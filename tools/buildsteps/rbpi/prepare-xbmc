@@ -3,7 +3,6 @@ XBMC_PLATFORM_DIR=rbpi
 . $WORKSPACE/tools/buildsteps/defaultenv
 
 cd $WORKSPACE
-JSON_BUILDER=$XBMC_DEPENDS_ROOT/i686-linux-gnu-native/bin/JsonSchemaBuilder ./bootstrap
 
 #build binary addons before building xbmc...
 #make sure that binary_addons don't clean the native tools

@@ -73,7 +73,6 @@ public:
   const CGUIControl *GetControl(int id) const;
   CGUIControl *GetControl(int id);
   virtual CGUIControl *GetFirstFocusableControl(int id);
-  void GetContainers(std::vector<CGUIControl *> &containers) const;
 
   virtual void AddControl(CGUIControl *control, int position = -1);
   bool InsertControl(CGUIControl *control, const CGUIControl *insertPoint);

@@ -187,7 +187,7 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
     movie->InsertEndChild(*doc.RootElement());
   }
   XMLUtils::SetString(movie, "mpaa", m_strMPAARating);
-  XMLUtils::SetInt(movie, "playcount", m_playCount);
+  XMLUtils::SetInt(movie, "playcount", GetPlayCount());
   XMLUtils::SetDate(movie, "lastplayed", m_lastPlayed);
   if (savePathInfo)
   {
@@ -375,7 +375,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar << m_strShowTitle;
     ar << m_strAlbum;
     ar << m_artist;
-    ar << m_playCount;
+    ar << GetPlayCount();
     ar << m_lastPlayed;
     ar << m_iTop250;
     ar << m_iSeason;
@@ -588,7 +588,7 @@ void CVideoInfoTag::Serialize(CVariant& value) const
   value["showtitle"] = m_strShowTitle;
   value["album"] = m_strAlbum;
   value["artist"] = m_artist;
-  value["playcount"] = m_playCount;
+  value["playcount"] = GetPlayCount();
   value["lastplayed"] = m_lastPlayed.IsValid() ? m_lastPlayed.GetAsDBDateTime() : StringUtils::Empty;
   value["top250"] = m_iTop250;
   value["year"] = m_premiered.GetYear();
@@ -676,7 +676,7 @@ void CVideoInfoTag::ToSortable(SortItem& sortable, Field field) const
   case FieldTvShowTitle:              sortable[FieldTvShowTitle] = m_strShowTitle; break;
   case FieldAlbum:                    sortable[FieldAlbum] = m_strAlbum; break;
   case FieldArtist:                   sortable[FieldArtist] = m_artist; break;
-  case FieldPlaycount:                sortable[FieldPlaycount] = m_playCount; break;
+  case FieldPlaycount:                sortable[FieldPlaycount] = GetPlayCount(); break;
   case FieldLastPlayed:               sortable[FieldLastPlayed] = m_lastPlayed.IsValid() ? m_lastPlayed.GetAsDBDateTime() : StringUtils::Empty; break;
   case FieldTop250:                   sortable[FieldTop250] = m_iTop250; break;
   case FieldYear:                     sortable[FieldYear] = m_premiered.GetYear(); break;
@@ -1221,6 +1221,11 @@ bool CVideoInfoTag::IsEmpty() const
           m_strPath.empty());
 }
 
+void CVideoInfoTag::SetDuration(int duration)
+{
+  m_duration = duration;
+}
+
 unsigned int CVideoInfoTag::GetDuration() const
 {
   /*
@@ -1231,6 +1236,11 @@ unsigned int CVideoInfoTag::GetDuration() const
   if (duration > m_duration * 0.6)
     return duration;
 
+  return m_duration;
+}
+
+unsigned int CVideoInfoTag::GetStaticDuration() const
+{
   return m_duration;
 }
 
@@ -1521,4 +1531,42 @@ std::vector<std::string> CVideoInfoTag::Trim(std::vector<std::string>&& items)
     str = StringUtils::Trim(str);
   });
   return items;
+}
+
+int CVideoInfoTag::GetPlayCount() const
+{
+  return m_playCount;
+}
+
+bool CVideoInfoTag::SetPlayCount(int count)
+{
+  m_playCount = count;
+  return true;
+}
+
+bool CVideoInfoTag::IncrementPlayCount()
+{
+  SetPlayCount(GetPlayCount() + 1); // note: not just m_playCount++; call possibly overridden (G|S)etPlayCount
+  return true;
+}
+
+CBookmark CVideoInfoTag::GetResumePoint() const
+{
+  return m_resumePoint;
+}
+
+bool CVideoInfoTag::SetResumePoint(const CBookmark &resumePoint)
+{
+  m_resumePoint = resumePoint;
+  return true;
+}
+
+bool CVideoInfoTag::SetResumePoint(double timeInSeconds, double totalTimeInSeconds, const std::string &playerState /* = "" */)
+{
+  CBookmark resumePoint;
+  resumePoint.timeInSeconds = timeInSeconds;
+  resumePoint.totalTimeInSeconds = totalTimeInSeconds;
+  resumePoint.playerState = playerState;
+  resumePoint.type = CBookmark::RESUME;
+  return SetResumePoint(resumePoint); // note: not just m_resumePoint = resumePoint; call the possibly overridden SetResumePoint
 }

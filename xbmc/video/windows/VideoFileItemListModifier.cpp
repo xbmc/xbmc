@@ -98,7 +98,7 @@ void CVideoFileItemListModifier::AddQueuingFolder(CFileItemList& items)
     }
     pItem->GetVideoInfoTag()->m_strTitle = strLabel;
     pItem->GetVideoInfoTag()->m_iEpisode = watched + unwatched;
-    pItem->GetVideoInfoTag()->m_playCount = (unwatched == 0) ? 1 : 0;
+    pItem->GetVideoInfoTag()->SetPlayCount((unwatched == 0) ? 1 : 0);
     CVideoDatabase db;
     if (db.Open())
     {

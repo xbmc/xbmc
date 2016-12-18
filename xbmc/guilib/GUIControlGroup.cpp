@@ -664,17 +664,6 @@ void CGUIControlGroup::ClearAll()
   SetInvalid();
 }
 
-void CGUIControlGroup::GetContainers(std::vector<CGUIControl *> &containers) const
-{
-  for (auto *control : m_children)
-  {
-    if (control->IsContainer())
-      containers.push_back(control);
-    else if (control->IsGroup())
-      ((CGUIControlGroup *)control)->GetContainers(containers);
-  }
-}
-
 #ifdef _DEBUG
 void CGUIControlGroup::DumpTextureUse()
 {

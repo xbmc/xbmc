@@ -61,6 +61,7 @@ namespace PVR
 
     DECL_CONTEXTMENUITEM(ShowInformation);
     DECL_STATICCONTEXTMENUITEM(FindSimilar);
+    DECL_STATICCONTEXTMENUITEM(PlayRecording);
     DECL_STATICCONTEXTMENUITEM(StartRecording);
     DECL_STATICCONTEXTMENUITEM(StopRecording);
     DECL_STATICCONTEXTMENUITEM(AddTimerRule);
@@ -68,11 +69,6 @@ namespace PVR
     DECL_STATICCONTEXTMENUITEM(DeleteTimerRule);
     DECL_CONTEXTMENUITEM(EditTimer);
     DECL_CONTEXTMENUITEM(DeleteTimer);
-    DECL_CONTEXTMENUITEM(PlayChannel);
-    DECL_CONTEXTMENUITEM(ResumePlayRecording);
-    DECL_CONTEXTMENUITEM(PlayRecording);
-    DECL_STATICCONTEXTMENUITEM(MarkWatched);
-    DECL_STATICCONTEXTMENUITEM(MarkUnwatched);
     DECL_STATICCONTEXTMENUITEM(RenameRecording);
     DECL_CONTEXTMENUITEM(DeleteRecording);
     DECL_STATICCONTEXTMENUITEM(UndeleteRecording);
@@ -158,80 +154,7 @@ namespace PVR
     }
 
     ///////////////////////////////////////////////////////////////////////////////
-    // Play channel
-
-    std::string PlayChannel::GetLabel(const CFileItem &item) const
-    {
-      if (item.GetEPGInfoTag())
-        return g_localizeStrings.Get(19000); /* Switch to channel */
-
-      return g_localizeStrings.Get(208); /* Play */
-    }
-
-    bool PlayChannel::IsVisible(const CFileItem &item) const
-    {
-      if (item.GetPVRChannelInfoTag())
-        return true;
-
-      if (item.GetEPGInfoTag())
-        return true;
-
-      return false;
-    }
-
-    bool PlayChannel::Execute(const CFileItemPtr &item) const
-    {
-      return CPVRGUIActions::GetInstance().SwitchToChannel(
-        item, CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRPLAYBACK_PLAYMINIMIZED), false /* bCheckResume */);
-    }
-
-    ///////////////////////////////////////////////////////////////////////////////
-    // Resume play recording
-
-    std::string ResumePlayRecording::GetLabel(const CFileItem &item) const
-    {
-      return CPVRGUIActions::GetInstance().GetResumeLabel(item);
-    }
-
-    bool ResumePlayRecording::IsVisible(const CFileItem &item) const
-    {
-      CPVRRecordingPtr recording;
-
-      const CEpgInfoTagPtr epg(item.GetEPGInfoTag());
-      if (epg)
-        recording = epg->Recording();
-
-      if (!recording)
-        recording = item.GetPVRRecordingInfoTag();
-
-      if (recording)
-        return !recording->IsDeleted() && !CPVRGUIActions::GetInstance().GetResumeLabel(item).empty();
-
-      return false;
-    }
-
-    bool ResumePlayRecording::Execute(const CFileItemPtr &item) const
-    {
-      item->m_lStartOffset = STARTOFFSET_RESUME; // must always be set if PlayRecording is called with bCheckResume == false
-      return CPVRGUIActions::GetInstance().PlayRecording(item, false /* bPlayMinimized */, false /* bCheckResume */);
-    }
-
-    ///////////////////////////////////////////////////////////////////////////////
     // Play recording
-
-    std::string PlayRecording::GetLabel(const CFileItem &item) const
-    {
-      const CPVRRecordingPtr recording(item.GetPVRRecordingInfoTag());
-      if (recording && !recording->IsDeleted())
-      {
-        if (CPVRGUIActions::GetInstance().GetResumeLabel(item).empty())
-          return g_localizeStrings.Get(208); /* Play */
-        else
-          return g_localizeStrings.Get(12021); /* Play from beginning */
-      }
-
-      return g_localizeStrings.Get(19687); /* Play recording */
-    }
 
     bool PlayRecording::IsVisible(const CFileItem &item) const
     {
@@ -241,9 +164,6 @@ namespace PVR
       if (epg)
         recording = epg->Recording();
 
-      if (!recording)
-        recording = item.GetPVRRecordingInfoTag();
-
       if (recording)
         return !recording->IsDeleted();
 
@@ -252,68 +172,7 @@ namespace PVR
 
     bool PlayRecording::Execute(const CFileItemPtr &item) const
     {
-      item->m_lStartOffset = 0; // must always be set if PlayRecording is called with bCheckResume == false
-      return CPVRGUIActions::GetInstance().PlayRecording(item, false /* bPlayMinimized */, false /* bCheckResume */);
-    }
-
-    ///////////////////////////////////////////////////////////////////////////////
-    // Mark watched
-
-    bool MarkWatched::IsVisible(const CFileItem &item) const
-    {
-      const CPVRRecordingPtr recording(item.GetPVRRecordingInfoTag());
-      if (!recording)
-        return false;
-
-      // ".." folders don't have have "mark watched" context menu item
-      if (item.IsParentFolder())
-        return false;
-
-      // recording folders always have "mark watched" context menu item
-      if (item.m_bIsFolder)
-        return true;
-
-      if (!recording->IsDeleted())
-      {
-        if (recording->m_playCount == 0)
-          return true;
-      }
-      return false;
-    }
-
-    bool MarkWatched::Execute(const CFileItemPtr &item) const
-    {
-      return CPVRGUIActions::GetInstance().MarkWatched(item);
-    }
-
-    ///////////////////////////////////////////////////////////////////////////////
-    // Mark unwatched
-
-    bool MarkUnwatched::IsVisible(const CFileItem &item) const
-    {
-      const CPVRRecordingPtr recording(item.GetPVRRecordingInfoTag());
-      if (!recording)
-        return false;
-
-      // ".." folders don't have have "mark unwatched" context menu item
-      if (item.IsParentFolder())
-        return false;
-
-      // recording folders always have "mark unwatched" context menu item
-      if (item.m_bIsFolder)
-        return true;
-
-      if (!recording->IsDeleted())
-      {
-        if (recording->m_playCount > 0)
-          return true;
-      }
-      return false;
-    }
-
-    bool MarkUnwatched::Execute(const CFileItemPtr &item) const
-    {
-      return CPVRGUIActions::GetInstance().MarkUnwatched(item);
+      return CPVRGUIActions::GetInstance().PlayRecording(item, false /* bPlayMinimized */, true /* bCheckResume */);
     }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -671,11 +530,7 @@ namespace PVR
     {
       std::make_shared<CONTEXTMENUITEM::ShowInformation>(),
       std::make_shared<CONTEXTMENUITEM::FindSimilar>(19003), /* Find similar */
-      std::make_shared<CONTEXTMENUITEM::PlayChannel>(),
-      std::make_shared<CONTEXTMENUITEM::ResumePlayRecording>(),
-      std::make_shared<CONTEXTMENUITEM::PlayRecording>(),
-      std::make_shared<CONTEXTMENUITEM::MarkWatched>(16103), /* Mark as watched */
-      std::make_shared<CONTEXTMENUITEM::MarkUnwatched>(16104), /* Mark as unwatched */
+      std::make_shared<CONTEXTMENUITEM::PlayRecording>(19687), /* Play recording */
       std::make_shared<CONTEXTMENUITEM::ToggleTimerState>(),
       std::make_shared<CONTEXTMENUITEM::AddTimerRule>(19061), /* Add timer */
       std::make_shared<CONTEXTMENUITEM::EditTimerRule>(19243), /* Edit timer rule */

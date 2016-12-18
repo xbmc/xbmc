@@ -166,10 +166,9 @@ bool CThumbExtractor::DoWork()
 
       // overwrite the runtime value if the one from streamdetails is available
       if (info->m_iDbId > 0
-          && info->m_duration > 0
-          && static_cast<size_t>(info->m_duration) != info->GetDuration())
+          && info->GetStaticDuration() != info->GetDuration())
       {
-        info->m_duration = info->GetDuration();
+        info->SetDuration(info->GetDuration());
 
         // store the updated information in the database
         db.SetDetailsForItem(info->m_iDbId, info->m_type, *info, m_item.GetArt());

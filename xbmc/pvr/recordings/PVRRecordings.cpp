@@ -137,7 +137,7 @@ void CPVRRecordings::GetSubDirectories(const CPVRRecordingsPath &recParentPath, 
         pFileItem->m_dateTime = current->RecordingTimeAsLocalTime();
     }
 
-    if (current->m_playCount == 0)
+    if (current->GetPlayCount() == 0)
       unwatchedFolders.insert(pFileItem);
   }
 
@@ -166,9 +166,9 @@ void CPVRRecordings::Update(void)
 
   lock.Enter();
   m_bIsUpdating = false;
-  g_PVRManager.SetChanged();
   lock.Leave();
 
+  g_PVRManager.SetChanged();
   g_PVRManager.NotifyObservers(ObservableMessageRecordings);
   g_PVRManager.PublishEvent(RecordingsInvalidated);
 }
@@ -336,7 +336,7 @@ bool CPVRRecordings::GetDirectory(const std::string& strPath, CFileItemList &ite
       // Use the channel icon as a fallback when a thumbnail is not available
       pFileItem->SetArtFallback("thumb", "icon");
 
-      pFileItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, pFileItem->GetPVRRecordingInfoTag()->m_playCount > 0);
+      pFileItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, pFileItem->GetPVRRecordingInfoTag()->GetPlayCount() > 0);
 
       items.Add(pFileItem);
     }
@@ -361,7 +361,7 @@ void CPVRRecordings::GetAll(CFileItemList &items, bool bDeleted)
     pFileItem->SetLabel2(current->RecordingTimeAsLocalTime().GetAsLocalizedDateTime(true, false));
     pFileItem->m_dateTime = current->RecordingTimeAsLocalTime();
     pFileItem->SetPath(current->m_strFileNameAndPath);
-    pFileItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, pFileItem->GetPVRRecordingInfoTag()->m_playCount > 0);
+    pFileItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, pFileItem->GetPVRRecordingInfoTag()->GetPlayCount() > 0);
 
     items.Add(pFileItem);
   }
@@ -496,7 +496,7 @@ CPVRRecordingPtr CPVRRecordings::GetRecordingForEpgTag(const EPG::CEpgInfoTagPtr
           recording.second->ClientID() == epgTag->ChannelTag()->ClientID() &&
           recording.second->ChannelUid() == epgTag->ChannelTag()->UniqueID() &&
           recording.second->RecordingTimeAsUTC() <= epgTag->StartAsUTC() &&
-          (recording.second->RecordingTimeAsUTC() + recording.second->m_duration) >= epgTag->EndAsUTC())
+          recording.second->EndTimeAsUTC() >= epgTag->EndAsUTC())
         return recording.second;
     }
   }
@@ -549,10 +549,10 @@ bool CPVRRecordings::ChangeRecordingsPlayCount(const CFileItemPtr &item, int cou
           recording->SetPlayCount(count);
 
         // Clear resume bookmark
-        if (recording->m_playCount > 0)
+        if (recording->GetPlayCount() > 0)
         {
           m_database.ClearBookMarksOfFile(pItem->GetPath(), CBookmark::RESUME);
-          recording->SetLastPlayedPosition(0);
+          recording->SetResumePoint(CBookmark());
         }
 
         if (count == INCREMENT_PLAY_COUNT)
@@ -566,4 +566,12 @@ bool CPVRRecordings::ChangeRecordingsPlayCount(const CFileItemPtr &item, int cou
   }
 
   return bResult;
+}
+
+bool CPVRRecordings::MarkWatched(const CFileItemPtr &item, bool bWatched)
+{
+  if (bWatched)
+    return IncrementRecordingsPlayCount(item);
+  else
+    return SetRecordingsPlayCount(item, 0);
 }

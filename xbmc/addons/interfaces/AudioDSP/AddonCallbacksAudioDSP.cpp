@@ -35,243 +35,243 @@ using namespace ActiveAE;
 
 namespace KodiAPI
 {
-namespace AudioDSP
-{
+  namespace AudioDSP
+  {
 
-CAddonCallbacksADSP::CAddonCallbacksADSP(ADDON::CAddon* addon)
-  : ADDON::IAddonInterface(addon, KODI_AE_DSP_API_VERSION),
+    CAddonCallbacksADSP::CAddonCallbacksADSP(ADDON::CAddon* addon)
+    : m_addon(addon),
     m_callbacks(new CB_ADSPLib)
-{
-  /* write KODI audio DSP specific add-on function addresses to callback table */
-  m_callbacks->AddMenuHook                = ADSPAddMenuHook;
-  m_callbacks->RemoveMenuHook             = ADSPRemoveMenuHook;
-  m_callbacks->RegisterMode               = ADSPRegisterMode;
-  m_callbacks->UnregisterMode             = ADSPUnregisterMode;
-
-  m_callbacks->SoundPlay_GetHandle        = ADSPSoundPlay_GetHandle;
-  m_callbacks->SoundPlay_ReleaseHandle    = ADSPSoundPlay_ReleaseHandle;
-  m_callbacks->SoundPlay_Play             = ADSPSoundPlay_Play;
-  m_callbacks->SoundPlay_Stop             = ADSPSoundPlay_Stop;
-  m_callbacks->SoundPlay_IsPlaying        = ADSPSoundPlay_IsPlaying;
-  m_callbacks->SoundPlay_SetChannel       = ADSPSoundPlay_SetChannel;
-  m_callbacks->SoundPlay_GetChannel       = ADSPSoundPlay_GetChannel;
-  m_callbacks->SoundPlay_SetVolume        = ADSPSoundPlay_SetVolume;
-  m_callbacks->SoundPlay_GetVolume        = ADSPSoundPlay_GetVolume;
-}
-
-CAddonCallbacksADSP::~CAddonCallbacksADSP()
-{
-  /* delete the callback table */
-  delete m_callbacks;
-}
-
-CActiveAEDSPAddon *CAddonCallbacksADSP::GetAudioDSPAddon(void *addonData)
-{
-  CAddonInterfaces *addon = static_cast<CAddonInterfaces *>(addonData);
-  if (!addon || !addon->GetHelperADSP())
-  {
-    CLog::Log(LOGERROR, "Audio DSP - %s - called with a null pointer", __FUNCTION__);
-    return NULL;
-  }
-
-  return dynamic_cast<CActiveAEDSPAddon*>(static_cast<CAddonCallbacksADSP*>(addon->GetHelperADSP())->m_addon);
-}
-
-void CAddonCallbacksADSP::ADSPAddMenuHook(void *addonData, AE_DSP_MENUHOOK *hook)
-{
-  CActiveAEDSPAddon *client = GetAudioDSPAddon(addonData);
-  if (!hook || !client)
-  {
-    CLog::Log(LOGERROR, "Audio DSP - %s - invalid handler data", __FUNCTION__);
-    return;
-  }
-
-  AE_DSP_MENUHOOKS *hooks = client->GetMenuHooks();
-  if (hooks)
-  {
-    AE_DSP_MENUHOOK hookInt;
-    hookInt.iHookId            = hook->iHookId;
-    hookInt.iLocalizedStringId = hook->iLocalizedStringId;
-    hookInt.category           = hook->category;
-    hookInt.iRelevantModeId    = hook->iRelevantModeId;
-    hookInt.bNeedPlayback      = hook->bNeedPlayback;
-
-    /* add this new hook */
-    hooks->push_back(hookInt);
-  }
-}
-
-void CAddonCallbacksADSP::ADSPRemoveMenuHook(void *addonData, AE_DSP_MENUHOOK *hook)
-{
-  CActiveAEDSPAddon *client = GetAudioDSPAddon(addonData);
-  if (!hook || !client)
-  {
-    CLog::Log(LOGERROR, "Audio DSP - %s - invalid handler data", __FUNCTION__);
-    return;
-  }
-
-  AE_DSP_MENUHOOKS *hooks = client->GetMenuHooks();
-  if (hooks)
-  {
-    for (unsigned int i = 0; i < hooks->size(); i++)
     {
-      if (hooks->at(i).iHookId == hook->iHookId)
+      /* write KODI audio DSP specific add-on function addresses to callback table */
+      m_callbacks->AddMenuHook                = ADSPAddMenuHook;
+      m_callbacks->RemoveMenuHook             = ADSPRemoveMenuHook;
+      m_callbacks->RegisterMode               = ADSPRegisterMode;
+      m_callbacks->UnregisterMode             = ADSPUnregisterMode;
+
+      m_callbacks->SoundPlay_GetHandle        = ADSPSoundPlay_GetHandle;
+      m_callbacks->SoundPlay_ReleaseHandle    = ADSPSoundPlay_ReleaseHandle;
+      m_callbacks->SoundPlay_Play             = ADSPSoundPlay_Play;
+      m_callbacks->SoundPlay_Stop             = ADSPSoundPlay_Stop;
+      m_callbacks->SoundPlay_IsPlaying        = ADSPSoundPlay_IsPlaying;
+      m_callbacks->SoundPlay_SetChannel       = ADSPSoundPlay_SetChannel;
+      m_callbacks->SoundPlay_GetChannel       = ADSPSoundPlay_GetChannel;
+      m_callbacks->SoundPlay_SetVolume        = ADSPSoundPlay_SetVolume;
+      m_callbacks->SoundPlay_GetVolume        = ADSPSoundPlay_GetVolume;
+    }
+
+    CAddonCallbacksADSP::~CAddonCallbacksADSP()
+    {
+      /* delete the callback table */
+      delete m_callbacks;
+    }
+
+    CActiveAEDSPAddon *CAddonCallbacksADSP::GetAudioDSPAddon(void *addonData)
+    {
+      CAddonInterfaces *addon = static_cast<CAddonInterfaces *>(addonData);
+      if (!addon || !addon->GetHelperADSP())
       {
-        /* remove this hook */
-        hooks->erase(hooks->begin()+i);
-        break;
+        CLog::Log(LOGERROR, "Audio DSP - %s - called with a null pointer", __FUNCTION__);
+        return NULL;
+      }
+
+      return dynamic_cast<CActiveAEDSPAddon*>(static_cast<CAddonCallbacksADSP*>(addon->GetHelperADSP())->m_addon);
+    }
+
+    void CAddonCallbacksADSP::ADSPAddMenuHook(void *addonData, AE_DSP_MENUHOOK *hook)
+    {
+      CActiveAEDSPAddon *client = GetAudioDSPAddon(addonData);
+      if (!hook || !client)
+      {
+        CLog::Log(LOGERROR, "Audio DSP - %s - invalid handler data", __FUNCTION__);
+        return;
+      }
+
+      AE_DSP_MENUHOOKS *hooks = client->GetMenuHooks();
+      if (hooks)
+      {
+        AE_DSP_MENUHOOK hookInt;
+        hookInt.iHookId            = hook->iHookId;
+        hookInt.iLocalizedStringId = hook->iLocalizedStringId;
+        hookInt.category           = hook->category;
+        hookInt.iRelevantModeId    = hook->iRelevantModeId;
+        hookInt.bNeedPlayback      = hook->bNeedPlayback;
+
+        /* add this new hook */
+        hooks->push_back(hookInt);
       }
     }
-  }
-}
 
-void CAddonCallbacksADSP::ADSPRegisterMode(void* addonData, AE_DSP_MODES::AE_DSP_MODE* mode)
-{
-  CActiveAEDSPAddon *addon = GetAudioDSPAddon(addonData);
-  if (!mode || !addon)
-  {
-    CLog::Log(LOGERROR, "Audio DSP - %s - invalid mode data", __FUNCTION__);
-    return;
-  }
+    void CAddonCallbacksADSP::ADSPRemoveMenuHook(void *addonData, AE_DSP_MENUHOOK *hook)
+    {
+      CActiveAEDSPAddon *client = GetAudioDSPAddon(addonData);
+      if (!hook || !client)
+      {
+        CLog::Log(LOGERROR, "Audio DSP - %s - invalid handler data", __FUNCTION__);
+        return;
+      }
 
-  CActiveAEDSPMode transferMode(*mode, addon->GetID());
-  int idMode = transferMode.AddUpdate();
-  mode->iUniqueDBModeId = idMode;
+      AE_DSP_MENUHOOKS *hooks = client->GetMenuHooks();
+      if (hooks)
+      {
+        for (unsigned int i = 0; i < hooks->size(); i++)
+        {
+          if (hooks->at(i).iHookId == hook->iHookId)
+          {
+            /* remove this hook */
+            hooks->erase(hooks->begin()+i);
+            break;
+          }
+        }
+      }
+    }
 
-  if (idMode > AE_DSP_INVALID_ADDON_ID)
-  {
-	  CLog::Log(LOGDEBUG, "Audio DSP - %s - successfull registered mode %s of %s adsp-addon", __FUNCTION__, mode->strModeName, addon->Name().c_str());
-  }
-  else
-  {
-	  CLog::Log(LOGERROR, "Audio DSP - %s - failed to register mode %s of %s adsp-addon", __FUNCTION__, mode->strModeName, addon->Name().c_str());
-  }
-}
+    void CAddonCallbacksADSP::ADSPRegisterMode(void* addonData, AE_DSP_MODES::AE_DSP_MODE* mode)
+    {
+      CActiveAEDSPAddon *addon = GetAudioDSPAddon(addonData);
+      if (!mode || !addon)
+      {
+        CLog::Log(LOGERROR, "Audio DSP - %s - invalid mode data", __FUNCTION__);
+        return;
+      }
 
-void CAddonCallbacksADSP::ADSPUnregisterMode(void* addonData, AE_DSP_MODES::AE_DSP_MODE* mode)
-{
-  CActiveAEDSPAddon *addon = GetAudioDSPAddon(addonData);
-  if (!mode || !addon)
-  {
-    CLog::Log(LOGERROR, "Audio DSP - %s - invalid mode data", __FUNCTION__);
-    return;
-  }
+      CActiveAEDSPMode transferMode(*mode, addon->GetID());
+      int idMode = transferMode.AddUpdate();
+      mode->iUniqueDBModeId = idMode;
 
-  CActiveAEDSPMode transferMode(*mode, addon->GetID());
-  transferMode.Delete();
-}
+      if (idMode > AE_DSP_INVALID_ADDON_ID)
+      {
+        CLog::Log(LOGDEBUG, "Audio DSP - %s - successfull registered mode %s of %s adsp-addon", __FUNCTION__, mode->strModeName, addon->Name().c_str());
+      }
+      else
+      {
+        CLog::Log(LOGERROR, "Audio DSP - %s - failed to register mode %s of %s adsp-addon", __FUNCTION__, mode->strModeName, addon->Name().c_str());
+      }
+    }
 
-ADSPHANDLE CAddonCallbacksADSP::ADSPSoundPlay_GetHandle(void *addonData, const char *filename)
-{
-  CActiveAEDSPAddon *addon = GetAudioDSPAddon(addonData);
-  if (!filename || !addon)
-  {
-    CLog::Log(LOGERROR, "Audio DSP - %s - invalid sound play data", __FUNCTION__);
-    return NULL;
-  }
+    void CAddonCallbacksADSP::ADSPUnregisterMode(void* addonData, AE_DSP_MODES::AE_DSP_MODE* mode)
+    {
+      CActiveAEDSPAddon *addon = GetAudioDSPAddon(addonData);
+      if (!mode || !addon)
+      {
+        CLog::Log(LOGERROR, "Audio DSP - %s - invalid mode data", __FUNCTION__);
+        return;
+      }
 
-  IAESound *sound = CServiceBroker::GetActiveAE().MakeSound(filename);
-  if (!sound)
-  {
-    CLog::Log(LOGERROR, "Audio DSP - %s - failed to make sound play data", __FUNCTION__);
-    return NULL;
-  }
+      CActiveAEDSPMode transferMode(*mode, addon->GetID());
+      transferMode.Delete();
+    }
 
-  return sound;
-}
+    ADSPHANDLE CAddonCallbacksADSP::ADSPSoundPlay_GetHandle(void *addonData, const char *filename)
+    {
+      CActiveAEDSPAddon *addon = GetAudioDSPAddon(addonData);
+      if (!filename || !addon)
+      {
+        CLog::Log(LOGERROR, "Audio DSP - %s - invalid sound play data", __FUNCTION__);
+        return NULL;
+      }
 
-void CAddonCallbacksADSP::ADSPSoundPlay_ReleaseHandle(void *addonData, ADSPHANDLE handle)
-{
-  CActiveAEDSPAddon *addon = GetAudioDSPAddon(addonData);
-  if (!handle || !addon)
-  {
-    CLog::Log(LOGERROR, "Audio DSP - %s - invalid sound play data", __FUNCTION__);
-    return;
-  }
+      IAESound *sound = CServiceBroker::GetActiveAE().MakeSound(filename);
+      if (!sound)
+      {
+        CLog::Log(LOGERROR, "Audio DSP - %s - failed to make sound play data", __FUNCTION__);
+        return NULL;
+      }
 
-  CServiceBroker::GetActiveAE().FreeSound((IAESound*)handle);
-}
+      return sound;
+    }
 
-void CAddonCallbacksADSP::ADSPSoundPlay_Play(void *addonData, ADSPHANDLE handle)
-{
-  CActiveAEDSPAddon *addon = GetAudioDSPAddon(addonData);
-  if (!handle || !addon)
-  {
-    CLog::Log(LOGERROR, "Audio DSP - %s - invalid sound play data", __FUNCTION__);
-    return;
-  }
-  ((IAESound*)handle)->Play();
-}
+    void CAddonCallbacksADSP::ADSPSoundPlay_ReleaseHandle(void *addonData, ADSPHANDLE handle)
+    {
+      CActiveAEDSPAddon *addon = GetAudioDSPAddon(addonData);
+      if (!handle || !addon)
+      {
+        CLog::Log(LOGERROR, "Audio DSP - %s - invalid sound play data", __FUNCTION__);
+        return;
+      }
 
-void CAddonCallbacksADSP::ADSPSoundPlay_Stop(void *addonData, ADSPHANDLE handle)
-{
-  CActiveAEDSPAddon *addon = GetAudioDSPAddon(addonData);
-  if (!handle || !addon)
-  {
-    CLog::Log(LOGERROR, "Audio DSP - %s - invalid sound play data", __FUNCTION__);
-    return;
-  }
-  ((IAESound*)handle)->Stop();
-}
+      CServiceBroker::GetActiveAE().FreeSound((IAESound*)handle);
+    }
 
-bool CAddonCallbacksADSP::ADSPSoundPlay_IsPlaying(void *addonData, ADSPHANDLE handle)
-{
-  CActiveAEDSPAddon *addon = GetAudioDSPAddon(addonData);
-  if (!handle || !addon)
-  {
-    CLog::Log(LOGERROR, "Audio DSP - %s - invalid sound play data", __FUNCTION__);
-    return false;
-  }
-  return ((IAESound*)handle)->IsPlaying();
-}
+    void CAddonCallbacksADSP::ADSPSoundPlay_Play(void *addonData, ADSPHANDLE handle)
+    {
+      CActiveAEDSPAddon *addon = GetAudioDSPAddon(addonData);
+      if (!handle || !addon)
+      {
+        CLog::Log(LOGERROR, "Audio DSP - %s - invalid sound play data", __FUNCTION__);
+        return;
+      }
+      ((IAESound*)handle)->Play();
+    }
 
-void CAddonCallbacksADSP::ADSPSoundPlay_SetChannel(void *addonData, ADSPHANDLE handle, AE_DSP_CHANNEL channel)
-{
-  CActiveAEDSPAddon *addon = GetAudioDSPAddon(addonData);
-  if (!handle || !addon)
-  {
-    CLog::Log(LOGERROR, "Audio DSP - %s - invalid sound play data", __FUNCTION__);
-    return;
-  }
+    void CAddonCallbacksADSP::ADSPSoundPlay_Stop(void *addonData, ADSPHANDLE handle)
+    {
+      CActiveAEDSPAddon *addon = GetAudioDSPAddon(addonData);
+      if (!handle || !addon)
+      {
+        CLog::Log(LOGERROR, "Audio DSP - %s - invalid sound play data", __FUNCTION__);
+        return;
+      }
+      ((IAESound*)handle)->Stop();
+    }
 
-  ((IAESound*)handle)->SetChannel(CActiveAEDSP::GetKODIChannel(channel));
-}
+    bool CAddonCallbacksADSP::ADSPSoundPlay_IsPlaying(void *addonData, ADSPHANDLE handle)
+    {
+      CActiveAEDSPAddon *addon = GetAudioDSPAddon(addonData);
+      if (!handle || !addon)
+      {
+        CLog::Log(LOGERROR, "Audio DSP - %s - invalid sound play data", __FUNCTION__);
+        return false;
+      }
+      return ((IAESound*)handle)->IsPlaying();
+    }
 
-AE_DSP_CHANNEL CAddonCallbacksADSP::ADSPSoundPlay_GetChannel(void *addonData, ADSPHANDLE handle)
-{
-  CActiveAEDSPAddon *addon = GetAudioDSPAddon(addonData);
-  if (!handle || !addon)
-  {
-    CLog::Log(LOGERROR, "Audio DSP - %s - invalid sound play data", __FUNCTION__);
-    return AE_DSP_CH_INVALID;
-  }
+    void CAddonCallbacksADSP::ADSPSoundPlay_SetChannel(void *addonData, ADSPHANDLE handle, AE_DSP_CHANNEL channel)
+    {
+      CActiveAEDSPAddon *addon = GetAudioDSPAddon(addonData);
+      if (!handle || !addon)
+      {
+        CLog::Log(LOGERROR, "Audio DSP - %s - invalid sound play data", __FUNCTION__);
+        return;
+      }
 
-  return CActiveAEDSP::GetDSPChannel(((IAESound*)handle)->GetChannel());
-}
+      ((IAESound*)handle)->SetChannel(CActiveAEDSP::GetKODIChannel(channel));
+    }
 
-void CAddonCallbacksADSP::ADSPSoundPlay_SetVolume(void *addonData, ADSPHANDLE handle, float volume)
-{
-  CActiveAEDSPAddon *addon = GetAudioDSPAddon(addonData);
-  if (!handle || !addon)
-  {
-    CLog::Log(LOGERROR, "Audio DSP - %s - invalid sound play data", __FUNCTION__);
-    return;
-  }
-
-  ((IAESound*)handle)->SetVolume(volume);
-}
-
-float CAddonCallbacksADSP::ADSPSoundPlay_GetVolume(void *addonData, ADSPHANDLE handle)
-{
-  CActiveAEDSPAddon *addon = GetAudioDSPAddon(addonData);
-  if (!handle || !addon)
-  {
-    CLog::Log(LOGERROR, "Audio DSP - %s - invalid sound play data", __FUNCTION__);
-    return 0.0f;
-  }
-
-  return ((IAESound*)handle)->GetVolume();
-}
-
-} /* namespace AudioDSP */
+    AE_DSP_CHANNEL CAddonCallbacksADSP::ADSPSoundPlay_GetChannel(void *addonData, ADSPHANDLE handle)
+    {
+      CActiveAEDSPAddon *addon = GetAudioDSPAddon(addonData);
+      if (!handle || !addon)
+      {
+        CLog::Log(LOGERROR, "Audio DSP - %s - invalid sound play data", __FUNCTION__);
+        return AE_DSP_CH_INVALID;
+      }
+      
+      return CActiveAEDSP::GetDSPChannel(((IAESound*)handle)->GetChannel());
+    }
+    
+    void CAddonCallbacksADSP::ADSPSoundPlay_SetVolume(void *addonData, ADSPHANDLE handle, float volume)
+    {
+      CActiveAEDSPAddon *addon = GetAudioDSPAddon(addonData);
+      if (!handle || !addon)
+      {
+        CLog::Log(LOGERROR, "Audio DSP - %s - invalid sound play data", __FUNCTION__);
+        return;
+      }
+      
+      ((IAESound*)handle)->SetVolume(volume);
+    }
+    
+    float CAddonCallbacksADSP::ADSPSoundPlay_GetVolume(void *addonData, ADSPHANDLE handle)
+    {
+      CActiveAEDSPAddon *addon = GetAudioDSPAddon(addonData);
+      if (!handle || !addon)
+      {
+        CLog::Log(LOGERROR, "Audio DSP - %s - invalid sound play data", __FUNCTION__);
+        return 0.0f;
+      }
+      
+      return ((IAESound*)handle)->GetVolume();
+    }
+    
+  } /* namespace AudioDSP */
 } /* namespace KodiAPI */

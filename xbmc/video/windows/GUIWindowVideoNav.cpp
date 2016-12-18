@@ -98,7 +98,7 @@ bool CGUIWindowVideoNav::OnAction(const CAction &action)
 
     if (pItem && pItem->HasVideoInfoTag())
     {
-      CVideoLibraryQueue::GetInstance().MarkAsWatched(pItem, pItem->GetVideoInfoTag()->m_playCount == 0);
+      CVideoLibraryQueue::GetInstance().MarkAsWatched(pItem, pItem->GetVideoInfoTag()->GetPlayCount() == 0);
       return true;
     }
   }
@@ -248,7 +248,7 @@ int CGUIWindowVideoNav::GetFirstUnwatchedItemIndex(bool includeAllSeasons, bool 
 
     // Is the season unwatched, and is its season number lower than the currently identified
     // first unwatched season
-    if (pTag->m_playCount == 0 && pTag->m_iSeason < iUnwatchedSeason)
+    if (pTag->GetPlayCount() == 0 && pTag->m_iSeason < iUnwatchedSeason)
     {
       iUnwatchedSeason = pTag->m_iSeason;
       iIndex = i;
@@ -273,7 +273,7 @@ int CGUIWindowVideoNav::GetFirstUnwatchedItemIndex(bool includeAllSeasons, bool 
 
       // Does the episode belong to the unwatched season and Is the episode unwatched, and is its epsiode number 
       // lower than the currently identified first unwatched episode
-      if (pTag->m_iSeason == iUnwatchedSeason && pTag->m_playCount == 0 && pTag->m_iEpisode < iUnwatchedEpisode)
+      if (pTag->m_iSeason == iUnwatchedSeason && pTag->GetPlayCount() == 0 && pTag->m_iEpisode < iUnwatchedEpisode)
       {
         iUnwatchedEpisode = pTag->m_iEpisode;
         iIndex = i;
@@ -593,13 +593,9 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items, CVideoDatabase &dat
         fetchedPlayCounts = true;
       }
       
-      // preferably use some information from PVR info tag if available
-      if (pItem->HasPVRRecordingInfoTag())
-        pItem->GetPVRRecordingInfoTag()->CopyClientInfo(pItem->GetVideoInfoTag());
-
       // set the watched overlay
       if (pItem->IsVideo())
-        pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_playCount > 0);
+        pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->GetPlayCount() > 0);
     }
   }
 }
@@ -1258,8 +1254,8 @@ bool CGUIWindowVideoNav::ApplyWatchedFilter(CFileItemList &items)
     if (filterWatched)
     {
       if(!item->IsParentFolder() && // Don't delete the go to parent folder
-         ((watchMode == WatchedModeWatched   && item->GetVideoInfoTag()->m_playCount == 0) ||
-          (watchMode == WatchedModeUnwatched && item->GetVideoInfoTag()->m_playCount > 0)))
+         ((watchMode == WatchedModeWatched   && item->GetVideoInfoTag()->GetPlayCount() == 0) ||
+          (watchMode == WatchedModeUnwatched && item->GetVideoInfoTag()->GetPlayCount() > 0)))
       {
         items.Remove(i);
         i--;

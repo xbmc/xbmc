@@ -113,3 +113,11 @@ msgstr ""
 msgctxt "#30024"
 msgid "Fallback to Artist Moods from"
 msgstr ""
+
+msgctxt "#30025"
+msgid "MB Mirror"
+msgstr ""
+
+msgctxt "#30026"
+msgid "MusicBrainz Mirror"
+msgstr ""

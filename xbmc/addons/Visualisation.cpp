@@ -23,6 +23,7 @@
 #include "ServiceBroker.h"
 #include "guiinfo/GUIInfoLabels.h"
 #include "Application.h"
+#include "filesystem/SpecialProtocol.h"
 #include "guilib/GraphicContext.h"
 #include "guilib/WindowIDs.h"
 #include "music/tags/MusicInfoTag.h"
@@ -32,12 +33,7 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
-#include "ServiceBroker.h"
-#include "cores/AudioEngine/Interfaces/AE.h"
-#ifdef TARGET_POSIX
-#include <dlfcn.h>
-#include "filesystem/SpecialProtocol.h"
-#endif
+#include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
 
 using namespace MUSIC_INFO;
 using namespace ADDON;

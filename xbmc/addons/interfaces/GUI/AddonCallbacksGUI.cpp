@@ -61,7 +61,7 @@ namespace GUI
 static int iXBMCGUILockRef = 0;
 
 CAddonCallbacksGUI::CAddonCallbacksGUI(CAddon* addon)
-  : ADDON::IAddonInterface(addon, KODI_GUILIB_API_VERSION),
+  : m_addon(addon),
     m_callbacks(new CB_GUILib)
 {
   /* GUI Helper functions */

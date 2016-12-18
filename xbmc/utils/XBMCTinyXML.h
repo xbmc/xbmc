@@ -20,9 +20,6 @@
  *
  */
 
-#if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
-  #include "config.h"
-#endif
 #ifndef TARGET_WINDOWS
 //compile fix for TinyXml < 2.6.0
 #define DOCUMENT    TINYXML_DOCUMENT

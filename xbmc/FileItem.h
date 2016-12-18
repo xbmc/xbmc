@@ -73,6 +73,8 @@ typedef std::shared_ptr<const IEvent> EventPtr;
 
 class CMediaSource;
 
+class CBookmark;
+
 enum EFileFolderType {
   EFILEFOLDER_TYPE_ALWAYS     = 1<<0,
   EFILEFOLDER_TYPE_ONCLICK    = 1<<1,
@@ -174,6 +176,12 @@ public:
    */
   bool IsAudio() const;
 
+  /*!
+   \brief Check whether an item is 'deleted' (for example, a trashed pvr recording).
+   \return true if item is 'deleted', false otherwise.
+   */
+  bool IsDeleted() const;
+
   bool IsGame() const;
   bool IsCUESheet() const;
   bool IsInternetStream(const bool bStrictCheck = false) const;
@@ -253,17 +261,11 @@ public:
     return m_musicInfoTag;
   }
 
-  inline bool HasVideoInfoTag() const
-  {
-    return m_videoInfoTag != NULL;
-  }
+  bool HasVideoInfoTag() const;
 
   CVideoInfoTag* GetVideoInfoTag();
 
-  inline const CVideoInfoTag* GetVideoInfoTag() const
-  {
-    return m_videoInfoTag;
-  }
+  const CVideoInfoTag* GetVideoInfoTag() const;
 
   inline bool HasEPGInfoTag() const
   {
@@ -326,6 +328,12 @@ public:
   }
 
   /*!
+   \brief return the item to play. will be almost 'this', but can be different (e.g. "Play recording" from PVR EPG grid window)
+   \return the item to play
+   */
+  CFileItem GetItemToPlay() const;
+
+  /*!
    \brief Test if this item has a valid resume point set.
    \return True if this item has a resume point and it is set, false otherwise.
    */
@@ -336,6 +344,14 @@ public:
    \return The time in seconds from the start to resume playing from.
    */
   double GetCurrentResumeTime() const;
+
+  /*!
+   \brief Return the current resume time and part.
+   \param startOffset will be filled with the resume time offset in seconds if item has a resume point set, is unchanged otherwise
+   \param partNumber will be filled with the part number if item has a resume point set, is unchanged otherwise
+   \return True if the item has a resume point set, false otherwise.
+   */
+  bool GetCurrentResumeTimeAndPartNumber(int& startOffset, int& partNumber) const;
 
   inline bool HasPictureInfoTag() const
   {
@@ -534,6 +550,12 @@ private:
    \sa Reset, CGUIListItem
    */
   void Initialize();
+
+  /*!
+   \brief Return the current resume point for this item.
+   \return The resum point.
+   */
+  CBookmark GetResumePoint() const;
 
   std::string m_strPath;            ///< complete path to item
 

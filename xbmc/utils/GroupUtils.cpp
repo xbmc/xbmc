@@ -127,8 +127,8 @@ bool GroupUtils::Group(GroupBy groupBy, const std::string &baseDir, const CFileI
           setInfo->m_dateAdded = movieInfo->m_dateAdded;
 
         // handle playcount/watched
-        setInfo->m_playCount += movieInfo->m_playCount;
-        if (movieInfo->m_playCount > 0)
+        setInfo->SetPlayCount(setInfo->GetPlayCount() + movieInfo->GetPlayCount());
+        if (movieInfo->GetPlayCount() > 0)
           iWatched++;
 
         //accumulate the path for a multipath construction
@@ -143,11 +143,11 @@ bool GroupUtils::Group(GroupBy groupBy, const std::string &baseDir, const CFileI
       if (ratings > 1)
         pItem->GetVideoInfoTag()->SetRating(totalRatings / ratings);
 
-      setInfo->m_playCount = iWatched >= (int)set->second.size() ? (setInfo->m_playCount / set->second.size()) : 0;
+      setInfo->SetPlayCount(iWatched >= static_cast<int>(set->second.size()) ? (setInfo->GetPlayCount() / set->second.size()) : 0);
       pItem->SetProperty("total", (int)set->second.size());
       pItem->SetProperty("watched", iWatched);
       pItem->SetProperty("unwatched", (int)set->second.size() - iWatched);
-      pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, setInfo->m_playCount > 0);
+      pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, setInfo->GetPlayCount() > 0);
 
       groupedItems.Add(pItem);
     }

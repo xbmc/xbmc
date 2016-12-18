@@ -90,17 +90,20 @@ void CGUIWindowPVRBase::UpdateSelectedItemPath()
 
 void CGUIWindowPVRBase::RegisterObservers(void)
 {
-  CSingleLock lock(m_critSection);
   g_PVRManager.RegisterObserver(this);
+
+  CSingleLock lock(m_critSection);
   if (m_channelGroup)
     m_channelGroup->RegisterObserver(this);
 };
 
 void CGUIWindowPVRBase::UnregisterObservers(void)
 {
-  CSingleLock lock(m_critSection);
-  if (m_channelGroup)
-    m_channelGroup->UnregisterObserver(this);
+  {
+    CSingleLock lock(m_critSection);
+    if (m_channelGroup)
+      m_channelGroup->UnregisterObserver(this);
+  }
   g_PVRManager.UnregisterObserver(this);
 };
 
@@ -313,18 +316,26 @@ CPVRChannelGroupPtr CGUIWindowPVRBase::GetChannelGroup(void)
 
 void CGUIWindowPVRBase::SetChannelGroup(const CPVRChannelGroupPtr &group)
 {
-  CSingleLock lock(m_critSection);
   if (!group)
     return;
 
-  if (m_channelGroup != group)
+  CPVRChannelGroupPtr channelGroup;
   {
-    if (m_channelGroup)
-      m_channelGroup->UnregisterObserver(this);
-    m_channelGroup = group;
-    // we need to register the window to receive changes from the new group
-    m_channelGroup->RegisterObserver(this);
-    g_PVRManager.SetPlayingGroup(m_channelGroup);
+    CSingleLock lock(m_critSection);
+    if (m_channelGroup != group)
+    {
+      if (m_channelGroup)
+        m_channelGroup->UnregisterObserver(this);
+      m_channelGroup = group;
+      // we need to register the window to receive changes from the new group
+      m_channelGroup->RegisterObserver(this);
+      channelGroup = m_channelGroup;
+    }
+  }
+
+  if (channelGroup)
+  {
+    g_PVRManager.SetPlayingGroup(channelGroup);
     Update(GetDirectoryPath());
   }
 }

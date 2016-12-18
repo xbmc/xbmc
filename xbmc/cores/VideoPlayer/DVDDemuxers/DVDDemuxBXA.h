@@ -21,10 +21,6 @@
 
 #include "DVDDemux.h"
 
-#if defined(HAVE_CONFIG_H)
-  #include "config.h"
-#endif
-
 #ifdef TARGET_WINDOWS
 #define __attribute__(dummy_val)
 #pragma pack(push)

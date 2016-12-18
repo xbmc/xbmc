@@ -21,10 +21,6 @@
   #define __STDC_LIMIT_MACROS
 #endif
 
-#if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
-#include "config.h"
-#endif
-
 #include "AEUtil.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"

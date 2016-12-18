@@ -136,8 +136,13 @@
 		228FA65E1C53F9D50023BBF0 /* InfoScanner.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 228FA65C1C53F9D50023BBF0 /* InfoScanner.cpp */; };
 		2A1D96BD1D437911009D8B25 /* GUIDialogPlayerProcessInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A1D96BC1D437911009D8B25 /* GUIDialogPlayerProcessInfo.cpp */; };
 		2A1D96BE1D437911009D8B25 /* GUIDialogPlayerProcessInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A1D96BC1D437911009D8B25 /* GUIDialogPlayerProcessInfo.cpp */; };
+		2A39DDB91E01E7BF0086DA95 /* ContextMenus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A39DDB71E01E7BF0086DA95 /* ContextMenus.cpp */; };
 		2A7B2BDC1BD6F16600044BCD /* PVRSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A7B2BDB1BD6F16600044BCD /* PVRSettings.cpp */; };
 		2A7B2BDD1BD6F16600044BCD /* PVRSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A7B2BDB1BD6F16600044BCD /* PVRSettings.cpp */; };
+		2A7FD7321E01F44000A41CA6 /* ContextMenus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A39DDB71E01E7BF0086DA95 /* ContextMenus.cpp */; };
+		2A7FD7331E01F45B00A41CA6 /* PVRItem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2AF0B0951DE1025E005CA6BA /* PVRItem.cpp */; };
+		2A7FD7341E01F46700A41CA6 /* PVRContextMenus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2AE16B821D60DBC4005C20EB /* PVRContextMenus.cpp */; };
+		2A7FD7351E01F47C00A41CA6 /* PVRGUIActions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2ABCFF7B1D998AA70067B4A1 /* PVRGUIActions.cpp */; };
 		2AB491701CDDF1920004C263 /* HTTPRequestHandlerUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2AB4916E1CDDF1920004C263 /* HTTPRequestHandlerUtils.cpp */; };
 		2AB491711CDDF1920004C263 /* HTTPRequestHandlerUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2AB4916E1CDDF1920004C263 /* HTTPRequestHandlerUtils.cpp */; };
 		2ABCFF7D1D998AA70067B4A1 /* PVRGUIActions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2ABCFF7B1D998AA70067B4A1 /* PVRGUIActions.cpp */; };
@@ -302,6 +307,8 @@
 		6890C2121DDBDBFC00F8F362 /* GameClientTranslator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6890C2031DDBDBFC00F8F362 /* GameClientTranslator.cpp */; };
 		6890C21D1DDBDCA200F8F362 /* GameResource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6890C21B1DDBDCA200F8F362 /* GameResource.cpp */; };
 		6890C21E1DDBDCA200F8F362 /* GameResource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6890C21B1DDBDCA200F8F362 /* GameResource.cpp */; };
+		6890C2271DDBDCF500F8F362 /* AddonCallbacksGame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6890C2251DDBDCF500F8F362 /* AddonCallbacksGame.cpp */; };
+		6890C2281DDBDCF500F8F362 /* AddonCallbacksGame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6890C2251DDBDCF500F8F362 /* AddonCallbacksGame.cpp */; };
 		6890C22F1DDBDD2D00F8F362 /* GameUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6890C22D1DDBDD2D00F8F362 /* GameUtils.cpp */; };
 		6890C2301DDBDD2D00F8F362 /* GameUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6890C22D1DDBDD2D00F8F362 /* GameUtils.cpp */; };
 		6890C2381DDBDD4400F8F362 /* GUIDialogSelectGameClient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6890C2341DDBDD4400F8F362 /* GUIDialogSelectGameClient.cpp */; };
@@ -330,6 +337,8 @@
 		6890C2851DDBE03900F8F362 /* GUIViewStateWindowGames.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6890C2801DDBE03900F8F362 /* GUIViewStateWindowGames.cpp */; };
 		6890C2861DDBE03900F8F362 /* GUIWindowGames.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6890C2821DDBE03900F8F362 /* GUIWindowGames.cpp */; };
 		6890C2871DDBE03900F8F362 /* GUIWindowGames.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6890C2821DDBE03900F8F362 /* GUIWindowGames.cpp */; };
+		68AE5BA51C92412900C4D527 /* AddonCallbacksPeripheral.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 68AE5BA31C92412900C4D527 /* AddonCallbacksPeripheral.cpp */; };
+		68AE5BA61C92412900C4D527 /* AddonCallbacksPeripheral.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 68AE5BA31C92412900C4D527 /* AddonCallbacksPeripheral.cpp */; };
 		68AE5BBD1C9241DF00C4D527 /* DefaultJoystick.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 68AE5BAC1C9241DF00C4D527 /* DefaultJoystick.cpp */; };
 		68AE5BBE1C9241DF00C4D527 /* DefaultJoystick.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 68AE5BAC1C9241DF00C4D527 /* DefaultJoystick.cpp */; };
 		68AE5BBF1C9241DF00C4D527 /* DriverPrimitive.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 68AE5BAE1C9241DF00C4D527 /* DriverPrimitive.cpp */; };
@@ -404,11 +413,24 @@
 		68D77D181CD1C6D9004C1735 /* GameInfoTag.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 68D77D151CD1C6D9004C1735 /* GameInfoTag.cpp */; };
 		68D9167A1DD0430E00058B06 /* GUIDialogNewJoystick.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 68D916781DD0430E00058B06 /* GUIDialogNewJoystick.cpp */; };
 		68D9167B1DD0430E00058B06 /* GUIDialogNewJoystick.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 68D916781DD0430E00058B06 /* GUIDialogNewJoystick.cpp */; };
+		761170901C8B85F8006C6366 /* AddonGUIRenderingControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7611708C1C8B85F8006C6366 /* AddonGUIRenderingControl.cpp */; };
+		761170911C8B85F8006C6366 /* AddonGUIWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7611708E1C8B85F8006C6366 /* AddonGUIWindow.cpp */; };
+		76AEFB361C8F79BD00EF2EC0 /* AddonInterfaces.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDED2E991C878F61000F5E80 /* AddonInterfaces.cpp */; };
+		76AEFB371C8F79C100EF2EC0 /* AddonCallbacksAddon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDED2E921C878EE0000F5E80 /* AddonCallbacksAddon.cpp */; };
+		76AEFB381C8F79C400EF2EC0 /* AddonCallbacksAudioDSP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDED2E951C878EF8000F5E80 /* AddonCallbacksAudioDSP.cpp */; };
+		76AEFB391C8F79C700EF2EC0 /* AddonCallbacksAudioEngine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDED2E8F1C878EB8000F5E80 /* AddonCallbacksAudioEngine.cpp */; };
+		76AEFB3A1C8F79CA00EF2EC0 /* AddonCallbacksCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDED2E8C1C878E97000F5E80 /* AddonCallbacksCodec.cpp */; };
+		76AEFB3B1C8F79CE00EF2EC0 /* AddonGUIRenderingControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7611708C1C8B85F8006C6366 /* AddonGUIRenderingControl.cpp */; };
+		76AEFB3C1C8F79D100EF2EC0 /* AddonGUIWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7611708E1C8B85F8006C6366 /* AddonGUIWindow.cpp */; };
+		76AEFB3D1C8F79D500EF2EC0 /* AddonCallbacksGUI.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDED2E891C878E62000F5E80 /* AddonCallbacksGUI.cpp */; };
+		76AEFB3E1C8F79D900EF2EC0 /* AddonCallbacksInputStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76F4C37C1C8E92E000A1E64B /* AddonCallbacksInputStream.cpp */; };
+		76AEFB3F1C8F79DC00EF2EC0 /* AddonCallbacksPVR.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDED2E861C878DE8000F5E80 /* AddonCallbacksPVR.cpp */; };
 		76EC19C61D15514200D4AF19 /* ActiveAEDSP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76EC19BC1D15514200D4AF19 /* ActiveAEDSP.cpp */; };
 		76EC19C71D15514200D4AF19 /* ActiveAEDSPAddon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76EC19BE1D15514200D4AF19 /* ActiveAEDSPAddon.cpp */; };
 		76EC19C81D15514200D4AF19 /* ActiveAEDSPDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76EC19C01D15514200D4AF19 /* ActiveAEDSPDatabase.cpp */; };
 		76EC19C91D15514200D4AF19 /* ActiveAEDSPMode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76EC19C21D15514200D4AF19 /* ActiveAEDSPMode.cpp */; };
 		76EC19CA1D15514200D4AF19 /* ActiveAEDSPProcess.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76EC19C41D15514200D4AF19 /* ActiveAEDSPProcess.cpp */; };
+		76F4C37E1C8E92E000A1E64B /* AddonCallbacksInputStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76F4C37C1C8E92E000A1E64B /* AddonCallbacksInputStream.cpp */; };
 		7C0B98A4154B79C30065A238 /* AEDeviceInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C0B98A1154B79C30065A238 /* AEDeviceInfo.cpp */; };
 		7C140989183224B8009F9411 /* ISetting.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C14096F183224B8009F9411 /* ISetting.cpp */; };
 		7C14098A183224B8009F9411 /* ISetting.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C14096F183224B8009F9411 /* ISetting.cpp */; };
@@ -447,55 +469,6 @@
 		7C2D6AE40F35453E00DD2E85 /* SpecialProtocol.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C2D6AE20F35453E00DD2E85 /* SpecialProtocol.cpp */; };
 		7C2ED53D1C7F7A9800C04032 /* ProcessInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C2ED53B1C7F7A9800C04032 /* ProcessInfo.cpp */; settings = {COMPILER_FLAGS = "-DPLATFORM_OVERRIDE_VP_PROCESSINFO"; }; };
 		7C2ED53E1C7F7A9800C04032 /* ProcessInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C2ED53B1C7F7A9800C04032 /* ProcessInfo.cpp */; settings = {COMPILER_FLAGS = "-DPLATFORM_OVERRIDE_VP_PROCESSINFO"; }; };
-		7C3373501DF1A1CD0019EDEC /* AddonCallbacksAddon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C3373201DF1A1CC0019EDEC /* AddonCallbacksAddon.cpp */; };
-		7C3373511DF1A1CD0019EDEC /* AddonCallbacksAddon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C3373201DF1A1CC0019EDEC /* AddonCallbacksAddon.cpp */; };
-		7C3373521DF1A1CD0019EDEC /* CMakeLists.txt in Resources */ = {isa = PBXBuildFile; fileRef = 7C3373221DF1A1CC0019EDEC /* CMakeLists.txt */; };
-		7C3373531DF1A1CD0019EDEC /* Makefile in Sources */ = {isa = PBXBuildFile; fileRef = 7C3373231DF1A1CC0019EDEC /* Makefile */; };
-		7C3373541DF1A1CD0019EDEC /* Makefile in Sources */ = {isa = PBXBuildFile; fileRef = 7C3373231DF1A1CC0019EDEC /* Makefile */; };
-		7C3373551DF1A1CD0019EDEC /* AddonInterfaces.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C3373241DF1A1CC0019EDEC /* AddonInterfaces.cpp */; };
-		7C3373561DF1A1CD0019EDEC /* AddonInterfaces.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C3373241DF1A1CC0019EDEC /* AddonInterfaces.cpp */; };
-		7C3373571DF1A1CD0019EDEC /* AddonCallbacksAudioDSP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C3373271DF1A1CC0019EDEC /* AddonCallbacksAudioDSP.cpp */; };
-		7C3373581DF1A1CD0019EDEC /* AddonCallbacksAudioDSP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C3373271DF1A1CC0019EDEC /* AddonCallbacksAudioDSP.cpp */; };
-		7C3373591DF1A1CD0019EDEC /* CMakeLists.txt in Resources */ = {isa = PBXBuildFile; fileRef = 7C3373291DF1A1CC0019EDEC /* CMakeLists.txt */; };
-		7C33735A1DF1A1CD0019EDEC /* Makefile in Sources */ = {isa = PBXBuildFile; fileRef = 7C33732A1DF1A1CC0019EDEC /* Makefile */; };
-		7C33735B1DF1A1CD0019EDEC /* Makefile in Sources */ = {isa = PBXBuildFile; fileRef = 7C33732A1DF1A1CC0019EDEC /* Makefile */; };
-		7C33735C1DF1A1CD0019EDEC /* AddonCallbacksAudioEngine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C33732C1DF1A1CC0019EDEC /* AddonCallbacksAudioEngine.cpp */; };
-		7C33735D1DF1A1CD0019EDEC /* AddonCallbacksAudioEngine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C33732C1DF1A1CC0019EDEC /* AddonCallbacksAudioEngine.cpp */; };
-		7C33735E1DF1A1CD0019EDEC /* CMakeLists.txt in Resources */ = {isa = PBXBuildFile; fileRef = 7C33732E1DF1A1CC0019EDEC /* CMakeLists.txt */; };
-		7C33735F1DF1A1CD0019EDEC /* Makefile in Sources */ = {isa = PBXBuildFile; fileRef = 7C33732F1DF1A1CD0019EDEC /* Makefile */; };
-		7C3373601DF1A1CD0019EDEC /* Makefile in Sources */ = {isa = PBXBuildFile; fileRef = 7C33732F1DF1A1CD0019EDEC /* Makefile */; };
-		7C3373611DF1A1CD0019EDEC /* CMakeLists.txt in Resources */ = {isa = PBXBuildFile; fileRef = 7C3373301DF1A1CD0019EDEC /* CMakeLists.txt */; };
-		7C3373621DF1A1CD0019EDEC /* AddonCallbacksCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C3373321DF1A1CD0019EDEC /* AddonCallbacksCodec.cpp */; };
-		7C3373631DF1A1CD0019EDEC /* AddonCallbacksCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C3373321DF1A1CD0019EDEC /* AddonCallbacksCodec.cpp */; };
-		7C3373641DF1A1CD0019EDEC /* CMakeLists.txt in Resources */ = {isa = PBXBuildFile; fileRef = 7C3373341DF1A1CD0019EDEC /* CMakeLists.txt */; };
-		7C3373651DF1A1CD0019EDEC /* Makefile in Sources */ = {isa = PBXBuildFile; fileRef = 7C3373351DF1A1CD0019EDEC /* Makefile */; };
-		7C3373661DF1A1CD0019EDEC /* Makefile in Sources */ = {isa = PBXBuildFile; fileRef = 7C3373351DF1A1CD0019EDEC /* Makefile */; };
-		7C3373671DF1A1CD0019EDEC /* AddonCallbacksGUI.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C3373371DF1A1CD0019EDEC /* AddonCallbacksGUI.cpp */; };
-		7C3373681DF1A1CD0019EDEC /* AddonCallbacksGUI.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C3373371DF1A1CD0019EDEC /* AddonCallbacksGUI.cpp */; };
-		7C3373691DF1A1CD0019EDEC /* AddonGUIRenderingControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C3373391DF1A1CD0019EDEC /* AddonGUIRenderingControl.cpp */; };
-		7C33736A1DF1A1CD0019EDEC /* AddonGUIRenderingControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C3373391DF1A1CD0019EDEC /* AddonGUIRenderingControl.cpp */; };
-		7C33736B1DF1A1CD0019EDEC /* AddonGUIWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C33733B1DF1A1CD0019EDEC /* AddonGUIWindow.cpp */; };
-		7C33736C1DF1A1CD0019EDEC /* AddonGUIWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C33733B1DF1A1CD0019EDEC /* AddonGUIWindow.cpp */; };
-		7C33736D1DF1A1CD0019EDEC /* CMakeLists.txt in Resources */ = {isa = PBXBuildFile; fileRef = 7C33733D1DF1A1CD0019EDEC /* CMakeLists.txt */; };
-		7C33736E1DF1A1CD0019EDEC /* Makefile in Sources */ = {isa = PBXBuildFile; fileRef = 7C33733E1DF1A1CD0019EDEC /* Makefile */; };
-		7C33736F1DF1A1CD0019EDEC /* Makefile in Sources */ = {isa = PBXBuildFile; fileRef = 7C33733E1DF1A1CD0019EDEC /* Makefile */; };
-		7C3373701DF1A1CD0019EDEC /* AddonCallbacksInputStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C3373411DF1A1CD0019EDEC /* AddonCallbacksInputStream.cpp */; };
-		7C3373711DF1A1CD0019EDEC /* AddonCallbacksInputStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C3373411DF1A1CD0019EDEC /* AddonCallbacksInputStream.cpp */; };
-		7C3373721DF1A1CD0019EDEC /* CMakeLists.txt in Resources */ = {isa = PBXBuildFile; fileRef = 7C3373431DF1A1CD0019EDEC /* CMakeLists.txt */; };
-		7C3373731DF1A1CD0019EDEC /* Makefile in Sources */ = {isa = PBXBuildFile; fileRef = 7C3373441DF1A1CD0019EDEC /* Makefile */; };
-		7C3373741DF1A1CD0019EDEC /* Makefile in Sources */ = {isa = PBXBuildFile; fileRef = 7C3373441DF1A1CD0019EDEC /* Makefile */; };
-		7C3373761DF1A1CD0019EDEC /* AddonCallbacksPeripheral.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C3373471DF1A1CD0019EDEC /* AddonCallbacksPeripheral.cpp */; };
-		7C3373771DF1A1CD0019EDEC /* AddonCallbacksPeripheral.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C3373471DF1A1CD0019EDEC /* AddonCallbacksPeripheral.cpp */; };
-		7C3373781DF1A1CD0019EDEC /* CMakeLists.txt in Resources */ = {isa = PBXBuildFile; fileRef = 7C3373491DF1A1CD0019EDEC /* CMakeLists.txt */; };
-		7C3373791DF1A1CD0019EDEC /* Makefile in Sources */ = {isa = PBXBuildFile; fileRef = 7C33734A1DF1A1CD0019EDEC /* Makefile */; };
-		7C33737A1DF1A1CD0019EDEC /* Makefile in Sources */ = {isa = PBXBuildFile; fileRef = 7C33734A1DF1A1CD0019EDEC /* Makefile */; };
-		7C33737B1DF1A1CD0019EDEC /* AddonCallbacksPVR.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C33734C1DF1A1CD0019EDEC /* AddonCallbacksPVR.cpp */; };
-		7C33737C1DF1A1CD0019EDEC /* AddonCallbacksPVR.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C33734C1DF1A1CD0019EDEC /* AddonCallbacksPVR.cpp */; };
-		7C33737D1DF1A1CD0019EDEC /* CMakeLists.txt in Resources */ = {isa = PBXBuildFile; fileRef = 7C33734E1DF1A1CD0019EDEC /* CMakeLists.txt */; };
-		7C33737E1DF1A1CD0019EDEC /* Makefile in Sources */ = {isa = PBXBuildFile; fileRef = 7C33734F1DF1A1CD0019EDEC /* Makefile */; };
-		7C33737F1DF1A1CD0019EDEC /* Makefile in Sources */ = {isa = PBXBuildFile; fileRef = 7C33734F1DF1A1CD0019EDEC /* Makefile */; };
-		7C3373821DF1A3690019EDEC /* ActiveAESettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C3373801DF1A3690019EDEC /* ActiveAESettings.cpp */; };
-		7C3373831DF1A3690019EDEC /* ActiveAESettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C3373801DF1A3690019EDEC /* ActiveAESettings.cpp */; };
 		7C4458BD161E203800A905F6 /* Screenshot.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C4458BB161E203800A905F6 /* Screenshot.cpp */; };
 		7C45DBE910F325C400D4BBF3 /* DAVDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C45DBE710F325C400D4BBF3 /* DAVDirectory.cpp */; };
 		7C4705AE12EF584C00369E51 /* AddonInstaller.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C4705AC12EF584C00369E51 /* AddonInstaller.cpp */; };
@@ -573,8 +546,6 @@
 		7C8E02471BA35D0B0072E8B2 /* SystemBuiltins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E02151BA35D0B0072E8B2 /* SystemBuiltins.cpp */; };
 		7C8E02491BA35D0B0072E8B2 /* WeatherBuiltins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E02171BA35D0B0072E8B2 /* WeatherBuiltins.cpp */; };
 		7C8E024A1BA35D0B0072E8B2 /* WeatherBuiltins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8E02171BA35D0B0072E8B2 /* WeatherBuiltins.cpp */; };
-		7C8F20111E01A7E100057EAD /* ContextMenus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8F200F1E01A7E000057EAD /* ContextMenus.cpp */; };
-		7C8F20121E01A7E100057EAD /* ContextMenus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8F200F1E01A7E000057EAD /* ContextMenus.cpp */; };
 		7C8FC6EE1829A4580045153D /* DirectoryProvider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8FC6EC1829A4580045153D /* DirectoryProvider.cpp */; };
 		7C8FC6EF1829A4580045153D /* DirectoryProvider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8FC6EC1829A4580045153D /* DirectoryProvider.cpp */; };
 		7C908894196358A8003D0619 /* auto_buffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C908892196358A8003D0619 /* auto_buffer.cpp */; };
@@ -1128,6 +1099,7 @@
 		DFB25D46163D4743006C4A48 /* WindowDialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD1E215FCE77900E10810 /* WindowDialog.cpp */; };
 		DFB25D47163D4743006C4A48 /* WindowDialogMixin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD1E615FCE77900E10810 /* WindowDialogMixin.cpp */; };
 		DFB25D48163D4743006C4A48 /* WindowXML.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD1EC15FCE77900E10810 /* WindowXML.cpp */; };
+		DFB65FB515373AE7006B8FF1 /* AEFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65F6515373AE7006B8FF1 /* AEFactory.cpp */; };
 		DFB65FB715373AE7006B8FF1 /* AEEncoderFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65F6A15373AE7006B8FF1 /* AEEncoderFFmpeg.cpp */; };
 		DFB65FCC15373AE7006B8FF1 /* AEBitstreamPacker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65FA315373AE7006B8FF1 /* AEBitstreamPacker.cpp */; };
 		DFB65FCE15373AE7006B8FF1 /* AEChannelInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65FA715373AE7006B8FF1 /* AEChannelInfo.cpp */; };
@@ -1615,6 +1587,7 @@
 		E49911AC174E5CFE00741B6D /* AEPackIEC61937.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65FAB15373AE7006B8FF1 /* AEPackIEC61937.cpp */; };
 		E49911AE174E5CFE00741B6D /* AEStreamInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65FAF15373AE7006B8FF1 /* AEStreamInfo.cpp */; };
 		E49911AF174E5CFE00741B6D /* AEUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65FB115373AE7006B8FF1 /* AEUtil.cpp */; };
+		E49911B1174E5CFE00741B6D /* AEFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65F6515373AE7006B8FF1 /* AEFactory.cpp */; };
 		E49911B2174E5D0A00741B6D /* EmuFileWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14E30D25F9F900618676 /* EmuFileWrapper.cpp */; };
 		E49911B3174E5D0A00741B6D /* emu_dummy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14B90D25F9F900618676 /* emu_dummy.cpp */; };
 		E49911B4174E5D0A00741B6D /* emu_kernel32.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14BD0D25F9F900618676 /* emu_kernel32.cpp */; };
@@ -2297,8 +2270,13 @@
 		E4E91BB80E7F7338001F0546 /* NptXbmcFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E91BB70E7F7338001F0546 /* NptXbmcFile.cpp */; settings = {COMPILER_FLAGS = "-I$SRCROOT/lib/libUPnP -I$SRCROOT/lib/libUPnP/Neptune/Source/Core -I$SRCROOT/lib/libUPnP/Platinum/Source/Core -I$SRCROOT/lib/libUPnP/Platinum/Source/Platinum  -I$SRCROOT/lib/libUPnP/Platinum/Source/Extras -I$SRCROOT/lib/libUPnP/Platinum/Source/Devices/MediaServer -I$SRCROOT/lib/libUPnP/Platinum/Source/Devices/MediaConnect -I$SRCROOT/lib/libUPnP/Platinum/Source/Devices/MediaRenderer"; }; };
 		EC720A8F155091BB00FFD782 /* ilog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC720A8D155091BB00FFD782 /* ilog.cpp */; };
 		EDADD1561DF792A400B3308D /* AddonDll.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDADD1551DF792A400B3308D /* AddonDll.cpp */; };
-		EDC0CE2D1DF1FE0C000A364F /* AddonCallbacksGame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDC0CE2B1DF1FE0C000A364F /* AddonCallbacksGame.cpp */; };
-		EDC0CE301DF1FE30000A364F /* Makefile in Sources */ = {isa = PBXBuildFile; fileRef = EDC0CE2F1DF1FE30000A364F /* Makefile */; };
+		EDED2E881C878DE8000F5E80 /* AddonCallbacksPVR.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDED2E861C878DE8000F5E80 /* AddonCallbacksPVR.cpp */; };
+		EDED2E8B1C878E62000F5E80 /* AddonCallbacksGUI.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDED2E891C878E62000F5E80 /* AddonCallbacksGUI.cpp */; };
+		EDED2E8E1C878E97000F5E80 /* AddonCallbacksCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDED2E8C1C878E97000F5E80 /* AddonCallbacksCodec.cpp */; };
+		EDED2E911C878EB8000F5E80 /* AddonCallbacksAudioEngine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDED2E8F1C878EB8000F5E80 /* AddonCallbacksAudioEngine.cpp */; };
+		EDED2E941C878EE0000F5E80 /* AddonCallbacksAddon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDED2E921C878EE0000F5E80 /* AddonCallbacksAddon.cpp */; };
+		EDED2E971C878EF8000F5E80 /* AddonCallbacksAudioDSP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDED2E951C878EF8000F5E80 /* AddonCallbacksAudioDSP.cpp */; };
+		EDED2E9B1C878F61000F5E80 /* AddonInterfaces.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDED2E991C878F61000F5E80 /* AddonInterfaces.cpp */; };
 		F500E35617F3412C004FC217 /* WinEvents.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F500E35517F3412C004FC217 /* WinEvents.cpp */; };
 		F500E35717F3412C004FC217 /* WinEvents.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F500E35517F3412C004FC217 /* WinEvents.cpp */; };
 		F506297A0E57B9680066625A /* MultiPathFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F50629780E57B9680066625A /* MultiPathFile.cpp */; };
@@ -2703,6 +2681,8 @@
 		2A1D96BB1D4378CC009D8B25 /* GUIDialogPlayerProcessInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogPlayerProcessInfo.h; sourceTree = "<group>"; };
 		2A1D96BC1D437911009D8B25 /* GUIDialogPlayerProcessInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogPlayerProcessInfo.cpp; sourceTree = "<group>"; };
 		2A1D96BF1D437CDB009D8B25 /* WindowIDs.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WindowIDs.h; sourceTree = "<group>"; };
+		2A39DDB71E01E7BF0086DA95 /* ContextMenus.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ContextMenus.cpp; sourceTree = "<group>"; };
+		2A39DDB81E01E7BF0086DA95 /* ContextMenus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContextMenus.h; sourceTree = "<group>"; };
 		2A45E7A71D2D042B000E49FA /* types.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = types.json; path = schema/types.json; sourceTree = "<group>"; };
 		2A45E7A81D2D042B000E49FA /* version.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = version.txt; path = schema/version.txt; sourceTree = "<group>"; };
 		2A4AAD251CEBC2060057AD44 /* DVDDemuxVobsub.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDDemuxVobsub.h; sourceTree = "<group>"; };
@@ -2940,6 +2920,8 @@
 		6890C21B1DDBDCA200F8F362 /* GameResource.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GameResource.cpp; sourceTree = "<group>"; };
 		6890C21C1DDBDCA200F8F362 /* GameResource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameResource.h; sourceTree = "<group>"; };
 		6890C2211DDBDCBC00F8F362 /* DllLibCPluff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllLibCPluff.h; sourceTree = "<group>"; };
+		6890C2251DDBDCF500F8F362 /* AddonCallbacksGame.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonCallbacksGame.cpp; path = addons/interfaces/Game/AddonCallbacksGame.cpp; sourceTree = "<group>"; };
+		6890C2261DDBDCF500F8F362 /* AddonCallbacksGame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonCallbacksGame.h; path = addons/interfaces/Game/AddonCallbacksGame.h; sourceTree = "<group>"; };
 		6890C22A1DDBDD0900F8F362 /* kodi_game_dll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kodi_game_dll.h; path = "kodi-addon-dev-kit/include/kodi/kodi_game_dll.h"; sourceTree = "<group>"; };
 		6890C22B1DDBDD0900F8F362 /* kodi_game_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kodi_game_types.h; path = "kodi-addon-dev-kit/include/kodi/kodi_game_types.h"; sourceTree = "<group>"; };
 		6890C22C1DDBDD2D00F8F362 /* GameTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GameTypes.h; path = games/GameTypes.h; sourceTree = "<group>"; };
@@ -2978,6 +2960,8 @@
 		6890C2821DDBE03900F8F362 /* GUIWindowGames.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUIWindowGames.cpp; path = games/windows/GUIWindowGames.cpp; sourceTree = "<group>"; };
 		6890C2831DDBE03900F8F362 /* GUIWindowGames.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUIWindowGames.h; path = games/windows/GUIWindowGames.h; sourceTree = "<group>"; };
 		68AE5BA01C923E5300C4D527 /* kodi_vfs_utils.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = kodi_vfs_utils.hpp; path = "kodi-addon-dev-kit/include/kodi/kodi_vfs_utils.hpp"; sourceTree = "<group>"; };
+		68AE5BA31C92412900C4D527 /* AddonCallbacksPeripheral.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonCallbacksPeripheral.cpp; path = addons/interfaces/Peripheral/AddonCallbacksPeripheral.cpp; sourceTree = "<group>"; };
+		68AE5BA41C92412900C4D527 /* AddonCallbacksPeripheral.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonCallbacksPeripheral.h; path = addons/interfaces/Peripheral/AddonCallbacksPeripheral.h; sourceTree = "<group>"; };
 		68AE5BA81C92414B00C4D527 /* kodi_peripheral_dll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kodi_peripheral_dll.h; path = "kodi-addon-dev-kit/include/kodi/kodi_peripheral_dll.h"; sourceTree = "<group>"; };
 		68AE5BA91C92414B00C4D527 /* kodi_peripheral_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kodi_peripheral_types.h; path = "kodi-addon-dev-kit/include/kodi/kodi_peripheral_types.h"; sourceTree = "<group>"; };
 		68AE5BAA1C92414B00C4D527 /* kodi_peripheral_utils.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = kodi_peripheral_utils.hpp; path = "kodi-addon-dev-kit/include/kodi/kodi_peripheral_utils.hpp"; sourceTree = "<group>"; };
@@ -3072,6 +3056,10 @@
 		6E97BDC10DA2B620003A2A89 /* EventServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventServer.h; sourceTree = "<group>"; };
 		6E97BDC30DA2B620003A2A89 /* Fanart.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Fanart.h; sourceTree = "<group>"; };
 		6E97BDC40DA2B620003A2A89 /* Socket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Socket.h; sourceTree = "<group>"; };
+		7611708C1C8B85F8006C6366 /* AddonGUIRenderingControl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonGUIRenderingControl.cpp; path = addons/interfaces/GUI/AddonGUIRenderingControl.cpp; sourceTree = "<group>"; };
+		7611708D1C8B85F8006C6366 /* AddonGUIRenderingControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonGUIRenderingControl.h; path = addons/interfaces/GUI/AddonGUIRenderingControl.h; sourceTree = "<group>"; };
+		7611708E1C8B85F8006C6366 /* AddonGUIWindow.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonGUIWindow.cpp; path = addons/interfaces/GUI/AddonGUIWindow.cpp; sourceTree = "<group>"; };
+		7611708F1C8B85F8006C6366 /* AddonGUIWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonGUIWindow.h; path = addons/interfaces/GUI/AddonGUIWindow.h; sourceTree = "<group>"; };
 		76EC19BC1D15514200D4AF19 /* ActiveAEDSP.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ActiveAEDSP.cpp; path = AudioDSPAddons/ActiveAEDSP.cpp; sourceTree = "<group>"; };
 		76EC19BD1D15514200D4AF19 /* ActiveAEDSP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ActiveAEDSP.h; path = AudioDSPAddons/ActiveAEDSP.h; sourceTree = "<group>"; };
 		76EC19BE1D15514200D4AF19 /* ActiveAEDSPAddon.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ActiveAEDSPAddon.cpp; path = AudioDSPAddons/ActiveAEDSPAddon.cpp; sourceTree = "<group>"; };
@@ -3082,6 +3070,8 @@
 		76EC19C31D15514200D4AF19 /* ActiveAEDSPMode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ActiveAEDSPMode.h; path = AudioDSPAddons/ActiveAEDSPMode.h; sourceTree = "<group>"; };
 		76EC19C41D15514200D4AF19 /* ActiveAEDSPProcess.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ActiveAEDSPProcess.cpp; path = AudioDSPAddons/ActiveAEDSPProcess.cpp; sourceTree = "<group>"; };
 		76EC19C51D15514200D4AF19 /* ActiveAEDSPProcess.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ActiveAEDSPProcess.h; path = AudioDSPAddons/ActiveAEDSPProcess.h; sourceTree = "<group>"; };
+		76F4C37C1C8E92E000A1E64B /* AddonCallbacksInputStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonCallbacksInputStream.cpp; path = addons/interfaces/InputStream/AddonCallbacksInputStream.cpp; sourceTree = "<group>"; };
+		76F4C37D1C8E92E000A1E64B /* AddonCallbacksInputStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonCallbacksInputStream.h; path = addons/interfaces/InputStream/AddonCallbacksInputStream.h; sourceTree = "<group>"; };
 		7C0B98A1154B79C30065A238 /* AEDeviceInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AEDeviceInfo.cpp; sourceTree = "<group>"; };
 		7C0B98A2154B79C30065A238 /* AEDeviceInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEDeviceInfo.h; sourceTree = "<group>"; };
 		7C14096F183224B8009F9411 /* ISetting.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ISetting.cpp; path = lib/ISetting.cpp; sourceTree = "<group>"; };
@@ -3133,48 +3123,6 @@
 		7C2ED53B1C7F7A9800C04032 /* ProcessInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ProcessInfo.cpp; path = VideoPlayer/Process/ProcessInfo.cpp; sourceTree = "<group>"; };
 		7C2ED53C1C7F7A9800C04032 /* ProcessInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ProcessInfo.h; path = VideoPlayer/Process/ProcessInfo.h; sourceTree = "<group>"; };
 		7C3018301BCC2DE200B1FE6F /* MusicInfoTagLoaderFFmpeg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicInfoTagLoaderFFmpeg.h; sourceTree = "<group>"; };
-		7C3373201DF1A1CC0019EDEC /* AddonCallbacksAddon.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AddonCallbacksAddon.cpp; sourceTree = "<group>"; };
-		7C3373211DF1A1CC0019EDEC /* AddonCallbacksAddon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddonCallbacksAddon.h; sourceTree = "<group>"; };
-		7C3373221DF1A1CC0019EDEC /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CMakeLists.txt; sourceTree = "<group>"; };
-		7C3373231DF1A1CC0019EDEC /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
-		7C3373241DF1A1CC0019EDEC /* AddonInterfaces.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AddonInterfaces.cpp; sourceTree = "<group>"; };
-		7C3373251DF1A1CC0019EDEC /* AddonInterfaces.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddonInterfaces.h; sourceTree = "<group>"; };
-		7C3373271DF1A1CC0019EDEC /* AddonCallbacksAudioDSP.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AddonCallbacksAudioDSP.cpp; sourceTree = "<group>"; };
-		7C3373281DF1A1CC0019EDEC /* AddonCallbacksAudioDSP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddonCallbacksAudioDSP.h; sourceTree = "<group>"; };
-		7C3373291DF1A1CC0019EDEC /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CMakeLists.txt; sourceTree = "<group>"; };
-		7C33732A1DF1A1CC0019EDEC /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
-		7C33732C1DF1A1CC0019EDEC /* AddonCallbacksAudioEngine.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AddonCallbacksAudioEngine.cpp; sourceTree = "<group>"; };
-		7C33732D1DF1A1CC0019EDEC /* AddonCallbacksAudioEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddonCallbacksAudioEngine.h; sourceTree = "<group>"; };
-		7C33732E1DF1A1CC0019EDEC /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CMakeLists.txt; sourceTree = "<group>"; };
-		7C33732F1DF1A1CD0019EDEC /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
-		7C3373301DF1A1CD0019EDEC /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CMakeLists.txt; sourceTree = "<group>"; };
-		7C3373321DF1A1CD0019EDEC /* AddonCallbacksCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AddonCallbacksCodec.cpp; sourceTree = "<group>"; };
-		7C3373331DF1A1CD0019EDEC /* AddonCallbacksCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddonCallbacksCodec.h; sourceTree = "<group>"; };
-		7C3373341DF1A1CD0019EDEC /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CMakeLists.txt; sourceTree = "<group>"; };
-		7C3373351DF1A1CD0019EDEC /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
-		7C3373371DF1A1CD0019EDEC /* AddonCallbacksGUI.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AddonCallbacksGUI.cpp; sourceTree = "<group>"; };
-		7C3373381DF1A1CD0019EDEC /* AddonCallbacksGUI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddonCallbacksGUI.h; sourceTree = "<group>"; };
-		7C3373391DF1A1CD0019EDEC /* AddonGUIRenderingControl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AddonGUIRenderingControl.cpp; sourceTree = "<group>"; };
-		7C33733A1DF1A1CD0019EDEC /* AddonGUIRenderingControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddonGUIRenderingControl.h; sourceTree = "<group>"; };
-		7C33733B1DF1A1CD0019EDEC /* AddonGUIWindow.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AddonGUIWindow.cpp; sourceTree = "<group>"; };
-		7C33733C1DF1A1CD0019EDEC /* AddonGUIWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddonGUIWindow.h; sourceTree = "<group>"; };
-		7C33733D1DF1A1CD0019EDEC /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CMakeLists.txt; sourceTree = "<group>"; };
-		7C33733E1DF1A1CD0019EDEC /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
-		7C33733F1DF1A1CD0019EDEC /* IAddonInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAddonInterface.h; sourceTree = "<group>"; };
-		7C3373411DF1A1CD0019EDEC /* AddonCallbacksInputStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AddonCallbacksInputStream.cpp; sourceTree = "<group>"; };
-		7C3373421DF1A1CD0019EDEC /* AddonCallbacksInputStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddonCallbacksInputStream.h; sourceTree = "<group>"; };
-		7C3373431DF1A1CD0019EDEC /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CMakeLists.txt; sourceTree = "<group>"; };
-		7C3373441DF1A1CD0019EDEC /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
-		7C3373471DF1A1CD0019EDEC /* AddonCallbacksPeripheral.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AddonCallbacksPeripheral.cpp; sourceTree = "<group>"; };
-		7C3373481DF1A1CD0019EDEC /* AddonCallbacksPeripheral.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddonCallbacksPeripheral.h; sourceTree = "<group>"; };
-		7C3373491DF1A1CD0019EDEC /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CMakeLists.txt; sourceTree = "<group>"; };
-		7C33734A1DF1A1CD0019EDEC /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
-		7C33734C1DF1A1CD0019EDEC /* AddonCallbacksPVR.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AddonCallbacksPVR.cpp; sourceTree = "<group>"; };
-		7C33734D1DF1A1CD0019EDEC /* AddonCallbacksPVR.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddonCallbacksPVR.h; sourceTree = "<group>"; };
-		7C33734E1DF1A1CD0019EDEC /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CMakeLists.txt; sourceTree = "<group>"; };
-		7C33734F1DF1A1CD0019EDEC /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
-		7C3373801DF1A3690019EDEC /* ActiveAESettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ActiveAESettings.cpp; sourceTree = "<group>"; };
-		7C3373811DF1A3690019EDEC /* ActiveAESettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActiveAESettings.h; sourceTree = "<group>"; };
 		7C4458BB161E203800A905F6 /* Screenshot.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Screenshot.cpp; sourceTree = "<group>"; };
 		7C4458BC161E203800A905F6 /* Screenshot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Screenshot.h; sourceTree = "<group>"; };
 		7C45DBE710F325C400D4BBF3 /* DAVDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DAVDirectory.cpp; sourceTree = "<group>"; };
@@ -3286,8 +3234,6 @@
 		7C8E02161BA35D0B0072E8B2 /* SystemBuiltins.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SystemBuiltins.h; path = builtins/SystemBuiltins.h; sourceTree = "<group>"; };
 		7C8E02171BA35D0B0072E8B2 /* WeatherBuiltins.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = WeatherBuiltins.cpp; path = builtins/WeatherBuiltins.cpp; sourceTree = "<group>"; };
 		7C8E02181BA35D0B0072E8B2 /* WeatherBuiltins.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WeatherBuiltins.h; path = builtins/WeatherBuiltins.h; sourceTree = "<group>"; };
-		7C8F200F1E01A7E000057EAD /* ContextMenus.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ContextMenus.cpp; sourceTree = "<group>"; };
-		7C8F20101E01A7E000057EAD /* ContextMenus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContextMenus.h; sourceTree = "<group>"; };
 		7C8FC6EC1829A4580045153D /* DirectoryProvider.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DirectoryProvider.cpp; path = xbmc/listproviders/DirectoryProvider.cpp; sourceTree = SOURCE_ROOT; };
 		7C8FC6ED1829A4580045153D /* DirectoryProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DirectoryProvider.h; path = xbmc/listproviders/DirectoryProvider.h; sourceTree = SOURCE_ROOT; };
 		7C908892196358A8003D0619 /* auto_buffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = auto_buffer.cpp; sourceTree = "<group>"; };
@@ -3763,8 +3709,8 @@
 		9A7368501C401F5F00CA169F /* DirectoryNodeInProgressTvShows.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeInProgressTvShows.h; sourceTree = "<group>"; };
 		9A999F1B1C67B77600E4E0D5 /* AddonBuilder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AddonBuilder.cpp; sourceTree = "<group>"; };
 		9A999F1C1C67B77600E4E0D5 /* AddonBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddonBuilder.h; sourceTree = "<group>"; };
-		9AA7E3E61C972CF4000B7863 /* ContextMenus.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ContextMenus.cpp; path = ../ContextMenus.cpp; sourceTree = "<group>"; };
-		9AA7E3E71C972CF4000B7863 /* ContextMenus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ContextMenus.h; path = ../ContextMenus.h; sourceTree = "<group>"; };
+		9AA7E3E61C972CF4000B7863 /* ContextMenus.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ContextMenus.cpp; sourceTree = "<group>"; };
+		9AA7E3E71C972CF4000B7863 /* ContextMenus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContextMenus.h; sourceTree = "<group>"; };
 		9ABFE79F1C972D60002F1318 /* ContextMenus.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ContextMenus.cpp; sourceTree = "<group>"; };
 		9ABFE7A01C972D60002F1318 /* ContextMenus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContextMenus.h; sourceTree = "<group>"; };
 		9AC167B41C5ED478004F0C29 /* MusicFileItemListModifier.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MusicFileItemListModifier.cpp; sourceTree = "<group>"; };
@@ -4195,6 +4141,8 @@
 		DFB02DE916629DBA00F37752 /* PyContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PyContext.h; path = python/PyContext.h; sourceTree = "<group>"; };
 		DFB0F470161B747500D744F4 /* AddonsOperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AddonsOperations.cpp; sourceTree = "<group>"; };
 		DFB0F471161B747500D744F4 /* AddonsOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddonsOperations.h; sourceTree = "<group>"; };
+		DFB65F6515373AE7006B8FF1 /* AEFactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AEFactory.cpp; sourceTree = "<group>"; };
+		DFB65F6615373AE7006B8FF1 /* AEFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEFactory.h; sourceTree = "<group>"; };
 		DFB65F6A15373AE7006B8FF1 /* AEEncoderFFmpeg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AEEncoderFFmpeg.cpp; sourceTree = "<group>"; };
 		DFB65F6B15373AE7006B8FF1 /* AEEncoderFFmpeg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEEncoderFFmpeg.h; sourceTree = "<group>"; };
 		DFB65F8915373AE7006B8FF1 /* AE.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AE.h; sourceTree = "<group>"; };
@@ -5069,10 +5017,6 @@
 		EC720A8D155091BB00FFD782 /* ilog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ilog.cpp; path = commons/ilog.cpp; sourceTree = "<group>"; };
 		EC720A8E155091BB00FFD782 /* ilog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ilog.h; path = commons/ilog.h; sourceTree = "<group>"; };
 		EDADD1551DF792A400B3308D /* AddonDll.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AddonDll.cpp; sourceTree = "<group>"; };
-		EDC0CE2B1DF1FE0C000A364F /* AddonCallbacksGame.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonCallbacksGame.cpp; path = Game/AddonCallbacksGame.cpp; sourceTree = "<group>"; };
-		EDC0CE2C1DF1FE0C000A364F /* AddonCallbacksGame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonCallbacksGame.h; path = Game/AddonCallbacksGame.h; sourceTree = "<group>"; };
-		EDC0CE2E1DF1FE30000A364F /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CMakeLists.txt; path = Game/CMakeLists.txt; sourceTree = "<group>"; };
-		EDC0CE2F1DF1FE30000A364F /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; name = Makefile; path = Game/Makefile; sourceTree = "<group>"; };
 		EDE8C70C1C7F615800A86ECC /* NOTE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = NOTE; path = "kodi-addon-dev-kit/include/NOTE"; sourceTree = "<group>"; };
 		EDE8C70D1C7F618500A86ECC /* kodi_adsp_dll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kodi_adsp_dll.h; path = "kodi-addon-dev-kit/include/kodi/kodi_adsp_dll.h"; sourceTree = "<group>"; };
 		EDE8C70E1C7F618500A86ECC /* kodi_adsp_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kodi_adsp_types.h; path = "kodi-addon-dev-kit/include/kodi/kodi_adsp_types.h"; sourceTree = "<group>"; };
@@ -5099,6 +5043,20 @@
 		EDE8C7231C7F618500A86ECC /* xbmc_scr_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xbmc_scr_types.h; path = "kodi-addon-dev-kit/include/kodi/xbmc_scr_types.h"; sourceTree = "<group>"; };
 		EDE8C7251C7F618500A86ECC /* xbmc_vis_dll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xbmc_vis_dll.h; path = "kodi-addon-dev-kit/include/kodi/xbmc_vis_dll.h"; sourceTree = "<group>"; };
 		EDE8C7261C7F618500A86ECC /* xbmc_vis_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xbmc_vis_types.h; path = "kodi-addon-dev-kit/include/kodi/xbmc_vis_types.h"; sourceTree = "<group>"; };
+		EDED2E861C878DE8000F5E80 /* AddonCallbacksPVR.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonCallbacksPVR.cpp; path = addons/interfaces/PVR/AddonCallbacksPVR.cpp; sourceTree = "<group>"; };
+		EDED2E871C878DE8000F5E80 /* AddonCallbacksPVR.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonCallbacksPVR.h; path = addons/interfaces/PVR/AddonCallbacksPVR.h; sourceTree = "<group>"; };
+		EDED2E891C878E62000F5E80 /* AddonCallbacksGUI.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonCallbacksGUI.cpp; path = addons/interfaces/GUI/AddonCallbacksGUI.cpp; sourceTree = "<group>"; };
+		EDED2E8A1C878E62000F5E80 /* AddonCallbacksGUI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonCallbacksGUI.h; path = addons/interfaces/GUI/AddonCallbacksGUI.h; sourceTree = "<group>"; };
+		EDED2E8C1C878E97000F5E80 /* AddonCallbacksCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonCallbacksCodec.cpp; path = addons/interfaces/Codec/AddonCallbacksCodec.cpp; sourceTree = "<group>"; };
+		EDED2E8D1C878E97000F5E80 /* AddonCallbacksCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonCallbacksCodec.h; path = addons/interfaces/Codec/AddonCallbacksCodec.h; sourceTree = "<group>"; };
+		EDED2E8F1C878EB8000F5E80 /* AddonCallbacksAudioEngine.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonCallbacksAudioEngine.cpp; path = addons/interfaces/AudioEngine/AddonCallbacksAudioEngine.cpp; sourceTree = "<group>"; };
+		EDED2E901C878EB8000F5E80 /* AddonCallbacksAudioEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonCallbacksAudioEngine.h; path = addons/interfaces/AudioEngine/AddonCallbacksAudioEngine.h; sourceTree = "<group>"; };
+		EDED2E921C878EE0000F5E80 /* AddonCallbacksAddon.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonCallbacksAddon.cpp; path = addons/interfaces/Addon/AddonCallbacksAddon.cpp; sourceTree = "<group>"; };
+		EDED2E931C878EE0000F5E80 /* AddonCallbacksAddon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonCallbacksAddon.h; path = addons/interfaces/Addon/AddonCallbacksAddon.h; sourceTree = "<group>"; };
+		EDED2E951C878EF8000F5E80 /* AddonCallbacksAudioDSP.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonCallbacksAudioDSP.cpp; path = addons/interfaces/AudioDSP/AddonCallbacksAudioDSP.cpp; sourceTree = "<group>"; };
+		EDED2E961C878EF8000F5E80 /* AddonCallbacksAudioDSP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonCallbacksAudioDSP.h; path = addons/interfaces/AudioDSP/AddonCallbacksAudioDSP.h; sourceTree = "<group>"; };
+		EDED2E991C878F61000F5E80 /* AddonInterfaces.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonInterfaces.cpp; path = addons/interfaces/AddonInterfaces.cpp; sourceTree = "<group>"; };
+		EDED2E9A1C878F61000F5E80 /* AddonInterfaces.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonInterfaces.h; path = addons/interfaces/AddonInterfaces.h; sourceTree = "<group>"; };
 		F500E35517F3412C004FC217 /* WinEvents.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WinEvents.cpp; sourceTree = "<group>"; };
 		F500E35917F34132004FC217 /* WinEvents.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WinEvents.h; sourceTree = "<group>"; };
 		F502BFDA160F34B900C96C76 /* CallbackHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CallbackHandler.cpp; path = python/CallbackHandler.cpp; sourceTree = "<group>"; };
@@ -5397,7 +5355,7 @@
 		18B49FF01152BEEB001AF8A6 /* addons */ = {
 			isa = PBXGroup;
 			children = (
-				7C33731E1DF1A1CC0019EDEC /* interfaces */,
+				EDED2E7E1C878C5F000F5E80 /* interfaces */,
 				EDE8C7091C7F60C200A86ECC /* kodi-addon-dev-kit */,
 				18B49FF11152BFA5001AF8A6 /* Addon.cpp */,
 				18B49FF21152BFA5001AF8A6 /* Addon.h */,
@@ -6262,6 +6220,8 @@
 				43FAC88812D6364800F67914 /* windows */,
 				7C62F24010505BC7002AD2C1 /* Bookmark.cpp */,
 				7C62F24110505BC7002AD2C1 /* Bookmark.h */,
+				9AA7E3E61C972CF4000B7863 /* ContextMenus.cpp */,
+				9AA7E3E71C972CF4000B7863 /* ContextMenus.h */,
 				E38E17FF0D25F9FA00618676 /* GUIViewStateVideo.cpp */,
 				E38E18000D25F9FA00618676 /* GUIViewStateVideo.h */,
 				7C87B2CC162CE39600EF897D /* PlayerController.cpp */,
@@ -6328,8 +6288,6 @@
 		43FAC88812D6364800F67914 /* windows */ = {
 			isa = PBXGroup;
 			children = (
-				9AA7E3E61C972CF4000B7863 /* ContextMenus.cpp */,
-				9AA7E3E71C972CF4000B7863 /* ContextMenus.h */,
 				E38E18050D25F9FA00618676 /* GUIWindowFullScreen.cpp */,
 				E38E18060D25F9FA00618676 /* GUIWindowFullScreen.h */,
 				E38E183B0D25F9FA00618676 /* GUIWindowVideoBase.cpp */,
@@ -6470,6 +6428,15 @@
 			name = playback;
 			sourceTree = "<group>";
 		};
+		6890C2241DDBDCE300F8F362 /* Game */ = {
+			isa = PBXGroup;
+			children = (
+				6890C2251DDBDCF500F8F362 /* AddonCallbacksGame.cpp */,
+				6890C2261DDBDCF500F8F362 /* AddonCallbacksGame.h */,
+			);
+			name = Game;
+			sourceTree = "<group>";
+		};
 		6890C2311DDBDD3500F8F362 /* dialogs */ = {
 			isa = PBXGroup;
 			children = (
@@ -6538,6 +6505,15 @@
 				6890C2831DDBE03900F8F362 /* GUIWindowGames.h */,
 			);
 			name = windows;
+			sourceTree = "<group>";
+		};
+		68AE5BA21C92410300C4D527 /* Peripheral */ = {
+			isa = PBXGroup;
+			children = (
+				68AE5BA31C92412900C4D527 /* AddonCallbacksPeripheral.cpp */,
+				68AE5BA41C92412900C4D527 /* AddonCallbacksPeripheral.h */,
+			);
+			name = Peripheral;
 			sourceTree = "<group>";
 		};
 		68AE5BAB1C92419500C4D527 /* joysticks */ = {
@@ -6738,6 +6714,15 @@
 			name = AudioDSPAddons;
 			sourceTree = "<group>";
 		};
+		76F4C37B1C8E927A00A1E64B /* InputStream */ = {
+			isa = PBXGroup;
+			children = (
+				76F4C37C1C8E92E000A1E64B /* AddonCallbacksInputStream.cpp */,
+				76F4C37D1C8E92E000A1E64B /* AddonCallbacksInputStream.h */,
+			);
+			name = InputStream;
+			sourceTree = "<group>";
+		};
 		7C14096E18322476009F9411 /* lib */ = {
 			isa = PBXGroup;
 			children = (
@@ -6780,118 +6765,6 @@
 			);
 			name = Process;
 			path = ..;
-			sourceTree = "<group>";
-		};
-		7C33731E1DF1A1CC0019EDEC /* interfaces */ = {
-			isa = PBXGroup;
-			children = (
-				7C33731F1DF1A1CC0019EDEC /* Addon */,
-				7C3373241DF1A1CC0019EDEC /* AddonInterfaces.cpp */,
-				7C3373251DF1A1CC0019EDEC /* AddonInterfaces.h */,
-				7C3373261DF1A1CC0019EDEC /* AudioDSP */,
-				7C33732B1DF1A1CC0019EDEC /* AudioEngine */,
-				7C3373301DF1A1CD0019EDEC /* CMakeLists.txt */,
-				7C3373311DF1A1CD0019EDEC /* Codec */,
-				7C3373361DF1A1CD0019EDEC /* GUI */,
-				EDC0CE291DF1FD7D000A364F /* Game */,
-				7C33733F1DF1A1CD0019EDEC /* IAddonInterface.h */,
-				7C3373401DF1A1CD0019EDEC /* InputStream */,
-				7C3373461DF1A1CD0019EDEC /* Peripheral */,
-				7C33734B1DF1A1CD0019EDEC /* PVR */,
-			);
-			path = interfaces;
-			sourceTree = "<group>";
-		};
-		7C33731F1DF1A1CC0019EDEC /* Addon */ = {
-			isa = PBXGroup;
-			children = (
-				7C3373201DF1A1CC0019EDEC /* AddonCallbacksAddon.cpp */,
-				7C3373211DF1A1CC0019EDEC /* AddonCallbacksAddon.h */,
-				7C3373221DF1A1CC0019EDEC /* CMakeLists.txt */,
-				7C3373231DF1A1CC0019EDEC /* Makefile */,
-			);
-			path = Addon;
-			sourceTree = "<group>";
-		};
-		7C3373261DF1A1CC0019EDEC /* AudioDSP */ = {
-			isa = PBXGroup;
-			children = (
-				7C3373271DF1A1CC0019EDEC /* AddonCallbacksAudioDSP.cpp */,
-				7C3373281DF1A1CC0019EDEC /* AddonCallbacksAudioDSP.h */,
-				7C3373291DF1A1CC0019EDEC /* CMakeLists.txt */,
-				7C33732A1DF1A1CC0019EDEC /* Makefile */,
-			);
-			path = AudioDSP;
-			sourceTree = "<group>";
-		};
-		7C33732B1DF1A1CC0019EDEC /* AudioEngine */ = {
-			isa = PBXGroup;
-			children = (
-				7C33732C1DF1A1CC0019EDEC /* AddonCallbacksAudioEngine.cpp */,
-				7C33732D1DF1A1CC0019EDEC /* AddonCallbacksAudioEngine.h */,
-				7C33732E1DF1A1CC0019EDEC /* CMakeLists.txt */,
-				7C33732F1DF1A1CD0019EDEC /* Makefile */,
-			);
-			path = AudioEngine;
-			sourceTree = "<group>";
-		};
-		7C3373311DF1A1CD0019EDEC /* Codec */ = {
-			isa = PBXGroup;
-			children = (
-				7C3373321DF1A1CD0019EDEC /* AddonCallbacksCodec.cpp */,
-				7C3373331DF1A1CD0019EDEC /* AddonCallbacksCodec.h */,
-				7C3373341DF1A1CD0019EDEC /* CMakeLists.txt */,
-				7C3373351DF1A1CD0019EDEC /* Makefile */,
-			);
-			path = Codec;
-			sourceTree = "<group>";
-		};
-		7C3373361DF1A1CD0019EDEC /* GUI */ = {
-			isa = PBXGroup;
-			children = (
-				7C3373371DF1A1CD0019EDEC /* AddonCallbacksGUI.cpp */,
-				7C3373381DF1A1CD0019EDEC /* AddonCallbacksGUI.h */,
-				7C3373391DF1A1CD0019EDEC /* AddonGUIRenderingControl.cpp */,
-				7C33733A1DF1A1CD0019EDEC /* AddonGUIRenderingControl.h */,
-				7C33733B1DF1A1CD0019EDEC /* AddonGUIWindow.cpp */,
-				7C33733C1DF1A1CD0019EDEC /* AddonGUIWindow.h */,
-				7C33733D1DF1A1CD0019EDEC /* CMakeLists.txt */,
-				7C33733E1DF1A1CD0019EDEC /* Makefile */,
-			);
-			path = GUI;
-			sourceTree = "<group>";
-		};
-		7C3373401DF1A1CD0019EDEC /* InputStream */ = {
-			isa = PBXGroup;
-			children = (
-				7C3373411DF1A1CD0019EDEC /* AddonCallbacksInputStream.cpp */,
-				7C3373421DF1A1CD0019EDEC /* AddonCallbacksInputStream.h */,
-				7C3373431DF1A1CD0019EDEC /* CMakeLists.txt */,
-				7C3373441DF1A1CD0019EDEC /* Makefile */,
-			);
-			path = InputStream;
-			sourceTree = "<group>";
-		};
-		7C3373461DF1A1CD0019EDEC /* Peripheral */ = {
-			isa = PBXGroup;
-			children = (
-				7C3373471DF1A1CD0019EDEC /* AddonCallbacksPeripheral.cpp */,
-				7C3373481DF1A1CD0019EDEC /* AddonCallbacksPeripheral.h */,
-				7C3373491DF1A1CD0019EDEC /* CMakeLists.txt */,
-				7C33734A1DF1A1CD0019EDEC /* Makefile */,
-			);
-			path = Peripheral;
-			sourceTree = "<group>";
-		};
-		7C33734B1DF1A1CD0019EDEC /* PVR */ = {
-			isa = PBXGroup;
-			children = (
-				7C33734C1DF1A1CD0019EDEC /* AddonCallbacksPVR.cpp */,
-				7C33734D1DF1A1CD0019EDEC /* AddonCallbacksPVR.h */,
-				7C33734E1DF1A1CD0019EDEC /* CMakeLists.txt */,
-				7C33734F1DF1A1CD0019EDEC /* Makefile */,
-			);
-			path = PVR;
 			sourceTree = "<group>";
 		};
 		7C430161175C41FE009B82E5 /* listproviders */ = {
@@ -8059,6 +7932,8 @@
 				DFB65F8815373AE7006B8FF1 /* Interfaces */,
 				F5CC22851814F7B5006B5E91 /* Sinks */,
 				DFB65FA215373AE7006B8FF1 /* Utils */,
+				DFB65F6515373AE7006B8FF1 /* AEFactory.cpp */,
+				DFB65F6615373AE7006B8FF1 /* AEFactory.h */,
 				DFEB902619E9337200728978 /* AEResampleFactory.cpp */,
 				DFEB902719E9337200728978 /* AEResampleFactory.h */,
 				F5CC230A18150118006B5E91 /* AESinkFactory.cpp */,
@@ -8396,12 +8271,12 @@
 				E38E14720D25F9F900618676 /* BackgroundInfoLoader.cpp */,
 				E38E14730D25F9F900618676 /* BackgroundInfoLoader.h */,
 				F5B413131065900C0035D105 /* config.h */,
-				7C8F200F1E01A7E000057EAD /* ContextMenus.cpp */,
-				7C8F20101E01A7E000057EAD /* ContextMenus.h */,
 				DF54F7FC1B6580AC000FCBA4 /* ContextMenuItem.cpp */,
 				DF54F7FD1B6580AC000FCBA4 /* ContextMenuItem.h */,
 				395C29F91A9CD20C00EBC7AD /* ContextMenuManager.cpp */,
 				395C29FA1A9CD20C00EBC7AD /* ContextMenuManager.h */,
+				2A39DDB71E01E7BF0086DA95 /* ContextMenus.cpp */,
+				2A39DDB81E01E7BF0086DA95 /* ContextMenus.h */,
 				E38E167E0D25F9FA00618676 /* CueDocument.cpp */,
 				E38E167F0D25F9FA00618676 /* CueDocument.h */,
 				7C1D682715A7D2FD00658B65 /* DatabaseManager.cpp */,
@@ -9646,17 +9521,6 @@
 			name = commons;
 			sourceTree = "<group>";
 		};
-		EDC0CE291DF1FD7D000A364F /* Game */ = {
-			isa = PBXGroup;
-			children = (
-				EDC0CE2B1DF1FE0C000A364F /* AddonCallbacksGame.cpp */,
-				EDC0CE2C1DF1FE0C000A364F /* AddonCallbacksGame.h */,
-				EDC0CE2E1DF1FE30000A364F /* CMakeLists.txt */,
-				EDC0CE2F1DF1FE30000A364F /* Makefile */,
-			);
-			name = Game;
-			sourceTree = "<group>";
-		};
 		EDE8C7091C7F60C200A86ECC /* kodi-addon-dev-kit */ = {
 			isa = PBXGroup;
 			children = (
@@ -9714,6 +9578,83 @@
 				EDE8C7261C7F618500A86ECC /* xbmc_vis_types.h */,
 			);
 			name = kodi;
+			sourceTree = "<group>";
+		};
+		EDED2E7E1C878C5F000F5E80 /* interfaces */ = {
+			isa = PBXGroup;
+			children = (
+				EDED2E841C878D1D000F5E80 /* Addon */,
+				EDED2E851C878D3F000F5E80 /* AudioDSP */,
+				EDED2E831C878D04000F5E80 /* AudioEngine */,
+				EDED2E821C878CF6000F5E80 /* Codec */,
+				6890C2241DDBDCE300F8F362 /* Game */,
+				EDED2E801C878CB4000F5E80 /* GUI */,
+				76F4C37B1C8E927A00A1E64B /* InputStream */,
+				68AE5BA21C92410300C4D527 /* Peripheral */,
+				EDED2E811C878CC1000F5E80 /* PVR */,
+				EDED2E991C878F61000F5E80 /* AddonInterfaces.cpp */,
+				EDED2E9A1C878F61000F5E80 /* AddonInterfaces.h */,
+			);
+			name = interfaces;
+			path = ..;
+			sourceTree = "<group>";
+		};
+		EDED2E801C878CB4000F5E80 /* GUI */ = {
+			isa = PBXGroup;
+			children = (
+				EDED2E891C878E62000F5E80 /* AddonCallbacksGUI.cpp */,
+				EDED2E8A1C878E62000F5E80 /* AddonCallbacksGUI.h */,
+				7611708C1C8B85F8006C6366 /* AddonGUIRenderingControl.cpp */,
+				7611708D1C8B85F8006C6366 /* AddonGUIRenderingControl.h */,
+				7611708E1C8B85F8006C6366 /* AddonGUIWindow.cpp */,
+				7611708F1C8B85F8006C6366 /* AddonGUIWindow.h */,
+			);
+			name = GUI;
+			sourceTree = "<group>";
+		};
+		EDED2E811C878CC1000F5E80 /* PVR */ = {
+			isa = PBXGroup;
+			children = (
+				EDED2E861C878DE8000F5E80 /* AddonCallbacksPVR.cpp */,
+				EDED2E871C878DE8000F5E80 /* AddonCallbacksPVR.h */,
+			);
+			name = PVR;
+			sourceTree = "<group>";
+		};
+		EDED2E821C878CF6000F5E80 /* Codec */ = {
+			isa = PBXGroup;
+			children = (
+				EDED2E8C1C878E97000F5E80 /* AddonCallbacksCodec.cpp */,
+				EDED2E8D1C878E97000F5E80 /* AddonCallbacksCodec.h */,
+			);
+			name = Codec;
+			sourceTree = "<group>";
+		};
+		EDED2E831C878D04000F5E80 /* AudioEngine */ = {
+			isa = PBXGroup;
+			children = (
+				EDED2E8F1C878EB8000F5E80 /* AddonCallbacksAudioEngine.cpp */,
+				EDED2E901C878EB8000F5E80 /* AddonCallbacksAudioEngine.h */,
+			);
+			name = AudioEngine;
+			sourceTree = "<group>";
+		};
+		EDED2E841C878D1D000F5E80 /* Addon */ = {
+			isa = PBXGroup;
+			children = (
+				EDED2E921C878EE0000F5E80 /* AddonCallbacksAddon.cpp */,
+				EDED2E931C878EE0000F5E80 /* AddonCallbacksAddon.h */,
+			);
+			name = Addon;
+			sourceTree = "<group>";
+		};
+		EDED2E851C878D3F000F5E80 /* AudioDSP */ = {
+			isa = PBXGroup;
+			children = (
+				EDED2E951C878EF8000F5E80 /* AddonCallbacksAudioDSP.cpp */,
+				EDED2E961C878EF8000F5E80 /* AddonCallbacksAudioDSP.h */,
+			);
+			name = AudioDSP;
 			sourceTree = "<group>";
 		};
 		F563529F16E53FE900D21BAD /* dialogs */ = {
@@ -9820,8 +9761,6 @@
 		F5CC22D21814FF3B006B5E91 /* ActiveAE */ = {
 			isa = PBXGroup;
 			children = (
-				7C3373801DF1A3690019EDEC /* ActiveAESettings.cpp */,
-				7C3373811DF1A3690019EDEC /* ActiveAESettings.h */,
 				76EC19BB1D15510D00D4AF19 /* AudioDSPAddons */,
 				F5CC22D31814FF3B006B5E91 /* ActiveAE.cpp */,
 				F5CC22D41814FF3B006B5E91 /* ActiveAE.h */,
@@ -10029,28 +9968,19 @@
 				DFFA440119104C1300C3923B /* AppIcon29x29.png in Resources */,
 				DFD7175A1C0A031B0025D964 /* InfoPlist.strings in Resources */,
 				DFD717591C0A031B0025D964 /* Default-Landscape-736h@3x.png in Resources */,
-				7C3373781DF1A1CD0019EDEC /* CMakeLists.txt in Resources */,
 				DFFA440219104C1300C3923B /* AppIcon29x29@2x.png in Resources */,
-				7C3373611DF1A1CD0019EDEC /* CMakeLists.txt in Resources */,
 				DFFA440319104C1300C3923B /* AppIcon40x40.png in Resources */,
-				7C33737D1DF1A1CD0019EDEC /* CMakeLists.txt in Resources */,
-				7C3373591DF1A1CD0019EDEC /* CMakeLists.txt in Resources */,
 				DFFA440419104C1300C3923B /* AppIcon40x40@2x.png in Resources */,
-				7C3373641DF1A1CD0019EDEC /* CMakeLists.txt in Resources */,
 				DFFA440519104C1300C3923B /* AppIcon50x50.png in Resources */,
-				7C33736D1DF1A1CD0019EDEC /* CMakeLists.txt in Resources */,
 				DFFA440619104C1300C3923B /* AppIcon50x50@2x.png in Resources */,
-				7C3373721DF1A1CD0019EDEC /* CMakeLists.txt in Resources */,
 				DFFA440719104C1300C3923B /* AppIcon57x57.png in Resources */,
 				DFFA440819104C1300C3923B /* AppIcon57x57@2x.png in Resources */,
 				DFFA440919104C1300C3923B /* AppIcon60x60.png in Resources */,
 				7C7A40371C240D60006D95A0 /* methods.json in Resources */,
-				7C3373521DF1A1CD0019EDEC /* CMakeLists.txt in Resources */,
 				DFFA440A19104C1300C3923B /* AppIcon60x60@2x.png in Resources */,
 				DFFA440B19104C1300C3923B /* AppIcon72x72.png in Resources */,
 				DFFA440C19104C1300C3923B /* AppIcon72x72@2x.png in Resources */,
 				DFFA440D19104C1300C3923B /* AppIcon76x76.png in Resources */,
-				7C33735E1DF1A1CD0019EDEC /* CMakeLists.txt in Resources */,
 				DFFA440E19104C1300C3923B /* AppIcon76x76@2x.png in Resources */,
 				7CCDA1B8192753E30074CF51 /* X_MS_MediaReceiverRegistrarSCPD.xml in Resources */,
 				7CCDA1C3192753E30074CF51 /* AVTransportSCPD.xml in Resources */,
@@ -10249,7 +10179,6 @@
 				E38E1F4E0D25F9FD00618676 /* dll_tracker.cpp in Sources */,
 				E38E1F500D25F9FD00618676 /* dll_tracker_file.cpp in Sources */,
 				E38E1F510D25F9FD00618676 /* dll_tracker_library.cpp in Sources */,
-				7C3373531DF1A1CD0019EDEC /* Makefile in Sources */,
 				DF4BF0151A4EF30F0053AC56 /* cc_decoder.c in Sources */,
 				E38E1F540D25F9FD00618676 /* dll_util.cpp in Sources */,
 				DFD717361C09FEC60025D964 /* AutoPool.mm in Sources */,
@@ -10304,8 +10233,6 @@
 				DF91E93E1C0A26350011084D /* SDLMain.mm in Sources */,
 				6890C1DC1DDBDBE500F8F362 /* DeltaPairMemoryStream.cpp in Sources */,
 				E38E1FAB0D25F9FD00618676 /* DVDStreamInfo.cpp in Sources */,
-				EDC0CE301DF1FE30000A364F /* Makefile in Sources */,
-				7C3373651DF1A1CD0019EDEC /* Makefile in Sources */,
 				E38E1FAC0D25F9FD00618676 /* DVDFactorySubtitle.cpp in Sources */,
 				E38E1FAD0D25F9FD00618676 /* DVDSubtitleLineCollection.cpp in Sources */,
 				E38E1FAE0D25F9FD00618676 /* DVDSubtitleParserSubrip.cpp in Sources */,
@@ -10326,15 +10253,17 @@
 				68AE5C0B1C92437900C4D527 /* GUIControllerWindow.cpp in Sources */,
 				E38E1FFA0D25F9FD00618676 /* DetectDVDType.cpp in Sources */,
 				E38E1FFB0D25F9FD00618676 /* DNSNameCache.cpp in Sources */,
+				EDED2E941C878EE0000F5E80 /* AddonCallbacksAddon.cpp in Sources */,
+				EDED2E971C878EF8000F5E80 /* AddonCallbacksAudioDSP.cpp in Sources */,
 				E38E1FFC0D25F9FD00618676 /* DynamicDll.cpp in Sources */,
 				E38E1FFF0D25F9FD00618676 /* FileItem.cpp in Sources */,
-				7C3373701DF1A1CD0019EDEC /* AddonCallbacksInputStream.cpp in Sources */,
 				6890C1F41DDBDBEA00F8F362 /* GameLoop.cpp in Sources */,
 				E38E20020D25F9FD00618676 /* CacheStrategy.cpp in Sources */,
 				E38E20030D25F9FD00618676 /* CDDADirectory.cpp in Sources */,
 				E38E20040D25F9FD00618676 /* cddb.cpp in Sources */,
 				E38E20050D25F9FD00618676 /* cdioSupport.cpp in Sources */,
 				E38E20070D25F9FD00618676 /* Directory.cpp in Sources */,
+				EDED2E881C878DE8000F5E80 /* AddonCallbacksPVR.cpp in Sources */,
 				E38E20090D25F9FD00618676 /* DirectoryHistory.cpp in Sources */,
 				395C29D81A98A11C00EBC7AD /* WsgiInputStream.cpp in Sources */,
 				E38E200B0D25F9FD00618676 /* DllLibCurl.cpp in Sources */,
@@ -10344,7 +10273,6 @@
 				E38E20240D25F9FD00618676 /* FTPParse.cpp in Sources */,
 				E38E20270D25F9FD00618676 /* IDirectory.cpp in Sources */,
 				E38E20280D25F9FD00618676 /* IFile.cpp in Sources */,
-				7C33736B1DF1A1CD0019EDEC /* AddonGUIWindow.cpp in Sources */,
 				E38E20290D25F9FD00618676 /* iso9660.cpp in Sources */,
 				68AE5BEF1C92424300C4D527 /* PeripheralJoystick.cpp in Sources */,
 				39B4F3701B96F845009B2D88 /* RepositoryUpdater.cpp in Sources */,
@@ -10374,7 +10302,6 @@
 				E38E204A0D25F9FD00618676 /* MusicDatabaseDirectory.cpp in Sources */,
 				E38E204B0D25F9FD00618676 /* MusicSearchDirectory.cpp in Sources */,
 				E38E204F0D25F9FD00618676 /* PlaylistDirectory.cpp in Sources */,
-				7C3373571DF1A1CD0019EDEC /* AddonCallbacksAudioDSP.cpp in Sources */,
 				E38E20500D25F9FD00618676 /* PlaylistFileDirectory.cpp in Sources */,
 				68AE5C1B1C92438E00C4D527 /* GUIControllerButton.cpp in Sources */,
 				E38E20510D25F9FD00618676 /* PluginDirectory.cpp in Sources */,
@@ -10434,7 +10361,6 @@
 				E38E20910D25F9FD00618676 /* GUIDialogPlayerControls.cpp in Sources */,
 				E38E20940D25F9FD00618676 /* GUIDialogProgress.cpp in Sources */,
 				E38E20950D25F9FD00618676 /* GUIDialogSeekBar.cpp in Sources */,
-				7C33735F1DF1A1CD0019EDEC /* Makefile in Sources */,
 				E38E20980D25F9FD00618676 /* GUIDialogSmartPlaylistEditor.cpp in Sources */,
 				E38E20990D25F9FD00618676 /* GUIDialogSmartPlaylistRule.cpp in Sources */,
 				E38E209A0D25F9FD00618676 /* GUIDialogSongInfo.cpp in Sources */,
@@ -10491,7 +10417,6 @@
 				E38E22350D25F9FE00618676 /* arcread.cpp in Sources */,
 				E38E22360D25F9FE00618676 /* cmddata.cpp in Sources */,
 				E38E22380D25F9FE00618676 /* consio.cpp in Sources */,
-				7C33737E1DF1A1CD0019EDEC /* Makefile in Sources */,
 				E38E22390D25F9FE00618676 /* crc.cpp in Sources */,
 				E38E223A0D25F9FE00618676 /* crypt.cpp in Sources */,
 				E38E223C0D25F9FE00618676 /* encname.cpp in Sources */,
@@ -10524,12 +10449,12 @@
 				E38E22560D25F9FE00618676 /* rijndael.cpp in Sources */,
 				E38E22570D25F9FE00618676 /* rs.cpp in Sources */,
 				E38E22580D25F9FE00618676 /* savepos.cpp in Sources */,
-				EDC0CE2D1DF1FE0C000A364F /* AddonCallbacksGame.cpp in Sources */,
 				E38E22590D25F9FE00618676 /* scantree.cpp in Sources */,
 				E38E225A0D25F9FE00618676 /* sha1.cpp in Sources */,
 				E38E225D0D25F9FE00618676 /* strfn.cpp in Sources */,
 				E38E225E0D25F9FE00618676 /* strlist.cpp in Sources */,
 				E38E22600D25F9FE00618676 /* system.cpp in Sources */,
+				EDED2E8E1C878E97000F5E80 /* AddonCallbacksCodec.cpp in Sources */,
 				E38E22610D25F9FE00618676 /* timefn.cpp in Sources */,
 				E38E22620D25F9FE00618676 /* ulinks.cpp in Sources */,
 				E38E22630D25F9FE00618676 /* unicode.cpp in Sources */,
@@ -10594,7 +10519,6 @@
 				E38E22F30D25F9FE00618676 /* SystemInfo.cpp in Sources */,
 				E38E22F40D25F9FE00618676 /* Thread.cpp in Sources */,
 				E38E22F70D25F9FE00618676 /* UdpClient.cpp in Sources */,
-				7C3373621DF1A1CD0019EDEC /* AddonCallbacksCodec.cpp in Sources */,
 				DF29BCFA1B5D911800904347 /* GUIViewStateEventLog.cpp in Sources */,
 				E38E22F80D25F9FE00618676 /* Weather.cpp in Sources */,
 				E38E22FB0D25F9FE00618676 /* VideoDatabase.cpp in Sources */,
@@ -10605,6 +10529,7 @@
 				E38E25780D263BF600618676 /* unpack.cpp in Sources */,
 				E38E257C0D263C4400618676 /* rar.cpp in Sources */,
 				E38E25C00D263DC100618676 /* DVDFactoryDemuxer.cpp in Sources */,
+				68AE5BA51C92412900C4D527 /* AddonCallbacksPeripheral.cpp in Sources */,
 				E38E25C30D263DE200618676 /* DVDDemuxFFmpeg.cpp in Sources */,
 				E3A4780A0D29029A00F3C3A6 /* GUIDialogCache.cpp in Sources */,
 				395C29ED1A98A16300EBC7AD /* HTTPPythonInvoker.cpp in Sources */,
@@ -10615,7 +10540,6 @@
 				E33206380D5070AA00435CE3 /* DVDDemuxVobsub.cpp in Sources */,
 				68AE5C071C92437900C4D527 /* GUIConfigurationWizard.cpp in Sources */,
 				E3DAAF8D0D6E1B0500F17647 /* SMBDirectory.cpp in Sources */,
-				7C33735A1DF1A1CD0019EDEC /* Makefile in Sources */,
 				E3E91FFD0D8C61DF002BF43D /* EventPacket.cpp in Sources */,
 				E3E91FFE0D8C61DF002BF43D /* EventServer.cpp in Sources */,
 				E3E91FFF0D8C61DF002BF43D /* Socket.cpp in Sources */,
@@ -10701,7 +10625,6 @@
 				F5E55B66107412DE006E788A /* GUIDialogTeletext.cpp in Sources */,
 				F5E55B7010741340006E788A /* Teletext.cpp in Sources */,
 				43348AA4107747CD00F859CF /* Edl.cpp in Sources */,
-				7C3373501DF1A1CD0019EDEC /* AddonCallbacksAddon.cpp in Sources */,
 				43348AAE1077486D00F859CF /* PlayerCoreFactory.cpp in Sources */,
 				43348AAF1077486D00F859CF /* PlayerSelectionRule.cpp in Sources */,
 				7CAA20511079C8160096DE39 /* BaseRenderer.cpp in Sources */,
@@ -10831,8 +10754,8 @@
 				18B7C7E81294222E009E7A26 /* GUITextureGLES.cpp in Sources */,
 				18B7C7E91294222E009E7A26 /* GUIToggleButtonControl.cpp in Sources */,
 				18B7C7EA1294222E009E7A26 /* GUIVideoControl.cpp in Sources */,
+				2A39DDB91E01E7BF0086DA95 /* ContextMenus.cpp in Sources */,
 				18B7C7EB1294222E009E7A26 /* GUIVisualisationControl.cpp in Sources */,
-				7C33736E1DF1A1CD0019EDEC /* Makefile in Sources */,
 				18B7C7EC1294222E009E7A26 /* GUIWindow.cpp in Sources */,
 				18B7C7ED1294222E009E7A26 /* GUIWindowManager.cpp in Sources */,
 				18B7C7EE1294222E009E7A26 /* GUIWrappingListContainer.cpp in Sources */,
@@ -10876,6 +10799,7 @@
 				18B7C937129428CA009E7A26 /* PlayListXML.cpp in Sources */,
 				18B7C938129428CA009E7A26 /* SmartPlayList.cpp in Sources */,
 				18B7C97C1294380A009E7A26 /* GUIWindowAddonBrowser.cpp in Sources */,
+				EDED2E911C878EB8000F5E80 /* AddonCallbacksAudioEngine.cpp in Sources */,
 				18B7C9831294385F009E7A26 /* XMLUtils.cpp in Sources */,
 				432D7CE412D86DA500CE4C49 /* NetworkLinux.cpp in Sources */,
 				432D7CF712D870E800CE4C49 /* TCPServer.cpp in Sources */,
@@ -10956,7 +10880,6 @@
 				DF527734151BAF4C00B5B63B /* WebSocket.cpp in Sources */,
 				DF527735151BAF4C00B5B63B /* WebSocketManager.cpp in Sources */,
 				DF527736151BAF4C00B5B63B /* WebSocketV13.cpp in Sources */,
-				7C3373791DF1A1CD0019EDEC /* Makefile in Sources */,
 				DF527737151BAF4C00B5B63B /* WebSocketV8.cpp in Sources */,
 				188F75FE152217BC009870CE /* Mime.cpp in Sources */,
 				188F7602152217DF009870CE /* GUIOperations.cpp in Sources */,
@@ -10981,6 +10904,7 @@
 				DF93D6A51444A8B1007C6459 /* MusicDatabaseFile.cpp in Sources */,
 				DF93D6A61444A8B1007C6459 /* NFSFile.cpp in Sources */,
 				DF93D6A71444A8B1007C6459 /* PipeFile.cpp in Sources */,
+				EDED2E8B1C878E62000F5E80 /* AddonCallbacksGUI.cpp in Sources */,
 				DF93D6A81444A8B1007C6459 /* RarFile.cpp in Sources */,
 				DF93D6AA1444A8B1007C6459 /* SFTPFile.cpp in Sources */,
 				DF93D6AB1444A8B1007C6459 /* ShoutcastFile.cpp in Sources */,
@@ -10999,17 +10923,18 @@
 				7C8E02251BA35D0B0072E8B2 /* CECBuiltins.cpp in Sources */,
 				F5ED908815538DCE00842059 /* XBMCTinyXML.cpp in Sources */,
 				F5ED908E15538E2300842059 /* POUtils.cpp in Sources */,
+				DFB65FB515373AE7006B8FF1 /* AEFactory.cpp in Sources */,
 				DFB65FB715373AE7006B8FF1 /* AEEncoderFFmpeg.cpp in Sources */,
 				DFB65FCC15373AE7006B8FF1 /* AEBitstreamPacker.cpp in Sources */,
 				DF29BCFD1B5D911800904347 /* GUIWindowEventLog.cpp in Sources */,
 				DFB65FCE15373AE7006B8FF1 /* AEChannelInfo.cpp in Sources */,
 				7CCA95CC1BC6E71D0091D308 /* GLSLOutput.cpp in Sources */,
-				7C3373691DF1A1CD0019EDEC /* AddonGUIRenderingControl.cpp in Sources */,
 				DFB65FD015373AE7006B8FF1 /* AEPackIEC61937.cpp in Sources */,
 				DFB65FD215373AE7006B8FF1 /* AEStreamInfo.cpp in Sources */,
 				DFB65FD315373AE7006B8FF1 /* AEUtil.cpp in Sources */,
 				DFB6610915374E80006B8FF1 /* DVDAudioCodecPassthrough.cpp in Sources */,
 				7C0B98A4154B79C30065A238 /* AEDeviceInfo.cpp in Sources */,
+				76F4C37E1C8E92E000A1E64B /* AddonCallbacksInputStream.cpp in Sources */,
 				7C6EB330155BD1D40080368A /* ImageFile.cpp in Sources */,
 				7C6EB6FA155F32C30080368A /* HTTPImageHandler.cpp in Sources */,
 				C84828C1156CFCD8005A996F /* PVRClients.cpp in Sources */,
@@ -11043,17 +10968,14 @@
 				C84828DE156CFCD8005A996F /* GUIWindowPVRBase.cpp in Sources */,
 				C84828DF156CFCD8005A996F /* GUIWindowPVRChannels.cpp in Sources */,
 				C84828E1156CFCD8005A996F /* GUIWindowPVRGuide.cpp in Sources */,
-				7C8F20111E01A7E100057EAD /* ContextMenus.cpp in Sources */,
 				7CE5D0B41D37EB6900211428 /* ActiveAEFilter.cpp in Sources */,
 				C84828E2156CFCD8005A996F /* GUIWindowPVRRecordings.cpp in Sources */,
 				C84828E3156CFCD8005A996F /* GUIWindowPVRSearch.cpp in Sources */,
 				C84828E4156CFCD8005A996F /* GUIWindowPVRTimers.cpp in Sources */,
 				7CA220071C921F74000FA3CD /* DemuxMultiSource.cpp in Sources */,
-				7C33737B1DF1A1CD0019EDEC /* AddonCallbacksPVR.cpp in Sources */,
 				C84828F5156CFD5E005A996F /* Epg.cpp in Sources */,
 				C84828F6156CFD5E005A996F /* EpgContainer.cpp in Sources */,
 				C84828F7156CFD5E005A996F /* EpgDatabase.cpp in Sources */,
-				7C3373821DF1A3690019EDEC /* ActiveAESettings.cpp in Sources */,
 				68AE5C331C9243A000C4D527 /* ControllerTranslator.cpp in Sources */,
 				C84828F8156CFD5E005A996F /* EpgInfoTag.cpp in Sources */,
 				C84828F9156CFD5E005A996F /* EpgSearchFilter.cpp in Sources */,
@@ -11064,7 +10986,6 @@
 				7CD4F7EC1C60DBC10015214B /* VideoFileItemListModifier.cpp in Sources */,
 				C8482909156CFF24005A996F /* PVRDirectory.cpp in Sources */,
 				C8482910156CFFA0005A996F /* DVDInputStreamPVRManager.cpp in Sources */,
-				7C3373551DF1A1CD0019EDEC /* AddonInterfaces.cpp in Sources */,
 				C848291F156D003E005A996F /* TextSearch.cpp in Sources */,
 				18E7CACB1578C26D001D4554 /* CDDARipJob.cpp in Sources */,
 				36A9443D15821E2800727135 /* DatabaseUtils.cpp in Sources */,
@@ -11182,6 +11103,7 @@
 				DF28EE03170E1E51005FA9D2 /* DisplaySettings.cpp in Sources */,
 				7C87B2CE162CE39600EF897D /* PlayerController.cpp in Sources */,
 				F52CC5F01713AAA200113454 /* DirectoryNodeGrouped.cpp in Sources */,
+				6890C2271DDBDCF500F8F362 /* AddonCallbacksGame.cpp in Sources */,
 				F52CC6AA1713BD2B00113454 /* DirectoryNodeGrouped.cpp in Sources */,
 				DFD717271C09EDCE0025D964 /* MessagePrinter.cpp in Sources */,
 				DFECFADF172D9C5100A43CF7 /* GUIControlSettings.cpp in Sources */,
@@ -11190,7 +11112,6 @@
 				DFECFB0E172D9CAB00A43CF7 /* SettingPath.cpp in Sources */,
 				6890C2111DDBDBFC00F8F362 /* GameClientTranslator.cpp in Sources */,
 				395F6DDD1A8133360088CC74 /* GUIDialogSimpleMenu.cpp in Sources */,
-				7C33735C1DF1A1CD0019EDEC /* AddonCallbacksAudioEngine.cpp in Sources */,
 				DFECFB1C172D9D0100A43CF7 /* BooleanLogic.cpp in Sources */,
 				DFECFB4C172D9D6D00A43CF7 /* NetworkServices.cpp in Sources */,
 				F5DB700217322DBB00D4DF21 /* FavouritesOperations.cpp in Sources */,
@@ -11198,7 +11119,6 @@
 				DFA8157E16713B1200E4E597 /* WakeOnAccess.cpp in Sources */,
 				7C973CFB1B5038580002A874 /* GUIDialogAudioDSPSettings.cpp in Sources */,
 				DF529BAE1741697B00523FB4 /* Environment.cpp in Sources */,
-				7C3373671DF1A1CD0019EDEC /* AddonCallbacksGUI.cpp in Sources */,
 				9A2FAD6A1C972BE10049652A /* ContextMenus.cpp in Sources */,
 				DFE4095B17417FDF00473BD9 /* LegacyPathTranslation.cpp in Sources */,
 				39C38CCA1BBFF1EE000F59F5 /* InputCodingTableKorean.cpp in Sources */,
@@ -11223,7 +11143,6 @@
 				7C2612711825B6340086E04D /* DatabaseQuery.cpp in Sources */,
 				7C920CF9181669FF00DA1477 /* TextureOperations.cpp in Sources */,
 				DFEF0BAC180ADE6400AEAED1 /* FileItemListModification.cpp in Sources */,
-				7C3373731DF1A1CD0019EDEC /* Makefile in Sources */,
 				DFEF0BC1180ADEDA00AEAED1 /* SmartPlaylistFileItemListModifier.cpp in Sources */,
 				7CC82C9318284F9F0010DF30 /* CharsetDetection.cpp in Sources */,
 				7C26126C182068660086E04D /* SettingsOperations.cpp in Sources */,
@@ -11322,6 +11241,7 @@
 				7CCDA1FE192753E30074CF51 /* ContentDirectorySCPD.cpp in Sources */,
 				7CCDA209192753E30074CF51 /* ContentDirectorywSearchSCPD.cpp in Sources */,
 				68AE5BCE1C9241F800C4D527 /* ButtonMapping.cpp in Sources */,
+				EDED2E9B1C878F61000F5E80 /* AddonInterfaces.cpp in Sources */,
 				7C921F921CD6042500684D0B /* FrameBufferObject.cpp in Sources */,
 				7CCDA214192753E30074CF51 /* PltDidl.cpp in Sources */,
 				7CCDA21D192753E30074CF51 /* PltFileMediaServer.cpp in Sources */,
@@ -11349,8 +11269,10 @@
 				7CCDA7BB192756250074CF51 /* NptDynamicLibraries.cpp in Sources */,
 				7CCDA7BE192756250074CF51 /* NptFile.cpp in Sources */,
 				7CCDA7C7192756250074CF51 /* NptHash.cpp in Sources */,
+				761170911C8B85F8006C6366 /* AddonGUIWindow.cpp in Sources */,
 				DF1D2DED1B6E85EE002BB9DB /* XbtDirectory.cpp in Sources */,
 				7CCDA7D0192756250074CF51 /* NptHttp.cpp in Sources */,
+				761170901C8B85F8006C6366 /* AddonGUIRenderingControl.cpp in Sources */,
 				7CCDA7D9192756250074CF51 /* NptJson.cpp in Sources */,
 				7CCDA7DC192756250074CF51 /* NptList.cpp in Sources */,
 				7CCDA7E5192756250074CF51 /* NptLogging.cpp in Sources */,
@@ -11401,7 +11323,6 @@
 				DF033D381946612400BFC82E /* AEDeviceEnumerationOSX.cpp in Sources */,
 				7C525DF5195E2D8100BE3482 /* SaveFileStateJob.cpp in Sources */,
 				7C908894196358A8003D0619 /* auto_buffer.cpp in Sources */,
-				7C3373761DF1A1CD0019EDEC /* AddonCallbacksPeripheral.cpp in Sources */,
 				7CF34D9F1930264A00D543C5 /* AudioEncoder.cpp in Sources */,
 				7C973CFA1B5038580002A874 /* GUIDialogAudioDSPManager.cpp in Sources */,
 				7CF80DC919710DC2003B2B34 /* KeyboardLayout.cpp in Sources */,
@@ -11418,7 +11339,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				DF29BCFE1B5D911800904347 /* GUIWindowEventLog.cpp in Sources */,
-				7C3373771DF1A1CD0019EDEC /* AddonCallbacksPeripheral.cpp in Sources */,
 				DF4BF0181A4EF31E0053AC56 /* cc_decoder708.cpp in Sources */,
 				DF1D2DF41B6E85EE002BB9DB /* XbtManager.cpp in Sources */,
 				7C921F931CD6042500684D0B /* FrameBufferObject.cpp in Sources */,
@@ -11486,7 +11406,6 @@
 				68AE5C081C92437900C4D527 /* GUIConfigurationWizard.cpp in Sources */,
 				E4991184174E5CE000741B6D /* GUIDialogAddonSettings.cpp in Sources */,
 				6890C24B1DDBDDA400F8F362 /* KeyboardEasterEgg.cpp in Sources */,
-				7C33737F1DF1A1CD0019EDEC /* Makefile in Sources */,
 				E4991185174E5CE000741B6D /* GUIViewStateAddonBrowser.cpp in Sources */,
 				E4991186174E5CE000741B6D /* GUIWindowAddonBrowser.cpp in Sources */,
 				E4991187174E5CE000741B6D /* PluginSource.cpp in Sources */,
@@ -11502,6 +11421,7 @@
 				228FA65E1C53F9D50023BBF0 /* InfoScanner.cpp in Sources */,
 				E4991191174E5CE400741B6D /* EncoderFFmpeg.cpp in Sources */,
 				E4991196174E5CEB00741B6D /* Exception.cpp in Sources */,
+				2A7FD7321E01F44000A41CA6 /* ContextMenus.cpp in Sources */,
 				E4991197174E5CEB00741B6D /* ilog.cpp in Sources */,
 				E4991198174E5CF600741B6D /* AEEncoderFFmpeg.cpp in Sources */,
 				E49911A6174E5CFE00741B6D /* AEBitstreamPacker.cpp in Sources */,
@@ -11512,6 +11432,7 @@
 				E49911AC174E5CFE00741B6D /* AEPackIEC61937.cpp in Sources */,
 				E49911AE174E5CFE00741B6D /* AEStreamInfo.cpp in Sources */,
 				E49911AF174E5CFE00741B6D /* AEUtil.cpp in Sources */,
+				E49911B1174E5CFE00741B6D /* AEFactory.cpp in Sources */,
 				6861B9EB1CC248EE00F62655 /* DriverReceiving.cpp in Sources */,
 				E49911B2174E5D0A00741B6D /* EmuFileWrapper.cpp in Sources */,
 				E49911B3174E5D0A00741B6D /* emu_dummy.cpp in Sources */,
@@ -11589,6 +11510,7 @@
 				E49911FC174E5D4500741B6D /* DVDOverlayContainer.cpp in Sources */,
 				DF4A3BB31B4B0FC100F9CDC0 /* ApplicationMessenger.cpp in Sources */,
 				DF29BCF21B5D911800904347 /* EventLog.cpp in Sources */,
+				6890C2281DDBDCF500F8F362 /* AddonCallbacksGame.cpp in Sources */,
 				E49911FF174E5D4500741B6D /* VideoPlayer.cpp in Sources */,
 				E4991200174E5D4500741B6D /* VideoPlayerAudio.cpp in Sources */,
 				E4991201174E5D4500741B6D /* VideoPlayerSubtitle.cpp in Sources */,
@@ -11613,7 +11535,6 @@
 				E4991220174E5D5A00741B6D /* BaseRenderer.cpp in Sources */,
 				6890C1DB1DDBDBE500F8F362 /* BasicMemoryStream.cpp in Sources */,
 				E4991222174E5D5A00741B6D /* OverlayRenderer.cpp in Sources */,
-				7C33737A1DF1A1CD0019EDEC /* Makefile in Sources */,
 				E4991223174E5D5A00741B6D /* OverlayRendererGL.cpp in Sources */,
 				E4991224174E5D5A00741B6D /* OverlayRendererUtil.cpp in Sources */,
 				E4991225174E5D5A00741B6D /* RenderCapture.cpp in Sources */,
@@ -11643,12 +11564,12 @@
 				E4991239174E5D7E00741B6D /* GUIDialogFavourites.cpp in Sources */,
 				E499123A174E5D7E00741B6D /* GUIDialogFileBrowser.cpp in Sources */,
 				E499123B174E5D7E00741B6D /* GUIDialogGamepad.cpp in Sources */,
-				7C3373661DF1A1CD0019EDEC /* Makefile in Sources */,
 				E499123C174E5D7E00741B6D /* GUIDialogKaiToast.cpp in Sources */,
 				39B4F3711B96F845009B2D88 /* RepositoryUpdater.cpp in Sources */,
 				E499123D174E5D7E00741B6D /* GUIDialogKeyboardGeneric.cpp in Sources */,
 				E499123E174E5D7E00741B6D /* GUIDialogMediaFilter.cpp in Sources */,
 				E499123F174E5D7E00741B6D /* GUIDialogMediaSource.cpp in Sources */,
+				76AEFB3C1C8F79D100EF2EC0 /* AddonGUIWindow.cpp in Sources */,
 				395C29E41A98A15700EBC7AD /* HTTPPythonHandler.cpp in Sources */,
 				6890C2391DDBDD4400F8F362 /* GUIDialogSelectGameClient.cpp in Sources */,
 				DFE704181D15803F004EAA9D /* ActiveAEDSP.cpp in Sources */,
@@ -11705,6 +11626,7 @@
 				E4991277174E5D8F00741B6D /* ISOFile.cpp in Sources */,
 				E4991278174E5D8F00741B6D /* LibraryDirectory.cpp in Sources */,
 				E499127A174E5D8F00741B6D /* MultiPathDirectory.cpp in Sources */,
+				76AEFB3D1C8F79D500EF2EC0 /* AddonCallbacksGUI.cpp in Sources */,
 				E499127B174E5D8F00741B6D /* MultiPathFile.cpp in Sources */,
 				DF9484051D70DCC300EFCF79 /* ProcessInfoIOS.cpp in Sources */,
 				E499127C174E5D9900741B6D /* DirectoryNode.cpp in Sources */,
@@ -11761,7 +11683,6 @@
 				E49912AE174E5D9900741B6D /* ShoutcastFile.cpp in Sources */,
 				DF0E4AD51AD5986F00A75430 /* GUIDialogPVRRadioRDSInfo.cpp in Sources */,
 				395C29C21A98A0A000EBC7AD /* Webinterface.cpp in Sources */,
-				7C3373631DF1A1CD0019EDEC /* AddonCallbacksCodec.cpp in Sources */,
 				E49912B2174E5D9900741B6D /* SmartPlaylistDirectory.cpp in Sources */,
 				DFD7175E1C0A031B0025D964 /* IOSKeyboard.mm in Sources */,
 				E49912B3174E5D9900741B6D /* SMBDirectory.cpp in Sources */,
@@ -11774,7 +11695,6 @@
 				E49912B8174E5D9900741B6D /* SpecialProtocolFile.cpp in Sources */,
 				E49912B9174E5D9900741B6D /* StackDirectory.cpp in Sources */,
 				E49912BC174E5D9900741B6D /* udf25.cpp in Sources */,
-				7C33737C1DF1A1CD0019EDEC /* AddonCallbacksPVR.cpp in Sources */,
 				E49912BD174E5D9900741B6D /* UDFDirectory.cpp in Sources */,
 				E49912BE174E5D9900741B6D /* UDFFile.cpp in Sources */,
 				DF0D9F551D639898006A7DBB /* PlatformDarwinIOS.cpp in Sources */,
@@ -11782,7 +11702,7 @@
 				E49912C0174E5D9900741B6D /* UPnPFile.cpp in Sources */,
 				E49912C1174E5DA000741B6D /* DirectoryNode.cpp in Sources */,
 				DF1D2DF11B6E85EE002BB9DB /* XbtFile.cpp in Sources */,
-				7C3373561DF1A1CD0019EDEC /* AddonInterfaces.cpp in Sources */,
+				76AEFB3B1C8F79CE00EF2EC0 /* AddonGUIRenderingControl.cpp in Sources */,
 				E49912C2174E5DA000741B6D /* DirectoryNodeEpisodes.cpp in Sources */,
 				E49912C3174E5DA000741B6D /* DirectoryNodeGrouped.cpp in Sources */,
 				E49912C4174E5DA000741B6D /* DirectoryNodeMoviesOverview.cpp in Sources */,
@@ -11792,7 +11712,6 @@
 				DFEA4B5A1B52721300562321 /* GUIDialogAudioDSPManager.cpp in Sources */,
 				DFED5AC71AB23388001F080D /* ReplayGain.cpp in Sources */,
 				E49912C7174E5DA000741B6D /* DirectoryNodeRecentlyAddedEpisodes.cpp in Sources */,
-				7C3373741DF1A1CD0019EDEC /* Makefile in Sources */,
 				E49912C8174E5DA000741B6D /* DirectoryNodeRecentlyAddedMovies.cpp in Sources */,
 				E49912C9174E5DA000741B6D /* DirectoryNodeRecentlyAddedMusicVideos.cpp in Sources */,
 				E49912CA174E5DA000741B6D /* DirectoryNodeRoot.cpp in Sources */,
@@ -11826,6 +11745,7 @@
 				E49912E6174E5DAD00741B6D /* GUIBorderedImage.cpp in Sources */,
 				E49912E7174E5DAD00741B6D /* GUIButtonControl.cpp in Sources */,
 				E49912E9174E5DAD00741B6D /* GUIColorManager.cpp in Sources */,
+				76AEFB3F1C8F79DC00EF2EC0 /* AddonCallbacksPVR.cpp in Sources */,
 				E49912EA174E5DAD00741B6D /* GUIControl.cpp in Sources */,
 				E49912EB174E5DAD00741B6D /* GUIControlFactory.cpp in Sources */,
 				E49912EC174E5DAD00741B6D /* GUIControlGroup.cpp in Sources */,
@@ -11838,6 +11758,7 @@
 				E49912F1174E5DAD00741B6D /* GUIFadeLabelControl.cpp in Sources */,
 				E49912F2174E5DAD00741B6D /* GUIFixedListContainer.cpp in Sources */,
 				E49912F3174E5DAD00741B6D /* GUIFont.cpp in Sources */,
+				2A7FD7351E01F47C00A41CA6 /* PVRGUIActions.cpp in Sources */,
 				E49912F4174E5DAD00741B6D /* GUIFontManager.cpp in Sources */,
 				E49912F5174E5DAD00741B6D /* GUIFontTTF.cpp in Sources */,
 				E49912F6174E5DAD00741B6D /* GUIFontTTFDX.cpp in Sources */,
@@ -11897,7 +11818,6 @@
 				E499131F174E5DAD00741B6D /* GUIWindowManager.cpp in Sources */,
 				2F4564D61970129A00396109 /* GUIFontCache.cpp in Sources */,
 				68AE5BD31C9241F800C4D527 /* InputHandling.cpp in Sources */,
-				7C3373681DF1A1CD0019EDEC /* AddonCallbacksGUI.cpp in Sources */,
 				E4991320174E5DAD00741B6D /* GUIWrappingListContainer.cpp in Sources */,
 				E4991321174E5DAD00741B6D /* imagefactory.cpp in Sources */,
 				E4991322174E5DAD00741B6D /* IWindowManagerCallback.cpp in Sources */,
@@ -11944,7 +11864,6 @@
 				E499135C174E5EBE00741B6D /* VideoLibrary.cpp in Sources */,
 				E499135D174E5EBE00741B6D /* XBMCOperations.cpp in Sources */,
 				E499135E174E5EEF00741B6D /* AddonModuleXbmc.cpp in Sources */,
-				7C3373511DF1A1CD0019EDEC /* AddonCallbacksAddon.cpp in Sources */,
 				E499135F174E5EEF00741B6D /* AddonModuleXbmcaddon.cpp in Sources */,
 				2A7B2BDD1BD6F16600044BCD /* PVRSettings.cpp in Sources */,
 				6890C1EB1DDBDBE500F8F362 /* SavestateWriter.cpp in Sources */,
@@ -11959,8 +11878,6 @@
 				E4991367174E5EEF00741B6D /* XBPython.cpp in Sources */,
 				E4991369174E5EEF00741B6D /* AnnouncementManager.cpp in Sources */,
 				E499136B174E5EF700741B6D /* ConvUtils.cpp in Sources */,
-				7C33736F1DF1A1CD0019EDEC /* Makefile in Sources */,
-				7C33735D1DF1A1CD0019EDEC /* AddonCallbacksAudioEngine.cpp in Sources */,
 				E499136C174E5EF700741B6D /* LinuxResourceCounter.cpp in Sources */,
 				E499136D174E5EF700741B6D /* LinuxTimezone.cpp in Sources */,
 				DFD7175F1C0A031B0025D964 /* IOSKeyboardView.mm in Sources */,
@@ -11976,7 +11893,6 @@
 				E4991376174E5F0E00741B6D /* GUIDialogSongInfo.cpp in Sources */,
 				E4991377174E5F0E00741B6D /* GUIDialogVisualisationPresetList.cpp in Sources */,
 				E4991378174E5F0E00741B6D /* MusicAlbumInfo.cpp in Sources */,
-				7C33735B1DF1A1CD0019EDEC /* Makefile in Sources */,
 				E4991379174E5F0E00741B6D /* MusicArtistInfo.cpp in Sources */,
 				E499137A174E5F0E00741B6D /* MusicInfoScanner.cpp in Sources */,
 				E499137B174E5F0E00741B6D /* MusicInfoScraper.cpp in Sources */,
@@ -12018,6 +11934,7 @@
 				E49913A8174E5F2100741B6D /* IHTTPRequestHandler.cpp in Sources */,
 				3994425C1A8DD8D0006C39E9 /* ProgressJob.cpp in Sources */,
 				E49913A9174E5F2100741B6D /* NetworkLinux.cpp in Sources */,
+				2A7FD7331E01F45B00A41CA6 /* PVRItem.cpp in Sources */,
 				E49913AA174E5F2100741B6D /* ZeroconfBrowserOSX.cpp in Sources */,
 				2AC7EB5C1C2330B300BDAA95 /* GUIWindowPVRTimerRules.cpp in Sources */,
 				E49913AB174E5F2100741B6D /* ZeroconfOSX.cpp in Sources */,
@@ -12051,7 +11968,6 @@
 				E49913C3174E5F3C00741B6D /* UdpClient.cpp in Sources */,
 				DFEB902919E9337200728978 /* AEResampleFactory.cpp in Sources */,
 				6890C1DF1DDBDBE500F8F362 /* LinearMemoryStream.cpp in Sources */,
-				7C33736A1DF1A1CD0019EDEC /* AddonGUIRenderingControl.cpp in Sources */,
 				E49913C4174E5F3C00741B6D /* WakeOnAccess.cpp in Sources */,
 				E49913C5174E5F3C00741B6D /* WebServer.cpp in Sources */,
 				E49913C6174E5F3C00741B6D /* Zeroconf.cpp in Sources */,
@@ -12063,6 +11979,7 @@
 				E49913CB174E5F8100741B6D /* PeripheralBluetooth.cpp in Sources */,
 				E49913CC174E5F8100741B6D /* PeripheralCecAdapter.cpp in Sources */,
 				E49913CD174E5F8100741B6D /* PeripheralDisk.cpp in Sources */,
+				76AEFB371C8F79C100EF2EC0 /* AddonCallbacksAddon.cpp in Sources */,
 				E49913CE174E5F8100741B6D /* PeripheralHID.cpp in Sources */,
 				E49913CF174E5F8100741B6D /* PeripheralImon.cpp in Sources */,
 				E49913D0174E5F8100741B6D /* PeripheralNIC.cpp in Sources */,
@@ -12072,6 +11989,7 @@
 				395C2A1A1A9F074C00EBC7AD /* Locale.cpp in Sources */,
 				E49913D5174E5F8600741B6D /* Peripherals.cpp in Sources */,
 				E49913D6174E5F8D00741B6D /* GUIDialogPictureInfo.cpp in Sources */,
+				76AEFB391C8F79C700EF2EC0 /* AddonCallbacksAudioEngine.cpp in Sources */,
 				E49913D7174E5F8D00741B6D /* GUIViewStatePictures.cpp in Sources */,
 				E49913D8174E5F8D00741B6D /* GUIWindowPictures.cpp in Sources */,
 				E49913D9174E5F8D00741B6D /* GUIWindowSlideShow.cpp in Sources */,
@@ -12106,7 +12024,6 @@
 				E49913EF174E5FB000741B6D /* ProfilesManager.cpp in Sources */,
 				E49913F0174E5FB000741B6D /* GUIViewStatePrograms.cpp in Sources */,
 				7C8E023B1BA35D0B0072E8B2 /* PlayerBuiltins.cpp in Sources */,
-				7C3373831DF1A3690019EDEC /* ActiveAESettings.cpp in Sources */,
 				E49913F1174E5FB000741B6D /* GUIWindowPrograms.cpp in Sources */,
 				E49913F3174E5FB000741B6D /* PVRClients.cpp in Sources */,
 				E49913F4174E5FB000741B6D /* PVRChannel.cpp in Sources */,
@@ -12121,7 +12038,6 @@
 				E49913FE174E5FB000741B6D /* GUIDialogPVRGuideInfo.cpp in Sources */,
 				E49913FF174E5FB000741B6D /* GUIDialogPVRGuideOSD.cpp in Sources */,
 				39C38CCB1BBFF1EE000F59F5 /* InputCodingTableKorean.cpp in Sources */,
-				7C3373541DF1A1CD0019EDEC /* Makefile in Sources */,
 				E4991400174E5FB000741B6D /* GUIDialogPVRGuideSearch.cpp in Sources */,
 				E4991401174E5FB000741B6D /* GUIDialogPVRRecordingInfo.cpp in Sources */,
 				E4991402174E5FB000741B6D /* GUIDialogPVRTimerSettings.cpp in Sources */,
@@ -12164,7 +12080,6 @@
 				E4991427174E603C00741B6D /* SettingControl.cpp in Sources */,
 				E4991429174E603C00741B6D /* SettingPath.cpp in Sources */,
 				E499142A174E603C00741B6D /* Settings.cpp in Sources */,
-				7C33736C1DF1A1CD0019EDEC /* AddonGUIWindow.cpp in Sources */,
 				E499142F174E603C00741B6D /* SkinSettings.cpp in Sources */,
 				E4991430174E603C00741B6D /* VideoSettings.cpp in Sources */,
 				395C2A0A1A9F06EB00EBC7AD /* LanguageResource.cpp in Sources */,
@@ -12213,6 +12128,7 @@
 				E499145D174E605900741B6D /* JSONVariantParser.cpp in Sources */,
 				E499145E174E605900741B6D /* JSONVariantWriter.cpp in Sources */,
 				E499145F174E605900741B6D /* LabelFormatter.cpp in Sources */,
+				76AEFB361C8F79BD00EF2EC0 /* AddonInterfaces.cpp in Sources */,
 				E4991460174E605900741B6D /* LangCodeExpander.cpp in Sources */,
 				E4991461174E605900741B6D /* LegacyPathTranslation.cpp in Sources */,
 				395C2A151A9F072400EBC7AD /* ResourceFile.cpp in Sources */,
@@ -12278,6 +12194,7 @@
 				E499149A174E606600741B6D /* VideoReferenceClock.cpp in Sources */,
 				E499149B174E606600741B6D /* VideoThumbLoader.cpp in Sources */,
 				E499149C174E606E00741B6D /* GUIViewControl.cpp in Sources */,
+				76AEFB3E1C8F79D900EF2EC0 /* AddonCallbacksInputStream.cpp in Sources */,
 				E499149D174E606E00741B6D /* GUIViewState.cpp in Sources */,
 				E499149E174E606E00741B6D /* ViewDatabase.cpp in Sources */,
 				E499149F174E606E00741B6D /* ViewStateSettings.cpp in Sources */,
@@ -12403,7 +12320,6 @@
 				7C2612721825B6340086E04D /* DatabaseQuery.cpp in Sources */,
 				7C920CFA181669FF00DA1477 /* TextureOperations.cpp in Sources */,
 				DFEF0BAD180ADE6400AEAED1 /* FileItemListModification.cpp in Sources */,
-				7C8F20121E01A7E100057EAD /* ContextMenus.cpp in Sources */,
 				DFE4BE061C661C5F0048EB03 /* AnnounceReceiver.mm in Sources */,
 				DFEF0BC2180ADEDA00AEAED1 /* SmartPlaylistFileItemListModifier.cpp in Sources */,
 				7CC82C9418284F9F0010DF30 /* CharsetDetection.cpp in Sources */,
@@ -12423,6 +12339,7 @@
 				7C14099F183224B8009F9411 /* SettingSection.cpp in Sources */,
 				7C1409A2183224B8009F9411 /* SettingsManager.cpp in Sources */,
 				7C1409A5183224B8009F9411 /* SettingUpdate.cpp in Sources */,
+				76AEFB381C8F79C400EF2EC0 /* AddonCallbacksAudioDSP.cpp in Sources */,
 				DF0ABB74183A94A30018445D /* Utf8Utils.cpp in Sources */,
 				7C1409AA184015C9009F9411 /* InfoExpression.cpp in Sources */,
 				AE4E87A717354C4A00D15206 /* XSLTUtils.cpp in Sources */,
@@ -12443,10 +12360,12 @@
 				7CC7B6B71918699000DDB120 /* GUIDialogSettingsManagerBase.cpp in Sources */,
 				7CC7B6BA1918699000DDB120 /* GUIDialogSettingsManualBase.cpp in Sources */,
 				DF0E4ACB1AD5982500A75430 /* InfoTagRadioRDS.cpp in Sources */,
+				76AEFB3A1C8F79CA00EF2EC0 /* AddonCallbacksCodec.cpp in Sources */,
 				7CC7B6C1191869EA00DDB120 /* SettingCreator.cpp in Sources */,
 				7CC7B6C4191869EA00DDB120 /* SettingUtils.cpp in Sources */,
 				7CC7B6C919186A8800DDB120 /* SettingConditions.cpp in Sources */,
 				42E2E1CA1B53F74D005C7E4E /* VideoLibraryRefreshingJob.cpp in Sources */,
+				2A7FD7341E01F46700A41CA6 /* PVRContextMenus.cpp in Sources */,
 				DF5E699B1B28121E009A88C3 /* PVRTimerType.cpp in Sources */,
 				7CCDA0DC192753E30074CF51 /* PltAction.cpp in Sources */,
 				7CCDA0E5192753E30074CF51 /* PltArgument.cpp in Sources */,
@@ -12476,7 +12395,6 @@
 				7CCDA190192753E30074CF51 /* PltThreadTask.cpp in Sources */,
 				7C8E02201BA35D0B0072E8B2 /* ApplicationBuiltins.cpp in Sources */,
 				7CCDA199192753E30074CF51 /* PltUPnP.cpp in Sources */,
-				7C3373581DF1A1CD0019EDEC /* AddonCallbacksAudioDSP.cpp in Sources */,
 				DF54F7FF1B6580AD000FCBA4 /* ContextMenuItem.cpp in Sources */,
 				7CCDA1A2192753E30074CF51 /* PltMediaConnect.cpp in Sources */,
 				6890C20E1DDBDBFC00F8F362 /* GameClientProperties.cpp in Sources */,
@@ -12484,7 +12402,6 @@
 				7CCDA1B0192753E30074CF51 /* X_MS_MediaReceiverRegistrarSCPD.cpp in Sources */,
 				7CCDA1BB192753E30074CF51 /* AVTransportSCPD.cpp in Sources */,
 				7CCDA1C8192753E30074CF51 /* PltMediaController.cpp in Sources */,
-				7C3373711DF1A1CD0019EDEC /* AddonCallbacksInputStream.cpp in Sources */,
 				6890C27C1DDBDFD900F8F362 /* RetroPlayerAudio.cpp in Sources */,
 				7CCDA1D1192753E30074CF51 /* PltMediaRenderer.cpp in Sources */,
 				7CCDA1DC192753E30074CF51 /* RdrConnectionManagerSCPD.cpp in Sources */,
@@ -12512,6 +12429,7 @@
 				7CCDA7A1192756250074CF51 /* NptConsole.cpp in Sources */,
 				7CCDA7A4192756250074CF51 /* NptCrypto.cpp in Sources */,
 				7CCDA7A7192756250074CF51 /* NptDataBuffer.cpp in Sources */,
+				68AE5BA61C92412900C4D527 /* AddonCallbacksPeripheral.cpp in Sources */,
 				6890C2081DDBDBFC00F8F362 /* GameClientInput.cpp in Sources */,
 				7CCDA7B0192756250074CF51 /* NptDebug.cpp in Sources */,
 				7CCDA7B9192756250074CF51 /* NptDigest.cpp in Sources */,
@@ -12543,7 +12461,6 @@
 				7CCDA846192756250074CF51 /* NptTime.cpp in Sources */,
 				7CCDA84F192756250074CF51 /* NptTls.cpp in Sources */,
 				7CCDA852192756250074CF51 /* NptUri.cpp in Sources */,
-				7C3373601DF1A1CD0019EDEC /* Makefile in Sources */,
 				7CCDA85B192756250074CF51 /* NptUtils.cpp in Sources */,
 				68AE5C201C92438E00C4D527 /* GUIGameController.cpp in Sources */,
 				7CCDA864192756250074CF51 /* NptXml.cpp in Sources */,

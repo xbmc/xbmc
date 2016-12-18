@@ -199,6 +199,9 @@ bool CPVRClients::HasEnabledClients(void) const
 
 bool CPVRClients::StopClient(const AddonPtr &client, bool bRestart)
 {
+  /* stop playback */
+  CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_STOP);
+
   CSingleLock lock(m_critSection);
   int iId = GetClientId(client);
   PVR_CLIENT mappedClient;

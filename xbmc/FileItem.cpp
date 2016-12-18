@@ -49,6 +49,7 @@
 #include "pvr/channels/PVRRadioRDSInfoTag.h"
 #include "pvr/recordings/PVRRecording.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
+#include "video/Bookmark.h"
 #include "video/VideoInfoTag.h"
 #include "threads/SingleLock.h"
 #include "music/tags/MusicInfoTag.h"
@@ -902,6 +903,14 @@ bool CFileItem::IsAudio() const
   return URIUtils::HasExtension(m_strPath, g_advancedSettings.GetMusicExtensions());
 }
 
+bool CFileItem::IsDeleted() const
+{
+  if (HasPVRRecordingInfoTag())
+    return GetPVRRecordingInfoTag()->IsDeleted();
+
+  return false;
+}
+
 bool CFileItem::IsGame() const
 {
   if (HasGameInfoTag())
@@ -1475,9 +1484,9 @@ bool CFileItem::IsSamePath(const CFileItem *item) const
   }
   if (HasVideoInfoTag() && item->HasVideoInfoTag())
   {
-    if (m_videoInfoTag->m_iDbId != -1 && item->m_videoInfoTag->m_iDbId != -1)
-      return ((m_videoInfoTag->m_iDbId == item->m_videoInfoTag->m_iDbId) &&
-        (m_videoInfoTag->m_type == item->m_videoInfoTag->m_type));
+    if (GetVideoInfoTag()->m_iDbId != -1 && item->GetVideoInfoTag()->m_iDbId != -1)
+      return ((GetVideoInfoTag()->m_iDbId == item->GetVideoInfoTag()->m_iDbId) &&
+        (GetVideoInfoTag()->m_type == item->GetVideoInfoTag()->m_type));
   }
   if (IsMusicDb() && HasMusicInfoTag())
   {
@@ -1488,7 +1497,7 @@ bool CFileItem::IsSamePath(const CFileItem *item) const
   }
   if (IsVideoDb() && HasVideoInfoTag())
   {
-    CFileItem dbItem(m_videoInfoTag->m_strFileNameAndPath, false);
+    CFileItem dbItem(GetVideoInfoTag()->m_strFileNameAndPath, false);
     if (HasProperty("item_start"))
       dbItem.SetProperty("item_start", GetProperty("item_start"));
     return dbItem.IsSamePath(item);
@@ -1502,7 +1511,7 @@ bool CFileItem::IsSamePath(const CFileItem *item) const
   }
   if (item->IsVideoDb() && item->HasVideoInfoTag())
   {
-    CFileItem dbItem(item->m_videoInfoTag->m_strFileNameAndPath, false);
+    CFileItem dbItem(item->GetVideoInfoTag()->m_strFileNameAndPath, false);
     if (item->HasProperty("item_start"))
       dbItem.SetProperty("item_start", item->GetProperty("item_start"));
     return IsSamePath(&dbItem);
@@ -1522,11 +1531,25 @@ void CFileItem::UpdateInfo(const CFileItem &item, bool replaceLabels /*=true*/)
   if (item.HasVideoInfoTag())
   { // copy info across
     //! @todo premiered info is normally stored in m_dateTime by the db
-    *GetVideoInfoTag() = *item.GetVideoInfoTag();
-    // preferably use some information from PVR info tag if available
-    if (m_pvrRecordingInfoTag)
-      m_pvrRecordingInfoTag->CopyClientInfo(GetVideoInfoTag());
-    SetOverlayImage(ICON_OVERLAY_UNWATCHED, GetVideoInfoTag()->m_playCount > 0);
+
+    if (item.m_videoInfoTag)
+    {
+      if (m_videoInfoTag)
+        *m_videoInfoTag = *item.m_videoInfoTag;
+      else
+        m_videoInfoTag = new CVideoInfoTag(*item.m_videoInfoTag);
+    }
+    else
+    {
+      if (m_videoInfoTag)
+        delete m_videoInfoTag;
+
+      m_videoInfoTag = new CVideoInfoTag;
+    }
+
+    m_pvrRecordingInfoTag = item.m_pvrRecordingInfoTag;
+
+    SetOverlayImage(ICON_OVERLAY_UNWATCHED, GetVideoInfoTag()->GetPlayCount() > 0);
     SetInvalid();
   }
   if (item.HasMusicInfoTag())
@@ -1576,7 +1599,11 @@ void CFileItem::SetFromVideoInfoTag(const CVideoInfoTag &video)
     m_bIsFolder = false;
   }
 
-  *GetVideoInfoTag() = video;
+  if (m_videoInfoTag)
+    *m_videoInfoTag = video;
+  else
+    m_videoInfoTag = new CVideoInfoTag(video);
+
   if (video.m_iSeason == 0)
     SetProperty("isspecial", "true");
   FillInDefaultIcon();
@@ -3354,12 +3381,27 @@ void CFileItemList::ClearSortState()
   m_sortDescription.sortAttributes = SortAttributeNone;
 }
 
+bool CFileItem::HasVideoInfoTag() const
+{
+  // Note: CPVRRecording is derived from CVideoInfoTag
+  return m_pvrRecordingInfoTag.get() != nullptr || m_videoInfoTag != nullptr;
+}
+
 CVideoInfoTag* CFileItem::GetVideoInfoTag()
 {
-  if (!m_videoInfoTag)
+  // Note: CPVRRecording is derived from CVideoInfoTag
+  if (m_pvrRecordingInfoTag)
+    return m_pvrRecordingInfoTag.get();
+  else if (!m_videoInfoTag)
     m_videoInfoTag = new CVideoInfoTag;
 
   return m_videoInfoTag;
+}
+
+const CVideoInfoTag* CFileItem::GetVideoInfoTag() const
+{
+  // Note: CPVRRecording is derived from CVideoInfoTag
+  return m_pvrRecordingInfoTag ? m_pvrRecordingInfoTag.get() : m_videoInfoTag;
 }
 
 CPictureInfoTag* CFileItem::GetPictureInfoTag()
@@ -3492,26 +3534,42 @@ int CFileItem::GetVideoContentType() const
   return type;
 }
 
+CFileItem CFileItem::GetItemToPlay() const
+{
+  if (HasEPGInfoTag())
+  {
+    const CPVRChannelPtr channel(GetEPGInfoTag()->ChannelTag());
+    if (channel)
+      return CFileItem(channel);
+  }
+  return *this;
+}
+
+CBookmark CFileItem::GetResumePoint() const
+{
+  if (HasVideoInfoTag())
+    return GetVideoInfoTag()->GetResumePoint();
+  return CBookmark();
+}
+
 bool CFileItem::IsResumePointSet() const
 {
-  return (HasVideoInfoTag() && GetVideoInfoTag()->m_resumePoint.IsSet()) ||
-      (m_pvrRecordingInfoTag && m_pvrRecordingInfoTag->GetLastPlayedPosition() > 0);
+  return GetResumePoint().IsSet();
 }
 
 double CFileItem::GetCurrentResumeTime() const
 {
-  if (m_pvrRecordingInfoTag)
+  return lrint(GetResumePoint().timeInSeconds);
+}
+
+bool CFileItem::GetCurrentResumeTimeAndPartNumber(int& startOffset, int& partNumber) const
+{
+  CBookmark resumePoint(GetResumePoint());
+  if (resumePoint.IsSet())
   {
-    // This will retrieve 'fresh' resume information from the PVR server
-    int rc = m_pvrRecordingInfoTag->GetLastPlayedPosition();
-    if (rc > 0)
-      return rc;
-    // Fall through to default value
+    startOffset = lrint(resumePoint.timeInSeconds);
+    partNumber = resumePoint.partNumber;
+    return true;
   }
-  if (HasVideoInfoTag() && GetVideoInfoTag()->m_resumePoint.IsSet())
-  {
-    return GetVideoInfoTag()->m_resumePoint.timeInSeconds;
-  }
-  // Resume from start when resume points are invalid or the PVR server returns an error
-  return 0;
+  return false;
 }

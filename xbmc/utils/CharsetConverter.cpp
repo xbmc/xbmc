@@ -36,10 +36,6 @@
 #include "utils/StringUtils.h"
 #include "utils/Utf8Utils.h"
 
-#if !defined(TARGET_WINDOWS) && defined(HAVE_CONFIG_H)
-  #include "config.h"
-#endif
-
 #ifdef WORDS_BIGENDIAN
   #define ENDIAN_SUFFIX "BE"
 #else

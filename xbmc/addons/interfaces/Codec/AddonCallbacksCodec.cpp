@@ -99,7 +99,7 @@ private:
 };
 
 CAddonCallbacksCodec::CAddonCallbacksCodec(CAddon* addon)
-  : ADDON::IAddonInterface(addon, KODI_CODEC_API_VERSION),
+  : m_addon(addon),
     m_callbacks(new CB_CodecLib)
 {
   /* write XBMC addon-on specific add-on function addresses to the callback table */

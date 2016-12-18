@@ -20,9 +20,6 @@
  *
  */
 
-#if (defined HAVE_CONFIG_H) && (!defined WIN32)
-  #include "config.h"
-#endif
 #include "DynamicDll.h"
 #include "GraphicBuffer.h"
 class DllGraphicBufferInterface

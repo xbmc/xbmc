@@ -78,6 +78,7 @@ using KODI::MESSAGING::HELPERS::DialogResponse;
 
 CPVRManager::CPVRManager(void) :
     CThread("PVRManager"),
+    m_addons(new CPVRClients),
     m_triggerEvent(true),
     m_currentFile(NULL),
     m_database(NULL),
@@ -89,15 +90,12 @@ CPVRManager::CPVRManager(void) :
     m_isChannelPreview(false)
 {
   CAnnouncementManager::GetInstance().AddAnnouncer(this);
-  m_addons.reset(new CPVRClients);
 }
 
 CPVRManager::~CPVRManager(void)
 {
   CServiceBroker::GetSettings().UnregisterCallback(this);
   CAnnouncementManager::GetInstance().RemoveAnnouncer(this);
-  Stop();
-  m_addons.reset();
   CLog::Log(LOGDEBUG,"PVRManager - destroyed");
 }
 
@@ -137,6 +135,30 @@ void CPVRManager::Announce(AnnouncementFlag flag, const char *sender, const char
 CPVRManager &CPVRManager::GetInstance()
 {
   return CServiceBroker::GetPVRManager();
+}
+
+CPVRChannelGroupsContainerPtr CPVRManager::ChannelGroups(void) const
+{
+  CSingleLock lock(m_critSection);
+  return m_channelGroups;
+}
+
+CPVRRecordingsPtr CPVRManager::Recordings(void) const
+{
+  CSingleLock lock(m_critSection);
+  return m_recordings;
+}
+
+CPVRTimersPtr CPVRManager::Timers(void) const
+{
+  CSingleLock lock(m_critSection);
+  return m_timers;
+}
+
+CPVRClientsPtr CPVRManager::Clients(void) const
+{
+  // note: m_addons is const (only set/reset in ctor/dtor). no need for a lock here.
+  return m_addons;
 }
 
 void CPVRManager::OnSettingChanged(const CSetting *setting)
@@ -222,7 +244,7 @@ void CPVRManager::OnSettingAction(const CSetting *setting)
   }
 }
 
-void CPVRManager::Cleanup(void)
+void CPVRManager::Clear(void)
 {
   CSingleLock lock(m_critSection);
 
@@ -249,14 +271,12 @@ void CPVRManager::Cleanup(void)
   }
 
   HideProgressDialog();
-
-  SetState(ManagerStateStopped);
 }
 
 void CPVRManager::ResetProperties(void)
 {
   CSingleLock lock(m_critSection);
-  Cleanup();
+  Clear();
 
   m_channelGroups.reset(new CPVRChannelGroupsContainer);
   m_recordings.reset(new CPVRRecordings);
@@ -342,8 +362,7 @@ void CPVRManager::Stop(void)
   if (m_database->IsOpen())
     m_database->Close();
 
-  /* unload all data */
-  Cleanup();
+  SetState(ManagerStateStopped);
 }
 
 CPVRManager::ManagerState CPVRManager::GetState(void) const
@@ -725,7 +744,7 @@ void CPVRManager::ResetDatabase(bool bResetEPGOnly /* = false */)
 
   CLog::Log(LOGNOTICE,"PVRManager - %s - restarting the PVRManager", __FUNCTION__);
   m_database->Open();
-  Cleanup();
+
   Start();
 
   pDlgProgress->SetPercentage(100);
@@ -1878,8 +1897,10 @@ bool CPVRManager::CreateChannelEpgs(void)
   if (EpgsCreated())
     return true;
 
+  bool bEpgsCreated = m_channelGroups->CreateChannelEpgs();
+
   CSingleLock lock(m_critSection);
-  m_bEpgsCreated = m_channelGroups->CreateChannelEpgs();
+  m_bEpgsCreated = bEpgsCreated;
   return m_bEpgsCreated;
 }
 

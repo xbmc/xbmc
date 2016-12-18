@@ -488,23 +488,7 @@ namespace PVR
     const CPVRRecordingPtr recording(CPVRItem(CFileItemPtr(new CFileItem(item))).GetRecording());
     if (recording && !recording->IsDeleted())
     {
-      // First try to find the resume position on the back-end, if that fails use video database
-      int positionInSeconds = recording->GetLastPlayedPosition();
-      // If the back-end does report a saved position it will be picked up by FileItem
-      if (positionInSeconds < 0)
-      {
-        CVideoDatabase db;
-        if (db.Open())
-        {
-          CBookmark bookmark;
-          std::string itemPath(recording->m_strFileNameAndPath);
-          if (db.GetResumeBookMark(itemPath, bookmark) )
-            positionInSeconds = lrint(bookmark.timeInSeconds);
-          db.Close();
-        }
-      }
-
-      // Suppress resume from 0
+      int positionInSeconds = lrint(recording->GetResumePoint().timeInSeconds);
       if (positionInSeconds > 0)
         resumeString = StringUtils::Format(g_localizeStrings.Get(12022).c_str(),
                                            StringUtils::SecondsToTimeString(positionInSeconds, TIME_FORMAT_HH_MM_SS).c_str());
@@ -698,17 +682,21 @@ namespace PVR
     else if (URIUtils::IsPVRRecording(item->GetPath()) && !item->HasPVRRecordingInfoTag())
       pvrItem = g_PVRRecordings->GetByPath(item->GetPath());
 
+    bool bCheckResume = true;
+    if (item->HasProperty("check_resume"))
+      bCheckResume = item->GetProperty("check_resume").asBoolean();
+
     if (pvrItem->HasPVRChannelInfoTag())
     {
       return SwitchToChannel(pvrItem,
                              CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRPLAYBACK_PLAYMINIMIZED),
-                             true);
+                             bCheckResume);
     }
     else if (pvrItem->HasPVRRecordingInfoTag())
     {
       return PlayRecording(pvrItem,
                            CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRPLAYBACK_PLAYMINIMIZED),
-                           true);
+                           bCheckResume);
     }
 
     return false;
@@ -729,34 +717,6 @@ namespace PVR
       return false;
 
     if (!g_PVRChannelGroups->GetGroupAll(channel->IsRadio())->RemoveFromGroup(channel))
-      return false;
-
-    CGUIWindowPVRBase *pvrWindow = dynamic_cast<CGUIWindowPVRBase *>(g_windowManager.GetWindow(g_windowManager.GetActiveWindow()));
-    if (pvrWindow)
-      pvrWindow->DoRefresh();
-    else
-      CLog::Log(LOGERROR, "CPVRGUIActions - %s - called on non-pvr window. no refresh possible.", __FUNCTION__);
-
-    return true;
-  }
-
-  bool CPVRGUIActions::MarkWatched(const CFileItemPtr &item) const
-  {
-    if (!g_PVRRecordings->IncrementRecordingsPlayCount(item))
-      return false;
-
-    CGUIWindowPVRBase *pvrWindow = dynamic_cast<CGUIWindowPVRBase *>(g_windowManager.GetWindow(g_windowManager.GetActiveWindow()));
-    if (pvrWindow)
-      pvrWindow->DoRefresh();
-    else
-      CLog::Log(LOGERROR, "CPVRGUIActions - %s - called on non-pvr window. no refresh possible.", __FUNCTION__);
-
-    return true;
-  }
-
-  bool CPVRGUIActions::MarkUnwatched(const CFileItemPtr &item) const
-  {
-    if (!g_PVRRecordings->SetRecordingsPlayCount(item, 0))
       return false;
 
     CGUIWindowPVRBase *pvrWindow = dynamic_cast<CGUIWindowPVRBase *>(g_windowManager.GetWindow(g_windowManager.GetActiveWindow()));

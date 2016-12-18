@@ -149,7 +149,7 @@ namespace XBMCAddon
 
     int InfoTagVideo::getPlayCount()
     {
-      return infoTag->m_playCount;
+      return infoTag->GetPlayCount();
     }
 
     String InfoTagVideo::getLastPlayed()

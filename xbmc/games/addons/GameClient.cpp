@@ -98,11 +98,11 @@ std::unique_ptr<CGameClient> CGameClient::FromExtension(ADDON::AddonProps props,
   using namespace ADDON;
 
   static const std::vector<std::string> properties = {
-      GAME_PROPERTY_EXTENSIONS,
-      GAME_PROPERTY_SUPPORTS_VFS,
-      GAME_PROPERTY_SUPPORTS_STANDALONE,
-      GAME_PROPERTY_SUPPORTS_KEYBOARD,
-      GAME_PROPERTY_SUPPORTS_MOUSE,
+    GAME_PROPERTY_EXTENSIONS,
+    GAME_PROPERTY_SUPPORTS_VFS,
+    GAME_PROPERTY_SUPPORTS_STANDALONE,
+    GAME_PROPERTY_SUPPORTS_KEYBOARD,
+    GAME_PROPERTY_SUPPORTS_MOUSE,
   };
 
   for (const auto& property : properties)
@@ -116,19 +116,19 @@ std::unique_ptr<CGameClient> CGameClient::FromExtension(ADDON::AddonProps props,
 }
 
 CGameClient::CGameClient(ADDON::AddonProps props) :
-  CAddonDll(std::move(props)),
-  m_apiVersion("0.0.0"),
-  m_libraryProps(this, m_info),
-  m_bSupportsVFS(false),
-  m_bSupportsStandalone(false),
-  m_bSupportsKeyboard(false),
-  m_bSupportsMouse(false),
-  m_bSupportsAllExtensions(false),
-  m_bIsPlaying(false),
-  m_serializeSize(0),
-  m_audio(nullptr),
-  m_video(nullptr),
-  m_region(GAME_REGION_UNKNOWN)
+CAddonDll(std::move(props)),
+m_apiVersion("0.0.0"),
+m_libraryProps(this, m_info),
+m_bSupportsVFS(false),
+m_bSupportsStandalone(false),
+m_bSupportsKeyboard(false),
+m_bSupportsMouse(false),
+m_bSupportsAllExtensions(false),
+m_bIsPlaying(false),
+m_serializeSize(0),
+m_audio(nullptr),
+m_video(nullptr),
+m_region(GAME_REGION_UNKNOWN)
 {
   const ADDON::InfoMap& extraInfo = m_props.extrainfo;
   ADDON::InfoMap::const_iterator it;
@@ -138,7 +138,7 @@ CGameClient::CGameClient(ADDON::AddonProps props) :
   {
     std::vector<std::string> extensions = StringUtils::Split(it->second, EXTENSION_SEPARATOR);
     std::transform(extensions.begin(), extensions.end(),
-      std::inserter(m_extensions, m_extensions.begin()), NormalizeExtension);
+                   std::inserter(m_extensions, m_extensions.begin()), NormalizeExtension);
 
     // Check for wildcard extension
     if (m_extensions.find(EXTENSION_WILDCARD) != m_extensions.end())
@@ -264,7 +264,8 @@ bool CGameClient::OpenFile(const CFileItem& file, IGameAudioCallback* audio, IGa
 
   GAME_ERROR error = GAME_ERROR_FAILED;
 
-  LogError(error = m_struct.LoadGame(path.c_str()), "LoadGame()");
+  try { LogError(error = m_struct.LoadGame(path.c_str()), "LoadGame()"); }
+  catch (...) { LogException("LoadGame()"); }
 
   if (error != GAME_ERROR_NO_ERROR)
   {
@@ -291,7 +292,9 @@ bool CGameClient::OpenStandalone(IGameAudioCallback* audio, IGameVideoCallback* 
 
   GAME_ERROR error = GAME_ERROR_FAILED;
 
-  LogError(error = m_struct.LoadStandalone(), "LoadStandalone()");
+  try { LogError(error = m_struct.LoadStandalone(), "LoadStandalone()"); }
+  catch (...) { LogException("LoadStandalone()"); }
+
   if (error != GAME_ERROR_NO_ERROR)
   {
     NotifyError(error);
@@ -363,11 +366,16 @@ bool CGameClient::LoadGameInfo()
   // Can be called only after retro_load_game()
   game_system_av_info av_info = { };
 
-  bool bSuccess = LogError(m_struct.GetGameInfo(&av_info), "GetGameInfo()");
+  bool bSuccess = false;
+  try { bSuccess = LogError(m_struct.GetGameInfo(&av_info), "GetGameInfo()"); }
+  catch (...) { LogException("GetGameInfo()"); }
+
   if (!bSuccess)
     return false;
 
-  GAME_REGION region = m_struct.GetRegion();
+  GAME_REGION region;
+  try { region = m_struct.GetRegion(); }
+  catch (...) { LogException("GetRegion()"); return false; }
 
   CLog::Log(LOGINFO, "GAME: ---------------------------------------");
   CLog::Log(LOGINFO, "GAME: Base Width:   %u", av_info.geometry.base_width);
@@ -435,7 +443,11 @@ std::string CGameClient::GetMissingResource()
 
 void CGameClient::CreatePlayback()
 {
-  bool bRequiresGameLoop = m_struct.RequiresGameLoop();
+  bool bRequiresGameLoop = false;
+
+  try { bRequiresGameLoop = m_struct.RequiresGameLoop(); }
+  catch (...) { LogException("RequiresGameLoop()"); }
+
   if (bRequiresGameLoop)
   {
     m_playback.reset(new CGameClientReversiblePlayback(this, m_timing.GetFrameRate(), m_serializeSize));
@@ -459,7 +471,8 @@ void CGameClient::Reset()
 
   if (m_bIsPlaying)
   {
-    LogError(m_struct.Reset(), "Reset()");
+    try { LogError(m_struct.Reset(), "Reset()"); }
+    catch (...) { LogException("Reset()"); }
 
     CreatePlayback();
   }
@@ -473,7 +486,8 @@ void CGameClient::CloseFile()
 
   if (m_bIsPlaying)
   {
-    LogError(m_struct.UnloadGame(), "UnloadGame()");
+    try { LogError(m_struct.UnloadGame(), "UnloadGame()"); }
+    catch (...) { LogException("UnloadGame()"); }
   }
 
   ClearPorts();
@@ -504,7 +518,8 @@ void CGameClient::RunFrame()
 
   if (m_bIsPlaying)
   {
-    LogError(m_struct.RunFrame(), "RunFrame()");
+    try { LogError(m_struct.RunFrame(), "RunFrame()"); }
+    catch (...) { LogException("RunFrame()"); }
   }
 }
 
@@ -523,17 +538,17 @@ bool CGameClient::OpenPixelStream(GAME_PIXEL_FORMAT format, unsigned int width, 
   unsigned int orientation = 0;
   switch (rotation)
   {
-  case GAME_VIDEO_ROTATION_90:
-    orientation = 360 - 90;
-    break;
-  case GAME_VIDEO_ROTATION_180:
-    orientation = 360 - 180;
-    break;
-  case GAME_VIDEO_ROTATION_270:
-    orientation = 360 - 270;
-    break;
-  default:
-    break;
+    case GAME_VIDEO_ROTATION_90:
+      orientation = 360 - 90;
+      break;
+    case GAME_VIDEO_ROTATION_180:
+      orientation = 360 - 180;
+      break;
+    case GAME_VIDEO_ROTATION_270:
+      orientation = 360 - 270;
+      break;
+    default:
+      break;
   }
 
   return m_video->OpenPixelStream(pixelFormat, width, height, m_timing.GetFrameRate(), orientation);
@@ -612,20 +627,20 @@ void CGameClient::AddStreamData(GAME_STREAM_TYPE stream, const uint8_t* data, un
 {
   switch (stream)
   {
-  case GAME_STREAM_AUDIO:
-  {
-    if (m_audio)
-      m_audio->AddData(data, size);
-    break;
-  }
-  case GAME_STREAM_VIDEO:
-  {
-    if (m_video)
-      m_video->AddData(data, size);
-    break;
-  }
-  default:
-    break;
+    case GAME_STREAM_AUDIO:
+    {
+      if (m_audio)
+        m_audio->AddData(data, size);
+      break;
+    }
+    case GAME_STREAM_VIDEO:
+    {
+      if (m_video)
+        m_video->AddData(data, size);
+      break;
+    }
+    default:
+      break;
   }
 }
 
@@ -633,20 +648,20 @@ void CGameClient::CloseStream(GAME_STREAM_TYPE stream)
 {
   switch (stream)
   {
-  case GAME_STREAM_AUDIO:
-  {
-    if (m_audio)
-      m_audio->CloseStream();
-    break;
-  }
-  case GAME_STREAM_VIDEO:
-  {
-    if (m_video)
-      m_video->CloseStream();
-    break;
-  }
-  default:
-    break;
+    case GAME_STREAM_AUDIO:
+    {
+      if (m_audio)
+        m_audio->CloseStream();
+      break;
+    }
+    case GAME_STREAM_VIDEO:
+    {
+      if (m_video)
+        m_video->CloseStream();
+      break;
+    }
+    default:
+      break;
   }
 }
 
@@ -657,7 +672,8 @@ size_t CGameClient::GetSerializeSize()
   size_t serializeSize = 0;
   if (m_bIsPlaying)
   {
-    serializeSize = m_struct.SerializeSize();
+    try { serializeSize = m_struct.SerializeSize(); }
+    catch (...) { LogException("SerializeSize()"); }
   }
 
   return serializeSize;
@@ -673,7 +689,8 @@ bool CGameClient::Serialize(uint8_t* data, size_t size)
   bool bSuccess = false;
   if (m_bIsPlaying)
   {
-    bSuccess = LogError(m_struct.Serialize(data, size), "Serialize()");
+    try { bSuccess = LogError(m_struct.Serialize(data, size), "Serialize()"); }
+    catch (...) { LogException("Serialize()"); }
   }
 
   return bSuccess;
@@ -689,7 +706,8 @@ bool CGameClient::Deserialize(const uint8_t* data, size_t size)
   bool bSuccess = false;
   if (m_bIsPlaying)
   {
-    bSuccess = LogError(m_struct.Deserialize(data, size), "Deserialize()");
+    try { bSuccess = LogError(m_struct.Deserialize(data, size), "Deserialize()"); }
+    catch (...) { LogException("Deserialize()"); }
   }
 
   return bSuccess;
@@ -760,18 +778,20 @@ void CGameClient::UpdatePort(unsigned int port, const ControllerPtr& controller)
     controllerStruct.abs_pointer_count    = 0; //! @todo
     controllerStruct.motor_count          = controller->Layout().FeatureCount(FEATURE_TYPE::MOTOR);
 
-    m_struct.UpdatePort(port, true, &controllerStruct);
+    try { m_struct.UpdatePort(port, true, &controllerStruct); }
+    catch (...) { LogException("UpdatePort()"); }
   }
   else
   {
-    m_struct.UpdatePort(port, false, nullptr);
+    try { m_struct.UpdatePort(port, false, nullptr); }
+    catch (...) { LogException("UpdatePort()"); }
   }
 }
 
 bool CGameClient::AcceptsInput(void) const
 {
   return g_application.IsAppFocused() &&
-         g_windowManager.GetActiveWindowID() == WINDOW_FULLSCREEN_GAME;
+  g_windowManager.GetActiveWindowID() == WINDOW_FULLSCREEN_GAME;
 }
 
 void CGameClient::ClearPorts(void)
@@ -815,12 +835,12 @@ bool CGameClient::ReceiveInputEvent(const game_input_event& event)
 
   switch (event.type)
   {
-  case GAME_INPUT_EVENT_MOTOR:
-    if (event.feature_name)
-      bHandled = SetRumble(event.port, event.feature_name, event.motor.magnitude);
-    break;
-  default:
-    break;
+    case GAME_INPUT_EVENT_MOTOR:
+      if (event.feature_name)
+        bHandled = SetRumble(event.port, event.feature_name, event.motor.magnitude);
+      break;
+    default:
+      break;
   }
 
   return bHandled;
@@ -854,12 +874,14 @@ void CGameClient::OpenMouse(void)
 
   game_controller controllerStruct = { strId.c_str() };
 
-  m_struct.UpdatePort(GAME_INPUT_PORT_MOUSE, true, &controllerStruct);
+  try { m_struct.UpdatePort(GAME_INPUT_PORT_MOUSE, true, &controllerStruct); }
+  catch (...) { LogException("UpdatePort()"); }
 }
 
 void CGameClient::CloseMouse(void)
 {
-  m_struct.UpdatePort(GAME_INPUT_PORT_MOUSE, false, nullptr);
+  try { m_struct.UpdatePort(GAME_INPUT_PORT_MOUSE, false, nullptr); }
+  catch (...) { LogException("UpdatePort()"); }
 
   m_mouse.reset();
 }
@@ -882,8 +904,15 @@ bool CGameClient::LogError(GAME_ERROR error, const char* strMethod) const
   if (error != GAME_ERROR_NO_ERROR)
   {
     CLog::Log(LOGERROR, "GAME - %s - addon '%s' returned an error: %s",
-        strMethod, ID().c_str(), CGameClientTranslator::ToString(error));
+              strMethod, ID().c_str(), CGameClientTranslator::ToString(error));
     return false;
   }
   return true;
+}
+
+void CGameClient::LogException(const char* strFunctionName) const
+{
+  CLog::Log(LOGERROR, "GAME: exception caught while trying to call '%s' on add-on %s",
+            strFunctionName, ID().c_str());
+  CLog::Log(LOGERROR, "Please contact the developer of this add-on: %s", Author().c_str());
 }
