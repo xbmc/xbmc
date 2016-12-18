@@ -46,13 +46,11 @@
 				<align>right</align>
 				<orientation>horizontal</orientation>
 				<control type="label" id="30">
-					<description>Header label</description>
 					<width min="0" max="680">auto</width>
 					<height>120</height>
 					<font>font12</font>
 				</control>
 				<control type="label">
-					<description>Header label</description>
 					<width min="0" max="120">auto</width>
 					<height>120</height>
 					<font>font12</font>
@@ -71,7 +69,6 @@
 			</control>
 			<control type="progress" id="32">
 				<left>3000</left>
-				<description>progress control</description>
 				<height>15</height>
 			</control>
 		</control>
