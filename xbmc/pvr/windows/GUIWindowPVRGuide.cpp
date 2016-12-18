@@ -257,11 +257,11 @@ bool CGUIWindowPVRGuide::OnMessage(CGUIMessage& message)
                   bReturn = true;
                   break;
                 case EPG_SELECT_ACTION_SWITCH:
-                  CPVRGUIActions::GetInstance().SwitchToChannel(pItem, false, true);
+                  CPVRGUIActions::GetInstance().SwitchToChannel(pItem, true);
                   bReturn = true;
                   break;
                 case EPG_SELECT_ACTION_PLAY_RECORDING:
-                  CPVRGUIActions::GetInstance().PlayRecording(pItem, false, true);
+                  CPVRGUIActions::GetInstance().PlayRecording(pItem, true);
                   bReturn = true;
                   break;
                 case EPG_SELECT_ACTION_INFO:
@@ -279,7 +279,7 @@ bool CGUIWindowPVRGuide::OnMessage(CGUIMessage& message)
               bReturn = true;
               break;
             case ACTION_PLAY:
-              CPVRGUIActions::GetInstance().PlayRecording(pItem, false, true);
+              CPVRGUIActions::GetInstance().PlayRecording(pItem, true);
               bReturn = true;
               break;
             case ACTION_RECORD:
@@ -313,7 +313,7 @@ bool CGUIWindowPVRGuide::OnMessage(CGUIMessage& message)
                 const CFileItemPtr item(epgGridContainer->GetSelectedChannelItem());
                 if (item)
                 {
-                  CPVRGUIActions::GetInstance().SwitchToChannel(item, false, true);
+                  CPVRGUIActions::GetInstance().SwitchToChannel(item, true);
                   bReturn = true;
                 }
               }
