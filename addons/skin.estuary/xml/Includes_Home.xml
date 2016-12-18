@@ -291,6 +291,7 @@
 		<param name="icon">$INFO[ListItem.Icon]</param>
 		<param name="icon_height">120</param>
 		<param name="pvr_submenu">false</param>
+		<param name="addon_submenu">false</param>
 		<param name="pvr_type">TV</param>
 		<param name="visible">true</param>
 		<definition>
@@ -389,7 +390,7 @@
 						</control>
 					</control>
 				</focusedlayout>
-				<include condition="!$PARAM[pvr_submenu]" content="SubmenuContent">
+				<include condition="!$PARAM[pvr_submenu] + !$PARAM[addon_submenu]" content="SubmenuContent">
 					<param name="widget_target" value="$PARAM[widget_target]"/>
 					<param name="item_limit" value="$PARAM[item_limit]"/>
 					<param name="content_path" value="$PARAM[content_path]"/>
@@ -397,11 +398,41 @@
 				<include condition="$PARAM[pvr_submenu]" content="PVRSubMenuContent">
 					<param name="pvr_type" value="$PARAM[pvr_type]"/>
 				</include>
+				<include condition="$PARAM[addon_submenu]">AddonSubMenuContent</include>
 			</control>
 		</definition>
 	</include>
 	<include name="SubmenuContent">
 		<content target="$PARAM[widget_target]" limit="$PARAM[item_limit]">$PARAM[content_path]</content>
+	</include>
+	<include name="AddonSubMenuContent">
+		<content>
+			<item>
+				<label>$LOCALIZE[24998]</label>
+				<onclick>ActivateWindow(addonbrowser,addons://user/,return)</onclick>
+				<thumb>DefaultAddonsInstalled.png</thumb>
+			</item>
+			<item>
+				<label>$LOCALIZE[24043]</label>
+				<onclick>ActivateWindow(addonbrowser,addons://outdated/,return)</onclick>
+				<thumb>DefaultAddonsUpdates.png</thumb>
+			</item>
+			<item>
+				<label>$LOCALIZE[24004]</label>
+				<onclick>ActivateWindow(addonbrowser,addons://recently_updated/,return)</onclick>
+				<thumb>DefaultAddonsRecentlyUpdated.png</thumb>
+			</item>
+			<item>
+				<label>$LOCALIZE[24033]</label>
+				<onclick>ActivateWindow(addonbrowser,addons://repos/,return)</onclick>
+				<thumb>DefaultAddonsRepo.png</thumb>
+			</item>
+			<item>
+				<label>$LOCALIZE[137]</label>
+				<onclick>ActivateWindow(addonbrowser,addons://search/,return)</onclick>
+				<thumb>DefaultAddonsSearch.png</thumb>
+			</item>
+		</content>
 	</include>
 	<include name="PVRSubMenuContent">
 		<content>

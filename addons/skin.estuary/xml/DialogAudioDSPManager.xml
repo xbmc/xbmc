@@ -68,7 +68,6 @@
 				</focusedlayout>
 			</control>
 			<control type="group" id="200">
-				<description>available- and active mode lists</description>
 				<top>90</top>
 				<control type="group">
 					<left>320</left>

@@ -236,11 +236,10 @@
 					<control type="grouplist" id="8001">
 						<include>WidgetGroupListCommon</include>
 						<include content="WidgetListCategories">
-							<param name="content_path" value="addons://"/>
 							<param name="widget_header" value="$LOCALIZE[31148]"/>
-							<param name="widget_target" value="addonbrowser"/>
 							<param name="list_id" value="8900"/>
 							<param name="visible" value="Integer.IsGreater(Container(8100).NumItems,0) | Integer.IsGreater(Container(8200).NumItems,0) | Integer.IsGreater(Container(8300).NumItems,0) | Integer.IsGreater(Container(8400).NumItems,0) | Integer.IsGreater(Container(8500).NumItems,0)"/>
+							<param name="addon_submenu" value="true"/>
 						</include>
 						<include content="WidgetListSquare">
 							<param name="content_path" value="addons://sources/video/"/>

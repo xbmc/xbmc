@@ -171,7 +171,7 @@
 					<height>300</height>
 					<fadetime>300</fadetime>
 					<aspectratio aligny="bottom">keep</aspectratio>
-					<texture fallback="DefaultVideo.png">$INFO[ListItem.Icon]</texture>
+					<texture fallback="DefaultAddon.png">$INFO[ListItem.Icon]</texture>
 					<bordertexture border="21">overlays/shadow.png</bordertexture>
 					<bordersize>20</bordersize>
 				</control>
