@@ -120,9 +120,11 @@ install(FILES ${CORE_SOURCE_DIR}/tools/Linux/packaging/media/icon256x256.png
         RENAME ${APP_NAME_LC}.png
         DESTINATION ${datarootdir}/icons/hicolor/256x256/apps
         COMPONENT kodi)
-install(CODE "execute_process(COMMAND gtk-update-icon-cache -f -q -t
-        $ENV{DESTDIR}${datarootdir}/icons/hicolor ERROR_QUIET)"
-        COMPONENT kodi)
+if(NOT DISTRIBUTION)
+  install(CODE "execute_process(COMMAND gtk-update-icon-cache -f -q -t
+          $ENV{DESTDIR}${datarootdir}/icons/hicolor ERROR_QUIET)"
+          COMPONENT kodi)
+endif()
 
 # Install docs
 install(FILES ${CORE_SOURCE_DIR}/copying.txt
