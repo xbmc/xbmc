@@ -4,7 +4,6 @@ xbmc/addons/interfaces                          addonsBinaryInterfaces
 xbmc/addons/interfaces/Addon                    addonCallbacks_Addon
 xbmc/addons/interfaces/AudioDSP                 addonCallbacks_AudioDSP
 xbmc/addons/interfaces/AudioEngine              addonCallbacks_AudioEngine
-xbmc/addons/interfaces/Codec                    addonCallbacks_Codec
 xbmc/addons/interfaces/Game                     addonCallbacks_Game
 xbmc/addons/interfaces/GUI                      addonCallbacks_GUI
 xbmc/addons/interfaces/InputStream              addonCallbacks_InputStream

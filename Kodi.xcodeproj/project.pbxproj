@@ -419,7 +419,6 @@
 		76AEFB371C8F79C100EF2EC0 /* AddonCallbacksAddon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDED2E921C878EE0000F5E80 /* AddonCallbacksAddon.cpp */; };
 		76AEFB381C8F79C400EF2EC0 /* AddonCallbacksAudioDSP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDED2E951C878EF8000F5E80 /* AddonCallbacksAudioDSP.cpp */; };
 		76AEFB391C8F79C700EF2EC0 /* AddonCallbacksAudioEngine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDED2E8F1C878EB8000F5E80 /* AddonCallbacksAudioEngine.cpp */; };
-		76AEFB3A1C8F79CA00EF2EC0 /* AddonCallbacksCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDED2E8C1C878E97000F5E80 /* AddonCallbacksCodec.cpp */; };
 		76AEFB3B1C8F79CE00EF2EC0 /* AddonGUIRenderingControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7611708C1C8B85F8006C6366 /* AddonGUIRenderingControl.cpp */; };
 		76AEFB3C1C8F79D100EF2EC0 /* AddonGUIWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7611708E1C8B85F8006C6366 /* AddonGUIWindow.cpp */; };
 		76AEFB3D1C8F79D500EF2EC0 /* AddonCallbacksGUI.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDED2E891C878E62000F5E80 /* AddonCallbacksGUI.cpp */; };
@@ -2272,7 +2271,6 @@
 		EDADD1561DF792A400B3308D /* AddonDll.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDADD1551DF792A400B3308D /* AddonDll.cpp */; };
 		EDED2E881C878DE8000F5E80 /* AddonCallbacksPVR.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDED2E861C878DE8000F5E80 /* AddonCallbacksPVR.cpp */; };
 		EDED2E8B1C878E62000F5E80 /* AddonCallbacksGUI.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDED2E891C878E62000F5E80 /* AddonCallbacksGUI.cpp */; };
-		EDED2E8E1C878E97000F5E80 /* AddonCallbacksCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDED2E8C1C878E97000F5E80 /* AddonCallbacksCodec.cpp */; };
 		EDED2E911C878EB8000F5E80 /* AddonCallbacksAudioEngine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDED2E8F1C878EB8000F5E80 /* AddonCallbacksAudioEngine.cpp */; };
 		EDED2E941C878EE0000F5E80 /* AddonCallbacksAddon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDED2E921C878EE0000F5E80 /* AddonCallbacksAddon.cpp */; };
 		EDED2E971C878EF8000F5E80 /* AddonCallbacksAudioDSP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDED2E951C878EF8000F5E80 /* AddonCallbacksAudioDSP.cpp */; };
@@ -5028,14 +5026,12 @@
 		EDE8C7141C7F618500A86ECC /* libKODI_audioengine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = libKODI_audioengine.h; path = "kodi-addon-dev-kit/include/kodi/libKODI_audioengine.h"; sourceTree = "<group>"; };
 		EDE8C7151C7F618500A86ECC /* libKODI_guilib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = libKODI_guilib.h; path = "kodi-addon-dev-kit/include/kodi/libKODI_guilib.h"; sourceTree = "<group>"; };
 		EDE8C7161C7F618500A86ECC /* libXBMC_addon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = libXBMC_addon.h; path = "kodi-addon-dev-kit/include/kodi/libXBMC_addon.h"; sourceTree = "<group>"; };
-		EDE8C7171C7F618500A86ECC /* libXBMC_codec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = libXBMC_codec.h; path = "kodi-addon-dev-kit/include/kodi/libXBMC_codec.h"; sourceTree = "<group>"; };
 		EDE8C7181C7F618500A86ECC /* libXBMC_pvr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = libXBMC_pvr.h; path = "kodi-addon-dev-kit/include/kodi/libXBMC_pvr.h"; sourceTree = "<group>"; };
 		EDE8C7191C7F618500A86ECC /* xbmc_addon_cpp_dll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xbmc_addon_cpp_dll.h; path = "kodi-addon-dev-kit/include/kodi/xbmc_addon_cpp_dll.h"; sourceTree = "<group>"; };
 		EDE8C71A1C7F618500A86ECC /* xbmc_addon_dll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xbmc_addon_dll.h; path = "kodi-addon-dev-kit/include/kodi/xbmc_addon_dll.h"; sourceTree = "<group>"; };
 		EDE8C71B1C7F618500A86ECC /* xbmc_addon_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xbmc_addon_types.h; path = "kodi-addon-dev-kit/include/kodi/xbmc_addon_types.h"; sourceTree = "<group>"; };
 		EDE8C71C1C7F618500A86ECC /* xbmc_audioenc_dll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xbmc_audioenc_dll.h; path = "kodi-addon-dev-kit/include/kodi/xbmc_audioenc_dll.h"; sourceTree = "<group>"; };
 		EDE8C71D1C7F618500A86ECC /* xbmc_audioenc_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xbmc_audioenc_types.h; path = "kodi-addon-dev-kit/include/kodi/xbmc_audioenc_types.h"; sourceTree = "<group>"; };
-		EDE8C71E1C7F618500A86ECC /* xbmc_codec_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xbmc_codec_types.h; path = "kodi-addon-dev-kit/include/kodi/xbmc_codec_types.h"; sourceTree = "<group>"; };
 		EDE8C71F1C7F618500A86ECC /* xbmc_epg_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xbmc_epg_types.h; path = "kodi-addon-dev-kit/include/kodi/xbmc_epg_types.h"; sourceTree = "<group>"; };
 		EDE8C7201C7F618500A86ECC /* xbmc_pvr_dll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xbmc_pvr_dll.h; path = "kodi-addon-dev-kit/include/kodi/xbmc_pvr_dll.h"; sourceTree = "<group>"; };
 		EDE8C7211C7F618500A86ECC /* xbmc_pvr_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xbmc_pvr_types.h; path = "kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"; sourceTree = "<group>"; };
@@ -5047,8 +5043,6 @@
 		EDED2E871C878DE8000F5E80 /* AddonCallbacksPVR.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonCallbacksPVR.h; path = addons/interfaces/PVR/AddonCallbacksPVR.h; sourceTree = "<group>"; };
 		EDED2E891C878E62000F5E80 /* AddonCallbacksGUI.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonCallbacksGUI.cpp; path = addons/interfaces/GUI/AddonCallbacksGUI.cpp; sourceTree = "<group>"; };
 		EDED2E8A1C878E62000F5E80 /* AddonCallbacksGUI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonCallbacksGUI.h; path = addons/interfaces/GUI/AddonCallbacksGUI.h; sourceTree = "<group>"; };
-		EDED2E8C1C878E97000F5E80 /* AddonCallbacksCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonCallbacksCodec.cpp; path = addons/interfaces/Codec/AddonCallbacksCodec.cpp; sourceTree = "<group>"; };
-		EDED2E8D1C878E97000F5E80 /* AddonCallbacksCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonCallbacksCodec.h; path = addons/interfaces/Codec/AddonCallbacksCodec.h; sourceTree = "<group>"; };
 		EDED2E8F1C878EB8000F5E80 /* AddonCallbacksAudioEngine.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonCallbacksAudioEngine.cpp; path = addons/interfaces/AudioEngine/AddonCallbacksAudioEngine.cpp; sourceTree = "<group>"; };
 		EDED2E901C878EB8000F5E80 /* AddonCallbacksAudioEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonCallbacksAudioEngine.h; path = addons/interfaces/AudioEngine/AddonCallbacksAudioEngine.h; sourceTree = "<group>"; };
 		EDED2E921C878EE0000F5E80 /* AddonCallbacksAddon.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonCallbacksAddon.cpp; path = addons/interfaces/Addon/AddonCallbacksAddon.cpp; sourceTree = "<group>"; };
@@ -9561,14 +9555,12 @@
 				7CEE107D1C970BB800E0D426 /* libKODI_inputstream.h */,
 				2A7E24C71CEBBC3B003096EB /* libKODI_peripheral.h */,
 				EDE8C7161C7F618500A86ECC /* libXBMC_addon.h */,
-				EDE8C7171C7F618500A86ECC /* libXBMC_codec.h */,
 				EDE8C7181C7F618500A86ECC /* libXBMC_pvr.h */,
 				EDE8C7191C7F618500A86ECC /* xbmc_addon_cpp_dll.h */,
 				EDE8C71A1C7F618500A86ECC /* xbmc_addon_dll.h */,
 				EDE8C71B1C7F618500A86ECC /* xbmc_addon_types.h */,
 				EDE8C71C1C7F618500A86ECC /* xbmc_audioenc_dll.h */,
 				EDE8C71D1C7F618500A86ECC /* xbmc_audioenc_types.h */,
-				EDE8C71E1C7F618500A86ECC /* xbmc_codec_types.h */,
 				EDE8C71F1C7F618500A86ECC /* xbmc_epg_types.h */,
 				EDE8C7201C7F618500A86ECC /* xbmc_pvr_dll.h */,
 				EDE8C7211C7F618500A86ECC /* xbmc_pvr_types.h */,
@@ -9586,7 +9578,6 @@
 				EDED2E841C878D1D000F5E80 /* Addon */,
 				EDED2E851C878D3F000F5E80 /* AudioDSP */,
 				EDED2E831C878D04000F5E80 /* AudioEngine */,
-				EDED2E821C878CF6000F5E80 /* Codec */,
 				6890C2241DDBDCE300F8F362 /* Game */,
 				EDED2E801C878CB4000F5E80 /* GUI */,
 				76F4C37B1C8E927A00A1E64B /* InputStream */,
@@ -9619,15 +9610,6 @@
 				EDED2E871C878DE8000F5E80 /* AddonCallbacksPVR.h */,
 			);
 			name = PVR;
-			sourceTree = "<group>";
-		};
-		EDED2E821C878CF6000F5E80 /* Codec */ = {
-			isa = PBXGroup;
-			children = (
-				EDED2E8C1C878E97000F5E80 /* AddonCallbacksCodec.cpp */,
-				EDED2E8D1C878E97000F5E80 /* AddonCallbacksCodec.h */,
-			);
-			name = Codec;
 			sourceTree = "<group>";
 		};
 		EDED2E831C878D04000F5E80 /* AudioEngine */ = {
@@ -10454,7 +10436,6 @@
 				E38E225D0D25F9FE00618676 /* strfn.cpp in Sources */,
 				E38E225E0D25F9FE00618676 /* strlist.cpp in Sources */,
 				E38E22600D25F9FE00618676 /* system.cpp in Sources */,
-				EDED2E8E1C878E97000F5E80 /* AddonCallbacksCodec.cpp in Sources */,
 				E38E22610D25F9FE00618676 /* timefn.cpp in Sources */,
 				E38E22620D25F9FE00618676 /* ulinks.cpp in Sources */,
 				E38E22630D25F9FE00618676 /* unicode.cpp in Sources */,
@@ -12360,7 +12341,6 @@
 				7CC7B6B71918699000DDB120 /* GUIDialogSettingsManagerBase.cpp in Sources */,
 				7CC7B6BA1918699000DDB120 /* GUIDialogSettingsManualBase.cpp in Sources */,
 				DF0E4ACB1AD5982500A75430 /* InfoTagRadioRDS.cpp in Sources */,
-				76AEFB3A1C8F79CA00EF2EC0 /* AddonCallbacksCodec.cpp in Sources */,
 				7CC7B6C1191869EA00DDB120 /* SettingCreator.cpp in Sources */,
 				7CC7B6C4191869EA00DDB120 /* SettingUtils.cpp in Sources */,
 				7CC7B6C919186A8800DDB120 /* SettingConditions.cpp in Sources */,
