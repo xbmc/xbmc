@@ -335,12 +335,9 @@ AVFrame* CFFmpegImage::ExtractFrame()
         m_orientation = (unsigned int)orientation;
     }
   }
-
-  AVFrame* clone = av_frame_clone(frame);
-  av_frame_free(&frame);
   av_packet_unref(&pkt);
 
-  return clone;
+  return frame;
 }
 
 AVPixelFormat CFFmpegImage::ConvertFormats(AVFrame* frame)
@@ -616,16 +613,6 @@ bool CFFmpegImage::CreateThumbnailFromSurface(unsigned char* bufferin, unsigned 
   }
   internalBufOutSize = (unsigned int) size;
 
-  m_outputBuffer = (uint8_t*) av_malloc(internalBufOutSize);
-
-  if (!m_outputBuffer)
-  {
-    CLog::Log(LOGERROR, "Could not generate allocate memory for thumbnail: %s", destFile.c_str());
-    CleanupLocalOutputBuffer();
-    return false;
-  }
-
-
   tdm.intermediateBuffer = (uint8_t*) av_malloc(internalBufOutSize);
   if (!tdm.intermediateBuffer)
   {
@@ -722,8 +709,9 @@ bool CFFmpegImage::CreateThumbnailFromSurface(unsigned char* bufferin, unsigned 
   int got_package = 0;
   AVPacket avpkt;
   av_init_packet(&avpkt);
-  avpkt.data = m_outputBuffer;
-  avpkt.size = internalBufOutSize;
+  // encoder will allocate memory
+  avpkt.data = nullptr;
+  avpkt.size = 0;
 
   int ret = EncodeFFmpegFrame(tdm.avOutctx, &avpkt, &got_package, tdm.frame_input);
 
@@ -735,8 +723,19 @@ bool CFFmpegImage::CreateThumbnailFromSurface(unsigned char* bufferin, unsigned 
   }
 
   bufferoutSize = avpkt.size;
+  m_outputBuffer = (uint8_t*) av_malloc(bufferoutSize);
+  if (!m_outputBuffer)
+  {
+    CLog::Log(LOGERROR, "Could not generate allocate memory for thumbnail: %s", destFile.c_str());
+    CleanupLocalOutputBuffer();
+    av_packet_unref(&avpkt);
+    return false;
+  }
+  // update buffer ptr for caller
   bufferout = m_outputBuffer;
 
+  // copy avpkt data into outputbuffer
+  memcpy(m_outputBuffer, avpkt.data, avpkt.size);
   av_packet_unref(&avpkt);
 
   return true;
