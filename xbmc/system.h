@@ -94,10 +94,6 @@
  *****************/
 
 #if defined(TARGET_WINDOWS)
-<<<<<<< e2f22cf7d1868a0e8ba19c02772b270cc145bd32
-=======
-//#define HAS_DVD_DRIVE
->>>>>>> Fixed some build issues
 #define HAS_WIN32_NETWORK
 #define HAS_IRSERVERSUITE
 #define HAS_AUDIO
