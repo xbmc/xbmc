@@ -14,9 +14,7 @@ Actions=Fullscreen;Standalone;
 [Desktop Action Fullscreen]
 Name=Open in fullscreen
 Exec=kodi -fs
-OnlyShowIn=Unity;
 
 [Desktop Action Standalone]
 Name=Open in standalone mode
 Exec=kodi --standalone
-OnlyShowIn=Unity;
