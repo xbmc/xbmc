@@ -42,7 +42,6 @@ option(ENABLE_DVDCSS      "Enable libdvdcss support?" ON)
 option(ENABLE_UPNP        "Enable UPnP support?" ON)
 option(ENABLE_NONFREE     "Enable non-free components?" ON)
 option(ENABLE_AIRTUNES    "Enable AirTunes support?" ON)
-option(ENABLE_CEC         "Enable CEC support?" ON)
 option(ENABLE_OPTICAL     "Enable optical support?" ON)
 # use ffmpeg from depends or system
 option(ENABLE_INTERNAL_FFMPEG "Enable internal ffmpeg?" OFF)
@@ -61,7 +60,6 @@ endif()
 if(NOT WIN32)
   option(WITH_ARCH              "build with given arch" OFF)
   option(WITH_CPU               "build with given cpu" OFF)
-  option(ENABLE_CCACHE          "Enable Ccache support" ON)
 endif()
 if(CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL rbpi)
   option(ENABLE_LIRC            "Enable LIRC support?" ON)
@@ -116,7 +114,7 @@ endif()
 
 # Optional dependencies
 set(optional_deps MicroHttpd MySqlClient SSH XSLT
-                  Alsa UDEV DBus Avahi SmbClient
+                  Alsa UDEV DBus Avahi SmbClient CCache
                   PulseAudio VDPAU VAAPI Bluetooth CAP)
 
 # Required, dyloaded deps
@@ -226,9 +224,6 @@ elseif(CORE_SYSTEM_NAME STREQUAL rbpi)
   core_require_dep(MMAL)
 endif()
 
-if(ENABLE_CCACHE)
-  core_optional_dep(CCache)
-endif()
 
 # Compile Info
 add_custom_command(OUTPUT ${CORE_BUILD_DIR}/xbmc/CompileInfo.cpp
