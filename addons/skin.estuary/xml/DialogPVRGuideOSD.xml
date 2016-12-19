@@ -26,7 +26,7 @@
 						<control type="label">
 							<left>20</left>
 							<width>150</width>
-							<height>90</height>
+							<bottom>0</bottom>
 							<aligny>center</aligny>
 							<textcolor>grey</textcolor>
 							<label>$INFO[ListItem.StartTime]</label>
@@ -34,7 +34,7 @@
 						<control type="label">
 							<left>150</left>
 							<width>610</width>
-							<height>90</height>
+							<bottom>0</bottom>
 							<align>right</align>
 							<aligny>center</aligny>
 							<label>$INFO[ListItem.Label]</label>
@@ -44,7 +44,7 @@
 						<control type="image">
 							<left>0</left>
 							<width>780</width>
-							<height>90</height>
+							<bottom>0</bottom>
 							<texture colordiffuse="button_focus">lists/focus.png</texture>
 							<visible>Control.HasFocus(11)</visible>
 							<animation effect="fade" start="100" end="0" time="0">UnFocus</animation>
@@ -52,14 +52,14 @@
 						<control type="label">
 							<left>20</left>
 							<width>150</width>
-							<height>90</height>
+							<bottom>0</bottom>
 							<aligny>center</aligny>
 							<label>$INFO[ListItem.StartTime]</label>
 						</control>
 						<control type="label">
 							<left>150</left>
 							<width>610</width>
-							<height>90</height>
+							<bottom>0</bottom>
 							<align>right</align>
 							<aligny>center</aligny>
 							<label>$INFO[ListItem.Label]</label>
