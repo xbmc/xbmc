@@ -37,6 +37,7 @@ BINDINGS+=xbmc/addons/kodi-addon-dev-kit/include/kodi/libKODI_inputstream.h
 BINDINGS+=xbmc/addons/kodi-addon-dev-kit/include/kodi/libKODI_peripheral.h
 BINDINGS+=xbmc/addons/kodi-addon-dev-kit/include/kodi/libXBMC_pvr.h
 BINDINGS+=xbmc/addons/kodi-addon-dev-kit/include/kodi/libXBMC_codec.h
+BINDINGS+=xbmc/addons/kodi-addon-dev-kit/include/kodi/versions.h
 BINDINGS+=xbmc/cores/VideoPlayer/DVDDemuxers/DVDDemuxPacket.h
 BINDINGS+=xbmc/cores/AudioEngine/Utils/AEChannelData.h
 BINDINGS+=xbmc/filesystem/IFileTypes.h
