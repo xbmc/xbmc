@@ -5,7 +5,8 @@
 	<coordinates>
 		<left>0</left>
 		<top>0</top>
-		<origin x="735" y="400">Window.IsActive(Home)</origin>
+		<origin x="1055" y="400">Window.IsActive(Home) + String.IsEqual(Skin.AspectRatio,21:9)</origin>
+		<origin x="735" y="400">Window.IsActive(Home) + !String.IsEqual(Skin.AspectRatio,21:9)</origin>
 	</coordinates>
 	<controls>
 		<control type="image">
