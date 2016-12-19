@@ -34,7 +34,10 @@ CAudioEncoder::CAudioEncoder(AddonProps props, std::string _extension)
 
 bool CAudioEncoder::Create()
 {
-  return CAddonDll::Create(&m_struct, &m_info) == ADDON_STATUS_OK;
+  if (CAddonDll::Create(ADDON_INSTANCE_AUDIOENCODER, &m_struct, &m_info) == ADDON_STATUS_OK)
+    return true;
+
+  return false;
 }
 
 bool CAudioEncoder::Init(audioenc_callbacks &callbacks)
