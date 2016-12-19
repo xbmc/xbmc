@@ -1015,8 +1015,10 @@ CPVRChannelPtr CPVRTimerInfoTag::ChannelTag(void) const
 
 CPVRChannelPtr CPVRTimerInfoTag::UpdateChannel(void)
 {
+  const CPVRChannelPtr channel(g_PVRChannelGroups->Get(m_bIsRadio)->GetGroupAll()->GetByUniqueID(m_iClientChannelUid, m_iClientId));
+
   CSingleLock lock(m_critSection);
-  m_channel = g_PVRChannelGroups->Get(m_bIsRadio)->GetGroupAll()->GetByUniqueID(m_iClientChannelUid, m_iClientId);
+  m_channel = channel;
   return m_channel;
 }
 

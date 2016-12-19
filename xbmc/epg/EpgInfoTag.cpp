@@ -340,18 +340,22 @@ int CEpgInfoTag::GetDuration(void) const
   return end - start > 0 ? end - start : 3600;
 }
 
+bool CEpgInfoTag::IsParentalLocked() const
+{
+  CPVRChannelPtr channel;
+  {
+    CSingleLock lock(m_critSection);
+    channel = m_pvrChannel;
+  }
+
+  return channel && g_PVRManager.IsParentalLocked(channel);
+}
+
 std::string CEpgInfoTag::Title(bool bOverrideParental /* = false */) const
 {
   std::string strTitle;
-  bool bParentalLocked(false);
 
-  {
-    CSingleLock lock(m_critSection);
-    if (m_pvrChannel)
-      bParentalLocked = g_PVRManager.IsParentalLocked(m_pvrChannel);
-  }
-
-  if (!bOverrideParental && bParentalLocked)
+  if (!bOverrideParental && IsParentalLocked())
     strTitle = g_localizeStrings.Get(19266); // parental locked
   else if (m_strTitle.empty() && !CSettings::GetInstance().GetBool(CSettings::SETTING_EPG_HIDENOINFOAVAILABLE))
     strTitle = g_localizeStrings.Get(19055); // no information available
@@ -365,11 +369,8 @@ std::string CEpgInfoTag::PlotOutline(bool bOverrideParental /* = false */) const
 {
   std::string retVal;
 
-  {
-    CSingleLock lock(m_critSection);
-    if (bOverrideParental || !m_pvrChannel || !g_PVRManager.IsParentalLocked(m_pvrChannel))
-      retVal = m_strPlotOutline;
-  }
+  if (bOverrideParental || !IsParentalLocked())
+    retVal = m_strPlotOutline;
 
   return retVal;
 }
@@ -378,11 +379,8 @@ std::string CEpgInfoTag::Plot(bool bOverrideParental /* = false */) const
 {
   std::string retVal;
 
-  {
-    CSingleLock lock(m_critSection);
-    if (bOverrideParental || !m_pvrChannel || !g_PVRManager.IsParentalLocked(m_pvrChannel))
-      retVal = m_strPlot;
-  }
+  if (bOverrideParental || !IsParentalLocked())
+    retVal = m_strPlot;
 
   return retVal;
 }
@@ -391,11 +389,8 @@ std::string CEpgInfoTag::OriginalTitle(bool bOverrideParental /* = false */) con
 {
   std::string retVal;
 
-  {
-    CSingleLock lock(m_critSection);
-    if (bOverrideParental || !m_pvrChannel || !g_PVRManager.IsParentalLocked(m_pvrChannel))
-      retVal = m_strOriginalTitle;
-  }
+  if (bOverrideParental || !IsParentalLocked())
+    retVal = m_strOriginalTitle;
 
   return retVal;
 }

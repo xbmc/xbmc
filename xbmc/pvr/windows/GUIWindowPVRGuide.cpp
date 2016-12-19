@@ -42,7 +42,6 @@ using namespace EPG;
 
 CGUIWindowPVRGuide::CGUIWindowPVRGuide(bool bRadio) :
   CGUIWindowPVRBase(bRadio, bRadio ? WINDOW_RADIO_GUIDE : WINDOW_TV_GUIDE, "MyPVRGuide.xml"),
-  m_refreshTimelineItemsThread(new CPVRRefreshTimelineItemsThread(this)),
   m_cachedChannelGroup(new CPVRChannelGroup)
 {
   m_bRefreshTimelineItems = false;
@@ -106,12 +105,14 @@ void CGUIWindowPVRGuide::OnDeinitWindow(int nextWindowID)
 void CGUIWindowPVRGuide::StartRefreshTimelineItemsThread()
 {
   StopRefreshTimelineItemsThread();
+  m_refreshTimelineItemsThread.reset(new CPVRRefreshTimelineItemsThread(this));
   m_refreshTimelineItemsThread->Create();
 }
 
 void CGUIWindowPVRGuide::StopRefreshTimelineItemsThread()
 {
-  m_refreshTimelineItemsThread->StopThread(false);
+  if (m_refreshTimelineItemsThread)
+    m_refreshTimelineItemsThread->StopThread(false);
 }
 
 void CGUIWindowPVRGuide::Notify(const Observable &obs, const ObservableMessage msg)
