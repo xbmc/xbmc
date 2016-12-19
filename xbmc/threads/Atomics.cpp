@@ -237,7 +237,8 @@ long AtomicAdd(volatile long* pAddr, long amount)
   return atomic_add(amount, pAddr);
 
 #elif defined(TARGET_WINDOWS)
-  return _InterlockedExchangeAdd(pAddr, amount);
+  _InterlockedExchangeAdd(pAddr, amount);
+  return *pAddr;
 
 #elif defined(__x86_64__)
   long result;
@@ -373,7 +374,8 @@ long AtomicSubtract(volatile long* pAddr, long amount)
 
 #elif defined(TARGET_WINDOWS)
   amount *= -1;
-  return _InterlockedExchangeAdd(pAddr, amount);
+  _InterlockedExchangeAdd(pAddr, amount);
+  return *pAddr;
 
 #elif defined(__x86_64__)
   long result;
