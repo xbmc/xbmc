@@ -81,7 +81,6 @@ CPVRManager::CPVRManager(void) :
     m_addons(new CPVRClients),
     m_triggerEvent(true),
     m_currentFile(NULL),
-    m_database(NULL),
     m_bFirstStart(true),
     m_bIsSwitchingChannels(false),
     m_bEpgsCreated(false),
@@ -135,6 +134,15 @@ void CPVRManager::Announce(AnnouncementFlag flag, const char *sender, const char
 CPVRManager &CPVRManager::GetInstance()
 {
   return CServiceBroker::GetPVRManager();
+}
+
+CPVRDatabasePtr CPVRManager::GetTVDatabase(void) const
+{
+  CSingleLock lock(m_critSection);
+  if (!m_database || !m_database->IsOpen())
+    CLog::Log(LOGERROR, "PVRManager - %s - failed to open the database", __FUNCTION__);
+
+  return m_database;
 }
 
 CPVRChannelGroupsContainerPtr CPVRManager::ChannelGroups(void) const
@@ -253,7 +261,7 @@ void CPVRManager::Clear(void)
   m_recordings.reset();
   m_channelGroups.reset();
   m_parentalTimer.reset();
-  SAFE_DELETE(m_database);
+  m_database.reset();
   m_triggerEvent.Set();
 
   m_currentFile           = NULL;
@@ -278,6 +286,7 @@ void CPVRManager::ResetProperties(void)
   CSingleLock lock(m_critSection);
   Clear();
 
+  m_database.reset(new CPVRDatabase);
   m_channelGroups.reset(new CPVRChannelGroupsContainer);
   m_recordings.reset(new CPVRRecordings);
   m_timers.reset(new CPVRTimers);
@@ -323,6 +332,8 @@ void CPVRManager::Start()
   ResetProperties();
   SetState(ManagerStateStarting);
 
+  m_database->Open();
+
   /* create the pvrmanager thread, which will ensure that all data will be loaded */
   Create();
   SetPriority(-1);
@@ -359,8 +370,9 @@ void CPVRManager::Stop(void)
   SetWakeupCommand();
 
   /* close database */
-  if (m_database->IsOpen())
-    m_database->Close();
+  const CPVRDatabasePtr database(GetTVDatabase());
+  if (database->IsOpen())
+    database->Close();
 
   SetState(ManagerStateStopped);
 }
@@ -424,11 +436,6 @@ void CPVRManager::PublishEvent(PVREvent event)
 
 void CPVRManager::Process(void)
 {
-  /* create and open database */
-  if (!m_database)
-    m_database = new CPVRDatabase;
-  m_database->Open();
-
   /* register application action listener */
   {
     CSingleExit exit(m_critSection);
@@ -689,19 +696,17 @@ void CPVRManager::ResetDatabase(bool bResetEPGOnly /* = false */)
   pDlgProgress->Progress();
 
   /* reset the EPG pointers */
-  if (m_database)
-    m_database->ResetEPG();
+  const CPVRDatabasePtr database(GetTVDatabase());
+  if (database)
+    database->ResetEPG();
 
-  /* stop the thread */
+  /* stop the thread, close database */
   Stop();
 
   pDlgProgress->SetPercentage(20);
   pDlgProgress->Progress();
 
-  if (!m_database)
-    m_database = new CPVRDatabase;
-
-  if (m_database && m_database->Open())
+  if (database && database->Open())
   {
     /* clean the EPG database */
     g_EpgContainer.Reset();
@@ -710,12 +715,12 @@ void CPVRManager::ResetDatabase(bool bResetEPGOnly /* = false */)
 
     if (!bResetEPGOnly)
     {
-      m_database->DeleteChannelGroups();
+      database->DeleteChannelGroups();
       pDlgProgress->SetPercentage(50);
       pDlgProgress->Progress();
 
       /* delete all channels */
-      m_database->DeleteChannels();
+      database->DeleteChannels();
       pDlgProgress->SetPercentage(70);
       pDlgProgress->Progress();
 
@@ -737,14 +742,15 @@ void CPVRManager::ResetDatabase(bool bResetEPGOnly /* = false */)
       pDlgProgress->Progress();
     }
 
-    m_database->Close();
+    database->Close();
   }
 
   CLog::Log(LOGNOTICE,"PVRManager - %s - %s database cleared", __FUNCTION__, bResetEPGOnly ? "EPG" : "PVR and EPG");
 
-  CLog::Log(LOGNOTICE,"PVRManager - %s - restarting the PVRManager", __FUNCTION__);
-  m_database->Open();
+  if (database)
+    database->Open();
 
+  CLog::Log(LOGNOTICE,"PVRManager - %s - restarting the PVRManager", __FUNCTION__);
   Start();
 
   pDlgProgress->SetPercentage(100);

@@ -169,7 +169,7 @@ namespace PVR
      * @brief Get the TV database.
      * @return The TV database.
      */
-    CPVRDatabase *GetTVDatabase(void) const { return m_database; }
+    CPVRDatabasePtr GetTVDatabase(void) const;
 
     /*!
      * @brief Get a GUIInfoManager character string.
@@ -673,7 +673,7 @@ namespace PVR
     std::vector<CJob *>             m_pendingUpdates;              /*!< vector of pending pvr updates */
 
     CFileItem *                     m_currentFile;                 /*!< the PVR file that is currently playing */
-    CPVRDatabase *                  m_database;                    /*!< the database for all PVR related data */
+    CPVRDatabasePtr                 m_database;                    /*!< the database for all PVR related data */
     CCriticalSection                m_critSection;                 /*!< critical section for all changes to this class, except for changes to triggers */
     bool                            m_bFirstStart;                 /*!< true when the PVR manager was started first, false otherwise */
     bool                            m_bIsSwitchingChannels;        /*!< true while switching channels */
