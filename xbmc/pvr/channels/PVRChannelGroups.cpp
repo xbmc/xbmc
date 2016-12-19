@@ -279,7 +279,7 @@ bool CPVRChannelGroups::LoadUserDefinedChannelGroups(void)
 
 bool CPVRChannelGroups::Load(void)
 {
-  CPVRDatabase *database = GetPVRDatabase();
+  const CPVRDatabasePtr database(g_PVRManager.GetTVDatabase());
   if (!database)
     return false;
 
@@ -548,7 +548,7 @@ bool CPVRChannelGroups::DeleteGroup(const CPVRChannelGroup &group)
   if (group.GroupID() > 0)
   {
     // delete the group from the database
-    CPVRDatabase *database = GetPVRDatabase();
+    const CPVRDatabasePtr database(g_PVRManager.GetTVDatabase());
     return database ? database->Delete(group) : false;
   }
   return bFound;
