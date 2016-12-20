@@ -34,7 +34,7 @@ public:
   CGUIListItemLayout();
   CGUIListItemLayout(const CGUIListItemLayout &from);
   virtual ~CGUIListItemLayout();
-  void LoadLayout(TiXmlElement *layout, int context, bool focused);
+  void LoadLayout(TiXmlElement *layout, int context, bool focused, float maxWidth, float maxHeight);
   void Process(CGUIListItem *item, int parentID, unsigned int currentTime, CDirtyRegionList &dirtyregions);
   void Render(CGUIListItem *item, int parentID);
   float Size(ORIENTATION orientation) const;
