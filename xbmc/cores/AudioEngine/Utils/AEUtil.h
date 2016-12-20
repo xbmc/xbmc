@@ -208,14 +208,6 @@ public:
   #endif
   static void ClampArray(float *data, uint32_t count);
 
-  /*
-    Rand implementations based on:
-    http://software.intel.com/en-us/articles/fast-random-number-generator-on-the-intel-pentiumr-4-processor/
-    This is NOT safe for crypto work, but perfectly fine for audio usage (dithering)
-  */
-  static float FloatRand1(const float min, const float max);
-  static void  FloatRand4(const float min, const float max, float result[4], __m128 *sseresult = NULL);
-
   static bool S16NeedsByteSwap(AEDataFormat in, AEDataFormat out);
 
   static uint64_t GetAVChannelLayout(const CAEChannelInfo &info);
