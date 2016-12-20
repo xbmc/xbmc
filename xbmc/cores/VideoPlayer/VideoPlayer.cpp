@@ -2895,6 +2895,7 @@ void CVideoPlayer::HandleMessages()
       {
         CloseDemuxer();
         m_playSpeed = DVD_PLAYSPEED_NORMAL;
+        m_newPlaySpeed = DVD_PLAYSPEED_NORMAL;
 
         // when using fast channel switching some shortcuts are taken which
         // means we'll have to update the view mode manually
@@ -2920,6 +2921,7 @@ void CVideoPlayer::HandleMessages()
       {
         CloseDemuxer();
         m_playSpeed = DVD_PLAYSPEED_NORMAL;
+        m_newPlaySpeed = DVD_PLAYSPEED_NORMAL;
       }
       else
       {
@@ -2971,6 +2973,7 @@ void CVideoPlayer::HandleMessages()
             m_ChannelEntryTimeOut.SetInfinite();
             CloseDemuxer();
             m_playSpeed = DVD_PLAYSPEED_NORMAL;
+            m_newPlaySpeed = DVD_PLAYSPEED_NORMAL;
 
             g_infoManager.SetDisplayAfterSeek();
             g_PVRManager.SetChannelPreview(false);
