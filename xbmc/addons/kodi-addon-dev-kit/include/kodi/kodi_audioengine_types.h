@@ -25,7 +25,7 @@
  */
 
 #ifdef BUILD_KODI_ADDON
-  #include "kodi/AudioEngine/AEChannelInfo.h"
+  #include "AEChannelInfo.h"
 #else
   #include "cores/AudioEngine/Utils/AEChannelInfo.h"
 #endif
