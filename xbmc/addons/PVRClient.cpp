@@ -42,6 +42,7 @@
 #include "PVRClient.h"
 
 #include <assert.h>
+#include <cmath>
 #include <memory>
 #include <algorithm>
 
@@ -279,8 +280,8 @@ void CPVRClient::WriteClientRecordingInfo(const CPVRRecording &xbmcRecording, PV
   addonRecording.iDuration           = xbmcRecording.GetDuration();
   addonRecording.iPriority           = xbmcRecording.m_iPriority;
   addonRecording.iLifetime           = xbmcRecording.m_iLifetime;
-  addonRecording.iPlayCount          = xbmcRecording.GetPlayCount();
-  addonRecording.iLastPlayedPosition = (int)xbmcRecording.GetResumePoint().timeInSeconds;
+  addonRecording.iPlayCount          = xbmcRecording.GetLocalPlayCount();
+  addonRecording.iLastPlayedPosition = lrint(xbmcRecording.GetLocalResumePoint().timeInSeconds);
   addonRecording.bIsDeleted          = xbmcRecording.IsDeleted();
   strncpy(addonRecording.strDirectory, xbmcRecording.m_strDirectory.c_str(), sizeof(addonRecording.strDirectory) - 1);
   strncpy(addonRecording.strStreamURL, xbmcRecording.m_strStreamURL.c_str(), sizeof(addonRecording.strStreamURL) - 1);
