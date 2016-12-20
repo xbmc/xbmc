@@ -169,7 +169,7 @@ bool CAddonDll::LoadDll()
   return true;
 }
 
-ADDON_STATUS CAddonDll::Create(void* funcTable, void* info)
+ADDON_STATUS CAddonDll::Create(int instanceType, void* funcTable, void* info)
 {
   /* ensure that a previous instance is destroyed */
   Destroy();
@@ -181,13 +181,25 @@ ADDON_STATUS CAddonDll::Create(void* funcTable, void* info)
   m_initialized = false;
 
   if (!LoadDll())
+  {
+    CGUIDialogOK::ShowAndGetInput(CVariant{24070}, CVariant{16029});
+    return ADDON_STATUS_PERMANENT_FAILURE;
+  }
+
+  /* Check version of requested instance type */
+  if (!CheckAPIVersion(instanceType))
     return ADDON_STATUS_PERMANENT_FAILURE;
 
+  /* Check versions about global parts on add-on (parts used on all types) */
+  for (unsigned int id = ADDON_INSTANCE_MAIN; id <= ADDON_INSTANCE_GLOBAL_MAX; ++id)
+  {
+    if (!CheckAPIVersion(id))
+      return ADDON_STATUS_PERMANENT_FAILURE;
+  }
+  
   /* Load add-on function table (written by add-on itself) */
   m_pDll->GetAddon(funcTable);
 
-  if (!CheckAPIVersion())
-    return ADDON_STATUS_PERMANENT_FAILURE;
 
   /* Allocate the helper function class to allow crosstalk over
      helper libraries */
@@ -274,6 +286,32 @@ void CAddonDll::Destroy()
     CLog::Log(LOGINFO, "ADDON: Dll Destroyed - %s", Name().c_str());
   }
   m_initialized = false;
+}
+
+bool CAddonDll::CheckAPIVersion(int instanceType)
+{
+  /* check the API version */
+  const char* kodiVersion = kodi::addon::GetInstanceVersion(instanceType);
+  const char* addonVersion = m_pDll->GetAddonInstanceVersion(instanceType);
+
+  if (AddonVersion(addonVersion) != AddonVersion(kodiVersion))
+  {
+    CLog::Log(LOGERROR, "Add-on '%s' is using an incompatible API version for instance type '%s'. Kodi API version = '%s', add-on API version '%s'",
+                            Name().c_str(),
+                            kodi::addon::GetInstanceName(instanceType),
+                            kodiVersion,
+                            addonVersion);
+
+    std::string heading = StringUtils::Format("%s: %s", TranslateType(Type(), true).c_str(), Name().c_str());
+    std::string text = StringUtils::Format(g_localizeStrings.Get(24084).c_str(),
+                                           kodi::addon::GetInstanceName(instanceType),
+                                           kodiVersion,
+                                           addonVersion);
+    CGUIDialogOK::ShowAndGetInput(CVariant{heading}, CVariant{text});
+    return false;
+  }
+
+  return true;
 }
 
 bool CAddonDll::DllLoaded(void) const

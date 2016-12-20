@@ -50,12 +50,6 @@
   #define PRAGMA_PACK 1
 #endif
 
-/* current Peripheral API version */
-#define PERIPHERAL_API_VERSION "1.2.1"
-
-/* min. Peripheral API version */
-#define PERIPHERAL_MIN_API_VERSION "1.2.0"
-
 /* indicates a joystick has no preference for port number */
 #define NO_PORT_REQUESTED     (-1)
 
@@ -290,8 +284,6 @@ extern "C"
    */
   typedef struct KodiToAddonFuncTable_Peripheral
   {
-    const char*      (__cdecl* GetPeripheralAPIVersion)(void);
-    const char*      (__cdecl* GetMinimumPeripheralAPIVersion)(void);
     PERIPHERAL_ERROR (__cdecl* GetAddonCapabilities)(PERIPHERAL_CAPABILITIES*);
     PERIPHERAL_ERROR (__cdecl* PerformDeviceScan)(unsigned int*, PERIPHERAL_INFO**);
     void             (__cdecl* FreeScanResults)(unsigned int, PERIPHERAL_INFO*);

@@ -5,6 +5,7 @@ addons/game.controller.default/*
 addons/kodi.adsp/*
 addons/kodi.audiodecoder/*
 addons/kodi.game/*
+addons/kodi.guilib/*
 addons/kodi.inputstream/*
 addons/kodi.peripheral/*
 addons/kodi.resource/*

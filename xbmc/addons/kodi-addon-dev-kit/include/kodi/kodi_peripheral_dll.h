@@ -32,24 +32,6 @@ extern "C"
   /// @name Peripheral operations
   ///{
   /*!
-   * @brief  Get the PERIPHERAL_API_VERSION used to compile this peripheral add-on
-   * @return KODI_PERIPHERAL_API_VERSION from kodi_peripheral_types.h
-   * @remarks Valid implementation required
-   *
-   * Used to check if the implementation is compatible with the frontend.
-   */
-  const char* GetPeripheralAPIVersion(void);
-
-  /*!
-   * @brief Get the KODI_PERIPHERAL_MIN_API_VERSION used to compile this peripheral add-on
-   * @return KODI_PERIPHERAL_MIN_API_VERSION from kodi_peripheral_types.h
-   * @remarks Valid implementation required
-   *
-   * Used to check if the implementation is compatible with the frontend.
-   */
-  const char* GetMinimumPeripheralAPIVersion(void);
-
-  /*!
    * @brief Get the list of features that this add-on provides
    * @param pCapabilities The add-on's capabilities.
    * @return PERIPHERAL_NO_ERROR if the properties were fetched successfully.
@@ -234,8 +216,6 @@ extern "C"
   {
     KodiToAddonFuncTable_Peripheral* pClient = static_cast<KodiToAddonFuncTable_Peripheral*>(ptr);
 
-    pClient->GetPeripheralAPIVersion        = GetPeripheralAPIVersion;
-    pClient->GetMinimumPeripheralAPIVersion = GetMinimumPeripheralAPIVersion;
     pClient->GetAddonCapabilities           = GetAddonCapabilities;
     pClient->PerformDeviceScan              = PerformDeviceScan;
     pClient->FreeScanResults                = FreeScanResults;

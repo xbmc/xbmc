@@ -23,6 +23,7 @@
 #include "DllAddon.h"
 #include "AddonManager.h"
 #include "addons/interfaces/AddonInterfaces.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/versions.h"
 #include "utils/XMLUtils.h"
 
 namespace ADDON
@@ -41,9 +42,8 @@ namespace ADDON
     virtual void SaveSettings();
     virtual std::string GetSetting(const std::string& key);
 
-    ADDON_STATUS Create(void* funcTable, void* info);
+    ADDON_STATUS Create(int instanceType, void* funcTable, void* info);
     virtual void Stop();
-    virtual bool CheckAPIVersion(void) { return true; }
     void Destroy();
 
     bool DllLoaded(void) const;
@@ -64,6 +64,7 @@ namespace ADDON
 
     virtual ADDON_STATUS TransferSettings();
     TiXmlElement MakeSetting(DllSetting& setting) const;
+    bool CheckAPIVersion(int instanceType);
 
     static void AddOnStatusCallback(void *userData, const ADDON_STATUS status, const char* msg);
     static bool AddOnGetSetting(void *userData, const char *settingName, void *settingValue);
