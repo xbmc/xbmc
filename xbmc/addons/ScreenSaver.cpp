@@ -39,6 +39,7 @@ CScreenSaver::CScreenSaver(const char *addonID)
     : ADDON::CAddonDll(AddonProps(addonID, ADDON_UNKNOWN))
 {
   memset(&m_info, 0, sizeof(m_info));
+  memset(&m_struct, 0, sizeof(m_struct));
 }
 
 bool CScreenSaver::IsInUse() const
@@ -85,13 +86,15 @@ bool CScreenSaver::CreateScreenSaver()
 void CScreenSaver::Start()
 {
   // notify screen saver that they should start
-  if (Initialized()) m_struct.Start();
+  if (m_struct.Start)
+    m_struct.Start();
 }
 
 void CScreenSaver::Render()
 {
   // ask screensaver to render itself
-  if (Initialized()) m_struct.Render();
+  if (m_struct.Render)
+    m_struct.Render();
 }
 
 void CScreenSaver::Destroy()
