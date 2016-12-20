@@ -234,7 +234,6 @@ endif()
 # Compile Info
 add_custom_command(OUTPUT ${CORE_BUILD_DIR}/xbmc/CompileInfo.cpp
                           ${CMAKE_BINARY_DIR}/addons/xbmc.addon/addon.xml
-                          ${CMAKE_BINARY_DIR}/addons/kodi.guilib/addon.xml
                    COMMAND ${CMAKE_COMMAND} -DCORE_SOURCE_DIR=${CORE_SOURCE_DIR}
                                             -DCORE_SYSTEM_NAME=${CORE_SYSTEM_NAME}
                                             -DCORE_BUILD_DIR=${CORE_BUILD_DIR}
@@ -245,11 +244,9 @@ add_custom_command(OUTPUT ${CORE_BUILD_DIR}/xbmc/CompileInfo.cpp
                                             -P ${PROJECT_SOURCE_DIR}/scripts/common/GenerateVersionedFiles.cmake
                   DEPENDS ${CORE_SOURCE_DIR}/version.txt
                           ${CORE_SOURCE_DIR}/addons/xbmc.addon/addon.xml.in
-                          ${CORE_SOURCE_DIR}/addons/kodi.guilib/addon.xml.in
                           ${CORE_SOURCE_DIR}/xbmc/CompileInfo.cpp.in)
 list(APPEND install_data addons/xbmc.addon/addon.xml)
 list(APPEND install_data addons/xbmc.json/addon.xml)
-list(APPEND install_data addons/kodi.guilib/addon.xml)
 add_library(compileinfo OBJECT ${CORE_BUILD_DIR}/xbmc/CompileInfo.cpp)
 set_target_properties(compileinfo PROPERTIES FOLDER "Build Utilities")
 target_compile_options(compileinfo PRIVATE "${SYSTEM_DEFINES}")

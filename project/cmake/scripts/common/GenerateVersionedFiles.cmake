@@ -2,7 +2,6 @@ include(${CORE_SOURCE_DIR}/project/cmake/scripts/common/Macros.cmake)
 
 core_find_versions()
 file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/addons/xbmc.addon)
-file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/addons/kodi.guilib)
 
 # configure_file without dependency tracking
 # configure_file would register additional file dependencies that interfere
@@ -14,5 +13,4 @@ function(generate_versioned_file _SRC _DEST)
 endfunction()
 
 generate_versioned_file(addons/xbmc.addon/addon.xml.in addons/xbmc.addon/addon.xml)
-generate_versioned_file(addons/kodi.guilib/addon.xml.in addons/kodi.guilib/addon.xml)
 generate_versioned_file(xbmc/CompileInfo.cpp.in ${CORE_BUILD_DIR}/xbmc/CompileInfo.cpp)
