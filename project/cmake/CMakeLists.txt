@@ -39,6 +39,7 @@ set(CMAKE_ASM_FLAGS "${CMAKE_C_FLAGS} -x assembler-with-cpp")
 
 # general
 option(VERBOSE            "Enable verbose output?" OFF)
+option(DISTRIBUTION       "Building for distribution?" OFF)
 option(ENABLE_DVDCSS      "Enable libdvdcss support?" ON)
 option(ENABLE_UPNP        "Enable UPnP support?" ON)
 option(ENABLE_NONFREE     "Enable non-free components?" ON)
