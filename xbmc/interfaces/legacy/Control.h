@@ -2833,6 +2833,112 @@ namespace XBMCAddon
       virtual void setPercent(float pct);
 #endif
 
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmcgui_control_slider
+      /// @brief \python_func{ getInt() }
+      ///-----------------------------------------------------------------------
+      /// Returns the value of the slider.
+      ///
+      /// @return                   int - value of slider
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v18 New function added.
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ...
+      /// print self.slider.getInt()
+      /// ...
+      /// ~~~~~~~~~~~~~
+      ///
+      getInt();
+#else
+      virtual int getInt();
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmcgui_control_slider
+      /// @brief \python_func{ setInt(value, min, delta, max) }
+      ///-----------------------------------------------------------------------
+      /// Sets the range, value and step size of the slider.
+      ///
+      /// @param value              int - value of slider
+      /// @param min                int - min of slider
+      /// @param delta              int - step size of slider
+      /// @param max                int - max of slider
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v18 New function added.
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ...
+      /// self.slider.setInt(450, 200, 10, 900)
+      /// ...
+      /// ~~~~~~~~~~~~~
+      ///
+      setInt(...);
+#else
+      virtual void setInt(int value, int min, int delta, int max);
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmcgui_control_slider
+      /// @brief \python_func{ getFloat() }
+      ///-----------------------------------------------------------------------
+      /// Returns the value of the slider.
+      ///
+      /// @return                   float - value of slider
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v18 New function added.
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ...
+      /// print self.slider.getFloat()
+      /// ...
+      /// ~~~~~~~~~~~~~
+      ///
+      getFloat();
+#else
+      virtual float getFloat();
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmcgui_control_slider
+      /// @brief \python_func{ setFloat(value, min, delta, max) }
+      ///-----------------------------------------------------------------------
+      /// Sets the range, value and step size of the slider.
+      ///
+      /// @param value              float - value of slider
+      /// @param min                float - min of slider
+      /// @param delta              float - step size of slider
+      /// @param max                float - max of slider
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v18 New function added.
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ...
+      /// self.slider.setFloat(15.0, 10.0, 1.0, 20.0)
+      /// ...
+      /// ~~~~~~~~~~~~~
+      ///
+      setFloat(...);
+#else
+      virtual void setFloat(float value, float min, float delta, float max);
+#endif
+
 #ifndef SWIG
       std::string strTextureBack;
       std::string strTexture;
