@@ -37,17 +37,17 @@
  */
 
 #define GLOBAL_VERSION_MAIN                     "1.0.0"
-#define GLOBAL_VERSION_GUI                      "5.11.0"
+#define GLOBAL_VERSION_GUI                      "5.11.1"
 
-#define INSTANCE_VERSION_ADSP                   "0.1.8"
-#define INSTANCE_VERSION_AUDIODECODER           "1.0.0"
-#define INSTANCE_VERSION_AUDIOENCODER           "1.0.0"
-#define INSTANCE_VERSION_GAME                   "1.0.28"
-#define INSTANCE_VERSION_INPUTSTREAM            "1.0.6"
-#define INSTANCE_VERSION_PERIPHERAL             "1.2.1"
-#define INSTANCE_VERSION_PVR                    "5.2.1"
-#define INSTANCE_VERSION_SCREENSAVER            "1.0.0"
-#define INSTANCE_VERSION_VISUALIZATION          "1.0.0"
+#define INSTANCE_VERSION_ADSP                   "0.1.9"
+#define INSTANCE_VERSION_AUDIODECODER           "1.0.1"
+#define INSTANCE_VERSION_AUDIOENCODER           "1.0.1"
+#define INSTANCE_VERSION_GAME                   "1.0.29"
+#define INSTANCE_VERSION_INPUTSTREAM            "1.0.7"
+#define INSTANCE_VERSION_PERIPHERAL             "1.2.2"
+#define INSTANCE_VERSION_PVR                    "5.2.2"
+#define INSTANCE_VERSION_SCREENSAVER            "1.0.1"
+#define INSTANCE_VERSION_VISUALIZATION          "1.0.1"
 
 /*
  * The currently used types for Kodi add-ons
