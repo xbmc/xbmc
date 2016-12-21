@@ -58,6 +58,11 @@ bool CScreenSaver::CreateScreenSaver()
       CScriptInvocationManager::GetInstance().ExecuteAsync(LibPath(), AddonPtr(new CScreenSaver(*this)));
     return true;
   }
+
+  m_name = Name();
+  m_presets = CSpecialProtocol::TranslatePath(Path());
+  m_profile = CSpecialProtocol::TranslatePath(Profile());
+
  // pass it the screen width,height
  // and the name of the screensaver
   int iWidth = g_graphicsContext.GetWidth();
@@ -73,9 +78,9 @@ bool CScreenSaver::CreateScreenSaver()
   m_info.width      = iWidth;
   m_info.height     = iHeight;
   m_info.pixelRatio = g_graphicsContext.GetResInfo().fPixelRatio;
-  m_info.name       = strdup(Name().c_str());
-  m_info.presets    = strdup(CSpecialProtocol::TranslatePath(Path()).c_str());
-  m_info.profile    = strdup(CSpecialProtocol::TranslatePath(Profile()).c_str());
+  m_info.name       = m_name.c_str();
+  m_info.presets    = m_presets.c_str();
+  m_info.profile    = m_profile.c_str();
 
   if (CAddonDll::Create(&m_struct, &m_info) == ADDON_STATUS_OK)
     return true;
@@ -110,22 +115,6 @@ void CScreenSaver::Destroy()
     return;
   }
 #endif
-  // Release what was allocated in method CScreenSaver::CreateScreenSaver.
-  if (m_info.name)
-  {
-    free((void *) m_info.name);
-    m_info.name = nullptr;
-  }
-  if (m_info.presets)
-  {
-    free((void *) m_info.presets);
-    m_info.presets = nullptr;
-  }
-  if (m_info.profile)
-  {
-    free((void *) m_info.profile);
-    m_info.profile = nullptr;
-  }
 
   CAddonDll::Destroy();
 }
