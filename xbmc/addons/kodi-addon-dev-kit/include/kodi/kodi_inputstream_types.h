@@ -30,9 +30,6 @@
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemuxPacket.h"
 #endif
 
-/* current API version */
-#define INPUTSTREAM_API_VERSION "1.0.6"
-
 extern "C" {
 
   // this are properties given to the addon on create
@@ -130,7 +127,6 @@ extern "C" {
     void (__cdecl* Close)(void);
     const char* (__cdecl* GetPathList)(void);
     struct INPUTSTREAM_CAPABILITIES (__cdecl* GetCapabilities)(void);
-    const char* (__cdecl* GetApiVersion)(void);
 
     // IDemux
     struct INPUTSTREAM_IDS (__cdecl* GetStreamIds)();

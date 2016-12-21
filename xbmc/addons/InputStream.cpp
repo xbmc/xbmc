@@ -75,19 +75,10 @@ CInputStream::CInputStream(const AddonProps& props,
 
 bool CInputStream::Create()
 {
-  return CAddonDll::Create(&m_struct, &m_info) == ADDON_STATUS_OK;
-}
+  if (CAddonDll::Create(ADDON_INSTANCE_INPUTSTREAM, &m_struct, &m_info) == ADDON_STATUS_OK)
+    return true;
 
-bool CInputStream::CheckAPIVersion()
-{
-  std::string dllVersion = m_struct.GetApiVersion();
-  if (dllVersion.compare(INPUTSTREAM_API_VERSION) != 0)
-  {
-    CLog::Log(LOGERROR, "CInputStream::CheckAPIVersion - API version does not match");
-    return false;
-  }
-
-  return true;
+  return false;
 }
 
 void CInputStream::SaveSettings()
@@ -114,7 +105,7 @@ void CInputStream::CheckConfig()
 void CInputStream::UpdateConfig()
 {
   std::string pathList;
-  ADDON_STATUS status = CAddonDll::Create(&m_struct, &m_info);
+  ADDON_STATUS status = CAddonDll::Create(ADDON_INSTANCE_INPUTSTREAM, &m_struct, &m_info);
 
   if (status != ADDON_STATUS_PERMANENT_FAILURE)
   {

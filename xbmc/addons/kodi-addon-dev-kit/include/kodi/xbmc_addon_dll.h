@@ -32,6 +32,7 @@
 #endif
 
 #include "xbmc_addon_types.h"
+#include "versions.h"
 
 #ifdef __cplusplus
 extern "C" { 
@@ -45,6 +46,10 @@ extern "C" {
   unsigned int __declspec(dllexport) ADDON_GetSettings(ADDON_StructSetting ***sSet);
   ADDON_STATUS __declspec(dllexport) ADDON_SetSetting(const char *settingName, const void *settingValue);
   void         __declspec(dllexport) ADDON_FreeSettings();
+  const char* __declspec(dllexport) ADDON_GetTypeVersion(int type)
+  {
+    return kodi::addon::GetTypeVersion(type);
+  }
 
 #ifdef __cplusplus
 };

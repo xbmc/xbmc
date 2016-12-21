@@ -1127,7 +1127,6 @@ void CPVRClients::UpdateAddons(void)
         CLog::Log(LOGERROR, "%s - failed to create add-on %s, status = %d", __FUNCTION__, addon->Name().c_str(), status);
         if (status == ADDON_STATUS_PERMANENT_FAILURE)
         {
-          CGUIDialogOK::ShowAndGetInput(CVariant{24070}, CVariant{16029});
           CAddonMgr::GetInstance().DisableAddon(addon->ID());
         }
       }

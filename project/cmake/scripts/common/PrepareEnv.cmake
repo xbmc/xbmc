@@ -1,4 +1,4 @@
-# parse version.txt and libKODI_guilib.h to get the version and API info
+# parse version.txt to get the version and API info
 include(${CORE_SOURCE_DIR}/project/cmake/scripts/common/Macros.cmake)
 core_find_versions()
 

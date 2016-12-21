@@ -60,12 +60,6 @@
 #define AE_DSP_STREAM_MAX_STREAMS               8
 #define AE_DSP_STREAM_MAX_MODES                 32
 
-/* current Audio DSP API version */
-#define KODI_AE_DSP_API_VERSION                 "0.1.8"
-
-/* min. Audio DSP API version */
-#define KODI_AE_DSP_MIN_API_VERSION             "0.1.8"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -475,10 +469,6 @@ extern "C" {
    */
   typedef struct KodiToAddonFuncTable_AudioDSP
   {
-    const char*  (__cdecl* GetAudioDSPAPIVersion)                (void);
-    const char*  (__cdecl* GetMinimumAudioDSPAPIVersion)         (void);
-    const char*  (__cdecl* GetGUIAPIVersion)                     (void);
-    const char*  (__cdecl* GetMinimumGUIAPIVersion)              (void);
     AE_DSP_ERROR (__cdecl* GetAddonCapabilities)                 (AE_DSP_ADDON_CAPABILITIES*);
     const char*  (__cdecl* GetDSPName)                           (void);
     const char*  (__cdecl* GetDSPVersion)                        (void);
