@@ -364,12 +364,7 @@ bool CPVRClient::GetAddonProperties(void)
 
   /* get the capabilities */
   memset(&addonCapabilities, 0, sizeof(addonCapabilities));
-  PVR_ERROR retVal = m_struct.GetAddonCapabilities(&addonCapabilities);
-  if (retVal != PVR_ERROR_NO_ERROR)
-  {
-    CLog::Log(LOGERROR, "PVR - couldn't get the capabilities for add-on '%s'. Please contact the developer of this add-on: %s", GetFriendlyName().c_str(), Author().c_str());
-    return false;
-  }
+  m_struct.GetCapabilities(&addonCapabilities);
 
   /* get the name of the backend */
   strBackendName = m_struct.GetBackendName();
