@@ -35,10 +35,15 @@
 namespace ADDON
 {
 
-CScreenSaver::CScreenSaver(const char *addonID)
-    : ADDON::CAddonDll(AddonProps(addonID, ADDON_UNKNOWN))
+CScreenSaver::CScreenSaver(AddonProps props)
+ : ADDON::CAddonDll(std::move(props))
 {
-  memset(&m_info, 0, sizeof(m_info));
+  memset(&m_struct, 0, sizeof(m_struct));
+}
+
+CScreenSaver::CScreenSaver(const char *addonID)
+ : ADDON::CAddonDll(AddonProps(addonID, ADDON_UNKNOWN))
+{
   memset(&m_struct, 0, sizeof(m_struct));
 }
 
@@ -63,24 +68,19 @@ bool CScreenSaver::CreateScreenSaver()
   m_presets = CSpecialProtocol::TranslatePath(Path());
   m_profile = CSpecialProtocol::TranslatePath(Profile());
 
- // pass it the screen width,height
- // and the name of the screensaver
-  int iWidth = g_graphicsContext.GetWidth();
-  int iHeight = g_graphicsContext.GetHeight();
-
 #ifdef HAS_DX
-  m_info.device     = g_Windowing.Get3D11Context();
+  m_info.device = g_Windowing.Get3D11Context();
 #else
-  m_info.device     = NULL;
+  m_info.device = nullptr;
 #endif
-  m_info.x          = 0;
-  m_info.y          = 0;
-  m_info.width      = iWidth;
-  m_info.height     = iHeight;
+  m_info.x = 0;
+  m_info.y = 0;
+  m_info.width = g_graphicsContext.GetWidth();
+  m_info.height = g_graphicsContext.GetHeight();
   m_info.pixelRatio = g_graphicsContext.GetResInfo().fPixelRatio;
-  m_info.name       = m_name.c_str();
-  m_info.presets    = m_presets.c_str();
-  m_info.profile    = m_profile.c_str();
+  m_info.name = m_name.c_str();
+  m_info.presets = m_presets.c_str();
+  m_info.profile = m_profile.c_str();
 
   if (CAddonDll::Create(&m_struct, &m_info) == ADDON_STATUS_OK)
     return true;
@@ -114,8 +114,8 @@ void CScreenSaver::Destroy()
     return;
   }
 
+  memset(&m_struct, 0, sizeof(m_struct));
   CAddonDll::Destroy();
 }
 
-} /*namespace ADDON*/
-
+} /* namespace ADDON */
