@@ -3,7 +3,9 @@ set(NATIVEPREFIX "@prefix@/@tool_dir@")
 
 set(OS "@platform_os@")
 set(CPU "@use_cpu@")
+set(ARCH "@platform_arch@")
 set(PLATFORM "@target_platform@")
+set(NEON "@use_neon@")
 
 # set CORE_SYSTEM_NAME and CMAKE_SYSTEM_NAME (sets CMAKE_CROSSCOMPILING)
 if(OS STREQUAL linux)

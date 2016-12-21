@@ -5,7 +5,7 @@
 #                          (don't configure for OpenGL)
 
 if(NOT CMAKE_SYSTEM_PROCESSOR)
-  set(CMAKE_SYSTEM_PROCESSOR ${CPU})
+  set(CMAKE_SYSTEM_PROCESSOR ${ARCH})
 endif()
 
 string(REGEX MATCH "^arm" TARGET_ARCH_ARM "${CMAKE_SYSTEM_PROCESSOR}")

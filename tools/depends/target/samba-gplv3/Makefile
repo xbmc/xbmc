@@ -8,7 +8,7 @@ SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
 ifeq ($(OS), ios)
-ifeq ($(CPU), arm64)
+ifeq ($(TARGET_ARCH), aarch64)
 # clang issue with optimizing out functions
 CONFIGURE_EXTRAS= --without-libmsrpc samba_cv_optimize_out_funcation_calls=no ac_cv_func_yp_get_default_domain=no
 endif
@@ -31,7 +31,7 @@ CONFIGURE= cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
 # Then xbmc will correctly access smb shares with LFS enabled
 # using the altered libsmbclient.h.
 ifeq ($(OS),android)
-ifeq ($(findstring arm64, $(CPU)), arm64)
+ifeq ($(TARGET_ARCH), aarch64)
 export CFLAGS+=-DHAVE_BZERO
 endif
 endif

@@ -1,6 +1,8 @@
 set(OS "@platform_os@")
 set(CPU "@use_cpu@")
+set(ARCH "@platform_arch@")
 set(PLATFORM "@target_platform@")
+set(NEON "@use_neon@")
 
 set(CMAKE_FIND_ROOT_PATH @CMAKE_FIND_ROOT_PATH@)
 

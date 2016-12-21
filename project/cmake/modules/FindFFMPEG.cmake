@@ -236,8 +236,10 @@ if(NOT FFMPEG_FOUND)
                    -DCROSSCOMPILING=${CMAKE_CROSSCOMPILING}
                    -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}
                    -DCORE_SYSTEM_NAME=${CORE_SYSTEM_NAME}
-                   -DCPU=${WITH_CPU}
+                   -DCPU=${CPU}
+                   -DARCH=${ARCH}
                    -DOS=${OS}
+                   -DNEON=${NEON}
                    -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
                    -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
                    -DCMAKE_AR=${CMAKE_AR}

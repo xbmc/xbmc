@@ -64,9 +64,9 @@ ALSA_LIB=
 LINUX_SYSTEM_LIBS=
 ifeq ($(OS),linux)
   DEPENDS += libuuid
-  #not for raspberry pi
-  ifneq ($(TARGET_PLATFORM),raspberry-pi)
-    DEPENDS += libsdl2 linux-system-libs
+  #not x86
+  ifeq ($(findstring x86, $PLATORM_ARCH), x86)
+    DEPENDS += linux-system-libs
     LINUX_SYSTEM_LIBS = linux-system-libs
   endif
   DEPENDS += alsa-lib

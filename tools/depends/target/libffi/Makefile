@@ -10,7 +10,7 @@ ARCHIVE=$(SOURCE).tar.gz
 # configuration settings
 CONFIGURE= ./configure --prefix=$(PREFIX) --disable-shared --disable-builddir 
 ifeq ($(OS), ios)
-ifneq ($(CPU), arm64)
+ifneq ($(TARGET_ARCH), aarch64)
 CONFIGURE+=CCASFLAGS=-no-integrated-as
 endif
 endif

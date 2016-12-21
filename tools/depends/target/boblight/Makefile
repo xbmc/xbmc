@@ -32,7 +32,7 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM); patch -p0 < ../02-fixandroid.patch
 	cd $(PLATFORM); autoreconf -vif
 	cd $(PLATFORM); $(CONFIGURE)
-ifeq ($(CPU),arm64)
+ifeq ($(TARGET_ARCH),aarch64)
 	cd $(PLATFORM); patch -p0 < ../03-fixtvos.patch
 	cd $(PLATFORM); sed -ie "s|-bind_at_load||" ./libtool
 	cd $(PLATFORM); sed -ie "s|-bind_at_load||" ./ltmain.sh

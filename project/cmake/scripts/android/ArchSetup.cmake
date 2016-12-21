@@ -8,25 +8,22 @@ set(ARCH_DEFINES -DTARGET_POSIX -DTARGET_LINUX -D_LINUX -DTARGET_ANDROID)
 set(SYSTEM_DEFINES -D__STDC_CONSTANT_MACROS -D_FILE_DEFINED
                    -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64)
 set(PLATFORM_DIR linux)
-if(WITH_ARCH)
-  set(ARCH ${WITH_ARCH})
-else()
-  if(CPU STREQUAL armeabi-v7a)
-    set(ARCH arm)
-    set(NEON True)
-  elseif(CPU STREQUAL arm64-v8a)
-    set(ARCH aarch64)
-  elseif(CPU STREQUAL i686)
-    set(ARCH i486-linux)
-    set(NEON False)
-  else()
-    message(SEND_ERROR "Unknown CPU: ${CPU}")
-  endif()
+
+if(NOT (ARCH STREQUAL arm OR ARCH STREQUAL aarch64 OR ARCH MATCHES "x86.*"))
+  message(SEND_ERROR "Unknown ARCH: ${ARCH}")
 endif()
 
-set(FFMPEG_OPTS --enable-cross-compile --cpu=cortex-a9 --arch=arm --target-os=linux --enable-neon
-                --disable-vdpau --cc=${CMAKE_C_COMPILER} --host-cc=${CMAKE_C_COMPILER}
-                --strip=${CMAKE_STRIP})
+set(FFMPEG_OPTS --enable-cross-compile --arch=${ARCH} --target-os=linux --disable-vdpau 
+                --cc=${CMAKE_C_COMPILER} --host-cc=${CMAKE_C_COMPILER} --strip=${CMAKE_STRIP})
+
+if(NEON)
+  set(FFMPEG_OPTS "${FFMPEG_OPTS} --enable-neon")
+endif()
+
+if(CPU)
+  set(FFMPEG_OPTS "${FFMPEG_OPTS} --cpu=${CPU}")
+endif()
+
 set(ENABLE_SDL OFF CACHE BOOL "" FORCE)
 set(ENABLE_X11 OFF CACHE BOOL "" FORCE)
 set(ENABLE_AML OFF CACHE BOOL "" FORCE)
