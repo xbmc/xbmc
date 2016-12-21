@@ -90,6 +90,26 @@ namespace PVR
 
   typedef std::shared_ptr<PVR::CPVRChannelGroup> CPVRChannelGroupPtr;
 
+  class CPVRManagerJobQueue
+  {
+  public:
+    CPVRManagerJobQueue();
+
+    void Start();
+    void Stop();
+    void Clear();
+
+    void AppendJob(CJob * job);
+    void ExecutePendingJobs();
+    bool WaitForJobs(unsigned int milliSeconds);
+
+  private:
+    CCriticalSection m_critSection;
+    CEvent m_triggerEvent;
+    std::vector<CJob *> m_pendingUpdates;
+    bool m_bStopped;
+  };
+
   class CPVRManager : public ISettingCallback, private CThread, public Observable, public ANNOUNCEMENT::IAnnouncer
   {
     friend class CPVRClients;
@@ -635,17 +655,6 @@ private:
      */
     bool ContinueLastChannel(void);
 
-    void ExecutePendingJobs(void);
-
-    bool IsJobPending(const char *strJobName) const;
-
-    /*!
-     * @brief Adds the job to the list of pending jobs unless an identical
-     * job is already queued
-     * @param job the job
-     */
-    void QueueJob(CJob *job);
-
     enum ManagerState
     {
       ManagerStateError = 0,
@@ -673,9 +682,7 @@ private:
     std::unique_ptr<CPVRGUIInfo>   m_guiInfo;                     /*!< pointer to the guiinfo data */
     //@}
 
-    CCriticalSection                m_critSectionTriggers;         /*!< critical section for triggered updates */
-    CEvent                          m_triggerEvent;                /*!< triggers an update */
-    std::vector<CJob *>             m_pendingUpdates;              /*!< vector of pending pvr updates */
+    CPVRManagerJobQueue             m_pendingUpdates;              /*!< vector of pending pvr updates */
 
     CFileItem *                     m_currentFile;                 /*!< the PVR file that is currently playing */
     CPVRDatabasePtr                 m_database;                    /*!< the database for all PVR related data */
