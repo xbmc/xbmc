@@ -39,7 +39,7 @@
 #define GLOBAL_VERSION_MAIN                     "1.0.0"
 #define GLOBAL_VERSION_GUI                      "5.11.1"
 
-#define INSTANCE_VERSION_ADSP                   "0.1.9"
+#define INSTANCE_VERSION_ADSP                   "0.1.10"
 #define INSTANCE_VERSION_AUDIODECODER           "1.0.1"
 #define INSTANCE_VERSION_AUDIOENCODER           "1.0.1"
 #define INSTANCE_VERSION_GAME                   "1.0.29"
