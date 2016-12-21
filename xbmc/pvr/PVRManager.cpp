@@ -76,10 +76,87 @@ using namespace KODI::MESSAGING;
 
 using KODI::MESSAGING::HELPERS::DialogResponse;
 
+CPVRManagerJobQueue::CPVRManagerJobQueue()
+: m_triggerEvent(false),
+m_bStopped(true)
+{
+}
+
+void CPVRManagerJobQueue::Start()
+{
+  CSingleLock lock(m_critSection);
+  m_bStopped = false;
+  m_triggerEvent.Set();
+}
+
+void CPVRManagerJobQueue::Stop()
+{
+  CSingleLock lock(m_critSection);
+  m_bStopped = true;
+  m_triggerEvent.Reset();
+}
+
+void CPVRManagerJobQueue::Clear()
+{
+  CSingleLock lock(m_critSection);
+  for (CJob *updateJob : m_pendingUpdates)
+    delete updateJob;
+
+  m_pendingUpdates.clear();
+  m_triggerEvent.Set();
+}
+
+void CPVRManagerJobQueue::AppendJob(CJob * job)
+{
+  CSingleLock lock(m_critSection);
+
+  // check for another pending job of given type...
+  for (CJob *updateJob : m_pendingUpdates)
+  {
+    if (!strcmp(updateJob->GetType(), job->GetType()))
+    {
+      delete job;
+      return;
+    }
+  }
+
+  m_pendingUpdates.push_back(job);
+  m_triggerEvent.Set();
+}
+
+void CPVRManagerJobQueue::ExecutePendingJobs()
+{
+  std::vector<CJob *> pendingUpdates;
+
+  {
+    CSingleLock lock(m_critSection);
+
+    if (m_bStopped)
+      return;
+
+    pendingUpdates = std::move(m_pendingUpdates);
+    m_triggerEvent.Reset();
+  }
+
+  CJob *job = nullptr;
+  while (!pendingUpdates.empty())
+  {
+    job = pendingUpdates.front();
+    pendingUpdates.erase(pendingUpdates.begin());
+
+    job->DoWork();
+    delete job;
+  }
+}
+
+bool CPVRManagerJobQueue::WaitForJobs(unsigned int milliSeconds)
+{
+  return m_triggerEvent.WaitMSec(milliSeconds);
+}
+
 CPVRManager::CPVRManager(void) :
     CThread("PVRManager"),
     m_addons(new CPVRClients),
-    m_triggerEvent(true),
     m_currentFile(NULL),
     m_bFirstStart(true),
     m_bIsSwitchingChannels(false),
@@ -254,6 +331,10 @@ void CPVRManager::OnSettingAction(const CSetting *setting)
 
 void CPVRManager::Clear(void)
 {
+  g_application.UnregisterActionListener(&CPVRActionListener::GetInstance());
+
+  m_pendingUpdates.Clear();
+
   CSingleLock lock(m_critSection);
 
   m_guiInfo.reset();
@@ -262,21 +343,10 @@ void CPVRManager::Clear(void)
   m_channelGroups.reset();
   m_parentalTimer.reset();
   m_database.reset();
-  m_triggerEvent.Set();
 
   m_currentFile           = NULL;
   m_bIsSwitchingChannels  = false;
   m_bEpgsCreated = false;
-
-  for (unsigned int iJobPtr = 0; iJobPtr < m_pendingUpdates.size(); iJobPtr++)
-    delete m_pendingUpdates.at(iJobPtr);
-  m_pendingUpdates.clear();
-
-  /* unregister application action listener */
-  {
-    CSingleExit exit(m_critSection);
-    g_application.UnregisterActionListener(&CPVRActionListener::GetInstance());
-  }
 
   HideProgressDialog();
 }
@@ -332,6 +402,8 @@ void CPVRManager::Start()
   ResetProperties();
   SetState(ManagerStateStarting);
 
+  m_pendingUpdates.Start();
+
   m_database->Open();
 
   /* create the pvrmanager thread, which will ensure that all data will be loaded */
@@ -346,6 +418,8 @@ void CPVRManager::Stop(void)
     return;
 
   SetState(ManagerStateStopping);
+
+  m_pendingUpdates.Stop();
 
   /* stop the EPG updater, since it might be using the pvr add-ons */
   g_EpgContainer.Stop();
@@ -363,6 +437,7 @@ void CPVRManager::Stop(void)
   SetState(ManagerStateInterrupted);
 
   StopThread();
+
   if (m_guiInfo)
     m_guiInfo->Stop();
 
@@ -484,7 +559,7 @@ void CPVRManager::Process(void)
     /* execute the next pending jobs if there are any */
     try
     {
-      ExecutePendingJobs();
+      m_pendingUpdates.ExecutePendingJobs();
     }
     catch (...)
     {
@@ -493,7 +568,7 @@ void CPVRManager::Process(void)
     }
 
     if (IsStarted() && !bRestart)
-      m_triggerEvent.WaitMSec(1000);
+      m_pendingUpdates.WaitForJobs(1000);
   }
 
   if (IsStarted())
@@ -1517,11 +1592,7 @@ bool CPVRManager::PerformChannelSwitch(const CPVRChannelPtr &channel, bool bPrev
   }
 
   // announce OnStop and OnPlay. yes, this ain't pretty
-  {
-    CSingleLock lock(m_critSectionTriggers);
-    m_pendingUpdates.push_back(new CPVRChannelSwitchJob(previousFile, m_currentFile));
-  }
-  m_triggerEvent.Set();
+  m_pendingUpdates.AppendJob(new CPVRChannelSwitchJob(previousFile, m_currentFile));
 
   return bSwitched;
 }
@@ -1773,60 +1844,29 @@ void CPVRManager::SearchMissingChannelIcons(void)
     m_channelGroups->SearchMissingChannelIcons();
 }
 
-bool CPVRManager::IsJobPending(const char *strJobName) const
-{
-  bool bReturn(false);
-  CSingleLock lock(m_critSectionTriggers);
-  for (unsigned int iJobPtr = 0; IsStarted() && iJobPtr < m_pendingUpdates.size(); iJobPtr++)
-  {
-    if (!strcmp(m_pendingUpdates.at(iJobPtr)->GetType(), strJobName))
-    {
-      bReturn = true;
-      break;
-    }
-  }
-
-  return bReturn;
-}
-
-void CPVRManager::QueueJob(CJob *job)
-{
-  CSingleLock lock(m_critSectionTriggers);
-  if (!IsStarted() || IsJobPending(job->GetType()))
-  {
-    delete job;
-    return;
-  }
-
-  m_pendingUpdates.push_back(job);
-
-  lock.Leave();
-  m_triggerEvent.Set();
-}
-
 void CPVRManager::TriggerEpgsCreate(void)
 {
-  QueueJob(new CPVREpgsCreateJob());
+  m_pendingUpdates.AppendJob(new CPVREpgsCreateJob());
 }
 
 void CPVRManager::TriggerRecordingsUpdate(void)
 {
-  QueueJob(new CPVRRecordingsUpdateJob());
+  m_pendingUpdates.AppendJob(new CPVRRecordingsUpdateJob());
 }
 
 void CPVRManager::TriggerTimersUpdate(void)
 {
-  QueueJob(new CPVRTimersUpdateJob());
+  m_pendingUpdates.AppendJob(new CPVRTimersUpdateJob());
 }
 
 void CPVRManager::TriggerChannelsUpdate(void)
 {
-  QueueJob(new CPVRChannelsUpdateJob());
+  m_pendingUpdates.AppendJob(new CPVRChannelsUpdateJob());
 }
 
 void CPVRManager::TriggerChannelGroupsUpdate(void)
 {
-  QueueJob(new CPVRChannelGroupsUpdateJob());
+  m_pendingUpdates.AppendJob(new CPVRChannelGroupsUpdateJob());
 }
 
 void CPVRManager::TriggerSearchMissingChannelIcons(void)
@@ -1837,25 +1877,6 @@ void CPVRManager::TriggerSearchMissingChannelIcons(void)
 void CPVRManager::ConnectionStateChange(CPVRClient *client, std::string connectString, PVR_CONNECTION_STATE state, std::string message)
 {
   CJobManager::GetInstance().AddJob(new CPVRClientConnectionJob(client, connectString, state, message), NULL);
-}
-
-void CPVRManager::ExecutePendingJobs(void)
-{
-  CSingleLock lock(m_critSectionTriggers);
-
-  while (!m_pendingUpdates.empty())
-  {
-    CJob *job = m_pendingUpdates.at(0);
-    m_pendingUpdates.erase(m_pendingUpdates.begin());
-    lock.Leave();
-
-    job->DoWork();
-    delete job;
-
-    lock.Enter();
-  }
-
-  m_triggerEvent.Reset();
 }
 
 bool CPVRChannelSwitchJob::DoWork(void)
