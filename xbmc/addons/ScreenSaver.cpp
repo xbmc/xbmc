@@ -104,7 +104,6 @@ void CScreenSaver::Render()
 
 void CScreenSaver::Destroy()
 {
-#ifdef HAS_PYTHON
   if (URIUtils::HasExtension(LibPath(), ".py"))
   {
     /* FIXME: This is a hack but a proper fix is non-trivial. Basically this code
@@ -114,7 +113,6 @@ void CScreenSaver::Destroy()
     g_alarmClock.Start(SCRIPT_ALARM, SCRIPT_TIMEOUT, "StopScript(" + LibPath() + ")", true, false);
     return;
   }
-#endif
 
   CAddonDll::Destroy();
 }
