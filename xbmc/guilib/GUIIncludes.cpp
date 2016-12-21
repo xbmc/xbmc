@@ -81,6 +81,8 @@ CGUIIncludes::CGUIIncludes()
   m_constantNodes.insert("fadetime");
   m_constantNodes.insert("pauseatend");
   m_constantNodes.insert("depth");
+  m_constantNodes.insert("movement");
+  m_constantNodes.insert("focusposition");
 
   m_expressionAttributes.insert("condition");
 
