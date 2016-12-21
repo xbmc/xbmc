@@ -1054,8 +1054,8 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   if (cam)
   {
     hasCamera = true;
-    cam->QueryFloatAttribute("x", &camera.x);
-    cam->QueryFloatAttribute("y", &camera.y);
+    camera.x = ParsePosition(cam->Attribute("x"), width);
+    camera.y = ParsePosition(cam->Attribute("y"), height);
   }
 
   if (XMLUtils::GetFloat(pControlNode, "depth", stereo))
