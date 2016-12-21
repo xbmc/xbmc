@@ -284,7 +284,7 @@ extern "C"
    */
   typedef struct KodiToAddonFuncTable_Peripheral
   {
-    PERIPHERAL_ERROR (__cdecl* GetAddonCapabilities)(PERIPHERAL_CAPABILITIES*);
+    void (__cdecl* GetCapabilities)(PERIPHERAL_CAPABILITIES*);
     PERIPHERAL_ERROR (__cdecl* PerformDeviceScan)(unsigned int*, PERIPHERAL_INFO**);
     void             (__cdecl* FreeScanResults)(unsigned int, PERIPHERAL_INFO*);
     PERIPHERAL_ERROR (__cdecl* GetEvents)(unsigned int*, PERIPHERAL_EVENT**);
