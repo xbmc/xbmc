@@ -35,8 +35,6 @@
 #include "platform/win32/WIN32Util.h"
 #endif //TARGET_WINDOWS
 
-#pragma comment(lib, "dnssd.lib")
-
 extern HWND g_hWnd;
 
 

@@ -115,7 +115,7 @@ endif()
 
 # Optional dependencies
 set(optional_deps MicroHttpd MySqlClient SSH XSLT
-                  Alsa UDEV DBus Avahi SmbClient CCache
+                  Alsa UDEV DBus Avahi MDNS SmbClient CCache
                   PulseAudio VDPAU VAAPI Bluetooth CAP)
 
 # Required, dyloaded deps
