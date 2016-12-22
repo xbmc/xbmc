@@ -186,14 +186,19 @@ private:
     void Reinit(void);
 
     /*!
-     * @brief Stop the PVRManager.
+     * @brief Stop PVRManager.
      */
     void Stop(void);
 
     /*!
-     * @brief Destroy PVRManager's objects.
+     * @brief Stop PVRManager, unload data.
      */
-    void Clear(void);
+    void Unload();
+
+    /*!
+     * @brief Stop PVRManager, unload data, unload addons.
+     */
+    void Shutdown();
 
     /*!
      * @brief Get the TV database.
@@ -641,6 +646,11 @@ private:
     void ResetProperties(void);
 
     /*!
+     * @brief Destroy PVRManager's objects.
+     */
+    void Clear(void);
+
+    /*!
      * @brief Called by ChannelUp() and ChannelDown() to perform a channel switch.
      * @param iNewChannelNumber The new channel number after the switch.
      * @param bPreview Preview window if true.
@@ -678,7 +688,7 @@ private:
     CPVRChannelGroupsContainerPtr  m_channelGroups;               /*!< pointer to the channel groups container */
     CPVRRecordingsPtr              m_recordings;                  /*!< pointer to the recordings container */
     CPVRTimersPtr                  m_timers;                      /*!< pointer to the timers container */
-    const CPVRClientsPtr           m_addons;                      /*!< pointer to the pvr addon container */
+    CPVRClientsPtr                 m_addons;                      /*!< pointer to the pvr addon container */
     std::unique_ptr<CPVRGUIInfo>   m_guiInfo;                     /*!< pointer to the guiinfo data */
     //@}
 

@@ -440,15 +440,34 @@ void CPVRManager::Stop(void)
   if (m_guiInfo)
     m_guiInfo->Stop();
 
-  /* executes the set wakeup command */
-  SetWakeupCommand();
-
   /* close database */
   const CPVRDatabasePtr database(GetTVDatabase());
   if (database->IsOpen())
     database->Close();
 
   SetState(ManagerStateStopped);
+}
+
+void CPVRManager::Unload()
+{
+  // stop pvr manager thread and clear all pvr data
+  Stop();
+  Clear();
+
+  // stop epg container thread and clear all epg data
+  g_EpgContainer.Stop();
+  g_EpgContainer.Clear();
+}
+
+void CPVRManager::Shutdown()
+{
+  // set system wakeup data
+  SetWakeupCommand();
+
+  Unload();
+
+  // release addons
+  m_addons.reset();
 }
 
 CPVRManager::ManagerState CPVRManager::GetState(void) const

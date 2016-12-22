@@ -276,7 +276,7 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
   ADDON::CAddonMgr::GetInstance().StopServices(true);
 
   // stop PVR related services
-  g_application.StopPVRManager();
+  CServiceBroker::GetPVRManager().Unload();
 
   // stop audio DSP services with a blocking message
   CServiceBroker::GetADSP().Deactivate();
@@ -323,7 +323,7 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
 #endif
 
   // restart PVR services
-  g_application.ReinitPVRManager();
+  CServiceBroker::GetPVRManager().Reinit();
 
   // start services which should run on login
   ADDON::CAddonMgr::GetInstance().StartServices(false);
