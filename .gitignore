@@ -207,15 +207,15 @@ lib/cpluff/stamp-h1
 /project/obj
 /project/output
 
-# /project/cmake
-/project/cmake/KodiConfig.cmake
-/project/cmake/addons/*.error
-/project/cmake/addons/.failure
-/project/cmake/addons/.success
-/project/cmake/addons/addons
-/project/cmake/addons/build
-/project/cmake/addons/depends/build
-/project/cmake/addons/output
+# /cmake
+/cmake/KodiConfig.cmake
+/cmake/addons/*.error
+/cmake/addons/.failure
+/cmake/addons/.success
+/cmake/addons/addons
+/cmake/addons/build
+/cmake/addons/depends/build
+/cmake/addons/output
 
 # /project/Win32BuildSetup/
 /project/Win32BuildSetup/*.log

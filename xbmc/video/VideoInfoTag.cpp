@@ -1546,7 +1546,7 @@ bool CVideoInfoTag::SetPlayCount(int count)
 
 bool CVideoInfoTag::IncrementPlayCount()
 {
-  SetPlayCount(GetPlayCount() + 1); // note: not just m_playCount++; call possibly overridden (G|S)etPlayCount
+  m_playCount++;
   return true;
 }
 
@@ -1568,5 +1568,7 @@ bool CVideoInfoTag::SetResumePoint(double timeInSeconds, double totalTimeInSecon
   resumePoint.totalTimeInSeconds = totalTimeInSeconds;
   resumePoint.playerState = playerState;
   resumePoint.type = CBookmark::RESUME;
-  return SetResumePoint(resumePoint); // note: not just m_resumePoint = resumePoint; call the possibly overridden SetResumePoint
+
+  m_resumePoint = resumePoint;
+  return true;
 }

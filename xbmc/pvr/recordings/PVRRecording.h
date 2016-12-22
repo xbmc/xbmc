@@ -126,24 +126,51 @@ namespace PVR
     bool Rename(const std::string &strNewName);
 
     /*!
-     * @brief Set this recording's play count on the client (if supported).
+     * @brief Set this recording's play count. The value will be transferred to the backend if it supports server-side play counts.
      * @param count play count.
      * @return True if play count was set successfully, false otherwise.
      */
     bool SetPlayCount(int count) override;
 
     /*!
-     * @brief Set this videos's resume point.
+     * @brief Increment this recording's play count. The value will be transferred to the backend if it supports server-side play counts.
+     * @return True if play count was increased successfully, false otherwise.
+     */
+    bool IncrementPlayCount() override;
+
+   /*!
+     * @brief Get this recording's local play count. The value will not be obtained from the backend, even if it supports server-side play counts.
+     * @return the play count.
+     */
+    int GetLocalPlayCount() const { return CVideoInfoTag::GetPlayCount(); }
+
+    /*!
+     * @brief Set this recording's resume point. The value will be transferred to the backend if it supports server-side resume points.
      * @param resumePoint resume point.
      * @return True if resume point was set successfully, false otherwise.
      */
     bool SetResumePoint(const CBookmark &resumePoint) override;
 
     /*!
-     * @brief Get this recording's resume point.
+     * @brief Set this recording's resume point. The value will be transferred to the backend if it supports server-side resume points.
+     * @param timeInSeconds the time of the resume point
+     * @param totalTimeInSeconds the total time of the video
+     * @param playerState the player state
+     * @return True if resume point was set successfully, false otherwise.
+     */
+    bool SetResumePoint(double timeInSeconds, double totalTimeInSeconds, const std::string &playerState = "") override;
+
+    /*!
+     * @brief Get this recording's resume point. The value will be obtained from the backend if it supports server-side resume points.
      * @return the resume point.
      */
     CBookmark GetResumePoint() const override;
+
+    /*!
+     * @brief Get this recording's local resume point. The value will not be obtained from the backend even if it supports server-side resume points.
+     * @return the resume point.
+     */
+    CBookmark GetLocalResumePoint() const { return CVideoInfoTag::GetResumePoint(); }
 
     /*!
      * @brief Retrieve the edit decision list (EDL) of a recording on the backend.

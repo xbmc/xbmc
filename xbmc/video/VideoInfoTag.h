@@ -208,7 +208,7 @@ public:
    * @param playerState the player state
    * @return True if resume point was set successfully, false otherwise.
    */
-  bool SetResumePoint(double timeInSeconds, double totalTimeInSeconds, const std::string &playerState = "");
+  virtual bool SetResumePoint(double timeInSeconds, double totalTimeInSeconds, const std::string &playerState = "");
 
   std::string m_basePath; // the base path of the video, for folder-based lookups
   int m_parentPathID;      // the parent path id where the base path of the video lies

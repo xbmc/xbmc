@@ -286,6 +286,19 @@ bool CPVRRecording::SetPlayCount(int count)
   return CVideoInfoTag::SetPlayCount(count);
 }
 
+bool CPVRRecording::IncrementPlayCount()
+{
+  PVR_ERROR error;
+  if (g_PVRClients->SupportsRecordingPlayCount(m_iClientId) &&
+      !g_PVRClients->SetRecordingPlayCount(*this, CVideoInfoTag::GetPlayCount(), &error))
+  {
+    DisplayError(error);
+    return false;
+  }
+
+  return CVideoInfoTag::IncrementPlayCount();
+}
+
 bool CPVRRecording::SetResumePoint(const CBookmark &resumePoint)
 {
   PVR_ERROR error;
@@ -297,6 +310,19 @@ bool CPVRRecording::SetResumePoint(const CBookmark &resumePoint)
   }
 
   return CVideoInfoTag::SetResumePoint(resumePoint);
+}
+
+bool CPVRRecording::SetResumePoint(double timeInSeconds, double totalTimeInSeconds, const std::string &playerState /* = "" */)
+{
+  PVR_ERROR error;
+  if (g_PVRClients->SupportsLastPlayedPosition(m_iClientId) &&
+      !g_PVRClients->SetRecordingLastPlayedPosition(*this, lrint(timeInSeconds), &error))
+  {
+    DisplayError(error);
+    return false;
+  }
+
+  return CVideoInfoTag::SetResumePoint(timeInSeconds, totalTimeInSeconds, playerState);
 }
 
 CBookmark CPVRRecording::GetResumePoint() const
@@ -386,8 +412,8 @@ void CPVRRecording::Update(const CPVRRecording &tag)
   m_iChannelUid       = tag.m_iChannelUid;
   m_bRadio            = tag.m_bRadio;
 
-  SetPlayCount(tag.GetPlayCount());
-  SetResumePoint(tag.GetResumePoint());
+  CVideoInfoTag::SetPlayCount(tag.GetLocalPlayCount());
+  CVideoInfoTag::SetResumePoint(tag.GetLocalResumePoint());
   SetDuration(tag.GetDuration());
 
   //Old Method of identifying TV show title and subtitle using m_strDirectory and strPlotOutline (deprecated)

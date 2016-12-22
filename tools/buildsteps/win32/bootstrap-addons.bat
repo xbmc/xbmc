@@ -33,7 +33,7 @@ IF "%WORKDIR%" == "" (
 
 rem setup some paths that we need later
 SET CUR_PATH=%CD%
-SET BASE_PATH=%WORKDIR%\project\cmake
+SET BASE_PATH=%WORKDIR%\cmake
 SET ADDONS_PATH=%BASE_PATH%\addons
 SET ADDONS_BOOTSTRAP_PATH=%ADDONS_PATH%\bootstrap
 SET BOOTSTRAP_BUILD_PATH=%ADDONS_PATH%\build\bootstrap
