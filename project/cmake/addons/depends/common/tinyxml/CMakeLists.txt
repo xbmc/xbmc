@@ -13,6 +13,11 @@ add_definitions(-DTIXML_USE_STL)
 
 add_library(tinyxml ${SOURCES})
 
+
+IF(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64")
+  SET_TARGET_PROPERTIES(tinyxml PROPERTIES COMPILE_FLAGS "-fPIC")
+ENDIF(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64")
+
 include_directories(${PROJECT_SOURCE_DIR}/include)
 
 set(HEADERS ${PROJECT_SOURCE_DIR}/include/tinystr.h
