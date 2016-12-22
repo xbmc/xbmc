@@ -664,7 +664,7 @@ namespace PVR
     CPVRChannelGroupsContainerPtr  m_channelGroups;               /*!< pointer to the channel groups container */
     CPVRRecordingsPtr              m_recordings;                  /*!< pointer to the recordings container */
     CPVRTimersPtr                  m_timers;                      /*!< pointer to the timers container */
-    CPVRClientsPtr                 m_addons;                      /*!< pointer to the pvr addon container */
+    const CPVRClientsPtr           m_addons;                      /*!< pointer to the pvr addon container */
     std::unique_ptr<CPVRGUIInfo>   m_guiInfo;                     /*!< pointer to the guiinfo data */
     //@}
 

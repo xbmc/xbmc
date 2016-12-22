@@ -94,8 +94,6 @@ CPVRManager::CPVRManager(void) :
 
 CPVRManager::~CPVRManager(void)
 {
-  m_addons.reset();
-
   CServiceBroker::GetSettings().UnregisterCallback(this);
   CAnnouncementManager::GetInstance().RemoveAnnouncer(this);
   CLog::Log(LOGDEBUG,"PVRManager - destroyed");
