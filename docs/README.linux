@@ -113,13 +113,21 @@ Cmake build instructions V18.0 and higher OpenSuse
 Create and change to build directory 
     $ mkdir kodi-build && cd kodi-build
     $ cmake ../project/cmake/ -DCMAKE_INSTALL_PREFIX=/opt/kodi
-    $ cmake --build ../project/cmake -- VERBOSE=1
+    $ cmake --build . -- VERBOSE=1
 
+Change: Since 22nd of December 2016 cmake changed the build config to
+<KODI_SRC> instead of <KODI_SRC>/project/cmake.
+This breaks above build instructions, to resolve this do:
+
+    $ rm CMakeCache.txt
+    $ cmake .. -DCMAKE_INSTALL_PREFIX=/opt/kodi 
+    $ cmake --build . -- VERBOSE=1
+    
 Tip: By adding -j<number> to the make command, you describe how many
      concurrent jobs will be used, it will speed up the build process.
      So for quadcore the command is:
     
-    $ cmake --build ../project/cmake -- VERBOSE=1 -j4
+    $ cmake --build . -- VERBOSE=1 -j4
 
 If the build process completes succesfully you would want to test if it is working.
 Still in the build directory type the following:
