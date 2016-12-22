@@ -19,6 +19,8 @@
  *
  */
 
+#include <string.h>
+
 /*
  *------------------------------------------------------------------------------
  * This header is only be used for Kodi itself and internally (not for add-on
@@ -159,6 +161,45 @@ inline const char* GetTypeName(int type)
       return "Visualization";
   }
   return "unknown";
+}
+
+/*
+ * Function used internally on add-on and in Kodi itself to get id number
+ * about given type name.
+ *
+ * @param[in] instanceType The with name type to ask
+ * @return Id number of the asked instance type
+ * 
+ * @warning String must be lower case here!
+ */
+inline int GetTypeId(const char* name)
+{
+  if (name)
+  {
+    if (strcmp(name, "addon") == 0)
+      return ADDON_GLOBAL_MAIN;
+    else if (strcmp(name, "gui") == 0)
+      return ADDON_GLOBAL_GUI;
+    else if (strcmp(name, "adsp") == 0)
+      return ADDON_INSTANCE_ADSP;
+    else if (strcmp(name, "audiodecoder") == 0)
+      return ADDON_INSTANCE_AUDIODECODER;
+    else if (strcmp(name, "audioencoder") == 0)
+      return ADDON_INSTANCE_AUDIOENCODER;
+    else if (strcmp(name, "game") == 0)
+      return ADDON_INSTANCE_GAME;
+    else if (strcmp(name, "inputstream") == 0)
+      return ADDON_INSTANCE_INPUTSTREAM;
+    else if (strcmp(name, "peripheral") == 0)
+      return ADDON_INSTANCE_PERIPHERAL;
+    else if (strcmp(name, "pvr") == 0)
+      return ADDON_INSTANCE_PVR;
+    else if (strcmp(name, "screensaver") == 0)
+      return ADDON_INSTANCE_SCREENSAVER;
+    else if (strcmp(name, "visualization") == 0)
+      return ADDON_INSTANCE_VISUALIZATION;
+  }
+  return -1;
 }
 
 #ifdef __cplusplus
