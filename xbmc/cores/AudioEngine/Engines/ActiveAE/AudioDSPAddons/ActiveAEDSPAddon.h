@@ -174,7 +174,7 @@ namespace ActiveAE
      * @param array_in Pointer to data memory
      * @param samples Amount of samples inside array_in
      * @return true if work was OK
-     * @remarks Optional. Is set by AE_DSP_ADDON_CAPABILITIES and asked with GetAddonCapabilities
+     * @remarks Optional. Is set by AE_DSP_ADDON_CAPABILITIES and asked with GetCapabilities
      */
     bool InputProcess(const ADDON_HANDLE handle, const float **array_in, unsigned int samples);
 

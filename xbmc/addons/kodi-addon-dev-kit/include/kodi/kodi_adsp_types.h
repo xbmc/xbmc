@@ -469,7 +469,7 @@ extern "C" {
    */
   typedef struct KodiToAddonFuncTable_AudioDSP
   {
-    AE_DSP_ERROR (__cdecl* GetAddonCapabilities)                 (AE_DSP_ADDON_CAPABILITIES*);
+    void (__cdecl* GetCapabilities)(AE_DSP_ADDON_CAPABILITIES*);
     const char*  (__cdecl* GetDSPName)                           (void);
     const char*  (__cdecl* GetDSPVersion)                        (void);
     AE_DSP_ERROR (__cdecl* MenuHook)                             (const AE_DSP_MENUHOOK&, const AE_DSP_MENUHOOK_DATA&);

@@ -53,9 +53,10 @@ extern "C"
 
   /*!
   * Get Capabilities of this addon.
+  * @param pCapabilities The add-on's capabilities.
   * @remarks
   */
-  struct INPUTSTREAM_CAPABILITIES GetCapabilities();
+  void GetCapabilities(INPUTSTREAM_CAPABILITIES *pCapabilities);
 
 
   /*!

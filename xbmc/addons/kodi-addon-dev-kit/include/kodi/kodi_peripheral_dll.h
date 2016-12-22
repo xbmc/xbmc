@@ -34,14 +34,13 @@ extern "C"
   /*!
    * @brief Get the list of features that this add-on provides
    * @param pCapabilities The add-on's capabilities.
-   * @return PERIPHERAL_NO_ERROR if the properties were fetched successfully.
    * @remarks Valid implementation required.
    *
    * Called by the frontend to query the add-on's capabilities and supported
    * peripherals. All capabilities that the add-on supports should be set to true.
    *
    */
-  PERIPHERAL_ERROR GetAddonCapabilities(PERIPHERAL_CAPABILITIES *pCapabilities);
+  void GetCapabilities(PERIPHERAL_CAPABILITIES *pCapabilities);
 
   /*!
    * @brief Perform a scan for joysticks
@@ -216,7 +215,7 @@ extern "C"
   {
     KodiToAddonFuncTable_Peripheral* pClient = static_cast<KodiToAddonFuncTable_Peripheral*>(ptr);
 
-    pClient->GetAddonCapabilities           = GetAddonCapabilities;
+    pClient->GetCapabilities = GetCapabilities;
     pClient->PerformDeviceScan              = PerformDeviceScan;
     pClient->FreeScanResults                = FreeScanResults;
     pClient->GetEvents                      = GetEvents;

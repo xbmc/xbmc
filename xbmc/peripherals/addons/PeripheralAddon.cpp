@@ -151,13 +151,7 @@ bool CPeripheralAddon::GetAddonProperties(void)
   PERIPHERAL_CAPABILITIES addonCapabilities = { };
 
   // Get the capabilities
-  PERIPHERAL_ERROR retVal = m_struct.GetAddonCapabilities(&addonCapabilities);
-  if (retVal != PERIPHERAL_NO_ERROR)
-  {
-    CLog::Log(LOGERROR, "PERIPHERAL - couldn't get the capabilities for add-on '%s'. Please contact the developer of this add-on: %s",
-        Name().c_str(), Author().c_str());
-    return false;
-  }
+  m_struct.GetCapabilities(&addonCapabilities);
 
   // Verify capabilities against addon.xml
   if (m_bProvidesJoysticks != addonCapabilities.provides_joysticks)

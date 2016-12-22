@@ -180,12 +180,7 @@ bool CActiveAEDSPAddon::GetAddonProperties(void)
 
   /* get the capabilities */
   memset(&addonCapabilities, 0, sizeof(addonCapabilities));
-  AE_DSP_ERROR retVal = m_struct.GetAddonCapabilities(&addonCapabilities);
-  if (retVal != AE_DSP_ERROR_NO_ERROR)
-  {
-    CLog::Log(LOGERROR, "ActiveAE DSP - couldn't get the capabilities for add-on '%s'. Please contact the developer of this add-on: %s", GetFriendlyName().c_str(), Author().c_str());
-    return false;
-  }
+  m_struct.GetCapabilities(&addonCapabilities);
 
   /* get the name of the dsp addon */
   std::string strDSPName = m_struct.GetDSPName();

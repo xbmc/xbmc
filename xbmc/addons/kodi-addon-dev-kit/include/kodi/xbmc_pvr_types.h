@@ -547,7 +547,7 @@ extern "C" {
    */
   typedef struct KodiToAddonFuncTable_PVR
   {
-    PVR_ERROR    (__cdecl* GetAddonCapabilities)(PVR_ADDON_CAPABILITIES*);
+    void (__cdecl* GetCapabilities)(PVR_ADDON_CAPABILITIES*);
     PVR_ERROR    (__cdecl* GetStreamProperties)(PVR_STREAM_PROPERTIES*);
     const char*  (__cdecl* GetBackendName)(void);
     const char*  (__cdecl* GetBackendVersion)(void);

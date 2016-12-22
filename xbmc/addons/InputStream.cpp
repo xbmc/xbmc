@@ -229,7 +229,10 @@ bool CInputStream::Open(CFileItem &fileitem)
 
   bool ret = m_struct.Open(props);
   if (ret)
-    m_caps = m_struct.GetCapabilities();
+  {
+    memset(&m_caps, 0, sizeof(m_caps));
+    m_struct.GetCapabilities(&m_caps);
+  }
 
   UpdateStreams();
   return ret;

@@ -126,7 +126,7 @@ extern "C" {
     bool (__cdecl* Open)(INPUTSTREAM&);
     void (__cdecl* Close)(void);
     const char* (__cdecl* GetPathList)(void);
-    struct INPUTSTREAM_CAPABILITIES (__cdecl* GetCapabilities)(void);
+    void (__cdecl* GetCapabilities)(INPUTSTREAM_CAPABILITIES*);
 
     // IDemux
     struct INPUTSTREAM_IDS (__cdecl* GetStreamIds)();
