@@ -98,7 +98,8 @@ void CScreenSaver::Start()
 void CScreenSaver::Stop()
 {
   // notify screen saver that they should start
-  if (Initialized()) m_struct.Stop();
+  if (m_struct.Stop)
+    m_struct.Stop();
 }
 
 void CScreenSaver::Render()
