@@ -90,14 +90,14 @@ before_script:
       cd $TRAVIS_BUILD_DIR/build;
     fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" && "$BUILD" == "Kodi" && "$CXX" == "g++" ]]; then
-      cmake -DCMAKE_BUILD_TYPE=Debug ../project/cmake;
+      cmake -DCMAKE_BUILD_TYPE=Debug ..;
     fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" && "$BUILD" == "Kodi" && "$CXX" == "clang++" ]]; then
-      cmake -DCMAKE_CXX_FLAGS="-Qunused-arguments" ../project/cmake;
+      cmake -DCMAKE_CXX_FLAGS="-Qunused-arguments" ..;
     fi
   - if [[ "$BUILD" != "Kodi" ]] && [[ "$ADDONS" == "adsp" || "$ADDONS" == "audiodecoder" || "$ADDONS" == "audioencoder" ||
           "$ADDONS" == "pvr" || "$ADDONS" == "screensaver" || "$ADDONS" == "visualization" ]]; then
-      cd $TRAVIS_BUILD_DIR/project/cmake/addons &&
+      cd $TRAVIS_BUILD_DIR/cmake/addons &&
       mkdir -p build &&
       cd build/ &&
       cmake ../bootstrap -DCMAKE_BUILD_TYPE=Debug &&
@@ -115,7 +115,7 @@ script:
           "$ADDONS" == "pvr" || "$ADDONS" == "screensaver" || "$ADDONS" == "visualization" ]]; then
       cd $TRAVIS_BUILD_DIR/ &&
       mkdir -p build &&
-      cmake -DADDONS_TO_BUILD="$ADDONS".* -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=../addons $TRAVIS_BUILD_DIR/project/cmake/addons &&
+      cmake -DADDONS_TO_BUILD="$ADDONS".* -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=../addons $TRAVIS_BUILD_DIR/cmake/addons &&
       make -j4;
     fi
 
