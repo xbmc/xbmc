@@ -571,7 +571,7 @@ function(core_find_git_rev stamp)
   endif()
 endfunction()
 
-# Parses version.txt and sets variables
+# Parses version.txt and libKODI_guilib.h and sets variables
 # used to construct dirs structure, file naming, API version, etc.
 #
 # The following variables are set from version.txt:
@@ -586,6 +586,10 @@ endfunction()
 #   APP_VERSION - the app version (${APP_VERSION_MAJOR}.${APP_VERSION_MINOR}-${APP_VERSION_TAG})
 #   APP_ADDON_API - the addon API version in the form of 16.9.702
 #   FILE_VERSION - file version in the form of 16,9,702,0 - Windows only
+#
+# The following variables are set from libKODI_guilib.h:
+#   guilib_version - current ADDONGUI API version
+#   guilib_version_min - minimal ADDONGUI API version
 macro(core_find_versions)
   # kodi-addons project also calls this macro and uses CORE_SOURCE_DIR
   # to point to core base dir
@@ -611,6 +615,10 @@ macro(core_find_versions)
     string(TOLOWER ${APP_VERSION_TAG} APP_VERSION_TAG_LC)
   endif()
   string(REPLACE "." "," FILE_VERSION ${APP_ADDON_API}.0)
+  file(STRINGS ${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/libKODI_guilib.h guilib_version REGEX "^.*GUILIB_API_VERSION (.*)$")
+  string(REGEX REPLACE ".*\"(.*)\"" "\\1" guilib_version ${guilib_version})
+  file(STRINGS ${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/libKODI_guilib.h guilib_version_min REGEX "^.*GUILIB_MIN_API_VERSION (.*)$")
+  string(REGEX REPLACE ".*\"(.*)\"" "\\1" guilib_version_min ${guilib_version_min})
   # unset variables not used anywhere else
   unset(version_list)
   unset(APP_APP_NAME)
@@ -618,6 +626,11 @@ macro(core_find_versions)
   # bail if we can't parse version.txt
   if(NOT DEFINED APP_VERSION_MAJOR OR NOT DEFINED APP_VERSION_MINOR)
     message(FATAL_ERROR "Could not determine app version! Make sure that ${CORE_SOURCE_DIR}/version.txt exists")
+  endif()
+
+  # bail if we can't parse libKODI_guilib.h
+  if(NOT DEFINED guilib_version OR NOT DEFINED guilib_version_min)
+    message(FATAL_ERROR "Could not determine add-on API version! Make sure that ${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/libKODI_guilib.h exists")
   endif()
 endmacro()
 

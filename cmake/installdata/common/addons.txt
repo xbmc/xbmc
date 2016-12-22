@@ -6,7 +6,6 @@ addons/kodi.adsp/*
 addons/kodi.audiodecoder/*
 addons/kodi.audioencoder/*
 addons/kodi.game/*
-addons/kodi.guilib/*
 addons/kodi.inputstream/*
 addons/kodi.peripheral/*
 addons/kodi.pvr/*
