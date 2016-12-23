@@ -8088,17 +8088,9 @@ std::string CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextW
   }
   else if (info.m_info == CONTAINER_CONTENT)
   {
-    CGUIWindow *window = NULL;
-    if (info.GetData1())
-    { // container specified
-      window = GetWindowWithCondition(contextWindow, 0);
-    }
-    else
-    { // no container specified - assume a mediawindow
-      window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
-    }
+    CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);;
     if (window)
-      return ((CGUIMediaWindow *)window)->CurrentDirectory().GetContent();
+      return static_cast<CGUIMediaWindow *>(window)->CurrentDirectory().GetContent();
   }
   else if (info.m_info == CONTROL_GET_LABEL)
   {
