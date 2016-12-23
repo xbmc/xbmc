@@ -38,7 +38,6 @@
 				<info>Player.Volume</info>
 			</control>
 			<control type="slider">
-				<description>Slider</description>
 				<left>40</left>
 				<top>55</top>
 				<width>400</width>

@@ -87,16 +87,13 @@
 				<texturenofocus border="40">buttons/dialogbutton-nofo.png</texturenofocus>
 			</control>
 			<control type="button" id="3">
-				<description>Default Button</description>
 				<include>DefaultSettingButton</include>
 			</control>
 			<control type="radiobutton" id="4">
-				<description>Default RadioButton</description>
 				<include>DefaultSettingButton</include>
 				<textwidth>900</textwidth>
 			</control>
 			<control type="spincontrolex" id="5">
-				<description>Default spincontrolex</description>
 				<include>DefaultSettingButton</include>
 				<textwidth>900</textwidth>
 			</control>
@@ -116,7 +113,6 @@
 				<texture colordiffuse="AAAAAAAA" border="3">dialogs/separator-grey.png</texture>
 			</control>
 			<control type="sliderex" id="8">
-				<description>Default Slider</description>
 				<include>DefaultSettingButton</include>
 			</control>
 		</control>

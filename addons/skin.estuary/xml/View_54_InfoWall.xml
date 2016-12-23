@@ -255,7 +255,7 @@
 				</control>
 				<control type="textbox">
 					<left>40</left>
-					<top>250</top>
+					<top>244</top>
 					<width>242</width>
 					<height>120</height>
 					<font>font27</font>
@@ -266,9 +266,9 @@
 					<visible>!ListItem.IsParentFolder</visible>
 				</control>
 				<control type="image">
-					<left>26</left>
-					<top>0</top>
-					<width>270</width>
+					<left>24</left>
+					<top>-1</top>
+					<width>272</width>
 					<height>270</height>
 					<texture fallback="DefaultMovies.png" background="true">$INFO[ListItem.Icon]</texture>
 					<aspectratio>scale</aspectratio>

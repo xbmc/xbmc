@@ -89,54 +89,51 @@
 					<ondown>700</ondown>
 					<onright>SetFocus($INFO[Container(9000).ListItem.Property(menu_id)])</onright>
 					<scrolltime tween="cubic" easing="out">500</scrolltime>
-					<focusedlayout height="95">
-						<control type="group">
-							<animation effect="fade" start="100" end="0" time="0">UnFocus</animation>
-							<control type="image">
-								<left>0</left>
-								<width>462</width>
-								<height>95</height>
-								<texture colordiffuse="button_focus">lists/focus.png</texture>
-								<animation effect="fade" start="100" end="0" time="0" condition="!Control.HasFocus(9000) + !ControlGroup(700).HasFocus">Conditional</animation>
-							</control>
-							<control type="image">
-								<left>-3</left>
-								<top>1</top>
-								<width>95</width>
-								<height>95</height>
-								<texture colordiffuse="button_focus">$INFO[ListItem.Art(thumb)]</texture>
-								<animation effect="fade" start="0" end="100" time="300" reversible="false">Focus</animation>
-							</control>
-							<control type="image">
-								<left>0</left>
-								<width>95</width>
-								<height>95</height>
-								<texture colordiffuse="51FFFFFF">colors/black.png</texture>
-								<animation effect="fade" start="100" end="0" time="0" condition="!Control.HasFocus(9000) + !ControlGroup(700).HasFocus">Conditional</animation>
-							</control>
+					<focusedlayout height="95" width="462">
+						<control type="image">
+							<left>0</left>
+							<right>0</right>
+							<bottom>0</bottom>
+							<texture colordiffuse="button_focus">lists/focus.png</texture>
+							<animation effect="fade" start="100" end="0" time="0" condition="!Control.HasFocus(9000)">Conditional</animation>
 						</control>
 						<control type="image">
 							<left>-3</left>
-							<top>1</top>
+							<top>0</top>
 							<width>95</width>
-							<height>95</height>
+							<bottom>0</bottom>
+							<texture colordiffuse="button_focus">$INFO[ListItem.Art(thumb)]</texture>
+							<animation effect="fade" start="0" end="100" time="300" reversible="false">Focus</animation>
+						</control>
+						<control type="image">
+							<left>0</left>
+							<width>95</width>
+							<bottom>0</bottom>
+							<texture colordiffuse="51FFFFFF">colors/black.png</texture>
+							<animation effect="fade" start="100" end="0" time="0" condition="!Control.HasFocus(9000)">Conditional</animation>
+						</control>
+						<control type="image">
+							<left>-3</left>
+							<top>0</top>
+							<width>95</width>
+							<bottom>0</bottom>
 							<texture>$INFO[ListItem.Art(thumb)]</texture>
 						</control>
 						<control type="label">
 							<left>104</left>
-							<height>95</height>
-							<width>560</width>
+							<bottom>0</bottom>
+							<right>10</right>
 							<aligny>center</aligny>
 							<font>font14</font>
 							<label>$INFO[ListItem.Label]</label>
 							<shadowcolor>text_shadow</shadowcolor>
 						</control>
 					</focusedlayout>
-					<itemlayout height="95">
+					<itemlayout height="95" width="462">
 						<control type="label">
 							<left>104</left>
-							<height>95</height>
-							<width>560</width>
+							<bottom>0</bottom>
+							<right>10</right>
 							<aligny>center</aligny>
 							<font>font14</font>
 							<label>$INFO[ListItem.Label]</label>
@@ -144,9 +141,9 @@
 						</control>
 						<control type="image">
 							<left>-3</left>
-							<top>1</top>
+							<top>0</top>
 							<width>95</width>
-							<height>95</height>
+							<bottom>0</bottom>
 							<texture colordiffuse="44FFFFFF">$INFO[ListItem.Art(thumb)]</texture>
 						</control>
 					</itemlayout>
