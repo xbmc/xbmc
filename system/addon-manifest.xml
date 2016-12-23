@@ -4,10 +4,12 @@
   <addon>game.controller.default</addon>
   <addon>kodi.adsp</addon>
   <addon>kodi.audiodecoder</addon>
+  <addon>kodi.audioencoder</addon>
   <addon>kodi.game</addon>
   <addon>kodi.guilib</addon>
   <addon>kodi.inputstream</addon>
   <addon>kodi.peripheral</addon>
+  <addon>kodi.pvr</addon>
   <addon>kodi.resource</addon>
   <addon>metadata.album.universal</addon>
   <addon>metadata.artists.universal</addon>
@@ -33,12 +35,10 @@
   <addon>skin.estouchy</addon>
   <addon>webinterface.default</addon>
   <addon>xbmc.addon</addon>
-  <addon>xbmc.audioencoder</addon>
   <addon>xbmc.core</addon>
   <addon>xbmc.gui</addon>
   <addon>xbmc.json</addon>
   <addon>xbmc.metadata</addon>
-  <addon>xbmc.pvr</addon>
   <addon>xbmc.python</addon>
   <addon>xbmc.webinterface</addon>
   <addon optional="true">peripheral.joystick</addon>
