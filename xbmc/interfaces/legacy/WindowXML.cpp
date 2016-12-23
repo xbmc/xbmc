@@ -271,6 +271,13 @@ namespace XBMCAddon
       A(m_vecItems)->SetProperty(key, value);
     }
 
+    void WindowXML::setContent(const String& value)
+    {
+      XBMC_TRACE;
+      LOCKGUI;
+      A(m_vecItems)->SetContent(value);
+    }
+
     int WindowXML::getCurrentContainerId()
     {
       XBMC_TRACE;
