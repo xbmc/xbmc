@@ -557,7 +557,7 @@
           <level>3</level>
           <default>audioencoder.xbmc.builtin.wav</default>
           <constraints>
-            <addontype>xbmc.audioencoder</addontype>
+            <addontype>kodi.audioencoder</addontype>
           </constraints>
           <control type="button" format="addon">
             <show more="true" details="true">installed</show>
