@@ -4276,16 +4276,6 @@ const infomap playlist[] =       {{ "length",           PLAYLIST_LENGTH },
 ///                  _string_,
 ///     Backend number
 ///   }
-///   \table_row3{   <b>`Pvr.HasEpg`</b>,
-///                  \anchor Pvr_HasEpg
-///                  _boolean_,
-///     Returns true when an epg is available.
-///   }
-///   \table_row3{   <b>`Pvr.HasTxt`</b>,
-///                  \anchor Pvr_HasTxt
-///                  _boolean_,
-///     Returns true when teletext is available.
-///   }
 ///   \table_row3{   <b>`Pvr.TotalDiscSpace`</b>,
 ///                  \anchor Pvr_TotalDiscSpace
 ///                  _string_,
@@ -4558,8 +4548,6 @@ const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING
                                   { "backendrecordings",        PVR_BACKEND_RECORDINGS },
                                   { "backenddeletedrecordings", PVR_BACKEND_DELETED_RECORDINGS },
                                   { "backendnumber",            PVR_BACKEND_NUMBER },
-                                  { "hasepg",                   PVR_HAS_EPG },
-                                  { "hastxt",                   PVR_HAS_TXT },
                                   { "totaldiscspace",           PVR_TOTAL_DISKSPACE },
                                   { "nexttimer",                PVR_NEXT_TIMER },
                                   { "isplayingtv",              PVR_IS_PLAYING_TV },
