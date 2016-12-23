@@ -62,7 +62,7 @@
 					<control type="label">
 						<left>135</left>
 						<top>0</top>
-						<width>730</width>
+						<right>20</right>
 						<height>60</height>
 						<font>font14</font>
 						<aligny>center</aligny>
@@ -71,7 +71,7 @@
 					<control type="textbox">
 						<left>135</left>
 						<top>52</top>
-						<width>730</width>
+						<right>20</right>
 						<height>65</height>
 						<font>font12</font>
 						<textcolor>grey</textcolor>
@@ -82,8 +82,8 @@
 					<control type="image">
 						<left>0</left>
 						<top>0</top>
-						<width>880</width>
-						<height>125</height>
+						<right>0</right>
+						<bottom>0</bottom>
 						<texture colordiffuse="button_focus">lists/focus.png</texture>
 						<visible>Control.HasFocus(6)</visible>
 					</control>
@@ -98,7 +98,7 @@
 					<control type="label">
 						<left>135</left>
 						<top>0</top>
-						<width>730</width>
+						<right>20</right>
 						<height>60</height>
 						<aligny>center</aligny>
 						<scroll>true</scroll>
@@ -108,7 +108,7 @@
 					<control type="textbox">
 						<left>135</left>
 						<top>52</top>
-						<width>730</width>
+						<right>20</right>
 						<height>65</height>
 						<font>font12</font>
 						<label>$INFO[ListItem.Label2]</label>

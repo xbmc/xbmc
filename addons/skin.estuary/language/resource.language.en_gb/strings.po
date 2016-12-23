@@ -56,7 +56,10 @@ msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr ""
 
-#empty string with id 31008
+#: /xml/SkinSettings.xml
+msgctxt "#31008"
+msgid "Enable category widgets"
+msgstr ""
 
 #: /1080i/MyVideoNav.xml
 msgctxt "#31009"
@@ -585,12 +588,7 @@ msgctxt "#31131"
 msgid "Choose skin fanart pack"
 msgstr ""
 
-#: /1080i/MyVideoNav.xml /1080i/View_502_FanArt.xml
-msgctxt "#31132"
-msgid "min"
-msgstr ""
-
-#empty string with id 31133
+#empty strings from id 31132 to 31133
 
 #: /1080i/DialogSeekBar.xml
 msgctxt "#31134"
