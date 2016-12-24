@@ -103,8 +103,6 @@ above. The example below would use the macOS SDK 10.9:
 
     ./configure --host=arm-apple-darwin --with-sdk=10.9
 
-Ensure that you also adapt the Xcode project to use this SDK version.
-
 ### 3.3 Compile Kodi binary addons
 
 Kodi maintains a set of binary addons (PVR clients, Visualizations, Audio DSP

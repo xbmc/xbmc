@@ -103,8 +103,6 @@ above. The example below would use the iOS SDK 8.0:
 
     ./configure --host=arm-apple-darwin --with-sdk=8.0
 
-Ensure that you also adapt the Xcode project to use this SDK version.
-
 ### 3.3 Compile Kodi binary addons
 
 Kodi maintains a set of binary addons (PVR clients, Visualizations, Audio DSP
