@@ -133,7 +133,7 @@ used to configure CMake.
 
     mkdir $HOME/Kodi/build
     cd $HOME/Kodi/build
-    /Users/Shared/xbmc-depends/buildtools-native/bin/cmake -G Xcode -DCMAKE_TOOLCHAIN_FILE=/Users/Shared/xbmc-depends/iphoneos9.3_armv7-target/share/Toolchain.cmake ../project/cmake
+    /Users/Shared/xbmc-depends/buildtools-native/bin/cmake -G Xcode -DCMAKE_TOOLCHAIN_FILE=/Users/Shared/xbmc-depends/iphoneos9.3_armv7-target/share/Toolchain.cmake ..
 
 The toolchain file location differs depending on your iOS and SDK version and
 you have to replace `iphoneos9.3_armv7` in the filename above with the correct
@@ -172,7 +172,7 @@ compile with make:
 
     mkdir $HOME/Kodi/build
     cd $HOME/Kodi/build
-    /Users/Shared/xbmc-depends/buildtools-native/bin/cmake -DCMAKE_TOOLCHAIN_FILE=/Users/Shared/xbmc-depends/iphoneos9.3_armv7-target/share/Toolchain.cmake ../project/cmake
+    /Users/Shared/xbmc-depends/buildtools-native/bin/cmake -DCMAKE_TOOLCHAIN_FILE=/Users/Shared/xbmc-depends/iphoneos9.3_armv7-target/share/Toolchain.cmake ..
     make
 
 The `-G` parameter defines the type of the generated project. Here it either
@@ -228,6 +228,6 @@ From Xcode7 on this approach is also available for non paying app developers
 
 ## 6 References
 
-- [project/cmake/README.md](https://github.com/xbmc/xbmc/tree/master/project/cmake/README.md)
+- [cmake/README.md](https://github.com/xbmc/xbmc/tree/master/cmake/README.md)
 - [tools/depends/README](https://github.com/xbmc/xbmc/tree/master/tools/depends/README)
 - [iOS section in forum.kodi.tv](http://forum.kodi.tv/forumdisplay.php?fid=137)
