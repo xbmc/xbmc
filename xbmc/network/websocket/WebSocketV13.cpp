@@ -102,7 +102,7 @@ bool CWebSocketV13::Handshake(const char* data, size_t length, std::string &resp
 
   // There must be a "Connection" header with the value "Upgrade"
   value = header.getValue(WS_HEADER_CONNECTION_LC);
-  if (value == NULL || strstr(value, WS_HEADER_UPGRADE) == NULL)
+  if (value == NULL || strnicmp(value, WS_HEADER_UPGRADE, strlen(WS_HEADER_UPGRADE)) != 0)
   {
     CLog::Log(LOGINFO, "WebSocket [RFC6455]: invalid \"%s\" received", WS_HEADER_CONNECTION_LC);
     return true;
