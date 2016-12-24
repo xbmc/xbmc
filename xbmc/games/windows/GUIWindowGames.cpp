@@ -195,9 +195,6 @@ void CGUIWindowGames::GetContextButtons(int itemNumber, CContextButtons &buttons
         buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 208); // Play
       }
 
-      if (!m_vecItems->IsPlugin() && item->HasAddonInfo())
-        buttons.Add(CONTEXT_BUTTON_INFO, 24003); // Add-on information
-
       if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_FILELISTS_ALLOWFILEDELETION) && !item->IsReadOnly())
       {
         buttons.Add(CONTEXT_BUTTON_DELETE, 117);
