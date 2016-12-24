@@ -65,6 +65,19 @@ macro (build_addon target prefix libs)
 
   # if there's an addon.xml.in we need to generate the addon.xml
   if(EXISTS ${PROJECT_SOURCE_DIR}/${target}/addon.xml.in)
+    # Set defines used on addon.xml.in and readed from versions.h
+    # To set versions about add-on parts automatic
+    file(STRINGS ${KODI_INCLUDE_DIR}/versions.h BIN_ADDON_PARTS)
+    foreach(loop_var ${BIN_ADDON_PARTS})
+      string(FIND "${loop_var}" "#define" matchres)
+      if("${matchres}" EQUAL 0)
+        string(REGEX MATCHALL "[A-Z0-9._]+|[A-Z0-9._]+$" loop_var "${loop_var}")
+        list(GET loop_var 0 include_name)
+        list(GET loop_var 1 include_version)
+        string(REGEX REPLACE ".*\"(.*)\"" "\\1" ${include_name} ${include_version})
+      endif()
+    endforeach(loop_var)
+
     set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS ${PROJECT_SOURCE_DIR}/${target}/addon.xml.in)
     set(PLATFORM ${CORE_SYSTEM_NAME})
 
