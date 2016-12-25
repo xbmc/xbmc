@@ -26,7 +26,7 @@ msgstr "Cerca..."
 
 msgctxt "#31002"
 msgid "Show media fanart as background"
-msgstr "Mostra fanart elementi come sfondo"
+msgstr "Mostra elementi fanart come sfondo"
 
 msgctxt "#31003"
 msgid "Cinema mode"
@@ -38,7 +38,7 @@ msgstr "Cambia modalità"
 
 msgctxt "#31005"
 msgid "Watch as 2D"
-msgstr "Guarda come 2D"
+msgstr "Guarda in 2D"
 
 msgctxt "#31006"
 msgid "Random movies"
@@ -210,7 +210,7 @@ msgstr "Vai a Playlist"
 
 msgctxt "#31057"
 msgid "Show login screen on startup"
-msgstr "Mostra schermata login all'avvio"
+msgstr "Mostra schermata di login all'avvio"
 
 msgctxt "#31058"
 msgid "Automatic Login on startup"

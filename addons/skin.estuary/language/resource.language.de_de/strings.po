@@ -122,7 +122,7 @@ msgstr "Zuletzt angemeldet"
 
 msgctxt "#31030"
 msgid "System memory usage"
-msgstr "System Speicher-Auslastung:"
+msgstr "System Speicher-Auslastung"
 
 msgctxt "#31031"
 msgid "Version info"
@@ -310,7 +310,7 @@ msgstr "Kanal-Einstellungen"
 
 msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
-msgstr "Bitte Kodi-Benutzerprofil auswählen[CR]um fortzufahren"
+msgstr "Bitte Kodi-Benutzerprofil zum[CR]Anmelden und Fortfahren auswählen"
 
 msgctxt "#31099"
 msgid "IconWall"
@@ -322,7 +322,7 @@ msgstr "Shift"
 
 msgctxt "#31101"
 msgid "InfoWall"
-msgstr "Info Wall"
+msgstr "InfoWall"
 
 msgctxt "#31102"
 msgid "Wall"
@@ -510,7 +510,7 @@ msgstr "Es sind keine passenden Addons installiert. Bitte im Addon-Browser ein v
 
 msgctxt "#31154"
 msgid "Press OK to switch between locations"
-msgstr "OK zum Wechseln des Ortes drücken"
+msgstr "[B]OK[/B] zum Wechseln des Ortes drücken"
 
 msgctxt "#31155"
 msgid "No bookmarks created yet."
@@ -538,4 +538,4 @@ msgstr "Medien-Flags anzeigen"
 
 msgctxt "#31161"
 msgid "Numeric pad"
-msgstr "Zffernblock"
+msgstr "Ziffern-Eingabe"

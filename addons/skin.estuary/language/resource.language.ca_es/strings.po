@@ -118,7 +118,7 @@ msgstr "Mostr el fanart"
 
 msgctxt "#31029"
 msgid "Last logged in"
-msgstr "Última entrada"
+msgstr "Última autenticació"
 
 msgctxt "#31030"
 msgid "System memory usage"
@@ -210,11 +210,11 @@ msgstr "Vés a la llista de reproducció"
 
 msgctxt "#31057"
 msgid "Show login screen on startup"
-msgstr "Mostra la pantalla d'inici de sessió a l'inici"
+msgstr "Mostra la pantalla d'autenticació a l'inici"
 
 msgctxt "#31058"
 msgid "Automatic Login on startup"
-msgstr "Inici de sessió automàtic a l'inici"
+msgstr "Autenticació automàtica a l'inici"
 
 msgctxt "#31061"
 msgid "Main menu items"
@@ -310,7 +310,7 @@ msgstr "Opcions del canal"
 
 msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
-msgstr "Seleccioneu el vostre perfil d'usuari de Kodi[CR]per entrar i continuar"
+msgstr "Seleccioneu el vostre perfil d'usuari de Kodi[CR]per autenticar-vos i continuar"
 
 msgctxt "#31100"
 msgid "Shift"

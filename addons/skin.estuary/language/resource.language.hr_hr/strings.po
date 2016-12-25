@@ -24,6 +24,14 @@ msgctxt "#31001"
 msgid "Search..."
 msgstr "Traži..."
 
+msgctxt "#31002"
+msgid "Show media fanart as background"
+msgstr "Prikaži medija fanart kao pozadinu"
+
+msgctxt "#31003"
+msgid "Cinema mode"
+msgstr "Kino način"
+
 msgctxt "#31004"
 msgid "Change mode"
 msgstr "Promijeni način"
@@ -31,6 +39,34 @@ msgstr "Promijeni način"
 msgctxt "#31005"
 msgid "Watch as 2D"
 msgstr "Gledaj kao 2D"
+
+msgctxt "#31006"
+msgid "Random movies"
+msgstr "Nasumični filmovi"
+
+msgctxt "#31007"
+msgid "Unwatched movies"
+msgstr "Nepogledani filmovi"
+
+msgctxt "#31009"
+msgid "Download icons"
+msgstr "Preuzmi ikone"
+
+msgctxt "#31010"
+msgid "In progress movies"
+msgstr "Filmovi u tijeku"
+
+msgctxt "#31012"
+msgid "Random albums"
+msgstr "Nasumični albumi"
+
+msgctxt "#31013"
+msgid "Random artists"
+msgstr "Nasumični izvođači"
+
+msgctxt "#31017"
+msgid "Rated"
+msgstr "Ocijenjeno"
 
 msgctxt "#31019"
 msgid "Forecast"
@@ -44,9 +80,41 @@ msgctxt "#31021"
 msgid "Misc options"
 msgstr "Ostale mogućnosti"
 
+msgctxt "#31022"
+msgid "Sort by"
+msgstr "Sortiraj po"
+
+msgctxt "#31023"
+msgid "Viewtype"
+msgstr "Vrsta prikaza"
+
 msgctxt "#31029"
 msgid "Last logged in"
 msgstr "Posljednji prijavljen"
+
+msgctxt "#31030"
+msgid "System memory usage"
+msgstr "Iskorištenost sistemske memorije"
+
+msgctxt "#31031"
+msgid "Version info"
+msgstr "Informacije o inačici"
+
+msgctxt "#31032"
+msgid "Order"
+msgstr "Redoslijed"
+
+msgctxt "#31034"
+msgid "Extended info"
+msgstr "Proširene informacije"
+
+msgctxt "#31035"
+msgid "Pages"
+msgstr "Stranice"
+
+msgctxt "#31036"
+msgid "items"
+msgstr "stavke"
 
 msgctxt "#31038"
 msgid "Rewind"
@@ -72,21 +140,69 @@ msgctxt "#31046"
 msgid "Delete group"
 msgstr "Obriši grupu"
 
+msgctxt "#31048"
+msgid "Available"
+msgstr "Dostupno"
+
+msgctxt "#31050"
+msgid "Press [B]OK[/B] to stop"
+msgstr "Pritisnuti [B]OK[/B] za kraj"
+
+msgctxt "#31051"
+msgid "Toggle language"
+msgstr "Prebaci jezik"
+
+msgctxt "#31052"
+msgid "filtered"
+msgstr "filtrirano"
+
 msgctxt "#31053"
 msgid "Arial based"
 msgstr "Temeljen na Arialu "
+
+msgctxt "#31067"
+msgid "Event log"
+msgstr "Zapisnik događaja"
+
+msgctxt "#31068"
+msgid "Choose presets"
+msgstr "Odaberi predložak"
 
 msgctxt "#31069"
 msgid "Last Updated"
 msgstr "Posljednje ažurirano"
 
+msgctxt "#31071"
+msgid "by"
+msgstr "po"
+
 msgctxt "#31072"
 msgid "Power Options"
 msgstr "Mogućnosti energije"
 
+msgctxt "#31075"
+msgid "Movie sets"
+msgstr "Filmske kolekcije"
+
+msgctxt "#31079"
+msgid "Cast not available"
+msgstr "Glumci nedostupni"
+
+msgctxt "#31080"
+msgid "Ends at"
+msgstr "Završava u"
+
 msgctxt "#31082"
 msgid "Lyrics add-on"
 msgstr "Dodatak za tekstove pjesama"
+
+msgctxt "#31089"
+msgid "Available groups"
+msgstr "Dostupne grupe"
+
+msgctxt "#31095"
+msgid "Use slide animations"
+msgstr "Koristi animacije"
 
 msgctxt "#31096"
 msgid "Local subtitle available"
@@ -100,6 +216,94 @@ msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "Odaberite svoj Kodi korisnički profil[CR]za prijavu i nastavak"
 
+msgctxt "#31099"
+msgid "IconWall"
+msgstr "Ikona zid"
+
 msgctxt "#31100"
 msgid "Shift"
-msgstr "Shift"
+msgstr "Pomicanje"
+
+msgctxt "#31101"
+msgid "InfoWall"
+msgstr "Info zid"
+
+msgctxt "#31102"
+msgid "Wall"
+msgstr "Zid"
+
+msgctxt "#31103"
+msgid "Enter text here..."
+msgstr "Unesite tekst ovdje..."
+
+msgctxt "#31106"
+msgid "Teletext"
+msgstr "Teletekst"
+
+msgctxt "#31107"
+msgid "WideList"
+msgstr "Široka lista"
+
+msgctxt "#31112"
+msgid "Toggle audio stream"
+msgstr "Prebaci audio stream"
+
+msgctxt "#31114"
+msgid "Search YouTube"
+msgstr "Pretraži YouTube"
+
+msgctxt "#31118"
+msgid "Enter add-on browser"
+msgstr "Pregled dodataka"
+
+msgctxt "#31122"
+msgid "Unwatched TV Shows"
+msgstr "Nepogledane TV serije"
+
+msgctxt "#31123"
+msgid "Same director"
+msgstr "Isti redatelj"
+
+msgctxt "#31127"
+msgid "Show icons"
+msgstr "Prikaži ikone"
+
+msgctxt "#31128"
+msgid "Contributors"
+msgstr "Suradnici"
+
+msgctxt "#31134"
+msgid "Remaining"
+msgstr "Preostalo"
+
+msgctxt "#31136"
+msgid "Click here to see latest changes..."
+msgstr "Pritisnite ovdje da bi vidjeli zadnje obavijesti..."
+
+msgctxt "#31139"
+msgid "Video decoder"
+msgstr "Video dekoder"
+
+msgctxt "#31142"
+msgid "Play speed"
+msgstr "Brzina izvođenja"
+
+msgctxt "#31144"
+msgid "Enter add-on browser"
+msgstr "Pregled dodataka"
+
+msgctxt "#31145"
+msgid "Search add-ons"
+msgstr "Pretraži dodatke"
+
+msgctxt "#31148"
+msgid "Categories"
+msgstr "Kategorije"
+
+msgctxt "#31150"
+msgid "Repository"
+msgstr "Skladište"
+
+msgctxt "#31157"
+msgid "Edit categories"
+msgstr "Uredi kategorije"

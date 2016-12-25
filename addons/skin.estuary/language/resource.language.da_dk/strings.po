@@ -107,3 +107,7 @@ msgstr "Shift"
 msgctxt "#31106"
 msgid "Teletext"
 msgstr "Tekst-tv"
+
+msgctxt "#31142"
+msgid "Play speed"
+msgstr "Afspilningshastighed"

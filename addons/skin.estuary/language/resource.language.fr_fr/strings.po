@@ -222,7 +222,7 @@ msgstr "Menu principal"
 
 msgctxt "#31062"
 msgid "Choose weather fanart pack"
-msgstr "Choisir le pack de FanArt pour la météo"
+msgstr "Choisir le paquet de FanArts pour la météo"
 
 msgctxt "#31063"
 msgid "Sections"
@@ -334,7 +334,7 @@ msgstr "Saisir le texte ici…"
 
 msgctxt "#31104"
 msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
-msgstr "La bibliothèque est actuellement vide. Pour la peupler avec des médias, aller à la section « Fichiers », ajouter une source de médias puis la configurer. Après ajout et indexation, la bibliothèque pourra être parcourue."
+msgstr "La médiathèque est actuellement vide. Pour la peupler avec des médias, aller à la section « Fichiers », ajouter une source de médias puis la configurer. Après ajout et indexation, la médiathèque pourra être parcourue."
 
 msgctxt "#31105"
 msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
@@ -362,7 +362,7 @@ msgstr "Changer de flux audio"
 
 msgctxt "#31113"
 msgid "Search local library"
-msgstr "Rechercher dans la bibliothèque locale"
+msgstr "Rechercher dans la médiathèque locale"
 
 msgctxt "#31114"
 msgid "Search YouTube"
@@ -434,7 +434,7 @@ msgstr "Paramètres relatifs au menu principal : configurer l'écran d'accueil c
 
 msgctxt "#31131"
 msgid "Choose skin fanart pack"
-msgstr "Choisir le pack de FanArt pour l'habillage"
+msgstr "Choisir le paquet de FanArts pour l'habillage"
 
 msgctxt "#31132"
 msgid "min"
