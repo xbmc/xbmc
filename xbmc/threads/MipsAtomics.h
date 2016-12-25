@@ -24,9 +24,6 @@
 #pragma once
 
 #include <inttypes.h>
-#include <pthread.h>
-
-extern pthread_mutex_t cmpxchg_mutex;
 
 static inline long cmpxchg32(volatile long *m, long oldval, long newval)
 {
@@ -52,20 +49,6 @@ static inline long cmpxchg32(volatile long *m, long oldval, long newval)
 		: "memory");						\
 
 	return retval;
-}
-
-
-static inline long long cmpxchg64(volatile long long *ptr,
-				      long long oldval, long long newval)
-{
-	long long prev;
-
-	pthread_mutex_lock(&cmpxchg_mutex);
-	prev = *(long long *)ptr;
-	if (prev == oldval)
-		*(long long *)ptr = newval;
-	pthread_mutex_unlock(&cmpxchg_mutex);
-	return prev;
 }
 
 

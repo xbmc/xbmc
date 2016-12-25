@@ -53,35 +53,6 @@ public:
   }
 };
 
-class DoAdd : public IRunnable
-{
-  long* number;
-  long toAdd;
-
-public:
-  inline DoAdd(long* num, long toAd) : number(num), toAdd(toAd) {}
-
-  virtual void Run()
-  {
-    for (long i = 0; i<TESTNUM; i++)
-      AtomicAdd(number,toAdd);
-  }
-};
-
-class DoSubtract : public IRunnable
-{
-  long* number;
-  long toAdd;
-public:
-  inline DoSubtract(long* num, long toAd) : number(num), toAdd(toAd) {}
-
-  virtual void Run()
-  {
-    for (long i = 0; i<TESTNUM; i++)
-      AtomicSubtract(number,toAdd);
-  }
-};
-
 TEST(TestMassAtomic, Increment)
 {
   long lNumber = 0;
@@ -112,38 +83,6 @@ TEST(TestMassAtomic, Decrement)
   EXPECT_EQ(0, lNumber);
  }
 
-TEST(TestMassAtomic, Add)
-{
-  long lNumber = 0;
-  long toAdd = 10;
-  DoAdd da(&lNumber,toAdd);
-
-  std::vector<std::shared_ptr<thread>> t(NUMTHREADS);
-  for(size_t i=0; i<NUMTHREADS; i++)
-    t[i].reset(new thread(da));
-
-  for(size_t i=0; i<NUMTHREADS; i++)
-    t[i]->join();
-
-  EXPECT_EQ((NUMTHREADS * TESTNUM) * toAdd, lNumber);
- }
-
-TEST(TestMassAtomic, Subtract)
-{
-  long toSubtract = 10;
-  long lNumber = (NUMTHREADS * TESTNUM) * toSubtract;
-  DoSubtract ds(&lNumber,toSubtract);
-
-  std::vector<std::shared_ptr<thread>> t(NUMTHREADS);
-  for(size_t i=0; i<NUMTHREADS; i++)
-    t[i].reset(new thread(ds));
-
-  for(size_t i=0; i<NUMTHREADS; i++)
-    t[i]->join();
-
-  EXPECT_EQ(0, lNumber);
- }
-
 #define STARTVAL 767856l
 
 TEST(TestAtomic, Increment)
@@ -159,18 +98,3 @@ TEST(TestAtomic, Decrement)
   EXPECT_EQ(STARTVAL - 1l, AtomicDecrement(&check));
   EXPECT_EQ(STARTVAL - 1l,check);
 }
-
-TEST(TestAtomic, Add)
-{
-  long check = STARTVAL;
-  EXPECT_EQ(STARTVAL + 123l, AtomicAdd(&check,123l));
-  EXPECT_EQ(STARTVAL + 123l,check);
-}
-
-TEST(TestAtomic, Subtract)
-{
-  long check = STARTVAL;
-  EXPECT_EQ(STARTVAL - 123l, AtomicSubtract(&check,123l));
-  EXPECT_EQ(STARTVAL - 123l, check);
-}
-
