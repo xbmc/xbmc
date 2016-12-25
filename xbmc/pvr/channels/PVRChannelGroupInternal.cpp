@@ -220,7 +220,7 @@ int CPVRChannelGroupInternal::GetMembers(CFileItemList &results, bool bGroupMemb
 
 int CPVRChannelGroupInternal::LoadFromDb(bool bCompress /* = false */)
 {
-  CPVRDatabase *database = GetPVRDatabase();
+  const CPVRDatabasePtr database(g_PVRManager.GetTVDatabase());
   if (!database)
     return -1;
 

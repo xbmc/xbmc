@@ -269,7 +269,7 @@ void CPVRChannelGroup::SearchAndSetChannelIcons(bool bUpdateDb /* = false */)
   if (iconPath.empty())
     return;
 
-  CPVRDatabase *database = GetPVRDatabase();
+  const CPVRDatabasePtr database(g_PVRManager.GetTVDatabase());
   if (!database)
     return;
 
@@ -586,7 +586,7 @@ CPVRChannelGroupPtr CPVRChannelGroup::GetPreviousGroup(void) const
 
 int CPVRChannelGroup::LoadFromDb(bool bCompress /* = false */)
 {
-  CPVRDatabase *database = GetPVRDatabase();
+  const CPVRDatabasePtr database(g_PVRManager.GetTVDatabase());
   if (!database)
     return -1;
 
@@ -703,13 +703,13 @@ bool CPVRChannelGroup::UpdateGroupEntries(const CPVRChannelGroup &channels)
   bool bChanged(false);
   bool bRemoved(false);
 
+  const CPVRDatabasePtr database(g_PVRManager.GetTVDatabase());
+  if (!database)
+    return bReturn;
+
   CSingleLock lock(m_critSection);
   /* sort by client channel number if this is the first time or if pvrmanager.backendchannelorder is true */
   bool bUseBackendChannelNumbers(m_members.empty() || m_bUsingBackendChannelOrder);
-
-  CPVRDatabase *database = GetPVRDatabase();
-  if (!database)
-    return bReturn;
 
   bRemoved = RemoveDeletedChannels(channels);
   bChanged = AddAndUpdateChannels(channels, bUseBackendChannelNumbers) || bRemoved;
@@ -841,6 +841,8 @@ bool CPVRChannelGroup::SetGroupName(const std::string &strGroupName, bool bSaveI
 bool CPVRChannelGroup::Persist(void)
 {
   bool bReturn(true);
+  const CPVRDatabasePtr database(g_PVRManager.GetTVDatabase());
+
   CSingleLock lock(m_critSection);
 
   /* only persist if the group has changes and is fully loaded or never has been saved before */
@@ -851,7 +853,7 @@ bool CPVRChannelGroup::Persist(void)
   if (m_iGroupId == -1)
     m_bLoaded = true;
 
-  if (CPVRDatabase *database = GetPVRDatabase())
+  if (database)
   {
     CLog::Log(LOGDEBUG, "CPVRChannelGroup - %s - persisting channel group '%s' with %d channels",
         __FUNCTION__, GroupName().c_str(), (int) m_members.size());
@@ -1142,6 +1144,8 @@ time_t CPVRChannelGroup::LastWatched(void) const
 
 bool CPVRChannelGroup::SetLastWatched(time_t iLastWatched)
 {
+  const CPVRDatabasePtr database(g_PVRManager.GetTVDatabase());
+
   CSingleLock lock(m_critSection);
 
   if (m_iLastWatched != iLastWatched)
@@ -1150,7 +1154,7 @@ bool CPVRChannelGroup::SetLastWatched(time_t iLastWatched)
     lock.Leave();
 
     /* update the database immediately */
-    if (CPVRDatabase *database = GetPVRDatabase())
+    if (database)
       return database->UpdateLastWatched(*this);
   }
 
