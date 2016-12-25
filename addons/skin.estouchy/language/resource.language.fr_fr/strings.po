@@ -198,7 +198,7 @@ msgstr "Configuration des actions pouvant être effectuées pendant la lecture �
 
 msgctxt "#31409"
 msgid "Configure library sources · Show the media lists display content · Configure how library lists are navigated"
-msgstr "Configuration des sources de la bibliothèque · Configuration de la manière dont les listes de média affichent le contenu · Configuration de la navigation des listes de la bibliothèque"
+msgstr "Configuration des sources de la médiathèque · Configuration de la manière dont les listes de médias affichent le contenu · Configuration de la navigation des listes de la médiathèque"
 
 msgctxt "#31410"
 msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"

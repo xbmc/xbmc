@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="skin.estouchy" version="1.1.2" name="Estouchy" provider-name="Team Kodi">
+<addon id="skin.estouchy" version="1.1.3" name="Estouchy" provider-name="Team Kodi">
 	<requires>
 		<import addon="xbmc.gui" version="5.12.0"/>
 	</requires>
@@ -40,6 +40,7 @@
 		<summary lang="sr_RS@latin">Maska za uređaje sa ekranom osetljivim na dodir</summary>
 		<summary lang="sv_SE">Skin för enheter med touchskärm</summary>
 		<summary lang="szl">Skōra dlŏ maszin z tykowym ekranym</summary>
+		<summary lang="th_TH">หน้าตาสำหรับอุปกรณ์สัมผัส</summary>
 		<summary lang="tr_TR">Dokunmatik ekranlı aygıtlar için dış görünüm</summary>
 		<summary lang="zh_CN">针对触屏设备的皮肤</summary>
 		<summary lang="zh_TW">為具有觸控螢幕的裝置所製作的佈景主題</summary>
@@ -75,6 +76,7 @@
 		<description lang="sr_RS@latin">Maska dizajnirana da bi bila korišćena na uređajima sa ekranima osetljivim na dodir kao što su tableti i pametni telefoni</description>
 		<description lang="sv_SE">Skal avsedd att användas på enheter med pekskärm som surfplattor och smarttelefoner</description>
 		<description lang="szl">Skōra dlŏ maszin ze tykowym ekranym, jak tablety i smartfōny.</description>
+		<description lang="th_TH">หน้าตาที่ออกแบบมาเพื่อใช้งานบนอุปกรณ์หน้าจอสัมผัส เช่น แท็บเล็ตและสมาร์ทโฟน</description>
 		<description lang="tr_TR">Bu dış görünüm tabletler ve akıllı telefonlar gibi dokunmatik ekranlı aygıtlarda kullanılmak üzere tasarlandı</description>
 		<description lang="zh_CN">为触屏设备如平板电脑和智能手机而设计的皮肤</description>
 		<description lang="zh_TW">本佈景主題專為平板及手機等具有觸控螢幕的裝置而設計</description>

@@ -84,6 +84,10 @@ msgctxt "#31045"
 msgid "REWIND"
 msgstr "PŘETÁČÍ SE ZPĚT"
 
+msgctxt "#31046"
+msgid "Play speed"
+msgstr "Rychlost přehrávání"
+
 msgctxt "#31049"
 msgid "End Time"
 msgstr "Čas ukončení"

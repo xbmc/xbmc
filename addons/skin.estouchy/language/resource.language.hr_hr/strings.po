@@ -76,6 +76,10 @@ msgctxt "#31045"
 msgid "REWIND"
 msgstr "PREMOTAVANJE UNAZAD"
 
+msgctxt "#31046"
+msgid "Play speed"
+msgstr "Brzina izvođenja"
+
 msgctxt "#31049"
 msgid "End Time"
 msgstr "Vrijeme završetka"
@@ -148,6 +152,10 @@ msgctxt "#31356"
 msgid "Download Subtitles"
 msgstr "Preuzmi podnaslove"
 
+msgctxt "#31358"
+msgid "Teletext"
+msgstr "Teletekst"
+
 msgctxt "#31390"
 msgid "Skin default"
 msgstr "Zadana presvlaka"
@@ -179,6 +187,10 @@ msgstr "TV uživo"
 msgctxt "#31557"
 msgid "Hide video background"
 msgstr "Sakrij video pozadinu"
+
+msgctxt "#31560"
+msgid "Available groups"
+msgstr "Dostupne grupe"
 
 msgctxt "#31561"
 msgid "Add Group"

@@ -76,6 +76,10 @@ msgctxt "#31045"
 msgid "REWIND"
 msgstr "SPOL TILBAGE"
 
+msgctxt "#31046"
+msgid "Play speed"
+msgstr "Afspilningshastighed"
+
 msgctxt "#31049"
 msgid "End Time"
 msgstr "Sluttidspunkt"
@@ -131,6 +135,10 @@ msgstr "Sidst Opdateret"
 msgctxt "#31303"
 msgid "Data provider"
 msgstr "Dataleverandør"
+
+msgctxt "#31309"
+msgid "System Memory Used:"
+msgstr "System hukommelse ibrug:"
 
 msgctxt "#31320"
 msgid "Last Logged In"
