@@ -602,7 +602,7 @@ void CGUIEPGGridContainer::UpdateItems()
     }
   }
 
-  if (prevSelectedEpgTag)
+  if (prevSelectedEpgTag && (oldChannelIndex != 0 || oldBlockIndex != 0))
   {
     if (m_gridModel->GetGridItem(newChannelIndex, newBlockIndex)->GetEPGInfoTag() != prevSelectedEpgTag)
       m_gridModel->FindChannelAndBlockIndex(channelUid, broadcastUid, eventOffset, newChannelIndex, newBlockIndex);
