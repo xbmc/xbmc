@@ -62,6 +62,7 @@ public:
   static const std::string SETTING_LOCALE_COUNTRY;
   static const std::string SETTING_LOCALE_CHARSET;
   static const std::string SETTING_LOCALE_KEYBOARDLAYOUTS;
+  static const std::string SETTING_LOCALE_ACTIVEKEYBOARDLAYOUT;
   static const std::string SETTING_LOCALE_TIMEZONECOUNTRY;
   static const std::string SETTING_LOCALE_TIMEZONE;
   static const std::string SETTING_LOCALE_SHORTDATEFORMAT;

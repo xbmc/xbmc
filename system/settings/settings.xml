@@ -3275,6 +3275,10 @@
             <multiselect>true</multiselect>
           </control>
         </setting>
+        <setting id="locale.activekeyboardlayout" type="string" label="0" help="0">
+          <level>4</level>
+          <default>English QWERTY</default>
+        </setting>
       </group>
       <group id="2" label="14270">
         <setting id="locale.country" type="string" label="14271" help="36115">
