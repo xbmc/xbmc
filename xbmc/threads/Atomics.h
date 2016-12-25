@@ -20,15 +20,14 @@
  *
  */
 
-//! @todo Inline these methods
-long cas(volatile long *pAddr, long expectedVal, long swapVal);
+#include <atomic>
 
 class CAtomicSpinLock
 {
 public:
-  CAtomicSpinLock(long& lock);
+  CAtomicSpinLock(std::atomic_flag& lock);
   ~CAtomicSpinLock();
 private:
-  long& m_Lock;
+  std::atomic_flag& m_Lock;
 };
 

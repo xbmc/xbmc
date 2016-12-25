@@ -20,6 +20,7 @@
  *
  */
 
+#include <atomic>
 #include <map>
 #include <string>
 #include <utility>
@@ -135,7 +136,7 @@ private:
   bool m_started;
 
   //protects singleton creation/destruction
-  static long sm_singleton_guard;
+  static std::atomic_flag sm_singleton_guard;
   static CZeroconf* smp_instance;
 
   class CPublish : public CJob
