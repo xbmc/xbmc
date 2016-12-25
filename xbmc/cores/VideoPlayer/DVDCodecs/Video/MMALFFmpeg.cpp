@@ -115,7 +115,7 @@ CDecoder::~CDecoder()
 long CDecoder::Release()
 {
   if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-    CLog::Log(LOGDEBUG, "%s::%s - m_refs:%ld", CLASSNAME, __FUNCTION__, m_refs);
+    CLog::Log(LOGDEBUG, "%s::%s - m_refs:%ld", CLASSNAME, __FUNCTION__, m_refs.load());
   return IHardwareDecoder::Release();
 }
 

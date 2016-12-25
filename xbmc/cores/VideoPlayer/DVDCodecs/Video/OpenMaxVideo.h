@@ -36,14 +36,14 @@ template<typename T> struct IDVDResourceCounted2
   virtual ~IDVDResourceCounted2() {}
   virtual T*   Acquire()
   {
-    printf("Acquire %p %d\n", this, m_refs);
+    printf("Acquire %p %d\n", this, m_refs.load());
     ++m_refs;
     return (T*)this;
   }
 
   virtual long Release()
   {
-    printf("Release %p %d\n", this, m_refs);
+    printf("Release %p %d\n", this, m_refs.load());
     --m_refs;
     assert(m_refs >= 0);
     if (m_refs == 0) delete (T*)this;

@@ -22,8 +22,6 @@
 
 //! @todo Inline these methods
 long cas(volatile long *pAddr, long expectedVal, long swapVal);
-long AtomicIncrement(volatile long* pAddr);
-long AtomicDecrement(volatile long* pAddr);
 
 class CAtomicSpinLock
 {

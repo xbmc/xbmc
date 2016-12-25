@@ -34,7 +34,6 @@
 #include "PlayListPlayer.h"
 #import "playlists/PlayList.h"
 
-#import "threads/Atomics.h"
 #import "platform/darwin/ios-common/AnnounceReceiver.h"
 #if defined(TARGET_DARWIN_TVOS)
 #import "platform/darwin/tvos/MainController.h"
