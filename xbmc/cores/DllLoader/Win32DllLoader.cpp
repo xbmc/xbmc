@@ -303,19 +303,19 @@ void Win32DllLoader::OverrideImports(const std::string &dll)
         // save the old function
         Import import;
         import.table = &first_thunk[j].u1.Function;
-        import.function = first_thunk[j].u1.Function;
+        import.function = (void *)first_thunk[j].u1.Function;
         m_overriddenImports.push_back(import);
 
         DWORD old_prot = 0;
 
         // change to protection settings so we can write to memory area
-        VirtualProtect((PVOID)&first_thunk[j].u1.Function, 4, PAGE_EXECUTE_READWRITE, &old_prot);
+        VirtualProtect((LPVOID)&first_thunk[j].u1.Function, sizeof(void*), PAGE_EXECUTE_READWRITE, &old_prot);
 
         // patch the address of function to point to our overridden version
-        first_thunk[j].u1.Function = (DWORD)fixup;
+        first_thunk[j].u1.Function = (DWORD_PTR)fixup;
 
         // reset to old settings
-        VirtualProtect((PVOID)&first_thunk[j].u1.Function, 4, old_prot, &old_prot);
+        VirtualProtect((LPVOID)&first_thunk[j].u1.Function, sizeof(void*), old_prot, &old_prot);
       }
     }
   }
@@ -356,12 +356,12 @@ void Win32DllLoader::RestoreImports()
 
     // change to protection settings so we can write to memory area
     DWORD old_prot = 0;
-    VirtualProtect(import.table, 4, PAGE_EXECUTE_READWRITE, &old_prot);
+    VirtualProtect(import.table, sizeof(void*), PAGE_EXECUTE_READWRITE, &old_prot);
 
-    *(DWORD *)import.table = import.function;
+    *(LPVOID *)import.table = import.function;
 
     // reset to old settings
-    VirtualProtect(import.table, 4, old_prot, &old_prot);
+    VirtualProtect(import.table, sizeof(void*), old_prot, &old_prot);
   }
 }
 
