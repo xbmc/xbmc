@@ -950,7 +950,8 @@ bool CEpgInfoTag::Update(const CEpgInfoTag &tag, bool bUpdateBroadcastId /* = tr
         EpgID()              != tag.EpgID() ||
         m_pvrChannel         != tag.m_pvrChannel ||
         m_genre              != tag.m_genre ||
-        m_strRecordingId     != tag.m_strRecordingId
+        m_strRecordingId     != tag.m_strRecordingId ||
+        m_strIconPath        != tag.m_strIconPath
     );
     if (bUpdateBroadcastId)
       bChanged = bChanged || m_iBroadcastId != tag.m_iBroadcastId;
@@ -989,6 +990,7 @@ bool CEpgInfoTag::Update(const CEpgInfoTag &tag, bool bUpdateBroadcastId /* = tr
       m_strEpisodeName     = tag.m_strEpisodeName;
       m_iUniqueBroadcastID = tag.m_iUniqueBroadcastID;
       m_strRecordingId     = tag.m_strRecordingId;
+      m_strIconPath        = tag.m_strIconPath;
 
       m_bChanged = true;
     }
