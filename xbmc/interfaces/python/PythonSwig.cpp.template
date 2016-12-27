@@ -160,7 +160,8 @@ void doMethod(Node method, MethodType methodType)
       if (useKeywordParsing && !doAsMappingIndex)
       { %>
     static const char *keywords[] = {<%
-          params.each { %>
+          params.each {
+          it.@name = it.@name.replace("defaultt", "default") %>
           "${it.@name}",<% } %>
           NULL};
 <%    }
