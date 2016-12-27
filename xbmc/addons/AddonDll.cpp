@@ -283,7 +283,8 @@ bool CAddonDll::CheckAPIVersion(int type)
 {
   /* check the API version */
   const char* kodiVersion = kodi::addon::GetTypeVersion(type);
-  const char* addonVersion = m_pDll->GetAddonTypeVersion(type);
+  const char* addonVersion = nullptr;
+  m_pDll->GetAddonTypeVersion(type, &addonVersion);
 
   if (AddonVersion(addonVersion) != AddonVersion(kodiVersion))
   {

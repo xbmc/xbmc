@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon id="kodi.guilib" version="@guilib_version@" provider-name="Team-Kodi">
+  <backwards-compatibility abi="@guilib_version_min@"/>
+  <requires>
+    <import addon="xbmc.core" version="0.1.0"/>
+  </requires>
+</addon>

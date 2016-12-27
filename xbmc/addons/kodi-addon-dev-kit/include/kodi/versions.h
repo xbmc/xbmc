@@ -38,18 +38,18 @@
  * overview.
  */
 
-#define GLOBAL_VERSION_MAIN                     "1.0.0"
-#define GLOBAL_VERSION_GUI                      "5.11.1"
+#define ADDON_GLOBAL_VERSION_MAIN                     "1.0.0"
+#define ADDON_GLOBAL_VERSION_GUI                      "5.11.1"
 
-#define INSTANCE_VERSION_ADSP                   "0.1.10"
-#define INSTANCE_VERSION_AUDIODECODER           "1.0.1"
-#define INSTANCE_VERSION_AUDIOENCODER           "1.0.1"
-#define INSTANCE_VERSION_GAME                   "1.0.29"
-#define INSTANCE_VERSION_INPUTSTREAM            "1.0.8"
-#define INSTANCE_VERSION_PERIPHERAL             "1.2.3"
-#define INSTANCE_VERSION_PVR                    "5.2.3"
-#define INSTANCE_VERSION_SCREENSAVER            "1.0.1"
-#define INSTANCE_VERSION_VISUALIZATION          "1.0.1"
+#define ADDON_INSTANCE_VERSION_ADSP                   "0.1.10"
+#define ADDON_INSTANCE_VERSION_AUDIODECODER           "1.0.1"
+#define ADDON_INSTANCE_VERSION_AUDIOENCODER           "1.0.1"
+#define ADDON_INSTANCE_VERSION_GAME                   "1.0.29"
+#define ADDON_INSTANCE_VERSION_INPUTSTREAM            "1.0.8"
+#define ADDON_INSTANCE_VERSION_PERIPHERAL             "1.2.3"
+#define ADDON_INSTANCE_VERSION_PVR                    "5.2.3"
+#define ADDON_INSTANCE_VERSION_SCREENSAVER            "1.0.1"
+#define ADDON_INSTANCE_VERSION_VISUALIZATION          "1.0.1"
 
 /*
  * The currently used types for Kodi add-ons
@@ -96,29 +96,29 @@ inline const char* GetTypeVersion(int type)
   {
     /* addon global parts */
     case ADDON_GLOBAL_MAIN:
-      return GLOBAL_VERSION_MAIN;
+      return ADDON_GLOBAL_VERSION_MAIN;
     case ADDON_GLOBAL_GUI:
-      return GLOBAL_VERSION_GUI;
+      return ADDON_GLOBAL_VERSION_GUI;
 
     /* addon type instances */
     case ADDON_INSTANCE_ADSP:
-      return INSTANCE_VERSION_ADSP;
+      return ADDON_INSTANCE_VERSION_ADSP;
     case ADDON_INSTANCE_AUDIODECODER:
-      return INSTANCE_VERSION_AUDIODECODER;
+      return ADDON_INSTANCE_VERSION_AUDIODECODER;
     case ADDON_INSTANCE_AUDIOENCODER:
-      return INSTANCE_VERSION_AUDIOENCODER;
+      return ADDON_INSTANCE_VERSION_AUDIOENCODER;
     case ADDON_INSTANCE_GAME:
-      return INSTANCE_VERSION_GAME;
+      return ADDON_INSTANCE_VERSION_GAME;
     case ADDON_INSTANCE_INPUTSTREAM:
-      return INSTANCE_VERSION_INPUTSTREAM;
+      return ADDON_INSTANCE_VERSION_INPUTSTREAM;
     case ADDON_INSTANCE_PERIPHERAL:
-      return INSTANCE_VERSION_PERIPHERAL;
+      return ADDON_INSTANCE_VERSION_PERIPHERAL;
     case ADDON_INSTANCE_PVR:
-      return INSTANCE_VERSION_PVR;
+      return ADDON_INSTANCE_VERSION_PVR;
     case ADDON_INSTANCE_SCREENSAVER:
-      return INSTANCE_VERSION_SCREENSAVER;
+      return ADDON_INSTANCE_VERSION_SCREENSAVER;
     case ADDON_INSTANCE_VISUALIZATION:
-      return INSTANCE_VERSION_VISUALIZATION;
+      return ADDON_INSTANCE_VERSION_VISUALIZATION;
   }
   return "0.0.0";
 }
