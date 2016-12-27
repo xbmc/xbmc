@@ -392,11 +392,6 @@ namespace PVR
     void TriggerChannelGroupsUpdate(void);
 
     /*!
-     * @brief Let the background thread save the current video settings.
-     */
-    void TriggerSaveChannelSettings(void);
-
-    /*!
      * @brief Update the channel that is currently active.
      * @param item The new channel.
      * @return True if it was updated correctly, false otherwise.
@@ -499,16 +494,6 @@ namespace PVR
     void SearchMissingChannelIcons(void);
 
     /*!
-     * @brief Persist the current channel settings in the database.
-     */
-    void SaveCurrentChannelSettings(void);
-
-    /*!
-     * @brief Load the settings for the current channel from the database.
-     */
-    void LoadCurrentChannelSettings(void);
-
-    /*!
      * @brief Check if channel is parental locked. Ask for PIN if neccessary.
      * @param channel The channel to open.
      * @return True if channel is unlocked (by default or PIN unlocked), false otherwise.
@@ -568,6 +553,18 @@ namespace PVR
      * @return If at least one client and all pvr data was loaded, false otherwise.
      */
     bool Load(void);
+    
+    /*!
+     * @brief Persist the current channel settings in the database.
+     * @param channel the channel which settings should be saved.
+     */
+    void SaveChannelSettings(const CPVRChannel &channel);
+
+    /*!
+     * @brief Load the settings for the current channel from the database.
+     * @param channel the channel which settings should be loaded.
+     */
+    void LoadChannelSettings(const CPVRChannel &channel);
 
     /*!
      * @brief Update all recordings.
@@ -721,16 +718,6 @@ namespace PVR
     virtual const char *GetType() const { return "pvr-update-channelgroups"; }
 
     virtual bool DoWork();
-  };
-
-  class CPVRChannelSettingsSaveJob : public CJob
-  {
-  public:
-    CPVRChannelSettingsSaveJob(void) {}
-    virtual ~CPVRChannelSettingsSaveJob() {}
-    virtual const char *GetType() const { return "pvr-save-channelsettings"; }
-
-    bool DoWork();
   };
 
   class CPVRChannelSwitchJob : public CJob

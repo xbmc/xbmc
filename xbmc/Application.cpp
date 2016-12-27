@@ -4469,9 +4469,6 @@ void CApplication::StopPlaying()
       m_pKaraokeMgr->Stop();
 #endif
 
-    if (g_PVRManager.IsPlayingTV() || g_PVRManager.IsPlayingRadio())
-      g_PVRManager.SaveCurrentChannelSettings();
-
     m_pPlayer->CloseFile();
 
     // turn off visualisation window when stopping
@@ -5751,10 +5748,6 @@ void CApplication::SaveCurrentFileSettings()
       dbs.SetVideoSettings(m_itemCurrentFile->GetPath(), CMediaSettings::Get().GetCurrentVideoSettings());
       dbs.Close();
     }
-  }
-  else if (m_itemCurrentFile->IsPVRChannel())
-  {
-    g_PVRManager.SaveCurrentChannelSettings();
   }
 }
 
