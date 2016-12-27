@@ -601,6 +601,7 @@
   </Pictures>
   <ContextMenu>
     <keyboard>
+      <y>Back</y> <!-- For easy "SwitchPlayer" window closing when using the Y key -->
       <c>Back</c>
       <menu>Back</menu>
     </keyboard>
