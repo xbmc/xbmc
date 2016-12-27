@@ -45,9 +45,9 @@ extern "C" {
   unsigned int __declspec(dllexport) ADDON_GetSettings(ADDON_StructSetting ***sSet);
   ADDON_STATUS __declspec(dllexport) ADDON_SetSetting(const char *settingName, const void *settingValue);
   void         __declspec(dllexport) ADDON_FreeSettings();
-  const char* __declspec(dllexport) ADDON_GetTypeVersion(int type)
+  void __declspec(dllexport) ADDON_GetTypeVersion(int type, const char** version)
   {
-    return kodi::addon::GetTypeVersion(type);
+    *version = kodi::addon::GetTypeVersion(type);
   }
 
 #ifdef __cplusplus

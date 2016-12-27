@@ -35,7 +35,8 @@ public:
   virtual unsigned int GetSettings(ADDON_StructSetting*** sSet)=0;
   virtual void FreeSettings()=0;
   virtual ADDON_STATUS SetSetting(const char *settingName, const void *settingValue) =0;
-  virtual const char* GetAddonTypeVersion(int type)=0;
+  // Needed to pass return value as 'version' this way to prevent 'error C2059: Syntaxerror: "__declspec(dllexport)"' on Windows
+  virtual void GetAddonTypeVersion(int type, const char** version)=0;
 };
 
 class DllAddon : public DllDynamic, public DllAddonInterface
@@ -50,7 +51,7 @@ public:
   DEFINE_METHOD0(void, FreeSettings)
   DEFINE_METHOD2(ADDON_STATUS, SetSetting, (const char *p1, const void *p2))
   DEFINE_METHOD1(void, GetAddon, (void* p1))
-  DEFINE_METHOD1(const char*, GetAddonTypeVersion, (int p1))
+  DEFINE_METHOD2(void, GetAddonTypeVersion, (int p1, const char** p2))
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD_RENAME(get_addon,GetAddon)
     RESOLVE_METHOD_RENAME(ADDON_Create, Create)
