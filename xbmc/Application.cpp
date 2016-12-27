@@ -4857,6 +4857,14 @@ bool CApplication::OnMessage(CGUIMessage& message)
       if (url.IsProtocol("plugin"))
         XFILE::CPluginDirectory::GetPluginResult(url.Get(), file);
 
+      // Don't queue if next media type is different from current one
+      if ((!file.IsVideo() && m_pPlayer->IsPlayingVideo())
+          || ((!file.IsAudio() || file.IsVideo()) && m_pPlayer->IsPlayingAudio()))
+      {
+        m_pPlayer->OnNothingToQueueNotify();
+        return true;
+      }
+
 #ifdef HAS_UPNP
       if (URIUtils::IsUPnP(file.GetPath()))
       {
