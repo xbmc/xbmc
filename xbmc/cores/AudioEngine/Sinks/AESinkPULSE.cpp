@@ -770,7 +770,10 @@ double CAESinkPULSE::GetCacheTotal()
 unsigned int CAESinkPULSE::AddPackets(uint8_t *data, unsigned int frames, bool hasAudio, bool blocking)
 {
   if (!m_IsAllocated)
-    return frames;
+  {
+    CLog::Log(LOGDEBUG, "AddPackets was called - but sink was not fully up and running");
+    return 0;
+  }
 
   if (m_IsStreamPaused)
   {
