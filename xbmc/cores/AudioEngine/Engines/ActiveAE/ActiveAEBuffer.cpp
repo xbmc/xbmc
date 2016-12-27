@@ -404,7 +404,7 @@ bool CActiveAEBufferPoolResample::ResampleBuffers(int64_t timestamp)
 void CActiveAEBufferPoolResample::ConfigureResampler(bool normalizelevels, bool stereoupmix, AEQuality quality)
 {
   bool normalize = true;
-  if ((m_format.m_channelLayout.Count() < m_inputFormat.m_channelLayout.Count()) && normalizelevels)
+  if ((m_format.m_channelLayout.Count() < m_inputFormat.m_channelLayout.Count()) && !normalizelevels)
   {
     normalize = false;
   }
