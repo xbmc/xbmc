@@ -128,6 +128,7 @@ bool CRecentlyAddedJob::UpdateVideo()
 
       home->SetProperty("LatestEpisode." + value + ".Thumb"         , item->GetArt("thumb"));
       home->SetProperty("LatestEpisode." + value + ".ShowThumb"     , item->GetArt("tvshow.thumb"));
+      home->SetProperty("LatestEpisode." + value + ".ShowBanner"    , item->GetArt("tvshow.banner"));
       home->SetProperty("LatestEpisode." + value + ".SeasonThumb"   , seasonThumb);
       home->SetProperty("LatestEpisode." + value + ".Fanart"        , item->GetArt("fanart"));
     }
