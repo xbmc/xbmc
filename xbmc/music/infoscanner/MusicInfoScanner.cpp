@@ -895,24 +895,13 @@ int CMusicInfoScanner::RetrieveMusicInfo(const std::string& strDirectory, CFileI
 
 void CMusicInfoScanner::FindArtForAlbums(VECALBUMS &albums, const std::string &path)
 {
-  /*
-   If there's a single album in the folder, then art can be taken from
-   the folder art.
-   */
+  CFileItem folderItem(path, true);
+  std::string folderArt = folderItem.GetUserMusicThumb(true);
+
   std::string albumArt;
-  if (albums.size() == 1)
-  {
-    CFileItem album(path, true);
-    albumArt = album.GetUserMusicThumb(true);
-    if (!albumArt.empty())
-      albums[0].art["thumb"] = albumArt;
-  }
   for (VECALBUMS::iterator i = albums.begin(); i != albums.end(); ++i)
   {
     CAlbum &album = *i;
-
-    if (albums.size() != 1)
-      albumArt = "";
 
     /*
      Find art that is common across these items
@@ -938,10 +927,11 @@ void CMusicInfoScanner::FindArtForAlbums(VECALBUMS &albums, const std::string &p
     }
 
     /*
-      assign the first art found to the album - better than no art at all
+      In case of a single album in this folder use folder.jpg for album and fallback to first found song art (if any)
+      Additionally with multiple albums, overrule folder art if common art for all songs was found
     */
-
-    if (art && albumArt.empty())
+    albumArt = folderArt;
+    if (art && (albumArt.empty() || (albums.size() > 1 && singleArt) ) )
     {
       if (!art->strThumb.empty())
         albumArt = art->strThumb;
@@ -966,12 +956,17 @@ void CMusicInfoScanner::FindArtForAlbums(VECALBUMS &albums, const std::string &p
       }
     }
   }
-  if (albums.size() == 1 && !albumArt.empty())
+
+  // In case we have no folderArt, use albumArt if it's a single album
+  if (folderArt.empty() && albums.size() == 1)
+    folderArt = albumArt;
+
+  if (!folderArt.empty())
   {
     // assign to folder thumb as well
-    CFileItem albumItem(path, true);
+    CFileItem folderItem(path, true);
     CMusicThumbLoader loader;
-    loader.SetCachedImage(albumItem, "thumb", albumArt);
+    loader.SetCachedImage(folderItem, "thumb", folderArt);
   }
 }
 
