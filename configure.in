@@ -138,8 +138,8 @@ libnfs_not_found="== Could not find libnfs. NFS client support disabled. =="
 libnfs_disabled="== NFS support disabled. =="
 libafpclient_not_found="== Could not find libafpclient. AFP client support disabled. =="
 libafpclient_disabled="== AFP support disabled. =="
-libshairport_not_found="== Could not find libshairport. AirTunes support disabled. =="
-libshairport_disabled="== AirTunes support disabled. =="
+libshairport_not_found="== Could not find libshairport. =="
+libshairplay_not_found="== Could not find libshairplay. =="
 samba_disabled="== SAMBA support disabled. =="
 libplist_not_found="== Could not find libplist. AirPlay support disabled. =="
 libplist_disabled="== AirPlay support disabled. =="
@@ -1385,24 +1385,45 @@ if test "$use_airplay" != "no"; then
   fi
 fi
 
-# libshairport for AirTunes
+# libshairplay for AirTunes (prefered lib)
 USE_AIRTUNES=0
 if test "x$use_airtunes" != "xno"; then
-  AC_CHECK_HEADERS([shairport/shairport.h],,
+  AC_CHECK_HEADERS([shairplay/raop.h],,
    [if test "x$use_airtunes" = "xyes"; then
-      AC_MSG_ERROR($libshairport_not_found)
+      AC_MSG_ERROR($libshairplay_not_found)
     elif test "x$use_airtunes" != "xno"; then
-      AC_MSG_NOTICE($libshairport_not_found)
+      AC_MSG_NOTICE($libshairplay_not_found)
       use_airtunes="no"
     fi
    ])
 
   if test "x$use_airtunes" != "xno"; then
-    XB_FIND_SONAME([SHAIRPORT], [shairport], [use_airtunes])
+    XB_FIND_SONAME([SHAIRPLAY], [shairplay], [use_airtunes])
     USE_AIRTUNES=1
-    AC_CHECK_MEMBERS([struct AudioOutput.ao_set_metadata],,,
-                     [[#include <shairport/shairport.h>]])
-    AC_DEFINE([HAVE_LIBSHAIRPORT],[1],["Define to 1 if you have libshairport."])
+    USE_LIBSHAIRPORT=1
+    AC_CHECK_MEMBERS([struct raop_callbacks_s.cls],,,
+                     [[#include <shairplay/raop.h>]])
+    AC_DEFINE([HAVE_LIBSHAIRPLAY],[1],["Define to 1 if you have libshairplay."])
+  fi
+
+  #libshairport - as a fallback for AirTunes
+  if test "x$USE_AIRTUNES" == "x0"; then
+    AC_CHECK_HEADERS([shairport/shairport.h],,
+     [if test "x$use_airtunes" = "xyes"; then
+        AC_MSG_ERROR($libshairport_not_found)
+      elif test "x$use_airtunes" != "xno"; then
+        AC_MSG_NOTICE($libshairport_not_found)
+        use_airtunes="no"
+      fi
+     ])
+
+    if test "x$use_airtunes" != "xno"; then
+      XB_FIND_SONAME([SHAIRPORT], [shairport], [use_airtunes])
+      USE_AIRTUNES=1
+      AC_CHECK_MEMBERS([struct AudioOutput.ao_set_metadata],,,
+                       [[#include <shairport/shairport.h>]])
+      AC_DEFINE([HAVE_LIBSHAIRPORT],[1],["Define to 1 if you have libshairport."])
+    fi
   fi
 fi
 
@@ -2197,7 +2218,11 @@ else
 fi
 
 if test "x$use_airtunes" != "xno"; then
-  final_message="$final_message\n  AirTunes support:\tYes"  
+  if test "x$USE_LIBSHAIRPORT" == "x1"; then
+    final_message="$final_message\n  AirTunes support (libshairplay):\tYes"
+  else
+    final_message="$final_message\n  AirTunes support (libshairport):\tYes"
+  fi
 else
   final_message="$final_message\n  AirTunes support:\tNo"
 fi
