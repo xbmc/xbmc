@@ -87,11 +87,13 @@ ffmpeg/libswresample/libswresample.a : ffmpeg;
 endif
 
 ffmpeg:
+ifneq (@USE_EXTERNAL_FFMPEG@,1)
 	$(MAKE) -C $@
 ifeq ($(findstring osx,$(ARCH)), osx)
 	-$(AR) d ffmpeg/libavcodec/libavcodec.a log2_tab.o
 	-$(AR) d ffmpeg/libavformat/libavformat.a log2_tab.o
 	-$(AR) d ffmpeg/libswresample/libswresample.a log2_tab.o
+endif
 endif
 
 clean:
