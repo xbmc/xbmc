@@ -22,6 +22,7 @@
 #include "LanguageHook.h"
 #include "guilib/GraphicContext.h"
 #include "guilib/GUIWindowManager.h"
+#include "input/MouseStat.h"
 #include "utils/log.h"
 
 #define NOTIFICATION_INFO     "info"
@@ -54,6 +55,26 @@ namespace XBMCAddon
       DelayedCallGuard dg;
       CSingleLock gl(g_graphicsContext);
       return g_windowManager.GetTopMostModalDialogID();
+    }
+    
+    long getMouseRawPosition()
+    {
+      return g_Mouse.GetRawX() * 10000 + g_Mouse.GetRawY();
+    }
+    
+    long getMousePosition()
+    {
+      return g_Mouse.GetX() * 10000 + g_Mouse.GetY();
+    }
+     
+    long getMouseRawAction()
+    {
+    	return g_Mouse.GetRawAction();
+    }
+
+    long getMouseAction()
+    {
+    	return g_Mouse.GetAction();
     }
     
     const char* getNOTIFICATION_INFO()    { return NOTIFICATION_INFO; }
