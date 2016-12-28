@@ -384,7 +384,8 @@ void CPeripherals::OnDeviceDeleted(const CPeripheralBus &bus, const CPeripheral 
 {
   OnDeviceChanged();
 
-  bool bNotify = true;
+  //! @todo Improve device notifications in v18
+  bool bNotify = false;
 
   // don't show a notification for emulated peripherals
   if (peripheral.Type() == PERIPHERAL_JOYSTICK_EMULATION) //! @todo Change to peripheral.IsEmulated()
