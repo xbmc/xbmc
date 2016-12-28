@@ -82,11 +82,19 @@ bool CGUIWindowVisualisation::OnAction(const CAction &action)
     return true;
 
   case ACTION_SHOW_GUI:
-    // save the settings
-    CServiceBroker::GetSettings().Save();
-    g_windowManager.PreviousWindow();
+    if (g_infoManager.GetShowInfo())
+    {
+      // if player info is shown, hide it
+      g_infoManager.SetShowInfo(false);
+    }
+    else
+    {
+      // save the settings
+      CServiceBroker::GetSettings().Save();
+      // switch back to the menu
+      g_windowManager.PreviousWindow();
+    }
     return true;
-    break;
 
   case ACTION_VIS_PRESET_LOCK:
     { // show the locked icon + fall through so that the vis handles the locking
