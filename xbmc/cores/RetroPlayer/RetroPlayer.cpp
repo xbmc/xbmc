@@ -69,7 +69,7 @@ bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options
     if (m_gameClient->Initialize())
     {
       m_audio.reset(new CRetroPlayerAudio(*m_processInfo));
-      m_video.reset(new CRetroPlayerVideo(m_clock, m_renderManager, *m_processInfo));
+      m_video.reset(new CRetroPlayerVideo(m_renderManager, *m_processInfo));
       if (m_gameClient->OpenFile(file, m_audio.get(), m_video.get()))
       {
         CLog::Log(LOGDEBUG, "RetroPlayer: Using game client %s", m_gameClient->ID().c_str());
