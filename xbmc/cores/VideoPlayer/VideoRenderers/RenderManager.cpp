@@ -350,14 +350,13 @@ void CRenderManager::FrameWait(int ms)
     m_presentevent.wait(lock, timeout.MillisLeft());
 }
 
-bool CRenderManager::HasFrame()
+bool CRenderManager::IsPresenting()
 {
   if (!IsConfigured())
     return false;
 
   CSingleLock lock(m_presentlock);
-  if (m_presentstep == PRESENT_READY ||
-      m_presentstep == PRESENT_FRAME || m_presentstep == PRESENT_FRAME2)
+  if (!m_presentTimer.IsTimePast())
     return true;
   else
     return false;
@@ -402,6 +401,7 @@ void CRenderManager::FrameMove()
       m_pRenderer->FlipPage(m_presentsource);
       m_presentstep = PRESENT_FRAME;
       m_presentevent.notifyAll();
+      m_presentTimer.Set(1000);
     }
 
     // release all previous
@@ -980,7 +980,7 @@ bool CRenderManager::IsGuiLayer()
     if (!m_pRenderer)
       return false;
 
-    if ((m_pRenderer->IsGuiLayer() && HasFrame()) ||
+    if ((m_pRenderer->IsGuiLayer() && IsPresenting()) ||
         m_renderedOverlay || m_overlays.HasOverlay(m_presentsource))
       return true;
 
