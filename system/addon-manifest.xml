@@ -2,14 +2,17 @@
   <addon>audioencoder.xbmc.builtin.aac</addon>
   <addon>audioencoder.xbmc.builtin.wma</addon>
   <addon>game.controller.default</addon>
-  <addon>kodi.adsp</addon>
-  <addon>kodi.audiodecoder</addon>
-  <addon>kodi.audioencoder</addon>
-  <addon>kodi.game</addon>
-  <addon>kodi.guilib</addon>
-  <addon>kodi.inputstream</addon>
-  <addon>kodi.peripheral</addon>
-  <addon>kodi.pvr</addon>
+  <addon>kodi.global.main</addon>
+  <addon>kodi.global.gui</addon>
+  <addon>kodi.instance.adsp</addon>
+  <addon>kodi.instance.audiodecoder</addon>
+  <addon>kodi.instance.audioencoder</addon>
+  <addon>kodi.instance.game</addon>
+  <addon>kodi.instance.inputstream</addon>
+  <addon>kodi.instance.peripheral</addon>
+  <addon>kodi.instance.pvr</addon>
+  <addon>kodi.instance.screensaver</addon>
+  <addon>kodi.instance.visualization</addon>
   <addon>kodi.resource</addon>
   <addon>metadata.album.universal</addon>
   <addon>metadata.artists.universal</addon>

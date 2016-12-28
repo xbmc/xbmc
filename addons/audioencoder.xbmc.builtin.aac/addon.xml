@@ -5,7 +5,7 @@
   name="AAC encoder"
   provider-name="spiff">
   <requires>
-    <import addon="kodi.audioencoder" version="1.0.0"/>
+    <import addon="kodi.instance.audioencoder" version="1.0.0"/>
   </requires>
   <extension
     point="kodi.audioencoder"

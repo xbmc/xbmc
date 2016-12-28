@@ -131,7 +131,7 @@ cmake_install.cmake
 /addons/peripheral.*
 /addons/xbmc.addon/addon.xml
 /addons/xbmc.json/addon.xml
-/addons/kodi.guilib/addon.xml
+/addons/kodi.global.gui/addon.xml
 /addons/audiodecoder.*
 /addons/visualization.*
 /addons/screensaver.*
