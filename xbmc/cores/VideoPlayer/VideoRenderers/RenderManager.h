@@ -72,7 +72,6 @@ public:
   float GetAspectRatio();
   void FrameMove();
   void FrameWait(int ms);
-  bool HasFrame();
   void Render(bool clear, DWORD flags = 0, DWORD alpha = 255, bool gui = true);
   bool IsGuiLayer();
   bool IsVideoLayer();
@@ -163,6 +162,7 @@ protected:
   void PresentBlend(bool clear, DWORD flags, DWORD alpha);
 
   void PrepareNextRender();
+  bool IsPresenting();
 
   bool Configure();
   void CreateRenderer();
@@ -241,6 +241,7 @@ protected:
   int m_lateframes;
   double m_presentpts;
   EPRESENTSTEP m_presentstep;
+  XbmcThreads::EndTime m_presentTimer;
   bool m_forceNext;
   int m_presentsource;
   XbmcThreads::ConditionVariable  m_presentevent;
