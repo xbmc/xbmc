@@ -701,6 +701,8 @@ namespace PVR
     ManagerState                    m_managerState;
     std::unique_ptr<CStopWatch>     m_parentalTimer;
 
+    CCriticalSection                m_startStopMutex; // mutex for protecting pvr manager's start/restart/stop sequence */
+
     std::atomic_bool m_isChannelPreview;
     CEventSource<PVREvent> m_events;
   };

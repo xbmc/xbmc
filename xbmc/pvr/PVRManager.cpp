@@ -392,6 +392,12 @@ void CPVRManager::Reinit()
 
 void CPVRManager::Start()
 {
+  CSingleLock initLock(m_startStopMutex);
+
+  // Note: Stop() must not be called while holding pvr manager's mutex. Stop() calls
+  // StopThread() which can deadlock if the worker thread tries to acquire pvr manager's
+  // lock while StopThread() is waiting for the worker to exit. Thus, we introduce another
+  // lock here (m_startStopMutex), which only gets hold while starting/restarting pvr manager.
   Stop();
 
   CSingleLock lock(m_critSection);
@@ -413,8 +419,10 @@ void CPVRManager::Start()
 
 void CPVRManager::Stop(void)
 {
+  CSingleLock initLock(m_startStopMutex);
+
   /* check whether the pvrmanager is loaded */
-  if (IsStopping() || IsStopped())
+  if (IsStopped())
     return;
 
   SetState(ManagerStateStopping);
@@ -443,7 +451,7 @@ void CPVRManager::Stop(void)
 
   /* close database */
   const CPVRDatabasePtr database(GetTVDatabase());
-  if (database->IsOpen())
+  if (database && database->IsOpen())
     database->Close();
 
   SetState(ManagerStateStopped);
