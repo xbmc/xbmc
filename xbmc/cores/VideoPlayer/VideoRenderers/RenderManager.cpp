@@ -393,6 +393,7 @@ void CRenderManager::FrameMove()
       m_presentstep = PRESENT_IDLE;
     }
 
+	CLog::Log(LOGNOTICE, "----------- Framemove - presentstep: %f, resenting: %d", m_presentstep, IsPresenting());
     if (m_presentstep == PRESENT_READY)
       PrepareNextRender();
 
@@ -987,6 +988,7 @@ bool CRenderManager::IsGuiLayer()
     if (m_renderDebug && m_debugTimer.IsTimePast())
       return true;
   }
+  CLog::Log(LOGNOTICE, "----------- IsGuiLayer - false");
   return false;
 }
 
@@ -1280,6 +1282,8 @@ void CRenderManager::PrepareNextRender()
   if (m_dvdClock.GetClockSpeed() < 0)
     nextFramePts = renderPts;
 
+  CLog::Log(LOGNOTICE, "----------- PrepareNextRender: queued: %d, discard: %d, free %d", m_queued.size(), m_discard.size(), m_free.size());
+
   if (m_clockSync.m_enabled)
   {
     double err = fmod(renderPts - nextFramePts, frametime);
@@ -1293,6 +1297,7 @@ void CRenderManager::PrepareNextRender()
       m_clockSync.m_errCount = 0;
 
       m_dvdClock.SetVsyncAdjust(-average);
+	  CLog::Log(LOGNOTICE, "----------- vsyncoff: %f", average);
     }
     renderPts += frametime / 2 - m_clockSync.m_syncOffset;
   }
@@ -1318,6 +1323,7 @@ void CRenderManager::PrepareNextRender()
         break;
       idx = *iter;
       ++iter;
+	  CLog::Log(LOGNOTICE, "----------- skip");
     }
 
     // skip late frames
@@ -1328,8 +1334,11 @@ void CRenderManager::PrepareNextRender()
     }
 
     int lateframes = (renderPts - m_Queue[idx].pts) * m_fps / DVD_TIME_BASE;
-    if (lateframes)
-      m_lateframes += lateframes;
+	if (lateframes)
+	{
+		CLog::Log(LOGNOTICE, "----------- lateframes curr: %d, new: %d", m_lateframes, lateframes);
+		m_lateframes += lateframes;
+	}
     else
       m_lateframes = 0;
     
@@ -1339,6 +1348,10 @@ void CRenderManager::PrepareNextRender()
     m_queued.pop_front();
     m_presentpts = m_Queue[idx].pts - totalLatency;
     m_presentevent.notifyAll();
+  }
+  else
+  {
+	  CLog::Log(LOGNOTICE, "----------- PrepareNextRender - no flip");
   }
 }
 
