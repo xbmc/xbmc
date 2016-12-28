@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="kodi.inputstream" version="1.0.8" provider-name="Team Kodi">
+<addon id="kodi.instance.pvr" version="5.2.3" provider-name="Team-Kodi">
   <requires>
     <import addon="xbmc.core" version="0.1.0"/>
   </requires>

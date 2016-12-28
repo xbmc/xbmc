@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon id="kodi.instance.adsp" version="0.1.10" provider-name="Team KODI">
+  <requires>
+    <import addon="xbmc.core" version="0.1.0"/>
+  </requires>
+</addon>
