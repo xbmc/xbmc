@@ -12,7 +12,7 @@ Default font lacks support for all characters
       <row>yxcvbnm,.-</row>
     </keyboard>
     <keyboard modifiers="shift">
-      <row>!"#$%&/()=?*</row>
+      <row>!"#$%&amp;/()=?*</row>
       <row>QWERTZUIOPŠĐ</row>
       <row>ASDFGHJKLČĆŽ</row>
       <row>YXCVBNM;:_</row>
