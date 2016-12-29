@@ -33,6 +33,8 @@
 #include "linux/imx/IMX.h"
 #include "libavcodec/avcodec.h"
 
+#include "guilib/LocalizeStrings.h"
+
 #include <cassert>
 #include <sys/stat.h>
 #include <sys/ioctl.h>
@@ -437,7 +439,7 @@ CIMXCodec::CIMXCodec()
 
 CIMXCodec::~CIMXCodec()
 {
-  g_IMXContext.SetVideoPixelFormat(nullptr);
+  g_IMXContext.SetProcessInfo(nullptr);
   StopThread(false);
   ProcessSignals(SIGNAL_SIGNAL);
   SetDrainMode(VPU_DEC_IN_DRAIN);
@@ -622,11 +624,19 @@ bool CIMXCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options, std::stri
     return false;
   }
 
+  std::list<EINTERLACEMETHOD> deintMethods({ EINTERLACEMETHOD::VS_INTERLACEMETHOD_AUTO,
+                                             EINTERLACEMETHOD::VS_INTERLACEMETHOD_RENDER_BOB });
+
+  for(int i = EINTERLACEMETHOD::VS_INTERLACEMETHOD_IMX_FASTMOTION; i <= VS_INTERLACEMETHOD_IMX_ADVMOTION_HALF; ++i)
+    deintMethods.push_back(static_cast<EINTERLACEMETHOD>(i));
+
   m_processInfo = m_pProcessInfo;
   m_processInfo->SetVideoDecoderName(m_pFormatName, true);
   m_processInfo->SetVideoDimensions(m_hints.width, m_hints.height);
-  m_processInfo->SetVideoDeintMethod("hardware");
-  g_IMXContext.SetVideoPixelFormat(m_processInfo);
+  m_processInfo->SetVideoDeintMethod("none");
+  m_processInfo->SetVideoPixelFormat("Y/CbCr 4:2:0");
+  m_processInfo->UpdateDeinterlacingMethods(deintMethods);
+  g_IMXContext.SetProcessInfo(m_processInfo);
 
   return true;
 }
@@ -1442,23 +1452,27 @@ bool CIMXContext::SetVSync(bool enable)
 inline
 void CIMXContext::SetFieldData(uint8_t fieldFmt, double fps)
 {
-  if (m_bStop || !IsRunning())
+  if (m_bStop || !IsRunning() || !m_bFbIsConfigured)
     return;
 
+  static EINTERLACEMETHOD imPrev;
   bool dr = IsDoubleRate();
   bool deint = !!m_currentFieldFmt;
   m_currentFieldFmt = fieldFmt;
 
   if (!!fieldFmt != deint ||
       dr != IsDoubleRate()||
-      fps != m_fps)
+      fps != m_fps        ||
+      imPrev != CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod)
     m_bFbIsConfigured = false;
 
   if (m_bFbIsConfigured)
     return;
 
   m_fps = fps;
+  imPrev = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod;
   CLog::Log(LOGDEBUG, "iMX : Output parameters changed - deinterlace %s%s, fps: %.3f\n", !!fieldFmt ? "active" : "not active", IsDoubleRate() ? " DR" : "", m_fps);
+  SetIPUMotion(imPrev);
 
   CSingleLock lk(m_pageSwapLock);
   AdaptScreen();
@@ -1482,14 +1496,42 @@ bool checkIPUStrideOffset(struct ipu_deinterlace *d)
 }
 
 inline
-int setIPUMotion(bool hasPrev, EINTERLACEMETHOD imethod)
+void CIMXContext::SetIPUMotion(EINTERLACEMETHOD imethod)
 {
-  if (hasPrev && imethod == VS_INTERLACEMETHOD_IMX_ADVMOTION)
-    return MED_MOTION;
-  else if (hasPrev && (imethod == VS_INTERLACEMETHOD_IMX_ADVMOTION_HALF || imethod == VS_INTERLACEMETHOD_AUTO))
-    return MED_MOTION;
+  std::string strImethod;
 
-  return HIGH_MOTION;
+  if (m_processInfo)
+    m_processInfo->SetVideoDeintMethod("none");
+
+  if (!m_currentFieldFmt || imethod == VS_INTERLACEMETHOD_NONE)
+    return;
+
+  switch (imethod)
+  {
+  case VS_INTERLACEMETHOD_IMX_ADVMOTION:
+    strImethod = g_localizeStrings.Get(16337);
+    m_motion   = MED_MOTION;
+    break;
+
+  case VS_INTERLACEMETHOD_AUTO:
+  case VS_INTERLACEMETHOD_IMX_ADVMOTION_HALF:
+    strImethod = g_localizeStrings.Get(16335);
+    m_motion   = MED_MOTION;
+    break;
+
+  case VS_INTERLACEMETHOD_IMX_FASTMOTION:
+    strImethod = g_localizeStrings.Get(16334);
+    m_motion   = HIGH_MOTION;
+    break;
+
+  default:
+    strImethod = g_localizeStrings.Get(16021);
+    m_motion   = HIGH_MOTION;
+    break;
+  }
+
+  if (m_processInfo)
+    m_processInfo->SetVideoDeintMethod(strImethod);
 }
 
 void CIMXContext::Blit(CIMXBuffer *source_p, CIMXBuffer *source, const CRect &srcRect,
@@ -1548,16 +1590,13 @@ bool CIMXContext::ShowPage()
     CLog::Log(LOGWARNING, "Vsync failed: %s\n", strerror(errno));
 }
 
-void CIMXContext::SetVideoPixelFormat(CProcessInfo *m_pProcessInfo)
+void CIMXContext::SetProcessInfo(CProcessInfo *m_pProcessInfo)
 {
   m_processInfo = m_pProcessInfo;
   if (!m_processInfo)
     return;
 
-  if (m_processInfo && m_fbVar.bits_per_pixel == 16)
-    m_processInfo->SetVideoPixelFormat("YUV 4:2:2");
-  else if (m_processInfo)
-    m_processInfo->SetVideoPixelFormat("RGB 32");
+  SetIPUMotion(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod);
 }
 
 void CIMXContext::Clear(int page)
@@ -1590,7 +1629,7 @@ void CIMXContext::Clear(int page)
   else
     CLog::Log(LOGERROR, "iMX Clear fb error : Unexpected format");
 
-  SetVideoPixelFormat(m_processInfo);
+  SetProcessInfo(m_processInfo);
 }
 
 void CIMXContext::PrepareTask(IPUTaskPtr &ipu, CRect srcRect, CRect dstRect)
