@@ -1,8 +1,10 @@
-set(SOURCES HTTPPythonInvoker.cpp
-            HTTPPythonWsgiInvoker.cpp)
+if(MICROHTTPD_FOUND)
+  set(SOURCES HTTPPythonInvoker.cpp
+              HTTPPythonWsgiInvoker.cpp)
 
-set(HEADERS HTTPPythonInvoker.h
-            HTTPPythonRequest.h
-            HTTPPythonWsgiInvoker.h)
+  set(HEADERS HTTPPythonInvoker.h
+              HTTPPythonRequest.h
+              HTTPPythonWsgiInvoker.h)
 
-core_add_library(network_httprequesthandlers_python)
+  core_add_library(network_httprequesthandlers_python)
+endif()
