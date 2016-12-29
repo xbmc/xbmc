@@ -24,6 +24,8 @@
   Common data structures shared between Kodi and Kodi's visualisations
  */
 
+#include "AddonBase.h"
+
 #include <cstddef>
 
 extern "C"
