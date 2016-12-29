@@ -214,7 +214,7 @@ class CDVDMsgPlayerSeek : public CDVDMsg
 public:
   struct CMode
   {
-    int time = 0;
+    double time = 0;
     bool relative = false;
     bool backward = false;
     bool accurate = true;
@@ -226,7 +226,7 @@ public:
   CDVDMsgPlayerSeek(CDVDMsgPlayerSeek::CMode mode) : CDVDMsg(PLAYER_SEEK),
     m_mode(mode)
   {}
-  int GetTime() { return m_mode.time; }
+  double GetTime() { return m_mode.time; }
   bool GetRelative() { return m_mode.relative; }
   bool GetBackward() { return m_mode.backward; }
   bool GetAccurate() { return m_mode.accurate; }
