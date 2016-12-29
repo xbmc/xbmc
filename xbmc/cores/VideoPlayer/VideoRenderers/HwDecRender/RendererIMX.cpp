@@ -80,6 +80,9 @@ bool CRendererIMX::IsGuiLayer()
 
 bool CRendererIMX::Supports(ERENDERFEATURE feature)
 {
+  if (!g_IMXContext.IsZoomAllowed())
+    return false;
+
   if (feature == RENDERFEATURE_PIXEL_RATIO ||
       feature == RENDERFEATURE_ZOOM)
     return true;
