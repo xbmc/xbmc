@@ -1771,6 +1771,45 @@ bool CIMXContext::TileTask(IPUTaskPtr &ipu)
   return true;
 }
 
+int CIMXContext::CheckTask(IPUTaskPtr &ipu)
+{
+  //We really use IPU only if we have to deinterlace (using VDIC)
+  int ret = IPU_CHECK_ERR_INPUT_CROP;
+  while (ret > IPU_CHECK_ERR_MIN)
+  {
+    ret = ioctl(m_ipuHandle, IPU_CHECK_TASK, &ipu->task);
+    switch (ret)
+    {
+      case IPU_CHECK_OK:
+        break;
+      case IPU_CHECK_ERR_SPLIT_INPUTW_OVER:
+        ipu->task.input.crop.w -= 8;
+        break;
+      case IPU_CHECK_ERR_SPLIT_INPUTH_OVER:
+        ipu->task.input.crop.h -= 8;
+        break;
+      case IPU_CHECK_ERR_SPLIT_OUTPUTW_OVER:
+        ipu->task.output.width -= 8;
+        ipu->task.output.crop.w = ipu->task.output.width;
+        break;
+      case IPU_CHECK_ERR_SPLIT_OUTPUTH_OVER:
+        ipu->task.output.height -= 8;
+        ipu->task.output.crop.h = ipu->task.output.height;
+        break;
+      // deinterlacing setup changing, m_ipuHandle is closed
+      case -1:
+      // no IPU processing needed
+      case IPU_CHECK_ERR_PROC_NO_NEED:
+        return ret;
+      default:
+        CLog::Log(LOGWARNING, "iMX : unhandled IPU check error: %d", ret);
+        return ret;
+      }
+  }
+
+  return 0;
+}
+
 bool CIMXContext::DoTask(IPUTaskPtr &ipu, CRect *dest)
 {
   // Clear page if cropping changes
@@ -1799,45 +1838,17 @@ bool CIMXContext::DoTask(IPUTaskPtr &ipu, CRect *dest)
   ||  (ipu->task.output.crop.w <= 0) || (ipu->task.output.crop.h <= 0))
     return false;
 
-  int ret = !TileTask(ipu);
-  if (!ret)
-  {
-    //We really use IPU only if we have to deinterlace (using VDIC)
-    ret = IPU_CHECK_ERR_INPUT_CROP;
-    while (ret > IPU_CHECK_ERR_MIN)
-    {
-        ret = ioctl(m_ipuHandle, IPU_CHECK_TASK, &ipu->task);
-        switch (ret)
-        {
-        case IPU_CHECK_OK:
-            break;
-        case IPU_CHECK_ERR_SPLIT_INPUTW_OVER:
-            ipu->task.input.crop.w -= 8;
-            break;
-        case IPU_CHECK_ERR_SPLIT_INPUTH_OVER:
-            ipu->task.input.crop.h -= 8;
-            break;
-        case IPU_CHECK_ERR_SPLIT_OUTPUTW_OVER:
-            ipu->task.output.crop.w -= 8;
-            break;
-        case IPU_CHECK_ERR_SPLIT_OUTPUTH_OVER:
-            ipu->task.output.crop.h -= 8;
-            break;
-        // deinterlacing setup changing, m_ipuHandle is closed
-        case -1:
-            return true;
-        default:
-            CLog::Log(LOGWARNING, "iMX : unhandled IPU check error: %d\n", ret);
-            return false;
-        }
-    }
+  if (!TileTask(ipu))
+    return false;
 
-    ret = ioctl(m_ipuHandle, IPU_QUEUE_TASK, &ipu->task);
-    if (ret < 0)
-      CLog::Log(LOGERROR, "IPU task failed: %s at #%d\n", strerror(errno), __LINE__);
-  }
+  if (CheckTask(ipu) == IPU_CHECK_ERR_PROC_NO_NEED)
+    return true;
 
-  return !ret;
+  int ret = ioctl(m_ipuHandle, IPU_QUEUE_TASK, &ipu->task);
+  if (ret < 0)
+    CLog::Log(LOGERROR, "IPU task failed: %s at #%d (ret %d)\n", strerror(errno), __LINE__, ret);
+
+  return ret == 0;
 }
 
 bool CIMXContext::CaptureDisplay(unsigned char *&buffer, int iWidth, int iHeight, bool blend)

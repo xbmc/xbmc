@@ -167,6 +167,7 @@ private:
   void PrepareTask(IPUTaskPtr &ipu, CRect srcRect, CRect dstRect);
   bool DoTask(IPUTaskPtr &ipu, CRect *dest = nullptr);
   bool TileTask(IPUTaskPtr &ipu);
+  int  CheckTask(IPUTaskPtr &ipu);
 
   void SetFieldData(uint8_t fieldFmt, double fps);
 
