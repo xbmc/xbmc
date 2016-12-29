@@ -7053,18 +7053,9 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
            condition == CONTAINER_SCROLLING || condition == CONTAINER_ISUPDATING ||
            condition == CONTAINER_HAS_PARENT_ITEM)
   {
-    const CGUIControl *control = NULL;
-    CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
-    if (window)
-      control = window->GetControl(window->GetViewContainerID());
-
-    if (control)
-    {
-      if (control->IsContainer())
-        bReturn = control->GetCondition(condition, 0);
-      else if (control->GetControlType() == CGUIControl::GUICONTROL_TEXTBOX)
-        bReturn = ((CGUITextBox *)control)->GetCondition(condition, 0);
-    }
+    auto activeContainer = GetActiveContainer(0, contextWindow);
+    if (activeContainer)
+      bReturn = activeContainer->GetCondition(condition, 0);
   }
   else if (condition == CONTAINER_CAN_FILTER)
   {
@@ -7377,24 +7368,9 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
   {
     if (!item)
     {
-      CGUIWindow *window = NULL;
-      int data1 = info.GetData1();
-      if (!data1) // No container specified, so we lookup the current view container
-      {
-        window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_HAS_LIST_ITEMS);
-        if (window && window->IsMediaWindow())
-          data1 = ((CGUIMediaWindow*)(window))->GetViewContainerID();
-      }
-
-      if (!window) // If we don't have a window already (from lookup above), get one
-        window = GetWindowWithCondition(contextWindow, 0);
-
-      if (window)
-      {
-        const CGUIControl *control = window->GetControl(data1);
-        if (control && control->IsContainer())
-          item = ((IGUIContainer *)control)->GetListItem(info.GetData2(), info.GetInfoFlag()).get();
-      }
+      auto activeContainer = GetActiveContainer(info.GetData1(), contextWindow);
+      if (activeContainer)
+        item = static_cast<IGUIContainer *>(activeContainer)->GetListItem(info.GetData2(), info.GetInfoFlag()).get();
     }
     if (item) // If we got a valid item, do the lookup
       bReturn = GetItemBool(item, condition); // Image prioritizes images over labels (in the case of music item ratings for instance)
@@ -7681,21 +7657,9 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
       case CONTAINER_ISUPDATING:
       case CONTAINER_HAS_PARENT_ITEM:
         {
-          const CGUIControl *control = NULL;
-          if (info.GetData1())
-          { // container specified
-            CGUIWindow *window = GetWindowWithCondition(contextWindow, 0);
-            if (window)
-              control = window->GetControl(info.GetData1());
-          }
-          else
-          { // no container specified - assume a mediawindow
-            CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
-            if (window)
-              control = window->GetControl(window->GetViewContainerID());
-          }
-          if (control)
-            bReturn = control->GetCondition(condition, info.GetData2());
+          auto activeContainer = GetActiveContainer(info.GetData1(), contextWindow);
+          if (activeContainer)
+            bReturn = activeContainer->GetCondition(condition, info.GetData2());
         }
         break;
       case CONTAINER_HAS_FOCUS:
@@ -7860,31 +7824,40 @@ bool CGUIInfoManager::GetMultiInfoInt(int &value, const GUIInfo &info, int conte
   if (info.m_info >= LISTITEM_START && info.m_info <= LISTITEM_END)
   {
     CFileItemPtr item;
-    CGUIWindow *window = NULL;
-
-    int data1 = info.GetData1();
-    if (!data1) // No container specified, so we lookup the current view container
-    {
-      window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_HAS_LIST_ITEMS);
-      if (window && window->IsMediaWindow())
-        data1 = ((CGUIMediaWindow*)(window))->GetViewContainerID();
-    }
-
-    if (!window) // If we don't have a window already (from lookup above), get one
-      window = GetWindowWithCondition(contextWindow, 0);
-
-    if (window)
-    {
-      const CGUIControl *control = window->GetControl(data1);
-      if (control && control->IsContainer())
-        item = std::static_pointer_cast<CFileItem>(((IGUIContainer *)control)->GetListItem(info.GetData2(), info.GetInfoFlag()));
-    }
+    auto activeContainer = GetActiveContainer(info.GetData1(), contextWindow);
+    if (activeContainer)
+      item = std::static_pointer_cast<CFileItem>(static_cast<IGUIContainer *>(activeContainer)->GetListItem(info.GetData2(), info.GetInfoFlag()));
 
     if (item) // If we got a valid item, do the lookup
       return GetItemInt(value, item.get(), info.m_info);
   }
 
   return 0;
+}
+
+/// \brief Returns the currently chosen container (view control for MediaWindows, currently focused container for non-MediaWindows)
+CGUIControl* CGUIInfoManager::GetActiveContainer(int containerId, int contextWindow) const
+{
+  CGUIWindow *window = GetWindowWithCondition(contextWindow, 0);
+  if (!window)
+    return nullptr;
+  if (!containerId) // No container specified, so we lookup the current view container
+  {
+    if (window->IsMediaWindow())
+      containerId = static_cast<CGUIMediaWindow*>(window)->GetViewContainerID();
+    else
+    {
+      auto control = window->GetFocusedControl();
+      if (control && control->IsContainer())
+        return control;
+    }
+  }
+  
+  CGUIControl *control = window->GetControl(containerId);
+  if (control && control->IsContainer())
+    return control;
+
+  return nullptr;
 }
 
 /// \brief Examines the multi information sent and returns the string as appropriate
@@ -7903,30 +7876,9 @@ std::string CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextW
   if (info.m_info >= LISTITEM_START && info.m_info <= LISTITEM_END)
   {
     CFileItemPtr item;
-    CGUIWindow *window = GetWindowWithCondition(contextWindow, 0);
-
-    int data1 = info.GetData1();
-    if (!data1) // No container specified, so we lookup the current view container
-    {
-      if (window)
-      {
-        if (window->IsMediaWindow())
-          data1 = static_cast<CGUIMediaWindow*>(window)->GetViewContainerID();
-        else
-        {
-          auto control = window->GetFocusedControl();
-          if (control && control->IsContainer())
-            data1 = control->GetID();
-        }
-      }
-    }
-
-    if (window)
-    {
-      const CGUIControl *control = window->GetControl(data1);
-      if (control && control->IsContainer())
-        item = std::static_pointer_cast<CFileItem>(((IGUIContainer *)control)->GetListItem(info.GetData2(), info.GetInfoFlag()));
-    }
+    auto activeContainer = GetActiveContainer(info.GetData1(), contextWindow);
+    if (activeContainer)
+      item = std::static_pointer_cast<CFileItem>(static_cast<IGUIContainer *>(activeContainer)->GetListItem(info.GetData2(), info.GetInfoFlag()));
 
     if (item) // If we got a valid item, do the lookup
       return GetItemImage(item.get(), info.m_info, fallback); // Image prioritizes images over labels (in the case of music item ratings for instance)
