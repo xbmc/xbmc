@@ -368,6 +368,7 @@ protected:
   VpuDecInputType              m_drainMode;
   int                          m_dropped;
   bool                         m_dropRequest;
+  bool                         m_rebuffer;
 
   std::vector<VpuFrameBuffer>  m_vpuFrameBuffers;   // Table of VPU frame buffers description
   std::unordered_map<VpuFrameBuffer*,double>
