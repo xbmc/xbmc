@@ -73,7 +73,7 @@ std::list<VpuFrameBuffer*> m_recycleBuffers;
 const int CIMXContext::m_fbPages = 3;
 
 // Experiments show that we need at least one more (+1) VPU buffer than the min value returned by the VPU
-const unsigned int CIMXCodec::m_extraVpuBuffers = 2 + CIMXContext::m_fbPages + RENDER_QUEUE_SIZE;
+const unsigned int CIMXCodec::m_extraVpuBuffers = 1 + CIMXContext::m_fbPages + RENDER_QUEUE_SIZE;
 
 CDVDVideoCodecIMX::~CDVDVideoCodecIMX()
 {
@@ -454,6 +454,7 @@ void CIMXCodec::DisposeDecQueues()
   m_decInput.for_each(Release);
   m_decOutput.signal();
   m_decOutput.for_each(Release);
+  m_rebuffer = true;
 }
 
 void CIMXCodec::Reset()
@@ -502,7 +503,6 @@ bool CIMXCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options, std::stri
   {
     StopThread(false);
     ProcessSignals(SIGNAL_FLUSH);
-    m_dropped = 0;
   }
 
   m_hints = hints;
@@ -791,13 +791,16 @@ int CIMXCodec::Decode(BYTE *pData, int iSize, double dts, double pts)
       return ret;
   }
 
+  if (m_rebuffer && m_decInput.size() > m_decInput.getquotasize() /2)
+    m_rebuffer = false;
+
   if ((m_decOutput.size() >= m_decOutput.getquotasize() /2 ||
-       m_drainMode || m_burst || !ret) && m_decOutput.size())
+       m_drainMode || m_burst || !ret) && m_decOutput.size() && !m_rebuffer)
     ret |= VC_PICTURE;
 
   if (m_burst)
   {
-    if (m_decInput.size() > m_burst)
+    if (m_decInput.size() >= RENDER_QUEUE_SIZE * 2)
       ret &= ~VC_BUFFER;
     --m_burst;
   }
@@ -807,8 +810,8 @@ int CIMXCodec::Decode(BYTE *pData, int iSize, double dts, double pts)
                        __FUNCTION__, iSize, recalcPts(dts), recalcPts(pts), (uint)pData, ret, m_decInput.size(), m_decOutput.size());
 #endif
 
-  if (!ret || m_drainMode)
-    Sleep(3);
+  if (!(ret & VC_PICTURE) || !ret || m_drainMode)
+    Sleep(10);
 
   return ret;
 }
@@ -855,11 +858,15 @@ void CIMXCodec::Process()
 #endif
 
   m_threadID = GetCurrentThreadId();
-  SetPriority(THREAD_PRIORITY_ABOVE_NORMAL);
+  SetPriority(GetPriority()+1);
 
   m_recycleBuffers.clear();
   m_pts.clear();
   m_loaded.Set();
+
+  m_dropped = 0;
+  m_dropRequest = false;
+  m_lastPTS = DVD_NOPTS_VALUE;
 
   memset(&dummy, 0, sizeof(dummy));
   AddExtraData(&dummy, (m_decOpenParam.CodecFormat == VPU_V_AVC && m_hints.extrasize));
@@ -955,9 +962,12 @@ void CIMXCodec::Process()
           m_decOpenParam.nMapType = 0;
           Dispose();
           VpuOpen();
-          m_fps /= 2;
           continue;
         }
+
+        if (m_initInfo.nInterlace && m_fps <= 30)
+          m_fps *= 2;
+
         m_processInfo->SetVideoFps(m_fps);
 
         CLog::Log(LOGDEBUG, "%s - VPU Init Stream Info : %dx%d (interlaced : %d - Minframe : %d)"\
@@ -966,9 +976,11 @@ void CIMXCodec::Process()
           m_initInfo.nAddressAlignment, m_initInfo.PicCropRect.nLeft, m_initInfo.PicCropRect.nTop,
           m_initInfo.PicCropRect.nRight, m_initInfo.PicCropRect.nBottom, m_initInfo.nQ16ShiftWidthDivHeightRatio, m_fps);
 
-        m_decInput.setquotasize(m_initInfo.nMinFrameBufferCount*7);
+        m_decInput.setquotasize(m_fps / 2);
 
-        if (m_decOpenParam.CodecFormat != VPU_V_MPEG2 && !(m_decOpenParam.CodecFormat == VPU_V_AVC && m_converter))
+        bool getFrame = !(m_decOpenParam.CodecFormat == VPU_V_AVC && m_converter);
+        getFrame &= m_decOpenParam.CodecFormat != VPU_V_MPEG2 && m_decOpenParam.CodecFormat != VPU_V_XVID;
+        if (getFrame || m_decRet & VPU_DEC_RESOLUTION_CHANGED)
         {
           SetDrainMode((VpuDecInputType)IN_DECODER_SET);
           inData = dummy;
@@ -1119,7 +1131,7 @@ bool CIMXCodec::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   previous = current;
 #endif
 
-  if (m_dropRequest)
+  if (m_dropRequest && !m_burst)
   {
     pDvdVideoPicture->iFlags = DVP_FLAG_DROPPED;
     ++m_dropped;
@@ -1158,7 +1170,7 @@ bool CIMXCodec::GetPicture(DVDVideoPicture* pDvdVideoPicture)
 
 void CIMXCodec::SetDropState(bool bDrop)
 {
-  m_dropRequest = bDrop ? m_decOutput.size() > m_decOutput.getquotasize() / 3 && !m_burst : false;
+  m_dropRequest = bDrop;
 }
 
 bool CIMXCodec::IsCurrentThread() const
