@@ -1,7 +1,6 @@
 #pragma once
-
 /*
- *      Copyright (C) 2005-2015 Team Kodi
+ *      Copyright (C) 2005-2016 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -20,26 +19,44 @@
  *
  */
 
-extern "C"
+#include "AddonBase.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+typedef struct AddonProps_Screensaver
 {
-  struct SCR_PROPS
-  {
-    void *device;
-    int x;
-    int y;
-    int width;
-    int height;
-    float pixelRatio;
-    const char *name;
-    const char *presets;
-    const char *profile;
-  };
+  void *device;
+  int x;
+  int y;
+  int width;
+  int height;
+  float pixelRatio;
+  const char *name;
+  const char *presets;
+  const char *profile;
+} AddonProps_Screensaver;
 
-  typedef struct KodiToAddonFuncTable_Screensaver
-  {
-    void (__cdecl* Start) ();
-    void (__cdecl* Stop) ();
-    void (__cdecl* Render) ();
-  } KodiToAddonFuncTable_Screensaver;
+typedef struct AddonToKodiFuncTable_Screensaver
+{
+  KODI_HANDLE kodiInstance;
+} AddonToKodiFuncTable_Screensaver;
+
+typedef struct KodiToAddonFuncTable_Screensaver
+{
+  void (__cdecl* Start) ();
+  void (__cdecl* Stop) ();
+  void (__cdecl* Render) ();
+} KodiToAddonFuncTable_Screensaver;
+
+typedef struct AddonInstance_ScreenSaver
+{
+  AddonProps_Screensaver props;
+  AddonToKodiFuncTable_Screensaver toKodi;
+  KodiToAddonFuncTable_Screensaver toAddon;
+} AddonInstance_ScreenSaver;
+
+#ifdef __cplusplus
 }
-
+#endif

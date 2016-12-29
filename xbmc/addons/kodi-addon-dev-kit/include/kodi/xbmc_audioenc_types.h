@@ -31,6 +31,8 @@
 #endif
 #endif
 
+#include "AddonBase.h"
+
 #include <stdint.h>
 
 extern "C"

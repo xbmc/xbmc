@@ -24,6 +24,8 @@
 #define __cdecl
 #endif
 
+#include "AddonBase.h"
+
 #ifdef BUILD_KODI_ADDON
 #include "DVDDemuxPacket.h"
 #else

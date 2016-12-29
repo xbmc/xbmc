@@ -34,7 +34,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#include "xbmc_addon_types.h"
+#include "AddonBase.h"
 #include "xbmc_epg_types.h"
 
 /*! @note Define "USE_DEMUX" at compile time if demuxing in the PVR add-on is used.

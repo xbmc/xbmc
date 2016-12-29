@@ -32,6 +32,8 @@
   #endif
 #endif
 
+#include "AddonBase.h"
+
 #include <stdint.h>
 
 #undef ATTRIBUTE_PACKED

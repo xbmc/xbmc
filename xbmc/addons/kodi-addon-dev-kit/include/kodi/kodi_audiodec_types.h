@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include "AddonBase.h"
+
 #include <stdint.h>
 #ifdef BUILD_KODI_ADDON
 #include "AEChannelData.h"

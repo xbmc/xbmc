@@ -20,6 +20,8 @@
 #ifndef KODI_GAME_TYPES_H_
 #define KODI_GAME_TYPES_H_
 
+#include "AddonBase.h"
+
 #include <stddef.h>
 #include <stdint.h>
 

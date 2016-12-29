@@ -24,6 +24,8 @@
  * Common data structures shared between KODI and KODI's binary add-ons
  */
 
+#include "AddonBase.h"
+
 #ifdef BUILD_KODI_ADDON
   #include "kodi/AudioEngine/AEChannelInfo.h"
 #else
