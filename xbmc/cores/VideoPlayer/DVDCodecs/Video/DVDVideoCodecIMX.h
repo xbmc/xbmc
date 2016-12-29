@@ -102,14 +102,17 @@ public:
 
   bool AdaptScreen(bool allocate = false);
   bool TaskRestart();
+  void OpenIPU();
+  void CloseIPU();
   void CloseDevices();
-  void g2dCloseDevices();
-  void g2dOpenDevices();
   bool OpenDevices();
 
   bool Blank();
   bool Unblank();
   bool SetVSync(bool enable);
+
+  void WaitVSync();
+  void Stop(bool bWait = true);
 
   // Blitter configuration
   bool IsDoubleRate() const { return m_currentFieldFmt & IPU_DEINTERLACE_RATE_EN; }
@@ -125,7 +128,6 @@ public:
 
   // Shows a page vsynced
   bool ShowPage();
-  void WaitVSync();
 
   // Clears the pages or a single page with 'black'
   void Clear(int page = RENDER_TASK_AUTOPAGE);
@@ -137,7 +139,7 @@ public:
   void OnResetDisplay();
   void OnLostDisplay();
 
-  void create() { Create(); m_onStartup.Wait(); }
+  void Allocate();
 
   static const int  m_fbPages;
 
@@ -179,16 +181,12 @@ private:
 
   void Dispose();
   void MemMap(struct fb_fix_screeninfo *fb_fix = NULL);
-  void Stop(bool bWait = true);
 
-  virtual void OnStartup();
-  virtual void OnExit();
-  virtual void Process();
+  virtual void OnStartup() override;
+  virtual void OnExit() override;
+  virtual void Process() override;
 
 private:
-  lkFIFO<IPUTaskPtr>             m_input;
-  std::vector<bool>              m_flip;
-
   int                            m_fbHandle;
   std::atomic<int>               m_fbCurrentPage;
   int                            m_pg;
@@ -208,8 +206,7 @@ private:
   CRectInt                      *m_pageCrops;
   bool                           m_bFbIsConfigured;
   CEvent                         m_waitVSync;
-  CEvent                         m_onStartup;
-  CEvent                         m_waitFlip;
+  CEvent                         m_pingFlip;
   CProcessInfo                  *m_processInfo;
 
   CCriticalSection               m_pageSwapLock;
