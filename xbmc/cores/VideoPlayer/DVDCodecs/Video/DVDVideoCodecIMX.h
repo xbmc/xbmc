@@ -411,6 +411,7 @@ private:
   bool                         IsCurrentThread() const;
 
   CCriticalSection             m_openLock;
+  std::atomic<unsigned char>   m_nrOut;
 };
 
 
