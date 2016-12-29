@@ -116,6 +116,12 @@ if test "x$TAR" = "xno" ; then
   AC_MSG_ERROR("Missing program: tar")
 fi
 
+if test "$use_debug" = "yes"; then
+  build_type="debug"
+else
+  build_type="release"
+fi
+
 use_host=$host_alias
 
 cross_compiling="yes"
@@ -124,7 +130,7 @@ if test "x$host" = "x$build"; then
   cross_compiling="no"
 fi
 
-deps_dir=$use_host
+deps_dir=$use_host-$build_type
 tool_dir=$build_cpu-$build_os-native
 cross_compiling="yes"
 
@@ -155,7 +161,7 @@ case $host in
       use_cpu="armeabi-v7a"
     fi
     use_sdk="${use_sdk:-android-21}"
-    deps_dir="$use_host-$use_sdk"
+    deps_dir="$use_host-$use_sdk-$build_type"
     platform_cflags="-DANDROID -fexceptions"
     optimize_flags="-Os"
     if test "x$use_cpu" = "xarmeabi-v7a"; then
@@ -173,7 +179,7 @@ case $host in
       use_cpu="arm64-v8a"
     fi
     use_sdk="${use_sdk:-android-21}"
-    deps_dir="$use_host-$use_sdk"
+    deps_dir="$use_host-$use_sdk-$build_type"
     platform_cflags="-DANDROID -fexceptions"
     optimize_flags="-Os"
     if test "x$use_cpu" = "xarm64-v8a"; then
@@ -191,7 +197,7 @@ case $host in
       use_cpu=$host_cpu
     fi
     use_sdk="${use_sdk:-android-21}"
-    deps_dir="$use_host-$use_sdk"
+    deps_dir="$use_host-$use_sdk-$build_type"
     platform_cflags="-DANDROID -fexceptions"
     optimize_flags="-Os"
     platform_ldflags="-L$prefix/$deps_dir/lib/$use_sdk"
@@ -406,7 +412,7 @@ case $host in
     platform_ldflags+=" -arch $use_cpu -m$platform_min_version -isysroot $use_sdk_path -stdlib=libc++"
     platform_cxxflags+=" -arch $use_cpu -m$platform_min_version -std=c++11 -stdlib=libc++"
     platform_includes="-isysroot $use_sdk_path"
-    deps_dir=$sdk_name"_"$use_cpu-target
+    deps_dir="${sdk_name}_${use_cpu}-target-${build_type}"
     tool_dir=buildtools-native;
     AC_CHECK_LIB([z], [main], has_zlib=1, AC_MSG_WARN("No zlib support in toolchain. Will build libz."); has_zlib=0)
   ;;
@@ -447,7 +453,7 @@ if test "$target_platform" = "raspberry-pi" ; then
   platform_os="linux"
   cross_compiling="yes"
   use_host="arm-linux-gnueabihf"
-  deps_dir="$use_host"
+  deps_dir="$use_platform-$build_type"
   platform_cflags+=" -pipe -mabi=aapcs-linux -Wno-psabi \
    -Wa,-mno-warn-deprecated -Wno-deprecated-declarations \
    -isystem${use_firmware}/opt/vc/include \
@@ -708,6 +714,8 @@ echo -e "host:\t\t $use_host"
 echo -e "cflags:\t\t $platform_cflags"
 echo -e "cxxflags:\t $platform_cxxflags"
 echo -e "ldflags:\t $platform_ldflags"
+echo -e "prefix:\t\t  $prefix"
+echo -e "depends:\t $prefix/$deps_dir"
 if test "$platform_os" == "android"; then
   echo -e "sdk-platform:\t $use_sdk"
   echo -e "build-tools:\t $build_tools_path"
