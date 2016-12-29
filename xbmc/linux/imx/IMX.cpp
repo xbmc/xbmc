@@ -21,7 +21,6 @@
 
 #include "IMX.h"
 #include <linux/mxcfb.h>
-#include <algorithm>
 
 /*
  *  official imx6 -SR tree
@@ -36,14 +35,9 @@
 #include "windowing/WindowingFactory.h"
 #include "utils/log.h"
 #include "guilib/GraphicContext.h"
-#include "utils/MathUtils.h"
-#include "DVDClock.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDCodecUtils.h"
 
-#include <algorithm>
-
 #define  DCIC_DEVICE    "/dev/mxc_dcic0"
-#define  FB_DEVICE      "/dev/fb0"
 
 CIMX::CIMX(void) : CThread("CIMX")
   , m_change(true)
@@ -173,54 +167,57 @@ bool CIMXFps::Recalc()
   m_hgraph.clear();
   for (auto d : m_ts)
   {
-    if (d != 0.0 && prev != DVD_NOPTS_VALUE)
-      m_hgraph[MathUtils::round_int(d - prev)]++;
+    if (prev != DVD_NOPTS_VALUE)
+    {
+      frameDuration = CDVDCodecUtils::NormalizeFrameduration((d - prev), &hasMatch);
+      if (fabs(frameDuration - rint(frameDuration)) < 0.01)
+        frameDuration = rint(frameDuration);
+
+      m_hgraph[(unsigned long)(frameDuration * 100)]++;
+    }
     prev = d;
   }
 
-  unsigned int patternLength = 0;
   for (auto it = m_hgraph.begin(); it != m_hgraph.end();)
   {
     if (it->second > 1)
     {
-      count += it->second;
-      frameDuration += it->first * it->second;
+      double duration = CDVDCodecUtils::NormalizeFrameduration((double)it->first / 100, &hasMatch);
+
       ++it;
     }
     else
+    {
+      for (auto iti = m_hgraph.begin(); it != iti; iti++)
+      {
+        if (!iti->first)
+          continue;
+        int dv = it->first / iti->first;
+        if (dv * iti->first == it->first)
+        {
+          m_hgraph[it->first] += dv;
+          break;
+        }
+      }
       m_hgraph.erase(it++);
+    }
+  }
+
+  frameDuration = 0.0;
+  for (auto h : m_hgraph)
+  {
+    count += h.second;
+    frameDuration += h.first * h.second;
   }
 
   if (count)
-    frameDuration /= count;
+    frameDuration /= (100 * count);
 
-  double frameNorm = CDVDCodecUtils::NormalizeFrameduration(frameDuration, &hasMatch);
+  frameDuration = CDVDCodecUtils::NormalizeFrameduration(frameDuration, &hasMatch);
 
-  if (hasMatch && !patternLength)
-    m_patternLength = 1;
-  else
-    m_patternLength = patternLength;
-
-  if (!m_hasPattern && hasMatch)
-    m_frameDuration = frameNorm;
-
-  if ((m_ts.size() == DIFFRINGSIZE && !m_hasPattern && hasMatch))
-    m_hasPattern = true;
-
-  if (m_hasPattern)
-    m_ptscorrection = (m_ts.size() - 1) * m_frameDuration + m_ts.front() - m_ts.back();
-
-  if (m_hasPattern && m_ts.size() == DIFFRINGSIZE && m_ptscorrection > m_frameDuration / 4)
-  {
-    m_hasPattern = false;
-    m_frameDuration = DVD_NOPTS_VALUE;
-  }
-
-  return m_hgraph.size() <= 2;
-  bool ret = m_hgraph.size() <= 2;
-  if (!m_hasPattern && ret)
-    m_frameDuration = frameNorm;
-  return ret;
+  if (hasMatch)
+    m_frameDuration = frameDuration;
+  return true;
 }
 
 void CIMXFps::Add(double tm)
@@ -233,8 +230,6 @@ void CIMXFps::Add(double tm)
 
 void CIMXFps::Flush()
 {
+  m_frameDuration = DVD_NOPTS_VALUE;
   m_ts.clear();
-  m_frameDuration = 0.0;
-  m_ptscorrection = 0.0;
-  m_hasPattern = false;
 }

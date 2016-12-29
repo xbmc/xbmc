@@ -24,6 +24,7 @@
 #include "threads/Thread.h"
 #include "guilib/DispResource.h"
 #include "utils/log.h"
+#include "cores/VideoPlayer/DVDClock.h"
 
 #include <mutex>
 #include <queue>
@@ -34,6 +35,8 @@
 #include <map>
 
 #define DIFFRINGSIZE 60
+
+#define FB_DEVICE "/dev/fb0"
 
 class CIMX;
 extern CIMX g_IMX;
@@ -189,20 +192,14 @@ protected:
 class CIMXFps
 {
   public:
-    CIMXFps()       { Flush(); }
+    CIMXFps() { Flush(); }
     void   Add(double pts);
-    void   Flush(); //flush the saved pattern and the ringbuffer
-
-    double GetFrameDuration() { return m_frameDuration;             }
-    bool   HasFullBuffer()    { return m_ts.size() == DIFFRINGSIZE; }
-
+    void   Flush();
+    double GetFrameDuration(bool raw = false) { return m_frameDuration; }
     bool   Recalc();
 
   private:
+    std::map<unsigned long,int>  m_hgraph;
     std::deque<double>   m_ts;
-    std::map<double,int> m_hgraph;
     double               m_frameDuration;
-    bool                 m_hasPattern;
-    double               m_ptscorrection;
-    int                  m_patternLength;
 };

@@ -431,7 +431,7 @@ CIMXCodec::CIMXCodec()
   m_skipMode = VPU_DEC_SKIPNONE;
 
   m_decOutput.setquotasize(1);
-  m_decInput.setquotasize(25);
+  m_decInput.setquotasize(30);
   m_loaded.Reset();
 }
 
@@ -738,27 +738,28 @@ int CIMXCodec::Decode(BYTE *pData, int iSize, double dts, double pts)
   if (EOS() && m_drainMode && !m_decOutput.size())
     return VC_BUFFER;
 
-  if (!m_decInput.size())
-    ptrn.Flush();
-
   int ret = 0;
   if (!g_IMXCodec->IsRunning())
   {
-    if ((!m_decInput.full() || !ptrn.Recalc()) && m_decInput.size() < 40)
+    if (!m_decInput.full())
     {
-      if (m_decInput.full())
-        m_decInput.setquotasize(m_decInput.getquotasize()+1);
-
-      if (dts != DVD_NOPTS_VALUE)
-        ptrn.Add(dts);
-      else if (pts != DVD_NOPTS_VALUE)
+      if (pts != DVD_NOPTS_VALUE)
         ptrn.Add(pts);
+      else if (dts != DVD_NOPTS_VALUE)
+        ptrn.Add(dts);
 
       ret |= VC_BUFFER;
     }
     else
     {
-      m_fps = DVD_TIME_BASE / ptrn.GetFrameDuration();
+      double fd = ptrn.GetFrameDuration(true);
+      if (fd > 80000 && m_hints.fpsscale != 0)
+        m_fps = (double)m_hints.fpsrate / m_hints.fpsscale;
+      else if (fd != 0)
+        m_fps = (double)DVD_TIME_BASE / fd;
+      else
+        m_fps = 60;
+
       m_decOpenParam.nMapType = 1;
 
       ptrn.Flush();
