@@ -601,6 +601,12 @@ bool CIMXCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options, std::stri
     switch(m_hints.codec_tag)
     {
     case _4CC('D','I','V','X'):
+      // Test for VPU unsupported profiles to revert to sw decoding
+      if (m_hints.profile == -99 && m_hints.level == -99)
+      {
+        CLog::Log(LOGNOTICE, "i.MX6 iMX-divx4 profile %d level %d - sw decoding", m_hints.profile, m_hints.level);
+        return false;
+      }
       m_decOpenParam.CodecFormat = VPU_V_XVID; // VPU_V_DIVX4
       m_pFormatName = "iMX-divx4";
       break;
@@ -871,6 +877,8 @@ void CIMXCodec::Process()
   memset(&dummy, 0, sizeof(dummy));
   AddExtraData(&dummy, (m_decOpenParam.CodecFormat == VPU_V_AVC && m_hints.extrasize));
   inData = dummy;
+  if (dummy.sCodecData.pData)
+    CLog::Log(LOGVIDEO, "Decode: MEDIAINFO: adding extra codec data\n");
 
   VpuOpen();
 
@@ -897,7 +905,7 @@ void CIMXCodec::Process()
 
     // some streams have problem with getting intial info after seek into (during playback start).
     // feeding VPU with extra data helps
-    if (!m_vpuFrameBuffers.size() && m_converter && !task->IsEmpty() && m_decRet & VPU_DEC_NO_ENOUGH_INBUF)
+    if (!m_vpuFrameBuffers.size() && !task->IsEmpty() && m_decRet & VPU_DEC_NO_ENOUGH_INBUF)
       AddExtraData(&inData, true);
 
 #ifdef IMX_PROFILE_BUFFERS
@@ -957,7 +965,7 @@ void CIMXCodec::Process()
         if (!VpuFreeBuffers(false) || !VpuAllocFrameBuffers())
           ExitError("VPU error while registering frame buffers");
 
-        if (m_initInfo.nInterlace && m_fps >= 49 && !m_converter && m_decOpenParam.nMapType == 1)
+        if (m_initInfo.nInterlace && m_fps >= 49 && m_decOpenParam.nMapType == 1)
         {
           m_decOpenParam.nMapType = 0;
           Dispose();
@@ -978,7 +986,7 @@ void CIMXCodec::Process()
 
         m_decInput.setquotasize(m_fps / 2);
 
-        bool getFrame = !(m_decOpenParam.CodecFormat == VPU_V_AVC && m_converter);
+        bool getFrame = !(m_decOpenParam.CodecFormat == VPU_V_AVC && *(char*)m_hints.extradata == 1);
         getFrame &= m_decOpenParam.CodecFormat != VPU_V_MPEG2 && m_decOpenParam.CodecFormat != VPU_V_XVID;
         if (getFrame || m_decRet & VPU_DEC_RESOLUTION_CHANGED)
         {
@@ -994,10 +1002,6 @@ void CIMXCodec::Process()
 
       if (m_decRet & CLASS_PICTURE && getOutputFrame(&m_frameInfo))
       {
-        // Some codecs (VC1?) lie about their frame size (mod 16). Adjust...
-        m_frameInfo.pExtInfo->nFrmWidth  = (((m_frameInfo.pExtInfo->nFrmWidth) + 15) & ~15);
-        m_frameInfo.pExtInfo->nFrmHeight = (((m_frameInfo.pExtInfo->nFrmHeight) + 15) & ~15);
-
         ++m_nrOut;
         CDVDVideoCodecIMXBuffer *buffer = new CDVDVideoCodecIMXBuffer(&m_frameInfo, m_fps, m_decOpenParam.nMapType);
 
@@ -1186,11 +1190,13 @@ CDVDVideoCodecIMXBuffer::CDVDVideoCodecIMXBuffer(VpuDecOutFrameInfo *frameInfo, 
   , m_iFlags(DVP_FLAG_DROPPED)
   , m_convBuffer(nullptr)
 {
-
   m_pctWidth  = frameInfo->pExtInfo->FrmCropRect.nRight - frameInfo->pExtInfo->FrmCropRect.nLeft;
   m_pctHeight = frameInfo->pExtInfo->FrmCropRect.nBottom - frameInfo->pExtInfo->FrmCropRect.nTop;
-  iWidth      = frameInfo->pExtInfo->nFrmWidth;
-  iHeight     = frameInfo->pExtInfo->nFrmHeight;
+
+  // Some codecs (VC1?) lie about their frame size (mod 16). Adjust...
+  iWidth      = (((frameInfo->pExtInfo->nFrmWidth) + 15) & ~15);
+  iHeight     = (((frameInfo->pExtInfo->nFrmHeight) + 15) & ~15);
+
   pVirtAddr   = m_frameBuffer->pbufVirtY;
   pPhysAddr   = (int)m_frameBuffer->pbufY;
 
@@ -1283,7 +1289,7 @@ bool CIMXContext::AdaptScreen(bool allocate)
   m_fbVar.xoffset = 0;
   m_fbVar.yoffset = 0;
 
-  if (!allocate && (fbVar.bits_per_pixel == 16 || m_currentFieldFmt || (m_fbHeight >= 1080 && m_fps >= 49)))
+  if (!allocate && (fbVar.bits_per_pixel == 16 || m_fps >= 49 && m_fbHeight >= 1080))
   {
     m_fbVar.nonstd = _4CC('Y', 'U', 'Y', 'V');
     m_fbVar.bits_per_pixel = 16;
@@ -1501,12 +1507,14 @@ void CIMXContext::SetFieldData(uint8_t fieldFmt, double fps)
 #define VAL2  RENDER_FLAG_BOT
 
 inline
-bool checkIPUStrideOffset(struct ipu_deinterlace *d)
+bool checkIPUStrideOffset(struct ipu_deinterlace *d, bool DR)
 {
   switch (d->motion)
   {
   case HIGH_MOTION:
     return ((d->field_fmt & MASK1) == VAL1) || ((d->field_fmt & MASK2) == VAL2);
+  case MED_MOTION:
+    return DR && !(((d->field_fmt & MASK1) == VAL1) || ((d->field_fmt & MASK2) == VAL2));
   default:
     return true;
   }
@@ -1571,7 +1579,7 @@ void CIMXContext::Blit(CIMXBuffer *source_p, CIMXBuffer *source, const CRect &sr
   PrepareTask(ipu, srcRect, dstRect);
 
   if (DoTask(ipu))
-    m_fbCurrentPage = ipu->page | checkIPUStrideOffset(&ipu->task.input.deinterlace) << 4;
+    m_fbCurrentPage = ipu->page | checkIPUStrideOffset(&ipu->task.input.deinterlace, IsDoubleRate()) << 4;
 
   m_pingFlip.Set();
 
