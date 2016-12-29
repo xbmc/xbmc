@@ -60,7 +60,7 @@ private:
   unsigned long m_counterLast;
   CEvent        m_VblankEvent;
 
-  double        m_frameTime;
+  int           m_frameTime;
   CCriticalSection m_critSection;
 
   uint32_t      m_lastSyncFlag;
