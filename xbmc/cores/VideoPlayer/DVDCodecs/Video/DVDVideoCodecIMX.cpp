@@ -1227,17 +1227,8 @@ CIMXContext::CIMXContext()
   , m_bufferCapture(NULL)
   , m_deviceName("/dev/fb1")
 {
-  m_waitVSync.Reset();
-  m_onStartup.Reset();
-  m_waitFlip.Reset();
-  m_flip.clear();
-  m_flip.resize(m_fbPages);
   m_pageCrops = new CRectInt[m_fbPages];
-  CLog::Log(LOGDEBUG, "iMX : Allocated %d render buffers\n", m_fbPages);
-
-  SetBlitRects(CRectInt(), CRectInt());
-
-  g2dOpenDevices();
+  OpenDevices();
 }
 
 CIMXContext::~CIMXContext()
@@ -1245,28 +1236,15 @@ CIMXContext::~CIMXContext()
   Stop(false);
   Dispose();
   CloseDevices();
-  g2dCloseDevices();
 }
 
 bool CIMXContext::AdaptScreen(bool allocate)
 {
-
-  if(m_ipuHandle)
-  {
-    close(m_ipuHandle);
-    m_ipuHandle = 0;
-  }
-
   MemMap();
-
-  if(!m_fbHandle && !OpenDevices())
-    goto Err;
 
   struct fb_var_screeninfo fbVar;
   if (!GetFBInfo("/dev/fb0", &fbVar))
     goto Err;
-
-  CLog::Log(LOGNOTICE, "iMX : Changing framebuffer parameters\n");
 
   m_fbWidth = allocate ? 1920 : fbVar.xres;
   m_fbHeight = allocate ? 1080 : fbVar.yres;
@@ -1295,6 +1273,7 @@ bool CIMXContext::AdaptScreen(bool allocate)
   m_fbVar.yres_virtual = (m_fbVar.yres + 1) * m_fbPages;
   m_fbVar.xres_virtual = m_fbVar.xres;
 
+  CloseIPU();
   Blank();
 
   struct fb_fix_screeninfo fb_fix;
@@ -1311,11 +1290,10 @@ bool CIMXContext::AdaptScreen(bool allocate)
   }
 
   MemMap(&fb_fix);
-
-  if (m_fbVar.bits_per_pixel == 16 || !RENDER_USE_G2D)
-    m_ipuHandle = open("/dev/mxc_ipu", O_RDWR, 0);
-
   Unblank();
+
+  OpenIPU();
+  m_bFbIsConfigured = true;
 
   return true;
 
@@ -1364,13 +1342,15 @@ void CIMXContext::MemMap(struct fb_fix_screeninfo *fb_fix)
 void CIMXContext::OnLostDisplay()
 {
   CSingleLock lk(m_pageSwapLock);
-  m_bFbIsConfigured = false;
+  if (IsRunning())
+    m_bFbIsConfigured = false;
 }
 
 void CIMXContext::OnResetDisplay()
 {
   CSingleLock lk(m_pageSwapLock);
-  m_bFbIsConfigured = false;
+  if (m_bFbIsConfigured)
+    return;
 
   CLog::Log(LOGDEBUG, "iMX : %s - going to change screen parameters\n", __FUNCTION__);
   AdaptScreen();
@@ -1397,32 +1377,30 @@ void CIMXContext::Dispose()
   m_pageCrops = NULL;
 }
 
+void CIMXContext::OpenIPU()
+{
+  m_ipuHandle = open("/dev/mxc_ipu", O_RDWR, 0);
+}
+
 bool CIMXContext::OpenDevices()
 {
   m_fbHandle = open(m_deviceName.c_str(), O_RDWR, 0);
-  if (m_fbHandle < 0)
-  {
-    m_fbHandle = 0;
+  OpenIPU();
+
+  bool opened = m_fbHandle > 0 && m_ipuHandle > 0;
+  if (!opened)
     CLog::Log(LOGWARNING, "iMX : Failed to open framebuffer: %s\n", m_deviceName.c_str());
+
+  return opened;
+}
+
+void CIMXContext::CloseIPU()
+{
+  if (m_ipuHandle)
+  {
+    close(m_ipuHandle);
+    m_ipuHandle = 0;
   }
-
-  return m_fbHandle > 0;
-}
-
-void CIMXContext::g2dOpenDevices()
-{
-  // open g2d here to ensure all g2d fucntions are called from the same thread
-  if (!g2d_open(&m_g2dHandle))
-    return;
-
-  m_g2dHandle = NULL;
-  CLog::Log(LOGERROR, "%s - Error while trying open G2D\n", __FUNCTION__);
-}
-
-void CIMXContext::g2dCloseDevices()
-{
-  if (m_g2dHandle && !g2d_close(m_g2dHandle))
-    m_g2dHandle = NULL;
 }
 
 void CIMXContext::CloseDevices()
@@ -1435,11 +1413,7 @@ void CIMXContext::CloseDevices()
     m_fbHandle = 0;
   }
 
-  if (m_ipuHandle)
-  {
-    close(m_ipuHandle);
-    m_ipuHandle = 0;
-  }
+  CloseIPU();
 }
 
 bool CIMXContext::Blank()
@@ -1860,6 +1834,13 @@ bool CIMXContext::CaptureDisplay(unsigned char *&buffer, int iWidth, int iHeight
   else if (blend)
     std::memcpy(m_bufferCapture->buf_vaddr, buffer, m_bufferCapture->buf_size);
 
+  if (g2d_open(&m_g2dHandle))
+  {
+    CLog::Log(LOGERROR, "%s : Error while trying open G2D\n", __FUNCTION__);
+    return false;
+  }
+
+  CSingleLock lk(m_pageSwapLock);
   if (m_bufferCapture && buffer)
   {
     struct g2d_surface src, dst;
@@ -1905,33 +1886,34 @@ bool CIMXContext::CaptureDisplay(unsigned char *&buffer, int iWidth, int iHeight
     std::memcpy(buffer, m_bufferCapture->buf_vaddr, m_bufferCapture->buf_size);
   }
   else
-  {
     CLog::Log(LOGERROR, "iMX : Error allocating capture buffer\n");
-  }
 
   if (m_bufferCapture && g2d_free(m_bufferCapture))
     CLog::Log(LOGERROR, "iMX : Error while freeing capture buuffer\n");
 
+  if (m_g2dHandle && !g2d_close(m_g2dHandle))
+    m_g2dHandle = NULL;
   return true;
+}
+
+void CIMXContext::Allocate()
+{
+  CSingleLock lk(m_pageSwapLock);
+  AdaptScreen(true);
+  AdaptScreen();
+  Create();
 }
 
 void CIMXContext::OnStartup()
 {
-  g_Windowing.Register(this);
-
   CSingleLock lk(m_pageSwapLock);
-
-  OpenDevices();
-
-  AdaptScreen(true);
-  AdaptScreen();
-
-  m_onStartup.Set();
+  g_Windowing.Register(this);
   CLog::Log(LOGNOTICE, "iMX : IPU thread started");
 }
 
 void CIMXContext::OnExit()
 {
+  CSingleLock lk(m_pageSwapLock);
   g_Windowing.Unregister(this);
   CLog::Log(LOGNOTICE, "iMX : IPU thread terminated");
 }
@@ -1942,7 +1924,7 @@ void CIMXContext::Stop(bool bWait /*= true*/)
     return;
 
   CThread::StopThread(false);
-  Blank();
+  m_pingFlip.Set();
   if (bWait && IsRunning())
     CThread::StopThread(true);
 }

@@ -35,14 +35,12 @@
 CRendererIMX::CRendererIMX()
 {
   m_bufHistory.clear();
-  g_IMXContext.Clear();
 }
 
 CRendererIMX::~CRendererIMX()
 {
   UnInit();
   std::for_each(m_bufHistory.begin(), m_bufHistory.end(), Release);
-  g_IMXContext.Clear();
   g_IMX.Deinitialize();
 }
 
