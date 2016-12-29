@@ -39,6 +39,7 @@ CSong::CSong(CFileItem& item)
   std::vector<std::string> musicBrainzArtistHints = tag.GetMusicBrainzArtistHints();
   strArtistDesc = tag.GetArtistString();
   strArtistSort = tag.GetArtistSort();
+  m_strComposerSort = tag.GetComposerSort();
   //Split the artist sort string to try and get sort names for individual artists
   std::vector<std::string> artistSort = StringUtils::Split(strArtistSort, g_advancedSettings.m_musicItemSeparator);
 
@@ -208,7 +209,7 @@ void CSong::Serialize(CVariant& value) const
   value["filename"] = strFileName;
   value["title"] = strTitle;
   value["artist"] = GetArtist();
-  value["artistsort"] = GetArtistSort();  //#Blake a string not vector 
+  value["artistsort"] = GetArtistSort();  // a string for the song not vector of values for each artist
   value["album"] = strAlbum;
   value["albumartist"] = GetAlbumArtist();
   value["genre"] = genre;
@@ -276,8 +277,8 @@ const std::vector<std::string> CSong::GetArtist() const
 
 const std::string CSong::GetArtistSort() const
 {
-  //The stored artist sort name string takes precidence #blake
-  //but value could be created from individual sort names held in artistcredits
+  //The stored artist sort name string takes precidence but a
+  //value could be created from individual sort names held in artistcredits
   if (!strArtistSort.empty())
     return strArtistSort;
   std::vector<std::string> artistvector;

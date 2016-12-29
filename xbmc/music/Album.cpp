@@ -305,8 +305,8 @@ const std::string CAlbum::GetAlbumArtistString() const
 
 const std::string CAlbum::GetAlbumArtistSort() const
 {
-  //The stored artist sort name string takes precidence #blake
-  //but value could be created from individual sort names held in artistcredits
+  //The stored artist sort name string takes precidence but a
+  //value could be created from individual sort names held in artistcredits
   if (!strArtistSort.empty())
     return strArtistSort;
   std::vector<std::string> artistvector;

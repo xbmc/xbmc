@@ -348,8 +348,8 @@ public:
   int AddRole(const std::string &strRole);
   bool AddSongArtist(int idArtist, int idSong, const std::string& strRole, const std::string& strArtist, int iOrder);
   bool AddSongArtist(int idArtist, int idSong, int idRole, const std::string& strArtist, int iOrder);
-  int  AddSongContributor(int idSong, const std::string& strRole, const std::string& strArtist);
-  void AddSongContributors(int idSong, const VECMUSICROLES& contributors);
+  int  AddSongContributor(int idSong, const std::string& strRole, const std::string& strArtist, const std::string &strSort);
+  void AddSongContributors(int idSong, const VECMUSICROLES& contributors, const std::string &strSort);
   int GetRoleByName(const std::string& strRole);
   bool GetRolesByArtist(int idArtist, CFileItem* item);
   bool GetSongsByArtist(int idArtist, std::vector<int>& songs);

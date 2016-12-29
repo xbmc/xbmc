@@ -53,6 +53,7 @@ public:
   const std::vector<std::string>& GetArtist() const;
   const std::string& GetArtistSort() const;
   const std::string GetArtistString() const;
+  const std::string& GetComposerSort() const;
   const std::string& GetAlbum() const;
   int GetAlbumId() const;
   const std::vector<std::string>& GetAlbumArtist() const;
@@ -99,6 +100,7 @@ public:
   void SetArtist(const std::vector<std::string>& artists, bool FillDesc = false);
   void SetArtistDesc(const std::string& strArtistDesc);
   void SetArtistSort(const std::string& strArtistsort);
+  void SetComposerSort(const std::string& strComposerSort);
   void SetAlbum(const std::string& strAlbum);
   void SetAlbumId(const int iAlbumId);
   void SetAlbumArtist(const std::string& strAlbumArtist);
@@ -191,6 +193,7 @@ protected:
   std::vector<std::string> m_artist;
   std::string m_strArtistSort;
   std::string m_strArtistDesc;
+  std::string m_strComposerSort;
   std::string m_strAlbum;
   std::vector<std::string> m_albumArtist;
   std::string m_strAlbumArtistDesc;

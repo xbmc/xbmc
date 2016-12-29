@@ -556,7 +556,8 @@ bool CMusicDatabase::AddAlbum(CAlbum& album)
                     std::distance(song->artistCredits.begin(), artistCredit));
     }
     // Having added artist credits (maybe with MBID) add the other contributing artists (no MBID)
-    AddSongContributors(song->idSong, song->GetContributors());
+    // and use COMPOSERSORT tag data to provide sort names for artists that are composers
+    AddSongContributors(song->idSong, song->GetContributors(), song->GetComposerSort());
 
     SaveCuesheet(song->strFileName, song->strCueSheet);
   }
@@ -640,7 +641,8 @@ bool CMusicDatabase::UpdateAlbum(CAlbum& album, bool OverrideTagData /* = true*/
           std::distance(song.artistCredits.begin(), artistCredit));
       }
       // Having added artist credits (maybe with MBID) add the other contributing artists (MBID unknown)
-      AddSongContributors(song.idSong, song.GetContributors());
+      // and use COMPOSERSORT tag data to provide sort names for artists that are composers
+      AddSongContributors(song.idSong, song.GetContributors(), song.GetComposerSort());
 
       SaveCuesheet(song.strFileName, song.strCueSheet);
     }
@@ -1554,7 +1556,7 @@ bool CMusicDatabase::AddSongArtist(int idArtist, int idSong, int idRole, const s
   return ExecuteQuery(strSQL);
 }
 
-int CMusicDatabase::AddSongContributor(int idSong, const std::string& strRole, const std::string& strArtist)
+int CMusicDatabase::AddSongContributor(int idSong, const std::string& strRole, const std::string& strArtist, const std::string &strSort)
 {
   if (strArtist.empty())
     return -1;
@@ -1575,7 +1577,7 @@ int CMusicDatabase::AddSongContributor(int idSong, const std::string& strRole, c
     m_pDS->close();
 
     if (idArtist < 0)
-      idArtist = AddArtist(strArtist, "", "");
+      idArtist = AddArtist(strArtist, "", strSort);
 
     // Add to song_artist table
     AddSongArtist(idArtist, idSong, strRole, strArtist, 0);
@@ -1590,11 +1592,28 @@ int CMusicDatabase::AddSongContributor(int idSong, const std::string& strRole, c
   return -1;
 }
 
-void CMusicDatabase::AddSongContributors(int idSong, const VECMUSICROLES& contributors)
+void CMusicDatabase::AddSongContributors(int idSong, const VECMUSICROLES& contributors, const std::string &strSort)
 {
+  std::vector<std::string> composerSort;
+  int countComposer = 0;
+  if (!strSort.empty())
+  {
+    composerSort = StringUtils::Split(strSort, g_advancedSettings.m_musicItemSeparator);
+  }
+  
   for (const auto &credit : contributors)
   {
-    AddSongContributor(idSong, credit.GetRoleDesc(), credit.GetArtist());
+    std::string strSortName;
+    //Identify composer sort name if we have it
+    if (countComposer < composerSort.size())
+    {
+      if (credit.GetRoleDesc().compare("Composer") == 0)
+      {
+        strSortName = composerSort[countComposer];
+        countComposer++;
+      }
+    }
+    AddSongContributor(idSong, credit.GetRoleDesc(), credit.GetArtist(), strSortName);
   }
 }
 

@@ -106,6 +106,7 @@ const CMusicInfoTag& CMusicInfoTag::operator =(const CMusicInfoTag& tag)
   m_artist = tag.m_artist;
   m_strArtistSort = tag.m_strArtistSort;
   m_strArtistDesc = tag.m_strArtistDesc;
+  m_strComposerSort = tag.m_strComposerSort;
   m_albumArtist = tag.m_albumArtist;
   m_strAlbumArtistSort = tag.m_strAlbumArtistSort;
   m_strAlbumArtistDesc = tag.m_strAlbumArtistDesc;
@@ -209,6 +210,11 @@ const std::string CMusicInfoTag::GetArtistString() const
 const std::string& CMusicInfoTag::GetArtistSort() const
 {
   return m_strArtistSort;
+}
+
+const std::string& CMusicInfoTag::GetComposerSort() const
+{
+  return m_strComposerSort;
 }
 
 const std::string& CMusicInfoTag::GetAlbum() const
@@ -392,6 +398,11 @@ void CMusicInfoTag::SetArtistDesc(const std::string& strArtistDesc)
 void CMusicInfoTag::SetArtistSort(const std::string& strArtistsort)
 {
   m_strArtistSort = strArtistsort;
+}
+
+void CMusicInfoTag::SetComposerSort(const std::string& strComposerSort)
+{
+  m_strComposerSort = strComposerSort;
 }
 
 void CMusicInfoTag::SetAlbum(const std::string& strAlbum)
@@ -791,7 +802,7 @@ void CMusicInfoTag::Serialize(CVariant& value) const
 
   value["displayartist"] = GetArtistString();
   value["displayalbumartist"] = GetAlbumArtistString();
-  value["artistsort"] = GetArtistSort(); //#blake change JSON API too
+  value["artistsort"] = GetArtistSort();
   value["album"] = m_strAlbum;
   value["albumartist"] = m_albumArtist;
   value["albumartistsort"] = m_strAlbumArtistSort;
@@ -850,7 +861,7 @@ void CMusicInfoTag::ToSortable(SortItem& sortable, Field field) const
       sortable[FieldTitle] = title;
     break;
   }
-  case FieldArtist:      sortable[FieldArtist] = m_strArtistDesc; break; //#blake add sort my sortname
+  case FieldArtist:      sortable[FieldArtist] = m_strArtistDesc; break;
   case FieldArtistSort:  sortable[FieldArtistSort] = m_strArtistSort; break;
   case FieldAlbum:       sortable[FieldAlbum] = m_strAlbum; break;
   case FieldAlbumArtist: sortable[FieldAlbumArtist] = m_strAlbumArtistDesc; break;
@@ -985,6 +996,7 @@ void CMusicInfoTag::Clear()
   m_strURL.clear();
   m_artist.clear();
   m_strArtistSort.clear();
+  m_strComposerSort.clear();
   m_strAlbum.clear();
   m_albumArtist.clear();
   m_genre.clear();
