@@ -78,28 +78,18 @@ bool CRendererIMX::IsGuiLayer()
   return false;
 }
 
-bool CRendererIMX::Supports(EINTERLACEMETHOD method)
+bool CRendererIMX::Supports(ERENDERFEATURE feature)
 {
-  if(method == VS_INTERLACEMETHOD_AUTO)
+  if (feature == RENDERFEATURE_PIXEL_RATIO ||
+      feature == RENDERFEATURE_ZOOM)
     return true;
 
-  if(method == VS_INTERLACEMETHOD_IMX_ADVMOTION
-  || method == VS_INTERLACEMETHOD_IMX_ADVMOTION_HALF
-  || method == VS_INTERLACEMETHOD_IMX_FASTMOTION
-  || method == VS_INTERLACEMETHOD_RENDER_BOB)
-    return true;
-  else
-    return false;
+  return false;
 }
 
 bool CRendererIMX::Supports(ESCALINGMETHOD method)
 {
   return method == VS_SCALINGMETHOD_AUTO;
-}
-
-EINTERLACEMETHOD CRendererIMX::AutoInterlaceMethod()
-{
-  return VS_INTERLACEMETHOD_IMX_ADVMOTION_HALF;
 }
 
 bool CRendererIMX::WantsDoublePass()
