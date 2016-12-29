@@ -81,6 +81,11 @@ else()
   set(CORE_HOST_IS_TARGET FALSE)
 endif()
 
+# Remove any optimization flags that might come from the toolchain file
+string(REPLACE "-g" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+string(REGEX REPLACE "-O[^ ]*" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0")
+
 # Main cpp
 set(CORE_MAIN_SOURCE ${CMAKE_SOURCE_DIR}/xbmc/platform/posix/main.cpp)
 
