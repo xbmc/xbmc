@@ -42,10 +42,14 @@ namespace ADDON
     virtual void SaveSettings();
     virtual std::string GetSetting(const std::string& key);
 
+    ADDON_STATUS Create();
     ADDON_STATUS Create(int type, void* funcTable, void* info);
     void Destroy();
 
     bool DllLoaded(void) const;
+
+    ADDON_STATUS CreateInstance(int instanceType, const std::string& instanceID, KODI_HANDLE instance, KODI_HANDLE* addonInstance);
+    void DestroyInstance(const std::string& instanceID);
 
   protected:
     bool Initialized() { return m_initialized; }
@@ -60,6 +64,7 @@ namespace ADDON
     bool m_initialized;
     bool LoadDll();
     bool m_needsavedsettings;
+    std::map<std::string, std::pair<int, KODI_HANDLE>> m_usedInstances;
 
     virtual ADDON_STATUS TransferSettings();
     TiXmlElement MakeSetting(DllSetting& setting) const;
