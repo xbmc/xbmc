@@ -204,4 +204,5 @@ class CIMXFps
     double               m_frameDuration;
     bool                 m_hasPattern;
     double               m_ptscorrection;
+    int                  m_patternLength;
 };

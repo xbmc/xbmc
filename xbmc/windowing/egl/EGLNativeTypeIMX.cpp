@@ -29,6 +29,7 @@
 #include <sys/ioctl.h>
 #ifdef HAS_IMXVPU
 #include <linux/mxcfb.h>
+#include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodecIMX.h"
 #endif
 #include "utils/log.h"
 #include "utils/RegExp.h"
