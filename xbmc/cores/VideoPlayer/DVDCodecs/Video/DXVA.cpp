@@ -981,6 +981,18 @@ bool CDecoder::GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture
   picture->dxva = m_presentPicture;
   picture->format = RENDER_FMT_DXVA;
   picture->extended_format = (unsigned int)m_format.OutputFormat;
+
+  int queued, discard, free;
+  m_processInfo.GetRenderBuffers(queued, discard, free);
+  if (free > 1)
+  {
+    g_Windowing.RequestDecodingTime();
+  }
+  else
+  {
+    g_Windowing.ReleaseDecodingTime();
+  }
+
   return true;
 }
 
