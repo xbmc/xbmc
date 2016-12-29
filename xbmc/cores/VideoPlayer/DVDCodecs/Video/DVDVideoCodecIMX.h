@@ -55,12 +55,9 @@
 // priorities to those subsystems can result in a very different user
 // experience. With that setting enabled we can build some statistics,
 // as numbers are always better than "feelings"
-#define IMX_PROFILE_BUFFERS
-
-#define IMX_PROFILE
+//#define IMX_PROFILE_BUFFERS
+//#define IMX_PROFILE
 //#define TRACE_FRAMES
-
-#define RENDER_USE_G2D 0
 
 // If uncommented a file "stream.dump" will be created in the current
 // directory whenever a new stream is started. This is only for debugging
@@ -205,7 +202,6 @@ public:
   struct g2d_buf                *m_bufferCapture;
 
   std::string                    m_deviceName;
-  int                            m_speed;
 
   double                         m_fps;
 };
@@ -296,7 +292,6 @@ public:
 
   void                  Reset();
 
-  void                  SetSpeed(int iSpeed)                    { m_speed = iSpeed; }
   void                  WaitStartup()                           { m_loaded.Wait(); }
 
   bool                  GetPicture(DVDVideoPicture *pDvdVideoPicture);
@@ -351,7 +346,6 @@ protected:
 
   static void Release(VPUTask *&t)                     { SAFE_RELEASE(t); }
   static void Release(CDVDVideoCodecIMXBuffer *&t)     { SAFE_RELEASE(t); }
-  static bool noDTS(VPUTask *&t)                       { return t->demux.dts == 0.0; }
 
   lkFIFO<VPUTask*>             m_decInput;
   lkFIFO<CDVDVideoCodecIMXBuffer*>
@@ -378,7 +372,6 @@ protected:
   CBitstreamConverter         *m_converter;         // H264 annex B converter
   bool                         m_warnOnce;          // Track warning messages to only warn once
   int                          m_codecControlFlags;
-  int                          m_speed;
   CCriticalSection             m_signalLock;
   CCriticalSection             m_queuesLock;
 #ifdef DUMP_STREAM
@@ -445,7 +438,6 @@ public:
   virtual bool          GetCodecStats(double &pts, int &droppedFrames, int &skippedPics) override
                                                                                 { return m_IMXCodec->GetCodecStats(pts, droppedFrames, skippedPics); }
   virtual void          SetCodecControl(int flags) override                     { m_IMXCodec->SetCodecControl(flags); }
-  virtual void          SetSpeed(int iSpeed)                                    { m_IMXCodec->SetSpeed(iSpeed); }
 
 private:
   std::shared_ptr<CIMXCodec> m_IMXCodec;
