@@ -44,6 +44,8 @@
 #include "platform/xbmc.h"
 #include "windowing/WinEvents.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/GraphicContext.h"
+#include "settings/DisplaySettings.h"
 #include "utils/log.h"
 #include "messaging/ApplicationMessenger.h"
 #include "utils/StringUtils.h"
@@ -548,7 +550,7 @@ CRect CXBMCApp::MapRenderToDroid(const CRect& srcRect)
   float scaleY = 1.0;
 
   CJNIRect r = m_xbmcappinstance->getVideoViewSurfaceRect();
-  RESOLUTION_INFO renderRes = g_graphicsContext.GetResInfo(g_graphicsContext.GetVideoResolution());
+  RESOLUTION_INFO renderRes = CDisplaySettings::GetInstance().GetResolutionInfo(g_graphicsContext.GetVideoResolution());
   scaleX = (double)r.width() / renderRes.iWidth;
   scaleY = (double)r.height() / renderRes.iHeight;
 
