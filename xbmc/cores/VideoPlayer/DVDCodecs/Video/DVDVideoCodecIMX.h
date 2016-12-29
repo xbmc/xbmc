@@ -114,6 +114,7 @@ public:
   // Blitter configuration
   bool IsDoubleRate() const { return m_currentFieldFmt & IPU_DEINTERLACE_RATE_EN; }
 
+  bool IsZoomAllowed() const { return m_zoomAllowed; }
   void SetProcessInfo(CProcessInfo *m_pProcessInfo);
 
   void SetIPUMotion(EINTERLACEMETHOD imethod);
@@ -199,6 +200,7 @@ private:
   CProcessInfo                  *m_processInfo;
   ipu_motion_sel                 m_motion;
 
+  bool                           m_zoomAllowed;
   CCriticalSection               m_pageSwapLock;
 public:
   void                          *m_g2dHandle;

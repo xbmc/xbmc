@@ -1703,28 +1703,46 @@ void CIMXContext::PrepareTask(IPUTaskPtr &ipu, CRect srcRect, CRect dstRect)
 
 bool CIMXContext::TileTask(IPUTaskPtr &ipu)
 {
-  int pad = ipu->task.input.height == 1080 && ipu->current->iHeight>ipu->task.input.height ? 16*ipu->current->iWidth : 0;
+  m_zoomAllowed = true;
 
+  // on double rate deinterlacing this is reusing previous already rasterised frame
   if (ipu->current->iFormat != _4CC('T', 'N', 'V', 'F') && ipu->current->iFormat != _4CC('T', 'N', 'V', 'P'))
   {
-    if (ipu->task.input.deinterlace.enable && ipu->task.input.deinterlace.motion != HIGH_MOTION && ipu->previous)
+    if (ipu->task.input.deinterlace.enable && ipu->task.input.deinterlace.motion != HIGH_MOTION)
     {
       ipu->task.input.paddr_n = ipu->task.input.paddr;
-      ipu->task.input.paddr   = ipu->previous->pPhysAddr + pad;
+      ipu->task.input.paddr   = ipu->previous->pPhysAddr;
     }
-    else
-      ipu->task.input.paddr  += pad;
     return true;
   }
 
   // Use band mode directly to FB, as no transformations needed (eg cropping)
   if (m_fps >= 49 && m_fbWidth == 1920 && ipu->task.input.width == 1920 && !ipu->task.input.deinterlace.enable)
   {
+    m_zoomAllowed = false;
     ipu->task.output.crop.pos.x = ipu->task.input.crop.pos.x = 0;
     ipu->task.output.crop.pos.y = ipu->task.input.crop.pos.y = 0;
     ipu->task.output.crop.h     = ipu->task.input.height     = ipu->task.input.crop.h = ipu->current->iHeight;
-    ipu->task.output.paddr     += m_fbLineLength * (m_fbHeight - ipu->task.input.crop.h)/2;
+    ipu->task.output.crop.w     = ipu->task.input.width      = ipu->task.input.crop.w = ipu->current->iWidth;
+    if (ipu->task.input.crop.h < m_fbHeight)
+      ipu->task.output.paddr     += m_fbLineLength * (m_fbHeight - ipu->task.input.crop.h)/2;
     return true;
+  }
+
+  // check for 3-field deinterlace (no HIGH_MOTION allowed) from tile field format
+  if (ipu->previous && ipu->current->iFormat == _4CC('T', 'N', 'V', 'F'))
+  {
+    ipu->task.input.paddr     = ipu->previous->pPhysAddr;
+    ipu->task.input.paddr_n   = ipu->current->pPhysAddr;
+    ipu->task.input.deinterlace.field_fmt = IPU_DEINTERLACE_FIELD_TOP;
+    ipu->task.input.deinterlace.enable = true;
+
+    ipu->task.output.crop.pos.x = ipu->task.input.crop.pos.x = 0;
+    ipu->task.output.crop.pos.y = ipu->task.input.crop.pos.y = 0;
+    ipu->task.output.crop.h     = ipu->task.input.height     = ipu->task.input.crop.h = ipu->current->iHeight;
+    ipu->task.output.crop.w     = ipu->task.input.width      = ipu->task.input.crop.w = ipu->current->iWidth;
+
+    return CheckTask(ipu) == 0;
   }
 
   // rasterize from tile (frame)
@@ -1735,26 +1753,26 @@ bool CIMXContext::TileTask(IPUTaskPtr &ipu)
   vdoa.input.height  = vdoa.output.height = ipu->current->iHeight;
   vdoa.input.format  = ipu->current->iFormat;
 
-  // check for 3-field deinterlace (no HIGH_MOTION allowed) from tile field format
-  if (ipu->previous && ipu->current->iFormat == _4CC('T', 'N', 'V', 'F'))
-  {
-    memcpy(&vdoa.input.deinterlace, &ipu->task.input.deinterlace, sizeof(ipu->task.input.deinterlace));
-    memset(&ipu->task.input.deinterlace, 0, sizeof(ipu->task.input.deinterlace));
-    vdoa.input.paddr_n = ipu->current->pPhysAddr;
-  }
-
-  struct g2d_buf *conv = g2d_alloc(ipu->current->iWidth *ipu->current->iHeight * 3, 0);
-  if (!conv)
-  {
-    CLog::Log(LOGERROR, "iMX: can't allocate crop buffer");
-    return false;
-  }
-
-  ((CDVDVideoCodecIMXBuffer*)ipu->current)->m_convBuffer = conv;
-
   vdoa.input.paddr   = vdoa.input.paddr_n ? ipu->previous->pPhysAddr : ipu->current->pPhysAddr;
-  vdoa.output.format = m_fbVar.bits_per_pixel == 16 ? _4CC('Y', 'U', 'Y', 'V') : _4CC('N', 'V', '1', '2');
-  vdoa.output.paddr  = conv->buf_paddr;
+  vdoa.output.format = ipu->task.input.format = m_fbVar.bits_per_pixel == 16 ? _4CC('Y', 'U', 'Y', 'V') : _4CC('N', 'V', '1', '2');
+
+  int check = CheckTask(ipu);
+  if (check == IPU_CHECK_ERR_PROC_NO_NEED)
+  {
+    vdoa.output.paddr = ipu->task.output.paddr;
+  }
+  else
+  {
+    struct g2d_buf *conv = g2d_alloc(ipu->current->iWidth *ipu->current->iHeight * 3, 0);
+    if (!conv)
+    {
+      CLog::Log(LOGERROR, "iMX: can't allocate crop buffer");
+      return false;
+    }
+
+    ((CDVDVideoCodecIMXBuffer*)ipu->current)->m_convBuffer = conv;
+    vdoa.output.paddr = conv->buf_paddr;
+  }
 
   if (ioctl(m_ipuHandle, IPU_QUEUE_TASK, &vdoa) < 0)
   {
@@ -1763,12 +1781,19 @@ bool CIMXContext::TileTask(IPUTaskPtr &ipu)
     return false;
   }
 
-  ipu->task.input.paddr   = vdoa.output.paddr + pad;
-  ipu->task.input.format  = vdoa.output.format;
-  if (ipu->task.input.deinterlace.enable && ipu->task.input.deinterlace.motion != HIGH_MOTION && ipu->previous)
+  ipu->task.input.paddr   = vdoa.output.paddr;
+
+  if (ipu->current->iFormat == _4CC('T', 'N', 'V', 'F'))
+    return true;
+
+  // output of VDOA task was sent directly to FB. no more processing needed.
+  if (check == IPU_CHECK_ERR_PROC_NO_NEED)
+    return true;
+
+  if (ipu->task.input.deinterlace.enable && ipu->task.input.deinterlace.motion != HIGH_MOTION)
   {
     ipu->task.input.paddr_n = ipu->task.input.paddr;
-    ipu->task.input.paddr   = ipu->previous->pPhysAddr + pad;
+    ipu->task.input.paddr   = ipu->previous->pPhysAddr;
   }
   ipu->current->iFormat   = vdoa.output.format;
   ipu->current->pPhysAddr = vdoa.output.paddr;
@@ -1824,7 +1849,7 @@ bool CIMXContext::DoTask(IPUTaskPtr &ipu, CRect *dest)
 
   // Populate input block
   ipu->task.input.width   = ipu->current->iWidth;
-  ipu->task.input.height  = std::min(ipu->current->iHeight, (unsigned int)1080);
+  ipu->task.input.height  = ipu->current->iHeight;
   ipu->task.input.format  = ipu->current->iFormat;
   ipu->task.input.paddr   = ipu->current->pPhysAddr;
 
