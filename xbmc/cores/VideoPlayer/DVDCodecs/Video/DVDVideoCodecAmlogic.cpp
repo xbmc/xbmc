@@ -29,7 +29,6 @@
 #include "utils/BitstreamConverter.h"
 #include "utils/log.h"
 #include "utils/SysfsUtils.h"
-#include "threads/Atomics.h"
 #include "settings/Settings.h"
 
 #define __MODULE_NAME__ "DVDVideoCodecAmlogic"
@@ -618,13 +617,13 @@ CDVDAmlogicInfo::CDVDAmlogicInfo(CDVDVideoCodecAmlogic *codec, CAMLCodec *amlcod
 
 CDVDAmlogicInfo *CDVDAmlogicInfo::Retain()
 {
-  AtomicIncrement(&m_refs);
+  ++m_refs;
   return this;
 }
 
 long CDVDAmlogicInfo::Release()
 {
-  long count = AtomicDecrement(&m_refs);
+  long count = --m_refs;
   if (count == 0)
   {
     if (m_codec)

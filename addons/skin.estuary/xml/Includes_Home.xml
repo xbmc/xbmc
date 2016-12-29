@@ -75,7 +75,7 @@
 				<top>115</top>
 				<visible>Integer.IsGreater(Container($PARAM[list_id]).NumItems,0) | Container($PARAM[list_id]).IsUpdating</visible>
 				<right>0</right>
-				<height>500</height>
+				<height>503</height>
 				<include content="WidgetListCommon">
 					<param name="list_id" value="$PARAM[list_id]"/>
 				</include>
@@ -112,6 +112,7 @@
 		<param name="visible">true</param>
 		<param name="visible_1">true</param>
 		<param name="visible_2">true</param>
+		<param name="button2_label">$LOCALIZE[31116]</param>
 		<param name="button2_onclick">true</param>
 		<definition>
 			<control type="group" id="$PARAM[button_id]889">
@@ -151,7 +152,7 @@
 						<control type="button" id="$PARAM[button_id]568">
 							<width>auto</width>
 							<height>110</height>
-							<label>$LOCALIZE[31116]</label>
+							<label>$PARAM[button2_label]</label>
 							<textoffsetx>40</textoffsetx>
 							<onclick>$PARAM[button2_onclick]</onclick>
 							<onclick>SetFocus(9000)</onclick>
@@ -326,14 +327,14 @@
 						</control>
 						<control type="image">
 							<centertop>74</centertop>
-							<left>62</left>
+							<left>58</left>
 							<width>200</width>
 							<height>$PARAM[icon_height]</height>
 							<texture fallback="DefaultFolder.png">$PARAM[icon]</texture>
 							<aspectratio>keep</aspectratio>
 						</control>
 						<control type="textbox">
-							<left>42</left>
+							<left>38</left>
 							<top>106</top>
 							<width>240</width>
 							<height>70</height>
@@ -371,14 +372,14 @@
 						</control>
 						<control type="image">
 							<centertop>74</centertop>
-							<left>62</left>
+							<left>58</left>
 							<width>200</width>
 							<height>$PARAM[icon_height]</height>
 							<texture fallback="DefaultFolder.png">$PARAM[icon]</texture>
 							<aspectratio>keep</aspectratio>
 						</control>
 						<control type="textbox">
-							<left>42</left>
+							<left>38</left>
 							<top>106</top>
 							<width>240</width>
 							<height>70</height>
@@ -889,10 +890,7 @@
 		<onunfocus>SetProperty(listposition,$INFO[Container($PARAM[list_id]).Position],home)</onunfocus>
 		<onfocus>Control.Move($PARAM[list_id],-$INFO[Container($PARAM[list_id]).Position])</onfocus>
 		<onfocus>Control.Move($PARAM[list_id],$INFO[Window(home).Property(listposition)])</onfocus>
-		<onback>PageUp</onback>
-		<onback>PageUp</onback>
-		<onback>PageUp</onback>
-		<onback>PageUp</onback>
+		<onback>SetFocus($PARAM[list_id],0,absolute)</onback>
 		<preloaditems>2</preloaditems>
 	</include>
 	<include name="BusyListSpinner">

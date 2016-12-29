@@ -74,12 +74,12 @@
 						<width>110</width>
 						<height>110</height>
 						<texture fallback="DefaultUser.png">$INFO[ListItem.Icon]</texture>
-						<aspectratio>scale</aspectratio>
+						<aspectratio>keep</aspectratio>
 					</control>
 					<control type="label">
 						<left>130</left>
 						<top>14</top>
-						<width>610</width>
+						<right>20</right>
 						<height>60</height>
 						<font>font37</font>
 						<aligny>center</aligny>
@@ -88,7 +88,7 @@
 					<control type="label">
 						<left>130</left>
 						<top>58</top>
-						<width>610</width>
+						<right>20</right>
 						<height>50</height>
 						<font>font12</font>
 						<textcolor>grey</textcolor>
@@ -100,9 +100,9 @@
 					<control type="image">
 						<left>0</left>
 						<top>0</top>
-						<width>775</width>
-						<height>130</height>
-						<texture border="40" colordiffuse="button_focus">lists/focus.png</texture>
+						<right>0</right>
+						<bottom>0</bottom>
+						<texture colordiffuse="button_focus">lists/focus.png</texture>
 						<visible>Control.HasFocus(52)</visible>
 					</control>
 					<control type="image">
@@ -111,12 +111,12 @@
 						<width>110</width>
 						<height>110</height>
 						<texture fallback="DefaultUser.png">$INFO[ListItem.Icon]</texture>
-						<aspectratio>scale</aspectratio>
+						<aspectratio>keep</aspectratio>
 					</control>
 					<control type="label">
 						<left>130</left>
 						<top>14</top>
-						<width>610</width>
+						<right>20</right>
 						<height>60</height>
 						<font>font37</font>
 						<aligny>center</aligny>
@@ -125,7 +125,7 @@
 					<control type="label">
 						<left>130</left>
 						<top>58</top>
-						<width>610</width>
+						<right>20</right>
 						<height>50</height>
 						<font>font12</font>
 						<aligny>center</aligny>

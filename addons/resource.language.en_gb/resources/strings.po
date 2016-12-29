@@ -8577,6 +8577,7 @@ msgstr ""
 
 #empty string with id 16040
 
+#: xbmc/GUIInfoManager.cpp
 #: xbmc/guilib/GUIRadioButtonControl.cpp"
 msgctxt "#16041"
 msgid "On"
@@ -14327,7 +14328,6 @@ msgid "Add-on options"
 msgstr ""
 
 #: xbmc/addons/ContextMenus.h
-#: xbmc/games/windows/GUIWindowGames.cpp
 msgctxt "#24003"
 msgid "Add-on information"
 msgstr ""

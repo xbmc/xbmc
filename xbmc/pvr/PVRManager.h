@@ -81,6 +81,26 @@ namespace PVR
   #define g_PVRRecordings    g_PVRManager.Recordings()
   #define g_PVRClients       g_PVRManager.Clients()
 
+  class CPVRManagerJobQueue
+  {
+  public:
+    CPVRManagerJobQueue();
+
+    void Start();
+    void Stop();
+    void Clear();
+
+    void AppendJob(CJob * job);
+    void ExecutePendingJobs();
+    bool WaitForJobs(unsigned int milliSeconds);
+
+  private:
+    CCriticalSection m_critSection;
+    CEvent m_triggerEvent;
+    std::vector<CJob *> m_pendingUpdates;
+    bool m_bStopped;
+  };
+
   class CPVRManager : public ISettingCallback, private CThread, public Observable, public ANNOUNCEMENT::IAnnouncer
   {
     friend class CPVRClients;
@@ -156,20 +176,25 @@ namespace PVR
     void Reinit(void);
 
     /*!
-     * @brief Stop the PVRManager.
+     * @brief Stop PVRManager.
      */
     void Stop(void);
 
     /*!
-     * @brief Destroy PVRManager's objects.
+     * @brief Stop PVRManager, unload data.
      */
-    void Clear(void);
+    void Unload();
+
+    /*!
+     * @brief Stop PVRManager, unload data, unload addons.
+     */
+    void Shutdown();
 
     /*!
      * @brief Get the TV database.
      * @return The TV database.
      */
-    CPVRDatabase *GetTVDatabase(void) const { return m_database; }
+    CPVRDatabasePtr GetTVDatabase(void) const;
 
     /*!
      * @brief Get a GUIInfoManager character string.
@@ -616,6 +641,11 @@ namespace PVR
     void ResetProperties(void);
 
     /*!
+     * @brief Destroy PVRManager's objects.
+     */
+    void Clear(void);
+
+    /*!
      * @brief Called by ChannelUp() and ChannelDown() to perform a channel switch.
      * @param iNewChannelNumber The new channel number after the switch.
      * @param bPreview Preview window if true.
@@ -629,17 +659,6 @@ namespace PVR
      * @return True if playback was continued, false otherwise.
      */
     bool ContinueLastChannel(void);
-
-    void ExecutePendingJobs(void);
-
-    bool IsJobPending(const char *strJobName) const;
-
-    /*!
-     * @brief Adds the job to the list of pending jobs unless an identical
-     * job is already queued
-     * @param job the job
-     */
-    void QueueJob(CJob *job);
 
     enum ManagerState
     {
@@ -664,16 +683,14 @@ namespace PVR
     CPVRChannelGroupsContainerPtr  m_channelGroups;               /*!< pointer to the channel groups container */
     CPVRRecordingsPtr              m_recordings;                  /*!< pointer to the recordings container */
     CPVRTimersPtr                  m_timers;                      /*!< pointer to the timers container */
-    const CPVRClientsPtr           m_addons;                      /*!< pointer to the pvr addon container */
+    CPVRClientsPtr                 m_addons;                      /*!< pointer to the pvr addon container */
     std::unique_ptr<CPVRGUIInfo>   m_guiInfo;                     /*!< pointer to the guiinfo data */
     //@}
 
-    CCriticalSection                m_critSectionTriggers;         /*!< critical section for triggered updates */
-    CEvent                          m_triggerEvent;                /*!< triggers an update */
-    std::vector<CJob *>             m_pendingUpdates;              /*!< vector of pending pvr updates */
+    CPVRManagerJobQueue             m_pendingUpdates;              /*!< vector of pending pvr updates */
 
     CFileItem *                     m_currentFile;                 /*!< the PVR file that is currently playing */
-    CPVRDatabase *                  m_database;                    /*!< the database for all PVR related data */
+    CPVRDatabasePtr                 m_database;                    /*!< the database for all PVR related data */
     CCriticalSection                m_critSection;                 /*!< critical section for all changes to this class, except for changes to triggers */
     bool                            m_bFirstStart;                 /*!< true when the PVR manager was started first, false otherwise */
     bool                            m_bIsSwitchingChannels;        /*!< true while switching channels */

@@ -319,6 +319,7 @@ bool CRenderManager::Configure()
     m_renderedOverlay = false;
     m_renderDebug = false;
     m_clockSync.Reset();
+    CheckEnableClockSync();
 
     m_renderState = STATE_CONFIGURED;
 

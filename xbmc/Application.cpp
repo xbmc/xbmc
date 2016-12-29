@@ -1330,25 +1330,6 @@ bool CApplication::StartServer(enum ESERVERS eServer, bool bStart, bool bWait/* 
   return ret;
 }
 
-void CApplication::StopPVRManager()
-{
-  CLog::Log(LOGINFO, "stopping PVRManager");
-  if (g_PVRManager.IsPlaying())
-    StopPlaying();
-  // stop pvr manager thread and clear all pvr data
-  g_PVRManager.Stop();
-  g_PVRManager.Clear();
-  // stop epg container thread and clear all epg data
-  g_EpgContainer.Stop();
-  g_EpgContainer.Clear();
-}
-
-void CApplication::ReinitPVRManager()
-{
-  CLog::Log(LOGINFO, "restarting PVRManager");
-  g_PVRManager.Reinit();
-}
-
 void CApplication::StartServices()
 {
 #if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
@@ -2917,7 +2898,6 @@ void CApplication::Stop(int exitCode)
     CLog::Log(LOGNOTICE, "stop player");
     m_pPlayer->ClosePlayer();
 
-    StopPVRManager();
     StopServices();
 
 #ifdef HAS_ZEROCONF

@@ -47,7 +47,7 @@ and that the mingw libs (ffmpeg, libdvd and others) are built using
 ### macOS
 
 For macOS the required dependencies can be found in
-[docs/README.osx](https://github.com/xbmc/xbmc/tree/master/docs/README.osx).
+[docs/README.osx.md](https://github.com/xbmc/xbmc/tree/master/docs/README.osx.md).
 
 On macOS it is necessary to build the dependencies in `tools/depends` using
 `./bootstrap && ./configure --host=<PLATFORM> && make`. The other steps such

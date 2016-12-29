@@ -4,7 +4,7 @@ There are two available build methods:
 1.) debuild / debhelper
   Requirements: debhelper, devscripts, all Kodi build deps 
       sudo apt-get install debhelper devscripts
-      sudo apt-get build-dep kodi (if you have on of our repos/ppas added, else read docs/README.linux or docs/README.ubuntu)
+      sudo apt-get build-dep kodi (if you have one of our repos/ppas added, else read docs/README.linux or docs/README.ubuntu)
 
   Result: Debian package for your host distribution and architecture only
   Recommended for local installs

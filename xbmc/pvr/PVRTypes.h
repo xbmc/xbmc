@@ -23,6 +23,9 @@
 
 namespace PVR
 {
+  class CPVRDatabase;
+  typedef std::shared_ptr<CPVRDatabase> CPVRDatabasePtr;
+
   class CPVRChannel;
   typedef std::shared_ptr<CPVRChannel> CPVRChannelPtr;
 

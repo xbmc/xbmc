@@ -108,6 +108,7 @@ const std::string CSettings::SETTING_LOCALE_LANGUAGE = "locale.language";
 const std::string CSettings::SETTING_LOCALE_COUNTRY = "locale.country";
 const std::string CSettings::SETTING_LOCALE_CHARSET = "locale.charset";
 const std::string CSettings::SETTING_LOCALE_KEYBOARDLAYOUTS = "locale.keyboardlayouts";
+const std::string CSettings::SETTING_LOCALE_ACTIVEKEYBOARDLAYOUT = "locale.activekeyboardlayout";
 const std::string CSettings::SETTING_LOCALE_TIMEZONECOUNTRY = "locale.timezonecountry";
 const std::string CSettings::SETTING_LOCALE_TIMEZONE = "locale.timezone";
 const std::string CSettings::SETTING_LOCALE_SHORTDATEFORMAT = "locale.shortdateformat";

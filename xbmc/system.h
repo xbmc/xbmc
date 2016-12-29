@@ -71,10 +71,12 @@
   #define HAS_UPNP
 #endif
 
-#if defined(HAVE_LIBMDNSEMBEDDED)
+#if defined(HAVE_LIBMDNS)
   #define HAS_ZEROCONF
   #define HAS_MDNS
-  #define HAS_MDNS_EMBEDDED
+  #if defined(HAVE_LIBMDNSEMBEDDED)
+    #define HAS_MDNS_EMBEDDED
+  #endif
 #endif
 
 /**********************
@@ -93,8 +95,6 @@
 #define HAS_WIN32_NETWORK
 #define HAS_IRSERVERSUITE
 #define HAS_FILESYSTEM_SMB
-#define HAS_ZEROCONF
-#define HAS_MDNS
 
 #define DECLARE_UNUSED(a,b) a b;
 #endif

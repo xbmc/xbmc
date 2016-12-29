@@ -131,6 +131,7 @@ libs: $(PREFIX)/lib/@APP_NAME_LC@/lib@APP_NAME_LC@.so
 	cp -fpL $(SRCLIBS) xbmc/obj/local/$(CPU)/
 	cp -fp $(PREFIX)/lib/@APP_NAME_LC@/lib@APP_NAME_LC@.so xbmc/obj/local/$(CPU)/
 	find $(PREFIX)/share/@APP_NAME_LC@/addons -name "*.so" -exec cp -fp {} xbmc/obj/local/$(CPU)/ \;
+	find $(PREFIX)/lib/@APP_NAME_LC@/addons -name "*.so" -exec cp -fp {} xbmc/obj/local/$(CPU)/ \; || true
 	find $(PREFIX)/lib/@APP_NAME_LC@/system -name "*.so" -exec cp -fp {} xbmc/obj/local/$(CPU)/ \;
 	cd xbmc/obj/local/$(CPU)/; find . -name "*.so" -not -name "lib*.so" | sed "s/\.\///" | xargs -I@ mv @ lib@
 	cp -fp xbmc/obj/local/$(CPU)/*.so xbmc/lib/$(CPU)/
