@@ -1335,7 +1335,6 @@ void CIMXContext::MemMap(struct fb_fix_screeninfo *fb_fix)
     m_fbPageSize = m_fbLineLength * m_fbVar.yres_virtual / m_fbPages;
     m_fbPhysAddr = fb_fix->smem_start;
     m_fbVirtAddr = (uint8_t*)mmap(0, m_fbPhysSize, PROT_READ | PROT_WRITE, MAP_SHARED, m_fbHandle, 0);
-    m_fbCurrentPage = 0;
     Clear();
   }
 }
@@ -1440,12 +1439,6 @@ bool CIMXContext::SetVSync(bool enable)
   return true;
 }
 
-void CIMXContext::SetBlitRects(const CRect &srcRect, const CRect &dstRect)
-{
-  m_srcRect = srcRect;
-  m_dstRect = dstRect;
-}
-
 inline
 void CIMXContext::SetFieldData(uint8_t fieldFmt, double fps)
 {
@@ -1499,70 +1492,60 @@ int setIPUMotion(bool hasPrev, EINTERLACEMETHOD imethod)
   return HIGH_MOTION;
 }
 
-void CIMXContext::Blit(CIMXBuffer *source_p, CIMXBuffer *source, uint8_t fieldFmt, int page)
+void CIMXContext::Blit(CIMXBuffer *source_p, CIMXBuffer *source, const CRect &srcRect,
+                       const CRect &dstRect, uint8_t fieldFmt, int page)
 {
+  static unsigned char pg;
+
   if (page == RENDER_TASK_AUTOPAGE)
-    page = m_pg;
+    page = pg;
   else if (page < 0 && page >= m_fbPages)
     return;
 
-  m_pg = ++m_pg % m_fbPages;
-
-  IPUTaskPtr ipu(new IPUTask);
-  ipu->page = page;
-
-  SetFieldData(fieldFmt, source->m_fps);
-  PrepareTask(ipu, source_p, source);
+  IPUTaskPtr ipu(new IPUTask(source_p, source, page));
+  pg = ++pg % m_fbPages;
 
 #ifdef IMX_PROFILE_BUFFERS
   unsigned long long before = XbmcThreads::SystemClockMillis();
 #endif
-  DoTask(ipu);
+  SetFieldData(fieldFmt, source->m_fps);
+  PrepareTask(ipu, srcRect, dstRect);
+
+  if (DoTask(ipu))
+    m_fbCurrentPage = ipu->page | checkIPUStrideOffset(&ipu->task.input.deinterlace) << 4;
+
+  m_pingFlip.Set();
+
 #ifdef IMX_PROFILE_BUFFERS
   unsigned long long after = XbmcThreads::SystemClockMillis();
   CLog::Log(LOGDEBUG, "+P 0x%x@%d  %d\n", ((CDVDVideoCodecIMXBuffer*)ipu->current)->GetIdx(), ipu->page, (int)(after-before));
 #endif
-
-  m_fbCurrentPage.store(ipu->page);
-  m_waitFlip.Set();
-
-  m_flip[ipu->page] = checkIPUStrideOffset(&ipu->task.input.deinterlace);
 }
 
 void CIMXContext::WaitVSync()
 {
-  m_waitVSync.WaitMSec(1000 / g_graphicsContext.GetFPS());
+  m_waitVSync.WaitMSec(1300 / g_graphicsContext.GetFPS());
 }
 
+inline
 bool CIMXContext::ShowPage()
 {
-  m_waitFlip.Wait();
-  int page = m_fbCurrentPage.load();
+  m_pingFlip.Wait();
 
-  CSingleLock lk(m_pageSwapLock);
-  if (!m_fbHandle || !m_bFbIsConfigured) return false;
-  // Protect page swapping from screen capturing that does read the current
-  // front buffer. This is actually not done very frequently so the lock
-  // does not hurt.
-  bool ret = true;
-
-  m_fbVar.activate = FB_ACTIVATE_VBL;
-  m_fbVar.yoffset = (m_fbVar.yres + 1) * page + !m_flip[page];
-  if (ioctl(m_fbHandle, FBIOPAN_DISPLAY, &m_fbVar) < 0)
   {
-    CLog::Log(LOGWARNING, "Panning failed: %s\n", strerror(errno));
-    ret = false;
+    CSingleLock lk(m_pageSwapLock);
+    if (!m_bFbIsConfigured)
+      return false;
   }
+
+  m_fbVar.yoffset = (m_fbVar.yres + 1) * (m_fbCurrentPage & 0xf) + !(m_fbCurrentPage >> 4);
+  if (ioctl(m_fbHandle, FBIOPAN_DISPLAY, &m_fbVar) < 0)
+    CLog::Log(LOGWARNING, "Panning failed: %s\n", strerror(errno));
 
   m_waitVSync.Set();
 
-  // Wait for flip
-  if (ret && m_vsync && ioctl(m_fbHandle, FBIO_WAITFORVSYNC, 0) < 0)
-  {
+  if (ioctl(m_fbHandle, MXCFB_WAIT_FOR_VSYNC, nullptr) < 0 && !CIMX::IsBlank())
     CLog::Log(LOGWARNING, "Vsync failed: %s\n", strerror(errno));
-    ret = false;
-  }
-  return ret;
 }
 
 void CIMXContext::SetVideoPixelFormat(CProcessInfo *m_pProcessInfo)
@@ -1610,15 +1593,8 @@ void CIMXContext::Clear(int page)
   SetVideoPixelFormat(m_processInfo);
 }
 
-void CIMXContext::PrepareTask(IPUTaskPtr &ipu, CIMXBuffer *source_p, CIMXBuffer *source)
+void CIMXContext::PrepareTask(IPUTaskPtr &ipu, CRect srcRect, CRect dstRect)
 {
-  // Fill with zeros
-  ipu->Zero();
-  ipu->Assign(source_p, source);
-
-  CRect srcRect = m_srcRect;
-  CRect dstRect = m_dstRect;
-
   CRectInt iSrcRect, iDstRect;
 
   float srcWidth = srcRect.Width();
@@ -1849,7 +1825,7 @@ bool CIMXContext::CaptureDisplay(unsigned char *&buffer, int iWidth, int iHeight
     memset(&dst, 0, sizeof(dst));
 
     {
-      src.planes[0] = m_fbPhysAddr + m_fbCurrentPage.load() * m_fbPageSize;
+      src.planes[0] = m_fbPhysAddr + (m_fbCurrentPage & 0xf) * m_fbPageSize;
       dst.planes[0] = m_bufferCapture->buf_paddr;
       if (m_fbVar.bits_per_pixel == 16)
       {
