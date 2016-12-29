@@ -53,6 +53,8 @@ public:
   int           WaitVsync();
   virtual void  OnResetDisplay();
 
+  static bool   IsBlank();
+
 private:
   virtual void  Process();
   bool          UpdateDCIC();

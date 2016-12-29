@@ -154,6 +154,14 @@ void CIMX::OnResetDisplay()
   UpdateDCIC();
 }
 
+bool CIMX::IsBlank()
+{
+  unsigned long curBlank;
+  int fd = open(FB_DEVICE, O_RDONLY | O_NONBLOCK);
+  bool ret = ioctl(fd, MXCFB_GET_FB_BLANK, &curBlank) || curBlank != FB_BLANK_UNBLANK;
+  close(fd);
+  return ret;
+}
 
 bool CIMXFps::Recalc()
 {
