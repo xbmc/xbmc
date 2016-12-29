@@ -471,8 +471,6 @@ bool CPeripheralAddon::ProcessEvents(void)
 
 bool CPeripheralAddon::SendRumbleEvent(unsigned int peripheralIndex, unsigned int driverIndex, float magnitude)
 {
-  bool bHandled = false;
-
   PERIPHERAL_EVENT eventStruct = { };
 
   eventStruct.peripheral_index = peripheralIndex;

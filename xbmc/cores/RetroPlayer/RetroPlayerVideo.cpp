@@ -35,9 +35,8 @@
 
 using namespace GAME;
 
-CRetroPlayerVideo::CRetroPlayerVideo(CDVDClock& clock, CRenderManager& renderManager, CProcessInfo& processInfo) :
+CRetroPlayerVideo::CRetroPlayerVideo(CRenderManager& renderManager, CProcessInfo& processInfo) :
   //CThread("RetroPlayerVideo"),
-  m_clock(clock),
   m_renderManager(renderManager),
   m_processInfo(processInfo),
   m_framerate(0.0),
