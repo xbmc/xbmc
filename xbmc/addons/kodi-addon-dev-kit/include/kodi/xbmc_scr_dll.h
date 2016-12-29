@@ -1,5 +1,4 @@
 #pragma once
-
 /*
  *      Copyright (C) 2005-2015 Team Kodi
  *      http://kodi.tv
@@ -27,18 +26,10 @@ extern "C"
 {
 
   // Functions that your visualisation must implement
-  void Start();
-  void Stop();
-  void Render();
+  void Start(KODI_HANDLE addonHandle);
+  void Stop(KODI_HANDLE addonHandle);
+  void Render(KODI_HANDLE addonHandle);
 
-  // function to export the above structure to XBMC
-  void __declspec(dllexport) get_addon(void* ptr)
-  {
-    KodiToAddonFuncTable_Screensaver* pScr = static_cast<KodiToAddonFuncTable_Screensaver*>(ptr);
-
-    pScr->Start = Start;
-    pScr->Stop = Stop;
-    pScr->Render = Render;
-  };
+  // No more needed, stays here to prevent load faults as long function is needed by other types!
+  void __declspec(dllexport) get_addon(void* ptr) { }
 };
-

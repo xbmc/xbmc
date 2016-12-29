@@ -46,6 +46,7 @@ private:
   std::string m_presets; /*!< To add-on sended preset path */
   std::string m_profile; /*!< To add-on sended profile path */
 
+  KODI_HANDLE m_addonInstance;
   AddonInstance_ScreenSaver m_struct;
 };
 
