@@ -59,6 +59,7 @@ protected:
   virtual void GetDebugInfo(std::string &audio, std::string &video, std::string &general) = 0;
   virtual void UpdateClockSync(bool enabled) = 0;
   virtual void UpdateRenderInfo(CRenderInfo &info) = 0;
+  virtual void UpdateRenderBuffers(int queued, int discard, int free) = 0;
 };
 
 class CRenderManager

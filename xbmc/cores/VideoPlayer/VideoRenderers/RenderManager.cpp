@@ -417,6 +417,8 @@ void CRenderManager::FrameMove()
       }
       else
         ++it;
+
+      m_playerPort->UpdateRenderBuffers(m_queued.size(), m_discard.size(), m_free.size());
     }
     
     m_bRenderGUI = true;
@@ -843,6 +845,7 @@ void CRenderManager::FlipPage(volatile std::atomic_bool& bStop, double pts,
   m.presentmethod = presentmethod;
   m.pts = pts;
   requeue(m_queued, m_free);
+  m_playerPort->UpdateRenderBuffers(m_queued.size(), m_discard.size(), m_free.size());
 
   // signal to any waiters to check state
   if (m_presentstep == PRESENT_IDLE)
@@ -1339,6 +1342,8 @@ void CRenderManager::PrepareNextRender()
     m_queued.pop_front();
     m_presentpts = m_Queue[idx].pts - totalLatency;
     m_presentevent.notifyAll();
+
+    m_playerPort->UpdateRenderBuffers(m_queued.size(), m_discard.size(), m_free.size());
   }
 }
 
