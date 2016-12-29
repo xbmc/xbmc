@@ -7893,32 +7893,18 @@ std::string CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextW
   }
   else if (info.m_info == PLAYER_FINISH_TIME)
   {
-    CDateTime time;
-    CEpgInfoTagPtr currentTag(GetEpgInfoTag());
-    if (currentTag)
-      time = currentTag->EndAsLocalTime();
-    else
-    {
-      time = CDateTime::GetCurrentDateTime();
-      int playTimeRemaining = GetPlayTimeRemaining();
-      float speed = g_application.m_pPlayer->GetPlaySpeed();
-      if (speed >= 0.75 && speed <= 1.55)
-        playTimeRemaining /= speed;
-      time += CDateTimeSpan(0, 0, 0, playTimeRemaining);
-    }
+    CDateTime time(CDateTime::GetCurrentDateTime());
+    int playTimeRemaining = GetPlayTimeRemaining();
+    float speed = g_application.m_pPlayer->GetPlaySpeed();
+    if (speed >= 0.75 && speed <= 1.55)
+      playTimeRemaining /= speed;
+    time += CDateTimeSpan(0, 0, 0, playTimeRemaining);
     return LocalizeTime(time, (TIME_FORMAT)info.GetData1());
   }
   else if (info.m_info == PLAYER_START_TIME)
   {
-    CDateTime time;
-    CEpgInfoTagPtr currentTag(GetEpgInfoTag());
-    if (currentTag)
-      time = currentTag->StartAsLocalTime();
-    else
-    {
-      time = CDateTime::GetCurrentDateTime();
-      time -= CDateTimeSpan(0, 0, 0, (int)GetPlayTime());
-    }
+    CDateTime time(CDateTime::GetCurrentDateTime());
+    time -= CDateTimeSpan(0, 0, 0, static_cast<int>(GetPlayTime()));
     return LocalizeTime(time, (TIME_FORMAT)info.GetData1());
   }
   else if (info.m_info == PLAYER_TIME_SPEED)
