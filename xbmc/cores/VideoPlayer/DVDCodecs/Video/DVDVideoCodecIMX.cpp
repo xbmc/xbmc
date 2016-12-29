@@ -1676,7 +1676,7 @@ void CIMXContext::PrepareTask(IPUTaskPtr &ipu, CIMXBuffer *source_p, CIMXBuffer 
   if (m_currentFieldFmt)
   {
     ipu->task.input.deinterlace.enable = 1;
-    ipu->task.input.deinterlace.motion = setIPUMotion(ipu->previous, CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod);
+    ipu->task.input.deinterlace.motion = ipu->previous ? m_motion : HIGH_MOTION;
     ipu->task.input.deinterlace.field_fmt = m_currentFieldFmt;
   }
 }

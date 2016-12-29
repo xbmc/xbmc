@@ -126,6 +126,7 @@ bool CRendererIMX::RenderHook(int index)
 
 bool CRendererIMX::RenderUpdateVideoHook(bool clear, DWORD flags, DWORD alpha)
 {
+  static DWORD flagsPrev;
 #if 0
   static unsigned long long previous = 0;
   unsigned long long current = XbmcThreads::SystemClockMillis();
@@ -140,7 +141,16 @@ bool CRendererIMX::RenderUpdateVideoHook(bool clear, DWORD flags, DWORD alpha)
       buffer->Lock();
       m_bufHistory.push_back(buffer);
     }
-    if (m_bufHistory.size() > 2)
+    else if (!m_bufHistory.empty() && m_bufHistory.back() == buffer && flagsPrev == flags)
+    {
+      g_IMX.WaitVsync();
+      return true;
+    }
+
+    flagsPrev = flags;
+
+    int size = flags & RENDER_FLAG_FIELDMASK ? 2 : 1;
+    while (m_bufHistory.size() > size)
     {
       m_bufHistory.front()->Release();
       m_bufHistory.pop_front();
