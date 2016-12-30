@@ -75,12 +75,10 @@
   #define HAS_UPNP
 #endif
 
-#if defined(HAVE_LIBMDNS)
+#if defined(HAVE_LIBMDNSEMBEDDED)
   #define HAS_ZEROCONF
   #define HAS_MDNS
-  #if defined(HAVE_LIBMDNSEMBEDDED)
-    #define HAS_MDNS_EMBEDDED
-  #endif
+  #define HAS_MDNS_EMBEDDED
 #endif
 
 /**********************
@@ -102,6 +100,8 @@
 #define HAS_WEB_SERVER
 #define HAS_WEB_INTERFACE
 #define HAS_FILESYSTEM_SMB
+#define HAS_ZEROCONF
+#define HAS_MDNS
 #define HAS_AIRTUNES
 #define HAS_UPNP
 
