@@ -2082,6 +2082,7 @@ void CVideoPlayer::HandlePlaySpeed()
       // 1. videoplayer has not detected a keyframe within lenght of demux buffers
       if (m_CurrentAudio.id >= 0 && m_CurrentVideo.id >= 0 &&
           !m_VideoPlayerAudio->AcceptsData() &&
+          m_CurrentVideo.syncState == IDVDStreamPlayer::SYNC_STARTING &&
           m_VideoPlayerVideo->IsStalled())
       {
         CLog::Log(LOGWARNING, "VideoPlayer::Sync - stream player video does not start, flushing buffers");
@@ -3776,13 +3777,14 @@ bool CVideoPlayer::OpenStream(CCurrentStream& current, int64_t demuxerId, int iS
 
   if (res)
   {
-    current.id      = iStream;
+    int oldId = current.id;
+    current.id = iStream;
     current.demuxerId = demuxerId;
-    current.source  = source;
-    current.hint    = hint;
-    current.stream  = (void*)stream;
+    current.source = source;
+    current.hint = hint;
+    current.stream = (void*)stream;
     current.lastdts = DVD_NOPTS_VALUE;
-    if (current.avsync != CCurrentStream::AV_SYNC_FORCE)
+    if (oldId >= 0 && current.avsync != CCurrentStream::AV_SYNC_FORCE)
       current.avsync = CCurrentStream::AV_SYNC_CHECK;
     if(stream)
       current.changes = stream->changes;
