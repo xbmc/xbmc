@@ -35,6 +35,8 @@
 #include <mDnsEmbedded.h>
 #endif //HAS_MDNS_EMBEDDED
 
+#pragma comment(lib, "dnssd.lib")
+
 extern HWND g_hWnd;
 
 void CZeroconfMDNS::Process()
