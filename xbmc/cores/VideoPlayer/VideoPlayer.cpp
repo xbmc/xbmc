@@ -5326,6 +5326,11 @@ void CVideoPlayer::UpdateRenderInfo(CRenderInfo &info)
   m_processInfo->UpdateRenderInfo(info);
 }
 
+void CVideoPlayer::UpdateRenderBuffers(int queued, int discard, int free)
+{
+  m_processInfo->UpdateRenderBuffers(queued, discard, free);
+}
+
 // IDispResource interface
 void CVideoPlayer::OnLostDisplay()
 {
