@@ -206,9 +206,12 @@ bool CAESinkDirectSound::Initialize(AEAudioFormat &format, std::string &device)
 
   WAVEFORMATEXTENSIBLE wfxex = {0};
 
-  // clamp samplerate to a minimum
+  // clamp samplerate between 44100 and 192000
   if (format.m_sampleRate < 44100)
     format.m_sampleRate = 44100;
+
+  if (format.m_sampleRate > 192000)
+    format.m_sampleRate = 192000;
 
   //fill waveformatex
   ZeroMemory(&wfxex, sizeof(WAVEFORMATEXTENSIBLE));
