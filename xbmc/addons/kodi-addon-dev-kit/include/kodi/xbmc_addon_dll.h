@@ -20,19 +20,7 @@
  *
  */
 
-#ifdef TARGET_WINDOWS
-#include <windows.h>
-#else
-#ifndef __cdecl
-#define __cdecl
-#endif
-#ifndef __declspec
-#define __declspec(X)
-#endif
-#endif
-
-#include "xbmc_addon_types.h"
-#include "versions.h"
+#include "AddonBase.h"
 
 #ifdef __cplusplus
 extern "C" { 
@@ -49,6 +37,8 @@ extern "C" {
   {
     return kodi::addon::GetTypeVersion(type);
   }
+  __declspec(dllexport) ADDON_STATUS ADDON_CreateInstance(int instanceType, const char* instanceID, KODI_HANDLE instance, KODI_HANDLE* addonInstance);
+  __declspec(dllexport) void ADDON_DestroyInstance(int instanceType, KODI_HANDLE instance);
 
 #ifdef __cplusplus
 };

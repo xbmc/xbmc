@@ -45,9 +45,9 @@ typedef struct AddonToKodiFuncTable_Screensaver
 
 typedef struct KodiToAddonFuncTable_Screensaver
 {
-  void (__cdecl* Start) ();
-  void (__cdecl* Stop) ();
-  void (__cdecl* Render) ();
+  void (__cdecl* Start) (KODI_HANDLE addonHandle);
+  void (__cdecl* Stop) (KODI_HANDLE addonHandle);
+  void (__cdecl* Render) (KODI_HANDLE addonHandle);
 } KodiToAddonFuncTable_Screensaver;
 
 typedef struct AddonInstance_ScreenSaver

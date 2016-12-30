@@ -169,6 +169,9 @@ bool CAddonDll::LoadDll()
   return true;
 }
 
+/*!
+ * @todo this function becomes removed on final 
+ */
 ADDON_STATUS CAddonDll::Create(int type, void* funcTable, void* info)
 {
   /* ensure that a previous instance is destroyed */
@@ -238,6 +241,60 @@ ADDON_STATUS CAddonDll::Create(int type, void* funcTable, void* info)
   return status;
 }
 
+/*!
+ * @todo This function becomes a lot of changes until final
+ */
+ADDON_STATUS CAddonDll::Create(KODI_HANDLE firstKodiInstance)
+{
+  CLog::Log(LOGDEBUG, "ADDON: Dll Initializing - %s", Name().c_str());
+  m_initialized = false;
+
+  if (!LoadDll())
+  {
+    CGUIDialogOK::ShowAndGetInput(CVariant{24070}, CVariant{16029});
+    return ADDON_STATUS_PERMANENT_FAILURE;
+  }
+
+  /* Check versions about global parts on add-on (parts used on all types) */
+  for (unsigned int id = ADDON_GLOBAL_MAIN; id <= ADDON_GLOBAL_MAX; ++id)
+  {
+    if (!CheckAPIVersion(id))
+      return ADDON_STATUS_PERMANENT_FAILURE;
+  }
+
+  /* Call Create to make connections, initializing data or whatever is
+     needed to become the AddOn running */
+  ADDON_STATUS status = m_pDll->Create(nullptr, firstKodiInstance); /*! @todo Values becomes changed after the system is reworked complete, now there to prevent conflicts */
+  if (status == ADDON_STATUS_OK)
+  {
+    m_initialized = true;
+  }
+  else if ((status == ADDON_STATUS_NEED_SETTINGS) || (status == ADDON_STATUS_NEED_SAVEDSETTINGS))
+  {
+    m_needsavedsettings = (status == ADDON_STATUS_NEED_SAVEDSETTINGS);
+    if ((status = TransferSettings()) == ADDON_STATUS_OK)
+      m_initialized = true;
+    else
+      new CAddonStatusHandler(ID(), status, "", false);
+  }
+  else
+  { // Addon failed initialization
+    CLog::Log(LOGERROR, "ADDON: Dll %s - Client returned bad status (%i) from Create and is not usable", Name().c_str(), status);
+
+    CGUIDialogOK* pDialog = (CGUIDialogOK*)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
+    if (pDialog)
+    {
+      std::string heading = StringUtils::Format("%s: %s", TranslateType(Type(), true).c_str(), Name().c_str());
+      pDialog->SetHeading(CVariant{heading});
+      pDialog->SetLine(1, CVariant{24070});
+      pDialog->SetLine(2, CVariant{24071});
+      pDialog->Open();
+    }
+  }
+
+  return status;
+}
+
 void CAddonDll::Destroy()
 {
   if (m_pDll)
@@ -276,6 +333,14 @@ void CAddonDll::Destroy()
     m_pDll = NULL;
     CLog::Log(LOGINFO, "ADDON: Dll Destroyed - %s", Name().c_str());
   }
+
+  /* Make sure all instances are destroyed if interface becomes stopped. */
+  for (std::map<std::string, std::pair<int, KODI_HANDLE>>::iterator it = m_usedInstances.begin(); it != m_usedInstances.end(); ++it)
+  {
+    m_pDll->DestroyInstance(it->second.first, it->second.second);
+    m_usedInstances.erase(it);
+  }
+
   m_initialized = false;
 }
 
@@ -303,6 +368,43 @@ bool CAddonDll::CheckAPIVersion(int type)
   }
 
   return true;
+}
+
+/*! @todo there comes further changes until it is final! */
+ADDON_STATUS CAddonDll::CreateInstance(int instanceType, const std::string& instanceID, KODI_HANDLE instance, KODI_HANDLE* addonInstance)
+{
+  ADDON_STATUS status = ADDON_STATUS_PERMANENT_FAILURE;
+
+  if (!m_initialized)
+    status = Create(instance);
+  if (status != ADDON_STATUS_OK)
+    return status;
+
+  /* Check version of requested instance type */
+  if (!CheckAPIVersion(instanceType))
+    return ADDON_STATUS_PERMANENT_FAILURE;
+
+  status = m_pDll->CreateInstance(instanceType, instanceID.c_str(), instance, addonInstance);
+  if (status == ADDON_STATUS_OK)
+  {
+    m_usedInstances[instanceID] = std::make_pair(instanceType, *addonInstance);
+  }
+
+  return status;
+}
+
+/*! @todo there comes further changes until it is final! */
+void CAddonDll::DestroyInstance(const std::string& instanceID)
+{
+  std::map<std::string, std::pair<int, KODI_HANDLE>>::iterator it = m_usedInstances.find(instanceID);
+  if (it != m_usedInstances.end())
+  {
+    m_pDll->DestroyInstance(it->second.first, it->second.second);
+    m_usedInstances.erase(it);
+  }
+
+  if (m_usedInstances.empty())
+    Destroy();
 }
 
 bool CAddonDll::DllLoaded(void) const
