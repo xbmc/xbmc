@@ -35,14 +35,12 @@
 CRendererIMX::CRendererIMX()
 {
   m_bufHistory.clear();
-  g_IMXContext.Clear();
 }
 
 CRendererIMX::~CRendererIMX()
 {
   UnInit();
   std::for_each(m_bufHistory.begin(), m_bufHistory.end(), Release);
-  g_IMXContext.Clear();
   g_IMX.Deinitialize();
 }
 
@@ -80,28 +78,21 @@ bool CRendererIMX::IsGuiLayer()
   return false;
 }
 
-bool CRendererIMX::Supports(EINTERLACEMETHOD method)
+bool CRendererIMX::Supports(ERENDERFEATURE feature)
 {
-  if(method == VS_INTERLACEMETHOD_AUTO)
+  if (!g_IMXContext.IsZoomAllowed())
+    return false;
+
+  if (feature == RENDERFEATURE_PIXEL_RATIO ||
+      feature == RENDERFEATURE_ZOOM)
     return true;
 
-  if(method == VS_INTERLACEMETHOD_IMX_ADVMOTION
-  || method == VS_INTERLACEMETHOD_IMX_ADVMOTION_HALF
-  || method == VS_INTERLACEMETHOD_IMX_FASTMOTION
-  || method == VS_INTERLACEMETHOD_RENDER_BOB)
-    return true;
-  else
-    return false;
+  return false;
 }
 
 bool CRendererIMX::Supports(ESCALINGMETHOD method)
 {
   return method == VS_SCALINGMETHOD_AUTO;
-}
-
-EINTERLACEMETHOD CRendererIMX::AutoInterlaceMethod()
-{
-  return VS_INTERLACEMETHOD_IMX_ADVMOTION_HALF;
 }
 
 bool CRendererIMX::WantsDoublePass()
@@ -138,6 +129,7 @@ bool CRendererIMX::RenderHook(int index)
 
 bool CRendererIMX::RenderUpdateVideoHook(bool clear, DWORD flags, DWORD alpha)
 {
+  static DWORD flagsPrev;
 #if 0
   static unsigned long long previous = 0;
   unsigned long long current = XbmcThreads::SystemClockMillis();
@@ -152,7 +144,16 @@ bool CRendererIMX::RenderUpdateVideoHook(bool clear, DWORD flags, DWORD alpha)
       buffer->Lock();
       m_bufHistory.push_back(buffer);
     }
-    if (m_bufHistory.size() > 2)
+    else if (!m_bufHistory.empty() && m_bufHistory.back() == buffer && flagsPrev == flags)
+    {
+      g_IMX.WaitVsync();
+      return true;
+    }
+
+    flagsPrev = flags;
+
+    int size = flags & RENDER_FLAG_FIELDMASK ? 2 : 1;
+    while (m_bufHistory.size() > size)
     {
       m_bufHistory.front()->Release();
       m_bufHistory.pop_front();
@@ -187,8 +188,6 @@ bool CRendererIMX::RenderUpdateVideoHook(bool clear, DWORD flags, DWORD alpha)
     }
 
     //CLog::Log(LOGDEBUG, "BLIT RECTS: source x1 %f x2 %f y1 %f y2 %f dest x1 %f x2 %f y1 %f y2 %f", srcRect.x1, srcRect.x2, srcRect.y1, srcRect.y2, dstRect.x1, dstRect.x2, dstRect.y1, dstRect.y2);
-    g_IMXContext.SetBlitRects(srcRect, dstRect);
-
     uint8_t fieldFmt = flags & RENDER_FLAG_FIELDMASK;
 
     if (!g_graphicsContext.IsFullScreenVideo())
@@ -208,7 +207,7 @@ bool CRendererIMX::RenderUpdateVideoHook(bool clear, DWORD flags, DWORD alpha)
     }
 
     CDVDVideoCodecIMXBuffer *buffer_p = m_bufHistory.front();
-    g_IMXContext.Blit(buffer_p == buffer ? nullptr : buffer_p, buffer, fieldFmt);
+    g_IMXContext.Blit(buffer_p == buffer ? nullptr : buffer_p, buffer, srcRect, dstRect, fieldFmt);
   }
 
 #if 0
