@@ -376,7 +376,6 @@ int VideoPlayerCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
     CDVDDemuxUtils::FreeDemuxPacket(pPacket);
     if (ret < 0)
     {
-      CDVDDemuxUtils::FreeDemuxPacket(pPacket);
       return READ_ERROR;
     }
   }
