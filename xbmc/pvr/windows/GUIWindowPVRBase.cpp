@@ -415,9 +415,10 @@ bool CGUIWindowPVRBase::InitChannelGroup()
     if (m_channelGroup != group)
     {
       m_viewControl.SetSelectedItem(0);
-      m_channelGroup = group;
-      m_vecItems->SetPath(GetDirectoryPath());
+      SetChannelGroup(group, false);
     }
+    // Path might have changed since last init. Set it always, not just on group change.
+    m_vecItems->SetPath(GetDirectoryPath());
     return true;
   }
   return false;
@@ -429,7 +430,7 @@ CPVRChannelGroupPtr CGUIWindowPVRBase::GetChannelGroup(void)
   return m_channelGroup;
 }
 
-void CGUIWindowPVRBase::SetChannelGroup(const CPVRChannelGroupPtr &group)
+void CGUIWindowPVRBase::SetChannelGroup(const CPVRChannelGroupPtr &group, bool bUpdate /* = true */)
 {
   if (!group)
     return;
@@ -448,7 +449,7 @@ void CGUIWindowPVRBase::SetChannelGroup(const CPVRChannelGroupPtr &group)
     }
   }
 
-  if (channelGroup)
+  if (bUpdate && channelGroup)
   {
     g_PVRManager.SetPlayingGroup(channelGroup);
     Update(GetDirectoryPath());
