@@ -11,7 +11,7 @@
 			<include content="DialogBackgroundCommons">
 				<param name="width" value="1820" />
 				<param name="height" value="830" />
-				<param name="header_label" value="$VAR[PVRChannelMgrHeader]" />
+				<param name="header_label" value="$VAR[PVRChannelMgrHeader]$INFO[Container(20).NumItems, (,)]" />
 				<param name="header_id" value="2" />
 			</include>
 			<control type="group">
@@ -45,37 +45,40 @@
 					<pagecontrol>60</pagecontrol>
 					<scrolltime>200</scrolltime>
 					<itemlayout height="70" width="630">
-						<control type="image">
-							<left>0</left>
-							<right>0</right>
-							<bottom>0</bottom>
-							<texture colordiffuse="selected">colors/white.png</texture>
-							<animation effect="fade" end="20" time="0" condition="true">Conditional</animation>
-							<visible>ListItem.Property(Changed)</visible>
-						</control>
-						<control type="image">
-							<left>15</left>
-							<top>10</top>
-							<width>50</width>
-							<height>50</height>
-							<texture>$INFO[ListItem.Property(icon)]</texture>
-							<aspectratio>keep</aspectratio>
-						</control>
-						<control type="image">
-							<right>0</right>
-							<top>10</top>
-							<width>50</width>
-							<height>50</height>
-							<texture>OverlayLocked.png</texture>
-							<aspectratio>keep</aspectratio>
-							<visible>ListItem.Property(ParentalLocked)</visible>
-						</control>
-						<control type="label">
-							<left>85</left>
-							<right>40</right>
-							<bottom>0</bottom>
-							<aligny>center</aligny>
-							<label>$INFO[ListItem.Property(Number),[B],[/B] - ]$INFO[ListItem.Property(Name)]</label>
+						<control type="group">
+							<animation effect="fade" start="100" end="50" time="0" condition="!ListItem.Property(ActiveChannel)">Conditional</animation>
+							<control type="image">
+								<left>0</left>
+								<right>0</right>
+								<bottom>0</bottom>
+								<texture colordiffuse="selected">colors/white.png</texture>
+								<animation effect="fade" end="20" time="0" condition="true">Conditional</animation>
+								<visible>ListItem.Property(Changed)</visible>
+							</control>
+							<control type="image">
+								<left>15</left>
+								<top>10</top>
+								<width>50</width>
+								<height>50</height>
+								<texture>$INFO[ListItem.Property(icon)]</texture>
+								<aspectratio>keep</aspectratio>
+							</control>
+							<control type="image">
+								<right>0</right>
+								<top>10</top>
+								<width>50</width>
+								<height>50</height>
+								<texture>OverlayLocked.png</texture>
+								<aspectratio>keep</aspectratio>
+								<visible>ListItem.Property(ParentalLocked)</visible>
+							</control>
+							<control type="label">
+								<left>85</left>
+								<right>40</right>
+								<bottom>0</bottom>
+								<aligny>center</aligny>
+								<label>$INFO[ListItem.Property(Number),[B],[/B] - ]$INFO[ListItem.Property(Name)]</label>
+							</control>
 						</control>
 					</itemlayout>
 					<focusedlayout height="70" width="630">
@@ -267,18 +270,6 @@
 					<param name="id" value="6" />
 					<param name="label" value="$LOCALIZE[222]" />
 				</include>
-			</control>
-			<control type="label">
-				<right>40</right>
-				<top>780</top>
-				<width>330</width>
-				<height>35</height>
-				<font>font12</font>
-				<textcolor>grey</textcolor>
-				<align>right</align>
-				<aligny>center</aligny>
-				<label>[COLOR=button_focus]$INFO[Container(20).NumItems][/COLOR] $LOCALIZE[19019] - [COLOR=button_focus]$INFO[Container(20).CurrentPage]/$INFO[Container(20).NumPages][/COLOR]</label>
-				<wrapmultiline>true</wrapmultiline>
 			</control>
 		</control>
 	</controls>
