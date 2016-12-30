@@ -5258,17 +5258,15 @@ bool CMusicDatabase::GetRandomSong(CFileItem* item, int& idSong, const Filter &f
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    // We don't use PrepareSQL here, as the WHERE clause is already formatted
-    std::string strSQL = PrepareSQL("select %s from songview ", !filter.fields.empty() ? filter.fields.c_str() : "*");
+    // Get a random song that matches filter criteria (which may exclude some songs)
+    // We don't use PrepareSQL here, as the WHERE clause is already formatted but must
+    // use songview as that is what the WHERE clause has as reference table
+    std::string strSQL = "SELECT idSong FROM songview ";
     Filter extFilter = filter;
     extFilter.AppendOrder(PrepareSQL("RANDOM()"));
     extFilter.limit = "1";
-
     if (!CDatabase::BuildSQL(strSQL, extFilter, strSQL))
       return false;
-
-    CLog::Log(LOGDEBUG, "%s query = %s", __FUNCTION__, strSQL.c_str());
-    // run query
     if (!m_pDS->query(strSQL))
       return false;
     int iRowsFound = m_pDS->num_rows();
@@ -5277,10 +5275,19 @@ bool CMusicDatabase::GetRandomSong(CFileItem* item, int& idSong, const Filter &f
       m_pDS->close();
       return false;
     }
-    GetFileItemFromDataset(item, CMusicDbUrl());
     idSong = m_pDS->fv("songview.idSong").get_asInt();
     m_pDS->close();
-    return true;
+
+    // Fetch the full song details, including contributors
+    std::string baseDir = StringUtils::Format("musicdb://songs/?songid=%d", idSong);
+    CFileItemList items;
+    GetSongsFullByWhere(baseDir, Filter(), items, SortDescription(), true);
+    if (items.Size() > 0)
+    {
+      *item = *items[0];      
+      return true;
+    }
+    return false;
   }
   catch(...)
   {
@@ -6585,6 +6592,9 @@ bool CMusicDatabase::GetFilter(CDbUrl &musicUrl, Filter &filter, SortDescription
     option = options.find("compilation");
     if (option != options.end())
       filter.AppendWhere(PrepareSQL("songview.bCompilation = %i", option->second.asBoolean() ? 1 : 0));
+    
+    if (idSong > 0)
+      filter.AppendWhere(PrepareSQL("songview.idSong = %i", idSong));
 
     if (idAlbum > 0)
       filter.AppendWhere(PrepareSQL("songview.idAlbum = %i", idAlbum));
