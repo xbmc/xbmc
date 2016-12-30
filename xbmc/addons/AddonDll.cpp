@@ -244,7 +244,7 @@ ADDON_STATUS CAddonDll::Create(int type, void* funcTable, void* info)
 /*!
  * @todo This function becomes a lot of changes until final
  */
-ADDON_STATUS CAddonDll::Create()
+ADDON_STATUS CAddonDll::Create(KODI_HANDLE firstKodiInstance)
 {
   CLog::Log(LOGDEBUG, "ADDON: Dll Initializing - %s", Name().c_str());
   m_initialized = false;
@@ -264,7 +264,7 @@ ADDON_STATUS CAddonDll::Create()
 
   /* Call Create to make connections, initializing data or whatever is
      needed to become the AddOn running */
-  ADDON_STATUS status = m_pDll->Create(nullptr, nullptr); /*! @todo Values becomes changed after the system is reworked complete, now there to prevent conflicts */
+  ADDON_STATUS status = m_pDll->Create(nullptr, firstKodiInstance); /*! @todo Values becomes changed after the system is reworked complete, now there to prevent conflicts */
   if (status == ADDON_STATUS_OK)
   {
     m_initialized = true;
@@ -376,7 +376,7 @@ ADDON_STATUS CAddonDll::CreateInstance(int instanceType, const std::string& inst
   ADDON_STATUS status = ADDON_STATUS_PERMANENT_FAILURE;
 
   if (!m_initialized)
-    status = Create();
+    status = Create(instance);
   if (status != ADDON_STATUS_OK)
     return status;
 

@@ -42,7 +42,7 @@ namespace ADDON
     virtual void SaveSettings();
     virtual std::string GetSetting(const std::string& key);
 
-    ADDON_STATUS Create();
+    ADDON_STATUS Create(KODI_HANDLE firstKodiInstance);
     ADDON_STATUS Create(int type, void* funcTable, void* info);
     void Destroy();
 
