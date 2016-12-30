@@ -28,6 +28,7 @@
 #include <vector>
 #include "rendering/RenderSystem.h"
 #include "guilib/GUIShaderDX.h"
+#include "threads/Condition.h"
 #include "threads/CriticalSection.h"
 #include "easyhook/easyhook.h"
 
@@ -79,6 +80,8 @@ public:
   void GetDisplayMode(DXGI_MODE_DESC *mode, bool useCached = false);
   void FinishCommandList(bool bExecute = true) const;
   void FlushGPU() const;
+  void RequestDecodingTime();
+  void ReleaseDecodingTime();
 
   ID3D11Device*           Get3D11Device() const       { return m_pD3DDev; }
   ID3D11DeviceContext*    Get3D11Context() const      { return m_pContext; }
@@ -187,6 +190,10 @@ protected:
   bool                        m_bStereoEnabled{false};
   TRACED_HOOK_HANDLE          m_hHook{nullptr};
   HMODULE                     m_hDriverModule{nullptr};
+
+  CCriticalSection m_decoderSection;
+  XbmcThreads::EndTime m_decodingTimer;
+  XbmcThreads::ConditionVariable m_decodingEvent;
 };
 
 #endif

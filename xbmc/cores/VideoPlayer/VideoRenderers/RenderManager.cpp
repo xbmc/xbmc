@@ -350,14 +350,13 @@ void CRenderManager::FrameWait(int ms)
     m_presentevent.wait(lock, timeout.MillisLeft());
 }
 
-bool CRenderManager::HasFrame()
+bool CRenderManager::IsPresenting()
 {
   if (!IsConfigured())
     return false;
 
   CSingleLock lock(m_presentlock);
-  if (m_presentstep == PRESENT_READY ||
-      m_presentstep == PRESENT_FRAME || m_presentstep == PRESENT_FRAME2)
+  if (!m_presentTimer.IsTimePast())
     return true;
   else
     return false;
@@ -402,6 +401,7 @@ void CRenderManager::FrameMove()
       m_pRenderer->FlipPage(m_presentsource);
       m_presentstep = PRESENT_FRAME;
       m_presentevent.notifyAll();
+      m_presentTimer.Set(1000);
     }
 
     // release all previous
@@ -417,6 +417,8 @@ void CRenderManager::FrameMove()
       }
       else
         ++it;
+
+      m_playerPort->UpdateRenderBuffers(m_queued.size(), m_discard.size(), m_free.size());
     }
     
     m_bRenderGUI = true;
@@ -843,6 +845,7 @@ void CRenderManager::FlipPage(volatile std::atomic_bool& bStop, double pts,
   m.presentmethod = presentmethod;
   m.pts = pts;
   requeue(m_queued, m_free);
+  m_playerPort->UpdateRenderBuffers(m_queued.size(), m_discard.size(), m_free.size());
 
   // signal to any waiters to check state
   if (m_presentstep == PRESENT_IDLE)
@@ -980,7 +983,7 @@ bool CRenderManager::IsGuiLayer()
     if (!m_pRenderer)
       return false;
 
-    if ((m_pRenderer->IsGuiLayer() && HasFrame()) ||
+    if ((m_pRenderer->IsGuiLayer() && IsPresenting()) ||
         m_renderedOverlay || m_overlays.HasOverlay(m_presentsource))
       return true;
 
@@ -1339,6 +1342,8 @@ void CRenderManager::PrepareNextRender()
     m_queued.pop_front();
     m_presentpts = m_Queue[idx].pts - totalLatency;
     m_presentevent.notifyAll();
+
+    m_playerPort->UpdateRenderBuffers(m_queued.size(), m_discard.size(), m_free.size());
   }
 }
 
