@@ -103,11 +103,6 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
       }
 
       m_bInitialized = false;
-
-      // remove z-buffer
-//      RESOLUTION res = g_graphicsContext.GetVideoResolution();
- //     g_graphicsContext.SetVideoResolution(res, FALSE);
-
     }
     break;
 
@@ -132,10 +127,6 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
 
       g_graphicsContext.CaptureStateBlock();
       m_screenSaver->CreateScreenSaver();
-
-      // setup a z-buffer
-//      RESOLUTION res = g_graphicsContext.GetVideoResolution();
-//      g_graphicsContext.SetVideoResolution(res, TRUE);
 
       return true;
     }
