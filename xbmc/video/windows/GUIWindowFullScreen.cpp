@@ -414,6 +414,7 @@ void CGUIWindowFullScreen::RenderEx()
   CGUIWindow::RenderEx();
   g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetVideoResolution(), false);
   g_application.m_pPlayer->Render(false, 255, false);
+  g_graphicsContext.SetRenderingResolution(m_coordsRes, m_needsScaling);
 }
 
 void CGUIWindowFullScreen::SeekChapter(int iChapter)
