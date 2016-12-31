@@ -338,6 +338,8 @@ void CDVDMediaCodecInfo::RenderUpdate(const CRect &SrcRect, const CRect &DestRec
 
 /*****************************************************************************/
 /*****************************************************************************/
+int CDVDVideoCodecAndroidMediaCodec::s_instances = 0;
+
 CDVDVideoCodecAndroidMediaCodec::CDVDVideoCodecAndroidMediaCodec(CProcessInfo &processInfo, bool surface_render)
 : CDVDVideoCodec(processInfo)
 , m_formatname("mediacodec")
@@ -359,6 +361,10 @@ CDVDVideoCodecAndroidMediaCodec::~CDVDVideoCodecAndroidMediaCodec()
 
 bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
+
+  if (s_instances > 0)
+    return false;
+
   // mediacodec crashes with null size. Trap this...
   if (!hints.width || !hints.height)
   {
@@ -620,6 +626,7 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
   CLog::Log(LOGINFO, "CDVDVideoCodecAndroidMediaCodec:: "
     "Open Android MediaCodec %s", m_codecname.c_str());
 
+  s_instances++;
   m_opened = true;
   memset(&m_demux_pkt, 0, sizeof(m_demux_pkt));
 
@@ -672,6 +679,7 @@ void CDVDVideoCodecAndroidMediaCodec::Dispose()
     CXBMCApp::get()->clearVideoView();
 
   SAFE_DELETE(m_bitstream);
+  s_instances--;
 }
 
 int CDVDVideoCodecAndroidMediaCodec::Decode(uint8_t *pData, int iSize, double dts, double pts)

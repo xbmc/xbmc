@@ -98,6 +98,8 @@ public:
   CDVDVideoCodecAndroidMediaCodec(CProcessInfo &processInfo, bool surface_render = false);
   virtual ~CDVDVideoCodecAndroidMediaCodec();
 
+  // track instances - we can only allow exactly one
+  static int s_instances;
   // required overrides
   virtual bool    Open(CDVDStreamInfo &hints, CDVDCodecOptions &options);
   virtual int     Decode(uint8_t *pData, int iSize, double dts, double pts);
