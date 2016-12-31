@@ -46,7 +46,7 @@ typedef struct AddonToKodiFuncTable_Screensaver
 
 typedef struct KodiToAddonFuncTable_Screensaver
 {
-  void (__cdecl* Start) (kodi::addon::CInstanceScreensaver* addonInstance);
+  bool (__cdecl* Start) (kodi::addon::CInstanceScreensaver* addonInstance);
   void (__cdecl* Stop) (kodi::addon::CInstanceScreensaver* addonInstance);
   void (__cdecl* Render) (kodi::addon::CInstanceScreensaver* addonInstance);
 } KodiToAddonFuncTable_Screensaver;
@@ -86,7 +86,7 @@ namespace addon
 
     virtual ~CInstanceScreensaver() { }
 
-    virtual void Start() {}
+    virtual bool Start() { return true; }
     virtual void Stop() {}
     virtual void Render() {}
 
@@ -113,9 +113,9 @@ namespace addon
       m_instanceData->toAddon.Render = ADDON_Render;
     }
 
-    inline static void ADDON_Start(CInstanceScreensaver* addonInstance)
+    inline static bool ADDON_Start(CInstanceScreensaver* addonInstance)
     {
-      addonInstance->Start();
+      return addonInstance->Start();
     }
 
     inline static void ADDON_Stop(CInstanceScreensaver* addonInstance)
