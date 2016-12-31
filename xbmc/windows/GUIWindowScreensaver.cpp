@@ -52,7 +52,6 @@ void CGUIWindowScreensaver::Render()
 {
   CSingleLock lock (m_critSection);
 
-#ifdef HAS_SCREENSAVER
   if (m_screenSaver)
   {
     if (m_bInitialized)
@@ -71,7 +70,7 @@ void CGUIWindowScreensaver::Render()
       return ;
     }
   }
-#endif
+
   CGUIWindow::Render();
 }
 
@@ -95,7 +94,6 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_DEINIT:
     {
       CSingleLock lock (m_critSection);
-#ifdef HAS_SCREENSAVER
       if (m_screenSaver)
       {
         m_screenSaver->Stop();
@@ -103,7 +101,7 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
         m_screenSaver->DestroyScreenSaver();
         m_screenSaver.reset();
       }
-#endif
+
       m_bInitialized = false;
 
       // remove z-buffer
@@ -118,7 +116,6 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
       CGUIWindow::OnMessage(message);
       CSingleLock lock (m_critSection);
 
-#ifdef HAS_SCREENSAVER
       assert(!m_screenSaver);
       m_bInitialized = false;
 
@@ -135,7 +132,7 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
 
       g_graphicsContext.CaptureStateBlock();
       m_screenSaver->CreateScreenSaver();
-#endif
+
       // setup a z-buffer
 //      RESOLUTION res = g_graphicsContext.GetVideoResolution();
 //      g_graphicsContext.SetVideoResolution(res, TRUE);

@@ -21,9 +21,7 @@
  */
 
 #include "guilib/GUIWindow.h"
-#ifdef HAS_SCREENSAVER
 #include "addons/ScreenSaver.h"
-#endif
 
 #include "threads/CriticalSection.h"
 
@@ -48,7 +46,5 @@ protected:
 private:
   bool m_bInitialized;
   CCriticalSection m_critSection;
-#ifdef HAS_SCREENSAVER
   std::shared_ptr<ADDON::CScreenSaver> m_screenSaver;
-#endif
 };
