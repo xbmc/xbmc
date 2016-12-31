@@ -57,31 +57,17 @@ void CGUIWindowScreensaver::Render()
   {
     if (m_bInitialized)
     {
-      try
-      {
-        //some screensavers seem to be depending on xbmc clearing the screen
-        //       g_Windowing.Get3DDevice()->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER, 0x00010001, 1.0f, 0L );
-        g_graphicsContext.CaptureStateBlock();
-        m_screenSaver->Render();
-        g_graphicsContext.ApplyStateBlock();
-      }
-      catch (...)
-      {
-        CLog::Log(LOGERROR, "SCREENSAVER: - Exception in Render() - %s", m_screenSaver->Name().c_str());
-      }
+      //some screensavers seem to be depending on xbmc clearing the screen
+      //       g_Windowing.Get3DDevice()->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER, 0x00010001, 1.0f, 0L );
+      g_graphicsContext.CaptureStateBlock();
+      m_screenSaver->Render();
+      g_graphicsContext.ApplyStateBlock();
       return ;
     }
     else
     {
-      try
-      {
-        m_screenSaver->Start();
-        m_bInitialized = true;
-      }
-      catch (...)
-      {
-        CLog::Log(LOGERROR, "SCREENSAVER: - Exception in Start() - %s", m_screenSaver->Name().c_str());
-      }
+      m_screenSaver->Start();
+      m_bInitialized = true;
       return ;
     }
   }
