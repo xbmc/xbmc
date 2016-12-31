@@ -464,12 +464,19 @@
 						<texture colordiffuse="button_focus">lists/focus.png</texture>
 						<animation effect="fade" start="100" end="0" time="0" condition="!Control.HasFocus($PARAM[list_id])">Conditional</animation>
 					</control>
+					<control type="image">
+						<left>15</left>
+						<top>0</top>
+						<width>32</width>
+						<bottom>0</bottom>
+						<aspectratio aligny="center">keep</aspectratio>
+						<texture>$VAR[ListWatchedIconVar]</texture>
+					</control>
 					<control type="label">
-						<left>20</left>
-						<textoffsetx>15</textoffsetx>
+						<left>65</left>
 						<top>0</top>
 						<bottom>0</bottom>
-						<right>0</right>
+						<right>20</right>
 						<aligny>center</aligny>
 						<scroll>true</scroll>
 						<label>$INFO[ListItem.Label]</label>
@@ -488,12 +495,19 @@
 					</control>
 				</focusedlayout>
 				<itemlayout height="list_item_height" width="$PARAM[width]">
+					<control type="image">
+						<left>15</left>
+						<top>0</top>
+						<width>32</width>
+						<bottom>0</bottom>
+						<aspectratio aligny="center">keep</aspectratio>
+						<texture>$VAR[ListWatchedIconVar]</texture>
+					</control>
 					<control type="label">
-						<left>20</left>
-						<textoffsetx>15</textoffsetx>
+						<left>65</left>
 						<top>0</top>
 						<bottom>0</bottom>
-						<right>0</right>
+						<right>20</right>
 						<aligny>center</aligny>
 						<label>$INFO[ListItem.Label]</label>
 						<shadowcolor>text_shadow</shadowcolor>
@@ -763,11 +777,12 @@
 		</control>
 		<control type="group">
 			<width>$PARAM[width]</width>
+			<height>$PARAM[height]</height>
 			<control type="image">
 				<left>0</left>
 				<top>0</top>
 				<right>0</right>
-				<height>$PARAM[height]</height>
+				<bottom>0</bottom>
 				<texture colordiffuse="dialog_tint">colors/white.png</texture>
 			</control>
 			<control type="image">
@@ -792,7 +807,7 @@
 				<left>0</left>
 				<top>0</top>
 				<right>0</right>
-				<height>$PARAM[height]</height>
+				<bottom>0</bottom>
 				<texturefocus />
 				<texturenofocus />
 				<onclick>noop</onclick>

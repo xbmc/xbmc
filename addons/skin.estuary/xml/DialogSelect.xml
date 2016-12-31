@@ -83,7 +83,7 @@
 						<left>0</left>
 						<top>0</top>
 						<right>0</right>
-						<height>125</height>
+						<bottom>0</bottom>
 						<texture colordiffuse="button_focus">lists/focus.png</texture>
 						<visible>Control.HasFocus(6)</visible>
 					</control>
