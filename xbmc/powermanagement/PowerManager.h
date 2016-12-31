@@ -93,6 +93,8 @@ private:
 
   void OnLowBattery();
 
+  void WaitForNet(int timeout) const;
+
   IPowerSyscall *m_instance;
 };
 
