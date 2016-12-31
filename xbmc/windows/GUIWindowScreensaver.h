@@ -44,7 +44,6 @@ protected:
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
 
 private:
-  bool m_bInitialized;
   CCriticalSection m_critSection;
   std::shared_ptr<ADDON::CScreenSaver> m_screenSaver;
 };

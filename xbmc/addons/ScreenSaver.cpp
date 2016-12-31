@@ -73,10 +73,14 @@ bool CScreenSaver::CreateScreenSaver()
   m_struct.props.profile = m_profile.c_str();
   m_struct.toKodi.kodiInstance = this;
 
-  if (m_addon->CreateInstance(ADDON_INSTANCE_SCREENSAVER, ID(), &m_struct, reinterpret_cast<KODI_HANDLE*>(&m_addonInstance)) == ADDON_STATUS_OK)
-    return true;
+  if (m_addon->CreateInstance(ADDON_INSTANCE_SCREENSAVER, ID(), &m_struct, reinterpret_cast<KODI_HANDLE*>(&m_addonInstance)) != ADDON_STATUS_OK)
+    return false;
 
-  return false;
+  // notify screen saver that they should start
+  if (m_struct.toAddon.Start)
+    return m_struct.toAddon.Start(m_addonInstance);
+
+  return true;
 }
 
 void CScreenSaver::DestroyScreenSaver()
@@ -91,23 +95,13 @@ void CScreenSaver::DestroyScreenSaver()
     return;
   }
 
-  m_addon->DestroyInstance(ID());
-  memset(&m_struct, 0, sizeof(m_struct));
-  m_addonInstance = nullptr;
-}
-
-void CScreenSaver::Start()
-{
-  // notify screen saver that they should start
-  if (m_struct.toAddon.Start)
-    m_struct.toAddon.Start(m_addonInstance);
-}
-
-void CScreenSaver::Stop()
-{
   // notify screen saver that they should start
   if (m_struct.toAddon.Stop)
     m_struct.toAddon.Stop(m_addonInstance);
+
+  m_addon->DestroyInstance(ID());
+  memset(&m_struct, 0, sizeof(m_struct));
+  m_addonInstance = nullptr;
 }
 
 void CScreenSaver::Render()

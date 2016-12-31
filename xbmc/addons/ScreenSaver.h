@@ -34,8 +34,6 @@ public:
   // Things that MUST be supplied by the child addon instance classes
   bool CreateScreenSaver();
   void DestroyScreenSaver();
-  void Start();
-  void Stop();
   void Render();
 
 private:

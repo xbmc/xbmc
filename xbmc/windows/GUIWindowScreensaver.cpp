@@ -54,21 +54,12 @@ void CGUIWindowScreensaver::Render()
 
   if (m_screenSaver)
   {
-    if (m_bInitialized)
-    {
-      //some screensavers seem to be depending on xbmc clearing the screen
-      //       g_Windowing.Get3DDevice()->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER, 0x00010001, 1.0f, 0L );
-      g_graphicsContext.CaptureStateBlock();
-      m_screenSaver->Render();
-      g_graphicsContext.ApplyStateBlock();
-      return ;
-    }
-    else
-    {
-      m_screenSaver->Start();
-      m_bInitialized = true;
-      return ;
-    }
+    //some screensavers seem to be depending on xbmc clearing the screen
+    //       g_Windowing.Get3DDevice()->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER, 0x00010001, 1.0f, 0L );
+    g_graphicsContext.CaptureStateBlock();
+    m_screenSaver->Render();
+    g_graphicsContext.ApplyStateBlock();
+    return;
   }
 
   CGUIWindow::Render();
@@ -96,13 +87,10 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
       CSingleLock lock (m_critSection);
       if (m_screenSaver)
       {
-        m_screenSaver->Stop();
-        g_graphicsContext.ApplyStateBlock();
         m_screenSaver->DestroyScreenSaver();
+        g_graphicsContext.ApplyStateBlock();
         m_screenSaver.reset();
       }
-
-      m_bInitialized = false;
     }
     break;
 
@@ -112,23 +100,17 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
       CSingleLock lock (m_critSection);
 
       assert(!m_screenSaver);
-      m_bInitialized = false;
-
       m_screenSaver.reset();
+
       // Setup new screensaver instance
       AddonPtr addon;
-      if (!CAddonMgr::GetInstance().GetAddon(CServiceBroker::GetSettings().GetString(CSettings::SETTING_SCREENSAVER_MODE), addon, ADDON_SCREENSAVER))
-        return false;
-
-      m_screenSaver.reset(new CScreenSaver(std::dynamic_pointer_cast<CAddonDll>(addon)));
-
+      if (CAddonMgr::GetInstance().GetAddon(CServiceBroker::GetSettings().GetString(CSettings::SETTING_SCREENSAVER_MODE), addon, ADDON_SCREENSAVER))
+        m_screenSaver.reset(new CScreenSaver(std::dynamic_pointer_cast<CAddonDll>(addon)));
       if (!m_screenSaver)
         return false;
 
       g_graphicsContext.CaptureStateBlock();
-      m_screenSaver->CreateScreenSaver();
-
-      return true;
+      return m_screenSaver->CreateScreenSaver();
     }
   case GUI_MSG_CHECK_LOCK:
     if (!g_passwordManager.IsProfileLockUnlocked())
@@ -141,4 +123,3 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
   }
   return CGUIWindow::OnMessage(message);
 }
-
