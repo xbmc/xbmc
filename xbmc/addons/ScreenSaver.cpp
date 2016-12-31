@@ -35,23 +35,11 @@
 namespace ADDON
 {
 
-CScreenSaver::CScreenSaver(AddonProps props)
- : ADDON::CAddonDll(std::move(props)),
+CScreenSaver::CScreenSaver(ADDON::AddonDllPtr addon)
+ : CAddonInstanceInfo(addon),
    m_addonInstance(nullptr)
 {
   memset(&m_struct, 0, sizeof(m_struct));
-}
-
-CScreenSaver::CScreenSaver(const char *addonID)
- : ADDON::CAddonDll(AddonProps(addonID, ADDON_UNKNOWN)),
-   m_addonInstance(nullptr)
-{
-  memset(&m_struct, 0, sizeof(m_struct));
-}
-
-bool CScreenSaver::IsInUse() const
-{
-  return CServiceBroker::GetSettings().GetString(CSettings::SETTING_SCREENSAVER_MODE) == ID();
 }
 
 bool CScreenSaver::CreateScreenSaver()
@@ -62,7 +50,7 @@ bool CScreenSaver::CreateScreenSaver()
     g_alarmClock.Stop(SCRIPT_ALARM, true);
 
     if (!CScriptInvocationManager::GetInstance().Stop(LibPath()))
-      CScriptInvocationManager::GetInstance().ExecuteAsync(LibPath(), AddonPtr(new CScreenSaver(*this)));
+      CScriptInvocationManager::GetInstance().ExecuteAsync(LibPath(), AddonPtr(new CAddonDll(*m_addon)));
     return true;
   }
 
@@ -85,10 +73,27 @@ bool CScreenSaver::CreateScreenSaver()
   m_struct.props.profile = m_profile.c_str();
   m_struct.toKodi.kodiInstance = this;
 
-  if (CAddonDll::CreateInstance(ADDON_INSTANCE_SCREENSAVER, ID(), &m_struct, reinterpret_cast<KODI_HANDLE*>(&m_addonInstance)) == ADDON_STATUS_OK)
+  if (m_addon->CreateInstance(ADDON_INSTANCE_SCREENSAVER, ID(), &m_struct, reinterpret_cast<KODI_HANDLE*>(&m_addonInstance)) == ADDON_STATUS_OK)
     return true;
 
   return false;
+}
+
+void CScreenSaver::DestroyScreenSaver()
+{
+  if (URIUtils::HasExtension(LibPath(), ".py"))
+  {
+    /* FIXME: This is a hack but a proper fix is non-trivial. Basically this code
+     * makes sure the addon gets terminated after we've moved out of the screensaver window.
+     * If we don't do this, we may simply lockup.
+     */
+    g_alarmClock.Start(SCRIPT_ALARM, SCRIPT_TIMEOUT, "StopScript(" + LibPath() + ")", true, false);
+    return;
+  }
+
+  m_addon->DestroyInstance(ID());
+  memset(&m_struct, 0, sizeof(m_struct));
+  m_addonInstance = nullptr;
 }
 
 void CScreenSaver::Start()
@@ -110,23 +115,6 @@ void CScreenSaver::Render()
   // ask screensaver to render itself
   if (m_struct.toAddon.Render)
     m_struct.toAddon.Render(m_addonInstance);
-}
-
-void CScreenSaver::Destroy()
-{
-  if (URIUtils::HasExtension(LibPath(), ".py"))
-  {
-    /* FIXME: This is a hack but a proper fix is non-trivial. Basically this code
-     * makes sure the addon gets terminated after we've moved out of the screensaver window.
-     * If we don't do this, we may simply lockup.
-     */
-    g_alarmClock.Start(SCRIPT_ALARM, SCRIPT_TIMEOUT, "StopScript(" + LibPath() + ")", true, false);
-    return;
-  }
-
-  CAddonDll::DestroyInstance(ID());
-  memset(&m_struct, 0, sizeof(m_struct));
-  m_addonInstance = nullptr;
 }
 
 } /* namespace ADDON */

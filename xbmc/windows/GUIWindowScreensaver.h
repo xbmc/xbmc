@@ -49,6 +49,6 @@ private:
   bool m_bInitialized;
   CCriticalSection m_critSection;
 #ifdef HAS_SCREENSAVER
-  std::shared_ptr<ADDON::CScreenSaver> m_addon;
+  std::shared_ptr<ADDON::CScreenSaver> m_screenSaver;
 #endif
 };

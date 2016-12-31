@@ -58,21 +58,23 @@ std::shared_ptr<IAddon> CAddonBuilder::Build()
   if (m_props.type == ADDON_UNKNOWN)
     return std::make_shared<CAddon>(std::move(m_props));
 
-  if (m_extPoint == nullptr)
-    return FromProps(std::move(m_props));
-
   const TYPE type(m_props.type);
 
-  // Handle screensaver special cases
-  if (type == ADDON_SCREENSAVER)
+  /*
+   * Startup of reworked addon interfaces, switch currently two times until
+   * rework is finished. On end is only for all binary addons one
+   * "return std::make_shared<CAddonDll>(std::move(m_props));" needed.
+   */
+  switch (type)
   {
-    // built in screensaver
-    if (StringUtils::StartsWithNoCase(m_extPoint->plugin->identifier, "screensaver.xbmc.builtin."))
-      return std::make_shared<CAddon>(std::move(m_props));
-    // python screensaver
-    if (URIUtils::HasExtension(CAddonMgr::GetInstance().GetExtValue(m_extPoint->configuration, "@library"), ".py"))
-      return std::make_shared<CScreenSaver>(std::move(m_props));
+    case ADDON_SCREENSAVER:
+      return std::make_shared<CAddonDll>(std::move(m_props));
+    default:
+      break;
   }
+
+  if (m_extPoint == nullptr)
+    return FromProps(std::move(m_props));
 
   // Handle audio encoder special cases
   if (type == ADDON_AUDIOENCODER)
@@ -84,7 +86,6 @@ std::shared_ptr<IAddon> CAddonBuilder::Build()
 
   // Ensure binary types have a valid library for the platform
   if (type == ADDON_VIZ ||
-      type == ADDON_SCREENSAVER ||
       type == ADDON_PVRDLL ||
       type == ADDON_ADSPDLL ||
       type == ADDON_AUDIOENCODER ||
@@ -124,8 +125,6 @@ std::shared_ptr<IAddon> CAddonBuilder::Build()
     case ADDON_VIZ:
       return std::make_shared<CVisualisation>(std::move(m_props));
 #endif
-    case ADDON_SCREENSAVER:
-      return std::make_shared<CScreenSaver>(std::move(m_props));
 #ifdef HAS_PVRCLIENTS
     case ADDON_PVRDLL:
       return PVR::CPVRClient::FromExtension(std::move(m_props), m_extPoint);
@@ -198,8 +197,6 @@ AddonPtr CAddonBuilder::FromProps(AddonProps addonProps)
     case ADDON_VIZ:
       return AddonPtr(new CVisualisation(std::move(addonProps)));
 #endif
-    case ADDON_SCREENSAVER:
-      return AddonPtr(new CScreenSaver(std::move(addonProps)));
     case ADDON_PVRDLL:
       return AddonPtr(new PVR::CPVRClient(std::move(addonProps)));
     case ADDON_ADSPDLL:

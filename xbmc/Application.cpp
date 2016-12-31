@@ -3966,8 +3966,12 @@ bool CApplication::WakeUpScreenSaver(bool bPowerOffKeyPressed /* = false */)
       // we can just continue as usual from vis mode
       return false;
     }
-    else if (m_screenSaver->ID() == "screensaver.xbmc.builtin.dim" || m_screenSaver->ID() == "screensaver.xbmc.builtin.black" || m_screenSaver->ID().empty())
+    else if (m_screenSaver->ID() == "screensaver.xbmc.builtin.dim" ||
+             m_screenSaver->ID() == "screensaver.xbmc.builtin.black" ||
+             m_screenSaver->ID().empty())
+    {
       return true;
+    }
     else if (!m_screenSaver->ID().empty())
     { // we're in screensaver window
       if (g_windowManager.GetActiveWindow() == WINDOW_SCREENSAVER)
@@ -4048,26 +4052,21 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
 
   m_bScreenSave = true;
 
-  // Get Screensaver Mode
-  m_screenSaver.reset();
-  if (!CAddonMgr::GetInstance().GetAddon(m_ServiceManager->GetSettings().GetString(CSettings::SETTING_SCREENSAVER_MODE), m_screenSaver))
-    m_screenSaver.reset(new CScreenSaver(""));
+  // disable screensaver lock from the login screen
+  m_iScreenSaveLock = g_windowManager.GetActiveWindow() == WINDOW_LOGIN_SCREEN ? 1 : 0;
+
+  // set to Dim in the case of a dialog on screen or playing video
+  std::string usedScreenSaver;
+  if (!forceType && (g_windowManager.HasModalDialog() || (m_pPlayer->IsPlayingVideo() && m_ServiceManager->GetSettings().GetBool(CSettings::SETTING_SCREENSAVER_USEDIMONPAUSE)) || g_PVRManager.IsRunningChannelScan()))
+    usedScreenSaver = "screensaver.xbmc.builtin.dim";
+  else // Get Screensaver Mode
+    usedScreenSaver = m_ServiceManager->GetSettings().GetString(CSettings::SETTING_SCREENSAVER_MODE);
+  CAddonMgr::GetInstance().GetAddon(usedScreenSaver, m_screenSaver);
 
   CAnnouncementManager::GetInstance().Announce(GUI, "xbmc", "OnScreensaverActivated");
 
-  // disable screensaver lock from the login screen
-  m_iScreenSaveLock = g_windowManager.GetActiveWindow() == WINDOW_LOGIN_SCREEN ? 1 : 0;
-  if (!forceType)
-  {
-    // set to Dim in the case of a dialog on screen or playing video
-    if (g_windowManager.HasModalDialog() || (m_pPlayer->IsPlayingVideo() && m_ServiceManager->GetSettings().GetBool(CSettings::SETTING_SCREENSAVER_USEDIMONPAUSE)) || g_PVRManager.IsRunningChannelScan())
-    {
-      if (!CAddonMgr::GetInstance().GetAddon("screensaver.xbmc.builtin.dim", m_screenSaver))
-        m_screenSaver.reset(new CScreenSaver(""));
-    }
-  }
-  if (m_screenSaver->ID() == "screensaver.xbmc.builtin.dim"
-      || m_screenSaver->ID() == "screensaver.xbmc.builtin.black")
+  if (m_screenSaver->ID() == "screensaver.xbmc.builtin.dim" ||
+      m_screenSaver->ID() == "screensaver.xbmc.builtin.black")
   {
 #ifdef TARGET_ANDROID
     // Default screensaver activated -> release wake lock

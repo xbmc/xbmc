@@ -28,6 +28,9 @@
 
 namespace ADDON
 {
+  class CAddonDll;
+  typedef std::shared_ptr<CAddonDll> AddonDllPtr;
+
   class CAddonDll : public CAddon
   {
   public:
@@ -37,6 +40,7 @@ namespace ADDON
     CAddonDll(const CAddonDll &rhs);
     virtual ~CAddonDll();
     virtual ADDON_STATUS GetStatus();
+    virtual bool IsInUse() const;
 
     // addon settings
     virtual void SaveSettings();
@@ -74,6 +78,29 @@ namespace ADDON
     static bool AddOnGetSetting(void *userData, const char *settingName, void *settingValue);
     static void AddOnOpenSettings(const char *url, bool bReload);
     static void AddOnOpenOwnSettings(void *userData, bool bReload);
+  };
+
+  /*!
+   * Class to make use of standard add-on functions more easy available on
+   * Kodi's add-on instance classes.
+   *
+   * This functions in class are needed on several places, without them must be
+   * on every instance class the same function added, with them can it be
+   * prevent.
+   */
+  class CAddonInstanceInfo
+  {
+  public:
+    CAddonInstanceInfo(AddonDllPtr addon) : m_addon(addon) { }
+
+    std::string ID() const { return m_addon->ID(); }
+    std::string Name() const { return m_addon->Name(); }
+    std::string Path() const { return m_addon->Path(); }
+    std::string Profile() const { return m_addon->Profile(); }
+    std::string LibPath() const { return m_addon->LibPath(); }
+
+  protected:
+    ADDON::AddonDllPtr m_addon;
   };
 
 }; /* namespace ADDON */
