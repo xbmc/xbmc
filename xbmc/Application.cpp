@@ -1106,6 +1106,8 @@ bool CApplication::Initialize()
   g_peripherals.Initialise();
 #endif
 
+  getNetwork().WaitForNet();
+
   // Load curl so curl_global_init gets called before any service threads
   // are started. Unloading will have no effect as curl is never fully unloaded.
   // To quote man curl_global_init:
