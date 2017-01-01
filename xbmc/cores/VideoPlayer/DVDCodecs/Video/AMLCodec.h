@@ -93,6 +93,7 @@ private:
   float            m_zoom;
   int              m_contrast;
   int              m_brightness;
+  RESOLUTION       m_video_res;
 
   PosixFilePtr     m_amlVideoFile;
   std::string      m_defaultVfmMap;
