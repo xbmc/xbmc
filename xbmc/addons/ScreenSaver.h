@@ -1,3 +1,4 @@
+#pragma once
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://xbmc.org
@@ -17,37 +18,31 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#pragma once
 
 #include "AddonDll.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/xbmc_scr_types.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/screensaver/Screensaver.h"
 
 namespace ADDON
 {
 
-class CScreenSaver : public ADDON::CAddonDll
+class CScreenSaver
+  : public ADDON::CAddonInstanceInfo
 {
 public:
-  explicit CScreenSaver(AddonProps props);
-  explicit CScreenSaver(const char *addonID);
+  explicit CScreenSaver(ADDON::AddonDllPtr addon);
 
-  virtual ~CScreenSaver() {}
-  virtual bool IsInUse() const;
-
-  // Things that MUST be supplied by the child classes
+  // Things that MUST be supplied by the child addon instance classes
   bool CreateScreenSaver();
-  void Start();
-  void Stop();
+  void DestroyScreenSaver();
   void Render();
-  void Destroy();
 
 private:
   std::string m_name; /*!< To add-on sended name */
   std::string m_presets; /*!< To add-on sended preset path */
   std::string m_profile; /*!< To add-on sended profile path */
 
-  KODI_HANDLE m_addonInstance;
-  AddonInstance_ScreenSaver m_struct;
+  kodi::addon::CInstanceScreensaver* m_addonInstance;
+  AddonInstance_Screensaver m_struct;
 };
 
 } /* namespace ADDON */

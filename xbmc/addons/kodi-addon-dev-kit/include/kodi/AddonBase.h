@@ -205,6 +205,12 @@ namespace addon {
     {
     }
 
+    virtual ~CAddonBase()
+    {
+      m_globalSingleInstance = nullptr;
+      m_firstKodiInstance = nullptr;
+    }
+    
     virtual ADDON_STATUS Create() { return ADDON_STATUS_OK; }
 
     virtual ADDON_STATUS GetStatus() { return ADDON_STATUS_OK; }

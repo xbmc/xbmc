@@ -417,6 +417,11 @@ ADDON_STATUS CAddonDll::GetStatus()
   return m_pDll->GetStatus();
 }
 
+bool CAddonDll::IsInUse() const
+{
+  return !m_usedInstances.empty();
+}
+
 bool CAddonDll::LoadSettings()
 {
   if (m_settingsLoaded)

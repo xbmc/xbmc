@@ -35,23 +35,11 @@
 namespace ADDON
 {
 
-CScreenSaver::CScreenSaver(AddonProps props)
- : ADDON::CAddonDll(std::move(props)),
+CScreenSaver::CScreenSaver(ADDON::AddonDllPtr addon)
+ : CAddonInstanceInfo(addon),
    m_addonInstance(nullptr)
 {
   memset(&m_struct, 0, sizeof(m_struct));
-}
-
-CScreenSaver::CScreenSaver(const char *addonID)
- : ADDON::CAddonDll(AddonProps(addonID, ADDON_UNKNOWN)),
-   m_addonInstance(nullptr)
-{
-  memset(&m_struct, 0, sizeof(m_struct));
-}
-
-bool CScreenSaver::IsInUse() const
-{
-  return CServiceBroker::GetSettings().GetString(CSettings::SETTING_SCREENSAVER_MODE) == ID();
 }
 
 bool CScreenSaver::CreateScreenSaver()
@@ -62,7 +50,7 @@ bool CScreenSaver::CreateScreenSaver()
     g_alarmClock.Stop(SCRIPT_ALARM, true);
 
     if (!CScriptInvocationManager::GetInstance().Stop(LibPath()))
-      CScriptInvocationManager::GetInstance().ExecuteAsync(LibPath(), AddonPtr(new CScreenSaver(*this)));
+      CScriptInvocationManager::GetInstance().ExecuteAsync(LibPath(), AddonPtr(new CAddonDll(*m_addon)));
     return true;
   }
 
@@ -85,34 +73,17 @@ bool CScreenSaver::CreateScreenSaver()
   m_struct.props.profile = m_profile.c_str();
   m_struct.toKodi.kodiInstance = this;
 
-  if (CAddonDll::CreateInstance(ADDON_INSTANCE_SCREENSAVER, ID(), &m_struct, &m_addonInstance) == ADDON_STATUS_OK)
-    return true;
+  if (m_addon->CreateInstance(ADDON_INSTANCE_SCREENSAVER, ID(), &m_struct, reinterpret_cast<KODI_HANDLE*>(&m_addonInstance)) != ADDON_STATUS_OK)
+    return false;
 
-  return false;
-}
-
-void CScreenSaver::Start()
-{
   // notify screen saver that they should start
   if (m_struct.toAddon.Start)
-    m_struct.toAddon.Start(m_addonInstance);
+    return m_struct.toAddon.Start(m_addonInstance);
+
+  return true;
 }
 
-void CScreenSaver::Stop()
-{
-  // notify screen saver that they should start
-  if (m_struct.toAddon.Stop)
-    m_struct.toAddon.Stop(m_addonInstance);
-}
-
-void CScreenSaver::Render()
-{
-  // ask screensaver to render itself
-  if (m_struct.toAddon.Render)
-    m_struct.toAddon.Render(m_addonInstance);
-}
-
-void CScreenSaver::Destroy()
+void CScreenSaver::DestroyScreenSaver()
 {
   if (URIUtils::HasExtension(LibPath(), ".py"))
   {
@@ -124,9 +95,20 @@ void CScreenSaver::Destroy()
     return;
   }
 
-  CAddonDll::DestroyInstance(ID());
+  // notify screen saver that they should start
+  if (m_struct.toAddon.Stop)
+    m_struct.toAddon.Stop(m_addonInstance);
+
+  m_addon->DestroyInstance(ID());
   memset(&m_struct, 0, sizeof(m_struct));
   m_addonInstance = nullptr;
+}
+
+void CScreenSaver::Render()
+{
+  // ask screensaver to render itself
+  if (m_struct.toAddon.Render)
+    m_struct.toAddon.Render(m_addonInstance);
 }
 
 } /* namespace ADDON */

@@ -21,9 +21,7 @@
  */
 
 #include "guilib/GUIWindow.h"
-#ifdef HAS_SCREENSAVER
 #include "addons/ScreenSaver.h"
-#endif
 
 #include "threads/CriticalSection.h"
 
@@ -46,9 +44,6 @@ protected:
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
 
 private:
-  bool m_bInitialized;
   CCriticalSection m_critSection;
-#ifdef HAS_SCREENSAVER
-  std::shared_ptr<ADDON::CScreenSaver> m_addon;
-#endif
+  std::shared_ptr<ADDON::CScreenSaver> m_screenSaver;
 };
