@@ -45,6 +45,7 @@ extern "C" {
 /* Standard undefined pointer handle */
 typedef void* KODI_HANDLE;
 
+//==============================================================================
 ///
 typedef enum ADDON_STATUS
 {
@@ -73,6 +74,35 @@ typedef enum ADDON_STATUS
    * addon */
   ADDON_STATUS_NOT_IMPLEMENTED
 } ADDON_STATUS;
+//------------------------------------------------------------------------------
+
+//==============================================================================
+/// @todo remove start with ADDON_* after old way on libXBMC_addon.h is removed
+/// 
+typedef enum AddonLog
+{
+  /// 
+  ADDON_LOG_DEBUG = 0,
+
+  /// 
+  ADDON_LOG_INFO = 1,
+
+  /// 
+  ADDON_LOG_NOTICE = 2,
+
+  /// 
+  ADDON_LOG_WARNING = 3,
+
+  /// 
+  ADDON_LOG_ERROR = 4,
+
+  /// 
+  ADDON_LOG_SEVERE = 5,
+
+  ///
+  ADDON_LOG_FATAL = 6
+} AddonLog;
+//------------------------------------------------------------------------------
 
 /*
  *
@@ -101,6 +131,27 @@ typedef ADDON_HANDLE_STRUCT *ADDON_HANDLE;
 /* To have a on add-on and kodi itself handled string always on known size! */
 #define ADDON_STANDARD_STRING_LENGTH 1024
 #define ADDON_STANDARD_STRING_LENGTH_SMALL 256
+
+typedef struct AddonToKodiFuncTable_Addon
+{
+  void* kodiInstance;
+  char* (*get_addon_path)(void* kodiInstance);
+  char* (*get_base_user_path)(void* kodiInstance);
+  void (*addon_log_msg)(void* kodiInstance, const int loglevel, const char *msg);
+  void (*free_string)(void* kodiInstance, char* str);
+} AddonToKodiFuncTable_Addon;
+
+typedef struct KodiToAddonFuncTable_Addon
+{
+  void* dummy;
+} KodiToAddonFuncTable_Addon;
+
+typedef struct FuncTable_Addon
+{
+  const char* libBasePath;  ///< Never, never change this!!!
+  AddonToKodiFuncTable_Addon toKodi;
+  KodiToAddonFuncTable_Addon toAddon;
+} FuncTable_Addon;
 
 #ifdef __cplusplus
 namespace kodi {
@@ -240,6 +291,7 @@ namespace addon {
     }
 
     /* Global variables of class */
+    static FuncTable_Addon* m_instance; // Interface function table to hold addresses on add-on and from kodi
     static CAddonBase* m_createdAddon; // Base add-on class pointer, needed to save startet main class
     static KODI_HANDLE m_globalSingleInstance; // Pointer to a instance used on single way (together with this class)
     static KODI_HANDLE m_firstKodiInstance; // Pointer of first created instance, used in case this add-on goes with single way
@@ -358,6 +410,59 @@ namespace addon {
 
 } /* namespace addon */
 } /* namespace kodi */
+
+//==============================================================================
+namespace kodi {
+/// 
+inline std::string GetAddonPath()
+{
+  char* str = ::kodi::addon::CAddonBase::m_instance->toKodi.get_addon_path(::kodi::addon::CAddonBase::m_instance->toKodi.kodiInstance);
+  std::string ret = str;
+  ::kodi::addon::CAddonBase::m_instance->toKodi.free_string(::kodi::addon::CAddonBase::m_instance->toKodi.kodiInstance, str);
+  return ret;
+}
+} /* namespace kodi */
+//------------------------------------------------------------------------------
+
+//==============================================================================
+namespace kodi {
+/// 
+inline std::string GetBaseUserPath()
+{
+  char* str = ::kodi::addon::CAddonBase::m_instance->toKodi.get_base_user_path(::kodi::addon::CAddonBase::m_instance->toKodi.kodiInstance);
+  std::string ret = str;
+  ::kodi::addon::CAddonBase::m_instance->toKodi.free_string(::kodi::addon::CAddonBase::m_instance->toKodi.kodiInstance, str);
+  return ret;
+}
+} /* namespace kodi */
+//------------------------------------------------------------------------------
+
+//==============================================================================
+namespace kodi {
+/// 
+inline std::string GetLibPath()
+{
+  return ::kodi::addon::CAddonBase::m_instance->libBasePath;
+}
+} /* namespace kodi */
+//------------------------------------------------------------------------------
+
+//==============================================================================
+namespace kodi {
+/// 
+inline void Log(const AddonLog loglevel, const char* format, ...)
+{
+  char buffer[16384];
+  va_list args;
+  va_start(args, format);
+  vsprintf(buffer, format, args);
+  va_end(args);
+  ::kodi::addon::CAddonBase::m_instance->toKodi.addon_log_msg(::kodi::addon::CAddonBase::m_instance->toKodi.kodiInstance, loglevel, buffer);
+}
+} /* namespace kodi */
+//------------------------------------------------------------------------------
+
+
 } /* extern "C" */
 #endif /* __cplusplus */
 
@@ -372,8 +477,9 @@ namespace addon {
  */
 #define ADDONCREATOR(AddonClass) \
   extern "C" __declspec(dllexport) void get_addon(void* pAddon) {} \
-  extern "C" __declspec(dllexport) ADDON_STATUS ADDON_Create(void *cb, void *firstKodiInstance) \
+  extern "C" __declspec(dllexport) ADDON_STATUS ADDON_Create(void *instance, void *firstKodiInstance) \
   { \
+    kodi::addon::CAddonBase::m_instance = static_cast<FuncTable_Addon*>(instance); \
     kodi::addon::CAddonBase::m_firstKodiInstance = firstKodiInstance; \
     kodi::addon::CAddonBase::m_createdAddon = new AddonClass; \
     return kodi::addon::CAddonBase::m_createdAddon->Create(); \
@@ -414,6 +520,7 @@ namespace addon {
   { \
     kodi::addon::CAddonBase::ADDONBASE_DestroyInstance(instanceType, instance); \
   } \
+  FuncTable_Addon* kodi::addon::CAddonBase::m_instance = nullptr; \
   kodi::addon::CAddonBase* kodi::addon::CAddonBase::m_createdAddon = nullptr; \
   KODI_HANDLE kodi::addon::CAddonBase::m_globalSingleInstance = nullptr; \
   KODI_HANDLE kodi::addon::CAddonBase::m_firstKodiInstance = nullptr;
