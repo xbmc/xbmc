@@ -85,7 +85,7 @@ bool CScreenSaver::CreateScreenSaver()
   m_struct.props.profile = m_profile.c_str();
   m_struct.toKodi.kodiInstance = this;
 
-  if (CAddonDll::CreateInstance(ADDON_INSTANCE_SCREENSAVER, ID(), &m_struct, &m_addonInstance) == ADDON_STATUS_OK)
+  if (CAddonDll::CreateInstance(ADDON_INSTANCE_SCREENSAVER, ID(), &m_struct, reinterpret_cast<KODI_HANDLE*>(&m_addonInstance)) == ADDON_STATUS_OK)
     return true;
 
   return false;

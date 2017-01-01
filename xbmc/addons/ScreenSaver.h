@@ -1,3 +1,4 @@
+#pragma once
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://xbmc.org
@@ -17,10 +18,9 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#pragma once
 
 #include "AddonDll.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/xbmc_scr_types.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/screensaver/Screensaver.h"
 
 namespace ADDON
 {
@@ -46,8 +46,8 @@ private:
   std::string m_presets; /*!< To add-on sended preset path */
   std::string m_profile; /*!< To add-on sended profile path */
 
-  KODI_HANDLE m_addonInstance;
-  AddonInstance_ScreenSaver m_struct;
+  kodi::addon::CInstanceScreensaver* m_addonInstance;
+  AddonInstance_Screensaver m_struct;
 };
 
 } /* namespace ADDON */
