@@ -350,7 +350,7 @@ bool CXBMCApp::AcquireAudioFocus()
   CJNIAudioManager audioManager(getSystemService("audio"));
 
   // Request audio focus for playback
-  int result = audioManager.requestAudioFocus(*m_xbmcappinstance,
+  int result = audioManager.requestAudioFocus(m_audioFocusListener,
                                               // Use the music stream.
                                               CJNIAudioManager::STREAM_MUSIC,
                                               // Request permanent focus.
@@ -372,7 +372,7 @@ bool CXBMCApp::ReleaseAudioFocus()
   CJNIAudioManager audioManager(getSystemService("audio"));
 
   // Release audio focus after playback
-  int result = audioManager.abandonAudioFocus(*m_xbmcappinstance);
+  int result = audioManager.abandonAudioFocus(m_audioFocusListener);
   if (result != CJNIAudioManager::AUDIOFOCUS_REQUEST_GRANTED)
   {
     CXBMCApp::android_printf("Audio Focus abandon failed");
@@ -562,33 +562,33 @@ CRect CXBMCApp::MapRenderToDroid(const CRect& srcRect)
 
 void CXBMCApp::OnPlayBackStarted()
 {
-  AcquireAudioFocus();
+  m_xbmcappinstance->AcquireAudioFocus();
   registerMediaButtonEventReceiver();
   CAndroidKey::SetHandleMediaKeys(true);
 }
 
 void CXBMCApp::OnPlayBackPaused()
 {
-  ReleaseAudioFocus();
+  m_xbmcappinstance->ReleaseAudioFocus();
 }
 
 void CXBMCApp::OnPlayBackResumed()
 {
-  AcquireAudioFocus();
+  m_xbmcappinstance->AcquireAudioFocus();
 }
 
 void CXBMCApp::OnPlayBackStopped()
 {
   CAndroidKey::SetHandleMediaKeys(false);
   unregisterMediaButtonEventReceiver();
-  ReleaseAudioFocus();
+  m_xbmcappinstance->ReleaseAudioFocus();
 }
 
 void CXBMCApp::OnPlayBackEnded()
 {
   CAndroidKey::SetHandleMediaKeys(false);
   unregisterMediaButtonEventReceiver();
-  ReleaseAudioFocus();
+  m_xbmcappinstance->ReleaseAudioFocus();
 }
 
 const CJNIViewInputDevice CXBMCApp::GetInputDevice(int deviceId)

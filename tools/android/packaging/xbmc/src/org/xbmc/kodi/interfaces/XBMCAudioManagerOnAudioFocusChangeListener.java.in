@@ -1,9 +1,9 @@
-package @APP_PACKAGE@;
+package @APP_PACKAGE@.interfaces;
 
 import android.media.AudioManager.OnAudioFocusChangeListener;
 import android.util.Log;
 
-public class XBMCOnAudioFocusChangeListener implements OnAudioFocusChangeListener
+public class XBMCAudioManagerOnAudioFocusChangeListener implements OnAudioFocusChangeListener
 {
   native void _onAudioFocusChange(int focusChange);
 

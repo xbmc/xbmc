@@ -29,17 +29,24 @@
 #include "guilib/Geometry.h"
 #include "threads/Event.h"
 
-class CJNIXBMCVideoView : public CJNIBase
+class CJNIXBMCVideoView : virtual public CJNIBase, public CJNISurfaceHolderCallback, public CJNIInterfaceImplem<CJNIXBMCVideoView>
 {
 public:
   CJNIXBMCVideoView(const jni::jhobject &object);
   ~CJNIXBMCVideoView();
 
+  static void RegisterNatives(JNIEnv* env);
+  
   static CJNIXBMCVideoView* createVideoView(CJNISurfaceHolderCallback* callback);
 
-  static void _OnSurfaceChanged(JNIEnv* env, jobject thiz, jobject holder, jint format, jint width, jint height);
-  static void _OnSurfaceCreated(JNIEnv* env, jobject thiz, jobject holder);
-  static void _OnSurfaceDestroyed(JNIEnv* env, jobject thiz, jobject holder);
+  // CJNISurfaceHolderCallback interface
+  void surfaceChanged(CJNISurfaceHolder holder, int format, int width, int height);
+  void surfaceCreated(CJNISurfaceHolder holder);
+  void surfaceDestroyed(CJNISurfaceHolder holder);
+
+  static void _surfaceChanged(JNIEnv* env, jobject thiz, jobject holder, jint format, jint width, jint height);
+  static void _surfaceCreated(JNIEnv* env, jobject thiz, jobject holder);
+  static void _surfaceDestroyed(JNIEnv* env, jobject thiz, jobject holder);
 
   bool waitForSurface(unsigned int millis);
   bool isActive() { return m_surfaceCreated->Signaled(); }
@@ -54,13 +61,8 @@ public:
 protected:
   CJNISurfaceHolderCallback* m_callback;
   CEvent* m_surfaceCreated;
-
-  void OnSurfaceChanged(CJNISurfaceHolder holder, int format, int width, int height);
-  void OnSurfaceCreated(CJNISurfaceHolder holder);
-  void OnSurfaceDestroyed(CJNISurfaceHolder holder);
-
   CRect m_surfaceRect;
 
 private:
   CJNIXBMCVideoView();
-};
+  };
