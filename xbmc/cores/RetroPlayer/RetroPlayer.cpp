@@ -46,6 +46,8 @@ CRetroPlayer::CRetroPlayer(IPlayerCallback& callback) :
 
 CRetroPlayer::~CRetroPlayer()
 {
+  g_Windowing.Unregister(this);
+
   CloseFile();
 }
 
