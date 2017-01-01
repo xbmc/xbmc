@@ -44,6 +44,7 @@ CAddonDll::CAddonDll(AddonProps props)
   m_pHelpers    = NULL;
   m_needsavedsettings = false;
   m_parentLib.clear();
+  memset(&m_interface, 0, sizeof(m_interface));
 }
 
 CAddonDll::CAddonDll(const CAddonDll &rhs)
@@ -55,6 +56,7 @@ CAddonDll::CAddonDll(const CAddonDll &rhs)
   m_pHelpers          = rhs.m_pHelpers;
   m_needsavedsettings = rhs.m_needsavedsettings;
   m_parentLib = rhs.m_parentLib;
+  memset(&m_interface, 0, sizeof(m_interface));
 }
 
 CAddonDll::~CAddonDll()
@@ -262,9 +264,14 @@ ADDON_STATUS CAddonDll::Create(KODI_HANDLE firstKodiInstance)
       return ADDON_STATUS_PERMANENT_FAILURE;
   }
 
+  /* Allocate the helper function class to allow crosstalk over
+     helper add-on headers */
+  if (!InitInterfaceFunctions())
+    return ADDON_STATUS_PERMANENT_FAILURE;
+
   /* Call Create to make connections, initializing data or whatever is
      needed to become the AddOn running */
-  ADDON_STATUS status = m_pDll->Create(nullptr, firstKodiInstance); /*! @todo Values becomes changed after the system is reworked complete, now there to prevent conflicts */
+  ADDON_STATUS status = m_pDll->Create(&m_interface, firstKodiInstance);
   if (status == ADDON_STATUS_OK)
   {
     m_initialized = true;
@@ -318,6 +325,16 @@ void CAddonDll::Destroy()
       }
       CAddon::SaveSettings();
     }
+
+    /* Make sure all instances are destroyed if interface becomes stopped. */
+    for (std::map<std::string, std::pair<int, KODI_HANDLE>>::iterator it = m_usedInstances.begin(); it != m_usedInstances.end(); ++it)
+    {
+      m_pDll->DestroyInstance(it->second.first, it->second.second);
+      m_usedInstances.erase(it);
+    }
+
+    DeInitInterfaceFunctions();
+
     /* Unload library file */
     m_pDll->Destroy();
     m_pDll->Unload();
@@ -332,13 +349,6 @@ void CAddonDll::Destroy()
     delete m_pDll;
     m_pDll = NULL;
     CLog::Log(LOGINFO, "ADDON: Dll Destroyed - %s", Name().c_str());
-  }
-
-  /* Make sure all instances are destroyed if interface becomes stopped. */
-  for (std::map<std::string, std::pair<int, KODI_HANDLE>>::iterator it = m_usedInstances.begin(); it != m_usedInstances.end(); ++it)
-  {
-    m_pDll->DestroyInstance(it->second.first, it->second.second);
-    m_usedInstances.erase(it);
   }
 
   m_initialized = false;
@@ -596,6 +606,107 @@ ADDON_STATUS CAddonDll::TransferSettings()
 
   return ADDON_STATUS_OK;
 }
+
+/*!
+ * @brief Addon to Kodi basic callbacks below
+ *
+ * The amount of functions here are hold so minimal as possible. Only parts
+ * where needed on nearly every add-on (e.g. addon_log_msg) are to add here.
+ *
+ * More specific parts like e.g. to open files should be added to a separate
+ * part.
+ */
+//@{
+
+bool CAddonDll::InitInterfaceFunctions()
+{
+  memset(&m_interface, 0, sizeof(m_interface));
+  m_interface.libBasePath = strdup(CSpecialProtocol::TranslatePath("special://xbmcbinaddons").c_str());
+  m_interface.toKodi.kodiInstance = this;
+  m_interface.toKodi.get_addon_path = get_addon_path;
+  m_interface.toKodi.get_base_user_path = get_base_user_path;
+  m_interface.toKodi.addon_log_msg = addon_log_msg;
+  m_interface.toKodi.free_string = free_string;
+
+  return true;
+}
+
+void CAddonDll::DeInitInterfaceFunctions()
+{
+  free((char*)m_interface.libBasePath);
+}
+
+char* CAddonDll::get_addon_path(void* kodiInstance)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiInstance);
+  if (addon == nullptr)
+  {
+    CLog::Log(LOGERROR, "get_addon_path(...) called with empty kodi instance pointer");
+    return nullptr;
+  }
+  
+  return strdup(CSpecialProtocol::TranslatePath(addon->Path()).c_str());
+}
+
+char* CAddonDll::get_base_user_path(void* kodiInstance)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiInstance);
+  if (addon == nullptr)
+  {
+    CLog::Log(LOGERROR, "get_base_user_path(...) called with empty kodi instance pointer");
+    return nullptr;
+  }
+
+  return strdup(CSpecialProtocol::TranslatePath(addon->Profile()).c_str());
+}
+
+void CAddonDll::addon_log_msg(void* kodiInstance, const int addonLogLevel, const char* strMessage)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiInstance);
+  if (addon == nullptr)
+  {
+    CLog::Log(LOGERROR, "addon_log_msg(...) called with empty kodi instance pointer");
+    return;
+  }
+
+  int logLevel = LOGNONE;
+  switch (addonLogLevel)
+  {
+    case ADDON_LOG_FATAL:
+      logLevel = LOGFATAL;
+      break;
+    case ADDON_LOG_SEVERE:
+      logLevel = LOGSEVERE;
+      break;
+    case ADDON_LOG_ERROR:
+      logLevel = LOGERROR;
+      break;
+    case ADDON_LOG_WARNING:
+      logLevel = LOGWARNING;
+      break;
+    case ADDON_LOG_NOTICE:
+      logLevel = LOGNOTICE;
+      break;
+    case ADDON_LOG_INFO:
+      logLevel = LOGINFO;
+      break;
+    case ADDON_LOG_DEBUG:
+      logLevel = LOGDEBUG;
+      break;
+    default:
+      break;
+  }
+
+  CLog::Log(logLevel, "AddOnLog: %s: %s", addon->Name().c_str(), strMessage);
+}
+
+void CAddonDll::free_string(void* kodiInstance, char* str)
+{
+  if (str)
+    free(str);
+}
+
+//@}
 
 }; /* namespace ADDON */
 

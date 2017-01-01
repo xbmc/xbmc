@@ -78,6 +78,19 @@ namespace ADDON
     static bool AddOnGetSetting(void *userData, const char *settingName, void *settingValue);
     static void AddOnOpenSettings(const char *url, bool bReload);
     static void AddOnOpenOwnSettings(void *userData, bool bReload);
+
+    /// addon to kodi basic callbacks below
+    //@{
+    FuncTable_Addon m_interface;
+
+    bool InitInterfaceFunctions();
+    void DeInitInterfaceFunctions();
+
+    static char* get_addon_path(void* kodiInstance);
+    static char* get_base_user_path(void* kodiInstance);
+    static void addon_log_msg(void* kodiInstance, const int addonLogLevel, const char* strMessage);
+    static void free_string(void* kodiInstance, char* str);
+    //@}
   };
 
   /*!
