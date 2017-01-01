@@ -370,6 +370,11 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
     // Won't work reliably
     return false;
   }
+  else if (hints.orientation && m_render_surface && CJNIMediaFormat::GetSDKVersion() < 23)
+  {
+    CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open - %s\n", "Surface does not support orientation before API 23");
+    return false;
+  }
   else if (!CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODEC) &&
            !CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE))
     return false;
@@ -963,6 +968,13 @@ bool CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec(void)
     m_mime.c_str(), m_hints.width, m_hints.height);
   // some android devices forget to default the demux input max size
   mediaformat.setInteger(CJNIMediaFormat::KEY_MAX_INPUT_SIZE, 0);
+
+  if (CJNIBase::GetSDKVersion() >= 23 && m_render_surface)
+  {
+    // Handle rotation
+    mediaformat.setInteger(CJNIMediaFormat::KEY_ROTATION, m_hints.orientation);
+  }
+
 
   // handle codec extradata
   if (m_hints.extrasize)
