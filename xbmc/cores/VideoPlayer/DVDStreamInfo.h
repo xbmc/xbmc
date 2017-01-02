@@ -26,7 +26,7 @@ extern "C" {
 #include "libavcodec/avcodec.h"
 }
 
-#define CODEC_FORCE_SOFRWARE 0x01
+#define CODEC_FORCE_SOFTWARE 0x01
 #define CODEC_ALLOW_FALLBACK 0x02
 
 class CDemuxStream;

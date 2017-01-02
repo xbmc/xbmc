@@ -131,7 +131,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, CProces
 
   options.m_opaque_pointer = info.opaque_pointer;
 
-  if (!(hint.codecOptions & CODEC_FORCE_SOFRWARE))
+  if (!(hint.codecOptions & CODEC_FORCE_SOFTWARE))
   {
 #if defined(HAS_LIBAMCODEC)
     // Amlogic can be present on multiple platforms (Linux, Android)
