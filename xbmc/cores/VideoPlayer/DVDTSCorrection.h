@@ -60,7 +60,6 @@ class CPullupCorrection
     double CalcFrameDuration(); //calculates the frame duration from m_pattern
 
     std::vector<double> m_pattern, m_lastPattern; //the last saved pattern
-    int m_patternpos;              //the position of the pattern in the ringbuffer, moves one to the past each time a pts is added
     double m_frameduration;        //frameduration exposed to VideoPlayer, used for calculating the fps
     double m_maxframeduration;     //Max value detected for frame duration (for VFR files case)
     double m_minframeduration;     //Min value detected for frame duration (for VFR files case)
