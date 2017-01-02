@@ -125,7 +125,7 @@ bool CVideoPlayerVideo::OpenStream(CDVDStreamInfo &hint)
   CRenderInfo info;
   info = m_renderManager.GetRenderInfo();
 
-  m_pullupCorrection.ResetVFRDetection();
+  m_ptsTracker.ResetVFRDetection();
   if(hint.flags & AV_DISPOSITION_ATTACHED_PIC)
     return false;
 
@@ -166,7 +166,7 @@ void CVideoPlayerVideo::OpenStream(CDVDStreamInfo &hint, CDVDVideoCodec* codec)
     m_processInfo.SetVideoFps(0);
   }
 
-  m_pullupCorrection.ResetVFRDetection();
+  m_ptsTracker.ResetVFRDetection();
   m_bCalcFrameRate = CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_USEDISPLAYASCLOCK) ||
                      CServiceBroker::GetSettings().GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) != ADJUST_REFRESHRATE_OFF;
   ResetFrameRateCalc();
@@ -369,7 +369,7 @@ void CVideoPlayerVideo::Process()
       pts = 0;
       m_rewindStalled = false;
 
-      m_pullupCorrection.Flush();
+      m_ptsTracker.Flush();
       //we need to recalculate the framerate
       //! @todo this needs to be set on a streamchange instead
       ResetFrameRateCalc();
@@ -444,7 +444,7 @@ void CVideoPlayerVideo::Process()
       {
         m_iDroppedFrames++;
         iDropped++;
-        m_pullupCorrection.Flush();
+        m_ptsTracker.Flush();
       }
       if (m_messageQueue.GetDataSize() == 0 ||  m_speed < 0)
       {
@@ -618,7 +618,7 @@ bool CVideoPlayerVideo::ProcessDecoderOutput(double &frametime, double &pts)
     if ((iResult & EOS_DROPPED) && !(m_picture.iFlags & DVP_FLAG_DROPPED))
     {
       m_iDroppedFrames++;
-      m_pullupCorrection.Flush();
+      m_ptsTracker.Flush();
     }
   }
 
@@ -764,7 +764,7 @@ int CVideoPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
   int result = 0;
 
   //try to calculate the framerate
-  m_pullupCorrection.Add(pts);
+  m_ptsTracker.Add(pts);
   if (!m_stalled)
     CalcFrameRate();
 
@@ -886,7 +886,7 @@ std::string CVideoPlayerVideo::GetPlayerInfo()
   s << ", drop:" << m_iDroppedFrames;
   s << ", skip:" << m_renderManager.GetSkippedFrames();
 
-  int pc = m_pullupCorrection.GetPatternLength();
+  int pc = m_ptsTracker.GetPatternLength();
   if (pc > 0)
     s << ", pc:" << pc;
   else
@@ -948,17 +948,17 @@ void CVideoPlayerVideo::CalcFrameRate()
     return;
   }
 
-  if (!m_pullupCorrection.HasFullBuffer())
+  if (!m_ptsTracker.HasFullBuffer())
     return; //we can only calculate the frameduration if m_pullupCorrection has a full buffer
 
   //see if m_pullupCorrection was able to detect a pattern in the timestamps
   //and is able to calculate the correct frame duration from it
-  double frameduration = m_pullupCorrection.GetFrameDuration();
-  if (m_pullupCorrection.VFRDetection())
-    frameduration = m_pullupCorrection.GetMinFrameDuration();
+  double frameduration = m_ptsTracker.GetFrameDuration();
+  if (m_ptsTracker.VFRDetection())
+    frameduration = m_ptsTracker.GetMinFrameDuration();
 
   if ((frameduration==DVD_NOPTS_VALUE) ||
-      ((g_advancedSettings.m_videoFpsDetect == 1) && ((m_pullupCorrection.GetPatternLength() > 1) && !m_pullupCorrection.VFRDetection())))
+      ((g_advancedSettings.m_videoFpsDetect == 1) && ((m_ptsTracker.GetPatternLength() > 1) && !m_ptsTracker.VFRDetection())))
   {
     //reset the stored framerates if no good framerate was detected
     m_fStableFrameRate = 0.0;

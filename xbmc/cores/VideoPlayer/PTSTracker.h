@@ -27,10 +27,10 @@
 #define VFR_DETECTION_THRESHOLD 3
 #define VFR_PATTERN_THRESHOLD 2
 
-class CPullupCorrection
+class CPtsTracker
 {
   public:
-    CPullupCorrection();
+    CPtsTracker();
     void   Add(double pts);
     void   Flush(); //flush the saved pattern and the ringbuffer
     void   ResetVFRDetection(void);
@@ -50,13 +50,9 @@ class CPullupCorrection
     double GetDiff(int diffnr);      //gets diffs from now to the past
 
     void GetPattern(std::vector<double>& pattern);     //gets the current pattern
-    void GetDifftypes(std::vector<double>& difftypes); //gets the difftypes from the ringbuffer
 
     static bool MatchDiff(double diff1, double diff2); //checks if two diffs match by MAXERR
     static bool MatchDifftype(int* diffs1, int* diffs2, int nrdiffs); //checks if the difftypes match
-
-    //builds a pattern of timestamps in the ringbuffer
-    void BuildPattern(std::vector<double>& pattern, int patternlength);
 
     //checks if the current pattern matches with the saved m_pattern with offset m_patternpos
     bool CheckPattern(std::vector<double>& pattern);
@@ -64,7 +60,6 @@ class CPullupCorrection
     double CalcFrameDuration(); //calculates the frame duration from m_pattern
 
     std::vector<double> m_pattern, m_lastPattern; //the last saved pattern
-    int m_patternpos;              //the position of the pattern in the ringbuffer, moves one to the past each time a pts is added
     double m_frameduration;        //frameduration exposed to VideoPlayer, used for calculating the fps
     double m_maxframeduration;     //Max value detected for frame duration (for VFR files case)
     double m_minframeduration;     //Min value detected for frame duration (for VFR files case)

@@ -6,7 +6,7 @@ set(SOURCES DVDAudio.cpp
             DVDMessageQueue.cpp
             DVDOverlayContainer.cpp
             DVDStreamInfo.cpp
-            DVDTSCorrection.cpp
+            PTSTracker.cpp
             Edl.cpp
             VideoPlayerAudio.cpp
             VideoPlayer.cpp
@@ -24,7 +24,7 @@ set(HEADERS DVDAudio.h
             DVDOverlayContainer.h
             DVDResource.h
             DVDStreamInfo.h
-            DVDTSCorrection.h
+            PTSTracker.h
             Edl.h
             IVideoPlayer.h
             VideoPlayer.h
