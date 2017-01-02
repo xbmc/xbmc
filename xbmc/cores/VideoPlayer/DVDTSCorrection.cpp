@@ -39,6 +39,7 @@ void CPullupCorrection::ResetVFRDetection(void)
   m_maxframeduration = DVD_NOPTS_VALUE;
   m_VFRCounter = 0;
   m_patternCounter = 0;
+  m_lastPattern.clear();
 }
 
 void CPullupCorrection::Flush()
@@ -46,7 +47,6 @@ void CPullupCorrection::Flush()
   m_pattern.clear();
   m_ringpos       = 0;
   m_prevpts       = DVD_NOPTS_VALUE;
-  m_patternpos    = 0;
   m_ringfill      = 0;
   m_haspattern    = false;
   m_patternlength = 0;
@@ -101,19 +101,12 @@ void CPullupCorrection::Add(double pts)
   }
   else
   {
-    //the saved pattern should have moved 1 diff into the past
-    m_patternpos = (m_patternpos + 1) % m_pattern.size();
-
-    //we save the pattern, in case it changes very slowly
-    for (unsigned int i = 0; i < m_pattern.size(); i++)
-      m_pattern[i] = pattern[(m_patternpos + i) % pattern.size()];
-
     if (!m_haspattern)
     {
       m_haspattern = true;
       m_patternlength = m_pattern.size();
 
-      if (!CheckPattern(m_lastPattern))
+      if (!m_lastPattern.empty() && !CheckPattern(m_lastPattern))
       {
         m_patternCounter++;
       }
@@ -223,6 +216,7 @@ void CPullupCorrection::GetPattern(std::vector<double>& pattern)
       break;
     }
   }
+  std::sort(pattern.begin(), pattern.end());
 }
 
 inline bool CPullupCorrection::MatchDiff(double diff1, double diff2)
@@ -254,13 +248,10 @@ bool CPullupCorrection::CheckPattern(std::vector<double>& pattern)
       return false; //all diffs are too close to 0, can't use this
   }
 
-  //the saved pattern should have moved 1 diff into the past
-  int patternpos = (m_patternpos + 1) % m_pattern.size();
-
   //check if the current pattern matches the saved pattern, with an offset of 1
   for (unsigned int i = 0; i < m_pattern.size(); i++)
   {
-    double diff = pattern[(patternpos + i) % pattern.size()];
+    double diff = pattern[i];
 
     if (!MatchDiff(diff, m_pattern[i]))
       return false;
