@@ -29,6 +29,7 @@
 #include <sys/ioctl.h>
 #ifdef HAS_IMXVPU
 #include <linux/mxcfb.h>
+#include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodecIMX.h"
 #endif
 #include "utils/log.h"
 #include "utils/RegExp.h"
@@ -127,10 +128,10 @@ void CEGLNativeTypeIMX::Initialize()
     CLog::Log(LOGERROR, "%s - Failed to setup color keying\n", __FUNCTION__);
 
   close(fd);
-
-  m_sar = GetMonitorSAR();
-  g_IMXContext.create();
   ShowWindow(true);
+
+  g_IMXContext.Allocate();
+  m_sar = GetMonitorSAR();
 #endif
   return;
 }
@@ -262,6 +263,8 @@ bool CEGLNativeTypeIMX::SetNativeResolution(const RESOLUTION_INFO &res)
   CreateNativeDisplay();
   CreateNativeWindow();
 
+  g_IMXContext.OnResetDisplay();
+  ShowWindow(true);
   CLog::Log(LOGDEBUG, "%s: %s",__FUNCTION__, res.strId.c_str());
 
   return true;

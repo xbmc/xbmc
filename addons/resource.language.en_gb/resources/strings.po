@@ -20398,3 +20398,14 @@ msgstr ""
 msgctxt "#39010"
 msgid "Select sort method"
 msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#39011"
+msgid "Maximum wait time for network"
+msgstr ""
+
+#. Description of setting with label #39011 "Maximum wait time for network"
+#: system/settings/settings.xml
+msgctxt "#39012"
+msgid "Set the maximum time to wait for the network to come up after waking up. When time has passed before network is up startup will continue."
+msgstr ""

@@ -20,23 +20,8 @@ bool MergeArchive(Archive &Arc,ComprDataIO *DataIO,bool ShowFileName,char Comman
   Arc.Close();
 
   char NextName[NM];
-  if(DataIO != NULL && (DataIO->m_iSeekTo > Arc.NewLhd.FullPackSize)){
-    if (Arc.Volume && Arc.NotFirstVolume)
-      VolNameToFirstName(Arc.FileName,NextName,(Arc.NewMhd.Flags & MHD_NEWNUMBERING));
-    else
-      strcpy(NextName,Arc.FileName);
-
-    Int64 FastSeek = 0;
-    while(FastSeek+Arc.NewLhd.FullPackSize < DataIO->m_iSeekTo){
-      NextVolumeName(NextName,(Arc.NewMhd.Flags & MHD_NEWNUMBERING)==0 || Arc.OldFormat);
-      FastSeek += Arc.NewLhd.FullPackSize;
-    }
-    DataIO->CurUnpRead = FastSeek;
-
-  }else{
-    strcpy(NextName,Arc.FileName);
-    NextVolumeName(NextName,(Arc.NewMhd.Flags & MHD_NEWNUMBERING)==0 || Arc.OldFormat);
-  }
+  strcpy(NextName,Arc.FileName);
+  NextVolumeName(NextName,(Arc.NewMhd.Flags & MHD_NEWNUMBERING)==0 || Arc.OldFormat);
 
 #if !defined(SFX_MODULE) && !defined(RARDLL)
   bool RecoveryDone=false;

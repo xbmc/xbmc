@@ -428,7 +428,7 @@ endif()
 # Use make binary-addons ADDONS="visualization.spectrum" to select the addons to build.
 if(CMAKE_GENERATOR STREQUAL "Unix Makefiles")
   if(CMAKE_CROSSCOMPILING)
-    set(_cross_args CROSS_COMPILING=yes TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE})
+    set(_cross_args CROSS_COMPILING=yes)
   endif()
   if(NOT CORE_SYSTEM_NAME STREQUAL android)
     set(_prefix ${CMAKE_BINARY_DIR}/addons)
