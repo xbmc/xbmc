@@ -61,9 +61,16 @@ public:
   void SetViewPort(D3D11_VIEWPORT viewPort);
   void SetSampler(SHADER_SAMPLER sampler);
 
+  void XM_CALLCONV GetWVP(XMMATRIX &w, XMMATRIX &v, XMMATRIX &p) 
+  { 
+    w = m_cbWorldViewProj.world; 
+    v = m_cbWorldViewProj.view; 
+    p = m_cbWorldViewProj.projection; 
+  }
   XMMATRIX XM_CALLCONV GetWorld()      const { return m_cbWorldViewProj.world; }
   XMMATRIX XM_CALLCONV GetView()       const { return m_cbWorldViewProj.view; }
   XMMATRIX XM_CALLCONV GetProjection() const { return m_cbWorldViewProj.projection; }
+  void     XM_CALLCONV SetWVP(const XMMATRIX &w, const XMMATRIX &v, const XMMATRIX &p);
   void     XM_CALLCONV SetWorld(const XMMATRIX &value);
   void     XM_CALLCONV SetView(const XMMATRIX &value);
   void     XM_CALLCONV SetProjection(const XMMATRIX &value);

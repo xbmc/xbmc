@@ -321,6 +321,14 @@ void CGUIShaderDX::Project(float &x, float &y, float &z)
   z = 0;
 }
 
+void XM_CALLCONV CGUIShaderDX::SetWVP(const XMMATRIX &w, const XMMATRIX &v, const XMMATRIX &p)
+{
+  m_bIsWVPDirty = true;
+  m_cbWorldViewProj.world = w;
+  m_cbWorldViewProj.view = v;
+  m_cbWorldViewProj.projection = p;
+}
+
 void CGUIShaderDX::SetWorld(const XMMATRIX &value)
 {
   m_bIsWVPDirty = true;
