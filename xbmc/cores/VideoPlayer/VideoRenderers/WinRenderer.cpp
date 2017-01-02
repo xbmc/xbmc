@@ -912,8 +912,11 @@ void CWinRenderer::RenderHW(DWORD flags)
     bool stereoHack = g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_SPLIT_HORIZONTAL
                    || g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_SPLIT_VERTICAL;
 
+    CGUIShaderDX* pGUIShader = g_Windowing.GetGUIShader();
+    XMMATRIX w, v, p;
     if (stereoHack)
     {
+      pGUIShader->GetWVP(w, v, p);
       CRect bbSize = g_Windowing.GetBackBufferRect();
 
       g_Windowing.GetViewPort(oldViewPort);
@@ -926,7 +929,10 @@ void CWinRenderer::RenderHW(DWORD flags)
     CD3DTexture::DrawQuad(dst, 0xFFFFFF, &m_IntermediateTarget, &tu, SHADER_METHOD_RENDER_TEXTURE_NOBLEND);
 
     if (stereoHack)
+    {
       g_Windowing.SetViewPort(oldViewPort);
+      pGUIShader->SetWVP(w, v, p);
+    }
   }
 }
 
