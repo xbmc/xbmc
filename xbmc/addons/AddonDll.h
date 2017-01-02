@@ -81,10 +81,10 @@ namespace ADDON
 
     /// addon to kodi basic callbacks below
     //@{
-    FuncTable_Addon m_interface;
+    AddonGlobalInterface m_interface;
 
-    bool InitInterfaceFunctions();
-    void DeInitInterfaceFunctions();
+    inline bool InitInterface(KODI_HANDLE firstKodiInstance);
+    inline void DeInitInterface();
 
     static char* get_addon_path(void* kodiInstance);
     static char* get_base_user_path(void* kodiInstance);
