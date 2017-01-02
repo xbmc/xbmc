@@ -21,6 +21,7 @@
 #include "AddonDll.h"
 
 #include "AddonStatusHandler.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/AddonBase.h"
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogOK.h"
 #include "utils/URIUtils.h"
@@ -266,12 +267,12 @@ ADDON_STATUS CAddonDll::Create(KODI_HANDLE firstKodiInstance)
 
   /* Allocate the helper function class to allow crosstalk over
      helper add-on headers */
-  if (!InitInterfaceFunctions())
+  if (!InitInterface(firstKodiInstance))
     return ADDON_STATUS_PERMANENT_FAILURE;
 
   /* Call Create to make connections, initializing data or whatever is
      needed to become the AddOn running */
-  ADDON_STATUS status = m_pDll->Create(&m_interface, firstKodiInstance);
+  ADDON_STATUS status = m_pDll->Create(&m_interface, nullptr);
   if (status == ADDON_STATUS_OK)
   {
     m_initialized = true;
@@ -333,7 +334,7 @@ void CAddonDll::Destroy()
       m_usedInstances.erase(it);
     }
 
-    DeInitInterfaceFunctions();
+    DeInitInterface();
 
     /* Unload library file */
     m_pDll->Destroy();
@@ -618,11 +619,16 @@ ADDON_STATUS CAddonDll::TransferSettings()
  */
 //@{
 
-bool CAddonDll::InitInterfaceFunctions()
+bool CAddonDll::InitInterface(KODI_HANDLE firstKodiInstance)
 {
   memset(&m_interface, 0, sizeof(m_interface));
+
   m_interface.libBasePath = strdup(CSpecialProtocol::TranslatePath("special://xbmcbinaddons").c_str());
-  m_interface.toKodi.kodiInstance = this;
+  m_interface.addonBase = nullptr;
+  m_interface.globalSingleInstance = nullptr;
+  m_interface.firstKodiInstance = firstKodiInstance;
+
+  m_interface.toKodi.kodiBase = this;
   m_interface.toKodi.get_addon_path = get_addon_path;
   m_interface.toKodi.get_base_user_path = get_base_user_path;
   m_interface.toKodi.addon_log_msg = addon_log_msg;
@@ -631,7 +637,7 @@ bool CAddonDll::InitInterfaceFunctions()
   return true;
 }
 
-void CAddonDll::DeInitInterfaceFunctions()
+void CAddonDll::DeInitInterface()
 {
   free((char*)m_interface.libBasePath);
 }

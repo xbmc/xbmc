@@ -68,17 +68,17 @@ namespace addon
     CInstanceScreensaver()
       : IAddonInstance(ADDON_INSTANCE_SCREENSAVER)
     {
-      if (kodi::addon::CAddonBase::m_globalSingleInstance != nullptr)
+      if (CAddonBase::m_interface->globalSingleInstance != nullptr)
         throw std::logic_error("kodi::addon::CInstanceScreensaver: Creation of more as one in single instance way is not allowed!");
 
-      SetAddonStruct(kodi::addon::CAddonBase::m_firstKodiInstance);
-      kodi::addon::CAddonBase::m_globalSingleInstance = this;
+      SetAddonStruct(CAddonBase::m_interface->firstKodiInstance);
+      CAddonBase::m_interface->globalSingleInstance = this;
     }
 
     CInstanceScreensaver(KODI_HANDLE instance)
       : IAddonInstance(ADDON_INSTANCE_SCREENSAVER)
     {
-      if (kodi::addon::CAddonBase::m_globalSingleInstance != nullptr)
+      if (CAddonBase::m_interface->globalSingleInstance != nullptr)
         throw std::logic_error("kodi::addon::CInstanceScreensaver: Creation of multiple together with single instance way is not allowed!");
 
       SetAddonStruct(instance);
