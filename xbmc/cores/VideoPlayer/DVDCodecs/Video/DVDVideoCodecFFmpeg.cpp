@@ -343,7 +343,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   m_pCodecContext->codec_tag = hints.codec_tag;
 
   // setup threading model
-  if (!hints.software)
+  if (!(hints.codecOptions & CODEC_FORCE_SOFRWARE))
   {
     bool tryhw = false;
 #ifdef HAVE_LIBVDPAU

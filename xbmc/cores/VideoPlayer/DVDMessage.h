@@ -43,9 +43,7 @@ public:
   {
     NONE = 1000,
 
-
     // messages used in the whole system
-
     GENERAL_RESYNC,                 //
     GENERAL_FLUSH,                  // flush all buffers
     GENERAL_RESET,                  // reset codecs for new data
@@ -56,7 +54,6 @@ public:
     GENERAL_EOF,                    // eof of stream
 
     // player core related messages (cVideoPlayer.cpp)
-
     PLAYER_SET_AUDIOSTREAM,         //
     PLAYER_SET_VIDEOSTREAM,         //
     PLAYER_SET_SUBTITLESTREAM,      //
@@ -75,17 +72,18 @@ public:
     PLAYER_CHANNEL_SELECT,          // switches to the provided channel
     PLAYER_STARTED,                 // sent whenever a sub player has finished it's first frame after open
     PLAYER_AVCHANGE,                // signal a change in audio or video parameters
+    PLAYER_ABORT,
 
     // demuxer related messages
-
     DEMUXER_PACKET,                 // data packet
     DEMUXER_RESET,                  // reset the demuxer
 
-
     // video related messages
-
     VIDEO_SET_ASPECT,               // set aspectratio of video
     VIDEO_DRAIN,                    // wait for decoder to output last frame
+
+    // audio related messages
+    AUDIO_SILENCE,
 
     // subtitle related messages
     SUBTITLE_CLUTCHANGE,
