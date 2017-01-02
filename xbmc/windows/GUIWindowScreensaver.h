@@ -21,7 +21,7 @@
  */
 
 #include "guilib/GUIWindow.h"
-#include "addons/ScreenSaver.h"
+#include "addons/interfaces/kodi/screensaver/Screensaver.h"
 
 #include "threads/CriticalSection.h"
 
