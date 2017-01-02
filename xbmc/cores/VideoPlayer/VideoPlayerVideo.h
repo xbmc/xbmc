@@ -27,7 +27,7 @@
 #include "DVDCodecs/Video/DVDVideoCodec.h"
 #include "DVDClock.h"
 #include "DVDOverlayContainer.h"
-#include "DVDTSCorrection.h"
+#include "PTSTracker.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "utils/BitstreamStats.h"
 #include <atomic>
@@ -141,10 +141,9 @@ protected:
   CDVDStreamInfo m_hints;
   CDVDVideoCodec* m_pVideoCodec;
   DVDVideoPicture* m_pTempOverlayPicture;
-  CPullupCorrection m_pullupCorrection;
+  CPtsTracker m_ptsTracker;
   std::list<DVDMessageListItem> m_packets;
   CDroppingStats m_droppingStats;
   CRenderManager& m_renderManager;
   DVDVideoPicture m_picture;
 };
-
