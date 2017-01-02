@@ -349,17 +349,16 @@ bool CGUIWindowPVRBase::Update(const std::string &strDirectory, bool updateFilte
     return false;
   }
 
-  int iOldCount = m_vecItems->GetObjectCount();
+  int iOldCount = m_vecItems->Size();
   int iSelectedItem = m_viewControl.GetSelectedItem();
   const std::string oldPath = m_vecItems->GetPath();
 
   bool bReturn = CGUIMediaWindow::Update(strDirectory, updateFilterPath);
 
   if (bReturn &&
-      iSelectedItem != -1 && // something must have been selected
-      iOldCount > 0) // more than only ".." item or nothing in previous item list
+      iSelectedItem != -1) // something must have been selected
   {
-    int iNewCount = m_vecItems->GetObjectCount();
+    int iNewCount = m_vecItems->Size();
     if (iOldCount > iNewCount && // at least one item removed by Update()
         oldPath == m_vecItems->GetPath()) // update not due changing into another folder
     {
