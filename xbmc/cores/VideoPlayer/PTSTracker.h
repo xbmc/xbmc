@@ -27,10 +27,10 @@
 #define VFR_DETECTION_THRESHOLD 3
 #define VFR_PATTERN_THRESHOLD 2
 
-class CPullupCorrection
+class CPtsTracker
 {
   public:
-    CPullupCorrection();
+    CPtsTracker();
     void   Add(double pts);
     void   Flush(); //flush the saved pattern and the ringbuffer
     void   ResetVFRDetection(void);
