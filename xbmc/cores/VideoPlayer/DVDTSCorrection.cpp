@@ -132,7 +132,8 @@ inline double CPullupCorrection::GetDiff(int diffnr)
 {
   //m_ringpos is the last added diff, so if we want to go in the past we have to move back in the ringbuffer
   int pos = m_ringpos - diffnr;
-  if (pos < 0) pos += DIFFRINGSIZE;
+  if (pos < 0)
+    pos += DIFFRINGSIZE;
 
   return m_diffring[pos];
 }
@@ -145,7 +146,22 @@ void CPullupCorrection::GetPattern(std::vector<double>& pattern)
 
   //get the difftypes
   std::vector<double> difftypes;
-  GetDifftypes(difftypes);
+  for (int i = 0; i < m_ringfill; i++)
+  {
+    bool hasmatch = false;
+    for (unsigned int j = 0; j < difftypes.size(); j++)
+    {
+      if (MatchDiff(GetDiff(i), difftypes[j]))
+      {
+        hasmatch = true;
+        break;
+      }
+    }
+
+    //if we don't have a match with a saved difftype, we add it as a new one
+    if (!hasmatch)
+      difftypes.push_back(GetDiff(i));
+  }
 
   //mark each diff with what difftype it is
   for (int i = 0; i < m_ringfill; i++)
@@ -195,44 +211,17 @@ void CPullupCorrection::GetPattern(std::vector<double>& pattern)
 
     if (hasmatch)
     {
-      BuildPattern(pattern, length);
+      for (int i = 0; i < length; i++)
+      {
+        double avgdiff = 0.0;
+        for (int j = 0; j < m_ringfill / length; j++)
+          avgdiff += GetDiff(j * length + i);
+
+        avgdiff /= m_ringfill / length;
+        pattern.push_back(avgdiff);
+      }
       break;
     }
-  }
-}
-
-//calculate the different types of diffs we have
-void CPullupCorrection::GetDifftypes(std::vector<double>& difftypes)
-{
-  for (int i = 0; i < m_ringfill; i++)
-  {
-    bool hasmatch = false;
-    for (unsigned int j = 0; j < difftypes.size(); j++)
-    {
-      if (MatchDiff(GetDiff(i), difftypes[j]))
-      {
-        hasmatch = true;
-        break;
-      }
-    }
-
-    //if we don't have a match with a saved difftype, we add it as a new one
-    if (!hasmatch)
-      difftypes.push_back(GetDiff(i));
-  }
-}
-
-//builds a pattern of timestamps in the ringbuffer
-void CPullupCorrection::BuildPattern(std::vector<double>& pattern, int patternlength)
-{
-  for (int i = 0; i < patternlength; i++)
-  {
-    double avgdiff = 0.0;
-    for (int j = 0; j < m_ringfill / patternlength; j++)
-      avgdiff += GetDiff(j * patternlength + i);
-
-    avgdiff /= m_ringfill / patternlength;
-    pattern.push_back(avgdiff);
   }
 }
 
