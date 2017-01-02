@@ -41,7 +41,7 @@ void CDVDStreamInfo::Clear()
   type = STREAM_NONE;
   uniqueId = -1;
   realtime = false;
-  software = false;
+  codecOptions = 0;
   codec_tag  = 0;
   flags = 0;
   filename.clear();
@@ -173,7 +173,7 @@ void CDVDStreamInfo::Assign(const CDVDStreamInfo& right, bool withextradata)
   orientation = right.orientation;
   bitsperpixel = right.bitsperpixel;
   vfr = right.vfr;
-  software = right.software;
+  codecOptions = right.codecOptions;
   stereo_mode = right.stereo_mode;
 
   // AUDIO

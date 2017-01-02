@@ -203,7 +203,7 @@ bool CDVDFileInfo::ExtractThumb(const std::string &strPath,
     std::unique_ptr<CProcessInfo> pProcessInfo(CProcessInfo::CreateInstance());
 
     CDVDStreamInfo hint(*pDemuxer->GetStream(demuxerId, nVideoStream), true);
-    hint.software = true;
+    hint.codecOptions = CODEC_FORCE_SOFRWARE;
 
     pVideoCodec = CDVDFactoryCodec::CreateVideoCodec(hint, *pProcessInfo);
 

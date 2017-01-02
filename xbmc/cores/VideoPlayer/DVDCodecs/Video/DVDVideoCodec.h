@@ -127,12 +127,6 @@ struct DVDVideoPicture
   ERenderFormat format;
 };
 
-struct DVDVideoUserData
-{
-  uint8_t* data;
-  int size;
-};
-
 #define DVP_FLAG_TOP_FIELD_FIRST    0x00000001
 #define DVP_FLAG_REPEAT_TOP_FIELD   0x00000002  //< Set to indicate that the top field should be repeated
 #define DVP_FLAG_ALLOCATED          0x00000004  //< Set to indicate that this has allocated data
@@ -178,8 +172,21 @@ public:
 
   /**
    * Open the decoder, returns true on success
+   * Decoders not capable of runnung multiple instances should return false in case
+   * there is already a instance open
    */
   virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options) = 0;
+
+  /**
+   * Reconfigure the decoder, returns true on success
+   * Decoders not capable of runnung multiple instances may be capable of reconfiguring
+   * the running instance. If Reconfigure returns false, player will close / open
+   * the decoder
+   */
+  virtual bool Reconfigure(CDVDStreamInfo &hints)
+  {
+    return false;
+  }
 
   /**
    * returns one or a combination of VC_ messages
@@ -206,18 +213,6 @@ public:
   {
     memset(pDvdVideoPicture, 0, sizeof(DVDVideoPicture));
     return true;
-  }
-
-  /**
-   * returns true if successfull
-   * the data is valid until the next Decode call
-   * userdata can be anything, for now we use it for closed captioning
-   */
-  virtual bool GetUserData(DVDVideoUserData* pDvdVideoUserData)
-  {
-    pDvdVideoUserData->data = NULL;
-    pDvdVideoUserData->size = 0;
-    return false;
   }
 
   /**
