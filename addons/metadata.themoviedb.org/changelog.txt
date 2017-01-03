@@ -104,7 +104,7 @@
 - fixed: movies without release date won't find
 
 [B]3.0.7[/B]
-- fixed: keep originaltitle; IMDb ID; remove TMDb title fallback, because it became obsolate
+- fixed: keep originaltitle; IMDb ID; remove TMDb title fallback, because it became obsolete
 
 [B]3.0.6[/B]
 - updated chinese translation

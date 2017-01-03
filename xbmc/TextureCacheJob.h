@@ -97,7 +97,7 @@ private:
    a image URL is much more likely to be static and the actual image at the URL is unlikely
    to change, so no point checking all the time.
    \param url the url to check
-   \return true if the image given by the URL should be checked for updates, false otehrwise
+   \return true if the image given by the URL should be checked for updates, false otherwise
    */
   bool UpdateableURL(const std::string &url) const;
 

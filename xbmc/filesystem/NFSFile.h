@@ -110,7 +110,7 @@ private:
   tOpenContextMap m_openContextMap;//unique map for tracking all open contexts
   uint64_t m_lastAccessedTime;//last access time for m_pNfsContext
   DllLibNfs *m_pLibNfs;//the lib
-  std::list<std::string> m_exportList;//list of exported pathes of current connected servers
+  std::list<std::string> m_exportList;//list of exported paths of current connected servers
   CCriticalSection keepAliveLock;
   CCriticalSection openContextLock;
  

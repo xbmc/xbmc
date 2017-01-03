@@ -41,4 +41,4 @@
 • Updated language files from Transifex
 
 ﻿[B]0.0.1[/B]
-• Initial commmit
+• Initial commit

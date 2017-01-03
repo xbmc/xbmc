@@ -329,7 +329,7 @@ protected:
   bool  OnJobProgress(unsigned int progress, unsigned int total, const CJob *job) const;
 
 private:
-  // private construction, and no assignements; use the provided singleton methods
+  // private construction, and no assignments; use the provided singleton methods
   CJobManager();
   CJobManager(const CJobManager&);
   CJobManager const& operator=(CJobManager const&);

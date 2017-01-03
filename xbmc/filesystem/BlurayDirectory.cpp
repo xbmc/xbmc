@@ -34,7 +34,7 @@
 namespace XFILE
 {
 
-#define MAIN_TITLE_LENGTH_PERCENT 70 /** Minumum length of main titles, based on longest title */
+#define MAIN_TITLE_LENGTH_PERCENT 70 /** Minimum length of main titles, based on longest title */
 
 CBlurayDirectory::CBlurayDirectory()
   : m_dll(NULL)

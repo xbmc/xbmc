@@ -25,10 +25,10 @@
     {
       [remote setDelegate:self];
       [remote setSimulateHoldEvents:NO];
-      //for now, we're using lending of exlusive lock
+      //for now, we're using lending of exclusive lock
       //kHIDRemoteModeExclusiveAuto isn't working, as we're a background daemon
       //one possibility would be to know when XBMC is running. Once we know that,
-      //we could aquire exclusive lock when it's running, and release _exclusive_
+      //we could acquire exclusive lock when it's running, and release _exclusive_
       //access once done
       [remote setExclusiveLockLendingEnabled:YES];
 

@@ -561,7 +561,7 @@ typedef struct {
   uint8_t unknown1;
   uint8_t unknown2;
   uint8_t unknown3;
-  uint8_t unknown4; /* ?? allways 0x30 language?, text format? */
+  uint8_t unknown4; /* ?? always 0x30 language?, text format? */
   uint8_t unknown5;
   uint16_t offset; /* from first */
   

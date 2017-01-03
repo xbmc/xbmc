@@ -768,7 +768,7 @@ void CPeripheralCecAdapter::CecAlert(void *cbParam, const libcec_alert alert, co
 
   if (bReopenConnection)
   {
-    // Reopen the connection asynchronously. Otherwise a deadlock may occure.
+    // Reopen the connection asynchronously. Otherwise a deadlock may occur.
     // Reconnect means destruction and recreation of our libcec instance, but libcec
     // calls this callback function synchronously and must not be destroyed meanwhile.
     adapter->ReopenConnection(true);

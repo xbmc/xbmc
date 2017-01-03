@@ -143,7 +143,7 @@ void CSMB::Init()
 
     // reads smb.conf so this MUST be after we create smb.conf
     // multiple smbc_init calls are ignored by libsmbclient.
-    // note: this is important as it initilizes the smb old
+    // note: this is important as it initializes the smb old
     // interface compatibility. Samba 3.4.0 or higher has the new interface.
     // note: we leak the following here once, not sure why yet.
     // 48 bytes -> smb_xmalloc_array
@@ -174,7 +174,7 @@ void CSMB::Init()
     m_context->options.one_share_per_server = false;
     m_context->options.browse_max_lmb_count = 0;
     m_context->timeout = g_advancedSettings.m_sambaclienttimeout * 1000;
-    // we need to strdup these, they will get free'ed on smbc_free_context
+    // we need to strdup these, they will get free'd on smbc_free_context
     if (CServiceBroker::GetSettings().GetString(CSettings::SETTING_SMB_WORKGROUP).length() > 0)
       m_context->workgroup = strdup(CServiceBroker::GetSettings().GetString(CSettings::SETTING_SMB_WORKGROUP).c_str());
     m_context->user = strdup("guest");
@@ -258,7 +258,7 @@ void CSMB::CheckIfIdle()
 /* We check if there are open connections. This is done without a lock to not halt the mainthread. It should be thread safe as
    worst case scenario is that m_OpenConnections could read 0 and then changed to 1 if this happens it will enter the if wich will lead to another check, wich is locked.  */
   if (m_OpenConnections == 0)
-  { /* I've set the the maxiumum IDLE time to be 1 min and 30 sec. */
+  { /* I've set the the maximum IDLE time to be 1 min and 30 sec. */
     CSingleLock lock(*this);
     if (m_OpenConnections == 0 /* check again - when locked */ && m_context != NULL)
     {

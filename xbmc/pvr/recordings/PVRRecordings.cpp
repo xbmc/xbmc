@@ -302,7 +302,7 @@ bool CPVRRecordings::GetDirectory(const std::string& strPath, CFileItemList &ite
     if (!recPath.IsDeleted() && bGrouped)
       GetSubDirectories(recPath, &items);
 
-    // get all files of the currrent directory or recursively all files starting at the current directory if in flatten mode
+    // get all files of the current directory or recursively all files starting at the current directory if in flatten mode
     for (const auto recording : m_recordings)
     {
       CPVRRecordingPtr current = recording.second;

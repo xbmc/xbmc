@@ -61,7 +61,7 @@ public:
   const CAudioSettings& GetCurrentAudioSettings() const { return m_currentAudioSettings; }
   CAudioSettings& GetCurrentAudioSettings() { return m_currentAudioSettings; }
 
-  /*! \brief Retreive the watched mode for the given content type
+  /*! \brief Retrieve the watched mode for the given content type
    \param content Current content type
    \return the current watch mode for this content type, WATCH_MODE_ALL if the content type is unknown.
    \sa SetWatchMode

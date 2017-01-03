@@ -206,7 +206,7 @@ int CAPKFile::Stat(const CURL& url, struct __stat64* buffer)
 {
   memset(buffer, 0, sizeof(struct __stat64));
 
-  // do not use interal member vars here,
+  // do not use internal member vars here,
   //  we might be called without opening
   std::string path = url.GetFileName();
   std::string host = url.GetHostName();

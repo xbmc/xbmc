@@ -12,7 +12,7 @@
 #
 # and the following imported targets::
 #
-#   Bluray::Bluray   - The libblueray library
+#   Bluray::Bluray   - The libbluray library
 
 if(PKG_CONFIG_FOUND)
   pkg_check_modules(PC_BLURAY libbluray>=0.7.0 QUIET)

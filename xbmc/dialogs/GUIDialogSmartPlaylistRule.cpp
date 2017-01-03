@@ -284,7 +284,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
     {
       CFileItemPtr item = items[i];
       CSmartPlaylist playlist;
-      // don't list unloadable smartplaylists or any referencable smartplaylists
+      // don't list unloadable smartplaylists or any referenceable smartplaylists
       // which do not match the type of the current smartplaylist
       if (!playlist.Load(item->GetPath()) ||
          (m_rule.m_field == FieldPlaylist &&

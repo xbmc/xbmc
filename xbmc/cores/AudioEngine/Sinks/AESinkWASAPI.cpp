@@ -1011,7 +1011,7 @@ bool CAESinkWASAPI::InitializeExclusive(AEAudioFormat &format)
   /* The requested format is not supported by the device.  Find something that works */
   for (int layout = -1; layout <= (int)ARRAYSIZE(layoutsList); layout++)
   {
-    // if requested layout is not suppported, try standard layouts with at least
+    // if requested layout is not supported, try standard layouts with at least
     // the number of channels as requested
     // as the last resort try stereo
     if (layout == ARRAYSIZE(layoutsList))

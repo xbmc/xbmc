@@ -39,7 +39,7 @@ namespace CDDB
 
 //Can be removed if/when removing Xcddb::queryCDinfo(int real_track_count, toc cdtoc[])
 //#define IN_PROGRESS           -1
-//#define QUERRY_OK             7
+//#define QUERY_OK             7
 //#define E_INEXACT_MATCH_FOUND      211
 //#define W_CDDB_already_shook_hands      402
 //#define E_CDDB_Handshake_not_successful 431

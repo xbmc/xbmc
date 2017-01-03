@@ -45,7 +45,7 @@ typedef struct {
   int       vtsN;         /* 0 is vmgm? */
   pgc_t    *pgc;          /* either this or 'int pgcN' is enough? */
   int       pgcN;         /* but provide pgcN for quick lookup */
-  int       pgN;          /* is this needed? can allways fid pgN from cellN? */
+  int       pgN;          /* is this needed? can always fid pgN from cellN? */
   int       cellN;
   int32_t   cell_restart; /* get cell to restart */
   int       blockN;

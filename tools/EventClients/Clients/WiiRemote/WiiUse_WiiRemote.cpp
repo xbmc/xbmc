@@ -77,12 +77,12 @@ void CWiiController::handleACC(float currentRoll, float currentPitch)
   if (m_currentAction == ACTION_NONE)
   {
     if ((g_deadzone - (abs((int)m_rel_roll)) < 5) && (abs((int)m_abs_pitch) < (g_deadzone / 1.5)))
-     // crossed the roll deadzone threshhold while inside the pitch deadzone
+     // crossed the roll deadzone threshold while inside the pitch deadzone
       {
         m_currentAction = ACTION_ROLL;
       }
     else if ((g_deadzone - (abs((int)m_rel_pitch)) < 5) && (abs((int)m_abs_roll) < (g_deadzone / 1.5))) 
-    // crossed the pitch deadzone threshhold while inside the roll deadzone
+    // crossed the pitch deadzone threshold while inside the roll deadzone
       {
         m_currentAction = ACTION_PITCH;
       }
@@ -174,7 +174,7 @@ return 0;
 
 float smoothDeg(float oldVal, float newVal)
 {
-//If values go over 180 or under -180, weird things happen. This tranforms the values to -360 to 360 instead.
+//If values go over 180 or under -180, weird things happen. This transforms the values to -360 to 360 instead.
 
   if (newVal - oldVal > 300)
     return (newVal - 360);

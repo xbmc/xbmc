@@ -25,7 +25,7 @@
 
 /*!
  * \ingroup touch
- * \brief Convencience interface implementing ITouchActionHandler with an
+ * \brief Convenience interface implementing ITouchActionHandler with an
  *        implementation that forwards any ITouchActionHandler-related calls
  *        to a previously registered ITouchActionHandler
  *

@@ -376,7 +376,7 @@ void CLinuxRendererGL::ReleaseImage(int source, bool preserve)
 
   im.flags &= ~IMAGE_FLAG_INUSE;
   im.flags |= IMAGE_FLAG_READY;
-  /* if image should be preserved reserve it so it's not auto seleceted */
+  /* if image should be preserved reserve it so it's not auto selected */
 
   if( preserve )
     im.flags |= IMAGE_FLAG_RESERVED;
@@ -1526,7 +1526,7 @@ void CLinuxRendererGL::RenderRGB(int index, int field)
 
 void CLinuxRendererGL::RenderSoftware(int index, int field)
 {
-  // used for textues uploaded from rgba or CVPixelBuffers.
+  // used for textures uploaded from rgba or CVPixelBuffers.
   YUVPLANES &planes = m_buffers[index].fields[field];
 
   glDisable(GL_DEPTH_TEST);

@@ -94,8 +94,8 @@ namespace ActiveAE
     std::vector<ActiveAE::CActiveAEDSPModePtr>  m_ActiveModes;                            /*!< The process modes currently active on dsp processing stream */
     std::vector<ActiveModeData>                 m_ActiveModesData;                        /*!< The process modes currently active on dsp processing stream info*/
     std::vector<ActiveAE::CActiveAEDSPModePtr>  m_MasterModes[AE_DSP_ASTREAM_MAX];        /*!< table about selectable and usable master processing modes */
-    std::map<std::string, int>                  m_MenuPositions;                          /*!< The differnet menu selection positions */
-    std::vector<int>                            m_MenuHierarchy;                          /*!< Menu selection flow hierachy */
+    std::map<std::string, int>                  m_MenuPositions;                          /*!< The different menu selection positions */
+    std::vector<int>                            m_MenuHierarchy;                          /*!< Menu selection flow hierarchy */
     std::vector<MenuHookMember>                 m_Menus;                                  /*!< storage about present addon menus on currently selected submenu */
     std::vector< std::pair<std::string, int> >  m_ModeList;                               /*!< currently present modes */
     bool                                        m_GetCPUUsage;                            /*!< if true cpu usage detection is active */

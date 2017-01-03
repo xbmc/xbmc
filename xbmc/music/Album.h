@@ -92,7 +92,7 @@ public:
   const std::vector<std::string> GetMusicBrainzAlbumArtistID() const;
   std::string GetGenreString() const;
 
-  /*! \brief Get album artist names from the artist decription string (if it exists)
+  /*! \brief Get album artist names from the artist description string (if it exists)
              or concatenated from the vector of artistcredits objects
   \return album artist names as a single string
   */

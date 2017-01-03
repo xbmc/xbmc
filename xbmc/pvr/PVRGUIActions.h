@@ -50,7 +50,7 @@ namespace PVR
     /*!
      * @brief Open a window containing a list of epg tags 'similar' to a given item.
      * @param item containing epg data for matching. item must be an epg tag, a channel or a recording.
-     * @param windowToClose is the window to close before opening the window with the search reasults.
+     * @param windowToClose is the window to close before opening the window with the search results.
      * @return true on success, false otherwise.
      */
     bool FindSimilar(const CFileItemPtr &item, CGUIWindow *windowToClose = nullptr) const;
@@ -239,7 +239,7 @@ namespace PVR
      * @brief Delete a timer or timer rule, always showing a confirmation dialog.
      * @param item containing a timer or timer rule to delete. item must be a timer, an epg tag or a channel.
      * @param bIsRecording denotes whether the timer is currently recording (controls correct confirmation dialog).
-     * @param bDeleteRule denotes to delete a timer rule. For convenience, one can pass a timer creted by a rule.
+     * @param bDeleteRule denotes to delete a timer rule. For convenience, one can pass a timer created by a rule.
      * @return true, if the timer or timer rule was deleted successfully, false otherwise.
     */
     bool DeleteTimer(const CFileItemPtr &item, bool bIsRecording, bool bDeleteRule) const;
@@ -270,7 +270,7 @@ namespace PVR
     bool ConfirmDeleteRecording(const CFileItemPtr &item) const;
 
     /*!
-     * @brief Open a dialog to confirm to permaantly remove all deleted recordings.
+     * @brief Open a dialog to confirm to permanently remove all deleted recordings.
      * @return true, to proceed with delete, false otherwise.
      */
     bool ConfirmDeleteAllRecordingsFromTrash() const;

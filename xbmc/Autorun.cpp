@@ -202,7 +202,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const std::string& strDrive, int& nAdde
 
         // Check if the current foldername indicates a Blu-Ray structure (default is "BDMV").
         // A BR should also include an "AACS" folder for encryption, Sony-BRs can also include update folders for PS3 (PS3_UPDATE / PS3_VPRM).
-        //! @todo for the time beeing, the DVD autorun settings are used to determine if the BR should be started automatically.
+        //! @todo for the time being, the DVD autorun settings are used to determine if the BR should be started automatically.
         if (StringUtils::EqualsNoCase(name, "BDMV") && bAllowVideo
         && (bypassSettings || CServiceBroker::GetSettings().GetBool(CSettings::SETTING_DVDS_AUTORUN)))
         {
@@ -223,7 +223,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const std::string& strDrive, int& nAdde
 
         // Check if the current foldername indicates a HD DVD structure (default is "HVDVD_TS").
         // Most HD DVD will also include an "ADV_OBJ" folder for advanced content. This folder should be handled first.
-        //! @todo for the time beeing, the DVD autorun settings are used to determine if the HD DVD should be started automatically.
+        //! @todo for the time being, the DVD autorun settings are used to determine if the HD DVD should be started automatically.
         CFileItemList items, sitems;
         
         // Advanced Content HD DVD (most discs?)
