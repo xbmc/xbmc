@@ -13,6 +13,12 @@ if(NOT ZIPALIGN_EXECUTABLE)
   message(FATAL_ERROR "Could NOT find zipalign executable")
 endif()
 
+if(CMAKE_BUILD_TYPE STREQUAL Debug)
+  set(ANDROID_DEBUGGABLE true)
+else()
+  set(ANDROID_DEBUGGABLE false)
+endif()
+
 # Configure files into packaging environment.
 configure_file(${CMAKE_SOURCE_DIR}/tools/android/packaging/Makefile.in
                ${CMAKE_BINARY_DIR}/tools/android/packaging/Makefile @ONLY)
