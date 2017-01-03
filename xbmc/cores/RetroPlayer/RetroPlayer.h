@@ -36,8 +36,7 @@ namespace GAME
   class CRetroPlayerVideo;
 
   class CRetroPlayer : public IPlayer,
-                       public IRenderMsg,
-                       public IDispResource
+                       public IRenderMsg
   {
   public:
     CRetroPlayer(IPlayerCallback& callback);
@@ -144,11 +143,6 @@ namespace GAME
     virtual void UpdateClockSync(bool enabled) override;
     virtual void UpdateRenderInfo(CRenderInfo &info) override;
     virtual void UpdateRenderBuffers(int queued, int discard, int free) override {}
-
-    // implementation of IDispResource
-    //virtual void OnLostDisplay() override { }
-    //virtual void OnResetDisplay() override { }
-    //virtual void OnAppFocusChange(bool focus) override { }
 
   private:
     /**
