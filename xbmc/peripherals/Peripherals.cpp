@@ -356,9 +356,12 @@ void CPeripherals::OnDeviceAdded(const CPeripheralBus &bus, const CPeripheral &p
 {
   OnDeviceChanged();
 
+  //! @todo Improve device notifications in v18
+#if 0
   // don't show a notification for devices detected during the initial scan
   if (bus.IsInitialised())
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(35005), peripheral.DeviceName());
+#endif
 }
 
 void CPeripherals::OnDeviceDeleted(const CPeripheralBus &bus, const CPeripheral &peripheral)
@@ -366,10 +369,9 @@ void CPeripherals::OnDeviceDeleted(const CPeripheralBus &bus, const CPeripheral 
   OnDeviceChanged();
 
   //! @todo Improve device notifications in v18
-  bool bNotify = false;
-
-  if (bNotify)
-    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(35006), peripheral.DeviceName());
+#if 0
+  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(35006), peripheral.DeviceName());
+#endif
 }
 
 void CPeripherals::OnDeviceChanged()
