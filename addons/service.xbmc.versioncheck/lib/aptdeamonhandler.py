@@ -26,7 +26,7 @@ try:
 except:
     log('python apt import error')
 
-class AptdeamonHandler:
+class AptdaemonHandler:
 
     def __init__(self):
         self.aptclient = client.AptClient()
