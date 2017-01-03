@@ -376,7 +376,7 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
   }
 
   // pending calls must be cleared out
-  XBMCAddon::RetardedAsynchCallbackHandler::clearPendingCalls(state);
+  XBMCAddon::RetardedAsyncCallbackHandler::clearPendingCalls(state);
 
   PyThreadState_Swap(NULL);
   PyEval_ReleaseLock();
