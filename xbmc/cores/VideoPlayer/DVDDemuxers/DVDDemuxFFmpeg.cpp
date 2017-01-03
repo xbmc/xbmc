@@ -346,7 +346,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo, bool filein
             {
               // not dts either, return false in case we were explicitely
               // requested to only check for S/PDIF padded compressed audio
-              CLog::Log(LOGDEBUG, "%s - not spdif or dts file, fallbacking", __FUNCTION__);
+              CLog::Log(LOGDEBUG, "%s - not spdif or dts file, falling back", __FUNCTION__);
               return false;
             }
           }

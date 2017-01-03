@@ -128,7 +128,7 @@ HANDLE CreateFile(LPCTSTR lpFileName, DWORD dwDesiredAccess,
     fd = open(igFileName.c_str(), flags, mode);
     if (fd != -1)
     {
-      CLog::Log(LOGWARNING,"%s, successfuly opened <%s> instead of <%s>", __FUNCTION__, igFileName.c_str(), lpFileName);
+      CLog::Log(LOGWARNING,"%s, successfully opened <%s> instead of <%s>", __FUNCTION__, igFileName.c_str(), lpFileName);
       strResultFile = igFileName;
     }
   }
