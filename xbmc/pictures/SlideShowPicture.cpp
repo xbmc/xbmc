@@ -32,7 +32,7 @@
 #endif
 #include <math.h>
 
-#define IMMEDIATE_TRANSISTION_TIME          20
+#define IMMEDIATE_TRANSITION_TIME          20
 
 #define PICTURE_MOVE_AMOUNT              0.02f
 #define PICTURE_MOVE_AMOUNT_ANALOG       0.01f
@@ -707,7 +707,7 @@ void CSlideShowPic::Rotate(float fRotateAngle, bool immediate /* = false */)
 
   m_transistionTemp.type = TRANSISTION_ROTATE;
   m_transistionTemp.start = m_iCounter;
-  m_transistionTemp.length = IMMEDIATE_TRANSISTION_TIME;
+  m_transistionTemp.length = IMMEDIATE_TRANSITION_TIME;
   m_fTransistionAngle = (float)fRotateAngle / (float)m_transistionTemp.length;
   // reset the timer
   m_transistionEnd.start = m_iCounter + m_transistionStart.length + (int)(g_graphicsContext.GetFPS() * CServiceBroker::GetSettings().GetInt(CSettings::SETTING_SLIDESHOW_STAYTIME));
@@ -724,7 +724,7 @@ void CSlideShowPic::Zoom(float fZoom, bool immediate /* = false */)
   }
   m_transistionTemp.type = TRANSISTION_ZOOM;
   m_transistionTemp.start = m_iCounter;
-  m_transistionTemp.length = IMMEDIATE_TRANSISTION_TIME;
+  m_transistionTemp.length = IMMEDIATE_TRANSITION_TIME;
   m_fTransistionZoom = (fZoom - m_fZoomAmount) / (float)m_transistionTemp.length;
   // reset the timer
   m_transistionEnd.start = m_iCounter + m_transistionStart.length + (int)(g_graphicsContext.GetFPS() * CServiceBroker::GetSettings().GetInt(CSettings::SETTING_SLIDESHOW_STAYTIME));
