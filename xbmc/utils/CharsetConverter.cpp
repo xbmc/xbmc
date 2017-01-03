@@ -555,7 +555,7 @@ static struct SCharsetMapping
   , { "CP1255", "Hebrew (Windows)" }
   , { "CP1256", "Arabic (Windows)" }
   , { "CP1257", "Baltic (Windows)" }
-  , { "CP1258", "Vietnamesse (Windows)" }
+  , { "CP1258", "Vietnamese (Windows)" }
   , { "CP874", "Thai (Windows)" }
   , { "BIG5", "Chinese Traditional (Big5)" }
   , { "GBK", "Chinese Simplified (GBK)" }
