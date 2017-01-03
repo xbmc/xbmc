@@ -2,5 +2,5 @@
 <node order="7" type="folder" visible="Library.HasContent(Role, Remixer)">
 	<label>29987</label>
         <icon>DefaultMusicGenres.png</icon>
-	<path>musicdb://artists/?role=Remixer&albumartistsonly=false</path>
+	<path>musicdb://artists/?role=Remixer&amp;albumartistsonly=false</path>
 </node>
