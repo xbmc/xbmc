@@ -1744,6 +1744,16 @@ void CWinSystemOSX::AnnounceOnLostDevice()
 
 void CWinSystemOSX::AnnounceOnResetDevice()
 {
+  double currentFps = m_refreshRate;
+  int w = 0;
+  int h = 0;
+  int currentScreenIdx = GetCurrentScreen();
+  // ensure that graphics context knows about the current refreshrate before
+  // doing the callbacks
+  GetScreenResolution(&w, &h, &currentFps, currentScreenIdx);
+
+  g_graphicsContext.SetFPS(currentFps);
+
   CSingleLock lock(m_resourceSection);
   // tell any shared resources
   CLog::Log(LOGDEBUG, "CWinSystemOSX::AnnounceOnResetDevice");
