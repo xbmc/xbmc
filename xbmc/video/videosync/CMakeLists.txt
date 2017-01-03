@@ -35,6 +35,11 @@ if(CORE_SYSTEM_NAME STREQUAL android)
   list(APPEND HEADERS VideoSyncAndroid.h)
 endif()
 
+if(IMX_FOUND)
+  list(APPEND SOURCES VideoSyncIMX.cpp)
+  list(APPEND HEADERS VideoSyncIMX.h)
+endif()
+
 if(SOURCES AND HEADERS)
   core_add_library(video_sync)
 endif()
