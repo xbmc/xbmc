@@ -250,12 +250,12 @@ const std::vector<std::string> CSong::GetArtist() const
 const std::vector<std::string> CSong::GetMusicBrainzArtistID() const
 {
   //Get artist MusicBrainz IDs as vector from artist credits
-  std::vector<std::string> muisicBrainzID;
+  std::vector<std::string> musicBrainzID;
   for (VECARTISTCREDITS::const_iterator artistCredit = artistCredits.begin(); artistCredit != artistCredits.end(); ++artistCredit)
   {
-    muisicBrainzID.push_back(artistCredit->GetMusicBrainzArtistID());
+    musicBrainzID.push_back(artistCredit->GetMusicBrainzArtistID());
   }
-  return muisicBrainzID;
+  return musicBrainzID;
 }
 
 const std::string CSong::GetArtistString() const

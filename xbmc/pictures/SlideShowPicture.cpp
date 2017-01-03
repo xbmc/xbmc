@@ -755,13 +755,13 @@ void CSlideShowPic::Render()
 }
 
 #ifdef HAS_DX
-bool CSlideShowPic::UpdateVertexBuffer(Vertex* vericies)
+bool CSlideShowPic::UpdateVertexBuffer(Vertex* vertices)
 {
   if (!m_vb) // create new
   {
     CD3D11_BUFFER_DESC desc(sizeof(Vertex) * 5, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DYNAMIC, D3D11_CPU_ACCESS_WRITE);
     D3D11_SUBRESOURCE_DATA initData = {};
-    initData.pSysMem = vericies;
+    initData.pSysMem = vertices;
     initData.SysMemPitch = sizeof(Vertex) * 5;
     if (SUCCEEDED(g_Windowing.Get3D11Device()->CreateBuffer(&desc, &initData, &m_vb)))
       return true;
@@ -772,7 +772,7 @@ bool CSlideShowPic::UpdateVertexBuffer(Vertex* vericies)
     D3D11_MAPPED_SUBRESOURCE res;
     if (SUCCEEDED(pContext->Map(m_vb, 0, D3D11_MAP_WRITE_DISCARD, 0, &res)))
     {
-      memcpy(res.pData, vericies, sizeof(Vertex) * 5);
+      memcpy(res.pData, vertices, sizeof(Vertex) * 5);
       pContext->Unmap(m_vb, 0);
       return true;
     }

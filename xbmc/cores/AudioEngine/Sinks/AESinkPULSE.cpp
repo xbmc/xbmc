@@ -1018,7 +1018,7 @@ inline bool CAESinkPULSE::WaitForOperation(pa_operation *op, pa_threaded_mainloo
   if (op == NULL)
     return false;
 
-  bool sucess = true;
+  bool success = true;
 
   while (pa_operation_get_state(op) == PA_OPERATION_RUNNING)
     pa_threaded_mainloop_wait(mainloop);
@@ -1026,11 +1026,11 @@ inline bool CAESinkPULSE::WaitForOperation(pa_operation *op, pa_threaded_mainloo
   if (pa_operation_get_state(op) != PA_OPERATION_DONE)
   {
     CLog::Log(LOGERROR, "PulseAudio: %s Operation failed", LogEntry);
-    sucess = false;
+    success = false;
   }
 
   pa_operation_unref(op);
-  return sucess;
+  return success;
 }
 
 bool CAESinkPULSE::SetupContext(const char *host, pa_context **context, pa_threaded_mainloop **mainloop)

@@ -38,11 +38,11 @@
 void *_aligned_malloc(size_t s, size_t alignTo) {
 
   char *pFull = (char*)malloc(s + alignTo + sizeof(char *));
-  char *pAlligned = (char *)ALIGN(((unsigned long)pFull + sizeof(char *)), alignTo);
+  char *pAligned = (char *)ALIGN(((unsigned long)pFull + sizeof(char *)), alignTo);
 
-  *(char **)(pAlligned - sizeof(char*)) = pFull;
+  *(char **)(pAligned - sizeof(char*)) = pFull;
 
-  return(pAlligned);
+  return(pAligned);
 }
 
 void _aligned_free(void *p) {

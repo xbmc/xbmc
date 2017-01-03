@@ -1162,8 +1162,8 @@ void CDVDInputStreamBluray::SetupPlayerSettings()
 
 #ifdef HAVE_LIBBLURAY_BDJ
   std::string cacheDir = CSpecialProtocol::TranslatePath("special://userdata/cache/bluray/cache");
-  std::string persitentDir = CSpecialProtocol::TranslatePath("special://userdata/cache/bluray/persistent");
-  m_dll->bd_set_player_setting_str(m_bd, 400, persitentDir.c_str());
+  std::string persistentDir = CSpecialProtocol::TranslatePath("special://userdata/cache/bluray/persistent");
+  m_dll->bd_set_player_setting_str(m_bd, 400, persistentDir.c_str());
   m_dll->bd_set_player_setting_str(m_bd, 401, cacheDir.c_str());
 #endif
 }

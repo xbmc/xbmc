@@ -63,7 +63,7 @@ namespace XBMCAddon
     ///
     copy(...);
 #else
-    bool copy(const String& strSource, const String& strDestnation);
+    bool copy(const String& strSource, const String& strDestination);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
