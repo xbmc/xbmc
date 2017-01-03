@@ -129,7 +129,7 @@ public:
 
   int IoControl(EIoControl request, void* param);
 
-  IFile *GetImplemenation() { return m_pFile; }
+  IFile *GetImplementation() { return m_pFile; }
 
   // CURL interface
   static bool Exists(const CURL& file, bool bUseCache = true);

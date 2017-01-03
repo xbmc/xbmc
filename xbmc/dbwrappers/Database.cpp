@@ -574,7 +574,7 @@ bool CDatabase::Compress(bool bForce /* =true */)
   return true;
 }
 
-void CDatabase::Interupt()
+void CDatabase::Interrupt()
 {
   m_pDS->interrupt();
 }

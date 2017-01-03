@@ -236,7 +236,7 @@ TEST(TestVariant, swap)
   EXPECT_TRUE(a.isString());
 }
 
-TEST(TestVariant, interator_array)
+TEST(TestVariant, iterator_array)
 {
   std::vector<std::string> strarray;
   strarray.push_back("string");

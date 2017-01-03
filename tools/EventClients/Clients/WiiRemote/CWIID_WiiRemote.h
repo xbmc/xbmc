@@ -90,7 +90,7 @@ public:
   bool Connect();  
 
   void SetBluetoothAddress(const char * btaddr);
-  void SetSensativity(float DeadX, float DeadY, int Samples);
+  void SetSensitivity(float DeadX, float DeadY, int Samples);
   void SetJoystickMap(const char *JoyMap);
 private:
   int  m_NumSamples;

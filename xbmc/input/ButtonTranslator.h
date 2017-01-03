@@ -79,7 +79,7 @@ public:
    \param key to search a mapping for
    \return true if a longpress mapping exists
    */
-  bool HasLonpressMapping(int window, const CKey &key);
+  bool HasLongpressMapping(int window, const CKey &key);
 
   /*! \brief Obtain the action configured for a given window and key
    \param window the window id

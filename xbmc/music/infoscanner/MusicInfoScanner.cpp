@@ -416,7 +416,7 @@ bool CMusicInfoScanner::IsScanning()
 void CMusicInfoScanner::Stop(bool wait /* = false*/)
 {
   if (m_bCanInterrupt)
-    m_musicDatabase.Interupt();
+    m_musicDatabase.Interrupt();
 
   StopThread(wait);
 }

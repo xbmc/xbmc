@@ -69,7 +69,7 @@ public:
   virtual int8_t GetExtension() const { return m_extension; }
   virtual WebSocketFrameOpcode GetOpcode() const { return m_opcode; }
   virtual bool IsControlFrame() const { return (m_valid && (m_opcode & 0x8) == 0x8); }
-  virtual bool IsMasekd() const { return m_masked; }
+  virtual bool IsMasked() const { return m_masked; }
   virtual uint64_t GetLength() const { return m_length; }
   virtual int32_t GetMask() const { return m_mask; }
   virtual const char* GetFrameData() const { return m_data; }

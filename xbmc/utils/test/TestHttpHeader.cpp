@@ -75,7 +75,7 @@
   "\r\n"
 
 // local helper function: replace substrings
-std::string strReplc(const std::string& str, const std::string& from, const std::string& to)
+std::string strReplace(const std::string& str, const std::string& from, const std::string& to)
 {
   std::string result;
   size_t prevPos = 0;
@@ -175,14 +175,14 @@ TEST(TestHttpHeader, Parse)
   EXPECT_STREQ("http://www.Example.Com", testHdr.GetValue("Location").c_str()); // case-sensitive match of value
 
   /* check support for '\n' line endings */
-  testHdr.Parse(strReplc(CHECK_HEADER_SMPL, "\r\n", "\n"));
+  testHdr.Parse(strReplace(CHECK_HEADER_SMPL, "\r\n", "\n"));
   EXPECT_TRUE(testHdr.IsHeaderDone()) << "Completed header has \"parsing not finished\" state";
   EXPECT_STRCASEEQ(CHECK_HEADER_SMPL, testHdr.GetHeader().c_str()) << "Parsed header mismatch the original header";
   EXPECT_TRUE(testHdr.IsHeaderDone()) << "Completed header has \"parsing not finished\" state";
-  testHdr.Parse(strReplc(CHECK_HEADER_L1, "\r\n", "\n"));
+  testHdr.Parse(strReplace(CHECK_HEADER_L1, "\r\n", "\n"));
   EXPECT_STRCASEEQ(CHECK_HEADER_L1, testHdr.GetHeader().c_str()) << "Parsed header mismatch the original header";
   EXPECT_TRUE(testHdr.IsHeaderDone()) << "Completed header has \"parsing not finished\" state";
-  testHdr.Parse(strReplc(CHECK_HEADER_L2, "\r\n", "\n"));
+  testHdr.Parse(strReplace(CHECK_HEADER_L2, "\r\n", "\n"));
   EXPECT_STRCASEEQ(CHECK_HEADER_L2, testHdr.GetHeader().c_str()) << "Parsed header mismatch the original header";
   EXPECT_TRUE(testHdr.IsHeaderDone()) << "Completed header has \"parsing not finished\" state";
   testHdr.Parse(CHECK_PROT_LINE_200 "\n" CHECK_CNT_TYPE_NAME ": " CHECK_CONTENT_TYPE_HTML "\r\n"); // mixed "\n" and "\r\n"
@@ -332,7 +332,7 @@ TEST(TestHttpHeader, Parse_Multiline)
   EXPECT_TRUE(testHdr.IsHeaderDone()) << "Completed header has \"parsing not finished\" state";
   EXPECT_GE(strlen("Apache/2.4.7 (Unix)     mod_wsgi/3.4 \tPython/2.7.5\t \t \tOpenSSL/1.0.1e"), testHdr.GetValue("Server").length()) << "Length of miltiline value is greater than length of original string";
   EXPECT_LE(strlen("Apache/2.4.7 (Unix) mod_wsgi/3.4 Python/2.7.5 OpenSSL/1.0.1e"), testHdr.GetValue("Server").length()) << "Length of miltiline value is less than length of trimmed original string";
-  EXPECT_STREQ("Apache/2.4.7(Unix)mod_wsgi/3.4Python/2.7.5OpenSSL/1.0.1e", strReplc(strReplc(testHdr.GetValue("Server"), " ", ""), "\t", "").c_str()) << "Multiline value with removed whitespaces does not match original string with removed whitespaces";
+  EXPECT_STREQ("Apache/2.4.7(Unix)mod_wsgi/3.4Python/2.7.5OpenSSL/1.0.1e", strReplace(strReplace(testHdr.GetValue("Server"), " ", ""), "\t", "").c_str()) << "Multiline value with removed whitespaces does not match original string with removed whitespaces";
 
   testHdr.Clear();
   testHdr.Parse(CHECK_PROT_LINE_200 "\r\n");
@@ -343,7 +343,7 @@ TEST(TestHttpHeader, Parse_Multiline)
   EXPECT_TRUE(testHdr.IsHeaderDone()) << "Completed header has \"parsing not finished\" state";
   EXPECT_GE(strlen("Apache/2.4.7 (Unix)     mod_wsgi/3.4 \tPython/2.7.5\t \t \tOpenSSL/1.0.1e"), testHdr.GetValue("Server").length()) << "Length of miltiline value is greater than length of original string";
   EXPECT_LE(strlen("Apache/2.4.7 (Unix) mod_wsgi/3.4 Python/2.7.5 OpenSSL/1.0.1e"), testHdr.GetValue("Server").length()) << "Length of miltiline value is less than length of trimmed original string";
-  EXPECT_STREQ("Apache/2.4.7(Unix)mod_wsgi/3.4Python/2.7.5OpenSSL/1.0.1e", strReplc(strReplc(testHdr.GetValue("Server"), " ", ""), "\t", "").c_str()) << "Multiline value with removed whitespaces does not match original string with removed whitespaces";
+  EXPECT_STREQ("Apache/2.4.7(Unix)mod_wsgi/3.4Python/2.7.5OpenSSL/1.0.1e", strReplace(strReplace(testHdr.GetValue("Server"), " ", ""), "\t", "").c_str()) << "Multiline value with removed whitespaces does not match original string with removed whitespaces";
 }
 
 TEST(TestHttpHeader, GetValue)

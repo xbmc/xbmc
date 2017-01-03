@@ -47,4 +47,4 @@ protected:
   static const char *m_classname;
 };
 
-typedef std::vector<CJNIInetAddress> CJNIInetAddresss;
+typedef std::vector<CJNIInetAddress> CJNIInetAddresses;

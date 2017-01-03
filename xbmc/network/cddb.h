@@ -67,7 +67,7 @@ class Xcddb
 public:
   Xcddb();
   virtual ~Xcddb();
-  void setCDDBIpAdress(const std::string& ip_address);
+  void setCDDBIpAddress(const std::string& ip_address);
   void setCacheDir(const std::string& pCacheDir );
 
 //  int queryCDinfo(int real_track_count, toc cdtoc[]);

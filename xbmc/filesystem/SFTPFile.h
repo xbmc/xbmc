@@ -60,7 +60,7 @@ public:
   CSFTPSession(const std::string &host, unsigned int port, const std::string &username, const std::string &password);
   virtual ~CSFTPSession();
 
-  sftp_file CreateFileHande(const std::string &file);
+  sftp_file CreateFileHandle(const std::string &file);
   void CloseFileHandle(sftp_file handle);
   bool GetDirectory(const std::string &base, const std::string &folder, CFileItemList &items);
   bool DirectoryExists(const char *path);

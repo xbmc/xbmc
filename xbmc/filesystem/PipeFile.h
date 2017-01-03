@@ -76,7 +76,7 @@ public:
   bool IsEmpty();
   bool IsClosed();
   
-  void SetOpenThreashold(int threashold);
+  void SetOpenThreshold(int threshold);
 
 protected:
   int64_t m_pos;

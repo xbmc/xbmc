@@ -365,7 +365,7 @@ void* CAirTunesServer::AudioOutputFunctions::audio_init(void *cls, int bits, int
   XFILE::CPipeFile *pipe=(XFILE::CPipeFile *)cls;
   const CURL pathToUrl(XFILE::PipesManager::GetInstance().GetUniquePipeName());
   pipe->OpenForWrite(pathToUrl);
-  pipe->SetOpenThreashold(300);
+  pipe->SetOpenThreshold(300);
 
   Demux_BXA_FmtHeader header;
   strncpy(header.fourcc, "BXA ", 4);

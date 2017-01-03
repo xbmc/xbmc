@@ -130,7 +130,7 @@ UInt32 CCoreAudioStream::GetDirection()
 // WARNING - don't rely on this method - the return value of
 // GetTerminalType is driver specific - the checked return
 // values are only recommendations from apple
-bool CCoreAudioStream::IsDigitalOuptut(AudioStreamID id)
+bool CCoreAudioStream::IsDigitalOutput(AudioStreamID id)
 {
   UInt32 type = GetTerminalType(id);
   // yes apple is mixing types here...

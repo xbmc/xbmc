@@ -87,7 +87,7 @@ class Pipe
     bool IsEof();
     
     int	GetAvailableRead();
-    void SetOpenThreashold(int threshold);
+    void SetOpenThreshold(int threshold);
 
   protected:
     

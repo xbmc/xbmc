@@ -911,7 +911,7 @@ CAction CButtonTranslator::GetGlobalAction(const CKey &key)
   return GetAction(-1, key, true);
 }
 
-bool CButtonTranslator::HasLonpressMapping(int window, const CKey &key)
+bool CButtonTranslator::HasLongpressMapping(int window, const CKey &key)
 {
   std::map<int, buttonMap>::const_iterator it = m_translatorMap.find(window);
   if (it != m_translatorMap.end())
@@ -940,11 +940,11 @@ bool CButtonTranslator::HasLonpressMapping(int window, const CKey &key)
   {
     // first check if we have a fallback for the window
     int fallbackWindow = GetFallbackWindow(window);
-    if (fallbackWindow > -1 && HasLonpressMapping(fallbackWindow, key))
+    if (fallbackWindow > -1 && HasLongpressMapping(fallbackWindow, key))
       return true;
 
     // fallback to default section
-    return HasLonpressMapping(-1, key);
+    return HasLongpressMapping(-1, key);
   }
 
   return false;

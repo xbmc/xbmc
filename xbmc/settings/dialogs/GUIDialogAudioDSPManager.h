@@ -53,7 +53,7 @@ namespace ActiveAE
 
     bool OnClickListAvailable(CGUIMessage &message);
     bool OnClickListActive(CGUIMessage &message);
-    bool OnClickRadioContinousSaving(CGUIMessage &message);
+    bool OnClickRadioContinuousSaving(CGUIMessage &message);
     bool OnClickApplyChanges(CGUIMessage &message);
     bool OnClickClearActiveModes(CGUIMessage &message);
 

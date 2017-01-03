@@ -126,7 +126,7 @@ namespace VIDEO
       m_itemCount = -1;
 
       // Database operations should not be canceled
-      // using Interupt() while scanning as it could
+      // using Interrupt() while scanning as it could
       // result in unexpected behaviour.
       m_bCanInterrupt = false;
 
@@ -229,7 +229,7 @@ namespace VIDEO
   void CVideoInfoScanner::Stop()
   {
     if (m_bCanInterrupt)
-      m_database.Interupt();
+      m_database.Interrupt();
 
     m_bStop = true;
   }

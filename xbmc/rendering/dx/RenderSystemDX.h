@@ -115,7 +115,7 @@ protected:
   void OnResize(unsigned int width, unsigned int height);
   void SetFullScreenInternal();
   void GetClosestDisplayModeToCurrent(IDXGIOutput* output, DXGI_MODE_DESC* outCurrentDisplayMode, bool useCached = false);
-  void CheckInterlasedStereoView(void);
+  void CheckInterlacedStereoView(void);
   void SetMaximumFrameLatency(uint8_t latency = -1) const;
 
   bool GetStereoEnabled() const;

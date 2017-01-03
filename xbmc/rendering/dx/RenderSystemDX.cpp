@@ -772,7 +772,7 @@ bool CRenderSystemDX::CreateWindowSizeDependentResources()
 
   if (!bNeedRecreate && !bNeedResize)
   {
-    CheckInterlasedStereoView();
+    CheckInterlacedStereoView();
     return true;
   }
 
@@ -1010,7 +1010,7 @@ bool CRenderSystemDX::CreateWindowSizeDependentResources()
   CPoint camPoint = { m_nBackBufferWidth * 0.5f, m_nBackBufferHeight * 0.5f };
   SetCameraPosition(camPoint, m_nBackBufferWidth, m_nBackBufferHeight);
 
-  CheckInterlasedStereoView();
+  CheckInterlacedStereoView();
 
   if (bRestoreRTView)
     m_pContext->OMSetRenderTargets(1, &m_pRenderTargetView, m_depthStencilView);
@@ -1025,7 +1025,7 @@ bool CRenderSystemDX::CreateWindowSizeDependentResources()
   return true;
 }
 
-void CRenderSystemDX::CheckInterlasedStereoView(void)
+void CRenderSystemDX::CheckInterlacedStereoView(void)
 {
   RENDER_STEREO_MODE stereoMode = g_graphicsContext.GetStereoMode();
 
