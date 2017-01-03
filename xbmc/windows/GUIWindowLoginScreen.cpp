@@ -217,7 +217,7 @@ void CGUIWindowLoginScreen::Update()
     item->SetArt("thumb", profile->getThumb());
     if (profile->getThumb().empty() || profile->getThumb() == "-")
       item->SetArt("thumb", "DefaultUser.png");
-    item->SetLabelPreformated(true);
+    item->SetLabelPreformatted(true);
     m_vecItems->Add(item);
   }
   m_viewControl.SetItems(*m_vecItems);

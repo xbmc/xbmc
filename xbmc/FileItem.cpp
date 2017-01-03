@@ -318,7 +318,7 @@ CFileItem::CFileItem(const CMediaSource& share)
   m_iBadPwdCount = share.m_iBadPwdCount;
   m_iDriveType = share.m_iDriveType;
   SetArt("thumb", share.m_strThumbnailImage);
-  SetLabelPreformated(true);
+  SetLabelPreformatted(true);
   if (IsDVD())
     GetVideoInfoTag()->m_strFileNameAndPath = share.strDiskUniqueId; // share.strDiskUniqueId contains disc unique id
   FillInMimeType(false);
@@ -1390,7 +1390,7 @@ void CFileItem::SetLabel(const std::string &strLabel)
     m_bIsParentFolder = true;
     m_bIsFolder = true;
     m_specialSort = SortSpecialOnTop;
-    SetLabelPreformated(true);
+    SetLabelPreformatted(true);
   }
   CGUIListItem::SetLabel(strLabel);
 }
@@ -2610,7 +2610,7 @@ void CFileItemList::StackFolders()
             item->m_bIsFolder = false;
             item->SetPath(dvdPath);
             item->SetLabel2("");
-            item->SetLabelPreformated(true);
+            item->SetLabelPreformatted(true);
             m_sortDescription.sortBy = SortByNone; /* sorting is now broken */
           }
         }
@@ -3098,7 +3098,7 @@ std::string CFileItem::GetFolderThumb(const std::string &folderJPG /* = "folder.
 
 std::string CFileItem::GetMovieName(bool bUseFolderNames /* = false */) const
 {
-  if (IsLabelPreformated())
+  if (IsLabelPreformatted())
     return GetLabel();
 
   if (m_pvrRecordingInfoTag)

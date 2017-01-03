@@ -147,7 +147,7 @@ bool GetDirectoryFromTxtRecords(const CZeroconfBrowser::ZeroconfService& zerocon
       else
         item->SetLabel("/");
 
-      item->SetLabelPreformated(true);
+      item->SetLabelPreformatted(true);
       //just set the default folder icon
       item->FillInDefaultIcon();
       item->m_bIsShareOrDrive=true;
@@ -183,7 +183,7 @@ bool CZeroconfDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         //now do the formatting
         std::string protocol = GetHumanReadableProtocol(it->GetType());
         item->SetLabel(it->GetName() + " (" + protocol  + ")");
-        item->SetLabelPreformated(true);
+        item->SetLabelPreformatted(true);
         //just set the default folder icon
         item->FillInDefaultIcon();
         items.Add(item);

@@ -131,7 +131,7 @@ void CGUIWindowPVRSearch::OnPrepareFileItems(CFileItemList &items)
   {
     CFileItemPtr item(new CFileItem("pvr://guide/searchresults/search/", true));
     item->SetLabel(g_localizeStrings.Get(19140)); // "Search..."
-    item->SetLabelPreformated(true);
+    item->SetLabelPreformatted(true);
     item->SetSpecialSort(SortSpecialOnTop);
     items.Add(item);
   }

@@ -500,7 +500,7 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
     {
       CFileItemPtr newTag(new CFileItem("newtag://" + videoUrl.GetType(), false));
       newTag->SetLabel(g_localizeStrings.Get(20462));
-      newTag->SetLabelPreformated(true);
+      newTag->SetLabelPreformatted(true);
       newTag->SetSpecialSort(SortSpecialOnTop);
       items.Add(newTag);
     }

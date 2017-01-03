@@ -467,7 +467,7 @@ bool CGUIWindowFileManager::Update(int iList, const std::string &strDirectory)
     pItem->SetPath("add");
     pItem->SetIconImage("DefaultAddSource.png");
     pItem->SetLabel(strLabel);
-    pItem->SetLabelPreformated(true);
+    pItem->SetLabelPreformatted(true);
     pItem->m_bIsFolder = true;
     pItem->SetSpecialSort(SortSpecialOnBottom);
     m_vecItems[iList]->Add(pItem);
@@ -488,14 +488,14 @@ bool CGUIWindowFileManager::Update(int iList, const std::string &strDirectory)
     CFileItemPtr pItem(new CFileItem("special://profile/", true));
     pItem->SetLabel(g_localizeStrings.Get(20070));
     pItem->SetArt("thumb", "DefaultFolder.png");
-    pItem->SetLabelPreformated(true);
+    pItem->SetLabelPreformatted(true);
     m_vecItems[iList]->Add(pItem);
     
     #ifdef TARGET_DARWIN_IOS
       CFileItemPtr iItem(new CFileItem("special://envhome/Documents/Inbox", true));
       iItem->SetLabel("Inbox");
       iItem->SetArt("thumb", "DefaultFolder.png");
-      iItem->SetLabelPreformated(true);
+      iItem->SetLabelPreformatted(true);
       m_vecItems[iList]->Add(iItem);
     #endif
   }
