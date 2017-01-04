@@ -2,5 +2,5 @@
 <node order="3" type="folder" visible="Library.HasContent(Role, Orchestra)">
 	<label>29993</label>
 	<icon>DefaultMusicGenres.png</icon>
-	<path>musicdb://artists/?role=Orchestra&albumartistsonly=false</path>
+	<path>musicdb://artists/?role=Orchestra&amp;albumartistsonly=false</path>
 </node>
