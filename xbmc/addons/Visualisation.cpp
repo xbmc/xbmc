@@ -63,7 +63,8 @@ void CAudioBuffer::Set(const float* psBuffer, int iSize)
 }
 
 CVisualisation::CVisualisation(AddonProps props)
-  : CAddonDll(std::move(props))
+  : CAddonDll(std::move(props)),
+    m_addonInstance(nullptr)
 {
   memset(&m_info, 0, sizeof(m_info));
 }
@@ -91,7 +92,7 @@ bool CVisualisation::Create(int x, int y, int w, int h, void *device)
     // Start the visualisation
     std::string strFile = URIUtils::GetFileName(g_application.CurrentFile());
     CLog::Log(LOGDEBUG, "Visualisation::Start()\n");
-    m_struct.Start(m_iChannels, m_iSamplesPerSec, m_iBitsPerSample, strFile.c_str());
+    m_struct.Start(m_addonInstance, m_iChannels, m_iSamplesPerSec, m_iBitsPerSample, strFile.c_str());
 
     m_hasPresets = GetPresets();
 
@@ -115,7 +116,7 @@ void CVisualisation::Start(int iChannels, int iSamplesPerSec, int iBitsPerSample
   // pass it the nr of audio channels, sample rate, bits/sample and offcourse the songname
   if (Initialized())
   {
-    m_struct.Start(iChannels, iSamplesPerSec, iBitsPerSample, strSongName.c_str());
+    m_struct.Start(m_addonInstance, iChannels, iSamplesPerSec, iBitsPerSample, strSongName.c_str());
   }
 }
 
@@ -128,7 +129,7 @@ void CVisualisation::AudioData(const float* pAudioData, int iAudioDataLength, fl
   // iFreqDataLength = length of pFreqData
   if (Initialized())
   {
-    m_struct.AudioData(pAudioData, iAudioDataLength, pFreqData, iFreqDataLength);
+    m_struct.AudioData(m_addonInstance, pAudioData, iAudioDataLength, pFreqData, iFreqDataLength);
   }
 }
 
@@ -137,7 +138,7 @@ void CVisualisation::Render()
   // ask visz. to render itself
   if (Initialized())
   {
-    m_struct.Render();
+    m_struct.Render(m_addonInstance);
   }
 }
 
@@ -146,7 +147,7 @@ void CVisualisation::Stop()
   CServiceBroker::GetActiveAE().UnregisterAudioCallback(this);
   if (Initialized())
   {
-    m_struct.Stop();
+    m_struct.Stop(m_addonInstance);
   }
 }
 
@@ -154,7 +155,7 @@ void CVisualisation::GetInfo(VIS_INFO *info)
 {
   if (Initialized())
   {
-    m_struct.GetInfo(info);
+    m_struct.GetInfo(m_addonInstance, info);
   }
 }
 
@@ -191,9 +192,9 @@ bool CVisualisation::OnAction(VIS_ACTION action, void *param)
       track.year        = tag->GetYear();
       track.rating      = tag->GetUserrating();
 
-      return m_struct.OnAction(action, &track);
+      return m_struct.OnAction(m_addonInstance, action, &track);
     }
-    return m_struct.OnAction((int)action, param);
+    return m_struct.OnAction(m_addonInstance, (int)action, param);
   }
   return false;
 }
@@ -256,7 +257,7 @@ void CVisualisation::CreateBuffers()
 
   // Get the number of buffers from the current vis
   VIS_INFO info;
-  m_struct.GetInfo(&info);
+  m_struct.GetInfo(m_addonInstance, &info);
   m_iNumBuffers = info.iSyncDelay + 1;
   m_bWantsFreq = (info.bWantsFreq != 0);
   if (m_iNumBuffers > MAX_AUDIO_BUFFERS)
@@ -319,7 +320,7 @@ bool CVisualisation::GetPresets()
 {
   m_presets.clear();
   char **presets = NULL;
-  unsigned int entries = m_struct.GetPresets(&presets);
+  unsigned int entries = m_struct.GetPresets(m_addonInstance, &presets);
 
   if (presets && entries > 0)
   {
@@ -344,7 +345,7 @@ bool CVisualisation::GetSubModules()
 {
   m_submodules.clear();
   char **modules = NULL;
-  unsigned int entries = m_struct.GetSubModules(&modules);
+  unsigned int entries = m_struct.GetSubModules(m_addonInstance, &modules);
 
   if (modules && entries > 0)
   {
@@ -373,7 +374,7 @@ bool CVisualisation::IsLocked()
     if (!Initialized())
       return false;
 
-    return m_struct.IsLocked();
+    return m_struct.IsLocked(m_addonInstance);
   }
   return false;
 }
@@ -407,7 +408,7 @@ void CVisualisation::Destroy()
 
 unsigned CVisualisation::GetPreset()
 {
-  return m_struct.GetPreset();
+  return m_struct.GetPreset(m_addonInstance);
 }
 
 std::string CVisualisation::GetPresetName()

@@ -26,16 +26,16 @@
 extern "C"
 {
   // Functions that your visualisation must implement
-  void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, const char* szSongName);
-  void Stop();
-  void AudioData(const float* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength);
-  void Render();
-  bool OnAction(long action, const void *param);
-  void GetInfo(VIS_INFO* pInfo);
-  unsigned int GetPresets(char ***presets);
-  unsigned GetPreset();
-  unsigned int GetSubModules(char ***presets);
-  bool IsLocked();
+  bool Start(void* addonInstance, int iChannels, int iSamplesPerSec, int iBitsPerSample, const char* szSongName);
+  void Stop(void* addonInstance);
+  void AudioData(void* addonInstance, const float* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength);
+  void Render(void* addonInstance);
+  bool OnAction(void* addonInstance, long action, const void *param);
+  void GetInfo(void* addonInstance, VIS_INFO* pInfo);
+  unsigned int GetPresets(void* addonInstance, char ***presets);
+  unsigned GetPreset(void* addonInstance);
+  unsigned int GetSubModules(void* addonInstance, char ***presets);
+  bool IsLocked(void* addonInstance);
 
   // function to export the above structure to XBMC
   void __declspec(dllexport) get_addon(void* ptr)

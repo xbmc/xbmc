@@ -97,17 +97,17 @@ extern "C"
 
   typedef struct KodiToAddonFuncTable_Visualisation
   {
-    void (__cdecl* Start)(int iChannels, int iSamplesPerSec, int iBitsPerSample, const char* szSongName);
-    void (__cdecl* Stop)();
-    void (__cdecl* AudioData)(const float* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength);
-    void (__cdecl* Render) ();
-    void (__cdecl* GetInfo)(VIS_INFO *info);
-    bool (__cdecl* OnAction)(long flags, const void *param);
-    int (__cdecl* HasPresets)();
-    unsigned int (__cdecl *GetPresets)(char ***presets);
-    unsigned int (__cdecl *GetPreset)();
-    unsigned int (__cdecl *GetSubModules)(char ***modules);
-    bool (__cdecl* IsLocked)();
+    bool (__cdecl* Start)(void* addonInstance, int iChannels, int iSamplesPerSec, int iBitsPerSample, const char* szSongName);
+    void (__cdecl* Stop)(void* addonInstance);
+    void (__cdecl* AudioData)(void* addonInstance, const float* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength);
+    void (__cdecl* Render) (void* addonInstance);
+    void (__cdecl* GetInfo)(void* addonInstance, VIS_INFO *info);
+    bool (__cdecl* OnAction)(void* addonInstance, long flags, const void *param);
+    int (__cdecl* HasPresets)(void* addonInstance);
+    unsigned int (__cdecl *GetPresets)(void* addonInstance, char ***presets);
+    unsigned int (__cdecl *GetPreset)(void* addonInstance);
+    unsigned int (__cdecl *GetSubModules)(void* addonInstance, char ***modules);
+    bool (__cdecl* IsLocked)(void* addonInstance);
   } KodiToAddonFuncTable_Visualisation;
 }
 
