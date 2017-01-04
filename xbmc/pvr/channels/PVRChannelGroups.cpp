@@ -220,13 +220,16 @@ bool CPVRChannelGroups::Update(bool bChannelsOnly /* = false */)
     GetGroupsFromClients();
 
   // sync channels in groups
+  std::vector<CPVRChannelGroupPtr> groups;
   {
     CSingleLock lock(m_critSection);
-    for (std::vector<CPVRChannelGroupPtr>::iterator it = m_groups.begin(); it != m_groups.end(); ++it)
-    {
-      if (bUpdateAllGroups || (*it)->IsInternalGroup())
-        bReturn = (*it)->Update() && bReturn;
-    }
+    groups = m_groups;
+  }
+
+  for (const auto &group : groups)
+  {
+    if (bUpdateAllGroups || group->IsInternalGroup())
+      bReturn = group->Update() && bReturn;
   }
 
   // persist changes
