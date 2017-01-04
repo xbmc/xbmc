@@ -104,9 +104,8 @@ namespace ADDON
 
     // track information
     std::string m_AlbumThumb;
-    
-    VIS_PROPS m_info;
+
     void* m_addonInstance;
-    KodiToAddonFuncTable_Visualisation m_struct;
+    AddonInstance_Visualisation m_struct;
   };
 }

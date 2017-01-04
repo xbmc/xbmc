@@ -36,20 +36,6 @@ extern "C"
     int iSyncDelay;
   };
 
-  struct VIS_PROPS
-  {
-    void *device;
-    int x;
-    int y;
-    int width;
-    int height;
-    float pixelRatio;
-    const char *name;
-    const char *presets;
-    const char *profile;
-    const char *submodule;
-  };
-
   enum VIS_ACTION
   { 
     VIS_ACTION_NONE = 0,
@@ -95,19 +81,46 @@ extern "C"
     int        reserved4;
   };
 
-  typedef struct KodiToAddonFuncTable_Visualisation
-  {
-    bool (__cdecl* Start)(void* addonInstance, int iChannels, int iSamplesPerSec, int iBitsPerSample, const char* szSongName);
-    void (__cdecl* Stop)(void* addonInstance);
-    void (__cdecl* AudioData)(void* addonInstance, const float* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength);
-    void (__cdecl* Render) (void* addonInstance);
-    void (__cdecl* GetInfo)(void* addonInstance, VIS_INFO *info);
-    bool (__cdecl* OnAction)(void* addonInstance, long flags, const void *param);
-    int (__cdecl* HasPresets)(void* addonInstance);
-    unsigned int (__cdecl *GetPresets)(void* addonInstance, char ***presets);
-    unsigned int (__cdecl *GetPreset)(void* addonInstance);
-    unsigned int (__cdecl *GetSubModules)(void* addonInstance, char ***modules);
-    bool (__cdecl* IsLocked)(void* addonInstance);
-  } KodiToAddonFuncTable_Visualisation;
+typedef struct AddonProps_Visualisation
+{
+  void *device;
+  int x;
+  int y;
+  int width;
+  int height;
+  float pixelRatio;
+  const char *name;
+  const char *presets;
+  const char *profile;
+  const char *submodule;
+} AddonProps_Visualisation;
+  
+typedef struct AddonToKodiFuncTable_Visualisation
+{
+  KODI_HANDLE kodiInstance;
+} AddonToKodiFuncTable_Visualisation;
+
+typedef struct KodiToAddonFuncTable_Visualisation
+{
+  bool (__cdecl* Start)(void* addonInstance, int iChannels, int iSamplesPerSec, int iBitsPerSample, const char* szSongName);
+  void (__cdecl* Stop)(void* addonInstance);
+  void (__cdecl* AudioData)(void* addonInstance, const float* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength);
+  void (__cdecl* Render) (void* addonInstance);
+  void (__cdecl* GetInfo)(void* addonInstance, VIS_INFO *info);
+  bool (__cdecl* OnAction)(void* addonInstance, long flags, const void *param);
+  int (__cdecl* HasPresets)(void* addonInstance);
+  unsigned int (__cdecl *GetPresets)(void* addonInstance, char ***presets);
+  unsigned int (__cdecl *GetPreset)(void* addonInstance);
+  unsigned int (__cdecl *GetSubModules)(void* addonInstance, char ***modules);
+  bool (__cdecl* IsLocked)(void* addonInstance);
+} KodiToAddonFuncTable_Visualisation;
+
+typedef struct AddonInstance_Visualisation
+{
+  AddonProps_Visualisation props;
+  AddonToKodiFuncTable_Visualisation toKodi;
+  KodiToAddonFuncTable_Visualisation toAddon;
+} AddonInstance_Visualisation;
+
 }
 
