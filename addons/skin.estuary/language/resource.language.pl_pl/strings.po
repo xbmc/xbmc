@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 # Addon Name: Estuary
 # Addon id: skin.estuary
-# Addon Provider: phil65, Piers
+# Addon Provider: phil65, Ichabod Fletchman
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
@@ -94,7 +94,7 @@ msgstr "Prognoza"
 
 msgctxt "#31020"
 msgid "Actions"
-msgstr "Operacje"
+msgstr "Akcje"
 
 msgctxt "#31021"
 msgid "Misc options"
@@ -334,7 +334,7 @@ msgstr "Wprowadź tekst..."
 
 msgctxt "#31104"
 msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
-msgstr "Twoja biblioteka jest pusta. W celu wypełnienia jej własnymi mediami, wejdź do sekcji \"Pliki\", dodaj źródło mediów i skonfiguruj je. Po dodaniu źródła i przeskanowaniu jego zawartości, będziesz mieć możliwość przeglądania swojej biblioteki."
+msgstr "Twoja biblioteka jest pusta. W celu wypełnienia jej własnymi mediami, przejdź do przeglądarki plików, dodaj źródło mediów i skonfiguruj je. Po dodaniu źródła i przeskanowaniu jego zawartości, będziesz mieć możliwość przeglądania swojej biblioteki."
 
 msgctxt "#31105"
 msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
@@ -350,7 +350,7 @@ msgstr "Lista szeroka"
 
 msgctxt "#31110"
 msgid "Enter files section"
-msgstr "Wejdź do sekcji Pliki"
+msgstr "Przejdź do przeglądarki plików"
 
 msgctxt "#31111"
 msgid "View your personal pictures or download one of the many image add-ons from the official repository."
@@ -374,7 +374,7 @@ msgstr "Szukaj w serwisie TheMovieDB"
 
 msgctxt "#31116"
 msgid "Remove this main menu item"
-msgstr "Usuń pozycję menu startowego"
+msgstr "Usuń tę pozycję z menu startowego"
 
 msgctxt "#31117"
 msgid "Edit nodes"
@@ -382,7 +382,7 @@ msgstr "Edytuj węzły"
 
 msgctxt "#31118"
 msgid "Enter add-on browser"
-msgstr "Wejdź do przeglądarki dodatków"
+msgstr "Przejdź do przeglądarki dodatków"
 
 msgctxt "#31119"
 msgid "You do not have any add-ons installed yet. Visit our add-on browser to browse through our collection and improve your Kodi experience."
@@ -478,7 +478,7 @@ msgstr "Korzystanie z funkcji telewizyjnych wymaga wybrania i skonfigurowania od
 
 msgctxt "#31144"
 msgid "Enter add-on browser"
-msgstr "Wejdź do przeglądarki dodatków"
+msgstr "Przejdź do przeglądarki dodatków"
 
 msgctxt "#31145"
 msgid "Search add-ons"

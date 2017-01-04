@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 # Addon Name: Estuary
 # Addon id: skin.estuary
-# Addon Provider: phil65, Piers
+# Addon Provider: phil65, Ichabod Fletchman
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
@@ -46,7 +46,7 @@ msgstr "Films aléatoires"
 
 msgctxt "#31007"
 msgid "Unwatched movies"
-msgstr "Films non regardés"
+msgstr "Films non visionnés"
 
 msgctxt "#31009"
 msgid "Download icons"
@@ -138,7 +138,7 @@ msgstr "Votre évaluation"
 
 msgctxt "#31034"
 msgid "Extended info"
-msgstr "Infos supplémentaires"
+msgstr "Infos complémentaires"
 
 msgctxt "#31035"
 msgid "Pages"
@@ -310,7 +310,7 @@ msgstr "Options de chaînes"
 
 msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
-msgstr "Choisissez votre profil d'utilisateur Kodi[CR]pour vous connecter et continuer"
+msgstr "Choisissez votre profil d'utilisateur Kodi[CR]pour vous connecter et poursuivre"
 
 msgctxt "#31099"
 msgid "IconWall"
@@ -398,7 +398,7 @@ msgstr "Définir le fournisseur météo"
 
 msgctxt "#31122"
 msgid "Unwatched TV Shows"
-msgstr "Émissions télé non regardées"
+msgstr "Émissions télé non visionnées"
 
 msgctxt "#31123"
 msgid "Same director"
@@ -498,7 +498,7 @@ msgstr "Dépôt"
 
 msgctxt "#31151"
 msgid "Unwatched music videos"
-msgstr "Vidéos musicales non regardées"
+msgstr "Vidéos musicales non visionnées"
 
 msgctxt "#31152"
 msgid "Random music videos"
@@ -534,7 +534,7 @@ msgstr "Illustration"
 
 msgctxt "#31160"
 msgid "Show media flags"
-msgstr "Afficher les drapeaux des médias"
+msgstr "Afficher les drapeaux de médias"
 
 msgctxt "#31161"
 msgid "Numeric pad"

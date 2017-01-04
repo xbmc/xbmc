@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 # Addon Name: Estuary
 # Addon id: skin.estuary
-# Addon Provider: phil65, Piers
+# Addon Provider: phil65, Ichabod Fletchman
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
@@ -458,7 +458,7 @@ msgstr "Yürütücü işlem bilgisi"
 
 msgctxt "#31139"
 msgid "Video decoder"
-msgstr "Video çözücüsü"
+msgstr "Video kod çözücü"
 
 msgctxt "#31140"
 msgid "Pixel format"

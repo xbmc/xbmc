@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 # Addon Name: Estuary
 # Addon id: skin.estuary
-# Addon Provider: phil65, Piers
+# Addon Provider: phil65, Ichabod Fletchman
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
@@ -24,9 +24,13 @@ msgctxt "#31001"
 msgid "Search..."
 msgstr "Sök..."
 
+msgctxt "#31002"
+msgid "Show media fanart as background"
+msgstr "Visa media-fanart som bakgrund"
+
 msgctxt "#31003"
 msgid "Cinema mode"
-msgstr "Bio-läge"
+msgstr "Bioläge"
 
 msgctxt "#31004"
 msgid "Change mode"
@@ -102,7 +106,7 @@ msgstr "Sortera efter"
 
 msgctxt "#31023"
 msgid "Viewtype"
-msgstr "Vytyp"
+msgstr "Vy"
 
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
@@ -116,13 +120,17 @@ msgctxt "#31029"
 msgid "Last logged in"
 msgstr "Senast inloggad"
 
+msgctxt "#31030"
+msgid "System memory usage"
+msgstr "Systemets minnesanvändning"
+
 msgctxt "#31031"
 msgid "Version info"
 msgstr "Versionsinfo"
 
 msgctxt "#31032"
 msgid "Order"
-msgstr "Ordning"
+msgstr "Sortera"
 
 msgctxt "#31033"
 msgid "Your rating"
@@ -155,6 +163,10 @@ msgstr "Kameratillverkare"
 msgctxt "#31042"
 msgid "Playlist options"
 msgstr "Alternativ för spellista"
+
+msgctxt "#31043"
+msgid "Set the type and add rules to create a smart playlist. These playlists are dynamic and include all media items from your database which apply to your chosen rules."
+msgstr "Ställ in typ och lägg till regler för att skapa en smart spellista. Dessa spellistor är dynamiska och omfattar alla mediaobjekt från databasen matchar dins valda regler."
 
 msgctxt "#31044"
 msgid "Add group"
@@ -254,7 +266,7 @@ msgstr "Roller inte tillgängliga"
 
 msgctxt "#31080"
 msgid "Ends at"
-msgstr "Slutar vid"
+msgstr "Slutar"
 
 msgctxt "#31082"
 msgid "Lyrics add-on"
@@ -300,6 +312,10 @@ msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "Välj din Kodi-användarprofil[CR]för att logga in och fortsätta"
 
+msgctxt "#31099"
+msgid "IconWall"
+msgstr "Ikonvägg"
+
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Shift"
@@ -327,6 +343,10 @@ msgstr "Lägg till videokällor och ange lämplig innehållstyp för att fylla d
 msgctxt "#31106"
 msgid "Teletext"
 msgstr "Texttv"
+
+msgctxt "#31107"
+msgid "WideList"
+msgstr "Bred lista"
 
 msgctxt "#31110"
 msgid "Enter files section"
@@ -382,7 +402,7 @@ msgstr "O-sedda TV-program"
 
 msgctxt "#31123"
 msgid "Same director"
-msgstr "Samma direktör"
+msgstr "Samma regissör"
 
 msgctxt "#31124"
 msgid "Show images on map"
@@ -412,6 +432,10 @@ msgctxt "#31130"
 msgid "Main menu-related settings: Configure the home screen to your likings."
 msgstr "Huvudmeny relaterade inställningar: Konfigurera startskärmen till ditt tycke och smak."
 
+msgctxt "#31131"
+msgid "Choose skin fanart pack"
+msgstr "Välj skal-fanart paket"
+
 msgctxt "#31132"
 msgid "min"
 msgstr "min"
@@ -427,6 +451,10 @@ msgstr "Klicka här för att se de senaste ändringarna..."
 msgctxt "#31137"
 msgid "PVR info"
 msgstr "PVR-info"
+
+msgctxt "#31138"
+msgid "Player process info"
+msgstr "Spelarprocedur info"
 
 msgctxt "#31139"
 msgid "Video decoder"
@@ -444,6 +472,10 @@ msgctxt "#31142"
 msgid "Play speed"
 msgstr "Uppspelningshastighet"
 
+msgctxt "#31143"
+msgid "You did not set up PVR yet. In order to use PVR, choose a PVR client addon and configure it. Please visit http://kodi.wiki/view/PVR to learn more."
+msgstr "Du har inte konfigurerat PVR ännu. För att kunna nyttja PVR måste du välja, och konfigurera, ett PVR-klientstillägg. Besök http://kodi.wiki/view/PVR för att lära sig mer."
+
 msgctxt "#31144"
 msgid "Enter add-on browser"
 msgstr "Ange tilläggsutforskare"
@@ -451,3 +483,59 @@ msgstr "Ange tilläggsutforskare"
 msgctxt "#31145"
 msgid "Search add-ons"
 msgstr "Sök i tillägg"
+
+msgctxt "#31148"
+msgid "Categories"
+msgstr "Kategorier"
+
+msgctxt "#31149"
+msgid "Select genre fanart pack"
+msgstr "Välj genre-fanart paket"
+
+msgctxt "#31150"
+msgid "Repository"
+msgstr "Förråd"
+
+msgctxt "#31151"
+msgid "Unwatched music videos"
+msgstr "Osedda musikvideor"
+
+msgctxt "#31152"
+msgid "Random music videos"
+msgstr "Slumpvis musikvideor"
+
+msgctxt "#31153"
+msgid "You do not have any add-ons of this type installed. Enter the add-on browser to download add-ons created by our community."
+msgstr "Du har inga tillägg av denna typ installerat. Gå till tilläggshanteraren för att hämta tillägg som skapats av vår community."
+
+msgctxt "#31154"
+msgid "Press OK to switch between locations"
+msgstr "Tryck på OK för att växla mellan platser"
+
+msgctxt "#31155"
+msgid "No bookmarks created yet."
+msgstr "Inga bokmärken skapade än."
+
+msgctxt "#31156"
+msgid "Choose background pattern"
+msgstr "Välj bakgrundsmönster"
+
+msgctxt "#31157"
+msgid "Edit categories"
+msgstr "Redigera kategorier"
+
+msgctxt "#31158"
+msgid "Touch mode"
+msgstr "Pekskärmsläge"
+
+msgctxt "#31159"
+msgid "Artwork"
+msgstr "Illustration"
+
+msgctxt "#31160"
+msgid "Show media flags"
+msgstr "Visa mediaflaggor"
+
+msgctxt "#31161"
+msgid "Numeric pad"
+msgstr "Numerisk knappsat"

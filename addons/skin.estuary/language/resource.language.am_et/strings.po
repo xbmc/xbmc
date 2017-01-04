@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 # Addon Name: Estuary
 # Addon id: skin.estuary
-# Addon Provider: phil65, Piers
+# Addon Provider: phil65, Ichabod Fletchman
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
@@ -52,6 +52,18 @@ msgctxt "#31072"
 msgid "Power Options"
 msgstr "የሀይል ምርጫዎች"
 
+msgctxt "#31089"
+msgid "Available groups"
+msgstr "ዝግጁ ቡድኖች"
+
 msgctxt "#31096"
 msgid "Local subtitle available"
 msgstr "የ አካባቢ ንዑስ አርእስት ዝግጁ ነው"
+
+msgctxt "#31106"
+msgid "Teletext"
+msgstr "ቴሌቴክስት"
+
+msgctxt "#31142"
+msgid "Play speed"
+msgstr "የ ማጫወቻ ፍጥነት"

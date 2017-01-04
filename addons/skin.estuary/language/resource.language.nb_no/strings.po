@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 # Addon Name: Estuary
 # Addon id: skin.estuary
-# Addon Provider: phil65, Piers
+# Addon Provider: phil65, Ichabod Fletchman
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
@@ -119,6 +119,10 @@ msgstr "Vis fanart"
 msgctxt "#31029"
 msgid "Last logged in"
 msgstr "Sist innlogget"
+
+msgctxt "#31030"
+msgid "System memory usage"
+msgstr "System minne bruk"
 
 msgctxt "#31031"
 msgid "Version info"
@@ -308,6 +312,10 @@ msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "Velg din Kodi brukerprofil[CR]for å logge inn og fortsette"
 
+msgctxt "#31099"
+msgid "IconWall"
+msgstr "IkonVegg"
+
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Shift"
@@ -475,3 +483,59 @@ msgstr "Skriv inn utvidelsesleseren"
 msgctxt "#31145"
 msgid "Search add-ons"
 msgstr "Søk tillegg"
+
+msgctxt "#31148"
+msgid "Categories"
+msgstr "Kategorier"
+
+msgctxt "#31149"
+msgid "Select genre fanart pack"
+msgstr "Velg sjanger fanart pakke"
+
+msgctxt "#31150"
+msgid "Repository"
+msgstr "Oppbevaringssted"
+
+msgctxt "#31151"
+msgid "Unwatched music videos"
+msgstr "Usette musikk videoer"
+
+msgctxt "#31152"
+msgid "Random music videos"
+msgstr "Tilfeldige musikk videoer"
+
+msgctxt "#31153"
+msgid "You do not have any add-ons of this type installed. Enter the add-on browser to download add-ons created by our community."
+msgstr "Du har ingen tillegg av denne typen installert. Gå til tilleggs modulen for å laste ned tillegg som er laget av vårt miljø."
+
+msgctxt "#31154"
+msgid "Press OK to switch between locations"
+msgstr "Trykk OK for å bytte mellom lokasjoner"
+
+msgctxt "#31155"
+msgid "No bookmarks created yet."
+msgstr "Ingen bokmerker opprettet enda."
+
+msgctxt "#31156"
+msgid "Choose background pattern"
+msgstr "Velg bakgrunnsmønster."
+
+msgctxt "#31157"
+msgid "Edit categories"
+msgstr "Rediger kategorier"
+
+msgctxt "#31158"
+msgid "Touch mode"
+msgstr "Touch modus"
+
+msgctxt "#31159"
+msgid "Artwork"
+msgstr "Kunstverk"
+
+msgctxt "#31160"
+msgid "Show media flags"
+msgstr "Vis media flagg"
+
+msgctxt "#31161"
+msgid "Numeric pad"
+msgstr "Talltastatur"
