@@ -1290,8 +1290,11 @@ bool CPVRManager::OpenLiveStream(const CFileItem &fileItem)
     if(m_currentFile)
       delete m_currentFile;
     m_currentFile = new CFileItem(fileItem);
+  }
 
-    CPVRChannelPtr channel(m_addons->GetPlayingChannel());
+  if (bReturn)
+  {
+    const CPVRChannelPtr channel(m_addons->GetPlayingChannel());
     if (channel)
     {
       SetPlayingGroup(channel);
@@ -1320,8 +1323,6 @@ bool CPVRManager::OpenRecordedStream(const CPVRRecordingPtr &tag)
 
 void CPVRManager::CloseStream(void)
 {
-  CSingleLock lock(m_critSection);
-
   CPVRChannelPtr channel(m_addons->GetPlayingChannel());
   if (channel)
   {
@@ -1331,8 +1332,10 @@ void CPVRManager::CloseStream(void)
     g_application.SaveFileState();
   }
 
-  m_isChannelPreview = false;
   m_addons->CloseStream();
+
+  CSingleLock lock(m_critSection);
+  m_isChannelPreview = false;
   SAFE_DELETE(m_currentFile);
 }
 
