@@ -22,6 +22,7 @@
 #include "FileItem.h"
 #include "utils/StringUtils.h"
 #include "music/tags/MusicInfoTag.h"
+#include "TextureDatabase.h"
 #include "guilib/LocalizeStrings.h"
 #include "URL.h"
 
@@ -79,6 +80,10 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url,
       author = tag->value;
   }
 
+  std::string thumb;
+  if (m_fctx->nb_chapters > 1)
+    thumb = CTextureUtils::GetWrappedImageURL(url.Get(), "music");
+
   for (size_t i=0;i<m_fctx->nb_chapters;++i)
   {
     tag=nullptr;
@@ -125,6 +130,8 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url,
     item->m_lEndOffset *= 75;
     item->GetMusicInfoTag()->SetDuration((item->m_lEndOffset-item->m_lStartOffset)/75);
     item->SetProperty("item_start", item->m_lStartOffset);
+    if (!thumb.empty())
+      item->SetArt("thumb", thumb);
     items.Add(item);
   }
 
