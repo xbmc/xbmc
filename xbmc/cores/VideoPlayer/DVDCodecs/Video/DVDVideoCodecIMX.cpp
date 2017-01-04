@@ -1391,7 +1391,7 @@ void CIMXContext::OnResetDisplay()
 
 bool CIMXContext::TaskRestart()
 {
-  CLog::Log(LOGINFO, "iMX : %s - restarting IMX rendererer\n", __FUNCTION__);
+  CLog::Log(LOGINFO, "iMX : %s - restarting IMX renderer\n", __FUNCTION__);
   // Stop the ipu thread
   Stop();
   MemMap();
@@ -1966,7 +1966,7 @@ bool CIMXContext::CaptureDisplay(unsigned char *&buffer, int iWidth, int iHeight
     CLog::Log(LOGERROR, "iMX : Error allocating capture buffer\n");
 
   if (m_bufferCapture && g2d_free(m_bufferCapture))
-    CLog::Log(LOGERROR, "iMX : Error while freeing capture buuffer\n");
+    CLog::Log(LOGERROR, "iMX : Error while freeing capture buffer\n");
 
   if (m_g2dHandle && !g2d_close(m_g2dHandle))
     m_g2dHandle = NULL;

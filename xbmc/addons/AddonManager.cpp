@@ -237,7 +237,7 @@ static bool LoadManifest(std::set<std::string>& system, std::set<std::string>& o
   auto root = doc.RootElement();
   if (!root || root->ValueStr() != "addons")
   {
-    CLog::Log(LOGERROR, "ADDONS: malformatted manifest");
+    CLog::Log(LOGERROR, "ADDONS: malformed manifest");
     return false;
   }
 
