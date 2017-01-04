@@ -2,5 +2,5 @@
 <node order="12" type="folder">
 	<label>38045</label>
 	<icon>DefaultMusicArtists.png</icon>
-	<path>musicdb://artists/?roleid=-1000&albumartistsonly=false</path>
+	<path>musicdb://artists/?roleid=-1000&amp;albumartistsonly=false</path>
 </node>
