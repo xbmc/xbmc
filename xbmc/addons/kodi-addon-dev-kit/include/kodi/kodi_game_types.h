@@ -21,10 +21,10 @@
 #define KODI_GAME_TYPES_H_
 
 /* current game API version */
-#define GAME_API_VERSION                "1.0.28"
+#define GAME_API_VERSION                "1.0.29"
 
 /* min. game API version */
-#define GAME_MIN_API_VERSION            "1.0.28"
+#define GAME_MIN_API_VERSION            "1.0.29"
 
 #include <stddef.h>
 #include <stdint.h>
@@ -476,7 +476,7 @@ typedef struct KodiToAddonFuncTable_Game
   GAME_ERROR  (__cdecl* Serialize)(uint8_t*, size_t);
   GAME_ERROR  (__cdecl* Deserialize)(const uint8_t*, size_t);
   GAME_ERROR  (__cdecl* CheatReset)(void);
-  GAME_ERROR  (__cdecl* GetMemory)(GAME_MEMORY, const uint8_t**, size_t*);
+  GAME_ERROR  (__cdecl* GetMemory)(GAME_MEMORY, uint8_t**, size_t*);
   GAME_ERROR  (__cdecl* SetCheat)(unsigned int, bool, const char*);
 } KodiToAddonFuncTable_Game;
 
