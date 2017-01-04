@@ -170,7 +170,7 @@ msgstr "Cambiar el skin · Seleccionar idioma y zona · Cambiar la visualizació
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
-msgstr "Selecciona tu perfil de usuario de Kodi[CR]para ingresar y continuar"
+msgstr "Seleccione su perfil de usuario de Kodi[CR]para ingresar y continuar"
 
 msgctxt "#31550"
 msgid "Backgrounds"

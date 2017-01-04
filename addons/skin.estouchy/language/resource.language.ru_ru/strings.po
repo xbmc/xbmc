@@ -144,6 +144,10 @@ msgctxt "#31303"
 msgid "Data provider"
 msgstr "Источник данных"
 
+msgctxt "#31309"
+msgid "System Memory Used:"
+msgstr "Использование памяти:"
+
 msgctxt "#31320"
 msgid "Last Logged In"
 msgstr "Последний вход"

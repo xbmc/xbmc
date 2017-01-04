@@ -36,6 +36,10 @@ msgctxt "#31009"
 msgid "Working..."
 msgstr "በመስራት ላይ "
 
+msgctxt "#31011"
+msgid "Recent"
+msgstr "የ ቅርብ ጊዜ"
+
 msgctxt "#31013"
 msgid "Movies"
 msgstr "ሙቪዎች"
@@ -56,6 +60,10 @@ msgctxt "#31038"
 msgid "Login"
 msgstr "መግቢያ"
 
+msgctxt "#31039"
+msgid "Updated:"
+msgstr "ተሻሽሏል:"
+
 msgctxt "#31044"
 msgid "FAST FORWARD"
 msgstr "ወደ ፊት ማሳለፊያ"
@@ -63,6 +71,10 @@ msgstr "ወደ ፊት ማሳለፊያ"
 msgctxt "#31045"
 msgid "REWIND"
 msgstr "ወደ ኋላ ማሳለፊያ"
+
+msgctxt "#31046"
+msgid "Play speed"
+msgstr "የ ማጫወቻ ፍጥነት"
 
 msgctxt "#31049"
 msgid "End Time"
@@ -120,6 +132,10 @@ msgctxt "#31303"
 msgid "Data provider"
 msgstr "ዳታ አቅራቢ "
 
+msgctxt "#31309"
+msgid "System Memory Used:"
+msgstr "የ ተጠቀሙት የ ስርአቱ ማስታወሻ"
+
 msgctxt "#31320"
 msgid "Last Logged In"
 msgstr "መጨረሻ የገባው"
@@ -136,6 +152,10 @@ msgctxt "#31356"
 msgid "Download Subtitles"
 msgstr "ንዑስ አርእስቶች ማውረጃ "
 
+msgctxt "#31358"
+msgid "Teletext"
+msgstr "ቴሌቴክስት"
+
 msgctxt "#31390"
 msgid "Skin default"
 msgstr "መደበኛ "
@@ -148,6 +168,14 @@ msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "ይምረጡ የ እርስዎን  Kodi ተጠቃሚ ገጽታ[CR]ለ መግባት እና ለመቀጠል"
 
+msgctxt "#31548"
+msgid "Home menu"
+msgstr "የ ቤት ዝርዝር"
+
+msgctxt "#31549"
+msgid "Home Add-ons"
+msgstr "የ ቤት ተጨማ-ሪዎች"
+
 msgctxt "#31550"
 msgid "Backgrounds"
 msgstr "መደቦች "
@@ -156,9 +184,33 @@ msgctxt "#31551"
 msgid "Add-on Shortcut"
 msgstr "አቋራጭ መጨ-መሪያ "
 
+msgctxt "#31552"
+msgid "SYNC"
+msgstr "ማስማሚያ"
+
+msgctxt "#31553"
+msgid "Use Custom Background"
+msgstr "መደብ ማስተካከያ ይጠቀሙ"
+
+msgctxt "#31554"
+msgid "Background:"
+msgstr "መደብ:"
+
 msgctxt "#31556"
 msgid "Live TV"
 msgstr "ቲቪ በቀጥታ "
+
+msgctxt "#31557"
+msgid "Hide video background"
+msgstr "የ ቪዲዮ መደብ መደበቂያ"
+
+msgctxt "#31559"
+msgid "Channel settings"
+msgstr "ጣቢያዎች ማሰናጃ"
+
+msgctxt "#31560"
+msgid "Available groups"
+msgstr "ዝግጁ ቡድኖች"
 
 msgctxt "#31561"
 msgid "Add Group"
@@ -171,3 +223,19 @@ msgstr "ቡድን እንደገና መሰየሚያ"
 msgctxt "#31563"
 msgid "Delete Group"
 msgstr "ቡድን ማጥፊያ"
+
+msgctxt "#31564"
+msgid "Show hidden"
+msgstr "የ ተደበቁ ማሳያ"
+
+msgctxt "#31565"
+msgid "Show deleted"
+msgstr "የ ጠፉ ማሳያ"
+
+msgctxt "#31900"
+msgid "First Run"
+msgstr "መጀመሪያ ማስኬጃ"
+
+msgctxt "#31904"
+msgid "Now Playing Title..."
+msgstr "አርእስት በ ማጫወት ላይ..."

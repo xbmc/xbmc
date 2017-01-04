@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="skin.estouchy" version="1.1.3" name="Estouchy" provider-name="Team Kodi">
+<addon id="skin.estouchy" version="1.1.4" name="Estouchy" provider-name="Team Kodi">
 	<requires>
 		<import addon="xbmc.gui" version="5.12.0"/>
 	</requires>
@@ -8,6 +8,8 @@
 		<res width="1706" height="960" aspect="16:9" default="true" folder="xml"/>
 	</extension>
 	<extension point="xbmc.addon.metadata">
+		<summary lang="af_ZA">Oortreksel vir raakskerm toestelle</summary>
+		<summary lang="am_ET">ለ ተችስክሪን አካሎች ቆዳ</summary>
 		<summary lang="bg_BG">Облик за устройства с екран чувствителен на допир</summary>
 		<summary lang="ca_ES">Aparença per als dispositius amb pantalla tàctil</summary>
 		<summary lang="cs_CZ">Skin pro dotyková zařízení</summary>
@@ -44,6 +46,7 @@
 		<summary lang="tr_TR">Dokunmatik ekranlı aygıtlar için dış görünüm</summary>
 		<summary lang="zh_CN">针对触屏设备的皮肤</summary>
 		<summary lang="zh_TW">為具有觸控螢幕的裝置所製作的佈景主題</summary>
+		<description lang="af_ZA">Oortreksel ontwerp om op raakskerm toestelle soos tablette en slimfone te gebruik</description>
 		<description lang="bg_BG">Обликът е разработен за ползване на устройства, с екран чувствителен на допир като таблет или телефон.</description>
 		<description lang="ca_ES">Aparença dissenyada perquè s'utilitzi en dispositius amb pantalla tàctil com taules i telèfons intel·ligents</description>
 		<description lang="cs_CZ">Skin navržený pro zařízení s dotykovou obrazovkou, jako jsou tablety a smartphony.</description>

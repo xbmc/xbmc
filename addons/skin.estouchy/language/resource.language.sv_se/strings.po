@@ -144,6 +144,10 @@ msgctxt "#31303"
 msgid "Data provider"
 msgstr "Dataleverantör"
 
+msgctxt "#31309"
+msgid "System Memory Used:"
+msgstr "Systemets minnesanvändning:"
+
 msgctxt "#31320"
 msgid "Last Logged In"
 msgstr "Sist inloggad"
@@ -188,9 +192,37 @@ msgctxt "#31407"
 msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
 msgstr "Hantera dina installerade tillägg · Bläddra efter och installera tillägg från kodi.tv · Ställ in tilläggsinställningar"
 
+msgctxt "#31408"
+msgid "Configure actions that can be used during playback · Configure how media content is played"
+msgstr "Konfigurera åtgärder som kan användas under uppspelning · Konfigurera hur medieinnehåll spelas"
+
+msgctxt "#31409"
+msgid "Configure library sources · Show the media lists display content · Configure how library lists are navigated"
+msgstr "Konfigurera bibliotekskällor · Visa medielistor displayinnehåll · Konfigurera hur bibliotekslistor navigeras"
+
+msgctxt "#31410"
+msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
+msgstr "Konfigurera skal · Konfigurera plats · Konfigurera kontroll · Konfigurera skärmsläckare · Konfigurera huvudlåset"
+
+msgctxt "#31411"
+msgid "Configure your profiles · Set locking options · Enable login screen"
+msgstr "Konfigurera profiler · Ställ in låsalternativ · Aktivera inloggningsskärmen"
+
+msgctxt "#31412"
+msgid "Display system information · Hardware statistics · Check storage availability · View network configuration"
+msgstr "Visa systeminformation · Statistik hårdvara · Kontrollera lagringstillgängligheten · Visa nätverkskonfiguration"
+
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Välj din Kodi-användarprofil[CR]för att logga in och fortsätta"
+
+msgctxt "#31548"
+msgid "Home menu"
+msgstr "Hem meny"
+
+msgctxt "#31549"
+msgid "Home Add-ons"
+msgstr "Hem Tillägg"
 
 msgctxt "#31550"
 msgid "Backgrounds"

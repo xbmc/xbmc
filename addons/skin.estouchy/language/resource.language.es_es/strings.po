@@ -216,6 +216,14 @@ msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Selecciona tu usuario [CR] y continua"
 
+msgctxt "#31548"
+msgid "Home menu"
+msgstr "Menú de inicio"
+
+msgctxt "#31549"
+msgid "Home Add-ons"
+msgstr "Inicio Add-ons"
+
 msgctxt "#31550"
 msgid "Backgrounds"
 msgstr "Fondos"
