@@ -262,6 +262,7 @@ void CWinRenderer::AddVideoPictureHW(DVDVideoPicture &picture, int index)
     SAFE_RELEASE(buf->pic);
     buf->pic = m_processor->Convert(picture);
     buf->frameIdx = m_frameIdx;
+    buf->pictureFlags = picture.iFlags;
     m_frameIdx += 2;
   }
   else if (picture.format == RENDER_FMT_DXVA)
@@ -1118,7 +1119,8 @@ bool CWinRenderer::NeedBuffer(int idx)
     DXVABuffer** buffers = reinterpret_cast<DXVABuffer**>(m_VideoBuffers);
 
     int numPast = m_processor->PastRefs();
-    if (buffers[idx] && buffers[idx]->pic)
+    if (buffers[idx] && buffers[idx]->pic &&
+        (buffers[idx]->pictureFlags & DVP_FLAG_INTERLACED))
     {
       if (buffers[idx]->frameIdx + numPast*2 >= buffers[m_iYV12RenderBuffer]->frameIdx)
         return true;
