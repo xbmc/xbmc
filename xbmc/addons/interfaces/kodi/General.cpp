@@ -35,19 +35,19 @@ using namespace kodi; // addon-dev-kit namespace
 namespace ADDON
 {
 
-void Interface_General::Init(AddonGlobalInterface* interface)
+void Interface_General::Init(AddonGlobalInterface* addonInterface)
 {
-  interface->toKodi.kodi = (AddonToKodiFuncTable_kodi*)malloc(sizeof(AddonToKodiFuncTable_kodi));
-  interface->toKodi.kodi->get_setting = get_setting;
-  interface->toKodi.kodi->open_settings_dialog = open_settings_dialog;
+  addonInterface->toKodi.kodi = (AddonToKodiFuncTable_kodi*)malloc(sizeof(AddonToKodiFuncTable_kodi));
+  addonInterface->toKodi.kodi->get_setting = get_setting;
+  addonInterface->toKodi.kodi->open_settings_dialog = open_settings_dialog;
 }
 
-void Interface_General::DeInit(AddonGlobalInterface* interface)
+void Interface_General::DeInit(AddonGlobalInterface* addonInterface)
 {
-  if (interface->toKodi.kodi)
+  if (addonInterface->toKodi.kodi)
   {
-    free(interface->toKodi.kodi);
-    interface->toKodi.kodi = nullptr;
+    free(addonInterface->toKodi.kodi);
+    addonInterface->toKodi.kodi = nullptr;
   }
 }
 
