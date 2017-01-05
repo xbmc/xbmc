@@ -66,15 +66,15 @@ void CAudioBuffer::Set(const float* psBuffer, int iSize)
 
 CVisualisation::CVisualisation(ADDON::AddonDllPtr addon)
   : CAddonInstanceInfo(addon),
-    m_addonInstance(nullptr)
+    m_addonInstance(nullptr),
+    m_active(false)
 {
   memset(&m_struct, 0, sizeof(m_struct));
 }
 
 bool CVisualisation::Create(int x, int y, int w, int h, void *device)
 {
-  bool ret = false;
-
+  m_active = false;
   m_name = Name();
   m_presetsPath = CSpecialProtocol::TranslatePath(Path());
   m_profilePath = CSpecialProtocol::TranslatePath(Profile());
@@ -96,13 +96,13 @@ bool CVisualisation::Create(int x, int y, int w, int h, void *device)
   m_struct.toKodi.transfer_preset = transfer_preset;
 
   if (m_addon->CreateInstance(ADDON_INSTANCE_VISUALIZATION, ID(), &m_struct, reinterpret_cast<KODI_HANDLE*>(&m_addonInstance)) != ADDON_STATUS_OK)
-    return ret;
+    return m_active;
 
   // Start the visualisation
   std::string strFile = URIUtils::GetFileName(g_application.CurrentFile());
   CLog::Log(LOGDEBUG, "Visualisation::Start()");
   if (m_struct.toAddon.Start)
-    ret = m_struct.toAddon.Start(m_addonInstance, m_iChannels, m_iSamplesPerSec, m_iBitsPerSample, strFile.c_str());
+    m_active = m_struct.toAddon.Start(m_addonInstance, m_iChannels, m_iSamplesPerSec, m_iBitsPerSample, strFile.c_str());
 
   m_hasPresets = GetPresets();
 
@@ -110,7 +110,7 @@ bool CVisualisation::Create(int x, int y, int w, int h, void *device)
 
   CServiceBroker::GetActiveAE().RegisterAudioCallback(this);
 
-  return ret;
+  return m_active;
 }
 
 void CVisualisation::AudioData(const float* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength)
@@ -139,9 +139,10 @@ void CVisualisation::Stop()
 {
   CServiceBroker::GetActiveAE().UnregisterAudioCallback(this);
 
-  if (m_struct.toAddon.Stop)
+  if (m_active && m_struct.toAddon.Stop)
   {
     m_struct.toAddon.Stop(m_addonInstance);
+    m_active = false;
   }
 
   m_addon->DestroyInstance(ID());
@@ -151,7 +152,7 @@ void CVisualisation::Stop()
 
 bool CVisualisation::OnAction(VIS_ACTION action, void *param)
 {
-  if (!m_struct.toAddon.OnAction)
+  if (!m_active || !m_struct.toAddon.OnAction)
     return false;
 
   // see if vis wants to handle the input

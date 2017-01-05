@@ -108,5 +108,6 @@ namespace ADDON
 
     kodi::addon::CInstanceVisualization* m_addonInstance;
     AddonInstance_Visualization m_struct;
+    bool m_active;
   };
 }

@@ -389,7 +389,7 @@ bool CAddonDll::CheckAPIVersion(int type)
 /*! @todo there comes further changes until it is final! */
 ADDON_STATUS CAddonDll::CreateInstance(int instanceType, const std::string& instanceID, KODI_HANDLE instance, KODI_HANDLE* addonInstance)
 {
-  ADDON_STATUS status = ADDON_STATUS_PERMANENT_FAILURE;
+  ADDON_STATUS status = ADDON_STATUS_OK;
 
   if (!m_initialized)
     status = Create(instance);
