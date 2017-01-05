@@ -138,7 +138,7 @@ if(ADDON_SRC_PREFIX)
 endif()
 
 if(NOT APP_LIB_DIR)
-  set(APP_LIB_DIR "${ADDON_DEPENDS_PATH}/lib/kodi")
+  set(APP_LIB_DIR "${ADDON_DEPENDS_PATH}/lib/${APP_NAME_LC}")
 else()
   file(TO_CMAKE_PATH "${APP_LIB_DIR}" APP_LIB_DIR)
 endif()

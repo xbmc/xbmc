@@ -47,8 +47,8 @@ function(check_install_permissions install_dir have_perms)
   # param[in] install_dir directory to check for write permissions
   # param[out] have_perms wether we have permissions to install to install_dir
 
-  set(testfile_lib ${install_dir}/lib/kodi/.cmake-inst-test)
-  set(testfile_share ${install_dir}/share/kodi/.cmake-inst-test)
+  set(testfile_lib ${install_dir}/lib/${APP_NAME_LC}/.cmake-inst-test)
+  set(testfile_share ${install_dir}/share/${APP_NAME_LC}/.cmake-inst-test)
   get_filename_component(testdir_lib ${testfile_lib} DIRECTORY)
   get_filename_component(testdir_share ${testfile_share} DIRECTORY)
 
