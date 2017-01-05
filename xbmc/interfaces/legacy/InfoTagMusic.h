@@ -121,6 +121,30 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_InfoTagMusic
+      /// @brief \python_func{ getMediaType() }
+      ///-----------------------------------------------------------------------
+      /// Get the media type of the music item.
+      ///
+      /// @return [string] media type
+      ///
+      /// Available strings about media type for music:
+      /// | String         | Description                                       |
+      /// |---------------:|:--------------------------------------------------|
+      /// | artist         | If it is defined as an artist
+      /// | album          | If it is defined as an album
+      /// | song           | If it is defined as a song
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v18 New function added.
+      ///
+      getMediaType();
+#else
+      String getMediaType();
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_InfoTagMusic
       /// @brief \python_func{ getArtist() }
       ///-----------------------------------------------------------------------
       /// Returns the artist from music as string if present.
