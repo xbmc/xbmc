@@ -1,0 +1,51 @@
+package @APP_PACKAGE@.interfaces;
+
+import android.net.nsd.NsdManager;
+import android.net.nsd.NsdServiceInfo;
+import android.util.Log;
+
+public class XBMCNsdManagerDiscoveryListener implements NsdManager.DiscoveryListener
+{
+  native void _onDiscoveryStarted (String serviceType);
+  native void _onDiscoveryStopped (String serviceType);
+  native void _onServiceFound (NsdServiceInfo serviceInfo);
+  native void _onServiceLost (NsdServiceInfo serviceInfo);
+  native void _onStartDiscoveryFailed (String serviceType, int errorCode);
+  native void _onStopDiscoveryFailed (String serviceType, int errorCode);
+
+  @Override
+  public void onDiscoveryStarted (String serviceType)
+  {
+    _onDiscoveryStarted(serviceType);
+  }
+
+  @Override
+  public void onDiscoveryStopped (String serviceType)
+  {
+    _onDiscoveryStopped(serviceType);
+  }
+  
+  @Override
+  public void onServiceFound (NsdServiceInfo serviceInfo)
+  {
+    _onServiceFound  (serviceInfo);
+  }
+
+  @Override
+  public void onServiceLost (NsdServiceInfo serviceInfo)
+  {
+    _onServiceLost  (serviceInfo);
+  }
+
+  @Override
+  public void onStartDiscoveryFailed (String serviceType, int errorCode)
+  {
+    _onStartDiscoveryFailed(serviceType, errorCode);
+  }
+  
+  @Override
+  public void onStopDiscoveryFailed (String serviceType, int errorCode)
+  {
+    _onStopDiscoveryFailed(serviceType, errorCode);
+  }
+}

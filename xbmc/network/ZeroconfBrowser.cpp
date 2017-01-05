@@ -28,6 +28,8 @@
 #elif defined(TARGET_DARWIN)
 //on osx use the native implementation
 #include "osx/ZeroconfBrowserOSX.h"
+#elif defined(TARGET_ANDROID)
+#include "android/ZeroconfBrowserAndroid.h"
 #elif defined(HAS_MDNS)
 #include "mdns/ZeroconfBrowserMDNS.h"
 #endif
@@ -154,6 +156,9 @@ CZeroconfBrowser*  CZeroconfBrowser::GetInstance()
       smp_instance = new CZeroconfBrowserOSX;
 #elif defined(HAS_AVAHI)
       smp_instance  = new CZeroconfBrowserAvahi;
+#elif defined(TARGET_ANDROID)
+      // WIP
+      smp_instance  = new CZeroconfBrowserAndroid;
 #elif defined(HAS_MDNS)
       smp_instance  = new CZeroconfBrowserMDNS;
 #endif

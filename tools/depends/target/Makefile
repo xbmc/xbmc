@@ -42,7 +42,7 @@ endif
 
 ifeq ($(OS),android)
   EXCLUDED_DEPENDS = libcec libusb
-  DEPENDS += mdnsresponder libuuid libandroidjni
+  DEPENDS += libuuid libandroidjni
   CROSSGUID_DEPS = libuuid
 endif
 

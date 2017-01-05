@@ -34,6 +34,8 @@
 #elif defined(TARGET_DARWIN)
 //on osx use the native implementation
 #include "osx/ZeroconfOSX.h"
+#elif defined(TARGET_ANDROID)
+#include "android/ZeroconfAndroid.h"
 #elif defined(HAS_MDNS)
 #include "mdns/ZeroconfMDNS.h"
 #endif
@@ -150,6 +152,8 @@ CZeroconf*  CZeroconf::GetInstance()
     smp_instance = new CZeroconfOSX;
 #elif defined(HAS_AVAHI)
     smp_instance  = new CZeroconfAvahi;
+#elif defined(TARGET_ANDROID)
+    smp_instance  = new CZeroconfAndroid;
 #elif defined(HAS_MDNS)
     smp_instance  = new CZeroconfMDNS;
 #endif
