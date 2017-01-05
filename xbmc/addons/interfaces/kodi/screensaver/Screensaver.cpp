@@ -17,7 +17,9 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#include "ScreenSaver.h"
+
+#include "Screensaver.h"
+
 #include "ServiceBroker.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/GraphicContext.h"

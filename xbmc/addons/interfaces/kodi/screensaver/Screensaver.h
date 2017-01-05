@@ -19,7 +19,7 @@
  *
  */
 
-#include "AddonDll.h"
+#include "addons/AddonDll.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/screensaver/Screensaver.h"
 
 namespace ADDON

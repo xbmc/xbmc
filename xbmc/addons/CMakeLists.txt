@@ -26,7 +26,6 @@ set(SOURCES Addon.cpp
             Repository.cpp
             RepositoryUpdater.cpp
             Scraper.cpp
-            ScreenSaver.cpp
             Service.cpp
             Skin.cpp
             UISoundsResource.cpp
@@ -66,7 +65,6 @@ set(HEADERS Addon.h
             RepositoryUpdater.h
             Resource.h
             Scraper.h
-            ScreenSaver.h
             Service.h
             Skin.h
             UISoundsResource.h
