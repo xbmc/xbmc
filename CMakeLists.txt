@@ -77,6 +77,34 @@ endif()
 core_find_git_rev(APP_SCMID FULL)
 core_find_versions()
 
+# add-on xml's
+# find all folders conains a addon.xml.in
+file(GLOB ADDON_XML_IN_FILE ${CMAKE_SOURCE_DIR}/addons/*/addon.xml.in)
+foreach(loop_var ${ADDON_XML_IN_FILE})
+  list(GET loop_var 0 xml_name)
+
+  string(REPLACE "/addon.xml.in" "" xml_name ${xml_name})
+  string(REPLACE "${CORE_SOURCE_DIR}/" "" xml_name ${xml_name})
+
+  list(APPEND ADDON_XML_DEPENDS "${CORE_SOURCE_DIR}/${xml_name}/addon.xml.in")
+  list(APPEND ADDON_XML_OUTPUTS "${CMAKE_BINARY_DIR}/${xml_name}/addon.xml")
+
+  # Read content of add-on folder to have on install
+  file(GLOB ADDON_FILES "${CORE_SOURCE_DIR}/${xml_name}/*")
+  foreach(loop_var ${ADDON_FILES})
+    if(loop_var MATCHES "addon.xml.in")
+      string(REPLACE "addon.xml.in" "addon.xml" loop_var ${loop_var})
+    endif()
+
+    list(GET loop_var 0 file_name)
+    string(REPLACE "${CORE_SOURCE_DIR}/" "" file_name ${file_name})
+    list(APPEND ADDON_INSTALL_DATA "${file_name}")
+
+    unset(file_name)
+  endforeach()
+  unset(xml_name)
+endforeach()
+
 # Dynamically loaded libraries built with the project
 add_custom_target(${APP_NAME_LC}-libraries)
 set(LIBRARY_FILES "" CACHE STRING "" FORCE)
@@ -229,8 +257,7 @@ endif()
 
 # Compile Info
 add_custom_command(OUTPUT ${CORE_BUILD_DIR}/xbmc/CompileInfo.cpp
-                          ${CMAKE_BINARY_DIR}/addons/xbmc.addon/addon.xml
-                          ${CMAKE_BINARY_DIR}/addons/kodi.global.gui/addon.xml
+                          ${ADDON_XML_OUTPUTS}
                    COMMAND ${CMAKE_COMMAND} -DCORE_SOURCE_DIR=${CMAKE_SOURCE_DIR}
                                             -DCORE_SYSTEM_NAME=${CORE_SYSTEM_NAME}
                                             -DCORE_BUILD_DIR=${CORE_BUILD_DIR}
@@ -240,12 +267,9 @@ add_custom_command(OUTPUT ${CORE_BUILD_DIR}/xbmc/CompileInfo.cpp
                                             -Dprefix=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
                                             -P ${CMAKE_SOURCE_DIR}/cmake/scripts/common/GenerateVersionedFiles.cmake
                    DEPENDS ${CMAKE_SOURCE_DIR}/version.txt
-                           ${CMAKE_SOURCE_DIR}/addons/xbmc.addon/addon.xml.in
-                           ${CMAKE_SOURCE_DIR}/addons/kodi.global.gui/addon.xml.in
+                           ${ADDON_XML_DEPENDS}
                            ${CMAKE_SOURCE_DIR}/xbmc/CompileInfo.cpp.in)
-list(APPEND install_data addons/xbmc.addon/addon.xml)
-list(APPEND install_data addons/xbmc.json/addon.xml)
-list(APPEND install_data addons/kodi.global.gui/addon.xml)
+list(APPEND install_data ${ADDON_INSTALL_DATA})
 add_library(compileinfo OBJECT ${CORE_BUILD_DIR}/xbmc/CompileInfo.cpp)
 set_target_properties(compileinfo PROPERTIES FOLDER "Build Utilities")
 target_compile_options(compileinfo PRIVATE "${SYSTEM_DEFINES}")

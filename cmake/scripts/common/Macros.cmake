@@ -582,7 +582,7 @@ function(core_find_git_rev stamp)
   endif()
 endfunction()
 
-# Parses version.txt and libKODI_guilib.h and sets variables
+# Parses version.txt and versions.h and sets variables
 # used to construct dirs structure, file naming, API version, etc.
 #
 # The following variables are set from version.txt:
@@ -598,9 +598,7 @@ endfunction()
 #   APP_ADDON_API - the addon API version in the form of 16.9.702
 #   FILE_VERSION - file version in the form of 16,9,702,0 - Windows only
 #
-# The following variables are set from libKODI_guilib.h:
-#   guilib_version - current ADDONGUI API version
-#   guilib_version_min - minimal ADDONGUI API version
+# About for addon's set variables see defines in "versions.h"
 macro(core_find_versions)
   # kodi-addons project also calls this macro and uses CORE_SOURCE_DIR
   # to point to core base dir
@@ -626,22 +624,29 @@ macro(core_find_versions)
     string(TOLOWER ${APP_VERSION_TAG} APP_VERSION_TAG_LC)
   endif()
   string(REPLACE "." "," FILE_VERSION ${APP_ADDON_API}.0)
-  file(STRINGS ${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/libKODI_guilib.h guilib_version REGEX "^.*GUILIB_API_VERSION (.*)$")
-  string(REGEX REPLACE ".*\"(.*)\"" "\\1" guilib_version ${guilib_version})
-  file(STRINGS ${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/libKODI_guilib.h guilib_version_min REGEX "^.*GUILIB_MIN_API_VERSION (.*)$")
-  string(REGEX REPLACE ".*\"(.*)\"" "\\1" guilib_version_min ${guilib_version_min})
+
+  # Set defines used on addon.xml.in and readed from versions.h
+  # To set versions about add-on parts automatic
+  # This part is near equal with them on "AddonHelpers.cmake", except the place of versions.h
+  file(STRINGS ${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/versions.h BIN_ADDON_PARTS)
+  foreach(loop_var ${BIN_ADDON_PARTS})
+    string(FIND "${loop_var}" "#define" matchres)
+    if("${matchres}" EQUAL 0)
+      string(REGEX MATCHALL "[A-Z0-9._]+|[A-Z0-9._]+$" loop_var "${loop_var}")
+      list(GET loop_var 0 include_name)
+      list(GET loop_var 1 include_version)
+      string(REGEX REPLACE ".*\"(.*)\"" "\\1" ${include_name} ${include_version})
+    endif()
+  endforeach(loop_var)
+
   # unset variables not used anywhere else
   unset(version_list)
   unset(APP_APP_NAME)
+  unset(BIN_ADDON_PARTS)
 
   # bail if we can't parse version.txt
   if(NOT DEFINED APP_VERSION_MAJOR OR NOT DEFINED APP_VERSION_MINOR)
     message(FATAL_ERROR "Could not determine app version! Make sure that ${CORE_SOURCE_DIR}/version.txt exists")
-  endif()
-
-  # bail if we can't parse libKODI_guilib.h
-  if(NOT DEFINED guilib_version OR NOT DEFINED guilib_version_min)
-    message(FATAL_ERROR "Could not determine add-on API version! Make sure that ${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/libKODI_guilib.h exists")
   endif()
 endmacro()
 

@@ -2,16 +2,6 @@ addons/audioencoder.xbmc.builtin.aac/*
 addons/audioencoder.xbmc.builtin.wav/*
 addons/audioencoder.xbmc.builtin.wma/*
 addons/game.controller.default/*
-addons/kodi.global.main/*
-addons/kodi.instance.adsp/*
-addons/kodi.instance.audiodecoder/*
-addons/kodi.instance.audioencoder/*
-addons/kodi.instance.game/*
-addons/kodi.instance.inputstream/*
-addons/kodi.instance.peripheral/*
-addons/kodi.instance.pvr/*
-addons/kodi.instance.screensaver/*
-addons/kodi.instance.visualization/*
 addons/kodi.resource/*
 addons/xbmc.addon/metadata.xsd
 addons/xbmc.addon/repository.xsd

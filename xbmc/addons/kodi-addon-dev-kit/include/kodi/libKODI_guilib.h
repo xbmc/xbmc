@@ -169,12 +169,6 @@ typedef struct CB_GUILib
 } /* namespace KodiAPI */
 
 
-/* current ADDONGUI API version */
-#define KODI_GUILIB_API_VERSION "5.11.1"
-
-/* min. ADDONGUI API version */
-#define KODI_GUILIB_MIN_API_VERSION "5.11.1"
-
 #define ADDON_ACTION_PREVIOUS_MENU          10
 #define ADDON_ACTION_CLOSE_DIALOG           51
 #define ADDON_ACTION_NAV_BACK               92

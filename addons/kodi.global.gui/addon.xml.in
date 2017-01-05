@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="kodi.global.gui" version="@guilib_version@" provider-name="Team-Kodi">
-  <backwards-compatibility abi="@guilib_version_min@"/>
+<addon id="kodi.global.gui" version="@ADDON_GLOBAL_VERSION_GUI@" provider-name="Team-Kodi">
   <requires>
     <import addon="xbmc.core" version="0.1.0"/>
   </requires>
