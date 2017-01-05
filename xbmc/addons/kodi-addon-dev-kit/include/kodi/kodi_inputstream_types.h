@@ -54,11 +54,26 @@ extern "C" {
    */
   typedef struct INPUTSTREAM_CAPABILITIES
   {
-    bool m_supportsIDemux;                  /*!< @brief supports interface IDemux */
-    bool m_supportsIPosTime;                /*!< @brief supports interface IPosTime */
-    bool m_supportsIDisplayTime;            /*!< @brief supports interface IDisplayTime */
-    bool m_supportsSeek;                    /*!< @brief supports seek */
-    bool m_supportsPause;                   /*!< @brief supports pause */
+    enum MASKTYPE: uint32_t
+    {
+      /// supports interface IDemux
+      SUPPORTSIDEMUX = (1 << 0),
+
+      /// supports interface IPosTime
+      SUPPORTSIPOSTIME = (1 << 1),
+
+      /// supports interface IDisplayTime
+      SUPPORTSIDISPLAYTIME = (1 << 2),
+
+      /// supports seek
+      SUPPORTSSEEK = (1 << 3),
+
+      /// supports pause
+      SUPPORTSPAUSE = (1 << 4)
+    };
+
+    /// set of supported capabilities
+    MASKTYPE m_mask;
   } INPUTSTREAM_CAPABILITIES;
 
   /*!
