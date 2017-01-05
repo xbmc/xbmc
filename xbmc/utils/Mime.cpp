@@ -55,6 +55,7 @@ std::map<std::string, std::string> fillMimeTypes()
   mimeTypes.insert(std::pair<std::string, std::string>("arc",       "application/octet-stream"));
   mimeTypes.insert(std::pair<std::string, std::string>("arj",       "application/arj"));
   mimeTypes.insert(std::pair<std::string, std::string>("art",       "image/x-jg"));
+  mimeTypes.insert(std::pair<std::string, std::string>("arw",       "image/arw"));
   mimeTypes.insert(std::pair<std::string, std::string>("asf",       "video/x-ms-asf"));
   mimeTypes.insert(std::pair<std::string, std::string>("asm",       "text/x-asm"));
   mimeTypes.insert(std::pair<std::string, std::string>("asp",       "text/asp"));
@@ -91,6 +92,7 @@ std::map<std::string, std::string> fillMimeTypes()
   mimeTypes.insert(std::pair<std::string, std::string>("cpt",       "application/x-cpt"));
   mimeTypes.insert(std::pair<std::string, std::string>("crl",       "application/pkcs-crl"));
   mimeTypes.insert(std::pair<std::string, std::string>("crt",       "application/pkix-cert"));
+  mimeTypes.insert(std::pair<std::string, std::string>("cr2",       "image/cr2"));
   mimeTypes.insert(std::pair<std::string, std::string>("csh",       "application/x-csh"));
   mimeTypes.insert(std::pair<std::string, std::string>("css",       "text/css"));
   mimeTypes.insert(std::pair<std::string, std::string>("cxx",       "text/plain"));
@@ -268,6 +270,7 @@ std::map<std::string, std::string> fillMimeTypes()
   mimeTypes.insert(std::pair<std::string, std::string>("naplps",    "image/naplps"));
   mimeTypes.insert(std::pair<std::string, std::string>("nc",        "application/x-netcdf"));
   mimeTypes.insert(std::pair<std::string, std::string>("ncm",       "application/vnd.nokia.configuration-message"));
+  mimeTypes.insert(std::pair<std::string, std::string>("nef",       "image/nef"));
   mimeTypes.insert(std::pair<std::string, std::string>("nfo",       "text/xml"));
   mimeTypes.insert(std::pair<std::string, std::string>("nif",       "image/x-niff"));
   mimeTypes.insert(std::pair<std::string, std::string>("niff",      "image/x-niff"));
