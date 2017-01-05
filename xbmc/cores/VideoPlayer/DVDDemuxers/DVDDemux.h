@@ -22,6 +22,7 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 #include "system.h"
 
 struct DemuxPacket;
