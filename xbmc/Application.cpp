@@ -1685,6 +1685,8 @@ bool CApplication::LoadSkin(const std::string& skinID)
 
   g_colorManager.Load(m_ServiceManager->GetSettings().GetString(CSettings::SETTING_LOOKANDFEEL_SKINCOLORS));
 
+  g_SkinInfo->LoadIncludes();
+  
   g_fontManager.LoadFonts(m_ServiceManager->GetSettings().GetString(CSettings::SETTING_LOOKANDFEEL_FONT));
 
   // load in the skin strings
@@ -1693,7 +1695,6 @@ bool CApplication::LoadSkin(const std::string& skinID)
 
   g_localizeStrings.LoadSkinStrings(langPath, m_ServiceManager->GetSettings().GetString(CSettings::SETTING_LOCALE_LANGUAGE));
 
-  g_SkinInfo->LoadIncludes();
 
   int64_t start;
   start = CurrentHostCounter();
