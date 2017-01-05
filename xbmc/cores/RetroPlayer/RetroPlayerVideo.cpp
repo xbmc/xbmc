@@ -22,13 +22,9 @@
 #include "RetroPlayerDefines.h"
 #include "PixelConverter.h"
 #include "PixelConverterRBP.h"
-#include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDCodecUtils.h"
-#include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
-#include "cores/VideoPlayer/DVDDemuxers/DVDDemux.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
-#include "cores/VideoPlayer/DVDStreamInfo.h"
 #include "utils/log.h"
 
 #include <atomic> //! @todo
@@ -104,10 +100,9 @@ bool CRetroPlayerVideo::OpenEncodedStream(AVCodecID codec)
   videoStream.iOrientation = orientationDeg;
   */
 
-  CDVDStreamInfo hint(videoStream);
-  m_pVideoCodec.reset(CDVDFactoryCodec::CreateVideoCodec(hint, m_processInfo, m_renderManager.GetRenderInfo()));
+  //! @todo
 
-  return m_pVideoCodec.get() != nullptr;
+  return false;
 }
 
 void CRetroPlayerVideo::AddData(const uint8_t* data, unsigned int size)
@@ -132,7 +127,6 @@ void CRetroPlayerVideo::CloseStream()
 {
   m_renderManager.Flush();
   m_pixelConverter.reset();
-  m_pVideoCodec.reset();
 }
 
 bool CRetroPlayerVideo::Configure(DVDVideoPicture& picture)
@@ -184,24 +178,6 @@ bool CRetroPlayerVideo::GetPicture(const uint8_t* data, unsigned int size, DVDVi
       {
         m_pixelConverter->GetPicture(picture);
         bHasPicture = true;
-      }
-    }
-  }
-  else if (m_pVideoCodec)
-  {
-    // FIXME
-    int iDecoderState = m_pVideoCodec->AddData(const_cast<uint8_t*>(data), size, DVD_NOPTS_VALUE, DVD_NOPTS_VALUE);
-    if (iDecoderState & VC_PICTURE)
-    {
-      m_pVideoCodec->ClearPicture(&picture);
-
-      if (m_pVideoCodec->GetPicture(&picture))
-      {
-        // Drop frame if requested by the decoder
-        const bool bDropped = (picture.iFlags & DVP_FLAG_DROPPED) != 0;
-
-        if (!bDropped)
-          bHasPicture = true;
       }
     }
   }

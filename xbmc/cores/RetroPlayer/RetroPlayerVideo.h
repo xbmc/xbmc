@@ -25,7 +25,6 @@
 #include <memory>
 
 class CDVDClock;
-class CDVDVideoCodec;
 class CPixelConverter;
 class CProcessInfo;
 class CRenderManager;
@@ -68,6 +67,5 @@ namespace GAME
     bool         m_bConfigured; // Need first picture to configure the render manager
     unsigned int m_droppedFrames;
     std::unique_ptr<CPixelConverter> m_pixelConverter;
-    std::unique_ptr<CDVDVideoCodec>  m_pVideoCodec;
   };
 }
