@@ -62,13 +62,18 @@ void CAudioBuffer::Set(const float* psBuffer, int iSize)
   for (int i = iSize; i < m_iLen; ++i) m_pBuffer[i] = 0;
 }
 
-CVisualisation::CVisualisation(AddonProps props)
-  : CAddonDll(std::move(props)),
+CVisualisation::CVisualisation(ADDON::AddonDllPtr addon)
+  : CAddonInstanceInfo(addon),
     m_addonInstance(nullptr)
 {
   memset(&m_struct, 0, sizeof(m_struct));
 }
-  
+
+CVisualisation::~CVisualisation()
+{
+  Destroy();
+}
+
 bool CVisualisation::Create(int x, int y, int w, int h, void *device)
 {
   m_name = Name();
@@ -91,7 +96,7 @@ bool CVisualisation::Create(int x, int y, int w, int h, void *device)
   m_struct.toKodi.kodiInstance = this;
   m_struct.toKodi.transfer_preset = transfer_preset;
 
-  if (CAddonDll::CreateInstance(ADDON_INSTANCE_VISUALIZATION, ID(), &m_struct, reinterpret_cast<KODI_HANDLE*>(&m_addonInstance)) != ADDON_STATUS_OK)
+  if (m_addon->CreateInstance(ADDON_INSTANCE_VISUALIZATION, ID(), &m_struct, reinterpret_cast<KODI_HANDLE*>(&m_addonInstance)) != ADDON_STATUS_OK)
     return false;
 
   // Start the visualisation
@@ -346,11 +351,7 @@ bool CVisualisation::IsLocked()
 
 void CVisualisation::Destroy()
 {
-  // notify visualization that they should stop
-  if (m_struct.toAddon.Stop)
-    m_struct.toAddon.Stop(m_addonInstance);
-
-  CAddonDll::DestroyInstance(ID());
+  m_addon->DestroyInstance(ID());
   memset(&m_struct, 0, sizeof(m_struct));
   m_addonInstance = nullptr;
 }
@@ -366,9 +367,4 @@ std::string CVisualisation::GetPresetName()
     return m_presets[GetPreset()];
   else
     return "";
-}
-
-bool CVisualisation::IsInUse() const
-{
-  return CServiceBroker::GetSettings().GetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION) == ID();
 }

@@ -185,6 +185,7 @@ namespace addon
       m_instanceData = static_cast<AddonInstance_Visualization*>(instance);
 
       m_instanceData->toAddon.Start = ADDON_Start;
+      m_instanceData->toAddon.Stop = ADDON_Stop;
       m_instanceData->toAddon.AudioData = ADDON_AudioData;
       m_instanceData->toAddon.Render = ADDON_Render;
       m_instanceData->toAddon.GetInfo = ADDON_GetInfo;

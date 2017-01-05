@@ -51,16 +51,16 @@ private:
 
 namespace ADDON
 {
-  class CVisualisation : public CAddonDll
+  class CVisualisation : public ADDON::CAddonInstanceInfo
                        , public IAudioCallback
                        , public IRenderingCallback
   {
   public:
-    explicit CVisualisation(AddonProps props);
+    explicit CVisualisation(ADDON::AddonDllPtr addon);
+    virtual ~CVisualisation();
 
     virtual void OnInitialize(int iChannels, int iSamplesPerSec, int iBitsPerSample);
     virtual void OnAudioData(const float* pAudioData, int iAudioDataLength);
-    virtual bool IsInUse() const;
     bool Create(int x, int y, int w, int h, void *device);
     void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, const std::string &strSongName);
     void AudioData(const float *pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength);
