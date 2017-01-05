@@ -109,7 +109,7 @@ void CVisualisation::Start(int iChannels, int iSamplesPerSec, int iBitsPerSample
 {
   // notify visz. that new song has been started
   // pass it the nr of audio channels, sample rate, bits/sample and offcourse the songname
-  if (Initialized())
+  if (m_struct.toAddon.Start)
   {
     m_struct.toAddon.Start(m_addonInstance, iChannels, iSamplesPerSec, iBitsPerSample, strSongName.c_str());
   }
@@ -122,7 +122,7 @@ void CVisualisation::AudioData(const float* pAudioData, int iAudioDataLength, fl
   // iAudioDataLength = length of audiodata array
   // pFreqData = fft-ed audio data
   // iFreqDataLength = length of pFreqData
-  if (Initialized())
+  if (m_struct.toAddon.AudioData)
   {
     m_struct.toAddon.AudioData(m_addonInstance, pAudioData, iAudioDataLength, pFreqData, iFreqDataLength);
   }
@@ -131,7 +131,7 @@ void CVisualisation::AudioData(const float* pAudioData, int iAudioDataLength, fl
 void CVisualisation::Render()
 {
   // ask visz. to render itself
-  if (Initialized())
+  if (m_struct.toAddon.Render)
   {
     m_struct.toAddon.Render(m_addonInstance);
   }
@@ -140,7 +140,7 @@ void CVisualisation::Render()
 void CVisualisation::Stop()
 {
   CServiceBroker::GetActiveAE().UnregisterAudioCallback(this);
-  if (Initialized())
+  if (m_struct.toAddon.Stop)
   {
     m_struct.toAddon.Stop(m_addonInstance);
   }
@@ -148,7 +148,7 @@ void CVisualisation::Stop()
 
 void CVisualisation::GetInfo(VIS_INFO *info)
 {
-  if (Initialized())
+  if (m_struct.toAddon.GetInfo)
   {
     m_struct.toAddon.GetInfo(m_addonInstance, info);
   }
@@ -156,7 +156,7 @@ void CVisualisation::GetInfo(VIS_INFO *info)
 
 bool CVisualisation::OnAction(VIS_ACTION action, void *param)
 {
-  if (!Initialized())
+  if (!m_struct.toAddon.OnAction)
     return false;
 
   // see if vis wants to handle the input
@@ -196,8 +196,6 @@ bool CVisualisation::OnAction(VIS_ACTION action, void *param)
 
 void CVisualisation::OnInitialize(int iChannels, int iSamplesPerSec, int iBitsPerSample)
 {
-  if (!Initialized())
-    return ;
   CLog::Log(LOGDEBUG, "OnInitialize() started");
 
   m_iChannels = iChannels;
@@ -210,9 +208,6 @@ void CVisualisation::OnInitialize(int iChannels, int iSamplesPerSec, int iBitsPe
 
 void CVisualisation::OnAudioData(const float* pAudioData, int iAudioDataLength)
 {
-  if (!Initialized())
-    return ;
-
   // FIXME: iAudioDataLength should never be less than 0
   if (iAudioDataLength<0)
     return;
@@ -281,27 +276,26 @@ void CVisualisation::ClearBuffers()
 bool CVisualisation::UpdateTrack()
 {
   bool handled = false;
-  if (Initialized())
-  {
-    // get the current album art filename
-    m_AlbumThumb = CSpecialProtocol::TranslatePath(g_infoManager.GetImage(MUSICPLAYER_COVER, WINDOW_INVALID));
 
-    // get the current track tag
-    const CMusicInfoTag* tag = g_infoManager.GetCurrentSongTag();
+  // get the current album art filename
+  m_AlbumThumb = CSpecialProtocol::TranslatePath(g_infoManager.GetImage(MUSICPLAYER_COVER, WINDOW_INVALID));
 
-    if (m_AlbumThumb == "DefaultAlbumCover.png")
-      m_AlbumThumb = "";
-    else
-      CLog::Log(LOGDEBUG,"Updating visualisation albumart: %s", m_AlbumThumb.c_str());
+  // get the current track tag
+  const CMusicInfoTag* tag = g_infoManager.GetCurrentSongTag();
 
-    // inform the visualisation of the current album art
-    if (OnAction( VIS_ACTION_UPDATE_ALBUMART, (void*)( m_AlbumThumb.c_str() ) ) )
-      handled = true;
+  if (m_AlbumThumb == "DefaultAlbumCover.png")
+    m_AlbumThumb = "";
+  else
+    CLog::Log(LOGDEBUG,"Updating visualisation albumart: %s", m_AlbumThumb.c_str());
 
-    // inform the visualisation of the current track's tag information
-    if ( tag && OnAction( VIS_ACTION_UPDATE_TRACK, (void*)tag ) )
-      handled = true;
-  }
+  // inform the visualisation of the current album art
+  if (OnAction( VIS_ACTION_UPDATE_ALBUMART, (void*)( m_AlbumThumb.c_str() ) ) )
+    handled = true;
+
+  // inform the visualisation of the current track's tag information
+  if ( tag && OnAction( VIS_ACTION_UPDATE_TRACK, (void*)tag ) )
+    handled = true;
+
   return handled;
 }
 
@@ -338,7 +332,7 @@ bool CVisualisation::IsLocked()
 {
   if (!m_presets.empty())
   {
-    if (!Initialized())
+    if (!m_struct.toAddon.IsLocked)
       return false;
 
     return m_struct.toAddon.IsLocked(m_addonInstance);
