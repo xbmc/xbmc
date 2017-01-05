@@ -80,6 +80,7 @@ bool CRetroPlayerVideo::OpenPixelStream(AVPixelFormat pixfmt, unsigned int width
 
 bool CRetroPlayerVideo::OpenEncodedStream(AVCodecID codec)
 {
+  /*
   CDemuxStreamVideo videoStream;
 
   // Stream
@@ -88,6 +89,7 @@ bool CRetroPlayerVideo::OpenEncodedStream(AVCodecID codec)
   videoStream.type = STREAM_VIDEO;
   videoStream.source = STREAM_SOURCE_DEMUX;
   videoStream.realtime = true;
+  */
 
   // Video
   //! @todo Needed?
