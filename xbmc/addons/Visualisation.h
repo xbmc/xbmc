@@ -70,13 +70,10 @@ namespace ADDON
     bool OnAction(VIS_ACTION action, void *param = NULL);
     bool UpdateTrack();
     bool HasPresets() { return m_hasPresets; };
-    bool HasSubModules() { return !m_submodules.empty(); }
     bool IsLocked();
     unsigned GetPreset();
     std::string GetPresetName();
     bool GetPresetList(std::vector<std::string>& vecpresets);
-    bool GetSubModuleList(std::vector<std::string>& vecmodules);
-    static std::string GetFriendlyName(const std::string& vis, const std::string& module);
     void Destroy();
 
     // Static function to transfer data from add-on to kodi
@@ -87,12 +84,9 @@ namespace ADDON
     void ClearBuffers();
 
     bool GetPresets();
-    bool GetSubModules();
 
     // cached preset list
     std::vector<std::string> m_presets;
-    // cached submodule list
-    std::vector<std::string> m_submodules;
 
     // audio properties
     int m_iChannels;

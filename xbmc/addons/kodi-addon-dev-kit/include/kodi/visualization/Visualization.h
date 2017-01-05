@@ -57,7 +57,6 @@ typedef struct AddonProps_Visualization
   const char *name;
   const char *presets;
   const char *profile;
-  const char *submodule;
 } AddonProps_Visualization;
 
 typedef struct AddonToKodiFuncTable_Visualization

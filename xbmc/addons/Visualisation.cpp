@@ -84,7 +84,6 @@ bool CVisualisation::Create(int x, int y, int w, int h, void *device)
   m_struct.props.name = strdup(Name().c_str());
   m_struct.props.presets = strdup(CSpecialProtocol::TranslatePath(Path()).c_str());
   m_struct.props.profile = strdup(CSpecialProtocol::TranslatePath(Profile()).c_str());
-  m_struct.props.submodule = nullptr;
   m_struct.toKodi.kodiInstance = this;
   m_struct.toKodi.transfer_preset = transfer_preset;
 
@@ -98,11 +97,6 @@ bool CVisualisation::Create(int x, int y, int w, int h, void *device)
     m_struct.toAddon.Start(m_addonInstance, m_iChannels, m_iSamplesPerSec, m_iBitsPerSample, strFile.c_str());
 
   m_hasPresets = GetPresets();
-
-  if (GetSubModules())
-    m_struct.props.submodule = strdup(CSpecialProtocol::TranslatePath(m_submodules.front()).c_str());
-  else
-    m_struct.props.submodule = nullptr;
 
   CreateBuffers();
 
@@ -340,38 +334,6 @@ void CVisualisation::transfer_preset(void* kodiInstance, const char* preset)
   addon->m_presets.push_back(preset);
 }
 
-bool CVisualisation::GetSubModuleList(std::vector<std::string> &vecmodules)
-{
-  vecmodules = m_submodules;
-  return !m_submodules.empty();
-}
-
-bool CVisualisation::GetSubModules()
-{
-  m_submodules.clear();
-  char **modules = NULL;
-  unsigned int entries = m_struct.toAddon.GetSubModules(m_addonInstance, &modules);
-
-  if (modules && entries > 0)
-  {
-    for (unsigned i=0; i < entries; i++)
-    {
-      if (modules[i])
-      {
-        m_submodules.push_back(modules[i]);
-      }
-    }
-  }
-  return (!m_submodules.empty());
-}
-
-std::string CVisualisation::GetFriendlyName(const std::string& strVisz,
-                                            const std::string& strSubModule)
-{
-  // should be of the format "moduleName (visName)"
-  return strSubModule + " (" + strVisz + ")";
-}
-
 bool CVisualisation::IsLocked()
 {
   if (!m_presets.empty())
@@ -401,11 +363,6 @@ void CVisualisation::Destroy()
   {
     free((void *) m_struct.props.profile);
     m_struct.props.profile = nullptr;
-  }
-  if (m_struct.props.submodule)
-  {
-    free((void *) m_struct.props.submodule);
-    m_struct.props.submodule = nullptr;
   }
 
   CAddonDll::DestroyInstance(ID());
