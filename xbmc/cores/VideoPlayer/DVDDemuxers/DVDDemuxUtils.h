@@ -27,5 +27,6 @@ class CDVDDemuxUtils
 public:
   static void FreeDemuxPacket(DemuxPacket* pPacket);
   static DemuxPacket* AllocateDemuxPacket(int iDataSize = 0);
+  static DemuxPacket* AllocateDemuxPacket(unsigned int iDataSize, unsigned int encryptedSubsampleCount);
 };
 
