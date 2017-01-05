@@ -73,7 +73,7 @@ namespace XBMCAddonUtils
    * Looks in references.xml for image name
    * If none exist return default image name
    */
-  const char *getDefaultImage(char* cControlType, char* cTextureType, char* cDefault);
+  const char *getDefaultImage(char* cControlType, char* cTextureType);
 
 #ifdef ENABLE_XBMC_TRACE_API
   class TraceGuard
