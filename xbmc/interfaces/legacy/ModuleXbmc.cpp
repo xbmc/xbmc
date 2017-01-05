@@ -461,7 +461,7 @@ namespace XBMCAddon
       else if (strcmpi(mediaType, "music") == 0)
         result = g_advancedSettings.GetMusicExtensions();
       else if (strcmpi(mediaType, "picture") == 0)
-        result = g_advancedSettings.m_pictureExtensions;
+        result = g_advancedSettings.GetPictureExtensions();
 
       //! @todo implement
       //    else

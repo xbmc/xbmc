@@ -34,7 +34,7 @@ namespace ADDON
       CAddonDll(std::move(props))
     {}
 
-    CImageDecoder(AddonProps props, std::string mimetypes);
+    CImageDecoder(AddonProps props, std::string mimetypes, std::string extensions);
     virtual ~CImageDecoder();
 
     bool Create(const std::string& mimetype);
@@ -50,9 +50,11 @@ namespace ADDON
                 unsigned int format);
 
     const std::string& GetMimetypes() const { return m_mimetype; }
+    const std::string& GetExtensions() const { return m_extension; }
   protected:
     void* m_image = nullptr;
     std::string m_mimetype;
+    std::string m_extension;
     IMAGEDEC_PROPS m_info;
     KodiToAddonFuncTable_ImageDecoder m_struct;
   };
