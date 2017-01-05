@@ -23,6 +23,7 @@
 #include "addons/AudioEncoder.h"
 #include "addons/ContextMenuAddon.h"
 #include "addons/GameResource.h"
+#include "addons/ImageDecoder.h"
 #include "addons/ImageResource.h"
 #include "addons/InputStream.h"
 #include "addons/LanguageResource.h"
@@ -91,6 +92,7 @@ std::shared_ptr<IAddon> CAddonBuilder::Build()
       type == ADDON_AUDIOENCODER ||
       type == ADDON_AUDIODECODER ||
       type == ADDON_VFS ||
+      type == ADDON_IMAGEDECODER ||
       type == ADDON_INPUTSTREAM ||
       type == ADDON_PERIPHERALDLL ||
       type == ADDON_GAMEDLL)
@@ -138,6 +140,8 @@ std::shared_ptr<IAddon> CAddonBuilder::Build()
       return CAudioEncoder::FromExtension(std::move(m_props), m_extPoint);
     case ADDON_AUDIODECODER:
       return CAudioDecoder::FromExtension(std::move(m_props), m_extPoint);
+    case ADDON_IMAGEDECODER:
+      return CImageDecoder::FromExtension(std::move(m_props), m_extPoint);
     case ADDON_INPUTSTREAM:
       return CInputStream::FromExtension(std::move(m_props), m_extPoint);
     case ADDON_PERIPHERALDLL:

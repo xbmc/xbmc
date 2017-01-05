@@ -18,6 +18,7 @@ set(SOURCES Addon.cpp
             GUIDialogAddonSettings.cpp
             GUIViewStateAddonBrowser.cpp
             GUIWindowAddonBrowser.cpp
+            ImageDecoder.cpp
             ImageResource.cpp
             InputStream.cpp
             LanguageResource.cpp
@@ -58,6 +59,7 @@ set(HEADERS Addon.h
             GUIViewStateAddonBrowser.h
             GUIWindowAddonBrowser.h
             IAddon.h
+            ImageDecoder.h
             ImageResource.h
             InputStream.h
             LanguageResource.h

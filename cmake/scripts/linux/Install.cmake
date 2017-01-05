@@ -156,6 +156,9 @@ install(FILES ${CMAKE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/ko
               ${CMAKE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/xbmc_addon_dll.h
               ${CMAKE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/xbmc_addon_types.h
               ${CMAKE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/xbmc_codec_types.h
+              ${CMAKE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/kodi_imagedec_types.h
+              ${CMAKE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/kodi_imagedec_dll.h
+              ${CMAKE_SOURCE_DIR}/xbmc/guilib/TextureFormats.h
               ${CMAKE_SOURCE_DIR}/xbmc/cores/VideoPlayer/DVDDemuxers/DVDDemuxPacket.h
               ${CMAKE_SOURCE_DIR}/xbmc/filesystem/IFileTypes.h
               ${CMAKE_SOURCE_DIR}/xbmc/input/XBMC_vkeys.h
