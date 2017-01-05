@@ -33,6 +33,11 @@
 #include "utils/Variant.h"
 #include "Util.h"
 
+/*
+ * Standard addon interface function includes
+ */
+#include "addons/interfaces/kodi/General.h"
+
 namespace ADDON
 {
 
@@ -633,6 +638,8 @@ bool CAddonDll::InitInterface(KODI_HANDLE firstKodiInstance)
   m_interface.toKodi.get_base_user_path = get_base_user_path;
   m_interface.toKodi.addon_log_msg = addon_log_msg;
   m_interface.toKodi.free_string = free_string;
+
+  Interface_General::Init(&m_interface);
 
   return true;
 }
