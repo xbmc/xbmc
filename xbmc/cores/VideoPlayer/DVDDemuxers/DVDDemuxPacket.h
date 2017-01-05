@@ -21,6 +21,7 @@
  */
 
 #include <cstdint>
+#include <memory>
 
 #define DMX_SPECIALID_STREAMINFO    -10
 #define DMX_SPECIALID_STREAMCHANGE  -11
