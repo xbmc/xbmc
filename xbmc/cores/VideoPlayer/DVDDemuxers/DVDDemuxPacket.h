@@ -25,6 +25,8 @@
 #define DMX_SPECIALID_STREAMINFO    -10
 #define DMX_SPECIALID_STREAMCHANGE  -11
 
+struct DemuxCryptoInfo;
+
 typedef struct DemuxPacket
 {
   unsigned char* pData;   // data
@@ -38,4 +40,6 @@ typedef struct DemuxPacket
   double duration; // duration in DVD_TIME_BASE if available
 
   int dispTime;
+
+  std::shared_ptr<DemuxCryptoInfo> cryptoInfo;
 } DemuxPacket;
