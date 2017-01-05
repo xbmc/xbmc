@@ -56,10 +56,12 @@ const float* CAudioBuffer::Get() const
 
 void CAudioBuffer::Set(const float* psBuffer, int iSize)
 {
-  if (iSize<0)
+  if (iSize < 0)
     return;
+
   memcpy(m_pBuffer, psBuffer, iSize * sizeof(float));
-  for (int i = iSize; i < m_iLen; ++i) m_pBuffer[i] = 0;
+  for (int i = iSize; i < m_iLen; ++i)
+    m_pBuffer[i] = 0;
 }
 
 CVisualisation::CVisualisation(ADDON::AddonDllPtr addon)
@@ -69,13 +71,10 @@ CVisualisation::CVisualisation(ADDON::AddonDllPtr addon)
   memset(&m_struct, 0, sizeof(m_struct));
 }
 
-CVisualisation::~CVisualisation()
-{
-  Destroy();
-}
-
 bool CVisualisation::Create(int x, int y, int w, int h, void *device)
 {
+  bool ret = false;
+
   m_name = Name();
   m_presetsPath = CSpecialProtocol::TranslatePath(Path());
   m_profilePath = CSpecialProtocol::TranslatePath(Profile());
@@ -97,13 +96,13 @@ bool CVisualisation::Create(int x, int y, int w, int h, void *device)
   m_struct.toKodi.transfer_preset = transfer_preset;
 
   if (m_addon->CreateInstance(ADDON_INSTANCE_VISUALIZATION, ID(), &m_struct, reinterpret_cast<KODI_HANDLE*>(&m_addonInstance)) != ADDON_STATUS_OK)
-    return false;
+    return ret;
 
   // Start the visualisation
   std::string strFile = URIUtils::GetFileName(g_application.CurrentFile());
-  CLog::Log(LOGDEBUG, "Visualisation::Start()\n");
+  CLog::Log(LOGDEBUG, "Visualisation::Start()");
   if (m_struct.toAddon.Start)
-    m_struct.toAddon.Start(m_addonInstance, m_iChannels, m_iSamplesPerSec, m_iBitsPerSample, strFile.c_str());
+    ret = m_struct.toAddon.Start(m_addonInstance, m_iChannels, m_iSamplesPerSec, m_iBitsPerSample, strFile.c_str());
 
   m_hasPresets = GetPresets();
 
@@ -111,17 +110,7 @@ bool CVisualisation::Create(int x, int y, int w, int h, void *device)
 
   CServiceBroker::GetActiveAE().RegisterAudioCallback(this);
 
-  return true;
-}
-
-void CVisualisation::Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, const std::string &strSongName)
-{
-  // notify visz. that new song has been started
-  // pass it the nr of audio channels, sample rate, bits/sample and offcourse the songname
-  if (m_struct.toAddon.Start)
-  {
-    m_struct.toAddon.Start(m_addonInstance, iChannels, iSamplesPerSec, iBitsPerSample, strSongName.c_str());
-  }
+  return ret;
 }
 
 void CVisualisation::AudioData(const float* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength)
@@ -149,18 +138,15 @@ void CVisualisation::Render()
 void CVisualisation::Stop()
 {
   CServiceBroker::GetActiveAE().UnregisterAudioCallback(this);
+
   if (m_struct.toAddon.Stop)
   {
     m_struct.toAddon.Stop(m_addonInstance);
   }
-}
 
-void CVisualisation::GetInfo(VIS_INFO *info)
-{
-  if (m_struct.toAddon.GetInfo)
-  {
-    m_struct.toAddon.GetInfo(m_addonInstance, info);
-  }
+  m_addon->DestroyInstance(ID());
+  memset(&m_struct, 0, sizeof(m_struct));
+  m_addonInstance = nullptr;
 }
 
 bool CVisualisation::OnAction(VIS_ACTION action, void *param)
@@ -218,18 +204,20 @@ void CVisualisation::OnInitialize(int iChannels, int iSamplesPerSec, int iBitsPe
 void CVisualisation::OnAudioData(const float* pAudioData, int iAudioDataLength)
 {
   // FIXME: iAudioDataLength should never be less than 0
-  if (iAudioDataLength<0)
+  if (iAudioDataLength < 0)
     return;
 
   // Save our audio data in the buffers
-  std::unique_ptr<CAudioBuffer> pBuffer ( new CAudioBuffer(iAudioDataLength) );
+  std::unique_ptr<CAudioBuffer> pBuffer (new CAudioBuffer(iAudioDataLength));
   pBuffer->Set(pAudioData, iAudioDataLength);
-  m_vecBuffers.push_back( pBuffer.release() );
+  m_vecBuffers.push_back(pBuffer.release());
 
-  if ( (int)m_vecBuffers.size() < m_iNumBuffers) return ;
+  if ( (int)m_vecBuffers.size() < m_iNumBuffers)
+    return;
 
-  std::unique_ptr<CAudioBuffer> ptrAudioBuffer ( m_vecBuffers.front() );
+  std::unique_ptr<CAudioBuffer> ptrAudioBuffer(m_vecBuffers.front());
   m_vecBuffers.pop_front();
+
   // Fourier transform the data if the vis wants it...
   if (m_bWantsFreq)
   {
@@ -245,9 +233,9 @@ void CVisualisation::OnAudioData(const float* pAudioData, int iAudioDataLength)
   }
   else
   { // Transfer data to our visualisation
-    AudioData(ptrAudioBuffer->Get(), iAudioDataLength, NULL, 0);
+    AudioData(ptrAudioBuffer->Get(), iAudioDataLength, nullptr, 0);
   }
-  return ;
+  return;
 }
 
 void CVisualisation::CreateBuffers()
@@ -256,7 +244,10 @@ void CVisualisation::CreateBuffers()
 
   // Get the number of buffers from the current vis
   VIS_INFO info;
-  m_struct.toAddon.GetInfo(m_addonInstance, &info);
+
+  if (m_struct.toAddon.GetInfo)
+    m_struct.toAddon.GetInfo(m_addonInstance, &info);
+
   m_iNumBuffers = info.iSyncDelay + 1;
   m_bWantsFreq = (info.bWantsFreq != 0);
   if (m_iNumBuffers > MAX_AUDIO_BUFFERS)
@@ -339,32 +330,24 @@ void CVisualisation::transfer_preset(void* kodiInstance, const char* preset)
 
 bool CVisualisation::IsLocked()
 {
-  if (!m_presets.empty())
-  {
-    if (!m_struct.toAddon.IsLocked)
-      return false;
+  if (m_presets.empty() || m_struct.toAddon.IsLocked == nullptr)
+    return false;
 
-    return m_struct.toAddon.IsLocked(m_addonInstance);
-  }
-  return false;
+  return m_struct.toAddon.IsLocked(m_addonInstance);
 }
 
-void CVisualisation::Destroy()
+unsigned int CVisualisation::GetPreset()
 {
-  m_addon->DestroyInstance(ID());
-  memset(&m_struct, 0, sizeof(m_struct));
-  m_addonInstance = nullptr;
-}
+  if (m_struct.toAddon.GetPreset)
+    return m_struct.toAddon.GetPreset(m_addonInstance);
 
-unsigned CVisualisation::GetPreset()
-{
-  return m_struct.toAddon.GetPreset(m_addonInstance);
+  return 0;
 }
 
 std::string CVisualisation::GetPresetName()
 {
   if (!m_presets.empty())
     return m_presets[GetPreset()];
-  else
-    return "";
+
+  return "";
 }

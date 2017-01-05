@@ -57,24 +57,24 @@ namespace ADDON
   {
   public:
     explicit CVisualisation(ADDON::AddonDllPtr addon);
-    virtual ~CVisualisation();
 
+    // Child functions related to IAudioCallback
     virtual void OnInitialize(int iChannels, int iSamplesPerSec, int iBitsPerSample);
     virtual void OnAudioData(const float* pAudioData, int iAudioDataLength);
-    bool Create(int x, int y, int w, int h, void *device);
-    void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, const std::string &strSongName);
+
+    // Child functions related to IRenderingCallback
+    virtual bool Create(int x, int y, int w, int h, void *device) override;
+    virtual void Render() override;
+    virtual void Stop() override;
+
     void AudioData(const float *pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength);
-    void Render();
-    void Stop();
-    void GetInfo(VIS_INFO *info);
-    bool OnAction(VIS_ACTION action, void *param = NULL);
+    bool OnAction(VIS_ACTION action, void *param = nullptr);
     bool UpdateTrack();
     bool HasPresets() { return m_hasPresets; };
     bool IsLocked();
-    unsigned GetPreset();
+    unsigned int GetPreset();
     std::string GetPresetName();
     bool GetPresetList(std::vector<std::string>& vecpresets);
-    void Destroy();
 
     // Static function to transfer data from add-on to kodi
     static void transfer_preset(void* kodiInstance, const char* preset);
