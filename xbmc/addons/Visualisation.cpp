@@ -71,6 +71,10 @@ CVisualisation::CVisualisation(AddonProps props)
   
 bool CVisualisation::Create(int x, int y, int w, int h, void *device)
 {
+  m_name = Name();
+  m_presetsPath = CSpecialProtocol::TranslatePath(Path());
+  m_profilePath = CSpecialProtocol::TranslatePath(Profile());
+
 #ifdef HAS_DX
   m_struct.props.device = g_Windowing.Get3D11Context();
 #else
@@ -81,9 +85,9 @@ bool CVisualisation::Create(int x, int y, int w, int h, void *device)
   m_struct.props.width = w;
   m_struct.props.height = h;
   m_struct.props.pixelRatio = g_graphicsContext.GetResInfo().fPixelRatio;
-  m_struct.props.name = strdup(Name().c_str());
-  m_struct.props.presets = strdup(CSpecialProtocol::TranslatePath(Path()).c_str());
-  m_struct.props.profile = strdup(CSpecialProtocol::TranslatePath(Profile()).c_str());
+  m_struct.props.name = m_name.c_str();
+  m_struct.props.presets = m_presetsPath.c_str();
+  m_struct.props.profile = m_profilePath.c_str();
   m_struct.toKodi.kodiInstance = this;
   m_struct.toKodi.transfer_preset = transfer_preset;
 
@@ -342,22 +346,9 @@ bool CVisualisation::IsLocked()
 
 void CVisualisation::Destroy()
 {
-  // Free what was allocated in method CVisualisation::Create
-  if (m_struct.props.name)
-  {
-    free((void *) m_struct.props.name);
-    m_struct.props.name = nullptr;
-  }
-  if (m_struct.props.presets)
-  {
-    free((void *) m_struct.props.presets);
-    m_struct.props.presets = nullptr;
-  }
-  if (m_struct.props.profile)
-  {
-    free((void *) m_struct.props.profile);
-    m_struct.props.profile = nullptr;
-  }
+  // notify visualization that they should stop
+  if (m_struct.toAddon.Stop)
+    m_struct.toAddon.Stop(m_addonInstance);
 
   CAddonDll::DestroyInstance(ID());
   memset(&m_struct, 0, sizeof(m_struct));

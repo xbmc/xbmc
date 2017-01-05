@@ -102,6 +102,10 @@ namespace ADDON
     // track information
     std::string m_AlbumThumb;
 
+    std::string m_name; /*!< To add-on sended name */
+    std::string m_presetsPath; /*!< To add-on sended preset path */
+    std::string m_profilePath; /*!< To add-on sended profile path */
+
     kodi::addon::CInstanceVisualization* m_addonInstance;
     AddonInstance_Visualization m_struct;
   };
