@@ -20,11 +20,12 @@
  *
  */
 
+extern "C"
+{
+
 struct AddonGlobalInterface;
 
 namespace ADDON
-{
-extern "C"
 {
 
   /*!
@@ -37,8 +38,8 @@ extern "C"
    */
   struct Interface_General
   {
-    static void Init(AddonGlobalInterface* interface);
-    static void DeInit(AddonGlobalInterface* interface);
+    static void Init(AddonGlobalInterface* addonInterface);
+    static void DeInit(AddonGlobalInterface* addonInterface);
 
     /*!
      * @brief callback functions from add-on to kodi
@@ -56,5 +57,5 @@ extern "C"
     //@}
   };
 
-} /* extern "C" */
 } /* namespace ADDON */
+} /* extern "C" */
