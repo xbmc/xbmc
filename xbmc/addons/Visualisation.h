@@ -21,7 +21,7 @@
 
 #include "AddonDll.h"
 #include "cores/AudioEngine/Interfaces/IAudioCallback.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/xbmc_vis_types.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/visualization/Visualization.h"
 #include "guilib/IRenderingCallback.h"
 #include "utils/rfft.h"
 
@@ -79,6 +79,9 @@ namespace ADDON
     static std::string GetFriendlyName(const std::string& vis, const std::string& module);
     void Destroy();
 
+    // Static function to transfer data from add-on to kodi
+    static void transfer_preset(void* kodiInstance, const char* preset);
+
   private:
     void CreateBuffers();
     void ClearBuffers();
@@ -105,7 +108,7 @@ namespace ADDON
     // track information
     std::string m_AlbumThumb;
 
-    void* m_addonInstance;
-    AddonInstance_Visualisation m_struct;
+    kodi::addon::CInstanceVisualization* m_addonInstance;
+    AddonInstance_Visualization m_struct;
   };
 }

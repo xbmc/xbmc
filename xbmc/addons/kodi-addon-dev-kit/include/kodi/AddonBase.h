@@ -310,7 +310,7 @@ namespace addon {
 
     virtual bool GetSettings(std::vector<CAddonSetting>& settings) { return false; }
 
-    virtual ADDON_STATUS SetSetting(std::string& settingName, const void *settingValue) { return ADDON_STATUS_UNKNOWN; }
+    virtual ADDON_STATUS SetSetting(const std::string& settingName, const void *settingValue) { return ADDON_STATUS_UNKNOWN; }
 
     virtual ADDON_STATUS CreateInstance(int instanceType, std::string instanceID, KODI_HANDLE instance, KODI_HANDLE& addonInstance)
     {
@@ -392,9 +392,7 @@ namespace addon {
     static inline ADDON_STATUS ADDONBASE_SetSetting(const char *settingName, const void *settingValue)
     {
       std::string name = settingName;
-      ADDON_STATUS ret = CAddonBase::m_interface->addonBase->SetSetting(name, settingValue);
-      std::strcpy((char*)settingName, name.c_str());
-      return ret;
+      return CAddonBase::m_interface->addonBase->SetSetting(name, settingValue);
     }
 
     static inline void ADDONBASE_FreeSettings(unsigned int elements, ADDON_StructSetting*** set)

@@ -86,8 +86,9 @@ bool CVisualisation::Create(int x, int y, int w, int h, void *device)
   m_struct.props.profile = strdup(CSpecialProtocol::TranslatePath(Profile()).c_str());
   m_struct.props.submodule = nullptr;
   m_struct.toKodi.kodiInstance = this;
+  m_struct.toKodi.transfer_preset = transfer_preset;
 
-  if (CAddonDll::CreateInstance(ADDON_INSTANCE_SCREENSAVER, ID(), &m_struct, reinterpret_cast<KODI_HANDLE*>(&m_addonInstance)) != ADDON_STATUS_OK)
+  if (CAddonDll::CreateInstance(ADDON_INSTANCE_VISUALIZATION, ID(), &m_struct, reinterpret_cast<KODI_HANDLE*>(&m_addonInstance)) != ADDON_STATUS_OK)
     return false;
 
   // Start the visualisation
@@ -178,7 +179,7 @@ bool CVisualisation::OnAction(VIS_ACTION action, void *param)
       std::string albumArtist(tag->GetAlbumArtistString());
       std::string genre(StringUtils::Join(tag->GetGenre(), g_advancedSettings.m_musicItemSeparator));
       
-      VisTrack track;
+      kodi::addon::VisTrack track;
       track.title       = tag->GetTitle().c_str();
       track.artist      = artist.c_str();
       track.album       = tag->GetAlbum().c_str();
@@ -194,7 +195,7 @@ bool CVisualisation::OnAction(VIS_ACTION action, void *param)
 
       return m_struct.toAddon.OnAction(m_addonInstance, action, &track);
     }
-    return m_struct.toAddon.OnAction(m_addonInstance, (int)action, param);
+    return m_struct.toAddon.OnAction(m_addonInstance, action, param);
   }
   return false;
 }
@@ -319,20 +320,24 @@ bool CVisualisation::GetPresetList(std::vector<std::string> &vecpresets)
 bool CVisualisation::GetPresets()
 {
   m_presets.clear();
-  char **presets = NULL;
-  unsigned int entries = m_struct.toAddon.GetPresets(m_addonInstance, &presets);
 
-  if (presets && entries > 0)
-  {
-    for (unsigned i=0; i < entries; i++)
-    {
-      if (presets[i])
-      {
-        m_presets.push_back(presets[i]);
-      }
-    }
-  }
+  if (m_struct.toAddon.GetPresets)
+    m_struct.toAddon.GetPresets(m_addonInstance);
+  // Note: m_presets becomes filled up with callback function transfer_preset
+
   return (!m_presets.empty());
+}
+
+void CVisualisation::transfer_preset(void* kodiInstance, const char* preset)
+{
+  CVisualisation *addon = static_cast<CVisualisation*>(kodiInstance);
+  if (!addon)
+  {
+    CLog::Log(LOGERROR, "CVisualization::transfer_preset - invalid handler data");
+    return;
+  }
+
+  addon->m_presets.push_back(preset);
 }
 
 bool CVisualisation::GetSubModuleList(std::vector<std::string> &vecmodules)
