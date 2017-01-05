@@ -1400,7 +1400,7 @@ bool CVaapiRenderPicture::GLMapSurface()
 
       attrib = attribs;
       *attrib++ = EGL_LINUX_DRM_FOURCC_EXT;
-      *attrib++ = fourcc_code('G', 'R', '1', '6');
+      *attrib++ = fourcc_code('G', 'R', '3', '2');
       *attrib++ = EGL_WIDTH;
       *attrib++ = (glInterop.vaImage.width + 1) >> 1;
       *attrib++ = EGL_HEIGHT;
