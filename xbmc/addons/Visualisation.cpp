@@ -81,33 +81,33 @@ bool CVisualisation::Create(int x, int y, int w, int h, void *device)
   m_struct.props.width = w;
   m_struct.props.height = h;
   m_struct.props.pixelRatio = g_graphicsContext.GetResInfo().fPixelRatio;
-
   m_struct.props.name = strdup(Name().c_str());
   m_struct.props.presets = strdup(CSpecialProtocol::TranslatePath(Path()).c_str());
   m_struct.props.profile = strdup(CSpecialProtocol::TranslatePath(Profile()).c_str());
   m_struct.props.submodule = nullptr;
+  m_struct.toKodi.kodiInstance = this;
 
-  if (CAddonDll::Create(ADDON_INSTANCE_VISUALIZATION, &m_struct.toAddon, &m_struct.props) == ADDON_STATUS_OK)
-  {
-    // Start the visualisation
-    std::string strFile = URIUtils::GetFileName(g_application.CurrentFile());
-    CLog::Log(LOGDEBUG, "Visualisation::Start()\n");
+  if (CAddonDll::CreateInstance(ADDON_INSTANCE_SCREENSAVER, ID(), &m_struct, reinterpret_cast<KODI_HANDLE*>(&m_addonInstance)) != ADDON_STATUS_OK)
+    return false;
+
+  // Start the visualisation
+  std::string strFile = URIUtils::GetFileName(g_application.CurrentFile());
+  CLog::Log(LOGDEBUG, "Visualisation::Start()\n");
+  if (m_struct.toAddon.Start)
     m_struct.toAddon.Start(m_addonInstance, m_iChannels, m_iSamplesPerSec, m_iBitsPerSample, strFile.c_str());
 
-    m_hasPresets = GetPresets();
+  m_hasPresets = GetPresets();
 
-    if (GetSubModules())
-      m_struct.props.submodule = strdup(CSpecialProtocol::TranslatePath(m_submodules.front()).c_str());
-    else
-      m_struct.props.submodule = nullptr;
+  if (GetSubModules())
+    m_struct.props.submodule = strdup(CSpecialProtocol::TranslatePath(m_submodules.front()).c_str());
+  else
+    m_struct.props.submodule = nullptr;
 
-    CreateBuffers();
+  CreateBuffers();
 
-    CServiceBroker::GetActiveAE().RegisterAudioCallback(this);
+  CServiceBroker::GetActiveAE().RegisterAudioCallback(this);
 
-    return true;
-  }
-  return false;
+  return true;
 }
 
 void CVisualisation::Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, const std::string &strSongName)
@@ -403,7 +403,9 @@ void CVisualisation::Destroy()
     m_struct.props.submodule = nullptr;
   }
 
-  CAddonDll::Destroy();
+  CAddonDll::DestroyInstance(ID());
+  memset(&m_struct, 0, sizeof(m_struct));
+  m_addonInstance = nullptr;
 }
 
 unsigned CVisualisation::GetPreset()
