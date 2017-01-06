@@ -11,6 +11,7 @@ xbmc/addons/interfaces/Peripheral               addonCallbacks_Peripheral
 xbmc/addons/interfaces/PVR                      addonCallbacks_PVR
 xbmc/addons/interfaces/kodi                     addonInterface_kodi
 xbmc/addons/interfaces/kodi/screensaver         addonInterface_kodi_screensaver
+xbmc/addons/interfaces/kodi/visualization       addonInterface_kodi_visualization
 xbmc/commons                                    commons
 xbmc/dbwrappers                                 dbwrappers
 xbmc/dialogs                                    dialogs

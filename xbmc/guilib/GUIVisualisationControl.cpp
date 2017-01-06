@@ -24,7 +24,7 @@
 #include "Application.h"
 #include "addons/AddonManager.h"
 #include "addons/AddonSystemSettings.h"
-#include "addons/Visualisation.h"
+#include "addons/interfaces/kodi/visualization/Visualization.h"
 #include "utils/log.h"
 #include "input/Key.h"
 
@@ -41,7 +41,7 @@ CGUIVisualisationControl::CGUIVisualisationControl(int parentID, int controlID, 
 }
 
 CGUIVisualisationControl::CGUIVisualisationControl(const CGUIVisualisationControl &from)
-  : CGUIRenderingControl(from), m_bAttemptedLoad(false), m_addon()
+  : CGUIRenderingControl(from), m_bAttemptedLoad(false), m_visualization()
 {
   ControlType = GUICONTROL_VISUALISATION;
 }
@@ -51,15 +51,15 @@ bool CGUIVisualisationControl::OnMessage(CGUIMessage &message)
   switch (message.GetMessage())
   {
   case GUI_MSG_GET_VISUALISATION:
-    message.SetPointer(m_addon.get());
-    return m_addon != NULL;
+    message.SetPointer(m_visualization.get());
+    return m_visualization != NULL;
   case GUI_MSG_VISUALISATION_RELOAD:
     FreeResources(true);
     return true;
   case GUI_MSG_PLAYBACK_STARTED:
-    if (m_addon)
+    if (m_visualization)
     {
-      m_addon->UpdateTrack();
+      m_visualization->UpdateTrack();
       return true;
     }
     break;
@@ -69,23 +69,23 @@ bool CGUIVisualisationControl::OnMessage(CGUIMessage &message)
 
 bool CGUIVisualisationControl::OnAction(const CAction &action)
 {
-  if (!m_addon)
+  if (!m_visualization)
     return false;
 
   switch (action.GetID())
   {
   case ACTION_VIS_PRESET_NEXT:
-    return m_addon->OnAction(VIS_ACTION_NEXT_PRESET);
+    return m_visualization->OnAction(VIS_ACTION_NEXT_PRESET);
   case ACTION_VIS_PRESET_PREV:
-    return m_addon->OnAction(VIS_ACTION_PREV_PRESET);
+    return m_visualization->OnAction(VIS_ACTION_PREV_PRESET);
   case ACTION_VIS_PRESET_RANDOM:
-    return m_addon->OnAction(VIS_ACTION_RANDOM_PRESET);
+    return m_visualization->OnAction(VIS_ACTION_RANDOM_PRESET);
   case ACTION_VIS_RATE_PRESET_PLUS:
-    return m_addon->OnAction(VIS_ACTION_RATE_PRESET_PLUS);
+    return m_visualization->OnAction(VIS_ACTION_RATE_PRESET_PLUS);
   case ACTION_VIS_RATE_PRESET_MINUS:
-    return m_addon->OnAction(VIS_ACTION_RATE_PRESET_MINUS);
+    return m_visualization->OnAction(VIS_ACTION_RATE_PRESET_MINUS);
   case ACTION_VIS_PRESET_LOCK:
-    return m_addon->OnAction(VIS_ACTION_LOCK_PRESET);
+    return m_visualization->OnAction(VIS_ACTION_LOCK_PRESET);
   default:
     return CGUIRenderingControl::OnAction(action);
   }
@@ -98,15 +98,15 @@ void CGUIVisualisationControl::Process(unsigned int currentTime, CDirtyRegionLis
     if (m_bInvalidated)
       FreeResources(true);
 
-    if (!m_addon && !m_bAttemptedLoad)
+    if (!m_visualization && !m_bAttemptedLoad)
     {
       AddonPtr addon;
       if (ADDON::CAddonSystemSettings::GetInstance().GetActive(ADDON_VIZ, addon))
       {
-        m_addon = std::dynamic_pointer_cast<CVisualisation>(addon);
-        if (m_addon)
-          if (!InitCallback(m_addon.get()))
-            m_addon.reset();
+        m_visualization.reset(new CVisualisation(std::dynamic_pointer_cast<CAddonDll>(addon)));
+        if (m_visualization)
+          if (!InitCallback(m_visualization.get()))
+            m_visualization.reset();
       }
 
       m_bAttemptedLoad = true;
@@ -119,14 +119,14 @@ void CGUIVisualisationControl::FreeResources(bool immediately)
 {
   m_bAttemptedLoad = false;
   // tell our app that we're going
-  if (!m_addon)
+  if (!m_visualization)
     return;
 
   CGUIMessage msg(GUI_MSG_VISUALISATION_UNLOADING, m_controlID, 0);
   g_windowManager.SendMessage(msg);
   CLog::Log(LOGDEBUG, "FreeVisualisation() started");
   CGUIRenderingControl::FreeResources(immediately);
-  m_addon.reset();
+  m_visualization.reset();
   CLog::Log(LOGDEBUG, "FreeVisualisation() done");
 }
 

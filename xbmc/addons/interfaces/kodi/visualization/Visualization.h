@@ -19,9 +19,9 @@
  */
 #pragma once
 
-#include "AddonDll.h"
+#include "addons/AddonDll.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/visualization/Visualization.h"
 #include "cores/AudioEngine/Interfaces/IAudioCallback.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/xbmc_vis_types.h"
 #include "guilib/IRenderingCallback.h"
 #include "utils/rfft.h"
 
@@ -51,45 +51,42 @@ private:
 
 namespace ADDON
 {
-  class CVisualisation : public CAddonDll
+  class CVisualisation : public ADDON::CAddonInstanceInfo
                        , public IAudioCallback
                        , public IRenderingCallback
   {
   public:
-    explicit CVisualisation(AddonProps props);
+    explicit CVisualisation(ADDON::AddonDllPtr addon);
 
+    // Child functions related to IAudioCallback
     virtual void OnInitialize(int iChannels, int iSamplesPerSec, int iBitsPerSample);
     virtual void OnAudioData(const float* pAudioData, int iAudioDataLength);
-    virtual bool IsInUse() const;
-    bool Create(int x, int y, int w, int h, void *device);
-    void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, const std::string &strSongName);
+
+    // Child functions related to IRenderingCallback
+    virtual bool Create(int x, int y, int w, int h, void *device) override;
+    virtual void Render() override;
+    virtual void Stop() override;
+
     void AudioData(const float *pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength);
-    void Render();
-    void Stop();
-    void GetInfo(VIS_INFO *info);
-    bool OnAction(VIS_ACTION action, void *param = NULL);
+    bool OnAction(VIS_ACTION action, void *param = nullptr);
     bool UpdateTrack();
     bool HasPresets() { return m_hasPresets; };
-    bool HasSubModules() { return !m_submodules.empty(); }
     bool IsLocked();
-    unsigned GetPreset();
+    unsigned int GetPreset();
     std::string GetPresetName();
     bool GetPresetList(std::vector<std::string>& vecpresets);
-    bool GetSubModuleList(std::vector<std::string>& vecmodules);
-    static std::string GetFriendlyName(const std::string& vis, const std::string& module);
-    void Destroy();
+
+    // Static function to transfer data from add-on to kodi
+    static void transfer_preset(void* kodiInstance, const char* preset);
 
   private:
     void CreateBuffers();
     void ClearBuffers();
 
     bool GetPresets();
-    bool GetSubModules();
 
     // cached preset list
     std::vector<std::string> m_presets;
-    // cached submodule list
-    std::vector<std::string> m_submodules;
 
     // audio properties
     int m_iChannels;
@@ -104,8 +101,13 @@ namespace ADDON
 
     // track information
     std::string m_AlbumThumb;
-    
-    VIS_PROPS m_info;
-    KodiToAddonFuncTable_Visualisation m_struct;
+
+    std::string m_name; /*!< To add-on sended name */
+    std::string m_presetsPath; /*!< To add-on sended preset path */
+    std::string m_profilePath; /*!< To add-on sended profile path */
+
+    kodi::addon::CInstanceVisualization* m_addonInstance;
+    AddonInstance_Visualization m_struct;
+    bool m_active;
   };
 }

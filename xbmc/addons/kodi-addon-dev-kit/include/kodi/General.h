@@ -42,11 +42,13 @@ typedef struct AddonToKodiFuncTable_kodi
   void (*open_settings_dialog)(void* kodiBase);
 } AddonToKodiFuncTable_kodi;
 
+} /* extern "C" */
+
 namespace kodi
 {
   //============================================================================
   ///
-  inline bool GetSettingString(const std::string& settingName, std::string& settingValue)
+  inline bool CheckSettingString(const std::string& settingName, std::string& settingValue)
   {
     char * buffer = (char*) malloc(1024);
     buffer[0] = 0; /* Set the end of string */
@@ -60,7 +62,17 @@ namespace kodi
 
   //============================================================================
   ///
-  inline bool GetSettingInt(const std::string& settingName, int& settingValue)
+  inline std::string GetSettingString(const std::string& settingName)
+  {
+    std::string settingValue;
+    CheckSettingString(settingName, settingValue);
+    return settingValue;
+  }
+  //----------------------------------------------------------------------------
+
+  //============================================================================
+  ///
+  inline bool CheckSettingInt(const std::string& settingName, int& settingValue)
   {
     return ::kodi::addon::CAddonBase::m_interface->toKodi.kodi->get_setting(::kodi::addon::CAddonBase::m_interface->toKodi.kodiBase, settingName.c_str(), &settingValue);
   }
@@ -68,7 +80,17 @@ namespace kodi
 
   //============================================================================
   ///
-  inline bool GetSettingUInt(const std::string& settingName, unsigned int& settingValue)
+  inline int GetSettingInt(const std::string& settingName)
+  {
+    int settingValue = 0;
+    CheckSettingInt(settingName, settingValue);
+    return settingValue;
+  }
+  //----------------------------------------------------------------------------
+
+  //============================================================================
+  ///
+  inline bool CheckSettingUInt(const std::string& settingName, unsigned int& settingValue)
   {
     return ::kodi::addon::CAddonBase::m_interface->toKodi.kodi->get_setting(::kodi::addon::CAddonBase::m_interface->toKodi.kodiBase, settingName.c_str(), &settingValue);
   }
@@ -76,7 +98,17 @@ namespace kodi
 
   //============================================================================
   ///
-  inline bool GetSettingBoolean(const std::string& settingName, bool& settingValue)
+  inline unsigned int GetSettingUInt(const std::string& settingName)
+  {
+    unsigned int settingValue = 0;
+    CheckSettingUInt(settingName, settingValue);
+    return settingValue;
+  }
+  //----------------------------------------------------------------------------
+
+  //============================================================================
+  ///
+  inline bool CheckSettingBoolean(const std::string& settingName, bool& settingValue)
   {
     return ::kodi::addon::CAddonBase::m_interface->toKodi.kodi->get_setting(::kodi::addon::CAddonBase::m_interface->toKodi.kodiBase, settingName.c_str(), &settingValue);
   }
@@ -84,9 +116,29 @@ namespace kodi
 
   //============================================================================
   ///
-  inline bool GetSettingFloat(const std::string& settingName, float& settingValue)
+  inline bool GetSettingBoolean(const std::string& settingName)
+  {
+    bool settingValue = false;
+    CheckSettingBoolean(settingName, settingValue);
+    return settingValue;
+  }
+  //----------------------------------------------------------------------------
+
+  //============================================================================
+  ///
+  inline bool CheckSettingFloat(const std::string& settingName, float& settingValue)
   {
     return ::kodi::addon::CAddonBase::m_interface->toKodi.kodi->get_setting(::kodi::addon::CAddonBase::m_interface->toKodi.kodiBase, settingName.c_str(), &settingValue);
+  }
+  //----------------------------------------------------------------------------
+
+  //============================================================================
+  ///
+  inline float GetSettingFloat(const std::string& settingName)
+  {
+    float settingValue = 0.0f;
+    CheckSettingFloat(settingName, settingValue);
+    return settingValue;
   }
   //----------------------------------------------------------------------------
 
@@ -99,4 +151,3 @@ namespace kodi
   //----------------------------------------------------------------------------
 
 } /* namespace kodi */
-} /* extern "C" */

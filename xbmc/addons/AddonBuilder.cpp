@@ -32,7 +32,6 @@
 #include "addons/Service.h"
 #include "addons/Skin.h"
 #include "addons/UISoundsResource.h"
-#include "addons/Visualisation.h"
 #include "addons/Webinterface.h"
 #include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.h"
 #include "games/addons/GameClient.h"
@@ -66,6 +65,7 @@ std::shared_ptr<IAddon> CAddonBuilder::Build()
    */
   switch (type)
   {
+    case ADDON_VIZ:
     case ADDON_SCREENSAVER:
       return std::make_shared<CAddonDll>(std::move(m_props));
     default:
@@ -84,8 +84,7 @@ std::shared_ptr<IAddon> CAddonBuilder::Build()
   }
 
   // Ensure binary types have a valid library for the platform
-  if (type == ADDON_VIZ ||
-      type == ADDON_PVRDLL ||
+  if (type == ADDON_PVRDLL ||
       type == ADDON_ADSPDLL ||
       type == ADDON_AUDIOENCODER ||
       type == ADDON_AUDIODECODER ||
@@ -120,10 +119,6 @@ std::shared_ptr<IAddon> CAddonBuilder::Build()
     case ADDON_SCRAPER_TVSHOWS:
     case ADDON_SCRAPER_LIBRARY:
       return CScraper::FromExtension(std::move(m_props), m_extPoint);
-#if defined(HAS_VISUALISATION)
-    case ADDON_VIZ:
-      return std::make_shared<CVisualisation>(std::move(m_props));
-#endif
 #ifdef HAS_PVRCLIENTS
     case ADDON_PVRDLL:
       return PVR::CPVRClient::FromExtension(std::move(m_props), m_extPoint);
@@ -192,10 +187,6 @@ AddonPtr CAddonBuilder::FromProps(AddonProps addonProps)
       return AddonPtr(new CScraper(std::move(addonProps)));
     case ADDON_SKIN:
       return AddonPtr(new CSkinInfo(std::move(addonProps)));
-#if defined(HAS_VISUALISATION)
-    case ADDON_VIZ:
-      return AddonPtr(new CVisualisation(std::move(addonProps)));
-#endif
     case ADDON_PVRDLL:
       return AddonPtr(new PVR::CPVRClient(std::move(addonProps)));
     case ADDON_ADSPDLL:

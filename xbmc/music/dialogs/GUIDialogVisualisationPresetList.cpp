@@ -19,7 +19,7 @@
  */
 
 #include "GUIDialogVisualisationPresetList.h"
-#include "addons/Visualisation.h"
+#include "addons/interfaces/kodi/visualization/Visualization.h"
 #include "guilib/GUIWindowManager.h"
 #include "GUIUserMessages.h"
 #include "FileItem.h"

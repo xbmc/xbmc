@@ -34,5 +34,5 @@ public:
   virtual bool OnMessage(CGUIMessage &message);
 private:
   bool m_bAttemptedLoad;
-  ADDON::VizPtr m_addon;
+  ADDON::VizPtr m_visualization;
 };
