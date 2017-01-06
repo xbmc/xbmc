@@ -207,7 +207,7 @@ bool CAddonCallbacksAddon::GetAddonSetting(void *addonData, const char *strSetti
 
     if (!addonHelper->m_addon->ReloadSettings())
     {
-      CLog::Log(LOGERROR, "CAddonCallbacksAddon - %s - could't get settings for add-on '%s'", __FUNCTION__, addonHelper->m_addon->Name().c_str());
+      CLog::Log(LOGERROR, "CAddonCallbacksAddon - %s - couldn't get settings for add-on '%s'", __FUNCTION__, addonHelper->m_addon->Name().c_str());
       return false;
     }
 

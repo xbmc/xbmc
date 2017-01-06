@@ -328,7 +328,7 @@ TEST_F(TestCharsetConverter, getCharsetLabels)
   reflabels.push_back("Hebrew (Windows)");
   reflabels.push_back("Arabic (Windows)");
   reflabels.push_back("Baltic (Windows)");
-  reflabels.push_back("Vietnamesse (Windows)");
+  reflabels.push_back("Vietnamese (Windows)");
   reflabels.push_back("Thai (Windows)");
   reflabels.push_back("Chinese Traditional (Big5)");
   reflabels.push_back("Chinese Simplified (GBK)");

@@ -487,10 +487,31 @@ namespace XBMCAddon
             else
               CLog::Log(LOGWARNING, "Invalid media type \"%s\"", value.c_str());
           }
+          else
+            CLog::Log(LOGERROR,"NEWADDON Unknown Video Info Key \"%s\"", key.c_str());
         }
       }
       else if (strcmpi(type, "music") == 0)
       {
+        std::string type;
+        for (auto it = infoLabels.begin(); it != infoLabels.end(); ++it)
+        {
+          String key = it->first;
+          StringUtils::ToLower(key);
+          const InfoLabelValue& alt = it->second;
+          const String value(alt.which() == first ? alt.former() : emptyString);
+
+          if (key == "mediatype")
+          {
+            if (CMediaTypes::IsValidMediaType(value))
+            {
+              type = value;
+              item->GetMusicInfoTag()->SetType(value);
+            }
+            else
+              CLog::Log(LOGWARNING, "Invalid media type \"%s\"", value.c_str());
+          }
+        }
         for (InfoLabelDict::const_iterator it = infoLabels.begin(); it != infoLabels.end(); ++it)
         {
           String key = it->first;
@@ -500,7 +521,9 @@ namespace XBMCAddon
           const String value(alt.which() == first ? alt.former() : emptyString);
 
           //! @todo add the rest of the infolabels
-          if (key == "tracknumber")
+          if (key == "dbid" && !type.empty())
+            item->GetMusicInfoTag()->SetDatabaseId(strtol(value.c_str(), NULL, 10), type);
+          else if (key == "tracknumber")
             item->GetMusicInfoTag()->SetTrackNumber(strtol(value.c_str(), NULL, 10));
           else if (key == "discnumber")
             item->GetMusicInfoTag()->SetDiscNumber(strtol(value.c_str(), NULL, 10));
@@ -542,13 +565,6 @@ namespace XBMCAddon
             item->GetMusicInfoTag()->SetMusicBrainzAlbumArtistID(StringUtils::Split(value, g_advancedSettings.m_musicItemSeparator));
           else if (key == "comment")
             item->GetMusicInfoTag()->SetComment(value);
-          else if (key == "mediatype")
-          {
-            if (CMediaTypes::IsValidMediaType(value))
-              item->GetMusicInfoTag()->SetType(value);
-            else
-              CLog::Log(LOGWARNING, "Invalid media type \"%s\"", value.c_str());
-          }
           else if (key == "date")
           {
             if (strlen(value.c_str()) == 10)
@@ -559,7 +575,7 @@ namespace XBMCAddon
               item->m_dateTime.SetDate(year, month, day);
             }
           }
-          else
+          else if (key != "mediatype")
             CLog::Log(LOGERROR,"NEWADDON Unknown Music Info Key \"%s\"", key.c_str());
 
           // This should probably be set outside of the loop but since the original

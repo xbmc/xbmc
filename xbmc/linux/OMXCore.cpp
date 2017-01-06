@@ -592,7 +592,7 @@ OMX_ERRORTYPE COMXCoreComponent::AllocInputBuffers()
   m_input_buffer_count  = portFormat.nBufferCountActual;
   m_input_buffer_size   = portFormat.nBufferSize;
 
-  CLog::Log(LOGDEBUG, "COMXCoreComponent::AllocInputBuffers component(%s) - port(%d), nBufferCountMin(%u), nBufferCountActual(%u), nBufferSize(%u), nBufferAlignmen(%u)\n",
+  CLog::Log(LOGDEBUG, "COMXCoreComponent::AllocInputBuffers component(%s) - port(%d), nBufferCountMin(%u), nBufferCountActual(%u), nBufferSize(%u), nBufferAlignment(%u)\n",
             m_componentName.c_str(), GetInputPort(), portFormat.nBufferCountMin,
             portFormat.nBufferCountActual, portFormat.nBufferSize, portFormat.nBufferAlignment);
 
@@ -658,7 +658,7 @@ OMX_ERRORTYPE COMXCoreComponent::AllocOutputBuffers()
   m_output_buffer_count  = portFormat.nBufferCountActual;
   m_output_buffer_size   = portFormat.nBufferSize;
 
-  CLog::Log(LOGDEBUG, "COMXCoreComponent::AllocOutputBuffers component(%s) - port(%d), nBufferCountMin(%u), nBufferCountActual(%u), nBufferSize(%u) nBufferAlignmen(%u)\n",
+  CLog::Log(LOGDEBUG, "COMXCoreComponent::AllocOutputBuffers component(%s) - port(%d), nBufferCountMin(%u), nBufferCountActual(%u), nBufferSize(%u) nBufferAlignment(%u)\n",
             m_componentName.c_str(), m_output_port, portFormat.nBufferCountMin,
             portFormat.nBufferCountActual, portFormat.nBufferSize, portFormat.nBufferAlignment);
 
@@ -1264,7 +1264,7 @@ OMX_ERRORTYPE COMXCoreComponent::UseEGLImage(OMX_BUFFERHEADERTYPE** ppBufferHdr,
     return omx_err;
   }
 
-  CLog::Log(LOGDEBUG, "%s::%s component(%s) - port(%d), nBufferCountMin(%u), nBufferCountActual(%u), nBufferSize(%u) nBufferAlignmen(%u)\n",
+  CLog::Log(LOGDEBUG, "%s::%s component(%s) - port(%d), nBufferCountMin(%u), nBufferCountActual(%u), nBufferSize(%u) nBufferAlignment(%u)\n",
             CLASSNAME, __func__, m_componentName.c_str(), m_output_port, portFormat.nBufferCountMin,
             portFormat.nBufferCountActual, portFormat.nBufferSize, portFormat.nBufferAlignment);
 

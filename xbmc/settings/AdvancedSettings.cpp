@@ -991,7 +991,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
 
       if (!strFrom.empty() && !strTo.empty())
       {
-        CLog::Log(LOGDEBUG,"  Registering substition pair:");
+        CLog::Log(LOGDEBUG,"  Registering substitution pair:");
         CLog::Log(LOGDEBUG,"    From: [%s]", strFrom.c_str());
         CLog::Log(LOGDEBUG,"    To:   [%s]", strTo.c_str());
         m_pathSubstitutions.push_back(std::make_pair(strFrom,strTo));

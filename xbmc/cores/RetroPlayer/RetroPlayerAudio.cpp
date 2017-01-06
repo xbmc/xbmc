@@ -145,7 +145,7 @@ void CRetroPlayerAudio::AddData(const uint8_t* data, unsigned int size)
       int consumed = m_pAudioCodec->AddData(const_cast<uint8_t*>(data), size, DVD_NOPTS_VALUE, DVD_NOPTS_VALUE);
       if (consumed < 0)
       {
-        CLog::Log(LOGERROR, "CRretroPlayerAudio::AddData - Decode Error (%d)", consumed);
+        CLog::Log(LOGERROR, "CRetroPlayerAudio::AddData - Decode Error (%d)", consumed);
         m_pAudioCodec.reset();
         return;
       }

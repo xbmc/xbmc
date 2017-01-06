@@ -947,7 +947,7 @@ OMX_ERRORTYPE COpenMaxVideo::DecoderEventHandler(
           else if (ctx->m_omx_output_port == (int)nData2)
           {
             sem_post(ctx->m_omx_flush_output);
-            CLog::Log(LOGDEBUG, "COpenMax::%s - OMX_CommandFlush ouput\n",__func__);
+            CLog::Log(LOGDEBUG, "COpenMax::%s - OMX_CommandFlush output\n",__func__);
           }
           else
           */

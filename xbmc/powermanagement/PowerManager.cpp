@@ -58,10 +58,6 @@
 extern HWND g_hWnd;
 #endif
 
-#if defined(TARGET_POSIX)
-#include "linux/XTimeUtils.h"
-#endif
-
 using namespace ANNOUNCEMENT;
 
 CPowerManager g_powerManager;
@@ -275,11 +271,7 @@ void CPowerManager::OnWake()
 {
   CLog::Log(LOGNOTICE, "%s: Running resume jobs", __FUNCTION__);
 
-  {
-    const int waitNetTimeout = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_POWERMANAGEMENT_WAITNETAFTERWAKEUP);
-    if (waitNetTimeout > 0)
-      WaitForNet(waitNetTimeout);
-  }
+  g_application.getNetwork().WaitForNet();
 
   // reset out timers
   g_application.ResetShutdownTimers();
@@ -337,32 +329,4 @@ void CPowerManager::SettingOptionsShutdownStatesFiller(const CSetting *setting, 
     list.push_back(make_pair(g_localizeStrings.Get(13014), POWERSTATE_MINIMIZE));
 #endif
   }
-}
-
-void CPowerManager::WaitForNet(int timeout) const
-{
-  CNetwork& net = g_application.getNetwork();
-
-  // check if we have at least one network interface to wait for
-  if (!net.IsAvailable())
-    return;
-
-  CLog::Log(LOGNOTICE, "%s: Waiting for a network interface to come up (Timeout: %d s)", __FUNCTION__, timeout);
-
-  const static int intervalMs = 200;
-  const int numMaxTries = (timeout * 1000) / intervalMs;
-
-  for(int i=0; i < numMaxTries; ++i)
-  {
-    if (i > 0)
-      Sleep(intervalMs);
-
-    if (net.IsConnected())
-    {
-      CLog::Log(LOGNOTICE, "%s: A network interface is up after waiting %d ms", __FUNCTION__, i * intervalMs);
-      return;
-    }
-  }
-
-  CLog::Log(LOGNOTICE, "%s: No network interface did come up within %d s... Giving up...", __FUNCTION__, timeout);
 }

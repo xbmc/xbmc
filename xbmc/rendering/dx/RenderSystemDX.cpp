@@ -203,7 +203,7 @@ void CRenderSystemDX::OnMove()
     SetMonitor(newMonitor);
     if (m_needNewDevice)
     {
-      CLog::Log(LOGDEBUG, "%s - Adapter changed, reseting render system.", __FUNCTION__);
+      CLog::Log(LOGDEBUG, "%s - Adapter changed, resetting render system.", __FUNCTION__);
       ResetRenderSystem(m_nBackBufferWidth, m_nBackBufferHeight, m_bFullScreenDevice, m_refreshRate);
     }
   }
@@ -1852,7 +1852,7 @@ void CRenderSystemDX::InitHooks()
   if (!deviceFound)
     return;
 
-  CLog::Log(LOGDEBUG, __FUNCTION__": Hookind into UserModeDriver on device %S. ", displayDevice.DeviceKey);
+  CLog::Log(LOGDEBUG, __FUNCTION__": Hooking into UserModeDriver on device %S. ", displayDevice.DeviceKey);
   wchar_t* keyName =
 #ifndef _M_X64
     // on x64 system and x32 build use UserModeDriverNameWow key
@@ -1916,7 +1916,7 @@ void CRenderSystemDX::InitHooks()
   }
 
   if (lstat != ERROR_SUCCESS)
-    CLog::Log(LOGDEBUG, __FUNCTION__": error open regystry key with error %ld.", lstat);
+    CLog::Log(LOGDEBUG, __FUNCTION__": error open registry key with error %ld.", lstat);
 
   if (hKey != 0)
     RegCloseKey(hKey);

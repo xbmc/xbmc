@@ -172,7 +172,7 @@ void CAddonDatabase::CreateTables()
 
 void CAddonDatabase::CreateAnalytics()
 {
-  CLog::Log(LOGINFO, "%s creating indicies", __FUNCTION__);
+  CLog::Log(LOGINFO, "%s creating indices", __FUNCTION__);
   m_pDS->exec("CREATE INDEX idxAddons ON addons(addonID)");
   m_pDS->exec("CREATE UNIQUE INDEX ix_addonlinkrepo_1 ON addonlinkrepo ( idAddon, idRepo )\n");
   m_pDS->exec("CREATE UNIQUE INDEX ix_addonlinkrepo_2 ON addonlinkrepo ( idRepo, idAddon )\n");

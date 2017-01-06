@@ -211,7 +211,7 @@ bool Xcddb::queryCDinfo(CCdInfo* pInfo, int inexact_list_select)
   std::string read_buffer = getInexactCommand(inexact_list_select);
   if (read_buffer.empty())
   {
-    CLog::Log(LOGERROR, "Xcddb::queryCDinfo_inexaxt_list_select Size of inexaxt_list_select are 0");
+    CLog::Log(LOGERROR, "Xcddb::queryCDinfo_inexact_list_select Size of inexact_list_select are 0");
     m_lastError = E_PARAMETER_WRONG;
     return false;
   }
@@ -222,8 +222,8 @@ bool Xcddb::queryCDinfo(CCdInfo* pInfo, int inexact_list_select)
   Recv(false); // Clear pending data on our connection
   if (!Send(read_buffer.c_str()))
   {
-    CLog::Log(LOGERROR, "Xcddb::queryCDinfo_inexaxt_list_select Error sending \"%s\"", read_buffer.c_str());
-    CLog::Log(LOGERROR, "Xcddb::queryCDinfo_inexaxt_list_select pInfo == NULL");
+    CLog::Log(LOGERROR, "Xcddb::queryCDinfo_inexact_list_select Error sending \"%s\"", read_buffer.c_str());
+    CLog::Log(LOGERROR, "Xcddb::queryCDinfo_inexact_list_select pInfo == NULL");
     m_lastError = E_NETWORK_ERROR_SEND;
     return false;
   }
@@ -242,7 +242,7 @@ bool Xcddb::queryCDinfo(CCdInfo* pInfo, int inexact_list_select)
   case 403: //Database entry is corrupt.
   case 409: //No handshake.
   default:
-    CLog::Log(LOGERROR, "Xcddb::queryCDinfo_inexaxt_list_select Error: \"%s\"", recv_buffer.c_str());
+    CLog::Log(LOGERROR, "Xcddb::queryCDinfo_inexact_list_select Error: \"%s\"", recv_buffer.c_str());
     return false;
   }
 
@@ -251,7 +251,7 @@ bool Xcddb::queryCDinfo(CCdInfo* pInfo, int inexact_list_select)
   // Quit
   if ( ! Send("quit") )
   {
-    CLog::Log(LOGERROR, "Xcddb::queryCDinfo_inexaxt_list_select Error sending \"%s\"", "quit");
+    CLog::Log(LOGERROR, "Xcddb::queryCDinfo_inexact_list_select Error sending \"%s\"", "quit");
     m_lastError = E_NETWORK_ERROR_SEND;
     return false;
   }
@@ -265,7 +265,7 @@ bool Xcddb::queryCDinfo(CCdInfo* pInfo, int inexact_list_select)
 
   case 530: //error, closing connection.
   default:
-    CLog::Log(LOGERROR, "Xcddb::queryCDinfo_inexaxt_list_select Error: \"%s\"", recv_buffer.c_str());
+    CLog::Log(LOGERROR, "Xcddb::queryCDinfo_inexact_list_select Error: \"%s\"", recv_buffer.c_str());
     return false;
   }
 
@@ -274,7 +274,7 @@ bool Xcddb::queryCDinfo(CCdInfo* pInfo, int inexact_list_select)
   // Close connection
   if ( !closeSocket() )
   {
-    CLog::Log(LOGERROR, "Xcddb::queryCDinfo_inexaxt_list_select Error closing socket");
+    CLog::Log(LOGERROR, "Xcddb::queryCDinfo_inexact_list_select Error closing socket");
     m_lastError = E_NETWORK_ERROR_SEND;
     return false;
   }

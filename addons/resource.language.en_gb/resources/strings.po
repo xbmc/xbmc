@@ -20407,5 +20407,5 @@ msgstr ""
 #. Description of setting with label #39011 "Maximum wait time for network"
 #: system/settings/settings.xml
 msgctxt "#39012"
-msgid "Set the maximum time to wait for the network to come up after waking up. When time has passed before network is up startup will continue."
+msgid "Set the maximum time to wait for the network to come up after starting or waking up. When time has passed before network is up startup will continue."
 msgstr ""

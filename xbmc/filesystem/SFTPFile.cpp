@@ -335,7 +335,7 @@ bool CSFTPSession::VerifyKnownHost(ssh_session session)
     case SSH_SERVER_FILE_NOT_FOUND:
       CLog::Log(LOGINFO, "SFTPSession: Server file was not found, creating a new one");
     case SSH_SERVER_NOT_KNOWN:
-      CLog::Log(LOGINFO, "SFTPSession: Server unkown, we trust it for now");
+      CLog::Log(LOGINFO, "SFTPSession: Server unknown, we trust it for now");
       if (ssh_write_knownhost(session) < 0)
       {
         CLog::Log(LOGERROR, "CSFTPSession: Failed to save host '%s'", strerror(errno));

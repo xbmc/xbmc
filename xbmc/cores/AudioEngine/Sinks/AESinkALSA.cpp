@@ -806,7 +806,7 @@ bool CAESinkALSA::InitializeHW(const ALSAConfig &inconfig, ALSAConfig &outconfig
           || snd_pcm_hw_params(m_pcm, hw_params_copy) != 0)
         {
           // set default that Alsa would choose
-          CLog::Log(LOGWARNING, "CAESinkAlsa::IntializeHW - Using default alsa values - set failed");
+          CLog::Log(LOGWARNING, "CAESinkAlsa::InitializeHW - Using default alsa values - set failed");
           if (snd_pcm_hw_params(m_pcm, hw_params) != 0)
           {
             CLog::Log(LOGDEBUG, "CAESinkALSA::InitializeHW - Could not init a valid sink");

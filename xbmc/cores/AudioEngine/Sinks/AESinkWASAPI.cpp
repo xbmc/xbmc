@@ -1118,7 +1118,7 @@ initialize:
   audioSinkBufferDurationMsec = (REFERENCE_TIME)500000;
   if (IsUSBDevice())
   {
-    CLog::Log(LOGDEBUG, __FUNCTION__": detected USB device, increating buffer size");
+    CLog::Log(LOGDEBUG, __FUNCTION__": detected USB device, increasing buffer size");
     audioSinkBufferDurationMsec = (REFERENCE_TIME)1000000;
   }
   audioSinkBufferDurationMsec = (REFERENCE_TIME)((audioSinkBufferDurationMsec / format.m_frameSize) * format.m_frameSize); //even number of frames

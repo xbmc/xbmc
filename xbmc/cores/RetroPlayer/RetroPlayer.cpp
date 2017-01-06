@@ -30,7 +30,6 @@
 #include "utils/log.h"
 #include "utils/MathUtils.h"
 #include "utils/StringUtils.h"
-#include "windowing/WindowingFactory.h"
 #include "FileItem.h"
 #include "URL.h"
 
@@ -41,7 +40,6 @@ CRetroPlayer::CRetroPlayer(IPlayerCallback& callback) :
   m_renderManager(m_clock, this),
   m_processInfo(CProcessInfo::CreateInstance())
 {
-  g_Windowing.Register(this);
 }
 
 CRetroPlayer::~CRetroPlayer()
