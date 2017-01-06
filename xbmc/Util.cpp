@@ -2056,11 +2056,11 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
     if (URIUtils::HasExtension(vecSubtitles[i], ".smi"))
     {
       //Cache multi-language sami subtitle
-      CDVDSubtitleStream* pStream = new CDVDSubtitleStream();
-      if (pStream->Open(vecSubtitles[i]))
+      CDVDSubtitleStream stream;
+      if (stream.Open(vecSubtitles[i]))
       {
         CDVDSubtitleTagSami TagConv;
-        TagConv.LoadHead(pStream);
+        TagConv.LoadHead(&stream);
         if (TagConv.m_Langclass.size() >= 2)
         {
           for (unsigned int k = 0; k < TagConv.m_Langclass.size(); k++)
@@ -2074,7 +2074,6 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
           }
         }
       }
-      delete pStream;
     }
   }
   CLog::Log(LOGDEBUG, "%s: END (total time: %i ms)", __FUNCTION__, (int)(XbmcThreads::SystemClockMillis() - startTimer));
