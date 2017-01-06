@@ -24,6 +24,13 @@
 
 using namespace jni;
 
+CJNIMediaCodecCryptoInfo::CJNIMediaCodecCryptoInfo()
+  : CJNIBase("android/media/MediaCodec$CryptoInfo")
+{
+  m_object = new_object(GetClassName(), "<init>", "()V");
+  m_object.setGlobal();
+}
+
 int CJNIMediaCodecCryptoInfo::numSubSamples() const
 {
   return get_field<int>(m_object, "numSubSamples");

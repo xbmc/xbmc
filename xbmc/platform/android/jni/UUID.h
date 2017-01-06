@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2013 Team XBMC
+ *      Copyright (C) 2016 Team Kodi
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -21,15 +21,11 @@
 
 #include "JNIBase.h"
 
-class CJNIUUID;
-
-class CJNIMediaCrypto : public CJNIBase
+class CJNIUUID : public CJNIBase
 {
 public:
-  CJNIMediaCrypto(const jni::jhobject &object) : CJNIBase(object) {};
-  CJNIMediaCrypto(const CJNIUUID& uuid, const std::vector<char>& initData);
-  ~CJNIMediaCrypto() {}
+  CJNIUUID(int64_t mostSigBits, int64_t leastSigBits);
+  CJNIUUID(const jni::jhobject &object) : CJNIBase(object) {}
+  ~CJNIUUID() {}
 
-  void setMediaDrmSession(const std::vector<char> & sessionId);
-  bool requiresSecureDecoderComponent(const std::string& mime);
 };

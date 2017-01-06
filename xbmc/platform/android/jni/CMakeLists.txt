@@ -34,6 +34,7 @@ set(SOURCES Activity.cpp
             MediaCodecBufferInfo.cpp
             MediaCodec.cpp
             MediaCodecCryptoInfo.cpp
+            MediaCrypto.cpp
             MediaCodecInfo.cpp
             MediaCodecList.cpp
             MediaFormat.cpp
@@ -83,7 +84,7 @@ set(SOURCES Activity.cpp
             InetAddress.cpp
             NetworkInterface.cpp
             Rect.cpp
-            )
+            UUID.cpp)
 
 set(HEADERS Activity.h
             ApplicationInfo.h
@@ -171,6 +172,7 @@ set(HEADERS Activity.h
             NetworkInterface.h
             Rect.h
             jutils/jutils.hpp
-            jutils/jutils-details.hpp)
+            jutils/jutils-details.hpp
+            UUID.h)
 
 core_add_library(platform_android_jni)
