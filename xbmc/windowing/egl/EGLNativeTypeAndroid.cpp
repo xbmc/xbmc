@@ -147,7 +147,7 @@ void CEGLNativeTypeAndroid::Initialize()
   std::string displaySize;
   m_width = m_height = 0;
 
-  if (CJNIBuild::DEVICE != "foster")   // Buggy implementation of DisplayMode API on SATV
+  if (CJNIBuild::DEVICE != "foster" || CJNIBase::GetSDKVersion() >= 24)   // Buggy implementation of DisplayMode API on SATV
   {
     fetchDisplayModes();
     for (auto res : s_res_displayModes)
