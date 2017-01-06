@@ -146,7 +146,7 @@ if(NOT DEFINED NEON OR NEON)
   option(ENABLE_NEON "Enable NEON optimization" ${NEON})
   if(ENABLE_NEON)
     message(STATUS "NEON optimization enabled")
-    add_options(CXX ALL_BUILDS "-mfpu=neon -mvectorize-with-neon-quad")
+    add_options(ALL_LANGUAGES ALL_BUILDS ${NEON_FLAGS})
   endif()
 endif()
 
