@@ -18,7 +18,7 @@
  *
  */
 #include "system.h"
-#include "Visualisation.h"
+#include "Visualization.h"
 #include "GUIInfoManager.h"
 #include "ServiceBroker.h"
 #include "guiinfo/GUIInfoLabels.h"

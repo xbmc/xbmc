@@ -34,7 +34,7 @@
 #include "utils/URIUtils.h"
 #include "utils/Weather.h"
 #include "PartyModeManager.h"
-#include "addons/Visualisation.h"
+#include "addons/interfaces/kodi/visualization/Visualization.h"
 #include "input/ButtonTranslator.h"
 #include "utils/AlarmClock.h"
 #include "LangInfo.h"

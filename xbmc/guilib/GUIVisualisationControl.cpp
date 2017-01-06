@@ -24,7 +24,7 @@
 #include "Application.h"
 #include "addons/AddonManager.h"
 #include "addons/AddonSystemSettings.h"
-#include "addons/Visualisation.h"
+#include "addons/interfaces/kodi/visualization/Visualization.h"
 #include "utils/log.h"
 #include "input/Key.h"
 

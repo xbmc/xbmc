@@ -29,7 +29,6 @@ set(SOURCES Addon.cpp
             Service.cpp
             Skin.cpp
             UISoundsResource.cpp
-            Visualisation.cpp
             Webinterface.cpp)
 
 set(HEADERS Addon.h
@@ -68,7 +67,6 @@ set(HEADERS Addon.h
             Service.h
             Skin.h
             UISoundsResource.h
-            Visualisation.h
             Webinterface.h)
 
 core_add_library(addons)
