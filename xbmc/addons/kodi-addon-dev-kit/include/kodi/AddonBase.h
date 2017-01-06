@@ -510,9 +510,9 @@ inline void Log(const AddonLog loglevel, const char* format, ...)
  */
 #define ADDONCREATOR(AddonClass) \
   extern "C" __declspec(dllexport) void get_addon(void* pAddon) {} \
-  extern "C" __declspec(dllexport) ADDON_STATUS ADDON_Create(KODI_HANDLE interface, void *unused) \
+  extern "C" __declspec(dllexport) ADDON_STATUS ADDON_Create(KODI_HANDLE addonInterface, void *unused) \
   { \
-    kodi::addon::CAddonBase::m_interface = static_cast<AddonGlobalInterface*>(interface); \
+    kodi::addon::CAddonBase::m_interface = static_cast<AddonGlobalInterface*>(addonInterface); \
     kodi::addon::CAddonBase::m_interface->addonBase = new AddonClass; \
     return kodi::addon::CAddonBase::m_interface->addonBase->Create(); \
   } \
