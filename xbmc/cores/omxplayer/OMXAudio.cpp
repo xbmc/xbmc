@@ -38,7 +38,7 @@
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "guilib/LocalizeStrings.h"
-#include "cores/AudioEngine/AEFactory.h"
+//#include "cores/AudioEngine/AEFactory.h"
 #include "Util.h"
 #include <algorithm>
 #include <cassert>
@@ -94,16 +94,16 @@ COMXAudio::COMXAudio() :
   m_failed_eos      (false  ),
   m_output          (AESINKPI_UNKNOWN)
 {
-  CAEFactory::Suspend();
-  while (!CAEFactory::IsSuspended())
-    Sleep(10);
+  //CAEFactory::Suspend();
+  //while (!CAEFactory::IsSuspended())
+  //  Sleep(10);
 }
 
 COMXAudio::~COMXAudio()
 {
   Deinitialize();
 
-  CAEFactory::Resume();
+  //CAEFactory::Resume();
 }
 
 bool COMXAudio::PortSettingsChanged()
@@ -602,7 +602,7 @@ bool COMXAudio::Initialize(AEAudioFormat format, OMXClock *clock, CDVDStreamInfo
     CAEChannelInfo resolvedMap = channelMap;
     resolvedMap.ResolveChannels(stdLayout);
 
-    if (CServiceBroker::GetSettings().GetInt(CSettings::SETTING_AUDIOOUTPUT_CONFIG) == AE_CONFIG_FIXED || (upmix && channelMap.Count() <= 2))
+    if (CServiceBroker::GetSettings().GetInt(CSettings::SETTING_AUDIOOUTPUT_CONFIG) == 1 /*AE_CONFIG_FIXED*/ || (upmix && channelMap.Count() <= 2))
       resolvedMap = stdLayout;
 
     uint64_t m_dst_chan_layout = GetAVChannelLayout(resolvedMap);

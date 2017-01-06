@@ -25,7 +25,7 @@
 #include "utils/log.h"
 
 #include "cores/AudioEngine/Utils/AEUtil.h"
-#include "cores/AudioEngine/AEFactory.h"
+//#include "cores/AudioEngine/AEFactory.h"
 #include "settings/Settings.h"
 #include "linux/RBP.h"
 
@@ -95,6 +95,7 @@ bool COMXAudioCodecOMX::Open(CDVDStreamInfo &hints)
   m_pCodecContext->block_align = hints.blockalign;
   m_pCodecContext->bit_rate = hints.bitrate;
   m_pCodecContext->bits_per_coded_sample = hints.bitspersample;
+#if 0
   if (hints.codec == AV_CODEC_ID_TRUEHD)
   {
     if (CAEFactory::HasStereoAudioChannelCount())
@@ -102,6 +103,7 @@ bool COMXAudioCodecOMX::Open(CDVDStreamInfo &hints)
     else if (!CAEFactory::HasHDAudioChannelCount())
       m_pCodecContext->request_channel_layout = AV_CH_LAYOUT_5POINT1;
   }
+#endif
   if (m_pCodecContext->request_channel_layout)
     CLog::Log(LOGNOTICE,"COMXAudioCodecOMX::Open() Requesting channel layout of %x", (unsigned)m_pCodecContext->request_channel_layout);
 

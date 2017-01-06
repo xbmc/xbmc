@@ -56,7 +56,7 @@ public:
   virtual ~CDecoder();
   virtual bool Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat, unsigned int surfaces);
   virtual int Decode(AVCodecContext* avctx, AVFrame* frame);
-  virtual bool GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* picture);
+  virtual bool GetPicture(AVCodecContext* avctx, DVDVideoPicture* picture);
   virtual int Check(AVCodecContext* avctx);
   virtual void Close();
   virtual const std::string Name() { return "mmal"; }
@@ -74,6 +74,7 @@ protected:
   std::shared_ptr<CMMALPool> m_pool;
   enum AVPixelFormat m_fmt;
   CDVDStreamInfo m_hints;
+  CGPUMEM *m_gmem;
 };
 
 };

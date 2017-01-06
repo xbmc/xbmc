@@ -103,6 +103,7 @@ CDecoder::CDecoder(CProcessInfo &processInfo, CDVDStreamInfo &hints) : m_process
   m_shared = 0;
   m_avctx = nullptr;
   m_pool = nullptr;
+  m_gmem = nullptr;
 }
 
 CDecoder::~CDecoder()
@@ -262,6 +263,19 @@ bool CDecoder::Open(AVCodecContext *avctx, AVCodecContext* mainctx, enum AVPixel
 
 int CDecoder::Decode(AVCodecContext* avctx, AVFrame* frame)
 {
+  CSingleLock lock(m_section);
+
+  if (frame)
+  {
+    if ((frame->format != AV_PIX_FMT_YUV420P && frame->format != AV_PIX_FMT_BGR0 && frame->format != AV_PIX_FMT_RGB565LE) ||
+        frame->buf[1] != nullptr || frame->buf[0] == nullptr)
+    {
+      CLog::Log(LOGERROR, "%s::%s frame format invalid format:%d buf:%p,%p", CLASSNAME, __func__, frame->format, frame->buf[0], frame->buf[1]);
+      return VC_ERROR;
+    }
+    AVBufferRef *buf = frame->buf[0];
+    m_gmem = (CGPUMEM *)av_buffer_get_opaque(buf);
+  }
   int status = Check(avctx);
   if(status)
     return status;
@@ -272,35 +286,28 @@ int CDecoder::Decode(AVCodecContext* avctx, AVFrame* frame)
     return VC_BUFFER;
 }
 
-bool CDecoder::GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* picture)
+bool CDecoder::GetPicture(AVCodecContext* avctx, DVDVideoPicture* picture)
 {
-  CDVDVideoCodecFFmpeg* ctx = (CDVDVideoCodecFFmpeg*)avctx->opaque;
-  bool ret = ctx->GetPictureCommon(picture);
-  if (!ret)
-    return false;
-
-  if ((frame->format != AV_PIX_FMT_YUV420P && frame->format != AV_PIX_FMT_BGR0 && frame->format != AV_PIX_FMT_RGB565LE) ||
-      frame->buf[1] != nullptr || frame->buf[0] == nullptr)
-    return false;
-
   CSingleLock lock(m_section);
 
-  AVBufferRef *buf = frame->buf[0];
-  CGPUMEM *gmem = (CGPUMEM *)av_buffer_get_opaque(buf);
+  CDVDVideoCodecFFmpeg* ctx = (CDVDVideoCodecFFmpeg*)avctx->opaque;
+  bool ret = ctx->GetPictureCommon(picture);
+  if (!ret || !m_gmem)
+    return false;
 
-  picture->MMALBuffer = (CMMALYUVBuffer *)gmem->m_opaque;
+  picture->MMALBuffer = (CMMALYUVBuffer *)m_gmem->m_opaque;
   assert(picture->MMALBuffer);
   picture->format = RENDER_FMT_MMAL;
   assert(picture->MMALBuffer->mmal_buffer);
-  picture->MMALBuffer->mmal_buffer->data = (uint8_t *)gmem->m_vc_handle;
-  picture->MMALBuffer->mmal_buffer->alloc_size = picture->MMALBuffer->mmal_buffer->length = gmem->m_numbytes;
+  picture->MMALBuffer->mmal_buffer->data = (uint8_t *)m_gmem->m_vc_handle;
+  picture->MMALBuffer->mmal_buffer->alloc_size = picture->MMALBuffer->mmal_buffer->length = m_gmem->m_numbytes;
   picture->MMALBuffer->m_stills = m_hints.stills;
 
   // need to flush ARM cache so GPU can see it
-  gmem->Flush();
+  m_gmem->Flush();
 
   if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-    CLog::Log(LOGDEBUG, "%s::%s - mmal:%p dts:%.3f pts:%.3f buf:%p gpu:%p", CLASSNAME, __FUNCTION__, picture->MMALBuffer->mmal_buffer, 1e-6*picture->dts, 1e-6*picture->pts, picture->MMALBuffer, gmem);
+    CLog::Log(LOGDEBUG, "%s::%s - mmal:%p dts:%.3f pts:%.3f buf:%p gpu:%p", CLASSNAME, __FUNCTION__, picture->MMALBuffer->mmal_buffer, 1e-6*picture->dts, 1e-6*picture->pts, picture->MMALBuffer, m_gmem);
   return true;
 }
 
