@@ -147,6 +147,7 @@ struct DXVABuffer : SVideoBuffer
   ~DXVABuffer() { SAFE_RELEASE(pic); }
   DXVA::CRenderPicture *pic;
   unsigned int frameIdx;
+  unsigned int pictureFlags;
 };
 
 class CWinRenderer : public CBaseRenderer
