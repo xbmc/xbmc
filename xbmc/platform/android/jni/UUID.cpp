@@ -1,6 +1,5 @@
-#pragma once
 /*
- *      Copyright (C) 2013 Team XBMC
+ *      Copyright (C) 2016 Team Kodi
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,17 +18,16 @@
  *
  */
 
-#include "JNIBase.h"
 
-class CJNIUUID;
+#include "UUID.h"
 
-class CJNIMediaCrypto : public CJNIBase
+#include "jutils/jutils-details.hpp"
+
+using namespace jni;
+
+CJNIUUID::CJNIUUID(int64_t mostSigBits, int64_t leastSigBits)
+  : CJNIBase("java/util/UUID")
 {
-public:
-  CJNIMediaCrypto(const jni::jhobject &object) : CJNIBase(object) {};
-  CJNIMediaCrypto(const CJNIUUID& uuid, const std::vector<char>& initData);
-  ~CJNIMediaCrypto() {}
-
-  void setMediaDrmSession(const std::vector<char> & sessionId);
-  bool requiresSecureDecoderComponent(const std::string& mime);
-};
+  m_object = new_object(GetClassName(), "<init>", "(JJ)V", mostSigBits, leastSigBits);
+  m_object.setGlobal();
+}
