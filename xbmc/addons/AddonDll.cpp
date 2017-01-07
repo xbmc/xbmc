@@ -62,7 +62,7 @@ CAddonDll::CAddonDll(const CAddonDll &rhs)
   m_pHelpers          = rhs.m_pHelpers;
   m_needsavedsettings = rhs.m_needsavedsettings;
   m_parentLib = rhs.m_parentLib;
-  memset(&m_interface, 0, sizeof(m_interface));
+  m_interface = rhs.m_interface;
 }
 
 CAddonDll::~CAddonDll()
@@ -611,6 +611,16 @@ ADDON_STATUS CAddonDll::TransferSettings()
   }
 
   return ADDON_STATUS_OK;
+}
+
+void CAddonDll::UpdateSettings(std::map<std::string, std::string>& settings)
+{
+  if (m_interface.toAddon.set_setting)
+  {
+    for (auto it = settings.begin(); it != settings.end(); ++it)
+      m_interface.toAddon.set_setting(it->first.c_str(), it->second.c_str(), (std::next(it) == settings.end()) ? true : false);
+  }
+  CAddon::UpdateSettings(settings);
 }
 
 /*!

@@ -55,6 +55,8 @@ namespace ADDON
     ADDON_STATUS CreateInstance(int instanceType, const std::string& instanceID, KODI_HANDLE instance, KODI_HANDLE* addonInstance);
     void DestroyInstance(const std::string& instanceID);
 
+    virtual void UpdateSettings(std::map<std::string, std::string>& settings);
+
   protected:
     bool Initialized() { return m_initialized; }
     virtual bool LoadSettings();
