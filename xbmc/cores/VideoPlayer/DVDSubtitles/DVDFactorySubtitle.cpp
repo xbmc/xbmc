@@ -28,16 +28,17 @@
 #include "DVDSubtitleParserSSA.h"
 #include "DVDSubtitleParserVplayer.h"
 
+#include <memory>
+
 CDVDSubtitleParser* CDVDFactorySubtitle::CreateParser(std::string& strFile)
 {
   char line[1024];
   int i;
   CDVDSubtitleParser* pParser = NULL;
 
-  CDVDSubtitleStream* pStream = new CDVDSubtitleStream();
+  std::unique_ptr<CDVDSubtitleStream> pStream(new CDVDSubtitleStream());
   if(!pStream->Open(strFile))
   {
-    delete pStream;
     return NULL;
   }
 
@@ -48,33 +49,27 @@ CDVDSubtitleParser* CDVDFactorySubtitle::CreateParser(std::string& strFile)
       if ((sscanf (line, "{%d}{}", &i)==1) ||
           (sscanf (line, "{%d}{%d}", &i, &i)==2))
       {
-        pParser = new CDVDSubtitleParserMicroDVD(pStream, strFile.c_str());
-        pStream = NULL;
+        pParser = new CDVDSubtitleParserMicroDVD(std::move(pStream), strFile.c_str());
       }
       else if (sscanf(line, "[%d][%d]", &i, &i) == 2)
       {
-        pParser = new CDVDSubtitleParserMPL2(pStream, strFile.c_str());
-        pStream = NULL;
+        pParser = new CDVDSubtitleParserMPL2(std::move(pStream), strFile.c_str());
       }
       else if (sscanf(line, "%d:%d:%d%*c%d --> %d:%d:%d%*c%d", &i, &i, &i, &i, &i, &i, &i, &i) == 8)
       {
-        pParser = new CDVDSubtitleParserSubrip(pStream, strFile.c_str());
-        pStream = NULL;
+        pParser = new CDVDSubtitleParserSubrip(std::move(pStream), strFile.c_str());
       }
       else if (sscanf(line, "%d:%d:%d:", &i, &i, &i) == 3)
       {
-        pParser = new CDVDSubtitleParserVplayer(pStream, strFile.c_str());
-        pStream = NULL;
+        pParser = new CDVDSubtitleParserVplayer(std::move(pStream), strFile.c_str());
       }
       else if ((!memcmp(line, "Dialogue: Marked", 16)) || (!memcmp(line, "Dialogue: ", 10)))
       {
-        pParser =  new CDVDSubtitleParserSSA(pStream, strFile.c_str());
-        pStream = NULL;
+        pParser =  new CDVDSubtitleParserSSA(std::move(pStream), strFile.c_str());
       }
       else if (strstr (line, "<SAMI>"))
       {
-        pParser = new CDVDSubtitleParserSami(pStream, strFile.c_str());
-        pStream = NULL;
+        pParser = new CDVDSubtitleParserSami(std::move(pStream), strFile.c_str());
       }
     }
     else
@@ -82,8 +77,7 @@ CDVDSubtitleParser* CDVDFactorySubtitle::CreateParser(std::string& strFile)
       break;
     }
   }
-  if (pStream)
-    delete pStream;
+
   return pParser;
 }
 
