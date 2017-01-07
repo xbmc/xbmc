@@ -21,7 +21,6 @@
 #include "DVDFactorySubtitle.h"
 
 #include "DVDSubtitleStream.h"
-//#include "DVDSubtitleParserSpu.h"
 #include "DVDSubtitleParserSubrip.h"
 #include "DVDSubtitleParserMicroDVD.h"
 #include "DVDSubtitleParserMPL2.h"
@@ -72,73 +71,11 @@ CDVDSubtitleParser* CDVDFactorySubtitle::CreateParser(std::string& strFile)
         pParser =  new CDVDSubtitleParserSSA(pStream, strFile.c_str());
         pStream = NULL;
       }
-      //   if (sscanf (line, "%d:%d:%d.%d,%d:%d:%d.%d",     &i, &i, &i, &i, &i, &i, &i, &i)==8){
-      //     this->uses_time=1;
-      //     xprintf (this->stream->xine, XINE_VERBOSITY_DEBUG, "subviewer subtitle format detected\n");
-      //     return FORMAT_SUBVIEWER;
-      //   }
-
-      //   if (sscanf (line, "%d:%d:%d,%d,%d:%d:%d,%d",     &i, &i, &i, &i, &i, &i, &i, &i)==8){
-      //     this->uses_time=1;
-      //     xprintf (this->stream->xine, XINE_VERBOSITY_DEBUG, "subviewer subtitle format detected\n");
-      //     return FORMAT_SUBVIEWER;
-      //   }
-
       else if (strstr (line, "<SAMI>"))
       {
         pParser = new CDVDSubtitleParserSami(pStream, strFile.c_str());
         pStream = NULL;
       }
-      //   /*
-      //   * A RealText format is a markup language, starts with <window> tag,
-      //   * options (behaviour modifiers) are possible.
-      //   */
-      //   if ( !strcasecmp(line, "<window") ) {
-      //     this->uses_time=1;
-      //     xprintf (this->stream->xine, XINE_VERBOSITY_DEBUG, "rt subtitle format detected\n");
-      //     return FORMAT_RT;
-      //   }
-      //   if ((!memcmp(line, "Dialogue: Marked", 16)) || (!memcmp(line, "Dialogue: ", 10))) {
-      //     this->uses_time=1;
-      //     xprintf (this->stream->xine, XINE_VERBOSITY_DEBUG, "ssa subtitle format detected\n");
-      //     return FORMAT_SSA;
-      //   }
-      //   if (sscanf (line, "%d,%d,\"%c", &i, &i, (char *) &i) == 3) {
-      //     this->uses_time=0;
-      //     xprintf (this->stream->xine, XINE_VERBOSITY_DEBUG, "pjs subtitle format detected\n");
-      //     return FORMAT_PJS;
-      //   }
-      //   if (sscanf (line, "FORMAT=%d", &i) == 1) {
-      //     this->uses_time=0;
-      //     xprintf (this->stream->xine, XINE_VERBOSITY_DEBUG, "mpsub subtitle format detected\n");
-      //     return FORMAT_MPSUB;
-      //   }
-      //   if (sscanf (line, "FORMAT=TIM%c", &p)==1 && p=='E') {
-      //     this->uses_time=1;
-      //     xprintf (this->stream->xine, XINE_VERBOSITY_DEBUG, "mpsub subtitle format detected\n");
-      //     return FORMAT_MPSUB;
-      //   }
-      //   if (strstr (line, "-->>")) {
-      //     this->uses_time=0;
-      //     xprintf (this->stream->xine, XINE_VERBOSITY_DEBUG, "aqtitle subtitle format detected\n");
-      //     return FORMAT_AQTITLE;
-      //   }
-      //   if (sscanf(line, "@%d @%d", &i, &i) == 2 ||
-      //sscanf(line, "%d:%d:%d.%d %d:%d:%d.%d", &i, &i, &i, &i, &i, &i, &i, &i) == 8) {
-      //     this->uses_time = 1;
-      //     xprintf (this->stream->xine, XINE_VERBOSITY_DEBUG, "jacobsub subtitle format detected\n");
-      //     return FORMAT_JACOBSUB;
-      //   }
-      //   if (sscanf(line, "{T %d:%d:%d:%d",&i, &i, &i, &i) == 4) {
-      //     this->uses_time = 1;
-      //     xprintf (this->stream->xine, XINE_VERBOSITY_DEBUG, "subviewer 2.0 subtitle format detected\n");
-      //     return FORMAT_SUBVIEWER2;
-      //   }
-      //   if (sscanf(line, "[%d:%d:%d]", &i, &i, &i) == 3) {
-      //     this->uses_time = 1;
-      //     xprintf (this->stream->xine, XINE_VERBOSITY_DEBUG, "subrip 0.9 subtitle format detected\n");
-      //     return FORMAT_SUBRIP09;
-      //   }
     }
     else
     {
