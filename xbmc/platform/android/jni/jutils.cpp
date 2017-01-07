@@ -116,6 +116,7 @@ std::vector<std::string> jcast_helper<std::vector<std::string>, jobjectArray >::
       ret.push_back(newString);
       env->ReleaseStringUTFChars(element, newString);
     }
+    env->DeleteLocalRef(element);
   }
   return ret;
 }
