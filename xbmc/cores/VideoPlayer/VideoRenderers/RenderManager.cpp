@@ -419,10 +419,9 @@ void CRenderManager::FrameMove()
       }
       else
         ++it;
-
-      m_playerPort->UpdateRenderBuffers(m_queued.size(), m_discard.size(), m_free.size());
     }
-    
+
+    m_playerPort->UpdateRenderBuffers(m_queued.size(), m_discard.size(), m_free.size());
     m_bRenderGUI = true;
   }
 
