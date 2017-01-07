@@ -23,9 +23,11 @@
 
 #include "addons/kodi-addon-dev-kit/include/kodi/General.h"
 
+#include "GUIUserMessages.h"
 #include "ServiceBroker.h"
 #include "addons/AddonDll.h"
 #include "addons/GUIDialogAddonSettings.h"
+#include "guilib/GUIWindowManager.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
@@ -39,6 +41,7 @@ void Interface_General::Init(AddonGlobalInterface* addonInterface)
 {
   addonInterface->toKodi.kodi = (AddonToKodiFuncTable_kodi*)malloc(sizeof(AddonToKodiFuncTable_kodi));
   addonInterface->toKodi.kodi->get_setting = get_setting;
+  addonInterface->toKodi.kodi->set_setting = set_setting;
   addonInterface->toKodi.kodi->open_settings_dialog = open_settings_dialog;
 }
 
@@ -132,6 +135,41 @@ bool Interface_General::get_setting(void* kodiBase, const char* settingName, voi
   CLog::Log(LOGERROR, "kodi::General::%s - can't find setting '%s' in '%s'", __FUNCTION__, settingName, addon->Name().c_str());
 
   return false;
+}
+
+bool Interface_General::set_setting(void* kodiBase, const char* settingName, const char* settingValue)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  if (addon == nullptr || settingName == nullptr || settingValue == nullptr)
+  {
+    CLog::Log(LOGERROR, "kodi::General::%s - invalid data (addon='%p', settingName='%p', settingValue='%p')",
+                                        __FUNCTION__, addon, settingName, settingValue);
+
+    return false;
+  }
+
+  bool save = true;
+  if (g_windowManager.IsWindowActive(WINDOW_DIALOG_ADDON_SETTINGS))
+  {
+    CGUIDialogAddonSettings* dialog = dynamic_cast<CGUIDialogAddonSettings*>(g_windowManager.GetWindow(WINDOW_DIALOG_ADDON_SETTINGS));
+    if (dialog->GetCurrentID() == addon->ID())
+    {
+      CGUIMessage message(GUI_MSG_SETTING_UPDATED, 0, 0);
+      std::vector<std::string> params;
+      params.push_back(settingName);
+      params.push_back(settingValue);
+      message.SetStringParams(params);
+      g_windowManager.SendThreadMessage(message, WINDOW_DIALOG_ADDON_SETTINGS);
+      save=false;
+    }
+  }
+  if (save)
+  {
+    addon->UpdateSetting(settingName, settingValue);
+    addon->SaveSettings();
+  }
+
+  return true;
 }
 
 void Interface_General::open_settings_dialog(void* kodiBase)

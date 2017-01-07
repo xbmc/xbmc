@@ -124,6 +124,7 @@ namespace ADDON
     virtual bool HasSettings() =0;
     virtual void SaveSettings() =0;
     virtual void UpdateSetting(const std::string& key, const std::string& value) =0;
+    virtual void UpdateSettings(std::map<std::string, std::string>& settings) =0;
     virtual std::string GetSetting(const std::string& key) =0;
     virtual TiXmlElement* GetSettingsXML() =0;
     virtual const ADDONDEPS &GetDeps() const =0;

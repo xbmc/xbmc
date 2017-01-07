@@ -145,6 +145,8 @@ public:
    */
   void UpdateSetting(const std::string& key, const std::string& value) override;
 
+  virtual void UpdateSettings(std::map<std::string, std::string>& settings);
+
   /*! \brief Retrieve a particular settings value
    If a previously configured user setting is available, we return it's value, else we return the default (if available)
    \param key the id of the setting to retrieve
