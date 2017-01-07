@@ -443,6 +443,11 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
           SAFE_DELETE(m_bitstream);
         }
       }
+      else
+      {
+        CLog::Log(LOGWARNING, "CDVDVideoCodecAndroidMediaCodec::Open - No extradata found");
+        return false;
+      }
       break;
     case AV_CODEC_ID_HEVC:
       m_mime = "video/hevc";
@@ -455,6 +460,11 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
         {
           SAFE_DELETE(m_bitstream);
         }
+      }
+      else
+      {
+        CLog::Log(LOGWARNING, "CDVDVideoCodecAndroidMediaCodec::Open - No extradata found");
+        return false;
       }
       break;
     case AV_CODEC_ID_WMV3:
