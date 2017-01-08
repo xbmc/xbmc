@@ -23,6 +23,7 @@
 #include "system.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFormats.h"
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
+#include "DVDResource.h"
 
 extern "C" {
 #include "libavcodec/avcodec.h"
