@@ -564,3 +564,6 @@ exclude_dll.txt
 
 #certificates
 /system/certs/
+
+#Workaround for autotools right before final Krypton
+xbmc/cores/AudioEngine/AEDefines_override.h
