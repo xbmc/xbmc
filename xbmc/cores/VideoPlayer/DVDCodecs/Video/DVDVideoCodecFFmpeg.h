@@ -37,16 +37,14 @@ extern "C" {
 #include "libpostproc/postprocess.h"
 }
 
-class CCriticalSection;
-
 class CDVDVideoCodecFFmpeg : public CDVDVideoCodec
 {
 public:
   class IHardwareDecoder : public IDVDResourceCounted<IHardwareDecoder>
   {
     public:
-    IHardwareDecoder() {}
-    virtual ~IHardwareDecoder() {};
+    IHardwareDecoder() = default;
+    virtual ~IHardwareDecoder() = default;
     virtual bool Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat, unsigned int surfaces) = 0;
     virtual int  Decode(AVCodecContext* avctx, AVFrame* frame) = 0;
     virtual bool GetPicture(AVCodecContext* avctx, DVDVideoPicture* picture) = 0;
@@ -64,7 +62,6 @@ public:
   virtual int AddData(uint8_t* pData, int iSize, double dts, double pts) override;
   virtual void Reset() override;
   virtual void Reopen() override;
-  bool GetPictureCommon(DVDVideoPicture* pDvdVideoPicture);
   virtual int GetPicture(DVDVideoPicture* pDvdVideoPicture) override;
   virtual const char* GetName() override { return m_name.c_str(); }; // m_name is never changed after open
   virtual unsigned GetConvergeCount() override;
@@ -72,8 +69,8 @@ public:
   virtual bool GetCodecStats(double &pts, int &droppedFrames, int &skippedPics) override;
   virtual void SetCodecControl(int flags) override;
 
-  IHardwareDecoder * GetHardware() { return m_pHardware; };
-  void SetHardware(IHardwareDecoder* hardware);
+  IHardwareDecoder* GetHardware() { return m_pHardware; };
+  bool GetPictureCommon(DVDVideoPicture* pDvdVideoPicture);
 
 protected:
   void Dispose();
@@ -86,16 +83,21 @@ protected:
   void UpdateName();
   bool SetPictureParams(DVDVideoPicture* pDvdVideoPicture);
 
+  IHardwareDecoder* CreateVideoDecoderHW(AVPixelFormat pixfmt, CProcessInfo &processInfo);
+  bool HasHardware() { return m_pHardware != nullptr; };
+  void SetHardware(IHardwareDecoder *hardware);
+
+
   AVFrame* m_pFrame;
   AVFrame* m_pDecodedFrame;
   AVCodecContext* m_pCodecContext;
 
-  std::string       m_filters;
-  std::string       m_filters_next;
-  AVFilterGraph*   m_pFilterGraph;
+  std::string m_filters;
+  std::string m_filters_next;
+  AVFilterGraph* m_pFilterGraph;
   AVFilterContext* m_pFilterIn;
   AVFilterContext* m_pFilterOut;
-  AVFrame*         m_pFilterFrame;
+  AVFrame* m_pFilterFrame;
   bool m_filterEof;
   bool m_eof;
 
