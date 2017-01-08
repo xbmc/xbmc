@@ -89,7 +89,7 @@ void CVideoSyncOsx::RefreshChanged()
   m_displayReset = true;
 }
 
-void CVideoSyncOsx::OnLostDevice()
+void CVideoSyncOsx::OnLostDisplay()
 {
   if (!m_displayLost)
   {
@@ -98,7 +98,7 @@ void CVideoSyncOsx::OnLostDevice()
   }
 }
 
-void CVideoSyncOsx::OnResetDevice()
+void CVideoSyncOsx::OnResetDisplay()
 {
   m_displayReset = true;
 }
