@@ -37,6 +37,7 @@
  * Standard addon interface function includes
  */
 #include "addons/interfaces/kodi/General.h"
+#include "addons/interfaces/kodi/gui/General.h"
 
 namespace ADDON
 {
@@ -650,6 +651,7 @@ bool CAddonDll::InitInterface(KODI_HANDLE firstKodiInstance)
   m_interface.toKodi.free_string = free_string;
 
   Interface_General::Init(&m_interface);
+  Interface_GUIGeneral::Init(&m_interface);
 
   return true;
 }

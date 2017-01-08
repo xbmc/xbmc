@@ -143,6 +143,7 @@ typedef ADDON_HANDLE_STRUCT *ADDON_HANDLE;
  * Set complete from Kodi!
  */
 struct AddonToKodiFuncTable_kodi;
+struct AddonToKodiFuncTable_kodi_gui;
 typedef struct AddonToKodiFuncTable_Addon
 {
   // Pointer inside Kodi, used on callback functions to give related handle
@@ -156,6 +157,7 @@ typedef struct AddonToKodiFuncTable_Addon
   void (*free_string)(void* kodiBase, char* str);
 
   AddonToKodiFuncTable_kodi* kodi;
+  AddonToKodiFuncTable_kodi_gui* kodi_gui;
 } AddonToKodiFuncTable_Addon;
 
 /*

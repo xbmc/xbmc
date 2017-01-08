@@ -166,7 +166,7 @@ namespace addon
     virtual bool LockPreset(bool lockUnlock) { return false; }
     virtual bool RatePreset(bool plusMinus) { return false; }
     virtual bool UpdateAlbumart(std::string albumart) { return false; }
-    virtual bool UpdateTrack(const VisTrack &track) { return false; }
+    virtual bool UpdateTrack(const kodi::addon::VisTrack &track) { return false; }
 
     inline void* Device() { return m_instanceData->props.device; }
     inline int X() { return m_instanceData->props.x; }
