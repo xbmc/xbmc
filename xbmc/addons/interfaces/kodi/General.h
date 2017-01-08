@@ -55,6 +55,7 @@ namespace ADDON
     static bool get_setting(void* kodiBase, const char* settingName, void* settingValue);
     static bool set_setting(void* kodiBase, const char* settingName, const char* settingValue);
     static void open_settings_dialog(void* kodiBase);
+    static char* get_localized_string(void* kodiBase, long dwCode);
     //@}
   };
 

@@ -41,6 +41,7 @@ typedef struct AddonToKodiFuncTable_kodi
   bool (*get_setting)(void* kodiBase, const char* settingName, void *settingValue);
   bool (*set_setting)(void* kodiBase, const char* settingName, const char* settingValue);
   void (*open_settings_dialog)(void* kodiBase);
+  char* (*get_localized_string)(void* kodiInstance, long dwCode);
 } AddonToKodiFuncTable_kodi;
 
 } /* extern "C" */
@@ -166,6 +167,22 @@ namespace kodi
   inline void OpenSettings()
   {
     ::kodi::addon::CAddonBase::m_interface->toKodi.kodi->open_settings_dialog(::kodi::addon::CAddonBase::m_interface->toKodi.kodiBase);
+  }
+  //----------------------------------------------------------------------------
+
+  //============================================================================
+  ///
+  inline std::string GetLocalizedString(uint32_t labelId, const std::string& defaultStr = "")
+  {
+    std::string retString = defaultStr;
+    char* strMsg = ::kodi::addon::CAddonBase::m_interface->toKodi.kodi->get_localized_string(::kodi::addon::CAddonBase::m_interface->toKodi.kodiBase, labelId);
+    if (strMsg != nullptr)
+    {
+      if (std::strlen(strMsg))
+        retString = strMsg;
+      ::kodi::addon::CAddonBase::m_interface->toKodi.free_string(::kodi::addon::CAddonBase::m_interface->toKodi.kodiBase,strMsg);
+    }
+    return retString;
   }
   //----------------------------------------------------------------------------
 
