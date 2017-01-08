@@ -72,7 +72,7 @@ public:
 
 private:
   // private construction, and no assignements; use the provided singleton methods
-  CGenericTouchActionHandler() { }
+  CGenericTouchActionHandler() : m_gestures(0) { }
   CGenericTouchActionHandler(const CGenericTouchActionHandler&);
   CGenericTouchActionHandler const& operator=(CGenericTouchActionHandler const&);
   virtual ~CGenericTouchActionHandler() { }
@@ -80,4 +80,6 @@ private:
   void touch(uint8_t type, uint8_t button, uint16_t x, uint16_t y);
   void sendEvent(int actionId, float x, float y, float x2 = 0.0f, float y2 = 0.0f, int pointers = 1);
   void focusControl(float x, float y);
+
+  int m_gestures;
 };
