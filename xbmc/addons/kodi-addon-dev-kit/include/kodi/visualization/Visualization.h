@@ -21,6 +21,8 @@
 
 #include "../AddonBase.h"
 
+namespace kodi { namespace addon { class CInstanceVisualization; }}
+
 extern "C"
 {
 
@@ -43,8 +45,6 @@ struct VIS_INFO
   bool bWantsFreq;
   int iSyncDelay;
 };
-
-namespace kodi { namespace addon { class CInstanceVisualization; }}
 
 typedef struct AddonProps_Visualization
 {
@@ -87,6 +87,8 @@ typedef struct AddonInstance_Visualization
   KodiToAddonFuncTable_Visualization toAddon;
 } AddonInstance_Visualization;
 
+} /* extern "C" */
+
 namespace kodi
 {
 namespace addon
@@ -113,13 +115,13 @@ namespace addon
     const char *reserved1;
     const char *reserved2;
 
-    int        trackNumber;
-    int        discNumber;
-    int        duration;
-    int        year;
-    char       rating;
-    int        reserved3;
-    int        reserved4;
+    int trackNumber;
+    int discNumber;
+    int duration;
+    int year;
+    char rating;
+    int reserved3;
+    int reserved4;
   };
 
   class CInstanceVisualization : public IAddonInstance
@@ -285,4 +287,3 @@ namespace addon
 
 } /* namespace addon */
 } /* namespace kodi */
-} /* extern "C" */
