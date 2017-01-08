@@ -20,6 +20,7 @@
  *
  */
 
+#include <memory>
 #include <set>
 #include "guilib/GUIDialog.h"
 #include "threads/Thread.h"
@@ -152,7 +153,7 @@ private:
 
   int m_iCurrentPic;
   // background loader
-  CBackgroundPicLoader* m_pBackgroundLoader;
+  std::unique_ptr<CBackgroundPicLoader> m_pBackgroundLoader;
   int m_iLastFailedNextSlide;
   bool m_bLoadNextPic;
   RESOLUTION m_Resolution;
