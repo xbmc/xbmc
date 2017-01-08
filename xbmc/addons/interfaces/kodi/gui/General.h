@@ -1,6 +1,5 @@
 #pragma once
 /*
- *      Copyright (C) 2012-2013 Team XBMC
  *      Copyright (C) 2015-2016 Team KODI
  *      http://kodi.tv
  *
@@ -29,14 +28,14 @@ namespace ADDON
 {
 
   /*!
-   * @brief Global general Add-on to Kodi callback functions
+   * @brief Global gui Add-on to Kodi callback functions
    *
-   * To hold general functions not related to a instance type and usable for
-   * every add-on type.
+   * To hold general gui functions and initialize also all other gui related types not
+   * related to a instance type and usable for every add-on type.
    *
-   * Related add-on header is "./xbmc/addons/kodi-addon-dev-kit/include/kodi/General.h"
+   * Related add-on header is "./xbmc/addons/kodi-addon-dev-kit/include/kodi/gui/General.h"
    */
-  struct Interface_General
+  struct Interface_GUIGeneral
   {
     static void Init(AddonGlobalInterface* addonInterface);
     static void DeInit(AddonGlobalInterface* addonInterface);
@@ -52,11 +51,18 @@ namespace ADDON
      * class.
      */
     //@{
-    static bool get_setting(void* kodiBase, const char* settingName, void* settingValue);
-    static bool set_setting(void* kodiBase, const char* settingName, const char* settingValue);
-    static void open_settings_dialog(void* kodiBase);
-    static char* get_localized_string(void* kodiBase, long dwCode);
+    static void lock();
+    static void unlock();
+
+    static int get_screen_height(void* kodiBase);
+    static int get_screen_width(void* kodiBase);
+    static int get_video_resolution(void* kodiBase);
+    static int get_current_window_dialog_id(void* kodiBase);
+    static int get_current_window_id(void* kodiBase);
     //@}
+
+  private:
+    static int m_iAddonGUILockRef;
   };
 
 } /* namespace ADDON */

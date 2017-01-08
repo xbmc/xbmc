@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2016 Team Kodi
+ *      Copyright (C) 2005-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -21,10 +21,10 @@
 
 #include "../AddonBase.h"
 
+namespace kodi { namespace addon { class CInstanceScreensaver; }}
+
 extern "C"
 {
-
-namespace kodi { namespace addon { class CInstanceScreensaver; }}
 
 typedef struct AddonProps_Screensaver
 {
@@ -57,6 +57,8 @@ typedef struct AddonInstance_Screensaver
   AddonToKodiFuncTable_Screensaver toKodi;
   KodiToAddonFuncTable_Screensaver toAddon;
 } AddonInstance_Screensaver;
+
+} /* extern "C" */
 
 namespace kodi
 {
@@ -133,4 +135,3 @@ namespace addon
 
 } /* namespace addon */
 } /* namespace kodi */
-} /* extern "C" */

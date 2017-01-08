@@ -1,6 +1,6 @@
 /*
  *      Copyright (C) 2012-2013 Team XBMC
- *      Copyright (C) 2015-2016 Team KODI
+ *      Copyright (C) 2015-2017 Team KODI
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -23,6 +23,7 @@
 
 #include "addons/kodi-addon-dev-kit/include/kodi/General.h"
 
+#include "Application.h"
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
 #include "addons/AddonDll.h"
@@ -43,6 +44,7 @@ void Interface_General::Init(AddonGlobalInterface* addonInterface)
   addonInterface->toKodi.kodi->get_setting = get_setting;
   addonInterface->toKodi.kodi->set_setting = set_setting;
   addonInterface->toKodi.kodi->open_settings_dialog = open_settings_dialog;
+  addonInterface->toKodi.kodi->get_localized_string = get_localized_string;
 }
 
 void Interface_General::DeInit(AddonGlobalInterface* addonInterface)
@@ -183,6 +185,28 @@ void Interface_General::open_settings_dialog(void* kodiBase)
 
   // show settings dialog
   CGUIDialogAddonSettings::ShowAndGetInput(ADDON::AddonPtr(addon));
+}
+
+char* Interface_General::get_localized_string(void* kodiInstance, long dwCode)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiInstance);
+  if (!addon)
+  {
+    CLog::Log(LOGERROR, "kodi::General::%s - invalid data (addon='%p')", __FUNCTION__, addon);
+    return nullptr;
+  }
+
+  if (g_application.m_bStop)
+    return nullptr;
+
+  std::string string;
+  if ((dwCode >= 30000 && dwCode <= 30999) || (dwCode >= 32000 && dwCode <= 32999))
+    string = g_localizeStrings.GetAddonString(addon->ID(), dwCode).c_str();
+  else
+    string = g_localizeStrings.Get(dwCode).c_str();
+
+  char* buffer = strdup(string.c_str());
+  return buffer;
 }
 
 } /* namespace ADDON */

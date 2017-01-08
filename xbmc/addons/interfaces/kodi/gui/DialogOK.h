@@ -1,6 +1,5 @@
 #pragma once
 /*
- *      Copyright (C) 2012-2013 Team XBMC
  *      Copyright (C) 2015-2016 Team KODI
  *      http://kodi.tv
  *
@@ -28,18 +27,9 @@ struct AddonGlobalInterface;
 namespace ADDON
 {
 
-  /*!
-   * @brief Global general Add-on to Kodi callback functions
-   *
-   * To hold general functions not related to a instance type and usable for
-   * every add-on type.
-   *
-   * Related add-on header is "./xbmc/addons/kodi-addon-dev-kit/include/kodi/General.h"
-   */
-  struct Interface_General
+  struct Interface_GUIDialogOK
   {
     static void Init(AddonGlobalInterface* addonInterface);
-    static void DeInit(AddonGlobalInterface* addonInterface);
 
     /*!
      * @brief callback functions from add-on to kodi
@@ -52,10 +42,8 @@ namespace ADDON
      * class.
      */
     //@{
-    static bool get_setting(void* kodiBase, const char* settingName, void* settingValue);
-    static bool set_setting(void* kodiBase, const char* settingName, const char* settingValue);
-    static void open_settings_dialog(void* kodiBase);
-    static char* get_localized_string(void* kodiBase, long dwCode);
+    static void show_and_get_input_single_text(void* kodiBase, const char *heading, const char *text);
+    static void show_and_get_input_line_text(void* kodiBase, const char *heading, const char *line0, const char *line1, const char *line2);
     //@}
   };
 
