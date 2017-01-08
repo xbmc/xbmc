@@ -22,14 +22,14 @@
 #include "system_gl.h"
 
 #include "DVDVideoCodecFFmpeg.h"
+#include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
 
 class CProcessInfo;
 
 namespace VTB
 {
 
-class CDecoder
-  : public CDVDVideoCodecFFmpeg::IHardwareDecoder
+class CDecoder: public CDVDVideoCodecFFmpeg::IHardwareDecoder
 {
 public:
   CDecoder(CProcessInfo& processInfo);

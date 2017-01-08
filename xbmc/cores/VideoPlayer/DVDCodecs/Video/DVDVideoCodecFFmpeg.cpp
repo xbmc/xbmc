@@ -32,35 +32,10 @@
 #include "settings/VideoSettings.h"
 #include "settings/MediaSettings.h"
 #include "utils/log.h"
-#include <memory>
-
-#ifndef TARGET_POSIX
-#define RINT(x) ((x) >= 0 ? ((int)((x) + 0.5)) : ((int)((x) - 0.5)))
-#else
-#include <math.h>
-#include "linux/XTimeUtils.h"
-#define RINT lrint
-#endif
-
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFormats.h"
-
-#ifdef HAVE_LIBVDPAU
-#include "VDPAU.h"
-#endif
-#ifdef HAS_DX
-#include "DXVA.h"
-#endif
-#ifdef HAVE_LIBVA
-#include "VAAPI.h"
-#endif
-#ifdef TARGET_DARWIN
-#include "VTB.h"
-#endif
-#ifdef HAS_MMAL
-#include "MMALFFmpeg.h"
-#endif
 #include "utils/StringUtils.h"
+#include <memory>
 
 extern "C" {
 #include "libavutil/opt.h"
@@ -69,6 +44,14 @@ extern "C" {
 #include "libavfilter/buffersrc.h"
 #include "libavutil/pixdesc.h"
 }
+
+#ifndef TARGET_POSIX
+#define RINT(x) ((x) >= 0 ? ((int)((x) + 0.5)) : ((int)((x) - 0.5)))
+#else
+#include <math.h>
+#include "linux/XTimeUtils.h"
+#define RINT lrint
+#endif
 
 enum DecoderState
 {
@@ -165,94 +148,32 @@ enum AVPixelFormat CDVDVideoCodecFFmpeg::GetFormat(struct AVCodecContext * avctx
   }
 
   // hardware decoder de-selected, restore standard ffmpeg
-  if (ctx->GetHardware())
+  if (ctx->HasHardware())
   {
-    ctx->SetHardware(NULL);
+    ctx->SetHardware(nullptr);
     avctx->get_buffer2 = avcodec_default_get_buffer2;
     avctx->slice_flags = 0;
     avctx->hwaccel_context = 0;
   }
 
   const AVPixelFormat * cur = fmt;
-  while(*cur != AV_PIX_FMT_NONE)
+  while (*cur != AV_PIX_FMT_NONE)
   {
     pixFmtName = av_get_pix_fmt_name(*cur);
 
-#ifdef HAVE_LIBVDPAU
-    if(VDPAU::CDecoder::IsVDPAUFormat(*cur) && CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVDPAU))
-    {
-      CLog::Log(LOGNOTICE,"CDVDVideoCodecFFmpeg::GetFormat - Creating VDPAU(%ix%i)", avctx->width, avctx->height);
-      VDPAU::CDecoder* vdp = new VDPAU::CDecoder(ctx->m_processInfo);
-      if(vdp->Open(avctx, ctx->m_pCodecContext, *cur, ctx->m_uSurfacesCount))
-      {
-        ctx->m_processInfo.SetVideoPixelFormat(pixFmtName ? pixFmtName : "");
-        ctx->SetHardware(vdp);
-        return *cur;
-      }
-      else
-        vdp->Release();
-    }
-#endif
-#ifdef HAS_DX
-  if(DXVA::CDecoder::Supports(*cur) && CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_USEDXVA2))
-  {
-    CLog::Log(LOGNOTICE, "CDVDVideoCodecFFmpeg::GetFormat - Creating DXVA(%ix%i)", avctx->width, avctx->height);
-    DXVA::CDecoder* dec = new DXVA::CDecoder(ctx->m_processInfo);
-    if(dec->Open(avctx, ctx->m_pCodecContext, *cur, ctx->m_uSurfacesCount))
-    {
-      ctx->m_processInfo.SetVideoPixelFormat(pixFmtName ? pixFmtName : "");
-      ctx->SetHardware(dec);
-      return *cur;
-    }
-    else
-      dec->Release();
-  }
-#endif
-#ifdef HAVE_LIBVA
-    // mpeg4 vaapi decoding is disabled
-    if(*cur == AV_PIX_FMT_VAAPI_VLD && CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVAAPI))
-    {
-      VAAPI::CDecoder* dec = new VAAPI::CDecoder(ctx->m_processInfo);
-      if(dec->Open(avctx, ctx->m_pCodecContext, *cur, ctx->m_uSurfacesCount) == true)
-      {
-        ctx->m_processInfo.SetVideoPixelFormat(pixFmtName ? pixFmtName : "");
-        ctx->SetHardware(dec);
-        return *cur;
-      }
-      else
-        dec->Release();
-    }
-#endif
+    IHardwareDecoder *pDecoder(ctx->CreateVideoDecoderHW(*cur, ctx->m_processInfo));
 
-#ifdef TARGET_DARWIN
-    if (*cur == AV_PIX_FMT_VIDEOTOOLBOX && CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVTB))
+    if (pDecoder)
     {
-      VTB::CDecoder* dec = new VTB::CDecoder(ctx->m_processInfo);
-      if(dec->Open(avctx, ctx->m_pCodecContext, *cur, ctx->m_uSurfacesCount))
+      if (pDecoder->Open(avctx, ctx->m_pCodecContext, *cur, ctx->m_uSurfacesCount))
       {
         ctx->m_processInfo.SetVideoPixelFormat(pixFmtName ? pixFmtName : "");
-        ctx->SetHardware(dec);
+        ctx->SetHardware(pDecoder);
         return *cur;
       }
-      else
-        dec->Release();
     }
-#endif
 
-#ifdef HAS_MMAL
-    if (*cur == AV_PIX_FMT_YUV420P)
-    {
-      MMAL::CDecoder* dec = new MMAL::CDecoder(ctx->m_processInfo, ctx->m_hints);
-      if(dec->Open(avctx, ctx->m_pCodecContext, *cur, ctx->m_uSurfacesCount))
-      {
-        ctx->m_processInfo.SetVideoPixelFormat(pixFmtName ? pixFmtName : "");
-        ctx->SetHardware(dec);
-        return *cur;
-      }
-      else
-        dec->Release();
-    }
-#endif
+    SAFE_RELEASE(pDecoder);
     cur++;
   }
 
@@ -345,27 +266,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   // setup threading model
   if (!(hints.codecOptions & CODEC_FORCE_SOFTWARE))
   {
-    bool tryhw = false;
-#ifdef HAVE_LIBVDPAU
-    if(CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVDPAU))
-      tryhw = true;
-#endif
-#ifdef HAVE_LIBVA
-    if(CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVAAPI))
-      tryhw = true;
-#endif
-#ifdef HAS_DX
-    if(CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_USEDXVA2))
-      tryhw = true;
-#endif
-#ifdef TARGET_DARWIN
-    if(CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVTB))
-      tryhw = true;
-#endif
-#ifdef HAS_MMAL
-    tryhw = true;
-#endif
-    if (tryhw && m_decoderState == STATE_NONE)
+    if (m_decoderState == STATE_NONE)
     {
       m_decoderState = STATE_HW_SINGLE;
     }
@@ -1244,3 +1145,73 @@ void CDVDVideoCodecFFmpeg::SetHardware(IHardwareDecoder* hardware)
   m_pHardware = hardware;
   UpdateName();
 }
+
+//------------------------------------------------------------------------------
+// temporary
+//------------------------------------------------------------------------------
+
+#ifdef HAS_DX
+#include "DXVA.h"
+#define VP_VIDEOCODEC_HW
+CDVDVideoCodecFFmpeg::IHardwareDecoder* CDVDVideoCodecFFmpeg::CreateVideoDecoderHW(AVPixelFormat pixfmt, CProcessInfo &processInfo)
+{
+  if (DXVA::CDecoder::Supports(pixfmt) && CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_USEDXVA2))
+    return new DXVA::CDecoder(m_processInfo);
+  return nullptr;
+}
+#endif
+
+// Linux X11
+#if defined(HAVE_LIBVA) || defined(HAVE_LIBVDPAU)
+#if defined(HAVE_LIBVA)
+#include "VAAPI.h"
+#endif
+#if defined(HAVE_LIBVDPAU)
+#include "VDPAU.h"
+#endif
+
+#define VP_VIDEOCODEC_HW
+CDVDVideoCodecFFmpeg::IHardwareDecoder* CDVDVideoCodecFFmpeg::CreateVideoDecoderHW(AVPixelFormat pixfmt, CProcessInfo &processInfo)
+{
+  if (pixfmt == AV_PIX_FMT_VAAPI_VLD && CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVAAPI))
+    return new VAAPI::CDecoder(m_processInfo);
+
+  if(VDPAU::CDecoder::IsVDPAUFormat(pixfmt) && CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVDPAU))
+    return new VDPAU::CDecoder(m_processInfo);
+
+  return nullptr;
+}
+#endif
+
+#ifdef TARGET_DARWIN
+#include "VTB.h"
+#define VP_VIDEOCODEC_HW
+CDVDVideoCodecFFmpeg::IHardwareDecoder* CDVDVideoCodecFFmpeg::CreateVideoDecoderHW(AVPixelFormat pixfmt, CProcessInfo &processInfo)
+{
+  if (pixfmt == AV_PIX_FMT_VIDEOTOOLBOX && CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVTB))
+    return new VTB::CDecoder(m_processInfo);
+  return nullptr;
+}
+#endif
+
+#ifdef HAS_MMAL
+#include "MMALFFmpeg.h"
+#define VP_VIDEOCODEC_HW
+CDVDVideoCodecFFmpeg::IHardwareDecoder* CDVDVideoCodecFFmpeg::CreateVideoDecoderHW(AVPixelFormat pixfmt, CProcessInfo &processInfo)
+{
+  if (pixfmt == AV_PIX_FMT_YUV420P)
+    return new MMAL::CDecoder(m_processInfo, ctx->m_hints);
+  return nullptr;
+}
+#endif
+
+//------------------------------------------------------------------------------
+// Stubs for platform specific overrides
+//------------------------------------------------------------------------------
+
+#if !defined(VP_VIDEOCODEC_HW)
+CDVDVideoCodecFFmpeg::IHardwareDecoder* CDVDVideoCodecFFmpeg::CreateVideoDecoderHW(AVPixelFormat pixfmt, CProcessInfo &processInfo)
+{
+  return nullptr;
+}
+#endif
