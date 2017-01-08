@@ -153,4 +153,5 @@ endif()
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
   add_options (ALL_LANGUAGES DEBUG "-g" "-D_DEBUG" "-Wall")
 endif()
-
+# workaround for peace on earth
+list(APPEND SYSTEM_DEFINES -DBUILDING_WITH_CMAKE=1)
