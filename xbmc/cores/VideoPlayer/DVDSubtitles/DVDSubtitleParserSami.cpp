@@ -27,8 +27,8 @@
 #include "utils/URIUtils.h"
 #include "DVDSubtitleTagSami.h"
 
-CDVDSubtitleParserSami::CDVDSubtitleParserSami(CDVDSubtitleStream* pStream, const std::string& filename)
-    : CDVDSubtitleParserText(pStream, filename)
+CDVDSubtitleParserSami::CDVDSubtitleParserSami(std::unique_ptr<CDVDSubtitleStream> && pStream, const std::string& filename)
+    : CDVDSubtitleParserText(std::move(pStream), filename)
 {
 
 }
@@ -56,7 +56,7 @@ bool CDVDSubtitleParserSami::Open(CDVDStreamInfo &hints)
   CDVDSubtitleTagSami TagConv;
   if (!TagConv.Init())
     return false;
-  TagConv.LoadHead(m_pStream);
+  TagConv.LoadHead(m_pStream.get());
   if (TagConv.m_Langclass.size() >= 2)
   {
     for (unsigned int i = 0; i < TagConv.m_Langclass.size(); i++)

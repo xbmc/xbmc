@@ -22,10 +22,12 @@
 
 #include "DVDSubtitleParser.h"
 
+#include <memory>
+
 class CDVDSubtitleParserVplayer : public CDVDSubtitleParserText
 {
 public:
-  CDVDSubtitleParserVplayer(CDVDSubtitleStream* pStream, const std::string& strFile);
+  CDVDSubtitleParserVplayer(std::unique_ptr<CDVDSubtitleStream> && pStream, const std::string& strFile);
   virtual ~CDVDSubtitleParserVplayer();
 
   virtual bool Open(CDVDStreamInfo &hints);
