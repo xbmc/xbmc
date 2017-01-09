@@ -38,6 +38,7 @@ public:
   static void _onInputDeviceAdded(JNIEnv *env, jobject context, jint deviceId);
   static void _onInputDeviceChanged(JNIEnv *env, jobject context, jint deviceId);
   static void _onInputDeviceRemoved(JNIEnv *env, jobject context, jint deviceId);
+  static void _onVisibleBehindCanceled(JNIEnv *env, jobject context);
 
   static void _callNative(JNIEnv *env, jobject context, jlong funcAddr, jlong variantAddr);
   static void runNativeOnUiThread(void (*callback)(CVariant *), CVariant *variant);
@@ -54,4 +55,5 @@ protected:
   virtual void onActivityResult(int requestCode, int resultCode, CJNIIntent resultData)=0;
   virtual void onVolumeChanged(int volume)=0;
   virtual void doFrame(int64_t frameTimeNanos)=0;
+  virtual void onVisibleBehindCanceled() = 0;
 };
