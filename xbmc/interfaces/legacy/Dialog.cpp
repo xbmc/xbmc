@@ -273,7 +273,7 @@ namespace XBMCAddon
       else if (type == 2)
         CGUIDialogFileBrowser::ShowAndGetImageList(*shares, heading, valuelist);
       else
-        throw WindowException("Error: Cannot retreive multuple directories using browse %s is NULL.",s_shares.c_str());
+        throw WindowException("Error: Cannot retrieve multiple directories using browse %s is NULL.",s_shares.c_str());
 
       return valuelist;
     }

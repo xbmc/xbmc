@@ -607,7 +607,7 @@ public class Splash extends Activity {
       Matcher m = reMount.matcher(Mounts[i]);
       if (m.find()) {
         if (m.group(1).startsWith("/dev/block/vold") && !m.group(2).startsWith("/mnt/secure/asec")) {
-          Log.d(TAG, "addind mount: " + m.group(2));
+          Log.d(TAG, "adding mount: " + m.group(2));
           mMounts.add(m.group(2));
         }
       }
