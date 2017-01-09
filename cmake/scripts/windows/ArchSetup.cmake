@@ -22,7 +22,8 @@ set(PYTHON_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/project/BuildDependencies/include/pyt
 # Emptying PATH so that system installed libraries (MySql, Python) are not picked up.
 # The VS/bin directory has to be in PATH for example for NMake.
 get_filename_component(TOOLCHAIN_PATH ${CMAKE_CXX_COMPILER} DIRECTORY)
-set(ENV{PATH} "${TOOLCHAIN_PATH}")
+set(TMP_PATH ENV{PATH}})
+set(ENV{PATH} "${CMAKE_SOURCE_DIR}/project/BuildDependencies;${TMP_PATH}")
 
 
 # -------- Compiler options ---------
