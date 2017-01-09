@@ -62,16 +62,16 @@ namespace dbiplus
 /*!
  \ingroup music
  \brief A set of std::string objects, used for CMusicDatabase
- \sa ISETPATHES, CMusicDatabase
+ \sa ISETPATHS, CMusicDatabase
  */
-typedef std::set<std::string> SETPATHES;
+typedef std::set<std::string> SETPATHS;
 
 /*!
  \ingroup music
- \brief The SETPATHES iterator
- \sa SETPATHES, CMusicDatabase
+ \brief The SETPATHS iterator
+ \sa SETPATHS, CMusicDatabase
  */
-typedef std::set<std::string>::iterator ISETPATHES;
+typedef std::set<std::string>::iterator ISETPATHS;
 
 class CGUIDialogProgress;
 class CFileItemList;
