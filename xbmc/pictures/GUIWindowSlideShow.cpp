@@ -150,7 +150,6 @@ void CBackgroundPicLoader::LoadPic(int iPic, int iSlideNumber, const std::string
 CGUIWindowSlideShow::CGUIWindowSlideShow(void)
     : CGUIDialog(WINDOW_SLIDESHOW, "SlideShow.xml")
 {
-  m_pBackgroundLoader = NULL;
   m_Resolution = RES_INVALID;
   m_loadType = KEEP_IN_MEMORY;
   m_bLoadNextPic = false;
@@ -259,8 +258,7 @@ void CGUIWindowSlideShow::OnDeinitWindow(int nextWindowID)
       // stop the thread
       CLog::Log(LOGDEBUG,"Stopping BackgroundLoader thread");
       m_pBackgroundLoader->StopThread();
-      delete m_pBackgroundLoader;
-      m_pBackgroundLoader = NULL;
+      m_pBackgroundLoader.reset();
     }
     // and close the images.
     m_Image[0].Close();
@@ -398,12 +396,7 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
   // Create our background loader if necessary
   if (!m_pBackgroundLoader)
   {
-    m_pBackgroundLoader = new CBackgroundPicLoader();
-
-    if (!m_pBackgroundLoader)
-    {
-      throw 1;
-    }
+    m_pBackgroundLoader.reset(new CBackgroundPicLoader());
     m_pBackgroundLoader->Create(this);
   }
 

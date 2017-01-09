@@ -69,8 +69,8 @@ PUSHD "%TMP_PATH%" || EXIT /B 10
 %ZIP% x %1 || (
   IF %RetryDownload%==YES (
     POPD || EXIT /B 5
-    ECHO WARNNING! Can't extract files from archive %1!
-    ECHO WARNNING! Deleting %1 and will retry downloading.
+    ECHO WARNING! Can't extract files from archive %1!
+    ECHO WARNING! Deleting %1 and will retry downloading.
     del /f "%1"
     SET RetryDownload=NO
     GOTO startDownloadingFile
