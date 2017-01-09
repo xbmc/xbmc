@@ -14,13 +14,13 @@ function(generate_file file)
   add_custom_command(OUTPUT ${CPP_FILE}
                      COMMAND ${SWIG_EXECUTABLE}
                      ARGS -w401 -c++ -o ${file}.xml -xml -I${CMAKE_SOURCE_DIR}/xbmc -xmllang python ${CMAKE_CURRENT_SOURCE_DIR}/../swig/${file}
-                     COMMAND ${Java_JAVA_EXECUTABLE}
+                     COMMAND ${JAVA_EXECUTABLE}
                      ARGS -cp "${classpath}" groovy.ui.GroovyMain ${CMAKE_SOURCE_DIR}/tools/codegenerator/Generator.groovy ${file}.xml ${CMAKE_CURRENT_SOURCE_DIR}/../python/PythonSwig.cpp.template ${file}.cpp > ${devnull}
                      DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/../swig/${file})
   set(SOURCES ${SOURCES} "${CPP_FILE}" PARENT_SCOPE)
 endfunction()
 
-find_package(Java COMPONENTS Runtime REQUIRED)
+find_program(JAVA_EXECUTABLE Java REQUIRED)
 find_package(SWIG REQUIRED)
 
 # The generated bindings

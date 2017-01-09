@@ -19,9 +19,8 @@ list(APPEND CMAKE_SYSTEM_PREFIX_PATH ${CMAKE_SOURCE_DIR}/project/BuildDependenci
 set(PYTHON_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/project/BuildDependencies/include/python)
 
 # The find_* functions prefer PATH over CMAKE_PREFIX_PATH for dependencies.
-# Emptying PATH so that system installed libraries (MySql, Python) are not picked up.
-# The VS/bin directory has to be in PATH for example for NMake.
-get_filename_component(TOOLCHAIN_PATH ${CMAKE_CXX_COMPILER} DIRECTORY)
+# prepending our PATH so that our libraries are found first to avoid
+# picking up system libraries that will not build
 set(TMP_PATH ENV{PATH}})
 set(ENV{PATH} "${CMAKE_SOURCE_DIR}/project/BuildDependencies;${TMP_PATH}")
 
