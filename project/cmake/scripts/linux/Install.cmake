@@ -264,10 +264,12 @@ if(ENABLE_EVENTCLIENTS)
           DESTINATION ${bindir}
           COMPONENT kodi-eventclients-ps3)
 
-  # Install kodi-eventclients-wiiremote
-  install(PROGRAMS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/WiiRemote/${APP_NAME_LC}-wiiremote
-          DESTINATION ${bindir}
-          COMPONENT kodi-eventclients-wiiremote)
+  if(BLUETOOTH_FOUND)
+    # Install kodi-eventclients-wiiremote
+    install(PROGRAMS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/WiiRemote/${APP_NAME_LC}-wiiremote
+            DESTINATION ${bindir}
+            COMPONENT kodi-eventclients-wiiremote)
+  endif()
 
   # Install kodi-eventclients-xbmc-send
   install(PROGRAMS "${CORE_SOURCE_DIR}/tools/EventClients/Clients/Kodi Send/kodi-send.py"
