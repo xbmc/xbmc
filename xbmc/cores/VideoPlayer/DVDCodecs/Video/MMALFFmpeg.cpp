@@ -86,7 +86,11 @@ CMMALYUVBuffer::~CMMALYUVBuffer()
     m_pool->ReleaseBuffer(gmem);
   gmem = nullptr;
   if (mmal_buffer)
+  {
     mmal_buffer_header_release(mmal_buffer);
+    if (m_pool)
+      m_pool->Prime();
+  }
 }
 
 //-----------------------------------------------------------------------------
