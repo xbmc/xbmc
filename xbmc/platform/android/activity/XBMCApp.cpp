@@ -625,6 +625,11 @@ std::vector<int> CXBMCApp::GetInputDeviceIds()
   return inputManager.getInputDeviceIds();
 }
 
+void CXBMCApp::ProcessSlow()
+{
+
+}
+
 std::vector<androidPackage> CXBMCApp::GetApplications()
 {
   CSingleLock lock(m_applicationsMutex);

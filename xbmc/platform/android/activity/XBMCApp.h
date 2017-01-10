@@ -185,6 +185,9 @@ public:
   static void InitFrameCallback(CVideoSyncAndroid *syncImpl);
   static void DeinitFrameCallback();
 
+  // Application slow ping
+  void ProcessSlow();
+
   static bool WaitVSync(unsigned int milliSeconds);
 
   bool getVideosurfaceInUse();

@@ -4539,6 +4539,11 @@ void CApplication::ProcessSlow()
   if (!m_pPlayer->IsPlayingVideo())
     CSectionLoader::UnloadDelayed();
 
+#ifdef TARGET_ANDROID
+  // Pass the slow loop to droid
+  CXBMCApp::get()->ProcessSlow();
+#endif
+
   // check for any idle curl connections
   g_curlInterface.CheckIdle();
 
