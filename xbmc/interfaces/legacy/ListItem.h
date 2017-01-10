@@ -562,6 +562,10 @@ namespace XBMCAddon
       /// | year          | integer (2009)
       /// | episode       | integer (4)
       /// | season        | integer (1)
+      /// | sortepisode   | integer (4)
+      /// | sortseason    | integer (1)
+      /// | episodeguide  | string (Episode guide)
+      /// | showlink      | string (Battlestar Galactica) or list of strings (["Battlestar Galactica", "Caprica"])
       /// | top250        | integer (192)
       /// | setid         | integer (14)
       /// | tracknumber   | integer (3)
@@ -656,7 +660,7 @@ namespace XBMCAddon
       /// Added labels **setid**, **set**, **imdbnumber**, **code**, **dbid**, **path** and **userrating**.
       /// Expanded the possible infoLabels for the option **mediatype**.
       /// @python_v18 Added new **game** type and associated infolabels.
-      /// Added labels **setoverview**, **tag**.
+      /// Added labels **setoverview**, **tag**, **sortepisode**, **sortseason**, **episodeguide**, **showlink**.
       /// Extended labels **genre**, **country**, **director**, **studio**, **writer**, **tag**, **credits** to also use a list of strings.
       ///
       /// **Example:**

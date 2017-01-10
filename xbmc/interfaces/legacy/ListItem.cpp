@@ -352,6 +352,14 @@ namespace XBMCAddon
             item->GetVideoInfoTag()->m_iEpisode = strtol(value.c_str(), NULL, 10);
           else if (key == "season")
             item->GetVideoInfoTag()->m_iSeason = strtol(value.c_str(), NULL, 10);
+          else if (key == "sortepisode")
+            item->GetVideoInfoTag()->m_iSpecialSortEpisode = strtol(value.c_str(), NULL, 10);
+          else if (key == "sortseason")
+            item->GetVideoInfoTag()->m_iSpecialSortSeason = strtol(value.c_str(), NULL, 10);
+          else if (key == "episodeguide")
+            item->GetVideoInfoTag()->SetEpisodeGuide(value);
+          else if (key == "showlink")
+            item->GetVideoInfoTag()->SetShowLink(getStringArray(alt, key, value));
           else if (key == "top250")
             item->GetVideoInfoTag()->m_iTop250 = strtol(value.c_str(), NULL, 10);
           else if (key == "setid")
