@@ -557,8 +557,8 @@ namespace XBMCAddon
       /// __Video Values__:
       /// | Info label    | Description                                        |
       /// |--------------:|:---------------------------------------------------|
-      /// | genre         | string (Comedy)
-      /// | country       | string (Germany)
+      /// | genre         | string (Comedy) or list of strings (["Comedy", "Animation", "Drama"])
+      /// | country       | string (Germany) or list of strings (["Germany", "Italy", "France"])
       /// | year          | integer (2009)
       /// | episode       | integer (4)
       /// | season        | integer (1)
@@ -572,7 +572,7 @@ namespace XBMCAddon
       /// | overlay       | integer (2) - range is `0..7`.  See \ref kodi_guilib_listitem_iconoverlay "Overlay icon types" for values
       /// | cast          | list (["Michal C. Hall","Jennifer Carpenter"]) - if provided a list of tuples cast will be interpreted as castandrole
       /// | castandrole   | list of tuples ([("Michael C. Hall","Dexter"),("Jennifer Carpenter","Debra")])
-      /// | director      | string (Dagur Kari)
+      /// | director      | string (Dagur Kari) or list of strings (["Dagur Kari", "Quentin Tarantino", "Chrstopher Nolan"])
       /// | mpaa          | string (PG-13)
       /// | plot          | string (Long Description)
       /// | plotoutline   | string (Short Description)
@@ -580,19 +580,19 @@ namespace XBMCAddon
       /// | originaltitle | string (Big Fan)
       /// | sorttitle     | string (Big Fan)
       /// | duration      | integer (245) - duration in seconds
-      /// | studio        | string (Warner Bros.)
+      /// | studio        | string (Warner Bros.) or list of strings (["Warner Bros.", "Disney", "Paramount"])
       /// | tagline       | string (An awesome movie) - short description of movie
-      /// | writer        | string (Robert D. Siegel)
+      /// | writer        | string (Robert D. Siegel) or list of strings (["Robert D. Siegel", "Jonathan Nolan", "J.K. Rowling"])
       /// | tvshowtitle   | string (Heroes)
       /// | premiered     | string (2005-03-04)
       /// | status        | string (Continuing) - status of a TVshow
       /// | set           | string (Batman Collection) - name of the collection
       /// | setoverview   | string (All Batman movies) - overview of the collection
-      /// | tag           | string (cult) - movie tag
+      /// | tag           | string (cult) or list of strings (["cult", "documentary", "best movies"]) - movie tag
       /// | imdbnumber    | string (tt0110293) - IMDb code
       /// | code          | string (101) - Production code
       /// | aired         | string (2008-12-07)
-      /// | credits       | string (Andy Kaufman) - writing credits
+      /// | credits       | string (Andy Kaufman) or list of strings (["Dagur Kari", "Quentin Tarantino", "Chrstopher Nolan"]) - writing credits
       /// | lastplayed    | string (%Y-%m-%d %h:%m:%s = 2009-04-05 23:16:04)
       /// | album         | string (The Joshua Tree)
       /// | artist        | list (['U2'])
@@ -657,6 +657,7 @@ namespace XBMCAddon
       /// Expanded the possible infoLabels for the option **mediatype**.
       /// @python_v18 Added new **game** type and associated infolabels.
       /// Added labels **setoverview**, **tag**.
+      /// Extended labels **genre**, **country**, **director**, **studio**, **writer**, **tag**, **credits** to also use a list of strings.
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
@@ -1032,6 +1033,9 @@ namespace XBMCAddon
       /// Function completely removed and replaced with context menu add-ons.
       ///
 #endif
+
+private:
+      std::vector<std::string> getStringArray(const InfoLabelValue& alt, const std::string& tag, std::string value = "");
     };
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS

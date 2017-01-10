@@ -413,11 +413,11 @@ namespace XBMCAddon
             }
           }
           else if (key == "genre")
-            item->GetVideoInfoTag()->m_genre = StringUtils::Split(value, g_advancedSettings.m_videoItemSeparator);
+            item->GetVideoInfoTag()->SetGenre(getStringArray(alt, key, value));
           else if (key == "country")
-            item->GetVideoInfoTag()->m_country = StringUtils::Split(value, g_advancedSettings.m_videoItemSeparator);
+            item->GetVideoInfoTag()->SetCountry(getStringArray(alt, key, value));
           else if (key == "director")
-            item->GetVideoInfoTag()->m_director = StringUtils::Split(value, g_advancedSettings.m_videoItemSeparator);
+            item->GetVideoInfoTag()->SetDirector(getStringArray(alt, key, value));
           else if (key == "mpaa")
             item->GetVideoInfoTag()->m_strMPAARating = value;
           else if (key == "plot")
@@ -433,11 +433,11 @@ namespace XBMCAddon
           else if (key == "duration")
             item->GetVideoInfoTag()->SetDuration(strtol(value.c_str(), NULL, 10));
           else if (key == "studio")
-            item->GetVideoInfoTag()->m_studio = StringUtils::Split(value, g_advancedSettings.m_videoItemSeparator);            
+            item->GetVideoInfoTag()->SetStudio(getStringArray(alt, key, value));
           else if (key == "tagline")
             item->GetVideoInfoTag()->m_strTagLine = value;
-          else if (key == "writer")
-            item->GetVideoInfoTag()->m_writingCredits = StringUtils::Split(value, g_advancedSettings.m_videoItemSeparator);
+          else if (key == "writer" || key == "credits")
+            item->GetVideoInfoTag()->SetWritingCredits(getStringArray(alt, key, value));
           else if (key == "tvshowtitle")
             item->GetVideoInfoTag()->m_strShowTitle = value;
           else if (key == "premiered")
@@ -453,15 +453,13 @@ namespace XBMCAddon
           else if (key == "setoverview")
             item->GetVideoInfoTag()->SetSetOverview(value);
           else if (key == "tag")
-            item->GetVideoInfoTag()->SetTags(StringUtils::Split(value, g_advancedSettings.m_videoItemSeparator));
+            item->GetVideoInfoTag()->SetTags(getStringArray(alt, key, value));
           else if (key == "imdbnumber")
             item->GetVideoInfoTag()->SetUniqueID(value);
           else if (key == "code")
             item->GetVideoInfoTag()->m_strProductionCode = value;
           else if (key == "aired")
             item->GetVideoInfoTag()->m_firstAired.SetFromDateString(value);
-          else if (key == "credits")
-            item->GetVideoInfoTag()->m_writingCredits = StringUtils::Split(value, g_advancedSettings.m_videoItemSeparator);
           else if (key == "lastplayed")
             item->GetVideoInfoTag()->m_lastPlayed.SetFromDBDateTime(value);
           else if (key == "album")
@@ -800,6 +798,25 @@ namespace XBMCAddon
       if (item->HasMusicInfoTag())
         return new xbmc::InfoTagMusic(*item->GetMusicInfoTag());
       return new xbmc::InfoTagMusic();
+    }
+
+    std::vector<std::string> ListItem::getStringArray(const InfoLabelValue& alt, const std::string& tag, std::string value)
+    {
+      if (alt.which() == first)
+      {
+        if (value.empty())
+          value = alt.former();
+        return StringUtils::Split(value, g_advancedSettings.m_videoItemSeparator);
+      }
+      
+      std::vector<std::string> els;
+      for (const auto& el : alt.later())
+      {
+        if (el.which() == second)
+          throw WrongTypeException(StringUtils::Format("When using \"%s\" you need to supply a string or list of strings for the value in the dictionary", tag.c_str()).c_str());
+        els.emplace_back(el.former());
+      }
+      return els;
     }
   }
 }
