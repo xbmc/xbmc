@@ -87,6 +87,7 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 
+#include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/channels/PVRRadioRDSInfoTag.h"
@@ -4521,6 +4522,11 @@ const infomap playlist[] =       {{ "length",           PLAYLIST_LENGTH },
 ///                  _boolean_,
 ///     Returns true if there are radio timers present who currently not do recording
 ///   }
+///   \table_row3{   <b>`Pvr.ChannelNumberInput`</b>,
+///                  \anchor Pvr_ChannelNumberInput
+///                  _string_,
+///     Returns the currently entered channel number while in numeric channel input mode, an empty string otherwise
+///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
@@ -4604,7 +4610,8 @@ const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING
                                   { "hasnonrecordingtvtimer",     PVR_HAS_NONRECORDING_TV_TIMER },
                                   { "isrecordingradio",           PVR_IS_RECORDING_RADIO },
                                   { "hasradiotimer",              PVR_HAS_RADIO_TIMER },
-                                  { "hasnonrecordingradiotimer",  PVR_HAS_NONRECORDING_RADIO_TIMER }};
+                                  { "hasnonrecordingradiotimer",  PVR_HAS_NONRECORDING_RADIO_TIMER },
+                                  { "channelnumberinput",         PVR_CHANNEL_NUMBER_INPUT }};
 
 /// \page modules__General__List_of_gui_access
 /// \section modules__General__List_of_gui_access_ADSP ADSP
@@ -5918,6 +5925,9 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case PVR_RADIO_NEXT_RECORDING_CHAN_ICO:
   case PVR_RADIO_NEXT_RECORDING_DATETIME:
     g_PVRManager.TranslateCharInfo(info, strLabel);
+    break;
+  case PVR_CHANNEL_NUMBER_INPUT:
+    strLabel = CPVRGUIActions::GetInstance().GetChannelNumberInputHandler().GetChannelNumberAsString();
     break;
   case ADSP_ACTIVE_STREAM_TYPE:
   case ADSP_DETECTED_STREAM_TYPE:

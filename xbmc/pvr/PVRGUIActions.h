@@ -20,6 +20,7 @@
  */
 
 #include "pvr/PVRTypes.h"
+#include "pvr/PVRChannelNumberInputHandler.h"
 
 #include <memory>
 #include <string>
@@ -31,6 +32,25 @@ class CGUIWindow;
 
 namespace PVR
 {
+  class CPVRChannelSwitchingInputHandler : public CPVRChannelNumberInputHandler
+  {
+  public:
+    // CPVRChannelNumberInputHandler implementation
+    void OnInputDone() override;
+
+  private:
+    /*!
+     * @brief Switch to the channel with the given number.
+     * @param iChannelNumber the channel number
+     */
+    void SwitchToChannel(int iChannelNumber);
+
+    /*!
+     * @brief Switch to the previously played channel.
+     */
+    void SwitchToPreviousChannel();
+  };
+
   class CPVRGUIActions
   {
   public:
@@ -213,6 +233,12 @@ namespace PVR
      */
     bool HideChannel(const CFileItemPtr &item) const;
 
+    /*!
+     * @brief Get the currently active channel number input handler.
+     * @return the handler.
+     */
+    CPVRChannelNumberInputHandler &GetChannelNumberInputHandler();
+
   private:
     CPVRGUIActions() = default;
     CPVRGUIActions(const CPVRGUIActions&) = delete;
@@ -299,6 +325,9 @@ namespace PVR
      * @param item containing a channel or a recording.
      */
     void StartPlayback(CFileItem *item) const;
+
+  private:
+    CPVRChannelSwitchingInputHandler m_channelNumberInputHandler;
   };
 
 } // namespace PVR

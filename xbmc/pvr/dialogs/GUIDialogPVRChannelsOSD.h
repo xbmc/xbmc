@@ -23,6 +23,7 @@
 #include "utils/Observer.h"
 #include "view/GUIViewControl.h"
 
+#include "pvr/PVRChannelNumberInputHandler.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 
 #include <map>
@@ -31,30 +32,33 @@ class CFileItemList;
 
 namespace PVR
 {
-  class CGUIDialogPVRChannelsOSD : public CGUIDialog, public Observer
+  class CGUIDialogPVRChannelsOSD : public CGUIDialog, public Observer, public CPVRChannelNumberInputHandler
   {
   public:
     CGUIDialogPVRChannelsOSD(void);
     virtual ~CGUIDialogPVRChannelsOSD(void);
-    virtual bool OnMessage(CGUIMessage& message);
-    virtual bool OnAction(const CAction &action);
-    virtual void OnWindowLoaded();
-    virtual void OnWindowUnload();
-    virtual void Notify(const Observable &obs, const ObservableMessage msg);
+    bool OnMessage(CGUIMessage& message) override;
+    bool OnAction(const CAction &action) override;
+    void OnWindowLoaded() override;
+    void OnWindowUnload() override;
+    void Notify(const Observable &obs, const ObservableMessage msg) override;
+
+    // CPVRChannelNumberInputHandler implementation
+    void OnInputDone() override;
 
   protected:
-    virtual void OnInitWindow();
-    virtual void OnDeinitWindow(int nextWindowID);
-    virtual void RestoreControlStates();
-    virtual void SaveControlStates();
-    virtual void SetInvalid();
+    void OnInitWindow() override;
+    void OnDeinitWindow(int nextWindowID) override;
+    void RestoreControlStates() override;
+    void SaveControlStates() override;
+    void SetInvalid() override;
 
     void GotoChannel(int iItem);
     void ShowInfo(int item);
     void Clear();
     void Update();
     CPVRChannelGroupPtr GetPlayingGroup();
-    CGUIControl *GetFirstFocusableControl(int id);
+    CGUIControl *GetFirstFocusableControl(int id) override;
 
     CFileItemList    *m_vecItems;
     CGUIViewControl   m_viewControl;
