@@ -587,6 +587,8 @@ namespace XBMCAddon
       /// | premiered     | string (2005-03-04)
       /// | status        | string (Continuing) - status of a TVshow
       /// | set           | string (Batman Collection) - name of the collection
+      /// | setoverview   | string (All Batman movies) - overview of the collection
+      /// | tag           | string (cult) - movie tag
       /// | imdbnumber    | string (tt0110293) - IMDb code
       /// | code          | string (101) - Production code
       /// | aired         | string (2008-12-07)
@@ -654,6 +656,7 @@ namespace XBMCAddon
       /// Added labels **setid**, **set**, **imdbnumber**, **code**, **dbid**, **path** and **userrating**.
       /// Expanded the possible infoLabels for the option **mediatype**.
       /// @python_v18 Added new **game** type and associated infolabels.
+      /// Added labels **setoverview**, **tag**.
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}

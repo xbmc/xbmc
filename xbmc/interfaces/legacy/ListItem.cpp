@@ -450,6 +450,10 @@ namespace XBMCAddon
             item->GetVideoInfoTag()->m_strStatus = value;
           else if (key == "set")
             item->GetVideoInfoTag()->m_strSet = value;
+          else if (key == "setoverview")
+            item->GetVideoInfoTag()->SetSetOverview(value);
+          else if (key == "tag")
+            item->GetVideoInfoTag()->SetTags(StringUtils::Split(value, g_advancedSettings.m_videoItemSeparator));
           else if (key == "imdbnumber")
             item->GetVideoInfoTag()->SetUniqueID(value);
           else if (key == "code")
