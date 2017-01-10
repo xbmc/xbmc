@@ -247,6 +247,8 @@ void CMMALPool::Prime()
   if (!m_mmal_pool || !m_component)
     return;
   MMAL_PORT_T *port = m_input ? m_component->input[0] : m_component->output[0];
+  if (!port->is_enabled)
+    return;
   while (omvb = GetBuffer(0), omvb)
   {
     if (VERBOSE && g_advancedSettings.CanLogComponent(LOGVIDEO))
@@ -525,7 +527,6 @@ void CMMALRenderer::Run()
   CLog::Log(LOGDEBUG, "%s::%s - starting", CLASSNAME, __func__);
   while (1)
   {
-    bool prime = false;
     MMAL_BUFFER_HEADER_T *buffer = mmal_queue_wait(m_queue_process);
     assert(buffer);
     if (buffer == &m_quitpacket)
@@ -656,10 +657,6 @@ void CMMALRenderer::Run()
           }
         }
       }
-      else
-      {
-        prime = true;
-      }
       break;
     }
     default: assert(0); break;
@@ -678,8 +675,6 @@ void CMMALRenderer::Run()
         mmal_buffer_header_release(buffer);
       }
     }
-    if (prime && m_deint_output_pool)
-     m_deint_output_pool->Prime();
   }
   CLog::Log(LOGDEBUG, "%s::%s - stopping", CLASSNAME, __func__);
 }
