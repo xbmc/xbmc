@@ -318,6 +318,13 @@ install(FILES ${CMAKE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/ko
         DESTINATION ${includedir}/${APP_NAME_LC}
         COMPONENT kodi-game-dev)
 
+# Install kodi-vfs-dev
+install(FILES ${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/kodi_vfs_dll.h
+              ${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/kodi_vfs_types.h
+              ${CORE_SOURCE_DIR}/xbmc/filesystem/IFileTypes.h
+        DESTINATION include/${APP_NAME_LC}
+        COMPONENT kodi-vfs-dev)
+
 # Install XBT skin files
 foreach(texture ${XBT_FILES})
   string(REPLACE "${CMAKE_BINARY_DIR}/" "" dir ${texture})

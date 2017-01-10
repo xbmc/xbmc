@@ -20405,3 +20405,8 @@ msgstr ""
 msgctxt "#39012"
 msgid "Set the maximum time to wait for the network to come up after starting or waking up. When time has passed before network is up startup will continue."
 msgstr ""
+
+#: xbmc/addons/Addon.cpp
+msgctxt "#39013"
+msgid "Virtual filesystems"
+msgstr ""

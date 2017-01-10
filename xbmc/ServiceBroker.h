@@ -62,4 +62,5 @@ public:
   static CDataCacheCore& GetDataCacheCore();
   static PLAYLIST::CPlayListPlayer& GetPlaylistPlayer();
   static CSettings& GetSettings();
+  static bool IsBinaryAddonCacheUp();
 };

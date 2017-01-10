@@ -40,3 +40,4 @@ addons/metadata.common.theaudiodb.com/*
 addons/metadata.common.themoviedb.org/*
 addons/metadata.themoviedb.org/*
 addons/metadata.tvdb.com/*
+addons/kodi.vfs/*

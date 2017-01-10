@@ -53,6 +53,7 @@
 #include "addons/BinaryAddonCache.h"
 #include "addons/LanguageResource.h"
 #include "addons/Skin.h"
+#include "addons/VFSEntry.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
 #ifdef HAS_PYTHON
 #include "interfaces/python/XBPython.h"
@@ -204,6 +205,7 @@
 #ifdef TARGET_POSIX
 #include "XHandle.h"
 #include "XTimeUtils.h"
+#include "filesystem/posix/PosixDirectory.h"
 #endif
 
 #if defined(TARGET_ANDROID)
@@ -2944,6 +2946,14 @@ void CApplication::Stop(int exitCode)
 #ifdef HAS_FILESYSTEM_SFTP
     CSFTPSessionManager::DisconnectAllSessions();
 #endif
+    VECADDONS addons;
+    CServiceBroker::GetBinaryAddonCache().GetAddons(addons, ADDON_VFS);
+    for (auto& it : addons)
+    {
+      AddonPtr addon = CServiceBroker::GetBinaryAddonCache().GetAddonInstance(it->ID(), ADDON_VFS);
+      VFSEntryPtr vfs = std::static_pointer_cast<CVFSEntry>(addon);
+      vfs->DisconnectAll();
+    }
 
 #if defined(TARGET_POSIX) && defined(HAS_FILESYSTEM_SMB)
     smb.Deinit();
@@ -4582,6 +4592,15 @@ void CApplication::ProcessSlow()
   CSFTPSessionManager::ClearOutIdleSessions();
 #endif
 
+  VECADDONS addons;
+  CServiceBroker::GetBinaryAddonCache().GetAddons(addons, ADDON_VFS);
+  for (auto& it : addons)
+  {
+    AddonPtr addon = CServiceBroker::GetBinaryAddonCache().GetAddonInstance(it->ID(), ADDON_VFS);
+    VFSEntryPtr vfs = std::static_pointer_cast<CVFSEntry>(addon);
+    vfs->ClearOutIdle();
+  }
+
   g_mediaManager.ProcessEvents();
 
   CAEFactory::GarbageCollect();
@@ -5203,6 +5222,15 @@ void CApplication::CloseNetworkShares()
 #ifdef HAS_FILESYSTEM_SFTP
   CSFTPSessionManager::DisconnectAllSessions();
 #endif
+
+  VECADDONS addons;
+  CServiceBroker::GetBinaryAddonCache().GetAddons(addons, ADDON_VFS);
+  for (auto& it : addons)
+  {
+    AddonPtr addon = CServiceBroker::GetBinaryAddonCache().GetAddonInstance(it->ID(), ADDON_VFS);
+    VFSEntryPtr vfs = std::static_pointer_cast<CVFSEntry>(addon);
+    vfs->DisconnectAll();
+  }
 }
 
 void CApplication::RegisterActionListener(IActionListener *listener)
