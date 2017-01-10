@@ -730,6 +730,9 @@ int CMMALVideo::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   bool drain = (m_codecControlFlags & DVD_CODEC_CTRL_DRAIN) ? true : false;
   bool send_eos = drain && !m_got_eos && m_packet_num_eos != m_packet_num;
 
+  if (m_pool)
+    m_pool->Prime();
+
   // we don't get an EOS response if no packets have been sent
   if (m_packet_num == 0 && send_eos)
     m_got_eos = true;
