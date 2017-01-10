@@ -327,37 +327,43 @@ endmacro()
 
 # add a required dependency of main application
 # Arguments:
-#   dep name of find rule for dependency, used uppercased for variable prefix
+#   dep_list name of find rule for dependency, used uppercased for variable prefix
+#            also accepts a list of multiple dependencies
 # On return:
 #   dependency added to ${SYSTEM_INCLUDES}, ${DEPLIBS} and ${DEP_DEFINES}
-function(core_require_dep dep)
-  find_package(${dep} REQUIRED)
-  string(TOUPPER ${dep} depup)
-  list(APPEND SYSTEM_INCLUDES ${${depup}_INCLUDE_DIRS})
-  list(APPEND DEPLIBS ${${depup}_LIBRARIES})
-  list(APPEND DEP_DEFINES ${${depup}_DEFINITIONS})
-  export_dep()
+function(core_require_dep)
+  foreach(dep ${ARGN})
+    find_package(${dep} REQUIRED)
+    string(TOUPPER ${dep} depup)
+    list(APPEND SYSTEM_INCLUDES ${${depup}_INCLUDE_DIRS})
+    list(APPEND DEPLIBS ${${depup}_LIBRARIES})
+    list(APPEND DEP_DEFINES ${${depup}_DEFINITIONS})
+    export_dep()
+  endforeach()
 endfunction()
 
 # add a required dyloaded dependency of main application
 # Arguments:
-#   dep name of find rule for dependency, used uppercased for variable prefix
+#   dep_list name of find rule for dependency, used uppercased for variable prefix
+#            also accepts a list of multiple dependencies
 # On return:
 #   dependency added to ${SYSTEM_INCLUDES}, ${dep}_SONAME is set up
-function(core_require_dyload_dep dep)
-  find_package(${dep} REQUIRED)
-  string(TOUPPER ${dep} depup)
-  list(APPEND SYSTEM_INCLUDES ${${depup}_INCLUDE_DIRS})
-  list(APPEND DEP_DEFINES ${${depup}_DEFINITIONS})
-  find_soname(${depup} REQUIRED)
-  export_dep()
-  set(${depup}_SONAME ${${depup}_SONAME} PARENT_SCOPE)
+function(core_require_dyload_dep)
+  foreach(dep ${ARGN})
+    find_package(${dep} REQUIRED)
+    string(TOUPPER ${dep} depup)
+    list(APPEND SYSTEM_INCLUDES ${${depup}_INCLUDE_DIRS})
+    list(APPEND DEP_DEFINES ${${depup}_DEFINITIONS})
+    find_soname(${depup} REQUIRED)
+    export_dep()
+    set(${depup}_SONAME ${${depup}_SONAME} PARENT_SCOPE)
+  endforeach()
 endfunction()
 
 # helper macro for optional deps
 macro(setup_enable_switch)
   string(TOUPPER ${dep} depup)
-  if(ARGV1)
+  if(${ARGV1})
     set(enable_switch ${ARGV1})
   else()
     set(enable_switch ENABLE_${depup})
@@ -368,57 +374,65 @@ endmacro()
 
 # add an optional dependency of main application
 # Arguments:
-#   dep name of find rule for dependency, used uppercased for variable prefix
+#   dep_list name of find rule for dependency, used uppercased for variable prefix
+#            also accepts a list of multiple dependencies
 # On return:
 #   dependency optionally added to ${SYSTEM_INCLUDES}, ${DEPLIBS} and ${DEP_DEFINES}
-function(core_optional_dep dep)
-  setup_enable_switch()
-  if(${enable_switch} STREQUAL AUTO)
-    find_package(${dep})
-  elseif(${${enable_switch}})
-    find_package(${dep} REQUIRED)
-    set(_required True)
-  endif()
+function(core_optional_dep)
+  foreach(dep ${ARGN})
+    set(_required False)
+    setup_enable_switch()
+    if(${enable_switch} STREQUAL AUTO)
+      find_package(${dep})
+    elseif(${${enable_switch}})
+      find_package(${dep} REQUIRED)
+      set(_required True)
+    endif()
 
-  if(${depup}_FOUND)
-    list(APPEND SYSTEM_INCLUDES ${${depup}_INCLUDE_DIRS})
-    list(APPEND DEPLIBS ${${depup}_LIBRARIES})
-    list(APPEND DEP_DEFINES ${${depup}_DEFINITIONS})
-    set(final_message ${final_message} "${depup} enabled: Yes" PARENT_SCOPE)
-    export_dep()
-  elseif(_required)
-    message(FATAL_ERROR "${depup} enabled but not found")
-  else()
-    set(final_message ${final_message} "${depup} enabled: No" PARENT_SCOPE)
-  endif()
+    if(${depup}_FOUND)
+      list(APPEND SYSTEM_INCLUDES ${${depup}_INCLUDE_DIRS})
+      list(APPEND DEPLIBS ${${depup}_LIBRARIES})
+      list(APPEND DEP_DEFINES ${${depup}_DEFINITIONS})
+      set(final_message ${final_message} "${depup} enabled: Yes")
+      export_dep()
+    elseif(_required)
+      message(FATAL_ERROR "${depup} enabled but not found")
+    else()
+      set(final_message ${final_message} "${depup} enabled: No")
+    endif()
+  endforeach()
+  set(final_message ${final_message} PARENT_SCOPE)
 endfunction()
 
 # add an optional dyloaded dependency of main application
 # Arguments:
-#   dep name of find rule for dependency, used uppercased for variable prefix
+#   dep_list name of find rule for dependency, used uppercased for variable prefix
+#            also accepts a list of multiple dependencies
 # On return:
 #   dependency optionally added to ${SYSTEM_INCLUDES}, ${DEP_DEFINES}, ${dep}_SONAME is set up
-function(core_optional_dyload_dep dep)
-  setup_enable_switch()
-  if(${enable_switch} STREQUAL AUTO)
-    find_package(${dep})
-  elseif(${${enable_switch}})
-    find_package(${dep} REQUIRED)
-    set(_required True)
-  endif()
+function(core_optional_dyload_dep)
+  foreach(dep ${ARGN})
+    setup_enable_switch()
+    if(${enable_switch} STREQUAL AUTO)
+      find_package(${dep})
+    elseif(${${enable_switch}})
+      find_package(${dep} REQUIRED)
+      set(_required True)
+    endif()
 
-  if(${depup}_FOUND)
-    list(APPEND SYSTEM_INCLUDES ${${depup}_INCLUDE_DIRS})
-    find_soname(${depup} REQUIRED)
-    list(APPEND DEP_DEFINES ${${depup}_DEFINITIONS})
-    set(final_message ${final_message} "${depup} enabled: Yes" PARENT_SCOPE)
-    export_dep()
-    set(${depup}_SONAME ${${depup}_SONAME} PARENT_SCOPE)
-  elseif(_required)
-    message(FATAL_ERROR "${depup} enabled but not found")
-  else()
-    set(final_message ${final_message} "${depup} enabled: No" PARENT_SCOPE)
-  endif()
+    if(${depup}_FOUND)
+      list(APPEND SYSTEM_INCLUDES ${${depup}_INCLUDE_DIRS})
+      find_soname(${depup} REQUIRED)
+      list(APPEND DEP_DEFINES ${${depup}_DEFINITIONS})
+      set(final_message ${final_message} "${depup} enabled: Yes" PARENT_SCOPE)
+      export_dep()
+      set(${depup}_SONAME ${${depup}_SONAME} PARENT_SCOPE)
+    elseif(_required)
+      message(FATAL_ERROR "${depup} enabled but not found")
+    else()
+      set(final_message ${final_message} "${depup} enabled: No" PARENT_SCOPE)
+    endif()
+  endforeach()
 endfunction()
 
 function(core_file_read_filtered result filepattern)

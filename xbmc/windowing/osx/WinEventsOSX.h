@@ -20,7 +20,7 @@
  *
  */
 
-#include "windowing/WinEventsSDL.h"
+#include "windowing/osx/WinEventsSDL.h"
 
 class CWinEventsOSX : public CWinEventsSDL
 {

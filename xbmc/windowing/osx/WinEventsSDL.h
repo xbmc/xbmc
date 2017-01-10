@@ -27,7 +27,7 @@
 #ifdef HAS_SDL
 #include <SDL/SDL_events.h>
 
-#include "WinEvents.h"
+#include "windowing/WinEvents.h"
 
 class CWinEventsSDL : public IWinEvents
 {

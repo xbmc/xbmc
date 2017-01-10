@@ -21,7 +21,6 @@
 #include "system.h"
 #ifdef HAS_SDL_WIN_EVENTS
 
-#include "WinEvents.h"
 #include "WinEventsSDL.h"
 #include "Application.h"
 #include "messaging/ApplicationMessenger.h"
@@ -31,7 +30,7 @@
 #include "input/Key.h"
 #include "input/InputManager.h"
 #include "input/MouseStat.h"
-#include "WindowingFactory.h"
+#include "windowing/WindowingFactory.h"
 #if defined(TARGET_DARWIN)
 #include "platform/darwin/osx/CocoaInterface.h"
 #endif

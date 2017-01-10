@@ -7,6 +7,7 @@
 # and link Kodi against the cpluff libraries.
 
 if(NOT WIN32)
+  find_package(EXPAT REQUIRED)
   string(REPLACE ";" " " defines "${CMAKE_C_FLAGS} ${SYSTEM_DEFINES} -I${EXPAT_INCLUDE_DIR}")
   get_filename_component(expat_dir ${EXPAT_LIBRARY} DIRECTORY)
   set(ldflags "-L${expat_dir}")

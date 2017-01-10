@@ -23,13 +23,13 @@
 
 #ifdef HAS_X11_WIN_EVENTS
 
-#include "WinEvents.h"
+#include "xbmc/windowing/WinEvents.h"
 #include "WinEventsX11.h"
 #include "Application.h"
 #include "messaging/ApplicationMessenger.h"
 #include <X11/Xlib.h>
 #include <X11/extensions/Xrandr.h>
-#include "WindowingFactory.h"
+#include "xbmc/windowing/WindowingFactory.h"
 #include "X11/keysymdef.h"
 #include "X11/XF86keysym.h"
 #include "utils/log.h"

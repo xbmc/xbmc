@@ -42,7 +42,7 @@
 #include <X11/Xatom.h>
 #include <X11/extensions/Xrandr.h>
 
-#include "../WinEventsX11.h"
+#include "WinEventsX11.h"
 #include "input/InputManager.h"
 
 using namespace KODI::MESSAGING;

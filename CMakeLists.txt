@@ -50,12 +50,6 @@ if(UNIX)
   option(FFMPEG_PATH        "Path to external ffmpeg?" "")
   option(ENABLE_INTERNAL_CROSSGUID "Enable internal crossguid?" ON)
   option(ENABLE_OPENSSL     "Enable OpenSSL?" ON)
-  option(ENABLE_MIR         "Enable MIR?" OFF)
-  if(CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd)
-    option(ENABLE_X11         "Enable X11 support?" ON)
-    option(ENABLE_AML         "Enable AML?" OFF)
-    option(ENABLE_IMX         "Enable IMX?" OFF)
-  endif()
 endif()
 # System options
 if(NOT WIN32)
@@ -99,6 +93,36 @@ endif()
 find_package(Threads REQUIRED QUIET)
 list(APPEND DEPLIBS ${CMAKE_THREAD_LIBS_INIT})
 
+# Platform
+if(CORE_SYSTEM_NAME STREQUAL linux)
+  # Set default CORE_PLATFORM_NAME to X11
+  # This is overridden by user setting -DCORE_PLATFORM_NAME=<platform>
+  set(_DEFAULT_PLATFORM X11)
+else()
+  string(TOLOWER ${CORE_SYSTEM_NAME} _DEFAULT_PLATFORM)
+endif()
+
+set(CORE_PLATFORM_NAME ${_DEFAULT_PLATFORM} CACHE STRING "Platform port to build")
+unset(_DEFAULT_PLATFORM)
+string(TOLOWER ${CORE_PLATFORM_NAME} CORE_PLATFORM_NAME_LC)
+
+list(APPEND final_message "Platform: ${CORE_PLATFORM_NAME}")
+if(EXISTS ${CMAKE_SOURCE_DIR}/cmake/platform/${CORE_SYSTEM_NAME}/${CORE_PLATFORM_NAME_LC}.cmake)
+  include(${CMAKE_SOURCE_DIR}/cmake/platform/${CORE_SYSTEM_NAME}/${CORE_PLATFORM_NAME_LC}.cmake)
+else()
+  file(GLOB _platformnames RELATIVE ${CMAKE_SOURCE_DIR}/cmake/platform/${CORE_SYSTEM_NAME}/
+                                    ${CMAKE_SOURCE_DIR}/cmake/platform/${CORE_SYSTEM_NAME}/*.cmake)
+  string(REPLACE ".cmake" " " _platformnames ${_platformnames})
+  message(FATAL_ERROR "invalid CORE_PLATFORM_NAME: ${CORE_PLATFORM_NAME_LC}\nValid platforms: ${_platformnames}")
+endif()
+
+foreach(dep ${PLATFORM_REQUIRED_DEPS})
+  # We need to specify ENABLE_${PLATFORM_REQUIRED_DEPS} in order for the
+  # optional subdirectory for the specified platform to get built.
+  string(TOUPPER ${dep} depup)
+  set(ENABLE_${depup} "ON" CACHE BOOL "Force enabling required ${depup} support" FORCE)
+endforeach()
+
 # Required dependencies. Keep in alphabetical order please
 set(required_deps Cdio
                   Cpluff
@@ -113,7 +137,8 @@ set(required_deps Cdio
                   RapidJSON
                   Sqlite3
                   TagLib
-                  TinyXML)
+                  TinyXML
+                  ${PLATFORM_REQUIRED_DEPS})
 if(NOT WIN32)
   list(APPEND required_deps ZLIB)
 else()
@@ -140,9 +165,8 @@ set(optional_deps Alsa
                   Sndio
                   SSH
                   UDEV
-                  VAAPI
-                  VDPAU
-                  XSLT)
+                  XSLT
+                  ${PLATFORM_OPTIONAL_DEPS})
 
 # Required, dyloaded deps. Keep in alphabetical order please
 set(required_dyload ASS
@@ -154,36 +178,18 @@ set(dyload_optional Bluray
                     NFS
                     Plist)
 
-# Required by shared objects we link
-set(required_dep_libs EXPAT)
-
 # Required tools
 find_package(TexturePacker REQUIRED)
 find_package(JsonSchemaBuilder REQUIRED)
 
-foreach(dep ${required_dep_libs})
-  find_package(${dep} REQUIRED)
-endforeach()
-
-foreach(dep ${required_deps})
-  core_require_dep(${dep})
-endforeach()
-
-foreach(dep ${optional_deps})
-  core_optional_dep(${dep})
-endforeach()
+core_require_dep(${required_deps})
+core_optional_dep(${optional_deps})
+core_require_dyload_dep(${required_dyload})
+core_optional_dyload_dep(${dyload_optional})
 
 if(NOT UDEV_FOUND)
   core_optional_dep(LibUSB)
 endif()
-
-foreach(dep ${required_dyload})
-  core_require_dyload_dep(${dep})
-endforeach()
-
-foreach(dep ${dyload_optional})
-  core_optional_dyload_dep(${dep})
-endforeach()
 
 if(ENABLE_OPENSSL)
   core_require_dep(OpenSSL)
@@ -212,42 +218,6 @@ endif()
 
 if(CORE_SYSTEM_NAME STREQUAL osx)
   core_require_dep(Sdl)
-endif()
-
-if(NOT WIN32)
-  core_optional_dep(OpenGl)
-  if(OPENGL_FOUND AND NOT APPLE)
-    if(ENABLE_MIR)
-      core_require_dep(Mir ENABLE_MIR)
-      core_optional_dep(LibDRM ENABLE_MIR)
-    else()
-      core_optional_dep(X ENABLE_X11)
-      core_optional_dep(XRandR ENABLE_X11)
-      core_optional_dep(LibDRM ENABLE_X11)
-    endif()
-  else()
-    core_optional_dep(OpenGLES)
-    if(OPENGLES_FOUND)
-      if(ENABLE_MIR)
-        core_require_dep(Mir ENABLE_MIR)
-        core_optional_dep(LibDRM ENABLE_MIR)
-      else()
-        core_optional_dep(X ENABLE_X11)
-        core_optional_dep(XRandR ENABLE_X11)
-        core_optional_dep(LibDRM ENABLE_X11)
-      endif()
-    endif()
-  endif()
-  if(NOT APPLE)
-    core_require_dep(EGL)
-  endif()
-endif()
-
-if(CORE_SYSTEM_NAME STREQUAL android OR CORE_SYSTEM_NAME STREQUAL linux)
-  core_optional_dep(AML)
-  core_optional_dep(IMX)
-elseif(CORE_SYSTEM_NAME STREQUAL rbpi)
-  core_require_dep(MMAL)
 endif()
 
 # find all folders containing addon.xml.in

@@ -20,7 +20,7 @@
 */
 #pragma once
 
-#include "WinEvents.h"
+#include "xbmc/windowing/WinEvents.h"
 #include <X11/Xlib.h>
 #include "threads/SystemClock.h"
 #include <map>
