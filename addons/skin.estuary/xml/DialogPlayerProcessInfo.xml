@@ -8,6 +8,7 @@
 		<control type="group">
 			<bottom>0</bottom>
 			<height>250</height>
+			<animation effect="slide" end="0,-80" time="150" condition="PVR.IsTimeShift">conditional</animation>
 			<control type="image">
 				<left>10</left>
 				<top>-240</top>
