@@ -4891,10 +4891,10 @@ void CVideoDatabase::UpdateTables(int iVersion)
       {"country", {"country_link"}},
       {"tag", {"tag_link"}}
     };
-    for (const auto& addtionalTableEntry : additionalTablesMap)
+    for (const auto& additionalTableEntry : additionalTablesMap)
     {
-      std::string table = addtionalTableEntry.first;
-      std::string tablePk = addtionalTableEntry.first + "_id";
+      std::string table = additionalTableEntry.first;
+      std::string tablePk = additionalTableEntry.first + "_id";
       std::map<int, std::string> duplicatesMinMap;
       std::map<int, std::string> duplicatesMap;
 
@@ -4940,7 +4940,7 @@ void CVideoDatabase::UpdateTables(int iVersion)
       }
 
       // cleanup duplicates in link tables
-      for (const auto& subTable : addtionalTableEntry.second)
+      for (const auto& subTable : additionalTableEntry.second)
       {
         // create indexes to speed up things
         m_pDS->exec(PrepareSQL("CREATE INDEX ix_%s ON %s (%s)",

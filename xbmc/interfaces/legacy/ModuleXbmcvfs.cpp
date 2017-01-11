@@ -32,10 +32,10 @@ namespace XBMCAddon
 
   namespace xbmcvfs
   {
-    bool copy(const String& strSource, const String& strDestnation)
+    bool copy(const String& strSource, const String& strDestination)
     {
       DelayedCallGuard dg;
-      return XFILE::CFile::Copy(strSource, strDestnation);
+      return XFILE::CFile::Copy(strSource, strDestination);
     }
 
     // delete a file

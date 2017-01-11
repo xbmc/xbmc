@@ -1001,7 +1001,7 @@ bool CGUIDialogAddonSettings::GetCondition(const std::string &condition, const i
 
   bool bCondition = true;
   bool bCompare = true;
-  bool bControlDependend = false;//flag if the condition depends on another control
+  bool bControlDependent = false;//flag if the condition depends on another control
   std::vector<std::string> conditionVec;
 
   if (condition.find("+") != std::string::npos)
@@ -1022,7 +1022,7 @@ bool CGUIDialogAddonSettings::GetCondition(const std::string &condition, const i
     if (!control2)
       continue;
       
-    bControlDependend = true; //once we are here - this condition depends on another control
+    bControlDependent = true; //once we are here - this condition depends on another control
 
     std::string value;
     switch (control2->GetControlType())
@@ -1073,7 +1073,7 @@ bool CGUIDialogAddonSettings::GetCondition(const std::string &condition, const i
     }
   }
   
-  if (!bControlDependend)//if condition doesn't depend on another control - try if its an infobool expression
+  if (!bControlDependent)//if condition doesn't depend on another control - try if its an infobool expression
   {
     bCondition = g_infoManager.EvaluateBool(condition);
   }

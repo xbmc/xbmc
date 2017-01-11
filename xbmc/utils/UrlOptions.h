@@ -36,7 +36,7 @@ public:
   void Clear() { m_options.clear(); m_strLead.clear(); }
 
   const UrlOptions& GetOptions() const { return m_options; }
-  std::string GetOptionsString(bool withLeadingSeperator = false) const;
+  std::string GetOptionsString(bool withLeadingSeparator = false) const;
 
   virtual void AddOption(const std::string &key, const char *value);
   virtual void AddOption(const std::string &key, const std::string &value);

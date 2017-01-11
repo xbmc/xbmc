@@ -35,7 +35,7 @@ CUrlOptions::CUrlOptions(const std::string &options, const char *strLead /* = ""
 CUrlOptions::~CUrlOptions()
 { }
 
-std::string CUrlOptions::GetOptionsString(bool withLeadingSeperator /* = false */) const
+std::string CUrlOptions::GetOptionsString(bool withLeadingSeparator /* = false */) const
 {
   std::string options;
   for (const auto &opt : m_options)
@@ -48,7 +48,7 @@ std::string CUrlOptions::GetOptionsString(bool withLeadingSeperator /* = false *
       options += "=" + CURL::Encode(opt.second.asString());
   }
 
-  if (withLeadingSeperator && !options.empty())
+  if (withLeadingSeparator && !options.empty())
   {
     if (m_strLead.empty())
       options = "?" + options;

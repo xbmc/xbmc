@@ -204,7 +204,7 @@ public:
   {
     if (m_Payload.empty())
       ConstructPayload();
-    bool SendSuccessfull = true;
+    bool SendSuccessful = true;
     int NbrOfPackages = (m_Payload.size() / MAX_PAYLOAD_SIZE) + 1;
     int Send = 0;
     int Sent = 0;
@@ -234,11 +234,11 @@ public:
       int rtn = sendto(Socket, t, (32 + Send), 0, Addr.GetAddress(), sizeof(struct sockaddr));
 
       if (rtn != (32 + Send))
-        SendSuccessfull = false;
+        SendSuccessful = false;
 
       Sent += Send;
     }
-    return SendSuccessfull;
+    return SendSuccessful;
   }
 protected:
   char            m_Header[HEADER_SIZE];

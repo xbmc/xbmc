@@ -720,7 +720,7 @@ OMX_IMAGE_CODINGTYPE COMXImageFile::GetCodingType(unsigned int &width, unsigned 
         // Exif header
         if(READ32(p) == 0x45786966)
         {
-          bool bMotorolla = false;
+          bool bMotorola = false;
           bool bError = false;
           SKIPN(p, 1 * 2);
           readBits += 2;
@@ -731,9 +731,9 @@ OMX_IMAGE_CODINGTYPE COMXImageFile::GetCodingType(unsigned int &width, unsigned 
 
           /* Discover byte order */
           if(o1 == 'M' && o2 == 'M')
-            bMotorolla = true;
+            bMotorola = true;
           else if(o1 == 'I' && o2 == 'I')
-            bMotorolla = false;
+            bMotorola = false;
           else
             bError = true;
         
@@ -745,7 +745,7 @@ OMX_IMAGE_CODINGTYPE COMXImageFile::GetCodingType(unsigned int &width, unsigned 
             unsigned int offset, a, b, numberOfTags, tagNumber;
   
             // Get first IFD offset (offset to IFD0)
-            if(bMotorolla)
+            if(bMotorola)
             {
               SKIPN(p, 1 * 2);
               readBits += 2;
@@ -774,7 +774,7 @@ OMX_IMAGE_CODINGTYPE COMXImageFile::GetCodingType(unsigned int &width, unsigned 
             } 
 
             // Get the number of directory entries contained in this IFD
-            if(bMotorolla)
+            if(bMotorola)
             {
               a = READ8(p);
               b = READ8(p);
@@ -791,7 +791,7 @@ OMX_IMAGE_CODINGTYPE COMXImageFile::GetCodingType(unsigned int &width, unsigned 
             while(numberOfTags && p < q)
             {
               // Get Tag number
-              if(bMotorolla)
+              if(bMotorola)
               {
                 a = READ8(p);
                 b = READ8(p);
@@ -809,7 +809,7 @@ OMX_IMAGE_CODINGTYPE COMXImageFile::GetCodingType(unsigned int &width, unsigned 
               //found orientation tag
               if(tagNumber == EXIF_TAG_ORIENTATION)
               {
-                if(bMotorolla)
+                if(bMotorola)
                 {
                   SKIPN(p, 1 * 7);
                   readBits += 7;

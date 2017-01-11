@@ -135,6 +135,6 @@ private:
   CCriticalSection m_textureAccess;
 #ifdef HAS_DX
   ID3D11Buffer*    m_vb;
-  bool             UpdateVertexBuffer(Vertex *vertecies);
+  bool             UpdateVertexBuffer(Vertex *vertices);
 #endif
 };

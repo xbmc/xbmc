@@ -29,7 +29,7 @@
 
 #include <algorithm>
 
-std::string ArrayToString(SortAttribute attributes, const CVariant &variant, const std::string &seperator = " / ")
+std::string ArrayToString(SortAttribute attributes, const CVariant &variant, const std::string &separator = " / ")
 {
   std::vector<std::string> strArray;
   if (variant.isArray())
@@ -42,7 +42,7 @@ std::string ArrayToString(SortAttribute attributes, const CVariant &variant, con
         strArray.push_back(it->asString());
     }
 
-    return StringUtils::Join(strArray, seperator);
+    return StringUtils::Join(strArray, separator);
   }
   else if (variant.isString())
   {

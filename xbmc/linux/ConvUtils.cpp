@@ -26,7 +26,7 @@
 #include <ctype.h>
 #include <errno.h>
 
-void OutputDebugString(LPCTSTR lpOuputString)
+void OutputDebugString(LPCTSTR lpOutputString)
 {
 }
 

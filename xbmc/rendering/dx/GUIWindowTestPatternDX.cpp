@@ -340,7 +340,7 @@ void CGUIWindowTestPatternDX::DrawRectangle(float x, float y, float x2, float y2
   pGUIShader->Draw(ARRAYSIZE(vert), 0);
 }
 
-void CGUIWindowTestPatternDX::UpdateVertexBuffer(Vertex *vertecies, unsigned count)
+void CGUIWindowTestPatternDX::UpdateVertexBuffer(Vertex *vertices, unsigned count)
 {
   unsigned width = sizeof(Vertex) * count;
 
@@ -350,7 +350,7 @@ void CGUIWindowTestPatternDX::UpdateVertexBuffer(Vertex *vertecies, unsigned cou
 
     CD3D11_BUFFER_DESC desc(width, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DYNAMIC, D3D11_CPU_ACCESS_WRITE);
     D3D11_SUBRESOURCE_DATA initData = {};
-    initData.pSysMem = vertecies;
+    initData.pSysMem = vertices;
     initData.SysMemPitch = width;
     if (SUCCEEDED(g_Windowing.Get3D11Device()->CreateBuffer(&desc, &initData, &m_vb)))
     {
@@ -364,7 +364,7 @@ void CGUIWindowTestPatternDX::UpdateVertexBuffer(Vertex *vertecies, unsigned cou
     D3D11_MAPPED_SUBRESOURCE res;
     if (SUCCEEDED(pContext->Map(m_vb, 0, D3D11_MAP_WRITE_DISCARD, 0, &res)))
     {
-      memcpy(res.pData, vertecies, sizeof(Vertex) * count);
+      memcpy(res.pData, vertices, sizeof(Vertex) * count);
       pContext->Unmap(m_vb, 0);
     }
   }
