@@ -341,6 +341,33 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_xbmcgui_listitem
+      /// @brief \python_func{ addSeason(number, name = "") }
+      ///-----------------------------------------------------------------------
+      /// Add a season with name to a listitem. It needs at least the season number
+      ///
+      /// @param number     int - the number of the season.
+      /// @param name       string - the name of the season. Default "".
+      ///
+      ///-----------------------------------------------------------------------
+      ///
+      /// @python_v18 New function added.
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ...
+      /// # addSeason(number, name))
+      /// listitem.addSeason(1, "Murder House")
+      /// ...
+      /// ~~~~~~~~~~~~~
+      ///
+      addSeason(...);
+#else
+      void addSeason(int number, std::string name = "");
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmcgui_listitem
       /// @brief \python_func{ getArt(key) }
       ///-----------------------------------------------------------------------
       /// Returns a listitem art path as a string, similar to an infolabel.\n
