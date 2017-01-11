@@ -738,6 +738,11 @@ namespace XBMCAddon
       item->GetVideoInfoTag()->m_fanart.Pack();
     }
 
+    void ListItem::addAvailableThumb(std::string url, std::string aspect, std::string referrer, std::string cache, bool post, bool isgz, int season)
+    {
+      LOCKGUIIF(m_offscreen);
+      item->GetVideoInfoTag()->m_strPictureURL.AddElement(url, aspect, referrer, cache, post, isgz, season);
+    }
 
     void ListItem::addStreamInfo(const char* cType, const Properties& dictionary)
     {

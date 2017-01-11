@@ -772,6 +772,36 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_xbmcgui_listitem
+      /// @brief \python_func{ addAvailableThumb(images) }
+      ///-----------------------------------------------------------------------
+      /// @brief Add a thumb to available thumbs (needed for scrapers)
+      ///
+      /// @param url            string (image path url)
+      /// @param aspect         [opt] string (image type)
+      /// @param referrer       [opt] string (referr url)
+      /// @param cache          [opt] string (filename in cache)
+      /// @param post           [opt] bool (use post to retrieve the image, default false)
+      /// @param isgz           [opt] bool (use gzip to retrieve the image, default false)
+      /// @param season         [opt] integer (number of season in case of season thumb)
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v18 New function added.
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ...
+      /// listitem.addAvailableThumb(path_to_image_1, "1.77")
+      /// ...
+      /// ~~~~~~~~~~~~~
+      ///
+      addAvailableThumb(...);
+#else
+      void addAvailableThumb(std::string url, std::string aspect = "", std::string referrer = "", std::string cache = "", bool post = false, bool isgz = false, int season = -1);
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmcgui_listitem
       /// @brief \python_func{ addStreamInfo(type, values) }
       ///-----------------------------------------------------------------------
       /// @brief Add a stream with details.
