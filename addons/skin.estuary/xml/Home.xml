@@ -705,7 +705,7 @@
 					<include content="ImageWidget">
 						<param name="text_label" value="$INFO[System.DVDLabel]" />
 						<param name="button_label" value="$LOCALIZE[341]" />
-						<param name="button_onclick" value="PlayDVD"/>
+						<param name="button_onclick" value="PlayDisc"/>
 						<param name="button_id" value="21100"/>
 						<param name="visible" value="true"/>
 						<param name="button2_label" value="$LOCALIZE[13391]"/>
@@ -825,7 +825,7 @@
 						</item>
 						<item>
 							<label>$LOCALIZE[427]</label>
-							<onclick>PlayDVD</onclick>
+							<onclick>PlayDisc</onclick>
 							<property name="menu_id">$NUMBER[21000]</property>
 							<thumb>icons/sidemenu/disc.png</thumb>
 							<property name="id">disc</property>

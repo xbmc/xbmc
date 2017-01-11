@@ -30,7 +30,7 @@
 				<width>1000</width>
 				<height>60</height>
 				<label>$VAR[VideoOSDHelpTextVar]</label>
-				<visible>!Player.ShowInfo</visible>
+				<visible>!Player.ShowInfo + !PVR.IsTimeShift</visible>
 			</control>
 			<control type="group" id="200">
 				<control type="grouplist" id="201">

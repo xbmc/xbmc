@@ -86,7 +86,7 @@
 				<top>100</top>
 				<bottom>315</bottom>
 				<pagecontrol>60</pagecontrol>
-				<autoscroll delay="5000" repeat="7500" time="5000">true</autoscroll>
+				<autoscroll delay="5000" repeat="7500" time="5000">!Control.HasFocus(60)</autoscroll>
 			</control>
 			<control type="scrollbar" id="60">
 				<right>0</right>
