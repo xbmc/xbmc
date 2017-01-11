@@ -713,6 +713,32 @@ namespace XBMCAddon
       }
     }
 
+    void ListItem::setAvailableFanart(const std::vector<Properties>& images)
+    {
+      LOCKGUIIF(m_offscreen);
+      item->GetVideoInfoTag()->m_fanart.Clear();
+      for (const auto& dictionary : images)
+      {
+        std::string image;
+        std::string preview;
+        std::string colors;
+        for (const auto& it: dictionary)
+        {
+          const String& key = it.first;
+          const String& value = it.second;
+          if (key == "image")
+            image = value;
+          else if (key == "preview")
+            preview = value;
+          else if (key == "colors")
+            colors = value;
+        }
+        item->GetVideoInfoTag()->m_fanart.AddFanart(image, preview, colors);
+      }
+      item->GetVideoInfoTag()->m_fanart.Pack();
+    }
+
+
     void ListItem::addStreamInfo(const char* cType, const Properties& dictionary)
     {
       LOCKGUIIF(m_offscreen);

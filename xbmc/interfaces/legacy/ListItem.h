@@ -739,6 +739,39 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_xbmcgui_listitem
+      /// @brief \python_func{ setAvailableFanart(images) }
+      ///-----------------------------------------------------------------------
+      /// @brief Set available images (needed for scrapers)
+      ///
+      /// @param images            list of dictionaries (see below for relevant keys)
+      ///
+      /// - Keys:
+      /// | Label         | Description                                     |
+      /// |--------------:|:------------------------------------------------|
+      /// | image         | string (http://www.someurl.com/someimage.png)
+      /// | preview       | [opt] string (http://www.someurl.com/somepreviewimage.png)
+      /// | colors        | [opt] string (either comma separated Kodi hex values ("FFFFFFFF,DDDDDDDD") or TVDB RGB Int Triplets ("|68,69,59|69,70,58|78,78,68|"))
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v18 New function added.
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ...
+      /// fanart = [{"image": path_to_image_1, "preview": path_to_preview_1}, {"image": path_to_image_2, "preview": path_to_preview_2}]
+      /// listitem.setAvailableFanart(fanart)
+      /// ...
+      /// ~~~~~~~~~~~~~
+      ///
+      setAvailableFanart(...);
+#else
+      void setAvailableFanart(const std::vector<Properties>& images);
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmcgui_listitem
       /// @brief \python_func{ addStreamInfo(type, values) }
       ///-----------------------------------------------------------------------
       /// @brief Add a stream with details.

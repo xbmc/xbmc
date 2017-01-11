@@ -82,6 +82,10 @@ public:
   /// Returns how many fanarts are stored
   /// \return An integer indicating how many fanarts are stored in the class.  Fanart indices are 0 to (GetNumFanarts() - 1)
   unsigned int GetNumFanarts() const;
+  /// Adds an image to internal fanart data
+  void AddFanart(const std::string& image, const std::string& preview, const std::string& colors);
+  /// Clear all internal fanart data
+  void Clear();
   ///
   /// m_xml contains an XML formatted string which is all fanart packed into one string.
   ///
@@ -107,7 +111,6 @@ private:
   struct SFanartData
   {
     std::string strImage;
-    std::string strResolution;
     std::string strColors;
     std::string strPreview;
   };

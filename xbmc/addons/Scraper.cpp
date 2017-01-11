@@ -691,9 +691,7 @@ static std::string ParseFanart(const CFileItem& item,
     prefix << tag << i+1;
     std::string url = FromString(item, prefix.str()+".url");
     std::string preview = FromString(item, prefix.str()+".preview");
-    std::string res = FromString(item, prefix.str()+".dim");
     TiXmlElement thumb("thumb");
-    thumb.SetAttribute("dim", res);
     thumb.SetAttribute("preview", preview);
     TiXmlText text(url);
     thumb.InsertEndChild(text);
