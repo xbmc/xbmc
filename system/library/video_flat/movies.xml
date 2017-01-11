@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <node order="1" type="filter" visible="Library.HasContent(Movies)">
-  <label>342</label>
-  <icon>DefaultMovies.png</icon>
-  <content>movies</content>
-  <order direction="ascending">sorttitle</order>
+	<label>342</label>
+	<icon>DefaultMovies.png</icon>
+	<content>movies</content>
+	<order direction="ascending">sorttitle</order>
 </node>
