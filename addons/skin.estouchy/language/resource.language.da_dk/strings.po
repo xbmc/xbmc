@@ -94,7 +94,7 @@ msgstr "Sorter: Faldende"
 
 msgctxt "#31055"
 msgid "Open playlist"
-msgstr "Åbn afspilningsliste"
+msgstr "Åbn playliste"
 
 msgctxt "#31056"
 msgid "Save playlist"
@@ -102,7 +102,7 @@ msgstr "Gem afspilningsliste"
 
 msgctxt "#31057"
 msgid "Close playlist"
-msgstr "Luk afspilningsliste"
+msgstr "Luk playliste"
 
 msgctxt "#31058"
 msgid "System music files"
@@ -110,7 +110,7 @@ msgstr "Systemmusikfiler"
 
 msgctxt "#31059"
 msgid "Current playlist"
-msgstr "Nuværende afspilningsliste"
+msgstr "Nuværende playliste"
 
 msgctxt "#31200"
 msgid "Back"
@@ -191,6 +191,10 @@ msgstr "Live TV"
 msgctxt "#31557"
 msgid "Hide video background"
 msgstr "Skjul videobaggrund"
+
+msgctxt "#31560"
+msgid "Available groups"
+msgstr "Tilgængelig grupper"
 
 msgctxt "#31561"
 msgid "Add Group"

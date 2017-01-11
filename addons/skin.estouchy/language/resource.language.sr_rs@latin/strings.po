@@ -172,9 +172,33 @@ msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 msgstr "Promenite masku · Postavite jezik i regiju - Promenite opcije izlistavanja datoteka - Postavite čuvara ekrana"
 
+msgctxt "#31405"
+msgid "Configure & manage media sharing services · Configure & manage the weather service"
+msgstr "Podesi & upravljaj servisima deljenja medija · Podesi & upravljaj servisom vremenske prognoze"
+
+msgctxt "#31406"
+msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
+msgstr "Podesi prikaz ·  Podesi audio · Podesi pristup internetu · Podesi uštedu energije · Podesi evidentiranje"
+
 msgctxt "#31407"
 msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
 msgstr "Upravljajte vašim instaliranim dodatnim programima · Potražite i instalirajte dodatne programe sa kodi.tv - Podesite podešavanja dodatnih programa"
+
+msgctxt "#31408"
+msgid "Configure actions that can be used during playback · Configure how media content is played"
+msgstr "Podesite akcije koje se mogu koristiti tokom reprodukcije · Podesite kako se medijski sadržaji reprodukuju"
+
+msgctxt "#31410"
+msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
+msgstr "Podesi masku · Podesi region · Podesi kontrolu · Podesi čuvara ekrana · Podesi glavno zaključavanje"
+
+msgctxt "#31411"
+msgid "Configure your profiles · Set locking options · Enable login screen"
+msgstr "Podesite vaše profile · Postavite opcije zaključavanja · Aktivirajte ekran za prijavu"
+
+msgctxt "#31412"
+msgid "Display system information · Hardware statistics · Check storage availability · View network configuration"
+msgstr "Prikaži sistemske informacije · Hardverska statistika · Proveri dostupnost skladišta · Pogledaj konfiguraciju mreže"
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"

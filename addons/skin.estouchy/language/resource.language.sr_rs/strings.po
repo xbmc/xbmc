@@ -174,11 +174,11 @@ msgstr "Промените маску · Поставите језик и рег
 
 msgctxt "#31405"
 msgid "Configure & manage media sharing services · Configure & manage the weather service"
-msgstr "Подеси & управљај сервисима дељења медија · Подеси & управљај метео сервисом"
+msgstr "Подеси & управљај сервисима дељења медија · Подеси & управљај сервисом временске прогнозе"
 
 msgctxt "#31406"
 msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
-msgstr "Подеси приказ ·  Подеси аудио · Подеси приступ интернету · Подеси уштеду енергије · Подеси пријављивање"
+msgstr "Подеси приказ ·  Подеси аудио · Подеси приступ интернету · Подеси уштеду енергије · Подеси евидентирање"
 
 msgctxt "#31407"
 msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
@@ -190,15 +190,15 @@ msgstr "Подесите акције које се могу користити 
 
 msgctxt "#31410"
 msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
-msgstr "Подеси маску · Подеси регион · Подеси контролу · Подеси чувар екрана · Подеси главно закључавање"
+msgstr "Подеси маску · Подеси регион · Подеси контролу · Подеси чувара екрана · Подеси главно закључавање"
 
 msgctxt "#31411"
 msgid "Configure your profiles · Set locking options · Enable login screen"
-msgstr "Подесите ваше профиле · Подесите опције закључавања · Активирајте екран за пријаву"
+msgstr "Подесите ваше профиле · Поставите опције закључавања · Активирајте екран за пријаву"
 
 msgctxt "#31412"
 msgid "Display system information · Hardware statistics · Check storage availability · View network configuration"
-msgstr "Прикажи системске информације · Хардверску статистику · Провери доступност складишта · Погледај конфигурацију мреже"
+msgstr "Прикажи системске информације · Хардверска статистика · Провери доступност складишта · Погледај конфигурацију мреже"
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
