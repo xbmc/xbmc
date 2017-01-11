@@ -312,6 +312,10 @@ msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "Seleccioneu el vostre perfil d'usuari de Kodi[CR]per autenticar-vos i continuar"
 
+msgctxt "#31099"
+msgid "IconWall"
+msgstr "Mur d'icones"
+
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Desplaçament"
@@ -519,6 +523,10 @@ msgstr "Edita les categories"
 msgctxt "#31158"
 msgid "Touch mode"
 msgstr "Mode tàctil"
+
+msgctxt "#31159"
+msgid "Artwork"
+msgstr "Artwork"
 
 msgctxt "#31160"
 msgid "Show media flags"

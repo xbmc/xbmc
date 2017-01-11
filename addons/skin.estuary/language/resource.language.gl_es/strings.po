@@ -120,6 +120,10 @@ msgctxt "#31029"
 msgid "Last logged in"
 msgstr "Último ingreso"
 
+msgctxt "#31030"
+msgid "System memory usage"
+msgstr "Uso de memoria"
+
 msgctxt "#31031"
 msgid "Version info"
 msgstr "Información de versión"
@@ -404,6 +408,38 @@ msgctxt "#31134"
 msgid "Remaining"
 msgstr "Restante"
 
+msgctxt "#31142"
+msgid "Play speed"
+msgstr "Velocidade de reprodución"
+
 msgctxt "#31144"
 msgid "Enter add-on browser"
 msgstr "Introducir buscador de engadidos"
+
+msgctxt "#31145"
+msgid "Search add-ons"
+msgstr "Buscar complementos"
+
+msgctxt "#31148"
+msgid "Categories"
+msgstr "Categorías"
+
+msgctxt "#31150"
+msgid "Repository"
+msgstr "Repositorio"
+
+msgctxt "#31151"
+msgid "Unwatched music videos"
+msgstr "Vídeos musicais sen ver"
+
+msgctxt "#31152"
+msgid "Random music videos"
+msgstr "Vídeos musicais ó chou"
+
+msgctxt "#31157"
+msgid "Edit categories"
+msgstr "Editar categorías"
+
+msgctxt "#31158"
+msgid "Touch mode"
+msgstr "Modo táctil"

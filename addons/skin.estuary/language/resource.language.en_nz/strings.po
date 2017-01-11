@@ -104,6 +104,10 @@ msgctxt "#31022"
 msgid "Sort by"
 msgstr "Sort by"
 
+msgctxt "#31023"
+msgid "Viewtype"
+msgstr "Viewtype"
+
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
 msgstr "No favourites found. You can add any item from media views to this list by using the context menu."

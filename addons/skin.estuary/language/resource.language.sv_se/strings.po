@@ -154,7 +154,7 @@ msgstr "Spola bakåt"
 
 msgctxt "#31039"
 msgid "Fast forward"
-msgstr "Spola fram"
+msgstr "Spola framåt"
 
 msgctxt "#31041"
 msgid "Camera manufacturer"
@@ -202,7 +202,7 @@ msgstr "Arialbaserad"
 
 msgctxt "#31054"
 msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
-msgstr "Tryck [B]Vänster[/B] för att spola tillbaka eller [B]Höger[/B] för att snabbspola framåt"
+msgstr "Tryck [B]Vänster[/B] för att spola bakåt eller [B]Höger[/B] för att spola framåt"
 
 msgctxt "#31056"
 msgid "Go to playlist"
@@ -330,7 +330,7 @@ msgstr "Vägg"
 
 msgctxt "#31103"
 msgid "Enter text here..."
-msgstr "Fyll i text här..."
+msgstr "Ange text här..."
 
 msgctxt "#31104"
 msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
@@ -538,4 +538,4 @@ msgstr "Visa mediaflaggor"
 
 msgctxt "#31161"
 msgid "Numeric pad"
-msgstr "Numerisk knappsat"
+msgstr "Numerisk knappsats"

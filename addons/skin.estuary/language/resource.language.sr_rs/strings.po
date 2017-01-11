@@ -86,7 +86,7 @@ msgstr "Оцењено"
 
 msgctxt "#31018"
 msgid "Recently played channels"
-msgstr "Скорашњи канали"
+msgstr "Недавно репродуковани канали"
 
 msgctxt "#31019"
 msgid "Forecast"
@@ -238,7 +238,7 @@ msgstr "Изабери подешавања"
 
 msgctxt "#31069"
 msgid "Last Updated"
-msgstr "Последње ажурирање"
+msgstr "Последње Ажурирање"
 
 msgctxt "#31071"
 msgid "by"

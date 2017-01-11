@@ -42,7 +42,7 @@ msgstr "Gledaj kao 2D"
 
 msgctxt "#31006"
 msgid "Random movies"
-msgstr "Nasumični filmovi"
+msgstr "Naizmjenični filmovi"
 
 msgctxt "#31007"
 msgid "Unwatched movies"
@@ -58,19 +58,19 @@ msgstr "Filmovi u tijeku"
 
 msgctxt "#31011"
 msgid "Most played albums"
-msgstr "Najviše izvođeni albumi"
+msgstr "Najslušaniji albumi"
 
 msgctxt "#31012"
 msgid "Random albums"
-msgstr "Nasumični albumi"
+msgstr "Naizmjenični albumi"
 
 msgctxt "#31013"
 msgid "Random artists"
-msgstr "Nasumični izvođači"
+msgstr "Naizmjenični izvođači"
 
 msgctxt "#31014"
 msgid "Unplayed albums"
-msgstr "Nereproducirani albumi"
+msgstr "Neslušani albumi"
 
 msgctxt "#31015"
 msgid "Recent recordings"
@@ -78,7 +78,7 @@ msgstr "Nedavne snimke"
 
 msgctxt "#31016"
 msgid "Recently played channels"
-msgstr "Nedavno reproducirani kanali"
+msgstr "Nedavno gledani programi"
 
 msgctxt "#31017"
 msgid "Rated"
@@ -86,7 +86,7 @@ msgstr "Ocijenjeno"
 
 msgctxt "#31018"
 msgid "Recently played channels"
-msgstr "Nedavno reproducirani kanali"
+msgstr "Nedavno slušani programi"
 
 msgctxt "#31019"
 msgid "Forecast"
@@ -102,7 +102,7 @@ msgstr "Ostale mogućnosti"
 
 msgctxt "#31022"
 msgid "Sort by"
-msgstr "Sortiraj po"
+msgstr "Razvrstaj po"
 
 msgctxt "#31023"
 msgid "Viewtype"
@@ -122,11 +122,11 @@ msgstr "Posljednji put prijavljen"
 
 msgctxt "#31030"
 msgid "System memory usage"
-msgstr "Iskorištenost sistemske memorije"
+msgstr "Korištenje memorije sustava"
 
 msgctxt "#31031"
 msgid "Version info"
-msgstr "Informacije o inačici"
+msgstr "Informacija inačice"
 
 msgctxt "#31032"
 msgid "Order"
@@ -238,7 +238,7 @@ msgstr "Glazbeni popis za reprodukciju"
 
 msgctxt "#31067"
 msgid "Event log"
-msgstr "Zapisnik događaja"
+msgstr "Zapis događaja"
 
 msgctxt "#31068"
 msgid "Choose presets"
@@ -246,7 +246,7 @@ msgstr "Odaberi predložak"
 
 msgctxt "#31069"
 msgid "Last Updated"
-msgstr "Posljednje ažurirano"
+msgstr "Posljednja nadopuna"
 
 msgctxt "#31071"
 msgid "by"
@@ -270,15 +270,15 @@ msgstr "Završava u"
 
 msgctxt "#31082"
 msgid "Lyrics add-on"
-msgstr "Dodatak za tekstove pjesama"
+msgstr "Dodatak tekstova pjesama"
 
 msgctxt "#31083"
 msgid "Lyrics add-on settings"
-msgstr "Postavke dodatak za tekstove pjesama"
+msgstr "Postavke dodatak tekstova pjesama"
 
 msgctxt "#31084"
 msgid "Visualisation settings"
-msgstr "Postavke Vizualizacije"
+msgstr "Postavke vizualizacije"
 
 msgctxt "#31089"
 msgid "Available groups"
@@ -286,7 +286,7 @@ msgstr "Dostupne grupe"
 
 msgctxt "#31090"
 msgid "Search trailer"
-msgstr "Pretraži trailere"
+msgstr "Pretraži najave"
 
 msgctxt "#31092"
 msgid "Video menu"

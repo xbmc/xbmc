@@ -106,7 +106,7 @@ msgstr "Zoradiť podľa"
 
 msgctxt "#31023"
 msgid "Viewtype"
-msgstr "TypZobrazenia"
+msgstr "Typ zobrazenia"
 
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."

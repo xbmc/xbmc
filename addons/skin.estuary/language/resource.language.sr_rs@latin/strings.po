@@ -86,7 +86,7 @@ msgstr "Ocenjeno"
 
 msgctxt "#31018"
 msgid "Recently played channels"
-msgstr "Skorašnji kanali"
+msgstr "Nedavno reprodukovani kanali"
 
 msgctxt "#31019"
 msgid "Forecast"
@@ -238,7 +238,7 @@ msgstr "Izaberi podešavanja"
 
 msgctxt "#31069"
 msgid "Last Updated"
-msgstr "Poslednje ažuriranje"
+msgstr "Poslednje Ažuriranje"
 
 msgctxt "#31071"
 msgid "by"
@@ -423,6 +423,10 @@ msgstr "Podešavanja vezana za glavni meni: Podesite glavni ekran prema vašim �
 msgctxt "#31132"
 msgid "min"
 msgstr "min"
+
+msgctxt "#31134"
+msgid "Remaining"
+msgstr "Preostalo"
 
 msgctxt "#31144"
 msgid "Enter add-on browser"

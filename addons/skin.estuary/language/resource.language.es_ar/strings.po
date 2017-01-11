@@ -318,7 +318,7 @@ msgstr "IconWall"
 
 msgctxt "#31100"
 msgid "Shift"
-msgstr "Mayusc."
+msgstr "Desplazamiento"
 
 msgctxt "#31101"
 msgid "InfoWall"
@@ -410,7 +410,7 @@ msgstr "Mostrar imágenes en mapa"
 
 msgctxt "#31125"
 msgid "Press up for actor info"
-msgstr "Presione arriba para ver información del actor"
+msgstr "Pulse 'arriba' para ver información del actor"
 
 msgctxt "#31126"
 msgid "Press OK to read plot"
@@ -510,7 +510,7 @@ msgstr "No tiene instalados add-ons de este tipo. Visite nuestro buscador de add
 
 msgctxt "#31154"
 msgid "Press OK to switch between locations"
-msgstr "Presine OK para conmutar entre ubicaciones"
+msgstr "Presione OK para conmutar entre ubicaciones"
 
 msgctxt "#31155"
 msgid "No bookmarks created yet."
