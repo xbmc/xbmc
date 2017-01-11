@@ -1694,9 +1694,6 @@ msgctxt "#368"
 msgid "IMDb"
 msgstr ""
 
-#: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeMoviesOverview.cpp
-#: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeMusicVideosOverview.cpp
-#: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeTvShowOverview.cpp
 msgctxt "#369"
 msgid "Title"
 msgstr ""
@@ -2553,9 +2550,6 @@ msgstr ""
 
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
 #: xbmc/dialogs/GUIDialogSmartPlaylistRule.cpp
-#: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeMoviesOverview.cpp
-#: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeMusicVideosOverview.cpp
-#: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeTvShowOverview.cpp
 #: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#562"
 msgid "Year"
@@ -2955,6 +2949,9 @@ msgid "Browse for library"
 msgstr ""
 
 #: xbmc/filesystem/MusicDatabaseDirectory/DirectoryNodeOverview.cpp
+#: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeMoviesOverview.cpp
+#: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeMusicVideosOverview.cpp
+#: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeTvShowOverview.cpp
 #: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#652"
 msgid "Years"
@@ -4778,7 +4775,14 @@ msgctxt "#10021"
 msgid "Settings - TV"
 msgstr ""
 
-#empty strings from id 10022 to 10024
+#empty strings from id 10022 to 10023
+
+#: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeMoviesOverview.cpp
+#: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeMusicVideosOverview.cpp
+#: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeTvShowOverview.cpp
+msgctxt "#10024"
+msgid "Titles"
+msgstr ""
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#10025"
