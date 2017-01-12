@@ -163,7 +163,7 @@ public:
   virtual void SetReadRate(unsigned rate) {}
 
   /*! \brief Get the cache status
-   \return true when cache status was succesfully obtained
+   \return true when cache status was successfully obtained
    */
   virtual bool GetCacheStatus(XFILE::SCacheStatus *status) { return false; }
 

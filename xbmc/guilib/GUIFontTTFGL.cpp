@@ -210,7 +210,7 @@ void CGUIFontTTFGL::LastEnd()
 
     // Bind our pre-calculated array to GL_ELEMENT_ARRAY_BUFFER
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_elementArrayHandle);
-    // Store currect scissor
+    // Store current scissor
     CRect scissor = g_graphicsContext.StereoCorrection(g_graphicsContext.GetScissors());
 
     for (size_t i = 0; i < m_vertexTrans.size(); i++)

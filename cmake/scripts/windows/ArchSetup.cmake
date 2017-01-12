@@ -29,7 +29,7 @@ set(SYSTEM_DEFINES -DNOMINMAX -D_USE_32BIT_TIME_T -DHAS_DX -D__STDC_CONSTANT_MAC
                    -DPLT_HTTP_DEFAULT_SERVER="UPnP/1.0 DLNADOC/1.50 Kodi"
                    $<$<CONFIG:Debug>:-DD3D_DEBUG_INFO -D_ITERATOR_DEBUG_LEVEL=0>)
 
-# Make sure /FS is set for Visual Studio in order to prevent simultanious access to pdb files.
+# Make sure /FS is set for Visual Studio in order to prevent simultaneous access to pdb files.
 if(CMAKE_GENERATOR MATCHES "Visual Studio")
   set(CMAKE_CXX_FLAGS "/MP /FS ${CMAKE_CXX_FLAGS}")
 endif()

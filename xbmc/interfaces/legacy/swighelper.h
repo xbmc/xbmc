@@ -32,7 +32,7 @@
  *  SWIGHIDDENVIRTUAL to 'hide' the polymorphic behavior from the scripting
  *  language using the macro instead.
  *
- * Note: You should not hide virtual destructors from the scripting langage.
+ * Note: You should not hide virtual destructors from the scripting language.
  */
 #ifdef SWIG
 #define SWIGHIDDENVIRTUAL 

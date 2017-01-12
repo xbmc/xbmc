@@ -34,7 +34,7 @@
 
 // aligned memory allocation.
 // in order to do so - we alloc extra space and store the original allocation in it (so that we can free later on).
-// the returned address will be the nearest alligned address within the space allocated.
+// the returned address will be the nearest aligned address within the space allocated.
 void *_aligned_malloc(size_t s, size_t alignTo) {
 
   char *pFull = (char*)malloc(s + alignTo + sizeof(char *));

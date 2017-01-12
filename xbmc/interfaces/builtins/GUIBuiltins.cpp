@@ -85,7 +85,7 @@ static int ActivateWindow(const std::vector<std::string>& params2)
   int iWindow = CButtonTranslator::TranslateWindow(strWindow);
   if (iWindow != WINDOW_INVALID)
   {
-    // compate the given directory param with the current active directory
+    // compare the given directory param with the current active directory
     bool bIsSameStartFolder = true;
     if (!params.empty())
     {

@@ -67,7 +67,7 @@ CGUIAddonWindow::~CGUIAddonWindow(void)
 
 bool CGUIAddonWindow::OnAction(const CAction &action)
 {
-  // Let addon decide whether it wants to hande action first
+  // Let addon decide whether it wants to handle action first
   if (CBOnAction && CBOnAction(m_clientHandle, action.GetID()))
     return true;
 
@@ -164,7 +164,7 @@ bool CGUIAddonWindow::OnMessage(CGUIMessage& message)
 //            inf->pObject = Action_FromAction(CAction(ACTION_CONTEXT_MENU));
 //            inf->pCallbackWindow = pCallbackWindow;
 //
-//            // aquire lock?
+//            // acquire lock?
 //            PyXBMC_AddPendingCall(Py_XBMC_Event_OnAction, inf);
 //            PulseActionEvent();
           }
@@ -281,7 +281,7 @@ void CGUIAddonWindow::PulseActionEvent()
 bool CGUIAddonWindow::OnClick(int iItem, const std::string &player)
 {
   // Hook Over calling  CGUIMediaWindow::OnClick(iItem) results in it trying to PLAY the file item
-  // which if its not media is BAD and 99 out of 100 times undesireable.
+  // which if its not media is BAD and 99 out of 100 times undesirable.
   return false;
 }
 

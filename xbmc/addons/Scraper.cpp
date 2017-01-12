@@ -977,7 +977,7 @@ std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CCurlFile &fcurl,
         for ( ; pxeLink && pxeLink->FirstChild(); pxeLink = pxeLink->NextSiblingElement("url"))
           scurlMovie.ParseElement(pxeLink);
 
-        // calculate the relavance of this hit
+        // calculate the relevance of this hit
         std::string sCompareTitle = scurlMovie.strTitle;
         StringUtils::ToLower(sCompareTitle);
         std::string sMatchTitle = sTitle;

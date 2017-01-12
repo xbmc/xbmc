@@ -637,7 +637,7 @@ bool CGUIDialogSmartPlaylistEditor::EditPlaylist(const std::string &path, const 
   { // failed to load
     if (!StringUtils::StartsWithNoCase(editor->m_mode, "party"))
       return false; // only edit normal playlists that exist
-    // party mode playlists can be editted even if they don't exist
+    // party mode playlists can be edited even if they don't exist
     playlist.SetType(editor->m_mode == "partymusic" ? "songs" : "musicvideos");
   }
 

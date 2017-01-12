@@ -484,7 +484,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
               bool multiSelect = strMultiselect && strcmpi(strMultiselect, "true") == 0;
               if (multiSelect)
               {
-                // construct vector of addon IDs (IDs are comma seperated in single string)
+                // construct vector of addon IDs (IDs are comma separated in single string)
                 std::vector<std::string> addonIDs = StringUtils::Split(value, ',');
                 if (CGUIWindowAddonBrowser::SelectAddonID(types, addonIDs, false) == 1)
                 {

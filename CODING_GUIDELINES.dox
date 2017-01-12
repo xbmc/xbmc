@@ -146,7 +146,7 @@ doSomething(e); doSomething(f); // this is probably bad style anyway
 \subsection code_guidelines_3_1 No vertical alignment
 
 Do not use whitespaces to align value names together, this becomes problematic
-on updates to see the change, if the whitspaces need to change on all.
+on updates to see the change, if the whitespace need to change on all.
 
 This should be not used:
 ~~~~~~~~~~~~~

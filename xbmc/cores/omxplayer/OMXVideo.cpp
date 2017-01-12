@@ -629,7 +629,7 @@ bool COMXVideo::Open(CDVDStreamInfo &hints, OMXClock *clock, bool hdmi_clock_syn
   }
 
 
-  // Alloc buffers for the omx intput port.
+  // Alloc buffers for the omx input port.
   omx_err = m_omx_decoder.AllocInputBuffers();
   if (omx_err != OMX_ErrorNone)
   {

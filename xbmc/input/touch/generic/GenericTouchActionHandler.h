@@ -71,7 +71,7 @@ public:
   int QuerySupportedGestures(float x, float y);
 
 private:
-  // private construction, and no assignements; use the provided singleton methods
+  // private construction, and no assignments; use the provided singleton methods
   CGenericTouchActionHandler() { }
   CGenericTouchActionHandler(const CGenericTouchActionHandler&);
   CGenericTouchActionHandler const& operator=(CGenericTouchActionHandler const&);

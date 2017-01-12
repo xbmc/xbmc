@@ -103,7 +103,7 @@ namespace JOYSTICK
      * when mapping ends and immediately sends Volume Down actions.
      *
      * The fix is to allow implementers to wait until all axes are motionless
-     * before deattaching themselves.
+     * before detaching themselves.
      *
      * Called in the same thread as \ref IButtonMapper::MapPrimitive.
      */

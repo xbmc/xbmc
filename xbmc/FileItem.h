@@ -553,7 +553,7 @@ private:
 
   /*!
    \brief Return the current resume point for this item.
-   \return The resum point.
+   \return The resume point.
    */
   CBookmark GetResumePoint() const;
 

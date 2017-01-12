@@ -458,7 +458,7 @@ bool CStereoscopicsManager::OnAction(const CAction &action)
     {
       RENDER_STEREO_MODE targetMode = GetPreferredPlaybackMode();
 
-      // if we have an old userdefined steremode, use that one as toggle target
+      // if we have an old userdefined stereomode, use that one as toggle target
       if (m_stereoModeSetByUser != RENDER_STEREO_MODE_UNDEFINED)
       {
         // if user mode is set to OFF, he manually turned it off before. In this case use the last user applied mode

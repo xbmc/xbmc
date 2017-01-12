@@ -2716,7 +2716,7 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
     // currently we calculate the repeat time (ie time from last similar keypress) just global as fps
     float frameTime = m_frameTime.GetElapsedSeconds();
     m_frameTime.StartZero();
-    // never set a frametime less than 2 fps to avoid problems when debuggin and on breaks
+    // never set a frametime less than 2 fps to avoid problems when debugging and on breaks
     if( frameTime > 0.5 ) frameTime = 0.5;
 
     if (processGUI && m_renderGUI)
@@ -3954,7 +3954,7 @@ bool CApplication::WakeUpScreenSaverAndDPMS(bool bPowerOffKeyPressed /* = false 
 
   if(result)
   {
-    // allow listeners to ignore the deactivation if it preceeds a powerdown/suspend etc
+    // allow listeners to ignore the deactivation if it precedes a powerdown/suspend etc
     CVariant data(CVariant::VariantTypeObject);
     data["shuttingdown"] = bPowerOffKeyPressed;
     CAnnouncementManager::GetInstance().Announce(GUI, "xbmc", "OnScreensaverDeactivated", data);
@@ -4527,7 +4527,7 @@ void CApplication::ProcessSlow()
   }
 #endif
 
-  // Temporarely pause pausable jobs when viewing video/picture
+  // Temporarily pause pausable jobs when viewing video/picture
   int currentWindow = g_windowManager.GetActiveWindow();
   if (CurrentFileItem().IsVideo() || CurrentFileItem().IsPicture() || currentWindow == WINDOW_FULLSCREEN_VIDEO || currentWindow == WINDOW_SLIDESHOW)
   {
@@ -4613,7 +4613,7 @@ void CApplication::ProcessSlow()
 }
 
 // Global Idle Time in Seconds
-// idle time will be resetet if on any OnKey()
+// idle time will be reset if on any OnKey()
 // int return: system Idle time in seconds! 0 is no idle!
 int CApplication::GlobalIdleTime()
 {

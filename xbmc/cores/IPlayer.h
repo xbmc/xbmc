@@ -332,7 +332,7 @@ public:
   // Skip to next track/item inside the current media (if supported).
   virtual bool SkipNext(){return false;}
 
-  //Returns true if not playback (paused or stopped beeing filled)
+  //Returns true if not playback (paused or stopped being filled)
   virtual bool IsCaching() const {return false;};
   //Cache filled in Percent
   virtual int GetCacheLevel() const {return -1;};
@@ -358,7 +358,7 @@ public:
   virtual void GetSubtitleCapabilities(std::vector<int> &subCaps) { subCaps.assign(1,IPC_SUBS_ALL); };
 
   /*!
-   \breif hook into render loop of render thread
+   \brief hook into render loop of render thread
    */
   virtual void FrameMove() {};
 

@@ -50,7 +50,7 @@ public:
   /*!
    \brief Check if filename have any of the listed extensions
    \param strFileName Path or URL to check
-   \param strExtensions List of '.' prefixed lowercase extensions seperated with '|'
+   \param strExtensions List of '.' prefixed lowercase extensions separated with '|'
    \return \e true if strFileName have any one of the extensions.
    \note The check is case insensitive for strFileName, but requires
          strExtensions to be lowercase. Returns false when strFileName or
@@ -90,7 +90,7 @@ public:
   static std::string SubstitutePath(const std::string& strPath, bool reverse = false);
 
   /*! \brief Check whether a URL is a given URL scheme.
-   Comparison is case-insensitve as per RFC1738
+   Comparison is case-insensitive as per RFC1738
    \param url a std::string path.
    \param type a lower-case scheme name, e.g. "smb".
    \return true if the url is of the given scheme, false otherwise.

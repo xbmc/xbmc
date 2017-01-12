@@ -650,8 +650,8 @@ void CSlideShowPic::Keep()
 
 bool CSlideShowPic::StartTransistion()
 {
-  // this is called if we need to start transistioning immediately to the new picture
-  if (m_bDrawNextImage) return false; // don't need to do anything as we are already transistioning
+  // this is called if we need to start transitioning immediately to the new picture
+  if (m_bDrawNextImage) return false; // don't need to do anything as we are already transitioning
   // decrease the number of display frame
   m_transistionEnd.start = m_iCounter;
   m_bTransistionImmediately = true;

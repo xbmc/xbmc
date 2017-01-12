@@ -60,7 +60,7 @@ public:
   //implement it by doing so.
   //
   //fcr_identifier - the identifier of the already published service which should be reannounced
-  // returns true on successfull reannonuce - false if this service isn't published yet
+  // returns true on successful reannonuce - false if this service isn't published yet
   bool ForceReAnnounceService(const std::string& fcr_identifier);
 
   ///removes the specified service
@@ -75,7 +75,7 @@ public:
   //started, get published now.
   bool Start();
 
-  // unpublishs all services (but keeps them stored in this class)
+  // unpublishes all services (but keeps them stored in this class)
   // a call to Start() will republish them
   void Stop();
 

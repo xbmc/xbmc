@@ -53,7 +53,7 @@ using namespace KODI::MESSAGING;
 
 #define CLASSNAME "COpenMaxVideo"
 
-//! @todo These are Nvidia Tegra2 dependent, need to dynamiclly find the
+//! @todo These are Nvidia Tegra2 dependent, need to dynamically find the
 //! right codec matched to video format.
 #define OMX_H264BASE_DECODER    "OMX.Nvidia.h264.decode"
 // OMX.Nvidia.h264ext.decode segfaults, not sure why.
@@ -283,7 +283,7 @@ void COpenMaxVideo::SetDropState(bool bDrop)
           CLASSNAME, __func__, omx_err);
     }
 
-    // And ingore all queued elements
+    // And ignore all queued elements
     ReleaseDemuxQueue();
 
     pthread_mutex_unlock(&m_omx_queue_mutex);
@@ -303,7 +303,7 @@ int COpenMaxVideo::EnqueueDemuxPacket(omx_demux_packet demux_packet)
   OMX_ERRORTYPE omx_err;
   OMX_BUFFERHEADERTYPE* omx_buffer;
 
-  // need to lock here to retreve an input buffer and pop the queue
+  // need to lock here to retrieve an input buffer and pop the queue
   omx_buffer = m_omx_input_avaliable.front();
   m_omx_input_avaliable.pop();
 
@@ -348,7 +348,7 @@ int COpenMaxVideo::Decode(uint8_t* pData, int iSize, double dts, double pts)
     uint8_t *demuxer_content = pData;
 
     // we need to queue then de-queue the demux packet, seems silly but
-    // omx might not have a omx input buffer avaliable when we are called
+    // omx might not have a omx input buffer available when we are called
     // and we must store the demuxer packet and try again later.
     omx_demux_packet demux_packet;
     demux_packet.dts = dts;
@@ -439,7 +439,7 @@ void COpenMaxVideo::ReleaseBuffer(OpenMaxVideoBuffer* releaseBuffer)
   if (!releaseBuffer)
     return;
 
-  //! @todo this is NOT multithreading safe. Buffer lifetime managment needs to be adopted.
+  //! @todo this is NOT multithreading safe. Buffer lifetime management needs to be adopted.
 
   pthread_mutex_lock(&m_omx_queue_mutex);
   OpenMaxVideoBuffer *buffer = releaseBuffer;
@@ -534,7 +534,7 @@ OMX_ERRORTYPE COpenMaxVideo::DecoderEmptyBufferDone(
     CLASSNAME, __func__, pBuffer->nFilledLen, (double)pBuffer->nTimeStamp / 1000.0);
   #endif
 
-  // queue free input buffer to avaliable list.
+  // queue free input buffer to available list.
   pthread_mutex_lock(&m_omx_queue_mutex);
   ctx->m_omx_input_avaliable.push(pBuffer);
   if(!ctx->m_omx_input_avaliable.empty()) {

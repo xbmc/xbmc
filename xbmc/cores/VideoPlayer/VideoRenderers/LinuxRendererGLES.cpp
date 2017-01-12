@@ -247,7 +247,7 @@ void CLinuxRendererGLES::ReleaseImage(int source, bool preserve)
 
   im.flags &= ~IMAGE_FLAG_INUSE;
   im.flags |= IMAGE_FLAG_READY;
-  /* if image should be preserved reserve it so it's not auto seleceted */
+  /* if image should be preserved reserve it so it's not auto selected */
 
   if( preserve )
     im.flags |= IMAGE_FLAG_RESERVED;

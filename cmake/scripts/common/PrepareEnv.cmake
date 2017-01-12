@@ -2,7 +2,7 @@
 include(${CORE_SOURCE_DIR}/cmake/scripts/common/Macros.cmake)
 core_find_versions()
 
-# in case we need to download something, set KODI_MIRROR to the default if not alread set
+# in case we need to download something, set KODI_MIRROR to the default if not already set
 if(NOT DEFINED KODI_MIRROR)
   set(KODI_MIRROR "http://mirrors.kodi.tv")
 endif()

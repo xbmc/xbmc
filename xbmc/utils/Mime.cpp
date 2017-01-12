@@ -177,7 +177,7 @@ std::map<std::string, std::string> fillMimeTypes()
   mimeTypes.insert(std::pair<std::string, std::string>("ima",       "application/x-ima"));
   mimeTypes.insert(std::pair<std::string, std::string>("imap",      "application/x-httpd-imap"));
   mimeTypes.insert(std::pair<std::string, std::string>("inf",       "application/inf"));
-  mimeTypes.insert(std::pair<std::string, std::string>("ins",       "application/x-internett-signup"));
+  mimeTypes.insert(std::pair<std::string, std::string>("ins",       "application/x-internet-signup"));
   mimeTypes.insert(std::pair<std::string, std::string>("ip",        "application/x-ip2"));
   mimeTypes.insert(std::pair<std::string, std::string>("isu",       "video/x-isvideo"));
   mimeTypes.insert(std::pair<std::string, std::string>("it",        "audio/it"));
@@ -219,7 +219,7 @@ std::map<std::string, std::string> fillMimeTypes()
   mimeTypes.insert(std::pair<std::string, std::string>("m1v",       "video/mpeg"));
   mimeTypes.insert(std::pair<std::string, std::string>("m2a",       "audio/mpeg"));
   mimeTypes.insert(std::pair<std::string, std::string>("m2v",       "video/mpeg"));
-  mimeTypes.insert(std::pair<std::string, std::string>("m3u",       "audio/x-mpequrl"));
+  mimeTypes.insert(std::pair<std::string, std::string>("m3u",       "audio/x-mpegurl"));
   mimeTypes.insert(std::pair<std::string, std::string>("man",       "application/x-troff-man"));
   mimeTypes.insert(std::pair<std::string, std::string>("map",       "application/x-navimap"));
   mimeTypes.insert(std::pair<std::string, std::string>("mar",       "text/plain"));
@@ -323,7 +323,7 @@ std::map<std::string, std::string> fillMimeTypes()
   mimeTypes.insert(std::pair<std::string, std::string>("pvu",       "paleovu/x-pv"));
   mimeTypes.insert(std::pair<std::string, std::string>("pwz",       "application/vnd.ms-powerpoint"));
   mimeTypes.insert(std::pair<std::string, std::string>("py",        "text/x-script.phyton"));
-  mimeTypes.insert(std::pair<std::string, std::string>("pyc",       "applicaiton/x-bytecode.python"));
+  mimeTypes.insert(std::pair<std::string, std::string>("pyc",       "application/x-bytecode.python"));
   mimeTypes.insert(std::pair<std::string, std::string>("qcp",       "audio/vnd.qcelp"));
   mimeTypes.insert(std::pair<std::string, std::string>("qd3",       "x-world/x-3dmf"));
   mimeTypes.insert(std::pair<std::string, std::string>("qd3d",      "x-world/x-3dmf"));

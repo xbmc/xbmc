@@ -109,7 +109,7 @@ HANDLE CreateFile(LPCTSTR lpFileName, DWORD dwDesiredAccess,
 
   // we always open files with fileflag O_NONBLOCK to support
   // cdrom devices, but we then turn it of for actual reads
-  // apperently it's used for multiple things, read mode
+  // apparently it's used for multiple things, read mode
   // and how opens are handled. devices must be opened
   // with this flag set to work correctly
   flags |= O_NONBLOCK;

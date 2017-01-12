@@ -54,7 +54,7 @@ namespace EVENTPACKET
   /************************************************************************/
 
   /************************************************************************
-     The payload format for each packet type is decribed below each
+     The payload format for each packet type is described below each
      packet type.
 
      Legend:

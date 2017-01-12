@@ -40,8 +40,8 @@ size, colour, location and contents of the text to be displayed.
 --------------------------------------------------------------------------------
 \section Label_Control_sect2 Auto size labels
 Wrapping your label in a grouplist with the auto width and appropriate minium and
-maximum values. Allows the labels width to dynamically change relevalant to how
-long the label text is. This allows a image or other control to be alligned to
+maximum values. Allows the labels width to dynamically change relative to how
+long the label text is. This allows a image or other control to be aligned to
 the right of the actual label text no matter how wide the label is.
 
 ~~~~~~~~~~~~~

@@ -134,7 +134,7 @@ protected:
   float m_sourceFrameRatio;
   float m_fps;
 
-  unsigned int m_renderOrientation; // orientation of the video in degress counter clockwise
+  unsigned int m_renderOrientation; // orientation of the video in degrees counter clockwise
   unsigned int m_oldRenderOrientation; // orientation of the previous frame
   // for drawing the texture with glVertex4f (holds all 4 corner points of the destination rect
   // with correct orientation based on m_renderOrientation

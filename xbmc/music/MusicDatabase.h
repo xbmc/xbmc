@@ -219,7 +219,7 @@ public:
    \param strArtist the album artist name(s)
    \param strGenre the album genre(s)
    \param year the year
-   \param strRecordLabel the recording lable
+   \param strRecordLabel the recording label
    \param strType album type (Musicbrainz release type e.g. "Broadcast, Soundtrack, live"), 
    \param bCompilation if the album is a compilation
    \param releaseType "album" or "single"

@@ -92,7 +92,7 @@ namespace PVR
       CPVRTimerInfoTagPtr timer;
       const CEpgInfoTagPtr epgTag(m_item->GetPVRChannelInfoTag()->GetEPGNow());
       if (epgTag)
-        timer = epgTag->Timer(); // cheap method, but not reliable as timers get set at epg tags asychrounously
+        timer = epgTag->Timer(); // cheap method, but not reliable as timers get set at epg tags asynchronously
 
       if (timer)
         return timer;

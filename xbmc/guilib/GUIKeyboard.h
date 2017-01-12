@@ -59,7 +59,7 @@ class CGUIKeyboard : public ITimerCallback
     
     /*!
     *\brief This call should cancel a currently shown keyboard dialog. The implementation should 
-    * return false from the modal ShowAndGetInput once anyone calls this metohod.
+    * return false from the modal ShowAndGetInput once anyone calls this method.
     */
     virtual void Cancel() = 0;
 

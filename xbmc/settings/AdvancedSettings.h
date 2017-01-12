@@ -311,7 +311,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     int m_iSkipLoopFilter;
 
     unsigned int m_RestrictCapsMask;
-    float m_sleepBeforeFlip; ///< if greather than zero, XBMC waits for raster to be this amount through the frame prior to calling the flip
+    float m_sleepBeforeFlip; ///< if greater than zero, XBMC waits for raster to be this amount through the frame prior to calling the flip
     bool m_bVirtualShares;
     bool m_bAllowDeferredRendering;
 
@@ -376,7 +376,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
 
     bool m_useDisplayControlHWStereo;
 
-    /*!< @brief position behavior of ass subtitiles when setting "subtitle position on screen" set to "fixed"
+    /*!< @brief position behavior of ass subtitles when setting "subtitle position on screen" set to "fixed"
     True to show at the fixed position set in video calibration
     False to show at the bottom of video (default) */
     bool m_videoAssFixedWorks;

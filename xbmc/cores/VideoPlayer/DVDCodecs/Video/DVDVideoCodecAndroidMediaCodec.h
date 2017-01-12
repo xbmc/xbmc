@@ -61,7 +61,7 @@ public:
   CDVDMediaCodecInfo* Retain();
   long                Release();
 
-  // meat and potatos
+  // meat and potatoes
   void                Validate(bool state);
   bool                WaitForFrame(int millis);
   // MediaCodec related

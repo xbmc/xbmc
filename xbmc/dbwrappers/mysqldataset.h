@@ -147,7 +147,7 @@ or insert() operations default = false) */
   virtual int  exec ();
   virtual int  exec (const std::string &sql);
   virtual const void* getExecRes();
-/* as open, but with our query exept Sql */
+/* as open, but with our query exec Sql */
   virtual bool query(const std::string &query);
 /* func. closes a query */
   virtual void close(void);
@@ -159,7 +159,7 @@ or insert() operations default = false) */
   virtual long nextid(const char *seq_name);
 /* sequence numbers */
   virtual int num_rows();
-/* interupt any pending database operation  */
+/* interrupt any pending database operation  */
   virtual void interrupt();
 
   virtual bool bof();

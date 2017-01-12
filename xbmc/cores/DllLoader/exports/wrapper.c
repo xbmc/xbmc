@@ -460,7 +460,7 @@ struct mntent *__wrap_getmntent(FILE *fp)
 
 // GCC 4.3 in Ubuntu 8.10 defines _FORTIFY_SOURCE=2 which means, that fread, read etc 
 // are actually #defines which are inlined when compiled with -O. Those defines
-// actally call __*chk (for example, __fread_chk). We need to bypass this whole
+// actually call __*chk (for example, __fread_chk). We need to bypass this whole
 // thing to actually call our wrapped functions. 
 #if _FORTIFY_SOURCE > 1
 

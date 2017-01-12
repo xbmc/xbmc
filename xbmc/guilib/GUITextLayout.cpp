@@ -307,7 +307,7 @@ void CGUITextLayout::BidiTransform(std::vector<CGUIString> &lines, bool forceLTR
         flippedText.push_back(sectionStyle | sectionFlipped[j]);
     }
 
-    // replace the original line with the proccessed one
+    // replace the original line with the processed one
     lines[i] = CGUIString(flippedText.begin(), flippedText.end(), line.m_carriageReturn);
   }
 }

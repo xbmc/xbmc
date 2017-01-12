@@ -62,7 +62,7 @@ namespace UPNP
   {
     ECLIENTQUIRKS_NONE = 0x0
 
-    /* Client requires folder's to be marked as storageFolers as verndor type (360)*/
+    /* Client requires folder's to be marked as storageFolders as vendor type (360)*/
   , ECLIENTQUIRKS_ONLYSTORAGEFOLDER = 0x01
 
     /* Client can't handle subtypes for videoItems (360) */

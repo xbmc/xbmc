@@ -36,7 +36,7 @@ The minimum version of iOS you need to run(!) Kodi is 6.0 atm.
 - On Mavericks (OSX 10.9.x) we recommend using Xcode 6.1.
 - On Yosemite (OSX 10.10.x) we recommend using Xcode 6.4.
 - On El Capitan (OSX 10.11.x) we recommend using Xcode 7.x or Xcode 8.x.
-- On Sierra (macOS 10.12.x) we recomment using Xcode 8.x.
+- On Sierra (macOS 10.12.x) we recommend using Xcode 8.x.
 
 ## 2 Getting the source code
 
@@ -124,7 +124,7 @@ plugins and more). They can be built as shown below:
 
 #### 4.1.1 Generate CMake project files
 
-Before you can use Xode to build Kodi, the Xcode project has to be generated
+Before you can use Xcode to build Kodi, the Xcode project has to be generated
 with CMake. Note that CMake is compiled as parts of the depends doesn't have
 to be installed separately. Also a Toolchain-file has been generated with is
 used to configure CMake.
@@ -210,7 +210,7 @@ Gestures can be adapted in [system/keymaps/touchscreen.xml](https://github.com/x
 If you are a developer with an official apple code signing identity you can
 deploy Kodi via xcode to work on it on non-jailbroken devices. For this to
 happen you just need to alter the Xcode project by setting your codesign
-identity. Just select the "iPhone Developer" shortcut. It'ss also important
+identity. Just select the "iPhone Developer" shortcut. It's also important
 that you select the signing on all 4 spots in the project settings. After that
 the last buildstep in our support script will do a full sign of all binaries
 and the bundle with the given identity (all `*.viz`, `*.pvr`, `*.so` files
