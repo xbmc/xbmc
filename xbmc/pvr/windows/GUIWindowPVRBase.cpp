@@ -168,7 +168,7 @@ void CGUIWindowPVRBase::OnInitWindow(void)
   }
   else
   {
-    CGUIWindow::OnInitWindow(); // do not call CGUIMediaWindow as it will do a Refresh which in no case works in this state (no cahnnelgroup!)
+    CGUIWindow::OnInitWindow(); // do not call CGUIMediaWindow as it will do a Refresh which in no case works in this state (no channelgroup!)
     ShowProgressDialog(g_localizeStrings.Get(19235), 0); // PVR manager is starting up
   }
 }

@@ -102,7 +102,7 @@ using namespace MUSIC_INFO;
  *  %Y - Year
  *  %Z - tvshow title
  *  %a - Date Added
- *  %c - Relevance - Used for actors' appearences
+ *  %c - Relevance - Used for actors' appearances
  *  %d - Date and Time
  *  %p - Last Played
  *  %r - User Rating

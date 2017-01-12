@@ -19,7 +19,7 @@ image which includes Linux.
 The following steps were tested with Ubuntu 14.04 x64. (Note that building on
 a 32 bit machine requires slightly different setting).
 
-The following commands build for newer Rapberry Pi 2 generation. In order to
+The following commands build for newer Raspberry Pi 2 generation. In order to
 build for the first Raspberry Pi, the commands have to be adapted to use
 `--with-platform=raspberry-pi` instead of `--with-platform=raspberry-pi2`.
 

@@ -137,7 +137,7 @@ public:
   /*! \brief Handle an input event
    * 
    * \param newEvent event details
-   * \return true on succesfully handled event
+   * \return true on successfully handled event
    * \sa XBMC_Event
    */
   bool OnEvent(XBMC_Event& newEvent);
@@ -271,7 +271,7 @@ private:
   /*! \brief Process keyboard event and translate into an action
   *
   * \param CKey keypress details
-  * \return true on succesfully handled event
+  * \return true on successfully handled event
   * \sa CKey
   */
   bool OnKey(const CKey& key);

@@ -72,7 +72,7 @@ public:
   *
   * Remarks: Open can only be called once. Calling
   * Open() on an already opened file will fail
-  * exept flag READ_REOPEN is set and the underlying
+  * except if flag READ_REOPEN is set and the underlying
   * file has an implementation of ReOpen().
   */
   bool Open(const CURL& file, const unsigned int flags = 0);

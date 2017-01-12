@@ -184,7 +184,7 @@ The most useful options are,
       List the names of all tests instead of running them.
 	  The name of TEST(Foo, Bar) is "Foo.Bar".
 
-    --gtest_filter=POSTIVE_PATTERNS[-NEGATIVE_PATTERNS]
+    --gtest_filter=POSITIVE_PATTERNS[-NEGATIVE_PATTERNS]
       Run only the tests whose name matches one of the positive patterns but
       none of the negative patterns. '?' matches any single character; '*'
       matches any substring; ':' separates two patterns.

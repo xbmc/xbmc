@@ -393,7 +393,7 @@ int  CDarwinUtils::GetFrameworkPath(bool forPython, char* path, size_t *pathsize
   if (pathname && strstr([pathname UTF8String], "Contents"))
   {
     strcpy(path, [pathname UTF8String]);
-    // ExectuablePath is <product>.app/Contents/MacOS/<executable>
+    // ExecutablePath is <product>.app/Contents/MacOS/<executable>
     char *lastSlash = strrchr(path, '/');
     if (lastSlash)
     {

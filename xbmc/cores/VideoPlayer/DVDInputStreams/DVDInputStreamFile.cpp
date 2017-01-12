@@ -104,7 +104,7 @@ bool CDVDInputStreamFile::Open()
   return true;
 }
 
-// close file and reset everyting
+// close file and reset everything
 void CDVDInputStreamFile::Close()
 {
   if (m_pFile)

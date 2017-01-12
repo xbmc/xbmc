@@ -195,8 +195,8 @@ namespace XBMCAddon
       /// Seek to position in file.
       ///
       /// @param seekBytes          position in the file
-      /// @param iWhence            where in a file to seek from[0 begining,
-      ///                           1 current , 2 end possition]
+      /// @param iWhence            where in a file to seek from[0 beginning,
+      ///                           1 current , 2 end position]
       ///
       ///
       ///-----------------------------------------------------------------------

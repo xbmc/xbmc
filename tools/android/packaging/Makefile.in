@@ -25,8 +25,8 @@ endif
 X86OVERRIDES=XBMC_OVERRIDE_HOST=i686-android-linux XBMC_OVERRIDE_TOOLCHAIN=$(XBMC_X86_TOOLCHAIN)
 ARMOVERRIDES=XBMC_OVERRIDE_HOST=arm-linux-androideabi XBMC_OVERRIDE_TOOLCHAIN=$(XBMC_ARM_TOOLCHAIN)
 
-#this fixes a android ndk fuckup where the pathes to 
-#prebuilt stuff follow different name shemes for
+#this fixes a android ndk fuckup where the paths to 
+#prebuilt stuff follow different name schemes for
 #arm and x86
 ifeq ($(findstring i686,$(CPU)),i686)
   ARCH=x86

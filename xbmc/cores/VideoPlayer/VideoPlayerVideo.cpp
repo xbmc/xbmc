@@ -498,7 +498,7 @@ void CVideoPlayerVideo::Process()
         if (iDecoderState & VC_BUFFER)
           break;
 
-        // the decoder didn't need more data, flush the remaning buffer
+        // the decoder didn't need more data, flush the remaining buffer
         iDecoderState = m_pVideoCodec->Decode(NULL, 0, DVD_NOPTS_VALUE, DVD_NOPTS_VALUE);
       }
     }
@@ -558,7 +558,7 @@ bool CVideoPlayerVideo::ProcessDecoderOutput(int &decoderState, double &frametim
   // check for a new picture
   if (decoderState & VC_PICTURE)
   {
-    // try to retrieve the picture (should never fail!), unless there is a demuxer bug ofcours
+    // try to retrieve the picture (should never fail!), unless there is a demuxer bug of course
     m_pVideoCodec->ClearPicture(&m_picture);
     if (m_pVideoCodec->GetPicture(&m_picture))
     {
@@ -568,7 +568,7 @@ bool CVideoPlayerVideo::ProcessDecoderOutput(int &decoderState, double &frametim
         m_picture.iDuration = frametime;
 
       // validate picture timing,
-      // if both dts/pts invalid, use pts calulated from picture.iDuration
+      // if both dts/pts invalid, use pts calculated from picture.iDuration
       // if pts invalid use dts, else use picture.pts as passed
       if (m_picture.dts == DVD_NOPTS_VALUE && m_picture.pts == DVD_NOPTS_VALUE)
       {
@@ -582,7 +582,7 @@ bool CVideoPlayerVideo::ProcessDecoderOutput(int &decoderState, double &frametim
       if( m_fForcedAspectRatio != 0.0f )
         m_picture.iDisplayWidth = (int) (m_picture.iDisplayHeight * m_fForcedAspectRatio);
 
-      /* if frame has a pts (usually originiating from demux packet), use that */
+      /* if frame has a pts (usually originating from demux packet), use that */
       if (m_picture.pts != DVD_NOPTS_VALUE)
       {
         pts = m_picture.pts;
@@ -618,7 +618,7 @@ bool CVideoPlayerVideo::ProcessDecoderOutput(int &decoderState, double &frametim
 
       if (iResult & EOS_ABORT)
       {
-        //if we break here and we directly try to decode again wihout
+        //if we break here and we directly try to decode again without
         //flushing the video codec things break for some reason
         //i think the decoder (libmpeg2 atleast) still has a pointer
         //to the data, and when the packet is freed that will fail.
@@ -745,7 +745,7 @@ int CVideoPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
     m_messageParent.Put(new CDVDMsg(CDVDMsg::PLAYER_AVCHANGE));
   }
 
-  /* figure out steremode expected based on user settings and hints */
+  /* figure out stereomode expected based on user settings and hints */
   unsigned int stereo_flags = GetStereoModeFlags(GetStereoMode());
 
   double config_framerate = m_bFpsInvalid ? 0.0 : m_fFrameRate;

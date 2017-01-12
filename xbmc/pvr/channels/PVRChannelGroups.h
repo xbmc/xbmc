@@ -100,7 +100,7 @@ namespace PVR
     /*!
      * @brief Get a group given it's name.
      * @param strName The name.
-     * @return The group or NULL if it wan't found.
+     * @return The group or NULL if it wasn't found.
      */
     CPVRChannelGroupPtr GetByName(const std::string &strName) const;
 

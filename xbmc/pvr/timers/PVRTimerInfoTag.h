@@ -22,7 +22,7 @@
 /*
  * DESCRIPTION:
  *
- * CPVRTimerInfoTag is part of the PVRManager to support sheduled recordings.
+ * CPVRTimerInfoTag is part of the PVRManager to support scheduled recordings.
  *
  * The timer information tag holds data about current programmed timers for
  * the PVRManager. It is possible to create timers directly based upon

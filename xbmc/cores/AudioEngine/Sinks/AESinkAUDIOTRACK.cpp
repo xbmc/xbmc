@@ -532,7 +532,7 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
 
   // In their infinite wisdom, Google decided to make getPlaybackHeadPosition
   // return a 32bit "int" that you should "interpret as unsigned."  As such,
-  // for wrap saftey, we need to do all ops on it in 32bit integer math.
+  // for wrap safety, we need to do all ops on it in 32bit integer math.
 
   uint32_t head_pos = (uint32_t)m_at_jni->getPlaybackHeadPosition();
 

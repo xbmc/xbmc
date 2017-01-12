@@ -40,7 +40,7 @@
  * 'static' variable in a header file - on purpose?)
  *
  * There are two different ways to use this pattern when replacing global variables.
- * The selection of which one to use depends on whether or not there is a possiblity
+ * The selection of which one to use depends on whether or not there is a possibility
  * that the code in the .cpp file for the global can be executed from a static method
  * somewhere. This may take some explanation.
  *
@@ -48,7 +48,7 @@
  *
  * 1) You can use the reference object std::shared_ptr to access the global variable.
  *
- * This would be the preferred means since it is (very slightly) more efficent than
+ * This would be the preferred means since it is (very slightly) more efficient than
  * the alternative. To use this pattern you replace standard static references to
  * the global with access through the reference. If you use the C preprocessor to
  * do this for you can put the following code in the header file where the global's
@@ -135,7 +135,7 @@ namespace xbmcutil
      *  effectively 'reset' the shared pointer after it had been set by the prior 
      *  getInstance call, and a second instance would be created. We really don't 
      *  want this to happen so 'instance' is a pointer to a smart pointer so that
-     *  we can deterministally handle its construction. It is guarded by the 
+     *  we can deterministically handle its construction. It is guarded by the 
      *  Deleter class above so that when the bss segment that this static is
      *  sitting in is deinitialized, the shared_ptr pointer will be cleaned up.
      */
@@ -149,7 +149,7 @@ namespace xbmcutil
 
     /**
      * Retrieve an instance of the singleton using a shared pointer for 
-     *  referenece counting.
+     *  reference counting.
      */
     inline static std::shared_ptr<T> getInstance()
     {

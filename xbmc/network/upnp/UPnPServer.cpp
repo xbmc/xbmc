@@ -867,7 +867,7 @@ CUPnPServer::OnSearchContainer(PLT_ActionReference&          action,
                 // all tracks of a specific genre
                 else if (count == 2)
                     id += "-1/-1/";
-                // all tracks of a specific genre of a specfic artist
+                // all tracks of a specific genre of a specific artist
                 else if (count == 3)
                     id += "-1/";
             } else if (id.StartsWith("musicdb://artists/")) {

@@ -22,7 +22,7 @@
 /* VideoCore Shared Memory - user interface library.
 **
 ** This library provides all the necessary abstraction for any application to
-** make use of the shared memory service which is distributed accross a kernel
+** make use of the shared memory service which is distributed across a kernel
 ** driver and a videocore service.
 **
 ** It is an application design decision to choose or not to use this service.
@@ -84,11 +84,11 @@
 **   stay valid following the unlock action corresponding to this lock.
 **
 **
-** Unocking memory blocks.
+** Unlocking memory blocks.
 **
 **   When the memory block has been allocated in a host cached fashion, unlocking the
 **   memory block (and so forgiving its ownership) will trigger a cache flush unless
-**   explicitely asked not to flush the cache for performances reasons.
+**   explicitly asked not to flush the cache for performances reasons.
 **
 **   For the above reason and when using host cached allocation, it is important that
 **   an application properly implements the lock/unlock mechanism to ensure cache will

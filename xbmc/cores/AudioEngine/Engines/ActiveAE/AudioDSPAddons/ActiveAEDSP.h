@@ -322,7 +322,7 @@ namespace ActiveAE
     AE_DSP_STREAMTYPE LoadCurrentAudioSettings(void);
 
     /*!
-     * @brief Perfoms a update of all processing calls over the add-ons
+     * @brief Performs a update of all processing calls over the add-ons
      * @param bAsync if true the update becomes performed on background
      */
     void TriggerModeUpdate(bool bAsync = true);
@@ -405,7 +405,7 @@ namespace ActiveAE
     unsigned int            m_usedProcessesCnt;                         /*!< the amount of used addon processes */
     CActiveAEDSPProcessPtr  m_usedProcesses[AE_DSP_STREAM_MAX_STREAMS]; /*!< Pointer to active process performing classes */
     unsigned int            m_activeProcessId;                          /*!< The currently active audio stream id of a playing file source */
-    bool                    m_isValidAudioDSPSettings;                  /*!< if settings load was successfull it becomes true */
+    bool                    m_isValidAudioDSPSettings;                  /*!< if settings load was successful it becomes true */
     AE_DSP_MODELIST         m_modes[AE_DSP_MODE_TYPE_MAX];              /*!< list of currently used dsp processing calls */
     std::map<std::string, int> m_addonNameIds; /*!< map add-on names to IDs */
   };

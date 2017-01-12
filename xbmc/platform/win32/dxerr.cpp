@@ -85,7 +85,7 @@ const WCHAR* WINAPI DXGetErrorStringW( _In_ HRESULT hr )
 {
    switch(hr)
    {
-// Commmented out codes are actually alises for other codes
+// Commented out codes are actually aliases for other codes
 
 // -------------------------------------------------------------
 // Common Win32 error codes
@@ -3477,7 +3477,7 @@ void WINAPI DXGetErrorDescriptionW( _In_ HRESULT hr, _Out_cap_(count) WCHAR* des
 
     switch (hr)
     {
-// Commmented out codes are actually alises for other codes
+// Commented out codes are actually aliases for other codes
 
 #if !defined(WINAPI_FAMILY) || (WINAPI_FAMILY == WINAPI_FAMILY_DESKTOP_APP)
 

@@ -44,7 +44,7 @@
 //#define MAX_DISPLAYS 32
 //static NSWindow* blankingWindows[MAX_DISPLAYS];
 
-//display link for display managment
+//display link for display management
 static CVDisplayLinkRef displayLink = NULL; 
 
 CGDirectDisplayID Cocoa_GetDisplayIDFromScreen(NSScreen *screen);

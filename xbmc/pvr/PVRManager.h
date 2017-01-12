@@ -322,7 +322,7 @@ namespace PVR
      * @brief Switch to the given channel.
      * @param channel The channel to switch to.
      * @param bPreview True to show a preview, false otherwise.
-     * @return Trrue if the switch was successful, false otherwise.
+     * @return True if the switch was successful, false otherwise.
      */
     bool PerformChannelSwitch(const CPVRChannelPtr &channel, bool bPreview);
 
@@ -530,16 +530,16 @@ namespace PVR
     void SearchMissingChannelIcons(void);
 
     /*!
-     * @brief Check if channel is parental locked. Ask for PIN if neccessary.
+     * @brief Check if channel is parental locked. Ask for PIN if necessary.
      * @param channel The channel to open.
      * @return True if channel is unlocked (by default or PIN unlocked), false otherwise.
      */
     bool CheckParentalLock(const CPVRChannelPtr &channel);
 
     /*!
-     * @brief Check if parental lock is overriden at the given moment.
+     * @brief Check if parental lock is overridden at the given moment.
      * @param channel The channel to open.
-     * @return True if parental lock is overriden, false otherwise.
+     * @return True if parental lock is overridden, false otherwise.
      */
     bool IsParentalLocked(const CPVRChannelPtr &channel);
 

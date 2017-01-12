@@ -432,7 +432,7 @@ bool CDVDInputStreamBluray::Open()
   return true;
 }
 
-// close file and reset everyting
+// close file and reset everything
 void CDVDInputStreamBluray::Close()
 {
   if (!m_dll)

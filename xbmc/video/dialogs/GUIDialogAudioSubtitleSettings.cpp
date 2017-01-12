@@ -362,7 +362,7 @@ void CGUIDialogAudioSubtitleSettings::InitializeSettings()
     AddToggle(groupAudio, SETTING_AUDIO_PASSTHROUGH, 348, 0, m_passthrough);
   }
 
-  // subitlte settings
+  // subtitle settings
   m_subtitleVisible = g_application.m_pPlayer->GetSubtitleVisible();
   // subtitle enabled setting
   AddToggle(groupSubtitles, SETTING_SUBTITLE_ENABLE, 13397, 0, m_subtitleVisible);

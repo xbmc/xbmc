@@ -99,7 +99,7 @@ public:
   virtual int GetBitRate() { return 0; }
 
   /*
-   * returns if the codec requests to use passtrough
+   * returns if the codec requests to use passthrough
    */
   virtual bool NeedPassthrough() { return false; }
 

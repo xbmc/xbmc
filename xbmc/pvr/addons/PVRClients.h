@@ -217,7 +217,7 @@ namespace PVR
      * @brief Seek to a position in a stream.
      *        Limited to recordings playback at the moment.
      * @param iFilePosition The position to seek to.
-     * @param iWhence Specify how to seek ("new position=pos", "new position=pos+actual postion" or "new position=filesize-pos")
+     * @param iWhence Specify how to seek ("new position=pos", "new position=pos+actual position" or "new position=filesize-pos")
      * @return The new stream position.
      */
     int64_t SeekStream(int64_t iFilePosition, int iWhence = SEEK_SET);
@@ -281,7 +281,7 @@ namespace PVR
     /*!
      * @brief Switch an opened live tv stream to another channel.
      * @param channel The channel to switch to.
-     * @return True if the switch was successfull, false otherwise.
+     * @return True if the switch was successful, false otherwise.
      */
     bool SwitchChannel(const CPVRChannelPtr &channel);
 
@@ -605,28 +605,28 @@ namespace PVR
     /*!
      * @brief Open addon settings dialog to add a channel
      * @param channel The channel to edit.
-     * @return True if the edit was successfull, false otherwise.
+     * @return True if the edit was successful, false otherwise.
      */
     bool OpenDialogChannelAdd(const CPVRChannelPtr &channel);
 
     /*!
      * @brief Open addon settings dialog to related channel
      * @param channel The channel to edit.
-     * @return True if the edit was successfull, false otherwise.
+     * @return True if the edit was successful, false otherwise.
      */
     bool OpenDialogChannelSettings(const CPVRChannelPtr &channel);
 
     /*!
      * @brief Inform addon to delete channel
      * @param channel The channel to delete.
-     * @return True if it was successfull, false otherwise.
+     * @return True if it was successful, false otherwise.
      */
     bool DeleteChannel(const CPVRChannelPtr &channel);
 
     /*!
      * @brief Request the client to rename given channel
      * @param channel The channel to rename
-     * @return True if the edit was successfull, false otherwise.
+     * @return True if the edit was successful, false otherwise.
      */
     bool RenameChannel(const CPVRChannelPtr &channel);
 
@@ -693,7 +693,7 @@ namespace PVR
     bool GetCreatedClient(int iClientId, PVR_CLIENT &addon) const;
 
     /*!
-     * @bried Get all created clients.
+     * @brief Get all created clients.
      * @param clients Store the active clients in this map.
      * @return The amount of added clients.
      */
@@ -715,7 +715,7 @@ namespace PVR
     int                   m_playingClientId;          /*!< the ID of the client that is currently playing */
     bool                  m_bIsPlayingLiveTV;
     bool                  m_bIsPlayingRecording;
-    std::string           m_strPlayingClientName;     /*!< the name client that is currenty playing a stream or an empty string if nothing is playing */
+    std::string           m_strPlayingClientName;     /*!< the name client that is currently playing a stream or an empty string if nothing is playing */
     PVR_CLIENTMAP         m_clientMap;                /*!< a map of all known clients */
     CCriticalSection      m_critSection;
     std::map<std::string, int> m_addonNameIds; /*!< map add-on names to IDs */

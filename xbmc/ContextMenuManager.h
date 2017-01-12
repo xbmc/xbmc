@@ -74,7 +74,7 @@ namespace CONTEXTMENU
   bool ShowFor(const CFileItemPtr& fileItem, const CContextMenuItem& root=CContextMenuManager::MAIN);
 
   /*!
-   * Shortcut for continuing the context menu loop from an exisiting menu item.
+   * Shortcut for continuing the context menu loop from an existing menu item.
    */
   bool LoopFrom(const IContextMenuItem& menu, const CFileItemPtr& fileItem);
 }

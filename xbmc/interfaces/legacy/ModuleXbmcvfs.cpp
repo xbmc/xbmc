@@ -52,7 +52,7 @@ namespace XBMCAddon
       return XFILE::CFile::Rename(file,newFile);
     }  
 
-    // check for a file or folder existance, mimics Pythons os.path.exists()
+    // check for a file or folder existence, mimics Pythons os.path.exists()
     bool exists(const String& path)
     {
       DelayedCallGuard dg;

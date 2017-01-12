@@ -45,7 +45,7 @@ namespace XBMCAddon
       /// \python_func{ operator(status, response_headers[, exc_info]) }
       ///------------------------------------------------------------------------
       ///
-      /// Callable implemention to write data to the response.
+      /// Callable implementation to write data to the response.
       ///
       /// @param data            string data to write
       ///

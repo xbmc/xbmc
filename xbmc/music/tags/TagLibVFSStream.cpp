@@ -129,7 +129,7 @@ void TagLibVFSStream::insert(const ByteVector &data, TagLib::ulong start, TagLib
   // Now I'll explain the steps in this ugliness:
 
   // First, make sure that we're working with a buffer that is longer than
-  // the *differnce* in the tag sizes.  We want to avoid overwriting parts
+  // the *difference* in the tag sizes.  We want to avoid overwriting parts
   // that aren't yet in memory, so this is necessary.
   TagLib::ulong bufferLength = bufferSize();
 

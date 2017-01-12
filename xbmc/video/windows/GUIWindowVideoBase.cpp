@@ -460,7 +460,7 @@ void CGUIWindowVideoBase::OnQueueItem(int iItem)
 
 void CGUIWindowVideoBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItemList &queuedItems)
 {
-  if (!pItem->CanQueue() || pItem->IsRAR() || pItem->IsZIP() || pItem->IsParentFolder()) // no zip/rar enques thank you!
+  if (!pItem->CanQueue() || pItem->IsRAR() || pItem->IsZIP() || pItem->IsParentFolder()) // no zip/rar enqueues thank you!
     return;
 
   if (pItem->m_bIsFolder)
@@ -1254,7 +1254,7 @@ void CGUIWindowVideoBase::LoadPlayList(const std::string& strPlayList, int iPlay
 
 void CGUIWindowVideoBase::PlayItem(int iItem, const std::string &player)
 {
-  // restrictions should be placed in the appropiate window code
+  // restrictions should be placed in the appropriate window code
   // only call the base code if the item passes since this clears
   // the currently playing temp playlist
 
@@ -1370,7 +1370,7 @@ void CGUIWindowVideoBase::GetGroupedItems(CFileItemList &items)
   if (items.HasProperty(PROPERTY_GROUP_MIXED))
     mixed = items.GetProperty(PROPERTY_GROUP_MIXED).asBoolean();
 
-  // group == "none" completely supresses any grouping
+  // group == "none" completely suppresses any grouping
   if (!StringUtils::EqualsNoCase(group, "none"))
   {
     CQueryParams params;

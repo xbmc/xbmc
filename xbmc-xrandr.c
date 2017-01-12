@@ -181,7 +181,7 @@ warning (const char *format, ...)
     va_end (ap);
 }
 
-/* Because fmin requires C99 suppport */
+/* Because fmin requires C99 support */
 static inline double dmin (double x, double y)
 {
     return x < y ? x : y;

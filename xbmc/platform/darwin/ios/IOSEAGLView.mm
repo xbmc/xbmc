@@ -440,7 +440,7 @@ using namespace KODI::MESSAGING;
   [myLock unlockWithCondition:TRUE];
 
   // grrr, xbmc does not shutdown properly and leaves
-  // several classes in an indeterminant state, we must exit and
+  // several classes in an indeterminate state, we must exit and
   // reload Lowtide/AppleTV, boo.
   [g_xbmcController enableScreenSaver];
   [g_xbmcController enableSystemSleep];

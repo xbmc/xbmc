@@ -117,7 +117,7 @@ private:
   float m_bx[4], m_by[4];
   float m_ox[4], m_oy[4];
 
-  // transistion and display effects
+  // transition and display effects
   DISPLAY_EFFECT m_displayEffect;
   TRANSISTION m_transistionStart;
   TRANSISTION m_transistionEnd;

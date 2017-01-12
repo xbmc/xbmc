@@ -682,7 +682,7 @@ bool CPVRManager::Load(bool bShowProgress)
     ShowProgressDialog(g_localizeStrings.Get(19239), 85); // Starting background threads
   m_guiInfo->Start();
 
-  /* close the progess dialog */
+  /* close the progress dialog */
   if (bShowProgress)
     HideProgressDialog();
 

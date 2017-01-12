@@ -537,8 +537,8 @@ namespace XBMCAddon
       /// |:------------:|:----------------------|
       /// | video        | Video information
       /// | music        | Music information
-      /// | pictures     | Pictures informantion
-      /// | game         | Game informantion
+      /// | pictures     | Pictures informanion
+      /// | game         | Game information
       ///
       /// @note To set pictures exif info, prepend `exif:` to the label. Exif values must be passed
       ///       as strings, separate value pairs with a comma. <b>(eg. <c>{'exif:resolution': '720,480'}</c></b>

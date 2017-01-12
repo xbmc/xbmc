@@ -72,7 +72,7 @@ public:
   virtual void NotifyAppActiveChange(bool bActivated) {}
   virtual void ShowOSMouse(bool show) {};
   virtual bool HasCursor(){ return true; }
-  //some plattforms have api for gesture inertial scrolling - default to false and use the InertialScrollingHandler
+  //some platforms have api for gesture inertial scrolling - default to false and use the InertialScrollingHandler
   virtual bool HasInertialGestures(){ return false; }
   //does the output expect limited color range (ie 16-235)
   virtual bool UseLimitedColor();

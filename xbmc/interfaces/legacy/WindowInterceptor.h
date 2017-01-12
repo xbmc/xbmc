@@ -54,7 +54,7 @@ namespace XBMCAddon
        *
        * ref(window)->UpCall()
        *
-       * durring the context of 'UpCall' it's possible that another call will
+       * during the context of 'UpCall' it's possible that another call will
        *  be made back on the window from the xbmc core side (this happens in
        *  sometimes in OnMessage). In that case, if upcall is still 'true', than
        *  the call will wrongly proceed back to the xbmc core side rather than

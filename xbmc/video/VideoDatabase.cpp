@@ -927,7 +927,7 @@ void CVideoDatabase::UpdateFileDateAdded(int idFile, const std::string& strFileN
 
     if (!finalDateAdded.IsValid())
     {
-      // 1 prefering to use the files mtime(if it's valid) and only using the file's ctime if the mtime isn't valid
+      // 1 preferring to use the files mtime(if it's valid) and only using the file's ctime if the mtime isn't valid
       if (g_advancedSettings.m_iVideoLibraryDateAdded == 1)
         finalDateAdded = CFileUtils::GetModificationDate(strFileNameAndPath, false);
       //2 using the newer datetime of the file's mtime and ctime
@@ -3122,7 +3122,7 @@ void CVideoDatabase::ClearBookMarkOfFile(const std::string& strFilenameAndPath, 
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
 
-    /* a litle bit uggly, we clear first bookmark that is within one second of given */
+    /* a little bit uggly, we clear first bookmark that is within one second of given */
     /* should be no problem since we never add bookmarks that are closer than that   */
     double mintime = bookmark.timeInSeconds - 0.5f;
     double maxtime = bookmark.timeInSeconds + 0.5f;
@@ -3269,7 +3269,7 @@ void CVideoDatabase::DeleteMovie(int idMovie, bool bKeepId /* = false */)
 
     // keep the movie table entry, linking to tv shows, and bookmarks
     // so we can update the data in place
-    // the ancilliary tables are still purged
+    // the ancillary tables are still purged
     if (!bKeepId)
     {
       int idFile = GetDbId(PrepareSQL("SELECT idFile FROM movie WHERE idMovie=%i", idMovie));
@@ -3415,7 +3415,7 @@ void CVideoDatabase::DeleteEpisode(int idEpisode, bool bKeepId /* = false */)
       AnnounceRemove(MediaTypeEpisode, idEpisode);
 
     // keep episode table entry and bookmarks so we can update the data in place
-    // the ancilliary tables are still purged
+    // the ancillary tables are still purged
     if (!bKeepId)
     {
       int idFile = GetDbId(PrepareSQL("SELECT idFile FROM episode WHERE idEpisode=%i", idEpisode));
@@ -3454,7 +3454,7 @@ void CVideoDatabase::DeleteMusicVideo(int idMVideo, bool bKeepId /* = false */)
     BeginTransaction();
 
     // keep the music video table entry and bookmarks so we can update data in place
-    // the ancilliary tables are still purged
+    // the ancillary tables are still purged
     if (!bKeepId)
     {
       int idFile = GetDbId(PrepareSQL("SELECT idFile FROM musicvideo WHERE idMVideo=%i", idMVideo));

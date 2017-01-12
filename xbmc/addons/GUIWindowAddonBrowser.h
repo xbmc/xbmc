@@ -56,7 +56,7 @@ public:
    \param addonIDs [in/out] array of (pre) selected addon IDs
    \param showNone whether there should be a "None" item in the list (defaults to false)
    \param showDetails whether to show details of the addons or not
-   \param multipleSelection allow selection of multiple addons, if set to true showNone will automaticly switch to false
+   \param multipleSelection allow selection of multiple addons, if set to true showNone will automatically switch to false
    \param showInstalled whether installed addons should be in the list
    \param showInstallable whether installable addons should be in the list
    \param showMore whether to show the "Get More" button (only makes sense if showInstalled is true and showInstallable is false)
