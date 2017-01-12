@@ -272,11 +272,13 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_xbmcgui_listitem
-      /// @brief \python_func{ setUniqueIDs(values) }
+      /// @brief \python_func{ setUniqueIDs(values, defaultrating) }
       ///-----------------------------------------------------------------------
       /// Sets the listitem's uniqueID
       ///
       /// @param values             dictionary - pairs of `{ label: value }`.
+      /// @param defaultrating      [opt] string - the name of default rating.
+      ///
       ///  - Some example values (any string possible):
       ///  | Label         | Type                                              |
       ///  |:-------------:|:--------------------------------------------------|
@@ -292,14 +294,14 @@ namespace XBMCAddon
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
       /// ...
-      /// # setUniqueIDs(values)
-      /// listitem.setUniqueIDs({ 'imdb': 'tt8938399', 'tmdb' : '9837493' })
+      /// # setUniqueIDs(values, defaultrating)
+      /// listitem.setUniqueIDs({ 'imdb': 'tt8938399', 'tmdb' : '9837493' }, "imdb")
       /// ...
       /// ~~~~~~~~~~~~~
       ///
       setUniqueIDs(...);
 #else
-      void setUniqueIDs(const Properties& dictionary);
+      void setUniqueIDs(const Properties& dictionary, const String& defaultrating = "");
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS

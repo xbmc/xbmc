@@ -151,14 +151,14 @@ namespace XBMCAddon
       }
     }
 
-    void ListItem::setUniqueIDs(const Properties& dictionary)
+    void ListItem::setUniqueIDs(const Properties& dictionary, const String& defaultrating /* = "" */)
     {
       if (!item) return;
 
       LOCKGUI;
       CVideoInfoTag& vtag = *item->GetVideoInfoTag();
       for (const auto& it : dictionary)
-        vtag.SetUniqueID(it.second, it.first);
+        vtag.SetUniqueID(it.second, it.first, it.first == defaultrating);
     }
 
     void ListItem::setRating(std::string type, float rating, int votes /* = 0 */, bool defaultt /* = false */)
