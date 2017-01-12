@@ -36,7 +36,7 @@ class CDVDVideoCodecAmlogic;
 class CDVDAmlogicInfo
 {
 public:
-  CDVDAmlogicInfo(CDVDVideoCodecAmlogic *codec, CAMLCodec *amlcodec, int omxPts);
+  CDVDAmlogicInfo(CDVDVideoCodecAmlogic *codec, CAMLCodec *amlcodec, int omxPts, int amlDuration);
 
   // reference counting
   CDVDAmlogicInfo* Retain();
@@ -44,6 +44,7 @@ public:
 
   CAMLCodec *getAmlCodec() const;
   int GetOmxPts() const { return m_omxPts; }
+  int GetAmlDuration() const { return m_amlDuration; }
   void invalidate();
 
 protected:
@@ -52,7 +53,7 @@ protected:
 
   CDVDVideoCodecAmlogic* m_codec;
   CAMLCodec* m_amlCodec;
-  int m_omxPts;
+  int m_omxPts, m_amlDuration;
 };
 
 class CDVDVideoCodecAmlogic : public CDVDVideoCodec
@@ -98,6 +99,7 @@ protected:
   mpeg2_sequence *m_mpeg2_sequence;
   double          m_mpeg2_sequence_pts;
   bool            m_drop;
+  bool            m_has_keyframe;
 
   CBitstreamParser *m_bitparser;
   CBitstreamConverter *m_bitstream;
