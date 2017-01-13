@@ -145,12 +145,24 @@ CXBMCApp::~CXBMCApp()
 
 void CXBMCApp::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
 {
-  if ((flag & Input) && strcmp(sender, "xbmc") == 0)
+  if (strcmp(sender, "xbmc") != 0)
+    return;
+
+  if (flag & Input)
   {
     if (strcmp(message, "OnInputRequested") == 0)
       CAndroidKey::SetHandleSearchKeys(true);
     else if (strcmp(message, "OnInputFinished") == 0)
       CAndroidKey::SetHandleSearchKeys(false);
+  }
+  else if (flag & Player)
+  {
+     if (strcmp(message, "OnPlay") == 0)
+      OnPlayBackStarted();
+    else if (strcmp(message, "OnPause") == 0)
+      OnPlayBackPaused();
+    else if (strcmp(message, "OnStop") == 0)
+      OnPlayBackStopped();
   }
 }
 
@@ -591,21 +603,7 @@ void CXBMCApp::OnPlayBackPaused()
   m_xbmcappinstance->ReleaseAudioFocus();
 }
 
-void CXBMCApp::OnPlayBackResumed()
-{
-  RequestVisibleBehind(true);
-  m_xbmcappinstance->AcquireAudioFocus();
-}
-
 void CXBMCApp::OnPlayBackStopped()
-{
-  RequestVisibleBehind(false);
-  CAndroidKey::SetHandleMediaKeys(false);
-  unregisterMediaButtonEventReceiver();
-  m_xbmcappinstance->ReleaseAudioFocus();
-}
-
-void CXBMCApp::OnPlayBackEnded()
 {
   RequestVisibleBehind(false);
   CAndroidKey::SetHandleMediaKeys(false);

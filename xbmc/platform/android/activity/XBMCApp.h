@@ -166,11 +166,9 @@ public:
   static int WaitForActivityResult(const CJNIIntent &intent, int requestCode, CJNIIntent& result);
 
   // Playback callbacks
-  static void OnPlayBackStarted();
-  static void OnPlayBackPaused();
-  static void OnPlayBackResumed();
-  static void OnPlayBackStopped();
-  static void OnPlayBackEnded();
+  void OnPlayBackStarted();
+  void OnPlayBackPaused();
+  void OnPlayBackStopped();
 
   // input device methods
   static void RegisterInputDeviceCallbacks(IInputDeviceCallbacks* handler);
