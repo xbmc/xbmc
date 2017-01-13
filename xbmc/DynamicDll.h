@@ -391,6 +391,7 @@ public: \
 //
 
 #define RESOLVE_METHOD_OPTIONAL(method) \
+   m_##method##_ptr = nullptr; \
    m_dll->ResolveExport( #method , & m_##method##_ptr );
 
 #define RESOLVE_METHOD_OPTIONAL_FP(method) \
