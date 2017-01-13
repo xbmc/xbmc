@@ -7,6 +7,7 @@ set(SOURCES android_main.cpp
             EventLoop.cpp
             GraphicBuffer.cpp
             JNIMainActivity.cpp
+            JNIXBMCMediaSession.cpp
             JNIXBMCVideoView.cpp
             JNIXBMCAudioManagerOnAudioFocusChangeListener.cpp
             JNIXBMCSurfaceTextureOnFrameAvailableListener.cpp
@@ -28,6 +29,7 @@ set(HEADERS AndroidExtra.h
             GraphicBuffer.h
             IActivityHandler.h
             JNIMainActivity.h
+            JNIXBMCMediaSession.h
             JNIXBMCVideoView.h
             JNIXBMCAudioManagerOnAudioFocusChangeListener.h
             JNIXBMCSurfaceTextureOnFrameAvailableListener.h

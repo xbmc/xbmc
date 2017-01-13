@@ -1,0 +1,143 @@
+package @APP_PACKAGE@;
+
+import android.app.Activity;
+import android.app.PendingIntent;
+import android.content.Intent;
+import android.media.MediaMetadata;
+import android.media.session.MediaSession;
+import android.media.session.PlaybackState;
+import android.util.Log;
+
+import java.util.concurrent.Callable;
+import java.util.concurrent.FutureTask;
+
+/**
+ * Created by Christian BROWET on 1/10/17.
+ */
+
+public class XBMCMediaSession
+{
+  native void _onPlayRequested();
+  native void _onPauseRequested();
+  native void _onNextRequested();
+  native void _onPreviousRequested();
+  native void _onForwardRequested();
+  native void _onRewindRequested();
+  native void _onStopRequested();
+  native void _onSeekRequested(long pos);
+
+  private static final String TAG = "XBMCMediaSession";
+
+  private class XBMCMediaSessionCallback extends MediaSession.Callback
+  {
+
+    @Override
+    public void onPlay()
+    {
+      Log.d(TAG, "onPlay: ");
+      super.onPlay();
+      _onPlayRequested();
+    }
+
+    @Override
+    public void onPause()
+    {
+      Log.d(TAG, "onPause: ");
+      super.onPause();
+      _onPauseRequested();
+    }
+
+    @Override
+    public void onSkipToNext()
+    {
+      Log.d(TAG, "onSkipToNext: ");
+      super.onSkipToNext();
+      _onNextRequested();
+    }
+
+    @Override
+    public void onSkipToPrevious()
+    {
+      Log.d(TAG, "onSkipToPrevious: ");
+      super.onSkipToPrevious();
+      _onPreviousRequested();
+    }
+
+    @Override
+    public void onFastForward()
+    {
+      Log.d(TAG, "onFastForward: ");
+      super.onFastForward();
+      _onForwardRequested();
+    }
+
+    @Override
+    public void onRewind()
+    {
+      Log.d(TAG, "onRewind: ");
+      super.onRewind();
+      _onRewindRequested();
+    }
+
+    @Override
+    public void onStop()
+    {
+      Log.d(TAG, "onStop: ");
+      super.onStop();
+      _onStopRequested();
+    }
+
+    @Override
+    public void onSeekTo(long pos)
+    {
+      Log.d(TAG, "onSeekTo: ");
+      super.onSeekTo(pos);
+      _onSeekRequested(pos);
+    }
+  }
+
+  private MediaSession mSession = null;
+  private XBMCMediaSessionCallback mMediaSessionCallback;
+  private long mTotDurMs = 0;
+
+  public XBMCMediaSession()
+  {
+    Log.d(TAG, "XBMCMediaSession init");
+    this.mSession = new MediaSession(Main.MainActivity, "XBMC_session");
+    this.mSession.setFlags(MediaSession.FLAG_HANDLES_MEDIA_BUTTONS | MediaSession.FLAG_HANDLES_TRANSPORT_CONTROLS);
+
+    Main.MainActivity.runOnUiThread(new Runnable()
+    {
+      @Override
+      public void run()
+      {
+        Log.d(TAG, "XBMCMediaSession callback");
+        mMediaSessionCallback = new XBMCMediaSessionCallback();
+        mSession.setCallback(mMediaSessionCallback);
+      }
+    });
+  }
+
+  public void activate(boolean state)
+  {
+    mSession.setActive(state);
+  }
+
+  private void updatePlaybackState(PlaybackState mystate)
+  {
+    mSession.setPlaybackState(mystate);
+  }
+
+  private void updateMetadata(MediaMetadata myData)
+  {
+    mSession.setMetadata(myData);
+  }
+
+  private void updateIntent(Intent intent)
+  {
+    PendingIntent pi = PendingIntent.getActivity(Main.MainActivity, 99 /*request code*/,
+        intent, PendingIntent.FLAG_UPDATE_CURRENT);
+    mSession.setSessionActivity(pi);
+  }
+
+}
