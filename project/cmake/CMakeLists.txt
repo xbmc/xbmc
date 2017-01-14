@@ -28,6 +28,7 @@ include(scripts/common/AddOptions.cmake)
 include(scripts/common/ArchSetup.cmake)
 include(scripts/common/Macros.cmake)
 include(scripts/common/ProjectMacros.cmake)
+core_find_versions()
 include(scripts/${CORE_SYSTEM_NAME}/PathSetup.cmake)
 include(ExternalProject)
 
@@ -75,7 +76,6 @@ else()
 endif()
 
 core_find_git_rev(APP_SCMID FULL)
-core_find_versions()
 
 # Dynamically loaded libraries built with the project
 add_custom_target(${APP_NAME_LC}-libraries)
