@@ -10,7 +10,6 @@ xbmc/addons/interfaces/InputStream              addonCallbacks_InputStream
 xbmc/addons/interfaces/Peripheral               addonCallbacks_Peripheral
 xbmc/addons/interfaces/PVR                      addonCallbacks_PVR
 xbmc/addons/interfaces/kodi                     addonInterface_kodi
-xbmc/addons/interfaces/kodi/screensaver         addonInterface_kodi_screensaver
 xbmc/addons/interfaces/kodi/visualization       addonInterface_kodi_visualization
 xbmc/addons/interfaces/kodi/gui                 addonInterface_kodi_gui
 xbmc/commons                                    commons

@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2005-2017 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,38 +13,55 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "GUIWindowScreensaverDim.h"
+
+#include "Application.h"
+#include "addons/AddonDll.h"
 #include "guilib/GraphicContext.h"
 #include "guilib/GUITexture.h"
-#include "Application.h"
 
 CGUIWindowScreensaverDim::CGUIWindowScreensaverDim(void)
-  : CGUIDialog(WINDOW_SCREENSAVER_DIM, "", DialogModalityType::MODELESS)
+  : CGUIDialog(WINDOW_SCREENSAVER_DIM, "", DialogModalityType::MODELESS),
+    m_dimLevel(100.0f),
+    m_newDimLevel(100.0f),
+    m_visible(false)
 {
   m_needsScaling = false;
-  m_dimLevel = 100.0f;
-  m_newDimLevel = 100.0f;
   m_animations.push_back(CAnimation::CreateFader(0, 100, 0, 1000, ANIM_TYPE_WINDOW_OPEN));
   m_animations.push_back(CAnimation::CreateFader(100, 0, 0, 1000, ANIM_TYPE_WINDOW_CLOSE));
   m_renderOrder = RENDER_ORDER_WINDOW_SCREENSAVER;
 }
 
-CGUIWindowScreensaverDim::~CGUIWindowScreensaverDim(void)
-{
-}
-
 void CGUIWindowScreensaverDim::UpdateVisibility()
 {
-  m_newDimLevel = g_application.GetDimScreenSaverLevel();
-  if (m_newDimLevel)
-    Open();
-  else
+  if (g_application.IsInScreenSaver())
+  {
+    if (m_visible)
+      return;
+
+    std::string usedId = g_application.ScreensaverIdInUse();
+    if  (usedId == "screensaver.xbmc.builtin.dim" ||
+         usedId == "screensaver.xbmc.builtin.black")
+    {
+      m_visible = true;
+      const ADDON::AddonDllPtr info = ADDON::CAddonMgr::GetInstance().GetAddon(ADDON::ADDON_SCREENSAVER, usedId);
+      if (info && !info->GetSetting("level").empty())
+        m_newDimLevel = 100.0f - (float)atof(info->GetSetting("level").c_str());
+      else
+        m_newDimLevel = 100.0f;
+      Open();
+    }
+  }
+  else if (m_visible)
+  {
+    m_visible = false;
     Close();
+  }
 }
 
 void CGUIWindowScreensaverDim::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
