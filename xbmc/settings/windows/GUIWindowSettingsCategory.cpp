@@ -40,7 +40,7 @@
 #define SETTINGS_INTERFACE              WINDOW_SETTINGS_INTERFACE - WINDOW_SETTINGS_START
 #define SETTINGS_GAMES                  WINDOW_SETTINGS_MYGAMES - WINDOW_SETTINGS_START
 
-#define CONTRL_BTN_LEVELS               20
+#define CONTROL_BTN_LEVELS               20
 
 typedef struct {
   int id;
@@ -144,7 +144,7 @@ bool CGUIWindowSettingsCategory::OnAction(const CAction &action)
       if (m_iCategory >= 0 && m_iCategory < (int)m_categories.size())
         oldCategory = m_categories[m_iCategory]->GetId();
 
-      SET_CONTROL_LABEL(CONTRL_BTN_LEVELS, 10036 + (int)CViewStateSettings::GetInstance().GetSettingLevel());
+      SET_CONTROL_LABEL(CONTROL_BTN_LEVELS, 10036 + (int)CViewStateSettings::GetInstance().GetSettingLevel());
       // only re-create the categories, the settings will be created later
       SetupControls(false);
 
@@ -181,7 +181,7 @@ bool CGUIWindowSettingsCategory::OnBack(int actionID)
 
 void CGUIWindowSettingsCategory::OnWindowLoaded()
 {
-  SET_CONTROL_LABEL(CONTRL_BTN_LEVELS, 10036 + (int)CViewStateSettings::GetInstance().GetSettingLevel());
+  SET_CONTROL_LABEL(CONTROL_BTN_LEVELS, 10036 + (int)CViewStateSettings::GetInstance().GetSettingLevel());
   CGUIDialogSettingsManagerBase::OnWindowLoaded();
 }
 
