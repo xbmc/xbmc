@@ -1880,7 +1880,8 @@ void CDVDDemuxFFmpeg::ParsePacket(AVPacket *pkt)
     if (!stream)
       return;
 
-    if (parser->second->m_parserCtx->parser &&
+    if (parser->second->m_parserCtx &&
+        parser->second->m_parserCtx->parser &&
         parser->second->m_parserCtx->parser->split &&
         !st->codecpar->extradata)
     {
