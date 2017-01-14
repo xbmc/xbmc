@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="skin.estouchy" version="1.1.5" name="Estouchy" provider-name="Team Kodi">
+<addon id="skin.estouchy" version="1.1.6" name="Estouchy" provider-name="Team Kodi">
 	<requires>
 		<import addon="xbmc.gui" version="5.12.0"/>
 	</requires>
@@ -12,7 +12,7 @@
 		<summary lang="am_ET">ለ ተችስክሪን አካሎች ቆዳ</summary>
 		<summary lang="bg_BG">Облик за устройства с екран чувствителен на допир</summary>
 		<summary lang="ca_ES">Aparença per als dispositius amb pantalla tàctil</summary>
-		<summary lang="cs_CZ">Skin pro dotyková zařízení</summary>
+		<summary lang="cs_CZ">Vzhled pro zařízení s dotykovou obrazovkou</summary>
 		<summary lang="de_DE">Skin für Touchscreen-Geräte</summary>
 		<summary lang="el_GR">Κέλυφος για συσκευές με οθόνη αφής</summary>
 		<summary lang="en_GB">Skin for touchscreen devices</summary>
@@ -25,6 +25,7 @@
 		<summary lang="fr_FR">Habillage pour les appareils à écran tactile</summary>
 		<summary lang="gl_ES">Pel para dispositivos táctiles</summary>
 		<summary lang="he_IL">מעטפת עבור התקני מסך מגע</summary>
+		<summary lang="hr_HR">Presvlaka za uređaje s dodirom na zaslon</summary>
 		<summary lang="hu_HU">Felület érintőképernyős eszközöknek</summary>
 		<summary lang="it_IT">Skin per dispositivi touchscreen</summary>
 		<summary lang="ko_KR">터치 스크린 기기를 위한 스킨</summary>
@@ -49,7 +50,7 @@
 		<description lang="af_ZA">Oortreksel ontwerp om op raakskerm toestelle soos tablette en slimfone te gebruik</description>
 		<description lang="bg_BG">Обликът е разработен за ползване на устройства, с екран чувствителен на допир като таблет или телефон.</description>
 		<description lang="ca_ES">Aparença dissenyada perquè s'utilitzi en dispositius amb pantalla tàctil com taules i telèfons intel·ligents</description>
-		<description lang="cs_CZ">Skin navržený pro zařízení s dotykovou obrazovkou, jako jsou tablety a smartphony.</description>
+		<description lang="cs_CZ">Vzhled navržený pro použití na zařízeních s dotykovou obrazovkou, jako jsou tablety a chytré telefony</description>
 		<description lang="de_DE">Dieses Skin wurde für die Benutzung mit Touchscreen-Geräten wie Tablets und Handys entworfen</description>
 		<description lang="el_GR">Κέλυφος σχεδιασμένο για να χρησιμοποιηθεί σε συσκευές με οθόνη αφής όπως ταμπλέτες και έξυπνα κινητά.</description>
 		<description lang="en_GB">Skin designed to be used on touchscreen devices like tablets and smartphones</description>
@@ -62,6 +63,7 @@
 		<description lang="fr_FR">Habillage conçu pour les appareils à écran tactile comme les tablettes et les téléphones</description>
 		<description lang="gl_ES">Pel deseñada para se empregar en dispositivos táctiles como tabletas e móbiles</description>
 		<description lang="he_IL">מעטפת מיועדת לשימוש בהתקני מסך מגע כגון טאבלט וסמארטפון</description>
+		<description lang="hr_HR">Presvlaka dizajnirana za korištenje na uređajima s dodirom na zaslon poput tableta i pametnih telefona</description>
 		<description lang="hu_HU">Egy érintőképernyős eszközökre, például táblagépekre és okostelefonokra tervezett felület</description>
 		<description lang="it_IT">Skin progettata per essere usata su dispositivi touchscreen come tablet e smartphone</description>
 		<description lang="ko_KR">태블릿이나 스마트폰과 같은 터치 스크린 기기에서 사용할 수 있게 디자인한 스킨</description>

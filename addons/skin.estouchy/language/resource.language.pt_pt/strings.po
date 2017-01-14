@@ -144,6 +144,10 @@ msgctxt "#31303"
 msgid "Data provider"
 msgstr "Fornecedor de dados"
 
+msgctxt "#31309"
+msgid "System Memory Used:"
+msgstr "Memória do sistema utilizada:"
+
 msgctxt "#31320"
 msgid "Last Logged In"
 msgstr "Última Ligação"
@@ -211,6 +215,14 @@ msgstr "Mostrar as informações do sistema · Estatísticas do 'hardware' · Ve
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Escolha o seu perfil de utilizador do Kodi[CR]para iniciar sessão e continuar"
+
+msgctxt "#31548"
+msgid "Home menu"
+msgstr "Menu de Início"
+
+msgctxt "#31549"
+msgid "Home Add-ons"
+msgstr "Add-ons de Início"
 
 msgctxt "#31550"
 msgid "Backgrounds"
