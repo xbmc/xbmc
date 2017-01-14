@@ -42,7 +42,7 @@ msgstr "Se i 2D"
 
 msgctxt "#31006"
 msgid "Random movies"
-msgstr "Slumpmässiga filmer"
+msgstr "Slumpvis urvalda filmer"
 
 msgctxt "#31007"
 msgid "Unwatched movies"
@@ -62,11 +62,11 @@ msgstr "Mest spelade album"
 
 msgctxt "#31012"
 msgid "Random albums"
-msgstr "Slumpmässiga album"
+msgstr "Slumpvis urvalda album"
 
 msgctxt "#31013"
 msgid "Random artists"
-msgstr "Slumpmässiga artister"
+msgstr "Slumpvis urvalda artister"
 
 msgctxt "#31014"
 msgid "Unplayed albums"
@@ -222,7 +222,7 @@ msgstr "Huvudmeny objekt"
 
 msgctxt "#31062"
 msgid "Choose weather fanart pack"
-msgstr "Välj fanart för väder"
+msgstr "Välj väder-fanart paket"
 
 msgctxt "#31063"
 msgid "Sections"
@@ -238,7 +238,7 @@ msgstr "Spellista för musik"
 
 msgctxt "#31067"
 msgid "Event log"
-msgstr "Händelselogg"
+msgstr "Eventlogg"
 
 msgctxt "#31068"
 msgid "Choose presets"
@@ -258,7 +258,7 @@ msgstr "Energialternativ"
 
 msgctxt "#31075"
 msgid "Movie sets"
-msgstr "Filmsamling"
+msgstr "Filmsamlingar"
 
 msgctxt "#31079"
 msgid "Cast not available"
@@ -398,7 +398,7 @@ msgstr "Ställ in väderleksleverantör"
 
 msgctxt "#31122"
 msgid "Unwatched TV Shows"
-msgstr "O-sedda TV-program"
+msgstr "Osedda TV-program"
 
 msgctxt "#31123"
 msgid "Same director"
@@ -502,7 +502,7 @@ msgstr "Osedda musikvideor"
 
 msgctxt "#31152"
 msgid "Random music videos"
-msgstr "Slumpvis musikvideor"
+msgstr "Slumpvis urvalda musikvideor"
 
 msgctxt "#31153"
 msgid "You do not have any add-ons of this type installed. Enter the add-on browser to download add-ons created by our community."

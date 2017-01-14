@@ -22,11 +22,11 @@ msgstr "Trenutno se reproducira"
 
 msgctxt "#31001"
 msgid "Search..."
-msgstr "Traži..."
+msgstr "Pretaži..."
 
 msgctxt "#31002"
 msgid "Show media fanart as background"
-msgstr "Prikaži medija fanart kao pozadinu"
+msgstr "Prikaži poster obožavatelja medija kao pozadinu"
 
 msgctxt "#31003"
 msgid "Cinema mode"
@@ -70,7 +70,7 @@ msgstr "Naizmjenični izvođači"
 
 msgctxt "#31014"
 msgid "Unplayed albums"
-msgstr "Neslušani albumi"
+msgstr "Neodslušani albumi"
 
 msgctxt "#31015"
 msgid "Recent recordings"
@@ -110,19 +110,19 @@ msgstr "Vrsta prikaza"
 
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
-msgstr "Omiljeno nije pronađeno. Možete dodati bilo koju stavku iz medija na ovaj popis pomoću kontekstnog izbornika."
+msgstr "Omiljeno nije pronađeno. Možete dodati bilo koju stavku iz medija na ovaj popis pomoću sadržajnog izbornika."
 
 msgctxt "#31028"
 msgid "Show fanart"
-msgstr "Prikaži fanart"
+msgstr "Prikaži poster obožavatelja"
 
 msgctxt "#31029"
 msgid "Last logged in"
-msgstr "Posljednji put prijavljen"
+msgstr "Posljednji prijavljen"
 
 msgctxt "#31030"
 msgid "System memory usage"
-msgstr "Korištenje memorije sustava"
+msgstr "Korištenje memorije"
 
 msgctxt "#31031"
 msgid "Version info"
@@ -130,7 +130,7 @@ msgstr "Informacija inačice"
 
 msgctxt "#31032"
 msgid "Order"
-msgstr "Redoslijed"
+msgstr "Poredaj"
 
 msgctxt "#31033"
 msgid "Your rating"
@@ -146,7 +146,7 @@ msgstr "Stranice"
 
 msgctxt "#31036"
 msgid "items"
-msgstr "stavke"
+msgstr "stavka"
 
 msgctxt "#31038"
 msgid "Rewind"
@@ -166,7 +166,7 @@ msgstr "Mogućnosti popisa izvođenja"
 
 msgctxt "#31043"
 msgid "Set the type and add rules to create a smart playlist. These playlists are dynamic and include all media items from your database which apply to your chosen rules."
-msgstr "Postavite vrstu i dodajte pravila za stvaranje pametne liste izvođenja. Te liste izvođenje su dinamičke i sadrže sve medijske stavke koje odgovaraju postavljenim pravilima. "
+msgstr "Postavite vrstu i dodajte pravila za stvaranje pametnog popisa izvođenja. Ti popisi izvođenja su promjenjivi i sadrže sve medijske stavke iz vaše baze podataka koje odgovaraju odabranim pravilima. "
 
 msgctxt "#31044"
 msgid "Add group"
@@ -186,11 +186,11 @@ msgstr "Dostupno"
 
 msgctxt "#31050"
 msgid "Press [B]OK[/B] to stop"
-msgstr "Pritisni [B]OK[/B] za kraj"
+msgstr "Pritisni [B]U redu[/B] za završetak"
 
 msgctxt "#31051"
 msgid "Toggle language"
-msgstr "Prebaci jezik"
+msgstr "Odaberi podnaslov"
 
 msgctxt "#31052"
 msgid "filtered"
@@ -202,27 +202,27 @@ msgstr "Temeljen na Arialu "
 
 msgctxt "#31054"
 msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
-msgstr "Pritisni [B]Lijevo[/B] za Premotavanje unazad, ili [B]Desno[/B] za Premotavanje unaprijed"
+msgstr "Pritisni [B]Lijevu strelicu[/B] za premotavanje unazad, ili [B]Desnu strelicu[/B] za premotavanje unaprijed"
 
 msgctxt "#31056"
 msgid "Go to playlist"
-msgstr "Idi na popis za reprodukciju"
+msgstr "Idi na popis izvođenja"
 
 msgctxt "#31057"
 msgid "Show login screen on startup"
-msgstr "Prikaži zaslon prijave prilikom pokretanja"
+msgstr "Prikaži zaslon prijave pri pokretanju"
 
 msgctxt "#31058"
 msgid "Automatic Login on startup"
-msgstr "Automatska prijava prilikom pokretanja"
+msgstr "Automatska prijava pri pokretanju"
 
 msgctxt "#31061"
 msgid "Main menu items"
-msgstr "Glavne stavke izbornika"
+msgstr "Glavni izbornik"
 
 msgctxt "#31062"
 msgid "Choose weather fanart pack"
-msgstr "Izaberite fanart paket za vrijeme"
+msgstr "Odaberi paket postera obožavatelja za vrijeme"
 
 msgctxt "#31063"
 msgid "Sections"
@@ -230,11 +230,11 @@ msgstr "Dio"
 
 msgctxt "#31065"
 msgid "Video playlist"
-msgstr "Video popis za reprodukciju"
+msgstr "Video popis izvođenja"
 
 msgctxt "#31066"
 msgid "Music playlist"
-msgstr "Glazbeni popis za reprodukciju"
+msgstr "Glazbeni popis izvođenja"
 
 msgctxt "#31067"
 msgid "Event log"
@@ -250,7 +250,7 @@ msgstr "Posljednja nadopuna"
 
 msgctxt "#31071"
 msgid "by"
-msgstr "po"
+msgstr "od"
 
 msgctxt "#31072"
 msgid "Power Options"
@@ -294,11 +294,11 @@ msgstr "Video izbornik"
 
 msgctxt "#31093"
 msgid "Show weather info in top bar"
-msgstr "Prikaži informacije o vremenu u gornjoj traci"
+msgstr "Prikaži informacije vremena u gornjoj traci"
 
 msgctxt "#31095"
 msgid "Use slide animations"
-msgstr "Koristi animacije"
+msgstr "Koristi klizne animacije"
 
 msgctxt "#31096"
 msgid "Local subtitle available"
@@ -314,11 +314,11 @@ msgstr "Odaberite svoj Kodi korisnički profil[CR]za prijavu i nastavak"
 
 msgctxt "#31099"
 msgid "IconWall"
-msgstr "Ikona zid"
+msgstr "Zid ikona"
 
 msgctxt "#31100"
 msgid "Shift"
-msgstr "Pomicanje"
+msgstr "Pomak"
 
 msgctxt "#31101"
 msgid "InfoWall"
@@ -330,15 +330,15 @@ msgstr "Zid"
 
 msgctxt "#31103"
 msgid "Enter text here..."
-msgstr "Unesite tekst ovdje..."
+msgstr "Upišite tekst ovdje..."
 
 msgctxt "#31104"
 msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
-msgstr "Vaša zbirka je trenutno prazna. Da bi ste ju popunili sa vašim osobnim medijima, uđite u \"datoteke\", dodajte izvor medija i konfigurirajte ga. Nakon što je izvor dodan i indeksiran biti ćete u mogućnosti pregledavati vašu zbirku"
+msgstr "Vaša zbirka je trenutno prazna. Kako biste ju popunili s vašim osobnim medijima, uđite u \"Datoteke\" odjeljak, dodajte izvor medija i prilagodite ga. Nakon što je izvor dodan i popisan biti ćete u mogućnosti pregledavati svoju zbirku."
 
 msgctxt "#31105"
 msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
-msgstr "Dodajte video izvor i postavite odgovarajuću vrstu sadržaja kako biste popunili svoju video zbirku."
+msgstr "Dodajte video izvor i postavite odgovarajuću vrstu sadržaja kako biste popunili svoju videoteku."
 
 msgctxt "#31106"
 msgid "Teletext"
@@ -346,19 +346,19 @@ msgstr "Teletekst"
 
 msgctxt "#31107"
 msgid "WideList"
-msgstr "Široka lista"
+msgstr "Širok popis"
 
 msgctxt "#31110"
 msgid "Enter files section"
-msgstr "Uđite u datoteke"
+msgstr "Otvori odjeljak datoteka"
 
 msgctxt "#31111"
 msgid "View your personal pictures or download one of the many image add-ons from the official repository."
-msgstr "Pogledajte svoje osobne slike ili preuzmite jedan od mnogih slikovnih dodataka iz službenog repozitorija."
+msgstr "Gledajte svoje osobne slike ili preuzmite jedan od mnogih slikovnih dodataka iz službenog repozitorija."
 
 msgctxt "#31112"
 msgid "Toggle audio stream"
-msgstr "Prebaci audio stream"
+msgstr "Odaberi zvučni zapis"
 
 msgctxt "#31113"
 msgid "Search local library"
@@ -374,7 +374,7 @@ msgstr "Pretraži TheMovieDB"
 
 msgctxt "#31116"
 msgid "Remove this main menu item"
-msgstr "Ukloni ovu stavku iz glavnog izbornika"
+msgstr "Ukloni ovu stavku glavnog izbornika"
 
 msgctxt "#31117"
 msgid "Edit nodes"
@@ -382,19 +382,19 @@ msgstr "Uredi čvorišta"
 
 msgctxt "#31118"
 msgid "Enter add-on browser"
-msgstr "Pregled dodataka"
+msgstr "Otvori pregled dodataka"
 
 msgctxt "#31119"
 msgid "You do not have any add-ons installed yet. Visit our add-on browser to browse through our collection and improve your Kodi experience."
-msgstr "Nemate niti jedan dodatak instaliran. Posjetite i pregledajte našu kolekciju dodataka i poboljšajte vaše kodi iskustvo."
+msgstr "Nemate niti jedan dodatak instaliran. Posjetite naš preglednik dodataka kako bi pregledali našu kolekciju i poboljšali svoje iskustvo s Kodijem."
 
 msgctxt "#31120"
 msgid "You did not set up a weather provider yet. In order to view weather information, choose a weather provider and set up your location."
-msgstr "Još niste postavili pružatelja usluge o vremenu. Kako biste vidjeli informacije o vremenu, odaberite pružatelja usluge i konfigurirajte ga."
+msgstr "Još niste postavili pružatelja vremenske usluge. Kako biste vidjeli informacije o vremenu, odaberite pružatelja usluge i postavite svoju lokaciju."
 
 msgctxt "#31121"
 msgid "Set weather provider"
-msgstr "Postavi pružatelja vremenskih usluga"
+msgstr "Postavi pružatelja vremenske usluge"
 
 msgctxt "#31122"
 msgid "Unwatched TV Shows"
@@ -406,15 +406,15 @@ msgstr "Isti redatelj"
 
 msgctxt "#31124"
 msgid "Show images on map"
-msgstr "Prikaži slike ne karti"
+msgstr "Prikaži slike na karti"
 
 msgctxt "#31125"
 msgid "Press up for actor info"
-msgstr "Pritisni gore za informacije o glumcu"
+msgstr "Pritisni gornju strelicu za informacije o glumcu"
 
 msgctxt "#31126"
 msgid "Press OK to read plot"
-msgstr "Pritisni OK za čitanje zapleta"
+msgstr "Pritisni 'U redu' za čitanje kratkog sadržaja"
 
 msgctxt "#31127"
 msgid "Show icons"
@@ -426,15 +426,15 @@ msgstr "Suradnici"
 
 msgctxt "#31129"
 msgid "General settings applying to all areas of the skin."
-msgstr "Opče postavke koje se primjenjuju na sva područja presvlake"
+msgstr "Opće postavke koje se primjenjuju na sva područja presvlake."
 
 msgctxt "#31130"
 msgid "Main menu-related settings: Configure the home screen to your likings."
-msgstr "Postavke vezane za Glavni izbornik: Postavite početni zaslon kako vam odgovara"
+msgstr "Postavke glavnog izbornika: Prilagodite početni zaslon svojim potrebama."
 
 msgctxt "#31131"
 msgid "Choose skin fanart pack"
-msgstr "Izaberite fanart paket za presvlaku"
+msgstr "Odaberi paket postera obožavatelja za presvlaku"
 
 msgctxt "#31132"
 msgid "min"
@@ -446,7 +446,7 @@ msgstr "Preostalo"
 
 msgctxt "#31136"
 msgid "Click here to see latest changes..."
-msgstr "Pritisnite ovdje da bi vidjeli zadnje obavijesti..."
+msgstr "Pritisnite ovdje kako bi vidjeli najnovije promjene..."
 
 msgctxt "#31137"
 msgid "PVR info"
@@ -454,11 +454,11 @@ msgstr "PVR informacije"
 
 msgctxt "#31138"
 msgid "Player process info"
-msgstr "Informacije o izvođenju"
+msgstr "Informacije reproduktora"
 
 msgctxt "#31139"
 msgid "Video decoder"
-msgstr "Video dekoder"
+msgstr "Video dekôder"
 
 msgctxt "#31140"
 msgid "Pixel format"
@@ -466,19 +466,19 @@ msgstr "Format piksela"
 
 msgctxt "#31141"
 msgid "Changes for version"
-msgstr "Promjene za verziju"
+msgstr "Promjene u inačici"
 
 msgctxt "#31142"
 msgid "Play speed"
-msgstr "Brzina izvođenja"
+msgstr "Brzina reprodukcije"
 
 msgctxt "#31143"
 msgid "You did not set up PVR yet. In order to use PVR, choose a PVR client addon and configure it. Please visit http://kodi.wiki/view/PVR to learn more."
-msgstr "Još niste postavili PVR. Da biste koristili PVR, odaberite jedan od ponuđenih iz liste dodataka te ga konfigurirajte. Posjetite http://kodi.wiki/view/PVR kako bi saznali više."
+msgstr "Još niste postavili PVR. Kako biste koristili PVR, odaberite dodatak PVR klijenta i prilagodite ga. Posjetite http://kodi.wiki/view/PVR kako bi saznali više."
 
 msgctxt "#31144"
 msgid "Enter add-on browser"
-msgstr "Pregled dodataka"
+msgstr "Otvori pregled dodataka"
 
 msgctxt "#31145"
 msgid "Search add-ons"
@@ -490,7 +490,7 @@ msgstr "Kategorije"
 
 msgctxt "#31149"
 msgid "Select genre fanart pack"
-msgstr "Odaberite fanart paket za žanrove"
+msgstr "Odaberi paket postera obožavatelja za žanrove"
 
 msgctxt "#31150"
 msgid "Repository"
@@ -502,23 +502,23 @@ msgstr "Nepogledani glazbeni spotovi"
 
 msgctxt "#31152"
 msgid "Random music videos"
-msgstr "Nasumični glazbeni spotovi"
+msgstr "Naizmjenični glazbeni spotovi"
 
 msgctxt "#31153"
 msgid "You do not have any add-ons of this type installed. Enter the add-on browser to download add-ons created by our community."
-msgstr "Nemate niti jedan dodatak ove vrste instaliran. Uđite u preglednik dodataka kako biste preuzeli dodatke stvorene od strane naše zajednice."
+msgstr "Nemate niti jedan dodatak ove vrste instaliran. Otvorite preglednik dodataka kako biste preuzeli dodatke stvorene od strane naše zajednice."
 
 msgctxt "#31154"
 msgid "Press OK to switch between locations"
-msgstr "Pritisni OK za prebacivanje između lokacija"
+msgstr "Pritisni 'U redu' za prebacivanje između lokacija"
 
 msgctxt "#31155"
 msgid "No bookmarks created yet."
-msgstr "Zabilješke još nisu stvorene"
+msgstr "Još nema stvorenih zabilješka."
 
 msgctxt "#31156"
 msgid "Choose background pattern"
-msgstr "Odaberite pozadinski uzorak"
+msgstr "Odaberi uzorak pozadine"
 
 msgctxt "#31157"
 msgid "Edit categories"
@@ -534,7 +534,7 @@ msgstr "Ilustracije"
 
 msgctxt "#31160"
 msgid "Show media flags"
-msgstr "Prikaži medijske karakteristike"
+msgstr "Prikaži medijske oznake"
 
 msgctxt "#31161"
 msgid "Numeric pad"
