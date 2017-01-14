@@ -1,1 +1,1 @@
-project/cmake/scripts/linux/ExtraTargets.cmake
+../linux/ExtraTargets.cmake
