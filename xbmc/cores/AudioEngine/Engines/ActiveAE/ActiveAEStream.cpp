@@ -563,10 +563,12 @@ const enum AEDataFormat CActiveAEStream::GetDataFormat() const
 
 void CActiveAEStream::RegisterAudioCallback(IAudioCallback* pCallback)
 {
+  return AE.RegisterAudioCallback(pCallback);
 }
 
 void CActiveAEStream::UnRegisterAudioCallback()
 {
+  return AE.UnregisterAudioCallback();
 }
 
 void CActiveAEStream::RegisterSlave(IAEStream *slave)
