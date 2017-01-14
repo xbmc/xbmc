@@ -166,7 +166,7 @@ bool CEGLNativeTypeRaspberryPI::DestroyNativeDisplay()
 bool CEGLNativeTypeRaspberryPI::DestroyNativeWindow()
 {
 #if defined(TARGET_RASPBERRY_PI)
-  DestroyDispmaxWindow();
+  DestroyDispmanxWindow();
   free(m_nativeWindow);
   m_nativeWindow = NULL;
   DLOG("CEGLNativeTypeRaspberryPI::DestroyNativeWindow\n");
@@ -228,7 +228,7 @@ bool CEGLNativeTypeRaspberryPI::SetNativeResolution(const RESOLUTION_INFO &res)
   if(!m_DllBcmHost || !m_nativeWindow)
     return false;
 
-  DestroyDispmaxWindow();
+  DestroyDispmanxWindow();
 
   RENDER_STEREO_MODE stereo_mode = g_graphicsContext.GetStereoMode();
   if(GETFLAGS_GROUP(res.dwFlags) && GETFLAGS_MODE(res.dwFlags))
@@ -362,7 +362,7 @@ bool CEGLNativeTypeRaspberryPI::SetNativeResolution(const RESOLUTION_INFO &res)
     (DISPMANX_RESOURCE_HANDLE_T)0,  // src
     &src_rect,
     DISPMANX_PROTECTION_NONE,
-    &alpha,                         //alphe
+    &alpha,                         //alpha
     &clamp,                         //clamp
     transform);                     // transform
 
@@ -488,7 +488,7 @@ bool CEGLNativeTypeRaspberryPI::ProbeResolutions(std::vector<RESOLUTION_INFO> &r
 
   /* read initial desktop resolution before probe resolutions.
    * probing will replace the desktop resolution when it finds the same one.
-   * we raplace it because probing will generate more detailed 
+   * we replace it because probing will generate more detailed 
    * resolution flags we don't get with vc_tv_get_state.
    */
 
@@ -579,7 +579,7 @@ bool CEGLNativeTypeRaspberryPI::ShowWindow(bool show)
 }
 
 #if defined(TARGET_RASPBERRY_PI)
-void CEGLNativeTypeRaspberryPI::DestroyDispmaxWindow()
+void CEGLNativeTypeRaspberryPI::DestroyDispmanxWindow()
 {
   if(!m_DllBcmHost)
     return;
@@ -598,7 +598,7 @@ void CEGLNativeTypeRaspberryPI::DestroyDispmaxWindow()
     g_RBP.CloseDisplay(m_dispman_display);
     m_dispman_display = DISPMANX_NO_HANDLE;
   }
-  DLOG("CEGLNativeTypeRaspberryPI::DestroyDispmaxWindow\n");
+  DLOG("CEGLNativeTypeRaspberryPI::DestroyDispmanxWindow\n");
 }
 
 void CEGLNativeTypeRaspberryPI::GetSupportedModes(HDMI_RES_GROUP_T group, std::vector<RESOLUTION_INFO> &resolutions)

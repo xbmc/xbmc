@@ -125,7 +125,7 @@ public:
   an array containing an empty string).
 
   Delimiter strings are applied in order, so once the (optional) maximum number of 
-  items is produced no other delimters are applied. This produces different results
+  items is produced no other delimiters are applied. This produces different results
   to applying all delimiters at once e.g. "a/b#c/d" becomes "a", "b#c", "d" rather
   than "a", "b", "c/d"
 

@@ -126,7 +126,7 @@ namespace PVR
     PVR_CONNECTION_STATE GetPreviousConnectionState(void) const;
 
     /*!
-     * @brief signal to PVRMananager this client should be ignored
+     * @brief signal to PVRManager this client should be ignored
      * @return true if this client should be ignored
      */
     bool IgnoreClient(void) const;
@@ -307,7 +307,7 @@ namespace PVR
 
     /*!
      * @param deleted if set return deleted recording
-     * @return The total amount of recordingd on the server or -1 on error.
+     * @return The total amount of recordings on the server or -1 on error.
      */
     int GetRecordingsAmount(bool deleted);
 
@@ -532,7 +532,7 @@ namespace PVR
     /*!
      * @brief Open a recording on the server.
      * @param recording The recording to open.
-     * @return True if the stream has been opened succesfully, false otherwise.
+     * @return True if the stream has been opened successfully, false otherwise.
      */
     bool OpenStream(const CPVRRecordingPtr &recording);
 

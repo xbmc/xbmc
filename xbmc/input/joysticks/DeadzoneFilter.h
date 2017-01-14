@@ -56,7 +56,7 @@ namespace JOYSTICK
     /*!
      * \brief Apply deadzone filtering to an axis
      * \param axisIndex The axis index
-     * \param axisValud The axis value
+     * \param axisValue The axis value
      * \return The value after applying deadzone filtering
      */
     float FilterAxis(unsigned int axisIndex, float axisValue);

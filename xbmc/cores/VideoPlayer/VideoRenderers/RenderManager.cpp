@@ -1312,7 +1312,7 @@ void CRenderManager::PrepareNextRender()
     while (iter != m_queued.end())
     {
       // the slot for rendering in time is [pts .. (pts +  x * frametime)]
-      // renderer/drivers have internal queues, being slightliy late here does not mean that
+      // renderer/drivers have internal queues, being slightly late here does not mean that
       // we are really late. The likelihood that we recover decreases the greater m_lateframes
       // get. Skipping a frame is easier than having decoder dropping one (lateframes > 10)
       double x = (m_lateframes <= 6) ? 0.98 : 0;

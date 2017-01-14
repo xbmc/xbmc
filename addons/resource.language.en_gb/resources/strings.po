@@ -1300,7 +1300,7 @@ msgctxt "#283"
 msgid "Search results"
 msgstr ""
 
-#. generic "no search results found" label used in diferent places
+#. generic "no search results found" label used in different places
 #: xbmc/pvr/windows/GUIWindowPVRSearch.cpp
 #: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
 #: xbmc/video/windows/GUIWindowVideoBase.cpp
@@ -2716,7 +2716,7 @@ msgctxt "#592"
 msgid "One"
 msgstr ""
 
-#. Label used for buttons and select options as a reference to match all items or ocurrences.
+#. Label used for buttons and select options as a reference to match all items or occurrences.
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
 #: xbmc/filesystem/AddonsDirectory.cpp
 #: xbmc/PlayListPlayer.cpp
@@ -3498,7 +3498,7 @@ msgstr ""
 
 #empty strings from id 800 to 801
 
-#. Label of progess bar which shows the available/total space of pvr backend
+#. Label of progress bar which shows the available/total space of pvr backend
 #: xbmc/pvr/PVRGUIInfo.cpp
 msgctxt "#802"
 msgid "%s of %s available"
@@ -8911,7 +8911,7 @@ msgctxt "#19003"
 msgid "Find similar"
 msgstr ""
 
-#. label for epg import progess control
+#. label for epg import progress control
 #: xbmc/epg/EpgContainer.cpp
 msgctxt "#19004"
 msgid "Importing guide from clients"
@@ -9090,7 +9090,7 @@ msgctxt "#19029"
 msgid "Channel"
 msgstr ""
 
-#. generic 'now' label used in diffrent places
+#. generic 'now' label used in different places
 #: addons/skin.estuary/1080i/DialogPVRRadioRDSInfo.xml
 #: addons/skin.estuary/1080i/MyWeather.xml
 #: xbmc/pvr/windows/GUIWindowPVRGuide.cpp
@@ -9098,7 +9098,7 @@ msgctxt "#19030"
 msgid "Now"
 msgstr ""
 
-#. generic 'next' label used in diffrent places in pvr context
+#. generic 'next' label used in different places in pvr context
 #: addons/skin.estuary/1080i/DialogFullScreenInfo.xml
 #: addons/skin.estuary/1080i/DialogPVRRadioRDSInfo.xml
 #: addons/skin.estuary/1080i/MyPVRChannels.xml
@@ -9454,7 +9454,7 @@ msgstr ""
 
 #. Label for "Instant recording action" setting
 #: system/settings/settings.xml
-#: xbmc/pvr/PVRMananger.cpp
+#: xbmc/pvr/PVRManager.cpp
 msgctxt "#19086"
 msgid "Instant recording action"
 msgstr ""
@@ -9478,19 +9478,19 @@ msgid "Ask what to do"
 msgstr ""
 
 #. Label for "Instant recording action" dialog settings value
-#: xbmc/pvr/PVRMananger.cpp
+#: xbmc/pvr/PVRManager.cpp
 msgctxt "#19090"
 msgid "Record the next %d minutes"
 msgstr ""
 
 #. Label for "Instant recording action" dialog settings value
-#: xbmc/pvr/PVRMananger.cpp
+#: xbmc/pvr/PVRManager.cpp
 msgctxt "#19091"
 msgid "Record current show (%s)"
 msgstr ""
 
 #. Label for "Instant recording action" dialog settings value
-#: xbmc/pvr/PVRMananger.cpp
+#: xbmc/pvr/PVRManager.cpp
 msgctxt "#19092"
 msgid "Record next show (%s)"
 msgstr ""
@@ -15045,7 +15045,7 @@ msgctxt "#24141"
 msgid "Add-on disabled"
 msgstr ""
 
-#. The dependency on <addon id> version <addon version> coult not be satisfied.
+#. The dependency on <addon id> version <addon version> could not be satisfied.
 #: xbmc/addons/AddonInstaller.cpp
 msgctxt "#24142"
 msgid "The dependency on %s version %s could not be satisfied."
@@ -15266,7 +15266,7 @@ msgctxt "#29903"
 msgid "Composer"
 msgstr ""
 
-#. Artits which sing the music (if present)
+#. Artists which sing the music (if present)
 #: addons/skin.estuary/1080i/DialogPVRRadioRDSInfo.xml
 msgctxt "#29904"
 msgid "Artist"
@@ -19718,7 +19718,7 @@ msgctxt "#36618"
 msgid "Add-ons will be given access to personal data stored on this device. By allowing, you agree that you are solely responsible for any loss of data, unwanted behaviour, or damage to your device. Proceed?"
 msgstr ""
 
-#. Label of a setting, allow the user to specifiy high quality downscaling of pictures
+#. Label of a setting, allow the user to specify high quality downscaling of pictures
 #: system/settings/settings.xml
 msgctxt "#36619"
 msgid "High quality downscaling"
@@ -20408,4 +20408,9 @@ msgstr ""
 #: system/settings/settings.xml
 msgctxt "#39012"
 msgid "Set the maximum time to wait for the network to come up after starting or waking up. When time has passed before network is up startup will continue."
+msgstr ""
+
+#: xbmc/addons/Addon.cpp
+msgctxt "#39013"
+msgid "Virtual filesystems"
 msgstr ""

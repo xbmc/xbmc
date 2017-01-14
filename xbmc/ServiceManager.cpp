@@ -46,6 +46,7 @@ bool CServiceManager::Init1()
 
   m_settings.reset(new CSettings());
 
+  init_level = 1;
   return true;
 }
 
@@ -69,6 +70,7 @@ bool CServiceManager::Init2()
 
   m_contextMenuManager.reset(new CContextMenuManager(*m_addonMgr.get()));
 
+  init_level = 2;
   return true;
 }
 
@@ -107,6 +109,7 @@ bool CServiceManager::Init3()
   m_PVRManager->Init();
   m_contextMenuManager->Init();
 
+  init_level = 3;
   return true;
 }
 
@@ -122,6 +125,7 @@ void CServiceManager::Deinit()
   CScriptInvocationManager::GetInstance().UnregisterLanguageInvocationHandler(m_XBPython.get());
   m_XBPython.reset();
   m_announcementManager.reset();
+  init_level = 0;
 }
 
 ADDON::CAddonMgr &CServiceManager::GetAddonMgr()

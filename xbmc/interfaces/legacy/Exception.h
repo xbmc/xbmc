@@ -31,7 +31,7 @@ namespace XBMCAddon
    * UnimplementedException Can be used in places like the 
    *  Control hierarchy where the
    *  requirements of dynamic language usage force us to add 
-   *  unimplmenented methods to a class hierarchy. See the 
+   *  unimplemented methods to a class hierarchy. See the 
    *  detailed explanation on the class Control for more.
    */
   class UnimplementedException : public XbmcCommons::Exception

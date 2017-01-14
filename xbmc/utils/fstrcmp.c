@@ -83,7 +83,7 @@ static int similar_text(const char *str1, const char *str2, int len1, int len2)
  symbol tables occur.
 
    RETURNS
- double; 0 if the strings are entirly dissimilar, 1 if the
+ double; 0 if the strings are entirely dissimilar, 1 if the
  strings are identical, and a number in between if they are
  similar.  */
 

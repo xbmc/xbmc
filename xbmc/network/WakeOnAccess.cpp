@@ -426,7 +426,7 @@ bool CWakeOnAccess::WakeUpHost(const WakeUpEntry& server)
   // we have ping response ; just add extra wait-for-services before returning if requested
 
   {
-    WaitCondition waitObj ; // wait uninteruptable fixed time for services ..
+    WaitCondition waitObj ; // wait uninterruptable fixed time for services ..
 
     dlg.ShowAndWait (waitObj, server.wait_services_sec, LOCALIZED(13032));
 

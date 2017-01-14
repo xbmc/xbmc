@@ -40,6 +40,7 @@
 #include "events/AddonManagementEvent.h"
 #include "events/EventLog.h"
 #include "filesystem/SpecialProtocol.h"
+#include "VFSEntry.h"
 #include "LangInfo.h"
 #include "PluginSource.h"
 #include "Repository.h"

@@ -114,7 +114,7 @@ enum eWindowsAttribFillOpacity
 {
   solid=0,
   flash=1,
-  traslucent=2,
+  translucent=2,
   transparent=3
 };
 
@@ -160,7 +160,7 @@ enum ePanAttribTextTag
   texttag_song_lyrics=8,
   texttag_sound_effect_description=9,
   texttag_musical_score_description=10,
-  texttag_expletitive=11,
+  texttag_expletive=11,
   texttag_undefined_12=12,
   texttag_undefined_13=13,
   texttag_undefined_14=14,

@@ -39,7 +39,7 @@
 - fixed: MetaCritic Score
 
 [B]2.7.3[/B]
-- fixed: orginal title won't scrape in some cases
+- fixed: original title won't scrape in some cases
 
 [B]2.7.2[/B]
 - changed: make sure to parse the intended page
@@ -129,10 +129,10 @@
 - reverted: fixchars removed from cast parsing, leads to Dharma Beta2 hanging, will be added back once next Beta is out
 
 [B]2.0.2[/B]
-- fixed: some more cast won't get scraped under certain circumtances
+- fixed: some more cast won't get scraped under certain circumstances
 
 [B]2.0.1[/B]
-- fixed: cast won't get scraped under certain circumtances
+- fixed: cast won't get scraped under certain circumstances
 
 [B]2.0.0[/B]
 - changed: adapted new IMDb layout

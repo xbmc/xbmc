@@ -81,7 +81,7 @@ bool CPVRDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       item->SetLabelPreformated(true);
       items.Add(item);
 
-      // Sort by name only. Labels are preformated.
+      // Sort by name only. Labels are preformatted.
       items.AddSortMethod(SortByLabel, 551 /* Name */, LABEL_MASKS("%L", "", "%L", ""));
     }
     return true;

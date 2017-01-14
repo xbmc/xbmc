@@ -273,7 +273,7 @@ void CVDPAUContext::DestroyContext()
   m_vdpDevice = VDP_INVALID_HANDLE;
 }
 
-void CVDPAUContext::SpewHardwareAvailable()  //CopyrighVDPAUt (c) 2008 Wladimir J. van der Laan  -- VDPInfo
+void CVDPAUContext::SpewHardwareAvailable()  //Copyright (c) 2008 Wladimir J. van der Laan  -- VDPInfo
 {
   VdpStatus rv;
   CLog::Log(LOGNOTICE,"VDPAU Decoder capabilities:");
@@ -1115,7 +1115,7 @@ int CDecoder::Decode(AVCodecContext *avctx, AVFrame *pFrame)
   while (!retval)
   {
     bool drain = (m_codecControl & DVD_CODEC_CTRL_DRAIN);
-    // if all pics are drained, break the loop by settngn VC_BUFFER
+    // if all pics are drained, break the loop by setting VC_BUFFER
     if (drain && decoded <= 0 && processed <= 0 && render <= 0)
       drain = false;
 
@@ -1925,16 +1925,16 @@ void CMixer::SetColor()
   {
     float studioCSC[3][4];
     GenerateStudioCSCMatrix(colorStandard, studioCSC);
-    void const * pm_CSCMatix[] = { &studioCSC };
-    vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_attribute_values(m_videoMixer, ARSIZE(attributes), attributes, pm_CSCMatix);
+    void const * pm_CSCMatrix[] = { &studioCSC };
+    vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_attribute_values(m_videoMixer, ARSIZE(attributes), attributes, pm_CSCMatrix);
   }
   else
   {
     vdp_st = m_config.context->GetProcs().vdp_generate_csc_matrix(&m_Procamp, colorStandard, &m_CSCMatrix);
     if(vdp_st != VDP_STATUS_ERROR)
     {
-      void const * pm_CSCMatix[] = { &m_CSCMatrix };
-      vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_attribute_values(m_videoMixer, ARSIZE(attributes), attributes, pm_CSCMatix);
+      void const * pm_CSCMatrix[] = { &m_CSCMatrix };
+      vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_attribute_values(m_videoMixer, ARSIZE(attributes), attributes, pm_CSCMatrix);
     }
   }
 

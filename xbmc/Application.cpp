@@ -53,6 +53,7 @@
 #include "addons/BinaryAddonCache.h"
 #include "addons/LanguageResource.h"
 #include "addons/Skin.h"
+#include "addons/VFSEntry.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
 #ifdef HAS_PYTHON
 #include "interfaces/python/XBPython.h"
@@ -204,6 +205,7 @@
 #ifdef TARGET_POSIX
 #include "XHandle.h"
 #include "XTimeUtils.h"
+#include "filesystem/posix/PosixDirectory.h"
 #endif
 
 #if defined(TARGET_ANDROID)
@@ -2690,7 +2692,7 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
     // currently we calculate the repeat time (ie time from last similar keypress) just global as fps
     float frameTime = m_frameTime.GetElapsedSeconds();
     m_frameTime.StartZero();
-    // never set a frametime less than 2 fps to avoid problems when debuggin and on breaks
+    // never set a frametime less than 2 fps to avoid problems when debugging and on breaks
     if( frameTime > 0.5 ) frameTime = 0.5;
 
     if (processGUI && m_renderGUI)
@@ -2919,6 +2921,14 @@ void CApplication::Stop(int exitCode)
 #ifdef HAS_FILESYSTEM_SFTP
     CSFTPSessionManager::DisconnectAllSessions();
 #endif
+    VECADDONS addons;
+    CServiceBroker::GetBinaryAddonCache().GetAddons(addons, ADDON_VFS);
+    for (auto& it : addons)
+    {
+      AddonPtr addon = CServiceBroker::GetBinaryAddonCache().GetAddonInstance(it->ID(), ADDON_VFS);
+      VFSEntryPtr vfs = std::static_pointer_cast<CVFSEntry>(addon);
+      vfs->DisconnectAll();
+    }
 
 #if defined(TARGET_POSIX) && defined(HAS_FILESYSTEM_SMB)
     smb.Deinit();
@@ -3918,7 +3928,7 @@ bool CApplication::WakeUpScreenSaverAndDPMS(bool bPowerOffKeyPressed /* = false 
 
   if(result)
   {
-    // allow listeners to ignore the deactivation if it preceeds a powerdown/suspend etc
+    // allow listeners to ignore the deactivation if it precedes a powerdown/suspend etc
     CVariant data(CVariant::VariantTypeObject);
     data["shuttingdown"] = bPowerOffKeyPressed;
     CAnnouncementManager::GetInstance().Announce(GUI, "xbmc", "OnScreensaverDeactivated", data);
@@ -4490,7 +4500,7 @@ void CApplication::ProcessSlow()
   }
 #endif
 
-  // Temporarely pause pausable jobs when viewing video/picture
+  // Temporarily pause pausable jobs when viewing video/picture
   int currentWindow = g_windowManager.GetActiveWindow();
   if (CurrentFileItem().IsVideo() || CurrentFileItem().IsPicture() || currentWindow == WINDOW_FULLSCREEN_VIDEO || currentWindow == WINDOW_SLIDESHOW)
   {
@@ -4555,6 +4565,15 @@ void CApplication::ProcessSlow()
   CSFTPSessionManager::ClearOutIdleSessions();
 #endif
 
+  VECADDONS addons;
+  CServiceBroker::GetBinaryAddonCache().GetAddons(addons, ADDON_VFS);
+  for (auto& it : addons)
+  {
+    AddonPtr addon = CServiceBroker::GetBinaryAddonCache().GetAddonInstance(it->ID(), ADDON_VFS);
+    VFSEntryPtr vfs = std::static_pointer_cast<CVFSEntry>(addon);
+    vfs->ClearOutIdle();
+  }
+
   g_mediaManager.ProcessEvents();
 
   m_ServiceManager->GetActiveAE().GarbageCollect();
@@ -4567,7 +4586,7 @@ void CApplication::ProcessSlow()
 }
 
 // Global Idle Time in Seconds
-// idle time will be resetet if on any OnKey()
+// idle time will be reset if on any OnKey()
 // int return: system Idle time in seconds! 0 is no idle!
 int CApplication::GlobalIdleTime()
 {
@@ -5176,6 +5195,15 @@ void CApplication::CloseNetworkShares()
 #ifdef HAS_FILESYSTEM_SFTP
   CSFTPSessionManager::DisconnectAllSessions();
 #endif
+
+  VECADDONS addons;
+  CServiceBroker::GetBinaryAddonCache().GetAddons(addons, ADDON_VFS);
+  for (auto& it : addons)
+  {
+    AddonPtr addon = CServiceBroker::GetBinaryAddonCache().GetAddonInstance(it->ID(), ADDON_VFS);
+    VFSEntryPtr vfs = std::static_pointer_cast<CVFSEntry>(addon);
+    vfs->DisconnectAll();
+  }
 }
 
 void CApplication::RegisterActionListener(IActionListener *listener)

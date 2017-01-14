@@ -727,7 +727,7 @@ void OMXPlayerVideo::ResolutionUpdateCallBack(uint32_t width, uint32_t height, f
 
   ERenderFormat format = RENDER_FMT_BYPASS;
 
-  /* figure out steremode expected based on user settings and hints */
+  /* figure out stereomode expected based on user settings and hints */
   unsigned flags = GetStereoModeFlags(GetStereoMode());
 
   if(m_bAllowFullscreen)

@@ -310,7 +310,7 @@ void CAdvancedSettings::Initialize()
   m_iEdlCommBreakAutowait = 0;             // Off by default
   m_iEdlCommBreakAutowind = 0;             // Off by default
 
-  // Touchscreen  default values if no adjustment is necessarry
+  // Touchscreen  default values if no adjustment is necessary
   m_screenAlign_xOffset = 0;
   m_screenAlign_yOffset= 0;
   m_screenAlign_xStretchFactor = 1.0;

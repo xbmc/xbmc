@@ -496,7 +496,7 @@ void CCurlFile::SetCommonOptions(CReadState* state)
     g_curlInterface.easy_setopt(h, CURLOPT_USERPWD, userpwd.c_str());
   }
 
-  // make sure headers are seperated from the data stream
+  // make sure headers are separated from the data stream
   g_curlInterface.easy_setopt(h, CURLOPT_WRITEHEADER, state);
   g_curlInterface.easy_setopt(h, CURLOPT_HEADERFUNCTION, header_callback);
   g_curlInterface.easy_setopt(h, CURLOPT_HEADER, FALSE);
@@ -707,7 +707,7 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
   if( url2.IsProtocol("ftp")
    || url2.IsProtocol("ftps") )
   {
-    // we was using url optons for urls, keep the old code work and warning
+    // we was using url options for urls, keep the old code work and warning
     if (!url2.GetOptions().empty())
     {
       CLog::Log(LOGWARNING, "%s: ftp url option is deprecated, please switch to use protocol option (change '?' to '|'), url: [%s]", __FUNCTION__, url2.GetRedacted().c_str());
@@ -1342,7 +1342,7 @@ int64_t CCurlFile::Seek(int64_t iFilePosition, int iWhence)
         m_state     = m_oldState;
         m_oldState  = NULL;
       }
-      // Retry without mutlisession
+      // Retry without multisession
       m_multisession = false;
       return Seek(iFilePosition, iWhence);
     }

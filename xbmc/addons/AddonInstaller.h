@@ -115,7 +115,7 @@ public:
   typedef std::map<std::string, CDownloadJob> JobMap;
 
 private:
-  // private construction, and no assignements; use the provided singleton methods
+  // private construction, and no assignments; use the provided singleton methods
   CAddonInstaller();
   CAddonInstaller(const CAddonInstaller&);
   CAddonInstaller const& operator=(CAddonInstaller const&);

@@ -138,7 +138,7 @@ bool CNFSDirectory::ResolveSymlink( const std::string &dirName, struct nfsdirent
     if(resolvedLink[0] == '/')
     {    
       //use the special stat function for using an extra context
-      //because we are inside of a dir traversation
+      //because we are inside of a dir traversal
       //and just can't change the global nfs context here
       //without destroying something...
       fullpath = resolvedLink;
@@ -195,7 +195,7 @@ bool CNFSDirectory::GetDirectory(const CURL& url, CFileItemList &items)
    
   if(!gNfsConnection.Connect(url,strDirName))
   {
-    //connect has failed - so try to get the exported filesystms if no path is given to the url
+    //connect has failed - so try to get the exported filesystems if no path is given to the url
     if(url.GetShareName().empty())
     {
       if(url.GetHostName().empty())

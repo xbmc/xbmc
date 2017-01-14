@@ -14,6 +14,7 @@
   <addon>kodi.instance.screensaver</addon>
   <addon>kodi.instance.visualization</addon>
   <addon>kodi.resource</addon>
+  <addon>kodi.vfs</addon>
   <addon>metadata.album.universal</addon>
   <addon>metadata.artists.universal</addon>
   <addon>metadata.common.allmusic.com</addon>

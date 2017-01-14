@@ -692,7 +692,7 @@ void CGUIEPGGridContainer::UpdateItems()
 
       broadcastUid = prevSelectedEpgTag->UniqueBroadcastID();
     }
-    else // "gap" tag seleceted
+    else // "gap" tag selected
     {
       const GridItem *prevItem(GetPrevItem(m_channelCursor));
       if (prevItem)

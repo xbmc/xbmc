@@ -53,7 +53,7 @@ find_program(LIBXML2_XMLLINT_EXECUTABLE xmllint)
 # for backwards compat. with KDE 4.0.x:
 set(XMLLINT_EXECUTABLE "${LIBXML2_XMLLINT_EXECUTABLE}")
 
-# Make sure to use static flags if apropriate
+# Make sure to use static flags if appropriate
 if(PC_LIBXML_FOUND)
     if(${LIBXML2_LIBRARY} MATCHES ".+\.a$" AND PC_LIBXML_STATIC_LDFLAGS)
         set(LIBXML2_LIBRARY ${LIBXML2_LIBRARY} ${PC_LIBXML_STATIC_LDFLAGS})

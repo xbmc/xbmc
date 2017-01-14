@@ -322,7 +322,7 @@ namespace PVR
      * @brief Switch to the given channel.
      * @param channel The channel to switch to.
      * @param bPreview True to show a preview, false otherwise.
-     * @return Trrue if the switch was successful, false otherwise.
+     * @return True if the switch was successful, false otherwise.
      */
     bool PerformChannelSwitch(const CPVRChannelPtr &channel, bool bPreview);
 
@@ -530,16 +530,16 @@ namespace PVR
     void SearchMissingChannelIcons(void);
 
     /*!
-     * @brief Check if channel is parental locked. Ask for PIN if neccessary.
+     * @brief Check if channel is parental locked. Ask for PIN if necessary.
      * @param channel The channel to open.
      * @return True if channel is unlocked (by default or PIN unlocked), false otherwise.
      */
     bool CheckParentalLock(const CPVRChannelPtr &channel);
 
     /*!
-     * @brief Check if parental lock is overriden at the given moment.
+     * @brief Check if parental lock is overridden at the given moment.
      * @param channel The channel to open.
-     * @return True if parental lock is overriden, false otherwise.
+     * @return True if parental lock is overridden, false otherwise.
      */
     bool IsParentalLocked(const CPVRChannelPtr &channel);
 
@@ -689,7 +689,7 @@ namespace PVR
 
     CPVRManagerJobQueue             m_pendingUpdates;              /*!< vector of pending pvr updates */
 
-    CFileItem *                     m_currentFile;                 /*!< the PVR file that is currently playing */
+    CFileItemPtr                    m_currentFile;                 /*!< the PVR file that is currently playing */
     CPVRDatabasePtr                 m_database;                    /*!< the database for all PVR related data */
     CCriticalSection                m_critSection;                 /*!< critical section for all changes to this class, except for changes to triggers */
     bool                            m_bFirstStart;                 /*!< true when the PVR manager was started first, false otherwise */
@@ -770,14 +770,14 @@ namespace PVR
   class CPVRChannelSwitchJob : public CJob
   {
   public:
-    CPVRChannelSwitchJob(CFileItem* previous, CFileItem* next) : m_previous(previous), m_next(next) {}
+    CPVRChannelSwitchJob(const CFileItemPtr &previous, const CFileItemPtr & next) : m_previous(previous), m_next(next) {}
     virtual ~CPVRChannelSwitchJob() {}
     virtual const char *GetType() const { return "pvr-channel-switch"; }
 
     virtual bool DoWork();
   private:
-    CFileItem* m_previous;
-    CFileItem* m_next;
+    CFileItemPtr m_previous;
+    CFileItemPtr m_next;
   };
 
   class CPVRSearchMissingChannelIconsJob : public CJob

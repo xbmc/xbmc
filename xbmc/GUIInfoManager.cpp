@@ -2063,12 +2063,12 @@ const infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
 ///   \table_row3{   <b>`VideoPlayer.ChannelName`</b>,
 ///                  \anchor VideoPlayer_ChannelName
 ///                  _string_,
-///     Name of the curently tuned channel (PVR).
+///     Name of the currently tuned channel (PVR).
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.ChannelNumber`</b>,
 ///                  \anchor VideoPlayer_ChannelNumber
 ///                  _string_,
-///     Number of the curently tuned channel (PVR).
+///     Number of the currently tuned channel (PVR).
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.SubChannelNumber`</b>,
 ///                  \anchor VideoPlayer_SubChannelNumber
@@ -2083,7 +2083,7 @@ const infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
 ///   \table_row3{   <b>`VideoPlayer.ChannelGroup`</b>,
 ///                  \anchor VideoPlayer_ChannelGroup
 ///                  _string_,
-///     Group of the curently tuned channel (PVR).
+///     Group of the currently tuned channel (PVR).
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.ParentalRating`</b>,
 ///                  \anchor VideoPlayer_ParentalRating
@@ -4409,7 +4409,7 @@ const infomap playlist[] =       {{ "length",           PLAYLIST_LENGTH },
 ///   \table_row3{   <b>`Pvr.TimeShiftProgress`</b>,
 ///                  \anchor Pvr_TimeShiftProgress
 ///                  _integer_,
-///     Returns the position of currently timeshifted title on TV as interger
+///     Returns the position of currently timeshifted title on TV as integer
 ///   }
 ///   \table_row3{   <b>`Pvr.TVNowRecordingTitle`</b>,
 ///                  \anchor Pvr_TVNowRecordingTitle
@@ -4664,7 +4664,7 @@ const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING
 ///   \table_row3{   <b>`ADSP.MasterName`</b>,
 ///                  \anchor ADSP_MasterName
 ///                  _string_,
-///     Name of the curently selected and used master dsp mode
+///     Name of the currently selected and used master dsp mode
 ///   }
 ///   \table_row3{   <b>`ADSP.MasterInfo`</b>,
 ///                  \anchor ADSP_MasterInfo
@@ -4679,7 +4679,7 @@ const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING
 ///   \table_row3{   <b>`ADSP.MasterOverrideIcon`</b>,
 ///                  \anchor ADSP_MasterOverrideIcon
 ///                  _path_,
-///     Icon to overrite Kodi's codec icon with one of add-on\, e.g. Dolby
+///     Icon to override Kodi's codec icon with one of add-on\, e.g. Dolby
 ///     Digital EX on Dolby Digital
 ///   }
 /// \table_end
@@ -4748,7 +4748,7 @@ const infomap adsp[] =           {{ "isactive",                 ADSP_IS_ACTIVE }
 ///   \table_row3{   <b>`RDS.GetLine(number)`</b>,
 ///                  \anchor RDS_GetLine
 ///                  _string_,
-///     Returns the last sended RDS text messages on givern number\, 0 is the
+///     Returns the last sended RDS text messages on given number\, 0 is the
 ///     last and 4 rows are supported (0-3)
 ///   }
 ///   \table_row3{   <b>`RDS.Title`</b>,
@@ -5004,13 +5004,13 @@ const infomap adsp[] =           {{ "isactive",                 ADSP_IS_ACTIVE }
 ///   \table_row3{   <b>`RDS.EmailHotline`</b>,
 ///                  \anchor RDS_EmailHotline
 ///                  _string_,
-///     The email adress of the radio stations hotline (if available)\n
+///     The email address of the radio stations hotline (if available)\n
 ///     (Only be available on RadiotextPlus)
 ///   }
 ///   \table_row3{   <b>`RDS.EmailStudio`</b>,
 ///                  \anchor RDS_EmailStudio
 ///                  _string_,
-///     The email adress of the radio stations studio (if available)\n
+///     The email address of the radio stations studio (if available)\n
 ///     (Only be available on RadiotextPlus)
 ///   }
 /// \table_end

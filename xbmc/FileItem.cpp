@@ -993,6 +993,7 @@ bool CFileItem::IsFileFolder(EFileFolderType types) const
     || IsZIP()
     || IsRAR()
     || IsRSS()
+    || IsType(".iso")
     || IsType(".ogg|.oga|.nsf|.sid|.sap|.xbt|.xsp")
 #if defined(TARGET_ANDROID)
     || IsType(".apk")
@@ -1274,7 +1275,7 @@ void CFileItem::FillInDefaultIcon()
       /* To reduce the average runtime of this code, this list should
        * be ordered with most frequently seen types first.  Also bear
        * in mind the complexity of the code behind the check in the
-       * case of IsWhatater() returns false.
+       * case of IsWhatever() returns false.
        */
       if (IsPVRChannel())
       {

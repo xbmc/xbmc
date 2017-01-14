@@ -425,7 +425,7 @@ void CVideoPlayerAudio::Process()
         if (m_streaminfo.codec == AV_CODEC_ID_FLAC && m_streaminfo.channellayout)
           audioframe.format.m_channelLayout = CAEUtil::GetAEChannelLayout(m_streaminfo.channellayout);
 
-        // we have succesfully decoded an audio frame, setup renderer to match
+        // we have successfully decoded an audio frame, setup renderer to match
         if (!m_dvdAudio.IsValidFormat(audioframe))
         {
           if(m_speed)

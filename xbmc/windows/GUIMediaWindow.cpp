@@ -1088,7 +1088,7 @@ void CGUIMediaWindow::ShowShareErrorMessage(CFileItem* pItem)
   CGUIDialogOK::ShowAndGetInput(CVariant{220}, CVariant{idMessageText});
 }
 
-// \brief The functon goes up one level in the directory tree
+// \brief The function goes up one level in the directory tree
 bool CGUIMediaWindow::GoParentFolder()
 {
   if (m_vecItems->IsVirtualDirectoryRoot())
@@ -1186,10 +1186,10 @@ void CGUIMediaWindow::GetDirectoryHistoryString(const CFileItem* pItem, std::str
 {
   if (pItem->m_bIsShareOrDrive)
   {
-    // We are in the virual directory
+    // We are in the virtual directory
 
     // History string of the DVD drive
-    // must be handel separately
+    // must be handled separately
     if (pItem->m_iDriveType == CMediaSource::SOURCE_TYPE_DVD)
     {
       // Remove disc label from item label
@@ -1210,7 +1210,7 @@ void CGUIMediaWindow::GetDirectoryHistoryString(const CFileItem* pItem, std::str
     }
     else
     {
-      // Other items in virual directory
+      // Other items in virtual directory
       std::string strPath = pItem->GetPath();
       URIUtils::RemoveSlashAtEnd(strPath);
 
@@ -1393,7 +1393,7 @@ bool CGUIMediaWindow::OnPlayAndQueueMedia(const CFileItemPtr &item, std::string 
   return true;
 }
 
-// \brief Synchonize the fileitems with the playlistplayer
+// \brief Synchronize the fileitems with the playlistplayer
 // It recreated the playlist of the playlistplayer based
 // on the fileitems of the window
 void CGUIMediaWindow::UpdateFileList()

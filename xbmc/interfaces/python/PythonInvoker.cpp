@@ -187,7 +187,7 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
   URIUtils::RemoveSlashAtEnd(scriptDir);
   addPath(scriptDir);
 
-  // add all addon module dependecies to path
+  // add all addon module dependencies to path
   if (m_addon)
   {
     std::set<std::string> paths;
@@ -376,7 +376,7 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
   }
 
   // pending calls must be cleared out
-  XBMCAddon::RetardedAsynchCallbackHandler::clearPendingCalls(state);
+  XBMCAddon::RetardedAsyncCallbackHandler::clearPendingCalls(state);
 
   PyThreadState_Swap(NULL);
   PyEval_ReleaseLock();
@@ -398,7 +398,7 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
 
   // run the gc before finishing
   //
-  // if the script exited by throwing a SystemExit excepton then going back
+  // if the script exited by throwing a SystemExit exception then going back
   // into the interpreter causes this python bug to get hit:
   //    http://bugs.python.org/issue10582
   // and that causes major failures. So we are not going to go back in

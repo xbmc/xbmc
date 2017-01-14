@@ -127,7 +127,7 @@ void CWiiRemote::ErrorCallback(struct wiimote *wiiremote, const char *str, va_li
 #endif
 
 //Constructor
-/*This constructor is never used but it shows how one would connect to just a specific Wiiremote by Mac-Adress*/
+/*This constructor is never used but it shows how one would connect to just a specific Wiiremote by Mac-Address*/
 CWiiRemote::CWiiRemote(char *wii_btaddr)
 {
   SetBluetoothAddress(wii_btaddr);
@@ -153,7 +153,7 @@ CWiiRemote::~CWiiRemote()
 }
 
 //---------------------Public-------------------------------------------------------------------
-/* Basicly this just sets up standard control bits */
+/* Basically this just sets up standard control bits */
 void CWiiRemote::SetBluetoothAddress(const char *btaddr)
 {
   static const bdaddr_t b = {{0, 0, 0, 0, 0, 0}}; /* BDADDR_ANY */

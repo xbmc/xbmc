@@ -14,7 +14,7 @@
 #
 # Inspired by https://github.com/bilke/cmake-modules/blob/master/CodeCoverage.cmake
 
-# Comiler and linker setup
+# Compiler and linker setup
 set(CMAKE_C_FLAGS_COVERAGE "-g -O0 --coverage" CACHE STRING
   "Flags used by the C compiler during coverage builds." FORCE)
 set(CMAKE_CXX_FLAGS_COVERAGE "-g -O0 --coverage" CACHE STRING

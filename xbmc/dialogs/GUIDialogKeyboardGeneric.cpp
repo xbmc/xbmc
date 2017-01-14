@@ -305,7 +305,7 @@ bool CGUIDialogKeyboardGeneric::OnMessage(CGUIMessage& message)
   case GUI_MSG_SET_TEXT:
   case GUI_MSG_INPUT_TEXT_EDIT:
     {
-      // the edit control only handles these messages if it is either focues
+      // the edit control only handles these messages if it is either focused
       // or its specific control ID is set in the message. As neither is the
       // case here (focus is on one of the keyboard buttons) we have to force
       // the control ID of the message to the control ID of the edit control

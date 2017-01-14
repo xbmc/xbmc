@@ -53,7 +53,7 @@ static void EnumerateDevices(CADeviceList &list)
     //(allows transition from headphones to speaker and stuff
     //like that)
     //fixme taking the first stream device is wrong here
-    //we rather might need the concatination of all streams *sucks*
+    //we rather might need the concatenation of all streams *sucks*
     if(defaultDeviceName == devEnum.GetMasterDeviceName())
     {
       struct CADeviceInstance deviceInstance;
@@ -410,7 +410,7 @@ unsigned int CAESinkDARWINOSX::AddPackets(uint8_t **data, unsigned int frames, u
     if (!m_started)
       timeout = 4500;
 
-    // we are using a timer here for beeing sure for timeouts
+    // we are using a timer here for being sure for timeouts
     // condvar can be woken spuriously as signaled
     XbmcThreads::EndTime timer(timeout);
     condVar.wait(mutex, timeout);
@@ -444,7 +444,7 @@ void CAESinkDARWINOSX::Drain()
 
     bytes = m_buffer->GetReadSize();
     // if we timeout and don't
-    // consum bytes - decrease maxNumTimeouts
+    // consume bytes - decrease maxNumTimeouts
     if (timer.IsTimePast() && bytes == totalBytes)
       maxNumTimeouts--;
     totalBytes = bytes;

@@ -658,7 +658,7 @@ extern "C" UINT WINAPI dllGetSystemDirectoryA(LPTSTR lpBuffer, UINT uSize)
   //unsigned int len = strlen(systemdir);
   //if (len > uSize) return 0;
   //strcpy(lpBuffer, systemdir);
-  //not_implement("kernel32.dll incompete function dllGetSystemDirectory called\n"); //warning
+  //not_implement("kernel32.dll incomplete function dllGetSystemDirectory called\n"); //warning
   //CLog::Log(LOGDEBUG,"KERNEL32!GetSystemDirectoryA(0x%x, %d) => %s", lpBuffer, uSize, systemdir);
   //return len;
 #ifdef API_DEBUG
@@ -868,8 +868,8 @@ extern "C" int WINAPI dllMultiByteToWideChar(UINT CodePage, DWORD dwFlags, LPCST
 
   if (ret > 0)
   {
-    // second fix, but only if cchWideChar == 0, and ofcours ret > 0 indicating the function
-    // returned the number of bytes needed, otherwise ret would be 0, meaning a successfull conversion
+    // second fix, but only if cchWideChar == 0, and of course ret > 0 indicating the function
+    // returned the number of bytes needed, otherwise ret would be 0, meaning a successful conversion
     if (cchWideChar == 0) {
       ret--;
     }
@@ -912,8 +912,8 @@ extern "C" int WINAPI dllWideCharToMultiByte(UINT CodePage, DWORD dwFlags, LPCWS
 
   if (ret > 0)
   {
-    // second fix, but only if cbMultiByte == 0, and ofcours ret > 0 indicating the function
-    // returned the number of bytes needed, otherwise ret would be 0, meaning a successfull conversion
+    // second fix, but only if cbMultiByte == 0, and of course ret > 0 indicating the function
+    // returned the number of bytes needed, otherwise ret would be 0, meaning a successful conversion
     if (cbMultiByte == 0) {
       ret--;
     }

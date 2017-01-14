@@ -106,7 +106,7 @@ protected:
 
   int m_iScreenWidth;
   int m_iScreenHeight;
-  int m_iOrientation;// orientation of the video in degress counter clockwise
+  int m_iOrientation;// orientation of the video in degrees counter clockwise
 
   unsigned int m_uSurfacesCount;
 

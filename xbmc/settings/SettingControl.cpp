@@ -71,10 +71,10 @@ bool CSettingControlFormattedRange::Deserialize(const TiXmlNode *node, bool upda
     const TiXmlNode *settingNode = node->Parent();
     if (settingNode != NULL)
     {
-      const TiXmlNode *contraintsNode = settingNode->FirstChild(SETTING_XML_ELM_CONSTRAINTS);
-      if (contraintsNode != NULL)
+      const TiXmlNode *constraintsNode = settingNode->FirstChild(SETTING_XML_ELM_CONSTRAINTS);
+      if (constraintsNode != NULL)
       {
-        const TiXmlNode *minimumNode = contraintsNode->FirstChild(SETTING_XML_ELM_MINIMUM);
+        const TiXmlNode *minimumNode = constraintsNode->FirstChild(SETTING_XML_ELM_MINIMUM);
         if (minimumNode != NULL)
         {
           const TiXmlElement *minimumElem = minimumNode->ToElement();

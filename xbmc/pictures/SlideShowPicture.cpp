@@ -32,7 +32,7 @@
 #endif
 #include <math.h>
 
-#define IMMEDIATE_TRANSISTION_TIME          20
+#define IMMEDIATE_TRANSITION_TIME          20
 
 #define PICTURE_MOVE_AMOUNT              0.02f
 #define PICTURE_MOVE_AMOUNT_ANALOG       0.01f
@@ -650,8 +650,8 @@ void CSlideShowPic::Keep()
 
 bool CSlideShowPic::StartTransistion()
 {
-  // this is called if we need to start transistioning immediately to the new picture
-  if (m_bDrawNextImage) return false; // don't need to do anything as we are already transistioning
+  // this is called if we need to start transitioning immediately to the new picture
+  if (m_bDrawNextImage) return false; // don't need to do anything as we are already transitioning
   // decrease the number of display frame
   m_transistionEnd.start = m_iCounter;
   m_bTransistionImmediately = true;
@@ -707,7 +707,7 @@ void CSlideShowPic::Rotate(float fRotateAngle, bool immediate /* = false */)
 
   m_transistionTemp.type = TRANSISTION_ROTATE;
   m_transistionTemp.start = m_iCounter;
-  m_transistionTemp.length = IMMEDIATE_TRANSISTION_TIME;
+  m_transistionTemp.length = IMMEDIATE_TRANSITION_TIME;
   m_fTransistionAngle = (float)fRotateAngle / (float)m_transistionTemp.length;
   // reset the timer
   m_transistionEnd.start = m_iCounter + m_transistionStart.length + (int)(g_graphicsContext.GetFPS() * CServiceBroker::GetSettings().GetInt(CSettings::SETTING_SLIDESHOW_STAYTIME));
@@ -724,7 +724,7 @@ void CSlideShowPic::Zoom(float fZoom, bool immediate /* = false */)
   }
   m_transistionTemp.type = TRANSISTION_ZOOM;
   m_transistionTemp.start = m_iCounter;
-  m_transistionTemp.length = IMMEDIATE_TRANSISTION_TIME;
+  m_transistionTemp.length = IMMEDIATE_TRANSITION_TIME;
   m_fTransistionZoom = (fZoom - m_fZoomAmount) / (float)m_transistionTemp.length;
   // reset the timer
   m_transistionEnd.start = m_iCounter + m_transistionStart.length + (int)(g_graphicsContext.GetFPS() * CServiceBroker::GetSettings().GetInt(CSettings::SETTING_SLIDESHOW_STAYTIME));
@@ -755,13 +755,13 @@ void CSlideShowPic::Render()
 }
 
 #ifdef HAS_DX
-bool CSlideShowPic::UpdateVertexBuffer(Vertex* vericies)
+bool CSlideShowPic::UpdateVertexBuffer(Vertex* vertices)
 {
   if (!m_vb) // create new
   {
     CD3D11_BUFFER_DESC desc(sizeof(Vertex) * 5, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DYNAMIC, D3D11_CPU_ACCESS_WRITE);
     D3D11_SUBRESOURCE_DATA initData = {};
-    initData.pSysMem = vericies;
+    initData.pSysMem = vertices;
     initData.SysMemPitch = sizeof(Vertex) * 5;
     if (SUCCEEDED(g_Windowing.Get3D11Device()->CreateBuffer(&desc, &initData, &m_vb)))
       return true;
@@ -772,7 +772,7 @@ bool CSlideShowPic::UpdateVertexBuffer(Vertex* vericies)
     D3D11_MAPPED_SUBRESOURCE res;
     if (SUCCEEDED(pContext->Map(m_vb, 0, D3D11_MAP_WRITE_DISCARD, 0, &res)))
     {
-      memcpy(res.pData, vericies, sizeof(Vertex) * 5);
+      memcpy(res.pData, vertices, sizeof(Vertex) * 5);
       pContext->Unmap(m_vb, 0);
       return true;
     }

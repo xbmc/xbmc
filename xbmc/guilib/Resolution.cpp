@@ -221,7 +221,7 @@ RESOLUTION CResolutionUtils::FindClosestResolution(float fps, int width, bool is
         (info.dwFlags & D3DPRESENTFLAG_MODEMASK) != (curr.dwFlags & D3DPRESENTFLAG_MODEMASK) ||
         info.fRefreshRate < (fRefreshRate * multiplier / 1.001) - 0.001)
     {
-      // evaluate all higher modes and evalute them
+      // evaluate all higher modes and evaluate them
       // concerning dimension and refreshrate weight
       // skip lower resolutions
       if ((width < orig.iScreenWidth) || // orig res large enough

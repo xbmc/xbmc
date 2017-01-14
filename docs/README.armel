@@ -158,7 +158,7 @@ Note. You will need the headers and shared object files for EGL and GLESv2 to co
 -----------------------------------------------------------------------------
 
 In order to continue, you will need the SGX SDK from TI's website.
-Once you have installed said SDK on a standard Linux machine, copy the neccessary .h and .so files to the appropriate directories in scratchbox:
+Once you have installed said SDK on a standard Linux machine, copy the necessary .h and .so files to the appropriate directories in scratchbox:
 e.g /scratchbox/users/<username>/targets/<target_name>/usr/include/EGL/egl.h
 These files will also need to be transferred over to the board eventually.
 

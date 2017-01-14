@@ -704,6 +704,8 @@ bool CAddonsDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       type = ADDON_PVRDLL;
     else if (path.GetFileName() == "kodi.adsp")
       type = ADDON_ADSPDLL;
+    else if (path.GetFileName() == "kodi.vfs")
+      type = ADDON_VFS;
     else
       type = ADDON_UNKNOWN;
 

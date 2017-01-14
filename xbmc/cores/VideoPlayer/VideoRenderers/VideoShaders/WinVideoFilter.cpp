@@ -194,7 +194,7 @@ bool CWinShader::Execute(std::vector<ID3D11RenderTargetView*> *vecRT, unsigned i
   ID3D11DeviceContext* pContext = g_Windowing.Get3D11Context();
   ID3D11RenderTargetView* oldRT = nullptr;
 
-  // The render target will be overriden: save the caller's original RT
+  // The render target will be overridden: save the caller's original RT
   if (vecRT != nullptr && !vecRT->empty())
     pContext->OMGetRenderTargets(1, &oldRT, nullptr);
 
@@ -867,7 +867,7 @@ void CConvolutionShaderSeparable::SetStepParams(UINT iPass)
   {
     if (m_oldRenderTarget)
     {
-      // get dimention of old render target
+      // get dimension of old render target
       ID3D11Resource* rtResource = nullptr;
       m_oldRenderTarget->GetResource(&rtResource);
       ID3D11Texture2D* rtTexture = nullptr;
@@ -896,9 +896,9 @@ void CConvolutionShaderSeparable::SetStepParams(UINT iPass)
     // restore scissor
     g_Windowing.SetScissors(g_graphicsContext.StereoCorrection(g_graphicsContext.GetScissors()));
   }
-  // seting view port
+  // setting view port
   pContext->RSSetViewports(1, &viewPort);
-  // pass viewport dimention to the shaders
+  // pass viewport dimension to the shaders
   m_effect.SetFloatArray("g_viewPort", &viewPort.Width, 2);
 }
 

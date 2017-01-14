@@ -345,7 +345,7 @@ void CRenderSystemDX::SetFullScreenInternal()
     float currentRefreshRate = RATIONAL_TO_FLOAT(currentMode.RefreshRate);
     CLog::Log(LOGDEBUG, "%s - Current display mode is: %dx%d@%0.3f", __FUNCTION__, currentMode.Width, currentMode.Height, currentRefreshRate);
 
-    // use backbuffer dimention to find required display mode
+    // use backbuffer dimension to find required display mode
     toMatchMode.Width = m_nBackBufferWidth;
     toMatchMode.Height = m_nBackBufferHeight;
     bool useDefaultRefreshRate = 0 == m_refreshRate;
@@ -864,7 +864,7 @@ bool CRenderSystemDX::CreateWindowSizeDependentResources()
         bHWStereoEnabled = false;
         hr = dxgiFactory2->CreateSwapChainForHwnd(m_pD3DDev, m_hFocusWnd, &scDesc1, &scFSDesc, nullptr, &m_pSwapChain1);
 
-        // fallback to split_horisontal mode.
+        // fallback to split_horizontal mode.
         g_graphicsContext.SetStereoMode(RENDER_STEREO_MODE_SPLIT_HORIZONTAL);
       }
 
@@ -1009,7 +1009,7 @@ bool CRenderSystemDX::CreateWindowSizeDependentResources()
   if (bRestoreRTView)
     m_pContext->OMSetRenderTargets(1, &m_pRenderTargetView, m_depthStencilView);
 
-  // notify about resurection of display
+  // notify about resurrection of display
   if (m_bResizeRequred)
     OnDisplayBack();
 
@@ -1319,7 +1319,7 @@ bool CRenderSystemDX::ClearBuffers(color_t color)
   if ( m_stereoMode != RENDER_STEREO_MODE_OFF
     && m_stereoMode != RENDER_STEREO_MODE_MONO)
   {
-    // if stereo anaglyph/tab/sbs, data was cleared when left view was rendererd
+    // if stereo anaglyph/tab/sbs, data was cleared when left view was rendered
     if (m_stereoView == RENDER_STEREO_VIEW_RIGHT)
     {
       // execute command's queue
@@ -1478,7 +1478,7 @@ bool CRenderSystemDX::TestRender()
   }
 
   // Now we fill the vertex buffer. To do this, we need to Lock() the VB to
-  // gain access to the vertices. This mechanism is required becuase vertex
+  // gain access to the vertices. This mechanism is required because vertex
   // buffers may be in device memory.
   VOID* pVertices;
   if( FAILED( pVB->Lock( 0, sizeof( vertices ), ( void** )&pVertices, 0 ) ) )

@@ -162,7 +162,7 @@ static CEvent keyboardFinishedEvent;
 {
   LOG(@"%s: keyboard IsShowing %d", __PRETTY_FUNCTION__, _keyboardIsShowing);
   // Do not break the keyboard show up process, else we will lost
-  // keyboard did hide notifaction.
+  // keyboard did hide notification.
   return _keyboardIsShowing != 1;
 }
 
@@ -184,7 +184,7 @@ static CEvent keyboardFinishedEvent;
 #if __IPHONE_8_0
   // when compiled against ios 8.x sdk and runtime is ios
   // 5.1.1 (f.e. ipad1 which has 5.1.1 as latest available ios version)
-  // there is an incompatibility which somehowe prevents us from getting
+  // there is an incompatibility which somehow prevents us from getting
   // notified about "keyboardDidHide". This makes the keyboard
   // useless on those ios platforms.
   // Instead we are called here with "DidChangeFrame" and
@@ -274,7 +274,7 @@ static CEvent keyboardFinishedEvent;
   // give back the control to whoever
   [_textField resignFirstResponder];
 
-  // allways calld in the mainloop context
+  // always called in the mainloop context
   // detach the keyboard view from our main controller
   [g_xbmcController deactivateKeyboard:self];
   

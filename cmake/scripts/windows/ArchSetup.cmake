@@ -18,12 +18,6 @@ list(APPEND CMAKE_SYSTEM_PREFIX_PATH ${CMAKE_SOURCE_DIR}/project/BuildDependenci
 
 set(PYTHON_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/project/BuildDependencies/include/python)
 
-# The find_* functions prefer PATH over CMAKE_PREFIX_PATH for dependencies.
-# Emptying PATH so that system installed libraries (MySql, Python) are not picked up.
-# The VS/bin directory has to be in PATH for example for NMake.
-get_filename_component(TOOLCHAIN_PATH ${CMAKE_CXX_COMPILER} DIRECTORY)
-set(ENV{PATH} "${TOOLCHAIN_PATH}")
-
 
 # -------- Compiler options ---------
 
@@ -35,7 +29,7 @@ set(SYSTEM_DEFINES -DNOMINMAX -D_USE_32BIT_TIME_T -DHAS_DX -D__STDC_CONSTANT_MAC
                    -DPLT_HTTP_DEFAULT_SERVER="UPnP/1.0 DLNADOC/1.50 Kodi"
                    $<$<CONFIG:Debug>:-DD3D_DEBUG_INFO -D_ITERATOR_DEBUG_LEVEL=0>)
 
-# Make sure /FS is set for Visual Studio in order to prevent simultanious access to pdb files.
+# Make sure /FS is set for Visual Studio in order to prevent simultaneous access to pdb files.
 if(CMAKE_GENERATOR MATCHES "Visual Studio")
   set(CMAKE_CXX_FLAGS "/MP /FS ${CMAKE_CXX_FLAGS}")
 endif()
