@@ -83,6 +83,6 @@ SRCS += Utils/AELimiter.cpp
 SRCS += Encoders/AEEncoderFFmpeg.cpp
 
 LIB   = audioengine.a
-
+$(shell touch AEDefines_override.h)
 include @abs_top_srcdir@/Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
