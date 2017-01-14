@@ -128,6 +128,8 @@ static int RunAddon(const std::vector<std::string>& params)
         cmd = StringUtils::Format("ActivateWindow(Programs,plugin://%s%s,return)", addonid.c_str(), urlParameters.c_str());
       else if (plugin->Provides(CPluginSource::IMAGE))
         cmd = StringUtils::Format("ActivateWindow(Pictures,plugin://%s%s,return)", addonid.c_str(), urlParameters.c_str());
+      else if (plugin->Provides(CPluginSource::GAME))
+        cmd = StringUtils::Format("ActivateWindow(Games,plugin://%s%s,return)", addonid.c_str(), urlParameters.c_str());
       else
         // Pass the script name (addonid) and all the parameters
         // (params[1] ... params[x]) separated by a comma to RunPlugin
