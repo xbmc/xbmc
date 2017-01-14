@@ -38,6 +38,9 @@ extern "C"
 
 namespace ADDON
 {
+  class CAddonDll;
+  typedef std::shared_ptr<CAddonDll> AddonDllPtr;
+
   typedef std::map<TYPE, VECADDONS> MAPADDONS;
   typedef std::map<TYPE, VECADDONS>::iterator IMAPADDONS;
   typedef std::vector<cp_cfg_element_t*> ELEMENTS;
@@ -91,6 +94,8 @@ namespace ADDON
      \return true if an addon matching the id of the given type is available and is enabled (if enabledOnly is true).
      */
     bool GetAddon(const std::string &id, AddonPtr &addon, const TYPE &type = ADDON_UNKNOWN, bool enabledOnly = true);
+
+    AddonDllPtr GetAddon(const TYPE &type, const std::string &id);
 
     bool HasAddons(const TYPE &type);
 

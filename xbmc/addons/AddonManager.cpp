@@ -630,6 +630,13 @@ bool CAddonMgr::GetAddon(const std::string &str, AddonPtr &addon, const TYPE &ty
   return false;
 }
 
+AddonDllPtr CAddonMgr::GetAddon(const TYPE &type, const std::string &id)
+{
+  AddonPtr addon;
+  GetAddon(id, addon, type);
+  return std::dynamic_pointer_cast<CAddonDll>(addon);
+}
+
 bool CAddonMgr::FindAddons()
 {
   bool result = false;
