@@ -41,6 +41,10 @@ configure_file(${PROJECT_SOURCE_DIR}/KodiConfig.cmake.in
 
 # Configure xsession entry
 configure_file(${CORE_SOURCE_DIR}/tools/Linux/kodi-xsession.desktop.in
+               ${CORE_BUILD_DIR}/${APP_NAME_LC}-xsession.desktop @ONLY)
+
+# Configure desktop entry
+configure_file(${CORE_SOURCE_DIR}/tools/Linux/kodi.desktop.in
                ${CORE_BUILD_DIR}/${APP_NAME_LC}.desktop @ONLY)
 
 # Install app
@@ -78,12 +82,13 @@ foreach(file ${install_data})
 endforeach()
 
 # Install xsession entry
-install(FILES ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/${APP_NAME_LC}.desktop
+install(FILES ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/${APP_NAME_LC}-xsession.desktop
+        RENAME ${APP_NAME_LC}.desktop
         DESTINATION ${datarootdir}/xsessions
         COMPONENT kodi)
 
 # Install desktop entry
-install(FILES ${CORE_SOURCE_DIR}/tools/Linux/kodi.desktop
+install(FILES ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/${APP_NAME_LC}.desktop
         DESTINATION ${datarootdir}/applications
         COMPONENT kodi)
 
