@@ -1,8 +1,7 @@
 #pragma once
-
 /*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2005-2017 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -15,28 +14,22 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
 
+#include "addons/kodi-addon-dev-kit/include/kodi/screensaver/Screensaver.h"
+#include "addons/AddonDll.h"
 #include "guilib/GUIWindow.h"
-#include "addons/interfaces/kodi/screensaver/Screensaver.h"
-
-#include "threads/CriticalSection.h"
-
-#define SCREENSAVER_FADE   1
-#define SCREENSAVER_BLACK  2
-#define SCREENSAVER_XBS    3
 
 class CGUIWindowScreensaver : public CGUIWindow
 {
 public:
   CGUIWindowScreensaver(void);
-  virtual ~CGUIWindowScreensaver(void);
 
   virtual bool OnMessage(CGUIMessage& message);
-  virtual bool OnAction(const CAction &action);
+  virtual bool OnAction(const CAction &action) { return false; } // We're just a screen saver, nothing to do here
   virtual void Render();
   virtual void Process(unsigned int currentTime, CDirtyRegionList &regions);
 
@@ -44,6 +37,12 @@ protected:
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
 
 private:
-  CCriticalSection m_critSection;
-  std::shared_ptr<ADDON::CScreenSaver> m_screenSaver;
+  std::string m_name; /*!< To add-on sended name */
+  std::string m_presets; /*!< To add-on sended preset path */
+  std::string m_profile; /*!< To add-on sended profile path */
+
+  ADDON::AddonDllPtr m_addon;
+  kodi::addon::CInstanceScreensaver* m_addonInstance;
+  AddonInstance_Screensaver m_struct;
 };
+
