@@ -403,6 +403,11 @@ bool CWin32File::Rename(const CURL& urlCurrentName, const CURL& urlNewName)
     return false;
 
   const bool result = (MoveFileExW(curNameW.c_str(), newNameW.c_str(), MOVEFILE_COPY_ALLOWED) != 0);
+  if (!result)
+  {
+    CLog::LogW(LOGERROR, L"Failed to rename file/directory %s to %s, Error: %s",
+      curNameW.c_str(), newNameW.c_str(), CLog::Win32ErrorToString(GetLastError()));
+  }
   if (m_smbFile)
     m_lastSMBFileErr = GetLastError(); // set real error state
 

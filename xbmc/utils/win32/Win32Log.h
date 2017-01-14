@@ -33,6 +33,7 @@ class CWin32Log : public CLog
 public:
   static void LogW(int loglevel, PRINTF_FORMAT_STRING const wchar_t *format, ...);
   static void LogFunctionW(int loglevel, IN_OPT_STRING const char* functionName, PRINTF_FORMAT_STRING const wchar_t* format, ...);
+  static std::wstring Win32ErrorToString(int errorCode);
 #define LogFW(loglevel,format,...) LogFunctionW((loglevel),__FUNCTION__,(format),##__VA_ARGS__)
 };
 

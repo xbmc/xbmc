@@ -18,7 +18,11 @@
 *
 */
 
+
 #include "Win32Log.h"
+
+#include <string>
+
 #include "utils/StringUtils.h"
 #include "utils/CharsetConverter.h"
 
@@ -62,4 +66,18 @@ void CWin32Log::LogFunctionW(int loglevel, const char* functionName, const wchar
         PrintDebugString(__FUNCTION__ ": Can't convert log wide string to UTF-8");
     }
   }
+}
+
+std::wstring CWin32Log::Win32ErrorToString(int errorCode)
+{
+  LPWSTR message = nullptr;
+  auto result = FormatMessageW(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
+    nullptr, errorCode, 0, message, 0, nullptr);
+  if (result == 0)
+    return std::wstring();
+
+  std::wstring formattedMessage(message, result);
+  HeapFree(GetProcessHeap(), 0, message);
+
+  return formattedMessage;
 }
