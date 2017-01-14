@@ -38,32 +38,6 @@
 using namespace MUSIC_INFO;
 using namespace ADDON;
 
-CAudioBuffer::CAudioBuffer(int iSize)
-{
-  m_iLen = iSize;
-  m_pBuffer = new float[iSize];
-}
-
-CAudioBuffer::~CAudioBuffer()
-{
-  delete [] m_pBuffer;
-}
-
-const float* CAudioBuffer::Get() const
-{
-  return m_pBuffer;
-}
-
-void CAudioBuffer::Set(const float* psBuffer, int iSize)
-{
-  if (iSize < 0)
-    return;
-
-  memcpy(m_pBuffer, psBuffer, iSize * sizeof(float));
-  for (int i = iSize; i < m_iLen; ++i)
-    m_pBuffer[i] = 0;
-}
-
 CVisualisation::CVisualisation(ADDON::AddonDllPtr addon)
   : CAddonInstanceInfo(addon),
     m_addonInstance(nullptr),

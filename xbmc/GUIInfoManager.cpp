@@ -34,7 +34,7 @@
 #include "utils/URIUtils.h"
 #include "utils/Weather.h"
 #include "PartyModeManager.h"
-#include "addons/interfaces/kodi/visualization/Visualization.h"
+#include "guilib/GUIVisualisationControl.h"
 #include "input/ButtonTranslator.h"
 #include "utils/AlarmClock.h"
 #include "LangInfo.h"
@@ -6619,8 +6619,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
       g_windowManager.SendMessage(msg);
       if (msg.GetPointer())
       {
-        CVisualisation* viz = NULL;
-        viz = (CVisualisation*)msg.GetPointer();
+        CGUIVisualisationControl* viz = (CGUIVisualisationControl*)msg.GetPointer();
         if (viz)
         {
           strLabel = viz->GetPresetName();
@@ -7284,7 +7283,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
         g_windowManager.SendMessage(msg);
         if (msg.GetPointer())
         {
-          CVisualisation *pVis = (CVisualisation *)msg.GetPointer();
+          CGUIVisualisationControl *pVis = (CGUIVisualisationControl *)msg.GetPointer();
           bReturn = pVis->IsLocked();
         }
       }
@@ -7315,8 +7314,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
       g_windowManager.SendMessage(msg);
       if (msg.GetPointer())
       {
-        CVisualisation* viz = NULL;
-        viz = (CVisualisation*)msg.GetPointer();
+        CGUIVisualisationControl* viz = (CGUIVisualisationControl*)msg.GetPointer();
         bReturn = (viz && viz->HasPresets());
       }
     }
