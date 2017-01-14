@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="webinterface.default"
-  version="2.3.9"
+  version="2.3.10"
   name="Kodi web interface - Chorus2"
   provider-name="jez500, Team Kodi">
   <requires>
@@ -17,7 +17,7 @@
     <summary lang="en_GB">Kodi web interface - Chorus2</summary>
     <summary lang="en_NZ">Kodi web interface - Chorus2</summary>
     <summary lang="es_AR">Interfaz web Kodi - Chorus2</summary>
-    <summary lang="es_ES">Interfaz web Kodi - Coro2</summary>
+    <summary lang="es_ES">Interfaz web Kodi - Chorus2</summary>
     <summary lang="es_MX">Interface web Kodi - Chorus2</summary>
     <summary lang="fi_FI">Kodin web-käyttöliittymä - Chorus2</summary>
     <summary lang="fr_CA">Interface Web de Kodi - Chorus2</summary>
@@ -46,12 +46,12 @@
     <description lang="en_GB">Default Kodi web interface. Browse and interact with your Music, Movies, TV Shows and more via a web browser.</description>
     <description lang="en_NZ">Default Kodi web interface. Browse and interact with your Music, Movies, TV Shows and more via a web browser.</description>
     <description lang="es_AR">Web interface Kodi por defecto. Navegue e interactue con su música, películs, shows de TV y más vía un browser Web.</description>
-    <description lang="es_ES">Interfaz web por defecto de Kodi. Busca e interactúa con tu Música, Películas Series y más a través del navegador</description>
+    <description lang="es_ES">Interfaz web por defecto de Kodi. Navega e interactúa por tu Música, Películas Series y más desde el navegador</description>
     <description lang="es_MX">interface web Kodi Predeterminado. Navega e interactúa con tu música, películas, programas de televisión y mucho más a través de un navegador web.</description>
     <description lang="fi_FI">Kodin oletusarvoinen web-käyttöliittymä. Selaa ja toista musiikkia, elokuvia, tv-sarjoja ynnä muuta nettiselaimen kautta.</description>
     <description lang="fr_CA">L'interface Web par défaut de Kodi. Parcourez et interagissez avec votre musique, vos films, vos émissions télé et plus par le biais d'un navigateur Web.</description>
     <description lang="fr_FR">Interface Web par défaut de Kodi. Parcourir et interagir avec votre Musique, vos Films, vos Séries TV et plus encore avec votre nagivateur Web.</description>
-    <description lang="hr_HR">Zadano kodi web sučelje. Istraži svoju Glazbu, Filmove, TV serije i još mnogo toga putem web preglednika</description>
+    <description lang="hr_HR">Zadano kodi web sučelje. Pregledavajte i reproducirajte Glazbu, Filmove, TV serije i još mnogo toga putem web preglednika.</description>
     <description lang="it_IT">Interfaccia web predefinita di Kodi. Sfoglia e interagisci con la tua Musica, i tuoi Film, Serie TV e altro tramite un browser web.</description>
     <description lang="lt_LT">Numatytoji Kodi žiniatinklio sąsaja. Naršykite ir valdykite savo muziką, filmus, TV laidas ir dar daugiau naudodami interneto naršyklę.</description>
     <description lang="ms_MY">Antarmuka sesawang Kodi lalai. Layar dan berinteraksi dengan Muzik, Cereka, Rancangan TV dan banyak lagi melalui pelayar sesawang.</description>
