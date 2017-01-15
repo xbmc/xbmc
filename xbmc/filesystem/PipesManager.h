@@ -87,7 +87,7 @@ class Pipe
     bool IsEof();
     
     int	GetAvailableRead();
-    void SetOpenThreashold(int threashold);
+    void SetOpenThreashold(int threshold);
 
   protected:
     
@@ -98,7 +98,7 @@ class Pipe
     CRingBuffer m_buffer;
     std::string  m_strPipeName;
     int         m_nRefCount;
-    int         m_nOpenThreashold;
+    int         m_nOpenThreshold;
 
     CEvent     m_readEvent;
     CEvent     m_writeEvent;

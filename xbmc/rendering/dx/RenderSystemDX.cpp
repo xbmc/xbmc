@@ -298,7 +298,7 @@ void CRenderSystemDX::SetFullScreenInternal()
     OnDisplayLost();
     hr = m_pSwapChain->SetFullscreenState(false, nullptr);
     if (SUCCEEDED(hr))
-      m_bResizeRequred = true;
+      m_bResizeRequired = true;
     else
       CLog::Log(LOGERROR, "%s - Failed switch full screen state: %s.", __FUNCTION__, GetErrorDescription(hr).c_str());
   }
@@ -320,7 +320,7 @@ void CRenderSystemDX::SetFullScreenInternal()
       OnDisplayLost();
       hr = m_pSwapChain->SetFullscreenState(true, m_pOutput);
       if (SUCCEEDED(hr))
-        m_bResizeRequred = true;
+        m_bResizeRequired = true;
       else
         CLog::Log(LOGERROR, "%s - Failed switch full screen state: %s.", __FUNCTION__, GetErrorDescription(hr).c_str());
     }
@@ -371,12 +371,12 @@ void CRenderSystemDX::SetFullScreenInternal()
       // change monitor resolution (in fullscreen mode) to required mode
       CLog::Log(LOGDEBUG, "%s - Switching mode to %dx%d@%0.3f.", __FUNCTION__, matchedMode.Width, matchedMode.Height, matchedRefreshRate);
 
-      if (!m_bResizeRequred)
+      if (!m_bResizeRequired)
         OnDisplayLost();
 
       hr = m_pSwapChain->ResizeTarget(&matchedMode);
       if (SUCCEEDED(hr))
-        m_bResizeRequred = true;
+        m_bResizeRequired = true;
       else
         CLog::Log(LOGERROR, "%s - Failed to switch output mode: %s", __FUNCTION__, GetErrorDescription(hr).c_str());
     }
@@ -454,7 +454,7 @@ void CRenderSystemDX::DeleteDevice()
     SAFE_RELEASE(m_d3dDebug);
   }
 #endif
-  m_bResizeRequred = false;
+  m_bResizeRequired = false;
   m_bHWStereoEnabled = false;
   m_bRenderCreated = false;
   m_bStereoEnabled = false;
@@ -748,7 +748,7 @@ bool CRenderSystemDX::CreateWindowSizeDependentResources()
   if (m_pSwapChain)
   {
     m_pSwapChain->GetDesc(&scDesc);
-    bNeedResize = m_bResizeRequred || 
+    bNeedResize = m_bResizeRequired || 
                   m_nBackBufferWidth != scDesc.BufferDesc.Width || 
                   m_nBackBufferHeight != scDesc.BufferDesc.Height;
   }
@@ -793,10 +793,10 @@ bool CRenderSystemDX::CreateWindowSizeDependentResources()
 
   if (bNeedRecreate)
   {
-    if (!m_bResizeRequred)
+    if (!m_bResizeRequired)
     {
       OnDisplayLost();
-      m_bResizeRequred = true;
+      m_bResizeRequired = true;
     }
 
     BOOL fullScreen;
@@ -1008,11 +1008,11 @@ bool CRenderSystemDX::CreateWindowSizeDependentResources()
     m_pContext->OMSetRenderTargets(1, &m_pRenderTargetView, m_depthStencilView);
 
   // notify about resurrection of display
-  if (m_bResizeRequred)
+  if (m_bResizeRequired)
     OnDisplayBack();
 
   m_resizeInProgress = false;
-  m_bResizeRequred = false;
+  m_bResizeRequired = false;
 
   return true;
 }

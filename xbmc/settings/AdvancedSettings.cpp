@@ -160,7 +160,7 @@ void CAdvancedSettings::Initialize()
   m_videoFpsDetect = 1;
   m_videoBusyDialogDelay_ms = 500;
 
-  m_mediacodecForceSoftwareRendring = false;
+  m_mediacodecForceSoftwareRendering = false;
 
   m_videoDefaultLatency = 0.0;
 
@@ -592,7 +592,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetBoolean(pElement,"vdpauHDdeintSkipChroma",m_videoVDPAUdeintSkipChromaHD);
     XMLUtils::GetBoolean(pElement,"useffmpegvda", m_useFfmpegVda);
 
-    XMLUtils::GetBoolean(pElement,"mediacodecforcesoftwarerendering",m_mediacodecForceSoftwareRendring);
+    XMLUtils::GetBoolean(pElement,"mediacodecforcesoftwarerendering",m_mediacodecForceSoftwareRendering);
 
     TiXmlElement* pAdjustRefreshrate = pElement->FirstChildElement("adjustrefreshrate");
     if (pAdjustRefreshrate)

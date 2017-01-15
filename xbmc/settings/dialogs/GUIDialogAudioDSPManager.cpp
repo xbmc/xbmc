@@ -75,7 +75,7 @@ CGUIDialogAudioDSPManager::CGUIDialogAudioDSPManager(void)
 {
   m_bMovingMode               = false;
   m_bContainsChanges          = false;
-  m_bContinousSaving          = true;
+  m_bContinuousSaving          = true;
   m_iSelected[LIST_AVAILABLE] = 0;
   m_iSelected[LIST_ACTIVE]    = 0;
 
@@ -195,8 +195,8 @@ void CGUIDialogAudioDSPManager::OnInitWindow()
     return;
   }
 
-  SET_CONTROL_SELECTED(GetID(), CONTROL_RADIO_BUTTON_CONTINUOUS_SAVING, m_bContinousSaving);
-  applyButton->SetEnabled(!m_bContinousSaving);
+  SET_CONTROL_SELECTED(GetID(), CONTROL_RADIO_BUTTON_CONTINUOUS_SAVING, m_bContinuousSaving);
+  applyButton->SetEnabled(!m_bContinuousSaving);
 
   Update();
   SetSelectedModeType();
@@ -206,7 +206,7 @@ void CGUIDialogAudioDSPManager::OnDeinitWindow(int nextWindowID)
 {
   if (m_bContainsChanges)
   {
-    if (m_bContinousSaving)
+    if (m_bContinuousSaving)
     {
       SaveList();
     }
@@ -218,7 +218,7 @@ void CGUIDialogAudioDSPManager::OnDeinitWindow(int nextWindowID)
       }
       else
       {
-        m_bContinousSaving = false;
+        m_bContinuousSaving = false;
       }
     }
   }
@@ -277,7 +277,7 @@ bool CGUIDialogAudioDSPManager::OnClickListActive(CGUIMessage &message)
       m_bMovingMode = false;
       m_bContainsChanges = true;
 
-      if (m_bContinousSaving)
+      if (m_bContinuousSaving)
       {
         SaveList();
       }
@@ -294,7 +294,7 @@ bool CGUIDialogAudioDSPManager::OnClickListActive(CGUIMessage &message)
       // reenable all buttons and mode selection list
       modeList->SetEnabled(true);
       clearActiveModesButton->SetEnabled(true);
-      if (!m_bContinousSaving)
+      if (!m_bContinuousSaving)
       {
         applyButton->SetEnabled(true);
       }
@@ -320,11 +320,11 @@ bool CGUIDialogAudioDSPManager::OnClickRadioContinousSaving(CGUIMessage &message
   if (!radioButton->IsSelected())
   {
     applyChangesButton->SetEnabled(true);
-    m_bContinousSaving = false;
+    m_bContinuousSaving = false;
   }
   else
   {
-    m_bContinousSaving = true;
+    m_bContinuousSaving = true;
     applyChangesButton->SetEnabled(false);
   }
 
@@ -364,7 +364,7 @@ bool CGUIDialogAudioDSPManager::OnClickClearActiveModes(CGUIMessage &message)
     m_activeViewControl.SetItems(*m_activeItems[m_iCurrentType]);
 
     m_bContainsChanges = true;
-    if (m_bContinousSaving)
+    if (m_bContinuousSaving)
     {
       SaveList();
     }
@@ -617,7 +617,7 @@ bool CGUIDialogAudioDSPManager::OnContextButton(int itemNumber, CONTEXT_BUTTON b
     }
 
     m_bContainsChanges = true;
-    if (m_bContinousSaving)
+    if (m_bContinuousSaving)
     {
       SaveList();
     }
@@ -648,7 +648,7 @@ bool CGUIDialogAudioDSPManager::OnContextButton(int itemNumber, CONTEXT_BUTTON b
     // if we are in MovingMode all buttons and mode selection list will be disabled!
     modeList->SetEnabled(false);
     clearActiveModesButton->SetEnabled(false);
-    if (!m_bContinousSaving)
+    if (!m_bContinuousSaving)
     {
       applyButton->SetEnabled(false);
     }

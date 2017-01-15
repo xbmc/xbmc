@@ -76,7 +76,7 @@ namespace ActiveAE
 
     bool m_bMovingMode;
     bool m_bContainsChanges;
-    bool m_bContinousSaving;    // if true, all settings are directly saved
+    bool m_bContinuousSaving;    // if true, all settings are directly saved
 
     int m_iCurrentType;
     int m_iSelected[AE_DSP_MODE_TYPE_MAX];
