@@ -1228,19 +1228,22 @@ double CDVDDemuxFFmpeg::SelectAspect(AVStream* st, bool& forced)
     return dar;
   }
 
-  forced = false;
   /* if stream aspect is 1:1 or 0:0 use codec aspect */
   if((st->sample_aspect_ratio.den == 1 || st->sample_aspect_ratio.den == 0) &&
      (st->sample_aspect_ratio.num == 1 || st->sample_aspect_ratio.num == 0) &&
       st->codecpar->sample_aspect_ratio.num != 0)
   {
+    forced = false;
     return av_q2d(st->codecpar->sample_aspect_ratio);
   }
 
-  forced = true;
   if(st->sample_aspect_ratio.num != 0)
+  {
+    forced = true;
     return av_q2d(st->sample_aspect_ratio);
+  }
 
+  forced = false;
   return 0.0;
 }
 
