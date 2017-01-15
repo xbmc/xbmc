@@ -1,6 +1,8 @@
-set(SOURCES General.cpp)
+set(SOURCES General.cpp
+            Filesystem.cpp)
 
-set(HEADERS General.h)
+set(HEADERS General.h
+            Filesystem.h)
 
 include_directories(${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include)
 

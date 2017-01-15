@@ -20,6 +20,7 @@
  */
 
 #include "General.h"
+#include "Filesystem.h"
 
 #include "addons/kodi-addon-dev-kit/include/kodi/General.h"
 
@@ -45,6 +46,8 @@ void Interface_General::Init(AddonGlobalInterface* addonInterface)
   addonInterface->toKodi.kodi->set_setting = set_setting;
   addonInterface->toKodi.kodi->open_settings_dialog = open_settings_dialog;
   addonInterface->toKodi.kodi->get_localized_string = get_localized_string;
+  
+  Interface_Filesystem::Init(addonInterface);
 }
 
 void Interface_General::DeInit(AddonGlobalInterface* addonInterface)
