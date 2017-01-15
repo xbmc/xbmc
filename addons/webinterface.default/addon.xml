@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="webinterface.default"
-  version="2.3.10"
+  version="2.4.1"
   name="Kodi web interface - Chorus2"
   provider-name="jez500, Team Kodi">
   <requires>
@@ -9,67 +9,12 @@
   </requires>
   <extension point="xbmc.webinterface"/>
   <extension point="xbmc.addon.metadata">
-    <summary lang="af_ZA">Kodi web koppelvlak - Chorus2</summary>
-    <summary lang="ca_ES">Interfície web de Kodi - Chorus2</summary>
-    <summary lang="da_DK">Kodi webinterface - Chorus2</summary>
-    <summary lang="de_DE">Kodi Webinterface - Chorus2</summary>
-    <summary lang="el_GR">Διασύνδεση ιστού Kodi - Chorus2</summary>
-    <summary lang="en_GB">Kodi web interface - Chorus2</summary>
-    <summary lang="en_NZ">Kodi web interface - Chorus2</summary>
-    <summary lang="es_AR">Interfaz web Kodi - Chorus2</summary>
-    <summary lang="es_ES">Interfaz web Kodi - Chorus2</summary>
-    <summary lang="es_MX">Interface web Kodi - Chorus2</summary>
-    <summary lang="fi_FI">Kodin web-käyttöliittymä - Chorus2</summary>
-    <summary lang="fr_CA">Interface Web de Kodi - Chorus2</summary>
-    <summary lang="fr_FR">Interface Web Kodi - Chorus2</summary>
-    <summary lang="gl_ES">Interface web do Kodi - Chorus2</summary>
-    <summary lang="hr_HR">Kodi web sučelje - Chorus2</summary>
-    <summary lang="it_IT">Interfaccia web Kodi - Chorus2</summary>
-    <summary lang="lt_LT">Kodi žiniatinklio sąsaja - Chorus2</summary>
-    <summary lang="ms_MY">Antaramuka sesawang Kodi - Chorus2</summary>
-    <summary lang="nb_NO">Kodi web brukergrensesnitt - Chorus2</summary>
-    <summary lang="nl_NL">Kodi web interface - Chorus2</summary>
-    <summary lang="pl_PL">Chorus2</summary>
-    <summary lang="pt_BR">Kodi Interface web - Chorus2</summary>
-    <summary lang="sk_SK">Webové rozhranie Kodi - Chorus2</summary>
-    <summary lang="sr_RS">Kodi web интерфејс - Chorus2</summary>
-    <summary lang="sr_RS@latin">Kodi web interfejs - Chorus2</summary>
-    <summary lang="sv_SE">Kodi webbgränssnitt - Chorus2</summary>
-    <summary lang="tr_TR">Kodi web arayüzü - Chorus2</summary>
-    <summary lang="zh_CN">Kodi Web 界面 - Chorus2</summary>
-    <summary lang="zh_TW">Kodi網頁介面 - Chorus2</summary>
-    <description lang="af_ZA">Bestek Kodi web koppelvlak. Blaai en het interaksie met jou Musiek, Flieks, TV Vertonings en meer via a web blaaier.</description>
-    <description lang="ca_ES">La interfície web predeterminada de Kodi. Navegueu i interactueu amb la vostra música, les vostres pel·lícules, els vostres programes de televisió i més coses a través d'un navegador web.</description>
-    <description lang="da_DK">Kodi's standard webinterface. Gennemse and interager med din musik, film, TV-shows og mere via en webbrowser</description>
-    <description lang="de_DE">Standard Kodi Webinterface, Durchsuche und Interagiere mit deiner Musik, deinen Filmen, Serien und mehr über deinen Web-Browser</description>
-    <description lang="el_GR">Προεπιλεγμένη διασύνδεση ιστού του Kodi. Περιηγηθείτε σε Μουσική, Ταινίες, Σειρές και άλλα από τον περιηγητή.</description>
-    <description lang="en_GB">Default Kodi web interface. Browse and interact with your Music, Movies, TV Shows and more via a web browser.</description>
-    <description lang="en_NZ">Default Kodi web interface. Browse and interact with your Music, Movies, TV Shows and more via a web browser.</description>
-    <description lang="es_AR">Web interface Kodi por defecto. Navegue e interactue con su música, películs, shows de TV y más vía un browser Web.</description>
-    <description lang="es_ES">Interfaz web por defecto de Kodi. Navega e interactúa por tu Música, Películas Series y más desde el navegador</description>
-    <description lang="es_MX">interface web Kodi Predeterminado. Navega e interactúa con tu música, películas, programas de televisión y mucho más a través de un navegador web.</description>
-    <description lang="fi_FI">Kodin oletusarvoinen web-käyttöliittymä. Selaa ja toista musiikkia, elokuvia, tv-sarjoja ynnä muuta nettiselaimen kautta.</description>
-    <description lang="fr_CA">L'interface Web par défaut de Kodi. Parcourez et interagissez avec votre musique, vos films, vos émissions télé et plus par le biais d'un navigateur Web.</description>
-    <description lang="fr_FR">Interface Web par défaut de Kodi. Parcourir et interagir avec votre Musique, vos Films, vos Séries TV et plus encore avec votre nagivateur Web.</description>
-    <description lang="hr_HR">Zadano kodi web sučelje. Pregledavajte i reproducirajte Glazbu, Filmove, TV serije i još mnogo toga putem web preglednika.</description>
-    <description lang="it_IT">Interfaccia web predefinita di Kodi. Sfoglia e interagisci con la tua Musica, i tuoi Film, Serie TV e altro tramite un browser web.</description>
-    <description lang="lt_LT">Numatytoji Kodi žiniatinklio sąsaja. Naršykite ir valdykite savo muziką, filmus, TV laidas ir dar daugiau naudodami interneto naršyklę.</description>
-    <description lang="ms_MY">Antarmuka sesawang Kodi lalai. Layar dan berinteraksi dengan Muzik, Cereka, Rancangan TV dan banyak lagi melalui pelayar sesawang.</description>
-    <description lang="nb_NO">Standard Kodi web brukergrensesnitt. Se og interager med dine Musikk, Filmer, TV Serier og mye mer via web browseren din.</description>
-    <description lang="nl_NL">Standaard Kodi web interface. Blader en bedien je muziek, films, series en meer van een webbrowser.</description>
-    <description lang="pl_PL">Domyślny interfejs webowy Kodi.</description>
-    <description lang="pt_BR">Interface web padrão do Kodi. Navegue e interaja com suas músicas, files, seriados e muito mais via um navegador de internet.</description>
-    <description lang="sk_SK">Predvolené webové rozhranie Kodi. Prehliadajte a ovládajte vašu hudbu, filmy, seriály a mnoho ďaľšieho cez webový prehliadač.</description>
-    <description lang="sr_RS">Подразумевани Kodi web интерфејс. Потражите и интерагујте са вашом Музиком, Филмовима, ТВ Серијама и више путем web претраживача.</description>
-    <description lang="sr_RS@latin">Podrazumevani Kodi web interfejs. Potražite i interagujte sa vašom Muzikom, Filmovima, TV Serijama i više putem web pretraživača.</description>
-    <description lang="sv_SE">Standard Kodi webbgränssnitt. Bläddra och interagera med din Musik, Filmer, TV-serier och mycket mer via en webbläsare.</description>
-    <description lang="tr_TR">Varsayılan Kodi web arayüzü. İnternet tarayıcısı üzerinden Müzik, Film ve Dizilerinize göz atın.</description>
-    <description lang="zh_CN">默认 Kodi Web 界面。通过浏览器浏览和播放音乐、电影、剧集等。</description>
-    <description lang="zh_TW">預設的Kodi網頁介面。可在網頁瀏覽器中瀏覽及播放您的音樂、影片、電視劇等內容。</description>
-    <language>en</language>
+    <summary lang="en">Default web interface</summary>
+    <description lang="en">Browse and interact with your Music, Movies, TV Shows and more via a web browser. Stream music and videos to your browser. Edit and manage your Kodi media library.</description>
     <platform>all</platform>
-    <forum>http://forum.xbmc.org/showthread.php?tid=183451</forum>
+    <language>en</language>
     <source>https://github.com/xbmc/chorus2</source>
+    <forum>http://forum.xbmc.org/showthread.php?tid=183451</forum>
     <assets>
       <icon>icon.png</icon>
       <fanart>images/turntable.jpg</fanart>
@@ -81,6 +26,7 @@
       <screenshot>screenshots/movie.jpg</screenshot>
       <screenshot>screenshots/settings.jpg</screenshot>
       <screenshot>screenshots/addons.jpg</screenshot>
+      <screenshot>screenshots/edit-media.jpg</screenshot>
     </assets>
   </extension>
 </addon>
