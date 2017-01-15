@@ -1,0 +1,57 @@
+<h1 id="t-umaczenia">Tłumaczenia</h1>
+<p>Mechanizm aktualizacji plików tłumaczeń, wymaga odrobiny wiedzy na temat systemu
+kontroli wersji GIT. Ta strona zawiera informacje o strukturze plików tłumaczeń.</p>
+<h2 id="gdzie-znajduj-si-pliki-dla-danego-j-zyka-">Gdzie znajdują się pliki dla danego języka?</h2>
+<p>Pliki tłumaczeń znajdują się w dwóch miejscach. LANG_CODE - dwuliterowy, niepowtarzalny
+kod dla każdego języka. Np.: en, fr, de, pl</p>
+<h3 id="wyra-enia">Wyrażenia</h3>
+<p><code>src/lang/_strings/LANG_CODE.po</code></p>
+<ul>
+<li>Powyższe wyrażenia są używane w całej aplikacji. Należy przetłumaczyć tylko tekst
+znajdujący się w cudzysłowie, za słowem kluczowym <code>msgstr</code>.</li>
+<li>W przypadku, gdy brakuje linijki z wyrażeniem <code>msgstr</code>, skopiuj ją z pliku en.po 
+i przetłumacz treść w cudzysłowie. Np. pl.po.<pre><code>msgctxt <span class="hljs-string">""</span>
+msgid <span class="hljs-string">"Select a filter"</span>
+msgstr <span class="hljs-string">"Wybierz filtr"</span>
+</code></pre></li>
+</ul>
+<h3 id="strony">Strony</h3>
+<p><code>src/lang/LANG_CODE/PAGE.md</code></p>
+<ul>
+<li>W tym miejscu znajdują się całe strony, które wymagają tłumaczenia.</li>
+<li>Strony te zostały stworzone w języku znaczników <a href="https://pl.wikipedia.org/wiki/Markdown">Markdown</a>.</li>
+<li>W przypadku, gdy nie istnieje jeszcze strona <em>PAGE</em>.md dla Twojego języka, to należy ją skopiować
+z folderu <code>en</code>, a następnie zmodyfikować.</li>
+<li>Twórz tylko strony <em>PAGE</em>.md dla kompleksowych tłumaczeń</li>
+</ul>
+<h2 id="dodawanie-nowego-j-zyka">Dodawanie nowego języka</h2>
+<p><strong>Przykład:</strong> Jeśli nowym językiem tłumaczenia jest język <code>polski</code> to jego <em>LANG_CODE</em> jest równy <code>pl</code>.</p>
+<h3 id="poinformuj-aplikacj-o-zmianach">Poinformuj aplikację o zmianach</h3>
+<p>Wymagane jest poinformowanie aplikacji o dostępności nowego języka. W tym celu musisz
+zmodyfikować plik <code>/src/js/helpers/translate.js.coffee</code> i dodać <code>pl: &quot;Polski&quot;</code> do listy
+języków w funkcji <code>getLanguages</code>.</p>
+<h3 id="powielanie-struktury-folderu-plik-w-z-j-zyka-angielskiego">Powielanie struktury folderu/plików z języka angielskiego</h3>
+<p>Skopiuj pliki, które chcesz przetłumaczyć na nowy język:</p>
+<ul>
+<li><strong>Wyrażenia:</strong> skopiuj <code>/src/_strings/en.po</code> do <code>/src/_strings/pl.po</code></li>
+<li><strong>Strony:</strong> skopiuj <code>/src/en/readme.md</code> do <code>/src/pl/readme.md</code></li>
+</ul>
+<h2 id="testowanie">Testowanie</h2>
+<p>Testowanie zmiany wymaga zbudowania aplikacji, aczkolwiek w przypadku postępowania w ramach
+istniejącej struktury, nie powinno to być potrzebne.</p>
+<p>Jeśli naprawdę chcesz przetestować zmiany w aplikacji, możesz to zrobić następująco:</p>
+<ol>
+<li>Upewnij się, że <code>nodejs</code>, <code>npm</code> są zainstalowane</li>
+<li>Przejdź do folderu Chorusa<code>cd /chorus/folder</code></li>
+<li>Uruchom <code>npm install</code> (tylko za pierwszym razem)</li>
+<li>Wykonaj <code>grunt lang</code> (to polecenie przebuduje tylko tłumaczenia w folderze <code>dist/lang</code>)</li>
+<li>Odśwież interfejs Chorusa</li>
+</ol>
+<h2 id="dzia-anie-awaryjne">Działanie awaryjne</h2>
+<p>Mechanizm obsługi języków powinien awaryjnie wyświetlać wyrażenia w języku angielskim
+chyba, że w pliku dla aktywnego języka znajduje się już wyrażenie dla danego <code>msgid</code>
+albo strona dla danego kodu języka <code>LANG_CODE/PAGE.md</code> istnieje.</p>
+<h2 id="przesy-anie-aktualizacji">Przesyłanie aktualizacji</h2>
+<p>Najlepszym sposobem na przesłanie aktualizacji, jest wykorzystanie funkcji Pull Request, dla zmianach
+znajdujących się w dedykowanej gałęzi repozytorium <a href="https://github.com/jez500/chorus2">GitHuba</a>.
+Aczkolwiek dopuszczam przesyłanie aktualizacji za pomocą innych metod, np. łączą do plików z tłumaczeniem.</p>

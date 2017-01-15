@@ -1,0 +1,40 @@
+<h1 id="obs-uga-dodatk-w">Obsługa dodatków</h1>
+<p>Chorus obsługuje dodatki, ale tylko na poziomie podstawowym. Każdy dodatek działa nieco inaczej, więc nie wszystkie
+funkcje będą dostępne. Na stronie <a href="#addons/all">Dodatki</a> widoczna jest lista dodatków wykonywalnych oraz dodatków, które 
+udostępniają muzykę/wideo (np. YouTube). Dostęp do dodatków, widocznych na tej liście, można uzyskać za pośrednictwem
+<a href="#browser">przeglądarki</a>.</p>
+<h2 id="wyszukiwanie-zawarto-ci-dodatk-w">Wyszukiwanie zawartości dodatków</h2>
+<p>Po instalacji Kodi, Chorus zawiera wyszukiwanie zawartości dla niektórych popularniejszy dodatków, co umożliwia
+przeszukiwanie zawartości dodatków za pomocą strony wyszukiwania. Dla przykładu, możesz wprowadzić wyrażenie
+&quot;szalone koty&quot; w polu wyszukiwania, nacisnąć &quot;YouTube&quot;, aby pobrać listę odnalezionych materiałów w serwisie YouTube.</p>
+<p>Jeśli chciałbyś przeszukiwać zawartość udostępnianą przez dodatki, które nie są zawarte w Chorusie, możesz dodać
+swoją własną <a href="#settings/search">metodę wyszukiwania</a> dla wybranego dodatku, która poinformuje Chorusa, jak przeszukiwać zawartość
+przez niego udostępnianą.</p>
+<p>W celu dodania niestandardowego wyszukiwania, musisz znać postać adresu URL używanego wewnętrznie przez dodatek, który służy
+do dostarczania wyników wyszukiwania. To nie zawsze jest proste ani oczywiste i może wiązać się z analizą kodu dodatku lub pliku
+dziennika Kodi, aby określi poprawny format adresu URL. Przy czym Chorus zastąpi wzorzec <code>[QUERY]</code> szukanym wyrażeniem.</p>
+<h3 id="przyk-ady-adres-w-url-przeszukiwania-zawarto-ci-dodatk-w">Przykłady adresów URL przeszukiwania zawartości dodatków</h3>
+<ul>
+<li>YouTube: <code>plugin://plugin.video.youtube/search/?q=[QUERY]</code></li>
+<li>SoundCloud: <code>plugin://plugin.audio.soundcloud/search/query/?q=[QUERY]</code></li>
+<li>Radio: <code>plugin://plugin.audio.radio_de/stations/search/[QUERY]</code></li>
+<li>MixCloud: <code>plugin://plugin.audio.mixcloud/?mode=30&amp;key=cloudcast&amp;offset=0&amp;query=[QUERY]</code></li>
+</ul>
+<h3 id="wsp-udzia-">Współudział</h3>
+<p>Jeśli znasz jakiś dobry dodatek, którego można użyć do wyszukiwania zawartości i uważasz, że powinien być dostępny razem
+z instalacją Kodi, powinieneś rozważyć przesłanie modyfikacji kodu za pomocą funkcji <a href="https://github.com/xbmc/chorus2/pulls">Pull Request</a>.
+Przyjrzyj się <a href="https://github.com/xbmc/chorus2/blob/master/src/js/apps/addon/soundcloud/addon_soundcloud_app.js.coffee">modułowi SoundCloud</a> jako przykład struktury kodu.
+UWAGA: Tylko dodatki z oficjalnego repozytorium zostaną zaakceptowane.</p>
+<h2 id="zarz-dzanie-dodatkami">Zarządzanie dodatkami</h2>
+<p>Chorus udostępnia <a href="#settings/addons">stronę ustawień</a> umożliwiającą aktywację i dezaktywację dodatków, ale pamiętaj, że dezaktywacja
+pewnych dodatków może mieć niekorzystne skutki, więc używaj tej funkcji z ostrożnością.</p>
+<h2 id="znane-problemy-i-ograniczenia">Znane problemy i ograniczenia</h2>
+<p>Zaobserwowano kilka problemów związanych z używanie dodatków w Chorusie</p>
+<ul>
+<li>Nie można pobrać zawartości dodatku.</li>
+<li>Zawartość dodatku można odtwarzać tylko w Kodi, nie można jej transmitować to przeglądarki.</li>
+<li>Rezultatem dodania pojedynczej zawartości dodatku do listy odtwarzania, często jest pozycja o dziwnym lub brakującym
+tytule. Przy czym dodawanie zawartości folderów dodatku do listy odtwarzania  wydaje się działać poprawnie. Stąd wniosek,
+że jest to jakiś problem z interfejsem programistycznym Kodi.</li>
+<li>Niektóre dodatki w ogóle nie działają, w takich przypadkach należy zgłosić to autorowi dodatku.</li>
+</ul>
