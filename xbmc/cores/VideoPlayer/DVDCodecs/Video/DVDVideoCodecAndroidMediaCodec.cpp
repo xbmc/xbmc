@@ -685,6 +685,8 @@ void CDVDVideoCodecAndroidMediaCodec::Dispose()
       xbmc_jnienv()->ExceptionClear();
   }
   ReleaseSurfaceTexture();
+  if (m_render_surface)
+    CXBMCApp::get()->clearVideoView();
 
   SAFE_DELETE(m_bitstream);
   s_instances--;
