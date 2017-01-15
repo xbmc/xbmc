@@ -37,10 +37,15 @@ typedef struct {
   int       size_in_bits;
 } bits_writer_t;
 
-typedef struct {
-  uint8_t *buffer, *start;
+struct bits_reader_t {
+  const uint8_t *buffer, *start;
   int      offbits, length, oflow;
-} bits_reader_t;
+
+  void       bits_reader_set(const uint8_t *buf, int len);
+  uint32_t   read_bits(int nbits);
+  void       skip_bits(int nbits);
+  uint32_t   get_bits(int nbits);
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 //! @todo refactor this so as not to need these ffmpeg routines.
@@ -138,6 +143,7 @@ public:
   static bool Open();
   static void Close();
   static bool FindIdrSlice(const uint8_t *buf, int buf_size);
+  static bool VC1RecoveryPoint(const uint8_t *buf, const uint8_t *buf_end);
 
 protected:
   static const uint8_t* find_start_code(const uint8_t *p, const uint8_t *end, uint32_t *state);
@@ -157,11 +163,6 @@ public:
   int               GetConvertSize() const;
   uint8_t*          GetExtraData(void) const;
   int               GetExtraSize() const;
-
-  static void       bits_reader_set( bits_reader_t *br, uint8_t *buf, int len );
-  static uint32_t   read_bits( bits_reader_t *br, int nbits );
-  static void       skip_bits( bits_reader_t *br, int nbits );
-  static uint32_t   get_bits( bits_reader_t *br, int nbits );
 
   static void       init_bits_writer(bits_writer_t *s, uint8_t *buffer, int buffer_size, int writer_le);
   static void       write_bits(bits_writer_t *s, int n, unsigned int value);

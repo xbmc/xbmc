@@ -72,6 +72,34 @@ enum {
     HEVC_NAL_SEI_SUFFIX = 40
 };
 
+enum {
+  VC1_PROFILE_SIMPLE,
+  VC1_PROFILE_MAIN,
+  VC1_PROFILE_RESERVED,
+  VC1_PROFILE_ADVANCED
+};
+
+enum {
+  VC1_END_OF_SEQ = 0x0A,
+  VC1_SLICE = 0x0B,
+  VC1_FIELD = 0x0C,
+  VC1_FRAME = 0x0D,
+  VC1_ENTRYPOINT = 0x0E,
+  VC1_SEQUENCE = 0x0F,
+  VC1_SLICE_USER = 0x1B,
+  VC1_FIELD_USER = 0x1C,
+  VC1_FRAME_USER = 0x1D,
+  VC1_ENTRY_POINT_USER = 0x1E,
+  VC1_SEQUENCE_USER = 0x1F
+};
+
+enum
+{
+  VC1_FRAME_PROGRESSIVE = 0x0,
+  VC1_FRAME_INTERLACE = 0x10,
+  VC1_FIELD_INTERLACE = 0x11
+};
+
 ////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////
 // GStreamer h264 parser
@@ -207,6 +235,75 @@ static const uint8_t* avc_find_startcode(const uint8_t *p, const uint8_t *end)
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////
+
+void bits_reader_t::bits_reader_set(const uint8_t *buf, int len)
+{
+  buffer = start = buf;
+  offbits = 0;
+  length = len;
+  oflow = 0;
+}
+
+uint32_t bits_reader_t::read_bits(int nbits)
+{
+  int i, nbytes;
+  uint32_t ret = 0;
+  const uint8_t *buf;
+
+  buf = buffer;
+  nbytes = (offbits + nbits) / 8;
+  if (((offbits + nbits) % 8) > 0)
+    nbytes++;
+  if ((buf + nbytes) > (start + length)) {
+    oflow = 1;
+    return 0;
+  }
+  for (i = 0; i<nbytes; i++)
+    ret += buf[i] << ((nbytes - i - 1) * 8);
+  i = (4 - nbytes) * 8 + offbits;
+  ret = ((ret << i) >> i) >> ((nbytes * 8) - nbits - offbits);
+
+  offbits += nbits;
+  buffer += offbits / 8;
+  offbits %= 8;
+
+  return ret;
+}
+
+void bits_reader_t::skip_bits(int nbits)
+{
+  offbits += nbits;
+  buffer += offbits / 8;
+  offbits %= 8;
+  if (buffer > (start + length)) {
+    oflow = 1;
+  }
+}
+
+uint32_t bits_reader_t::get_bits(int nbits)
+{
+  int i, nbytes;
+  uint32_t ret = 0;
+  const uint8_t *buf;
+
+  buf = buffer;
+  nbytes = (offbits + nbits) / 8;
+  if (((offbits + nbits) % 8) > 0)
+    nbytes++;
+  if ((buf + nbytes) > (start + length)) {
+    oflow = 1;
+    return 0;
+  }
+  for (i = 0; i<nbytes; i++)
+    ret += buf[i] << ((nbytes - i - 1) * 8);
+  i = (4 - nbytes) * 8 + offbits;
+  ret = ((ret << i) >> i) >> ((nbytes * 8) - nbits - offbits);
+
+  return ret;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////
 CBitstreamParser::CBitstreamParser()
 {
 }
@@ -301,6 +398,90 @@ bool CBitstreamParser::FindIdrSlice(const uint8_t *buf, int buf_size)
   }
 
   return rtn;
+}
+
+bool CBitstreamParser::VC1RecoveryPoint(const uint8_t *buf, const uint8_t *buf_end)
+{
+  bool rtn = false;
+  uint32_t state = -1;
+  uint8_t profile(0xFF), max_bframes(0xFF);
+  uint8_t simple_skip_bits(2);
+  uint8_t adv_interlace;
+  for (; rtn == false;)
+  {
+    buf = find_start_code(buf, buf_end, &state);
+    if (buf >= buf_end)
+      break;
+    if (buf[-1] == VC1_SEQUENCE)
+    {
+      if (profile != 0xFF)
+        return false;
+      bits_reader_t br;
+      br.bits_reader_set(buf, buf_end - buf);
+      // Read the profile
+      profile = static_cast<uint8_t>(br.read_bits(2));
+      if (profile == VC1_PROFILE_ADVANCED)
+      {
+        br.skip_bits(39);
+        adv_interlace = br.read_bits(1);
+      }
+      else
+      {
+        br.skip_bits(22);
+        if (br.read_bits(1)) //rangered
+          ++simple_skip_bits;
+        max_bframes = br.read_bits(3);
+        br.skip_bits(2); // quantizer
+        if (br.read_bits(1)) //finterpflag
+          ++simple_skip_bits;
+      }
+    }
+    else if (buf[-1] == VC1_FRAME)
+    {
+      bits_reader_t br;
+      br.bits_reader_set(buf, buf_end - buf);
+      if (profile == VC1_PROFILE_ADVANCED)
+      {
+        uint8_t fcm;
+        if (adv_interlace) {
+          fcm = br.read_bits(1);
+          if (fcm)
+            fcm = br.read_bits(1) + 1;
+        }
+        else
+          fcm = VC1_FRAME_PROGRESSIVE;
+        if (fcm == VC1_FIELD_INTERLACE) {
+          uint8_t pic = br.read_bits(3);
+          return pic == 0x00 || pic == 0x01;
+        }
+        else
+        {
+          uint8_t pic(0);
+          while (pic < 4 && br.read_bits(1))++pic;
+          return pic == 2;
+        }
+        return false;
+      }
+      else if (profile != 0xFF)
+      {
+        br.skip_bits(simple_skip_bits); // quantizer
+        uint8_t pic(br.read_bits(1));
+        if (max_bframes) {
+          if (!pic) {
+            pic = br.read_bits(1);
+            return pic != 0;
+          }
+          else
+            return false;
+        }
+        else
+          return pic != 0;
+      }
+      else
+        break;
+    }
+  }
+  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -1066,72 +1247,6 @@ const int CBitstreamConverter::isom_write_avcc(AVIOContext *pb, const uint8_t *d
     }
   }
   return 0;
-}
-
-void CBitstreamConverter::bits_reader_set( bits_reader_t *br, uint8_t *buf, int len )
-{
-  br->buffer = br->start = buf;
-  br->offbits = 0;
-  br->length = len;
-  br->oflow = 0;
-}
-
-uint32_t CBitstreamConverter::read_bits( bits_reader_t *br, int nbits )
-{
-  int i, nbytes;
-  uint32_t ret = 0;
-  uint8_t *buf;
-
-  buf = br->buffer;
-  nbytes = (br->offbits + nbits)/8;
-  if ( ((br->offbits + nbits) %8 ) > 0 )
-    nbytes++;
-  if ( (buf + nbytes) > (br->start + br->length) ) {
-    br->oflow = 1;
-    return 0;
-  }
-  for ( i=0; i<nbytes; i++ )
-    ret += buf[i]<<((nbytes-i-1)*8);
-  i = (4-nbytes)*8+br->offbits;
-  ret = ((ret<<i)>>i)>>((nbytes*8)-nbits-br->offbits);
-
-  br->offbits += nbits;
-  br->buffer += br->offbits / 8;
-  br->offbits %= 8;
-
-  return ret;
-}
-
-void CBitstreamConverter::skip_bits( bits_reader_t *br, int nbits )
-{
-  br->offbits += nbits;
-  br->buffer += br->offbits / 8;
-  br->offbits %= 8;
-  if ( br->buffer > (br->start + br->length) ) {
-    br->oflow = 1;
-  }
-}
-
-uint32_t CBitstreamConverter::get_bits( bits_reader_t *br, int nbits )
-{
-  int i, nbytes;
-  uint32_t ret = 0;
-  uint8_t *buf;
-
-  buf = br->buffer;
-  nbytes = (br->offbits + nbits)/8;
-  if ( ((br->offbits + nbits) %8 ) > 0 )
-    nbytes++;
-  if ( (buf + nbytes) > (br->start + br->length) ) {
-    br->oflow = 1;
-    return 0;
-  }
-  for ( i=0; i<nbytes; i++ )
-    ret += buf[i]<<((nbytes-i-1)*8);
-  i = (4-nbytes)*8+br->offbits;
-  ret = ((ret<<i)>>i)>>((nbytes*8)-nbits-br->offbits);
-
-  return ret;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
