@@ -541,7 +541,7 @@
 								<texture border="21">dialogs/dialog-bg.png</texture>
 							</control>
 							<control type="label">
-								<left>300</left>
+								<left>840</left>
 								<top>60</top>
 								<aligny>center</aligny>
 								<height>24</height>
@@ -551,7 +551,7 @@
 								<label>$INFO[Weather.Location]</label>
 							</control>
 							<control type="label">
-								<left>300</left>
+								<left>840</left>
 								<top>120</top>
 								<aligny>center</aligny>
 								<height>24</height>
