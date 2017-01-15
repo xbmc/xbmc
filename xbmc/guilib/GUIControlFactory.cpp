@@ -36,6 +36,7 @@
 #include "GUIProgressControl.h"
 #include "GUISliderControl.h"
 #include "GUIMoverControl.h"
+#include "GUIRenderingControl.h"
 #include "GUIResizeControl.h"
 #include "GUISpinControlEx.h"
 #include "GUIVisualisationControl.h"

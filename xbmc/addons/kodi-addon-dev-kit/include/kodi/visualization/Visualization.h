@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2016 Team Kodi
+ *      Copyright (C) 2005-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,6 +19,11 @@
  *
  */
 
+/*
+ * Parts with a comment named "internal" are only used inside header and not
+ * used or accessed direct during add-on development!
+ */
+
 #include "../AddonBase.h"
 
 namespace kodi { namespace addon { class CInstanceVisualization; }}
@@ -26,7 +31,7 @@ namespace kodi { namespace addon { class CInstanceVisualization; }}
 extern "C"
 {
 
-typedef enum VIS_ACTION
+typedef enum VIS_ACTION /* internal */
 { 
   VIS_ACTION_NONE = 0,
   VIS_ACTION_NEXT_PRESET,
@@ -40,13 +45,13 @@ typedef enum VIS_ACTION
   VIS_ACTION_UPDATE_TRACK
 } VIS_ACTION;
 
-struct VIS_INFO
+struct VIS_INFO /* internal */
 {
   bool bWantsFreq;
   int iSyncDelay;
 };
 
-typedef struct AddonProps_Visualization
+typedef struct AddonProps_Visualization /* internal */
 {
   void *device;
   int x;
@@ -59,17 +64,18 @@ typedef struct AddonProps_Visualization
   const char *profile;
 } AddonProps_Visualization;
 
-typedef struct AddonToKodiFuncTable_Visualization
+typedef struct AddonToKodiFuncTable_Visualization /* internal */
 {
   KODI_HANDLE kodiInstance;
   void (__cdecl* transfer_preset) (void* kodiInstance, const char* preset);
 } AddonToKodiFuncTable_Visualization;
 
-typedef struct KodiToAddonFuncTable_Visualization
+typedef struct KodiToAddonFuncTable_Visualization /* internal */
 {
   bool (__cdecl* Start)(kodi::addon::CInstanceVisualization* addonInstance, int channels, int samplesPerSec, int bitsPerSample, const char* songName);
   void (__cdecl* Stop)(kodi::addon::CInstanceVisualization* addonInstance);
   void (__cdecl* AudioData)(kodi::addon::CInstanceVisualization* addonInstance, const float* audioData, int audioDataLength, float *freqData, int freqDataLength);
+  bool (__cdecl* IsDirty) (kodi::addon::CInstanceVisualization* addonInstance);
   void (__cdecl* Render) (kodi::addon::CInstanceVisualization* addonInstance);
   void (__cdecl* GetInfo)(kodi::addon::CInstanceVisualization* addonInstance, VIS_INFO *info);
   bool (__cdecl* OnAction)(kodi::addon::CInstanceVisualization* addonInstance, VIS_ACTION action, const void *param);
@@ -80,7 +86,7 @@ typedef struct KodiToAddonFuncTable_Visualization
   bool (__cdecl* IsLocked)(kodi::addon::CInstanceVisualization* addonInstance);
 } KodiToAddonFuncTable_Visualization;
 
-typedef struct AddonInstance_Visualization
+typedef struct AddonInstance_Visualization /* internal */
 {
   AddonProps_Visualization props;
   AddonToKodiFuncTable_Visualization toKodi;
@@ -93,6 +99,7 @@ namespace kodi
 {
 namespace addon
 {
+
   class VisTrack
   {
   public:
@@ -153,6 +160,7 @@ namespace addon
     virtual bool Start(int channels, int samplesPerSec, int bitsPerSample, std::string songName) { return true; }
     virtual void Stop() {}
     virtual void AudioData(const float* audioData, int audioDataLength, float* freqData, int freqDataLength) {}
+    virtual bool IsDirty() { return true; }
     virtual void Render() {}
     virtual void GetInfo(bool& wantsFreq, int& syncDelay) { wantsFreq = false; syncDelay = 0; }
     virtual bool HasPresets() { return false; }
@@ -211,6 +219,11 @@ namespace addon
     inline static void ADDON_AudioData(CInstanceVisualization* addonInstance, const float* audioData, int audioDataLength, float *freqData, int freqDataLength)
     {
       addonInstance->AudioData(audioData, audioDataLength, freqData, freqDataLength);
+    }
+    
+    inline static bool ADDON_IsDirty(CInstanceVisualization* addonInstance)
+    {
+      return addonInstance->IsDirty();
     }
 
     inline static void ADDON_Render(CInstanceVisualization* addonInstance)
