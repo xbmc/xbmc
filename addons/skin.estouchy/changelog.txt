@@ -1,3 +1,25 @@
+V1.1.7
+- Add scrollbar to guide view
+- Align shutdown button
+
+V1.1.6
+- Updated language files from Transifex
+
+V1.1.5
+- Updated language files from Transifex
+
+V1.1.4
+- Updated language files from Transifex
+
+V1.1.3
+- Updated language files from Transifex
+
+V1.1.2
+- Updated language files from Transifex
+
+V1.1.1
+- Updated language files from Transifex
+
 V1.1.0
 - Redesign
 

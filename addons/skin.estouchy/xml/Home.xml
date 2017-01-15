@@ -153,11 +153,10 @@
 				<orientation>Horizontal</orientation>
 				<itemlayout height="120" width="120">
 					<control type="image">
-						<posx>20</posx>
-						<posy>20</posy>
-						<width>80</width>
-						<height>80</height>
-						<bordersize>12</bordersize>
+						<posx>32</posx>
+						<posy>32</posy>
+						<width>56</width>
+						<height>56</height>
 						<texture>$INFO[ListItem.Icon]</texture>
 						<aspectratio>keep</aspectratio>
 					</control>
@@ -171,11 +170,10 @@
 						<texture colordiffuse="blue">roundbutton-focus.png</texture>
 					</control>
 					<control type="image">
-						<posx>20</posx>
-						<posy>20</posy>
-						<width>80</width>
-						<height>80</height>
-						<bordersize>12</bordersize>
+						<posx>32</posx>
+						<posy>32</posy>
+						<width>56</width>
+						<height>56</height>
 						<texture>$INFO[ListItem.Icon]</texture>
 						<aspectratio>keep</aspectratio>
 					</control>

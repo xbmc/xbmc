@@ -310,7 +310,7 @@
 			<include>Window_OpenClose_Animation</include>
 			<posx>40r</posx>
 			<posy>120</posy>
-			<visible>Control.IsVisible(60) + ![[Window.IsVisible(TVGuide) | Window.IsVisible(RadioGuide)] + Control.IsVisible(10)]</visible>
+			<visible>Control.IsVisible(60)</visible>
 			<animation effect="slide" start="40,0" end="0,0" time="400">Visible</animation>
 			<animation effect="slide" start="0,0" end="40,0" time="400">Hidden</animation>
 			<animation effect="slide" start="0,0" end="-7,0" time="0" condition="String.IsEqual(Skin.AspectRatio,4:3)">Conditional</animation>
