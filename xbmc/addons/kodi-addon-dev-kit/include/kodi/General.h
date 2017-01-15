@@ -20,31 +20,7 @@
  */
 
 #include "AddonBase.h"
-
-extern "C"
-{
-
-/*
- * For interface between add-on and kodi.
- *
- * In this structure becomes the addresses of functions inside Kodi stored who
- * then available for the add-on to call.
- *
- * All function pointers there are used by the C++ interface functions below.
- * You find the set of them on xbmc/addons/interfaces/kodi/General.cpp
- *
- * Note: For add-on development itself not needed, thats why with '*' here in
- * text.
- */
-typedef struct AddonToKodiFuncTable_kodi
-{
-  bool (*get_setting)(void* kodiBase, const char* settingName, void *settingValue);
-  bool (*set_setting)(void* kodiBase, const char* settingName, const char* settingValue);
-  void (*open_settings_dialog)(void* kodiBase);
-  char* (*get_localized_string)(void* kodiInstance, long dwCode);
-} AddonToKodiFuncTable_kodi;
-
-} /* extern "C" */
+#include "definitions.h"
 
 namespace kodi
 {
