@@ -50,7 +50,6 @@ function(bootstrap_repo repo_id repo_url repo_revision)
                                       -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}
                                       -DPROJECT_SOURCE_DIR=<SOURCE_DIR>
                                       -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
-                                      -DADDONS_TO_BUILD=${ADDONS_TO_BUILD}
                                       -P ${PROJECT_SOURCE_DIR}/Bootstrap.cmake
                       )
 endfunction()
