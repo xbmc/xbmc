@@ -182,11 +182,11 @@
 			<width>$PARAM[panel-width]</width>
 			<height>550</height>
 			<onleft>2</onleft>
-			<onright>10</onright>
+			<onright>60</onright>
 			<onup>10</onup>
 			<ondown>10</ondown>
 			<viewtype label="19069">list</viewtype>
-			<pagecontrol>10</pagecontrol>
+			<pagecontrol>60</pagecontrol>
 			<scrolltime>200</scrolltime>
 			<timeblocks>40</timeblocks>
 			<rulerunit>6</rulerunit>
