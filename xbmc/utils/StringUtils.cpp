@@ -933,6 +933,8 @@ long StringUtils::TimeStringToSeconds(const std::string &timeString)
 
 std::string StringUtils::SecondsToTimeString(long lSeconds, TIME_FORMAT format)
 {
+  bool isNegative = lSeconds < 0;
+  lSeconds = abs(lSeconds);
   int hh = lSeconds / 3600;
   lSeconds = lSeconds % 3600;
   int mm = lSeconds / 60;
@@ -949,6 +951,8 @@ std::string StringUtils::SecondsToTimeString(long lSeconds, TIME_FORMAT format)
     strHMS += StringUtils::Format(strHMS.empty() ? "%2.2i" : ":%2.2i", mm);
   if (format & TIME_FORMAT_SS)
     strHMS += StringUtils::Format(strHMS.empty() ? "%2.2i" : ":%2.2i", ss);
+  if (isNegative)
+    strHMS = "-" + strHMS;
   return strHMS;
 }
 
