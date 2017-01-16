@@ -90,10 +90,6 @@ Note: For developers and anyone else who compiles frequently it is recommended t
 -----------------------------------------------------------------------------
 4. How to compile
 -----------------------------------------------------------------------------
-
-To create the Kodi executable manually perform these steps:
-.0  $ ./bootstrap
-
 Cmake build instructions V18.0 and higher OpenSuse
 
 Create and change to build directory 
