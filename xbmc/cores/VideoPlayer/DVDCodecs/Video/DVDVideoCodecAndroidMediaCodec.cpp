@@ -32,6 +32,8 @@
 #include "messaging/ApplicationMessenger.h"
 #include "DVDClock.h"
 #include "utils/BitstreamConverter.h"
+#include "utils/BitstreamWriter.h"
+
 #include "utils/CPUInfo.h"
 #include "utils/log.h"
 #include "settings/AdvancedSettings.h"
