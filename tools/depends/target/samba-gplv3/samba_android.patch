@@ -1,10 +1,10 @@
 diff -ru lib/util/charset/iconv.c lib/util/charset/iconv.c
 --- lib/util/charset/iconv.c	2013-01-29 09:49:31.000000000 +0100
 +++ lib/util/charset/iconv.c	2015-03-28 08:30:53.191217266 +0100
-@@ -23,6 +23,11 @@
- #include "system/iconv.h"
+@@ -24,6 +24,11 @@
  #include "system/filesys.h"
-
+ #include "charset_proto.h"
+ 
 +#if defined(ANDROID)
 +#include <stdint.h>
 +#include <byteswap.h>
@@ -13,8 +13,8 @@ diff -ru lib/util/charset/iconv.c lib/util/charset/iconv.c
  #ifdef strcasecmp
  #undef strcasecmp
  #endif
-@@ -502,6 +507,19 @@ static size_t ucs2hex_push(void *cd, con
-        return 0;
+@@ -532,6 +537,19 @@
+ 	return 0;
  }
 
 +#if defined(ANDROID)
@@ -31,51 +31,12 @@ diff -ru lib/util/charset/iconv.c lib/util/charset/iconv.c
 +#endif
 +
  static size_t iconv_swab(void *cd, const char **inbuf, size_t *inbytesleft,
-                         char **outbuf, size_t *outbytesleft)
+ 			 char **outbuf, size_t *outbytesleft)
  {
-diff -ru lib/util/system.c lib/util/system.c
---- lib/util/system.c	2013-01-29 09:49:31.000000000 +0100
-+++ lib/util/system.c	2015-03-28 08:30:53.843217274 +0100
-@@ -83,7 +83,9 @@
- {
- 	struct in_addr in;
- 	struct in_addr in2;
-+#if !defined(ANDROID)
- 	in = inet_makeaddr(net, host);
-+#endif
- 	in2.s_addr = in.s_addr;
- 	return in2;
- }
 diff -ru lib/util/util_pw.c lib/util/util_pw.c
 --- lib/util/util_pw.c	2013-01-29 09:49:31.000000000 +0100
 +++ lib/util/util_pw.c	2015-03-28 08:30:53.843217274 +0100
-@@ -34,17 +34,25 @@
- 
- void sys_setpwent(void)
- {
-+#if !defined(ANDROID)
- 	setpwent();
-+#endif
- }
- 
- struct passwd *sys_getpwent(void)
- {
-+#if !defined(ANDROID)
- 	return getpwent();
-+#else
-+	return NULL;
-+#endif
- }
- 
- void sys_endpwent(void)
- {
-+#if !defined(ANDROID)
- 	endpwent();
-+#endif
- }
- 
- /**************************************************************************
-@@ -83,7 +91,9 @@
+@@ -50,7 +50,9 @@
  	ret->pw_passwd = talloc_strdup(ret, from->pw_passwd);
  	ret->pw_uid = from->pw_uid;
  	ret->pw_gid = from->pw_gid;
@@ -88,7 +49,7 @@ diff -ru lib/util/util_pw.c lib/util/util_pw.c
 diff -ru nsswitch/libwbclient/wbc_pwd.c nsswitch/libwbclient/wbc_pwd.c
 --- nsswitch/libwbclient/wbc_pwd.c	2013-01-29 09:49:31.000000000 +0100
 +++ nsswitch/libwbclient/wbc_pwd.c	2015-03-28 08:30:53.847217275 +0100
-@@ -45,7 +45,9 @@
+@@ -46,7 +46,9 @@
  	struct passwd *pw = (struct passwd *)ptr;
  	free(pw->pw_name);
  	free(pw->pw_passwd);
@@ -98,7 +59,7 @@ diff -ru nsswitch/libwbclient/wbc_pwd.c nsswitch/libwbclient/wbc_pwd.c
  	free(pw->pw_shell);
  	free(pw->pw_dir);
  }
-@@ -67,10 +69,12 @@
+@@ -68,10 +70,12 @@
  	if (pw->pw_passwd == NULL) {
  		goto fail;
  	}
@@ -114,7 +75,7 @@ diff -ru nsswitch/libwbclient/wbc_pwd.c nsswitch/libwbclient/wbc_pwd.c
 diff -ru nsswitch/libwbclient/wbc_sid.c nsswitch/libwbclient/wbc_sid.c
 --- nsswitch/libwbclient/wbc_sid.c	2013-01-29 09:49:31.000000000 +0100
 +++ nsswitch/libwbclient/wbc_sid.c	2015-03-28 08:30:53.847217275 +0100
-@@ -950,9 +950,11 @@
+@@ -1040,9 +1040,11 @@
  
  		wbcFreeMemory(name);
  
@@ -126,46 +87,10 @@ diff -ru nsswitch/libwbclient/wbc_sid.c nsswitch/libwbclient/wbc_sid.c
  	}
  
  	wbc_status = WBC_ERR_SUCCESS;
-diff -ru source3/configure source3/configure
---- source3/configure	2013-01-29 10:21:59.000000000 +0100
-+++ source3/configure	2015-03-28 08:43:34.903227582 +0100
-@@ -36540,19 +36540,19 @@
- if test "x$ac_cv_lib_pthread_pthread_attr_init" = xyes; then :
- 
- 	     PTHREAD_CFLAGS="-D_REENTRANT -D_POSIX_PTHREAD_SEMANTICS"
--	     PTHREAD_LDFLAGS="-lpthread"
-+	     PTHREAD_LDFLAGS=""
- fi
- 
- fi
- 
- if test "x$PTHREAD_LDFLAGS" = xerror; then
--  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for pthread_attr_init in -lpthreads" >&5
--$as_echo_n "checking for pthread_attr_init in -lpthreads... " >&6; }
-+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for pthread_attr_init in " >&5
-+$as_echo_n "checking for pthread_attr_init in ... " >&6; }
- if ${ac_cv_lib_pthreads_pthread_attr_init+:} false; then :
-   $as_echo_n "(cached) " >&6
- else
-   ac_check_lib_save_LIBS=$LIBS
--LIBS="-lpthreads  $LIBS"
-+LIBS="  $LIBS"
- cat confdefs.h - <<_ACEOF >conftest.$ac_ext
- /* end confdefs.h.  */
- 
-@@ -36585,7 +36585,7 @@
- if test "x$ac_cv_lib_pthreads_pthread_attr_init" = xyes; then :
- 
- 	     PTHREAD_CFLAGS="-D_THREAD_SAFE"
--	     PTHREAD_LDFLAGS="-lpthreads"
-+	     PTHREAD_LDFLAGS=""
- fi
- 
- fi
-diff -ru source3/lib/fault.c source3/lib/fault.c
---- source3/lib/fault.c	2013-01-29 09:49:31.000000000 +0100
-+++ source3/lib/fault.c	2015-03-28 08:30:54.539217284 +0100
-@@ -375,7 +375,7 @@
+diff -ru source3/lib/dumpcore.c source3/lib/dumpcore.c
+--- source3/lib/dumpcore.c
++++ source3/lib/dumpcore.c
+@@ -306,7 +306,7 @@
  	umask(~(0700));
  	dbgflush();
  
@@ -175,36 +100,34 @@ diff -ru source3/lib/fault.c source3/lib/fault.c
  	 * ID. We know how to dump core safely, so let's make sure we have our
  	 * dumpable flag set.
 diff -ru source3/lib/system.c source3/lib/system.c
---- source3/lib/system.c	2013-01-29 09:49:31.000000000 +0100
-+++ source3/lib/system.c	2015-03-28 08:30:54.543217284 +0100
-@@ -921,8 +921,11 @@
- #if defined(HAVE_EXPLICIT_LARGEFILE_SUPPORT) && defined(HAVE_SEEKDIR64)
- 	seekdir64(dirp, offset);
- #else
+--- source3/modules/vfs_default.c
++++ source3/modules/vfs_default.c
+@@ -455,7 +455,9 @@
+ static void vfswrap_seekdir(vfs_handle_struct *handle, DIR *dirp, long offset)
+ {
+ 	START_PROFILE(syscall_seekdir);
 +#if !defined(ANDROID)
  	seekdir(dirp, offset);
- #endif
-+	return;
 +#endif
+ 	END_PROFILE(syscall_seekdir);
  }
  
- /*******************************************************************
-@@ -934,7 +937,11 @@
- #if defined(HAVE_EXPLICIT_LARGEFILE_SUPPORT) && defined(HAVE_TELLDIR64)
- 	return (long)telldir64(dirp);
- #else
+@@ -463,7 +465,11 @@
+ {
+ 	long result;
+ 	START_PROFILE(syscall_telldir);
 +#if !defined(ANDROID)
- 	return (long)telldir(dirp);
+ 	result = telldir(dirp);
 +#else
-+	return(0);
++	result = 0;
 +#endif
- #endif
+ 	END_PROFILE(syscall_telldir);
+ 	return result;
  }
- 
-diff -ru source3/libads/dns.c source3/libads/dns.c
---- source3/libads/dns.c	2013-01-29 09:49:31.000000000 +0100
-+++ source3/libads/dns.c	2015-03-28 08:30:54.543217284 +0100
-@@ -40,6 +40,16 @@
+diff -ru lib/addns/dnsquery.c lib/addns/dnsquery.c
+--- lib/addns/dnsquery.c
++++ lib/addns/dnsquery.c
+@@ -41,6 +41,16 @@
  
  #define MAX_DNS_PACKET_SIZE 0xffff
  
@@ -224,7 +147,7 @@ diff -ru source3/libads/dns.c source3/libads/dns.c
 diff -ru source3/passdb/passdb.c source3/passdb/passdb.c
 --- source3/passdb/passdb.c	2013-01-29 09:49:31.000000000 +0100
 +++ source3/passdb/passdb.c	2015-03-28 08:30:54.543217284 +0100
-@@ -163,6 +163,7 @@
+@@ -147,6 +147,7 @@
  
  	fullname = NULL;
  
@@ -232,7 +155,7 @@ diff -ru source3/passdb/passdb.c source3/passdb/passdb.c
  	if (count_commas(pwd->pw_gecos) == 3) {
  		/*
  		 * Heuristic: This seems to be a gecos field that has been
-@@ -173,11 +174,14 @@
+@@ -157,11 +158,14 @@
  			talloc_tos(), pwd->pw_gecos,
  			strchr(pwd->pw_gecos, ',') - pwd->pw_gecos);
  	}
@@ -250,7 +173,7 @@ diff -ru source3/passdb/passdb.c source3/passdb/passdb.c
 diff -ru source3/passdb/pdb_interface.c source3/passdb/pdb_interface.c
 --- source3/passdb/pdb_interface.c	2013-01-29 09:49:31.000000000 +0100
 +++ source3/passdb/pdb_interface.c	2015-03-28 08:30:54.547217284 +0100
-@@ -1464,8 +1464,8 @@
+@@ -1607,8 +1607,8 @@
  	}
  
  	/* Primary group members */
@@ -261,7 +184,7 @@ diff -ru source3/passdb/pdb_interface.c source3/passdb/pdb_interface.c
  		if (pwd->pw_gid == gid) {
  			if (!add_uid_to_array_unique(mem_ctx, pwd->pw_uid,
  						pp_uids, p_num)) {
-@@ -1473,7 +1473,7 @@
+@@ -1616,7 +1616,7 @@
  			}
  		}
  	}
