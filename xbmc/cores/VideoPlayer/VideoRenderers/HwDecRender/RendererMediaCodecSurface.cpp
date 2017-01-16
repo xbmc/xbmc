@@ -143,6 +143,11 @@ bool CRendererMediaCodecSurface::RenderHook(int index)
         srcRect.x2 *= 2.0;
       break;
 
+      case RENDER_STEREO_MODE_MONO:
+        dstRect.y2 = dstRect.y2 * (dstRect.y2 / m_sourceRect.y2);
+        dstRect.x2 = dstRect.x2 * (dstRect.x2 / m_sourceRect.x2);
+      break;
+
       default:
       break;
     }
