@@ -6,6 +6,8 @@ LIBNAME=samba
 VERSION=4.5.3
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
+# will remove befor merge
+BASE_URL=https://download.samba.org/pub/samba/stable
 
 ifeq ($(OS), ios)
 ifeq ($(CPU), arm64)
@@ -14,7 +16,7 @@ CONFIGURE_EXTRAS= --without-libmsrpc samba_cv_optimize_out_funcation_calls=no ac
 endif
 endif
 
-CONFIGURE=./configure --prefix=$(PREFIX) \
+CONFIGURE=./configure -v --prefix=$(PREFIX) \
           --without-cluster-support --without-ldap \
           --without-pam --enable-fhs \
           --without-winbind --disable-cups --without-ads \
@@ -69,7 +71,7 @@ endif
 	cd $(PLATFORM); $(CONFIGURE)
 
 $(LIBDYLIB): $(PLATFORM)
-	cd $(PLATFORM); WAF_MAKE=1 $(NATIVEPREFIX)/bin/python ./buildtools/bin/waf --targets=smbclient
+	cd $(PLATFORM); WAF_MAKE=1 $(NATIVEPREFIX)/bin/python ./buildtools/bin/waf -v --targets=smbclient
 
 .installed-$(PLATFORM): $(LIBDYLIB)
 ifeq (darwin, $(findstring darwin, $(HOST)))
