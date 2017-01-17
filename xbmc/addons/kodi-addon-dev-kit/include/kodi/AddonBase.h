@@ -211,7 +211,7 @@ namespace addon {
  * Mainly is this currently used to identify requested instance types.
  *
  * @note This class is not need to know during add-on development thats why
- * with "/*".
+ * commented with "*".
  */
 class IAddonInstance
 {
