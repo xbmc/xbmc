@@ -97,11 +97,11 @@ CRepository::CRepository(AddonProps props, DirList dirs)
 }
 
 
-bool CRepository::GetAddonHash(const AddonPtr& addon, std::string& checksum) const
+bool CRepository::GetAddonHash(const std::string& addonPath, std::string& checksum) const
 {
   DirList::const_iterator it;
   for (it = m_dirs.begin();it != m_dirs.end(); ++it)
-    if (URIUtils::PathHasParent(addon->Path(), it->datadir, true))
+    if (URIUtils::PathHasParent(addonPath, it->datadir, true))
       break;
 
   if (it != m_dirs.end())
@@ -111,7 +111,7 @@ bool CRepository::GetAddonHash(const AddonPtr& addon, std::string& checksum) con
       checksum = "";
       return true;
     }
-    if (FetchChecksum(addon->Path() + ".md5", checksum))
+    if (FetchChecksum(addonPath + ".md5", checksum))
     {
       size_t pos = checksum.find_first_of(" \n");
       if (pos != std::string::npos)

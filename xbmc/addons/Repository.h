@@ -49,10 +49,13 @@ namespace ADDON
     explicit CRepository(AddonProps props) : CAddon(std::move(props)) {};
     CRepository(AddonProps props, DirList dirs);
 
-    /*! \brief Get the md5 hash for an addon.
-     \param the addon in question.
+    /*!
+     * \brief Get the md5 hash for an addon.
+     * \param[in] addonPath the addon in question.
+     * \param[out] checksum the calculated checksum of addon
+     * \return true if successful done, otherwise false
      */
-    bool GetAddonHash(const AddonPtr& addon, std::string& checksum) const;
+    bool GetAddonHash(const std::string& addonPath, std::string& checksum) const;
 
     enum FetchStatus
     {
