@@ -28,8 +28,8 @@ using namespace XFILE::VIDEODATABASEDIRECTORY;
 
 Node MusicVideoChildren[] = {
                               { NODE_TYPE_GENRE,             "genres",    135 },
-                              { NODE_TYPE_TITLE_MUSICVIDEOS, "titles",    369 },
-                              { NODE_TYPE_YEAR,              "years",     562 },
+                              { NODE_TYPE_TITLE_MUSICVIDEOS, "titles",    10024 },
+                              { NODE_TYPE_YEAR,              "years",     652 },
                               { NODE_TYPE_ACTOR,             "artists",   133 },
                               { NODE_TYPE_MUSICVIDEOS_ALBUM, "albums",    132 },
                               { NODE_TYPE_DIRECTOR,          "directors", 20348 },
