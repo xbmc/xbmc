@@ -63,7 +63,7 @@
 			<control type="group">
 				<height>78</height>
 				<bottom>0</bottom>
-				<visible>$EXP[sidebar_focused]</visible>
+				<visible>$EXP[sidebar_visible]</visible>
 				<animation effect="fade" time="300">VisibleChange</animation>
 				<include content="LeftAlignedInfo">
 					<param name="main_label" value="$INFO[Window(AddonBrowser).Property(Updated)]" />
