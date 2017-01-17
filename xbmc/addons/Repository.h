@@ -64,11 +64,11 @@ namespace ADDON
       STATUS_ERROR
     };
 
-    FetchStatus FetchIfChanged(const std::string& oldChecksum, std::string& checksum, VECADDONS& addons) const;
+    FetchStatus FetchIfChanged(const std::string& oldChecksum, std::string& checksum, VECAddonProps& addons) const;
 
   private:
     static bool FetchChecksum(const std::string& url, std::string& checksum) noexcept;
-    static bool FetchIndex(const DirInfo& repo, VECADDONS& addons) noexcept;
+    static bool FetchIndex(const DirInfo& repo, VECAddonProps& addons) noexcept;
 
     DirList m_dirs;
   };

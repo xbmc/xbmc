@@ -24,6 +24,10 @@
 #include "guilib/LocalizeStrings.h"
 #include "utils/URIUtils.h"
 
+CAddonManagementEvent::CAddonManagementEvent(ADDON::AddonPropsPtr addonProps, const CVariant& description)
+  : CAddonEvent(addonProps, description)
+{ }
+
 CAddonManagementEvent::CAddonManagementEvent(ADDON::AddonPtr addon, const CVariant& description)
   : CAddonEvent(addon, description)
 { }
@@ -62,7 +66,11 @@ bool CAddonManagementEvent::Execute() const
   if (!CanExecute())
     return false;
 
-  CFileItemPtr addonItem = XFILE::CAddonsDirectory::FileItemFromAddon(m_addon, URIUtils::AddFileToFolder("addons://", m_addon->ID()));
+  CFileItemPtr addonItem;
+  if (m_addon) /*! @todo currently still there until everything is reworked to the final way! */
+    addonItem = XFILE::CAddonsDirectory::FileItemFromAddon(m_addon, URIUtils::AddFileToFolder("addons://", m_addon->ID()));
+  else if (m_addonProps)
+    addonItem = XFILE::CAddonsDirectory::FileItemFromAddonProps(m_addonProps, URIUtils::AddFileToFolder("addons://", m_addonProps->ID()));
   if (addonItem == nullptr)
     return false;
 

@@ -20,6 +20,11 @@
 
 #include "AddonEvent.h"
 
+CAddonEvent::CAddonEvent(ADDON::AddonPropsPtr addonProps, const CVariant& description)
+  : CUniqueEvent(addonProps->Name(), description, addonProps->Icon()),
+    m_addonProps(addonProps)
+{ }
+
 CAddonEvent::CAddonEvent(ADDON::AddonPtr addon, const CVariant& description)
   : CUniqueEvent(addon->Name(), description, addon->Icon()),
     m_addon(addon)

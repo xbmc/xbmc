@@ -54,7 +54,7 @@ public:
   bool FindByAddonId(const std::string& addonId, ADDON::VECADDONS& addons);
 
   bool UpdateRepositoryContent(const std::string& repositoryId, const ADDON::AddonVersion& version,
-      const std::string& checksum, const std::vector<ADDON::AddonPtr>& addons);
+      const std::string& checksum, const ADDON::VECAddonProps& addonProps);
 
   int GetRepoChecksum(const std::string& id, std::string& checksum);
 

@@ -21,10 +21,12 @@
 
 #include "events/UniqueEvent.h"
 #include "addons/IAddon.h"
+#include "addons/AddonProperties.h"
 
 class CAddonEvent : public CUniqueEvent
 {
 public:
+  CAddonEvent(ADDON::AddonPropsPtr addonProps, const CVariant& description);
   CAddonEvent(ADDON::AddonPtr addon, const CVariant& description);
   CAddonEvent(ADDON::AddonPtr addon, const CVariant& description, const CVariant& details);
   CAddonEvent(ADDON::AddonPtr addon, const CVariant& description, const CVariant& details, const CVariant& executionLabel);
@@ -36,5 +38,6 @@ public:
   virtual const char* GetType() const { return "AddonEvent"; }
 
 protected:
-  ADDON::AddonPtr m_addon;
+  ADDON::AddonPtr m_addon; /*! @todo currently still there until everything is reworked to the final way! */
+  ADDON::AddonPropsPtr m_addonProps;
 };

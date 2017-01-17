@@ -820,6 +820,35 @@ void CAddonsDirectory::GenerateAddonListing(const CURL &path,
   }
 }
 
+CFileItemPtr CAddonsDirectory::FileItemFromAddonProps(const AddonPropsPtr &addonProps,
+    const std::string& path, bool folder)
+{
+  if (!addonProps)
+    return CFileItemPtr();
+
+  CFileItemPtr item(new CFileItem(addonProps));
+  item->m_bIsFolder = folder;
+  item->SetPath(path);
+
+  std::string strLabel(addonProps->Name());
+  if (CURL(path).GetHostName() == "search")
+    strLabel = StringUtils::Format("%s - %s", TranslateType(addonProps->Type(), true).c_str(), addonProps->Name().c_str());
+  item->SetLabel(strLabel);
+  item->SetArt("thumb", addonProps->Icon());
+  item->SetIconImage("DefaultAddon.png");
+  if (URIUtils::IsInternetStream(addonProps->FanArt()) || CFile::Exists(addonProps->FanArt()))
+    item->SetArt("fanart", addonProps->FanArt());
+
+  //! @todo fix hacks that depends on these
+  item->SetProperty("Addon.ID", addonProps->ID());
+  item->SetProperty("Addon.Name", addonProps->Name());
+  const auto it = addonProps->ExtraInfo().find("language");
+  if (it != addonProps->ExtraInfo().end())
+    item->SetProperty("Addon.Language", it->second);
+
+  return item;
+}
+
 CFileItemPtr CAddonsDirectory::FileItemFromAddon(const AddonPtr &addon,
     const std::string& path, bool folder)
 {
