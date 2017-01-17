@@ -1095,7 +1095,7 @@ bool CAddonMgr::LoadAddonDescription(const std::string &directory, AddonPtr &add
   return addon != nullptr;
 }
 
-bool CAddonMgr::AddonsFromRepoXML(const CRepository::DirInfo& repo, const std::string& xml, VECADDONS& addons)
+bool CAddonMgr::AddonsFromRepoXML(const CRepository::DirInfo& repo, const std::string& xml, VECAddonProps& addonProps)
 {
   CXBMCTinyXML doc;
   if (!doc.Parse(xml))
@@ -1110,46 +1110,19 @@ bool CAddonMgr::AddonsFromRepoXML(const CRepository::DirInfo& repo, const std::s
     return false;
   }
 
-  // create a context for these addons
-  cp_status_t status;
-  cp_context_t *context = m_cpluff->create_context(&status);
-  if (!context)
-    return false;
-
-  // each addon XML should have a UTF-8 declaration
-  TiXmlDeclaration decl("1.0", "UTF-8", "");
   auto element = doc.RootElement()->FirstChildElement("addon");
   while (element)
   {
-    // dump the XML back to text
-    std::string xml;
-    xml << decl;
-    xml << *element;
-    cp_status_t status;
-    cp_plugin_info_t *info = m_cpluff->load_plugin_descriptor_from_memory(context, xml.c_str(), xml.size(), &status);
-    if (info)
+    AddonPropsPtr props = std::make_shared<AddonProps>(element, xml);
+    if (props->IsUsable())
     {
-      CAddonBuilder builder;
-      auto basePath = URIUtils::AddFileToFolder(repo.datadir, std::string(info->identifier));
-      info->plugin_path = static_cast<char*>(malloc(basePath.length() + 1));
-      strncpy(info->plugin_path, basePath.c_str(), basePath.length());
-      info->plugin_path[basePath.length()] = '\0';
-
-      if (Factory(info, ADDON_UNKNOWN, builder))
-      {
-        builder.SetPath(URIUtils::AddFileToFolder(repo.datadir, StringUtils::Format("%s/%s-%s.zip",
-            info->identifier, info->identifier, builder.GetVersion().asString().c_str())));
-        auto addon = builder.Build();
-        if (addon)
-          addons.push_back(std::move(addon));
-      }
-      free(info->plugin_path);
-      info->plugin_path = nullptr;
-      m_cpluff->release_info(context, info);
+      props->SetPath(URIUtils::AddFileToFolder(repo.datadir, StringUtils::Format("%s/%s-%s.zip",
+                     props->ID().c_str(), props->ID().c_str(), props->Version().asString().c_str())));
+      addonProps.push_back(std::move(props));
     }
     element = element->NextSiblingElement("addon");
   }
-  m_cpluff->destroy_context(context);
+
   return true;
 }
 
