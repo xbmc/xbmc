@@ -239,10 +239,10 @@ namespace ADDON
      A repository XML is essentially a concatenated list of addon descriptors.
      \param repo The repository info.
      \param xml The XML document from repository.
-     \param addons [out] returned list of addons.
+     \param AddonProps [out] returned list of addon properties.
      \return true if the repository XML file is parsed, false otherwise.
      */
-    bool AddonsFromRepoXML(const CRepository::DirInfo& repo, const std::string& xml, VECADDONS& addons);
+    bool AddonsFromRepoXML(const CRepository::DirInfo& repo, const std::string& xml, VECAddonProps& AddonProps);
 
     /*! \brief Start all services addons.
         \return True is all addons are started, false otherwise
