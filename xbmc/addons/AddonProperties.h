@@ -31,6 +31,11 @@ namespace ADDON
   std::string GetIcon(TYPE type);
   TYPE TranslateType(const std::string &string);
 
+  class AddonProps;
+  typedef std::shared_ptr<AddonProps> AddonPropsPtr;
+  typedef std::vector<AddonPropsPtr> VECAddonProps;
+  typedef std::vector<AddonPropsPtr>::iterator VECAddonPropsIter;
+
   class AddonProps
   {
   public:
