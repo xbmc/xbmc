@@ -473,7 +473,9 @@ void CGUIVisualisationControl::DeInitVisualization()
   }
 
   memset(&m_struct, 0, sizeof(m_struct));
-  m_addonInstance = nullptr;  
+  m_addonInstance = nullptr;
+
+  ClearBuffers();
 }
 
 void CGUIVisualisationControl::CreateBuffers()
@@ -509,4 +511,7 @@ void CGUIVisualisationControl::ClearBuffers()
   {
     m_freq[j] = 0.0f;
   }
+
+  if (m_transform)
+    m_transform.reset();
 }
