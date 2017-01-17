@@ -38,6 +38,47 @@
 
 using namespace ADDON;
 
+static std::string SerializeMetadata(const AddonProps& props)
+{
+  CVariant variant;
+  variant["author"] = props.Author();
+  variant["disclaimer"] = props.Disclaimer();
+  variant["broken"] = props.Broken();
+  variant["size"] = props.PackageSize();
+
+  variant["path"] = props.Path();
+  variant["fanart"] = props.FanArt();
+  variant["icon"] = props.Icon();
+
+  variant["screenshots"] = CVariant(CVariant::VariantTypeArray);
+  for (const auto& item : props.Screenshots())
+    variant["screenshots"].push_back(item);
+
+  variant["extensions"] = CVariant(CVariant::VariantTypeArray);
+  variant["extensions"].push_back(ADDON::TranslateType(props.Type(), false));
+
+  variant["dependencies"] = CVariant(CVariant::VariantTypeArray);
+  for (const auto& kv : props.GetDeps())
+  {
+    CVariant dep(CVariant::VariantTypeObject);
+    dep["addonId"] = kv.first;
+    dep["version"] = kv.second.first.asString();
+    dep["optional"] = kv.second.second;
+    variant["dependencies"].push_back(std::move(dep));
+  }
+
+  variant["extrainfo"] = CVariant(CVariant::VariantTypeArray);
+  for (const auto& kv : props.ExtraInfo())
+  {
+    CVariant info(CVariant::VariantTypeObject);
+    info["key"] = kv.first;
+    info["value"] = kv.second;
+    variant["extrainfo"].push_back(std::move(info));
+  }
+
+  return CJSONVariantWriter::Write(variant, true);
+}
+
 static std::string SerializeMetadata(const IAddon& addon)
 {
   CVariant variant;
@@ -778,7 +819,7 @@ void CAddonDatabase::DeleteRepository(const std::string& id)
 }
 
 bool CAddonDatabase::UpdateRepositoryContent(const std::string& repository, const AddonVersion& version,
-    const std::string& checksum, const std::vector<AddonPtr>& addons)
+    const std::string& checksum, const ADDON::VECAddonProps& addonProps)
 {
   try
   {
@@ -795,7 +836,7 @@ bool CAddonDatabase::UpdateRepositoryContent(const std::string& repository, cons
 
     m_pDB->start_transaction();
     m_pDS->exec(PrepareSQL("UPDATE repo SET checksum='%s' WHERE id='%d'", checksum.c_str(), idRepo));
-    for (const auto& addon : addons)
+    for (const auto& addon : addonProps)
     {
       m_pDS->exec(PrepareSQL(
           "INSERT INTO addons (id, metadata, addonID, version, name, summary, description, news) "

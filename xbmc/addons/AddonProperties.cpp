@@ -156,15 +156,15 @@ const char* GetPlatformLibraryName(const TiXmlElement* element)
 }
 
 AddonProps::AddonProps()
-  : type(ADDON_UNKNOWN),
-    packageSize(0),
-    m_usable(true)
+  : m_usable(true),
+    type(ADDON_UNKNOWN),
+    packageSize(0)
 {
 }
 
 AddonProps::AddonProps(std::string addonPath)
-  : path(addonPath),
-    m_usable(false)
+  : m_usable(false),
+    path(addonPath)
 {
   auto addonXmlPath = CSpecialProtocol::TranslatePath(URIUtils::AddFileToFolder(path, "addon.xml"));
 
@@ -188,10 +188,10 @@ AddonProps::AddonProps(const TiXmlElement* baseElement, std::string addonXmlPath
 }
 
 AddonProps::AddonProps(std::string id, TYPE type)
-  : id(std::move(id)),
+  : m_usable(true),
+    id(std::move(id)),
     type(type),
-    packageSize(0),
-    m_usable(true)
+    packageSize(0)
 {
 }
 
@@ -350,62 +350,61 @@ bool AddonProps::LoadAddonXML(const TiXmlElement* baseElement, std::string addon
           std::string value = elementsAssets->Value();
           if (value == "icon")
           {
-            icon = elementsAssets->GetText();
-            if (!icon.empty())
-              icon = URIUtils::AddFileToFolder(path, icon);
+            if (elementsAssets->GetText() != nullptr)
+              icon = URIUtils::AddFileToFolder(path, elementsAssets->GetText());
           }
           else if (value == "fanart")
           {
-            fanart = elementsAssets->GetText();
-            if (!fanart.empty())
-              fanart = URIUtils::AddFileToFolder(path, fanart);
+            if (elementsAssets->GetText() != nullptr)
+              fanart = URIUtils::AddFileToFolder(path, elementsAssets->GetText());
           }
           else if (value == "screenshot")
           {
-            std::string screenshot = elementsAssets->GetText();
-            if (!screenshot.empty())
-              screenshots.emplace_back(URIUtils::AddFileToFolder(path, screenshot));
+            if (elementsAssets->GetText() != nullptr)
+              screenshots.emplace_back(URIUtils::AddFileToFolder(path, elementsAssets->GetText()));
           }
         }
       }
 
       /* Parse addon.xml "<license">...</license>" */
       element = child->FirstChildElement("license");
-      if (element)
+      if (element && element->GetText() != nullptr)
         license = element->GetText();
 
       /* Parse addon.xml "<source">...</source>" */
       element = child->FirstChildElement("source");
-      if (element)
+      if (element && element->GetText() != nullptr)
         source = element->GetText();
 
       /* Parse addon.xml "<broken">...</broken>" */
       element = child->FirstChildElement("broken");
-      if (element)
+      if (element && element->GetText() != nullptr)
         broken = element->GetText();
 
       /* Parse addon.xml "<size">...</size>" */
       element = child->FirstChildElement("size");
-      if (element)
+      if (element && element->GetText() != nullptr)
         packageSize = StringUtils::ToUint64(element->GetText(), 0);
 
       /* Parse addon.xml "<news lang="..">...</news>" */
+      const char* strChangelog = nullptr;
       element = child->FirstChildElement("news");
       while (element)
       {
         const char *lang = element->Attribute("lang");
         if (lang != nullptr && g_langInfo.GetLocale().Matches(lang))
         {
-          changelog = element->GetText();
+          strChangelog = element->GetText();
           break;
         }
         else if (lang == nullptr || strcmp(lang, "en") == 0 || strcmp(lang, "en_GB") == 0)
         {
-          changelog = element->GetText();
+          strChangelog = element->GetText();
         }
 
         element = element->NextSiblingElement("news");
       }
+      changelog = strChangelog ? strChangelog : "";
     }
     else
     {

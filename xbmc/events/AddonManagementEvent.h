@@ -24,6 +24,7 @@
 class CAddonManagementEvent : public CAddonEvent
 {
 public:
+  CAddonManagementEvent(ADDON::AddonPropsPtr addonProps, const CVariant& description);
   CAddonManagementEvent(ADDON::AddonPtr addon, const CVariant& description);
   CAddonManagementEvent(ADDON::AddonPtr addon, const CVariant& description, const CVariant& details);
   CAddonManagementEvent(ADDON::AddonPtr addon, const CVariant& description, const CVariant& details, const CVariant& executionLabel);
@@ -35,6 +36,11 @@ public:
   virtual const char* GetType() const { return "AddonManagementEvent"; }
   virtual std::string GetExecutionLabel() const;
 
-  virtual bool CanExecute() const { return m_addon != NULL; }
+  virtual bool CanExecute() const
+  {
+    if (m_addon != nullptr || m_addonProps != nullptr)
+      return true;
+    return false;
+  }
   virtual bool Execute() const;
 };

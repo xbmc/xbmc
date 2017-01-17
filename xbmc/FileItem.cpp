@@ -329,6 +329,11 @@ CFileItem::CFileItem(std::shared_ptr<const ADDON::IAddon> addonInfo) : m_addonIn
   Initialize();
 }
 
+CFileItem::CFileItem(std::shared_ptr<const ADDON::AddonProps> addonInfo) : m_addonPropsInfo(std::move(addonInfo))
+{
+  Initialize();
+}
+
 CFileItem::CFileItem(const EventPtr& eventLogEntry)
 {
   Initialize();

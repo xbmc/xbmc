@@ -143,7 +143,7 @@ bool CRepository::FetchChecksum(const std::string& url, std::string& checksum) n
   return true;
 }
 
-bool CRepository::FetchIndex(const DirInfo& repo, VECADDONS& addons) noexcept
+bool CRepository::FetchIndex(const DirInfo& repo, VECAddonProps& addons) noexcept
 {
   XFILE::CCurlFile http;
   http.SetAcceptEncoding("gzip");
@@ -172,7 +172,7 @@ bool CRepository::FetchIndex(const DirInfo& repo, VECADDONS& addons) noexcept
 }
 
 CRepository::FetchStatus CRepository::FetchIfChanged(const std::string& oldChecksum,
-    std::string& checksum, VECADDONS& addons) const
+    std::string& checksum, VECAddonProps& addons) const
 {
   checksum = "";
   for (const auto& dir : m_dirs)
@@ -194,7 +194,7 @@ CRepository::FetchStatus CRepository::FetchIfChanged(const std::string& oldCheck
 
   for (const auto& dir : m_dirs)
   {
-    VECADDONS tmp;
+    VECAddonProps tmp;
     if (!FetchIndex(dir, tmp))
       return STATUS_ERROR;
     addons.insert(addons.end(), tmp.begin(), tmp.end());
@@ -215,7 +215,7 @@ bool CRepositoryUpdateJob::DoWork()
     oldChecksum = "";
 
   std::string newChecksum;
-  VECADDONS addons;
+  VECAddonProps addons;
   auto status = m_repo->FetchIfChanged(oldChecksum, newChecksum, addons);
 
   database.SetLastChecked(m_repo->ID(), m_repo->Version(),
