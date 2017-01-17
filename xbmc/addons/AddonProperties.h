@@ -22,12 +22,38 @@
 #include "addons/IAddon.h"
 #include "addons/AddonVersion.h"
 
+class TiXmlElement;
+
 namespace ADDON
 {
+  // utils
+  std::string TranslateType(TYPE type, bool pretty=false);
+  std::string GetIcon(TYPE type);
+  TYPE TranslateType(const std::string &string);
 
   class AddonProps
   {
   public:
+    /*!
+     * @brief Class constructor for local available addons where his addon.xml
+     * is present.
+     *
+     * @param[in] addonPath The folder name where addon.xml is included
+     */
+    AddonProps(std::string addonPath);
+
+    /*!
+     * @brief Class constructor used for repository list of addons where not
+     * available on local system.
+     *
+     * Source is normally a "addons.xml"
+     *
+     * @param[in] baseElement The TinyXML base element to parse
+     * @param[in] addonXmlPath Path to the element related xml file, used
+     *                         to know on log messages to source of fault
+     */
+    AddonProps(const TiXmlElement* baseElement, std::string addonXmlPath);
+
     AddonProps();
     AddonProps(std::string id, TYPE type);
 
@@ -56,6 +82,29 @@ namespace ADDON
     CDateTime lastUsed;
     std::string origin;
     uint64_t packageSize;
+
+    /*!
+     * @brief Used to set path for not local available addons who are related
+     * to a repository.
+     *
+     * @param[in] strPath Path where addon is available (normally with a *.zip
+     *                    ending.
+     */
+    void SetPath(std::string strPath) { path = std::move(strPath); }
+    bool IsUsable() const { return m_usable; }
+
+  private:
+    bool m_usable;
+
+    /*!
+     * @brief Function to load data xml file to set all property values
+     *
+     * @param[in] element The tiny xml element to read
+     * @param[in] addonXmlPath Path to the element related xml file, used
+     *                         to know on log messages to source of fault
+     * @return true if successfully done, otherwise false
+     */
+    bool LoadAddonXML(const TiXmlElement* element, std::string addonXmlPath);
   };
 
 } /* namespace ADDON */
