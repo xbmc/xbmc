@@ -20,7 +20,7 @@
  */
 
 #include "IAddon.h"
-#include "addons/AddonVersion.h"
+#include "addons/AddonProperties.h"
 #include "utils/XBMCTinyXML.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/ISerializable.h"
@@ -51,41 +51,6 @@ void OnPreInstall(const AddonPtr& addon);
 void OnPostInstall(const AddonPtr& addon, bool update, bool modal);
 void OnPreUnInstall(const AddonPtr& addon);
 void OnPostUnInstall(const AddonPtr& addon);
-
-
-class AddonProps
-{
-public:
-  AddonProps() : type(ADDON_UNKNOWN), packageSize(0) {};
-  AddonProps(std::string id, TYPE type) : id(std::move(id)), type(type), packageSize(0) {}
-
-  std::string id;
-  TYPE type;
-  AddonVersion version{"0.0.0"};
-  AddonVersion minversion{"0.0.0"};
-  std::string name;
-  std::string license;
-  std::string summary;
-  std::string description;
-  std::string libname;
-  std::string author;
-  std::string source;
-  std::string path;
-  std::string icon;
-  std::string changelog;
-  std::string fanart;
-  std::vector<std::string> screenshots;
-  std::string disclaimer;
-  ADDONDEPS dependencies;
-  std::string broken;
-  InfoMap extrainfo;
-  CDateTime installDate;
-  CDateTime lastUpdated;
-  CDateTime lastUsed;
-  std::string origin;
-  uint64_t packageSize;
-};
-
 
 class CAddon : public IAddon
 {
