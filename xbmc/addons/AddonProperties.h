@@ -36,6 +36,9 @@ namespace ADDON
   typedef std::vector<AddonPropsPtr> VECAddonProps;
   typedef std::vector<AddonPropsPtr>::iterator VECAddonPropsIter;
 
+  class CAddon;
+  class CAddonBuilder;
+
   class AddonProps
   {
   public:
@@ -62,6 +65,45 @@ namespace ADDON
     AddonProps();
     AddonProps(std::string id, TYPE type);
 
+    const std::string& ID() const { return id; }
+    TYPE Type() const { return type; }
+    const AddonVersion& Version() const { return version; }
+    const AddonVersion& MinVersion() const { return minversion; }
+    const std::string& Name() const { return name; }
+    const std::string& License() const { return license; }
+    const std::string& Summary() const { return summary; }
+    const std::string& Description() const { return description; }
+    const std::string& Libname() const { return libname; }
+    const std::string& Author() const { return author; }
+    const std::string& Source() const { return source; }
+    const std::string& Path() const { return path; }
+    const std::string& Icon() const { return icon; }
+    const std::string& ChangeLog() const { return changelog; }
+    const std::string& FanArt() const { return fanart; }
+    const std::vector<std::string>& Screenshots() const { return screenshots; }
+    const std::string& Disclaimer() const { return disclaimer; }
+    const ADDONDEPS& GetDeps() const { return dependencies; }
+    const std::string& Broken() const { return broken; }
+    const InfoMap& ExtraInfo() const { return extrainfo; }
+    const CDateTime& InstallDate() const { return installDate; }
+    const CDateTime& LastUpdated() const { return lastUpdated; }
+    const CDateTime& LastUsed() const { return lastUsed; }
+    const std::string& Origin() const { return origin; }
+    uint64_t PackageSize() const { return packageSize; }
+
+    /*!
+     * @brief Used to set path for not local available addons who are related
+     * to a repository.
+     *
+     * @param[in] strPath Path where addon is available (normally with a *.zip
+     *                    ending.
+     */
+    void SetPath(std::string strPath) { path = std::move(strPath); }
+    bool IsUsable() const { return m_usable; }
+
+  /*private: So long public until all add-on types reworked to new way! */
+    bool m_usable;
+
     std::string id;
     TYPE type;
     AddonVersion version{"0.0.0"};
@@ -87,19 +129,6 @@ namespace ADDON
     CDateTime lastUsed;
     std::string origin;
     uint64_t packageSize;
-
-    /*!
-     * @brief Used to set path for not local available addons who are related
-     * to a repository.
-     *
-     * @param[in] strPath Path where addon is available (normally with a *.zip
-     *                    ending.
-     */
-    void SetPath(std::string strPath) { path = std::move(strPath); }
-    bool IsUsable() const { return m_usable; }
-
-  private:
-    bool m_usable;
 
     /*!
      * @brief Function to load data xml file to set all property values
