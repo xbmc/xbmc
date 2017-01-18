@@ -26,10 +26,6 @@ class TiXmlElement;
 
 namespace ADDON
 {
-  // utils
-  std::string TranslateType(TYPE type, bool pretty=false);
-  std::string GetIcon(TYPE type);
-  TYPE TranslateType(const std::string &string);
 
   class AddonProps;
   typedef std::shared_ptr<AddonProps> AddonPropsPtr;
@@ -67,6 +63,16 @@ namespace ADDON
     AddonProps();
     AddonProps(std::string id, TYPE type);
 
+    /*!
+     * @brief To ask generated class is usable and all needed parts are set.
+     *
+     * @return True is OK and usable, otherwise false.
+     *
+     * @note This function is only be related to constructor's who read the
+     * addon xml part.
+     */
+    bool IsUsable() const { return m_usable; }
+
     const std::string& ID() const { return id; }
     TYPE Type() const { return type; }
     const AddonVersion& Version() const { return version; }
@@ -94,16 +100,13 @@ namespace ADDON
     uint64_t PackageSize() const { return packageSize; }
 
     /*!
-     * @brief Used to set path for not local available addons who are related
-     * to a repository.
-     *
-     * @param[in] strPath Path where addon is available (normally with a *.zip
-     *                    ending.
+     * @brief Utilities to translate add-on parts to his requested part.
      */
-    void SetPath(std::string strPath) { path = std::move(strPath); }
-    void SetFanArt(std::string strFanArt) { fanart = strFanArt; }
-    void SetIcon(std::string strIcon) { icon = strIcon; }
-    bool IsUsable() const { return m_usable; }
+    //@{
+    static std::string TranslateType(TYPE type, bool pretty=false);
+    static std::string TranslateIconType(TYPE type);
+    static TYPE TranslateType(const std::string &string);
+    //@}
 
   /*private: So long public until all add-on types reworked to new way! */
     bool m_usable;
@@ -143,6 +146,15 @@ namespace ADDON
      * @return true if successfully done, otherwise false
      */
     bool LoadAddonXML(const TiXmlElement* element, std::string addonXmlPath);
+
+    /*!
+     * @brief Parse the given xml element about the used platform library name.
+     *
+     * @note The returned library names depends on the OS where Kodi is compiled.
+     * @param[in] element The TinyXML element to read
+     * @return The string of used library e.g. 'library_linux' for Linux
+     */
+    static const char* GetPlatformLibraryName(const TiXmlElement* element);
   };
 
 } /* namespace ADDON */

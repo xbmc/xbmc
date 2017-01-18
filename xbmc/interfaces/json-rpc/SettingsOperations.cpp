@@ -627,7 +627,7 @@ bool CSettingsOperations::SerializeSettingAddon(const CSettingAddon* setting, CV
     return false;
 
   obj["type"] = "addon";
-  obj["addontype"] = ADDON::TranslateType(setting->GetAddonType());
+  obj["addontype"] = ADDON::AddonProps::TranslateType(setting->GetAddonType());
 
   return true;
 }
