@@ -20417,6 +20417,8 @@ msgctxt "#38207"
 msgid "Show EXIF picture information"
 msgstr ""
 
+#. Help text of setting "Pictures -> Show EXIF picture information" with label #38208
+#: system/settings/settings.xml
 msgctxt "#38208"
 msgid "If EXIF information exists (date, time, camera used, etc.), it will be displayed."
 msgstr ""
