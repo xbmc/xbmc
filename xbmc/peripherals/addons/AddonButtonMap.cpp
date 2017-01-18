@@ -326,7 +326,7 @@ CAddonButtonMap::DriverMap CAddonButtonMap::CreateLookupTable(const FeatureMap& 
           driverMap[translatedPrimitive] = it->first;
 
           // Map opposite semiaxis
-          CDriverPrimitive oppositePrimitive = CDriverPrimitive(translatedPrimitive.Index(), translatedPrimitive.SemiAxisDirection() * -1);
+          CDriverPrimitive oppositePrimitive = CDriverPrimitive(translatedPrimitive.Index(), 0, translatedPrimitive.SemiAxisDirection() * -1, 1);
           driverMap[oppositePrimitive] = it->first;
         }
         break;
