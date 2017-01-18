@@ -13131,7 +13131,12 @@ msgctxt "#21342"
 msgid "There are currently no updates available for this add-on."
 msgstr ""
 
-#empty strings from id 21343 to 21358
+#empty strings from id 21343 to 21357
+
+#: system/settings/settings.xml
+msgctxt "#21358"
+msgid "Enable UPnP support"
+msgstr ""
 
 #: xbmc/dialogs/GUIDialogFileBrowser.cpp
 msgctxt "#21359"
@@ -20482,3 +20487,10 @@ msgstr ""
 msgctxt "#39016"
 msgid "Resume audiobook"
 msgstr ""
+
+#. Description of setting with label #21358 "Share my libraries"
+#: system/settings/settings.xml
+msgctxt "#39017"
+msgid "Enables UPnP. This allows you to stream media in your libraries to a UPnP client and to detect remote UPnP servers."
+msgstr ""
+
