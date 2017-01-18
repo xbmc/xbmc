@@ -87,7 +87,7 @@ static const TypeMapping types[] =
    {"kodi.vfs",                          ADDON_VFS,                 39013, "DefaultAddonVfs.png" },
   };
 
-std::string TranslateType(ADDON::TYPE type, bool pretty/*=false*/)
+std::string AddonProps::TranslateType(ADDON::TYPE type, bool pretty/*=false*/)
 {
   for (unsigned int index=0; index < ARRAY_SIZE(types); ++index)
   {
@@ -103,7 +103,7 @@ std::string TranslateType(ADDON::TYPE type, bool pretty/*=false*/)
   return "";
 }
 
-TYPE TranslateType(const std::string &string)
+TYPE AddonProps::TranslateType(const std::string &string)
 {
   for (unsigned int index=0; index < ARRAY_SIZE(types); ++index)
   {
@@ -115,7 +115,7 @@ TYPE TranslateType(const std::string &string)
   return ADDON_UNKNOWN;
 }
 
-std::string GetIcon(ADDON::TYPE type)
+std::string AddonProps::TranslateIconType(ADDON::TYPE type)
 {
   for (unsigned int index=0; index < ARRAY_SIZE(types); ++index)
   {
@@ -126,7 +126,7 @@ std::string GetIcon(ADDON::TYPE type)
   return "";
 }
 
-const char* GetPlatformLibraryName(const TiXmlElement* element)
+const char* AddonProps::GetPlatformLibraryName(const TiXmlElement* element)
 {
   const char* libraryName;
 #if defined(TARGET_ANDROID)

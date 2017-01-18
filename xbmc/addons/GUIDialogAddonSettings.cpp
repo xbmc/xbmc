@@ -474,7 +474,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
             for (std::vector<std::string>::iterator i = addonTypes.begin(); i != addonTypes.end(); ++i)
             {
               StringUtils::Trim(*i);
-              ADDON::TYPE type = TranslateType(*i);
+              ADDON::TYPE type = AddonProps::TranslateType(*i);
               if (type != ADDON_UNKNOWN)
                 types.push_back(type);
             }

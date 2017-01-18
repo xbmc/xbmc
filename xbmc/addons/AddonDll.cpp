@@ -164,7 +164,7 @@ bool CAddonDll::LoadDll()
     CGUIDialogOK* pDialog = (CGUIDialogOK*)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
     if (pDialog)
     {
-      std::string heading = StringUtils::Format("%s: %s", TranslateType(Type(), true).c_str(), Name().c_str());
+      std::string heading = StringUtils::Format("%s: %s", AddonProps::TranslateType(Type(), true).c_str(), Name().c_str());
       pDialog->SetHeading(CVariant{heading});
       pDialog->SetLine(1, CVariant{24070});
       pDialog->SetLine(2, CVariant{24071});
@@ -239,7 +239,7 @@ ADDON_STATUS CAddonDll::Create(int type, void* funcTable, void* info)
     CGUIDialogOK* pDialog = (CGUIDialogOK*)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
     if (pDialog)
     {
-      std::string heading = StringUtils::Format("%s: %s", TranslateType(Type(), true).c_str(), Name().c_str());
+      std::string heading = StringUtils::Format("%s: %s", AddonProps::TranslateType(Type(), true).c_str(), Name().c_str());
       pDialog->SetHeading(CVariant{heading});
       pDialog->SetLine(1, CVariant{24070});
       pDialog->SetLine(2, CVariant{24071});
@@ -298,7 +298,7 @@ ADDON_STATUS CAddonDll::Create(KODI_HANDLE firstKodiInstance)
     CGUIDialogOK* pDialog = (CGUIDialogOK*)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
     if (pDialog)
     {
-      std::string heading = StringUtils::Format("%s: %s", TranslateType(Type(), true).c_str(), Name().c_str());
+      std::string heading = StringUtils::Format("%s: %s", AddonProps::TranslateType(Type(), true).c_str(), Name().c_str());
       pDialog->SetHeading(CVariant{heading});
       pDialog->SetLine(1, CVariant{24070});
       pDialog->SetLine(2, CVariant{24071});
@@ -375,7 +375,7 @@ bool CAddonDll::CheckAPIVersion(int type)
                             kodiVersion,
                             addonVersion);
 
-    std::string heading = StringUtils::Format("%s: %s", TranslateType(Type(), true).c_str(), Name().c_str());
+    std::string heading = StringUtils::Format("%s: %s", AddonProps::TranslateType(Type(), true).c_str(), Name().c_str());
     std::string text = StringUtils::Format(g_localizeStrings.Get(24084).c_str(),
                                            kodi::addon::GetTypeName(type),
                                            kodiVersion,

@@ -86,7 +86,7 @@ static cp_extension_t* GetFirstExtPoint(const cp_plugin_info_t* addon, TYPE type
     if (type == ADDON_UNKNOWN)
       return ext;
 
-    if (type == TranslateType(ext->ext_point_id))
+    if (type == AddonProps::TranslateType(ext->ext_point_id))
       return ext;
   }
   return nullptr;
@@ -115,7 +115,7 @@ bool CAddonMgr::Factory(const cp_plugin_info_t* plugin, TYPE type, CAddonBuilder
 
   if (ext)
   {
-    builder.SetType(TranslateType(ext->ext_point_id));
+    builder.SetType(AddonProps::TranslateType(ext->ext_point_id));
     builder.SetExtPoint(ext);
 
     auto libname = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@library");
