@@ -203,6 +203,11 @@ bool CGUISliderControl::OnAction(const CAction &action)
     }
     break;
 
+  case ACTION_PAGE_DOWN:
+    // go DOWN 10 increments
+    Move(-10);
+    return true;
+
   case ACTION_MOVE_RIGHT:
     if (IsActive() && m_orientation == HORIZONTAL)
     {
@@ -226,6 +231,11 @@ bool CGUISliderControl::OnAction(const CAction &action)
       return true;
     }
     break;
+
+  case ACTION_PAGE_UP:
+    // go UP 10 increments
+    Move(10);
+    return true;
 
   case ACTION_SELECT_ITEM:
     if (m_rangeSelection)
