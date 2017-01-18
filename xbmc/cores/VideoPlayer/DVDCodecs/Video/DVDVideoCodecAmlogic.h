@@ -28,7 +28,6 @@
 class CAMLCodec;
 struct frame_queue;
 struct mpeg2_sequence;
-class CBitstreamParser;
 class CBitstreamConverter;
 
 class CDVDVideoCodecAmlogic;
@@ -99,7 +98,6 @@ protected:
   double          m_mpeg2_sequence_pts;
   bool            m_drop;
 
-  CBitstreamParser *m_bitparser;
   CBitstreamConverter *m_bitstream;
 private:
   CCriticalSection    m_secure;

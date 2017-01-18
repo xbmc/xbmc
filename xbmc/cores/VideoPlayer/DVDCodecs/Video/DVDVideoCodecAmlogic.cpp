@@ -49,7 +49,6 @@ CDVDVideoCodecAmlogic::CDVDVideoCodecAmlogic(CProcessInfo &processInfo) : CDVDVi
   m_framerate(0.0),
   m_video_rate(0),
   m_mpeg2_sequence(NULL),
-  m_bitparser(NULL),
   m_bitstream(NULL),
   m_opened(false),
   m_drop(false)
@@ -131,8 +130,6 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
         m_hints.extradata = malloc(m_hints.extrasize);
         memcpy(m_hints.extradata, m_bitstream->GetExtraData(), m_hints.extrasize);
       }
-      //m_bitparser = new CBitstreamParser();
-      //m_bitparser->Open();
       break;
     case AV_CODEC_ID_MPEG4:
     case AV_CODEC_ID_MSMPEG4V2:
@@ -259,9 +256,6 @@ void CDVDVideoCodecAmlogic::Dispose(void)
   if (m_bitstream)
     delete m_bitstream, m_bitstream = NULL;
 
-  if (m_bitparser)
-    delete m_bitparser, m_bitparser = NULL;
-
   while (m_queue_depth)
     FrameQueuePop();
 }
@@ -280,9 +274,6 @@ int CDVDVideoCodecAmlogic::Decode(uint8_t *pData, int iSize, double dts, double 
       pData = m_bitstream->GetConvertBuffer();
       iSize = m_bitstream->GetConvertSize();
     }
-
-    if (m_bitparser)
-      m_bitparser->FindIdrSlice(pData, iSize);
 
     FrameRateTracking( pData, iSize, dts, pts);
   }
