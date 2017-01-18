@@ -367,6 +367,7 @@
 					<visible>String.IsEmpty(Listitem.Plot)</visible>
 				</control>
 			</control>
+			<include>PVRChannelNumberInput</include>
 			<include content="TopBar">
 				<param name="breadcrumbs_label" value="$VAR[BreadcrumbsPVRChannelsVar]" />
 			</include>

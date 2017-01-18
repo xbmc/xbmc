@@ -17975,7 +17975,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36231"
-msgid "When flipping through channels using channel up/down buttons or when pressing a number button in full screen mode, channel switches must be confirmed using the OK button."
+msgid "When flipping through channels using channel up/down buttons, channel switches must be confirmed using the OK button."
 msgstr ""
 
 #: system/settings/settings.xml

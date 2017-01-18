@@ -1411,7 +1411,7 @@
         </setting>
         <setting id="pvrplayback.confirmchannelswitch" type="boolean" label="19281" help="36231">
           <level>1</level>
-          <default>false</default>
+          <default>true</default>
           <control type="toggle" />
         </setting>
         <setting id="pvrplayback.channelentrytimeout" type="integer" label="19073" help="36232">

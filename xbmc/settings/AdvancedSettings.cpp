@@ -353,7 +353,7 @@ void CAdvancedSettings::Initialize()
   m_iPVRInfoToggleInterval         = 3000;
   m_bPVRChannelIconsAutoScan       = true;
   m_bPVRAutoScanIconsUserSet       = false;
-  m_iPVRNumericChannelSwitchTimeout = 1000;
+  m_iPVRNumericChannelSwitchTimeout = 2000;
 
   m_cacheMemSize = 1024 * 1024 * 20;
   m_cacheBufferMode = CACHE_BUFFER_MODE_INTERNET; // Default (buffer all internet streams/filesystems)

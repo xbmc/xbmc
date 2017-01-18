@@ -143,4 +143,18 @@
 			<visible>String.IsEmpty(Listitem.Plot) + String.IsEmpty(Listitem.Genre)</visible>
 		</control>
 	</include>
+	<include name="PVRChannelNumberInput">
+		<control type="label">
+			<left>0</left>
+			<top>0</top>
+			<width>100%</width>
+			<height>100%</height>
+			<label>$INFO[PVR.ChannelNumberInput]</label>
+			<shadowcolor>black</shadowcolor>
+			<align>center</align>
+			<font>WeatherTemp</font>
+			<aligny>center</aligny>
+			<visible>!String.IsEmpty(PVR.ChannelNumberInput)</visible>
+		</control>
+	</include>
 </includes>
