@@ -131,8 +131,8 @@ namespace XBMCAddon
     /// @param updateListing        [opt] bool - True=this folder should
     ///                             update the current listing/False=Folder
     ///                             is a subfolder(Default).
-    /// @param cacheToDisc          [opt] bool - True=Allow folder to be cached
-    ///                             (default)/False=this folder
+    /// @param cacheToDisc          [opt] bool - True=Folder will cache if
+    ///                             extended time(default)/False=this folder
     ///                             will never cache to disc.
     ///
     ///
