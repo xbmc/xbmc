@@ -155,15 +155,9 @@ const char* GetPlatformLibraryName(const TiXmlElement* element)
   return libraryName;
 }
 
-AddonProps::AddonProps()
-  : m_usable(true),
-    type(ADDON_UNKNOWN),
-    packageSize(0)
-{
-}
-
 AddonProps::AddonProps(std::string addonPath)
   : m_usable(false),
+    type(ADDON_UNKNOWN),
     path(addonPath)
 {
   auto addonXmlPath = CSpecialProtocol::TranslatePath(URIUtils::AddFileToFolder(path, "addon.xml"));
@@ -179,12 +173,54 @@ AddonProps::AddonProps(std::string addonPath)
   }
 
   m_usable = LoadAddonXML(xmlDoc.RootElement(), addonXmlPath);
+  if (m_usable)
+  {
+    if (icon.empty())
+    {
+      std::string tmpIcon = URIUtils::AddFileToFolder(path, "icon.png");
+      if (XFILE::CFile::Exists(tmpIcon))
+        icon = tmpIcon;
+    }
+
+    if (fanart.empty())
+    {
+      std::string tmpFanart = URIUtils::AddFileToFolder(path, "fanart.jpg");
+      if (XFILE::CFile::Exists(tmpFanart))
+        fanart = tmpFanart;
+    }
+  }
 }
 
-AddonProps::AddonProps(const TiXmlElement* baseElement, std::string addonXmlPath)
-  : m_usable(false)
+AddonProps::AddonProps(const TiXmlElement* baseElement, std::string addonRepoXmlPath)
+  : m_usable(false),
+    type(ADDON_UNKNOWN)
 {
-  m_usable = LoadAddonXML(baseElement, addonXmlPath);
+  m_usable = LoadAddonXML(baseElement, addonRepoXmlPath);
+  if (m_usable)
+  {
+    /*
+     * For repo based addon data becomes the folders set from here, to know the
+     * place is the add-on id needed who comes from xml.
+     *
+     * Also need the add-on path set to the zip file on repository place.
+     */
+    for (unsigned int i = 0; i < screenshots.size(); ++i)
+    {
+      screenshots[i] = URIUtils::AddFileToFolder(addonRepoXmlPath, StringUtils::Format("%s/%s", id.c_str(), screenshots[i].c_str()));
+    }
+    if (!fanart.empty())
+      fanart = URIUtils::AddFileToFolder(addonRepoXmlPath, StringUtils::Format("%s/%s", id.c_str(), fanart.c_str()));
+    if (!icon.empty())
+      icon = URIUtils::AddFileToFolder(addonRepoXmlPath, StringUtils::Format("%s/%s", id.c_str(), icon.c_str()));
+    path = URIUtils::AddFileToFolder(addonRepoXmlPath, StringUtils::Format("%s/%s-%s.zip", id.c_str(), id.c_str(), version.asString().c_str()));
+  }
+}
+
+AddonProps::AddonProps()
+  : m_usable(true),
+    type(ADDON_UNKNOWN),
+    packageSize(0)
+{
 }
 
 AddonProps::AddonProps(std::string id, TYPE type)
@@ -211,7 +247,7 @@ bool AddonProps::LoadAddonXML(const TiXmlElement* baseElement, std::string addon
 
   if (!StringUtils::EqualsNoCase(baseElement->Value(), "addon"))
   {
-    CLog::Log(LOGERROR, "AddonProps: file '%s' doesnt contain <addon>", addonXmlPath.c_str());
+    CLog::Log(LOGERROR, "AddonProps: file from '%s' doesnt contain <addon>", addonXmlPath.c_str());
     return false;
   }
 
@@ -230,9 +266,13 @@ bool AddonProps::LoadAddonXML(const TiXmlElement* baseElement, std::string addon
   version = ADDON::AddonVersion(cstring ? cstring : "");
   cstring = baseElement->Attribute("provider-name");
   author = cstring ? cstring : "";
-  if (id.empty() || name.empty() || version.empty() || author.empty())
+  if (id.empty() || name.empty() || version.empty())
   {
-    CLog::Log(LOGERROR, "AddonProps: file '%s' doesnt contain required values on <addon ... >", addonXmlPath.c_str());
+    CLog::Log(LOGERROR, "AddonProps: file '%s' doesnt contain required values on <addon ... > id='%s', name='%s', version='%s'", 
+              addonXmlPath.c_str(),
+              id.empty() ? "missing" : id.c_str(),
+              name.empty() ? "missing" : name.c_str(),
+              version.empty() ? "missing" : version.asString().c_str());
     return false;
   }
 
@@ -267,7 +307,7 @@ bool AddonProps::LoadAddonXML(const TiXmlElement* baseElement, std::string addon
   for (const TiXmlElement* child = baseElement->FirstChildElement("extension"); child != nullptr; child = child->NextSiblingElement("extension"))
   {
     cstring = child->Attribute("point");
-    std::string point = child->Attribute("point");
+    std::string point = cstring ? cstring : "";
     if (point == "kodi.addon.metadata" || point == "xbmc.addon.metadata")
     {
       /*
@@ -290,6 +330,8 @@ bool AddonProps::LoadAddonXML(const TiXmlElement* baseElement, std::string addon
             strSummary = element->GetText();
           }
         }
+        else
+          strSummary = element->GetText();
       }
       summary = strSummary ? strSummary : "";
 
@@ -313,6 +355,8 @@ bool AddonProps::LoadAddonXML(const TiXmlElement* baseElement, std::string addon
             strDescription = element->GetText();
           }
         }
+        else
+          strDescription = element->GetText();
       }
       description = strDescription ? strDescription : "";
   
@@ -336,6 +380,8 @@ bool AddonProps::LoadAddonXML(const TiXmlElement* baseElement, std::string addon
             strDisclaimer = element->GetText();
           }
         }
+        else
+          strDisclaimer = element->GetText();
       }
       disclaimer = strDisclaimer ? strDisclaimer : "";
 
@@ -381,6 +427,25 @@ bool AddonProps::LoadAddonXML(const TiXmlElement* baseElement, std::string addon
       if (element && element->GetText() != nullptr)
         broken = element->GetText();
 
+      /* Parse addon.xml "<language">...</language>" */
+      element = child->FirstChildElement("language");
+      if (element && element->GetText() != nullptr)
+        extrainfo.insert(std::make_pair("language", element->GetText()));
+
+      /* Parse addon.xml "<noicon">...</noicon>" */
+      if (icon.empty())
+      {
+        element = child->FirstChildElement("noicon");
+        icon = (element && strcmp(element->GetText() , "true") == 0) ? "" : "icon.png";
+      }
+
+      /* Parse addon.xml "<nofanart">...</nofanart>" */
+      if (fanart.empty())
+      {
+        element = child->FirstChildElement("nofanart");
+        fanart = (element && strcmp(element->GetText() , "true") == 0) ? "" : "fanart.jpg";
+      }
+
       /* Parse addon.xml "<size">...</size>" */
       element = child->FirstChildElement("size");
       if (element && element->GetText() != nullptr)
@@ -406,14 +471,41 @@ bool AddonProps::LoadAddonXML(const TiXmlElement* baseElement, std::string addon
       }
       changelog = strChangelog ? strChangelog : "";
     }
+    else if (point == "xbmc.python.script" && type == ADDON_UNKNOWN)
+    {
+      type = ADDON_SCRIPT;
+      /* Parse addon.xml "<provides">...</provides>" */
+      const TiXmlElement* element = child->FirstChildElement("provides");
+      if (element && element->GetText() != nullptr)
+        extrainfo.insert(std::make_pair("provides", element->GetText()));
+    }
+    else if (point == "xbmc.python.pluginsource" && type == ADDON_UNKNOWN)
+    {
+      type = ADDON_PLUGIN;
+      /* Parse addon.xml "<provides">...</provides>" */
+      const TiXmlElement* element = child->FirstChildElement("provides");
+      if (element && element->GetText() != nullptr)
+        extrainfo.insert(std::make_pair("provides", element->GetText()));
+    }
+    else if (point == "kodi.resource.language" && type == ADDON_UNKNOWN)
+    {
+      type = ADDON_RESOURCE_LANGUAGE;
+      /* Parse addon.xml "<locale">...</locale>" */
+      cstring = child->Attribute("locale");
+      if (cstring != nullptr)
+        extrainfo.insert(std::make_pair("locale", cstring));
+    }
     else
     {
       // Get add-on type
-      type = TranslateType(point);
       if (type == ADDON_UNKNOWN)
       {
-        CLog::Log(LOGERROR, "AddonProps: file '%s' doesn't contain a valid add-on type name (%s)", addonXmlPath.c_str(), point.c_str());
-        return false;
+        type = TranslateType(point);
+        if (type == ADDON_UNKNOWN || type >= ADDON_MAX)
+        {
+          CLog::Log(LOGERROR, "AddonProps: file '%s' doesn't contain a valid add-on type name (%s)", addonXmlPath.c_str(), point.c_str());
+          return false;
+        }
       }
 
       // Get add-on library file name (if present)
@@ -436,20 +528,6 @@ bool AddonProps::LoadAddonXML(const TiXmlElement* baseElement, std::string addon
         attribute = attribute->Next();
       }
     }
-  }
-
-  if (icon.empty())
-  {
-    std::string tmpIcon = URIUtils::AddFileToFolder(path, "icon.png");
-    if (XFILE::CFile::Exists(tmpIcon))
-      icon = tmpIcon;
-  }
-
-  if (fanart.empty())
-  {
-    std::string tmpFanart = URIUtils::AddFileToFolder(path, "fanart.png");
-    if (XFILE::CFile::Exists(tmpFanart))
-      fanart = tmpFanart;
   }
 
   return true;

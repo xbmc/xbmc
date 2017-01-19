@@ -1113,13 +1113,10 @@ bool CAddonMgr::AddonsFromRepoXML(const CRepository::DirInfo& repo, const std::s
   auto element = doc.RootElement()->FirstChildElement("addon");
   while (element)
   {
-    AddonPropsPtr props = std::make_shared<AddonProps>(element, xml);
+    AddonPropsPtr props = std::make_shared<AddonProps>(element, repo.datadir);
     if (props->IsUsable())
-    {
-      props->SetPath(URIUtils::AddFileToFolder(repo.datadir, StringUtils::Format("%s/%s-%s.zip",
-                     props->ID().c_str(), props->ID().c_str(), props->Version().asString().c_str())));
       addonProps.push_back(std::move(props));
-    }
+
     element = element->NextSiblingElement("addon");
   }
 
