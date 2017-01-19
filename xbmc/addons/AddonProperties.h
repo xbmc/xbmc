@@ -57,10 +57,12 @@ namespace ADDON
      * Source is normally a "addons.xml"
      *
      * @param[in] baseElement The TinyXML base element to parse
-     * @param[in] addonXmlPath Path to the element related xml file, used
-     *                         to know on log messages to source of fault
+     * @param[in] addonRepoXmlPath Path to the element related xml file, used
+     *                             to know on log messages to source of fault
+     *                             For this class constructor it contains the
+     *                             big addons.xml from repository!
      */
-    AddonProps(const TiXmlElement* baseElement, std::string addonXmlPath);
+    AddonProps(const TiXmlElement* baseElement, std::string addonRepoXmlPath);
 
     AddonProps();
     AddonProps(std::string id, TYPE type);
@@ -99,6 +101,8 @@ namespace ADDON
      *                    ending.
      */
     void SetPath(std::string strPath) { path = std::move(strPath); }
+    void SetFanArt(std::string strFanArt) { fanart = strFanArt; }
+    void SetIcon(std::string strIcon) { icon = strIcon; }
     bool IsUsable() const { return m_usable; }
 
   /*private: So long public until all add-on types reworked to new way! */
