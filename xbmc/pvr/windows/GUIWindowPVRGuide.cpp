@@ -19,7 +19,6 @@
  */
 
 #include "ContextMenuManager.h"
-#include "dialogs/GUIDialogNumeric.h"
 #include "epg/GUIEPGGridContainer.h"
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
@@ -45,6 +44,7 @@ using namespace EPG;
 
 CGUIWindowPVRGuide::CGUIWindowPVRGuide(bool bRadio) :
   CGUIWindowPVRBase(bRadio, bRadio ? WINDOW_RADIO_GUIDE : WINDOW_TV_GUIDE, "MyPVRGuide.xml"),
+  CPVRChannelNumberInputHandler(1000),
   m_cachedChannelGroup(new CPVRChannelGroup)
 {
   m_bRefreshTimelineItems = false;
@@ -217,6 +217,13 @@ bool CGUIWindowPVRGuide::OnAction(const CAction &action)
 {
   switch (action.GetID())
   {
+    case REMOTE_0:
+      if (GetCurrentDigitCount() == 0)
+      {
+        // single zero input is handled by epg grid container
+        break;
+      }
+      // fall-thru is intended
     case REMOTE_1:
     case REMOTE_2:
     case REMOTE_3:
@@ -226,7 +233,8 @@ bool CGUIWindowPVRGuide::OnAction(const CAction &action)
     case REMOTE_7:
     case REMOTE_8:
     case REMOTE_9:
-      return InputChannelNumber(action.GetID() - REMOTE_0);
+      AppendChannelNumberDigit(action.GetID() - REMOTE_0);
+      return true;
   }
 
   return CGUIWindowPVRBase::OnAction(action);
@@ -472,31 +480,25 @@ bool CGUIWindowPVRGuide::OnContextButtonNow(CFileItem *item, CONTEXT_BUTTON butt
   return bReturn;
 }
 
-bool CGUIWindowPVRGuide::InputChannelNumber(int input)
+void CGUIWindowPVRGuide::OnInputDone()
 {
-  std::string strInput = StringUtils::Format("%i", input);
-  if (CGUIDialogNumeric::ShowAndGetNumber(strInput, g_localizeStrings.Get(19103)))
+  const int iChannelNumber = GetChannelNumber();
+  if (iChannelNumber >= 0)
   {
-    int iChannelNumber = atoi(strInput.c_str());
-    if (iChannelNumber >= 0)
+    for (const CFileItemPtr event : m_vecItems->GetList())
     {
-      for (auto event : m_vecItems->GetList())
+      const CEpgInfoTagPtr tag(event->GetEPGInfoTag());
+      if (tag->HasPVRChannel() && tag->PVRChannelNumber() == iChannelNumber)
       {
-        const CEpgInfoTagPtr tag(event->GetEPGInfoTag());
-        if (tag->HasPVRChannel() && tag->PVRChannelNumber() == iChannelNumber)
+        CGUIEPGGridContainer* epgGridContainer = dynamic_cast<CGUIEPGGridContainer*>(GetControl(m_viewControl.GetCurrentControl()));
+        if (epgGridContainer)
         {
-          CGUIEPGGridContainer* epgGridContainer = dynamic_cast<CGUIEPGGridContainer*>(GetControl(m_viewControl.GetCurrentControl()));
-          if (epgGridContainer)
-          {
-            epgGridContainer->SetChannel(tag->ChannelTag());
-            return true;
-          }
+          epgGridContainer->SetChannel(tag->ChannelTag());
+          return;
         }
       }
     }
   }
-
-  return false;
 }
 
 CPVRRefreshTimelineItemsThread::CPVRRefreshTimelineItemsThread(CGUIWindowPVRGuide *pGuideWindow)

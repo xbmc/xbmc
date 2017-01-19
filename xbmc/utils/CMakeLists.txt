@@ -5,7 +5,9 @@ set(SOURCES ActorProtocol.cpp
             auto_buffer.cpp
             Base64.cpp
             BitstreamConverter.cpp
+            BitstreamReader.cpp
             BitstreamStats.cpp
+            BitstreamWriter.cpp
             BooleanLogic.cpp
             CharsetConverter.cpp
             CharsetDetection.cpp
@@ -68,6 +70,7 @@ set(SOURCES ActorProtocol.cpp
             UrlOptions.cpp
             Utf8Utils.cpp
             Variant.cpp
+            VC1BitstreamParser.cpp
             Vector.cpp
             Weather.cpp
             XBMCTinyXML.cpp
@@ -80,7 +83,9 @@ set(HEADERS ActorProtocol.h
             auto_buffer.h
             Base64.h
             BitstreamConverter.h
+            BitstreamReader.h
             BitstreamStats.h
+            BitstreamWriter.h
             BooleanLogic.h
             CharsetConverter.h
             CharsetDetection.h
@@ -156,6 +161,7 @@ set(HEADERS ActorProtocol.h
             Utf8Utils.h
             uXstrings.h
             Variant.h
+            VC1BitstreamParser.h
             Vector.h
             Weather.h
             XBMCTinyXML.h
