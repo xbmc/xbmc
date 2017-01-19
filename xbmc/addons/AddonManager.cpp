@@ -664,8 +664,25 @@ bool CAddonMgr::FindAddons()
 
   // Reload caches
   std::set<std::string> tmp;
+  m_database.GetEnabled(tmp);
+  AddonInfoMap enabledAddons;
+  for (auto addonId : tmp)
+  {
+    const AddonPropsPtr info = GetInstalledAddonInfo(addonId);
+    if (info == nullptr)
+    {
+      CLog::Log(LOGERROR, "ADDONS: Addon Id '%s' does not mach installed map", addonId.c_str());
+      continue;
+    }
+    enabledAddons[info->Type()][addonId] = info;
+  }
+  m_enabledAddons = std::move(enabledAddons);
+
+  { /* old part */
+  tmp.clear();
   m_database.GetDisabled(tmp);
   m_disabled = std::move(tmp);
+  } /* old part end */
 
   tmp.clear();
   m_database.GetBlacklisted(tmp);

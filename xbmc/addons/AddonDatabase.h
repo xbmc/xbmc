@@ -43,6 +43,9 @@ public:
   /*! Get the addon IDs that has been set to disabled */
   bool GetDisabled(std::set<std::string>& addons);
 
+  /*! Get the addon IDs that has been set to enabled */
+  bool GetEnabled(std::set<std::string>& addons);
+
   /*! @deprecated: use FindByAddonId */
   bool GetAvailableVersions(const std::string& addonId,
       std::vector<std::pair<ADDON::AddonVersion, std::string>>& versionsInfo);

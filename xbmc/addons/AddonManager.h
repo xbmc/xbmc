@@ -326,6 +326,7 @@ namespace ADDON
     const AddonPropsPtr GetInstalledAddonInfo(const std::string& addonId);
 
     AddonInfoMap m_installedAddons;
+    AddonInfoMap m_enabledAddons;
     std::set<std::string> m_updateBlacklist;
   };
 
