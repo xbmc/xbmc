@@ -190,10 +190,6 @@ namespace ADDON
 
     bool IsSystemAddon(const std::string& id);
 
-    bool AddToUpdateBlacklist(const std::string& id);
-    bool RemoveFromUpdateBlacklist(const std::string& id);
-    bool IsBlacklisted(const std::string& id) const;
-
     void UpdateLastUsed(const std::string& id);
 
     /* libcpluff */
@@ -265,6 +261,42 @@ namespace ADDON
 
     const AddonPropsPtr GetInstalledAddonInfo(TYPE addonType, std::string addonId);
 
+    /*!
+     * @brief Add add-on id to blacklist where it becomes noted that updates are
+     * available.
+     *
+     * The add-on database becomes also updated with call from this function.
+     *
+     * @param[in] id The add-on id to blacklist
+     * @return true if successfully done, otherwise false
+     *
+     * @note In case add-on is already in blacklist becomes the add skipped and
+     * returns a true.
+     */
+    bool AddToUpdateBlacklist(const std::string& id);
+
+    /*!
+     * @brief Remove a add-on from blacklist in case a update is no more
+     * possible or done.
+     *
+     * The add-on database becomes also updated with call from this function.
+     *
+     * @param[in] id The add-on id to blacklist
+     * @return true if successfully done, otherwise false
+     *
+     * @note In case add-on is not in blacklist becomes the remove skipped and
+     * returns a true.
+     */
+    bool RemoveFromUpdateBlacklist(const std::string& id);
+
+    /*!
+     * @brief Check a add-on id is blacklisted
+     *
+     * @param[in] id The add-on id to check
+     * @return true in case it is blacklisted, otherwise false
+     */
+    bool IsBlacklisted(const std::string& id) const;
+
   private:
 
     /* libcpluff */
@@ -282,7 +314,6 @@ namespace ADDON
     bool EnableSingle(const std::string& id);
 
     std::set<std::string> m_disabled;
-    std::set<std::string> m_updateBlacklist;
     static std::map<TYPE, IAddonMgrCallback*> m_managers;
     CCriticalSection m_critSection;
     CAddonDatabase m_database;
@@ -295,6 +326,7 @@ namespace ADDON
     const AddonPropsPtr GetInstalledAddonInfo(const std::string& addonId);
 
     AddonInfoMap m_installedAddons;
+    std::set<std::string> m_updateBlacklist;
   };
 
 }; /* namespace ADDON */

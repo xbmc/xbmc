@@ -708,28 +708,6 @@ void CAddonMgr::OnPostUnInstall(const std::string& id)
   m_updateBlacklist.erase(id);
 }
 
-bool CAddonMgr::RemoveFromUpdateBlacklist(const std::string& id)
-{
-  CSingleLock lock(m_critSection);
-  if (!IsBlacklisted(id))
-    return true;
-  return m_database.RemoveAddonFromBlacklist(id) && m_updateBlacklist.erase(id) > 0;
-}
-
-bool CAddonMgr::AddToUpdateBlacklist(const std::string& id)
-{
-  CSingleLock lock(m_critSection);
-  if (IsBlacklisted(id))
-    return true;
-  return m_database.BlacklistAddon(id) && m_updateBlacklist.insert(id).second;
-}
-
-bool CAddonMgr::IsBlacklisted(const std::string& id) const
-{
-  CSingleLock lock(m_critSection);
-  return m_updateBlacklist.find(id) != m_updateBlacklist.end();
-}
-
 void CAddonMgr::UpdateLastUsed(const std::string& id)
 {
   auto time = CDateTime::GetCurrentDateTime();
@@ -1234,6 +1212,28 @@ void cp_logger(cp_log_severity_t level, const char *msg, const char *apid, void 
  * @todo This is during rework together with the old style!
  */
 //@{
+
+bool CAddonMgr::AddToUpdateBlacklist(const std::string& id)
+{
+  CSingleLock lock(m_critSection);
+  if (IsBlacklisted(id))
+    return true;
+  return m_database.BlacklistAddon(id) && m_updateBlacklist.insert(id).second;
+}
+
+bool CAddonMgr::RemoveFromUpdateBlacklist(const std::string& id)
+{
+  CSingleLock lock(m_critSection);
+  if (!IsBlacklisted(id))
+    return true;
+  return m_database.RemoveAddonFromBlacklist(id) && m_updateBlacklist.erase(id) > 0;
+}
+
+bool CAddonMgr::IsBlacklisted(const std::string& id) const
+{
+  CSingleLock lock(m_critSection);
+  return m_updateBlacklist.find(id) != m_updateBlacklist.end();
+}
 
 void CAddonMgr::FindAddons(AddonInfoMap& addonmap, std::string path)
 {
