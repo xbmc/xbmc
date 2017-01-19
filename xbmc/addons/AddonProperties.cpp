@@ -268,12 +268,11 @@ bool AddonProps::LoadAddonXML(const TiXmlElement* baseElement, std::string addon
   version = ADDON::AddonVersion(cstring ? cstring : "");
   cstring = baseElement->Attribute("provider-name");
   author = cstring ? cstring : "";
-  if (id.empty() || name.empty() || version.empty())
+  if (id.empty() || version.empty())
   {
-    CLog::Log(LOGERROR, "AddonProps: file '%s' doesnt contain required values on <addon ... > id='%s', name='%s', version='%s'", 
+    CLog::Log(LOGERROR, "AddonProps: file '%s' doesnt contain required values on <addon ... > id='%s', version='%s'", 
               addonXmlPath.c_str(),
               id.empty() ? "missing" : id.c_str(),
-              name.empty() ? "missing" : name.c_str(),
               version.empty() ? "missing" : version.asString().c_str());
     return false;
   }
