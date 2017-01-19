@@ -947,6 +947,32 @@ bool CAddonDatabase::GetDisabled(std::set<std::string>& addons)
   return false;
 }
 
+bool CAddonDatabase::GetEnabled(std::set< std::string >& addons)
+{
+  try
+  {
+    if (nullptr == m_pDB.get())
+      return false;
+    if (nullptr == m_pDS.get())
+      return false;
+
+    std::string sql = PrepareSQL("SELECT addonID FROM installed WHERE enabled=1");
+    m_pDS->query(sql);
+    while (!m_pDS->eof())
+    {
+      addons.insert(m_pDS->fv(0).get_asString());
+      m_pDS->next();
+    }
+    m_pDS->close();
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
+  return false;
+}
+
 bool CAddonDatabase::GetBlacklisted(std::set<std::string>& addons)
 {
   try
