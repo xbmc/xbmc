@@ -39,6 +39,7 @@
 #include "DllLibCPluff.h"
 #include "events/AddonManagementEvent.h"
 #include "events/EventLog.h"
+#include "filesystem/Directory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "VFSEntry.h"
 #include "LangInfo.h"
@@ -299,6 +300,8 @@ void CAddonMgr::UnregisterAddonMgrCallback(TYPE type)
 
 bool CAddonMgr::Init()
 {
+  { /* Old part */
+
   CSingleLock lock(m_critSection);
   m_cpluff = std::unique_ptr<DllLibCPluff>(new DllLibCPluff);
   m_cpluff->Load();
@@ -351,35 +354,31 @@ bool CAddonMgr::Init()
     return false;
   }
 
+  } /* Old part end */
+
   if (!LoadManifest(m_systemAddons, m_optionalAddons))
   {
     CLog::Log(LOGERROR, "ADDONS: Failed to read manifest");
     return false;
   }
 
- if (!m_database.Open())
-   CLog::Log(LOGFATAL, "ADDONS: Failed to open database");
+  if (!m_database.Open())
+    CLog::Log(LOGFATAL, "ADDONS: Failed to open database");
 
   FindAddons();
 
   //Ensure required add-ons are installed and enabled
   for (const auto& id : m_systemAddons)
   {
-    AddonPtr addon;
-    if (!GetAddon(id, addon, ADDON_UNKNOWN))
+    if (GetInstalledAddonInfo(id) == nullptr)
     {
-      CLog::Log(LOGFATAL, "addon '%s' not installed or not enabled.", id.c_str());
+      CLog::Log(LOGFATAL, "ADDONS: required addon '%s' not installed or not enabled.", id.c_str());
       return false;
     }
   }
 
-  VECADDONS repos;
-  if (GetAddons(repos, ADDON_REPOSITORY))
-  {
-    VECADDONS::iterator it = repos.begin();
-    for (;it != repos.end(); ++it)
-      CLog::Log(LOGNOTICE, "ADDONS: Using repository %s", (*it)->ID().c_str());
-  }
+  for (auto repos : m_installedAddons[ADDON_REPOSITORY])
+    CLog::Log(LOGNOTICE, "ADDONS: Using repository %s", repos.first.c_str());
 
   return true;
 }
@@ -639,38 +638,41 @@ AddonDllPtr CAddonMgr::GetAddon(const TYPE &type, const std::string &id)
 
 bool CAddonMgr::FindAddons()
 {
-  bool result = false;
   CSingleLock lock(m_critSection);
-  if (m_cpluff && m_cp_context)
+
+  { /* old part */
+  if (!m_cpluff || !m_cp_context)
+    return false;
+  m_cpluff->scan_plugins(m_cp_context, CP_SP_UPGRADE);
+  } /* old part end */
+  
+  AddonInfoMap installedAddons;
+
+  FindAddons(installedAddons, "special://xbmcbin/addons");
+  FindAddons(installedAddons, "special://xbmc/addons");
+  FindAddons(installedAddons, "special://home/addons");
+
+  m_installedAddons = std::move(installedAddons);
+
+  std::set<std::string> installed;
+  for (auto addonInfoTypes : m_installedAddons)
   {
-    result = true;
-    m_cpluff->scan_plugins(m_cp_context, CP_SP_UPGRADE);
-
-    //Sync with db
-    {
-      std::set<std::string> installed;
-      cp_status_t status;
-      int n;
-      cp_plugin_info_t** cp_addons = m_cpluff->get_plugins_info(m_cp_context, &status, &n);
-      for (int i = 0; i < n; ++i)
-        installed.insert(cp_addons[i]->identifier);
-      m_cpluff->release_info(m_cp_context, cp_addons);
-      m_database.SyncInstalled(installed, m_systemAddons, m_optionalAddons);
-    }
-
-    // Reload caches
-    std::set<std::string> tmp;
-    m_database.GetDisabled(tmp);
-    m_disabled = std::move(tmp);
-
-    tmp.clear();
-    m_database.GetBlacklisted(tmp);
-    m_updateBlacklist = std::move(tmp);
-
-    m_events.Publish(AddonEvents::InstalledChanged());
+    for (auto addonInfo : addonInfoTypes.second)
+      installed.insert(addonInfo.second->ID());
   }
+  m_database.SyncInstalled(installed, m_systemAddons, m_optionalAddons);
 
-  return result;
+  // Reload caches
+  std::set<std::string> tmp;
+  m_database.GetDisabled(tmp);
+  m_disabled = std::move(tmp);
+
+  tmp.clear();
+  m_database.GetBlacklisted(tmp);
+  m_updateBlacklist = std::move(tmp);
+
+  m_events.Publish(AddonEvents::InstalledChanged());
+  return true;
 }
 
 bool CAddonMgr::UnloadAddon(const AddonPtr& addon)
@@ -1226,6 +1228,67 @@ void cp_logger(cp_log_severity_t level, const char *msg, const char *apid, void 
   else
     CLog::Log(cp_to_clog(level), "ADDON: cpluff: '%s' reports '%s'", apid, msg);
 }
+
+/*!
+ * @brief reworked new parts below
+ * @todo This is during rework together with the old style!
+ */
+//@{
+
+void CAddonMgr::FindAddons(AddonInfoMap& addonmap, std::string path)
+{
+  CFileItemList items;
+  if (XFILE::CDirectory::GetDirectory(path, items, "", XFILE::DIR_FLAG_NO_FILE_DIRS))
+  {
+    for (int i = 0; i < items.Size(); ++i)
+    {
+      std::string path = items[i]->GetPath();
+      if (XFILE::CFile::Exists(path + "addon.xml"))
+      {
+        AddonPropsPtr addonInfo = std::make_shared<AddonProps>(path);
+        if (addonInfo->IsUsable())
+        {
+          addonmap[addonInfo->Type()][addonInfo->ID()] = addonInfo;
+        }
+      }
+    }
+  }
+}
+
+const AddonPropsPtr CAddonMgr::GetInstalledAddonInfo(const std::string& addonId)
+{
+  for (auto addonInfoTypes : m_installedAddons)
+  {
+    const auto result = addonInfoTypes.second.find(addonId);
+    if (result != addonInfoTypes.second.end())
+      return result->second;
+  }
+  return AddonPropsPtr();
+}
+
+const AddonPropsPtr CAddonMgr::GetInstalledAddonInfo(TYPE addonType, std::string addonId)
+{
+  if (addonType <= ADDON_UNKNOWN || addonType >= ADDON_MAX || addonId.empty())
+    return AddonPropsPtr();
+
+  const auto installedTypeIt = m_installedAddons.find(addonType);
+  if (installedTypeIt == m_installedAddons.end())
+  {
+    CLog::Log(LOGERROR, "ADDONS: No add-ons for requested type '%s' present", AddonProps::TranslateType(addonType).c_str());
+    return AddonPropsPtr();
+  }
+
+  const auto result = installedTypeIt->second.find(addonId);
+  if (result == installedTypeIt->second.end())
+  {
+    CLog::Log(LOGERROR, "ADDONS: Requested add-on '%s' for type '%s' not present", addonId.c_str(), AddonProps::TranslateType(addonType).c_str());
+    return AddonPropsPtr();
+  }
+
+  return result->second;
+}
+
+//@}
 
 } /* namespace ADDON */
 

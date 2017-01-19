@@ -45,6 +45,9 @@ namespace ADDON
   typedef std::map<TYPE, VECADDONS>::iterator IMAPADDONS;
   typedef std::vector<cp_cfg_element_t*> ELEMENTS;
 
+  typedef std::map<std::string, AddonPropsPtr> AddonInfoList;
+  typedef std::map<TYPE, AddonInfoList> AddonInfoMap;
+
   const std::string ADDON_PYTHON_EXT           = "*.py";
 
   /**
@@ -260,6 +263,8 @@ namespace ADDON
     static bool Factory(const cp_plugin_info_t* plugin, TYPE type, CAddonBuilder& builder);
     static void FillCpluffMetadata(const cp_plugin_info_t* plugin, CAddonBuilder& builder);
 
+    const AddonPropsPtr GetInstalledAddonInfo(TYPE addonType, std::string addonId);
+
   private:
 
     /* libcpluff */
@@ -285,6 +290,11 @@ namespace ADDON
     std::set<std::string> m_systemAddons;
     std::set<std::string> m_optionalAddons;
     bool m_serviceSystemStarted;
+
+    void FindAddons(AddonInfoMap& addonmap, std::string path);
+    const AddonPropsPtr GetInstalledAddonInfo(const std::string& addonId);
+
+    AddonInfoMap m_installedAddons;
   };
 
 }; /* namespace ADDON */
