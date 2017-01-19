@@ -242,14 +242,14 @@ bool CDVDFileInfo::ExtractThumb(const std::string &strPath,
           if (iDecoderState & VC_ERROR)
             break;
 
-          int result = 0;
-          while (result == 0)
+          iDecoderState = 0;
+          while (iDecoderState == 0)
           {
             memset(&picture, 0, sizeof(DVDVideoPicture));
-            result = pVideoCodec->GetPicture(&picture);
+            iDecoderState = pVideoCodec->GetPicture(&picture);
           }
 
-          if (result & VC_PICTURE)
+          if (iDecoderState & VC_PICTURE)
           {
             if(!(picture.iFlags & DVP_FLAG_DROPPED))
               break;
