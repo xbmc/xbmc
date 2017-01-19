@@ -38,88 +38,6 @@
 
 using namespace ADDON;
 
-static std::string SerializeMetadata(const AddonProps& props)
-{
-  CVariant variant;
-  variant["author"] = props.Author();
-  variant["disclaimer"] = props.Disclaimer();
-  variant["broken"] = props.Broken();
-  variant["size"] = props.PackageSize();
-
-  variant["path"] = props.Path();
-  variant["fanart"] = props.FanArt();
-  variant["icon"] = props.Icon();
-
-  variant["screenshots"] = CVariant(CVariant::VariantTypeArray);
-  for (const auto& item : props.Screenshots())
-    variant["screenshots"].push_back(item);
-
-  variant["extensions"] = CVariant(CVariant::VariantTypeArray);
-  variant["extensions"].push_back(ADDON::AddonProps::TranslateType(props.Type(), false));
-
-  variant["dependencies"] = CVariant(CVariant::VariantTypeArray);
-  for (const auto& kv : props.GetDeps())
-  {
-    CVariant dep(CVariant::VariantTypeObject);
-    dep["addonId"] = kv.first;
-    dep["version"] = kv.second.first.asString();
-    dep["optional"] = kv.second.second;
-    variant["dependencies"].push_back(std::move(dep));
-  }
-
-  variant["extrainfo"] = CVariant(CVariant::VariantTypeArray);
-  for (const auto& kv : props.ExtraInfo())
-  {
-    CVariant info(CVariant::VariantTypeObject);
-    info["key"] = kv.first;
-    info["value"] = kv.second;
-    variant["extrainfo"].push_back(std::move(info));
-  }
-
-  return CJSONVariantWriter::Write(variant, true);
-}
-
-static std::string SerializeMetadata(const IAddon& addon)
-{
-  CVariant variant;
-  variant["author"] = addon.Author();
-  variant["disclaimer"] = addon.Disclaimer();
-  variant["broken"] = addon.Broken();
-  variant["size"] = addon.PackageSize();
-
-  variant["path"] = addon.Path();
-  variant["fanart"] = addon.FanArt();
-  variant["icon"] = addon.Icon();
-
-  variant["screenshots"] = CVariant(CVariant::VariantTypeArray);
-  for (const auto& item : addon.Screenshots())
-    variant["screenshots"].push_back(item);
-
-  variant["extensions"] = CVariant(CVariant::VariantTypeArray);
-  variant["extensions"].push_back(ADDON::AddonProps::TranslateType(addon.Type(), false));
-
-  variant["dependencies"] = CVariant(CVariant::VariantTypeArray);
-  for (const auto& kv : addon.GetDeps())
-  {
-    CVariant dep(CVariant::VariantTypeObject);
-    dep["addonId"] = kv.first;
-    dep["version"] = kv.second.first.asString();
-    dep["optional"] = kv.second.second;
-    variant["dependencies"].push_back(std::move(dep));
-  }
-
-  variant["extrainfo"] = CVariant(CVariant::VariantTypeArray);
-  for (const auto& kv : addon.ExtraInfo())
-  {
-    CVariant info(CVariant::VariantTypeObject);
-    info["key"] = kv.first;
-    info["value"] = kv.second;
-    variant["extrainfo"].push_back(std::move(info));
-  }
-
-  return CJSONVariantWriter::Write(variant, true);
-}
-
 static void DeserializeMetadata(const std::string& document, CAddonBuilder& builder)
 {
   CVariant variant = CJSONVariantParser::Parse(document);
@@ -841,7 +759,7 @@ bool CAddonDatabase::UpdateRepositoryContent(const std::string& repository, cons
       m_pDS->exec(PrepareSQL(
           "INSERT INTO addons (id, metadata, addonID, version, name, summary, description, news) "
           "VALUES (NULL, '%s', '%s', '%s', '%s','%s', '%s','%s')",
-          SerializeMetadata(*addon).c_str(),
+          addon->SerializeMetadata().c_str(),
           addon->ID().c_str(),
           addon->Version().asString().c_str(),
           addon->Name().c_str(),

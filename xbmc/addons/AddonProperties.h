@@ -99,6 +99,9 @@ namespace ADDON
     const std::string& Origin() const { return origin; }
     uint64_t PackageSize() const { return packageSize; }
 
+    std::string SerializeMetadata();
+    void DeserializeMetadata(const std::string& document);
+
     /*!
      * @brief Utilities to translate add-on parts to his requested part.
      */
