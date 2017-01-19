@@ -24,6 +24,8 @@
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/LocalizeStrings.h"
+#include "utils/JSONVariantParser.h"
+#include "utils/JSONVariantWriter.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -531,6 +533,83 @@ bool AddonProps::LoadAddonXML(const TiXmlElement* baseElement, std::string addon
   }
 
   return true;
+}
+
+std::string AddonProps::SerializeMetadata()
+{
+  CVariant variant;
+  variant["author"] = author;
+  variant["disclaimer"] = disclaimer;
+  variant["broken"] = broken;
+  variant["size"] = packageSize;
+
+  variant["path"] = path;
+  variant["fanart"] = fanart;
+  variant["icon"] = icon;
+
+  variant["screenshots"] = CVariant(CVariant::VariantTypeArray);
+  for (const auto& item : screenshots)
+    variant["screenshots"].push_back(item);
+
+  variant["extensions"] = CVariant(CVariant::VariantTypeArray);
+  variant["extensions"].push_back(TranslateType(type, false));
+
+  variant["dependencies"] = CVariant(CVariant::VariantTypeArray);
+  for (const auto& kv : dependencies)
+  {
+    CVariant dep(CVariant::VariantTypeObject);
+    dep["addonId"] = kv.first;
+    dep["version"] = kv.second.first.asString();
+    dep["optional"] = kv.second.second;
+    variant["dependencies"].push_back(std::move(dep));
+  }
+
+  variant["extrainfo"] = CVariant(CVariant::VariantTypeArray);
+  for (const auto& kv : extrainfo)
+  {
+    CVariant info(CVariant::VariantTypeObject);
+    info["key"] = kv.first;
+    info["value"] = kv.second;
+    variant["extrainfo"].push_back(std::move(info));
+  }
+
+  return CJSONVariantWriter::Write(variant, true);
+}
+
+void AddonProps::DeserializeMetadata(const std::string& document)
+{
+  CVariant variant = CJSONVariantParser::Parse(document);
+
+  author = variant["author"].asString();
+  disclaimer = variant["disclaimer"].asString();
+  broken = variant["broken"].asString();
+  packageSize = variant["size"].asUnsignedInteger();
+
+  path = variant["path"].asString();
+  fanart = variant["fanart"].asString();
+  icon = variant["icon"].asString();
+
+  std::vector<std::string> screenshots;
+  for (auto it = variant["screenshots"].begin_array(); it != variant["screenshots"].end_array(); ++it)
+    screenshots.push_back(it->asString());
+  screenshots = std::move(screenshots);
+
+  type = TranslateType(variant["extensions"][0].asString());
+
+  ADDONDEPS deps;
+  for (auto it = variant["dependencies"].begin_array(); it != variant["dependencies"].end_array(); ++it)
+  {
+    AddonVersion version((*it)["version"].asString());
+    deps.emplace((*it)["addonId"].asString(), std::make_pair(std::move(version), (*it)["optional"].asBoolean()));
+  }
+  dependencies = std::move(deps);
+
+  InfoMap extraInfo;
+  for (auto it = variant["extrainfo"].begin_array(); it != variant["extrainfo"].end_array(); ++it)
+    extraInfo.emplace((*it)["key"].asString(), (*it)["value"].asString());
+  extrainfo = std::move(extraInfo);
+  
+  m_usable = true;
 }
 
 } /* namespace ADDON */
