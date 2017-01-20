@@ -7848,13 +7848,7 @@ msgctxt "#14277"
 msgid "Allow remote control from applications on other systems"
 msgstr ""
 
-#empty strings from id 14278 to 14299
-
-#. "pvr manager" settings group label
-#: system/settings/settings.xml
-msgctxt "#14300"
-msgid "PVR Manager"
-msgstr ""
+#empty strings from id 14278 to 14300
 
 #. pvr "channels" settings group label
 #: system/settings/settings.xml
@@ -10530,11 +10524,7 @@ msgctxt "#19268"
 msgid "Hide \"No information available\" labels"
 msgstr ""
 
-#. pvr settings 'hide connection lost warnings' setting label. Do not display notification message in case Kodi cannot reach a pvr backend
-#: system/settings/settings.xml
-msgctxt "#19269"
-msgid "Disable \"Connection lost\" warnings"
-msgstr ""
+# empty string with id 19269
 
 #. Label of the option to switch between a grouped recordings list and a non-grouped recordings list in pvr recordings window.
 #: addons/skin.estuary/1080i/Includes_MediaMenu.xml
@@ -17870,10 +17860,7 @@ msgctxt "#36209"
 msgid "Delete the databases for channels and guide and reimport the data from the backend afterwards."
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#36210"
-msgid "Prevent the \"Connection lost\" notification window from displaying when the PVR backend server is not available."
-msgstr ""
+#empty string with id 36210
 
 #: system/settings/settings.xml
 msgctxt "#36211"
