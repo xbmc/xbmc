@@ -129,7 +129,7 @@ bool CAddonSystemSettings::UnsetActive(const AddonPropsPtr& addonProps)
 std::vector<std::string> CAddonSystemSettings::MigrateAddons(std::function<void(void)> onMigrate)
 {
   auto getIncompatible = [](){
-    AddonInfos incompatible = CAddonMgr::GetInstance().GetAddonInfos();
+    AddonInfos incompatible = CAddonMgr::GetInstance().GetAddonInfos(true, ADDON_UNKNOWN);
     incompatible.erase(std::remove_if(incompatible.begin(), incompatible.end(),
         [](const AddonPropsPtr a){ return CAddonMgr::GetInstance().IsCompatible(*a); }), incompatible.end());
     return incompatible;

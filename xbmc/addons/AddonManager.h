@@ -310,7 +310,7 @@ namespace ADDON
      *                        returned who match them. Default is for all types.
      * @return The list with of available add-on's with info tables.
      */
-    AddonInfos GetAddonInfos(bool enabledOnly = true, const TYPE &type = ADDON_UNKNOWN);
+    AddonInfos GetAddonInfos(bool enabledOnly, const TYPE &type);
 
     /*!
      * @brief Compare the given add-on info to his related dependency versions.
