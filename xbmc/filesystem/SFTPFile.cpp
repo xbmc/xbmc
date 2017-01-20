@@ -27,10 +27,6 @@
 #include <fcntl.h>
 #include <sstream>
 
-#ifdef TARGET_WINDOWS
-#pragma comment(lib, "ssh.lib")
-#endif
-
 #if defined(TARGET_DARWIN_IOS)
 #include "utils/StringUtils.h"
 #include "platform/darwin/DarwinUtils.h"

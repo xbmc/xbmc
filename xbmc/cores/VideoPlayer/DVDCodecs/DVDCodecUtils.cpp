@@ -25,16 +25,6 @@
 #include "cores/FFmpeg.h"
 #include "Util.h"
 
-#ifdef TARGET_WINDOWS
-#pragma comment(lib, "avcodec.lib")
-#pragma comment(lib, "avfilter.lib")
-#pragma comment(lib, "avformat.lib")
-#pragma comment(lib, "avutil.lib")
-#pragma comment(lib, "postproc.lib")
-#pragma comment(lib, "swresample.lib")
-#pragma comment(lib, "swscale.lib")
-#endif
-
 extern "C" {
 #include "libswscale/swscale.h"
 }
