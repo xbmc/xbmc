@@ -277,9 +277,9 @@ void CVideoPlayerVideo::Process()
   double pts = 0;
   double frametime = (double)DVD_TIME_BASE / m_fFrameRate;
 
-  int iDropped = 0; //frames dropped in a row
   bool bRequestDrop = false;
   int iDropDirective;
+  bool onlyPrioMsgs = false;
 
   m_videoStats.Start();
   m_droppingStats.Reset();
@@ -297,8 +297,16 @@ void CVideoPlayerVideo::Process()
     if (m_paused)
       iPriority = 1;
 
+    if (onlyPrioMsgs)
+    {
+      iPriority = 1;
+      iQueueTimeOut = 1;
+    }
+
     CDVDMsg* pMsg;
     MsgQueueReturnCode ret = m_messageQueue.Get(&pMsg, iQueueTimeOut, iPriority);
+
+    onlyPrioMsgs = false;
 
     if (MSGQ_IS_ERROR(ret))
     {
@@ -307,17 +315,27 @@ void CVideoPlayerVideo::Process()
     }
     else if (ret == MSGQ_TIMEOUT)
     {
-      // if we only wanted priority messages, this isn't a stall
-      if( iPriority )
+      if (ProcessDecoderOutput(frametime, pts))
+      {
+        onlyPrioMsgs = true;
         continue;
+      }
 
-      // check if decoder has produced some output
-      m_pVideoCodec->SetCodecControl(DVD_CODEC_CTRL_DRAIN);
-      ProcessDecoderOutput(frametime, pts);
+      // if we only wanted priority messages, this isn't a stall
+      if (iPriority)
+        continue;
 
       //Okey, start rendering at stream fps now instead, we are likely in a stillframe
       if (!m_stalled)
       {
+        // squeeze pictures out
+        while (!m_bStop && m_pVideoCodec)
+        {
+          m_pVideoCodec->SetCodecControl(DVD_CODEC_CTRL_DRAIN);
+          if (!ProcessDecoderOutput(frametime, pts))
+            break;
+        }
+
         CLog::Log(LOGINFO, "CVideoPlayerVideo - Stillframe detected, switching to forced %f fps", m_fFrameRate);
         m_stalled = true;
         pts += frametime * 4;
@@ -419,9 +437,7 @@ void CVideoPlayerVideo::Process()
       while (!m_bStop && m_pVideoCodec)
       {
         m_pVideoCodec->SetCodecControl(DVD_CODEC_CTRL_DRAIN);
-        bool cont = ProcessDecoderOutput(frametime, pts);
-
-        if (!cont)
+        if (!ProcessDecoderOutput(frametime, pts))
           break;
       }
     }
@@ -433,7 +449,7 @@ void CVideoPlayerVideo::Process()
     else if (pMsg->IsType(CDVDMsg::DEMUXER_PACKET))
     {
       DemuxPacket* pPacket = ((CDVDMsgDemuxerPacket*)pMsg)->GetPacket();
-      bool bPacketDrop     = ((CDVDMsgDemuxerPacket*)pMsg)->GetPacketDrop();
+      bool bPacketDrop = ((CDVDMsgDemuxerPacket*)pMsg)->GetPacketDrop();
 
       if (m_stalled)
       {
@@ -452,7 +468,6 @@ void CVideoPlayerVideo::Process()
       if (iDropDirective & EOS_DROPPED)
       {
         m_iDroppedFrames++;
-        iDropped++;
         m_ptsTracker.Flush();
       }
       if (m_messageQueue.GetDataSize() == 0 ||  m_speed < 0)
@@ -488,15 +503,9 @@ void CVideoPlayerVideo::Process()
 
       m_videoStats.AddSampleBytes(pPacket->iSize);
 
-      // loop while no error and decoder produces pics
-      while (!m_bStop)
+      if (ProcessDecoderOutput(frametime, pts))
       {
-        int dropped = m_iDroppedFrames;
-        bool cont = ProcessDecoderOutput(frametime, pts);
-        iDropped += m_iDroppedFrames - dropped;
-
-        if (!cont)
-          break;
+        onlyPrioMsgs = true;
       }
     }
 
@@ -505,7 +514,8 @@ void CVideoPlayerVideo::Process()
   }
 
   // we need to let decoder release any picture retained resources.
-  m_pVideoCodec->ClearPicture(&m_picture);
+  if (m_pVideoCodec)
+    m_pVideoCodec->ClearPicture(&m_picture);
 }
 
 bool CVideoPlayerVideo::ProcessDecoderOutput(double &frametime, double &pts)
