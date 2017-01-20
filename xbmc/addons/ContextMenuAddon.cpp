@@ -40,17 +40,17 @@ void CContextMenuAddon::ParseMenu(
   auto menuId = CAddonMgr::GetInstance().GetExtValue(elem, "@id");
   auto menuLabel = CAddonMgr::GetInstance().GetExtValue(elem, "label");
   if (StringUtils::IsNaturalNumber(menuLabel))
-    menuLabel = g_localizeStrings.GetAddonString(props.id, atoi(menuLabel.c_str()));
+    menuLabel = g_localizeStrings.GetAddonString(props.m_id, atoi(menuLabel.c_str()));
 
   if (menuId.empty())
   {
     //anonymous group. create a new unique internal id.
     std::stringstream ss;
-    ss << props.id << ++anonGroupCount;
+    ss << props.m_id << ++anonGroupCount;
     menuId = ss.str();
   }
 
-  items.push_back(CContextMenuItem::CreateGroup(menuLabel, parent, menuId, props.id));
+  items.push_back(CContextMenuItem::CreateGroup(menuLabel, parent, menuId, props.m_id));
 
   ELEMENTS subMenus;
   if (CAddonMgr::GetInstance().GetExtElements(elem, "menu", subMenus))
@@ -66,12 +66,12 @@ void CContextMenuAddon::ParseMenu(
       auto library = CAddonMgr::GetInstance().GetExtValue(elem, "@library");
       auto label = CAddonMgr::GetInstance().GetExtValue(elem, "label");
       if (StringUtils::IsNaturalNumber(label))
-        label = g_localizeStrings.GetAddonString(props.id, atoi(label.c_str()));
+        label = g_localizeStrings.GetAddonString(props.m_id, atoi(label.c_str()));
 
       if (!label.empty() && !library.empty() && !visCondition.empty())
       {
         auto menu = CContextMenuItem::CreateItem(label, menuId,
-            URIUtils::AddFileToFolder(props.path, library), visCondition, props.id);
+            URIUtils::AddFileToFolder(props.m_path, library), visCondition, props.m_id);
         items.push_back(menu);
       }
     }
@@ -105,10 +105,10 @@ std::unique_ptr<CContextMenuAddon> CContextMenuAddon::FromExtension(AddonProps p
 
       auto label = CAddonMgr::GetInstance().GetExtValue(elem, "label");
       if (StringUtils::IsNaturalNumber(label))
-        label = g_localizeStrings.GetAddonString(props.id, atoi(label.c_str()));
+        label = g_localizeStrings.GetAddonString(props.m_id, atoi(label.c_str()));
 
       CContextMenuItem menuItem = CContextMenuItem::CreateItem(label, parent,
-          URIUtils::AddFileToFolder(props.path, props.libname), visCondition, props.id);
+          URIUtils::AddFileToFolder(props.m_path, props.m_libname), visCondition, props.m_id);
 
       items.push_back(menuItem);
     }

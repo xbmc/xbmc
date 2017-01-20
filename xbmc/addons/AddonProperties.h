@@ -73,31 +73,31 @@ namespace ADDON
      */
     bool IsUsable() const { return m_usable; }
 
-    const std::string& ID() const { return id; }
-    TYPE Type() const { return type; }
-    const AddonVersion& Version() const { return version; }
-    const AddonVersion& MinVersion() const { return minversion; }
-    const std::string& Name() const { return name; }
-    const std::string& License() const { return license; }
-    const std::string& Summary() const { return summary; }
-    const std::string& Description() const { return description; }
-    const std::string& Libname() const { return libname; }
-    const std::string& Author() const { return author; }
-    const std::string& Source() const { return source; }
-    const std::string& Path() const { return path; }
-    const std::string& Icon() const { return icon; }
-    const std::string& ChangeLog() const { return changelog; }
-    const std::string& FanArt() const { return fanart; }
-    const std::vector<std::string>& Screenshots() const { return screenshots; }
-    const std::string& Disclaimer() const { return disclaimer; }
-    const ADDONDEPS& GetDeps() const { return dependencies; }
-    const std::string& Broken() const { return broken; }
-    const InfoMap& ExtraInfo() const { return extrainfo; }
-    const CDateTime& InstallDate() const { return installDate; }
-    const CDateTime& LastUpdated() const { return lastUpdated; }
-    const CDateTime& LastUsed() const { return lastUsed; }
-    const std::string& Origin() const { return origin; }
-    uint64_t PackageSize() const { return packageSize; }
+    const std::string& ID() const { return m_id; }
+    TYPE Type() const { return m_type; }
+    const AddonVersion& Version() const { return m_version; }
+    const AddonVersion& MinVersion() const { return m_minversion; }
+    const std::string& Name() const { return m_name; }
+    const std::string& License() const { return m_license; }
+    const std::string& Summary() const { return m_summary; }
+    const std::string& Description() const { return m_description; }
+    const std::string& Libname() const { return m_libname; }
+    const std::string& Author() const { return m_author; }
+    const std::string& Source() const { return m_source; }
+    const std::string& Path() const { return m_path; }
+    const std::string& Icon() const { return m_icon; }
+    const std::string& ChangeLog() const { return m_changelog; }
+    const std::string& FanArt() const { return m_fanart; }
+    const std::vector<std::string>& Screenshots() const { return m_screenshots; }
+    const std::string& Disclaimer() const { return m_disclaimer; }
+    const ADDONDEPS& GetDeps() const { return m_dependencies; }
+    const std::string& Broken() const { return m_broken; }
+    const InfoMap& ExtraInfo() const { return m_extrainfo; }
+    const CDateTime& InstallDate() const { return m_installDate; }
+    const CDateTime& LastUpdated() const { return m_lastUpdated; }
+    const CDateTime& LastUsed() const { return m_lastUsed; }
+    const std::string& Origin() const { return m_origin; }
+    uint64_t PackageSize() const { return m_packageSize; }
 
     std::string SerializeMetadata();
     void DeserializeMetadata(const std::string& document);
@@ -115,31 +115,31 @@ namespace ADDON
   /*private: So long public until all add-on types reworked to new way! */
     bool m_usable;
 
-    std::string id;
-    TYPE type;
-    AddonVersion version{"0.0.0"};
-    AddonVersion minversion{"0.0.0"};
-    std::string name;
-    std::string license;
-    std::string summary;
-    std::string description;
-    std::string libname;
-    std::string author;
-    std::string source;
-    std::string path;
-    std::string icon;
-    std::string changelog;
-    std::string fanart;
-    std::vector<std::string> screenshots;
-    std::string disclaimer;
-    ADDONDEPS dependencies;
-    std::string broken;
-    InfoMap extrainfo;
-    CDateTime installDate;
-    CDateTime lastUpdated;
-    CDateTime lastUsed;
-    std::string origin;
-    uint64_t packageSize;
+    std::string m_id;
+    TYPE m_type;
+    AddonVersion m_version{"0.0.0"};
+    AddonVersion m_minversion{"0.0.0"};
+    std::string m_name;
+    std::string m_license;
+    std::string m_summary;
+    std::string m_description;
+    std::string m_libname;
+    std::string m_author;
+    std::string m_source;
+    std::string m_path;
+    std::string m_icon;
+    std::string m_changelog;
+    std::string m_fanart;
+    std::vector<std::string> m_screenshots;
+    std::string m_disclaimer;
+    ADDONDEPS m_dependencies;
+    std::string m_broken;
+    InfoMap m_extrainfo;
+    CDateTime m_installDate;
+    CDateTime m_lastUpdated;
+    CDateTime m_lastUsed;
+    std::string m_origin;
+    uint64_t m_packageSize;
 
     /*!
      * @brief Function to load data xml file to set all property values

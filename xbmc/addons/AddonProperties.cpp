@@ -159,16 +159,16 @@ const char* AddonProps::GetPlatformLibraryName(const TiXmlElement* element)
 
 AddonProps::AddonProps(std::string addonPath)
   : m_usable(false),
-    type(ADDON_UNKNOWN),
-    path(addonPath)
+    m_type(ADDON_UNKNOWN),
+    m_path(addonPath)
 {
-  auto addonXmlPath = CSpecialProtocol::TranslatePath(URIUtils::AddFileToFolder(path, "addon.xml"));
+  auto addonXmlPath = CSpecialProtocol::TranslatePath(URIUtils::AddFileToFolder(m_path, "addon.xml"));
 
   CXBMCTinyXML xmlDoc;
   if (!xmlDoc.LoadFile(addonXmlPath))
   {
     CLog::Log(LOGERROR, "AddonProps: Unable to load '%s', Line %d\n%s",
-                                               path.c_str(),
+                                               m_path.c_str(),
                                                xmlDoc.ErrorRow(),
                                                xmlDoc.ErrorDesc());
     return;
@@ -177,25 +177,25 @@ AddonProps::AddonProps(std::string addonPath)
   m_usable = LoadAddonXML(xmlDoc.RootElement(), addonXmlPath);
   if (m_usable)
   {
-    if (icon.empty())
+    if (m_icon.empty())
     {
-      std::string tmpIcon = URIUtils::AddFileToFolder(path, "icon.png");
+      std::string tmpIcon = URIUtils::AddFileToFolder(m_path, "icon.png");
       if (XFILE::CFile::Exists(tmpIcon))
-        icon = tmpIcon;
+        m_icon = tmpIcon;
     }
 
-    if (fanart.empty())
+    if (m_fanart.empty())
     {
-      std::string tmpFanart = URIUtils::AddFileToFolder(path, "fanart.jpg");
+      std::string tmpFanart = URIUtils::AddFileToFolder(m_path, "fanart.jpg");
       if (XFILE::CFile::Exists(tmpFanart))
-        fanart = tmpFanart;
+        m_fanart = tmpFanart;
     }
   }
 }
 
 AddonProps::AddonProps(const TiXmlElement* baseElement, std::string addonRepoXmlPath)
   : m_usable(false),
-    type(ADDON_UNKNOWN)
+    m_type(ADDON_UNKNOWN)
 {
   m_usable = LoadAddonXML(baseElement, addonRepoXmlPath);
   if (m_usable)
@@ -206,30 +206,30 @@ AddonProps::AddonProps(const TiXmlElement* baseElement, std::string addonRepoXml
      *
      * Also need the add-on path set to the zip file on repository place.
      */
-    for (unsigned int i = 0; i < screenshots.size(); ++i)
+    for (unsigned int i = 0; i < m_screenshots.size(); ++i)
     {
-      screenshots[i] = URIUtils::AddFileToFolder(addonRepoXmlPath, StringUtils::Format("%s/%s", id.c_str(), screenshots[i].c_str()));
+      m_screenshots[i] = URIUtils::AddFileToFolder(addonRepoXmlPath, StringUtils::Format("%s/%s", m_id.c_str(), m_screenshots[i].c_str()));
     }
-    if (!fanart.empty())
-      fanart = URIUtils::AddFileToFolder(addonRepoXmlPath, StringUtils::Format("%s/%s", id.c_str(), fanart.c_str()));
-    if (!icon.empty())
-      icon = URIUtils::AddFileToFolder(addonRepoXmlPath, StringUtils::Format("%s/%s", id.c_str(), icon.c_str()));
-    path = URIUtils::AddFileToFolder(addonRepoXmlPath, StringUtils::Format("%s/%s-%s.zip", id.c_str(), id.c_str(), version.asString().c_str()));
+    if (!m_fanart.empty())
+      m_fanart = URIUtils::AddFileToFolder(addonRepoXmlPath, StringUtils::Format("%s/%s", m_id.c_str(), m_fanart.c_str()));
+    if (!m_icon.empty())
+      m_icon = URIUtils::AddFileToFolder(addonRepoXmlPath, StringUtils::Format("%s/%s", m_id.c_str(), m_icon.c_str()));
+    m_path = URIUtils::AddFileToFolder(addonRepoXmlPath, StringUtils::Format("%s/%s-%s.zip", m_id.c_str(), m_id.c_str(), m_version.asString().c_str()));
   }
 }
 
 AddonProps::AddonProps()
   : m_usable(true),
-    type(ADDON_UNKNOWN),
-    packageSize(0)
+    m_type(ADDON_UNKNOWN),
+    m_packageSize(0)
 {
 }
 
 AddonProps::AddonProps(std::string id, TYPE type)
   : m_usable(true),
-    id(std::move(id)),
-    type(type),
-    packageSize(0)
+    m_id(std::move(id)),
+    m_type(type),
+    m_packageSize(0)
 {
 }
 
@@ -261,19 +261,19 @@ bool AddonProps::LoadAddonXML(const TiXmlElement* baseElement, std::string addon
    *        provider-name="???">
    */
   cstring = baseElement->Attribute("id");
-  id = cstring ? cstring : "";
+  m_id = cstring ? cstring : "";
   cstring = baseElement->Attribute("name");
-  name = cstring ? cstring : "";
+  m_name = cstring ? cstring : "";
   cstring = baseElement->Attribute("version");
-  version = ADDON::AddonVersion(cstring ? cstring : "");
+  m_version = ADDON::AddonVersion(cstring ? cstring : "");
   cstring = baseElement->Attribute("provider-name");
-  author = cstring ? cstring : "";
-  if (id.empty() || version.empty())
+  m_author = cstring ? cstring : "";
+  if (m_id.empty() || m_version.empty())
   {
     CLog::Log(LOGERROR, "AddonProps: file '%s' doesnt contain required values on <addon ... > id='%s', version='%s'", 
               addonXmlPath.c_str(),
-              id.empty() ? "missing" : id.c_str(),
-              version.empty() ? "missing" : version.asString().c_str());
+              m_id.empty() ? "missing" : m_id.c_str(),
+              m_version.empty() ? "missing" : m_version.asString().c_str());
     return false;
   }
 
@@ -294,7 +294,7 @@ bool AddonProps::LoadAddonXML(const TiXmlElement* baseElement, std::string addon
         const char* version = child->Attribute("version");
         bool optional = false;
         child->QueryBoolAttribute("optional", &optional);
-        dependencies.emplace(cstring, std::make_pair(ADDON::AddonVersion(version ? version : "0.0.0"), optional));
+        m_dependencies.emplace(cstring, std::make_pair(ADDON::AddonVersion(version ? version : "0.0.0"), optional));
       }
     }
   }
@@ -334,7 +334,7 @@ bool AddonProps::LoadAddonXML(const TiXmlElement* baseElement, std::string addon
         else
           strSummary = element->GetText();
       }
-      summary = strSummary ? strSummary : "";
+      m_summary = strSummary ? strSummary : "";
 
       /*
        * Parse addon.xml "<description lang="..">...</description>"
@@ -359,7 +359,7 @@ bool AddonProps::LoadAddonXML(const TiXmlElement* baseElement, std::string addon
         else
           strDescription = element->GetText();
       }
-      description = strDescription ? strDescription : "";
+      m_description = strDescription ? strDescription : "";
   
       /*
        * Parse addon.xml "<disclaimer lang="..">...</disclaimer>"
@@ -384,7 +384,7 @@ bool AddonProps::LoadAddonXML(const TiXmlElement* baseElement, std::string addon
         else
           strDisclaimer = element->GetText();
       }
-      disclaimer = strDisclaimer ? strDisclaimer : "";
+      m_disclaimer = strDisclaimer ? strDisclaimer : "";
 
       /*
        * Parse addon.xml "<assets>...</assets>"
@@ -398,17 +398,17 @@ bool AddonProps::LoadAddonXML(const TiXmlElement* baseElement, std::string addon
           if (value == "icon")
           {
             if (elementsAssets->GetText() != nullptr)
-              icon = URIUtils::AddFileToFolder(path, elementsAssets->GetText());
+              m_icon = URIUtils::AddFileToFolder(m_path, elementsAssets->GetText());
           }
           else if (value == "fanart")
           {
             if (elementsAssets->GetText() != nullptr)
-              fanart = URIUtils::AddFileToFolder(path, elementsAssets->GetText());
+              m_fanart = URIUtils::AddFileToFolder(m_path, elementsAssets->GetText());
           }
           else if (value == "screenshot")
           {
             if (elementsAssets->GetText() != nullptr)
-              screenshots.emplace_back(URIUtils::AddFileToFolder(path, elementsAssets->GetText()));
+              m_screenshots.emplace_back(URIUtils::AddFileToFolder(m_path, elementsAssets->GetText()));
           }
         }
       }
@@ -416,41 +416,41 @@ bool AddonProps::LoadAddonXML(const TiXmlElement* baseElement, std::string addon
       /* Parse addon.xml "<license">...</license>" */
       element = child->FirstChildElement("license");
       if (element && element->GetText() != nullptr)
-        license = element->GetText();
+        m_license = element->GetText();
 
       /* Parse addon.xml "<source">...</source>" */
       element = child->FirstChildElement("source");
       if (element && element->GetText() != nullptr)
-        source = element->GetText();
+        m_source = element->GetText();
 
       /* Parse addon.xml "<broken">...</broken>" */
       element = child->FirstChildElement("broken");
       if (element && element->GetText() != nullptr)
-        broken = element->GetText();
+        m_broken = element->GetText();
 
       /* Parse addon.xml "<language">...</language>" */
       element = child->FirstChildElement("language");
       if (element && element->GetText() != nullptr)
-        extrainfo.insert(std::make_pair("language", element->GetText()));
+        m_extrainfo.insert(std::make_pair("language", element->GetText()));
 
       /* Parse addon.xml "<noicon">...</noicon>" */
-      if (icon.empty())
+      if (m_icon.empty())
       {
         element = child->FirstChildElement("noicon");
-        icon = (element && strcmp(element->GetText() , "true") == 0) ? "" : "icon.png";
+        m_icon = (element && strcmp(element->GetText() , "true") == 0) ? "" : "icon.png";
       }
 
       /* Parse addon.xml "<nofanart">...</nofanart>" */
-      if (fanart.empty())
+      if (m_fanart.empty())
       {
         element = child->FirstChildElement("nofanart");
-        fanart = (element && strcmp(element->GetText() , "true") == 0) ? "" : "fanart.jpg";
+        m_fanart = (element && strcmp(element->GetText() , "true") == 0) ? "" : "fanart.jpg";
       }
 
       /* Parse addon.xml "<size">...</size>" */
       element = child->FirstChildElement("size");
       if (element && element->GetText() != nullptr)
-        packageSize = StringUtils::ToUint64(element->GetText(), 0);
+        m_packageSize = StringUtils::ToUint64(element->GetText(), 0);
 
       /* Parse addon.xml "<news lang="..">...</news>" */
       const char* strChangelog = nullptr;
@@ -470,39 +470,39 @@ bool AddonProps::LoadAddonXML(const TiXmlElement* baseElement, std::string addon
 
         element = element->NextSiblingElement("news");
       }
-      changelog = strChangelog ? strChangelog : "";
+      m_changelog = strChangelog ? strChangelog : "";
     }
-    else if (point == "xbmc.python.script" && type == ADDON_UNKNOWN)
+    else if (point == "xbmc.python.script" && m_type == ADDON_UNKNOWN)
     {
-      type = ADDON_SCRIPT;
+      m_type = ADDON_SCRIPT;
       /* Parse addon.xml "<provides">...</provides>" */
       const TiXmlElement* element = child->FirstChildElement("provides");
       if (element && element->GetText() != nullptr)
-        extrainfo.insert(std::make_pair("provides", element->GetText()));
+        m_extrainfo.insert(std::make_pair("provides", element->GetText()));
     }
-    else if (point == "xbmc.python.pluginsource" && type == ADDON_UNKNOWN)
+    else if (point == "xbmc.python.pluginsource" && m_type == ADDON_UNKNOWN)
     {
-      type = ADDON_PLUGIN;
+      m_type = ADDON_PLUGIN;
       /* Parse addon.xml "<provides">...</provides>" */
       const TiXmlElement* element = child->FirstChildElement("provides");
       if (element && element->GetText() != nullptr)
-        extrainfo.insert(std::make_pair("provides", element->GetText()));
+        m_extrainfo.insert(std::make_pair("provides", element->GetText()));
     }
-    else if (point == "kodi.resource.language" && type == ADDON_UNKNOWN)
+    else if (point == "kodi.resource.language" && m_type == ADDON_UNKNOWN)
     {
-      type = ADDON_RESOURCE_LANGUAGE;
+      m_type = ADDON_RESOURCE_LANGUAGE;
       /* Parse addon.xml "<locale">...</locale>" */
       cstring = child->Attribute("locale");
       if (cstring != nullptr)
-        extrainfo.insert(std::make_pair("locale", cstring));
+        m_extrainfo.insert(std::make_pair("locale", cstring));
     }
     else
     {
       // Get add-on type
-      if (type == ADDON_UNKNOWN)
+      if (m_type == ADDON_UNKNOWN)
       {
-        type = TranslateType(point);
-        if (type == ADDON_UNKNOWN || type >= ADDON_MAX)
+        m_type = TranslateType(point);
+        if (m_type == ADDON_UNKNOWN || m_type >= ADDON_MAX)
         {
           CLog::Log(LOGERROR, "AddonProps: file '%s' doesn't contain a valid add-on type name (%s)", addonXmlPath.c_str(), point.c_str());
           return false;
@@ -514,7 +514,7 @@ bool AddonProps::LoadAddonXML(const TiXmlElement* baseElement, std::string addon
       if (library == nullptr)
         library = GetPlatformLibraryName(child);
       if (library != nullptr)
-        libname = library;
+        m_libname = library;
 
       const TiXmlAttribute* attribute = child->FirstAttribute();
       while (attribute)
@@ -524,7 +524,7 @@ bool AddonProps::LoadAddonXML(const TiXmlElement* baseElement, std::string addon
         {
           const char* value = attribute->Value();
           if (value)
-            extrainfo.insert(std::make_pair(name, value));
+            m_extrainfo.insert(std::make_pair(name, value));
         }
         attribute = attribute->Next();
       }
@@ -537,24 +537,24 @@ bool AddonProps::LoadAddonXML(const TiXmlElement* baseElement, std::string addon
 std::string AddonProps::SerializeMetadata()
 {
   CVariant variant;
-  variant["author"] = author;
-  variant["disclaimer"] = disclaimer;
-  variant["broken"] = broken;
-  variant["size"] = packageSize;
+  variant["author"] = m_author;
+  variant["disclaimer"] = m_disclaimer;
+  variant["broken"] = m_broken;
+  variant["size"] = m_packageSize;
 
-  variant["path"] = path;
-  variant["fanart"] = fanart;
-  variant["icon"] = icon;
+  variant["path"] = m_path;
+  variant["fanart"] = m_fanart;
+  variant["icon"] = m_icon;
 
   variant["screenshots"] = CVariant(CVariant::VariantTypeArray);
-  for (const auto& item : screenshots)
+  for (const auto& item : m_screenshots)
     variant["screenshots"].push_back(item);
 
   variant["extensions"] = CVariant(CVariant::VariantTypeArray);
-  variant["extensions"].push_back(TranslateType(type, false));
+  variant["extensions"].push_back(TranslateType(m_type, false));
 
   variant["dependencies"] = CVariant(CVariant::VariantTypeArray);
-  for (const auto& kv : dependencies)
+  for (const auto& kv : m_dependencies)
   {
     CVariant dep(CVariant::VariantTypeObject);
     dep["addonId"] = kv.first;
@@ -564,7 +564,7 @@ std::string AddonProps::SerializeMetadata()
   }
 
   variant["extrainfo"] = CVariant(CVariant::VariantTypeArray);
-  for (const auto& kv : extrainfo)
+  for (const auto& kv : m_extrainfo)
   {
     CVariant info(CVariant::VariantTypeObject);
     info["key"] = kv.first;
@@ -579,21 +579,21 @@ void AddonProps::DeserializeMetadata(const std::string& document)
 {
   CVariant variant = CJSONVariantParser::Parse(document);
 
-  author = variant["author"].asString();
-  disclaimer = variant["disclaimer"].asString();
-  broken = variant["broken"].asString();
-  packageSize = variant["size"].asUnsignedInteger();
+  m_author = variant["author"].asString();
+  m_disclaimer = variant["disclaimer"].asString();
+  m_broken = variant["broken"].asString();
+  m_packageSize = variant["size"].asUnsignedInteger();
 
-  path = variant["path"].asString();
-  fanart = variant["fanart"].asString();
-  icon = variant["icon"].asString();
+  m_path = variant["path"].asString();
+  m_fanart = variant["fanart"].asString();
+  m_icon = variant["icon"].asString();
 
   std::vector<std::string> screenshots;
   for (auto it = variant["screenshots"].begin_array(); it != variant["screenshots"].end_array(); ++it)
     screenshots.push_back(it->asString());
   screenshots = std::move(screenshots);
 
-  type = TranslateType(variant["extensions"][0].asString());
+  m_type = TranslateType(variant["extensions"][0].asString());
 
   ADDONDEPS deps;
   for (auto it = variant["dependencies"].begin_array(); it != variant["dependencies"].end_array(); ++it)
@@ -601,19 +601,19 @@ void AddonProps::DeserializeMetadata(const std::string& document)
     AddonVersion version((*it)["version"].asString());
     deps.emplace((*it)["addonId"].asString(), std::make_pair(std::move(version), (*it)["optional"].asBoolean()));
   }
-  dependencies = std::move(deps);
+  m_dependencies = std::move(deps);
 
   InfoMap extraInfo;
   for (auto it = variant["extrainfo"].begin_array(); it != variant["extrainfo"].end_array(); ++it)
     extraInfo.emplace((*it)["key"].asString(), (*it)["value"].asString());
-  extrainfo = std::move(extraInfo);
+  m_extrainfo = std::move(extraInfo);
   
   m_usable = true;
 }
 
 bool AddonProps::MeetsVersion(const AddonVersion &version) const
 {
-  return AddonProps::minversion <= version && version <= AddonProps::version;
+  return m_minversion <= version && version <= m_version;
 }
 
 } /* namespace ADDON */
