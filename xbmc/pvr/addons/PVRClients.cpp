@@ -179,9 +179,13 @@ int CPVRClients::GetFirstConnectedClientID(void)
 int CPVRClients::EnabledClientAmount(void) const
 {
   int iReturn(0);
-  CSingleLock lock(m_critSection);
+  PVR_CLIENTMAP clientMap;
+  {
+    CSingleLock lock(m_critSection);
+    clientMap = m_clientMap;
+  }
 
-  for (const auto &client : m_clientMap)
+  for (const auto &client : clientMap)
     if (!CAddonMgr::GetInstance().IsAddonDisabled(client.second->ID()))
       ++iReturn;
 
@@ -190,7 +194,13 @@ int CPVRClients::EnabledClientAmount(void) const
 
 bool CPVRClients::HasEnabledClients(void) const
 {
-  for (const auto &client : m_clientMap)
+  PVR_CLIENTMAP clientMap;
+  {
+    CSingleLock lock(m_critSection);
+    clientMap = m_clientMap;
+  }
+
+  for (const auto &client : clientMap)
     if (!CAddonMgr::GetInstance().IsAddonDisabled(client.second->ID()))
       return true;
   return false;
