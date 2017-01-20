@@ -48,6 +48,8 @@ namespace ADDON
   typedef std::map<std::string, AddonPropsPtr> AddonInfoList;
   typedef std::map<TYPE, AddonInfoList> AddonInfoMap;
 
+  typedef std::vector<AddonPropsPtr> AddonInfos;
+
   const std::string ADDON_PYTHON_EXT           = "*.py";
 
   /**
@@ -296,6 +298,21 @@ namespace ADDON
      * @return true in case it is blacklisted, otherwise false
      */
     bool IsBlacklisted(const std::string& id) const;
+
+    /*!
+     * @brief Get a list of add-on's with info's for the on system available
+     * ones.
+     *
+     * @param[in] enabledOnly [opt] If true are only enabled ones given back,
+     *                        if false all on system available. Default is true.
+     * @param[in] type        [opt] The requested type, with "ADDON_UNKNOWN"
+     *                        are all add-on types given back who match the case
+     *                        with value before.
+     *                        If a type id becomes added are only add-ons
+     *                        returned who match them. Default is for all types.
+     * @return The list with of available add-on's with info tables.
+     */
+    AddonInfos GetAddonInfos(bool enabledOnly = true, const TYPE &type = ADDON_UNKNOWN);
 
   private:
 
