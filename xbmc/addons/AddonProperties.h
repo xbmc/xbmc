@@ -101,6 +101,7 @@ namespace ADDON
 
     std::string SerializeMetadata();
     void DeserializeMetadata(const std::string& document);
+    bool MeetsVersion(const AddonVersion &version) const;
 
     /*!
      * @brief Utilities to translate add-on parts to his requested part.

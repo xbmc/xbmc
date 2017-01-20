@@ -611,4 +611,9 @@ void AddonProps::DeserializeMetadata(const std::string& document)
   m_usable = true;
 }
 
+bool AddonProps::MeetsVersion(const AddonVersion &version) const
+{
+  return AddonProps::minversion <= version && version <= AddonProps::version;
+}
+
 } /* namespace ADDON */
