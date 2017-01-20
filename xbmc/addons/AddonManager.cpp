@@ -499,7 +499,7 @@ bool CAddonMgr::GetDisabledAddons(VECADDONS& addons, const TYPE& type)
   if (GetInstalledAddons(all, type))
   {
     std::copy_if(all.begin(), all.end(), std::back_inserter(addons),
-        [this](const AddonPtr& addon){ return IsAddonDisabled(addon->ID()); });
+        [this](const AddonPtr& addon){ return !IsAddonEnabled(addon->ID()); });
     return true;
   }
   return false;
@@ -567,7 +567,7 @@ bool CAddonMgr::GetAddonsInternal(const TYPE &type, VECADDONS &addons, bool enab
     cp_plugin_info_t* cp_addon = m_cpluff->get_plugin_info(m_cp_context, builder.GetId().c_str(), &status);
     if (status == CP_OK && cp_addon)
     {
-      if (enabledOnly && IsAddonDisabled(cp_addon->identifier))
+      if (enabledOnly && !IsAddonEnabled(cp_addon->identifier))
       {
         m_cpluff->release_info(m_cp_context, cp_addon);
         continue;
@@ -613,7 +613,7 @@ bool CAddonMgr::GetAddon(const std::string &str, AddonPtr &addon, const TYPE &ty
 
     if (addon)
     {
-      if (enabledOnly && IsAddonDisabled(addon->ID()))
+      if (enabledOnly && !IsAddonEnabled(addon->ID()))
         return false;
 
       // if the addon has a running instance, grab that
@@ -813,12 +813,6 @@ bool CAddonMgr::EnableAddon(const std::string& id)
   return true;
 }
 
-bool CAddonMgr::IsAddonDisabled(const std::string& ID)
-{
-  CSingleLock lock(m_critSection);
-  return m_disabled.find(ID) != m_disabled.end();
-}
-
 bool CAddonMgr::CanAddonBeDisabled(const std::string& ID)
 {
   if (ID.empty())
@@ -840,15 +834,33 @@ bool CAddonMgr::CanAddonBeDisabled(const std::string& ID)
   return true;
 }
 
-bool CAddonMgr::CanAddonBeEnabled(const std::string& id)
+bool CAddonMgr::CanAddonBeEnabled(const std::string& addonId)
 {
-  return !id.empty() && IsAddonInstalled(id);
+  return !addonId.empty() && IsAddonInstalled(addonId);
 }
 
-bool CAddonMgr::IsAddonInstalled(const std::string& ID)
+bool CAddonMgr::IsAddonInstalled(const std::string& addonId)
 {
-  AddonPtr tmp;
-  return GetAddon(ID, tmp, ADDON_UNKNOWN, false);
+  CSingleLock lock(m_critSection);
+
+  for (auto addonInfoTypes : m_installedAddons)
+  {
+    if (addonInfoTypes.second.find(addonId) != addonInfoTypes.second.end())
+      return true;
+  }
+  return false;
+}
+
+bool CAddonMgr::IsAddonEnabled(const std::string& addonId)
+{
+  CSingleLock lock(m_critSection);
+
+  for (auto addonInfoTypes : m_enabledAddons)
+  {
+    if (addonInfoTypes.second.find(addonId) != addonInfoTypes.second.end())
+      return true;
+  }
+  return false;
 }
 
 bool CAddonMgr::CanAddonBeInstalled(const AddonPtr& addon)

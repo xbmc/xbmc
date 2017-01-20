@@ -66,7 +66,7 @@ bool CCheckForUpdates::Execute(const CFileItemPtr& item) const
 bool CEnableAddon::IsVisible(const CFileItem& item) const
 {
   return item.HasAddonInfo() &&
-  CAddonMgr::GetInstance().IsAddonDisabled(item.GetAddonInfo()->ID()) &&
+  !CAddonMgr::GetInstance().IsAddonEnabled(item.GetAddonInfo()->ID()) &&
   CAddonMgr::GetInstance().CanAddonBeEnabled(item.GetAddonInfo()->ID());
 }
 
@@ -78,7 +78,7 @@ bool CEnableAddon::Execute(const CFileItemPtr& item) const
 bool CDisableAddon::IsVisible(const CFileItem& item) const
 {
   return item.HasAddonInfo() &&
-  !CAddonMgr::GetInstance().IsAddonDisabled(item.GetAddonInfo()->ID()) &&
+  CAddonMgr::GetInstance().IsAddonEnabled(item.GetAddonInfo()->ID()) &&
   CAddonMgr::GetInstance().CanAddonBeDisabled(item.GetAddonInfo()->ID());
 }
 

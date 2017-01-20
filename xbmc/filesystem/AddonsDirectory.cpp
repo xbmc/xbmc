@@ -800,7 +800,7 @@ void CAddonsDirectory::GenerateAddonListing(const CURL &path,
 
     AddonPtr localAddon;
     bool installed = CAddonMgr::GetInstance().GetAddon(addon->ID(), localAddon, ADDON_UNKNOWN, false);
-    bool disabled = CAddonMgr::GetInstance().IsAddonDisabled(addon->ID());
+    bool disabled = !CAddonMgr::GetInstance().IsAddonEnabled(addon->ID());
     bool hasUpdate = outdated.find(addon->ID()) != outdated.end();
 
     pItem->SetProperty("Addon.IsInstalled", installed);

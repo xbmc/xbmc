@@ -101,7 +101,7 @@ const char** CGameClientProperties::GetProxyDllPaths(void)
       if (CAddonMgr::GetInstance().GetAddon(strAddonId, addon, ADDON_GAMEDLL, false))
       {
         // If add-on is disabled, ask the user to enable it
-        if (CAddonMgr::GetInstance().IsAddonDisabled(addon->ID()))
+        if (!CAddonMgr::GetInstance().IsAddonEnabled(addon->ID()))
         {
           // Failed to play game
           // This game depends on a disabled add-on. Would you like to enable it?
