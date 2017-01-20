@@ -444,7 +444,11 @@ void CGUIDialogAddonInfo::OnUninstall()
   if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{24037}, CVariant{750}))
     return;
 
-  CJobManager::GetInstance().AddJob(new CAddonUnInstallJob(m_localAddon),
+  bool removeData = false;
+  if (CDirectory::Exists("special://profile/addon_data/"+m_localAddon->ID()))
+    removeData = CGUIDialogYesNo::ShowAndGetInput(CVariant{24037}, CVariant{39014});
+
+  CJobManager::GetInstance().AddJob(new CAddonUnInstallJob(m_localAddon, removeData),
                                     &CAddonInstaller::GetInstance());
   Close();
 }
