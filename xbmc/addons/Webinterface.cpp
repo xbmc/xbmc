@@ -34,7 +34,7 @@ std::unique_ptr<CWebinterface> CWebinterface::FromExtension(AddonProps props, co
   if (StringUtils::EqualsNoCase(webinterfaceType.c_str(), "wsgi"))
     type = WebinterfaceTypeWsgi;
   else if (!webinterfaceType.empty() && !StringUtils::EqualsNoCase(webinterfaceType.c_str(), "static") && !StringUtils::EqualsNoCase(webinterfaceType.c_str(), "html"))
-    CLog::Log(LOGWARNING, "Webinterface addon \"%s\" has specified an unsupported type \"%s\"", props.id.c_str(), webinterfaceType.c_str());
+    CLog::Log(LOGWARNING, "Webinterface addon \"%s\" has specified an unsupported type \"%s\"", props.m_id.c_str(), webinterfaceType.c_str());
 
   // determine the entry point of the webinterface
   std::string entryPoint(WEBINTERFACE_DEFAULT_ENTRY_POINT);

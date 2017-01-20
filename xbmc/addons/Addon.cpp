@@ -69,7 +69,7 @@ CAddon::CAddon(AddonProps props)
 
 bool CAddon::MeetsVersion(const AddonVersion &version) const
 {
-  return m_props.minversion <= version && version <= m_props.version;
+  return m_props.m_minversion <= version && version <= m_props.m_version;
 }
 
 /**
@@ -86,7 +86,7 @@ bool CAddon::LoadSettings(bool bForce /* = false*/)
     return true;
   if (!m_hasSettings)
     return false;
-  std::string addonFileName = URIUtils::AddFileToFolder(m_props.path, "resources", "settings.xml");
+  std::string addonFileName = URIUtils::AddFileToFolder(m_props.m_path, "resources", "settings.xml");
 
   if (!m_addonXmlDoc.LoadFile(addonFileName))
   {
@@ -242,9 +242,9 @@ TiXmlElement* CAddon::GetSettingsXML()
 
 std::string CAddon::LibPath() const
 {
-  if (m_props.libname.empty())
+  if (m_props.m_libname.empty())
     return "";
-  return URIUtils::AddFileToFolder(m_props.path, m_props.libname);
+  return URIUtils::AddFileToFolder(m_props.m_path, m_props.m_libname);
 }
 
 AddonVersion CAddon::GetDependencyVersion(const std::string &dependencyID) const

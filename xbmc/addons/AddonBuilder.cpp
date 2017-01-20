@@ -49,15 +49,15 @@ std::shared_ptr<IAddon> CAddonBuilder::Build()
   if (m_built)
     throw std::logic_error("Already built");
 
-  if (m_props.id.empty())
+  if (m_props.m_id.empty())
     return nullptr;
 
   m_built = true;
 
-  if (m_props.type == ADDON_UNKNOWN)
+  if (m_props.m_type == ADDON_UNKNOWN)
     return std::make_shared<CAddon>(std::move(m_props));
 
-  const TYPE type(m_props.type);
+  const TYPE type(m_props.m_type);
 
   /*
    * Startup of reworked addon interfaces, switch currently two times until
@@ -167,7 +167,7 @@ AddonPtr CAddonBuilder::FromProps(AddonProps addonProps)
   // FIXME: there is no need for this as none of the derived classes will contain any useful
   // information. We should return CAddon instances only, however there are several places that
   // down casts, which need to fixed first.
-  switch (addonProps.type)
+  switch (addonProps.m_type)
   {
     case ADDON_PLUGIN:
     case ADDON_SCRIPT:

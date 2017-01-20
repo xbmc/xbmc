@@ -109,7 +109,7 @@ std::unique_ptr<CGameClient> CGameClient::FromExtension(ADDON::AddonProps props,
   {
     std::string strProperty = CAddonMgr::GetInstance().GetExtValue(ext->configuration, property.c_str());
     if (!strProperty.empty())
-      props.extrainfo[property] = strProperty;
+      props.m_extrainfo[property] = strProperty;
   }
 
   return std::unique_ptr<CGameClient>(new CGameClient(std::move(props)));
@@ -130,7 +130,7 @@ m_audio(nullptr),
 m_video(nullptr),
 m_region(GAME_REGION_UNKNOWN)
 {
-  const ADDON::InfoMap& extraInfo = m_props.extrainfo;
+  const ADDON::InfoMap& extraInfo = m_props.m_extrainfo;
   ADDON::InfoMap::const_iterator it;
 
   it = extraInfo.find(GAME_PROPERTY_EXTENSIONS);
