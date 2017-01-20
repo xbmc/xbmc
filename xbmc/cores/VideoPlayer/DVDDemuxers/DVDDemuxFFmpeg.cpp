@@ -1386,7 +1386,7 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
         st->iHeight = pStream->codecpar->height;
         st->fAspect = SelectAspect(pStream, st->bForcedAspect);
         if (pStream->codecpar->height)
-          st->fAspect *= pStream->codecpar->width / pStream->codecpar->height;
+          st->fAspect *= (double)pStream->codecpar->width / pStream->codecpar->height;
         st->iOrientation = 0;
         st->iBitsPerPixel = pStream->codecpar->bits_per_coded_sample;
         st->iBitRate = pStream->codecpar->bit_rate;
