@@ -647,7 +647,7 @@ static void RootDirectory(CFileItemList& items)
     item->SetIconImage("DefaultAddonsRecentlyUpdated.png");
     items.Add(item);
   }
-  if (CAddonMgr::GetInstance().HasAddons(ADDON_REPOSITORY))
+  if (CAddonMgr::GetInstance().HasEnabledAddons(ADDON_REPOSITORY))
   {
     CFileItemPtr item(new CFileItem("addons://repos/", true));
     item->SetLabel(g_localizeStrings.Get(24033));

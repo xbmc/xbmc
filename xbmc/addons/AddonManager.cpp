@@ -227,37 +227,6 @@ void CAddonMgr::FillCpluffMetadata(const cp_plugin_info_t* plugin, CAddonBuilder
   }
 }
 
-static bool LoadManifest(std::set<std::string>& system, std::set<std::string>& optional)
-{
-  CXBMCTinyXML doc;
-  if (!doc.LoadFile("special://xbmc/system/addon-manifest.xml"))
-  {
-    CLog::Log(LOGERROR, "ADDONS: manifest missing");
-    return false;
-  }
-
-  auto root = doc.RootElement();
-  if (!root || root->ValueStr() != "addons")
-  {
-    CLog::Log(LOGERROR, "ADDONS: malformed manifest");
-    return false;
-  }
-
-  auto elem = root->FirstChildElement("addon");
-  while (elem)
-  {
-    if (elem->FirstChild())
-    {
-      if (XMLUtils::GetAttribute(elem, "optional") == "true")
-        optional.insert(elem->FirstChild()->ValueStr());
-      else
-        system.insert(elem->FirstChild()->ValueStr());
-    }
-    elem = elem->NextSiblingElement("addon");
-  }
-  return true;
-}
-
 CAddonMgr::CAddonMgr()
   : m_cp_context(nullptr),
   m_cpluff(nullptr),
@@ -388,18 +357,6 @@ void CAddonMgr::DeInit()
   m_cpluff->destroy_context(m_cp_context);
   m_cpluff.reset();
   m_database.Close();
-}
-
-bool CAddonMgr::HasAddons(const TYPE &type)
-{
-  VECADDONS addons;
-  return GetAddonsInternal(type, addons, true);
-}
-
-bool CAddonMgr::HasInstalledAddons(const TYPE &type)
-{
-  VECADDONS addons;
-  return GetAddonsInternal(type, addons, false);
 }
 
 void CAddonMgr::AddToUpdateableAddons(AddonPtr &pAddon)
@@ -862,12 +819,6 @@ bool CAddonMgr::CanUninstall(const AddonPtr& addon)
       !StringUtils::StartsWith(addon->Path(), CSpecialProtocol::TranslatePath("special://xbmc/addons"));
 }
 
-bool CAddonMgr::IsSystemAddon(const std::string& id)
-{
-  CSingleLock lock(m_critSection);
-  return std::find(m_systemAddons.begin(), m_systemAddons.end(), id) != m_systemAddons.end();
-}
-
 std::string CAddonMgr::GetTranslatedString(const cp_cfg_element_t *root, const char *tag)
 {
   if (!root)
@@ -1166,6 +1117,18 @@ void cp_logger(cp_log_severity_t level, const char *msg, const char *apid, void 
  */
 //@{
 
+bool CAddonMgr::HasInstalledAddons(const TYPE &type)
+{
+  CSingleLock lock(m_critSection);
+  return (m_installedAddons.find(type) != m_installedAddons.end()) ? true : false;
+}
+
+bool CAddonMgr::HasEnabledAddons(const TYPE &type)
+{
+  CSingleLock lock(m_critSection);
+  return (m_enabledAddons.find(type) != m_enabledAddons.end()) ? true : false;
+}
+
 bool CAddonMgr::IsAddonInstalled(const std::string& addonId)
 {
   CSingleLock lock(m_critSection);
@@ -1188,6 +1151,12 @@ bool CAddonMgr::IsAddonEnabled(const std::string& addonId)
       return true;
   }
   return false;
+}
+
+bool CAddonMgr::IsSystemAddon(const std::string& addonId)
+{
+  CSingleLock lock(m_critSection);
+  return std::find(m_systemAddons.begin(), m_systemAddons.end(), addonId) != m_systemAddons.end();
 }
 
 bool CAddonMgr::IsBlacklisted(const std::string& addonId) const
@@ -1344,6 +1313,37 @@ const AddonPropsPtr CAddonMgr::GetInstalledAddonInfo(TYPE addonType, std::string
   }
 
   return result->second;
+}
+
+bool CAddonMgr::LoadManifest(std::set<std::string>& system, std::set<std::string>& optional)
+{
+  CXBMCTinyXML doc;
+  if (!doc.LoadFile("special://xbmc/system/addon-manifest.xml"))
+  {
+    CLog::Log(LOGERROR, "ADDONS: manifest missing");
+    return false;
+  }
+
+  auto root = doc.RootElement();
+  if (!root || root->ValueStr() != "addons")
+  {
+    CLog::Log(LOGERROR, "ADDONS: malformed manifest");
+    return false;
+  }
+
+  auto elem = root->FirstChildElement("addon");
+  while (elem)
+  {
+    if (elem->FirstChild())
+    {
+      if (XMLUtils::GetAttribute(elem, "optional") == "true")
+        optional.insert(elem->FirstChild()->ValueStr());
+      else
+        system.insert(elem->FirstChild()->ValueStr());
+    }
+    elem = elem->NextSiblingElement("addon");
+  }
+  return true;
 }
 
 //@}
