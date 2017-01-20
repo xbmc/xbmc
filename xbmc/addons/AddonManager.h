@@ -255,8 +255,6 @@ namespace ADDON
 
     bool ServicesHasStarted() const;
 
-    bool IsCompatible(const IAddon& addon);
-
     static AddonPtr Factory(const cp_plugin_info_t* plugin, TYPE type);
     static bool Factory(const cp_plugin_info_t* plugin, TYPE type, CAddonBuilder& builder);
     static void FillCpluffMetadata(const cp_plugin_info_t* plugin, CAddonBuilder& builder);
@@ -313,6 +311,24 @@ namespace ADDON
      * @return The list with of available add-on's with info tables.
      */
     AddonInfos GetAddonInfos(bool enabledOnly = true, const TYPE &type = ADDON_UNKNOWN);
+
+    /*!
+     * @brief Compare the given add-on info to his related dependency versions.
+     *
+     * The dependency versions are set on addon.xml with:
+     * ```
+     * ...
+     * <requires>
+     *   <import addon="kodi.???" version="???"/>
+     * </requires>
+     * ...
+     * ```
+     *
+     * @param[in] addonProps The add-on properties to compare to dependency
+     *                       versions.
+     * @return true if compatible, if not returns it false.
+     */
+    bool IsCompatible(const AddonProps& addonProps);
 
   private:
 

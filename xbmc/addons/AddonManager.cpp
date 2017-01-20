@@ -1173,31 +1173,6 @@ void CAddonMgr::StopServices(const bool onlylogin)
   }
 }
 
-bool CAddonMgr::IsCompatible(const IAddon& addon)
-{
-  for (const auto& dependencyInfo : addon.GetDeps())
-  {
-    const auto& optional = dependencyInfo.second.second;
-    if (!optional)
-    {
-      const auto& dependencyId = dependencyInfo.first;
-      const auto& version = dependencyInfo.second.first;
-
-      // Intentionally only check the xbmc.* and kodi.* magic dependencies. Everything else will
-      // not be missing anyway, unless addon was installed in an unsupported way.
-      if (StringUtils::StartsWith(dependencyId, "xbmc.") ||
-          StringUtils::StartsWith(dependencyId, "kodi."))
-      {
-        AddonPtr dependency;
-        bool haveAddon = GetAddon(dependencyId, dependency);
-        if (!haveAddon || !dependency->MeetsVersion(version))
-          return false;
-      }
-    }
-  }
-  return true;
-}
-
 int cp_to_clog(cp_log_severity_t lvl)
 {
   if (lvl >= CP_LOG_ERROR)
@@ -1279,6 +1254,31 @@ AddonInfos CAddonMgr::GetAddonInfos(bool enabledOnly/* = true*/, const TYPE &typ
   }
 
   return infos;
+}
+
+bool CAddonMgr::IsCompatible(const AddonProps& addonProps)
+{
+  for (const auto& dependencyInfo : addonProps.GetDeps())
+  {
+    const auto& optional = dependencyInfo.second.second;
+    if (!optional)
+    {
+      const auto& dependencyId = dependencyInfo.first;
+      const auto& version = dependencyInfo.second.first;
+
+      // Intentionally only check the xbmc.* and kodi.* magic dependencies. Everything else will
+      // not be missing anyway, unless addon was installed in an unsupported way.
+      if (StringUtils::StartsWith(dependencyId, "xbmc.") ||
+          StringUtils::StartsWith(dependencyId, "kodi."))
+      {
+        AddonPropsPtr dependency = GetInstalledAddonInfo(dependencyId);
+        if (!dependency || !dependency->MeetsVersion(version))
+          return false;
+      }
+    }
+  }
+
+  return true;
 }
 
 void CAddonMgr::FindAddons(AddonInfoMap& addonmap, std::string path)
