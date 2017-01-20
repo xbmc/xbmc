@@ -163,13 +163,6 @@ namespace ADDON
     /*! \brief Enable an addon. Returns true on success, false on failure. */
     bool EnableAddon(const std::string& ID);
 
-    /* \brief Check whether an addon has been disabled via DisableAddon.
-     In case the disabled cache does not know about the current state the database routine will be used.
-     \param ID id of the addon
-     \sa DisableAddon
-     */
-    bool IsAddonDisabled(const std::string& ID);
-
     /* \brief Checks whether an addon can be disabled via DisableAddon.
      \param ID id of the addon
      \sa DisableAddon
@@ -177,11 +170,6 @@ namespace ADDON
     bool CanAddonBeDisabled(const std::string& ID);
 
     bool CanAddonBeEnabled(const std::string& id);
-
-    /* \brief Checks whether an addon is installed.
-     \param ID id of the addon
-    */
-    bool IsAddonInstalled(const std::string& ID);
 
     /* \brief Checks whether an addon can be installed. Broken addons can't be installed.
     \param addon addon to be checked
@@ -311,6 +299,22 @@ namespace ADDON
      * @return The list with of available add-on's with info tables.
      */
     AddonInfos GetAddonInfos(bool enabledOnly, const TYPE &type);
+
+    /*!
+     * @brief Checks whether an addon is installed.
+     *
+     * @param[in] addonId id of the addon
+     * @return true if installed
+     */
+    bool IsAddonInstalled(const std::string& addonId);
+
+    /*!
+     * @brief Check whether an addon has been enabled.
+     *
+     * @param[in] addonId id of the addon
+     * @return true if enabled
+     */
+    bool IsAddonEnabled(const std::string& addonId);
 
     /*!
      * @brief Compare the given add-on info to his related dependency versions.

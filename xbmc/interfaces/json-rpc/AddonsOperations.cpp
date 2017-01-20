@@ -164,7 +164,7 @@ JSONRPC_STATUS CAddonsOperations::SetAddonEnabled(const std::string &method, ITr
     disabled = !parameterObject["enabled"].asBoolean();
   // we need to toggle the current disabled state of the addon
   else if (parameterObject["enabled"].isString())
-    disabled = !CAddonMgr::GetInstance().IsAddonDisabled(id);
+    disabled = CAddonMgr::GetInstance().IsAddonEnabled(id);
   else
     return InvalidParams;
 
@@ -279,7 +279,7 @@ void CAddonsOperations::FillDetails(AddonPtr addon, const CVariant& fields, CVar
     // from the addon database because it can't be read from addon.xml
     if (field == "enabled")
     {
-      object[field] = !CAddonMgr::GetInstance().IsAddonDisabled(addon->ID());
+      object[field] = CAddonMgr::GetInstance().IsAddonEnabled(addon->ID());
     }
     else if (field == "installed")
     {

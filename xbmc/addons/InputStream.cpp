@@ -42,7 +42,7 @@ std::unique_ptr<CInputStream> CInputStream::FromExtension(AddonProps props, cons
   std::string name(ext->plugin->identifier);
   std::unique_ptr<CInputStream> istr(new CInputStream(props, name, listitemprops,
                                                       extensions, protocols));
-  if (!CAddonMgr::GetInstance().IsAddonDisabled(props.id))
+  if (CAddonMgr::GetInstance().IsAddonEnabled(props.id))
     istr->CheckConfig();
   return istr;
 }

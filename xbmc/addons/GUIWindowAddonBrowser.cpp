@@ -544,7 +544,7 @@ int CGUIWindowAddonBrowser::SelectAddonID(const std::vector<ADDON::TYPE> &types,
         }
 
         // if the addon is disabled we need to enable it
-        if (CAddonMgr::GetInstance().IsAddonDisabled(addon->ID()))
+        if (!CAddonMgr::GetInstance().IsAddonEnabled(addon->ID()))
           CAddonMgr::GetInstance().EnableAddon(addon->ID());
       }
     }
