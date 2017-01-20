@@ -130,16 +130,25 @@ bool CVideoPlayerVideo::OpenStream(CDVDStreamInfo &hint)
     return false;
 
   CLog::Log(LOGNOTICE, "Creating video codec with codec id: %i", hint.codec);
-  CDVDVideoCodec* codec = CDVDFactoryCodec::CreateVideoCodec(hint, m_processInfo, info);
-  if (!codec)
-  {
-    CLog::Log(LOGINFO, "CVideoPlayerVideo::OpenStream - could not open video codec");
-  }
 
   if(m_messageQueue.IsInited())
+  {
+    CDVDVideoCodec* codec = CDVDFactoryCodec::CreateVideoCodec(hint, m_processInfo, info);
+    if (!codec)
+    {
+      CLog::Log(LOGINFO, "CVideoPlayerVideo::OpenStream - could not open video codec");
+    }
     m_messageQueue.Put(new CDVDMsgVideoCodecChange(hint, codec), 0);
+  }
   else
   {
+    hint.codecOptions |= CODEC_ALLOW_FALLBACK;
+    CDVDVideoCodec* codec = CDVDFactoryCodec::CreateVideoCodec(hint, m_processInfo, info);
+    if (!codec)
+    {
+      CLog::Log(LOGERROR, "CVideoPlayerVideo::OpenStream - could not open video codec");
+      return false;
+    }
     OpenStream(hint, codec);
     CLog::Log(LOGNOTICE, "Creating video thread");
     m_messageQueue.Init();
