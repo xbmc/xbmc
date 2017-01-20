@@ -689,6 +689,7 @@ bool CAddonMgr::FindAddons()
   m_updateBlacklist = std::move(tmp);
 
   m_events.Publish(AddonEvents::InstalledChanged());
+
   return true;
 }
 
@@ -1250,6 +1251,34 @@ bool CAddonMgr::IsBlacklisted(const std::string& id) const
 {
   CSingleLock lock(m_critSection);
   return m_updateBlacklist.find(id) != m_updateBlacklist.end();
+}
+
+AddonInfos CAddonMgr::GetAddonInfos(bool enabledOnly/* = true*/, const TYPE &type/* = ADDON_UNKNOWN*/)
+{
+  AddonInfos infos;
+
+  AddonInfoMap* addons;
+  if (enabledOnly)
+    addons = &m_enabledAddons;
+  else
+    addons = &m_installedAddons;
+
+  AddonInfoMap::const_iterator itr;
+  if (type == ADDON_UNKNOWN)
+    itr = addons->begin();
+  else
+    itr = addons->find(type);
+
+  if (itr != addons->end())
+  {
+    do
+    {
+      for (auto info : itr->second)
+        infos.push_back(info.second);
+    } while (++itr != addons->end() && type == ADDON_UNKNOWN);
+  }
+
+  return infos;
 }
 
 void CAddonMgr::FindAddons(AddonInfoMap& addonmap, std::string path)
