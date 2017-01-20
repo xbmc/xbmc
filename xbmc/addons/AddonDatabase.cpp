@@ -737,7 +737,7 @@ void CAddonDatabase::DeleteRepository(const std::string& id)
 }
 
 bool CAddonDatabase::UpdateRepositoryContent(const std::string& repository, const AddonVersion& version,
-    const std::string& checksum, const ADDON::VECAddonProps& addonProps)
+    const std::string& checksum, const ADDON::AddonInfos& addonProps)
 {
   try
   {

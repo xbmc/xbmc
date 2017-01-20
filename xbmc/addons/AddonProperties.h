@@ -29,8 +29,8 @@ namespace ADDON
 
   class AddonProps;
   typedef std::shared_ptr<AddonProps> AddonPropsPtr;
-  typedef std::vector<AddonPropsPtr> VECAddonProps;
-  typedef std::vector<AddonPropsPtr>::iterator VECAddonPropsIter;
+  typedef std::vector<AddonPropsPtr> AddonInfos;
+  typedef std::vector<AddonPropsPtr>::iterator AddonInfosIter;
 
   class CAddon;
   class CAddonBuilder;

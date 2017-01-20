@@ -839,30 +839,6 @@ bool CAddonMgr::CanAddonBeEnabled(const std::string& addonId)
   return !addonId.empty() && IsAddonInstalled(addonId);
 }
 
-bool CAddonMgr::IsAddonInstalled(const std::string& addonId)
-{
-  CSingleLock lock(m_critSection);
-
-  for (auto addonInfoTypes : m_installedAddons)
-  {
-    if (addonInfoTypes.second.find(addonId) != addonInfoTypes.second.end())
-      return true;
-  }
-  return false;
-}
-
-bool CAddonMgr::IsAddonEnabled(const std::string& addonId)
-{
-  CSingleLock lock(m_critSection);
-
-  for (auto addonInfoTypes : m_enabledAddons)
-  {
-    if (addonInfoTypes.second.find(addonId) != addonInfoTypes.second.end())
-      return true;
-  }
-  return false;
-}
-
 bool CAddonMgr::CanAddonBeInstalled(const AddonPtr& addon)
 {
   if (addon == NULL)
@@ -1105,34 +1081,6 @@ bool CAddonMgr::LoadAddonDescription(const std::string &directory, AddonPtr &add
   return addon != nullptr;
 }
 
-bool CAddonMgr::AddonsFromRepoXML(const CRepository::DirInfo& repo, const std::string& xml, VECAddonProps& addonProps)
-{
-  CXBMCTinyXML doc;
-  if (!doc.Parse(xml))
-  {
-    CLog::Log(LOGERROR, "CAddonMgr: Failed to parse addons.xml.");
-    return false;
-  }
-
-  if (doc.RootElement() == nullptr || doc.RootElement()->ValueStr() != "addons")
-  {
-    CLog::Log(LOGERROR, "CAddonMgr: Failed to parse addons.xml. Malformed.");
-    return false;
-  }
-
-  auto element = doc.RootElement()->FirstChildElement("addon");
-  while (element)
-  {
-    AddonPropsPtr props = std::make_shared<AddonProps>(element, repo.datadir);
-    if (props->IsUsable())
-      addonProps.push_back(std::move(props));
-
-    element = element->NextSiblingElement("addon");
-  }
-
-  return true;
-}
-
 bool CAddonMgr::ServicesHasStarted() const
 {
   CSingleLock lock(m_critSection);
@@ -1218,26 +1166,50 @@ void cp_logger(cp_log_severity_t level, const char *msg, const char *apid, void 
  */
 //@{
 
-bool CAddonMgr::AddToUpdateBlacklist(const std::string& id)
+bool CAddonMgr::IsAddonInstalled(const std::string& addonId)
 {
   CSingleLock lock(m_critSection);
-  if (IsBlacklisted(id))
-    return true;
-  return m_database.BlacklistAddon(id) && m_updateBlacklist.insert(id).second;
+
+  for (auto addonInfoTypes : m_installedAddons)
+  {
+    if (addonInfoTypes.second.find(addonId) != addonInfoTypes.second.end())
+      return true;
+  }
+  return false;
 }
 
-bool CAddonMgr::RemoveFromUpdateBlacklist(const std::string& id)
+bool CAddonMgr::IsAddonEnabled(const std::string& addonId)
 {
   CSingleLock lock(m_critSection);
-  if (!IsBlacklisted(id))
-    return true;
-  return m_database.RemoveAddonFromBlacklist(id) && m_updateBlacklist.erase(id) > 0;
+
+  for (auto addonInfoTypes : m_enabledAddons)
+  {
+    if (addonInfoTypes.second.find(addonId) != addonInfoTypes.second.end())
+      return true;
+  }
+  return false;
 }
 
-bool CAddonMgr::IsBlacklisted(const std::string& id) const
+bool CAddonMgr::IsBlacklisted(const std::string& addonId) const
 {
   CSingleLock lock(m_critSection);
-  return m_updateBlacklist.find(id) != m_updateBlacklist.end();
+  return m_updateBlacklist.find(addonId) != m_updateBlacklist.end();
+}
+
+bool CAddonMgr::AddToUpdateBlacklist(const std::string& addonId)
+{
+  CSingleLock lock(m_critSection);
+  if (IsBlacklisted(addonId))
+    return true;
+  return m_database.BlacklistAddon(addonId) && m_updateBlacklist.insert(addonId).second;
+}
+
+bool CAddonMgr::RemoveFromUpdateBlacklist(const std::string& addonId)
+{
+  CSingleLock lock(m_critSection);
+  if (!IsBlacklisted(addonId))
+    return true;
+  return m_database.RemoveAddonFromBlacklist(addonId) && m_updateBlacklist.erase(addonId) > 0;
 }
 
 AddonInfos CAddonMgr::GetAddonInfos(bool enabledOnly/* = true*/, const TYPE &type/* = ADDON_UNKNOWN*/)
@@ -1288,6 +1260,34 @@ bool CAddonMgr::IsCompatible(const AddonProps& addonProps)
           return false;
       }
     }
+  }
+
+  return true;
+}
+
+bool CAddonMgr::AddonsFromRepoXML(const CRepository::DirInfo& repo, const std::string& xml, AddonInfos& addonInfos)
+{
+  CXBMCTinyXML doc;
+  if (!doc.Parse(xml))
+  {
+    CLog::Log(LOGERROR, "CAddonMgr: Failed to parse addons.xml.");
+    return false;
+  }
+
+  if (doc.RootElement() == nullptr || doc.RootElement()->ValueStr() != "addons")
+  {
+    CLog::Log(LOGERROR, "CAddonMgr: Failed to parse addons.xml. Malformed.");
+    return false;
+  }
+
+  auto element = doc.RootElement()->FirstChildElement("addon");
+  while (element)
+  {
+    AddonPropsPtr props = std::make_shared<AddonProps>(element, repo.datadir);
+    if (props->IsUsable())
+      addonInfos.push_back(std::move(props));
+
+    element = element->NextSiblingElement("addon");
   }
 
   return true;
