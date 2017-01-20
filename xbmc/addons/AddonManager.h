@@ -48,8 +48,6 @@ namespace ADDON
   typedef std::map<std::string, AddonPropsPtr> AddonInfoList;
   typedef std::map<TYPE, AddonInfoList> AddonInfoMap;
 
-  typedef std::vector<AddonPropsPtr> AddonInfos;
-
   const std::string ADDON_PYTHON_EXT           = "*.py";
 
   /**
@@ -228,10 +226,10 @@ namespace ADDON
      A repository XML is essentially a concatenated list of addon descriptors.
      \param repo The repository info.
      \param xml The XML document from repository.
-     \param AddonProps [out] returned list of addon properties.
+     \param ddonInfos [out] returned list of addon properties.
      \return true if the repository XML file is parsed, false otherwise.
      */
-    bool AddonsFromRepoXML(const CRepository::DirInfo& repo, const std::string& xml, VECAddonProps& AddonProps);
+    bool AddonsFromRepoXML(const CRepository::DirInfo& repo, const std::string& xml, AddonInfos& addonInfos);
 
     /*! \brief Start all services addons.
         \return True is all addons are started, false otherwise
@@ -250,18 +248,42 @@ namespace ADDON
     const AddonPropsPtr GetInstalledAddonInfo(TYPE addonType, std::string addonId);
 
     /*!
+     * @brief Checks whether an addon is installed.
+     *
+     * @param[in] addonId id of the addon
+     * @return true if installed
+     */
+    bool IsAddonInstalled(const std::string& addonId);
+
+    /*!
+     * @brief Check whether an addon has been enabled.
+     *
+     * @param[in] addonId id of the addon
+     * @return true if enabled
+     */
+    bool IsAddonEnabled(const std::string& addonId);
+
+    /*!
+     * @brief Check a add-on id is blacklisted
+     *
+     * @param[in] addonId The add-on id to check
+     * @return true in case it is blacklisted, otherwise false
+     */
+    bool IsBlacklisted(const std::string& addonId) const;
+
+    /*!
      * @brief Add add-on id to blacklist where it becomes noted that updates are
      * available.
      *
      * The add-on database becomes also updated with call from this function.
      *
-     * @param[in] id The add-on id to blacklist
+     * @param[in] addonId The add-on id to blacklist
      * @return true if successfully done, otherwise false
      *
      * @note In case add-on is already in blacklist becomes the add skipped and
      * returns a true.
      */
-    bool AddToUpdateBlacklist(const std::string& id);
+    bool AddToUpdateBlacklist(const std::string& addonId);
 
     /*!
      * @brief Remove a add-on from blacklist in case a update is no more
@@ -269,21 +291,13 @@ namespace ADDON
      *
      * The add-on database becomes also updated with call from this function.
      *
-     * @param[in] id The add-on id to blacklist
+     * @param[in] addonId The add-on id to blacklist
      * @return true if successfully done, otherwise false
      *
      * @note In case add-on is not in blacklist becomes the remove skipped and
      * returns a true.
      */
-    bool RemoveFromUpdateBlacklist(const std::string& id);
-
-    /*!
-     * @brief Check a add-on id is blacklisted
-     *
-     * @param[in] id The add-on id to check
-     * @return true in case it is blacklisted, otherwise false
-     */
-    bool IsBlacklisted(const std::string& id) const;
+    bool RemoveFromUpdateBlacklist(const std::string& addonId);
 
     /*!
      * @brief Get a list of add-on's with info's for the on system available
@@ -299,22 +313,6 @@ namespace ADDON
      * @return The list with of available add-on's with info tables.
      */
     AddonInfos GetAddonInfos(bool enabledOnly, const TYPE &type);
-
-    /*!
-     * @brief Checks whether an addon is installed.
-     *
-     * @param[in] addonId id of the addon
-     * @return true if installed
-     */
-    bool IsAddonInstalled(const std::string& addonId);
-
-    /*!
-     * @brief Check whether an addon has been enabled.
-     *
-     * @param[in] addonId id of the addon
-     * @return true if enabled
-     */
-    bool IsAddonEnabled(const std::string& addonId);
 
     /*!
      * @brief Compare the given add-on info to his related dependency versions.
