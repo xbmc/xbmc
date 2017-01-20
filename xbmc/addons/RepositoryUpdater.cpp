@@ -201,7 +201,7 @@ void CRepositoryUpdater::ScheduleUpdate()
   if (CServiceBroker::GetSettings().GetInt(CSettings::SETTING_ADDONS_AUTOUPDATES) == AUTO_UPDATES_NEVER)
     return;
 
-  if (!CAddonMgr::GetInstance().HasAddons(ADDON_REPOSITORY))
+  if (!CAddonMgr::GetInstance().HasEnabledAddons(ADDON_REPOSITORY))
     return;
 
   auto prev = LastUpdated();

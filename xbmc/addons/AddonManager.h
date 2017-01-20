@@ -100,10 +100,6 @@ namespace ADDON
 
     AddonDllPtr GetAddon(const TYPE &type, const std::string &id);
 
-    bool HasAddons(const TYPE &type);
-
-    bool HasInstalledAddons(const TYPE &type);
-
     /*! Returns all installed, enabled add-ons. */
     bool GetAddons(VECADDONS& addons);
 
@@ -176,8 +172,6 @@ namespace ADDON
 
     bool CanUninstall(const AddonPtr& addon);
 
-    bool IsSystemAddon(const std::string& id);
-
     void UpdateLastUsed(const std::string& id);
 
     /* libcpluff */
@@ -247,6 +241,25 @@ namespace ADDON
 
     const AddonPropsPtr GetInstalledAddonInfo(TYPE addonType, std::string addonId);
 
+
+    /*!
+     * @brief Checks system about given type to know related add-on's are
+     * installed.
+     *
+     * @param[in] type Add-on type to check installed
+     * @return true if given type is installed
+     */
+    bool HasInstalledAddons(const TYPE &type);
+
+    /*!
+     * @brief Checks system about given type to know related add-on's are
+     * installed and also minimum one enabled.
+     *
+     * @param[in] type Add-on type to check enabled
+     * @return true if given type is enabled
+     */
+    bool HasEnabledAddons(const TYPE &type);
+
     /*!
      * @brief Checks whether an addon is installed.
      *
@@ -262,6 +275,14 @@ namespace ADDON
      * @return true if enabled
      */
     bool IsAddonEnabled(const std::string& addonId);
+
+    /*!
+     * @brief Check the given add-on id is a system one
+     *
+     * @param[in] addonId id of the addon to check
+     * @return true if system add-on
+     */
+    bool IsSystemAddon(const std::string& addonId);
 
     /*!
      * @brief Check a add-on id is blacklisted
@@ -353,15 +374,25 @@ namespace ADDON
     CCriticalSection m_critSection;
     CAddonDatabase m_database;
     CEventSource<AddonEvent> m_events;
-    std::set<std::string> m_systemAddons;
     std::set<std::string> m_optionalAddons;
     bool m_serviceSystemStarted;
 
     void FindAddons(AddonInfoMap& addonmap, std::string path);
     const AddonPropsPtr GetInstalledAddonInfo(const std::string& addonId);
 
+    /*!
+     * @brief To load the add-on manifest where is defined which are at least
+     * required to start and run Kodi!
+     *
+     * @param[out] system List of required add-on's who must be present
+     * @param[out] optional List of optional add-on's who can be present but not required
+     * @return true if load is successfully done.
+     */
+    static bool LoadManifest(std::set<std::string>& system, std::set<std::string>& optional);
+
     AddonInfoMap m_installedAddons;
     AddonInfoMap m_enabledAddons;
+    std::set<std::string> m_systemAddons;
     std::set<std::string> m_updateBlacklist;
   };
 
