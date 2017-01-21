@@ -257,6 +257,9 @@ using KODI::MESSAGING::HELPERS::DialogResponse;
 //extern IDirectSoundRenderer* m_pAudioDecoder;
 CApplication::CApplication(void)
   : m_pPlayer(new CApplicationPlayer)
+#ifdef HAS_DVD_DRIVE
+  , m_Autorun(new CAutorun())
+#endif
   , m_iScreenSaveLock(0)
   , m_bPlaybackStarting(false)
   , m_ePlayState(PLAY_STATE_NONE)
@@ -269,6 +272,7 @@ CApplication::CApplication(void)
   , m_dpmsIsActive(false)
   , m_dpmsIsManual(false)
   , m_itemCurrentFile(new CFileItem)
+  , m_currentStack(new CFileItemList)
   , m_stackFileItemToUpdate(new CFileItem)
   , m_threadID(0)
   , m_bInitializing(true)
@@ -298,23 +302,11 @@ CApplication::CApplication(void)
 #ifdef HAS_GLX
   XInitThreads();
 #endif
-
-  /* for now always keep this around */
-  m_currentStack = new CFileItemList;
-
-#ifdef HAS_DVD_DRIVE
-  m_Autorun = new CAutorun();
-#endif
 }
 
 CApplication::~CApplication(void)
 {
-  delete m_musicInfoScanner;
   delete &m_progressTrackingVideoResumeBookmark;
-#ifdef HAS_DVD_DRIVE
-  delete m_Autorun;
-#endif
-  delete m_currentStack;
 
   delete m_pInertialScrollingHandler;
 
