@@ -123,6 +123,7 @@ namespace ADDON
 
     /*! Get the installable addon with the highest version. */
     bool FindInstallableById(const std::string& addonId, AddonPtr& addon);
+    bool FindInstallableById(const std::string& addonId, AddonPropsPtr& addon);
 
     void AddToUpdateableAddons(AddonPtr &pAddon);
     void RemoveFromUpdateableAddons(AddonPtr &pAddon);    
@@ -130,6 +131,7 @@ namespace ADDON
 
     /*! Get addons with available updates */
     VECADDONS GetAvailableUpdates();
+    AddonInfos GetAvailableUpdates2();
 
     /*! Returns true if there is any addon with available updates, otherwise false */
     bool HasAvailableUpdates();

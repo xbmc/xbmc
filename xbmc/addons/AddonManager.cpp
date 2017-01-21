@@ -420,6 +420,25 @@ VECADDONS CAddonMgr::GetAvailableUpdates()
   return updates;
 }
 
+AddonInfos CAddonMgr::GetAvailableUpdates2()
+{
+  CSingleLock lock(m_critSection);
+  auto start = XbmcThreads::SystemClockMillis();
+
+  AddonInfos updates;
+  for (auto addonInfoTypes : m_enabledAddons)
+  {
+    for (auto addonInfo : addonInfoTypes.second)
+    {
+      AddonPropsPtr remote;
+      if (m_database.GetAddonInfo(addonInfo.first, remote) && remote->Version() > addonInfo.second->Version())
+        updates.emplace_back(std::move(remote));
+    }
+  }
+  CLog::Log(LOGDEBUG, "CAddonMgr::GetAvailableUpdates took %i ms", XbmcThreads::SystemClockMillis() - start);
+  return updates;
+}
+
 bool CAddonMgr::HasAvailableUpdates()
 {
   return !GetAvailableUpdates().empty();
@@ -506,6 +525,20 @@ bool CAddonMgr::FindInstallableById(const std::string& addonId, AddonPtr& result
 
   result = *std::max_element(versions.begin(), versions.end(),
       [](const AddonPtr& a, const AddonPtr& b) { return a->Version() < b->Version(); });
+  return true;
+}
+
+bool CAddonMgr::FindInstallableById(const std::string& addonId, AddonPropsPtr& result)
+{
+  AddonInfos versions;
+  {
+    CSingleLock lock(m_critSection);
+    if (!m_database.FindByAddonId(addonId, versions) || versions.empty())
+      return false;
+  }
+
+  result = *std::max_element(versions.begin(), versions.end(),
+      [](const AddonPropsPtr& a, const AddonPropsPtr& b) { return a->Version() < b->Version(); });
   return true;
 }
 

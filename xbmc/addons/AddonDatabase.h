@@ -36,9 +36,11 @@ public:
 
   /*! @deprecated: use CAddonMgr::FindInstallableById */
   bool GetAddon(const std::string& addonID, ADDON::AddonPtr& addon);
+  bool GetAddonInfo(const std::string& addonID, ADDON::AddonPropsPtr& info);
 
   /*! \brief Get an addon with a specific version and repository. */
   bool GetAddon(const std::string& addonID, const ADDON::AddonVersion& version, const std::string& repoId, ADDON::AddonPtr& addon);
+  bool GetAddonInfo(const std::string& addonID, const ADDON::AddonVersion& version, const std::string& repoId, ADDON::AddonPropsPtr& info);
 
   /*! Get the addon IDs that has been set to disabled */
   bool GetDisabled(std::set<std::string>& addons);
@@ -55,6 +57,7 @@ public:
 
   /*! Returns all addons in the repositories with id `addonId`. */
   bool FindByAddonId(const std::string& addonId, ADDON::VECADDONS& addons);
+  bool FindByAddonId(const std::string& addonId, ADDON::AddonInfos& addonInfos);
 
   bool UpdateRepositoryContent(const std::string& repositoryId, const ADDON::AddonVersion& version,
       const std::string& checksum, const ADDON::AddonInfos& addonInfos);
@@ -67,9 +70,11 @@ public:
    \returns true on success, false on error or if repository have never been synced.
    */
   bool GetRepositoryContent(const std::string& id, ADDON::VECADDONS& addons);
+  bool GetRepositoryContent(const std::string& id, ADDON::AddonInfos& addons);
 
   /*! Get addons across all repositories */
   bool GetRepositoryContent(ADDON::VECADDONS& addons);
+  bool GetRepositoryContent(ADDON::AddonInfos& addons);
 
   bool SetLastChecked(const std::string& id, const ADDON::AddonVersion& version, const std::string& timestamp);
 
@@ -81,6 +86,7 @@ public:
   std::pair<CDateTime, ADDON::AddonVersion> LastChecked(const std::string& id);
 
   bool Search(const std::string& search, ADDON::VECADDONS& items);
+  bool Search(const std::string& search, ADDON::AddonInfos& items);
 
   /*! \brief Disable an addon.
    Sets a flag that this addon has been disabled.  If disabled, it is usually still available on disk.
@@ -157,6 +163,7 @@ protected:
   const char *GetBaseDBName() const { return "Addons"; }
 
   bool GetAddon(int id, ADDON::AddonPtr& addon);
+  bool GetAddonInfo(int id, ADDON::AddonPropsPtr& info);
   void DeleteRepository(const std::string& id);
 };
 
