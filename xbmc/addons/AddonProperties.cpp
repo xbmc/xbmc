@@ -562,6 +562,38 @@ bool AddonProps::LoadAddonXML(const TiXmlElement* baseElement, std::string addon
   return true;
 }
 
+std::string AddonProps::ExtraInfoValueString(std::string id) const
+{
+  InfoMap::const_iterator it = m_extrainfo.find(id);
+  if (it != m_extrainfo.end())
+    return it->second;
+  return "";
+}
+
+bool AddonProps::ExtraInfoValueBool(std::string id) const
+{
+  InfoMap::const_iterator it = m_extrainfo.find(id);
+  if (it != m_extrainfo.end())
+    return (it->second == "true");
+  return false;
+}
+
+int AddonProps::ExtraInfoValueInt(std::string id) const
+{
+  InfoMap::const_iterator it = m_extrainfo.find(id);
+  if (it != m_extrainfo.end())
+    return atoi(it->second.c_str());
+  return 0;
+}
+
+float AddonProps::ExtraInfoValueFloat(std::string id) const
+{
+  InfoMap::const_iterator it = m_extrainfo.find(id);
+  if (it != m_extrainfo.end())
+    return atof(it->second.c_str());
+  return 0.0f;
+}
+
 std::string AddonProps::SerializeMetadata()
 {
   CVariant variant;
