@@ -145,6 +145,7 @@ void CAdvancedSettings::Initialize()
   m_videoIgnorePercentAtEnd   = 8.0f;
   m_videoPlayCountMinimumPercent = 90.0f;
   m_videoVDPAUScaling = -1;
+  m_allowResolutionChange = true;
   m_videoVAAPIforced = false;
   m_videoNonLinStretchRatio = 0.5f;
   m_videoEnableHighQualityHwScalers = false;
@@ -597,6 +598,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     TiXmlElement* pAdjustRefreshrate = pElement->FirstChildElement("adjustrefreshrate");
     if (pAdjustRefreshrate)
     {
+      XMLUtils::GetBoolean(pAdjustRefreshrate, "allowresolutionchange", m_allowResolutionChange);
       TiXmlElement* pRefreshOverride = pAdjustRefreshrate->FirstChildElement("override");
       while (pRefreshOverride)
       {

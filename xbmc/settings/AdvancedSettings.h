@@ -176,6 +176,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     float m_audioApplyDrc;
     bool m_useFfmpegVda;
 
+    bool m_allowResolutionChange;
     int   m_videoVDPAUScaling;
     bool  m_videoVAAPIforced;
     float m_videoNonLinStretchRatio;
