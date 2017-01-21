@@ -424,6 +424,13 @@ void CPVRManager::Stop(void)
   if (IsStopped())
     return;
 
+  /* stop playback if needed */
+  if (IsPlaying())
+  {
+    CLog::Log(LOGNOTICE,"PVRManager - %s - stopping PVR playback", __FUNCTION__);
+    CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_STOP);
+  }
+
   SetState(ManagerStateStopping);
 
   m_pendingUpdates.Stop();
@@ -432,13 +439,6 @@ void CPVRManager::Stop(void)
   g_EpgContainer.Stop();
 
   CLog::Log(LOGNOTICE, "PVRManager - stopping");
-
-  /* stop playback if needed */
-  if (IsPlaying())
-  {
-    CLog::Log(LOGNOTICE,"PVRManager - %s - stopping PVR playback", __FUNCTION__);
-    CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_STOP);
-  }
 
   /* stop all update threads */
   SetState(ManagerStateInterrupted);
