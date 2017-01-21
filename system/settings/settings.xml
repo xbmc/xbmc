@@ -722,7 +722,7 @@
           <control type="list" format="string" />
         </setting>
         <setting id="subtitles.charset" type="string" parent="subtitles.font" label="735" help="36189">
-          <level>3</level>
+          <level>1</level>
           <default>DEFAULT</default>
           <constraints>
             <options>charsets</options>
