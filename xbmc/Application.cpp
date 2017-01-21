@@ -266,7 +266,6 @@ CApplication::CApplication(void)
   , m_autoExecScriptExecuted(false)
   , m_bScreenSave(false)
   , m_bInhibitIdleShutdown(false)
-  , m_dpms(nullptr)
   , m_dpmsIsActive(false)
   , m_dpmsIsManual(false)
   , m_itemCurrentFile(new CFileItem)
@@ -317,9 +316,7 @@ CApplication::~CApplication(void)
 #endif
   delete m_currentStack;
 
-  delete m_dpms;
   delete m_pInertialScrollingHandler;
-  delete m_pPlayer;
 
   m_actionListeners.clear();
 }
@@ -1144,7 +1141,7 @@ bool CApplication::Initialize()
   StartServices();
 
   // Init DPMS, before creating the corresponding setting control.
-  m_dpms = new DPMSSupport();
+  m_dpms.reset(new DPMSSupport());
   bool uiInitializationFinished = true;
   if (g_windowManager.Initialized())
   {

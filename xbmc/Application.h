@@ -303,7 +303,7 @@ public:
   MEDIA_DETECT::CDetectDVDMedia m_DetectDVDType;
 #endif
 
-  CApplicationPlayer* m_pPlayer;
+  std::unique_ptr<CApplicationPlayer> m_pPlayer;
 
   inline bool IsInScreenSaver() { return m_bScreenSave; };
   inline bool IsDPMSActive() { return m_dpmsIsActive; };
@@ -455,7 +455,7 @@ protected:
 
   bool m_bInhibitIdleShutdown;
 
-  DPMSSupport* m_dpms;
+  std::unique_ptr<DPMSSupport> m_dpms;
   bool m_dpmsIsActive;
   bool m_dpmsIsManual;
 
