@@ -119,7 +119,7 @@ bool CRetroPlayerAudio::OpenEncodedStream(AVCodecID codec, unsigned int samplera
   audioStream.iChannelLayout = CAEUtil::GetAVChannelLayout(channelLayout);
 
   CDVDStreamInfo hint(audioStream);
-  m_pAudioCodec.reset(CDVDFactoryCodec::CreateAudioCodec(hint, m_processInfo, false, true));
+  m_pAudioCodec.reset(CDVDFactoryCodec::CreateAudioCodec(hint, m_processInfo, false));
 
   if (!m_pAudioCodec)
   {

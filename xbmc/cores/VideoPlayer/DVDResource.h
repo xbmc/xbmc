@@ -31,7 +31,7 @@ template<typename T> struct IDVDResourceCounted
   IDVDResourceCounted(const IDVDResourceCounted &) = delete;
   IDVDResourceCounted &operator=(const IDVDResourceCounted &) = delete;
 
-  virtual T*  Acquire()
+  virtual T*   Acquire()
   {
     ++m_refs;
     return (T*)this;
@@ -41,8 +41,7 @@ template<typename T> struct IDVDResourceCounted
   {
     long count = --m_refs;
     assert(count >= 0);
-    if (count == 0)
-      delete (T*)this;
+    if (count == 0) delete (T*)this;
     return count;
   }
   std::atomic<long> m_refs;

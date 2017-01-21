@@ -29,7 +29,18 @@
 
 #include "Video/DVDVideoCodecFFmpeg.h"
 #include "Video/DVDVideoCodecOpenMax.h"
-
+#if defined(HAS_IMXVPU)
+#include "Video/DVDVideoCodecIMX.h"
+#endif
+#include "Video/MMALCodec.h"
+#if defined(HAS_LIBAMCODEC)
+#include "utils/AMLUtils.h"
+#include "Video/DVDVideoCodecAmlogic.h"
+#endif
+#if defined(TARGET_ANDROID)
+#include "Video/DVDVideoCodecAndroidMediaCodec.h"
+#include "platform/android/activity/AndroidFeatures.h"
+#endif
 #include "Audio/DVDAudioCodecFFmpeg.h"
 #include "Audio/DVDAudioCodecPassthrough.h"
 #include "Overlay/DVDOverlayCodecSSA.h"
@@ -44,16 +55,73 @@
 #include "settings/VideoSettings.h"
 #include "utils/StringUtils.h"
 
+CDVDVideoCodec* CDVDFactoryCodec::OpenCodec(CDVDVideoCodec* pCodec, CDVDStreamInfo &hints, CDVDCodecOptions &options )
+{
+  try
+  {
+    CLog::Log(LOGDEBUG, "FactoryCodec - Video: %s - Opening", pCodec->GetName());
+    if( pCodec->Open( hints, options ) )
+    {
+      CLog::Log(LOGDEBUG, "FactoryCodec - Video: %s - Opened", pCodec->GetName());
+      return pCodec;
+    }
 
-//#include "VPFactoryCodec_override.h"
+    CLog::Log(LOGDEBUG, "FactoryCodec - Video: %s - Failed", pCodec->GetName());
+    delete pCodec;
+  }
+  catch(...)
+  {
+    CLog::Log(LOGERROR, "FactoryCodec - Video: Failed with exception");
+  }
+  return nullptr;
+}
 
-//------------------------------------------------------------------------------
-// Video
-//------------------------------------------------------------------------------
+CDVDAudioCodec* CDVDFactoryCodec::OpenCodec(CDVDAudioCodec* pCodec, CDVDStreamInfo &hints, CDVDCodecOptions &options )
+{
+  try
+  {
+    CLog::Log(LOGDEBUG, "FactoryCodec - Audio: %s - Opening", pCodec->GetName());
+    if( pCodec->Open( hints, options ) )
+    {
+      CLog::Log(LOGDEBUG, "FactoryCodec - Audio: %s - Opened", pCodec->GetName());
+      return pCodec;
+    }
+
+    CLog::Log(LOGDEBUG, "FactoryCodec - Audio: %s - Failed", pCodec->GetName());
+    delete pCodec;
+  }
+  catch(...)
+  {
+    CLog::Log(LOGERROR, "FactoryCodec - Audio: Failed with exception");
+  }
+  return nullptr;
+}
+
+CDVDOverlayCodec* CDVDFactoryCodec::OpenCodec(CDVDOverlayCodec* pCodec, CDVDStreamInfo &hints, CDVDCodecOptions &options )
+{
+  try
+  {
+    CLog::Log(LOGDEBUG, "FactoryCodec - Overlay: %s - Opening", pCodec->GetName());
+    if( pCodec->Open( hints, options ) )
+    {
+      CLog::Log(LOGDEBUG, "FactoryCodec - Overlay: %s - Opened", pCodec->GetName());
+      return pCodec;
+    }
+
+    CLog::Log(LOGDEBUG, "FactoryCodec - Overlay: %s - Failed", pCodec->GetName());
+    delete pCodec;
+  }
+  catch(...)
+  {
+    CLog::Log(LOGERROR, "FactoryCodec - Audio: Failed with exception");
+  }
+  return nullptr;
+}
+
 
 CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, CProcessInfo &processInfo, const CRenderInfo &info)
 {
-  std::unique_ptr<CDVDVideoCodec> pCodec;
+  CDVDVideoCodec* pCodec = nullptr;
   CDVDCodecOptions options;
 
   if (info.formats.empty())
@@ -63,50 +131,52 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, CProces
 
   options.m_opaque_pointer = info.opaque_pointer;
 
-  // platform specifig video decoders
   if (!(hint.codecOptions & CODEC_FORCE_SOFTWARE))
   {
-    pCodec.reset(CreateVideoCodecHW(processInfo));
-    if (pCodec && pCodec->Open(hint, options))
-    {
-      return pCodec.release();
-    }
-    if (!(hint.codecOptions & CODEC_ALLOW_FALLBACK))
-      return nullptr;
+#if defined(HAS_LIBAMCODEC)
+    // Amlogic can be present on multiple platforms (Linux, Android)
+    // try this first. if it does not open, we still try other hw decoders
+    pCodec = OpenCodec(new CDVDVideoCodecAmlogic(processInfo), hint, options);
+    if (pCodec)
+      return pCodec;
+#endif
+
+#if defined(HAS_IMXVPU)
+    pCodec = OpenCodec(new CDVDVideoCodecIMX(processInfo), hint, options);
+#elif defined(TARGET_ANDROID)
+    pCodec = OpenCodec(new CDVDVideoCodecAndroidMediaCodec(processInfo), hint, options);
+#elif defined(HAVE_LIBOPENMAX)
+    pCodec = OpenCodec(new CDVDVideoCodecOpenMax(processInfo), hint, options);
+#elif defined(HAS_MMAL)
+    pCodec = OpenCodec(new CMMALVideo(processInfo), hint, options);
+#endif
+    if (pCodec || !(hint.codecOptions & CODEC_ALLOW_FALLBACK))
+      return pCodec;
   }
+
+  // try to decide if we want to try halfres decoding
+#if !defined(TARGET_POSIX) && !defined(TARGET_WINDOWS)
+  float pixelrate = (float)hint.width*hint.height*hint.fpsrate/hint.fpsscale;
+  if (pixelrate > 1400.0f*720.0f*30.0f)
+  {
+    CLog::Log(LOGINFO, "CDVDFactoryCodec - High video resolution detected %dx%d, trying half resolution decoding ", hint.width, hint.height);
+    options.m_keys.push_back(CDVDCodecOption("lowres","1"));
+  }
+#endif
 
   std::string value = StringUtils::Format("%d", info.max_buffer_size);
   options.m_keys.push_back(CDVDCodecOption("surfaces", value));
-  pCodec.reset(new CDVDVideoCodecFFmpeg(processInfo));
-  if (pCodec->Open(hint, options))
-  {
-    return pCodec.release();
-  }
+  pCodec = OpenCodec(new CDVDVideoCodecFFmpeg(processInfo), hint, options);
+  if (pCodec)
+    return pCodec;
 
   return nullptr;;
 }
 
-CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, CProcessInfo &processInfo)
-{
-  CRenderInfo renderInfo;
-  return CreateVideoCodec(hint, processInfo, renderInfo);
-}
-
-//------------------------------------------------------------------------------
-// Audio
-//------------------------------------------------------------------------------
-
 CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec(CDVDStreamInfo &hint, CProcessInfo &processInfo, bool allowpassthrough, bool allowdtshddecode)
 {
-  std::unique_ptr<CDVDAudioCodec> pCodec;
+  CDVDAudioCodec* pCodec = NULL;
   CDVDCodecOptions options;
-
-  // platform specifig audio decoders
-  pCodec.reset(CreateAudioCodecHW(processInfo));
-  if (pCodec && pCodec->Open(hint, options))
-  {
-    return pCodec.release();
-  }
 
   if (!allowdtshddecode)
     options.m_keys.push_back(CDVDCodecOption("allowdtshddecode", "0"));
@@ -114,102 +184,55 @@ CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec(CDVDStreamInfo &hint, CProces
   // we don't use passthrough if "sync playback to display" is enabled
   if (allowpassthrough)
   {
-    pCodec.reset(new CDVDAudioCodecPassthrough(processInfo));
-    if (pCodec->Open(hint, options))
-    {
-      return pCodec.release();
-    }
+    pCodec = OpenCodec(new CDVDAudioCodecPassthrough(processInfo), hint, options);
+    if (pCodec)
+      return pCodec;
   }
 
-  pCodec.reset(new CDVDAudioCodecFFmpeg(processInfo));
-  if (pCodec->Open(hint, options))
-  {
-    return pCodec.release();
-  }
+  pCodec = OpenCodec(new CDVDAudioCodecFFmpeg(processInfo), hint, options);
+  if (pCodec)
+    return pCodec;
 
   return nullptr;
 }
 
-//------------------------------------------------------------------------------
-// Overlay
-//------------------------------------------------------------------------------
-
 CDVDOverlayCodec* CDVDFactoryCodec::CreateOverlayCodec( CDVDStreamInfo &hint )
 {
-  std::unique_ptr<CDVDOverlayCodec> pCodec;
+  CDVDOverlayCodec* pCodec = NULL;
   CDVDCodecOptions options;
 
   switch (hint.codec)
   {
     case AV_CODEC_ID_TEXT:
     case AV_CODEC_ID_SUBRIP:
-      pCodec.reset(new CDVDOverlayCodecText());
-      if (pCodec->Open(hint, options))
-      {
-        return pCodec.release();
-      }
+      pCodec = OpenCodec(new CDVDOverlayCodecText(), hint, options);
+      if (pCodec)
+        return pCodec;
       break;
 
     case AV_CODEC_ID_SSA:
     case AV_CODEC_ID_ASS:
-      pCodec.reset(new CDVDOverlayCodecSSA());
-      if (pCodec->Open(hint, options))
-      {
-        return pCodec.release();
-      }
+      pCodec = OpenCodec(new CDVDOverlayCodecSSA(), hint, options);
+      if (pCodec)
+        return pCodec;
 
-      pCodec.reset(new CDVDOverlayCodecText());
-      if (pCodec->Open(hint, options))
-      {
-        return pCodec.release();
-      }
+      pCodec = OpenCodec(new CDVDOverlayCodecText(), hint, options);
+      if (pCodec)
+        return pCodec;
       break;
 
     case AV_CODEC_ID_MOV_TEXT:
-      pCodec.reset(new CDVDOverlayCodecTX3G());
-      if (pCodec->Open(hint, options))
-      {
-        return pCodec.release();
-      }
+      pCodec = OpenCodec(new CDVDOverlayCodecTX3G(), hint, options);
+      if (pCodec)
+        return pCodec;
       break;
 
     default:
-      pCodec.reset(new CDVDOverlayCodecFFmpeg());
-      if (pCodec->Open(hint, options))
-      {
-        return pCodec.release();
-      }
+      pCodec = OpenCodec(new CDVDOverlayCodecFFmpeg(), hint, options);
+      if (pCodec)
+        return pCodec;
       break;
   }
 
   return nullptr;
 }
-
-//------------------------------------------------------------------------------
-// Stubs for platform specific overrides
-//------------------------------------------------------------------------------
-
-// temp
-#if defined(HAS_MMAL)
-#define VP_VIDEOCODEC_HW
-#include "Video/MMALCodec.h"
-CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodecHW(CProcessInfo &processInfo)
-{
-  CDVDVideoCodec* pCodec = new CMMALVideo(processInfo);
-  return pCodec;
-}
-#endif
-
-#if !defined(VP_VIDEOCODEC_HW)
-CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodecHW(CProcessInfo &processInfo)
-{
-  return nullptr;
-}
-#endif
-
-#if !defined(VP_AUDIOCODEC_HW)
-CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodecHW(CProcessInfo &processInfo)
-{
-  return nullptr;
-}
-#endif
