@@ -17330,7 +17330,7 @@ msgstr ""
 #. Description of setting with label #14091 "Character set"
 #: system/settings/settings.xml
 msgctxt "#36116"
-msgid "Choose which character set is used for displaying text in the user interface."
+msgid "Choose which character set is used for displaying text in the user interface. This doesn't change the character set used for subtitles, for that go to Player > Language."
 msgstr ""
 
 #. Description of setting with label #14079 "Timezone country"
