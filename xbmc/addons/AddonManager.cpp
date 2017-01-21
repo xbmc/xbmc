@@ -668,12 +668,6 @@ bool CAddonMgr::FindAddons()
   }
   m_enabledAddons = std::move(enabledAddons);
 
-  { /* old part */
-  tmp.clear();
-  m_database.GetDisabled(tmp);
-  m_disabled = std::move(tmp);
-  } /* old part end */
-
   tmp.clear();
   m_database.GetBlacklisted(tmp);
   m_updateBlacklist = std::move(tmp);
@@ -712,7 +706,17 @@ bool CAddonMgr::ReloadAddon(AddonPtr& addon)
 void CAddonMgr::OnPostUnInstall(const std::string& id)
 {
   CSingleLock lock(m_critSection);
-  m_disabled.erase(id);
+
+  /*! @todo make it better */
+  for (auto addonInfoTypes : m_installedAddons)
+  {
+    if (addonInfoTypes.second.find(id) != addonInfoTypes.second.end())
+    {
+      addonInfoTypes.second.erase(id);
+      break;
+    }
+  }
+
   m_updateBlacklist.erase(id);
 }
 
@@ -748,14 +752,23 @@ static void ResolveDependencies(const std::string& addonId, std::vector<std::str
 bool CAddonMgr::DisableAddon(const std::string& id)
 {
   CSingleLock lock(m_critSection);
+
   if (!CanAddonBeDisabled(id))
     return false;
-  if (m_disabled.find(id) != m_disabled.end())
+  if (!IsAddonEnabled(id))
     return true; //already disabled
   if (!m_database.DisableAddon(id))
     return false;
-  if (!m_disabled.insert(id).second)
+
+  const AddonPropsPtr info = GetInstalledAddonInfo(id);
+  if (info == nullptr)
+  {
+    CLog::Log(LOGERROR, "ADDONS: Addon Id '%s' does not mach installed map", id.c_str());
     return false;
+  }
+  m_enabledAddons[info->Type()].erase(id);
+
+//----------
 
   //success
   ADDON::OnDisabled(id);
@@ -771,11 +784,22 @@ bool CAddonMgr::DisableAddon(const std::string& id)
 bool CAddonMgr::EnableSingle(const std::string& id)
 {
   CSingleLock lock(m_critSection);
-  if (m_disabled.find(id) == m_disabled.end())
+
+  if (IsAddonEnabled(id))
     return true; //already enabled
   if (!m_database.DisableAddon(id, false))
     return false;
-  m_disabled.erase(id);
+
+  const AddonPropsPtr info = GetInstalledAddonInfo(id);
+  if (info == nullptr)
+  {
+    CLog::Log(LOGERROR, "ADDONS: Addon Id '%s' does not mach installed map", id.c_str());
+    return false;
+  }
+  m_enabledAddons[info->Type()][id] = info;
+
+//----------
+
   ADDON::OnEnabled(id);
 
   AddonPtr addon;

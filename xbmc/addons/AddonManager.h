@@ -371,12 +371,10 @@ namespace ADDON
     bool GetAddonsInternal(const TYPE &type, VECADDONS &addons, bool enabledOnly);
     bool EnableSingle(const std::string& id);
 
-    std::set<std::string> m_disabled;
     static std::map<TYPE, IAddonMgrCallback*> m_managers;
     CCriticalSection m_critSection;
     CAddonDatabase m_database;
     CEventSource<AddonEvent> m_events;
-    std::set<std::string> m_optionalAddons;
     bool m_serviceSystemStarted;
 
     void FindAddons(AddonInfoMap& addonmap, std::string path);
@@ -395,6 +393,7 @@ namespace ADDON
     AddonInfoMap m_installedAddons;
     AddonInfoMap m_enabledAddons;
     std::set<std::string> m_systemAddons;
+    std::set<std::string> m_optionalAddons;
     std::set<std::string> m_updateBlacklist;
   };
 
