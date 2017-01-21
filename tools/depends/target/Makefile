@@ -13,7 +13,7 @@ DEPENDS = \
 	python27 libshairplay \
 	libplist libcec libbluray tinyxml dummy-libxbmc \
 	libssh taglib libusb libnfs \
-	pythonmodule-pil pythonmodule-setuptools \
+	pythonmodule-pil pythonmodule-pycryptodome pythonmodule-setuptools \
 	libxslt ffmpeg platform crossguid \
         libdvdread libdvdnav libdvdcss p8-platform
 
@@ -95,6 +95,7 @@ libpng: $(ZLIB)
 openssl: $(ZLIB)
 gnutls: nettle $(ZLIB)
 nettle: gmp
+pythonmodule-pycryptodome: python27 pythonmodule-setuptools
 pythonmodule-pil: $(ZLIB) libjpeg-turbo libpng freetype2 python27 pythonmodule-setuptools
 pythonmodule-setuptools: python27
 libsdl2: $(LINUX_SYSTEM_LIBS)
