@@ -20,7 +20,6 @@
  *
  */
 
-#include <vector>
 #include "cores/VideoPlayer/VideoRenderers/RenderFormats.h"
 #include "cores/VideoPlayer/VideoRenderers/BaseRenderer.h"
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
@@ -37,16 +36,24 @@ class CDVDCodecOptions;
 
 class CDVDFactoryCodec
 {
+friend class CDVDVideoCodecFFmpeg;
+
 public:
   static CDVDVideoCodec* CreateVideoCodec(CDVDStreamInfo &hint,
                                           CProcessInfo &processInfo,
-                                          const CRenderInfo &info = CRenderInfo());
-  static CDVDAudioCodec* CreateAudioCodec(CDVDStreamInfo &hint, CProcessInfo &processInfo,
-                                          bool allowpassthrough = true, bool allowdtshddecode = true);
-  static CDVDOverlayCodec* CreateOverlayCodec(CDVDStreamInfo &hint );
+                                          const CRenderInfo &info);
 
-  static CDVDAudioCodec* OpenCodec(CDVDAudioCodec* pCodec, CDVDStreamInfo &hint, CDVDCodecOptions &options );
-  static CDVDVideoCodec* OpenCodec(CDVDVideoCodec* pCodec, CDVDStreamInfo &hint, CDVDCodecOptions &options );
-  static CDVDOverlayCodec* OpenCodec(CDVDOverlayCodec* pCodec, CDVDStreamInfo &hint, CDVDCodecOptions &options );
+  static CDVDVideoCodec* CreateVideoCodec(CDVDStreamInfo &hint,
+                                          CProcessInfo &processInfo);
+
+  static CDVDAudioCodec* CreateAudioCodec(CDVDStreamInfo &hint, CProcessInfo &processInfo,
+                                          bool allowpassthrough, bool allowdtshddecode);
+
+  static CDVDOverlayCodec* CreateOverlayCodec(CDVDStreamInfo &hint);
+
+protected:
+
+  static CDVDVideoCodec* CreateVideoCodecHW(CProcessInfo &processInfo);
+  static CDVDAudioCodec* CreateAudioCodecHW(CProcessInfo &processInfo);
 };
 
