@@ -19,7 +19,6 @@
  */
 
 #include "system.h"
-#ifdef HAVE_LIBVDPAU
 #include "VDPAU.h"
 #include "ServiceBroker.h"
 #include <dlfcn.h>
@@ -3676,5 +3675,3 @@ bool COutput::DestroyGlxContext()
 
   return true;
 }
-
-#endif

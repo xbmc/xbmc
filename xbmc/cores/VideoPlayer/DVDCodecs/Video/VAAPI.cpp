@@ -18,7 +18,6 @@
  *
  */
 #include "system.h"
-#ifdef HAVE_LIBVA
 #include "VAAPI.h"
 #include "ServiceBroker.h"
 #include "windowing/WindowingFactory.h"
@@ -3501,5 +3500,3 @@ bool CFFmpegPostproc::CheckSuccess(VAStatus status)
   }
   return true;
 }
-
-#endif
