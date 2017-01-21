@@ -820,6 +820,43 @@ void CAddonsDirectory::GenerateAddonListing(const CURL &path,
   }
 }
 
+void CAddonsDirectory::GenerateAddonListing(const CURL &path,
+    const AddonPropsList& addons, CFileItemList &items, const std::string label)
+{
+  std::set<std::string> outdated;
+  for (const auto& addon : CAddonMgr::GetInstance().GetAvailableUpdates())
+    outdated.insert(addon->ID());
+
+  items.ClearItems();
+  items.SetContent("addons");
+  items.SetLabel(label);
+  for (const auto& addon : addons)
+  {
+    CURL itemPath = path;
+    itemPath.SetFileName(addon->ID());
+    CFileItemPtr pItem = FileItemFromAddonProps(addon, itemPath.Get(), false);
+
+    bool installed = CAddonMgr::GetInstance().IsAddonInstalled(addon->ID());
+    bool enabled = CAddonMgr::GetInstance().IsAddonEnabled(addon->ID());
+    bool hasUpdate = outdated.find(addon->ID()) != outdated.end();
+
+    pItem->SetProperty("Addon.IsInstalled", installed);
+    pItem->SetProperty("Addon.IsEnabled", installed && enabled);
+    pItem->SetProperty("Addon.HasUpdate", hasUpdate);
+
+    if (installed)
+      pItem->SetProperty("Addon.Status", g_localizeStrings.Get(305));
+    if (!enabled)
+      pItem->SetProperty("Addon.Status", g_localizeStrings.Get(24023));
+    if (hasUpdate)
+      pItem->SetProperty("Addon.Status", g_localizeStrings.Get(24068));
+    else if (!addon->Broken().empty())
+      pItem->SetProperty("Addon.Status", g_localizeStrings.Get(24098));
+
+    items.Add(pItem);
+  }
+}
+
 CFileItemPtr CAddonsDirectory::FileItemFromAddonProps(const AddonPropsPtr &addonProps,
     const std::string& path, bool folder)
 {
