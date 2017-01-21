@@ -60,6 +60,30 @@ namespace ADDON
      */
     AddonProps(const TiXmlElement* baseElement, std::string addonRepoXmlPath);
 
+    /*!
+     * @brief Class constructor used for already known parts, like from
+     * database.
+     *
+     * Source is normally a "addons.xml"
+     *
+     * @param[in] id Identification string of add-on
+     * @param[in] version Version of them
+     * @param[in] name Add-on name
+     * @param[in] summary Summary description
+     * @param[in] description Bigger description
+     * @param[in] metadata Other data from add-on (includes also his type)
+     * @param[in] changelog The changelog
+     * @param[in] origin
+     */
+    AddonProps(const std::string& id,
+               const AddonVersion& version,
+               const std::string& name,
+               const std::string& summary,
+               const std::string& description,
+               const std::string& metadata,
+               const std::string& changelog,
+               const std::string& origin);
+
     AddonProps();
     AddonProps(std::string id, TYPE type);
 
@@ -98,6 +122,7 @@ namespace ADDON
     const CDateTime& LastUsed() const { return m_lastUsed; }
     const std::string& Origin() const { return m_origin; }
     uint64_t PackageSize() const { return m_packageSize; }
+    std::string LibPath() const;
 
     std::string SerializeMetadata();
     void DeserializeMetadata(const std::string& document);

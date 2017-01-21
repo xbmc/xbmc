@@ -218,6 +218,34 @@ AddonProps::AddonProps(const TiXmlElement* baseElement, std::string addonRepoXml
   }
 }
 
+AddonProps::AddonProps(const std::string& id,
+                       const AddonVersion& version,
+                       const std::string& name,
+                       const std::string& summary,
+                       const std::string& description,
+                       const std::string& metadata,
+                       const std::string& changelog,
+                       const std::string& origin)
+  : m_usable(false),
+    m_id(id),
+    m_type(ADDON_UNKNOWN),
+    m_version(version),
+    m_name(name),
+    m_summary(summary),
+    m_description(description),
+    m_changelog(changelog),
+    m_origin(origin)
+{
+  DeserializeMetadata(metadata);
+  if (!m_id.empty() && m_type > ADDON_UNKNOWN && m_type < ADDON_MAX)
+    m_usable = true;
+  else
+  {
+    m_usable = false;
+    CLog::Log(LOGERROR, "AddonProps: tried to create add-on info with invalid data (id='%s', type='%i')", m_id.c_str(), m_type);
+  }
+}
+
 AddonProps::AddonProps()
   : m_usable(true),
     m_type(ADDON_UNKNOWN),
@@ -614,6 +642,13 @@ void AddonProps::DeserializeMetadata(const std::string& document)
 bool AddonProps::MeetsVersion(const AddonVersion &version) const
 {
   return m_minversion <= version && version <= m_version;
+}
+
+std::string AddonProps::LibPath() const
+{
+  if (m_libname.empty())
+    return "";
+  return URIUtils::AddFileToFolder(m_path, m_libname);
 }
 
 } /* namespace ADDON */
