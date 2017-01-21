@@ -180,37 +180,39 @@ bool CLanguageResource::FindLegacyLanguage(const std::string &locale, std::strin
 
   std::string addonId = GetAddonId(locale);
 
-  AddonPtr addon;
-  if (!CAddonMgr::GetInstance().GetAddon(addonId, addon, ADDON_RESOURCE_LANGUAGE, true))
+  const AddonPropsPtr addon = CAddonMgr::GetInstance().GetInstalledAddonInfo(ADDON_RESOURCE_LANGUAGE, addonId);
+  if (addon == nullptr)
     return false;
 
   legacyLanguage = addon->Name();
   return true;
 }
 
-bool CLanguageResource::FindLanguageAddonByName(const std::string &legacyLanguage, std::string &addonId, const VECADDONS &languageAddons /* = VECADDONS() */)
+bool CLanguageResource::FindLanguageAddonByName(const std::string &legacyLanguage, std::string &addonId, const AddonInfos &languageAddons /* = AddonInfos() */)
 {
   if (legacyLanguage.empty())
     return false;
 
-  VECADDONS addons;
-  if (!languageAddons.empty())
+  AddonInfos addons;
+  if (languageAddons.empty())
+    addons = CAddonMgr::GetInstance().GetAddonInfos(false, ADDON_RESOURCE_LANGUAGE);
+  else
     addons = languageAddons;
-  else if (!CAddonMgr::GetInstance().GetInstalledAddons(addons, ADDON_RESOURCE_LANGUAGE) || addons.empty())
+
+  if (addons.empty())
     return false;
 
   // try to find a language that matches the old language in name or id
-  for (VECADDONS::const_iterator addon = addons.begin(); addon != addons.end(); ++addon)
+  for (auto addon : addons)
   {
-    const CLanguageResource* languageAddon = static_cast<CLanguageResource*>(addon->get());
-
     // check if the old language matches the language addon id, the language
     // locale or the language addon name
-    if (legacyLanguage.compare((*addon)->ID()) == 0 ||
-        languageAddon->GetLocale().Equals(legacyLanguage) ||
-        StringUtils::EqualsNoCase(legacyLanguage, languageAddon->Name()))
+    CLocale locale = CLocale::FromString(addon->ExtraInfoValueString("locale"));
+    if (legacyLanguage.compare(addon->ID()) == 0 ||
+        locale.Equals(legacyLanguage) ||
+        StringUtils::EqualsNoCase(legacyLanguage, addon->Name()))
     {
-      addonId = (*addon)->ID();
+      addonId = addon->ID();
       return true;
     }
   }
