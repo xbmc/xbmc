@@ -779,7 +779,7 @@ bool CAddonsDirectory::IsRepoDirectory(const CURL& url)
   return url.GetHostName() == "repos"
       || url.GetHostName() == "all"
       || url.GetHostName() == "search"
-      || CAddonMgr::GetInstance().GetAddon(url.GetHostName(), tmp, ADDON_REPOSITORY);
+      || CAddonMgr::GetInstance().IsAddonEnabled(url.GetHostName(), ADDON_REPOSITORY);
 }
 
 void CAddonsDirectory::GenerateAddonListing(const CURL &path,
@@ -799,17 +799,17 @@ void CAddonsDirectory::GenerateAddonListing(const CURL &path,
     CFileItemPtr pItem = FileItemFromAddon(addon, itemPath.Get(), false);
 
     AddonPtr localAddon;
-    bool installed = CAddonMgr::GetInstance().GetAddon(addon->ID(), localAddon, ADDON_UNKNOWN, false);
-    bool disabled = !CAddonMgr::GetInstance().IsAddonEnabled(addon->ID());
+    bool installed = CAddonMgr::GetInstance().IsAddonInstalled(addon->ID());
+    bool enabled = CAddonMgr::GetInstance().IsAddonEnabled(addon->ID());
     bool hasUpdate = outdated.find(addon->ID()) != outdated.end();
 
     pItem->SetProperty("Addon.IsInstalled", installed);
-    pItem->SetProperty("Addon.IsEnabled", installed && !disabled);
+    pItem->SetProperty("Addon.IsEnabled", installed && enabled);
     pItem->SetProperty("Addon.HasUpdate", hasUpdate);
 
     if (installed)
       pItem->SetProperty("Addon.Status", g_localizeStrings.Get(305));
-    if (disabled)
+    if (!enabled)
       pItem->SetProperty("Addon.Status", g_localizeStrings.Get(24023));
     if (hasUpdate)
       pItem->SetProperty("Addon.Status", g_localizeStrings.Get(24068));

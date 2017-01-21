@@ -1186,27 +1186,47 @@ bool CAddonMgr::HasEnabledAddons(const TYPE &type)
   return (m_enabledAddons.find(type) != m_enabledAddons.end()) ? true : false;
 }
 
-bool CAddonMgr::IsAddonInstalled(const std::string& addonId)
+bool CAddonMgr::IsAddonInstalled(const std::string& addonId, const TYPE &type/* = ADDON_UNKNOWN*/)
 {
   CSingleLock lock(m_critSection);
 
-  for (auto addonInfoTypes : m_installedAddons)
+  AddonInfoMap::const_iterator itr;
+  if (type == ADDON_UNKNOWN)
+    itr = m_installedAddons.begin();
+  else
+    itr = m_installedAddons.find(type);
+
+  if (itr != m_installedAddons.end())
   {
-    if (addonInfoTypes.second.find(addonId) != addonInfoTypes.second.end())
-      return true;
+    do
+    {
+      if (itr->second.find(addonId) != itr->second.end())
+        return true;
+    } while (++itr != m_installedAddons.end() && type == ADDON_UNKNOWN);
   }
+
   return false;
 }
 
-bool CAddonMgr::IsAddonEnabled(const std::string& addonId)
+bool CAddonMgr::IsAddonEnabled(const std::string& addonId, const TYPE &type/* = ADDON_UNKNOWN*/)
 {
   CSingleLock lock(m_critSection);
 
-  for (auto addonInfoTypes : m_enabledAddons)
+  AddonInfoMap::const_iterator itr;
+  if (type == ADDON_UNKNOWN)
+    itr = m_enabledAddons.begin();
+  else
+    itr = m_enabledAddons.find(type);
+
+  if (itr != m_enabledAddons.end())
   {
-    if (addonInfoTypes.second.find(addonId) != addonInfoTypes.second.end())
-      return true;
+    do
+    {
+      if (itr->second.find(addonId) != itr->second.end())
+        return true;
+    } while (++itr != m_enabledAddons.end() && type == ADDON_UNKNOWN);
   }
+
   return false;
 }
 

@@ -293,7 +293,7 @@ bool AddonProps::LoadAddonXML(const TiXmlElement* baseElement, std::string addon
   cstring = baseElement->Attribute("name");
   m_name = cstring ? cstring : "";
   cstring = baseElement->Attribute("version");
-  m_version = ADDON::AddonVersion(cstring ? cstring : "");
+  m_version = AddonVersion(ADDON::AddonVersion(cstring ? cstring : ""));
   cstring = baseElement->Attribute("provider-name");
   m_author = cstring ? cstring : "";
   if (m_id.empty() || m_version.empty())

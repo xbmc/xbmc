@@ -920,15 +920,15 @@ std::string CGUIDialogAddonSettings::GetAddonNames(const std::string& addonIDsli
 {
   std::string retVal;
   std::vector<std::string> addons = StringUtils::Split(addonIDslist, ',');
-  for (std::vector<std::string>::const_iterator it = addons.begin(); it != addons.end() ; ++it)
+  for (auto id : addons)
   {
     if (!retVal.empty())
       retVal += ", ";
-    AddonPtr addon;
-    if (CAddonMgr::GetInstance().GetAddon(*it ,addon))
+    AddonPropsPtr addon = CAddonMgr::GetInstance().GetInstalledAddonInfo(id);
+    if (addon)
       retVal += addon->Name();
     else
-      retVal += *it;
+      retVal += id;
   }
   return retVal;
 }

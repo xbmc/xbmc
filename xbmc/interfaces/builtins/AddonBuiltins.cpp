@@ -136,16 +136,16 @@ static int RunAddon(const std::vector<std::string>& params)
         cmd = StringUtils::Format("RunPlugin(%s)", StringUtils::Join(params, ",").c_str());
       CBuiltins::GetInstance().Execute(cmd);
     }
-    else if (CAddonMgr::GetInstance().GetAddon(addonid, addon, ADDON_SCRIPT) ||
-        CAddonMgr::GetInstance().GetAddon(addonid, addon, ADDON_SCRIPT_WEATHER) ||
-        CAddonMgr::GetInstance().GetAddon(addonid, addon, ADDON_SCRIPT_LYRICS) ||
-        CAddonMgr::GetInstance().GetAddon(addonid, addon, ADDON_SCRIPT_LIBRARY))
+    else if (CAddonMgr::GetInstance().IsAddonEnabled(addonid, ADDON_SCRIPT) ||
+        CAddonMgr::GetInstance().IsAddonEnabled(addonid, ADDON_SCRIPT_WEATHER) ||
+        CAddonMgr::GetInstance().IsAddonEnabled(addonid, ADDON_SCRIPT_LYRICS) ||
+        CAddonMgr::GetInstance().IsAddonEnabled(addonid, ADDON_SCRIPT_LIBRARY))
     {
       // Pass the script name (addonid) and all the parameters
       // (params[1] ... params[x]) separated by a comma to RunScript
       CBuiltins::GetInstance().Execute(StringUtils::Format("RunScript(%s)", StringUtils::Join(params, ",").c_str()));
     }
-    else if (CAddonMgr::GetInstance().GetAddon(addonid, addon, ADDON_GAMEDLL))
+    else if (CAddonMgr::GetInstance().IsAddonEnabled(addonid, ADDON_GAMEDLL))
     {
       CFileItem item;
 

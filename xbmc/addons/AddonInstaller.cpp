@@ -469,8 +469,7 @@ CAddonInstallJob::CAddonInstallJob(const AddonPtr &addon, const AddonPtr &repo, 
     m_repo(repo),
     m_hash(hash)
 {
-  AddonPtr dummy;
-  m_update = CAddonMgr::GetInstance().GetAddon(addon->ID(), dummy, ADDON_UNKNOWN, false);
+  m_update = CAddonMgr::GetInstance().IsAddonInstalled(addon->ID(), ADDON_UNKNOWN);
 }
 
 bool CAddonInstallJob::GetAddonWithHash(const std::string& addonID, RepositoryPtr& repo,
@@ -691,9 +690,8 @@ bool CAddonInstallJob::Install(const std::string &installFrom, const AddonPtr& r
       const std::string &addonID = it->first;
       const AddonVersion &version = it->second.first;
       bool optional = it->second.second;
-      AddonPtr dependency;
-      bool haveAddon = CAddonMgr::GetInstance().GetAddon(addonID, dependency, ADDON_UNKNOWN, false);
-      if ((haveAddon && !dependency->MeetsVersion(version)) || (!haveAddon && !optional))
+      AddonPropsPtr dependency = CAddonMgr::GetInstance().GetInstalledAddonInfo(addonID);
+      if ((dependency && !dependency->MeetsVersion(version)) || (!dependency && !optional))
       {
         // we have it but our version isn't good enough, or we don't have it and we need it
 
