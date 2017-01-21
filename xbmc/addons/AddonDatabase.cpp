@@ -1183,30 +1183,6 @@ bool CAddonDatabase::BreakAddon(const std::string &addonID, const std::string& r
                                    addonID.c_str(), reason.c_str()));
 }
 
-bool CAddonDatabase::GetDisabled(std::set<std::string>& addons)
-{
-  try
-  {
-    if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS.get()) return false;
-
-    std::string sql = PrepareSQL("SELECT addonID FROM installed WHERE enabled=0");
-    m_pDS->query(sql);
-    while (!m_pDS->eof())
-    {
-      addons.insert(m_pDS->fv(0).get_asString());
-      m_pDS->next();
-    }
-    m_pDS->close();
-    return true;
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
-  }
-  return false;
-}
-
 bool CAddonDatabase::GetEnabled(std::set< std::string >& addons)
 {
   try

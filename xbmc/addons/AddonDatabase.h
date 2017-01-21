@@ -42,9 +42,6 @@ public:
   bool GetAddon(const std::string& addonID, const ADDON::AddonVersion& version, const std::string& repoId, ADDON::AddonPtr& addon);
   bool GetAddonInfo(const std::string& addonID, const ADDON::AddonVersion& version, const std::string& repoId, ADDON::AddonPropsPtr& info);
 
-  /*! Get the addon IDs that has been set to disabled */
-  bool GetDisabled(std::set<std::string>& addons);
-
   /*! Get the addon IDs that has been set to enabled */
   bool GetEnabled(std::set<std::string>& addons);
 
