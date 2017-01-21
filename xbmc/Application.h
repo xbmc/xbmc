@@ -114,7 +114,6 @@ class CApplication : public CXBApplicationEx, public IPlayerCallback, public IMs
                      public ISettingCallback, public ISettingsHandler, public ISubSettings,
                      public KODI::MESSAGING::IMessageTarget
 {
-  friend class CApplicationPlayer;
 public:
 
   enum ESERVERS
