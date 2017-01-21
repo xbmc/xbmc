@@ -116,12 +116,18 @@ namespace ADDON
     const std::string& Disclaimer() const { return m_disclaimer; }
     const ADDONDEPS& GetDeps() const { return m_dependencies; }
     const std::string& Broken() const { return m_broken; }
-    const InfoMap& ExtraInfo() const { return m_extrainfo; }
     const CDateTime& InstallDate() const { return m_installDate; }
     const CDateTime& LastUpdated() const { return m_lastUpdated; }
     const CDateTime& LastUsed() const { return m_lastUsed; }
     const std::string& Origin() const { return m_origin; }
     uint64_t PackageSize() const { return m_packageSize; }
+
+    const InfoMap& ExtraInfo() const { return m_extrainfo; }
+    std::string ExtraInfoValueString(std::string id) const;
+    bool ExtraInfoValueBool(std::string id) const;
+    int ExtraInfoValueInt(std::string id) const;
+    float ExtraInfoValueFloat(std::string id) const;
+
     std::string LibPath() const;
 
     std::string SerializeMetadata();
