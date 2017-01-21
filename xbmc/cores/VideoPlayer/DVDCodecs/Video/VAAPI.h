@@ -25,8 +25,6 @@
 
 #include "DVDVideoCodec.h"
 #include "DVDVideoCodecFFmpeg.h"
-#include "DVDVideoCodec.h"
-#include "DVDVideoCodecFFmpeg.h"
 #include "settings/VideoSettings.h"
 #include "threads/CriticalSection.h"
 #include "threads/SharedSection.h"
