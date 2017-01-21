@@ -28,8 +28,6 @@
 #include "VTB.h"
 #include "utils/BitstreamConverter.h"
 #include "utils/BitstreamReader.h"
-#include "settings/Settings.h"
-#include "ServiceBroker.h"
 
 extern "C" {
 #include "libavcodec/videotoolbox.h"
@@ -59,9 +57,6 @@ void CDecoder::Close()
 
 bool CDecoder::Open(AVCodecContext *avctx, AVCodecContext* mainctx, enum AVPixelFormat fmt, unsigned int surfaces)
 {
-  if (!CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVTB))
-    return false;
-
   if (avctx->codec_id == AV_CODEC_ID_H264)
   {
     CBitstreamConverter bs;

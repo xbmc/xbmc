@@ -45,8 +45,8 @@ public:
   class IHardwareDecoder : public IDVDResourceCounted<IHardwareDecoder>
   {
     public:
-    IHardwareDecoder() = default;
-    virtual ~IHardwareDecoder() = default;
+    IHardwareDecoder() {}
+    virtual ~IHardwareDecoder() {};
     virtual bool Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat, unsigned int surfaces) = 0;
     virtual int  Decode(AVCodecContext* avctx, AVFrame* frame) = 0;
     virtual bool GetPicture(AVCodecContext* avctx, DVDVideoPicture* picture) = 0;
@@ -72,6 +72,9 @@ public:
   virtual bool GetCodecStats(double &pts, int &droppedFrames, int &skippedPics) override;
   virtual void SetCodecControl(int flags) override;
 
+  IHardwareDecoder * GetHardware() { return m_pHardware; };
+  void SetHardware(IHardwareDecoder* hardware);
+
 protected:
   void Dispose();
   static enum AVPixelFormat GetFormat(struct AVCodecContext * avctx, const AVPixelFormat * fmt);
@@ -83,20 +86,16 @@ protected:
   void UpdateName();
   bool SetPictureParams(DVDVideoPicture* pDvdVideoPicture);
 
-  IHardwareDecoder* CreateVideoDecoderHW(AVPixelFormat pixfmt, CProcessInfo &processInfo);
-  bool HasHardware() { return m_pHardware != nullptr; };
-  void SetHardware(std::unique_ptr<IHardwareDecoder> &&hardware);
-
   AVFrame* m_pFrame;
   AVFrame* m_pDecodedFrame;
   AVCodecContext* m_pCodecContext;
 
-  std::string m_filters;
-  std::string m_filters_next;
-  AVFilterGraph* m_pFilterGraph;
+  std::string       m_filters;
+  std::string       m_filters_next;
+  AVFilterGraph*   m_pFilterGraph;
   AVFilterContext* m_pFilterIn;
   AVFilterContext* m_pFilterOut;
-  AVFrame* m_pFilterFrame;
+  AVFrame*         m_pFilterFrame;
   bool m_filterEof;
   bool m_eof;
 
@@ -113,7 +112,7 @@ protected:
 
   std::string m_name;
   int m_decoderState;
-  std::unique_ptr<IHardwareDecoder> m_pHardware;
+  IHardwareDecoder *m_pHardware;
   int m_iLastKeyframe;
   double m_dts;
   bool   m_started;
