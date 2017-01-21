@@ -752,6 +752,11 @@ public:
   const std::string &GetContent() const { return m_content; };
 
   void ClearSortState();
+
+  VECFILEITEMS::const_iterator begin() { return m_items.cbegin(); }
+  VECFILEITEMS::const_iterator end() { return m_items.cend(); }
+  VECFILEITEMS::const_iterator cbegin() const { return m_items.begin(); }
+  VECFILEITEMS::const_iterator cend() const { return m_items.end(); }
 private:
   void Sort(FILEITEMLISTCOMPARISONFUNC func);
   void FillSortFields(FILEITEMFILLFUNC func);
