@@ -411,12 +411,24 @@ CEpgInfoTagPtr CEpgContainer::GetTagById(const CPVRChannelPtr &channel, unsigned
 {
   CEpgInfoTagPtr retval;
 
-  if (!channel || iBroadcastId == EPG_TAG_INVALID_UID)
+  if (iBroadcastId == EPG_TAG_INVALID_UID)
     return retval;
 
-  const CEpgPtr epg(channel->GetEPG());
-  if (epg)
-    retval = epg->GetTagByBroadcastId(iBroadcastId);
+  if (channel)
+  {
+    const CEpgPtr epg(channel->GetEPG());
+    if (epg)
+      retval = epg->GetTagByBroadcastId(iBroadcastId);
+  }
+  else
+  {
+    for (const auto &epgEntry : m_epgs)
+    {
+      retval = epgEntry.second->GetTagByBroadcastId(iBroadcastId);
+      if (retval)
+        break;
+    }
+  }
 
   return retval;
 }
