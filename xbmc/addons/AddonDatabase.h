@@ -73,6 +73,8 @@ public:
   bool GetRepositoryContent(ADDON::VECADDONS& addons);
   bool GetRepositoryContent(ADDON::AddonInfos& addons);
 
+  bool GetRepositoryContent(ADDON::AddonInfos& addons, ADDON::TYPE type = ADDON::ADDON_UNKNOWN, const std::string& repoId = "");
+
   bool SetLastChecked(const std::string& id, const ADDON::AddonVersion& version, const std::string& timestamp);
 
   /*!
