@@ -241,6 +241,7 @@ namespace ADDON
     static bool Factory(const cp_plugin_info_t* plugin, TYPE type, CAddonBuilder& builder);
     static void FillCpluffMetadata(const cp_plugin_info_t* plugin, CAddonBuilder& builder);
 
+    const AddonPropsPtr GetInstalledAddonInfo(const std::string& addonId);
     const AddonPropsPtr GetInstalledAddonInfo(TYPE addonType, std::string addonId);
 
 
@@ -266,17 +267,19 @@ namespace ADDON
      * @brief Checks whether an addon is installed.
      *
      * @param[in] addonId id of the addon
+     * * @param[in] type Add-on type to check installed
      * @return true if installed
      */
-    bool IsAddonInstalled(const std::string& addonId);
+    bool IsAddonInstalled(const std::string& addonId, const TYPE &type = ADDON_UNKNOWN);
 
     /*!
      * @brief Check whether an addon has been enabled.
      *
      * @param[in] addonId id of the addon
+     * @param[in] type Add-on type to check installed and enabled
      * @return true if enabled
      */
-    bool IsAddonEnabled(const std::string& addonId);
+    bool IsAddonEnabled(const std::string& addonId, const TYPE &type = ADDON_UNKNOWN);
 
     /*!
      * @brief Check the given add-on id is a system one
@@ -378,7 +381,6 @@ namespace ADDON
     bool m_serviceSystemStarted;
 
     void FindAddons(AddonInfoMap& addonmap, std::string path);
-    const AddonPropsPtr GetInstalledAddonInfo(const std::string& addonId);
 
     /*!
      * @brief To load the add-on manifest where is defined which are at least
