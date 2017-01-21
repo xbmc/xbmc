@@ -484,14 +484,12 @@ int CDVDVideoCodecFFmpeg::AddData(uint8_t* pData, int iSize, double dts, double 
   int ret = avcodec_send_packet(m_pCodecContext, &avpkt);
 
   // try again
-  while (ret == AVERROR(EAGAIN))
+  if (ret == AVERROR(EAGAIN))
   {
-    ret = avcodec_send_packet(m_pCodecContext, &avpkt);
-    Sleep(20);
+    return 0;
   }
-
   // error
-  if (ret)
+  else if (ret)
   {
     // handle VC_NOBUFFER error for hw accel
     if (m_pHardware)
