@@ -18,7 +18,6 @@
  *
  */
 #include "system.h"
-#ifdef TARGET_DARWIN
 #include "platform/darwin/osx/CocoaInterface.h"
 #include "platform/darwin/DarwinUtils.h"
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
@@ -135,5 +134,3 @@ unsigned CDecoder::GetAllowedReferences()
 {
   return 5;
 }
-
-#endif

@@ -29,7 +29,7 @@ class CProcessInfo;
 namespace VTB
 {
 
-class CDecoder: public CDVDVideoCodecFFmpeg::IHardwareDecoder
+class CDecoder: public IHardwareDecoder
 {
 public:
   CDecoder(CProcessInfo& processInfo);
