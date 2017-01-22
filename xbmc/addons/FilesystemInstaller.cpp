@@ -26,7 +26,34 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
+#ifdef TARGET_POSIX
+#include "XTimeUtils.h"
+#endif
+
 using namespace XFILE;
+
+namespace
+{
+
+bool renameOrRetry(const std::string & source, const std::string & dest, const char * description)
+{
+  auto count = 1;
+  auto result = false;
+  do
+  {
+    result = CFile::Rename(source, dest);
+    if (!result)
+    {
+      CLog::Log(LOGERROR, "Failed to move %s addon files from '%s' to '%s', retrying in 500ms",
+			          description, source.c_str(), dest.c_str());
+      Sleep(500);
+    }
+  } while (!result && count++ < 4);
+
+  return result;
+}
+
+} // end namespace unnamed
 
 CFilesystemInstaller::CFilesystemInstaller()
 {
@@ -52,18 +79,12 @@ bool CFilesystemInstaller::InstallToFilesystem(const std::string& archive, const
   bool hasOldData = CDirectory::Exists(addonFolder);
   if (hasOldData)
   {
-    if (!CFile::Rename(addonFolder, oldAddonData))
-    {
-      CLog::Log(LOGERROR, "Failed to move old addon files from '%s' to '%s'", addonFolder.c_str(), oldAddonData.c_str());
+    if (!renameOrRetry(addonFolder, oldAddonData, "old"))
       return false;
-    }
   }
 
-  if (!CFile::Rename(newAddonData, addonFolder))
-  {
-    CLog::Log(LOGERROR, "Failed to move new addon files from '%s' to '%s'", newAddonData.c_str(), addonFolder.c_str());
+  if (!renameOrRetry(newAddonData, addonFolder, "new"))
     return false;
-  }
 
   if (hasOldData)
   {
