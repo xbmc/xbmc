@@ -52,18 +52,36 @@ bool CFilesystemInstaller::InstallToFilesystem(const std::string& archive, const
   bool hasOldData = CDirectory::Exists(addonFolder);
   if (hasOldData)
   {
-    if (!CFile::Rename(addonFolder, oldAddonData))
+    auto count = 1;
+    auto result = false;
+    do
     {
-      CLog::Log(LOGERROR, "Failed to move old addon files from '%s' to '%s'", addonFolder.c_str(), oldAddonData.c_str());
+      result = CFile::Rename(addonFolder, oldAddonData);
+      if (!result)
+      {
+        CLog::Log(LOGERROR, "Failed to move old addon files from '%s' to '%s', reytring in 500ms", addonFolder.c_str(), oldAddonData.c_str());
+        Sleep(500);
+      }
+    } while (!result && count++ < 4);
+
+    if (!result)
       return false;
-    }
   }
 
-  if (!CFile::Rename(newAddonData, addonFolder))
+  auto count = 1;
+  auto result = false;
+  do
   {
-    CLog::Log(LOGERROR, "Failed to move new addon files from '%s' to '%s'", newAddonData.c_str(), addonFolder.c_str());
+    result = CFile::Rename(newAddonData, addonFolder);
+    if (!result)
+    {
+      CLog::Log(LOGERROR, "Failed to move new addon files from '%s' to '%s', retrying in 500ms", newAddonData.c_str(), addonFolder.c_str());
+      Sleep(500);
+    }
+  } while (!result && count++ < 4);
+
+  if (!result)
     return false;
-  }
 
   if (hasOldData)
   {
