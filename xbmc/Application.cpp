@@ -4674,6 +4674,11 @@ const std::string& CApplication::CurrentFile()
   return m_itemCurrentFile->GetPath();
 }
 
+std::shared_ptr<CFileItem> CApplication::CurrentFileItemPtr()
+{
+  return m_itemCurrentFile;
+}
+
 CFileItem& CApplication::CurrentFileItem()
 {
   return *m_itemCurrentFile;

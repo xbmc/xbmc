@@ -164,6 +164,7 @@ public:
   void ReloadSkin(bool confirm = false);
   const std::string& CurrentFile();
   CFileItem& CurrentFileItem();
+  std::shared_ptr<CFileItem> CurrentFileItemPtr();
   void SetCurrentFileItem(const CFileItem &item);
   CFileItem& CurrentUnstackedItem();
   virtual bool OnMessage(CGUIMessage& message) override;
