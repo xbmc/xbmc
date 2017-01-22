@@ -291,19 +291,20 @@ public:
   static bool OnEvent(XBMC_Event& newEvent);
 
   CNetwork& getNetwork();
+
 #ifdef HAS_PERFORMANCE_SAMPLE
   CPerformanceStats &GetPerformanceStats();
 #endif
 
+  std::unique_ptr<CApplicationPlayer> m_pPlayer;
+
 #ifdef HAS_DVD_DRIVE
-  MEDIA_DETECT::CAutorun* m_Autorun;
+  std::unique_ptr<MEDIA_DETECT::CAutorun> m_Autorun;
 #endif
 
 #if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
   MEDIA_DETECT::CDetectDVDMedia m_DetectDVDType;
 #endif
-
-  std::unique_ptr<CApplicationPlayer> m_pPlayer;
 
   inline bool IsInScreenSaver() { return m_bScreenSave; };
   inline bool IsDPMSActive() { return m_dpmsIsActive; };
@@ -460,7 +461,7 @@ protected:
   bool m_dpmsIsManual;
 
   CFileItemPtr m_itemCurrentFile;
-  CFileItemList* m_currentStack;
+  std::unique_ptr<CFileItemList> m_currentStack;
   CFileItemPtr m_stackFileItemToUpdate;
 
   std::string m_prevMedia;
@@ -483,7 +484,7 @@ protected:
   bool m_bTestMode;
   bool m_bSystemScreenSaverEnable;
 
-  MUSIC_INFO::CMusicInfoScanner *m_musicInfoScanner;
+  std::unique_ptr<MUSIC_INFO::CMusicInfoScanner> m_musicInfoScanner;
 
   bool m_muted;
   float m_volumeLevel;
