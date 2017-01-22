@@ -21,7 +21,6 @@
 
 #include <list>
 #include <vector>
-#include "DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
 #include "DVDResource.h"
 #include "guilib/D3DResource.h"
 #include "libavcodec/avcodec.h"
@@ -112,7 +111,7 @@ private:
 };
 
 class CDecoder
-  : public CDVDVideoCodecFFmpeg::IHardwareDecoder
+  : public IHardwareDecoder
   , public ID3DResource
 {
 public:

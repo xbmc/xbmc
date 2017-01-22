@@ -24,9 +24,6 @@
 #include <EGL/eglext.h>
 
 #include "DVDVideoCodec.h"
-#include "DVDVideoCodecFFmpeg.h"
-#include "DVDVideoCodec.h"
-#include "DVDVideoCodecFFmpeg.h"
 #include "settings/VideoSettings.h"
 #include "threads/CriticalSection.h"
 #include "threads/SharedSection.h"
@@ -44,6 +41,7 @@
 extern "C" {
 #include "libavutil/avutil.h"
 #include "libavcodec/vaapi.h"
+#include "libavfilter/avfilter.h"
 }
 
 using namespace Actor;
@@ -410,7 +408,7 @@ private:
  *  VAAPI main class
  */
 class CDecoder
- : public CDVDVideoCodecFFmpeg::IHardwareDecoder
+ : public IHardwareDecoder
 {
    friend class CVaapiRenderPicture;
 

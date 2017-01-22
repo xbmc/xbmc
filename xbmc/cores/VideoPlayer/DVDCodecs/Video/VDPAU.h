@@ -44,11 +44,8 @@
 #include <GL/glext.h>
 
 #include "DVDVideoCodec.h"
-#include "DVDVideoCodecFFmpeg.h"
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
-#include "DVDVideoCodec.h"
-#include "DVDVideoCodecFFmpeg.h"
 #include "threads/CriticalSection.h"
 #include "threads/SharedSection.h"
 #include "settings/VideoSettings.h"
@@ -544,7 +541,7 @@ private:
  *  VDPAU main class
  */
 class CDecoder
- : public CDVDVideoCodecFFmpeg::IHardwareDecoder
+ : public IHardwareDecoder
  , public IDispResource
 {
    friend class CVdpauRenderPicture;

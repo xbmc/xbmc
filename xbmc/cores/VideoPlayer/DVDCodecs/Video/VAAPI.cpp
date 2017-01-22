@@ -18,7 +18,6 @@
  *
  */
 #include "system.h"
-#ifdef HAVE_LIBVA
 #include "VAAPI.h"
 #include "ServiceBroker.h"
 #include "windowing/WindowingFactory.h"
@@ -762,8 +761,8 @@ long CDecoder::ReleasePicReference()
 
 int CDecoder::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags)
 {
-  CDVDVideoCodecFFmpeg* ctx = (CDVDVideoCodecFFmpeg*)avctx->opaque;
-  CDecoder*             va  = (CDecoder*)ctx->GetHardware();
+  ICallbackHWAccel* cb = static_cast<ICallbackHWAccel*>(avctx->opaque);
+  CDecoder* va = static_cast<CDecoder*>(cb->GetHWAccel());
 
   // while we are waiting to recover we can't do anything
   CSingleLock lock(va->m_DecoderSection);
@@ -852,7 +851,7 @@ int CDecoder::Decode(AVCodecContext* avctx, AVFrame* pFrame)
     // send frame to output for processing
     CVaapiDecodedPicture pic;
     memset(&pic.DVDPic, 0, sizeof(pic.DVDPic));
-    ((CDVDVideoCodecFFmpeg*)avctx->opaque)->GetPictureCommon(&pic.DVDPic);
+    ((ICallbackHWAccel*)avctx->opaque)->GetPictureCommon(&pic.DVDPic);
     pic.videoSurface = surf;
     pic.DVDPic.color_matrix = avctx->colorspace;
     m_bufferStats.IncDecoded();
@@ -3351,9 +3350,9 @@ bool CFFmpegPostproc::AddPicture(CVaapiDecodedPicture &inPic)
   m_pFilterFrameIn->top_field_first = (inPic.DVDPic.iFlags & DVP_FLAG_TOP_FIELD_FIRST) ? 1 : 0;
 
   if (inPic.DVDPic.pts == DVD_NOPTS_VALUE)
-    m_pFilterFrameIn->pkt_pts = AV_NOPTS_VALUE;
+    m_pFilterFrameIn->pts = AV_NOPTS_VALUE;
   else
-    m_pFilterFrameIn->pkt_pts = (inPic.DVDPic.pts / DVD_TIME_BASE) * AV_TIME_BASE;
+    m_pFilterFrameIn->pts = (inPic.DVDPic.pts / DVD_TIME_BASE) * AV_TIME_BASE;
 
   av_frame_get_buffer(m_pFilterFrameIn, 64);
 
@@ -3501,5 +3500,3 @@ bool CFFmpegPostproc::CheckSuccess(VAStatus status)
   }
   return true;
 }
-
-#endif
