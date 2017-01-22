@@ -440,6 +440,10 @@ void CPVRManager::Stop(void)
     CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_STOP);
   }
 
+  /* destroy addons */
+  m_addons->Unload();
+  CLog::Log(LOGNOTICE, "PVRManager - clients unloaded");
+
   /* stop all update threads */
   SetState(ManagerStateInterrupted);
 
