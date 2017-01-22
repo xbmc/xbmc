@@ -110,22 +110,10 @@ struct ReplayGainSettings
   int iType;
 };
 
-class CBackgroundPlayer : public CThread
-{
-public:
-  CBackgroundPlayer(const CFileItem &item, int iPlayList);
-  virtual ~CBackgroundPlayer();
-  virtual void Process();
-protected:
-  CFileItem *m_item;
-  int       m_iPlayList;
-};
-
 class CApplication : public CXBApplicationEx, public IPlayerCallback, public IMsgTargetCallback,
                      public ISettingCallback, public ISettingsHandler, public ISubSettings,
                      public KODI::MESSAGING::IMessageTarget
 {
-  friend class CApplicationPlayer;
 public:
 
   enum ESERVERS
