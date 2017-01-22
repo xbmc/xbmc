@@ -27,6 +27,7 @@
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/GUIWindowManager.h"
 #include "settings/Settings.h"
+#include "windowing/WindowingFactory.h"
 
 using namespace ADDON;
 
