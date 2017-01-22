@@ -804,8 +804,8 @@ void CAddonInstallJob::ReportInstallError(const std::string& addonID, const std:
   CEventLog::GetInstance().Add(activity, !IsModal(), false);
 }
 
-CAddonUnInstallJob::CAddonUnInstallJob(const AddonPtr &addon)
-  : m_addon(addon)
+CAddonUnInstallJob::CAddonUnInstallJob(const AddonPtr &addon, bool removeData)
+  : m_addon(addon), m_removeData(removeData)
 { }
 
 bool CAddonUnInstallJob::DoWork()
@@ -828,6 +828,8 @@ bool CAddonUnInstallJob::DoWork()
   }
 
   ClearFavourites();
+  if (m_removeData)
+    CFileUtils::DeleteItem("special://profile/addon_data/"+m_addon->ID()+"/", true);
 
   AddonPtr addon;
   CAddonDatabase database;

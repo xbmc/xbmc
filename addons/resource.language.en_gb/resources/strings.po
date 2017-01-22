@@ -20415,6 +20415,12 @@ msgctxt "#39013"
 msgid "Virtual filesystems"
 msgstr ""
 
+#. Message of a dialog, asking if related data of an add-on should also be removed on uninstall
+#: xbmc/addons/GUIDialogAddonInfo.cpp
+msgctxt "#39014"
+msgid "Would you also like to remove all related data (e.g. settings) of this add-on?"
+msgstr ""
+
 #. Description of setting "Pictures -> Show EXIF picture information" with label #38207
 #: system/settings/settings.xml
 msgctxt "#38207"

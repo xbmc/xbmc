@@ -191,7 +191,7 @@ private:
 class CAddonUnInstallJob : public CFileOperationJob
 {
 public:
-  CAddonUnInstallJob(const ADDON::AddonPtr &addon);
+  CAddonUnInstallJob(const ADDON::AddonPtr &addon, bool removeData);
 
   virtual bool DoWork();
 
@@ -199,4 +199,5 @@ private:
   void ClearFavourites();
 
   ADDON::AddonPtr m_addon;
+  bool m_removeData;
 };
