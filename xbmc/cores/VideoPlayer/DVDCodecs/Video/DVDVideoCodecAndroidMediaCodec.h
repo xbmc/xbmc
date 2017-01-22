@@ -36,14 +36,17 @@
 class CJNISurface;
 class CJNISurfaceTexture;
 class CJNIMediaCodec;
+class CJNIMediaCrypto;
 class CJNIMediaFormat;
 class CDVDMediaCodecOnFrameAvailable;
 class CJNIByteBuffer;
 class CBitstreamConverter;
+struct DemuxCryptoInfo;
 
 typedef struct amc_demux {
   uint8_t  *pData;
   int       iSize;
+  std::shared_ptr<DemuxCryptoInfo> cryptoInfo;
   double    dts;
   double    pts;
 } amc_demux;
@@ -99,17 +102,15 @@ public:
   virtual ~CDVDVideoCodecAndroidMediaCodec();
 
   // required overrides
-  virtual bool    Open(CDVDStreamInfo &hints, CDVDCodecOptions &options);
-  virtual int     Decode(uint8_t *pData, int iSize, double dts, double pts);
-  virtual void    Reset();
-  virtual bool    GetPicture(DVDVideoPicture *pDvdVideoPicture);
-  virtual bool    ClearPicture(DVDVideoPicture* pDvdVideoPicture);
-  virtual void    SetDropState(bool bDrop);
-  virtual void    SetCodecControl(int flags);
-  virtual int     GetDataSize(void);
-  virtual double  GetTimeSize(void);
-  virtual const char* GetName(void) { return m_formatname.c_str(); }
-  virtual unsigned GetAllowedReferences();
+  virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options) override;
+  virtual int AddData(const DemuxPacket &packet) override;
+  virtual void Reset() override;
+  virtual bool Reconfigure(CDVDStreamInfo &hints) override;
+  virtual int GetPicture(DVDVideoPicture* pDvdVideoPicture) override;
+  virtual bool ClearPicture(DVDVideoPicture* pDvdVideoPicture) override;
+  virtual const char* GetName() override { return m_formatname.c_str(); };
+  virtual void SetCodecControl(int flags) override;
+  virtual unsigned GetAllowedReferences() override;
 
 protected:
   void            Dispose();
@@ -122,6 +123,7 @@ protected:
   static void     CallbackInitSurfaceTexture(void*);
   void            InitSurfaceTexture(void);
   void            ReleaseSurfaceTexture(void);
+  void            DisposePacketData(void);
 
   CDVDStreamInfo  m_hints;
   std::string     m_mime;
@@ -134,9 +136,11 @@ protected:
   int             m_state;
   int             m_noPictureLoop;
 
-  CJNISurface    *m_surface;
-  unsigned int    m_textureId;
-  CJNISurface     m_videosurface;
+  CJNISurface      *m_surface;
+  unsigned int      m_textureId;
+  CJNISurface       m_videosurface;
+  CJNIMediaCrypto  *m_crypto;
+
   // we need these as shared_ptr because CDVDVideoCodecAndroidMediaCodec
   // will get deleted before CLinuxRendererGLES is shut down and
   // CLinuxRendererGLES refs them via CDVDMediaCodecInfo.
