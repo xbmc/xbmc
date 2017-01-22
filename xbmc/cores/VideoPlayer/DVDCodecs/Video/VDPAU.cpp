@@ -926,9 +926,8 @@ bool CDecoder::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
 
 int CDecoder::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags)
 {
-  //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
-  CDVDVideoCodecFFmpeg* ctx        = (CDVDVideoCodecFFmpeg*)avctx->opaque;
-  CDecoder*             vdp        = (CDecoder*)ctx->GetHardware();
+  ICallbackHWAccel* cb = static_cast<ICallbackHWAccel*>(avctx->opaque);
+  CDecoder* vdp = static_cast<CDecoder*>(cb->GetHWAccel());
 
   // while we are waiting to recover we can't do anything
   CSingleLock lock(vdp->m_DecoderSection);
@@ -967,7 +966,7 @@ int CDecoder::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags)
   pic->data[0] = (uint8_t*)(uintptr_t)surf;
   pic->data[3] = (uint8_t*)(uintptr_t)surf;
   pic->linesize[0] = pic->linesize[1] =  pic->linesize[2] = 0;
-  AVBufferRef *buffer = av_buffer_create(pic->data[3], 0, FFReleaseBuffer, ctx, 0);
+  AVBufferRef *buffer = av_buffer_create(pic->data[3], 0, FFReleaseBuffer, vdp, 0);
   if (!buffer)
   {
     CLog::Log(LOGERROR, "CVDPAU::%s - error creating buffer", __FUNCTION__);
@@ -981,7 +980,7 @@ int CDecoder::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags)
 
 void CDecoder::FFReleaseBuffer(void *opaque, uint8_t *data)
 {
-  CDecoder *vdp = (CDecoder*)((CDVDVideoCodecFFmpeg*)opaque)->GetHardware();
+  CDecoder *vdp = (CDecoder*)opaque;
 
   VdpVideoSurface surf;
 
@@ -996,8 +995,8 @@ int CDecoder::Render(struct AVCodecContext *s, struct AVFrame *src,
                      const VdpPictureInfo *info, uint32_t buffers_used,
                      const VdpBitstreamBuffer *buffers)
 {
-  CDVDVideoCodecFFmpeg* ctx = (CDVDVideoCodecFFmpeg*)s->opaque;
-  CDecoder*             vdp = (CDecoder*)ctx->GetHardware();
+  ICallbackHWAccel* ctx = (ICallbackHWAccel*)s->opaque;
+  CDecoder* vdp = (CDecoder*)ctx->GetHWAccel();
 
   // while we are waiting to recover we can't do anything
   CSingleLock lock(vdp->m_DecoderSection);

@@ -305,3 +305,27 @@ public:
 protected:
   CProcessInfo &m_processInfo;
 };
+
+// callback interface for ffmpeg hw accelerators
+class IHardwareDecoder : public IDVDResourceCounted<IHardwareDecoder>
+{
+public:
+  IHardwareDecoder() = default;
+  virtual ~IHardwareDecoder() = default;
+  virtual bool Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat, unsigned int surfaces) = 0;
+  virtual int  Decode(AVCodecContext* avctx, AVFrame* frame) = 0;
+  virtual bool GetPicture(AVCodecContext* avctx, DVDVideoPicture* picture) = 0;
+  virtual int  Check(AVCodecContext* avctx) = 0;
+  virtual void Reset() {}
+  virtual unsigned GetAllowedReferences() { return 0; }
+  virtual bool CanSkipDeint() {return false; }
+  virtual const std::string Name() = 0;
+  virtual void SetCodecControl(int flags) {};
+};
+
+class ICallbackHWAccel
+{
+public:
+  virtual IHardwareDecoder* GetHWAccel() = 0;
+  virtual bool GetPictureCommon(DVDVideoPicture* pDvdVideoPicture) = 0;
+};
