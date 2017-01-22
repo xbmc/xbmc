@@ -297,7 +297,7 @@ bool CEGLNativeTypeAndroid::SetNativeResolution(const RESOLUTION_INFO &res)
   CLog::Log(LOGDEBUG, "CEGLNativeTypeAndroid: SetNativeResolution: %s: %dx%d@%f", res.strId.c_str(), res.iWidth, res.iHeight, res.fRefreshRate);
 
 
-  if (s_hasModeApi)
+  if (s_hasModeApi && res.strId != s_res_cur_displayMode.strId)
   {
     CXBMCApp::SetDisplayMode(atoi(res.strId.c_str()));
     s_res_cur_displayMode = res;
