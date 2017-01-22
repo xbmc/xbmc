@@ -199,5 +199,5 @@ private:
   void ClearFavourites();
 
   ADDON::AddonPtr m_addon;
-  bool m_remove_addon_user_data_and_settings;
+  bool m_removeData;
 };
