@@ -203,7 +203,7 @@ void CGUIWindowPictures::OnPrepareFileItems(CFileItemList& items)
     if (StringUtils::EqualsNoCase(items[i]->GetLabel(), "folder.jpg"))
       items.Remove(i);
 
-  if (items.GetFolderCount() == items.Size())
+  if (items.GetFolderCount()==items.Size() || !CSettings::GetInstance().GetBool(CSettings::SETTING_PICTURES_USETAGS))
     return;
 
   // Start the music info loader thread
