@@ -459,12 +459,12 @@ static int64_t pts_dtoi(double pts)
   return u.pts_i;
 }
 
-int CDVDVideoCodecFFmpeg::AddData(uint8_t* pData, int iSize, double dts, double pts)
+int CDVDVideoCodecFFmpeg::AddData(const DemuxPacket &packet)
 {
   if (!m_pCodecContext)
     return VC_ERROR;
 
-  if (!pData)
+  if (!packet.pData)
     return VC_ERROR;
 
   if (m_eof)
@@ -474,15 +474,15 @@ int CDVDVideoCodecFFmpeg::AddData(uint8_t* pData, int iSize, double dts, double 
 
   m_iLastKeyframe++;
 
-  m_dts = dts;
-  m_pCodecContext->reordered_opaque = pts_dtoi(pts);
+  m_dts = packet.dts;
+  m_pCodecContext->reordered_opaque = pts_dtoi(packet.pts);
 
   AVPacket avpkt;
   av_init_packet(&avpkt);
-  avpkt.data = pData;
-  avpkt.size = iSize;
-  avpkt.dts = (dts == DVD_NOPTS_VALUE) ? AV_NOPTS_VALUE : dts / DVD_TIME_BASE * AV_TIME_BASE;
-  avpkt.pts = (pts == DVD_NOPTS_VALUE) ? AV_NOPTS_VALUE : pts / DVD_TIME_BASE * AV_TIME_BASE;
+  avpkt.data = packet.pData;
+  avpkt.size = packet.iSize;
+  avpkt.dts = (packet.dts == DVD_NOPTS_VALUE) ? AV_NOPTS_VALUE : packet.dts / DVD_TIME_BASE * AV_TIME_BASE;
+  avpkt.pts = (packet.pts == DVD_NOPTS_VALUE) ? AV_NOPTS_VALUE : packet.pts / DVD_TIME_BASE * AV_TIME_BASE;
 
   int ret = avcodec_send_packet(m_pCodecContext, &avpkt);
 

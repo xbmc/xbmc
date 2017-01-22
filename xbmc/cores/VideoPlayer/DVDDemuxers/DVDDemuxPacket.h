@@ -30,7 +30,16 @@ struct DemuxCryptoInfo;
 
 typedef struct DemuxPacket
 {
-  unsigned char* pData;   // data
+  DemuxPacket() {};
+
+  DemuxPacket(unsigned char *pData, int const iSize, double const pts, double const dts)
+    : pData(pData)
+    , iSize(iSize)
+    , pts(pts)
+    , dts(dts)
+  {};
+
+  unsigned char *pData;   // data
   int iSize;     // data size
   int iStreamId; // integer representing the stream index
   int64_t demuxerId; // id of the demuxer that created the packet

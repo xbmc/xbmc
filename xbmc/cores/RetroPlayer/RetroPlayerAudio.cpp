@@ -142,7 +142,7 @@ void CRetroPlayerAudio::AddData(const uint8_t* data, unsigned int size)
     if (m_pAudioCodec)
     {
       // FIXME
-      int consumed = m_pAudioCodec->AddData(const_cast<uint8_t*>(data), size, DVD_NOPTS_VALUE, DVD_NOPTS_VALUE);
+      int consumed = m_pAudioCodec->AddData(DemuxPacket(const_cast<uint8_t*>(data), size, DVD_NOPTS_VALUE, DVD_NOPTS_VALUE));
       if (consumed < 0)
       {
         CLog::Log(LOGERROR, "CRetroPlayerAudio::AddData - Decode Error (%d)", consumed);

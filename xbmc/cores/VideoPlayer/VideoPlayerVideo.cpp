@@ -490,7 +490,7 @@ void CVideoPlayerVideo::Process()
         codecControl |= DVD_CODEC_CTRL_ROTATE;
       m_pVideoCodec->SetCodecControl(codecControl);
 
-      m_pVideoCodec->AddData(pPacket->pData, pPacket->iSize, pPacket->dts, pPacket->pts);
+      m_pVideoCodec->AddData(*pPacket);
 
       // buffer packets so we can recover should decoder flush for some reason
       if (m_pVideoCodec->GetConvergeCount() > 0)

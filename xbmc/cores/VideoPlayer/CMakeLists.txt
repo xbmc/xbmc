@@ -17,6 +17,7 @@ set(SOURCES DVDAudio.cpp
 
 set(HEADERS DVDAudio.h
             DVDClock.h
+            DVDConstants.h
             DVDDemuxSPU.h
             DVDFileInfo.h
             DVDMessage.h
