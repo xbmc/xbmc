@@ -235,7 +235,7 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
     if (playlist.OpenAndReadName(url))
     {
       pItem->SetLabel(playlist.GetName());
-      pItem->SetLabelPreformated(true);
+      pItem->SetLabelPreformatted(true);
     }
     IFileDirectory* pDir=new CSmartPlaylistDirectory;
     return pDir; // treat as directory
