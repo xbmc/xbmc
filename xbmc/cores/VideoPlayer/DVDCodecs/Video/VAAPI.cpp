@@ -761,8 +761,8 @@ long CDecoder::ReleasePicReference()
 
 int CDecoder::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags)
 {
-  CDVDVideoCodecFFmpeg* ctx = (CDVDVideoCodecFFmpeg*)avctx->opaque;
-  CDecoder*             va  = (CDecoder*)ctx->GetHardware();
+  ICallbackHWAccel* cb = static_cast<ICallbackHWAccel*>(avctx->opaque);
+  CDecoder* va = static_cast<CDecoder*>(cb->GetHWAccel());
 
   // while we are waiting to recover we can't do anything
   CSingleLock lock(va->m_DecoderSection);
@@ -851,7 +851,7 @@ int CDecoder::Decode(AVCodecContext* avctx, AVFrame* pFrame)
     // send frame to output for processing
     CVaapiDecodedPicture pic;
     memset(&pic.DVDPic, 0, sizeof(pic.DVDPic));
-    ((CDVDVideoCodecFFmpeg*)avctx->opaque)->GetPictureCommon(&pic.DVDPic);
+    ((ICallbackHWAccel*)avctx->opaque)->GetPictureCommon(&pic.DVDPic);
     pic.videoSurface = surf;
     pic.DVDPic.color_matrix = avctx->colorspace;
     m_bufferStats.IncDecoded();

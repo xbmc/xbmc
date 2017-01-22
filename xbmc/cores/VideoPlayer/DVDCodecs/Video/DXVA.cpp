@@ -44,7 +44,7 @@ static void RelBufferS(void *opaque, uint8_t *data)
 { ((CDecoder*)opaque)->RelBuffer(data); }
 
 static int GetBufferS(AVCodecContext *avctx, AVFrame *pic, int flags) 
-{  return ((CDecoder*)((CDVDVideoCodecFFmpeg*)avctx->opaque)->GetHardware())->GetBuffer(avctx, pic, flags); }
+{  return ((CDecoder*)((ICallbackHWAccel*)avctx->opaque)->GetHWAccel())->GetBuffer(avctx, pic, flags); }
 
 DEFINE_GUID(DXVADDI_Intel_ModeH264_A, 0x604F8E64,0x4951,0x4c54,0x88,0xFE,0xAB,0xD2,0x5C,0x15,0xB3,0xD6);
 DEFINE_GUID(DXVADDI_Intel_ModeH264_C, 0x604F8E66,0x4951,0x4c54,0x88,0xFE,0xAB,0xD2,0x5C,0x15,0xB3,0xD6);
@@ -975,7 +975,7 @@ int CDecoder::Decode(AVCodecContext* avctx, AVFrame* frame)
 
 bool CDecoder::GetPicture(AVCodecContext* avctx, DVDVideoPicture* picture)
 {
-  ((CDVDVideoCodecFFmpeg*)avctx->opaque)->GetPictureCommon(picture);
+  ((ICallbackHWAccel*)avctx->opaque)->GetPictureCommon(picture);
   CSingleLock lock(m_section);
 
   picture->dxva = m_presentPicture;
