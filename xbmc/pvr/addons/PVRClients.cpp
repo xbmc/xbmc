@@ -40,7 +40,6 @@
 #include "pvr/PVRManager.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimers.h"
-#include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/Variant.h"
 
@@ -1537,7 +1536,7 @@ void CPVRClients::ConnectionStateChange(CPVRClient *client, std::string &strConn
     strMsg = g_localizeStrings.Get(iMsg);
 
   // Notify user.
-  if (bNotify && !CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRMANAGER_HIDECONNECTIONLOSTWARNING))
+  if (bNotify)
     CGUIDialogKaiToast::QueueNotification(bError ? CGUIDialogKaiToast::Error : CGUIDialogKaiToast::Info, client->Name().c_str(),
                                           strMsg, 5000, true);
 
