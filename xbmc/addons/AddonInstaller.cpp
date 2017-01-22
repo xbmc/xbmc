@@ -805,7 +805,7 @@ void CAddonInstallJob::ReportInstallError(const std::string& addonID, const std:
 }
 
 CAddonUnInstallJob::CAddonUnInstallJob(const AddonPtr &addon, bool removeData)
-  : m_addon(addon), m_remove_addon_userdata_and_settings(removeData)
+  : m_addon(addon), m_removeData(removeData)
 { }
 
 bool CAddonUnInstallJob::DoWork()
@@ -828,7 +828,7 @@ bool CAddonUnInstallJob::DoWork()
   }
 
   ClearFavourites();
-  if (m_remove_addon_user_data_and_settings)
+  if (m_removeData)
     CFileUtils::DeleteItem("special://profile/addon_data/"+m_addon->ID()+"/", true);
 
   AddonPtr addon;
