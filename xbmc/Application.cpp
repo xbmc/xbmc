@@ -17,6 +17,7 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#include <regex>
 
 #include "network/Network.h"
 #include "threads/SystemClock.h"
@@ -305,6 +306,13 @@ CApplication::CApplication(void)
 #ifdef HAS_DVD_DRIVE
   m_Autorun = new CAutorun();
 #endif
+
+
+  auto ptr = std::make_unique<int>(10);
+  auto func = [](const auto &param) {};
+  std::string str = "Test regular expression support.";
+  std::regex regex("REGULAR EXPRESSION", std::regex_constants::icase);
+
 }
 
 CApplication::~CApplication(void)

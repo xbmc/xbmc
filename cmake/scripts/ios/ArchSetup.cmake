@@ -21,8 +21,6 @@ else()
   endif()
 endif()
 
-find_package(CXX11 REQUIRED)
-
 list(APPEND CMAKE_SYSTEM_PREFIX_PATH ${NATIVEPREFIX})
 
 list(APPEND DEPLIBS "-framework CoreFoundation" "-framework CoreVideo"

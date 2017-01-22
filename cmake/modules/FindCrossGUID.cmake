@@ -34,9 +34,6 @@ if(ENABLE_INTERNAL_CROSSGUID)
                                     <SOURCE_DIR> &&
                                     ${CMAKE_COMMAND} -E copy
                                     ${CMAKE_SOURCE_DIR}/tools/depends/target/crossguid/FindUUID.cmake
-                                    <SOURCE_DIR> &&
-                                    ${CMAKE_COMMAND} -E copy
-                                    ${CMAKE_SOURCE_DIR}/tools/depends/target/crossguid/FindCXX11.cmake
                                     <SOURCE_DIR>
                       BUILD_BYPRODUCTS ${CROSSGUID_LIBRARY})
   set_target_properties(crossguid PROPERTIES FOLDER "External Projects")

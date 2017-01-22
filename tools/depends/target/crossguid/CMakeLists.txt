@@ -1,12 +1,12 @@
+cmake_minimum_required(VERSION 3.1)
 project(crossguid)
-
-cmake_minimum_required(VERSION 3.0)
 
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR})
 
-find_package(CXX11 REQUIRED)
-
 add_library(${PROJECT_NAME} guid.cpp)
+set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 11
+                                                 CXX_STANDARD_REQUIRED True
+                                                 CXX_EXTENSIONS False)
 
 if(UNIX AND NOT APPLE)
   find_package(UUID REQUIRED)
