@@ -3350,9 +3350,9 @@ bool CFFmpegPostproc::AddPicture(CVaapiDecodedPicture &inPic)
   m_pFilterFrameIn->top_field_first = (inPic.DVDPic.iFlags & DVP_FLAG_TOP_FIELD_FIRST) ? 1 : 0;
 
   if (inPic.DVDPic.pts == DVD_NOPTS_VALUE)
-    m_pFilterFrameIn->pkt_pts = AV_NOPTS_VALUE;
+    m_pFilterFrameIn->pts = AV_NOPTS_VALUE;
   else
-    m_pFilterFrameIn->pkt_pts = (inPic.DVDPic.pts / DVD_TIME_BASE) * AV_TIME_BASE;
+    m_pFilterFrameIn->pts = (inPic.DVDPic.pts / DVD_TIME_BASE) * AV_TIME_BASE;
 
   av_frame_get_buffer(m_pFilterFrameIn, 64);
 
