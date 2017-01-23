@@ -161,8 +161,9 @@ set WORKSPACE=%CD%\..\..\kodi-build
   xcopy %EXE% BUILD_WIN32\application > NUL
   xcopy %D3D% BUILD_WIN32\application > NUL
   xcopy %base_dir%\userdata BUILD_WIN32\application\userdata /E /Q /I /Y /EXCLUDE:exclude.txt > NUL
-  copy %base_dir%\copying.txt BUILD_WIN32\application > NUL
   copy %base_dir%\LICENSE.GPL BUILD_WIN32\application > NUL
+  copy %base_dir%\copying.txt BUILD_WIN32\application > NUL
+  copy %base_dir%\privacy-policy.txt BUILD_WIN32\application > NUL
   copy %base_dir%\known_issues.txt BUILD_WIN32\application > NUL
   xcopy dependencies\*.* BUILD_WIN32\application /Q /I /Y /EXCLUDE:exclude.txt  > NUL
 

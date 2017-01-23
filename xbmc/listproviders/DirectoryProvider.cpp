@@ -227,8 +227,8 @@ bool CDirectoryProvider::Update(bool forceRefresh)
 
 void CDirectoryProvider::Announce(AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
 {
-  // we are only interested in library and player changes
-  if ((flag & (VideoLibrary | AudioLibrary | Player)) == 0)
+  // we are only interested in library, player and GUI changes
+  if ((flag & (VideoLibrary | AudioLibrary | Player | GUI)) == 0)
     return;
 
   {
@@ -249,6 +249,14 @@ void CDirectoryProvider::Announce(AnnouncementFlag flag, const char *sender, con
         if (m_currentSort.sortBy == SortByLastPlayed ||
             m_currentSort.sortBy == SortByPlaycount ||
             m_currentSort.sortBy == SortByLastUsed)
+          m_updateState = INVALIDATED;
+      }
+    }
+    else if (flag & GUI)
+    {
+      if (strcmp(message, "OnFavouritesUpdated") == 0)
+      {
+        if (URIUtils::IsProtocol(m_currentUrl, "favourites"))
           m_updateState = INVALIDATED;
       }
     }

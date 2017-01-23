@@ -37,7 +37,7 @@ CProcessInfo* CProcessInfo::CreateInstance()
 // base class definitions
 CProcessInfo::CProcessInfo()
 {
-
+  ResetVideoCodecInfo();
 }
 
 CProcessInfo::~CProcessInfo()

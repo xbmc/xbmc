@@ -20,7 +20,6 @@ compiler:
   - clang
 
 env:
-#  - BUILD=Kodi TOOLS=Autotools
   - BUILD=Kodi TOOLS=CMake
 #  - ADDONS=adsp
 #  - ADDONS=audiodecoder
@@ -87,27 +86,14 @@ before_script:
 #
   - if [[ "$TRAVIS_OS_NAME" == "linux" && "$BUILD" == "Kodi" ]]; then
       ulimit -c unlimited -S;
-      if [[ "$TOOLS" == "Autotools" ]]; then
-        cd $TRAVIS_BUILD_DIR &&
-        ./bootstrap;
-      elif [[ "$TOOLS" == "CMake" ]]; then
-        mkdir $TRAVIS_BUILD_DIR/build &&
-        cd $TRAVIS_BUILD_DIR/build;
-      fi
+      mkdir $TRAVIS_BUILD_DIR/build &&
+      cd $TRAVIS_BUILD_DIR/build;
     fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" && "$BUILD" == "Kodi" && "$CXX" == "g++" ]]; then
-      if [[ "$TOOLS" == "Autotools" ]]; then
-        ./configure --enable-debug;
-      elif [[ "$TOOLS" == "CMake" ]]; then
-        cmake -DCMAKE_BUILD_TYPE=Debug ../project/cmake;
-      fi
+      cmake -DCMAKE_BUILD_TYPE=Debug ../project/cmake;
     fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" && "$BUILD" == "Kodi" && "$CXX" == "clang++" ]]; then
-      if [[ "$TOOLS" == "Autotools" ]]; then
-        CXXFLAGS="-Qunused-arguments" ./configure;
-      elif [[ "$TOOLS" == "CMake" ]]; then
-        cmake -DCMAKE_CXX_FLAGS="-Qunused-arguments" ../project/cmake;
-      fi
+      cmake -DCMAKE_CXX_FLAGS="-Qunused-arguments" ../project/cmake;
     fi
   - if [[ "$BUILD" != "Kodi" ]] && [[ "$ADDONS" == "adsp" || "$ADDONS" == "audiodecoder" || "$ADDONS" == "audioencoder" ||
           "$ADDONS" == "pvr" || "$ADDONS" == "screensaver" || "$ADDONS" == "visualization" ]]; then
@@ -115,28 +101,22 @@ before_script:
       mkdir -p build &&
       cd build/ &&
       cmake ../bootstrap -DCMAKE_BUILD_TYPE=Debug &&
-      make -j3;
+      make -j4;
     fi
 
 # Actually build
 #
 script:
   - if [[ "$BUILD" == "Kodi" ]]; then
-      if [[ "$TOOLS" == "Autotools" ]]; then
-        make -j3 &&
-        make testsuite &&
-        ./kodi-test;
-      elif [[ "$TOOLS" == "CMake" ]]; then
-        make -j3 &&
-        make check;
-      fi
+      make -j4 &&
+      make check;
     fi
   - if [[ "$BUILD" != "Kodi" ]] && [[ "$ADDONS" == "adsp" || "$ADDONS" == "audiodecoder" || "$ADDONS" == "audioencoder" ||
           "$ADDONS" == "pvr" || "$ADDONS" == "screensaver" || "$ADDONS" == "visualization" ]]; then
       cd $TRAVIS_BUILD_DIR/ &&
       mkdir -p build &&
       cmake -DADDONS_TO_BUILD="$ADDONS".* -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=../addons $TRAVIS_BUILD_DIR/project/cmake/addons &&
-      make -j3;
+      make -j4;
     fi
 
 after_failure:
@@ -146,6 +126,6 @@ after_failure:
     fi
 
 # Disable annoying emails
-#
+
 notifications:
   email: false

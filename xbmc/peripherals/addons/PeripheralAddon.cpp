@@ -78,13 +78,11 @@ CPeripheralAddon::~CPeripheralAddon(void)
       // shutdown the joystick if it is supported
       if (peripheral.second->Type() == PERIPHERAL_JOYSTICK)
       {
-        CPeripheralJoystick* joystick = static_cast<CPeripheralJoystick*>(peripheral.second);
+        std::shared_ptr<CPeripheralJoystick> joystick = std::static_pointer_cast<CPeripheralJoystick>(peripheral.second);
         if (joystick->SupportsPowerOff())
           PowerOffJoystick(peripheral.first);
       }
     }
-
-    delete peripheral.second;
   }
   m_peripherals.clear();
 
@@ -208,7 +206,7 @@ bool CPeripheralAddon::IsCompatibleAPIVersion(const ADDON::AddonVersion &minVers
   return (version >= myMinVersion && minVersion <= myVersion);
 }
 
-bool CPeripheralAddon::Register(unsigned int peripheralIndex, CPeripheral *peripheral)
+bool CPeripheralAddon::Register(unsigned int peripheralIndex, const PeripheralPtr& peripheral)
 {
   if (!peripheral)
     return false;
@@ -219,7 +217,7 @@ bool CPeripheralAddon::Register(unsigned int peripheralIndex, CPeripheral *perip
   {
     if (peripheral->Type() == PERIPHERAL_JOYSTICK)
     {
-      m_peripherals[peripheralIndex] = static_cast<CPeripheralJoystick*>(peripheral);
+      m_peripherals[peripheralIndex] = std::static_pointer_cast<CPeripheralJoystick>(peripheral);
 
       CLog::Log(LOGNOTICE, "%s - new %s device registered on %s->%s: %s",
           __FUNCTION__, PeripheralTypeTranslator::TypeToString(peripheral->Type()),
@@ -232,30 +230,31 @@ bool CPeripheralAddon::Register(unsigned int peripheralIndex, CPeripheral *perip
   return false;
 }
 
-void CPeripheralAddon::UnregisterRemovedDevices(const PeripheralScanResults &results, std::vector<CPeripheral*>& removedPeripherals)
+void CPeripheralAddon::UnregisterRemovedDevices(const PeripheralScanResults &results, PeripheralVector& removedPeripherals)
 {
   CSingleLock lock(m_critSection);
   std::vector<unsigned int> removedIndexes;
-  for (std::map<unsigned int, CPeripheral*>::const_iterator it = m_peripherals.begin(); it != m_peripherals.end(); ++it)
+  for (auto& it : m_peripherals)
   {
-    CPeripheral *peripheral = it->second;
+    const PeripheralPtr& peripheral = it.second;
     PeripheralScanResult updatedDevice(PERIPHERAL_BUS_ADDON);
     if (!results.GetDeviceOnLocation(peripheral->Location(), &updatedDevice) ||
       *peripheral != updatedDevice)
     {
       // Device removed
-      removedIndexes.push_back(it->first);
+      removedIndexes.push_back(it.first);
     }
   }
   lock.Leave();
 
-  for (std::vector<unsigned int>::const_iterator it = removedIndexes.begin(); it != removedIndexes.end(); ++it)
+  for (auto index : removedIndexes)
   {
-    CPeripheral *peripheral = m_peripherals[*it];
+    auto it = m_peripherals.find(index);
+    const PeripheralPtr& peripheral = it->second;
     CLog::Log(LOGNOTICE, "%s - device removed from %s/%s: %s (%s:%s)", __FUNCTION__, PeripheralTypeTranslator::TypeToString(peripheral->Type()), peripheral->Location().c_str(), peripheral->DeviceName().c_str(), peripheral->VendorIdAsString(), peripheral->ProductIdAsString());
     peripheral->OnDeviceRemoved();
     removedPeripherals.push_back(peripheral);
-    m_peripherals.erase(*it);
+    m_peripherals.erase(it);
   }
 }
 
@@ -273,37 +272,42 @@ void CPeripheralAddon::GetFeatures(std::vector<PeripheralFeature> &features) con
     features.push_back(FEATURE_JOYSTICK);
 }
 
-CPeripheral* CPeripheralAddon::GetPeripheral(unsigned int index) const
+PeripheralPtr CPeripheralAddon::GetPeripheral(unsigned int index) const
 {
-  CPeripheral* peripheral(NULL);
+  PeripheralPtr peripheral;
   CSingleLock lock(m_critSection);
-  std::map<unsigned int, CPeripheral*>::const_iterator it = m_peripherals.find(index);
+  auto it = m_peripherals.find(index);
   if (it != m_peripherals.end())
     peripheral = it->second;
   return peripheral;
 }
 
-CPeripheral *CPeripheralAddon::GetByPath(const std::string &strPath) const
+PeripheralPtr CPeripheralAddon::GetByPath(const std::string &strPath) const
 {
+  PeripheralPtr result;
+
   CSingleLock lock(m_critSection);
-  for (std::map<unsigned int, CPeripheral*>::const_iterator it = m_peripherals.begin(); it != m_peripherals.end(); ++it)
+  for (auto it : m_peripherals)
   {
-    if (StringUtils::EqualsNoCase(strPath, it->second->FileLocation()))
-      return it->second;
+    if (StringUtils::EqualsNoCase(strPath, it.second->FileLocation()))
+    {
+      result = it.second;
+      break;
+    }
   }
 
-  return NULL;
+  return result;
 }
 
-int CPeripheralAddon::GetPeripheralsWithFeature(std::vector<CPeripheral*> &results, const PeripheralFeature feature) const
+int CPeripheralAddon::GetPeripheralsWithFeature(PeripheralVector &results, const PeripheralFeature feature) const
 {
   int iReturn(0);
   CSingleLock lock(m_critSection);
-  for (std::map<unsigned int, CPeripheral*>::const_iterator it = m_peripherals.begin(); it != m_peripherals.end(); ++it)
+  for (auto it : m_peripherals)
   {
-    if (it->second->HasFeature(feature))
+    if (it.second->HasFeature(feature))
     {
-      results.push_back(it->second);
+      results.push_back(it.second);
       ++iReturn;
     }
   }
@@ -320,10 +324,10 @@ size_t CPeripheralAddon::GetNumberOfPeripheralsWithId(const int iVendorId, const
 {
   int iReturn(0);
   CSingleLock lock(m_critSection);
-  for (std::map<unsigned int, CPeripheral*>::const_iterator it = m_peripherals.begin(); it != m_peripherals.end(); ++it)
+  for (auto it : m_peripherals)
   {
-    if (it->second->VendorId() == iVendorId &&
-        it->second->ProductId() == iProductId)
+    if (it.second->VendorId() == iVendorId &&
+        it.second->ProductId() == iProductId)
       iReturn++;
   }
 
@@ -333,9 +337,9 @@ size_t CPeripheralAddon::GetNumberOfPeripheralsWithId(const int iVendorId, const
 void CPeripheralAddon::GetDirectory(const std::string &strPath, CFileItemList &items) const
 {
   CSingleLock lock(m_critSection);
-  for (std::map<unsigned int, CPeripheral*>::const_iterator it = m_peripherals.begin(); it != m_peripherals.end(); ++it)
+  for (auto it : m_peripherals)
   {
-    const CPeripheral *peripheral = it->second;
+    const PeripheralPtr& peripheral = it.second;
     if (peripheral->IsHidden())
       continue;
 
@@ -416,7 +420,7 @@ bool CPeripheralAddon::ProcessEvents(void)
     for (unsigned int i = 0; i < eventCount; i++)
     {
       ADDON::PeripheralEvent event(pEvents[i]);
-      CPeripheral* device = GetPeripheral(event.PeripheralIndex());
+      PeripheralPtr device = GetPeripheral(event.PeripheralIndex());
       if (!device)
         continue;
 
@@ -424,7 +428,7 @@ bool CPeripheralAddon::ProcessEvents(void)
       {
       case PERIPHERAL_JOYSTICK:
       {
-        CPeripheralJoystick* joystickDevice = static_cast<CPeripheralJoystick*>(device);
+        std::shared_ptr<CPeripheralJoystick> joystickDevice = std::static_pointer_cast<CPeripheralJoystick>(device);
 
         switch (event.Type())
         {
@@ -461,10 +465,10 @@ bool CPeripheralAddon::ProcessEvents(void)
       }
     }
 
-    for (std::map<unsigned int, CPeripheral*>::const_iterator it = m_peripherals.begin(); it != m_peripherals.end(); ++it)
+    for (auto it : m_peripherals)
     {
-      if (it->second->Type() == PERIPHERAL_JOYSTICK)
-        static_cast<CPeripheralJoystick*>(it->second)->ProcessAxisMotions();
+      if (it.second->Type() == PERIPHERAL_JOYSTICK)
+        std::static_pointer_cast<CPeripheralJoystick>(it.second)->ProcessAxisMotions();
     }
 
     try { m_pStruct->FreeEvents(eventCount, pEvents); }

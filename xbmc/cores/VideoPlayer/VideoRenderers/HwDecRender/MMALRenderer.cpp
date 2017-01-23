@@ -72,6 +72,8 @@ CMMALPool::CMMALPool(const char *component_name, bool input, uint32_t num_buffer
 
   m_mmal_pool = mmal_port_pool_create(port, port->buffer_num, port->buffer_size);
   m_closing = false;
+  m_software = false;
+  m_processInfo = nullptr;
   m_mmal_format = 0;
   m_width = 0;
   m_height = 0;
@@ -208,14 +210,14 @@ CMMALBuffer *CMMALPool::GetBuffer(uint32_t timeout)
     // ffmpeg requirements
     uint32_t aligned_width = m_aligned_width, aligned_height = m_aligned_height;
     AlignedSize(m_avctx, aligned_width, aligned_height);
-    if (m_dec)
+    if (!IsSoftware())
     {
-      CMMALVideoBuffer *vid = new CMMALVideoBuffer(m_dec, shared_from_this());
+      CMMALVideoBuffer *vid = new CMMALVideoBuffer(static_cast<CMMALVideo *>(m_dec), shared_from_this());
       omvb = vid;
     }
     else
     {
-      MMAL::CMMALYUVBuffer *yuv = new MMAL::CMMALYUVBuffer(shared_from_this(), m_mmal_format, m_width, m_height, aligned_width, aligned_height, m_size);
+      MMAL::CMMALYUVBuffer *yuv = new MMAL::CMMALYUVBuffer(static_cast<MMAL::CDecoder *>(m_dec), shared_from_this(), m_mmal_format, m_width, m_height, aligned_width, aligned_height, m_size);
       if (yuv)
       {
         CGPUMEM *gmem = yuv->gmem;
@@ -547,6 +549,7 @@ void CMMALRenderer::Run()
     {
       if (buffer->length > 0)
       {
+        EINTERLACEMETHOD last_interlace_method = m_interlace_method;
         EINTERLACEMETHOD interlace_method = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod;
         if (interlace_method == VS_INTERLACEMETHOD_AUTO)
         {
@@ -582,6 +585,22 @@ void CMMALRenderer::Run()
         }
         else if (m_deint_input || interlace)
           CheckConfigurationDeint(omvb->m_width, omvb->m_height, omvb->m_aligned_width, omvb->m_aligned_height, omvb->m_encoding, interlace_method);
+
+        if (!m_deint_input)
+          m_interlace_method = VS_INTERLACEMETHOD_NONE;
+
+        if (last_interlace_method == m_interlace_method)
+          ;
+        else if (m_interlace_method == VS_INTERLACEMETHOD_MMAL_ADVANCED)
+          omvb->SetVideoDeintMethod("adv(x2)");
+        else if (m_interlace_method == VS_INTERLACEMETHOD_MMAL_ADVANCED_HALF)
+          omvb->SetVideoDeintMethod("adv(x1)");
+        else if (m_interlace_method == VS_INTERLACEMETHOD_MMAL_BOB)
+          omvb->SetVideoDeintMethod("bob(x2)");
+        else if (m_interlace_method == VS_INTERLACEMETHOD_MMAL_BOB_HALF)
+          omvb->SetVideoDeintMethod("bob(x1)");
+        else
+          omvb->SetVideoDeintMethod("none");
 
         if (m_deint_input)
         {
@@ -1197,7 +1216,7 @@ void CMMALRenderer::DestroyDeinterlace()
       CLog::Log(LOGERROR, "%s::%s Failed to disable deinterlace output port(status=%x %s)", CLASSNAME, __func__, status, mmal_status_to_string(status));
   }
   m_deint_output = nullptr;
-  m_interlace_method = VS_INTERLACEMETHOD_NONE;
+  m_interlace_method = VS_INTERLACEMETHOD_MAX;
   m_deint_width = 0;
   m_deint_height = 0;
   m_deint_aligned_width = 0;

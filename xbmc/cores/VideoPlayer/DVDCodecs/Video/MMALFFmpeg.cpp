@@ -42,8 +42,8 @@ using namespace MMAL;
 
 #define CLASSNAME "CMMALYUVBuffer"
 
-CMMALYUVBuffer::CMMALYUVBuffer(std::shared_ptr<CMMALPool> pool, uint32_t mmal_encoding, uint32_t width, uint32_t height, uint32_t aligned_width, uint32_t aligned_height, uint32_t size)
-  : m_pool(pool)
+CMMALYUVBuffer::CMMALYUVBuffer(CDecoder *omv, std::shared_ptr<CMMALPool> pool, uint32_t mmal_encoding, uint32_t width, uint32_t height, uint32_t aligned_width, uint32_t aligned_height, uint32_t size)
+: CMMALBuffer(pool), m_omv(omv)
 {
   uint32_t size_pic = 0;
   m_width = width;
@@ -244,6 +244,8 @@ bool CDecoder::Open(AVCodecContext *avctx, AVCodecContext* mainctx, enum AVPixel
     CLog::Log(LOGERROR, "%s::%s Failed to create pool for decoder output", CLASSNAME, __func__);
     return false;
   }
+  m_pool->SetDecoder(this);
+  m_pool->SetProcessInfo(&m_processInfo);
 
   std::list<EINTERLACEMETHOD> deintMethods;
   deintMethods.push_back(EINTERLACEMETHOD::VS_INTERLACEMETHOD_AUTO);

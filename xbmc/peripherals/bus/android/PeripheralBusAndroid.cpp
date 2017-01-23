@@ -60,21 +60,21 @@ CPeripheralBusAndroid::~CPeripheralBusAndroid()
   CXBMCApp::UnregisterInputDeviceCallbacks();
 }
 
-bool CPeripheralBusAndroid::InitializeProperties(CPeripheral* peripheral)
+bool CPeripheralBusAndroid::InitializeProperties(CPeripheral& peripheral)
 {
   if (!CPeripheralBus::InitializeProperties(peripheral))
     return false;
 
-  if (peripheral == nullptr || peripheral->Type() != PERIPHERAL_JOYSTICK)
+  if (peripheral.Type() != PERIPHERAL_JOYSTICK)
   {
-    CLog::Log(LOGWARNING, "CPeripheralBusAndroid: unknown peripheral");
+    CLog::Log(LOGWARNING, "CPeripheralBusAndroid: invalid peripheral type");
     return false;
   }
 
   int deviceId;
-  if (!GetDeviceId(peripheral->Location(), deviceId))
+  if (!GetDeviceId(peripheral.Location(), deviceId))
   {
-    CLog::Log(LOGWARNING, "CPeripheralBusAndroid: failed to initialize properties for peripheral \"%s\"", peripheral->Location().c_str());
+    CLog::Log(LOGWARNING, "CPeripheralBusAndroid: failed to initialize properties for peripheral \"%s\"", peripheral.Location().c_str());
     return false;
   }
 
@@ -85,29 +85,29 @@ bool CPeripheralBusAndroid::InitializeProperties(CPeripheral* peripheral)
     return false;
   }
 
-  CPeripheralJoystick* joystick = static_cast<CPeripheralJoystick*>(peripheral);
-  joystick->SetRequestedPort(device.getControllerNumber());
-  joystick->SetProvider("android");
+  CPeripheralJoystick& joystick = static_cast<CPeripheralJoystick&>(peripheral);
+  joystick.SetRequestedPort(device.getControllerNumber());
+  joystick.SetProvider("android");
 
   // prepare the joystick state
   CAndroidJoystickState state;
   if (!state.Initialize(device))
   {
     CLog::Log(LOGWARNING, "CPeripheralBusAndroid: failed to initialize the state for input device \"%s\" with ID %d",
-              joystick->DeviceName().c_str(), deviceId);
+              joystick.DeviceName().c_str(), deviceId);
     return false;
   }
 
   // fill in the number of buttons, hats and axes
-  joystick->SetButtonCount(state.GetButtonCount());
-  joystick->SetHatCount(state.GetHatCount());
-  joystick->SetAxisCount(state.GetAxisCount());
+  joystick.SetButtonCount(state.GetButtonCount());
+  joystick.SetHatCount(state.GetHatCount());
+  joystick.SetAxisCount(state.GetAxisCount());
 
   // remember the joystick state
   m_joystickStates.insert(std::make_pair(deviceId, std::move(state)));
 
   CLog::Log(LOGDEBUG, "CPeripheralBusAndroid: input device \"%s\" with ID %d has %u buttons, %u hats and %u axes",
-            joystick->DeviceName().c_str(), deviceId, joystick->ButtonCount(), joystick->HatCount(), joystick->AxisCount());
+            joystick.DeviceName().c_str(), deviceId, joystick.ButtonCount(), joystick.HatCount(), joystick.AxisCount());
   return true;
 }
 
@@ -128,11 +128,11 @@ void CPeripheralBusAndroid::ProcessEvents()
 
   for (const auto& event : events)
   {
-    CPeripheral* device = GetPeripheral(GetDeviceLocation(event.PeripheralIndex()));
-    if (device == nullptr || device->Type() != PERIPHERAL_JOYSTICK)
+    PeripheralPtr device = GetPeripheral(GetDeviceLocation(event.PeripheralIndex()));
+    if (!device || device->Type() != PERIPHERAL_JOYSTICK)
       continue;
 
-    CPeripheralJoystick* joystick = static_cast<CPeripheralJoystick*>(device);
+    CPeripheralJoystick* joystick = static_cast<CPeripheralJoystick*>(device.get());
     switch (event.Type())
     {
       case PERIPHERAL_EVENT_TYPE_DRIVER_BUTTON:
@@ -167,11 +167,11 @@ void CPeripheralBusAndroid::ProcessEvents()
     CSingleLock lock(m_critSectionStates);
     for (const auto& joystickState : m_joystickStates)
     {
-      CPeripheral* device = GetPeripheral(GetDeviceLocation(joystickState.second.GetDeviceId()));
-      if (device == nullptr || device->Type() != PERIPHERAL_JOYSTICK)
+      PeripheralPtr device = GetPeripheral(GetDeviceLocation(joystickState.second.GetDeviceId()));
+      if (!device || device->Type() != PERIPHERAL_JOYSTICK)
         continue;
 
-      static_cast<CPeripheralJoystick*>(device)->ProcessAxisMotions();
+      static_cast<CPeripheralJoystick*>(device.get())->ProcessAxisMotions();
     }
   }
 }

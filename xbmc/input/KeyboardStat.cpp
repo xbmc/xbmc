@@ -60,13 +60,13 @@ void CKeyboardStat::Initialize()
 
 bool CKeyboardStat::LookupSymAndUnicodePeripherals(XBMC_keysym &keysym, uint8_t *key, char *unicode)
 {
-  std::vector<CPeripheral *> hidDevices;
+  PeripheralVector hidDevices;
   if (g_peripherals.GetPeripheralsWithFeature(hidDevices, FEATURE_HID))
   {
-    for (unsigned int iDevicePtr = 0; iDevicePtr < hidDevices.size(); iDevicePtr++)
+    for (auto& peripheral : hidDevices)
     {
-      CPeripheralHID *hidDevice = (CPeripheralHID *) hidDevices.at(iDevicePtr);
-      if (hidDevice && hidDevice->LookupSymAndUnicode(keysym, key, unicode))
+      std::shared_ptr<CPeripheralHID> hidDevice = std::static_pointer_cast<CPeripheralHID>(peripheral);
+      if (hidDevice->LookupSymAndUnicode(keysym, key, unicode))
         return true;
     }
   }
