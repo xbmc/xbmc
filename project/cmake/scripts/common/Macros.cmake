@@ -584,6 +584,7 @@ function(core_find_git_rev stamp)
   else()
     find_package(Git)
     if(GIT_FOUND AND EXISTS ${CORE_SOURCE_DIR}/.git)
+      execute_process(COMMAND ${GIT_EXECUTABLE} update-index --ignore-submodules --refresh -q)
       execute_process(COMMAND ${GIT_EXECUTABLE} diff-files --ignore-submodules --quiet --
                       RESULT_VARIABLE status_code
                       WORKING_DIRECTORY ${CORE_SOURCE_DIR})
