@@ -167,9 +167,8 @@ void COverlayQuadsDX::Render(SRenderState &state)
   ID3D11DeviceContext* pContext = g_Windowing.Get3D11Context();
   CGUIShaderDX* pGUIShader = g_Windowing.GetGUIShader();
 
-  XMMATRIX world = pGUIShader->GetWorld();
-  XMMATRIX view = pGUIShader->GetView();
-  XMMATRIX proj = pGUIShader->GetProjection();
+  XMMATRIX world, view, proj;
+  pGUIShader->GetWVP(world, view, proj);
 
   if (g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_SPLIT_HORIZONTAL
    || g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_SPLIT_VERTICAL)
@@ -201,9 +200,7 @@ void COverlayQuadsDX::Render(SRenderState &state)
   pGUIShader->Draw(m_count * 6, 0);
 
   // restoring transformation
-  pGUIShader->SetWorld(world);
-  pGUIShader->SetView(view);
-  pGUIShader->SetProjection(proj);
+  pGUIShader->SetWVP(world, view, proj);
   pGUIShader->RestoreBuffers();
 }
 
@@ -335,9 +332,8 @@ void COverlayImageDX::Render(SRenderState &state)
   ID3D11DeviceContext* pContext = g_Windowing.Get3D11Context();
   CGUIShaderDX* pGUIShader = g_Windowing.GetGUIShader();
 
-  XMMATRIX world = pGUIShader->GetWorld();
-  XMMATRIX view = pGUIShader->GetView();
-  XMMATRIX proj = pGUIShader->GetProjection();
+  XMMATRIX world, view, proj;
+  pGUIShader->GetWVP(world, view, proj);
 
   if (g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_SPLIT_HORIZONTAL
    || g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_SPLIT_VERTICAL)
@@ -369,9 +365,7 @@ void COverlayImageDX::Render(SRenderState &state)
   pGUIShader->Draw(4, 0);
 
   // restoring transformation
-  pGUIShader->SetWorld(world);
-  pGUIShader->SetView(view);
-  pGUIShader->SetProjection(proj);
+  pGUIShader->SetWVP(world, view, proj);
   pGUIShader->RestoreBuffers();
 }
 

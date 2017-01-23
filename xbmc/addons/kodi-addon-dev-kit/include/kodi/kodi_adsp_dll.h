@@ -49,7 +49,7 @@
  *     to his type) about his given sample rate.
  *   - About the from user selected master processing mode the related addon
  *     becomes called now with MasterProcessSetMode(...) to handle it's
- *     selectionon the addon given by the own addon type identifier or by
+ *     selection on the addon given by the own addon type identifier or by
  *     KODI's useddatabase id, also the currently used stream type (e.g.
  *     Music or Video) is send.
  *     - If the addon supports only one master mode it can ignore this function
@@ -179,7 +179,7 @@ extern "C"
    * surround upmix not needed on 5.1 audio stream.
    * @param addonSettings The add-ons audio settings.
    * @param pProperties The properties of the currently playing stream.
-   * @param handle On this becomes addon informated about stream id and can set function addresses which need on calls
+   * @param handle On this becomes addon informed about stream id and can set function addresses which need on calls
    * @return AE_DSP_ERROR_NO_ERROR if the properties were fetched successfully
    * and data can be performed. AE_DSP_ERROR_IGNORE_ME if format is not
    * supported, but without fault.
@@ -517,8 +517,10 @@ extern "C"
   //@}
 
   // function to export the above structure to KODI
-  void __declspec(dllexport) get_addon(struct AudioDSP* pDSP)
+  void __declspec(dllexport) get_addon(void* ptr)
   {
+    KodiToAddonFuncTable_AudioDSP* pDSP = static_cast<KodiToAddonFuncTable_AudioDSP*>(ptr);
+
     pDSP->GetAudioDSPAPIVersion                 = GetAudioDSPAPIVersion;
     pDSP->GetMinimumAudioDSPAPIVersion          = GetMinimumAudioDSPAPIVersion;
     pDSP->GetGUIAPIVersion                      = GetGUIAPIVersion;

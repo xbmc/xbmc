@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<include>Animation_DialogPopupOpenClose</include>
+	<controls>
+		<control type="group">
+			<centertop>50%</centertop>
+			<height>750</height>
+			<centerleft>50%</centerleft>
+			<width>1720</width>
+			<control type="group" id="250">
+				<include content="DialogBackgroundCommons">
+					<param name="width" value="1720" />
+					<param name="height" value="750" />
+					<param name="header_label" value="$LOCALIZE[24012]" />
+					<param name="header_id" value="100" />
+				</include>
+				<control type="group">
+					<left>1320</left>
+					<control type="grouplist">
+						<top>110</top>
+						<left>-20</left>
+						<onright>150</onright>
+						<onleft>73</onleft>
+						<orientation>vertical</orientation>
+						<include content="DefaultDialogButton">
+							<param name="id" value="160" />
+							<param name="label" value="$LOCALIZE[24120]" />
+							<param name="width" value="420" />
+							<param name="height" value="150" />
+						</include>
+					</control>
+					<control type="label" id="140">
+						<description>textarea</description>
+						<top>280</top>
+						<width>380</width>
+						<height>40</height>
+						<align>center</align>
+						<aligny>center</aligny>
+						<wrapmultiline>true</wrapmultiline>
+					</control>
+					<control type="grouplist" id="130">
+						<top>630</top>
+						<width>380</width>
+						<height>300</height>
+						<orientation>vertical</orientation>
+						<itemgap>15</itemgap>
+						<control type="image">
+							<width>380</width>
+							<height>50</height>
+							<aspectratio align="center">keep</aspectratio>
+							<texture>DefaultIconInfo.png</texture>
+						</control>
+						<control type="label">
+							<description>notification</description>
+							<width>380</width>
+							<height>30</height>
+							<label>$LOCALIZE[31096]</label>
+							<align>center</align>
+							<aligny>center</aligny>
+						</control>
+					</control>
+				</control>
+			</control>
+			<control type="group">
+				<top>130</top>
+				<left>360</left>
+				<control type="image">
+					<left>-20</left>
+					<top>-20</top>
+					<width>960</width>
+					<height>640</height>
+					<texture border="40">buttons/dialogbutton-nofo.png</texture>
+				</control>
+				<control type="label">
+					<description>Video label</description>
+					<top>-45</top>
+					<width>920</width>
+					<height>30</height>
+					<font>font30_title</font>
+					<label>$INFO[Player.Filename]</label>
+					<align>center</align>
+					<aligny>center</aligny>
+					<textcolor>grey</textcolor>
+					<shadowcolor>black</shadowcolor>
+					<scroll>true</scroll>
+				</control>
+				<control type="list" id="120">
+					<width>920</width>
+					<height>600</height>
+					<onleft>150</onleft>
+					<onright>73</onright>
+					<onup>120</onup>
+					<ondown>120</ondown>
+					<pagecontrol>73</pagecontrol>
+					<pagecontrol>121</pagecontrol>
+					<scrolltime>200</scrolltime>
+					<itemlayout width="920" height="100">
+						<control type="image">
+							<left>25</left>
+							<top>5</top>
+							<width>50</width>
+							<height>50</height>
+							<texture>$INFO[ListItem.Thumb,windows/subtitles/flags/,.png]</texture>
+							<aspectratio>keep</aspectratio>
+						</control>
+						<control type="label">
+							<left>0</left>
+							<top>20</top>
+							<width>100</width>
+							<height>100</height>
+							<font>font12</font>
+							<textcolor>grey</textcolor>
+							<align>center</align>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Label]</label>
+						</control>
+						<control type="image">
+							<left>810</left>
+							<top>60</top>
+							<width>30</width>
+							<height>20</height>
+							<texture>windows/subtitles/icon_close_caption.png</texture>
+							<visible>ListItem.property(hearing_imp)</visible>
+						</control>
+						<control type="image">
+							<left>850</left>
+							<top>60</top>
+							<width>60</width>
+							<height>20</height>
+							<texture>windows/subtitles/icon_sync.png</texture>
+							<visible>ListItem.property(sync)</visible>
+						</control>
+						<control type="textbox">
+							<left>130</left>
+							<width>645</width>
+							<height>100</height>
+							<aligny>center</aligny>
+							<font>font12</font>
+							<label>$INFO[ListItem.Label2]</label>
+						</control>
+						<control type="image">
+							<left>810</left>
+							<top>10</top>
+							<width>100</width>
+							<height>45</height>
+							<texture fallback="flags/starrating/rating0.png">$INFO[ListItem.ActualIcon,flags/starrating/rating,.png]</texture>
+							<aspectratio>keep</aspectratio>
+						</control>
+					</itemlayout>
+					<focusedlayout width="920" height="100">
+						<control type="image">
+							<left>0</left>
+							<right>0</right>
+							<bottom>0</bottom>
+							<texture colordiffuse="button_focus">lists/focus.png</texture>
+							<visible>Control.HasFocus(120)</visible>
+						</control>
+						<control type="image">
+							<left>25</left>
+							<top>5</top>
+							<width>50</width>
+							<height>50</height>
+							<texture>$INFO[ListItem.Thumb,windows/subtitles/flags/,.png]</texture>
+							<aspectratio>keep</aspectratio>
+						</control>
+						<control type="label">
+							<left>0</left>
+							<top>20</top>
+							<width>100</width>
+							<height>100</height>
+							<font>font12</font>
+							<textcolor>grey</textcolor>
+							<align>center</align>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Label]</label>
+						</control>
+						<control type="image">
+							<left>810</left>
+							<top>60</top>
+							<width>30</width>
+							<height>20</height>
+							<texture>windows/subtitles/icon_close_caption.png</texture>
+							<visible>ListItem.property(hearing_imp)</visible>
+						</control>
+						<control type="image">
+							<left>850</left>
+							<top>60</top>
+							<width>60</width>
+							<height>20</height>
+							<texture>windows/subtitles/icon_sync.png</texture>
+							<visible>ListItem.property(sync)</visible>
+						</control>
+						<control type="textbox">
+							<left>130</left>
+							<width>645</width>
+							<height>100</height>
+							<aligny>center</aligny>
+							<font>font12</font>
+							<label>$INFO[ListItem.Label2]</label>
+						</control>
+						<control type="image">
+							<left>810</left>
+							<top>10</top>
+							<width>100</width>
+							<height>45</height>
+							<texture fallback="flags/starrating/rating0.png">$INFO[ListItem.ActualIcon,flags/starrating/rating,.png]</texture>
+							<aspectratio>keep</aspectratio>
+						</control>
+					</focusedlayout>
+				</control>
+				<control type="scrollbar" id="73">
+					<left>925</left>
+					<width>12</width>
+					<height>600</height>
+					<onleft>120</onleft>
+					<onright>160</onright>
+					<ondown>73</ondown>
+					<onup>73</onup>
+					<orientation>vertical</orientation>
+				</control>
+			</control>
+			<control type="group">
+				<left>20</left>
+				<top>130</top>
+				<control type="image">
+					<left>-20</left>
+					<top>-20</top>
+					<width>360</width>
+					<height>520</height>
+					<texture border="40">buttons/dialogbutton-nofo.png</texture>
+				</control>
+				<control type="label">
+					<left>0</left>
+					<top>-50</top>
+					<width>320</width>
+					<height>26</height>
+					<label>$LOCALIZE[24018]</label>
+					<align>center</align>
+					<font>font30_title</font>
+					<aligny>top</aligny>
+					<textcolor>button_focus</textcolor>
+					<shadowcolor>black</shadowcolor>
+					<wrapmultiline>true</wrapmultiline>
+				</control>
+				<control type="image" id="110">
+					<description>Service Logo</description>
+					<top>500</top>
+					<width>320</width>
+					<height>80</height>
+					<fadetime>200</fadetime>
+					<aspectratio>keep</aspectratio>
+				</control>
+				<control type="list" id="150">
+					<width>320</width>
+					<height>480</height>
+					<onleft>160</onleft>
+					<onright>120</onright>
+					<onup>150</onup>
+					<ondown>150</ondown>
+					<scrolltime>200</scrolltime>
+					<include content="DefaultSimpleListLayout">
+						<param name="width" value="320" />
+						<param name="height" value="80" />
+						<param name="list_id" value="150" />
+						<param name="align" value="center" />
+					</include>
+				</control>
+			</control>
+		</control>
+	</controls>
+</window>

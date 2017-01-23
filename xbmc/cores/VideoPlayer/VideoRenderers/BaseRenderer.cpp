@@ -23,6 +23,7 @@
 #include <cstdlib> // std::abs(int) prototype
 #include <algorithm>
 #include "BaseRenderer.h"
+#include "ServiceBroker.h"
 #include "settings/DisplaySettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
@@ -229,7 +230,7 @@ void CBaseRenderer::CalcNormalRenderRect(float offsetX, float offsetY, float wid
 
   // allow a certain error to maximize size of render area
   float fCorrection = width / height / outputFrameRatio - 1.0f;
-  float fAllowed    = CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_ERRORINASPECT) * 0.01f;
+  float fAllowed    = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_VIDEOPLAYER_ERRORINASPECT) * 0.01f;
   if(fCorrection >   fAllowed) fCorrection =   fAllowed;
   if(fCorrection < - fAllowed) fCorrection = - fAllowed;
 
@@ -456,7 +457,7 @@ void CBaseRenderer::SetViewMode(int viewMode)
   CDisplaySettings::GetInstance().SetNonLinearStretched(false);
 
   if ( CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode == ViewModeZoom ||
-       (is43 && CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_STRETCH43) == ViewModeZoom))
+       (is43 && CServiceBroker::GetSettings().GetInt(CSettings::SETTING_VIDEOPLAYER_STRETCH43) == ViewModeZoom))
   { // zoom image so no black bars
     CDisplaySettings::GetInstance().SetPixelRatio(1.0);
     // calculate the desired output ratio
@@ -488,7 +489,7 @@ void CBaseRenderer::SetViewMode(int viewMode)
     }
   }
   else if ( CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode == ViewModeWideZoom ||
-           (is43 && CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_STRETCH43) == ViewModeWideZoom))
+           (is43 && CServiceBroker::GetSettings().GetInt(CSettings::SETTING_VIDEOPLAYER_STRETCH43) == ViewModeWideZoom))
   { // super zoom
     float stretchAmount = (screenWidth / screenHeight) * info.fPixelRatio / sourceFrameRatio;
     CDisplaySettings::GetInstance().SetPixelRatio(pow(stretchAmount, float(2.0/3.0)));
@@ -497,8 +498,8 @@ void CBaseRenderer::SetViewMode(int viewMode)
   }
   else if ( CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode == ViewModeStretch16x9 ||
             CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode == ViewModeStretch16x9Nonlin ||
-           (is43 && (CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_STRETCH43) == ViewModeStretch16x9 ||
-                     CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_STRETCH43) == ViewModeStretch16x9Nonlin)))
+           (is43 && (CServiceBroker::GetSettings().GetInt(CSettings::SETTING_VIDEOPLAYER_STRETCH43) == ViewModeStretch16x9 ||
+                     CServiceBroker::GetSettings().GetInt(CSettings::SETTING_VIDEOPLAYER_STRETCH43) == ViewModeStretch16x9Nonlin)))
   { // stretch image to 16:9 ratio
     CDisplaySettings::GetInstance().SetZoomAmount(1.0);
     if (res == RES_PAL_4x3 || res == RES_PAL60_4x3 || res == RES_NTSC_4x3 || res == RES_HDTV_480p_4x3)
@@ -511,7 +512,7 @@ void CBaseRenderer::SetViewMode(int viewMode)
       // incorrect behaviour, but it's what the users want, so...
       CDisplaySettings::GetInstance().SetPixelRatio((screenWidth / screenHeight) * info.fPixelRatio / sourceFrameRatio);
     }
-    bool nonlin = (is43 && CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_STRETCH43) == ViewModeStretch16x9Nonlin) ||
+    bool nonlin = (is43 && CServiceBroker::GetSettings().GetInt(CSettings::SETTING_VIDEOPLAYER_STRETCH43) == ViewModeStretch16x9Nonlin) ||
                   CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode == ViewModeStretch16x9Nonlin;
     CDisplaySettings::GetInstance().SetNonLinearStretched(nonlin);
   }

@@ -23,6 +23,9 @@
 
 namespace JOYSTICK
 {
+  /*!
+   * \brief Joystick translation utilities
+   */
   class CJoystickTranslator
   {
   public:

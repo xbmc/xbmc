@@ -22,6 +22,7 @@
 #include "UPnPServer.h"
 #include "UPnPInternal.h"
 #include "Application.h"
+#include "ServiceBroker.h"
 #include "view/GUIViewState.h"
 #include "video/VideoThumbLoader.h"
 #include "music/Artist.h"
@@ -164,7 +165,7 @@ CUPnPServer::PropagateUpdates()
     std::string buffer;
     std::map<std::string, std::pair<bool, unsigned long> >::iterator itr;
 
-    if (m_scanning || !CSettings::GetInstance().GetBool(CSettings::SETTING_SERVICES_UPNPANNOUNCE))
+    if (m_scanning || !CServiceBroker::GetSettings().GetBool(CSettings::SETTING_SERVICES_UPNPANNOUNCE))
         return;
 
     NPT_CHECK_LABEL(FindServiceById("urn:upnp-org:serviceId:ContentDirectory", service), failed);
@@ -297,7 +298,7 @@ CUPnPServer::Build(CFileItemPtr                  item,
         if (path.StartsWith("musicdb://")) {
             if (path == "musicdb://" ) {
                 item->SetLabel("Music Library");
-                item->SetLabelPreformated(true);
+                item->SetLabelPreformatted(true);
             } else {
                 if (!item->HasMusicInfoTag()) {
                     MUSICDATABASEDIRECTORY::CQueryParams params;
@@ -329,14 +330,14 @@ CUPnPServer::Build(CFileItemPtr                  item,
                     std::string label;
                     if (CMusicDatabaseDirectory::GetLabel((const char*)path, label)) {
                         item->SetLabel(label);
-                        item->SetLabelPreformated(true);
+                        item->SetLabelPreformatted(true);
                     }
                 }
             }
         } else if (file_path.StartsWith("library://") || file_path.StartsWith("videodb://")) {
             if (path == "library://video/" ) {
                 item->SetLabel("Video Library");
-                item->SetLabelPreformated(true);
+                item->SetLabelPreformatted(true);
             } else {
                 if (!item->HasVideoInfoTag()) {
                     VIDEODATABASEDIRECTORY::CQueryParams params;
@@ -359,13 +360,13 @@ CUPnPServer::Build(CFileItemPtr                  item,
                     // for tvshows and seasons, iEpisode and playCount are
                     // invalid
                     item->GetVideoInfoTag()->m_iEpisode = (int)item->GetProperty("totalepisodes").asInteger();
-                    item->GetVideoInfoTag()->m_playCount = (int)item->GetProperty("watchedepisodes").asInteger();
+                    item->GetVideoInfoTag()->SetPlayCount(static_cast<int>(item->GetProperty("watchedepisodes").asInteger()));
                 }
 
                 // try to grab title from tag
                 if (item->HasVideoInfoTag() && !item->GetVideoInfoTag()->m_strTitle.empty()) {
                     item->SetLabel(item->GetVideoInfoTag()->m_strTitle);
-                    item->SetLabelPreformated(true);
+                    item->SetLabelPreformatted(true);
                 }
 
                 // try to grab it from the folder
@@ -373,7 +374,7 @@ CUPnPServer::Build(CFileItemPtr                  item,
                     std::string label;
                     if (CVideoDatabaseDirectory::GetLabel((const char*)path, label)) {
                         item->SetLabel(label);
-                        item->SetLabelPreformated(true);
+                        item->SetLabelPreformatted(true);
                     }
                 }
             }
@@ -551,7 +552,7 @@ CUPnPServer::OnBrowseMetadata(PLT_ActionReference&          action,
             id += "/";
             item.reset(new CFileItem((const char*)id, true));
             item->SetLabel("Root");
-            item->SetLabelPreformated(true);
+            item->SetLabelPreformatted(true);
             object = Build(item, true, context, thumb_loader);
             object->m_ParentID = "-1";
         } else {
@@ -662,13 +663,13 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference&          action,
             // music library
             item.reset(new CFileItem("musicdb://", true));
             item->SetLabel("Music Library");
-            item->SetLabelPreformated(true);
+            item->SetLabelPreformatted(true);
             items.Add(item);
 
             // video library
             item.reset(new CFileItem("library://video/", true));
             item->SetLabel("Video Library");
-            item->SetLabelPreformated(true);
+            item->SetLabelPreformatted(true);
             items.Add(item);
 
             items.Sort(SortByLabel, SortOrderAscending);
@@ -866,7 +867,7 @@ CUPnPServer::OnSearchContainer(PLT_ActionReference&          action,
                 // all tracks of a specific genre
                 else if (count == 2)
                     id += "-1/-1/";
-                // all tracks of a specific genre of a specfic artist
+                // all tracks of a specific genre of a specific artist
                 else if (count == 3)
                     id += "-1/";
             } else if (id.StartsWith("musicdb://artists/")) {
@@ -1069,6 +1070,7 @@ CUPnPServer::OnUpdateObject(PLT_ActionReference&             action,
                 CBookmark bookmark;
                 bookmark.timeInSeconds = resume;
                 bookmark.totalTimeInSeconds = resume + 100; // not required to be correct
+                bookmark.playerState = new_vals["lastPlayerState"];
 
                 db.AddBookMarkToFile(file_path, bookmark, CBookmark::RESUME);
             }

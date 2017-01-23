@@ -221,14 +221,16 @@ RESOLUTION CResolutionUtils::FindClosestResolution(float fps, int width, bool is
         (info.dwFlags & D3DPRESENTFLAG_MODEMASK) != (curr.dwFlags & D3DPRESENTFLAG_MODEMASK) ||
         info.fRefreshRate < (fRefreshRate * multiplier / 1.001) - 0.001)
     {
-      // evaluate all higher modes and evalute them
+      // evaluate all higher modes and evaluate them
       // concerning dimension and refreshrate weight
       // skip lower resolutions
+      // don't change resolutions when 3D is wanted
       if ((width < orig.iScreenWidth) || // orig res large enough
          (info.iScreenWidth < orig.iScreenWidth) || // new res is smaller
          (info.iScreenHeight < orig.iScreenHeight) || // new height would be smaller
          (info.dwFlags & D3DPRESENTFLAG_MODEMASK) != (curr.dwFlags & D3DPRESENTFLAG_MODEMASK) || // don't switch to interlaced modes
-         (info.iScreen != curr.iScreen)) // skip not current displays
+         (info.iScreen != curr.iScreen) || // skip not current displays
+         is3D) // skip res changing when doing 3D
       {
         continue;
       }

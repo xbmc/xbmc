@@ -95,12 +95,12 @@ namespace PVR
      * @param bExcludeHidden Whenever to exclude hidden channel groups.
      * @return A list of groups the channel is a member.
      */
-    std::vector<CPVRChannelGroupPtr> GetGroupsByChannel(const CPVRChannelPtr channel, bool bExcludeHidden = false) const;
+    std::vector<CPVRChannelGroupPtr> GetGroupsByChannel(const CPVRChannelPtr &channel, bool bExcludeHidden = false) const;
 
     /*!
      * @brief Get a group given it's name.
      * @param strName The name.
-     * @return The group or NULL if it wan't found.
+     * @return The group or NULL if it wasn't found.
      */
     CPVRChannelGroupPtr GetByName(const std::string &strName) const;
 
@@ -167,7 +167,7 @@ namespace PVR
      * @brief Change the selected group.
      * @param group The group to select.
      */
-    void SetSelectedGroup(CPVRChannelGroupPtr group);
+    void SetSelectedGroup(const CPVRChannelGroupPtr &group);
 
     /*!
      * @brief Add a group to this container.

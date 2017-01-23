@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<defaultcontrol>5</defaultcontrol>
+	<include>Animation_DialogPopupOpenClose</include>
+	<controls>
+		<control type="group">
+			<top>105</top>
+			<centerleft>50%</centerleft>
+			<width>1520</width>
+			<include>Animation_DialogPopupVisible</include>
+			<visible>!Window.IsVisible(sliderdialog)</visible>
+			<visible>![Window.IsActive(osdaudiodspsettings) + Window.Is(osdaudiosettings)]</visible>
+			<include content="DialogBackgroundCommons">
+				<param name="width" value="1520" />
+				<param name="height" value="870" />
+				<param name="header_label" value="" />
+				<param name="header_id" value="2" />
+			</include>
+			<control type="image">
+				<left>10</left>
+				<top>80</top>
+				<width>1200</width>
+				<height>790</height>
+				<texture border="40">buttons/dialogbutton-nofo.png</texture>
+			</control>
+			<control type="grouplist" id="5">
+				<description>control area</description>
+				<left>29</left>
+				<top>100</top>
+				<width>1160</width>
+				<height>750</height>
+				<onleft>9000</onleft>
+				<onright>9000</onright>
+				<onup>5</onup>
+				<ondown>5</ondown>
+			</control>
+			<control type="button" id="7">
+				<description>Default Button</description>
+				<include>DefaultSettingButton</include>
+			</control>
+			<control type="radiobutton" id="8">
+				<description>Default RadioButton</description>
+				<include>DefaultSettingButton</include>
+			</control>
+			<control type="spincontrolex" id="9">
+				<description>Default SpinControlex</description>
+				<include>DefaultSettingButton</include>
+			</control>
+			<control type="image" id="11">
+				<description>separator image</description>
+				<height>3</height>
+				<texture colordiffuse="AAAAAAAA" border="3">dialogs/separator-grey.png</texture>
+			</control>
+			<control type="edit" id="12">
+				<include>DefaultSettingButton</include>
+			</control>
+			<control type="sliderex" id="13">
+				<description>Default Slider</description>
+				<include>DefaultSettingButton</include>
+			</control>
+			<control type="label" id="14">
+				<description>Default Label</description>
+				<include>DefaultSettingLabel</include>
+			</control>
+			<control type="grouplist" id="9000">
+				<left>1210</left>
+				<top>92</top>
+				<orientation>vertical</orientation>
+				<width>300</width>
+				<height>250</height>
+				<itemgap>-10</itemgap>
+				<onleft>5</onleft>
+				<onright>5</onright>
+				<include content="DefaultDialogButton">
+					<param name="id" value="28" />
+					<param name="label" value="" />
+				</include>
+				<include content="DefaultDialogButton">
+					<param name="id" value="29" />
+					<param name="label" value="" />
+				</include>
+				<include content="DefaultDialogButton">
+					<param name="id" value="30" />
+					<param name="label" value="" />
+				</include>
+			</control>
+		</control>
+	</controls>
+</window>

@@ -18,9 +18,6 @@
  *
  */
 
-#if defined(HAVE_CONFIG_H)
-  #include "config.h"
-#endif
 #include <limits.h>
 #if defined(TARGET_ANDROID)
 #include <unistd.h>
@@ -106,7 +103,7 @@ void CThread::SetThreadInfo()
   // call will fail
   if (userMaxPrio > 0)
   {
-    // start thread with nice level of appication
+    // start thread with nice level of application
     int appNice = getpriority(PRIO_PROCESS, getpid());
     if (setpriority(PRIO_PROCESS, m_ThreadOpaque.LwpId, appNice) != 0)
       if (logger) logger->Log(LOGERROR, "%s: error %s", __FUNCTION__, strerror(errno));
@@ -203,7 +200,7 @@ int CThread::GetPriority()
 {
   int iReturn;
 
-  // lwp id is valid after start signel has fired
+  // lwp id is valid after start signal has fired
   m_StartEvent.Wait();
 
   CSingleLock lock(m_CriticalSection);

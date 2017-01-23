@@ -76,10 +76,6 @@ msgctxt "#31303"
 msgid "Data provider"
 msgstr "အချက်အလက်များထောက်ပံ့သူ"
 
-msgctxt "#31309"
-msgid "Memory Used:"
-msgstr "အသုံးပြုထားသော Memory -"
-
 msgctxt "#31320"
 msgid "Last Logged In"
 msgstr "နောက်ဆုံးဝင်ခဲ့ချိန်"
@@ -87,6 +83,10 @@ msgstr "နောက်ဆုံးဝင်ခဲ့ချိန်"
 msgctxt "#31356"
 msgid "Download Subtitles"
 msgstr "စာတန်းထိုးများကို ဒေါင်းလုတ်ဆွဲမည်"
+
+msgctxt "#31550"
+msgid "Backgrounds"
+msgstr "နောက်ခံ"
 
 msgctxt "#31556"
 msgid "Live TV"

@@ -33,11 +33,11 @@ class CSlideShowPic
 {
 public:
   enum DISPLAY_EFFECT { EFFECT_NONE = 0, EFFECT_FLOAT, EFFECT_ZOOM, EFFECT_RANDOM, EFFECT_PANORAMA, EFFECT_NO_TIMEOUT };
-  enum TRANSISTION_EFFECT { TRANSISTION_NONE = 0, FADEIN_FADEOUT, CROSSFADE, TRANSISTION_ZOOM, TRANSISTION_ROTATE };
+  enum TRANSITION_EFFECT { TRANSITION_NONE = 0, FADEIN_FADEOUT, CROSSFADE, TRANSITION_ZOOM, TRANSITION_ROTATE };
 
-  struct TRANSISTION
+  struct TRANSITION
   {
-    TRANSISTION_EFFECT type;
+    TRANSITION_EFFECT type;
     int start;
     int length;
   };
@@ -45,7 +45,7 @@ public:
   CSlideShowPic();
   ~CSlideShowPic();
 
-  void SetTexture(int iSlideNumber, CBaseTexture* pTexture, DISPLAY_EFFECT dispEffect = EFFECT_RANDOM, TRANSISTION_EFFECT transEffect = FADEIN_FADEOUT);
+  void SetTexture(int iSlideNumber, CBaseTexture* pTexture, DISPLAY_EFFECT dispEffect = EFFECT_RANDOM, TRANSITION_EFFECT transEffect = FADEIN_FADEOUT);
   void UpdateTexture(CBaseTexture* pTexture);
 
   bool IsLoaded() const { return m_bIsLoaded;};
@@ -53,7 +53,7 @@ public:
   void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
   void Render();
   void Close();
-  void Reset(DISPLAY_EFFECT dispEffect = EFFECT_RANDOM, TRANSISTION_EFFECT transEffect = FADEIN_FADEOUT);
+  void Reset(DISPLAY_EFFECT dispEffect = EFFECT_RANDOM, TRANSITION_EFFECT transEffect = FADEIN_FADEOUT);
   DISPLAY_EFFECT DisplayEffect() const { return m_displayEffect; }
   bool DisplayEffectNeedChange(DISPLAY_EFFECT newDispEffect) const;
   bool IsStarted() const { return m_iCounter > 0; }
@@ -64,9 +64,9 @@ public:
   int GetHeight() const { return (int)m_fHeight;};
 
   void Keep();
-  bool StartTransistion();
-  int GetTransistionTime(int iType) const;
-  void SetTransistionTime(int iType, int iTime);
+  bool StartTransition();
+  int GetTransitionTime(int iType) const;
+  void SetTransitionTime(int iType, int iTime);
 
   int SlideNumber() const { return m_iSlideNumber;};
 
@@ -86,7 +86,7 @@ public:
   bool m_bCanMoveHorizontally;
   bool m_bCanMoveVertically;
 private:
-  void SetTexture_Internal(int iSlideNumber, CBaseTexture* pTexture, DISPLAY_EFFECT dispEffect = EFFECT_RANDOM, TRANSISTION_EFFECT transEffect = FADEIN_FADEOUT);
+  void SetTexture_Internal(int iSlideNumber, CBaseTexture* pTexture, DISPLAY_EFFECT dispEffect = EFFECT_RANDOM, TRANSITION_EFFECT transEffect = FADEIN_FADEOUT);
   void UpdateVertices(float cur_x[4], float cur_y[4], const float new_x[4], const float new_y[4], CDirtyRegionList &dirtyregions);
   void Render(float *x, float *y, CBaseTexture* pTexture, color_t color);
   CBaseTexture *m_pImage;
@@ -117,24 +117,24 @@ private:
   float m_bx[4], m_by[4];
   float m_ox[4], m_oy[4];
 
-  // transistion and display effects
+  // transition and display effects
   DISPLAY_EFFECT m_displayEffect;
-  TRANSISTION m_transistionStart;
-  TRANSISTION m_transistionEnd;
-  TRANSISTION m_transistionTemp; // used for rotations + zooms
+  TRANSITION m_transitionStart;
+  TRANSITION m_transitionEnd;
+  TRANSITION m_transitionTemp; // used for rotations + zooms
   float m_fAngle; // angle (between 0 and 2pi to display the image)
-  float m_fTransistionAngle;
-  float m_fTransistionZoom;
+  float m_fTransitionAngle;
+  float m_fTransitionZoom;
   int m_iCounter;
   int m_iTotalFrames;
   bool m_bPause;
   bool m_bNoEffect;
   bool m_bFullSize;
-  bool m_bTransistionImmediately;
+  bool m_bTransitionImmediately;
 
   CCriticalSection m_textureAccess;
 #ifdef HAS_DX
   ID3D11Buffer*    m_vb;
-  bool             UpdateVertexBuffer(Vertex *vertecies);
+  bool             UpdateVertexBuffer(Vertex *vertices);
 #endif
 };

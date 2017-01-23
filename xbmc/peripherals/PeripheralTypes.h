@@ -45,6 +45,8 @@ namespace PERIPHERALS
 #ifdef TARGET_ANDROID
     PERIPHERAL_BUS_ANDROID,
 #endif
+    PERIPHERAL_BUS_IMX,
+    PERIPHERAL_BUS_APPLICATION,
   };
 
   enum PeripheralFeature
@@ -74,6 +76,7 @@ namespace PERIPHERALS
     PERIPHERAL_TUNER,
     PERIPHERAL_IMON,
     PERIPHERAL_JOYSTICK,
+    PERIPHERAL_JOYSTICK_EMULATION,
   };
 
   class CPeripheral;
@@ -131,6 +134,8 @@ namespace PERIPHERALS
         return "imon";
       case PERIPHERAL_JOYSTICK:
         return "joystick";
+      case PERIPHERAL_JOYSTICK_EMULATION:
+        return "joystickemulation";
       default:
         return "unknown";
       }
@@ -159,6 +164,8 @@ namespace PERIPHERALS
         return PERIPHERAL_IMON;
       else if (strTypeLowerCase == "joystick")
         return PERIPHERAL_JOYSTICK;
+      else if (strTypeLowerCase == "joystickemulation")
+        return PERIPHERAL_JOYSTICK_EMULATION;
 
       return PERIPHERAL_UNKNOWN;
     };
@@ -173,6 +180,8 @@ namespace PERIPHERALS
         return "pci";
       case PERIPHERAL_BUS_RPI:
         return "rpi";
+      case PERIPHERAL_BUS_IMX:
+        return "imx";
       case PERIPHERAL_BUS_CEC:
         return "cec";
       case PERIPHERAL_BUS_ADDON:
@@ -181,6 +190,8 @@ namespace PERIPHERALS
       case PERIPHERAL_BUS_ANDROID:
         return "android";
 #endif
+      case PERIPHERAL_BUS_APPLICATION:
+        return "application";
       default:
         return "unknown";
       }
@@ -197,6 +208,8 @@ namespace PERIPHERALS
         return PERIPHERAL_BUS_PCI;
       else if (strTypeLowerCase == "rpi")
         return PERIPHERAL_BUS_RPI;
+      else if (strTypeLowerCase == "imx")
+        return PERIPHERAL_BUS_IMX;
       else if (strTypeLowerCase == "cec")
         return PERIPHERAL_BUS_CEC;
       else if (strTypeLowerCase == "addon")
@@ -205,6 +218,8 @@ namespace PERIPHERALS
       else if (strTypeLowerCase == "android")
         return PERIPHERAL_BUS_ANDROID;
 #endif
+      else if (strTypeLowerCase == "application")
+        return PERIPHERAL_BUS_APPLICATION;
 
       return PERIPHERAL_BUS_UNKNOWN;
     };

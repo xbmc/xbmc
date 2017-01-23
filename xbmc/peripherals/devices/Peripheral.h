@@ -30,6 +30,7 @@ class CSetting;
 
 namespace JOYSTICK
 {
+  class IActionMap;
   class IButtonMapper;
   class IDriverHandler;
   class IDriverReceiver;
@@ -95,14 +96,14 @@ namespace PERIPHERALS
 
     /*!
      * @brief Initialises the peripheral.
-     * @return True when the peripheral has been initialised succesfully, false otherwise.
+     * @return True when the peripheral has been initialised successfully, false otherwise.
      */
     bool Initialise(void);
 
     /*!
      * @brief Initialise one of the features of this peripheral.
      * @param feature The feature to initialise.
-     * @return True when the feature has been initialised succesfully, false otherwise.
+     * @return True when the feature has been initialised successfully, false otherwise.
      */
     virtual bool InitialiseFeature(const PeripheralFeature feature) { return true; }
 
@@ -201,6 +202,8 @@ namespace PERIPHERALS
     virtual void UnregisterJoystickButtonMapper(JOYSTICK::IButtonMapper* mapper);
 
     virtual JOYSTICK::IDriverReceiver* GetDriverReceiver() { return nullptr; }
+
+    virtual JOYSTICK::IActionMap* GetActionMap() { return nullptr; }
 
   protected:
     virtual void ClearSettings(void);

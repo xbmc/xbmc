@@ -352,6 +352,56 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_xbmcgui_window_xml
+      /// @brief \python_func{ setContent(value) }
+      ///-----------------------------------------------------------------------
+      /// Sets the content type of the container.
+      ///
+      /// @param value          string or unicode - content value.
+      ///
+      /// __Available content types__
+      /// | Name        | Media                                    |
+      /// |:-----------:|:-----------------------------------------|
+      /// | actors      | Videos
+      /// | addons      | Addons, Music, Pictures, Programs, Videos
+      /// | albums      | Music, Videos
+      /// | artists     | Music, Videos
+      /// | countries   | Music, Videos
+      /// | directors   | Videos
+      /// | files       | Music, Videos
+      /// | games       | Games
+      /// | genres      | Music, Videos
+      /// | images      | Pictures
+      /// | mixed       | Music, Videos
+      /// | movies      | Videos
+      /// | Musicvideos | Music, Videos
+      /// | playlists   | Music, Videos
+      /// | seasons     | Videos
+      /// | sets        | Videos
+      /// | songs       | Music
+      /// | studios     | Music, Videos
+      /// | tags        | Music, Videos
+      /// | tvshows     | Videos
+      /// | videos      | Videos
+      /// | years       | Music, Videos
+      ///
+      /// ------------------------------------------------------------------------
+      /// @python_v18 Added new function.
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ..
+      /// self.setContent('movies')
+      /// ..
+      /// ~~~~~~~~~~~~~
+      ///
+      setContent(...);
+#else
+      SWIGHIDDENVIRTUAL void setContent(const String &strValue);
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmcgui_window_xml
       /// @brief \python_func{ getCurrentContainerId() }
       ///-----------------------------------------------------------------------
       /// Get the id of the currently visible container.
@@ -381,7 +431,7 @@ namespace XBMCAddon
       SWIGHIDDENVIRTUAL bool      OnDoubleClick(int iItem);
       SWIGHIDDENVIRTUAL void      Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
 
-      SWIGHIDDENVIRTUAL bool IsMediaWindow() const { XBMC_TRACE; return true; };
+      SWIGHIDDENVIRTUAL bool IsMediaWindow();
 
       // This method is identical to the Window::OnDeinitWindow method
       //  except it passes the message on to their respective parents.

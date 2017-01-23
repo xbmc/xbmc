@@ -35,7 +35,7 @@ namespace XbmcThreads
   {
     CONDITION_VARIABLE cond;
 
-    // SleepConditionVarialbeCS requires the condition variable be entered
+    // SleepConditionVariableCS requires the condition variable be entered
     //  only once.
     struct AlmostExit 
     {

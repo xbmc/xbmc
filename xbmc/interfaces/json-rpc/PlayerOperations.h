@@ -21,14 +21,11 @@
 
 #include "JSONRPC.h"
 #include "FileItemHandler.h"
+#include "epg/EpgTypes.h"
+
+#include <string>
 
 class CVariant;
-
-namespace EPG
-{
-  class CEpgInfoTag;
-  typedef std::shared_ptr<EPG::CEpgInfoTag> CEpgInfoTagPtr;
-}
 
 namespace JSONRPC
 {

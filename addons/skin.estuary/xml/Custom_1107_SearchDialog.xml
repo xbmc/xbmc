@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window type="dialog" id="1107">
+	<defaultcontrol always="true">9000</defaultcontrol>
+	<include>Animation_DialogPopupOpenClose</include>
+	<controls>
+		<control type="group">
+			<centerleft>50%</centerleft>
+			<width>600</width>
+			<centertop>60%</centertop>
+			<height>700</height>
+			<include content="DialogBackgroundCommons">
+				<param name="width" value="600" />
+				<param name="height" value="80" />
+				<param name="header_label" value="$LOCALIZE[137]" />
+				<param name="header_id" value="" />
+			</include>
+			<control type="panel" id="9000">
+				<include>ButtonMenuList</include>
+				<content>
+					<item>
+						<label>$LOCALIZE[31113]</label>
+						<onclick>Dialog.Close(all)</onclick>
+						<onclick condition="System.hasAddon(script.globalsearch)">RunScript(script.globalsearch)</onclick>
+						<onclick condition="!System.hasAddon(script.globalsearch)">InstallAddon(script.globalsearch)</onclick>
+					</item>
+					<item>
+						<label>$LOCALIZE[31145]</label>
+						<onclick>Dialog.Close(all)</onclick>
+						<onclick>ActivateWindow(addonbrowser,addons://search/,return)</onclick>
+					</item>
+					<item>
+						<label>$LOCALIZE[31114]</label>
+						<onclick>Dialog.Close(all)</onclick>
+						<onclick condition="System.hasAddon(plugin.video.youtube)">ActivateWindow(videos,plugin://plugin.video.youtube/kodion/search/input/,return)</onclick>
+						<onclick condition="!System.hasAddon(plugin.video.youtube)">InstallAddon(plugin.video.youtube)</onclick>
+					</item>
+					<item>
+						<label>$LOCALIZE[31115]</label>
+						<onclick>Dialog.Close(all)</onclick>
+						<onclick condition="System.hasAddon(script.extendedinfo)">RunScript(script.extendedinfo,info=moviedbbrowser,search=True)</onclick>
+						<onclick condition="!System.hasAddon(script.extendedinfo)">InstallAddon(script.extendedinfo)</onclick>
+					</item>
+				</content>
+			</control>
+		</control>
+	</controls>
+</window>

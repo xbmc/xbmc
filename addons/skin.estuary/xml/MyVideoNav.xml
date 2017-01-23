@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<defaultcontrol always="true">50</defaultcontrol>
+	<backgroundcolor>background</backgroundcolor>
+	<views>50,51,52,53,54,55,500,501,502</views>
+	<menucontrol>9000</menucontrol>
+	<controls>
+		<include>DefaultBackground</include>
+		<control type="group">
+			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="$EXP[infodialog_active]">Conditional</animation>
+			<include>View_50_List</include>
+			<include>View_51_Poster</include>
+			<include>View_52_IconWall</include>
+			<include>View_53_Shift</include>
+			<include>View_54_InfoWall</include>
+			<include>View_55_WideList</include>
+			<include>View_500_Wall</include>
+			<include>View_501_Banner</include>
+			<include>View_502_FanArt</include>
+			<control type="group">
+				<depth>DepthContentPanel</depth>
+				<include>OpenClose_Left</include>
+				<visible>Control.IsVisible(55)</visible>
+				<include>Visible_Left</include>
+				<include>ListThumbInfoPanel</include>
+			</control>
+			<control type="group">
+				<depth>DepthContentPanel</depth>
+				<include>OpenClose_Left</include>
+				<visible>Control.IsVisible(50) | Control.Isvisible(54) | [Control.IsVisible(501) + String.IsEqual(Skin.AspectRatio,21:9)]</visible>
+				<include>Visible_Left</include>
+				<include content="ContentPanel">
+					<param name="width" value="656" />
+				</include>
+				<control type="group">
+					<width>550</width>
+					<control type="textbox">
+						<top>120</top>
+						<left>30</left>
+						<width>550</width>
+						<aligny>center</aligny>
+						<height>110</height>
+						<font>font36_title</font>
+						<label>$INFO[ListItem.Label]</label>
+					</control>
+					<control type="textbox">
+						<left>30</left>
+						<top>240</top>
+						<width>525</width>
+						<bottom>100</bottom>
+						<visible>!ListItem.IsCollection</visible>
+						<label>$INFO[ListItem.Tagline,[I],[/I][CR][CR]]$INFO[ListItem.Plot][CR][CR]</label>
+						<autoscroll delay="10000" time="3000" repeat="10000">Skin.HasSetting(autoscroll)</autoscroll>
+					</control>
+					<control type="textbox">
+						<left>30</left>
+						<top>360</top>
+						<width>530</width>
+						<height>413</height>
+						<align>center</align>
+						<aligny>center</aligny>
+						<font>font27</font>
+						<textcolor>80FFFFFF</textcolor>
+						<label>$LOCALIZE[19055]</label>
+						<visible>String.IsEmpty(Listitem.Plot) + String.IsEmpty(Listitem.Tagline) + !ListItem.IsCollection + !ListItem.IsParentFolder</visible>
+					</control>
+					<control type="group">
+						<left>20</left>
+						<top>245</top>
+						<visible>ListItem.IsCollection</visible>
+						<include content="InfoList">
+							<param name="bottom" value="108" />
+							<param name="width" value="540" />
+							<param name="sortby" value="year" />
+							<param name="sortorder" value="descending" />
+							<param name="font" value="font13" />
+						</include>
+					</control>
+				</control>
+			</control>
+			<include content="TopBar">
+				<param name="breadcrumbs_label" value="$VAR[BreadcrumbsVideoVar]" />
+			</include>
+			<include content="BottomBar">
+				<param name="info_visible" value="true" />
+			</include>
+			<control type="group">
+				<depth>DepthBars</depth>
+				<bottom>0</bottom>
+				<height>70</height>
+				<animation effect="fade" start="0" end="100" time="300" delay="300">WindowOpen</animation>
+				<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
+				<include condition="!Skin.HasSetting(hide_mediaflags)">MediaFlags</include>
+			</control>
+			<include>CommonScrollbars</include>
+			<include>MediaMenuMouseOverlay</include>
+			<control type="group">
+				<include>MediaMenuCommon</include>
+				<control type="grouplist" id="9000">
+					<top>50</top>
+					<include>MediaMenuListCommon</include>
+					<control type="button" id="10">
+						<description>Watched Toggle</description>
+						<include>MediaMenuItemsCommon</include>
+						<label>$LOCALIZE[20367]</label>
+						<label2>[B]$INFO[Container.NumItems][/B]</label2>
+						<visible>Container.Content(movies) | Container.Content(sets) | Container.Content(tvshows) | Container.content(seasons) | Container.Content(episodes)</visible>
+					</control>
+					<control type="label" id="203">
+						<include>MediaMenuLabelCommon</include>
+						<label>$LOCALIZE[31020]</label>
+					</control>
+					<control type="radiobutton" id="16">
+						<description>PartyMode</description>
+						<label>$LOCALIZE[589]</label>
+						<include>MediaMenuItemsCommon</include>
+						<visible>Container.Content(MusicVideos)</visible>
+					</control>
+					<control type="radiobutton" id="11">
+						<description>Unlock Shares</description>
+						<include>MediaMenuItemsCommon</include>
+						<label>$LOCALIZE[20336]</label>
+						<onclick>mastermode</onclick>
+						<selected>system.ismaster</selected>
+						<visible>system.haslocks</visible>
+					</control>
+					<control type="togglebutton" id="619">
+						<description>Update library</description>
+						<include>MediaMenuItemsCommon</include>
+						<label>$LOCALIZE[653]</label>
+						<onclick>UpdateLibrary(video)</onclick>
+						<visible>!Container.Content(addons)+ String.IsEmpty(Container.PluginName)</visible>
+						<altlabel>$LOCALIZE[13353]</altlabel>
+						<usealttexture>library.isscanningvideo</usealttexture>
+					</control>
+					<control type="button" id="612">
+						<description>Go to playlist</description>
+						<include>MediaMenuItemsCommon</include>
+						<label>$LOCALIZE[31056]</label>
+						<onclick>ActivateWindow(videoplaylist)</onclick>
+						<visible>IntegerGreaterThan(Playlist.Length(video),0)</visible>
+					</control>
+					<control type="button" id="621">
+						<description>Get more</description>
+						<include>MediaMenuItemsCommon</include>
+						<label>$LOCALIZE[21452]</label>
+						<onclick>ActivateWindow(addonbrowser,addons://more/video/,return)</onclick>
+						<visible>Container.Content(addons)</visible>
+					</control>
+					<control type="button" id="622">
+						<include>MediaMenuItemsCommon</include>
+						<label>$LOCALIZE[31117]</label>
+						<onclick condition="System.HasAddon(plugin.library.node.editor)">ActivateWindow(programs,plugin://plugin.library.node.editor/?ltype=video,return)</onclick>
+						<onclick condition="!System.HasAddon(plugin.library.node.editor)">InstallAddon(plugin.library.node.editor)</onclick>
+						<visible>Container.Content() + String.IsEmpty(Container.PluginName)</visible>
+					</control>
+					<control type="button" id="623">
+						<include>MediaMenuItemsCommon</include>
+						<label>$LOCALIZE[31009]</label>
+						<onclick>InstallAddon(resource.images.studios.white)</onclick>
+						<visible>Container.Content(studios) + !System.HasAddon(resource.images.studios.white)</visible>
+					</control>
+					<control type="button" id="624">
+						<include>MediaMenuItemsCommon</include>
+						<label>$LOCALIZE[10140]</label>
+						<onclick>Addon.OpenSettings($INFO[Container.PluginName])</onclick>
+						<visible>!String.IsEmpty(Container.PluginName)</visible>
+					</control>
+					<include>MediaMenuNowPlaying</include>
+				</control>
+			</control>
+		</control>
+	</controls>
+</window>

@@ -183,11 +183,11 @@ bool CTagLoaderTagLib::ParseTag(ASF::Tag *asf, EmbeddedArt *art, CMusicInfoTag& 
     else if (it->first == "WM/Publisher")
       tag.SetRecordLabel(it->second.front().toString().to8Bit(true));
     else if (it->first == "WM/AlbumArtistSortOrder")
-    {} // Known unsupported, supress warnings
+    {} // Known unsupported, suppress warnings
     else if (it->first == "WM/ArtistSortOrder")
-    {} // Known unsupported, supress warnings
+    {} // Known unsupported, suppress warnings
     else if (it->first == "WM/Script")
-    {} // Known unsupported, supress warnings
+    {} // Known unsupported, suppress warnings
     else if (it->first == "WM/Year")
       tag.SetYear(atoi(it->second.front().toString().toCString(true)));
     else if (it->first == "MusicBrainz/Artist Id")
@@ -378,7 +378,7 @@ bool CTagLoaderTagLib::ParseTag(ID3v2::Tag *id3v2, MUSIC_INFO::EmbeddedArt *art,
           AddArtistRole(tag, StringListToVectorString(tiplframe->fieldList()));
       }
     else if (it->first == "TMCL")
-      // Loop through and process the musicain credits list
+      // Loop through and process the musician credits list
       // It is a mapping between the instrument and the person that played it, but also includes "orchestra" or "soloist".
       // In fieldlist every odd field is an instrument, and every even is an artist or a comma delimited list of artists.
       for (ID3v2::FrameList::ConstIterator ip = it->second.begin(); ip != it->second.end(); ++ip)
@@ -561,7 +561,9 @@ bool CTagLoaderTagLib::ParseTag(Ogg::XiphComment *xiph, EmbeddedArt *art, CMusic
   if (!xiph)
     return false;
 
+#if TAGLIB_MAJOR_VERSION <= 1 && TAGLIB_MINOR_VERSION < 11
   FLAC::Picture pictures[3];
+#endif
   ReplayGain replayGainInfo;
 
   const Ogg::FieldListMap& fieldListMap = xiph->fieldListMap();
@@ -596,7 +598,7 @@ bool CTagLoaderTagLib::ParseTag(Ogg::XiphComment *xiph, EmbeddedArt *art, CMusic
     else if (it->first == "CUESHEET")
       tag.SetCueSheet(it->second.front().to8Bit(true));
     else if (it->first == "ENCODEDBY")
-    {} // Known but unsupported, supress warnings
+    {} // Known but unsupported, suppress warnings
     else if (it->first == "COMPOSER")
       AddArtistRole(tag, "Composer", StringListToVectorString(it->second));
     else if (it->first == "CONDUCTOR")
@@ -981,32 +983,60 @@ void CTagLoaderTagLib::AddArtistRole(CMusicInfoTag &tag, const std::vector<std::
   if (values.size() % 2 != 0) // Must contain an even number of entries 
     return;
 
+  // Vector of possible separators
+  const std::vector<std::string> separators{ ";", "/", ",", "&", " and " };
+
   for (size_t i = 0; i + 1 < values.size(); i += 2)
-    tag.AddArtistRole(values[i], StringUtils::Split(values[i + 1], ","));
+  {
+    std::vector<std::string> roles;
+    //Split into individual roles
+    roles = StringUtils::Split(values[i], separators);
+    for (auto role : roles)
+    {
+      StringUtils::Trim(role);
+      StringUtils::ToCapitalize(role);
+      tag.AddArtistRole(role, StringUtils::Split(values[i + 1], ","));
+    }
+  }
 }
 
 void CTagLoaderTagLib::AddArtistInstrument(CMusicInfoTag &tag, const std::vector<std::string> &values)
 {
-  // Values is a musician credits list, each entry is artist name followed by instrument (or function)
-  // e.g. violin, drums, background vocals, solo, orchestra etc. in brackets. This is how Picard uses PERFORMER tag.
-  // If there is not a pair of brackets then role is "performer" by default, and the whole entry is 
-  // taken as artist name.
-  
+  /* Values is a musician credits list, each entry is artist name followed by instrument (or function) 
+     e.g. violin, drums, background vocals, solo, orchestra etc. in brackets. This is how Picard uses 
+     the PERFORMER tag. Multiple instruments may be in one tag 
+     e.g "Pierre Marchand (bass, drum machine and hammond organ)", 
+     these will be separated into individual roles. 
+     If there is not a pair of brackets then role is "performer" by default, and the whole entry is 
+     taken as artist name.
+  */
+  // Vector of possible separators
+  const std::vector<std::string> separators{";", "/", ",", "&", " and "};
+
   for (size_t i = 0; i < values.size(); ++i)
   {
-    std::string strRole = "Performer";
+    std::vector<std::string> roles;    
     std::string strArtist = values[i];
     size_t firstLim = values[i].find_first_of("(");
     size_t lastLim = values[i].find_last_of(")");
     if (lastLim != std::string::npos && firstLim != std::string::npos && firstLim < lastLim - 1)
     {
       //Pair of brackets with something between them
-      strRole = values[i].substr(firstLim + 1, lastLim - firstLim - 1);
-      StringUtils::Trim(strRole);
       strArtist.erase(firstLim, lastLim - firstLim + 1);
+      std::string strRole = values[i].substr(firstLim + 1, lastLim - firstLim - 1);
+      //Split into individual roles
+      roles = StringUtils::Split(strRole, separators);
     }
     StringUtils::Trim(strArtist);
-    tag.AddArtistRole(strRole, strArtist);
+    if (roles.empty())
+      tag.AddArtistRole("Performer", strArtist);
+    else
+      for (auto role : roles)
+      {
+        StringUtils::Trim(role);
+        StringUtils::ToCapitalize(role);
+        tag.AddArtistRole(role, strArtist);
+      }
   }
 }
 

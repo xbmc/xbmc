@@ -24,6 +24,7 @@
 #include "EventScanner.h"
 #include "bus/PeripheralBus.h"
 #include "devices/Peripheral.h"
+#include "games/ports/PortMapper.h" //! @todo Find me a better place
 #include "messaging/IMessageTarget.h"
 #include "settings/lib/ISettingCallback.h"
 #include "system.h"
@@ -213,7 +214,7 @@ namespace PERIPHERALS
      * @brief rateHz The rate in Hz
      * @return A handle that unsets its rate when expired
      */
-    EventRateHandle SetEventScanRate(float rateHz) { return m_eventScanner.SetRate(rateHz); }
+    EventRateHandle SetEventScanRate(double rateHz) { return m_eventScanner.SetRate(rateHz); }
 
     /*!
      * 
@@ -238,11 +239,50 @@ namespace PERIPHERALS
     // implementation of IEventScannerCallback
     virtual void ProcessEvents(void) override;
 
+    /*!
+     * \brief Initialize button mapping
+     *
+     * This command enables button mapping on all busses. Button maps allow
+     * connect events from the driver to the higher-level features used by
+     * controller profiles.
+     *
+     * If user input is required, a blocking dialog may be shown.
+     *
+     * \return True if button mapping is enabled for at least one bus
+     */
+    bool EnableButtonMapping();
+
+    /*!
+     * \brief Get an add-on that can provide button maps for a device
+     * \return An add-on that provides button maps, or empty if no add-on is found
+     */
     PeripheralAddonPtr GetAddonWithButtonMap(const CPeripheral* device);
 
+    /*!
+     * \brief Reset all button maps to the defaults for all devices and the given controller
+     * \param controllerId The controller profile to reset
+     * @todo Add a device parameter to allow resetting button maps per-device
+     */
     void ResetButtonMaps(const std::string& controllerId);
 
+    /*!
+     * \brief Register a button mapper interface
+     * \param mapper The button mapper
+     *
+     * Clients implementing the IButtonMapper interface call
+     * \ref CPeripherals::RegisterJoystickButtonMapper to register themselves
+     * as eligible for button mapping commands.
+     *
+     * When registering the mapper is forwarded to all peripherals. See
+     * \ref CPeripheral::RegisterJoystickButtonMapper for what is done to the
+     * mapper after being given to the peripheral.
+     */
     void RegisterJoystickButtonMapper(JOYSTICK::IButtonMapper* mapper);
+
+    /*!
+     * \brief Unregister a button mapper interface
+     * \param mapper The button mapper
+     */
     void UnregisterJoystickButtonMapper(JOYSTICK::IButtonMapper* mapper);
 
     virtual void OnSettingChanged(const CSetting *setting) override;
@@ -267,6 +307,7 @@ namespace PERIPHERALS
     std::vector<PeripheralBusPtr>        m_busses;
     std::vector<PeripheralDeviceMapping> m_mappings;
     CEventScanner                        m_eventScanner;
+	GAME::CPortMapper                    m_portMapper; //! @todo Find me a better place
     CCriticalSection                     m_critSection;
     CCriticalSection                     m_critSectionBusses;
     CCriticalSection                     m_critSectionMappings;

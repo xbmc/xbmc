@@ -48,8 +48,11 @@ namespace PLAYLIST
 }
 
 class CContextMenuManager;
+#ifdef HAS_PYTHON
 class XBPython;
+#endif
 class CDataCacheCore;
+class CSettings;
 
 class CServiceManager
 {
@@ -61,7 +64,9 @@ public:
   ADDON::CAddonMgr& GetAddonMgr();
   ADDON::CBinaryAddonCache& GetBinaryAddonCache();
   ANNOUNCEMENT::CAnnouncementManager& GetAnnouncementManager();
+#ifdef HAS_PYTHON
   XBPython& GetXBPython();
+#endif
   PVR::CPVRManager& GetPVRManager();
   ActiveAE::CActiveAEDSP& GetADSPManager();
   CContextMenuManager& GetContextMenuManager();
@@ -71,6 +76,9 @@ public:
   CPlatform& GetPlatform();
 
   PLAYLIST::CPlayListPlayer& GetPlaylistPlayer();
+  int init_level = 0;
+
+  CSettings& GetSettings();
 
 protected:
   struct delete_dataCacheCore
@@ -86,11 +94,14 @@ protected:
   std::unique_ptr<ADDON::CAddonMgr> m_addonMgr;
   std::unique_ptr<ADDON::CBinaryAddonCache> m_binaryAddonCache;
   std::unique_ptr<ANNOUNCEMENT::CAnnouncementManager> m_announcementManager;
+#ifdef HAS_PYTHON
   std::unique_ptr<XBPython> m_XBPython;
+#endif
   std::unique_ptr<PVR::CPVRManager> m_PVRManager;
   std::unique_ptr<ActiveAE::CActiveAEDSP> m_ADSPManager;
   std::unique_ptr<CContextMenuManager, delete_contextMenuManager> m_contextMenuManager;
   std::unique_ptr<CDataCacheCore, delete_dataCacheCore> m_dataCacheCore;
   std::unique_ptr<CPlatform> m_Platform;
   std::unique_ptr<PLAYLIST::CPlayListPlayer> m_playlistPlayer;
+  std::unique_ptr<CSettings> m_settings;
 };

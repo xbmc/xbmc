@@ -55,8 +55,10 @@ namespace GAME
     void GetMoreControllers(void);
     void ResetController(void);
     void ShowHelp(void);
+    void ShowButtonCaptureDialog(void);
 
     IControllerList* m_controllerList;
     IFeatureList*    m_featureList;
+    std::string      m_param; // First auxiliary parameter in call to ActivateWindow()
   };
 }

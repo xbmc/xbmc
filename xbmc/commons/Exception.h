@@ -105,7 +105,7 @@ namespace XbmcCommons
   /**
    * This class forms the base class for unchecked exceptions. Unchecked exceptions
    * are those that really shouldn't be handled explicitly. For example, on windows
-   * when a access violaton is converted to a win32_exception, there's nothing
+   * when a access violation is converted to a win32_exception, there's nothing
    * that can be done in most code. The outer most stack frame might try to 
    * do some error logging prior to shutting down, but that's really it.
    */

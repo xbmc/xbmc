@@ -18,10 +18,6 @@
  *
  */
 
-#if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
-  #include "config.h"
-#endif
-
 // python.h should always be included first before any other includes
 #include <Python.h>
 #include <osdefs.h>

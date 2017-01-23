@@ -106,7 +106,7 @@ namespace PVR
 
     /*!
      * @brief Load all channels from the clients.
-     * @return True when updated succesfully, false otherwise.
+     * @return True when updated successfully, false otherwise.
      */
     bool LoadFromClients(void);
 
@@ -149,7 +149,7 @@ namespace PVR
      */
     void UpdateChannelPaths(void);
 
-    void CreateChannelEpg(CPVRChannelPtr channel, bool bForce = false);
+    void CreateChannelEpg(const CPVRChannelPtr &channel, bool bForce = false);
 
     size_t m_iHiddenChannels; /*!< the amount of hidden channels in this container */
 

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<defaultcontrol>11</defaultcontrol>
+	<include>Animation_DialogPopupOpenClose</include>
+	<depth>DepthOSD+</depth>
+	<controls>
+		<control type="group">
+			<top>100</top>
+			<centerleft>50%</centerleft>
+			<width>840</width>
+			<control type="image">
+				<left>-20</left>
+				<top>-30</top>
+				<width>840</width>
+				<height>155</height>
+				<texture>dialogs/dialog-bg-nobo.png</texture>
+				<bordertexture border="21">overlays/shadow.png</bordertexture>
+				<bordersize>20</bordersize>
+			</control>
+			<control type="label" id="10">
+				<description>Dialog header</description>
+				<left>40</left>
+				<top>10</top>
+				<width>550</width>
+				<height>20</height>
+				<aligny>center</aligny>
+				<font>font14</font>
+				<textcolor>button_focus</textcolor>
+			</control>
+			<control type="label" id="12">
+				<description>Slider Value</description>
+				<left>0</left>
+				<top>10</top>
+				<width>760</width>
+				<height>20</height>
+				<align>right</align>
+				<aligny>center</aligny>
+				<font>font14</font>
+			</control>
+			<control type="slider" id="11">
+				<description>Slider</description>
+				<left>40</left>
+				<top>65</top>
+				<width>720</width>
+				<height>28</height>
+				<onup>11</onup>
+				<ondown>11</ondown>
+				<onleft>11</onleft>
+				<onright>11</onright>
+			</control>
+			<control type="image">
+				<left>0</left>
+				<top>65</top>
+				<width>28</width>
+				<height>28</height>
+				<texture flipx="true" colordiffuse="button_focus">overlays/arrowright.png</texture>
+				<animation effect="zoom" start="0,100" end="100,100" delay="500" center="auto" time="200">WindowOpen</animation>
+				<animation effect="zoom" start="100,100" end="0,100" center="auto" time="200">WindowClose</animation>
+			</control>
+			<control type="image">
+				<left>770</left>
+				<top>65</top>
+				<width>28</width>
+				<height>28</height>
+				<texture colordiffuse="button_focus">overlays/arrowright.png</texture>
+				<animation effect="zoom" start="0,100" end="100,100" delay="500" center="auto" time="200">WindowOpen</animation>
+				<animation effect="zoom" start="100,100" end="0,100" center="auto" time="200">WindowClose</animation>
+			</control>
+		</control>
+	</controls>
+</window>

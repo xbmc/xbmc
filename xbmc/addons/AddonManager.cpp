@@ -36,10 +36,11 @@
 #include "ContextMenuAddon.h"
 #include "ContextMenuManager.h"
 #include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.h"
-#include "DllAudioDSP.h"
 #include "DllLibCPluff.h"
 #include "events/AddonManagementEvent.h"
 #include "events/EventLog.h"
+#include "filesystem/SpecialProtocol.h"
+#include "VFSEntry.h"
 #include "LangInfo.h"
 #include "PluginSource.h"
 #include "Repository.h"
@@ -237,7 +238,7 @@ static bool LoadManifest(std::set<std::string>& system, std::set<std::string>& o
   auto root = doc.RootElement();
   if (!root || root->ValueStr() != "addons")
   {
-    CLog::Log(LOGERROR, "ADDONS: malformatted manifest");
+    CLog::Log(LOGERROR, "ADDONS: malformed manifest");
     return false;
   }
 
@@ -832,6 +833,11 @@ bool CAddonMgr::CanAddonBeDisabled(const std::string& ID)
     return false;
 
   return true;
+}
+
+bool CAddonMgr::CanAddonBeEnabled(const std::string& id)
+{
+  return !id.empty() && IsAddonInstalled(id);
 }
 
 bool CAddonMgr::IsAddonInstalled(const std::string& ID)

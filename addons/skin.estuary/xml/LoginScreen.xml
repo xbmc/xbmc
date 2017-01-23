@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<defaultcontrol always="true">52</defaultcontrol>
+	<controls>
+		<include>DefaultBackground</include>
+		<control type="group">
+			<include>OpenClose_Right</include>
+			<control type="image">
+				<description>LOGO</description>
+				<left>1240</left>
+				<top>280</top>
+				<width>112</width>
+				<height>112</height>
+				<aspectratio aligny="top" align="center">keep</aspectratio>
+				<texture colordiffuse="button_focus">icons/logo.png</texture>
+			</control>
+			<control type="image">
+				<left>1400</left>
+				<top>316</top>
+				<width>112</width>
+				<height>36</height>
+				<texture>icons/logo-text.png</texture>
+			</control>
+			<control type="textbox">
+				<left>1015</left>
+				<top>390</top>
+				<width>750</width>
+				<height>300</height>
+				<align>center</align>
+				<aligny>center</aligny>
+				<font>font14</font>
+				<label>$LOCALIZE[31098]</label>
+			</control>
+			<control type="button" id="20">
+				<description>Power push button</description>
+				<left>1150</left>
+				<top>690</top>
+				<width>500</width>
+				<height>130</height>
+				<label>$LOCALIZE[31072]</label>
+				<font>font12</font>
+				<align>center</align>
+				<onclick>ActivateWindow(ShutdownMenu)</onclick>
+				<onleft>52</onleft>
+				<onright>52</onright>
+				<onup>52</onup>
+				<ondown>52</ondown>
+				<colordiffuse>CCFFFFFF</colordiffuse>
+			</control>
+		</control>
+		<control type="group">
+			<include>OpenClose_Left</include>
+			<include content="ContentPanel">
+				<param name="width" value="820" />
+				<param name="left" value="-24" />
+			</include>
+			<control type="fixedlist" id="52">
+				<left>0</left>
+				<top>list_y_offset</top>
+				<width>775</width>
+				<bottom>list_y_offset</bottom>
+				<onleft>20</onleft>
+				<onright>20</onright>
+				<focusposition>1</focusposition>
+				<movement>0</movement>
+				<onup>52</onup>
+				<ondown>52</ondown>
+				<pagecontrol>60</pagecontrol>
+				<scrolltime tween="cubic" easing="out">500</scrolltime>
+				<itemlayout height="130" width="775">
+					<control type="image">
+						<left>10</left>
+						<top>10</top>
+						<width>110</width>
+						<height>110</height>
+						<texture fallback="DefaultUser.png">$INFO[ListItem.Icon]</texture>
+						<aspectratio>keep</aspectratio>
+					</control>
+					<control type="label">
+						<left>130</left>
+						<top>14</top>
+						<right>20</right>
+						<height>60</height>
+						<font>font37</font>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Label]</label>
+					</control>
+					<control type="label">
+						<left>130</left>
+						<top>58</top>
+						<right>20</right>
+						<height>50</height>
+						<font>font12</font>
+						<textcolor>grey</textcolor>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Label2]</label>
+					</control>
+				</itemlayout>
+				<focusedlayout height="130" width="775">
+					<control type="image">
+						<left>0</left>
+						<top>0</top>
+						<right>0</right>
+						<bottom>0</bottom>
+						<texture colordiffuse="button_focus">lists/focus.png</texture>
+						<visible>Control.HasFocus(52)</visible>
+					</control>
+					<control type="image">
+						<left>10</left>
+						<top>10</top>
+						<width>110</width>
+						<height>110</height>
+						<texture fallback="DefaultUser.png">$INFO[ListItem.Icon]</texture>
+						<aspectratio>keep</aspectratio>
+					</control>
+					<control type="label">
+						<left>130</left>
+						<top>14</top>
+						<right>20</right>
+						<height>60</height>
+						<font>font37</font>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Label]</label>
+					</control>
+					<control type="label">
+						<left>130</left>
+						<top>58</top>
+						<right>20</right>
+						<height>50</height>
+						<font>font12</font>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Label2]</label>
+					</control>
+				</focusedlayout>
+			</control>
+		</control>
+		<include>TopBar</include>
+		<include>BottomBar</include>
+	</controls>
+</window>

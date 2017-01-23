@@ -22,6 +22,7 @@
 
 #include <utility>
 
+#include "ServiceBroker.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogProgress.h"
@@ -88,7 +89,7 @@ namespace VIDEO
 
     try
     {
-      if (m_showDialog && !CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOLIBRARY_BACKGROUNDUPDATE))
+      if (m_showDialog && !CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOLIBRARY_BACKGROUNDUPDATE))
       {
         CGUIDialogExtendedProgressBar* dialog =
           (CGUIDialogExtendedProgressBar*)g_windowManager.GetWindow(WINDOW_DIALOG_EXT_PROGRESS);
@@ -857,7 +858,7 @@ namespace VIDEO
           if (StringUtils::EqualsNoCase(strPathY, strPathX))
             /*
             remove everything sorted below the video_ts.ifo file in the same path.
-            understandbly this wont stack correctly if there are other files in the the dvd folder.
+            understandably this wont stack correctly if there are other files in the the dvd folder.
             this should be unlikely and thus is being ignored for now but we can monitor the
             where the path changes and potentially remove the items above the video_ts.ifo file.
             */
@@ -1283,11 +1284,11 @@ namespace VIDEO
     }
 
     if (g_advancedSettings.m_bVideoLibraryImportWatchedState || libraryImport)
-      m_database.SetPlayCount(*pItem, movieDetails.m_playCount, movieDetails.m_lastPlayed);
+      m_database.SetPlayCount(*pItem, movieDetails.GetPlayCount(), movieDetails.m_lastPlayed);
 
     if ((g_advancedSettings.m_bVideoLibraryImportResumePoint || libraryImport) &&
-        movieDetails.m_resumePoint.IsSet())
-      m_database.AddBookMarkToFile(pItem->GetPath(), movieDetails.m_resumePoint, CBookmark::RESUME);
+        movieDetails.GetResumePoint().IsSet())
+      m_database.AddBookMarkToFile(pItem->GetPath(), movieDetails.GetResumePoint(), CBookmark::RESUME);
 
     m_database.Close();
 
@@ -1403,7 +1404,7 @@ namespace VIDEO
 
     // parent folder to apply the thumb to and to search for local actor thumbs
     std::string parentDir = URIUtils::GetBasePath(pItem->GetPath());
-    if (CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOLIBRARY_ACTORTHUMBS))
+    if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOLIBRARY_ACTORTHUMBS))
       FetchActorThumbs(movieDetails.m_cast, actorArtPath.empty() ? parentDir : actorArtPath);
     if (bApplyToDir)
       ApplyThumbToFolder(parentDir, art["thumb"]);

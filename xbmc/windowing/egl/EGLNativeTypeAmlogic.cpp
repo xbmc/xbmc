@@ -23,6 +23,7 @@
 #include "utils/AMLUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/SysfsUtils.h"
+#include "filesystem/SpecialProtocol.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -133,6 +134,8 @@ bool CEGLNativeTypeAmlogic::GetNativeResolution(RESOLUTION_INFO *res) const
 
 bool CEGLNativeTypeAmlogic::SetNativeResolution(const RESOLUTION_INFO &res)
 {
+  bool result = false;
+
 #if defined(_FBDEV_WINDOW_H_)
   if (m_nativeWindow)
   {
@@ -144,16 +147,24 @@ bool CEGLNativeTypeAmlogic::SetNativeResolution(const RESOLUTION_INFO &res)
   // Don't set the same mode as current
   std::string mode;
   SysfsUtils::GetString("/sys/class/display/mode", mode);
-  if (res.strId == mode)
-    return false;
+  if (res.strId != mode)
+    result = SetDisplayResolution(res.strId.c_str());
 
-  return SetDisplayResolution(res.strId.c_str());
+  HandleScale(res);
+
+  return result;
 }
 
 bool CEGLNativeTypeAmlogic::ProbeResolutions(std::vector<RESOLUTION_INFO> &resolutions)
 {
-  std::string valstr;
-  SysfsUtils::GetString("/sys/class/amhdmitx/amhdmitx0/disp_cap", valstr);
+  std::string valstr, dcapfile;
+  dcapfile = CSpecialProtocol::TranslatePath("special://home/userdata/disp_cap");
+
+  if (SysfsUtils::GetString(dcapfile, valstr) < 0)
+  {
+    if (SysfsUtils::GetString("/sys/class/amhdmitx/amhdmitx0/disp_cap", valstr) < 0)
+      return false;
+  }
   std::vector<std::string> probe_str = StringUtils::Split(valstr, "\n");
 
   resolutions.clear();
@@ -218,6 +229,29 @@ void CEGLNativeTypeAmlogic::SetupVideoScaling(const char *mode)
   }
 
   SysfsUtils::SetInt("/sys/class/graphics/fb0/blank", 0);
+}
+
+void CEGLNativeTypeAmlogic::HandleScale(const RESOLUTION_INFO &res)
+{
+  if (res.iScreenWidth > res.iWidth && res.iScreenHeight > res.iHeight)
+    EnableFreeScale(res);
+  else
+    DisableFreeScale();
+}
+
+void CEGLNativeTypeAmlogic::EnableFreeScale(const RESOLUTION_INFO &res)
+{
+  char fsaxis_str[256] = {0};
+  sprintf(fsaxis_str, "0 0 %d %d", res.iWidth-1, res.iHeight-1);
+  char waxis_str[256] = {0};
+  sprintf(waxis_str, "0 0 %d %d", res.iScreenWidth-1, res.iScreenHeight-1);
+
+  SysfsUtils::SetInt("/sys/class/graphics/fb0/free_scale", 0);
+  SysfsUtils::SetString("/sys/class/graphics/fb0/free_scale_axis", fsaxis_str);
+  SysfsUtils::SetString("/sys/class/graphics/fb0/window_axis", waxis_str);
+  SysfsUtils::SetInt("/sys/class/graphics/fb0/scale_width", res.iWidth);
+  SysfsUtils::SetInt("/sys/class/graphics/fb0/scale_height", res.iHeight);
+  SysfsUtils::SetInt("/sys/class/graphics/fb0/free_scale", 0x10001);
 }
 
 void CEGLNativeTypeAmlogic::DisableFreeScale()

@@ -24,9 +24,6 @@
 #include <assert.h>
 #if defined(TARGET_ANDROID)
   #include "EGLNativeTypeAndroid.h"
-#if defined(HAS_LIBAMCODEC)
-  #include "EGLNativeTypeAmlAndroid.h"
-#endif
 #endif
 #if defined(TARGET_RASPBERRY_PI)
   #include "EGLNativeTypeRaspberryPI.h"
@@ -91,9 +88,7 @@ bool CEGLWrapper::Initialize(const std::string &implementation)
   // Try to create each backend in sequence and go with the first one
   // that we know will work
   if (
-#if defined(TARGET_ANDROID) && defined(HAS_LIBAMCODEC)
-      (nativeGuess = CreateEGLNativeType<CEGLNativeTypeAmlAndroid>(implementation))
-#elif defined(TARGET_ANDROID)
+#if defined(TARGET_ANDROID)
       (nativeGuess = CreateEGLNativeType<CEGLNativeTypeAndroid>(implementation))
 #elif defined(TARGET_RASPBERRY_PI)
       (nativeGuess = CreateEGLNativeType<CEGLNativeTypeRaspberryPI>(implementation))

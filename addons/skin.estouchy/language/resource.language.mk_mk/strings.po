@@ -132,10 +132,6 @@ msgctxt "#31303"
 msgid "Data provider"
 msgstr "Добавувач на податоци"
 
-msgctxt "#31309"
-msgid "Memory Used:"
-msgstr "Искористеност на меморија:"
-
 msgctxt "#31320"
 msgid "Last Logged In"
 msgstr "Последна пријава"
@@ -168,21 +164,9 @@ msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Изаберете ваш Kodi кориснички[CR]профил за најава, а потоа продолжете понатаму"
 
-msgctxt "#31500"
-msgid "Home Menu Catagory Buttons"
-msgstr "Категориски Копчиња на Домашно Мени"
-
-msgctxt "#31501"
-msgid "Home Page Add-on Quick Links"
-msgstr "Home Page Add-on Quick Links"
-
-msgctxt "#31502"
-msgid "Miscellaneous Options"
-msgstr "Разни поставки"
-
 msgctxt "#31550"
-msgid "Home Screen Weather Info and button"
-msgstr "Home Screen Weather Info and button"
+msgid "Backgrounds"
+msgstr "Позадини"
 
 msgctxt "#31551"
 msgid "Add-on Shortcut"

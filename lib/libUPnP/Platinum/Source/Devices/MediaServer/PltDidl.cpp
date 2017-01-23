@@ -163,6 +163,8 @@ PLT_Didl::ConvertFilterToMask(const NPT_String& filter)
             mask |= PLT_FILTER_MASK_EPISODE_COUNT;
         } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_EPISODE_SEASON, len, true) == 0) {
             mask |= PLT_FILTER_MASK_EPISODE_SEASON;
+        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_XBMC_LASTPLAYERSTATE, len, true) == 0) {
+            mask |= PLT_FILTER_MASK_XBMC_LASTPLAYERSTATE;
         } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_XBMC_DATEADDED, len, true) == 0) {
             mask |= PLT_FILTER_MASK_XBMC_DATEADDED;
         } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_XBMC_RATING, len, true) == 0) {

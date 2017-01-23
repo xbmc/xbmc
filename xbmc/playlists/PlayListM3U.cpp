@@ -169,7 +169,7 @@ bool CPlayListM3U::Load(const std::string& strFileName)
           strInfo = URIUtils::GetFileName(strFileName);
         }
 
-        // should substitition occur befor or after charset conversion??
+        // should substitution occur before or after charset conversion??
         strFileName = URIUtils::SubstitutePath(strFileName);
 
         // Get the full path file name and add it to the the play list

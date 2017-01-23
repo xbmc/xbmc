@@ -24,6 +24,7 @@
 #include "DVDStateSerializer.h"
 #include "settings/Settings.h"
 #include "LangInfo.h"
+#include "ServiceBroker.h"
 #include "utils/log.h"
 #include "guilib/Geometry.h"
 #include "utils/URIUtils.h"
@@ -104,7 +105,7 @@ bool CDVDInputStreamNavigator::Open()
     return false;
   }
 
-  int region = CSettings::GetInstance().GetInt(CSettings::SETTING_DVDS_PLAYERREGION);
+  int region = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_DVDS_PLAYERREGION);
   int mask = 0;
   if(region > 0)
     mask = 1 << (region-1);
@@ -179,7 +180,7 @@ bool CDVDInputStreamNavigator::Open()
   }
 
   // jump directly to title menu
-  if(CSettings::GetInstance().GetBool(CSettings::SETTING_DVDS_AUTOMENU))
+  if(CServiceBroker::GetSettings().GetBool(CSettings::SETTING_DVDS_AUTOMENU))
   {
     int len, event;
     uint8_t buf[2048];
@@ -268,7 +269,7 @@ int CDVDInputStreamNavigator::Read(uint8_t* buf, int buf_size)
   return iBytesRead;
 }
 
-// not working yet, but it is the recommanded way for seeking
+// not working yet, but it is the recommended way for seeking
 int64_t CDVDInputStreamNavigator::Seek(int64_t offset, int whence)
 {
   if(whence == SEEK_POSSIBLE)
@@ -399,13 +400,13 @@ int CDVDInputStreamNavigator::ProcessBlock(uint8_t* dest_buffer, int* read)
       // Player applications should inform their audio decoder to switch channels
       {
 
-        //dvdnav_get_audio_logical_stream actually does the oposite to the docs..
+        //dvdnav_get_audio_logical_stream actually does the opposite to the docs..
         //taking a audiostream as given on dvd, it gives the physical stream that
         //refers to in the mpeg file
 
         dvdnav_audio_stream_change_event_t* event = (dvdnav_audio_stream_change_event_t*)buf;
 
-        //wroong... stupid docs..
+        //wrong... stupid docs..
         //event->logical = dvdnav_get_audio_logical_stream(m_dvdnav, event->physical);
         //logical should actually be set to the (vm->state).AST_REG
 
@@ -482,7 +483,7 @@ int CDVDInputStreamNavigator::ProcessBlock(uint8_t* dest_buffer, int* read)
 
           if (times)
           {
-            // the times array stores the end timestampes of the chapters, e.g., times[0] stores the position/beginning of chapter 2
+            // the times array stores the end timestamps of the chapters, e.g., times[0] stores the position/beginning of chapter 2
             m_mapTitleChapters[m_iTitle][1] = 0;
             for (int i = 0; i < entries - 1; ++i)
             {

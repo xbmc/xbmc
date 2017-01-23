@@ -28,10 +28,12 @@
 namespace JOYSTICK
 {
   class CDriverPrimitive;
+  class CGUIDialogNewJoystick;
   class IInputHandler;
   class IButtonMap;
 
   /*!
+   * \ingroup joystick
    * \brief Class to translate input from the driver into higher-level features
    *
    * Raw driver input arrives for three elements: buttons, hats and axes. When
@@ -66,5 +68,7 @@ namespace JOYSTICK
     IButtonMap* const    m_buttonMap;
 
     std::map<FeatureName, FeaturePtr> m_features;
+
+    static CGUIDialogNewJoystick* const m_dialog;
   };
 }

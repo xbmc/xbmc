@@ -21,7 +21,6 @@
 
 #include "IMX.h"
 #include <linux/mxcfb.h>
-#include <algorithm>
 
 /*
  *  official imx6 -SR tree
@@ -36,14 +35,9 @@
 #include "windowing/WindowingFactory.h"
 #include "utils/log.h"
 #include "guilib/GraphicContext.h"
-#include "utils/MathUtils.h"
-#include "DVDClock.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDCodecUtils.h"
 
-#include <algorithm>
-
 #define  DCIC_DEVICE    "/dev/mxc_dcic0"
-#define  FB_DEVICE      "/dev/fb0"
 
 CIMX::CIMX(void) : CThread("CIMX")
   , m_change(true)
@@ -61,29 +55,32 @@ CIMX::~CIMX(void)
 
 bool CIMX::Initialize()
 {
+  m_change = true;
   CSingleLock lock(m_critSection);
 
   m_fddcic = open(DCIC_DEVICE, O_RDWR);
   if (m_fddcic < 0)
   {
-    m_frameTime = 0;
+    m_frameTime = (int) 1000 / 25;
     return false;
   }
 
   Create();
-
   return true;
 }
 
 void CIMX::Deinitialize()
 {
+  StopThread(false);
   CSingleLock lock(m_critSection);
-
   StopThread();
-  m_VblankEvent.Set();
+
+  if (m_fddcic > 0)
+    ioctl(m_fddcic, DCIC_IOC_STOP_VSYNC, 0);
 
   if (m_fddcic > 0)
     close(m_fddcic);
+  m_fddcic = 0;
 }
 
 bool CIMX::UpdateDCIC()
@@ -94,6 +91,7 @@ bool CIMX::UpdateDCIC()
     return true;
 
   CSingleLock lock(m_critSection);
+  m_change = false;
 
   int fb0 = open(FB_DEVICE, O_RDONLY | O_NONBLOCK);
   if (fb0 < 0)
@@ -117,7 +115,6 @@ bool CIMX::UpdateDCIC()
     ioctl(m_fddcic, DCIC_IOC_START_VSYNC, 0);
 
   m_VblankEvent.Reset();
-  m_change = false;
   m_lastSyncFlag = screen_info.sync;
 
   return true;
@@ -128,12 +125,6 @@ void CIMX::Process()
   ioctl(m_fddcic, DCIC_IOC_START_VSYNC, 0);
   while (!m_bStop)
   {
-    if (m_change && !UpdateDCIC())
-    {
-      CLog::Log(LOGERROR, "CIMX::%s - Error occured. Exiting. Probably will need to reinitialize.", __FUNCTION__);
-      break;
-    }
-
     read(m_fddcic, &m_counter, sizeof(unsigned long));
     m_VblankEvent.Set();
   }
@@ -144,7 +135,7 @@ int CIMX::WaitVsync()
 {
   int diff;
 
-  if (!IsRunning())
+  if (m_fddcic < 1)
     Initialize();
 
   if (!m_VblankEvent.WaitMSec(m_frameTime))
@@ -160,8 +151,17 @@ void CIMX::OnResetDisplay()
 {
   m_frameTime = (double)1300 / g_graphicsContext.GetFPS();
   m_change = true;
+  UpdateDCIC();
 }
 
+bool CIMX::IsBlank()
+{
+  unsigned long curBlank;
+  int fd = open(FB_DEVICE, O_RDONLY | O_NONBLOCK);
+  bool ret = ioctl(fd, MXCFB_GET_FB_BLANK, &curBlank) || curBlank != FB_BLANK_UNBLANK;
+  close(fd);
+  return ret;
+}
 
 bool CIMXFps::Recalc()
 {
@@ -175,54 +175,57 @@ bool CIMXFps::Recalc()
   m_hgraph.clear();
   for (auto d : m_ts)
   {
-    if (d != 0.0 && prev != DVD_NOPTS_VALUE)
-      m_hgraph[MathUtils::round_int(d - prev)]++;
+    if (prev != DVD_NOPTS_VALUE)
+    {
+      frameDuration = CDVDCodecUtils::NormalizeFrameduration((d - prev), &hasMatch);
+      if (fabs(frameDuration - rint(frameDuration)) < 0.01)
+        frameDuration = rint(frameDuration);
+
+      m_hgraph[(unsigned long)(frameDuration * 100)]++;
+    }
     prev = d;
   }
 
-  unsigned int patternLength = 0;
   for (auto it = m_hgraph.begin(); it != m_hgraph.end();)
   {
     if (it->second > 1)
     {
-      count += it->second;
-      frameDuration += it->first * it->second;
+      double duration = CDVDCodecUtils::NormalizeFrameduration((double)it->first / 100, &hasMatch);
+
       ++it;
     }
     else
+    {
+      for (auto iti = m_hgraph.begin(); it != iti; iti++)
+      {
+        if (!iti->first)
+          continue;
+        int dv = it->first / iti->first;
+        if (dv * iti->first == it->first)
+        {
+          m_hgraph[it->first] += dv;
+          break;
+        }
+      }
       m_hgraph.erase(it++);
+    }
+  }
+
+  frameDuration = 0.0;
+  for (auto h : m_hgraph)
+  {
+    count += h.second;
+    frameDuration += h.first * h.second;
   }
 
   if (count)
-    frameDuration /= count;
+    frameDuration /= (100 * count);
 
-  double frameNorm = CDVDCodecUtils::NormalizeFrameduration(frameDuration, &hasMatch);
+  frameDuration = CDVDCodecUtils::NormalizeFrameduration(frameDuration, &hasMatch);
 
-  if (hasMatch && !patternLength)
-    m_patternLength = 1;
-  else
-    m_patternLength = patternLength;
-
-  if (!m_hasPattern && hasMatch)
-    m_frameDuration = frameNorm;
-
-  if ((m_ts.size() == DIFFRINGSIZE && !m_hasPattern && hasMatch))
-    m_hasPattern = true;
-
-  if (m_hasPattern)
-    m_ptscorrection = (m_ts.size() - 1) * m_frameDuration + m_ts.front() - m_ts.back();
-
-  if (m_hasPattern && m_ts.size() == DIFFRINGSIZE && m_ptscorrection > m_frameDuration / 4)
-  {
-    m_hasPattern = false;
-    m_frameDuration = DVD_NOPTS_VALUE;
-  }
-
-  return m_hgraph.size() <= 2;
-  bool ret = m_hgraph.size() <= 2;
-  if (!m_hasPattern && ret)
-    m_frameDuration = frameNorm;
-  return ret;
+  if (hasMatch)
+    m_frameDuration = frameDuration;
+  return true;
 }
 
 void CIMXFps::Add(double tm)
@@ -235,8 +238,6 @@ void CIMXFps::Add(double tm)
 
 void CIMXFps::Flush()
 {
+  m_frameDuration = DVD_NOPTS_VALUE;
   m_ts.clear();
-  m_frameDuration = 0.0;
-  m_ptscorrection = 0.0;
-  m_hasPattern = false;
 }

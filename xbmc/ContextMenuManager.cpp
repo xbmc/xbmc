@@ -25,14 +25,16 @@
 #include "addons/ContextMenus.h"
 #include "addons/IAddon.h"
 #include "music/ContextMenus.h"
+#include "pvr/PVRContextMenus.h"
 #include "video/ContextMenus.h"
 #include "utils/log.h"
 #include "ServiceBroker.h"
 
 #include <iterator>
+#include "ContextMenus.h"
 
 using namespace ADDON;
-
+using namespace PVR;
 
 const CContextMenuItem CContextMenuManager::MAIN = CContextMenuItem::CreateGroup("", "", "kodi.core.main", "");
 const CContextMenuItem CContextMenuManager::MANAGE = CContextMenuItem::CreateGroup("", "", "kodi.core.manage", "");
@@ -60,6 +62,8 @@ void CContextMenuManager::Init()
       std::make_shared<CONTEXTMENU::CResume>(),
       std::make_shared<CONTEXTMENU::CPlay>(),
       std::make_shared<CONTEXTMENU::CAddonInfo>(),
+      std::make_shared<CONTEXTMENU::CEnableAddon>(),
+      std::make_shared<CONTEXTMENU::CDisableAddon>(),
       std::make_shared<CONTEXTMENU::CAddonSettings>(),
       std::make_shared<CONTEXTMENU::CCheckForUpdates>(),
       std::make_shared<CONTEXTMENU::CEpisodeInfo>(),
@@ -71,8 +75,15 @@ void CContextMenuManager::Init()
       std::make_shared<CONTEXTMENU::CSongInfo>(),
       std::make_shared<CONTEXTMENU::CMarkWatched>(),
       std::make_shared<CONTEXTMENU::CMarkUnWatched>(),
+      std::make_shared<CONTEXTMENU::CEjectDisk>(),
+      std::make_shared<CONTEXTMENU::CEjectDrive>(),
   };
+
   ReloadAddonItems();
+
+  const std::vector<std::shared_ptr<IContextMenuItem>> pvrItems(CPVRContextMenuManager::GetInstance().GetMenuItems());
+  for (const auto &item : pvrItems)
+    m_items.emplace_back(item);
 }
 
 void CContextMenuManager::ReloadAddonItems()

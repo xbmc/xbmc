@@ -27,6 +27,7 @@
 #include <utility>
 #include <vector>
 
+#include "ServiceBroker.h"
 #include "cores/VideoPlayer/VideoRenderers/ColorManager.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "guilib/GraphicContext.h"
@@ -277,7 +278,7 @@ bool CDisplaySettings::OnSettingChanging(const CSetting *setting)
     }
 
     std::string screenmode = GetStringFromResolution(newRes);
-    CSettings::GetInstance().SetString(CSettings::SETTING_VIDEOSCREEN_SCREENMODE, screenmode);
+    CServiceBroker::GetSettings().SetString(CSettings::SETTING_VIDEOSCREEN_SCREENMODE, screenmode);
   }
   if (settingId == CSettings::SETTING_VIDEOSCREEN_SCREENMODE)
   {
@@ -357,19 +358,19 @@ bool CDisplaySettings::OnSettingUpdate(CSetting* &setting, const char *oldSettin
   else if (settingId == CSettings::SETTING_VIDEOSCREEN_PREFEREDSTEREOSCOPICMODE)
   {
     CSettingInt *stereomodeSetting = (CSettingInt*)setting;
-    STEREOSCOPIC_PLAYBACK_MODE playbackMode = (STEREOSCOPIC_PLAYBACK_MODE) CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOPLAYER_STEREOSCOPICPLAYBACKMODE);
+    STEREOSCOPIC_PLAYBACK_MODE playbackMode = (STEREOSCOPIC_PLAYBACK_MODE) CServiceBroker::GetSettings().GetInt(CSettings::SETTING_VIDEOPLAYER_STEREOSCOPICPLAYBACKMODE);
     if (stereomodeSetting->GetValue() == RENDER_STEREO_MODE_OFF)
     {
       // if preferred playback mode was OFF, update playback mode to ignore
       if (playbackMode == STEREOSCOPIC_PLAYBACK_MODE_PREFERRED)
-        CSettings::GetInstance().SetInt(CSettings::SETTING_VIDEOPLAYER_STEREOSCOPICPLAYBACKMODE, STEREOSCOPIC_PLAYBACK_MODE_IGNORE);
+        CServiceBroker::GetSettings().SetInt(CSettings::SETTING_VIDEOPLAYER_STEREOSCOPICPLAYBACKMODE, STEREOSCOPIC_PLAYBACK_MODE_IGNORE);
       return stereomodeSetting->SetValue(RENDER_STEREO_MODE_AUTO);
     }
     else if (stereomodeSetting->GetValue() == RENDER_STEREO_MODE_MONO)
     {
       // if preferred playback mode was MONO, update playback mode
       if (playbackMode == STEREOSCOPIC_PLAYBACK_MODE_PREFERRED)
-        CSettings::GetInstance().SetInt(CSettings::SETTING_VIDEOPLAYER_STEREOSCOPICPLAYBACKMODE, STEREOSCOPIC_PLAYBACK_MODE_MONO);
+        CServiceBroker::GetSettings().SetInt(CSettings::SETTING_VIDEOPLAYER_STEREOSCOPICPLAYBACKMODE, STEREOSCOPIC_PLAYBACK_MODE_MONO);
       return stereomodeSetting->SetValue(RENDER_STEREO_MODE_AUTO);
     }
   }
@@ -385,7 +386,7 @@ void CDisplaySettings::SetCurrentResolution(RESOLUTION resolution, bool save /* 
   if (save)
   {
     std::string mode = GetStringFromResolution(resolution);
-    CSettings::GetInstance().SetString(CSettings::SETTING_VIDEOSCREEN_SCREENMODE, mode.c_str());
+    CServiceBroker::GetSettings().SetString(CSettings::SETTING_VIDEOSCREEN_SCREENMODE, mode.c_str());
   }
 
   if (resolution != m_currentResolution)
@@ -397,7 +398,7 @@ void CDisplaySettings::SetCurrentResolution(RESOLUTION resolution, bool save /* 
 
 RESOLUTION CDisplaySettings::GetDisplayResolution() const
 {
-  return GetResolutionFromString(CSettings::GetInstance().GetString(CSettings::SETTING_VIDEOSCREEN_SCREENMODE));
+  return GetResolutionFromString(CServiceBroker::GetSettings().GetString(CSettings::SETTING_VIDEOSCREEN_SCREENMODE));
 }
 
 const RESOLUTION_INFO& CDisplaySettings::GetResolutionInfo(size_t index) const
@@ -636,7 +637,7 @@ std::string CDisplaySettings::GetStringFromResolution(RESOLUTION resolution, flo
 
 RESOLUTION CDisplaySettings::GetResolutionForScreen()
 {
-  DisplayMode mode = CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOSCREEN_SCREEN);
+  DisplayMode mode = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_VIDEOSCREEN_SCREEN);
   if (mode == DM_WINDOWED)
     return RES_WINDOW;
 
@@ -777,7 +778,7 @@ void CDisplaySettings::SettingOptionsMonitorsFiller(const CSetting *setting, std
 #if defined(HAS_GLX)
   std::vector<std::string> monitors;
   g_Windowing.GetConnectedOutputs(&monitors);
-  std::string currentMonitor = CSettings::GetInstance().GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR);
+  std::string currentMonitor = CServiceBroker::GetSettings().GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR);
   for (unsigned int i=0; i<monitors.size(); ++i)
   {
     if(currentMonitor.compare("Default") != 0 &&

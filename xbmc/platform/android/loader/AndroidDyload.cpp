@@ -284,14 +284,16 @@ void* CAndroidDyload::Open_Internal(std::string filename, bool checkSystem)
     if (*j == libName.c_str())
       continue;
 
+    // Don't dlopen system libs
+    if (IsSystemLib(*j))
+      continue;
+
     if (FindInDeps(*j))
       continue;
 
     handle = Find(*j);
     if (handle)
     {
-      if (IsSystemLib(*j) && !checkSystem)
-        continue;
       recursivelibdep dep;
       dep.handle = handle;
       dep.filename = *j;

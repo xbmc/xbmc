@@ -393,7 +393,7 @@ int  CDarwinUtils::GetFrameworkPath(bool forPython, char* path, size_t *pathsize
   if (pathname && strstr([pathname UTF8String], "Contents"))
   {
     strcpy(path, [pathname UTF8String]);
-    // ExectuablePath is <product>.app/Contents/MacOS/<executable>
+    // ExecutablePath is <product>.app/Contents/MacOS/<executable>
     char *lastSlash = strrchr(path, '/');
     if (lastSlash)
     {
@@ -501,6 +501,13 @@ bool CDarwinUtils::IsIosSandboxed(void)
       // we are also sandboxed if this is our bundle path
       if (strlen("/var/mobile/Containers/Bundle/") < path_size &&
         strncmp(given_path, "/var/mobile/Containers/Bundle/", strlen("/var/mobile/Containers/Bundle/")) == 0)
+      {
+        ret = 1;
+      }
+      
+      // Some time after ios8, Apple decided to change this yet again
+      if (strlen("/var/containers/Bundle/") < path_size &&
+        strncmp(given_path, "/var/containers/Bundle/", strlen("/var/containers/Bundle/")) == 0)
       {
         ret = 1;
       }

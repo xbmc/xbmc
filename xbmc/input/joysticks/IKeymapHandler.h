@@ -24,6 +24,7 @@
 namespace JOYSTICK
 {
   /*!
+   * \ingroup joystick
    * \brief Interface for handling keymap keys
    *
    * Keys can be mapped to analog actions (e.g. "AnalogSeekForward") or digital
@@ -43,6 +44,16 @@ namespace JOYSTICK
      *         no action is mapped to the specified key
      */
     virtual INPUT_TYPE GetInputType(unsigned int keyId) const = 0;
+
+    /*!
+     * \brief Get the action ID mapped to the specified key ID
+     *
+     * \param keyId  The key ID from Key.h
+     *
+     * \return The action ID, or ACTION_NONE if no action is mapped to the
+     *         specified key
+     */
+    virtual int GetActionID(unsigned int keyId) const = 0;
 
     /*!
      * \brief A key mapped to a digital action has been pressed or released

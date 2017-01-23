@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<includes>
+	<include name="View_53_Shift">
+		<control type="group">
+			<description>Poster Viewtype</description>
+			<centertop>50%</centertop>
+			<left>0</left>
+			<height>880</height>
+			<control type="group">
+				<visible>Control.IsVisible(53)</visible>
+				<animation effect="fade" start="0" end="100" time="300">WindowOpen</animation>
+				<animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
+				<animation effect="fade" time="200">VisibleChange</animation>
+				<control type="image">
+					<left>0</left>
+					<top>760</top>
+					<width>100%</width>
+					<height>110</height>
+					<texture colordiffuse="E6FFFFFF">dialogs/dialog-bg-nobo.png</texture>
+				</control>
+				<control type="image">
+					<left>0</left>
+					<top>35</top>
+					<width>100%</width>
+					<height>190</height>
+					<texture colordiffuse="E6FFFFFF">dialogs/dialog-bg-nobo.png</texture>
+				</control>
+			</control>
+			<control type="group">
+				<visible>Control.IsVisible(53)</visible>
+				<include>Visible_Right</include>
+				<include>OpenClose_Right</include>
+				<top>160</top>
+				<control type="image">
+					<left>600</left>
+					<top>600</top>
+					<width>340</width>
+					<height>110</height>
+					<visible>Control.HasFocus(53)</visible>
+					<animation effect="fade" time="200">VisibleChange</animation>
+					<texture colordiffuse="button_focus">colors/grey.png</texture>
+					<animation effect="slide" start="0,0" end="-364,0" time="300" tween="sine" easing="inout" condition="Integer.IsEqual(Container.Position,1) | Integer.IsEqual(Container.Position,0)">Conditional</animation>
+					<animation effect="slide" start="0,0" end="-364,0" time="300" tween="sine" easing="inout" condition="Integer.IsEqual(Container.Position,0)">Conditional</animation>
+					<animation effect="slide" start="0,0" end="364,0" time="300" tween="sine" easing="inout" condition="Integer.IsEqual(Container.Position,3) | Integer.IsEqual(Container.Position,4)">Conditional</animation>
+					<animation effect="slide" start="0,0" end="364,0" time="300" tween="sine" easing="inout" condition="Integer.IsEqual(Container.Position,4)">Conditional</animation>
+				</control>
+				<control type="fixedlist" id="53">
+					<left>-150</left>
+					<top>0</top>
+					<width>111%</width>
+					<height>695</height>
+					<focusposition>1</focusposition>
+					<movement>0</movement>
+					<pagecontrol>5199</pagecontrol>
+					<scrolltime tween="cubic" easing="out">500</scrolltime>
+					<orientation>horizontal</orientation>
+					<visible>Container.Content(movies) | Container.Content(sets) | Container.Content(tvshows) | Container.Content(seasons) | Container.Content(musicvideos) | Container.Content(artists) | Container.Content(albums) | Container.Content(mixed) | Container.Content(images) | Container.Content(videos)</visible>
+					<onleft>53</onleft>
+					<onup>9000</onup>
+					<ondown>5199</ondown>
+					<onright>53</onright>
+					<preloaditems>1</preloaditems>
+					<viewtype label="31100">icon</viewtype>
+					<itemlayout width="370">
+						<control type="image">
+							<depth>DepthContentPopout</depth>
+							<left>0</left>
+							<top>90</top>
+							<width>370</width>
+							<height>480</height>
+							<aspectratio aligny="center">keep</aspectratio>
+							<texture fallback="DefaultVideo.png">$VAR[ShiftThumbVar]</texture>
+							<bordertexture border="21">overlays/shadow.png</bordertexture>
+							<bordersize>20</bordersize>
+						</control>
+						<control type="textbox">
+							<left>20</left>
+							<top>603</top>
+							<width>330</width>
+							<height>105</height>
+							<align>center</align>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Label]</label>
+						</control>
+						<control type="image">
+							<left>169</left>
+							<top>560</top>
+							<width>32</width>
+							<height>32</height>
+							<texture>$VAR[WallWatchedIconVar]</texture>
+						</control>
+					</itemlayout>
+					<focusedlayout width="370">
+						<control type="image">
+							<depth>DepthContentPopout</depth>
+							<left>0</left>
+							<top>90</top>
+							<width>370</width>
+							<height>480</height>
+							<aspectratio aligny="center">keep</aspectratio>
+							<texture fallback="DefaultVideo.png">$VAR[ShiftThumbVar]</texture>
+							<bordertexture border="21">overlays/shadow.png</bordertexture>
+							<bordersize>20</bordersize>
+						</control>
+						<control type="textbox">
+							<left>20</left>
+							<top>603</top>
+							<width>330</width>
+							<height>105</height>
+							<align>center</align>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Label]</label>
+							<autoscroll time="3000" delay="3000" repeat="3000">True</autoscroll>
+						</control>
+						<control type="image">
+							<left>169</left>
+							<top>560</top>
+							<width>32</width>
+							<height>32</height>
+							<texture>$VAR[WallWatchedIconVar]</texture>
+						</control>
+					</focusedlayout>
+				</control>
+			</control>
+			<control type="group">
+				<visible>Control.IsVisible(53)</visible>
+				<include>Visible_Right</include>
+				<include>OpenClose_Right</include>
+				<control type="group">
+					<width>50%</width>
+					<include content="ShiftTextbox">
+						<param name="textbox_id" value="53200" />
+						<param name="textbox_content" value="$VAR[ShiftLeftTextBoxVar]" />
+					</include>
+				</control>
+				<control type="group">
+					<left>50%</left>
+					<width>50%</width>
+					<include content="ShiftTextbox">
+						<param name="textbox_id" value="53300" />
+						<param name="textbox_content" value="$VAR[ShiftRightTextBoxVar]" />
+					</include>
+				</control>
+				<control type="panel">
+					<left>20</left>
+					<top>48</top>
+					<width>1880</width>
+					<height>180</height>
+					<orientation>horizontal</orientation>
+					<visible>ListItem.IsCollection</visible>
+					<animation effect="fade" time="200">VisibleChange</animation>
+					<focusedlayout height="40" width="628">
+						<control type="label">
+							<textoffsetx>10</textoffsetx>
+							<height>40</height>
+							<width>628</width>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Year,[COLOR button_focus],[/COLOR]  -  ]$INFO[ListItem.Title]</label>
+							<shadowcolor>text_shadow</shadowcolor>
+						</control>
+					</focusedlayout>
+					<itemlayout height="40" width="628">
+						<control type="label">
+							<textoffsetx>10</textoffsetx>
+							<height>40</height>
+							<width>628</width>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Year,[COLOR button_focus],[/COLOR]  -  ]$INFO[ListItem.Title]</label>
+							<shadowcolor>text_shadow</shadowcolor>
+						</control>
+					</itemlayout>
+					<content sortby="year" sortorder="descending">$VAR[InfoListPathVar]</content>
+				</control>
+			</control>
+		</control>
+	</include>
+	<include name="ShiftTextbox">
+		<control type="group">
+			<animation effect="fade" time="200" start="0" end="100" condition="!String.IsEmpty(Control.GetLabel($PARAM[textbox_id]))">Conditional</animation>
+			<animation effect="fade" time="200" start="100" end="0" condition="String.IsEmpty(Control.GetLabel($PARAM[textbox_id]))">Conditional</animation>
+			<control type="textbox" id="$PARAM[textbox_id]">
+				<left>30</left>
+				<top>45</top>
+				<right>30</right>
+				<height>163</height>
+				<label>$PARAM[textbox_content]</label>
+				<shadowcolor>text_shadow</shadowcolor>
+			</control>
+		</control>
+	</include>
+</includes>

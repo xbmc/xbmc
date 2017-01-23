@@ -49,4 +49,18 @@ struct CCheckForUpdates : CStaticContextMenuAction
   bool IsVisible(const CFileItem& item) const override;
   bool Execute(const CFileItemPtr& item) const override;
 };
+
+struct CEnableAddon : CStaticContextMenuAction
+{
+  CEnableAddon() : CStaticContextMenuAction(24022) {}
+  bool IsVisible(const CFileItem& item) const override;
+  bool Execute(const CFileItemPtr& item) const override;
+};
+
+struct CDisableAddon : CStaticContextMenuAction
+{
+  CDisableAddon() : CStaticContextMenuAction(24021) {}
+  bool IsVisible(const CFileItem& item) const override;
+  bool Execute(const CFileItemPtr& item) const override;
+};
 }

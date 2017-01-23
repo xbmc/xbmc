@@ -48,10 +48,6 @@ msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "Неодгледани филмови"
 
-msgctxt "#31008"
-msgid "No disclaimer"
-msgstr "Нема правила одрицања"
-
 msgctxt "#31009"
 msgid "Download icons"
 msgstr "Преузми иконице"
@@ -89,8 +85,8 @@ msgid "Rated"
 msgstr "Оцењено"
 
 msgctxt "#31018"
-msgid "Most played channels"
-msgstr "Најгледанији канали"
+msgid "Recently played channels"
+msgstr "Скорашњи канали"
 
 msgctxt "#31019"
 msgid "Forecast"
@@ -112,21 +108,9 @@ msgctxt "#31023"
 msgid "Viewtype"
 msgstr "Приказ"
 
-msgctxt "#31024"
-msgid "Next tracks"
-msgstr "Следеће песме"
-
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
 msgstr "Омиљено није пронађено. Можете додати било коју ставку из приказа медија овој листи коришћењем менија опција."
-
-msgctxt "#31026"
-msgid "Go to albums"
-msgstr "Иди у албуме"
-
-msgctxt "#31027"
-msgid "Go to songs"
-msgstr "Иди у песме"
 
 msgctxt "#31028"
 msgid "Show fanart"
@@ -135,10 +119,6 @@ msgstr "Прикажи уметност љубитеља"
 msgctxt "#31029"
 msgid "Last logged in"
 msgstr "Последња пријава"
-
-msgctxt "#31030"
-msgid "Memory used"
-msgstr "Искоришћена меморија"
 
 msgctxt "#31031"
 msgid "Version info"
@@ -164,10 +144,6 @@ msgctxt "#31036"
 msgid "items"
 msgstr "ставке"
 
-msgctxt "#31037"
-msgid "Tracklist"
-msgstr "Листа песама"
-
 msgctxt "#31038"
 msgid "Rewind"
 msgstr "Премотај уназад"
@@ -175,10 +151,6 @@ msgstr "Премотај уназад"
 msgctxt "#31039"
 msgid "Fast forward"
 msgstr "Премотај унапред"
-
-msgctxt "#31040"
-msgid "Cancel update"
-msgstr "Откажи надоградњу"
 
 msgctxt "#31041"
 msgid "Camera manufacturer"
@@ -204,17 +176,9 @@ msgctxt "#31046"
 msgid "Delete group"
 msgstr "Избриши групу"
 
-msgctxt "#31047"
-msgid "Read more..."
-msgstr "Прочитај више..."
-
 msgctxt "#31048"
 msgid "Available"
 msgstr "Доступно"
-
-msgctxt "#31049"
-msgid "Press [B]Up[/B] to rewind or fast-forward"
-msgstr "Притисните [B]Горе[/B] за премотавање унапред"
 
 msgctxt "#31050"
 msgid "Press [B]OK[/B] to stop"
@@ -236,10 +200,6 @@ msgctxt "#31054"
 msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
 msgstr "Притисните [B]Лево[/B] за премотавање уназад, или [B]Десно[/B] за премотавање унапред"
 
-msgctxt "#31055"
-msgid "Subtitle download"
-msgstr "Преузимање превода"
-
 msgctxt "#31056"
 msgid "Go to playlist"
 msgstr "Иди на листу за репродукцију"
@@ -252,29 +212,13 @@ msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr "Аутоматска Пријава при укључивању"
 
-msgctxt "#31059"
-msgid "Updates available"
-msgstr "Доступне надоградње"
-
-msgctxt "#31060"
-msgid "minutes"
-msgstr "минути"
-
 msgctxt "#31061"
 msgid "Main menu items"
 msgstr "Ставке главног менија"
 
-msgctxt "#31062"
-msgid "Shortcuts to the \"Files\" sections of each media type. Go there to add additional sources for your databases."
-msgstr "Пречице ка секцијама \"Датотеке\" за сваку врсту медија. Идите тамо да би додали додатне изворе за ваше базе података."
-
 msgctxt "#31063"
 msgid "Sections"
 msgstr "Секције"
-
-msgctxt "#31064"
-msgid "unwatched"
-msgstr "неодгледано"
 
 msgctxt "#31065"
 msgid "Video playlist"
@@ -296,10 +240,6 @@ msgctxt "#31069"
 msgid "Last Updated"
 msgstr "Последње ажурирање"
 
-msgctxt "#31070"
-msgid "Add media sources"
-msgstr "Додај изворе медија"
-
 msgctxt "#31071"
 msgid "by"
 msgstr "од стране"
@@ -308,29 +248,9 @@ msgctxt "#31072"
 msgid "Power Options"
 msgstr "Опције напајања"
 
-msgctxt "#31073"
-msgid "Titles"
-msgstr "Називи"
-
-msgctxt "#31074"
-msgid "Library root"
-msgstr "Корен библиотеке"
-
 msgctxt "#31075"
 msgid "Movie sets"
 msgstr "Филмски комплети"
-
-msgctxt "#31076"
-msgid "Play optical disc"
-msgstr "Пусти оптички диск"
-
-msgctxt "#31077"
-msgid "Previous location"
-msgstr "Претходна локација"
-
-msgctxt "#31078"
-msgid "Next location"
-msgstr "Следећа локација"
 
 msgctxt "#31079"
 msgid "Cast not available"
@@ -339,10 +259,6 @@ msgstr "Улоге нису доступне"
 msgctxt "#31080"
 msgid "Ends at"
 msgstr "Завршава се у"
-
-msgctxt "#31081"
-msgid "Album info"
-msgstr "Подаци о албуму"
 
 msgctxt "#31082"
 msgid "Lyrics add-on"
@@ -356,22 +272,6 @@ msgctxt "#31084"
 msgid "Visualisation settings"
 msgstr "Подешавања визуелизације"
 
-msgctxt "#31085"
-msgid "Channel Group"
-msgstr "Група Програма"
-
-msgctxt "#31086"
-msgid "Metadata"
-msgstr "Мета подаци"
-
-msgctxt "#31087"
-msgid "Provider settings"
-msgstr "Подешавања провајдера"
-
-msgctxt "#31088"
-msgid "Content scanning options"
-msgstr "Опције анализирања садржаја"
-
 msgctxt "#31089"
 msgid "Available groups"
 msgstr "Доступне групе"
@@ -380,10 +280,6 @@ msgctxt "#31090"
 msgid "Search trailer"
 msgstr "Тражи најаву"
 
-msgctxt "#31091"
-msgid "Download subtitles"
-msgstr "Преузми титлове"
-
 msgctxt "#31092"
 msgid "Video menu"
 msgstr "Видео мени"
@@ -391,10 +287,6 @@ msgstr "Видео мени"
 msgctxt "#31093"
 msgid "Show weather info in top bar"
 msgstr "Прикажи информације о прогнози у горњој траци"
-
-msgctxt "#31094"
-msgid "Show media flags for movies / episodes / music videos"
-msgstr "Прикажи медијске заставице за филмове / епизоде / музичке спотове"
 
 msgctxt "#31095"
 msgid "Use slide animations"
@@ -411,10 +303,6 @@ msgstr "Опције канала"
 msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "Изаберите ваш Kodi кориснички профил[CR]за пријаву, а потом наставите даље"
-
-msgctxt "#31099"
-msgid "Icon Wall"
-msgstr "Зид Иконица"
 
 msgctxt "#31100"
 msgid "Shift"
@@ -447,14 +335,6 @@ msgstr "Телетекст"
 msgctxt "#31107"
 msgid "WideList"
 msgstr "ШирокаЛиста"
-
-msgctxt "#31108"
-msgid "Use custom global background"
-msgstr "Користи прилагоћену глобалну позадину"
-
-msgctxt "#31109"
-msgid "Choose image path"
-msgstr "Изаберите путању слике"
 
 msgctxt "#31110"
 msgid "Enter files section"
@@ -540,18 +420,14 @@ msgctxt "#31130"
 msgid "Main menu-related settings: Configure the home screen to your likings."
 msgstr "Подешавања везана за главни мени: Подесите главни екран према вашим жељама."
 
-msgctxt "#31131"
-msgid "Choose home fanart pack"
-msgstr "Изаберите пакет уметности љубитеља за главни екран"
-
 msgctxt "#31132"
 msgid "min"
 msgstr "мин"
 
-msgctxt "#31133"
-msgid "Hide"
-msgstr "Сакриј"
-
 msgctxt "#31134"
 msgid "Remaining"
 msgstr "Преостало"
+
+msgctxt "#31144"
+msgid "Enter add-on browser"
+msgstr "Отвори претраживач додатних програма"

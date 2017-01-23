@@ -62,7 +62,7 @@ public:
   virtual void GetChapterName(std::string& strChapterName)     { return; }
   virtual int  SeekChapter(int iChapter)                       { return -1; }
 
-  virtual void SeekTime(__int64 iTime = 0);
+  virtual void SeekTime(int64_t iTime = 0);
   virtual int64_t GetTime();
   virtual int64_t GetTotalTime();
   virtual void SetSpeed(float speed = 0) override;

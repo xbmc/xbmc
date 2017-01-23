@@ -36,10 +36,6 @@ msgctxt "#31072"
 msgid "Power Options"
 msgstr "மின்திறன் விருப்பங்கள்"
 
-msgctxt "#31081"
-msgid "Album info"
-msgstr "ஆல்பம்  தகவல்"
-
 msgctxt "#31096"
 msgid "Local subtitle available"
 msgstr "உள்ளூர் வசன வரிகள் இருக்கிறது"

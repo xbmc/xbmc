@@ -19,6 +19,7 @@
  */
 
 #include "FileItem.h"
+#include "ServiceBroker.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogProgress.h"
@@ -291,7 +292,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonRadioParentalLocked(CGUIMessage &
 
   // ask for PIN first
   if (!g_PVRManager.CheckParentalPIN(g_localizeStrings.Get(19262).c_str()))
-  { // failed - reset to previou
+  { // failed - reset to previous
     SET_CONTROL_SELECTED(GetID(), RADIOBUTTON_PARENTAL_LOCK, !selected);
     return false;
   }
@@ -363,10 +364,10 @@ bool CGUIDialogPVRChannelManager::OnClickButtonChannelLogo(CGUIMessage &message)
 
   std::string strThumb;
   VECSOURCES shares;
-  if (CSettings::GetInstance().GetString(CSettings::SETTING_PVRMENU_ICONPATH) != "")
+  if (CServiceBroker::GetSettings().GetString(CSettings::SETTING_PVRMENU_ICONPATH) != "")
   {
     CMediaSource share1;
-    share1.strPath = CSettings::GetInstance().GetString(CSettings::SETTING_PVRMENU_ICONPATH);
+    share1.strPath = CServiceBroker::GetSettings().GetString(CSettings::SETTING_PVRMENU_ICONPATH);
     share1.strName = g_localizeStrings.Get(19066);
     shares.push_back(share1);
   }
@@ -720,7 +721,7 @@ void CGUIDialogPVRChannelManager::Clear(void)
   m_channelItems->Clear();
 }
 
-void CGUIDialogPVRChannelManager::RenameChannel(CFileItemPtr pItem)
+void CGUIDialogPVRChannelManager::RenameChannel(const CFileItemPtr &pItem)
 {
   std::string strChannelName = pItem->GetProperty("Name").asString();
   if (strChannelName != pItem->GetPVRChannelInfoTag()->ChannelName())
@@ -733,7 +734,7 @@ void CGUIDialogPVRChannelManager::RenameChannel(CFileItemPtr pItem)
   }
 }
 
-bool CGUIDialogPVRChannelManager::PersistChannel(CFileItemPtr pItem, CPVRChannelGroupPtr group, unsigned int *iChannelNumber)
+bool CGUIDialogPVRChannelManager::PersistChannel(const CFileItemPtr &pItem, const CPVRChannelGroupPtr &group, unsigned int *iChannelNumber)
 {
   if (!pItem || !pItem->HasPVRChannelInfoTag() || !group)
     return false;

@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<defaultcontrol>3</defaultcontrol>
+	<include>Animation_DialogPopupOpenClose</include>
+	<controls>
+		<control type="group">
+			<centertop>50%</centertop>
+			<centerleft>50%</centerleft>
+			<width>1820</width>
+			<height>690</height>
+			<include content="DialogBackgroundCommons">
+				<param name="width" value="1820" />
+				<param name="height" value="690" />
+				<param name="header_label" value="$LOCALIZE[35058]" />
+				<param name="header_id" value="2" />
+			</include>
+			<control type="label">
+				<description>Controller profiles grouplist heading</description>
+				<top>90</top>
+				<left>15</left>
+				<width>330</width>
+				<height>25</height>
+				<font>font12</font>
+				<label>$LOCALIZE[35050]</label>
+				<align>center</align>
+				<aligny>center</aligny>
+				<textcolor>button_focus</textcolor>
+			</control>
+			<control type="image">
+				<left>-5</left>
+				<top>110</top>
+				<width>370</width>
+				<height>582</height>
+				<texture border="40">buttons/dialogbutton-nofo.png</texture>
+			</control>
+			<control type="grouplist" id="3">
+				<description>Controller profiles grouplist</description>
+				<left>15</left>
+				<top>130</top>
+				<width>330</width>
+				<height>540</height>
+				<onleft>9001</onleft>
+				<onright>5</onright>
+				<onup>3</onup>
+				<ondown>3</ondown>
+			</control>
+			<control type="button" id="10">
+				<description>Default controller button</description>
+				<height>60</height>
+				<width>330</width>
+				<align>center</align>
+				<aligny>center</aligny>
+				<font>font25_title</font>
+				<texturefocus colordiffuse="button_focus">lists/focus.png</texturefocus>
+				<texturenofocus />
+			</control>
+			<control type="gamecontroller" id="31">
+				<left>400</left>
+				<top>210</top>
+				<width>547</width>
+				<height>343</height>
+			</control>
+			<control type="group">
+				<left>1000</left>
+				<width>410</width>
+				<top>90</top>
+				<height>602</height>
+				<control type="label">
+					<description>Feature list heading</description>
+					<left>20</left>
+					<right>20</right>
+					<height>25</height>
+					<font>font12</font>
+					<label>$LOCALIZE[35059]</label>
+					<align>center</align>
+					<aligny>center</aligny>
+					<textcolor>button_focus</textcolor>
+				</control>
+				<control type="image">
+					<top>20</top>
+					<bottom>0</bottom>
+					<right>0</right>
+					<texture border="40">buttons/dialogbutton-nofo.png</texture>
+				</control>
+				<control type="grouplist" id="5">
+					<description>Features grouplist</description>
+					<left>20</left>
+					<right>20</right>
+					<top>40</top>
+					<bottom>20</bottom>
+					<onleft>3</onleft>
+					<onright>61</onright>
+					<onup>5</onup>
+					<ondown>5</ondown>
+					<pagecontrol>61</pagecontrol>
+				</control>
+				<control type="scrollbar" id="61">
+					<right>0</right>
+					<top>40</top>
+					<width>12</width>
+					<bottom>20</bottom>
+					<onleft>5</onleft>
+					<onright>9001</onright>
+					<orientation>vertical</orientation>
+				</control>
+				<control type="button" id="7">
+					<description>Default feature button</description>
+					<height>60</height>
+					<left>20</left>
+					<right>20</right>
+					<align>center</align>
+					<aligny>center</aligny>
+					<font>font27</font>
+					<texturefocus colordiffuse="button_focus">lists/focus.png</texturefocus>
+					<texturenofocus />
+				</control>
+				<control type="label" id="8">
+					<description>Feature group title</description>
+					<left>20</left>
+					<right>20</right>
+					<align>center</align>
+					<top>0</top>
+					<height>40</height>
+					<aligny>center</aligny>
+					<font>font20_title</font>
+					<textcolor>grey</textcolor>
+					<shadowcolor>black</shadowcolor>
+				</control>
+			</control>
+			<control type="image" id="9">
+				<description>Feature separator image</description>
+				<height>3</height>
+				<texture colordiffuse="AAAAAAAA" border="3">dialogs/separator-grey.png</texture>
+			</control>
+			<control type="grouplist" id="9001">
+				<right>20</right>
+				<top>110</top>
+				<onleft>5</onleft>
+				<onright>3</onright>
+				<width>350</width>
+				<itemgap>dialogbuttons_itemgap</itemgap>
+				<include content="DefaultDialogButton">
+					<param name="width" value="350" />
+					<param name="id" value="18" />
+					<param name="label" value="$LOCALIZE[186]" />
+				</include>
+				<include content="DefaultDialogButton">
+					<param name="width" value="350" />
+					<param name="id" value="19" />
+					<param name="label" value="$LOCALIZE[10035]" />
+				</include>
+				<include content="DefaultDialogButton">
+					<param name="width" value="350" />
+					<param name="id" value="20" />
+					<param name="label" value="$LOCALIZE[21452]" />
+				</include>
+				<include content="DefaultDialogButton">
+					<param name="width" value="350" />
+					<param name="id" value="17" />
+					<param name="label" value="$LOCALIZE[10043]" />
+				</include>
+				<include content="DefaultDialogButton">
+					<param name="width" value="350" />
+					<param name="id" value="21" />
+					<param name="label" value="$LOCALIZE[35013]" />
+				</include>
+			</control>
+		</control>
+	</controls>
+</window>

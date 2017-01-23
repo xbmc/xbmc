@@ -1,0 +1,51 @@
+<h1 id="traductions">Traductions</h1>
+<p>Pour mettre à jour les fichiers de langue vous devez juste connaître un petit peu GIT.
+Cette page devrait vous éclairer sur la structure des fichiers de langue.</p>
+<h2 id="o-sont-les-fichiers-de-langue-">Où sont les fichiers de langue ?</h2>
+<p>Ces fichiers se trouvent à deux endroits. Le <em>CODE_LANG</em> correspond aux deux premières lettres de votre langue (ex: en, fr, de).</p>
+<h3 id="strings-textes-">Strings (textes)</h3>
+<p><code>src/lang/_strings/CODE_LANG.po</code></p>
+<ul>
+<li>Ce sont les textes que l&#39;on retrouve un peu partout dans l&#39;application. En général il suffit de mettre à jour <code>msgstr</code>.</li>
+<li>Si il n&#39;y a pas de <code>msgstr</code> pour le texte donné, copiez le de en.po et mettez le à jour.</li>
+</ul>
+<p>Exemple (fr.po) :</p>
+<pre><code>msgctxt <span class="hljs-string">""</span>
+msgid <span class="hljs-string">"Select a filter"</span>
+msgstr <span class="hljs-string">"Sélectionner un filtre"</span>
+</code></pre><h3 id="pages">Pages</h3>
+<p><code>src/lang/CODE_LANG/PAGE.md</code></p>
+<ul>
+<li>Ce sont des pages complètes qui peuvent être remplacées avec une langue différente.</li>
+<li>Ce pages sont écrites au format <a href="https://en.wikipedia.org/wiki/Markdown">markdown</a>.</li>
+<li>Si il n&#39;y pas de <em>PAGE</em>.md pour votre langue, copiez-le du répertoire <code>en</code> et éditez-le.</li>
+<li>Créez uniquement un fichier <em>PAGE</em>.md pour une traduction complète</li>
+</ul>
+<h2 id="rajoute-une-nouvelle-langue">Rajoute une nouvelle langue</h2>
+<p><strong>Exemple:</strong> Si votre nouvelle langue est <code>French</code> il aura <code>fr</code> fr comme <em>CODE_LANG</em>.</p>
+<h3 id="dites-le-l-application">Dites-le à l&#39;application</h3>
+<p>Vous devez aussi dire à l&#39;application de rajouter cette langue comme option. Pour cela il faut éditer
+ce fichier <code>/src/js/helpers/translate.js.coffee</code> et rajouter <code>fr: &quot;French&quot;</code> aux langues dans <code>getLanguages</code>.</p>
+<h3 id="dupliquez-la-structure-de-fichier-et-de-r-pertoire-de-en-">Dupliquez la structure de fichier et de répertoire de <code>en</code></h3>
+<p>Copiez les fichiers que vous voulez traduire:</p>
+<ul>
+<li><strong>Strings:</strong> Copiez <code>/src/_strings/en.po</code> dans <code>/src/_strings/fr.po</code></li>
+<li><strong>Pages:</strong> Copiez <code>/src/en/readme.md</code> dans <code>/src/fr/readme.md</code></li>
+</ul>
+<h2 id="testez">Testez</h2>
+<p>Pour tester vous devez générer une nouvelle version de l&#39;application, cependant si vous suivez une structure
+ déjà existante cela n&#39;est pas forcément nécessaire.</p>
+<p>Si vous voulez <strong>vraiment</strong> tester votre langue dans l&#39;application, il faut :</p>
+<ol>
+<li>Vous assurer que <code>nodejs</code>, <code>npm</code> sont installés</li>
+<li><code>cd /chorus/folder</code></li>
+<li><code>npm install</code> (seulement la première fois)</li>
+<li><code>grunt lang</code> (cela va reconstruire les dichiers de langue dans le répertoire <code>dist/lang</code>)</li>
+<li>Rafraîchir Chorus</li>
+</ol>
+<h2 id="solution-de-repli">Solution de repli</h2>
+<p>Les traductions doivent se rabattre sur l&#39;anglais sauf si <code>msgid</code> est défini dans le fichier
+<code>CODE_LANG.po</code> ou si une page <code>LANG_CODE/PAGE.md</code> existe.</p>
+<h2 id="proposez-une-mise-jour">Proposez une mise à jour</h2>
+<p>Envoyer une <em>pull request</em> sur <a href="https://github.com/xbmc/chorus2">GitHub</a> sur une nouvelle branche est
+la meilleure manière. Je peux envisager des mises à jour par d&#39;autres méthodes.</p>

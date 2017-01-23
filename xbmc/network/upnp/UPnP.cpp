@@ -33,6 +33,7 @@
 #include "UPnPSettings.h"
 #include "utils/URIUtils.h"
 #include "Application.h"
+#include "ServiceBroker.h"
 #include "messaging/ApplicationMessenger.h"
 #include "network/Network.h"
 #include "utils/log.h"
@@ -65,7 +66,7 @@ NPT_SET_LOCAL_LOGGER("xbmc.upnp")
 DLNA_ORG_PS = 'DLNA.ORG_PS'
 DLNA_ORG_PS_VAL = '1'
 
-# Convertion Indicator
+# Conversion Indicator
 #    1 transcoded
 #    0 not transcoded
 DLNA_ORG_CI = 'DLNA.ORG_CI'
@@ -214,7 +215,7 @@ public:
             path += id.c_str();
         }
 
-        CLog::Log(LOGDEBUG, "UPNP: notfified container update %s", (const char*)path);
+        CLog::Log(LOGDEBUG, "UPNP: notified container update %s", (const char*)path);
         CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
         message.SetStringParam(path.GetChars());
         g_windowManager.SendThreadMessage(message);
@@ -243,13 +244,19 @@ public:
         NPT_String curr_value;
         NPT_String new_value;
 
-        if (item.GetVideoInfoTag()->m_resumePoint.timeInSeconds != bookmark.timeInSeconds) {
+        if (item.GetVideoInfoTag()->GetResumePoint().timeInSeconds != bookmark.timeInSeconds) {
             CLog::Log(LOGDEBUG, "UPNP: Updating resume point for item %s", path.c_str());
             long time = (long)bookmark.timeInSeconds;
             if (time < 0) time = 0;
             curr_value.Append(NPT_String::Format("<upnp:lastPlaybackPosition>%ld</upnp:lastPlaybackPosition>",
-                                                 (long)item.GetVideoInfoTag()->m_resumePoint.timeInSeconds));
+                                                 (long)item.GetVideoInfoTag()->GetResumePoint().timeInSeconds));
+            curr_value += "<xbmc:lastPlayerState>";
+            PLT_Didl::AppendXmlEscape(curr_value, item.GetVideoInfoTag()->GetResumePoint().playerState.c_str());
+            curr_value += "</xbmc:lastPlayerState>";
             new_value.Append(NPT_String::Format("<upnp:lastPlaybackPosition>%ld</upnp:lastPlaybackPosition>", time));
+            new_value += "<xbmc:lastPlayerState>";
+            PLT_Didl::AppendXmlEscape(new_value, bookmark.playerState.c_str());
+            new_value += "</xbmc:lastPlayerState>";
         }
         if (updatePlayCount) {
             CLog::Log(LOGDEBUG, "UPNP: Marking video item %s as watched", path.c_str());
@@ -636,7 +643,7 @@ CUPnP::CreateServer(int port /* = 0 */)
     // but it doesn't work anyways as it requires multicast for XP to detect us
     device->m_PresentationURL =
         NPT_HttpUrl(m_IP.c_str(),
-                    CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_WEBSERVERPORT),
+                    CServiceBroker::GetSettings().GetInt(CSettings::SETTING_SERVICES_WEBSERVERPORT),
                     "/").ToString();
 
     device->m_ModelName        = "Kodi";
@@ -719,7 +726,7 @@ CUPnP::CreateRenderer(int port /* = 0 */)
 
     device->m_PresentationURL =
         NPT_HttpUrl(m_IP.c_str(),
-                    CSettings::GetInstance().GetInt(CSettings::SETTING_SERVICES_WEBSERVERPORT),
+                    CServiceBroker::GetSettings().GetInt(CSettings::SETTING_SERVICES_WEBSERVERPORT),
                     "/").ToString();
     device->m_ModelName        = "Kodi";
     device->m_ModelNumber      = CSysInfo::GetVersion().c_str();

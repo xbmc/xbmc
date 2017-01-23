@@ -22,6 +22,7 @@
 #include "system.h"
 #include "GUIWindowFullScreen.h"
 #include "Application.h"
+#include "ServiceBroker.h"
 #include "messaging/ApplicationMessenger.h"
 #include "GUIInfoManager.h"
 #include "guilib/GUIProgressControl.h"
@@ -104,7 +105,7 @@ CGUIWindowFullScreen::~CGUIWindowFullScreen(void)
 
 bool CGUIWindowFullScreen::OnAction(const CAction &action)
 {
-  if (CSettings::GetInstance().GetBool(CSettings::SETTING_PVRPLAYBACK_CONFIRMCHANNELSWITCH) &&
+  if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRPLAYBACK_CONFIRMCHANNELSWITCH) &&
       g_infoManager.IsPlayerChannelPreviewActive() &&
       (action.GetID() == ACTION_SELECT_ITEM || CButtonTranslator::GetInstance().GetGlobalAction(action.GetButtonCode()).GetID() == ACTION_SELECT_ITEM))
   {
@@ -260,7 +261,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 
       CGUIWindow::OnMessage(message);
 
-      CSettings::GetInstance().Save();
+      CServiceBroker::GetSettings().Save();
 
       CSingleLock lock (g_graphicsContext);
       g_graphicsContext.SetFullScreenVideo(false);
@@ -413,6 +414,7 @@ void CGUIWindowFullScreen::RenderEx()
   CGUIWindow::RenderEx();
   g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetVideoResolution(), false);
   g_application.m_pPlayer->Render(false, 255, false);
+  g_graphicsContext.SetRenderingResolution(m_coordsRes, m_needsScaling);
 }
 
 void CGUIWindowFullScreen::SeekChapter(int iChapter)

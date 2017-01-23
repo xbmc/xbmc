@@ -24,13 +24,17 @@
  *
  */
 
+#include <map>
 #include <memory>
+#include <string>
 #include <utility>
 #include <vector>
 
 #include "addons/IAddon.h"
+#include "epg/EpgTypes.h"
 #include "guilib/GUIListItem.h"
 #include "GUIPassword.h"
+#include "pvr/PVRTypes.h"
 #include "threads/CriticalSection.h"
 #include "utils/IArchivable.h"
 #include "utils/ISerializable.h"
@@ -43,23 +47,11 @@ namespace MUSIC_INFO
   class CMusicInfoTag;
 }
 class CVideoInfoTag;
-namespace EPG
-{
-  class CEpgInfoTag;
-  typedef std::shared_ptr<EPG::CEpgInfoTag> CEpgInfoTagPtr;
-}
-namespace PVR
-{
-  class CPVRChannel;
-  class CPVRRecording;
-  class CPVRTimerInfoTag;
-  class CPVRRadioRDSInfoTag;
-  typedef std::shared_ptr<PVR::CPVRRecording> CPVRRecordingPtr;
-  typedef std::shared_ptr<PVR::CPVRChannel> CPVRChannelPtr;
-  typedef std::shared_ptr<PVR::CPVRTimerInfoTag> CPVRTimerInfoTagPtr;
-  typedef std::shared_ptr<PVR::CPVRRadioRDSInfoTag> CPVRRadioRDSInfoTagPtr;
-}
 class CPictureInfoTag;
+namespace GAME
+{
+  class CGameInfoTag;
+}
 
 class CAlbum;
 class CArtist;
@@ -80,6 +72,8 @@ typedef std::shared_ptr<const IEvent> EventPtr;
 #define STARTOFFSET_RESUME (-1)
 
 class CMediaSource;
+
+class CBookmark;
 
 enum EFileFolderType {
   EFILEFOLDER_TYPE_ALWAYS     = 1<<0,
@@ -182,6 +176,13 @@ public:
    */
   bool IsAudio() const;
 
+  /*!
+   \brief Check whether an item is 'deleted' (for example, a trashed pvr recording).
+   \return true if item is 'deleted', false otherwise.
+   */
+  bool IsDeleted() const;
+
+  bool IsGame() const;
   bool IsCUESheet() const;
   bool IsInternetStream(const bool bStrictCheck = false) const;
   bool IsPlayList() const;
@@ -242,8 +243,8 @@ public:
   void SetFileSizeLabel();
   virtual void SetLabel(const std::string &strLabel);
   int GetVideoContentType() const; /* return VIDEODB_CONTENT_TYPE, but don't want to include videodb in this header */
-  bool IsLabelPreformated() const { return m_bLabelPreformated; }
-  void SetLabelPreformated(bool bYesNo) { m_bLabelPreformated=bYesNo; }
+  bool IsLabelPreformatted() const { return m_bLabelPreformated; }
+  void SetLabelPreformatted(bool bYesNo) { m_bLabelPreformated=bYesNo; }
   bool SortsOnTop() const { return m_specialSort == SortSpecialOnTop; }
   bool SortsOnBottom() const { return m_specialSort == SortSpecialOnBottom; }
   void SetSpecialSort(SortSpecial sort) { m_specialSort = sort; }
@@ -260,17 +261,11 @@ public:
     return m_musicInfoTag;
   }
 
-  inline bool HasVideoInfoTag() const
-  {
-    return m_videoInfoTag != NULL;
-  }
+  bool HasVideoInfoTag() const;
 
   CVideoInfoTag* GetVideoInfoTag();
 
-  inline const CVideoInfoTag* GetVideoInfoTag() const
-  {
-    return m_videoInfoTag;
-  }
+  const CVideoInfoTag* GetVideoInfoTag() const;
 
   inline bool HasEPGInfoTag() const
   {
@@ -333,6 +328,12 @@ public:
   }
 
   /*!
+   \brief return the item to play. will be almost 'this', but can be different (e.g. "Play recording" from PVR EPG grid window)
+   \return the item to play
+   */
+  CFileItem GetItemToPlay() const;
+
+  /*!
    \brief Test if this item has a valid resume point set.
    \return True if this item has a resume point and it is set, false otherwise.
    */
@@ -343,6 +344,14 @@ public:
    \return The time in seconds from the start to resume playing from.
    */
   double GetCurrentResumeTime() const;
+
+  /*!
+   \brief Return the current resume time and part.
+   \param startOffset will be filled with the resume time offset in seconds if item has a resume point set, is unchanged otherwise
+   \param partNumber will be filled with the part number if item has a resume point set, is unchanged otherwise
+   \return True if the item has a resume point set, false otherwise.
+   */
+  bool GetCurrentResumeTimeAndPartNumber(int& startOffset, int& partNumber) const;
 
   inline bool HasPictureInfoTag() const
   {
@@ -356,6 +365,18 @@ public:
 
   bool HasAddonInfo() const { return m_addonInfo != nullptr; }
   const std::shared_ptr<const ADDON::IAddon> GetAddonInfo() const { return m_addonInfo; }
+
+  inline bool HasGameInfoTag() const
+  {
+    return m_gameInfoTag != NULL;
+  }
+
+  GAME::CGameInfoTag* GetGameInfoTag();
+
+  inline const GAME::CGameInfoTag* GetGameInfoTag() const
+  {
+    return m_gameInfoTag;
+  }
 
   CPictureInfoTag* GetPictureInfoTag();
 
@@ -427,6 +448,7 @@ public:
   std::string FindTrailer() const;
 
   virtual bool LoadMusicTag();
+  virtual bool LoadGameTag();
 
   /* Returns the content type of this item if known */
   const std::string& GetMimeType() const { return m_mimetype; }
@@ -529,6 +551,12 @@ private:
    */
   void Initialize();
 
+  /*!
+   \brief Return the current resume point for this item.
+   \return The resume point.
+   */
+  CBookmark GetResumePoint() const;
+
   std::string m_strPath;            ///< complete path to item
 
   SortSpecial m_specialSort;
@@ -547,6 +575,7 @@ private:
   PVR::CPVRRadioRDSInfoTagPtr m_pvrRadioRDSInfoTag;
   CPictureInfoTag* m_pictureInfoTag;
   std::shared_ptr<const ADDON::IAddon> m_addonInfo;
+  GAME::CGameInfoTag* m_gameInfoTag;
   EventPtr m_eventLogEntry;
   bool m_bIsAlbum;
 
@@ -723,6 +752,13 @@ public:
   const std::string &GetContent() const { return m_content; };
 
   void ClearSortState();
+
+  VECFILEITEMS::const_iterator begin() { return m_items.cbegin(); }
+  VECFILEITEMS::const_iterator end() { return m_items.cend(); }
+  VECFILEITEMS::const_iterator begin() const { return m_items.begin(); }
+  VECFILEITEMS::const_iterator end() const { return m_items.end(); }
+  VECFILEITEMS::const_iterator cbegin() const { return m_items.begin(); }
+  VECFILEITEMS::const_iterator cend() const { return m_items.end(); }
 private:
   void Sort(FILEITEMLISTCOMPARISONFUNC func);
   void FillSortFields(FILEITEMFILLFUNC func);

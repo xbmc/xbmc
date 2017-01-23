@@ -84,6 +84,10 @@ msgctxt "#31045"
 msgid "REWIND"
 msgstr "SPÄŤ"
 
+msgctxt "#31046"
+msgid "Play speed"
+msgstr "Rýchlosť prehrávania"
+
 msgctxt "#31049"
 msgid "End Time"
 msgstr "Čas konca"
@@ -141,8 +145,8 @@ msgid "Data provider"
 msgstr "Poskytovateľ dát"
 
 msgctxt "#31309"
-msgid "Memory Used:"
-msgstr "Použitá pamäť:"
+msgid "System Memory Used:"
+msgstr "Použitá systémová pamäť:"
 
 msgctxt "#31320"
 msgid "Last Logged In"
@@ -192,6 +196,10 @@ msgctxt "#31408"
 msgid "Configure actions that can be used during playback · Configure how media content is played"
 msgstr "Konfigurovať akcie, ktoré je možné použiť počas prehrávania · Konfigurovať ako sa má prehrávať mediálny obsah"
 
+msgctxt "#31409"
+msgid "Configure library sources · Show the media lists display content · Configure how library lists are navigated"
+msgstr "Konfigurovať zdroje knižnice · Zobraziť obsah zobrazenia zoznamov médií · Konfigurovať spôsob navigácie v zoznamoch knižnice"
+
 msgctxt "#31410"
 msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
 msgstr "Konfigurovať vzhľad · Konfigurovať región · Konfigurovať ovládanie · Konfigurovať šetrič obrazovky · Konfigurovať hlavný zámok"
@@ -208,21 +216,9 @@ msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Prihlásenie užívateľa[CR]Pokračujte výberom profilu"
 
-msgctxt "#31500"
-msgid "Home Menu Catagory Buttons"
-msgstr "Tlačidlá kategórií hlavného menu"
-
-msgctxt "#31501"
-msgid "Home Page Add-on Quick Links"
-msgstr "Rýchle odkazy rozšírení Úvodnej obrazovky"
-
-msgctxt "#31502"
-msgid "Miscellaneous Options"
-msgstr "Rôzne nastavenia"
-
 msgctxt "#31550"
-msgid "Home Screen Weather Info and button"
-msgstr "Tlačítko a informácie o počasí Úvodnej obrazovky"
+msgid "Backgrounds"
+msgstr "Pozadia"
 
 msgctxt "#31551"
 msgid "Add-on Shortcut"

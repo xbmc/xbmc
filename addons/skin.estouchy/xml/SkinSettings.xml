@@ -3,9 +3,86 @@
 	<defaultcontrol>91</defaultcontrol>
 	<controls>
 		<include>CommonBackground</include>
+		<control type="group">
+			<include>Window_OpenClose_Animation_Zoom</include>
+			<posx>0</posx>
+			<posy>0</posy>
+			<control type="image">
+				<description>Menu Panel</description>
+				<posx>-5</posx>
+				<posy>-5</posy>
+				<width>400</width>
+				<height>970</height>
+				<texture>panel.png</texture>
+				<bordertexture border="6">panel_shadow.png</bordertexture>
+				<bordersize>5</bordersize>
+			</control>
+			<control type="grouplist" id="9">
+				<description>button area</description>
+				<posx>0</posx>
+				<posy>130</posy>
+				<width>390</width>
+				<height>720</height>
+				<itemgap>-1</itemgap>
+				<onleft>9</onleft>
+				<onright>9</onright>
+				<onup>2</onup>
+				<ondown>2</ondown>
+				<control type="button" id="91">
+					<description>Home Button</description>
+					<width>390</width>
+					<height>80</height>
+					<aligny>center</aligny>
+					<font>font24_title</font>
+					<textcolor>white</textcolor>
+					<texturefocus>list_focus.png</texturefocus>
+					<texturenofocus></texturenofocus>
+					<pulseonselect>false</pulseonselect>
+					<label>31548</label>
+					<textoffsetx>20</textoffsetx>
+					<onfocus>Skin.SetString(SkinSettings,1)</onfocus>
+				</control>
+				<control type="button" id="92">
+					<description>Addon Button</description>
+					<width>390</width>
+					<height>80</height>
+					<aligny>center</aligny>
+					<font>font24_title</font>
+					<textcolor>white</textcolor>
+					<texturefocus>list_focus.png</texturefocus>
+					<texturenofocus></texturenofocus>
+					<pulseonselect>false</pulseonselect>
+					<label>31549</label>
+					<textoffsetx>20</textoffsetx>
+					<onfocus>Skin.SetString(SkinSettings,2)</onfocus>
+				</control>
+				<control type="button" id="93">
+					<description>Background Button</description>
+					<width>390</width>
+					<height>80</height>
+					<aligny>center</aligny>
+					<font>font24_title</font>
+					<textcolor>white</textcolor>
+					<texturefocus>list_focus.png</texturefocus>
+					<texturenofocus></texturenofocus>
+					<pulseonselect>false</pulseonselect>
+					<label>31550</label>
+					<textoffsetx>20</textoffsetx>
+					<onfocus>Skin.SetString(SkinSettings,3)</onfocus>
+				</control>
+			</control>
+			<include content="SkinSettingsContent" condition="String.IsEqual(Skin.AspectRatio,16:9)">
+				<param name="panel-width">1316</param>
+				<param name="textbox-width">1286</param>
+			</include>
+			<include content="SkinSettingsContent" condition="String.IsEqual(Skin.AspectRatio,4:3)">
+				<param name="panel-width">890</param>
+				<param name="textbox-width">860</param>
+			</include>
+		</control>
 		<include>Header</include>
 		<include>CommonNowPlaying</include>
-		<include>Header</include>
+		<include>Footer</include>
 		<control type="label">
 			<description>Window label</description>
 			<include>MediaWindowTitleCommons</include>
@@ -27,523 +104,5 @@
 				</item>
 			</content>
 		</control>
-		<control type="group">
-			<include>Window_OpenClose_Animation_Zoom</include>
-			<include>16x9_xPos_Relocation</include>
-			<posx>30</posx>
-			<posy>140</posy>
-			<control type="image">
-				<posx>0</posx>
-				<posy>0</posy>
-				<width>290</width>
-				<height>720</height>
-				<texture>panel.png</texture>
-			</control>
-			<control type="grouplist" id="9">
-				<description>button area</description>
-				<posx>0</posx>
-				<posy>0</posy>
-				<width>290</width>
-				<height>720</height>
-				<itemgap>-1</itemgap>
-				<onleft>9</onleft>
-				<onright>9</onright>
-				<onup>2</onup>
-				<ondown>2</ondown>
-				<control type="button" id="91">
-					<description>Home Button</description>
-					<width>290</width>
-					<height>80</height>
-					<aligny>center</aligny>
-					<font>font24_title</font>
-					<textcolor>white</textcolor>
-					<texturefocus>list_focus.png</texturefocus>
-					<texturenofocus border="40,0,40,5">list_nofocus.png</texturenofocus>
-					<pulseonselect>false</pulseonselect>
-					<label>10000</label>
-					<textoffsetx>20</textoffsetx>
-					<onfocus>Skin.SetString(SkinSettings,1)</onfocus>
-				</control>
-				<control type="button" id="92">
-					<description>Addon Button</description>
-					<width>290</width>
-					<height>80</height>
-					<aligny>center</aligny>
-					<font>font24_title</font>
-					<textcolor>white</textcolor>
-					<texturefocus>list_focus.png</texturefocus>
-					<texturenofocus border="40,0,40,5">list_nofocus.png</texturenofocus>
-					<pulseonselect>false</pulseonselect>
-					<label>24001</label>
-					<textoffsetx>20</textoffsetx>
-					<onfocus>Skin.SetString(SkinSettings,2)</onfocus>
-				</control>
-			</control>
-			<control type="image">
-				<posx>310</posx>
-				<posy>0</posy>
-				<width>880</width>
-				<height>720</height>
-				<texture border="20">panel.png</texture>
-			</control>
-			<control type="grouplist" id="100">
-				<description>control area</description>
-				<posx>310</posx>
-				<posy>0</posy>
-				<width>880</width>
-				<height>720</height>
-				<pagecontrol>60</pagecontrol>
-				<itemgap>-1</itemgap>
-				<onup>100</onup>
-				<ondown>9002</ondown>
-				<onleft>9</onleft>
-				<onright>60</onright>
-				<visible>Skin.String(SkinSettings,1)</visible>
-				<control type="label" id="101">
-					<width>880</width>
-					<height>80</height>
-					<align>center</align>
-					<aligny>center</aligny>
-					<font>font24_title</font>
-					<textcolor>white</textcolor>
-					<label>31500</label>
-					<textoffsetx>20</textoffsetx>
-				</control>
-				<control type="image">
-					<posx>0</posx>
-					<posy>60</posy>
-					<width>880</width>
-					<height>2</height>
-					<texture border="2">separator.png</texture>
-				</control>
-				<control type="radiobutton" id="102">
-					<description>Show LiveTV</description>
-					<width>880</width>
-					<height>80</height>
-					<aligny>center</aligny>
-					<font>font24_title</font>
-					<textcolor>white</textcolor>
-					<texturefocus>list_focus.png</texturefocus>
-					<texturenofocus border="40,0,40,5">list_nofocus.png</texturenofocus>
-					<pulseonselect>false</pulseonselect>
-					<label>$LOCALIZE[31556]</label>
-					<onclick>Skin.ToggleSetting(HideHomeButtonLiveTV)</onclick>
-					<selected>!Skin.HasSetting(HideHomeButtonLiveTV)</selected>
-					<enable>System.HasPVRAddon</enable>
-					<textoffsetx>20</textoffsetx>
-				</control>
-				<control type="radiobutton" id="103">
-					<description>Show Radio</description>
-					<width>880</width>
-					<height>80</height>
-					<aligny>center</aligny>
-					<font>font24_title</font>
-					<textcolor>white</textcolor>
-					<texturefocus>list_focus.png</texturefocus>
-					<texturenofocus border="40,0,40,5">list_nofocus.png</texturenofocus>
-					<pulseonselect>false</pulseonselect>
-					<label>$LOCALIZE[19021]</label>
-					<onclick>Skin.ToggleSetting(HideHomeButtonRadio)</onclick>
-					<selected>!Skin.HasSetting(HideHomeButtonRadio)</selected>
-					<enable>System.HasPVRAddon</enable>
-					<textoffsetx>20</textoffsetx>
-				</control>
-				<control type="radiobutton" id="104">
-					<description>Hide Videos</description>
-					<width>880</width>
-					<height>80</height>
-					<aligny>center</aligny>
-					<font>font24_title</font>
-					<textcolor>white</textcolor>
-					<texturefocus>list_focus.png</texturefocus>
-					<texturenofocus border="40,0,40,5">list_nofocus.png</texturenofocus>
-					<pulseonselect>false</pulseonselect>
-					<label>$LOCALIZE[3]</label>
-					<onclick>Skin.ToggleSetting(HideHomeButtonVideo)</onclick>
-					<selected>!Skin.HasSetting(HideHomeButtonVideo)</selected>
-					<textoffsetx>20</textoffsetx>
-				</control>
-				<control type="radiobutton" id="105">
-					<description>Hide Movies</description>
-					<width>880</width>
-					<height>80</height>
-					<aligny>center</aligny>
-					<font>font24_title</font>
-					<textcolor>white</textcolor>
-					<texturefocus>list_focus.png</texturefocus>
-					<texturenofocus border="40,0,40,5">list_nofocus.png</texturenofocus>
-					<pulseonselect>false</pulseonselect>
-					<label>$LOCALIZE[20342]</label>
-					<onclick>Skin.ToggleSetting(HideHomeButtonMovies)</onclick>
-					<selected>!Skin.HasSetting(HideHomeButtonMovies)</selected>
-					<textoffsetx>20</textoffsetx>
-					<enable>Library.HasContent(Movies)</enable>
-				</control>
-				<control type="radiobutton" id="106">
-					<description>Hide TVShows</description>
-					<width>880</width>
-					<height>80</height>
-					<aligny>center</aligny>
-					<font>font24_title</font>
-					<textcolor>white</textcolor>
-					<texturefocus>list_focus.png</texturefocus>
-					<texturenofocus border="40,0,40,5">list_nofocus.png</texturenofocus>
-					<pulseonselect>false</pulseonselect>
-					<label>$LOCALIZE[20343]</label>
-					<onclick>Skin.ToggleSetting(HideHomeButtonTVShows)</onclick>
-					<selected>!Skin.HasSetting(HideHomeButtonTVShows)</selected>
-					<textoffsetx>20</textoffsetx>
-					<enable>Library.HasContent(TVShows)</enable>
-				</control>
-				<control type="radiobutton" id="107">
-					<description>Hide Music</description>
-					<width>880</width>
-					<height>80</height>
-					<aligny>center</aligny>
-					<font>font24_title</font>
-					<textcolor>white</textcolor>
-					<texturefocus>list_focus.png</texturefocus>
-					<texturenofocus border="40,0,40,5">list_nofocus.png</texturenofocus>
-					<pulseonselect>false</pulseonselect>
-					<label>$LOCALIZE[2]</label>
-					<onclick>Skin.ToggleSetting(HideHomeButtonMusic)</onclick>
-					<selected>!Skin.HasSetting(HideHomeButtonMusic)</selected>
-					<textoffsetx>20</textoffsetx>
-				</control>
-				<control type="radiobutton" id="108">
-					<description>Hide Pictures</description>
-					<width>880</width>
-					<height>80</height>
-					<aligny>center</aligny>
-					<font>font24_title</font>
-					<textcolor>white</textcolor>
-					<texturefocus>list_focus.png</texturefocus>
-					<texturenofocus border="40,0,40,5">list_nofocus.png</texturenofocus>
-					<pulseonselect>false</pulseonselect>
-					<label>$LOCALIZE[1]</label>
-					<onclick>Skin.ToggleSetting(HideHomeButtonPictures)</onclick>
-					<selected>!Skin.HasSetting(HideHomeButtonPictures)</selected>
-					<textoffsetx>20</textoffsetx>
-				</control>
-				<control type="radiobutton" id="109">
-					<description>Hide Programs</description>
-					<width>880</width>
-					<height>80</height>
-					<aligny>center</aligny>
-					<font>font24_title</font>
-					<textcolor>white</textcolor>
-					<texturefocus>list_focus.png</texturefocus>
-					<texturenofocus border="40,0,40,5">list_nofocus.png</texturenofocus>
-					<pulseonselect>false</pulseonselect>
-					<label>$LOCALIZE[0]</label>
-					<onclick>Skin.ToggleSetting(HideHomeButtonPrograms)</onclick>
-					<selected>!Skin.HasSetting(HideHomeButtonPrograms)</selected>
-					<textoffsetx>20</textoffsetx>
-				</control>
-				<control type="label" id="110">
-					<width>880</width>
-					<height>80</height>
-					<align>center</align>
-					<aligny>center</aligny>
-					<font>font24_title</font>
-					<textcolor>white</textcolor>
-					<label>31502</label>
-					<textoffsetx>20</textoffsetx>
-				</control>
-				<control type="image">
-					<posx>0</posx>
-					<posy>60</posy>
-					<width>880</width>
-					<height>2</height>
-					<texture border="2">separator.png</texture>
-				</control>
-				<control type="radiobutton" id="111">
-					<description>Show Weather info and button</description>
-					<width>880</width>
-					<height>80</height>
-					<aligny>center</aligny>
-					<font>font24_title</font>
-					<textcolor>white</textcolor>
-					<texturefocus>list_focus.png</texturefocus>
-					<texturenofocus border="40,0,40,5">list_nofocus.png</texturenofocus>
-					<pulseonselect>false</pulseonselect>
-					<label>$LOCALIZE[31550]</label>
-					<onclick>Skin.ToggleSetting(HideHomeButtonWeather)</onclick>
-					<selected>!Skin.HasSetting(HideHomeButtonWeather)</selected>
-					<textoffsetx>20</textoffsetx>
-				</control>
-				<control type="radiobutton" id="112">
-					<description>Use custom background</description>
-					<width>880</width>
-					<height>80</height>
-					<aligny>center</aligny>
-					<font>font24_title</font>
-					<textcolor>white</textcolor>
-					<texturefocus>list_focus.png</texturefocus>
-					<texturenofocus border="40,0,40,5">list_nofocus.png</texturenofocus>
-					<pulseonselect>false</pulseonselect>
-					<label>$LOCALIZE[31553]</label>
-					<onclick>Skin.ToggleSetting(UseCustomBackground)</onclick>
-					<selected>Skin.HasSetting(UseCustomBackground)</selected>
-					<textoffsetx>20</textoffsetx>
-				</control>
-				<control type="button" id="113">
-					<width>880</width>
-					<height>80</height>
-					<aligny>center</aligny>
-					<font>font24_title</font>
-					<textcolor>white</textcolor>
-					<texturefocus>list_focus.png</texturefocus>
-					<texturenofocus border="40,0,40,5">list_nofocus.png</texturenofocus>
-					<pulseonselect>false</pulseonselect>
-					<label>- $LOCALIZE[31554]</label>
-					<label2>$INFO[Skin.String(CustomBackground)]</label2>
-					<onclick>Skin.SetImage(CustomBackground)</onclick>
-					<enable>Skin.HasSetting(UseCustomBackground)</enable>
-					<textoffsetx>20</textoffsetx>
-				</control>
-				<control type="radiobutton" id="114">
-					<description>Hide video background</description>
-					<width>880</width>
-					<height>80</height>
-					<aligny>center</aligny>
-					<font>font24_title</font>
-					<textcolor>white</textcolor>
-					<texturefocus>list_focus.png</texturefocus>
-					<texturenofocus border="40,0,40,5">list_nofocus.png</texturenofocus>
-					<pulseonselect>false</pulseonselect>
-					<label>$LOCALIZE[31557]</label>
-					<onclick>Skin.ToggleSetting(HideVideoBackground)</onclick>
-					<selected>Skin.HasSetting(HideVideoBackground)</selected>
-					<textoffsetx>20</textoffsetx>
-				</control>
-				<control type="radiobutton" id="115">
-					<description>Hide viz background</description>
-					<width>880</width>
-					<height>80</height>
-					<aligny>center</aligny>
-					<font>font24_title</font>
-					<textcolor>white</textcolor>
-					<texturefocus>list_focus.png</texturefocus>
-					<texturenofocus border="40,0,40,5">list_nofocus.png</texturenofocus>
-					<pulseonselect>false</pulseonselect>
-					<label>$LOCALIZE[31558]</label>
-					<onclick>Skin.ToggleSetting(HideVizBackground)</onclick>
-					<selected>Skin.HasSetting(HideVizBackground)</selected>
-					<textoffsetx>20</textoffsetx>
-				</control>
-			</control>
-			<control type="grouplist" id="200">
-				<description>control area</description>
-				<posx>310</posx>
-				<posy>0</posy>
-				<width>880</width>
-				<height>720</height>
-				<pagecontrol>60</pagecontrol>
-				<itemgap>-1</itemgap>
-				<onup>200</onup>
-				<ondown>9002</ondown>
-				<onleft>9</onleft>
-				<onright>60</onright>
-				<visible>Skin.String(SkinSettings,2)</visible>
-				<control type="label" id="201">
-					<width>880</width>
-					<height>80</height>
-					<align>center</align>
-					<aligny>center</aligny>
-					<font>font24_title</font>
-					<textcolor>white</textcolor>
-					<label>31501</label>
-				</control>
-				<control type="image">
-					<posx>0</posx>
-					<posy>60</posy>
-					<width>880</width>
-					<height>2</height>
-					<texture border="2">separator.png</texture>
-				</control>
-				<control type="button" id="202">
-					<description>Home Addon Button</description>
-					<width>880</width>
-					<height>80</height>
-					<aligny>center</aligny>
-					<font>font24_title</font>
-					<textcolor>white</textcolor>
-					<texturefocus>list_focus.png</texturefocus>
-					<texturenofocus border="40,0,40,5">list_nofocus.png</texturenofocus>
-					<pulseonselect>false</pulseonselect>
-					<label>$LOCALIZE[31551] 1</label>
-					<label2>$INFO[system.addontitle(Skin.String(HomeAddonButton1))]</label2>
-					<textoffsetx>20</textoffsetx>
-					<onclick>Skin.SetAddon(HomeAddonButton1,xbmc.addon.video,xbmc.addon.audio,xbmc.addon.image,xbmc.python.script)</onclick>
-				</control>
-				<control type="button" id="203">
-					<description>Home Addon Button</description>
-					<width>880</width>
-					<height>80</height>
-					<aligny>center</aligny>
-					<font>font24_title</font>
-					<textcolor>white</textcolor>
-					<texturefocus>list_focus.png</texturefocus>
-					<texturenofocus border="40,0,40,5">list_nofocus.png</texturenofocus>
-					<pulseonselect>false</pulseonselect>
-					<label>$LOCALIZE[31551] 2</label>
-					<label2>$INFO[system.addontitle(Skin.String(HomeAddonButton2))]</label2>
-					<textoffsetx>20</textoffsetx>
-					<onclick>Skin.SetAddon(HomeAddonButton2,xbmc.addon.video,xbmc.addon.audio,xbmc.addon.image,xbmc.python.script)</onclick>
-				</control>
-				<control type="button" id="204">
-					<description>Home Addon Button</description>
-					<width>880</width>
-					<height>80</height>
-					<aligny>center</aligny>
-					<font>font24_title</font>
-					<textcolor>white</textcolor>
-					<texturefocus>list_focus.png</texturefocus>
-					<texturenofocus border="40,0,40,5">list_nofocus.png</texturenofocus>
-					<pulseonselect>false</pulseonselect>
-					<label>$LOCALIZE[31551] 3</label>
-					<label2>$INFO[system.addontitle(Skin.String(HomeAddonButton3))]</label2>
-					<textoffsetx>20</textoffsetx>
-					<onclick>Skin.SetAddon(HomeAddonButton3,xbmc.addon.video,xbmc.addon.audio,xbmc.addon.image,xbmc.python.script)</onclick>
-				</control>
-				<control type="button" id="205">
-					<description>Home Addon Button</description>
-					<width>880</width>
-					<height>80</height>
-					<aligny>center</aligny>
-					<font>font24_title</font>
-					<textcolor>white</textcolor>
-					<texturefocus>list_focus.png</texturefocus>
-					<texturenofocus border="40,0,40,5">list_nofocus.png</texturenofocus>
-					<pulseonselect>false</pulseonselect>
-					<label>$LOCALIZE[31551] 4</label>
-					<label2>$INFO[system.addontitle(Skin.String(HomeAddonButton4))]</label2>
-					<textoffsetx>20</textoffsetx>
-					<onclick>Skin.SetAddon(HomeAddonButton4,xbmc.addon.video,xbmc.addon.audio,xbmc.addon.image,xbmc.python.script)</onclick>
-				</control>
-				<control type="button" id="206">
-					<description>Home Addon Button</description>
-					<width>880</width>
-					<height>80</height>
-					<aligny>center</aligny>
-					<font>font24_title</font>
-					<textcolor>white</textcolor>
-					<texturefocus>list_focus.png</texturefocus>
-					<texturenofocus border="40,0,40,5">list_nofocus.png</texturenofocus>
-					<pulseonselect>false</pulseonselect>
-					<label>$LOCALIZE[31551] 5</label>
-					<label2>$INFO[system.addontitle(Skin.String(HomeAddonButton5))]</label2>
-					<textoffsetx>20</textoffsetx>
-					<onclick>Skin.SetAddon(HomeAddonButton5,xbmc.addon.video,xbmc.addon.audio,xbmc.addon.image,xbmc.python.script)</onclick>
-				</control>
-				<control type="button" id="207">
-					<description>Home Addon Button</description>
-					<width>880</width>
-					<height>80</height>
-					<aligny>center</aligny>
-					<font>font24_title</font>
-					<textcolor>white</textcolor>
-					<texturefocus>list_focus.png</texturefocus>
-					<texturenofocus border="40,0,40,5">list_nofocus.png</texturenofocus>
-					<pulseonselect>false</pulseonselect>
-					<label>$LOCALIZE[31551] 6</label>
-					<label2>$INFO[system.addontitle(Skin.String(HomeAddonButton6))]</label2>
-					<textoffsetx>20</textoffsetx>
-					<onclick>Skin.SetAddon(HomeAddonButton6,xbmc.addon.video,xbmc.addon.audio,xbmc.addon.image,xbmc.python.script)</onclick>
-				</control>
-				<control type="button" id="208">
-					<description>Home Addon Button</description>
-					<width>880</width>
-					<height>80</height>
-					<aligny>center</aligny>
-					<font>font24_title</font>
-					<textcolor>white</textcolor>
-					<texturefocus>list_focus.png</texturefocus>
-					<texturenofocus border="40,0,40,5">list_nofocus.png</texturenofocus>
-					<pulseonselect>false</pulseonselect>
-					<label>$LOCALIZE[31551] 7</label>
-					<label2>$INFO[system.addontitle(Skin.String(HomeAddonButton7))]</label2>
-					<textoffsetx>20</textoffsetx>
-					<onclick>Skin.SetAddon(HomeAddonButton7,xbmc.addon.video,xbmc.addon.audio,xbmc.addon.image,xbmc.python.script)</onclick>
-				</control>
-				<control type="button" id="209">
-					<description>Home Addon Button</description>
-					<width>880</width>
-					<height>80</height>
-					<aligny>center</aligny>
-					<font>font24_title</font>
-					<textcolor>white</textcolor>
-					<texturefocus>list_focus.png</texturefocus>
-					<texturenofocus border="40,0,40,5">list_nofocus.png</texturenofocus>
-					<pulseonselect>false</pulseonselect>
-					<label>$LOCALIZE[31551] 8</label>
-					<label2>$INFO[system.addontitle(Skin.String(HomeAddonButton8))]</label2>
-					<textoffsetx>20</textoffsetx>
-					<onclick>Skin.SetAddon(HomeAddonButton8,xbmc.addon.video,xbmc.addon.audio,xbmc.addon.image,xbmc.python.script)</onclick>
-				</control>
-				<control type="button" id="210">
-					<description>Home Addon Button</description>
-					<width>880</width>
-					<height>80</height>
-					<aligny>center</aligny>
-					<font>font24_title</font>
-					<textcolor>white</textcolor>
-					<texturefocus>list_focus.png</texturefocus>
-					<texturenofocus border="40,0,40,5">list_nofocus.png</texturenofocus>
-					<pulseonselect>false</pulseonselect>
-					<label>$LOCALIZE[31551] 9</label>
-					<label2>$INFO[system.addontitle(Skin.String(HomeAddonButton9))]</label2>
-					<textoffsetx>20</textoffsetx>
-					<onclick>Skin.SetAddon(HomeAddonButton9,xbmc.addon.video,xbmc.addon.audio,xbmc.addon.image,xbmc.python.script)</onclick>
-				</control>
-				<control type="button" id="211">
-					<description>Home Addon Button</description>
-					<width>880</width>
-					<height>80</height>
-					<aligny>center</aligny>
-					<font>font24_title</font>
-					<textcolor>white</textcolor>
-					<texturefocus>list_focus.png</texturefocus>
-					<texturenofocus border="40,0,40,5">list_nofocus.png</texturenofocus>
-					<pulseonselect>false</pulseonselect>
-					<label>$LOCALIZE[31551] 10</label>
-					<label2>$INFO[system.addontitle(Skin.String(HomeAddonButton10))]</label2>
-					<textoffsetx>20</textoffsetx>
-					<onclick>Skin.SetAddon(HomeAddonButton10,xbmc.addon.video,xbmc.addon.audio,xbmc.addon.image,xbmc.python.script)</onclick>
-				</control>
-				<control type="button" id="212">
-					<description>Home Addon Button</description>
-					<width>880</width>
-					<height>80</height>
-					<aligny>center</aligny>
-					<font>font24_title</font>
-					<textcolor>white</textcolor>
-					<texturefocus>list_focus.png</texturefocus>
-					<texturenofocus border="40,0,40,5">list_nofocus.png</texturenofocus>
-					<pulseonselect>false</pulseonselect>
-					<label>$LOCALIZE[31551] 11</label>
-					<label2>$INFO[system.addontitle(Skin.String(HomeAddonButton11))]</label2>
-					<textoffsetx>20</textoffsetx>
-					<onclick>Skin.SetAddon(HomeAddonButton11,xbmc.addon.video,xbmc.addon.audio,xbmc.addon.image,xbmc.python.script)</onclick>
-				</control>
-				<control type="button" id="213">
-					<description>Home Addon Button</description>
-					<width>880</width>
-					<height>80</height>
-					<aligny>center</aligny>
-					<font>font24_title</font>
-					<textcolor>white</textcolor>
-					<texturefocus>list_focus.png</texturefocus>
-					<texturenofocus border="40,0,40,5">list_nofocus.png</texturenofocus>
-					<pulseonselect>false</pulseonselect>
-					<label>$LOCALIZE[31551] 12</label>
-					<label2>$INFO[system.addontitle(Skin.String(HomeAddonButton12))]</label2>
-					<textoffsetx>20</textoffsetx>
-					<onclick>Skin.SetAddon(HomeAddonButton12,xbmc.addon.video,xbmc.addon.audio,xbmc.addon.image,xbmc.python.script)</onclick>
-				</control>
-			</control>
-		</control>
-		<include>ScrollBarCommons</include>
 	</controls>
 </window>

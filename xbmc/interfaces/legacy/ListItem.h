@@ -83,13 +83,15 @@ namespace XBMCAddon
     public:
 #if !defined SWIG && !defined DOXYGEN_SHOULD_SKIP_THIS
       CFileItemPtr item;
+      bool m_offscreen;
 #endif
 
       ListItem(const String& label = emptyString,
                const String& label2 = emptyString,
                const String& iconImage = emptyString,
                const String& thumbnailImage = emptyString,
-               const String& path = emptyString);
+               const String& path = emptyString,
+               bool offscreen = false);
 
 #ifndef SWIG
       inline ListItem(CFileItemPtr pitem) : item(pitem) {}
@@ -535,7 +537,8 @@ namespace XBMCAddon
       /// |:------------:|:----------------------|
       /// | video        | Video information
       /// | music        | Music information
-      /// | pictures     | Pictures informantion
+      /// | pictures     | Pictures informanion
+      /// | game         | Game information
       ///
       /// @note To set pictures exif info, prepend `exif:` to the label. Exif values must be passed
       ///       as strings, separate value pairs with a comma. <b>(eg. <c>{'exif:resolution': '720,480'}</c></b>
@@ -592,28 +595,36 @@ namespace XBMCAddon
       /// | album         | string (The Joshua Tree)
       /// | artist        | list (['U2'])
       /// | votes         | string (12345 votes)
+      /// | path          | string (/home/user/movie.avi)
       /// | trailer       | string (/home/user/trailer.avi)
       /// | dateadded     | string (%Y-%m-%d %h:%m:%s = 2009-04-05 23:16:04)
       /// | mediatype     | string - "video", "movie", "tvshow", "season", "episode" or "musicvideo"
       /// | dbid          | integer (23) - Only add this for items which are part of the local db. You also need to set the correct 'mediatype'!
       ///
       /// __Music Values__:
-      /// | Info label    | Description                                        |
-      /// |--------------:|:---------------------------------------------------|
-      /// | tracknumber   | integer (8)
-      /// | discnumber    | integer (2)
-      /// | duration      | integer (245) - duration in seconds
-      /// | year          | integer (1998)
-      /// | genre         | string (Rock)
-      /// | album         | string (Pulse)
-      /// | artist        | string (Muse)
-      /// | title         | string (American Pie)
-      /// | rating        | float - range is between 0 and 10
-      /// | userrating    | integer - range is 1..10
-      /// | lyrics        | string (On a dark desert highway...)
-      /// | playcount     | integer (2) - number of times this item has been played
-      /// | lastplayed    | string (%Y-%m-%d %h:%m:%s = 2009-04-05 23:16:04)
-      /// | mediatype     | string - "music", "song", "album", "artist"
+      /// | Info label               | Description                                        |
+      /// |-------------------------:|:---------------------------------------------------|
+      /// | tracknumber              | integer (8)
+      /// | discnumber               | integer (2)
+      /// | duration                 | integer (245) - duration in seconds
+      /// | year                     | integer (1998)
+      /// | genre                    | string (Rock)
+      /// | album                    | string (Pulse)
+      /// | artist                   | string (Muse)
+      /// | title                    | string (American Pie)
+      /// | rating                   | float - range is between 0 and 10
+      /// | userrating               | integer - range is 1..10
+      /// | lyrics                   | string (On a dark desert highway...)
+      /// | playcount                | integer (2) - number of times this item has been played
+      /// | lastplayed               | string (%Y-%m-%d %h:%m:%s = 2009-04-05 23:16:04)
+      /// | mediatype                | string - "music", "song", "album", "artist"
+      /// | dbid                     | integer (23) - Only add this for items which are part of the local db. You also need to set the correct 'mediatype'!
+      /// | listeners                | integer (25614)
+      /// | musicbrainztrackid       | string (cd1de9af-0b71-4503-9f96-9f5efe27923c)
+      /// | musicbrainzartistid      | string (d87e52c5-bb8d-4da8-b941-9f4928627dc8)
+      /// | musicbrainzalbumid       | string (24944755-2f68-3778-974e-f572a9e30108)
+      /// | musicbrainzalbumartistid | string (d87e52c5-bb8d-4da8-b941-9f4928627dc8)
+      /// | comment                  | string (This is a great song)
       ///
       /// __Picture Values__:
       /// | Info label    | Description                                        |
@@ -622,6 +633,17 @@ namespace XBMCAddon
       /// | picturepath   | string (`/home/username/pictures/img001.jpg`)
       /// | exif*         | string (See \ref kodi_pictures_infotag for valid strings)
       ///
+      /// __Game Values__:
+      /// | Info label    | Description                                        |
+      /// |--------------:|:---------------------------------------------------|
+      /// | title         | string (Super Mario Bros.)
+      /// | platform      | string (Atari 2600)
+      /// | genres        | list (["Action","Strategy"])
+      /// | publisher     | string (Nintendo)
+      /// | developer     | string (Square)
+      /// | overview      | string (Long Description)
+      /// | year          | integer (1980)
+      /// | gameclient    | string (game.libretro.fceumm)
       ///
       ///
       ///-----------------------------------------------------------------------
@@ -629,8 +651,9 @@ namespace XBMCAddon
       /// @python_v15 **duration** has to be set in seconds.
       /// @python_v16 Added new label **mediatype**.
       /// @python_v17
-      /// Added labels **setid**, **set**, **imdbnumber**, **code**, **dbid** and **userrating**.
+      /// Added labels **setid**, **set**, **imdbnumber**, **code**, **dbid**, **path** and **userrating**.
       /// Expanded the possible infoLabels for the option **mediatype**.
+      /// @python_v18 Added new **game** type and associated infolabels.
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}

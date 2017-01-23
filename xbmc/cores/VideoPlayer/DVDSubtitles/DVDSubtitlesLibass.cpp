@@ -20,6 +20,7 @@
 
 #include "DVDSubtitlesLibass.h"
 #include "DVDClock.h"
+#include "ServiceBroker.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
 #include "settings/Settings.h"
@@ -76,10 +77,10 @@ CDVDSubtitlesLibass::CDVDSubtitlesLibass()
     return;
 
   //Setting default font to the Arial in \media\fonts (used if FontConfig fails)
-  strPath = URIUtils::AddFileToFolder("special://home/media/Fonts/", CSettings::GetInstance().GetString(CSettings::SETTING_SUBTITLES_FONT));
+  strPath = URIUtils::AddFileToFolder("special://home/media/Fonts/", CServiceBroker::GetSettings().GetString(CSettings::SETTING_SUBTITLES_FONT));
   if (!XFILE::CFile::Exists(strPath))
-    strPath = URIUtils::AddFileToFolder("special://xbmc/media/Fonts/", CSettings::GetInstance().GetString(CSettings::SETTING_SUBTITLES_FONT));
-  int fc = !CSettings::GetInstance().GetBool(CSettings::SETTING_SUBTITLES_OVERRIDEASSFONTS);
+    strPath = URIUtils::AddFileToFolder("special://xbmc/media/Fonts/", CServiceBroker::GetSettings().GetString(CSettings::SETTING_SUBTITLES_FONT));
+  int fc = !CServiceBroker::GetSettings().GetBool(CSettings::SETTING_SUBTITLES_OVERRIDEASSFONTS);
 
   m_dll.ass_set_margins(m_renderer, 0, 0, 0, 0);
   m_dll.ass_set_use_margins(m_renderer, 0);
@@ -160,14 +161,14 @@ ASS_Image* CDVDSubtitlesLibass::RenderImage(int frameWidth, int frameHeight, int
     return NULL;
   }
 
-  double storage_aspact = (double)frameWidth / frameHeight;
+  double storage_aspect = (double)frameWidth / frameHeight;
   m_dll.ass_set_frame_size(m_renderer, frameWidth, frameHeight);
   int topmargin = (frameHeight - videoHeight) / 2;
   int leftmargin = (frameWidth - videoWidth) / 2;
   m_dll.ass_set_margins(m_renderer, topmargin, topmargin, leftmargin, leftmargin);
   m_dll.ass_set_use_margins(m_renderer, useMargin);
   m_dll.ass_set_line_position(m_renderer, position);
-  m_dll.ass_set_aspect_ratio(m_renderer, storage_aspact / g_graphicsContext.GetResInfo().fPixelRatio, storage_aspact);
+  m_dll.ass_set_aspect_ratio(m_renderer, storage_aspect / g_graphicsContext.GetResInfo().fPixelRatio, storage_aspect);
   return m_dll.ass_render_frame(m_renderer, m_track, DVD_TIME_TO_MSEC(pts), changes);
 }
 

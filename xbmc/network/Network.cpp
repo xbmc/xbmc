@@ -23,13 +23,18 @@
 #include <arpa/inet.h>
 
 #include "Network.h"
+#include "ServiceBroker.h"
 #include "messaging/ApplicationMessenger.h"
 #include "network/NetworkServices.h"
+#include "settings/Settings.h"
 #include "utils/log.h"
 #ifdef TARGET_WINDOWS
 #include "utils/SystemInfo.h"
 #include "platform/win32/WIN32Util.h"
 #include "utils/CharsetConverter.h"
+#endif
+#ifdef TARGET_POSIX
+#include "linux/XTimeUtils.h"
 #endif
 #include "utils/StringUtils.h"
 
@@ -549,3 +554,32 @@ int CreateTCPServerSocket(const int port, const bool bindLocal, const int backlo
   return sock;
 }
 
+void CNetwork::WaitForNet()
+{
+  const int timeout = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_POWERMANAGEMENT_WAITFORNETWORK);
+  if (timeout <= 0)
+    return; // wait for network is disabled
+
+  // check if we have at least one network interface to wait for
+  if (!IsAvailable())
+    return;
+
+  CLog::Log(LOGNOTICE, "%s: Waiting for a network interface to come up (Timeout: %d s)", __FUNCTION__, timeout);
+
+  const static int intervalMs = 200;
+  const int numMaxTries = (timeout * 1000) / intervalMs;
+
+  for(int i=0; i < numMaxTries; ++i)
+  {
+    if (i > 0)
+      Sleep(intervalMs);
+
+    if (IsConnected())
+    {
+      CLog::Log(LOGNOTICE, "%s: A network interface is up after waiting %d ms", __FUNCTION__, i * intervalMs);
+      return;
+    }
+  }
+
+  CLog::Log(LOGNOTICE, "%s: No network interface did come up within %d s... Giving up...", __FUNCTION__, timeout);
+}

@@ -21,6 +21,7 @@
 #include "GUIDialogTeletext.h"
 #include "utils/log.h"
 #include "Application.h"
+#include "ServiceBroker.h"
 #include "guilib/GUITexture.h"
 #include "guilib/Texture.h"
 #include "guilib/LocalizeStrings.h"
@@ -177,7 +178,7 @@ void CGUIDialogTeletext::SetCoordinates()
   top = g_graphicsContext.ScaleFinalYCoord(0, 0);
   bottom = g_graphicsContext.ScaleFinalYCoord(0, (float)m_coordsRes.iHeight);
 
-  if (CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_TELETEXTSCALE))
+  if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_TELETEXTSCALE))
   {
     /* Fixed aspect ratio to 4:3 for teletext */
     float width = right - left;

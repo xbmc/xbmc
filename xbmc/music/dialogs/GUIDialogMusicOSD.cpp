@@ -19,6 +19,7 @@
  */
 
 #include "GUIDialogMusicOSD.h"
+#include "ServiceBroker.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
 #include "input/InputManager.h"
@@ -56,8 +57,8 @@ bool CGUIDialogMusicOSD::OnMessage(CGUIMessage &message)
         std::string addonID;
         if (CGUIWindowAddonBrowser::SelectAddonID(ADDON::ADDON_VIZ, addonID, true) == 1)
         {
-          CSettings::GetInstance().SetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION, addonID);
-          CSettings::GetInstance().Save();
+          CServiceBroker::GetSettings().SetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION, addonID);
+          CServiceBroker::GetSettings().Save();
           g_windowManager.SendMessage(GUI_MSG_VISUALISATION_RELOAD, 0, 0);
         }
       }
@@ -91,7 +92,7 @@ bool CGUIDialogMusicOSD::OnAction(const CAction &action)
         for (int i = 1; i <= 10; i++)
           dialog->Add(StringUtils::Format("%s: %i", g_localizeStrings.Get(563).c_str(), i));
 
-        auto track = std::make_shared<CFileItem>(g_application.CurrentFileItem());
+        auto track = g_application.CurrentFileItemPtr();
         dialog->SetSelected(track->GetMusicInfoTag()->GetUserrating());
 
         dialog->Open();

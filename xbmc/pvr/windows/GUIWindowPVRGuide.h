@@ -22,6 +22,7 @@
 #include <atomic>
 #include <memory>
 #include "threads/Thread.h"
+#include "pvr/PVRChannelNumberInputHandler.h"
 #include "GUIWindowPVRBase.h"
 
 class CSetting;
@@ -35,7 +36,7 @@ namespace PVR
 {
   class CPVRRefreshTimelineItemsThread;
 
-  class CGUIWindowPVRGuide : public CGUIWindowPVRBase
+  class CGUIWindowPVRGuide : public CGUIWindowPVRBase, public CPVRChannelNumberInputHandler
   {
   public:
     CGUIWindowPVRGuide(bool bRadio);
@@ -52,6 +53,9 @@ namespace PVR
     virtual void SetInvalid() override;
 
     bool RefreshTimelineItems();
+
+    // CPVRChannelNumberInputHandler implementation
+    void OnInputDone() override;
 
   protected:
     virtual void UpdateSelectedItemPath() override;
@@ -70,16 +74,6 @@ namespace PVR
     bool OnContextButtonBegin(CFileItem *item, CONTEXT_BUTTON button);
     bool OnContextButtonEnd(CFileItem *item, CONTEXT_BUTTON button);
     bool OnContextButtonNow(CFileItem *item, CONTEXT_BUTTON button);
-    bool OnContextButtonInfo(CFileItem *item, CONTEXT_BUTTON button);
-    bool OnContextButtonPlay(CFileItem *item, CONTEXT_BUTTON button);
-    bool OnContextButtonStartRecord(CFileItem *item, CONTEXT_BUTTON button);
-    bool OnContextButtonStopRecord(CFileItem *item, CONTEXT_BUTTON button);
-    bool OnContextButtonDeleteTimer(CFileItem *item, CONTEXT_BUTTON button);
-
-    void GetViewChannelItems(CFileItemList &items);
-    void GetViewNowItems(CFileItemList &items);
-    void GetViewNextItems(CFileItemList &items);
-    void GetViewTimelineItems(CFileItemList &items);
 
     void StartRefreshTimelineItemsThread();
     void StopRefreshTimelineItemsThread();

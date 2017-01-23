@@ -19,8 +19,8 @@
  */
 
 #include "Util.h"
-#include "threads/Atomics.h"
 #include "MMALRenderer.h"
+#include "ServiceBroker.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
 #include "filesystem/File.h"
 #include "settings/AdvancedSettings.h"
@@ -383,7 +383,7 @@ bool CMMALRenderer::CheckConfigurationVout(uint32_t width, uint32_t height, uint
       return false;
     }
 
-    if (!m_queue_render && !CSettings::GetInstance().GetBool("videoplayer.usedisplayasclock"))
+    if (!m_queue_render && !CServiceBroker::GetSettings().GetBool("videoplayer.usedisplayasclock"))
     {
       m_queue_render = mmal_queue_create();
       Create();
@@ -637,7 +637,8 @@ void CMMALRenderer::Run()
         if (m_queue_render)
         {
           mmal_queue_put(m_queue_render, buffer);
-          CLog::Log(LOGDEBUG, "%s::%s send %p to m_queue_render", CLASSNAME, __func__, omvb);
+          if (VERBOSE && g_advancedSettings.CanLogComponent(LOGVIDEO))
+            CLog::Log(LOGDEBUG, "%s::%s send %p to m_queue_render", CLASSNAME, __func__, omvb);
           kept = true;
         }
         else
@@ -645,7 +646,8 @@ void CMMALRenderer::Run()
           CheckConfigurationVout(omvb->m_width, omvb->m_height, omvb->m_aligned_width, omvb->m_aligned_height, omvb->m_encoding);
           if (m_vout_input)
           {
-            CLog::Log(LOGDEBUG, "%s::%s send %p to m_vout_input", CLASSNAME, __func__, omvb);
+            if (VERBOSE && g_advancedSettings.CanLogComponent(LOGVIDEO))
+              CLog::Log(LOGDEBUG, "%s::%s send %p to m_vout_input", CLASSNAME, __func__, omvb);
             MMAL_STATUS_T status = mmal_port_send_buffer(m_vout_input, buffer);
             if (status != MMAL_SUCCESS)
               CLog::Log(LOGERROR, "%s::%s - Failed to send buffer %p to %s (status=0%x %s)", CLASSNAME, __func__, buffer, m_vout_input->name, status, mmal_status_to_string(status));
@@ -764,7 +766,7 @@ int CMMALRenderer::GetImage(YV12Image *image, int source, bool readonly)
       CLog::Log(LOGDEBUG, "%s::%s - invalid: format:%d image:%p source:%d ro:%d", CLASSNAME, __func__, m_format, image, source, readonly);
     return -1;
   }
-  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+  if (VERBOSE && g_advancedSettings.CanLogComponent(LOGVIDEO))
     CLog::Log(LOGDEBUG, "%s::%s - MMAL: image:%p source:%d ro:%d", CLASSNAME, __func__, image, source, readonly);
   return source;
 }
@@ -797,8 +799,12 @@ void CMMALRenderer::Reset()
 
 void CMMALRenderer::Flush()
 {
-  m_iYV12RenderBuffer = 0;
+  CSingleLock lock(m_sharedSection);
   CLog::Log(LOGDEBUG, "%s::%s", CLASSNAME, __func__);
+  if (m_vout_input)
+    mmal_port_flush(m_vout_input);
+  ReleaseBuffers();
+  m_iYV12RenderBuffer = 0;
 }
 
 void CMMALRenderer::Update()

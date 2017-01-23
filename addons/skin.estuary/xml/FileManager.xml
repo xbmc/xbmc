@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<defaultcontrol always="true">20</defaultcontrol>
+	<controls>
+		<include>DefaultBackground</include>
+		<control type="image">
+			<description>Dialog Header image</description>
+			<centerleft>50%</centerleft>
+			<centertop>50%</centertop>
+			<width>68</width>
+			<height>68</height>
+			<texture colordiffuse="button_focus" border="2">icons/file-manager/left-right.png</texture>
+			<animation effect="fade" start="0" end="100" time="300" delay="100">WindowOpen</animation>
+			<animation effect="fade" start="100" end="0" time="160">WindowClose</animation>
+		</control>
+		<control type="group">
+			<left>0</left>
+			<include>OpenClose_Left</include>
+			<include content="ContentPanel">
+				<param name="width" value="872" />
+			</include>
+			<include content="FileManagerPanel">
+				<param name="header_label" value="" />
+				<param name="list_id" value="20" />
+				<param name="scrollbar_id" value="60" />
+				<param name="onleft_id" value="60" />
+				<param name="onright_id" value="21" />
+				<param name="width" value="812" />
+			</include>
+			<control type="scrollbar" id="60">
+				<top>80</top>
+				<left>0</left>
+				<width>12</width>
+				<bottom>80</bottom>
+				<onleft>20</onleft>
+				<onright>20</onright>
+				<orientation>vertical</orientation>
+				<animation effect="zoom" end="50,100" time="300" tween="sine" center="0,0" easing="inout" condition="!Control.HasFocus(60)">conditional</animation>
+				<texturesliderbackground />
+			</control>
+		</control>
+		<control type="group">
+			<width>818</width>
+			<right>0</right>
+			<include>OpenClose_Right</include>
+			<include content="ContentPanel">
+				<param name="width" value="878" />
+				<param name="flipx" value="true" />
+				<param name="left" value="-20" />
+			</include>
+			<include content="FileManagerPanel">
+				<param name="header_id" value="102" />
+				<param name="header_label" value="" />
+				<param name="list_id" value="21" />
+				<param name="scrollbar_id" value="61" />
+				<param name="onleft_id" value="20" />
+				<param name="onright_id" value="61" />
+				<param name="width" value="817" />
+			</include>
+			<control type="scrollbar" id="61">
+				<left>800</left>
+				<animation effect="slide" end="5,0" time="0" condition="true">Conditional</animation>
+				<top>80</top>
+				<width>12</width>
+				<bottom>80</bottom>
+				<onleft>21</onleft>
+				<onright>21</onright>
+				<animation effect="zoom" end="50,100" time="300" tween="sine" center="812,0" easing="inout" condition="!Control.HasFocus(61)">conditional</animation>
+				<texturesliderbackground />
+				<orientation>vertical</orientation>
+			</control>
+		</control>
+		<include content="TopBar">
+			<param name="breadcrumbs_label" value="$LOCALIZE[7]" />
+		</include>
+		<include>BottomBar</include>
+		<control type="group">
+			<bottom>0</bottom>
+			<height>65</height>
+			<animation effect="fade" start="0" end="100" time="400">WindowOpen</animation>
+			<animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
+			<control type="label">
+				<right>730</right>
+				<width>400</width>
+				<height>48</height>
+				<aligny>center</aligny>
+				<align>right</align>
+				<shadowcolor>text_shadow</shadowcolor>
+				<label>$INFO[Container(21).CurrentItem,, / ]$INFO[Container(21).NumItems]</label>
+			</control>
+			<control type="label" id="102">
+				<right>40</right>
+				<width>600</width>
+				<height>48</height>
+				<font>font30_title</font>
+				<align>right</align>
+				<aligny>center</aligny>
+				<label>$PARAM[header_label]</label>
+				<haspath>true</haspath>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="label">
+				<left>730</left>
+				<width>400</width>
+				<height>48</height>
+				<aligny>center</aligny>
+				<shadowcolor>text_shadow</shadowcolor>
+				<label>$INFO[Container(20).CurrentItem,, / ]$INFO[Container(20).NumItems]</label>
+			</control>
+			<control type="label" id="101">
+				<left>40</left>
+				<width>600</width>
+				<height>48</height>
+				<font>font30_title</font>
+				<aligny>center</aligny>
+				<label>$PARAM[header_label]</label>
+				<haspath>true</haspath>
+				<shadowcolor>black</shadowcolor>
+			</control>
+		</control>
+	</controls>
+</window>

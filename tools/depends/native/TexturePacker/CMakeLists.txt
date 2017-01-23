@@ -1,4 +1,4 @@
-list(APPEND CMAKE_MODULE_PATH ${CORE_SOURCE_DIR}/project/cmake/modules)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules)
 
 if(APPLE)
   set(CMAKE_FIND_ROOT_PATH ${NATIVEPREFIX})
@@ -15,7 +15,7 @@ else()
   file(STRINGS ${GIF_INCLUDE_DIR}/gif_lib.h GIFSTRINGS)
   string(REGEX MATCH "GIFLIB_MAJOR ([0-9])" GIFLIB_MAJOR ${GIFSTRINGS})
   if(GIFLIB_MAJOR)
-    separate_arguments(GIFLIB_MAJOR)
+    string(REPLACE " " ";" GIFLIB_MAJOR ${GIFLIB_MAJOR})
     list(GET GIFLIB_MAJOR 1 GIFLIB_MAJOR)
   else()
     set(GIFLIB_MAJOR ${GIF_VERSION})
@@ -33,7 +33,7 @@ set(SOURCES src/md5.cpp
             src/decoder/PNGDecoder.cpp
             src/decoder/GifHelper.cpp
             src/decoder/GIFDecoder.cpp
-            ${CORE_SOURCE_DIR}/xbmc/guilib/XBTF.cpp)
+            ${CMAKE_SOURCE_DIR}/xbmc/guilib/XBTF.cpp)
 
 set(CMAKE_POSITITION_INDEPENDENT_CODE 1)
 
@@ -42,9 +42,9 @@ target_include_directories(TexturePacker
                            PRIVATE ${PNG_INCLUDE_DIRS}
                                     ${JPEG_INCLUDE_DIR}
                                     ${GIF_INCLUDE_DIR}
-                                    ${CORE_SOURCE_DIR}/xbmc
-                                    ${CORE_SOURCE_DIR}/xbmc/${PLATFORM_DIR}
-                                    ${CORE_SOURCE_DIR}/lib
+                                    ${CMAKE_SOURCE_DIR}/xbmc
+                                    ${CMAKE_SOURCE_DIR}/xbmc/${PLATFORM_DIR}
+                                    ${CMAKE_SOURCE_DIR}/lib
                                     ${CMAKE_CURRENT_SOURCE_DIR}/src
                                     ${CMAKE_CURRENT_SOURCE_DIR}/src/decoder)
 target_link_libraries(TexturePacker

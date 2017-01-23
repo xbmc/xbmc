@@ -67,9 +67,9 @@ echo "Package $TARGET_NAME"
 
 # Copy all of XBMC's dylib dependencies and rename their locations to inside the Framework
 echo "Checking $TARGET_NAME for dylib dependencies"
-for a in $(otool -L "$TARGET_BINARY"  | grep "$EXTERNAL_LIBS" | awk ' { print $1 } ') ; do
+for a in $(otool -L "$TARGET_BINARY"  | grep "$EXTERNAL_LIBS\|$DYLIB_NAMEPATH" | awk ' { print $1 } ') ; do
   echo "    Packaging $a"
-  cp -f "$a" "$TARGET_FRAMEWORKS/"
+  cp -f "$EXTERNAL_LIBS/lib/$(basename $a)" "$TARGET_FRAMEWORKS/"
   chmod u+w "$TARGET_FRAMEWORKS/$(basename $a)"
   install_name_tool -change "$a" "$DYLIB_NAMEPATH/$(basename $a)" "$TARGET_BINARY"
 done

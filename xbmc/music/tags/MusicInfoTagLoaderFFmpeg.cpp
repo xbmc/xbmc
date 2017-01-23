@@ -84,17 +84,71 @@ bool CMusicInfoTagLoaderFFmpeg::Load(const std::string& strFileName, CMusicInfoT
     return false;
   }
 
+  /* ffmpeg supports the return of ID3v2 metadata but has its own naming system 
+     for some, but not all, of the keys. In particular the key for the conductor 
+     tag TPE3 is called "performer". 
+     See https://github.com/xbmc/FFmpeg/blob/master/libavformat/id3v2.c#L43
+     Other keys are retuened using their 4 char name.
+     Only single frame values are returned even for v2.4 fomart tags e.g. while 
+     tagged with multiple TPE1 frames "artist1", "artist2", "artist3" only 
+     "artist1" is returned by ffmpeg.
+     Hence, like with v2.3 format tags, multiple values for artist, genre etc. 
+     need to be combined when tagging into a single value using a known item 
+     separator e.g. "artist1 / artist2 / artist3"
+
+     Any changes to ID3v2 tag processing in CTagLoaderTagLib need to be 
+     repeated here
+  */
   auto&& ParseTag = [&tag](AVDictionaryEntry* avtag)
-                          {
-                            if (strcasecmp(avtag->key, "title") == 0)
-                              tag.SetTitle(avtag->value);
+                          { 
+                            if (strcasecmp(avtag->key, "album") == 0)
+                              tag.SetAlbum(avtag->value);
                             else if (strcasecmp(avtag->key, "artist") == 0)
                               tag.SetArtist(avtag->value);
-                            else if (strcasecmp(avtag->key, "album") == 0)
-                              tag.SetAlbum(avtag->value);
-                            else if (strcasecmp(avtag->key, "part_number") == 0 ||
-                                strcasecmp(avtag->key, "track") == 0)
+                            else if (strcasecmp(avtag->key, "album_artist") == 0 || 
+                                     strcasecmp(avtag->key, "album artist") == 0)
+                              tag.SetAlbumArtist(avtag->value);
+                            else if (strcasecmp(avtag->key, "title") == 0)
+                              tag.SetTitle(avtag->value);
+                            else if (strcasecmp(avtag->key, "genre") == 0)
+                              tag.SetGenre(avtag->value);
+                            else if (strcasecmp(avtag->key, "part_number") == 0 || 
+                                     strcasecmp(avtag->key, "track") == 0)
                               tag.SetTrackNumber(strtol(avtag->value, nullptr, 10));
+                            else if (strcasecmp(avtag->key, "disc") == 0)
+                              tag.SetDiscNumber(strtol(avtag->value, nullptr, 10));
+                            else if (strcasecmp(avtag->key, "date") == 0)
+                              tag.SetYear(strtol(avtag->value, nullptr, 10));
+                            else if (strcasecmp(avtag->key, "compilation") == 0)
+                              tag.SetCompilation((strtol(avtag->value, nullptr, 10) == 0) ? false : true);
+                            else if (strcasecmp(avtag->key, "encoded_by") == 0) {}
+                            else if (strcasecmp(avtag->key, "composer") == 0)
+                              tag.AddArtistRole("Composer", avtag->value);
+                            else if (strcasecmp(avtag->key, "performer") == 0) // Conductor or TPE3 tag
+                              tag.AddArtistRole("Conductor", avtag->value);
+                            else if (strcasecmp(avtag->key, "TEXT") == 0)
+                              tag.AddArtistRole("Lyricist", avtag->value);
+                            else if (strcasecmp(avtag->key, "TPE4") == 0)
+                              tag.AddArtistRole("Remixer", avtag->value);
+                            else if (strcasecmp(avtag->key, "LABEL") == 0 || 
+                                     strcasecmp(avtag->key, "TPUB") == 0)
+                              tag.SetRecordLabel(avtag->value);
+                            else if (strcasecmp(avtag->key, "copyright") == 0 || 
+                                     strcasecmp(avtag->key, "TCOP") == 0) {} // Copyright message
+                            else if (strcasecmp(avtag->key, "TDRC") == 0)
+                              tag.SetYear(strtol(avtag->value, nullptr, 10));
+                            else if (strcasecmp(avtag->key, "TDRL") == 0)
+                              tag.SetYear(strtol(avtag->value, nullptr, 10));
+                            else if (strcasecmp(avtag->key, "TDTG") == 0) {} // Tagging time
+                            else if (strcasecmp(avtag->key, "language") == 0 || 
+                                     strcasecmp(avtag->key, "TLAN") == 0) {} // Languages
+                            else if (strcasecmp(avtag->key, "mood") == 0 || 
+                                     strcasecmp(avtag->key, "TMOO") == 0)
+                              tag.SetMood(avtag->value);
+                            else if (strcasecmp(avtag->key, "artist-sort") == 0 || 
+                                     strcasecmp(avtag->key, "TSOP") == 0) {}
+                            else if (strcasecmp(avtag->key, "TSO2") == 0) {}  // Album artist sort
+                            else if (strcasecmp(avtag->key, "TSOC") == 0) {}  // composer sort
                           };
 
   AVDictionaryEntry* avtag=nullptr;

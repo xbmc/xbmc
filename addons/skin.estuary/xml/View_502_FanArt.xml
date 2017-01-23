@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<includes>
+	<include name="View_502_FanArt">
+		<control type="group">
+			<include>OpenClose_Left</include>
+			<left>-5</left>
+			<visible>Control.IsVisible(502)</visible>
+			<include>Visible_Left</include>
+			<include content="ListContainer">
+				<param name="list_id" value="502" />
+				<param name="viewtype_label" value="$LOCALIZE[20445]" />
+			</include>
+		</control>
+		<control type="group">
+			<depth>DepthContentPanel</depth>
+			<include>OpenClose_Right</include>
+			<visible>Control.IsVisible(502)</visible>
+			<include>Visible_Right</include>
+			<control type="group">
+				<right>-20</right>
+				<width>1235</width>
+				<include content="ContentPanel">
+					<param name="width" value="1235" />
+					<param name="left" value="0" />
+					<param name="top" value="-20" />
+					<param name="flipx" value="true" />
+				</include>
+				<control type="image">
+					<left>38</left>
+					<right>36</right>
+					<top>115</top>
+					<height>644</height>
+					<fadetime>300</fadetime>
+					<texture border="2" fallback="special://skin/extras/home-images/movie.jpg" background="true">$VAR[FanartImageVar]</texture>
+					<aspectratio align="center" aligny="bottom">scale</aspectratio>
+				</control>
+				<control type="group">
+					<left>600</left>
+					<top>82</top>
+					<include>UserRatingCircle</include>
+				</control>
+				<control type="textbox">
+					<left>50</left>
+					<right>50</right>
+					<top>769</top>
+					<bottom>105</bottom>
+					<label>$INFO[ListItem.Plot]</label>
+					<autoscroll time="3000" delay="7000" repeat="5000">!System.HasActiveModalDialog + Skin.HasSetting(AutoScroll)</autoscroll>
+				</control>
+				<control type="scrollbar" id="502600">
+					<left>20</left>
+					<top>list_y_offset</top>
+					<width>12</width>
+					<bottom>list_y_offset</bottom>
+					<onleft>502</onleft>
+					<onright>502</onright>
+					<orientation>vertical</orientation>
+					<animation effect="zoom" end="50,100" time="300" tween="sine" center="20,0" easing="inout" condition="!Control.HasFocus(502600)">conditional</animation>
+				</control>
+				<control type="group">
+					<left>40</left>
+					<top>770</top>
+					<visible>ListItem.IsCollection</visible>
+					<include content="InfoList">
+						<param name="bottom" value="108" />
+						<param name="width" value="1000" />
+						<param name="sortby" value="year" />
+						<param name="sortorder" value="descending" />
+						<param name="font" value="font13" />
+					</include>
+				</control>
+			</control>
+		</control>
+	</include>
+</includes>

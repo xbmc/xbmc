@@ -145,6 +145,11 @@
       <hash>Rename</hash>
     </remote>
   </FileManager>
+  <FileBrowser>
+    <remote>
+      <zero>Highlight</zero>
+    </remote>
+  </FileBrowser>
   <MusicPlaylist>
     <remote>
       <clear>Delete</clear>
@@ -202,6 +207,20 @@
       <pageminus>SkipPrevious</pageminus>
     </remote>
   </FullscreenVideo>
+  <FullscreenGame>
+    <remote>
+      <left>StepBack</left>
+      <right>StepForward</right>
+      <back>Back</back>
+      <menu>OSD</menu>
+      <contentsmenu>OSD</contentsmenu>
+      <rootmenu>OSD</rootmenu>
+      <start>OSD</start>
+      <select>OSD</select>
+      <title>CodecInfo</title>
+      <info>Info</info>
+    </remote>
+  </FullscreenGame>
   <VideoTimeSeek>
     <remote>
       <select>Select</select>
@@ -242,6 +261,16 @@
       <info>Info</info>
       <guide>ActivateWindow(PVROSDGuide)</guide>
       <playlist>ActivateWindow(PVROSDChannels)</playlist>
+      <zero>Number0</zero>
+      <one>Number1</one>
+      <two>Number2</two>
+      <three>Number3</three>
+      <four>Number4</four>
+      <five>Number5</five>
+      <six>Number6</six>
+      <seven>Number7</seven>
+      <eight>Number8</eight>
+      <nine>Number9</nine>
     </remote>
   </Visualisation>
   <MusicOSD>

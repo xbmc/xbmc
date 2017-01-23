@@ -128,7 +128,7 @@ public:
   void SetResult(int res)
   {
     //On posted messages result will be zero, since they can't
-    //retreive the response we silently ignore this to let message
+    //retrieve the response we silently ignore this to let message
     //handlers not have to worry about it
     if (result)
       *result = res;

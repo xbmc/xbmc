@@ -20,8 +20,15 @@
  *
  */
 
+#ifdef TARGET_WINDOWS
+#include <windows.h>
+#else
 #ifndef __cdecl
 #define __cdecl
+#endif
+#ifndef __declspec
+#define __declspec(X)
+#endif
 #endif
 
 #ifdef BUILD_KODI_ADDON
@@ -31,7 +38,7 @@
 #endif
 
 /* current API version */
-#define INPUTSTREAM_API_VERSION "1.0.5"
+#define INPUTSTREAM_API_VERSION "1.0.6"
 
 extern "C" {
 
@@ -124,7 +131,7 @@ extern "C" {
   /*!
    * @brief Structure to transfer the methods from xbmc_inputstream_dll.h to XBMC
    */
-  typedef struct InputStreamAddonFunctions
+  typedef struct KodiToAddonFuncTable_InputStream
   {
     bool (__cdecl* Open)(INPUTSTREAM&);
     void (__cdecl* Close)(void);
@@ -140,7 +147,7 @@ extern "C" {
     void (__cdecl* DemuxAbort)(void);
     void (__cdecl* DemuxFlush)(void);
     DemuxPacket* (__cdecl* DemuxRead)(void);
-    bool (__cdecl* DemuxSeekTime)(int, bool, double*);
+    bool (__cdecl* DemuxSeekTime)(double, bool, double*);
     void (__cdecl* DemuxSetSpeed)(int);
     void (__cdecl* SetVideoResolution)(int, int);
 
@@ -161,7 +168,7 @@ extern "C" {
     int64_t (__cdecl* LengthStream)(void);
     void (__cdecl* PauseStream)(double);
     bool (__cdecl* IsRealTimeStream)(void);
-  } InputStreamAddonFunctions;
+  } KodiToAddonFuncTable_InputStream;
 }
 
 

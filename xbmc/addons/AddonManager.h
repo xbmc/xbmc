@@ -166,6 +166,8 @@ namespace ADDON
      */
     bool CanAddonBeDisabled(const std::string& ID);
 
+    bool CanAddonBeEnabled(const std::string& id);
+
     /* \brief Checks whether an addon is installed.
      \param ID id of the addon
     */

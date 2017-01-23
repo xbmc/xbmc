@@ -29,19 +29,25 @@
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "interfaces/python/XBPython.h"
 #include "pvr/PVRManager.h"
+#include "settings/Settings.h"
 
 bool CServiceManager::Init1()
 {
   m_announcementManager.reset(new ANNOUNCEMENT::CAnnouncementManager());
   m_announcementManager->Start();
 
+#ifdef HAS_PYTHON
   m_XBPython.reset(new XBPython());
   CScriptInvocationManager::GetInstance().RegisterLanguageInvocationHandler(m_XBPython.get(), ".py");
-  
+#endif
+
   m_Platform.reset(CPlatform::CreateInstance());
 
   m_playlistPlayer.reset(new PLAYLIST::CPlayListPlayer());
 
+  m_settings.reset(new CSettings());
+
+  init_level = 1;
   return true;
 }
 
@@ -65,6 +71,7 @@ bool CServiceManager::Init2()
 
   m_contextMenuManager.reset(new CContextMenuManager(*m_addonMgr.get()));
 
+  init_level = 2;
   return true;
 }
 
@@ -74,6 +81,7 @@ bool CServiceManager::Init3()
   m_PVRManager->Init();
   m_contextMenuManager->Init();
 
+  init_level = 3;
   return true;
 }
 
@@ -81,12 +89,17 @@ void CServiceManager::Deinit()
 {
   m_contextMenuManager.reset();
   m_binaryAddonCache.reset();
+  if (m_PVRManager)
+    m_PVRManager->Shutdown();
   m_PVRManager.reset();
   m_ADSPManager.reset();
   m_addonMgr.reset();
+#ifdef HAS_PYTHON
   CScriptInvocationManager::GetInstance().UnregisterLanguageInvocationHandler(m_XBPython.get());
   m_XBPython.reset();
+#endif
   m_announcementManager.reset();
+  init_level = 0;
 }
 
 ADDON::CAddonMgr &CServiceManager::GetAddonMgr()
@@ -104,10 +117,12 @@ ANNOUNCEMENT::CAnnouncementManager& CServiceManager::GetAnnouncementManager()
   return *m_announcementManager;
 }
 
+#ifdef HAS_PYTHON
 XBPython& CServiceManager::GetXBPython()
 {
   return *m_XBPython;
 }
+#endif
 
 PVR::CPVRManager& CServiceManager::GetPVRManager()
 {
@@ -137,6 +152,11 @@ CPlatform& CServiceManager::GetPlatform()
 PLAYLIST::CPlayListPlayer& CServiceManager::GetPlaylistPlayer()
 {
   return *m_playlistPlayer;
+}
+
+CSettings& CServiceManager::GetSettings()
+{
+  return *m_settings;
 }
 
 // deleters for unique_ptr

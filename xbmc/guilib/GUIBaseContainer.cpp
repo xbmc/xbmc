@@ -19,6 +19,7 @@
  */
 
 #include "GUIBaseContainer.h"
+#include "ServiceBroker.h"
 #include "utils/CharsetConverter.h"
 #include "GUIInfoManager.h"
 #include "utils/TimeUtils.h"
@@ -434,7 +435,10 @@ bool CGUIBaseContainer::OnMessage(CGUIMessage& message)
     {
       if (message.GetParam1()) // subfocus item is specified, so set the offset appropriately
       {
-        int item = std::min(GetOffset() + (int)message.GetParam1() - 1, (int)m_items.size() - 1);
+        int offset = GetOffset();
+        if (message.GetParam2() && message.GetParam2() == 1)
+          offset = 0;
+        int item = std::min(offset + (int)message.GetParam1() - 1, (int)m_items.size() - 1);
         SelectItem(item);
       }
     }
@@ -575,7 +579,7 @@ void CGUIBaseContainer::OnJumpLetter(char letter, bool skip /*=false*/)
   {
     CGUIListItemPtr item = m_items[i];
     std::string label = item->GetLabel();
-    if (CSettings::GetInstance().GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING))
+    if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING))
       label = SortUtils::RemoveArticles(label);
     if (0 == strnicmp(label.c_str(), m_match.c_str(), m_match.size()))
     {
@@ -862,9 +866,10 @@ void CGUIBaseContainer::FreeResources(bool immediately)
   if (m_listProvider)
   {
     if (immediately)
+    {
       Reset();
-
-    m_listProvider->Reset(immediately);
+      m_listProvider->Reset();
+    }
   }
   m_scroller.Stop();
 }
@@ -1140,14 +1145,14 @@ void CGUIBaseContainer::LoadLayout(TiXmlElement *layout)
   while (itemElement)
   { // we have a new item layout
     m_layouts.emplace_back();
-    m_layouts.back().LoadLayout(itemElement, GetParentID(), false);
+    m_layouts.back().LoadLayout(itemElement, GetParentID(), false, m_width, m_height);
     itemElement = itemElement->NextSiblingElement("itemlayout");
   }
   itemElement = layout->FirstChildElement("focusedlayout");
   while (itemElement)
   { // we have a new item layout
     m_focusedLayouts.emplace_back();
-    m_focusedLayouts.back().LoadLayout(itemElement, GetParentID(), true);
+    m_focusedLayouts.back().LoadLayout(itemElement, GetParentID(), true, m_width, m_height);
     itemElement = itemElement->NextSiblingElement("focusedlayout");
   }
 }
@@ -1299,10 +1304,11 @@ std::string CGUIBaseContainer::GetLabel(int info) const
         label = StringUtils::Format("%i", GetSelectedItem() + 1);
     }
     break;
+  case CONTAINER_ACTUAL_ITEMS:
   case CONTAINER_NUM_ITEMS:
     {
       unsigned int numItems = GetNumItems();
-      if (numItems && m_items[0]->IsFileItem() && (std::static_pointer_cast<CFileItem>(m_items[0]))->IsParentFolder())
+      if (info == CONTAINER_NUM_ITEMS && numItems && m_items[0]->IsFileItem() && (std::static_pointer_cast<CFileItem>(m_items[0]))->IsParentFolder())
         label = StringUtils::Format("%u", numItems-1);
       else
         label = StringUtils::Format("%u", numItems);

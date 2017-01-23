@@ -22,7 +22,11 @@ msgstr "Acum în redare"
 
 msgctxt "#31001"
 msgid "Search..."
-msgstr "Caută..."
+msgstr "Căutare..."
+
+msgctxt "#31002"
+msgid "Show media fanart as background"
+msgstr "Arată decorul media ca fundal"
 
 msgctxt "#31003"
 msgid "Cinema mode"
@@ -81,8 +85,8 @@ msgid "Rated"
 msgstr "Evaluat"
 
 msgctxt "#31018"
-msgid "Most played channels"
-msgstr "Cele mai redate canale"
+msgid "Recently played channels"
+msgstr "Canale redate recent"
 
 msgctxt "#31019"
 msgid "Forecast"
@@ -100,21 +104,21 @@ msgctxt "#31022"
 msgid "Sort by"
 msgstr "Sortează după"
 
-msgctxt "#31026"
-msgid "Go to albums"
-msgstr "Mergi la albume"
+msgctxt "#31023"
+msgid "Viewtype"
+msgstr "Tip de vizualizare"
 
-msgctxt "#31027"
-msgid "Go to songs"
-msgstr "Mergi la muzică"
+msgctxt "#31025"
+msgid "No favourites found. You can add any item from media views to this list by using the context menu."
+msgstr "Nu a fost găsit niciun elemen favori. Puteți adăuga orice element din vizualizările media la această listă folosind meniul contextual."
+
+msgctxt "#31028"
+msgid "Show fanart"
+msgstr "Arată decorul"
 
 msgctxt "#31029"
 msgid "Last logged in"
 msgstr "Ultimul autentificat"
-
-msgctxt "#31030"
-msgid "Memory used"
-msgstr "Memorie folosită"
 
 msgctxt "#31031"
 msgid "Version info"
@@ -126,7 +130,7 @@ msgstr "Ordine"
 
 msgctxt "#31033"
 msgid "Your rating"
-msgstr "Nota dumneavoastră"
+msgstr "Nota dvs."
 
 msgctxt "#31034"
 msgid "Extended info"
@@ -140,10 +144,6 @@ msgctxt "#31036"
 msgid "items"
 msgstr "Elemente"
 
-msgctxt "#31037"
-msgid "Tracklist"
-msgstr "Listă piese"
-
 msgctxt "#31038"
 msgid "Rewind"
 msgstr "Derulează înapoi"
@@ -152,13 +152,17 @@ msgctxt "#31039"
 msgid "Fast forward"
 msgstr "Derulează înainte"
 
-msgctxt "#31040"
-msgid "Cancel update"
-msgstr "Anulează actualizarea"
+msgctxt "#31041"
+msgid "Camera manufacturer"
+msgstr "Producător aparat foto"
 
 msgctxt "#31042"
 msgid "Playlist options"
 msgstr "Opțiuni listă de redare"
+
+msgctxt "#31043"
+msgid "Set the type and add rules to create a smart playlist. These playlists are dynamic and include all media items from your database which apply to your chosen rules."
+msgstr "Stabiliți tipul și adăugați reguli pentru a crea o listă de redare inteligentă. Aceste liste de redare sunt dinamice și includ toate elementele media din baza de date care se potrivesc cu regulile alese."
 
 msgctxt "#31044"
 msgid "Add group"
@@ -172,13 +176,13 @@ msgctxt "#31046"
 msgid "Delete group"
 msgstr "Ștergere grup"
 
-msgctxt "#31047"
-msgid "Read more..."
-msgstr "Citește mai mult"
-
 msgctxt "#31048"
 msgid "Available"
 msgstr "Disponibil"
+
+msgctxt "#31050"
+msgid "Press [B]OK[/B] to stop"
+msgstr "Apăsați [B]Bine[/B] pentru a opri"
 
 msgctxt "#31051"
 msgid "Toggle language"
@@ -192,17 +196,41 @@ msgctxt "#31053"
 msgid "Arial based"
 msgstr "Cu Arial la bază"
 
-msgctxt "#31060"
-msgid "minutes"
-msgstr "minute"
+msgctxt "#31054"
+msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
+msgstr "Apăsați [B]La stânga[/B] pentru a derula înapoi, sau [B]La dreapta[/B] pentru a derula înainte"
+
+msgctxt "#31056"
+msgid "Go to playlist"
+msgstr "Du-te la lista de redare"
+
+msgctxt "#31057"
+msgid "Show login screen on startup"
+msgstr "Arată ecranul de autentificare la pornire"
+
+msgctxt "#31058"
+msgid "Automatic Login on startup"
+msgstr "Autentificare automată la pornire"
+
+msgctxt "#31061"
+msgid "Main menu items"
+msgstr "Elemente meniu principal"
+
+msgctxt "#31062"
+msgid "Choose weather fanart pack"
+msgstr "Alegeți pachetul de decoruri pentru vreme"
 
 msgctxt "#31063"
 msgid "Sections"
 msgstr "Secțiuni"
 
-msgctxt "#31064"
-msgid "unwatched"
-msgstr "nevuzute"
+msgctxt "#31065"
+msgid "Video playlist"
+msgstr "Listă de redare video"
+
+msgctxt "#31066"
+msgid "Music playlist"
+msgstr "Listă de redare muzică"
 
 msgctxt "#31067"
 msgid "Event log"
@@ -210,15 +238,11 @@ msgstr "Jurnal de evenimente"
 
 msgctxt "#31068"
 msgid "Choose presets"
-msgstr "Alege valori implicite"
+msgstr "Alegeți prestabilirile"
 
 msgctxt "#31069"
 msgid "Last Updated"
 msgstr "Ultima actualizare"
-
-msgctxt "#31070"
-msgid "Add media sources"
-msgstr "Adăugare sursă media"
 
 msgctxt "#31071"
 msgid "by"
@@ -228,53 +252,29 @@ msgctxt "#31072"
 msgid "Power Options"
 msgstr "Opțiuni de alimentare"
 
-msgctxt "#31073"
-msgid "Titles"
-msgstr "Titluri"
-
-msgctxt "#31074"
-msgid "Library root"
-msgstr "Mediatecă"
-
 msgctxt "#31075"
 msgid "Movie sets"
 msgstr "Colecție de filme"
 
-msgctxt "#31077"
-msgid "Previous location"
-msgstr "Locație anterioară"
-
-msgctxt "#31078"
-msgid "Next location"
-msgstr "Locația următoare"
+msgctxt "#31079"
+msgid "Cast not available"
+msgstr "Distribuție indisponibilă"
 
 msgctxt "#31080"
 msgid "Ends at"
 msgstr "Se termină la"
 
-msgctxt "#31081"
-msgid "Album info"
-msgstr "Info album"
-
 msgctxt "#31082"
 msgid "Lyrics add-on"
 msgstr "Supliment versuri"
 
-msgctxt "#31085"
-msgid "Channel Group"
-msgstr "Grup canal"
+msgctxt "#31083"
+msgid "Lyrics add-on settings"
+msgstr "Stabiliri supliment versuri"
 
-msgctxt "#31086"
-msgid "Metadata"
-msgstr "Metadata"
-
-msgctxt "#31087"
-msgid "Provider settings"
-msgstr "Setări furnizor"
-
-msgctxt "#31088"
-msgid "Content scanning options"
-msgstr "Opțiuni scanare conținut"
+msgctxt "#31084"
+msgid "Visualisation settings"
+msgstr "Stabiliri vizualizare"
 
 msgctxt "#31089"
 msgid "Available groups"
@@ -282,11 +282,7 @@ msgstr "Grupuri disponibile"
 
 msgctxt "#31090"
 msgid "Search trailer"
-msgstr "Caută trailer"
-
-msgctxt "#31091"
-msgid "Download subtitles"
-msgstr "Descarcă subtitluri"
+msgstr "Caută secvențe"
 
 msgctxt "#31092"
 msgid "Video menu"
@@ -295,6 +291,10 @@ msgstr "Meniu video"
 msgctxt "#31093"
 msgid "Show weather info in top bar"
 msgstr "Arată vremea in bara de sus"
+
+msgctxt "#31095"
+msgid "Use slide animations"
+msgstr "Folosește animații de glisare"
 
 msgctxt "#31096"
 msgid "Local subtitle available"
@@ -312,17 +312,49 @@ msgctxt "#31100"
 msgid "Shift"
 msgstr "Schimbare"
 
+msgctxt "#31101"
+msgid "InfoWall"
+msgstr "Perete de informații"
+
+msgctxt "#31102"
+msgid "Wall"
+msgstr "Perete"
+
 msgctxt "#31103"
 msgid "Enter text here..."
 msgstr "Introduceți text"
+
+msgctxt "#31104"
+msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
+msgstr "Mediateca dumneavoastră este momentan goală. Pentru a o umple cu fișiere media, intrați în secțiunea de „Fișiere”, adăugați o sursă media și configurați-o. După ce sursa a fost adăugată și indexată veți putea să vă răsfoiți mediateca."
+
+msgctxt "#31105"
+msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
+msgstr "Adăugați surse video și stabiliți tipul de conținut potrivit pentru a vă umple mediatecile video."
 
 msgctxt "#31106"
 msgid "Teletext"
 msgstr "Teletext"
 
-msgctxt "#31109"
-msgid "Choose image path"
-msgstr "Alege calea către imagine"
+msgctxt "#31107"
+msgid "WideList"
+msgstr "Listă lată"
+
+msgctxt "#31110"
+msgid "Enter files section"
+msgstr "Intrare secțiune fișiere"
+
+msgctxt "#31111"
+msgid "View your personal pictures or download one of the many image add-ons from the official repository."
+msgstr "Vizualizați-vă imaginile personale sau descărcați unul dintre numeroasele suplimente de imagini din depozitul oficial."
+
+msgctxt "#31112"
+msgid "Toggle audio stream"
+msgstr "Comută fluxul audio"
+
+msgctxt "#31113"
+msgid "Search local library"
+msgstr "Caută în mediateca locală"
 
 msgctxt "#31114"
 msgid "Search YouTube"
@@ -332,6 +364,10 @@ msgctxt "#31115"
 msgid "Search TheMovieDB"
 msgstr "Caută pe TheMovieDB"
 
+msgctxt "#31116"
+msgid "Remove this main menu item"
+msgstr "Elimină acest element din meniul principal"
+
 msgctxt "#31117"
 msgid "Edit nodes"
 msgstr "Modificare noduri"
@@ -339,6 +375,14 @@ msgstr "Modificare noduri"
 msgctxt "#31118"
 msgid "Enter add-on browser"
 msgstr "Navigator suplimente"
+
+msgctxt "#31119"
+msgid "You do not have any add-ons installed yet. Visit our add-on browser to browse through our collection and improve your Kodi experience."
+msgstr "Deocamdată nu aveți niciun supliment instalat. Vizitați răsfoitorul nostru de suplimente pentru a răsfoi colecția noastră și a vă îmbunătăți experiența cu Kodi."
+
+msgctxt "#31120"
+msgid "You did not set up a weather provider yet. In order to view weather information, choose a weather provider and set up your location."
+msgstr "Nu ați configura încă un furnizor de informații meteorologige. Pentru a vedea informații meteo, alegeți un furnizor de informații meteo și configurați-vă locația."
 
 msgctxt "#31121"
 msgid "Set weather provider"
@@ -362,7 +406,7 @@ msgstr "Apasă în sus pentru informații despre actori"
 
 msgctxt "#31126"
 msgid "Press OK to read plot"
-msgstr "Apasă OK pentru a citi rezumatul"
+msgstr "Apasă „Bine” pentru a citi intriga"
 
 msgctxt "#31127"
 msgid "Show icons"
@@ -372,14 +416,62 @@ msgctxt "#31128"
 msgid "Contributors"
 msgstr "Contribuitori"
 
+msgctxt "#31129"
+msgid "General settings applying to all areas of the skin."
+msgstr "Stabiliri generale care se aplică tuturor porțiunilor costumului."
+
+msgctxt "#31130"
+msgid "Main menu-related settings: Configure the home screen to your likings."
+msgstr "Stabiliri conexe meniului principal: Configurați ecranul inițial cum vă place."
+
+msgctxt "#31131"
+msgid "Choose skin fanart pack"
+msgstr "Alegeți pachetul de decoruri pentru costum"
+
 msgctxt "#31132"
 msgid "min"
 msgstr "min"
 
-msgctxt "#31133"
-msgid "Hide"
-msgstr "Ascunde"
-
 msgctxt "#31134"
 msgid "Remaining"
 msgstr "Rămas"
+
+msgctxt "#31136"
+msgid "Click here to see latest changes..."
+msgstr "Clic aici pentru a vedea ultimele schimbări..."
+
+msgctxt "#31137"
+msgid "PVR info"
+msgstr "Informații PVR"
+
+msgctxt "#31138"
+msgid "Player process info"
+msgstr "Informații de procesare redator"
+
+msgctxt "#31139"
+msgid "Video decoder"
+msgstr "Decodor video"
+
+msgctxt "#31140"
+msgid "Pixel format"
+msgstr "Format pixeli"
+
+msgctxt "#31141"
+msgid "Changes for version"
+msgstr "Schimbări pentru versiune"
+
+msgctxt "#31142"
+msgid "Play speed"
+msgstr "Viteză de redare"
+
+msgctxt "#31143"
+msgid "You did not set up PVR yet. In order to use PVR, choose a PVR client addon and configure it. Please visit http://kodi.wiki/view/PVR to learn more."
+msgstr "Nu ați configurat funcția PVR încă. Pentru a folosi această funcție, alegeți un supliment client PVR și configurați-l. Vizitați http://kodi.wiki/view/PVR pentru a afla mai multe."
+
+msgctxt "#31144"
+msgid "Enter add-on browser"
+msgstr "Navigator suplimente"
+
+msgctxt "#31145"
+msgid "Search add-ons"
+msgstr "Căutare suplimente"

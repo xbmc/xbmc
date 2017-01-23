@@ -36,10 +36,6 @@
 #include "utils/StringUtils.h"
 #include "utils/Utf8Utils.h"
 
-#if !defined(TARGET_WINDOWS) && defined(HAVE_CONFIG_H)
-  #include "config.h"
-#endif
-
 #ifdef WORDS_BIGENDIAN
   #define ENDIAN_SUFFIX "BE"
 #else
@@ -59,10 +55,8 @@
   #define UTF8_SOURCE "UTF-8"
   #define WCHAR_CHARSET UTF16_CHARSET 
 #if _DEBUG
-  #pragma comment(lib, "libfribidi.lib")
   #pragma comment(lib, "libiconvd.lib")
 #else
-  #pragma comment(lib, "libfribidi.lib")
   #pragma comment(lib, "libiconv.lib")
 #endif
 #elif defined(TARGET_ANDROID)
@@ -559,7 +553,7 @@ static struct SCharsetMapping
   , { "CP1255", "Hebrew (Windows)" }
   , { "CP1256", "Arabic (Windows)" }
   , { "CP1257", "Baltic (Windows)" }
-  , { "CP1258", "Vietnamesse (Windows)" }
+  , { "CP1258", "Vietnamese (Windows)" }
   , { "CP874", "Thai (Windows)" }
   , { "BIG5", "Chinese Traditional (Big5)" }
   , { "GBK", "Chinese Simplified (GBK)" }

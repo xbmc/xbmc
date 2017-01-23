@@ -19,6 +19,7 @@
  */
 
 #include "WinSystem.h"
+#include "ServiceBroker.h"
 #include "guilib/GraphicContext.h"
 #include "settings/DisplaySettings.h"
 #include "settings/lib/Setting.h"
@@ -243,7 +244,7 @@ REFRESHRATE CWinSystemBase::DefaultRefreshRate(int screen, std::vector<REFRESHRA
 bool CWinSystemBase::UseLimitedColor()
 {
 #if defined(HAS_GL) || defined(HAS_DX)
-  static CSettingBool* setting = (CSettingBool*)CSettings::GetInstance().GetSetting(CSettings::SETTING_VIDEOSCREEN_LIMITEDRANGE);
+  static CSettingBool* setting = (CSettingBool*)CServiceBroker::GetSettings().GetSetting(CSettings::SETTING_VIDEOSCREEN_LIMITEDRANGE);
   return setting->GetValue();
 #else
   return false;
@@ -257,6 +258,6 @@ std::string CWinSystemBase::GetClipboardText(void)
 
 int CWinSystemBase::NoOfBuffers(void)
 {
-  int buffers = CSettings::GetInstance().GetInt(CSettings::SETTING_VIDEOSCREEN_NOOFBUFFERS);
+  int buffers = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_VIDEOSCREEN_NOOFBUFFERS);
   return buffers;
 }

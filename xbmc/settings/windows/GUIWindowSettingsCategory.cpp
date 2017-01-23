@@ -23,6 +23,7 @@
 #include "GUIWindowSettingsCategory.h"
 #include "GUIPassword.h"
 #include "GUIUserMessages.h"
+#include "ServiceBroker.h"
 #include "input/Key.h"
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
@@ -37,8 +38,9 @@
 #define SETTINGS_PLAYER                 WINDOW_SETTINGS_PLAYER - WINDOW_SETTINGS_START
 #define SETTINGS_MEDIA                  WINDOW_SETTINGS_MEDIA - WINDOW_SETTINGS_START
 #define SETTINGS_INTERFACE              WINDOW_SETTINGS_INTERFACE - WINDOW_SETTINGS_START
+#define SETTINGS_GAMES                  WINDOW_SETTINGS_MYGAMES - WINDOW_SETTINGS_START
 
-#define CONTRL_BTN_LEVELS               20
+#define CONTROL_BTN_LEVELS               20
 
 typedef struct {
   int id;
@@ -50,13 +52,14 @@ static const SettingGroup s_settingGroupMap[] = { { SETTINGS_SYSTEM,      "syste
                                                   { SETTINGS_PVR,         "pvr" },
                                                   { SETTINGS_PLAYER,      "player" },
                                                   { SETTINGS_MEDIA,       "media" },
-                                                  { SETTINGS_INTERFACE,   "interface" } };
-                                                  
+                                                  { SETTINGS_INTERFACE,   "interface" },
+                                                  { SETTINGS_GAMES,       "games" } };
+
 #define SettingGroupSize sizeof(s_settingGroupMap) / sizeof(SettingGroup)
 
 CGUIWindowSettingsCategory::CGUIWindowSettingsCategory()
     : CGUIDialogSettingsManagerBase(WINDOW_SETTINGS_SYSTEM, "SettingsCategory.xml"),
-      m_settings(CSettings::GetInstance()),
+      m_settings(CServiceBroker::GetSettings()),
       m_iSection(0),
       m_returningFromSkinLoad(false)
 {
@@ -70,6 +73,7 @@ CGUIWindowSettingsCategory::CGUIWindowSettingsCategory()
   m_idRange.push_back(WINDOW_SETTINGS_PLAYER);
   m_idRange.push_back(WINDOW_SETTINGS_MEDIA);
   m_idRange.push_back(WINDOW_SETTINGS_INTERFACE);
+  m_idRange.push_back(WINDOW_SETTINGS_MYGAMES);
 }
 
 CGUIWindowSettingsCategory::~CGUIWindowSettingsCategory()
@@ -133,14 +137,14 @@ bool CGUIWindowSettingsCategory::OnAction(const CAction &action)
         return false;
       
       CViewStateSettings::GetInstance().CycleSettingLevel();
-      CSettings::GetInstance().Save();
+      CServiceBroker::GetSettings().Save();
 
       // try to keep the current position
       std::string oldCategory;
       if (m_iCategory >= 0 && m_iCategory < (int)m_categories.size())
         oldCategory = m_categories[m_iCategory]->GetId();
 
-      SET_CONTROL_LABEL(CONTRL_BTN_LEVELS, 10036 + (int)CViewStateSettings::GetInstance().GetSettingLevel());
+      SET_CONTROL_LABEL(CONTROL_BTN_LEVELS, 10036 + (int)CViewStateSettings::GetInstance().GetSettingLevel());
       // only re-create the categories, the settings will be created later
       SetupControls(false);
 
@@ -177,7 +181,7 @@ bool CGUIWindowSettingsCategory::OnBack(int actionID)
 
 void CGUIWindowSettingsCategory::OnWindowLoaded()
 {
-  SET_CONTROL_LABEL(CONTRL_BTN_LEVELS, 10036 + (int)CViewStateSettings::GetInstance().GetSettingLevel());
+  SET_CONTROL_LABEL(CONTROL_BTN_LEVELS, 10036 + (int)CViewStateSettings::GetInstance().GetSettingLevel());
   CGUIDialogSettingsManagerBase::OnWindowLoaded();
 }
 

@@ -35,15 +35,15 @@ public:
     m_displayReset(false){};
   
   // CVideoSync interface
-  virtual bool Setup(PUPDATECLOCK func);
-  virtual void Run(std::atomic<bool>& stop);
-  virtual void Cleanup();
-  virtual float GetFps();
-  virtual void RefreshChanged();
+  virtual bool Setup(PUPDATECLOCK func) override;
+  virtual void Run(std::atomic<bool>& stop) override;
+  virtual void Cleanup() override;
+  virtual float GetFps() override;
+  virtual void RefreshChanged() override;
   
   // IDispResource interface
-  virtual void OnLostDevice();
-  virtual void OnResetDevice();
+  virtual void OnLostDisplay() override;
+  virtual void OnResetDisplay() override;
 
   // used in the displaylink callback
   void VblankHandler(int64_t nowtime, uint32_t timebase);

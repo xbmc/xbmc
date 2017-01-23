@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <node order="4" type="folder" visible="Library.HasContent(TVShows)">
-  <label>626</label>
-  <icon>DefaultInProgressShows.png</icon>
-  <path>videodb://inprogresstvshows/</path>
+	<label>626</label>
+	<icon>DefaultInProgressShows.png</icon>
+	<path>videodb://inprogresstvshows/</path>
 </node>

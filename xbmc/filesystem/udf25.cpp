@@ -48,7 +48,7 @@
                   | ((uint64_t)data[(p) + 6] << 48) \
                   | ((uint64_t)data[(p) + 7] << 56))
 
-/* This is wrong with regard to endianess */
+/* This is wrong with regard to endianness */
 #define GETN(p, n, target) memcpy(target, &data[p], n)
 
 using namespace XFILE;

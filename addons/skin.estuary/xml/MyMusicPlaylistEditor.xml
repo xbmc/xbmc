@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<defaultcontrol always="true">6</defaultcontrol>
+	<menucontrol>9000</menucontrol>
+	<controls>
+		<include>DefaultBackground</include>
+		<control type="group">
+			<include>OpenClose_Left</include>
+			<left>302</left>
+			<include content="FileManagerPanel">
+				<param name="header_id" value="22" />
+				<param name="header_label" value="$LOCALIZE[20094]" />
+				<param name="list_id" value="50" />
+				<param name="scrollbar_id" value="60" />
+				<param name="onleft_id" value="9000" />
+				<param name="onright_id" value="60" />
+				<param name="width" value="playlisteditorlist_width" />
+			</include>
+		</control>
+		<control type="group">
+			<include>OpenClose_Left</include>
+			<include content="ContentPanel">
+				<param name="width" value="360" />
+			</include>
+			<control type="grouplist" id="9000">
+				<left>0</left>
+				<top>160</top>
+				<onright>50</onright>
+				<onleft>100</onleft>
+				<itemgap>-20</itemgap>
+				<control type="button" id="6">
+					<description>Button Network</description>
+					<include content="DefaultSettingButton">
+						<param name="height" value="120" />
+					</include>
+					<width>300</width>
+					<label>$LOCALIZE[502]</label>
+				</control>
+				<control type="button" id="7">
+					<include content="DefaultSettingButton">
+						<param name="height" value="120" />
+					</include>
+					<width>300</width>
+					<label>$LOCALIZE[190]</label>
+				</control>
+				<control type="button" id="8">
+					<include content="DefaultSettingButton">
+						<param name="height" value="120" />
+					</include>
+					<width>300</width>
+					<label>$LOCALIZE[192]</label>
+				</control>
+			</control>
+		</control>
+		<control type="group">
+			<include>OpenClose_Right</include>
+			<width>845</width>
+			<right>0</right>
+			<include content="ContentPanel">
+				<param name="width" value="1100" />
+				<param name="left" value="-21" />
+			</include>
+			<include content="FileManagerPanel">
+				<param name="header_id" value="23" />
+				<param name="header_label" value="$LOCALIZE[13350]" />
+				<param name="list_id" value="100" />
+				<param name="scrollbar_id" value="61" />
+				<param name="onleft_id" value="60" />
+				<param name="onright_id" value="61" />
+				<param name="width" value="850" />
+			</include>
+			<control type="scrollbar" id="60">
+				<left>0</left>
+				<top>80</top>
+				<width>12</width>
+				<bottom>80</bottom>
+				<onleft>50</onleft>
+				<onright>100</onright>
+				<texturesliderbackground />
+				<animation effect="zoom" end="50,100" time="300" tween="sine" center="0,0" easing="inout" condition="!Control.HasFocus(60)">conditional</animation>
+				<orientation>vertical</orientation>
+			</control>
+			<control type="scrollbar" id="61">
+				<left>834</left>
+				<top>80</top>
+				<width>12</width>
+				<bottom>80</bottom>
+				<onleft>100</onleft>
+				<onright>9000</onright>
+				<texturesliderbackground></texturesliderbackground>
+				<animation effect="zoom" end="50,100" time="300" tween="sine" center="848,0" easing="inout" condition="!Control.HasFocus(61)">conditional</animation>
+				<orientation>vertical</orientation>
+			</control>
+		</control>
+		<include content="TopBar">
+			<param name="breadcrumbs_label" value="$LOCALIZE[10503][COLOR=button_focus][/COLOR]" />
+		</include>
+		<include>BottomBar</include>
+		<include content="BottomBarTwoListInfo">
+			<param name="left_container_id">50</param>
+			<param name="left_scrollbar_id">60</param>
+			<param name="right_container_id">100</param>
+			<param name="right_scrollbar_id">61</param>
+		</include>
+	</controls>
+</window>

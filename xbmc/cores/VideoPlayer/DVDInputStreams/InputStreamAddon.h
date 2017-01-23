@@ -49,7 +49,7 @@ public:
   //! \brief Read data from stream
   virtual int Read(uint8_t* buf, int buf_size) override;
 
-  //! \brief Seeek in stream
+  //! \brief Seek in stream
   virtual int64_t Seek(int64_t offset, int whence) override;
 
   //! \brief Pause stream
@@ -81,7 +81,7 @@ public:
   virtual void EnableStream(int iStreamId, bool enable) override;
   virtual int GetNrOfStreams() const override;
   virtual void SetSpeed(int iSpeed) override;
-  virtual bool SeekTime(int time, bool backward = false, double* startpts = NULL) override;
+  virtual bool SeekTime(double time, bool backward = false, double* startpts = NULL) override;
   virtual void AbortDemux() override;
   virtual void FlushDemux() override;
   virtual void SetVideoResolution(int width, int height) override;

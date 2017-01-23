@@ -46,7 +46,7 @@ namespace XBMCAddon
 
     /**
      * This class extends the Interceptor<CGUIMediaWindow> in order to 
-     *  add behavior for a few more virtual functions that were unneccessary
+     *  add behavior for a few more virtual functions that were unnecessary
      *  in the Window or WindowDialog.
      */
 #define checkedb(methcall) ( window.isNotNull() ? xwin-> methcall : false )
@@ -271,11 +271,26 @@ namespace XBMCAddon
       A(m_vecItems)->SetProperty(key, value);
     }
 
+    void WindowXML::setContent(const String& value)
+    {
+      XBMC_TRACE;
+      LOCKGUI;
+      A(m_vecItems)->SetContent(value);
+    }
+
     int WindowXML::getCurrentContainerId()
     {
       XBMC_TRACE;
       LOCKGUI;
       return A(m_viewControl.GetCurrentControl());
+    }
+
+    bool WindowXML::IsMediaWindow()
+    {
+      XBMC_TRACE;
+      if (A(m_viewControl.GetViewModeCount()) == 0)
+        return false;
+      return true;
     }
 
     bool WindowXML::OnAction(const CAction &action)
@@ -438,7 +453,7 @@ namespace XBMCAddon
     {
       XBMC_TRACE;
       // Hook Over calling  CGUIMediaWindow::OnClick(iItem) results in it trying to PLAY the file item
-      // which if its not media is BAD and 99 out of 100 times undesireable.
+      // which if its not media is BAD and 99 out of 100 times undesirable.
       return false;
     }
 

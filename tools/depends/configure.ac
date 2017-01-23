@@ -12,8 +12,8 @@ passed_cflags="$CFLAGS"
 passed_ldflags="$LDFLAGS"
 passed_cxxflags="$CXXFLAGS"
 
-m4_include([../../m4/xbmc_arch.m4])
-m4_include([../../m4/ax_cxx_compile_stdcxx_11.m4])
+m4_include([m4/xbmc_arch.m4])
+m4_include([m4/ax_cxx_compile_stdcxx_11.m4])
 AX_CXX_COMPILE_STDCXX_11(,[mandatory])
 c11_flags="$CFLAGS"
 cxx11_flags="$CXXFLAGS"
@@ -74,7 +74,7 @@ AC_ARG_WITH([sdk-path],
 
 AC_ARG_WITH([sdk],
   [AS_HELP_STRING([--with-sdk],
-  [spcify sdk platform version (optional for android). default is android-21])],
+  [specify sdk platform version (optional for android). default is android-21])],
   [use_sdk=$withval])
 
 AC_ARG_ENABLE([gplv3],
@@ -597,6 +597,7 @@ echo -e
   AC_SUBST(build_tools_path)
 fi
 
+AC_SUBST(use_debug)
 AC_SUBST(use_host)
 AC_SUBST(deps_dir)
 AC_SUBST(tool_dir)

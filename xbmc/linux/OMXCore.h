@@ -59,14 +59,14 @@ typedef struct omx_event {
 
 class COMXCore;
 class COMXCoreComponent;
-class COMXCoreTunel;
+class COMXCoreTunnel;
 class COMXCoreClock;
 
-class COMXCoreTunel
+class COMXCoreTunnel
 {
 public:
-  COMXCoreTunel();
-  ~COMXCoreTunel();
+  COMXCoreTunnel();
+  ~COMXCoreTunnel();
 
   void Initialize(COMXCoreComponent *src_component, unsigned int src_port, COMXCoreComponent *dst_component, unsigned int dst_port);
   bool IsInitialized() const { return m_tunnel_set; }

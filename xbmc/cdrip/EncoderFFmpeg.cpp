@@ -27,6 +27,7 @@
 #include "stdint.h"
 
 #include "EncoderFFmpeg.h"
+#include "ServiceBroker.h"
 #include "utils/log.h"
 #include "settings/Settings.h"
 #include "utils/SystemInfo.h"
@@ -88,7 +89,7 @@ bool CEncoderFFmpeg::Init(audioenc_callbacks &callbacks)
   }
 
   AddonPtr addon;
-  CAddonMgr::GetInstance().GetAddon(CSettings::GetInstance().GetString(CSettings::SETTING_AUDIOCDS_ENCODER), addon);
+  CAddonMgr::GetInstance().GetAddon(CServiceBroker::GetSettings().GetString(CSettings::SETTING_AUDIOCDS_ENCODER), addon);
   if (addon)
   {
     m_Format->bit_rate = (128+32*strtol(addon->GetSetting("bitrate").c_str(), NULL, 10))*1000;

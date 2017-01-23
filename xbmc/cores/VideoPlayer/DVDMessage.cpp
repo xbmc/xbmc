@@ -95,7 +95,7 @@ void CDVDMsgGeneralSynchronize::Wait(std::atomic<bool>& abort, unsigned int sour
 long CDVDMsgGeneralSynchronize::Release()
 {
   CSingleLock lock(m_p->section);
-  long count = AtomicDecrement(&m_refs);
+  long count = --m_refs;
   m_p->condition.notifyAll();
   lock.Leave();
   if (count == 0)

@@ -19,11 +19,13 @@
  *
  */
 
+#include "pvr/PVRChannelNumberInputHandler.h"
+
 #include "GUIWindowPVRBase.h"
 
 namespace PVR
 {
-  class CGUIWindowPVRChannels : public CGUIWindowPVRBase
+  class CGUIWindowPVRChannels : public CGUIWindowPVRBase, public CPVRChannelNumberInputHandler
   {
   public:
     CGUIWindowPVRChannels(bool bRadio);
@@ -36,21 +38,18 @@ namespace PVR
     virtual void UpdateButtons(void) override;
     virtual bool OnAction(const CAction &action) override;
 
+    // CPVRChannelNumberInputHandler implementation
+    void OnInputDone() override;
+
   protected:
     virtual std::string GetDirectoryPath(void) override;
 
   private:
-    bool OnContextButtonAdd(CFileItem *item, CONTEXT_BUTTON button);
-    bool OnContextButtonGroupManager(CFileItem *item, CONTEXT_BUTTON button);
-    bool OnContextButtonInfo(CFileItem *item, CONTEXT_BUTTON button);
-    bool OnContextButtonManage(CFileItem *item, CONTEXT_BUTTON button);
-    bool OnContextButtonUpdateEpg(CFileItem *item, CONTEXT_BUTTON button);
-    bool OnContextButtonAddTimer(CFileItem *item, CONTEXT_BUTTON button);
-    bool OnContextButtonStartRecord(CFileItem *item, CONTEXT_BUTTON button);
-    bool OnContextButtonStopRecord(CFileItem *item, CONTEXT_BUTTON button);
+    bool OnContextButtonManage(const CFileItemPtr &item, CONTEXT_BUTTON button);
 
     void ShowChannelManager();
-    void ShowGroupManager(void);
+    void ShowGroupManager();
+    void UpdateEpg(const CFileItemPtr &item);
 
     bool m_bShowHiddenChannels;
   };

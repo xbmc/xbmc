@@ -23,6 +23,7 @@
 #include <utility>
 
 #include "Application.h"
+#include "ServiceBroker.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "Epg.h"
 #include "EpgSearchFilter.h"
@@ -179,18 +180,24 @@ void CEpgContainer::Start(bool bAsync)
 
   LoadFromDB();
 
-  CSingleLock lock(m_critSection);
-  if (!m_bStop)
+  bool bStop = false;
   {
-    CheckPlayingEvents();
+    CSingleLock lock(m_critSection);
+    bStop = m_bStop;
+    if (!m_bStop)
+    {
+      CheckPlayingEvents();
 
-    Create();
-    SetPriority(-1);
+      Create();
+      SetPriority(-1);
 
-    m_bStarted = true;
+      m_bStarted = true;
+    }
+  }
 
+  if (!bStop)
+  {
     g_PVRManager.TriggerEpgsCreate();
-
     CLog::Log(LOGNOTICE, "%s - EPG thread started", __FUNCTION__);
   }
 }
@@ -405,12 +412,24 @@ CEpgInfoTagPtr CEpgContainer::GetTagById(const CPVRChannelPtr &channel, unsigned
 {
   CEpgInfoTagPtr retval;
 
-  if (!channel || iBroadcastId == EPG_TAG_INVALID_UID)
+  if (iBroadcastId == EPG_TAG_INVALID_UID)
     return retval;
 
-  const CEpgPtr epg(channel->GetEPG());
-  if (epg)
-    retval = epg->GetTagByBroadcastId(iBroadcastId);
+  if (channel)
+  {
+    const CEpgPtr epg(channel->GetEPG());
+    if (epg)
+      retval = epg->GetTagByBroadcastId(iBroadcastId);
+  }
+  else
+  {
+    for (const auto &epgEntry : m_epgs)
+    {
+      retval = epgEntry.second->GetTagByBroadcastId(iBroadcastId);
+      if (retval)
+        break;
+    }
+  }
 
   return retval;
 }
@@ -496,9 +515,9 @@ CEpgPtr CEpgContainer::CreateChannelEpg(const CPVRChannelPtr &channel)
 
 bool CEpgContainer::LoadSettings(void)
 {
-  m_bIgnoreDbForClient = CSettings::GetInstance().GetBool(CSettings::SETTING_EPG_IGNOREDBFORCLIENT);
-  m_iUpdateTime        = CSettings::GetInstance().GetInt (CSettings::SETTING_EPG_EPGUPDATE) * 60;
-  m_iDisplayTime       = CSettings::GetInstance().GetInt (CSettings::SETTING_EPG_DAYSTODISPLAY) * 24 * 60 * 60;
+  m_bIgnoreDbForClient = CServiceBroker::GetSettings().GetBool(CSettings::SETTING_EPG_IGNOREDBFORCLIENT);
+  m_iUpdateTime        = CServiceBroker::GetSettings().GetInt (CSettings::SETTING_EPG_EPGUPDATE) * 60;
+  m_iDisplayTime       = CServiceBroker::GetSettings().GetInt (CSettings::SETTING_EPG_DAYSTODISPLAY) * 24 * 60 * 60;
 
   return true;
 }
@@ -581,7 +600,7 @@ bool CEpgContainer::InterruptUpdate(void) const
   bReturn = g_application.m_bStop || m_bStop || m_bPreventUpdates;
 
   return bReturn ||
-    (CSettings::GetInstance().GetBool(CSettings::SETTING_EPG_PREVENTUPDATESWHILEPLAYINGTV) &&
+    (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_EPG_PREVENTUPDATESWHILEPLAYINGTV) &&
      g_application.m_pPlayer && g_application.m_pPlayer->IsPlaying());
 }
 
@@ -772,24 +791,36 @@ int CEpgContainer::GetEPGSearch(CFileItemList &results, const EpgSearchFilter &f
 bool CEpgContainer::CheckPlayingEvents(void)
 {
   bool bReturn(false);
-  time_t iNow;
   bool bFoundChanges(false);
 
   {
-    CSingleLock lock(m_critSection);
+    time_t iNextEpgActiveTagCheck;
+    {
+      CSingleLock lock(m_critSection);
+      iNextEpgActiveTagCheck = m_iNextEpgActiveTagCheck;
+    }
+
+    time_t iNow;
     CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(iNow);
-    if (iNow >= m_iNextEpgActiveTagCheck)
+    if (iNow >= iNextEpgActiveTagCheck)
     {
       for (const auto &epgEntry : m_epgs)
         bFoundChanges = epgEntry.second->CheckPlayingEvent() || bFoundChanges;
-      CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(m_iNextEpgActiveTagCheck);
-      m_iNextEpgActiveTagCheck += g_advancedSettings.m_iEpgActiveTagCheckInterval;
+
+      CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(iNextEpgActiveTagCheck);
+      iNextEpgActiveTagCheck += g_advancedSettings.m_iEpgActiveTagCheckInterval;
 
       /* pvr tags always start on the full minute */
       if (g_PVRManager.IsStarted())
-        m_iNextEpgActiveTagCheck -= m_iNextEpgActiveTagCheck % 60;
+        iNextEpgActiveTagCheck -= iNextEpgActiveTagCheck % 60;
 
       bReturn = true;
+    }
+
+    if (bReturn)
+    {
+      CSingleLock lock(m_critSection);
+      m_iNextEpgActiveTagCheck = iNextEpgActiveTagCheck;
     }
   }
 

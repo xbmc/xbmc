@@ -53,4 +53,9 @@
       <rightclick>Info</rightclick>
     </mouse>
   </FullscreenVideo>
+  <FullscreenGame>
+    <mouse>
+      <rightclick>Info</rightclick>
+    </mouse>
+  </FullscreenGame>
 </keymap>

@@ -133,7 +133,7 @@ int CAddonDatabase::GetMinSchemaVersion() const
 
 int CAddonDatabase::GetSchemaVersion() const
 {
-  return 26;
+  return 27;
 }
 
 void CAddonDatabase::CreateTables()
@@ -146,6 +146,7 @@ void CAddonDatabase::CreateTables()
       "version TEXT NOT NULL,"
       "name TEXT NOT NULL,"
       "summary TEXT NOT NULL,"
+      "news TEXT NOT NULL,"
       "description TEXT NOT NULL)");
 
   CLog::Log(LOGINFO, "create repo table");
@@ -172,7 +173,7 @@ void CAddonDatabase::CreateTables()
 
 void CAddonDatabase::CreateAnalytics()
 {
-  CLog::Log(LOGINFO, "%s creating indicies", __FUNCTION__);
+  CLog::Log(LOGINFO, "%s creating indices", __FUNCTION__);
   m_pDS->exec("CREATE INDEX idxAddons ON addons(addonID)");
   m_pDS->exec("CREATE UNIQUE INDEX ix_addonlinkrepo_1 ON addonlinkrepo ( idAddon, idRepo )\n");
   m_pDS->exec("CREATE UNIQUE INDEX ix_addonlinkrepo_2 ON addonlinkrepo ( idRepo, idAddon )\n");
@@ -300,6 +301,10 @@ void CAddonDatabase::UpdateTables(int version)
         "name TEXT NOT NULL,"
         "summary TEXT NOT NULL,"
         "description TEXT NOT NULL)");
+  }
+  if (version < 27)
+  {
+    m_pDS->exec("ALTER TABLE addons ADD news TEXT NOT NULL DEFAULT ''");
   }
 }
 
@@ -478,7 +483,7 @@ bool CAddonDatabase::FindByAddonId(const std::string& addonId, ADDON::VECADDONS&
     if (NULL == m_pDS.get()) return false;
 
     std::string sql = PrepareSQL(
-        "SELECT addons.version, addons.name, addons.summary, addons.description, addons.metadata,"
+        "SELECT addons.version, addons.name, addons.summary, addons.description, addons.metadata, addons.news,"
         "repo.addonID AS repoID FROM addons "
         "JOIN addonlinkrepo ON addonlinkrepo.idAddon=addons.id "
         "JOIN repo ON repo.id=addonlinkrepo.idRepo "
@@ -498,7 +503,8 @@ bool CAddonDatabase::FindByAddonId(const std::string& addonId, ADDON::VECADDONS&
       builder.SetSummary(m_pDS->fv(2).get_asString());
       builder.SetDescription(m_pDS->fv(3).get_asString());
       DeserializeMetadata(m_pDS->fv(4).get_asString(), builder);
-      builder.SetOrigin(m_pDS->fv(5).get_asString());
+      builder.SetChangelog(m_pDS->fv(5).get_asString());
+      builder.SetOrigin(m_pDS->fv(6).get_asString());
 
       auto addon = builder.Build();
       if (addon)
@@ -792,14 +798,15 @@ bool CAddonDatabase::UpdateRepositoryContent(const std::string& repository, cons
     for (const auto& addon : addons)
     {
       m_pDS->exec(PrepareSQL(
-          "INSERT INTO addons (id, metadata, addonID, version, name, summary, description) "
-          "VALUES (NULL, '%s', '%s', '%s', '%s','%s', '%s')",
+          "INSERT INTO addons (id, metadata, addonID, version, name, summary, description, news) "
+          "VALUES (NULL, '%s', '%s', '%s', '%s','%s', '%s','%s')",
           SerializeMetadata(*addon).c_str(),
           addon->ID().c_str(),
           addon->Version().asString().c_str(),
           addon->Name().c_str(),
           addon->Summary().c_str(),
-          addon->Description().c_str()));
+          addon->Description().c_str(),
+          addon->ChangeLog().c_str()));
 
       auto idAddon = m_pDS->lastinsertid();
       if (idAddon <= 0)

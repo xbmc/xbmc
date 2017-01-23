@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<defaultcontrol always="true">26</defaultcontrol>
+	<include>Animation_DialogPopupOpenClose</include>
+	<controls>
+		<control type="group">
+			<centertop>50%</centertop>
+			<height>880</height>
+			<centerleft>50%</centerleft>
+			<width>1720</width>
+			<include content="DialogBackgroundCommons">
+				<param name="width" value="1720" />
+				<param name="height" value="880" />
+				<param name="header_label" value="$LOCALIZE[19143]" />
+				<param name="header_id" value="1" />
+			</include>
+			<control type="grouplist" id="9000">
+				<left>0</left>
+				<top>50</top>
+				<width>370</width>
+				<height>600</height>
+				<itemgap>-20</itemgap>
+				<align>center</align>
+				<orientation>vertical</orientation>
+				<onleft>12</onleft>
+				<onright>13</onright>
+				<onup>9000</onup>
+				<ondown>9000</ondown>
+				<control type="button" id="26">
+					<description>Add Group</description>
+					<width>370</width>
+					<include>SettingsItemCommon</include>
+					<font>font25_title</font>
+					<label>$LOCALIZE[31044]</label>
+				</control>
+				<control type="button" id="27">
+					<description>Rename Group</description>
+					<width>370</width>
+					<include>SettingsItemCommon</include>
+					<font>font25_title</font>
+					<label>$LOCALIZE[31045]</label>
+				</control>
+				<control type="radiobutton" id="25">
+					<description>Hide Group</description>
+					<width>370</width>
+					<include>SettingsItemCommon</include>
+					<font>font25_title</font>
+					<label>$LOCALIZE[19289]</label>
+					<radiowidth>100</radiowidth>
+					<radioposy>13</radioposy>
+				</control>
+				<control type="button" id="28">
+					<description>Delete Group</description>
+					<width>370</width>
+					<include>SettingsItemCommon</include>
+					<font>font25_title</font>
+					<label>$LOCALIZE[31046]</label>
+				</control>
+				<control type="button" id="29">
+					<description>OK</description>
+					<width>370</width>
+					<include>SettingsItemCommon</include>
+					<font>font25_title</font>
+					<label>$LOCALIZE[186]</label>
+				</control>
+			</control>
+			<control type="group">
+				<left>350</left>
+				<top>80</top>
+				<control type="label">
+					<description>name label</description>
+					<left>0</left>
+					<top>0</top>
+					<width>360</width>
+					<height>70</height>
+					<label>$LOCALIZE[31089]: [COLOR white]$INFO[Container(13).NumItems][/COLOR]</label>
+					<align>center</align>
+					<aligny>center</aligny>
+					<font>font12</font>
+					<textcolor>button_focus</textcolor>
+				</control>
+				<control type="image">
+					<left>0</left>
+					<top>55</top>
+					<width>360</width>
+					<height>740</height>
+					<texture border="40">buttons/dialogbutton-nofo.png</texture>
+				</control>
+				<control type="list" id="13">
+					<left>20</left>
+					<top>75</top>
+					<width>320</width>
+					<height>700</height>
+					<onup>13</onup>
+					<ondown>13</ondown>
+					<onleft>9000</onleft>
+					<onright>73</onright>
+					<pagecontrol>73</pagecontrol>
+					<scrolltime>200</scrolltime>
+					<include content="DefaultSimpleListLayout">
+						<param name="width" value="320" />
+						<param name="list_id" value="13" />
+					</include>
+				</control>
+				<control type="scrollbar" id="73">
+					<left>305</left>
+					<top>75</top>
+					<width>12</width>
+					<height>700</height>
+					<onleft>13</onleft>
+					<onright>11</onright>
+					<ondown>73</ondown>
+					<onup>73</onup>
+					<orientation>vertical</orientation>
+				</control>
+			</control>
+			<control type="group">
+				<description>Channels list</description>
+				<left>700</left>
+				<top>80</top>
+				<include content="ChannelManagerList">
+					<param name="header_id" value="21" />
+					<param name="list_id" value="11" />
+					<param name="scrollbar_id" value="71" />
+					<param name="onright" value="12" />
+					<param name="onleft" value="73" />
+				</include>
+			</control>
+			<control type="group">
+				<description>Grouped Channels list</description>
+				<left>1200</left>
+				<top>80</top>
+				<include content="ChannelManagerList">
+					<param name="header_id" value="22" />
+					<param name="list_id" value="12" />
+					<param name="scrollbar_id" value="72" />
+					<param name="onright" value="9000" />
+					<param name="onleft" value="71" />
+				</include>
+			</control>
+		</control>
+		<control type="label" id="20">
+			<description>Fake Label used to pass on name label</description>
+			<visible>false</visible>
+		</control>
+	</controls>
+</window>

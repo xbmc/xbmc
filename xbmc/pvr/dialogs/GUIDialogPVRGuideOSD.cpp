@@ -24,9 +24,9 @@
 #include "input/Key.h"
 #include "view/ViewState.h"
 
+#include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
 
-#include "GUIDialogPVRGuideInfo.h"
 #include "GUIDialogPVRGuideOSD.h"
 
 using namespace PVR;
@@ -122,19 +122,10 @@ void CGUIDialogPVRGuideOSD::Clear()
 
 void CGUIDialogPVRGuideOSD::ShowInfo(int item)
 {
-  /* Check file item is in list range and get his pointer */
-  if (item < 0 || item >= (int)m_vecItems->Size()) return;
-
-  CFileItemPtr pItem = m_vecItems->Get(item);
-
-  /* Load programme info dialog */
-  CGUIDialogPVRGuideInfo* pDlgInfo = (CGUIDialogPVRGuideInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_GUIDE_INFO);
-  if (!pDlgInfo)
+  if (item < 0 || item >= (int)m_vecItems->Size())
     return;
 
-  /* inform dialog about the file item and open dialog window */
-  pDlgInfo->SetProgInfo(pItem->GetEPGInfoTag());
-  pDlgInfo->Open();
+  CPVRGUIActions::GetInstance().ShowEPGInfo(m_vecItems->Get(item));
 }
 
 void CGUIDialogPVRGuideOSD::OnWindowLoaded()

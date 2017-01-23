@@ -74,8 +74,7 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IVideoPlayer* pPlayer
       if (!input->UseParent())
         addon = std::shared_ptr<ADDON::CInputStream>(new ADDON::CInputStream(*input));
 
-      ADDON_STATUS status = addon->Create();
-      if (status == ADDON_STATUS_OK)
+      if (addon->Create())
       {
         unsigned int videoWidth, videoHeight;
         pPlayer->GetVideoResolution(videoWidth, videoHeight);
@@ -174,6 +173,9 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IVideoPlayer* pPlayer
       return new CDVDInputStreamFFmpeg(finalFileitem);
 
     if (finalFileitem.GetMimeType() == "application/vnd.apple.mpegurl")
+      return new CDVDInputStreamFFmpeg(finalFileitem);
+
+    if (URIUtils::IsProtocol(finalFileitem.GetPath(), "udp"))
       return new CDVDInputStreamFFmpeg(finalFileitem);
   }
 

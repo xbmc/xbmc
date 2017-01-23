@@ -25,11 +25,6 @@
 #include "URL.h"
 #include "utils/log.h"
 #include "filesystem/File.h"
-
-#ifdef HAVE_CONFIG_H
-#include "config.h" // for HAVE_POSIX_FADVISE
-#endif // HAVE_CONFIG_H
-
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>

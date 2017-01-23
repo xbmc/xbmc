@@ -20,6 +20,7 @@
 
 #include "FileItem.h"
 #include "VideoFileItemListModifier.h"
+#include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
 #include "video/VideoDatabase.h"
 #include "filesystem/VideoDatabaseDirectory/DirectoryNode.h"
@@ -55,7 +56,7 @@ void CVideoFileItemListModifier::AddQueuingFolder(CFileItemList& items)
   CFileItemPtr pItem;
 
   // always show "all" items by default
-  if (!CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOLIBRARY_SHOWALLITEMS))
+  if (!CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOLIBRARY_SHOWALLITEMS))
     return;
 
   // no need for "all" item when only one item
@@ -97,7 +98,7 @@ void CVideoFileItemListModifier::AddQueuingFolder(CFileItemList& items)
     }
     pItem->GetVideoInfoTag()->m_strTitle = strLabel;
     pItem->GetVideoInfoTag()->m_iEpisode = watched + unwatched;
-    pItem->GetVideoInfoTag()->m_playCount = (unwatched == 0) ? 1 : 0;
+    pItem->GetVideoInfoTag()->SetPlayCount((unwatched == 0) ? 1 : 0);
     CVideoDatabase db;
     if (db.Open())
     {

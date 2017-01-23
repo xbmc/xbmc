@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<defaultcontrol always="true">9</defaultcontrol>
+	<include>Animation_DialogPopupOpenClose</include>
+	<controls>
+		<control type="group">
+			<centertop>50%</centertop>
+			<height>820</height>
+			<centerleft>50%</centerleft>
+			<width>1780</width>
+			<include content="DialogBackgroundCommons">
+				<param name="width" value="1780" />
+				<param name="height" value="820" />
+				<param name="header_label" value="$LOCALIZE[19142]" />
+				<param name="header_id" value="2" />
+			</include>
+			<control type="edit" id="9">
+				<left>10</left>
+				<top>80</top>
+				<width>1460</width>
+				<height>100</height>
+				<textoffsetx>60</textoffsetx>
+				<shadowcolor>black</shadowcolor>
+				<hinttext>$LOCALIZE[137]...</hinttext>
+				<onleft>9000</onleft>
+				<onright>9000</onright>
+				<onup>24</onup>
+				<ondown>10</ondown>
+			</control>
+			<control type="textbox">
+				<description>Search help</description>
+				<left>30</left>
+				<top>160</top>
+				<width>1440</width>
+				<height>68</height>
+				<font>font12</font>
+				<textcolor>grey</textcolor>
+				<label>$LOCALIZE[19001] $LOCALIZE[19002]</label>
+			</control>
+			<control type="image">
+				<left>10</left>
+				<top>210</top>
+				<width>1460</width>
+				<height>600</height>
+				<texture border="40">buttons/dialogbutton-nofo.png</texture>
+			</control>
+			<control type="grouplist" id="5000">
+				<left>30</left>
+				<top>230</top>
+				<onright>6000</onright>
+				<onleft>9000</onleft>
+				<ondown>9</ondown>
+				<onup>9</onup>
+				<orientation>vertical</orientation>
+				<control type="radiobutton" id="10">
+					<description>Include Description</description>
+					<width>710</width>
+					<onright>12</onright>
+					<include>DefaultSettingButton</include>
+					<label>$LOCALIZE[19134]</label>
+				</control>
+				<control type="radiobutton" id="11">
+					<description>Case Sensitive</description>
+					<width>710</width>
+					<onright>13</onright>
+					<include>DefaultSettingButton</include>
+					<label>$LOCALIZE[19135]</label>
+				</control>
+				<control type="edit" id="14">
+					<description>Start Date</description>
+					<width>710</width>
+					<onright>16</onright>
+					<include>DefaultSettingButton</include>
+					<label>$LOCALIZE[19128]</label>
+				</control>
+				<control type="edit" id="15">
+					<description>Stop Date</description>
+					<width>710</width>
+					<onright>17</onright>
+					<include>DefaultSettingButton</include>
+					<label>$LOCALIZE[19129]</label>
+				</control>
+				<control type="spincontrolex" id="18">
+					<description>Genre</description>
+					<width>710</width>
+					<onright>19</onright>
+					<include>DefaultSettingButton</include>
+					<label>$LOCALIZE[515]</label>
+				</control>
+				<control type="radiobutton" id="20">
+					<description>Include unknown Genres</description>
+					<width>710</width>
+					<onright>21</onright>
+					<include>DefaultSettingButton</include>
+					<label>$LOCALIZE[19132]</label>
+				</control>
+				<control type="radiobutton" id="22">
+					<description>FTA only</description>
+					<width>710</width>
+					<onright>23</onright>
+					<include>DefaultSettingButton</include>
+					<label>$LOCALIZE[19123]</label>
+				</control>
+				<control type="radiobutton" id="24">
+					<description>Ignore Timers</description>
+					<width>710</width>
+					<onright>27</onright>
+					<include>DefaultSettingButton</include>
+					<label>$LOCALIZE[19124]</label>
+				</control>
+			</control>
+			<control type="grouplist" id="6000">
+				<left>740</left>
+				<top>230</top>
+				<onright>9000</onright>
+				<onleft>5000</onleft>
+				<ondown>9</ondown>
+				<onup>9</onup>
+				<orientation>vertical</orientation>
+				<control type="spincontrolex" id="12">
+					<description>Min Duration</description>
+					<width>710</width>
+					<onleft>10</onleft>
+					<include>DefaultSettingButton</include>
+					<label>$LOCALIZE[19130]</label>
+				</control>
+				<control type="spincontrolex" id="13">
+					<description>Max Duration</description>
+					<width>710</width>
+					<onleft>11</onleft>
+					<include>DefaultSettingButton</include>
+					<label>$LOCALIZE[19131]</label>
+				</control>
+				<control type="edit" id="16">
+					<description>Start time</description>
+					<width>710</width>
+					<onleft>14</onleft>
+					<include>DefaultSettingButton</include>
+					<label>$LOCALIZE[19126]</label>
+				</control>
+				<control type="edit" id="17">
+					<description>Stop time</description>
+					<width>710</width>
+					<onleft>15</onleft>
+					<include>DefaultSettingButton</include>
+					<label>$LOCALIZE[19127]</label>
+				</control>
+				<control type="radiobutton" id="19">
+					<description>avoid repeats</description>
+					<width>710</width>
+					<onleft>18</onleft>
+					<include>DefaultSettingButton</include>
+					<label>$LOCALIZE[19121]</label>
+				</control>
+				<control type="spincontrolex" id="21">
+					<description>Groups</description>
+					<width>710</width>
+					<onleft>20</onleft>
+					<include>DefaultSettingButton</include>
+					<label>$LOCALIZE[19141]</label>
+				</control>
+				<control type="spincontrolex" id="23">
+					<description>Channels</description>
+					<width>710</width>
+					<onleft>22</onleft>
+					<include>DefaultSettingButton</include>
+					<label>$LOCALIZE[19148]</label>
+				</control>
+				<control type="radiobutton" id="27">
+					<description>Ignore Recordings</description>
+					<width>710</width>
+					<onleft>24</onleft>
+					<include>DefaultSettingButton</include>
+					<label>$LOCALIZE[19125]</label>
+				</control>
+			</control>
+			<control type="grouplist" id="9000">
+				<top>80</top>
+				<left>1460</left>
+				<onup>9000</onup>
+				<ondown>9000</ondown>
+				<onleft>6000</onleft>
+				<onright>5000</onright>
+				<width>1320</width>
+				<orientation>vertical</orientation>
+				<include content="DefaultDialogButton">
+					<param name="id" value="26" />
+					<param name="label" value="$LOCALIZE[137]" />
+				</include>
+				<include content="DefaultDialogButton">
+					<param name="id" value="28" />
+					<param name="label" value="$LOCALIZE[10035]" />
+				</include>
+				<include content="DefaultDialogButton">
+					<param name="id" value="25" />
+					<param name="label" value="$LOCALIZE[222]" />
+				</include>
+			</control>
+		</control>
+	</controls>
+</window>

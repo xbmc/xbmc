@@ -1,0 +1,655 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<defaultcontrol always="true">300</defaultcontrol>
+	<include>Keyboard_Slide_Up</include>
+	<depth>DepthDialog+</depth>
+	<controls>
+		<control type="group">
+			<bottom>0</bottom>
+			<centerleft>50%</centerleft>
+			<width>100%</width>
+			<visible>!Window.IsVisible(numericinput)</visible>
+			<include>Animation_DialogPopupVisible</include>
+			<control type="image">
+				<left>0</left>
+				<bottom>0</bottom>
+				<width>100%</width>
+				<height>300%</height>
+				<texture flipy="true">frame/osdfade.png</texture>
+			</control>
+			<control type="image">
+				<left>0</left>
+				<bottom>0</bottom>
+				<width>100%</width>
+				<height>470</height>
+				<texture colordiffuse="dialog_tint">colors/white.png</texture>
+			</control>
+			<control type="label" id="311">
+				<centerleft>50%</centerleft>
+				<top>50</top>
+				<width>1542</width>
+				<height>100</height>
+				<font>font45</font>
+				<label>$PARAM[header_label]</label>
+				<align>center</align>
+				<aligny>center</aligny>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="image">
+				<centerleft>50%</centerleft>
+				<top>184</top>
+				<width>1542</width>
+				<height>100</height>
+				<texture colordiffuse="dialog_tint">colors/white.png</texture>
+			</control>
+			<control type="image">
+				<centerleft>50%</centerleft>
+				<top>184</top>
+				<width>1542</width>
+				<height>100</height>
+				<texture border="40">buttons/button-alt-nofo.png</texture>
+			</control>
+			<control type="edit" id="312">
+				<centerleft>50%</centerleft>
+				<top>183</top>
+				<width>1510</width>
+				<height>100</height>
+				<font>font37</font>
+				<align>center</align>
+				<aligny>center</aligny>
+				<texturefocus />
+				<texturenofocus />
+			</control>
+			<control type="group" id="78500">
+				<centerleft>59%</centerleft>
+				<bottom>0</bottom>
+				<height>480</height>
+				<width>1920</width>
+				<animation effect="slide" end="-60,0" time="200" tween="sine" easing="inout" condition="Control.IsVisible(110) | Control.IsVisible(130) | Control.IsVisible(150) | Control.IsVisible(170)">conditional</animation>
+				<animation effect="slide" end="-110,0" time="200" tween="sine" easing="inout" condition="Control.IsVisible(111) | Control.IsVisible(131) | Control.IsVisible(151) | Control.IsVisible(171)">conditional</animation>
+				<!-- 1st row -->
+				<control type="grouplist">
+					<left>320</left>
+					<itemgap>-30</itemgap>
+					<orientation>horizontal</orientation>
+					<onright>95200</onright>
+					<control type="button" id="100">
+						<description>(0,0) key button</description>
+						<onup condition="!Integer.IsGreater(Container(9010).NumItems,0)">304</onup>
+						<onup condition="Integer.IsGreater(Container(9010).NumItems,0)">9010</onup>
+						<ondown>120</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="101">
+						<description>(0,1) key button</description>
+						<onup condition="!Integer.IsGreater(Container(9010).NumItems,0)">303</onup>
+						<onup condition="Integer.IsGreater(Container(9010).NumItems,0)">9010</onup>
+						<ondown>121</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="102">
+						<description>(0,2) key button</description>
+						<onup condition="!Integer.IsGreater(Container(9010).NumItems,0)">302</onup>
+						<onup condition="Integer.IsGreater(Container(9010).NumItems,0)">9010</onup>
+						<ondown>122</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="103">
+						<description>(0,3) key button</description>
+						<onup condition="!Integer.IsGreater(Container(9010).NumItems,0)">32</onup>
+						<onup condition="Integer.IsGreater(Container(9010).NumItems,0)">9010</onup>
+						<ondown>123</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="104">
+						<description>(0,4) key button</description>
+						<onup condition="!Integer.IsGreater(Container(9010).NumItems,0)">32</onup>
+						<onup condition="Integer.IsGreater(Container(9010).NumItems,0)">9010</onup>
+						<ondown>124</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="105">
+						<description>(0,5) key button</description>
+						<onup condition="!Integer.IsGreater(Container(9010).NumItems,0)">32</onup>
+						<onup condition="Integer.IsGreater(Container(9010).NumItems,0)">9010</onup>
+						<ondown>125</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="106">
+						<description>(0,6) key button</description>
+						<onup condition="!Integer.IsGreater(Container(9010).NumItems,0)">32</onup>
+						<onup condition="Integer.IsGreater(Container(9010).NumItems,0)">9010</onup>
+						<ondown>126</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="107">
+						<description>(0,7) key button</description>
+						<onup condition="!Integer.IsGreater(Container(9010).NumItems,0)">305</onup>
+						<onup condition="Integer.IsGreater(Container(9010).NumItems,0)">9010</onup>
+						<ondown>127</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="108">
+						<description>(0,8) key button</description>
+						<onup condition="!Integer.IsGreater(Container(9010).NumItems,0)">306</onup>
+						<onup condition="Integer.IsGreater(Container(9010).NumItems,0)">9010</onup>
+						<ondown>128</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="109">
+						<description>(0,9) key button</description>
+						<onup condition="!Integer.IsGreater(Container(9010).NumItems,0)">8</onup>
+						<onup condition="Integer.IsGreater(Container(9010).NumItems,0)">9010</onup>
+						<ondown>129</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="110">
+						<description>(0,10) key button</description>
+						<onup condition="!Integer.IsGreater(Container(9010).NumItems,0)">8</onup>
+						<onup condition="Integer.IsGreater(Container(9010).NumItems,0)">9010</onup>
+						<ondown>130</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="111">
+						<description>(0,11) key button</description>
+						<onup condition="!Integer.IsGreater(Container(9010).NumItems,0)">8</onup>
+						<onup condition="Integer.IsGreater(Container(9010).NumItems,0)">9010</onup>
+						<ondown>131</ondown>
+						<include>KeyboardButton</include>
+					</control>
+				</control>
+				<!-- 2nd row -->
+				<control type="grouplist">
+					<left>320</left>
+					<top>90</top>
+					<itemgap>-30</itemgap>
+					<orientation>horizontal</orientation>
+					<onright>95200</onright>
+					<control type="button" id="120">
+						<description>(1,0) key button</description>
+						<onup>100</onup>
+						<ondown>140</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="121">
+						<description>(1,1) key button</description>
+						<onup>101</onup>
+						<ondown>141</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="122">
+						<description>(1,2) key button</description>
+						<onup>102</onup>
+						<ondown>142</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="123">
+						<description>(1,3) key button</description>
+						<onup>103</onup>
+						<ondown>143</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="124">
+						<description>(1,4) key button</description>
+						<onup>104</onup>
+						<ondown>144</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="125">
+						<description>(1,5) key button</description>
+						<onup>105</onup>
+						<ondown>145</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="126">
+						<description>(1,6) key button</description>
+						<onup>106</onup>
+						<ondown>146</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="127">
+						<description>(1,7) key button</description>
+						<onup>107</onup>
+						<ondown>147</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="128">
+						<description>(1,8) key button</description>
+						<onup>108</onup>
+						<ondown>148</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="129">
+						<description>(1,9) key button</description>
+						<onup>109</onup>
+						<ondown>149</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="130">
+						<description>(1,10) key button</description>
+						<onup>110</onup>
+						<ondown>150</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="131">
+						<description>(1,11) key button</description>
+						<onup>111</onup>
+						<ondown>151</ondown>
+						<include>KeyboardButton</include>
+					</control>
+				</control>
+				<!-- 3rd row -->
+				<control type="grouplist">
+					<left>320</left>
+					<top>180</top>
+					<orientation>horizontal</orientation>
+					<onright>95200</onright>
+					<itemgap>-30</itemgap>
+					<control type="button" id="140">
+						<description>(2,0) key button</description>
+						<onup>120</onup>
+						<ondown>160</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="141">
+						<description>(2,1) key button</description>
+						<onup>121</onup>
+						<ondown>161</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="142">
+						<description>(2,2) key button</description>
+						<onup>122</onup>
+						<ondown>162</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="143">
+						<description>(2,3) key button</description>
+						<onup>123</onup>
+						<ondown>163</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="144">
+						<description>(2,4) key button</description>
+						<onup>124</onup>
+						<ondown>164</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="145">
+						<description>(2,5) key button</description>
+						<onup>125</onup>
+						<ondown>165</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="146">
+						<description>(2,6) key button</description>
+						<onup>126</onup>
+						<ondown>166</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="147">
+						<description>(2,7) key button</description>
+						<onup>127</onup>
+						<ondown>167</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="148">
+						<description>(2,8) key button</description>
+						<onup>128</onup>
+						<ondown>168</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="149">
+						<description>(2,9) key button</description>
+						<onup>129</onup>
+						<ondown>169</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="150">
+						<description>(2,10) key button</description>
+						<onup>130</onup>
+						<ondown>170</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="151">
+						<description>(2,11) key button</description>
+						<onup>131</onup>
+						<ondown>171</ondown>
+						<include>KeyboardButton</include>
+					</control>
+				</control>
+				<!-- 4th row -->
+				<control type="grouplist">
+					<left>320</left>
+					<top>270</top>
+					<itemgap>-30</itemgap>
+					<orientation>horizontal</orientation>
+					<onright>95200</onright>
+					<control type="button" id="160">
+						<description>(3,0) key button</description>
+						<onup>140</onup>
+						<ondown>304</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="161">
+						<description>(3,1) key button</description>
+						<onup>141</onup>
+						<ondown>303</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="162">
+						<description>(3,2) key button</description>
+						<onup>142</onup>
+						<ondown>302</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="163">
+						<description>(3,3) key button</description>
+						<onup>143</onup>
+						<ondown>32</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="164">
+						<description>(3,4) key button</description>
+						<onup>144</onup>
+						<ondown>32</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="165">
+						<description>(3,5) key button</description>
+						<onup>145</onup>
+						<ondown>32</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="166">
+						<description>(3,6) key button</description>
+						<onup>146</onup>
+						<ondown>32</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="167">
+						<description>(3,7) key button</description>
+						<onup>147</onup>
+						<ondown>305</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="168">
+						<description>(3,8) key button</description>
+						<onup>148</onup>
+						<ondown>306</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="169">
+						<description>(3,9) key button</description>
+						<onup>149</onup>
+						<ondown>8</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="170">
+						<description>(3,10) key button</description>
+						<onup>150</onup>
+						<ondown>8</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="171">
+						<description>(3,11) key button</description>
+						<onup>501</onup>
+						<ondown>8</ondown>
+						<include>KeyboardButton</include>
+					</control>
+				</control>
+				<!-- 5th row -->
+				<control type="grouplist">
+					<left>320</left>
+					<top>360</top>
+					<itemgap>-30</itemgap>
+					<orientation>horizontal</orientation>
+					<onright>95200</onright>
+					<control type="radiobutton" id="304">
+						<description>Symbols button</description>
+						<width>120</width>
+						<height>120</height>
+						<onup>160</onup>
+						<ondown>100</ondown>
+						<texturefocus colordiffuse="button_focus">buttons/roundbutton-fo.png</texturefocus>
+						<texturenofocus />
+						<textureradioonfocus colordiffuse="FFFFFFFF">icons/keyboard/letters.png</textureradioonfocus>
+						<textureradioonnofocus colordiffuse="FFFFFFFF">icons/keyboard/letters.png</textureradioonnofocus>
+						<textureradioofffocus colordiffuse="FFFFFFFF">icons/keyboard/symbols.png</textureradioofffocus>
+						<textureradiooffnofocus colordiffuse="FFFFFFFF">icons/keyboard/symbols.png</textureradiooffnofocus>
+						<radioposx>32l</radioposx>
+						<radiowidth>56</radiowidth>
+						<radioheight>36</radioheight>
+					</control>
+					<control type="radiobutton" id="303">
+						<description>CAPS LOCK button</description>
+						<width>120</width>
+						<height>120</height>
+						<onup>161</onup>
+						<ondown>101</ondown>
+						<texturefocus colordiffuse="button_focus">buttons/roundbutton-fo.png</texturefocus>
+						<texturenofocus />
+						<textureradioonfocus colordiffuse="FFFFFFFF">icons/keyboard/capslock.png</textureradioonfocus>
+						<textureradioonnofocus colordiffuse="button_focus">icons/keyboard/capslock.png</textureradioonnofocus>
+						<textureradioofffocus colordiffuse="FFFFFFFF">icons/keyboard/capslock.png</textureradioofffocus>
+						<textureradiooffnofocus colordiffuse="FFFFFFFF">icons/keyboard/capslock.png</textureradiooffnofocus>
+						<radioposx>40</radioposx>
+						<radioposy>42</radioposy>
+						<radiowidth>42</radiowidth>
+						<radioheight>47</radioheight>
+					</control>
+					<control type="radiobutton" id="302">
+						<description>SHIFT button</description>
+						<width>120</width>
+						<height>120</height>
+						<onup>162</onup>
+						<ondown>102</ondown>
+						<texturefocus colordiffuse="button_focus">buttons/roundbutton-fo.png</texturefocus>
+						<texturenofocus />
+						<textureradioonfocus colordiffuse="FFFFFFFF">icons/keyboard/shift.png</textureradioonfocus>
+						<textureradioonnofocus colordiffuse="button_focus">icons/keyboard/shift.png</textureradioonnofocus>
+						<textureradioofffocus colordiffuse="FFFFFFFF">icons/keyboard/shift.png</textureradioofffocus>
+						<textureradiooffnofocus colordiffuse="FFFFFFFF">icons/keyboard/shift.png</textureradiooffnofocus>
+						<radioposx>42</radioposx>
+						<radiowidth>36</radiowidth>
+						<radioheight>36</radioheight>
+					</control>
+					<control type="radiobutton" id="32">
+						<description>SPACE button</description>
+						<width>390</width>
+						<height>120</height>
+						<onup>164</onup>
+						<ondown>104</ondown>
+						<texturefocus />
+						<texturenofocus />
+						<textureradioonfocus colordiffuse="button_focus">icons/keyboard/spacebar.png</textureradioonfocus>
+						<textureradioonnofocus colordiffuse="FFFFFFFF">icons/keyboard/spacebar.png</textureradioonnofocus>
+						<textureradioofffocus colordiffuse="button_focus">icons/keyboard/spacebar.png</textureradioofffocus>
+						<textureradiooffnofocus colordiffuse="FFFFFFFF">icons/keyboard/spacebar.png</textureradiooffnofocus>
+						<radioposx>34</radioposx>
+						<radiowidth>328</radiowidth>
+						<radioheight>36</radioheight>
+					</control>
+					<control type="radiobutton" id="305">
+						<description>previous button</description>
+						<width>120</width>
+						<height>120</height>
+						<ondown>107</ondown>
+						<onup>167</onup>
+						<texturefocus colordiffuse="button_focus">buttons/roundbutton-fo.png</texturefocus>
+						<texturenofocus />
+						<textureradioonfocus colordiffuse="FFFFFFFF">icons/keyboard/arrowleft.png</textureradioonfocus>
+						<textureradioonnofocus colordiffuse="FFFFFFFF">icons/keyboard/arrowleft.png</textureradioonnofocus>
+						<textureradioofffocus colordiffuse="FFFFFFFF">icons/keyboard/arrowleft.png</textureradioofffocus>
+						<textureradiooffnofocus colordiffuse="FFFFFFFF">icons/keyboard/arrowleft.png</textureradiooffnofocus>
+						<radioposx>38</radioposx>
+						<radiowidth>36</radiowidth>
+						<radioheight>36</radioheight>
+					</control>
+					<control type="radiobutton" id="306">
+						<description>next button</description>
+						<width>120</width>
+						<height>120</height>
+						<ondown>108</ondown>
+						<onup>168</onup>
+						<texturefocus colordiffuse="button_focus">buttons/roundbutton-fo.png</texturefocus>
+						<texturenofocus />
+						<textureradioonfocus colordiffuse="FFFFFFFF">icons/keyboard/arrowright.png</textureradioonfocus>
+						<textureradioonnofocus colordiffuse="FFFFFFFF">icons/keyboard/arrowright.png</textureradioonnofocus>
+						<textureradioofffocus colordiffuse="FFFFFFFF">icons/keyboard/arrowright.png</textureradioofffocus>
+						<textureradiooffnofocus colordiffuse="FFFFFFFF">icons/keyboard/arrowright.png</textureradiooffnofocus>
+						<radioposx>45</radioposx>
+						<radiowidth>36</radiowidth>
+						<radioheight>36</radioheight>
+					</control>
+					<control type="radiobutton" id="8">
+						<description>BACKSPACE button</description>
+						<width>120</width>
+						<height>120</height>
+						<onup>169</onup>
+						<ondown>109</ondown>
+						<texturefocus colordiffuse="button_focus">buttons/roundbutton-fo.png</texturefocus>
+						<texturenofocus />
+						<textureradioonfocus colordiffuse="FFFFFFFF">icons/keyboard/backspace.png</textureradioonfocus>
+						<textureradioonnofocus colordiffuse="FFFFFFFF">icons/keyboard/backspace.png</textureradioonnofocus>
+						<textureradioofffocus colordiffuse="FFFFFFFF">icons/keyboard/backspace.png</textureradioofffocus>
+						<textureradiooffnofocus colordiffuse="FFFFFFFF">icons/keyboard/backspace.png</textureradiooffnofocus>
+						<radioposx>31</radioposx>
+						<radiowidth>51</radiowidth>
+						<radioheight>36</radioheight>
+					</control>
+				</control>
+			</control>
+			<control type="grouplist" id="95200">
+				<bottom>0</bottom>
+				<height>460</height>
+				<centerleft>86%</centerleft>
+				<itemgap>dialogbuttons_itemgap</itemgap>
+				<onup>95200</onup>
+				<ondown>95200</ondown>
+				<onleft>78500</onleft>
+				<onright>140</onright>
+				<width>350</width>
+				<orientation>vertical</orientation>
+				<include content="DefaultDialogButton">
+					<param name="id" value="300" />
+					<param name="label" value="$LOCALIZE[12321]" />
+					<param name="width" value="350" />
+				</include>
+				<include content="DefaultDialogButton">
+					<param name="id" value="301" />
+					<param name="label" value="$LOCALIZE[222]" />
+					<param name="width" value="350" />
+				</include>
+				<include content="DefaultDialogButton">
+					<param name="id" value="309" />
+					<param name="label" value="Layout" />
+					<param name="width" value="350" />
+				</include>
+				<include content="DefaultDialogButton">
+					<param name="id" value="307" />
+					<param name="label" value="$LOCALIZE[1006]" />
+					<param name="width" value="350" />
+				</include>
+			</control>
+			<control type="panel" id="9010">
+				<centerleft>50%</centerleft>
+				<bottom>490</bottom>
+				<width>1500</width>
+				<height>200</height>
+				<scrolltime tween="cubic" easing="out">500</scrolltime>
+				<orientation>vertical</orientation>
+				<onleft>9010</onleft>
+				<onright>9010</onright>
+				<onup>noop</onup>
+				<ondown>105</ondown>
+				<visible>!Control.IsVisible(313)</visible>
+				<itemlayout width="500" height="60">
+					<control type="image">
+						<left>10</left>
+						<top>0</top>
+						<width>480</width>
+						<height>50</height>
+						<texture colordiffuse="dialog_tint">colors/white.png</texture>
+					</control>
+					<control type="label">
+						<textoffsetx>30</textoffsetx>
+						<top>0</top>
+						<width>500</width>
+						<height>50</height>
+						<label>$INFO[ListItem.Label]</label>
+						<font>font12</font>
+						<shadowcolor>text_shadow</shadowcolor>
+						<aligny>center</aligny>
+					</control>
+				</itemlayout>
+				<focusedlayout width="500" height="60">
+					<control type="group">
+						<control type="image">
+							<left>10</left>
+							<top>0</top>
+							<width>480</width>
+							<height>50</height>
+							<texture colordiffuse="dialog_tint">colors/white.png</texture>
+						</control>
+						<control type="image">
+							<left>10</left>
+							<width>480</width>
+							<height>50</height>
+							<texture colordiffuse="button_focus">colors/grey.png</texture>
+							<include>Animation_FocusTextureFade</include>
+						</control>
+						<control type="label">
+							<textoffsetx>30</textoffsetx>
+							<top>0</top>
+							<width>500</width>
+							<height>50</height>
+							<label>$INFO[ListItem.Label]</label>
+							<font>font12</font>
+							<shadowcolor>text_shadow</shadowcolor>
+							<aligny>center</aligny>
+						</control>
+					</control>
+				</focusedlayout>
+				<content>$VAR[AutoCompletionContentVar]</content>
+			</control>
+			<control type="label" id="313">
+				<left>60</left>
+				<top>690</top>
+				<width>1480</width>
+				<height>90</height>
+				<label>$INFO[ListItem.Label]</label>
+				<font>font37</font>
+				<shadowcolor>text_shadow</shadowcolor>
+				<aligny>center</aligny>
+			</control>
+			<control type="group">
+				<visible>Control.IsVisible(313)</visible>
+				<control type="image">
+					<left>20</left>
+					<top>690</top>
+					<width>1560</width>
+					<height>90</height>
+					<texture border="40">buttons/dialogbutton-nofo.png</texture>
+				</control>
+				<control type="image">
+					<left>20</left>
+					<top>770</top>
+					<width>1560</width>
+					<height>90</height>
+					<texture border="40">buttons/dialogbutton-nofo.png</texture>
+				</control>
+				<control type="label" id="314">
+					<left>60</left>
+					<top>770</top>
+					<width>1480</width>
+					<height>90</height>
+					<label>$INFO[ListItem.Label]</label>
+					<font>font37</font>
+					<shadowcolor>text_shadow</shadowcolor>
+					<aligny>center</aligny>
+				</control>
+			</control>
+		</control>
+	</controls>
+</window>

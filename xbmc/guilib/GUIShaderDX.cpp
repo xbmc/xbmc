@@ -240,8 +240,8 @@ void CGUIShaderDX::DrawQuad(Vertex& v1, Vertex& v2, Vertex& v3, Vertex& v4)
   if (SUCCEEDED(pContext->Map(m_pVertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &resource)))
   {
     // we are using strip topology
-    Vertex verticies[4] = { v2, v3, v1, v4 };
-    memcpy(resource.pData, &verticies, sizeof(Vertex) * 4);
+    Vertex vertices[4] = { v2, v3, v1, v4 };
+    memcpy(resource.pData, &vertices, sizeof(Vertex) * 4);
     pContext->Unmap(m_pVertexBuffer, 0);
     // Draw primitives
     pContext->Draw(4, 0);
@@ -319,6 +319,14 @@ void CGUIShaderDX::Project(float &x, float &y, float &z)
   x = XMVectorGetX(vScreenCoord);
   y = XMVectorGetY(vScreenCoord);
   z = 0;
+}
+
+void XM_CALLCONV CGUIShaderDX::SetWVP(const XMMATRIX &w, const XMMATRIX &v, const XMMATRIX &p)
+{
+  m_bIsWVPDirty = true;
+  m_cbWorldViewProj.world = w;
+  m_cbWorldViewProj.view = v;
+  m_cbWorldViewProj.projection = p;
 }
 
 void CGUIShaderDX::SetWorld(const XMMATRIX &value)

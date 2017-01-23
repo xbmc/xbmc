@@ -48,10 +48,6 @@ msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "Films non vus"
 
-msgctxt "#31008"
-msgid "No disclaimer"
-msgstr "Pas d'avertissement"
-
 msgctxt "#31009"
 msgid "Download icons"
 msgstr "Télécharger les icônes"
@@ -89,8 +85,8 @@ msgid "Rated"
 msgstr "Noté"
 
 msgctxt "#31018"
-msgid "Most played channels"
-msgstr "Chaînes les plus vues"
+msgid "Recently played channels"
+msgstr "Chaînes vues récemment"
 
 msgctxt "#31019"
 msgid "Forecast"
@@ -106,27 +102,15 @@ msgstr "Options diverses"
 
 msgctxt "#31022"
 msgid "Sort by"
-msgstr "Trier par"
+msgstr "Trier par "
 
 msgctxt "#31023"
 msgid "Viewtype"
 msgstr "Type de vue"
 
-msgctxt "#31024"
-msgid "Next tracks"
-msgstr "Prochaines pistes"
-
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
 msgstr "Aucun favori trouvé. Il est possible d'ajouter n'importe quel élément à cette liste à partir des vues média à l'aide du menu contextuel."
-
-msgctxt "#31026"
-msgid "Go to albums"
-msgstr "Aller aux albums"
-
-msgctxt "#31027"
-msgid "Go to songs"
-msgstr "Aller aux chansons"
 
 msgctxt "#31028"
 msgid "Show fanart"
@@ -136,13 +120,9 @@ msgctxt "#31029"
 msgid "Last logged in"
 msgstr "Dernière connexion "
 
-msgctxt "#31030"
-msgid "Memory used"
-msgstr "Mémoire utilisée "
-
 msgctxt "#31031"
 msgid "Version info"
-msgstr "Infos de version "
+msgstr "Informations de version "
 
 msgctxt "#31032"
 msgid "Order"
@@ -164,10 +144,6 @@ msgctxt "#31036"
 msgid "items"
 msgstr "éléments"
 
-msgctxt "#31037"
-msgid "Tracklist"
-msgstr "Liste de pistes"
-
 msgctxt "#31038"
 msgid "Rewind"
 msgstr "Retour rapide"
@@ -175,10 +151,6 @@ msgstr "Retour rapide"
 msgctxt "#31039"
 msgid "Fast forward"
 msgstr "Avance rapide"
-
-msgctxt "#31040"
-msgid "Cancel update"
-msgstr "Annuler la mise à jour"
 
 msgctxt "#31041"
 msgid "Camera manufacturer"
@@ -204,17 +176,9 @@ msgctxt "#31046"
 msgid "Delete group"
 msgstr "Supprimer groupe"
 
-msgctxt "#31047"
-msgid "Read more..."
-msgstr "En savoir plus…"
-
 msgctxt "#31048"
 msgid "Available"
 msgstr "Disponible"
-
-msgctxt "#31049"
-msgid "Press [B]Up[/B] to rewind or fast-forward"
-msgstr "Appuyer sur [B]Haut[/B] pour le retour ou l'avance rapide"
 
 msgctxt "#31050"
 msgid "Press [B]OK[/B] to stop"
@@ -236,10 +200,6 @@ msgctxt "#31054"
 msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
 msgstr "Appuyer sur [B]Gauche[/B] pour le retour rapide, ou [B]Droite[/B] pour l'avance rapide"
 
-msgctxt "#31055"
-msgid "Subtitle download"
-msgstr "Téléchargement de sous-titres"
-
 msgctxt "#31056"
 msgid "Go to playlist"
 msgstr "Aller à la liste de lecture"
@@ -252,29 +212,17 @@ msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr "Identification auto. au démarrage"
 
-msgctxt "#31059"
-msgid "Updates available"
-msgstr "Mises à jour disponible"
-
-msgctxt "#31060"
-msgid "minutes"
-msgstr "minutes"
-
 msgctxt "#31061"
 msgid "Main menu items"
-msgstr "Éléments menu principal"
+msgstr "Menu principal"
 
 msgctxt "#31062"
-msgid "Shortcuts to the \"Files\" sections of each media type. Go there to add additional sources for your databases."
-msgstr "Raccourcis vers la section « Fichiers » pour chaque type de médias. Y aller pour ajouter d'autres sources aux bases de données."
+msgid "Choose weather fanart pack"
+msgstr "Choisir le pack de FanArt pour la météo"
 
 msgctxt "#31063"
 msgid "Sections"
 msgstr "Sections"
-
-msgctxt "#31064"
-msgid "unwatched"
-msgstr "non vu"
 
 msgctxt "#31065"
 msgid "Video playlist"
@@ -286,7 +234,7 @@ msgstr "Liste de lecture de musique"
 
 msgctxt "#31067"
 msgid "Event log"
-msgstr "Journal les évènements"
+msgstr "Journal des évènements"
 
 msgctxt "#31068"
 msgid "Choose presets"
@@ -296,10 +244,6 @@ msgctxt "#31069"
 msgid "Last Updated"
 msgstr "Dernière mise à jour"
 
-msgctxt "#31070"
-msgid "Add media sources"
-msgstr "Ajouter des sources de médias"
-
 msgctxt "#31071"
 msgid "by"
 msgstr "par"
@@ -308,29 +252,9 @@ msgctxt "#31072"
 msgid "Power Options"
 msgstr "Options d'alimentation"
 
-msgctxt "#31073"
-msgid "Titles"
-msgstr "Titres"
-
-msgctxt "#31074"
-msgid "Library root"
-msgstr "Racine biblothèque"
-
 msgctxt "#31075"
 msgid "Movie sets"
 msgstr "Sagas"
-
-msgctxt "#31076"
-msgid "Play optical disc"
-msgstr "Lire disque optique"
-
-msgctxt "#31077"
-msgid "Previous location"
-msgstr "Lieu précédent"
-
-msgctxt "#31078"
-msgid "Next location"
-msgstr "Lieu suivant"
 
 msgctxt "#31079"
 msgid "Cast not available"
@@ -339,10 +263,6 @@ msgstr "Casting non disponible"
 msgctxt "#31080"
 msgid "Ends at"
 msgstr "Termine à"
-
-msgctxt "#31081"
-msgid "Album info"
-msgstr "Informations de l'album"
 
 msgctxt "#31082"
 msgid "Lyrics add-on"
@@ -356,22 +276,6 @@ msgctxt "#31084"
 msgid "Visualisation settings"
 msgstr "Paramètres de visualisation"
 
-msgctxt "#31085"
-msgid "Channel Group"
-msgstr "Groupe de chaînes"
-
-msgctxt "#31086"
-msgid "Metadata"
-msgstr "Métadonnées"
-
-msgctxt "#31087"
-msgid "Provider settings"
-msgstr "Paramètres de fournisseur"
-
-msgctxt "#31088"
-msgid "Content scanning options"
-msgstr "Options d'analyse de contenu"
-
 msgctxt "#31089"
 msgid "Available groups"
 msgstr "Groupes disponibles"
@@ -380,10 +284,6 @@ msgctxt "#31090"
 msgid "Search trailer"
 msgstr "Rechercher une bande-annonce"
 
-msgctxt "#31091"
-msgid "Download subtitles"
-msgstr "Téléchargement de sous-titres"
-
 msgctxt "#31092"
 msgid "Video menu"
 msgstr "Menu vidéo"
@@ -391,10 +291,6 @@ msgstr "Menu vidéo"
 msgctxt "#31093"
 msgid "Show weather info in top bar"
 msgstr "Afficher la météo en barre haute"
-
-msgctxt "#31094"
-msgid "Show media flags for movies / episodes / music videos"
-msgstr "Afficher les indicateurs média de films/épisodes/vidéos musicales"
 
 msgctxt "#31095"
 msgid "Use slide animations"
@@ -411,10 +307,6 @@ msgstr "Options de la chaîne"
 msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "Sélectionner le profil utilisateur Kodi[CR]pour s'identifier et poursuivre"
-
-msgctxt "#31099"
-msgid "Icon Wall"
-msgstr "Mur d'icônes"
 
 msgctxt "#31100"
 msgid "Shift"
@@ -447,14 +339,6 @@ msgstr "Télétexte"
 msgctxt "#31107"
 msgid "WideList"
 msgstr "Liste large"
-
-msgctxt "#31108"
-msgid "Use custom global background"
-msgstr "Utiliser un arrière-plan personnalisé"
-
-msgctxt "#31109"
-msgid "Choose image path"
-msgstr "Choisir le chemin de l'image"
 
 msgctxt "#31110"
 msgid "Enter files section"
@@ -490,7 +374,7 @@ msgstr "Éditer les nœuds"
 
 msgctxt "#31118"
 msgid "Enter add-on browser"
-msgstr "Navigateur d'extension"
+msgstr "Aller au navigateur d'extensions"
 
 msgctxt "#31119"
 msgid "You do not have any add-ons installed yet. Visit our add-on browser to browse through our collection and improve your Kodi experience."
@@ -541,17 +425,53 @@ msgid "Main menu-related settings: Configure the home screen to your likings."
 msgstr "Paramètres relatifs au menu principal : configurer l'écran d'accueil comme désiré."
 
 msgctxt "#31131"
-msgid "Choose home fanart pack"
-msgstr "Choisir le paquet de FanArt pour l'accueil"
+msgid "Choose skin fanart pack"
+msgstr "Choisir le pack de FanArt pour l'habillage"
 
 msgctxt "#31132"
 msgid "min"
 msgstr "min"
 
-msgctxt "#31133"
-msgid "Hide"
-msgstr "Masquer"
-
 msgctxt "#31134"
 msgid "Remaining"
 msgstr "Restant"
+
+msgctxt "#31136"
+msgid "Click here to see latest changes..."
+msgstr "Voir les dernières modifications…"
+
+msgctxt "#31137"
+msgid "PVR info"
+msgstr "Infos enregistreur vidéo"
+
+msgctxt "#31138"
+msgid "Player process info"
+msgstr "Infos processus de lecture"
+
+msgctxt "#31139"
+msgid "Video decoder"
+msgstr "Décodeur vidéo"
+
+msgctxt "#31140"
+msgid "Pixel format"
+msgstr "Format de pixel"
+
+msgctxt "#31141"
+msgid "Changes for version"
+msgstr "Modifications pour version"
+
+msgctxt "#31142"
+msgid "Play speed"
+msgstr "Vitesse de lecture"
+
+msgctxt "#31143"
+msgid "You did not set up PVR yet. In order to use PVR, choose a PVR client addon and configure it. Please visit http://kodi.wiki/view/PVR to learn more."
+msgstr "Il n'y a pas encore d'enregistreur vidéo (PVR) défini. Pour utiliser la fonction d'enregistrement vidéo numérique, choisir une extension de client enregistreur numérique et la configurer. Merci de visiter http://kodi.wiki/view/PVR pour plus d'informations."
+
+msgctxt "#31144"
+msgid "Enter add-on browser"
+msgstr "Aller au navigateur d'extensions"
+
+msgctxt "#31145"
+msgid "Search add-ons"
+msgstr "Rechercher les extensions"

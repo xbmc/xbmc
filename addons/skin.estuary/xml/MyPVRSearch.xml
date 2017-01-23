@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<defaultcontrol always="true">50</defaultcontrol>
+	<menucontrol>9000</menucontrol>
+	<views>50</views>
+	<menucontrol>6053</menucontrol>
+	<controls>
+		<include>DefaultBackground</include>
+		<control type="group">
+			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="$EXP[infodialog_active]">Conditional</animation>
+			<control type="group">
+				<visible>Control.IsVisible(50)</visible>
+				<include>OpenClose_Left</include>
+				<include>Visible_Left</include>
+				<control type="fixedlist" id="50">
+					<left>0</left>
+					<top>list_y_offset</top>
+					<right>918</right>
+					<bottom>list_y_offset</bottom>
+					<onup>50</onup>
+					<ondown>50</ondown>
+					<onleft>9000</onleft>
+					<onright>77</onright>
+					<movement>2</movement>
+					<focusposition>3</focusposition>
+					<pagecontrol>77</pagecontrol>
+					<scrolltime>200</scrolltime>
+					<itemlayout height="100" width="tvchannelslist_width">
+						<control type="label">
+							<visible>String.IsEmpty(ListItem.Date)</visible>
+							<left>120</left>
+							<top>0</top>
+							<right>30</right>
+							<height>100</height>
+							<font>font36_title</font>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Label]</label>
+						</control>
+						<control type="group">
+							<visible>!String.IsEmpty(ListItem.Date)</visible>
+							<control type="image">
+								<left>25</left>
+								<top>10</top>
+								<width>80</width>
+								<height>80</height>
+								<texture fallback="DefaultTVShows.png">$INFO[Listitem.ActualIcon]</texture>
+								<aspectratio>keep</aspectratio>
+								<visible>!String.IsEmpty(ListItem.ActualIcon)</visible>
+							</control>
+							<control type="label">
+								<left>120</left>
+								<top>10</top>
+								<right>30</right>
+								<height>100</height>
+								<aligny>top</aligny>
+								<label>$INFO[ListItem.ChannelName][COLOR grey]$INFO[ListItem.Label, - ][/COLOR]</label>
+							</control>
+							<control type="label">
+								<left>120</left>
+								<top>20</top>
+								<width>350</width>
+								<height>100</height>
+								<font>font12</font>
+								<aligny>center</aligny>
+								<label>$INFO[ListItem.Date]</label>
+							</control>
+						</control>
+					</itemlayout>
+					<focusedlayout height="100" width="tvchannelslist_width">
+						<control type="image">
+							<left>0</left>
+							<top>0</top>
+							<right>0</right>
+							<height>101</height>
+							<texture colordiffuse="button_focus">lists/focus.png</texture>
+							<visible>Control.HasFocus(50)</visible>
+						</control>
+						<control type="label">
+							<visible>String.IsEmpty(ListItem.Date)</visible>
+							<left>120</left>
+							<top>0</top>
+							<right>30</right>
+							<height>100</height>
+							<font>font36_title</font>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Label]</label>
+						</control>
+						<control type="group">
+							<visible>!String.IsEmpty(ListItem.Date)</visible>
+							<control type="image">
+								<left>25</left>
+								<top>10</top>
+								<width>80</width>
+								<height>80</height>
+								<texture fallback="DefaultTVShows.png">$INFO[Listitem.ActualIcon]</texture>
+								<aspectratio>keep</aspectratio>
+								<visible>!String.IsEmpty(ListItem.ActualIcon)</visible>
+							</control>
+							<control type="label">
+								<left>120</left>
+								<top>10</top>
+								<right>30</right>
+								<height>100</height>
+								<aligny>top</aligny>
+								<label>$INFO[ListItem.ChannelName]$INFO[ListItem.Label, - ]</label>
+							</control>
+							<control type="label">
+								<left>120</left>
+								<top>20</top>
+								<width>350</width>
+								<height>100</height>
+								<font>font12</font>
+								<aligny>center</aligny>
+								<label>$INFO[ListItem.Date]</label>
+							</control>
+						</control>
+					</focusedlayout>
+				</control>
+			</control>
+			<control type="group">
+				<depth>DepthContentPanel</depth>
+				<width>870</width>
+				<right>0</right>
+				<include>OpenClose_Right</include>
+				<include content="ContentPanel">
+					<param name="left" value="-68" />
+					<param name="width" value="970" />
+					<param name="top" value="-20" />
+					<param name="flipx" value="true" />
+				</include>
+				<control type="scrollbar" id="77">
+					<left>-45</left>
+					<top>0</top>
+					<width>12</width>
+					<height>100%</height>
+					<onleft>50</onleft>
+					<onright>50</onright>
+					<orientation>vertical</orientation>
+					<animation effect="zoom" start="100,100" end="50,100" center="-45,0" time="300" tween="sine" easing="inout" condition="!Control.HasFocus(77)">conditional</animation>
+				</control>
+				<include>PVRInfoPanel</include>
+			</control>
+			<include content="TopBar">
+				<param name="breadcrumbs_label" value="$VAR[BreadcrumbsPVRSearchVar]" />
+			</include>
+			<include content="BottomBar">
+				<param name="info_visible" value="true" />
+			</include>
+			<control type="group">
+				<include>MediaMenuCommon</include>
+				<include>PVRSideBar</include>
+			</control>
+		</control>
+	</controls>
+</window>

@@ -151,12 +151,12 @@ protected:
   COMXCoreComponent m_omx_splitter;
   COMXCoreComponent m_omx_mixer;
   COMXCoreComponent m_omx_decoder;
-  COMXCoreTunel     m_omx_tunnel_clock_analog;
-  COMXCoreTunel     m_omx_tunnel_clock_hdmi;
-  COMXCoreTunel     m_omx_tunnel_mixer;
-  COMXCoreTunel     m_omx_tunnel_decoder;
-  COMXCoreTunel     m_omx_tunnel_splitter_analog;
-  COMXCoreTunel     m_omx_tunnel_splitter_hdmi;
+  COMXCoreTunnel    m_omx_tunnel_clock_analog;
+  COMXCoreTunnel    m_omx_tunnel_clock_hdmi;
+  COMXCoreTunnel    m_omx_tunnel_mixer;
+  COMXCoreTunnel    m_omx_tunnel_decoder;
+  COMXCoreTunnel    m_omx_tunnel_splitter_analog;
+  COMXCoreTunnel    m_omx_tunnel_splitter_hdmi;
 
   CCriticalSection m_critSection;
 };

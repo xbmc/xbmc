@@ -184,20 +184,4 @@ namespace PVR
 
     bool RemoveChannelsFromGroup(const CPVRChannelGroup &group);
   };
-
-  /*!
-   * @brief Try to open the PVR database.
-   * @return The opened database or NULL if the database failed to open.
-   */
-  inline CPVRDatabase *GetPVRDatabase(void)
-  {
-    CPVRDatabase *database = g_PVRManager.GetTVDatabase();
-    if (!database || !database->IsOpen())
-    {
-      CLog::Log(LOGERROR, "PVR - failed to open the database");
-      database = NULL;
-    }
-
-    return database;
-  }
 }

@@ -19,19 +19,13 @@
  *
  */
 
-#include <memory>
-#include <map>
-
+#include "epg/EpgTypes.h"
 #include "FileItem.h"
 #include "video/VideoDatabase.h"
 
-#include "PVRRecording.h"
+#include "pvr/recordings/PVRRecording.h"
 
-namespace EPG
-{
-  class CEpgInfoTag;
-  typedef std::shared_ptr<EPG::CEpgInfoTag> CEpgInfoTagPtr;
-}
+#include <map>
 
 namespace PVR
 {
@@ -109,6 +103,7 @@ namespace PVR
     bool RenameRecording(CFileItem &item, std::string &strNewName);
     bool SetRecordingsPlayCount(const CFileItemPtr &item, int count);
     bool IncrementRecordingsPlayCount(const CFileItemPtr &item);
+    bool MarkWatched(const CFileItemPtr &item, bool bWatched);
 
     bool GetDirectory(const std::string& strPath, CFileItemList &items);
     CFileItemPtr GetByPath(const std::string &path);

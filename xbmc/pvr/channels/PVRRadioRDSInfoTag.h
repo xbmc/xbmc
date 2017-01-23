@@ -23,14 +23,13 @@
 #include "utils/ISerializable.h"
 #include "XBDateTime.h"
 
-#include <memory>
+#include "pvr/PVRTypes.h"
+
 #include <deque>
 #include <string>
 
 namespace PVR
 {
-  class CPVRRadioRDSInfoTag;
-  typedef std::shared_ptr<CPVRRadioRDSInfoTag> CPVRRadioRDSInfoTagPtr;
 
 class CPVRRadioRDSInfoTag : public IArchivable, public ISerializable
 {

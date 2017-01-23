@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<defaultcontrol always="true">9001</defaultcontrol>
+	<include>Animation_DialogPopupOpenClose</include>
+	<controls>
+		<control type="group">
+			<centerleft>50%</centerleft>
+			<width>960</width>
+			<top>330</top>
+			<include content="DialogBackgroundCommons">
+				<param name="width" value="960" />
+				<param name="height" value="500" />
+				<param name="header_label" value="$LOCALIZE[21421]" />
+				<param name="header_id" value="2" />
+			</include>
+			<control type="label">
+				<description>Rule match label</description>
+				<left>20</left>
+				<top>65</top>
+				<width>720</width>
+				<include>SettingsLabelCommon</include>
+				<label>$LOCALIZE[21422]</label>
+			</control>
+			<control type="grouplist" id="9001">
+				<left>30</left>
+				<top>100</top>
+				<orientation>vertical</orientation>
+				<onup>9000</onup>
+				<ondown>9000</ondown>
+				<control type="button" id="15">
+					<description>Rule Field</description>
+					<include>SettingsItemCommon</include>
+					<width>900</width>
+				</control>
+				<control type="button" id="16">
+					<description>Rule operator</description>
+					<width>900</width>
+					<include>SettingsItemCommon</include>
+				</control>
+				<control type="grouplist" id="9002">
+					<left>30</left>
+					<top>200</top>
+					<orientation>horizontal</orientation>
+					<control type="edit" id="17">
+						<description>Value Button</description>
+						<width>600</width>
+						<include>SettingsItemCommon</include>
+						<hinttext>$LOCALIZE[31103]</hinttext>
+					</control>
+					<control type="button" id="20">
+						<description>Browse Button</description>
+						<width>300</width>
+						<include>SettingsItemCommon</include>
+						<align>center</align>
+						<label>$LOCALIZE[1024]</label>
+					</control>
+				</control>
+			</control>
+			<control type="grouplist" id="9000">
+				<orientation>horizontal</orientation>
+				<left>0</left>
+				<top>410</top>
+				<width>960</width>
+				<align>center</align>
+				<onup>9002</onup>
+				<ondown>15</ondown>
+				<include content="DefaultDialogButton">
+					<param name="id" value="18" />
+					<param name="label" value="$LOCALIZE[186]" />
+				</include>
+				<include content="DefaultDialogButton">
+					<param name="id" value="19" />
+					<param name="label" value="$LOCALIZE[222]" />
+				</include>
+			</control>
+		</control>
+	</controls>
+</window>

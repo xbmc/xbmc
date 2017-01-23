@@ -251,7 +251,7 @@ unsigned int CAAudioUnitSink::write(uint8_t *data, unsigned int frames)
     if (!m_started)
       timeout = 4500;
 
-    // we are using a timer here for beeing sure for timeouts
+    // we are using a timer here for being sure for timeouts
     // condvar can be woken spuriously as signaled
     XbmcThreads::EndTime timer(timeout);
     condVar.wait(mutex, timeout);
@@ -283,7 +283,7 @@ void CAAudioUnitSink::drain()
 
     bytes = m_buffer->GetReadSize();
     // if we timeout and don't
-    // consum bytes - decrease maxNumTimeouts
+    // consume bytes - decrease maxNumTimeouts
     if (timer.IsTimePast() && bytes == totalBytes)
       maxNumTimeouts--;
     totalBytes = bytes;
@@ -549,7 +549,7 @@ static void EnumerateDevices(AEDeviceInfoList &list)
   device.m_displayName = "Default";
   device.m_displayNameExtra = "";
   // TODO screen changing on ios needs to call
-  // devices changed once this is available in activae
+  // devices changed once this is available in active
   if (g_Windowing.GetCurrentScreen() > 0)
   {
     device.m_deviceType = AE_DEVTYPE_IEC958; //allow passthrough for tvout

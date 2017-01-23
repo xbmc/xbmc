@@ -1054,8 +1054,8 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   if (cam)
   {
     hasCamera = true;
-    cam->QueryFloatAttribute("x", &camera.x);
-    cam->QueryFloatAttribute("y", &camera.y);
+    camera.x = ParsePosition(cam->Attribute("x"), width);
+    camera.y = ParsePosition(cam->Attribute("y"), height);
   }
 
   if (XMLUtils::GetFloat(pControlNode, "depth", stereo))
@@ -1335,7 +1335,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
     break;
   case CGUIControl::GUICONTAINER_EPGGRID:
     {
-      CGUIEPGGridContainer *epgGridContainer = new CGUIEPGGridContainer(parentID, id, posX, posY, width, height, scrollTime, preloadItems, timeBlocks, rulerUnit, textureProgressIndicator);
+      CGUIEPGGridContainer *epgGridContainer = new CGUIEPGGridContainer(parentID, id, posX, posY, width, height, orientation, scrollTime, preloadItems, timeBlocks, rulerUnit, textureProgressIndicator);
       control = epgGridContainer;
       epgGridContainer->LoadLayout(pControlNode);
       epgGridContainer->SetRenderOffset(offset);

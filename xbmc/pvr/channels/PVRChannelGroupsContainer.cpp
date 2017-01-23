@@ -163,13 +163,13 @@ bool CPVRChannelGroupsContainer::GetDirectory(const std::string& strPath, CFileI
     /* all tv channels */
     item.reset(new CFileItem(strBase + "/tv/", true));
     item->SetLabel(g_localizeStrings.Get(19020));
-    item->SetLabelPreformated(true);
+    item->SetLabelPreformatted(true);
     results.Add(item);
 
     /* all radio channels */
     item.reset(new CFileItem(strBase + "/radio/", true));
     item->SetLabel(g_localizeStrings.Get(19021));
-    item->SetLabelPreformated(true);
+    item->SetLabelPreformatted(true);
     results.Add(item);
 
     return true;
@@ -334,7 +334,7 @@ CPVRChannelGroupPtr CPVRChannelGroupsContainer::GetPreviousPlayedGroup(void)
   return m_lastPlayedGroups[0];
 }
 
-void CPVRChannelGroupsContainer::SetLastPlayedGroup(CPVRChannelGroupPtr group)
+void CPVRChannelGroupsContainer::SetLastPlayedGroup(const CPVRChannelGroupPtr &group)
 {
   CSingleLock lock(m_critSection);
   m_lastPlayedGroups[0] = m_lastPlayedGroups[1];

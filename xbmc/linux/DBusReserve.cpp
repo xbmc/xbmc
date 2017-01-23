@@ -84,7 +84,7 @@ bool CDBusReserve::AcquireDevice(const std::string& device)
   }
   else if(res == DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER)
   {
-    CLog::Log(LOGDEBUG, "CDBusReserve::AcquireDevice(%s): Request name succeded", device.c_str());
+    CLog::Log(LOGDEBUG, "CDBusReserve::AcquireDevice(%s): Request name succeeded", device.c_str());
     m_devs.push_back(device);
     return true;
   }
@@ -162,7 +162,7 @@ bool CDBusReserve::ReleaseDevice(const std::string& device)
   std::vector<std::string>::iterator it = find(m_devs.begin(), m_devs.end(), device);
   if(it == m_devs.end())
   {
-    CLog::Log(LOGDEBUG, "CDBusReserve::ReleaseDevice(%s): device wasn't aquired here", device.c_str());
+    CLog::Log(LOGDEBUG, "CDBusReserve::ReleaseDevice(%s): device wasn't acquired here", device.c_str());
     return false;
   }
   m_devs.erase(it);

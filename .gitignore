@@ -129,6 +129,7 @@ cmake_install.cmake
 /addons/pvr.*
 /addons/adsp.*
 /addons/peripheral.*
+/addons/game.*
 /addons/xbmc.addon/addon.xml
 /addons/xbmc.json/addon.xml
 /addons/kodi.guilib/addon.xml
@@ -141,30 +142,6 @@ cmake_install.cmake
 /lib/Makefile
 /lib/*/1
 /lib/*/win32/1
-
-# /lib/addons/
-/lib/addons/library.kodi.guilib/Makefile
-/lib/addons/library.kodi.guilib/project/VS2010Express/Release
-/lib/addons/library.kodi.guilib/project/VS2010Express/Debug
-/lib/addons/library.xbmc.addon/Makefile
-/lib/addons/library.kodi.adsp/Makefile
-/lib/addons/library.xbmc.pvr/Makefile
-/lib/addons/library.xbmc.codec/Makefile
-/lib/addons/library.kodi.peripheral/Makefile
-/lib/addons/library.xbmc.addon/project/VS2010Express/Release
-/lib/addons/library.xbmc.addon/project/VS2010Express/Debug
-/lib/addons/library.kodi.adsp/project/VS2010Express/Release
-/lib/addons/library.kodi.adsp/project/VS2010Express/Debug
-/lib/addons/library.xbmc.codec/project/VS2010Express/Release
-/lib/addons/library.xbmc.codec/project/VS2010Express/Debug
-/lib/addons/library.xbmc.pvr/project/VS2010Express/Release
-/lib/addons/library.xbmc.pvr/project/VS2010Express/Debug
-/lib/addons/library.kodi.audioengine/Makefile
-/lib/addons/library.kodi.audioengine/project/VS2010Express/Release/
-/lib/addons/library.kodi.audioengine/project/VS2010Express/Debug/
-/lib/addons/library.kodi.inputstream/Makefile
-/lib/addons/library.kodi.peripheral/project/VS2010Express/Release
-/lib/addons/library.kodi.peripheral/project/VS2010Express/Debug
 
 # /lib/cpluff/
 /lib/cpluff/ABOUT-NLS
@@ -231,15 +208,15 @@ lib/cpluff/stamp-h1
 /project/obj
 /project/output
 
-# /project/cmake
-/project/cmake/KodiConfig.cmake
-/project/cmake/addons/*.error
-/project/cmake/addons/.failure
-/project/cmake/addons/.success
-/project/cmake/addons/addons
-/project/cmake/addons/build
-/project/cmake/addons/depends/build
-/project/cmake/addons/output
+# /cmake
+/cmake/KodiConfig.cmake
+/cmake/addons/*.error
+/cmake/addons/.failure
+/cmake/addons/.success
+/cmake/addons/addons
+/cmake/addons/build
+/cmake/addons/depends/build
+/cmake/addons/output
 
 # /project/Win32BuildSetup/
 /project/Win32BuildSetup/*.log
@@ -274,7 +251,6 @@ lib/cpluff/stamp-h1
 /system/EasyHook32.dll
 /system/libcurl.dll
 /system/libeay32.dll
-/system/librtmp.dll
 /system/libexif.dll
 /system/ssh.dll
 /system/sqlite3.dll
@@ -407,7 +383,7 @@ lib/cpluff/stamp-h1
 
 # /xbmc/addons/
 /xbmc/addons/Makefile
-/xbmc/addons/binary/interfaces/Makefile
+/xbmc/addons/interfaces/Makefile
 
 # /xbmc/platform/android
 /xbmc/platform/android/Makefile
@@ -438,6 +414,7 @@ lib/cpluff/stamp-h1
 /xbmc/cores/playercorefactory/Makefile
 /xbmc/cores/Makefile
 /xbmc/cores/VideoPlayer/VideoRenderers/Makefile
+/xbmc/cores/RetroPlayer/Makefile
 
 # /xbmc/filesystem/
 /xbmc/filesystem/Makefile
@@ -538,26 +515,11 @@ lib/cpluff/stamp-h1
 # /portable_data
 /portable_data
 
-/addons/library.xbmc.addon/libXBMC_addon.dll
-/addons/library.xbmc.addon/libXBMC_addon.lib
-/addons/library.kodi.adsp/libKODI_adsp.dll
-/addons/library.kodi.adsp/libKODI_adsp.lib
-/addons/library.xbmc.codec/libXBMC_codec.dll
-/addons/library.xbmc.codec/libXBMC_codec.lib
-/addons/library.kodi.guilib/libKODI_guilib.dll
-/addons/library.kodi.guilib/libKODI_guilib.lib
-/addons/library.xbmc.pvr/libXBMC_pvr.dll
-/addons/library.xbmc.pvr/libXBMC_pvr.lib
-/addons/library.kodi.audioengine/libKODI_audioengine.dll
-/addons/library.kodi.audioengine/libKODI_audioengine.lib
-
 /pvr-addons
 /adsp-addons
 
 # Doxygen generated files
 /docs/html
-lib/addons/library.kodi.inputstream/project/VS2010Express/Debug
-lib/addons/library.kodi.inputstream/project/VS2010Express/Release
 tools/depends/native/TexturePacker/src/Win32/Debug/
 tools/depends/native/TexturePacker/src/Win32/Release/
 tools/depends/native/TexturePacker/src/Win32/TexturePacker.VC.db

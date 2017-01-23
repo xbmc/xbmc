@@ -155,6 +155,8 @@ void CGUIEPGGridContainerModel::Refresh(const std::unique_ptr<CFileItemList> &it
   m_blocks = (gridDuration.GetDays() * 24 * 60 + gridDuration.GetHours() * 60 + gridDuration.GetMinutes()) / MINSPERBLOCK;
   if (m_blocks >= MAXBLOCKS)
     m_blocks = MAXBLOCKS;
+  else if (m_blocks < iBlocksPerPage)
+    m_blocks = iBlocksPerPage;
 
   m_gridIndex.reserve(m_channelItems.size());
   const std::vector<GridItem> blocks(m_blocks);
@@ -344,7 +346,7 @@ void CGUIEPGGridContainerModel::FreeProgrammeMemory(int channel, int keepStart, 
           m_gridIndex[channel][i].item->FreeMemory();
           // FreeMemory() is smart enough to not cause any problems when called multiple times on same item
           // but we can make use of condition needed to not call FreeMemory() on item that is partially visible
-          // to avoid calling FreeMemory() multiple times on item that ocupy few blocks in a row
+          // to avoid calling FreeMemory() multiple times on item that occupy few blocks in a row
           last = m_gridIndex[channel][i].item;
         }
       }
@@ -361,7 +363,7 @@ void CGUIEPGGridContainerModel::FreeProgrammeMemory(int channel, int keepStart, 
           m_gridIndex[channel][i].item->FreeMemory();
           // FreeMemory() is smart enough to not cause any problems when called multiple times on same item
           // but we can make use of condition needed to not call FreeMemory() on item that is partially visible
-          // to avoid calling FreeMemory() multiple times on item that ocupy few blocks in a row
+          // to avoid calling FreeMemory() multiple times on item that occupy few blocks in a row
           last = m_gridIndex[channel][i].item;
         }
       }

@@ -20,6 +20,7 @@
 
 #include "system.h"
 #include "GUIWindowVideoBase.h"
+#include "ServiceBroker.h"
 #include "Util.h"
 #include "video/VideoInfoDownloader.h"
 #include "video/VideoInfoScanner.h"
@@ -459,7 +460,7 @@ void CGUIWindowVideoBase::OnQueueItem(int iItem)
 
 void CGUIWindowVideoBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItemList &queuedItems)
 {
-  if (!pItem->CanQueue() || pItem->IsRAR() || pItem->IsZIP() || pItem->IsParentFolder()) // no zip/rar enques thank you!
+  if (!pItem->CanQueue() || pItem->IsRAR() || pItem->IsZIP() || pItem->IsParentFolder()) // no zip/rar enqueues thank you!
     return;
 
   if (pItem->m_bIsFolder)
@@ -504,8 +505,8 @@ void CGUIWindowVideoBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
         }
       }
       else if (items[i]->HasVideoInfoTag() &&
-       ((unwatchedOnly && items[i]->GetVideoInfoTag()->m_playCount > 0) ||
-        (watchedOnly && items[i]->GetVideoInfoTag()->m_playCount <= 0)))
+       ((unwatchedOnly && items[i]->GetVideoInfoTag()->GetPlayCount() > 0) ||
+        (watchedOnly && items[i]->GetVideoInfoTag()->GetPlayCount() <= 0)))
         continue;
 
       AddItemToPlayList(items[i], queuedItems);
@@ -557,8 +558,8 @@ void CGUIWindowVideoBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
 
 void CGUIWindowVideoBase::GetResumeItemOffset(const CFileItem *item, int& startoffset, int& partNumber)
 {
-  // do not resume livetv
-  if (item->IsLiveTV())
+  // do not resume Live TV and 'deleted' items (e.g. trashed pvr recordings)
+  if (item->IsLiveTV() || item->IsDeleted())
     return;
 
   startoffset = 0;
@@ -566,10 +567,9 @@ void CGUIWindowVideoBase::GetResumeItemOffset(const CFileItem *item, int& starto
 
   if (!item->IsNFO() && !item->IsPlayList())
   {
-    if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_resumePoint.IsSet())
+    if (item->GetCurrentResumeTimeAndPartNumber(startoffset, partNumber))
     {
-      startoffset = (int)(item->GetVideoInfoTag()->m_resumePoint.timeInSeconds*75);
-      partNumber = item->GetVideoInfoTag()->m_resumePoint.partNumber;
+      startoffset *= 75;
     }
     else
     {
@@ -619,7 +619,7 @@ bool CGUIWindowVideoBase::OnSelect(int iItem)
       !StringUtils::StartsWith(path, "newplaylist://") &&
       !StringUtils::StartsWith(path, "newtag://") &&
       !StringUtils::StartsWith(path, "script://"))
-    return OnFileAction(iItem, CSettings::GetInstance().GetInt(CSettings::SETTING_MYVIDEOS_SELECTACTION), "");
+    return OnFileAction(iItem, CServiceBroker::GetSettings().GetInt(CSettings::SETTING_MYVIDEOS_SELECTACTION), "");
 
   return CGUIMediaWindow::OnSelect(iItem);
 }
@@ -650,7 +650,7 @@ bool CGUIWindowVideoBase::OnFileAction(int iItem, int action, std::string player
       if (!resumeString.empty())
       {
         choices.Add(SELECT_ACTION_RESUME, resumeString);
-        choices.Add(SELECT_ACTION_PLAY, 12021);   // Start from beginning
+        choices.Add(SELECT_ACTION_PLAY, 12021);   // Play from beginning
       }
       else
         choices.Add(SELECT_ACTION_PLAY, 208);   // Play
@@ -763,14 +763,14 @@ std::string CGUIWindowVideoBase::GetResumeString(const CFileItem &item)
 
 bool CGUIWindowVideoBase::ShowResumeMenu(CFileItem &item)
 {
-  if (!item.m_bIsFolder && !item.IsLiveTV())
+  if (!item.m_bIsFolder && !item.IsPVR())
   {
     std::string resumeString = GetResumeString(item);
     if (!resumeString.empty())
     { // prompt user whether they wish to resume
       CContextButtons choices;
       choices.Add(1, resumeString);
-      choices.Add(2, 12021); // start from the beginning
+      choices.Add(2, 12021); // Play from beginning
       int retVal = CGUIDialogContextMenu::ShowAndGetChoice(choices);
       if (retVal < 0)
         return false; // don't do anything
@@ -799,7 +799,7 @@ bool CGUIWindowVideoBase::OnResumeItem(int iItem, const std::string &player)
   {
     CContextButtons choices;
     choices.Add(SELECT_ACTION_RESUME, resumeString);
-    choices.Add(SELECT_ACTION_PLAY, 12021);   // Start from beginning
+    choices.Add(SELECT_ACTION_PLAY, 12021);   // Play from beginning
     int value = CGUIDialogContextMenu::ShowAndGetChoice(choices);
     if (value < 0)
       return true;
@@ -871,7 +871,7 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
       //then add add either 'play from here' or 'play only this' depending on default behaviour
       if (!(item->m_bIsFolder || item->IsScript()) && m_vecItems->Size() > 1 && itemNumber < m_vecItems->Size()-1)
       {
-        if (!CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_AUTOPLAYNEXTITEM))
+        if (!CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_AUTOPLAYNEXTITEM))
           buttons.Add(CONTEXT_BUTTON_PLAY_AND_QUEUE, 13412);
         else
           buttons.Add(CONTEXT_BUTTON_PLAY_ONLY_THIS, 13434);
@@ -924,7 +924,7 @@ bool CGUIWindowVideoBase::OnPlayStackPart(int iItem)
       {
         CContextButtons choices;
         choices.Add(SELECT_ACTION_RESUME, resumeString);
-        choices.Add(SELECT_ACTION_PLAY, 12021);   // Start from beginning
+        choices.Add(SELECT_ACTION_PLAY, 12021);   // Play from beginning
         int value = CGUIDialogContextMenu::ShowAndGetChoice(choices);
         if (value == SELECT_ACTION_RESUME)
           GetResumeItemOffset(parts[selectedFile].get(), stack->m_lStartOffset, stack->m_lStartPartNumber);
@@ -999,7 +999,7 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         // any other select actions but play or resume, resume, play or playpart
         // don't make any sense here since the user already decided that he'd
         // like to play the item (just with a specific player)
-        VideoSelectAction selectAction = (VideoSelectAction)CSettings::GetInstance().GetInt(CSettings::SETTING_MYVIDEOS_SELECTACTION);
+        VideoSelectAction selectAction = (VideoSelectAction)CServiceBroker::GetSettings().GetInt(CSettings::SETTING_MYVIDEOS_SELECTACTION);
         if (selectAction != SELECT_ACTION_PLAY_OR_RESUME &&
             selectAction != SELECT_ACTION_RESUME &&
             selectAction != SELECT_ACTION_PLAY &&
@@ -1220,7 +1220,7 @@ void CGUIWindowVideoBase::OnDeleteItem(CFileItemPtr item)
       return;
   }
 
-  if ((CSettings::GetInstance().GetBool(CSettings::SETTING_FILELISTS_ALLOWFILEDELETION) ||
+  if ((CServiceBroker::GetSettings().GetBool(CSettings::SETTING_FILELISTS_ALLOWFILEDELETION) ||
        m_vecItems->IsPath("special://videoplaylists/")) &&
       CUtil::SupportsWriteFileOperations(item->GetPath()))
     CFileUtils::DeleteItem(item);
@@ -1254,7 +1254,7 @@ void CGUIWindowVideoBase::LoadPlayList(const std::string& strPlayList, int iPlay
 
 void CGUIWindowVideoBase::PlayItem(int iItem, const std::string &player)
 {
-  // restrictions should be placed in the appropiate window code
+  // restrictions should be placed in the appropriate window code
   // only call the base code if the item passes since this clears
   // the currently playing temp playlist
 
@@ -1320,18 +1320,20 @@ bool CGUIWindowVideoBase::GetDirectory(const std::string &strDirectory, CFileIte
   {
     CFileItemPtr newPlaylist(new CFileItem(CProfilesManager::GetInstance().GetUserDataItem("PartyMode-Video.xsp"),false));
     newPlaylist->SetLabel(g_localizeStrings.Get(16035));
-    newPlaylist->SetLabelPreformated(true);
+    newPlaylist->SetLabelPreformatted(true);
+    newPlaylist->SetIconImage("DefaultPartyMode.png");
     newPlaylist->m_bIsFolder = true;
     items.Add(newPlaylist);
 
 /*    newPlaylist.reset(new CFileItem("newplaylist://", false));
     newPlaylist->SetLabel(g_localizeStrings.Get(525));
-    newPlaylist->SetLabelPreformated(true);
+    newPlaylist->SetLabelPreformatted(true);
     items.Add(newPlaylist);
 */
     newPlaylist.reset(new CFileItem("newsmartplaylist://video", false));
     newPlaylist->SetLabel(g_localizeStrings.Get(21437));  // "new smart playlist..."
-    newPlaylist->SetLabelPreformated(true);
+    newPlaylist->SetIconImage("DefaultAddSource.png");
+    newPlaylist->SetLabelPreformatted(true);
     items.Add(newPlaylist);
   }
 
@@ -1343,7 +1345,7 @@ bool CGUIWindowVideoBase::GetDirectory(const std::string &strDirectory, CFileIte
   if (info && info->Content() == CONTENT_TVSHOWS)
     m_stackingAvailable = false;
 
-  if (m_stackingAvailable && !items.IsStack() && CSettings::GetInstance().GetBool(CSettings::SETTING_MYVIDEOS_STACKVIDEOS))
+  if (m_stackingAvailable && !items.IsStack() && CServiceBroker::GetSettings().GetBool(CSettings::SETTING_MYVIDEOS_STACKVIDEOS))
     items.Stack();
 
   return bResult;
@@ -1368,7 +1370,7 @@ void CGUIWindowVideoBase::GetGroupedItems(CFileItemList &items)
   if (items.HasProperty(PROPERTY_GROUP_MIXED))
     mixed = items.GetProperty(PROPERTY_GROUP_MIXED).asBoolean();
 
-  // group == "none" completely supresses any grouping
+  // group == "none" completely suppresses any grouping
   if (!StringUtils::EqualsNoCase(group, "none"))
   {
     CQueryParams params;
@@ -1377,10 +1379,10 @@ void CGUIWindowVideoBase::GetGroupedItems(CFileItemList &items)
     VIDEODATABASEDIRECTORY::NODE_TYPE nodeType = CVideoDatabaseDirectory::GetDirectoryChildType(m_strFilterPath);
     if (items.GetContent() == "movies" && params.GetSetId() <= 0 &&
         nodeType == NODE_TYPE_TITLE_MOVIES &&
-       (CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOLIBRARY_GROUPMOVIESETS) || (StringUtils::EqualsNoCase(group, "sets") && mixed)))
+       (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOLIBRARY_GROUPMOVIESETS) || (StringUtils::EqualsNoCase(group, "sets") && mixed)))
     {
       CFileItemList groupedItems;
-      GroupAttribute groupAttributes = CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOLIBRARY_GROUPSINGLEITEMSETS) ? GroupAttributeNone : GroupAttributeIgnoreSingleItems;
+      GroupAttribute groupAttributes = CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOLIBRARY_GROUPSINGLEITEMSETS) ? GroupAttributeNone : GroupAttributeIgnoreSingleItems;
       if (GroupUtils::GroupAndMix(GroupBySet, m_strFilterPath, items, groupedItems, groupAttributes))
       {
         items.ClearItems();
@@ -1545,7 +1547,7 @@ void CGUIWindowVideoBase::OnSearchItemFound(const CFileItem* pSelItem)
 
     Update(strParentPath);
 
-    if (pSelItem->IsVideoDb() && CSettings::GetInstance().GetBool(CSettings::SETTING_MYVIDEOS_FLATTEN))
+    if (pSelItem->IsVideoDb() && CServiceBroker::GetSettings().GetBool(CSettings::SETTING_MYVIDEOS_FLATTEN))
       SetHistoryForPath("");
     else
       SetHistoryForPath(strParentPath);
@@ -1571,7 +1573,7 @@ void CGUIWindowVideoBase::OnSearchItemFound(const CFileItem* pSelItem)
 
     Update(strPath);
 
-    if (pSelItem->IsVideoDb() && CSettings::GetInstance().GetBool(CSettings::SETTING_MYVIDEOS_FLATTEN))
+    if (pSelItem->IsVideoDb() && CServiceBroker::GetSettings().GetBool(CSettings::SETTING_MYVIDEOS_FLATTEN))
       SetHistoryForPath("");
     else
       SetHistoryForPath(strPath);
@@ -1633,7 +1635,7 @@ void CGUIWindowVideoBase::AppendAndClearSearchItems(CFileItemList &searchItems, 
   if (!searchItems.Size())
     return;
 
-  searchItems.Sort(SortByLabel, SortOrderAscending, CSettings::GetInstance().GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING) ? SortAttributeIgnoreArticle : SortAttributeNone);
+  searchItems.Sort(SortByLabel, SortOrderAscending, CServiceBroker::GetSettings().GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING) ? SortAttributeIgnoreArticle : SortAttributeNone);
   for (int i = 0; i < searchItems.Size(); i++)
     searchItems[i]->SetLabel(prependLabel + searchItems[i]->GetLabel());
   results.Append(searchItems);

@@ -18,10 +18,6 @@
  *
  */
 
-#if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
-  #include "config.h"
-#endif
-
 // python.h should always be included first before any other includes
 #include <Python.h>
 #include <osdefs.h>
@@ -33,7 +29,7 @@
 
 #define MODULE "xbmc"
 
-#define RUNSCRIPT_PRAMBLE \
+#define RUNSCRIPT_PREAMBLE \
         "" \
         "import " MODULE "\n" \
         "xbmc.abortRequested = False\n" \
@@ -71,12 +67,12 @@
 #if defined(TARGET_ANDROID)
 
 #define RUNSCRIPT_COMPLIANT \
-  RUNSCRIPT_PRAMBLE RUNSCRIPT_SETUPTOOLS_HACK RUNSCRIPT_POSTSCRIPT
+  RUNSCRIPT_PREAMBLE RUNSCRIPT_SETUPTOOLS_HACK RUNSCRIPT_POSTSCRIPT
 
 #else
 
 #define RUNSCRIPT_COMPLIANT \
-  RUNSCRIPT_PRAMBLE RUNSCRIPT_POSTSCRIPT
+  RUNSCRIPT_PREAMBLE RUNSCRIPT_POSTSCRIPT
 
 #endif
 

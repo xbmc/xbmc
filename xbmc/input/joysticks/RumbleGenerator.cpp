@@ -24,7 +24,11 @@
 #include "games/controllers/ControllerFeature.h"
 #include "input/joysticks/IInputReceiver.h"
 
-#define RUMBLE_DURATION_MS     1000
+#define RUMBLE_TEST_DURATION_MS          1000 // Per motor
+#define RUMBLE_NOTIFICATION_DURATION_MS  300
+
+ // From game.controller.default profile
+#define WEAK_MOTOR_NAME        "rightmotor"
 
 using namespace JOYSTICK;
 
@@ -71,15 +75,22 @@ void CRumbleGenerator::Process(void)
   {
   case RUMBLE_NOTIFICATION:
   {
-    for (const std::string& motor : m_motors)
+    std::vector<std::string> motors;
+
+    if (std::find(m_motors.begin(), m_motors.end(), WEAK_MOTOR_NAME) != m_motors.end())
+      motors.push_back(WEAK_MOTOR_NAME);
+    else
+      motors = m_motors; // Not using default profile? Just rumble all motors
+
+    for (const std::string& motor : motors)
       m_receiver->SetRumbleState(motor, 1.0f);
 
-    Sleep(1000);
+    Sleep(RUMBLE_NOTIFICATION_DURATION_MS);
 
     if (m_bStop)
       break;
 
-    for (const std::string& motor : m_motors)
+    for (const std::string& motor : motors)
       m_receiver->SetRumbleState(motor, 0.0f);
 
     break;
@@ -90,7 +101,7 @@ void CRumbleGenerator::Process(void)
     {
       m_receiver->SetRumbleState(motor, 1.0f);
 
-      Sleep(1000);
+      Sleep(RUMBLE_TEST_DURATION_MS);
 
       if (m_bStop)
         break;

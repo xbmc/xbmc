@@ -30,13 +30,9 @@ namespace MUSIC_INFO
   class EmbeddedArt;
 }
 
-typedef DllAddon<AudioDecoder, AUDIODEC_PROPS> DllAudioDecoder;
 namespace ADDON
 {
-  typedef CAddonDll<DllAudioDecoder,
-                    AudioDecoder, AUDIODEC_PROPS> AudioDecoderDll;
-
-  class CAudioDecoder : public AudioDecoderDll,
+  class CAudioDecoder : public CAddonDll,
                         public ICodec,
                         public MUSIC_INFO::IMusicInfoTagLoader,
                         public XFILE::CMusicFileDirectory
@@ -46,7 +42,7 @@ namespace ADDON
     static std::unique_ptr<CAudioDecoder> FromExtension(AddonProps props, const cp_extension_t* ext);
 
     explicit CAudioDecoder(AddonProps props)
-      : AudioDecoderDll(std::move(props))
+      : CAddonDll(std::move(props))
       , m_context{nullptr}
       , m_tags{false}
       , m_tracks{false}
@@ -59,6 +55,7 @@ namespace ADDON
     virtual ~CAudioDecoder();
 
     // Things that MUST be supplied by the child classes
+    bool Create();
     bool Init(const CFileItem& file, unsigned int filecache) override;
     int ReadPCM(uint8_t* buffer, int size, int* actualsize);
     bool Seek(int64_t time);
@@ -81,6 +78,8 @@ namespace ADDON
     bool m_tags;
     bool m_tracks;
     const AEChannel* m_channel;
+    AUDIODEC_PROPS m_info;
+    KodiToAddonFuncTable_AudioDecoder m_struct;
   };
 
 } /*namespace ADDON*/

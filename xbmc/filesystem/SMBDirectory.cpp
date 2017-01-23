@@ -20,7 +20,7 @@
 
 /*
 * know bugs:
-* - when opening a server for the first time with ip adres and the second time
+* - when opening a server for the first time with ip address and the second time
 *   with server name, access to the server is denied.
 * - when browsing entire network, user can't go back one step
 *   share = smb://, user selects a workgroup, user selects a server.

@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<defaultcontrol always="true">21</defaultcontrol>
+	<include>Animation_DialogPopupOpenClose</include>
+	<depth>DepthDialog+</depth>
+	<controls>
+		<control type="group">
+			<centertop>50%</centertop>
+			<height>660</height>
+			<centerleft>50%</centerleft>
+			<width>545</width>
+			<include content="DialogBackgroundCommons">
+				<param name="width" value="545" />
+				<param name="height" value="660" />
+				<param name="header_label" value="$LOCALIZE[31161]" />
+				<param name="header_id" value="" />
+			</include>
+			<control type="image">
+				<left>44</left>
+				<top>181</top>
+				<width>457</width>
+				<height>60</height>
+				<texture colordiffuse="32FFFFFF" border="2">colors/white.png</texture>
+			</control>
+			<control type="label" id="4">
+				<description>Edit Text</description>
+				<left>34</left>
+				<top>170</top>
+				<width>477</width>
+				<height>80</height>
+				<font>font37</font>
+				<textcolor>button_focus</textcolor>
+				<align>center</align>
+				<aligny>center</aligny>
+			</control>
+			<control type="textbox" id="1">
+				<left>20</left>
+				<top>80</top>
+				<width>505</width>
+				<height>90</height>
+				<textcolor>button_focus</textcolor>
+				<align>center</align>
+				<aligny>center</aligny>
+			</control>
+			<control type="grouplist">
+				<left>350</left>
+				<top>240</top>
+				<height>1000</height>
+				<orientation>vertical</orientation>
+				<itemgap>-20</itemgap>
+				<control type="button" id="23">
+					<description>Backspace button</description>
+					<width>170</width>
+					<height>223</height>
+					<font>font12</font>
+					<align>center</align>
+					<aligny>center</aligny>
+					<texturefocus border="40" colordiffuse="button_focus">buttons/dialogbutton-fo.png</texturefocus>
+					<texturenofocus colordiffuse="71FFFFFF" border="40">buttons/button-alt-nofo.png</texturenofocus>
+					<label>$LOCALIZE[20181]</label>
+					<onleft>13</onleft>
+					<onright>11</onright>
+					<angle>270</angle>
+				</control>
+				<control type="button" id="21">
+					<description>Done button</description>
+					<onleft>19</onleft>
+					<onright>17</onright>
+					<width>170</width>
+					<height>223</height>
+					<font>font12</font>
+					<align>center</align>
+					<aligny>center</aligny>
+					<texturefocus border="40" colordiffuse="button_focus">buttons/dialogbutton-fo.png</texturefocus>
+					<texturenofocus colordiffuse="71FFFFFF" border="40">buttons/button-alt-nofo.png</texturenofocus>
+					<label>$LOCALIZE[20177]</label>
+					<angle>270</angle>
+				</control>
+			</control>
+			<control type="grouplist" id="4000">
+				<left>30</left>
+				<top>240</top>
+				<height>1000</height>
+				<onleft>23</onleft>
+				<onright>23</onright>
+				<orientation>vertical</orientation>
+				<itemgap>-10</itemgap>
+				<control type="grouplist">
+					<description>1 - 3 buttons</description>
+					<height>110</height>
+					<itemgap>-20</itemgap>
+					<orientation>horizontal</orientation>
+					<control type="button" id="11">
+						<include>KeyboardButton</include>
+						<label>$LOCALIZE[12311]</label>
+						<onup>20</onup>
+						<ondown>14</ondown>
+					</control>
+					<control type="button" id="12">
+						<include>KeyboardButton</include>
+						<label>$LOCALIZE[12312]</label>
+						<onup>10</onup>
+						<ondown>15</ondown>
+					</control>
+					<control type="button" id="13">
+						<include>KeyboardButton</include>
+						<label>$LOCALIZE[12313]</label>
+						<onup>22</onup>
+						<ondown>16</ondown>
+					</control>
+				</control>
+				<control type="grouplist">
+					<description>4 - 6 buttons</description>
+					<height>110</height>
+					<itemgap>-20</itemgap>
+					<orientation>horizontal</orientation>
+					<control type="button" id="14">
+						<include>KeyboardButton</include>
+						<label>$LOCALIZE[12314]</label>
+						<onup>11</onup>
+						<ondown>17</ondown>
+					</control>
+					<control type="button" id="15">
+						<include>KeyboardButton</include>
+						<label>$LOCALIZE[12315]</label>
+						<onup>12</onup>
+						<ondown>18</ondown>
+					</control>
+					<control type="button" id="16">
+						<include>KeyboardButton</include>
+						<label>$LOCALIZE[12316]</label>
+						<onup>13</onup>
+						<ondown>19</ondown>
+					</control>
+				</control>
+				<control type="grouplist">
+					<description>7 - 9 buttons</description>
+					<height>110</height>
+					<onleft>21</onleft>
+					<onright>21</onright>
+					<itemgap>-20</itemgap>
+					<orientation>horizontal</orientation>
+					<control type="button" id="17">
+						<include>KeyboardButton</include>
+						<label>$LOCALIZE[12317]</label>
+						<onup>14</onup>
+						<ondown>20</ondown>
+					</control>
+					<control type="button" id="18">
+						<include>KeyboardButton</include>
+						<label>$LOCALIZE[12318]</label>
+						<onup>15</onup>
+						<ondown>10</ondown>
+					</control>
+					<control type="button" id="19">
+						<include>KeyboardButton</include>
+						<label>$LOCALIZE[12319]</label>
+						<onup>16</onup>
+						<ondown>22</ondown>
+					</control>
+				</control>
+				<control type="grouplist">
+					<height>110</height>
+					<onleft>21</onleft>
+					<onright>21</onright>
+					<itemgap>-20</itemgap>
+					<orientation>horizontal</orientation>
+					<control type="radiobutton" id="20">
+						<description>prev button</description>
+						<width>125</width>
+						<height>125</height>
+						<texturefocus colordiffuse="button_focus">buttons/roundbutton-fo.png</texturefocus>
+						<texturenofocus />
+						<textureradioonfocus colordiffuse="FFFFFFFF">icons/keyboard/arrowleft.png</textureradioonfocus>
+						<textureradioonnofocus colordiffuse="FFFFFFFF">icons/keyboard/arrowleft.png</textureradioonnofocus>
+						<textureradioofffocus colordiffuse="FFFFFFFF">icons/keyboard/arrowleft.png</textureradioofffocus>
+						<textureradiooffnofocus colordiffuse="FFFFFFFF">icons/keyboard/arrowleft.png</textureradiooffnofocus>
+						<radioposx>40</radioposx>
+						<radiowidth>36</radiowidth>
+						<radioheight>36</radioheight>
+						<onup>17</onup>
+						<ondown>11</ondown>
+					</control>
+					<control type="button" id="10">
+						<description>0 button</description>
+						<include>KeyboardButton</include>
+						<label>$LOCALIZE[12310]</label>
+						<onup>18</onup>
+						<ondown>12</ondown>
+					</control>
+					<control type="radiobutton" id="22">
+						<description>next button</description>
+						<width>125</width>
+						<height>125</height>
+						<texturefocus colordiffuse="button_focus">buttons/roundbutton-fo.png</texturefocus>
+						<texturenofocus />
+						<textureradioonfocus colordiffuse="FFFFFFFF">icons/keyboard/arrowright.png</textureradioonfocus>
+						<textureradioonnofocus colordiffuse="FFFFFFFF">icons/keyboard/arrowright.png</textureradioonnofocus>
+						<textureradioofffocus colordiffuse="FFFFFFFF">icons/keyboard/arrowright.png</textureradioofffocus>
+						<textureradiooffnofocus colordiffuse="FFFFFFFF">icons/keyboard/arrowright.png</textureradiooffnofocus>
+						<radioposx>45</radioposx>
+						<radiowidth>36</radiowidth>
+						<radioheight>36</radioheight>
+						<onup>19</onup>
+						<ondown>13</ondown>
+					</control>
+				</control>
+			</control>
+		</control>
+	</controls>
+</window>

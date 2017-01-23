@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE schema PUBLIC "-//W3C//DTD XMLSCHEMA 200102//EN" "http://www.w3.org/2001/XMLSchema.dtd">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="extension">
+    <xs:complexType>
+      <xs:attribute name="point" type="xs:string" use="required"/>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

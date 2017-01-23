@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<window>
+	<defaultcontrol></defaultcontrol>
+	<backgroundcolor>background</backgroundcolor>
+	<controls>
+		<control type="visualisation">
+			<include>FullScreenDimensions</include>
+			<visible>Player.HasAudio</visible>
+		</control>
+		<control type="image">
+			<left>0</left>
+			<top>0</top>
+			<width>100%</width>
+			<height>100%</height>
+			<aspectratio>scale</aspectratio>
+			<fadetime>400</fadetime>
+			<animation effect="fade" start="0" end="100" time="400">WindowOpen</animation>
+			<animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
+			<texture background="true" colordiffuse="88FFFFFF">$INFO[Player.Art(fanart)]</texture>
+		</control>
+		<control type="group">
+			<animation effect="fade" start="100" end="30" time="0" condition="!String.IsEmpty(Player.Art(fanart)) | Visualisation.Enabled">Conditional</animation>
+			<include>ColoredBackgroundImages</include>
+		</control>
+		<control type="group">
+			<bottom>0</bottom>
+			<height>1080</height>
+			<include>OpenClose_Left</include>
+			<control type="image">
+				<left>33</left>
+				<top>200</top>
+				<include>Visible_Left</include>
+				<visible>Player.ShowInfo | Window.IsActive(musicosd)</visible>
+				<width>500</width>
+				<height>500</height>
+				<fadetime>400</fadetime>
+				<aspectratio aligny="bottom">keep</aspectratio>
+				<texture fallback="DefaultAlbumCover.png" border="2">$INFO[MusicPlayer.Cover]</texture>
+				<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
+				<bordersize>4</bordersize>
+			</control>
+			<control type="group">
+				<top>-30</top>
+				<visible>[Player.ShowInfo | Window.IsActive(musicosd)] + !Window.IsActive(playerprocessinfo)</visible>
+				<include>Visible_Left</include>
+				<control type="group">
+					<left>30</left>
+					<top>740</top>
+					<control type="label">
+						<top>0</top>
+						<width>1600</width>
+						<height>40</height>
+						<label>$INFO[MusicPlayer.Artist]</label>
+						<font>font60</font>
+						<shadowcolor>black</shadowcolor>
+						<scroll>true</scroll>
+					</control>
+					<control type="label">
+						<top>80</top>
+						<width>1600</width>
+						<height>40</height>
+						<label>$INFO[MusicPlayer.Album]$INFO[MusicPlayer.Year,[COLOR button_focus] [,][/COLOR]]</label>
+						<font>font37</font>
+						<shadowcolor>black</shadowcolor>
+						<scroll>true</scroll>
+					</control>
+					<control type="label">
+						<top>127</top>
+						<width>1600</width>
+						<height>40</height>
+						<label>$INFO[MusicPlayer.TrackNumber,,: ][COLOR=white]$INFO[Player.Title][/COLOR]</label>
+						<font>font45</font>
+						<shadowcolor>black</shadowcolor>
+						<textcolor>button_focus</textcolor>
+						<scroll>true</scroll>
+					</control>
+				</control>
+			</control>
+		</control>
+	</controls>
+</window>

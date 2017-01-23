@@ -20,10 +20,6 @@
 
 #pragma once
 
-#if (defined HAVE_CONFIG_H) && (!defined TARGET_WINDOWS)
-  #include "config.h"
-#endif
-
 #include "DVDDemuxers/DVDDemux.h"
 
 extern "C" {
@@ -70,7 +66,7 @@ public:
   int profile; // encoder profile of the stream reported by the decoder. used to qualify hw decoders.
   bool ptsinvalid;  // pts cannot be trusted (avi's).
   bool forced_aspect; // aspect is forced from container
-  int orientation; // orientation of the video in degress counter clockwise
+  int orientation; // orientation of the video in degrees counter clockwise
   int bitsperpixel;
   std::string stereo_mode; // stereoscopic 3d mode
 

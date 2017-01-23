@@ -49,7 +49,7 @@ public:
    */
   static CTextureCache &GetInstance();
 
-  /*! \brief Initalize the texture cache
+  /*! \brief Initialize the texture cache
    */
   void Initialize();
 
@@ -156,7 +156,7 @@ public:
   bool Export(const std::string &image, const std::string &destination, bool overwrite);
   bool Export(const std::string &image, const std::string &destination); //! @todo BACKWARD COMPATIBILITY FOR MUSIC THUMBS
 private:
-  // private construction, and no assignements; use the provided singleton methods
+  // private construction, and no assignments; use the provided singleton methods
   CTextureCache();
   CTextureCache(const CTextureCache&);
   CTextureCache const& operator=(CTextureCache const&);

@@ -52,7 +52,7 @@ protected:
   std::string GetDefaultLabel(int controlId) const;
   virtual int GetDefaultLabelID(int controlId) const;
   /*! \brief Get a localized string from a variant
-   If the varaint is already a string we return directly, else if it's an integer we return the corresponding
+   If the variant is already a string we return directly, else if it's an integer we return the corresponding
    localized string.
    \param var the variant to localize.
    */

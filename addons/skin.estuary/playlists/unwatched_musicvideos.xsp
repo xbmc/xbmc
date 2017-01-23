@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<smartplaylist type="musicvideos">
+    <name>Unwatched music videos</name>
+    <match>all</match>
+    <rule field="playcount" operator="is">
+        <value>0</value>
+    </rule>
+    <limit>15</limit>
+    <order direction="descending">random</order>
+</smartplaylist>

@@ -22,6 +22,7 @@
 
 #include "Application.h"
 #include "FileItem.h"
+#include "ServiceBroker.h"
 #include "filesystem/Directory.h"
 #include "guilib/GUIWindowManager.h"
 #include "GUIUserMessages.h"
@@ -278,11 +279,11 @@ static int PlayerControl(const std::vector<std::string>& params)
     {
       case PLAYLIST_MUSIC:
         CMediaSettings::GetInstance().SetMusicPlaylistShuffled(g_playlistPlayer.IsShuffled(iPlaylist));
-        CSettings::GetInstance().Save();
+        CServiceBroker::GetSettings().Save();
         break;
       case PLAYLIST_VIDEO:
         CMediaSettings::GetInstance().SetVideoPlaylistShuffled(g_playlistPlayer.IsShuffled(iPlaylist));
-        CSettings::GetInstance().Save();
+        CServiceBroker::GetSettings().Save();
       default:
         break;
     }
@@ -326,11 +327,11 @@ static int PlayerControl(const std::vector<std::string>& params)
     {
       case PLAYLIST_MUSIC:
         CMediaSettings::GetInstance().SetMusicPlaylistRepeat(state == PLAYLIST::REPEAT_ALL);
-        CSettings::GetInstance().Save();
+        CServiceBroker::GetSettings().Save();
         break;
       case PLAYLIST_VIDEO:
         CMediaSettings::GetInstance().SetVideoPlaylistRepeat(state == PLAYLIST::REPEAT_ALL);
-        CSettings::GetInstance().Save();
+        CServiceBroker::GetSettings().Save();
     }
 
     // send messages so now playing window can get updated
@@ -471,9 +472,18 @@ static int PlayMedia(const std::vector<std::string>& params)
   }
   else
   {
-    int playlist = item.IsAudio() ? PLAYLIST_MUSIC : PLAYLIST_VIDEO;
-    g_playlistPlayer.ClearPlaylist(playlist);
-    g_playlistPlayer.SetCurrentPlaylist(playlist);
+    int playlist = PLAYLIST_NONE;
+
+    if (item.IsAudio())
+      playlist = PLAYLIST_MUSIC;
+    else if (item.IsVideo())
+      playlist = PLAYLIST_VIDEO;
+
+    if (playlist != PLAYLIST_NONE)
+    {
+      g_playlistPlayer.ClearPlaylist(playlist);
+      g_playlistPlayer.SetCurrentPlaylist(playlist);
+    }
 
     // play media
     if (!g_application.PlayMedia(item, "", playlist))

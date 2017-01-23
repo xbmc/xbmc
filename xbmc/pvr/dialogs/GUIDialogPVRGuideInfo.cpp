@@ -28,10 +28,12 @@
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 
+#include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
-#include "pvr/windows/GUIWindowPVRBase.h"
+#include "pvr/windows/GUIWindowPVRSearch.h"
 
 #include "GUIDialogPVRGuideInfo.h"
 
@@ -55,47 +57,6 @@ CGUIDialogPVRGuideInfo::CGUIDialogPVRGuideInfo(void)
 
 CGUIDialogPVRGuideInfo::~CGUIDialogPVRGuideInfo(void)
 {
-}
-
-bool CGUIDialogPVRGuideInfo::ActionStartTimer(const CEpgInfoTagPtr &tag)
-{
-  bool bReturn = false;
-
-  CFileItemPtr item(new CFileItem(tag));
-  bReturn = CGUIWindowPVRBase::AddTimer(item.get());
-
-  if (bReturn)
-    Close();
-
-  return bReturn;
-}
-
-bool CGUIDialogPVRGuideInfo::ActionCancelTimer(const CFileItemPtr &timer)
-{
-  bool bReturn = false;
-
-  if (timer->GetPVRTimerInfoTag()->IsRecording())
-    bReturn = CGUIWindowPVRBase::StopRecordFile(timer.get());
-  else
-    bReturn = CGUIWindowPVRBase::DeleteTimer(timer.get());
-
-  if (bReturn)
-    Close();
-
-  return bReturn;
-}
-
-bool CGUIDialogPVRGuideInfo::ActionAddTimerRule(const CEpgInfoTagPtr &tag)
-{
-  bool bReturn = false;
-
-  const CFileItemPtr item(new CFileItem(tag));
-  bReturn = CGUIWindowPVRBase::AddTimerRule(item.get(), true);
-
-  if (bReturn)
-    Close();
-
-  return bReturn;
 }
 
 bool CGUIDialogPVRGuideInfo::OnClickButtonOK(CGUIMessage &message)
@@ -127,12 +88,24 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonRecord(CGUIMessage &message)
       return bReturn;
     }
 
-    CPVRTimerInfoTagPtr timerTag = m_progItem->Timer();
+    const CPVRTimerInfoTagPtr timerTag(m_progItem->Timer());
     if (timerTag)
-      ActionCancelTimer(CFileItemPtr(new CFileItem(timerTag)));
+    {
+      const CFileItemPtr item(new CFileItem(timerTag));
+      if (timerTag->IsRecording())
+        bReturn = CPVRGUIActions::GetInstance().StopRecording(item);
+      else
+        bReturn = CPVRGUIActions::GetInstance().DeleteTimer(item);
+    }
     else
-      ActionStartTimer(m_progItem);
+    {
+      const CFileItemPtr item(new CFileItem(m_progItem));
+      bReturn = CPVRGUIActions::GetInstance().AddTimer(item, false);
+    }
   }
+
+  if (bReturn)
+    Close();
 
   return bReturn;
 }
@@ -144,10 +117,14 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonAddTimer(CGUIMessage &message)
   if (message.GetSenderId() == CONTROL_BTN_ADD_TIMER)
   {
     if (m_progItem && !m_progItem->Timer())
-      ActionAddTimerRule(m_progItem);
-
-    bReturn = true;
+    {
+      const CFileItemPtr item(new CFileItem(m_progItem));
+      bReturn = CPVRGUIActions::GetInstance().AddTimerRule(item, true);
+    }
   }
+
+  if (bReturn)
+    Close();
 
   return bReturn;
 }
@@ -160,28 +137,12 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonPlay(CGUIMessage &message)
   {
     Close();
 
-    if (m_progItem)
-    {
-      if (message.GetSenderId() == CONTROL_BTN_PLAY_RECORDING && m_progItem->HasRecording())
-        g_application.PlayFile(CFileItem(m_progItem->Recording()), "videoplayer");
-      else if (m_progItem->HasPVRChannel())
-      {
-        CPVRChannelPtr channel = m_progItem->ChannelTag();
-        // try a fast switch
-        bool bSwitchSuccessful = false;
-        if ((g_PVRManager.IsPlayingTV() || g_PVRManager.IsPlayingRadio()) &&
-            (channel->IsRadio() == g_PVRManager.IsPlayingRadio()))
-        {
-          if (channel->StreamURL().empty())
-            bSwitchSuccessful = g_application.m_pPlayer->SwitchChannel(channel);
-        }
+    const CFileItemPtr item(new CFileItem(m_progItem));
+    if (message.GetSenderId() == CONTROL_BTN_PLAY_RECORDING)
+      CPVRGUIActions::GetInstance().PlayRecording(item, true /* bCheckResume */);
+    else
+      CPVRGUIActions::GetInstance().SwitchToChannel(item, true /* bCheckResume */);
 
-        if (!bSwitchSuccessful)
-        {
-          CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(new CFileItem(channel)), "videoplayer");
-        }
-      }
-    }
     bReturn = true;
   }
 
@@ -193,19 +154,7 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonFind(CGUIMessage &message)
   bool bReturn = false;
 
   if (message.GetSenderId() == CONTROL_BTN_FIND)
-  {
-    if (m_progItem && m_progItem->HasPVRChannel())
-    {
-      int windowSearchId = m_progItem->ChannelTag()->IsRadio() ? WINDOW_RADIO_SEARCH : WINDOW_TV_SEARCH;
-      CGUIWindowPVRBase *windowSearch = (CGUIWindowPVRBase*) g_windowManager.GetWindow(windowSearchId);
-      if (windowSearch)
-      {
-        Close();
-        g_windowManager.ActivateWindow(windowSearchId);
-        bReturn = windowSearch->OnContextButton(CFileItem(m_progItem), CONTEXT_BUTTON_FIND);
-      }
-    }
-  }
+    return CPVRGUIActions::GetInstance().FindSimilar(CFileItemPtr(new CFileItem(m_progItem)), this);
 
   return bReturn;
 }
@@ -258,6 +207,8 @@ void CGUIDialogPVRGuideInfo::OnInitWindow()
   }
 
   bool bHideRecord(true);
+  bool bHideAddTimer(true);
+
   if (m_progItem->HasTimer())
   {
     if (m_progItem->Timer()->IsRecording())
@@ -270,16 +221,17 @@ void CGUIDialogPVRGuideInfo::OnInitWindow()
       SET_CONTROL_LABEL(CONTROL_BTN_RECORD, 19060); /* Delete timer */
       bHideRecord = false;
     }
-
-    /* already has a timer. hide the add timer button */
-    SET_CONTROL_HIDDEN(CONTROL_BTN_ADD_TIMER);
   }
-  else if (m_progItem->EndAsLocalTime() > CDateTime::GetCurrentDateTime())
+  else if (g_PVRClients->SupportsTimers() && m_progItem->EndAsLocalTime() > CDateTime::GetCurrentDateTime())
   {
     SET_CONTROL_LABEL(CONTROL_BTN_RECORD, 264);     /* Record */
     bHideRecord = false;
+    bHideAddTimer = false;
   }
 
   if (bHideRecord)
     SET_CONTROL_HIDDEN(CONTROL_BTN_RECORD);
+
+  if (bHideAddTimer)
+    SET_CONTROL_HIDDEN(CONTROL_BTN_ADD_TIMER);
 }

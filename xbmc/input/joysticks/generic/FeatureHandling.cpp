@@ -30,6 +30,8 @@
 using namespace JOYSTICK;
 
 #define ANALOG_DIGITAL_THRESHOLD  0.5f
+#define DISCRETE_ANALOG_RAMPUP_TIME_MS  1500
+#define DISCRETE_ANALOG_START_VALUE     0.3f
 
 // --- CJoystickFeature --------------------------------------------------------
 
@@ -65,8 +67,10 @@ CScalarFeature::CScalarFeature(const FeatureName& name, IInputHandler* handler, 
   m_inputType(handler->GetInputType(name)),
   m_bDigitalState(false),
   m_bDigitalHandled(false),
-  m_holdStartTimeMs(0),
-  m_analogState(0.0f)
+  m_motionStartTimeMs(0),
+  m_analogState(0.0f),
+  m_analogEvent(false),
+  m_bDiscrete(true)
 {
 }
 
@@ -85,6 +89,10 @@ bool CScalarFeature::OnDigitalMotion(const CDriverPrimitive& source, bool bPress
 
 bool CScalarFeature::OnAnalogMotion(const CDriverPrimitive& source, float magnitude)
 {
+  // Update discrete status
+  if (magnitude != 0.0f && magnitude != 1.0f)
+    m_bDiscrete = false;
+
   if (!AcceptsInput(magnitude != 0.0f))
     return false;
 
@@ -100,16 +108,39 @@ void CScalarFeature::ProcessMotions(void)
 {
   if (m_bDigitalState && m_bDigitalHandled)
   {
-    if (m_holdStartTimeMs == 0)
+    if (m_motionStartTimeMs == 0)
     {
       // Button was just pressed, record start time and exit
-      m_holdStartTimeMs = XbmcThreads::SystemClockMillis();
+      m_motionStartTimeMs = XbmcThreads::SystemClockMillis();
     }
     else
     {
       // Button has been pressed more than one event frame
-      const unsigned int elapsed = XbmcThreads::SystemClockMillis() - m_holdStartTimeMs;
+      const unsigned int elapsed = XbmcThreads::SystemClockMillis() - m_motionStartTimeMs;
       m_handler->OnButtonHold(m_name, elapsed);
+    }
+  }
+  else if (m_analogEvent)
+  {
+    float magnitude = m_analogState;
+
+    // If analog value is discrete, ramp up magnitude
+    if (m_bDiscrete)
+    {
+      const unsigned int elapsed = XbmcThreads::SystemClockMillis() - m_motionStartTimeMs;
+      if (elapsed < DISCRETE_ANALOG_RAMPUP_TIME_MS)
+      {
+        magnitude *= static_cast<float>(elapsed) / DISCRETE_ANALOG_RAMPUP_TIME_MS;
+        if (magnitude < DISCRETE_ANALOG_START_VALUE)
+          magnitude = DISCRETE_ANALOG_START_VALUE;
+      }
+    }
+
+    m_handler->OnButtonMotion(m_name, magnitude);
+    if (m_analogState == 0.0f)
+    {
+      m_analogEvent = false;
+      m_motionStartTimeMs = 0;
     }
   }
 }
@@ -119,7 +150,7 @@ void CScalarFeature::OnDigitalMotion(bool bPressed)
   if (m_bDigitalState != bPressed)
   {
     m_bDigitalState = bPressed;
-    m_holdStartTimeMs = 0; // This is set in ProcessMotions()
+    m_motionStartTimeMs = 0; // This is set in ProcessMotions()
 
     CLog::Log(LOGDEBUG, "Feature [ %s ] on %s %s", m_name.c_str(), m_handler->ControllerID().c_str(),
               bPressed ? "pressed" : "released");
@@ -135,16 +166,17 @@ void CScalarFeature::OnAnalogMotion(float magnitude)
   if (m_analogState != 0.0f || magnitude != 0.0f)
   {
     m_analogState = magnitude;
+    m_analogEvent = true;
+    if (m_motionStartTimeMs == 0)
+      m_motionStartTimeMs = XbmcThreads::SystemClockMillis();
 
+    // Log activation/deactivation
     if (m_bDigitalState != bActivated)
     {
       m_bDigitalState = bActivated;
-
       CLog::Log(LOGDEBUG, "Feature [ %s ] on %s %s", m_name.c_str(), m_handler->ControllerID().c_str(),
                 bActivated ? "activated" : "deactivated");
     }
-
-    m_handler->OnButtonMotion(m_name, magnitude);
   }
 }
 

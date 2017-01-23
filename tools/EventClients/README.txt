@@ -49,9 +49,9 @@ can however be done using the program "sixaxis.c" available from:
 
 http://www.pabr.org/sixlinux/sixlinux.en.html
 
-Once pairing for eiher or both has been done, run the ps3d.py program
+Once pairing for either or both has been done, run the ps3d.py program
 as root after disabling any existing HID servers that might currently
-be running. The program requires root prvilieges since it listens on
+be running. The program requires root privileges since it listens on
 Bluetooth L2CAP PSMs 17 and 19.
 
 Using the PS3 Sixaxis Controller
@@ -72,7 +72,7 @@ The executable depends on libcwiid and libbluetooth and is compiled using
 # g++ WiiRemote.cpp -lcwiid -o WiiRemote
 The WiiRemote will emulate mouse by default but can be disabled by running with --disable-mouseemulation
 The sensitivity of the mouseemulation can be set using the --deadzone_x or --deadzone_y where the number is
-the percentage of the space is considered "dead", higher means more sensative.
+the percentage of the space is considered "dead", higher means more sensitive.
 Other commands can be listed with --help
 
 The WiiRemote is mappable with keymap.xml where button id's are the following:

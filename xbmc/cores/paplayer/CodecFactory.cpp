@@ -43,7 +43,7 @@ ICodec* CodecFactory::CreateCodec(const std::string &strFileType)
     if (std::find(exts.begin(), exts.end(), "."+fileType) != exts.end())
     {
       CAudioDecoder* result = new CAudioDecoder(*dec);
-      static_cast<AudioDecoderDll&>(*result).Create();
+      result->Create();
       return result;
     }
   }
@@ -69,7 +69,7 @@ ICodec* CodecFactory::CreateCodecDemux(const CFileItem& file, unsigned int filec
       if (std::find(mime.begin(), mime.end(), content) != mime.end())
       {
         CAudioDecoder* result = new CAudioDecoder(*dec);
-        static_cast<AudioDecoderDll&>(*result).Create();
+        result->Create();
         return result;
       }
     }

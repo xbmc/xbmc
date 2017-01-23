@@ -25,22 +25,19 @@
 #include <vector>
 #include <map>
 
-typedef DllAddon<InputStreamAddonFunctions, INPUTSTREAM_PROPS> DllInputStream;
-
 class CDemuxStream;
 
 namespace ADDON
 {
-  typedef CAddonDll<DllInputStream, InputStreamAddonFunctions, INPUTSTREAM_PROPS> InputStreamDll;
 
-  class CInputStream : public InputStreamDll
+  class CInputStream : public CAddonDll
   {
   public:
 
     static std::unique_ptr<CInputStream> FromExtension(AddonProps props, const cp_extension_t* ext);
 
     explicit CInputStream(AddonProps props)
-      : InputStreamDll(std::move(props))
+      : CAddonDll(std::move(props))
     {};
     CInputStream(const AddonProps& props,
                  const std::string& name,
@@ -51,6 +48,8 @@ namespace ADDON
 
     virtual void SaveSettings() override;
     virtual bool CheckAPIVersion(void) override;
+
+    bool Create();
 
     bool UseParent();
     bool Supports(const CFileItem &fileitem);
@@ -75,7 +74,7 @@ namespace ADDON
     CDemuxStream* GetStream(int iStreamId);
     std::vector<CDemuxStream*> GetStreams() const;
     DemuxPacket* ReadDemux();
-    bool SeekTime(int time, bool backward, double* startpts);
+    bool SeekTime(double time, bool backward, double* startpts);
     void AbortDemux();
     void FlushDemux();
     void SetSpeed(int iSpeed);
@@ -111,6 +110,10 @@ namespace ADDON
       bool m_ready;
     };
     static std::map<std::string, Config> m_configMap;
+
+  private:
+    INPUTSTREAM_PROPS m_info;
+    KodiToAddonFuncTable_InputStream m_struct;
   };
 
 } /*namespace ADDON*/

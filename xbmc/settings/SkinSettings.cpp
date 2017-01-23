@@ -23,6 +23,7 @@
 
 #include "SkinSettings.h"
 #include "GUIInfoManager.h"
+#include "ServiceBroker.h"
 #include "addons/Skin.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
@@ -185,7 +186,7 @@ void CSkinSettings::MigrateSettings(const ADDON::SkinPtr& skin)
     skin->SaveSettings();
 
     // save the guisettings.xml
-    CSettings::GetInstance().Save();
+    CServiceBroker::GetSettings().Save();
   }
 }
 

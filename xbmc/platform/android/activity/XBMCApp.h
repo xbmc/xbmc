@@ -42,7 +42,7 @@
 
 #include "guilib/Geometry.h"
 
-// forward delares
+// forward declares
 class CJNIWakeLock;
 class CAESinkAUDIOTRACK;
 class CVariant;

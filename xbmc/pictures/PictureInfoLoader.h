@@ -39,5 +39,6 @@ protected:
 
   CFileItemList* m_mapFileItems;
   unsigned int m_tagReads;
+  bool m_loadTags;
 };
 

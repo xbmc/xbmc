@@ -52,14 +52,6 @@ msgctxt "#31072"
 msgid "Power Options"
 msgstr "Dewisiadau pŵer"
 
-msgctxt "#31081"
-msgid "Album info"
-msgstr "Gwybodaeth albwm"
-
-msgctxt "#31085"
-msgid "Channel Group"
-msgstr "Grŵp Sianel"
-
 msgctxt "#31096"
 msgid "Local subtitle available"
 msgstr "Is deitlau lleol ar gael"
@@ -67,7 +59,3 @@ msgstr "Is deitlau lleol ar gael"
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Shift"
-
-msgctxt "#31133"
-msgid "Hide"
-msgstr "Cuddio"

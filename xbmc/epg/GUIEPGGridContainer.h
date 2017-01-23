@@ -37,7 +37,7 @@ namespace EPG
   {
   public:
     CGUIEPGGridContainer(int parentID, int controlID, float posX, float posY, float width, float height,
-                         int scrollTime, int preloadItems, int minutesPerPage,
+                         ORIENTATION orientation, int scrollTime, int preloadItems, int minutesPerPage,
                          int rulerUnit, const CTextureInfo& progressIndicatorTexture);
     CGUIEPGGridContainer(const CGUIEPGGridContainer &other);
 
@@ -120,26 +120,32 @@ namespace EPG
 
     void ProcessChannels(unsigned int currentTime, CDirtyRegionList &dirtyregions);
     void ProcessRuler(unsigned int currentTime, CDirtyRegionList &dirtyregions);
+    void ProcessRulerDate(unsigned int currentTime, CDirtyRegionList &dirtyregions);
     void ProcessProgrammeGrid(unsigned int currentTime, CDirtyRegionList &dirtyregions);
     void ProcessProgressIndicator(unsigned int currentTime, CDirtyRegionList &dirtyregions);
     void RenderChannels();
+    void RenderRulerDate();
     void RenderRuler();
     void RenderProgrammeGrid();
     void RenderProgressIndicator();
 
     CPoint m_renderOffset; ///< \brief render offset of the first item in the list \sa SetRenderOffset
 
+    ORIENTATION m_orientation;
+
     std::vector<CGUIListItemLayout> m_channelLayouts;
     std::vector<CGUIListItemLayout> m_focusedChannelLayouts;
     std::vector<CGUIListItemLayout> m_focusedProgrammeLayouts;
     std::vector<CGUIListItemLayout> m_programmeLayouts;
     std::vector<CGUIListItemLayout> m_rulerLayouts;
+    std::vector<CGUIListItemLayout> m_rulerDateLayouts;
 
     CGUIListItemLayout *m_channelLayout;
     CGUIListItemLayout *m_focusedChannelLayout;
     CGUIListItemLayout *m_programmeLayout;
     CGUIListItemLayout *m_focusedProgrammeLayout;
     CGUIListItemLayout *m_rulerLayout;
+    CGUIListItemLayout *m_rulerDateLayout;
 
     int m_pageControl;
 
@@ -149,7 +155,12 @@ namespace EPG
   private:
     void HandleChannels(bool bRender, unsigned int currentTime, CDirtyRegionList &dirtyregions);
     void HandleRuler(bool bRender, unsigned int currentTime, CDirtyRegionList &dirtyregions);
+    void HandleRulerDate(bool bRender, unsigned int currentTime, CDirtyRegionList &dirtyregions);
     void HandleProgrammeGrid(bool bRender, unsigned int currentTime, CDirtyRegionList &dirtyregions);
+
+    float GetCurrentTimePositionOnPage() const;
+    float GetProgressIndicatorWidth() const;
+    float GetProgressIndicatorHeight() const;
 
     void UpdateItems();
 
@@ -167,6 +178,8 @@ namespace EPG
     int m_cacheProgrammeItems;
     int m_cacheRulerItems;
 
+    float m_rulerDateHeight; //! height of ruler date item
+    float m_rulerDateWidth; //! width of ruler date item
     float m_rulerPosX;      //! X position of first ruler item
     float m_rulerPosY;      //! Y position of first ruler item
     float m_rulerHeight;    //! height of the scrolling timeline above the ruler items

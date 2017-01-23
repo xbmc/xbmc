@@ -19,16 +19,18 @@
  *
  */
 
+#include <exception>
 #include <memory>
 #include <string>
 #include <vector>
 
 #include "addons/Addon.h"
 #include "addons/AddonDll.h"
-#include "addons/DllPVRClient.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
 #include "network/ZeroconfBrowser.h"
 
 #include "pvr/channels/PVRChannel.h"
+#include "pvr/PVRTypes.h"
 
 namespace EPG
 {
@@ -51,7 +53,6 @@ namespace PVR
   typedef std::shared_ptr<CPVRClient> PVR_CLIENT;
   #define PVR_INVALID_CLIENT_ID (-2)
 
-  typedef std::shared_ptr<CPVRTimerType> CPVRTimerTypePtr;
   typedef std::vector<CPVRTimerTypePtr>  CPVRTimerTypes;
 
   /*!
@@ -59,7 +60,7 @@ namespace PVR
    *
    * Also translates XBMC's C++ structures to the addon's C structures.
    */
-  class CPVRClient : public ADDON::CAddonDll<DllPVRClient, PVRClient, PVR_PROPERTIES>
+  class CPVRClient : public ADDON::CAddonDll
   {
   public:
     static std::unique_ptr<CPVRClient> FromExtension(ADDON::AddonProps props, const cp_extension_t* ext);
@@ -125,7 +126,7 @@ namespace PVR
     PVR_CONNECTION_STATE GetPreviousConnectionState(void) const;
 
     /*!
-     * @brief signal to PVRMananager this client should be ignored
+     * @brief signal to PVRManager this client should be ignored
      * @return true if this client should be ignored
      */
     bool IgnoreClient(void) const;
@@ -306,7 +307,7 @@ namespace PVR
 
     /*!
      * @param deleted if set return deleted recording
-     * @return The total amount of recordingd on the server or -1 on error.
+     * @return The total amount of recordings on the server or -1 on error.
      */
     int GetRecordingsAmount(bool deleted);
 
@@ -515,7 +516,7 @@ namespace PVR
      * @return True if the seek operation was possible
      * @remarks Optional, and only used if addon has its own demuxer. Return False if this add-on won't provide this function.
      */
-    bool SeekTime(int time, bool backwards, double *startpts);
+    bool SeekTime(double time, bool backwards, double *startpts);
 
     /*!
      * Notify the pvr addon/demuxer that XBMC wishes to change playback speed
@@ -531,7 +532,7 @@ namespace PVR
     /*!
      * @brief Open a recording on the server.
      * @param recording The recording to open.
-     * @return True if the stream has been opened succesfully, false otherwise.
+     * @return True if the stream has been opened successfully, false otherwise.
      */
     bool OpenStream(const CPVRRecordingPtr &recording);
 
@@ -707,7 +708,6 @@ namespace PVR
     bool CanPlayChannel(const CPVRChannelPtr &channel) const;
 
     bool LogError(const PVR_ERROR error, const char *strMethod) const;
-    void LogException(const std::exception &e, const char *strFunctionName) const;
 
     bool                   m_bReadyToUse;          /*!< true if this add-on is initialised (ADDON_Create returned true), false otherwise */
     PVR_CONNECTION_STATE   m_connectionState;      /*!< the backend connection state */
@@ -741,5 +741,7 @@ namespace PVR
     CPVRRecordingPtr    m_playingRecording;
     ADDON::AddonVersion m_apiVersion;
     bool                m_bAvahiServiceAdded;
+    PVR_PROPERTIES      m_info;
+    KodiToAddonFuncTable_PVR m_struct;
   };
 }

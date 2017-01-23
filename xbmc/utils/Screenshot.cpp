@@ -23,6 +23,7 @@
 #include "system.h"
 #include <vector>
 
+#include "ServiceBroker.h"
 #include "Util.h"
 #include "URL.h"
 
@@ -244,7 +245,7 @@ void CScreenShot::TakeScreenshot()
   std::string strDir;
 
   // check to see if we have a screenshot folder yet
-  CSettingPath *screenshotSetting = (CSettingPath*)CSettings::GetInstance().GetSetting(CSettings::SETTING_DEBUG_SCREENSHOTPATH);
+  CSettingPath *screenshotSetting = (CSettingPath*)CServiceBroker::GetSettings().GetSetting(CSettings::SETTING_DEBUG_SCREENSHOTPATH);
   if (screenshotSetting != NULL)
   {
     strDir = screenshotSetting->GetValue();

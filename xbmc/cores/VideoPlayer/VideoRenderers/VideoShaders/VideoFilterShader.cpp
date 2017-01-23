@@ -152,7 +152,7 @@ ConvolutionFilterShader::~ConvolutionFilterShader()
 
 void ConvolutionFilterShader::OnCompiledAndLinked()
 {
-  // obtain shader attribute handles on successfull compilation
+  // obtain shader attribute handles on successful compilation
   m_hSourceTex = glGetUniformLocation(ProgramHandle(), "img");
   m_hStepXY    = glGetUniformLocation(ProgramHandle(), "stepxy");
   m_hKernTex   = glGetUniformLocation(ProgramHandle(), "kernelTex");

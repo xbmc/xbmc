@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <node order="2" type="filter">
-  <label>369</label>
-  <icon>DefaultTVShowTitle.png</icon>
-  <content>tvshows</content>
-  <order direction="ascending">sorttitle</order>
+	<label>10024</label>
+	<icon>DefaultTVShowTitle.png</icon>
+	<content>tvshows</content>
+	<order direction="ascending">sorttitle</order>
 </node>

@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<defaultcontrol always="true">50</defaultcontrol>
+	<backgroundcolor>background</backgroundcolor>
+	<views>50,52,53,54,55,500</views>
+	<menucontrol>9000</menucontrol>
+	<controls>
+		<include>DefaultBackground</include>
+		<control type="group">
+			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="$EXP[infodialog_active]">Conditional</animation>
+			<include>View_50_List</include>
+			<include>View_52_IconWall</include>
+			<include>View_53_Shift</include>
+			<control type="group">
+				<left>50</left>
+				<include>View_54_InfoWall</include>
+		</control>
+			<include>View_55_WideList</include>
+			<include>View_500_Wall</include>
+			<include>CommonScrollbars</include>
+			<control type="group">
+				<include>OpenClose_Left</include>
+				<visible>Control.Isvisible(54)</visible>
+				<include>Visible_Left</include>
+				<visible>Container.Content(images)</visible>
+				<include content="ContentPanel">
+					<param name="width" value="656" />
+				</include>
+				<control type="textbox">
+					<left>40</left>
+					<top>360</top>
+					<width>529</width>
+					<height>413</height>
+					<align>center</align>
+					<aligny>center</aligny>
+					<font>font27</font>
+					<textcolor>80FFFFFF</textcolor>
+					<label>$LOCALIZE[19055]</label>
+					<visible>!ListItem.IsParentFolder + ListItem.IsFolder</visible>
+				</control>
+				<control type="grouplist">
+					<left>20</left>
+					<top>152</top>
+					<width>570</width>
+					<height>760</height>
+					<orientation>vertical</orientation>
+					<include content="PicsInfoLine">
+						<param name="label" value="$LOCALIZE[21820]"/>
+						<param name="value" value="ListItem.PictureDatetime" />
+					</include>
+					<include content="PicsInfoLine">
+						<param name="label" value="$LOCALIZE[21805]"/>
+						<param name="value" value="ListItem.PictureResolution" />
+					</include>
+					<include content="PicsInfoLine">
+						<param name="label" value="$LOCALIZE[21826]"/>
+						<param name="value" value="ListItem.PictureAperture" />
+					</include>
+					<include content="PicsInfoLine">
+						<param name="label" value="$LOCALIZE[21863]"/>
+						<param name="value" value="ListItem.PictureAuthor" />
+					</include>
+					<include content="PicsInfoLine">
+						<param name="label" value="$LOCALIZE[21867]"/>
+						<param name="value" value="ListItem.PictureByline" />
+					</include>
+					<include content="PicsInfoLine">
+						<param name="label" value="$LOCALIZE[21868]"/>
+						<param name="value" value="ListItem.PictureBylineTitle" />
+					</include>
+					<include content="PicsInfoLine">
+						<param name="label" value="$LOCALIZE[31041]"/>
+						<param name="value" value="ListItem.PictureCamMake" />
+					</include>
+					<include content="PicsInfoLine">
+						<param name="label" value="$LOCALIZE[21823]"/>
+						<param name="value" value="ListItem.PictureCamModel" />
+					</include>
+					<include content="PicsInfoLine">
+						<param name="label" value="$LOCALIZE[21862]"/>
+						<param name="value" value="ListItem.PictureCaption" />
+					</include>
+					<include content="PicsInfoLine">
+						<param name="label" value="$LOCALIZE[21866]"/>
+						<param name="value" value="ListItem.PictureCategory" />
+					</include>
+					<include content="PicsInfoLine">
+						<param name="label" value="$LOCALIZE[21839]"/>
+						<param name="value" value="ListItem.PictureCCDWidth" />
+					</include>
+					<include content="PicsInfoLine">
+						<param name="label" value="$LOCALIZE[21873]"/>
+						<param name="value" value="ListItem.PictureCity" />
+					</include>
+					<include content="PicsInfoLine">
+						<param name="label" value="$LOCALIZE[21807]"/>
+						<param name="value" value="ListItem.PictureColour" />
+					</include>
+					<include content="PicsInfoLine">
+						<param name="label" value="$LOCALIZE[21839]"/>
+						<param name="value" value="ListItem.PictureComment" />
+					</include>
+					<include content="PicsInfoLine">
+						<param name="label" value="$LOCALIZE[21871]"/>
+						<param name="value" value="ListItem.PictureCopyrightNotice" />
+					</include>
+					<include content="PicsInfoLine">
+						<param name="label" value="$LOCALIZE[21875]"/>
+						<param name="value" value="ListItem.PictureCountry" />
+					</include>
+					<include content="PicsInfoLine">
+						<param name="label" value="$LOCALIZE[21879]"/>
+						<param name="value" value="ListItem.PictureCountryCode" />
+					</include>
+					<include content="PicsInfoLine">
+						<param name="label" value="$LOCALIZE[21869]"/>
+						<param name="value" value="ListItem.PictureCredit" />
+					</include>
+					<include content="PicsInfoLine">
+						<param name="label" value="$LOCALIZE[21821]"/>
+						<param name="value" value="ListItem.PictureDesc" />
+					</include>
+					<include content="PicsInfoLine">
+						<param name="label" value="$LOCALIZE[21838]"/>
+						<param name="value" value="ListItem.PictureDigitalZoom" />
+					</include>
+					<include content="PicsInfoLine">
+						<param name="label" value="$LOCALIZE[21832]"/>
+						<param name="value" value="ListItem.PictureExpMode" />
+					</include>
+					<include content="PicsInfoLine">
+						<param name="label" value="$LOCALIZE[21829]"/>
+						<param name="value" value="ListItem.PictureExposure" />
+					</include>
+					<include content="PicsInfoLine">
+						<param name="label" value="$LOCALIZE[21831]"/>
+						<param name="value" value="ListItem.PictureExposureBias" />
+					</include>
+					<include content="PicsInfoLine">
+						<param name="label" value="$LOCALIZE[21830]"/>
+						<param name="value" value="ListItem.PictureExpTime" />
+					</include>
+					<include content="PicsInfoLine">
+						<param name="label" value="$LOCALIZE[21833]"/>
+						<param name="value" value="ListItem.PictureFlashUsed" />
+					</include>
+					<include content="PicsInfoLine">
+						<param name="label" value="$LOCALIZE[21827]"/>
+						<param name="value" value="ListItem.PictureFocalLen" />
+					</include>
+					<include content="PicsInfoLine">
+						<param name="label" value="$LOCALIZE[21828]"/>
+						<param name="value" value="ListItem.PictureFocusDist" />
+					</include>
+					<include content="PicsInfoLine">
+						<param name="label" value="$LOCALIZE[21840]"/>
+						<param name="value" value="ListItem.PictureGPSLat" />
+					</include>
+					<include content="PicsInfoLine">
+						<param name="label" value="$LOCALIZE[21841]"/>
+						<param name="value" value="ListItem.PictureGPSLon" />
+					</include>
+					<include content="PicsInfoLine">
+						<param name="label" value="$LOCALIZE[21842]"/>
+						<param name="value" value="ListItem.PictureGPSAlt" />
+					</include>
+					<include content="PicsInfoLine">
+						<param name="label" value="$LOCALIZE[21864]"/>
+						<param name="value" value="ListItem.PictureHeadline" />
+					</include>
+					<include content="PicsInfoLine">
+						<param name="label" value="$LOCALIZE[21858]"/>
+						<param name="value" value="ListItem.PictureImageType" />
+					</include>
+					<include content="PicsInfoLine">
+						<param name="label" value="$LOCALIZE[21837]"/>
+						<param name="value" value="ListItem.PictureISO" />
+					</include>
+					<include content="PicsInfoLine">
+						<param name="label" value="$LOCALIZE[21861]"/>
+						<param name="value" value="ListItem.PictureKeywords" />
+					</include>
+					<include content="PicsInfoLine">
+						<param name="label" value="$LOCALIZE[21843]"/>
+						<param name="value" value="ListItem.PictureOrientation" />
+					</include>
+					<include content="PicsInfoLine">
+						<param name="label" value="$LOCALIZE[21808]"/>
+						<param name="value" value="ListItem.PictureProcess" />
+					</include>
+				</control>
+			</control>
+			<control type="group">
+				<include>OpenClose_Left</include>
+				<visible>Control.IsVisible(50) | Control.IsVisible(55)</visible>
+				<include>Visible_Left</include>
+				<include>ListThumbInfoPanel</include>
+			</control>
+			<include content="TopBar">
+				<param name="breadcrumbs_label" value="$LOCALIZE[1213]" />
+			</include>
+			<include content="BottomBar">
+				<param name="info_visible" value="true" />
+			</include>
+			<include>MediaMenuMouseOverlay</include>
+			<control type="group">
+				<include>MediaMenuCommon</include>
+				<control type="grouplist" id="9000">
+					<top>50</top>
+					<include>MediaMenuListCommon</include>
+					<control type="label" id="203">
+						<description>Actions</description>
+						<include>MediaMenuLabelCommon</include>
+						<label>$LOCALIZE[31020]</label>
+					</control>
+					<control type="button" id="6">
+						<label>$LOCALIZE[13317]</label>
+						<include>MediaMenuItemsCommon</include>
+					</control>
+					<control type="button" id="7">
+						<label>$LOCALIZE[13318]</label>
+						<include>MediaMenuItemsCommon</include>
+					</control>
+					<control type="radiobutton" id="9">
+						<label>$LOCALIZE[13319]</label>
+						<include>MediaMenuItemsCommon</include>
+					</control>
+					<control type="button" id="622">
+						<include>MediaMenuItemsCommon</include>
+						<label>$LOCALIZE[31124]</label>
+						<onclick condition="System.HasAddon(script.maps.browser)">RunScript(script.maps.browser,folder=$INFO[Container.FolderPath])</onclick>
+						<onclick condition="!System.HasAddon(script.maps.browser)">InstallAddon(script.maps.browser)</onclick>
+						<visible>Container.Content(images) + String.IsEmpty(Container.PluginName)</visible>
+					</control>
+					<control type="button" id="624">
+						<include>MediaMenuItemsCommon</include>
+						<label>$LOCALIZE[10140]</label>
+						<onclick>Addon.OpenSettings($INFO[Container.PluginName])</onclick>
+						<visible>!String.IsEmpty(Container.PluginName)</visible>
+					</control>
+					<control type="button" id="621">
+						<description>Get more</description>
+						<include>MediaMenuItemsCommon</include>
+						<label>$LOCALIZE[21452]</label>
+						<onclick>ActivateWindow(addonbrowser,addons://more/image/,return)</onclick>
+						<visible>Container.Content(addons)</visible>
+					</control>
+					<include>MediaMenuNowPlaying</include>
+				</control>
+			</control>
+		</control>
+	</controls>
+</window>

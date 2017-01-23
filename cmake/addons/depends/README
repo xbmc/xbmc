@@ -1,0 +1,61 @@
+KODI ADDON DEPENDENCIES
+=======================
+This directory contains the cmake-based buildsystem for addon dependencies. It
+looks into the "common" and the "<platform>/cmake" sub-directories and parses
+all *.txt files recursively. Each dependency must have its own <dependency>.txt
+file (either in the main sub-directory or in a separate subdirectory of the main
+subdirectory) which must follow one of the defined formats:
+  * an empty file means that no extra downloads are necessary
+  * <dependency>
+  * <dependency> <url>
+  * <dependency> <git-url> <git-revision>
+where
+  * <dependency> must be identical to the filename
+  * <url> must be the URL to an archive that is downloaded and extracted.
+  * <git-url> must be the URL of the git repository containing the
+    dependency.
+  * <git-revision> must be a valid git tag/branch/commit in the dependency's git
+    repository which will be used for the build.
+
+Reserved filenames (for additional information on how to build a dependency)
+are:
+  * CMakeLists.txt: build instructions for the dependency
+  * install.txt: instructions on how to install the dependency's built files
+  * noinstall.txt: no installation step required (content is ignored)
+  * flags.txt: additional build flags
+  * deps.txt: whitespace separated list of dependencies of this dependency
+
+The buildsystem uses the following variables (which can be passed into it when
+executing cmake with the -D<variable-name>=<value> option) to e.g. access
+specific paths:
+  * CMAKE_BUILD_TYPE specifies the type of the build. This can be either "Debug"
+    or "Release" (default is "Release").
+  * CMAKE_TOOLCHAIN_FILE can be used to pass a toolchain file into the add-on
+    builds.
+  * CORE_SYSTEM_NAME is the name of the platform (e.g. "linux" or "android") in
+    lower-case (defaults to lowercase(CMAKE_SYSTEM_NAME)).
+  * CORE_SOURCE_DIR points to the root directory of the project (default is the
+    absolute representation of ../../.. starting from this directory).
+  * ADDON_DEPENDS_PATH points to the directory where the built dependencies
+    (their include and library file) will be installed to.
+  * ARCH_DEFINES specifies the platform-specific C/C++ preprocessor defines
+    (defaults to empty).
+  * DEPENDS_TO_BUILD is a quoted, space delimited list of <dependency>s that
+    you want to build (default is "all").
+
+To trigger the cmake-based buildsystem the following command must be executed
+with <path> being the path to this directory (absolute or relative, allowing for
+in-source and out-of-source builds).
+
+  cmake <path> -G <generator>
+
+cmake supports multiple generators, see
+http://www.cmake.org/cmake/help/v2.8.8/cmake.html#section_Generators for a list.
+
+In case of additional options the call might look like this
+
+  cmake <path> [-G <generator>] \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DCORE_SOURCE_DIR="<path-to-project-root>" \
+        -DARCH_DEFINES="-DTARGET_LINUX" \
+        -DCMAKE_INSTALL_PREFIX="<path-to-install-directory"

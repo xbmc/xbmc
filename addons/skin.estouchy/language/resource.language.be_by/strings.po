@@ -132,10 +132,6 @@ msgctxt "#31303"
 msgid "Data provider"
 msgstr "Data provider"
 
-msgctxt "#31309"
-msgid "Memory Used:"
-msgstr "Занята памяці:"
-
 msgctxt "#31320"
 msgid "Last Logged In"
 msgstr "Апошні ўваход"
@@ -168,17 +164,9 @@ msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Select your Kodi user Profile[CR]to login and continue"
 
-msgctxt "#31501"
-msgid "Home Page Add-on Quick Links"
-msgstr "Home Page Add-on Quick Links"
-
-msgctxt "#31502"
-msgid "Miscellaneous Options"
-msgstr "Miscellaneous Options"
-
 msgctxt "#31550"
-msgid "Home Screen Weather Info and button"
-msgstr "Home Screen Weather Info and button"
+msgid "Backgrounds"
+msgstr "Backgrounds"
 
 msgctxt "#31551"
 msgid "Add-on Shortcut"

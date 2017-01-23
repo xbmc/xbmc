@@ -28,6 +28,7 @@ namespace JOYSTICK
   class IInputReceiver;
 
   /*!
+   * \ingroup joystick
    * \brief Interface for handling input events for game controllers
    */
   class IInputHandler
@@ -77,14 +78,14 @@ namespace JOYSTICK
     virtual bool OnButtonPress(const FeatureName& feature, bool bPressed) = 0;
 
     /*!
-    * \brief A digital button has been pressed for more than one event frame
-    *
-    * \param feature      The feature being held
-    * \param holdTimeMs   The time elapsed since the initial press (ms)
-    *
-    * If OnButtonPress() returns true for the initial press, then this callback
-    * is invoked on subsequent frames until the button is released.
-    */
+     * \brief A digital button has been pressed for more than one event frame
+     *
+     * \param feature      The feature being held
+     * \param holdTimeMs   The time elapsed since the initial press (ms)
+     *
+     * If OnButtonPress() returns true for the initial press, then this callback
+     * is invoked on subsequent frames until the button is released.
+     */
     virtual void OnButtonHold(const FeatureName& feature, unsigned int holdTimeMs) = 0;
 
     /*!

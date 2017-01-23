@@ -24,7 +24,7 @@
 #include "threads/SingleLock.h"
 
 // Override for platform ports
-#if !defined(PLATFORM_OVERRIDE)
+#if !defined(PLATFORM_OVERRIDE_VP_PROCESSINFO)
 
 CProcessInfo* CProcessInfo::CreateInstance()
 {
@@ -56,6 +56,7 @@ void CProcessInfo::ResetVideoCodecInfo()
   m_videoWidth = 0;
   m_videoHeight = 0;
   m_videoFPS = 0.0;
+  m_videoDAR = 0.0;
   m_deintMethods.clear();
   m_deintMethods.push_back(EINTERLACEMETHOD::VS_INTERLACEMETHOD_NONE);
   m_deintMethodDefault = EINTERLACEMETHOD::VS_INTERLACEMETHOD_NONE;
@@ -67,6 +68,7 @@ void CProcessInfo::ResetVideoCodecInfo()
   CServiceBroker::GetDataCacheCore().SetVideoPixelFormat(m_videoPixelFormat);
   CServiceBroker::GetDataCacheCore().SetVideoDimensions(m_videoWidth, m_videoHeight);
   CServiceBroker::GetDataCacheCore().SetVideoFps(m_videoFPS);
+  CServiceBroker::GetDataCacheCore().SetVideoDAR(m_videoDAR);
   CServiceBroker::GetDataCacheCore().SetStateSeeking(m_stateSeeking);
 }
 
@@ -345,6 +347,22 @@ void CProcessInfo::UpdateRenderInfo(CRenderInfo &info)
     if (!Supports(deint))
       m_deintMethods.push_back(deint);
   }
+}
+
+void CProcessInfo::UpdateRenderBuffers(int queued, int discard, int free)
+{
+  CSingleLock lock(m_renderSection);
+  m_renderBufQueued = queued;
+  m_renderBufDiscard = discard;
+  m_renderBufFree = free;
+}
+
+void CProcessInfo::GetRenderBuffers(int &queued, int &discard, int &free)
+{
+  CSingleLock lock(m_renderSection);
+  queued = m_renderBufQueued;
+  discard = m_renderBufDiscard;
+  free = m_renderBufFree;
 }
 
 // player states

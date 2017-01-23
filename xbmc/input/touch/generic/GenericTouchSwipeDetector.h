@@ -54,7 +54,7 @@ private:
    */
   bool m_swipeDetected;
   /*!
-   * \brief Number of active pointeres
+   * \brief Number of active pointers
    */
   unsigned int m_size;
 };

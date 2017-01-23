@@ -132,10 +132,6 @@ msgctxt "#31303"
 msgid "Data provider"
 msgstr ": مزود البيانات"
 
-msgctxt "#31309"
-msgid "Memory Used:"
-msgstr "الذاكرة المستخدمة:"
-
 msgctxt "#31320"
 msgid "Last Logged In"
 msgstr "آخر تسجيل دخول في"
@@ -168,21 +164,9 @@ msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "للدخول والإستمرارا [CR]Kodi  حدد ملفك الشخصي الخاص بـ"
 
-msgctxt "#31500"
-msgid "Home Menu Catagory Buttons"
-msgstr "أزرار تصنيف القائمة الرئيسية"
-
-msgctxt "#31501"
-msgid "Home Page Add-on Quick Links"
-msgstr "روابط سريعة لصفحة الإضافة الرئيسية"
-
-msgctxt "#31502"
-msgid "Miscellaneous Options"
-msgstr "خيارات متنوعة"
-
 msgctxt "#31550"
-msgid "Home Screen Weather Info and button"
-msgstr "زر و شاشة معلومات الطقس الرئيسية"
+msgid "Backgrounds"
+msgstr "الخلفية"
 
 msgctxt "#31551"
 msgid "Add-on Shortcut"

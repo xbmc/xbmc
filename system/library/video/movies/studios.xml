@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <node order="6" type="filter">
-  <label>20388</label>
-  <icon>DefaultStudios.png</icon>
-  <content>movies</content>
-  <group>studios</group>
+	<label>20388</label>
+	<icon>DefaultStudios.png</icon>
+	<content>movies</content>
+	<group>studios</group>
 </node>

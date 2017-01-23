@@ -25,6 +25,9 @@
 
 namespace JOYSTICK
 {
+  /*!
+   * Handles keymaps
+   */
   class CKeymapHandler : public IKeymapHandler
   {
   public:
@@ -34,6 +37,7 @@ namespace JOYSTICK
 
     // implementation of IKeymapHandler
     virtual INPUT_TYPE GetInputType(unsigned int keyId) const override;
+    virtual int GetActionID(unsigned int keyId) const override;
     virtual void OnDigitalKey(unsigned int keyId, bool bPressed, unsigned int holdTimeMs = 0) override;
     virtual void OnAnalogKey(unsigned int keyId, float magnitude) override;
 
@@ -52,7 +56,6 @@ namespace JOYSTICK
     static bool SendDigitalAction(unsigned int keyId, unsigned int holdTimeMs = 0);
     static bool SendAnalogAction(unsigned int keyId, float magnitude);
 
-    BUTTON_STATE              m_state;
     unsigned int              m_lastButtonPress;
     unsigned int              m_lastDigitalActionMs;
     std::vector<unsigned int> m_pressedButtons;

@@ -19,6 +19,7 @@
  */
 
 #include "AddonInstaller.h"
+#include "ServiceBroker.h"
 #include "events/EventLog.h"
 #include "events/AddonManagementEvent.h"
 #include "events/NotificationEvent.h"
@@ -237,7 +238,9 @@ bool CAddonInstaller::DoInstall(const AddonPtr &addon, const RepositoryPtr& repo
   CAddonInstallJob* installJob = new CAddonInstallJob(addon, repo, hash);
   if (background)
   {
-    unsigned int jobID = CJobManager::GetInstance().AddJob(installJob, this);
+    // Workaround: because CAddonInstallJob is blocking waiting for other jobs, it needs to be run
+    // with priority dedicated.
+    unsigned int jobID = CJobManager::GetInstance().AddJob(installJob, this, CJob::PRIORITY_DEDICATED);
     m_downloadJobs.insert(make_pair(addon->ID(), CDownloadJob(jobID)));
     m_idle.Reset();
     return true;
@@ -600,7 +603,7 @@ bool CAddonInstallJob::DoWork()
   }
 
   g_localizeStrings.LoadAddonStrings(URIUtils::AddFileToFolder(m_addon->Path(), "resources/language/"),
-      CSettings::GetInstance().GetString(CSettings::SETTING_LOCALE_LANGUAGE), m_addon->ID());
+      CServiceBroker::GetSettings().GetString(CSettings::SETTING_LOCALE_LANGUAGE), m_addon->ID());
 
   ADDON::OnPostInstall(m_addon, m_update, IsModal());
 
@@ -614,7 +617,7 @@ bool CAddonInstallJob::DoWork()
 
   CEventLog::GetInstance().Add(
     EventPtr(new CAddonManagementEvent(m_addon, m_update ? 24065 : 24064)),
-    !IsModal() && CSettings::GetInstance().GetBool(CSettings::SETTING_ADDONS_NOTIFICATIONS), false);
+    !IsModal() && CServiceBroker::GetSettings().GetBool(CSettings::SETTING_ADDONS_NOTIFICATIONS), false);
 
   // and we're done!
   MarkFinished();
@@ -801,8 +804,8 @@ void CAddonInstallJob::ReportInstallError(const std::string& addonID, const std:
   CEventLog::GetInstance().Add(activity, !IsModal(), false);
 }
 
-CAddonUnInstallJob::CAddonUnInstallJob(const AddonPtr &addon)
-  : m_addon(addon)
+CAddonUnInstallJob::CAddonUnInstallJob(const AddonPtr &addon, bool removeData)
+  : m_addon(addon), m_removeData(removeData)
 { }
 
 bool CAddonUnInstallJob::DoWork()
@@ -825,6 +828,8 @@ bool CAddonUnInstallJob::DoWork()
   }
 
   ClearFavourites();
+  if (m_removeData)
+    CFileUtils::DeleteItem("special://profile/addon_data/"+m_addon->ID()+"/", true);
 
   AddonPtr addon;
   CAddonDatabase database;

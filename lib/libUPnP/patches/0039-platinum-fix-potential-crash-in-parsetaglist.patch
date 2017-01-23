@@ -1,0 +1,26 @@
+From f034d17ddfefac6a182511f1401d248beb45b280 Mon Sep 17 00:00:00 2001
+From: phate89 <phates89@gmail.com>
+Date: Mon, 12 Dec 2016 17:37:44 +0100
+Subject: [PATCH 1/1] platinum: fix potential crash in parsetaglist
+
+---
+ lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaServer.cpp | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaServer.cpp b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaServer.cpp
+index 6ecec0f..0a43dab 100644
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaServer.cpp
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaServer.cpp
+@@ -400,7 +400,8 @@ PLT_MediaServer::ParseTagList(const NPT_String& updates, NPT_Map<NPT_String,NPT_
+     for (NPT_List<NPT_XmlNode*>::Iterator children = didl_partial->GetChildren().GetFirstItem(); children; children++) {
+         NPT_XmlElementNode* child = (*children)->AsElementNode();
+         if (!child) continue;
+-        tags[child->GetTag()] = *child->GetText();
++        const NPT_String *txt = child->GetText();
++        tags[child->GetTag()] = txt ? *txt : "";
+     }
+ 
+     return NPT_SUCCESS;
+-- 
+2.10.2.windows.1
+

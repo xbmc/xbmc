@@ -62,6 +62,7 @@ public:
   static const std::string SETTING_LOCALE_COUNTRY;
   static const std::string SETTING_LOCALE_CHARSET;
   static const std::string SETTING_LOCALE_KEYBOARDLAYOUTS;
+  static const std::string SETTING_LOCALE_ACTIVEKEYBOARDLAYOUT;
   static const std::string SETTING_LOCALE_TIMEZONECOUNTRY;
   static const std::string SETTING_LOCALE_TIMEZONE;
   static const std::string SETTING_LOCALE_SHORTDATEFORMAT;
@@ -172,7 +173,6 @@ public:
   static const std::string SETTING_SCRAPERS_MOVIESDEFAULT;
   static const std::string SETTING_SCRAPERS_TVSHOWSDEFAULT;
   static const std::string SETTING_SCRAPERS_MUSICVIDEOSDEFAULT;
-  static const std::string SETTING_PVRMANAGER_HIDECONNECTIONLOSTWARNING;
   static const std::string SETTING_PVRMANAGER_SYNCCHANNELGROUPS;
   static const std::string SETTING_PVRMANAGER_BACKENDCHANNELORDER;
   static const std::string SETTING_PVRMANAGER_USEBACKENDCHANNELNUMBERS;
@@ -191,7 +191,7 @@ public:
   static const std::string SETTING_EPG_PREVENTUPDATESWHILEPLAYINGTV;
   static const std::string SETTING_EPG_IGNOREDBFORCLIENT;
   static const std::string SETTING_EPG_RESETEPG;
-  static const std::string SETTING_PVRPLAYBACK_PLAYMINIMIZED;
+  static const std::string SETTING_PVRPLAYBACK_SWITCHTOFULLSCREEN;
   static const std::string SETTING_PVRPLAYBACK_STARTLAST;
   static const std::string SETTING_PVRPLAYBACK_SIGNALQUALITY;
   static const std::string SETTING_PVRPLAYBACK_SCANTIME;
@@ -236,7 +236,6 @@ public:
   static const std::string SETTING_MUSICPLAYER_REPLAYGAINTYPE;
   static const std::string SETTING_MUSICPLAYER_REPLAYGAINPREAMP;
   static const std::string SETTING_MUSICPLAYER_REPLAYGAINNOGAINPREAMP;
-  static const std::string SETTING_MUSICPLAYER_REPLAYGAINAVOIDCLIPPING;
   static const std::string SETTING_MUSICPLAYER_CROSSFADE;
   static const std::string SETTING_MUSICPLAYER_CROSSFADEALBUMTRACKS;
   static const std::string SETTING_MUSICPLAYER_VISUALISATION;
@@ -254,6 +253,7 @@ public:
   static const std::string SETTING_AUDIOCDS_EJECTONRIP;
   static const std::string SETTING_MYMUSIC_SONGTHUMBINVIS;
   static const std::string SETTING_MYMUSIC_DEFAULTLIBVIEW;
+  static const std::string SETTING_PICTURES_USETAGS;
   static const std::string SETTING_PICTURES_GENERATETHUMBS;
   static const std::string SETTING_PICTURES_SHOWVIDEOS;
   static const std::string SETTING_PICTURES_DISPLAYRESOLUTION;
@@ -330,6 +330,7 @@ public:
   static const std::string SETTING_AUDIOOUTPUT_VOLUMESTEPS;
   static const std::string SETTING_INPUT_PERIPHERALS;
   static const std::string SETTING_INPUT_ENABLEMOUSE;
+  static const std::string SETTING_INPUT_ASKNEWCONTROLLERS;
   static const std::string SETTING_INPUT_CONTROLLERCONFIG;
   static const std::string SETTING_INPUT_TESTRUMBLE;
   static const std::string SETTING_INPUT_CONTROLLERPOWEROFF;
@@ -347,6 +348,7 @@ public:
   static const std::string SETTING_POWERMANAGEMENT_SHUTDOWNTIME;
   static const std::string SETTING_POWERMANAGEMENT_SHUTDOWNSTATE;
   static const std::string SETTING_POWERMANAGEMENT_WAKEONACCESS;
+  static const std::string SETTING_POWERMANAGEMENT_WAITFORNETWORK;
   static const std::string SETTING_DEBUG_SHOWLOGINFO;
   static const std::string SETTING_DEBUG_EXTRALOGGING;
   static const std::string SETTING_DEBUG_SETEXTRALOGLEVEL;
@@ -378,6 +380,18 @@ public:
   static const std::string SETTING_SOURCE_VIDEOS;
   static const std::string SETTING_SOURCE_MUSIC;
   static const std::string SETTING_SOURCE_PICTURES;
+  static const std::string SETTING_GAMES_KEYBOARD_PLAYERS;
+  static const std::string SETTING_GAMES_KEYBOARD_PLAYERCONFIG_1;
+  static const std::string SETTING_GAMES_KEYBOARD_PLAYERCONFIG_2;
+  static const std::string SETTING_GAMES_KEYBOARD_PLAYERCONFIG_3;
+  static const std::string SETTING_GAMES_KEYBOARD_PLAYERCONFIG_4;
+  static const std::string SETTING_GAMES_KEYBOARD_PLAYERCONFIG_5;
+  static const std::string SETTING_GAMES_KEYBOARD_PLAYERCONFIG_6;
+  static const std::string SETTING_GAMES_KEYBOARD_PLAYERCONFIG_7;
+  static const std::string SETTING_GAMES_KEYBOARD_PLAYERCONFIG_8;
+  static const std::string SETTING_GAMES_ENABLE;
+  static const std::string SETTING_GAMES_ENABLEREWIND;
+  static const std::string SETTING_GAMES_REWINDTIME;
 
   /*!
    \brief Creates a new settings wrapper around a new settings manager.
@@ -387,13 +401,6 @@ public:
    */
   CSettings();
   virtual ~CSettings();
-
-  /*!
-   \brief Returns a "global" settings wrapper which can be used from anywhere.
-
-   \return "global" settings wrapper
-   */
-  static CSettings& GetInstance();
 
   CSettingsManager* GetSettingsManager() const { return m_settingsManager; }
 
@@ -600,10 +607,14 @@ private:
   void InitializeVisibility();
   void InitializeDefaults();
   void InitializeOptionFillers();
+  void UninitializeOptionFillers();
   void InitializeConditions();
   void InitializeISettingsHandlers();
+  void UninitializeISettingsHandlers();
   void InitializeISubSettings();
+  void UninitializeISubSettings();
   void InitializeISettingCallbacks();
+  void UninitializeISettingCallbacks();
   bool Reset();
 
   bool m_initialized;

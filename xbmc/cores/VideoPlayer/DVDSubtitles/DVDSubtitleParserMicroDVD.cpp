@@ -26,8 +26,8 @@
 #include "utils/log.h"
 #include "DVDSubtitleTagMicroDVD.h"
 
-CDVDSubtitleParserMicroDVD::CDVDSubtitleParserMicroDVD(CDVDSubtitleStream* stream, const std::string& filename)
-    : CDVDSubtitleParserText(stream, filename), m_framerate( DVD_TIME_BASE / 25.0 )
+CDVDSubtitleParserMicroDVD::CDVDSubtitleParserMicroDVD(std::unique_ptr<CDVDSubtitleStream> && stream, const std::string& filename)
+    : CDVDSubtitleParserText(std::move(stream), filename), m_framerate( DVD_TIME_BASE / 25.0 )
 {
 
 }

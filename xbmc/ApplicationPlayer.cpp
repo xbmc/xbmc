@@ -74,7 +74,7 @@ void CApplicationPlayer::ClosePlayerGapless(std::string &playername)
   {
     // XXX: we had to stop the previous playing item, it was done in VideoPlayer::OpenFile.
     // but in paplayer::OpenFile, it sometimes just fade in without call CloseFile.
-    // but if we do not stop it, we can not distingush callbacks from previous
+    // but if we do not stop it, we can not distinguish callbacks from previous
     // item and current item, it will confused us then we can not make correct delay
     // callback after the starting state.
     CloseFile(true);
@@ -176,6 +176,12 @@ bool CApplicationPlayer::HasVideo() const
   return (player && player->HasVideo());
 }
 
+bool CApplicationPlayer::HasGame() const
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  return (player && player->HasGame());
+}
+
 int CApplicationPlayer::GetPreferredPlaylist() const
 {
   if (IsPlayingVideo())
@@ -217,6 +223,11 @@ bool CApplicationPlayer::IsPlayingAudio() const
 bool CApplicationPlayer::IsPlayingVideo() const
 {
   return (IsPlaying() && HasVideo());
+}
+
+bool CApplicationPlayer::IsPlayingGame() const
+{
+  return (IsPlaying() && HasGame());
 }
 
 bool CApplicationPlayer::IsPlayingRDS() const

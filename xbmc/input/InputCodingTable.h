@@ -46,7 +46,7 @@ public:
   virtual void Deinitialize() {}
 
   /*! \brief Can be overridden if initialization is expensive to avoid calling initialize more than needed
-      \return true if initialization has beeen done and was successful, false otherwise.
+      \return true if initialization has been done and was successful, false otherwise.
   */
   virtual bool IsInitialized() const { return true; }
   virtual bool GetWordListPage(const std::string& strCode, bool isFirstPage) = 0;

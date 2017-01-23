@@ -29,7 +29,7 @@
 
 CZeroconfOSX::CZeroconfOSX():m_runloop(0)
 {
-  //aquire the main threads event loop
+  //acquire the main threads event loop
   m_runloop = CFRunLoopGetMain();
 }
 
