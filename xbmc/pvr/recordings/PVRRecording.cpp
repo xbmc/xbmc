@@ -97,7 +97,6 @@ CPVRRecording::CPVRRecording(const PVR_RECORDING &recording, unsigned int iClien
   m_playCount                      = recording.iPlayCount;
   m_resumePoint.timeInSeconds      = recording.iLastPlayedPosition;
   m_resumePoint.totalTimeInSeconds = recording.iDuration;
-  m_genre                          = StringUtils::Split(CEpg::ConvertGenreIdToString(recording.iGenreType, recording.iGenreSubType), g_advancedSettings.m_videoItemSeparator);
   m_strIconPath                    = recording.strIconPath;
   m_strThumbnailPath               = recording.strThumbnailPath;
   m_strFanartPath                  = recording.strFanartPath;
@@ -496,13 +495,4 @@ void CPVRRecording::SetGenre(int iGenreType, int iGenreSubType, const std::strin
     /* Determine the genre description from the type and subtype IDs */
     m_genre = StringUtils::Split(CEpg::ConvertGenreIdToString(iGenreType, iGenreSubType), g_advancedSettings.m_videoItemSeparator);
   }
-}
-
-bool CPVRRecording::IsInProgress() const
-{
-	// Note: It is not enough to only check recording time and duration against 'now'.
-	//       Only the state of the related timer is a safe indicator that the backend
-	//       actually is recording this.
-
-	return g_PVRTimers->HasRecordingTimerForRecording(*this);
 }
