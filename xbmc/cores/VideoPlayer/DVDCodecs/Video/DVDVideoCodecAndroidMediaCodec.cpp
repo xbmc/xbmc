@@ -367,8 +367,14 @@ CDVDVideoCodecAndroidMediaCodec::~CDVDVideoCodecAndroidMediaCodec()
     delete m_crypto;
 }
 
+std::atomic<bool> CDVDVideoCodecAndroidMediaCodec::m_InstanceGuard(false);
+
 bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
+  // allow only 1 instance here
+  if (m_InstanceGuard.exchange(true))
+    return false;
+
   // mediacodec crashes with null size. Trap this...
   if (!hints.width || !hints.height)
   {
@@ -711,6 +717,8 @@ void CDVDVideoCodecAndroidMediaCodec::Dispose()
       xbmc_jnienv()->ExceptionClear();
   }
   ReleaseSurfaceTexture();
+
+  m_InstanceGuard.exchange(false);
 
   //TODO: investigate why this one crashes
   //if (m_render_surface)
