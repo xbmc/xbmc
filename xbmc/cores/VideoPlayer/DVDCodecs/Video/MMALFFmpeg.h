@@ -22,7 +22,6 @@
 
 #include <memory>
 #include <queue>
-#include "DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
 #include "libavcodec/avcodec.h"
 #include "MMALCodec.h"
 
@@ -49,7 +48,7 @@ private:
 };
 
 class CDecoder
-  : public CDVDVideoCodecFFmpeg::IHardwareDecoder
+  : public IHardwareDecoder
 {
 public:
   CDecoder(CProcessInfo& processInfo, CDVDStreamInfo &hints);

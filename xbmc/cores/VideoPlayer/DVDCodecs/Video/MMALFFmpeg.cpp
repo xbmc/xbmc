@@ -128,8 +128,8 @@ void CDecoder::Close()
 
 void CDecoder::FFReleaseBuffer(void *opaque, uint8_t *data)
 {
-  CGPUMEM *gmem = (CGPUMEM *)opaque;
-  CMMALYUVBuffer *YUVBuffer = (CMMALYUVBuffer *)gmem->m_opaque;
+  CGPUMEM *gmem = static_cast<CGPUMEM *>(opaque);
+  CMMALYUVBuffer *YUVBuffer = static_cast<CMMALYUVBuffer *>(gmem->m_opaque);
   if (g_advancedSettings.CanLogComponent(LOGVIDEO))
     CLog::Log(LOGDEBUG,"%s::%s buf:%p gmem:%p", CLASSNAME, __FUNCTION__, YUVBuffer, gmem);
 
@@ -138,8 +138,8 @@ void CDecoder::FFReleaseBuffer(void *opaque, uint8_t *data)
 
 int CDecoder::FFGetBuffer(AVCodecContext *avctx, AVFrame *frame, int flags)
 {
-  CDVDVideoCodecFFmpeg *ctx = (CDVDVideoCodecFFmpeg*)avctx->opaque;
-  CDecoder *dec = (CDecoder*)ctx->GetHardware();
+  ICallbackHWAccel* ctx = static_cast<ICallbackHWAccel*>(avctx->opaque);
+  CDecoder* dec = static_cast<CDecoder*>(ctx->GetHWAccel());
   if (g_advancedSettings.CanLogComponent(LOGVIDEO))
     CLog::Log(LOGDEBUG,"%s::%s %dx%d format:%x:%x flags:%x", CLASSNAME, __FUNCTION__, frame->width, frame->height, frame->format, dec->m_fmt, flags);
 
@@ -290,7 +290,7 @@ bool CDecoder::GetPicture(AVCodecContext* avctx, DVDVideoPicture* picture)
 {
   CSingleLock lock(m_section);
 
-  CDVDVideoCodecFFmpeg* ctx = (CDVDVideoCodecFFmpeg*)avctx->opaque;
+  ICallbackHWAccel* ctx = static_cast<ICallbackHWAccel*>(avctx->opaque);
   bool ret = ctx->GetPictureCommon(picture);
   if (!ret || !m_gmem)
     return false;
