@@ -183,6 +183,7 @@ public:
   virtual IDisplayTime* GetIDisplayTime() { return nullptr; }
 
   const CVariant &GetProperty(const std::string key){ return m_item.GetProperty(key); }
+  bool HasProperty(const std::string key) { return m_item.HasProperty(key); }
 
 protected:
   DVDStreamType m_streamType;

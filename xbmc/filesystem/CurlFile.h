@@ -105,6 +105,8 @@ namespace XFILE
       /* static function that will get cookies stored by CURL in RFC 2109 format */
       static bool GetCookies(const CURL &url, std::string &cookies);
 
+      bool IsShoutcast() { return m_isshoutcast; }
+
       class CReadState
       {
       public:
@@ -209,5 +211,6 @@ namespace XFILE
       MAPHTTPHEADERS m_requestheaders;
 
       long            m_httpresponse;
+      bool            m_isshoutcast;
   };
 }

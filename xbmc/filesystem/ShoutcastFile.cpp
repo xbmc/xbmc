@@ -75,6 +75,7 @@ bool CShoutcastFile::Open(const CURL& url)
   bool result = m_file.Open(url2);
   if (result)
   {
+    m_tag.SetType(MediaTypeShoutcast);
     m_tag.SetTitle(m_file.GetHttpHeader().GetValue("icy-name"));
     if (m_tag.GetTitle().empty())
       m_tag.SetTitle(m_file.GetHttpHeader().GetValue("ice-name")); // icecast

@@ -167,6 +167,8 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IVideoPlayer* pPlayer
           delete pRedirectEx;
         }
       }
+      if (curlFile.IsShoutcast())
+        finalFileitem.SetProperty("isshoutcast", true);      
     }
 
     if (finalFileitem.IsType(".m3u8"))
