@@ -73,7 +73,7 @@ extern "C" {
     };
 
     /// set of supported capabilities
-    MASKTYPE m_mask;
+    uint32_t m_mask;
   } INPUTSTREAM_CAPABILITIES;
 
   /*!
