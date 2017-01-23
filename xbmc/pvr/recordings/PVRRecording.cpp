@@ -96,6 +96,8 @@ CPVRRecording::CPVRRecording(const PVR_RECORDING &recording, unsigned int iClien
   m_strStreamURL                   = recording.strStreamURL;
   m_strChannelName                 = recording.strChannelName;
   m_playCount                      = recording.iPlayCount;
+  m_resumePoint.timeInSeconds      = recording.iLastPlayedPosition;
+  m_resumePoint.totalTimeInSeconds = recording.iDuration;
   m_genre                          = StringUtils::Split(CEpg::ConvertGenreIdToString(recording.iGenreType, recording.iGenreSubType), g_advancedSettings.m_videoItemSeparator);
   m_strIconPath                    = recording.strIconPath;
   m_strThumbnailPath               = recording.strThumbnailPath;
