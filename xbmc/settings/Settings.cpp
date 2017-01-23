@@ -296,6 +296,7 @@ const std::string CSettings::SETTING_AUDIOCDS_SETTINGS = "audiocds.settings";
 const std::string CSettings::SETTING_AUDIOCDS_EJECTONRIP = "audiocds.ejectonrip";
 const std::string CSettings::SETTING_MYMUSIC_SONGTHUMBINVIS = "mymusic.songthumbinvis";
 const std::string CSettings::SETTING_MYMUSIC_DEFAULTLIBVIEW = "mymusic.defaultlibview";
+const std::string CSettings::SETTING_PICTURES_USETAGS = "pictures.usetags";
 const std::string CSettings::SETTING_PICTURES_GENERATETHUMBS = "pictures.generatethumbs";
 const std::string CSettings::SETTING_PICTURES_SHOWVIDEOS = "pictures.showvideos";
 const std::string CSettings::SETTING_PICTURES_DISPLAYRESOLUTION = "pictures.displayresolution";
