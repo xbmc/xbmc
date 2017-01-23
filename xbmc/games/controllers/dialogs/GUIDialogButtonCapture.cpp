@@ -19,7 +19,6 @@
  */
 
 #include "GUIDialogButtonCapture.h"
-#include "dialogs/GUIDialogOK.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/WindowIDs.h"
 #include "input/joysticks/JoystickIDs.h"
@@ -80,9 +79,7 @@ void CGUIDialogButtonCapture::Process()
       break;
 
     //! @todo Move to rendering thread when there is a rendering thread
-    auto dialog = g_windowManager.GetWindow<CGUIDialogOK>(WINDOW_DIALOG_OK);
-    if (dialog)
-      dialog->SetText(GetDialogText());
+    HELPERS::UpdateOKDialogText(CVariant{ 35013 }, CVariant{ GetDialogText() });
   }
 }
 
