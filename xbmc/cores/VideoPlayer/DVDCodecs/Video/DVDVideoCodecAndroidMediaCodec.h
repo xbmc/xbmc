@@ -25,6 +25,7 @@
 #include <queue>
 #include <vector>
 #include <memory>
+#include <atomic>
 
 #include "DVDVideoCodec.h"
 #include "DVDStreamInfo.h"
@@ -152,6 +153,8 @@ protected:
   std::vector<CJNIByteBuffer> m_input;
   std::vector<CJNIByteBuffer> m_output;
   std::vector<CDVDMediaCodecInfo*> m_inflight;
+
+  static std::atomic<bool> m_InstanceGuard;
 
   CBitstreamConverter *m_bitstream;
   DVDVideoPicture m_videobuffer;
