@@ -486,7 +486,7 @@ bool CGUIControlFactory::GetAnimations(TiXmlNode *control, const CRect &rect, in
   return ret;
 }
 
-bool CGUIControlFactory::GetActions(const TiXmlNode* pRootNode, const char* strTag, CGUIAction& action)
+bool CGUIControlFactory::GetActions(const TiXmlNode* pRootNode, const char* strTag, CGUIAction& action, const std::vector<string> actionsIgnore)
 {
   action.m_actions.clear();
   const TiXmlElement* pElement = pRootNode->FirstChildElement(strTag);
@@ -495,9 +495,16 @@ bool CGUIControlFactory::GetActions(const TiXmlNode* pRootNode, const char* strT
     if (pElement->FirstChild())
     {
       CGUIAction::cond_action_pair pair;
+      std::string function;
+      vector<string> parameters;
+
       pair.condition = XMLUtils::GetAttribute(pElement, "condition");
       pair.action = pElement->FirstChild()->Value();
-      action.m_actions.push_back(pair);
+      // check if action is supported
+      CUtil::SplitExecFunction(pair.action, function, parameters);
+      if(actionsIgnore.size() == 0 || 
+          std::find(actionsIgnore.begin(), actionsIgnore.end(), function) == actionsIgnore.end())
+        action.m_actions.push_back(pair);
     }
     pElement = pElement->NextSiblingElement(strTag);
   }

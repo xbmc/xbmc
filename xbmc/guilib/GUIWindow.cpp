@@ -179,7 +179,7 @@ bool CGUIWindow::Load(TiXmlElement* pRootElement)
 
   CGUIControlFactory::GetInfoColor(pRootElement, "backgroundcolor", m_clearBackground, GetID());
   CGUIControlFactory::GetActions(pRootElement, "onload", m_loadActions);
-  CGUIControlFactory::GetActions(pRootElement, "onunload", m_unloadActions);
+  CGUIControlFactory::GetActions(pRootElement, "onunload", m_unloadActions, ONUNLOAD_DISALLOWED_ACTIONS);
   CGUIControlFactory::GetHitRect(pRootElement, m_hitRect);
 
   TiXmlElement *pChild = pRootElement->FirstChildElement();

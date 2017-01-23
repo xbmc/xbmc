@@ -285,6 +285,8 @@ protected:
 private:
   std::map<std::string, CVariant, icompare> m_mapProperties;
   std::map<INFO::InfoPtr, bool> m_xmlIncludeConditions; ///< \brief used to store conditions used to resolve includes for this window
+  // list of actions *not* supported
+  static const std::vector<std::string> ONUNLOAD_DISALLOWED_ACTIONS = {"ActivateWindow"};
 };
 
 #endif

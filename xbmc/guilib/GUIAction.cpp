@@ -23,6 +23,9 @@
 #include "GUIWindowManager.h"
 #include "GUIControl.h"
 #include "GUIInfoManager.h"
+#include "utils/StringUtils.h"
+#include "Util.h"
+#include "utils/log.h"
 
 CGUIAction::CGUIAction()
 {
@@ -74,6 +77,42 @@ int CGUIAction::GetNavigation() const
     }
   }
   return 0;
+}
+
+bool CGUIAction::RemoveActions(const std::string toremove)
+{
+  std::string function;
+  vector<string> parameters;
+  iActions it = m_actions.begin();
+  bool ret     = false;
+
+  while(it != m_actions.end())
+  {
+    CUtil::SplitExecFunction(it->action, function, parameters);
+    if(function == toremove)
+    {
+      it  = m_actions.erase(it);
+      ret = true;
+    }
+    else
+      it++;
+  }
+
+  return ret;
+}
+
+void CGUIAction::LogActions() const
+{
+  if (m_actions.size() == 0) return;
+
+  std::string function;
+  vector<string> parameters;
+
+  for (ciActions it = m_actions.begin() ; it != m_actions.end() ; ++it)
+  {
+    CUtil::SplitExecFunction(it->action, function, parameters);
+    CLog::Log(LOGDEBUG, "CGUIAction::LogActions: %s, function is: %s", it->action.c_str(), function.c_str());
+  }
 }
 
 void CGUIAction::SetNavigation(int id)

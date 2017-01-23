@@ -52,6 +52,14 @@ public:
    */
   int GetNavigation() const;
   /**
+   * Log all actions in log file (for debugging purpose)
+   */
+  void LogActions() const;
+  /**;
+   * Remove all actions with the given function name
+   */
+  bool RemoveActions(const std::string function);
+  /**
    * Set navigation route
    */
   void SetNavigation(int id);

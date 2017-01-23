@@ -99,7 +99,7 @@ public:
   static bool GetInfoColor(const TiXmlNode* pRootNode, const char* strTag, CGUIInfoColor &value, int parentID);
   static std::string FilterLabel(const std::string &label);
   static bool GetConditionalVisibility(const TiXmlNode* control, std::string &condition);
-  static bool GetActions(const TiXmlNode* pRootNode, const char* strTag, CGUIAction& actions);
+  static bool GetActions(const TiXmlNode* pRootNode, const char* strTag, CGUIAction& actions, const std::vector<std::string> actionsIgnore = std::vector<std::string>());
   static void GetRectFromString(const std::string &string, CRect &rect);
   static bool GetHitRect(const TiXmlNode* pRootNode, CRect &rect);
   static bool GetScroller(const TiXmlNode *pControlNode, const std::string &scrollerTag, CScroller& scroller);
