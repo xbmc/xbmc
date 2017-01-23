@@ -369,7 +369,7 @@ void CVideoPlayerAudio::Process()
       DemuxPacket* pPacket = ((CDVDMsgDemuxerPacket*)pMsg)->GetPacket();
       bool bPacketDrop  = ((CDVDMsgDemuxerPacket*)pMsg)->GetPacketDrop();
 
-      int ret = m_pAudioCodec->AddData(pPacket->pData, pPacket->iSize, pPacket->dts, pPacket->pts);
+      int ret = m_pAudioCodec->AddData(*pPacket);
       if (ret < 0)
       {
         CLog::Log(LOGERROR, "CVideoPlayerAudio::DecodeFrame - Decode Error. Skipping audio packet");

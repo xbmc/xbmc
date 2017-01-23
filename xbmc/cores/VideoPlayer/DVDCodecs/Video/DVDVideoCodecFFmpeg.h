@@ -43,7 +43,7 @@ public:
   CDVDVideoCodecFFmpeg(CProcessInfo &processInfo);
   virtual ~CDVDVideoCodecFFmpeg();
   virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options) override;
-  virtual int AddData(uint8_t* pData, int iSize, double dts, double pts) override;
+  virtual int AddData(const DemuxPacket &packet) override;
   virtual void Reset() override;
   virtual void Reopen() override;
   virtual int GetPicture(DVDVideoPicture* pDvdVideoPicture) override;

@@ -23,6 +23,7 @@
 #include "system.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFormats.h"
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
+#include "cores/VideoPlayer/DVDDemuxers/DVDDemuxPacket.h"
 #include "DVDResource.h"
 
 extern "C" {
@@ -192,7 +193,7 @@ public:
   /**
    * returns one or a combination of VC_ messages
    */
-  virtual int AddData(uint8_t* pData, int iSize, double dts, double pts) = 0;
+  virtual int AddData(const DemuxPacket &packet) = 0;
 
   /**
    * Reset the decoder.
