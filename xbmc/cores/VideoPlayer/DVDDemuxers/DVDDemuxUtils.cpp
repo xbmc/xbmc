@@ -19,7 +19,7 @@
  */
 
 #include "DVDDemuxUtils.h"
-#include "DVDClock.h"
+#include "TimingConstants.h"
 #include "DemuxCrypto.h"
 #include "utils/log.h"
 #include "system.h"

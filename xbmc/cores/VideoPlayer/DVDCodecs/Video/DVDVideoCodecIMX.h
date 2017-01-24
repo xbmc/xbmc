@@ -29,7 +29,6 @@
 #include "DVDVideoCodec.h"
 #include "DVDStreamInfo.h"
 #include "guilib/DispResource.h"
-#include "DVDClock.h"
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemuxPacket.h"
 
 #include <linux/ipu.h>

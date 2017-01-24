@@ -27,7 +27,7 @@
 #include "cores/VideoPlayer/DVDCodecs/Audio/DVDAudioCodec.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemux.h"
-#include "cores/VideoPlayer/DVDClock.h"
+#include "cores/VideoPlayer/TimingConstants.h"
 #include "cores/VideoPlayer/DVDStreamInfo.h"
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
 #include "threads/Thread.h"

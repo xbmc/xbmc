@@ -23,7 +23,7 @@
 #include "AMLCodec.h"
 #include "DynamicDll.h"
 
-#include "cores/VideoPlayer/DVDClock.h"
+#include "cores/VideoPlayer/TimingConstants.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "settings/AdvancedSettings.h"

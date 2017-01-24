@@ -23,7 +23,7 @@
 #include "windowing/WindowingFactory.h"
 #include "DVDVideoCodec.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDCodecUtils.h"
-#include "cores/VideoPlayer/DVDClock.h"
+#include "cores/VideoPlayer/TimingConstants.h"
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"

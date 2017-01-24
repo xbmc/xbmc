@@ -25,7 +25,7 @@
 
 #include "commons/Exception.h"
 #include "cores/FFmpeg.h"
-#include "DVDClock.h" // for DVD_TIME_BASE
+#include "TimingConstants.h" // for DVD_TIME_BASE
 #include "DVDDemuxUtils.h"
 #include "DVDInputStreams/DVDInputStream.h"
 #include "DVDInputStreams/DVDInputStreamFFmpeg.h"

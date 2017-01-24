@@ -28,7 +28,7 @@
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "DVDVideoCodecFFmpeg.h"
-#include "DVDClock.h"
+#include "TimingConstants.h"
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"

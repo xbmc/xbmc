@@ -30,7 +30,7 @@
 #include "Application.h"
 #include "ServiceBroker.h"
 #include "messaging/ApplicationMessenger.h"
-#include "DVDClock.h"
+#include "TimingConstants.h"
 #include "utils/BitstreamConverter.h"
 #include "utils/BitstreamWriter.h"
 
