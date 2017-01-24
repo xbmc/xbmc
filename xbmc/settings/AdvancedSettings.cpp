@@ -27,7 +27,7 @@
 
 #include "addons/AudioDecoder.h"
 #include "addons/BinaryAddonCache.h"
-#include "addons/IAddon.h"
+#include "addons/Addon.h"
 #include "Application.h"
 #include "ServiceBroker.h"
 #include "filesystem/File.h"

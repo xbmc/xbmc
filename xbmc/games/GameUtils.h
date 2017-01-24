@@ -21,7 +21,6 @@
 
 #include "GameTypes.h"
 #include "addons/Addon.h"
-#include "addons/IAddon.h"
 
 #include <set>
 #include <string>

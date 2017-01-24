@@ -20,7 +20,7 @@
  */
 
 #include "JSONRPC.h"
-#include "addons/IAddon.h"
+#include "addons/Addon.h"
 
 class CAddonDatabase;
 class CVariant;

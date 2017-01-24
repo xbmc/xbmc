@@ -24,7 +24,7 @@
 #include "GUIFeatureList.h"
 #include "IConfigurationWindow.h"
 #include "addons/GUIWindowAddonBrowser.h"
-#include "addons/IAddon.h"
+#include "addons/Addon.h"
 #include "addons/AddonManager.h"
 #include "games/controllers/dialogs/GUIDialogButtonCapture.h"
 #include "guilib/GUIButtonControl.h"

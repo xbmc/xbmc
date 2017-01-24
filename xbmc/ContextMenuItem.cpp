@@ -22,7 +22,7 @@
 #include "addons/Addon.h"
 #include "addons/AddonManager.h"
 #include "addons/ContextMenuAddon.h"
-#include "addons/IAddon.h"
+#include "addons/Addon.h"
 #include "GUIInfoManager.h"
 #ifdef HAS_PYTHON
 #include "interfaces/generic/ScriptInvocationManager.h"

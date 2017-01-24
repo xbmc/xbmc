@@ -24,7 +24,7 @@
 #include <string>
 #include <vector>
 
-#include "addons/IAddon.h"
+#include "addons/Addon.h"
 #include "settings/dialogs/GUIDialogSettingsManagerBase.h"
 #include "settings/lib/SettingDefinitions.h"
 

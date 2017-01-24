@@ -233,7 +233,7 @@ static int SetFile(const std::vector<std::string>& params)
 
   // Note. can only browse one addon type from here
   // if browsing for addons, required param[1] is addontype string, with optional param[2]
-  // as contenttype string see IAddon.h & ADDON::TranslateXX
+  // as contenttype string see Addon.h & ADDON::TranslateXX
   std::string strMask = (params.size() > 1) ? params[1] : "";
   StringUtils::ToLower(strMask);
   ADDON::TYPE type;

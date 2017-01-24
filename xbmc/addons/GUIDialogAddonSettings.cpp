@@ -20,7 +20,7 @@
 
 #include "GUIDialogAddonSettings.h"
 #include "filesystem/PluginDirectory.h"
-#include "addons/IAddon.h"
+#include "addons/Addon.h"
 #include "addons/AddonManager.h"
 #include "dialogs/GUIDialogNumeric.h"
 #include "dialogs/GUIDialogFileBrowser.h"

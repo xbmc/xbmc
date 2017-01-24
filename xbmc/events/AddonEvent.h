@@ -20,7 +20,7 @@
  */
 
 #include "events/UniqueEvent.h"
-#include "addons/IAddon.h"
+#include "addons/Addon.h"
 #include "addons/AddonProperties.h"
 
 class CAddonEvent : public CUniqueEvent

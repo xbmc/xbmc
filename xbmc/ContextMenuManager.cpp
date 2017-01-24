@@ -23,7 +23,7 @@
 #include "addons/Addon.h"
 #include "addons/ContextMenuAddon.h"
 #include "addons/ContextMenus.h"
-#include "addons/IAddon.h"
+#include "addons/Addon.h"
 #include "music/ContextMenus.h"
 #include "pvr/PVRContextMenus.h"
 #include "video/ContextMenus.h"
