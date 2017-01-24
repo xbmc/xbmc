@@ -17,7 +17,6 @@ set(SOURCES DVDAudio.cpp
 
 set(HEADERS DVDAudio.h
             DVDClock.h
-            DVDConstants.h
             DVDDemuxSPU.h
             DVDFileInfo.h
             DVDMessage.h
@@ -25,9 +24,10 @@ set(HEADERS DVDAudio.h
             DVDOverlayContainer.h
             DVDResource.h
             DVDStreamInfo.h
-            PTSTracker.h
             Edl.h
             IVideoPlayer.h
+            PTSTracker.h
+            TimingConstants.h
             VideoPlayer.h
             VideoPlayerAudio.h
             VideoPlayerRadioRDS.h

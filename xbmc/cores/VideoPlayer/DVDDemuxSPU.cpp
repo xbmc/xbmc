@@ -19,7 +19,7 @@
  */
 
 #include "DVDDemuxSPU.h"
-#include "DVDClock.h"
+#include "TimingConstants.h"
 #include "DVDCodecs/Overlay/DVDOverlaySpu.h"
 #include "utils/log.h"
 

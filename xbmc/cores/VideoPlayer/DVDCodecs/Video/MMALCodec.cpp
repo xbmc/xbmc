@@ -25,7 +25,7 @@
 #include "MMALCodec.h"
 
 #include "ServiceBroker.h"
-#include "DVDClock.h"
+#include "TimingConstants.h"
 #include "DVDStreamInfo.h"
 #include "windowing/WindowingFactory.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDCodecs.h"

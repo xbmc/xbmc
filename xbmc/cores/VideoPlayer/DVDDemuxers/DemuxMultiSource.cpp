@@ -18,7 +18,7 @@
  *
  */
 
-#include "DVDClock.h"
+#include "TimingConstants.h"
 #include "DemuxMultiSource.h"
 #include "DVDDemuxUtils.h"
 #include "DVDFactoryDemuxer.h"

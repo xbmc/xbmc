@@ -21,7 +21,7 @@
  */
 
 #include "threads/CriticalSection.h"
-#include "DVDConstants.h"
+#include "TimingConstants.h"
 
 #include <memory>
 #include <stdint.h>

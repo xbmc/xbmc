@@ -25,7 +25,7 @@
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemuxPacket.h"
-#include "DVDClock.h"
+#include "TimingConstants.h"
 
 #include <vector>
 

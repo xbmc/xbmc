@@ -25,7 +25,7 @@
 #include "OpenMax.h"
 #if defined(HAVE_LIBOPENMAX)
 #include "DynamicDll.h"
-#include "DVDClock.h"
+#include "TimingConstants.h"
 #include "DVDStreamInfo.h"
 #include "windowing/WindowingFactory.h"
 #include "DVDVideoCodec.h"
