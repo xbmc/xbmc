@@ -31,7 +31,7 @@
 					<height>567</height>
 					<aspectratio aligny="top">scale</aspectratio>
 					<fadetime>300</fadetime>
-					<texture background="true" fallback="DefaultAudio.png">$INFO[ListItem.Art(thumb)]</texture>
+					<texture background="true">$VAR[MusicInfoThumbVar]</texture>
 				</control>
 			</control>
 			<control type="group">

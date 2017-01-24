@@ -37,7 +37,7 @@
 						<aligny>center</aligny>
 						<label>$INFO[ListItem.Year]</label>
 						<shadowcolor>text_shadow</shadowcolor>
-						<visible>!Container.Content(tvshows) + !Container.Content(seasons) + !Container.Content(episodes) + !Container.Content(movies)</visible>
+						<visible>!Container.Content(tvshows) + !Container.Content(seasons) + !Container.Content(episodes) + !Container.Content(movies) + !Container.Content(videos)</visible>
 					</control>
 					<control type="image">
 						<left>35</left>
@@ -45,7 +45,7 @@
 						<width>32</width>
 						<height>32</height>
 						<texture>$VAR[ListWatchedIconVar]</texture>
-						<visible>Container.Content(tvshows) | Container.Content(seasons) | Container.Content(episodes) | Container.Content(movies) | String.IsEmpty(ListItem.Year)</visible>
+						<visible>Container.Content(tvshows) | Container.Content(seasons) | Container.Content(episodes) | Container.Content(movies) | Container.Content(videos) | String.IsEmpty(ListItem.Year)</visible>
 					</control>
 					<control type="label">
 						<left>105</left>
@@ -78,7 +78,7 @@
 						<label>$INFO[ListItem.Year]</label>
 						<textcolor>button_focus</textcolor>
 						<shadowcolor>text_shadow</shadowcolor>
-						<visible>!Container.Content(tvshows) + !Container.Content(seasons) + !Container.Content(episodes) + !Container.Content(movies)</visible>
+						<visible>!Container.Content(tvshows) + !Container.Content(seasons) + !Container.Content(episodes) + !Container.Content(movies) + !Container.Content(videos)</visible>
 					</control>
 					<control type="image">
 						<left>35</left>
@@ -86,7 +86,7 @@
 						<width>32</width>
 						<height>32</height>
 						<texture colordiffuse="grey">$VAR[ListWatchedIconVar]</texture>
-						<visible>Container.Content(tvshows) | Container.Content(seasons) | Container.Content(episodes) | Container.Content(movies) | String.IsEmpty(ListItem.Year)</visible>
+						<visible>Container.Content(tvshows) | Container.Content(seasons) | Container.Content(episodes) | Container.Content(movies) | Container.Content(videos) | String.IsEmpty(ListItem.Year)</visible>
 					</control>
 					<control type="label">
 						<left>105</left>
