@@ -237,8 +237,8 @@ bool CRenderManager::Configure(DVDVideoPicture& picture, float fps, unsigned fla
     m_NumberBuffers  = buffers;
     m_renderState = STATE_CONFIGURING;
     m_stateEvent.Reset();
-
-    CheckEnableClockSync();
+    m_clockSync.Reset();
+    m_dvdClock.SetVsyncAdjust(0);
 
     CSingleLock lock2(m_presentlock);
     m_presentstep = PRESENT_READY;
@@ -319,7 +319,7 @@ bool CRenderManager::Configure()
     m_renderedOverlay = false;
     m_renderDebug = false;
     m_clockSync.Reset();
-    CheckEnableClockSync();
+    m_dvdClock.SetVsyncAdjust(0);
 
     m_renderState = STATE_CONFIGURED;
 
@@ -384,6 +384,8 @@ void CRenderManager::FrameMove()
         CApplicationMessenger::GetInstance().PostMsg(TMSG_SWITCHTOFULLSCREEN);
       }
     }
+
+    CheckEnableClockSync();
   }
   {
     CSingleLock lock2(m_presentlock);
@@ -1081,8 +1083,6 @@ void CRenderManager::UpdateResolution()
         RESOLUTION res = CResolutionUtils::ChooseBestResolution(m_fps, m_width, CONF_FLAGS_STEREO_MODE_MASK(m_flags));
         g_graphicsContext.SetVideoResolution(res);
         UpdateDisplayLatency();
-
-        CheckEnableClockSync();
       }
       m_bTriggerUpdateResolution = false;
       m_playerPort->VideoParamsChange();
