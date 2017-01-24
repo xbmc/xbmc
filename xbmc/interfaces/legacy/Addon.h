@@ -20,7 +20,7 @@
 
 #pragma once
 
-#include "addons/IAddon.h"
+#include "addons/Addon.h"
 
 #include "AddonString.h"
 #include "AddonClass.h"

@@ -26,7 +26,7 @@
 #include <string>
 #include <map>
 #include "threads/CriticalSection.h"
-#include "addons/IAddon.h"
+#include "addons/Addon.h"
 #include "PlatformDefs.h"
 
 #include "threads/Event.h"

@@ -57,7 +57,6 @@ set(HEADERS Addon.h
             GUIDialogAddonSettings.h
             GUIViewStateAddonBrowser.h
             GUIWindowAddonBrowser.h
-            IAddon.h
             ImageResource.h
             InputStream.h
             LanguageResource.h

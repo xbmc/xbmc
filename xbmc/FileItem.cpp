@@ -324,7 +324,7 @@ CFileItem::CFileItem(const CMediaSource& share)
   FillInMimeType(false);
 }
 
-CFileItem::CFileItem(std::shared_ptr<const ADDON::IAddon> addonInfo) : m_addonInfo(std::move(addonInfo))
+CFileItem::CFileItem(std::shared_ptr<const ADDON::CAddon> addonInfo) : m_addonInfo(std::move(addonInfo))
 {
   Initialize();
 }
@@ -934,7 +934,7 @@ bool CFileItem::IsGame() const
     return false;
 
   if (HasAddonInfo())
-    return CGameUtils::IsStandaloneGame(std::const_pointer_cast<ADDON::IAddon>(GetAddonInfo()));
+    return CGameUtils::IsStandaloneGame(std::const_pointer_cast<ADDON::CAddon>(GetAddonInfo()));
 
   return CGameUtils::HasGameExtension(m_strPath);
 }

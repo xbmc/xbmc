@@ -20,7 +20,7 @@
 
 #include "GameClientProperties.h"
 #include "GameClient.h"
-#include "addons/IAddon.h"
+#include "addons/Addon.h"
 #include "addons/AddonManager.h"
 #include "addons/GameResource.h"
 #include "dialogs/GUIDialogYesNo.h"

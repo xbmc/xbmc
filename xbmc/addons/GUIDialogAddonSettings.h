@@ -24,7 +24,7 @@
 #include <vector>
 
 #include "dialogs/GUIDialogBoxBase.h"
-#include "IAddon.h"
+#include "Addon.h"
 
 class CGUIDialogAddonSettings : public CGUIDialogBoxBase
 {

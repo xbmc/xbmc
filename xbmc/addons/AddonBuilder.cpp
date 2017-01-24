@@ -44,7 +44,7 @@
 namespace ADDON
 {
 
-std::shared_ptr<IAddon> CAddonBuilder::Build()
+std::shared_ptr<CAddon> CAddonBuilder::Build()
 {
   if (m_built)
     throw std::logic_error("Already built");

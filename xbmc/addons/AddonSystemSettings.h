@@ -40,7 +40,7 @@ public:
 
   bool GetActive(const TYPE& type, AddonPtr& addon);
   bool SetActive(const TYPE& type, const std::string& addonID);
-  bool IsActive(const IAddon& addon);
+  bool IsActive(const CAddon& addon);
 
   /*!
    * @brief Attempt to unset addon as active. 

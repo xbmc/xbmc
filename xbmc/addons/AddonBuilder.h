@@ -18,7 +18,7 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#include "IAddon.h"
+#include "Addon.h"
 #include "Service.h"
 
 namespace ADDON
@@ -29,7 +29,7 @@ class CAddonBuilder
 public:
   CAddonBuilder() : m_built(false), m_extPoint(nullptr) {}
 
-  std::shared_ptr<IAddon> Build();
+  std::shared_ptr<CAddon> Build();
   void SetId(std::string id) { m_props.m_id = std::move(id); }
   void SetName(std::string name) { m_props.m_name = std::move(name); }
   void SetLicense(std::string license) { m_props.m_license = std::move(license); }
@@ -61,7 +61,7 @@ public:
   const AddonVersion& GetVersion() const { return m_props.m_version; }
 
 private:
-  static std::shared_ptr<IAddon> FromProps(AddonProps addonProps);
+  static std::shared_ptr<CAddon> FromProps(AddonProps addonProps);
 
   bool m_built;
   AddonProps m_props;

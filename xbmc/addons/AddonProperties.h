@@ -19,13 +19,67 @@
  *
  */
 
-#include "addons/IAddon.h"
+#include "XBDateTime.h"
 #include "addons/AddonVersion.h"
+
+#include <map>
+#include <memory>
+#include <vector>
 
 class TiXmlElement;
 
 namespace ADDON
 {
+
+  typedef enum
+  {
+    ADDON_UNKNOWN,
+    ADDON_VIZ,
+    ADDON_SKIN,
+    ADDON_PVRDLL,
+    ADDON_ADSPDLL,
+    ADDON_INPUTSTREAM,
+    ADDON_GAMEDLL,
+    ADDON_PERIPHERALDLL,
+    ADDON_SCRIPT,
+    ADDON_SCRIPT_WEATHER,
+    ADDON_SUBTITLE_MODULE,
+    ADDON_SCRIPT_LYRICS,
+    ADDON_SCRAPER_ALBUMS,
+    ADDON_SCRAPER_ARTISTS,
+    ADDON_SCRAPER_MOVIES,
+    ADDON_SCRAPER_MUSICVIDEOS,
+    ADDON_SCRAPER_TVSHOWS,
+    ADDON_SCREENSAVER,
+    ADDON_PLUGIN,
+    ADDON_REPOSITORY,
+    ADDON_WEB_INTERFACE,
+    ADDON_SERVICE,
+    ADDON_AUDIOENCODER,
+    ADDON_CONTEXT_ITEM,
+    ADDON_AUDIODECODER,
+    ADDON_RESOURCE_IMAGES,
+    ADDON_RESOURCE_LANGUAGE,
+    ADDON_RESOURCE_UISOUNDS,
+    ADDON_RESOURCE_GAMES,
+    ADDON_VFS,
+    ADDON_VIDEO, // virtual addon types
+    ADDON_AUDIO,
+    ADDON_IMAGE,
+    ADDON_EXECUTABLE,
+    ADDON_GAME,
+    ADDON_SCRAPER_LIBRARY,
+    ADDON_SCRIPT_LIBRARY,
+    ADDON_SCRIPT_MODULE,
+    ADDON_GAME_CONTROLLER,
+    ADDON_MAX
+  } TYPE;
+
+  class CAddonMgr;
+  class AddonVersion;
+  typedef std::map<std::string, std::pair<const AddonVersion, bool> > ADDONDEPS;
+  typedef std::map<std::string, std::string> InfoMap;
+  class AddonProps;
 
   class AddonProps;
   typedef std::shared_ptr<AddonProps> AddonPropsPtr;

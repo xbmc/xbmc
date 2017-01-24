@@ -53,7 +53,7 @@ namespace PERIPHERALS
 
     virtual ~CPeripheralAddon(void);
 
-    // implementation of IAddon
+    // implementation of CAddon
     virtual ADDON::AddonPtr GetRunningInstance(void) const override;
 
     /*!

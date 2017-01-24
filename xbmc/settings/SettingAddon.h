@@ -20,7 +20,7 @@
  */
 
 #include "settings/lib/Setting.h"
-#include "addons/IAddon.h"
+#include "addons/Addon.h"
 
 class CSettingAddon : public CSettingString
 {

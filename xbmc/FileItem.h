@@ -30,7 +30,7 @@
 #include <utility>
 #include <vector>
 
-#include "addons/IAddon.h"
+#include "addons/Addon.h"
 #include "epg/EpgTypes.h"
 #include "guilib/GUIListItem.h"
 #include "GUIPassword.h"
@@ -116,7 +116,7 @@ public:
   CFileItem(const PVR::CPVRRecordingPtr& record);
   CFileItem(const PVR::CPVRTimerInfoTagPtr& timer);
   CFileItem(const CMediaSource& share);
-  CFileItem(std::shared_ptr<const ADDON::IAddon> addonInfo);
+  CFileItem(std::shared_ptr<const ADDON::CAddon> addonInfo);
   CFileItem(std::shared_ptr<const ADDON::AddonProps> addonInfo);
   CFileItem(const EventPtr& eventLogEntry);
 
@@ -365,7 +365,7 @@ public:
   }
 
   bool HasAddonInfo() const { return m_addonInfo != nullptr; }
-  const std::shared_ptr<const ADDON::IAddon> GetAddonInfo() const { return m_addonInfo; }
+  const std::shared_ptr<const ADDON::CAddon> GetAddonInfo() const { return m_addonInfo; }
   bool HasAddonPropsInfo() const { return m_addonPropsInfo != nullptr; }
   const std::shared_ptr<const ADDON::AddonProps> GetAddonPropsInfo() const { return m_addonPropsInfo; }
 
@@ -577,7 +577,7 @@ private:
   PVR::CPVRTimerInfoTagPtr m_pvrTimerInfoTag;
   PVR::CPVRRadioRDSInfoTagPtr m_pvrRadioRDSInfoTag;
   CPictureInfoTag* m_pictureInfoTag;
-  std::shared_ptr<const ADDON::IAddon> m_addonInfo;
+  std::shared_ptr<const ADDON::CAddon> m_addonInfo;
   std::shared_ptr<const ADDON::AddonProps> m_addonPropsInfo;
   GAME::CGameInfoTag* m_gameInfoTag;
   EventPtr m_eventLogEntry;
