@@ -20,7 +20,7 @@
 
 #include "DVDSubtitleParserSubrip.h"
 #include "DVDCodecs/Overlay/DVDOverlayText.h"
-#include "DVDClock.h"
+#include "TimingConstants.h"
 #include "utils/StringUtils.h"
 #include "DVDSubtitleTagSami.h"
 

@@ -19,7 +19,7 @@
  */
 
 #include "PixelConverter.h"
-#include "cores/VideoPlayer/DVDClock.h"
+#include "cores/VideoPlayer/TimingConstants.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDCodecUtils.h"
 #include "utils/log.h"
 

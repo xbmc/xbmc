@@ -19,7 +19,7 @@
  */
 
 #include "DVDCodecUtils.h"
-#include "DVDClock.h"
+#include "TimingConstants.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "utils/log.h"
 #include "cores/FFmpeg.h"

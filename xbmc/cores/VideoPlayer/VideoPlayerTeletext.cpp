@@ -19,7 +19,7 @@
  */
 
 #include "VideoPlayerTeletext.h"
-#include "DVDClock.h"
+#include "TimingConstants.h"
 #include "DVDStreamInfo.h"
 #include "DVDDemuxers/DVDDemuxPacket.h"
 #include "utils/log.h"

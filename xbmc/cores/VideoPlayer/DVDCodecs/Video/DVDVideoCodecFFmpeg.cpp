@@ -22,7 +22,7 @@
 #include "DVDVideoCodecFFmpeg.h"
 #include "DVDDemuxers/DVDDemux.h"
 #include "DVDStreamInfo.h"
-#include "DVDClock.h"
+#include "TimingConstants.h"
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDCodecs/DVDCodecUtils.h"
 #include "ServiceBroker.h"
