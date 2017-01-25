@@ -147,7 +147,7 @@ protected:
 
   // ID3DResource overrides
   void OnCreateDevice() override  {}
-  void OnDestroyDevice() override { CSingleLock lock(m_section); m_state = DXVA_LOST;  m_event.Reset(); }
+  void OnDestroyDevice(bool fatal) override { CSingleLock lock(m_section); m_state = DXVA_LOST;  m_event.Reset(); }
   void OnLostDevice() override    { CSingleLock lock(m_section); m_state = DXVA_LOST;  m_event.Reset(); }
   void OnResetDevice() override   { CSingleLock lock(m_section); m_state = DXVA_RESET; m_event.Set();   }
 

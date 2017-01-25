@@ -58,10 +58,11 @@ class ID3DResource
 public:
   virtual ~ID3DResource() {};
 
-  virtual void OnDestroyDevice()=0;
+  virtual void OnDestroyDevice(bool fatal)=0;
   virtual void OnCreateDevice()=0;
   virtual void OnLostDevice() {};
   virtual void OnResetDevice() {};
+  virtual void OnDestroyDevice() { OnDestroyDevice(false); }
 };
 
 class CD3DHelper
@@ -137,10 +138,8 @@ public:
   static void DrawQuad(const CRect &coords, color_t color, unsigned numViews, ID3D11ShaderResourceView **view, const CRect *texCoords,
     SHADER_METHOD options = SHADER_METHOD_RENDER_TEXTURE_BLEND);
 
-  virtual void OnDestroyDevice();
-  virtual void OnCreateDevice();
-  virtual void OnLostDevice();
-  virtual void OnResetDevice();
+  void OnDestroyDevice(bool fatal) override;
+  void OnCreateDevice() override;
 
 private:
   unsigned int GetMemoryUsage(unsigned int pitch) const;
@@ -191,8 +190,8 @@ public:
 
   ID3DX11Effect *Get() const { return m_effect; };
 
-  virtual void OnDestroyDevice();
-  virtual void OnCreateDevice();
+  void OnDestroyDevice(bool fatal) override;
+  void OnCreateDevice() override;
 
 private:
   bool         CreateEffect();
@@ -218,8 +217,8 @@ public:
   DXGI_FORMAT GetFormat() { return m_format; }
   ID3D11Buffer* Get() const { return m_buffer; };
 
-  virtual void OnDestroyDevice();
-  virtual void OnCreateDevice();
+  void OnDestroyDevice(bool fatal) override;
+  void OnCreateDevice() override;
 private:
   bool CreateBuffer(const void *pData);
   D3D11_BIND_FLAG  m_type;
@@ -247,8 +246,8 @@ public:
   void Release();
   bool IsInited() { return m_inited; }
 
-  virtual void OnDestroyDevice();
-  virtual void OnCreateDevice();
+  void OnDestroyDevice(bool fatal) override;
+  void OnCreateDevice() override;
 
 private:
   bool CreateInternal();
@@ -275,8 +274,8 @@ public:
   void Release();
   bool IsInited() { return m_inited; }
 
-  virtual void OnDestroyDevice();
-  virtual void OnCreateDevice();
+  void OnDestroyDevice(bool fatal) override;
+  void OnCreateDevice() override;
 
 private:
   bool CreateInternal();
