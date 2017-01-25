@@ -2131,8 +2131,10 @@ const infomap videoplayer[] =    {{ "title",            VIDEOPLAYER_TITLE },
                                   { "videocodec",       VIDEOPLAYER_VIDEO_CODEC },
                                   { "videoresolution",  VIDEOPLAYER_VIDEO_RESOLUTION },
                                   { "videoaspect",      VIDEOPLAYER_VIDEO_ASPECT },
+                                  { "videobitrate",     VIDEOPLAYER_VIDEO_BITRATE },
                                   { "audiocodec",       VIDEOPLAYER_AUDIO_CODEC },
                                   { "audiochannels",    VIDEOPLAYER_AUDIO_CHANNELS },
+                                  { "audiobitrate",     VIDEOPLAYER_AUDIO_BITRATE },
                                   { "audiolanguage",    VIDEOPLAYER_AUDIO_LANG },
                                   { "hasteletext",      VIDEOPLAYER_HASTELETEXT },
                                   { "lastplayed",       VIDEOPLAYER_LASTPLAYED },
@@ -6174,6 +6176,24 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
     {
       if (m_audioInfo.channels > 0)
         strLabel = StringUtils::Format("%i", m_audioInfo.channels);
+    }
+    break;
+  case VIDEOPLAYER_AUDIO_BITRATE:
+    if(g_application.m_pPlayer->IsPlaying())
+    {
+      std::string strBitrate = "";
+      if (m_audioInfo.bitrate > 0)
+        strBitrate = StringUtils::Format("%li", lrint(static_cast<double>(m_audioInfo.bitrate) / 1000.0));
+      return strBitrate;
+    }
+    break;
+  case VIDEOPLAYER_VIDEO_BITRATE:
+    if(g_application.m_pPlayer->IsPlaying())
+    {
+      std::string strBitrate = "";
+      if (m_videoInfo.bitrate > 0)
+        strBitrate = StringUtils::Format("%li", lrint(static_cast<double>(m_videoInfo.bitrate) / 1000.0));
+      return strBitrate;
     }
     break;
   case VIDEOPLAYER_AUDIO_LANG:
