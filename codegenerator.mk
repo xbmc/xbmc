@@ -69,3 +69,4 @@ else
 #build json builder - ".." because makefile is in the parent dir of "bin"
 	$(MAKE) -C $(abspath $(@D)/..)
 endif
+$(shell touch $(TOPDIR)/xbmc/cores/AudioEngine/AEDefines_override.h)
