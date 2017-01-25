@@ -540,4 +540,18 @@ namespace PVR
   private:
     CPVRChannelGroupPtr m_group;
   };
+
+  class CPVRSearchAndSetChannelIcons : public CJob
+  {
+  public:
+    CPVRSearchAndSetChannelIcons(const PVR_CHANNEL_GROUP_MEMBERS &groupMembers, bool bUpdateDb)
+    : m_groupMembers(groupMembers), m_bUpdateDb(bUpdateDb) {}
+    virtual ~CPVRSearchAndSetChannelIcons() {}
+    virtual const char *GetType() const { return "pvr-channelgroup-searchandsetchannelicons"; }
+
+    virtual bool DoWork();
+  private:
+    PVR_CHANNEL_GROUP_MEMBERS m_groupMembers;
+    const bool m_bUpdateDb;
+  };
 }
