@@ -40,12 +40,20 @@ namespace ADDON
 std::unique_ptr<CLanguageResource> CLanguageResource::FromExtension(AddonProps props, const cp_extension_t* ext)
 {
   // parse <extension> attributes
+//   fprintf(stderr, "-------------A %s - @locale:         %s\n", props.ID().c_str(), props.GetExtValue("@locale").c_str());
   CLocale locale = CLocale::FromString(CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@locale"));
 
   // parse <charsets>
   std::string charsetGui;
   bool forceUnicodeFont(false);
   std::string charsetSubtitle;
+//   CAddonExtensions* charsetsElement2 = props.GetExtElement("charsets");
+//   if (charsetsElement2 != nullptr)
+//   {
+//     fprintf(stderr, "-------------B %s - gui:             %s\n", props.ID().c_str(), charsetsElement2->GetExtValue("gui").c_str());
+//     fprintf(stderr, "-------------B %s - gui@unicodefont: %s\n", props.ID().c_str(), charsetsElement2->GetExtValue("gui@unicodefont").c_str());
+//     fprintf(stderr, "-------------B %s - subtitle:        %s\n", props.ID().c_str(), charsetsElement2->GetExtValue("subtitle").c_str());
+//   }
   cp_cfg_element_t *charsetsElement = CAddonMgr::GetInstance().GetExtElement(ext->configuration, "charsets");
   if (charsetsElement != NULL)
   {
@@ -58,6 +66,13 @@ std::unique_ptr<CLanguageResource> CLanguageResource::FromExtension(AddonProps p
   std::string dvdLanguageMenu;
   std::string dvdLanguageAudio;
   std::string dvdLanguageSubtitle;
+//   CAddonExtensions* dvdElement2 = props.GetExtElement("dvd");
+//   if (dvdElement2 != nullptr)
+//   {
+//     fprintf(stderr, "-------------C %s - menu             %s\n", props.ID().c_str(), dvdElement2->GetExtValue("menu").c_str());
+//     fprintf(stderr, "-------------C %s - audio:           %s\n", props.ID().c_str(), dvdElement2->GetExtValue("audio").c_str());
+//     fprintf(stderr, "-------------C %s - subtitle:        %s\n", props.ID().c_str(), dvdElement2->GetExtValue("subtitle").c_str());
+//   }
   cp_cfg_element_t *dvdElement = CAddonMgr::GetInstance().GetExtElement(ext->configuration, "dvd");
   if (dvdElement != NULL)
   {
@@ -75,6 +90,42 @@ std::unique_ptr<CLanguageResource> CLanguageResource::FromExtension(AddonProps p
 
   // parse <sorttokens>
   std::set<std::string> sortTokens;
+  CAddonExtensions* sorttokensElement2 = props.GetExtElement("sorttokens");
+  if (sorttokensElement2 != nullptr)
+  {
+    /* First loop goes around rows e.g.
+     *   <token separators="'">L</token>
+     *   <token>Le</token>
+     *   ...
+     */
+    for (auto values : sorttokensElement2->GetExtValues())
+    {
+      std::string token;
+      std::string separators;
+      /* Second loop goes around the row parts, e.g.
+       *   separators = "'"
+       *   token = Le
+       */
+      for (auto value : values.second)
+      {
+        if (value.first == "token")
+          token = value.second;
+        else if (value.first == "token@separators")
+          separators = value.second;
+      }
+      if (!token.empty())
+      {
+        if (separators.empty())
+          separators = " ._";
+
+        for (auto separator : separators)
+          sortTokens.insert(token + separator);
+      }
+    }
+  }
+//   for (std::set<std::string>::iterator it=sortTokens.begin(); it!=sortTokens.end(); ++it)
+//     fprintf(stderr, "1 - %s\n", it->c_str());
+  sortTokens.clear();
   cp_cfg_element_t *sorttokensElement = CAddonMgr::GetInstance().GetExtElement(ext->configuration, "sorttokens");
   if (sorttokensElement != NULL)
   {
@@ -94,6 +145,8 @@ std::unique_ptr<CLanguageResource> CLanguageResource::FromExtension(AddonProps p
       }
     }
   }
+//   for (std::set<std::string>::iterator it=sortTokens.begin(); it!=sortTokens.end(); ++it)
+//     fprintf(stderr, "2 - %s\n", it->c_str());
   return std::unique_ptr<CLanguageResource>(new CLanguageResource(
       std::move(props),
       locale,
@@ -207,7 +260,8 @@ bool CLanguageResource::FindLanguageAddonByName(const std::string &legacyLanguag
   {
     // check if the old language matches the language addon id, the language
     // locale or the language addon name
-    CLocale locale = CLocale::FromString(addon->ExtraInfoValueString("locale"));
+    fprintf(stderr, "------------------------addon->GetExtValue(@locale) %s\n", addon->GetExtValue("@locale").c_str());
+    CLocale locale = CLocale::FromString(addon->GetExtValue("@locale"));
     if (legacyLanguage.compare(addon->ID()) == 0 ||
         locale.Equals(legacyLanguage) ||
         StringUtils::EqualsNoCase(legacyLanguage, addon->Name()))

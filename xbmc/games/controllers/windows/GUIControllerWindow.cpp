@@ -291,7 +291,7 @@ void CGUIControllerWindow::UpdateButtons(void)
 {
   using namespace ADDON;
 
-  VECADDONS addons;
+  AddonInfos addons;
   CONTROL_ENABLE_ON_CONDITION(CONTROL_GET_MORE, CAddonMgr::GetInstance().GetInstallableAddons(addons, ADDON::ADDON_GAME_CONTROLLER) && !addons.empty());
 }
 

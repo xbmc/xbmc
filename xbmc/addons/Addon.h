@@ -162,7 +162,7 @@ public:
   virtual void OnPostInstall(bool update, bool modal) {};
   virtual void OnPreUnInstall() {};
   virtual void OnPostUnInstall() {};
-
+const AddonProps m_props;
 protected:
   /*! \brief Load the default settings and these with any previously configured user settings
    \param bForce force the load of settings even if they are already loaded (reload)
@@ -196,7 +196,7 @@ protected:
    */
   virtual void SettingsToXML(CXBMCTinyXML &doc) const;
 
-  const AddonProps m_props;
+  //const AddonProps m_props;
   CXBMCTinyXML      m_addonXmlDoc;
   bool              m_settingsLoaded;
   bool              m_userSettingsLoaded;

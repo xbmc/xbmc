@@ -41,9 +41,8 @@ bool CAddonSettings::IsVisible(const CFileItem& item) const
 
 bool CAddonSettings::Execute(const CFileItemPtr& item) const
 {
-  AddonPtr addon;
-  return CAddonMgr::GetInstance().GetAddon(item->GetAddonInfo()->ID(), addon, ADDON_UNKNOWN, false)
-         && CGUIDialogAddonSettings::ShowAndGetInput(addon);
+  AddonPropsPtr addon = CAddonMgr::GetInstance().GetInstalledAddonInfo(item->GetAddonInfo()->ID());
+  return CGUIDialogAddonSettings::ShowAndGetInput(addon);
 }
 
 bool CCheckForUpdates::IsVisible(const CFileItem& item) const

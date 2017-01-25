@@ -34,7 +34,7 @@
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogYesNo.h"
-#include "games/GameUtils.h"
+//#include "games/GameUtils.h"
 #include "GUIUserMessages.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
@@ -199,10 +199,10 @@ void CGUIDialogAddonInfo::UpdateControls()
   SET_CONTROL_LABEL(CONTROL_BTN_AUTOUPDATE, 21340);
 
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_SELECT, m_addonEnabled && (CanOpen() ||
-      CanRun() || (CanUse() && !m_localAddon->IsInUse())));
+      CanRun() || (CanUse()/* && !m_localAddon->IsInUse()*/))); /// @todo bring back after place is changed
   SET_CONTROL_LABEL(CONTROL_BTN_SELECT, CanUse() ? 21480 : (CanOpen() ? 21478 : 21479));
 
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_SETTINGS, isInstalled && m_localAddon->HasSettings());
+  //CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_SETTINGS, isInstalled && m_localAddon->HasSettings());
 
   CFileItemList items;
   for (const auto& screenshot : m_item->GetAddonInfo()->Screenshots())
@@ -374,8 +374,8 @@ bool CGUIDialogAddonInfo::CanRun() const
     if (m_localAddon->Type() == ADDON_SCRIPT)
       return true;
 
-    if (GAME::CGameUtils::IsStandaloneGame(m_localAddon))
-      return true;
+/*    if (GAME::CGameUtils::IsStandaloneGame(m_localAddon))
+      return true;*/
   }
 
   return false;
@@ -397,15 +397,12 @@ bool CGUIDialogAddonInfo::PromptIfDependency(int heading, int line2)
   if (!m_localAddon)
     return false;
 
-  VECADDONS addons;
   std::vector<std::string> deps;
-  CAddonMgr::GetInstance().GetAddons(addons);
-  for (VECADDONS::const_iterator it  = addons.begin();
-       it != addons.end();++it)
+  for (auto addon : CAddonMgr::GetInstance().GetAddonInfos(true, ADDON_UNKNOWN))
   {
-    ADDONDEPS::const_iterator i = (*it)->GetDeps().find(m_localAddon->ID());
-    if (i != (*it)->GetDeps().end() && !i->second.second) // non-optional dependency
-      deps.push_back((*it)->Name());
+    ADDONDEPS::const_iterator i = addon->GetDeps().find(m_localAddon->ID());
+    if (i != addon->GetDeps().end() && !i->second.second) // non-optional dependency
+      deps.push_back(addon->Name());
   }
 
   if (!deps.empty())
@@ -420,7 +417,7 @@ bool CGUIDialogAddonInfo::PromptIfDependency(int heading, int line2)
 
 void CGUIDialogAddonInfo::OnUninstall()
 {
-  if (!m_localAddon.get())
+  /*if (!m_localAddon.get())
     return;
 
   if (!g_passwordManager.CheckMenuLock(WINDOW_ADDON_BROWSER))
@@ -440,7 +437,7 @@ void CGUIDialogAddonInfo::OnUninstall()
 
   CJobManager::GetInstance().AddJob(new CAddonUnInstallJob(m_localAddon, removeData),
                                     &CAddonInstaller::GetInstance());
-  Close();
+  Close();*/
 }
 
 void CGUIDialogAddonInfo::OnEnableDisable()
@@ -491,6 +488,6 @@ bool CGUIDialogAddonInfo::SetItem(const CFileItemPtr& item)
 
   m_item = item;
   m_localAddon.reset();
-  CAddonMgr::GetInstance().GetAddon(item->GetAddonInfo()->ID(), m_localAddon, ADDON_UNKNOWN, false);
+  m_localAddon = CAddonMgr::GetInstance().GetInstalledAddonInfo(item->GetAddonInfo()->ID());
   return true;
 }

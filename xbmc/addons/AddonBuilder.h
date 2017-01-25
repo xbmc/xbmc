@@ -30,6 +30,7 @@ public:
   CAddonBuilder() : m_built(false), m_extPoint(nullptr) {}
 
   std::shared_ptr<CAddon> Build();
+  std::shared_ptr<CAddon> Build2();
   void SetId(std::string id) { m_props.m_id = std::move(id); }
   void SetName(std::string name) { m_props.m_name = std::move(name); }
   void SetLicense(std::string license) { m_props.m_license = std::move(license); }

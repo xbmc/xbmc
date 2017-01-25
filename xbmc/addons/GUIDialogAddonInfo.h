@@ -78,7 +78,7 @@ private:
   bool PromptIfDependency(int heading, int line2);
 
   CFileItemPtr m_item;
-  ADDON::AddonPtr m_localAddon;
+  ADDON::AddonPropsPtr m_localAddon;
   bool m_addonEnabled;
 };
 

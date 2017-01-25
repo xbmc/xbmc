@@ -113,7 +113,7 @@ bool CAddonInstaller::IsDownloading() const
   return !m_downloadJobs.empty();
 }
 
-void CAddonInstaller::GetInstallList(VECADDONS &addons) const
+void CAddonInstaller::GetInstallList(AddonInfos &addonInfos) const
 {
   CSingleLock lock(m_critSection);
   std::vector<std::string> addonIDs;
@@ -126,11 +126,11 @@ void CAddonInstaller::GetInstallList(VECADDONS &addons) const
 
   CAddonDatabase database;
   database.Open();
-  for (std::vector<std::string>::iterator it = addonIDs.begin(); it != addonIDs.end(); ++it)
+  for (auto id : addonIDs)
   {
-    AddonPtr addon;
-    if (database.GetAddon(*it, addon))
-      addons.push_back(addon);
+    AddonPropsPtr addon;
+    if (database.GetAddonInfo(id, addon))
+      addonInfos.push_back(addon);
   }
 }
 
@@ -162,26 +162,27 @@ bool CAddonInstaller::Cancel(const std::string &addonID)
   return false;
 }
 
-bool CAddonInstaller::InstallModal(const std::string &addonID, ADDON::AddonPtr &addon, bool promptForInstall /* = true */)
+bool CAddonInstaller::InstallModal(const std::string &addonID, bool promptForInstall /* = true */)
 {
   if (!g_passwordManager.CheckMenuLock(WINDOW_ADDON_BROWSER))
     return false;
 
   // we assume that addons that are enabled don't get to this routine (i.e. that GetAddon() has been called)
-  if (CAddonMgr::GetInstance().GetAddon(addonID, addon, ADDON_UNKNOWN, false))
+  if (CAddonMgr::GetInstance().IsAddonInstalled(addonID))
     return false; // addon is installed but disabled, and the user has specifically activated something that needs
                   // the addon - should we enable it?
 
   // check we have it available
   CAddonDatabase database;
   database.Open();
-  if (!database.GetAddon(addonID, addon))
+  ADDON::AddonPropsPtr addonInfo;
+  if (!database.GetAddonInfo(addonID, addonInfo))
     return false;
 
   // if specified ask the user if he wants it installed
   if (promptForInstall)
   {
-    if (HELPERS::ShowYesNoDialogLines(CVariant{24076}, CVariant{24100}, CVariant{addon->Name()}, CVariant{24101}) !=
+    if (HELPERS::ShowYesNoDialogLines(CVariant{24076}, CVariant{24100}, CVariant{addonInfo->Name()}, CVariant{24101}) !=
       DialogResponse::YES)
     {
       return false;
@@ -191,13 +192,13 @@ bool CAddonInstaller::InstallModal(const std::string &addonID, ADDON::AddonPtr &
   if (!InstallOrUpdate(addonID, false, true))
     return false;
 
-  return CAddonMgr::GetInstance().GetAddon(addonID, addon);
+  return CAddonMgr::GetInstance().IsAddonInstalled(addonID);
 }
 
 
 bool CAddonInstaller::InstallOrUpdate(const std::string &addonID, bool background /* = true */, bool modal /* = false */)
 {
-  AddonPtr addon;
+  AddonPropsPtr addon;
   RepositoryPtr repo;
   std::string hash;
   if (!CAddonInstallJob::GetAddonWithHash(addonID, repo, addon, hash))
@@ -211,10 +212,10 @@ void CAddonInstaller::Install(const std::string& addonId, const AddonVersion& ve
   CLog::Log(LOGDEBUG, "CAddonInstaller: installing '%s' version '%s' from repository '%s'",
       addonId.c_str(), version.asString().c_str(), repoId.c_str());
 
-  AddonPtr addon;
+  AddonPropsPtr addon;
   CAddonDatabase database;
 
-  if (!database.Open() || !database.GetAddon(addonId, version, repoId, addon))
+  if (!database.Open() || !database.GetAddonInfo(addonId, version, repoId, addon))
     return;
 
   AddonPtr repo;
@@ -227,7 +228,7 @@ void CAddonInstaller::Install(const std::string& addonId, const AddonVersion& ve
   DoInstall(addon, std::static_pointer_cast<CRepository>(repo), hash, true, false);
 }
 
-bool CAddonInstaller::DoInstall(const AddonPtr &addon, const RepositoryPtr& repo,
+bool CAddonInstaller::DoInstall(const AddonPropsPtr &addon, const RepositoryPtr& repo,
     const std::string &hash /* = "" */, bool background /* = true */, bool modal /* = false */)
 {
   // check whether we already have the addon installing
@@ -286,7 +287,7 @@ bool CAddonInstaller::InstallFromZip(const std::string &path)
     return false;
   }
 
-  AddonPtr addon;
+  AddonPropsPtr addon;
   if (CAddonMgr::GetInstance().LoadAddonDescription(items[0]->GetPath(), addon))
     return DoInstall(addon, RepositoryPtr());
 
@@ -296,13 +297,13 @@ bool CAddonInstaller::InstallFromZip(const std::string &path)
   return false;
 }
 
-bool CAddonInstaller::CheckDependencies(const AddonPtr &addon, CAddonDatabase *database /* = NULL */)
+bool CAddonInstaller::CheckDependencies(const AddonPropsPtr &addon, CAddonDatabase *database /* = NULL */)
 {
   std::pair<std::string, std::string> failedDep;
   return CheckDependencies(addon, failedDep, database);
 }
 
-bool CAddonInstaller::CheckDependencies(const AddonPtr &addon, std::pair<std::string, std::string> &failedDep, CAddonDatabase *database /* = NULL */)
+bool CAddonInstaller::CheckDependencies(const AddonPropsPtr &addon, std::pair<std::string, std::string> &failedDep, CAddonDatabase *database /* = NULL */)
 {
   std::vector<std::string> preDeps;
   preDeps.push_back(addon->ID());
@@ -313,7 +314,7 @@ bool CAddonInstaller::CheckDependencies(const AddonPtr &addon, std::pair<std::st
   return CheckDependencies(addon, preDeps, *database, failedDep);
 }
 
-bool CAddonInstaller::CheckDependencies(const AddonPtr &addon,
+bool CAddonInstaller::CheckDependencies(const AddonPropsPtr &addon,
                                         std::vector<std::string>& preDeps, CAddonDatabase &database,
                                         std::pair<std::string, std::string> &failedDep)
 {
@@ -329,12 +330,11 @@ bool CAddonInstaller::CheckDependencies(const AddonPtr &addon,
     const std::string &addonID = i->first;
     const AddonVersion &version = i->second.first;
     bool optional = i->second.second;
-    AddonPtr dep;
-    bool haveAddon = CAddonMgr::GetInstance().GetAddon(addonID, dep);
-    if ((haveAddon && !dep->MeetsVersion(version)) || (!haveAddon && !optional))
+    AddonPropsPtr dep = CAddonMgr::GetInstance().GetInstalledAddonInfo(addonID);
+    if ((dep && !dep->MeetsVersion(version)) || (!dep && !optional))
     {
       // we have it but our version isn't good enough, or we don't have it and we need it
-      if (!database.GetAddon(addonID, dep) || !dep->MeetsVersion(version))
+      if (!database.GetAddonInfo(addonID, dep) || !dep->MeetsVersion(version))
       {
         // we don't have it in a repo, or we have it but the version isn't good enough, so dep isn't satisfied.
         CLog::Log(LOGDEBUG, "CAddonInstallJob[%s]: requires %s version %s which is not available", addon->ID().c_str(), addonID.c_str(), version.asString().c_str());
@@ -464,7 +464,7 @@ int64_t CAddonInstaller::EnumeratePackageFolder(std::map<std::string,CFileItemLi
   return size;
 }
 
-CAddonInstallJob::CAddonInstallJob(const AddonPtr &addon, const AddonPtr &repo, const std::string &hash /* = "" */)
+CAddonInstallJob::CAddonInstallJob(const AddonPropsPtr &addon, const AddonPtr &repo, const std::string &hash /* = "" */)
   : m_addon(addon),
     m_repo(repo),
     m_hash(hash)
@@ -473,7 +473,7 @@ CAddonInstallJob::CAddonInstallJob(const AddonPtr &addon, const AddonPtr &repo, 
 }
 
 bool CAddonInstallJob::GetAddonWithHash(const std::string& addonID, RepositoryPtr& repo,
-    ADDON::AddonPtr& addon, std::string& hash)
+    ADDON::AddonPropsPtr& addon, std::string& hash)
 {
   if (!CAddonMgr::GetInstance().FindInstallableById(addonID, addon))
     return false;
@@ -589,22 +589,22 @@ bool CAddonInstallJob::DoWork()
   }
 
   // run any pre-install functions
-  ADDON::OnPreInstall(m_addon);
+  //ADDON::OnPreInstall(m_addon);
 
   // perform install
   if (!Install(installFrom, m_repo))
     return false;
 
-  if (!CAddonMgr::GetInstance().ReloadAddon(m_addon))
-  {
-    CLog::Log(LOGERROR, "CAddonInstallJob[%s]: failed to reload addon", m_addon->ID().c_str());
-    return false;
-  }
+//   if (!CAddonMgr::GetInstance().ReloadAddon(m_addon))
+//   {
+//     CLog::Log(LOGERROR, "CAddonInstallJob[%s]: failed to reload addon", m_addon->ID().c_str());
+//     return false;
+//   }
 
   g_localizeStrings.LoadAddonStrings(URIUtils::AddFileToFolder(m_addon->Path(), "resources/language/"),
       CServiceBroker::GetSettings().GetString(CSettings::SETTING_LOCALE_LANGUAGE), m_addon->ID());
 
-  ADDON::OnPostInstall(m_addon, m_update, IsModal());
+  //ADDON::OnPostInstall(m_addon, m_update, IsModal());
 
   {
     CAddonDatabase database;
@@ -714,7 +714,7 @@ bool CAddonInstallJob::Install(const std::string &installFrom, const AddonPtr& r
         else if (IsModal())
         {
           RepositoryPtr repoForDep;
-          AddonPtr addon;
+          AddonPropsPtr addon;
           std::string hash;
           if (!CAddonInstallJob::GetAddonWithHash(addonID, repoForDep, addon, hash))
           {
@@ -766,11 +766,11 @@ bool CAddonInstallJob::Install(const std::string &installFrom, const AddonPtr& r
 
 void CAddonInstallJob::ReportInstallError(const std::string& addonID, const std::string& fileName, const std::string& message /* = "" */)
 {
-  AddonPtr addon;
+  AddonPropsPtr addon;
   CAddonDatabase database;
   if (database.Open())
   {
-    database.GetAddon(addonID, addon);
+    database.GetAddonInfo(addonID, addon);
     database.Close();
   }
 
@@ -780,8 +780,7 @@ void CAddonInstallJob::ReportInstallError(const std::string& addonID, const std:
   EventPtr activity;
   if (addon != NULL)
   {
-    AddonPtr addon2;
-    CAddonMgr::GetInstance().GetAddon(addonID, addon2);
+    AddonPropsPtr addon2 = CAddonMgr::GetInstance().GetInstalledAddonInfo(addonID);
     if (msg.empty())
       msg = g_localizeStrings.Get(addon2 != NULL ? 113 : 114);
 
@@ -802,21 +801,21 @@ void CAddonInstallJob::ReportInstallError(const std::string& addonID, const std:
   CEventLog::GetInstance().Add(activity, !IsModal(), false);
 }
 
-CAddonUnInstallJob::CAddonUnInstallJob(const AddonPtr &addon, bool removeData)
-  : m_addon(addon), m_removeData(removeData)
+CAddonUnInstallJob::CAddonUnInstallJob(const AddonPropsPtr &addon, bool removeData)
+  : m_addon(addon)
 { }
 
 bool CAddonUnInstallJob::DoWork()
 {
-  ADDON::OnPreUnInstall(m_addon);
+  //ADDON::OnPreUnInstall(m_addon);
 
   //Unregister addon with the manager to ensure nothing tries
   //to interact with it while we are uninstalling.
-  if (!CAddonMgr::GetInstance().UnloadAddon(m_addon))
-  {
-    CLog::Log(LOGERROR, "CAddonUnInstallJob[%s]: failed to unload addon.", m_addon->ID().c_str());
-    return false;
-  }
+//   if (!CAddonMgr::GetInstance().UnloadAddon(m_addon))
+//   {
+//     CLog::Log(LOGERROR, "CAddonUnInstallJob[%s]: failed to unload addon.", m_addon->ID().c_str());
+//     return false;
+//   }
 
   CFilesystemInstaller fsInstaller;
   if (!fsInstaller.UnInstallFromFilesystem(m_addon->Path()))
@@ -829,18 +828,18 @@ bool CAddonUnInstallJob::DoWork()
   if (m_removeData)
     CFileUtils::DeleteItem("special://profile/addon_data/"+m_addon->ID()+"/", true);
 
-  AddonPtr addon;
+  AddonPropsPtr addon;
   CAddonDatabase database;
   // try to get the addon object from the repository as the local one does not exist anymore
   // if that doesn't work fall back to the local one
-  if (!database.Open() || !database.GetAddon(m_addon->ID(), addon) || addon == NULL)
+  if (!database.Open() || !database.GetAddonInfo(m_addon->ID(), addon) || addon == NULL)
     addon = m_addon;
   CEventLog::GetInstance().Add(EventPtr(new CAddonManagementEvent(addon, 24144)));
 
   CAddonMgr::GetInstance().OnPostUnInstall(m_addon->ID());
   database.OnPostUnInstall(m_addon->ID());
 
-  ADDON::OnPostUnInstall(m_addon);
+//   ADDON::OnPostUnInstall(m_addon);
   return true;
 }
 

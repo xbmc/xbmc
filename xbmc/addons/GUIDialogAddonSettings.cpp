@@ -196,7 +196,7 @@ void CGUIDialogAddonSettings::OnInitWindow()
 }
 
 // \brief Show CGUIDialogOK dialog, then wait for user to dismiss it.
-bool CGUIDialogAddonSettings::ShowAndGetInput(const AddonPtr &addon, bool saveToDisk /* = true */)
+bool CGUIDialogAddonSettings::ShowAndGetInput(const AddonPropsPtr &addon, bool saveToDisk /* = true */)
 {
   if (!addon)
     return false;
@@ -205,7 +205,7 @@ bool CGUIDialogAddonSettings::ShowAndGetInput(const AddonPtr &addon, bool saveTo
     return false;
 
   bool ret(false);
-  if (addon->HasSettings())
+/*  if (addon->HasSettings())
   { 
     // Create the dialog
     CGUIDialogAddonSettings* pDialog = NULL;
@@ -222,7 +222,7 @@ bool CGUIDialogAddonSettings::ShowAndGetInput(const AddonPtr &addon, bool saveTo
     pDialog->Open();
     ret = true;
   }
-  else
+  else*/
   { // addon does not support settings, inform user
     CGUIDialogOK::ShowAndGetInput(CVariant{24000}, CVariant{24030});
   }
@@ -558,12 +558,12 @@ void CGUIDialogAddonSettings::UpdateFromControls()
 void CGUIDialogAddonSettings::SaveSettings(void)
 {
   UpdateFromControls();
-  m_addon->UpdateSettings(m_settings);
-
-  if (m_saveToDisk)
-  { 
-    m_addon->SaveSettings();
-  } 
+//   m_addon->UpdateSettings(m_settings);
+// 
+//   if (m_saveToDisk)
+//   { 
+//     m_addon->SaveSettings();
+//   } 
 }
 
 void CGUIDialogAddonSettings::FreeSections()
@@ -592,58 +592,58 @@ void CGUIDialogAddonSettings::FreeControls()
 
 void CGUIDialogAddonSettings::CreateSections()
 {
-  CGUIControlGroupList *group = dynamic_cast<CGUIControlGroupList *>(GetControl(CONTROL_SECTION_AREA));
-  CGUIButtonControl *originalButton = dynamic_cast<CGUIButtonControl *>(GetControl(CONTROL_DEFAULT_SECTION_BUTTON));
-  if (!m_addon)
-    return;
-
-  if (originalButton)
-    originalButton->SetVisible(false);
-
-  // clear the category group
-  FreeSections();
-
-  // grab our categories
-  const TiXmlElement *category = m_addon->GetSettingsXML()->FirstChildElement("category");
-  if (!category) // add a default one...
-    category = m_addon->GetSettingsXML();
- 
-  int buttonID = CONTROL_START_SECTION;
-  while (category)
-  { // add a category
-    CGUIButtonControl *button = originalButton ? originalButton->Clone() : NULL;
-
-    std::string label = GetString(category->Attribute("label"));
-    if (label.empty())
-      label = g_localizeStrings.Get(128);
-
-    if (buttonID >= CONTROL_START_SETTING)
-    {
-      CLog::Log(LOGERROR, "%s - cannot have more than %d categories - simplify your addon!", __FUNCTION__, CONTROL_START_SETTING - CONTROL_START_SECTION);
-      break;
-    }
-
-    // add the category button
-    if (button && group)
-    {
-      button->SetID(buttonID++);
-      button->SetLabel(label);
-      button->SetVisible(true);
-      group->AddControl(button);
-    }
-
-    // grab a local copy of all the settings in this category
-    const TiXmlElement *setting = category->FirstChildElement("setting");
-    while (setting)
-    {
-      const std::string id = XMLUtils::GetAttribute(setting, "id");
-      if (!id.empty())
-        m_settings[id] = m_addon->GetSetting(id);
-      setting = setting->NextSiblingElement("setting");
-    }
-    category = category->NextSiblingElement("category");
-  }
-  m_totalSections = buttonID - CONTROL_START_SECTION;
+//   CGUIControlGroupList *group = dynamic_cast<CGUIControlGroupList *>(GetControl(CONTROL_SECTION_AREA));
+//   CGUIButtonControl *originalButton = dynamic_cast<CGUIButtonControl *>(GetControl(CONTROL_DEFAULT_SECTION_BUTTON));
+//   if (!m_addon)
+//     return;
+// 
+//   if (originalButton)
+//     originalButton->SetVisible(false);
+// 
+//   // clear the category group
+//   FreeSections();
+// 
+//   // grab our categories
+//   const TiXmlElement *category = m_addon->GetSettingsXML()->FirstChildElement("category");
+//   if (!category) // add a default one...
+//     category = m_addon->GetSettingsXML();
+//  
+//   int buttonID = CONTROL_START_SECTION;
+//   while (category)
+//   { // add a category
+//     CGUIButtonControl *button = originalButton ? originalButton->Clone() : NULL;
+// 
+//     std::string label = GetString(category->Attribute("label"));
+//     if (label.empty())
+//       label = g_localizeStrings.Get(128);
+// 
+//     if (buttonID >= CONTROL_START_SETTING)
+//     {
+//       CLog::Log(LOGERROR, "%s - cannot have more than %d categories - simplify your addon!", __FUNCTION__, CONTROL_START_SETTING - CONTROL_START_SECTION);
+//       break;
+//     }
+// 
+//     // add the category button
+//     if (button && group)
+//     {
+//       button->SetID(buttonID++);
+//       button->SetLabel(label);
+//       button->SetVisible(true);
+//       group->AddControl(button);
+//     }
+// 
+//     // grab a local copy of all the settings in this category
+//     const TiXmlElement *setting = category->FirstChildElement("setting");
+//     while (setting)
+//     {
+//       const std::string id = XMLUtils::GetAttribute(setting, "id");
+//       if (!id.empty())
+//         m_settings[id] = m_addon->GetSetting(id);
+//       setting = setting->NextSiblingElement("setting");
+//     }
+//     category = category->NextSiblingElement("category");
+//   }
+//   m_totalSections = buttonID - CONTROL_START_SECTION;
 }
 
 void CGUIDialogAddonSettings::CreateControls()
@@ -935,33 +935,33 @@ std::string CGUIDialogAddonSettings::GetAddonNames(const std::string& addonIDsli
 
 std::vector<std::string> CGUIDialogAddonSettings::GetFileEnumValues(const std::string &path, const std::string &mask, const std::string &options) const
 {
-  // Create our base path, used for type "fileenum" settings
-  // replace $PROFILE with the profile path of the plugin/script
-  std::string fullPath = path;
-  if (fullPath.find("$PROFILE") != std::string::npos)
-    StringUtils::Replace(fullPath, "$PROFILE", m_addon->Profile());
-  else
-    fullPath = URIUtils::AddFileToFolder(m_addon->Path(), path);
-
-  bool hideExtensions = StringUtils::EqualsNoCase(options, "hideext");
-  // fetch directory
-  CFileItemList items;
-  if (!mask.empty())
-    CDirectory::GetDirectory(fullPath, items, mask, XFILE::DIR_FLAG_NO_FILE_DIRS);
-  else
-    CDirectory::GetDirectory(fullPath, items, "", XFILE::DIR_FLAG_NO_FILE_DIRS);
+//   // Create our base path, used for type "fileenum" settings
+//   // replace $PROFILE with the profile path of the plugin/script
+//   std::string fullPath = path;
+//   if (fullPath.find("$PROFILE") != std::string::npos)
+//     StringUtils::Replace(fullPath, "$PROFILE", m_addon->Profile());
+//   else
+//     fullPath = URIUtils::AddFileToFolder(m_addon->Path(), path);
+// 
+//   bool hideExtensions = StringUtils::EqualsNoCase(options, "hideext");
+//   // fetch directory
+//   CFileItemList items;
+//   if (!mask.empty())
+//     CDirectory::GetDirectory(fullPath, items, mask, XFILE::DIR_FLAG_NO_FILE_DIRS);
+//   else
+//     CDirectory::GetDirectory(fullPath, items, "", XFILE::DIR_FLAG_NO_FILE_DIRS);
 
   std::vector<std::string> values;
-  for (int i = 0; i < items.Size(); ++i)
-  {
-    CFileItemPtr pItem = items[i];
-    if ((mask == "/" && pItem->m_bIsFolder) || !pItem->m_bIsFolder)
-    {
-      if (hideExtensions)
-        pItem->RemoveExtension();
-      values.push_back(pItem->GetLabel());
-    }
-  }
+//   for (int i = 0; i < items.Size(); ++i)
+//   {
+//     CFileItemPtr pItem = items[i];
+//     if ((mask == "/" && pItem->m_bIsFolder) || !pItem->m_bIsFolder)
+//     {
+//       if (hideExtensions)
+//         pItem->RemoveExtension();
+//       values.push_back(pItem->GetLabel());
+//     }
+//   }
   return values;
 }
 
@@ -1113,48 +1113,48 @@ std::string CGUIDialogAddonSettings::GetString(const char *value, bool subSettin
 // Go over all the settings and set their default values
 void CGUIDialogAddonSettings::SetDefaultSettings()
 {
-  if(!m_addon)
-    return;
-
-  const TiXmlElement *category = m_addon->GetSettingsXML()->FirstChildElement("category");
-  if (!category) // add a default one...
-    category = m_addon->GetSettingsXML();
-
-  while (category)
-  {
-    const TiXmlElement *setting = category->FirstChildElement("setting");
-    while (setting)
-    {
-      const std::string   id = XMLUtils::GetAttribute(setting, "id");
-      const std::string type = XMLUtils::GetAttribute(setting, "type");
-      const char *value = setting->Attribute("default");
-      if (!id.empty())
-      {
-        if (value)
-          m_settings[id] = value;
-        else if (type == "bool")
-          m_settings[id] = "false";
-        else if (type == "slider" || type == "enum")
-          m_settings[id] = "0";
-        else
-          m_settings[id] = "";
-      }
-      setting = setting->NextSiblingElement("setting");
-    }
-    category = category->NextSiblingElement("category");
-  }
-  CreateControls();
+//   if(!m_addon)
+//     return;
+// 
+//   const TiXmlElement *category = m_addon->GetSettingsXML()->FirstChildElement("category");
+//   if (!category) // add a default one...
+//     category = m_addon->GetSettingsXML();
+// 
+//   while (category)
+//   {
+//     const TiXmlElement *setting = category->FirstChildElement("setting");
+//     while (setting)
+//     {
+//       const std::string   id = XMLUtils::GetAttribute(setting, "id");
+//       const std::string type = XMLUtils::GetAttribute(setting, "type");
+//       const char *value = setting->Attribute("default");
+//       if (!id.empty())
+//       {
+//         if (value)
+//           m_settings[id] = value;
+//         else if (type == "bool")
+//           m_settings[id] = "false";
+//         else if (type == "slider" || type == "enum")
+//           m_settings[id] = "0";
+//         else
+//           m_settings[id] = "";
+//       }
+//       setting = setting->NextSiblingElement("setting");
+//     }
+//     category = category->NextSiblingElement("category");
+//   }
+//   CreateControls();
 }
 
 const TiXmlElement *CGUIDialogAddonSettings::GetFirstSetting() const
 {
-  const TiXmlElement *category = m_addon->GetSettingsXML()->FirstChildElement("category");
-  if (!category)
-    category = m_addon->GetSettingsXML();
-  for (unsigned int i = 0; i < m_currentSection && category; i++)
-    category = category->NextSiblingElement("category");
-  if (category)
-    return category->FirstChildElement("setting");
+//   const TiXmlElement *category = m_addon->GetSettingsXML()->FirstChildElement("category");
+//   if (!category)
+//     category = m_addon->GetSettingsXML();
+//   for (unsigned int i = 0; i < m_currentSection && category; i++)
+//     category = category->NextSiblingElement("category");
+//   if (category)
+//     return category->FirstChildElement("setting");
   return NULL;
 }
 

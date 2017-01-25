@@ -933,8 +933,8 @@ bool CFileItem::IsGame() const
   if (IsPVR())
     return false;
 
-  if (HasAddonInfo())
-    return CGameUtils::IsStandaloneGame(std::const_pointer_cast<ADDON::CAddon>(GetAddonInfo()));
+//   if (HasAddonInfo())
+//     return CGameUtils::IsStandaloneGame(std::const_pointer_cast<ADDON::CAddon>(GetAddonInfo()));
 
   return CGameUtils::HasGameExtension(m_strPath);
 }

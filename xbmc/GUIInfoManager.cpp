@@ -6988,12 +6988,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
   else if (condition == SYSTEM_HAS_PVR)
     bReturn = true;
   else if (condition == SYSTEM_HAS_PVR_ADDON)
-  {
-    VECADDONS pvrAddons;
-    CBinaryAddonCache &addonCache = CServiceBroker::GetBinaryAddonCache();
-    addonCache.GetAddons(pvrAddons, ADDON::ADDON_PVRDLL);
-    bReturn = (pvrAddons.size() > 0);
-  }
+    bReturn = CAddonMgr::GetInstance().HasInstalledAddons(ADDON::ADDON_PVRDLL);
   else if (condition == SYSTEM_HAS_ADSP)
     bReturn = true;
   else if (condition == SYSTEM_HAS_CMS)

@@ -101,7 +101,7 @@ namespace XBMCAddon
     {
       DelayedCallGuard dcguard(languageHook);
       // show settings dialog
-      ADDON::AddonPtr addon(pAddon);
+      AddonPropsPtr addon = CAddonMgr::GetInstance().GetInstalledAddonInfo(pAddon->ID());
       CGUIDialogAddonSettings::ShowAndGetInput(addon);
     }
 

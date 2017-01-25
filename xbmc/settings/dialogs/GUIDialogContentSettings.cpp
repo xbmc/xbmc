@@ -268,7 +268,10 @@ void CGUIDialogContentSettings::OnSettingAction(const CSetting *setting)
     }
   }
   else if (settingId == SETTING_SCRAPER_SETTINGS)
-    CGUIDialogAddonSettings::ShowAndGetInput(m_scraper, false);
+  {
+    AddonPropsPtr addonProps = CAddonMgr::GetInstance().GetInstalledAddonInfo(m_scraper->ID());
+    CGUIDialogAddonSettings::ShowAndGetInput(addonProps, false);
+  }
 }
 
 void CGUIDialogContentSettings::Save()

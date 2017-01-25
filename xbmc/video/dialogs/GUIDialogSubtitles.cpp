@@ -232,11 +232,7 @@ void CGUIDialogSubtitles::Process(unsigned int currentTime, CDirtyRegionList &di
 
 void CGUIDialogSubtitles::FillServices()
 {
-  ClearServices();
-
-  VECADDONS addons;
-  ADDON::CAddonMgr::GetInstance().GetAddons(addons, ADDON_SUBTITLE_MODULE);
-
+  ADDON::AddonInfos addons = ADDON::CAddonMgr::GetInstance().GetAddonInfos(true, ADDON::ADDON_SUBTITLE_MODULE);
   if (addons.empty())
   {
     UpdateStatus(NO_SERVICES);
@@ -254,12 +250,12 @@ void CGUIDialogSubtitles::FillServices()
     defaultService = CServiceBroker::GetSettings().GetString(CSettings::SETTING_SUBTITLES_MOVIE);
   
   std::string service = addons.front()->ID();
-  for (VECADDONS::const_iterator addonIt = addons.begin(); addonIt != addons.end(); ++addonIt)
+  for (const auto addon : addons)
   {
-    CFileItemPtr item(CAddonsDirectory::FileItemFromAddon(*addonIt, "plugin://" + (*addonIt)->ID(), false));
+    CFileItemPtr item(CAddonsDirectory::FileItemFromAddonProps(addon, "plugin://" + addon->ID(), false));
     m_serviceItems->Add(item);
-    if ((*addonIt)->ID() == defaultService)
-      service = (*addonIt)->ID();
+    if (addon->ID() == defaultService)
+      service = addon->ID();
   }
 
   // Bind our services to the UI

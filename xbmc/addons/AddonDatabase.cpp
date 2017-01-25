@@ -359,6 +359,31 @@ void CAddonDatabase::GetInstalled(std::vector<CAddonBuilder>& addons)
   }
 }
 
+void CAddonDatabase::GetInstallData(AddonPropsPtr addonProps)
+{
+  try
+  {
+    if (nullptr == m_pDB.get())
+      return;
+    if (nullptr == m_pDS.get())
+      return;
+
+    m_pDS->query(PrepareSQL("SELECT * FROM installed WHERE addonID='%s'", addonProps->ID().c_str()));
+    if (!m_pDS->eof())
+    {
+      addonProps->SetInstallDate(CDateTime::FromDBDateTime(m_pDS->fv(3).get_asString()));
+      addonProps->SetLastUpdated(CDateTime::FromDBDateTime(m_pDS->fv(4).get_asString()));
+      addonProps->SetLastUsed(CDateTime::FromDBDateTime(m_pDS->fv(5).get_asString()));
+      addonProps->SetOrigin(m_pDS->fv(6).get_asString());
+    }
+    m_pDS->close();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
+}
+
 bool CAddonDatabase::SetLastUpdated(const std::string& addonId, const CDateTime& dateTime)
 {
   try
@@ -465,6 +490,7 @@ bool CAddonDatabase::FindByAddonId(const std::string& addonId, ADDON::VECADDONS&
       builder.SetChangelog(m_pDS->fv(5).get_asString());
       builder.SetOrigin(m_pDS->fv(6).get_asString());
 
+fprintf(stderr, "-11-----xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx----------- %s\n", __PRETTY_FUNCTION__);
       auto addon = builder.Build();
       if (addon)
         addons.push_back(std::move(addon));
@@ -586,6 +612,7 @@ bool CAddonDatabase::GetAddon(const std::string& addonID, const AddonVersion& ve
     if (m_pDS->eof())
       return false;
 
+    fprintf(stderr, "-22bbbbbbbbbbbbbbbb-----xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx----------- %s\n", __PRETTY_FUNCTION__);
     return GetAddon(m_pDS->fv(0).get_asInt(), addon);
   }
   catch (...)
@@ -652,6 +679,7 @@ bool CAddonDatabase::GetAddon(const std::string& id, AddonPtr& addon)
       }
       m_pDS2->next();
     }
+    fprintf(stderr, "-22ccccccccccccccccccc-----xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx----------- %s\n", __PRETTY_FUNCTION__);
     return GetAddon(maxid,addon);
   }
   catch (...)
@@ -720,6 +748,7 @@ bool CAddonDatabase::GetAddon(int id, AddonPtr &addon)
     builder.SetSummary(m_pDS2->fv(5).get_asString());
     builder.SetDescription(m_pDS2->fv(6).get_asString());
     DeserializeMetadata(m_pDS2->fv(1).get_asString(), builder);
+fprintf(stderr, "-22-----xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx----------- %s\n", __PRETTY_FUNCTION__);
     addon = builder.Build();
     return addon != nullptr;
   }
@@ -843,6 +872,7 @@ bool CAddonDatabase::GetRepositoryContent(const std::string& id, VECADDONS& addo
       builder.SetDescription(m_pDS->fv(6).get_asString());
       DeserializeMetadata(m_pDS->fv(1).get_asString(), builder);
 
+fprintf(stderr, "-33-----xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx----------- %s\n", __PRETTY_FUNCTION__);
       auto addon = builder.Build();
       if (addon)
       {
@@ -1244,6 +1274,7 @@ bool CAddonDatabase::Search(const std::string& search, VECADDONS& addons)
     while (!m_pDS->eof())
     {
       AddonPtr addon;
+      fprintf(stderr, "-22aaaaaaaaaaa-----xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx----------- %s\n", __PRETTY_FUNCTION__);
       GetAddon(m_pDS->fv(0).get_asString(),addon);
       if (addon->Type() >= ADDON_UNKNOWN+1 && addon->Type() < ADDON_SCRAPER_LIBRARY)
         addons.push_back(addon);

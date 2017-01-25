@@ -119,7 +119,8 @@ void CAddonStatusHandler::Process()
     if (!m_addon->HasSettings())
       return;
 
-    if (CGUIDialogAddonSettings::ShowAndGetInput(m_addon))
+    AddonPropsPtr addonProps = CAddonMgr::GetInstance().GetInstalledAddonInfo(m_addon->ID());
+    if (CGUIDialogAddonSettings::ShowAndGetInput(addonProps))
     {
       //! @todo Doesn't dialogaddonsettings save these automatically? It should do this.
       m_addon->SaveSettings();

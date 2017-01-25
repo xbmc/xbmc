@@ -34,6 +34,179 @@
 namespace ADDON
 {
 
+CAddonExtensions::CAddonExtensions()
+{
+  //fprintf(stderr, "------------------------------------------CAddonExtensions() No. %i\n", m_cnt);
+}
+
+bool CAddonExtensions::ParseExtension(const TiXmlElement* element)
+{
+  const char* cstring;
+  const char* cstring2;
+
+  cstring = element->Attribute("point");
+  if (cstring && (strcmp(cstring, "kodi.addon.metadata") == 0 || strcmp(cstring, "xbmc.addon.metadata") == 0))
+    return true;
+
+  m_point = cstring ? cstring : "";
+
+  EXT_VALUE extension;
+  const TiXmlAttribute* attribute = element->FirstAttribute();
+  while (attribute)
+  {
+    std::string name = attribute->Name();
+    if (name != "point")
+    {
+      cstring = attribute->Value();
+      if (cstring)
+      {
+        std::string value = cstring;
+        name = "@" + name;
+        extension.push_back(std::pair<std::string, std::string>(name, value));
+      }
+    }
+    attribute = attribute->Next();
+  }
+  if (!extension.empty())
+    m_values.push_back(std::pair<std::string, EXT_VALUE>("", extension));
+
+  const TiXmlElement* childElement = element->FirstChildElement();
+  while (childElement)
+  {
+    cstring = childElement->Value();
+    if (cstring)
+    {
+      std::string id = cstring;
+
+      EXT_VALUE extension;
+      const TiXmlAttribute* attribute = childElement->FirstAttribute();
+      while (attribute)
+      {
+        std::string name = attribute->Name();
+        if (name != "point")
+        {
+          cstring2 = attribute->Value();
+          if (cstring2)
+          {
+            std::string value = cstring2;
+            name = id + "@" + name;
+            extension.push_back(std::pair<std::string, std::string>(name, value));
+          }
+        }
+        attribute = attribute->Next();
+      }
+    
+      cstring2 = childElement->GetText();
+      if (cstring2)
+        extension.push_back(std::pair<std::string, std::string>(id, cstring2));
+
+      if (!extension.empty())
+        m_values.push_back(std::pair<std::string, EXT_VALUE>(id, extension));
+
+      if (!cstring2)
+      {
+        const TiXmlElement* childSubElement = childElement->FirstChildElement();
+        if (childSubElement)
+        {
+          CAddonExtensions subElement;
+          if (subElement.ParseExtension(childElement))
+            m_childs.push_back(std::pair<std::string, CAddonExtensions>(id, subElement));
+        }
+      }
+    }
+    childElement = childElement->NextSiblingElement();
+  }
+
+        //fprintf (stderr, "attribute->Name(); %s - %s\n", name.c_str(), value.c_str());
+  
+//   if (!m_point.empty())
+//   {
+//     for (auto ptr : m_extension)
+//      fprintf (stderr, "        No. %i - m_extension %s - %s\n", m_cnt, ptr.first.c_str(), ptr.second.c_str());
+// 
+//     fprintf (stderr, "\n\n END---       No. %i - m_point %s\n", m_cnt, m_point.c_str());
+//     for (int i = 0; i < m_values.size(); i++)
+//     {
+//       for (int j = 0; j < m_values[i].second.size(); j++)
+//       {
+//         fprintf (stderr, " ---> %03i-%03i: %s%s - %s\n", i, j, m_values[i].first.c_str(), m_values[i].second[j].first.c_str(), m_values[i].second[j].second.c_str());
+//       }
+//     }
+//     if (!m_childs.empty())
+//     {
+//       for (auto child : m_childs)
+//       {
+//         fprintf (stderr, "        No. %i - child %s\n", m_cnt, child.first.c_str());
+//         for (int i = 0; i < child.second.m_values.size(); i++)
+//         {
+//           for (int j = 0; j < child.second.m_values[i].second.size(); j++)
+//           {
+//             fprintf (stderr, " ---> %03i-%03i: %s%s - %s\n", i, j, child.second.m_values[i].first.c_str(), child.second.m_values[i].second[j].first.c_str(), child.second.m_values[i].second[j].second.c_str());
+//           }
+//         }
+// //         for (auto ptr : child.second.m_extension)
+// //           fprintf (stderr, "        No. %i -   child->m_extension %s - %s\n", m_cnt, ptr.first.c_str(), ptr.second.c_str());
+//       }
+//     }
+// 
+//     fprintf (stderr, "\n\n\n");
+//   }
+  return true;
+}
+
+CAddonExtensions::~CAddonExtensions()
+{
+  
+}
+
+std::string CAddonExtensions::GetExtValue(std::string id) const
+{
+  for (int i = 0; i < m_values.size(); i++)
+  {
+    for (int j = 0; j < m_values[i].second.size(); j++)
+    {
+      if (m_values[i].second[j].first == id)
+        return m_values[i].second[j].second;
+    }
+  }
+  return "";
+}
+
+const EXT_VALUES& CAddonExtensions::GetExtValues() const
+{
+  return m_values;
+}
+
+CAddonExtensions* CAddonExtensions::GetExtElement(std::string id)
+{
+  for (EXT_ELEMENTS::iterator it = m_childs.begin(); it != m_childs.end(); ++it)
+  {
+    if (it->first == id)
+      return &it->second;
+  }
+ 
+  return nullptr;
+}
+
+bool CAddonExtensions::GetExtElements(std::string id, EXT_ELEMENTS &result)
+{
+ 
+  return true;
+}
+
+bool CAddonExtensions::GetExtList(std::string id, std::vector<std::string> &result) const
+{
+ 
+  return true;
+}
+
+void CAddonExtensions::Insert(std::string id, std::string value)
+{
+  EXT_VALUE extension;
+  extension.push_back(std::pair<std::string, std::string>(id, value));
+  m_values.push_back(std::pair<std::string, EXT_VALUE>(id, extension));
+}
+
 /**
  * helper functions 
  *
@@ -238,7 +411,11 @@ AddonProps::AddonProps(const std::string& id,
 {
   DeserializeMetadata(metadata);
   if (!m_id.empty() && m_type > ADDON_UNKNOWN && m_type < ADDON_MAX)
+  {
     m_usable = true;
+
+    SetProvides(GetExtValue("provides"));
+  }
   else
   {
     m_usable = false;
@@ -259,6 +436,7 @@ AddonProps::AddonProps(std::string id, TYPE type)
     m_type(type),
     m_packageSize(0)
 {
+
 }
 
 bool AddonProps::LoadAddonXML(const TiXmlElement* baseElement, std::string addonXmlPath)
@@ -337,6 +515,13 @@ bool AddonProps::LoadAddonXML(const TiXmlElement* baseElement, std::string addon
   {
     cstring = child->Attribute("point");
     std::string point = cstring ? cstring : "";
+
+    if (!ParseExtension(child))
+    {
+      CLog::Log(LOGERROR, "AddonProps: file '%s' doesn't contain a valid add-on extensions (%s)", addonXmlPath.c_str(), point.c_str());
+      return false;
+    }
+
     if (point == "kodi.addon.metadata" || point == "xbmc.addon.metadata")
     {
       /*
@@ -526,6 +711,12 @@ bool AddonProps::LoadAddonXML(const TiXmlElement* baseElement, std::string addon
     }
     else
     {
+//       if (!ParseExtension(child))
+//       {
+//         CLog::Log(LOGERROR, "AddonProps: file '%s' doesn't contain a valid add-on extensions (%s)", addonXmlPath.c_str(), point.c_str());
+//         return false;
+//       }
+
       // Get add-on type
       if (m_type == ADDON_UNKNOWN)
       {
@@ -559,39 +750,9 @@ bool AddonProps::LoadAddonXML(const TiXmlElement* baseElement, std::string addon
     }
   }
 
+  SetProvides(GetExtValue("provides"));
+
   return true;
-}
-
-std::string AddonProps::ExtraInfoValueString(std::string id) const
-{
-  InfoMap::const_iterator it = m_extrainfo.find(id);
-  if (it != m_extrainfo.end())
-    return it->second;
-  return "";
-}
-
-bool AddonProps::ExtraInfoValueBool(std::string id) const
-{
-  InfoMap::const_iterator it = m_extrainfo.find(id);
-  if (it != m_extrainfo.end())
-    return (it->second == "true");
-  return false;
-}
-
-int AddonProps::ExtraInfoValueInt(std::string id) const
-{
-  InfoMap::const_iterator it = m_extrainfo.find(id);
-  if (it != m_extrainfo.end())
-    return atoi(it->second.c_str());
-  return 0;
-}
-
-float AddonProps::ExtraInfoValueFloat(std::string id) const
-{
-  InfoMap::const_iterator it = m_extrainfo.find(id);
-  if (it != m_extrainfo.end())
-    return atof(it->second.c_str());
-  return 0.0f;
 }
 
 std::string AddonProps::SerializeMetadata()
@@ -663,10 +824,11 @@ void AddonProps::DeserializeMetadata(const std::string& document)
   }
   m_dependencies = std::move(deps);
 
-  InfoMap extraInfo;
+  //InfoMap extraInfo;
   for (auto it = variant["extrainfo"].begin_array(); it != variant["extrainfo"].end_array(); ++it)
-    extraInfo.emplace((*it)["key"].asString(), (*it)["value"].asString());
-  m_extrainfo = std::move(extraInfo);
+    Insert((*it)["key"].asString(), (*it)["value"].asString());
+//     extraInfo.emplace((*it)["key"].asString(), (*it)["value"].asString());
+//   m_extrainfo = std::move(extraInfo);
   
   m_usable = true;
 }
@@ -676,6 +838,22 @@ bool AddonProps::MeetsVersion(const AddonVersion &version) const
   return m_minversion <= version && version <= m_version;
 }
 
+AddonProps::SubContent AddonProps::TranslateSubContent(const std::string &content)
+{
+  if (content == "audio")
+    return AddonProps::AUDIO;
+  else if (content == "image")
+    return AddonProps::IMAGE;
+  else if (content == "executable")
+    return AddonProps::EXECUTABLE;
+  else if (content == "video")
+    return AddonProps::VIDEO;
+  else if (content == "game")
+    return AddonProps::GAME;
+  else
+    return AddonProps::UNKNOWN;
+}
+
 std::string AddonProps::LibPath() const
 {
   if (m_libname.empty())
@@ -683,4 +861,31 @@ std::string AddonProps::LibPath() const
   return URIUtils::AddFileToFolder(m_path, m_libname);
 }
 
+void AddonProps::SetProvides(const std::string &content)
+{
+  if (!content.empty())
+  {
+    fprintf(stderr, "---->ID: %s\n", ID().c_str());
+    for (auto provide : StringUtils::Split(content, ' '))
+    {
+      fprintf(stderr, "   ->Provide: %s\n", provide.c_str());
+      SubContent content = TranslateSubContent(provide);
+      if (content != UNKNOWN)
+        m_providedSubContent.insert(content);
+    }
+  }
+  if (m_type == ADDON_SCRIPT && m_providedSubContent.empty())
+    m_providedSubContent.insert(EXECUTABLE);
+}
+
+bool AddonProps::IsType(TYPE type) const
+{
+  return ((type == ADDON_VIDEO && ProvidesSubContent(VIDEO))
+       || (type == ADDON_AUDIO && ProvidesSubContent(AUDIO))
+       || (type == ADDON_IMAGE && ProvidesSubContent(IMAGE))
+       || (type == ADDON_GAME && ProvidesSubContent(GAME))
+       || (type == ADDON_EXECUTABLE && ProvidesSubContent(EXECUTABLE))
+       || (type == m_type));
+}
+    
 } /* namespace ADDON */
