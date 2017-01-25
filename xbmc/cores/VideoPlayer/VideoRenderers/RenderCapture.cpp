@@ -507,7 +507,7 @@ void CRenderCaptureDX::OnLostDevice()
   SetState(CAPTURESTATE_FAILED);
 }
 
-void CRenderCaptureDX::OnDestroyDevice()
+void CRenderCaptureDX::OnDestroyDevice(bool fatal)
 {
   CleanupDX();
   SetState(CAPTURESTATE_FAILED);

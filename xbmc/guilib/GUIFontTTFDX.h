@@ -44,21 +44,21 @@ public:
   CGUIFontTTFDX(const std::string& strFileName);
   virtual ~CGUIFontTTFDX(void);
 
-  virtual bool FirstBegin();
-  virtual void LastEnd();
-  virtual CVertexBuffer CreateVertexBuffer(const std::vector<SVertex> &vertices) const;
-  virtual void DestroyVertexBuffer(CVertexBuffer &bufferHandle) const;
+  bool FirstBegin() override;
+  void LastEnd() override;
+  CVertexBuffer CreateVertexBuffer(const std::vector<SVertex> &vertices) const override;
+  void DestroyVertexBuffer(CVertexBuffer &bufferHandle) const override;
 
-  virtual void OnDestroyDevice();
-  virtual void OnCreateDevice();
+  void OnDestroyDevice(bool fatal) override;
+  void OnCreateDevice() override;
 
   static void CreateStaticIndexBuffer(void);
   static void DestroyStaticIndexBuffer(void);
 
 protected:
-  virtual CBaseTexture* ReallocTexture(unsigned int& newHeight);
-  virtual bool CopyCharToTexture(FT_BitmapGlyph bitGlyph, unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2);
-  virtual void DeleteHardwareTexture();
+  CBaseTexture* ReallocTexture(unsigned int& newHeight) override;
+  bool CopyCharToTexture(FT_BitmapGlyph bitGlyph, unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2) override;
+  void DeleteHardwareTexture() override;
 
 private:
   bool UpdateDynamicVertexBuffer(const SVertex* pSysMem, unsigned int count);

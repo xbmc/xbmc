@@ -383,16 +383,13 @@ void CD3DTexture::SaveTexture()
   }
 }
 
-void CD3DTexture::OnDestroyDevice()
+void CD3DTexture::OnDestroyDevice(bool fatal)
 {
-  SaveTexture();
+  if (!fatal)
+    SaveTexture();
   SAFE_RELEASE(m_texture);
   SAFE_RELEASE(m_textureView);
   SAFE_RELEASE(m_renderTarget);
-}
-
-void CD3DTexture::OnLostDevice()
-{
 }
 
 void CD3DTexture::RestoreTexture()
@@ -414,10 +411,6 @@ void CD3DTexture::RestoreTexture()
 void CD3DTexture::OnCreateDevice()
 {
   RestoreTexture();
-}
-
-void CD3DTexture::OnResetDevice()
-{
 }
 
 unsigned int CD3DTexture::GetMemoryUsage(unsigned int pitch) const
@@ -533,10 +526,10 @@ bool CD3DEffect::Create(const std::string &effectString, DefinesMap* defines)
 void CD3DEffect::Release()
 {
   g_Windowing.Unregister(this);
-  OnDestroyDevice();
+  OnDestroyDevice(false);
 }
 
-void CD3DEffect::OnDestroyDevice()
+void CD3DEffect::OnDestroyDevice(bool fatal)
 {
   SAFE_RELEASE(m_effect);
   m_techniquie = nullptr;
@@ -790,8 +783,14 @@ bool CD3DBuffer::Unmap()
   return false;
 }
 
-void CD3DBuffer::OnDestroyDevice()
+void CD3DBuffer::OnDestroyDevice(bool fatal)
 {
+  if (fatal)
+  {
+    SAFE_RELEASE(m_buffer);
+    return;
+  }
+
   ID3D11Device* pDevice = g_Windowing.Get3D11Device();
   ID3D11DeviceContext* pContext = g_Windowing.GetImmediateContext();
 
@@ -1005,7 +1004,7 @@ void CD3DVertexShader::OnCreateDevice()
     m_inited = CreateInternal();
 }
 
-void CD3DVertexShader::OnDestroyDevice()
+void CD3DVertexShader::OnDestroyDevice(bool fatal)
 {
   ReleaseShader();
 }
@@ -1130,7 +1129,7 @@ void CD3DPixelShader::OnCreateDevice()
     m_inited = CreateInternal();
 }
 
-void CD3DPixelShader::OnDestroyDevice()
+void CD3DPixelShader::OnDestroyDevice(bool fatal)
 {
   ReleaseShader();
 }
