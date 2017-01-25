@@ -54,9 +54,17 @@ class XBPython;
 class CDataCacheCore;
 class CSettings;
 
+namespace GAME
+{
+  class CGameServices;
+}
+
 class CServiceManager
 {
 public:
+  CServiceManager();
+  ~CServiceManager();
+
   bool Init1();
   bool Init2();
   bool Init3();
@@ -74,6 +82,7 @@ public:
   /**\brief Get the platform object. This is save to be called after Init1() was called
    */
   CPlatform& GetPlatform();
+  GAME::CGameServices& GetGameServices();
 
   PLAYLIST::CPlayListPlayer& GetPlaylistPlayer();
   int init_level = 0;
@@ -104,4 +113,5 @@ protected:
   std::unique_ptr<CPlatform> m_Platform;
   std::unique_ptr<PLAYLIST::CPlayListPlayer> m_playlistPlayer;
   std::unique_ptr<CSettings> m_settings;
+  std::unique_ptr<GAME::CGameServices> m_gameServices;
 };
