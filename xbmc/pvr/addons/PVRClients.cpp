@@ -220,8 +220,13 @@ bool CPVRClients::StopClient(const AddonPtr &client, bool bRestart)
     if (bRestart)
       mappedClient->ReCreate();
     else
-      mappedClient->Destroy();
+    {
+      const auto it = m_clientMap.find(iId);
+      if (it != m_clientMap.end())
+        m_clientMap.erase(it);
 
+      mappedClient->Destroy();
+    }
     return true;
   }
 
