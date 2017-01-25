@@ -24,12 +24,12 @@
 class CAddonManagementEvent : public CAddonEvent
 {
 public:
-  CAddonManagementEvent(ADDON::AddonPropsPtr addonProps, const CVariant& description);
-  CAddonManagementEvent(ADDON::AddonPropsPtr addonProps, const CVariant& description, const CVariant& details);
-  CAddonManagementEvent(ADDON::AddonPropsPtr addonProps, const CVariant& description, const CVariant& details, const CVariant& executionLabel);
-  CAddonManagementEvent(ADDON::AddonPropsPtr addonProps, EventLevel level, const CVariant& description);
-  CAddonManagementEvent(ADDON::AddonPropsPtr addonProps, EventLevel level, const CVariant& description, const CVariant& details);
-  CAddonManagementEvent(ADDON::AddonPropsPtr addonProps, EventLevel level, const CVariant& description, const CVariant& details, const CVariant& executionLabel);
+  CAddonManagementEvent(ADDON::AddonInfoPtr addonInfo, const CVariant& description);
+  CAddonManagementEvent(ADDON::AddonInfoPtr addonInfo, const CVariant& description, const CVariant& details);
+  CAddonManagementEvent(ADDON::AddonInfoPtr addonInfo, const CVariant& description, const CVariant& details, const CVariant& executionLabel);
+  CAddonManagementEvent(ADDON::AddonInfoPtr addonInfo, EventLevel level, const CVariant& description);
+  CAddonManagementEvent(ADDON::AddonInfoPtr addonInfo, EventLevel level, const CVariant& description, const CVariant& details);
+  CAddonManagementEvent(ADDON::AddonInfoPtr addonInfo, EventLevel level, const CVariant& description, const CVariant& details, const CVariant& executionLabel);
   virtual ~CAddonManagementEvent() { }
 
   virtual const char* GetType() const { return "AddonManagementEvent"; }
@@ -37,7 +37,7 @@ public:
 
   virtual bool CanExecute() const
   {
-    if (m_addon != nullptr || m_addonProps != nullptr)
+    if (m_addonInfo != nullptr)
       return true;
     return false;
   }

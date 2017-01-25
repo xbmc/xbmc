@@ -128,7 +128,7 @@ void CAddonInstaller::GetInstallList(AddonInfos &addonInfos) const
   database.Open();
   for (auto id : addonIDs)
   {
-    AddonPropsPtr addon;
+    AddonInfoPtr addon;
     if (database.GetAddonInfo(id, addon))
       addonInfos.push_back(addon);
   }
@@ -175,7 +175,7 @@ bool CAddonInstaller::InstallModal(const std::string &addonID, bool promptForIns
   // check we have it available
   CAddonDatabase database;
   database.Open();
-  ADDON::AddonPropsPtr addonInfo;
+  ADDON::AddonInfoPtr addonInfo;
   if (!database.GetAddonInfo(addonID, addonInfo))
     return false;
 
@@ -198,7 +198,7 @@ bool CAddonInstaller::InstallModal(const std::string &addonID, bool promptForIns
 
 bool CAddonInstaller::InstallOrUpdate(const std::string &addonID, bool background /* = true */, bool modal /* = false */)
 {
-  AddonPropsPtr addon;
+  AddonInfoPtr addon;
   RepositoryPtr repo;
   std::string hash;
   if (!CAddonInstallJob::GetAddonWithHash(addonID, repo, addon, hash))
@@ -212,7 +212,7 @@ void CAddonInstaller::Install(const std::string& addonId, const AddonVersion& ve
   CLog::Log(LOGDEBUG, "CAddonInstaller: installing '%s' version '%s' from repository '%s'",
       addonId.c_str(), version.asString().c_str(), repoId.c_str());
 
-  AddonPropsPtr addon;
+  AddonInfoPtr addon;
   CAddonDatabase database;
 
   if (!database.Open() || !database.GetAddonInfo(addonId, version, repoId, addon))
@@ -228,7 +228,7 @@ void CAddonInstaller::Install(const std::string& addonId, const AddonVersion& ve
   DoInstall(addon, std::static_pointer_cast<CRepository>(repo), hash, true, false);
 }
 
-bool CAddonInstaller::DoInstall(const AddonPropsPtr &addon, const RepositoryPtr& repo,
+bool CAddonInstaller::DoInstall(const AddonInfoPtr &addon, const RepositoryPtr& repo,
     const std::string &hash /* = "" */, bool background /* = true */, bool modal /* = false */)
 {
   // check whether we already have the addon installing
@@ -287,7 +287,7 @@ bool CAddonInstaller::InstallFromZip(const std::string &path)
     return false;
   }
 
-  AddonPropsPtr addon;
+  AddonInfoPtr addon;
   if (CAddonMgr::GetInstance().LoadAddonDescription(items[0]->GetPath(), addon))
     return DoInstall(addon, RepositoryPtr());
 
@@ -297,13 +297,13 @@ bool CAddonInstaller::InstallFromZip(const std::string &path)
   return false;
 }
 
-bool CAddonInstaller::CheckDependencies(const AddonPropsPtr &addon, CAddonDatabase *database /* = NULL */)
+bool CAddonInstaller::CheckDependencies(const AddonInfoPtr &addon, CAddonDatabase *database /* = NULL */)
 {
   std::pair<std::string, std::string> failedDep;
   return CheckDependencies(addon, failedDep, database);
 }
 
-bool CAddonInstaller::CheckDependencies(const AddonPropsPtr &addon, std::pair<std::string, std::string> &failedDep, CAddonDatabase *database /* = NULL */)
+bool CAddonInstaller::CheckDependencies(const AddonInfoPtr &addon, std::pair<std::string, std::string> &failedDep, CAddonDatabase *database /* = NULL */)
 {
   std::vector<std::string> preDeps;
   preDeps.push_back(addon->ID());
@@ -314,7 +314,7 @@ bool CAddonInstaller::CheckDependencies(const AddonPropsPtr &addon, std::pair<st
   return CheckDependencies(addon, preDeps, *database, failedDep);
 }
 
-bool CAddonInstaller::CheckDependencies(const AddonPropsPtr &addon,
+bool CAddonInstaller::CheckDependencies(const AddonInfoPtr &addon,
                                         std::vector<std::string>& preDeps, CAddonDatabase &database,
                                         std::pair<std::string, std::string> &failedDep)
 {
@@ -330,7 +330,7 @@ bool CAddonInstaller::CheckDependencies(const AddonPropsPtr &addon,
     const std::string &addonID = i->first;
     const AddonVersion &version = i->second.first;
     bool optional = i->second.second;
-    AddonPropsPtr dep = CAddonMgr::GetInstance().GetInstalledAddonInfo(addonID);
+    AddonInfoPtr dep = CAddonMgr::GetInstance().GetInstalledAddonInfo(addonID);
     if ((dep && !dep->MeetsVersion(version)) || (!dep && !optional))
     {
       // we have it but our version isn't good enough, or we don't have it and we need it
@@ -464,7 +464,7 @@ int64_t CAddonInstaller::EnumeratePackageFolder(std::map<std::string,CFileItemLi
   return size;
 }
 
-CAddonInstallJob::CAddonInstallJob(const AddonPropsPtr &addon, const AddonPtr &repo, const std::string &hash /* = "" */)
+CAddonInstallJob::CAddonInstallJob(const AddonInfoPtr &addon, const AddonPtr &repo, const std::string &hash /* = "" */)
   : m_addon(addon),
     m_repo(repo),
     m_hash(hash)
@@ -473,7 +473,7 @@ CAddonInstallJob::CAddonInstallJob(const AddonPropsPtr &addon, const AddonPtr &r
 }
 
 bool CAddonInstallJob::GetAddonWithHash(const std::string& addonID, RepositoryPtr& repo,
-    ADDON::AddonPropsPtr& addon, std::string& hash)
+    ADDON::AddonInfoPtr& addon, std::string& hash)
 {
   if (!CAddonMgr::GetInstance().FindInstallableById(addonID, addon))
     return false;
@@ -690,7 +690,7 @@ bool CAddonInstallJob::Install(const std::string &installFrom, const AddonPtr& r
       const std::string &addonID = it->first;
       const AddonVersion &version = it->second.first;
       bool optional = it->second.second;
-      AddonPropsPtr dependency = CAddonMgr::GetInstance().GetInstalledAddonInfo(addonID);
+      AddonInfoPtr dependency = CAddonMgr::GetInstance().GetInstalledAddonInfo(addonID);
       if ((dependency && !dependency->MeetsVersion(version)) || (!dependency && !optional))
       {
         // we have it but our version isn't good enough, or we don't have it and we need it
@@ -714,7 +714,7 @@ bool CAddonInstallJob::Install(const std::string &installFrom, const AddonPtr& r
         else if (IsModal())
         {
           RepositoryPtr repoForDep;
-          AddonPropsPtr addon;
+          AddonInfoPtr addon;
           std::string hash;
           if (!CAddonInstallJob::GetAddonWithHash(addonID, repoForDep, addon, hash))
           {
@@ -766,7 +766,7 @@ bool CAddonInstallJob::Install(const std::string &installFrom, const AddonPtr& r
 
 void CAddonInstallJob::ReportInstallError(const std::string& addonID, const std::string& fileName, const std::string& message /* = "" */)
 {
-  AddonPropsPtr addon;
+  AddonInfoPtr addon;
   CAddonDatabase database;
   if (database.Open())
   {
@@ -780,7 +780,7 @@ void CAddonInstallJob::ReportInstallError(const std::string& addonID, const std:
   EventPtr activity;
   if (addon != NULL)
   {
-    AddonPropsPtr addon2 = CAddonMgr::GetInstance().GetInstalledAddonInfo(addonID);
+    AddonInfoPtr addon2 = CAddonMgr::GetInstance().GetInstalledAddonInfo(addonID);
     if (msg.empty())
       msg = g_localizeStrings.Get(addon2 != NULL ? 113 : 114);
 
@@ -801,7 +801,7 @@ void CAddonInstallJob::ReportInstallError(const std::string& addonID, const std:
   CEventLog::GetInstance().Add(activity, !IsModal(), false);
 }
 
-CAddonUnInstallJob::CAddonUnInstallJob(const AddonPropsPtr &addon, bool removeData)
+CAddonUnInstallJob::CAddonUnInstallJob(const AddonInfoPtr &addon, bool removeData)
   : m_addon(addon)
 { }
 
@@ -828,7 +828,7 @@ bool CAddonUnInstallJob::DoWork()
   if (m_removeData)
     CFileUtils::DeleteItem("special://profile/addon_data/"+m_addon->ID()+"/", true);
 
-  AddonPropsPtr addon;
+  AddonInfoPtr addon;
   CAddonDatabase database;
   // try to get the addon object from the repository as the local one does not exist anymore
   // if that doesn't work fall back to the local one

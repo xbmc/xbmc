@@ -56,7 +56,7 @@ static void DeserializeMetadata(const std::string& document, CAddonBuilder& buil
     screenshots.push_back(it->asString());
   builder.SetScreenshots(std::move(screenshots));
 
-  builder.SetType(AddonProps::TranslateType(variant["extensions"][0].asString()));
+  builder.SetType(CAddonInfo::TranslateType(variant["extensions"][0].asString()));
 
   ADDONDEPS deps;
   for (auto it = variant["dependencies"].begin_array(); it != variant["dependencies"].end_array(); ++it)
@@ -359,7 +359,7 @@ void CAddonDatabase::GetInstalled(std::vector<CAddonBuilder>& addons)
   }
 }
 
-void CAddonDatabase::GetInstallData(AddonPropsPtr addonProps)
+void CAddonDatabase::GetInstallData(AddonInfoPtr addonProps)
 {
   try
   {
@@ -532,7 +532,7 @@ bool CAddonDatabase::FindByAddonId(const std::string& addonId, ADDON::AddonInfos
     m_pDS->query(sql.c_str());
     while (!m_pDS->eof())
     {
-      AddonPropsPtr usedInfo = std::make_shared<AddonProps>(
+      AddonInfoPtr usedInfo = std::make_shared<CAddonInfo>(
                                   addonId,                       /* id */
                                   AddonVersion(m_pDS2->fv(0).get_asString()),
                                   m_pDS2->fv(1).get_asString(),  /* name */
@@ -622,7 +622,7 @@ bool CAddonDatabase::GetAddon(const std::string& addonID, const AddonVersion& ve
   return false;
 }
 
-bool CAddonDatabase::GetAddonInfo(const std::string& addonID, const AddonVersion& version, const std::string& repoId, AddonPropsPtr& info)
+bool CAddonDatabase::GetAddonInfo(const std::string& addonID, const AddonVersion& version, const std::string& repoId, AddonInfoPtr& info)
 {
   try
   {
@@ -690,7 +690,7 @@ bool CAddonDatabase::GetAddon(const std::string& id, AddonPtr& addon)
   return false;
 }
 
-bool CAddonDatabase::GetAddonInfo(const std::string& id, AddonPropsPtr& info)
+bool CAddonDatabase::GetAddonInfo(const std::string& id, AddonInfoPtr& info)
 {
   try
   {
@@ -759,7 +759,7 @@ fprintf(stderr, "-22-----xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx----------- %
   return false;
 }
 
-bool CAddonDatabase::GetAddonInfo(int id, AddonPropsPtr &info)
+bool CAddonDatabase::GetAddonInfo(int id, AddonInfoPtr &info)
 {
   try
   {
@@ -772,7 +772,7 @@ bool CAddonDatabase::GetAddonInfo(int id, AddonPropsPtr &info)
     if (m_pDS2->eof())
       return false;
 
-    AddonPropsPtr usedInfo = std::make_shared<AddonProps>(
+    AddonInfoPtr usedInfo = std::make_shared<CAddonInfo>(
                                 m_pDS2->fv(2).get_asString(),  /* id */
                                 AddonVersion(m_pDS2->fv(3).get_asString()),
                                 m_pDS2->fv(4).get_asString(),  /* name */
@@ -968,7 +968,7 @@ bool CAddonDatabase::GetRepositoryContent(const std::string& id, AddonInfos& add
         continue;
       }
 
-      AddonPropsPtr usedInfo = std::make_shared<AddonProps>(
+      AddonInfoPtr usedInfo = std::make_shared<CAddonInfo>(
                                   addonId,                      /* id */
                                   version,                      /* version */
                                   m_pDS->fv(4).get_asString(),  /* name */
@@ -1068,7 +1068,7 @@ bool CAddonDatabase::GetRepositoryContent(AddonInfos& addons, TYPE type/* = ADDO
         continue;
       }
 
-      AddonPropsPtr usedInfo = std::make_shared<AddonProps>(
+      AddonInfoPtr usedInfo = std::make_shared<CAddonInfo>(
                                   addonId,                      /* id */
                                   version,                      /* version */
                                   m_pDS->fv(4).get_asString(),  /* name */
@@ -1310,7 +1310,7 @@ bool CAddonDatabase::Search(const std::string& search, AddonInfos& addons)
 
     while (!m_pDS->eof())
     {
-      AddonPropsPtr addon;
+      AddonInfoPtr addon;
       GetAddonInfo(m_pDS->fv(0).get_asString(), addon);
       if (addon->Type() >= ADDON_UNKNOWN+1 && addon->Type() < ADDON_SCRAPER_LIBRARY)
         addons.push_back(addon);

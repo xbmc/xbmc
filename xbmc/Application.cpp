@@ -1459,12 +1459,12 @@ void CApplication::OnSettingAction(const CSetting *setting)
     ActivateScreenSaver(true);
   else if (settingId == CSettings::SETTING_SCREENSAVER_SETTINGS)
   {
-    AddonPropsPtr addon = CAddonMgr::GetInstance().GetInstalledAddonInfo(ADDON_SCREENSAVER, m_ServiceManager->GetSettings().GetString(CSettings::SETTING_SCREENSAVER_MODE));
+    AddonInfoPtr addon = CAddonMgr::GetInstance().GetInstalledAddonInfo(ADDON_SCREENSAVER, m_ServiceManager->GetSettings().GetString(CSettings::SETTING_SCREENSAVER_MODE));
     CGUIDialogAddonSettings::ShowAndGetInput(addon);
   }
   else if (settingId == CSettings::SETTING_AUDIOCDS_SETTINGS)
   {
-    AddonPropsPtr addon = CAddonMgr::GetInstance().GetInstalledAddonInfo(ADDON_AUDIOENCODER, m_ServiceManager->GetSettings().GetString(CSettings::SETTING_AUDIOCDS_ENCODER));
+    AddonInfoPtr addon = CAddonMgr::GetInstance().GetInstalledAddonInfo(ADDON_AUDIOENCODER, m_ServiceManager->GetSettings().GetString(CSettings::SETTING_AUDIOCDS_ENCODER));
     CGUIDialogAddonSettings::ShowAndGetInput(addon);
   }
   else if (settingId == CSettings::SETTING_VIDEOSCREEN_GUICALIBRATION)

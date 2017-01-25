@@ -57,8 +57,8 @@ using XFILE::CFile;
 namespace ADDON
 {
 
-CAddon::CAddon(AddonProps props)
-  : m_props(std::move(props))
+CAddon::CAddon(CAddonInfo props)
+  : m_addonInfo(std::move(props))
 {
   m_profilePath = StringUtils::Format("special://profile/addon_data/%s/", ID().c_str());
   m_userSettingsPath = URIUtils::AddFileToFolder(m_profilePath, "settings.xml");
@@ -69,7 +69,7 @@ CAddon::CAddon(AddonProps props)
 
 bool CAddon::MeetsVersion(const AddonVersion &version) const
 {
-  return m_props.m_minversion <= version && version <= m_props.m_version;
+  return m_addonInfo.m_minversion <= version && version <= m_addonInfo.m_version;
 }
 
 /**
@@ -86,7 +86,7 @@ bool CAddon::LoadSettings(bool bForce /* = false*/)
     return true;
   if (!m_hasSettings)
     return false;
-  std::string addonFileName = URIUtils::AddFileToFolder(m_props.m_path, "resources", "settings.xml");
+  std::string addonFileName = URIUtils::AddFileToFolder(m_addonInfo.m_path, "resources", "settings.xml");
 
   if (!m_addonXmlDoc.LoadFile(addonFileName))
   {
@@ -242,9 +242,9 @@ TiXmlElement* CAddon::GetSettingsXML()
 
 std::string CAddon::LibPath() const
 {
-  if (m_props.m_libname.empty())
+  if (m_addonInfo.m_libname.empty())
     return "";
-  return URIUtils::AddFileToFolder(m_props.m_path, m_props.m_libname);
+  return URIUtils::AddFileToFolder(m_addonInfo.m_path, m_addonInfo.m_libname);
 }
 
 AddonVersion CAddon::GetDependencyVersion(const std::string &dependencyID) const

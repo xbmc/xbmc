@@ -80,15 +80,11 @@ namespace ADDON
   class AddonVersion;
   typedef std::map<std::string, std::pair<const AddonVersion, bool> > ADDONDEPS;
   typedef std::map<std::string, std::string> InfoMap;
-  class AddonProps;
 
-  class AddonProps;
-  typedef std::shared_ptr<AddonProps> AddonPropsPtr;
-  typedef std::vector<AddonPropsPtr> AddonInfos;
-  typedef std::vector<AddonPropsPtr>::iterator AddonInfosIter;
-  
-  typedef std::vector<AddonPropsPtr> AddonPropsList;
-  typedef std::vector<AddonPropsPtr>::iterator AddonPropsListIter;
+  class CAddonInfo;
+  typedef std::shared_ptr<CAddonInfo> AddonInfoPtr;
+  typedef std::vector<AddonInfoPtr> AddonInfos;
+  typedef std::vector<AddonInfoPtr>::iterator AddonInfosIter;
 
   class CAddon;
   class CAddonBuilder;
@@ -118,7 +114,7 @@ namespace ADDON
     EXT_ELEMENTS m_childs;
   };
   
-  class AddonProps : public CAddonExtensions
+  class CAddonInfo : public CAddonExtensions
   {
   public:
     enum SubContent
@@ -137,7 +133,7 @@ namespace ADDON
      *
      * @param[in] addonPath The folder name where addon.xml is included
      */
-    AddonProps(std::string addonPath);
+    CAddonInfo(std::string addonPath);
 
     /*!
      * @brief Class constructor used for repository list of addons where not
@@ -151,7 +147,7 @@ namespace ADDON
      *                             For this class constructor it contains the
      *                             big addons.xml from repository!
      */
-    AddonProps(const TiXmlElement* baseElement, std::string addonRepoXmlPath);
+    CAddonInfo(const TiXmlElement* baseElement, std::string addonRepoXmlPath);
 
     /*!
      * @brief Class constructor used for already known parts, like from
@@ -168,7 +164,7 @@ namespace ADDON
      * @param[in] changelog The changelog
      * @param[in] origin
      */
-    AddonProps(const std::string& id,
+    CAddonInfo(const std::string& id,
                const AddonVersion& version,
                const std::string& name,
                const std::string& summary,
@@ -177,8 +173,8 @@ namespace ADDON
                const std::string& changelog,
                const std::string& origin);
 
-    AddonProps();
-    AddonProps(std::string id, TYPE type);
+    CAddonInfo();
+    CAddonInfo(std::string id, TYPE type);
 
     /*!
      * @brief To ask generated class is usable and all needed parts are set.

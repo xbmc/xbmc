@@ -32,10 +32,10 @@ namespace ADDON
 class CImageResource : public CResource
 {
 public:
-  static std::unique_ptr<CImageResource> FromExtension(AddonProps props, const cp_extension_t* ext);
+  static std::unique_ptr<CImageResource> FromExtension(CAddonInfo addonInfo, const cp_extension_t* ext);
 
-  explicit CImageResource(AddonProps props) : CResource(std::move(props)) {};
-  CImageResource(AddonProps props, std::string type);
+  explicit CImageResource(CAddonInfo addonInfo) : CResource(std::move(addonInfo)) {};
+  CImageResource(CAddonInfo addonInfo, std::string type);
 
   virtual void OnPreUnInstall();
 

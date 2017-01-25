@@ -45,7 +45,7 @@ namespace ADDON
   typedef std::map<TYPE, VECADDONS>::iterator IMAPADDONS;
   typedef std::vector<cp_cfg_element_t*> ELEMENTS;
 
-  typedef std::map<std::string, AddonPropsPtr> AddonInfoList;
+  typedef std::map<std::string, AddonInfoPtr> AddonInfoList;
   typedef std::map<TYPE, AddonInfoList> AddonInfoMap;
 
   const std::string ADDON_PYTHON_EXT           = "*.py";
@@ -123,7 +123,7 @@ namespace ADDON
 
     /*! Get the installable addon with the highest version. */
     bool FindInstallableById(const std::string& addonId, AddonPtr& addon);
-    bool FindInstallableById(const std::string& addonId, AddonPropsPtr& addon);
+    bool FindInstallableById(const std::string& addonId, AddonInfoPtr& addon);
 
     void AddToUpdateableAddons(AddonPtr &pAddon);
     void RemoveFromUpdateableAddons(AddonPtr &pAddon);    
@@ -166,9 +166,9 @@ namespace ADDON
 
     bool CanUninstall(const AddonPtr& addon);
 
-    bool CanAddonBeInstalled(const AddonPropsPtr& addonProps);
+    bool CanAddonBeInstalled(const AddonInfoPtr& addonInfo);
 
-    bool CanUninstall(const AddonPropsPtr& addonProps);
+    bool CanUninstall(const AddonInfoPtr& addonInfo);
     
     void UpdateLastUsed(const std::string& id);
 
@@ -213,7 +213,7 @@ namespace ADDON
      \return true if addon is set, false otherwise.
      */
     bool LoadAddonDescription(const std::string &path, AddonPtr &addon);
-    bool LoadAddonDescription(const std::string &path, AddonPropsPtr &addon);
+    bool LoadAddonDescription(const std::string &path, AddonInfoPtr &addon);
 
     /*! \brief Parse a repository XML file for addons and load their descriptors
      A repository XML is essentially a concatenated list of addon descriptors.
@@ -238,8 +238,8 @@ namespace ADDON
     static bool Factory(const cp_plugin_info_t* plugin, TYPE type, CAddonBuilder& builder);
     static void FillCpluffMetadata(const cp_plugin_info_t* plugin, CAddonBuilder& builder);
 
-    const AddonPropsPtr GetInstalledAddonInfo(const std::string& addonId);
-    const AddonPropsPtr GetInstalledAddonInfo(TYPE addonType, std::string addonId);
+    const AddonInfoPtr GetInstalledAddonInfo(const std::string& addonId);
+    const AddonInfoPtr GetInstalledAddonInfo(TYPE addonType, std::string addonId);
 
 
     /*!
@@ -351,11 +351,11 @@ namespace ADDON
      * ...
      * ```
      *
-     * @param[in] addonProps The add-on properties to compare to dependency
+     * @param[in] addonInfo The add-on properties to compare to dependency
      *                       versions.
      * @return true if compatible, if not returns it false.
      */
-    bool IsCompatible(const AddonProps& addonProps);
+    bool IsCompatible(const CAddonInfo& addonInfo);
 
 
 

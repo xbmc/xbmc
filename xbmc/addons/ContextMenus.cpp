@@ -41,7 +41,7 @@ bool CAddonSettings::IsVisible(const CFileItem& item) const
 
 bool CAddonSettings::Execute(const CFileItemPtr& item) const
 {
-  AddonPropsPtr addon = CAddonMgr::GetInstance().GetInstalledAddonInfo(item->GetAddonInfo()->ID());
+  AddonInfoPtr addon = CAddonMgr::GetInstance().GetInstalledAddonInfo(item->GetAddonInfo()->ID());
   return CGUIDialogAddonSettings::ShowAndGetInput(addon);
 }
 

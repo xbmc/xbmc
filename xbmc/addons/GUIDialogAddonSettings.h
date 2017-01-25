@@ -38,7 +38,7 @@ public:
    \param saveToDisk whether the changes should be saved to disk or just made local to the addon.  Defaults to true
    \return true if settings were changed and the dialog confirmed, false otherwise.
    */
-  static bool ShowAndGetInput(const ADDON::AddonPropsPtr &addon, bool saveToDisk = true);
+  static bool ShowAndGetInput(const ADDON::AddonInfoPtr &addon, bool saveToDisk = true);
   virtual void DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions);
 
   std::string GetCurrentID() const;
@@ -83,7 +83,7 @@ private:
 
   const TiXmlElement *GetFirstSetting() const;
 
-  ADDON::AddonPropsPtr m_addon;
+  ADDON::AddonInfoPtr m_addon;
   std::map<std::string,std::string> m_buttonValues;
   bool m_saveToDisk; // whether the addon settings should be saved to disk or just stored locally in the addon
 

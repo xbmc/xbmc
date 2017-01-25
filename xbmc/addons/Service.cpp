@@ -26,18 +26,18 @@
 namespace ADDON
 {
 
-std::unique_ptr<CService> CService::FromExtension(AddonProps props, const cp_extension_t* ext)
+std::unique_ptr<CService> CService::FromExtension(CAddonInfo addonInfo, const cp_extension_t* ext)
 {
   START_OPTION startOption(LOGIN);
   std::string start = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@start");
   if (start == "startup")
     startOption = STARTUP;
-  return std::unique_ptr<CService>(new CService(std::move(props), TYPE(UNKNOWN), startOption));
+  return std::unique_ptr<CService>(new CService(std::move(addonInfo), TYPE(UNKNOWN), startOption));
 }
 
 
-CService::CService(AddonProps props, TYPE type, START_OPTION startOption)
-  : CAddon(std::move(props)), m_type(type), m_startOption(startOption)
+CService::CService(CAddonInfo addonInfo, TYPE type, START_OPTION startOption)
+  : CAddon(std::move(addonInfo)), m_type(type), m_startOption(startOption)
 {
   BuildServiceType();
 }

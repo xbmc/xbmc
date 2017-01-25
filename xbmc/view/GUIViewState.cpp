@@ -569,12 +569,12 @@ CGUIViewStateFromItems::CGUIViewStateFromItems(const CFileItemList &items) : CGU
   if (items.IsPlugin())
   {
     CURL url(items.GetPath());
-    AddonPropsPtr addon = CAddonMgr::GetInstance().GetInstalledAddonInfo(ADDON_PLUGIN, url.GetHostName());
+    AddonInfoPtr addon = CAddonMgr::GetInstance().GetInstalledAddonInfo(ADDON_PLUGIN, url.GetHostName());
     if (addon)
     {
-      if (addon->ProvidesSubContent(AddonProps::VIDEO))
+      if (addon->ProvidesSubContent(CAddonInfo::VIDEO))
         m_playlist = PLAYLIST_VIDEO;
-      else if (addon->ProvidesSubContent(AddonProps::AUDIO))
+      else if (addon->ProvidesSubContent(CAddonInfo::AUDIO))
         m_playlist = PLAYLIST_MUSIC;
     }
   }

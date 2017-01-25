@@ -329,7 +329,7 @@ CFileItem::CFileItem(std::shared_ptr<const ADDON::CAddon> addonInfo) : m_addonIn
   Initialize();
 }
 
-CFileItem::CFileItem(std::shared_ptr<const ADDON::AddonProps> addonInfo) : m_addonPropsInfo(std::move(addonInfo))
+CFileItem::CFileItem(std::shared_ptr<const ADDON::CAddonInfo> addonInfo) : m_addonInfoInfo(std::move(addonInfo))
 {
   Initialize();
 }

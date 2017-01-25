@@ -6660,7 +6660,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
     break;
   case VISUALISATION_NAME:
     {
-      AddonPropsPtr addon = CAddonMgr::GetInstance().GetInstalledAddonInfo(ADDON_VIZ, CServiceBroker::GetSettings().GetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION));
+      AddonInfoPtr addon = CAddonMgr::GetInstance().GetInstalledAddonInfo(ADDON_VIZ, CServiceBroker::GetSettings().GetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION));
       if (addon)
         strLabel = addon->Name();
     }
@@ -8091,7 +8091,7 @@ std::string CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextW
     // it simply retrieves it's name or icon that means if an addon is placed on the home screen it
     // will stay there even if it's disabled/marked as broken. This might need to be changed/fixed
     // in the future.
-    AddonPropsPtr addon;
+    AddonInfoPtr addon;
     if (info.GetData2() == 0)
       addon = CAddonMgr::GetInstance().GetInstalledAddonInfo(const_cast<CGUIInfoManager*>(this)->GetLabel(info.GetData1(), contextWindow));
     else
@@ -10529,7 +10529,7 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
     break;
   case LISTITEM_ADDON_TYPE:
     if (item->HasAddonInfo())
-      return ADDON::AddonProps::TranslateType(item->GetAddonInfo()->Type(),true);
+      return ADDON::CAddonInfo::TranslateType(item->GetAddonInfo()->Type(),true);
     break;
   case LISTITEM_ADDON_INSTALL_DATE:
     if (item->HasAddonInfo())
@@ -10548,7 +10548,7 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
     {
       if (item->GetAddonInfo()->Origin() == ORIGIN_SYSTEM)
         return g_localizeStrings.Get(24992);
-      AddonPropsPtr origin = CAddonMgr::GetInstance().GetInstalledAddonInfo(ADDON_REPOSITORY, item->GetAddonInfo()->Origin());
+      AddonInfoPtr origin = CAddonMgr::GetInstance().GetInstalledAddonInfo(ADDON_REPOSITORY, item->GetAddonInfo()->Origin());
       if (origin)
         return origin->Name();
       return g_localizeStrings.Get(13205);

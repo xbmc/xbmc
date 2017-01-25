@@ -252,7 +252,7 @@ void CGUIDialogSubtitles::FillServices()
   std::string service = addons.front()->ID();
   for (const auto addon : addons)
   {
-    CFileItemPtr item(CAddonsDirectory::FileItemFromAddonProps(addon, "plugin://" + addon->ID(), false));
+    CFileItemPtr item(CAddonsDirectory::FileItemFromAddonInfo(addon, "plugin://" + addon->ID(), false));
     m_serviceItems->Add(item);
     if (addon->ID() == defaultService)
       service = addon->ID();

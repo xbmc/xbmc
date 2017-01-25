@@ -36,11 +36,11 @@ public:
 
   /*! @deprecated: use CAddonMgr::FindInstallableById */
   bool GetAddon(const std::string& addonID, ADDON::AddonPtr& addon);
-  bool GetAddonInfo(const std::string& addonID, ADDON::AddonPropsPtr& info);
+  bool GetAddonInfo(const std::string& addonID, ADDON::AddonInfoPtr& info);
 
   /*! \brief Get an addon with a specific version and repository. */
   bool GetAddon(const std::string& addonID, const ADDON::AddonVersion& version, const std::string& repoId, ADDON::AddonPtr& addon);
-  bool GetAddonInfo(const std::string& addonID, const ADDON::AddonVersion& version, const std::string& repoId, ADDON::AddonPropsPtr& info);
+  bool GetAddonInfo(const std::string& addonID, const ADDON::AddonVersion& version, const std::string& repoId, ADDON::AddonInfoPtr& info);
 
   /*! Get the addon IDs that has been set to enabled */
   bool GetEnabled(std::set<std::string>& addons);
@@ -147,7 +147,7 @@ public:
                      const std::set<std::string>& optional);
 
   void GetInstalled(std::vector<ADDON::CAddonBuilder>& addons);
-  void GetInstallData(ADDON::AddonPropsPtr addonProps);
+  void GetInstallData(ADDON::AddonInfoPtr addonInfo);
 
   bool SetLastUpdated(const std::string& addonId, const CDateTime& dateTime);
   bool SetOrigin(const std::string& addonId, const std::string& origin);
@@ -163,7 +163,7 @@ protected:
   const char *GetBaseDBName() const { return "Addons"; }
 
   bool GetAddon(int id, ADDON::AddonPtr& addon);
-  bool GetAddonInfo(int id, ADDON::AddonPropsPtr& info);
+  bool GetAddonInfo(int id, ADDON::AddonInfoPtr& info);
   void DeleteRepository(const std::string& id);
 };
 

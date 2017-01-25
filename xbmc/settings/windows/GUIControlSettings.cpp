@@ -609,7 +609,7 @@ void CGUIControlButtonSetting::Update(bool updateDisplayOnly /* = false */)
       std::string strValue = ((CSettingString *)m_pSetting)->GetValue();
       if (controlFormat == "addon")
       {
-        ADDON::AddonPropsPtr addon = ADDON::CAddonMgr::GetInstance().GetInstalledAddonInfo(strValue);
+        ADDON::AddonInfoPtr addon = ADDON::CAddonMgr::GetInstance().GetInstalledAddonInfo(strValue);
         if (addon)
           strText = addon->Name();
         if (strText.empty())
