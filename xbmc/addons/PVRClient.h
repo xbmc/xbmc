@@ -72,6 +72,7 @@ namespace PVR
 
     virtual void OnDisabled() override;
     virtual void OnEnabled() override;
+    virtual void OnPreInstall() override;
     virtual void OnPostInstall(bool update, bool modal) override;
     virtual void OnPreUnInstall() override;
     virtual void OnPostUnInstall() override;
@@ -705,6 +706,11 @@ namespace PVR
      * @return True when it can be played, false otherwise.
      */
     bool CanPlayChannel(const CPVRChannelPtr &channel) const;
+
+    /*!
+     * @brief Stop this instance, if it is currently running.
+     */
+    void StopRunningInstance();
 
     bool LogError(const PVR_ERROR error, const char *strMethod) const;
     void LogException(const std::exception &e, const char *strFunctionName) const;
