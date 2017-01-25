@@ -23,12 +23,22 @@
 #include "ContextMenuManager.h"
 #include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.h"
 #include "cores/DataCacheCore.h"
+#include "games/GameServices.h"
 #include "PlayListPlayer.h"
 #include "utils/log.h"
 #include "interfaces/AnnouncementManager.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "interfaces/python/XBPython.h"
 #include "pvr/PVRManager.h"
+
+CServiceManager::CServiceManager() :
+  m_gameServices(new GAME::CGameServices)
+{
+}
+
+CServiceManager::~CServiceManager()
+{
+}
 
 bool CServiceManager::Init1()
 {
@@ -73,12 +83,14 @@ bool CServiceManager::Init3()
   m_ADSPManager->Init();
   m_PVRManager->Init();
   m_contextMenuManager->Init();
+  m_gameServices->Init();
 
   return true;
 }
 
 void CServiceManager::Deinit()
 {
+  m_gameServices->Deinit();
   m_contextMenuManager.reset();
   m_binaryAddonCache.reset();
   if (m_PVRManager)
@@ -139,6 +151,11 @@ CPlatform& CServiceManager::GetPlatform()
 PLAYLIST::CPlayListPlayer& CServiceManager::GetPlaylistPlayer()
 {
   return *m_playlistPlayer;
+}
+
+GAME::CGameServices& CServiceManager::GetGameServices()
+{
+  return *m_gameServices;
 }
 
 // deleters for unique_ptr

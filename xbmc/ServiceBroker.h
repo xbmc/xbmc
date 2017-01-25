@@ -48,6 +48,11 @@ class CContextMenuManager;
 class XBPython;
 class CDataCacheCore;
 
+namespace GAME
+{
+  class CGameServices;
+}
+
 class CServiceBroker
 {
 public:
@@ -60,4 +65,5 @@ public:
   static CContextMenuManager& GetContextMenuManager();
   static CDataCacheCore& GetDataCacheCore();
   static PLAYLIST::CPlayListPlayer& GetPlaylistPlayer();
+  static GAME::CGameServices& GetGameServices();
 };
