@@ -21,6 +21,7 @@
 #include "ControllerLayout.h"
 #include "Controller.h"
 #include "ControllerDefinitions.h"
+#include "ControllerTranslator.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
 #include "utils/XMLUtils.h"
@@ -106,6 +107,10 @@ bool CControllerLayout::Deserialize(const TiXmlElement* pElement, const CControl
     }
 
     // Category
+    std::string strCategory = XMLUtils::GetAttribute(pCategory, LAYOUT_XML_ATTR_CATEGORY_NAME);
+    FEATURE_CATEGORY category = CControllerTranslator::TranslateFeatureCategory(strCategory);
+
+    // Category label
     std::string strCategoryLabel;
 
     std::string strCategoryLabelId = XMLUtils::GetAttribute(pCategory, LAYOUT_XML_ATTR_CATEGORY_LABEL);
@@ -122,7 +127,7 @@ bool CControllerLayout::Deserialize(const TiXmlElement* pElement, const CControl
     {
       CControllerFeature feature;
 
-      if (!feature.Deserialize(pFeature, controller, strCategoryLabel))
+      if (!feature.Deserialize(pFeature, controller, category, strCategoryLabel))
         return false;
 
       m_features.push_back(feature);

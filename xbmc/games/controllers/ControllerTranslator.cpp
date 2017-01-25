@@ -50,6 +50,34 @@ FEATURE_TYPE CControllerTranslator::TranslateFeatureType(const std::string& strT
   return FEATURE_TYPE::UNKNOWN;
 }
 
+const char* CControllerTranslator::TranslateFeatureCategory(FEATURE_CATEGORY category)
+{
+  switch (category)
+  {
+    case FEATURE_CATEGORY::FACE:          return "face";
+    case FEATURE_CATEGORY::SHOULDER:      return "shoulder";
+    case FEATURE_CATEGORY::TRIGGER:       return "triggers";
+    case FEATURE_CATEGORY::ANALOG_STICK:  return "analogsticks";
+    case FEATURE_CATEGORY::ACCELEROMETER: return "accelerometer";
+    case FEATURE_CATEGORY::HAPTICS:       return "haptics";
+    default:
+      break;
+  }
+  return "";
+}
+
+FEATURE_CATEGORY CControllerTranslator::TranslateFeatureCategory(const std::string& strCategory)
+{
+  if (strCategory == "face")           return FEATURE_CATEGORY::FACE;
+  if (strCategory == "shoulder")       return FEATURE_CATEGORY::SHOULDER;
+  if (strCategory == "triggers")       return FEATURE_CATEGORY::TRIGGER;
+  if (strCategory == "analogsticks")   return FEATURE_CATEGORY::ANALOG_STICK;
+  if (strCategory == "accelerometer")  return FEATURE_CATEGORY::ACCELEROMETER;
+  if (strCategory == "haptics")        return FEATURE_CATEGORY::HAPTICS;
+
+  return FEATURE_CATEGORY::UNKNOWN;
+}
+
 const char* CControllerTranslator::TranslateInputType(INPUT_TYPE type)
 {
   switch (type)
