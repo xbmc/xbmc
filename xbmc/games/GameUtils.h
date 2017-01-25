@@ -63,10 +63,10 @@ namespace GAME
      *
      * \return true if the add-on can be launched, false otherwise
      */
-    static bool IsStandaloneGame(const ADDON::AddonPtr& addon);
+    static bool IsStandaloneGame(const ADDON::AddonPropsPtr& addon);
 
   private:
     static void GetGameClients(const CFileItem& file, GameClientVector& candidates, GameClientVector& installable, bool& bHasVfsGameClient);
-    static void GetGameClients(const ADDON::VECADDONS& addons, const CURL& translatedUrl, GameClientVector& candidates, bool& bHasVfsGameClient);
+    static void GetGameClients(const ADDON::AddonInfos& addons, const CURL& translatedUrl, GameClientVector& candidates, bool& bHasVfsGameClient);
   };
 } // namespace GAME

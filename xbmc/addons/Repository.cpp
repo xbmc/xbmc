@@ -241,6 +241,7 @@ bool CRepositoryUpdateJob::DoWork()
     for (const auto& addon : addons)
     {
       AddonPtr oldAddon;
+fprintf(stderr, "-22cxxxcccccccccccccccccc-----xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx----------- %s\n", __PRETTY_FUNCTION__);
       if (database.GetAddon(addon->ID(), oldAddon) && addon->Version() > oldAddon->Version())
       {
         if (!oldAddon->Icon().empty() || !oldAddon->FanArt().empty() || !oldAddon->Screenshots().empty())
@@ -270,6 +271,7 @@ bool CRepositoryUpdateJob::DoWork()
       continue;
 
     AddonPtr oldAddon;
+fprintf(stderr, "-22cyyyyyyyyyycccccccccccccccccc-----xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx----------- %s\n", __PRETTY_FUNCTION__);
     database.GetAddon(addon->ID(), oldAddon);
 
     if (database.GetAddonVersion(addon->ID()).first > addon->Version())

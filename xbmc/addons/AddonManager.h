@@ -117,9 +117,9 @@ namespace ADDON
     bool GetDisabledAddons(VECADDONS& addons, const TYPE& type);
 
     /*! Get all installable addons */
-    bool GetInstallableAddons(VECADDONS& addons);
+    bool GetInstallableAddons(AddonInfos& addons);
 
-    bool GetInstallableAddons(VECADDONS& addons, const TYPE &type);
+    bool GetInstallableAddons(AddonInfos& addons, const TYPE &type);
 
     /*! Get the installable addon with the highest version. */
     bool FindInstallableById(const std::string& addonId, AddonPtr& addon);
@@ -129,15 +129,7 @@ namespace ADDON
     void RemoveFromUpdateableAddons(AddonPtr &pAddon);    
     bool ReloadSettings(const std::string &id);
 
-    /*! Get addons with available updates */
-    VECADDONS GetAvailableUpdates();
-    AddonInfos GetAvailableUpdates2();
-
-    /*! Returns true if there is any addon with available updates, otherwise false */
-    bool HasAvailableUpdates();
-
     std::string GetTranslatedString(const cp_cfg_element_t *root, const char *tag);
-    static AddonPtr AddonFromProps(AddonProps& props);
 
     /*! \brief Checks for new / updated add-ons
      \return True if everything went ok, false otherwise
@@ -174,6 +166,10 @@ namespace ADDON
 
     bool CanUninstall(const AddonPtr& addon);
 
+    bool CanAddonBeInstalled(const AddonPropsPtr& addonProps);
+
+    bool CanUninstall(const AddonPropsPtr& addonProps);
+    
     void UpdateLastUsed(const std::string& id);
 
     /* libcpluff */
@@ -217,6 +213,7 @@ namespace ADDON
      \return true if addon is set, false otherwise.
      */
     bool LoadAddonDescription(const std::string &path, AddonPtr &addon);
+    bool LoadAddonDescription(const std::string &path, AddonPropsPtr &addon);
 
     /*! \brief Parse a repository XML file for addons and load their descriptors
      A repository XML is essentially a concatenated list of addon descriptors.
@@ -329,16 +326,18 @@ namespace ADDON
      * @brief Get a list of add-on's with info's for the on system available
      * ones.
      *
-     * @param[in] enabledOnly [opt] If true are only enabled ones given back,
+     * @param[in] enabledOnly If true are only enabled ones given back,
      *                        if false all on system available. Default is true.
-     * @param[in] type        [opt] The requested type, with "ADDON_UNKNOWN"
+     * @param[in] type        The requested type, with "ADDON_UNKNOWN"
      *                        are all add-on types given back who match the case
      *                        with value before.
      *                        If a type id becomes added are only add-ons
      *                        returned who match them. Default is for all types.
+     * @param[in] useTimeData [opt] if set to true also the dates from updates,
+     *                        installation and usage becomes set on info.
      * @return The list with of available add-on's with info tables.
      */
-    AddonInfos GetAddonInfos(bool enabledOnly, const TYPE &type);
+    AddonInfos GetAddonInfos(bool enabledOnly, const TYPE &type, bool useTimeData = false);
 
     /*!
      * @brief Compare the given add-on info to his related dependency versions.
@@ -357,6 +356,25 @@ namespace ADDON
      * @return true if compatible, if not returns it false.
      */
     bool IsCompatible(const AddonProps& addonProps);
+
+
+
+
+
+    /*!
+     * @brief Get addons with available updates
+     *
+     * @return the list of addon infos
+     */
+    AddonInfos GetAvailableUpdates();
+
+    /*!
+     * @brief Checks for available addon updates
+     *
+     * @return true if there is any addon with available updates, otherwise
+     * false
+     */
+    bool HasAvailableUpdates();
 
   private:
 

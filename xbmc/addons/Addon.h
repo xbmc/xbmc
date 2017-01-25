@@ -170,7 +170,7 @@ public:
   virtual void OnPostInstall(bool update, bool modal) {};
   virtual void OnPreUnInstall() {};
   virtual void OnPostUnInstall() {};
-
+const AddonProps m_props;
 protected:
   /*! \brief Load the user settings
    \return true if user settings exist, false otherwise
@@ -197,7 +197,7 @@ protected:
    */
   virtual void SettingsToXML(CXBMCTinyXML &doc) const;
 
-  const AddonProps m_props;
+  //const AddonProps m_props;
   CXBMCTinyXML      m_addonXmlDoc;
   bool              m_settingsLoaded;
   bool              m_userSettingsLoaded;

@@ -24,6 +24,7 @@
 
 #include <map>
 #include <memory>
+#include <set>
 #include <vector>
 
 class TiXmlElement;
@@ -92,9 +93,44 @@ namespace ADDON
   class CAddon;
   class CAddonBuilder;
 
-  class AddonProps
+  class CAddonExtensions;
+  typedef std::vector<std::pair<std::string, CAddonExtensions> > EXT_ELEMENTS;
+  typedef std::vector<std::pair<std::string, std::string> > EXT_VALUE;
+  typedef std::vector<std::pair<std::string, EXT_VALUE> > EXT_VALUES;
+  class CAddonExtensions
   {
   public:
+    CAddonExtensions();
+    ~CAddonExtensions();
+    bool ParseExtension(const TiXmlElement* element);
+
+    std::string GetExtValue(std::string id) const;
+    const EXT_VALUES& GetExtValues() const;
+    CAddonExtensions* GetExtElement(std::string id);
+    bool GetExtElements(std::string id, EXT_ELEMENTS &result);
+    bool GetExtList(std::string id, std::vector<std::string> &result) const;
+
+    void Insert(std::string id, std::string value);
+//   private:
+    bool m_ready;
+    std::string m_point;
+    EXT_VALUES m_values;
+    EXT_ELEMENTS m_childs;
+  };
+  
+  class AddonProps : public CAddonExtensions
+  {
+  public:
+    enum SubContent
+    {
+      UNKNOWN,
+      AUDIO,
+      IMAGE,
+      EXECUTABLE,
+      VIDEO,
+      GAME
+    };
+
     /*!
      * @brief Class constructor for local available addons where his addon.xml
      * is present.
@@ -154,8 +190,14 @@ namespace ADDON
      */
     bool IsUsable() const { return m_usable; }
 
+    void SetInstallDate(CDateTime installDate) { m_installDate = installDate; }
+    void SetLastUpdated(CDateTime lastUpdated) { m_lastUpdated = lastUpdated; }
+    void SetLastUsed(CDateTime lastUsed) { m_lastUsed = lastUsed; }
+    void SetOrigin(std::string origin) { m_origin = std::move(origin); }
+
     const std::string& ID() const { return m_id; }
     TYPE Type() const { return m_type; }
+    bool IsType(TYPE type) const;
     const AddonVersion& Version() const { return m_version; }
     const AddonVersion& MinVersion() const { return m_minversion; }
     const std::string& Name() const { return m_name; }
@@ -180,13 +222,19 @@ namespace ADDON
     uint64_t PackageSize() const { return m_packageSize; }
 
     const InfoMap& ExtraInfo() const { return m_extrainfo; }
-    std::string ExtraInfoValueString(std::string id) const;
-    bool ExtraInfoValueBool(std::string id) const;
-    int ExtraInfoValueInt(std::string id) const;
-    float ExtraInfoValueFloat(std::string id) const;
 
     std::string LibPath() const;
 
+    bool ProvidesSubContent(const SubContent& content) const
+    {
+      return content == UNKNOWN ? false : m_providedSubContent.count(content) > 0;
+    }
+
+    bool ProvidesSeveralSubContents() const
+    {
+      return m_providedSubContent.size() > 1;
+    }
+  
     std::string SerializeMetadata();
     void DeserializeMetadata(const std::string& document);
     bool MeetsVersion(const AddonVersion &version) const;
@@ -247,6 +295,19 @@ namespace ADDON
      * @return The string of used library e.g. 'library_linux' for Linux
      */
     static const char* GetPlatformLibraryName(const TiXmlElement* element);
+
+    static SubContent TranslateSubContent(const std::string &content);
+  
+    /*!
+     * @brief Set the provided content for this plugin
+     * 
+     * If no valid content types are passed in, we set the EXECUTABLE type
+     * 
+     * @param content a space-separated list of content types
+     */
+    void SetProvides(const std::string &content);
+
+    std::set<SubContent> m_providedSubContent;
   };
 
 } /* namespace ADDON */

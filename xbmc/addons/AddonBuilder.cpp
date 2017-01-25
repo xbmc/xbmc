@@ -99,6 +99,12 @@ std::shared_ptr<CAddon> CAddonBuilder::Build()
       return AddonPtr();
   }
 
+  /*
+   * Temporary to create props from path
+   * becomes later done on other place
+   */
+  //AddonProps props(m_props.Path());
+
   switch (type)
   {
     case ADDON_PLUGIN:
@@ -161,9 +167,133 @@ std::shared_ptr<CAddon> CAddonBuilder::Build()
   return AddonPtr();
 }
 
+std::shared_ptr<CAddon> CAddonBuilder::Build2()
+{
+  if (m_built)
+    throw std::logic_error("Already built");
+
+  if (m_props.m_id.empty())
+    return nullptr;
+
+  m_built = true;
+
+  if (m_props.m_type == ADDON_UNKNOWN)
+    return std::make_shared<CAddon>(std::move(m_props));
+
+  const TYPE type(m_props.m_type);
+
+  fprintf(stderr, "Build2() - m_props.path: %s\n", m_props.Path().c_str());
+  /*
+   * Startup of reworked addon interfaces, switch currently two times until
+   * rework is finished. On end is only for all binary addons one
+   * "return std::make_shared<CAddonDll>(std::move(m_props));" needed.
+   */
+  switch (type)
+  {
+    case ADDON_VIZ:
+    case ADDON_SCREENSAVER:
+      return std::make_shared<CAddonDll>(std::move(m_props));
+    default:
+      break;
+  }
+
+  if (m_extPoint == nullptr)
+    return FromProps(std::move(m_props));
+
+  // Handle audio encoder special cases
+  if (type == ADDON_AUDIOENCODER)
+  {
+    // built in audio encoder
+    if (StringUtils::StartsWithNoCase(m_extPoint->plugin->identifier, "audioencoder.xbmc.builtin."))
+      return CAudioEncoder::FromExtension(std::move(m_props), m_extPoint);
+  }
+
+  // Ensure binary types have a valid library for the platform
+  if (type == ADDON_PVRDLL ||
+      type == ADDON_ADSPDLL ||
+      type == ADDON_AUDIOENCODER ||
+      type == ADDON_AUDIODECODER ||
+      type == ADDON_VFS ||
+      type == ADDON_INPUTSTREAM ||
+      type == ADDON_PERIPHERALDLL ||
+      type == ADDON_GAMEDLL)
+  {
+    std::string value = CAddonMgr::GetInstance().GetPlatformLibraryName(m_extPoint->plugin->extensions->configuration);
+    if (value.empty())
+      return AddonPtr();
+  }
+
+  /*
+   * Temporary to create props from path
+   * becomes later done on other place
+   */
+  AddonProps props(m_props.Path());
+
+  switch (type)
+  {
+    case ADDON_PLUGIN:
+    case ADDON_SCRIPT:
+      return CPluginSource::FromExtension(std::move(m_props), m_extPoint);
+    case ADDON_SCRIPT_LIBRARY:
+    case ADDON_SCRIPT_LYRICS:
+    case ADDON_SCRIPT_MODULE:
+    case ADDON_SUBTITLE_MODULE:
+    case ADDON_SCRIPT_WEATHER:
+      return std::make_shared<CAddon>(std::move(m_props));
+    case ADDON_WEB_INTERFACE:
+      return CWebinterface::FromExtension(std::move(m_props), m_extPoint);
+    case ADDON_SERVICE:
+      return CService::FromExtension(std::move(m_props), m_extPoint);
+    case ADDON_SCRAPER_ALBUMS:
+    case ADDON_SCRAPER_ARTISTS:
+    case ADDON_SCRAPER_MOVIES:
+    case ADDON_SCRAPER_MUSICVIDEOS:
+    case ADDON_SCRAPER_TVSHOWS:
+    case ADDON_SCRAPER_LIBRARY:
+      return CScraper::FromExtension(std::move(m_props), m_extPoint);
+#ifdef HAS_PVRCLIENTS
+    case ADDON_PVRDLL:
+      return PVR::CPVRClient::FromExtension(std::move(m_props), m_extPoint);
+#endif
+    case ADDON_ADSPDLL:
+      return std::make_shared<ActiveAE::CActiveAEDSPAddon>(std::move(m_props));
+    case ADDON_AUDIOENCODER:
+      return CAudioEncoder::FromExtension(std::move(m_props), m_extPoint);
+    case ADDON_AUDIODECODER:
+      return CAudioDecoder::FromExtension(std::move(m_props), m_extPoint);
+    case ADDON_INPUTSTREAM:
+      return CInputStream::FromExtension(std::move(m_props), m_extPoint);
+    case ADDON_PERIPHERALDLL:
+      return PERIPHERALS::CPeripheralAddon::FromExtension(std::move(m_props), m_extPoint);
+    case ADDON_GAMEDLL:
+      return GAME::CGameClient::FromExtension(std::move(m_props), m_extPoint);
+    case ADDON_VFS:
+      return CVFSEntry::FromExtension(std::move(m_props), m_extPoint);
+    case ADDON_SKIN:
+      return CSkinInfo::FromExtension(std::move(props), m_extPoint);
+    case ADDON_RESOURCE_IMAGES:
+      return CImageResource::FromExtension(std::move(m_props), m_extPoint);
+    case ADDON_RESOURCE_GAMES:
+      return CGameResource::FromExtension(std::move(m_props), m_extPoint);
+    case ADDON_RESOURCE_LANGUAGE:
+      return CLanguageResource::FromExtension(std::move(props), m_extPoint);
+    case ADDON_RESOURCE_UISOUNDS:
+      return std::make_shared<CUISoundsResource>(std::move(m_props));
+    case ADDON_REPOSITORY:
+      return CRepository::FromExtension(std::move(m_props), m_extPoint);
+    case ADDON_CONTEXT_ITEM:
+      return CContextMenuAddon::FromExtension(std::move(m_props), m_extPoint);
+    case ADDON_GAME_CONTROLLER:
+      return GAME::CController::FromExtension(std::move(m_props), m_extPoint);
+    default:
+      break;
+  }
+  return AddonPtr();
+}
 
 AddonPtr CAddonBuilder::FromProps(AddonProps addonProps)
 {
+  fprintf(stderr, "Build() - m_props.path: %s\n", addonProps.Path().c_str());
   // FIXME: there is no need for this as none of the derived classes will contain any useful
   // information. We should return CAddon instances only, however there are several places that
   // down casts, which need to fixed first.

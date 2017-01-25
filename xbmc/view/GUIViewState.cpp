@@ -569,14 +569,13 @@ CGUIViewStateFromItems::CGUIViewStateFromItems(const CFileItemList &items) : CGU
   if (items.IsPlugin())
   {
     CURL url(items.GetPath());
-    AddonPtr addon;
-    if (CAddonMgr::GetInstance().GetAddon(url.GetHostName(), addon, ADDON_PLUGIN))
+    AddonPropsPtr addon = CAddonMgr::GetInstance().GetInstalledAddonInfo(ADDON_PLUGIN, url.GetHostName());
+    if (addon)
     {
-      PluginPtr plugin = std::static_pointer_cast<CPluginSource>(addon);
-      if (plugin->Provides(CPluginSource::AUDIO))
-        m_playlist = PLAYLIST_MUSIC;
-      if (plugin->Provides(CPluginSource::VIDEO))
+      if (addon->ProvidesSubContent(AddonProps::VIDEO))
         m_playlist = PLAYLIST_VIDEO;
+      else if (addon->ProvidesSubContent(AddonProps::AUDIO))
+        m_playlist = PLAYLIST_MUSIC;
     }
   }
 

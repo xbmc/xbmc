@@ -200,10 +200,8 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
     CLog::Log(LOGWARNING, "CPythonInvoker(%d): Script invoked without an addon. Adding all addon "
         "modules installed to python path as fallback. This behaviour will be removed in future "
         "version.", GetId());
-    ADDON::VECADDONS addons;
-    ADDON::CAddonMgr::GetInstance().GetAddons(addons, ADDON::ADDON_SCRIPT_MODULE);
-    for (unsigned int i = 0; i < addons.size(); ++i)
-      addPath(CSpecialProtocol::TranslatePath(addons[i]->LibPath()));
+    for (auto addon : ADDON::CAddonMgr::GetInstance().GetAddonInfos(true, ADDON::ADDON_SCRIPT_MODULE))
+      addPath(CSpecialProtocol::TranslatePath(addon->LibPath()));
   }
 
   // we want to use sys.path so it includes site-packages

@@ -73,7 +73,7 @@ public:
   bool GetRepositoryContent(ADDON::VECADDONS& addons);
   bool GetRepositoryContent(ADDON::AddonInfos& addons);
 
-  bool GetRepositoryContent(ADDON::AddonInfos& addons, ADDON::TYPE type = ADDON::ADDON_UNKNOWN, const std::string& repoId = "");
+  bool GetRepositoryContent(ADDON::AddonInfos& addons, ADDON::TYPE type, const std::string& repoId = "");
 
   bool SetLastChecked(const std::string& id, const ADDON::AddonVersion& version, const std::string& timestamp);
 
@@ -147,6 +147,7 @@ public:
                      const std::set<std::string>& optional);
 
   void GetInstalled(std::vector<ADDON::CAddonBuilder>& addons);
+  void GetInstallData(ADDON::AddonPropsPtr addonProps);
 
   bool SetLastUpdated(const std::string& addonId, const CDateTime& dateTime);
   bool SetOrigin(const std::string& addonId, const std::string& origin);

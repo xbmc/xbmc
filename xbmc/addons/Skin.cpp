@@ -139,6 +139,8 @@ std::unique_ptr<CSkinInfo> CSkinInfo::FromExtension(AddonProps props, const cp_e
   RESOLUTION_INFO defaultRes = RESOLUTION_INFO();
   std::vector<RESOLUTION_INFO> resolutions;
 
+  clock_t begin = clock();
+  
   ELEMENTS elements;
   if (CAddonMgr::GetInstance().GetExtElements(ext->configuration, "res", elements))
   {
@@ -177,6 +179,64 @@ std::unique_ptr<CSkinInfo> CSkinInfo::FromExtension(AddonProps props, const cp_e
     effectsSlowDown = (float)atof(str.c_str());
 
   bool debugging = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@debugging") == "true";
+
+//   clock_t end = clock();
+//   double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
+//   fprintf(stderr, "OLD: %s: elapsed secs: %f\n", __FUNCTION__, elapsed_secs);
+//   
+
+  
+  begin = clock();
+
+  for (auto values : props.GetExtValues())
+  {
+    if (values.first != "res")
+      continue;
+
+    int width = 0;
+    int height = 0;
+    bool defRes = false;
+    std::string folder;
+    float aspect = 0;
+    std::string strAspect;
+
+    for (auto value : values.second)
+    {
+      if (value.first == "res@width")
+        width = atoi(value.second.c_str());
+      else if (value.first == "res@height")
+        height = atoi(value.second.c_str());
+      else if (value.first == "res@default")
+        defRes = value.second == "true";
+      else if (value.first == "res@folder")
+        folder = value.second;
+      else if (value.first == "res@aspect")
+        strAspect = value.second;
+    }
+
+    std::vector<std::string> fracs = StringUtils::Split(strAspect, ':');
+    if (fracs.size() == 2)
+      aspect = (float)(atof(fracs[0].c_str())/atof(fracs[1].c_str()));
+    if (width > 0 && height > 0)
+    {
+      RESOLUTION_INFO res(width, height, aspect, folder);
+      res.strId = strAspect; // for skin usage, store aspect string in strId
+      if (defRes)
+        defaultRes = res;
+      resolutions.push_back(res);
+    }
+  }
+  
+  effectsSlowDown = 1.f;
+  str = props.GetExtValue("@effectslowdown");
+  if (!str.empty())
+    effectsSlowDown = (float)atof(str.c_str());
+
+  debugging = props.GetExtValue("@debugging") == "true";
+
+//   end = clock();
+//   elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
+//   fprintf(stderr, "NEW: %s: elapsed secs: %f\n", __FUNCTION__, elapsed_secs);
 
   return std::unique_ptr<CSkinInfo>(new CSkinInfo(std::move(props), defaultRes, resolutions,
       effectsSlowDown, debugging));
