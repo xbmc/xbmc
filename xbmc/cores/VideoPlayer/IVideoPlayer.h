@@ -132,7 +132,6 @@ public:
   virtual void SetMute(bool bOnOff) {};
   virtual void SetDynamicRangeCompression(long drc) = 0;
   virtual std::string GetPlayerInfo() = 0;
-  virtual int GetAudioBitrate() = 0;
   virtual int GetAudioChannels() = 0;
   virtual double GetCurrentPts() = 0;
   virtual bool IsStalled() const = 0;

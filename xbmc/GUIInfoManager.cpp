@@ -9406,6 +9406,9 @@ void CGUIInfoManager::UpdateAVInfo()
 
       m_videoInfo = video;
       m_audioInfo = audio;
+      printf("debug arate=%i\n", audio.bitrate);
+      printf("codec=%s\n", audio.audioCodecName.c_str());
+      printf("channel=%i\n", audio.channels);
 
       m_isPvrChannelPreview = g_PVRManager.IsChannelPreview();
     }
