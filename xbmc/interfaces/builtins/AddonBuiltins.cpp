@@ -243,11 +243,11 @@ static int RunScript(const std::vector<std::string>& params)
 static int OpenDefaultSettings(const std::vector<std::string>& params)
 {
   AddonPtr addon;
-  ADDON::TYPE type = AddonProps::TranslateType(params[0]);
+  ADDON::TYPE type = CAddonInfo::TranslateType(params[0]);
   if (CAddonSystemSettings::GetInstance().GetActive(type, addon))
   {
-    AddonPropsPtr addonProps = CAddonMgr::GetInstance().GetInstalledAddonInfo(addon->ID());
-    bool changed = CGUIDialogAddonSettings::ShowAndGetInput(addonProps);
+    AddonInfoPtr addonInfo = CAddonMgr::GetInstance().GetInstalledAddonInfo(addon->ID());
+    bool changed = CGUIDialogAddonSettings::ShowAndGetInput(addonInfo);
     if (type == ADDON_VIZ && changed)
       g_windowManager.SendMessage(GUI_MSG_VISUALISATION_RELOAD, 0, 0);
   }
@@ -262,7 +262,7 @@ static int OpenDefaultSettings(const std::vector<std::string>& params)
 static int SetDefaultAddon(const std::vector<std::string>& params)
 {
   std::string addonID;
-  TYPE type = AddonProps::TranslateType(params[0]);
+  TYPE type = CAddonInfo::TranslateType(params[0]);
   bool allowNone = false;
   if (type == ADDON_VIZ)
     allowNone = true;
@@ -284,7 +284,7 @@ static int SetDefaultAddon(const std::vector<std::string>& params)
  */
 static int AddonSettings(const std::vector<std::string>& params)
 {
-  AddonPropsPtr addon = CAddonMgr::GetInstance().GetInstalledAddonInfo(params[0]);
+  AddonInfoPtr addon = CAddonMgr::GetInstance().GetInstalledAddonInfo(params[0]);
   CGUIDialogAddonSettings::ShowAndGetInput(addon);
   return 0;
 }

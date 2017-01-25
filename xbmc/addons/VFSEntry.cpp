@@ -56,7 +56,7 @@ class CVFSURLWrapper
     std::vector<std::string> m_strings;
 };
 
-std::unique_ptr<CVFSEntry> CVFSEntry::FromExtension(AddonProps props,
+std::unique_ptr<CVFSEntry> CVFSEntry::FromExtension(CAddonInfo addonInfo,
                                                     const cp_extension_t* ext)
 {
   std::string protocols = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@protocols");
@@ -65,7 +65,7 @@ std::unique_ptr<CVFSEntry> CVFSEntry::FromExtension(AddonProps props,
   bool directories = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@directories") == "true";
   bool filedirectories = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@filedirectories") == "true";
 
-  return std::unique_ptr<CVFSEntry>(new CVFSEntry(std::move(props),
+  return std::unique_ptr<CVFSEntry>(new CVFSEntry(std::move(addonInfo),
                                                   protocols,
                                                   extensions,
                                                   files, directories,
@@ -73,11 +73,11 @@ std::unique_ptr<CVFSEntry> CVFSEntry::FromExtension(AddonProps props,
 }
 
 
-CVFSEntry::CVFSEntry(AddonProps props,
+CVFSEntry::CVFSEntry(CAddonInfo addonInfo,
                      const std::string& protocols,
                      const std::string& extensions,
                      bool files, bool directories, bool filedirectories)
- : CAddonDll(std::move(props)),
+ : CAddonDll(std::move(addonInfo)),
    m_protocols(protocols),
    m_extensions(extensions),
    m_files(files),

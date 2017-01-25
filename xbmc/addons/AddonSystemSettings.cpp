@@ -109,17 +109,17 @@ bool CAddonSystemSettings::IsActive(const CAddon& addon)
   return GetActive(addon.Type(), active) && active->ID() == addon.ID();
 }
 
-bool CAddonSystemSettings::UnsetActive(const AddonPropsPtr& addonProps)
+bool CAddonSystemSettings::UnsetActive(const AddonInfoPtr& addonInfo)
 {
-  auto it = m_activeSettings.find(addonProps->Type());
+  auto it = m_activeSettings.find(addonInfo->Type());
   if (it == m_activeSettings.end())
     return true;
 
   auto setting = static_cast<CSettingString*>(CServiceBroker::GetSettings().GetSetting(it->second));
-  if (setting->GetValue() != addonProps->ID())
+  if (setting->GetValue() != addonInfo->ID())
     return true;
 
-  if (setting->GetDefault() == addonProps->ID())
+  if (setting->GetDefault() == addonInfo->ID())
     return false; // Cant unset defaults
 
   setting->Reset();
@@ -131,7 +131,7 @@ std::vector<std::string> CAddonSystemSettings::MigrateAddons(std::function<void(
   auto getIncompatible = [](){
     AddonInfos incompatible = CAddonMgr::GetInstance().GetAddonInfos(true, ADDON_UNKNOWN);
     incompatible.erase(std::remove_if(incompatible.begin(), incompatible.end(),
-        [](const AddonPropsPtr a){ return CAddonMgr::GetInstance().IsCompatible(*a); }), incompatible.end());
+        [](const AddonInfoPtr a){ return CAddonMgr::GetInstance().IsCompatible(*a); }), incompatible.end());
     return incompatible;
   };
 

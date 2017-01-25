@@ -24,28 +24,28 @@
 #include "guilib/LocalizeStrings.h"
 #include "utils/URIUtils.h"
 
-CAddonManagementEvent::CAddonManagementEvent(ADDON::AddonPropsPtr addonProps, const CVariant& description)
-  : CAddonEvent(addonProps, description)
+CAddonManagementEvent::CAddonManagementEvent(ADDON::AddonInfoPtr addonInfo, const CVariant& description)
+  : CAddonEvent(addonInfo, description)
 { }
 
-CAddonManagementEvent::CAddonManagementEvent(ADDON::AddonPropsPtr addonProps, const CVariant& description, const CVariant& details)
-  : CAddonEvent(addonProps, description, details)
+CAddonManagementEvent::CAddonManagementEvent(ADDON::AddonInfoPtr addonInfo, const CVariant& description, const CVariant& details)
+  : CAddonEvent(addonInfo, description, details)
 { }
 
-CAddonManagementEvent::CAddonManagementEvent(ADDON::AddonPropsPtr addonProps, const CVariant& description, const CVariant& details, const CVariant& executionLabel)
-  : CAddonEvent(addonProps, description, details, executionLabel)
+CAddonManagementEvent::CAddonManagementEvent(ADDON::AddonInfoPtr addonInfo, const CVariant& description, const CVariant& details, const CVariant& executionLabel)
+  : CAddonEvent(addonInfo, description, details, executionLabel)
 { }
 
-CAddonManagementEvent::CAddonManagementEvent(ADDON::AddonPropsPtr addonProps, EventLevel level, const CVariant& description)
-  : CAddonEvent(addonProps, level, description)
+CAddonManagementEvent::CAddonManagementEvent(ADDON::AddonInfoPtr addonInfo, EventLevel level, const CVariant& description)
+  : CAddonEvent(addonInfo, level, description)
 { }
 
-CAddonManagementEvent::CAddonManagementEvent(ADDON::AddonPropsPtr addonProps, EventLevel level, const CVariant& description, const CVariant& details)
-  : CAddonEvent(addonProps, level, description, details)
+CAddonManagementEvent::CAddonManagementEvent(ADDON::AddonInfoPtr addonInfo, EventLevel level, const CVariant& description, const CVariant& details)
+  : CAddonEvent(addonInfo, level, description, details)
 { }
 
-CAddonManagementEvent::CAddonManagementEvent(ADDON::AddonPropsPtr addonProps, EventLevel level, const CVariant& description, const CVariant& details, const CVariant& executionLabel)
-  : CAddonEvent(addonProps, level, description, details, executionLabel)
+CAddonManagementEvent::CAddonManagementEvent(ADDON::AddonInfoPtr addonInfo, EventLevel level, const CVariant& description, const CVariant& details, const CVariant& executionLabel)
+  : CAddonEvent(addonInfo, level, description, details, executionLabel)
 { }
 
 std::string CAddonManagementEvent::GetExecutionLabel() const
@@ -63,11 +63,8 @@ bool CAddonManagementEvent::Execute() const
     return false;
 
   CFileItemPtr addonItem;
-//   if (m_addon) /*! @todo currently still there until everything is reworked to the final way! */
-//     addonItem = XFILE::CAddonsDirectory::FileItemFromAddon(m_addon, URIUtils::AddFileToFolder("addons://", m_addon->ID()));
-//   else 
-    if (m_addonProps)
-    addonItem = XFILE::CAddonsDirectory::FileItemFromAddonProps(m_addonProps, URIUtils::AddFileToFolder("addons://", m_addonProps->ID()));
+  if (m_addonInfo)
+    addonItem = XFILE::CAddonsDirectory::FileItemFromAddonInfo(m_addonInfo, URIUtils::AddFileToFolder("addons://", m_addonInfo->ID()));
   if (addonItem == nullptr)
     return false;
 

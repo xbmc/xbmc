@@ -37,22 +37,22 @@ using KODI::MESSAGING::HELPERS::DialogResponse;
 namespace ADDON
 {
 
-std::unique_ptr<CLanguageResource> CLanguageResource::FromExtension(AddonProps props, const cp_extension_t* ext)
+std::unique_ptr<CLanguageResource> CLanguageResource::FromExtension(CAddonInfo addonInfo, const cp_extension_t* ext)
 {
   // parse <extension> attributes
-//   fprintf(stderr, "-------------A %s - @locale:         %s\n", props.ID().c_str(), props.GetExtValue("@locale").c_str());
+//   fprintf(stderr, "-------------A %s - @locale:         %s\n", addonInfo.ID().c_str(), addonInfo.GetExtValue("@locale").c_str());
   CLocale locale = CLocale::FromString(CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@locale"));
 
   // parse <charsets>
   std::string charsetGui;
   bool forceUnicodeFont(false);
   std::string charsetSubtitle;
-//   CAddonExtensions* charsetsElement2 = props.GetExtElement("charsets");
+//   CAddonExtensions* charsetsElement2 = addonInfo.GetExtElement("charsets");
 //   if (charsetsElement2 != nullptr)
 //   {
-//     fprintf(stderr, "-------------B %s - gui:             %s\n", props.ID().c_str(), charsetsElement2->GetExtValue("gui").c_str());
-//     fprintf(stderr, "-------------B %s - gui@unicodefont: %s\n", props.ID().c_str(), charsetsElement2->GetExtValue("gui@unicodefont").c_str());
-//     fprintf(stderr, "-------------B %s - subtitle:        %s\n", props.ID().c_str(), charsetsElement2->GetExtValue("subtitle").c_str());
+//     fprintf(stderr, "-------------B %s - gui:             %s\n", addonInfo.ID().c_str(), charsetsElement2->GetExtValue("gui").c_str());
+//     fprintf(stderr, "-------------B %s - gui@unicodefont: %s\n", addonInfo.ID().c_str(), charsetsElement2->GetExtValue("gui@unicodefont").c_str());
+//     fprintf(stderr, "-------------B %s - subtitle:        %s\n", addonInfo.ID().c_str(), charsetsElement2->GetExtValue("subtitle").c_str());
 //   }
   cp_cfg_element_t *charsetsElement = CAddonMgr::GetInstance().GetExtElement(ext->configuration, "charsets");
   if (charsetsElement != NULL)
@@ -66,12 +66,12 @@ std::unique_ptr<CLanguageResource> CLanguageResource::FromExtension(AddonProps p
   std::string dvdLanguageMenu;
   std::string dvdLanguageAudio;
   std::string dvdLanguageSubtitle;
-//   CAddonExtensions* dvdElement2 = props.GetExtElement("dvd");
+//   CAddonExtensions* dvdElement2 = addonInfo.GetExtElement("dvd");
 //   if (dvdElement2 != nullptr)
 //   {
-//     fprintf(stderr, "-------------C %s - menu             %s\n", props.ID().c_str(), dvdElement2->GetExtValue("menu").c_str());
-//     fprintf(stderr, "-------------C %s - audio:           %s\n", props.ID().c_str(), dvdElement2->GetExtValue("audio").c_str());
-//     fprintf(stderr, "-------------C %s - subtitle:        %s\n", props.ID().c_str(), dvdElement2->GetExtValue("subtitle").c_str());
+//     fprintf(stderr, "-------------C %s - menu             %s\n", addonInfo.ID().c_str(), dvdElement2->GetExtValue("menu").c_str());
+//     fprintf(stderr, "-------------C %s - audio:           %s\n", addonInfo.ID().c_str(), dvdElement2->GetExtValue("audio").c_str());
+//     fprintf(stderr, "-------------C %s - subtitle:        %s\n", addonInfo.ID().c_str(), dvdElement2->GetExtValue("subtitle").c_str());
 //   }
   cp_cfg_element_t *dvdElement = CAddonMgr::GetInstance().GetExtElement(ext->configuration, "dvd");
   if (dvdElement != NULL)
@@ -90,7 +90,7 @@ std::unique_ptr<CLanguageResource> CLanguageResource::FromExtension(AddonProps p
 
   // parse <sorttokens>
   std::set<std::string> sortTokens;
-  CAddonExtensions* sorttokensElement2 = props.GetExtElement("sorttokens");
+  CAddonExtensions* sorttokensElement2 = addonInfo.GetExtElement("sorttokens");
   if (sorttokensElement2 != nullptr)
   {
     /* First loop goes around rows e.g.
@@ -148,7 +148,7 @@ std::unique_ptr<CLanguageResource> CLanguageResource::FromExtension(AddonProps p
 //   for (std::set<std::string>::iterator it=sortTokens.begin(); it!=sortTokens.end(); ++it)
 //     fprintf(stderr, "2 - %s\n", it->c_str());
   return std::unique_ptr<CLanguageResource>(new CLanguageResource(
-      std::move(props),
+      std::move(addonInfo),
       locale,
       charsetGui,
       forceUnicodeFont,
@@ -160,7 +160,7 @@ std::unique_ptr<CLanguageResource> CLanguageResource::FromExtension(AddonProps p
 }
 
 CLanguageResource::CLanguageResource(
-    AddonProps props,
+    CAddonInfo addonInfo,
     const CLocale& locale,
     const std::string& charsetGui,
     bool forceUnicodeFont,
@@ -169,7 +169,7 @@ CLanguageResource::CLanguageResource(
     const std::string& dvdLanguageAudio,
     const std::string& dvdLanguageSubtitle,
     const std::set<std::string>& sortTokens)
-  : CResource(std::move(props)),
+  : CResource(std::move(addonInfo)),
     m_locale(locale),
     m_charsetGui(charsetGui),
     m_forceUnicodeFont(forceUnicodeFont),
@@ -233,7 +233,7 @@ bool CLanguageResource::FindLegacyLanguage(const std::string &locale, std::strin
 
   std::string addonId = GetAddonId(locale);
 
-  const AddonPropsPtr addon = CAddonMgr::GetInstance().GetInstalledAddonInfo(ADDON_RESOURCE_LANGUAGE, addonId);
+  const AddonInfoPtr addon = CAddonMgr::GetInstance().GetInstalledAddonInfo(ADDON_RESOURCE_LANGUAGE, addonId);
   if (addon == nullptr)
     return false;
 

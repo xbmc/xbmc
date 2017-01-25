@@ -677,7 +677,7 @@ bool CLangInfo::SetLanguage(bool& fallback, const std::string &strLanguage /* = 
   if (addonId.empty())
     addonId = CServiceBroker::GetSettings().GetString(CSettings::SETTING_LOCALE_LANGUAGE);
 
-  const ADDON::AddonPropsPtr languageAddon = ADDON::CAddonMgr::GetInstance().GetInstalledAddonInfo(ADDON::ADDON_RESOURCE_LANGUAGE, addonId);
+  const ADDON::AddonInfoPtr languageAddon = ADDON::CAddonMgr::GetInstance().GetInstalledAddonInfo(ADDON::ADDON_RESOURCE_LANGUAGE, addonId);
   if (languageAddon)
   {
     ADDON::CAddonMgr::GetInstance().EnableAddon(languageAddon->ID());

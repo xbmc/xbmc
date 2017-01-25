@@ -87,7 +87,7 @@ static cp_extension_t* GetFirstExtPoint(const cp_plugin_info_t* addon, TYPE type
     if (type == ADDON_UNKNOWN)
       return ext;
 
-    if (type == AddonProps::TranslateType(ext->ext_point_id))
+    if (type == CAddonInfo::TranslateType(ext->ext_point_id))
       return ext;
   }
   return nullptr;
@@ -117,7 +117,7 @@ bool CAddonMgr::Factory(const cp_plugin_info_t* plugin, TYPE type, CAddonBuilder
 
   if (ext)
   {
-    builder.SetType(AddonProps::TranslateType(ext->ext_point_id));
+    builder.SetType(CAddonInfo::TranslateType(ext->ext_point_id));
     builder.SetExtPoint(ext);
 
     auto libname = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@library");
@@ -456,7 +456,7 @@ bool CAddonMgr::GetInstallableAddons(AddonInfos& addons, const TYPE &type)
   // go through all addons and remove all that are already installed
 
   addons.erase(std::remove_if(addons.begin(), addons.end(),
-    [this, type](const AddonPropsPtr& addon)
+    [this, type](const AddonInfoPtr& addon)
     {
       bool bErase = false;
 
@@ -487,7 +487,7 @@ bool CAddonMgr::FindInstallableById(const std::string& addonId, AddonPtr& result
   return true;
 }
 
-bool CAddonMgr::FindInstallableById(const std::string& addonId, AddonPropsPtr& result)
+bool CAddonMgr::FindInstallableById(const std::string& addonId, AddonInfoPtr& result)
 {
   AddonInfos versions;
   {
@@ -497,7 +497,7 @@ bool CAddonMgr::FindInstallableById(const std::string& addonId, AddonPropsPtr& r
   }
 
   result = *std::max_element(versions.begin(), versions.end(),
-      [](const AddonPropsPtr& a, const AddonPropsPtr& b) { return a->Version() < b->Version(); });
+      [](const AddonInfoPtr& a, const AddonInfoPtr& b) { return a->Version() < b->Version(); });
   return true;
 }
 
@@ -619,7 +619,7 @@ bool CAddonMgr::FindAddons()
   AddonInfoMap enabledAddons;
   for (auto addonId : tmp)
   {
-    const AddonPropsPtr info = GetInstalledAddonInfo(addonId);
+    const AddonInfoPtr info = GetInstalledAddonInfo(addonId);
     if (info == nullptr)
     {
       CLog::Log(LOGERROR, "ADDONS: Addon Id '%s' does not mach installed map", addonId.c_str());
@@ -721,7 +721,7 @@ bool CAddonMgr::DisableAddon(const std::string& id)
   if (!m_database.DisableAddon(id))
     return false;
 
-  const AddonPropsPtr info = GetInstalledAddonInfo(id);
+  const AddonInfoPtr info = GetInstalledAddonInfo(id);
   if (info == nullptr)
   {
     CLog::Log(LOGERROR, "ADDONS: Addon Id '%s' does not mach installed map", id.c_str());
@@ -734,7 +734,7 @@ bool CAddonMgr::DisableAddon(const std::string& id)
   //success
   ADDON::OnDisabled(id);
 
-  const AddonPropsPtr addon = GetInstalledAddonInfo(id);
+  const AddonInfoPtr addon = GetInstalledAddonInfo(id);
   if (addon != nullptr)
     CEventLog::GetInstance().Add(EventPtr(new CAddonManagementEvent(addon, 24141)));
 
@@ -751,7 +751,7 @@ bool CAddonMgr::EnableSingle(const std::string& id)
   if (!m_database.DisableAddon(id, false))
     return false;
 
-  const AddonPropsPtr info = GetInstalledAddonInfo(id);
+  const AddonInfoPtr info = GetInstalledAddonInfo(id);
   if (info == nullptr)
   {
     CLog::Log(LOGERROR, "ADDONS: Addon Id '%s' does not mach installed map", id.c_str());
@@ -763,7 +763,7 @@ bool CAddonMgr::EnableSingle(const std::string& id)
 
   ADDON::OnEnabled(id);
 
-  AddonPropsPtr addon = GetInstalledAddonInfo(id);
+  AddonInfoPtr addon = GetInstalledAddonInfo(id);
   if (addon != nullptr)
     CEventLog::GetInstance().Add(EventPtr(new CAddonManagementEvent(addon, 24064)));
 
@@ -837,7 +837,7 @@ bool CAddonMgr::CanUninstall(const AddonPtr& addon)
       !StringUtils::StartsWith(addon->Path(), CSpecialProtocol::TranslatePath("special://xbmc/addons"));
 }
 
-bool CAddonMgr::CanAddonBeInstalled(const AddonPropsPtr& addonProps)
+bool CAddonMgr::CanAddonBeInstalled(const AddonInfoPtr& addonProps)
 {
   if (addonProps == nullptr)
     return false;
@@ -854,7 +854,7 @@ bool CAddonMgr::CanAddonBeInstalled(const AddonPropsPtr& addonProps)
   return true;
 }
 
-bool CAddonMgr::CanUninstall(const AddonPropsPtr& addonProps)
+bool CAddonMgr::CanUninstall(const AddonInfoPtr& addonProps)
 {
   return addonProps && CanAddonBeDisabled(addonProps->ID()) &&
       !StringUtils::StartsWith(addonProps->Path(), CSpecialProtocol::TranslatePath("special://xbmc/addons"));
@@ -1074,7 +1074,7 @@ bool CAddonMgr::LoadAddonDescription(const std::string &directory, AddonPtr &add
   return addon != nullptr;
 }
 
-bool CAddonMgr::LoadAddonDescription(const std::string &directory, AddonPropsPtr &addon)
+bool CAddonMgr::LoadAddonDescription(const std::string &directory, AddonInfoPtr &addon)
 {
   auto addonXmlPath = CSpecialProtocol::TranslatePath(URIUtils::AddFileToFolder(directory, "addon.xml"));
 
@@ -1315,7 +1315,7 @@ AddonInfos CAddonMgr::GetAddonInfos(bool enabledOnly, const TYPE &type, bool use
   return infos;
 }
 
-bool CAddonMgr::IsCompatible(const AddonProps& addonProps)
+bool CAddonMgr::IsCompatible(const CAddonInfo& addonProps)
 {
   for (const auto& dependencyInfo : addonProps.GetDeps())
   {
@@ -1330,7 +1330,7 @@ bool CAddonMgr::IsCompatible(const AddonProps& addonProps)
       if (StringUtils::StartsWith(dependencyId, "xbmc.") ||
           StringUtils::StartsWith(dependencyId, "kodi."))
       {
-        AddonPropsPtr dependency = GetInstalledAddonInfo(dependencyId);
+        AddonInfoPtr dependency = GetInstalledAddonInfo(dependencyId);
         if (!dependency || !dependency->MeetsVersion(version))
           return false;
       }
@@ -1358,7 +1358,7 @@ bool CAddonMgr::AddonsFromRepoXML(const CRepository::DirInfo& repo, const std::s
   auto element = doc.RootElement()->FirstChildElement("addon");
   while (element)
   {
-    AddonPropsPtr props = std::make_shared<AddonProps>(element, repo.datadir);
+    AddonInfoPtr props = std::make_shared<CAddonInfo>(element, repo.datadir);
     if (props->IsUsable())
       addonInfos.push_back(std::move(props));
 
@@ -1378,7 +1378,7 @@ void CAddonMgr::FindAddons(AddonInfoMap& addonmap, std::string path)
       std::string path = items[i]->GetPath();
       if (XFILE::CFile::Exists(path + "addon.xml"))
       {
-        AddonPropsPtr addonInfo = std::make_shared<AddonProps>(path);
+        AddonInfoPtr addonInfo = std::make_shared<CAddonInfo>(path);
         if (addonInfo->IsUsable())
         {
           addonmap[addonInfo->Type()][addonInfo->ID()] = addonInfo;
@@ -1388,7 +1388,7 @@ void CAddonMgr::FindAddons(AddonInfoMap& addonmap, std::string path)
   }
 }
 
-const AddonPropsPtr CAddonMgr::GetInstalledAddonInfo(const std::string& addonId)
+const AddonInfoPtr CAddonMgr::GetInstalledAddonInfo(const std::string& addonId)
 {
   for (auto addonInfoTypes : m_installedAddons)
   {
@@ -1396,26 +1396,26 @@ const AddonPropsPtr CAddonMgr::GetInstalledAddonInfo(const std::string& addonId)
     if (result != addonInfoTypes.second.end())
       return result->second;
   }
-  return AddonPropsPtr();
+  return AddonInfoPtr();
 }
 
-const AddonPropsPtr CAddonMgr::GetInstalledAddonInfo(TYPE addonType, std::string addonId)
+const AddonInfoPtr CAddonMgr::GetInstalledAddonInfo(TYPE addonType, std::string addonId)
 {
   if (addonType <= ADDON_UNKNOWN || addonType >= ADDON_MAX || addonId.empty())
-    return AddonPropsPtr();
+    return AddonInfoPtr();
 
   const auto installedTypeIt = m_installedAddons.find(addonType);
   if (installedTypeIt == m_installedAddons.end())
   {
-    CLog::Log(LOGERROR, "ADDONS: No add-ons for requested type '%s' present", AddonProps::TranslateType(addonType).c_str());
-    return AddonPropsPtr();
+    CLog::Log(LOGERROR, "ADDONS: No add-ons for requested type '%s' present", CAddonInfo::TranslateType(addonType).c_str());
+    return AddonInfoPtr();
   }
 
   const auto result = installedTypeIt->second.find(addonId);
   if (result == installedTypeIt->second.end())
   {
-    CLog::Log(LOGERROR, "ADDONS: Requested add-on '%s' for type '%s' not present", addonId.c_str(), AddonProps::TranslateType(addonType).c_str());
-    return AddonPropsPtr();
+    CLog::Log(LOGERROR, "ADDONS: Requested add-on '%s' for type '%s' not present", addonId.c_str(), CAddonInfo::TranslateType(addonType).c_str());
+    return AddonInfoPtr();
   }
 
   return result->second;
@@ -1480,7 +1480,7 @@ AddonInfos CAddonMgr::GetAvailableUpdates()
   {
     for (auto addonInfo : addonInfoTypes.second)
     {
-      AddonPropsPtr remote;
+      AddonInfoPtr remote;
       if (m_database.GetAddonInfo(addonInfo.first, remote) && remote->Version() > addonInfo.second->Version())
         updates.emplace_back(std::move(remote));
     }
@@ -1498,7 +1498,7 @@ bool CAddonMgr::HasAvailableUpdates()
   {
     for (auto addonInfo : addonInfoTypes.second)
     {
-      AddonPropsPtr remote;
+      AddonInfoPtr remote;
       if (m_database.GetAddonInfo(addonInfo.first, remote) && remote->Version() > addonInfo.second->Version())
         return true;
     }

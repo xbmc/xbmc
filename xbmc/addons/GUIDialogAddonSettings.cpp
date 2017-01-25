@@ -196,7 +196,7 @@ void CGUIDialogAddonSettings::OnInitWindow()
 }
 
 // \brief Show CGUIDialogOK dialog, then wait for user to dismiss it.
-bool CGUIDialogAddonSettings::ShowAndGetInput(const AddonPropsPtr &addon, bool saveToDisk /* = true */)
+bool CGUIDialogAddonSettings::ShowAndGetInput(const AddonInfoPtr &addon, bool saveToDisk /* = true */)
 {
   if (!addon)
     return false;
@@ -474,7 +474,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
             for (std::vector<std::string>::iterator i = addonTypes.begin(); i != addonTypes.end(); ++i)
             {
               StringUtils::Trim(*i);
-              ADDON::TYPE type = AddonProps::TranslateType(*i);
+              ADDON::TYPE type = CAddonInfo::TranslateType(*i);
               if (type != ADDON_UNKNOWN)
                 types.push_back(type);
             }
@@ -924,7 +924,7 @@ std::string CGUIDialogAddonSettings::GetAddonNames(const std::string& addonIDsli
   {
     if (!retVal.empty())
       retVal += ", ";
-    AddonPropsPtr addon = CAddonMgr::GetInstance().GetInstalledAddonInfo(id);
+    AddonInfoPtr addon = CAddonMgr::GetInstance().GetInstalledAddonInfo(id);
     if (addon)
       retVal += addon->Name();
     else

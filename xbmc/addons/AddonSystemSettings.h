@@ -48,10 +48,10 @@ public:
    * Returns true if addon is no longer active, false if it could not be unset
    * (e.g. if the addon is the default)
    *
-   * @param[in] addonProps The info of add-on to set
+   * @param[in] addonInfo The info of add-on to set
    * @return true if successfully done, false if not
    */
-  bool UnsetActive(const AddonPropsPtr& addonProps);
+  bool UnsetActive(const AddonInfoPtr& addonInfo);
 
   /*!
    * @brief Check compatibility of installed addons and attempt to migrate.

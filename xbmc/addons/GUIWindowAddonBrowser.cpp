@@ -419,7 +419,7 @@ int CGUIWindowAddonBrowser::SelectAddonID(const std::vector<ADDON::TYPE> &types,
     {
       for (ADDON::AddonInfos::iterator addon = installableAddons.begin(); addon != installableAddons.end();)
       {
-        AddonPropsPtr pAddon = *addon;
+        AddonInfoPtr pAddon = *addon;
         
         // check if the addon matches one of the provided addon types
         bool matchesType = false;
@@ -452,11 +452,11 @@ int CGUIWindowAddonBrowser::SelectAddonID(const std::vector<ADDON::TYPE> &types,
     return -1;
 
   // turn the addons into items
-  std::map<std::string, AddonPropsPtr> addonMap;
+  std::map<std::string, AddonInfoPtr> addonMap;
   CFileItemList items;
   for (auto addon : addons)
   {
-    CFileItemPtr item(CAddonsDirectory::FileItemFromAddonProps(addon, addon->ID()));
+    CFileItemPtr item(CAddonsDirectory::FileItemFromAddonInfo(addon, addon->ID()));
     item->SetLabel2(addon->Summary());
     if (!items.Contains(item->GetPath()))
     {
@@ -473,7 +473,7 @@ int CGUIWindowAddonBrowser::SelectAddonID(const std::vector<ADDON::TYPE> &types,
   {
     if (!heading.empty())
       heading += ", ";
-    heading += AddonProps::TranslateType(*type, true);
+    heading += CAddonInfo::TranslateType(*type, true);
   }
 
   dialog->SetHeading(CVariant{std::move(heading)});
@@ -529,10 +529,10 @@ int CGUIWindowAddonBrowser::SelectAddonID(const std::vector<ADDON::TYPE> &types,
     // check if one of the selected addons needs to be installed
     if (showInstallable)
     {
-      std::map<std::string, AddonPropsPtr>::const_iterator itAddon = addonMap.find(item->GetPath());
+      std::map<std::string, AddonInfoPtr>::const_iterator itAddon = addonMap.find(item->GetPath());
       if (itAddon != addonMap.end())
       {
-        const AddonPropsPtr& addon = itAddon->second;
+        const AddonInfoPtr& addon = itAddon->second;
 
         // if the addon isn't installed we need to install it
         if (!CAddonMgr::GetInstance().IsAddonInstalled(addon->ID()))

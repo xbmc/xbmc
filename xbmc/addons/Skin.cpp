@@ -134,7 +134,7 @@ bool CSkinSettingBool::SerializeSetting(TiXmlElement* element) const
   return true;
 }
 
-std::unique_ptr<CSkinInfo> CSkinInfo::FromExtension(AddonProps props, const cp_extension_t* ext)
+std::unique_ptr<CSkinInfo> CSkinInfo::FromExtension(CAddonInfo addonInfo, const cp_extension_t* ext)
 {
   RESOLUTION_INFO defaultRes = RESOLUTION_INFO();
   std::vector<RESOLUTION_INFO> resolutions;
@@ -188,7 +188,7 @@ std::unique_ptr<CSkinInfo> CSkinInfo::FromExtension(AddonProps props, const cp_e
   
   begin = clock();
 
-  for (auto values : props.GetExtValues())
+  for (auto values : addonInfo.GetExtValues())
   {
     if (values.first != "res")
       continue;
@@ -228,27 +228,27 @@ std::unique_ptr<CSkinInfo> CSkinInfo::FromExtension(AddonProps props, const cp_e
   }
   
   effectsSlowDown = 1.f;
-  str = props.GetExtValue("@effectslowdown");
+  str = addonInfo.GetExtValue("@effectslowdown");
   if (!str.empty())
     effectsSlowDown = (float)atof(str.c_str());
 
-  debugging = props.GetExtValue("@debugging") == "true";
+  debugging = addonInfo.GetExtValue("@debugging") == "true";
 
 //   end = clock();
 //   elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
 //   fprintf(stderr, "NEW: %s: elapsed secs: %f\n", __FUNCTION__, elapsed_secs);
 
-  return std::unique_ptr<CSkinInfo>(new CSkinInfo(std::move(props), defaultRes, resolutions,
+  return std::unique_ptr<CSkinInfo>(new CSkinInfo(std::move(addonInfo), defaultRes, resolutions,
       effectsSlowDown, debugging));
 }
 
 CSkinInfo::CSkinInfo(
-    AddonProps props,
+    CAddonInfo addonInfo,
     const RESOLUTION_INFO& resolution,
     const std::vector<RESOLUTION_INFO>& resolutions,
     float effectsSlowDown,
     bool debugging)
-    : CAddon(std::move(props)),
+    : CAddon(std::move(addonInfo)),
       m_defaultRes(resolution),
       m_resolutions(resolutions),
       m_effectsSlowDown(effectsSlowDown),

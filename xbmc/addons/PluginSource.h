@@ -30,10 +30,10 @@ public:
 
   enum Content { UNKNOWN, AUDIO, IMAGE, EXECUTABLE, VIDEO, GAME };
 
-  static std::unique_ptr<CPluginSource> FromExtension(AddonProps props, const cp_extension_t* ext);
+  static std::unique_ptr<CPluginSource> FromExtension(CAddonInfo addonInfo, const cp_extension_t* ext);
 
-  explicit CPluginSource(AddonProps props);
-  CPluginSource(AddonProps props, const std::string& provides);
+  explicit CPluginSource(CAddonInfo addonInfo);
+  CPluginSource(CAddonInfo addonInfo, const std::string& provides);
 
   virtual TYPE FullType() const;
   virtual bool IsType(TYPE type) const;

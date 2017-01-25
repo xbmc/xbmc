@@ -63,7 +63,7 @@ namespace GAME
      *
      * \return true if the add-on can be launched, false otherwise
      */
-    static bool IsStandaloneGame(const ADDON::AddonPropsPtr& addon);
+    static bool IsStandaloneGame(const ADDON::AddonInfoPtr& addon);
 
   private:
     static void GetGameClients(const CFileItem& file, GameClientVector& candidates, GameClientVector& installable, bool& bHasVfsGameClient);

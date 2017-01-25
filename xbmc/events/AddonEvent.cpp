@@ -20,32 +20,32 @@
 
 #include "AddonEvent.h"
 
-CAddonEvent::CAddonEvent(ADDON::AddonPropsPtr addonProps, const CVariant& description)
-  : CUniqueEvent(addonProps->Name(), description, addonProps->Icon()),
-    m_addonProps(addonProps)
+CAddonEvent::CAddonEvent(ADDON::AddonInfoPtr addonInfo, const CVariant& description)
+  : CUniqueEvent(addonInfo->Name(), description, addonInfo->Icon()),
+    m_addonInfo(addonInfo)
 { }
 
-CAddonEvent::CAddonEvent(ADDON::AddonPropsPtr addonProps, const CVariant& description, const CVariant& details)
-  : CUniqueEvent(addonProps->Name(), description, addonProps->Icon(), details),
-  m_addonProps(addonProps)
+CAddonEvent::CAddonEvent(ADDON::AddonInfoPtr addonInfo, const CVariant& description, const CVariant& details)
+  : CUniqueEvent(addonInfo->Name(), description, addonInfo->Icon(), details),
+  m_addonInfo(addonInfo)
 { }
 
-CAddonEvent::CAddonEvent(ADDON::AddonPropsPtr addonProps, const CVariant& description, const CVariant& details, const CVariant& executionLabel)
-  : CUniqueEvent(addonProps->Name(), description, addonProps->Icon(), details, executionLabel),
-  m_addonProps(addonProps)
+CAddonEvent::CAddonEvent(ADDON::AddonInfoPtr addonInfo, const CVariant& description, const CVariant& details, const CVariant& executionLabel)
+  : CUniqueEvent(addonInfo->Name(), description, addonInfo->Icon(), details, executionLabel),
+  m_addonInfo(addonInfo)
 { }
 
-CAddonEvent::CAddonEvent(ADDON::AddonPropsPtr addonProps, EventLevel level, const CVariant& description)
-  : CUniqueEvent(addonProps->Name(), description, addonProps->Icon(), level),
-  m_addonProps(addonProps)
+CAddonEvent::CAddonEvent(ADDON::AddonInfoPtr addonInfo, EventLevel level, const CVariant& description)
+  : CUniqueEvent(addonInfo->Name(), description, addonInfo->Icon(), level),
+  m_addonInfo(addonInfo)
 { }
 
-CAddonEvent::CAddonEvent(ADDON::AddonPropsPtr addonProps, EventLevel level, const CVariant& description, const CVariant& details)
-  : CUniqueEvent(addonProps->Name(), description, addonProps->Icon(), details, level),
-  m_addonProps(addonProps)
+CAddonEvent::CAddonEvent(ADDON::AddonInfoPtr addonInfo, EventLevel level, const CVariant& description, const CVariant& details)
+  : CUniqueEvent(addonInfo->Name(), description, addonInfo->Icon(), details, level),
+  m_addonInfo(addonInfo)
 { }
 
-CAddonEvent::CAddonEvent(ADDON::AddonPropsPtr addonProps, EventLevel level, const CVariant& description, const CVariant& details, const CVariant& executionLabel)
-  : CUniqueEvent(addonProps->Name(), description, addonProps->Icon(), details, executionLabel, level),
-  m_addonProps(addonProps)
+CAddonEvent::CAddonEvent(ADDON::AddonInfoPtr addonInfo, EventLevel level, const CVariant& description, const CVariant& details, const CVariant& executionLabel)
+  : CUniqueEvent(addonInfo->Name(), description, addonInfo->Icon(), details, executionLabel, level),
+  m_addonInfo(addonInfo)
 { }

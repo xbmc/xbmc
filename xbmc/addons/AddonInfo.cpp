@@ -18,7 +18,7 @@
  *
  */
 
-#include "AddonProperties.h"
+#include "AddonInfo.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/versions.h"
 #include "Util.h"
 #include "filesystem/File.h"
@@ -262,7 +262,7 @@ static const TypeMapping types[] =
    {"kodi.vfs",                          ADDON_VFS,                 39013, "DefaultAddonVfs.png" },
   };
 
-std::string AddonProps::TranslateType(ADDON::TYPE type, bool pretty/*=false*/)
+std::string CAddonInfo::TranslateType(ADDON::TYPE type, bool pretty/*=false*/)
 {
   for (unsigned int index=0; index < ARRAY_SIZE(types); ++index)
   {
@@ -278,7 +278,7 @@ std::string AddonProps::TranslateType(ADDON::TYPE type, bool pretty/*=false*/)
   return "";
 }
 
-TYPE AddonProps::TranslateType(const std::string &string)
+TYPE CAddonInfo::TranslateType(const std::string &string)
 {
   for (unsigned int index=0; index < ARRAY_SIZE(types); ++index)
   {
@@ -290,7 +290,7 @@ TYPE AddonProps::TranslateType(const std::string &string)
   return ADDON_UNKNOWN;
 }
 
-std::string AddonProps::TranslateIconType(ADDON::TYPE type)
+std::string CAddonInfo::TranslateIconType(ADDON::TYPE type)
 {
   for (unsigned int index=0; index < ARRAY_SIZE(types); ++index)
   {
@@ -301,7 +301,7 @@ std::string AddonProps::TranslateIconType(ADDON::TYPE type)
   return "";
 }
 
-const char* AddonProps::GetPlatformLibraryName(const TiXmlElement* element)
+const char* CAddonInfo::GetPlatformLibraryName(const TiXmlElement* element)
 {
   const char* libraryName;
 #if defined(TARGET_ANDROID)
@@ -330,7 +330,7 @@ const char* AddonProps::GetPlatformLibraryName(const TiXmlElement* element)
   return libraryName;
 }
 
-AddonProps::AddonProps(std::string addonPath)
+CAddonInfo::CAddonInfo(std::string addonPath)
   : m_usable(false),
     m_type(ADDON_UNKNOWN),
     m_path(addonPath)
@@ -340,7 +340,7 @@ AddonProps::AddonProps(std::string addonPath)
   CXBMCTinyXML xmlDoc;
   if (!xmlDoc.LoadFile(addonXmlPath))
   {
-    CLog::Log(LOGERROR, "AddonProps: Unable to load '%s', Line %d\n%s",
+    CLog::Log(LOGERROR, "CAddonInfo: Unable to load '%s', Line %d\n%s",
                                                m_path.c_str(),
                                                xmlDoc.ErrorRow(),
                                                xmlDoc.ErrorDesc());
@@ -366,7 +366,7 @@ AddonProps::AddonProps(std::string addonPath)
   }
 }
 
-AddonProps::AddonProps(const TiXmlElement* baseElement, std::string addonRepoXmlPath)
+CAddonInfo::CAddonInfo(const TiXmlElement* baseElement, std::string addonRepoXmlPath)
   : m_usable(false),
     m_type(ADDON_UNKNOWN)
 {
@@ -391,7 +391,7 @@ AddonProps::AddonProps(const TiXmlElement* baseElement, std::string addonRepoXml
   }
 }
 
-AddonProps::AddonProps(const std::string& id,
+CAddonInfo::CAddonInfo(const std::string& id,
                        const AddonVersion& version,
                        const std::string& name,
                        const std::string& summary,
@@ -419,18 +419,18 @@ AddonProps::AddonProps(const std::string& id,
   else
   {
     m_usable = false;
-    CLog::Log(LOGERROR, "AddonProps: tried to create add-on info with invalid data (id='%s', type='%i')", m_id.c_str(), m_type);
+    CLog::Log(LOGERROR, "CAddonInfo: tried to create add-on info with invalid data (id='%s', type='%i')", m_id.c_str(), m_type);
   }
 }
 
-AddonProps::AddonProps()
+CAddonInfo::CAddonInfo()
   : m_usable(true),
     m_type(ADDON_UNKNOWN),
     m_packageSize(0)
 {
 }
 
-AddonProps::AddonProps(std::string id, TYPE type)
+CAddonInfo::CAddonInfo(std::string id, TYPE type)
   : m_usable(true),
     m_id(std::move(id)),
     m_type(type),
@@ -439,7 +439,7 @@ AddonProps::AddonProps(std::string id, TYPE type)
 
 }
 
-bool AddonProps::LoadAddonXML(const TiXmlElement* baseElement, std::string addonXmlPath)
+bool CAddonInfo::LoadAddonXML(const TiXmlElement* baseElement, std::string addonXmlPath)
 {
   /*
   * Following values currently not set from creator:
@@ -455,7 +455,7 @@ bool AddonProps::LoadAddonXML(const TiXmlElement* baseElement, std::string addon
 
   if (!StringUtils::EqualsNoCase(baseElement->Value(), "addon"))
   {
-    CLog::Log(LOGERROR, "AddonProps: file from '%s' doesnt contain <addon>", addonXmlPath.c_str());
+    CLog::Log(LOGERROR, "CAddonInfo: file from '%s' doesnt contain <addon>", addonXmlPath.c_str());
     return false;
   }
 
@@ -476,7 +476,7 @@ bool AddonProps::LoadAddonXML(const TiXmlElement* baseElement, std::string addon
   m_author = cstring ? cstring : "";
   if (m_id.empty() || m_version.empty())
   {
-    CLog::Log(LOGERROR, "AddonProps: file '%s' doesnt contain required values on <addon ... > id='%s', version='%s'", 
+    CLog::Log(LOGERROR, "CAddonInfo: file '%s' doesnt contain required values on <addon ... > id='%s', version='%s'", 
               addonXmlPath.c_str(),
               m_id.empty() ? "missing" : m_id.c_str(),
               m_version.empty() ? "missing" : m_version.asString().c_str());
@@ -518,7 +518,7 @@ bool AddonProps::LoadAddonXML(const TiXmlElement* baseElement, std::string addon
 
     if (!ParseExtension(child))
     {
-      CLog::Log(LOGERROR, "AddonProps: file '%s' doesn't contain a valid add-on extensions (%s)", addonXmlPath.c_str(), point.c_str());
+      CLog::Log(LOGERROR, "CAddonInfo: file '%s' doesn't contain a valid add-on extensions (%s)", addonXmlPath.c_str(), point.c_str());
       return false;
     }
 
@@ -713,7 +713,7 @@ bool AddonProps::LoadAddonXML(const TiXmlElement* baseElement, std::string addon
     {
 //       if (!ParseExtension(child))
 //       {
-//         CLog::Log(LOGERROR, "AddonProps: file '%s' doesn't contain a valid add-on extensions (%s)", addonXmlPath.c_str(), point.c_str());
+//         CLog::Log(LOGERROR, "CAddonInfo: file '%s' doesn't contain a valid add-on extensions (%s)", addonXmlPath.c_str(), point.c_str());
 //         return false;
 //       }
 
@@ -723,7 +723,7 @@ bool AddonProps::LoadAddonXML(const TiXmlElement* baseElement, std::string addon
         m_type = TranslateType(point);
         if (m_type == ADDON_UNKNOWN || m_type >= ADDON_MAX)
         {
-          CLog::Log(LOGERROR, "AddonProps: file '%s' doesn't contain a valid add-on type name (%s)", addonXmlPath.c_str(), point.c_str());
+          CLog::Log(LOGERROR, "CAddonInfo: file '%s' doesn't contain a valid add-on type name (%s)", addonXmlPath.c_str(), point.c_str());
           return false;
         }
       }
@@ -755,7 +755,7 @@ bool AddonProps::LoadAddonXML(const TiXmlElement* baseElement, std::string addon
   return true;
 }
 
-std::string AddonProps::SerializeMetadata()
+std::string CAddonInfo::SerializeMetadata()
 {
   CVariant variant;
   variant["author"] = m_author;
@@ -796,7 +796,7 @@ std::string AddonProps::SerializeMetadata()
   return CJSONVariantWriter::Write(variant, true);
 }
 
-void AddonProps::DeserializeMetadata(const std::string& document)
+void CAddonInfo::DeserializeMetadata(const std::string& document)
 {
   CVariant variant = CJSONVariantParser::Parse(document);
 
@@ -833,35 +833,35 @@ void AddonProps::DeserializeMetadata(const std::string& document)
   m_usable = true;
 }
 
-bool AddonProps::MeetsVersion(const AddonVersion &version) const
+bool CAddonInfo::MeetsVersion(const AddonVersion &version) const
 {
   return m_minversion <= version && version <= m_version;
 }
 
-AddonProps::SubContent AddonProps::TranslateSubContent(const std::string &content)
+CAddonInfo::SubContent CAddonInfo::TranslateSubContent(const std::string &content)
 {
   if (content == "audio")
-    return AddonProps::AUDIO;
+    return CAddonInfo::AUDIO;
   else if (content == "image")
-    return AddonProps::IMAGE;
+    return CAddonInfo::IMAGE;
   else if (content == "executable")
-    return AddonProps::EXECUTABLE;
+    return CAddonInfo::EXECUTABLE;
   else if (content == "video")
-    return AddonProps::VIDEO;
+    return CAddonInfo::VIDEO;
   else if (content == "game")
-    return AddonProps::GAME;
+    return CAddonInfo::GAME;
   else
-    return AddonProps::UNKNOWN;
+    return CAddonInfo::UNKNOWN;
 }
 
-std::string AddonProps::LibPath() const
+std::string CAddonInfo::LibPath() const
 {
   if (m_libname.empty())
     return "";
   return URIUtils::AddFileToFolder(m_path, m_libname);
 }
 
-void AddonProps::SetProvides(const std::string &content)
+void CAddonInfo::SetProvides(const std::string &content)
 {
   if (!content.empty())
   {
@@ -878,7 +878,7 @@ void AddonProps::SetProvides(const std::string &content)
     m_providedSubContent.insert(EXECUTABLE);
 }
 
-bool AddonProps::IsType(TYPE type) const
+bool CAddonInfo::IsType(TYPE type) const
 {
   return ((type == ADDON_VIDEO && ProvidesSubContent(VIDEO))
        || (type == ADDON_AUDIO && ProvidesSubContent(AUDIO))

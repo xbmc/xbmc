@@ -238,7 +238,7 @@ std::set<std::string> CGameUtils::GetGameExtensions()
   return extensions;
 }
 
-bool CGameUtils::IsStandaloneGame(const ADDON::AddonPropsPtr& addon)
+bool CGameUtils::IsStandaloneGame(const ADDON::AddonInfoPtr& addon)
 {
 /*  using namespace ADDON;
 

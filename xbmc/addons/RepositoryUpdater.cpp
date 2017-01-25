@@ -180,7 +180,7 @@ CDateTime CRepositoryUpdater::LastUpdated() const
   db.Open();
   std::vector<CDateTime> updateTimes;
   std::transform(repos.begin(), repos.end(), std::back_inserter(updateTimes),
-    [&](const AddonPropsPtr& repo)
+    [&](const AddonInfoPtr& repo)
     {
       auto lastCheck = db.LastChecked(repo->ID());
       if (lastCheck.first.IsValid() && lastCheck.second == repo->Version())
