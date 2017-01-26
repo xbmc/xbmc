@@ -321,6 +321,7 @@ void CInputStream::UpdateStreams()
       videoStream->iHeight = stream.m_Height;
       videoStream->fAspect = stream.m_Aspect;
       videoStream->stereo_mode = "mono";
+      videoStream->iBitRate = stream.m_BitRate;
       demuxStream = videoStream;
     }
     else if (stream.m_streamType == INPUTSTREAM_INFO::TYPE_SUBTITLE)

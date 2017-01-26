@@ -60,7 +60,6 @@ public:
 
 
   std::string GetPlayerInfo();
-  int GetAudioBitrate();
   int GetAudioChannels();
 
   // holds stream information for current playing stream
