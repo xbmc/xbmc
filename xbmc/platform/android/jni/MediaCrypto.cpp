@@ -61,6 +61,9 @@ void CJNIMediaCrypto::setMediaDrmSession(const std::vector<char>& sessionId)
 
 bool CJNIMediaCrypto::requiresSecureDecoderComponent(const std::string& mime)
 {
+  if (!m_object)
+    return false;
+
   return call_method<jboolean>(m_object,
     "requiresSecureDecoderComponent", "(Ljava/lang/String;)Z",
     jcast<jhstring>(mime));
