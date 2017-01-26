@@ -132,6 +132,7 @@ protected:
   int             m_colorFormat;
   std::string     m_formatname;
   bool            m_opened;
+  bool            m_checkForPicture;
   bool            m_drop;
   int             m_codecControlFlags;
   int             m_state;
@@ -159,7 +160,7 @@ protected:
   CBitstreamConverter *m_bitstream;
   DVDVideoPicture m_videobuffer;
 
-  int             m_dec_retcode;
+  int             m_indexInputBuffer;
   bool            m_render_sw;
   bool            m_render_surface;
   int             m_src_offset[4];
