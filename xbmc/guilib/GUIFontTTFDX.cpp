@@ -348,7 +348,7 @@ void CGUIFontTTFDX::CreateStaticIndexBuffer(void)
 bool CGUIFontTTFDX::m_staticIndexBufferCreated = false;
 ID3D11Buffer* CGUIFontTTFDX::m_staticIndexBuffer = nullptr;
 
-void CGUIFontTTFDX::OnDestroyDevice(void)
+void CGUIFontTTFDX::OnDestroyDevice(bool fatal)
 {
   SAFE_RELEASE(m_staticIndexBuffer);
   m_staticIndexBufferCreated = false;

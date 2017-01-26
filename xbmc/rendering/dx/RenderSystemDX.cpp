@@ -29,6 +29,7 @@
 #include "guilib/GUIShaderDX.h"
 #include "guilib/GUITextureD3D.h"
 #include "guilib/GUIWindowManager.h"
+#include "messaging/ApplicationMessenger.h"
 #include "settings/AdvancedSettings.h"
 #include "threads/SingleLock.h"
 #include "utils/MathUtils.h"
@@ -418,7 +419,14 @@ void CRenderSystemDX::DeleteDevice()
 
   // tell any shared resources
   for (std::vector<ID3DResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
-    (*i)->OnDestroyDevice();
+  {
+    // the most of resources like textures and buffers try to 
+    // receive and save their status from current device.
+    // m_nDeviceStatus contains the last device status and
+    // DXGI_ERROR_DEVICE_REMOVED means that we have no possibility
+    // to use the device anymore, tell all resouces about this.
+    (*i)->OnDestroyDevice(DXGI_ERROR_DEVICE_REMOVED == m_nDeviceStatus);
+  }
 
   if (m_pSwapChain)
     m_pSwapChain->SetFullscreenState(false, nullptr);
@@ -1284,6 +1292,8 @@ bool CRenderSystemDX::BeginRender()
     {
       OnDeviceLost();
       OnDeviceReset();
+      if (m_bRenderCreated)
+        KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, "ReloadSkin");
     }
     return false;
   }
