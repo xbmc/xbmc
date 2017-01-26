@@ -331,7 +331,7 @@ CAddonButtonMap::DriverMap CAddonButtonMap::CreateLookupTable(const FeatureMap& 
         }
         break;
       }
-        
+
       default:
         break;
     }
