@@ -43,7 +43,6 @@
 #include "filesystem/SpecialProtocol.h"
 #include "VFSEntry.h"
 #include "LangInfo.h"
-#include "PluginSource.h"
 #include "Repository.h"
 #include "Scraper.h"
 #include "Service.h"
@@ -534,7 +533,7 @@ bool CAddonMgr::GetAddonsInternal(const TYPE &type, VECADDONS &addons, bool enab
       AddonPtr addon;
       fprintf(stderr, "----------------- %s\n", __PRETTY_FUNCTION__);
       if (Factory(cp_addon, type, builder))
-        addon = builder.Build2();
+        addon = builder.Build();
       m_cpluff->release_info(m_cp_context, cp_addon);
 
       if (addon)

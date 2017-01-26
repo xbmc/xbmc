@@ -27,7 +27,6 @@
 #include "addons/AddonSystemSettings.h"
 #include "addons/GUIDialogAddonSettings.h"
 #include "addons/GUIWindowAddonBrowser.h"
-#include "addons/PluginSource.h"
 #include "addons/RepositoryUpdater.h"
 #include "FileItem.h"
 #include "filesystem/PluginDirectory.h"
@@ -97,10 +96,9 @@ static int RunAddon(const std::vector<std::string>& params)
   {
     const std::string& addonid = params[0];
 
-    AddonPtr addon;
-    if (CAddonMgr::GetInstance().GetAddon(addonid, addon, ADDON_PLUGIN))
+    AddonInfoPtr addon = CAddonMgr::GetInstance().GetInstalledAddonInfo(ADDON_PLUGIN, addonid);
+    if (addon)
     {
-      PluginPtr plugin = std::dynamic_pointer_cast<CPluginSource>(addon);
       std::string urlParameters;
       std::vector<std::string> parameters;
       if (params.size() == 2 &&
@@ -119,15 +117,15 @@ static int RunAddon(const std::vector<std::string>& params)
       }
 
       std::string cmd;
-      if (plugin->Provides(CPluginSource::VIDEO))
+      if (addon->ProvidesSubContent(CAddonInfo::VIDEO))
         cmd = StringUtils::Format("ActivateWindow(Videos,plugin://%s%s,return)", addonid.c_str(), urlParameters.c_str());
-      else if (plugin->Provides(CPluginSource::AUDIO))
+      else if (addon->ProvidesSubContent(CAddonInfo::AUDIO))
         cmd = StringUtils::Format("ActivateWindow(Music,plugin://%s%s,return)", addonid.c_str(), urlParameters.c_str());
-      else if (plugin->Provides(CPluginSource::EXECUTABLE))
+      else if (addon->ProvidesSubContent(CAddonInfo::EXECUTABLE))
         cmd = StringUtils::Format("ActivateWindow(Programs,plugin://%s%s,return)", addonid.c_str(), urlParameters.c_str());
-      else if (plugin->Provides(CPluginSource::IMAGE))
+      else if (addon->ProvidesSubContent(CAddonInfo::IMAGE))
         cmd = StringUtils::Format("ActivateWindow(Pictures,plugin://%s%s,return)", addonid.c_str(), urlParameters.c_str());
-      else if (plugin->Provides(CPluginSource::GAME))
+      else if (addon->ProvidesSubContent(CAddonInfo::GAME))
         cmd = StringUtils::Format("ActivateWindow(Games,plugin://%s%s,return)", addonid.c_str(), urlParameters.c_str());
       else
         // Pass the script name (addonid) and all the parameters

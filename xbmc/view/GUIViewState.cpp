@@ -39,7 +39,6 @@
 #include "guilib/GUIWindowManager.h"
 #include "addons/Addon.h"
 #include "addons/AddonManager.h"
-#include "addons/PluginSource.h"
 #include "view/ViewState.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSourceSettings.h"

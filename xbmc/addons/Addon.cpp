@@ -240,13 +240,6 @@ TiXmlElement* CAddon::GetSettingsXML()
   return m_addonXmlDoc.RootElement();
 }
 
-std::string CAddon::LibPath() const
-{
-  if (m_addonInfo.m_libname.empty())
-    return "";
-  return URIUtils::AddFileToFolder(m_addonInfo.m_path, m_addonInfo.m_libname);
-}
-
 AddonVersion CAddon::GetDependencyVersion(const std::string &dependencyID) const
 {
   const ADDON::ADDONDEPS &deps = GetDeps();
