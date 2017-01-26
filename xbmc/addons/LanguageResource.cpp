@@ -109,9 +109,9 @@ std::unique_ptr<CLanguageResource> CLanguageResource::FromExtension(CAddonInfo a
       for (auto value : values.second)
       {
         if (value.first == "token")
-          token = value.second;
+          token = value.second.asString();
         else if (value.first == "token@separators")
-          separators = value.second;
+          separators = value.second.asString();
       }
       if (!token.empty())
       {

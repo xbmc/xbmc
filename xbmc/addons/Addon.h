@@ -160,7 +160,10 @@ public:
   virtual void OnPostInstall(bool update, bool modal) {};
   virtual void OnPreUnInstall() {};
   virtual void OnPostUnInstall() {};
-const CAddonInfo m_addonInfo;
+
+  const CAddonInfo* AddonInfo() { return &m_addonInfo; }
+
+  CAddonInfo m_addonInfo;
 protected:
   /*! \brief Load the default settings and these with any previously configured user settings
    \param bForce force the load of settings even if they are already loaded (reload)
