@@ -154,7 +154,7 @@ std::shared_ptr<CAddon> CAddonBuilder::Build()
     case ADDON_RESOURCE_GAMES:
       return CGameResource::FromExtension(std::move(m_addonInfo), m_extPoint);
     case ADDON_RESOURCE_LANGUAGE:
-      return CLanguageResource::FromExtension(std::move(m_addonInfo), m_extPoint);
+      return std::make_shared<CLanguageResource>(std::move(addonInfo));
     case ADDON_RESOURCE_UISOUNDS:
       return std::make_shared<CUISoundsResource>(std::move(m_addonInfo));
     case ADDON_REPOSITORY:
