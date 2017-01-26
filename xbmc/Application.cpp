@@ -3015,8 +3015,8 @@ bool CApplication::PlayMedia(const CFileItem& item, const std::string &player, i
   CURL path(item.GetPath());
   if (path.GetProtocol() == "game")
   {
-    AddonPtr addon;
-    if (CAddonMgr::GetInstance().GetAddon(path.GetHostName(), addon, ADDON_GAMEDLL))
+    AddonInfoPtr addon = CAddonMgr::GetInstance().GetInstalledAddonInfo(ADDON_GAMEDLL, path.GetHostName());
+    if (addon)
     {
       CFileItem addonItem(addon);
       return PlayFile(addonItem, player, false) == PLAYBACK_OK;

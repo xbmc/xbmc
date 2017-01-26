@@ -295,7 +295,7 @@ bool CGUIWindowAddonBrowser::GetDirectory(const std::string& strDirectory, CFile
     {
       for (int i = items.Size() - 1; i >= 0; i--)
       {
-        if (items[i]->GetAddonInfo() && !items[i]->GetAddonInfo()->Broken().empty())
+        if (items[i]->HasAddonInfo() && !items[i]->GetAddonInfo()->Broken().empty())
         {
           //check if it's installed
           if (!CAddonMgr::GetInstance().IsAddonInstalled(items[i]->GetProperty("Addon.ID").asString()))
@@ -423,13 +423,13 @@ int CGUIWindowAddonBrowser::SelectAddonID(const std::vector<ADDON::TYPE> &types,
         
         // check if the addon matches one of the provided addon types
         bool matchesType = false;
-        for (std::vector<ADDON::TYPE>::const_iterator type = validTypes.begin(); type != validTypes.end(); ++type)
+        for (const auto type : validTypes)
         {
-//           if (pAddon->IsType(*type))
-//           {
-//             matchesType = true;
-//             break;
-//           }
+          if (pAddon->IsType(type))
+          {
+            matchesType = true;
+            break;
+          }
         }
 
         if (matchesType)
