@@ -30,7 +30,6 @@ public:
   CAddonBuilder() : m_built(false), m_extPoint(nullptr) {}
 
   std::shared_ptr<CAddon> Build();
-  std::shared_ptr<CAddon> Build2();
   void SetId(std::string id) { m_addonInfo.m_id = std::move(id); }
   void SetName(std::string name) { m_addonInfo.m_name = std::move(name); }
   void SetLicense(std::string license) { m_addonInfo.m_license = std::move(license); }
@@ -62,8 +61,6 @@ public:
   const AddonVersion& GetVersion() const { return m_addonInfo.m_version; }
 
 private:
-  static std::shared_ptr<CAddon> FromProps(CAddonInfo addonInfo);
-
   bool m_built;
   CAddonInfo m_addonInfo;
   cp_extension_t* m_extPoint;

@@ -46,8 +46,6 @@ namespace ADDON
   typedef std::shared_ptr<CAddon> AddonPtr;
   class CSkinInfo;
   typedef std::shared_ptr<CSkinInfo> SkinPtr;
-  class CPluginSource;
-  typedef std::shared_ptr<CPluginSource> PluginPtr;
 
   typedef std::vector<AddonPtr> VECADDONS;
   typedef std::vector<AddonPtr>::iterator IVECADDONS;
@@ -79,7 +77,7 @@ public:
   virtual std::string Description() const { return m_addonInfo.m_description; }
   virtual std::string Path() const { return m_addonInfo.m_path; }
   virtual std::string Profile() const { return m_profilePath; }
-  virtual std::string LibPath() const;
+  virtual std::string LibPath() const { return m_addonInfo.LibPath(); }
   virtual std::string Author() const { return m_addonInfo.m_author; }
   virtual std::string ChangeLog() const { return m_addonInfo.m_changelog; }
   virtual std::string FanArt() const { return m_addonInfo.m_fanart; }

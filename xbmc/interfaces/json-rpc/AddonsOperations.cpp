@@ -22,7 +22,6 @@
 #include "JSONUtils.h"
 #include "addons/AddonManager.h"
 #include "addons/AddonDatabase.h"
-#include "addons/PluginSource.h"
 #include "messaging/ApplicationMessenger.h"
 #include "TextureCache.h"
 #include "filesystem/File.h"
@@ -38,103 +37,106 @@ JSONRPC_STATUS CAddonsOperations::GetAddons(const std::string &method, ITranspor
 {
   std::vector<TYPE> addonTypes;
   TYPE addonType = CAddonInfo::TranslateType(parameterObject["type"].asString());
-  CPluginSource::Content content = CPluginSource::Translate(parameterObject["content"].asString());
+  CAddonInfo::SubContent content = CAddonInfo::TranslateSubContent(parameterObject["content"].asString());
   CVariant enabled = parameterObject["enabled"];
   CVariant installed = parameterObject["installed"];
 
   // ignore the "content" parameter if the type is specified but not a plugin or script
   if (addonType != ADDON_UNKNOWN && addonType != ADDON_PLUGIN && addonType != ADDON_SCRIPT)
-    content = CPluginSource::UNKNOWN;
+    content = CAddonInfo::UNKNOWN;
 
-  if (addonType >= ADDON_VIDEO && addonType <= ADDON_EXECUTABLE)
+  bool contentFound = false;
+  switch (addonType)
+  {
+  case ADDON_VIDEO:
+    content = CAddonInfo::VIDEO;
+    contentFound = true;
+    break;
+  case ADDON_AUDIO:
+    content = CAddonInfo::AUDIO;
+    contentFound = true;
+    break;
+  case ADDON_IMAGE:
+    content = CAddonInfo::IMAGE;
+    contentFound = true;
+    break;
+  case ADDON_GAME:
+    content = CAddonInfo::GAME;
+    contentFound = true;
+    break;
+  case ADDON_EXECUTABLE:
+    content = CAddonInfo::EXECUTABLE;
+    contentFound = true;
+    break;
+
+  default:
+    break;
+  }
+
+  if (contentFound)
   {
     addonTypes.push_back(ADDON_PLUGIN);
     addonTypes.push_back(ADDON_SCRIPT);
-
-    switch (addonType)
-    {
-    case ADDON_VIDEO:
-      content = CPluginSource::VIDEO;
-      break;
-    case ADDON_AUDIO:
-      content = CPluginSource::AUDIO;
-      break;
-    case ADDON_IMAGE:
-      content = CPluginSource::IMAGE;
-      break;
-    case ADDON_GAME:
-      content = CPluginSource::GAME;
-      break;
-    case ADDON_EXECUTABLE:
-      content = CPluginSource::EXECUTABLE;
-      break;
-
-    default:
-      break;
-    }
   }
   else
     addonTypes.push_back(addonType);
 
-//   VECADDONS addons;
-//   for (std::vector<TYPE>::const_iterator typeIt = addonTypes.begin(); typeIt != addonTypes.end(); ++typeIt)
-//   {
-//     VECADDONS typeAddons;
-//     if (*typeIt == ADDON_UNKNOWN)
-//     {
-//       if (!enabled.isBoolean()) //All
-//       {
+   AddonInfos addons;
+   for (const auto typeIt : addonTypes)
+   {
+     AddonInfos typeAddons;
+     if (typeIt == ADDON_UNKNOWN)
+     {
+       if (!enabled.isBoolean()) //All
+       {
 //         if (!installed.isBoolean() || installed.asBoolean())
 //           typeAddons = CAddonMgr::GetInstance().GetAddonInfos(false, ADDON_UNKNOWN);
 //           CAddonMgr::GetInstance().GetInstalledAddons(typeAddons);
-//         if (!installed.isBoolean() || (installed.isBoolean() && !installed.asBoolean()))
-//           CAddonMgr::GetInstance().GetInstallableAddons(typeAddons);
-//       }
+         if (!installed.isBoolean() || (installed.isBoolean() && !installed.asBoolean()))
+           CAddonMgr::GetInstance().GetInstallableAddons(typeAddons);
+       }
 //       else if (enabled.asBoolean() && (!installed.isBoolean() || installed.asBoolean())) //Enabled
 //         CAddonMgr::GetInstance().GetAddons(typeAddons);
 //       else if (!installed.isBoolean() || installed.asBoolean())
 //         CAddonMgr::GetInstance().GetDisabledAddons(typeAddons);
-//     }
-//     else
-//     {
-//       if (!enabled.isBoolean()) //All
-//       {
+     }
+     else
+     {
+       if (!enabled.isBoolean()) //All
+       {
 //         if (!installed.isBoolean() || installed.asBoolean())
 //           CAddonMgr::GetInstance().GetInstalledAddons(typeAddons, *typeIt);
-//         if (!installed.isBoolean() || (installed.isBoolean() && !installed.asBoolean()))
-//           CAddonMgr::GetInstance().GetInstallableAddons(typeAddons, *typeIt);
-//       }
+         if (!installed.isBoolean() || (installed.isBoolean() && !installed.asBoolean()))
+           CAddonMgr::GetInstance().GetInstallableAddons(typeAddons, typeIt);
+       }
 //       else if (enabled.asBoolean() && (!installed.isBoolean() || installed.asBoolean())) //Enabled
 //         CAddonMgr::GetInstance().GetAddons(typeAddons, *typeIt);
 //       else if (!installed.isBoolean() || installed.asBoolean())
 //         CAddonMgr::GetInstance().GetDisabledAddons(typeAddons, *typeIt);
-//     }
-// 
-//     addons.insert(addons.end(), typeAddons.begin(), typeAddons.end());
-//   }
+     }
 
-//   // remove library addons
-//   for (int index = 0; index < (int)addons.size(); index++)
-//   {
-//     PluginPtr plugin;
-//     if (content != CPluginSource::UNKNOWN)
-//       plugin = std::dynamic_pointer_cast<CPluginSource>(addons.at(index));
-// 
-//     if ((addons.at(index)->Type() <= ADDON_UNKNOWN || addons.at(index)->Type() >= ADDON_MAX) ||
-//        ((content != CPluginSource::UNKNOWN && plugin == NULL) || (plugin != NULL && !plugin->Provides(content))))
-//     {
-//       addons.erase(addons.begin() + index);
-//       index--;
-//     }
-//   }
-// 
-//   int start, end;
-//   HandleLimits(parameterObject, result, addons.size(), start, end);
-//   
-//   CAddonDatabase addondb;
+     addons.insert(addons.end(), typeAddons.begin(), typeAddons.end());
+   }
+
+   // remove library addons
+   for (int index = 0; index < (int)addons.size(); index++)
+   {
+     AddonInfoPtr addonInfo = addons.at(index);
+     if ((addons.at(index)->Type() <= ADDON_UNKNOWN || addons.at(index)->Type() >= ADDON_MAX) ||
+         !addonInfo->ProvidesSubContent(content))
+     {
+       addons.erase(addons.begin() + index);
+       index--;
+     }
+   }
+
+   int start, end;
+   HandleLimits(parameterObject, result, addons.size(), start, end);
+
+   CAddonDatabase addondb;
 //   for (int index = start; index < end; index++)
 //     FillDetails(addons.at(index), parameterObject["properties"], result["addons"], addondb, true);
-//   
+
   return OK;
 }
 

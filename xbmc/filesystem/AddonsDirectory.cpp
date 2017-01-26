@@ -30,7 +30,6 @@
 #include "FileItem.h"
 #include "addons/AddonInstaller.h"
 #include "addons/BinaryAddonCache.h"
-#include "addons/PluginSource.h"
 #include "addons/RepositoryUpdater.h"
 #include "dialogs/GUIDialogOK.h"
 /*#include "games/addons/GameClient.h"
@@ -874,7 +873,7 @@ bool CAddonsDirectory::GetScriptsAndPlugins(const std::string &content, AddonInf
   }
   tempAddons.clear();
 
-/*  if (type == CPluginSource::GAME)
+/*  if (type == CAddonInfo::GAME)
   {
     CAddonMgr::GetInstance().GetAddons(tempAddons, ADDON_GAMEDLL);
     for (auto& addon : tempAddons)
@@ -882,8 +881,8 @@ bool CAddonsDirectory::GetScriptsAndPlugins(const std::string &content, AddonInf
       if (IsStandaloneGame(addon))
         addons.push_back(addon);
     }
-  }
-*/
+  }*/
+
   return true;
 }
 

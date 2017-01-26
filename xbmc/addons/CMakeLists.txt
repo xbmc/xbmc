@@ -22,7 +22,6 @@ set(SOURCES Addon.cpp
             ImageResource.cpp
             InputStream.cpp
             LanguageResource.cpp
-            PluginSource.cpp
             PVRClient.cpp
             Repository.cpp
             RepositoryUpdater.cpp
@@ -60,7 +59,6 @@ set(HEADERS Addon.h
             ImageResource.h
             InputStream.h
             LanguageResource.h
-            PluginSource.h
             PVRClient.h
             Repository.h
             RepositoryUpdater.h
