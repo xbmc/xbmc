@@ -2694,7 +2694,10 @@ bool CVppPostproc::PreInit(CVaapiConfig &config, SDiMethods *methods)
   VASurfaceID surfaces[32];
   unsigned int format = VA_RT_FORMAT_YUV420;
   if (m_config.profile == VAProfileHEVCMain10)
+  {
     format = VA_RT_FORMAT_YUV420_10BPP;
+    attrib->value.value.i = VA_FOURCC_P010;
+  }
   int nb_surfaces = NUM_RENDER_PICS;
   if (!CheckSuccess(vaCreateSurfaces(m_config.dpy,
                                      format,
