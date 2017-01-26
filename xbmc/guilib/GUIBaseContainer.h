@@ -158,6 +158,8 @@ protected:
 
   CGUIListItemLayout *m_layout;
   CGUIListItemLayout *m_focusedLayout;
+  bool m_layoutCondition = false;
+  bool m_focusedLayoutCondition = false;
 
   void ScrollToOffset(int offset);
   void SetContainerMoving(int direction);
