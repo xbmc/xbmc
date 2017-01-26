@@ -324,12 +324,7 @@ CFileItem::CFileItem(const CMediaSource& share)
   FillInMimeType(false);
 }
 
-CFileItem::CFileItem(std::shared_ptr<const ADDON::CAddon> addonInfo) : m_addonInfo(std::move(addonInfo))
-{
-  Initialize();
-}
-
-CFileItem::CFileItem(std::shared_ptr<const ADDON::CAddonInfo> addonInfo) : m_addonInfoInfo(std::move(addonInfo))
+CFileItem::CFileItem(std::shared_ptr<const ADDON::CAddonInfo> addonInfo) : m_addonInfo(std::move(addonInfo))
 {
   Initialize();
 }

@@ -80,7 +80,7 @@ std::shared_ptr<CAddon> CAddonBuilder::Build()
 
   if (m_extPoint == nullptr)
   {
-    fprintf(stderr, "(m_extPoint == nullptr)!!!!!!!!\n");
+    fprintf(stderr, "(m_extPoint == nullptr)!!!!!!!! '%s'\n", m_addonInfo.m_id.c_str());
     int* a = nullptr;
     a[0] = 0;
   }
