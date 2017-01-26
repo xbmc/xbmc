@@ -16,6 +16,7 @@ addons/webinterface.default/*
 addons/screensaver.xbmc.builtin.dim/*
 addons/screensaver.xbmc.builtin.black/*
 addons/script.module.pil/*
+addons/script.module.pycryptodome/*
 addons/script.module.pysqlite/*
 addons/resource.language.en_gb/*
 addons/resource.uisounds.kodi/*

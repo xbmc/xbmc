@@ -68,17 +68,17 @@ bool CPVRDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 
       item.reset(new CFileItem(base + "channels/", true));
       item->SetLabel(g_localizeStrings.Get(19019));
-      item->SetLabelPreformated(true);
+      item->SetLabelPreformatted(true);
       items.Add(item);
 
       item.reset(new CFileItem(base + "recordings/active/", true));
       item->SetLabel(g_localizeStrings.Get(19017)); // TV Recordings
-      item->SetLabelPreformated(true);
+      item->SetLabelPreformatted(true);
       items.Add(item);
 
       item.reset(new CFileItem(base + "recordings/deleted/", true));
       item->SetLabel(g_localizeStrings.Get(19108)); // Deleted TV Recordings
-      item->SetLabelPreformated(true);
+      item->SetLabelPreformatted(true);
       items.Add(item);
 
       // Sort by name only. Labels are preformatted.

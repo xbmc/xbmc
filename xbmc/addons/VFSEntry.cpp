@@ -280,9 +280,9 @@ static void VFSDirEntriesToCFileItemList(int num_entries,
       if (strcasecmp(entries[i].properties[j].name, "propmisusepreformatted") == 0)
       {
         if (strcasecmp(entries[i].properties[j].name, "true") == 0)
-          item->SetLabelPreformated(true);
+          item->SetLabelPreformatted(true);
         else
-          item->SetLabelPreformated(false);
+          item->SetLabelPreformatted(false);
       } else
         item->SetProperty(entries[i].properties[j].name,
                           entries[i].properties[j].val);

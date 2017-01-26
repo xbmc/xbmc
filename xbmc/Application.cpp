@@ -257,6 +257,9 @@ using KODI::MESSAGING::HELPERS::DialogResponse;
 //extern IDirectSoundRenderer* m_pAudioDecoder;
 CApplication::CApplication(void)
   : m_pPlayer(new CApplicationPlayer)
+#ifdef HAS_DVD_DRIVE
+  , m_Autorun(new CAutorun())
+#endif
   , m_iScreenSaveLock(0)
   , m_bPlaybackStarting(false)
   , m_ePlayState(PLAY_STATE_NONE)
@@ -266,10 +269,10 @@ CApplication::CApplication(void)
   , m_autoExecScriptExecuted(false)
   , m_screensaverActive(false)
   , m_bInhibitIdleShutdown(false)
-  , m_dpms(nullptr)
   , m_dpmsIsActive(false)
   , m_dpmsIsManual(false)
   , m_itemCurrentFile(new CFileItem)
+  , m_currentStack(new CFileItemList)
   , m_stackFileItemToUpdate(new CFileItem)
   , m_threadID(0)
   , m_bInitializing(true)
@@ -299,27 +302,13 @@ CApplication::CApplication(void)
 #ifdef HAS_GLX
   XInitThreads();
 #endif
-
-  /* for now always keep this around */
-  m_currentStack = new CFileItemList;
-
-#ifdef HAS_DVD_DRIVE
-  m_Autorun = new CAutorun();
-#endif
 }
 
 CApplication::~CApplication(void)
 {
-  delete m_musicInfoScanner;
   delete &m_progressTrackingVideoResumeBookmark;
-#ifdef HAS_DVD_DRIVE
-  delete m_Autorun;
-#endif
-  delete m_currentStack;
 
-  delete m_dpms;
   delete m_pInertialScrollingHandler;
-  delete m_pPlayer;
 
   m_actionListeners.clear();
 }
@@ -962,6 +951,10 @@ bool CApplication::InitDirectoriesOSX()
   else
     userHome = "/root";
 
+  std::string binaddonAltDir;
+  if (getenv("KODI_BINADDON_PATH"))
+    binaddonAltDir = getenv("KODI_BINADDON_PATH");
+
   std::string appPath = CUtil::GetHomePath();
   setenv("KODI_HOME", appPath.c_str(), 0);
 
@@ -980,6 +973,7 @@ bool CApplication::InitDirectoriesOSX()
   {
     // map our special drives
     CSpecialProtocol::SetXBMCBinPath(appPath);
+    CSpecialProtocol::SetXBMCAltBinAddonPath(binaddonAltDir);
     CSpecialProtocol::SetXBMCPath(appPath);
     #if defined(TARGET_DARWIN_IOS)
       std::string appName = CCompileInfo::GetAppName();
@@ -1017,6 +1011,7 @@ bool CApplication::InitDirectoriesOSX()
     URIUtils::AddSlashAtEnd(appPath);
 
     CSpecialProtocol::SetXBMCBinPath(appPath);
+    CSpecialProtocol::SetXBMCAltBinAddonPath(binaddonAltDir);
     CSpecialProtocol::SetXBMCPath(appPath);
     CSpecialProtocol::SetHomePath(URIUtils::AddFileToFolder(appPath, "portable_data"));
     CSpecialProtocol::SetMasterProfilePath(URIUtils::AddFileToFolder(appPath, "portable_data/userdata"));
@@ -1144,7 +1139,7 @@ bool CApplication::Initialize()
   StartServices();
 
   // Init DPMS, before creating the corresponding setting control.
-  m_dpms = new DPMSSupport();
+  m_dpms.reset(new DPMSSupport());
   bool uiInitializationFinished = true;
   if (g_windowManager.Initialized())
   {
@@ -4672,6 +4667,11 @@ void CApplication::Restart(bool bSamePosition)
 const std::string& CApplication::CurrentFile()
 {
   return m_itemCurrentFile->GetPath();
+}
+
+std::shared_ptr<CFileItem> CApplication::CurrentFileItemPtr()
+{
+  return m_itemCurrentFile;
 }
 
 CFileItem& CApplication::CurrentFileItem()

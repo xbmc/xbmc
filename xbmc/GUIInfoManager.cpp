@@ -7665,9 +7665,22 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
       case CONTAINER_ISUPDATING:
       case CONTAINER_HAS_PARENT_ITEM:
         {
-          auto activeContainer = GetActiveContainer(info.GetData1(), contextWindow);
-          if (activeContainer)
-            bReturn = activeContainer->GetCondition(condition, info.GetData2());
+          if (info.GetData1())
+          {
+            auto *window = GetWindowWithCondition(contextWindow, 0);
+            if (window)
+            {
+              auto control = window->GetControl(info.GetData1());
+              if (control)
+                bReturn = control->GetCondition(condition, info.GetData2());
+            }
+          }
+          else
+          {
+            auto activeContainer = GetActiveContainer(0, contextWindow);
+            if (activeContainer)
+              bReturn = activeContainer->GetCondition(condition, info.GetData2());
+          }
         }
         break;
       case CONTAINER_HAS_FOCUS:

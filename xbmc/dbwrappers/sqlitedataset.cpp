@@ -34,10 +34,6 @@
 #include "system.h" // for Sleep(), OutputDebugString() and GetLastError()
 #include "utils/URIUtils.h"
 
-#ifdef TARGET_WINDOWS
-#pragma comment(lib, "sqlite3.lib")
-#endif
-
 #ifdef TARGET_POSIX
 #include "linux/XTimeUtils.h"
 #endif

@@ -7848,13 +7848,7 @@ msgctxt "#14277"
 msgid "Allow remote control from applications on other systems"
 msgstr ""
 
-#empty strings from id 14278 to 14299
-
-#. "pvr manager" settings group label
-#: system/settings/settings.xml
-msgctxt "#14300"
-msgid "PVR Manager"
-msgstr ""
+#empty strings from id 14278 to 14300
 
 #. pvr "channels" settings group label
 #: system/settings/settings.xml
@@ -10530,11 +10524,7 @@ msgctxt "#19268"
 msgid "Hide \"No information available\" labels"
 msgstr ""
 
-#. pvr settings 'hide connection lost warnings' setting label. Do not display notification message in case Kodi cannot reach a pvr backend
-#: system/settings/settings.xml
-msgctxt "#19269"
-msgid "Disable \"Connection lost\" warnings"
-msgstr ""
+# empty string with id 19269
 
 #. Label of the option to switch between a grouped recordings list and a non-grouped recordings list in pvr recordings window.
 #: addons/skin.estuary/1080i/Includes_MediaMenu.xml
@@ -17334,7 +17324,7 @@ msgstr ""
 #. Description of setting with label #14091 "Character set"
 #: system/settings/settings.xml
 msgctxt "#36116"
-msgid "Choose which character set is used for displaying text in the user interface."
+msgid "Choose which character set is used for displaying text in the user interface. This doesn't change the character set used for subtitles, for that go to Player > Language."
 msgstr ""
 
 #. Description of setting with label #14079 "Timezone country"
@@ -17874,10 +17864,7 @@ msgctxt "#36209"
 msgid "Delete the databases for channels and guide and reimport the data from the backend afterwards."
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#36210"
-msgid "Prevent the \"Connection lost\" notification window from displaying when the PVR backend server is not available."
-msgstr ""
+#empty string with id 36210
 
 #: system/settings/settings.xml
 msgctxt "#36211"
@@ -20417,4 +20404,22 @@ msgstr ""
 #: xbmc/addons/Addon.cpp
 msgctxt "#39013"
 msgid "Virtual filesystems"
+msgstr ""
+
+#. Message of a dialog, asking if related data of an add-on should also be removed on uninstall
+#: xbmc/addons/GUIDialogAddonInfo.cpp
+msgctxt "#39014"
+msgid "Would you also like to remove all related data (e.g. settings) of this add-on?"
+msgstr ""
+
+#. Description of setting "Pictures -> Show EXIF picture information" with label #38207
+#: system/settings/settings.xml
+msgctxt "#38207"
+msgid "Show EXIF picture information"
+msgstr ""
+
+#. Help text of setting "Pictures -> Show EXIF picture information" with label #38208
+#: system/settings/settings.xml
+msgctxt "#38208"
+msgid "If EXIF information exists (date, time, camera used, etc.), it will be displayed."
 msgstr ""

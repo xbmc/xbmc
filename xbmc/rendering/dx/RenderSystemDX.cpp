@@ -45,9 +45,7 @@
 #else
 #pragma comment(lib, "EasyHook64.lib")
 #endif
-#pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "dxgi.lib")
-#pragma comment(lib, "dxguid.lib")
 
 #define RATIONAL_TO_FLOAT(rational) ((rational.Denominator != 0) ? \
  static_cast<float>(rational.Numerator) / static_cast<float>(rational.Denominator) : 0.0f)

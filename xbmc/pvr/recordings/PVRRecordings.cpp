@@ -123,7 +123,7 @@ void CPVRRecordings::GetSubDirectories(const CPVRRecordingsPath &recParentPath, 
       pFileItem.reset(new CFileItem(strCurrent, true));
       pFileItem->SetPath(strFilePath);
       pFileItem->SetLabel(strCurrent);
-      pFileItem->SetLabelPreformated(true);
+      pFileItem->SetLabelPreformatted(true);
       pFileItem->m_dateTime = current->RecordingTimeAsLocalTime();
 
       // Assume all folders are watched, we'll change the overlay later

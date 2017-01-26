@@ -37,9 +37,11 @@ bool CServiceManager::Init1()
   m_announcementManager.reset(new ANNOUNCEMENT::CAnnouncementManager());
   m_announcementManager->Start();
 
+#ifdef HAS_PYTHON
   m_XBPython.reset(new XBPython());
   CScriptInvocationManager::GetInstance().RegisterLanguageInvocationHandler(m_XBPython.get(), ".py");
-  
+#endif
+
   m_Platform.reset(CPlatform::CreateInstance());
 
   m_playlistPlayer.reset(new PLAYLIST::CPlayListPlayer());
@@ -122,8 +124,10 @@ void CServiceManager::Deinit()
   m_PVRManager.reset();
   m_ADSPManager.reset();
   m_addonMgr.reset();
+#ifdef HAS_PYTHON
   CScriptInvocationManager::GetInstance().UnregisterLanguageInvocationHandler(m_XBPython.get());
   m_XBPython.reset();
+#endif
   m_announcementManager.reset();
   init_level = 0;
 }
@@ -143,10 +147,12 @@ ANNOUNCEMENT::CAnnouncementManager& CServiceManager::GetAnnouncementManager()
   return *m_announcementManager;
 }
 
+#ifdef HAS_PYTHON
 XBPython& CServiceManager::GetXBPython()
 {
   return *m_XBPython;
 }
+#endif
 
 PVR::CPVRManager& CServiceManager::GetPVRManager()
 {

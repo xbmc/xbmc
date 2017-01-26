@@ -36,10 +36,12 @@ ANNOUNCEMENT::CAnnouncementManager &CServiceBroker::GetAnnouncementManager()
   return g_application.m_ServiceManager->GetAnnouncementManager();
 }
 
+#ifdef HAS_PYTHON
 XBPython& CServiceBroker::GetXBPython()
 {
   return g_application.m_ServiceManager->GetXBPython();
 }
+#endif
 
 PVR::CPVRManager &CServiceBroker::GetPVRManager()
 {

@@ -1320,20 +1320,20 @@ bool CGUIWindowVideoBase::GetDirectory(const std::string &strDirectory, CFileIte
   {
     CFileItemPtr newPlaylist(new CFileItem(CProfilesManager::GetInstance().GetUserDataItem("PartyMode-Video.xsp"),false));
     newPlaylist->SetLabel(g_localizeStrings.Get(16035));
-    newPlaylist->SetLabelPreformated(true);
+    newPlaylist->SetLabelPreformatted(true);
     newPlaylist->SetIconImage("DefaultPartyMode.png");
     newPlaylist->m_bIsFolder = true;
     items.Add(newPlaylist);
 
 /*    newPlaylist.reset(new CFileItem("newplaylist://", false));
     newPlaylist->SetLabel(g_localizeStrings.Get(525));
-    newPlaylist->SetLabelPreformated(true);
+    newPlaylist->SetLabelPreformatted(true);
     items.Add(newPlaylist);
 */
     newPlaylist.reset(new CFileItem("newsmartplaylist://video", false));
     newPlaylist->SetLabel(g_localizeStrings.Get(21437));  // "new smart playlist..."
     newPlaylist->SetIconImage("DefaultAddSource.png");
-    newPlaylist->SetLabelPreformated(true);
+    newPlaylist->SetLabelPreformatted(true);
     items.Add(newPlaylist);
   }
 

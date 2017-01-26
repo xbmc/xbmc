@@ -40,6 +40,7 @@ public:
   static CContextMenuManager& GetInstance();
 
   void Init();
+  void Deinit();
 
   ContextMenuView GetItems(const CFileItem& item, const CContextMenuItem& root = MAIN) const;
 

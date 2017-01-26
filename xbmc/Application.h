@@ -110,22 +110,10 @@ struct ReplayGainSettings
   int iType;
 };
 
-class CBackgroundPlayer : public CThread
-{
-public:
-  CBackgroundPlayer(const CFileItem &item, int iPlayList);
-  virtual ~CBackgroundPlayer();
-  virtual void Process();
-protected:
-  CFileItem *m_item;
-  int       m_iPlayList;
-};
-
 class CApplication : public CXBApplicationEx, public IPlayerCallback, public IMsgTargetCallback,
                      public ISettingCallback, public ISettingsHandler, public ISubSettings,
                      public KODI::MESSAGING::IMessageTarget
 {
-  friend class CApplicationPlayer;
 public:
 
   enum ESERVERS
@@ -164,6 +152,7 @@ public:
   void ReloadSkin(bool confirm = false);
   const std::string& CurrentFile();
   CFileItem& CurrentFileItem();
+  std::shared_ptr<CFileItem> CurrentFileItemPtr();
   void SetCurrentFileItem(const CFileItem &item);
   CFileItem& CurrentUnstackedItem();
   virtual bool OnMessage(CGUIMessage& message) override;
@@ -291,22 +280,24 @@ public:
   static bool OnEvent(XBMC_Event& newEvent);
 
   CNetwork& getNetwork();
+
 #ifdef HAS_PERFORMANCE_SAMPLE
   CPerformanceStats &GetPerformanceStats();
 #endif
 
+  std::unique_ptr<CApplicationPlayer> m_pPlayer;
+
 #ifdef HAS_DVD_DRIVE
-  MEDIA_DETECT::CAutorun* m_Autorun;
+  std::unique_ptr<MEDIA_DETECT::CAutorun> m_Autorun;
 #endif
 
 #if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
   MEDIA_DETECT::CDetectDVDMedia m_DetectDVDType;
 #endif
 
-  CApplicationPlayer* m_pPlayer;
-
   inline bool IsInScreenSaver() { return m_screensaverActive; };
   inline std::string ScreensaverIdInUse() { return m_screensaverIdInUse; }
+
   inline bool IsDPMSActive() { return m_dpmsIsActive; };
   int m_iScreenSaveLock; // spiff: are we checking for a lock? if so, ignore the screensaver state, if -1 we have failed to input locks
 
@@ -455,12 +446,12 @@ protected:
 
   bool m_bInhibitIdleShutdown;
 
-  DPMSSupport* m_dpms;
+  std::unique_ptr<DPMSSupport> m_dpms;
   bool m_dpmsIsActive;
   bool m_dpmsIsManual;
 
   CFileItemPtr m_itemCurrentFile;
-  CFileItemList* m_currentStack;
+  std::unique_ptr<CFileItemList> m_currentStack;
   CFileItemPtr m_stackFileItemToUpdate;
 
   std::string m_prevMedia;
@@ -483,7 +474,7 @@ protected:
   bool m_bTestMode;
   bool m_bSystemScreenSaverEnable;
 
-  MUSIC_INFO::CMusicInfoScanner *m_musicInfoScanner;
+  std::unique_ptr<MUSIC_INFO::CMusicInfoScanner> m_musicInfoScanner;
 
   bool m_muted;
   float m_volumeLevel;

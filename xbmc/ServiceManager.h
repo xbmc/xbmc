@@ -49,7 +49,9 @@ namespace PLAYLIST
 }
 
 class CContextMenuManager;
+#ifdef HAS_PYTHON
 class XBPython;
+#endif
 class CDataCacheCore;
 class CSettings;
 class IAE;
@@ -67,7 +69,9 @@ public:
   ADDON::CAddonMgr& GetAddonMgr();
   ADDON::CBinaryAddonCache& GetBinaryAddonCache();
   ANNOUNCEMENT::CAnnouncementManager& GetAnnouncementManager();
+#ifdef HAS_PYTHON
   XBPython& GetXBPython();
+#endif
   PVR::CPVRManager& GetPVRManager();
   ActiveAE::CActiveAEDSP& GetADSPManager();
   IAE& GetActiveAE();
@@ -101,7 +105,9 @@ protected:
   std::unique_ptr<ADDON::CAddonMgr> m_addonMgr;
   std::unique_ptr<ADDON::CBinaryAddonCache> m_binaryAddonCache;
   std::unique_ptr<ANNOUNCEMENT::CAnnouncementManager> m_announcementManager;
+#ifdef HAS_PYTHON
   std::unique_ptr<XBPython> m_XBPython;
+#endif
   std::unique_ptr<PVR::CPVRManager> m_PVRManager;
   std::unique_ptr<ActiveAE::CActiveAEDSP> m_ADSPManager;
   std::unique_ptr<ActiveAE::CActiveAE, delete_activeAE> m_ActiveAE;
