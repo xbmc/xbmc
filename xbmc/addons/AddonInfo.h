@@ -21,16 +21,22 @@
 
 #include "XBDateTime.h"
 #include "addons/AddonVersion.h"
+#include "utils/StringUtils.h"
 
 #include <map>
 #include <memory>
 #include <set>
+#include <string>
 #include <vector>
 
 class TiXmlElement;
 
 namespace ADDON
 {
+  class CAddonInfo;
+  typedef std::shared_ptr<CAddonInfo> AddonInfoPtr;
+  typedef std::vector<AddonInfoPtr> AddonInfos;
+  typedef std::vector<AddonInfoPtr>::iterator AddonInfosIter;
 
   typedef enum
   {
@@ -76,22 +82,18 @@ namespace ADDON
     ADDON_MAX
   } TYPE;
 
-  class CAddonMgr;
-  class AddonVersion;
-  typedef std::map<std::string, std::pair<const AddonVersion, bool> > ADDONDEPS;
-  typedef std::map<std::string, std::string> InfoMap;
-
-  class CAddonInfo;
-  typedef std::shared_ptr<CAddonInfo> AddonInfoPtr;
-  typedef std::vector<AddonInfoPtr> AddonInfos;
-  typedef std::vector<AddonInfoPtr>::iterator AddonInfosIter;
-
-  class CAddon;
-  class CAddonBuilder;
-
+  struct extValue
+  {
+    extValue(const std::string& strValue) : str(strValue) { }
+    const std::string asString()  const { return str; }
+    const bool asBoolean() const { return StringUtils::EqualsNoCase(str, "true"); }
+    const int asInteger() const { return atoi(str.c_str()); }
+    const float asFloat() const { return atof(str.c_str()); }
+    std::string str; // as long not with "const" until bala bala void CAddonDatabase::GetInstalled(std::vector<CAddonBuilder>& addons) is removed (brings compile fault for this but not use this, hääähhh????
+  };
   class CAddonExtensions;
   typedef std::vector<std::pair<std::string, CAddonExtensions> > EXT_ELEMENTS;
-  typedef std::vector<std::pair<std::string, std::string> > EXT_VALUE;
+  typedef std::vector<std::pair<std::string, extValue> > EXT_VALUE;
   typedef std::vector<std::pair<std::string, EXT_VALUE> > EXT_VALUES;
   class CAddonExtensions
   {
@@ -100,20 +102,24 @@ namespace ADDON
     ~CAddonExtensions();
     bool ParseExtension(const TiXmlElement* element);
 
+    const extValue GetValue(std::string id) const;
     std::string GetExtValue(std::string id) const;
     const EXT_VALUES& GetExtValues() const;
     CAddonExtensions* GetExtElement(std::string id);
-    bool GetExtElements(std::string id, EXT_ELEMENTS &result);
-    bool GetExtList(std::string id, std::vector<std::string> &result) const;
 
     void Insert(std::string id, std::string value);
-//   private:
+
+  private:
     bool m_ready;
     std::string m_point;
     EXT_VALUES m_values;
     EXT_ELEMENTS m_childs;
   };
-  
+
+  class AddonVersion;
+  typedef std::map<std::string, std::pair<const AddonVersion, bool> > ADDONDEPS;
+  typedef std::map<std::string, std::string> InfoMap;
+
   class CAddonInfo : public CAddonExtensions
   {
   public:

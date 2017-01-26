@@ -168,7 +168,10 @@ public:
   virtual void OnPostInstall(bool update, bool modal) {};
   virtual void OnPreUnInstall() {};
   virtual void OnPostUnInstall() {};
-const CAddonInfo m_addonInfo;
+
+  const CAddonInfo* AddonInfo() { return &m_addonInfo; }
+
+  CAddonInfo m_addonInfo;
 protected:
   /*! \brief Load the user settings
    \return true if user settings exist, false otherwise

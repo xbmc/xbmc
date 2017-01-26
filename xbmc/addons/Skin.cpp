@@ -203,15 +203,15 @@ std::unique_ptr<CSkinInfo> CSkinInfo::FromExtension(CAddonInfo addonInfo, const 
     for (auto value : values.second)
     {
       if (value.first == "res@width")
-        width = atoi(value.second.c_str());
+        width = value.second.asInteger();
       else if (value.first == "res@height")
-        height = atoi(value.second.c_str());
+        height = value.second.asInteger();
       else if (value.first == "res@default")
-        defRes = value.second == "true";
+        defRes = value.second.asBoolean();
       else if (value.first == "res@folder")
-        folder = value.second;
+        folder = value.second.asString();
       else if (value.first == "res@aspect")
-        strAspect = value.second;
+        strAspect = value.second.asString();
     }
 
     std::vector<std::string> fracs = StringUtils::Split(strAspect, ':');

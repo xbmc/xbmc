@@ -159,7 +159,7 @@ CAddonExtensions::~CAddonExtensions()
   
 }
 
-std::string CAddonExtensions::GetExtValue(std::string id) const
+const extValue CAddonExtensions::GetValue(std::string id) const
 {
   for (int i = 0; i < m_values.size(); i++)
   {
@@ -167,6 +167,19 @@ std::string CAddonExtensions::GetExtValue(std::string id) const
     {
       if (m_values[i].second[j].first == id)
         return m_values[i].second[j].second;
+    }
+  }
+  return extValue("");
+}
+
+std::string CAddonExtensions::GetExtValue(std::string id) const
+{
+  for (int i = 0; i < m_values.size(); i++)
+  {
+    for (int j = 0; j < m_values[i].second.size(); j++)
+    {
+      if (m_values[i].second[j].first == id)
+        return m_values[i].second[j].second.asString();
     }
   }
   return "";
@@ -186,18 +199,6 @@ CAddonExtensions* CAddonExtensions::GetExtElement(std::string id)
   }
  
   return nullptr;
-}
-
-bool CAddonExtensions::GetExtElements(std::string id, EXT_ELEMENTS &result)
-{
- 
-  return true;
-}
-
-bool CAddonExtensions::GetExtList(std::string id, std::vector<std::string> &result) const
-{
- 
-  return true;
 }
 
 void CAddonExtensions::Insert(std::string id, std::string value)

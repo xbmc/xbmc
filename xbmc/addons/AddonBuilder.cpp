@@ -142,7 +142,7 @@ std::shared_ptr<CAddon> CAddonBuilder::Build()
     case ADDON_INPUTSTREAM:
       return CInputStream::FromExtension(std::move(m_addonInfo), m_extPoint);
     case ADDON_PERIPHERALDLL:
-      return PERIPHERALS::CPeripheralAddon::FromExtension(std::move(m_addonInfo), m_extPoint);
+      return std::make_shared<PERIPHERALS::CPeripheralAddon>(std::move(addonInfo));
     case ADDON_GAMEDLL:
       return GAME::CGameClient::FromExtension(std::move(m_addonInfo), m_extPoint);
     case ADDON_VFS:
