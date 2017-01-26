@@ -190,9 +190,9 @@ const EXT_VALUES& CAddonExtensions::GetExtValues() const
   return m_values;
 }
 
-CAddonExtensions* CAddonExtensions::GetExtElement(std::string id)
+const CAddonExtensions* CAddonExtensions::GetExtElement(std::string id) const
 {
-  for (EXT_ELEMENTS::iterator it = m_childs.begin(); it != m_childs.end(); ++it)
+  for (EXT_ELEMENTS::const_iterator it = m_childs.begin(); it != m_childs.end(); ++it)
   {
     if (it->first == id)
       return &it->second;
