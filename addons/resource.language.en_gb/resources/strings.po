@@ -9746,7 +9746,7 @@ msgctxt "#19135"
 msgid "Case sensitive"
 msgstr ""
 
-#. unused?
+#: xbmc/pvr/dialogs/GUIDialogPVRGuideInfo.cpp
 msgctxt "#19136"
 msgid "Channel unavailable"
 msgstr ""
