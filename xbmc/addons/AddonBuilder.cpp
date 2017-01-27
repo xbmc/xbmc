@@ -142,7 +142,7 @@ std::shared_ptr<CAddon> CAddonBuilder::Build()
     case ADDON_PERIPHERALDLL:
       return std::make_shared<PERIPHERALS::CPeripheralAddon>(std::move(addonInfo));
     case ADDON_GAMEDLL:
-      return GAME::CGameClient::FromExtension(std::move(m_addonInfo), m_extPoint);
+      return std::make_shared<GAME::CGameClient>(std::move(addonInfo));
     case ADDON_VFS:
       return std::make_shared<CVFSEntry>(std::move(addonInfo));
     case ADDON_SKIN:
