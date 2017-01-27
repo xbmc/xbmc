@@ -45,6 +45,7 @@ typedef struct CB_INPUTSTREAMLib
 {
   void (*FreeDemuxPacket)(void *addonData, DemuxPacket* pPacket);
   DemuxPacket* (*AllocateDemuxPacket)(void *addonData, int iDataSize);
+  DemuxPacket* (*AllocateEncryptedDemuxPacket)(void *addonData, unsigned int iDataSize, unsigned int encryptedSubsampleCount);
 } CB_INPUTSTREAMLib;
 
 } /* namespace InputStream */
@@ -91,6 +92,17 @@ public:
   DemuxPacket* AllocateDemuxPacket(int iDataSize)
   {
     return m_Callbacks->AllocateDemuxPacket(m_Handle->addonData, iDataSize);
+  }
+
+  /*!
+  * @brief Allocate a demux packet with crypto data. Free with FreeDemuxPacket
+  * @param iDataSize The size of the data that will go into the packet
+  * @param encryptedSubsampleCount The number of encrypted subSamples that will go into the packet
+  * @return The allocated packet
+  */
+  DemuxPacket* AllocateEncryptedDemuxPacket(unsigned int iDataSize, unsigned int encryptedSubsampleCount)
+  {
+    return m_Callbacks->AllocateEncryptedDemuxPacket(m_Handle->addonData, iDataSize, encryptedSubsampleCount);
   }
 
   /*!

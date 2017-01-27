@@ -146,6 +146,7 @@ install(DIRECTORY ${CMAKE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kod
         COMPONENT kodi-addon-dev)
 
 install(FILES ${CMAKE_SOURCE_DIR}/xbmc/cores/VideoPlayer/DVDDemuxers/DVDDemuxPacket.h
+              ${CMAKE_SOURCE_DIR}/xbmc/cores/VideoPlayer/DVDDemuxers/DemuxCrypto.h
               ${CMAKE_SOURCE_DIR}/xbmc/cores/AudioEngine/Utils/AEChannelData.h
               ${CMAKE_SOURCE_DIR}/xbmc/filesystem/IFileTypes.h
               ${CMAKE_SOURCE_DIR}/xbmc/input/XBMC_vkeys.h
