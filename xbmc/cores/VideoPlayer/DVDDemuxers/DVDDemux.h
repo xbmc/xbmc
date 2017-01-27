@@ -157,6 +157,7 @@ public:
     type = STREAM_VIDEO;
     iOrientation = 0;
     iBitsPerPixel = 0;
+    iBitRate = 0;
   }
 
   virtual ~CDemuxStreamVideo() {}
@@ -170,6 +171,7 @@ public:
   bool bForcedAspect; // aspect is forced from container
   int iOrientation; // orientation of the video in degrees counter clockwise
   int iBitsPerPixel;
+  int iBitRate;
   std::string stereo_mode; // expected stereo mode
 };
 

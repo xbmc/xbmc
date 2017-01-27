@@ -64,7 +64,7 @@ public:
 
   // ID3DResource overrides
   void OnCreateDevice() override  {}
-  void OnDestroyDevice() override { CSingleLock lock(m_section); UnInit(); }
+  void OnDestroyDevice(bool fatal) override { CSingleLock lock(m_section); UnInit(); }
   void OnLostDevice() override    { CSingleLock lock(m_section); UnInit(); }
   void OnResetDevice() override   { CSingleLock lock(m_section); Close();  }
 
