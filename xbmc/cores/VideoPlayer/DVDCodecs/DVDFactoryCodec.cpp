@@ -200,6 +200,16 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodecHW(CProcessInfo &processInfo)
 }
 #endif
 
+#if defined(TARGET_ANDROID)
+#define VP_VIDEOCODEC_HW
+#include "Video/DVDVideoCodecAndroidMediaCodec.h"
+CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodecHW(CProcessInfo &processInfo)
+{
+  CDVDVideoCodec* pCodec = new CDVDVideoCodecAndroidMediaCodec(processInfo);
+  return pCodec;
+}
+#endif
+
 #if !defined(VP_VIDEOCODEC_HW)
 CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodecHW(CProcessInfo &processInfo)
 {
