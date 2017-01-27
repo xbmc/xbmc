@@ -55,10 +55,7 @@ namespace GAME
   class CGameClient : public ADDON::CAddonDll
   {
   public:
-    static std::unique_ptr<CGameClient> FromExtension(ADDON::CAddonInfo addonInfo, const cp_extension_t* ext);
-
     CGameClient(ADDON::CAddonInfo addonInfo);
-
     virtual ~CGameClient(void);
 
     // Implementation of CAddon via CAddonDll
