@@ -154,20 +154,22 @@ class CDVDStreamInfo;
 class CDVDCodecOption;
 class CDVDCodecOptions;
 
-// VC_ messages, messages can be combined
-#define VC_ERROR                    0x00000001  //< an error occured, no other messages will be returned
-#define VC_BUFFER                   0x00000002  //< the decoder needs more data
-#define VC_PICTURE                  0x00000004  //< the decoder got a picture, call Decode(NULL, 0) again to parse the rest of the data
-#define VC_USERDATA                 0x00000008  //< the decoder found some userdata,  call Decode(NULL, 0) again to parse the rest of the data
-#define VC_FLUSHED                  0x00000010  //< the decoder lost it's state, we need to restart decoding again
-#define VC_DROPPED                  0x00000020  //< needed to identify if a picture was dropped
-#define VC_NOBUFFER                 0x00000040  //< last FFmpeg GetBuffer failed
-#define VC_REOPEN                   0x00000080  //< decoder request to re-open
-#define VC_EOF                      0x00000100  //< EOF
-
 class CDVDVideoCodec
 {
 public:
+
+  enum VCReturn
+  {
+    VC_NONE = 0,
+    VC_ERROR,           //< an error occured, no other messages will be returned
+    VC_BUFFER,          //< the decoder needs more data
+    VC_PICTURE,         //< the decoder got a picture, call Decode(NULL, 0) again to parse the rest of the data
+    VC_FLUSHED,         //< the decoder lost it's state, we need to restart decoding again
+    VC_NOBUFFER,        //< last FFmpeg GetBuffer failed
+    VC_REOPEN,          //< decoder request to re-open
+    VC_EOF              //< EOF
+  };
+
   CDVDVideoCodec(CProcessInfo &processInfo) : m_processInfo(processInfo) {}
   virtual ~CDVDVideoCodec() {}
 
@@ -190,9 +192,10 @@ public:
   }
 
   /**
-   * returns one or a combination of VC_ messages
+   * add data, decoder has to consume the entire packet
+   * returns true if the packet was consumed or if resubmitting it is useless
    */
-  virtual int AddData(uint8_t* pData, int iSize, double dts, double pts) = 0;
+  virtual bool AddData(const DemuxPacket &packet) = 0;
 
   /**
    * Reset the decoder.
@@ -201,10 +204,11 @@ public:
   virtual void Reset() = 0;
 
   /**
-   * returns one or a combination of VC_ messages
-   * the data is valid until the next GetPicture call
+   * GetPicture controls decoding. Player calls it on every cycle
+   * it can signal a picture, request a buffer, or return none, if nothing applies
+   * the data is valid until the next GetPicture return VC_PICTURE
    */
-  virtual int GetPicture(DVDVideoPicture* pDvdVideoPicture) = 0;
+  virtual VCReturn GetPicture(DVDVideoPicture* pDvdVideoPicture) = 0;
 
   /**
    * returns true if successfull
@@ -313,9 +317,9 @@ public:
   IHardwareDecoder() = default;
   virtual ~IHardwareDecoder() = default;
   virtual bool Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat, unsigned int surfaces) = 0;
-  virtual int  Decode(AVCodecContext* avctx, AVFrame* frame) = 0;
+  virtual CDVDVideoCodec::VCReturn Decode(AVCodecContext* avctx, AVFrame* frame) = 0;
   virtual bool GetPicture(AVCodecContext* avctx, DVDVideoPicture* picture) = 0;
-  virtual int  Check(AVCodecContext* avctx) = 0;
+  virtual CDVDVideoCodec::VCReturn Check(AVCodecContext* avctx) = 0;
   virtual void Reset() {}
   virtual unsigned GetAllowedReferences() { return 0; }
   virtual bool CanSkipDeint() {return false; }

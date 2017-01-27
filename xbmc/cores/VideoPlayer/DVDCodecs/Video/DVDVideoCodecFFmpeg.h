@@ -43,10 +43,10 @@ public:
   CDVDVideoCodecFFmpeg(CProcessInfo &processInfo);
   virtual ~CDVDVideoCodecFFmpeg();
   virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options) override;
-  virtual int AddData(uint8_t* pData, int iSize, double dts, double pts) override;
+  virtual bool AddData(const DemuxPacket &packet) override;
   virtual void Reset() override;
   virtual void Reopen() override;
-  virtual int GetPicture(DVDVideoPicture* pDvdVideoPicture) override;
+  virtual CDVDVideoCodec::VCReturn GetPicture(DVDVideoPicture* pDvdVideoPicture) override;
   virtual const char* GetName() override { return m_name.c_str(); }; // m_name is never changed after open
   virtual unsigned GetConvergeCount() override;
   virtual unsigned GetAllowedReferences() override;
@@ -62,7 +62,7 @@ protected:
 
   int  FilterOpen(const std::string& filters, bool scale);
   void FilterClose();
-  int  FilterProcess(AVFrame* frame);
+  CDVDVideoCodec::VCReturn FilterProcess(AVFrame* frame);
   void SetFilters();
   void UpdateName();
   bool SetPictureParams(DVDVideoPicture* pDvdVideoPicture);
