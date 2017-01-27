@@ -158,7 +158,7 @@ std::shared_ptr<CAddon> CAddonBuilder::Build()
     case ADDON_RESOURCE_UISOUNDS:
       return std::make_shared<CUISoundsResource>(std::move(m_addonInfo));
     case ADDON_REPOSITORY:
-      return CRepository::FromExtension(std::move(m_addonInfo), m_extPoint);
+      return std::make_shared<CRepository>(std::move(addonInfo));
     case ADDON_CONTEXT_ITEM:
       return CContextMenuAddon::FromExtension(std::move(m_addonInfo), m_extPoint);
     case ADDON_GAME_CONTROLLER:

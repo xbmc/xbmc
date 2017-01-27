@@ -90,6 +90,7 @@ namespace ADDON
     const bool asBoolean() const { return StringUtils::EqualsNoCase(str, "true"); }
     const int asInteger() const { return atoi(str.c_str()); }
     const float asFloat() const { return atof(str.c_str()); }
+    const bool empty() const { return str.empty(); }
     std::string str; // as long not with "const" until bala bala void CAddonDatabase::GetInstalled(std::vector<CAddonBuilder>& addons) is removed (brings compile fault for this but not use this, hääähhh????
   };
   class CAddonExtensions;
@@ -107,6 +108,7 @@ namespace ADDON
     std::string GetExtValue(std::string id) const;
     const EXT_VALUES& GetExtValues() const;
     const CAddonExtensions* GetExtElement(std::string id) const;
+    const EXT_ELEMENTS GetElements(std::string id = "") const;
 
     void Insert(std::string id, std::string value);
 
