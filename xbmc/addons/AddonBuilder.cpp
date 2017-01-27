@@ -117,7 +117,7 @@ std::shared_ptr<CAddon> CAddonBuilder::Build()
     case ADDON_SCRIPT_MODULE:
     case ADDON_SUBTITLE_MODULE:
     case ADDON_SCRIPT_WEATHER:
-      return std::make_shared<CAddon>(std::move(m_addonInfo));
+      return std::make_shared<CAddon>(std::move(addonInfo));
     case ADDON_WEB_INTERFACE:
       return std::make_shared<CWebinterface>(std::move(addonInfo));
     case ADDON_SERVICE:

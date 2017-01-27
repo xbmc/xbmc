@@ -251,13 +251,21 @@ static CVariant Serialize(const AddonPtr& addon)
     variant["broken"] = false;
   else
     variant["broken"] = addon->Broken();
+  /**
+   * @warning only the base extended values from addon.xml are available here!
+   * All others defined in child parts on xml are need to load separate.
+   * @todo find a way to bring everything here?
+   */
   variant["extrainfo"] = CVariant(CVariant::VariantTypeArray);
-  for (const auto& kv : addon->ExtraInfo())
+  for (auto values : addon->AddonInfo()->GetExtValues())
   {
-    CVariant info(CVariant::VariantTypeObject);
-    info["key"] = kv.first;
-    info["value"] = kv.second;
-    variant["extrainfo"].push_back(std::move(info));
+    for (auto value : values.second)
+    {
+      CVariant info(CVariant::VariantTypeObject);
+      info["key"] = value.first;
+      info["value"] = value.second.asString();
+      variant["extrainfo"].push_back(std::move(info));
+    }
   }
   variant["rating"] = -1;
   return variant;

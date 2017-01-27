@@ -90,7 +90,6 @@ public:
   virtual CDateTime LastUsed() const { return m_addonInfo.m_lastUsed; }
   virtual std::string Origin() const { return m_addonInfo.m_origin; }
   virtual uint64_t PackageSize() const { return m_addonInfo.m_packageSize; }
-  virtual const InfoMap& ExtraInfo() const { return m_addonInfo.m_extrainfo; }
   virtual const ADDONDEPS& GetDeps() const { return m_addonInfo.m_dependencies; }
 
   /*! \brief Check whether the this addon can be configured or not
