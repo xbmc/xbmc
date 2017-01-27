@@ -36,7 +36,6 @@ namespace ADDON
 
 CAddonExtensions::CAddonExtensions()
 {
-  //fprintf(stderr, "------------------------------------------CAddonExtensions() No. %i\n", m_cnt);
 }
 
 bool CAddonExtensions::ParseExtension(const TiXmlElement* element)
@@ -117,40 +116,6 @@ bool CAddonExtensions::ParseExtension(const TiXmlElement* element)
     childElement = childElement->NextSiblingElement();
   }
 
-        //fprintf (stderr, "attribute->Name(); %s - %s\n", name.c_str(), value.c_str());
-  
-//   if (!m_point.empty())
-//   {
-//     for (auto ptr : m_extension)
-//      fprintf (stderr, "        No. %i - m_extension %s - %s\n", m_cnt, ptr.first.c_str(), ptr.second.c_str());
-// 
-//     fprintf (stderr, "\n\n END---       No. %i - m_point %s\n", m_cnt, m_point.c_str());
-//     for (int i = 0; i < m_values.size(); i++)
-//     {
-//       for (int j = 0; j < m_values[i].second.size(); j++)
-//       {
-//         fprintf (stderr, " ---> %03i-%03i: %s%s - %s\n", i, j, m_values[i].first.c_str(), m_values[i].second[j].first.c_str(), m_values[i].second[j].second.c_str());
-//       }
-//     }
-//     if (!m_childs.empty())
-//     {
-//       for (auto child : m_childs)
-//       {
-//         fprintf (stderr, "        No. %i - child %s\n", m_cnt, child.first.c_str());
-//         for (int i = 0; i < child.second.m_values.size(); i++)
-//         {
-//           for (int j = 0; j < child.second.m_values[i].second.size(); j++)
-//           {
-//             fprintf (stderr, " ---> %03i-%03i: %s%s - %s\n", i, j, child.second.m_values[i].first.c_str(), child.second.m_values[i].second[j].first.c_str(), child.second.m_values[i].second[j].second.c_str());
-//           }
-//         }
-// //         for (auto ptr : child.second.m_extension)
-// //           fprintf (stderr, "        No. %i -   child->m_extension %s - %s\n", m_cnt, ptr.first.c_str(), ptr.second.c_str());
-//       }
-//     }
-// 
-//     fprintf (stderr, "\n\n\n");
-//   }
   return true;
 }
 
@@ -161,36 +126,23 @@ CAddonExtensions::~CAddonExtensions()
 
 const extValue CAddonExtensions::GetValue(std::string id) const
 {
-  for (int i = 0; i < m_values.size(); i++)
+  for (auto values : m_values)
   {
-    for (int j = 0; j < m_values[i].second.size(); j++)
+    for (auto value : values.second)
     {
-      if (m_values[i].second[j].first == id)
-        return m_values[i].second[j].second;
+      if (value.first == id)
+        return value.second;
     }
   }
   return extValue("");
 }
 
-std::string CAddonExtensions::GetExtValue(std::string id) const
-{
-  for (int i = 0; i < m_values.size(); i++)
-  {
-    for (int j = 0; j < m_values[i].second.size(); j++)
-    {
-      if (m_values[i].second[j].first == id)
-        return m_values[i].second[j].second.asString();
-    }
-  }
-  return "";
-}
-
-const EXT_VALUES& CAddonExtensions::GetExtValues() const
+const EXT_VALUES& CAddonExtensions::GetValues() const
 {
   return m_values;
 }
 
-const CAddonExtensions* CAddonExtensions::GetExtElement(std::string id) const
+const CAddonExtensions* CAddonExtensions::GetElement(std::string id) const
 {
   for (EXT_ELEMENTS::const_iterator it = m_childs.begin(); it != m_childs.end(); ++it)
   {
@@ -429,7 +381,7 @@ CAddonInfo::CAddonInfo(const std::string& id,
   {
     m_usable = true;
 
-    SetProvides(GetExtValue("provides"));
+    SetProvides(GetValue("provides").asString());
   }
   else
   {
@@ -722,7 +674,7 @@ bool CAddonInfo::LoadAddonXML(const TiXmlElement* baseElement, std::string addon
     }
   }
 
-  SetProvides(GetExtValue("provides"));
+  SetProvides(GetValue("provides").asString());
 
   return true;
 }
@@ -757,7 +709,7 @@ std::string CAddonInfo::SerializeMetadata()
   }
 
   variant["extrainfo"] = CVariant(CVariant::VariantTypeArray);
-  for (const auto& values : GetExtValues())
+  for (const auto& values : GetValues())
   {
     CVariant info(CVariant::VariantTypeObject);
     for (auto value : values.second)

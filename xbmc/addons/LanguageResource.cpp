@@ -44,7 +44,7 @@ CLanguageResource::CLanguageResource(CAddonInfo addonInfo)
   m_locale = CLocale::FromString(AddonInfo()->GetValue("@locale").asString());
 
   // parse <charsets>
-  const CAddonExtensions* charsetsElement = AddonInfo()->GetExtElement("charsets");
+  const CAddonExtensions* charsetsElement = AddonInfo()->GetElement("charsets");
   if (charsetsElement != nullptr)
   {
     m_charsetGui = charsetsElement->GetValue("gui").asString();
@@ -53,7 +53,7 @@ CLanguageResource::CLanguageResource(CAddonInfo addonInfo)
   }
   
   // parse <dvd>
-  const CAddonExtensions* dvdElement = AddonInfo()->GetExtElement("dvd");
+  const CAddonExtensions* dvdElement = AddonInfo()->GetElement("dvd");
   if (dvdElement != nullptr)
   {
     m_dvdLanguageMenu = dvdElement->GetValue("menu").asString();
@@ -69,7 +69,7 @@ CLanguageResource::CLanguageResource(CAddonInfo addonInfo)
     m_dvdLanguageSubtitle = m_locale.GetLanguageCode();
 
   // parse <sorttokens>
-  const CAddonExtensions* sorttokensElement = AddonInfo()->GetExtElement("sorttokens");
+  const CAddonExtensions* sorttokensElement = AddonInfo()->GetElement("sorttokens");
   if (sorttokensElement != nullptr)
   {
     /* First loop goes around rows e.g.
@@ -77,7 +77,7 @@ CLanguageResource::CLanguageResource(CAddonInfo addonInfo)
      *   <token>Le</token>
      *   ...
      */
-    for (auto values : sorttokensElement->GetExtValues())
+    for (auto values : sorttokensElement->GetValues())
     {
       std::string token;
       std::string separators;

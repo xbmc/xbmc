@@ -137,7 +137,7 @@ bool CSkinSettingBool::SerializeSetting(TiXmlElement* element) const
 CSkinInfo::CSkinInfo(CAddonInfo addonInfo)
   : CAddon(std::move(addonInfo))
 {
-  for (auto values : AddonInfo()->GetExtValues())
+  for (auto values : AddonInfo()->GetValues())
   {
     if (values.first != "res")
       continue;

@@ -257,7 +257,7 @@ static CVariant Serialize(const AddonPtr& addon)
    * @todo find a way to bring everything here?
    */
   variant["extrainfo"] = CVariant(CVariant::VariantTypeArray);
-  for (auto values : addon->AddonInfo()->GetExtValues())
+  for (auto values : addon->AddonInfo()->GetValues())
   {
     for (auto value : values.second)
     {
