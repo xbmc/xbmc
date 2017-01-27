@@ -38,20 +38,7 @@ namespace ADDON
                         public XFILE::CMusicFileDirectory
   {
   public:
-
-    static std::unique_ptr<CAudioDecoder> FromExtension(CAddonInfo addonInfo, const cp_extension_t* ext);
-
-    explicit CAudioDecoder(CAddonInfo addonInfo)
-      : CAddonDll(std::move(addonInfo))
-      , m_context{nullptr}
-      , m_tags{false}
-      , m_tracks{false}
-      , m_channel{nullptr}
-    {}
-
-    CAudioDecoder(CAddonInfo addonInfo, std::string extension, std::string mimetype, bool tags,
-        bool tracks, std::string codecName, std::string strExt);
-
+    CAudioDecoder(CAddonInfo addonInfo);
     virtual ~CAudioDecoder();
 
     // Things that MUST be supplied by the child classes
