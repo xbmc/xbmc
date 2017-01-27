@@ -150,7 +150,7 @@ std::shared_ptr<CAddon> CAddonBuilder::Build()
     case ADDON_RESOURCE_IMAGES:
       return std::make_shared<CImageResource>(std::move(addonInfo));
     case ADDON_RESOURCE_GAMES:
-      return CGameResource::FromExtension(std::move(m_addonInfo), m_extPoint);
+      return std::make_shared<CGameResource>(std::move(addonInfo));
     case ADDON_RESOURCE_LANGUAGE:
       return std::make_shared<CLanguageResource>(std::move(addonInfo));
     case ADDON_RESOURCE_UISOUNDS:
