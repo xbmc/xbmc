@@ -131,7 +131,7 @@
 #include "pvr/dialogs/GUIDialogPVRChannelsOSD.h"
 #include "pvr/dialogs/GUIDialogPVRGroupManager.h"
 #include "pvr/dialogs/GUIDialogPVRGuideInfo.h"
-#include "pvr/dialogs/GUIDialogPVRGuideOSD.h"
+#include "pvr/dialogs/GUIDialogPVRChannelGuide.h"
 #include "pvr/dialogs/GUIDialogPVRGuideSearch.h"
 #include "pvr/dialogs/GUIDialogPVRRadioRDSInfo.h"
 #include "pvr/dialogs/GUIDialogPVRRecordingInfo.h"
@@ -280,7 +280,7 @@ void CGUIWindowManager::CreateWindows()
   Add(new CGUIDialogPVRChannelManager);
   Add(new CGUIDialogPVRGuideSearch);
   Add(new CGUIDialogPVRChannelsOSD);
-  Add(new CGUIDialogPVRGuideOSD);
+  Add(new CGUIDialogPVRChannelGuide);
 
   Add(new ActiveAE::CGUIDialogAudioDSPManager);
   Add(new ActiveAE::CGUIDialogAudioDSPSettings);
@@ -380,7 +380,7 @@ bool CGUIWindowManager::DestroyWindows()
     Delete(WINDOW_DIALOG_PVR_RADIO_RDS_INFO);
     Delete(WINDOW_DIALOG_PVR_UPDATE_PROGRESS);
     Delete(WINDOW_DIALOG_PVR_OSD_CHANNELS);
-    Delete(WINDOW_DIALOG_PVR_OSD_GUIDE);
+    Delete(WINDOW_DIALOG_PVR_CHANNEL_GUIDE);
     Delete(WINDOW_DIALOG_OSD_TELETEXT);
 
     Delete(WINDOW_DIALOG_AUDIO_DSP_MANAGER);

@@ -26,11 +26,11 @@ class CFileItemList;
 
 namespace PVR
 {
-  class CGUIDialogPVRGuideOSD : public CGUIDialog
+  class CGUIDialogPVRChannelGuide : public CGUIDialog
   {
   public:
-    CGUIDialogPVRGuideOSD(void);
-    virtual ~CGUIDialogPVRGuideOSD(void);
+    CGUIDialogPVRChannelGuide(void);
+    virtual ~CGUIDialogPVRChannelGuide(void);
     virtual bool OnMessage(CGUIMessage& message);
     virtual void OnWindowLoaded();
     virtual void OnWindowUnload();
