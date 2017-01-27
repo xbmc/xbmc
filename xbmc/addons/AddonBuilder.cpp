@@ -160,7 +160,7 @@ std::shared_ptr<CAddon> CAddonBuilder::Build()
     case ADDON_CONTEXT_ITEM:
       return std::make_shared<CContextMenuAddon>(std::move(addonInfo));
     case ADDON_GAME_CONTROLLER:
-      return GAME::CController::FromExtension(std::move(m_addonInfo), m_extPoint);
+      return std::make_shared<GAME::CController>(std::move(addonInfo));
     default:
       break;
   }
