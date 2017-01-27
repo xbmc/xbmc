@@ -161,7 +161,7 @@ public:
   virtual void OnPreUnInstall() {};
   virtual void OnPostUnInstall() {};
 
-  const CAddonInfo* AddonInfo() { return &m_addonInfo; }
+  const CAddonInfo* AddonInfo() const { return &m_addonInfo; }
 
   CAddonInfo m_addonInfo;
 protected:

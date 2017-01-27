@@ -119,7 +119,7 @@ std::shared_ptr<CAddon> CAddonBuilder::Build()
     case ADDON_SCRIPT_WEATHER:
       return std::make_shared<CAddon>(std::move(m_addonInfo));
     case ADDON_WEB_INTERFACE:
-      return CWebinterface::FromExtension(std::move(m_addonInfo), m_extPoint);
+      return std::make_shared<CWebinterface>(std::move(addonInfo));
     case ADDON_SERVICE:
       return CService::FromExtension(std::move(m_addonInfo), m_extPoint);
     case ADDON_SCRAPER_ALBUMS:
