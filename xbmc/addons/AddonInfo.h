@@ -30,6 +30,7 @@
 #include <vector>
 
 class TiXmlElement;
+namespace XBMCAddon { namespace xbmcgui { class WindowXML; } } 
 
 namespace ADDON
 {
@@ -251,6 +252,8 @@ namespace ADDON
     //@}
 
   /*private: So long public until all add-on types reworked to new way! */
+    friend class XBMCAddon::xbmcgui::WindowXML;
+
     bool m_usable;
 
     std::string m_id;

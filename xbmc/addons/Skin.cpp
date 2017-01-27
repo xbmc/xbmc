@@ -134,61 +134,10 @@ bool CSkinSettingBool::SerializeSetting(TiXmlElement* element) const
   return true;
 }
 
-std::unique_ptr<CSkinInfo> CSkinInfo::FromExtension(CAddonInfo addonInfo, const cp_extension_t* ext)
+CSkinInfo::CSkinInfo(CAddonInfo addonInfo)
+  : CAddon(std::move(addonInfo))
 {
-  RESOLUTION_INFO defaultRes = RESOLUTION_INFO();
-  std::vector<RESOLUTION_INFO> resolutions;
-
-  clock_t begin = clock();
-  
-  ELEMENTS elements;
-  if (CAddonMgr::GetInstance().GetExtElements(ext->configuration, "res", elements))
-  {
-    for (ELEMENTS::iterator i = elements.begin(); i != elements.end(); ++i)
-    {
-      int width = atoi(CAddonMgr::GetInstance().GetExtValue(*i, "@width").c_str());
-      int height = atoi(CAddonMgr::GetInstance().GetExtValue(*i, "@height").c_str());
-      bool defRes = CAddonMgr::GetInstance().GetExtValue(*i, "@default") == "true";
-      std::string folder = CAddonMgr::GetInstance().GetExtValue(*i, "@folder");
-      float aspect = 0;
-      std::string strAspect = CAddonMgr::GetInstance().GetExtValue(*i, "@aspect");
-      std::vector<std::string> fracs = StringUtils::Split(strAspect, ':');
-      if (fracs.size() == 2)
-        aspect = (float)(atof(fracs[0].c_str())/atof(fracs[1].c_str()));
-      if (width > 0 && height > 0)
-      {
-        RESOLUTION_INFO res(width, height, aspect, folder);
-        res.strId = strAspect; // for skin usage, store aspect string in strId
-        if (defRes)
-          defaultRes = res;
-        resolutions.push_back(res);
-      }
-    }
-  }
-  else
-  { // no resolutions specified -> backward compatibility
-    std::string defaultWide = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@defaultwideresolution");
-    if (defaultWide.empty())
-      defaultWide = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@defaultresolution");
-    TranslateResolution(defaultWide, defaultRes);
-  }
-
-  float effectsSlowDown(1.f);
-  std::string str = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@effectslowdown");
-  if (!str.empty())
-    effectsSlowDown = (float)atof(str.c_str());
-
-  bool debugging = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@debugging") == "true";
-
-//   clock_t end = clock();
-//   double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
-//   fprintf(stderr, "OLD: %s: elapsed secs: %f\n", __FUNCTION__, elapsed_secs);
-//   
-
-  
-  begin = clock();
-
-  for (auto values : addonInfo.GetExtValues())
+  for (auto values : AddonInfo()->GetExtValues())
   {
     if (values.first != "res")
       continue;
@@ -222,38 +171,17 @@ std::unique_ptr<CSkinInfo> CSkinInfo::FromExtension(CAddonInfo addonInfo, const 
       RESOLUTION_INFO res(width, height, aspect, folder);
       res.strId = strAspect; // for skin usage, store aspect string in strId
       if (defRes)
-        defaultRes = res;
-      resolutions.push_back(res);
+        m_defaultRes = res;
+      m_resolutions.push_back(res);
     }
   }
   
-  effectsSlowDown = 1.f;
-  str = addonInfo.GetExtValue("@effectslowdown");
-  if (!str.empty())
-    effectsSlowDown = (float)atof(str.c_str());
+  m_effectsSlowDown = AddonInfo()->GetValue("@effectslowdown").asFloat();
+  if (m_effectsSlowDown == 0.0f)
+    m_effectsSlowDown = 1.f;
 
-  debugging = addonInfo.GetExtValue("@debugging") == "true";
+  m_debugging = AddonInfo()->GetValue("@debugging").asBoolean();
 
-//   end = clock();
-//   elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
-//   fprintf(stderr, "NEW: %s: elapsed secs: %f\n", __FUNCTION__, elapsed_secs);
-
-  return std::unique_ptr<CSkinInfo>(new CSkinInfo(std::move(addonInfo), defaultRes, resolutions,
-      effectsSlowDown, debugging));
-}
-
-CSkinInfo::CSkinInfo(
-    CAddonInfo addonInfo,
-    const RESOLUTION_INFO& resolution,
-    const std::vector<RESOLUTION_INFO>& resolutions,
-    float effectsSlowDown,
-    bool debugging)
-    : CAddon(std::move(addonInfo)),
-      m_defaultRes(resolution),
-      m_resolutions(resolutions),
-      m_effectsSlowDown(effectsSlowDown),
-      m_debugging(debugging)
-{
   LoadStartupWindows(nullptr);
 }
 
