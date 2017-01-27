@@ -128,13 +128,13 @@ std::shared_ptr<CAddon> CAddonBuilder::Build()
     case ADDON_SCRAPER_MUSICVIDEOS:
     case ADDON_SCRAPER_TVSHOWS:
     case ADDON_SCRAPER_LIBRARY:
-      return CScraper::FromExtension(std::move(m_addonInfo), m_extPoint);
+      return std::make_shared<CScraper>(std::move(addonInfo));
 #ifdef HAS_PVRCLIENTS
     case ADDON_PVRDLL:
       return PVR::CPVRClient::FromExtension(std::move(m_addonInfo), m_extPoint);
 #endif
     case ADDON_ADSPDLL:
-      return std::make_shared<ActiveAE::CActiveAEDSPAddon>(std::move(m_addonInfo));
+      return std::make_shared<ActiveAE::CActiveAEDSPAddon>(std::move(addonInfo));
     case ADDON_AUDIOENCODER:
       return std::make_shared<CAudioEncoder>(std::move(addonInfo));
     case ADDON_AUDIODECODER:
@@ -156,7 +156,7 @@ std::shared_ptr<CAddon> CAddonBuilder::Build()
     case ADDON_RESOURCE_LANGUAGE:
       return std::make_shared<CLanguageResource>(std::move(addonInfo));
     case ADDON_RESOURCE_UISOUNDS:
-      return std::make_shared<CUISoundsResource>(std::move(m_addonInfo));
+      return std::make_shared<CUISoundsResource>(std::move(addonInfo));
     case ADDON_REPOSITORY:
       return std::make_shared<CRepository>(std::move(addonInfo));
     case ADDON_CONTEXT_ITEM:

@@ -86,11 +86,7 @@ private:
 class CScraper : public CAddon
 {
 public:
-
-  static std::unique_ptr<CScraper> FromExtension(CAddonInfo addonInfo, const cp_extension_t* ext);
-
-  explicit CScraper(CAddonInfo addonInfo);
-  CScraper(CAddonInfo addonInfo, bool requiressettings, CDateTimeSpan persistence, CONTENT_TYPE pathContent);
+  CScraper(CAddonInfo addonInfo);
 
   /*! \brief Set the scraper settings for a particular path from an XML string
    Loads the default and user settings (if not already loaded) and, if the given XML string is non-empty,

@@ -127,57 +127,40 @@ static void CheckScraperError(const TiXmlElement *pxeRoot)
   throw CScraperError(sTitle, sMessage);
 }
 
-std::unique_ptr<CScraper> CScraper::FromExtension(CAddonInfo addonInfo, const cp_extension_t* ext)
+CScraper::CScraper(CAddonInfo addonInfo)
+  : CAddon(std::move(addonInfo)),
+    m_fLoaded(false),
+    m_pathContent(CONTENT_NONE)
 {
-  bool requiressettings = CAddonMgr::GetInstance().GetExtValue(ext->configuration,"@requiressettings") == "true";
+  m_requiressettings = AddonInfo()->GetValue("@requiressettings").asBoolean();
 
   CDateTimeSpan persistence;
-  std::string tmp = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@cachepersistence");
+  std::string tmp = AddonInfo()->GetValue("@cachepersistence").asString();
   if (!tmp.empty())
-    persistence.SetFromTimeString(tmp);
+    m_persistence.SetFromTimeString(tmp);
 
-  CONTENT_TYPE pathContent(CONTENT_NONE);
-  switch (addonInfo.m_type)
+  switch (AddonInfo()->Type())
   {
     case ADDON_SCRAPER_ALBUMS:
-      pathContent = CONTENT_ALBUMS;
+      m_pathContent = CONTENT_ALBUMS;
       break;
     case ADDON_SCRAPER_ARTISTS:
-      pathContent = CONTENT_ARTISTS;
+      m_pathContent = CONTENT_ARTISTS;
       break;
     case ADDON_SCRAPER_MOVIES:
-      pathContent = CONTENT_MOVIES;
+      m_pathContent = CONTENT_MOVIES;
       break;
     case ADDON_SCRAPER_MUSICVIDEOS:
-      pathContent = CONTENT_MUSICVIDEOS;
+      m_pathContent = CONTENT_MUSICVIDEOS;
       break;
     case ADDON_SCRAPER_TVSHOWS:
-      pathContent = CONTENT_TVSHOWS;
+      m_pathContent = CONTENT_TVSHOWS;
       break;
     default:
       break;
   }
 
-  return std::unique_ptr<CScraper>(new CScraper(std::move(addonInfo), requiressettings, persistence, pathContent));
-}
-
-CScraper::CScraper(CAddonInfo addonInfo)
-  : CAddon(std::move(addonInfo)),
-    m_fLoaded(false),
-    m_requiressettings(false),
-    m_pathContent(CONTENT_NONE)
-{
-  m_isPython = URIUtils::GetExtension(LibPath()) == ".py";
-}
-
-CScraper::CScraper(CAddonInfo addonInfo, bool requiressettings, CDateTimeSpan persistence, CONTENT_TYPE pathContent)
-  : CAddon(std::move(addonInfo)),
-    m_fLoaded(false),
-    m_requiressettings(requiressettings),
-    m_persistence(persistence),
-    m_pathContent(pathContent)
-{
-  m_isPython = URIUtils::GetExtension(LibPath()) == ".py";
+  m_isPython = URIUtils::GetExtension(AddonInfo()->LibPath()) == ".py";
 }
 
 bool CScraper::Supports(const CONTENT_TYPE &content) const
