@@ -150,7 +150,7 @@ std::shared_ptr<CAddon> CAddonBuilder::Build()
     case ADDON_SKIN:
       return std::make_shared<CSkinInfo>(std::move(addonInfo));
     case ADDON_RESOURCE_IMAGES:
-      return CImageResource::FromExtension(std::move(m_addonInfo), m_extPoint);
+      return std::make_shared<CImageResource>(std::move(addonInfo));
     case ADDON_RESOURCE_GAMES:
       return CGameResource::FromExtension(std::move(m_addonInfo), m_extPoint);
     case ADDON_RESOURCE_LANGUAGE:
