@@ -73,7 +73,7 @@ void CContextMenuAddon::ParseMenu(
 CContextMenuAddon::CContextMenuAddon(CAddonInfo addonInfo)
   : CAddon(std::move(addonInfo))
 {
-  const CAddonExtensions* menu = AddonInfo()->GetExtElement("menu");
+  const CAddonExtensions* menu = AddonInfo()->GetElement("menu");
   if (menu)
   {
     int tmp = 0;
@@ -82,7 +82,7 @@ CContextMenuAddon::CContextMenuAddon(CAddonInfo addonInfo)
   else
   {
     //backwards compatibility. add first item definition
-    const CAddonExtensions* elem = AddonInfo()->GetExtElement("item");
+    const CAddonExtensions* elem = AddonInfo()->GetElement("item");
     if (elem)
     {
       std::string visCondition = elem->GetValue("visible").asString();

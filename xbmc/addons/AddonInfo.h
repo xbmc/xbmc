@@ -105,9 +105,8 @@ namespace ADDON
     bool ParseExtension(const TiXmlElement* element);
 
     const extValue GetValue(std::string id) const;
-    std::string GetExtValue(std::string id) const;
-    const EXT_VALUES& GetExtValues() const;
-    const CAddonExtensions* GetExtElement(std::string id) const;
+    const EXT_VALUES& GetValues() const;
+    const CAddonExtensions* GetElement(std::string id) const;
     const EXT_ELEMENTS GetElements(std::string id = "") const;
 
     void Insert(std::string id, std::string value);

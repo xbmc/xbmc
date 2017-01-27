@@ -47,68 +47,15 @@ std::shared_ptr<CAddon> CAddonBuilder::Build()
 {
   if (m_built)
     throw std::logic_error("Already built");
-
-  if (m_addonInfo.m_id.empty())
-    return nullptr;
-
   m_built = true;
-
-  if (m_addonInfo.m_type == ADDON_UNKNOWN)
-    return std::make_shared<CAddon>(std::move(m_addonInfo));
-
-  const TYPE type(m_addonInfo.m_type);
-
+  
   /*
    * Temporary to create props from path
    * becomes later done on other place
    */
   CAddonInfo addonInfo(m_addonInfo.Path());
-  
-  /*
-   * Startup of reworked addon interfaces, switch currently two times until
-   * rework is finished. On end is only for all binary addons one
-   * "return std::make_shared<CAddonDll>(std::move(m_addonInfo));" needed.
-   */
-  switch (type)
-  {
-    case ADDON_VIZ:
-    case ADDON_SCREENSAVER:
-      return std::make_shared<CAddonDll>(std::move(addonInfo));
-    default:
-      break;
-  }
 
-  if (m_extPoint == nullptr)
-  {
-    fprintf(stderr, "(m_extPoint == nullptr)!!!!!!!! '%s'\n", m_addonInfo.m_id.c_str());
-    int* a = nullptr;
-    a[0] = 0;
-  }
-
-  // Handle audio encoder special cases
-  if (type == ADDON_AUDIOENCODER)
-  {
-    // built in audio encoder
-    if (StringUtils::StartsWithNoCase(addonInfo.ID(), "audioencoder.xbmc.builtin."))
-      return std::make_shared<CAudioEncoder>(std::move(addonInfo));
-  }
-
-  // Ensure binary types have a valid library for the platform
-  if (type == ADDON_PVRDLL ||
-      type == ADDON_ADSPDLL ||
-      type == ADDON_AUDIOENCODER ||
-      type == ADDON_AUDIODECODER ||
-      type == ADDON_VFS ||
-      type == ADDON_INPUTSTREAM ||
-      type == ADDON_PERIPHERALDLL ||
-      type == ADDON_GAMEDLL)
-  {
-    std::string value = CAddonMgr::GetInstance().GetPlatformLibraryName(m_extPoint->plugin->extensions->configuration);
-    if (value.empty())
-      return AddonPtr();
-  }
-
-  switch (type)
+  switch (addonInfo.Type())
   {
     case ADDON_PLUGIN:
     case ADDON_SCRIPT:
@@ -129,6 +76,9 @@ std::shared_ptr<CAddon> CAddonBuilder::Build()
     case ADDON_SCRAPER_TVSHOWS:
     case ADDON_SCRAPER_LIBRARY:
       return std::make_shared<CScraper>(std::move(addonInfo));
+    case ADDON_VIZ:
+    case ADDON_SCREENSAVER:
+      return std::make_shared<CAddonDll>(std::move(addonInfo));
     case ADDON_PVRDLL:
       return std::make_shared<PVR::CPVRClient>(std::move(addonInfo));
     case ADDON_ADSPDLL:
@@ -164,7 +114,8 @@ std::shared_ptr<CAddon> CAddonBuilder::Build()
     default:
       break;
   }
-  return AddonPtr();
+
+  return std::make_shared<CAddon>(std::move(addonInfo));
 }
 
 }

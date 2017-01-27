@@ -95,7 +95,6 @@ static cp_extension_t* GetFirstExtPoint(const cp_plugin_info_t* addon, TYPE type
 AddonPtr CAddonMgr::Factory(const cp_plugin_info_t* plugin, TYPE type)
 {
   CAddonBuilder builder;
-  fprintf(stderr, "----------------- %s\n", __PRETTY_FUNCTION__);
   if (Factory(plugin, type, builder))
     return builder.Build();
   return nullptr;
@@ -109,58 +108,10 @@ bool CAddonMgr::Factory(const cp_plugin_info_t* plugin, TYPE type, CAddonBuilder
   if (!PlatformSupportsAddon(plugin))
     return false;
 
-  cp_extension_t* ext = GetFirstExtPoint(plugin, type);
-
-  if (ext == nullptr && type != ADDON_UNKNOWN)
-    return false; // no extension point satisfies the type requirement
-
-  if (ext)
-  {
-    builder.SetType(CAddonInfo::TranslateType(ext->ext_point_id));
-    builder.SetExtPoint(ext);
-
-    auto libname = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@library");
-    if (libname.empty())
-      libname = CAddonMgr::GetInstance().GetPlatformLibraryName(ext->configuration);
-    builder.SetLibName(libname);
-  }
-
-  FillCpluffMetadata(plugin, builder);
-  return true;
-}
-
-void CAddonMgr::FillCpluffMetadata(const cp_plugin_info_t* plugin, CAddonBuilder& builder)
-{
-  builder.SetId(plugin->identifier);
-
-  if (plugin->version)
-    builder.SetVersion(AddonVersion(plugin->version));
-
-  if (plugin->abi_bw_compatibility)
-    builder.SetMinVersion(AddonVersion(plugin->abi_bw_compatibility));
-
-  if (plugin->name)
-    builder.SetName(plugin->name);
-
-  if (plugin->provider_name)
-    builder.SetAuthor(plugin->provider_name);
-
   if (plugin->plugin_path && strcmp(plugin->plugin_path, "") != 0)
     builder.SetPath(plugin->plugin_path);
 
-  {
-    ADDONDEPS dependencies;
-    for (unsigned int i = 0; i < plugin->num_imports; ++i)
-    {
-      if (plugin->imports[i].plugin_id)
-      {
-        std::string id(plugin->imports[i].plugin_id);
-        AddonVersion version(plugin->imports[i].version ? plugin->imports[i].version : "0.0.0");
-        dependencies.emplace(std::move(id), std::make_pair(version, plugin->imports[i].optional != 0));
-      }
-    }
-    builder.SetDependencies(std::move(dependencies));
-  }
+  return true;
 }
 
 CAddonMgr::CAddonMgr()
@@ -408,20 +359,6 @@ bool CAddonMgr::GetInstallableAddons(AddonInfos& addons, const TYPE &type)
   return true;
 }
 
-bool CAddonMgr::FindInstallableById(const std::string& addonId, AddonPtr& result)
-{
-  VECADDONS versions;
-  {
-    CSingleLock lock(m_critSection);
-    if (!m_database.FindByAddonId(addonId, versions) || versions.empty())
-      return false;
-  }
-
-  result = *std::max_element(versions.begin(), versions.end(),
-      [](const AddonPtr& a, const AddonPtr& b) { return a->Version() < b->Version(); });
-  return true;
-}
-
 bool CAddonMgr::FindInstallableById(const std::string& addonId, AddonInfoPtr& result)
 {
   AddonInfos versions;
@@ -467,7 +404,6 @@ bool CAddonMgr::GetAddonsInternal(const TYPE &type, VECADDONS &addons, bool enab
       }
 
       AddonPtr addon;
-      fprintf(stderr, "----------------- %s\n", __PRETTY_FUNCTION__);
       if (Factory(cp_addon, type, builder))
         addon = builder.Build();
       m_cpluff->release_info(m_cp_context, cp_addon);
@@ -493,7 +429,6 @@ bool CAddonMgr::GetAddon(const std::string &str, AddonPtr &addon, const TYPE &ty
   cp_plugin_info_t *cpaddon = m_cpluff->get_plugin_info(m_cp_context, str.c_str(), &status);
   if (status == CP_OK && cpaddon)
   {
-    fprintf(stderr, "----------------- %s\n", __PRETTY_FUNCTION__);
     addon = Factory(cpaddon, type);
     m_cpluff->release_info(m_cp_context, cpaddon);
 
@@ -886,29 +821,6 @@ bool CAddonMgr::PlatformSupportsAddon(const cp_plugin_info_t *plugin)
       supportedPlatforms.begin(), supportedPlatforms.end()) != platforms.end();
 }
 
-cp_cfg_element_t *CAddonMgr::GetExtElement(cp_cfg_element_t *base, const char *path)
-{
-  cp_cfg_element_t *element = NULL;
-  if (base)
-    element = m_cpluff->lookup_cfg_element(base, path);
-  return element;
-}
-
-bool CAddonMgr::GetExtElements(cp_cfg_element_t *base, const char *path, ELEMENTS &elements)
-{
-  if (!base || !path)
-    return false;
-
-  for (unsigned int i = 0; i < base->num_children; i++)
-  {
-    std::string temp = base->children[i].name;
-    if (!temp.compare(path))
-      elements.push_back(&base->children[i]);
-  }
-
-  return !elements.empty();
-}
-
 const cp_extension_t *CAddonMgr::GetExtension(const cp_plugin_info_t *props, const char *extension) const
 {
   if (!props)
@@ -921,15 +833,6 @@ const cp_extension_t *CAddonMgr::GetExtension(const cp_plugin_info_t *props, con
   return NULL;
 }
 
-std::string CAddonMgr::GetExtValue(cp_cfg_element_t *base, const char *path) const
-{
-  const char *value = "";
-  if (base && (value = m_cpluff->lookup_cfg_value(base, path)))
-    return value;
-  else
-    return "";
-}
-
 bool CAddonMgr::GetExtList(cp_cfg_element_t *base, const char *path, std::vector<std::string> &result) const
 {
   result.clear();
@@ -940,35 +843,6 @@ bool CAddonMgr::GetExtList(cp_cfg_element_t *base, const char *path, std::vector
     return false;
   StringUtils::Tokenize(all, result, ' ');
   return true;
-}
-
-std::string CAddonMgr::GetPlatformLibraryName(cp_cfg_element_t *base) const
-{
-  std::string libraryName;
-#if defined(TARGET_ANDROID)
-  libraryName = GetExtValue(base, "@library_android");
-#elif defined(TARGET_LINUX) || defined(TARGET_FREEBSD)
-#if defined(TARGET_FREEBSD)
-  libraryName = GetExtValue(base, "@library_freebsd");
-  if (libraryName.empty())
-#elif defined(TARGET_RASPBERRY_PI)
-  libraryName = GetExtValue(base, "@library_rbpi");
-  if (libraryName.empty())
-#endif
-  libraryName = GetExtValue(base, "@library_linux");
-#elif defined(TARGET_WINDOWS) && defined(HAS_DX)
-  libraryName = GetExtValue(base, "@library_windx");
-  if (libraryName.empty())
-    libraryName = GetExtValue(base, "@library_windows");
-#elif defined(TARGET_DARWIN)
-#if defined(TARGET_DARWIN_IOS)
-  libraryName = GetExtValue(base, "@library_ios");
-  if (libraryName.empty())
-#endif
-  libraryName = GetExtValue(base, "@library_osx");
-#endif
-
-  return libraryName;
 }
 
 bool CAddonMgr::LoadAddonDescription(const std::string &directory, AddonPtr &addon)
@@ -995,7 +869,6 @@ bool CAddonMgr::LoadAddonDescription(const std::string &directory, AddonPtr &add
     info->plugin_path = static_cast<char*>(malloc(directory.length() + 1));
     strncpy(info->plugin_path, directory.c_str(), directory.length());
     info->plugin_path[directory.length()] = '\0';
-    fprintf(stderr, "----------------- %s\n", __PRETTY_FUNCTION__);
     addon = Factory(info, ADDON_UNKNOWN);
 
     free(info->plugin_path);

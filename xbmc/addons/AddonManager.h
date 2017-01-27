@@ -122,7 +122,6 @@ namespace ADDON
     bool GetInstallableAddons(AddonInfos& addons, const TYPE &type);
 
     /*! Get the installable addon with the highest version. */
-    bool FindInstallableById(const std::string& addonId, AddonPtr& addon);
     bool FindInstallableById(const std::string& addonId, AddonInfoPtr& addon);
 
     void AddToUpdateableAddons(AddonPtr &pAddon);
@@ -172,25 +171,6 @@ namespace ADDON
     
     void UpdateLastUsed(const std::string& id);
 
-    /* libcpluff */
-    std::string GetExtValue(cp_cfg_element_t *base, const char *path) const;
-
-    /*! \brief Retrieve an element from a given configuration element
-     \param base the base configuration element.
-     \param path the path to the configuration element from the base element.
-     \param element [out] returned element.
-     \return true if the configuration element is present
-     */
-    cp_cfg_element_t *GetExtElement(cp_cfg_element_t *base, const char *path);
-
-    /*! \brief Retrieve a vector of repeated elements from a given configuration element
-     \param base the base configuration element.
-     \param path the path to the configuration element from the base element.
-     \param result [out] returned list of elements.
-     \return true if the configuration element is present and the list of elements is non-empty
-     */
-    bool GetExtElements(cp_cfg_element_t *base, const char *path, ELEMENTS &result);
-
     /*! \brief Retrieve a list of strings from a given configuration element
      Assumes the configuration element or attribute contains a whitespace separated list of values (eg xs:list schema).
      \param base the base configuration element.
@@ -201,10 +181,6 @@ namespace ADDON
     bool GetExtList(cp_cfg_element_t *base, const char *path, std::vector<std::string> &result) const;
 
     const cp_extension_t *GetExtension(const cp_plugin_info_t *props, const char *extension) const;
-
-    /*! \brief Retrieves the platform-specific library name from the given configuration element
-     */
-    std::string GetPlatformLibraryName(cp_cfg_element_t *base) const;
 
     /*! \brief Load the addon in the given path
      This loads the addon using c-pluff which parses the addon descriptor file.
@@ -236,7 +212,6 @@ namespace ADDON
 
     static AddonPtr Factory(const cp_plugin_info_t* plugin, TYPE type);
     static bool Factory(const cp_plugin_info_t* plugin, TYPE type, CAddonBuilder& builder);
-    static void FillCpluffMetadata(const cp_plugin_info_t* plugin, CAddonBuilder& builder);
 
     const AddonInfoPtr GetInstalledAddonInfo(const std::string& addonId);
     const AddonInfoPtr GetInstalledAddonInfo(TYPE addonType, std::string addonId);
