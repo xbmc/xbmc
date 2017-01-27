@@ -4968,7 +4968,7 @@ void CMusicDatabase::UpdateTables(int version)
     m_pDS->exec("INSERT INTO versiontagscan (idVersion, iNeedsScan) values(0, 0)");
   }
 
-  // Set the verion of tag scanning required. 
+  // Set the version of tag scanning required. 
   // Not every schema change requires the tags to be rescanned, set to the highest schema version 
   // that needs this. Forced rescanning (of music files that have not changed since they were 
   // previously scanned) also accommodates any changes to the way tags are processed 
