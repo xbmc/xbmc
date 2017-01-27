@@ -34,26 +34,14 @@ namespace ADDON
 std::map<std::string, CInputStream::Config> CInputStream::m_configMap;
 CCriticalSection CInputStream::m_parentSection;
 
-std::unique_ptr<CInputStream> CInputStream::FromExtension(CAddonInfo addonInfo, const cp_extension_t* ext)
+CInputStream::CInputStream(const CAddonInfo& addonInfo)
+  : CAddonDll(std::move(addonInfo))
 {
-  std::string listitemprops = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@listitemprops");
-  std::string extensions = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@extension");
-  std::string protocols = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@protocols");
-  std::string name(ext->plugin->identifier);
-  std::unique_ptr<CInputStream> istr(new CInputStream(addonInfo, name, listitemprops,
-                                                      extensions, protocols));
-  if (CAddonMgr::GetInstance().IsAddonEnabled(addonInfo.m_id))
-    istr->CheckConfig();
-  return istr;
-}
+  std::string listitemprops = AddonInfo()->GetValue("@listitemprops").asString();
+  std::string extensions = AddonInfo()->GetValue("@extension").asString();
+  std::string protocols = AddonInfo()->GetValue("@protocols").asString();
+  std::string name(AddonInfo()->ID());
 
-CInputStream::CInputStream(const CAddonInfo& addonInfo,
-                           const std::string& name,
-                           const std::string& listitemprops,
-                           const std::string& extensions,
-                           const std::string& protocols)
-: CAddonDll(std::move(addonInfo))
-{
   m_fileItemProps = StringUtils::Tokenize(listitemprops, "|");
   for (auto &key : m_fileItemProps)
   {
@@ -72,6 +60,8 @@ CInputStream::CInputStream(const CAddonInfo& addonInfo,
   {
     StringUtils::Trim(ext);
   }
+
+  CheckConfig();
 }
 
 bool CInputStream::Create()

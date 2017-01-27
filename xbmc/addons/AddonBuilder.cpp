@@ -140,7 +140,7 @@ std::shared_ptr<CAddon> CAddonBuilder::Build()
     case ADDON_AUDIODECODER:
       return std::make_shared<CAudioDecoder>(std::move(addonInfo));
     case ADDON_INPUTSTREAM:
-      return CInputStream::FromExtension(std::move(m_addonInfo), m_extPoint);
+      return std::make_shared<CInputStream>(std::move(addonInfo));
     case ADDON_PERIPHERALDLL:
       return std::make_shared<PERIPHERALS::CPeripheralAddon>(std::move(addonInfo));
     case ADDON_GAMEDLL:
