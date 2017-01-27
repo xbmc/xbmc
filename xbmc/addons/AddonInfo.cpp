@@ -201,6 +201,20 @@ const CAddonExtensions* CAddonExtensions::GetExtElement(std::string id) const
   return nullptr;
 }
 
+const EXT_ELEMENTS CAddonExtensions::GetElements(std::string id) const
+{
+  if (id.empty())
+    return m_childs;
+
+  EXT_ELEMENTS childs;
+  for (auto child : m_childs)
+  {
+    if (child.first == id)
+      childs.push_back(std::pair<std::string, CAddonExtensions>(child.first, child.second));
+  }
+  return childs;
+}
+
 void CAddonExtensions::Insert(std::string id, std::string value)
 {
   EXT_VALUE extension;
@@ -866,10 +880,10 @@ void CAddonInfo::SetProvides(const std::string &content)
 {
   if (!content.empty())
   {
-    fprintf(stderr, "---->ID: %s\n", ID().c_str());
+//    fprintf(stderr, "---->ID: %s\n", ID().c_str());
     for (auto provide : StringUtils::Split(content, ' '))
     {
-      fprintf(stderr, "   ->Provide: %s\n", provide.c_str());
+//      fprintf(stderr, "   ->Provide: %s\n", provide.c_str());
       SubContent content = TranslateSubContent(provide);
       if (content != UNKNOWN)
         m_providedSubContent.insert(content);
