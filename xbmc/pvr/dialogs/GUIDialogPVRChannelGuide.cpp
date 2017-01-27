@@ -36,12 +36,11 @@ using namespace PVR;
 CGUIDialogPVRChannelGuide::CGUIDialogPVRChannelGuide()
     : CGUIDialog(WINDOW_DIALOG_PVR_CHANNEL_GUIDE, "DialogPVRChannelGuide.xml")
 {
-  m_vecItems = new CFileItemList;
+  m_vecItems.reset(new CFileItemList);
 }
 
 CGUIDialogPVRChannelGuide::~CGUIDialogPVRChannelGuide()
 {
-  delete m_vecItems;
 }
 
 bool CGUIDialogPVRChannelGuide::OnMessage(CGUIMessage& message)

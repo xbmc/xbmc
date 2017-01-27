@@ -45,8 +45,8 @@ namespace PVR
 
     CGUIControl *GetFirstFocusableControl(int id);
 
-    CFileItemList    *m_vecItems;
-    CGUIViewControl   m_viewControl;
+    std::unique_ptr<CFileItemList> m_vecItems;
+    CGUIViewControl m_viewControl;
 
   private:
     CPVRChannelPtr m_channel;
