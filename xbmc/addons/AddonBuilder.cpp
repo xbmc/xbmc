@@ -89,8 +89,8 @@ std::shared_ptr<CAddon> CAddonBuilder::Build()
   if (type == ADDON_AUDIOENCODER)
   {
     // built in audio encoder
-    if (StringUtils::StartsWithNoCase(m_extPoint->plugin->identifier, "audioencoder.xbmc.builtin."))
-      return CAudioEncoder::FromExtension(std::move(m_addonInfo), m_extPoint);
+    if (StringUtils::StartsWithNoCase(addonInfo.ID(), "audioencoder.xbmc.builtin."))
+      return std::make_shared<CAudioEncoder>(std::move(addonInfo));
   }
 
   // Ensure binary types have a valid library for the platform
@@ -136,7 +136,7 @@ std::shared_ptr<CAddon> CAddonBuilder::Build()
     case ADDON_ADSPDLL:
       return std::make_shared<ActiveAE::CActiveAEDSPAddon>(std::move(m_addonInfo));
     case ADDON_AUDIOENCODER:
-      return CAudioEncoder::FromExtension(std::move(m_addonInfo), m_extPoint);
+      return std::make_shared<CAudioEncoder>(std::move(addonInfo));
     case ADDON_AUDIODECODER:
       return std::make_shared<CAudioDecoder>(std::move(addonInfo));
     case ADDON_INPUTSTREAM:

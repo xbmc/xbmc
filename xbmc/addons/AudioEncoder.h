@@ -28,10 +28,7 @@ namespace ADDON
   class CAudioEncoder : public CAddonDll, public IEncoder
   {
   public:
-    static std::unique_ptr<CAudioEncoder> FromExtension(CAddonInfo addonInfo, const cp_extension_t* ext);
-
-    explicit CAudioEncoder(CAddonInfo addonInfo) : CAddonDll(std::move(addonInfo)), m_context{nullptr} {};
-    CAudioEncoder(CAddonInfo addonInfo, std::string extension);
+    CAudioEncoder(CAddonInfo addonInfo);
     virtual ~CAudioEncoder() {}
 
     // Things that MUST be supplied by the child classes
@@ -40,10 +37,10 @@ namespace ADDON
     int Encode(int nNumBytesRead, uint8_t* pbtStream);
     bool Close();
     void Destroy();
-
-    const std::string extension;
+    const std::string& Extension() { return m_extension; }
 
   private:
+    std::string m_extension;
     void *m_context; ///< audio encoder context
     AUDIOENC_PROPS m_info;
     KodiToAddonFuncTable_AudioEncoder m_struct;
