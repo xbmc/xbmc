@@ -11241,7 +11241,11 @@ msgctxt "#19685"
 msgid "Confirm shutdown"
 msgstr ""
 
-#empty string with id 19686
+#: Label for buttons to open channel guide dialog
+#: addons/skin.estuary/xml/DialogPVRInfo.xml
+msgctxt "#19686"
+msgid "Channel guide"
+msgstr ""
 
 #: Label for context menu entries, dialog heading, button to start playing a recording
 #: xbmc/pvr/PVRContextMenus.cpp
