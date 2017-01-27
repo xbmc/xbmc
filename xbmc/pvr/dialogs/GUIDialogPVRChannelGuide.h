@@ -34,6 +34,7 @@ namespace PVR
     virtual bool OnMessage(CGUIMessage& message);
     virtual void OnWindowLoaded();
     virtual void OnWindowUnload();
+    virtual void Open(const CPVRChannelPtr &channel);
 
   protected:
     virtual void OnInitWindow();
@@ -46,5 +47,8 @@ namespace PVR
 
     CFileItemList    *m_vecItems;
     CGUIViewControl   m_viewControl;
+
+  private:
+    CPVRChannelPtr m_channel;
   };
 }

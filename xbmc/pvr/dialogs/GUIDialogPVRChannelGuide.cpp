@@ -70,10 +70,20 @@ bool CGUIDialogPVRChannelGuide::OnMessage(CGUIMessage& message)
   return CGUIDialog::OnMessage(message);
 }
 
+void CGUIDialogPVRChannelGuide::Open(const CPVRChannelPtr &channel)
+{
+  m_channel = channel;
+  CGUIDialog::Open();
+}
+
 void CGUIDialogPVRChannelGuide::OnInitWindow()
 {
-  /* Close dialog immediately if no TV or radio channel is playing */
-  if (!g_PVRManager.IsPlaying())
+  // no user-specific channel is set use current playing channel
+  if (!m_channel)
+    m_channel = g_PVRManager.GetCurrentChannel();
+
+  // no channel at all, close the dialog
+  if (!m_channel)
   {
     Close();
     return;
@@ -86,7 +96,7 @@ void CGUIDialogPVRChannelGuide::OnInitWindow()
   // empty the list ready for population
   Clear();
 
-  g_PVRManager.GetCurrentEpg(*m_vecItems);
+  m_channel->GetEPG(*m_vecItems);
   m_viewControl.SetItems(*m_vecItems);
 
   g_graphicsContext.Unlock();
@@ -111,6 +121,7 @@ void CGUIDialogPVRChannelGuide::OnInitWindow()
 void CGUIDialogPVRChannelGuide::OnDeinitWindow(int nextWindowID)
 {
   CGUIDialog::OnDeinitWindow(nextWindowID);
+  m_channel.reset();
   Clear();
 }
 
