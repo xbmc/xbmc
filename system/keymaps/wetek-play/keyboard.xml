@@ -196,7 +196,7 @@
       <nine>Number9</nine>
     </keyboard>
   </TVChannels>
-  <PVROSDGuide>
+  <PVRChannelGuide>
     <keyboard>
       <zero>Number0</zero>
       <one>Number1</one>
@@ -209,7 +209,7 @@
       <eight>Number8</eight>
       <nine>Number9</nine>
     </keyboard>
-  </PVROSDGuide>
+  </PVRChannelGuide>
   <TVGuide>
     <keyboard>
       <zero>Number0</zero>
