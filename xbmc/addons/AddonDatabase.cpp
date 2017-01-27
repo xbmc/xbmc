@@ -40,6 +40,8 @@ using namespace ADDON;
 
 static void DeserializeMetadata(const std::string& document, CAddonBuilder& builder)
 {
+  fprintf(stderr, "-------------> %s\n", __PRETTY_FUNCTION__);
+/*  
   CVariant variant = CJSONVariantParser::Parse(document);
 
   builder.SetAuthor(variant["author"].asString());
@@ -69,7 +71,7 @@ static void DeserializeMetadata(const std::string& document, CAddonBuilder& buil
   InfoMap extraInfo;
   for (auto it = variant["extrainfo"].begin_array(); it != variant["extrainfo"].end_array(); ++it)
     extraInfo.emplace((*it)["key"].asString(), (*it)["value"].asString());
-  builder.SetExtrainfo(std::move(extraInfo));
+  builder.SetExtrainfo(std::move(extraInfo));*/
 }
 
 CAddonDatabase::CAddonDatabase()

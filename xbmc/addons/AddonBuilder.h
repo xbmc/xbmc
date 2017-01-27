@@ -48,7 +48,6 @@ public:
   void SetVersion(AddonVersion version) { m_addonInfo.m_version = std::move(version); }
   void SetMinVersion(AddonVersion minversion) { m_addonInfo.m_minversion = std::move(minversion); }
   void SetDependencies(ADDONDEPS dependencies) { m_addonInfo.m_dependencies = std::move(dependencies); }
-  void SetExtrainfo(InfoMap extrainfo) { m_addonInfo.m_extrainfo = std::move(extrainfo); }
   void SetType(TYPE type) { m_addonInfo.m_type = type; }
   void SetExtPoint(cp_extension_t* ext) { m_extPoint = ext; }
   void SetInstallDate(CDateTime installDate) { m_addonInfo.m_installDate = installDate; }

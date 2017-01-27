@@ -842,9 +842,9 @@ CFileItemPtr CAddonsDirectory::FileItemFromAddonInfo(const AddonInfoPtr &addonIn
   //! @todo fix hacks that depends on these
   item->SetProperty("Addon.ID", addonInfo->ID());
   item->SetProperty("Addon.Name", addonInfo->Name());
-  const auto it = addonInfo->ExtraInfo().find("language");
-  if (it != addonInfo->ExtraInfo().end())
-    item->SetProperty("Addon.Language", it->second);
+  strLabel = addonInfo->GetValue("language").asString();
+  if (!strLabel.empty())
+    item->SetProperty("Addon.Language", strLabel);
 
   return item;
 }

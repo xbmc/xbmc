@@ -531,12 +531,6 @@ bool CAddonInfo::LoadAddonXML(const TiXmlElement* baseElement, std::string addon
     cstring = child->Attribute("point");
     std::string point = cstring ? cstring : "";
 
-    if (!ParseExtension(child))
-    {
-      CLog::Log(LOGERROR, "CAddonInfo: file '%s' doesn't contain a valid add-on extensions (%s)", addonXmlPath.c_str(), point.c_str());
-      return false;
-    }
-
     if (point == "kodi.addon.metadata" || point == "xbmc.addon.metadata")
     {
       /*
@@ -659,7 +653,7 @@ bool CAddonInfo::LoadAddonXML(const TiXmlElement* baseElement, std::string addon
       /* Parse addon.xml "<language">...</language>" */
       element = child->FirstChildElement("language");
       if (element && element->GetText() != nullptr)
-        m_extrainfo.insert(std::make_pair("language", element->GetText()));
+        Insert("language", element->GetText());
 
       /* Parse addon.xml "<noicon">...</noicon>" */
       if (m_icon.empty())
@@ -700,37 +694,13 @@ bool CAddonInfo::LoadAddonXML(const TiXmlElement* baseElement, std::string addon
       }
       m_changelog = strChangelog ? strChangelog : "";
     }
-    else if (point == "xbmc.python.script" && m_type == ADDON_UNKNOWN)
-    {
-      m_type = ADDON_SCRIPT;
-      /* Parse addon.xml "<provides">...</provides>" */
-      const TiXmlElement* element = child->FirstChildElement("provides");
-      if (element && element->GetText() != nullptr)
-        m_extrainfo.insert(std::make_pair("provides", element->GetText()));
-    }
-    else if (point == "xbmc.python.pluginsource" && m_type == ADDON_UNKNOWN)
-    {
-      m_type = ADDON_PLUGIN;
-      /* Parse addon.xml "<provides">...</provides>" */
-      const TiXmlElement* element = child->FirstChildElement("provides");
-      if (element && element->GetText() != nullptr)
-        m_extrainfo.insert(std::make_pair("provides", element->GetText()));
-    }
-    else if (point == "kodi.resource.language" && m_type == ADDON_UNKNOWN)
-    {
-      m_type = ADDON_RESOURCE_LANGUAGE;
-      /* Parse addon.xml "<locale">...</locale>" */
-      cstring = child->Attribute("locale");
-      if (cstring != nullptr)
-        m_extrainfo.insert(std::make_pair("locale", cstring));
-    }
     else
     {
-//       if (!ParseExtension(child))
-//       {
-//         CLog::Log(LOGERROR, "CAddonInfo: file '%s' doesn't contain a valid add-on extensions (%s)", addonXmlPath.c_str(), point.c_str());
-//         return false;
-//       }
+      if (!ParseExtension(child))
+      {
+        CLog::Log(LOGERROR, "CAddonInfo: file '%s' doesn't contain a valid add-on extensions (%s)", addonXmlPath.c_str(), point.c_str());
+        return false;
+      }
 
       // Get add-on type
       if (m_type == ADDON_UNKNOWN)
@@ -749,19 +719,6 @@ bool CAddonInfo::LoadAddonXML(const TiXmlElement* baseElement, std::string addon
         library = GetPlatformLibraryName(child);
       if (library != nullptr)
         m_libname = library;
-
-      const TiXmlAttribute* attribute = child->FirstAttribute();
-      while (attribute)
-      {
-        std::string name = attribute->Name();
-        if (name != "point" && !StringUtils::StartsWithNoCase(name, "library") )
-        {
-          const char* value = attribute->Value();
-          if (value)
-            m_extrainfo.insert(std::make_pair(name, value));
-        }
-        attribute = attribute->Next();
-      }
     }
   }
 
@@ -800,12 +757,15 @@ std::string CAddonInfo::SerializeMetadata()
   }
 
   variant["extrainfo"] = CVariant(CVariant::VariantTypeArray);
-  for (const auto& kv : m_extrainfo)
+  for (const auto& values : GetExtValues())
   {
     CVariant info(CVariant::VariantTypeObject);
-    info["key"] = kv.first;
-    info["value"] = kv.second;
-    variant["extrainfo"].push_back(std::move(info));
+    for (auto value : values.second)
+    {
+      info["key"] = value.first;
+      info["value"] = value.second.asString();
+      variant["extrainfo"].push_back(std::move(info));
+    }
   }
 
   return CJSONVariantWriter::Write(variant, true);
@@ -813,6 +773,7 @@ std::string CAddonInfo::SerializeMetadata()
 
 void CAddonInfo::DeserializeMetadata(const std::string& document)
 {
+  fprintf(stderr, "-------------> %s\n", __PRETTY_FUNCTION__);
   CVariant variant = CJSONVariantParser::Parse(document);
 
   m_author = variant["author"].asString();
@@ -839,12 +800,9 @@ void CAddonInfo::DeserializeMetadata(const std::string& document)
   }
   m_dependencies = std::move(deps);
 
-  //InfoMap extraInfo;
   for (auto it = variant["extrainfo"].begin_array(); it != variant["extrainfo"].end_array(); ++it)
     Insert((*it)["key"].asString(), (*it)["value"].asString());
-//     extraInfo.emplace((*it)["key"].asString(), (*it)["value"].asString());
-//   m_extrainfo = std::move(extraInfo);
-  
+
   m_usable = true;
 }
 

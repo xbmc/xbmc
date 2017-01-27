@@ -121,7 +121,6 @@ namespace ADDON
 
   class AddonVersion;
   typedef std::map<std::string, std::pair<const AddonVersion, bool> > ADDONDEPS;
-  typedef std::map<std::string, std::string> InfoMap;
 
   class CAddonInfo : public CAddonExtensions
   {
@@ -226,8 +225,6 @@ namespace ADDON
     const std::string& Origin() const { return m_origin; }
     uint64_t PackageSize() const { return m_packageSize; }
 
-    const InfoMap& ExtraInfo() const { return m_extrainfo; }
-
     std::string LibPath() const;
 
     bool ProvidesSubContent(const SubContent& content) const
@@ -277,7 +274,6 @@ namespace ADDON
     std::string m_disclaimer;
     ADDONDEPS m_dependencies;
     std::string m_broken;
-    InfoMap m_extrainfo;
     CDateTime m_installDate;
     CDateTime m_lastUpdated;
     CDateTime m_lastUsed;
