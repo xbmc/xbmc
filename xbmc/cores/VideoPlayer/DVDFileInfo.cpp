@@ -215,7 +215,7 @@ bool CDVDFileInfo::ExtractThumb(const std::string &strPath,
       CLog::Log(LOGDEBUG,"%s - seeking to pos %dms (total: %dms) in %s", __FUNCTION__, nSeekTo, nTotalLen, redactPath.c_str());
       if (pDemuxer->SeekTime(nSeekTo, true))
       {
-        int iDecoderState = VC_ERROR;
+        CDVDVideoCodec::VCReturn iDecoderState = CDVDVideoCodec::VC_NONE;
         DVDVideoPicture picture;
 
         memset(&picture, 0, sizeof(picture));
@@ -236,20 +236,17 @@ bool CDVDFileInfo::ExtractThumb(const std::string &strPath,
             continue;
           }
 
-          iDecoderState = pVideoCodec->AddData(*pPacket);
+          pVideoCodec->AddData(*pPacket);
           CDVDDemuxUtils::FreeDemuxPacket(pPacket);
 
-          if (iDecoderState & VC_ERROR)
-            break;
-
-          iDecoderState = 0;
-          while (iDecoderState == 0)
+          iDecoderState = CDVDVideoCodec::VC_NONE;
+          while (iDecoderState == CDVDVideoCodec::VC_NONE)
           {
             memset(&picture, 0, sizeof(DVDVideoPicture));
             iDecoderState = pVideoCodec->GetPicture(&picture);
           }
 
-          if (iDecoderState & VC_PICTURE)
+          if (iDecoderState == CDVDVideoCodec::VC_PICTURE)
           {
             if(!(picture.iFlags & DVP_FLAG_DROPPED))
               break;
@@ -257,7 +254,7 @@ bool CDVDFileInfo::ExtractThumb(const std::string &strPath,
 
         } while (abort_index--);
 
-        if (iDecoderState & VC_PICTURE && !(picture.iFlags & DVP_FLAG_DROPPED))
+        if (iDecoderState == CDVDVideoCodec::VC_PICTURE && !(picture.iFlags & DVP_FLAG_DROPPED))
         {
           {
             unsigned int nWidth = g_advancedSettings.m_imageRes;

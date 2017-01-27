@@ -490,21 +490,27 @@ void CVideoPlayerVideo::Process()
         codecControl |= DVD_CODEC_CTRL_ROTATE;
       m_pVideoCodec->SetCodecControl(codecControl);
 
-      m_pVideoCodec->AddData(*pPacket);
-
-      // buffer packets so we can recover should decoder flush for some reason
-      if (m_pVideoCodec->GetConvergeCount() > 0)
+      if (m_pVideoCodec->AddData(*pPacket))
       {
-        m_packets.emplace_back(pMsg, 0);
-        if (m_packets.size() > m_pVideoCodec->GetConvergeCount() ||
-            m_packets.size() * frametime > DVD_SEC_TO_TIME(10))
-          m_packets.pop_front();
+        // buffer packets so we can recover should decoder flush for some reason
+        if (m_pVideoCodec->GetConvergeCount() > 0)
+        {
+          m_packets.emplace_back(pMsg, 0);
+          if (m_packets.size() > m_pVideoCodec->GetConvergeCount() ||
+              m_packets.size() * frametime > DVD_SEC_TO_TIME(10))
+            m_packets.pop_front();
+        }
+
+        m_videoStats.AddSampleBytes(pPacket->iSize);
+
+        if (ProcessDecoderOutput(frametime, pts))
+        {
+          onlyPrioMsgs = true;
+        }
       }
-
-      m_videoStats.AddSampleBytes(pPacket->iSize);
-
-      if (ProcessDecoderOutput(frametime, pts))
+      else
       {
+        m_messageQueue.PutBack(pMsg);
         onlyPrioMsgs = true;
       }
     }
@@ -520,15 +526,15 @@ void CVideoPlayerVideo::Process()
 
 bool CVideoPlayerVideo::ProcessDecoderOutput(double &frametime, double &pts)
 {
-  int decoderState = m_pVideoCodec->GetPicture(&m_picture);
+  CDVDVideoCodec::VCReturn decoderState = m_pVideoCodec->GetPicture(&m_picture);
 
-  if (decoderState & VC_BUFFER)
+  if (decoderState == CDVDVideoCodec::VC_BUFFER)
   {
     return false;
   }
 
   // if decoder was flushed, we need to seek back again to resume rendering
-  if (decoderState & VC_FLUSHED)
+  if (decoderState == CDVDVideoCodec::VC_FLUSHED)
   {
     CLog::Log(LOGDEBUG, "CVideoPlayerVideo - video decoder was flushed");
     while (!m_packets.empty())
@@ -546,7 +552,7 @@ bool CVideoPlayerVideo::ProcessDecoderOutput(double &frametime, double &pts)
     return false;
   }
 
-  if (decoderState & VC_REOPEN)
+  if (decoderState == CDVDVideoCodec::VC_REOPEN)
   {
     while (!m_packets.empty())
     {
@@ -562,19 +568,19 @@ bool CVideoPlayerVideo::ProcessDecoderOutput(double &frametime, double &pts)
   }
 
   // if decoder had an error, tell it to reset to avoid more problems
-  if (decoderState & VC_ERROR)
+  if (decoderState == CDVDVideoCodec::VC_ERROR)
   {
     CLog::Log(LOGDEBUG, "CVideoPlayerVideo - video decoder returned error");
     return false;
   }
 
-  if (decoderState & VC_EOF)
+  if (decoderState == CDVDVideoCodec::VC_EOF)
   {
     return false;
   }
 
   // check for a new picture
-  if (decoderState & VC_PICTURE)
+  if (decoderState == CDVDVideoCodec::VC_PICTURE)
   {
     bool hasTimestamp = true;
 
