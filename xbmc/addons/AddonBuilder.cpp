@@ -121,7 +121,7 @@ std::shared_ptr<CAddon> CAddonBuilder::Build()
     case ADDON_WEB_INTERFACE:
       return std::make_shared<CWebinterface>(std::move(addonInfo));
     case ADDON_SERVICE:
-      return CService::FromExtension(std::move(m_addonInfo), m_extPoint);
+      return std::make_shared<CService>(std::move(addonInfo));
     case ADDON_SCRAPER_ALBUMS:
     case ADDON_SCRAPER_ARTISTS:
     case ADDON_SCRAPER_MOVIES:
