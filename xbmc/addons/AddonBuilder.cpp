@@ -148,7 +148,7 @@ std::shared_ptr<CAddon> CAddonBuilder::Build()
     case ADDON_VFS:
       return CVFSEntry::FromExtension(std::move(m_addonInfo), m_extPoint);
     case ADDON_SKIN:
-      return CSkinInfo::FromExtension(std::move(m_addonInfo), m_extPoint);
+      return std::make_shared<CSkinInfo>(std::move(addonInfo));
     case ADDON_RESOURCE_IMAGES:
       return CImageResource::FromExtension(std::move(m_addonInfo), m_extPoint);
     case ADDON_RESOURCE_GAMES:
