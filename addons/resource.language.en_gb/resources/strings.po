@@ -9002,7 +9002,7 @@ msgid "Folder with channel icons"
 msgstr ""
 
 #. label for PVR backend number of channels in system information's PVR section
-#: addons/skin.estuary/xml/DialogPVRGuideOSD.xml
+#: addons/skin.estuary/xml/DialogPVRChannelGuide.xml
 #: addons/skin.estuary/xml/DialogPVRChannelManager.xml
 #: addons/skin.estuary/xml/DialogPVRChannelsOSD.xml
 #: addons/skin.estuary/xml/Variables.xml
