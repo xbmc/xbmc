@@ -129,10 +129,8 @@ std::shared_ptr<CAddon> CAddonBuilder::Build()
     case ADDON_SCRAPER_TVSHOWS:
     case ADDON_SCRAPER_LIBRARY:
       return std::make_shared<CScraper>(std::move(addonInfo));
-#ifdef HAS_PVRCLIENTS
     case ADDON_PVRDLL:
-      return PVR::CPVRClient::FromExtension(std::move(m_addonInfo), m_extPoint);
-#endif
+      return std::make_shared<PVR::CPVRClient>(std::move(addonInfo));
     case ADDON_ADSPDLL:
       return std::make_shared<ActiveAE::CActiveAEDSPAddon>(std::move(addonInfo));
     case ADDON_AUDIOENCODER:

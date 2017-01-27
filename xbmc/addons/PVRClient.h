@@ -63,13 +63,8 @@ namespace PVR
   class CPVRClient : public ADDON::CAddonDll
   {
   public:
-    static std::unique_ptr<CPVRClient> FromExtension(ADDON::CAddonInfo addonInfo, const cp_extension_t* ext);
-
-    explicit CPVRClient(ADDON::CAddonInfo addonInfo);
-    CPVRClient(ADDON::CAddonInfo addonInfo, const std::string& strAvahiType,
-        const std::string& strAvahiIpSetting, const std::string& strAvahiPortSetting);
-
-    ~CPVRClient(void);
+    CPVRClient(ADDON::CAddonInfo addonInfo);
+    virtual ~CPVRClient(void);
 
     virtual void OnDisabled() override;
     virtual void OnEnabled() override;
