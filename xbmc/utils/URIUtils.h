@@ -227,6 +227,10 @@ public:
    */
   static bool UpdateUrlEncoding(std::string &strFilename);
 
+  static bool ConvIPv6(const std::string &address, struct sockaddr_in6 *sa = NULL);
+  static bool ConvIPv4(const std::string &address, struct sockaddr_in  *sa = NULL);
+  static std::string CanonizeIPv6(const std::string &address);
+
 private:
   static std::string resolvePath(const std::string &path);
 };

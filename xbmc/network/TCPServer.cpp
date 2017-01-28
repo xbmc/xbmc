@@ -480,8 +480,11 @@ void CTCPServer::Deinitialize()
 
   m_connections.clear();
 
-  for (unsigned int i = 0; i < m_servers.size(); i++)
-    closesocket(m_servers[i]);
+  for (unsigned int i = m_servers.size(); i > 0; i--)
+  {
+    shutdown(m_servers[i-1], SHUT_RDWR);
+    closesocket(m_servers[i-1]);
+  }
 
   m_servers.clear();
 

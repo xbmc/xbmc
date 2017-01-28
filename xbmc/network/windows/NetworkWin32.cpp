@@ -29,6 +29,8 @@
 #include "utils/StringUtils.h"
 #include "platform/win32/WIN32Util.h"
 
+#include "xbmc/messaging/ApplicationMessenger.h"
+
 // undefine if you want to build without the wlan stuff
 // might be needed for VS2003
 #define HAS_WIN32_WLAN_API
@@ -38,6 +40,7 @@
 #pragma comment (lib,"Wlanapi.lib")
 #endif
 
+using namespace KODI::MESSAGING;
 
 CNetworkInterfaceWin32::CNetworkInterfaceWin32(CNetworkWin32* network, const IP_ADAPTER_INFO& adapter) :
    m_adaptername(adapter.Description)
@@ -150,28 +153,25 @@ std::string CNetworkInterfaceWin32::GetCurrentDefaultGateway(void)
 CNetworkWin32::CNetworkWin32(void)
 {
   queryInterfaceList();
+  CApplicationMessenger::GetInstance().PostMsg(TMSG_NETWORKMESSAGE, CNetwork::SERVICES_UP, 0);
 }
 
 CNetworkWin32::~CNetworkWin32(void)
 {
-  CleanInterfaceList();
   m_netrefreshTimer.Stop();
+  CleanInterfaceList();
 }
 
 void CNetworkWin32::CleanInterfaceList()
 {
-  std::vector<CNetworkInterface*>::iterator it = m_interfaces.begin();
-  while(it != m_interfaces.end())
-  {
-    CNetworkInterface* nInt = *it;
-    delete nInt;
-    it = m_interfaces.erase(it);
-  }
+  CSingleLock lock (m_lockInterfaces);
+  auto it = m_interfaces.before_begin();
+  m_interfaces.erase_after(it, m_interfaces.end());
 }
 
-std::vector<CNetworkInterface*>& CNetworkWin32::GetInterfaceList(void)
+std::forward_list<CNetworkInterface*>& CNetworkWin32::GetInterfaceList(void)
 {
-  CSingleLock lock (m_critSection);
+  CSingleLock lock (m_lockInterfaces);
   if(m_netrefreshTimer.GetElapsedSeconds() >= 5.0f)
     queryInterfaceList();
 
@@ -185,6 +185,7 @@ void CNetworkWin32::queryInterfaceList()
 
   PIP_ADAPTER_INFO adapterInfo;
   PIP_ADAPTER_INFO adapter = NULL;
+  auto             pos     = m_interfaces.before_begin();
 
   ULONG ulOutBufLen = sizeof (IP_ADAPTER_INFO);
 
@@ -205,7 +206,8 @@ void CNetworkWin32::queryInterfaceList()
     adapter = adapterInfo;
     while (adapter)
     {
-      m_interfaces.push_back(new CNetworkInterfaceWin32(this, *adapter));
+      m_interfaces.insert_after(pos, new CNetworkInterfaceWin32(this, *adapter));
+      ++pos;
       adapter = adapter->Next;
     }
   }
@@ -216,35 +218,33 @@ std::vector<std::string> CNetworkWin32::GetNameServers(void)
 {
   std::vector<std::string> result;
 
-  FIXED_INFO *pFixedInfo;
+  PIP_ADAPTER_ADDRESSES adapterAddresses = NULL;
+  PIP_ADAPTER_ADDRESSES adapter = NULL;
   ULONG ulOutBufLen;
-  IP_ADDR_STRING *pIPAddr;
 
-  pFixedInfo = (FIXED_INFO *) malloc(sizeof (FIXED_INFO));
-  if (pFixedInfo == NULL)
+  if (GetAdaptersAddresses(AF_UNSPEC, GAA_FLAG_SKIP_UNICAST | GAA_FLAG_SKIP_ANYCAST | GAA_FLAG_SKIP_MULTICAST | GAA_FLAG_SKIP_FRIENDLY_NAME, NULL, NULL, &ulOutBufLen) != ERROR_BUFFER_OVERFLOW)
     return result;
 
-  ulOutBufLen = sizeof (FIXED_INFO);
-  if (GetNetworkParams(pFixedInfo, &ulOutBufLen) == ERROR_BUFFER_OVERFLOW)
-  {
-    free(pFixedInfo);
-    pFixedInfo = (FIXED_INFO *) malloc(ulOutBufLen);
-    if (pFixedInfo == NULL)
-      return result;
-  }
+  adapterAddresses = (PIP_ADAPTER_ADDRESSES)malloc(ulOutBufLen);
+  if (adapterAddresses == NULL)
+    return result;
 
-  if (GetNetworkParams(pFixedInfo, &ulOutBufLen) == NO_ERROR)
+  if (GetAdaptersAddresses(AF_UNSPEC, GAA_FLAG_SKIP_UNICAST | GAA_FLAG_SKIP_ANYCAST | GAA_FLAG_SKIP_MULTICAST | GAA_FLAG_SKIP_FRIENDLY_NAME, NULL, adapterAddresses, &ulOutBufLen) == NO_ERROR)
   {
-    result.push_back(pFixedInfo->DnsServerList.IpAddress.String);
-    pIPAddr = pFixedInfo->DnsServerList.Next;
-    while(pIPAddr)
+    IP_ADAPTER_DNS_SERVER_ADDRESS *dnsAddress = NULL;
+    for (adapter = adapterAddresses; adapter; adapter = adapter->Next)
     {
-      result.push_back(pIPAddr->IpAddress.String);
-      pIPAddr = pIPAddr->Next;
+      if (adapter->IfType == IF_TYPE_SOFTWARE_LOOPBACK || adapter->OperStatus != IF_OPER_STATUS::IfOperStatusUp)
+        continue;
+      for (dnsAddress = adapter->FirstDnsServerAddress; dnsAddress; dnsAddress = dnsAddress->Next)
+      {
+        std::string strIp = CNetwork::GetIpStr(dnsAddress->Address.lpSockaddr);
+        if (!strIp.empty())
+          result.push_back(strIp);
+      }
     }
-
   }
-  free(pFixedInfo);
+  free(adapterAddresses);
 
   return result;
 }
@@ -254,15 +254,19 @@ void CNetworkWin32::SetNameServers(const std::vector<std::string>& nameServers)
   return;
 }
 
-bool CNetworkWin32::PingHost(unsigned long host, unsigned int timeout_ms /* = 2000 */)
+bool CNetworkWin32::PingHostImpl(const std::string &target, unsigned int timeout_ms /* = 2000 */)
 {
+  struct sockaddr_in sa;
+  if (!CNetwork::ConvIPv4(target, &sa))
+    return false;
+
   char SendData[]    = "poke";
   HANDLE hIcmpFile   = IcmpCreateFile();
   BYTE ReplyBuffer [sizeof(ICMP_ECHO_REPLY) + sizeof(SendData)];
 
   SetLastError(ERROR_SUCCESS);
 
-  DWORD dwRetVal = IcmpSendEcho(hIcmpFile, host, SendData, sizeof(SendData), 
+  DWORD dwRetVal = IcmpSendEcho(hIcmpFile, (unsigned long)sa.sin_addr.s_addr, SendData, sizeof(SendData),
                                 NULL, ReplyBuffer, sizeof(ReplyBuffer), timeout_ms);
 
   DWORD lastErr = GetLastError();

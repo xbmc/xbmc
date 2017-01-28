@@ -19,15 +19,29 @@
  */
 
 #include <cstdlib>
+#include <algorithm>
 
+#include "xbmc/messaging/ApplicationMessenger.h"
+#include <poll.h>
 #include <sys/ioctl.h>
+#include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#ifdef TARGET_ANDROID
+  #include "network/linux/android-ifaddrs/ifaddrs.h"
+#endif
 #if defined(TARGET_LINUX)
   #include <linux/if.h>
   #include <linux/wireless.h>
   #include <linux/sockios.h>
+  #include <linux/netlink.h>
+  #include <linux/rtnetlink.h>
+#ifndef _IFADDRS_H_
+  #include <ifaddrs.h>
+#endif
+#else
+  #include "network/osx/priv_netlink.h"
 #endif
 #ifdef TARGET_ANDROID
 #include "platform/android/bionic_supplement/bionic_supplement.h"
@@ -67,7 +81,13 @@
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 
-CNetworkInterfaceLinux::CNetworkInterfaceLinux(CNetworkLinux* network, std::string interfaceName, char interfaceMacAddrRaw[6]):
+using namespace KODI::MESSAGING;
+
+CNetworkInterfaceLinux::CNetworkInterfaceLinux(CNetworkLinux* network, unsigned int ifa_flags,
+                                               struct sockaddr *address, struct sockaddr *netmask,
+                                               std::string interfaceName, char interfaceMacAddrRaw[6]) :
+  m_interfaceFlags(ifa_flags),
+  m_removed(false),
   m_interfaceName(interfaceName),
   m_interfaceMacAdr(StringUtils::Format("%02X:%02X:%02X:%02X:%02X:%02X",
                                         (uint8_t)interfaceMacAddrRaw[0],
@@ -78,11 +98,17 @@ CNetworkInterfaceLinux::CNetworkInterfaceLinux(CNetworkLinux* network, std::stri
                                         (uint8_t)interfaceMacAddrRaw[5]))
 {
    m_network = network;
+  m_address = (struct sockaddr *) malloc(sizeof(struct sockaddr_storage));
+  m_netmask = (struct sockaddr *) malloc(sizeof(struct sockaddr_storage));
+  memcpy(m_address, address, sizeof(struct sockaddr_storage));
+  memcpy(m_netmask, netmask, sizeof(struct sockaddr_storage));
    memcpy(m_interfaceMacAddrRaw, interfaceMacAddrRaw, sizeof(m_interfaceMacAddrRaw));
 }
 
 CNetworkInterfaceLinux::~CNetworkInterfaceLinux(void)
 {
+  free(m_address);
+  free(m_netmask);
 }
 
 std::string& CNetworkInterfaceLinux::GetName(void)
@@ -106,31 +132,21 @@ bool CNetworkInterfaceLinux::IsWireless()
 
 bool CNetworkInterfaceLinux::IsEnabled()
 {
-   struct ifreq ifr;
-   strcpy(ifr.ifr_name, m_interfaceName.c_str());
-   if (ioctl(m_network->GetSocket(), SIOCGIFFLAGS, &ifr) < 0)
-      return false;
-
-   return ((ifr.ifr_flags & IFF_UP) == IFF_UP);
+   return true;
 }
 
 bool CNetworkInterfaceLinux::IsConnected()
 {
-   struct ifreq ifr;
-   int zero = 0;
-   memset(&ifr,0,sizeof(struct ifreq));
-   strcpy(ifr.ifr_name, m_interfaceName.c_str());
-   if (ioctl(m_network->GetSocket(), SIOCGIFFLAGS, &ifr) < 0)
-      return false;
-
    // ignore loopback
-   int iRunning = ( (ifr.ifr_flags & IFF_RUNNING) && (!(ifr.ifr_flags & IFF_LOOPBACK)));
+   if (IsRemoved() || m_interfaceFlags & IFF_LOOPBACK)
+     return false;
 
-   if (ioctl(m_network->GetSocket(), SIOCGIFADDR, &ifr) < 0)
-      return false;
+   // Don't add IFF_LOWER_UP - looks it is driver dependent on Linux
+   // and missing on running interfaces on OSX (Maverick tested)
+   unsigned int needFlags = IFF_RUNNING; //IFF_LOWER_UP
+   bool iRunning = (m_interfaceFlags & needFlags) == needFlags;
 
-   // return only interfaces which has ip address
-   return iRunning && (0 != memcmp(ifr.ifr_addr.sa_data+sizeof(short), &zero, sizeof(int)));
+  return iRunning;
 }
 
 std::string CNetworkInterfaceLinux::GetMacAddress()
@@ -145,31 +161,17 @@ void CNetworkInterfaceLinux::GetMacAddressRaw(char rawMac[6])
 
 std::string CNetworkInterfaceLinux::GetCurrentIPAddress(void)
 {
-   std::string result;
-
-   struct ifreq ifr;
-   strcpy(ifr.ifr_name, m_interfaceName.c_str());
-   ifr.ifr_addr.sa_family = AF_INET;
-   if (ioctl(m_network->GetSocket(), SIOCGIFADDR, &ifr) >= 0)
-   {
-      result = inet_ntoa((*((struct sockaddr_in *)&ifr.ifr_addr)).sin_addr);
-   }
-
-   return result;
+   return CNetwork::GetIpStr(m_address);
 }
 
 std::string CNetworkInterfaceLinux::GetCurrentNetmask(void)
 {
    std::string result;
 
-   struct ifreq ifr;
-   strcpy(ifr.ifr_name, m_interfaceName.c_str());
-   ifr.ifr_addr.sa_family = AF_INET;
-   if (ioctl(m_network->GetSocket(), SIOCGIFNETMASK, &ifr) >= 0)
-   {
-      result = inet_ntoa((*((struct sockaddr_in*)&ifr.ifr_addr)).sin_addr);
-   }
-
+   if (isIPv4())
+    result = CNetwork::GetIpStr(m_netmask);
+   else
+    result = StringUtils::Format("%u", CNetwork::PrefixLength(m_netmask));
    return result;
 }
 
@@ -258,7 +260,7 @@ std::string CNetworkInterfaceLinux::GetCurrentDefaultGateway(void)
    }
    free(buf);
 #else
-   FILE* fp = fopen("/proc/net/route", "r");
+   FILE* fp = isIPv4() ? fopen("/proc/net/route", "r") : fopen("/proc/net/ipv6_route", "r");
    if (!fp)
    {
      // TBD: Error
@@ -269,35 +271,45 @@ std::string CNetworkInterfaceLinux::GetCurrentDefaultGateway(void)
    char iface[16];
    char dst[128];
    char gateway[128];
+   unsigned int metric;
+   unsigned int metric_prev = -1;
    size_t linel = 0;
    int n;
    int linenum = 0;
    while (getdelim(&line, &linel, '\n', fp) > 0)
    {
       // skip first two lines
-      if (linenum++ < 1)
+      if (isIPv4() && linenum++ < 1)
          continue;
 
       // search where the word begins
-      n = sscanf(line,  "%15s %127s %127s",
-         iface, dst, gateway);
+      if (isIPv4())
+        n = sscanf(line,  "%15s %127s %127s",
+           iface, dst, gateway);
+      else
+        n = sscanf(line,  "%*32s %*2s %32s %*2s %32s %8x %*8s %*8s %*8s %8s",
+           dst, gateway, &metric, iface);
 
       if (n < 3)
          continue;
 
       if (strcmp(iface, m_interfaceName.c_str()) == 0 &&
-          strcmp(dst, "00000000") == 0 &&
-          strcmp(gateway, "00000000") != 0)
+         (strcmp(dst, "00000000") == 0 || strcmp(dst, "00000000000000000000000000000000") == 0) &&
+          strcmp(gateway, "00000000") != 0 && strcmp(gateway, "00000000000000000000000000000000") != 0)
       {
-         unsigned char gatewayAddr[4];
-         int len = CNetwork::ParseHex(gateway, gatewayAddr);
-         if (len == 4)
+         if (isIPv4())
          {
-            struct in_addr in;
-            in.s_addr = (gatewayAddr[0] << 24) | (gatewayAddr[1] << 16) |
-                        (gatewayAddr[2] << 8) | (gatewayAddr[3]);
-            result = inet_ntoa(in);
-            break;
+           struct in_addr in;
+           sscanf(gateway, "%8x", &in.s_addr);
+           result = inet_ntoa(in);
+         }
+         else if (metric < metric_prev)
+         {
+           metric_prev = metric;
+           std::string tstr = gateway;
+           for(int i = 7; i > 0; i--)
+             tstr.insert(tstr.begin() + i*4, ':');
+           result = CNetwork::CanonizeIPv6(tstr);
          }
       }
    }
@@ -312,6 +324,8 @@ CNetworkLinux::CNetworkLinux(void)
 {
    m_sock = socket(AF_INET, SOCK_DGRAM, 0);
    queryInterfaceList();
+   RegisterWatcher(WatcherProcess);
+   CApplicationMessenger::GetInstance().PostMsg(TMSG_NETWORKMESSAGE, CNetwork::SERVICES_UP, 0);
 }
 
 CNetworkLinux::~CNetworkLinux(void)
@@ -319,18 +333,26 @@ CNetworkLinux::~CNetworkLinux(void)
   if (m_sock != -1)
     close(CNetworkLinux::m_sock);
 
-  std::vector<CNetworkInterface*>::iterator it = m_interfaces.begin();
-  while(it != m_interfaces.end())
-  {
-    CNetworkInterface* nInt = *it;
-    delete nInt;
-    it = m_interfaces.erase(it);
-  }
+  CSingleLock lock(m_lockInterfaces);
+  InterfacesClear();
+  DeleteRemoved();
 }
 
-std::vector<CNetworkInterface*>& CNetworkLinux::GetInterfaceList(void)
+void CNetworkLinux::DeleteRemoved(void)
 {
-   return m_interfaces;
+  m_interfaces.remove_if(IsRemoved);
+}
+
+void CNetworkLinux::InterfacesClear(void)
+{
+  for (auto &&iface: m_interfaces)
+    ((CNetworkInterfaceLinux*)iface)->SetRemoved();
+}
+
+std::forward_list<CNetworkInterface*>& CNetworkLinux::GetInterfaceList(void)
+{
+  CSingleLock lock(m_lockInterfaces);
+  return m_interfaces;
 }
 
 //! @bug
@@ -354,147 +376,128 @@ CNetworkInterface* CNetworkLinux::GetFirstConnectedInterface(void)
     return pNetIf;
 }
 
-
-void CNetworkLinux::GetMacAddress(const std::string& interfaceName, char rawMac[6])
+void CNetworkLinux::GetMacAddress(struct ifaddrs *tif, char *mac)
 {
-  memset(rawMac, 0, 6);
-#if defined(TARGET_DARWIN) || defined(TARGET_FREEBSD)
-
+#if !defined(TARGET_LINUX)
 #if !defined(IFT_ETHER)
 #define IFT_ETHER 0x6/* Ethernet CSMACD */
 #endif
-  const struct sockaddr_dl* dlAddr = NULL;
-  const uint8_t * base = NULL;
-  // Query the list of interfaces.
-  struct ifaddrs *list;
-  struct ifaddrs *interface;
-
-  if( getifaddrs(&list) < 0 )
+  if (((const struct sockaddr_dl*) tif->ifa_addr)->sdl_type == IFT_ETHER)
   {
-    return;
+    const struct sockaddr_dl *dlAddr = (const struct sockaddr_dl *) tif->ifa_addr;
+    const uint8_t *base = (const uint8_t*) &dlAddr->sdl_data[dlAddr->sdl_nlen];
+
+    if( dlAddr->sdl_alen > 5 )
+      memcpy(mac, base, 6);
   }
-
-  for(interface = list; interface != NULL; interface = interface->ifa_next)
-  {
-    if(interfaceName == interface->ifa_name)
-    {
-      if ( (interface->ifa_addr->sa_family == AF_LINK) && (((const struct sockaddr_dl *) interface->ifa_addr)->sdl_type == IFT_ETHER) ) 
-      {
-        dlAddr = (const struct sockaddr_dl *) interface->ifa_addr;
-        base = (const uint8_t *) &dlAddr->sdl_data[dlAddr->sdl_nlen];
-
-        if( dlAddr->sdl_alen > 5 )
-        {
-          memcpy(rawMac, base, 6);
-        }
-      }
-      break;
-    }
-  }
-
-  freeifaddrs(list);
-
 #else
-
-   struct ifreq ifr;
-   strcpy(ifr.ifr_name, interfaceName.c_str());
-   if (ioctl(GetSocket(), SIOCGIFHWADDR, &ifr) >= 0)
-   {
-      memcpy(rawMac, ifr.ifr_hwaddr.sa_data, 6);
-   }
+  struct ifreq ifr;
+  strcpy(ifr.ifr_name, tif->ifa_name);
+  if (ioctl(GetSocket(), SIOCGIFHWADDR, &ifr) >= 0)
+    memcpy(mac, ifr.ifr_hwaddr.sa_data, 6);
 #endif
 }
 
-void CNetworkLinux::queryInterfaceList()
+CNetworkInterfaceLinux *CNetworkLinux::Exists(const struct sockaddr *addr, const struct sockaddr *mask, const std::string &name)
 {
-  char macAddrRaw[6];
-  m_interfaces.clear();
+  for (auto &&iface: m_interfaces)
+    if (((CNetworkInterfaceLinux*)iface)->Exists(addr, mask, name))
+      return (CNetworkInterfaceLinux*)iface;
 
-#if defined(TARGET_DARWIN) || defined(TARGET_FREEBSD)
+  return NULL;
+}
 
-   // Query the list of interfaces.
-   struct ifaddrs *list;
-   if (getifaddrs(&list) < 0)
-     return;
+bool CNetworkLinux::queryInterfaceList()
+{
+  bool change = false;
+
+  CSingleLock lock(m_lockInterfaces);
+
+  // Query the list of interfaces.
+  struct ifaddrs *list;
+  if (getifaddrs(&list) < 0)
+    return false;
+
+#if !defined(TARGET_LINUX)
+  std::map<std::string,struct ifaddrs> t_hwaddrs;
+#endif
+
+  InterfacesClear();
+
+  // find last IPv4 record, we will add new interfaces
+  // right after this one (to keep IPv4 in front).
+  auto pos = m_interfaces.before_begin();
+  for (auto &&iface : m_interfaces)
+  {
+    if (iface && iface->isIPv6())
+      break;
+    ++pos;
+  }
 
    struct ifaddrs *cur;
    for(cur = list; cur != NULL; cur = cur->ifa_next)
    {
-     if(cur->ifa_addr->sa_family != AF_INET)
+     std::string name = cur->ifa_name;
+#if !defined(TARGET_LINUX)
+     if(cur->ifa_addr->sa_family == AF_LINK)
+     {
+       struct ifaddrs &t = *cur;
+       t_hwaddrs[name] = t;
+     }
+#endif
+
+     if(!cur->ifa_addr ||
+        (cur->ifa_addr->sa_family != AF_INET &&
+         cur->ifa_addr->sa_family != AF_INET6))
        continue;
 
-     GetMacAddress(cur->ifa_name, macAddrRaw);
+     if(!(cur->ifa_flags & IFF_UP))
+       continue;
+
      // Add the interface.
-     m_interfaces.push_back(new CNetworkInterfaceLinux(this, cur->ifa_name, macAddrRaw));
+     std::string addr = CNetwork::GetIpStr(cur->ifa_addr);
+     std::string mask = CNetwork::GetIpStr(cur->ifa_netmask);
+
+     if(addr.empty() || mask.empty())
+       continue;
+
+     CNetworkInterfaceLinux *iface = Exists(cur->ifa_addr, cur->ifa_netmask, name);
+     if (iface)
+     {
+       iface->SetRemoved(false);
+       iface->m_interfaceFlags = cur->ifa_flags;
+       continue;
+     }
+
+     char macAddrRaw[6] = {0};
+#if !defined(TARGET_LINUX)
+     GetMacAddress(&t_hwaddrs[name], macAddrRaw);
+#else
+     GetMacAddress(cur, macAddrRaw);
+#endif
+
+     CNetworkInterfaceLinux *i = new CNetworkInterfaceLinux(this, cur->ifa_flags, cur->ifa_addr,
+                                                            cur->ifa_netmask, name, macAddrRaw);
+
+     m_interfaces.insert_after(pos, i);
+     if (i->isIPv4())
+       pos++;
+     change = true;
    }
 
    freeifaddrs(list);
 
-#else
-   FILE* fp = fopen("/proc/net/dev", "r");
-   if (!fp)
-   {
-     // TBD: Error
-     return;
-   }
+   change |= std::count_if(m_interfaces.begin(), m_interfaces.end(), IsRemoved);
+   DeleteRemoved();
 
-   char* line = NULL;
-   size_t linel = 0;
-   int n;
-   char* p;
-   int linenum = 0;
-   while (getdelim(&line, &linel, '\n', fp) > 0)
-   {
-      // skip first two lines
-      if (linenum++ < 2)
-         continue;
-
-    // search where the word begins
-      p = line;
-      while (isspace(*p))
-      ++p;
-
-      // read word until :
-      n = strcspn(p, ": \t");
-      p[n] = 0;
-
-      // save the result
-      std::string interfaceName = p;
-      GetMacAddress(interfaceName, macAddrRaw);
-      m_interfaces.push_back(new CNetworkInterfaceLinux(this, interfaceName, macAddrRaw));
-   }
-   free(line);
-   fclose(fp);
-#endif
+   return change;
 }
 
 std::vector<std::string> CNetworkLinux::GetNameServers(void)
 {
    std::vector<std::string> result;
 
-#if defined(TARGET_DARWIN)
-  FILE* pipe = popen("scutil --dns | grep \"nameserver\" | tail -n2", "r");
-  usleep(100000);
-  if (pipe)
-  {
-    std::vector<std::string> tmpStr;
-    char buffer[256] = {'\0'};
-    if (fread(buffer, sizeof(char), sizeof(buffer), pipe) > 0 && !ferror(pipe))
-    {
-      tmpStr = StringUtils::Split(buffer, "\n");
-      for (unsigned int i = 0; i < tmpStr.size(); i ++)
-      {
-        // result looks like this - > '  nameserver[0] : 192.168.1.1'
-        // 2 blank spaces + 13 in 'nameserver[0]' + blank + ':' + blank == 18 :)
-        if (tmpStr[i].length() >= 18)
-          result.push_back(tmpStr[i].substr(18));
-      }
-    }
-    pclose(pipe);
-  } 
-  if (result.empty())
-    CLog::Log(LOGWARNING, "Unable to determine nameserver");
-#elif defined(TARGET_ANDROID)
+#if defined(TARGET_ANDROID)
   char nameserver[PROP_VALUE_MAX];
 
   if (__system_property_get("net.dns1",nameserver))
@@ -503,19 +506,34 @@ std::vector<std::string> CNetworkLinux::GetNameServers(void)
     result.push_back(nameserver);
   if (__system_property_get("net.dns3",nameserver))
     result.push_back(nameserver);
-
-  if (!result.size())
-       CLog::Log(LOGWARNING, "Unable to determine nameserver");
 #else
-   res_init();
+   int res = res_init();
 
-   for (int i = 0; i < _res.nscount; i ++)
+   for (int i = 0; i < MAXNS && !res; i++)
    {
-      std::string ns = inet_ntoa(((struct sockaddr_in *)&_res.nsaddr_list[i])->sin_addr);
-      result.push_back(ns);
-   }
+     std::string strIp = CNetwork::GetIpStr((struct sockaddr *)&_res.nsaddr_list[i]);
+     if (!strIp.empty())
+       result.push_back(strIp);
+
+#if !defined(TARGET_DARWIN)
+     strIp = CNetwork::GetIpStr((struct sockaddr *)_res._u._ext.nsaddrs[i]);
+     if (!strIp.empty())
+       result.push_back(strIp);
 #endif
-   return result;
+
+     if (_res.nscount
+#if !defined(TARGET_DARWIN)
+         + _res._u._ext.nscount6
+#endif
+         == result.size())
+       break;
+   }
+
+#endif
+  if (result.empty())
+       CLog::Log(LOGWARNING, "Unable to determine nameserver");
+
+  return result;
 }
 
 void CNetworkLinux::SetNameServers(const std::vector<std::string>& nameServers)
@@ -537,19 +555,23 @@ void CNetworkLinux::SetNameServers(const std::vector<std::string>& nameServers)
 #endif
 }
 
-bool CNetworkLinux::PingHost(unsigned long remote_ip, unsigned int timeout_ms)
+bool CNetworkLinux::PingHostImpl(const std::string &target, unsigned int timeout_ms)
 {
-  char cmd_line [64];
+  bool isIPv6 = CNetwork::ConvIPv6(target);
+  if (isIPv6 && !SupportsIPv6())
+    return false;
 
-  struct in_addr host_ip; 
-  host_ip.s_addr = remote_ip;
+  char cmd_line [64];
+  std::string ping = isIPv6 ? "ping6" : "ping";
 
 #if defined (TARGET_DARWIN_IOS) // no timeout option available
-  sprintf(cmd_line, "ping -c 1 %s", inet_ntoa(host_ip));
+  sprintf(cmd_line, "%s -c 1 %s", ping.c_str(), target.c_str());
 #elif defined (TARGET_DARWIN) || defined (TARGET_FREEBSD)
-  sprintf(cmd_line, "ping -c 1 -t %d %s", timeout_ms / 1000 + (timeout_ms % 1000) != 0, inet_ntoa(host_ip));
+  sprintf(cmd_line, "%s -c 1 -%s %d %s >/dev/null 2>&1",
+        ping.c_str(), isIPv6 ? "i" : "t", timeout_ms / 1000 + (timeout_ms % 1000) != 0, target.c_str());
 #else
-  sprintf(cmd_line, "ping -c 1 -w %d %s", timeout_ms / 1000 + (timeout_ms % 1000) != 0, inet_ntoa(host_ip));
+  sprintf(cmd_line, "%s -c 1 -w %d %s >/dev/null 2>&1",
+        ping.c_str(), timeout_ms / 1000 + (timeout_ms % 1000) != 0, target.c_str());
 #endif
 
   int status = system (cmd_line);
@@ -567,9 +589,12 @@ bool CNetworkLinux::PingHost(unsigned long remote_ip, unsigned int timeout_ms)
   return result == 0;
 }
 
-#if defined(TARGET_DARWIN) || defined(TARGET_FREEBSD)
 bool CNetworkInterfaceLinux::GetHostMacAddress(unsigned long host_ip, std::string& mac)
 {
+  if (m_network->GetFirstConnectedFamily() == AF_INET6 || isIPv6())
+    return false;
+
+#if defined(TARGET_DARWIN) || defined(TARGET_FREEBSD)
   bool ret = false;
   size_t needed;
   char *buf, *next;
@@ -616,10 +641,7 @@ bool CNetworkInterfaceLinux::GetHostMacAddress(unsigned long host_ip, std::strin
     }
   }
   return ret;
-}
 #else
-bool CNetworkInterfaceLinux::GetHostMacAddress(unsigned long host_ip, std::string& mac)
-{
   struct arpreq areq;
   struct sockaddr_in* sin;
 
@@ -653,8 +675,8 @@ bool CNetworkInterfaceLinux::GetHostMacAddress(unsigned long host_ip, std::strin
       return true;
 
   return false;
-}
 #endif
+}
 
 std::vector<NetworkAccessPoint> CNetworkInterfaceLinux::GetAccessPoints(void)
 {
@@ -1118,4 +1140,53 @@ void CNetworkInterfaceLinux::WriteSettings(FILE* fw, NetworkAssignment assignmen
       fprintf(fw, "auto %s\n\n", GetName().c_str());
 }
 
+void WatcherProcess(void *caller)
+{
+  struct sockaddr_nl addr;
+  int fds = socket(PF_NETLINK, SOCK_RAW, NETLINK_ROUTE);
+  struct pollfd m_fds = { fds, POLLIN, 0 };
+  char msg[4096];
+  std::atomic<bool> *stopping = ((CNetwork::CNetworkUpdater*)caller)->Stopping();
+
+  memset (&addr, 0, sizeof(struct sockaddr_nl));
+  addr.nl_family = AF_NETLINK;
+  addr.nl_pid = getpid ();
+#if defined(TARGET_LINUX)
+  addr.nl_groups = RTMGRP_LINK | RTMGRP_IPV4_IFADDR | RTMGRP_IPV6_IFADDR;
+                /* RTMGRP_IPV4_IFADDR | RTMGRP_TC | RTMGRP_IPV4_MROUTE |
+                   RTMGRP_IPV4_ROUTE | RTMGRP_IPV4_RULE |
+                   RTMGRP_IPV6_IFADDR | RTMGRP_IPV6_MROUTE |
+                   RTMGRP_IPV6_ROUTE | RTMGRP_IPV6_IFINFO |
+                   RTMGRP_IPV6_PREFIX */
+#else
+  addr.nl_groups = RTMGRP_LINK;
+#endif
+
+  if (-1 == bind(fds, (const struct sockaddr *) &addr, sizeof(struct sockaddr)))
+  {
+    close(fds);
+    fds = 0;
+  }
+  else
+    fcntl(fds, F_SETFL, O_NONBLOCK);
+
+  while(!*stopping)
+    if (poll(&m_fds, 1, 1000) > 0)
+    {
+      while (!*stopping && fds && recv(fds, &msg, sizeof(msg), 0) > 0);
+      if (*stopping)
+        continue;
+
+      if (!fds)
+        ((CNetwork::CNetworkUpdater*)caller)->Sleep(5000);
+      else
+        ((CNetwork::CNetworkUpdater*)caller)->Sleep(1000);
+
+      if (stopping || !g_application.getNetwork().ForceRereadInterfaces())
+        continue;
+
+      CLog::Log(LOGINFO, "Interfaces change %s", __FUNCTION__);
+      CApplicationMessenger::GetInstance().SendMsg(TMSG_NETWORKMESSAGE, CNetwork::NETWORK_CHANGED, 0);
+    }
+}
 

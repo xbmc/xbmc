@@ -282,6 +282,8 @@ void CURL::Parse(const std::string& strURL1)
   if (m_strHostName.empty())
     m_strHostName = strHostNameAndPort;
 
+  m_strHostName = URIUtils::CanonizeIPv6(m_strHostName);
+
   if (iSlash != std::string::npos)
   {
     iPos = iSlash + 1;

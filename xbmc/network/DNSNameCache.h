@@ -27,6 +27,8 @@ class CCriticalSection;
 
 class CDNSNameCache
 {
+friend class CNetwork;
+
 public:
   class CDNSName
   {
@@ -37,9 +39,13 @@ public:
   CDNSNameCache(void);
   virtual ~CDNSNameCache(void);
   static bool Lookup(const std::string& strHostName, std::string& strIpAddress);
+  static std::string Lookup(const std::string& strHostName);
   static void Add(const std::string& strHostName, const std::string& strIpAddress);
 
 protected:
+  static void Flush();
+
+private:
   static bool GetCached(const std::string& strHostName, std::string& strIpAddress);
   static CCriticalSection m_critical;
   std::vector<CDNSName> m_vecDNSNames;

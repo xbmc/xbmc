@@ -18,6 +18,8 @@
  *
  */
 
+#include "network/Network.h"
+#include "Application.h"
 #include "CurlFile.h"
 #include "ServiceBroker.h"
 #include "utils/URIUtils.h"
@@ -946,13 +948,13 @@ bool CCurlFile::Download(const std::string& strURL, const std::string& strFileNa
 // Detect whether we are "online" or not! Very simple and dirty!
 bool CCurlFile::IsInternet()
 {
-  CURL url("http://www.msftncsi.com/ncsi.txt");
+  CURL url(StringUtils::Format("http://%s.msftncsi.com/ncsi.txt", g_application.getNetwork().GetFirstConnectedFamily() == AF_INET6 ? "ipv6" : "www"));
   bool found = Exists(url);
   if (!found)
   {
     // fallback
     Close();
-    url.Parse("http://www.w3.org/");
+    url.Parse(StringUtils::Format("http://%s.w3.org/", g_application.getNetwork().GetFirstConnectedFamily() == AF_INET6 ? "ipv6" : "www"));
     found = Exists(url);
   }
   Close();

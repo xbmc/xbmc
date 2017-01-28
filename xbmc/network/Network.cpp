@@ -18,12 +18,16 @@
  *
  */
 
+#include <bitset>
+#include <stdlib.h>
+
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
 
 #include "Network.h"
 #include "ServiceBroker.h"
+#include "DNSNameCache.h"
 #include "messaging/ApplicationMessenger.h"
 #include "network/NetworkServices.h"
 #include "settings/Settings.h"
@@ -36,9 +40,26 @@
 #ifdef TARGET_POSIX
 #include "linux/XTimeUtils.h"
 #endif
+#ifdef TARGET_DARWIN
+#include <stdlib.h> // for malloc() and free()
+#endif
 #include "utils/StringUtils.h"
+#include "xbmc/interfaces/AnnouncementManager.h"
 
 using namespace KODI::MESSAGING;
+using namespace ANNOUNCEMENT;
+
+socklen_t CNetwork::sa_len(struct sockaddr *addr)
+{
+  switch(((struct sockaddr_storage*)addr)->ss_family)
+  {
+  case AF_INET:
+    return sizeof(struct sockaddr_in);
+  case AF_INET6:
+    return sizeof(struct sockaddr_in6);
+  }
+  return 0;
+}
 
 /* slightly modified in_ether taken from the etherboot project (http://sourceforge.net/projects/etherboot) */
 bool in_ether (const char *bufp, unsigned char *addr)
@@ -137,14 +158,61 @@ int NetworkAccessPoint::FreqToChannel(float frequency)
 }
 
 
-CNetwork::CNetwork()
+CNetwork::CNetwork() :
+  m_bStop(false)
 {
-  CApplicationMessenger::GetInstance().PostMsg(TMSG_NETWORKMESSAGE, SERVICES_UP, 0);
+  m_signalNetworkChange.Reset();
 }
 
 CNetwork::~CNetwork()
 {
+  m_bStop = true;
+  m_updThread->StopThread(false);
+  m_signalNetworkChange.Set();
   CApplicationMessenger::GetInstance().PostMsg(TMSG_NETWORKMESSAGE, SERVICES_DOWN, 0);
+  m_updThread->StopThread(true);
+}
+
+std::string CNetwork::GetIpStr(const struct sockaddr *sa)
+{
+  std::string result;
+  if (!sa)
+    return result;
+
+  char s[INET6_ADDRSTRLEN] = {0};
+  switch(sa->sa_family)
+  {
+  case AF_INET:
+    inet_ntop(AF_INET, &(((struct sockaddr_in *)sa)->sin_addr), s, INET6_ADDRSTRLEN);
+    break;
+  case AF_INET6:
+    inet_ntop(AF_INET6, &(((struct sockaddr_in6 *)sa)->sin6_addr), s, INET6_ADDRSTRLEN);
+    break;
+  default:
+    return result;
+  }
+
+  result = s;
+  return result;
+}
+
+std::string CNetwork::GetIpStr(unsigned long address)
+{
+  struct in_addr in = { htonl(address) };
+  std::string addr = inet_ntoa(in);
+
+  return addr;
+}
+
+bool CNetworkInterface::GetHostMacAddress(const std::string &host, std::string &mac)
+{
+  struct sockaddr_in in;
+
+  if (!CNetwork::ConvIPv4(host, &in))
+    return false;
+
+  unsigned long ip = in.sin_addr.s_addr;
+  return GetHostMacAddress(ip, mac);
 }
 
 int CNetwork::ParseHex(char *str, unsigned char *addr)
@@ -164,6 +232,55 @@ int CNetwork::ParseHex(char *str, unsigned char *addr)
    }
 
    return len;
+}
+
+bool CNetwork::ConvIPv4(const std::string &address, struct sockaddr_in *sa, unsigned short port)
+{
+  if (address.empty())
+    return false;
+
+  struct in_addr sin_addr;
+  int ret = inet_pton(AF_INET, address.c_str(), &sin_addr);
+
+  if (ret > 0 && sa)
+  {
+    sa->sin_family = AF_INET;
+    sa->sin_port = htons(port);
+    memcpy(&(sa->sin_addr), &sin_addr, sizeof(struct in_addr));
+  }
+
+  return (ret > 0);
+}
+
+bool CNetwork::ConvIPv6(const std::string &address, struct sockaddr_in6 *sa, unsigned short port)
+{
+  if (address.empty())
+    return false;
+
+  struct in6_addr sin6_addr;
+  int ret = inet_pton(AF_INET6, address.c_str(), &sin6_addr);
+
+  if (ret > 0 && sa)
+  {
+    sa->sin6_family = AF_INET6;
+    sa->sin6_port = htons((uint16_t)port);
+    memcpy(&(sa->sin6_addr), &sin6_addr, sizeof(struct in6_addr));
+  }
+
+  return (ret > 0);
+}
+
+sockaddrPtr CNetwork::ConvIP(const std::string &address, unsigned short port)
+{
+  sockaddrPtr sa(new struct sockaddr_storage);
+
+  if (!address.empty() && sa)
+    if (ConvIPv4(address, (struct sockaddr_in  *) sa.get(), port)
+    ||  ConvIPv6(address, (struct sockaddr_in6 *) sa.get(), port))
+      return sa;
+
+  sa.reset();
+  return sa;
 }
 
 bool CNetwork::GetHostName(std::string& hostname)
@@ -197,15 +314,12 @@ bool CNetwork::IsLocalHost(const std::string& hostname)
       && StringUtils::EqualsNoCase(hostname, myhostname))
     return true;
 
-  std::vector<CNetworkInterface*>& ifaces = GetInterfaceList();
-  std::vector<CNetworkInterface*>::const_iterator iter = ifaces.begin();
-  while (iter != ifaces.end())
+  myhostname = CanonizeIPv6(hostname);
+  if (ConvIPv4(myhostname) || ConvIPv6(myhostname))
   {
-    CNetworkInterface* iface = *iter;
-    if (iface && iface->GetCurrentIPAddress() == hostname)
-      return true;
-
-     ++iter;
+    for (auto &&iface: GetInterfaceList())
+      if (iface && iface->GetCurrentIPAddress() == myhostname)
+        return true;
   }
 
   return false;
@@ -213,45 +327,101 @@ bool CNetwork::IsLocalHost(const std::string& hostname)
 
 CNetworkInterface* CNetwork::GetFirstConnectedInterface()
 {
-   std::vector<CNetworkInterface*>& ifaces = GetInterfaceList();
-   std::vector<CNetworkInterface*>::const_iterator iter = ifaces.begin();
-   while (iter != ifaces.end())
-   {
-      CNetworkInterface* iface = *iter;
-      if (iface && iface->IsConnected())
-         return iface;
-      ++iter;
-   }
+   for (auto &&iface: GetInterfaceList())
+     if (iface && iface->IsConnected())
+       return iface;
 
    return NULL;
 }
 
-bool CNetwork::HasInterfaceForIP(unsigned long address)
+bool CNetwork::AddrMatch(const std::string &addr, const std::string &match_ip, const std::string &match_mask)
 {
-   unsigned long subnet;
-   unsigned long local;
-   std::vector<CNetworkInterface*>& ifaces = GetInterfaceList();
-   std::vector<CNetworkInterface*>::const_iterator iter = ifaces.begin();
-   while (iter != ifaces.end())
-   {
-      CNetworkInterface* iface = *iter;
-      if (iface && iface->IsConnected())
-      {
-         subnet = ntohl(inet_addr(iface->GetCurrentNetmask().c_str()));
-         local = ntohl(inet_addr(iface->GetCurrentIPAddress().c_str()));
-         if( (address & subnet) == (local & subnet) )
-            return true;
-      }
-      ++iter;
-   }
+  if (ConvIPv4(addr) && ConvIPv4(match_ip) && ConvIPv4(match_mask))
+  {
+    unsigned long address = ntohl(inet_addr(addr.c_str()));
+    unsigned long subnet = ntohl(inet_addr(match_mask.c_str()));
+    unsigned long local = ntohl(inet_addr(match_ip.c_str()));
+    return ((address & subnet) == (local & subnet));
+  }
+  else if (!g_application.getNetwork().SupportsIPv6())
+  {
+    return false;
+  }
+  else
+  {
+    struct sockaddr_in6 address;
+    struct sockaddr_in6 local;
+    struct sockaddr_in6 subnet;
+    if (!ConvIPv6(addr, &address) || !ConvIPv6(match_ip, &local)
+     || !ConvIPv6(match_mask, &subnet))
+      return false;
 
-   return false;
+    // mask matching of IPv6 follows same rule as for IPv4, only
+    // difference is the storage object of IPv6 address what
+    // is 16 segments of 8bit information (16bytes => 128bits)
+    // lets assume we match fd::2 against fd::1/16. this means
+    // for illustration:
+    // 00fd:0000:0000:0000:0000:0000:0000:0002
+    // to
+    // 00fd:0000:0000:0000:0000:0000:0000:0001 with mask
+    // ffff:0000:0000:0000:0000:0000:0000:0000
+    // as with IPv4, addr1 & mask == addr2 & mask - for each segment
+
+    // despite the comment explaining uint_8[16] structure
+    // (what at the time of writing this text was valid for OSX/Linux/BSD)
+    // rather let's use type independent construction. this is because (OSX????)
+    // .h files commented the internal s6_addr structure type inside
+    // sockaddr_in6 as not being mandatory specified by RFC - devil never sleeps.
+    unsigned int m;
+    for (m = 0; m < sizeof(address.sin6_addr.s6_addr); m++)
+      if ((address.sin6_addr.s6_addr[m] & subnet.sin6_addr.s6_addr[m]) !=
+          (  local.sin6_addr.s6_addr[m] & subnet.sin6_addr.s6_addr[m]))
+      {
+        m = -1;
+      }
+
+    // in case of matching addresses, we loop through each segment,
+    // leaving m with final value of 16.
+    // if we don't match, m is set to <unsigned int>.max() and for() is ended.
+    // RESULT: any value of m smaller than <unsigned int>.max() indicates success.
+    if (m < (unsigned int)~0)
+      return true;
+  }
+
+  return false;
 }
 
-bool CNetwork::IsAvailable(void)
+bool CNetwork::HasInterfaceForIP(const std::string &address)
 {
-  std::vector<CNetworkInterface*>& ifaces = GetInterfaceList();
-  return (ifaces.size() != 0);
+  if (address.empty())
+    return false;
+
+  for (auto &&iface: GetInterfaceList())
+    if (iface && iface->IsConnected() &&
+        AddrMatch(address, iface->GetCurrentIPAddress(), iface->GetCurrentNetmask()))
+        return true;
+
+  return false;
+}
+
+bool CNetwork::HasInterfaceForIP(unsigned long address)
+{
+  std::string addr = GetIpStr(address);
+  return HasInterfaceForIP(addr);
+}
+
+bool CNetwork::IsAvailable(bool wait)
+{
+  std::forward_list<CNetworkInterface*>& ifaces = GetInterfaceList();
+
+  while (!m_bStop && wait && ifaces.empty())
+  {
+    m_signalNetworkChange.WaitMSec(5000);
+    ifaces = GetInterfaceList();
+    m_signalNetworkChange.Reset();
+  }
+
+  return (!ifaces.empty());
 }
 
 bool CNetwork::IsConnected()
@@ -261,15 +431,9 @@ bool CNetwork::IsConnected()
 
 CNetworkInterface* CNetwork::GetInterfaceByName(const std::string& name)
 {
-   std::vector<CNetworkInterface*>& ifaces = GetInterfaceList();
-   std::vector<CNetworkInterface*>::const_iterator iter = ifaces.begin();
-   while (iter != ifaces.end())
-   {
-      CNetworkInterface* iface = *iter;
-      if (iface && iface->GetName() == name)
-         return iface;
-      ++iter;
-   }
+   for (auto &&iface: GetInterfaceList())
+     if (iface && iface->GetName() == name)
+       return iface;
 
    return NULL;
 }
@@ -279,7 +443,14 @@ void CNetwork::NetworkMessage(EMESSAGE message, int param)
   switch( message )
   {
     case SERVICES_UP:
+      if (IsAvailable())
+      {
+        CLog::Log(LOGDEBUG, "%s - There is no configured network interface. Not starting network services",__FUNCTION__);
+        break;
+      }
+
       CLog::Log(LOGDEBUG, "%s - Starting network services",__FUNCTION__);
+      CDNSNameCache::Flush();
       CNetworkServices::GetInstance().Start();
       break;
 
@@ -288,6 +459,14 @@ void CNetwork::NetworkMessage(EMESSAGE message, int param)
       CNetworkServices::GetInstance().Stop(false); // tell network services to stop, but don't wait for them yet
       CLog::Log(LOGDEBUG, "%s - Waiting for network services to stop",__FUNCTION__);
       CNetworkServices::GetInstance().Stop(true); // wait for network services to stop
+      break;
+
+    case NETWORK_CHANGED:
+      m_signalNetworkChange.Set();
+      CLog::Log(LOGDEBUG, "%s - Network setup changed. Will restart network services",__FUNCTION__);
+      ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::Network, "network", "OnInterfacesChange");
+      NetworkMessage(SERVICES_DOWN, 0);
+      NetworkMessage(SERVICES_UP, 0);
       break;
   }
 }
@@ -298,6 +477,9 @@ bool CNetwork::WakeOnLan(const char* mac)
   unsigned char ethaddr[8];
   unsigned char buf [128];
   unsigned char *ptr;
+
+  if (GetFirstConnectedFamily() == AF_INET6)
+    return false;
 
   // Fetch the hardware address
   if (!in_ether(mac, ethaddr))
@@ -350,7 +532,7 @@ bool CNetwork::WakeOnLan(const char* mac)
 }
 
 // ping helper
-static const char* ConnectHostPort(SOCKET soc, const struct sockaddr_in& addr, struct timeval& timeOut, bool tryRead)
+static const char* ConnectHostPort(SOCKET soc, struct sockaddr *addr, struct timeval& timeOut, bool tryRead)
 {
   // set non-blocking
 #ifdef TARGET_WINDOWS
@@ -363,7 +545,7 @@ static const char* ConnectHostPort(SOCKET soc, const struct sockaddr_in& addr, s
   if (result != 0)
     return "set non-blocking option failed";
 
-  result = connect(soc, (struct sockaddr *)&addr, sizeof(addr)); // non-blocking connect, will fail ..
+  result = connect(soc, addr, CNetwork::sa_len(addr)); // non-blocking connect, will fail ..
 
   if (result < 0)
   {
@@ -427,17 +609,17 @@ static const char* ConnectHostPort(SOCKET soc, const struct sockaddr_in& addr, s
   return 0; // success
 }
 
-bool CNetwork::PingHost(unsigned long ipaddr, unsigned short port, unsigned int timeOutMs, bool readability_check)
+bool CNetwork::PingHost(const std::string &ipaddr, unsigned short port, unsigned int timeOutMs, bool readability_check)
 {
   if (port == 0) // use icmp ping
-    return PingHost (ipaddr, timeOutMs);
+    return PingHostImpl (ipaddr, timeOutMs);
 
-  struct sockaddr_in addr; 
-  addr.sin_family = AF_INET; 
-  addr.sin_port = htons(port); 
-  addr.sin_addr.s_addr = ipaddr; 
+  sockaddrPtr addr = ConvIP(ipaddr, port);
 
-  SOCKET soc = socket(AF_INET, SOCK_STREAM, 0); 
+  if (!addr)
+    return false;
+
+  SOCKET soc = socket(addr->ss_family, SOCK_STREAM, 0);
 
   const char* err_msg = "invalid socket";
 
@@ -447,7 +629,7 @@ bool CNetwork::PingHost(unsigned long ipaddr, unsigned short port, unsigned int 
     tmout.tv_sec = timeOutMs / 1000; 
     tmout.tv_usec = (timeOutMs % 1000) * 1000; 
 
-    err_msg = ConnectHostPort (soc, addr, tmout, readability_check);
+    err_msg = ConnectHostPort (soc, (struct sockaddr *)addr.get(), tmout, readability_check);
 
     (void) closesocket (soc);
   }
@@ -460,10 +642,69 @@ bool CNetwork::PingHost(unsigned long ipaddr, unsigned short port, unsigned int 
     std::string sock_err = strerror(errno);
 #endif
 
-    CLog::Log(LOGERROR, "%s(%s:%d) - %s (%s)", __FUNCTION__, inet_ntoa(addr.sin_addr), port, err_msg, sock_err.c_str());
+    CLog::Log(LOGERROR, "%s(%s:%d) - %s (%s)", __FUNCTION__, ipaddr.c_str(), port, err_msg, sock_err.c_str());
   }
 
   return err_msg == 0;
+}
+
+std::string CNetwork::CanonizeIPv6(const std::string &address)
+{
+  std::string result = address;
+
+  struct sockaddr_in6 addr;
+  if (!ConvIPv6(address, &addr))
+    return result;
+
+  result = GetIpStr((const sockaddr*)&addr);
+  return result;
+}
+
+uint8_t CNetwork::PrefixLength(const struct sockaddr *netmask)
+{
+  uint8_t prefixLength = 0;
+  switch (netmask->sa_family)
+  {
+    case AF_INET:
+      prefixLength = std::bitset<sizeof(((struct sockaddr_in *) netmask)->sin_addr.s_addr)>(((struct sockaddr_in *) netmask)->sin_addr.s_addr).count();
+      break;
+    case AF_INET6:
+      for (unsigned int i = 0; i < sizeof(((struct sockaddr_in6 *) netmask)->sin6_addr.s6_addr); ++i)
+        prefixLength += std::bitset<sizeof(((struct sockaddr_in6 *) netmask)->sin6_addr.s6_addr)>(((struct sockaddr_in6 *) netmask)->sin6_addr.s6_addr[i]).count();
+      break;
+  }
+  return prefixLength;
+}
+
+bool CNetwork::CompareAddresses(const struct sockaddr * sa, const struct sockaddr * sb)
+{
+  if (sa->sa_family != sb->sa_family)
+    return false;
+  else if (sa->sa_family == AF_INET)
+    return ((struct sockaddr_in *)(sa))->sin_addr.s_addr == ((struct sockaddr_in *)(sb))->sin_addr.s_addr;
+  else if (sa->sa_family == AF_INET6)
+    return (memcmp((char *) &(((struct sockaddr_in6 *)(sa))->sin6_addr), (char *) &(((struct sockaddr_in6 *)(sb))->sin6_addr), sizeof(((struct sockaddr_in6 *)(sa))->sin6_addr))) == 0;
+  return false;
+}
+
+CNetwork::CNetworkUpdater::CNetworkUpdater(void (*watcher)(void *caller))
+ : CThread("NetConfUpdater")
+ , m_watcher(watcher)
+{
+  CAnnouncementManager::GetInstance().AddAnnouncer(this);
+}
+
+CNetwork::CNetworkUpdater::~CNetworkUpdater()
+{
+  CAnnouncementManager::GetInstance().RemoveAnnouncer(this);
+}
+
+void CNetwork::CNetworkUpdater::Announce(AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
+{
+  if (flag == System && !strcmp(sender, "xbmc") && !strcmp(message, "OnSleep"))
+    StopThread(false);
+  else if (flag == System && !strcmp(sender, "xbmc") && !strcmp(message, "OnWake"))
+    Create(false);
 }
 
 //creates, binds and listens a tcp socket on the desired port. Set bindLocal to
@@ -512,7 +753,8 @@ int CreateTCPServerSocket(const int port, const bool bindLocal, const int backlo
     {
       closesocket(sock);
       sock = -1;
-      CLog::Log(LOGDEBUG, "%s Server: Failed to bind ipv6 serversocket, trying ipv4", callerName);
+      CLog::Log(LOGDEBUG, "%s Server: Failed to bind ipv6 serversocket on port %d, trying ipv4 (error was %s (%d))",
+                           callerName, port, strerror(errno), errno);
     }
   }
   
@@ -534,7 +776,8 @@ int CreateTCPServerSocket(const int port, const bool bindLocal, const int backlo
     if (bind( sock, (struct sockaddr *) &addr, sizeof(struct sockaddr_in)) < 0)
     {
       closesocket(sock);
-      CLog::Log(LOGERROR, "%s Server: Failed to bind ipv4 serversocket", callerName);
+      CLog::Log(LOGERROR, "%s Server: Failed to bind ipv4 serversocket on port %d, trying ipv4 (error was %s (%d))",
+                           callerName, port, strerror(errno), errno);
       return INVALID_SOCKET;
     }
   }
