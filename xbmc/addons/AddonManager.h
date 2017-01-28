@@ -381,6 +381,8 @@ namespace ADDON
      */
     static bool LoadManifest(std::set<std::string>& system, std::set<std::string>& optional);
 
+    static std::shared_ptr<CAddon> CreateAddon(AddonInfoPtr addonInfo);
+
     AddonInfoMap m_installedAddons;
     AddonInfoMap m_enabledAddons;
     std::set<std::string> m_systemAddons;

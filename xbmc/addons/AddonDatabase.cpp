@@ -24,7 +24,6 @@
 #include <iterator>
 #include <utility>
 
-#include "addons/AddonBuilder.h"
 #include "addons/AddonManager.h"
 #include "dbwrappers/dataset.h"
 #include "filesystem/SpecialProtocol.h"
@@ -37,42 +36,6 @@
 #include "XBDateTime.h"
 
 using namespace ADDON;
-
-static void DeserializeMetadata(const std::string& document, CAddonBuilder& builder)
-{
-  fprintf(stderr, "-------------> %s\n", __PRETTY_FUNCTION__);
-/*  
-  CVariant variant = CJSONVariantParser::Parse(document);
-
-  builder.SetAuthor(variant["author"].asString());
-  builder.SetDisclaimer(variant["disclaimer"].asString());
-  builder.SetBroken(variant["broken"].asString());
-  builder.SetPackageSize(variant["size"].asUnsignedInteger());
-
-  builder.SetPath(variant["path"].asString());
-  builder.SetFanart(variant["fanart"].asString());
-  builder.SetIcon(variant["icon"].asString());
-
-  std::vector<std::string> screenshots;
-  for (auto it = variant["screenshots"].begin_array(); it != variant["screenshots"].end_array(); ++it)
-    screenshots.push_back(it->asString());
-  builder.SetScreenshots(std::move(screenshots));
-
-  builder.SetType(CAddonInfo::TranslateType(variant["extensions"][0].asString()));
-
-  ADDONDEPS deps;
-  for (auto it = variant["dependencies"].begin_array(); it != variant["dependencies"].end_array(); ++it)
-  {
-    AddonVersion version((*it)["version"].asString());
-    deps.emplace((*it)["addonId"].asString(), std::make_pair(std::move(version), (*it)["optional"].asBoolean()));
-  }
-  builder.SetDependencies(std::move(deps));
-
-  InfoMap extraInfo;
-  for (auto it = variant["extrainfo"].begin_array(); it != variant["extrainfo"].end_array(); ++it)
-    extraInfo.emplace((*it)["key"].asString(), (*it)["value"].asString());
-  builder.SetExtrainfo(std::move(extraInfo));*/
-}
 
 CAddonDatabase::CAddonDatabase()
 {
@@ -332,28 +295,6 @@ void CAddonDatabase::SyncInstalled(const std::set<std::string>& ids,
   {
     CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
     RollbackTransaction();
-  }
-}
-
-void CAddonDatabase::GetInstalled(std::vector<CAddonBuilder>& addons)
-{
-  try
-  {
-    if (NULL == m_pDB.get()) return;
-    if (NULL == m_pDS.get()) return;
-
-    m_pDS->query(PrepareSQL("SELECT * FROM installed"));
-    while (!m_pDS->eof())
-    {
-      auto it = addons.emplace(addons.end());
-      it->SetId(m_pDS->fv(1).get_asString());
-      m_pDS->next();
-    }
-    m_pDS->close();
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
   }
 }
 

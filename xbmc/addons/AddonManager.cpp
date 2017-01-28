@@ -26,29 +26,15 @@
 #include <utility>
 
 #include "Addon.h"
-#include "addons/AddonBuilder.h"
-#include "addons/ImageResource.h"
-#include "addons/LanguageResource.h"
-#include "addons/UISoundsResource.h"
-#include "addons/Webinterface.h"
-#include "AudioDecoder.h"
-#include "AudioEncoder.h"
-#include "ContextMenuAddon.h"
 #include "ContextMenuManager.h"
-#include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.h"
 #include "DllLibCPluff.h"
 #include "events/AddonManagementEvent.h"
 #include "events/EventLog.h"
 #include "filesystem/Directory.h"
 #include "filesystem/SpecialProtocol.h"
-#include "VFSEntry.h"
 #include "LangInfo.h"
-#include "Repository.h"
-#include "Scraper.h"
-#include "Service.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
-#include "Skin.h"
 #include "system.h"
 #include "threads/SingleLock.h"
 #include "Util.h"
@@ -58,6 +44,27 @@
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
 #include "ServiceBroker.h"
+
+/* CAddon class included add-on's */
+#include "addons/AudioDecoder.h"
+#include "addons/AudioEncoder.h"
+#include "addons/ContextMenuAddon.h"
+#include "addons/GameResource.h"
+#include "addons/ImageResource.h"
+#include "addons/InputStream.h"
+#include "addons/LanguageResource.h"
+#include "addons/Repository.h"
+#include "addons/Scraper.h"
+#include "addons/Service.h"
+#include "addons/Skin.h"
+#include "addons/UISoundsResource.h"
+#include "addons/VFSEntry.h"
+#include "addons/Webinterface.h"
+#include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.h"
+#include "games/addons/GameClient.h"
+#include "games/controllers/Controller.h"
+#include "peripherals/addons/PeripheralAddon.h"
+#include "addons/PVRClient.h"
 
 using namespace XFILE;
 
@@ -357,8 +364,7 @@ bool CAddonMgr::GetAddonsInternal(const TYPE &type, VECADDONS &addons, bool enab
 
   for (auto info : GetAddonInfos(enabledOnly, type))
   {
-    CAddonBuilder builder;
-    AddonPtr addon = builder.Build(info);
+    AddonPtr addon = CreateAddon(info);
     if (addon)
     {
       // if the addon has a running instance, grab that
@@ -374,13 +380,10 @@ bool CAddonMgr::GetAddonsInternal(const TYPE &type, VECADDONS &addons, bool enab
 bool CAddonMgr::GetAddon(const std::string &str, AddonPtr &addon, const TYPE &type/*=ADDON_UNKNOWN*/, bool enabledOnly /*= true*/)
 {
   CSingleLock lock(m_critSection);
-fprintf(stderr, "--------------<\n");
+
   AddonInfoPtr info = GetInstalledAddonInfo(str);
   if (info)
-  {
-    CAddonBuilder builder;
-    addon = builder.Build(info);
-  }
+    addon = CreateAddon(info);
 
   return nullptr != addon.get();
 }
@@ -1178,6 +1181,71 @@ bool CAddonMgr::HasAvailableUpdates()
     }
   }
   return false;
+}
+
+std::shared_ptr<CAddon> CAddonMgr::CreateAddon(AddonInfoPtr addonInfo)
+{
+  switch (addonInfo->Type())
+  {
+    case ADDON_PLUGIN:
+    case ADDON_SCRIPT:
+    case ADDON_SCRIPT_LIBRARY:
+    case ADDON_SCRIPT_LYRICS:
+    case ADDON_SCRIPT_MODULE:
+    case ADDON_SUBTITLE_MODULE:
+    case ADDON_SCRIPT_WEATHER:
+      return std::make_shared<CAddon>(addonInfo);
+    case ADDON_WEB_INTERFACE:
+      return std::make_shared<CWebinterface>(addonInfo);
+    case ADDON_SERVICE:
+      return std::make_shared<CService>(addonInfo);
+    case ADDON_SCRAPER_ALBUMS:
+    case ADDON_SCRAPER_ARTISTS:
+    case ADDON_SCRAPER_MOVIES:
+    case ADDON_SCRAPER_MUSICVIDEOS:
+    case ADDON_SCRAPER_TVSHOWS:
+    case ADDON_SCRAPER_LIBRARY:
+      return std::make_shared<CScraper>(addonInfo);
+    case ADDON_VIZ:
+    case ADDON_SCREENSAVER:
+      return std::make_shared<CAddonDll>(addonInfo);
+    case ADDON_PVRDLL:
+      return std::make_shared<PVR::CPVRClient>(addonInfo);
+    case ADDON_ADSPDLL:
+      return std::make_shared<ActiveAE::CActiveAEDSPAddon>(addonInfo);
+    case ADDON_AUDIOENCODER:
+      return std::make_shared<CAudioEncoder>(addonInfo);
+    case ADDON_AUDIODECODER:
+      return std::make_shared<CAudioDecoder>(addonInfo);
+    case ADDON_INPUTSTREAM:
+      return std::make_shared<CInputStream>(addonInfo);
+    case ADDON_PERIPHERALDLL:
+      return std::make_shared<PERIPHERALS::CPeripheralAddon>(addonInfo);
+    case ADDON_GAMEDLL:
+      return std::make_shared<GAME::CGameClient>(addonInfo);
+    case ADDON_VFS:
+      return std::make_shared<CVFSEntry>(addonInfo);
+    case ADDON_SKIN:
+      return std::make_shared<CSkinInfo>(addonInfo);
+    case ADDON_RESOURCE_IMAGES:
+      return std::make_shared<CImageResource>(addonInfo);
+    case ADDON_RESOURCE_GAMES:
+      return std::make_shared<CGameResource>(addonInfo);
+    case ADDON_RESOURCE_LANGUAGE:
+      return std::make_shared<CLanguageResource>(addonInfo);
+    case ADDON_RESOURCE_UISOUNDS:
+      return std::make_shared<CUISoundsResource>(addonInfo);
+    case ADDON_REPOSITORY:
+      return std::make_shared<CRepository>(addonInfo);
+    case ADDON_CONTEXT_ITEM:
+      return std::make_shared<CContextMenuAddon>(addonInfo);
+    case ADDON_GAME_CONTROLLER:
+      return std::make_shared<GAME::CController>(addonInfo);
+    default:
+      break;
+  }
+
+  return std::make_shared<CAddon>(addonInfo);
 }
 
 //@}
