@@ -387,6 +387,7 @@ bool CAddonMgr::ReloadAddon(AddonPtr& addon)
 //   return FindAddons()
 //       && GetAddon(addon->ID(), addon, ADDON_UNKNOWN, false)
 //       && EnableAddon(addon->ID());
+  return false;
 }
 
 void CAddonMgr::OnPostUnInstall(const std::string& id)
@@ -792,34 +793,6 @@ bool CAddonMgr::IsCompatible(const CAddonInfo& addonProps)
   return true;
 }
 
-bool CAddonMgr::AddonsFromRepoXML(const CRepository::DirInfo& repo, const std::string& xml, AddonInfos& addonInfos)
-{
-  CXBMCTinyXML doc;
-  if (!doc.Parse(xml))
-  {
-    CLog::Log(LOGERROR, "CAddonMgr: Failed to parse addons.xml.");
-    return false;
-  }
-
-  if (doc.RootElement() == nullptr || doc.RootElement()->ValueStr() != "addons")
-  {
-    CLog::Log(LOGERROR, "CAddonMgr: Failed to parse addons.xml. Malformed.");
-    return false;
-  }
-
-  auto element = doc.RootElement()->FirstChildElement("addon");
-  while (element)
-  {
-    AddonInfoPtr props = std::make_shared<CAddonInfo>(element, repo.datadir);
-    if (props->IsUsable())
-      addonInfos.push_back(std::move(props));
-
-    element = element->NextSiblingElement("addon");
-  }
-
-  return true;
-}
-
 void CAddonMgr::FindAddons(AddonInfoMap& addonmap, std::string path)
 {
   CFileItemList items;
@@ -873,36 +846,6 @@ const AddonInfoPtr CAddonMgr::GetInstalledAddonInfo(TYPE addonType, std::string 
   return result->second;
 }
 
-bool CAddonMgr::LoadManifest(std::set<std::string>& system, std::set<std::string>& optional)
-{
-  CXBMCTinyXML doc;
-  if (!doc.LoadFile("special://xbmc/system/addon-manifest.xml"))
-  {
-    CLog::Log(LOGERROR, "ADDONS: manifest missing");
-    return false;
-  }
-
-  auto root = doc.RootElement();
-  if (!root || root->ValueStr() != "addons")
-  {
-    CLog::Log(LOGERROR, "ADDONS: malformed manifest");
-    return false;
-  }
-
-  auto elem = root->FirstChildElement("addon");
-  while (elem)
-  {
-    if (elem->FirstChild())
-    {
-      if (XMLUtils::GetAttribute(elem, "optional") == "true")
-        optional.insert(elem->FirstChild()->ValueStr());
-      else
-        system.insert(elem->FirstChild()->ValueStr());
-    }
-    elem = elem->NextSiblingElement("addon");
-  }
-  return true;
-}
 
 
 
@@ -956,6 +899,38 @@ bool CAddonMgr::HasAvailableUpdates()
     }
   }
   return false;
+}
+
+
+bool CAddonMgr::LoadManifest(std::set<std::string>& system, std::set<std::string>& optional)
+{
+  CXBMCTinyXML doc;
+  if (!doc.LoadFile("special://xbmc/system/addon-manifest.xml"))
+  {
+    CLog::Log(LOGERROR, "ADDONS: manifest missing");
+    return false;
+  }
+
+  auto root = doc.RootElement();
+  if (!root || root->ValueStr() != "addons")
+  {
+    CLog::Log(LOGERROR, "ADDONS: malformed manifest");
+    return false;
+  }
+
+  auto elem = root->FirstChildElement("addon");
+  while (elem)
+  {
+    if (elem->FirstChild())
+    {
+      if (XMLUtils::GetAttribute(elem, "optional") == "true")
+        optional.insert(elem->FirstChild()->ValueStr());
+      else
+        system.insert(elem->FirstChild()->ValueStr());
+    }
+    elem = elem->NextSiblingElement("addon");
+  }
+  return true;
 }
 
 std::shared_ptr<CAddon> CAddonMgr::CreateAddon(AddonInfoPtr addonInfo)

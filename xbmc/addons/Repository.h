@@ -47,10 +47,11 @@ namespace ADDON
     CRepository(AddonInfoPtr addonInfo);
 
     /*!
-     * \brief Get the md5 hash for an addon.
-     * \param[in] addonPath the addon in question.
-     * \param[out] checksum the calculated checksum of addon
-     * \return true if successful done, otherwise false
+     * @brief Get the md5 hash for an addon.
+     *
+     * @param[in] addonPath the addon in question.
+     * @param[out] checksum the calculated checksum of addon
+     * @return true if successful done, otherwise false
      */
     bool GetAddonHash(const std::string& addonPath, std::string& checksum) const;
 
@@ -64,6 +65,17 @@ namespace ADDON
     FetchStatus FetchIfChanged(const std::string& oldChecksum, std::string& checksum, AddonInfos& addons) const;
 
   private:
+    /*!
+     * @brief Parse a repository XML file for addons and load their descriptors
+     * A repository XML is essentially a concatenated list of addon descriptors.
+     *
+     * @param[in] repo The repository info.
+     * @param[in] xml The XML document from repository.
+     * @param[out] addonInfos returned list of addon properties.
+     * @return true if the repository XML file is parsed, false otherwise.
+     */
+    static bool AddonsFromRepoXML(const CRepository::DirInfo& repo, const std::string& xml, AddonInfos& addonInfos);
+
     static bool FetchChecksum(const std::string& url, std::string& checksum) noexcept;
     static bool FetchIndex(const DirInfo& repo, AddonInfos& addons) noexcept;
 
