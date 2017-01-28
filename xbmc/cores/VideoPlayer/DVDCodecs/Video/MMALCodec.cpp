@@ -595,7 +595,7 @@ void CMMALVideo::Dispose()
   Reset();
 }
 
-int CMMALVideo::AddData(uint8_t* pData, int iSize, double dts, double pts)
+bool CMMALVideo::AddData(const DemuxPacket &packet)
 {
   CSingleLock lock(m_sharedSection);
   //if (g_advancedSettings.CanLogComponent(LOGVIDEO))
@@ -616,7 +616,7 @@ int CMMALVideo::AddData(uint8_t* pData, int iSize, double dts, double pts)
     if (!buffer)
     {
       CLog::Log(LOGERROR, "%s::%s - mmal_queue_get failed", CLASSNAME, __func__);
-      return VC_ERROR;
+      return true;
     }
     lock.Enter();
 
@@ -648,7 +648,7 @@ int CMMALVideo::AddData(uint8_t* pData, int iSize, double dts, double pts)
     if (status != MMAL_SUCCESS)
     {
       CLog::Log(LOGERROR, "%s::%s Failed send buffer to decoder input port (status=%x %s)", CLASSNAME, __func__, status, mmal_status_to_string(status));
-      return VC_ERROR;
+      return true;
     }
   }
   if (packet.pts != DVD_NOPTS_VALUE)
@@ -659,7 +659,7 @@ int CMMALVideo::AddData(uint8_t* pData, int iSize, double dts, double pts)
   if (m_demuxerPts != DVD_NOPTS_VALUE && m_decoderPts == DVD_NOPTS_VALUE)
     m_decoderPts = m_demuxerPts;
 
-  return 0;
+  return true;
 }
 
 void CMMALVideo::Reset(void)
@@ -723,7 +723,7 @@ void CMMALVideo::SetSpeed(int iSpeed)
   m_speed = iSpeed;
 }
 
-int CMMALVideo::GetPicture(DVDVideoPicture* pDvdVideoPicture)
+CDVDVideoCodec::VCReturn CMMALVideo::GetPicture(DVDVideoPicture* pDvdVideoPicture)
 {
   CSingleLock lock(m_sharedSection);
   MMAL_STATUS_T status;
@@ -772,11 +772,11 @@ int CMMALVideo::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   // we've built up quite a lot of data in decoder - try to throttle it
   double queued = m_decoderPts != DVD_NOPTS_VALUE && m_demuxerPts != DVD_NOPTS_VALUE ? m_demuxerPts - m_decoderPts : 0.0;
   bool full = queued > DVD_MSEC_TO_TIME(1000);
-  int ret = 0;
+  CDVDVideoCodec::VCReturn ret = VC_NONE;
 
   CMMALVideoBuffer *buffer = nullptr;
   XbmcThreads::EndTime delay(500);
-  while (!ret && !delay.IsTimePast())
+  while (ret == VC_NONE && !delay.IsTimePast())
   {
     CSingleLock output_lock(m_output_mutex);
     unsigned int pics = m_output_ready.size();
@@ -794,7 +794,7 @@ int CMMALVideo::GetPicture(DVDVideoPicture* pDvdVideoPicture)
       ret = VC_EOF;
     else if ((m_preroll || pics <= 1) && mmal_queue_length(m_dec_input_pool->queue) > 0)
       ret = VC_BUFFER;
-    if (!ret)
+    if (ret == VC_NONE)
     {
       // otherwise we busy spin
       lock.Leave();
