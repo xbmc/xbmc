@@ -154,7 +154,7 @@ namespace ActiveAE
      * @param bRestart If true, restart the addon.
      * @return True if the it was found, false otherwise.
      */
-    bool StopAudioDSPAddon(ADDON::AddonPtr addon, bool bRestart);
+    bool StopAudioDSPAddon(const ADDON::AddonInfoPtr addon, bool bRestart);
 
     /*!
      * @return The amount of enabled audio dsp addons.
@@ -196,7 +196,7 @@ namespace ActiveAE
      * @param addon The addon addon pointer.
      * @return True when the addon pointer is valid and ready, false otherwise.
      */
-    bool IsReadyAudioDSPAddon(const ADDON::AddonPtr& addon);
+    bool IsReadyAudioDSPAddon(const ADDON::AddonInfoPtr& addon);
 
     /*!
      * @brief Get the instance of the audio dsp addon.
@@ -374,7 +374,7 @@ namespace ActiveAE
      * @param addon The dsp addon to check.
      * @return True if this addon is registered, false otherwise.
      */
-    bool IsKnownAudioDSPAddon(const ADDON::AddonPtr& addon) const;
+    bool IsKnownAudioDSPAddon(const ADDON::AddonInfoPtr& addon) const;
 
     /*!
      * @brief Get the instance of the dsp addon, if it's ready.
@@ -389,7 +389,7 @@ namespace ActiveAE
      * @param addon The addon class pointer.
      * @return the id of the asked addon, -1 if not available
      */
-    int GetAudioDSPAddonId(const ADDON::AddonPtr& addon) const;
+    int GetAudioDSPAddonId(const ADDON::AddonInfoPtr& addon) const;
 
 
     static const int        m_StreamTypeNameTable[];                    /*!< Table for stream type strings related to type id */

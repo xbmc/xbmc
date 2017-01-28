@@ -153,7 +153,35 @@ bool CRepository::FetchIndex(const DirInfo& repo, AddonInfos& addons) noexcept
     response = std::move(buffer);
   }
 
-  return CAddonMgr::GetInstance().AddonsFromRepoXML(repo, response, addons);
+  return AddonsFromRepoXML(repo, response, addons);
+}
+
+bool CRepository::AddonsFromRepoXML(const CRepository::DirInfo& repo, const std::string& xml, AddonInfos& addonInfos)
+{
+  CXBMCTinyXML doc;
+  if (!doc.Parse(xml))
+  {
+    CLog::Log(LOGERROR, "CRepository: Failed to parse addons.xml.");
+    return false;
+  }
+
+  if (doc.RootElement() == nullptr || doc.RootElement()->ValueStr() != "addons")
+  {
+    CLog::Log(LOGERROR, "CRepository: Failed to parse addons.xml. Malformed.");
+    return false;
+  }
+
+  auto element = doc.RootElement()->FirstChildElement("addon");
+  while (element)
+  {
+    AddonInfoPtr props = std::make_shared<CAddonInfo>(element, repo.datadir);
+    if (props->IsUsable())
+      addonInfos.push_back(std::move(props));
+
+    element = element->NextSiblingElement("addon");
+  }
+
+  return true;
 }
 
 CRepository::FetchStatus CRepository::FetchIfChanged(const std::string& oldChecksum,

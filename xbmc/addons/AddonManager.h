@@ -169,15 +169,6 @@ namespace ADDON
      */
     bool LoadAddonDescription(const std::string &path, AddonInfoPtr &addon);
 
-    /*! \brief Parse a repository XML file for addons and load their descriptors
-     A repository XML is essentially a concatenated list of addon descriptors.
-     \param repo The repository info.
-     \param xml The XML document from repository.
-     \param ddonInfos [out] returned list of addon properties.
-     \return true if the repository XML file is parsed, false otherwise.
-     */
-    bool AddonsFromRepoXML(const CRepository::DirInfo& repo, const std::string& xml, AddonInfos& addonInfos);
-
     /*! \brief Start all services addons.
         \return True is all addons are started, false otherwise
     */
@@ -350,6 +341,17 @@ namespace ADDON
      */
     static bool LoadManifest(std::set<std::string>& system, std::set<std::string>& optional);
 
+    /*!
+     * @brief Add-on creation function
+     *
+     * With them becomes from given addon information the needed add-on class
+     * generated. This class is defined with "CAddon" as parent and some
+     * add-ons bring the own childs to them.
+     *
+     * @param[in] addonInfo Pointer to the add-on information class from where
+     *                      it becomes created.
+     * @return The pointer of created add-on class
+     */
     static std::shared_ptr<CAddon> CreateAddon(AddonInfoPtr addonInfo);
 
     AddonInfoMap m_installedAddons;
