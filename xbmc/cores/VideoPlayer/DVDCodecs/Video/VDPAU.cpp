@@ -714,7 +714,7 @@ void CDecoder::OnResetDisplay()
   g_graphicsContext.restore(count);
 }
 
-int CDecoder::Check(AVCodecContext* avctx)
+CDVDVideoCodec::VCReturn CDecoder::Check(AVCodecContext* avctx)
 {
   EDisplayState state;
 
@@ -752,11 +752,11 @@ int CDecoder::Check(AVCodecContext* avctx)
     }
 
     if (state == VDPAU_RESET)
-      return VC_FLUSHED;
+      return CDVDVideoCodec::VC_FLUSHED;
     else
-      return VC_ERROR;
+      return CDVDVideoCodec::VC_ERROR;
   }
-  return 0;
+  return CDVDVideoCodec::VC_NONE;
 }
 
 bool CDecoder::IsVDPAUFormat(AVPixelFormat format)
@@ -1059,16 +1059,16 @@ void CDecoder::SetCodecControl(int flags)
     m_bufferStats.SetDraining(false);
 }
 
-int CDecoder::Decode(AVCodecContext *avctx, AVFrame *pFrame)
+CDVDVideoCodec::VCReturn CDecoder::Decode(AVCodecContext *avctx, AVFrame *pFrame)
 {
-  int result = Check(avctx);
-  if (result)
+  CDVDVideoCodec::VCReturn result = Check(avctx);
+  if (result != CDVDVideoCodec::VC_NONE)
     return result;
 
   CSingleLock lock(m_DecoderSection);
 
   if (!m_vdpauConfigured)
-    return VC_ERROR;
+    return CDVDVideoCodec::VC_ERROR;
 
   if(pFrame)
   { // we have a new frame from decoder
@@ -1078,7 +1078,7 @@ int CDecoder::Decode(AVCodecContext *avctx, AVFrame *pFrame)
     if (!m_videoSurfaces.IsValid(surf))
     {
       CLog::Log(LOGWARNING, "CVDPAU::Decode - ignoring invalid buffer");
-      return VC_BUFFER;
+      return CDVDVideoCodec::VC_BUFFER;
     }
     m_videoSurfaces.MarkRender(surf);
 
@@ -1094,7 +1094,6 @@ int CDecoder::Decode(AVCodecContext *avctx, AVFrame *pFrame)
     m_codecControl = pic.DVDPic.iFlags & (DVD_CODEC_CTRL_DRAIN | DVD_CODEC_CTRL_NO_POSTPROC);
   }
 
-  int retval = 0;
   uint16_t decoded, processed, render;
   Message *msg;
   while (m_vdpauOutput.m_controlPort.ReceiveInMessage(&msg))
@@ -1102,27 +1101,28 @@ int CDecoder::Decode(AVCodecContext *avctx, AVFrame *pFrame)
     if (msg->signal == COutputControlProtocol::ERROR)
     {
       m_DisplayState = VDPAU_ERROR;
-      retval |= VC_ERROR;
+      msg->Release();
+      return CDVDVideoCodec::VC_BUFFER;
     }
     msg->Release();
   }
 
+  bool drain = (m_codecControl & DVD_CODEC_CTRL_DRAIN);
+
   m_bufferStats.Get(decoded, processed, render);
+  // if all pics are drained, break the loop by setting VC_EOF
+  if (drain && decoded <= 0 && processed <= 0 && render <= 0)
+    return CDVDVideoCodec::VC_EOF;
 
   uint64_t startTime = CurrentHostCounter();
-  while (!retval)
+  while (true)
   {
-    bool drain = (m_codecControl & DVD_CODEC_CTRL_DRAIN);
-    // if all pics are drained, break the loop by setting VC_BUFFER
-    if (drain && decoded <= 0 && processed <= 0 && render <= 0)
-      drain = false;
-
     // first fill the buffers to keep vdpau busy
     // mixer will run with decoded >= 2. output is limited by number of output surfaces
     // In case mixer is bypassed we limit by looking at processed
-    if (decoded < 3 && processed < 3 && !drain)
+    if (!drain && decoded < 3 && processed < 3)
     {
-      retval |= VC_BUFFER;
+      return CDVDVideoCodec::VC_BUFFER;
     }
     else if (m_vdpauOutput.m_dataPort.ReceiveInMessage(&msg))
     {
@@ -1137,10 +1137,10 @@ int CDecoder::Decode(AVCodecContext *avctx, AVFrame *pFrame)
         m_presentPicture = *(CVdpauRenderPicture**)msg->data;
         m_presentPicture->vdpau = this;
         m_bufferStats.DecRender();
-        m_bufferStats.Get(decoded, processed, render);
-        retval |= VC_PICTURE;
         msg->Release();
-        break;
+        uint64_t diff = CurrentHostCounter() - startTime;
+        m_bufferStats.SetParams(diff, m_codecControl);
+        return CDVDVideoCodec::VC_PICTURE;
       }
       msg->Release();
     }
@@ -1148,43 +1148,29 @@ int CDecoder::Decode(AVCodecContext *avctx, AVFrame *pFrame)
     {
       if (msg->signal == COutputControlProtocol::STATS)
       {
+        msg->Release();
         m_bufferStats.Get(decoded, processed, render);
+        if (!drain && decoded < 3 && processed < 3)
+        {
+          return CDVDVideoCodec::VC_BUFFER;
+        }
       }
       else
       {
         m_DisplayState = VDPAU_ERROR;
-        retval |= VC_ERROR;
+        msg->Release();
+        return CDVDVideoCodec::VC_ERROR;
       }
-      msg->Release();
     }
 
-    if (decoded < 3 && processed < 3)
-    {
-      retval |= VC_BUFFER;
-    }
-
-    if (!retval && !m_inMsgEvent.WaitMSec(2000))
+    if (!m_inMsgEvent.WaitMSec(2000))
       break;
   }
-  uint64_t diff = CurrentHostCounter() - startTime;
-  if (retval & VC_PICTURE)
-  {
-    m_bufferStats.SetParams(diff, m_codecControl);
-  }
-  if (diff*1000/CurrentHostFrequency() > 50)
-  {
-    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-      CLog::Log(LOGDEBUG,"CVDPAU::Decode long wait: %d", (int)((diff*1000)/CurrentHostFrequency()));
-  }
 
-  if (!retval)
-  {
-    CLog::Log(LOGERROR, "VDPAU::%s - timed out waiting for output message", __FUNCTION__);
-    m_DisplayState = VDPAU_ERROR;
-    retval |= VC_ERROR;
-  }
+  CLog::Log(LOGERROR, "VDPAU::%s - timed out waiting for output message", __FUNCTION__);
+  m_DisplayState = VDPAU_ERROR;
 
-  return retval;
+  return CDVDVideoCodec::VC_ERROR;
 }
 
 bool CDecoder::GetPicture(AVCodecContext* avctx, DVDVideoPicture* picture)

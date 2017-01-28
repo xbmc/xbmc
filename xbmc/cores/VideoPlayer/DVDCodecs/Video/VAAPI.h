@@ -418,7 +418,7 @@ public:
   virtual ~CDecoder();
 
   virtual bool Open (AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat, unsigned int surfaces = 0) override;
-  virtual int Decode (AVCodecContext* avctx, AVFrame* frame);
+  virtual CDVDVideoCodec::VCReturn Decode (AVCodecContext* avctx, AVFrame* frame);
   virtual bool GetPicture(AVCodecContext* avctx, DVDVideoPicture* picture) override;
   virtual void Reset() override;
   virtual void Close();
@@ -426,7 +426,7 @@ public:
   virtual bool CanSkipDeint() override;
   virtual unsigned GetAllowedReferences() override { return 4; }
 
-  virtual int Check(AVCodecContext* avctx) override;
+  virtual CDVDVideoCodec::VCReturn Check(AVCodecContext* avctx) override;
   virtual const std::string Name() override { return "vaapi"; }
   virtual void SetCodecControl(int flags) override;
 

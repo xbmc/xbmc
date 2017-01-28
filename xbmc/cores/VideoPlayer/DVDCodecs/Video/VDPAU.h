@@ -559,7 +559,7 @@ public:
   virtual ~CDecoder();
 
   virtual bool Open      (AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat, unsigned int surfaces = 0);
-  virtual int  Decode    (AVCodecContext* avctx, AVFrame* frame);
+  virtual CDVDVideoCodec::VCReturn Decode    (AVCodecContext* avctx, AVFrame* frame);
   virtual bool GetPicture(AVCodecContext* avctx, DVDVideoPicture* picture);
   virtual void Reset();
   virtual void Close();
@@ -567,7 +567,7 @@ public:
   virtual bool CanSkipDeint();
   virtual unsigned GetAllowedReferences() { return 5; }
 
-  virtual int  Check(AVCodecContext* avctx);
+  virtual CDVDVideoCodec::VCReturn Check(AVCodecContext* avctx);
   virtual const std::string Name() { return "vdpau"; }
   virtual void SetCodecControl(int flags);
 
