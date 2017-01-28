@@ -586,7 +586,7 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdV
         if (m_pHardware->GetPicture(m_pCodecContext, pDvdVideoPicture))
           return VC_PICTURE;
         else
-          return VC_BUFFER;
+          return VC_ERROR;
       }
       else
       {
@@ -684,7 +684,7 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdV
         return VC_ERROR;
     }
 
-    return VC_NONE;
+    return ret;
   }
   // process filters for sw decoding
   else

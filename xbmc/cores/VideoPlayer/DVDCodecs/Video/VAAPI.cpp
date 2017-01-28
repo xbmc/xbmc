@@ -825,16 +825,16 @@ void CDecoder::SetCodecControl(int flags)
   m_codecControl = flags & (DVD_CODEC_CTRL_DRAIN | DVD_CODEC_CTRL_HURRY);
 }
 
-int CDecoder::Decode(AVCodecContext* avctx, AVFrame* pFrame)
+CDVDVideoCodec::VCReturn CDecoder::Decode(AVCodecContext* avctx, AVFrame* pFrame)
 {
-  int result = Check(avctx);
-  if (result && result != VC_NOBUFFER)
+  CDVDVideoCodec::VCReturn result = Check(avctx);
+  if (result != CDVDVideoCodec::VC_NOBUFFER && result != CDVDVideoCodec::VC_NONE)
     return result;
 
   CSingleLock lock(m_DecoderSection);
 
   if (!m_vaapiConfigured)
-    return VC_ERROR;
+    return CDVDVideoCodec::VC_ERROR;
 
   if (pFrame)
   { // we have a new frame from decoder
@@ -844,7 +844,7 @@ int CDecoder::Decode(AVCodecContext* avctx, AVFrame* pFrame)
     if (!m_videoSurfaces.IsValid(surf))
     {
       CLog::Log(LOGWARNING, "VAAPI::Decode - ignoring invalid buffer");
-      return VC_BUFFER;
+      return CDVDVideoCodec::VC_BUFFER;
     }
     m_videoSurfaces.MarkRender(surf);
 
@@ -860,7 +860,6 @@ int CDecoder::Decode(AVCodecContext* avctx, AVFrame* pFrame)
     m_codecControl = pic.DVDPic.iFlags & (DVD_CODEC_CTRL_HURRY | DVD_CODEC_CTRL_NO_POSTPROC);
   }
 
-  int retval = 0;
   uint16_t decoded, processed, render;
   bool vpp;
   Message *msg;
@@ -869,24 +868,25 @@ int CDecoder::Decode(AVCodecContext* avctx, AVFrame* pFrame)
     if (msg->signal == COutputControlProtocol::ERROR)
     {
       m_DisplayState = VAAPI_ERROR;
-      retval |= VC_ERROR;
+      msg->Release();
+      return CDVDVideoCodec::VC_ERROR;
     }
     msg->Release();
   }
 
+  bool drain = (m_codecControl & DVD_CODEC_CTRL_DRAIN);
+
   m_bufferStats.Get(decoded, processed, render, vpp);
+  // if all pics are drained, break the loop by setting VC_EOF
+  if (drain && decoded <= 0 && processed <= 0 && render <= 0)
+    return CDVDVideoCodec::VC_EOF;
 
-  while (!retval)
+  while (true)
   {
-    bool drain = (m_codecControl & DVD_CODEC_CTRL_DRAIN);
-    // if all pics are drained, break the loop by setting VC_BUFFER
-    if (drain && decoded <= 0 && processed <= 0 && render <= 0)
-      drain = false;
-
     // first fill the buffers to keep vaapi busy
-    if (decoded < 2 && processed < 3 && m_videoSurfaces.HasFree() && !drain)
+    if (!drain && decoded < 2 && processed < 3 && m_videoSurfaces.HasFree())
     {
-      retval |= VC_BUFFER;
+      return CDVDVideoCodec::VC_BUFFER;
     }
     else if (m_vaapiOutput.m_dataPort.ReceiveInMessage(&msg))
     {
@@ -901,10 +901,9 @@ int CDecoder::Decode(AVCodecContext* avctx, AVFrame* pFrame)
         m_presentPicture = *(CVaapiRenderPicture**)msg->data;
         m_presentPicture->vaapi = this;
         m_bufferStats.DecRender();
-        m_bufferStats.Get(decoded, processed, render, vpp);
-        retval |= VC_PICTURE;
+        m_bufferStats.SetParams(0, m_codecControl);
         msg->Release();
-        break;
+        return CDVDVideoCodec::VC_PICTURE;
       }
       msg->Release();
     }
@@ -912,43 +911,34 @@ int CDecoder::Decode(AVCodecContext* avctx, AVFrame* pFrame)
     {
       if (msg->signal == COutputControlProtocol::STATS)
       {
+        msg->Release();
         m_bufferStats.Get(decoded, processed, render, vpp);
+        if (!drain && decoded < 2 && processed < 3)
+        {
+          return CDVDVideoCodec::VC_BUFFER;
+        }
       }
       else
       {
+        msg->Release();
         m_DisplayState = VAAPI_ERROR;
-        retval |= VC_ERROR;
+        return CDVDVideoCodec::VC_ERROR;
       }
-      msg->Release();
     }
 
-    if (decoded < 2 && processed < 3)
-    {
-      retval |= VC_BUFFER;
-    }
-
-    if (!retval && !m_inMsgEvent.WaitMSec(2000))
+    if (!m_inMsgEvent.WaitMSec(2000))
       break;
   }
-  if (retval & VC_PICTURE)
-  {
-    m_bufferStats.SetParams(0, m_codecControl);
-  }
 
-  if (!retval)
-  {
-    CLog::Log(LOGERROR, "VAAPI::%s - timed out waiting for output message - decoded: %d, proc: %d, has free surface: %s",
-                        __FUNCTION__, decoded, processed, m_videoSurfaces.HasFree() ? "yes" : "no");
-    m_DisplayState = VAAPI_ERROR;
-    retval |= VC_ERROR;
-  }
+  CLog::Log(LOGERROR, "VAAPI::%s - timed out waiting for output message - decoded: %d, proc: %d, has free surface: %s",
+                      __FUNCTION__, decoded, processed, m_videoSurfaces.HasFree() ? "yes" : "no");
+  m_DisplayState = VAAPI_ERROR;
 
-  return retval;
+  return CDVDVideoCodec::VC_ERROR;
 }
 
-int CDecoder::Check(AVCodecContext* avctx)
+CDVDVideoCodec::VCReturn CDecoder::Check(AVCodecContext* avctx)
 {
-  int ret = 0;
   EDisplayState state;
 
   { CSingleLock lock(m_DecoderSection);
@@ -986,22 +976,21 @@ int CDecoder::Check(AVCodecContext* avctx)
     }
 
     if (state == VAAPI_RESET)
-      return VC_FLUSHED;
+      return CDVDVideoCodec::VC_FLUSHED;
     else
-      return VC_ERROR;
+      return CDVDVideoCodec::VC_ERROR;
   }
 
   if (m_getBufferError > 0 && m_getBufferError < 5)
   {
     // if there is no other error, sleep for a short while
     // in order not to drain player's message queue
-    if (!ret)
-      Sleep(20);
+    Sleep(10);
 
-    ret |= VC_NOBUFFER;
+    return CDVDVideoCodec::VC_NOBUFFER;
   }
 
-  return ret;
+  return CDVDVideoCodec::VC_NONE;
 }
 
 bool CDecoder::GetPicture(AVCodecContext* avctx, DVDVideoPicture* picture)
