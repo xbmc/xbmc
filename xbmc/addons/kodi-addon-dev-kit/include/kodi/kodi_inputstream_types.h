@@ -149,7 +149,7 @@ extern "C" {
       CRYPTO_KEY_SYSTEM_PLAYREADY,
       CRYPTO_KEY_SYSTEM_COUNT
     } m_CryptoKeySystem;                 /*!< @brief keysystem for encrypted media, KEY_SYSTEM_NONE for unencrypted media */
-    char * m_CryptoSessionId;            /*!< @brief The crypto session key id */
+    char m_CryptoSessionId[32];          /*!< @brief The crypto session key id */
     uint16_t m_CryptoSessionIdSize;      /*!< @brief The size of the crypto session key id */
   } INPUTSTREAM_INFO;
 
