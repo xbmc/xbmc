@@ -473,6 +473,9 @@ int CDVDVideoCodecFFmpeg::AddData(uint8_t* pData, int iSize, double dts, double 
   }
 
   m_iLastKeyframe++;
+  // put a limit on convergence count to avoid huge mem usage on streams without keyframes
+  if (m_iLastKeyframe > 300)
+    m_iLastKeyframe = 300;
 
   m_dts = dts;
   m_pCodecContext->reordered_opaque = pts_dtoi(pts);
@@ -654,13 +657,12 @@ int CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
 
   if (!m_started)
   {
+    if (m_iLastKeyframe >= 300 && m_pDecodedFrame->pict_type == AV_PICTURE_TYPE_I)
+      m_started = true;
+
     av_frame_unref(m_pDecodedFrame);
     return VC_BUFFER;
   }
-
-  // put a limit on convergence count to avoid huge mem usage on streams without keyframes
-  if (m_iLastKeyframe > 300)
-    m_iLastKeyframe = 300;
 
   // push the frame to hw decoder for further processing
   if (m_pHardware)
