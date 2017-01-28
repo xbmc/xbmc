@@ -248,7 +248,7 @@ void CGUIDialogSubtitles::FillServices()
   else
     // Set default service for filemode and movies
     defaultService = CServiceBroker::GetSettings().GetString(CSettings::SETTING_SUBTITLES_MOVIE);
-  
+
   std::string service = addons.front()->ID();
   for (const auto addon : addons)
   {

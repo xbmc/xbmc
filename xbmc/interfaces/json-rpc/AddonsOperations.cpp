@@ -81,61 +81,57 @@ JSONRPC_STATUS CAddonsOperations::GetAddons(const std::string &method, ITranspor
   else
     addonTypes.push_back(addonType);
 
-   AddonInfos addons;
-   for (const auto typeIt : addonTypes)
-   {
-     AddonInfos typeAddons;
-     if (typeIt == ADDON_UNKNOWN)
-     {
-       if (!enabled.isBoolean()) //All
-       {
-//         if (!installed.isBoolean() || installed.asBoolean())
-//           typeAddons = CAddonMgr::GetInstance().GetAddonInfos(false, ADDON_UNKNOWN);
-//           CAddonMgr::GetInstance().GetInstalledAddons(typeAddons);
-         if (!installed.isBoolean() || (installed.isBoolean() && !installed.asBoolean()))
-           CAddonMgr::GetInstance().GetInstallableAddons(typeAddons);
-       }
-//       else if (enabled.asBoolean() && (!installed.isBoolean() || installed.asBoolean())) //Enabled
-//         CAddonMgr::GetInstance().GetAddons(typeAddons);
-//       else if (!installed.isBoolean() || installed.asBoolean())
-//         CAddonMgr::GetInstance().GetDisabledAddons(typeAddons);
-     }
-     else
-     {
-       if (!enabled.isBoolean()) //All
-       {
-//         if (!installed.isBoolean() || installed.asBoolean())
-//           CAddonMgr::GetInstance().GetInstalledAddons(typeAddons, *typeIt);
-         if (!installed.isBoolean() || (installed.isBoolean() && !installed.asBoolean()))
-           CAddonMgr::GetInstance().GetInstallableAddons(typeAddons, typeIt);
-       }
-//       else if (enabled.asBoolean() && (!installed.isBoolean() || installed.asBoolean())) //Enabled
-//         CAddonMgr::GetInstance().GetAddons(typeAddons, *typeIt);
-//       else if (!installed.isBoolean() || installed.asBoolean())
-//         CAddonMgr::GetInstance().GetDisabledAddons(typeAddons, *typeIt);
-     }
+  AddonInfos addons;
+  for (const auto typeIt : addonTypes)
+  {
+    if (typeIt == ADDON_UNKNOWN)
+    {
+      if (!enabled.isBoolean()) //All
+      {
+        if (!installed.isBoolean() || installed.asBoolean())
+          CAddonMgr::GetInstance().GetAddonInfos(addons, false, typeIt);
+        if (!installed.isBoolean() || (installed.isBoolean() && !installed.asBoolean()))
+          CAddonMgr::GetInstance().GetInstallableAddonInfos(addons, typeIt);
+      }
+      else if (enabled.asBoolean() && (!installed.isBoolean() || installed.asBoolean())) //Enabled
+        CAddonMgr::GetInstance().GetAddonInfos(addons, true, typeIt);
+      else  if (!installed.isBoolean() || installed.asBoolean())
+        CAddonMgr::GetInstance().GetDisabledAddonInfos(addons, typeIt);
+    }
+    else
+    {
+      if (!enabled.isBoolean()) //All
+      {
+        if (!installed.isBoolean() || installed.asBoolean())
+          CAddonMgr::GetInstance().GetAddonInfos(addons, false, typeIt);
+        if (!installed.isBoolean() || (installed.isBoolean() && !installed.asBoolean()))
+          CAddonMgr::GetInstance().GetInstallableAddonInfos(addons, typeIt);
+      }
+      else if (enabled.asBoolean() && (!installed.isBoolean() || installed.asBoolean())) //Enabled
+        CAddonMgr::GetInstance().GetAddonInfos(addons, true, typeIt);
+      else if (!installed.isBoolean() || installed.asBoolean())
+        CAddonMgr::GetInstance().GetDisabledAddonInfos(addons, typeIt);
+    }
+  }
 
-     addons.insert(addons.end(), typeAddons.begin(), typeAddons.end());
-   }
+  // remove library addons
+  for (int index = 0; index < (int)addons.size(); index++)
+  {
+    AddonInfoPtr addonInfo = addons.at(index);
+    if ((addons.at(index)->Type() <= ADDON_UNKNOWN || addons.at(index)->Type() >= ADDON_MAX) ||
+        (!addonInfo->ProvidesSubContent(content) && contentFound))
+    {
+      addons.erase(addons.begin() + index);
+      index--;
+    }
+  }
 
-   // remove library addons
-   for (int index = 0; index < (int)addons.size(); index++)
-   {
-     AddonInfoPtr addonInfo = addons.at(index);
-     if ((addons.at(index)->Type() <= ADDON_UNKNOWN || addons.at(index)->Type() >= ADDON_MAX) ||
-         !addonInfo->ProvidesSubContent(content))
-     {
-       addons.erase(addons.begin() + index);
-       index--;
-     }
-   }
+  int start, end;
+  HandleLimits(parameterObject, result, addons.size(), start, end);
 
-   int start, end;
-   HandleLimits(parameterObject, result, addons.size(), start, end);
-
-   CAddonDatabase addondb;
-//   for (int index = start; index < end; index++)
-//     FillDetails(addons.at(index), parameterObject["properties"], result["addons"], addondb, true);
+  CAddonDatabase addondb;
+  for (int index = start; index < end; index++)
+    FillDetails(addons.at(index), parameterObject["properties"], result["addons"], addondb, true);
 
   return OK;
 }
@@ -143,8 +139,8 @@ JSONRPC_STATUS CAddonsOperations::GetAddons(const std::string &method, ITranspor
 JSONRPC_STATUS CAddonsOperations::GetAddonDetails(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   std::string id = parameterObject["addonid"].asString();
-  AddonPtr addon;
-  if (!CAddonMgr::GetInstance().GetAddon(id, addon, ADDON::ADDON_UNKNOWN, false) || addon.get() == NULL ||
+  AddonInfoPtr addon = CAddonMgr::GetInstance().GetInstalledAddonInfo(id);
+  if (addon.get() == nullptr ||
       addon->Type() <= ADDON_UNKNOWN || addon->Type() >= ADDON_MAX)
     return InvalidParams;
     
@@ -157,9 +153,7 @@ JSONRPC_STATUS CAddonsOperations::GetAddonDetails(const std::string &method, ITr
 JSONRPC_STATUS CAddonsOperations::SetAddonEnabled(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   std::string id = parameterObject["addonid"].asString();
-  AddonPtr addon;
-  if (!CAddonMgr::GetInstance().GetAddon(id, addon, ADDON::ADDON_UNKNOWN, false) || addon == nullptr ||
-    addon->Type() <= ADDON_UNKNOWN || addon->Type() >= ADDON_MAX)
+  if (!CAddonMgr::GetInstance().IsAddonInstalled(id))
     return InvalidParams;
 
   bool disabled = false;
@@ -178,9 +172,7 @@ JSONRPC_STATUS CAddonsOperations::SetAddonEnabled(const std::string &method, ITr
 JSONRPC_STATUS CAddonsOperations::ExecuteAddon(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   std::string id = parameterObject["addonid"].asString();
-  AddonPtr addon;
-  if (!CAddonMgr::GetInstance().GetAddon(id, addon) || addon.get() == NULL ||
-      addon->Type() < ADDON_VIZ || addon->Type() >= ADDON_MAX)
+  if (!CAddonMgr::GetInstance().IsAddonEnabled(id))
     return InvalidParams;
     
   std::string argv;
@@ -223,7 +215,7 @@ JSONRPC_STATUS CAddonsOperations::ExecuteAddon(const std::string &method, ITrans
   return ACK;
 }
 
-static CVariant Serialize(const AddonPtr& addon)
+static CVariant Serialize(const AddonInfoPtr& addon)
 {
   CVariant variant;
   variant["addonid"] = addon->ID();
@@ -257,7 +249,7 @@ static CVariant Serialize(const AddonPtr& addon)
    * @todo find a way to bring everything here?
    */
   variant["extrainfo"] = CVariant(CVariant::VariantTypeArray);
-  for (auto values : addon->AddonInfo()->GetValues())
+  for (auto values : addon->GetValues())
   {
     for (auto value : values.second)
     {
@@ -271,7 +263,7 @@ static CVariant Serialize(const AddonPtr& addon)
   return variant;
 }
 
-void CAddonsOperations::FillDetails(AddonPtr addon, const CVariant& fields, CVariant &result, CAddonDatabase &addondb, bool append /* = false */)
+void CAddonsOperations::FillDetails(AddonInfoPtr addon, const CVariant& fields, CVariant &result, CAddonDatabase &addondb, bool append /* = false */)
 {
   if (addon.get() == NULL)
     return;
