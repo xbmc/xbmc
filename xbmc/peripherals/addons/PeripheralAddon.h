@@ -47,7 +47,7 @@ namespace PERIPHERALS
   class CPeripheralAddon : public ADDON::CAddonDll
   {
   public:
-    CPeripheralAddon(ADDON::CAddonInfo addonInfo);
+    CPeripheralAddon(ADDON::AddonInfoPtr addonInfo);
     virtual ~CPeripheralAddon(void);
 
     // implementation of CAddon

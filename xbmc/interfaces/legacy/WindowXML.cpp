@@ -107,7 +107,7 @@ namespace XBMCAddon
       if (!XFILE::CFile::Exists(strSkinPath))
       {
         std::string str("none");
-        ADDON::CAddonInfo addonInfo(str, ADDON::ADDON_SKIN);
+        ADDON::AddonInfoPtr addonInfo = std::make_shared<ADDON::CAddonInfo>(str, ADDON::ADDON_SKIN);
         ADDON::CSkinInfo::TranslateResolution(defaultRes, res);
 
         // Check for the matching folder for the skin in the fallback skins folder
@@ -119,7 +119,7 @@ namespace XBMCAddon
         // Check for the matching folder for the skin in the fallback skins folder (if it exists)
         if (XFILE::CFile::Exists(basePath))
         {
-          addonInfo.m_path = basePath;
+          addonInfo->m_path = basePath;
           ADDON::CSkinInfo skinInfo(addonInfo, res);
           skinInfo.Start();
           strSkinPath = skinInfo.GetSkinPath(xmlFilename, &res);
@@ -128,7 +128,7 @@ namespace XBMCAddon
         if (!XFILE::CFile::Exists(strSkinPath))
         {
           // Finally fallback to the DefaultSkin as it didn't exist in either the XBMC Skin folder or the fallback skin folder
-          addonInfo.m_path = URIUtils::AddFileToFolder(fallbackPath, defaultSkin);
+          addonInfo->m_path = URIUtils::AddFileToFolder(fallbackPath, defaultSkin);
           ADDON::CSkinInfo skinInfo(addonInfo, res);
 
           skinInfo.Start();

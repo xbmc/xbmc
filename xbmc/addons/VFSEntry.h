@@ -32,7 +32,7 @@ namespace ADDON
   public:
     //! \brief Construct from add-on properties.
     //! \param addonInfo General addon properties
-    CVFSEntry(CAddonInfo addonInfo);
+    CVFSEntry(AddonInfoPtr addonInfo);
 
     //! \brief Empty destructor.
     virtual ~CVFSEntry() {}

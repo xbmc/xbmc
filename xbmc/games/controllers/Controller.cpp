@@ -29,8 +29,8 @@ using namespace GAME;
 
 const ControllerPtr CController::EmptyPtr;
 
-CController::CController(ADDON::CAddonInfo addonInfo) :
-  CAddon(std::move(addonInfo)),
+CController::CController(ADDON::AddonInfoPtr addonInfo) :
+  CAddon(addonInfo),
   m_bLoaded(false)
 {
 }

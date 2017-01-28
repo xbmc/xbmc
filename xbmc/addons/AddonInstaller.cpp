@@ -572,7 +572,7 @@ bool CAddonInstallJob::DoWork()
       CURL archive = URIUtils::CreateArchivePath("zip", CURL(package), "");
 
       CFileItemList archivedFiles;
-      AddonPtr temp;
+      AddonInfoPtr temp;
       if (!CDirectory::GetDirectory(archive, archivedFiles) ||
           archivedFiles.Size() != 1 || !archivedFiles[0]->m_bIsFolder ||
           !CAddonMgr::GetInstance().LoadAddonDescription(archivedFiles[0]->GetPath(), temp))

@@ -63,7 +63,7 @@ namespace PVR
   class CPVRClient : public ADDON::CAddonDll
   {
   public:
-    CPVRClient(ADDON::CAddonInfo addonInfo);
+    CPVRClient(ADDON::AddonInfoPtr addonInfo);
     virtual ~CPVRClient(void);
 
     virtual void OnDisabled() override;

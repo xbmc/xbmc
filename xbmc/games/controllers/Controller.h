@@ -31,7 +31,7 @@ namespace GAME
 class CController : public ADDON::CAddon
 {
 public:
-  CController(ADDON::CAddonInfo addonInfo);
+  CController(ADDON::AddonInfoPtr addonInfo);
   virtual ~CController(void) { }
 
   static const ControllerPtr EmptyPtr;

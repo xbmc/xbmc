@@ -29,7 +29,7 @@ class CAddonBuilder
 public:
   CAddonBuilder() : m_built(false) {}
 
-  std::shared_ptr<CAddon> Build();
+  std::shared_ptr<CAddon> Build(AddonInfoPtr addonInfo);
   void SetId(std::string id) { m_addonInfo.m_id = std::move(id); }
   void SetPath(std::string path) { m_addonInfo.m_path = std::move(path); }
 

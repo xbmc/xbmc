@@ -39,7 +39,7 @@ namespace ADDON
       LOGIN
     };
 
-    CService(CAddonInfo addonInfo);
+    CService(AddonInfoPtr addonInfo);
 
     bool Start();
     bool Stop();

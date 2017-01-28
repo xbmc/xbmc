@@ -56,8 +56,8 @@ class CVFSURLWrapper
     std::vector<std::string> m_strings;
 };
 
-CVFSEntry::CVFSEntry(CAddonInfo addonInfo)
-  : CAddonDll(std::move(addonInfo))
+CVFSEntry::CVFSEntry(AddonInfoPtr addonInfo)
+  : CAddonDll(addonInfo)
 {
   m_protocols = AddonInfo()->GetValue("@protocols").asString();
   m_extensions = AddonInfo()->GetValue("@extensions").asString();

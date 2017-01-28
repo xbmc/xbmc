@@ -92,28 +92,6 @@ static cp_extension_t* GetFirstExtPoint(const cp_plugin_info_t* addon, TYPE type
   return nullptr;
 }
 
-AddonPtr CAddonMgr::Factory(const cp_plugin_info_t* plugin, TYPE type)
-{
-  CAddonBuilder builder;
-  if (Factory(plugin, type, builder))
-    return builder.Build();
-  return nullptr;
-}
-
-bool CAddonMgr::Factory(const cp_plugin_info_t* plugin, TYPE type, CAddonBuilder& builder)
-{
-  if (!plugin || !plugin->identifier)
-    return false;
-
-  if (!PlatformSupportsAddon(plugin))
-    return false;
-
-  if (plugin->plugin_path && strcmp(plugin->plugin_path, "") != 0)
-    builder.SetPath(plugin->plugin_path);
-
-  return true;
-}
-
 CAddonMgr::CAddonMgr()
   : m_cp_context(nullptr),
   m_cpluff(nullptr),
@@ -376,46 +354,18 @@ bool CAddonMgr::FindInstallableById(const std::string& addonId, AddonInfoPtr& re
 bool CAddonMgr::GetAddonsInternal(const TYPE &type, VECADDONS &addons, bool enabledOnly)
 {
   CSingleLock lock(m_critSection);
-  if (!m_cp_context)
-    return false;
 
-  std::vector<CAddonBuilder> builders;
-  m_database.GetInstalled(builders);
-
-  for (auto& builder : builders)
+  for (auto info : GetAddonInfos(enabledOnly, type))
   {
-    cp_status_t status;
-    cp_plugin_info_t* cp_addon = m_cpluff->get_plugin_info(m_cp_context, builder.GetId().c_str(), &status);
-    if (status == CP_OK && cp_addon)
+    CAddonBuilder builder;
+    AddonPtr addon = builder.Build(info);
+    if (addon)
     {
-      if (enabledOnly && !IsAddonEnabled(cp_addon->identifier))
-      {
-        m_cpluff->release_info(m_cp_context, cp_addon);
-        continue;
-      }
-
-      //FIXME: hack for skipping special dependency addons (xbmc.python etc.).
-      //Will break if any extension point is added to them
-      cp_extension_t *props = GetFirstExtPoint(cp_addon, type);
-      if (props == nullptr)
-      {
-        m_cpluff->release_info(m_cp_context, cp_addon);
-        continue;
-      }
-
-      AddonPtr addon;
-      if (Factory(cp_addon, type, builder))
-        addon = builder.Build();
-      m_cpluff->release_info(m_cp_context, cp_addon);
-
-      if (addon)
-      {
-        // if the addon has a running instance, grab that
-        AddonPtr runningAddon = addon->GetRunningInstance();
-        if (runningAddon)
-          addon = runningAddon;
-        addons.emplace_back(std::move(addon));
-      }
+      // if the addon has a running instance, grab that
+      AddonPtr runningAddon = addon->GetRunningInstance();
+      if (runningAddon)
+        addon = runningAddon;
+      addons.emplace_back(std::move(addon));
     }
   }
   return addons.size() > 0;
@@ -424,30 +374,15 @@ bool CAddonMgr::GetAddonsInternal(const TYPE &type, VECADDONS &addons, bool enab
 bool CAddonMgr::GetAddon(const std::string &str, AddonPtr &addon, const TYPE &type/*=ADDON_UNKNOWN*/, bool enabledOnly /*= true*/)
 {
   CSingleLock lock(m_critSection);
-
-  cp_status_t status;
-  cp_plugin_info_t *cpaddon = m_cpluff->get_plugin_info(m_cp_context, str.c_str(), &status);
-  if (status == CP_OK && cpaddon)
+fprintf(stderr, "--------------<\n");
+  AddonInfoPtr info = GetInstalledAddonInfo(str);
+  if (info)
   {
-    addon = Factory(cpaddon, type);
-    m_cpluff->release_info(m_cp_context, cpaddon);
-
-    if (addon)
-    {
-      if (enabledOnly && !IsAddonEnabled(addon->ID()))
-        return false;
-
-      // if the addon has a running instance, grab that
-      AddonPtr runningAddon = addon->GetRunningInstance();
-      if (runningAddon)
-        addon = runningAddon;
-    }
-    return NULL != addon.get();
+    CAddonBuilder builder;
+    addon = builder.Build(info);
   }
-  if (cpaddon)
-    m_cpluff->release_info(m_cp_context, cpaddon);
 
-  return false;
+  return nullptr != addon.get();
 }
 
 AddonDllPtr CAddonMgr::GetAddon(const TYPE &type, const std::string &id)
@@ -845,79 +780,10 @@ bool CAddonMgr::GetExtList(cp_cfg_element_t *base, const char *path, std::vector
   return true;
 }
 
-bool CAddonMgr::LoadAddonDescription(const std::string &directory, AddonPtr &addon)
-{
-  auto addonXmlPath = CSpecialProtocol::TranslatePath(URIUtils::AddFileToFolder(directory, "addon.xml"));
-
-  XFILE::CFile file;
-  XFILE::auto_buffer buffer;
-  if (file.LoadFile(addonXmlPath, buffer) <= 0)
-  {
-    CLog::Log(LOGERROR, "Failed to read '%s'", addonXmlPath.c_str());
-    return false;
-  }
-
-  cp_status_t status;
-  cp_context_t* context = m_cpluff->create_context(&status);
-  if (!context)
-    return false;
-
-  auto info = m_cpluff->load_plugin_descriptor_from_memory(context, buffer.get(), buffer.size(), &status);
-  if (info)
-  {
-    // Correct the path. load_plugin_descriptor_from_memory sets it to 'memory'
-    info->plugin_path = static_cast<char*>(malloc(directory.length() + 1));
-    strncpy(info->plugin_path, directory.c_str(), directory.length());
-    info->plugin_path[directory.length()] = '\0';
-    addon = Factory(info, ADDON_UNKNOWN);
-
-    free(info->plugin_path);
-    info->plugin_path = nullptr;
-    m_cpluff->release_info(context, info);
-  }
-  else
-    CLog::Log(LOGERROR, "Failed to parse '%s'", addonXmlPath.c_str());
-
-  m_cpluff->destroy_context(context);
-  return addon != nullptr;
-}
-
 bool CAddonMgr::LoadAddonDescription(const std::string &directory, AddonInfoPtr &addon)
 {
-  auto addonXmlPath = CSpecialProtocol::TranslatePath(URIUtils::AddFileToFolder(directory, "addon.xml"));
-
-//   XFILE::CFile file;
-//   XFILE::auto_buffer buffer;
-//   if (file.LoadFile(addonXmlPath, buffer) <= 0)
-//   {
-//     CLog::Log(LOGERROR, "Failed to read '%s'", addonXmlPath.c_str());
-//     return false;
-//   }
-// 
-//   cp_status_t status;
-//   cp_context_t* context = m_cpluff->create_context(&status);
-//   if (!context)
-//     return false;
-// 
-//   auto info = m_cpluff->load_plugin_descriptor_from_memory(context, buffer.get(), buffer.size(), &status);
-//   if (info)
-//   {
-//     // Correct the path. load_plugin_descriptor_from_memory sets it to 'memory'
-//     info->plugin_path = static_cast<char*>(malloc(directory.length() + 1));
-//     strncpy(info->plugin_path, directory.c_str(), directory.length());
-//     info->plugin_path[directory.length()] = '\0';
-    fprintf(stderr, "----------------- %s\n", __PRETTY_FUNCTION__);
-//     addon = Factory(info, ADDON_UNKNOWN);
-// 
-//     free(info->plugin_path);
-//     info->plugin_path = nullptr;
-//     m_cpluff->release_info(context, info);
-//   }
-//   else
-//     CLog::Log(LOGERROR, "Failed to parse '%s'", addonXmlPath.c_str());
-// 
-//   m_cpluff->destroy_context(context);
-  return addon != nullptr;
+  addon = std::make_shared<CAddonInfo>(directory);
+  return addon != nullptr && addon->IsUsable();
 }
 
 bool CAddonMgr::ServicesHasStarted() const

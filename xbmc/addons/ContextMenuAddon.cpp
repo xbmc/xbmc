@@ -70,8 +70,8 @@ void CContextMenuAddon::ParseMenu(
   }
 }
 
-CContextMenuAddon::CContextMenuAddon(CAddonInfo addonInfo)
-  : CAddon(std::move(addonInfo))
+CContextMenuAddon::CContextMenuAddon(AddonInfoPtr addonInfo)
+  : CAddon(addonInfo)
 {
   const CAddonExtensions* menu = AddonInfo()->GetElement("menu");
   if (menu)
@@ -97,7 +97,7 @@ CContextMenuAddon::CContextMenuAddon(CAddonInfo addonInfo)
         label = g_localizeStrings.GetAddonString(AddonInfo()->ID(), atoi(label.c_str()));
 
       CContextMenuItem menuItem = CContextMenuItem::CreateItem(label, parent,
-          URIUtils::AddFileToFolder(addonInfo.m_path, addonInfo.m_libname), visCondition, AddonInfo()->ID());
+          URIUtils::AddFileToFolder(AddonInfo()->Path(), AddonInfo()->Libname()), visCondition, AddonInfo()->ID());
 
       m_items.push_back(menuItem);
     }

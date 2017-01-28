@@ -33,7 +33,7 @@ namespace ADDON
   class CInputStream : public CAddonDll
   {
   public:
-    CInputStream(const CAddonInfo& addonInfo);
+    CInputStream(AddonInfoPtr addonInfo);
     virtual ~CInputStream() {}
 
     virtual void SaveSettings() override;

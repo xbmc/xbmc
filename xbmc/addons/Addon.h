@@ -62,35 +62,35 @@ void OnPostUnInstall(const AddonPtr& addon);
 class CAddon : public std::enable_shared_from_this<CAddon>
 {
 public:
-  explicit CAddon(CAddonInfo addonInfo);
+  explicit CAddon(AddonInfoPtr addonInfo);
   virtual ~CAddon() {}
 
-  virtual TYPE Type() const { return m_addonInfo.m_type; }
+  virtual TYPE Type() const { return m_addonInfo->m_type; }
   virtual TYPE FullType() const { return Type(); }
-  virtual bool IsType(TYPE type) const { return type == m_addonInfo.m_type; }
-  virtual std::string ID() const { return m_addonInfo.m_id; }
-  virtual std::string Name() const { return m_addonInfo.m_name; }
+  virtual bool IsType(TYPE type) const { return type == m_addonInfo->m_type; }
+  virtual std::string ID() const { return m_addonInfo->m_id; }
+  virtual std::string Name() const { return m_addonInfo->m_name; }
   virtual bool IsInUse() const { return false; };
-  virtual AddonVersion Version() const { return m_addonInfo.m_version; }
-  virtual AddonVersion MinVersion() const { return m_addonInfo.m_minversion; }
-  virtual std::string Summary() const { return m_addonInfo.m_summary; }
-  virtual std::string Description() const { return m_addonInfo.m_description; }
-  virtual std::string Path() const { return m_addonInfo.m_path; }
+  virtual AddonVersion Version() const { return m_addonInfo->m_version; }
+  virtual AddonVersion MinVersion() const { return m_addonInfo->m_minversion; }
+  virtual std::string Summary() const { return m_addonInfo->m_summary; }
+  virtual std::string Description() const { return m_addonInfo->m_description; }
+  virtual std::string Path() const { return m_addonInfo->m_path; }
   virtual std::string Profile() const { return m_profilePath; }
-  virtual std::string LibPath() const { return m_addonInfo.LibPath(); }
-  virtual std::string Author() const { return m_addonInfo.m_author; }
-  virtual std::string ChangeLog() const { return m_addonInfo.m_changelog; }
-  virtual std::string FanArt() const { return m_addonInfo.m_fanart; }
-  virtual std::string Icon() const { return m_addonInfo.m_icon; };
-  virtual std::vector<std::string> Screenshots() const { return m_addonInfo.m_screenshots; };
-  virtual std::string Disclaimer() const { return m_addonInfo.m_disclaimer; }
-  virtual std::string Broken() const { return m_addonInfo.m_broken; }
-  virtual CDateTime InstallDate() const { return m_addonInfo.m_installDate; }
-  virtual CDateTime LastUpdated() const { return m_addonInfo.m_lastUpdated; }
-  virtual CDateTime LastUsed() const { return m_addonInfo.m_lastUsed; }
-  virtual std::string Origin() const { return m_addonInfo.m_origin; }
-  virtual uint64_t PackageSize() const { return m_addonInfo.m_packageSize; }
-  virtual const ADDONDEPS& GetDeps() const { return m_addonInfo.m_dependencies; }
+  virtual std::string LibPath() const { return m_addonInfo->LibPath(); }
+  virtual std::string Author() const { return m_addonInfo->m_author; }
+  virtual std::string ChangeLog() const { return m_addonInfo->m_changelog; }
+  virtual std::string FanArt() const { return m_addonInfo->m_fanart; }
+  virtual std::string Icon() const { return m_addonInfo->m_icon; };
+  virtual std::vector<std::string> Screenshots() const { return m_addonInfo->m_screenshots; };
+  virtual std::string Disclaimer() const { return m_addonInfo->m_disclaimer; }
+  virtual std::string Broken() const { return m_addonInfo->m_broken; }
+  virtual CDateTime InstallDate() const { return m_addonInfo->m_installDate; }
+  virtual CDateTime LastUpdated() const { return m_addonInfo->m_lastUpdated; }
+  virtual CDateTime LastUsed() const { return m_addonInfo->m_lastUsed; }
+  virtual std::string Origin() const { return m_addonInfo->m_origin; }
+  virtual uint64_t PackageSize() const { return m_addonInfo->m_packageSize; }
+  virtual const ADDONDEPS& GetDeps() const { return m_addonInfo->m_dependencies; }
 
   /*! \brief Check whether the this addon can be configured or not
    \return true if the addon has settings, false otherwise
@@ -160,9 +160,9 @@ public:
   virtual void OnPreUnInstall() {};
   virtual void OnPostUnInstall() {};
 
-  const CAddonInfo* AddonInfo() const { return &m_addonInfo; }
+  const AddonInfoPtr AddonInfo() const { return m_addonInfo; }
 
-  CAddonInfo m_addonInfo;
+  AddonInfoPtr m_addonInfo;
 protected:
   /*! \brief Load the default settings and these with any previously configured user settings
    \param bForce force the load of settings even if they are already loaded (reload)

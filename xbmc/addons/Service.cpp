@@ -26,9 +26,9 @@
 namespace ADDON
 {
 
-CService::CService(CAddonInfo addonInfo)
-  : CAddon(std::move(addonInfo)), 
-    m_type(UNKNOWN), 
+CService::CService(AddonInfoPtr addonInfo)
+  : CAddon(addonInfo),
+    m_type(UNKNOWN),
     m_startOption(LOGIN)
 {
   std::string start = AddonInfo()->GetValue("@start").asString();

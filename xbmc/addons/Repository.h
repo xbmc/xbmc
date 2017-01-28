@@ -44,7 +44,7 @@ namespace ADDON
 
     typedef std::vector<DirInfo> DirList;
 
-    CRepository(CAddonInfo addonInfo);
+    CRepository(AddonInfoPtr addonInfo);
 
     /*!
      * \brief Get the md5 hash for an addon.

@@ -54,8 +54,8 @@ using namespace XFILE;
   #define SAFE_DELETE(p)  do { delete (p); (p) = NULL; } while (0)
 #endif
 
-CPeripheralAddon::CPeripheralAddon(ADDON::CAddonInfo addonInfo) :
-  CAddonDll(std::move(addonInfo)),
+CPeripheralAddon::CPeripheralAddon(ADDON::AddonInfoPtr addonInfo) :
+  CAddonDll(addonInfo),
   m_apiVersion("0.0.0")
 {
   m_bProvidesJoysticks = AddonInfo()->GetValue("@provides_joysticks").asBoolean();

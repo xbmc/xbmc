@@ -55,8 +55,8 @@ using KODI::MESSAGING::HELPERS::DialogResponse;
 
 #define DEFAULT_INFO_STRING_VALUE "unknown"
 
-CPVRClient::CPVRClient(CAddonInfo addonInfo)
-  : CAddonDll(std::move(addonInfo)),
+CPVRClient::CPVRClient(AddonInfoPtr addonInfo)
+  : CAddonDll(addonInfo),
     m_apiVersion("0.0.0"),
     m_bAvahiServiceAdded(false)
 {
