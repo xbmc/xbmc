@@ -21,8 +21,8 @@
 namespace ADDON
 {
 
-CAudioEncoder::CAudioEncoder(CAddonInfo addonInfo)
-  : CAddonDll(std::move(addonInfo)),
+CAudioEncoder::CAudioEncoder(AddonInfoPtr addonInfo)
+  : CAddonDll(addonInfo),
     m_context(nullptr)
 {
   m_extension = AddonInfo()->GetValue("@extension").asString();

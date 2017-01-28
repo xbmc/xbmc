@@ -28,7 +28,7 @@ namespace ADDON
   class CAudioEncoder : public CAddonDll, public IEncoder
   {
   public:
-    CAudioEncoder(CAddonInfo addonInfo);
+    CAudioEncoder(AddonInfoPtr addonInfo);
     virtual ~CAudioEncoder() {}
 
     // Things that MUST be supplied by the child classes

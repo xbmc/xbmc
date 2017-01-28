@@ -106,16 +106,8 @@ public:
     std::string m_name;
   };
 
-  static std::unique_ptr<CSkinInfo> FromExtension(CAddonInfo addonInfo, const cp_extension_t* ext);
-
-  //FIXME: CAddonCallbacksGUI/WindowXML hack
-  explicit CSkinInfo(CAddonInfo addonInfo, const RESOLUTION_INFO& resolution)
-      : CAddon(std::move(addonInfo)),
-        m_defaultRes(resolution),
-        m_effectsSlowDown(1.f),
-        m_debugging(false) {}
-
-  CSkinInfo(CAddonInfo addonInfo);
+  CSkinInfo(AddonInfoPtr addonInfo);
+  explicit CSkinInfo(AddonInfoPtr addonInfo, const RESOLUTION_INFO& resolution);
 
   /*! \brief Load resolution information from directories in Path().
    */

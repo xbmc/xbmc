@@ -134,8 +134,8 @@ bool CSkinSettingBool::SerializeSetting(TiXmlElement* element) const
   return true;
 }
 
-CSkinInfo::CSkinInfo(CAddonInfo addonInfo)
-  : CAddon(std::move(addonInfo))
+CSkinInfo::CSkinInfo(AddonInfoPtr addonInfo)
+  : CAddon(addonInfo)
 {
   for (auto values : AddonInfo()->GetValues())
   {
@@ -183,6 +183,14 @@ CSkinInfo::CSkinInfo(CAddonInfo addonInfo)
   m_debugging = AddonInfo()->GetValue("@debugging").asBoolean();
 
   LoadStartupWindows(nullptr);
+}
+
+CSkinInfo::CSkinInfo(AddonInfoPtr addonInfo, const RESOLUTION_INFO& resolution)
+  : CAddon(addonInfo),
+    m_defaultRes(resolution),
+    m_effectsSlowDown(1.f),
+    m_debugging(false)
+{
 }
 
 struct closestRes

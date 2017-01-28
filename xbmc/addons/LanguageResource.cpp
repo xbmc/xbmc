@@ -37,8 +37,8 @@ using KODI::MESSAGING::HELPERS::DialogResponse;
 namespace ADDON
 {
 
-CLanguageResource::CLanguageResource(CAddonInfo addonInfo)
-  : CResource(std::move(addonInfo))
+CLanguageResource::CLanguageResource(AddonInfoPtr addonInfo)
+  : CResource(addonInfo)
 {
   // parse <extension> attributes
   m_locale = CLocale::FromString(AddonInfo()->GetValue("@locale").asString());

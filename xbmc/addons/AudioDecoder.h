@@ -38,7 +38,7 @@ namespace ADDON
                         public XFILE::CMusicFileDirectory
   {
   public:
-    CAudioDecoder(CAddonInfo addonInfo);
+    CAudioDecoder(AddonInfoPtr addonInfo);
     virtual ~CAudioDecoder();
 
     // Things that MUST be supplied by the child classes

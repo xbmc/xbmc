@@ -26,8 +26,8 @@
 
 using namespace ADDON;
 
-CWebinterface::CWebinterface(ADDON::CAddonInfo addonInfo)
-  : CAddon(std::move(addonInfo)),
+CWebinterface::CWebinterface(ADDON::AddonInfoPtr addonInfo)
+  : CAddon(addonInfo),
     m_type(WebinterfaceTypeStatic),
     m_entryPoint(WEBINTERFACE_DEFAULT_ENTRY_POINT)
 {
@@ -36,7 +36,7 @@ CWebinterface::CWebinterface(ADDON::CAddonInfo addonInfo)
   if (StringUtils::EqualsNoCase(webinterfaceType, "wsgi"))
     m_type = WebinterfaceTypeWsgi;
   else if (!webinterfaceType.empty() && !StringUtils::EqualsNoCase(webinterfaceType, "static") && !StringUtils::EqualsNoCase(webinterfaceType, "html"))
-    CLog::Log(LOGWARNING, "Webinterface addon \"%s\" has specified an unsupported type \"%s\"", addonInfo.m_id.c_str(), webinterfaceType.c_str());
+    CLog::Log(LOGWARNING, "Webinterface addon \"%s\" has specified an unsupported type \"%s\"", AddonInfo()->ID().c_str(), webinterfaceType.c_str());
 
   // determine the entry point of the webinterface
   std::string entry = AddonInfo()->GetValue("@entry").asString();

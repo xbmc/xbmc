@@ -32,7 +32,7 @@ namespace ADDON
   class CContextMenuAddon : public CAddon
   {
   public:
-    CContextMenuAddon(CAddonInfo addonInfo);
+    CContextMenuAddon(AddonInfoPtr addonInfo);
 
     const std::vector<CContextMenuItem>& GetItems() const { return m_items; };
 

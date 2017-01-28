@@ -24,8 +24,8 @@
 namespace ADDON
 {
 
-CAudioDecoder::CAudioDecoder(CAddonInfo addonInfo)
-  : CAddonDll(std::move(addonInfo))
+CAudioDecoder::CAudioDecoder(AddonInfoPtr addonInfo)
+  : CAddonDll(addonInfo)
 {
   m_extension = AddonInfo()->GetValue("@extension").asString();
   m_mimetype = AddonInfo()->GetValue("@mimetype").asString();

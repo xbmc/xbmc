@@ -127,8 +127,8 @@ static void CheckScraperError(const TiXmlElement *pxeRoot)
   throw CScraperError(sTitle, sMessage);
 }
 
-CScraper::CScraper(CAddonInfo addonInfo)
-  : CAddon(std::move(addonInfo)),
+CScraper::CScraper(AddonInfoPtr addonInfo)
+  : CAddon(addonInfo),
     m_fLoaded(false),
     m_pathContent(CONTENT_NONE)
 {

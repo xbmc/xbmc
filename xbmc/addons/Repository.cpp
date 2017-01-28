@@ -54,8 +54,8 @@ using namespace KODI::MESSAGING;
 
 using KODI::MESSAGING::HELPERS::DialogResponse;
 
-CRepository::CRepository(CAddonInfo addonInfo)
-  : CAddon(std::move(addonInfo))
+CRepository::CRepository(AddonInfoPtr addonInfo)
+  : CAddon(addonInfo)
 {
   for (auto element : AddonInfo()->GetElements("dir"))
   {

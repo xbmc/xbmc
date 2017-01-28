@@ -188,7 +188,6 @@ namespace ADDON
      \param addon [out] returned addon.
      \return true if addon is set, false otherwise.
      */
-    bool LoadAddonDescription(const std::string &path, AddonPtr &addon);
     bool LoadAddonDescription(const std::string &path, AddonInfoPtr &addon);
 
     /*! \brief Parse a repository XML file for addons and load their descriptors
@@ -209,9 +208,6 @@ namespace ADDON
     void StopServices(const bool onlylogin);
 
     bool ServicesHasStarted() const;
-
-    static AddonPtr Factory(const cp_plugin_info_t* plugin, TYPE type);
-    static bool Factory(const cp_plugin_info_t* plugin, TYPE type, CAddonBuilder& builder);
 
     const AddonInfoPtr GetInstalledAddonInfo(const std::string& addonId);
     const AddonInfoPtr GetInstalledAddonInfo(TYPE addonType, std::string addonId);

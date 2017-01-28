@@ -87,8 +87,8 @@ namespace
 
 // --- CGameClient -------------------------------------------------------------
 
-CGameClient::CGameClient(ADDON::CAddonInfo addonInfo)
-  : CAddonDll(std::move(addonInfo)),
+CGameClient::CGameClient(ADDON::AddonInfoPtr addonInfo)
+  : CAddonDll(addonInfo),
     m_apiVersion("0.0.0"),
     m_libraryProps(this, m_info),
     m_bSupportsAllExtensions(false),

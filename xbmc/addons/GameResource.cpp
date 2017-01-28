@@ -24,7 +24,7 @@
 
 using namespace ADDON;
 
-CGameResource::CGameResource(CAddonInfo addonInfo) :
-  CResource(std::move(addonInfo))
+CGameResource::CGameResource(AddonInfoPtr addonInfo) :
+  CResource(addonInfo)
 {
 }

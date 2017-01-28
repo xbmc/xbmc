@@ -34,7 +34,7 @@ namespace ADDON
   class CWebinterface : public CAddon
   {
   public:
-    CWebinterface(CAddonInfo addonInfo);
+    CWebinterface(AddonInfoPtr addonInfo);
 
     WebinterfaceType GetType() const { return m_type; }
     const std::string& EntryPoint() const { return m_entryPoint; }

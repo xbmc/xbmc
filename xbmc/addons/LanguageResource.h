@@ -29,7 +29,7 @@ namespace ADDON
 class CLanguageResource : public CResource
 {
 public:
-  CLanguageResource(CAddonInfo addonInfo);
+  CLanguageResource(AddonInfoPtr addonInfo);
 
   virtual bool IsInUse() const;
 

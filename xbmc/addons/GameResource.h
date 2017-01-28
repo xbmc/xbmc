@@ -29,7 +29,7 @@ namespace ADDON
 class CGameResource : public CResource
 {
 public:
-  CGameResource(CAddonInfo addonInfo);
+  CGameResource(AddonInfoPtr addonInfo);
   virtual ~CGameResource() = default;
 
   // implementation of CResource

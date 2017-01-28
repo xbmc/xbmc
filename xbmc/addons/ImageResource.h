@@ -32,7 +32,7 @@ namespace ADDON
 class CImageResource : public CResource
 {
 public:
-  CImageResource(CAddonInfo addonInfo);
+  CImageResource(AddonInfoPtr addonInfo);
 
   virtual void OnPreUnInstall();
 

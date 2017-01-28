@@ -34,8 +34,8 @@ namespace ADDON
 std::map<std::string, CInputStream::Config> CInputStream::m_configMap;
 CCriticalSection CInputStream::m_parentSection;
 
-CInputStream::CInputStream(const CAddonInfo& addonInfo)
-  : CAddonDll(std::move(addonInfo))
+CInputStream::CInputStream(AddonInfoPtr addonInfo)
+  : CAddonDll(addonInfo)
 {
   std::string listitemprops = AddonInfo()->GetValue("@listitemprops").asString();
   std::string extensions = AddonInfo()->GetValue("@extension").asString();

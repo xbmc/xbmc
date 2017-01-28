@@ -55,7 +55,7 @@ namespace GAME
   class CGameClient : public ADDON::CAddonDll
   {
   public:
-    CGameClient(ADDON::CAddonInfo addonInfo);
+    CGameClient(ADDON::AddonInfoPtr addonInfo);
     virtual ~CGameClient(void);
 
     // Implementation of CAddon via CAddonDll

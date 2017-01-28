@@ -28,8 +28,8 @@
 namespace ADDON
 {
 
-CImageResource::CImageResource(CAddonInfo addonInfo)
-  : CResource(std::move(addonInfo))
+CImageResource::CImageResource(AddonInfoPtr addonInfo)
+  : CResource(addonInfo)
 {
   m_type = AddonInfo()->GetValue("@type").asString();
 }
