@@ -32,6 +32,7 @@ CAddonCallbacksInputStream::CAddonCallbacksInputStream(ADDON::CAddon* addon)
 {
   m_callbacks->FreeDemuxPacket = InputStreamFreeDemuxPacket;
   m_callbacks->AllocateDemuxPacket = InputStreamAllocateDemuxPacket;
+  m_callbacks->AllocateEncryptedDemuxPacket = InputStreamAllocateEncryptedDemuxPacket;
 }
 
 CAddonCallbacksInputStream::~CAddonCallbacksInputStream()
@@ -48,6 +49,11 @@ void CAddonCallbacksInputStream::InputStreamFreeDemuxPacket(void *addonData, Dem
 DemuxPacket* CAddonCallbacksInputStream::InputStreamAllocateDemuxPacket(void *addonData, int iDataSize)
 {
   return CDVDDemuxUtils::AllocateDemuxPacket(iDataSize);
+}
+
+DemuxPacket* CAddonCallbacksInputStream::InputStreamAllocateEncryptedDemuxPacket(void *addonData, unsigned int iDataSize, unsigned int encryptedSubsampleCount)
+{
+  return CDVDDemuxUtils::AllocateDemuxPacket(iDataSize, encryptedSubsampleCount);
 }
 
 } /* namespace InputStream */

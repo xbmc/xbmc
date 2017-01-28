@@ -48,6 +48,15 @@ public:
   static DemuxPacket* InputStreamAllocateDemuxPacket(void* addonData, int iDataSize = 0);
 
   /*!
+   * @brief Allocate a demux packet with crypto data. Free with FreeDemuxPacket
+   * @param addonData A pointer to the add-on.
+   * @param iDataSize The size of the data that will go into the packet
+   * @param encryptedSubsampleCount The number of encrypted subSamples that will go into the packet
+   * @return The allocated packet.
+   */
+  static DemuxPacket* InputStreamAllocateEncryptedDemuxPacket(void* addonData, unsigned int iDataSize, unsigned int encryptedSubsampleCount);
+
+  /*!
    * @brief Free a packet that was allocated with AllocateDemuxPacket
    * @param addonData A pointer to the add-on.
    * @param pPacket The packet to free.
