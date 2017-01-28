@@ -261,7 +261,7 @@ bool CDecoder::Open(AVCodecContext *avctx, AVCodecContext* mainctx, enum AVPixel
   return true;
 }
 
-int CDecoder::Decode(AVCodecContext* avctx, AVFrame* frame)
+CDVDVideoCodec::VCReturn CDecoder::Decode(AVCodecContext* avctx, AVFrame* frame)
 {
   CSingleLock lock(m_section);
 
@@ -271,19 +271,19 @@ int CDecoder::Decode(AVCodecContext* avctx, AVFrame* frame)
         frame->buf[1] != nullptr || frame->buf[0] == nullptr)
     {
       CLog::Log(LOGERROR, "%s::%s frame format invalid format:%d buf:%p,%p", CLASSNAME, __func__, frame->format, frame->buf[0], frame->buf[1]);
-      return VC_ERROR;
+      return CDVDVideoCodec::VC_ERROR;
     }
     AVBufferRef *buf = frame->buf[0];
     m_gmem = (CGPUMEM *)av_buffer_get_opaque(buf);
   }
-  int status = Check(avctx);
-  if(status)
+  CDVDVideoCodec::VCReturn status = Check(avctx);
+  if (status != CDVDVideoCodec::VC_NONE)
     return status;
 
   if(frame)
-    return VC_BUFFER | VC_PICTURE;
+    return CDVDVideoCodec::VC_PICTURE;
   else
-    return VC_BUFFER;
+    return CDVDVideoCodec::VC_BUFFER;
 }
 
 bool CDecoder::GetPicture(AVCodecContext* avctx, DVDVideoPicture* picture)
@@ -311,10 +311,10 @@ bool CDecoder::GetPicture(AVCodecContext* avctx, DVDVideoPicture* picture)
   return true;
 }
 
-int CDecoder::Check(AVCodecContext* avctx)
+CDVDVideoCodec::VCReturn CDecoder::Check(AVCodecContext* avctx)
 {
   CSingleLock lock(m_section);
-  return 0;
+  return CDVDVideoCodec::VC_NONE;
 }
 
 unsigned CDecoder::GetAllowedReferences()
