@@ -1,7 +1,0 @@
-Installed extension points:
-  IDENTIFIER                       NAME
-  maximal.extpt4                   
-  maximal.extpt2                   Extension Point 2
-  maximal.extpt1                   Extension Point 1
-  maximal.extpt3                   
-C-Pluff Console > 

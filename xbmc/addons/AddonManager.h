@@ -29,13 +29,6 @@
 #include <map>
 #include <deque>
 
-
-class DllLibCPluff;
-extern "C"
-{
-#include "lib/cpluff/libcpluff/cpluff.h"
-}
-
 namespace ADDON
 {
   class CAddonDll;
@@ -43,7 +36,6 @@ namespace ADDON
 
   typedef std::map<TYPE, VECADDONS> MAPADDONS;
   typedef std::map<TYPE, VECADDONS>::iterator IMAPADDONS;
-  typedef std::vector<cp_cfg_element_t*> ELEMENTS;
 
   typedef std::map<std::string, AddonInfoPtr> AddonInfoList;
   typedef std::map<TYPE, AddonInfoList> AddonInfoMap;
@@ -128,15 +120,13 @@ namespace ADDON
     void RemoveFromUpdateableAddons(AddonPtr &pAddon);    
     bool ReloadSettings(const std::string &id);
 
-    std::string GetTranslatedString(const cp_cfg_element_t *root, const char *tag);
-
     /*! \brief Checks for new / updated add-ons
      \return True if everything went ok, false otherwise
      */
     bool FindAddons();
 
     /*! Unload addon from the system. Returns true if it was unloaded, otherwise false. */
-    bool UnloadAddon(const AddonPtr& addon);
+    bool UnloadAddon(const AddonInfoPtr& addon);
 
     /*! Returns true if the addon was successfully loaded and enabled; otherwise false. */
     bool ReloadAddon(AddonPtr& addon);
@@ -170,17 +160,6 @@ namespace ADDON
     bool CanUninstall(const AddonInfoPtr& addonInfo);
     
     void UpdateLastUsed(const std::string& id);
-
-    /*! \brief Retrieve a list of strings from a given configuration element
-     Assumes the configuration element or attribute contains a whitespace separated list of values (eg xs:list schema).
-     \param base the base configuration element.
-     \param path the path to the configuration element or attribute from the base element.
-     \param result [out] returned list of strings.
-     \return true if the configuration element is present and the list of strings is non-empty
-     */
-    bool GetExtList(cp_cfg_element_t *base, const char *path, std::vector<std::string> &result) const;
-
-    const cp_extension_t *GetExtension(const cp_plugin_info_t *props, const char *extension) const;
 
     /*! \brief Load the addon in the given path
      This loads the addon using c-pluff which parses the addon descriptor file.
@@ -347,18 +326,10 @@ namespace ADDON
      */
     bool HasAvailableUpdates();
 
+    static void FindAddons(AddonInfoMap& addonmap, std::string path);
+
   private:
-
-    /* libcpluff */
-    cp_context_t *m_cp_context;
-    std::unique_ptr<DllLibCPluff> m_cpluff;
     VECADDONS    m_updateableAddons;
-
-    /*! \brief Check whether this addon is supported on the current platform
-     \param info the plugin descriptor
-     \return true if the addon is supported, false otherwise.
-     */
-    static bool PlatformSupportsAddon(const cp_plugin_info_t *info);
 
     bool GetAddonsInternal(const TYPE &type, VECADDONS &addons, bool enabledOnly);
     bool EnableSingle(const std::string& id);
@@ -368,8 +339,6 @@ namespace ADDON
     CAddonDatabase m_database;
     CEventSource<AddonEvent> m_events;
     bool m_serviceSystemStarted;
-
-    void FindAddons(AddonInfoMap& addonmap, std::string path);
 
     /*!
      * @brief To load the add-on manifest where is defined which are at least
