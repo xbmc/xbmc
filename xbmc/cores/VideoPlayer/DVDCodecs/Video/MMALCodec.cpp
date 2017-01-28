@@ -622,8 +622,8 @@ int CMMALVideo::AddData(uint8_t* pData, int iSize, double dts, double pts)
 
     mmal_buffer_header_reset(buffer);
     buffer->cmd = 0;
-    buffer->pts = pts == DVD_NOPTS_VALUE ? MMAL_TIME_UNKNOWN : pts;
-    buffer->dts = dts == DVD_NOPTS_VALUE ? MMAL_TIME_UNKNOWN : dts;
+    buffer->pts = packet.pts == DVD_NOPTS_VALUE ? MMAL_TIME_UNKNOWN : packet.pts;
+    buffer->dts = packet.dts == DVD_NOPTS_VALUE ? MMAL_TIME_UNKNOWN : packet.dts;
     if (m_hints.ptsinvalid) buffer->pts = MMAL_TIME_UNKNOWN;
     buffer->length = (uint32_t)iSize > buffer->alloc_size ? buffer->alloc_size : (uint32_t)iSize;
     // set a flag so we can identify primary frames from generated frames (deinterlace)
@@ -643,7 +643,7 @@ int CMMALVideo::AddData(uint8_t* pData, int iSize, double dts, double pts)
     }
     if (g_advancedSettings.CanLogComponent(LOGVIDEO))
       CLog::Log(LOGDEBUG, "%s::%s - %-8p %-6d/%-6d dts:%.3f pts:%.3f flags:%x ready_queue(%d)",
-         CLASSNAME, __func__, buffer, buffer->length, iSize, dts == DVD_NOPTS_VALUE ? 0.0 : dts*1e-6, pts == DVD_NOPTS_VALUE ? 0.0 : pts*1e-6, buffer->flags, m_output_ready.size());
+         CLASSNAME, __func__, buffer, buffer->length, iSize, packet.dts == DVD_NOPTS_VALUE ? 0.0 : packet.dts*1e-6, packet.pts == DVD_NOPTS_VALUE ? 0.0 : packet.pts*1e-6, buffer->flags, m_output_ready.size());
     status = mmal_port_send_buffer(m_dec_input, buffer);
     if (status != MMAL_SUCCESS)
     {
@@ -651,10 +651,10 @@ int CMMALVideo::AddData(uint8_t* pData, int iSize, double dts, double pts)
       return VC_ERROR;
     }
   }
-  if (pts != DVD_NOPTS_VALUE)
-    m_demuxerPts = pts;
-  else if (dts != DVD_NOPTS_VALUE)
-    m_demuxerPts = dts;
+  if (packet.pts != DVD_NOPTS_VALUE)
+    m_demuxerPts = packet.pts;
+  else if (packet.dts != DVD_NOPTS_VALUE)
+    m_demuxerPts = packet.dts;
 
   if (m_demuxerPts != DVD_NOPTS_VALUE && m_decoderPts == DVD_NOPTS_VALUE)
     m_decoderPts = m_demuxerPts;
