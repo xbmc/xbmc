@@ -38,6 +38,9 @@ CSong::CSong(CFileItem& item)
   std::vector<std::string> artist = tag.GetArtist();
   std::vector<std::string> musicBrainzArtistHints = tag.GetMusicBrainzArtistHints();
   strArtistDesc = tag.GetArtistString();
+  strArtistSort = tag.GetArtistSort();
+  //Split the artist sort string to try and get sort names for individual artists
+  std::vector<std::string> artistSort = StringUtils::Split(strArtistSort, g_advancedSettings.m_musicItemSeparator);
 
   if (!tag.GetMusicBrainzArtistID().empty())
   { // Have musicbrainz artist info, so use it
@@ -93,6 +96,11 @@ CSong::CSong(CFileItem& item)
         musicBrainzArtistHints = tag.GetArtist();
     }
 
+    // Try to get number of artist sort names and musicbrainz ids to match. Split sort names 
+    // further using multiple possible delimiters, over single separator applied in Tag loader
+    if (artistSort.size() != tag.GetMusicBrainzArtistID().size())
+      artistSort = StringUtils::SplitMulti(artistSort, { ";", ":", "|", "#" });
+
     for (size_t i = 0; i < tag.GetMusicBrainzArtistID().size(); i++)
     {
       std::string artistId = tag.GetMusicBrainzArtistID()[i];
@@ -107,7 +115,13 @@ CSong::CSong(CFileItem& item)
         artistName = musicBrainzArtistHints[i];
       else
         artistName = artistId;
-      artistCredits.emplace_back(StringUtils::Trim(artistName), artistId);
+
+      // Use artist sort name providing we have as many as we have mbid, 
+      // otherwise something is wrong with them so ignore and leave blank
+      if (artistSort.size() == tag.GetMusicBrainzArtistID().size())
+        artistCredits.emplace_back(StringUtils::Trim(artistName), StringUtils::Trim(artistSort[i]), artistId);
+      else
+        artistCredits.emplace_back(StringUtils::Trim(artistName), "", artistId);
     }
   }
   else
@@ -120,9 +134,17 @@ CSong::CSong(CFileItem& item)
       // Split artist names further using multiple possible delimiters, over single separator applied in Tag loader
       artist = StringUtils::SplitMulti(artist, g_advancedSettings.m_musicArtistSeparators);
 
-    for (auto artistname: artist)
+    if (artistSort.size() != artist.size())
+      // Split artist sort names further using multiple possible delimiters, over single separator applied in Tag loader
+      artistSort = StringUtils::SplitMulti(artistSort, { ";", ":", "|", "#" });
+
+    for (size_t i = 0; i < artist.size(); i++)
     {
-      artistCredits.emplace_back(StringUtils::Trim(artistname));
+      artistCredits.emplace_back(StringUtils::Trim(artist[i]));
+      // Set artist sort name providing we have as many as we have artists, 
+      // otherwise something is wrong with them so ignore rather than guess.
+      if (artistSort.size() == artist.size())
+        artistCredits.back().SetSortName(StringUtils::Trim(artistSort[i]));
     }
   }
   strAlbum = tag.GetAlbum();
@@ -136,6 +158,7 @@ CSong::CSong(CFileItem& item)
     m_albumArtist = StringUtils::SplitMulti(m_albumArtist, g_advancedSettings.m_musicArtistSeparators);
   for (auto artistname : m_albumArtist)
     StringUtils::Trim(artistname);
+  m_strAlbumArtistSort = tag.GetAlbumArtistSort();
 
   strMusicBrainzTrackID = tag.GetMusicBrainzTrackID();
   m_musicRoles = tag.GetContributors();
@@ -185,6 +208,7 @@ void CSong::Serialize(CVariant& value) const
   value["filename"] = strFileName;
   value["title"] = strTitle;
   value["artist"] = GetArtist();
+  value["artistsort"] = GetArtistSort();  //#Blake a string not vector 
   value["album"] = strAlbum;
   value["albumartist"] = GetAlbumArtist();
   value["genre"] = genre;
@@ -208,7 +232,10 @@ void CSong::Clear()
   strFileName.clear();
   strTitle.clear();
   strAlbum.clear();
+  strArtistSort.clear();
+  strArtistDesc.clear();
   m_albumArtist.clear();
+  m_strAlbumArtistSort.clear();
   genre.clear();
   strThumb.clear();
   strMusicBrainzTrackID.clear();
@@ -245,6 +272,22 @@ const std::vector<std::string> CSong::GetArtist() const
   if (songartists.empty() && !strArtistDesc.empty())
     songartists = StringUtils::Split(strArtistDesc, g_advancedSettings.m_musicItemSeparator);
   return songartists;
+}
+
+const std::string CSong::GetArtistSort() const
+{
+  //The stored artist sort name string takes precidence #blake
+  //but value could be created from individual sort names held in artistcredits
+  if (!strArtistSort.empty())
+    return strArtistSort;
+  std::vector<std::string> artistvector;
+  for (auto artistcredit: artistCredits)
+    if (!artistcredit.GetSortName().empty())
+      artistvector.emplace_back(artistcredit.GetSortName());
+  std::string artistString;
+  if (!artistvector.empty())
+    artistString = StringUtils::Join(artistvector, "; ");
+  return artistString;
 }
 
 const std::vector<std::string> CSong::GetMusicBrainzArtistID() const

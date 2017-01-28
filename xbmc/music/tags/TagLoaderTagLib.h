@@ -41,8 +41,10 @@ public:
   static std::vector<std::string> SplitMBID(const std::vector<std::string> &values);
 protected:
   static void SetArtist(MUSIC_INFO::CMusicInfoTag &tag, const std::vector<std::string> &values);
+  static void SetArtistSort(MUSIC_INFO::CMusicInfoTag &tag, const std::vector<std::string> &values);
   static void SetArtistHints(MUSIC_INFO::CMusicInfoTag &tag, const std::vector<std::string> &values);
   static void SetAlbumArtist(MUSIC_INFO::CMusicInfoTag &tag, const std::vector<std::string> &values);
+  static void SetAlbumArtistSort(MUSIC_INFO::CMusicInfoTag &tag, const std::vector<std::string> &values);
   static void SetAlbumArtistHints(MUSIC_INFO::CMusicInfoTag &tag, const std::vector<std::string> &values);
   static void SetGenre(MUSIC_INFO::CMusicInfoTag &tag, const std::vector<std::string> &values);
   static void SetReleaseType(MUSIC_INFO::CMusicInfoTag &tag, const std::vector<std::string> &values);
