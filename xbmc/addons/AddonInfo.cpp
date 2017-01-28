@@ -725,7 +725,6 @@ std::string CAddonInfo::SerializeMetadata()
 
 void CAddonInfo::DeserializeMetadata(const std::string& document)
 {
-  fprintf(stderr, "-------------> %s\n", __PRETTY_FUNCTION__);
   CVariant variant = CJSONVariantParser::Parse(document);
 
   m_author = variant["author"].asString();

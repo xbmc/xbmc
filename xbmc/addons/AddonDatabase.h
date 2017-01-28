@@ -25,7 +25,6 @@
 #include "addons/Addon.h"
 #include "dbwrappers/Database.h"
 #include "FileItem.h"
-#include "AddonBuilder.h"
 
 class CAddonDatabase : public CDatabase
 {
@@ -140,7 +139,6 @@ public:
                      const std::set<std::string>& system,
                      const std::set<std::string>& optional);
 
-  void GetInstalled(std::vector<ADDON::CAddonBuilder>& addons);
   void GetInstallData(ADDON::AddonInfoPtr addonInfo);
 
   bool SetLastUpdated(const std::string& addonId, const CDateTime& dateTime);
