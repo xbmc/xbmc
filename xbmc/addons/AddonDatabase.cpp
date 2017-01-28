@@ -32,7 +32,6 @@
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
-#include "DllLibCPluff.h"
 #include "XBDateTime.h"
 
 using namespace ADDON;
@@ -138,58 +137,27 @@ void CAddonDatabase::UpdateTables(int version)
         "enabled BOOLEAN, installDate TEXT, lastUpdated TEXT, lastUsed TEXT) \n");
 
     //Ugly hack incoming! As the addon manager isnt created yet, we need to start up our own copy
-    //cpluff to find the currently enabled addons.
-    auto cpluff = std::unique_ptr<DllLibCPluff>(new DllLibCPluff());
-    cpluff->Load();
-    cp_status_t status;
-    status = cpluff->init();
-    if (status != CP_OK)
-    {
-      CLog::Log(LOGERROR, "AddonDatabase: Upgrade failed. cp_init() returned status: %i", status);
-      return;
-    }
-
-    cp_context_t* cp_context = cpluff->create_context(&status);
-
-    status = cpluff->register_pcollection(cp_context, CSpecialProtocol::TranslatePath("special://home/addons").c_str());
-    if (status != CP_OK)
-    {
-      CLog::Log(LOGERROR, "AddonDatabase: Upgrade failed. cp_register_pcollection() returned status: %i", status);
-      return;
-    }
-
-    status = cpluff->register_pcollection(cp_context, CSpecialProtocol::TranslatePath("special://xbmc/addons").c_str());
-    if (status != CP_OK)
-    {
-      CLog::Log(LOGERROR, "AddonDatabase: Upgrade failed. cp_register_pcollection() returned status: %i", status);
-      return;
-    }
-
-    status = cpluff->register_pcollection(cp_context, CSpecialProtocol::TranslatePath("special://xbmcbin/addons").c_str());
-    if (status != CP_OK)
-    {
-      CLog::Log(LOGERROR, "AddonDatabase: Upgrade failed. cp_register_pcollection() returned status: %i", status);
-      return;
-    }
-
-    cpluff->scan_plugins(cp_context, CP_SP_UPGRADE);
+    AddonInfoMap installedAddons;
+    CAddonMgr::FindAddons(installedAddons, "special://xbmcbin/addons");
+    CAddonMgr::FindAddons(installedAddons, "special://xbmc/addons");
+    CAddonMgr::FindAddons(installedAddons, "special://home/addons");
 
     std::string systemPath = CSpecialProtocol::TranslatePath("special://xbmc/addons");
     std::string now = CDateTime::GetCurrentDateTime().GetAsDBDateTime();
     BeginTransaction();
-    int n;
-    cp_plugin_info_t** cp_addons = cpluff->get_plugins_info(cp_context, &status, &n);
-    for (int i = 0; i < n; ++i)
+    for (auto addonType : installedAddons)
     {
-      const char* id = cp_addons[i]->identifier;
-      // To not risk enabling something user didn't enable, assume that everything from the systems
-      // directory is new for this release and set them to disabled.
-      bool inSystem = StringUtils::StartsWith(cp_addons[i]->plugin_path, systemPath);
-      m_pDS->exec(PrepareSQL("INSERT INTO installed(addonID, enabled, installDate) VALUES "
-          "('%s', NOT %d AND NOT EXISTS (SELECT * FROM disabled WHERE addonID='%s'), '%s')",
-          id, inSystem, id, now.c_str()));
+      for (auto addon : addonType.second)
+      {
+        const char* id = addon.second->ID().c_str();
+        // To not risk enabling something user didn't enable, assume that everything from the systems
+        // directory is new for this release and set them to disabled.
+        bool inSystem = StringUtils::StartsWith(addon.second->Path(), systemPath);
+        m_pDS->exec(PrepareSQL("INSERT INTO installed(addonID, enabled, installDate) VALUES "
+            "('%s', NOT %d AND NOT EXISTS (SELECT * FROM disabled WHERE addonID='%s'), '%s')",
+            id, inSystem, id, now.c_str()));
+      }
     }
-    cpluff->release_info(cp_context, cp_addons);
     CommitTransaction();
 
     m_pDS->exec("DROP TABLE disabled");

@@ -27,7 +27,6 @@
 
 #include "Addon.h"
 #include "ContextMenuManager.h"
-#include "DllLibCPluff.h"
 #include "events/AddonManagementEvent.h"
 #include "events/EventLog.h"
 #include "filesystem/Directory.h"
@@ -71,10 +70,6 @@ using namespace XFILE;
 namespace ADDON
 {
 
-cp_log_severity_t clog_to_cp(int lvl);
-void cp_fatalErrorHandler(const char *msg);
-void cp_logger(cp_log_severity_t level, const char *msg, const char *apid, void *user_data);
-
 /**********************************************************
  * CAddonMgr
  *
@@ -82,27 +77,8 @@ void cp_logger(cp_log_severity_t level, const char *msg, const char *apid, void 
 
 std::map<TYPE, IAddonMgrCallback*> CAddonMgr::m_managers;
 
-static cp_extension_t* GetFirstExtPoint(const cp_plugin_info_t* addon, TYPE type)
-{
-  for (unsigned int i = 0; i < addon->num_extensions; ++i)
-  {
-    cp_extension_t* ext = &addon->extensions[i];
-    if (strcmp(ext->ext_point_id, "kodi.addon.metadata") == 0 || strcmp(ext->ext_point_id, "xbmc.addon.metadata") == 0)
-      continue;
-
-    if (type == ADDON_UNKNOWN)
-      return ext;
-
-    if (type == CAddonInfo::TranslateType(ext->ext_point_id))
-      return ext;
-  }
-  return nullptr;
-}
-
 CAddonMgr::CAddonMgr()
-  : m_cp_context(nullptr),
-  m_cpluff(nullptr),
-  m_serviceSystemStarted(false)
+  : m_serviceSystemStarted(false)
 { }
 
 CAddonMgr::~CAddonMgr()
@@ -141,62 +117,6 @@ void CAddonMgr::UnregisterAddonMgrCallback(TYPE type)
 
 bool CAddonMgr::Init()
 {
-  { /* Old part */
-
-  CSingleLock lock(m_critSection);
-  m_cpluff = std::unique_ptr<DllLibCPluff>(new DllLibCPluff);
-  m_cpluff->Load();
-
-  if (!m_cpluff->IsLoaded())
-  {
-    CLog::Log(LOGERROR, "ADDONS: Fatal Error, could not load libcpluff");
-    return false;
-  }
-
-  m_cpluff->set_fatal_error_handler(cp_fatalErrorHandler);
-
-  cp_status_t status;
-  status = m_cpluff->init();
-  if (status != CP_OK)
-  {
-    CLog::Log(LOGERROR, "ADDONS: Fatal Error, cp_init() returned status: %i", status);
-    return false;
-  }
-
-  //! @todo could separate addons into different contexts would allow partial unloading of addon framework
-  m_cp_context = m_cpluff->create_context(&status);
-  assert(m_cp_context);
-  status = m_cpluff->register_pcollection(m_cp_context, CSpecialProtocol::TranslatePath("special://home/addons").c_str());
-  if (status != CP_OK)
-  {
-    CLog::Log(LOGERROR, "ADDONS: Fatal Error, cp_register_pcollection() returned status: %i", status);
-    return false;
-  }
-
-  status = m_cpluff->register_pcollection(m_cp_context, CSpecialProtocol::TranslatePath("special://xbmc/addons").c_str());
-  if (status != CP_OK)
-  {
-    CLog::Log(LOGERROR, "ADDONS: Fatal Error, cp_register_pcollection() returned status: %i", status);
-    return false;
-  }
-
-  status = m_cpluff->register_pcollection(m_cp_context, CSpecialProtocol::TranslatePath("special://xbmcbin/addons").c_str());
-  if (status != CP_OK)
-  {
-    CLog::Log(LOGERROR, "ADDONS: Fatal Error, cp_register_pcollection() returned status: %i", status);
-    return false;
-  }
-
-  status = m_cpluff->register_logger(m_cp_context, cp_logger,
-      this, clog_to_cp(g_advancedSettings.m_logLevel));
-  if (status != CP_OK)
-  {
-    CLog::Log(LOGERROR, "ADDONS: Fatal Error, cp_register_logger() returned status: %i", status);
-    return false;
-  }
-
-  } /* Old part end */
-
   if (!LoadManifest(m_systemAddons, m_optionalAddons))
   {
     CLog::Log(LOGERROR, "ADDONS: Failed to read manifest");
@@ -226,8 +146,6 @@ bool CAddonMgr::Init()
 
 void CAddonMgr::DeInit()
 {
-  m_cpluff->destroy_context(m_cp_context);
-  m_cpluff.reset();
   m_database.Close();
 }
 
@@ -399,12 +317,6 @@ bool CAddonMgr::FindAddons()
 {
   CSingleLock lock(m_critSection);
 
-  { /* old part */
-  if (!m_cpluff || !m_cp_context)
-    return false;
-  m_cpluff->scan_plugins(m_cp_context, CP_SP_UPGRADE);
-  } /* old part end */
-  
   AddonInfoMap installedAddons;
 
   FindAddons(installedAddons, "special://xbmcbin/addons");
@@ -446,30 +358,35 @@ bool CAddonMgr::FindAddons()
   return true;
 }
 
-bool CAddonMgr::UnloadAddon(const AddonPtr& addon)
+bool CAddonMgr::UnloadAddon(const AddonInfoPtr& addon)
 {
   CSingleLock lock(m_critSection);
-  if (m_cpluff && m_cp_context)
+  
+  std::string id = addon->ID();
+  for (auto addonInfoTypes : m_installedAddons)
   {
-    if (m_cpluff->uninstall_plugin(m_cp_context, addon->ID().c_str()) == CP_OK)
+    auto addonInfo = addonInfoTypes.second.find(id);
+    if (addonInfo != addonInfoTypes.second.end())
     {
+      addonInfoTypes.second.erase(addon->ID());
       m_events.Publish(AddonEvents::InstalledChanged());
       return true;
     }
   }
+
   return false;
 }
 
 bool CAddonMgr::ReloadAddon(AddonPtr& addon)
 {
   CSingleLock lock(m_critSection);
-  if (!addon ||!m_cpluff || !m_cp_context)
-    return false;
-
-  m_cpluff->uninstall_plugin(m_cp_context, addon->ID().c_str());
-  return FindAddons()
-      && GetAddon(addon->ID(), addon, ADDON_UNKNOWN, false)
-      && EnableAddon(addon->ID());
+//   if (!addon)
+//     return false;
+// 
+//   ?????
+//   return FindAddons()
+//       && GetAddon(addon->ID(), addon, ADDON_UNKNOWN, false)
+//       && EnableAddon(addon->ID());
 }
 
 void CAddonMgr::OnPostUnInstall(const std::string& id)
@@ -668,121 +585,6 @@ bool CAddonMgr::CanUninstall(const AddonInfoPtr& addonProps)
       !StringUtils::StartsWith(addonProps->Path(), CSpecialProtocol::TranslatePath("special://xbmc/addons"));
 }
 
-std::string CAddonMgr::GetTranslatedString(const cp_cfg_element_t *root, const char *tag)
-{
-  if (!root)
-    return "";
-
-  std::map<std::string, std::string> translatedValues;
-  for (unsigned int i = 0; i < root->num_children; i++)
-  {
-    const cp_cfg_element_t &child = root->children[i];
-    if (strcmp(tag, child.name) == 0)
-    {
-      // see if we have a "lang" attribute
-      const char *lang = m_cpluff->lookup_cfg_value((cp_cfg_element_t*)&child, "@lang");
-      if (lang != NULL && g_langInfo.GetLocale().Matches(lang))
-        translatedValues.insert(std::make_pair(lang, child.value != NULL ? child.value : ""));
-      else if (lang == NULL || strcmp(lang, "en") == 0 || strcmp(lang, "en_GB") == 0)
-        translatedValues.insert(std::make_pair("en_GB", child.value != NULL ? child.value : ""));
-      else if (strcmp(lang, "no") == 0)
-        translatedValues.insert(std::make_pair("nb_NO", child.value != NULL ? child.value : ""));
-    }
-  }
-
-  // put together a list of languages
-  std::set<std::string> languages;
-  for (auto const& translatedValue : translatedValues)
-    languages.insert(translatedValue.first);
-
-  // find the language from the list that matches the current locale best
-  std::string matchingLanguage = g_langInfo.GetLocale().FindBestMatch(languages);
-  if (matchingLanguage.empty())
-    matchingLanguage = "en_GB";
-
-  auto const& translatedValue = translatedValues.find(matchingLanguage);
-  if (translatedValue != translatedValues.end())
-    return translatedValue->second;
-
-  return "";
-}
-
-/*
- * libcpluff interaction
- */
-
-bool CAddonMgr::PlatformSupportsAddon(const cp_plugin_info_t *plugin)
-{
-  auto *metadata = CAddonMgr::GetInstance().GetExtension(plugin, "xbmc.addon.metadata");
-  if (!metadata)
-    metadata = CAddonMgr::GetInstance().GetExtension(plugin, "kodi.addon.metadata");
-
-  // if platforms are not specified, assume supported
-  if (!metadata)
-    return true;
-
-  std::vector<std::string> platforms;
-  if (!CAddonMgr::GetInstance().GetExtList(metadata->configuration, "platform", platforms))
-    return true;
-
-  if (platforms.empty())
-    return true;
-
-  std::vector<std::string> supportedPlatforms = {
-    "all",
-#if defined(TARGET_ANDROID)
-    "android",
-#elif defined(TARGET_RASPBERRY_PI)
-    "rbpi",
-    "linux",
-#elif defined(TARGET_FREEBSD)
-    "freebsd",
-    "linux",
-#elif defined(TARGET_LINUX)
-    "linux",
-#elif defined(TARGET_WINDOWS) && defined(HAS_DX)
-    "windx",
-    "windows",
-#elif defined(TARGET_DARWIN_IOS)
-    "ios",
-#elif defined(TARGET_DARWIN_OSX)
-    "osx",
-#if defined(__x86_64__)
-    "osx64",
-#else
-    "osx32",
-#endif
-#endif
-  };
-
-  return std::find_first_of(platforms.begin(), platforms.end(),
-      supportedPlatforms.begin(), supportedPlatforms.end()) != platforms.end();
-}
-
-const cp_extension_t *CAddonMgr::GetExtension(const cp_plugin_info_t *props, const char *extension) const
-{
-  if (!props)
-    return NULL;
-  for (unsigned int i = 0; i < props->num_extensions; ++i)
-  {
-    if (0 == strcmp(props->extensions[i].ext_point_id, extension))
-      return &props->extensions[i];
-  }
-  return NULL;
-}
-
-bool CAddonMgr::GetExtList(cp_cfg_element_t *base, const char *path, std::vector<std::string> &result) const
-{
-  result.clear();
-  if (!base || !path)
-    return false;
-  const char *all = m_cpluff->lookup_cfg_value(base, path);
-  if (!all || *all == 0)
-    return false;
-  StringUtils::Tokenize(all, result, ' ');
-  return true;
-}
-
 bool CAddonMgr::LoadAddonDescription(const std::string &directory, AddonInfoPtr &addon)
 {
   addon = std::make_shared<CAddonInfo>(directory);
@@ -839,33 +641,6 @@ void CAddonMgr::StopServices(const bool onlylogin)
         service->Stop();
     }
   }
-}
-
-int cp_to_clog(cp_log_severity_t lvl)
-{
-  if (lvl >= CP_LOG_ERROR)
-    return LOGINFO;
-  return LOGDEBUG;
-}
-
-cp_log_severity_t clog_to_cp(int lvl)
-{
-  if (lvl >= LOG_LEVEL_DEBUG)
-    return CP_LOG_INFO;
-  return CP_LOG_ERROR;
-}
-
-void cp_fatalErrorHandler(const char *msg)
-{
-  CLog::Log(LOGERROR, "ADDONS: CPluffFatalError(%s)", msg);
-}
-
-void cp_logger(cp_log_severity_t level, const char *msg, const char *apid, void *user_data)
-{
-  if(!apid)
-    CLog::Log(cp_to_clog(level), "ADDON: cpluff: '%s'", msg);
-  else
-    CLog::Log(cp_to_clog(level), "ADDON: cpluff: '%s' reports '%s'", apid, msg);
 }
 
 /*!

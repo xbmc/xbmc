@@ -22,7 +22,6 @@
  */
 
 /* libraries */
-#define DLL_PATH_CPLUFF        "special://xbmcbin/cpluff.dll"
 #define DLL_PATH_LIBEXIF       "special://xbmcbin/libexif.dll"
 #define DLL_PATH_LIBCURL       "special://xbmcbin/libcurl.dll"
 #define DLL_PATH_LIBNFS        "special://xbmcbin/libnfs.dll"

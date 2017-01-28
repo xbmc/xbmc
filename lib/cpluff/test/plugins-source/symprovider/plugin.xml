@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-<plugin id="symprovider" name="Symbol Provider">
-	<requires>
-		<import plugin="symuser"/>
-	</requires>
-	<runtime library="libruntime" funcs="sp_runtime"/>
-	<extension point="symuser.strings" string-symbol="sp_string"/>
-</plugin>
