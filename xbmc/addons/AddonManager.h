@@ -108,10 +108,6 @@ namespace ADDON
 
     bool GetDisabledAddons(VECADDONS& addons, const TYPE& type);
 
-    /*! Get all installable addons */
-    bool GetInstallableAddons(AddonInfos& addons);
-
-    bool GetInstallableAddons(AddonInfos& addons, const TYPE &type);
 
     /*! Get the installable addon with the highest version. */
     bool FindInstallableById(const std::string& addonId, AddonInfoPtr& addon);
@@ -279,6 +275,11 @@ namespace ADDON
      * @return The list with of available add-on's with info tables.
      */
     AddonInfos GetAddonInfos(bool enabledOnly, const TYPE &type, bool useTimeData = false);
+    bool GetAddonInfos(AddonInfos& addonInfos, bool enabledOnly, const TYPE &type, bool useTimeData = false);
+
+    bool GetDisabledAddonInfos(AddonInfos& addonInfos, const TYPE& type);
+
+    bool GetInstallableAddonInfos(AddonInfos& addonInfos, const TYPE &type);
 
     /*!
      * @brief Compare the given add-on info to his related dependency versions.

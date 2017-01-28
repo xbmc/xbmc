@@ -229,38 +229,6 @@ bool CAddonMgr::GetDisabledAddons(VECADDONS& addons, const TYPE& type)
   return false;
 }
 
-bool CAddonMgr::GetInstallableAddons(AddonInfos& addons)
-{
-  return GetInstallableAddons(addons, ADDON_UNKNOWN);
-}
-
-bool CAddonMgr::GetInstallableAddons(AddonInfos& addons, const TYPE &type)
-{
-  CSingleLock lock(m_critSection);
-
-  // get all addons
-  if (!m_database.GetRepositoryContent(addons))
-    return false;
-
-  // go through all addons and remove all that are already installed
-
-  addons.erase(std::remove_if(addons.begin(), addons.end(),
-    [this, type](const AddonInfoPtr& addon)
-    {
-      bool bErase = false;
-
-      // check if the addon matches the provided addon type
-      if (type != ADDON::ADDON_UNKNOWN && addon->Type() != type/* && !addon->IsType(type)*/)
-        bErase = true;
-
-      if (!this->CanAddonBeInstalled(addon))
-        bErase = true;
-
-      return bErase;
-    }), addons.end());
-
-  return true;
-}
 
 bool CAddonMgr::FindInstallableById(const std::string& addonId, AddonInfoPtr& result)
 {
@@ -737,7 +705,12 @@ bool CAddonMgr::RemoveFromUpdateBlacklist(const std::string& addonId)
 AddonInfos CAddonMgr::GetAddonInfos(bool enabledOnly, const TYPE &type, bool useTimeData/* = false*/)
 {
   AddonInfos infos;
+  GetAddonInfos(infos, enabledOnly, type, useTimeData);
+  return infos;
+}
 
+bool CAddonMgr::GetAddonInfos(AddonInfos& addonInfos, bool enabledOnly, const TYPE &type, bool useTimeData/* = false*/)
+{
   CSingleLock lock(m_critSection);
 
   AddonInfoMap* addons;
@@ -760,12 +733,12 @@ AddonInfos CAddonMgr::GetAddonInfos(bool enabledOnly, const TYPE &type, bool use
       {
         if (useTimeData)
           m_database.GetInstallData(info.second);
-        infos.push_back(info.second);
+        addonInfos.push_back(info.second);
       }
     } while (++itr != addons->end() && type == ADDON_UNKNOWN);
   }
 
-  return infos;
+  return !addonInfos.empty();
 }
 
 bool CAddonMgr::IsCompatible(const CAddonInfo& addonProps)
@@ -901,6 +874,59 @@ bool CAddonMgr::HasAvailableUpdates()
   return false;
 }
 
+bool CAddonMgr::GetDisabledAddonInfos(AddonInfos& addonInfos, const TYPE& type)
+{
+  AddonInfoMap::const_iterator itr;
+  if (type == ADDON_UNKNOWN)
+    itr = m_installedAddons.begin();
+  else
+    itr = m_installedAddons.find(type);
+
+  if (itr != m_installedAddons.end())
+  {
+    do
+    {
+      for (auto addonInfo : itr->second)
+      {
+        if (!IsAddonEnabled(addonInfo.second->ID(), type))
+          addonInfos.push_back(addonInfo.second);
+      }
+    } while (++itr != m_installedAddons.end() && type == ADDON_UNKNOWN);
+  }
+
+  return true;
+}
+
+bool CAddonMgr::GetInstallableAddonInfos(AddonInfos& addonInfos, const TYPE &type)
+{
+  CSingleLock lock(m_critSection);
+
+  // get all addons
+  AddonInfos installable;
+  if (!m_database.GetRepositoryContent(installable))
+    return false;
+
+  // go through all addons and remove all that are already installed
+
+  installable.erase(std::remove_if(installable.begin(), installable.end(),
+    [this, type](const AddonInfoPtr& addon)
+    {
+      bool bErase = false;
+
+      // check if the addon matches the provided addon type
+      if (type != ADDON::ADDON_UNKNOWN && addon->Type() != type/* && !addon->IsType(type)*/)
+        bErase = true;
+
+      if (!this->CanAddonBeInstalled(addon))
+        bErase = true;
+
+      return bErase;
+    }), installable.end());
+
+  addonInfos.insert(addonInfos.end(), installable.begin(), installable.end());
+
+  return true;
+}
 
 bool CAddonMgr::LoadManifest(std::set<std::string>& system, std::set<std::string>& optional)
 {

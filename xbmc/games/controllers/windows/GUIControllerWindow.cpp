@@ -292,7 +292,7 @@ void CGUIControllerWindow::UpdateButtons(void)
   using namespace ADDON;
 
   AddonInfos addons;
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_GET_MORE, CAddonMgr::GetInstance().GetInstallableAddons(addons, ADDON::ADDON_GAME_CONTROLLER) && !addons.empty());
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_GET_MORE, CAddonMgr::GetInstance().GetInstallableAddonInfos(addons, ADDON::ADDON_GAME_CONTROLLER));
 }
 
 void CGUIControllerWindow::GetMoreControllers(void)
