@@ -35,7 +35,7 @@ CDVDAudio::CDVDAudio(CDVDClock *clock) : m_pClock(clock)
   m_pAudioStream = NULL;
   m_bPassthrough = false;
   m_iBitsPerSample = 0;
-  m_sampeRate = 0;
+  m_sampleRate = 0;
   m_bPaused = true;
   m_playingPts = DVD_NOPTS_VALUE; //silence coverity uninitialized warning, is set elsewhere
   m_timeOfPts = 0.0; //silence coverity uninitialized warning, is set elsewhere
@@ -74,7 +74,7 @@ bool CDVDAudio::Create(const DVDAudioFrame &audioframe, AVCodecID codec, bool ne
   if (!m_pAudioStream)
     return false;
 
-  m_sampeRate = audioframe.format.m_sampleRate;
+  m_sampleRate = audioframe.format.m_sampleRate;
   m_iBitsPerSample = audioframe.bits_per_sample;
   m_bPassthrough = audioframe.passthrough;
   m_channelLayout = audioframe.format.m_channelLayout;
@@ -95,7 +95,7 @@ void CDVDAudio::Destroy()
     CAEFactory::FreeStream(m_pAudioStream);
 
   m_pAudioStream = NULL;
-  m_sampeRate = 0;
+  m_sampleRate = 0;
   m_iBitsPerSample = 0;
   m_bPassthrough = false;
   m_bPaused = true;
@@ -249,7 +249,7 @@ bool CDVDAudio::IsValidFormat(const DVDAudioFrame &audioframe)
   if(audioframe.passthrough != m_bPassthrough)
     return false;
 
-  if(m_sampeRate != audioframe.format.m_sampleRate ||
+  if(m_sampleRate != audioframe.format.m_sampleRate ||
      m_iBitsPerSample != audioframe.bits_per_sample ||
      m_channelLayout != audioframe.format.m_channelLayout)
     return false;

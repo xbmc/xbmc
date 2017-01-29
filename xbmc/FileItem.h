@@ -243,8 +243,8 @@ public:
   void SetFileSizeLabel();
   virtual void SetLabel(const std::string &strLabel);
   int GetVideoContentType() const; /* return VIDEODB_CONTENT_TYPE, but don't want to include videodb in this header */
-  bool IsLabelPreformatted() const { return m_bLabelPreformated; }
-  void SetLabelPreformatted(bool bYesNo) { m_bLabelPreformated=bYesNo; }
+  bool IsLabelPreformatted() const { return m_bLabelPreformatted; }
+  void SetLabelPreformatted(bool bYesNo) { m_bLabelPreformatted=bYesNo; }
   bool SortsOnTop() const { return m_specialSort == SortSpecialOnTop; }
   bool SortsOnBottom() const { return m_specialSort == SortSpecialOnBottom; }
   void SetSpecialSort(SortSpecial sort) { m_specialSort = sort; }
@@ -562,7 +562,7 @@ private:
   SortSpecial m_specialSort;
   bool m_bIsParentFolder;
   bool m_bCanQueue;
-  bool m_bLabelPreformated;
+  bool m_bLabelPreformatted;
   std::string m_mimetype;
   std::string m_extrainfo;
   bool m_doContentLookup;

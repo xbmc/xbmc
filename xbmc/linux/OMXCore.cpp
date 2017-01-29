@@ -459,10 +459,10 @@ OMX_BUFFERHEADERTYPE *COMXCoreComponent::GetInputBuffer(long timeout /*=200*/)
   {
     if (m_resource_error)
       break;
-    if(!m_omx_input_avaliable.empty())
+    if(!m_omx_input_available.empty())
     {
-      omx_input_buffer = m_omx_input_avaliable.front();
-      m_omx_input_avaliable.pop();
+      omx_input_buffer = m_omx_input_available.front();
+      m_omx_input_available.pop();
       break;
     }
 
@@ -519,7 +519,7 @@ OMX_ERRORTYPE COMXCoreComponent::WaitForInputDone(long timeout /*=200*/)
   struct timespec endtime;
   clock_gettime(CLOCK_REALTIME, &endtime);
   add_timespecs(endtime, timeout);
-  while (m_input_buffer_count != m_omx_input_avaliable.size())
+  while (m_input_buffer_count != m_omx_input_available.size())
   {
     if (m_resource_error)
       break;
@@ -612,7 +612,7 @@ OMX_ERRORTYPE COMXCoreComponent::AllocInputBuffers()
     buffer->nOffset         = 0;
     buffer->pAppPrivate     = (void*)i;  
     m_omx_input_buffers.push_back(buffer);
-    m_omx_input_avaliable.push(buffer);
+    m_omx_input_available.push(buffer);
   }
 
   omx_err = WaitForCommand(OMX_CommandPortEnable, m_input_port);
@@ -729,12 +729,12 @@ OMX_ERRORTYPE COMXCoreComponent::FreeInputBuffers()
   WaitForInputDone(1000);
 
   pthread_mutex_lock(&m_omx_input_mutex);
-  assert(m_omx_input_buffers.size() == m_omx_input_avaliable.size());
+  assert(m_omx_input_buffers.size() == m_omx_input_available.size());
 
   m_omx_input_buffers.clear();
 
-  while (!m_omx_input_avaliable.empty())
-    m_omx_input_avaliable.pop();
+  while (!m_omx_input_available.empty())
+    m_omx_input_available.pop();
 
   m_input_alignment     = 0;
   m_input_buffer_size   = 0;
@@ -1476,10 +1476,10 @@ OMX_ERRORTYPE COMXCoreComponent::DecoderEmptyBufferDone(OMX_HANDLETYPE hComponen
     return OMX_ErrorNone;
 
   #if defined(OMX_DEBUG_EVENTHANDLER)
-  CLog::Log(LOGDEBUG, "COMXCoreComponent::DecoderEmptyBufferDone component(%s) %p %d/%d\n", m_componentName.c_str(), pBuffer, m_omx_input_avaliable.size(), m_input_buffer_count);
+  CLog::Log(LOGDEBUG, "COMXCoreComponent::DecoderEmptyBufferDone component(%s) %p %d/%d\n", m_componentName.c_str(), pBuffer, m_omx_input_available.size(), m_input_buffer_count);
   #endif
   pthread_mutex_lock(&m_omx_input_mutex);
-  m_omx_input_avaliable.push(pBuffer);
+  m_omx_input_available.push(pBuffer);
 
   // this allows (all) blocked tasks to be awoken
   pthread_cond_broadcast(&m_input_buffer_cond);
