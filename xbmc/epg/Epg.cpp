@@ -584,7 +584,7 @@ int CEpg::Get(CFileItemList &results, const CEpgSearchFilter &filter) const
 
   for (std::map<CDateTime, CEpgInfoTagPtr>::const_iterator it = m_tags.begin(); it != m_tags.end(); ++it)
   {
-    if (filter.FilterEntry(*it->second))
+    if (filter.FilterEntry(it->second))
       results.Add(CFileItemPtr(new CFileItem(it->second)));
   }
 

@@ -20,13 +20,12 @@
  */
 
 #include "XBDateTime.h"
+#include "EpgTypes.h"
 
 class CFileItemList;
 
 namespace EPG
 {
-  class CEpgInfoTag;
-
   #define EPG_SEARCH_UNSET (-1)
 
   /** Filter to apply with on a CEpgInfoTag */
@@ -46,7 +45,7 @@ namespace EPG
      * @param tag The tag to check.
      * @return True if this tag matches the filter, false if not.
      */
-    bool FilterEntry(const CEpgInfoTag &tag) const;
+    bool FilterEntry(const CEpgInfoTagPtr &tag) const;
 
     /*!
      * @brief remove duplicates from a list of epg tags.
@@ -111,15 +110,15 @@ namespace EPG
     void SetUniqueBroadcastId(unsigned int iUniqueBroadcastId) { m_iUniqueBroadcastId = iUniqueBroadcastId; }
 
   private:
-    bool MatchGenre(const CEpgInfoTag &tag) const;
-    bool MatchDuration(const CEpgInfoTag &tag) const;
-    bool MatchStartAndEndTimes(const CEpgInfoTag &tag) const;
-    bool MatchSearchTerm(const CEpgInfoTag &tag) const;
-    bool MatchChannelNumber(const CEpgInfoTag &tag) const;
-    bool MatchChannelGroup(const CEpgInfoTag &tag) const;
-    bool MatchBroadcastId(const CEpgInfoTag &tag) const;
-    bool MatchChannelType(const CEpgInfoTag &tag) const;
-    bool MatchFreeToAir(const CEpgInfoTag &tag) const;
+    bool MatchGenre(const CEpgInfoTagPtr &tag) const;
+    bool MatchDuration(const CEpgInfoTagPtr &tag) const;
+    bool MatchStartAndEndTimes(const CEpgInfoTagPtr &tag) const;
+    bool MatchSearchTerm(const CEpgInfoTagPtr &tag) const;
+    bool MatchChannelNumber(const CEpgInfoTagPtr &tag) const;
+    bool MatchChannelGroup(const CEpgInfoTagPtr &tag) const;
+    bool MatchBroadcastId(const CEpgInfoTagPtr &tag) const;
+    bool MatchChannelType(const CEpgInfoTagPtr &tag) const;
+    bool MatchFreeToAir(const CEpgInfoTagPtr &tag) const;
 
     std::string   m_strSearchTerm;            /*!< The term to search for */
     bool          m_bIsCaseSensitive;         /*!< Do a case sensitive search */

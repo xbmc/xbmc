@@ -62,36 +62,36 @@ void CEpgSearchFilter::Reset()
   m_iUniqueBroadcastId	     = EPG_TAG_INVALID_UID;
 }
 
-bool CEpgSearchFilter::MatchGenre(const CEpgInfoTag &tag) const
+bool CEpgSearchFilter::MatchGenre(const CEpgInfoTagPtr &tag) const
 {
   bool bReturn(true);
 
   if (m_iGenreType != EPG_SEARCH_UNSET)
   {
-    bool bIsUnknownGenre(tag.GenreType() > EPG_EVENT_CONTENTMASK_USERDEFINED ||
-        tag.GenreType() < EPG_EVENT_CONTENTMASK_MOVIEDRAMA);
-    bReturn = ((m_bIncludeUnknownGenres && bIsUnknownGenre) || tag.GenreType() == m_iGenreType);
+    bool bIsUnknownGenre(tag->GenreType() > EPG_EVENT_CONTENTMASK_USERDEFINED ||
+                         tag->GenreType() < EPG_EVENT_CONTENTMASK_MOVIEDRAMA);
+    bReturn = ((m_bIncludeUnknownGenres && bIsUnknownGenre) || tag->GenreType() == m_iGenreType);
   }
 
   return bReturn;
 }
 
-bool CEpgSearchFilter::MatchDuration(const CEpgInfoTag &tag) const
+bool CEpgSearchFilter::MatchDuration(const CEpgInfoTagPtr &tag) const
 {
   bool bReturn(true);
 
   if (m_iMinimumDuration != EPG_SEARCH_UNSET)
-    bReturn = (tag.GetDuration() > m_iMinimumDuration * 60);
+    bReturn = (tag->GetDuration() > m_iMinimumDuration * 60);
 
   if (bReturn && m_iMaximumDuration != EPG_SEARCH_UNSET)
-    bReturn = (tag.GetDuration() < m_iMaximumDuration * 60);
+    bReturn = (tag->GetDuration() < m_iMaximumDuration * 60);
 
   return bReturn;
 }
 
-bool CEpgSearchFilter::MatchStartAndEndTimes(const CEpgInfoTag &tag) const
+bool CEpgSearchFilter::MatchStartAndEndTimes(const CEpgInfoTagPtr &tag) const
 {
-  return (tag.StartAsLocalTime() >= m_startDateTime && tag.EndAsLocalTime() <= m_endDateTime);
+  return (tag->StartAsLocalTime() >= m_startDateTime && tag->EndAsLocalTime() <= m_endDateTime);
 }
 
 void CEpgSearchFilter::SetSearchPhrase(const std::string &strSearchPhrase)
@@ -102,37 +102,37 @@ void CEpgSearchFilter::SetSearchPhrase(const std::string &strSearchPhrase)
   m_strSearchTerm.append("\"");
 }
 
-bool CEpgSearchFilter::MatchSearchTerm(const CEpgInfoTag &tag) const
+bool CEpgSearchFilter::MatchSearchTerm(const CEpgInfoTagPtr &tag) const
 {
   bool bReturn(true);
 
   if (!m_strSearchTerm.empty())
   {
     CTextSearch search(m_strSearchTerm, m_bIsCaseSensitive, SEARCH_DEFAULT_OR);
-    bReturn = search.Search(tag.Title()) ||
-              search.Search(tag.PlotOutline()) ||
-              (m_bSearchInDescription && search.Search(tag.Plot()));
+    bReturn = search.Search(tag->Title()) ||
+              search.Search(tag->PlotOutline()) ||
+              (m_bSearchInDescription && search.Search(tag->Plot()));
   }
 
   return bReturn;
 }
 
-bool CEpgSearchFilter::MatchBroadcastId(const CEpgInfoTag &tag) const
+bool CEpgSearchFilter::MatchBroadcastId(const CEpgInfoTagPtr &tag) const
 {
   if (m_iUniqueBroadcastId != EPG_TAG_INVALID_UID)
-    return (tag.UniqueBroadcastID() == m_iUniqueBroadcastId);
+    return (tag->UniqueBroadcastID() == m_iUniqueBroadcastId);
 
   return true;
 }
 
-bool CEpgSearchFilter::FilterEntry(const CEpgInfoTag &tag) const
+bool CEpgSearchFilter::FilterEntry(const CEpgInfoTagPtr &tag) const
 {
   return (MatchGenre(tag) &&
       MatchBroadcastId(tag) &&
       MatchDuration(tag) &&
       MatchStartAndEndTimes(tag) &&
       MatchSearchTerm(tag)) &&
-      (!tag.HasPVRChannel() ||
+      (!tag->HasPVRChannel() ||
        (MatchChannelType(tag) &&
         MatchChannelNumber(tag) &&
         MatchChannelGroup(tag) &&
@@ -173,12 +173,12 @@ int CEpgSearchFilter::RemoveDuplicates(CFileItemList &results)
   return iSize;
 }
 
-bool CEpgSearchFilter::MatchChannelType(const CEpgInfoTag &tag) const
+bool CEpgSearchFilter::MatchChannelType(const CEpgInfoTagPtr &tag) const
 {
-  return (g_PVRManager.IsStarted() && tag.ChannelTag()->IsRadio() == m_bIsRadio);
+  return (g_PVRManager.IsStarted() && tag->ChannelTag()->IsRadio() == m_bIsRadio);
 }
 
-bool CEpgSearchFilter::MatchChannelNumber(const CEpgInfoTag &tag) const
+bool CEpgSearchFilter::MatchChannelNumber(const CEpgInfoTagPtr &tag) const
 {
   bool bReturn(true);
 
@@ -188,27 +188,26 @@ bool CEpgSearchFilter::MatchChannelNumber(const CEpgInfoTag &tag) const
     if (!group)
       group = CPVRManager::GetInstance().ChannelGroups()->GetGroupAllTV();
 
-    bReturn = (m_iChannelNumber == (int) group->GetChannelNumber(tag.ChannelTag()));
+    bReturn = (m_iChannelNumber == (int) group->GetChannelNumber(tag->ChannelTag()));
   }
 
   return bReturn;
 }
 
-bool CEpgSearchFilter::MatchChannelGroup(const CEpgInfoTag &tag) const
+bool CEpgSearchFilter::MatchChannelGroup(const CEpgInfoTagPtr &tag) const
 {
   bool bReturn(true);
 
   if (m_iChannelGroup != EPG_SEARCH_UNSET && g_PVRManager.IsStarted())
   {
     CPVRChannelGroupPtr group = g_PVRChannelGroups->GetByIdFromAll(m_iChannelGroup);
-    bReturn = (group && group->IsGroupMember(tag.ChannelTag()));
+    bReturn = (group && group->IsGroupMember(tag->ChannelTag()));
   }
 
   return bReturn;
 }
 
-bool EpgSearchFilter::MatchFreeToAir(const CEpgInfoTag &tag) const
+bool CEpgSearchFilter::MatchFreeToAir(const CEpgInfoTagPtr &tag) const
 {
-  return (!m_bFreeToAirOnly || !tag.ChannelTag()->IsEncrypted());
+  return (!m_bFreeToAirOnly || !tag->ChannelTag()->IsEncrypted());
 }
-
