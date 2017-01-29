@@ -119,6 +119,7 @@ namespace EPG
     bool MatchChannelGroup(const CEpgInfoTag &tag) const;
     bool MatchBroadcastId(const CEpgInfoTag &tag) const;
     bool MatchChannelType(const CEpgInfoTag &tag) const;
+    bool MatchFreeToAir(const CEpgInfoTag &tag) const;
 
     std::string   m_strSearchTerm;            /*!< The term to search for */
     bool          m_bIsCaseSensitive;         /*!< Do a case sensitive search */

@@ -136,7 +136,7 @@ bool CEpgSearchFilter::FilterEntry(const CEpgInfoTag &tag) const
        (MatchChannelType(tag) &&
         MatchChannelNumber(tag) &&
         MatchChannelGroup(tag) &&
-        (!m_bFreeToAirOnly || !tag.ChannelTag()->IsEncrypted())));
+        MatchFreeToAir(tag)));
 }
 
 int CEpgSearchFilter::RemoveDuplicates(CFileItemList &results)
@@ -206,3 +206,9 @@ bool CEpgSearchFilter::MatchChannelGroup(const CEpgInfoTag &tag) const
 
   return bReturn;
 }
+
+bool EpgSearchFilter::MatchFreeToAir(const CEpgInfoTag &tag) const
+{
+  return (!m_bFreeToAirOnly || !tag.ChannelTag()->IsEncrypted());
+}
+
