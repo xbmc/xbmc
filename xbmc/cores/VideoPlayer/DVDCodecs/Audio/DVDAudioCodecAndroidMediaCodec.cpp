@@ -48,21 +48,6 @@
 
 #include <cassert>
 
-//#define DEBUG_VERBOSE 1
-
-/*static bool IsBlacklisted(const std::string &name)
-{
-  static const char *blacklisted_decoders[] = {
-    NULL
-  };
-  for (const char **ptr = blacklisted_decoders; *ptr; ptr++)
-  {
-    if (!strnicmp(*ptr, name.c_str(), strlen(*ptr)))
-      return true;
-  }
-  return false;
-}*/
-
 static const AEChannel KnownChannels[] = { AE_CH_FL, AE_CH_FR, AE_CH_FC, AE_CH_LFE, AE_CH_SL, AE_CH_SR, AE_CH_BL, AE_CH_BR, AE_CH_BC, AE_CH_BLOC, AE_CH_BROC, AE_CH_NULL };
 
 /****************************/
@@ -78,7 +63,6 @@ CDVDAudioCodecAndroidMediaCodec::CDVDAudioCodecAndroidMediaCodec(CProcessInfo &p
   m_bufferUsed(0),
   m_crypto(0)
 {
-  memset(&m_demux_pkt, 0, sizeof(m_demux_pkt));
 }
 
 CDVDAudioCodecAndroidMediaCodec::~CDVDAudioCodecAndroidMediaCodec()
@@ -207,7 +191,6 @@ bool CDVDAudioCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
   CLog::Log(LOGINFO, "CDVDAudioCodecAndroidMediaCodec:: Open Android MediaCodec %s", m_formatname.c_str());
 
   m_opened = true;
-  memset(&m_demux_pkt, 0, sizeof(m_demux_pkt));
 
   m_processInfo.SetAudioDecoderName(m_formatname.c_str());
   m_currentPts = DVD_NOPTS_VALUE;
@@ -220,13 +203,6 @@ void CDVDAudioCodecAndroidMediaCodec::Dispose()
     return;
 
   m_opened = false;
-
-  // release any retained demux packets
-  if (m_demux_pkt.pData)
-  {
-    free(m_demux_pkt.pData);
-    memset(&m_demux_pkt, 0, sizeof(m_demux_pkt));
-  }
 
   if (m_codec)
   {
@@ -340,13 +316,6 @@ void CDVDAudioCodecAndroidMediaCodec::Reset()
 {
   if (!m_opened)
     return;
-
-  // dump any pending demux packets
-  if (m_demux_pkt.pData)
-  {
-    free(m_demux_pkt.pData);
-    memset(&m_demux_pkt, 0, sizeof(m_demux_pkt));
-  }
 
   if (m_codec)
   {
