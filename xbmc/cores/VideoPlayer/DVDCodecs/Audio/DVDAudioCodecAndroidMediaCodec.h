@@ -29,9 +29,12 @@
 #include "cores/AudioEngine/Utils/AEAudioFormat.h"
 
 class CJNIMediaCodec;
+class CJNIMediaCrypto;
 class CJNIMediaFormat;
 class CJNIByteBuffer;
 class CProcessInfo;
+
+struct DemuxPacket;
 
 typedef struct amcaudio_demux {
   uint8_t *pData;
@@ -48,7 +51,7 @@ public:
 public:
   virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options) override;
   virtual void Dispose() override;
-  virtual int AddData(uint8_t* pData, int iSize, double dts, double pts) override;
+  virtual int AddData(const DemuxPacket &packet) override;
   virtual void GetData(DVDAudioFrame &frame) override;
   virtual int GetData(uint8_t** dst) override;
   virtual void Reset() override;
@@ -80,5 +83,6 @@ protected:
   double m_currentPts;
 
   std::shared_ptr<CJNIMediaCodec> m_codec;
+  CJNIMediaCrypto *m_crypto;
   amcaudio_demux m_demux_pkt;
 };

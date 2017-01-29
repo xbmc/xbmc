@@ -44,14 +44,6 @@ class CJNIByteBuffer;
 class CBitstreamConverter;
 struct DemuxCryptoInfo;
 
-typedef struct amc_demux {
-  uint8_t  *pData;
-  int       iSize;
-  std::shared_ptr<DemuxCryptoInfo> cryptoInfo;
-  double    dts;
-  double    pts;
-} amc_demux;
-
 class CDVDMediaCodecInfo
 {
 public:
@@ -104,10 +96,10 @@ public:
 
   // required overrides
   virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options) override;
-  virtual int AddData(const DemuxPacket &packet) override;
+  virtual bool AddData(const DemuxPacket &packet) override;
   virtual void Reset() override;
   virtual bool Reconfigure(CDVDStreamInfo &hints) override;
-  virtual int GetPicture(DVDVideoPicture* pDvdVideoPicture) override;
+  virtual VCReturn GetPicture(DVDVideoPicture* pDvdVideoPicture) override;
   virtual bool ClearPicture(DVDVideoPicture* pDvdVideoPicture) override;
   virtual const char* GetName() override { return m_formatname.c_str(); };
   virtual void SetCodecControl(int flags) override;
@@ -124,7 +116,6 @@ protected:
   static void     CallbackInitSurfaceTexture(void*);
   void            InitSurfaceTexture(void);
   void            ReleaseSurfaceTexture(void);
-  void            DisposePacketData(void);
 
   CDVDStreamInfo  m_hints;
   std::string     m_mime;
@@ -150,7 +141,6 @@ protected:
   std::shared_ptr<CJNISurfaceTexture> m_surfaceTexture;
   std::shared_ptr<CDVDMediaCodecOnFrameAvailable> m_frameAvailable;
 
-  amc_demux m_demux_pkt;
   std::vector<CJNIByteBuffer> m_input;
   std::vector<CJNIByteBuffer> m_output;
   std::vector<CDVDMediaCodecInfo*> m_inflight;
