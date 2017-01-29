@@ -31,13 +31,17 @@
 #include "DVDCodecs/DVDCodecs.h"
 #include "utils/log.h"
 #include "settings/AdvancedSettings.h"
+#include "cores/VideoPlayer/DVDDemuxers/DemuxCrypto.h"
+
 #include "platform/android/jni/ByteBuffer.h"
 #include "platform/android/jni/MediaCodec.h"
 #include "platform/android/jni/MediaCrypto.h"
 #include "platform/android/jni/MediaFormat.h"
 #include "platform/android/jni/MediaCodecList.h"
 #include "platform/android/jni/MediaCodecInfo.h"
+#include "platform/android/jni/MediaCodecCryptoInfo.h"
 #include "platform/android/activity/AndroidFeatures.h"
+#include "platform/android/jni/UUID.h"
 #include "platform/android/jni/Surface.h"
 
 #include "utils/StringUtils.h"
@@ -71,7 +75,8 @@ CDVDAudioCodecAndroidMediaCodec::CDVDAudioCodecAndroidMediaCodec(CProcessInfo &p
   m_channels(0),
   m_buffer(NULL),
   m_bufferSize(0),
-  m_bufferUsed(0)
+  m_bufferUsed(0),
+  m_crypto(0)
 {
   memset(&m_demux_pkt, 0, sizeof(m_demux_pkt));
 }
@@ -148,6 +153,37 @@ bool CDVDAudioCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
       break;
   }
 
+  if (m_crypto)
+    delete m_crypto;
+
+  if (m_hints.cryptoSession)
+  {
+    CLog::Log(LOGDEBUG, "CDVDAudioCodecAndroidMediaCodec::Open Initializing MediaCrypto");
+
+    CJNIUUID uuid(jni::jhobject(NULL));
+    if (m_hints.cryptoSession->keySystem == CRYPTO_SESSION_SYSTEM_WIDEVINE)
+      uuid = CJNIUUID(0xEDEF8BA979D64ACEULL, 0xA3C827DCD51D21EDULL);
+    else if (m_hints.cryptoSession->keySystem == CRYPTO_SESSION_SYSTEM_PLAYREADY)
+      uuid = CJNIUUID(0x9A04F07998404286ULL, 0xAB92E65BE0885F95ULL);
+    else
+    {
+      CLog::Log(LOGERROR, "CDVDAudioCodecAndroidMediaCodec::Open Unsupported crypto-keysystem:%u", m_hints.cryptoSession->keySystem);
+      return false;
+    }
+
+    m_crypto = new CJNIMediaCrypto(uuid, std::vector<char>(m_hints.cryptoSession->sessionId, m_hints.cryptoSession->sessionId + m_hints.cryptoSession->sessionIdSize));
+
+    if (xbmc_jnienv()->ExceptionCheck())
+    {
+      CLog::Log(LOGERROR, "MediaCrypto::ExceptionCheck: <init>");
+      xbmc_jnienv()->ExceptionDescribe();
+      xbmc_jnienv()->ExceptionClear();
+      return false;
+    }
+  }
+  else
+    m_crypto = new CJNIMediaCrypto(jni::jhobject(NULL));
+
   m_codec = std::shared_ptr<CJNIMediaCodec>(new CJNIMediaCodec(CJNIMediaCodec::createDecoderByType(m_mime)));
   if (xbmc_jnienv()->ExceptionCheck())
   {
@@ -200,25 +236,21 @@ void CDVDAudioCodecAndroidMediaCodec::Dispose()
     if (xbmc_jnienv()->ExceptionCheck())
       xbmc_jnienv()->ExceptionClear();
   }
+
+  if (m_crypto)
+  {
+    delete m_crypto;
+    m_crypto = nullptr;
+  }
 }
 
-int CDVDAudioCodecAndroidMediaCodec::AddData(uint8_t* pData, int iSize, double dts, double pts)
+int CDVDAudioCodecAndroidMediaCodec::AddData(const DemuxPacket &packet)
 {
   int rtn = 0;
   if (g_advancedSettings.CanLogComponent(LOGAUDIO))
-    CLog::Log(LOGDEBUG, "CDVDAudioCodecAndroidMediaCodec::AddData dts:%0.4lf pts:%0.4lf size(%d)", dts, pts, iSize);
+    CLog::Log(LOGDEBUG, "CDVDAudioCodecAndroidMediaCodec::AddData dts:%0.4lf pts:%0.4lf size(%d)", packet.dts, packet.pts, packet.iSize);
 
-  if (!pData)
-  {
-    // Check if we have a saved buffer
-    if (m_demux_pkt.pData)
-    {
-      pData = m_demux_pkt.pData;
-      iSize = m_demux_pkt.iSize;
-    }
-  }
-
-  if (pData)
+  if (packet.pData)
   {
     // try to fetch an input buffer
     int64_t timeout_us = 5000;
@@ -240,10 +272,10 @@ int CDVDAudioCodecAndroidMediaCodec::AddData(uint8_t* pData, int iSize, double d
         xbmc_jnienv()->ExceptionClear();
       }
 
-      if (iSize > size)
+      if (packet.iSize > size)
       {
-        CLog::Log(LOGERROR, "CDVDAudioCodecAndroidMediaCodec::AddData, iSize(%d) > size(%d)", iSize, size);
-        iSize = size;
+        CLog::Log(LOGERROR, "CDVDAudioCodecAndroidMediaCodec::AddData, iSize(%d) > size(%d)", packet.iSize, size);
+        return packet.iSize;
       }
       // fetch a pointer to the ByteBuffer backing store
       uint8_t *dst_ptr = (uint8_t*)xbmc_jnienv()->GetDirectBufferAddress(buffer.get_raw());
@@ -254,19 +286,37 @@ int CDVDAudioCodecAndroidMediaCodec::AddData(uint8_t* pData, int iSize, double d
         switch(m_hints.codec)
         {
           default:
-            memcpy(dst_ptr, pData, iSize);
+            memcpy(dst_ptr, packet.pData, packet.iSize);
             break;
         }
-        rtn += iSize;
       }
       else
-        rtn = 0;
+        return packet.iSize;
+
+      CJNIMediaCodecCryptoInfo *cryptoInfo(0);
+      if (!!m_crypto->get_raw() && packet.cryptoInfo)
+      {
+        cryptoInfo = new CJNIMediaCodecCryptoInfo();
+        cryptoInfo->set(
+          packet.cryptoInfo->numSubSamples,
+          std::vector<int>(packet.cryptoInfo->clearBytes, packet.cryptoInfo->clearBytes + packet.cryptoInfo->numSubSamples),
+          std::vector<int>(packet.cryptoInfo->cipherBytes, packet.cryptoInfo->cipherBytes + packet.cryptoInfo->numSubSamples),
+          std::vector<char>(packet.cryptoInfo->kid, packet.cryptoInfo->kid + 16),
+          std::vector<char>(packet.cryptoInfo->iv, packet.cryptoInfo->iv + 16),
+          CJNIMediaCodec::CRYPTO_MODE_AES_CTR);
+      }
 
       int flags = 0;
       int offset = 0;
-      int64_t presentationTimeUs = static_cast<int64_t>(pts);
+      int64_t presentationTimeUs = static_cast<int64_t>(packet.pts);
 
-      m_codec->queueInputBuffer(index, offset, iSize, presentationTimeUs, flags);
+      if (!cryptoInfo)
+        m_codec->queueInputBuffer(index, offset, packet.iSize, presentationTimeUs, flags);
+      else
+      {
+        m_codec->queueSecureInputBuffer(index, offset, *cryptoInfo, presentationTimeUs, flags);
+        delete cryptoInfo;
+      }
 
       // clear any jni exceptions, jni gets upset if we do not.
       if (xbmc_jnienv()->ExceptionCheck())
@@ -275,23 +325,6 @@ int CDVDAudioCodecAndroidMediaCodec::AddData(uint8_t* pData, int iSize, double d
         xbmc_jnienv()->ExceptionDescribe();
         xbmc_jnienv()->ExceptionClear();
       }
-
-      // Free saved buffer it there was one
-      if (m_demux_pkt.pData)
-      {
-        free(m_demux_pkt.pData);
-        memset(&m_demux_pkt, 0, sizeof(m_demux_pkt));
-      }
-    }
-    else
-    {
-      // We couldn't get an input buffer. Save the packet for next iteration, if it wasn't already
-      if (!m_demux_pkt.pData)
-      {
-        m_demux_pkt.iSize = iSize;
-        m_demux_pkt.pData = (uint8_t*)malloc(iSize);
-        memcpy(m_demux_pkt.pData, pData, iSize);
-      }
     }
   }
 
@@ -299,6 +332,7 @@ int CDVDAudioCodecAndroidMediaCodec::AddData(uint8_t* pData, int iSize, double d
   m_format.m_channelLayout = GetChannelMap();
   m_format.m_sampleRate = GetSampleRate();
   m_format.m_frameSize = m_format.m_channelLayout.Count() * CAEUtil::DataFormatToBits(m_format.m_dataFormat) >> 3;
+
   return rtn;
 }
 
@@ -369,12 +403,8 @@ bool CDVDAudioCodecAndroidMediaCodec::ConfigureMediaCodec(void)
   // use a null MediaCrypto, our content is not encrypted.
   // use a null Surface
   int flags = 0;
-  CJNIMediaCrypto *crypto(0);
-  crypto = new CJNIMediaCrypto(jni::jhobject(NULL));
-
   CJNISurface surface(jni::jhobject(NULL));
-  m_codec->configure(mediaformat, surface, *crypto, flags);
-  delete crypto;
+  m_codec->configure(mediaformat, surface, *m_crypto, flags);
 
   // always, check/clear jni exceptions.
   if (xbmc_jnienv()->ExceptionCheck())
@@ -509,7 +539,7 @@ int CDVDAudioCodecAndroidMediaCodec::GetData(uint8_t** dst)
     if (g_advancedSettings.CanLogComponent(LOGAUDIO))
       CLog::Log(LOGDEBUG, "CDVDAudioCodecAndroidMediaCodec::GetData index(%d), size(%d)", index, m_bufferUsed);
 
-    m_currentPts = bufferInfo.presentationTimeUs() == DVD_NOPTS_VALUE ? DVD_NOPTS_VALUE :  bufferInfo.presentationTimeUs();
+    m_currentPts = bufferInfo.presentationTimeUs() == (int64_t)DVD_NOPTS_VALUE ? DVD_NOPTS_VALUE :  bufferInfo.presentationTimeUs();
 
     // always, check/clear jni exceptions.
     if (xbmc_jnienv()->ExceptionCheck())
