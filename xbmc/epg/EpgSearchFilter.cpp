@@ -131,7 +131,9 @@ bool CEpgSearchFilter::FilterEntry(const CEpgInfoTagPtr &tag) const
       MatchBroadcastId(tag) &&
       MatchDuration(tag) &&
       MatchStartAndEndTimes(tag) &&
-      MatchSearchTerm(tag)) &&
+      MatchSearchTerm(tag) &&
+      MatchTimers(tag) &&
+      MatchRecordings(tag)) &&
       (!tag->HasPVRChannel() ||
        (MatchChannelType(tag) &&
         MatchChannelNumber(tag) &&
@@ -210,4 +212,14 @@ bool CEpgSearchFilter::MatchChannelGroup(const CEpgInfoTagPtr &tag) const
 bool CEpgSearchFilter::MatchFreeToAir(const CEpgInfoTagPtr &tag) const
 {
   return (!m_bFreeToAirOnly || !tag->ChannelTag()->IsEncrypted());
+}
+
+bool CEpgSearchFilter::MatchTimers(const CEpgInfoTagPtr &tag) const
+{
+  return (!m_bIgnorePresentTimers || !g_PVRTimers->GetTimerForEpgTag(tag));
+}
+
+bool CEpgSearchFilter::MatchRecordings(const CEpgInfoTagPtr &tag) const
+{
+  return (!m_bIgnorePresentRecordings || !g_PVRRecordings->GetRecordingForEpgTag(tag));
 }
