@@ -525,6 +525,7 @@ void CDVDDemuxClient::RequestStreams()
     dStream->codecName = stream->codecName;
     dStream->bandwidth = stream->bandwidth;
     dStream->uniqueId = stream->uniqueId;
+    dStream->cryptoSession = stream->cryptoSession;
     for (int j=0; j<4; j++)
       dStream->language[j] = stream->language[j];
 
