@@ -110,7 +110,8 @@ bool CEpgSearchFilter::MatchSearchTerm(const CEpgInfoTag &tag) const
   {
     CTextSearch search(m_strSearchTerm, m_bIsCaseSensitive, SEARCH_DEFAULT_OR);
     bReturn = search.Search(tag.Title()) ||
-        search.Search(tag.PlotOutline());
+              search.Search(tag.PlotOutline()) ||
+              (m_bSearchInDescription && search.Search(tag.Plot()));
   }
 
   return bReturn;
