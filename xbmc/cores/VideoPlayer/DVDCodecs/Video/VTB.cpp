@@ -101,33 +101,33 @@ bool CDecoder::Open(AVCodecContext *avctx, AVCodecContext* mainctx, enum AVPixel
   return true;
 }
 
-int CDecoder::Decode(AVCodecContext* avctx, AVFrame* frame)
+CDVDVideoCodec::VCReturn CDecoder::Decode(AVCodecContext* avctx, AVFrame* frame)
 {
-  int status = Check(avctx);
+  CDVDVideoCodec::VCReturn status = Check(avctx);
   if(status)
     return status;
 
   if(frame)
   {
     m_renderPicture = (CVPixelBufferRef)frame->data[3];
-    return VC_BUFFER | VC_PICTURE;
+    return CDVDVideoCodec::VC_PICTURE;
   }
   else
-    return VC_BUFFER;
+    return CDVDVideoCodec::VC_BUFFER;
 }
 
 bool CDecoder::GetPicture(AVCodecContext* avctx, DVDVideoPicture* picture)
 {
-  ((CDVDVideoCodecFFmpeg*)avctx->opaque)->GetPictureCommon(picture);
+  ((ICallbackHWAccel*)avctx->opaque)->GetPictureCommon(picture);
 
   picture->format = RENDER_FMT_CVBREF;
   picture->cvBufferRef = m_renderPicture;
   return true;
 }
 
-int CDecoder::Check(AVCodecContext* avctx)
+CDVDVideoCodec::VCReturn CDecoder::Check(AVCodecContext* avctx)
 {
-  return 0;
+  return CDVDVideoCodec::VC_NONE;
 }
 
 unsigned CDecoder::GetAllowedReferences()
