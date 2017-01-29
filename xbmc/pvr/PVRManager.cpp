@@ -1263,7 +1263,12 @@ bool CPVRTimersUpdateJob::DoWork(void)
 
 bool CPVRChannelsUpdateJob::DoWork(void)
 {
-  return g_PVRChannelGroups->Update(true);
+	bool bReturn = g_PVRChannelGroups->Update(true);
+
+	if(bReturn && g_PVRManager.IsStarted()) 
+		bReturn = g_PVRChannelGroups->CreateChannelEpgs();
+
+	return bReturn;
 }
 
 bool CPVRChannelGroupsUpdateJob::DoWork(void)
