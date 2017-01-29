@@ -33,9 +33,15 @@
 using namespace EPG;
 using namespace PVR;
 
-void EpgSearchFilter::Reset()
+
+CEpgSearchFilter::CEpgSearchFilter()
 {
-  m_strSearchTerm            = "";
+  Reset();
+}
+
+void CEpgSearchFilter::Reset()
+{
+  m_strSearchTerm.clear();
   m_bIsCaseSensitive         = false;
   m_bSearchInDescription     = false;
   m_iGenreType               = EPG_SEARCH_UNSET;
@@ -45,18 +51,18 @@ void EpgSearchFilter::Reset()
   m_startDateTime.SetFromUTCDateTime(g_EpgContainer.GetFirstEPGDate());
   m_endDateTime.SetFromUTCDateTime(g_EpgContainer.GetLastEPGDate());
   m_bIncludeUnknownGenres    = false;
-  m_bPreventRepeats          = false;
+  m_bRemoveDuplicates        = false;
 
   /* pvr specific filters */
   m_iChannelNumber           = EPG_SEARCH_UNSET;
-  m_bFTAOnly                 = false;
+  m_bFreeToAirOnly           = false;
   m_iChannelGroup            = EPG_SEARCH_UNSET;
   m_bIgnorePresentTimers     = true;
   m_bIgnorePresentRecordings = true;
-  m_iUniqueBroadcastId	     = 0;
+  m_iUniqueBroadcastId	     = EPG_TAG_INVALID_UID;
 }
 
-bool EpgSearchFilter::MatchGenre(const CEpgInfoTag &tag) const
+bool CEpgSearchFilter::MatchGenre(const CEpgInfoTag &tag) const
 {
   bool bReturn(true);
 
@@ -70,7 +76,7 @@ bool EpgSearchFilter::MatchGenre(const CEpgInfoTag &tag) const
   return bReturn;
 }
 
-bool EpgSearchFilter::MatchDuration(const CEpgInfoTag &tag) const
+bool CEpgSearchFilter::MatchDuration(const CEpgInfoTag &tag) const
 {
   bool bReturn(true);
 
@@ -83,12 +89,20 @@ bool EpgSearchFilter::MatchDuration(const CEpgInfoTag &tag) const
   return bReturn;
 }
 
-bool EpgSearchFilter::MatchStartAndEndTimes(const CEpgInfoTag &tag) const
+bool CEpgSearchFilter::MatchStartAndEndTimes(const CEpgInfoTag &tag) const
 {
   return (tag.StartAsLocalTime() >= m_startDateTime && tag.EndAsLocalTime() <= m_endDateTime);
 }
 
-bool EpgSearchFilter::MatchSearchTerm(const CEpgInfoTag &tag) const
+void CEpgSearchFilter::SetSearchPhrase(const std::string &strSearchPhrase)
+{
+  // match the exact phrase
+  m_strSearchTerm = "\"";
+  m_strSearchTerm.append(strSearchPhrase);
+  m_strSearchTerm.append("\"");
+}
+
+bool CEpgSearchFilter::MatchSearchTerm(const CEpgInfoTag &tag) const
 {
   bool bReturn(true);
 
@@ -102,15 +116,15 @@ bool EpgSearchFilter::MatchSearchTerm(const CEpgInfoTag &tag) const
   return bReturn;
 }
 
-bool EpgSearchFilter::MatchBroadcastId(const CEpgInfoTag &tag) const
+bool CEpgSearchFilter::MatchBroadcastId(const CEpgInfoTag &tag) const
 {
-  if (m_iUniqueBroadcastId != 0)
+  if (m_iUniqueBroadcastId != EPG_TAG_INVALID_UID)
     return (tag.UniqueBroadcastID() == m_iUniqueBroadcastId);
 
   return true;
 }
 
-bool EpgSearchFilter::FilterEntry(const CEpgInfoTag &tag) const
+bool CEpgSearchFilter::FilterEntry(const CEpgInfoTag &tag) const
 {
   return (MatchGenre(tag) &&
       MatchBroadcastId(tag) &&
@@ -121,10 +135,10 @@ bool EpgSearchFilter::FilterEntry(const CEpgInfoTag &tag) const
        (MatchChannelType(tag) &&
         MatchChannelNumber(tag) &&
         MatchChannelGroup(tag) &&
-        (!m_bFTAOnly || !tag.ChannelTag()->IsEncrypted())));
+        (!m_bFreeToAirOnly || !tag.ChannelTag()->IsEncrypted())));
 }
 
-int EpgSearchFilter::RemoveDuplicates(CFileItemList &results)
+int CEpgSearchFilter::RemoveDuplicates(CFileItemList &results)
 {
   unsigned int iSize = results.Size();
 
@@ -158,12 +172,12 @@ int EpgSearchFilter::RemoveDuplicates(CFileItemList &results)
   return iSize;
 }
 
-bool EpgSearchFilter::MatchChannelType(const CEpgInfoTag &tag) const
+bool CEpgSearchFilter::MatchChannelType(const CEpgInfoTag &tag) const
 {
   return (g_PVRManager.IsStarted() && tag.ChannelTag()->IsRadio() == m_bIsRadio);
 }
 
-bool EpgSearchFilter::MatchChannelNumber(const CEpgInfoTag &tag) const
+bool CEpgSearchFilter::MatchChannelNumber(const CEpgInfoTag &tag) const
 {
   bool bReturn(true);
 
@@ -179,7 +193,7 @@ bool EpgSearchFilter::MatchChannelNumber(const CEpgInfoTag &tag) const
   return bReturn;
 }
 
-bool EpgSearchFilter::MatchChannelGroup(const CEpgInfoTag &tag) const
+bool CEpgSearchFilter::MatchChannelGroup(const CEpgInfoTag &tag) const
 {
   bool bReturn(true);
 

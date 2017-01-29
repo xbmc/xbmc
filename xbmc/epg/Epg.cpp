@@ -573,7 +573,7 @@ int CEpg::Get(CFileItemList &results) const
   return results.Size() - iInitialSize;
 }
 
-int CEpg::Get(CFileItemList &results, const EpgSearchFilter &filter) const
+int CEpg::Get(CFileItemList &results, const CEpgSearchFilter &filter) const
 {
   int iInitialSize = results.Size();
 
