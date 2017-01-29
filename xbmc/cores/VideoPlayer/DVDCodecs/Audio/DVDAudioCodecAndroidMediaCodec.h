@@ -36,11 +36,6 @@ class CProcessInfo;
 
 struct DemuxPacket;
 
-typedef struct amcaudio_demux {
-  uint8_t *pData;
-  int iSize;
-} amcaudio_demux;
-
 class CDVDAudioCodecAndroidMediaCodec : public CDVDAudioCodec
 {
 public:
@@ -84,5 +79,4 @@ protected:
 
   std::shared_ptr<CJNIMediaCodec> m_codec;
   CJNIMediaCrypto *m_crypto;
-  amcaudio_demux m_demux_pkt;
 };
