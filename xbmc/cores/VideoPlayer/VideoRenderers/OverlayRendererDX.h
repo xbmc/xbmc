@@ -35,15 +35,12 @@ namespace OVERLAY {
 
   class COverlayQuadsDX
     : public COverlay
-    , public ID3DResource
   {
   public:
     COverlayQuadsDX(ASS_Image* images, int width, int height);
     virtual ~COverlayQuadsDX();
 
     void Render(SRenderState& state);
-    void OnCreateDevice() override {}
-    void OnDestroyDevice(bool fatal) override;
 
     int                    m_count;
     DWORD                  m_fvf;
@@ -53,7 +50,6 @@ namespace OVERLAY {
 
   class COverlayImageDX
     : public COverlay
-    , public ID3DResource
   {
   public:
     COverlayImageDX(CDVDOverlayImage* o);
@@ -62,8 +58,6 @@ namespace OVERLAY {
 
     void Load(uint32_t* rgba, int width, int height, int stride);
     void Render(SRenderState& state);
-    void OnCreateDevice() override {}
-    void OnDestroyDevice(bool fatal) override;
 
     DWORD                  m_fvf;
     CD3DTexture            m_texture;
