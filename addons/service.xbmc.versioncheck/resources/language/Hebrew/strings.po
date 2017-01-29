@@ -94,7 +94,7 @@ msgstr "בקר ב-http://kodi.tv למידע נוסף."
 
 msgctxt "#32034"
 msgid "Using %s while %s is available."
-msgstr "שימוש בs% בעוד s% זמין."
+msgstr "שימוש ב%s בעוד %s זמין."
 
 msgctxt "#32035"
 msgid "It is recommended that you to upgrade to a newer version."
