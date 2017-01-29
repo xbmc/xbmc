@@ -151,19 +151,21 @@ COverlayQuadsDX::COverlayQuadsDX(ASS_Image* images, int width, int height)
     CLog::Log(LOGERROR, "%s - failed to create vertex buffer", __FUNCTION__);
     m_texture.Release();
   }
-  else
-    g_Windowing.Register(this);
+
   delete[] vt;
 }
 
 COverlayQuadsDX::~COverlayQuadsDX()
 {
-  g_Windowing.Unregister(this);
 }
 
 void COverlayQuadsDX::Render(SRenderState &state)
 {
   if (m_count == 0)
+    return;
+
+  ID3D11Buffer* vertexBuffer = m_vertex.Get();
+  if (vertexBuffer == nullptr)
     return;
 
   ID3D11DeviceContext* pContext = g_Windowing.Get3D11Context();
@@ -188,7 +190,6 @@ void COverlayQuadsDX::Render(SRenderState &state)
   const unsigned stride = sizeof(Vertex);
   const unsigned offset = 0;
 
-  ID3D11Buffer* vertexBuffer = m_vertex.Get();
   // Set the vertex buffer to active in the input assembler so it can be rendered.
   pContext->IASetVertexBuffers(0, 1, &vertexBuffer, &stride, &offset);
   // Set the type of primitive that should be rendered from this vertex buffer, in this case triangles.
@@ -206,18 +207,8 @@ void COverlayQuadsDX::Render(SRenderState &state)
   pGUIShader->RestoreBuffers();
 }
 
-void COverlayQuadsDX::OnDestroyDevice(bool fatal)
-{
-  // fatal means that we have no valid buffer anymore
-  // resetting m_count will cause no rendering
-  if (fatal) 
-    m_count = 0; 
-}
-
-
 COverlayImageDX::~COverlayImageDX()
 {
-  g_Windowing.Unregister(this);
 }
 
 COverlayImageDX::COverlayImageDX(CDVDOverlayImage* o)
@@ -283,7 +274,6 @@ COverlayImageDX::COverlayImageDX(CDVDOverlayImage* o)
     m_width  = (float)o->width;
     m_height = (float)o->height;
   }
-  g_Windowing.Register(this);
 }
 
 COverlayImageDX::COverlayImageDX(CDVDOverlaySpu* o)
@@ -305,8 +295,6 @@ COverlayImageDX::COverlayImageDX(CDVDOverlaySpu* o)
   m_y      = (float)(min_y + o->y);
   m_width  = (float)(max_x - min_x);
   m_height = (float)(max_y - min_y);
-
-  g_Windowing.Register(this);
 }
 
 void COverlayImageDX::Load(uint32_t* rgba, int width, int height, int stride)
@@ -344,7 +332,8 @@ void COverlayImageDX::Load(uint32_t* rgba, int width, int height, int stride)
 
 void COverlayImageDX::Render(SRenderState &state)
 {
-  if (m_type == TYPE_NONE)
+  ID3D11Buffer* vertexBuffer = m_vertex.Get();
+  if (vertexBuffer == nullptr)
     return;
 
   ID3D11DeviceContext* pContext = g_Windowing.Get3D11Context();
@@ -371,7 +360,6 @@ void COverlayImageDX::Render(SRenderState &state)
   const unsigned stride = m_vertex.GetStride();
   const unsigned offset = 0;
 
-  ID3D11Buffer* vertexBuffer = m_vertex.Get();
   pContext->IASetVertexBuffers(0, 1, &vertexBuffer, &stride, &offset);
   pContext->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
@@ -385,14 +373,6 @@ void COverlayImageDX::Render(SRenderState &state)
   // restoring transformation
   pGUIShader->SetWVP(world, view, proj);
   pGUIShader->RestoreBuffers();
-}
-
-void OVERLAY::COverlayImageDX::OnDestroyDevice(bool fatal)
-{
-  // fatal means that we have no valid texture and buffer anymore
-  // resetting m_type will cause no rendering
-  if (fatal)
-    m_type = TYPE_NONE;
 }
 
 #endif
