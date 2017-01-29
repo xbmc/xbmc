@@ -20325,7 +20325,21 @@ msgctxt "#38111"
 msgid "This category contains other settings for the GUI interface"
 msgstr ""
 
-#empty strings from id 38112 to 38999
+#empty strings from id 38112 to 38206
+
+#. Description of setting "Pictures -> Show EXIF picture information" with label #38207
+#: system/settings/settings.xml
+msgctxt "#38207"
+msgid "Show EXIF picture information"
+msgstr ""
+
+#. Help text of setting "Pictures -> Show EXIF picture information" with label #38208
+#: system/settings/settings.xml
+msgctxt "#38208"
+msgid "If EXIF information exists (date, time, camera used, etc.), it will be displayed."
+msgstr ""
+
+#empty strings from id 38209 to 38999
 
 #: system/settings/settings.xml
 msgctxt "#39000"
@@ -20406,16 +20420,4 @@ msgstr ""
 #: xbmc/addons/GUIDialogAddonInfo.cpp
 msgctxt "#39014"
 msgid "Would you also like to remove all related data (e.g. settings) of this add-on?"
-msgstr ""
-
-#. Description of setting "Pictures -> Show EXIF picture information" with label #38207
-#: system/settings/settings.xml
-msgctxt "#38207"
-msgid "Show EXIF picture information"
-msgstr ""
-
-#. Help text of setting "Pictures -> Show EXIF picture information" with label #38208
-#: system/settings/settings.xml
-msgctxt "#38208"
-msgid "If EXIF information exists (date, time, camera used, etc.), it will be displayed."
 msgstr ""
