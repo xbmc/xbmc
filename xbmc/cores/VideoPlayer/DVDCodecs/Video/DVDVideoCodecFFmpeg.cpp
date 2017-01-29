@@ -659,10 +659,14 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdV
   if (!m_started)
   {
     if (m_iLastKeyframe >= 300 && m_pDecodedFrame->pict_type == AV_PICTURE_TYPE_I)
+    {
       m_started = true;
-
-    av_frame_unref(m_pDecodedFrame);
-    return VC_BUFFER;
+    }
+    else
+    {
+      av_frame_unref(m_pDecodedFrame);
+      return VC_BUFFER;
+    }
   }
 
   // push the frame to hw decoder for further processing
