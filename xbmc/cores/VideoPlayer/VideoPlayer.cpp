@@ -2013,7 +2013,8 @@ void CVideoPlayer::HandlePlaySpeed()
                  (m_CurrentAudio.packets == 0 && m_CurrentVideo.packets > threshold);
 
     if (m_CurrentAudio.syncState == IDVDStreamPlayer::SYNC_WAITSYNC &&
-        m_CurrentAudio.avsync == CCurrentStream::AV_SYNC_CONT)
+        (m_CurrentAudio.avsync == CCurrentStream::AV_SYNC_CONT ||
+         m_CurrentVideo.syncState == IDVDStreamPlayer::SYNC_INSYNC))
     {
       m_CurrentAudio.syncState = IDVDStreamPlayer::SYNC_INSYNC;
       m_CurrentAudio.avsync = CCurrentStream::AV_SYNC_NONE;
