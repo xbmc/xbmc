@@ -35,7 +35,7 @@ bool CAddonSettings::IsVisible(const CFileItem& item) const
 {
   AddonPtr addon;
   return item.HasAddonInfo()
-         && CAddonMgr::GetInstance().GetAddon(item.GetAddonInfo()->ID(), addon, ADDON_UNKNOWN, false)
+         && CAddonMgr::GetInstance().GetAddon(item.GetAddonInfo()->ID(), addon, ADDON_UNKNOWN)
          && addon->HasSettings();
 }
 

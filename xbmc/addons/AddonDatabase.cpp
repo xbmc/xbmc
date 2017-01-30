@@ -391,13 +391,13 @@ bool CAddonDatabase::FindByAddonId(const std::string& addonId, ADDON::AddonInfos
     {
       AddonInfoPtr usedInfo = std::make_shared<CAddonInfo>(
                                   addonId,                       /* id */
-                                  AddonVersion(m_pDS2->fv(0).get_asString()),
-                                  m_pDS2->fv(1).get_asString(),  /* name */
-                                  m_pDS2->fv(2).get_asString(),  /* summary */
-                                  m_pDS2->fv(3).get_asString(),  /* description */
-                                  m_pDS2->fv(4).get_asString(),  /* metadata */
-                                  m_pDS2->fv(5).get_asString(),  /* changelog */
-                                  m_pDS2->fv(6).get_asString()); /* origin */
+                                  AddonVersion(m_pDS->fv(0).get_asString()),
+                                  m_pDS->fv(1).get_asString(),  /* name */
+                                  m_pDS->fv(2).get_asString(),  /* summary */
+                                  m_pDS->fv(3).get_asString(),  /* description */
+                                  m_pDS->fv(4).get_asString(),  /* metadata */
+                                  m_pDS->fv(5).get_asString(),  /* changelog */
+                                  m_pDS->fv(6).get_asString()); /* origin */
 
       if (usedInfo->IsUsable())
         infos.push_back(std::move(usedInfo));

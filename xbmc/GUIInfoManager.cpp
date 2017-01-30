@@ -6660,7 +6660,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
     break;
   case VISUALISATION_NAME:
     {
-      AddonInfoPtr addon = CAddonMgr::GetInstance().GetInstalledAddonInfo(ADDON_VIZ, CServiceBroker::GetSettings().GetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION));
+      AddonInfoPtr addon = CAddonMgr::GetInstance().GetInstalledAddonInfo(CServiceBroker::GetSettings().GetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION), ADDON_VIZ);
       if (addon)
         strLabel = addon->Name();
     }
@@ -10548,7 +10548,7 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
     {
       if (item->GetAddonInfo()->Origin() == ORIGIN_SYSTEM)
         return g_localizeStrings.Get(24992);
-      AddonInfoPtr origin = CAddonMgr::GetInstance().GetInstalledAddonInfo(ADDON_REPOSITORY, item->GetAddonInfo()->Origin());
+      AddonInfoPtr origin = CAddonMgr::GetInstance().GetInstalledAddonInfo(item->GetAddonInfo()->Origin(), ADDON_REPOSITORY);
       if (origin)
         return origin->Name();
       return g_localizeStrings.Get(13205);

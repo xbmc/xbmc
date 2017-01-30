@@ -415,7 +415,8 @@ int CGUIWindowAddonBrowser::SelectAddonID(const std::vector<ADDON::TYPE> &types,
   if (showInstallable || showMore)
   {
     AddonInfos installableAddons;
-    if (CAddonMgr::GetInstance().GetInstallableAddonInfos(installableAddons, ADDON_UNKNOWN))
+    CAddonMgr::GetInstance().GetInstallableAddonInfos(installableAddons, ADDON_UNKNOWN);
+    if (!installableAddons.empty())
     {
       for (ADDON::AddonInfos::iterator addon = installableAddons.begin(); addon != installableAddons.end();)
       {

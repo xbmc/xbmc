@@ -272,18 +272,18 @@ void OnDisabled(const std::string& id)
 {
 
   AddonPtr addon;
-  if (CAddonMgr::GetInstance().GetAddon(id, addon, ADDON_PVRDLL, false) ||
-      CAddonMgr::GetInstance().GetAddon(id, addon, ADDON_ADSPDLL, false) ||
-      CAddonMgr::GetInstance().GetAddon(id, addon, ADDON_PERIPHERALDLL, false))
+  if (CAddonMgr::GetInstance().GetAddon(id, addon, ADDON_PVRDLL) ||
+      CAddonMgr::GetInstance().GetAddon(id, addon, ADDON_ADSPDLL) ||
+      CAddonMgr::GetInstance().GetAddon(id, addon, ADDON_PERIPHERALDLL))
     return addon->OnDisabled();
 
   if (CAddonMgr::GetInstance().ServicesHasStarted())
   {
-    if (CAddonMgr::GetInstance().GetAddon(id, addon, ADDON_SERVICE, false))
+    if (CAddonMgr::GetInstance().GetAddon(id, addon, ADDON_SERVICE))
       std::static_pointer_cast<CService>(addon)->Stop();
   }
 
-  if (CAddonMgr::GetInstance().GetAddon(id, addon, ADDON_CONTEXT_ITEM, false))
+  if (CAddonMgr::GetInstance().GetAddon(id, addon, ADDON_CONTEXT_ITEM))
     CContextMenuManager::GetInstance().Unload(*std::static_pointer_cast<CContextMenuAddon>(addon));
 }
 

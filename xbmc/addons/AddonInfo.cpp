@@ -317,19 +317,14 @@ CAddonInfo::CAddonInfo(std::string addonPath)
   m_usable = LoadAddonXML(xmlDoc.RootElement(), addonXmlPath);
   if (m_usable)
   {
-    if (m_icon.empty())
+    for (unsigned int i = 0; i < m_screenshots.size(); ++i)
     {
-      std::string tmpIcon = URIUtils::AddFileToFolder(m_path, "icon.png");
-      if (XFILE::CFile::Exists(tmpIcon))
-        m_icon = tmpIcon;
+      m_screenshots[i] = URIUtils::AddFileToFolder(m_path, m_screenshots[i]);
     }
-
-    if (m_fanart.empty())
-    {
-      std::string tmpFanart = URIUtils::AddFileToFolder(m_path, "fanart.jpg");
-      if (XFILE::CFile::Exists(tmpFanart))
-        m_fanart = tmpFanart;
-    }
+    if (!m_fanart.empty())
+      m_fanart = URIUtils::AddFileToFolder(m_path, m_fanart);
+    if (!m_icon.empty())
+      m_icon = URIUtils::AddFileToFolder(m_path, m_icon);
   }
 }
 
@@ -572,17 +567,17 @@ bool CAddonInfo::LoadAddonXML(const TiXmlElement* baseElement, std::string addon
           if (value == "icon")
           {
             if (elementsAssets->GetText() != nullptr)
-              m_icon = URIUtils::AddFileToFolder(m_path, elementsAssets->GetText());
+              m_icon = elementsAssets->GetText();
           }
           else if (value == "fanart")
           {
             if (elementsAssets->GetText() != nullptr)
-              m_fanart = URIUtils::AddFileToFolder(m_path, elementsAssets->GetText());
+              m_fanart = elementsAssets->GetText();
           }
           else if (value == "screenshot")
           {
             if (elementsAssets->GetText() != nullptr)
-              m_screenshots.emplace_back(URIUtils::AddFileToFolder(m_path, elementsAssets->GetText()));
+              m_screenshots.emplace_back(elementsAssets->GetText());
           }
         }
       }

@@ -54,12 +54,12 @@ CAddonsDirectory::~CAddonsDirectory(void) {}
 
 const auto CATEGORY_INFO_PROVIDERS = "category.infoproviders";
 const auto CATEGORY_LOOK_AND_FEEL = "category.lookandfeel";
-/*const auto CATEGORY_GAME_ADDONS = "category.gameaddons";
+const auto CATEGORY_GAME_ADDONS = "category.gameaddons";
 const auto CATEGORY_EMULATORS = "category.emulators";
 const auto CATEGORY_STANDALONE_GAMES = "category.standalonegames";
 const auto CATEGORY_GAME_PROVIDERS = "category.gameproviders";
 const auto CATEGORY_GAME_RESOURCES = "category.gameresources";
-const auto CATEGORY_GAME_SUPPORT_ADDONS = "category.gamesupport";*/
+const auto CATEGORY_GAME_SUPPORT_ADDONS = "category.gamesupport";
 
 const std::set<TYPE> dependencyTypes = {
     ADDON_SCRAPER_LIBRARY,
@@ -83,14 +83,14 @@ const std::set<TYPE> lookAndFeelTypes = {
   ADDON_RESOURCE_UISOUNDS,
   ADDON_VIZ,
 };
-/*
+
 const std::set<TYPE> gameTypes = {
   ADDON_GAME_CONTROLLER,
   ADDON_GAMEDLL,
   ADDON_GAME,
   ADDON_RESOURCE_GAMES,
 };
-*/
+
 static bool IsInfoProviderType(TYPE type)
 {
   return infoProviderTypes.find(type) != infoProviderTypes.end();
@@ -110,12 +110,12 @@ static bool IsLookAndFeelTypeAddon(const AddonInfoPtr& addon)
 {
   return IsLookAndFeelType(addon->Type());
 }
-/*
+
 static bool IsGameType(TYPE type)
 {
   return gameTypes.find(type) != gameTypes.end();
 }
-
+/*
 static bool IsStandaloneGame(const AddonPtr& addon)
 {
   return GAME::CGameUtils::IsStandaloneGame(addon);
@@ -476,8 +476,8 @@ static void UserInstalledAddons(const CURL& path, CFileItemList &items)
 
 static void DependencyAddons(const CURL& path, CFileItemList &items)
 {
-  AddonInfos all = CAddonMgr::GetInstance().GetAddonInfos(false, ADDON_UNKNOWN, true);
-  //CAddonMgr::GetInstance().GetInstalledAddons(all);
+  AddonInfos all;
+  CAddonMgr::GetInstance().GetAddonInfos(all, false, ADDON_UNKNOWN, true);
 
   AddonInfos deps;
   std::copy_if(all.begin(), all.end(), std::back_inserter(deps),
@@ -575,7 +575,6 @@ static bool Browse(const CURL& path, CFileItemList &items)
 
 static bool GetRecentlyUpdatedAddons(AddonInfos& addons)
 {
-  fprintf(stderr, "------------------------> %s %i\n", __PRETTY_FUNCTION__, addons.size());
   addons = CAddonMgr::GetInstance().GetAddonInfos(true, ADDON_UNKNOWN, true);
   if (addons.empty())
     return false;
@@ -583,8 +582,7 @@ static bool GetRecentlyUpdatedAddons(AddonInfos& addons)
   auto limit = CDateTime::GetCurrentDateTime() - CDateTimeSpan(1, 0, 0, 0);
   auto isOld = [limit](const AddonInfoPtr& addon){ return addon->LastUpdated() < limit; };
   addons.erase(std::remove_if(addons.begin(), addons.end(), isOld), addons.end());
-  
-  fprintf(stderr, "------------------------> %s %i\n", __PRETTY_FUNCTION__, addons.size());
+
   return true;
 }
 
@@ -785,7 +783,6 @@ bool CAddonsDirectory::IsRepoDirectory(const CURL& url)
 void CAddonsDirectory::GenerateAddonListing(const CURL &path,
     const AddonInfos& addons, CFileItemList &items, const std::string label)
 {
-  fprintf(stderr, "----------------------%s\n", __PRETTY_FUNCTION__);
   std::set<std::string> outdated;
   for (const auto& addon : CAddonMgr::GetInstance().GetAvailableUpdates())
     outdated.insert(addon->ID());

@@ -636,7 +636,7 @@ LanguageResourcePtr CLangInfo::GetLanguageAddon(const std::string& locale /* = "
     addonId = CServiceBroker::GetSettings().GetString(CSettings::SETTING_LOCALE_LANGUAGE);
 
   ADDON::AddonPtr addon;
-  if (ADDON::CAddonMgr::GetInstance().GetAddon(addonId, addon, ADDON::ADDON_RESOURCE_LANGUAGE, true) && addon != NULL)
+  if (ADDON::CAddonMgr::GetInstance().GetAddon(addonId, addon, ADDON::ADDON_RESOURCE_LANGUAGE) && addon != NULL)
     return std::dynamic_pointer_cast<ADDON::CLanguageResource>(addon);
 
   return NULL;
@@ -677,7 +677,7 @@ bool CLangInfo::SetLanguage(bool& fallback, const std::string &strLanguage /* = 
   if (addonId.empty())
     addonId = CServiceBroker::GetSettings().GetString(CSettings::SETTING_LOCALE_LANGUAGE);
 
-  const ADDON::AddonInfoPtr languageAddon = ADDON::CAddonMgr::GetInstance().GetInstalledAddonInfo(ADDON::ADDON_RESOURCE_LANGUAGE, addonId);
+  const ADDON::AddonInfoPtr languageAddon = ADDON::CAddonMgr::GetInstance().GetInstalledAddonInfo(addonId, ADDON::ADDON_RESOURCE_LANGUAGE);
   if (languageAddon)
   {
     ADDON::CAddonMgr::GetInstance().EnableAddon(languageAddon->ID());
