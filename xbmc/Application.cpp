@@ -1067,10 +1067,10 @@ void CApplication::CreateUserDirs() const
 
   //Let's clear our archive cache before starting up anything more
   auto archiveCachePath = CSpecialProtocol::TranslatePath("special://temp/archive_cache/");
-  if (CDirectory::RemoveRecursive(archiveCachePath))
-    CDirectory::Create(archiveCachePath);
-  else
-    CLog::Log(LOGWARNING, "Failed to remove the archive cache at %s", archiveCachePath.c_str());
+  if (CDirectory::Exists(archiveCachePath))
+    if (!CDirectory::RemoveRecursive(archiveCachePath))
+      CLog::Log(LOGWARNING, "Failed to remove the archive cache at %s", archiveCachePath.c_str());
+  CDirectory::Create(archiveCachePath);
 
 }
 
