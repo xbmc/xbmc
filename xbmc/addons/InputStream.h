@@ -33,17 +33,7 @@ namespace ADDON
   class CInputStream : public CAddonDll
   {
   public:
-
-    static std::unique_ptr<CInputStream> FromExtension(AddonProps props, const cp_extension_t* ext);
-
-    explicit CInputStream(AddonProps props)
-      : CAddonDll(std::move(props))
-    {};
-    CInputStream(const AddonProps& props,
-                 const std::string& name,
-                 const std::string& listitemprops,
-                 const std::string& extensions,
-                 const std::string& protocols);
+    CInputStream(AddonInfoPtr addonInfo);
     virtual ~CInputStream() {}
 
     virtual void SaveSettings() override;

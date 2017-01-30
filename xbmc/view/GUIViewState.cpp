@@ -39,7 +39,6 @@
 #include "guilib/GUIWindowManager.h"
 #include "addons/Addon.h"
 #include "addons/AddonManager.h"
-#include "addons/PluginSource.h"
 #include "view/ViewState.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSourceSettings.h"
@@ -454,7 +453,7 @@ void CGUIViewState::AddAddonsSource(const std::string &content, const std::strin
   if (XFILE::CAddonsDirectory::GetScriptsAndPlugins(content, items))
   { // add the plugin source
     CMediaSource source;
-    source.strPath = "addons://sources/" + content + "/";    
+    source.strPath = "addons://sources/" + content + "/";
     source.strName = label;
     if (!thumb.empty() && g_TextureManager.HasTexture(thumb))
       source.m_strThumbnailImage = thumb;
@@ -569,14 +568,13 @@ CGUIViewStateFromItems::CGUIViewStateFromItems(const CFileItemList &items) : CGU
   if (items.IsPlugin())
   {
     CURL url(items.GetPath());
-    AddonPtr addon;
-    if (CAddonMgr::GetInstance().GetAddon(url.GetHostName(), addon, ADDON_PLUGIN))
+    AddonInfoPtr addon = CAddonMgr::GetInstance().GetInstalledAddonInfo(url.GetHostName(), ADDON_PLUGIN);
+    if (addon)
     {
-      PluginPtr plugin = std::static_pointer_cast<CPluginSource>(addon);
-      if (plugin->Provides(CPluginSource::AUDIO))
-        m_playlist = PLAYLIST_MUSIC;
-      if (plugin->Provides(CPluginSource::VIDEO))
+      if (addon->ProvidesSubContent(CAddonInfo::VIDEO))
         m_playlist = PLAYLIST_VIDEO;
+      else if (addon->ProvidesSubContent(CAddonInfo::AUDIO))
+        m_playlist = PLAYLIST_MUSIC;
     }
   }
 

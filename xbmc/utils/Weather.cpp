@@ -421,8 +421,8 @@ void CWeather::OnSettingAction(const CSetting *setting)
   const std::string settingId = setting->GetId();
   if (settingId == CSettings::SETTING_WEATHER_ADDONSETTINGS)
   {
-    AddonPtr addon;
-    if (CAddonMgr::GetInstance().GetAddon(CServiceBroker::GetSettings().GetString(CSettings::SETTING_WEATHER_ADDON), addon, ADDON_SCRIPT_WEATHER) && addon != NULL)
+    AddonInfoPtr addon = CAddonMgr::GetInstance().GetInstalledAddonInfo(CServiceBroker::GetSettings().GetString(CSettings::SETTING_WEATHER_ADDON), ADDON_SCRIPT_WEATHER);
+    if (addon != nullptr)
     { //! @todo maybe have ShowAndGetInput return a bool if settings changed, then only reset weather if true.
       CGUIDialogAddonSettings::ShowAndGetInput(addon);
       Refresh();

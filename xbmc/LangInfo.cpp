@@ -636,7 +636,7 @@ LanguageResourcePtr CLangInfo::GetLanguageAddon(const std::string& locale /* = "
     addonId = CServiceBroker::GetSettings().GetString(CSettings::SETTING_LOCALE_LANGUAGE);
 
   ADDON::AddonPtr addon;
-  if (ADDON::CAddonMgr::GetInstance().GetAddon(addonId, addon, ADDON::ADDON_RESOURCE_LANGUAGE, true) && addon != NULL)
+  if (ADDON::CAddonMgr::GetInstance().GetAddon(addonId, addon, ADDON::ADDON_RESOURCE_LANGUAGE) && addon != NULL)
     return std::dynamic_pointer_cast<ADDON::CLanguageResource>(addon);
 
   return NULL;
@@ -673,21 +673,16 @@ bool CLangInfo::SetLanguage(bool& fallback, const std::string &strLanguage /* = 
     }
   }
 
-  LanguageResourcePtr languageAddon;
+  std::string addonId = ADDON::CLanguageResource::GetAddonId(language);
+  if (addonId.empty())
+    addonId = CServiceBroker::GetSettings().GetString(CSettings::SETTING_LOCALE_LANGUAGE);
+
+  const ADDON::AddonInfoPtr languageAddon = ADDON::CAddonMgr::GetInstance().GetInstalledAddonInfo(addonId, ADDON::ADDON_RESOURCE_LANGUAGE);
+  if (languageAddon)
   {
-    std::string addonId = ADDON::CLanguageResource::GetAddonId(language);
-    if (addonId.empty())
-      addonId = CServiceBroker::GetSettings().GetString(CSettings::SETTING_LOCALE_LANGUAGE);
-
-    ADDON::AddonPtr addon;
-    if (ADDON::CAddonMgr::GetInstance().GetAddon(addonId, addon, ADDON::ADDON_RESOURCE_LANGUAGE, false))
-    {
-      languageAddon = std::static_pointer_cast<ADDON::CLanguageResource>(addon);
-      ADDON::CAddonMgr::GetInstance().EnableAddon(languageAddon->ID());
-    }
+    ADDON::CAddonMgr::GetInstance().EnableAddon(languageAddon->ID());
   }
-
-  if (languageAddon == NULL)
+  else
   {
     CLog::Log(LOGWARNING, "CLangInfo: unable to load language \"%s\". Trying to determine matching language addon...", language.c_str());
 
@@ -708,11 +703,9 @@ bool CLangInfo::SetLanguage(bool& fallback, const std::string &strLanguage /* = 
         if (ADDON::CRepositoryUpdater::GetInstance().CheckForUpdates())
           ADDON::CRepositoryUpdater::GetInstance().Await();
 
-        ADDON::VECADDONS languageAddons;
-        if (addondb.GetRepositoryContent(languageAddons) && !languageAddons.empty())
+        ADDON::AddonInfos languageAddons;
+        if (addondb.GetRepositoryContent(languageAddons, ADDON::ADDON_RESOURCE_LANGUAGE) && !languageAddons.empty())
         {
-          languageAddons.erase(std::remove_if(languageAddons.begin(), languageAddons.end(),
-              [](const ADDON:: AddonPtr& addon){ return !addon->IsType(ADDON::ADDON_RESOURCE_LANGUAGE); }), languageAddons.end());
           // try to get the proper language addon by its name from all available language addons
           if (ADDON::CLanguageResource::FindLanguageAddonByName(language, newLanguage, languageAddons))
           {
@@ -763,8 +756,8 @@ bool CLangInfo::SetLanguage(bool& fallback, const std::string &strLanguage /* = 
     return false;
   }
 
-  ADDON::VECADDONS addons;
-  if (ADDON::CAddonMgr::GetInstance().GetInstalledAddons(addons))
+  ADDON::AddonInfos addons = ADDON::CAddonMgr::GetInstance().GetAddonInfos(false, ADDON::ADDON_UNKNOWN);
+  if (!addons.empty())
   {
     auto locale = CServiceBroker::GetSettings().GetString(CSettings::SETTING_LOCALE_LANGUAGE);
     for (const auto& addon : addons)
@@ -1186,12 +1179,12 @@ std::string CLangInfo::PrepareTimeFormat(const std::string& timeFormat, bool use
 void CLangInfo::SettingOptionsLanguageNamesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
 {
   // find languages...
-  ADDON::VECADDONS addons;
-  if (!ADDON::CAddonMgr::GetInstance().GetAddons(addons, ADDON::ADDON_RESOURCE_LANGUAGE))
+  ADDON::AddonInfos addons = ADDON::CAddonMgr::GetInstance().GetAddonInfos(true, ADDON::ADDON_RESOURCE_LANGUAGE);
+  if (addons.empty())
     return;
 
-  for (ADDON::VECADDONS::const_iterator addon = addons.begin(); addon != addons.end(); ++addon)
-    list.emplace_back((*addon)->Name(), (*addon)->Name());
+  for (const auto addon : addons)
+    list.emplace_back(addon->Name(), addon->Name());
 
   sort(list.begin(), list.end(), SortLanguage());
 }

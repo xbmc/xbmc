@@ -60,12 +60,6 @@ using namespace GAME;
 #define EXTENSION_SEPARATOR          "|"
 #define EXTENSION_WILDCARD           "*"
 
-#define GAME_PROPERTY_EXTENSIONS           "extensions"
-#define GAME_PROPERTY_SUPPORTS_VFS         "supports_vfs"
-#define GAME_PROPERTY_SUPPORTS_STANDALONE  "supports_standalone"
-#define GAME_PROPERTY_SUPPORTS_KEYBOARD    "supports_keyboard"
-#define GAME_PROPERTY_SUPPORTS_MOUSE       "supports_mouse"
-
 #define INPUT_SCAN_RATE  125 // Hz
 
 // --- NormalizeExtension ------------------------------------------------------
@@ -93,76 +87,32 @@ namespace
 
 // --- CGameClient -------------------------------------------------------------
 
-std::unique_ptr<CGameClient> CGameClient::FromExtension(ADDON::AddonProps props, const cp_extension_t* ext)
+CGameClient::CGameClient(ADDON::AddonInfoPtr addonInfo)
+  : CAddonDll(addonInfo),
+    m_apiVersion("0.0.0"),
+    m_libraryProps(this, m_info),
+    m_bSupportsAllExtensions(false),
+    m_bIsPlaying(false),
+    m_serializeSize(0),
+    m_audio(nullptr),
+    m_video(nullptr),
+    m_region(GAME_REGION_UNKNOWN)
 {
-  using namespace ADDON;
+  std::vector<std::string> extensions = StringUtils::Split(AddonInfo()->GetValue("extensions").asString(), EXTENSION_SEPARATOR);
+  std::transform(extensions.begin(), extensions.end(),
+                  std::inserter(m_extensions, m_extensions.begin()), NormalizeExtension);
 
-  static const std::vector<std::string> properties = {
-    GAME_PROPERTY_EXTENSIONS,
-    GAME_PROPERTY_SUPPORTS_VFS,
-    GAME_PROPERTY_SUPPORTS_STANDALONE,
-    GAME_PROPERTY_SUPPORTS_KEYBOARD,
-    GAME_PROPERTY_SUPPORTS_MOUSE,
-  };
-
-  for (const auto& property : properties)
+  // Check for wildcard extension
+  if (m_extensions.find(EXTENSION_WILDCARD) != m_extensions.end())
   {
-    std::string strProperty = CAddonMgr::GetInstance().GetExtValue(ext->configuration, property.c_str());
-    if (!strProperty.empty())
-      props.extrainfo[property] = strProperty;
+    m_bSupportsAllExtensions = true;
+    m_extensions.clear();
   }
 
-  return std::unique_ptr<CGameClient>(new CGameClient(std::move(props)));
-}
-
-CGameClient::CGameClient(ADDON::AddonProps props) :
-CAddonDll(std::move(props)),
-m_apiVersion("0.0.0"),
-m_libraryProps(this, m_info),
-m_bSupportsVFS(false),
-m_bSupportsStandalone(false),
-m_bSupportsKeyboard(false),
-m_bSupportsMouse(false),
-m_bSupportsAllExtensions(false),
-m_bIsPlaying(false),
-m_serializeSize(0),
-m_audio(nullptr),
-m_video(nullptr),
-m_region(GAME_REGION_UNKNOWN)
-{
-  const ADDON::InfoMap& extraInfo = m_props.extrainfo;
-  ADDON::InfoMap::const_iterator it;
-
-  it = extraInfo.find(GAME_PROPERTY_EXTENSIONS);
-  if (it != extraInfo.end())
-  {
-    std::vector<std::string> extensions = StringUtils::Split(it->second, EXTENSION_SEPARATOR);
-    std::transform(extensions.begin(), extensions.end(),
-                   std::inserter(m_extensions, m_extensions.begin()), NormalizeExtension);
-
-    // Check for wildcard extension
-    if (m_extensions.find(EXTENSION_WILDCARD) != m_extensions.end())
-    {
-      m_bSupportsAllExtensions = true;
-      m_extensions.clear();
-    }
-  }
-
-  it = extraInfo.find(GAME_PROPERTY_SUPPORTS_VFS);
-  if (it != extraInfo.end())
-    m_bSupportsVFS = (it->second == "true");
-
-  it = extraInfo.find(GAME_PROPERTY_SUPPORTS_STANDALONE);
-  if (it != extraInfo.end())
-    m_bSupportsStandalone = (it->second == "true");
-
-  it = extraInfo.find(GAME_PROPERTY_SUPPORTS_KEYBOARD);
-  if (it != extraInfo.end())
-    m_bSupportsKeyboard = (it->second == "true");
-
-  it = extraInfo.find(GAME_PROPERTY_SUPPORTS_MOUSE);
-  if (it != extraInfo.end())
-    m_bSupportsMouse = (it->second == "true");
+  m_bSupportsVFS = AddonInfo()->GetValue("supports_vfs").asBoolean();
+  m_bSupportsStandalone = AddonInfo()->GetValue("supports_standalone").asBoolean();
+  m_bSupportsKeyboard = AddonInfo()->GetValue("supports_keyboard").asBoolean();
+  m_bSupportsMouse = AddonInfo()->GetValue("supports_mouse").asBoolean();
 
   ResetPlayback();
 }
@@ -412,7 +362,7 @@ void CGameClient::NotifyError(GAME_ERROR error)
   {
     // Failed to play game
     // The emulator "%s" had an internal error.
-    CGUIDialogOK::ShowAndGetInput(CVariant{ 35210 }, StringUtils::Format(g_localizeStrings.Get(35213).c_str(), Name().c_str()));
+    CGUIDialogOK::ShowAndGetInput(CVariant{ 35210 }, StringUtils::Format(g_localizeStrings.Get(35213).c_str(), AddonInfo()->Name().c_str()));
   }
 }
 
@@ -428,8 +378,7 @@ std::string CGameClient::GetMissingResource()
     const std::string& strDependencyId = it->first;
     if (StringUtils::StartsWith(strDependencyId, "resource.games"))
     {
-      AddonPtr addon;
-      const bool bInstalled = CAddonMgr::GetInstance().GetAddon(strDependencyId, addon);
+      const bool bInstalled = CAddonMgr::GetInstance().IsAddonEnabled(strDependencyId);
       if (!bInstalled)
       {
         strAddonId = strDependencyId;

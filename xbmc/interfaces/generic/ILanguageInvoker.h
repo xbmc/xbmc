@@ -23,7 +23,7 @@
 #include <string>
 #include <vector>
 
-#include "addons/IAddon.h"
+#include "addons/Addon.h"
 
 class CLanguageInvokerThread;
 class ILanguageInvocationHandler;

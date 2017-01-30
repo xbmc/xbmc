@@ -24,7 +24,7 @@
 #include "GUIFeatureList.h"
 #include "IConfigurationWindow.h"
 #include "addons/GUIWindowAddonBrowser.h"
-#include "addons/IAddon.h"
+#include "addons/Addon.h"
 #include "addons/AddonManager.h"
 #include "games/controllers/dialogs/GUIDialogButtonCapture.h"
 #include "guilib/GUIButtonControl.h"
@@ -291,8 +291,9 @@ void CGUIControllerWindow::UpdateButtons(void)
 {
   using namespace ADDON;
 
-  VECADDONS addons;
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_GET_MORE, CAddonMgr::GetInstance().GetInstallableAddons(addons, ADDON::ADDON_GAME_CONTROLLER) && !addons.empty());
+  AddonInfos addons;
+  CAddonMgr::GetInstance().GetInstallableAddonInfos(addons, ADDON::ADDON_GAME_CONTROLLER);
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_GET_MORE, !addons.empty());
 }
 
 void CGUIControllerWindow::GetMoreControllers(void)

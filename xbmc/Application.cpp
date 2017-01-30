@@ -1459,15 +1459,13 @@ void CApplication::OnSettingAction(const CSetting *setting)
     ActivateScreenSaver(true);
   else if (settingId == CSettings::SETTING_SCREENSAVER_SETTINGS)
   {
-    AddonPtr addon;
-    if (CAddonMgr::GetInstance().GetAddon(m_ServiceManager->GetSettings().GetString(CSettings::SETTING_SCREENSAVER_MODE), addon, ADDON_SCREENSAVER))
-      CGUIDialogAddonSettings::ShowAndGetInput(addon);
+    AddonInfoPtr addon = CAddonMgr::GetInstance().GetInstalledAddonInfo(m_ServiceManager->GetSettings().GetString(CSettings::SETTING_SCREENSAVER_MODE), ADDON_SCREENSAVER);
+    CGUIDialogAddonSettings::ShowAndGetInput(addon);
   }
   else if (settingId == CSettings::SETTING_AUDIOCDS_SETTINGS)
   {
-    AddonPtr addon;
-    if (CAddonMgr::GetInstance().GetAddon(m_ServiceManager->GetSettings().GetString(CSettings::SETTING_AUDIOCDS_ENCODER), addon, ADDON_AUDIOENCODER))
-      CGUIDialogAddonSettings::ShowAndGetInput(addon);
+    AddonInfoPtr addon = CAddonMgr::GetInstance().GetInstalledAddonInfo(m_ServiceManager->GetSettings().GetString(CSettings::SETTING_AUDIOCDS_ENCODER), ADDON_AUDIOENCODER);
+    CGUIDialogAddonSettings::ShowAndGetInput(addon);
   }
   else if (settingId == CSettings::SETTING_VIDEOSCREEN_GUICALIBRATION)
     g_windowManager.ActivateWindow(WINDOW_SCREEN_CALIBRATION);
@@ -3017,8 +3015,8 @@ bool CApplication::PlayMedia(const CFileItem& item, const std::string &player, i
   CURL path(item.GetPath());
   if (path.GetProtocol() == "game")
   {
-    AddonPtr addon;
-    if (CAddonMgr::GetInstance().GetAddon(path.GetHostName(), addon, ADDON_GAMEDLL))
+    AddonInfoPtr addon = CAddonMgr::GetInstance().GetInstalledAddonInfo(path.GetHostName(), ADDON_GAMEDLL);
+    if (addon)
     {
       CFileItem addonItem(addon);
       return PlayFile(addonItem, player, false) == PLAYBACK_OK;

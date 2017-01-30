@@ -20,7 +20,7 @@
  */
 
 #include "XBDateTime.h"
-#include "addons/IAddon.h"
+#include "addons/Addon.h"
 #include "addons/Webinterface.h"
 #include "network/httprequesthandler/IHTTPRequestHandler.h"
 

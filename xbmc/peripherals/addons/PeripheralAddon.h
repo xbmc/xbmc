@@ -47,13 +47,10 @@ namespace PERIPHERALS
   class CPeripheralAddon : public ADDON::CAddonDll
   {
   public:
-    static std::unique_ptr<CPeripheralAddon> FromExtension(ADDON::AddonProps props, const cp_extension_t* ext);
-
-    CPeripheralAddon(ADDON::AddonProps props, bool bProvidesJoysticks, bool bProvidesButtonMaps);
-
+    CPeripheralAddon(ADDON::AddonInfoPtr addonInfo);
     virtual ~CPeripheralAddon(void);
 
-    // implementation of IAddon
+    // implementation of CAddon
     virtual ADDON::AddonPtr GetRunningInstance(void) const override;
 
     /*!

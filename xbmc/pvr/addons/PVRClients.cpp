@@ -186,7 +186,7 @@ int CPVRClients::EnabledClientAmount(void) const
   }
 
   for (const auto &client : clientMap)
-    if (!CAddonMgr::GetInstance().IsAddonDisabled(client.second->ID()))
+    if (CAddonMgr::GetInstance().IsAddonEnabled(client.second->ID()))
       ++iReturn;
 
   return iReturn;
@@ -201,7 +201,7 @@ bool CPVRClients::HasEnabledClients(void) const
   }
 
   for (const auto &client : clientMap)
-    if (!CAddonMgr::GetInstance().IsAddonDisabled(client.second->ID()))
+    if (CAddonMgr::GetInstance().IsAddonEnabled(client.second->ID()))
       return true;
   return false;
 }
@@ -1097,14 +1097,14 @@ bool CPVRClients::IsKnownClient(const AddonPtr &client) const
 void CPVRClients::UpdateAddons(void)
 {
   VECADDONS addons;
-  CAddonMgr::GetInstance().GetInstalledAddons(addons, ADDON_PVRDLL);
+  CAddonMgr::GetInstance().GetAddons(addons, ADDON_PVRDLL, false);
 
   if (addons.empty())
     return;
 
   for (auto &addon : addons)
   {
-    bool bEnabled = !CAddonMgr::GetInstance().IsAddonDisabled(addon->ID());
+    bool bEnabled = CAddonMgr::GetInstance().IsAddonEnabled(addon->ID());
 
     if (bEnabled && (!IsKnownClient(addon) || !IsCreatedClient(addon)))
     {

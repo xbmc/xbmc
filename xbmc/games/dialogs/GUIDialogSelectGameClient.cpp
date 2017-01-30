@@ -124,15 +124,16 @@ GameClientPtr CGUIDialogSelectGameClient::InstallGameClient(const GameClientVect
   {
     std::string gameClientId = installable[result]->ID();
     CLog::Log(LOGDEBUG, "Select game client dialog: Installing %s", gameClientId.c_str());
-    AddonPtr installedAddon;
-    if (CAddonInstaller::GetInstance().InstallModal(gameClientId, installedAddon, false))
+    if (CAddonInstaller::GetInstance().InstallModal(gameClientId, false))
     {
-      CLog::Log(LOGDEBUG, "Select game client dialog: Successfully installed %s", installedAddon->ID().c_str());
+      CLog::Log(LOGDEBUG, "Select game client dialog: Successfully installed %s", gameClientId.c_str());
 
       // if the addon is disabled we need to enable it
-      if (CAddonMgr::GetInstance().IsAddonDisabled(installedAddon->ID()))
-        CAddonMgr::GetInstance().EnableAddon(installedAddon->ID());
+      if (!CAddonMgr::GetInstance().IsAddonEnabled(gameClientId))
+        CAddonMgr::GetInstance().EnableAddon(gameClientId);
 
+      AddonPtr installedAddon;
+      CAddonMgr::GetInstance().GetAddon(gameClientId, installedAddon);
       gameClient = std::dynamic_pointer_cast<CGameClient>(installedAddon);
     }
     else

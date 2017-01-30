@@ -25,7 +25,7 @@
 #include <vector>
 
 #include "guilib/GUIDialog.h"
-#include "addons/IAddon.h"
+#include "addons/Addon.h"
 
 class CGUIDialogAddonInfo : public CGUIDialog
 {
@@ -78,7 +78,7 @@ private:
   bool PromptIfDependency(int heading, int line2);
 
   CFileItemPtr m_item;
-  ADDON::AddonPtr m_localAddon;
+  ADDON::AddonInfoPtr m_localAddon;
   bool m_addonEnabled;
 };
 

@@ -42,8 +42,8 @@
 namespace ADDON
 {
 
-CAddonDll::CAddonDll(AddonProps props)
-  : CAddon(std::move(props)),
+CAddonDll::CAddonDll(AddonInfoPtr props)
+  : CAddon(props),
     m_bIsChild(false)
 {
   m_initialized = false;
@@ -94,7 +94,7 @@ bool CAddonDll::LoadDll()
       libPath = tempbin + libPath;
       if (!XFILE::CFile::Exists(libPath))
       {
-        CLog::Log(LOGERROR, "ADDON: Could not locate %s", m_props.libname.c_str());
+        CLog::Log(LOGERROR, "ADDON: Could not locate %s", AddonInfo()->Libname().c_str());
         return false;
       }
     }
@@ -117,7 +117,7 @@ bool CAddonDll::LoadDll()
   if (!XFILE::CFile::Exists(strFileName))
   {
     std::string tempbin = getenv("XBMC_ANDROID_LIBS");
-    strFileName = tempbin + "/" + m_props.libname;
+    strFileName = tempbin + "/" + AddonInfo()->Libname().c_str();
   }
 #endif
   if (!XFILE::CFile::Exists(strFileName))
@@ -125,7 +125,7 @@ bool CAddonDll::LoadDll()
     std::string altbin = CSpecialProtocol::TranslatePath("special://xbmcaltbinaddons/");
     if (!altbin.empty())
     {
-      strAltFileName = altbin + m_props.libname;
+      strAltFileName = altbin + AddonInfo()->Libname().c_str();
       if (!XFILE::CFile::Exists(strAltFileName))
       {
         std::string temp = CSpecialProtocol::TranslatePath("special://xbmc/addons/");
@@ -146,7 +146,7 @@ bool CAddonDll::LoadDll()
       strFileName = tempbin + strFileName;
       if (!XFILE::CFile::Exists(strFileName))
       {
-        CLog::Log(LOGERROR, "ADDON: Could not locate %s", m_props.libname.c_str());
+        CLog::Log(LOGERROR, "ADDON: Could not locate %s", AddonInfo()->Libname().c_str());
         return false;
       }
     }
@@ -164,7 +164,7 @@ bool CAddonDll::LoadDll()
     CGUIDialogOK* pDialog = (CGUIDialogOK*)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
     if (pDialog)
     {
-      std::string heading = StringUtils::Format("%s: %s", TranslateType(Type(), true).c_str(), Name().c_str());
+      std::string heading = StringUtils::Format("%s: %s", CAddonInfo::TranslateType(Type(), true).c_str(), Name().c_str());
       pDialog->SetHeading(CVariant{heading});
       pDialog->SetLine(1, CVariant{24070});
       pDialog->SetLine(2, CVariant{24071});
@@ -239,7 +239,7 @@ ADDON_STATUS CAddonDll::Create(int type, void* funcTable, void* info)
     CGUIDialogOK* pDialog = (CGUIDialogOK*)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
     if (pDialog)
     {
-      std::string heading = StringUtils::Format("%s: %s", TranslateType(Type(), true).c_str(), Name().c_str());
+      std::string heading = StringUtils::Format("%s: %s", CAddonInfo::TranslateType(Type(), true).c_str(), Name().c_str());
       pDialog->SetHeading(CVariant{heading});
       pDialog->SetLine(1, CVariant{24070});
       pDialog->SetLine(2, CVariant{24071});
@@ -298,7 +298,7 @@ ADDON_STATUS CAddonDll::Create(KODI_HANDLE firstKodiInstance)
     CGUIDialogOK* pDialog = (CGUIDialogOK*)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
     if (pDialog)
     {
-      std::string heading = StringUtils::Format("%s: %s", TranslateType(Type(), true).c_str(), Name().c_str());
+      std::string heading = StringUtils::Format("%s: %s", CAddonInfo::TranslateType(Type(), true).c_str(), Name().c_str());
       pDialog->SetHeading(CVariant{heading});
       pDialog->SetLine(1, CVariant{24070});
       pDialog->SetLine(2, CVariant{24071});
@@ -375,7 +375,7 @@ bool CAddonDll::CheckAPIVersion(int type)
                             kodiVersion,
                             addonVersion);
 
-    std::string heading = StringUtils::Format("%s: %s", TranslateType(Type(), true).c_str(), Name().c_str());
+    std::string heading = StringUtils::Format("%s: %s", CAddonInfo::TranslateType(Type(), true).c_str(), Name().c_str());
     std::string text = StringUtils::Format(g_localizeStrings.Get(24084).c_str(),
                                            kodi::addon::GetTypeName(type),
                                            kodiVersion,

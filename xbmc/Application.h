@@ -45,8 +45,8 @@ class CKey;
 namespace ADDON
 {
   class CSkinInfo;
-  class IAddon;
-  typedef std::shared_ptr<IAddon> AddonPtr;
+  class CAddon;
+  typedef std::shared_ptr<CAddon> AddonPtr;
 }
 
 namespace MEDIA_DETECT

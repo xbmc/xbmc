@@ -29,13 +29,8 @@ using namespace GAME;
 
 const ControllerPtr CController::EmptyPtr;
 
-std::unique_ptr<CController> CController::FromExtension(ADDON::AddonProps props, const cp_extension_t* ext)
-{
-  return std::unique_ptr<CController>(new CController(std::move(props)));
-}
-
-CController::CController(ADDON::AddonProps addonprops) :
-  CAddon(std::move(addonprops)),
+CController::CController(ADDON::AddonInfoPtr addonInfo) :
+  CAddon(addonInfo),
   m_bLoaded(false)
 {
 }

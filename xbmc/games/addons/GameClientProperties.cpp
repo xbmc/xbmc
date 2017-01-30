@@ -20,7 +20,7 @@
 
 #include "GameClientProperties.h"
 #include "GameClient.h"
-#include "addons/IAddon.h"
+#include "addons/Addon.h"
 #include "addons/AddonManager.h"
 #include "addons/GameResource.h"
 #include "dialogs/GUIDialogYesNo.h"
@@ -98,10 +98,10 @@ const char** CGameClientProperties::GetProxyDllPaths(void)
     {
       const std::string& strAddonId = it->first;
       AddonPtr addon;
-      if (CAddonMgr::GetInstance().GetAddon(strAddonId, addon, ADDON_GAMEDLL, false))
+      if (CAddonMgr::GetInstance().GetAddon(strAddonId, addon, ADDON_GAMEDLL))
       {
         // If add-on is disabled, ask the user to enable it
-        if (CAddonMgr::GetInstance().IsAddonDisabled(addon->ID()))
+        if (!CAddonMgr::GetInstance().IsAddonEnabled(addon->ID()))
         {
           // Failed to play game
           // This game depends on a disabled add-on. Would you like to enable it?

@@ -26,33 +26,28 @@
 
 using namespace ADDON;
 
-std::unique_ptr<CWebinterface> CWebinterface::FromExtension(AddonProps props, const cp_extension_t* ext)
+CWebinterface::CWebinterface(ADDON::AddonInfoPtr addonInfo)
+  : CAddon(addonInfo),
+    m_type(WebinterfaceTypeStatic),
+    m_entryPoint(WEBINTERFACE_DEFAULT_ENTRY_POINT)
 {
   // determine the type of the webinterface
-  WebinterfaceType type(WebinterfaceTypeStatic);
-  std::string webinterfaceType = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@type");
-  if (StringUtils::EqualsNoCase(webinterfaceType.c_str(), "wsgi"))
-    type = WebinterfaceTypeWsgi;
-  else if (!webinterfaceType.empty() && !StringUtils::EqualsNoCase(webinterfaceType.c_str(), "static") && !StringUtils::EqualsNoCase(webinterfaceType.c_str(), "html"))
-    CLog::Log(LOGWARNING, "Webinterface addon \"%s\" has specified an unsupported type \"%s\"", props.id.c_str(), webinterfaceType.c_str());
+  std::string webinterfaceType = AddonInfo()->GetValue("@type").asString();
+  if (StringUtils::EqualsNoCase(webinterfaceType, "wsgi"))
+    m_type = WebinterfaceTypeWsgi;
+  else if (!webinterfaceType.empty() && !StringUtils::EqualsNoCase(webinterfaceType, "static") && !StringUtils::EqualsNoCase(webinterfaceType, "html"))
+    CLog::Log(LOGWARNING, "Webinterface addon \"%s\" has specified an unsupported type \"%s\"", AddonInfo()->ID().c_str(), webinterfaceType.c_str());
 
   // determine the entry point of the webinterface
-  std::string entryPoint(WEBINTERFACE_DEFAULT_ENTRY_POINT);
-  std::string entry = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@entry");
+  std::string entry = AddonInfo()->GetValue("@entry").asString();
   if (!entry.empty())
-    entryPoint = entry;
-
-  return std::unique_ptr<CWebinterface>(new CWebinterface(std::move(props), type, entryPoint));
+    m_entryPoint = entry;
 }
-
-CWebinterface::CWebinterface(ADDON::AddonProps props, WebinterfaceType type,
-    const std::string &entryPoint) : CAddon(std::move(props)), m_type(type), m_entryPoint(entryPoint)
-{ }
 
 std::string CWebinterface::GetEntryPoint(const std::string &path) const
 {
   if (m_type == WebinterfaceTypeWsgi)
-    return LibPath();
+    return AddonInfo()->LibPath();
 
   return URIUtils::AddFileToFolder(path, m_entryPoint);
 }
@@ -60,7 +55,7 @@ std::string CWebinterface::GetEntryPoint(const std::string &path) const
 std::string CWebinterface::GetBaseLocation() const
 {
   if (m_type == WebinterfaceTypeWsgi)
-    return "/addons/" + ID();
+    return "/addons/" + AddonInfo()->ID();
 
   return "";
 }

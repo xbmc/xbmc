@@ -6660,9 +6660,8 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
     break;
   case VISUALISATION_NAME:
     {
-      AddonPtr addon;
-      strLabel = CServiceBroker::GetSettings().GetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION);
-      if (CAddonMgr::GetInstance().GetAddon(strLabel,addon) && addon)
+      AddonInfoPtr addon = CAddonMgr::GetInstance().GetInstalledAddonInfo(CServiceBroker::GetSettings().GetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION), ADDON_VIZ);
+      if (addon)
         strLabel = addon->Name();
     }
     break;
@@ -6989,12 +6988,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
   else if (condition == SYSTEM_HAS_PVR)
     bReturn = true;
   else if (condition == SYSTEM_HAS_PVR_ADDON)
-  {
-    VECADDONS pvrAddons;
-    CBinaryAddonCache &addonCache = CServiceBroker::GetBinaryAddonCache();
-    addonCache.GetAddons(pvrAddons, ADDON::ADDON_PVRDLL);
-    bReturn = (pvrAddons.size() > 0);
-  }
+    bReturn = CAddonMgr::GetInstance().HasInstalledAddons(ADDON::ADDON_PVRDLL);
   else if (condition == SYSTEM_HAS_ADSP)
     bReturn = true;
   else if (condition == SYSTEM_HAS_CMS)
@@ -7636,8 +7630,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
         break;
       case SYSTEM_HAS_ADDON:
       {
-        AddonPtr addon;
-        bReturn = CAddonMgr::GetInstance().GetAddon(m_stringParameters[info.GetData1()],addon) && addon;
+        bReturn = CAddonMgr::GetInstance().IsAddonEnabled(m_stringParameters[info.GetData1()]);
         break;
       }
       case CONTAINER_SCROLL_PREVIOUS:
@@ -8098,11 +8091,11 @@ std::string CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextW
     // it simply retrieves it's name or icon that means if an addon is placed on the home screen it
     // will stay there even if it's disabled/marked as broken. This might need to be changed/fixed
     // in the future.
-    AddonPtr addon;
+    AddonInfoPtr addon;
     if (info.GetData2() == 0)
-      CAddonMgr::GetInstance().GetAddon(const_cast<CGUIInfoManager*>(this)->GetLabel(info.GetData1(), contextWindow),addon,ADDON_UNKNOWN,false);
+      addon = CAddonMgr::GetInstance().GetInstalledAddonInfo(const_cast<CGUIInfoManager*>(this)->GetLabel(info.GetData1(), contextWindow));
     else
-      CAddonMgr::GetInstance().GetAddon(m_stringParameters[info.GetData1()],addon,ADDON_UNKNOWN,false);
+      addon = CAddonMgr::GetInstance().GetInstalledAddonInfo(m_stringParameters[info.GetData1()]);
     if (addon && info.m_info == SYSTEM_ADDON_TITLE)
       return addon->Name();
     if (addon && info.m_info == SYSTEM_ADDON_ICON)
@@ -10536,7 +10529,7 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
     break;
   case LISTITEM_ADDON_TYPE:
     if (item->HasAddonInfo())
-      return ADDON::TranslateType(item->GetAddonInfo()->Type(),true);
+      return ADDON::CAddonInfo::TranslateType(item->GetAddonInfo()->Type(),true);
     break;
   case LISTITEM_ADDON_INSTALL_DATE:
     if (item->HasAddonInfo())
@@ -10555,8 +10548,8 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
     {
       if (item->GetAddonInfo()->Origin() == ORIGIN_SYSTEM)
         return g_localizeStrings.Get(24992);
-      AddonPtr origin;
-      if (CAddonMgr::GetInstance().GetAddon(item->GetAddonInfo()->Origin(), origin, ADDON_UNKNOWN, false))
+      AddonInfoPtr origin = CAddonMgr::GetInstance().GetInstalledAddonInfo(item->GetAddonInfo()->Origin(), ADDON_REPOSITORY);
+      if (origin)
         return origin->Name();
       return g_localizeStrings.Get(13205);
     }

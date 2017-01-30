@@ -228,8 +228,7 @@ std::string GetSoundSkinPath()
   if (value.empty())
     return "";
 
-  ADDON::AddonPtr addon;
-  if (!ADDON::CAddonMgr::GetInstance().GetAddon(value, addon, ADDON::ADDON_RESOURCE_UISOUNDS))
+  if (!ADDON::CAddonMgr::GetInstance().IsAddonEnabled(value, ADDON::ADDON_RESOURCE_UISOUNDS))
   {
     CLog::Log(LOGNOTICE, "Unknown sounds addon '%s'. Setting default sounds.", value.c_str());
     setting->Reset();

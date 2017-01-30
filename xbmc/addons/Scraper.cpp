@@ -127,57 +127,40 @@ static void CheckScraperError(const TiXmlElement *pxeRoot)
   throw CScraperError(sTitle, sMessage);
 }
 
-std::unique_ptr<CScraper> CScraper::FromExtension(AddonProps props, const cp_extension_t* ext)
+CScraper::CScraper(AddonInfoPtr addonInfo)
+  : CAddon(addonInfo),
+    m_fLoaded(false),
+    m_pathContent(CONTENT_NONE)
 {
-  bool requiressettings = CAddonMgr::GetInstance().GetExtValue(ext->configuration,"@requiressettings") == "true";
+  m_requiressettings = AddonInfo()->GetValue("@requiressettings").asBoolean();
 
   CDateTimeSpan persistence;
-  std::string tmp = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@cachepersistence");
+  std::string tmp = AddonInfo()->GetValue("@cachepersistence").asString();
   if (!tmp.empty())
-    persistence.SetFromTimeString(tmp);
+    m_persistence.SetFromTimeString(tmp);
 
-  CONTENT_TYPE pathContent(CONTENT_NONE);
-  switch (props.type)
+  switch (AddonInfo()->Type())
   {
     case ADDON_SCRAPER_ALBUMS:
-      pathContent = CONTENT_ALBUMS;
+      m_pathContent = CONTENT_ALBUMS;
       break;
     case ADDON_SCRAPER_ARTISTS:
-      pathContent = CONTENT_ARTISTS;
+      m_pathContent = CONTENT_ARTISTS;
       break;
     case ADDON_SCRAPER_MOVIES:
-      pathContent = CONTENT_MOVIES;
+      m_pathContent = CONTENT_MOVIES;
       break;
     case ADDON_SCRAPER_MUSICVIDEOS:
-      pathContent = CONTENT_MUSICVIDEOS;
+      m_pathContent = CONTENT_MUSICVIDEOS;
       break;
     case ADDON_SCRAPER_TVSHOWS:
-      pathContent = CONTENT_TVSHOWS;
+      m_pathContent = CONTENT_TVSHOWS;
       break;
     default:
       break;
   }
 
-  return std::unique_ptr<CScraper>(new CScraper(std::move(props), requiressettings, persistence, pathContent));
-}
-
-CScraper::CScraper(AddonProps props)
-  : CAddon(std::move(props)),
-    m_fLoaded(false),
-    m_requiressettings(false),
-    m_pathContent(CONTENT_NONE)
-{
-  m_isPython = URIUtils::GetExtension(LibPath()) == ".py";
-}
-
-CScraper::CScraper(AddonProps props, bool requiressettings, CDateTimeSpan persistence, CONTENT_TYPE pathContent)
-  : CAddon(std::move(props)),
-    m_fLoaded(false),
-    m_requiressettings(requiressettings),
-    m_persistence(persistence),
-    m_pathContent(pathContent)
-{
-  m_isPython = URIUtils::GetExtension(LibPath()) == ".py";
+  m_isPython = URIUtils::GetExtension(AddonInfo()->LibPath()) == ".py";
 }
 
 bool CScraper::Supports(const CONTENT_TYPE &content) const
@@ -364,20 +347,15 @@ bool CScraper::Load()
     //! @todo this routine assumes that deps are a single level, and assumes the dep is installed.
     //!       1. Does it make sense to have recursive dependencies?
     //!       2. Should we be checking the dep versions or do we assume it is ok?
-    ADDONDEPS deps = GetDeps();
-    ADDONDEPS::iterator itr = deps.begin();
-    while (itr != deps.end())
+    for (auto itr : GetDeps())
     {
-      if (itr->first == "xbmc.metadata")
-      {
-        ++itr;
+      if (itr.first == "xbmc.metadata")
         continue;
-      }
-      AddonPtr dep;
 
-      bool bOptional = itr->second.second;
+      bool bOptional = itr.second.second;
 
-      if (CAddonMgr::GetInstance().GetAddon((*itr).first, dep))
+      AddonInfoPtr dep = CAddonMgr::GetInstance().GetInstalledAddonInfo(itr.first);
+      if (dep)
       {
         CXBMCTinyXML doc;
         if (dep->Type() == ADDON_SCRAPER_LIBRARY && doc.LoadFile(dep->LibPath()))
@@ -391,7 +369,6 @@ bool CScraper::Load()
           break;
         }
       }
-      ++itr;
     }
   }
 

@@ -37,18 +37,17 @@ public:
   static CAddonInstaller &GetInstance();
 
   bool IsDownloading() const;
-  void GetInstallList(ADDON::VECADDONS &addons) const;
+  void GetInstallList(ADDON::AddonInfos &addonInfos) const;
   bool GetProgress(const std::string &addonID, unsigned int &percent) const;
   bool Cancel(const std::string &addonID);
 
   /*! \brief Installs the addon while showing a modal progress dialog
    \param addonID the addon ID of the item to install.
-   \param addon [out] the installed addon for later use.
    \param promptForInstall Whether or not to prompt the user before installing the addon.
    \return true on successful install, false otherwise.
    \sa Install
    */
-  bool InstallModal(const std::string &addonID, ADDON::AddonPtr &addon, bool promptForInstall = true);
+  bool InstallModal(const std::string &addonID, bool promptForInstall = true);
 
   /*! \brief Install an addon if it is available in a repository
    \param addonID the addon ID of the item to install
@@ -76,7 +75,7 @@ public:
   \param database the database instance to update. Defaults to NULL.
   \return true if dependencies are available, false otherwise.
   */
-  bool CheckDependencies(const ADDON::AddonPtr &addon, CAddonDatabase *database = NULL);
+  bool CheckDependencies(const ADDON::AddonInfoPtr &addon, CAddonDatabase *database = NULL);
 
   /*! \brief Check whether dependencies of an addon exist or are installable.
    Iterates through the addon's dependencies, checking they're installed or installable.
@@ -86,7 +85,7 @@ public:
    \param database the database instance to update. Defaults to NULL.
    \return true if dependencies are available, false otherwise.
    */
-  bool CheckDependencies(const ADDON::AddonPtr &addon, std::pair<std::string, std::string> &failedDep, CAddonDatabase *database = NULL);
+  bool CheckDependencies(const ADDON::AddonInfoPtr &addon, std::pair<std::string, std::string> &failedDep, CAddonDatabase *database = NULL);
 
   /*! \brief Check if an installation job for a given add-on is already queued up
    *  \param ID The ID of the add-on
@@ -128,7 +127,7 @@ private:
    \param background whether to install in the background or not. Defaults to true.
    \return true on successful install, false on failure.
    */
-  bool DoInstall(const ADDON::AddonPtr &addon, const ADDON::RepositoryPtr &repo,
+  bool DoInstall(const ADDON::AddonInfoPtr &addon, const ADDON::RepositoryPtr &repo,
       const std::string &hash = "", bool background = true, bool modal = false);
 
   /*! \brief Check whether dependencies of an addon exist or are installable.
@@ -140,7 +139,7 @@ private:
    \param failedDep Dependency addon that isn't available
    \return true if dependencies are available, false otherwise.
    */
-  bool CheckDependencies(const ADDON::AddonPtr &addon, std::vector<std::string>& preDeps, CAddonDatabase &database, std::pair<std::string, std::string> &failedDep);
+  bool CheckDependencies(const ADDON::AddonInfoPtr &addon, std::vector<std::string>& preDeps, CAddonDatabase &database, std::pair<std::string, std::string> &failedDep);
 
   void PrunePackageCache();
   int64_t EnumeratePackageFolder(std::map<std::string,CFileItemList*>& result);
@@ -153,7 +152,7 @@ private:
 class CAddonInstallJob : public CFileOperationJob
 {
 public:
-  CAddonInstallJob(const ADDON::AddonPtr &addon, const ADDON::AddonPtr &repo, const std::string &hash = "");
+  CAddonInstallJob(const ADDON::AddonInfoPtr &addon, const ADDON::AddonPtr &repo, const std::string &hash = "");
 
   virtual bool DoWork();
 
@@ -165,7 +164,7 @@ public:
    *  \return True if the add-on and its hash were found, false otherwise.
    */
   static bool GetAddonWithHash(const std::string& addonID, ADDON::RepositoryPtr& repo,
-      ADDON::AddonPtr& addon, std::string& hash);
+      ADDON::AddonInfoPtr& addon, std::string& hash);
 
 private:
   void OnPreInstall();
@@ -182,7 +181,7 @@ private:
    */
   void ReportInstallError(const std::string& addonID, const std::string& fileName, const std::string& message = "");
 
-  ADDON::AddonPtr m_addon;
+  ADDON::AddonInfoPtr m_addon;
   ADDON::AddonPtr m_repo;
   std::string m_hash;
   bool m_update;
@@ -191,13 +190,13 @@ private:
 class CAddonUnInstallJob : public CFileOperationJob
 {
 public:
-  CAddonUnInstallJob(const ADDON::AddonPtr &addon, bool removeData);
+  CAddonUnInstallJob(const ADDON::AddonInfoPtr &addon, bool removeData);
 
   virtual bool DoWork();
 
 private:
   void ClearFavourites();
 
-  ADDON::AddonPtr m_addon;
+  ADDON::AddonInfoPtr m_addon;
   bool m_removeData;
 };

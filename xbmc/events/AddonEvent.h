@@ -20,21 +20,21 @@
  */
 
 #include "events/UniqueEvent.h"
-#include "addons/IAddon.h"
+#include "addons/Addon.h"
 
 class CAddonEvent : public CUniqueEvent
 {
 public:
-  CAddonEvent(ADDON::AddonPtr addon, const CVariant& description);
-  CAddonEvent(ADDON::AddonPtr addon, const CVariant& description, const CVariant& details);
-  CAddonEvent(ADDON::AddonPtr addon, const CVariant& description, const CVariant& details, const CVariant& executionLabel);
-  CAddonEvent(ADDON::AddonPtr addon, EventLevel level, const CVariant& description);
-  CAddonEvent(ADDON::AddonPtr addon, EventLevel level, const CVariant& description, const CVariant& details);
-  CAddonEvent(ADDON::AddonPtr addon, EventLevel level, const CVariant& description, const CVariant& details, const CVariant& executionLabel);
+  CAddonEvent(ADDON::AddonInfoPtr addonInfo, const CVariant& description);
+  CAddonEvent(ADDON::AddonInfoPtr addonInfo, const CVariant& description, const CVariant& details);
+  CAddonEvent(ADDON::AddonInfoPtr addonInfo, const CVariant& description, const CVariant& details, const CVariant& executionLabel);
+  CAddonEvent(ADDON::AddonInfoPtr addonInfo, EventLevel level, const CVariant& description);
+  CAddonEvent(ADDON::AddonInfoPtr addonInfo, EventLevel level, const CVariant& description, const CVariant& details);
+  CAddonEvent(ADDON::AddonInfoPtr addonInfo, EventLevel level, const CVariant& description, const CVariant& details, const CVariant& executionLabel);
   virtual ~CAddonEvent() { }
 
   virtual const char* GetType() const { return "AddonEvent"; }
 
 protected:
-  ADDON::AddonPtr m_addon;
+  ADDON::AddonInfoPtr m_addonInfo;
 };

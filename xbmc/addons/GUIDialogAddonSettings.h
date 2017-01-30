@@ -24,7 +24,7 @@
 #include <vector>
 
 #include "dialogs/GUIDialogBoxBase.h"
-#include "IAddon.h"
+#include "Addon.h"
 
 class CGUIDialogAddonSettings : public CGUIDialogBoxBase
 {
@@ -38,7 +38,7 @@ public:
    \param saveToDisk whether the changes should be saved to disk or just made local to the addon.  Defaults to true
    \return true if settings were changed and the dialog confirmed, false otherwise.
    */
-  static bool ShowAndGetInput(const ADDON::AddonPtr &addon, bool saveToDisk = true);
+  static bool ShowAndGetInput(const ADDON::AddonInfoPtr &addon, bool saveToDisk = true);
   virtual void DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions);
 
   std::string GetCurrentID() const;

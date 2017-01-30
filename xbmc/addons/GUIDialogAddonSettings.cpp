@@ -20,7 +20,7 @@
 
 #include "GUIDialogAddonSettings.h"
 #include "filesystem/PluginDirectory.h"
-#include "addons/IAddon.h"
+#include "addons/Addon.h"
 #include "addons/AddonManager.h"
 #include "dialogs/GUIDialogNumeric.h"
 #include "dialogs/GUIDialogFileBrowser.h"
@@ -196,15 +196,21 @@ void CGUIDialogAddonSettings::OnInitWindow()
 }
 
 // \brief Show CGUIDialogOK dialog, then wait for user to dismiss it.
-bool CGUIDialogAddonSettings::ShowAndGetInput(const AddonPtr &addon, bool saveToDisk /* = true */)
+bool CGUIDialogAddonSettings::ShowAndGetInput(const AddonInfoPtr &addonInfo, bool saveToDisk /* = true */)
 {
-  if (!addon)
+  if (!addonInfo)
     return false;
 
   if (!g_passwordManager.CheckMenuLock(WINDOW_ADDON_BROWSER))
     return false;
 
-  bool ret(false);
+  /*!
+   * @todo it use currently the bad way to get the real add-on class to identify
+   * the presence of settings.
+   * NEED TO IMPROVE ASAP!
+   */
+  AddonPtr addon;
+  CAddonMgr::GetInstance().GetAddon(addonInfo->ID(), addon, addonInfo->Type());
   if (addon->HasSettings())
   { 
     // Create the dialog
@@ -220,14 +226,14 @@ bool CGUIDialogAddonSettings::ShowAndGetInput(const AddonPtr &addon, bool saveTo
     pDialog->m_addon = addon;
     pDialog->m_saveToDisk = saveToDisk;
     pDialog->Open();
-    ret = true;
+    return true;
   }
   else
   { // addon does not support settings, inform user
     CGUIDialogOK::ShowAndGetInput(CVariant{24000}, CVariant{24030});
   }
 
-  return ret;
+  return false;
 }
 
 bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
@@ -474,7 +480,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
             for (std::vector<std::string>::iterator i = addonTypes.begin(); i != addonTypes.end(); ++i)
             {
               StringUtils::Trim(*i);
-              ADDON::TYPE type = TranslateType(*i);
+              ADDON::TYPE type = CAddonInfo::TranslateType(*i);
               if (type != ADDON_UNKNOWN)
                 types.push_back(type);
             }
@@ -920,15 +926,15 @@ std::string CGUIDialogAddonSettings::GetAddonNames(const std::string& addonIDsli
 {
   std::string retVal;
   std::vector<std::string> addons = StringUtils::Split(addonIDslist, ',');
-  for (std::vector<std::string>::const_iterator it = addons.begin(); it != addons.end() ; ++it)
+  for (auto id : addons)
   {
     if (!retVal.empty())
       retVal += ", ";
-    AddonPtr addon;
-    if (CAddonMgr::GetInstance().GetAddon(*it ,addon))
+    AddonInfoPtr addon = CAddonMgr::GetInstance().GetInstalledAddonInfo(id);
+    if (addon)
       retVal += addon->Name();
     else
-      retVal += *it;
+      retVal += id;
   }
   return retVal;
 }
