@@ -98,7 +98,7 @@ const char** CGameClientProperties::GetProxyDllPaths(void)
     {
       const std::string& strAddonId = it->first;
       AddonPtr addon;
-      if (CAddonMgr::GetInstance().GetAddon(strAddonId, addon, ADDON_GAMEDLL, false))
+      if (CAddonMgr::GetInstance().GetAddon(strAddonId, addon, ADDON_GAMEDLL))
       {
         // If add-on is disabled, ask the user to enable it
         if (!CAddonMgr::GetInstance().IsAddonEnabled(addon->ID()))

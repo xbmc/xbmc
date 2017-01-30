@@ -1014,7 +1014,7 @@ bool CGUIMediaWindow::OnClick(int iItem, const std::string &player)
     if (m_vecItems->IsPlugin())
     {
       CURL url(m_vecItems->GetPath());
-      AddonInfoPtr addon = CAddonMgr::GetInstance().GetInstalledAddonInfo(ADDON_PLUGIN, url.GetHostName());
+      AddonInfoPtr addon = CAddonMgr::GetInstance().GetInstalledAddonInfo(url.GetHostName(), ADDON_PLUGIN);
       if (addon)
       {
         if (addon->ProvidesSubContent(CAddonInfo::AUDIO))

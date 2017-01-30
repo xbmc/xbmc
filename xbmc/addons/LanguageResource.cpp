@@ -157,7 +157,7 @@ bool CLanguageResource::FindLegacyLanguage(const std::string &locale, std::strin
 
   std::string addonId = GetAddonId(locale);
 
-  const AddonInfoPtr addon = CAddonMgr::GetInstance().GetInstalledAddonInfo(ADDON_RESOURCE_LANGUAGE, addonId);
+  const AddonInfoPtr addon = CAddonMgr::GetInstance().GetInstalledAddonInfo(addonId, ADDON_RESOURCE_LANGUAGE);
   if (addon == nullptr)
     return false;
 

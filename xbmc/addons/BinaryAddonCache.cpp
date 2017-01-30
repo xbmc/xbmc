@@ -102,7 +102,7 @@ void CBinaryAddonCache::Update()
   for (auto &addonType : m_addonsToCache)
   {
     VECADDONS addons;
-    CAddonMgr::GetInstance().GetInstalledAddons(addons, addonType);
+    CAddonMgr::GetInstance().GetAddons(addons, addonType, false);
     addonmap.insert(AddonMap::value_type(addonType, addons));
   }
 

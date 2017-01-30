@@ -96,7 +96,7 @@ static int RunAddon(const std::vector<std::string>& params)
   {
     const std::string& addonid = params[0];
 
-    AddonInfoPtr addon = CAddonMgr::GetInstance().GetInstalledAddonInfo(ADDON_PLUGIN, addonid);
+    AddonInfoPtr addon = CAddonMgr::GetInstance().GetInstalledAddonInfo(addonid, ADDON_PLUGIN);
     if (addon)
     {
       std::string urlParameters;

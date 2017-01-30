@@ -453,7 +453,7 @@ void CGUIViewState::AddAddonsSource(const std::string &content, const std::strin
   if (XFILE::CAddonsDirectory::GetScriptsAndPlugins(content, items))
   { // add the plugin source
     CMediaSource source;
-    source.strPath = "addons://sources/" + content + "/";    
+    source.strPath = "addons://sources/" + content + "/";
     source.strName = label;
     if (!thumb.empty() && g_TextureManager.HasTexture(thumb))
       source.m_strThumbnailImage = thumb;
@@ -568,7 +568,7 @@ CGUIViewStateFromItems::CGUIViewStateFromItems(const CFileItemList &items) : CGU
   if (items.IsPlugin())
   {
     CURL url(items.GetPath());
-    AddonInfoPtr addon = CAddonMgr::GetInstance().GetInstalledAddonInfo(ADDON_PLUGIN, url.GetHostName());
+    AddonInfoPtr addon = CAddonMgr::GetInstance().GetInstalledAddonInfo(url.GetHostName(), ADDON_PLUGIN);
     if (addon)
     {
       if (addon->ProvidesSubContent(CAddonInfo::VIDEO))

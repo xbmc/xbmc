@@ -279,17 +279,12 @@ bool CAddonInstaller::InstallFromZip(const std::string &path)
   //! @bug some zip files return a single item (root folder) that we think is stored, so we don't use the zip:// protocol
   CURL pathToUrl(path);
   CURL zipDir = URIUtils::CreateArchivePath("zip", pathToUrl, "");
-  if (!CDirectory::GetDirectory(zipDir, items) || items.Size() != 1 || !items[0]->m_bIsFolder)
+  if (CDirectory::GetDirectory(zipDir, items) && items.Size() == 1 && items[0]->m_bIsFolder)
   {
-    CEventLog::GetInstance().AddWithNotification(EventPtr(new CNotificationEvent(24045,
-        StringUtils::Format(g_localizeStrings.Get(24143).c_str(), path.c_str()),
-        "special://xbmc/media/icon256x256.png", EventLevel::Error)));
-    return false;
+    AddonInfoPtr addon;
+    if (CAddonMgr::LoadAddonDescription(addon, items[0]->GetPath()))
+      return DoInstall(addon, RepositoryPtr());
   }
-
-  AddonInfoPtr addon;
-  if (CAddonMgr::GetInstance().LoadAddonDescription(items[0]->GetPath(), addon))
-    return DoInstall(addon, RepositoryPtr());
 
   CEventLog::GetInstance().AddWithNotification(EventPtr(new CNotificationEvent(24045,
       StringUtils::Format(g_localizeStrings.Get(24143).c_str(), path.c_str()),
@@ -575,7 +570,7 @@ bool CAddonInstallJob::DoWork()
       AddonInfoPtr temp;
       if (!CDirectory::GetDirectory(archive, archivedFiles) ||
           archivedFiles.Size() != 1 || !archivedFiles[0]->m_bIsFolder ||
-          !CAddonMgr::GetInstance().LoadAddonDescription(archivedFiles[0]->GetPath(), temp))
+          !CAddonMgr::LoadAddonDescription(temp, archivedFiles[0]->GetPath()))
       {
         CLog::Log(LOGERROR, "CAddonInstallJob[%s]: invalid package %s", m_addon->ID().c_str(), package.c_str());
         db.RemovePackage(package);
@@ -595,11 +590,11 @@ bool CAddonInstallJob::DoWork()
   if (!Install(installFrom, m_repo))
     return false;
 
-//   if (!CAddonMgr::GetInstance().ReloadAddon(m_addon))
-//   {
-//     CLog::Log(LOGERROR, "CAddonInstallJob[%s]: failed to reload addon", m_addon->ID().c_str());
-//     return false;
-//   }
+  if (!CAddonMgr::GetInstance().AddNewInstalledAddon(m_addon))
+  {
+    CLog::Log(LOGERROR, "CAddonInstallJob[%s]: failed to reload addon", m_addon->ID().c_str());
+    return false;
+  }
 
   g_localizeStrings.LoadAddonStrings(URIUtils::AddFileToFolder(m_addon->Path(), "resources/language/"),
       CServiceBroker::GetSettings().GetString(CSettings::SETTING_LOCALE_LANGUAGE), m_addon->ID());
@@ -705,7 +700,7 @@ bool CAddonInstallJob::Install(const std::string &installFrom, const AddonPtr& r
 
           if (!CAddonMgr::GetInstance().IsAddonInstalled(addonID))
           {
-            CLog::Log(LOGERROR, "CAddonInstallJob[%s]: failed to install dependency %s", m_addon->ID().c_str(), addonID.c_str());
+            CLog::Log(LOGERROR, "CAddonInstallJob[%s] (1): failed to install dependency %s", m_addon->ID().c_str(), addonID.c_str());
             ReportInstallError(m_addon->ID(), m_addon->ID(), g_localizeStrings.Get(24085));
             return false;
           }
@@ -718,7 +713,7 @@ bool CAddonInstallJob::Install(const std::string &installFrom, const AddonPtr& r
           std::string hash;
           if (!CAddonInstallJob::GetAddonWithHash(addonID, repoForDep, addon, hash))
           {
-            CLog::Log(LOGERROR, "CAddonInstallJob[%s]: failed to find dependency %s", m_addon->ID().c_str(), addonID.c_str());
+            CLog::Log(LOGERROR, "CAddonInstallJob[%s] (2): failed to find dependency %s", m_addon->ID().c_str(), addonID.c_str());
             ReportInstallError(m_addon->ID(), m_addon->ID(), g_localizeStrings.Get(24085));
             return false;
           }
@@ -731,14 +726,14 @@ bool CAddonInstallJob::Install(const std::string &installFrom, const AddonPtr& r
 
           if (!dependencyJob.DoModal())
           {
-            CLog::Log(LOGERROR, "CAddonInstallJob[%s]: failed to install dependency %s", m_addon->ID().c_str(), addonID.c_str());
+            CLog::Log(LOGERROR, "CAddonInstallJob[%s] (3): failed to install dependency %s", m_addon->ID().c_str(), addonID.c_str());
             ReportInstallError(m_addon->ID(), m_addon->ID(), g_localizeStrings.Get(24085));
             return false;
           }
         }
         else if (!CAddonInstaller::GetInstance().InstallOrUpdate(addonID, false))
         {
-          CLog::Log(LOGERROR, "CAddonInstallJob[%s]: failed to install dependency %s", m_addon->ID().c_str(), addonID.c_str());
+          CLog::Log(LOGERROR, "CAddonInstallJob[%s] (4): failed to install dependency %s", m_addon->ID().c_str(), addonID.c_str());
           ReportInstallError(m_addon->ID(), m_addon->ID(), g_localizeStrings.Get(24085));
           return false;
         }

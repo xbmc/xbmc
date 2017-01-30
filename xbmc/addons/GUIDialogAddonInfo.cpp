@@ -198,11 +198,20 @@ void CGUIDialogAddonInfo::UpdateControls()
       !CAddonMgr::GetInstance().IsBlacklisted(m_localAddon->ID()));
   SET_CONTROL_LABEL(CONTROL_BTN_AUTOUPDATE, 21340);
 
+  /*!
+   * @todo it use currently the bad way to get the real add-on class to identify
+   * the presence of settings.
+   * NEED TO IMPROVE ASAP!
+   */
+  AddonPtr addon;
+  if (isInstalled)
+    CAddonMgr::GetInstance().GetAddon(m_localAddon->ID(), addon, m_localAddon->Type());
+
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_SELECT, m_addonEnabled && (CanOpen() ||
-      CanRun() || (CanUse()/* && !m_localAddon->IsInUse()*/))); /// @todo bring back after place is changed
+      CanRun() || (CanUse() && !addon->IsInUse())));
   SET_CONTROL_LABEL(CONTROL_BTN_SELECT, CanUse() ? 21480 : (CanOpen() ? 21478 : 21479));
 
-  //CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_SETTINGS, isInstalled && m_localAddon->HasSettings());
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_SETTINGS, isInstalled && addon->HasSettings());
 
   CFileItemList items;
   for (const auto& screenshot : m_item->GetAddonInfo()->Screenshots())
@@ -417,7 +426,7 @@ bool CGUIDialogAddonInfo::PromptIfDependency(int heading, int line2)
 
 void CGUIDialogAddonInfo::OnUninstall()
 {
-  /*if (!m_localAddon.get())
+  if (!m_localAddon.get())
     return;
 
   if (!g_passwordManager.CheckMenuLock(WINDOW_ADDON_BROWSER))
@@ -437,7 +446,7 @@ void CGUIDialogAddonInfo::OnUninstall()
 
   CJobManager::GetInstance().AddJob(new CAddonUnInstallJob(m_localAddon, removeData),
                                     &CAddonInstaller::GetInstance());
-  Close();*/
+  Close();
 }
 
 void CGUIDialogAddonInfo::OnEnableDisable()
