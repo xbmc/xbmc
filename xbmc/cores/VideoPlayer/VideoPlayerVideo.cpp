@@ -510,7 +510,7 @@ void CVideoPlayerVideo::Process()
       }
       else
       {
-        m_messageQueue.PutBack(pMsg);
+        m_messageQueue.PutBack(pMsg->Acquire());
         onlyPrioMsgs = true;
       }
     }
