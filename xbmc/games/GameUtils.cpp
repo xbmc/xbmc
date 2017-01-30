@@ -43,7 +43,7 @@ GameClientPtr CGameUtils::OpenGameClient(const CFileItem& file)
 
   GameClientPtr gameClient;
 
-/*  // Get the game client ID from the game info tag
+  // Get the game client ID from the game info tag
   std::string gameClientId;
   if (file.HasGameInfoTag())
     gameClientId = file.GetGameInfoTag()->GetGameClient();
@@ -90,13 +90,13 @@ GameClientPtr CGameUtils::OpenGameClient(const CFileItem& file)
       CGUIDialogSelectGameClient::ShowAndGetGameClient(candidates, installable, gameClient);
     }
   }
-*/
+
   return gameClient;
 }
 
 void CGameUtils::GetGameClients(const CFileItem& file, GameClientVector& candidates, GameClientVector& installable, bool& bHasVfsGameClient)
 {
-/*  using namespace ADDON;
+  using namespace ADDON;
 
   bHasVfsGameClient = false;
 
@@ -113,12 +113,12 @@ void CGameUtils::GetGameClients(const CFileItem& file, GameClientVector& candida
   bHasVfsGameClient |= bVfs;
 
   // Get remote candidates
-  VECADDONS remoteAddons;
+  /*VECADDONS remoteAddons;
   if (CAddonMgr::GetInstance().GetInstallableAddons(remoteAddons, ADDON_GAMEDLL))
   {
     GetGameClients(remoteAddons, translatedUrl, installable, bVfs);
     bHasVfsGameClient |= bVfs;
-  }
+  }*/
 
   // Sort by name
   //! @todo Move to presentation code
@@ -134,12 +134,12 @@ void CGameUtils::GetGameClients(const CFileItem& file, GameClientVector& candida
   };
 
   std::sort(candidates.begin(), candidates.end(), SortByName);
-  std::sort(installable.begin(), installable.end(), SortByName);*/
+  std::sort(installable.begin(), installable.end(), SortByName);
 }
 
-void CGameUtils::GetGameClients(const ADDON::AddonInfos& addons, const CURL& translatedUrl, GameClientVector& candidates, bool& bHasVfsGameClient)
+void CGameUtils::GetGameClients(const ADDON::VECADDONS& addons, const CURL& translatedUrl, GameClientVector& candidates, bool& bHasVfsGameClient)
 {
-/*  bHasVfsGameClient = false;
+  bHasVfsGameClient = false;
 
   const std::string extension = URIUtils::GetExtension(translatedUrl.Get());
 
@@ -162,12 +162,12 @@ void CGameUtils::GetGameClients(const ADDON::AddonInfos& addons, const CURL& tra
     }
 
     candidates.push_back(gameClient);
-  }*/
+  }
 }
 
 bool CGameUtils::HasGameExtension(const std::string &path)
 {
-/*  using namespace ADDON;
+  using namespace ADDON;
 
   // Get filename from CURL so that top-level zip directories will become
   // normal paths:
@@ -195,7 +195,7 @@ bool CGameUtils::HasGameExtension(const std::string &path)
   }
 
   // Check remote add-ons
-  gameClients.clear();
+  /*gameClients.clear();
   if (CAddonMgr::GetInstance().GetInstallableAddons(gameClients, ADDON_GAMEDLL))
   {
     for (auto& gameClient : gameClients)
@@ -204,8 +204,8 @@ bool CGameUtils::HasGameExtension(const std::string &path)
       if (gc->IsExtensionValid(extension))
         return true;
     }
-  }
-*/
+  }*/
+
   return false;
 }
 
@@ -214,7 +214,7 @@ std::set<std::string> CGameUtils::GetGameExtensions()
   using namespace ADDON;
 
   std::set<std::string> extensions;
-/*
+
   VECADDONS gameClients;
   CBinaryAddonCache& addonCache = CServiceBroker::GetBinaryAddonCache();
   addonCache.GetAddons(gameClients, ADDON_GAMEDLL);
@@ -225,7 +225,7 @@ std::set<std::string> CGameUtils::GetGameExtensions()
   }
 
   // Check remote add-ons
-  gameClients.clear();
+  /*gameClients.clear();
   if (CAddonMgr::GetInstance().GetInstallableAddons(gameClients, ADDON_GAMEDLL))
   {
     for (auto& gameClient : gameClients)
@@ -233,20 +233,20 @@ std::set<std::string> CGameUtils::GetGameExtensions()
       GameClientPtr gc(std::static_pointer_cast<CGameClient>(gameClient));
       extensions.insert(gc->GetExtensions().begin(), gc->GetExtensions().end());
     }
-  }
-*/
+  }*/
+
   return extensions;
 }
 
 bool CGameUtils::IsStandaloneGame(const ADDON::AddonInfoPtr& addon)
 {
-/*  using namespace ADDON;
+  using namespace ADDON;
 
   switch (addon->Type())
   {
     case ADDON_GAMEDLL:
     {
-      return std::static_pointer_cast<GAME::CGameClient>(addon)->SupportsStandalone();
+      return addon->GetValue("supports_standalone").asBoolean();
     }
     case ADDON_SCRIPT:
     {
@@ -255,6 +255,6 @@ bool CGameUtils::IsStandaloneGame(const ADDON::AddonInfoPtr& addon)
     default:
       break;
   }
-*/
+
   return false;
 }

@@ -773,11 +773,11 @@ void CAddonInstallJob::ReportInstallError(const std::string& addonID, const std:
 
   std::string msg = message;
   EventPtr activity;
-  if (addon != NULL)
+  if (addon != nullptr)
   {
     AddonInfoPtr addon2 = CAddonMgr::GetInstance().GetInstalledAddonInfo(addonID);
     if (msg.empty())
-      msg = g_localizeStrings.Get(addon2 != NULL ? 113 : 114);
+      msg = g_localizeStrings.Get(addon2 != nullptr ? 113 : 114);
 
     activity = EventPtr(new CAddonManagementEvent(addon, EventLevel::Error, msg));
     if (IsModal())
@@ -802,7 +802,11 @@ CAddonUnInstallJob::CAddonUnInstallJob(const AddonInfoPtr &addon, bool removeDat
 
 bool CAddonUnInstallJob::DoWork()
 {
-  //ADDON::OnPreUnInstall(m_addon);
+  AddonPtr localAddon;
+  if (!CAddonMgr::GetInstance().GetAddon(m_addon->ID(), localAddon))
+    return false;
+
+  ADDON::OnPreUnInstall(localAddon);
 
   //Unregister addon with the manager to ensure nothing tries
   //to interact with it while we are uninstalling.
@@ -827,14 +831,14 @@ bool CAddonUnInstallJob::DoWork()
   CAddonDatabase database;
   // try to get the addon object from the repository as the local one does not exist anymore
   // if that doesn't work fall back to the local one
-  if (!database.Open() || !database.GetAddonInfo(m_addon->ID(), addon) || addon == NULL)
+  if (!database.Open() || !database.GetAddonInfo(m_addon->ID(), addon) || addon == nullptr)
     addon = m_addon;
   CEventLog::GetInstance().Add(EventPtr(new CAddonManagementEvent(addon, 24144)));
 
   CAddonMgr::GetInstance().OnPostUnInstall(m_addon->ID());
   database.OnPostUnInstall(m_addon->ID());
 
-//   ADDON::OnPostUnInstall(m_addon);
+  ADDON::OnPostUnInstall(localAddon);
   return true;
 }
 

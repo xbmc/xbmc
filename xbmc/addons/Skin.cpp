@@ -175,7 +175,7 @@ CSkinInfo::CSkinInfo(AddonInfoPtr addonInfo)
       m_resolutions.push_back(res);
     }
   }
-  
+
   m_effectsSlowDown = AddonInfo()->GetValue("@effectslowdown").asFloat();
   if (m_effectsSlowDown == 0.0f)
     m_effectsSlowDown = 1.f;

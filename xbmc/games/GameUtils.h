@@ -67,6 +67,6 @@ namespace GAME
 
   private:
     static void GetGameClients(const CFileItem& file, GameClientVector& candidates, GameClientVector& installable, bool& bHasVfsGameClient);
-    static void GetGameClients(const ADDON::AddonInfos& addons, const CURL& translatedUrl, GameClientVector& candidates, bool& bHasVfsGameClient);
+    static void GetGameClients(const ADDON::VECADDONS& addons, const CURL& translatedUrl, GameClientVector& candidates, bool& bHasVfsGameClient);
   };
 } // namespace GAME

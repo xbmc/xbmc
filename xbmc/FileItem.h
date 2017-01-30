@@ -116,7 +116,7 @@ public:
   CFileItem(const PVR::CPVRRecordingPtr& record);
   CFileItem(const PVR::CPVRTimerInfoTagPtr& timer);
   CFileItem(const CMediaSource& share);
-  CFileItem(std::shared_ptr<const ADDON::CAddonInfo> addonInfo);
+  CFileItem(const ADDON::AddonInfoPtr addonInfo);
   CFileItem(const EventPtr& eventLogEntry);
 
   virtual ~CFileItem(void);
@@ -364,7 +364,7 @@ public:
   }
 
   bool HasAddonInfo() const { return m_addonInfo != nullptr; }
-  const std::shared_ptr<const ADDON::CAddonInfo> GetAddonInfo() const { return m_addonInfo; }
+  const ADDON::AddonInfoPtr GetAddonInfo() const { return m_addonInfo; }
 
   inline bool HasGameInfoTag() const
   {
@@ -574,7 +574,7 @@ private:
   PVR::CPVRTimerInfoTagPtr m_pvrTimerInfoTag;
   PVR::CPVRRadioRDSInfoTagPtr m_pvrRadioRDSInfoTag;
   CPictureInfoTag* m_pictureInfoTag;
-  std::shared_ptr<const ADDON::CAddonInfo> m_addonInfo;
+  ADDON::AddonInfoPtr m_addonInfo;
   GAME::CGameInfoTag* m_gameInfoTag;
   EventPtr m_eventLogEntry;
   bool m_bIsAlbum;
