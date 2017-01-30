@@ -850,8 +850,8 @@ bool CActiveAEDSP::HaveMenuHooks(AE_DSP_MENUHOOK_CAT cat, int iDSPAddonID)
       }
       else if (cat == AE_DSP_MENUHOOK_SETTING)
       {
-        AddonPtr addon;
-        if (CAddonMgr::GetInstance().GetAddon(citr->second->ID(), addon) && addon->HasSettings())
+        AddonInfoPtr addon = CAddonMgr::GetInstance().GetInstalledAddonInfo(citr->second->ID(), ADDON_ADSPDLL);
+        if (addon && addon->HasSettings())
           return true;
       }
     }

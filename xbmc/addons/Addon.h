@@ -139,6 +139,14 @@ public:
    \return true if  min_version <= version <= current_version, false otherwise.
    */
   virtual bool MeetsVersion(const AddonVersion &version) const;
+
+  /*! \brief Load the default settings and these with any previously configured user settings
+   \param bForce force the load of settings even if they are already loaded (reload)
+   \return true if settings exist, false otherwise
+   \sa LoadUserSettings, SaveSettings, HasSettings, HasUserSettings, GetSetting, UpdateSetting
+   */
+  virtual bool LoadSettings(bool bForce = false);
+
   virtual bool ReloadSettings();
 
   /*! \brief callback for when this add-on is disabled.
@@ -163,13 +171,6 @@ public:
   const AddonInfoPtr AddonInfo() const { return m_addonInfo; }
 
 protected:
-  /*! \brief Load the default settings and these with any previously configured user settings
-   \param bForce force the load of settings even if they are already loaded (reload)
-   \return true if settings exist, false otherwise
-   \sa LoadUserSettings, SaveSettings, HasSettings, HasUserSettings, GetSetting, UpdateSetting
-   */
-  virtual bool LoadSettings(bool bForce = false);
-
   /*! \brief Load the user settings
    \return true if user settings exist, false otherwise
    \sa LoadSettings, SaveSettings, HasSettings, HasUserSettings, GetSetting, UpdateSetting
