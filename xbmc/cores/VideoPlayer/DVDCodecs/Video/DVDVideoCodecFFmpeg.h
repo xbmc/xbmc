@@ -96,7 +96,7 @@ protected:
   AVFilterContext* m_pFilterIn;
   AVFilterContext* m_pFilterOut;
   AVFrame*         m_pFilterFrame;
-  bool m_filterEof;
+  bool m_filterEof = false;
 
   CDVDVideoPPFFmpeg m_postProc;
 
