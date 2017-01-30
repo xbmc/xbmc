@@ -503,7 +503,10 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
           resetHistory = true;
         }
         if (resetHistory)
+        {  
+          m_vecItems->RemoveDiscCache(GetID());
           SetHistoryForPath(m_vecItems->GetPath());
+        }
       }
       if (message.GetParam1() != WINDOW_INVALID)
       { // first time to this window - make sure we set the root path
