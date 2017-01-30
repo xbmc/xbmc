@@ -192,6 +192,13 @@ CLinuxRendererGL::~CLinuxRendererGL()
     delete m_pYUVShader;
     m_pYUVShader = NULL;
   }
+
+  if (m_pVideoFilterShader)
+  {
+    m_pVideoFilterShader->Free();
+    delete m_pVideoFilterShader;
+    m_pVideoFilterShader = NULL;
+  }
 }
 
 bool CLinuxRendererGL::ValidateRenderer()
