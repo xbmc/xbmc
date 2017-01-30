@@ -116,7 +116,6 @@ bool CPluginDirectory::StartScript(const std::string& strPath, bool retrievingDi
 {
   CURL url(strPath);
 
-  // try the plugin type first, and if not found, try an unknown type
   if (!CAddonMgr::GetInstance().IsAddonEnabled(url.GetHostName(), ADDON_PLUGIN) &&
       !CAddonInstaller::GetInstance().InstallModal(url.GetHostName()))
   {

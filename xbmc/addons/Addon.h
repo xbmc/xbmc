@@ -202,7 +202,7 @@ protected:
 private:
   bool m_hasSettings;
   std::map<std::string, std::string> m_settings;
-  
+
   std::string m_profilePath;
   std::string m_userSettingsPath;
 

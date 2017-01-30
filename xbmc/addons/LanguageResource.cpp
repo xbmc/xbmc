@@ -51,7 +51,7 @@ CLanguageResource::CLanguageResource(AddonInfoPtr addonInfo)
     m_forceUnicodeFont = charsetsElement->GetValue("gui@unicodefont").asBoolean();
     m_charsetSubtitle = charsetsElement->GetValue("subtitle").asString();
   }
-  
+
   // parse <dvd>
   const CAddonExtensions* dvdElement = AddonInfo()->GetElement("dvd");
   if (dvdElement != nullptr)

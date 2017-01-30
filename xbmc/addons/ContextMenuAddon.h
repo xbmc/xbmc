@@ -38,7 +38,6 @@ namespace ADDON
 
   private:
     void ParseMenu(const CAddonExtensions* elem, const std::string& parent, int& anonGroupCount);
-    
     std::vector<CContextMenuItem> m_items;
   };
 }

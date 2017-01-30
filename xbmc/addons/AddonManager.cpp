@@ -113,7 +113,7 @@ bool CAddonMgr::Init()
     }
   }
 
-  for (auto repos : m_installedAddons[ADDON_REPOSITORY])
+  for (auto& repos : m_installedAddons[ADDON_REPOSITORY])
     CLog::Log(LOGNOTICE, "ADDONS: Using repository %s", repos.first.c_str());
 
   return true;
@@ -142,9 +142,9 @@ bool CAddonMgr::FindAddons()
   m_installedAddons = std::move(installedAddons);
 
   std::set<std::string> installed;
-  for (auto addonInfoTypes : m_installedAddons)
+  for (auto& addonInfoTypes : m_installedAddons)
   {
-    for (auto addonInfo : addonInfoTypes.second)
+    for (auto& addonInfo : addonInfoTypes.second)
       installed.insert(addonInfo.second->ID());
   }
   m_database.SyncInstalled(installed, m_systemAddons, m_optionalAddons);
@@ -520,7 +520,7 @@ bool CAddonMgr::UnloadAddon(const AddonInfoPtr& addonInfo)
   CSingleLock lock(m_critSection);
   
   std::string id = addonInfo->ID();
-  for (auto addonInfoTypes : m_installedAddons)
+  for (auto& addonInfoTypes : m_installedAddons)
   {
     auto addonInfo = addonInfoTypes.second.find(id);
     if (addonInfo != addonInfoTypes.second.end())
@@ -539,7 +539,15 @@ void CAddonMgr::OnPostUnInstall(const std::string& id)
   CSingleLock lock(m_critSection);
 
   /*! @todo make it better */
-  for (auto addonInfoTypes : m_installedAddons)
+  for (auto& addonInfoTypes : m_enabledAddons)
+  {
+    if (addonInfoTypes.second.find(id) != addonInfoTypes.second.end())
+    {
+      addonInfoTypes.second.erase(id);
+      break;
+    }
+  }
+  for (auto& addonInfoTypes : m_installedAddons)
   {
     if (addonInfoTypes.second.find(id) != addonInfoTypes.second.end())
     {
