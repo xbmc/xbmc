@@ -7,6 +7,6 @@ if(ENABLE_X11 AND X_FOUND AND XRANDR_FOUND)
 endif()
 
 # WiiRemote
-if(ENABLE_EVENTCLIENTS AND BLUETOOTH_FOUND)
+if(ENABLE_EVENTCLIENTS AND BLUETOOTH_FOUND AND CWIID_FOUND)
   add_subdirectory(${CMAKE_SOURCE_DIR}/tools/EventClients/Clients/WiiRemote build/WiiRemote)
 endif()
