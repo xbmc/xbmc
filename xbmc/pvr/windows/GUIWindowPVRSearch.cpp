@@ -54,12 +54,6 @@ void CGUIWindowPVRSearch::GetContextButtons(int itemNumber, CContextButtons &but
   CGUIWindowPVRBase::GetContextButtons(itemNumber, buttons);
 }
 
-void CGUIWindowPVRSearch::OnWindowLoaded()
-{
-  CGUIMediaWindow::OnWindowLoaded();
-  m_searchfilter.Reset();
-}
-
 bool CGUIWindowPVRSearch::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 {
   if (itemNumber < 0 || itemNumber >= m_vecItems->Size())
@@ -70,7 +64,7 @@ bool CGUIWindowPVRSearch::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       CGUIMediaWindow::OnContextButton(itemNumber, button);
 }
 
-bool CGUIWindowPVRSearch::FindSimilar(const CFileItemPtr &item)
+void CGUIWindowPVRSearch::SetItemToSearch(const CFileItemPtr &item)
 {
   m_searchfilter.Reset();
 
@@ -86,8 +80,9 @@ bool CGUIWindowPVRSearch::FindSimilar(const CFileItemPtr &item)
   }
 
   m_bSearchConfirmed = true;
-  Refresh(true);
-  return true;
+
+  if (IsActive())
+    Refresh(true);
 }
 
 void CGUIWindowPVRSearch::OnPrepareFileItems(CFileItemList &items)

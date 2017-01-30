@@ -121,8 +121,9 @@ namespace PVR
     if (windowToClose)
       windowToClose->Close();
 
+    windowSearch->SetItemToSearch(item);
     g_windowManager.ActivateWindow(windowSearchId);
-    return windowSearch->FindSimilar(item);
+    return true;
   };
 
   bool CPVRGUIActions::ShowTimerSettings(const CPVRTimerInfoTagPtr &timer) const
