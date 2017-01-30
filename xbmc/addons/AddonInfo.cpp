@@ -34,19 +34,11 @@
 namespace ADDON
 {
 
-CAddonExtensions::CAddonExtensions()
-{
-}
-
 bool CAddonExtensions::ParseExtension(const TiXmlElement* element)
 {
   const char* cstring;
-  const char* cstring2;
 
   cstring = element->Attribute("point");
-  if (cstring && (strcmp(cstring, "kodi.addon.metadata") == 0 || strcmp(cstring, "xbmc.addon.metadata") == 0))
-    return true;
-
   m_point = cstring ? cstring : "";
 
   EXT_VALUE extension;
@@ -84,10 +76,10 @@ bool CAddonExtensions::ParseExtension(const TiXmlElement* element)
         std::string name = attribute->Name();
         if (name != "point")
         {
-          cstring2 = attribute->Value();
-          if (cstring2)
+          cstring = attribute->Value();
+          if (cstring)
           {
-            std::string value = cstring2;
+            std::string value = cstring;
             name = id + "@" + name;
             extension.push_back(std::pair<std::string, std::string>(name, value));
           }
@@ -95,14 +87,14 @@ bool CAddonExtensions::ParseExtension(const TiXmlElement* element)
         attribute = attribute->Next();
       }
     
-      cstring2 = childElement->GetText();
-      if (cstring2)
-        extension.push_back(std::pair<std::string, std::string>(id, cstring2));
+      cstring = childElement->GetText();
+      if (cstring)
+        extension.push_back(std::pair<std::string, std::string>(id, cstring));
 
       if (!extension.empty())
         m_values.push_back(std::pair<std::string, EXT_VALUE>(id, extension));
 
-      if (!cstring2)
+      if (!cstring)
       {
         const TiXmlElement* childSubElement = childElement->FirstChildElement();
         if (childSubElement)
@@ -117,11 +109,6 @@ bool CAddonExtensions::ParseExtension(const TiXmlElement* element)
   }
 
   return true;
-}
-
-CAddonExtensions::~CAddonExtensions()
-{
-  
 }
 
 const extValue CAddonExtensions::GetValue(std::string id) const
@@ -385,13 +372,6 @@ CAddonInfo::CAddonInfo(const std::string& id,
   }
 }
 
-CAddonInfo::CAddonInfo()
-  : m_usable(true),
-    m_type(ADDON_UNKNOWN),
-    m_packageSize(0)
-{
-}
-
 CAddonInfo::CAddonInfo(std::string id, TYPE type)
   : m_usable(true),
     m_id(std::move(id)),
@@ -433,7 +413,7 @@ bool CAddonInfo::LoadAddonXML(const TiXmlElement* baseElement, std::string addon
   cstring = baseElement->Attribute("name");
   m_name = cstring ? cstring : "";
   cstring = baseElement->Attribute("version");
-  m_version = AddonVersion(ADDON::AddonVersion(cstring ? cstring : ""));
+  m_version = AddonVersion(cstring ? cstring : "");
   cstring = baseElement->Attribute("provider-name");
   m_author = cstring ? cstring : "";
   if (m_id.empty() || m_version.empty())
@@ -443,6 +423,17 @@ bool CAddonInfo::LoadAddonXML(const TiXmlElement* baseElement, std::string addon
               m_id.empty() ? "missing" : m_id.c_str(),
               m_version.empty() ? "missing" : m_version.asString().c_str());
     return false;
+  }
+
+  /*
+   * Parse addon.xml:
+   * <backwards-compatibility abi="???"/>
+   */
+  const TiXmlElement* backwards = baseElement->FirstChildElement("backwards-compatibility");
+  if (backwards)
+  {
+    cstring = backwards->Attribute("abi");
+    m_minversion = AddonVersion(cstring ? cstring : "");
   }
 
   /*
@@ -658,14 +649,14 @@ bool CAddonInfo::LoadAddonXML(const TiXmlElement* baseElement, std::string addon
           CLog::Log(LOGERROR, "CAddonInfo: file '%s' doesn't contain a valid add-on type name (%s)", addonXmlPath.c_str(), point.c_str());
           return false;
         }
-      }
 
-      // Get add-on library file name (if present)
-      const char* library = child->Attribute("library");
-      if (library == nullptr)
-        library = GetPlatformLibraryName(child);
-      if (library != nullptr)
-        m_libname = library;
+        // Get add-on library file name (if present)
+        const char* library = child->Attribute("library");
+        if (library == nullptr)
+          library = GetPlatformLibraryName(child);
+        if (library != nullptr)
+          m_libname = library;
+      }
     }
   }
 
@@ -784,10 +775,8 @@ void CAddonInfo::SetProvides(const std::string &content)
 {
   if (!content.empty())
   {
-//    fprintf(stderr, "---->ID: %s\n", ID().c_str());
     for (auto provide : StringUtils::Split(content, ' '))
     {
-//      fprintf(stderr, "   ->Provide: %s\n", provide.c_str());
       SubContent content = TranslateSubContent(provide);
       if (content != UNKNOWN)
         m_providedSubContent.insert(content);

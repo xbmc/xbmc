@@ -65,32 +65,32 @@ public:
   explicit CAddon(AddonInfoPtr addonInfo);
   virtual ~CAddon() {}
 
-  virtual TYPE Type() const { return m_addonInfo->m_type; }
+  virtual TYPE Type() const { return m_addonInfo->Type(); }
   virtual TYPE FullType() const { return Type(); }
-  virtual bool IsType(TYPE type) const { return type == m_addonInfo->m_type; }
-  virtual std::string ID() const { return m_addonInfo->m_id; }
-  virtual std::string Name() const { return m_addonInfo->m_name; }
+  virtual bool IsType(TYPE type) const { return type == m_addonInfo->Type(); }
+  virtual std::string ID() const { return m_addonInfo->ID(); }
+  virtual std::string Name() const { return m_addonInfo->Name(); }
   virtual bool IsInUse() const { return false; };
-  virtual AddonVersion Version() const { return m_addonInfo->m_version; }
-  virtual AddonVersion MinVersion() const { return m_addonInfo->m_minversion; }
-  virtual std::string Summary() const { return m_addonInfo->m_summary; }
-  virtual std::string Description() const { return m_addonInfo->m_description; }
-  virtual std::string Path() const { return m_addonInfo->m_path; }
+  virtual AddonVersion Version() const { return m_addonInfo->Version(); }
+  virtual AddonVersion MinVersion() const { return m_addonInfo->MinVersion(); }
+  virtual std::string Summary() const { return m_addonInfo->Summary(); }
+  virtual std::string Description() const { return m_addonInfo->Description(); }
+  virtual std::string Path() const { return m_addonInfo->Path(); }
   virtual std::string Profile() const { return m_profilePath; }
   virtual std::string LibPath() const { return m_addonInfo->LibPath(); }
-  virtual std::string Author() const { return m_addonInfo->m_author; }
-  virtual std::string ChangeLog() const { return m_addonInfo->m_changelog; }
-  virtual std::string FanArt() const { return m_addonInfo->m_fanart; }
-  virtual std::string Icon() const { return m_addonInfo->m_icon; };
-  virtual std::vector<std::string> Screenshots() const { return m_addonInfo->m_screenshots; };
-  virtual std::string Disclaimer() const { return m_addonInfo->m_disclaimer; }
-  virtual std::string Broken() const { return m_addonInfo->m_broken; }
-  virtual CDateTime InstallDate() const { return m_addonInfo->m_installDate; }
-  virtual CDateTime LastUpdated() const { return m_addonInfo->m_lastUpdated; }
-  virtual CDateTime LastUsed() const { return m_addonInfo->m_lastUsed; }
-  virtual std::string Origin() const { return m_addonInfo->m_origin; }
-  virtual uint64_t PackageSize() const { return m_addonInfo->m_packageSize; }
-  virtual const ADDONDEPS& GetDeps() const { return m_addonInfo->m_dependencies; }
+  virtual std::string Author() const { return m_addonInfo->Author(); }
+  virtual std::string ChangeLog() const { return m_addonInfo->ChangeLog(); }
+  virtual std::string FanArt() const { return m_addonInfo->FanArt(); }
+  virtual std::string Icon() const { return m_addonInfo->Icon(); };
+  virtual std::vector<std::string> Screenshots() const { return m_addonInfo->Screenshots(); };
+  virtual std::string Disclaimer() const { return m_addonInfo->Disclaimer(); }
+  virtual std::string Broken() const { return m_addonInfo->Broken(); }
+  virtual CDateTime InstallDate() const { return m_addonInfo->InstallDate(); }
+  virtual CDateTime LastUpdated() const { return m_addonInfo->LastUpdated(); }
+  virtual CDateTime LastUsed() const { return m_addonInfo->LastUsed(); }
+  virtual std::string Origin() const { return m_addonInfo->Origin(); }
+  virtual uint64_t PackageSize() const { return m_addonInfo->PackageSize(); }
+  virtual const ADDONDEPS& GetDeps() const { return m_addonInfo->GetDeps(); }
 
   /*! \brief Check whether the this addon can be configured or not
    \return true if the addon has settings, false otherwise
@@ -162,7 +162,6 @@ public:
 
   const AddonInfoPtr AddonInfo() const { return m_addonInfo; }
 
-  AddonInfoPtr m_addonInfo;
 protected:
   /*! \brief Load the default settings and these with any previously configured user settings
    \param bForce force the load of settings even if they are already loaded (reload)
@@ -196,17 +195,18 @@ protected:
    */
   virtual void SettingsToXML(CXBMCTinyXML &doc) const;
 
-  //const CAddonInfo m_addonInfo;
   CXBMCTinyXML      m_addonXmlDoc;
   bool              m_settingsLoaded;
   bool              m_userSettingsLoaded;
 
 private:
   bool m_hasSettings;
-
+  std::map<std::string, std::string> m_settings;
+  
   std::string m_profilePath;
   std::string m_userSettingsPath;
-  std::map<std::string, std::string> m_settings;
+
+  const AddonInfoPtr m_addonInfo;
 };
 
 }; /* namespace ADDON */

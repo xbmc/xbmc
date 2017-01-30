@@ -31,6 +31,7 @@
 
 class TiXmlElement;
 namespace XBMCAddon { namespace xbmcgui { class WindowXML; } } 
+namespace KodiAPI { namespace GUI { class CAddonCallbacksGUI; } } 
 
 namespace ADDON
 {
@@ -91,17 +92,19 @@ namespace ADDON
     const int asInteger() const { return atoi(str.c_str()); }
     const float asFloat() const { return atof(str.c_str()); }
     const bool empty() const { return str.empty(); }
-    std::string str; // as long not with "const" until bala bala void CAddonDatabase::GetInstalled(std::vector<CAddonBuilder>& addons) is removed (brings compile fault for this but not use this, hääähhh????
+    const std::string str;
   };
+
   class CAddonExtensions;
   typedef std::vector<std::pair<std::string, CAddonExtensions> > EXT_ELEMENTS;
   typedef std::vector<std::pair<std::string, extValue> > EXT_VALUE;
   typedef std::vector<std::pair<std::string, EXT_VALUE> > EXT_VALUES;
+
   class CAddonExtensions
   {
   public:
-    CAddonExtensions();
-    ~CAddonExtensions();
+    CAddonExtensions() { }
+    ~CAddonExtensions() { }
     bool ParseExtension(const TiXmlElement* element);
 
     const extValue GetValue(std::string id) const;
@@ -112,7 +115,6 @@ namespace ADDON
     void Insert(std::string id, std::string value);
 
   private:
-    bool m_ready;
     std::string m_point;
     EXT_VALUES m_values;
     EXT_ELEMENTS m_childs;
@@ -121,9 +123,20 @@ namespace ADDON
   class AddonVersion;
   typedef std::map<std::string, std::pair<const AddonVersion, bool> > ADDONDEPS;
 
+  /*!
+   * @brief Add-on Information class
+   *
+   * This class stores all available standard informations of add-ons. This can
+   * be as source the content of a repository or with local installed ones.
+   *
+   * To generate the information becomes the addon.xml read.
+   */
   class CAddonInfo : public CAddonExtensions
   {
   public:
+    /*!
+     * Sub content types who can supported from add-on
+     */
     enum SubContent
     {
       UNKNOWN,
@@ -180,7 +193,15 @@ namespace ADDON
                const std::string& changelog,
                const std::string& origin);
 
-    CAddonInfo();
+    /*!
+     * @brief Constructor used on XBMCAddon::xbmcgui::WindowXML
+     *
+     * Used there to create a Pseudo Skin Add-on used upon the Python add-on
+     * interface for a code generated window.
+     *
+     * @param[in] id used id for the info
+     * @param[in] type add-on type used for the info
+     */
     CAddonInfo(std::string id, TYPE type);
 
     /*!
@@ -193,44 +214,236 @@ namespace ADDON
      */
     bool IsUsable() const { return m_usable; }
 
+    /*!
+     * @brief Parts used from ADDON::CAddonDatabase
+     */
+    //@{
     void SetInstallDate(CDateTime installDate) { m_installDate = installDate; }
     void SetLastUpdated(CDateTime lastUpdated) { m_lastUpdated = lastUpdated; }
     void SetLastUsed(CDateTime lastUsed) { m_lastUsed = lastUsed; }
     void SetOrigin(std::string origin) { m_origin = std::move(origin); }
+    //@}
 
+    /*!
+     * @brief Get the ID from add-on
+     *
+     * The ID is defined in addon.xml but should also equal with add-on path!
+     *
+     * @return ID string of add-on
+     */
     const std::string& ID() const { return m_id; }
+
+    /*!
+     * @brief The master type id of add-on
+     *
+     * @note to get a human readable name for the type can be TranslateType(...)
+     * from here used.
+     *
+     * @return Master Type ID of add-on
+     */ 
     TYPE Type() const { return m_type; }
+
+    /*!
+     * @brief To check add-on to support type
+     *
+     * This is a bit different from 'Type()' call, there becomes also the
+     * sub content checked.
+     *
+     * @return true if main type of sub typo is present on add-on
+     */
     bool IsType(TYPE type) const;
+
+    /*!
+     * @brief To get version of add-on
+     *
+     * @return The AddonVersion class from add-on
+     */
     const AddonVersion& Version() const { return m_version; }
+
+    /*!
+     * @brief To get min version of add-on
+     *
+     * Used to check compatibility with others who request them
+     *
+     * @return The AddonVersion class from add-on with minimum version
+     */
     const AddonVersion& MinVersion() const { return m_minversion; }
+
+    /*!
+     * @brief Human readable name of add-on
+     *
+     * @return Add-on name
+     */
     const std::string& Name() const { return m_name; }
+
+    /*!
+     * @brief Licence text of add-on
+     *
+     * @return the complete licence text defined on addon.xml
+     */
     const std::string& License() const { return m_license; }
+
+    /*!
+     * @brief To get a small add-on description text
+     *
+     * @return description text
+     */
     const std::string& Summary() const { return m_summary; }
+
+    /*!
+     * @brief To get a bigger add-on description
+     *
+     * @return description text
+     */
     const std::string& Description() const { return m_description; }
+
+    /*!
+     * @brief To get the used library name of add-on
+     *
+     * This is optional and several types don't need this (e.g. skin)
+     *
+     * @return the library name of add-on
+     */
     const std::string& Libname() const { return m_libname; }
+
+    /*!
+     * @brief to get the author of add-on
+     * @return Author name
+     */
     const std::string& Author() const { return m_author; }
+
+    /*!
+     * @brief The source URL of the add-on
+     * @return Source URL where add-on is from
+     */
     const std::string& Source() const { return m_source; }
+
+    /*!
+     * @brief Path where add-on is present
+     *
+     * Can be local or also repository URL's
+     *
+     * @return Path where add-on is
+     */
     const std::string& Path() const { return m_path; }
+
+    /*!
+     * @brief To get Path with icon file
+     *
+     * @return If a icon present a path to them, otherwise empty
+     */
     const std::string& Icon() const { return m_icon; }
+
+    /*!
+     * @brief To get a changelog from add-on
+     *
+     * Used to inform the user about changes
+     *
+     * @return Changelog text
+     */
     const std::string& ChangeLog() const { return m_changelog; }
+
+    /*!
+     * @brief To get a add-on fanart picture
+     *
+     * Is used as background on kodi's add-on window.
+     *
+     * @return Path with image who used as fanart
+     */
     const std::string& FanArt() const { return m_fanart; }
+
+    /*!
+     * @brief To get a list of available screenshots from add-on
+     *
+     * Used on kodi's add-on window to descripe a bit from add-on
+     *
+     * @return a list of screenshots if present
+     */
     const std::vector<std::string>& Screenshots() const { return m_screenshots; }
+
+    /*!
+     * @brief To get a disclaimer of warranties
+     *
+     * @return a disclaimer of addon
+     */
     const std::string& Disclaimer() const { return m_disclaimer; }
+
+    /*!
+     * @brief To get a list with dependencies related to this add-on
+     */
     const ADDONDEPS& GetDeps() const { return m_dependencies; }
+
+    /*!
+     * @brief To get broken parts
+     *
+     * @todo make description more detailed
+     */
     const std::string& Broken() const { return m_broken; }
+
+    /*!
+     * @brief To get install date of add-on
+     *
+     * @note this is only be set from add-on browser and not always present!
+     */
     const CDateTime& InstallDate() const { return m_installDate; }
+
+    /*!
+     * @brief To get last updated date of add-on
+     *
+     * @note this is only be set from add-on browser and not always present!
+     */
     const CDateTime& LastUpdated() const { return m_lastUpdated; }
+
+    /*!
+     * @brief To get the last used date of add-on
+     *
+     * @note this is only be set from add-on browser and not always present!
+     */
     const CDateTime& LastUsed() const { return m_lastUsed; }
+
+    /*!
+     * @brief The origin of add-on
+     *
+     * @todo make description more detailed
+     * @note this is only be set from add-on browser and not always present!
+     */
     const std::string& Origin() const { return m_origin; }
+
+    /*!
+     * @brief Size of the add-on package in Bytes
+     */
     uint64_t PackageSize() const { return m_packageSize; }
 
+    /*!
+     * @brief Get the library path where the add-on is present with his
+     * library/exe part.
+     *
+     * The library path can be a local and also for them on repository with
+     * URL to them.
+     *
+     * @return Path with lib where add-on is present, returns empty if no
+     * libname is defined.
+     */
     std::string LibPath() const;
 
+    /*!
+     * @brief Check the information about supported sub content
+     *
+     * @param[in] content Sub content type to check present
+     * @return true if present, otherwise false
+     */
     bool ProvidesSubContent(const SubContent& content) const
     {
       return content == UNKNOWN ? false : m_providedSubContent.count(content) > 0;
     }
 
+    /*!
+     * @brief To check addon contains several sub contents
+     *
+     * e.g. Music together with Video
+     *
+     * @return true if more as one is supported
+     */
     bool ProvidesSeveralSubContents() const
     {
       return m_providedSubContent.size() > 1;
@@ -238,6 +451,13 @@ namespace ADDON
   
     std::string SerializeMetadata();
     void DeserializeMetadata(const std::string& document);
+
+    /*!
+     * @brief Checks the information to match asked version
+     *
+     * @param[in] version Version to check
+     * @return true if add-on's version match asked version, otherwise false
+     */
     bool MeetsVersion(const AddonVersion &version) const;
 
     /*!
@@ -247,10 +467,12 @@ namespace ADDON
     static std::string TranslateType(TYPE type, bool pretty=false);
     static std::string TranslateIconType(TYPE type);
     static TYPE TranslateType(const std::string &string);
+    static SubContent TranslateSubContent(const std::string &content);
     //@}
 
-  /*private: So long public until all add-on types reworked to new way! */
+  private:
     friend class XBMCAddon::xbmcgui::WindowXML;
+    friend class KodiAPI::GUI::CAddonCallbacksGUI;
 
     bool m_usable;
 
@@ -278,6 +500,7 @@ namespace ADDON
     CDateTime m_lastUsed;
     std::string m_origin;
     uint64_t m_packageSize;
+    std::set<SubContent> m_providedSubContent;
 
     /*!
      * @brief Function to load data xml file to set all property values
@@ -288,17 +511,6 @@ namespace ADDON
      * @return true if successfully done, otherwise false
      */
     bool LoadAddonXML(const TiXmlElement* element, std::string addonXmlPath);
-
-    /*!
-     * @brief Parse the given xml element about the used platform library name.
-     *
-     * @note The returned library names depends on the OS where Kodi is compiled.
-     * @param[in] element The TinyXML element to read
-     * @return The string of used library e.g. 'library_linux' for Linux
-     */
-    static const char* GetPlatformLibraryName(const TiXmlElement* element);
-
-    static SubContent TranslateSubContent(const std::string &content);
   
     /*!
      * @brief Set the provided content for this plugin
@@ -309,7 +521,14 @@ namespace ADDON
      */
     void SetProvides(const std::string &content);
 
-    std::set<SubContent> m_providedSubContent;
+    /*!
+     * @brief Parse the given xml element about the used platform library name.
+     *
+     * @note The returned library names depends on the OS where Kodi is compiled.
+     * @param[in] element The TinyXML element to read
+     * @return The string of used library e.g. 'library_linux' for Linux
+     */
+    static const char* GetPlatformLibraryName(const TiXmlElement* element);
   };
 
 } /* namespace ADDON */

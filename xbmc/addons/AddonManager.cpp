@@ -769,7 +769,7 @@ std::shared_ptr<CAddon> CAddonMgr::CreateAddon(AddonInfoPtr addonInfo)
       break;
   }
 
-  return nullptr;
+  return std::make_shared<CAddon>(addonInfo);
 }
 
 //! @todo need to investigate, change and remove

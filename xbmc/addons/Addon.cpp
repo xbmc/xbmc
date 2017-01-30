@@ -69,7 +69,7 @@ CAddon::CAddon(AddonInfoPtr props)
 
 bool CAddon::MeetsVersion(const AddonVersion &version) const
 {
-  return m_addonInfo->m_minversion <= version && version <= m_addonInfo->m_version;
+  return m_addonInfo->MinVersion() <= version && version <= m_addonInfo->Version();
 }
 
 /**
@@ -86,7 +86,7 @@ bool CAddon::LoadSettings(bool bForce /* = false*/)
     return true;
   if (!m_hasSettings)
     return false;
-  std::string addonFileName = URIUtils::AddFileToFolder(m_addonInfo->m_path, "resources", "settings.xml");
+  std::string addonFileName = URIUtils::AddFileToFolder(m_addonInfo->Path(), "resources", "settings.xml");
 
   if (!m_addonXmlDoc.LoadFile(addonFileName))
   {
