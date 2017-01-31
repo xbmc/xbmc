@@ -22,7 +22,7 @@
 
 #if defined(TARGET_RASPBERRY_PI)
 
-#include "VideoSyncPi.h"
+#include "windowing/VideoSyncPi.h"
 #include "guilib/GraphicContext.h"
 #include "windowing/WindowingFactory.h"
 #include "utils/TimeUtils.h"
