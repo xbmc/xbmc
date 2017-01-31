@@ -35,12 +35,12 @@ typedef struct
   const char *out;
 } TestFiles;
 
-const TestFiles test_files[] = {{ "/path/to/image/file.jpg", "", "", "image://%2Fpath%2Fto%2Fimage%2Ffile.jpg/" },
-                                { "/path/to/image/file.jpg", "", "size=thumb", "image://%2Fpath%2Fto%2Fimage%2Ffile.jpg/transform?size=thumb" },
-                                { "/path/to/video/file.mkv", "video", "", "image://video@%2Fpath%2Fto%2Fvideo%2Ffile.mkv/" },
-                                { "/path/to/music/file.mp3", "music", "", "image://music@%2Fpath%2Fto%2Fmusic%2Ffile.mp3/" },
-                                { "image://%2Fpath%2Fto%2Fimage%2Ffile.jpg/", "", "", "image://%2Fpath%2Fto%2Fimage%2Ffile.jpg/" },
-                                { "image://%2Fpath%2Fto%2Fimage%2Ffile.jpg/transform?size=thumb", "", "size=thumb", "image://%2Fpath%2Fto%2Fimage%2Ffile.jpg/transform?size=thumb" }};
+const TestFiles test_files[] = {{ "/path/to/image/file.jpg", "", "", "image://%2fpath%2fto%2fimage%2ffile.jpg/" },
+                                { "/path/to/image/file.jpg", "", "size=thumb", "image://%2fpath%2fto%2fimage%2ffile.jpg/transform?size=thumb" },
+                                { "/path/to/video/file.mkv", "video", "", "image://video@%2fpath%2fto%2fvideo%2ffile.mkv/" },
+                                { "/path/to/music/file.mp3", "music", "", "image://music@%2fpath%2fto%2fmusic%2ffile.mp3/" },
+                                { "image://%2fpath%2fto%2fimage%2ffile.jpg/", "", "", "image://%2fpath%2fto%2fimage%2ffile.jpg/" },
+                                { "image://%2fpath%2fto%2fimage%2ffile.jpg/transform?size=thumb", "", "size=thumb", "image://%2fpath%2fto%2fimage%2ffile.jpg/transform?size=thumb" }};
 
 
 class TestTextureUtils :
