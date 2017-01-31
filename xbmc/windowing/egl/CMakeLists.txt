@@ -26,6 +26,8 @@ endif()
 if(MMAL_FOUND)
   list(APPEND SOURCES EGLNativeTypeRaspberryPI.cpp)
   list(APPEND HEADERS EGLNativeTypeRaspberryPI.h)
+  list(APPEND SOURCES VideoSyncPi.cpp)
+  list(APPEND HEADERS VideoSyncPi.h)
 endif()
 
 if(IMX_FOUND)

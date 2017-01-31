@@ -69,6 +69,9 @@ public:
 
   EGLDisplay    GetEGLDisplay();
   EGLContext    GetEGLContext();
+
+  // videosync
+  virtual std::unique_ptr<CVideoSync> GetVideoSync(void *clock) override;
 protected:
   virtual void  PresentRenderImpl(bool rendered);
   virtual void  SetVSyncImpl(bool enable);
