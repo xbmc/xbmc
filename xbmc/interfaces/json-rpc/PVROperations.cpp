@@ -180,19 +180,12 @@ JSONRPC_STATUS CPVROperations::GetBroadcastDetails(const std::string &method, IT
   if (!g_PVRManager.IsStarted())
     return FailedToExecute;
 
-  CEpgSearchFilter filter;
-  filter.SetUniqueBroadcastId(parameterObject["broadcastid"].asUnsignedInteger());
+  const CEpgInfoTagPtr epgTag = g_EpgContainer.GetTagById(CPVRChannelPtr(), parameterObject["broadcastid"].asUnsignedInteger());
 
-  CFileItemList broadcasts;
-  int resultSize = g_EpgContainer.GetEPGSearch(broadcasts, filter);
-
-  if (resultSize <= 0)
+  if (!epgTag)
     return InvalidParams;
-  else if (resultSize > 1)
-    return InternalError;
 
-  CFileItemPtr broadcast = broadcasts.Get(0);
-  HandleFileItem("broadcastid", false, "broadcastdetails", broadcast, parameterObject, parameterObject["properties"], result, false);
+  HandleFileItem("broadcastid", false, "broadcastdetails", CFileItemPtr(new CFileItem(epgTag)), parameterObject, parameterObject["properties"], result, false);
 
   return OK;
 }
