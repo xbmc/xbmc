@@ -59,7 +59,7 @@ void CGUIDialogButtonCapture::Show()
 
     Create();
 
-    bool bAccepted = CGUIDialogOK::ShowAndGetInput(CVariant{ 35013 }, CVariant{ GetDialogText() }); // "Fix skipping"
+    bool bAccepted = CGUIDialogOK::ShowAndGetInput(CVariant{ 35019 }, CVariant{ GetDialogText() }); // "Ignore input"
 
     StopThread(false);
 
