@@ -403,6 +403,9 @@ JSONRPC_STATUS CPVROperations::ToggleTimer(const std::string &method, ITransport
   else
   {
     timer = CPVRTimerInfoTag::CreateFromEpg(epgTag, timerrule);
+    if (!timer)
+      return InvalidParams;
+
     sentOkay = g_PVRTimers->AddTimer(timer);
   }
 
