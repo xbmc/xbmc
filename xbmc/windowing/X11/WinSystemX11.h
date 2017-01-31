@@ -64,6 +64,9 @@ public:
   virtual void Unregister(IDispResource *resource);
   bool HasCalibration(const RESOLUTION_INFO &resInfo) override;
 
+  // videosync
+  virtual std::unique_ptr<CVideoSync> GetVideoSync(void *clock) override;
+
   // Local to WinSystemX11 only
   Display*  GetDisplay() { return m_dpy; }
   void NotifyXRREvent();

@@ -19,38 +19,27 @@
  *
  */
 
-#if defined(HAS_GLX)
-
-#include "video/videosync/VideoSync.h"
-#include "system_gl.h"
-#include <X11/X.h>
-#include <X11/Xlib.h>
-#include <GL/glx.h>
+#include "windowing/VideoSync.h"
 #include "guilib/DispResource.h"
-#include "threads/Event.h"
 
-class CVideoSyncGLX : public CVideoSync, IDispResource
+class CVideoSyncDRM : public CVideoSync, IDispResource
 {
 public:
-  CVideoSyncGLX(CVideoReferenceClock *clock) : CVideoSync(clock) {};
+  CVideoSyncDRM(void *clock) : CVideoSync(clock) {};
   virtual bool Setup(PUPDATECLOCK func);
   virtual void Run(std::atomic<bool>& stop);
   virtual void Cleanup();
   virtual float GetFps();
-  virtual void OnLostDisplay();
   virtual void OnResetDisplay();
-
+  virtual void RefreshChanged();
 private:
-  int  (*m_glXWaitVideoSyncSGI) (int, int, unsigned int*);
-  int  (*m_glXGetVideoSyncSGI)  (unsigned int*);
-
-  static Display* m_Dpy;
-  XVisualInfo *m_vInfo;
-  Window       m_Window;
-  GLXContext   m_Context;
-  volatile bool m_displayLost;
-  volatile bool m_displayReset;
-  CEvent m_lostEvent;
+  static void EventHandler(int fd, unsigned int frame, unsigned int sec, unsigned int usec, void *data);
+  int m_fd;
+  volatile bool m_abort;
+  struct VblInfo
+  {
+    uint64_t start;
+    CVideoSyncDRM *videoSync;
+  };
 };
 
-#endif

@@ -72,6 +72,8 @@ public:
   virtual int GetNumScreens();    
   virtual int GetCurrentScreen();
   
+  virtual std::unique_ptr<CVideoSync> GetVideoSync(void *clock) override;
+
   bool InitDisplayLink(CVideoSyncIos *syncImpl);
   void DeinitDisplayLink(void);
   void OnAppFocusChange(bool focus);

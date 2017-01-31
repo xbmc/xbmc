@@ -20,8 +20,6 @@
 
 #include "system.h"
 
-#if defined(HAVE_X11)
-
 #include "WinSystemX11.h"
 #include "ServiceBroker.h"
 #include "settings/DisplaySettings.h"
@@ -41,6 +39,8 @@
 #include "windowing/WindowingFactory.h"
 #include "CompileInfo.h"
 #include "messaging/ApplicationMessenger.h"
+#include "VideoSyncDRM.h"
+#include "VideoSyncGLX.h"
 #include <X11/Xatom.h>
 #include <X11/extensions/Xrandr.h>
 
@@ -1071,4 +1071,13 @@ void CWinSystemX11::UpdateCrtc()
   g_graphicsContext.SetFPS(fps);
 }
 
+std::unique_ptr<CVideoSync> CWinSystemX11::GetVideoSync(void *clock)
+{
+#if defined(HAS_GLX)
+  std::unique_ptr<CVideoSync> pVSync(new CVideoSyncGLX(clock));
+#else
+  std::unique_ptr<CVideoSync> pVSync(new CVideoSyncDRM(clock));
 #endif
+  return pVSync;
+}
+

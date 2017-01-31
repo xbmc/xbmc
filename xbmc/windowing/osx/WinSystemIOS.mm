@@ -18,7 +18,6 @@
  *
  */
 
-#if defined(TARGET_DARWIN_IOS)
 //hack around problem with xbmc's typedef int BOOL
 // and obj-c's typedef unsigned char BOOL
 #define BOOL XBMC_BOOL 
@@ -26,7 +25,8 @@
 #undef BOOL
 
 #ifdef HAS_EGL
-#define BOOL XBMC_BOOL 
+#define BOOL XBMC_BOOL
+#include "VideoSyncIos.h"
 #include "WinSystemIOS.h"
 #include "utils/log.h"
 #include "filesystem/SpecialProtocol.h"
@@ -485,6 +485,11 @@ void* CWinSystemIOS::GetEAGLContextObj()
   return [g_xbmcController getEAGLContextObj];
 }
 
-#endif
+std::unique_ptr<CVideoSync> CWinSystemIOS::GetVideoSync(void *clock)
+{
+  std::unique_ptr<CVideoSync> pVSync(new CVideoSyncIos(clock));
+  return pVSync;
+}
 
 #endif
+

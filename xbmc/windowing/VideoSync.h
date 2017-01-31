@@ -21,12 +21,12 @@
 #include <atomic>
 
 class CVideoReferenceClock;
-typedef void (*PUPDATECLOCK)(int NrVBlanks, uint64_t time, CVideoReferenceClock *clock);
+typedef void (*PUPDATECLOCK)(int NrVBlanks, uint64_t time, void *clock);
 
 class CVideoSync
 {
 public:
-  CVideoSync(CVideoReferenceClock *clock) { m_refClock = clock; };
+  CVideoSync(void *clock) { m_refClock = clock; };
   virtual ~CVideoSync() {};
   virtual bool Setup(PUPDATECLOCK func) = 0;
   virtual void Run(std::atomic<bool>& stop) = 0;
@@ -36,5 +36,5 @@ public:
 protected:
   PUPDATECLOCK UpdateClock;
   float m_fps;
-  CVideoReferenceClock *m_refClock;
+  void *m_refClock;
 };

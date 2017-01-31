@@ -4,7 +4,9 @@ set(SOURCES GLContextEGL.cpp
             WinSystemX11.cpp
             WinSystemX11GLContext.cpp
             WinSystemX11GLESContext.cpp
-            XRandR.cpp)
+            XRandR.cpp
+            VideoSyncGLX.cpp
+            VideoSyncDRM.cpp)
 
 set(HEADERS GLContext.h
             GLContextEGL.h
@@ -12,6 +14,8 @@ set(HEADERS GLContext.h
             WinSystemX11.h
             WinSystemX11GLContext.h
             WinSystemX11GLESContext.h
-            XRandR.h)
+            XRandR.h
+            VideoSyncGLX.h
+            VideoSyncDRM.h)
 
 core_add_library(windowing_X11)

@@ -24,36 +24,9 @@
 #include "utils/TimeUtils.h"
 #include "threads/SingleLock.h"
 #include "guilib/GraphicContext.h"
-#include "video/videosync/VideoSync.h"
 #include "settings/Settings.h"
-
-#if defined(HAS_GLX)
-#include "video/videosync/VideoSyncGLX.h"
-#endif
-#if defined(HAVE_X11)
-#include "video/videosync/VideoSyncDRM.h"
+#include "windowing/VideoSync.h"
 #include "windowing/WindowingFactory.h"
-#elif defined(TARGET_RASPBERRY_PI)
-#include "video/videosync/VideoSyncPi.h"
-#elif defined(HAS_IMXVPU)
-#include "video/videosync/VideoSyncIMX.h"
-#endif
-#if defined(TARGET_WINDOWS)
-#include "video/videosync/VideoSyncD3D.h"
-#endif
-#if defined(TARGET_DARWIN_OSX)
-#include "video/videosync/VideoSyncOsx.h"
-#endif
-#if defined(TARGET_DARWIN_IOS)
-#include "video/videosync/VideoSyncIos.h"
-#endif
-#if defined(TARGET_ANDROID)
-#include "video/videosync/VideoSyncAndroid.h"
-#endif
-
-#ifdef TARGET_POSIX
-#include "linux/XTimeUtils.h"
-#endif
 
 CVideoReferenceClock::CVideoReferenceClock() : CThread("RefClock")
 {
@@ -70,8 +43,6 @@ CVideoReferenceClock::CVideoReferenceClock() : CThread("RefClock")
   m_MissedVblanks = 0;
   m_VblankTime = 0;
 
-  m_pVideoSync = nullptr;
-
   Start();
 }
 
@@ -87,12 +58,13 @@ void CVideoReferenceClock::Start()
     Create();
 }
 
-void CVideoReferenceClock::CBUpdateClock(int NrVBlanks, uint64_t time, CVideoReferenceClock *clock)
+void CVideoReferenceClock::CBUpdateClock(int NrVBlanks, uint64_t time, void *clock)
 {
   {
-    CSingleLock lock(clock->m_CritSection);
-    clock->m_VblankTime = time;
-    clock->UpdateClock(NrVBlanks, true);
+    CVideoReferenceClock *refClock = static_cast<CVideoReferenceClock*>(clock);
+    CSingleLock lock(refClock->m_CritSection);
+    refClock->m_VblankTime = time;
+    refClock->UpdateClock(NrVBlanks, true);
   }
 }
 
@@ -103,30 +75,7 @@ void CVideoReferenceClock::Process()
 
   while(!m_bStop)
   {
-    //set up the vblank clock
-#if defined(HAVE_X11)
-  std::string gpuvendor = g_Windowing.GetRenderVendor();
-  std::transform(gpuvendor.begin(), gpuvendor.end(), gpuvendor.begin(), ::tolower);
-  if ((gpuvendor.compare(0, 5, "intel") == 0 ||
-       gpuvendor.compare(0, 5, "x.org") == 0)) // AMD
-    m_pVideoSync = new CVideoSyncDRM(this);
-#if defined(HAS_GLX)
-  else
-    m_pVideoSync = new CVideoSyncGLX(this);
-#endif
-#elif defined(TARGET_WINDOWS)
-    m_pVideoSync = new CVideoSyncD3D(this);
-#elif defined(TARGET_DARWIN_OSX)
-    m_pVideoSync = new CVideoSyncOsx(this);
-#elif defined(TARGET_DARWIN_IOS)
-    m_pVideoSync = new CVideoSyncIos(this);
-#elif defined(TARGET_RASPBERRY_PI)
-    m_pVideoSync = new CVideoSyncPi(this);
-#elif defined(HAS_IMXVPU)
-    m_pVideoSync = new CVideoSyncIMX(this);
-#elif defined(TARGET_ANDROID)
-    m_pVideoSync = new CVideoSyncAndroid(this);
-#endif
+    m_pVideoSync = g_Windowing.GetVideoSync(this);
 
     if (m_pVideoSync)
     {
@@ -168,8 +117,7 @@ void CVideoReferenceClock::Process()
     if (m_pVideoSync)
     {
       m_pVideoSync->Cleanup();
-      delete m_pVideoSync;
-      m_pVideoSync = nullptr;
+      m_pVideoSync.reset();
     }
 
     if (!SetupSuccess)

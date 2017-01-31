@@ -74,6 +74,8 @@ public:
   virtual int GetNumScreens();
   virtual int GetCurrentScreen();
   virtual double GetCurrentRefreshrate() { return m_refreshRate; }
+
+  virtual std::unique_ptr<CVideoSync> GetVideoSync(void *clock) override;
   
   void        WindowChangedScreen();
 
@@ -88,9 +90,11 @@ public:
 
   std::string GetClipboardText(void);
 
+
 protected:
   void  HandlePossibleRefreshrateChange();
-  void* CreateWindowedContext(void* shareCtx);
+  void* CreateWindowe
+dContext(void* shareCtx);
   void* CreateFullScreenContext(int screen_index, void* shareCtx);
   void  GetScreenResolution(int* w, int* h, double* fps, int screenIdx);
   void  EnableVSync(bool enable); 
