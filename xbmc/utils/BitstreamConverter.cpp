@@ -213,6 +213,10 @@ CBitstreamParser::CBitstreamParser()
 {
 }
 
+CBitstreamParser::~CBitstreamParser()
+{
+}
+
 bool CBitstreamParser::FindIdrSlice(const uint8_t *buf, int buf_size)
 {
   if (!buf)
