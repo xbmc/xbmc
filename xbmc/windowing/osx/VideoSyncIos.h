@@ -20,13 +20,13 @@
  */
 
 #if defined(TARGET_DARWIN_IOS)
-#include "VideoSync.h"
+#include "windowing/VideoSync.h"
 #include "guilib/DispResource.h"
 
 class CVideoSyncIos : public CVideoSync, IDispResource
 {
 public:
-  CVideoSyncIos(CVideoReferenceClock *clock) : CVideoSync(clock), m_LastVBlankTime(0), m_abort(false){}
+  CVideoSyncIos(void *clock) : CVideoSync(clock), m_LastVBlankTime(0), m_abort(false){}
   
   // CVideoSync interface
   virtual bool Setup(PUPDATECLOCK func) override;

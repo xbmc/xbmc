@@ -24,7 +24,7 @@
 #include "utils/log.h"
 #include "VideoSyncIos.h"
 #include "utils/MathUtils.h"
-#include "video/VideoReferenceClock.h"
+#include "cores/VideoPlayer/VideoReferenceClock.h"
 #include "guilib/GraphicContext.h"
 #include "windowing/WindowingFactory.h"
 #include "utils/TimeUtils.h"

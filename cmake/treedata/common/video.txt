@@ -1,5 +1,4 @@
 xbmc/video           video
 xbmc/video/dialogs   video/dialogs
 xbmc/video/jobs      video/jobs
-xbmc/video/videosync video/sync
 xbmc/video/windows   video/windows

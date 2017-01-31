@@ -4,7 +4,8 @@ set(SOURCES WinEvents.cpp
 set(HEADERS WindowingFactory.h
             WinEvents.h
             WinSystem.h
-            XBMC_events.h)
+            XBMC_events.h
+            VideoSync.h)
 
 if (NOT MIR_FOUND)
   if(SDL_FOUND AND NOT X_FOUND)

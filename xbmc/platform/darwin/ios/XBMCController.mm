@@ -37,7 +37,6 @@
 #include "guilib/GUIControl.h"
 #include "input/Key.h"
 #include "windowing/WindowingFactory.h"
-#include "video/VideoReferenceClock.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 #include "Util.h"

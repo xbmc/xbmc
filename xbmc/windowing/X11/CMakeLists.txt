@@ -6,6 +6,8 @@ if (X_FOUND)
               WinSystemX11GLContext.cpp
               WinSystemX11GLESContext.cpp
               XRandR.cpp
+              VideoSyncGLX.cpp
+              VideoSyncDRM.cpp
               WinSystemX11.cpp)
 
   set(HEADERS GLContext.h
@@ -14,6 +16,8 @@ if (X_FOUND)
               WinSystemX11GLContext.h
               WinSystemX11GLESContext.h
               XRandR.h
+              VideoSyncGLX.h
+              VideoSyncDRM.h
               WinSystemX11.h)
 
   core_add_library(windowing_X11)
