@@ -25,7 +25,7 @@
 #if defined(HAVE_OMXLIB)
 
 #include "ServiceBroker.h"
-#include "video/VideoReferenceClock.h"
+#include "cores/VideoPlayer/VideoReferenceClock.h"
 #include "settings/Settings.h"
 
 #include "OMXClock.h"

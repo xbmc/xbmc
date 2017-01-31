@@ -21,7 +21,7 @@
 
 #if defined(TARGET_RASPBERRY_PI)
 
-#include "video/videosync/VideoSync.h"
+#include "windowing/VideoSync.h"
 #include "guilib/DispResource.h"
 
 class CVideoSyncPi : public CVideoSync, IDispResource
