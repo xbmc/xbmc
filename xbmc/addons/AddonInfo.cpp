@@ -289,7 +289,8 @@ CAddonInfo::CAddonInfo(std::string addonPath)
     m_type(ADDON_UNKNOWN),
     m_path(addonPath)
 {
-  auto addonXmlPath = CSpecialProtocol::TranslatePath(URIUtils::AddFileToFolder(m_path, "addon.xml"));
+  m_path = CSpecialProtocol::TranslatePath(addonPath);
+  auto addonXmlPath = URIUtils::AddFileToFolder(m_path, "addon.xml");
 
   CXBMCTinyXML xmlDoc;
   if (!xmlDoc.LoadFile(addonXmlPath))
