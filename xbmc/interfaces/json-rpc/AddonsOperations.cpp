@@ -37,35 +37,35 @@ JSONRPC_STATUS CAddonsOperations::GetAddons(const std::string &method, ITranspor
 {
   std::vector<TYPE> addonTypes;
   TYPE addonType = CAddonInfo::TranslateType(parameterObject["type"].asString());
-  CAddonInfo::SubContent content = CAddonInfo::TranslateSubContent(parameterObject["content"].asString());
+  TYPE content = CAddonInfo::TranslateSubContent(parameterObject["content"].asString());
   CVariant enabled = parameterObject["enabled"];
   CVariant installed = parameterObject["installed"];
 
   // ignore the "content" parameter if the type is specified but not a plugin or script
   if (addonType != ADDON_UNKNOWN && addonType != ADDON_PLUGIN && addonType != ADDON_SCRIPT)
-    content = CAddonInfo::UNKNOWN;
+    content = ADDON_UNKNOWN;
 
   bool contentFound = false;
   switch (addonType)
   {
   case ADDON_VIDEO:
-    content = CAddonInfo::VIDEO;
+    content = ADDON_VIDEO;
     contentFound = true;
     break;
   case ADDON_AUDIO:
-    content = CAddonInfo::AUDIO;
+    content = ADDON_AUDIO;
     contentFound = true;
     break;
   case ADDON_IMAGE:
-    content = CAddonInfo::IMAGE;
+    content = ADDON_IMAGE;
     contentFound = true;
     break;
   case ADDON_GAME:
-    content = CAddonInfo::GAME;
+    content = ADDON_GAME;
     contentFound = true;
     break;
   case ADDON_EXECUTABLE:
-    content = CAddonInfo::EXECUTABLE;
+    content = ADDON_EXECUTABLE;
     contentFound = true;
     break;
 

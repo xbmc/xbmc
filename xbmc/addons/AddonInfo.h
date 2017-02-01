@@ -73,15 +73,22 @@ namespace ADDON
     ADDON_RESOURCE_UISOUNDS,
     ADDON_RESOURCE_GAMES,
     ADDON_VFS,
-    ADDON_VIDEO, // virtual addon types
-    ADDON_AUDIO,
-    ADDON_IMAGE,
-    ADDON_EXECUTABLE,
-    ADDON_GAME,
     ADDON_SCRAPER_LIBRARY,
     ADDON_SCRIPT_LIBRARY,
     ADDON_SCRIPT_MODULE,
     ADDON_GAME_CONTROLLER,
+
+    /**
+     * @brief virtual addon types
+     */
+    //@{
+    ADDON_VIDEO,
+    ADDON_AUDIO,
+    ADDON_IMAGE,
+    ADDON_EXECUTABLE,
+    ADDON_GAME,
+    //@}
+
     ADDON_MAX
   } TYPE;
 
@@ -135,19 +142,6 @@ namespace ADDON
   class CAddonInfo : public CAddonExtensions
   {
   public:
-    /*!
-     * Sub content types who can supported from add-on
-     */
-    enum SubContent
-    {
-      UNKNOWN,
-      AUDIO,
-      IMAGE,
-      EXECUTABLE,
-      VIDEO,
-      GAME
-    };
-
     /*!
      * @brief Class constructor for local available addons where his addon.xml
      * is present.
@@ -433,9 +427,9 @@ namespace ADDON
      * @param[in] content Sub content type to check present
      * @return true if present, otherwise false
      */
-    bool ProvidesSubContent(const SubContent& content) const
+    bool ProvidesSubContent(const TYPE& content) const
     {
-      return content == UNKNOWN ? false : m_providedSubContent.count(content) > 0;
+      return content == ADDON_UNKNOWN ? false : m_providedSubContent.count(content) > 0;
     }
 
     /*!
@@ -468,7 +462,7 @@ namespace ADDON
     static std::string TranslateType(TYPE type, bool pretty=false);
     static std::string TranslateIconType(TYPE type);
     static TYPE TranslateType(const std::string &string);
-    static SubContent TranslateSubContent(const std::string &content);
+    static TYPE TranslateSubContent(const std::string &content);
     //@}
 
   private:
@@ -501,7 +495,7 @@ namespace ADDON
     CDateTime m_lastUsed;
     std::string m_origin;
     uint64_t m_packageSize;
-    std::set<SubContent> m_providedSubContent;
+    std::set<TYPE> m_providedSubContent;
 
     /*!
      * @brief Function to load data xml file to set all property values

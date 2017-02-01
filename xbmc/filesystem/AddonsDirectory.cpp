@@ -870,8 +870,8 @@ bool CAddonsDirectory::GetScriptsAndPlugins(const std::string &content, AddonInf
 {
   AddonInfos tempAddons;
 
-  CAddonInfo::SubContent type = CAddonInfo::TranslateSubContent(content);
-  if (type == CAddonInfo::UNKNOWN)
+  TYPE type = CAddonInfo::TranslateSubContent(content);
+  if (type == ADDON_UNKNOWN)
     return false;
 
   tempAddons = CAddonMgr::GetInstance().GetAddonInfos(true, ADDON_PLUGIN);
@@ -890,7 +890,7 @@ bool CAddonsDirectory::GetScriptsAndPlugins(const std::string &content, AddonInf
   }
   tempAddons.clear();
 
-  if (type == CAddonInfo::GAME)
+  if (type == ADDON_GAME)
   {
     tempAddons = CAddonMgr::GetInstance().GetAddonInfos(true, ADDON_GAMEDLL);
     for (auto& addon : tempAddons)

@@ -117,15 +117,15 @@ static int RunAddon(const std::vector<std::string>& params)
       }
 
       std::string cmd;
-      if (addon->ProvidesSubContent(CAddonInfo::VIDEO))
+      if (addon->ProvidesSubContent(ADDON_VIDEO))
         cmd = StringUtils::Format("ActivateWindow(Videos,plugin://%s%s,return)", addonid.c_str(), urlParameters.c_str());
-      else if (addon->ProvidesSubContent(CAddonInfo::AUDIO))
+      else if (addon->ProvidesSubContent(ADDON_AUDIO))
         cmd = StringUtils::Format("ActivateWindow(Music,plugin://%s%s,return)", addonid.c_str(), urlParameters.c_str());
-      else if (addon->ProvidesSubContent(CAddonInfo::EXECUTABLE))
+      else if (addon->ProvidesSubContent(ADDON_EXECUTABLE))
         cmd = StringUtils::Format("ActivateWindow(Programs,plugin://%s%s,return)", addonid.c_str(), urlParameters.c_str());
-      else if (addon->ProvidesSubContent(CAddonInfo::IMAGE))
+      else if (addon->ProvidesSubContent(ADDON_IMAGE))
         cmd = StringUtils::Format("ActivateWindow(Pictures,plugin://%s%s,return)", addonid.c_str(), urlParameters.c_str());
-      else if (addon->ProvidesSubContent(CAddonInfo::GAME))
+      else if (addon->ProvidesSubContent(ADDON_GAME))
         cmd = StringUtils::Format("ActivateWindow(Games,plugin://%s%s,return)", addonid.c_str(), urlParameters.c_str());
       else
         // Pass the script name (addonid) and all the parameters

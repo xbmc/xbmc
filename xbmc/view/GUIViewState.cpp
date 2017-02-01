@@ -571,9 +571,9 @@ CGUIViewStateFromItems::CGUIViewStateFromItems(const CFileItemList &items) : CGU
     AddonInfoPtr addon = CAddonMgr::GetInstance().GetInstalledAddonInfo(url.GetHostName(), ADDON_PLUGIN);
     if (addon)
     {
-      if (addon->ProvidesSubContent(CAddonInfo::VIDEO))
+      if (addon->ProvidesSubContent(ADDON_VIDEO))
         m_playlist = PLAYLIST_VIDEO;
-      else if (addon->ProvidesSubContent(CAddonInfo::AUDIO))
+      else if (addon->ProvidesSubContent(ADDON_AUDIO))
         m_playlist = PLAYLIST_MUSIC;
     }
   }

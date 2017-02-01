@@ -1017,7 +1017,7 @@ bool CGUIMediaWindow::OnClick(int iItem, const std::string &player)
       AddonInfoPtr addon = CAddonMgr::GetInstance().GetInstalledAddonInfo(url.GetHostName(), ADDON_PLUGIN);
       if (addon)
       {
-        if (addon->ProvidesSubContent(CAddonInfo::AUDIO))
+        if (addon->ProvidesSubContent(ADDON_AUDIO))
         {
           CFileItemList items;
           std::unique_ptr<CGUIViewState> state(CGUIViewState::GetViewState(GetID(), items));

@@ -750,20 +750,20 @@ bool CAddonInfo::MeetsVersion(const AddonVersion &version) const
   return m_minversion <= version && version <= m_version;
 }
 
-CAddonInfo::SubContent CAddonInfo::TranslateSubContent(const std::string &content)
+TYPE CAddonInfo::TranslateSubContent(const std::string &content)
 {
   if (content == "audio")
-    return CAddonInfo::AUDIO;
+    return ADDON_AUDIO;
   else if (content == "image")
-    return CAddonInfo::IMAGE;
+    return ADDON_IMAGE;
   else if (content == "executable")
-    return CAddonInfo::EXECUTABLE;
+    return ADDON_EXECUTABLE;
   else if (content == "video")
-    return CAddonInfo::VIDEO;
+    return ADDON_VIDEO;
   else if (content == "game")
-    return CAddonInfo::GAME;
+    return ADDON_GAME;
   else
-    return CAddonInfo::UNKNOWN;
+    return ADDON_UNKNOWN;
 }
 
 std::string CAddonInfo::LibPath() const
@@ -779,23 +779,18 @@ void CAddonInfo::SetProvides(const std::string &content)
   {
     for (auto provide : StringUtils::Split(content, ' '))
     {
-      SubContent content = TranslateSubContent(provide);
-      if (content != UNKNOWN)
+      TYPE content = TranslateSubContent(provide);
+      if (content != ADDON_UNKNOWN)
         m_providedSubContent.insert(content);
     }
   }
   if (m_mainType == ADDON_SCRIPT && m_providedSubContent.empty())
-    m_providedSubContent.insert(EXECUTABLE);
+    m_providedSubContent.insert(ADDON_EXECUTABLE);
 }
 
 bool CAddonInfo::IsType(TYPE type) const
 {
-  return ((type == m_mainType)
-       || (type == ADDON_VIDEO && ProvidesSubContent(VIDEO))
-       || (type == ADDON_AUDIO && ProvidesSubContent(AUDIO))
-       || (type == ADDON_IMAGE && ProvidesSubContent(IMAGE))
-       || (type == ADDON_GAME && ProvidesSubContent(GAME))
-       || (type == ADDON_EXECUTABLE && ProvidesSubContent(EXECUTABLE)));
+  return (m_mainType == type || ProvidesSubContent(type));
 }
 
 } /* namespace ADDON */
