@@ -44,6 +44,7 @@ namespace ADDON
 
     // addon settings
     virtual void SaveSettings();
+    virtual std::string GetSetting(const std::string& key);
 
     ADDON_STATUS Create(KODI_HANDLE firstKodiInstance);
     ADDON_STATUS Create(int type, void* funcTable, void* info);
@@ -58,6 +59,7 @@ namespace ADDON
 
   protected:
     bool Initialized() { return m_initialized; }
+    virtual bool LoadSettings();
     static uint32_t GetChildCount() { static uint32_t childCounter = 0; return childCounter++; }
     CAddonInterfaces* m_pHelpers;
     bool m_bIsChild;
@@ -71,6 +73,7 @@ namespace ADDON
     std::map<std::string, std::pair<int, KODI_HANDLE>> m_usedInstances;
 
     virtual ADDON_STATUS TransferSettings();
+    TiXmlElement MakeSetting(DllSetting& setting) const;
     bool CheckAPIVersion(int type);
 
     static void AddOnStatusCallback(void *userData, const ADDON_STATUS status, const char* msg);

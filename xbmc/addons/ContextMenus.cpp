@@ -33,7 +33,10 @@ using namespace ADDON;
 
 bool CAddonSettings::IsVisible(const CFileItem& item) const
 {
-  return item.HasAddonInfo() && item.GetAddonInfo()->HasSettings();
+  AddonPtr addon;
+  return item.HasAddonInfo()
+         && CAddonMgr::GetInstance().GetAddon(item.GetAddonInfo()->ID(), addon, ADDON_UNKNOWN)
+         && addon->HasSettings();
 }
 
 bool CAddonSettings::Execute(const CFileItemPtr& item) const
