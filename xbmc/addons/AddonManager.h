@@ -466,7 +466,7 @@ namespace ADDON
      *                      it becomes created.
      * @return The pointer of created add-on class
      */
-    static std::shared_ptr<CAddon> CreateAddon(AddonInfoPtr addonInfo);
+    static std::shared_ptr<CAddon> CreateAddon(AddonInfoPtr addonInfo, TYPE addonType);
 
     AddonInfoList m_installedAddons;
     AddonInfoList m_enabledAddons;

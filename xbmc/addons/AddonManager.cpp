@@ -296,7 +296,7 @@ bool CAddonMgr::GetAddons(VECADDONS &addons, const TYPE &type, bool enabledOnly/
 
   for (auto info : GetAddonInfos(enabledOnly, type))
   {
-    AddonPtr addon = CreateAddon(info);
+    AddonPtr addon = CreateAddon(info, type);
     if (addon)
     {
       // if the addon has a running instance, grab that
@@ -315,7 +315,7 @@ bool CAddonMgr::GetAddon(const std::string &addonId, AddonPtr &addon, const TYPE
 
   const AddonInfoPtr info = GetInstalledAddonInfo(addonId, type);
   if (info)
-    addon = CreateAddon(info);
+    addon = CreateAddon(info, type);
 
   if (addon)
   {
@@ -644,9 +644,12 @@ bool CAddonMgr::LoadManifest(std::set<std::string>& system, std::set<std::string
   return true;
 }
 
-std::shared_ptr<CAddon> CAddonMgr::CreateAddon(AddonInfoPtr addonInfo)
+std::shared_ptr<CAddon> CAddonMgr::CreateAddon(AddonInfoPtr addonInfo, TYPE addonType)
 {
-  switch (addonInfo->MainType())
+  if (addonType == ADDON_UNKNOWN)
+    addonType = addonInfo->MainType();
+
+  switch (addonType)
   {
     case ADDON_PLUGIN:
     case ADDON_SCRIPT:
