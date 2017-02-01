@@ -34,6 +34,56 @@
 namespace ADDON
 {
 
+typedef struct
+{
+  const char* name;
+  TYPE        type;
+  int         pretty;
+  const char* icon;
+} TypeMapping;
+
+static const TypeMapping types[] =
+  {{"unknown",                           ADDON_UNKNOWN,                 0, "" },
+   {"xbmc.metadata.scraper.albums",      ADDON_SCRAPER_ALBUMS,      24016, "DefaultAddonAlbumInfo.png" },
+   {"xbmc.metadata.scraper.artists",     ADDON_SCRAPER_ARTISTS,     24017, "DefaultAddonArtistInfo.png" },
+   {"xbmc.metadata.scraper.movies",      ADDON_SCRAPER_MOVIES,      24007, "DefaultAddonMovieInfo.png" },
+   {"xbmc.metadata.scraper.musicvideos", ADDON_SCRAPER_MUSICVIDEOS, 24015, "DefaultAddonMusicVideoInfo.png" },
+   {"xbmc.metadata.scraper.tvshows",     ADDON_SCRAPER_TVSHOWS,     24014, "DefaultAddonTvInfo.png" },
+   {"xbmc.metadata.scraper.library",     ADDON_SCRAPER_LIBRARY,     24083, "DefaultAddonInfoLibrary.png" },
+   {"xbmc.ui.screensaver",               ADDON_SCREENSAVER,         24008, "DefaultAddonScreensaver.png" },
+   {"xbmc.player.musicviz",              ADDON_VIZ,                 24010, "DefaultAddonVisualization.png" },
+   {"xbmc.python.pluginsource",          ADDON_PLUGIN,              24005, "" },
+   {"xbmc.python.script",                ADDON_SCRIPT,              24009, "" },
+   {"xbmc.python.weather",               ADDON_SCRIPT_WEATHER,      24027, "DefaultAddonWeather.png" },
+   {"xbmc.python.lyrics",                ADDON_SCRIPT_LYRICS,       24013, "DefaultAddonLyrics.png" },
+   {"xbmc.python.library",               ADDON_SCRIPT_LIBRARY,      24081, "DefaultAddonHelper.png" },
+   {"xbmc.python.module",                ADDON_SCRIPT_MODULE,       24082, "DefaultAddonLibrary.png" },
+   {"xbmc.subtitle.module",              ADDON_SUBTITLE_MODULE,     24012, "DefaultAddonSubtitles.png" },
+   {"kodi.context.item",                 ADDON_CONTEXT_ITEM,        24025, "DefaultAddonContextItem.png" },
+   {"kodi.game.controller",              ADDON_GAME_CONTROLLER,     35050, "DefaultAddonGame.png" },
+   {"xbmc.gui.skin",                     ADDON_SKIN,                  166, "DefaultAddonSkin.png" },
+   {"xbmc.webinterface",                 ADDON_WEB_INTERFACE,         199, "DefaultAddonWebSkin.png" },
+   {"xbmc.addon.repository",             ADDON_REPOSITORY,          24011, "DefaultAddonRepository.png" },
+   {"kodi.pvrclient",                    ADDON_PVRDLL,              24019, "DefaultAddonPVRClient.png" },
+   {"kodi.gameclient",                   ADDON_GAMEDLL,             35049, "DefaultAddonGame.png" },
+   {"kodi.peripheral",                   ADDON_PERIPHERALDLL,       35010, "DefaultAddonPeripheral.png" },
+   {"xbmc.addon.video",                  ADDON_VIDEO,                1037, "DefaultAddonVideo.png" },
+   {"xbmc.addon.audio",                  ADDON_AUDIO,                1038, "DefaultAddonMusic.png" },
+   {"xbmc.addon.image",                  ADDON_IMAGE,                1039, "DefaultAddonPicture.png" },
+   {"xbmc.addon.executable",             ADDON_EXECUTABLE,           1043, "DefaultAddonProgram.png" },
+   {"kodi.addon.game",                   ADDON_GAME,                35049, "DefaultAddonGame.png" },
+   {"kodi.audioencoder",                 ADDON_AUDIOENCODER,         200,  "DefaultAddonAudioEncoder.png" },
+   {"kodi.audiodecoder",                 ADDON_AUDIODECODER,         201,  "DefaultAddonAudioDecoder.png" },
+   {"xbmc.service",                      ADDON_SERVICE,             24018, "DefaultAddonService.png" },
+   {"kodi.resource.images",              ADDON_RESOURCE_IMAGES,     24035, "DefaultAddonImages.png" },
+   {"kodi.resource.language",            ADDON_RESOURCE_LANGUAGE,   24026, "DefaultAddonLanguage.png" },
+   {"kodi.resource.uisounds",            ADDON_RESOURCE_UISOUNDS,   24006, "DefaultAddonUISounds.png" },
+   {"kodi.resource.games",               ADDON_RESOURCE_GAMES,      35209, "DefaultAddonGame.png" },
+   {"kodi.adsp",                         ADDON_ADSPDLL,             24135, "DefaultAddonAudioDSP.png" },
+   {"kodi.inputstream",                  ADDON_INPUTSTREAM,         24048, "DefaultAddonInputstream.png" },
+   {"kodi.vfs",                          ADDON_VFS,                 39013, "DefaultAddonVfs.png" },
+  };
+
 bool CAddonExtensions::ParseExtension(const TiXmlElement* element)
 {
   const char* cstring;
@@ -161,60 +211,84 @@ void CAddonExtensions::Insert(std::string id, std::string value)
   m_values.push_back(std::pair<std::string, EXT_VALUE>(id, extension));
 }
 
+CAddonInstanceType::CAddonInstanceType(TYPE type, CAddonInfo* info, const TiXmlElement* child)
+{
+  m_type = type;
+  m_path = info->Path();
+
+  if (child)
+  {
+    // Get add-on library file name (if present)
+    const char* library = child->Attribute("library");
+    if (library == nullptr)
+      library = GetPlatformLibraryName(child);
+    if (library != nullptr)
+      m_libname = library;
+
+    if (!ParseExtension(child))
+    {
+      CLog::Log(LOGERROR, "CAddonInfo: addon.xml file doesn't contain a valid add-on extensions (%s)", info->ID().c_str());
+      return;
+    }
+    SetProvides(GetValue("provides").asString());
+  }
+}
+
+std::string CAddonInstanceType::LibPath() const
+{
+  if (m_libname.empty())
+    return "";
+  return URIUtils::AddFileToFolder(m_path, m_libname);
+}
+
+void CAddonInstanceType::SetProvides(const std::string &content)
+{
+  if (!content.empty())
+  {
+    for (auto provide : StringUtils::Split(content, ' '))
+    {
+      TYPE content = CAddonInfo::TranslateSubContent(provide);
+      if (content != ADDON_UNKNOWN)
+        m_providedSubContent.insert(content);
+    }
+  }
+  if (m_type == ADDON_SCRIPT && m_providedSubContent.empty())
+    m_providedSubContent.insert(ADDON_EXECUTABLE);
+}
+
+const char* CAddonInstanceType::GetPlatformLibraryName(const TiXmlElement* element)
+{
+  const char* libraryName;
+#if defined(TARGET_ANDROID)
+  libraryName = element->Attribute("library_android");
+#elif defined(TARGET_LINUX) || defined(TARGET_FREEBSD)
+#if defined(TARGET_FREEBSD)
+  libraryName = element->Attribute("library_freebsd");
+  if (libraryName == nullptr)
+#elif defined(TARGET_RASPBERRY_PI)
+  libraryName = element->Attribute("library_rbpi");
+  if (libraryName == nullptr)
+#endif
+  libraryName = element->Attribute("library_linux");
+#elif defined(TARGET_WINDOWS) && defined(HAS_DX)
+  libraryName = element->Attribute("library_windx");
+  if (libraryName == nullptr)
+    libraryName = element->Attribute("library_windows");
+#elif defined(TARGET_DARWIN)
+#if defined(TARGET_DARWIN_IOS)
+  libraryName = element->Attribute("library_ios");
+  if (libraryName == nullptr)
+#endif
+  libraryName = element->Attribute("library_osx");
+#endif
+
+  return libraryName;
+}
+
 /**
  * helper functions 
  *
  */
-
-typedef struct
-{
-  const char* name;
-  TYPE        type;
-  int         pretty;
-  const char* icon;
-} TypeMapping;
-
-static const TypeMapping types[] =
-  {{"unknown",                           ADDON_UNKNOWN,                 0, "" },
-   {"xbmc.metadata.scraper.albums",      ADDON_SCRAPER_ALBUMS,      24016, "DefaultAddonAlbumInfo.png" },
-   {"xbmc.metadata.scraper.artists",     ADDON_SCRAPER_ARTISTS,     24017, "DefaultAddonArtistInfo.png" },
-   {"xbmc.metadata.scraper.movies",      ADDON_SCRAPER_MOVIES,      24007, "DefaultAddonMovieInfo.png" },
-   {"xbmc.metadata.scraper.musicvideos", ADDON_SCRAPER_MUSICVIDEOS, 24015, "DefaultAddonMusicVideoInfo.png" },
-   {"xbmc.metadata.scraper.tvshows",     ADDON_SCRAPER_TVSHOWS,     24014, "DefaultAddonTvInfo.png" },
-   {"xbmc.metadata.scraper.library",     ADDON_SCRAPER_LIBRARY,     24083, "DefaultAddonInfoLibrary.png" },
-   {"xbmc.ui.screensaver",               ADDON_SCREENSAVER,         24008, "DefaultAddonScreensaver.png" },
-   {"xbmc.player.musicviz",              ADDON_VIZ,                 24010, "DefaultAddonVisualization.png" },
-   {"xbmc.python.pluginsource",          ADDON_PLUGIN,              24005, "" },
-   {"xbmc.python.script",                ADDON_SCRIPT,              24009, "" },
-   {"xbmc.python.weather",               ADDON_SCRIPT_WEATHER,      24027, "DefaultAddonWeather.png" },
-   {"xbmc.python.lyrics",                ADDON_SCRIPT_LYRICS,       24013, "DefaultAddonLyrics.png" },
-   {"xbmc.python.library",               ADDON_SCRIPT_LIBRARY,      24081, "DefaultAddonHelper.png" },
-   {"xbmc.python.module",                ADDON_SCRIPT_MODULE,       24082, "DefaultAddonLibrary.png" },
-   {"xbmc.subtitle.module",              ADDON_SUBTITLE_MODULE,     24012, "DefaultAddonSubtitles.png" },
-   {"kodi.context.item",                 ADDON_CONTEXT_ITEM,        24025, "DefaultAddonContextItem.png" },
-   {"kodi.game.controller",              ADDON_GAME_CONTROLLER,     35050, "DefaultAddonGame.png" },
-   {"xbmc.gui.skin",                     ADDON_SKIN,                  166, "DefaultAddonSkin.png" },
-   {"xbmc.webinterface",                 ADDON_WEB_INTERFACE,         199, "DefaultAddonWebSkin.png" },
-   {"xbmc.addon.repository",             ADDON_REPOSITORY,          24011, "DefaultAddonRepository.png" },
-   {"kodi.pvrclient",                    ADDON_PVRDLL,              24019, "DefaultAddonPVRClient.png" },
-   {"kodi.gameclient",                   ADDON_GAMEDLL,             35049, "DefaultAddonGame.png" },
-   {"kodi.peripheral",                   ADDON_PERIPHERALDLL,       35010, "DefaultAddonPeripheral.png" },
-   {"xbmc.addon.video",                  ADDON_VIDEO,                1037, "DefaultAddonVideo.png" },
-   {"xbmc.addon.audio",                  ADDON_AUDIO,                1038, "DefaultAddonMusic.png" },
-   {"xbmc.addon.image",                  ADDON_IMAGE,                1039, "DefaultAddonPicture.png" },
-   {"xbmc.addon.executable",             ADDON_EXECUTABLE,           1043, "DefaultAddonProgram.png" },
-   {"kodi.addon.game",                   ADDON_GAME,                35049, "DefaultAddonGame.png" },
-   {"kodi.audioencoder",                 ADDON_AUDIOENCODER,         200,  "DefaultAddonAudioEncoder.png" },
-   {"kodi.audiodecoder",                 ADDON_AUDIODECODER,         201,  "DefaultAddonAudioDecoder.png" },
-   {"xbmc.service",                      ADDON_SERVICE,             24018, "DefaultAddonService.png" },
-   {"kodi.resource.images",              ADDON_RESOURCE_IMAGES,     24035, "DefaultAddonImages.png" },
-   {"kodi.resource.language",            ADDON_RESOURCE_LANGUAGE,   24026, "DefaultAddonLanguage.png" },
-   {"kodi.resource.uisounds",            ADDON_RESOURCE_UISOUNDS,   24006, "DefaultAddonUISounds.png" },
-   {"kodi.resource.games",               ADDON_RESOURCE_GAMES,      35209, "DefaultAddonGame.png" },
-   {"kodi.adsp",                         ADDON_ADSPDLL,             24135, "DefaultAddonAudioDSP.png" },
-   {"kodi.inputstream",                  ADDON_INPUTSTREAM,         24048, "DefaultAddonInputstream.png" },
-   {"kodi.vfs",                          ADDON_VFS,                 39013, "DefaultAddonVfs.png" },
-  };
 
 std::string CAddonInfo::TranslateType(ADDON::TYPE type, bool pretty/*=false*/)
 {
@@ -253,35 +327,6 @@ std::string CAddonInfo::TranslateIconType(ADDON::TYPE type)
       return map.icon;
   }
   return "";
-}
-
-const char* CAddonInfo::GetPlatformLibraryName(const TiXmlElement* element)
-{
-  const char* libraryName;
-#if defined(TARGET_ANDROID)
-  libraryName = element->Attribute("library_android");
-#elif defined(TARGET_LINUX) || defined(TARGET_FREEBSD)
-#if defined(TARGET_FREEBSD)
-  libraryName = element->Attribute("library_freebsd");
-  if (libraryName == nullptr)
-#elif defined(TARGET_RASPBERRY_PI)
-  libraryName = element->Attribute("library_rbpi");
-  if (libraryName == nullptr)
-#endif
-  libraryName = element->Attribute("library_linux");
-#elif defined(TARGET_WINDOWS) && defined(HAS_DX)
-  libraryName = element->Attribute("library_windx");
-  if (libraryName == nullptr)
-    libraryName = element->Attribute("library_windows");
-#elif defined(TARGET_DARWIN)
-#if defined(TARGET_DARWIN_IOS)
-  libraryName = element->Attribute("library_ios");
-  if (libraryName == nullptr)
-#endif
-  libraryName = element->Attribute("library_osx");
-#endif
-
-  return libraryName;
 }
 
 CAddonInfo::CAddonInfo(std::string addonPath)
@@ -581,9 +626,9 @@ bool CAddonInfo::LoadAddonXML(const TiXmlElement* baseElement, std::string addon
         m_broken = element->GetText();
 
       /* Parse addon.xml "<language">...</language>" */
-      element = child->FirstChildElement("language");
+      /*element = child->FirstChildElement("language");
       if (element && element->GetText() != nullptr)
-        Insert("language", element->GetText());
+        Insert("language", element->GetText());*/
 
       /* Parse addon.xml "<noicon">...</noicon>" */
       if (m_icon.empty())
@@ -626,33 +671,28 @@ bool CAddonInfo::LoadAddonXML(const TiXmlElement* baseElement, std::string addon
     }
     else
     {
-      if (!ParseExtension(child))
+      TYPE type = TranslateType(point);
+      if (type == ADDON_UNKNOWN || type >= ADDON_MAX)
       {
-        CLog::Log(LOGERROR, "CAddonInfo: file '%s' doesn't contain a valid add-on extensions (%s)", addonXmlPath.c_str(), point.c_str());
+        CLog::Log(LOGERROR, "CAddonInfo: file '%s' doesn't contain a valid add-on type name (%s)", addonXmlPath.c_str(), point.c_str());
         return false;
       }
 
-      // Get add-on type
-      if (m_mainType == ADDON_UNKNOWN)
-      {
-        m_mainType = TranslateType(point);
-        if (m_mainType == ADDON_UNKNOWN || m_mainType >= ADDON_MAX)
-        {
-          CLog::Log(LOGERROR, "CAddonInfo: file '%s' doesn't contain a valid add-on type name (%s)", addonXmlPath.c_str(), point.c_str());
-          return false;
-        }
-
-        // Get add-on library file name (if present)
-        const char* library = child->Attribute("library");
-        if (library == nullptr)
-          library = GetPlatformLibraryName(child);
-        if (library != nullptr)
-          m_libname = library;
-      }
+      m_types.push_back(CAddonInstanceType(type, this, child));
     }
   }
 
-  SetProvides(GetValue("provides").asString());
+  /*
+   * If nothing is defined in addon.xml set this as unknown to have minimum one
+   * instance type present.
+   */
+  if (m_types.empty())
+  {
+    CAddonInstanceType instanceType(ADDON_UNKNOWN, this, nullptr);
+    m_types.push_back(instanceType);
+  }
+  
+  m_mainType = m_types[0].Type();
 
   return true;
 }
@@ -687,7 +727,7 @@ std::string CAddonInfo::SerializeMetadata()
   }
 
   variant["extrainfo"] = CVariant(CVariant::VariantTypeArray);
-  for (const auto& values : GetValues())
+  for (const auto& values : m_types[0]->GetValues())
   {
     CVariant info(CVariant::VariantTypeObject);
     for (auto value : values.second)
@@ -729,15 +769,19 @@ bool CAddonInfo::DeserializeMetadata(const std::string& document)
   }
   m_dependencies = std::move(deps);
 
+  CAddonInstanceType instanceType(m_mainType, this, nullptr);
+  
   for (auto it = variant["extrainfo"].begin_array(); it != variant["extrainfo"].end_array(); ++it)
   {
     /// @todo is more required on add-on's repository as the value "provides"
     if ((*it)["key"].asString() == "provides")
     {
-      SetProvides((*it)["value"].asString());
+      instanceType.SetProvides((*it)["value"].asString());
       break;
     }
   }
+
+  m_types.push_back(instanceType);
 
   if (m_id.empty() || m_mainType <= ADDON_UNKNOWN || m_mainType >= ADDON_MAX)
     return false;
@@ -748,6 +792,16 @@ bool CAddonInfo::DeserializeMetadata(const std::string& document)
 bool CAddonInfo::MeetsVersion(const AddonVersion &version) const
 {
   return m_minversion <= version && version <= m_version;
+}
+
+const CAddonInstanceType* CAddonInfo::AddonInstance(TYPE type) const
+{
+  for (auto& instanceType : m_types)
+  {
+    if (instanceType.Type() == type)
+      return &instanceType;
+  }
+  return nullptr;
 }
 
 TYPE CAddonInfo::TranslateSubContent(const std::string &content)
@@ -768,9 +822,9 @@ TYPE CAddonInfo::TranslateSubContent(const std::string &content)
 
 std::string CAddonInfo::LibPath() const
 {
-  if (m_libname.empty())
+  if (m_types.empty())
     return "";
-  return URIUtils::AddFileToFolder(m_path, m_libname);
+  return m_types[0].LibPath();
 }
 
 void CAddonInfo::SetProvides(const std::string &content)
@@ -791,6 +845,20 @@ void CAddonInfo::SetProvides(const std::string &content)
 bool CAddonInfo::IsType(TYPE type) const
 {
   return (m_mainType == type || ProvidesSubContent(type));
+}
+
+bool CAddonInfo::ProvidesSubContent(const TYPE& content) const
+{
+  if (content == ADDON_UNKNOWN)
+    return false;
+
+  for (auto instanceType : m_types)
+  {
+    if (instanceType.ProvidesSubContent(content))
+      return true;
+  }
+
+  return false;
 }
 
 } /* namespace ADDON */

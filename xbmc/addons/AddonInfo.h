@@ -132,6 +132,34 @@ namespace ADDON
   typedef std::map<std::string, std::pair<const AddonVersion, bool> > ADDONDEPS;
 
   /*!
+   */
+  class CAddonInstanceType : public CAddonExtensions
+  {
+  public:
+    CAddonInstanceType(TYPE type, CAddonInfo* info, const TiXmlElement* child);
+
+    const TYPE Type() const { return m_type; }
+    std::string LibPath() const;
+    bool ProvidesSubContent(const TYPE& content) const
+    {
+      return content == ADDON_UNKNOWN ? false : m_providedSubContent.count(content) > 0;
+    }
+
+    bool ProvidesSeveralSubContents() const
+    {
+      return m_providedSubContent.size() > 1;
+    }
+
+    const char* GetPlatformLibraryName(const TiXmlElement* element);
+    void SetProvides(const std::string &content);
+
+    TYPE m_type;
+    std::string m_path;
+    std::string m_libname;
+    std::set<TYPE> m_providedSubContent;
+  };
+
+  /*!
    * @brief Add-on Information class
    *
    * This class stores all available standard informations of add-ons. This can
@@ -139,9 +167,14 @@ namespace ADDON
    *
    * To generate the information becomes the addon.xml read.
    */
-  class CAddonInfo : public CAddonExtensions
+  class CAddonInfo
   {
   public:
+    const extValue GetValue(std::string id) const { return m_types[0].GetValue(id); }
+    const EXT_VALUES& GetValues() const { return m_types[0].GetValues(); }
+    const CAddonExtensions* GetElement(std::string id) const { return m_types[0].GetElement(id); }
+    const EXT_ELEMENTS GetElements(std::string id = "") const { return m_types[0].GetElements(id); }
+    
     /*!
      * @brief Class constructor for local available addons where his addon.xml
      * is present.
@@ -248,6 +281,10 @@ namespace ADDON
      */
     bool IsType(TYPE type) const;
 
+    const std::vector<CAddonInstanceType>& Types() const { return m_types; }
+
+    const CAddonInstanceType* AddonInstance(TYPE type) const;
+
     /*!
      * @brief To get version of add-on
      *
@@ -299,7 +336,7 @@ namespace ADDON
      *
      * @return the library name of add-on
      */
-    const std::string& Libname() const { return m_libname; }
+    const std::string& Libname() const { return m_types[0].m_libname; }
 
     /*!
      * @brief to get the author of add-on
@@ -427,10 +464,7 @@ namespace ADDON
      * @param[in] content Sub content type to check present
      * @return true if present, otherwise false
      */
-    bool ProvidesSubContent(const TYPE& content) const
-    {
-      return content == ADDON_UNKNOWN ? false : m_providedSubContent.count(content) > 0;
-    }
+    bool ProvidesSubContent(const TYPE& content) const;
 
     /*!
      * @brief To check addon contains several sub contents
@@ -473,13 +507,13 @@ namespace ADDON
 
     std::string m_id;
     TYPE m_mainType;
+    std::vector<CAddonInstanceType> m_types;
     AddonVersion m_version{"0.0.0"};
     AddonVersion m_minversion{"0.0.0"};
     std::string m_name;
     std::string m_license;
     std::string m_summary;
     std::string m_description;
-    std::string m_libname;
     std::string m_author;
     std::string m_source;
     std::string m_path;
@@ -515,15 +549,6 @@ namespace ADDON
      * @param content a space-separated list of content types
      */
     void SetProvides(const std::string &content);
-
-    /*!
-     * @brief Parse the given xml element about the used platform library name.
-     *
-     * @note The returned library names depends on the OS where Kodi is compiled.
-     * @param[in] element The TinyXML element to read
-     * @return The string of used library e.g. 'library_linux' for Linux
-     */
-    static const char* GetPlatformLibraryName(const TiXmlElement* element);
   };
 
 } /* namespace ADDON */
