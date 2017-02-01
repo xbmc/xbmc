@@ -286,7 +286,6 @@ const char* CAddonInfo::GetPlatformLibraryName(const TiXmlElement* element)
 
 CAddonInfo::CAddonInfo(std::string addonPath)
   : m_usable(false),
-    m_hasSettings(false),
     m_type(ADDON_UNKNOWN),
     m_path(addonPath)
 {
@@ -314,13 +313,10 @@ CAddonInfo::CAddonInfo(std::string addonPath)
     if (!m_icon.empty())
       m_icon = URIUtils::AddFileToFolder(m_path, m_icon);
   }
-  std::string addonFileName = URIUtils::AddFileToFolder(m_path, "resources", "settings.xml");
-  m_hasSettings = XFILE::CFile::Exists(addonFileName);
 }
 
 CAddonInfo::CAddonInfo(const TiXmlElement* baseElement, std::string addonRepoXmlPath)
   : m_usable(false),
-    m_hasSettings(false),
     m_type(ADDON_UNKNOWN)
 {
   m_usable = LoadAddonXML(baseElement, addonRepoXmlPath);
@@ -353,7 +349,6 @@ CAddonInfo::CAddonInfo(const std::string& id,
                        const std::string& changelog,
                        const std::string& origin)
   : m_usable(false),
-    m_hasSettings(false),
     m_id(id),
     m_type(ADDON_UNKNOWN),
     m_version(version),
@@ -379,7 +374,6 @@ CAddonInfo::CAddonInfo(const std::string& id,
 
 CAddonInfo::CAddonInfo(std::string id, TYPE type)
   : m_usable(true),
-    m_hasSettings(false),
     m_id(std::move(id)),
     m_type(type),
     m_packageSize(0)

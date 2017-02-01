@@ -204,8 +204,15 @@ bool CGUIDialogAddonSettings::ShowAndGetInput(const AddonInfoPtr &addonInfo, boo
   if (!g_passwordManager.CheckMenuLock(WINDOW_ADDON_BROWSER))
     return false;
 
-  if (addonInfo->HasSettings())
-  {
+  /*!
+   * @todo it use currently the bad way to get the real add-on class to identify
+   * the presence of settings.
+   * NEED TO IMPROVE ASAP!
+   */
+  AddonPtr addon;
+  CAddonMgr::GetInstance().GetAddon(addonInfo->ID(), addon, addonInfo->Type());
+  if (addon->HasSettings())
+  { 
     // Create the dialog
     CGUIDialogAddonSettings* pDialog = NULL;
     pDialog = (CGUIDialogAddonSettings*) g_windowManager.GetWindow(WINDOW_DIALOG_ADDON_SETTINGS);
@@ -213,13 +220,9 @@ bool CGUIDialogAddonSettings::ShowAndGetInput(const AddonInfoPtr &addonInfo, boo
       return false;
 
     // Set the heading
-    std::string heading = StringUtils::Format("$LOCALIZE[10004] - %s", addonInfo->Name().c_str()); // "Settings - AddonName"
+    std::string heading = StringUtils::Format("$LOCALIZE[10004] - %s", addon->Name().c_str()); // "Settings - AddonName"
     pDialog->m_strHeading = heading;
 
-    AddonPtr addon;
-    if (!CAddonMgr::GetInstance().GetAddon(addonInfo->ID(), addon, addonInfo->Type()))
-      return false;
-  
     pDialog->m_addon = addon;
     pDialog->m_saveToDisk = saveToDisk;
     pDialog->Open();
@@ -605,9 +608,6 @@ void CGUIDialogAddonSettings::CreateSections()
 
   // clear the category group
   FreeSections();
-  
-  if (m_addon->LoadSettings())
-    return;
 
   // grab our categories
   const TiXmlElement *category = m_addon->GetSettingsXML()->FirstChildElement("category");

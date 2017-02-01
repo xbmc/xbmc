@@ -216,13 +216,6 @@ namespace ADDON
     bool IsUsable() const { return m_usable; }
 
     /*!
-     * @brief To know add-on has a settings.xml present
-     *
-     * @return true if present, otherwise false
-     */
-    bool HasSettings() const { return m_hasSettings; }
-
-    /*!
      * @brief Parts used from ADDON::CAddonDatabase
      */
     //@{
@@ -483,7 +476,6 @@ namespace ADDON
     friend class KodiAPI::GUI::CAddonCallbacksGUI;
 
     bool m_usable;
-    bool m_hasSettings;
 
     std::string m_id;
     TYPE m_type;

@@ -29,7 +29,10 @@ extern "C" {
   ADDON_STATUS __declspec(dllexport) ADDON_Create(void *callbacks, void* props);
   void         __declspec(dllexport) ADDON_Destroy();
   ADDON_STATUS __declspec(dllexport) ADDON_GetStatus();
+  bool         __declspec(dllexport) ADDON_HasSettings();
+  unsigned int __declspec(dllexport) ADDON_GetSettings(ADDON_StructSetting ***sSet);
   ADDON_STATUS __declspec(dllexport) ADDON_SetSetting(const char *settingName, const void *settingValue);
+  void         __declspec(dllexport) ADDON_FreeSettings();
   __declspec(dllexport) const char* ADDON_GetTypeVersion(int type)
   {
     return kodi::addon::GetTypeVersion(type);
