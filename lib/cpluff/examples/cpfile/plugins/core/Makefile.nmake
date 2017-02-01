@@ -1,0 +1,25 @@
+# C-Pluff examples build system for MSVC
+# Copyright 2007 Johannes Lehtinen
+# This file is free software; Johannes Lehtinen gives unlimited permission
+# to copy, distribute and modify it.
+
+TOP = ..\..\..
+
+include ..\..\..\common.nmake
+
+pluginsdir = $(bindir)\cpfile\plugins
+plugindir = $(pluginsdir)\core
+
+libcore_OBJS = core.obj
+
+all-local: libcore.dll
+
+install-local: all-local
+	if not exist $(plugindir) mkdir $(plugindir)
+	for %f in (plugin.xml classifiers.xsd libcore.dll) do copy /y %f $(plugindir)
+
+clean-local:
+	for %f in ($(libcore_OBJS) libcore.*) do if exist %f del %f
+
+libcore.dll: $(libcore_OBJS)
+	cl /nologo /LD /MD /Fe$@ $(libcore_OBJS) $(cplibdir)\libcpluff.lib

@@ -29,7 +29,19 @@ namespace ADDON
 class CLanguageResource : public CResource
 {
 public:
-  CLanguageResource(AddonInfoPtr addonInfo);
+  static std::unique_ptr<CLanguageResource> FromExtension(AddonProps props, const cp_extension_t* ext);
+
+  explicit CLanguageResource(AddonProps props) : CResource(std::move(props)), m_forceUnicodeFont(false) {};
+
+  CLanguageResource(AddonProps props,
+      const CLocale& locale,
+      const std::string& charsetGui,
+      bool forceUnicodeFont,
+      const std::string& charsetSubtitle,
+      const std::string& dvdLanguageMenu,
+      const std::string& dvdLanguageAudio,
+      const std::string& dvdLanguageSubtitle,
+      const std::set<std::string>& sortTokens);
 
   virtual bool IsInUse() const;
 
@@ -52,7 +64,7 @@ public:
   static std::string GetAddonId(const std::string& locale);
 
   static bool FindLegacyLanguage(const std::string &locale, std::string &legacyLanguage);
-  static bool FindLanguageAddonByName(const std::string &legacyLanguage, std::string &addonId, const AddonInfos &languageAddons = AddonInfos());
+  static bool FindLanguageAddonByName(const std::string &legacyLanguage, std::string &addonId, const VECADDONS &languageAddons = VECADDONS());
 
 private:
   CLocale m_locale;

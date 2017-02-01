@@ -1,0 +1,7 @@
+Installed extensions:
+  IDENTIFIER                       NAME
+  maximal.ext1                     Extension 1
+  maximal.<anonymous>              
+  maximal.<anonymous>              Extension 3
+  maximal.ext2                     
+C-Pluff Console > 

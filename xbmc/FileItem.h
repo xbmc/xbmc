@@ -30,7 +30,7 @@
 #include <utility>
 #include <vector>
 
-#include "addons/Addon.h"
+#include "addons/IAddon.h"
 #include "epg/EpgTypes.h"
 #include "guilib/GUIListItem.h"
 #include "GUIPassword.h"
@@ -116,7 +116,7 @@ public:
   CFileItem(const PVR::CPVRRecordingPtr& record);
   CFileItem(const PVR::CPVRTimerInfoTagPtr& timer);
   CFileItem(const CMediaSource& share);
-  CFileItem(const ADDON::AddonInfoPtr addonInfo);
+  CFileItem(std::shared_ptr<const ADDON::IAddon> addonInfo);
   CFileItem(const EventPtr& eventLogEntry);
 
   virtual ~CFileItem(void);
@@ -364,7 +364,7 @@ public:
   }
 
   bool HasAddonInfo() const { return m_addonInfo != nullptr; }
-  const ADDON::AddonInfoPtr GetAddonInfo() const { return m_addonInfo; }
+  const std::shared_ptr<const ADDON::IAddon> GetAddonInfo() const { return m_addonInfo; }
 
   inline bool HasGameInfoTag() const
   {
@@ -574,7 +574,7 @@ private:
   PVR::CPVRTimerInfoTagPtr m_pvrTimerInfoTag;
   PVR::CPVRRadioRDSInfoTagPtr m_pvrRadioRDSInfoTag;
   CPictureInfoTag* m_pictureInfoTag;
-  ADDON::AddonInfoPtr m_addonInfo;
+  std::shared_ptr<const ADDON::IAddon> m_addonInfo;
   GAME::CGameInfoTag* m_gameInfoTag;
   EventPtr m_eventLogEntry;
   bool m_bIsAlbum;

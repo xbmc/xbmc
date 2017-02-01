@@ -32,6 +32,7 @@
 #include "Util.h"
 #include "addons/AddonManager.h"
 #include "addons/GUIDialogAddonSettings.h"
+#include "addons/PluginSource.h"
 #if defined(TARGET_ANDROID)
 #include "platform/android/activity/XBMCApp.h"
 #endif
@@ -1011,10 +1012,11 @@ bool CGUIMediaWindow::OnClick(int iItem, const std::string &player)
     if (m_vecItems->IsPlugin())
     {
       CURL url(m_vecItems->GetPath());
-      AddonInfoPtr addon = CAddonMgr::GetInstance().GetInstalledAddonInfo(url.GetHostName(), ADDON_PLUGIN);
-      if (addon)
+      AddonPtr addon;
+      if (CAddonMgr::GetInstance().GetAddon(url.GetHostName(),addon))
       {
-        if (addon->ProvidesSubContent(CAddonInfo::AUDIO))
+        PluginPtr plugin = std::dynamic_pointer_cast<CPluginSource>(addon);
+        if (plugin && plugin->Provides(CPluginSource::AUDIO))
         {
           CFileItemList items;
           std::unique_ptr<CGUIViewState> state(CGUIViewState::GetViewState(GetID(), items));

@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<plugin id="missingdep">
+	<requires>
+		<import plugin="nonexisting"/>
+	</requires>
+</plugin>

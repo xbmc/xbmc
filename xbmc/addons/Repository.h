@@ -44,14 +44,16 @@ namespace ADDON
 
     typedef std::vector<DirInfo> DirList;
 
-    CRepository(AddonInfoPtr addonInfo);
+    static std::unique_ptr<CRepository> FromExtension(AddonProps props, const cp_extension_t* ext);
+
+    explicit CRepository(AddonProps props) : CAddon(std::move(props)) {};
+    CRepository(AddonProps props, DirList dirs);
 
     /*!
-     * @brief Get the md5 hash for an addon.
-     *
-     * @param[in] addonPath the addon in question.
-     * @param[out] checksum the calculated checksum of addon
-     * @return true if successful done, otherwise false
+     * \brief Get the md5 hash for an addon.
+     * \param[in] addonPath the addon in question.
+     * \param[out] checksum the calculated checksum of addon
+     * \return true if successful done, otherwise false
      */
     bool GetAddonHash(const std::string& addonPath, std::string& checksum) const;
 
@@ -62,22 +64,11 @@ namespace ADDON
       STATUS_ERROR
     };
 
-    FetchStatus FetchIfChanged(const std::string& oldChecksum, std::string& checksum, AddonInfos& addons) const;
+    FetchStatus FetchIfChanged(const std::string& oldChecksum, std::string& checksum, VECADDONS& addons) const;
 
   private:
-    /*!
-     * @brief Parse a repository XML file for addons and load their descriptors
-     * A repository XML is essentially a concatenated list of addon descriptors.
-     *
-     * @param[in] repo The repository info.
-     * @param[in] xml The XML document from repository.
-     * @param[out] addonInfos returned list of addon properties.
-     * @return true if the repository XML file is parsed, false otherwise.
-     */
-    static bool AddonsFromRepoXML(const CRepository::DirInfo& repo, const std::string& xml, AddonInfos& addonInfos);
-
     static bool FetchChecksum(const std::string& url, std::string& checksum) noexcept;
-    static bool FetchIndex(const DirInfo& repo, AddonInfos& addons) noexcept;
+    static bool FetchIndex(const DirInfo& repo, VECADDONS& addons) noexcept;
 
     DirList m_dirs;
   };

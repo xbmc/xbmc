@@ -26,7 +26,8 @@
 #include <vector>
 
 #include "addons/AudioDecoder.h"
-#include "addons/AddonManager.h"
+#include "addons/BinaryAddonCache.h"
+#include "addons/IAddon.h"
 #include "Application.h"
 #include "ServiceBroker.h"
 #include "filesystem/File.h"
@@ -1424,10 +1425,14 @@ std::string CAdvancedSettings::GetMusicExtensions() const
 {
   std::string result(m_musicExtensions);
 
-  for (auto addon : CAddonMgr::GetInstance().GetAddonInfos(true, ADDON_AUDIODECODER))
+  VECADDONS codecs;
+  CBinaryAddonCache &addonCache = CServiceBroker::GetBinaryAddonCache();
+  addonCache.GetAddons(codecs, ADDON_AUDIODECODER);
+  for (size_t i=0;i<codecs.size();++i)
   {
+    std::shared_ptr<CAudioDecoder> dec(std::static_pointer_cast<CAudioDecoder>(codecs[i]));
     result += '|';
-    result += addon->GetValue("@extension").asString();
+    result += dec->GetExtensions();
   }
 
   return result;

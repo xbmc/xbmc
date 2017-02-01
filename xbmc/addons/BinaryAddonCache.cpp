@@ -60,7 +60,7 @@ void CBinaryAddonCache::GetAddons(VECADDONS& addons, const TYPE& type)
 
   for (auto &addon : myAddons)
   {
-    if (CAddonMgr::GetInstance().IsAddonEnabled(addon->ID()))
+    if (!CAddonMgr::GetInstance().IsAddonDisabled(addon->ID()))
       addons.emplace_back(std::move(addon));
   }
 }
@@ -102,7 +102,7 @@ void CBinaryAddonCache::Update()
   for (auto &addonType : m_addonsToCache)
   {
     VECADDONS addons;
-    CAddonMgr::GetInstance().GetAddons(addons, addonType, false);
+    CAddonMgr::GetInstance().GetInstalledAddons(addons, addonType);
     addonmap.insert(AddonMap::value_type(addonType, addons));
   }
 

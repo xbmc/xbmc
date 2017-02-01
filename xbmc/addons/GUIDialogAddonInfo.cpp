@@ -171,7 +171,7 @@ void CGUIDialogAddonInfo::UpdateControls()
     return;
 
   bool isInstalled = NULL != m_localAddon.get();
-  m_addonEnabled = m_localAddon && CAddonMgr::GetInstance().IsAddonEnabled(m_localAddon->ID());
+  m_addonEnabled = m_localAddon && !CAddonMgr::GetInstance().IsAddonDisabled(m_localAddon->ID());
   bool canDisable = isInstalled && CAddonMgr::GetInstance().CanAddonBeDisabled(m_localAddon->ID());
   bool canInstall = !isInstalled && m_item->GetAddonInfo()->Broken().empty();
   bool canUninstall = m_localAddon && CAddonMgr::GetInstance().CanUninstall(m_localAddon);
@@ -198,20 +198,11 @@ void CGUIDialogAddonInfo::UpdateControls()
       !CAddonMgr::GetInstance().IsBlacklisted(m_localAddon->ID()));
   SET_CONTROL_LABEL(CONTROL_BTN_AUTOUPDATE, 21340);
 
-  /*!
-   * @todo it use currently the bad way to get the real add-on class to identify
-   * the presence of settings.
-   * NEED TO IMPROVE ASAP!
-   */
-  AddonPtr addon;
-  if (isInstalled)
-    CAddonMgr::GetInstance().GetAddon(m_localAddon->ID(), addon, m_localAddon->Type());
-
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_SELECT, m_addonEnabled && (CanOpen() ||
-      CanRun() || (CanUse() && !addon->IsInUse())));
+      CanRun() || (CanUse() && !m_localAddon->IsInUse())));
   SET_CONTROL_LABEL(CONTROL_BTN_SELECT, CanUse() ? 21480 : (CanOpen() ? 21478 : 21479));
 
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_SETTINGS, isInstalled && addon->HasSettings());
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_SETTINGS, isInstalled && m_localAddon->HasSettings());
 
   CFileItemList items;
   for (const auto& screenshot : m_item->GetAddonInfo()->Screenshots())
@@ -406,12 +397,15 @@ bool CGUIDialogAddonInfo::PromptIfDependency(int heading, int line2)
   if (!m_localAddon)
     return false;
 
+  VECADDONS addons;
   std::vector<std::string> deps;
-  for (auto addon : CAddonMgr::GetInstance().GetAddonInfos(true, ADDON_UNKNOWN))
+  CAddonMgr::GetInstance().GetAddons(addons);
+  for (VECADDONS::const_iterator it  = addons.begin();
+       it != addons.end();++it)
   {
-    ADDONDEPS::const_iterator i = addon->GetDeps().find(m_localAddon->ID());
-    if (i != addon->GetDeps().end() && !i->second.second) // non-optional dependency
-      deps.push_back(addon->Name());
+    ADDONDEPS::const_iterator i = (*it)->GetDeps().find(m_localAddon->ID());
+    if (i != (*it)->GetDeps().end() && !i->second.second) // non-optional dependency
+      deps.push_back((*it)->Name());
   }
 
   if (!deps.empty())
@@ -497,6 +491,6 @@ bool CGUIDialogAddonInfo::SetItem(const CFileItemPtr& item)
 
   m_item = item;
   m_localAddon.reset();
-  m_localAddon = CAddonMgr::GetInstance().GetInstalledAddonInfo(item->GetAddonInfo()->ID());
+  CAddonMgr::GetInstance().GetAddon(item->GetAddonInfo()->ID(), m_localAddon, ADDON_UNKNOWN, false);
   return true;
 }

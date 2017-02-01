@@ -31,77 +31,95 @@ namespace ADDON
 {
 
 void CContextMenuAddon::ParseMenu(
-    const CAddonExtensions* elem,
+    const AddonProps& props,
+    cp_cfg_element_t* elem,
     const std::string& parent,
-    int& anonGroupCount)
+    int& anonGroupCount,
+    std::vector<CContextMenuItem>& items)
 {
-  std::string menuId = elem->GetValue("@id").asString();
-  std::string menuLabel = elem->GetValue("label").asString();
+  auto menuId = CAddonMgr::GetInstance().GetExtValue(elem, "@id");
+  auto menuLabel = CAddonMgr::GetInstance().GetExtValue(elem, "label");
   if (StringUtils::IsNaturalNumber(menuLabel))
-    menuLabel = g_localizeStrings.GetAddonString(AddonInfo()->ID(), atoi(menuLabel.c_str()));
+    menuLabel = g_localizeStrings.GetAddonString(props.id, atoi(menuLabel.c_str()));
 
   if (menuId.empty())
   {
     //anonymous group. create a new unique internal id.
     std::stringstream ss;
-    ss << AddonInfo()->ID() << ++anonGroupCount;
+    ss << props.id << ++anonGroupCount;
     menuId = ss.str();
   }
 
-  m_items.push_back(CContextMenuItem::CreateGroup(menuLabel, parent, menuId, AddonInfo()->ID()));
+  items.push_back(CContextMenuItem::CreateGroup(menuLabel, parent, menuId, props.id));
 
-  for (const auto subMenu : elem->GetElements("menu"))
-    ParseMenu(&subMenu.second, menuId, anonGroupCount);
+  ELEMENTS subMenus;
+  if (CAddonMgr::GetInstance().GetExtElements(elem, "menu", subMenus))
+    for (const auto& subMenu : subMenus)
+      ParseMenu(props, subMenu, menuId, anonGroupCount, items);
 
-  for (const auto element : elem->GetElements("item"))
+  ELEMENTS elems;
+  if (CAddonMgr::GetInstance().GetExtElements(elem, "item", elems))
   {
-    std::string visCondition = element.second.GetValue("visible").asString();
-    std::string library = element.second.GetValue("@library").asString();
-    std::string label = element.second.GetValue("label").asString();
-    if (StringUtils::IsNaturalNumber(label))
-      label = g_localizeStrings.GetAddonString(AddonInfo()->ID(), atoi(label.c_str()));
-
-    if (!label.empty() && !library.empty() && !visCondition.empty())
+    for (const auto& elem : elems)
     {
-      auto menu = CContextMenuItem::CreateItem(label, menuId,
-          URIUtils::AddFileToFolder(AddonInfo()->Path(), library), visCondition, AddonInfo()->ID());
-      m_items.push_back(menu);
+      auto visCondition = CAddonMgr::GetInstance().GetExtValue(elem, "visible");
+      auto library = CAddonMgr::GetInstance().GetExtValue(elem, "@library");
+      auto label = CAddonMgr::GetInstance().GetExtValue(elem, "label");
+      if (StringUtils::IsNaturalNumber(label))
+        label = g_localizeStrings.GetAddonString(props.id, atoi(label.c_str()));
+
+      if (!label.empty() && !library.empty() && !visCondition.empty())
+      {
+        auto menu = CContextMenuItem::CreateItem(label, menuId,
+            URIUtils::AddFileToFolder(props.path, library), visCondition, props.id);
+        items.push_back(menu);
+      }
     }
   }
 }
 
-CContextMenuAddon::CContextMenuAddon(AddonInfoPtr addonInfo)
-  : CAddon(addonInfo)
+std::unique_ptr<CContextMenuAddon> CContextMenuAddon::FromExtension(AddonProps props, const cp_extension_t* ext)
 {
-  const CAddonExtensions* menu = AddonInfo()->GetElement("menu");
+  std::vector<CContextMenuItem> items;
+
+  cp_cfg_element_t* menu = CAddonMgr::GetInstance().GetExtElement(ext->configuration, "menu");
   if (menu)
   {
     int tmp = 0;
-    ParseMenu(menu, "", tmp);
+    ParseMenu(props, menu, "", tmp, items);
   }
   else
   {
     //backwards compatibility. add first item definition
-    const CAddonExtensions* elem = AddonInfo()->GetElement("item");
-    if (elem)
+    ELEMENTS elems;
+    if (CAddonMgr::GetInstance().GetExtElements(ext->configuration, "item", elems))
     {
-      std::string visCondition = elem->GetValue("visible").asString();
+      cp_cfg_element_t *elem = elems[0];
+
+      std::string visCondition = CAddonMgr::GetInstance().GetExtValue(elem, "visible");
       if (visCondition.empty())
         visCondition = "false";
 
-      std::string parent = elem->GetValue("parent").asString() == "kodi.core.manage"
+      std::string parent = CAddonMgr::GetInstance().GetExtValue(elem, "parent") == "kodi.core.manage"
           ? CContextMenuManager::MANAGE.m_groupId : CContextMenuManager::MAIN.m_groupId;
 
-      auto label = elem->GetValue("label").asString();
+      auto label = CAddonMgr::GetInstance().GetExtValue(elem, "label");
       if (StringUtils::IsNaturalNumber(label))
-        label = g_localizeStrings.GetAddonString(AddonInfo()->ID(), atoi(label.c_str()));
+        label = g_localizeStrings.GetAddonString(props.id, atoi(label.c_str()));
 
       CContextMenuItem menuItem = CContextMenuItem::CreateItem(label, parent,
-          URIUtils::AddFileToFolder(AddonInfo()->Path(), AddonInfo()->Libname()), visCondition, AddonInfo()->ID());
+          URIUtils::AddFileToFolder(props.path, props.libname), visCondition, props.id);
 
-      m_items.push_back(menuItem);
+      items.push_back(menuItem);
     }
   }
+
+  return std::unique_ptr<CContextMenuAddon>(new CContextMenuAddon(std::move(props), std::move(items)));
+}
+
+CContextMenuAddon::CContextMenuAddon(AddonProps props, std::vector<CContextMenuItem> items)
+    : CAddon(std::move(props)), m_items(std::move(items))
+{
 }
 
 }

@@ -21,11 +21,15 @@
 namespace ADDON
 {
 
-CAudioEncoder::CAudioEncoder(AddonInfoPtr addonInfo)
-  : CAddonDll(addonInfo),
-    m_context(nullptr)
+std::unique_ptr<CAudioEncoder> CAudioEncoder::FromExtension(AddonProps props, const cp_extension_t* ext)
 {
-  m_extension = AddonInfo()->GetValue("@extension").asString();
+  std::string extension = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@extension");
+  return std::unique_ptr<CAudioEncoder>(new CAudioEncoder(std::move(props), std::move(extension)));
+}
+
+CAudioEncoder::CAudioEncoder(AddonProps props, std::string _extension)
+    : CAddonDll(std::move(props)), extension(std::move(_extension)), m_context(nullptr)
+{
 }
 
 bool CAudioEncoder::Create()

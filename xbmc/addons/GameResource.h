@@ -29,8 +29,10 @@ namespace ADDON
 class CGameResource : public CResource
 {
 public:
-  CGameResource(AddonInfoPtr addonInfo);
+  CGameResource(AddonProps props);
   virtual ~CGameResource() = default;
+
+  static std::unique_ptr<CGameResource> FromExtension(AddonProps props, const cp_extension_t* ext);
 
   // implementation of CResource
   virtual bool IsAllowed(const std::string& file) const override { return true; }

@@ -47,7 +47,7 @@ namespace XFILE
      \param addons the list of addons to fill with scripts and plugin content
      \return true if content is valid, false if it's invalid.
      */
-    static bool GetScriptsAndPlugins(const std::string &content, ADDON::AddonInfos &addons);
+    static bool GetScriptsAndPlugins(const std::string &content, ADDON::VECADDONS &addons);
 
     /*! \brief Fetch scripts and plugins of a given content type
      \param content the content type to fetch
@@ -56,8 +56,8 @@ namespace XFILE
      */
     static bool GetScriptsAndPlugins(const std::string &content, CFileItemList &items);
 
-    static void GenerateAddonListing(const CURL &path, const ADDON::AddonInfos& addons, CFileItemList &items, const std::string label);
-    static CFileItemPtr FileItemFromAddonInfo(const ADDON::AddonInfoPtr &addonInfo, const std::string& path, bool folder = false);
+    static void GenerateAddonListing(const CURL &path, const ADDON::VECADDONS& addons, CFileItemList &items, const std::string label);
+    static CFileItemPtr FileItemFromAddon(const ADDON::AddonPtr &addon, const std::string& path, bool folder = false);
   
     /*! \brief Returns true if `path` is a path or subpath of the repository directory, otherwise false */
     static bool IsRepoDirectory(const CURL& path);

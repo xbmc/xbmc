@@ -101,7 +101,7 @@ namespace XBMCAddon
     {
       DelayedCallGuard dcguard(languageHook);
       // show settings dialog
-      AddonInfoPtr addon = CAddonMgr::GetInstance().GetInstalledAddonInfo(pAddon->ID());
+      ADDON::AddonPtr addon(pAddon);
       CGUIDialogAddonSettings::ShowAndGetInput(addon);
     }
 
@@ -132,7 +132,7 @@ namespace XBMCAddon
       else if (strcmpi(id, "summary") == 0)
         return pAddon->Summary();
       else if (strcmpi(id, "type") == 0)
-        return ADDON::CAddonInfo::TranslateType(pAddon->Type());
+        return ADDON::TranslateType(pAddon->Type());
       else if (strcmpi(id, "version") == 0)
         return pAddon->Version().asString();
       else

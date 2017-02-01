@@ -1,0 +1,11 @@
+C-PLUFF EXAMPLES COPYRIGHT
+==========================
+
+The following copyright and licensing information applies to the example
+material contained in this directory.
+
+C-Pluff examples
+Copyright 2007 Johannes Lehtinen
+
+These examples are free software; Johannes Lehtinen gives unlimited
+permission to copy, distribute and modify them.

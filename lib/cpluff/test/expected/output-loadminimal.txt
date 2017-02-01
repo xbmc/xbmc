@@ -1,0 +1,14 @@
+{
+  identifier = "minimal",
+  name = NULL,
+  version = NULL,
+  provider_name = NULL,
+  abi_bw_compatibility = NULL,
+  api_bw_compatibility = NULL,
+  req_cpluff_version = NULL,
+  imports = {},
+  runtime_lib_name = NULL,
+  runtime_funcs_symbol = NULL,
+  ext_points = {},
+  extensions = {},
+}

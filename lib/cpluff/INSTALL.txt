@@ -1,0 +1,95 @@
+INSTALLING C-PLUFF
+==================
+
+These are instructions for building and installing the C-Pluff framework
+implementation using the source code distribution. Precompiled binaries
+are available for some platforms at the download page
+
+  http://www.c-pluff.org/download
+
+For help on building C-Pluff based applications, see the examples in the
+examples directory.
+
+
+Prerequisites
+-------------
+
+To build C-Pluff, you need to have following prerequisites installed:
+
+  - a C library supporting POSIX dlopen
+    (for example, GNU C library)
+    or
+    GNU Libtool libltdl library
+    (http://www.gnu.org/software/libtool/)
+
+  - Expat XML Parser library for C
+    (http://expat.sourceforge.net/)
+
+Following components are optional and are used if they are installed:
+
+  - GNU gettext libintl library for localization
+    (http://www.gnu.org/software/gettext/gettext.html)
+
+  - GNU Readline Library for enhanced command line
+    (http://cnswww.cns.cwru.edu/php/chet/readline/rltop.html)
+
+
+Building
+--------
+
+To build C-Pluff, follow the usual autotools procedure:
+
+  Building in the source directory:
+    ./configure
+    make
+
+  Building in a separate build directory:
+    cd BUILD_DIR
+    SOURCE_DIR/configure
+    make
+
+You can specify the installation prefix (for example, /usr or /usr/local)
+when running the configure script.
+
+  ./configure --prefix=/usr
+  
+The default installation prefix is /usr/local. More help on available
+configuration options is available using the --help option.
+
+  ./configure --help
+
+
+Installation
+------------
+
+You can install the library, header files, utilities, documentation and
+examples by making target install:
+
+  make install
+
+If installing to system directories you have to do this as root.
+
+Additionally, you can specify a directory to be used in place of the
+root directory during installation. This is typically used to create
+binary packages.
+
+  make DESTDIR=/tmp/installation install
+
+
+Known good build platforms
+--------------------------
+
+C-Pluff is known to compile cleanly on following combinations:
+
+  - Native Linux build
+    - GCC 4.1.2
+    - GNU C library 2.3.6
+    - Expat 1.95.8
+
+  - Cross compilation for Windows on Linux
+    - MinGW Runtime 3.9
+    - MinGW binutils 2.16.91
+    - MinGW 3.4.5
+    - Expat 2.0.0 (or 1.95.8 or 1.95.1)
+    - GNU Libtool libltdl 1.5.22
+    - GNU Gettext 0.16.1 (or 0.14.4)

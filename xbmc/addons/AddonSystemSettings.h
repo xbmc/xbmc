@@ -19,7 +19,7 @@
  *
  */
 
-#include "addons/Addon.h"
+#include "addons/IAddon.h"
 #include "settings/lib/ISettingCallback.h"
 #include <functional>
 #include <string>
@@ -40,23 +40,18 @@ public:
 
   bool GetActive(const TYPE& type, AddonPtr& addon);
   bool SetActive(const TYPE& type, const std::string& addonID);
-  bool IsActive(const CAddon& addon);
+  bool IsActive(const IAddon& addon);
 
   /*!
-   * @brief Attempt to unset addon as active. 
-   * 
-   * Returns true if addon is no longer active, false if it could not be unset
-   * (e.g. if the addon is the default)
-   *
-   * @param[in] addonInfo The info of add-on to set
-   * @return true if successfully done, false if not
+   * Attempt to unset addon as active. Returns true if addon is no longer active,
+   * false if it could not be unset (e.g. if the addon is the default)
    */
-  bool UnsetActive(const AddonInfoPtr& addonInfo);
+  bool UnsetActive(const AddonPtr& addon);
 
   /*!
-   * @brief Check compatibility of installed addons and attempt to migrate.
+   * Check compatibility of installed addons and attempt to migrate.
    *
-   * @param[in] onMigrate Called when a long running migration task takes place.
+   * @param onMigrate Called when a long running migration task takes place.
    * @return list of addons that was modified.
    */
   std::vector<std::string> MigrateAddons(std::function<void(void)> onMigrate);

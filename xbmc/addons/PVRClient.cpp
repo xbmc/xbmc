@@ -55,15 +55,32 @@ using KODI::MESSAGING::HELPERS::DialogResponse;
 
 #define DEFAULT_INFO_STRING_VALUE "unknown"
 
-CPVRClient::CPVRClient(AddonInfoPtr addonInfo)
-  : CAddonDll(addonInfo),
+std::unique_ptr<CPVRClient> CPVRClient::FromExtension(AddonProps props, const cp_extension_t* ext)
+{
+  std::string strAvahiType = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@avahi_type");
+  std::string strAvahiIpSetting = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@avahi_ip_setting");
+  std::string strAvahiPortSetting = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@avahi_port_setting");
+  return std::unique_ptr<CPVRClient>(new CPVRClient(std::move(props), strAvahiType,
+      strAvahiIpSetting, strAvahiPortSetting));
+}
+
+CPVRClient::CPVRClient(AddonProps props)
+  : CAddonDll(std::move(props)),
     m_apiVersion("0.0.0"),
     m_bAvahiServiceAdded(false)
 {
-  m_strAvahiType = AddonInfo()->GetValue("@avahi_type").asString();
-  m_strAvahiIpSetting = AddonInfo()->GetValue("@avahi_ip_setting").asString();
-  m_strAvahiPortSetting = AddonInfo()->GetValue("@avahi_port_setting").asString();
+  ResetProperties();
+}
 
+CPVRClient::CPVRClient(AddonProps props, const std::string& strAvahiType, const std::string& strAvahiIpSetting,
+    const std::string& strAvahiPortSetting)
+  : CAddonDll(std::move(props)),
+    m_strAvahiType(strAvahiType),
+    m_strAvahiIpSetting(strAvahiIpSetting),
+    m_strAvahiPortSetting(strAvahiPortSetting),
+    m_apiVersion("0.0.0"),
+    m_bAvahiServiceAdded(false)
+{
   ResetProperties();
 }
 
