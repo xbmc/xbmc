@@ -31,7 +31,10 @@ namespace GAME
 class CController : public ADDON::CAddon
 {
 public:
-  CController(ADDON::AddonInfoPtr addonInfo);
+  static std::unique_ptr<CController> FromExtension(ADDON::AddonProps props, const cp_extension_t* ext);
+
+  CController(ADDON::AddonProps addonprops);
+
   virtual ~CController(void) { }
 
   static const ControllerPtr EmptyPtr;

@@ -134,63 +134,67 @@ bool CSkinSettingBool::SerializeSetting(TiXmlElement* element) const
   return true;
 }
 
-CSkinInfo::CSkinInfo(AddonInfoPtr addonInfo)
-  : CAddon(addonInfo)
+std::unique_ptr<CSkinInfo> CSkinInfo::FromExtension(AddonProps props, const cp_extension_t* ext)
 {
-  for (auto values : AddonInfo()->GetValues())
+  RESOLUTION_INFO defaultRes = RESOLUTION_INFO();
+  std::vector<RESOLUTION_INFO> resolutions;
+
+  ELEMENTS elements;
+  if (CAddonMgr::GetInstance().GetExtElements(ext->configuration, "res", elements))
   {
-    if (values.first != "res")
-      continue;
-
-    int width = 0;
-    int height = 0;
-    bool defRes = false;
-    std::string folder;
-    float aspect = 0;
-    std::string strAspect;
-
-    for (auto value : values.second)
+    for (ELEMENTS::iterator i = elements.begin(); i != elements.end(); ++i)
     {
-      if (value.first == "res@width")
-        width = value.second.asInteger();
-      else if (value.first == "res@height")
-        height = value.second.asInteger();
-      else if (value.first == "res@default")
-        defRes = value.second.asBoolean();
-      else if (value.first == "res@folder")
-        folder = value.second.asString();
-      else if (value.first == "res@aspect")
-        strAspect = value.second.asString();
-    }
-
-    std::vector<std::string> fracs = StringUtils::Split(strAspect, ':');
-    if (fracs.size() == 2)
-      aspect = (float)(atof(fracs[0].c_str())/atof(fracs[1].c_str()));
-    if (width > 0 && height > 0)
-    {
-      RESOLUTION_INFO res(width, height, aspect, folder);
-      res.strId = strAspect; // for skin usage, store aspect string in strId
-      if (defRes)
-        m_defaultRes = res;
-      m_resolutions.push_back(res);
+      int width = atoi(CAddonMgr::GetInstance().GetExtValue(*i, "@width").c_str());
+      int height = atoi(CAddonMgr::GetInstance().GetExtValue(*i, "@height").c_str());
+      bool defRes = CAddonMgr::GetInstance().GetExtValue(*i, "@default") == "true";
+      std::string folder = CAddonMgr::GetInstance().GetExtValue(*i, "@folder");
+      float aspect = 0;
+      std::string strAspect = CAddonMgr::GetInstance().GetExtValue(*i, "@aspect");
+      std::vector<std::string> fracs = StringUtils::Split(strAspect, ':');
+      if (fracs.size() == 2)
+        aspect = (float)(atof(fracs[0].c_str())/atof(fracs[1].c_str()));
+      if (width > 0 && height > 0)
+      {
+        RESOLUTION_INFO res(width, height, aspect, folder);
+        res.strId = strAspect; // for skin usage, store aspect string in strId
+        if (defRes)
+          defaultRes = res;
+        resolutions.push_back(res);
+      }
     }
   }
+  else
+  { // no resolutions specified -> backward compatibility
+    std::string defaultWide = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@defaultwideresolution");
+    if (defaultWide.empty())
+      defaultWide = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@defaultresolution");
+    TranslateResolution(defaultWide, defaultRes);
+  }
 
-  m_effectsSlowDown = AddonInfo()->GetValue("@effectslowdown").asFloat();
-  if (m_effectsSlowDown == 0.0f)
-    m_effectsSlowDown = 1.f;
+  float effectsSlowDown(1.f);
+  std::string str = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@effectslowdown");
+  if (!str.empty())
+    effectsSlowDown = (float)atof(str.c_str());
 
-  m_debugging = AddonInfo()->GetValue("@debugging").asBoolean();
+  bool debugging = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@debugging") == "true";
 
-  LoadStartupWindows(nullptr);
+  return std::unique_ptr<CSkinInfo>(new CSkinInfo(std::move(props), defaultRes, resolutions,
+      effectsSlowDown, debugging));
 }
 
-CSkinInfo::CSkinInfo(AddonInfoPtr addonInfo, const RESOLUTION_INFO& resolution)
-  : CAddon(addonInfo),
-    m_defaultRes(resolution),
-    m_effectsSlowDown(1.f),
-    m_debugging(false)
+CSkinInfo::CSkinInfo(
+    AddonProps props,
+    const RESOLUTION_INFO& resolution,
+    const std::vector<RESOLUTION_INFO>& resolutions,
+    float effectsSlowDown,
+    bool debugging)
+    : CAddon(std::move(props)),
+      m_defaultRes(resolution),
+      m_resolutions(resolutions),
+      m_effectsSlowDown(effectsSlowDown),
+      m_debugging(debugging)
 {
+  LoadStartupWindows(nullptr);
 }
 
 struct closestRes

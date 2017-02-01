@@ -40,7 +40,7 @@ class CVariant;
 class TiXmlElement;
 namespace ADDON
 {
-  class CAddon;
+  class IAddon;
 }
 
 class DatabaseSettings

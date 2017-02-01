@@ -34,7 +34,7 @@ namespace ADDON
   class CAddonDll : public CAddon
   {
   public:
-    CAddonDll(AddonInfoPtr addonInfo);
+    CAddonDll(AddonProps props);
 
     //FIXME: does shallow pointer copy. no copy assignment op
     CAddonDll(const CAddonDll &rhs);

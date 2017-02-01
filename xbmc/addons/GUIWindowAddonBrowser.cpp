@@ -295,10 +295,11 @@ bool CGUIWindowAddonBrowser::GetDirectory(const std::string& strDirectory, CFile
     {
       for (int i = items.Size() - 1; i >= 0; i--)
       {
-        if (items[i]->HasAddonInfo() && !items[i]->GetAddonInfo()->Broken().empty())
+        if (items[i]->GetAddonInfo() && !items[i]->GetAddonInfo()->Broken().empty())
         {
           //check if it's installed
-          if (!CAddonMgr::GetInstance().IsAddonInstalled(items[i]->GetProperty("Addon.ID").asString()))
+          AddonPtr addon;
+          if (!CAddonMgr::GetInstance().GetAddon(items[i]->GetProperty("Addon.ID").asString(), addon))
             items.Remove(i);
         }
       }
@@ -389,12 +390,12 @@ int CGUIWindowAddonBrowser::SelectAddonID(const std::vector<ADDON::TYPE> &types,
     return -1;
 
   // get all addons to show
-  AddonInfos addons;
+  VECADDONS addons;
   if (showInstalled)
   {
     for (std::vector<ADDON::TYPE>::const_iterator type = validTypes.begin(); type != validTypes.end(); ++type)
     {
-      AddonInfos typeAddons;
+      VECADDONS typeAddons;
       if (*type == ADDON_AUDIO)
         CAddonsDirectory::GetScriptsAndPlugins("audio", typeAddons);
       else if (*type == ADDON_EXECUTABLE)
@@ -406,7 +407,7 @@ int CGUIWindowAddonBrowser::SelectAddonID(const std::vector<ADDON::TYPE> &types,
       else if (*type == ADDON_GAME)
         CAddonsDirectory::GetScriptsAndPlugins("game", typeAddons);
       else
-        typeAddons = CAddonMgr::GetInstance().GetAddonInfos(true, *type);
+        CAddonMgr::GetInstance().GetAddons(typeAddons, *type);
 
       addons.insert(addons.end(), typeAddons.begin(), typeAddons.end());
     }
@@ -414,19 +415,18 @@ int CGUIWindowAddonBrowser::SelectAddonID(const std::vector<ADDON::TYPE> &types,
 
   if (showInstallable || showMore)
   {
-    AddonInfos installableAddons;
-    CAddonMgr::GetInstance().GetInstallableAddonInfos(installableAddons, ADDON_UNKNOWN);
-    if (!installableAddons.empty())
+    VECADDONS installableAddons;
+    if (CAddonMgr::GetInstance().GetInstallableAddons(installableAddons))
     {
-      for (ADDON::AddonInfos::iterator addon = installableAddons.begin(); addon != installableAddons.end();)
+      for (ADDON::IVECADDONS addon = installableAddons.begin(); addon != installableAddons.end();)
       {
-        AddonInfoPtr pAddon = *addon;
-
+        AddonPtr pAddon = *addon;
+        
         // check if the addon matches one of the provided addon types
         bool matchesType = false;
-        for (const auto type : validTypes)
+        for (std::vector<ADDON::TYPE>::const_iterator type = validTypes.begin(); type != validTypes.end(); ++type)
         {
-          if (pAddon->IsType(type))
+          if (pAddon->IsType(*type))
           {
             matchesType = true;
             break;
@@ -453,16 +453,16 @@ int CGUIWindowAddonBrowser::SelectAddonID(const std::vector<ADDON::TYPE> &types,
     return -1;
 
   // turn the addons into items
-  std::map<std::string, AddonInfoPtr> addonMap;
+  std::map<std::string, AddonPtr> addonMap;
   CFileItemList items;
-  for (auto addon : addons)
+  for (ADDON::IVECADDONS addon = addons.begin(); addon != addons.end(); ++addon)
   {
-    CFileItemPtr item(CAddonsDirectory::FileItemFromAddonInfo(addon, addon->ID()));
-    item->SetLabel2(addon->Summary());
+    CFileItemPtr item(CAddonsDirectory::FileItemFromAddon(*addon, (*addon)->ID()));
+    item->SetLabel2((*addon)->Summary());
     if (!items.Contains(item->GetPath()))
     {
       items.Add(item);
-      addonMap.insert(std::make_pair(item->GetPath(), addon));
+      addonMap.insert(std::make_pair(item->GetPath(), *addon));
     }
   }
 
@@ -474,7 +474,7 @@ int CGUIWindowAddonBrowser::SelectAddonID(const std::vector<ADDON::TYPE> &types,
   {
     if (!heading.empty())
       heading += ", ";
-    heading += CAddonInfo::TranslateType(*type, true);
+    heading += TranslateType(*type, true);
   }
 
   dialog->SetHeading(CVariant{std::move(heading)});
@@ -530,20 +530,21 @@ int CGUIWindowAddonBrowser::SelectAddonID(const std::vector<ADDON::TYPE> &types,
     // check if one of the selected addons needs to be installed
     if (showInstallable)
     {
-      std::map<std::string, AddonInfoPtr>::const_iterator itAddon = addonMap.find(item->GetPath());
+      std::map<std::string, AddonPtr>::const_iterator itAddon = addonMap.find(item->GetPath());
       if (itAddon != addonMap.end())
       {
-        const AddonInfoPtr& addon = itAddon->second;
+        const AddonPtr& addon = itAddon->second;
 
         // if the addon isn't installed we need to install it
         if (!CAddonMgr::GetInstance().IsAddonInstalled(addon->ID()))
         {
-          if (!CAddonInstaller::GetInstance().InstallModal(addon->ID(), false))
+          AddonPtr installedAddon;
+          if (!CAddonInstaller::GetInstance().InstallModal(addon->ID(), installedAddon, false))
             continue;
         }
 
         // if the addon is disabled we need to enable it
-        if (!CAddonMgr::GetInstance().IsAddonEnabled(addon->ID()))
+        if (CAddonMgr::GetInstance().IsAddonDisabled(addon->ID()))
           CAddonMgr::GetInstance().EnableAddon(addon->ID());
       }
     }

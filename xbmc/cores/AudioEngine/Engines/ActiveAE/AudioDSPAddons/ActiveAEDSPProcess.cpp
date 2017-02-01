@@ -1291,7 +1291,7 @@ void CActiveAEDSPProcess::UpdateActiveModes()
       /// For resample only one call is allowed. Use first one and ignore everything else.
       CActiveAEDSPModePtr pMode = listInputResample[i].first;
       AE_DSP_ADDON        addon = listInputResample[i].second;
-      if (CAddonMgr::GetInstance().IsAddonEnabled(addon->ID()) && addon->SupportsInputResample() && pMode->IsEnabled())
+      if (!CAddonMgr::GetInstance().IsAddonDisabled(addon->ID()) && addon->SupportsInputResample() && pMode->IsEnabled())
       {
         ADDON_HANDLE_STRUCT handle;
         AE_DSP_ERROR err = addon->StreamCreate(&m_addonSettings, &m_addonStreamProperties, &handle);
@@ -1343,7 +1343,7 @@ void CActiveAEDSPProcess::UpdateActiveModes()
     {
       AE_DSP_ADDON addon = itr->second;
       int id = addon->GetID();
-      if (CAddonMgr::GetInstance().IsAddonEnabled(addon->ID()) && id != foundInputResamplerId)
+      if (!CAddonMgr::GetInstance().IsAddonDisabled(addon->ID()) && id != foundInputResamplerId)
       {
         ADDON_HANDLE_STRUCT handle;
         AE_DSP_ERROR err = addon->StreamCreate(&m_addonSettings, &m_addonStreamProperties, &handle);
@@ -1384,7 +1384,7 @@ void CActiveAEDSPProcess::UpdateActiveModes()
 
       if (m_usedMap.find(id) == m_usedMap.end())
         continue;
-      if (CAddonMgr::GetInstance().IsAddonEnabled(addon->ID()) && addon->SupportsPreProcess() && pMode->IsEnabled() &&
+      if (!CAddonMgr::GetInstance().IsAddonDisabled(addon->ID()) && addon->SupportsPreProcess() && pMode->IsEnabled() &&
         addon->StreamIsModeSupported(&m_addon_Handles[id], pMode->ModeType(), pMode->AddonModeNumber(), pMode->ModeID()))
       {
         CLog::Log(LOGDEBUG, "  | - %i - %s (%s)", i, pMode->AddonModeName().c_str(), addon->GetAudioDSPName().c_str());
@@ -1414,7 +1414,7 @@ void CActiveAEDSPProcess::UpdateActiveModes()
 
       if (m_usedMap.find(id) == m_usedMap.end())
         continue;
-      if (CAddonMgr::GetInstance().IsAddonEnabled(addon->ID()) && addon->SupportsMasterProcess() && pMode->IsEnabled() &&
+      if (!CAddonMgr::GetInstance().IsAddonDisabled(addon->ID()) && addon->SupportsMasterProcess() && pMode->IsEnabled() &&
         addon->StreamIsModeSupported(&m_addon_Handles[id], pMode->ModeType(), pMode->AddonModeNumber(), pMode->ModeID()))
       {
         CLog::Log(LOGDEBUG, "  | - %i - %s (%s)", i, pMode->AddonModeName().c_str(), addon->GetAudioDSPName().c_str());
@@ -1489,7 +1489,7 @@ void CActiveAEDSPProcess::UpdateActiveModes()
       if (m_usedMap.find(id) == m_usedMap.end())
         continue;
 
-      if (CAddonMgr::GetInstance().IsAddonEnabled(addon->ID()) && addon->SupportsPostProcess() && pMode->IsEnabled() &&
+      if (!CAddonMgr::GetInstance().IsAddonDisabled(addon->ID()) && addon->SupportsPostProcess() && pMode->IsEnabled() &&
         addon->StreamIsModeSupported(&m_addon_Handles[id], pMode->ModeType(), pMode->AddonModeNumber(), pMode->ModeID()))
       {
         CLog::Log(LOGDEBUG, "  | - %i - %s (%s)", i, pMode->AddonModeName().c_str(), addon->GetAudioDSPName().c_str());
@@ -1523,7 +1523,7 @@ void CActiveAEDSPProcess::UpdateActiveModes()
         int                    id = addon->GetID();
 
         if (m_usedMap.find(id) != m_usedMap.end() &&
-          CAddonMgr::GetInstance().IsAddonEnabled(addon->ID()) && addon->SupportsOutputResample() && pMode->IsEnabled() &&
+          !CAddonMgr::GetInstance().IsAddonDisabled(addon->ID()) && addon->SupportsOutputResample() && pMode->IsEnabled() &&
           addon->StreamIsModeSupported(&m_addon_Handles[id], pMode->ModeType(), pMode->AddonModeNumber(), pMode->ModeID()))
         {
           int outSamplerate = addon->OutputResampleSampleRate(&m_addon_Handles[id]);

@@ -1,10 +1,11 @@
 set(SOURCES Addon.cpp
+            AddonBuilder.cpp
             BinaryAddonCache.cpp
             AddonDatabase.cpp
             AddonDll.cpp
-            AddonInfo.cpp
             AddonInstaller.cpp
             AddonManager.cpp
+            AddonProperties.cpp
             AddonStatusHandler.cpp
             AddonSystemSettings.cpp
             AddonVersion.cpp
@@ -21,6 +22,7 @@ set(SOURCES Addon.cpp
             ImageResource.cpp
             InputStream.cpp
             LanguageResource.cpp
+            PluginSource.cpp
             PVRClient.cpp
             Repository.cpp
             RepositoryUpdater.cpp
@@ -32,13 +34,14 @@ set(SOURCES Addon.cpp
             Webinterface.cpp)
 
 set(HEADERS Addon.h
+            AddonBuilder.h
             AddonEvents.h
             BinaryAddonCache.h
             AddonDatabase.h
             AddonDll.h
-            AddonInfo.h
             AddonInstaller.h
             AddonManager.h
+            AddonProperties.h
             AddonStatusHandler.h
             AddonSystemSettings.h
             AddonVersion.h
@@ -47,15 +50,18 @@ set(HEADERS Addon.h
             ContextMenuAddon.h
             ContextMenus.h
             DllAddon.h
+            DllLibCPluff.h
             FilesystemInstaller.h
             GameResource.h
             GUIDialogAddonInfo.h
             GUIDialogAddonSettings.h
             GUIViewStateAddonBrowser.h
             GUIWindowAddonBrowser.h
+            IAddon.h
             ImageResource.h
             InputStream.h
             LanguageResource.h
+            PluginSource.h
             PVRClient.h
             Repository.h
             RepositoryUpdater.h

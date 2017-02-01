@@ -21,6 +21,7 @@
 
 #include <map>
 
+#include "addons/IAddon.h"
 #include "addons/AddonManager.h"
 #include "addons/Repository.h"
 #include "addons/RepositoryUpdater.h"

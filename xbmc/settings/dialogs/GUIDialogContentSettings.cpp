@@ -103,7 +103,7 @@ bool CGUIDialogContentSettings::Show(ADDON::ScraperPtr& scraper, VIDEO::SScanSet
     dialog->SetContent(content != CONTENT_NONE ? content : scraper->Content());
     dialog->SetScraper(scraper);
     // toast selected but disabled scrapers
-    if (!CAddonMgr::GetInstance().IsAddonEnabled(scraper->ID()))
+    if (CAddonMgr::GetInstance().IsAddonDisabled(scraper->ID()))
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(24024), scraper->Name(), 2000, true);
   }
 
@@ -268,10 +268,7 @@ void CGUIDialogContentSettings::OnSettingAction(const CSetting *setting)
     }
   }
   else if (settingId == SETTING_SCRAPER_SETTINGS)
-  {
-    AddonInfoPtr addonInfo = CAddonMgr::GetInstance().GetInstalledAddonInfo(m_scraper->ID());
-    CGUIDialogAddonSettings::ShowAndGetInput(addonInfo, false);
-  }
+    CGUIDialogAddonSettings::ShowAndGetInput(m_scraper, false);
 }
 
 void CGUIDialogContentSettings::Save()
@@ -298,7 +295,7 @@ void CGUIDialogContentSettings::SetupView()
   else
   {
     ToggleState(SETTING_SCRAPER_LIST, true);
-    if (m_scraper != NULL && CAddonMgr::GetInstance().IsAddonEnabled(m_scraper->ID()))
+    if (m_scraper != NULL && !CAddonMgr::GetInstance().IsAddonDisabled(m_scraper->ID()))
     {
       SetLabel2(SETTING_SCRAPER_LIST, m_scraper->Name());
       if (m_scraper && m_scraper->Supports(m_content) && m_scraper->HasSettings())
@@ -320,7 +317,7 @@ void CGUIDialogContentSettings::InitializeSettings()
 
   if (m_content == CONTENT_NONE)
     m_showScanSettings = false;
-  else if (m_scraper != NULL && CAddonMgr::GetInstance().IsAddonEnabled(m_scraper->ID()))
+  else if (m_scraper != NULL && !CAddonMgr::GetInstance().IsAddonDisabled(m_scraper->ID()))
     m_showScanSettings = true;
 
   CSettingCategory *category = AddCategory("contentsettings", -1);

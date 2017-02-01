@@ -1,0 +1,9 @@
+# C-Pluff examples build system for MSVC
+# Copyright 2007 Johannes Lehtinen
+# This file is free software; Johannes Lehtinen gives unlimited permission
+# to copy, distribute and modify it.
+
+SUBDIRS = cpfile
+TOP = .
+
+include common.nmake

@@ -130,7 +130,7 @@ find_package(Threads REQUIRED QUIET)
 list(APPEND DEPLIBS ${CMAKE_THREAD_LIBS_INIT})
 
 # Required dependencies
-set(required_deps Sqlite3 FreeType PCRE LibDvd
+set(required_deps Sqlite3 FreeType PCRE Cpluff LibDvd
                   TinyXML Yajl Cdio
                   Lzo2 Fribidi TagLib FFMPEG CrossGUID)
 if(NOT WIN32)
@@ -328,7 +328,7 @@ endif()
 # main library (used for main binary and tests)
 add_library(lib${APP_NAME_LC} STATIC $<TARGET_OBJECTS:compileinfo>)
 set_target_properties(lib${APP_NAME_LC} PROPERTIES PREFIX "")
-add_dependencies(lib${APP_NAME_LC} ffmpeg dvdnav crossguid)
+add_dependencies(lib${APP_NAME_LC} libcpluff ffmpeg dvdnav crossguid)
 
 # Other files (IDE)
 set(OTHER_FILES cmake/README.md)

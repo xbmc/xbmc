@@ -24,7 +24,12 @@
 
 using namespace ADDON;
 
-CGameResource::CGameResource(AddonInfoPtr addonInfo) :
-  CResource(addonInfo)
+CGameResource::CGameResource(AddonProps props) :
+  CResource(std::move(props))
 {
+}
+
+std::unique_ptr<CGameResource> CGameResource::FromExtension(AddonProps props, const cp_extension_t* ext)
+{
+  return std::unique_ptr<CGameResource>(new CGameResource(std::move(props)));
 }

@@ -295,7 +295,7 @@ std::string CCDDARipper::GetTrackName(CFileItem *item)
   if (addon)
   {
     std::shared_ptr<CAudioEncoder> enc = std::static_pointer_cast<CAudioEncoder>(addon);
-    track += enc->Extension();
+    track += enc->extension;
   }
 
   return track;

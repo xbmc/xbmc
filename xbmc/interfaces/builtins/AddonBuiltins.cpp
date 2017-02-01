@@ -27,6 +27,7 @@
 #include "addons/AddonSystemSettings.h"
 #include "addons/GUIDialogAddonSettings.h"
 #include "addons/GUIWindowAddonBrowser.h"
+#include "addons/PluginSource.h"
 #include "addons/RepositoryUpdater.h"
 #include "FileItem.h"
 #include "filesystem/PluginDirectory.h"
@@ -55,7 +56,8 @@ static int InstallAddon(const std::vector<std::string>& params)
 {
   const std::string& addonid = params[0];
 
-  CAddonInstaller::GetInstance().InstallModal(addonid);
+  AddonPtr addon;
+  CAddonInstaller::GetInstance().InstallModal(addonid, addon);
 
   return 0;
 }
@@ -96,9 +98,10 @@ static int RunAddon(const std::vector<std::string>& params)
   {
     const std::string& addonid = params[0];
 
-    AddonInfoPtr addon = CAddonMgr::GetInstance().GetInstalledAddonInfo(addonid, ADDON_PLUGIN);
-    if (addon)
+    AddonPtr addon;
+    if (CAddonMgr::GetInstance().GetAddon(addonid, addon, ADDON_PLUGIN))
     {
+      PluginPtr plugin = std::dynamic_pointer_cast<CPluginSource>(addon);
       std::string urlParameters;
       std::vector<std::string> parameters;
       if (params.size() == 2 &&
@@ -117,15 +120,15 @@ static int RunAddon(const std::vector<std::string>& params)
       }
 
       std::string cmd;
-      if (addon->ProvidesSubContent(CAddonInfo::VIDEO))
+      if (plugin->Provides(CPluginSource::VIDEO))
         cmd = StringUtils::Format("ActivateWindow(Videos,plugin://%s%s,return)", addonid.c_str(), urlParameters.c_str());
-      else if (addon->ProvidesSubContent(CAddonInfo::AUDIO))
+      else if (plugin->Provides(CPluginSource::AUDIO))
         cmd = StringUtils::Format("ActivateWindow(Music,plugin://%s%s,return)", addonid.c_str(), urlParameters.c_str());
-      else if (addon->ProvidesSubContent(CAddonInfo::EXECUTABLE))
+      else if (plugin->Provides(CPluginSource::EXECUTABLE))
         cmd = StringUtils::Format("ActivateWindow(Programs,plugin://%s%s,return)", addonid.c_str(), urlParameters.c_str());
-      else if (addon->ProvidesSubContent(CAddonInfo::IMAGE))
+      else if (plugin->Provides(CPluginSource::IMAGE))
         cmd = StringUtils::Format("ActivateWindow(Pictures,plugin://%s%s,return)", addonid.c_str(), urlParameters.c_str());
-      else if (addon->ProvidesSubContent(CAddonInfo::GAME))
+      else if (plugin->Provides(CPluginSource::GAME))
         cmd = StringUtils::Format("ActivateWindow(Games,plugin://%s%s,return)", addonid.c_str(), urlParameters.c_str());
       else
         // Pass the script name (addonid) and all the parameters
@@ -133,16 +136,16 @@ static int RunAddon(const std::vector<std::string>& params)
         cmd = StringUtils::Format("RunPlugin(%s)", StringUtils::Join(params, ",").c_str());
       CBuiltins::GetInstance().Execute(cmd);
     }
-    else if (CAddonMgr::GetInstance().IsAddonEnabled(addonid, ADDON_SCRIPT) ||
-        CAddonMgr::GetInstance().IsAddonEnabled(addonid, ADDON_SCRIPT_WEATHER) ||
-        CAddonMgr::GetInstance().IsAddonEnabled(addonid, ADDON_SCRIPT_LYRICS) ||
-        CAddonMgr::GetInstance().IsAddonEnabled(addonid, ADDON_SCRIPT_LIBRARY))
+    else if (CAddonMgr::GetInstance().GetAddon(addonid, addon, ADDON_SCRIPT) ||
+        CAddonMgr::GetInstance().GetAddon(addonid, addon, ADDON_SCRIPT_WEATHER) ||
+        CAddonMgr::GetInstance().GetAddon(addonid, addon, ADDON_SCRIPT_LYRICS) ||
+        CAddonMgr::GetInstance().GetAddon(addonid, addon, ADDON_SCRIPT_LIBRARY))
     {
       // Pass the script name (addonid) and all the parameters
       // (params[1] ... params[x]) separated by a comma to RunScript
       CBuiltins::GetInstance().Execute(StringUtils::Format("RunScript(%s)", StringUtils::Join(params, ",").c_str()));
     }
-    else if (CAddonMgr::GetInstance().IsAddonEnabled(addonid, ADDON_GAMEDLL))
+    else if (CAddonMgr::GetInstance().GetAddon(addonid, addon, ADDON_GAMEDLL))
     {
       CFileItem item;
 
@@ -241,11 +244,10 @@ static int RunScript(const std::vector<std::string>& params)
 static int OpenDefaultSettings(const std::vector<std::string>& params)
 {
   AddonPtr addon;
-  ADDON::TYPE type = CAddonInfo::TranslateType(params[0]);
+  ADDON::TYPE type = TranslateType(params[0]);
   if (CAddonSystemSettings::GetInstance().GetActive(type, addon))
   {
-    AddonInfoPtr addonInfo = CAddonMgr::GetInstance().GetInstalledAddonInfo(addon->ID());
-    bool changed = CGUIDialogAddonSettings::ShowAndGetInput(addonInfo);
+    bool changed = CGUIDialogAddonSettings::ShowAndGetInput(addon);
     if (type == ADDON_VIZ && changed)
       g_windowManager.SendMessage(GUI_MSG_VISUALISATION_RELOAD, 0, 0);
   }
@@ -260,7 +262,7 @@ static int OpenDefaultSettings(const std::vector<std::string>& params)
 static int SetDefaultAddon(const std::vector<std::string>& params)
 {
   std::string addonID;
-  TYPE type = CAddonInfo::TranslateType(params[0]);
+  TYPE type = TranslateType(params[0]);
   bool allowNone = false;
   if (type == ADDON_VIZ)
     allowNone = true;
@@ -282,8 +284,10 @@ static int SetDefaultAddon(const std::vector<std::string>& params)
  */
 static int AddonSettings(const std::vector<std::string>& params)
 {
-  AddonInfoPtr addon = CAddonMgr::GetInstance().GetInstalledAddonInfo(params[0]);
-  CGUIDialogAddonSettings::ShowAndGetInput(addon);
+  AddonPtr addon;
+  if (CAddonMgr::GetInstance().GetAddon(params[0], addon))
+    CGUIDialogAddonSettings::ShowAndGetInput(addon);
+
   return 0;
 }
 
