@@ -106,12 +106,12 @@ bool CAddonSystemSettings::SetActive(const TYPE& type, const std::string& addonI
 bool CAddonSystemSettings::IsActive(const CAddon& addon)
 {
   AddonPtr active;
-  return GetActive(addon.Type(), active) && active->ID() == addon.ID();
+  return GetActive(addon.MainType(), active) && active->ID() == addon.ID();
 }
 
 bool CAddonSystemSettings::UnsetActive(const AddonInfoPtr& addonInfo)
 {
-  auto it = m_activeSettings.find(addonInfo->Type());
+  auto it = m_activeSettings.find(addonInfo->MainType());
   if (it == m_activeSettings.end())
     return true;
 

@@ -638,7 +638,7 @@ bool CAddonMgr::LoadManifest(std::set<std::string>& system, std::set<std::string
 
 std::shared_ptr<CAddon> CAddonMgr::CreateAddon(AddonInfoPtr addonInfo)
 {
-  switch (addonInfo->Type())
+  switch (addonInfo->MainType())
   {
     case ADDON_PLUGIN:
     case ADDON_SCRIPT:

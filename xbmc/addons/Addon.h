@@ -65,9 +65,8 @@ public:
   explicit CAddon(AddonInfoPtr addonInfo);
   virtual ~CAddon() {}
 
-  virtual TYPE Type() const { return m_addonInfo->Type(); }
-  virtual TYPE FullType() const { return Type(); }
-  virtual bool IsType(TYPE type) const { return type == m_addonInfo->Type(); }
+  virtual TYPE MainType() const { return m_addonInfo->MainType(); }
+  virtual bool IsType(TYPE type) const { return m_addonInfo->IsType(type); }
   virtual std::string ID() const { return m_addonInfo->ID(); }
   virtual std::string Name() const { return m_addonInfo->Name(); }
   virtual bool IsInUse() const { return false; };

@@ -98,7 +98,10 @@ static bool IsInfoProviderType(TYPE type)
 
 static bool IsInfoProviderTypeAddon(const AddonInfoPtr& addon)
 {
-  return IsInfoProviderType(addon->Type());
+  for (auto providerType : infoProviderTypes)
+    if (addon->IsType(providerType))
+      return true;
+  return false;
 }
 
 static bool IsLookAndFeelType(TYPE type)
@@ -108,12 +111,23 @@ static bool IsLookAndFeelType(TYPE type)
 
 static bool IsLookAndFeelTypeAddon(const AddonInfoPtr& addon)
 {
-  return IsLookAndFeelType(addon->Type());
+  for (auto lookAndFeelType : lookAndFeelTypes)
+    if (addon->IsType(lookAndFeelType))
+      return true;
+  return false;
 }
 
 static bool IsGameType(TYPE type)
 {
   return gameTypes.find(type) != gameTypes.end();
+}
+
+static bool IsGameTypeAddon(const AddonInfoPtr& addon)
+{
+  for (auto gameType : gameTypes)
+    if (addon->IsType(gameType))
+      return true;
+  return false;
 }
 
 static bool IsStandaloneGame(const AddonInfoPtr& addon)
@@ -123,29 +137,29 @@ static bool IsStandaloneGame(const AddonInfoPtr& addon)
 
 static bool IsEmulator(const AddonInfoPtr& addon)
 {
-  return addon->Type() == ADDON_GAMEDLL && !addon->GetValue("extensions").empty();
+  return addon->IsType(ADDON_GAMEDLL) && !addon->GetValue("extensions").empty();
 }
 
 static bool IsGameProvider(const AddonInfoPtr& addon)
 {
-  return addon->Type() == ADDON_PLUGIN && addon->IsType(ADDON_GAME);
+  return addon->IsType(ADDON_PLUGIN) && addon->IsType(ADDON_GAME);
 }
 
 static bool IsGameResource(const AddonInfoPtr& addon)
 {
-  return addon->Type() == ADDON_RESOURCE_GAMES;
+  return addon->IsType(ADDON_RESOURCE_GAMES);
 }
 
 static bool IsGameSupportAddon(const AddonInfoPtr& addon)
 {
-  return addon->Type() == ADDON_GAMEDLL && 
+  return addon->IsType(ADDON_GAMEDLL) && 
          addon->GetValue("extensions").empty() &&
          !addon->GetValue("supports_standalone").asBoolean();
 }
 
 static bool IsGameAddon(const AddonInfoPtr& addon)
 {
-  return IsGameType(addon->Type()) ||
+  return IsGameTypeAddon(addon) ||
          IsStandaloneGame(addon) ||
          IsGameProvider(addon) ||
          IsGameResource(addon) ||
@@ -215,7 +229,7 @@ static void GenerateGameListing(const CURL& path, const AddonInfos& addons, CFil
   // Game controllers
   for (const auto& addon : addons)
   {
-    if (addon->Type() == ADDON_GAME_CONTROLLER)
+    if (addon->IsType(ADDON_GAME_CONTROLLER))
     {
       CFileItemPtr item(new CFileItem(CAddonInfo::TranslateType(ADDON_GAME_CONTROLLER, true)));
       CURL itemPath = path;
@@ -835,7 +849,7 @@ CFileItemPtr CAddonsDirectory::FileItemFromAddonInfo(const AddonInfoPtr &addonIn
 
   std::string strLabel(addonInfo->Name());
   if (CURL(path).GetHostName() == "search")
-    strLabel = StringUtils::Format("%s - %s", CAddonInfo::TranslateType(addonInfo->Type(), true).c_str(), addonInfo->Name().c_str());
+    strLabel = StringUtils::Format("%s - %s", CAddonInfo::TranslateType(addonInfo->MainType(), true).c_str(), addonInfo->Name().c_str());
   item->SetLabel(strLabel);
   item->SetArt("thumb", addonInfo->Icon());
   item->SetIconImage("DefaultAddon.png");
@@ -898,35 +912,28 @@ bool CAddonsDirectory::GetScriptsAndPlugins(const std::string &content, CFileIte
 
   for (auto addon : addons)
   {
-    const bool bIsFolder = (addon->Type() == ADDON_PLUGIN);
+    bool bIsFolder = false;
 
-    switch (addon->Type())
+    if (addon->IsType(ADDON_PLUGIN))
     {
-      case ADDON_PLUGIN:
+      bIsFolder = true;
+      path = "plugin://" + addon->ID();
+      if (addon->ProvidesSeveralSubContents())
       {
-        path = "plugin://" + addon->ID();
-        if (addon->ProvidesSeveralSubContents())
-        {
-          CURL url(path);
-          std::string opt = StringUtils::Format("?content_type=%s", content.c_str());
-          url.SetOptions(opt);
-          path = url.Get();
-        }
-        break;
+        CURL url(path);
+        std::string opt = StringUtils::Format("?content_type=%s", content.c_str());
+        url.SetOptions(opt);
+        path = url.Get();
       }
-      case ADDON_SCRIPT:
-      {
-        path = "script://" + addon->ID();
-        break;
-      }
-      case ADDON_GAMEDLL:
-      {
-        // Kodi fails to launch games with empty path from home screen
-        path = "game://" + addon->ID();
-        break;
-      }
-      default:
-        break;
+    }
+    else if (addon->IsType(ADDON_SCRIPT))
+    {
+      path = "script://" + addon->ID();
+    }
+    else if (addon->IsType(ADDON_GAMEDLL))
+    {
+      // Kodi fails to launch games with empty path from home screen
+      path = "game://" + addon->ID();
     }
 
     items.Add(FileItemFromAddonInfo(addon, path, bIsFolder));

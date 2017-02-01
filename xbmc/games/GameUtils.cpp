@@ -51,7 +51,7 @@ GameClientPtr CGameUtils::OpenGameClient(const CFileItem& file)
   // If the fileitem is an add-on, fall back to that
   if (gameClientId.empty())
   {
-    if (file.HasAddonInfo() && file.GetAddonInfo()->Type() == ADDON::ADDON_GAMEDLL)
+    if (file.HasAddonInfo() && file.GetAddonInfo()->IsType(ADDON_GAMEDLL))
       gameClientId = file.GetAddonInfo()->ID();
   }
 
@@ -242,19 +242,9 @@ bool CGameUtils::IsStandaloneGame(const ADDON::AddonInfoPtr& addon)
 {
   using namespace ADDON;
 
-  switch (addon->Type())
-  {
-    case ADDON_GAMEDLL:
-    {
-      return addon->GetValue("supports_standalone").asBoolean();
-    }
-    case ADDON_SCRIPT:
-    {
-      return addon->IsType(ADDON_GAME);
-    }
-    default:
-      break;
-  }
-
+  if (addon->IsType(ADDON_GAMEDLL))
+    return addon->GetValue("supports_standalone").asBoolean();
+  else if (addon->IsType(ADDON_SCRIPT))
+    return addon->IsType(ADDON_GAME);
   return false;
 }

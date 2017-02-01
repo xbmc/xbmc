@@ -150,7 +150,7 @@ int CNfoFile::Scrape(ScraperPtr& scraper)
     m_scurl = CScraperUrl();
     return 0;
   }
-  if (scraper->Type() != m_type)
+  if (!scraper->IsType(m_type))
     return 1;
   scraper->ClearCache();
 

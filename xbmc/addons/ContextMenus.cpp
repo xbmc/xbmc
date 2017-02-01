@@ -47,7 +47,7 @@ bool CAddonSettings::Execute(const CFileItemPtr& item) const
 
 bool CCheckForUpdates::IsVisible(const CFileItem& item) const
 {
-  return item.HasAddonInfo() && item.GetAddonInfo()->Type() == ADDON::ADDON_REPOSITORY;
+  return item.HasAddonInfo() && item.GetAddonInfo()->IsType(ADDON::ADDON_REPOSITORY);
 }
 
 bool CCheckForUpdates::Execute(const CFileItemPtr& item) const

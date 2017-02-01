@@ -734,7 +734,7 @@ bool CAddonDatabase::GetRepositoryContent(AddonInfos& addons, TYPE type/* = ADDO
                                   "",                           /* changelog */
                                   "");                          /* origin */
 
-      if (type == ADDON_UNKNOWN || usedInfo->Type() == type) /// @todo add type selection direct to database!
+      if (type == ADDON_UNKNOWN || usedInfo->IsType(type)) /// @todo add type selection direct to database!
       {
         if (usedInfo->IsUsable())
         {
@@ -935,7 +935,7 @@ bool CAddonDatabase::Search(const std::string& search, AddonInfos& addons)
     {
       AddonInfoPtr addon;
       GetAddonInfo(m_pDS->fv(0).get_asString(), addon);
-      if (addon->Type() >= ADDON_UNKNOWN+1 && addon->Type() < ADDON_SCRAPER_LIBRARY)
+      if (!addon->IsType(ADDON_UNKNOWN))
         addons.push_back(addon);
       m_pDS->next();
     }

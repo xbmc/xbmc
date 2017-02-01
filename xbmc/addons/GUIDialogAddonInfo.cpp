@@ -91,7 +91,7 @@ bool CGUIDialogAddonInfo::OnMessage(CGUIMessage& message)
       {
         if (m_localAddon)
         {
-          if (m_localAddon->Type() == ADDON_ADSPDLL && CServiceBroker::GetADSP().IsProcessing())
+          if (m_localAddon->IsType(ADDON_ADSPDLL) && CServiceBroker::GetADSP().IsProcessing())
           {
             CGUIDialogOK::ShowAndGetInput(24137, 0, 24138, 0);
             return true;
@@ -205,7 +205,7 @@ void CGUIDialogAddonInfo::UpdateControls()
    */
   AddonPtr addon;
   if (isInstalled)
-    CAddonMgr::GetInstance().GetAddon(m_localAddon->ID(), addon, m_localAddon->Type());
+    CAddonMgr::GetInstance().GetAddon(m_localAddon->ID(), addon, m_localAddon->MainType());
 
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_SELECT, m_addonEnabled && (CanOpen() ||
       CanRun() || (CanUse() && !addon->IsInUse())));
@@ -368,19 +368,19 @@ void CGUIDialogAddonInfo::OnSelect()
   if (CanOpen() || CanRun())
     CBuiltins::GetInstance().Execute("RunAddon(" + m_localAddon->ID() + ")");
   else if (CanUse())
-    CAddonSystemSettings::GetInstance().SetActive(m_localAddon->Type(), m_localAddon->ID());
+    CAddonSystemSettings::GetInstance().SetActive(m_localAddon->MainType(), m_localAddon->ID());
 }
 
 bool CGUIDialogAddonInfo::CanOpen() const
 {
-  return m_localAddon && m_localAddon->Type() == ADDON_PLUGIN;
+  return m_localAddon && m_localAddon->IsType(ADDON_PLUGIN);
 }
 
 bool CGUIDialogAddonInfo::CanRun() const
 {
   if (m_localAddon)
   {
-    if (m_localAddon->Type() == ADDON_SCRIPT)
+    if (m_localAddon->IsType(ADDON_SCRIPT))
       return true;
 
     if (GAME::CGameUtils::IsStandaloneGame(m_localAddon))
@@ -393,12 +393,12 @@ bool CGUIDialogAddonInfo::CanRun() const
 bool CGUIDialogAddonInfo::CanUse() const
 {
   return m_localAddon && (
-    m_localAddon->Type() == ADDON_SKIN ||
-    m_localAddon->Type() == ADDON_SCREENSAVER ||
-    m_localAddon->Type() == ADDON_VIZ ||
-    m_localAddon->Type() == ADDON_SCRIPT_WEATHER ||
-    m_localAddon->Type() == ADDON_RESOURCE_LANGUAGE ||
-    m_localAddon->Type() == ADDON_RESOURCE_UISOUNDS);
+    m_localAddon->IsType(ADDON_SKIN) ||
+    m_localAddon->IsType(ADDON_SCREENSAVER) ||
+    m_localAddon->IsType(ADDON_VIZ)||
+    m_localAddon->IsType(ADDON_SCRIPT_WEATHER) ||
+    m_localAddon->IsType(ADDON_RESOURCE_LANGUAGE) ||
+    m_localAddon->IsType(ADDON_RESOURCE_UISOUNDS));
 }
 
 bool CGUIDialogAddonInfo::PromptIfDependency(int heading, int line2)

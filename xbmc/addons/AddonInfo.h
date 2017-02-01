@@ -242,7 +242,7 @@ namespace ADDON
      *
      * @return Master Type ID of add-on
      */ 
-    TYPE Type() const { return m_type; }
+    TYPE MainType() const { return m_mainType; }
 
     /*!
      * @brief To check add-on to support type
@@ -478,7 +478,7 @@ namespace ADDON
     bool m_usable;
 
     std::string m_id;
-    TYPE m_type;
+    TYPE m_mainType;
     AddonVersion m_version{"0.0.0"};
     AddonVersion m_minversion{"0.0.0"};
     std::string m_name;

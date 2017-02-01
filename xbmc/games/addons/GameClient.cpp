@@ -135,7 +135,7 @@ ADDON::AddonPtr CGameClient::GetRunningInstance() const
   using namespace ADDON;
 
   CBinaryAddonCache& addonCache = CServiceBroker::GetBinaryAddonCache();
-  return addonCache.GetAddonInstance(ID(), Type());
+  return addonCache.GetAddonInstance(ID(), MainType());
 }
 
 bool CGameClient::SupportsPath() const

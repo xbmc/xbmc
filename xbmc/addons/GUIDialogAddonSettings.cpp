@@ -210,7 +210,7 @@ bool CGUIDialogAddonSettings::ShowAndGetInput(const AddonInfoPtr &addonInfo, boo
    * NEED TO IMPROVE ASAP!
    */
   AddonPtr addon;
-  CAddonMgr::GetInstance().GetAddon(addonInfo->ID(), addon, addonInfo->Type());
+  CAddonMgr::GetInstance().GetAddon(addonInfo->ID(), addon, addonInfo->MainType());
   if (addon->HasSettings())
   { 
     // Create the dialog

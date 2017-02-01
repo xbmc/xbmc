@@ -286,7 +286,7 @@ const char* CAddonInfo::GetPlatformLibraryName(const TiXmlElement* element)
 
 CAddonInfo::CAddonInfo(std::string addonPath)
   : m_usable(false),
-    m_type(ADDON_UNKNOWN),
+    m_mainType(ADDON_UNKNOWN),
     m_path(addonPath)
 {
   m_path = CSpecialProtocol::TranslatePath(addonPath);
@@ -318,7 +318,7 @@ CAddonInfo::CAddonInfo(std::string addonPath)
 
 CAddonInfo::CAddonInfo(const TiXmlElement* baseElement, std::string addonRepoXmlPath)
   : m_usable(false),
-    m_type(ADDON_UNKNOWN)
+    m_mainType(ADDON_UNKNOWN)
 {
   m_usable = LoadAddonXML(baseElement, addonRepoXmlPath);
   if (m_usable)
@@ -351,7 +351,7 @@ CAddonInfo::CAddonInfo(const std::string& id,
                        const std::string& origin)
   : m_usable(false),
     m_id(id),
-    m_type(ADDON_UNKNOWN),
+    m_mainType(ADDON_UNKNOWN),
     m_version(version),
     m_name(name),
     m_summary(summary),
@@ -360,7 +360,7 @@ CAddonInfo::CAddonInfo(const std::string& id,
     m_origin(origin)
 {
   DeserializeMetadata(metadata);
-  if (!m_id.empty() && m_type > ADDON_UNKNOWN && m_type < ADDON_MAX)
+  if (!m_id.empty() && m_mainType > ADDON_UNKNOWN && m_mainType < ADDON_MAX)
   {
     m_usable = true;
 
@@ -369,14 +369,14 @@ CAddonInfo::CAddonInfo(const std::string& id,
   else
   {
     m_usable = false;
-    CLog::Log(LOGERROR, "CAddonInfo: tried to create add-on info with invalid data (id='%s', type='%i')", m_id.c_str(), m_type);
+    CLog::Log(LOGERROR, "CAddonInfo: tried to create add-on info with invalid data (id='%s', type='%i')", m_id.c_str(), m_mainType);
   }
 }
 
 CAddonInfo::CAddonInfo(std::string id, TYPE type)
   : m_usable(true),
     m_id(std::move(id)),
-    m_type(type),
+    m_mainType(type),
     m_packageSize(0)
 {
 
@@ -642,10 +642,10 @@ bool CAddonInfo::LoadAddonXML(const TiXmlElement* baseElement, std::string addon
       }
 
       // Get add-on type
-      if (m_type == ADDON_UNKNOWN)
+      if (m_mainType == ADDON_UNKNOWN)
       {
-        m_type = TranslateType(point);
-        if (m_type == ADDON_UNKNOWN || m_type >= ADDON_MAX)
+        m_mainType = TranslateType(point);
+        if (m_mainType == ADDON_UNKNOWN || m_mainType >= ADDON_MAX)
         {
           CLog::Log(LOGERROR, "CAddonInfo: file '%s' doesn't contain a valid add-on type name (%s)", addonXmlPath.c_str(), point.c_str());
           return false;
@@ -683,7 +683,7 @@ std::string CAddonInfo::SerializeMetadata()
     variant["screenshots"].push_back(item);
 
   variant["extensions"] = CVariant(CVariant::VariantTypeArray);
-  variant["extensions"].push_back(TranslateType(m_type, false));
+  variant["extensions"].push_back(TranslateType(m_mainType, false));
 
   variant["dependencies"] = CVariant(CVariant::VariantTypeArray);
   for (const auto& kv : m_dependencies)
@@ -728,7 +728,7 @@ void CAddonInfo::DeserializeMetadata(const std::string& document)
     screenshots.push_back(it->asString());
   screenshots = std::move(screenshots);
 
-  m_type = TranslateType(variant["extensions"][0].asString());
+  m_mainType = TranslateType(variant["extensions"][0].asString());
 
   ADDONDEPS deps;
   for (auto it = variant["dependencies"].begin_array(); it != variant["dependencies"].end_array(); ++it)
@@ -783,18 +783,18 @@ void CAddonInfo::SetProvides(const std::string &content)
         m_providedSubContent.insert(content);
     }
   }
-  if (m_type == ADDON_SCRIPT && m_providedSubContent.empty())
+  if (m_mainType == ADDON_SCRIPT && m_providedSubContent.empty())
     m_providedSubContent.insert(EXECUTABLE);
 }
 
 bool CAddonInfo::IsType(TYPE type) const
 {
-  return ((type == ADDON_VIDEO && ProvidesSubContent(VIDEO))
+  return ((type == m_mainType)
+       || (type == ADDON_VIDEO && ProvidesSubContent(VIDEO))
        || (type == ADDON_AUDIO && ProvidesSubContent(AUDIO))
        || (type == ADDON_IMAGE && ProvidesSubContent(IMAGE))
        || (type == ADDON_GAME && ProvidesSubContent(GAME))
-       || (type == ADDON_EXECUTABLE && ProvidesSubContent(EXECUTABLE))
-       || (type == m_type));
+       || (type == ADDON_EXECUTABLE && ProvidesSubContent(EXECUTABLE)));
 }
-    
+
 } /* namespace ADDON */

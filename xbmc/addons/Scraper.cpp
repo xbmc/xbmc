@@ -139,7 +139,7 @@ CScraper::CScraper(AddonInfoPtr addonInfo)
   if (!tmp.empty())
     m_persistence.SetFromTimeString(tmp);
 
-  switch (AddonInfo()->Type())
+  switch (AddonInfo()->MainType())
   {
     case ADDON_SCRAPER_ALBUMS:
       m_pathContent = CONTENT_ALBUMS;
@@ -165,7 +165,7 @@ CScraper::CScraper(AddonInfoPtr addonInfo)
 
 bool CScraper::Supports(const CONTENT_TYPE &content) const
 {
-  return Type() == ScraperTypeFromContent(content);
+  return IsType(ScraperTypeFromContent(content));
 }
 
 bool CScraper::SetPathSettings(CONTENT_TYPE content, const std::string& xml)
@@ -358,7 +358,7 @@ bool CScraper::Load()
       if (dep)
       {
         CXBMCTinyXML doc;
-        if (dep->Type() == ADDON_SCRAPER_LIBRARY && doc.LoadFile(dep->LibPath()))
+        if (dep->IsType(ADDON_SCRAPER_LIBRARY) && doc.LoadFile(dep->LibPath()))
           m_parser.AddDocument(&doc);
       }
       else

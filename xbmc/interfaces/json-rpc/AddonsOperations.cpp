@@ -118,7 +118,7 @@ JSONRPC_STATUS CAddonsOperations::GetAddons(const std::string &method, ITranspor
   for (int index = 0; index < (int)addons.size(); index++)
   {
     AddonInfoPtr addonInfo = addons.at(index);
-    if ((addons.at(index)->Type() <= ADDON_UNKNOWN || addons.at(index)->Type() >= ADDON_MAX) ||
+    if (addons.at(index)->IsType(ADDON_UNKNOWN) ||
         (!addonInfo->ProvidesSubContent(content) && contentFound))
     {
       addons.erase(addons.begin() + index);
@@ -140,8 +140,7 @@ JSONRPC_STATUS CAddonsOperations::GetAddonDetails(const std::string &method, ITr
 {
   std::string id = parameterObject["addonid"].asString();
   AddonInfoPtr addon = CAddonMgr::GetInstance().GetInstalledAddonInfo(id);
-  if (addon.get() == nullptr ||
-      addon->Type() <= ADDON_UNKNOWN || addon->Type() >= ADDON_MAX)
+  if (addon.get() == nullptr || addon->IsType(ADDON_UNKNOWN))
     return InvalidParams;
     
   CAddonDatabase addondb;
@@ -219,7 +218,7 @@ static CVariant Serialize(const AddonInfoPtr& addon)
 {
   CVariant variant;
   variant["addonid"] = addon->ID();
-  variant["type"] = ADDON::CAddonInfo::TranslateType(addon->Type(), false);
+  variant["type"] = ADDON::CAddonInfo::TranslateType(addon->MainType(), false);
   variant["name"] = addon->Name();
   variant["version"] = addon->Version().asString();
   variant["summary"] = addon->Summary();
