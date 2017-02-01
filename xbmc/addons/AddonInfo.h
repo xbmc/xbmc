@@ -451,7 +451,7 @@ namespace ADDON
     }
   
     std::string SerializeMetadata();
-    void DeserializeMetadata(const std::string& document);
+    bool DeserializeMetadata(const std::string& document);
 
     /*!
      * @brief Checks the information to match asked version

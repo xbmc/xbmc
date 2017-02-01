@@ -359,18 +359,9 @@ CAddonInfo::CAddonInfo(const std::string& id,
     m_changelog(changelog),
     m_origin(origin)
 {
-  DeserializeMetadata(metadata);
-  if (!m_id.empty() && m_mainType > ADDON_UNKNOWN && m_mainType < ADDON_MAX)
-  {
-    m_usable = true;
-
-    SetProvides(GetValue("provides").asString());
-  }
-  else
-  {
-    m_usable = false;
+  m_usable = DeserializeMetadata(metadata);
+  if (!m_usable)
     CLog::Log(LOGERROR, "CAddonInfo: tried to create add-on info with invalid data (id='%s', type='%i')", m_id.c_str(), m_mainType);
-  }
 }
 
 CAddonInfo::CAddonInfo(std::string id, TYPE type)
@@ -710,7 +701,7 @@ std::string CAddonInfo::SerializeMetadata()
   return CJSONVariantWriter::Write(variant, true);
 }
 
-void CAddonInfo::DeserializeMetadata(const std::string& document)
+bool CAddonInfo::DeserializeMetadata(const std::string& document)
 {
   CVariant variant = CJSONVariantParser::Parse(document);
 
@@ -739,9 +730,19 @@ void CAddonInfo::DeserializeMetadata(const std::string& document)
   m_dependencies = std::move(deps);
 
   for (auto it = variant["extrainfo"].begin_array(); it != variant["extrainfo"].end_array(); ++it)
-    Insert((*it)["key"].asString(), (*it)["value"].asString());
+  {
+    /// @todo is more required on add-on's repository as the value "provides"
+    if ((*it)["key"].asString() == "provides")
+    {
+      SetProvides((*it)["value"].asString());
+      break;
+    }
+  }
 
-  m_usable = true;
+  if (m_id.empty() || m_mainType <= ADDON_UNKNOWN || m_mainType >= ADDON_MAX)
+    return false;
+
+  return true;
 }
 
 bool CAddonInfo::MeetsVersion(const AddonVersion &version) const
