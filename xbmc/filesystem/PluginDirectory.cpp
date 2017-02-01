@@ -116,7 +116,7 @@ bool CPluginDirectory::StartScript(const std::string& strPath, bool retrievingDi
 {
   CURL url(strPath);
 
-  if (!CAddonMgr::GetInstance().IsAddonEnabled(url.GetHostName(), ADDON_PLUGIN) &&
+  if (!CAddonMgr::GetInstance().IsAddonEnabled(url.GetHostName()) &&
       !CAddonInstaller::GetInstance().InstallModal(url.GetHostName()))
   {
     CLog::Log(LOGERROR, "Unable to find plugin %s", url.GetHostName().c_str());
@@ -447,7 +447,7 @@ bool CPluginDirectory::RunScriptWithParams(const std::string& strPath)
   if (url.GetHostName().empty()) // called with no script - should never happen
     return false;
 
-  if (!CAddonMgr::GetInstance().IsAddonEnabled(url.GetHostName(), ADDON_PLUGIN) && !CAddonInstaller::GetInstance().InstallModal(url.GetHostName()))
+  if (!CAddonMgr::GetInstance().IsAddonEnabled(url.GetHostName()) && !CAddonInstaller::GetInstance().InstallModal(url.GetHostName()))
   {
     CLog::Log(LOGERROR, "Unable to find plugin %s", url.GetHostName().c_str());
     return false;

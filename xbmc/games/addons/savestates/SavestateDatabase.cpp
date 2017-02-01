@@ -91,7 +91,7 @@ CFileItem* CSavestateDatabase::CreateFileItem(const CVariant& object) const
     item->SetArt("thumb", save.Thumbnail());
   else
   {
-    AddonInfoPtr addon = CAddonMgr::GetInstance().GetInstalledAddonInfo(save.GameClient(), ADDON_GAMEDLL);
+    AddonInfoPtr addon = CAddonMgr::GetInstance().GetInstalledAddonInfo(save.GameClient());
     if (addon)
       item->SetArt("thumb", addon->Icon());
   }

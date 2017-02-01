@@ -452,7 +452,8 @@ static void UserInstalledAddons(const CURL& path, CFileItemList &items)
   items.ClearItems();
   items.SetLabel(g_localizeStrings.Get(24998));
 
-  AddonInfos addons = CAddonMgr::GetInstance().GetAddonInfos(false, ADDON_UNKNOWN, true);
+  AddonInfos addons;
+  CAddonMgr::GetInstance().GetAddonInfos(addons, false, ADDON_UNKNOWN, true);
   addons.erase(std::remove_if(addons.begin(), addons.end(),
                               std::not1(std::ptr_fun(IsUserInstalled))), addons.end());
   if (addons.empty())
@@ -782,7 +783,7 @@ bool CAddonsDirectory::IsRepoDirectory(const CURL& url)
   return url.GetHostName() == "repos"
       || url.GetHostName() == "all"
       || url.GetHostName() == "search"
-      || CAddonMgr::GetInstance().IsAddonEnabled(url.GetHostName(), ADDON_REPOSITORY);
+      || CAddonMgr::GetInstance().IsAddonEnabled(url.GetHostName()); // ADDON_REPOSITORY
 }
 
 void CAddonsDirectory::GenerateAddonListing(const CURL &path,

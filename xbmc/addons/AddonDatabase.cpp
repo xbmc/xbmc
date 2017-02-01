@@ -137,7 +137,7 @@ void CAddonDatabase::UpdateTables(int version)
         "enabled BOOLEAN, installDate TEXT, lastUpdated TEXT, lastUsed TEXT) \n");
 
     //Ugly hack incoming! As the addon manager isnt created yet, we need to start up our own copy
-    AddonInfoMap installedAddons;
+    AddonInfoList installedAddons;
     CAddonMgr::FindAddons(installedAddons, "special://xbmcbin/addons");
     CAddonMgr::FindAddons(installedAddons, "special://xbmc/addons");
     CAddonMgr::FindAddons(installedAddons, "special://home/addons");
@@ -145,18 +145,15 @@ void CAddonDatabase::UpdateTables(int version)
     std::string systemPath = CSpecialProtocol::TranslatePath("special://xbmc/addons");
     std::string now = CDateTime::GetCurrentDateTime().GetAsDBDateTime();
     BeginTransaction();
-    for (auto addonType : installedAddons)
+    for (auto addon : installedAddons)
     {
-      for (auto addon : addonType.second)
-      {
-        const char* id = addon.second->ID().c_str();
-        // To not risk enabling something user didn't enable, assume that everything from the systems
-        // directory is new for this release and set them to disabled.
-        bool inSystem = StringUtils::StartsWith(addon.second->Path(), systemPath);
-        m_pDS->exec(PrepareSQL("INSERT INTO installed(addonID, enabled, installDate) VALUES "
-            "('%s', NOT %d AND NOT EXISTS (SELECT * FROM disabled WHERE addonID='%s'), '%s')",
-            id, inSystem, id, now.c_str()));
-      }
+      const char* id = addon.second->ID().c_str();
+      // To not risk enabling something user didn't enable, assume that everything from the systems
+      // directory is new for this release and set them to disabled.
+      bool inSystem = StringUtils::StartsWith(addon.second->Path(), systemPath);
+      m_pDS->exec(PrepareSQL("INSERT INTO installed(addonID, enabled, installDate) VALUES "
+          "('%s', NOT %d AND NOT EXISTS (SELECT * FROM disabled WHERE addonID='%s'), '%s')",
+          id, inSystem, id, now.c_str()));
     }
     CommitTransaction();
 

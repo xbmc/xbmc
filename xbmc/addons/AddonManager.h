@@ -34,7 +34,6 @@ namespace ADDON
   typedef std::shared_ptr<CAddonDll> AddonDllPtr;
 
   typedef std::map<std::string, AddonInfoPtr> AddonInfoList;
-  typedef std::map<TYPE, AddonInfoList> AddonInfoMap;
 
   const std::string ADDON_PYTHON_EXT = "*.py";
 
@@ -198,7 +197,6 @@ namespace ADDON
      * @brief To get information from a installed add-on
      *
      * @param[in] addonId the add-on id to get the info for
-     * @param[in] type [opt] add-on type used for id
      * @return add-on information pointer of installed add-on
      *
      * @note is recommended to use the 'type' value, it increase the
@@ -369,7 +367,7 @@ namespace ADDON
      * @param[in] path The path string to check (the addon.xml must be present
      *                 on them)
      */
-    static void FindAddons(AddonInfoMap& addonmap, const std::string &path);
+    static void FindAddons(AddonInfoList& addonmap, const std::string &path);
 
     /*!
      * @brief Load the addon in the given path
@@ -470,8 +468,8 @@ namespace ADDON
      */
     static std::shared_ptr<CAddon> CreateAddon(AddonInfoPtr addonInfo);
 
-    AddonInfoMap m_installedAddons;
-    AddonInfoMap m_enabledAddons;
+    AddonInfoList m_installedAddons;
+    AddonInfoList m_enabledAddons;
     std::set<std::string> m_systemAddons;
     std::set<std::string> m_optionalAddons;
     std::set<std::string> m_updateBlacklist;
