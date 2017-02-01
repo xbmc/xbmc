@@ -727,7 +727,7 @@ std::string CAddonInfo::SerializeMetadata()
   }
 
   variant["extrainfo"] = CVariant(CVariant::VariantTypeArray);
-  for (const auto& values : m_types[0]->GetValues())
+  for (const auto& values : m_types[0].GetValues())
   {
     CVariant info(CVariant::VariantTypeObject);
     for (auto value : values.second)

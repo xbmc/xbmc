@@ -317,6 +317,14 @@ bool CAddonMgr::GetAddon(const std::string &addonId, AddonPtr &addon, const TYPE
   if (info)
     addon = CreateAddon(info);
 
+  if (addon)
+  {
+    // if the addon has a running instance, grab that
+    AddonPtr runningAddon = addon->GetRunningInstance();
+    if (runningAddon)
+      addon = runningAddon;
+  }
+
   return nullptr != addon.get();
 }
 
