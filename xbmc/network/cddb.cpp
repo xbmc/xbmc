@@ -49,7 +49,7 @@ Xcddb::Xcddb()
 #else
     : m_cddb_socket(close, -1)
 #endif
-    , m_cddb_ip_adress(g_advancedSettings.m_cddbAddress)
+    , m_cddb_ip_address(g_advancedSettings.m_cddbAddress)
 {
   m_lastError = 0;
 }
@@ -76,10 +76,10 @@ bool Xcddb::openSocket()
   hints.ai_protocol = IPPROTO_TCP;
   sprintf(service, "%d", CDDB_PORT);
 
-  res = getaddrinfo(m_cddb_ip_adress.c_str(), service, &hints, &result);
+  res = getaddrinfo(m_cddb_ip_address.c_str(), service, &hints, &result);
   if(res)
   {
-    CLog::Log(LOGERROR, "Xcddb::openSocket - failed to lookup %s with error %s", m_cddb_ip_adress.c_str(), gai_strerror(res));
+    CLog::Log(LOGERROR, "Xcddb::openSocket - failed to lookup %s with error %s", m_cddb_ip_address.c_str(), gai_strerror(res));
     res = getaddrinfo("130.179.31.49", service, &hints, &result);
     if(res)
       return false;
@@ -730,9 +730,9 @@ void Xcddb::addInexactListLine(int line_cnt, const char *line, int len)
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-void Xcddb::setCDDBIpAdress(const std::string& ip_adress)
+void Xcddb::setCDDBIpAdress(const std::string& ip_address)
 {
-  m_cddb_ip_adress = ip_adress;
+  m_cddb_ip_address = ip_address;
 }
 
 //-------------------------------------------------------------------------------------------------------------------

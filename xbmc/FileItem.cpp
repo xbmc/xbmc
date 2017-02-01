@@ -359,7 +359,7 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
     return *this;
 
   CGUIListItem::operator=(item);
-  m_bLabelPreformated=item.m_bLabelPreformated;
+  m_bLabelPreformatted=item.m_bLabelPreformatted;
   FreeMemory();
   m_strPath = item.GetPath();
   m_bIsParentFolder = item.m_bIsParentFolder;
@@ -454,7 +454,7 @@ void CFileItem::Initialize()
   m_videoInfoTag = NULL;
   m_pictureInfoTag = NULL;
   m_gameInfoTag = NULL;
-  m_bLabelPreformated = false;
+  m_bLabelPreformatted = false;
   m_bIsAlbum = false;
   m_dwSize = 0;
   m_bIsParentFolder = false;
@@ -517,7 +517,7 @@ void CFileItem::Archive(CArchive& ar)
   if (ar.IsStoring())
   {
     ar << m_bIsParentFolder;
-    ar << m_bLabelPreformated;
+    ar << m_bLabelPreformatted;
     ar << m_strPath;
     ar << m_bIsShareOrDrive;
     ar << m_iDriveType;
@@ -579,7 +579,7 @@ void CFileItem::Archive(CArchive& ar)
   else
   {
     ar >> m_bIsParentFolder;
-    ar >> m_bLabelPreformated;
+    ar >> m_bLabelPreformatted;
     ar >> m_strPath;
     ar >> m_bIsShareOrDrive;
     ar >> m_iDriveType;

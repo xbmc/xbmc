@@ -43,9 +43,9 @@ class CGUIKeyboardFactory
 
     static bool SendTextToActiveKeyboard(const std::string &aTextString, bool closeKeyboard = false);
 
-    static bool isKeyboardActivated() { return g_activedKeyboard != NULL; }
+    static bool isKeyboardActivated() { return g_activeKeyboard != NULL; }
   private:
-    static CGUIKeyboard *g_activedKeyboard;
+    static CGUIKeyboard *g_activeKeyboard;
     static FILTERING m_filtering;
     static void keyTypedCB(CGUIKeyboard *ref, const std::string &typedString);
 };

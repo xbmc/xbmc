@@ -137,7 +137,7 @@ public:
   unsigned int GetInputBufferSize() const { return m_input_buffer_count * m_input_buffer_size; }
   unsigned int GetOutputBufferSize() const { return m_output_buffer_count * m_output_buffer_size; }
 
-  unsigned int GetInputBufferSpace() const { return m_omx_input_avaliable.size() * m_input_buffer_size; }
+  unsigned int GetInputBufferSpace() const { return m_omx_input_available.size() * m_input_buffer_size; }
   unsigned int GetOutputBufferSpace() const { return m_omx_output_available.size() * m_output_buffer_size; }
 
   void FlushAll();
@@ -175,7 +175,7 @@ private:
 
   // OMXCore input buffers (demuxer packets)
   pthread_mutex_t   m_omx_input_mutex;
-  std::queue<OMX_BUFFERHEADERTYPE*> m_omx_input_avaliable;
+  std::queue<OMX_BUFFERHEADERTYPE*> m_omx_input_available;
   std::vector<OMX_BUFFERHEADERTYPE*> m_omx_input_buffers;
   unsigned int  m_input_alignment;
   unsigned int  m_input_buffer_size;
