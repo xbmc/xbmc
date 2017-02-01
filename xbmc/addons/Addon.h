@@ -133,6 +133,14 @@ public:
    \return true if  min_version <= version <= current_version, false otherwise.
    */
   bool MeetsVersion(const AddonVersion &version) const override;
+
+  /*! \brief Load the default settings and override these with any previously configured user settings
+   \param bForce force the load of settings even if they are already loaded (reload)
+   \return true if settings exist, false otherwise
+   \sa LoadUserSettings, SaveSettings, HasSettings, HasUserSettings, GetSetting, UpdateSetting
+   */
+  virtual bool LoadSettings(bool bForce = false);
+
   bool ReloadSettings() override;
 
   /*! \brief callback for when this add-on is disabled.
@@ -155,13 +163,6 @@ public:
   void OnPostUnInstall() override {};
 
 protected:
-  /*! \brief Load the default settings and override these with any previously configured user settings
-   \param bForce force the load of settings even if they are already loaded (reload)
-   \return true if settings exist, false otherwise
-   \sa LoadUserSettings, SaveSettings, HasSettings, HasUserSettings, GetSetting, UpdateSetting
-   */
-  virtual bool LoadSettings(bool bForce = false);
-
   /*! \brief Load the user settings
    \return true if user settings exist, false otherwise
    \sa LoadSettings, SaveSettings, HasSettings, HasUserSettings, GetSetting, UpdateSetting

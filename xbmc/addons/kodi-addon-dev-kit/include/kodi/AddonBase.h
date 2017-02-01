@@ -249,80 +249,6 @@ private:
 //==============================================================================
 namespace kodi {
 namespace addon {
-/// Add-on settings handle class
-/// @todo need bigger improvement and rework
-class CAddonSetting
-{
-public:
-  enum SETTING_TYPE { NONE=0, CHECK, SPIN };
-
-  CAddonSetting(SETTING_TYPE type, std::string id, std::string label)
-    : Type(type),
-      Id(id),
-      Label(label),
-      Current(0)
-  {
-  }
-
-  CAddonSetting(const CAddonSetting &rhs) // copy constructor
-  {
-    Id = rhs.Id;
-    Label = rhs.Label;
-    Current = rhs.Current;
-    Type = rhs.Type;
-    for (unsigned int i = 0; i < rhs.Entries.size(); ++i)
-      Entries.push_back(rhs.Entries[i]);
-  }
-
-  void AddEntry(std::string label)
-  {
-    if (Label.empty() || Type != SPIN)
-      return;
-    Entries.push_back(Label);
-  }
-
-  //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-  // Function used on Kodi itself to transfer back from add-on given data with
-  // "ADDON_StructSetting***" to "std::vector<CAddonSetting>"
-  //
-  // Note: Not needed on add-on itself, only here to have all related parts on
-  // same place!
-  //
-  static inline void StructToVec(unsigned int elements, ADDON_StructSetting*** sSet, std::vector<CAddonSetting> *vecSet)
-  {
-    if (elements == 0)
-      return;
-
-    vecSet->clear();
-    for(unsigned int i = 0; i < elements; i++)
-    {
-      CAddonSetting vSet((CAddonSetting::SETTING_TYPE)(*sSet)[i]->type, (*sSet)[i]->id, (*sSet)[i]->label);
-      if((*sSet)[i]->type == CAddonSetting::SPIN)
-      {
-        for(unsigned int j=0;j<(*sSet)[i]->entry_elements;j++)
-        {
-          vSet.AddEntry((*sSet)[i]->entry[j]);
-        }
-      }
-      vSet.Current = (*sSet)[i]->current;
-      vecSet->push_back(vSet);
-    }
-  }
-
-  // data members
-  SETTING_TYPE Type;
-  std::string Id;
-  std::string Label;
-  int Current;
-  std::vector<std::string> Entries;
-};
-} /* namespace addon */
-} /* namespace kodi */
-//------------------------------------------------------------------------------
-
-//==============================================================================
-namespace kodi {
-namespace addon {
 /// Add-on main instance class.
 /// @todo need bigger improvement and rework
 class CAddonBase
@@ -336,14 +262,10 @@ public:
   virtual ~CAddonBase()
   {
   }
-  
+
   virtual ADDON_STATUS Create() { return ADDON_STATUS_OK; }
 
   virtual ADDON_STATUS GetStatus() { return ADDON_STATUS_OK; }
-
-  virtual bool HasSettings() { return false; }
-
-  virtual bool GetSettings(std::vector<CAddonSetting>& settings) { return false; }
 
   virtual ADDON_STATUS SetSetting(const std::string& settingName, const CSettingValue& settingValue, bool lastSetting) { return ADDON_STATUS_UNKNOWN; }
 
@@ -377,78 +299,9 @@ public:
 
   static inline ADDON_STATUS ADDONBASE_GetStatus() { return CAddonBase::m_interface->addonBase->GetStatus(); }
 
-  static inline bool ADDONBASE_HasSettings() { return CAddonBase::m_interface->addonBase->HasSettings(); }
-
-  static inline unsigned int ADDONBASE_GetSettings(ADDON_StructSetting ***sSet)
-  {
-    std::vector<CAddonSetting> settings;
-    if (CAddonBase::m_interface->addonBase->GetSettings(settings))
-    {
-      *sSet = nullptr;
-      if (settings.empty())
-        return 0;
-
-      *sSet = (ADDON_StructSetting**)malloc(settings.size()*sizeof(ADDON_StructSetting*));
-      for (unsigned int i = 0;i < settings.size(); ++i)
-      {
-        (*sSet)[i] = nullptr;
-        (*sSet)[i] = (ADDON_StructSetting*)malloc(sizeof(ADDON_StructSetting));
-        (*sSet)[i]->id = nullptr;
-        (*sSet)[i]->label = nullptr;
-
-        if (!settings[i].Id.empty() && !settings[i].Label.empty())
-        {
-          (*sSet)[i]->id = strdup(settings[i].Id.c_str());
-          (*sSet)[i]->label = strdup(settings[i].Label.c_str());
-          (*sSet)[i]->type = settings[i].Type;
-          (*sSet)[i]->current = settings[i].Current;
-          (*sSet)[i]->entry_elements = 0;
-          (*sSet)[i]->entry = nullptr;
-          if (settings[i].Type == CAddonSetting::SPIN && !settings[i].Entries.empty())
-          {
-            (*sSet)[i]->entry = (char**)malloc(settings[i].Entries.size()*sizeof(char**));
-            for (unsigned int j = 0; j < settings[i].Entries.size(); ++j)
-            {
-              if (!settings[i].Entries[j].empty())
-              {
-                (*sSet)[i]->entry[j] = strdup(settings[i].Entries[j].c_str());
-                (*sSet)[i]->entry_elements++;
-              }
-            }
-          }
-        }
-      }
-
-      return settings.size();
-    }
-    return 0;
-  }
-
   static inline ADDON_STATUS ADDONBASE_SetSetting(const char *settingName, const void *settingValue, bool lastSetting)
   {
     return CAddonBase::m_interface->addonBase->SetSetting(settingName, CSettingValue(settingValue), lastSetting);
-  }
-
-  static inline void ADDONBASE_FreeSettings(unsigned int elements, ADDON_StructSetting*** set)
-  {
-    if (elements == 0)
-      return;
-
-    for (unsigned int i = 0; i < elements; ++i)
-    {
-      if ((*set)[i]->type == CAddonSetting::SPIN)
-      {
-        for (unsigned int j = 0; j < (*set)[i]->entry_elements; ++j)
-        {
-          free((*set)[i]->entry[j]);
-        }
-        free((*set)[i]->entry);
-      }
-      free((*set)[i]->id);
-      free((*set)[i]->label);
-      free((*set)[i]);
-    }
-    free(*set);
   }
 
   static inline ADDON_STATUS ADDONBASE_CreateInstance(int instanceType, const char* instanceID, KODI_HANDLE instance, KODI_HANDLE* addonInstance)
@@ -554,18 +407,6 @@ inline void Log(const AddonLog loglevel, const char* format, ...)
   extern "C" __declspec(dllexport) ADDON_STATUS ADDON_GetStatus() \
   { \
     return kodi::addon::CAddonBase::ADDONBASE_GetStatus(); \
-  } \
-  extern "C" __declspec(dllexport) bool ADDON_HasSettings() \
-  { \
-    return kodi::addon::CAddonBase::ADDONBASE_HasSettings(); \
-  } \
-  extern "C" __declspec(dllexport) unsigned int ADDON_GetSettings(ADDON_StructSetting*** sSet) \
-  { \
-    return kodi::addon::CAddonBase::ADDONBASE_GetSettings(sSet); \
-  } \
-  extern "C" __declspec(dllexport) void ADDON_FreeSettings() \
-  { \
-    kodi::addon::CAddonBase::ADDONBASE_FreeSettings(0, nullptr); /* Currently bad but becomes soon changed! */ \
   } \
   extern "C" __declspec(dllexport) ADDON_STATUS ADDON_SetSetting(const char *settingName, const void *settingValue) { return ADDON_STATUS_OK; } \
   extern "C" __declspec(dllexport) const char* ADDON_GetTypeVersion(int type) \
