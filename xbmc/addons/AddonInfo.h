@@ -133,10 +133,10 @@ namespace ADDON
 
   /*!
    */
-  class CAddonInstanceType : public CAddonExtensions
+  class CAddonType : public CAddonExtensions
   {
   public:
-    CAddonInstanceType(TYPE type, CAddonInfo* info, const TiXmlElement* child);
+    CAddonType(TYPE type, CAddonInfo* info, const TiXmlElement* child);
 
     const TYPE Type() const { return m_type; }
     std::string LibPath() const;
@@ -281,9 +281,9 @@ namespace ADDON
      */
     bool IsType(TYPE type) const;
 
-    const std::vector<CAddonInstanceType>& Types() const { return m_types; }
+    const std::vector<CAddonType>& Types() const { return m_types; }
 
-    const CAddonInstanceType* AddonInstance(TYPE type) const;
+    const CAddonType* Type(TYPE type) const;
 
     /*!
      * @brief To get version of add-on
@@ -507,7 +507,7 @@ namespace ADDON
 
     std::string m_id;
     TYPE m_mainType;
-    std::vector<CAddonInstanceType> m_types;
+    std::vector<CAddonType> m_types;
     AddonVersion m_version{"0.0.0"};
     AddonVersion m_minversion{"0.0.0"};
     std::string m_name;

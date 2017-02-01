@@ -211,7 +211,7 @@ void CAddonExtensions::Insert(std::string id, std::string value)
   m_values.push_back(std::pair<std::string, EXT_VALUE>(id, extension));
 }
 
-CAddonInstanceType::CAddonInstanceType(TYPE type, CAddonInfo* info, const TiXmlElement* child)
+CAddonType::CAddonType(TYPE type, CAddonInfo* info, const TiXmlElement* child)
 {
   m_type = type;
   m_path = info->Path();
@@ -234,14 +234,14 @@ CAddonInstanceType::CAddonInstanceType(TYPE type, CAddonInfo* info, const TiXmlE
   }
 }
 
-std::string CAddonInstanceType::LibPath() const
+std::string CAddonType::LibPath() const
 {
   if (m_libname.empty())
     return "";
   return URIUtils::AddFileToFolder(m_path, m_libname);
 }
 
-void CAddonInstanceType::SetProvides(const std::string &content)
+void CAddonType::SetProvides(const std::string &content)
 {
   if (!content.empty())
   {
@@ -256,7 +256,7 @@ void CAddonInstanceType::SetProvides(const std::string &content)
     m_providedSubContent.insert(ADDON_EXECUTABLE);
 }
 
-const char* CAddonInstanceType::GetPlatformLibraryName(const TiXmlElement* element)
+const char* CAddonType::GetPlatformLibraryName(const TiXmlElement* element)
 {
   const char* libraryName;
 #if defined(TARGET_ANDROID)
@@ -678,7 +678,7 @@ bool CAddonInfo::LoadAddonXML(const TiXmlElement* baseElement, std::string addon
         return false;
       }
 
-      m_types.push_back(CAddonInstanceType(type, this, child));
+      m_types.push_back(CAddonType(type, this, child));
     }
   }
 
@@ -688,8 +688,8 @@ bool CAddonInfo::LoadAddonXML(const TiXmlElement* baseElement, std::string addon
    */
   if (m_types.empty())
   {
-    CAddonInstanceType instanceType(ADDON_UNKNOWN, this, nullptr);
-    m_types.push_back(instanceType);
+    CAddonType addonType(ADDON_UNKNOWN, this, nullptr);
+    m_types.push_back(addonType);
   }
   
   m_mainType = m_types[0].Type();
@@ -769,19 +769,19 @@ bool CAddonInfo::DeserializeMetadata(const std::string& document)
   }
   m_dependencies = std::move(deps);
 
-  CAddonInstanceType instanceType(m_mainType, this, nullptr);
+  CAddonType addonType(m_mainType, this, nullptr);
   
   for (auto it = variant["extrainfo"].begin_array(); it != variant["extrainfo"].end_array(); ++it)
   {
     /// @todo is more required on add-on's repository as the value "provides"
     if ((*it)["key"].asString() == "provides")
     {
-      instanceType.SetProvides((*it)["value"].asString());
+      addonType.SetProvides((*it)["value"].asString());
       break;
     }
   }
 
-  m_types.push_back(instanceType);
+  m_types.push_back(addonType);
 
   if (m_id.empty() || m_mainType <= ADDON_UNKNOWN || m_mainType >= ADDON_MAX)
     return false;
@@ -794,12 +794,12 @@ bool CAddonInfo::MeetsVersion(const AddonVersion &version) const
   return m_minversion <= version && version <= m_version;
 }
 
-const CAddonInstanceType* CAddonInfo::AddonInstance(TYPE type) const
+const CAddonType* CAddonInfo::Type(TYPE type) const
 {
-  for (auto& instanceType : m_types)
+  for (auto& addonType : m_types)
   {
-    if (instanceType.Type() == type)
-      return &instanceType;
+    if (addonType.Type() == type)
+      return &addonType;
   }
   return nullptr;
 }
@@ -852,9 +852,9 @@ bool CAddonInfo::ProvidesSubContent(const TYPE& content) const
   if (content == ADDON_UNKNOWN)
     return false;
 
-  for (auto instanceType : m_types)
+  for (auto addonType : m_types)
   {
-    if (instanceType.ProvidesSubContent(content))
+    if (addonType.ProvidesSubContent(content))
       return true;
   }
 

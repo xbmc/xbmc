@@ -67,6 +67,7 @@ public:
 
   virtual TYPE MainType() const { return m_addonInfo->MainType(); }
   virtual bool IsType(TYPE type) const { return m_addonInfo->IsType(type); }
+  virtual const CAddonType* Type(TYPE type) const { return m_addonInfo->Type(type); }
   virtual std::string ID() const { return m_addonInfo->ID(); }
   virtual std::string Name() const { return m_addonInfo->Name(); }
   virtual bool IsInUse() const { return false; };
