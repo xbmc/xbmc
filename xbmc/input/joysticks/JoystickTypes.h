@@ -59,6 +59,20 @@ namespace JOYSTICK
   };
 
   /*!
+   * \brief Categories of features used in the joystick library
+   */
+  enum class FEATURE_CATEGORY
+  {
+    UNKNOWN,
+    FACE,
+    SHOULDER,
+    TRIGGER,
+    ANALOG_STICK,
+    ACCELEROMETER,
+    HAPTICS,
+  };
+
+  /*!
    * \brief Direction arrows on the hat (directional pad)
    */
   enum class HAT_DIRECTION

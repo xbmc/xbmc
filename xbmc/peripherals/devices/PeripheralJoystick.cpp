@@ -242,6 +242,12 @@ bool CPeripheralJoystick::OnAxisMotion(unsigned int axisIndex, float position)
 
       // If axis is centered, force bHandled to false to notify all handlers.
       // This avoids "sticking".
+      //
+      //! @todo This fails for anomalous triggers! If a trigger travels from -1
+      // to +1, then at 0.0 the input will fall through to the next handler.
+      // And the next handler will get stuck, because it won't receive any more
+      // updates until the first handler is unregistered! We need to translate
+      // the position inside this class before calling OnAxisMotion().
       if (position == 0.0f)
         bHandled = false;
 

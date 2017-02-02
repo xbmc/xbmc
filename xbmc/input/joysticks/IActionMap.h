@@ -50,7 +50,7 @@ namespace JOYSTICK
      * \param feature  The feature to look up
      *
      * \return The action ID from Key.h, or ACTION_NONE if no action is mapped
-     *         to the specified key
+     *         to the specified feature
      */
     virtual int GetActionID(const FeatureName& feature) = 0;
   };
