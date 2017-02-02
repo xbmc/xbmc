@@ -45,7 +45,7 @@ bool CService::Start()
   {
 #ifdef HAS_PYTHON
   case PYTHON:
-    ret = (CScriptInvocationManager::GetInstance().ExecuteAsync(AddonInfo()->LibPath(), this->shared_from_this()) != -1);
+    ret = (CScriptInvocationManager::GetInstance().ExecuteAsync(Type(ADDON_SERVICE)->LibPath(), this->shared_from_this()) != -1);
     break;
 #endif
 
@@ -66,7 +66,7 @@ bool CService::Stop()
   {
 #ifdef HAS_PYTHON
   case PYTHON:
-    ret = CScriptInvocationManager::GetInstance().Stop(LibPath());
+    ret = CScriptInvocationManager::GetInstance().Stop(Type(ADDON_SERVICE)->LibPath());
     break;
 #endif
 
@@ -81,7 +81,7 @@ bool CService::Stop()
 
 void CService::BuildServiceType()
 {
-  std::string str = AddonInfo()->LibPath();
+  std::string str = Type(ADDON_SERVICE)->LibPath();
   std::string ext;
 
   size_t p = str.find_last_of('.');

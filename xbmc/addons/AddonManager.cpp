@@ -796,9 +796,9 @@ bool CAddonMgr::StartServices(const bool beforelogin)
     return false;
 
   bool ret = true;
-  for (IVECADDONS it = services.begin(); it != services.end(); ++it)
+  for (auto addon : services)
   {
-    std::shared_ptr<CService> service = std::dynamic_pointer_cast<CService>(*it);
+    std::shared_ptr<CService> service = std::dynamic_pointer_cast<CService>(addon);
     if (service)
     {
       if ( (beforelogin && service->GetStartOption() == CService::STARTUP)
@@ -821,9 +821,9 @@ void CAddonMgr::StopServices(const bool onlylogin)
   if (!GetAddons(services, ADDON_SERVICE))
     return;
 
-  for (IVECADDONS it = services.begin(); it != services.end(); ++it)
+  for (auto addon : services)
   {
-    std::shared_ptr<CService> service = std::dynamic_pointer_cast<CService>(*it);
+    std::shared_ptr<CService> service = std::dynamic_pointer_cast<CService>(addon);
     if (service)
     {
       if ( (onlylogin && service->GetStartOption() == CService::LOGIN)
@@ -831,6 +831,9 @@ void CAddonMgr::StopServices(const bool onlylogin)
         service->Stop();
     }
   }
+
+  CSingleLock lock(m_critSection);
+  m_serviceSystemStarted = false;
 }
 
 bool CAddonMgr::CanAddonBeDisabled(const std::string& addonID)

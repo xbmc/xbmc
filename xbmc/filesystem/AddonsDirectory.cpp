@@ -877,7 +877,7 @@ bool CAddonsDirectory::GetScriptsAndPlugins(const std::string &content, AddonInf
   tempAddons = CAddonMgr::GetInstance().GetAddonInfos(true, ADDON_PLUGIN);
   for (auto addon : tempAddons)
   {
-    if (addon->ProvidesSubContent(type))
+    if (addon->ProvidesSubContent(type, ADDON_PLUGIN))
       addons.push_back(addon);
   }
   tempAddons.clear();
@@ -885,7 +885,7 @@ bool CAddonsDirectory::GetScriptsAndPlugins(const std::string &content, AddonInf
   tempAddons = CAddonMgr::GetInstance().GetAddonInfos(true, ADDON_SCRIPT);
   for (auto addon : tempAddons)
   {
-    if (addon->ProvidesSubContent(type))
+    if (addon->ProvidesSubContent(type, ADDON_SCRIPT))
       addons.push_back(addon);
   }
   tempAddons.clear();

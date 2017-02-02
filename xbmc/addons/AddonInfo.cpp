@@ -847,14 +847,14 @@ bool CAddonInfo::IsType(TYPE type) const
   return (m_mainType == type || ProvidesSubContent(type));
 }
 
-bool CAddonInfo::ProvidesSubContent(const TYPE& content) const
+bool CAddonInfo::ProvidesSubContent(const TYPE& content, const TYPE& mainType/* = ADDON_UNKNOWN*/) const
 {
   if (content == ADDON_UNKNOWN)
     return false;
 
   for (auto addonType : m_types)
   {
-    if (addonType.ProvidesSubContent(content))
+    if ((mainType == ADDON_UNKNOWN || addonType.Type() == mainType) && addonType.ProvidesSubContent(content))
       return true;
   }
 

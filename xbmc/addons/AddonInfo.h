@@ -142,7 +142,7 @@ namespace ADDON
     std::string LibPath() const;
     bool ProvidesSubContent(const TYPE& content) const
     {
-      return content == ADDON_UNKNOWN ? false : m_providedSubContent.count(content) > 0;
+      return content == ADDON_UNKNOWN ? false : m_type == content || m_providedSubContent.count(content) > 0;
     }
 
     bool ProvidesSeveralSubContents() const
@@ -462,9 +462,11 @@ namespace ADDON
      * @brief Check the information about supported sub content
      *
      * @param[in] content Sub content type to check present
+     * @param[in] mainType [opt] Type to check sub type from, default to
+     *                     ADDON_UNKNOWN who check all included parts.
      * @return true if present, otherwise false
      */
-    bool ProvidesSubContent(const TYPE& content) const;
+    bool ProvidesSubContent(const TYPE& content, const TYPE& mainType = ADDON_UNKNOWN) const;
 
     /*!
      * @brief To check addon contains several sub contents
@@ -475,7 +477,7 @@ namespace ADDON
      */
     bool ProvidesSeveralSubContents() const
     {
-      return m_providedSubContent.size() > 1;
+      return m_types[0].m_providedSubContent.size() > 1;
     }
   
     std::string SerializeMetadata();
