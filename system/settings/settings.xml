@@ -2737,6 +2737,11 @@
           </dependencies>
           <control type="button" format="action" />
         </setting>
+        <setting id="input.notifyperipherals" type="boolean" label="35019" help="35020">
+          <level>1</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
       </group>
       <group id="2" label="14094">
         <setting id="input.enablemouse" type="boolean" label="21369" help="36377">

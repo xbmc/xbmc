@@ -16495,7 +16495,19 @@ msgctxt "#35018"
 msgid "Controller configuration depends on a disabled add-on. Would you like to enable it?"
 msgstr ""
 
-#empty strings from id 35019 to 35048
+#. Name of setting for enabling notifications when a peripheral is plugged in
+#: system/settings/settings.xml
+msgctxt "#35019"
+msgid "Notify when device is connected"
+msgstr ""
+
+#. Description of setting with label #35019 "Notify when device is connected"
+#: system/settings/settings.xml
+msgctxt "#35020"
+msgid "Show notification when a device is connected or removed."
+msgstr ""
+
+#empty strings from id 35021 to 35048
 
 #. Name of game add-ons category
 #: xbmc/addons/Addon.cpp

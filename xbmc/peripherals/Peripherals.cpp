@@ -64,6 +64,7 @@
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
+#include "ServiceBroker.h"
 
 #if defined(HAVE_LIBCEC)
 #include "bus/virtual/PeripheralBusCEC.h"
@@ -378,6 +379,10 @@ void CPeripherals::OnDeviceAdded(const CPeripheralBus &bus, const CPeripheral &p
   if (peripheral.Type() == PERIPHERAL_JOYSTICK_EMULATION) //! @todo Change to peripheral.IsEmulated()
     bNotify = false;
 
+  // don't show a notification if disabled in settings
+  if (!CServiceBroker::GetSettings().GetBool(CSettings::SETTING_INPUT_NOTIFY_PERIPHERALS))
+    bNotify = false;
+
   if (bNotify)
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(35005), peripheral.DeviceName());
 #endif
@@ -393,6 +398,10 @@ void CPeripherals::OnDeviceDeleted(const CPeripheralBus &bus, const CPeripheral 
 
   // don't show a notification for emulated peripherals
   if (peripheral.Type() == PERIPHERAL_JOYSTICK_EMULATION) //! @todo Change to peripheral.IsEmulated()
+    bNotify = false;
+
+  // don't show a notification if disabled in settings
+  if (!CServiceBroker::GetSettings().GetBool(CSettings::SETTING_INPUT_NOTIFY_PERIPHERALS))
     bNotify = false;
 
   if (bNotify)
