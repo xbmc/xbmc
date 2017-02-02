@@ -16036,7 +16036,7 @@ msgstr ""
 #. Label of the button to fix the bug where buttons are skipped in the controller dialog
 #: addons/skin.estuary/1080i/DialogGameControllers.xml
 msgctxt "#35013"
-msgid "Fix skipping"
+msgid "Ignore input"
 msgstr ""
 
 #. Help text of the button to fix the bug where buttons are skipped in the controller dialog. %s - list of disabled buttons and axes
