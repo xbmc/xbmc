@@ -1560,6 +1560,7 @@ bool CPVRManager::PerformChannelSwitch(const CPVRChannelPtr &channel, bool bPrev
     return false;
 
   // check whether we're waiting for a previous switch to complete
+  CFileItem* previousFile = nullptr;
   {
     CSingleLock lock(m_critSection);
     if (m_bIsSwitchingChannels)
@@ -1591,13 +1592,12 @@ bool CPVRManager::PerformChannelSwitch(const CPVRChannelPtr &channel, bool bPrev
     }
 
     m_bIsSwitchingChannels = true;
+
+    CLog::Log(LOGDEBUG, "PVRManager - %s - switching to channel '%s'", __FUNCTION__, channel->ChannelName().c_str());
+
+    previousFile = m_currentFile;
+    m_currentFile = nullptr;
   }
-
-  CLog::Log(LOGDEBUG, "PVRManager - %s - switching to channel '%s'", __FUNCTION__, channel->ChannelName().c_str());
-
-  // will be deleted by CPVRChannelSwitchJob::DoWork()
-  CFileItem* previousFile = m_currentFile;
-  m_currentFile = NULL;
 
   bool bSwitched(false);
 
