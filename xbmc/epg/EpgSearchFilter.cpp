@@ -54,12 +54,13 @@ void CEpgSearchFilter::Reset()
   m_bRemoveDuplicates        = false;
 
   /* pvr specific filters */
+  m_bIsRadio                 = false;
   m_iChannelNumber           = EPG_SEARCH_UNSET;
   m_bFreeToAirOnly           = false;
   m_iChannelGroup            = EPG_SEARCH_UNSET;
   m_bIgnorePresentTimers     = true;
   m_bIgnorePresentRecordings = true;
-  m_iUniqueBroadcastId	     = EPG_TAG_INVALID_UID;
+  m_iUniqueBroadcastId       = EPG_TAG_INVALID_UID;
 }
 
 bool CEpgSearchFilter::MatchGenre(const CEpgInfoTagPtr &tag) const
