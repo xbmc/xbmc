@@ -362,7 +362,9 @@ namespace ADDON
    *
    *    Semiaxis:
    *       - driver index
+   *       - center
    *       - semiaxis direction
+   *       - range
    *
    *    Motor:
    *       - driver index
@@ -377,7 +379,9 @@ namespace ADDON
       m_type(type),
       m_driverIndex(driverIndex),
       m_hatDirection(JOYSTICK_DRIVER_HAT_UNKNOWN),
-      m_semiAxisDirection(JOYSTICK_DRIVER_SEMIAXIS_UNKNOWN)
+      m_center(0),
+      m_semiAxisDirection(JOYSTICK_DRIVER_SEMIAXIS_UNKNOWN),
+      m_range(1)
     {
     }
 
@@ -389,7 +393,9 @@ namespace ADDON
       m_type(JOYSTICK_DRIVER_PRIMITIVE_TYPE_UNKNOWN),
       m_driverIndex(0),
       m_hatDirection(JOYSTICK_DRIVER_HAT_UNKNOWN),
-      m_semiAxisDirection(JOYSTICK_DRIVER_SEMIAXIS_UNKNOWN)
+      m_center(0),
+      m_semiAxisDirection(JOYSTICK_DRIVER_SEMIAXIS_UNKNOWN),
+      m_range(1)
     {
     }
 
@@ -409,7 +415,9 @@ namespace ADDON
       m_type(JOYSTICK_DRIVER_PRIMITIVE_TYPE_HAT_DIRECTION),
       m_driverIndex(hatIndex),
       m_hatDirection(direction),
-      m_semiAxisDirection(JOYSTICK_DRIVER_SEMIAXIS_UNKNOWN)
+      m_center(0),
+      m_semiAxisDirection(JOYSTICK_DRIVER_SEMIAXIS_UNKNOWN),
+      m_range(1)
     {
     }
 
@@ -417,11 +425,13 @@ namespace ADDON
      * \brief Construct a driver primitive representing the positive or negative
      *        half of an axis
      */
-    DriverPrimitive(unsigned int axisIndex, JOYSTICK_DRIVER_SEMIAXIS_DIRECTION direction) :
+    DriverPrimitive(unsigned int axisIndex, int center, JOYSTICK_DRIVER_SEMIAXIS_DIRECTION direction, unsigned int range) :
       m_type(JOYSTICK_DRIVER_PRIMITIVE_TYPE_SEMIAXIS),
       m_driverIndex(axisIndex),
       m_hatDirection(JOYSTICK_DRIVER_HAT_UNKNOWN),
-      m_semiAxisDirection(direction)
+      m_center(center),
+      m_semiAxisDirection(direction),
+      m_range(range)
     {
     }
 
@@ -437,7 +447,9 @@ namespace ADDON
       m_type(primitive.type),
       m_driverIndex(0),
       m_hatDirection(JOYSTICK_DRIVER_HAT_UNKNOWN),
-      m_semiAxisDirection(JOYSTICK_DRIVER_SEMIAXIS_UNKNOWN)
+      m_center(0),
+      m_semiAxisDirection(JOYSTICK_DRIVER_SEMIAXIS_UNKNOWN),
+      m_range(1)
     {
       switch (m_type)
       {
@@ -455,7 +467,9 @@ namespace ADDON
         case JOYSTICK_DRIVER_PRIMITIVE_TYPE_SEMIAXIS:
         {
           m_driverIndex       = primitive.semiaxis.index;
+          m_center            = primitive.semiaxis.center;
           m_semiAxisDirection = primitive.semiaxis.direction;
+          m_range             = primitive.semiaxis.range;
           break;
         }
         case JOYSTICK_DRIVER_PRIMITIVE_TYPE_MOTOR:
@@ -471,7 +485,9 @@ namespace ADDON
     JOYSTICK_DRIVER_PRIMITIVE_TYPE     Type(void) const { return m_type; }
     unsigned int                       DriverIndex(void) const { return m_driverIndex; }
     JOYSTICK_DRIVER_HAT_DIRECTION      HatDirection(void) const { return m_hatDirection; }
+    int                                Center(void) const { return m_center; }
     JOYSTICK_DRIVER_SEMIAXIS_DIRECTION SemiAxisDirection(void) const { return m_semiAxisDirection; }
+    unsigned int                       Range(void) const { return m_range; }
 
     bool operator==(const DriverPrimitive& other) const
     {
@@ -492,7 +508,9 @@ namespace ADDON
           case JOYSTICK_DRIVER_PRIMITIVE_TYPE_SEMIAXIS:
           {
             return m_driverIndex       == other.m_driverIndex &&
-                   m_semiAxisDirection == other.m_semiAxisDirection;
+                   m_center            == other.m_center &&
+                   m_semiAxisDirection == other.m_semiAxisDirection &&
+                   m_range             == other.m_range;
           }
           default:
             break;
@@ -520,7 +538,9 @@ namespace ADDON
         case JOYSTICK_DRIVER_PRIMITIVE_TYPE_SEMIAXIS:
         {
           driver_primitive.semiaxis.index     = m_driverIndex;
+          driver_primitive.semiaxis.center    = m_center;
           driver_primitive.semiaxis.direction = m_semiAxisDirection;
+          driver_primitive.semiaxis.range     = m_range;
           break;
         }
         case JOYSTICK_DRIVER_PRIMITIVE_TYPE_MOTOR:
@@ -542,7 +562,9 @@ namespace ADDON
     JOYSTICK_DRIVER_PRIMITIVE_TYPE     m_type;
     unsigned int                       m_driverIndex;
     JOYSTICK_DRIVER_HAT_DIRECTION      m_hatDirection;
+    int                                m_center;
     JOYSTICK_DRIVER_SEMIAXIS_DIRECTION m_semiAxisDirection;
+    unsigned int                       m_range;
   };
 
   typedef PeripheralVector<DriverPrimitive, JOYSTICK_DRIVER_PRIMITIVE> DriverPrimitives;

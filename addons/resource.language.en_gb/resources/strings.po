@@ -16462,11 +16462,7 @@ msgctxt "#35012"
 msgid "A new controller has been detected. Configuration can be done at any time in \"Settings -> System Settings -> Input\". Would you like to configure it now?"
 msgstr ""
 
-#. Label of the button to fix the bug where buttons are skipped in the controller dialog
-#: addons/skin.estuary/xml/DialogGameControllers.xml
-msgctxt "#35013"
-msgid "Fix skipping"
-msgstr ""
+#empty string with id 35013
 
 #. Help text of the button to fix the bug where buttons are skipped in the controller dialog. %s - list of disabled buttons and axes
 msgctxt "#35014"
@@ -16495,7 +16491,14 @@ msgctxt "#35018"
 msgid "Controller configuration depends on a disabled add-on. Would you like to enable it?"
 msgstr ""
 
-#empty strings from id 35019 to 35048
+#. Label of the button to fix the bug where buttons are skipped in the controller dialog
+#: addons/skin.estuary/xml/DialogGameControllers.xml
+#: xbmc/games/controllers/dialogs/GUIDialogButtonCapture.cpp
+msgctxt "#35019"
+msgid "Ignore input"
+msgstr ""
+
+#empty strings from id 35020 to 35048
 
 #. Name of game add-ons category
 #: xbmc/addons/Addon.cpp
