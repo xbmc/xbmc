@@ -27,7 +27,6 @@
 #include "guilib/TextureManager.h"
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
-#include "DVDVideoCodecFFmpeg.h"
 #include "TimingConstants.h"
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
@@ -1085,7 +1084,7 @@ CDVDVideoCodec::VCReturn CDecoder::Decode(AVCodecContext *avctx, AVFrame *pFrame
     // send frame to output for processing
     CVdpauDecodedPicture pic;
     memset(&pic.DVDPic, 0, sizeof(pic.DVDPic));
-    ((CDVDVideoCodecFFmpeg*)avctx->opaque)->GetPictureCommon(&pic.DVDPic);
+    ((ICallbackHWAccel*)avctx->opaque)->GetPictureCommon(&pic.DVDPic);
     pic.videoSurface = surf;
     pic.DVDPic.color_matrix = avctx->colorspace;
     m_bufferStats.IncDecoded();
