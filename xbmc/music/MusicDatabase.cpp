@@ -1534,7 +1534,7 @@ bool CMusicDatabase::GetRolesByArtist(int idArtist, CFileItem* item)
   try
   {
     std::string strSQL = PrepareSQL("SELECT DISTINCT song_artist.idRole, Role.strRole FROM song_artist JOIN role ON "
-                                    " song_artist.idRole = Role.idRole WHERE idArtist = %i ORDER BY song_artist.idRole ASC", idArtist);
+                                    " song_artist.idRole = role.idRole WHERE idArtist = %i ORDER BY song_artist.idRole ASC", idArtist);
     if (!m_pDS->query(strSQL))
       return false;
     if (m_pDS->num_rows() == 0)
@@ -1758,7 +1758,7 @@ bool CMusicDatabase::GetGenresByArtist(int idArtist, CFileItem* item)
 {
   try
   {
-    std::string strSQL = PrepareSQL("SELECT DISTINCT song_genre.idGenre, Genre.strGenre FROM "
+    std::string strSQL = PrepareSQL("SELECT DISTINCT song_genre.idGenre, genre.strGenre FROM "
       "song_artist JOIN song ON song_artist.idSong = song.idSong JOIN "
       "song_genre ON song.idSong = song_genre.idSong JOIN "
       "genre ON song_genre.idGenre = genre.idGenre "
