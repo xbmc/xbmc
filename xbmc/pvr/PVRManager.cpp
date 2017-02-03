@@ -1390,7 +1390,8 @@ bool CPVRManager::UpdateItem(CFileItem& item)
   }
 
   CSingleLock lock(m_critSection);
-  if (!m_currentFile || *m_currentFile->GetPVRChannelInfoTag() == *item.GetPVRChannelInfoTag())
+  if (!m_currentFile || !m_currentFile->GetPVRChannelInfoTag() || !item.GetPVRChannelInfoTag() ||
+      *m_currentFile->GetPVRChannelInfoTag() == *item.GetPVRChannelInfoTag())
     return false;
 
   g_application.SetCurrentFileItem(*m_currentFile);
@@ -1538,6 +1539,7 @@ bool CPVRManager::PerformChannelSwitch(const CPVRChannelPtr &channel, bool bPrev
     return false;
 
   // check whether we're waiting for a previous switch to complete
+  CFileItemPtr previousFile;
   {
     CSingleLock lock(m_critSection);
     if (m_bIsSwitchingChannels)
@@ -1567,12 +1569,11 @@ bool CPVRManager::PerformChannelSwitch(const CPVRChannelPtr &channel, bool bPrev
     }
 
     m_bIsSwitchingChannels = true;
+
+    CLog::Log(LOGDEBUG, "PVRManager - %s - switching to channel '%s'", __FUNCTION__, channel->ChannelName().c_str());
+
+    previousFile = std::move(m_currentFile);
   }
-
-  CLog::Log(LOGDEBUG, "PVRManager - %s - switching to channel '%s'", __FUNCTION__, channel->ChannelName().c_str());
-
-  const CFileItemPtr previousFile(m_currentFile);
-  m_currentFile.reset();
 
   bool bSwitched(false);
 
