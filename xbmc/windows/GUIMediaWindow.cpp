@@ -922,10 +922,10 @@ bool CGUIMediaWindow::OnClick(int iItem, const std::string &player)
     AddonPtr addon;
     if (CAddonMgr::GetInstance().GetAddon(url.GetHostName(), addon, ADDON_SCRIPT))
     {
-      if (!CScriptInvocationManager::GetInstance().Stop(addon->LibPath()))
+      if (!CScriptInvocationManager::GetInstance().Stop(addon->Type(ADDON_SCRIPT)->LibPath()))
       {
         CAddonMgr::GetInstance().UpdateLastUsed(addon->ID());
-        CScriptInvocationManager::GetInstance().ExecuteAsync(addon->LibPath(), addon);
+        CScriptInvocationManager::GetInstance().ExecuteAsync(addon->Type(ADDON_SCRIPT)->LibPath(), addon);
       }
       return true;
     }

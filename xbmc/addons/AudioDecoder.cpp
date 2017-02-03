@@ -27,12 +27,12 @@ namespace ADDON
 CAudioDecoder::CAudioDecoder(AddonInfoPtr addonInfo)
   : CAddonDll(addonInfo)
 {
-  m_extension = AddonInfo()->GetValue("@extension").asString();
-  m_mimetype = AddonInfo()->GetValue("@mimetype").asString();
-  m_tags = AddonInfo()->GetValue("@tags").asBoolean();
-  m_tracks = AddonInfo()->GetValue("@tracks").asBoolean();
-  m_CodecName = AddonInfo()->GetValue("@name").asString();
-  m_strExt = AddonInfo()->GetValue("@name").asString() + "stream";
+  m_extension = Type(ADDON_AUDIODECODER)->GetValue("@extension").asString();
+  m_mimetype = Type(ADDON_AUDIODECODER)->GetValue("@mimetype").asString();
+  m_tags = Type(ADDON_AUDIODECODER)->GetValue("@tags").asBoolean();
+  m_tracks = Type(ADDON_AUDIODECODER)->GetValue("@tracks").asBoolean();
+  m_CodecName = Type(ADDON_AUDIODECODER)->GetValue("@name").asString();
+  m_strExt = Type(ADDON_AUDIODECODER)->GetValue("@name").asString() + "stream";
 }
 
 CAudioDecoder::~CAudioDecoder()

@@ -41,10 +41,10 @@ CLanguageResource::CLanguageResource(AddonInfoPtr addonInfo)
   : CResource(addonInfo)
 {
   // parse <extension> attributes
-  m_locale = CLocale::FromString(AddonInfo()->GetValue("@locale").asString());
+  m_locale = CLocale::FromString(Type(ADDON_RESOURCE_LANGUAGE)->GetValue("@locale").asString());
 
   // parse <charsets>
-  const CAddonExtensions* charsetsElement = AddonInfo()->GetElement("charsets");
+  const CAddonExtensions* charsetsElement = Type(ADDON_RESOURCE_LANGUAGE)->GetElement("charsets");
   if (charsetsElement != nullptr)
   {
     m_charsetGui = charsetsElement->GetValue("gui").asString();
@@ -53,7 +53,7 @@ CLanguageResource::CLanguageResource(AddonInfoPtr addonInfo)
   }
 
   // parse <dvd>
-  const CAddonExtensions* dvdElement = AddonInfo()->GetElement("dvd");
+  const CAddonExtensions* dvdElement = Type(ADDON_RESOURCE_LANGUAGE)->GetElement("dvd");
   if (dvdElement != nullptr)
   {
     m_dvdLanguageMenu = dvdElement->GetValue("menu").asString();
@@ -69,7 +69,7 @@ CLanguageResource::CLanguageResource(AddonInfoPtr addonInfo)
     m_dvdLanguageSubtitle = m_locale.GetLanguageCode();
 
   // parse <sorttokens>
-  const CAddonExtensions* sorttokensElement = AddonInfo()->GetElement("sorttokens");
+  const CAddonExtensions* sorttokensElement = Type(ADDON_RESOURCE_LANGUAGE)->GetElement("sorttokens");
   if (sorttokensElement != nullptr)
   {
     /* First loop goes around rows e.g.
@@ -184,7 +184,7 @@ bool CLanguageResource::FindLanguageAddonByName(const std::string &legacyLanguag
   {
     // check if the old language matches the language addon id, the language
     // locale or the language addon name
-    CLocale locale = CLocale::FromString(addon->GetValue("@locale").asString());
+    CLocale locale = CLocale::FromString(addon->Type(ADDON_RESOURCE_LANGUAGE)->GetValue("@locale").asString());
     if (legacyLanguage.compare(addon->ID()) == 0 ||
         locale.Equals(legacyLanguage) ||
         StringUtils::EqualsNoCase(legacyLanguage, addon->Name()))

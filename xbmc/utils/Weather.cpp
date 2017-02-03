@@ -84,7 +84,7 @@ bool CWeatherJob::DoWork()
 
   // initialize our sys.argv variables
   std::vector<std::string> argv;
-  argv.push_back(addon->LibPath());
+  argv.push_back(addon->Type(ADDON_SCRIPT_WEATHER)->LibPath());
 
   std::string strSetting = StringUtils::Format("%i", m_location);
   argv.push_back(strSetting);

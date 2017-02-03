@@ -88,7 +88,7 @@ bool CPeripheralBusAddon::GetAddonWithButtonMap(ADDON::AddonInfoPtr &addon) cons
   auto it = std::find_if(m_addons.begin(), m_addons.end(),
     [](const ADDON::AddonPtr& addon)
     {
-      return addon->AddonInfo()->GetValue("@provides_buttonmaps").asBoolean();
+      return addon->Type(ADDON::ADDON_PERIPHERALDLL)->GetValue("@provides_buttonmaps").asBoolean();
     });
 
   if (it != m_addons.end())
@@ -497,7 +497,7 @@ bool CPeripheralBusAddon::PromptEnableAddons(const ADDON::AddonInfos& disabledAd
   auto itAddon = std::find_if(disabledAddons.begin(), disabledAddons.end(),
     [](const AddonInfoPtr& addonInfo)
   {
-    return addonInfo->GetValue("@provides_buttonmaps").asBoolean();
+    return addonInfo->Type(ADDON::ADDON_PERIPHERALDLL)->GetValue("@provides_buttonmaps").asBoolean();
   });
 
   if (itAddon != disabledAddons.end())
@@ -511,7 +511,7 @@ bool CPeripheralBusAddon::PromptEnableAddons(const ADDON::AddonInfos& disabledAd
   {
     for (auto addonInfo : disabledAddons)
     {
-      if (addonInfo->GetValue("@provides_buttonmaps").asBoolean())
+      if (addonInfo->Type(ADDON::ADDON_PERIPHERALDLL)->GetValue("@provides_buttonmaps").asBoolean())
         CAddonMgr::GetInstance().EnableAddon(addonInfo->ID());
     }
   }

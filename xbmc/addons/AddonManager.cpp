@@ -669,7 +669,7 @@ std::shared_ptr<CAddon> CAddonMgr::CreateAddon(AddonInfoPtr addonInfo, TYPE addo
     case ADDON_SCRAPER_MUSICVIDEOS:
     case ADDON_SCRAPER_TVSHOWS:
     case ADDON_SCRAPER_LIBRARY:
-      return std::make_shared<CScraper>(addonInfo);
+      return std::make_shared<CScraper>(addonType, addonInfo);
     case ADDON_VIZ:
     case ADDON_SCREENSAVER:
       return std::make_shared<CAddonDll>(addonInfo);

@@ -204,18 +204,18 @@ static int RunScript(const std::vector<std::string>& params)
     if (CAddonMgr::GetInstance().GetAddon(params[0], addon))
     {
       //Get the correct extension point to run
-      if (CAddonMgr::GetInstance().GetAddon(params[0], addon, ADDON_SCRIPT) ||
-          CAddonMgr::GetInstance().GetAddon(params[0], addon, ADDON_SCRIPT_WEATHER) ||
-          CAddonMgr::GetInstance().GetAddon(params[0], addon, ADDON_SCRIPT_LYRICS) ||
-          CAddonMgr::GetInstance().GetAddon(params[0], addon, ADDON_SCRIPT_LIBRARY))
-      {
-        scriptpath = addon->LibPath();
-      }
+      if (addon->IsType(ADDON_SCRIPT))
+        scriptpath = addon->Type(ADDON_SCRIPT)->LibPath();
+      else if (addon->IsType(ADDON_SCRIPT_WEATHER))
+        scriptpath = addon->Type(ADDON_SCRIPT_WEATHER)->LibPath();
+      else if (addon->IsType(ADDON_SCRIPT_LYRICS))
+        scriptpath = addon->Type(ADDON_SCRIPT_LYRICS)->LibPath();
+      else if (addon->IsType(ADDON_SCRIPT_LIBRARY))
+        scriptpath = addon->Type(ADDON_SCRIPT_LIBRARY)->LibPath();
       else
       {
         //Run a random extension point (old behaviour).
-        CAddonMgr::GetInstance().GetAddon(params[0], addon);
-        scriptpath = addon->LibPath();
+        scriptpath = addon->MainLibPath();
         CLog::Log(LOGWARNING, "RunScript called for a non-script addon '%s'. This behaviour is deprecated.", params[0].c_str());
       }
     }
@@ -298,10 +298,25 @@ static int StopScript(const std::vector<std::string>& params)
   //! @todo FIXME: This does not work for addons with multiple extension points!
   //! Are there any use for this? TODO: Fix hack in CScreenSaver::Destroy() and deprecate.
   std::string scriptpath(params[0]);
+
   // Test to see if the param is an addon ID
-  AddonPtr script;
-  if (CAddonMgr::GetInstance().GetAddon(params[0], script))
-    scriptpath = script->LibPath();
+  AddonInfoPtr script = CAddonMgr::GetInstance().GetInstalledAddonInfo(params[0]);
+  if (script)
+  {
+    if (script->IsType(ADDON_SCRIPT))
+      scriptpath = script->Type(ADDON_SCRIPT)->LibPath();
+    else if (script->IsType(ADDON_SCRIPT_WEATHER))
+      scriptpath = script->Type(ADDON_SCRIPT_WEATHER)->LibPath();
+    else if (script->IsType(ADDON_SCRIPT_LYRICS))
+      scriptpath = script->Type(ADDON_SCRIPT_LYRICS)->LibPath();
+    else if (script->IsType(ADDON_SCRIPT_LIBRARY))
+      scriptpath = script->Type(ADDON_SCRIPT_LIBRARY)->LibPath();
+    else
+    {
+      CLog::Log(LOGWARNING, "StopScript called for a non-script addon '%s'. This behaviour is deprecated.", params[0].c_str());
+      scriptpath = script->MainLibPath();
+    }
+  }
   CScriptInvocationManager::GetInstance().Stop(scriptpath);
 
   return 0;

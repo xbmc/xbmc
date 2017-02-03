@@ -98,7 +98,9 @@ CGameClient::CGameClient(ADDON::AddonInfoPtr addonInfo)
     m_video(nullptr),
     m_region(GAME_REGION_UNKNOWN)
 {
-  std::vector<std::string> extensions = StringUtils::Split(AddonInfo()->GetValue("extensions").asString(), EXTENSION_SEPARATOR);
+  using namespace ADDON;
+
+  std::vector<std::string> extensions = StringUtils::Split(Type(ADDON_GAMEDLL)->GetValue("extensions").asString(), EXTENSION_SEPARATOR);
   std::transform(extensions.begin(), extensions.end(),
                   std::inserter(m_extensions, m_extensions.begin()), NormalizeExtension);
 
@@ -109,10 +111,10 @@ CGameClient::CGameClient(ADDON::AddonInfoPtr addonInfo)
     m_extensions.clear();
   }
 
-  m_bSupportsVFS = AddonInfo()->GetValue("supports_vfs").asBoolean();
-  m_bSupportsStandalone = AddonInfo()->GetValue("supports_standalone").asBoolean();
-  m_bSupportsKeyboard = AddonInfo()->GetValue("supports_keyboard").asBoolean();
-  m_bSupportsMouse = AddonInfo()->GetValue("supports_mouse").asBoolean();
+  m_bSupportsVFS = Type(ADDON_GAMEDLL)->GetValue("supports_vfs").asBoolean();
+  m_bSupportsStandalone = Type(ADDON_GAMEDLL)->GetValue("supports_standalone").asBoolean();
+  m_bSupportsKeyboard = Type(ADDON_GAMEDLL)->GetValue("supports_keyboard").asBoolean();
+  m_bSupportsMouse = Type(ADDON_GAMEDLL)->GetValue("supports_mouse").asBoolean();
 
   ResetPlayback();
 }
@@ -121,13 +123,13 @@ CGameClient::~CGameClient(void)
 {
 }
 
-std::string CGameClient::LibPath() const
+std::string CGameClient::MainLibPath() const
 {
   // If the game client requires a proxy, load its DLL instead
   if (m_info->proxy_dll_count > 0)
     return m_info->proxy_dll_paths[0];
 
-  return CAddon::LibPath();
+  return CAddon::MainLibPath();
 }
 
 ADDON::AddonPtr CGameClient::GetRunningInstance() const
@@ -362,7 +364,7 @@ void CGameClient::NotifyError(GAME_ERROR error)
   {
     // Failed to play game
     // The emulator "%s" had an internal error.
-    CGUIDialogOK::ShowAndGetInput(CVariant{ 35210 }, StringUtils::Format(g_localizeStrings.Get(35213).c_str(), AddonInfo()->Name().c_str()));
+    CGUIDialogOK::ShowAndGetInput(CVariant{ 35210 }, StringUtils::Format(g_localizeStrings.Get(35213).c_str(), Name().c_str()));
   }
 }
 

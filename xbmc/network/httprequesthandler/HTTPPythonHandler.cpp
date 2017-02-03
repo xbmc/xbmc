@@ -73,7 +73,7 @@ CHTTPPythonHandler::CHTTPPythonHandler(const HTTPRequest &request)
   std::shared_ptr<ADDON::CWebinterface> webinterface = std::dynamic_pointer_cast<ADDON::CWebinterface>(m_addon);
 
   // forward every request to the default entry point
-  m_scriptPath = webinterface->LibPath();
+  m_scriptPath = webinterface->Type(ADDON::ADDON_WEB_INTERFACE)->LibPath();
 
   // we need to map any requests to a specific WSGI webinterface to the root path
   std::string baseLocation = webinterface->GetBaseLocation();

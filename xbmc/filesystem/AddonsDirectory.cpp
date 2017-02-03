@@ -137,7 +137,7 @@ static bool IsStandaloneGame(const AddonInfoPtr& addon)
 
 static bool IsEmulator(const AddonInfoPtr& addon)
 {
-  return addon->IsType(ADDON_GAMEDLL) && !addon->GetValue("extensions").empty();
+  return addon->IsType(ADDON_GAMEDLL) && !addon->Type(ADDON_GAMEDLL)->GetValue("extensions").empty();
 }
 
 static bool IsGameProvider(const AddonInfoPtr& addon)
@@ -153,8 +153,8 @@ static bool IsGameResource(const AddonInfoPtr& addon)
 static bool IsGameSupportAddon(const AddonInfoPtr& addon)
 {
   return addon->IsType(ADDON_GAMEDLL) && 
-         addon->GetValue("extensions").empty() &&
-         !addon->GetValue("supports_standalone").asBoolean();
+         addon->Type(ADDON_GAMEDLL)->GetValue("extensions").empty() &&
+         !addon->Type(ADDON_GAMEDLL)->GetValue("supports_standalone").asBoolean();
 }
 
 static bool IsGameAddon(const AddonInfoPtr& addon)
@@ -542,7 +542,7 @@ static void RunningAddons(const CURL& path, CFileItemList &items)
   AddonInfos addons = CAddonMgr::GetInstance().GetAddonInfos(false, ADDON_SERVICE);
 
   addons.erase(std::remove_if(addons.begin(), addons.end(),
-      [](const AddonInfoPtr& addon){ return !CScriptInvocationManager::GetInstance().IsRunning(addon->LibPath()); }), addons.end());
+      [](const AddonInfoPtr& addon){ return !CScriptInvocationManager::GetInstance().IsRunning(addon->Type(ADDON_SERVICE)->LibPath()); }), addons.end());
   CAddonsDirectory::GenerateAddonListing(path, addons, items, g_localizeStrings.Get(24994));
 }
 
@@ -859,7 +859,7 @@ CFileItemPtr CAddonsDirectory::FileItemFromAddonInfo(const AddonInfoPtr &addonIn
   //! @todo fix hacks that depends on these
   item->SetProperty("Addon.ID", addonInfo->ID());
   item->SetProperty("Addon.Name", addonInfo->Name());
-  strLabel = addonInfo->GetValue("language").asString();
+  strLabel = addonInfo->Language();
   if (!strLabel.empty())
     item->SetProperty("Addon.Language", strLabel);
 

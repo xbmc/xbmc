@@ -58,8 +58,8 @@ CPeripheralAddon::CPeripheralAddon(ADDON::AddonInfoPtr addonInfo) :
   CAddonDll(addonInfo),
   m_apiVersion("0.0.0")
 {
-  m_bProvidesJoysticks = AddonInfo()->GetValue("@provides_joysticks").asBoolean();
-  m_bProvidesButtonMaps = AddonInfo()->GetValue("@provides_buttonmaps").asBoolean();
+  m_bProvidesJoysticks = Type(ADDON::ADDON_PERIPHERALDLL)->GetValue("@provides_joysticks").asBoolean();
+  m_bProvidesButtonMaps = Type(ADDON::ADDON_PERIPHERALDLL)->GetValue("@provides_buttonmaps").asBoolean();
 
   ResetProperties();
 }

@@ -57,7 +57,7 @@ using KODI::MESSAGING::HELPERS::DialogResponse;
 CRepository::CRepository(AddonInfoPtr addonInfo)
   : CAddon(addonInfo)
 {
-  for (auto element : AddonInfo()->GetElements("dir"))
+  for (auto element : Type(ADDON_REPOSITORY)->GetElements("dir"))
   {
     AddonVersion min_version(element.second.GetValue("@minversion").asString());
     if (min_version <= CAddonMgr::GetInstance().GetInstalledAddonInfo("xbmc.addon")->Version())
@@ -71,13 +71,13 @@ CRepository::CRepository(AddonInfoPtr addonInfo)
       m_dirs.push_back(std::move(dir));
     }
   }
-  if (!AddonInfo()->GetValue("info").empty())
+  if (!Type(ADDON_REPOSITORY)->GetValue("info").empty())
   {
     DirInfo info;
-    info.checksum = AddonInfo()->GetValue("checksum").asString();
-    info.info = AddonInfo()->GetValue("info").asString();
-    info.datadir = AddonInfo()->GetValue("datadir").asString();
-    info.hashes = AddonInfo()->GetValue("hashes").asBoolean();
+    info.checksum = Type(ADDON_REPOSITORY)->GetValue("checksum").asString();
+    info.info = Type(ADDON_REPOSITORY)->GetValue("info").asString();
+    info.datadir = Type(ADDON_REPOSITORY)->GetValue("datadir").asString();
+    info.hashes = Type(ADDON_REPOSITORY)->GetValue("hashes").asBoolean();
     m_dirs.push_back(std::move(info));
   }
 }

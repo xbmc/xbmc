@@ -60,9 +60,9 @@ CPVRClient::CPVRClient(AddonInfoPtr addonInfo)
     m_apiVersion("0.0.0"),
     m_bAvahiServiceAdded(false)
 {
-  m_strAvahiType = AddonInfo()->GetValue("@avahi_type").asString();
-  m_strAvahiIpSetting = AddonInfo()->GetValue("@avahi_ip_setting").asString();
-  m_strAvahiPortSetting = AddonInfo()->GetValue("@avahi_port_setting").asString();
+  m_strAvahiType = Type(ADDON_PVRDLL)->GetValue("@avahi_type").asString();
+  m_strAvahiIpSetting = Type(ADDON_PVRDLL)->GetValue("@avahi_ip_setting").asString();
+  m_strAvahiPortSetting = Type(ADDON_PVRDLL)->GetValue("@avahi_port_setting").asString();
 
   ResetProperties();
 }

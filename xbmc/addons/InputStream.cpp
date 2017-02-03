@@ -37,10 +37,10 @@ CCriticalSection CInputStream::m_parentSection;
 CInputStream::CInputStream(AddonInfoPtr addonInfo)
   : CAddonDll(addonInfo)
 {
-  std::string listitemprops = AddonInfo()->GetValue("@listitemprops").asString();
-  std::string extensions = AddonInfo()->GetValue("@extension").asString();
-  std::string protocols = AddonInfo()->GetValue("@protocols").asString();
-  std::string name(AddonInfo()->ID());
+  std::string listitemprops = Type(ADDON_INPUTSTREAM)->GetValue("@listitemprops").asString();
+  std::string extensions = Type(ADDON_INPUTSTREAM)->GetValue("@extension").asString();
+  std::string protocols = Type(ADDON_INPUTSTREAM)->GetValue("@protocols").asString();
+  std::string name(ID());
 
   m_fileItemProps = StringUtils::Tokenize(listitemprops, "|");
   for (auto &key : m_fileItemProps)

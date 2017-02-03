@@ -59,11 +59,11 @@ class CVFSURLWrapper
 CVFSEntry::CVFSEntry(AddonInfoPtr addonInfo)
   : CAddonDll(addonInfo)
 {
-  m_protocols = AddonInfo()->GetValue("@protocols").asString();
-  m_extensions = AddonInfo()->GetValue("@extensions").asString();
-  m_files = AddonInfo()->GetValue("@files").asBoolean();
-  m_directories = AddonInfo()->GetValue("@directories").asBoolean();
-  m_filedirectories = AddonInfo()->GetValue("@filedirectories").asBoolean();
+  m_protocols = Type(ADDON_VFS)->GetValue("@protocols").asString();
+  m_extensions = Type(ADDON_VFS)->GetValue("@extensions").asString();
+  m_files = Type(ADDON_VFS)->GetValue("@files").asBoolean();
+  m_directories = Type(ADDON_VFS)->GetValue("@directories").asBoolean();
+  m_filedirectories = Type(ADDON_VFS)->GetValue("@filedirectories").asBoolean();
 }
 
 bool CVFSEntry::Create()

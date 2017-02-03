@@ -127,19 +127,20 @@ static void CheckScraperError(const TiXmlElement *pxeRoot)
   throw CScraperError(sTitle, sMessage);
 }
 
-CScraper::CScraper(AddonInfoPtr addonInfo)
+CScraper::CScraper(TYPE addonType, AddonInfoPtr addonInfo)
   : CAddon(addonInfo),
     m_fLoaded(false),
-    m_pathContent(CONTENT_NONE)
+    m_pathContent(CONTENT_NONE),
+    m_addonType(addonType)
 {
-  m_requiressettings = AddonInfo()->GetValue("@requiressettings").asBoolean();
+  m_requiressettings = Type(m_addonType)->GetValue("@requiressettings").asBoolean();
 
   CDateTimeSpan persistence;
-  std::string tmp = AddonInfo()->GetValue("@cachepersistence").asString();
+  std::string tmp = Type(m_addonType)->GetValue("@cachepersistence").asString();
   if (!tmp.empty())
     m_persistence.SetFromTimeString(tmp);
 
-  switch (AddonInfo()->MainType())
+  switch (m_addonType)
   {
     case ADDON_SCRAPER_ALBUMS:
       m_pathContent = CONTENT_ALBUMS;
@@ -160,7 +161,7 @@ CScraper::CScraper(AddonInfoPtr addonInfo)
       break;
   }
 
-  m_isPython = URIUtils::GetExtension(AddonInfo()->LibPath()) == ".py";
+  m_isPython = URIUtils::GetExtension(Type(m_addonType)->LibPath()) == ".py";
 }
 
 bool CScraper::Supports(const CONTENT_TYPE &content) const
@@ -341,7 +342,7 @@ bool CScraper::Load()
   if (m_fLoaded || m_isPython)
     return true;
 
-  bool result=m_parser.Load(LibPath());
+  bool result = m_parser.Load(Type(m_addonType)->LibPath());
   if (result)
   {
     //! @todo this routine assumes that deps are a single level, and assumes the dep is installed.
@@ -358,7 +359,7 @@ bool CScraper::Load()
       if (dep)
       {
         CXBMCTinyXML doc;
-        if (dep->IsType(ADDON_SCRAPER_LIBRARY) && doc.LoadFile(dep->LibPath()))
+        if (dep->IsType(ADDON_SCRAPER_LIBRARY) && doc.LoadFile(dep->Type(ADDON_SCRAPER_LIBRARY)->LibPath()))
           m_parser.AddDocument(&doc);
       }
       else
@@ -373,7 +374,7 @@ bool CScraper::Load()
   }
 
   if (!result)
-    CLog::Log(LOGWARNING, "failed to load scraper XML from %s", LibPath().c_str());
+    CLog::Log(LOGWARNING, "failed to load scraper XML from %s", Type(m_addonType)->LibPath().c_str());
   return m_fLoaded = result;
 }
 

@@ -31,7 +31,7 @@ CService::CService(AddonInfoPtr addonInfo)
     m_type(UNKNOWN),
     m_startOption(LOGIN)
 {
-  std::string start = AddonInfo()->GetValue("@start").asString();
+  std::string start = Type(ADDON_SERVICE)->GetValue("@start").asString();
   if (start == "startup")
     m_startOption = STARTUP;
 

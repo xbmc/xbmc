@@ -45,7 +45,7 @@ std::string CController::Label(void)
 std::string CController::ImagePath(void) const
 {
   if (!m_layout.Image().empty())
-    return URIUtils::AddFileToFolder(URIUtils::GetDirectory(LibPath()), m_layout.Image());
+    return URIUtils::AddFileToFolder(URIUtils::GetDirectory(Type(ADDON::ADDON_GAME_CONTROLLER)->LibPath()), m_layout.Image());
   return "";
 }
 
@@ -53,7 +53,7 @@ bool CController::LoadLayout(void)
 {
   if (!m_bLoaded)
   {
-    std::string strLayoutXmlPath = LibPath();
+    std::string strLayoutXmlPath = Type(ADDON::ADDON_GAME_CONTROLLER)->LibPath();
 
     CXBMCTinyXML xmlDoc;
     if (!xmlDoc.LoadFile(strLayoutXmlPath))

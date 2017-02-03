@@ -81,11 +81,11 @@ bool CAddonDll::LoadDll()
   std::string strAltFileName;
   if (!m_bIsChild)
   {
-    strFileName = LibPath();
+    strFileName = MainLibPath();
   }
   else
   {
-    std::string libPath = LibPath();
+    std::string libPath = MainLibPath();
     if (!XFILE::CFile::Exists(libPath))
     {
       std::string temp = CSpecialProtocol::TranslatePath("special://xbmc/");

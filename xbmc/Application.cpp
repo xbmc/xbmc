@@ -3976,7 +3976,7 @@ bool CApplication::WakeUpScreenSaver(bool bPowerOffKeyPressed /* = false */)
         * makes sure the addon gets terminated after we've moved out of the screensaver window.
         * If we don't do this, we may simply lockup.
         */
-        g_alarmClock.Start(SCRIPT_ALARM, SCRIPT_TIMEOUT, "StopScript(" + m_pythonScreenSaver->LibPath() + ")", true, false);
+        g_alarmClock.Start(SCRIPT_ALARM, SCRIPT_TIMEOUT, "StopScript(" + m_pythonScreenSaver->Type(ADDON_SCREENSAVER)->LibPath() + ")", true, false);
         m_pythonScreenSaver.reset();
       }
       if (g_windowManager.GetActiveWindow() == WINDOW_SCREENSAVER)
@@ -4082,17 +4082,18 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
   }
   else if (m_screensaverIdInUse.empty())
     return;
-  else if (CAddonMgr::GetInstance().GetAddon(m_screensaverIdInUse, m_pythonScreenSaver))
+  else if (CAddonMgr::GetInstance().GetAddon(m_screensaverIdInUse, m_pythonScreenSaver, ADDON_SCREENSAVER))
   {
-    if (CScriptInvocationManager::GetInstance().HasLanguageInvoker(m_pythonScreenSaver->LibPath()))
+    std::string libPath = m_pythonScreenSaver->Type(ADDON_SCREENSAVER)->LibPath();
+    if (CScriptInvocationManager::GetInstance().HasLanguageInvoker(libPath))
     {
       CLog::Log(LOGDEBUG, "using python screensaver add-on %s", m_screensaverIdInUse.c_str());
 
       // Don't allow a previously-scheduled alarm to kill our new screensaver
       g_alarmClock.Stop(SCRIPT_ALARM, true);
 
-      if (!CScriptInvocationManager::GetInstance().Stop(m_pythonScreenSaver->LibPath()))
-        CScriptInvocationManager::GetInstance().ExecuteAsync(m_pythonScreenSaver->LibPath(), AddonPtr(new CAddonDll(dynamic_cast<ADDON::CAddonDll&>(*m_pythonScreenSaver))));
+      if (!CScriptInvocationManager::GetInstance().Stop(libPath))
+        CScriptInvocationManager::GetInstance().ExecuteAsync(libPath, AddonPtr(new CAddonDll(dynamic_cast<ADDON::CAddonDll&>(*m_pythonScreenSaver))));
       return;
     }
     m_pythonScreenSaver.reset();

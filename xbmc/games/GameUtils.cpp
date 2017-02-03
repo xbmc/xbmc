@@ -243,7 +243,7 @@ bool CGameUtils::IsStandaloneGame(const ADDON::AddonInfoPtr& addon)
   using namespace ADDON;
 
   if (addon->IsType(ADDON_GAMEDLL))
-    return addon->GetValue("supports_standalone").asBoolean();
+    return addon->Type(ADDON_GAMEDLL)->GetValue("supports_standalone").asBoolean();
   else if (addon->IsType(ADDON_SCRIPT))
     return addon->IsType(ADDON_GAME);
   return false;

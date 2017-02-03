@@ -137,7 +137,7 @@ bool CSkinSettingBool::SerializeSetting(TiXmlElement* element) const
 CSkinInfo::CSkinInfo(AddonInfoPtr addonInfo)
   : CAddon(addonInfo)
 {
-  for (auto values : AddonInfo()->GetValues())
+  for (auto values : Type(ADDON_SKIN)->GetValues())
   {
     if (values.first != "res")
       continue;
@@ -176,11 +176,11 @@ CSkinInfo::CSkinInfo(AddonInfoPtr addonInfo)
     }
   }
 
-  m_effectsSlowDown = AddonInfo()->GetValue("@effectslowdown").asFloat();
+  m_effectsSlowDown = Type(ADDON_SKIN)->GetValue("@effectslowdown").asFloat();
   if (m_effectsSlowDown == 0.0f)
     m_effectsSlowDown = 1.f;
 
-  m_debugging = AddonInfo()->GetValue("@debugging").asBoolean();
+  m_debugging = Type(ADDON_SKIN)->GetValue("@debugging").asBoolean();
 
   LoadStartupWindows(nullptr);
 }

@@ -140,6 +140,7 @@ namespace ADDON
 
     const TYPE Type() const { return m_type; }
     std::string LibPath() const;
+    std::string LibName() const { return m_libname; }
     bool ProvidesSubContent(const TYPE& content) const
     {
       return content == ADDON_UNKNOWN ? false : m_type == content || m_providedSubContent.count(content) > 0;
@@ -152,6 +153,9 @@ namespace ADDON
 
     const char* GetPlatformLibraryName(const TiXmlElement* element);
     void SetProvides(const std::string &content);
+
+  private:
+    friend class CAddonInfo;
 
     TYPE m_type;
     std::string m_path;
@@ -170,11 +174,6 @@ namespace ADDON
   class CAddonInfo
   {
   public:
-    const extValue GetValue(std::string id) const { return m_types[0].GetValue(id); }
-    const EXT_VALUES& GetValues() const { return m_types[0].GetValues(); }
-    const CAddonExtensions* GetElement(std::string id) const { return m_types[0].GetElement(id); }
-    const EXT_ELEMENTS GetElements(std::string id = "") const { return m_types[0].GetElements(id); }
-    
     /*!
      * @brief Class constructor for local available addons where his addon.xml
      * is present.
@@ -281,9 +280,33 @@ namespace ADDON
      */
     bool IsType(TYPE type) const;
 
+    /*!
+     * @brief Get all available types from add-on
+     *
+     * @return a list of types supported on add-on
+     */
     const std::vector<CAddonType>& Types() const { return m_types; }
 
+    /*!
+     * @brief Get the type class from given type identifier
+     *
+     * @param[in] type The type to select, to become the master use
+     *                 ADDON_UNKNOWN
+     * @return Type class or `nullptr` if not present
+     */
     const CAddonType* Type(TYPE type) const;
+
+    /*!
+     * @brief Get the library path where the add-on is present with his
+     * library/exe part.
+     *
+     * The library path can be a local and also for them on repository with
+     * URL to them.
+     *
+     * @return Path with lib where add-on is present, returns empty if no
+     * libname is defined.
+     */
+    std::string MainLibPath() const;
 
     /*!
      * @brief To get version of add-on
@@ -447,16 +470,11 @@ namespace ADDON
     uint64_t PackageSize() const { return m_packageSize; }
 
     /*!
-     * @brief Get the library path where the add-on is present with his
-     * library/exe part.
+     * @brief User language of add-on
      *
-     * The library path can be a local and also for them on repository with
-     * URL to them.
-     *
-     * @return Path with lib where add-on is present, returns empty if no
-     * libname is defined.
+     * @return the on addon.xml defined language string
      */
-    std::string LibPath() const;
+    std::string Language() { return m_language; }
 
     /*!
      * @brief Check the information about supported sub content
@@ -532,6 +550,7 @@ namespace ADDON
     std::string m_origin;
     uint64_t m_packageSize;
     std::set<TYPE> m_providedSubContent;
+    std::string m_language;
 
     /*!
      * @brief Function to load data xml file to set all property values

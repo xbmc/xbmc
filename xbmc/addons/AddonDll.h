@@ -109,7 +109,6 @@ namespace ADDON
     std::string Name() const { return m_addon->Name(); }
     std::string Path() const { return m_addon->Path(); }
     std::string Profile() const { return m_addon->Profile(); }
-    std::string LibPath() const { return m_addon->LibPath(); }
 
   protected:
     ADDON::AddonDllPtr m_addon;

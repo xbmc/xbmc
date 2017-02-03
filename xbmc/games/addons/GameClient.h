@@ -59,7 +59,7 @@ namespace GAME
     virtual ~CGameClient(void);
 
     // Implementation of CAddon via CAddonDll
-    virtual std::string     LibPath() const override;
+    virtual std::string     MainLibPath() const override;
     virtual ADDON::AddonPtr GetRunningInstance() const override;
 
     // Query properties of the game client

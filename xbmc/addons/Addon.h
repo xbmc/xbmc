@@ -66,8 +66,11 @@ public:
   virtual ~CAddon() {}
 
   virtual TYPE MainType() const { return m_addonInfo->MainType(); }
+  virtual std::string MainLibPath() const { return m_addonInfo->MainLibPath(); }
+
   virtual bool IsType(TYPE type) const { return m_addonInfo->IsType(type); }
   virtual const CAddonType* Type(TYPE type) const { return m_addonInfo->Type(type); }
+
   virtual std::string ID() const { return m_addonInfo->ID(); }
   virtual std::string Name() const { return m_addonInfo->Name(); }
   virtual bool IsInUse() const { return false; };
@@ -77,7 +80,6 @@ public:
   virtual std::string Description() const { return m_addonInfo->Description(); }
   virtual std::string Path() const { return m_addonInfo->Path(); }
   virtual std::string Profile() const { return m_profilePath; }
-  virtual std::string LibPath() const { return m_addonInfo->LibPath(); }
   virtual std::string Author() const { return m_addonInfo->Author(); }
   virtual std::string ChangeLog() const { return m_addonInfo->ChangeLog(); }
   virtual std::string FanArt() const { return m_addonInfo->FanArt(); }

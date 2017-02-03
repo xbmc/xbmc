@@ -81,7 +81,7 @@ const char* CGameClientProperties::GetLibraryPath(void)
   if (m_strLibraryPath.empty())
   {
     // Get the parent add-on's real path
-    std::string strLibPath = m_parent->CAddon::LibPath();
+    std::string strLibPath = m_parent->CAddon::MainLibPath();
     m_strLibraryPath = CSpecialProtocol::TranslatePath(strLibPath);
   }
   return m_strLibraryPath.c_str();
@@ -196,7 +196,7 @@ const char** CGameClientProperties::GetExtensions(void)
 void CGameClientProperties::AddProxyDll(const GameClientPtr& gameClient)
 {
   // Get the add-on's real path
-  std::string strLibPath = gameClient->CAddon::LibPath();
+  std::string strLibPath = gameClient->CAddon::MainLibPath();
 
   // Ignore add-on if it is already added
   if (!HasProxyDll(strLibPath))

@@ -1427,7 +1427,7 @@ std::string CAdvancedSettings::GetMusicExtensions() const
   for (auto addon : CAddonMgr::GetInstance().GetAddonInfos(true, ADDON_AUDIODECODER))
   {
     result += '|';
-    result += addon->GetValue("@extension").asString();
+    result += addon->Type(ADDON_AUDIODECODER)->GetValue("@extension").asString();
   }
 
   return result;

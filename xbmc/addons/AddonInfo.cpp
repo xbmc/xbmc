@@ -332,7 +332,8 @@ std::string CAddonInfo::TranslateIconType(ADDON::TYPE type)
 CAddonInfo::CAddonInfo(std::string addonPath)
   : m_usable(false),
     m_mainType(ADDON_UNKNOWN),
-    m_path(addonPath)
+    m_path(addonPath),
+    m_packageSize(0)
 {
   m_path = CSpecialProtocol::TranslatePath(addonPath);
   auto addonXmlPath = URIUtils::AddFileToFolder(m_path, "addon.xml");
@@ -363,7 +364,8 @@ CAddonInfo::CAddonInfo(std::string addonPath)
 
 CAddonInfo::CAddonInfo(const TiXmlElement* baseElement, std::string addonRepoXmlPath)
   : m_usable(false),
-    m_mainType(ADDON_UNKNOWN)
+    m_mainType(ADDON_UNKNOWN),
+    m_packageSize(0)
 {
   m_usable = LoadAddonXML(baseElement, addonRepoXmlPath);
   if (m_usable)
@@ -402,7 +404,8 @@ CAddonInfo::CAddonInfo(const std::string& id,
     m_summary(summary),
     m_description(description),
     m_changelog(changelog),
-    m_origin(origin)
+    m_origin(origin),
+    m_packageSize(0)
 {
   m_usable = DeserializeMetadata(metadata);
   if (!m_usable)
@@ -421,12 +424,12 @@ CAddonInfo::CAddonInfo(std::string id, TYPE type)
 bool CAddonInfo::LoadAddonXML(const TiXmlElement* baseElement, std::string addonXmlPath)
 {
   /*
-  * Following values currently not set from creator:
-  * - CDateTime installDate;
-  * - CDateTime lastUpdated;
-  * - CDateTime lastUsed;
-  * - std::string origin;
-  */
+   * Following values currently not set from creator:
+   * - CDateTime installDate;
+   * - CDateTime lastUpdated;
+   * - CDateTime lastUsed;
+   * - std::string origin;
+   */
   const char* cstring; /* "C" string point where parts from TinyXML becomes
                           stored, is used as this to prevent double use of
                           calls and to prevent not wanted "C++" throws if
@@ -626,9 +629,9 @@ bool CAddonInfo::LoadAddonXML(const TiXmlElement* baseElement, std::string addon
         m_broken = element->GetText();
 
       /* Parse addon.xml "<language">...</language>" */
-      /*element = child->FirstChildElement("language");
+      element = child->FirstChildElement("language");
       if (element && element->GetText() != nullptr)
-        Insert("language", element->GetText());*/
+        m_language = element->GetText();
 
       /* Parse addon.xml "<noicon">...</noicon>" */
       if (m_icon.empty())
@@ -796,6 +799,9 @@ bool CAddonInfo::MeetsVersion(const AddonVersion &version) const
 
 const CAddonType* CAddonInfo::Type(TYPE type) const
 {
+  if (type == ADDON_UNKNOWN)
+    return &m_types[0];
+
   for (auto& addonType : m_types)
   {
     if (addonType.Type() == type)
@@ -820,7 +826,7 @@ TYPE CAddonInfo::TranslateSubContent(const std::string &content)
     return ADDON_UNKNOWN;
 }
 
-std::string CAddonInfo::LibPath() const
+std::string CAddonInfo::MainLibPath() const
 {
   if (m_types.empty())
     return "";

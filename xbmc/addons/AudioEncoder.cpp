@@ -25,7 +25,7 @@ CAudioEncoder::CAudioEncoder(AddonInfoPtr addonInfo)
   : CAddonDll(addonInfo),
     m_context(nullptr)
 {
-  m_extension = AddonInfo()->GetValue("@extension").asString();
+  m_extension = Type(ADDON_AUDIOENCODER)->GetValue("@extension").asString();
 }
 
 bool CAudioEncoder::Create()
