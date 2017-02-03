@@ -1,6 +1,7 @@
 SRCS=Controller.cpp \
      ControllerFeature.cpp \
      ControllerLayout.cpp \
+     ControllerManager.cpp \
      ControllerTranslator.cpp \
 
 LIB=controllers.a

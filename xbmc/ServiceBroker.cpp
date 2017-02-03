@@ -65,3 +65,8 @@ PLAYLIST::CPlayListPlayer &CServiceBroker::GetPlaylistPlayer()
 {
   return g_application.m_ServiceManager->GetPlaylistPlayer();
 }
+
+GAME::CGameServices& CServiceBroker::GetGameServices()
+{
+  return g_application.m_ServiceManager->GetGameServices();
+}

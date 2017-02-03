@@ -1,3 +1,4 @@
+xbmc/games                         games
 xbmc/games/controllers             games/controllers
 xbmc/games/controllers/dialogs     games/controllers/dialogs
 xbmc/games/controllers/guicontrols games/controllers/guicontrols
