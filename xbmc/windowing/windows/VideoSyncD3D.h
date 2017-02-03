@@ -19,16 +19,14 @@
  *
  */
 
-#if defined(TARGET_WINDOWS)
-
-#include "video/videosync/VideoSync.h"
+#include "windowing/VideoSync.h"
 #include "guilib/DispResource.h"
 #include "threads/Event.h"
 
 class CVideoSyncD3D : public CVideoSync, IDispResource
 {
 public:
-  CVideoSyncD3D(CVideoReferenceClock *clock) : CVideoSync(clock) {};
+  CVideoSyncD3D(void *clock) : CVideoSync(clock) {};
   bool Setup(PUPDATECLOCK func) override;
   void Run(std::atomic<bool>& stop) override;
   void Cleanup() override;
@@ -47,4 +45,3 @@ private:
   int64_t m_lastUpdateTime;
 };
 
-#endif

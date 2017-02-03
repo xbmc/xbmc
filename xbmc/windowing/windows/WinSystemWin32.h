@@ -154,6 +154,9 @@ public:
   virtual bool Hide();
   virtual bool Show(bool raise = true);
 
+  // videosync
+  virtual std::unique_ptr<CVideoSync> GetVideoSync(void *clock) override;
+
   // CWinSystemWin32
   HWND GetHwnd() { return m_hWnd; }
   bool IsAlteringWindow() { return m_IsAlteringWindow; }

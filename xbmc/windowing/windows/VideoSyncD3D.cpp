@@ -20,13 +20,11 @@
 
 #include "system.h"
 
-#if defined(TARGET_WINDOWS)
-
 #include "utils/log.h"
 #include "Utils/TimeUtils.h"
 #include "Utils/MathUtils.h"
 #include "windowing\WindowingFactory.h"
-#include "video/videosync/VideoSyncD3D.h"
+#include "VideoSyncD3D.h"
 #include "guilib/GraphicContext.h"
 #include "platform/win32/dxerr.h"
 #include "utils/StringUtils.h"
@@ -155,4 +153,3 @@ std::string CVideoSyncD3D::GetErrorDescription(HRESULT hr)
   return StringUtils::Format("%ls: %ls", error.c_str(), descr.c_str());
 }
 
-#endif
