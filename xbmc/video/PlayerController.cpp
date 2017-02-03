@@ -252,7 +252,7 @@ bool CPlayerController::OnAction(const CAction &action)
       {
         CMediaSettings::GetInstance().GetCurrentVideoSettings().m_CustomPixelRatio += 0.01f;
         if (CMediaSettings::GetInstance().GetCurrentVideoSettings().m_CustomPixelRatio > 2.f)
-          CMediaSettings::GetInstance().GetCurrentVideoSettings().m_CustomZoomAmount = 2.f;
+          CMediaSettings::GetInstance().GetCurrentVideoSettings().m_CustomPixelRatio = 2.f;
         CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode = ViewModeCustom;
         g_application.m_pPlayer->SetRenderViewMode(ViewModeCustom);
         ShowSlider(action.GetID(), 217, CMediaSettings::GetInstance().GetCurrentVideoSettings().m_CustomPixelRatio, 0.5f, 0.1f, 2.0f);
@@ -262,7 +262,7 @@ bool CPlayerController::OnAction(const CAction &action)
       case ACTION_DECREASE_PAR:
       {
         CMediaSettings::GetInstance().GetCurrentVideoSettings().m_CustomPixelRatio -= 0.01f;
-        if (CMediaSettings::GetInstance().GetCurrentVideoSettings().m_CustomZoomAmount < 0.5f)
+        if (CMediaSettings::GetInstance().GetCurrentVideoSettings().m_CustomPixelRatio < 0.5f)
           CMediaSettings::GetInstance().GetCurrentVideoSettings().m_CustomPixelRatio = 0.5f;
         CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode = ViewModeCustom;
         g_application.m_pPlayer->SetRenderViewMode(ViewModeCustom);
