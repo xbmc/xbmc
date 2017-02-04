@@ -1,24 +1,25 @@
-set(SOURCES GLContextEGL.cpp
-            GLContextGLX.cpp
-            GLContext.cpp
-            WinSystemX11GLContext.cpp
-            WinSystemX11GLESContext.cpp
-            XRandR.cpp
-            VideoSyncGLX.cpp
-            VideoSyncDRM.cpp)
+if (X11_FOUND)
 
-set(HEADERS GLContext.h
-            GLContextEGL.h
-            GLContextGLX.h
-            WinSystemX11GLContext.h
-            WinSystemX11GLESContext.h
-            XRandR.h
-            VideoSyncGLX.h
-            VideoSyncDRM.h)
+  set(SOURCES GLContextEGL.cpp
+              GLContextGLX.cpp
+              GLContext.cpp
+              WinSystemX11GLContext.cpp
+              WinSystemX11GLESContext.cpp
+              XRandR.cpp
+              VideoSyncGLX.cpp
+              VideoSyncDRM.cpp
+              WinSystemX11.cpp)
 
-if(NOT CORE_SYSTEM_NAME STREQUAL rbpi)
-  list(APPEND SOURCES WinSystemX11.cpp)
-  list(APPEND HEADERS WinSystemX11.h)
+  set(HEADERS GLContext.h
+              GLContextEGL.h
+              GLContextGLX.h
+              WinSystemX11GLContext.h
+              WinSystemX11GLESContext.h
+              XRandR.h
+              VideoSyncGLX.h
+              VideoSyncDRM.h
+              WinSystemX11.h)
+
+  core_add_library(windowing_X11)
+
 endif()
-
-core_add_library(windowing_X11)
