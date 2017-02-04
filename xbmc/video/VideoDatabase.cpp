@@ -1961,6 +1961,9 @@ bool CVideoDatabase::GetMovieInfo(const std::string& strFilenameAndPath, CVideoI
 {
   try
   {
+    if (m_pDB == nullptr || m_pDS == nullptr)
+      return false;
+
     if (idMovie < 0)
       idMovie = GetMovieId(strFilenameAndPath);
     if (idMovie < 0) return false;
@@ -1983,6 +1986,9 @@ bool CVideoDatabase::GetTvShowInfo(const std::string& strPath, CVideoInfoTag& de
 {
   try
   {
+    if (m_pDB == nullptr || m_pDS == nullptr)
+      return false;
+
     if (idTvShow < 0)
       idTvShow = GetTvShowId(strPath);
     if (idTvShow < 0) return false;
@@ -2048,6 +2054,9 @@ bool CVideoDatabase::GetEpisodeInfo(const std::string& strFilenameAndPath, CVide
 {
   try
   {
+    if (m_pDB == nullptr || m_pDS == nullptr)
+      return false;
+
     if (idEpisode < 0)
       idEpisode = GetEpisodeId(strFilenameAndPath);
     if (idEpisode < 0) return false;
@@ -2069,6 +2078,9 @@ bool CVideoDatabase::GetMusicVideoInfo(const std::string& strFilenameAndPath, CV
 {
   try
   {
+    if (m_pDB == nullptr || m_pDS == nullptr)
+      return false;
+
     if (idMVideo < 0)
       idMVideo = GetMusicVideoId(strFilenameAndPath);
     if (idMVideo < 0) return false;
