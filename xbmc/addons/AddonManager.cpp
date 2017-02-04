@@ -527,7 +527,7 @@ bool CAddonMgr::DisableAddon(const std::string& id)
 
   CEventLog::GetInstance().Add(EventPtr(new CAddonManagementEvent(addonInfo, 24141)));
 
-  m_events.Publish(AddonEvents::Disabled(id));
+  m_events.Publish(AddonEvents::Disabled(addonInfo));
   return true;
 }
 
@@ -553,7 +553,7 @@ bool CAddonMgr::EnableSingle(const std::string& addonId)
   CEventLog::GetInstance().Add(EventPtr(new CAddonManagementEvent(addonInfo, 24064)));
 
   CLog::Log(LOGDEBUG, "CAddonMgr: enabled %s", addonInfo->ID().c_str());
-  m_events.Publish(AddonEvents::Enabled(addonId));
+  m_events.Publish(AddonEvents::Enabled(addonInfo));
   return true;
 }
 

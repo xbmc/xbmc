@@ -19,10 +19,15 @@
  */
 #pragma once
 
+#include <memory>
 #include <string>
 
 namespace ADDON
 {
+
+  class CAddonInfo;
+  typedef std::shared_ptr<CAddonInfo> AddonInfoPtr;
+  
   struct AddonEvent
   {
     virtual ~AddonEvent() {};
@@ -32,14 +37,14 @@ namespace ADDON
   {
     struct Enabled : AddonEvent
     {
-      std::string id;
-      Enabled(std::string id) : id(std::move(id)) {}
+      const AddonInfoPtr addonInfo;
+      Enabled(const AddonInfoPtr addonInfo) : addonInfo(std::move(addonInfo)) {}
     };
 
     struct Disabled : AddonEvent
     {
-      std::string id;
-      Disabled(std::string id) : id(std::move(id)) {}
+      const AddonInfoPtr addonInfo;
+      Disabled(const AddonInfoPtr addonInfo) : addonInfo(std::move(addonInfo)) {}
     };
 
     struct MetadataChanged : AddonEvent
