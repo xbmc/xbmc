@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<settings>
+<settings version="1">
   <section id="player">
     <category id="videoplayer">
       <group id="3">

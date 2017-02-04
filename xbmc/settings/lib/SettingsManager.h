@@ -56,11 +56,22 @@ public:
   CSettingsManager();
   virtual ~CSettingsManager();
 
+  static const uint32_t Version = 1;
+  static const uint32_t MinimumSupportedVersion = 0;
+
   // implementation of ISettingCreator
   virtual CSetting* CreateSetting(const std::string &settingType, const std::string &settingId, CSettingsManager *settingsManager = NULL) const override;
 
   // implementation of ISettingControlCreator
   virtual ISettingControl* CreateControl(const std::string &controlType) const override;
+
+  /*!
+   \brief Try to get the version of the setting definitions/values represented by the given XML element.
+
+   \param root XML element representing setting definitions/values
+   \return Version of the setting definitions/values or 0 if no version has been specified
+   */
+  uint32_t ParseVersion(const TiXmlElement* root) const;
 
   /*!
    \brief Initializes the settings manager using the setting definitions

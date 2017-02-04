@@ -73,6 +73,15 @@ CSettingsManager::~CSettingsManager()
   Clear();
 }
 
+uint32_t CSettingsManager::ParseVersion(const TiXmlElement* root) const
+{
+  // try to get and check the version
+  uint32_t version = 0;
+  root->QueryUnsignedAttribute(SETTING_XML_ROOT_VERSION, &version);
+
+  return version;
+}
+
 bool CSettingsManager::Initialize(const TiXmlElement *root)
 {
   CExclusiveLock lock(m_critical);
@@ -83,6 +92,22 @@ bool CSettingsManager::Initialize(const TiXmlElement *root)
   if (!StringUtils::EqualsNoCase(root->ValueStr(), SETTING_XML_ROOT))
   {
     CLog::Log(LOGERROR, "CSettingsManager: error reading settings definition: doesn't contain <settings> tag");
+    return false;
+  }
+
+  // try to get and check the version
+  uint32_t version = ParseVersion(root);
+  if (version == 0)
+    CLog::Log(LOGWARNING, "CSettingsManager: missing " SETTING_XML_ROOT_VERSION " attribute");
+
+  if (version < MinimumSupportedVersion)
+  {
+    CLog::Log(LOGERROR, "CSettingsManager: unable to read setting definitions from version %u (minimum version: %u)", version, MinimumSupportedVersion);
+    return false;
+  }
+  if (version > Version)
+  {
+    CLog::Log(LOGERROR, "CSettingsManager: unable to read setting definitions from version %u (current version: %u)", version, Version);
     return false;
   }
 
@@ -126,6 +151,22 @@ bool CSettingsManager::Load(const TiXmlElement *root, bool &updated, bool trigge
   if (triggerEvents && !OnSettingsLoading())
     return false;
 
+  // try to get and check the version
+  uint32_t version = ParseVersion(root);
+  if (version == 0)
+    CLog::Log(LOGWARNING, "CSettingsManager: missing " SETTING_XML_ROOT_VERSION " attribute");
+
+  if (version < MinimumSupportedVersion)
+  {
+    CLog::Log(LOGERROR, "CSettingsManager: unable to read setting values from version %u (minimum version: %u)", version, MinimumSupportedVersion);
+    return false;
+  }
+  if (version > Version)
+  {
+    CLog::Log(LOGERROR, "CSettingsManager: unable to read setting values from version %u (current version: %u)", version, Version);
+    return false;
+  }
+
   if (!Deserialize(root, updated, loadedSettings))
     return false;
 
@@ -149,6 +190,15 @@ bool CSettingsManager::Save(TiXmlNode *root) const
 
   if (!OnSettingsSaving())
     return false;
+
+  // save the current version
+  TiXmlElement* rootElement = root->ToElement();
+  if (rootElement == nullptr)
+  {
+    CLog::Log(LOGERROR, "CSettingsManager: failed to save settings");
+    return false;
+  }
+  rootElement->SetAttribute(SETTING_XML_ROOT_VERSION, Version);
 
   if (!Serialize(root))
   {

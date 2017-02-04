@@ -24,6 +24,7 @@
 #include <vector>
 
 #define SETTING_XML_ROOT              "settings"
+#define SETTING_XML_ROOT_VERSION      "version"
 
 #define SETTING_XML_ELM_SECTION       "section"
 #define SETTING_XML_ELM_CATEGORY      "category"
