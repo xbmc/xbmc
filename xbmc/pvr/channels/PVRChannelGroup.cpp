@@ -33,7 +33,6 @@
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
-#include "utils/JobManager.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -269,36 +268,25 @@ bool CPVRChannelGroup::MoveChannel(unsigned int iOldChannelNumber, unsigned int 
 
 void CPVRChannelGroup::SearchAndSetChannelIcons(bool bUpdateDb /* = false */)
 {
-  // searching and setting channel icons may take some time, and (more important)
-  // it triggers GUI which might lead to deadlocks if directly called.
-  PVR_CHANNEL_GROUP_MEMBERS groupMembers;
-  {
-    CSingleLock lock(m_critSection);
-    groupMembers = m_members;
-  }
-
-  CJobManager::GetInstance().AddJob(new CPVRSearchAndSetChannelIcons(groupMembers, bUpdateDb), nullptr);
-}
-
-bool CPVRSearchAndSetChannelIcons::DoWork()
-{
   std::string iconPath = CServiceBroker::GetSettings().GetString(CSettings::SETTING_PVRMENU_ICONPATH);
   if (iconPath.empty())
-    return true;
+    return;
 
   const CPVRDatabasePtr database(g_PVRManager.GetTVDatabase());
   if (!database)
-    return false;
+    return;
 
   /* fetch files in icon path for fast lookup */
   CFileItemList fileItemList;
   XFILE::CDirectory::GetDirectory(iconPath, fileItemList, ".jpg|.png|.tbn");
 
   if (fileItemList.IsEmpty())
-    return true;
+    return;
 
   CGUIDialogExtendedProgressBar* dlgProgress = (CGUIDialogExtendedProgressBar*)g_windowManager.GetWindow(WINDOW_DIALOG_EXT_PROGRESS);
   CGUIDialogProgressBarHandle* dlgProgressHandle = dlgProgress ? dlgProgress->GetHandle(g_localizeStrings.Get(19287)) : NULL;
+
+  CSingleLock lock(m_critSection);
 
   /* create a map for fast lookup of normalized file base name */
   std::map<std::string, std::string> fileItemMap;
@@ -313,14 +301,14 @@ bool CPVRSearchAndSetChannelIcons::DoWork()
 
   int channelIndex = 0;
   CPVRChannelPtr channel;
-  for(const auto &groupMember : m_groupMembers)
+  for(PVR_CHANNEL_GROUP_MEMBERS::const_iterator it = m_members.begin(); it != m_members.end(); ++it)
   {
-    channel = groupMember.second.channel;
+    channel = it->second.channel;
 
     /* update progress dialog */
     if (dlgProgressHandle)
     {
-      dlgProgressHandle->SetProgress(channelIndex++, m_groupMembers.size());
+      dlgProgressHandle->SetProgress(channelIndex++, m_members.size());
       dlgProgressHandle->SetText(channel->ChannelName());
     }
 
@@ -345,7 +333,7 @@ bool CPVRSearchAndSetChannelIcons::DoWork()
       channel->SetIconPath(itItem->second, g_advancedSettings.m_bPVRAutoScanIconsUserSet);
     }
 
-    if (m_bUpdateDb)
+    if (bUpdateDb)
       channel->Persist();
 
     //! @todo start channel icon scraper here if nothing was found
@@ -353,8 +341,6 @@ bool CPVRSearchAndSetChannelIcons::DoWork()
 
   if (dlgProgressHandle)
     dlgProgressHandle->MarkFinished();
-
-  return true;
 }
 
 /********** sort methods **********/
