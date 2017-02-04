@@ -770,7 +770,7 @@ const CDateTime CEpgContainer::GetLastEPGDate(void)
   return returnValue;
 }
 
-int CEpgContainer::GetEPGSearch(CFileItemList &results, const EpgSearchFilter &filter)
+int CEpgContainer::GetEPGSearch(CFileItemList &results, const CEpgSearchFilter &filter)
 {
   int iInitialSize = results.Size();
 
@@ -782,8 +782,8 @@ int CEpgContainer::GetEPGSearch(CFileItemList &results, const EpgSearchFilter &f
   }
 
   /* remove duplicate entries */
-  if (filter.m_bPreventRepeats)
-    EpgSearchFilter::RemoveDuplicates(results);
+  if (filter.ShouldRemoveDuplicates())
+    filter.RemoveDuplicates(results);
 
   return results.Size() - iInitialSize;
 }

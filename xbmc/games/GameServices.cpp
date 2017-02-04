@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2015-2016 Team Kodi
+ *      Copyright (C) 2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -17,27 +17,34 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#pragma once
 
-#include "ControllerTypes.h"
-#include "input/joysticks/JoystickTypes.h"
+#include "GameServices.h"
+#include "controllers/Controller.h"
+#include "controllers/ControllerManager.h"
 
-#include <string>
+using namespace GAME;
 
-namespace GAME
+CGameServices::CGameServices() :
+  m_controllerManager(new CControllerManager)
 {
+}
 
-class CControllerTranslator
+CGameServices::~CGameServices()
 {
-public:
-  static const char* TranslateFeatureType(JOYSTICK::FEATURE_TYPE type);
-  static JOYSTICK::FEATURE_TYPE TranslateFeatureType(const std::string& strType);
+  Deinit();
+}
 
-  static const char* TranslateFeatureCategory(JOYSTICK::FEATURE_CATEGORY category);
-  static JOYSTICK::FEATURE_CATEGORY TranslateFeatureCategory(const std::string& strCategory);
+ControllerPtr CGameServices::GetController(const std::string& controllerId)
+{
+  return m_controllerManager->GetController(controllerId);
+}
 
-  static const char* TranslateInputType(JOYSTICK::INPUT_TYPE type);
-  static JOYSTICK::INPUT_TYPE TranslateInputType(const std::string& strType);
-};
+ControllerPtr CGameServices::GetDefaultController()
+{
+  return m_controllerManager->GetDefaultController();
+}
 
+ControllerVector CGameServices::GetControllers()
+{
+  return m_controllerManager->GetControllers();
 }

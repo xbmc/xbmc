@@ -31,16 +31,14 @@ namespace PVR
     virtual ~CGUIWindowPVRSearch(void) {};
 
     virtual bool OnMessage(CGUIMessage& message)  override;
-    virtual void OnWindowLoaded() override;
     virtual void GetContextButtons(int itemNumber, CContextButtons &buttons) override;
     virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
 
     /*!
-     * @brief trigger a search for events similar to the given item.
+     * @brief set the item to search similar events for.
      * @param item the epg event to search similar events for.
-     * @return True on success (note: empty result set also means success), false otherwise.
      */
-    bool FindSimilar(const CFileItemPtr &item);
+    void SetItemToSearch(const CFileItemPtr &item);
 
   protected:
     virtual void OnPrepareFileItems(CFileItemList &items) override;
@@ -52,6 +50,6 @@ namespace PVR
     void OpenDialogSearch();
 
     bool                  m_bSearchConfirmed;
-    EPG::EpgSearchFilter  m_searchfilter;
+    EPG::CEpgSearchFilter m_searchfilter;
   };
 }

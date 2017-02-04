@@ -180,20 +180,12 @@ JSONRPC_STATUS CPVROperations::GetBroadcastDetails(const std::string &method, IT
   if (!g_PVRManager.IsStarted())
     return FailedToExecute;
 
-  EpgSearchFilter filter;
-  filter.Reset();
-  filter.m_iUniqueBroadcastId = parameterObject["broadcastid"].asUnsignedInteger();
+  const CEpgInfoTagPtr epgTag = g_EpgContainer.GetTagById(CPVRChannelPtr(), parameterObject["broadcastid"].asUnsignedInteger());
 
-  CFileItemList broadcasts;
-  int resultSize = g_EpgContainer.GetEPGSearch(broadcasts, filter);
-
-  if (resultSize <= 0)
+  if (!epgTag)
     return InvalidParams;
-  else if (resultSize > 1)
-    return InternalError;
 
-  CFileItemPtr broadcast = broadcasts.Get(0);
-  HandleFileItem("broadcastid", false, "broadcastdetails", broadcast, parameterObject, parameterObject["properties"], result, false);
+  HandleFileItem("broadcastid", false, "broadcastdetails", CFileItemPtr(new CFileItem(epgTag)), parameterObject, parameterObject["properties"], result, false);
 
   return OK;
 }
@@ -403,6 +395,9 @@ JSONRPC_STATUS CPVROperations::ToggleTimer(const std::string &method, ITransport
   else
   {
     timer = CPVRTimerInfoTag::CreateFromEpg(epgTag, timerrule);
+    if (!timer)
+      return InvalidParams;
+
     sentOkay = g_PVRTimers->AddTimer(timer);
   }
 

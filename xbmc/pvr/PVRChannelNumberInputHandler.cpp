@@ -55,7 +55,7 @@ void CPVRChannelNumberInputHandler::AppendChannelNumberDigit(int iDigit)
 
   CSingleLock lock(m_mutex);
 
-  if (m_digits.size() == m_iMaxDigits)
+  if (m_digits.size() == (size_t)m_iMaxDigits)
     m_digits.pop_front();
 
   m_digits.emplace_back(iDigit);

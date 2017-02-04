@@ -25,6 +25,9 @@
 #include "input/joysticks/JoystickUtils.h"
 #include "utils/log.h"
 
+#include <array>
+#include <cmath>
+
 using namespace JOYSTICK;
 
 CGUIDialogNewJoystick* const CInputHandling::m_dialog = new CGUIDialogNewJoystick;
@@ -60,11 +63,46 @@ bool CInputHandling::OnAxisMotion(unsigned int axisIndex, float position)
 {
   bool bHandled = false;
 
-  CDriverPrimitive positiveSemiaxis(axisIndex, SEMIAXIS_DIRECTION::POSITIVE);
-  CDriverPrimitive negativeSemiaxis(axisIndex, SEMIAXIS_DIRECTION::NEGATIVE);
+  // Check for anomalous triggers that have an offset (non-zero) rest position
+  const std::array<int, 2> centers = { { -1, 1 } };
+  const std::array<unsigned int, 2> ranges = { { 1, 2 } };
+  for (auto center : centers)
+  {
+    for (auto range : ranges)
+    {
+      float magnitude = std::abs(position - center) / range;
 
-  bHandled |= OnAnalogMotion(positiveSemiaxis, position > 0.0f ? position : 0.0f);
-  bHandled |= OnAnalogMotion(negativeSemiaxis, position < 0.0f ? -position : 0.0f);
+      if (magnitude > 1.0f)
+        magnitude = 1.0f;
+
+      // Calculate the direction the trigger travels from the center point
+      SEMIAXIS_DIRECTION dir;
+      if (center > 0)
+        dir = SEMIAXIS_DIRECTION::NEGATIVE;
+      else
+        dir = SEMIAXIS_DIRECTION::POSITIVE;
+
+      CDriverPrimitive offsetSemiaxis(axisIndex, center, dir, range);
+
+      if (OnAnalogMotion(offsetSemiaxis, magnitude))
+      {
+        bHandled = true;
+        break;
+      }
+    }
+
+    if (bHandled)
+      break;
+  }
+
+  if (!bHandled)
+  {
+    CDriverPrimitive positiveSemiaxis(axisIndex, 0, SEMIAXIS_DIRECTION::POSITIVE, 1);
+    CDriverPrimitive negativeSemiaxis(axisIndex, 0, SEMIAXIS_DIRECTION::NEGATIVE, 1);
+
+    bHandled |= OnAnalogMotion(positiveSemiaxis, position > 0.0f ? position : 0.0f);
+    bHandled |= OnAnalogMotion(negativeSemiaxis, position < 0.0f ? -position : 0.0f);
+  }
 
   return bHandled;
 }

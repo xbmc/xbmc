@@ -1,4 +1,3 @@
-
 /*
  *      Copyright (C) 2014-2016 Team Kodi
  *      http://kodi.tv
@@ -219,7 +218,9 @@ extern "C"
   typedef struct JOYSTICK_DRIVER_SEMIAXIS
   {
     int                                index;
+    int                                center;
     JOYSTICK_DRIVER_SEMIAXIS_DIRECTION direction;
+    unsigned int                       range;
   } ATTRIBUTE_PACKED JOYSTICK_DRIVER_SEMIAXIS;
 
   typedef struct JOYSTICK_DRIVER_MOTOR

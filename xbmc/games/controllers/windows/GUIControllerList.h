@@ -53,9 +53,6 @@ namespace GAME
   private:
     bool RefreshControllers(void);
 
-    std::set<std::string> GetControllerIDs() const;
-    std::set<std::string> GetNewControllerIDs(ADDON::VECADDONS& addonCache) const;
-
     void RegisterController(const std::string& controllerId, const ADDON::VECADDONS& addonCache);
     void UnregisterController(const std::string& controllerId);
 

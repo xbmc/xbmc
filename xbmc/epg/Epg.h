@@ -233,7 +233,7 @@ namespace EPG
      * @param filter The filter to apply.
      * @return The amount of entries that were added.
      */
-    int Get(CFileItemList &results, const EpgSearchFilter &filter) const;
+    int Get(CFileItemList &results, const CEpgSearchFilter &filter) const;
 
     /*!
      * @brief Persist this table in the database.
