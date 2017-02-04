@@ -272,10 +272,6 @@ void CPVRChannelGroup::SearchAndSetChannelIcons(bool bUpdateDb /* = false */)
   if (iconPath.empty())
     return;
 
-  const CPVRDatabasePtr database(g_PVRManager.GetTVDatabase());
-  if (!database)
-    return;
-
   /* fetch files in icon path for fast lookup */
   CFileItemList fileItemList;
   XFILE::CDirectory::GetDirectory(iconPath, fileItemList, ".jpg|.png|.tbn");
