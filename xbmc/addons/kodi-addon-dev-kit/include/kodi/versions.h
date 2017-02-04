@@ -46,7 +46,7 @@
 #define ADDON_INSTANCE_VERSION_AUDIOENCODER           "1.0.1"
 #define ADDON_INSTANCE_VERSION_GAME                   "1.0.29"
 #define ADDON_INSTANCE_VERSION_INPUTSTREAM            "1.0.8"
-#define ADDON_INSTANCE_VERSION_PERIPHERAL             "1.2.3"
+#define ADDON_INSTANCE_VERSION_PERIPHERAL             "1.3.0"
 #define ADDON_INSTANCE_VERSION_PVR                    "5.2.3"
 #define ADDON_INSTANCE_VERSION_SCREENSAVER            "1.0.1"
 #define ADDON_INSTANCE_VERSION_VISUALIZATION          "1.0.1"
@@ -170,7 +170,7 @@ inline const char* GetTypeName(int type)
  *
  * @param[in] instanceType The with name type to ask
  * @return Id number of the asked instance type
- * 
+ *
  * @warning String must be lower case here!
  */
 inline int GetTypeId(const char* name)
