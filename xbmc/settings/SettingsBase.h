@@ -251,9 +251,10 @@ protected:
   \brief Loads setting values from the given document in XML format
 
   \param xml Document in XML format from which the settings are loaded
+  \param updated Output parameter indicating whether setting values had to be updated
   \return True if the setting values were successfully loaded, false otherwise
   */
-  bool LoadValuesFromXml(const CXBMCTinyXML& xml);
+  bool LoadValuesFromXml(const CXBMCTinyXML& xml, bool& updated);
   /*!
   \brief Saves the setting values in XML format to the given document.
 
@@ -266,10 +267,18 @@ protected:
   \brief Loads setting values from the given XML element.
 
   \param root XML element containing setting values
-  \param hide Whether to hide the loaded settings or not
+  \param updated Output parameter indicating whether setting values had to be updated
   \return True if the setting values were successfully loaded, false otherwise
   */
-  bool LoadValuesFromXml(const TiXmlElement* root, bool hide = false);
+  bool LoadValuesFromXml(const TiXmlElement* root, bool& updated);
+
+  /*!
+  \brief Loads hidden setting values from the given XML element.
+
+  \param root XML element containing setting values
+  \return True if the setting values were successfully loaded, false otherwise
+  */
+  bool LoadHiddenValuesFromXml(const TiXmlElement* root);
 
   bool m_initialized;
   CSettingsManager* m_settingsManager;

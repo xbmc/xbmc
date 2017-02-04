@@ -1207,7 +1207,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
   }
 
   // load in the settings overrides
-  CServiceBroker::GetSettings().Load(pRootElement, true);  // true to hide the settings we read in
+  CServiceBroker::GetSettings().LoadHidden(pRootElement);
 }
 
 void CAdvancedSettings::Clear()

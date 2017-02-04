@@ -78,35 +78,38 @@ bool CSettingsBase::IsInitialized() const
   return m_initialized && m_settingsManager->IsInitialized();
 }
 
-bool CSettingsBase::LoadValuesFromXml(const CXBMCTinyXML& xml)
+bool CSettingsBase::LoadValuesFromXml(const CXBMCTinyXML& xml, bool& updated)
 {
   const TiXmlElement* xmlRoot = xml.RootElement();
   if (xmlRoot == nullptr || xmlRoot->ValueStr() != SETTINGS_XML_ROOT)
     return false;
 
-  bool updated = false;
   return m_settingsManager->Load(xmlRoot, updated);
 }
 
-bool CSettingsBase::LoadValuesFromXml(const TiXmlElement* root, bool hide /* = false */)
+bool CSettingsBase::LoadValuesFromXml(const TiXmlElement* root, bool& updated)
 {
   if (root == nullptr)
     return false;
 
-  std::map<std::string, CSetting*>* loadedSettings = nullptr;
-  if (hide)
-    loadedSettings = new std::map<std::string, CSetting*>();
+  return m_settingsManager->Load(root, updated);
+}
+
+bool CSettingsBase::LoadHiddenValuesFromXml(const TiXmlElement* root)
+{
+  if (root == nullptr)
+    return false;
+
+  std::map<std::string, CSetting*> loadedSettings;
 
   bool updated;
-  // only trigger settings events if hiding is disabled
-  bool success = m_settingsManager->Load(root, updated, !hide, loadedSettings);
-  // if necessary hide all the loaded settings
-  if (success && hide && loadedSettings != nullptr)
+  // don't trigger events for hidden settings
+  bool success = m_settingsManager->Load(root, updated, false, &loadedSettings);
+  if (success)
   {
-    for(std::map<std::string, CSetting*>::const_iterator setting = loadedSettings->begin(); setting != loadedSettings->end(); ++setting)
+    for(std::map<std::string, CSetting*>::const_iterator setting = loadedSettings.begin(); setting != loadedSettings.end(); ++setting)
       setting->second->SetVisible(false);
   }
-  delete loadedSettings;
 
   return success;
 }
