@@ -280,7 +280,7 @@ void CPVRChannelGroup::SearchAndSetChannelIcons(bool bUpdateDb /* = false */)
   if (fileItemList.IsEmpty())
     return;
 
-  CGUIDialogProgressBarHandle* dlgProgressHandle = g_PVRManager.ShowProgressDialog(g_localizeStrings.Get(19287));
+  CGUIDialogProgressBarHandle* dlgProgressHandle = g_PVRManager.ShowProgressDialog(g_localizeStrings.Get(19286)); // Searching for channel icons
 
   CSingleLock lock(m_critSection);
 
