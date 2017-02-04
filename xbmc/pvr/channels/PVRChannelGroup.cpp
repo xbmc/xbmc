@@ -28,7 +28,6 @@
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "epg/EpgContainer.h"
 #include "filesystem/Directory.h"
-#include "guilib/GUIWindowManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
@@ -279,8 +278,7 @@ void CPVRChannelGroup::SearchAndSetChannelIcons(bool bUpdateDb /* = false */)
   if (fileItemList.IsEmpty())
     return;
 
-  CGUIDialogExtendedProgressBar* dlgProgress = (CGUIDialogExtendedProgressBar*)g_windowManager.GetWindow(WINDOW_DIALOG_EXT_PROGRESS);
-  CGUIDialogProgressBarHandle* dlgProgressHandle = dlgProgress ? dlgProgress->GetHandle(g_localizeStrings.Get(19287)) : NULL;
+  CGUIDialogProgressBarHandle* dlgProgressHandle = g_PVRManager.ShowProgressDialog(g_localizeStrings.Get(19287));
 
   CSingleLock lock(m_critSection);
 
