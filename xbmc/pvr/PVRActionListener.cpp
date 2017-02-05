@@ -71,6 +71,10 @@ bool CPVRActionListener::OnAction(const CAction &action)
       }
       return true;
     }
+
+    case ACTION_CONTINUE_LAST_CHANNEL:
+      return CPVRGUIActions::GetInstance().ContinueLastPlayedChannel();
+
     case ACTION_JUMP_SMS2:
     case ACTION_JUMP_SMS3:
     case ACTION_JUMP_SMS4:

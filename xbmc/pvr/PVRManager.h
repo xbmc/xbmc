@@ -466,14 +466,6 @@ namespace PVR
     int GetStartTime(void) const;
 
     /*!
-     * @brief Start playback on a channel.
-     * @param channel The channel to start to play.
-     * @param bMinimised If true, playback starts minimised, otherwise in fullscreen.
-     * @return True if playback was started, false otherwise.
-     */
-    bool StartPlayback(const CPVRChannelPtr &channel, bool bMinimised = false);
-
-    /*!
      * @brief Update the current playing file in the guiinfomanager and application.
      */
     void UpdateCurrentFile(void);

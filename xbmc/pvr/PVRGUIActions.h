@@ -241,6 +241,12 @@ namespace PVR
     bool SwitchToChannel(PlaybackType type) const;
 
     /*!
+     * @brief Continue playback of the last played channel.
+     * @return True if playback was continued, false otherwise.
+     */
+    bool ContinueLastPlayedChannel() const;
+
+    /*!
      * @brief Hide a channel, always showing a confirmation dialog.
      * @param item containing a channel or an epg tag.
      * @return true on success, false otherwise.
@@ -324,21 +330,33 @@ namespace PVR
 
     /*!
      * @brief Check "play minimized" settings value and switch to fullscreen if not set.
+     * @param bFullscreen switch to fullscreen or set windowed playback.
      */
-    void CheckAndSwitchToFullscreen() const;
+    void CheckAndSwitchToFullscreen(bool bFullscreen) const;
+
+    /*!
+     * @brief Switch channel.
+     * @param item containing a channel or an epg tag.
+     * @param bCheckResume controls resume check in case a recording for the current epg event is present.
+     * @param bFullscreen start playback fullscreen or not.
+     * @return true on success, false otherwise.
+     */
+    bool SwitchToChannel(const CFileItemPtr &item, bool bCheckResume, bool bFullscreen) const;
 
     /*!
      * @brief Try a fast Live TV/Radio channel switch. Calls directly into active player instead of using messaging
      * @param channel the channel to switch to.
+     * @param bFullscreen start playback fullscreen or not.
      * @return true if the switch was succesful, false otherwise.
      */
-    bool TryFastChannelSwitch(const CPVRChannelPtr &channel) const;
+    bool TryFastChannelSwitch(const CPVRChannelPtr &channel, bool bFullscreen) const;
 
     /*!
      * @brief Start playback of the given item.
+     * @param bFullscreen start playback fullscreen or not.
      * @param item containing a channel or a recording.
      */
-    void StartPlayback(CFileItem *item) const;
+    void StartPlayback(CFileItem *item, bool bFullscreen) const;
 
   private:
     CPVRChannelSwitchingInputHandler m_channelNumberInputHandler;

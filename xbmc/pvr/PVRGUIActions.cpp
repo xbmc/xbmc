@@ -534,9 +534,8 @@ namespace PVR
     return PlayRecording(item, false);
   }
 
-  void CPVRGUIActions::CheckAndSwitchToFullscreen() const
+  void CPVRGUIActions::CheckAndSwitchToFullscreen(bool bFullscreen) const
   {
-    const bool bFullscreen(CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRPLAYBACK_SWITCHTOFULLSCREEN));
     CMediaSettings::GetInstance().SetVideoStartWindowed(!bFullscreen);
 
     if (bFullscreen)
@@ -546,7 +545,7 @@ namespace PVR
     }
   }
 
-  bool CPVRGUIActions::TryFastChannelSwitch(const CPVRChannelPtr &channel) const
+  bool CPVRGUIActions::TryFastChannelSwitch(const CPVRChannelPtr &channel, bool bFullscreen) const
   {
     bool bSwitchSuccessful(false);
 
@@ -557,16 +556,16 @@ namespace PVR
       bSwitchSuccessful = g_application.m_pPlayer->SwitchChannel(channel);
 
       if (bSwitchSuccessful)
-        CheckAndSwitchToFullscreen();
+        CheckAndSwitchToFullscreen(bFullscreen);
     }
 
     return bSwitchSuccessful;
   }
 
-  void CPVRGUIActions::StartPlayback(CFileItem *item) const
+  void CPVRGUIActions::StartPlayback(CFileItem *item, bool bFullscreen) const
   {
     CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(item));
-    CheckAndSwitchToFullscreen();
+    CheckAndSwitchToFullscreen(bFullscreen);
   }
 
   bool CPVRGUIActions::PlayRecording(const CFileItemPtr &item, bool bCheckResume) const
@@ -589,7 +588,7 @@ namespace PVR
       {
         CFileItem *itemToPlay = new CFileItem(recording);
         itemToPlay->m_lStartOffset = item->m_lStartOffset;
-        StartPlayback(itemToPlay);
+        StartPlayback(itemToPlay, true);
       }
       return true;
     }
@@ -641,12 +640,17 @@ namespace PVR
     }
 
     if (!bCheckResume || CheckResumeRecording(item))
-      StartPlayback(new CFileItem(*item));
+      StartPlayback(new CFileItem(*item), true);
 
     return true;
   }
 
   bool CPVRGUIActions::SwitchToChannel(const CFileItemPtr &item, bool bCheckResume) const
+  {
+    return SwitchToChannel(item, bCheckResume, CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRPLAYBACK_SWITCHTOFULLSCREEN));
+  }
+
+  bool CPVRGUIActions::SwitchToChannel(const CFileItemPtr &item, bool bCheckResume, bool bFullscreen) const
   {
     if (item->m_bIsFolder)
       return false;
@@ -688,11 +692,11 @@ namespace PVR
       }
 
       /* optimization: try a fast switch */
-      bSwitchSuccessful = TryFastChannelSwitch(channel);
+      bSwitchSuccessful = TryFastChannelSwitch(channel, bFullscreen);
 
       if (!bSwitchSuccessful)
       {
-        StartPlayback(new CFileItem(channel));
+        StartPlayback(new CFileItem(channel), bFullscreen);
         return true;
       }
     }
@@ -769,6 +773,26 @@ namespace PVR
                                           g_localizeStrings.Get(19166), // PVR information
                                           StringUtils::Format(g_localizeStrings.Get(19035).c_str(),
                                                               g_localizeStrings.Get(bIsRadio ? 19021 : 19020).c_str())); // Radio/TV could not be played. Check the log for details.
+    return false;
+  }
+
+  bool CPVRGUIActions::ContinueLastPlayedChannel() const
+  {
+    int iPlayMode = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_PVRPLAYBACK_STARTLAST);
+    if (iPlayMode == CONTINUE_LAST_CHANNEL_OFF)
+      return false;
+
+    const CFileItemPtr item(g_PVRChannelGroups->GetLastPlayedChannel());
+    if (item && item->HasPVRChannelInfoTag())
+    {
+      const CPVRChannelPtr channel(item->GetPVRChannelInfoTag());
+
+      CLog::Log(LOGNOTICE, "PVRGUIActions - %s - continue playback on channel '%s'", __FUNCTION__, channel->ChannelName().c_str());
+
+      g_PVRManager.SetPlayingGroup(g_PVRChannelGroups->GetLastPlayedGroup(channel->ChannelID()));
+
+      return SwitchToChannel(item, true, iPlayMode == CONTINUE_LAST_CHANNEL_IN_FOREGROUND);
+    }
     return false;
   }
 

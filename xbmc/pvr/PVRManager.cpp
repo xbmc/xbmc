@@ -35,6 +35,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "interfaces/AnnouncementManager.h"
+#include "input/Key.h"
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "music/tags/MusicInfoTag.h"
@@ -773,21 +774,11 @@ bool CPVRManager::ChannelUpDown(unsigned int *iNewChannelNumber, bool bPreview, 
 
 bool CPVRManager::ContinueLastChannel(void)
 {
-  if (CServiceBroker::GetSettings().GetInt(CSettings::SETTING_PVRPLAYBACK_STARTLAST) == CONTINUE_LAST_CHANNEL_OFF)
-    return false;
-
-  CFileItemPtr channel = m_channelGroups->GetLastPlayedChannel();
-  if (channel && channel->HasPVRChannelInfoTag())
-  {
-    CLog::Log(LOGNOTICE, "PVRManager - %s - continue playback on channel '%s'", __FUNCTION__, channel->GetPVRChannelInfoTag()->ChannelName().c_str());
-    SetPlayingGroup(m_channelGroups->GetLastPlayedGroup(channel->GetPVRChannelInfoTag()->ChannelID()));
-    StartPlayback(channel->GetPVRChannelInfoTag(), (CServiceBroker::GetSettings().GetInt(CSettings::SETTING_PVRPLAYBACK_STARTLAST) == CONTINUE_LAST_CHANNEL_IN_BACKGROUND));
-    return true;
-  }
-
-  CLog::Log(LOGDEBUG, "PVRManager - %s - no last played channel to continue playback found", __FUNCTION__);
-
-  return false;
+  CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION,
+                                               WINDOW_INVALID,
+                                               -1,
+                                               static_cast<void*>(new CAction(ACTION_CONTINUE_LAST_CHANNEL)));
+  return true;
 }
 
 void CPVRManager::ResetDatabase(bool bResetEPGOnly /* = false */)
@@ -1459,19 +1450,6 @@ bool CPVRManager::UpdateItem(CFileItem& item)
   }
 
   return false;
-}
-
-bool CPVRManager::StartPlayback(const CPVRChannelPtr &channel, bool bMinimised /* = false */)
-{
-  CMediaSettings::GetInstance().SetVideoStartWindowed(bMinimised);
-  
-  CFileItemList *l = new CFileItemList; //don't delete,
-  l->Add(std::make_shared<CFileItem>(channel));
-  CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, -1, -1, static_cast<void*>(l));
-
-  CLog::Log(LOGNOTICE, "PVRManager - %s - started playback on channel '%s'",
-      __FUNCTION__, channel->ChannelName().c_str());
-  return true;
 }
 
 bool CPVRManager::PerformChannelSwitch(const CPVRChannelPtr &channel, bool bPreview)
