@@ -619,6 +619,9 @@ bool CAddonInstallJob::DoWork()
   {
     CAddonMgr::GetInstance().DisableAddon(m_addon->ID());
     CLog::Log(LOGDEBUG, "CAddonInstallJob[%s]: disabled because addon is marked as broken", m_addon->ID().c_str());
+    CEventLog::GetInstance().Add(
+      EventPtr(new CAddonManagementEvent(m_addon, 24094)),
+      !IsModal() && CServiceBroker::GetSettings().GetBool(CSettings::SETTING_ADDONS_NOTIFICATIONS), false);
     return false;
   }
 
