@@ -80,7 +80,6 @@ struct ThumbDataManagement
     frame_input = nullptr;
     av_frame_free(&frame_temporary);
     frame_temporary = nullptr;
-    avcodec_close(avOutctx);
     avcodec_free_context(&avOutctx);
     avOutctx = nullptr;
     sws_freeContext(sws);
