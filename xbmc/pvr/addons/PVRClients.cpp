@@ -143,11 +143,6 @@ bool CPVRClients::RequestRestart(AddonPtr addon, bool bDataChanged)
   return StopClient(addon, true);
 }
 
-bool CPVRClients::RequestRemoval(AddonPtr addon)
-{
-  return StopClient(addon, false);
-}
-
 void CPVRClients::Unload(void)
 {
   CSingleLock lock(m_critSection);

@@ -135,13 +135,6 @@ namespace ActiveAE
     virtual bool RequestRestart(ADDON::AddonPtr addon, bool bDataChanged) override;
 
     /*!
-     * @brief Remove a single audio dsp add-on.
-     * @param addon The add-on to remove.
-     * @return True if it was found and removed, false otherwise.
-     */
-    virtual bool RequestRemoval(ADDON::AddonPtr addon) override;
-
-    /*!
      * @brief Checks whether an add-on is loaded
      * @param strAddonId The add-on id to check
      * @return True when in use, false otherwise

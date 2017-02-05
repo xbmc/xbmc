@@ -346,23 +346,6 @@ bool CPeripheralBusAddon::RequestRestart(ADDON::AddonPtr addon, bool datachanged
   return true;
 }
 
-bool CPeripheralBusAddon::RequestRemoval(ADDON::AddonPtr addon)
-{
-  // make sure this is a peripheral addon
-  PeripheralAddonPtr peripheralAddon = std::dynamic_pointer_cast<CPeripheralAddon>(addon);
-  if (peripheralAddon == nullptr)
-    return false;
-
-  CSingleLock lock(m_critSection);
-  // destroy the peripheral addon
-  peripheralAddon->Destroy();
-
-  // remove the peripheral addon from the list of addons
-  m_addons.erase(std::remove(m_addons.begin(), m_addons.end(), peripheralAddon), m_addons.end());
-
-  return true;
-}
-
 void CPeripheralBusAddon::OnEvent(const ADDON::AddonEvent& event)
 {
   if (typeid(event) == typeid(ADDON::AddonEvents::Enabled) ||

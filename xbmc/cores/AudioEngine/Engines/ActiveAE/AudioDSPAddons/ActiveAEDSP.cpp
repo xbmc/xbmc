@@ -273,11 +273,6 @@ bool CActiveAEDSP::RequestRestart(AddonPtr addon, bool bDataChanged)
   return StopAudioDSPAddon(addon->AddonInfo(), true);
 }
 
-bool CActiveAEDSP::RequestRemoval(AddonPtr addon)
-{
-  return StopAudioDSPAddon(addon->AddonInfo(), false);
-}
-
 bool CActiveAEDSP::IsInUse(const std::string &strAddonId) const
 {
   CSingleLock lock(m_critSection);

@@ -48,7 +48,6 @@ namespace ADDON
     public:
       virtual ~IAddonMgrCallback() {};
       virtual bool RequestRestart(AddonPtr addon, bool datachanged)=0;
-      virtual bool RequestRemoval(AddonPtr addon)=0;
   };
 
   /**

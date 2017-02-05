@@ -86,7 +86,6 @@ namespace PERIPHERALS
 
     // implementation of IAddonMgrCallback
     bool RequestRestart(ADDON::AddonPtr addon, bool datachanged) override;
-    bool RequestRemoval(ADDON::AddonPtr addon) override;
 
     bool SplitLocation(const std::string& strLocation, PeripheralAddonPtr& addon, unsigned int& peripheralIndex) const;
 
