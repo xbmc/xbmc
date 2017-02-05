@@ -176,7 +176,7 @@ bool CFFmpegImage::LoadImageFromMemory(unsigned char* buffer, unsigned int bufSi
 
 bool CFFmpegImage::Initialize(unsigned char* buffer, unsigned int bufSize)
 {
-  uint8_t* fbuffer = (uint8_t*)av_malloc(FFMPEG_FILE_BUFFER_SIZE);
+  uint8_t* fbuffer = (uint8_t*)av_malloc(FFMPEG_FILE_BUFFER_SIZE + FF_INPUT_BUFFER_PADDING_SIZE);
   if (!fbuffer)
   {
     CLog::LogFunction(LOGERROR, __FUNCTION__, "Could not allocate FFMPEG_FILE_BUFFER_SIZE");
