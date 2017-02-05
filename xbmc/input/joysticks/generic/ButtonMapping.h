@@ -239,8 +239,6 @@ namespace JOYSTICK
      */
     bool MapPrimitive(const CDriverPrimitive& primitive);
 
-    bool IsDefaultController();
-
   private:
     bool IsMapping() const;
 

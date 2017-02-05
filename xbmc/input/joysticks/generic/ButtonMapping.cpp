@@ -22,7 +22,6 @@
 #include "games/GameServices.h"
 #include "games/controllers/Controller.h"
 #include "games/controllers/ControllerFeature.h"
-#include "input/joysticks/DefaultJoystick.h"
 #include "input/joysticks/DriverPrimitive.h"
 #include "input/joysticks/IActionMap.h"
 #include "input/joysticks/IButtonMap.h"
@@ -381,11 +380,6 @@ bool CButtonMapping::MapPrimitive(const CDriverPrimitive& primitive)
   }
 
   return bHandled;
-}
-
-bool CButtonMapping::IsDefaultController()
-{
-  return m_buttonMapper->ControllerID() == DEFAULT_CONTROLLER_ID;
 }
 
 bool CButtonMapping::IsMapping() const
