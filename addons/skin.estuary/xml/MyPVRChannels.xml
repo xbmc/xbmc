@@ -67,7 +67,7 @@
 							<aligny>top</aligny>
 							<font>font14</font>
 							<animation effect="slide" start="0,0" end="0,18" time="0">Conditional</animation>
-							<label>$INFO[ListItem.Label]</label>
+							<label>$INFO[ListItem.Title]</label>
 							<shadowcolor>text_shadow</shadowcolor>
 						</control>
 						<control type="label">
@@ -77,7 +77,7 @@
 							<right>120</right>
 							<aligny>top</aligny>
 							<font>font12</font>
-							<label>$INFO[ListItem.Title]</label>
+							<label>$INFO[ListItem.Label]</label>
 							<shadowcolor>text_shadow</shadowcolor>
 						</control>
 						<control type="label">
@@ -124,7 +124,7 @@
 							<right>120</right>
 							<aligny>top</aligny>
 							<font>font14</font>
-							<label>$INFO[ListItem.Label]</label>
+							<label>$INFO[ListItem.Title]</label>
 							<animation effect="slide" start="0,0" end="0,18" time="0">Conditional</animation>
 							<shadowcolor>text_shadow</shadowcolor>
 						</control>
@@ -135,7 +135,7 @@
 							<right>120</right>
 							<aligny>top</aligny>
 							<font>font12</font>
-							<label>$INFO[ListItem.Title]</label>
+							<label>$INFO[ListItem.Label]</label>
 							<shadowcolor>text_shadow</shadowcolor>
 							<textcolor>grey</textcolor>
 						</control>
