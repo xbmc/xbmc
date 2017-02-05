@@ -325,7 +325,7 @@ bool CButtonMapping::OnHatMotion(unsigned int hatIndex, HAT_STATE state)
   return GetHat(hatIndex).OnMotion(state);
 }
 
-bool CButtonMapping::OnAxisMotion(unsigned int axisIndex, float position)
+bool CButtonMapping::OnAxisMotion(unsigned int axisIndex, float position, int center, unsigned int range)
 {
   return GetAxis(axisIndex).OnMotion(position);
 }

@@ -98,6 +98,8 @@ namespace PERIPHERALS
 
     virtual bool IsIgnored(const JOYSTICK::CDriverPrimitive& primitive) override;
 
+    virtual bool GetAxisProperties(unsigned int axisIndex, int& center, unsigned int& range) override;
+
     virtual void SaveButtonMap() override;
 
     virtual void RevertButtonMap() override;
