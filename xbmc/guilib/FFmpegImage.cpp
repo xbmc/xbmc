@@ -146,13 +146,13 @@ CFFmpegImage::~CFFmpegImage()
   av_frame_free(&m_pFrame);
   // someone could have forgotten to call us
   CleanupLocalOutputBuffer();
-  if (m_ioctx)
-    FreeIOCtx(&m_ioctx);
   if (m_fctx)
   {
-    avcodec_close(m_codec_ctx);
+    avcodec_free_context(&m_codec_ctx);
     avformat_close_input(&m_fctx);
   }
+  if (m_ioctx)
+    FreeIOCtx(&m_ioctx);
 
   m_buf.data = nullptr;
   m_buf.pos = 0;
