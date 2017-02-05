@@ -474,18 +474,13 @@ bool CAddonMgr::UnloadAddon(const AddonInfoPtr& addonInfo)
 {
   CSingleLock lock(m_critSection);
   
-  m_installedAddons.erase(addonInfo->ID());
-  m_events.Publish(AddonEvents::InstalledChanged());
-  return true;
-}
-
-void CAddonMgr::OnPostUnInstall(const std::string& id)
-{
-  CSingleLock lock(m_critSection);
-
+  std::string id = addonInfo->ID();
   m_enabledAddons.erase(id);
   m_installedAddons.erase(id);
   m_updateBlacklist.erase(id);
+
+  m_events.Publish(AddonEvents::InstalledChanged());
+  return true;
 }
 
 bool CAddonMgr::EnableAddon(const std::string& addonId)

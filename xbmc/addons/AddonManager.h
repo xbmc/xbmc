@@ -321,13 +321,6 @@ namespace ADDON
     bool UnloadAddon(const AddonInfoPtr& addonInfo);
 
     /*!
-     * @brief Hook for clearing internal state after uninstall.
-     *
-     * @param[in] addonId id of the addon
-     */
-    void OnPostUnInstall(const std::string& addonId);
-
-    /*!
      * @brief Disable an addon.
      *
      * @param[in] addonId id of the addon
