@@ -113,7 +113,7 @@ namespace JOYSTICK
      * mapping begins. This function is used to indicate that the axis shouldn't
      * be mapped until after it crosses zero again.
      */
-    void SetEmitted() { m_state = AXIS_STATE::MAPPED; }
+    void SetEmitted(const CDriverPrimitive& activePrimitive);
 
   private:
     enum class AXIS_STATE
@@ -178,11 +178,9 @@ namespace JOYSTICK
     AXIS_STATE m_state;
     CDriverPrimitive m_activatedPrimitive;
     AXIS_TYPE m_type;
-    bool m_bContinuous; // false until a non-integer value is observed
     bool m_initialPositionKnown; // set to true on first motion
     float m_initialPosition; // set to position of first motion
     bool m_initialPositionChanged; // set to true when position differs from the initial position
-    bool m_bDiscreteDpadMapped; // set to true when a discrete D-pad axis has been mapped
     unsigned int m_activationTimeMs; // only used to delay anomalous trigger mapping to detect full range
   };
 
