@@ -62,13 +62,6 @@ namespace PVR
   class CPVRDatabase;
   class CGUIWindowPVRCommon;
 
-  enum PlaybackType
-  {
-    PlaybackTypeAny = 0,
-    PlaybackTypeTv,
-    PlaybackTypeRadio
-  };
-
   enum ContinueLastChannelOnStartup
   {
     CONTINUE_LAST_CHANNEL_OFF  = 0,
@@ -479,13 +472,6 @@ namespace PVR
      * @return True if playback was started, false otherwise.
      */
     bool StartPlayback(const CPVRChannelPtr &channel, bool bMinimised = false);
-
-    /*!
-     * @brief Start playback of the last used channel, and if it fails use first channel in the current channelgroup.
-     * @param type The type of playback to be started (any, radio, tv). See PlaybackType enum
-     * @return True if playback was started, false otherwise.
-     */
-    bool StartPlayback(PlaybackType type = PlaybackTypeAny);
 
     /*!
      * @brief Update the current playing file in the guiinfomanager and application.

@@ -711,6 +711,67 @@ namespace PVR
     return true;
   }
 
+  bool CPVRGUIActions::SwitchToChannel(PlaybackType type) const
+  {
+    CFileItemPtr channel;
+    bool bIsRadio(false);
+
+    // check if the desired PlaybackType is already playing,
+    // and if not, try to grab the last played channel of this type
+    switch (type)
+    {
+      case PlaybackTypeRadio:
+        if (g_PVRManager.IsPlayingRadio())
+          return true;
+
+        channel = g_PVRChannelGroups->GetGroupAllRadio()->GetLastPlayedChannel();
+        bIsRadio = true;
+        break;
+
+      case PlaybackTypeTV:
+        if (g_PVRManager.IsPlayingTV())
+          return true;
+
+        channel = g_PVRChannelGroups->GetGroupAllTV()->GetLastPlayedChannel();
+        break;
+
+      default:
+        if (g_PVRManager.IsPlaying())
+          return true;
+
+        channel = g_PVRChannelGroups->GetLastPlayedChannel();
+        break;
+    }
+
+    // if we have a last played channel, start playback
+    if (channel && channel->HasPVRChannelInfoTag())
+    {
+      return SwitchToChannel(channel, true);
+    }
+    else
+    {
+      // if we don't, find the active channel group of the demanded type and play it's first channel
+      const CPVRChannelGroupPtr channelGroup(g_PVRManager.GetPlayingGroup(bIsRadio));
+      if (channelGroup)
+      {
+        // try to start playback of first channel in this group
+        std::vector<PVRChannelGroupMember> groupMembers(channelGroup->GetMembers());
+        if (!groupMembers.empty())
+        {
+          return SwitchToChannel(CFileItemPtr(new CFileItem((*groupMembers.begin()).channel)), true);
+        }
+      }
+    }
+
+    CLog::Log(LOGNOTICE, "PVRGUIActions - %s - could not determine %s channel to start playback with. No last played channel found, and first channel of active group could also not be determined.", __FUNCTION__, bIsRadio ? "Radio": "TV");
+
+    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error,
+                                          g_localizeStrings.Get(19166), // PVR information
+                                          StringUtils::Format(g_localizeStrings.Get(19035).c_str(),
+                                                              g_localizeStrings.Get(bIsRadio ? 19021 : 19020).c_str())); // Radio/TV could not be played. Check the log for details.
+    return false;
+  }
+
   bool CPVRGUIActions::PlayMedia(const CFileItemPtr &item) const
   {
     CFileItemPtr pvrItem(item);

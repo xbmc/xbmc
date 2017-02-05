@@ -9016,7 +9016,7 @@ msgstr ""
 #: addons/skin.estuary/xml/SkinSettings.xml:
 #: addons/skin.estuary/xml/Variables.xml
 #: xbmc/pvr/channels/PVRChannelGroupsContainer.cpp
-#: xbmc/pvr/PVRManager.cpp
+#: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19020"
 msgid "TV"
 msgstr ""
@@ -9026,7 +9026,7 @@ msgstr ""
 #: addons/skin.estuary/xml/SkinSettings.xml
 #: addons/skin.estuary/xml/Variables.xml
 #: xbmc/pvr/channels/PVRChannelGroupsContainer.cpp
-#: xbmc/pvr/PVRManager.cpp
+#: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19021"
 msgid "Radio"
 msgstr ""
@@ -9920,8 +9920,10 @@ msgctxt "#19165"
 msgid "Switch"
 msgstr ""
 
-#. label for header of system information's PVR section
+#. label for header of misc PVR GUI elements
 #: xbmc/windows/GUIWindowSystemInfo.cpp
+#: xbmc/pvr/PVRManager.cpp
+#: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19166"
 msgid "PVR information"
 msgstr ""

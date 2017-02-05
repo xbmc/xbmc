@@ -58,15 +58,15 @@ bool CPVRActionListener::OnAction(const CAction &action)
       {
         case ACTION_PVR_PLAY:
           if (!isPlayingPvr)
-            g_PVRManager.StartPlayback(PlaybackTypeAny);
+            CPVRGUIActions::GetInstance().SwitchToChannel(PlaybackTypeAny);
           break;
         case ACTION_PVR_PLAY_TV:
           if (!isPlayingPvr || g_application.CurrentFileItem().GetPVRChannelInfoTag()->IsRadio())
-            g_PVRManager.StartPlayback(PlaybackTypeTv);
+            CPVRGUIActions::GetInstance().SwitchToChannel(PlaybackTypeTV);
           break;
         case ACTION_PVR_PLAY_RADIO:
           if (!isPlayingPvr || !g_application.CurrentFileItem().GetPVRChannelInfoTag()->IsRadio())
-            g_PVRManager.StartPlayback(PlaybackTypeRadio);
+            CPVRGUIActions::GetInstance().SwitchToChannel(PlaybackTypeRadio);
           break;
       }
       return true;

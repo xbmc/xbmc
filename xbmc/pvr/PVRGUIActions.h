@@ -32,6 +32,13 @@ class CGUIWindow;
 
 namespace PVR
 {
+  enum PlaybackType
+  {
+    PlaybackTypeAny = 0,
+    PlaybackTypeTV,
+    PlaybackTypeRadio
+  };
+
   class CPVRChannelSwitchingInputHandler : public CPVRChannelNumberInputHandler
   {
   public:
@@ -225,6 +232,13 @@ namespace PVR
      * @return True if the item could be played, false otherwise.
      */
     bool PlayMedia(const CFileItemPtr &item) const;
+
+    /*!
+     * @brief Start playback of the last played channel, and if there is none, play first channel in the current channelgroup.
+     * @param type The type of playback to be started (any, radio, tv). See PlaybackType enum
+     * @return True if playback was started, false otherwise.
+     */
+    bool SwitchToChannel(PlaybackType type) const;
 
     /*!
      * @brief Hide a channel, always showing a confirmation dialog.
