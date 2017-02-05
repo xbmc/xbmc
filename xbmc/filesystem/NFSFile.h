@@ -147,7 +147,7 @@ namespace XFILE
     //implement iocontrol for seek_possible for preventing the stat in File class for
     //getting this info ...
     virtual int IoControl(EIoControl request, void* param){ if(request == IOCTRL_SEEK_POSSIBLE) return 1;return -1;};    
-    virtual int  GetChunkSize() {return 1;}
+    virtual int  GetChunkSize() {return gNfsConnection.GetMaxReadChunkSize();}
     
     virtual bool OpenForWrite(const CURL& url, bool bOverWrite = false);
     virtual bool Delete(const CURL& url);
