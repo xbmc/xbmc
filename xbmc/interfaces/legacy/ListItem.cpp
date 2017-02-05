@@ -155,7 +155,7 @@ namespace XBMCAddon
     {
       if (!item) return;
 
-      LOCKGUI;
+      LOCKGUIIF(m_offscreen);
       CVideoInfoTag& vtag = *item->GetVideoInfoTag();
       for (const auto& it : dictionary)
         vtag.SetUniqueID(it.second, it.first, it.first == defaultrating);
@@ -165,7 +165,7 @@ namespace XBMCAddon
     {
       if (!item) return;
 
-      LOCKGUI;
+      LOCKGUIIF(m_offscreen);
       item->GetVideoInfoTag()->SetRating(rating, votes, type, defaultt);
     }
 
@@ -270,19 +270,19 @@ namespace XBMCAddon
 
     String ListItem::getUniqueID(const char* key)
     {
-      LOCKGUI;
+      LOCKGUIIF(m_offscreen);
       return item->GetVideoInfoTag()->GetUniqueID(key);
     }
 
     float ListItem::getRating(const char* key)
     {
-      LOCKGUI;
+      LOCKGUIIF(m_offscreen);
       return item->GetVideoInfoTag()->GetRating(key).rating;
     }
 
     int ListItem::getVotes(const char* key)
     {
-      LOCKGUI;
+      LOCKGUIIF(m_offscreen);
       return item->GetVideoInfoTag()->GetRating(key).votes;
     }
 
@@ -334,7 +334,7 @@ namespace XBMCAddon
 
     String ListItem::getPath()
     {
-      LOCKGUI;
+      LOCKGUIIF(m_offscreen);
       return item->GetPath();
     }
 
@@ -688,7 +688,7 @@ namespace XBMCAddon
 
     void ListItem::setCast(const std::vector<Properties>& actors)
     {
-      LOCKGUI;
+      LOCKGUIIF(m_offscreen);
       item->GetVideoInfoTag()->m_cast.clear();
       for (const auto& dictionary: actors)
       {
