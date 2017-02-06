@@ -25,7 +25,7 @@ ifeq ($(CROSS_COMPILING), yes)
   ffmpg_config += --arch=$(CPU) --enable-cross-compile
 endif
 ifeq ($(OS), linux)
-  ffmpg_config += --target-os=$(OS) --cpu=$(CPU)
+  ffmpg_config += --target-os=$(OS)
   ffmpg_config += --enable-vdpau --enable-vaapi --enable-pic
 endif
 ifeq ($(OS), android)
