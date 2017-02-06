@@ -59,43 +59,26 @@ bool CInputHandling::OnHatMotion(unsigned int hatIndex, HAT_STATE state)
   return bHandled;
 }
 
-bool CInputHandling::OnAxisMotion(unsigned int axisIndex, float position)
+bool CInputHandling::OnAxisMotion(unsigned int axisIndex, float position, int center, unsigned int range)
 {
   bool bHandled = false;
 
-  // Check for anomalous triggers that have an offset (non-zero) rest position
-  const std::array<int, 2> centers = { { -1, 1 } };
-  const std::array<unsigned int, 2> ranges = { { 1, 2 } };
-  for (auto center : centers)
+  if (center != 0)
   {
-    for (auto range : ranges)
-    {
-      float magnitude = std::abs(position - center) / range;
+    float translatedPostion = std::min((position - center) / range, 1.0f);
 
-      if (magnitude > 1.0f)
-        magnitude = 1.0f;
+    // Calculate the direction the trigger travels from the center point
+    SEMIAXIS_DIRECTION dir;
+    if (center > 0)
+      dir = SEMIAXIS_DIRECTION::NEGATIVE;
+    else
+      dir = SEMIAXIS_DIRECTION::POSITIVE;
 
-      // Calculate the direction the trigger travels from the center point
-      SEMIAXIS_DIRECTION dir;
-      if (center > 0)
-        dir = SEMIAXIS_DIRECTION::NEGATIVE;
-      else
-        dir = SEMIAXIS_DIRECTION::POSITIVE;
+    CDriverPrimitive offsetSemiaxis(axisIndex, center, dir, range);
 
-      CDriverPrimitive offsetSemiaxis(axisIndex, center, dir, range);
-
-      if (OnAnalogMotion(offsetSemiaxis, magnitude))
-      {
-        bHandled = true;
-        break;
-      }
-    }
-
-    if (bHandled)
-      break;
+    bHandled = OnAnalogMotion(offsetSemiaxis, translatedPostion);
   }
-
-  if (!bHandled)
+  else
   {
     CDriverPrimitive positiveSemiaxis(axisIndex, 0, SEMIAXIS_DIRECTION::POSITIVE, 1);
     CDriverPrimitive negativeSemiaxis(axisIndex, 0, SEMIAXIS_DIRECTION::NEGATIVE, 1);

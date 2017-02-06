@@ -218,17 +218,23 @@ bool CPeripheralJoystick::OnHatMotion(unsigned int hatIndex, HAT_STATE state)
 
 bool CPeripheralJoystick::OnAxisMotion(unsigned int axisIndex, float position)
 {
-  CSingleLock lock(m_handlerMutex);
+  // Get axis properties
+  int center = 0;
+  unsigned int range = 1;
+  if (m_buttonMap)
+    m_buttonMap->GetAxisProperties(axisIndex, center, range);
 
   // Apply deadzone filtering
-  if (m_deadzoneFilter)
+  if (center == 0 && m_deadzoneFilter)
     position = m_deadzoneFilter->FilterAxis(axisIndex, position);
+
+  CSingleLock lock(m_handlerMutex);
 
   // Process promiscuous handlers
   for (std::vector<DriverHandler>::iterator it = m_driverHandlers.begin(); it != m_driverHandlers.end(); ++it)
   {
     if (it->bPromiscuous)
-      it->handler->OnAxisMotion(axisIndex, position);
+      it->handler->OnAxisMotion(axisIndex, position, center, range);
   }
 
   bool bHandled = false;
@@ -238,17 +244,11 @@ bool CPeripheralJoystick::OnAxisMotion(unsigned int axisIndex, float position)
   {
     if (!it->bPromiscuous)
     {
-      bHandled |= it->handler->OnAxisMotion(axisIndex, position);
+      bHandled |= it->handler->OnAxisMotion(axisIndex, position, center, range);
 
       // If axis is centered, force bHandled to false to notify all handlers.
       // This avoids "sticking".
-      //
-      //! @todo This fails for anomalous triggers! If a trigger travels from -1
-      // to +1, then at 0.0 the input will fall through to the next handler.
-      // And the next handler will get stuck, because it won't receive any more
-      // updates until the first handler is unregistered! We need to translate
-      // the position inside this class before calling OnAxisMotion().
-      if (position == 0.0f)
+      if (position == static_cast<float>(center))
         bHandled = false;
 
       // Once an axis is handled, we're done
