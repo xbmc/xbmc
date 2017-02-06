@@ -40,8 +40,7 @@ using namespace GAME;
 CGUIConfigurationWizard::CGUIConfigurationWizard(bool bEmulation, unsigned int controllerNumber /* = 0 */) :
   CThread("GUIConfigurationWizard"),
   m_bEmulation(bEmulation),
-  m_controllerNumber(controllerNumber),
-  m_callback(nullptr)
+  m_controllerNumber(controllerNumber)
 {
   InitializeState();
 }
@@ -51,10 +50,9 @@ void CGUIConfigurationWizard::InitializeState(void)
   m_currentButton = nullptr;
   m_currentDirection = JOYSTICK::ANALOG_STICK_DIRECTION::UNKNOWN;
   m_history.clear();
-  m_lastMappingActionMs = 0;
 }
 
-void CGUIConfigurationWizard::Run(const std::string& strControllerId, const std::vector<IFeatureButton*>& buttons, IConfigurationWizardCallback* callback)
+void CGUIConfigurationWizard::Run(const std::string& strControllerId, const std::vector<IFeatureButton*>& buttons)
 {
   Abort();
 
@@ -64,7 +62,6 @@ void CGUIConfigurationWizard::Run(const std::string& strControllerId, const std:
     // Set Run() parameters
     m_strControllerId = strControllerId;
     m_buttons = buttons;
-    m_callback = callback;
 
     // Reset synchronization variables
     m_inputEvent.Reset();
@@ -106,8 +103,6 @@ bool CGUIConfigurationWizard::Abort(bool bWait /* = true */)
 void CGUIConfigurationWizard::Process(void)
 {
   CLog::Log(LOGDEBUG, "Starting configuration wizard");
-
-  m_lastMappingActionMs = XbmcThreads::SystemClockMillis();
 
   InstallHooks();
 
@@ -230,16 +225,6 @@ bool CGUIConfigurationWizard::MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
       if (bHandled)
       {
         m_history.insert(primitive);
-
-        // Detect button skipping
-        unsigned int elapsed = XbmcThreads::SystemClockMillis() - m_lastMappingActionMs;
-        if (elapsed <= SKIPPING_DETECTION_MS)
-        {
-          CLog::Log(LOGDEBUG, "%s: Possible skip detected after %ums", m_strControllerId.c_str(), elapsed);
-          if (m_callback)
-            m_callback->OnSkipDetected();
-        }
-        m_lastMappingActionMs = XbmcThreads::SystemClockMillis();
 
         OnMotion(buttonMap);
         m_inputEvent.Set();
