@@ -160,7 +160,8 @@ CPVRManager::CPVRManager(void) :
     m_bFirstStart(true),
     m_bIsSwitchingChannels(false),
     m_bEpgsCreated(false),
-    m_progressHandle(NULL),
+    m_progressBar(nullptr),
+    m_progressHandle(nullptr),
     m_managerState(ManagerStateStopped),
     m_isChannelPreview(false)
 {
@@ -376,6 +377,14 @@ void CPVRManager::Init()
   settingSet.insert(CSettings::SETTING_EPG_DAYSTODISPLAY);
   settingSet.insert(CSettings::SETTING_PVRPARENTAL_ENABLED);
   CSettings::GetInstance().RegisterCallback(this, settingSet);
+
+  // Note: we're holding the progress bar dialog instance pointer in a member because it is needed by pvr core
+  //       components. The latter might run in a different thread than the gui and g_windowManager.GetWindow()
+  //       locks the global graphics mutex, which easily can lead to deadlocks.
+  m_progressBar = dynamic_cast<CGUIDialogExtendedProgressBar *>(g_windowManager.GetWindow(WINDOW_DIALOG_EXT_PROGRESS));
+
+  if (!m_progressBar)
+    CLog::Log(LOGERROR, "CPVRManager - %s - unable to get WINDOW_DIALOG_EXT_PROGRESS!", __FUNCTION__);
 
   // initial check for enabled addons
   // if at least one pvr addon is enabled, PVRManager start up
@@ -691,14 +700,14 @@ bool CPVRManager::Load(bool bShowProgress)
 
 void CPVRManager::ShowProgressDialog(const std::string &strText, int iProgress)
 {
-  if (!m_progressHandle)
-  {
-    CGUIDialogExtendedProgressBar *loadingProgressDialog = (CGUIDialogExtendedProgressBar *)g_windowManager.GetWindow(WINDOW_DIALOG_EXT_PROGRESS);
-    m_progressHandle = loadingProgressDialog->GetHandle(g_localizeStrings.Get(19235)); // PVR manager is starting up
-  }
+  if (!m_progressHandle && m_progressBar)
+    m_progressHandle = m_progressBar->GetHandle(g_localizeStrings.Get(19235)); // PVR manager is starting up
 
-  m_progressHandle->SetPercentage((float)iProgress);
-  m_progressHandle->SetText(strText);
+  if (m_progressHandle)
+  {
+    m_progressHandle->SetPercentage(static_cast<float>(iProgress));
+    m_progressHandle->SetText(strText);
+  }
 }
 
 void CPVRManager::HideProgressDialog(void)
@@ -708,6 +717,14 @@ void CPVRManager::HideProgressDialog(void)
     m_progressHandle->MarkFinished();
     m_progressHandle = NULL;
   }
+}
+
+CGUIDialogProgressBarHandle* CPVRManager::ShowProgressDialog(const std::string &strTitle) const
+{
+  if (m_progressBar)
+    return m_progressBar->GetHandle(strTitle);
+
+  return nullptr;
 }
 
 bool CPVRManager::ChannelSwitchById(unsigned int iChannelId)

@@ -10293,14 +10293,14 @@ msgctxt "#19285"
 msgid "Browse for icon"
 msgstr ""
 
-#. Notification message if process starts searching for missing channel icons
-#: xbmc/pvr/PVRManager.cpp
+#. Label for channel icon search progress dialog
+#: xbmc/pvr/channels/PVRChannelGroup.cpp
 msgctxt "#19286"
 msgid "Searching for channel icons"
 msgstr ""
 
 #. Label for the default pvr channel group
-#: xbmc/pvr/windows/GUIWindowPVRCommon.cpp
+#: xbmc/pvr/channels/PVRChannelGroupInternal.cpp
 msgctxt "#19287"
 msgid "All channels"
 msgstr ""
