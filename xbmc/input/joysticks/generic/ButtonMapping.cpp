@@ -184,9 +184,14 @@ void CAxisDetector::ProcessMotion()
 
     if (!bIgnore)
     {
-      // Update driver primitive if we're mapping an anomalous trigger
+      // Update driver primitive's range if we're mapping an anomalous trigger
       if (m_type == AXIS_TYPE::OFFSET)
-        m_activatedPrimitive = CDriverPrimitive(m_axisIndex, m_config.center, m_activatedPrimitive.SemiAxisDirection(), m_config.range);
+      {
+        m_activatedPrimitive = CDriverPrimitive(m_activatedPrimitive.Index(),
+                                                m_activatedPrimitive.Center(),
+                                                m_activatedPrimitive.SemiAxisDirection(),
+                                                m_config.range);
+      }
 
       // Map primitive
       if (!m_buttonMapping->MapPrimitive(m_activatedPrimitive))
