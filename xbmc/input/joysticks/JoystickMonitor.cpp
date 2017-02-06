@@ -46,7 +46,7 @@ bool CJoystickMonitor::OnHatMotion(unsigned int hatIndex, HAT_STATE state)
   return false;
 }
 
-bool CJoystickMonitor::OnAxisMotion(unsigned int axisIndex, float position)
+bool CJoystickMonitor::OnAxisMotion(unsigned int axisIndex, float position, int center, unsigned int range)
 {
   if (position)
   {

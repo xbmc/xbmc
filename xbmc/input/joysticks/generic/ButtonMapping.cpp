@@ -94,55 +94,25 @@ CAxisDetector::CAxisDetector(CButtonMapping* buttonMapping, unsigned int axisInd
   m_config(config),
   m_state(AXIS_STATE::INACTIVE),
   m_type(AXIS_TYPE::UNKNOWN),
-  m_bContinuous(false),
   m_initialPositionKnown(false),
   m_initialPosition(0.0f),
   m_initialPositionChanged(false),
-  m_bDiscreteDpadMapped(false),
   m_activationTimeMs(0)
 {
 }
 
 bool CAxisDetector::OnMotion(float position)
 {
-  if (m_type == AXIS_TYPE::UNKNOWN)
-  {
-    if (m_config.bKnown)
-    {
-      if (m_config.center == 0)
-        m_type = AXIS_TYPE::NORMAL;
-      else
-        m_type = AXIS_TYPE::OFFSET;
-    }
-    else
-    {
-      DetectType(position);
-    }
-  }
+  DetectType(position);
 
   if (m_type != AXIS_TYPE::UNKNOWN)
   {
-    // Update range if a range of > 1 is observed
-    if (std::abs(position - m_config.center) > 1.0f)
-      m_config.range = 2;
-
     // Update position if this axis is an anomalous trigger
     if (m_type == AXIS_TYPE::OFFSET)
       position = (position - m_config.center) / m_config.range;
 
-    // We must observe two integer values to detect a discrete D-pad. In this
-    // case, the first value is the one that should be mapped. We only need to
-    // do this once.
-    if (!m_bContinuous && !m_bDiscreteDpadMapped)
-    {
-      if (m_initialPosition != 0.0f)
-        position = m_initialPosition;
-
-      m_bDiscreteDpadMapped = true; // position must be non-zero
-    }
-
     // Reset state if position crosses zero
-    if (m_state != AXIS_STATE::INACTIVE)
+    if (m_state == AXIS_STATE::MAPPED)
     {
       SEMIAXIS_DIRECTION activatedDir = m_activatedPrimitive.SemiAxisDirection();
       SEMIAXIS_DIRECTION newDir = CJoystickTranslator::PositionToSemiAxisDirection(position);
@@ -192,9 +162,7 @@ void CAxisDetector::ProcessMotion()
       // Map primitive
       if (!m_buttonMapping->MapPrimitive(m_activatedPrimitive))
       {
-        if (!m_bContinuous)
-          CLog::Log(LOGDEBUG, "Mapping discrete D-pad on axis %u failed", m_axisIndex);
-        else if (m_type == AXIS_TYPE::OFFSET)
+        if (m_type == AXIS_TYPE::OFFSET)
           CLog::Log(LOGDEBUG, "Mapping offset axis %u failed", m_axisIndex);
         else
           CLog::Log(LOGDEBUG, "Mapping normal axis %u failed", m_axisIndex);
@@ -205,27 +173,31 @@ void CAxisDetector::ProcessMotion()
   }
 }
 
+void CAxisDetector::SetEmitted(const CDriverPrimitive& activePrimitive)
+{
+  m_state = AXIS_STATE::MAPPED;
+  m_activatedPrimitive = activePrimitive;
+}
+
 void CAxisDetector::DetectType(float position)
 {
-  // Calculate center based on initial position.
-  //
-  // The idea behind this is that "initial perturbations are minimal". This
-  // means that, assuming the timestep is small enough, that the position will
-  // only have moved a small distance from the rest state.
-  //
-  // In practice, this assumption breaks for fast movements, especially on OSX
-  // where events are asynchronous and occur at larger timesteps. There's
-  // nothing we can do about this, so the user will have to try again with
-  // slower motion.
-  //
-  // To differentiate discrete D-pads from anomalous triggers, we need to use a
-  // second position value. If the position jumps discretely it's a discrete
-  // D-pad, if it travels continuously then it's an anomalous trigger.
-  //
+  // Update range if a range of > 1 is observed
+  if (std::abs(position - m_config.center) > 1.0f)
+    m_config.range = 2;
 
-  // Update state
-  if (position != -1.0f && position != 0.0f && position != 1.0f)
-    m_bContinuous = true;
+  if (m_type != AXIS_TYPE::UNKNOWN)
+    return;
+
+  if (m_config.bKnown)
+  {
+    if (m_config.center == 0)
+      m_type = AXIS_TYPE::NORMAL;
+    else
+      m_type = AXIS_TYPE::OFFSET;
+  }
+
+  if (m_type != AXIS_TYPE::UNKNOWN)
+    return;
 
   if (!m_initialPositionKnown)
   {
@@ -233,19 +205,19 @@ void CAxisDetector::DetectType(float position)
     m_initialPosition = position;
   }
 
-  if (!m_initialPositionChanged && position != m_initialPosition)
+  if (position != m_initialPosition)
     m_initialPositionChanged = true;
 
-  // Apply conditions for type detection
-  if (m_bContinuous)
+  if (m_initialPositionChanged)
   {
-    if (position < -0.5f)
+    // Calculate center based on initial position.
+    if (m_initialPosition < -0.5f)
     {
       m_config.center = -1;
       m_type = AXIS_TYPE::OFFSET;
       CLog::Log(LOGDEBUG, "Anomalous trigger detected on axis %u with center %d", m_axisIndex, m_config.center);
     }
-    else if (position > 0.5f)
+    else if (m_initialPosition > 0.5f)
     {
       m_config.center = 1;
       m_type = AXIS_TYPE::OFFSET;
@@ -254,15 +226,7 @@ void CAxisDetector::DetectType(float position)
     else
     {
       m_type = AXIS_TYPE::NORMAL;
-    }
-  }
-  else
-  {
-    // Detect a discrete D-pad when two discrete values have been observed
-    if (m_initialPositionChanged)
-    {
-      m_type = AXIS_TYPE::NORMAL; // Axis is a discrete D-pad
-      CLog::Log(LOGDEBUG, "Discrete D-pad detected on axis %u", m_axisIndex);
+      CLog::Log(LOGDEBUG, "Normal axis detected on axis %u", m_axisIndex);
     }
   }
 }
@@ -306,7 +270,7 @@ CButtonMapping::CButtonMapping(IButtonMapper* buttonMapper, IButtonMap* buttonMa
       axisConfig.center = primitive.Center();
       axisConfig.range = primitive.Range();
 
-      GetAxis(primitive.Index(), axisConfig).SetEmitted();
+      GetAxis(primitive.Index(), axisConfig).SetEmitted(primitive);
     }
   }
 }
@@ -321,7 +285,7 @@ bool CButtonMapping::OnHatMotion(unsigned int hatIndex, HAT_STATE state)
   return GetHat(hatIndex).OnMotion(state);
 }
 
-bool CButtonMapping::OnAxisMotion(unsigned int axisIndex, float position)
+bool CButtonMapping::OnAxisMotion(unsigned int axisIndex, float position, int center, unsigned int range)
 {
   return GetAxis(axisIndex).OnMotion(position);
 }
