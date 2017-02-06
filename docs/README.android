@@ -101,7 +101,7 @@ SDK (referenced as <android-sdk> from now on):
 After having extracted the Android SDK to <android-sdk> you need to
 install some android packages using the Android SDK Manager:
 
-    $ cd cd /$HOME/android-sdk-linux/tools
+    $ cd /$HOME/android-sdk-linux/tools
     $ ./android update sdk -u -t platform,platform-tool
     $ ./android update sdk --all -u -t build-tools-20.0.0
 --------------------------------------------------------------------
