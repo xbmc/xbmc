@@ -10619,13 +10619,13 @@ msgctxt "#19285"
 msgid "Browse for icon"
 msgstr ""
 
-#. unused?
+#. Label for channel icon search progress dialog
+#: xbmc/pvr/channels/PVRChannelGroup.cpp
 msgctxt "#19286"
 msgid "Searching for channel icons"
 msgstr ""
 
 #. Label for the default pvr channel group
-#: xbmc/pvr/channels/PVRChannelGroup.cpp
 #: xbmc/pvr/channels/PVRChannelGroupInternal.cpp
 msgctxt "#19287"
 msgid "All channels"
