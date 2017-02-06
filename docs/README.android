@@ -16,6 +16,7 @@ TOC
 We currently recommend Ubuntu "Xenial Xerus" (16.04) 64Bit. This is what our continuous
 integration system "jenkins" is using.
 
+********************** Note 
 Building on OSX, & Windows system is best done with Virtual Box installation
 of Ubutuntu 16.04. The instructions below assumes a FRESH INSTALLATION of 
 Ubuntu
@@ -23,6 +24,7 @@ Ubuntu
 This instruction has been tested on Kodi Krypton RC-1 compiled
 for ARM architecture running on FireTV.
 This instruction will compile Krypton without any errors. 
+**********************
 
 NOTE TO NEW USERS: All lines that are prefixed with the '$'
 character are commands that need to be typed into a terminal window /
