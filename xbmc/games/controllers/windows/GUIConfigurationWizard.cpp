@@ -92,7 +92,7 @@ void CGUIConfigurationWizard::OnUnfocus(IFeatureButton* button)
 
 bool CGUIConfigurationWizard::Abort(bool bWait /* = true */)
 {
-  if (IsRunning())
+  if (!m_bStop)
   {
     StopThread(false);
 
