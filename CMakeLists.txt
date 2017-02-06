@@ -193,7 +193,7 @@ endif()
 
 if(NOT WIN32)
   core_optional_dep(OpenGl)
-  if(OPENGL_FOUND)
+  if(OPENGL_FOUND AND NOT APPLE)
     if(ENABLE_MIR)
       core_require_dep(Mir ENABLE_MIR)
       core_optional_dep(LibDRM ENABLE_MIR)
