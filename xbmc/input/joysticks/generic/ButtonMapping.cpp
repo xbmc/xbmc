@@ -22,7 +22,6 @@
 #include "games/GameServices.h"
 #include "games/controllers/Controller.h"
 #include "games/controllers/ControllerFeature.h"
-#include "input/joysticks/DefaultJoystick.h"
 #include "input/joysticks/DriverPrimitive.h"
 #include "input/joysticks/IActionMap.h"
 #include "input/joysticks/IButtonMap.h"
@@ -185,9 +184,14 @@ void CAxisDetector::ProcessMotion()
 
     if (!bIgnore)
     {
-      // Update driver primitive if we're mapping an anomalous trigger
+      // Update driver primitive's range if we're mapping an anomalous trigger
       if (m_type == AXIS_TYPE::OFFSET)
-        m_activatedPrimitive = CDriverPrimitive(m_axisIndex, m_config.center, m_activatedPrimitive.SemiAxisDirection(), m_config.range);
+      {
+        m_activatedPrimitive = CDriverPrimitive(m_activatedPrimitive.Index(),
+                                                m_activatedPrimitive.Center(),
+                                                m_activatedPrimitive.SemiAxisDirection(),
+                                                m_config.range);
+      }
 
       // Map primitive
       if (!m_buttonMapping->MapPrimitive(m_activatedPrimitive))
@@ -381,11 +385,6 @@ bool CButtonMapping::MapPrimitive(const CDriverPrimitive& primitive)
   }
 
   return bHandled;
-}
-
-bool CButtonMapping::IsDefaultController()
-{
-  return m_buttonMapper->ControllerID() == DEFAULT_CONTROLLER_ID;
 }
 
 bool CButtonMapping::IsMapping() const

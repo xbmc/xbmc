@@ -182,20 +182,6 @@ namespace GAME
   };
 
   /*!
-   * \brief Callback handler passed to the button mapping wizard
-   */
-  class IConfigurationWizardCallback
-  {
-  public:
-    virtual ~IConfigurationWizardCallback() = default;
-
-    /*!
-     * \brief Called when a "skip" is detected, defined as two mapping commands within a short duration
-     */
-    virtual void OnSkipDetected() = 0;
-  };
-
-  /*!
    * \brief A wizard to direct user input
    */
   class IConfigurationWizard
@@ -207,7 +193,7 @@ namespace GAME
      * \brief Start the wizard at the specified feature
      * \param featureIndex The index of the feature to start at
      */
-    virtual void Run(const std::string& strControllerId, const std::vector<IFeatureButton*>& buttons, IConfigurationWizardCallback* callback) = 0;
+    virtual void Run(const std::string& strControllerId, const std::vector<IFeatureButton*>& buttons) = 0;
 
     /*!
      * \brief Callback for feature losing focus
