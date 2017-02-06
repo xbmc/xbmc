@@ -88,6 +88,7 @@
       <swipe direction="left" pointers="2">NextPicture</swipe>
       <tap pointers="2">Pause</tap>
       <tap pointers="3">Info</tap>
+      <longpress>Back</longpress>
     </touch>
   </SlideShow>
   <ScreenCalibration>
