@@ -455,4 +455,11 @@ public:
   // this needs to be public so it can be triggered when activated
   // by the user in the GUI.
   virtual void OnSettingAction(const CSetting *setting) override { return CSetting::OnSettingAction(this); }
+
+  bool HasData() const { return !m_data.empty(); }
+  const std::string& GetData() const { return m_data; }
+  void SetData(const std::string& data) { m_data = data; }
+
+protected:
+  std::string m_data;
 };

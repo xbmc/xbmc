@@ -52,6 +52,7 @@
 #define SETTING_XML_ELM_DELIMITER     "delimiter"
 #define SETTING_XML_ELM_MINIMUM_ITEMS "minimumitems"
 #define SETTING_XML_ELM_MAXIMUM_ITEMS "maximumitems"
+#define SETTING_XML_ELM_DATA          "data"
 
 #define SETTING_XML_ATTR_ID           "id"
 #define SETTING_XML_ATTR_LABEL        "label"

@@ -1420,7 +1420,8 @@ CSettingAction::CSettingAction(const std::string &id, int label, CSettingsManage
 }
   
 CSettingAction::CSettingAction(const std::string &id, const CSettingAction &setting)
-  : CSetting(id, setting)
+  : CSetting(id, setting),
+    m_data(setting.m_data)
 { }
 
 CSetting* CSettingAction::Clone(const std::string &id) const
@@ -1434,6 +1435,8 @@ bool CSettingAction::Deserialize(const TiXmlNode *node, bool update /* = false *
 
   if (!CSetting::Deserialize(node, update))
     return false;
+
+  m_data = XMLUtils::GetString(node, SETTING_XML_ELM_DATA);
     
   return true;
 }
