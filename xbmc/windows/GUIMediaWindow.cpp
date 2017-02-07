@@ -22,6 +22,7 @@
 #include "Application.h"
 #include "ServiceBroker.h"
 #include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 #include "ContextMenuManager.h"
 #include "FileItemListModification.h"
 #include "GUIPassword.h"
@@ -1474,6 +1475,8 @@ void CGUIMediaWindow::OnRenameItem(int iItem)
 
 void CGUIMediaWindow::OnInitWindow()
 {
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
   // initial fetch is done unthreaded to ensure the items are setup prior to skin animations kicking off
   m_rootDir.SetAllowThreads(false);
 
@@ -1491,7 +1494,7 @@ void CGUIMediaWindow::OnInitWindow()
   else
   {
     CGUIMessage msg(GUI_MSG_WINDOW_INIT, 0, 0, 0, PLUGIN_REFRESH_DELAY);
-    g_windowManager.SendThreadMessage(msg, m_controlID);
+    PostGUIMessage(msg, m_controlID);
   }
 
   if (updateStartDirectory)

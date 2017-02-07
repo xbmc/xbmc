@@ -21,6 +21,7 @@
 #include "Application.h"
 #include "ServiceBroker.h"
 #include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 #include "LocalizeStrings.h"
 #include "GUIKeyboardFactory.h"
 #include "dialogs/GUIDialogOK.h"
@@ -50,6 +51,8 @@ CGUIKeyboardFactory::~CGUIKeyboardFactory(void)
 
 void CGUIKeyboardFactory::keyTypedCB(CGUIKeyboard *ref, const std::string &typedString)
 {
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
   if(ref)
   {
     // send our search message in safe way (only the active window needs it)
@@ -59,12 +62,12 @@ void CGUIKeyboardFactory::keyTypedCB(CGUIKeyboard *ref, const std::string &typed
       case FILTERING_SEARCH:
         message.SetParam1(GUI_MSG_SEARCH_UPDATE);
         message.SetStringParam(typedString);
-        CApplicationMessenger::GetInstance().SendGUIMessage(message, g_windowManager.GetActiveWindow());
+        PostGUIMessage(message, g_windowManager.GetActiveWindow());
         break;
       case FILTERING_CURRENT:
         message.SetParam1(GUI_MSG_FILTER_ITEMS);
         message.SetStringParam(typedString);
-        CApplicationMessenger::GetInstance().SendGUIMessage(message);
+        PostGUIMessage(message);
         break;
       case FILTERING_NONE:
         break;

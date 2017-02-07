@@ -25,6 +25,7 @@
 #include "FileItem.h"
 #include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 
@@ -79,8 +80,10 @@ void CGUIDialogVisualisationPresetList::SetVisualisation(CVisualisation* vis)
 
 void CGUIDialogVisualisationPresetList::OnInitWindow()
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
-  g_windowManager.SendMessage(msg);
+  SendGUIMessage(msg);
   if (msg.GetPointer())
     SetVisualisation(static_cast<CVisualisation*>(msg.GetPointer()));
   CGUIDialogSelect::OnInitWindow();

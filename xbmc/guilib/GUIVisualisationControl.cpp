@@ -25,6 +25,7 @@
 #include "addons/AddonManager.h"
 #include "addons/AddonSystemSettings.h"
 #include "addons/Visualisation.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 #include "utils/log.h"
 #include "input/Key.h"
 
@@ -117,13 +118,15 @@ void CGUIVisualisationControl::Process(unsigned int currentTime, CDirtyRegionLis
 
 void CGUIVisualisationControl::FreeResources(bool immediately)
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   m_bAttemptedLoad = false;
   // tell our app that we're going
   if (!m_addon)
     return;
 
   CGUIMessage msg(GUI_MSG_VISUALISATION_UNLOADING, m_controlID, 0);
-  g_windowManager.SendMessage(msg);
+  SendGUIMessage(msg);
   CLog::Log(LOGDEBUG, "FreeVisualisation() started");
   CGUIRenderingControl::FreeResources(immediately);
   m_addon.reset();

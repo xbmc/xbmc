@@ -22,7 +22,7 @@
 #include "games/controllers/windows/GUIControllerDefines.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/WindowIDs.h"
-#include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 #include "threads/Event.h"
 #include "utils/StringUtils.h"
 
@@ -51,14 +51,15 @@ void CGUIFeatureButton::OnUnFocus(void)
 
 bool CGUIFeatureButton::DoPrompt(const std::string& strPrompt, const std::string& strWarn, const std::string& strFeature, CEvent& waitEvent)
 {
-  using namespace KODI::MESSAGING;
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
 
   bool bInterrupted = false;
 
   if (!HasFocus())
   {
     CGUIMessage msgFocus(GUI_MSG_SETFOCUS, GetID(), GetID());
-    CApplicationMessenger::GetInstance().SendGUIMessage(msgFocus, WINDOW_INVALID, false);
+    PostGUIMessage(msgFocus, WINDOW_INVALID);
   }
 
   CGUIMessage msgLabel(GUI_MSG_LABEL_SET, GetID(), GetID());
@@ -78,7 +79,7 @@ bool CGUIFeatureButton::DoPrompt(const std::string& strPrompt, const std::string
       strLabel = StringUtils::Format(strPrompt.c_str(), strFeature.c_str(), secondsRemaining);
 
     msgLabel.SetLabel(strLabel);
-    CApplicationMessenger::GetInstance().SendGUIMessage(msgLabel, WINDOW_INVALID, false);
+    PostGUIMessage(msgLabel, WINDOW_INVALID);
 
     waitEvent.Reset();
     bInterrupted = waitEvent.WaitMSec(1000); // Wait 1 second
@@ -89,7 +90,7 @@ bool CGUIFeatureButton::DoPrompt(const std::string& strPrompt, const std::string
 
   // Reset label
   msgLabel.SetLabel(m_feature.Label());
-  CApplicationMessenger::GetInstance().SendGUIMessage(msgLabel, WINDOW_INVALID, false);
+  PostGUIMessage(msgLabel, WINDOW_INVALID);
 
   return bInterrupted;
 }

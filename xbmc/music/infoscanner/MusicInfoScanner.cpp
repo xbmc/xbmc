@@ -44,6 +44,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "GUIUserMessages.h"
 #include "interfaces/AnnouncementManager.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 #include "music/MusicThumbLoader.h"
 #include "music/tags/MusicInfoTag.h"
 #include "music/tags/MusicInfoTagLoaderFactory.h"
@@ -89,6 +90,8 @@ CMusicInfoScanner::~CMusicInfoScanner()
 
 void CMusicInfoScanner::Process()
 {
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
   ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "OnScanStarted");
   try
   {
@@ -262,8 +265,7 @@ void CMusicInfoScanner::Process()
   
   // we need to clear the musicdb cache and update any active lists
   CUtil::DeleteMusicDatabaseDirectoryCache();
-  CGUIMessage msg(GUI_MSG_SCAN_FINISHED, 0, 0, 0);
-  g_windowManager.SendThreadMessage(msg);
+  PostGUIMessage(GUI_MSG_SCAN_FINISHED, 0, 0, 0);
   
   if (m_handle)
     m_handle->MarkFinished();
@@ -435,9 +437,11 @@ void CMusicInfoScanner::CleanDatabase(bool showProgress /* = true */)
 
 static void OnDirectoryScanned(const std::string& strDirectory)
 {
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
   CGUIMessage msg(GUI_MSG_DIRECTORY_SCANNED, 0, 0, 0);
   msg.SetStringParam(strDirectory);
-  g_windowManager.SendThreadMessage(msg);
+  PostGUIMessage(msg);
 }
 
 static std::string Prettify(const std::string& strDirectory)

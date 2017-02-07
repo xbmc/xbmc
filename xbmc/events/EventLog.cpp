@@ -26,6 +26,7 @@
 #include "filesystem/EventsDirectory.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/WindowIDs.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 #include "profiles/ProfilesManager.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
@@ -261,6 +262,8 @@ void CEventLog::OnSettingAction(const CSetting *setting)
 
 void CEventLog::SendMessage(const EventPtr& eventPtr, int message)
 {
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, message, 0, XFILE::CEventsDirectory::EventToFileItem(eventPtr));
-  g_windowManager.SendThreadMessage(msg);
+  PostGUIMessage(msg);
 }

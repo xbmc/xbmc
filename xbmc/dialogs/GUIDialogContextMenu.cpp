@@ -45,6 +45,7 @@
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "addons/Scraper.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 
 #define BACKGROUND_IMAGE       999
 #define GROUP_LIST             996
@@ -274,6 +275,8 @@ void CGUIDialogContextMenu::GetContextButtons(const std::string &type, const CFi
 
 bool CGUIDialogContextMenu::OnContextButton(const std::string &type, const CFileItemPtr& item, CONTEXT_BUTTON button)
 {
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
   // buttons that are available on both sources and autosourced items
   if (!item) return false;
   
@@ -407,8 +410,7 @@ bool CGUIDialogContextMenu::OnContextButton(const std::string &type, const CFile
           db.SetTextureForPath(item->GetPath(), "thumb", strThumb);
       }
 
-      CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
-      g_windowManager.SendThreadMessage(msg);
+      PostGUIMessage(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
       return true;
     }
 
@@ -429,8 +431,7 @@ bool CGUIDialogContextMenu::OnContextButton(const std::string &type, const CFile
       CMediaSourceSettings::GetInstance().UpdateSource(type, share->strName, "badpwdcount", "0");
       CMediaSourceSettings::GetInstance().Save();
 
-      CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
-      g_windowManager.SendThreadMessage(msg);
+      PostGUIMessage(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
       return true;
     }
   case CONTEXT_BUTTON_RESET_LOCK:
@@ -441,8 +442,7 @@ bool CGUIDialogContextMenu::OnContextButton(const std::string &type, const CFile
 
       CMediaSourceSettings::GetInstance().UpdateSource(type, share->strName, "badpwdcount", "0");
       CMediaSourceSettings::GetInstance().Save();
-      CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
-      g_windowManager.SendThreadMessage(msg);
+      PostGUIMessage(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
       return true;
     }
   case CONTEXT_BUTTON_REMOVE_LOCK:
@@ -458,8 +458,7 @@ bool CGUIDialogContextMenu::OnContextButton(const std::string &type, const CFile
       CMediaSourceSettings::GetInstance().UpdateSource(type, share->strName, "lockcode", "0");
       CMediaSourceSettings::GetInstance().UpdateSource(type, share->strName, "badpwdcount", "0");
       CMediaSourceSettings::GetInstance().Save();
-      CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
-      g_windowManager.SendThreadMessage(msg);
+      PostGUIMessage(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
       return true;
     }
   case CONTEXT_BUTTON_REACTIVATE_LOCK:
@@ -491,8 +490,7 @@ bool CGUIDialogContextMenu::OnContextButton(const std::string &type, const CFile
       CMediaSourceSettings::GetInstance().UpdateSource(type, share->strName, "lockmode", strNewLockMode);
       CMediaSourceSettings::GetInstance().UpdateSource(type, share->strName, "badpwdcount", "0");
       CMediaSourceSettings::GetInstance().Save();
-      CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
-      g_windowManager.SendThreadMessage(msg);
+      PostGUIMessage(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
       return true;
     }
   default:

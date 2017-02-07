@@ -39,6 +39,7 @@
 #include "music/MusicThumbLoader.h"
 #include "music/windows/GUIWindowMusicNav.h"
 #include "filesystem/Directory.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 
 using namespace XFILE;
 
@@ -70,6 +71,8 @@ CGUIDialogMusicInfo::~CGUIDialogMusicInfo(void)
 
 bool CGUIDialogMusicInfo::OnMessage(CGUIMessage& message)
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   switch ( message.GetMessage() )
   {
   case GUI_MSG_WINDOW_DEINIT:
@@ -125,7 +128,7 @@ bool CGUIDialogMusicInfo::OnMessage(CGUIMessage& message)
         if (m_bArtistInfo && (ACTION_SELECT_ITEM == iAction || ACTION_MOUSE_LEFT_CLICK == iAction))
         {
           CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControl);
-          g_windowManager.SendMessage(msg);
+          SendGUIMessage(msg);
           int iItem = msg.GetParam1();
           if (iItem < 0 || iItem >= static_cast<int>(m_albumSongs->Size()))
             break;
@@ -324,6 +327,8 @@ void CGUIDialogMusicInfo::OnInitWindow()
 
 void CGUIDialogMusicInfo::SetUserrating(int userrating) const
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   if (userrating < 0) userrating = 0;
   if (userrating > 10) userrating = 10;
   if (userrating != m_albumItem->GetMusicInfoTag()->GetUserrating())
@@ -331,7 +336,7 @@ void CGUIDialogMusicInfo::SetUserrating(int userrating) const
     m_albumItem->GetMusicInfoTag()->SetUserrating(userrating);
     // send a message to all windows to tell them to update the fileitem (eg playlistplayer, media windows)
     CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, m_albumItem);
-    g_windowManager.SendMessage(msg);
+    SendGUIMessage(msg);
   }
 }
 
@@ -346,6 +351,8 @@ void CGUIDialogMusicInfo::SetUserrating(int userrating) const
 //!       without sending a file that has this as it's album to this class
 void CGUIDialogMusicInfo::OnGetThumb()
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   CFileItemList items;
 
   // Current thumb
@@ -446,7 +453,7 @@ void CGUIDialogMusicInfo::OnGetThumb()
   // tell our GUI to completely reload all controls (as some of them
   // are likely to have had this image in use so will need refreshing)
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
-  g_windowManager.SendMessage(msg);
+  SendGUIMessage(msg);
   // Update our screen
   Update();
 }
@@ -455,6 +462,8 @@ void CGUIDialogMusicInfo::OnGetThumb()
 // Allow user to select a Fanart
 void CGUIDialogMusicInfo::OnGetFanart()
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   CFileItemList items;
 
   if (m_albumItem->HasArt("fanart"))
@@ -545,7 +554,7 @@ void CGUIDialogMusicInfo::OnGetFanart()
   // tell our GUI to completely reload all controls (as some of them
   // are likely to have had this image in use so will need refreshing)
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
-  g_windowManager.SendMessage(msg);
+  SendGUIMessage(msg);
   // Update our screen
   Update();
 }

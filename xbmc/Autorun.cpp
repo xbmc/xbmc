@@ -37,6 +37,7 @@
 #include "filesystem/File.h"
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogHelper.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 #include "profiles/ProfilesManager.h"
 #include "settings/Settings.h"
 #include "playlists/PlayList.h"
@@ -56,9 +57,6 @@
 using namespace XFILE;
 using namespace PLAYLIST;
 using namespace MEDIA_DETECT;
-using namespace KODI::MESSAGING;
-
-using KODI::MESSAGING::HELPERS::DialogResponse;
 
 CAutorun::CAutorun()
 {
@@ -93,6 +91,8 @@ void CAutorun::ExecuteAutorun(const std::string& path, bool bypassSettings, bool
 
 bool CAutorun::PlayDisc(const std::string& path, bool bypassSettings, bool startFromBeginning)
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   if ( !bypassSettings && CServiceBroker::GetSettings().GetInt(CSettings::SETTING_AUDIOCDS_AUTOACTION) != AUTOCD_PLAY && !CServiceBroker::GetSettings().GetBool(CSettings::SETTING_DVDS_AUTORUN))
     return false;
 
@@ -124,7 +124,7 @@ bool CAutorun::PlayDisc(const std::string& path, bool bypassSettings, bool start
   if ( !bPlaying && nAddedToPlaylist > 0 )
   {
     CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0 );
-    g_windowManager.SendMessage( msg );
+    SendGUIMessage(msg);
     g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
     // Start playing the items we inserted
     return g_playlistPlayer.Play(nSize, "");
@@ -498,8 +498,9 @@ bool CAutorun::IsEnabled() const
 
 bool CAutorun::PlayDiscAskResume(const std::string& path)
 {
+  using namespace KODI::MESSAGING::HELPERS;
   return PlayDisc(path, true, !CanResumePlayDVD(path) ||
-    HELPERS::ShowYesNoDialogText(CVariant{341}, CVariant{""}, CVariant{13404}, CVariant{12021}) == 
+                  ShowYesNoDialogText(CVariant{341}, CVariant{""}, CVariant{13404}, CVariant{12021}) == 
     DialogResponse::YES);
 }
 

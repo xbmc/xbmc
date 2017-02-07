@@ -26,6 +26,7 @@
 #include "view/GUIViewState.h"
 #include "input/Key.h"
 #include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
@@ -509,6 +510,8 @@ CPVRRefreshTimelineItemsThread::CPVRRefreshTimelineItemsThread(CGUIWindowPVRGuid
 
 void CPVRRefreshTimelineItemsThread::Process()
 {
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
   static const int BOOSTED_SLEEPS_THRESHOLD = 4;
 
   int iLastEpgItemsCount = 0;
@@ -518,8 +521,7 @@ void CPVRRefreshTimelineItemsThread::Process()
   {
     if (m_pGuideWindow->RefreshTimelineItems() && !m_bStop)
     {
-      CGUIMessage m(GUI_MSG_REFRESH_LIST, m_pGuideWindow->GetID(), 0, ObservableMessageEpg);
-      KODI::MESSAGING::CApplicationMessenger::GetInstance().SendGUIMessage(m);
+      PostGUIMessage(GUI_MSG_REFRESH_LIST, m_pGuideWindow->GetID(), 0, ObservableMessageEpg);
     }
 
     // in order to fill the guide window asap, use a short update interval until we the

@@ -24,6 +24,7 @@
 #include "ServiceBroker.h"
 #include "cores/DataCacheCore.h"
 #include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/DisplaySettings.h"
 #include "settings/lib/Setting.h"
@@ -32,6 +33,7 @@
 #include "TextureManager.h"
 #include "input/InputManager.h"
 #include "GUIWindowManager.h"
+#include "messaging/helpers/DialogHelper.h"
 
 using namespace KODI::MESSAGING;
 
@@ -384,6 +386,8 @@ void CGraphicContext::SetVideoResolution(RESOLUTION res, bool forceUpdate)
 
 void CGraphicContext::SetVideoResolutionInternal(RESOLUTION res, bool forceUpdate)
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   RESOLUTION lastRes = m_Resolution;
 
   // If the user asked us to guess, go with desktop
@@ -441,7 +445,7 @@ void CGraphicContext::SetVideoResolutionInternal(RESOLUTION res, bool forceUpdat
 
   // update anyone that relies on sizing information
   CInputManager::GetInstance().SetMouseResolution(info_org.iWidth, info_org.iHeight, 1, 1);
-  g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_WINDOW_RESIZE);
+  SendGUIMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_WINDOW_RESIZE);
 
   Unlock();
 }
@@ -979,13 +983,15 @@ void CGraphicContext::SetMediaDir(const std::string &strMediaDir)
 
 void CGraphicContext::Flip(bool rendered, bool videoLayer)
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   g_Windowing.PresentRender(rendered, videoLayer);
 
   if(m_stereoMode != m_nextStereoMode)
   {
     m_stereoMode = m_nextStereoMode;
     SetVideoResolution(GetVideoResolution(), true);
-    g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_RENDERER_RESET);
+    SendGUIMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_RENDERER_RESET);
   }
 }
 

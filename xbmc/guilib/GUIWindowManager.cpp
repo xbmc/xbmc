@@ -1317,15 +1317,7 @@ int CGUIWindowManager::GetTopMostModalDialogID(bool ignoreClosing /*= false*/) c
   return WINDOW_INVALID;
 }
 
-void CGUIWindowManager::SendThreadMessage(CGUIMessage& message, int window /*= 0*/)
-{
-  CSingleLock lock(m_critSection);
-
-  CGUIMessage* msg = new CGUIMessage(message);
-  m_vecThreadMessages.push_back( std::pair<CGUIMessage*,int>(msg,window) );
-}
-
-void CGUIWindowManager::DispatchThreadMessages()
+void CGUIWindowManager::DispatchThreadMessages() const
 {
   // This method only be called in the xbmc main thread.
 
@@ -1345,54 +1337,7 @@ void CGUIWindowManager::DispatchThreadMessages()
   // 5. If possible, queued messages can be removed by certain filter condition
   //    and not break above.
 
-  CSingleLock lock(m_critSection);
-
-  for(int msgCount = m_vecThreadMessages.size(); !m_vecThreadMessages.empty() && msgCount > 0; --msgCount)
-  {
-    // pop up one message per time to make messages be processed by order.
-    // this will ensure rule No.2 & No.3
-    CGUIMessage *pMsg = m_vecThreadMessages.front().first;
-    int window = m_vecThreadMessages.front().second;
-    m_vecThreadMessages.pop_front();
-
-    lock.Leave();
-
-    // XXX: during SendMessage(), there could be a deeper 'xbmc main loop' inited by e.g. doModal
-    //      which may loop there and callback to DispatchThreadMessages() multiple times.
-    if (window)
-      SendMessage( *pMsg, window );
-    else
-      SendMessage( *pMsg );
-    delete pMsg;
-
-    lock.Enter();
-  }
-}
-
-int CGUIWindowManager::RemoveThreadMessageByMessageIds(int *pMessageIDList)
-{
-  CSingleLock lock(m_critSection);
-  int removedMsgCount = 0;
-  for (std::list < std::pair<CGUIMessage*,int> >::iterator it = m_vecThreadMessages.begin();
-       it != m_vecThreadMessages.end();)
-  {
-    CGUIMessage *pMsg = it->first;
-    int *pMsgID;
-    for(pMsgID = pMessageIDList; *pMsgID != 0; ++pMsgID)
-      if (pMsg->GetMessage() == *pMsgID)
-        break;
-    if (*pMsgID)
-    {
-      it = m_vecThreadMessages.erase(it);
-      delete pMsg;
-      ++removedMsgCount;
-    }
-    else
-    {
-      ++it;
-    }
-  }
-  return removedMsgCount;
+  CApplicationMessenger::GetInstance().ProcessWindowMessages();
 }
 
 void CGUIWindowManager::AddMsgTarget( IMsgTargetCallback* pMsgTarget )

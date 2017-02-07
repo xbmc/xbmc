@@ -19,12 +19,10 @@
  */
 
 #include "GenericTouchActionHandler.h"
-#include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
 #include "windowing/WinEvents.h"
-
-using namespace KODI::MESSAGING;
 
 CGenericTouchActionHandler &CGenericTouchActionHandler::GetInstance()
 {
@@ -146,8 +144,10 @@ void CGenericTouchActionHandler::OnRotate(float centerX, float centerY, float an
 
 int CGenericTouchActionHandler::QuerySupportedGestures(float x, float y)
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   CGUIMessage msg(GUI_MSG_GESTURE_NOTIFY, 0, 0, (int)x, (int)y);
-  if (!g_windowManager.SendMessage(msg))
+  if (!SendGUIMessage(msg))
     return 0;
 
   int result = 0;

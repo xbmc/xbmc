@@ -22,6 +22,7 @@
 
 #include "guilib/GUIWindowManager.h"
 #include "input/ButtonTranslator.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 #include "utils/StringUtils.h"
 
 /*! \brief Send a move event to a GUI control.
@@ -31,9 +32,11 @@
  */
 static int ControlMove(const std::vector<std::string>& params)
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   CGUIMessage message(GUI_MSG_MOVE_OFFSET, g_windowManager.GetFocusedWindow(),
                       atoi(params[0].c_str()), atoi(params[1].c_str()));
-  g_windowManager.SendMessage(message);
+  SendGUIMessage(message);
 
   return 0;
 }
@@ -45,17 +48,19 @@ static int ControlMove(const std::vector<std::string>& params)
  */
 static int SendClick(const std::vector<std::string>& params)
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   if (params.size() == 2)
   {
     // have a window - convert it
     int windowID = CButtonTranslator::TranslateWindow(params[0]);
     CGUIMessage message(GUI_MSG_CLICKED, atoi(params[1].c_str()), windowID);
-    g_windowManager.SendMessage(message);
+    SendGUIMessage(message);
   }
   else
   { // single param - assume you meant the focused window
     CGUIMessage message(GUI_MSG_CLICKED, atoi(params[0].c_str()), g_windowManager.GetFocusedWindow());
-    g_windowManager.SendMessage(message);
+    SendGUIMessage(message);
   }
 
   return 0;
@@ -69,18 +74,20 @@ static int SendClick(const std::vector<std::string>& params)
  */
 static int SendMessage(const std::vector<std::string>& params)
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   int controlID = atoi(params[0].c_str());
   int windowID = (params.size() == 3) ? CButtonTranslator::TranslateWindow(params[2]) : g_windowManager.GetActiveWindow();
   if (params[1] == "moveup")
-    g_windowManager.SendMessage(GUI_MSG_MOVE_OFFSET, windowID, controlID, 1);
+    SendGUIMessage(GUI_MSG_MOVE_OFFSET, windowID, controlID, 1);
   else if (params[1] == "movedown")
-    g_windowManager.SendMessage(GUI_MSG_MOVE_OFFSET, windowID, controlID, -1);
+    SendGUIMessage(GUI_MSG_MOVE_OFFSET, windowID, controlID, -1);
   else if (params[1] == "pageup")
-    g_windowManager.SendMessage(GUI_MSG_PAGE_UP, windowID, controlID);
+    SendGUIMessage(GUI_MSG_PAGE_UP, windowID, controlID);
   else if (params[1] == "pagedown")
-    g_windowManager.SendMessage(GUI_MSG_PAGE_DOWN, windowID, controlID);
+    SendGUIMessage(GUI_MSG_PAGE_DOWN, windowID, controlID);
   else if (params[1] == "click")
-    g_windowManager.SendMessage(GUI_MSG_CLICKED, controlID, windowID);
+    SendGUIMessage(GUI_MSG_CLICKED, controlID, windowID);
 
   return 0;
 }
@@ -93,13 +100,15 @@ static int SendMessage(const std::vector<std::string>& params)
  */
 static int SetFocus(const std::vector<std::string>& params)
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   int controlID = atol(params[0].c_str());
   int subItem = (params.size() > 1) ? atol(params[1].c_str())+1 : 0;
   int absID = 0;
   if (params.size() > 2 && StringUtils::EqualsNoCase(params[2].c_str(), "absolute"))
     absID = 1;
   CGUIMessage msg(GUI_MSG_SETFOCUS, g_windowManager.GetFocusedWindow(), controlID, subItem, absID);
-  g_windowManager.SendMessage(msg);
+  SendGUIMessage(msg);
 
   return 0;
 }
@@ -113,9 +122,11 @@ static int SetFocus(const std::vector<std::string>& params)
   template<int Message>
 static int ShiftPage(const std::vector<std::string>& params)
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   int id = atoi(params[0].c_str());
   CGUIMessage message(Message, g_windowManager.GetFocusedWindow(), id);
-  g_windowManager.SendMessage(message);
+  SendGUIMessage(message);
 
   return 0;
 }

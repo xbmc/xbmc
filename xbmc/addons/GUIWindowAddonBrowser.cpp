@@ -37,6 +37,7 @@
 #include "filesystem/AddonsDirectory.h"
 #include "addons/AddonInstaller.h"
 #include "messaging/helpers/DialogHelper.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 #include "settings/Settings.h"
 #include "settings/MediaSourceSettings.h"
 #include "utils/StringUtils.h"
@@ -173,14 +174,16 @@ class UpdateAddons : public IRunnable
 
 void CGUIWindowAddonBrowser::OnEvent(const ADDON::CRepositoryUpdater::RepositoryUpdated& event)
 {
-  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
-  g_windowManager.SendThreadMessage(msg);
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
+  PostGUIMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
 }
 
 void CGUIWindowAddonBrowser::OnEvent(const ADDON::AddonEvent& event)
 {
-  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
-  g_windowManager.SendThreadMessage(msg);
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
+  PostGUIMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
 }
 
 bool CGUIWindowAddonBrowser::OnClick(int iItem, const std::string &player)

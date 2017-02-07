@@ -41,6 +41,7 @@
 #include "input/Key.h"
 #include "interfaces/AnnouncementManager.h"
 #include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 #include "music/tags/MusicInfoTag.h"
 #include "network/dacp/dacp.h"
 #include "network/Network.h"
@@ -139,6 +140,8 @@ void CAirTunesServer::RefreshMetadata()
 
 void CAirTunesServer::RefreshCoverArt(const char *outputFilename/* = NULL*/)
 {
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
   static std::string coverArtFile = TMP_COVERART_PATH_JPG;
 
   if (outputFilename != NULL)
@@ -152,7 +155,7 @@ void CAirTunesServer::RefreshCoverArt(const char *outputFilename/* = NULL*/)
   g_infoManager.SetCurrentAlbumThumb(coverArtFile);
   //update the ui
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_REFRESH_THUMBS);
-  g_windowManager.SendThreadMessage(msg);
+  PostGUIMessage(msg);
 }
 
 void CAirTunesServer::SetMetadataFromBuffer(const char *buffer, unsigned int size)

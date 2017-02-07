@@ -25,6 +25,7 @@
 #include "utils/StringUtils.h"
 #include "guiinfo/GUIInfoLabels.h"
 #include "GUIWindowManager.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 
 static const SliderAction actions[] = {
   {"seek",    "PlayerControl(SeekPercentage(%2f))", PLAYER_PROGRESS, false},
@@ -301,6 +302,8 @@ void CGUISliderControl::Move(int iNumSteps)
 
 void CGUISliderControl::SendClick()
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   float percent = 100*GetProportion();
   SEND_CLICK_MESSAGE(GetID(), GetParentID(), MathUtils::round_int(percent));
   if (m_action && (!m_dragging || m_action->fireOnDrag))
@@ -308,7 +311,7 @@ void CGUISliderControl::SendClick()
     std::string action = StringUtils::Format(m_action->formatString, percent);
     CGUIMessage message(GUI_MSG_EXECUTE, m_controlID, m_parentID);
     message.SetStringParam(action);
-    g_windowManager.SendMessage(message);    
+    SendGUIMessage(message);    
   }
 }
 

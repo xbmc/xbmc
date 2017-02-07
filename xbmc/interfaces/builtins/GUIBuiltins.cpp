@@ -22,6 +22,7 @@
 
 #include "Application.h"
 #include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogNumeric.h"
 #include "filesystem/Directory.h"
@@ -40,8 +41,7 @@
 #include "utils/RssManager.h"
 #include "utils/AlarmClock.h"
 #include "windows/GUIMediaWindow.h"
-
-using namespace KODI::MESSAGING;
+#include "messaging/helpers/DialogHelper.h"
 
 /*! \brief Execute a GUI action.
  *  \param params The parameters.
@@ -50,6 +50,7 @@ using namespace KODI::MESSAGING;
  */
 static int Action(const std::vector<std::string>& params)
 {
+  using KODI::MESSAGING::CApplicationMessenger;
   // try translating the action from our ButtonTranslator
   int actionID;
   if (CButtonTranslator::TranslateActionString(params[0].c_str(), actionID))
@@ -122,6 +123,8 @@ static int ActivateWindow(const std::vector<std::string>& params2)
   template<bool Replace>
 static int ActivateAndFocus(const std::vector<std::string>& params)
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   std::string strWindow = params[0];
 
   // confirm the window destination is valid prior to switching
@@ -140,7 +143,7 @@ static int ActivateAndFocus(const std::vector<std::string>& params)
         CGUIMessage msg(GUI_MSG_SETFOCUS, g_windowManager.GetFocusedWindow(),
                         atol(params[iPtr].c_str()),
                         (params.size() >= iPtr + 2) ? atol(params[iPtr + 1].c_str())+1 : 0);
-        g_windowManager.SendMessage(msg);
+        SendGUIMessage(msg);
         iPtr += 2;
       }
       return 0;
@@ -336,7 +339,7 @@ static int Screenshot(const std::vector<std::string>& params)
  */
 static int SetLanguage(const std::vector<std::string>& params)
 {
-  CApplicationMessenger::GetInstance().PostMsg(TMSG_SETLANGUAGE, -1, -1, nullptr, params[0]);
+  KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_SETLANGUAGE, -1, -1, nullptr, params[0]);
 
   return 0;
 }
@@ -390,6 +393,8 @@ static int SetProperty(const std::vector<std::string>& params)
  */
 static int SetStereoMode(const std::vector<std::string>& params)
 {
+  using KODI::MESSAGING::CApplicationMessenger;
+
   CAction action = CStereoscopicsManager::GetInstance().ConvertActionCommandToAction("SetStereoMode", params[0]);
   if (action.GetID() != ACTION_NONE)
     CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(action)));

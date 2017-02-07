@@ -25,6 +25,7 @@
 #include "addons/GUIDialogAddonSettings.h"
 #include "guilib/GUIWindowManager.h"
 #include "GUIUserMessages.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 #include "utils/StringUtils.h"
 
 using namespace ADDON;
@@ -73,6 +74,8 @@ namespace XBMCAddon
 
     void Addon::setSetting(const char* id, const String& value)
     {
+      using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
       DelayedCallGuard dcguard(languageHook);
       ADDON::AddonPtr addon(pAddon);
       bool save=true;
@@ -86,7 +89,7 @@ namespace XBMCAddon
           params.push_back(id);
           params.push_back(value);
           message.SetStringParams(params);
-          g_windowManager.SendThreadMessage(message,WINDOW_DIALOG_ADDON_SETTINGS);
+          PostGUIMessage(message,WINDOW_DIALOG_ADDON_SETTINGS);
           save=false;
         }
       }

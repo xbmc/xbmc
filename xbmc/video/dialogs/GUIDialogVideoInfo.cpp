@@ -31,6 +31,7 @@
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "video/VideoInfoScanner.h"
 #include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 #include "video/VideoInfoTag.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
@@ -285,6 +286,8 @@ bool CGUIDialogVideoInfo::OnAction(const CAction &action)
 
 void CGUIDialogVideoInfo::SetUserrating(int userrating) const
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   userrating = std::max(userrating, 0);
   userrating = std::min(userrating, 10);
   if (userrating != m_movieItem->GetVideoInfoTag()->m_iUserRating)
@@ -293,7 +296,7 @@ void CGUIDialogVideoInfo::SetUserrating(int userrating) const
     
     // send a message to all windows to tell them to update the fileitem (eg playlistplayer, media windows)
     CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, m_movieItem);
-    g_windowManager.SendMessage(msg);
+    SendGUIMessage(msg);
   }
 }
 
@@ -378,6 +381,8 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
 
 void CGUIDialogVideoInfo::Update()
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   // setup plot text area
   std::string strTmp = m_movieItem->GetVideoInfoTag()->m_strPlot;
   if (m_movieItem->GetVideoInfoTag()->m_type != MediaTypeTvShow)
@@ -436,7 +441,7 @@ void CGUIDialogVideoInfo::Update()
   if (m_hasUpdatedThumb)
   {
     CGUIMessage reload(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
-    g_windowManager.SendMessage(reload);
+    SendGUIMessage(reload);
   }
 }
 
@@ -1683,6 +1688,8 @@ bool CGUIDialogVideoInfo::RemoveItemsFromTag(const CFileItemPtr &tagItem)
 
 bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const CFileItemPtr &item, const MediaType &type)
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   if (item == nullptr || !item->HasVideoInfoTag() || type.empty())
     return false;
 
@@ -1853,7 +1860,7 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const CFileItemPtr &item, const
 
   CUtil::DeleteVideoDatabaseDirectoryCache();
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
-  g_windowManager.SendMessage(msg);
+  SendGUIMessage(msg);
 
   return true;
 }

@@ -37,9 +37,9 @@
 #include "input/Key.h"
 #include "URL.h"
 #include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 
 using namespace PLAYLIST;
-using namespace KODI::MESSAGING;
 
 CPlayListPlayer::CPlayListPlayer(void)
 {
@@ -82,6 +82,8 @@ bool CPlayListPlayer::OnAction(const CAction &action)
 
 bool CPlayListPlayer::OnMessage(CGUIMessage &message)
 {
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
   switch (message.GetMessage())
   {
   case GUI_MSG_NOTIFY_ALL:
@@ -100,8 +102,7 @@ bool CPlayListPlayer::OnMessage(CGUIMessage &message)
     {
       if (m_iCurrentPlayList != PLAYLIST_NONE && m_bPlaybackStarted)
       {
-        CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_STOPPED, 0, 0, m_iCurrentPlayList, m_iCurrentSong);
-        g_windowManager.SendThreadMessage(msg);
+        PostGUIMessage(GUI_MSG_PLAYLISTPLAYER_STOPPED, 0, 0, m_iCurrentPlayList, m_iCurrentSong);
         Reset();
         m_iCurrentPlayList = PLAYLIST_NONE;
         return true;
@@ -141,6 +142,8 @@ int CPlayListPlayer::GetNextSong(int offset) const
 
 int CPlayListPlayer::GetNextSong()
 {
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
   if (m_iCurrentPlayList == PLAYLIST_NONE)
     return -1;
   CPlayList& playlist = GetPlaylist(m_iCurrentPlayList);
@@ -159,8 +162,7 @@ int CPlayListPlayer::GetNextSong()
     if (m_iCurrentSong >= 0 && m_iCurrentSong < playlist.size() && playlist[m_iCurrentSong]->GetProperty("unplayable").asBoolean())
     {
       CLog::Log(LOGERROR,"Playlist Player: RepeatOne stuck on unplayable item: %i, path [%s]", m_iCurrentSong, playlist[m_iCurrentSong]->GetPath().c_str());
-      CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_STOPPED, 0, 0, m_iCurrentPlayList, m_iCurrentSong);
-      g_windowManager.SendThreadMessage(msg);
+      PostGUIMessage(GUI_MSG_PLAYLISTPLAYER_STOPPED, 0, 0, m_iCurrentPlayList, m_iCurrentSong);
       Reset();
       m_iCurrentPlayList = PLAYLIST_NONE;
       return -1;
@@ -179,6 +181,8 @@ int CPlayListPlayer::GetNextSong()
 
 bool CPlayListPlayer::PlayNext(int offset, bool bAutoPlay)
 {
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
   int iSong = GetNextSong(offset);
   CPlayList& playlist = GetPlaylist(m_iCurrentPlayList);
 
@@ -187,8 +191,7 @@ bool CPlayListPlayer::PlayNext(int offset, bool bAutoPlay)
     if(!bAutoPlay)
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(559), g_localizeStrings.Get(34201));
 
-    CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_STOPPED, 0, 0, m_iCurrentPlayList, m_iCurrentSong);
-    g_windowManager.SendThreadMessage(msg);
+    PostGUIMessage(GUI_MSG_PLAYLISTPLAYER_STOPPED, 0, 0, m_iCurrentPlayList, m_iCurrentSong);
     Reset();
     m_iCurrentPlayList = PLAYLIST_NONE;
     return false;
@@ -257,6 +260,8 @@ bool CPlayListPlayer::PlaySongId(int songId)
 
 bool CPlayListPlayer::Play(int iSong, std::string player, bool bAutoPlay /* = false */, bool bPlayPrevious /* = false */)
 {
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
   if (m_iCurrentPlayList == PLAYLIST_NONE)
     return false;
 
@@ -304,8 +309,7 @@ bool CPlayListPlayer::Play(int iSong, std::string player, bool bAutoPlay /* = fa
       // open error dialog
       CGUIDialogOK::ShowAndGetInput(CVariant{16026}, CVariant{16027});
 
-      CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_STOPPED, 0, 0, m_iCurrentPlayList, m_iCurrentSong);
-      g_windowManager.SendThreadMessage(msg);
+      PostGUIMessage(GUI_MSG_PLAYLISTPLAYER_STOPPED, 0, 0, m_iCurrentPlayList, m_iCurrentSong);
       Reset();
       GetPlaylist(m_iCurrentPlayList).Clear();
       m_iCurrentPlayList = PLAYLIST_NONE;
@@ -323,8 +327,7 @@ bool CPlayListPlayer::Play(int iSong, std::string player, bool bAutoPlay /* = fa
     else
     {
       CLog::Log(LOGDEBUG,"Playlist Player: no more playable items... aborting playback");
-      CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_STOPPED, 0, 0, m_iCurrentPlayList, m_iCurrentSong);
-      g_windowManager.SendThreadMessage(msg);
+      PostGUIMessage(GUI_MSG_PLAYLISTPLAYER_STOPPED, 0, 0, m_iCurrentPlayList, m_iCurrentSong);
       Reset();
       m_iCurrentPlayList = PLAYLIST_NONE;
       return false;
@@ -379,6 +382,8 @@ void CPlayListPlayer::SetCurrentPlaylist(int iPlaylist)
 
 void CPlayListPlayer::ClearPlaylist(int iPlaylist)
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   // clear our applications playlist file
   g_application.m_strPlayListFile.clear();
 
@@ -387,7 +392,7 @@ void CPlayListPlayer::ClearPlaylist(int iPlaylist)
 
   // its likely that the playlist changed
   CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
-  g_windowManager.SendMessage(msg);
+  SendGUIMessage(msg);
 }
 
 CPlayList& CPlayListPlayer::GetPlaylist(int iPlaylist)
@@ -434,13 +439,15 @@ int CPlayListPlayer::RemoveDVDItems()
 
 void CPlayListPlayer::Reset()
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   m_iCurrentSong = -1;
   m_bPlayedFirstFile = false;
   m_bPlaybackStarted = false;
 
   // its likely that the playlist changed
   CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
-  g_windowManager.SendMessage(msg);
+  SendGUIMessage(msg);
 }
 
 bool CPlayListPlayer::HasPlayedFirstFile() const
@@ -667,6 +674,8 @@ void CPlayListPlayer::Insert(int iPlaylist, CFileItemList& items, int iIndex)
 
 void CPlayListPlayer::Remove(int iPlaylist, int iPosition)
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   if (iPlaylist != PLAYLIST_MUSIC && iPlaylist != PLAYLIST_VIDEO)
     return;
   CPlayList& list = GetPlaylist(iPlaylist);
@@ -676,7 +685,7 @@ void CPlayListPlayer::Remove(int iPlaylist, int iPosition)
 
   // its likely that the playlist changed
   CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
-  g_windowManager.SendMessage(msg);
+  SendGUIMessage(msg);
 }
 
 void CPlayListPlayer::Clear()
@@ -691,6 +700,8 @@ void CPlayListPlayer::Clear()
 
 void CPlayListPlayer::Swap(int iPlaylist, int indexItem1, int indexItem2)
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   if (iPlaylist != PLAYLIST_MUSIC && iPlaylist != PLAYLIST_VIDEO)
     return;
 
@@ -705,7 +716,7 @@ void CPlayListPlayer::Swap(int iPlaylist, int indexItem1, int indexItem2)
 
   // its likely that the playlist changed
   CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
-  g_windowManager.SendMessage(msg);
+  SendGUIMessage(msg);
 }
 
 void CPlayListPlayer::AnnouncePropertyChanged(int iPlaylist, const std::string &strProperty, const CVariant &value)
@@ -728,6 +739,8 @@ int PLAYLIST::CPlayListPlayer::GetMessageMask()
 
 void PLAYLIST::CPlayListPlayer::OnApplicationMessage(KODI::MESSAGING::ThreadMessage* pMsg)
 {
+  using KODI::MESSAGING::CApplicationMessenger;
+
   switch (pMsg->dwMessage)
   {
   case TMSG_PLAYLISTPLAYER_PLAY:

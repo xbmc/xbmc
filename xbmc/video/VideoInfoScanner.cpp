@@ -40,6 +40,7 @@
 #include "interfaces/AnnouncementManager.h"
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogHelper.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 #include "NfoFile.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
@@ -236,9 +237,11 @@ namespace VIDEO
 
   static void OnDirectoryScanned(const std::string& strDirectory)
   {
+    using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
     CGUIMessage msg(GUI_MSG_DIRECTORY_SCANNED, 0, 0, 0);
     msg.SetStringParam(strDirectory);
-    g_windowManager.SendThreadMessage(msg);
+    PostGUIMessage(msg);
   }
 
   bool CVideoInfoScanner::DoScan(const std::string& strDirectory)

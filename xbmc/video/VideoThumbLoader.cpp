@@ -31,6 +31,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/StereoscopicsManager.h"
 #include "GUIUserMessages.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 #include "music/MusicDatabase.h"
 #include "rendering/RenderSystem.h"
 #include "settings/AdvancedSettings.h"
@@ -568,6 +569,8 @@ std::string CVideoThumbLoader::GetEmbeddedThumbURL(const CFileItem &item)
 
 void CVideoThumbLoader::OnJobComplete(unsigned int jobID, bool success, CJob* job)
 {
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
   if (success)
   {
     CThumbExtractor* loader = (CThumbExtractor*)job;
@@ -577,7 +580,7 @@ void CVideoThumbLoader::OnJobComplete(unsigned int jobID, bool success, CJob* jo
       m_pObserver->OnItemLoaded(&loader->m_item);
     CFileItemPtr pItem(new CFileItem(loader->m_item));
     CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, pItem);
-    g_windowManager.SendThreadMessage(msg);
+    PostGUIMessage(msg);
   }
   CJobQueue::OnJobComplete(jobID, success, job);
 }

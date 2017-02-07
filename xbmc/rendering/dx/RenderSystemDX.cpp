@@ -30,6 +30,7 @@
 #include "guilib/GUITextureD3D.h"
 #include "guilib/GUIWindowManager.h"
 #include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 #include "settings/AdvancedSettings.h"
 #include "threads/SingleLock.h"
 #include "utils/MathUtils.h"
@@ -470,8 +471,10 @@ void CRenderSystemDX::DeleteDevice()
 
 void CRenderSystemDX::OnDeviceLost()
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   CSingleLock lock(m_resourceSection);
-  g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_RENDERER_LOST);
+  SendGUIMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_RENDERER_LOST);
 
   OnDisplayLost();
 
@@ -487,6 +490,8 @@ void CRenderSystemDX::OnDeviceLost()
 
 void CRenderSystemDX::OnDeviceReset()
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   CSingleLock lock(m_resourceSection);
 
   if (m_needNewDevice)
@@ -498,7 +503,7 @@ void CRenderSystemDX::OnDeviceReset()
     for (std::vector<ID3DResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
       (*i)->OnResetDevice();
 
-    g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_RENDERER_RESET);
+    SendGUIMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_RENDERER_RESET);
   }
 
   OnDisplayReset();

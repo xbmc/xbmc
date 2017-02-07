@@ -28,6 +28,7 @@
 #include "GUIUserMessages.h"
 #include "MediaSource.h"
 #include "messaging/helpers/DialogHelper.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 #include "music/MusicDatabase.h"
 #include "storage/MediaManager.h"
 #include "utils/log.h"
@@ -205,8 +206,10 @@ static int UpdateLibrary(const std::vector<std::string>& params)
  */
 static int SearchVideoLibrary(const std::vector<std::string>& params)
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   CGUIMessage msg(GUI_MSG_SEARCH, 0, 0, 0);
-  g_windowManager.SendMessage(msg, WINDOW_VIDEO_NAV);
+  SendGUIMessage(msg, WINDOW_VIDEO_NAV);
 
   return 0;
 }

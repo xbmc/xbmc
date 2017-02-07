@@ -40,6 +40,7 @@
 #include "utils/URIUtils.h"
 #include "Application.h"
 #include "PlayListPlayer.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 
 #if defined(TARGET_DARWIN)
 #include "filesystem/SpecialProtocol.h"
@@ -243,13 +244,14 @@ static int RunScript(const std::vector<std::string>& params)
  */
 static int OpenDefaultSettings(const std::vector<std::string>& params)
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
   AddonPtr addon;
   ADDON::TYPE type = TranslateType(params[0]);
   if (CAddonSystemSettings::GetInstance().GetActive(type, addon))
   {
     bool changed = CGUIDialogAddonSettings::ShowAndGetInput(addon);
     if (type == ADDON_VIZ && changed)
-      g_windowManager.SendMessage(GUI_MSG_VISUALISATION_RELOAD, 0, 0);
+      SendGUIMessage(GUI_MSG_VISUALISATION_RELOAD, 0, 0);
   }
 
   return 0;
@@ -261,6 +263,7 @@ static int OpenDefaultSettings(const std::vector<std::string>& params)
  */
 static int SetDefaultAddon(const std::vector<std::string>& params)
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
   std::string addonID;
   TYPE type = TranslateType(params[0]);
   bool allowNone = false;
@@ -272,7 +275,7 @@ static int SetDefaultAddon(const std::vector<std::string>& params)
   {
     CAddonSystemSettings::GetInstance().SetActive(type, addonID);
     if (type == ADDON_VIZ)
-      g_windowManager.SendMessage(GUI_MSG_VISUALISATION_RELOAD, 0, 0);
+      SendGUIMessage(GUI_MSG_VISUALISATION_RELOAD, 0, 0);
   }
 
   return 0;

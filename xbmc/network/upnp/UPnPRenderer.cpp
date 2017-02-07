@@ -25,6 +25,7 @@
 #include "UPnPInternal.h"
 #include "Application.h"
 #include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 #include "FileItem.h"
 #include "filesystem/SpecialProtocol.h"
 #include "GUIInfoManager.h"
@@ -559,42 +560,43 @@ CUPnPRenderer::OnSetAVTransportURI(PLT_ActionReference& action)
 NPT_Result
 CUPnPRenderer::OnSetNextAVTransportURI(PLT_ActionReference& action)
 {
-    NPT_String uri, meta;
-    PLT_Service* service;
-    NPT_CHECK_SEVERE(FindServiceByType("urn:schemas-upnp-org:service:AVTransport:1", service));
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
 
-    NPT_CHECK_SEVERE(action->GetArgumentValue("NextURI", uri));
-    NPT_CHECK_SEVERE(action->GetArgumentValue("NextURIMetaData", meta));
+  NPT_String uri, meta;
+  PLT_Service* service;
+  NPT_CHECK_SEVERE(FindServiceByType("urn:schemas-upnp-org:service:AVTransport:1", service));
 
-    CFileItemPtr item = GetFileItem(uri, meta);
-    if (!item) {
-        return NPT_FAILURE;
+  NPT_CHECK_SEVERE(action->GetArgumentValue("NextURI", uri));
+  NPT_CHECK_SEVERE(action->GetArgumentValue("NextURIMetaData", meta));
+
+  CFileItemPtr item = GetFileItem(uri, meta);
+  if (!item) {
+      return NPT_FAILURE;
+  }
+
+  if (g_application.m_pPlayer->IsPlaying()) {
+
+    int playlist = PLAYLIST_MUSIC;
+    if(item->IsVideo())
+      playlist = PLAYLIST_VIDEO;
+
+    {
+      CSingleLock lock(g_graphicsContext);
+      g_playlistPlayer.ClearPlaylist(playlist);
+      g_playlistPlayer.Add(playlist, item);
+
+      g_playlistPlayer.SetCurrentSong(-1);
+      g_playlistPlayer.SetCurrentPlaylist(playlist);
     }
 
-    if (g_application.m_pPlayer->IsPlaying()) {
+    PostGUIMessage(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
 
-        int playlist = PLAYLIST_MUSIC;
-        if(item->IsVideo())
-          playlist = PLAYLIST_VIDEO;
+    service->SetStateVariable("NextAVTransportURI", uri);
+    service->SetStateVariable("NextAVTransportURIMetaData", meta);
 
-        {   CSingleLock lock(g_graphicsContext);
-            g_playlistPlayer.ClearPlaylist(playlist);
-            g_playlistPlayer.Add(playlist, item);
+    NPT_CHECK_SEVERE(action->SetArgumentsOutFromStateVariable());
 
-            g_playlistPlayer.SetCurrentSong(-1);
-            g_playlistPlayer.SetCurrentPlaylist(playlist);
-        }
-
-        CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
-        g_windowManager.SendThreadMessage(msg);
-
-
-        service->SetStateVariable("NextAVTransportURI", uri);
-        service->SetStateVariable("NextAVTransportURIMetaData", meta);
-
-        NPT_CHECK_SEVERE(action->SetArgumentsOutFromStateVariable());
-
-        return NPT_SUCCESS;
+    return NPT_SUCCESS;
 
   } else if (g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW) {
         return NPT_FAILURE;

@@ -26,6 +26,7 @@
 #include "filesystem/Directory.h"
 #include "guilib/GUIWindowManager.h"
 #include "GUIUserMessages.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 #include "PartyModeManager.h"
 #include "PlayListPlayer.h"
 #include "settings/AdvancedSettings.h"
@@ -116,6 +117,8 @@ static int PlayOffset(const std::vector<std::string>& params)
  */
 static int PlayerControl(const std::vector<std::string>& params)
 {
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
   g_application.ResetScreenSaver();
   g_application.WakeUpScreenSaverAndDPMS();
 
@@ -290,7 +293,7 @@ static int PlayerControl(const std::vector<std::string>& params)
 
     // send message
     CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_RANDOM, 0, 0, iPlaylist, g_playlistPlayer.IsShuffled(iPlaylist));
-    g_windowManager.SendThreadMessage(msg);
+    PostGUIMessage(msg);
   }
   else if (StringUtils::StartsWithNoCase(params[0], "repeat"))
   {
@@ -335,8 +338,8 @@ static int PlayerControl(const std::vector<std::string>& params)
     }
 
     // send messages so now playing window can get updated
-    CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_REPEAT, 0, 0, iPlaylist, (int)state);
-    g_windowManager.SendThreadMessage(msg);
+    CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_REPEAT, 0, 0, iPlaylist, static_cast<int>(state));
+    PostGUIMessage(msg);
   }
   else if (StringUtils::StartsWithNoCase(params[0], "resumelivetv"))
   {

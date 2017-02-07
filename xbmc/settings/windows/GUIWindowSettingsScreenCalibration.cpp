@@ -30,6 +30,7 @@
 #include "dialogs/GUIDialogYesNo.h"
 #include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
@@ -133,6 +134,8 @@ void CGUIWindowSettingsScreenCalibration::FreeResources(bool forceUnload)
 
 bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   switch ( message.GetMessage() )
   {
   case GUI_MSG_WINDOW_DEINIT:
@@ -142,7 +145,7 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
       g_graphicsContext.SetCalibrating(false);
       // reset our screen resolution to what it was initially
       g_graphicsContext.SetVideoResolution(CDisplaySettings::GetInstance().GetCurrentResolution());
-      g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_WINDOW_RESIZE);
+      SendGUIMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_WINDOW_RESIZE);
     }
     break;
 

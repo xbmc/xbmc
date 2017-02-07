@@ -44,6 +44,7 @@
 #include "filesystem/File.h"
 #include "TextureCache.h"
 #include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 #include "settings/Settings.h"
 #include <string>
 #include <vector>
@@ -530,12 +531,14 @@ bool CGUIDialogVideoBookmarks::AddEpisodeBookmark()
 
 bool CGUIDialogVideoBookmarks::OnAddBookmark()
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   if (!g_application.CurrentFileItem().IsVideo())
     return false;
   
   if (CGUIDialogVideoBookmarks::AddBookmark()) 
   {
-    g_windowManager.SendMessage(GUI_MSG_REFRESH_LIST, 0, WINDOW_DIALOG_VIDEO_BOOKMARKS);
+    SendGUIMessage(GUI_MSG_REFRESH_LIST, 0, WINDOW_DIALOG_VIDEO_BOOKMARKS);
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info,
                                           g_localizeStrings.Get(298),   // "Bookmarks"
                                           g_localizeStrings.Get(21362));// "Bookmark created"
@@ -546,6 +549,8 @@ bool CGUIDialogVideoBookmarks::OnAddBookmark()
 
 bool CGUIDialogVideoBookmarks::OnAddEpisodeBookmark()
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   bool bReturn = false;
   if (g_application.CurrentFileItem().HasVideoInfoTag() && g_application.CurrentFileItem().GetVideoInfoTag()->m_iEpisode > -1)
   {
@@ -558,7 +563,7 @@ bool CGUIDialogVideoBookmarks::OnAddEpisodeBookmark()
       bReturn = CGUIDialogVideoBookmarks::AddEpisodeBookmark();
       if(bReturn)
       {
-        g_windowManager.SendMessage(GUI_MSG_REFRESH_LIST, 0, WINDOW_DIALOG_VIDEO_BOOKMARKS);
+        SendGUIMessage(GUI_MSG_REFRESH_LIST, 0, WINDOW_DIALOG_VIDEO_BOOKMARKS);
         CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, 
                                               g_localizeStrings.Get(298),   // "Bookmarks"
                                               g_localizeStrings.Get(21363));// "Episode Bookmark created"

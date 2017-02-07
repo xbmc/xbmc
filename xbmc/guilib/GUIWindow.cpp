@@ -36,6 +36,7 @@
 #include "GUIAudioManager.h"
 #include "Application.h"
 #include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 #include "utils/Variant.h"
 #include "utils/StringUtils.h"
 
@@ -824,6 +825,8 @@ void CGUIWindow::ClearAll()
 
 bool CGUIWindow::Initialize()
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   if (!g_windowManager.Initialized())
     return false;     // can't load if we have no skin yet
   if(!NeedXMLReload())
@@ -835,7 +838,7 @@ bool CGUIWindow::Initialize()
     // if not app thread, send gui msg via app messenger
     // and wait for results, so windowLoaded flag would be updated
     CGUIMessage msg(GUI_MSG_WINDOW_LOAD, 0, 0);
-    CApplicationMessenger::GetInstance().SendGUIMessage(msg, GetID(), true);
+    SendGUIMessage(msg, GetID());
   }
   return m_windowLoaded;
 }

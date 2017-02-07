@@ -24,6 +24,7 @@
 #include "Application.h"
 #include "input/Key.h"
 #include "WindowIDs.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 
 CGUIVideoControl::CGUIVideoControl(int parentID, int controlID, float posX, float posY, float width, float height)
     : CGUIControl(parentID, controlID, posX, posY, width, height)
@@ -88,11 +89,13 @@ void CGUIVideoControl::RenderEx()
 
 EVENT_RESULT CGUIVideoControl::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   if (!g_application.m_pPlayer->IsPlayingVideo()) return EVENT_RESULT_UNHANDLED;
   if (event.m_id == ACTION_MOUSE_LEFT_CLICK)
   { // switch to fullscreen
     CGUIMessage message(GUI_MSG_FULLSCREEN, GetID(), GetParentID());
-    g_windowManager.SendMessage(message);
+    SendGUIMessage(message);
     return EVENT_RESULT_HANDLED;
   }
   return EVENT_RESULT_UNHANDLED;

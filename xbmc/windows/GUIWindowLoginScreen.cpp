@@ -42,6 +42,7 @@
 #include "interfaces/json-rpc/JSONRPC.h"
 #endif
 #include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 #include "network/Network.h"
 #include "PlayListPlayer.h"
 #include "profiles/Profile.h"
@@ -273,6 +274,8 @@ CFileItemPtr CGUIWindowLoginScreen::GetCurrentListItem(int offset)
 
 void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
 {
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
   CServiceBroker::GetContextMenuManager().Deinit();
 
   // stop service addons and give it some time before we start it again
@@ -346,7 +349,6 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
   // if the user interfaces has been fully initialized let everyone know
   if (uiInitializationFinished)
   {
-    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UI_READY);
-    g_windowManager.SendThreadMessage(msg);
+    PostGUIMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UI_READY);
   }
 }

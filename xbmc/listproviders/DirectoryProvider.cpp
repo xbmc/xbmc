@@ -31,6 +31,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "interfaces/AnnouncementManager.h"
 #include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 #include "music/dialogs/GUIDialogMusicInfo.h"
 #include "music/MusicThumbLoader.h"
 #include "pictures/PictureThumbLoader.h"
@@ -47,10 +48,10 @@
 #include "video/VideoThumbLoader.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
 #include "video/windows/GUIWindowVideoBase.h"
+#include "messaging/helpers/DialogHelper.h"
 
 using namespace XFILE;
 using namespace ANNOUNCEMENT;
-using namespace KODI::MESSAGING;
 using namespace PVR;
 
 class CDirectoryJob : public CJob
@@ -356,6 +357,8 @@ void CDirectoryProvider::OnJobComplete(unsigned int jobID, bool success, CJob *j
 
 bool CDirectoryProvider::OnClick(const CGUIListItemPtr &item)
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   CFileItem fileItem(*std::static_pointer_cast<CFileItem>(item));
 
   if (fileItem.HasVideoInfoTag()
@@ -379,7 +382,7 @@ bool CDirectoryProvider::OnClick(const CGUIListItemPtr &item)
   {
     CGUIMessage message(GUI_MSG_EXECUTE, 0, 0);
     message.SetStringParam(execute);
-    g_windowManager.SendMessage(message);
+    SendGUIMessage(message);
     return true;
   }
   return false;

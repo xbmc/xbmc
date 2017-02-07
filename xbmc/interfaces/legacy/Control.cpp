@@ -37,10 +37,12 @@
 #include "guilib/GUIEditControl.h"
 #include "guilib/GUIControlFactory.h"
 #include "listproviders/StaticProvider.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 
 #include "utils/XBMCTinyXML.h"
 #include "utils/StringUtils.h"
 #include "WindowException.h"
+#include "messaging/helpers/DialogHelper.h"
 
 namespace XBMCAddon
 {
@@ -72,18 +74,21 @@ namespace XBMCAddon
 
     void ControlFadeLabel::addLabel(const String& label)
     {
+      using KODI::MESSAGING::HELPERS::PostGUIMessage;
       CGUIMessage msg(GUI_MSG_LABEL_ADD, iParentId, iControlId);
       msg.SetLabel(label);
 
-      g_windowManager.SendThreadMessage(msg, iParentId);
+      PostGUIMessage(msg, iParentId);
     }
 
     void ControlFadeLabel::reset()
     {
+      using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
       CGUIMessage msg(GUI_MSG_LABEL_RESET, iParentId, iControlId);
 
       vecLabels.clear();
-      g_windowManager.SendThreadMessage(msg, iParentId);
+      PostGUIMessage(msg, iParentId);
     }
 
     CGUIControl* ControlFadeLabel::Create()
@@ -138,12 +143,14 @@ namespace XBMCAddon
 
     void ControlTextBox::setText(const String& text)
     {
+      using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
       // create message
       CGUIMessage msg(GUI_MSG_LABEL_SET, iParentId, iControlId);
       msg.SetLabel(text);
 
       // send message
-      g_windowManager.SendThreadMessage(msg, iParentId);
+      PostGUIMessage(msg, iParentId);
     }
 
     String ControlTextBox::getText()
@@ -156,9 +163,11 @@ namespace XBMCAddon
 
     void ControlTextBox::reset()
     {
+      using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
       // create message
       CGUIMessage msg(GUI_MSG_LABEL_RESET, iParentId, iControlId);
-      g_windowManager.SendThreadMessage(msg, iParentId);
+      PostGUIMessage(msg, iParentId);
     }
 
     void ControlTextBox::scroll(long position)
@@ -962,10 +971,12 @@ namespace XBMCAddon
                                 const char* shadowColor, const char* focusedColor,
                                 const String& label2)
     {
+      using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
       strText = label;
       CGUIMessage msg(GUI_MSG_LABEL_SET, iParentId, iControlId);
       msg.SetLabel(strText);
-      g_windowManager.SendThreadMessage(msg, iParentId);
+      PostGUIMessage(msg, iParentId);
     }
 
     String ControlLabel::getLabel()
@@ -1028,10 +1039,12 @@ namespace XBMCAddon
                                 const char* shadowColor, const char* focusedColor,
                                 const String& label2)
     {
+      using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
       strText = label;
       CGUIMessage msg(GUI_MSG_LABEL_SET, iParentId, iControlId);
       msg.SetLabel(strText);
-      g_windowManager.SendThreadMessage(msg, iParentId);
+      PostGUIMessage(msg, iParentId);
     }
 
     String ControlEdit::getLabel()
@@ -1043,18 +1056,21 @@ namespace XBMCAddon
 
     void ControlEdit::setText(const String& text)
     {
+      using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
       // create message
       CGUIMessage msg(GUI_MSG_LABEL2_SET, iParentId, iControlId);
       msg.SetLabel(text);
 
       // send message
-      g_windowManager.SendThreadMessage(msg, iParentId);
+      PostGUIMessage(msg, iParentId);
     }
 
     String ControlEdit::getText()
     {
+      using KODI::MESSAGING::HELPERS::SendGUIMessage;
       CGUIMessage msg(GUI_MSG_ITEM_SELECTED, iParentId, iControlId);
-      g_windowManager.SendMessage(msg, iParentId);
+      SendGUIMessage(msg, iParentId);
 
       return msg.GetLabel();
     }
@@ -1173,6 +1189,8 @@ namespace XBMCAddon
 
     void ControlList::sendLabelBind(int tail)
     {
+      using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
       // construct a CFileItemList to pass 'em on to the list
       CGUIListItemPtr items(new CFileItemList());
       for (unsigned int i = vecItems.size() - tail; i < vecItems.size(); i++)
@@ -1180,16 +1198,18 @@ namespace XBMCAddon
 
       CGUIMessage msg(GUI_MSG_LABEL_BIND, iParentId, iControlId, 0, 0, items);
       msg.SetPointer(items.get());
-      g_windowManager.SendThreadMessage(msg, iParentId);
+      PostGUIMessage(msg, iParentId);
     }
 
     void ControlList::selectItem(long item)
     {
+      using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
       // create message
       CGUIMessage msg(GUI_MSG_ITEM_SELECT, iParentId, iControlId, item);
 
       // send message
-      g_windowManager.SendThreadMessage(msg, iParentId);
+      PostGUIMessage(msg, iParentId);
     }
 
     void ControlList::removeItem(int index)
@@ -1204,9 +1224,11 @@ namespace XBMCAddon
 
     void ControlList::reset()
     {
+      using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
       CGUIMessage msg(GUI_MSG_LABEL_RESET, iParentId, iControlId);
 
-      g_windowManager.SendThreadMessage(msg, iParentId);
+      PostGUIMessage(msg, iParentId);
 
       // delete all items from vector
       // delete all ListItem from vector

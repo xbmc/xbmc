@@ -22,6 +22,7 @@
 #include "input/Key.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/WindowIDs.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 
 CGUIWindowStartup::CGUIWindowStartup(void)
     : CGUIWindow(WINDOW_STARTUP_ANIM, "Startup.xml")
@@ -41,9 +42,10 @@ bool CGUIWindowStartup::OnAction(const CAction &action)
 
 void CGUIWindowStartup::OnDeinitWindow(int nextWindowID)
 {
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
   CGUIWindow::OnDeinitWindow(nextWindowID);
 
   // let everyone know that the user interface is now ready for usage
-  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UI_READY);
-  g_windowManager.SendThreadMessage(msg);
+  PostGUIMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UI_READY);
 }

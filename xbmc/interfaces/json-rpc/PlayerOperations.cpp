@@ -28,6 +28,7 @@
 #include "interfaces/builtins/Builtins.h"
 #include "PartyModeManager.h"
 #include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 #include "FileItem.h"
 #include "VideoLibrary.h"
 #include "video/VideoDatabase.h"
@@ -1138,6 +1139,8 @@ int CPlayerOperations::GetPlaylist(PlayerType player)
 
 JSONRPC_STATUS CPlayerOperations::StartSlideshow(const std::string& path, bool recursive, bool random, const std::string &firstPicturePath /* = "" */)
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   int flags = 0;
   if (recursive)
     flags |= 1;
@@ -1156,7 +1159,7 @@ JSONRPC_STATUS CPlayerOperations::StartSlideshow(const std::string& path, bool r
   g_application.WakeUpScreenSaverAndDPMS();
   CGUIMessage msg(GUI_MSG_START_SLIDESHOW, 0, 0, flags);
   msg.SetStringParams(params);
-  CApplicationMessenger::GetInstance().SendGUIMessage(msg, WINDOW_SLIDESHOW);
+  SendGUIMessage(msg, WINDOW_SLIDESHOW);
 
   return ACK;
 }
@@ -1168,8 +1171,9 @@ void CPlayerOperations::SendSlideshowAction(int actionID)
 
 void CPlayerOperations::OnPlaylistChanged()
 {
-  CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
-  g_windowManager.SendThreadMessage(msg);
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
+  PostGUIMessage(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
 }
 
 JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std::string &property, CVariant &result)

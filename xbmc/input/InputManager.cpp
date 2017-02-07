@@ -30,6 +30,7 @@
 #include "input/keyboard/KeyboardEasterEgg.h"
 #include "input/Key.h"
 #include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 #include "guilib/Geometry.h"
 #include "guilib/GUIAudioManager.h"
 #include "guilib/GUIControl.h"
@@ -357,6 +358,8 @@ bool CInputManager::Process(int windowId, float frameTime)
 
 bool CInputManager::OnEvent(XBMC_Event& newEvent)
 {
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
   switch (newEvent.type)
   {
   case XBMC_KEYDOWN:
@@ -470,7 +473,7 @@ bool CInputManager::OnEvent(XBMC_Event& newEvent)
     if (newEvent.touch.action == ACTION_GESTURE_END || newEvent.touch.action == ACTION_TOUCH_TAP)
     {
       CGUIMessage msg(GUI_MSG_UNFOCUS_ALL, 0, 0, 0, 0);
-      CApplicationMessenger::GetInstance().SendGUIMessage(msg);
+      PostGUIMessage(msg);
     }
     break;
   } //case

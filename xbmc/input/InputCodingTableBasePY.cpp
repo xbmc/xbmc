@@ -23,6 +23,7 @@
 #include "utils/CharsetConverter.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 
 static std::map<std::string, std::wstring> codemap =
 {
@@ -448,6 +449,8 @@ std::vector<std::wstring> CInputCodingTableBasePY::GetResponse(int)
 
 bool CInputCodingTableBasePY::GetWordListPage(const std::string& strCode, bool isFirstPage)
 {
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
   if (!isFirstPage)
     return false;
 
@@ -462,6 +465,6 @@ bool CInputCodingTableBasePY::GetWordListPage(const std::string& strCode, bool i
   }
   CGUIMessage msg(GUI_MSG_CODINGTABLE_LOOKUP_COMPLETED, 0, 0, 0);
   msg.SetStringParam(strCode);
-  g_windowManager.SendThreadMessage(msg, g_windowManager.GetActiveWindowID());
+  PostGUIMessage(msg, g_windowManager.GetActiveWindowID());
   return true;
 }

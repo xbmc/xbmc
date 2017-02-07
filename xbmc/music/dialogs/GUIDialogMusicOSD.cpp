@@ -26,11 +26,12 @@
 #include "GUIUserMessages.h"
 #include "settings/Settings.h"
 #include "addons/GUIWindowAddonBrowser.h"
-#include "xbmc/dialogs/GUIDialogSelect.h"
-#include "xbmc/Application.h"
-#include "xbmc/FileItem.h"
-#include "xbmc/music/tags/MusicInfoTag.h"
-#include "xbmc/music/MusicDatabase.h"
+#include "dialogs/GUIDialogSelect.h"
+#include "Application.h"
+#include "FileItem.h"
+#include "music/tags/MusicInfoTag.h"
+#include "music/MusicDatabase.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 
 #define CONTROL_VIS_BUTTON       500
 #define CONTROL_LOCK_BUTTON      501
@@ -47,6 +48,8 @@ CGUIDialogMusicOSD::~CGUIDialogMusicOSD(void)
 
 bool CGUIDialogMusicOSD::OnMessage(CGUIMessage &message)
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   switch (message.GetMessage())
   {
   case GUI_MSG_CLICKED:
@@ -59,13 +62,13 @@ bool CGUIDialogMusicOSD::OnMessage(CGUIMessage &message)
         {
           CServiceBroker::GetSettings().SetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION, addonID);
           CServiceBroker::GetSettings().Save();
-          g_windowManager.SendMessage(GUI_MSG_VISUALISATION_RELOAD, 0, 0);
+          SendGUIMessage(GUI_MSG_VISUALISATION_RELOAD, 0, 0);
         }
       }
       else if (iControl == CONTROL_LOCK_BUTTON)
       {
         CGUIMessage msg(GUI_MSG_VISUALISATION_ACTION, 0, 0, ACTION_VIS_PRESET_LOCK);
-        g_windowManager.SendMessage(msg);
+        SendGUIMessage(msg);
       }
       return true;
     }
@@ -76,6 +79,8 @@ bool CGUIDialogMusicOSD::OnMessage(CGUIMessage &message)
 
 bool CGUIDialogMusicOSD::OnAction(const CAction &action)
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   switch (action.GetID())
   {
     case ACTION_SHOW_OSD:
@@ -106,7 +111,7 @@ bool CGUIDialogMusicOSD::OnAction(const CAction &action)
           track->GetMusicInfoTag()->SetUserrating(userrating);
           // send a message to all windows to tell them to update the fileitem (eg playlistplayer, media windows)
           CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, track);
-          g_windowManager.SendMessage(msg);
+          SendGUIMessage(msg);
 
           CMusicDatabase db;
           if (db.Open())

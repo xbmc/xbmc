@@ -35,6 +35,7 @@
 #include "Application.h"
 #include "ServiceBroker.h"
 #include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 #include "network/Network.h"
 #include "utils/log.h"
 #include "URL.h"
@@ -186,21 +187,25 @@ public:
     // PLT_MediaBrowser methods
     virtual bool OnMSAdded(PLT_DeviceDataReference& device)
     {
-        CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
-        message.SetStringParam("upnp://");
-        g_windowManager.SendThreadMessage(message);
+      using KODI::MESSAGING::HELPERS::PostGUIMessage;
 
-        return PLT_SyncMediaBrowser::OnMSAdded(device);
+      CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
+      message.SetStringParam("upnp://");
+      PostGUIMessage(message);
+
+      return PLT_SyncMediaBrowser::OnMSAdded(device);
     }
     virtual void OnMSRemoved(PLT_DeviceDataReference& device)
     {
-        PLT_SyncMediaBrowser::OnMSRemoved(device);
+      using KODI::MESSAGING::HELPERS::PostGUIMessage;
 
-        CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
-        message.SetStringParam("upnp://");
-        g_windowManager.SendThreadMessage(message);
+      PLT_SyncMediaBrowser::OnMSRemoved(device);
 
-        PLT_SyncMediaBrowser::OnMSRemoved(device);
+      CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
+      message.SetStringParam("upnp://");
+      PostGUIMessage(message);
+
+      PLT_SyncMediaBrowser::OnMSRemoved(device);
     }
 
     // PLT_MediaContainerChangesListener methods
@@ -208,17 +213,19 @@ public:
                                     const char*              item_id,
                                     const char*              update_id)
     {
-        NPT_String path = "upnp://"+device->GetUUID()+"/";
-        if (!NPT_StringsEqual(item_id, "0")) {
-            std::string id(CURL::Encode(item_id));
-            URIUtils::AddSlashAtEnd(id);
-            path += id.c_str();
-        }
+      using KODI::MESSAGING::HELPERS::PostGUIMessage;
 
-        CLog::Log(LOGDEBUG, "UPNP: notified container update %s", (const char*)path);
-        CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
-        message.SetStringParam(path.GetChars());
-        g_windowManager.SendThreadMessage(message);
+      NPT_String path = "upnp://"+device->GetUUID()+"/";
+      if (!NPT_StringsEqual(item_id, "0")) {
+          std::string id(CURL::Encode(item_id));
+          URIUtils::AddSlashAtEnd(id);
+          path += id.c_str();
+      }
+
+      CLog::Log(LOGDEBUG, "UPNP: notified container update %s", (const char*)path);
+      CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
+      message.SetStringParam(path.GetChars());
+      PostGUIMessage(message);
     }
 
     bool MarkWatched(const CFileItem& item, const bool watched)

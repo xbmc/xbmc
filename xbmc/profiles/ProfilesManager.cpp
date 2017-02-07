@@ -42,6 +42,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "input/ButtonTranslator.h"
 #include "input/InputManager.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 #include "settings/Settings.h"
 #if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
 #include "storage/DetectDVDType.h"
@@ -235,6 +236,8 @@ void CProfilesManager::Clear()
 
 bool CProfilesManager::LoadProfile(size_t index)
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   CSingleLock lock(m_critical);
   // check if the index is valid or not
   if (index >= m_profiles.size())
@@ -292,7 +295,7 @@ bool CProfilesManager::LoadProfile(size_t index)
 
   // init windows
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_WINDOW_RESET);
-  g_windowManager.SendMessage(msg);
+  SendGUIMessage(msg);
 
   CUtil::DeleteDirectoryCache();
   g_directoryCache.Clear();

@@ -31,6 +31,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
 #include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannelGroup.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
@@ -109,13 +110,14 @@ void CGUIWindowPVRBase::UnregisterObservers(void)
 
 void CGUIWindowPVRBase::Notify(const Observable &obs, const ObservableMessage msg)
 {
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
   if (msg == ObservableMessageManagerStopped)
     ClearData();
 
   if (IsActive())
   {
-    CGUIMessage m(GUI_MSG_REFRESH_LIST, GetID(), 0, msg);
-    CApplicationMessenger::GetInstance().SendGUIMessage(m);
+    PostGUIMessage(GUI_MSG_REFRESH_LIST, GetID(), 0, msg);
   }
 }
 

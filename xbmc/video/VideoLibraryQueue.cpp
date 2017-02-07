@@ -26,6 +26,7 @@
 #include "GUIUserMessages.h"
 #include "threads/SingleLock.h"
 #include "Util.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 #include "video/jobs/VideoLibraryCleaningJob.h"
 #include "video/jobs/VideoLibraryJob.h"
 #include "video/jobs/VideoLibraryMarkWatchedJob.h"
@@ -216,9 +217,10 @@ bool CVideoLibraryQueue::IsRunning() const
 
 void CVideoLibraryQueue::Refresh()
 {
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
   CUtil::DeleteVideoDatabaseDirectoryCache();
-  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
-  g_windowManager.SendThreadMessage(msg);
+  PostGUIMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
 }
 
 void CVideoLibraryQueue::OnJobComplete(unsigned int jobID, bool success, CJob *job)

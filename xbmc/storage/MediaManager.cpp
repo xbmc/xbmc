@@ -49,6 +49,7 @@
 #include "utils/JobManager.h"
 #include "utils/StringUtils.h"
 #include "AutorunMediaJob.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 
 #include "filesystem/File.h"
 
@@ -283,13 +284,14 @@ bool CMediaManager::SetLocationPath(const std::string& oldPath, const std::strin
 
 void CMediaManager::AddAutoSource(const CMediaSource &share, bool bAutorun)
 {
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
   CMediaSourceSettings::GetInstance().AddShare("files", share);
   CMediaSourceSettings::GetInstance().AddShare("video", share);
   CMediaSourceSettings::GetInstance().AddShare("pictures", share);
   CMediaSourceSettings::GetInstance().AddShare("music", share);
   CMediaSourceSettings::GetInstance().AddShare("programs", share);
-  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
-  g_windowManager.SendThreadMessage( msg );
+  PostGUIMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
 
 #ifdef HAS_DVD_DRIVE
   if(bAutorun)
@@ -299,13 +301,14 @@ void CMediaManager::AddAutoSource(const CMediaSource &share, bool bAutorun)
 
 void CMediaManager::RemoveAutoSource(const CMediaSource &share)
 {
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
   CMediaSourceSettings::GetInstance().DeleteSource("files", share.strName, share.strPath, true);
   CMediaSourceSettings::GetInstance().DeleteSource("video", share.strName, share.strPath, true);
   CMediaSourceSettings::GetInstance().DeleteSource("pictures", share.strName, share.strPath, true);
   CMediaSourceSettings::GetInstance().DeleteSource("music", share.strName, share.strPath, true);
   CMediaSourceSettings::GetInstance().DeleteSource("programs", share.strName, share.strPath, true);
-  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
-  g_windowManager.SendThreadMessage( msg );
+  PostGUIMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
 
 #ifdef HAS_DVD_DRIVE
   // delete cached CdInfo if any
@@ -654,6 +657,8 @@ void CMediaManager::ToggleTray(const char cDriveLetter)
 
 void CMediaManager::ProcessEvents()
 {
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
   CSingleLock lock(m_CritSecStorageProvider);
   if (m_platformStorage->PumpDriveChangeEvents(this))
   {
@@ -666,8 +671,7 @@ void CMediaManager::ProcessEvents()
     m_strFirstAvailDrive = m_platformStorage->GetFirstOpticalDeviceFileName();
 #endif
     
-    CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
-    g_windowManager.SendThreadMessage(msg);
+    PostGUIMessage(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
   }
 }
 

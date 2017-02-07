@@ -30,6 +30,7 @@
 #include "GUIUserMessages.h"
 #include "network/Network.h"
 #include "network/NetworkServices.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 #include "profiles/ProfilesManager.h"
 #include "Util.h"
 #include "utils/StringUtils.h"
@@ -95,6 +96,8 @@ static int LogOff(const std::vector<std::string>& params)
  */
 static int MasterMode(const std::vector<std::string>& params)
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   if (g_passwordManager.bMasterUser)
   {
     g_passwordManager.bMasterUser = false;
@@ -110,7 +113,7 @@ static int MasterMode(const std::vector<std::string>& params)
 
   CUtil::DeleteVideoDatabaseDirectoryCache();
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
-  g_windowManager.SendMessage(msg);
+  SendGUIMessage(msg);
 
   return 0;
 }

@@ -35,6 +35,7 @@
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "LangInfo.h"
 #include "log.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 #include "network/Network.h"
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
@@ -74,6 +75,8 @@ CWeatherJob::CWeatherJob(int location)
 
 bool CWeatherJob::DoWork()
 {
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
   // wait for the network
   if (!g_application.getNetwork().IsAvailable())
     return false;
@@ -105,8 +108,7 @@ bool CWeatherJob::DoWork()
     SetFromProperties();
 
     // and send a message that we're done
-    CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_WEATHER_FETCHED);
-    g_windowManager.SendThreadMessage(msg);
+    PostGUIMessage(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_WEATHER_FETCHED);
   }
   else
     CLog::Log(LOGERROR, "WEATHER: Weather download failed!");

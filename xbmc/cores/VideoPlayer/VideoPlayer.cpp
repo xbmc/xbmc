@@ -47,6 +47,7 @@
 #include "Application.h"
 #include "ServiceBroker.h"
 #include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 
 #include "DVDDemuxers/DVDDemuxCC.h"
 #include "cores/FFmpeg.h"
@@ -4365,6 +4366,8 @@ bool CVideoPlayer::ShowPVRChannelInfo(void)
 
 bool CVideoPlayer::OnAction(const CAction &action)
 {
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
 #define THREAD_ACTION(action) \
   do { \
     if (!IsCurrentThread()) { \
@@ -4430,8 +4433,7 @@ bool CVideoPlayer::OnAction(const CAction &action)
           m_callback.OnPlayBackResumed();
         }
         // send a message to everyone that we've gone to the menu
-        CGUIMessage msg(GUI_MSG_VIDEO_MENU_STARTED, 0, 0);
-        g_windowManager.SendThreadMessage(msg);
+        PostGUIMessage(GUI_MSG_VIDEO_MENU_STARTED, 0, 0);
         return true;
       }
       break;

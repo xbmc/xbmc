@@ -28,6 +28,7 @@
 #include "GUIControlFactory.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 #include "settings/lib/Setting.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
@@ -170,6 +171,8 @@ CGUIFont* GUIFontManager::LoadTTF(const std::string& strFontName, const std::str
 
 bool GUIFontManager::OnMessage(CGUIMessage &message)
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   if (message.GetMessage() != GUI_MSG_NOTIFY_ALL)
     return false;
 
@@ -183,7 +186,7 @@ bool GUIFontManager::OnMessage(CGUIMessage &message)
   { // our device has been reset - we have to reload our ttf fonts, and send
     // a message to controls that we have done so
     ReloadTTFFonts();
-    g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_WINDOW_RESIZE);
+    SendGUIMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_WINDOW_RESIZE);
     m_canReload = true;
     return true;
   }

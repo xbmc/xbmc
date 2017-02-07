@@ -23,6 +23,8 @@
 #include "GUIWindowManager.h"
 #include "GUIControl.h"
 #include "GUIInfoManager.h"
+#include "messaging/helpers/GUIMessageHelper.h"
+#include "messaging/helpers/DialogHelper.h"
 
 CGUIAction::CGUIAction()
 {
@@ -37,6 +39,8 @@ CGUIAction::CGUIAction(int controlID)
 
 bool CGUIAction::ExecuteActions(int controlID, int parentID, const CGUIListItemPtr &item /* = NULL */) const
 {
+  using namespace KODI::MESSAGING::HELPERS;
+
   if (m_actions.empty()) return false;
   // take a copy of actions that satisfy our conditions
   std::vector<std::string> actions;
@@ -55,9 +59,9 @@ bool CGUIAction::ExecuteActions(int controlID, int parentID, const CGUIListItemP
     CGUIMessage msg(GUI_MSG_EXECUTE, controlID, parentID, 0, 0, item);
     msg.SetStringParam(*i);
     if (m_sendThreadMessages)
-      g_windowManager.SendThreadMessage(msg);
+      PostGUIMessage(msg);
     else
-      g_windowManager.SendMessage(msg);
+      SendGUIMessage(msg);
     retval = true;
   }
   return retval;

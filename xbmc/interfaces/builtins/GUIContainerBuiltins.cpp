@@ -22,6 +22,7 @@
 
 #include "guilib/GUIWindowManager.h"
 #include "GUIUserMessages.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 #include "utils/StringUtils.h"
 
 /*! \brief Change sort method.
@@ -33,8 +34,9 @@
   template<int Dir>
 static int ChangeSortMethod(const std::vector<std::string>& params)
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
   CGUIMessage message(GUI_MSG_CHANGE_SORT_METHOD, g_windowManager.GetActiveWindow(), 0, 0, Dir);
-  g_windowManager.SendMessage(message);
+  SendGUIMessage(message);
 
   return 0;
 }
@@ -48,8 +50,9 @@ static int ChangeSortMethod(const std::vector<std::string>& params)
   template<int Dir>
 static int ChangeViewMode(const std::vector<std::string>& params)
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
   CGUIMessage message(GUI_MSG_CHANGE_VIEW_MODE, g_windowManager.GetActiveWindow(), 0, 0, Dir);
-  g_windowManager.SendMessage(message);
+  SendGUIMessage(message);
 
   return 0;
 }
@@ -59,11 +62,13 @@ static int ChangeViewMode(const std::vector<std::string>& params)
  *  \details params[0] = The URL to refresh window at.
  */
 static int Refresh(const std::vector<std::string>& params)
-{ // NOTE: These messages require a media window, thus they're sent to the current activewindow.
+{ 
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+  // NOTE: These messages require a media window, thus they're sent to the current activewindow.
   //       This shouldn't stop a dialog intercepting it though.
   CGUIMessage message(GUI_MSG_NOTIFY_ALL, g_windowManager.GetActiveWindow(), 0, GUI_MSG_UPDATE, 1); // 1 to reset the history
   message.SetStringParam(!params.empty() ? params[0] : "");
-  g_windowManager.SendMessage(message);
+  SendGUIMessage(message);
 
   return 0;
 }
@@ -74,8 +79,10 @@ static int Refresh(const std::vector<std::string>& params)
  */
 static int SetSortMethod(const std::vector<std::string>& params)
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   CGUIMessage message(GUI_MSG_CHANGE_SORT_METHOD, g_windowManager.GetActiveWindow(), 0, atoi(params[0].c_str()));
-  g_windowManager.SendMessage(message);
+  SendGUIMessage(message);
 
   return 0;
 }
@@ -86,8 +93,10 @@ static int SetSortMethod(const std::vector<std::string>& params)
  */
 static int SetViewMode(const std::vector<std::string>& params)
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   CGUIMessage message(GUI_MSG_CHANGE_VIEW_MODE, g_windowManager.GetActiveWindow(), 0, atoi(params[0].c_str()));
-  g_windowManager.SendMessage(message);
+  SendGUIMessage(message);
 
   return 0;
 }
@@ -97,8 +106,10 @@ static int SetViewMode(const std::vector<std::string>& params)
  */
 static int ToggleSortDirection(const std::vector<std::string>& params)
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   CGUIMessage message(GUI_MSG_CHANGE_SORT_DIRECTION, g_windowManager.GetActiveWindow(), 0, 0);
-  g_windowManager.SendMessage(message);
+  SendGUIMessage(message);
 
   return 0;
 }
@@ -110,11 +121,13 @@ static int ToggleSortDirection(const std::vector<std::string>& params)
  */
 static int Update(const std::vector<std::string>& params)
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   CGUIMessage message(GUI_MSG_NOTIFY_ALL, g_windowManager.GetActiveWindow(), 0, GUI_MSG_UPDATE, 0);
   message.SetStringParam(params[0]);
   if (params.size() > 1 && StringUtils::EqualsNoCase(params[1], "replace"))
     message.SetParam2(1); // reset the history
-  g_windowManager.SendMessage(message);
+  SendGUIMessage(message);
 
   return 0;
 }

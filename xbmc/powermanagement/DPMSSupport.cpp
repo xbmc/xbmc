@@ -22,6 +22,7 @@
 #include "DPMSSupport.h"
 #include "utils/log.h"
 #include "windowing/WindowingFactory.h"
+
 #include <assert.h>
 #include <string>
 #ifdef TARGET_WINDOWS

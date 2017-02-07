@@ -29,6 +29,7 @@
 #include "cdioSupport.h"
 #include "filesystem/iso9660.h"
 #include "filesystem/File.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 #include "threads/SingleLock.h"
 #ifdef TARGET_POSIX
 #include <sys/types.h>
@@ -124,6 +125,8 @@ void CDetectDVDMedia::OnExit()
 // Gets state of the DVD drive
 VOID CDetectDVDMedia::UpdateDvdrom()
 {
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
   // Signal for WaitMediaReady()
   // that we are busy detecting the
   // newly inserted media.
@@ -140,8 +143,7 @@ VOID CDetectDVDMedia::UpdateDvdrom()
           // Send Message to GUI that disc been ejected
           SetNewDVDShareUrl("D:\\", false, g_localizeStrings.Get(502));
           m_isoReader.Reset();
-          CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REMOVED_MEDIA);
-          g_windowManager.SendThreadMessage( msg );
+          PostGUIMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REMOVED_MEDIA);
           waitLock.Leave();
           m_DriveState = DRIVE_OPEN;
           return;
@@ -162,8 +164,7 @@ VOID CDetectDVDMedia::UpdateDvdrom()
             m_pCdInfo = NULL;
           }
           waitLock.Leave();
-          CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
-          g_windowManager.SendThreadMessage( msg );
+          PostGUIMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
           // Do we really need sleep here? This will fix: [ 1530771 ] "Open tray" problem
           // Sleep(6000);
           return ;
@@ -177,9 +178,8 @@ VOID CDetectDVDMedia::UpdateDvdrom()
           SetNewDVDShareUrl("D:\\", false, g_localizeStrings.Get(504));
           m_DriveState = DRIVE_CLOSED_NO_MEDIA;
           // Send Message to GUI that disc has changed
-          CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
           waitLock.Leave();
-          g_windowManager.SendThreadMessage( msg );
+          PostGUIMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
           return ;
         }
         break;
@@ -194,9 +194,8 @@ VOID CDetectDVDMedia::UpdateDvdrom()
             m_DriveState = DRIVE_CLOSED_MEDIA_PRESENT;
             // Detect ISO9660(mode1/mode2) or CDDA filesystem
             DetectMediaType();
-            CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
             waitLock.Leave();
-            g_windowManager.SendThreadMessage( msg );
+            PostGUIMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
             // Tell the application object that a new Cd is inserted
             // So autorun can be started.
             if ( !m_bStartup )

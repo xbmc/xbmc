@@ -35,10 +35,13 @@
 #include "GUIUserMessages.h"
 #include "music/MusicDatabase.h"
 #include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.h"
-#include "xbmc/music/tags/MusicInfoTag.h"
+#include "music/tags/MusicInfoTag.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 
 bool CSaveFileStateJob::DoWork()
 {
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
   std::string progressTrackingFile = m_item.GetPath();
 
   if (m_item.HasVideoInfoTag() && StringUtils::StartsWith(m_item.GetVideoInfoTag()->m_strFileNameAndPath, "removable://"))
@@ -153,7 +156,7 @@ bool CSaveFileStateJob::DoWork()
           if (m_item.HasProperty("original_listitem_url"))
             msgItem->SetPath(m_item.GetProperty("original_listitem_url").asString());
           CGUIMessage message(GUI_MSG_NOTIFY_ALL, g_windowManager.GetActiveWindow(), 0, GUI_MSG_UPDATE_ITEM, 1, msgItem); // 1 to update the listing as well
-          g_windowManager.SendThreadMessage(message);
+          PostGUIMessage(message);
         }
       }
     }

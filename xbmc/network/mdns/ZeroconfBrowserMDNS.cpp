@@ -26,6 +26,7 @@
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
 #include "GUIUserMessages.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 #include "network/DNSNameCache.h"
 #include "system.h"
 #include "threads/SingleLock.h"
@@ -68,6 +69,7 @@ void DNSSD_API CZeroconfBrowserMDNS::BrowserCallback(DNSServiceRef browser,
                                                     const char *replyDomain,
                                                     void *context)
 {
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
 
   if (errorCode == kDNSServiceErr_NoError)
   {
@@ -90,7 +92,7 @@ void DNSSD_API CZeroconfBrowserMDNS::BrowserCallback(DNSServiceRef browser,
     {
       CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
       message.SetStringParam("zeroconf://");
-      g_windowManager.SendThreadMessage(message);
+      PostGUIMessage(message);
       CLog::Log(LOGDEBUG, "ZeroconfBrowserMDNS::BrowserCallback sent gui update for path zeroconf://");
     }
   }

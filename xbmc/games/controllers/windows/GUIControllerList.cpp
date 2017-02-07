@@ -39,6 +39,7 @@
 #include "guilib/WindowIDs.h"
 #include "input/joysticks/DefaultJoystick.h" // for DEFAULT_CONTROLLER_ID
 #include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 #include "peripherals/Peripherals.h"
 #include "ServiceBroker.h"
 
@@ -149,12 +150,10 @@ void CGUIControllerList::ResetController(void)
 
 void CGUIControllerList::OnEvent(const ADDON::AddonEvent& event)
 {
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
   if (typeid(event) == typeid(ADDON::AddonEvents::InstalledChanged))
-  {
-    using namespace KODI::MESSAGING;
-    CGUIMessage msg(GUI_MSG_REFRESH_LIST, m_guiWindow->GetID(), CONTROL_CONTROLLER_LIST);
-    CApplicationMessenger::GetInstance().SendGUIMessage(msg);
-  }
+    PostGUIMessage(GUI_MSG_REFRESH_LIST, m_guiWindow->GetID(), CONTROL_CONTROLLER_LIST);
 }
 
 bool CGUIControllerList::RefreshControllers(void)

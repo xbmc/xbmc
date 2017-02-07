@@ -31,6 +31,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "storage/MediaManager.h"
 #include "ContextMenuManager.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 #include "utils/Variant.h"
 
 using namespace XFILE;
@@ -100,6 +101,8 @@ int CGUIDialogFavourites::GetSelectedItem()
 
 void CGUIDialogFavourites::OnClick(int item)
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   if (item < 0 || item >= m_favourites->Size())
     return;
 
@@ -111,7 +114,7 @@ void CGUIDialogFavourites::OnClick(int item)
 
   CGUIMessage message(GUI_MSG_EXECUTE, 0, GetID());
   message.SetStringParam(execute);
-  g_windowManager.SendMessage(message);
+  SendGUIMessage(message);
 }
 
 void CGUIDialogFavourites::OnPopupMenu(int item)

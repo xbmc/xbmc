@@ -26,8 +26,10 @@
 #include "guilib/GUIWindowManager.h"
 #include "Application.h"
 #include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 #include "utils/Variant.h"
 #include "WindowException.h"
+#include "messaging/helpers/DialogHelper.h"
 
 using namespace KODI::MESSAGING;
 
@@ -504,19 +506,24 @@ namespace XBMCAddon
 
     void Window::setFocus(Control* pControl)
     {
+      using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
       XBMC_TRACE;
+
       if(pControl == NULL)
         throw WindowException("Object should be of type Control");
 
       CGUIMessage msg = CGUIMessage(GUI_MSG_SETFOCUS,pControl->iParentId, pControl->iControlId);
-      g_windowManager.SendThreadMessage(msg, pControl->iParentId);
+      PostGUIMessage(msg, pControl->iParentId);
     }
 
     void Window::setFocusId(int iControlId)
     {
+      using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
       XBMC_TRACE;
       CGUIMessage msg = CGUIMessage(GUI_MSG_SETFOCUS,iWindowId,iControlId);
-      g_windowManager.SendThreadMessage(msg, iWindowId);
+      PostGUIMessage(msg, iWindowId);
     }
 
     Control* Window::getFocus()
@@ -550,6 +557,8 @@ namespace XBMCAddon
 
     void Window::doRemoveControl(Control* pControl, CCriticalSection* gcontext, bool wait)
     {
+      using namespace KODI::MESSAGING::HELPERS;
+
       XBMC_TRACE;
       // type checking, object should be of type Control
       if(pControl == NULL)
@@ -574,7 +583,10 @@ namespace XBMCAddon
 
       CGUIMessage msg(GUI_MSG_REMOVE_CONTROL, 0, 0);
       msg.SetPointer(pControl->pGUIControl);
-      CApplicationMessenger::GetInstance().SendGUIMessage(msg, iWindowId, wait);
+      if (wait)
+        SendGUIMessage(msg, iWindowId);
+      else
+        PostGUIMessage(msg, iWindowId);
 
       // initialize control to zero
       pControl->pGUIControl = NULL;
@@ -719,6 +731,8 @@ namespace XBMCAddon
 
     void Window::doAddControl(Control* pControl, CCriticalSection* gcontext, bool wait)
     {
+      using namespace KODI::MESSAGING::HELPERS;
+
       XBMC_TRACE;
       if(pControl == NULL)
         throw WindowException("NULL Control passed to WindowBase::addControl");
@@ -756,7 +770,10 @@ namespace XBMCAddon
       // This calls the CGUIWindow parent class to do the final add
       CGUIMessage msg(GUI_MSG_ADD_CONTROL, 0, 0);
       msg.SetPointer(pControl->pGUIControl);
-      CApplicationMessenger::GetInstance().SendGUIMessage(msg, iWindowId, wait);
+      if (wait)
+        SendGUIMessage(msg, iWindowId);
+      else
+        PostGUIMessage(msg, iWindowId);
     }
 
     void Window::addControls(std::vector<Control*> pControls)

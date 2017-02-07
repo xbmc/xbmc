@@ -22,6 +22,7 @@
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
 #include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 #include "dialogs/GUIDialogGamepad.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "dialogs/GUIDialogNumeric.h"
@@ -423,6 +424,8 @@ bool CGUIPassword::CheckMenuLock(int iWindowID)
 
 bool CGUIPassword::LockSource(const std::string& strType, const std::string& strName, bool bState)
 {
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
   VECSOURCES* pShares = CMediaSourceSettings::GetInstance().GetSources(strType);
   bool bResult = false;
   for (IVECSOURCES it=pShares->begin();it != pShares->end();++it)
@@ -437,14 +440,15 @@ bool CGUIPassword::LockSource(const std::string& strType, const std::string& str
       break;
     }
   }
-  CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
-  g_windowManager.SendThreadMessage(msg);
+  PostGUIMessage(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
 
   return bResult;
 }
 
 void CGUIPassword::LockSources(bool lock)
 {
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
   // lock or unlock all sources (those with locks)
   const char* strType[] = {"programs", "music", "video", "pictures", "files", "games"};
   for (unsigned int i = 0; i < sizeof(strType) / sizeof(*strType); ++i)
@@ -454,12 +458,13 @@ void CGUIPassword::LockSources(bool lock)
       if (it->m_iLockMode != LOCK_MODE_EVERYONE)
         it->m_iHasLock = lock ? 2 : 1;
   }
-  CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
-  g_windowManager.SendThreadMessage(msg);
+  PostGUIMessage(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
 }
 
 void CGUIPassword::RemoveSourceLocks()
 {
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
   // remove lock from all sources
   const char* strType[] = {"programs", "music", "video", "pictures", "files", "games"};
   for (unsigned int i = 0; i < sizeof(strType) / sizeof(*strType); ++i)
@@ -474,8 +479,7 @@ void CGUIPassword::RemoveSourceLocks()
       }
   }
   CMediaSourceSettings::GetInstance().Save();
-  CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0, GUI_MSG_UPDATE_SOURCES);
-  g_windowManager.SendThreadMessage(msg);
+  PostGUIMessage(GUI_MSG_NOTIFY_ALL,0,0, GUI_MSG_UPDATE_SOURCES);
 }
 
 bool CGUIPassword::IsDatabasePathUnlocked(const std::string& strPath, VECSOURCES& vecSources)

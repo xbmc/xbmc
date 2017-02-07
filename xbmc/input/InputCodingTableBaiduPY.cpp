@@ -28,6 +28,7 @@
 #include "utils/RegExp.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 
 CInputCodingTableBaiduPY::CInputCodingTableBaiduPY(const std::string& strUrl) :
   CThread("BaiduPYApi"),
@@ -71,6 +72,8 @@ void CInputCodingTableBaiduPY::Process()
 
 void CInputCodingTableBaiduPY::HandleResponse(const std::string& strCode, const std::string& response)
 {
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
   if (strCode != m_code) // don't handle obsolete response
     return;
 
@@ -99,7 +102,7 @@ void CInputCodingTableBaiduPY::HandleResponse(const std::string& strCode, const 
   CGUIMessage msg(GUI_MSG_CODINGTABLE_LOOKUP_COMPLETED, 0, 0, m_messageCounter);
   msg.SetStringParam(strCode);
   lock.Leave();
-  g_windowManager.SendThreadMessage(msg, g_windowManager.GetActiveWindowID());
+  PostGUIMessage(msg, g_windowManager.GetActiveWindowID());
 }
 
 std::wstring CInputCodingTableBaiduPY::UnicodeToWString(const std::string& unicode)

@@ -36,6 +36,7 @@
 #include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/Variant.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 
 using namespace XFILE;
 
@@ -57,14 +58,18 @@ CGUIWindowSettingsProfile::~CGUIWindowSettingsProfile(void)
 
 int CGUIWindowSettingsProfile::GetSelectedItem()
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_PROFILES);
-  g_windowManager.SendMessage(msg);
+  SendGUIMessage(msg);
 
   return msg.GetParam1();
 }
 
 void CGUIWindowSettingsProfile::OnPopupMenu(int iItem)
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   if (iItem == (int)CProfilesManager::GetInstance().GetNumberOfProfiles())
     return;
 
@@ -80,7 +85,7 @@ void CGUIWindowSettingsProfile::OnPopupMenu(int iItem)
     unsigned iCtrlID = GetFocusedControlID();
     g_application.StopPlaying();
     CGUIMessage msg2(GUI_MSG_ITEM_SELECTED, g_windowManager.GetActiveWindow(), iCtrlID);
-    g_windowManager.SendMessage(msg2);
+    SendGUIMessage(msg2);
     g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_DOWN,1);
     CProfilesManager::GetInstance().LoadMasterProfileForLogin();
     CGUIWindowLoginScreen::LoadProfile(iItem);
@@ -100,6 +105,8 @@ void CGUIWindowSettingsProfile::OnPopupMenu(int iItem)
 
 bool CGUIWindowSettingsProfile::OnMessage(CGUIMessage& message)
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   switch ( message.GetMessage() )
   {
   case GUI_MSG_WINDOW_DEINIT:
@@ -124,7 +131,7 @@ bool CGUIWindowSettingsProfile::OnMessage(CGUIMessage& message)
         )
         {
           CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_PROFILES);
-          g_windowManager.SendMessage(msg);
+          SendGUIMessage(msg);
           int iItem = msg.GetParam1();
           if (iAction == ACTION_CONTEXT_MENU || iAction == ACTION_MOUSE_RIGHT_CLICK)
           {
@@ -141,7 +148,7 @@ bool CGUIWindowSettingsProfile::OnMessage(CGUIMessage& message)
             {
               LoadList();
               CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), 2,iItem);
-              g_windowManager.SendMessage(msg);
+              SendGUIMessage(msg);
 
               return true;
             }
@@ -155,7 +162,7 @@ bool CGUIWindowSettingsProfile::OnMessage(CGUIMessage& message)
             {
               LoadList();
               CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), 2,iItem);
-              g_windowManager.SendMessage(msg);
+              SendGUIMessage(msg);
               return true;
             }
 
@@ -219,8 +226,10 @@ void CGUIWindowSettingsProfile::LoadList()
 
 void CGUIWindowSettingsProfile::ClearListItems()
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_PROFILES);
-  g_windowManager.SendMessage(msg);
+  SendGUIMessage(msg);
 
   m_listItems->Clear();
 }

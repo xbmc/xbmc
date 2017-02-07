@@ -23,6 +23,7 @@
 #include "Application.h"
 #include "ServiceBroker.h"
 #include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 #include "Util.h"
 #include "filesystem/Directory.h"
 #include "filesystem/ZipManager.h"
@@ -195,6 +196,8 @@ bool CGUIWindowFileManager::OnBack(int actionID)
 
 bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   switch ( message.GetMessage() )
   {
   case GUI_MSG_NOTIFY_ALL:
@@ -297,7 +300,7 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
           {
             //move to next item
             CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), iControl, iItem + 1);
-            g_windowManager.SendMessage(msg);
+            SendGUIMessage(msg);
           }
         }
         else if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_DOUBLE_CLICK)
@@ -360,8 +363,10 @@ void CGUIWindowFileManager::OnSort(int iList)
 
 void CGUIWindowFileManager::ClearFileItems(int iList)
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), iList + CONTROL_LEFT_LIST);
-  g_windowManager.SendMessage(msg);
+  SendGUIMessage(msg);
 
   m_vecItems[iList]->Clear(); // will clean up everything
 }
@@ -676,8 +681,10 @@ bool CGUIWindowFileManager::HaveDiscOrConnection( std::string& strPath, int iDri
 
 void CGUIWindowFileManager::UpdateControl(int iList, int item)
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), iList + CONTROL_LEFT_LIST, item, 0, m_vecItems[iList]);
-  g_windowManager.SendMessage(msg);
+  SendGUIMessage(msg);
 }
 
 void CGUIWindowFileManager::OnMark(int iList, int iItem)
@@ -1150,6 +1157,8 @@ int64_t CGUIWindowFileManager::CalculateFolderSize(const std::string &strDirecto
 
 void CGUIWindowFileManager::OnJobComplete(unsigned int jobID, bool success, CJob *job)
 {
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
   if(!success)
   {
     CFileOperationJob* fileJob = (CFileOperationJob*)job;
@@ -1160,7 +1169,7 @@ void CGUIWindowFileManager::OnJobComplete(unsigned int jobID, bool success, CJob
   if (IsActive())
   {
     CGUIMessage msg(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_UPDATE);
-    CApplicationMessenger::GetInstance().SendGUIMessage(msg, GetID(), false);
+    PostGUIMessage(msg, GetID());
   }
 
   CJobQueue::OnJobComplete(jobID, success, job);

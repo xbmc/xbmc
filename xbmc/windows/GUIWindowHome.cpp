@@ -30,6 +30,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "Application.h"
 #include "utils/StringUtils.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 
 using namespace ANNOUNCEMENT;
 
@@ -75,6 +76,8 @@ void CGUIWindowHome::OnInitWindow()
 
 void CGUIWindowHome::Announce(AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
 {
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
   int ra_flag = 0;
 
   CLog::Log(LOGDEBUG, "GOT ANNOUNCEMENT, type: %i, from %s, message %s",(int)flag, sender, message);
@@ -105,7 +108,7 @@ void CGUIWindowHome::Announce(AnnouncementFlag flag, const char *sender, const c
   }
 
   CGUIMessage reload(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_REFRESH_THUMBS, ra_flag);
-  g_windowManager.SendThreadMessage(reload, GetID());
+  PostGUIMessage(reload, GetID());
 }
 
 void CGUIWindowHome::AddRecentlyAddedJobs(int flag)

@@ -28,6 +28,7 @@
 #include "input/MouseStat.h"
 #include "input/InputManager.h"
 #include "input/Key.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 
 CGUIControl::CGUIControl() :
   m_hitColor(0xffffffff),
@@ -303,10 +304,12 @@ void CGUIControl::OnPrevControl()
 
 bool CGUIControl::SendWindowMessage(CGUIMessage &message) const
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   CGUIWindow *pWindow = g_windowManager.GetWindow(GetParentID());
   if (pWindow)
     return pWindow->OnMessage(message);
-  return g_windowManager.SendMessage(message);
+  return SendGUIMessage(message);
 }
 
 int CGUIControl::GetID(void) const

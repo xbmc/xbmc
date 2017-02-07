@@ -28,6 +28,7 @@
 #include "guilib/IGUIContainer.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
@@ -67,6 +68,8 @@ void CGUIViewControl::SetParentWindow(int window)
 
 void CGUIViewControl::SetCurrentView(int viewMode, bool bRefresh /* = false */)
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   // grab the previous control
   CGUIControl *previousView = NULL;
   if (m_currentView >= 0 && m_currentView < (int)m_visibleViews.size())
@@ -124,7 +127,7 @@ void CGUIViewControl::SetCurrentView(int viewMode, bool bRefresh /* = false */)
   if (hasFocus)
   {
     CGUIMessage msg(GUI_MSG_SETFOCUS, m_parentWindow, pNewView->GetID(), 0);
-    g_windowManager.SendMessage(msg, m_parentWindow);
+    SendGUIMessage(msg, m_parentWindow);
   }
 
   UpdateViewAsControl(((IGUIContainer *)pNewView)->GetLabel());
@@ -140,9 +143,11 @@ void CGUIViewControl::SetItems(CFileItemList &items)
 
 void CGUIViewControl::UpdateContents(const CGUIControl *control, int currentItem)
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   if (!control || !m_fileItems) return;
   CGUIMessage msg(GUI_MSG_LABEL_BIND, m_parentWindow, control->GetID(), currentItem, 0, m_fileItems);
-  g_windowManager.SendMessage(msg, m_parentWindow);
+  SendGUIMessage(msg, m_parentWindow);
 }
 
 void CGUIViewControl::UpdateView()
@@ -159,11 +164,13 @@ void CGUIViewControl::UpdateView()
 
 int CGUIViewControl::GetSelectedItem(const CGUIControl *control) const
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   if (!control || !m_fileItems)
     return -1;
 
   CGUIMessage msg(GUI_MSG_ITEM_SELECTED, m_parentWindow, control->GetID());
-  g_windowManager.SendMessage(msg, m_parentWindow);
+  SendGUIMessage(msg, m_parentWindow);
 
   int iItem = msg.GetParam1();
   if (iItem >= m_fileItems->Size())
@@ -198,6 +205,8 @@ std::string CGUIViewControl::GetSelectedItemPath() const
 
 void CGUIViewControl::SetSelectedItem(int item)
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   if (!m_fileItems || item < 0 || item >= m_fileItems->Size())
     return;
 
@@ -205,7 +214,7 @@ void CGUIViewControl::SetSelectedItem(int item)
     return; // no valid current view!
 
   CGUIMessage msg(GUI_MSG_ITEM_SELECT, m_parentWindow, m_visibleViews[m_currentView]->GetID(), item);
-  g_windowManager.SendMessage(msg, m_parentWindow);
+  SendGUIMessage(msg, m_parentWindow);
 }
 
 void CGUIViewControl::SetSelectedItem(const std::string &itemPath)
@@ -232,11 +241,13 @@ void CGUIViewControl::SetSelectedItem(const std::string &itemPath)
 
 void CGUIViewControl::SetFocused()
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   if (m_currentView < 0 || m_currentView >= (int)m_visibleViews.size())
     return; // no valid current view!
 
   CGUIMessage msg(GUI_MSG_SETFOCUS, m_parentWindow, m_visibleViews[m_currentView]->GetID(), 0);
-  g_windowManager.SendMessage(msg, m_parentWindow);
+  SendGUIMessage(msg, m_parentWindow);
 }
 
 bool CGUIViewControl::HasControl(int viewControlID) const
@@ -302,11 +313,13 @@ int CGUIViewControl::GetNextViewMode(int direction) const
 
 void CGUIViewControl::Clear()
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   if (m_currentView < 0 || m_currentView >= (int)m_visibleViews.size())
     return; // no valid current view!
 
   CGUIMessage msg(GUI_MSG_LABEL_RESET, m_parentWindow, m_visibleViews[m_currentView]->GetID(), 0);
-  g_windowManager.SendMessage(msg, m_parentWindow);
+  SendGUIMessage(msg, m_parentWindow);
 }
 
 int CGUIViewControl::GetView(VIEW_TYPE type, int id) const
@@ -322,6 +335,8 @@ int CGUIViewControl::GetView(VIEW_TYPE type, int id) const
 
 void CGUIViewControl::UpdateViewAsControl(const std::string &viewLabel)
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   // the view as control could be a select/spin/dropdown button
   std::vector< std::pair<std::string, int> > labels;
   for (unsigned int i = 0; i < m_visibleViews.size(); i++)
@@ -332,13 +347,13 @@ void CGUIViewControl::UpdateViewAsControl(const std::string &viewLabel)
   }
   CGUIMessage msg(GUI_MSG_SET_LABELS, m_parentWindow, m_viewAsControl, m_currentView);
   msg.SetPointer(&labels);
-  g_windowManager.SendMessage(msg, m_parentWindow);
+  SendGUIMessage(msg, m_parentWindow);
 
   // otherwise it's just a normal button
   std::string label = StringUtils::Format(g_localizeStrings.Get(534).c_str(), viewLabel.c_str()); // View: %s
   CGUIMessage msgSet(GUI_MSG_LABEL_SET, m_parentWindow, m_viewAsControl);
   msgSet.SetLabel(label);
-  g_windowManager.SendMessage(msgSet, m_parentWindow);
+  SendGUIMessage(msgSet, m_parentWindow);
 }
 
 void CGUIViewControl::UpdateViewVisibility()

@@ -56,6 +56,7 @@
 #include "input/Key.h"
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/ThreadMessage.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
@@ -402,9 +403,11 @@ void CPeripherals::OnDeviceDeleted(const CPeripheralBus &bus, const CPeripheral 
 
 void CPeripherals::OnDeviceChanged()
 {
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
   // refresh settings (peripherals manager could be enabled/disabled now)
   CGUIMessage msgSettings(GUI_MSG_UPDATE, WINDOW_SETTINGS_SYSTEM, 0);
-  g_windowManager.SendThreadMessage(msgSettings, WINDOW_SETTINGS_SYSTEM);
+  PostGUIMessage(msgSettings, WINDOW_SETTINGS_SYSTEM);
 
   SetChanged();
 }

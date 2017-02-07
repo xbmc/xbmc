@@ -34,8 +34,9 @@
 #include "guilib/GUISpinControlEx.h"
 #include "guilib/GUIToggleButtonControl.h"
 #include "guilib/GUIWindowManager.h"
-#include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
+#include "input/Key.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 #include "settings/SettingControl.h"
 #include "settings/lib/SettingSection.h"
 #include "settings/windows/GUIControlSettings.h"
@@ -87,6 +88,8 @@ CGUIDialogSettingsBase::~CGUIDialogSettingsBase()
 
 bool CGUIDialogSettingsBase::OnMessage(CGUIMessage &message)
 {
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
   switch (message.GetMessage())
   {
     case GUI_MSG_WINDOW_INIT:
@@ -138,7 +141,7 @@ bool CGUIDialogSettingsBase::OnMessage(CGUIMessage &message)
       {
         m_delayedTimer.Stop();
         CGUIMessage message(GUI_MSG_UPDATE_ITEM, GetID(), m_delayedSetting->GetID(), 1); // param1 = 1 for "reset the control if it's invalid"
-        g_windowManager.SendThreadMessage(message, GetID());
+        PostGUIMessage(message, GetID());
       }
       // update the value of the previous setting (in case it was invalid)
       else if (m_iSetting >= CONTROL_SETTINGS_START_CONTROL && m_iSetting < (int)(CONTROL_SETTINGS_START_CONTROL + m_settingControls.size()))
@@ -147,7 +150,7 @@ bool CGUIDialogSettingsBase::OnMessage(CGUIMessage &message)
         if (control != NULL && control->GetSetting() != NULL && !control->IsValid())
         {
           CGUIMessage message(GUI_MSG_UPDATE_ITEM, GetID(), m_iSetting, 1); // param1 = 1 for "reset the control if it's invalid"
-          g_windowManager.SendThreadMessage(message, GetID());
+          PostGUIMessage(message, GetID());
         }
       }
 
@@ -814,13 +817,15 @@ void CGUIDialogSettingsBase::UpdateSettingControl(const std::string &settingId)
 
 void CGUIDialogSettingsBase::UpdateSettingControl(BaseSettingControlPtr pSettingControl)
 {
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
   if (pSettingControl == NULL)
     return;
 
   // we send a thread message so that it's processed the following frame (some settings won't
   // like being changed during Render())
   CGUIMessage message(GUI_MSG_UPDATE_ITEM, GetID(), pSettingControl->GetID());
-  g_windowManager.SendThreadMessage(message, GetID());
+  PostGUIMessage(message, GetID());
 }
 
 void CGUIDialogSettingsBase::SetControlLabel(int controlId, const CVariant &label)

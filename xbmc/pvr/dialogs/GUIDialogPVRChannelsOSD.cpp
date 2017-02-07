@@ -24,6 +24,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
 #include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 #include "view/ViewState.h"
 
 #include "pvr/PVRGUIActions.h"
@@ -306,8 +307,9 @@ CGUIControl *CGUIDialogPVRChannelsOSD::GetFirstFocusableControl(int id)
 
 void CGUIDialogPVRChannelsOSD::Notify(const Observable &obs, const ObservableMessage msg)
 {
-  CGUIMessage m(GUI_MSG_REFRESH_LIST, GetID(), 0, msg);
-  CApplicationMessenger::GetInstance().SendGUIMessage(m);
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
+  PostGUIMessage(GUI_MSG_REFRESH_LIST, GetID(), 0, msg);
 }
 
 void CGUIDialogPVRChannelsOSD::SaveSelectedItemPath(int iGroupID)

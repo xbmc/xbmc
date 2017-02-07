@@ -24,6 +24,7 @@
 #include "utils/TimeUtils.h"
 #include "input/Key.h"
 #include "guilib/GUIWindowManager.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 #include "windowing/WindowingFactory.h"
 
 #include <cmath>
@@ -49,6 +50,8 @@ CInertialScrollingHandler::CInertialScrollingHandler()
 
 bool CInertialScrollingHandler::CheckForInertialScrolling(const CAction* action)
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   bool ret = false;//return value - false no inertial scrolling - true - inertial scrolling
 
   if(g_Windowing.HasInertialGestures())
@@ -77,7 +80,7 @@ bool CInertialScrollingHandler::CheckForInertialScrolling(const CAction* action)
     //for making switching between multiple lists
     //possible
     CGUIMessage message(GUI_MSG_EXCLUSIVE_MOUSE, 0, 0);
-    g_windowManager.SendMessage(message);     
+    SendGUIMessage(message);     
     m_bScrolling = false;
     //wakeup screensaver on pan begin
     g_application.ResetScreenSaver();    
@@ -91,7 +94,7 @@ bool CInertialScrollingHandler::CheckForInertialScrolling(const CAction* action)
       CGUIMessage message(GUI_MSG_GESTURE_NOTIFY, 0, 0, (int)action->GetAmount(2), (int)action->GetAmount(3));
 
       //ask if the control wants inertial scrolling
-      if(g_windowManager.SendMessage(message))
+      if(SendGUIMessage(message))
       {
         int result = 0;
         if (message.GetPointer())

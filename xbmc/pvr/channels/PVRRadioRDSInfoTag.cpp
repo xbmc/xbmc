@@ -22,6 +22,7 @@
 #include "GUIUserMessages.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 #include "utils/Archive.h"
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
@@ -328,6 +329,8 @@ const std::string& CPVRRadioRDSInfoTag::GetComment() const
 
 void CPVRRadioRDSInfoTag::SetInfoNews(const std::string& strNews)
 {
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
   std::string tmpStr = Trim(strNews);
   g_charsetConverter.unknownToUTF8(tmpStr);
 
@@ -343,8 +346,7 @@ void CPVRRadioRDSInfoTag::SetInfoNews(const std::string& strNews)
   m_strInfoNews.emplace_back(std::move(tmpStr));
 
   // send a message to all windows to tell them to update the radiotext
-  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_RADIOTEXT);
-  g_windowManager.SendThreadMessage(msg);
+  PostGUIMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_RADIOTEXT);
 }
 
 const std::string CPVRRadioRDSInfoTag::GetInfoNews() const
@@ -362,6 +364,8 @@ const std::string CPVRRadioRDSInfoTag::GetInfoNews() const
 
 void CPVRRadioRDSInfoTag::SetInfoNewsLocal(const std::string& strNews)
 {
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
   std::string tmpStr = Trim(strNews);
   g_charsetConverter.unknownToUTF8(tmpStr);
 
@@ -377,8 +381,7 @@ void CPVRRadioRDSInfoTag::SetInfoNewsLocal(const std::string& strNews)
   m_strInfoNewsLocal.emplace_front(std::move(tmpStr));
 
   // send a message to all windows to tell them to update the radiotext
-  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_RADIOTEXT);
-  g_windowManager.SendThreadMessage(msg);
+  PostGUIMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_RADIOTEXT);
 }
 
 const std::string CPVRRadioRDSInfoTag::GetInfoNewsLocal() const
@@ -396,6 +399,8 @@ const std::string CPVRRadioRDSInfoTag::GetInfoNewsLocal() const
 
 void CPVRRadioRDSInfoTag::SetInfoSport(const std::string& strSport)
 {
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
   std::string tmpStr = Trim(strSport);
   g_charsetConverter.unknownToUTF8(tmpStr);
 
@@ -411,8 +416,7 @@ void CPVRRadioRDSInfoTag::SetInfoSport(const std::string& strSport)
   m_strInfoSport.emplace_front(std::move(tmpStr));
 
   // send a message to all windows to tell them to update the radiotext
-  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_RADIOTEXT);
-  g_windowManager.SendThreadMessage(msg);
+  PostGUIMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_RADIOTEXT);
 }
 
 const std::string CPVRRadioRDSInfoTag::GetInfoSport() const
@@ -430,6 +434,8 @@ const std::string CPVRRadioRDSInfoTag::GetInfoSport() const
 
 void CPVRRadioRDSInfoTag::SetInfoStock(const std::string& strStock)
 {
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
   std::string tmpStr = Trim(strStock);
   g_charsetConverter.unknownToUTF8(tmpStr);
 
@@ -445,8 +451,7 @@ void CPVRRadioRDSInfoTag::SetInfoStock(const std::string& strStock)
   m_strInfoStock.emplace_front(std::move(tmpStr));
 
   // send a message to all windows to tell them to update the radiotext
-  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_RADIOTEXT);
-  g_windowManager.SendThreadMessage(msg);
+  PostGUIMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_RADIOTEXT);
 }
 
 const std::string CPVRRadioRDSInfoTag::GetInfoStock() const
@@ -464,6 +469,8 @@ const std::string CPVRRadioRDSInfoTag::GetInfoStock() const
 
 void CPVRRadioRDSInfoTag::SetInfoWeather(const std::string& strWeather)
 {
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
   std::string tmpStr = Trim(strWeather);
   g_charsetConverter.unknownToUTF8(tmpStr);
 
@@ -478,8 +485,7 @@ void CPVRRadioRDSInfoTag::SetInfoWeather(const std::string& strWeather)
 
   m_strInfoWeather.emplace_front(std::move(tmpStr));
   // send a message to all windows to tell them to update the radiotext
-  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_RADIOTEXT);
-  g_windowManager.SendThreadMessage(msg);
+  PostGUIMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_RADIOTEXT);
 }
 
 const std::string CPVRRadioRDSInfoTag::GetInfoWeather() const
@@ -497,6 +503,8 @@ const std::string CPVRRadioRDSInfoTag::GetInfoWeather() const
 
 void CPVRRadioRDSInfoTag::SetInfoLottery(const std::string& strLottery)
 {
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
   std::string tmpStr = Trim(strLottery);
   g_charsetConverter.unknownToUTF8(tmpStr);
 
@@ -511,8 +519,7 @@ void CPVRRadioRDSInfoTag::SetInfoLottery(const std::string& strLottery)
 
   m_strInfoLottery.emplace_front(std::move(tmpStr));
   // send a message to all windows to tell them to update the radiotext
-  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_RADIOTEXT);
-  g_windowManager.SendThreadMessage(msg);
+  PostGUIMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_RADIOTEXT);
 }
 
 const std::string CPVRRadioRDSInfoTag::GetInfoLottery() const
@@ -530,6 +537,8 @@ const std::string CPVRRadioRDSInfoTag::GetInfoLottery() const
 
 void CPVRRadioRDSInfoTag::SetEditorialStaff(const std::string& strEditorialStaff)
 {
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
   std::string tmpStr = Trim(strEditorialStaff);
   g_charsetConverter.unknownToUTF8(tmpStr);
 
@@ -544,8 +553,7 @@ void CPVRRadioRDSInfoTag::SetEditorialStaff(const std::string& strEditorialStaff
 
   m_strEditorialStaff.push_front(tmpStr);
   // send a message to all windows to tell them to update the radiotext
-  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_RADIOTEXT);
-  g_windowManager.SendThreadMessage(msg);
+  PostGUIMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_RADIOTEXT);
 }
 
 const std::string CPVRRadioRDSInfoTag::GetEditorialStaff() const
@@ -563,6 +571,8 @@ const std::string CPVRRadioRDSInfoTag::GetEditorialStaff() const
 
 void CPVRRadioRDSInfoTag::SetInfoHoroscope(const std::string& strHoroscope)
 {
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
   std::string tmpStr = Trim(strHoroscope);
   g_charsetConverter.unknownToUTF8(tmpStr);
 
@@ -577,8 +587,7 @@ void CPVRRadioRDSInfoTag::SetInfoHoroscope(const std::string& strHoroscope)
 
   m_strInfoHoroscope.emplace_front(std::move(tmpStr));
   // send a message to all windows to tell them to update the radiotext
-  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_RADIOTEXT);
-  g_windowManager.SendThreadMessage(msg);
+  PostGUIMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_RADIOTEXT);
 }
 
 const std::string CPVRRadioRDSInfoTag::GetInfoHoroscope() const
@@ -596,6 +605,8 @@ const std::string CPVRRadioRDSInfoTag::GetInfoHoroscope() const
 
 void CPVRRadioRDSInfoTag::SetInfoCinema(const std::string& strCinema)
 {
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
   std::string tmpStr = Trim(strCinema);
   g_charsetConverter.unknownToUTF8(tmpStr);
 
@@ -610,8 +621,7 @@ void CPVRRadioRDSInfoTag::SetInfoCinema(const std::string& strCinema)
 
   m_strInfoCinema.emplace_front(std::move(tmpStr));
   // send a message to all windows to tell them to update the fileitem radiotext
-  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_RADIOTEXT);
-  g_windowManager.SendThreadMessage(msg);
+  PostGUIMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_RADIOTEXT);
 }
 
 const std::string CPVRRadioRDSInfoTag::GetInfoCinema() const
@@ -629,6 +639,8 @@ const std::string CPVRRadioRDSInfoTag::GetInfoCinema() const
 
 void CPVRRadioRDSInfoTag::SetInfoOther(const std::string& strOther)
 {
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
   std::string tmpStr = Trim(strOther);
   g_charsetConverter.unknownToUTF8(tmpStr);
 
@@ -643,8 +655,7 @@ void CPVRRadioRDSInfoTag::SetInfoOther(const std::string& strOther)
 
   m_strInfoOther.emplace_front(std::move(tmpStr));
   // send a message to all windows to tell them to update the fileitem radiotext
-  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_RADIOTEXT);
-  g_windowManager.SendThreadMessage(msg);
+  PostGUIMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_RADIOTEXT);
 }
 
 const std::string CPVRRadioRDSInfoTag::GetInfoOther() const

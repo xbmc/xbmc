@@ -21,6 +21,7 @@
 #include "WeatherBuiltins.h"
 
 #include "guilib/GUIWindowManager.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 
 /*! \brief Switch to a given weather location.
  *  \param params The parameters.
@@ -28,9 +29,11 @@
  */
 static int SetLocation(const std::vector<std::string>& params)
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   int loc = atoi(params[0].c_str());
   CGUIMessage msg(GUI_MSG_ITEM_SELECT, 0, 0, loc);
-  g_windowManager.SendMessage(msg, WINDOW_WEATHER);
+  SendGUIMessage(msg, WINDOW_WEATHER);
 
   return 0;
 }
@@ -44,8 +47,10 @@ static int SetLocation(const std::vector<std::string>& params)
   template<int Direction>
 static int SwitchLocation(const std::vector<std::string>& params)
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   CGUIMessage msg(GUI_MSG_MOVE_OFFSET, 0, 0, Direction);
-  g_windowManager.SendMessage(msg, WINDOW_WEATHER);
+  SendGUIMessage(msg, WINDOW_WEATHER);
 
   return 0;
 }

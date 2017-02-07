@@ -28,6 +28,7 @@
 #include "input/XBMC_vkeys.h"
 #include "utils/log.h"
 #include "windowing/WindowingFactory.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 
 #define ALMOST_ZERO 0.125f
 enum {
@@ -90,6 +91,8 @@ void CWinEventsAndroid::MessagePushRepeat(XBMC_Event *repeatEvent)
 
 bool CWinEventsAndroid::MessagePump()
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   bool ret = false;
 
   // Do not always loop, only pump the initial queued count events. else if ui keep pushing
@@ -110,7 +113,7 @@ bool CWinEventsAndroid::MessagePump()
     ret |= g_application.OnEvent(pumpEvent);
 
     if (pumpEvent.type == XBMC_MOUSEBUTTONUP)
-      g_windowManager.SendMessage(GUI_MSG_UNFOCUS_ALL, 0, 0, 0, 0);
+      SendGUIMessage(GUI_MSG_UNFOCUS_ALL, 0, 0, 0, 0);
   }
 
   return ret;

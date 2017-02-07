@@ -75,6 +75,7 @@
 #include "cores/DataCacheCore.h"
 #include "guiinfo/GUIInfoLabels.h"
 #include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 
 // stuff for current song
 #include "music/MusicInfoLoader.h"
@@ -5833,6 +5834,8 @@ TIME_FORMAT CGUIInfoManager::TranslateTimeFormat(const std::string &format)
 
 std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *fallback)
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   if (info >= CONDITIONAL_LABEL_START && info <= CONDITIONAL_LABEL_END)
     return GetSkinVariableString(info, false);
 
@@ -6646,7 +6649,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case VISUALISATION_PRESET:
     {
       CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
-      g_windowManager.SendMessage(msg);
+      SendGUIMessage(msg);
       if (msg.GetPointer())
       {
         CVisualisation* viz = NULL;
@@ -6864,6 +6867,8 @@ bool CGUIInfoManager::EvaluateBool(const std::string &expression, int contextWin
 // for toggle button controls and visibility of images.
 bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListItem *item)
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
   bool bReturn = false;
   int condition = abs(condition1);
 
@@ -7311,7 +7316,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     case VISUALISATION_LOCKED:
       {
         CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
-        g_windowManager.SendMessage(msg);
+        SendGUIMessage(msg);
         if (msg.GetPointer())
         {
           CVisualisation *pVis = (CVisualisation *)msg.GetPointer();
@@ -7342,7 +7347,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     case VISUALISATION_HAS_PRESETS:
     {
       CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
-      g_windowManager.SendMessage(msg);
+      SendGUIMessage(msg);
       if (msg.GetPointer())
       {
         CVisualisation* viz = NULL;

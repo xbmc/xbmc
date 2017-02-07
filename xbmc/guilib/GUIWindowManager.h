@@ -66,9 +66,6 @@ class CGUIWindowManager : public KODI::MESSAGING::IMessageTarget
 public:
   CGUIWindowManager(void);
   virtual ~CGUIWindowManager(void);
-  bool SendMessage(CGUIMessage& message);
-  bool SendMessage(int message, int senderID, int destID, int param1 = 0, int param2 = 0);
-  bool SendMessage(CGUIMessage& message, int window);
   void Initialize();
   void Add(CGUIWindow* pWindow);
   void AddUniqueInstance(CGUIWindow *window);
@@ -156,11 +153,7 @@ public:
   void RemoveDialog(int id);
   int GetTopMostModalDialogID(bool ignoreClosing = false) const;
 
-  void SendThreadMessage(CGUIMessage& message, int window = 0);
-  void DispatchThreadMessages();
-  // method to removed queued messages with message id in the requested message id list.
-  // pMessageIDList: point to first integer of a 0 ends integer array.
-  int RemoveThreadMessageByMessageIds(int *pMessageIDList);
+  void DispatchThreadMessages() const;
   void AddMsgTarget( IMsgTargetCallback* pMsgTarget );
   int GetActiveWindow() const;
   int GetActiveWindowID();
@@ -190,6 +183,10 @@ public:
 #endif
 private:
   void RenderPass() const;
+
+  bool SendMessage(CGUIMessage& message);
+  bool SendMessage(int message, int senderID, int destID, int param1 = 0, int param2 = 0);
+  bool SendMessage(CGUIMessage& message, int window);
 
   void LoadNotOnDemandWindows();
   void UnloadNotOnDemandWindows();
@@ -224,7 +221,6 @@ private:
   std::stack<int> m_windowHistory;
 
   IWindowManagerCallback* m_pCallback;
-  std::list < std::pair<CGUIMessage*,int> > m_vecThreadMessages;
   CCriticalSection m_critSection;
   std::vector <IMsgTargetCallback*> m_vecMsgTargets;
 

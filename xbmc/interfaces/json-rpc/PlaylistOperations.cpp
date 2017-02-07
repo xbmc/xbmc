@@ -24,6 +24,7 @@
 #include "input/Key.h"
 #include "GUIUserMessages.h"
 #include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 #include "pictures/GUIWindowSlideShow.h"
 #include "pictures/PictureInfoTag.h"
 #include "utils/Variant.h"
@@ -239,8 +240,9 @@ int CPlaylistOperations::GetPlaylist(const CVariant &playlist)
 
 void CPlaylistOperations::NotifyAll()
 {
-  CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
-  g_windowManager.SendThreadMessage(msg);
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
+  PostGUIMessage(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
 }
 
 JSONRPC_STATUS CPlaylistOperations::GetPropertyValue(int playlist, const std::string &property, CVariant &result)

@@ -28,6 +28,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "GUIUserMessages.h"
 #include "interfaces/AnnouncementManager.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 #include "music/MusicDatabase.h"
 #include "music/windows/GUIWindowMusicPlaylist.h"
 #include "PlayListPlayer.h"
@@ -501,8 +502,9 @@ bool CPartyModeManager::MovePlaying()
 
 void CPartyModeManager::SendUpdateMessage()
 {
-  CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
-  g_windowManager.SendThreadMessage(msg);
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
+  PostGUIMessage(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
 }
 
 void CPartyModeManager::Play(int iPos)

@@ -31,6 +31,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "input/Key.h"
 #include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/dialogs/GUIDialogPVRGuideInfo.h"
 #include "pvr/dialogs/GUIDialogPVRRecordingInfo.h"
@@ -536,13 +537,15 @@ namespace PVR
 
   void CPVRGUIActions::CheckAndSwitchToFullscreen() const
   {
+    using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
     const bool bFullscreen(CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRPLAYBACK_SWITCHTOFULLSCREEN));
     CMediaSettings::GetInstance().SetVideoStartWindowed(!bFullscreen);
 
     if (bFullscreen)
     {
       CGUIMessage msg(GUI_MSG_FULLSCREEN, 0, g_windowManager.GetActiveWindow());
-      g_windowManager.SendMessage(msg);
+      SendGUIMessage(msg);
     }
   }
 
@@ -571,6 +574,8 @@ namespace PVR
 
   bool CPVRGUIActions::PlayRecording(const CFileItemPtr &item, bool bCheckResume) const
   {
+    using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
     const CPVRRecordingPtr recording(CPVRItem(item).GetRecording());
     if (!recording)
       return false;
@@ -578,7 +583,7 @@ namespace PVR
     if (g_PVRManager.IsPlayingRecording(recording))
     {
       CGUIMessage msg(GUI_MSG_FULLSCREEN, 0, g_windowManager.GetActiveWindow());
-      g_windowManager.SendMessage(msg);
+      SendGUIMessage(msg);
       return true;
     }
 
@@ -648,6 +653,8 @@ namespace PVR
 
   bool CPVRGUIActions::SwitchToChannel(const CFileItemPtr &item, bool bCheckResume) const
   {
+    using KODI::MESSAGING::HELPERS::SendGUIMessage;
+
     if (item->m_bIsFolder)
       return false;
 
@@ -656,7 +663,7 @@ namespace PVR
         (channel && channel->HasRecording() && g_PVRManager.IsPlayingRecording(channel->GetRecording())))
     {
       CGUIMessage msg(GUI_MSG_FULLSCREEN, 0, g_windowManager.GetActiveWindow());
-      g_windowManager.SendMessage(msg);
+      SendGUIMessage(msg);
       return true;
     }
 

@@ -34,6 +34,7 @@
 #include "settings/Settings.h"
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogHelper.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 #include "FilesystemInstaller.h"
 #include "filesystem/FavouritesDirectory.h"
 #include "utils/JobManager.h"
@@ -79,6 +80,8 @@ CAddonInstaller &CAddonInstaller::GetInstance()
 
 void CAddonInstaller::OnJobComplete(unsigned int jobID, bool success, CJob* job)
 {
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
   CSingleLock lock(m_critSection);
   JobMap::iterator i = find_if(m_downloadJobs.begin(), m_downloadJobs.end(), bind2nd(find_map(), jobID));
   if (i != m_downloadJobs.end())
@@ -89,11 +92,13 @@ void CAddonInstaller::OnJobComplete(unsigned int jobID, bool success, CJob* job)
   PrunePackageCache();
 
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
-  g_windowManager.SendThreadMessage(msg);
+  PostGUIMessage(msg);
 }
 
 void CAddonInstaller::OnJobProgress(unsigned int jobID, unsigned int progress, unsigned int total, const CJob *job)
 {
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
   CSingleLock lock(m_critSection);
   JobMap::iterator i = find_if(m_downloadJobs.begin(), m_downloadJobs.end(), bind2nd(find_map(), jobID));
   if (i != m_downloadJobs.end())
@@ -103,7 +108,7 @@ void CAddonInstaller::OnJobProgress(unsigned int jobID, unsigned int progress, u
     CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM);
     msg.SetStringParam(i->first);
     lock.Leave();
-    g_windowManager.SendThreadMessage(msg);
+    PostGUIMessage(msg);
   }
 }
 

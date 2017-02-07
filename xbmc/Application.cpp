@@ -65,6 +65,7 @@
 #include "messaging/ThreadMessage.h"
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogHelper.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 #include "SectionLoader.h"
 #include "cores/DllLoader/DllLoaderContainer.h"
 #include "GUIUserMessages.h"
@@ -1076,6 +1077,8 @@ void CApplication::CreateUserDirs() const
 
 bool CApplication::Initialize()
 {
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
 #if defined(HAS_DVD_DRIVE) && !defined(TARGET_WINDOWS) // somehow this throws an "unresolved external symbol" on win32
   // turn off cdio logging
   cdio_loglevel_default = CDIO_LOG_ERROR;
@@ -1273,8 +1276,7 @@ bool CApplication::Initialize()
   // if the user interfaces has been fully initialized let everyone know
   if (uiInitializationFinished)
   {
-    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UI_READY);
-    g_windowManager.SendThreadMessage(msg);
+    PostGUIMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UI_READY);
   }
 
   return true;
@@ -1352,6 +1354,8 @@ void CApplication::StopServices()
 
 void CApplication::OnSettingChanged(const CSetting *setting)
 {
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
   if (setting == NULL)
     return;
 
@@ -1421,8 +1425,7 @@ void CApplication::OnSettingChanged(const CSetting *setting)
   }
   else if (settingId == CSettings::SETTING_LOOKANDFEEL_SKINZOOM)
   {
-    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_WINDOW_RESIZE);
-    g_windowManager.SendThreadMessage(msg);
+    PostGUIMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_WINDOW_RESIZE);
   }
   else if (StringUtils::StartsWithNoCase(settingId, "audiooutput."))
   {
@@ -1554,13 +1557,14 @@ bool CApplication::OnSettingsSaving() const
 
 void CApplication::ReloadSkin(bool confirm/*=false*/)
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
   if (!g_SkinInfo || m_bInitializing)
     return; // Don't allow reload before skin is loaded by system
 
   std::string oldSkin = g_SkinInfo->ID();
 
   CGUIMessage msg(GUI_MSG_LOAD_SKIN, -1, g_windowManager.GetActiveWindow());
-  g_windowManager.SendMessage(msg);
+  SendGUIMessage(msg);
 
   std::string newSkin = m_ServiceManager->GetSettings().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN);
   if (LoadSkin(newSkin))
@@ -1996,6 +2000,7 @@ bool CApplication::OnAppCommand(const CAction &action)
 
 bool CApplication::OnAction(const CAction &action)
 {
+  using KODI::MESSAGING::HELPERS::SendGUIMessage;
   // special case for switching between GUI & fullscreen mode.
   if (action.GetID() == ACTION_SHOW_GUI)
   { // Switch to fullscreen mode if we can
@@ -2115,7 +2120,7 @@ bool CApplication::OnAction(const CAction &action)
         }
         // send a message to all windows to tell them to update the fileitem (eg playlistplayer, media windows)
         CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, m_itemCurrentFile);
-        g_windowManager.SendMessage(msg);
+        SendGUIMessage(msg);
       }
     }
     return true;
@@ -2148,7 +2153,7 @@ bool CApplication::OnAction(const CAction &action)
         }
         // send a message to all windows to tell them to update the fileitem (eg playlistplayer, media windows)
         CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, m_itemCurrentFile);
-        g_windowManager.SendMessage(msg);
+        SendGUIMessage(msg);
       }
     }
     return true;
@@ -2339,7 +2344,7 @@ bool CApplication::OnAction(const CAction &action)
     if (g_windowManager.GetActiveWindow() == WINDOW_SETTINGS_SYSTEM)
     {
       CGUIMessage msg(GUI_MSG_WINDOW_INIT, 0,0,WINDOW_INVALID,g_windowManager.GetActiveWindow());
-      g_windowManager.SendMessage(msg);
+      SendGUIMessage(msg);
     }
     return true;
   }
@@ -3423,7 +3428,7 @@ PlayBackRet CApplication::PlayFile(CFileItem item, const std::string& player, bo
     // pushed some delay message into the threadmessage list, they are not
     // expected be processed after or during the new item playback starting.
     // so we clean up previous playing item's playback callback delay messages here.
-    int previousMsgsIgnoredByNewPlaying[] = {
+    std::vector<int> previousMsgsIgnoredByNewPlaying{
       GUI_MSG_PLAYBACK_STARTED,
       GUI_MSG_PLAYBACK_ENDED,
       GUI_MSG_PLAYBACK_STOPPED,
@@ -3431,10 +3436,9 @@ PlayBackRet CApplication::PlayFile(CFileItem item, const std::string& player, bo
       GUI_MSG_PLAYLISTPLAYER_STOPPED,
       GUI_MSG_PLAYLISTPLAYER_STARTED,
       GUI_MSG_PLAYLISTPLAYER_CHANGED,
-      GUI_MSG_QUEUE_NEXT_ITEM,
-      0
+      GUI_MSG_QUEUE_NEXT_ITEM
     };
-    int dMsgCount = g_windowManager.RemoveThreadMessageByMessageIds(&previousMsgsIgnoredByNewPlaying[0]);
+    int dMsgCount = CApplicationMessenger::GetInstance().RemoveThreadMessageByMessageIds(previousMsgsIgnoredByNewPlaying);
     if (dMsgCount > 0)
       CLog::LogF(LOGDEBUG,"Ignored %d playback thread messages", dMsgCount);
   }
@@ -3565,6 +3569,8 @@ PlayBackRet CApplication::PlayFile(CFileItem item, const std::string& player, bo
 
 void CApplication::OnPlayBackEnded()
 {
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
   CSingleLock lock(m_playStateMutex);
   CLog::LogF(LOGDEBUG,"play state was %d, starting %d", m_ePlayState, m_bPlaybackStarting);
   m_ePlayState = PLAY_STATE_ENDED;
@@ -3586,12 +3592,13 @@ void CApplication::OnPlayBackEnded()
   data["end"] = true;
   CAnnouncementManager::GetInstance().Announce(Player, "xbmc", "OnStop", m_itemCurrentFile, data);
 
-  CGUIMessage msg(GUI_MSG_PLAYBACK_ENDED, 0, 0);
-  g_windowManager.SendThreadMessage(msg);
+  PostGUIMessage(GUI_MSG_PLAYBACK_ENDED, 0, 0);
 }
 
 void CApplication::OnPlayBackStarted()
 {
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
   CSingleLock lock(m_playStateMutex);
   CLog::LogF(LOGDEBUG,"play state was %d, starting %d", m_ePlayState, m_bPlaybackStarting);
   m_ePlayState = PLAY_STATE_PLAYING;
@@ -3610,12 +3617,13 @@ void CApplication::OnPlayBackStarted()
     CDarwinUtils::EnableOSScreenSaver(false);
 #endif
 
-  CGUIMessage msg(GUI_MSG_PLAYBACK_STARTED, 0, 0);
-  g_windowManager.SendThreadMessage(msg);
+  PostGUIMessage(GUI_MSG_PLAYBACK_STARTED, 0, 0);
 }
 
 void CApplication::OnQueueNextItem()
 {
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
   CSingleLock lock(m_playStateMutex);
   CLog::LogF(LOGDEBUG,"play state was %d, starting %d", m_ePlayState, m_bPlaybackStarting);
   if(m_bPlaybackStarting)
@@ -3626,12 +3634,13 @@ void CApplication::OnQueueNextItem()
   g_pythonParser.OnQueueNextItem(); // currently unimplemented
 #endif
 
-  CGUIMessage msg(GUI_MSG_QUEUE_NEXT_ITEM, 0, 0);
-  g_windowManager.SendThreadMessage(msg);
+  PostGUIMessage(GUI_MSG_QUEUE_NEXT_ITEM, 0, 0);
 }
 
 void CApplication::OnPlayBackStopped()
 {
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
   CSingleLock lock(m_playStateMutex);
   CLog::LogF(LOGDEBUG, "play state was %d, starting %d", m_ePlayState, m_bPlaybackStarting);
   m_ePlayState = PLAY_STATE_STOPPED;
@@ -3653,8 +3662,7 @@ void CApplication::OnPlayBackStopped()
   data["end"] = false;
   CAnnouncementManager::GetInstance().Announce(Player, "xbmc", "OnStop", m_itemCurrentFile, data);
 
-  CGUIMessage msg( GUI_MSG_PLAYBACK_STOPPED, 0, 0 );
-  g_windowManager.SendThreadMessage(msg);
+  PostGUIMessage(GUI_MSG_PLAYBACK_STOPPED, 0, 0);
 }
 
 void CApplication::OnPlayBackPaused()
@@ -4151,6 +4159,8 @@ bool CApplication::IsIdleShutdownInhibited() const
 
 bool CApplication::OnMessage(CGUIMessage& message)
 {
+  using namespace KODI::MESSAGING::HELPERS;
+
   switch ( message.GetMessage() )
   {
   case GUI_MSG_NOTIFY_ALL:
@@ -4162,7 +4172,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
         if ( nRemoved > 0 )
         {
           CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0 );
-          g_windowManager.SendMessage( msg );
+          SendGUIMessage( msg );
         }
         // stop the file if it's on dvd (will set the resume point etc)
         if (m_itemCurrentFile->IsOnDVD())
@@ -4217,7 +4227,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
         int currentSong = g_playlistPlayer.GetCurrentSong();
         int param = ((currentSong & 0xffff) << 16) | (m_nextPlaylistItem & 0xffff);
         CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_CHANGED, 0, 0, g_playlistPlayer.GetCurrentPlaylist(), param, item);
-        g_windowManager.SendThreadMessage(msg);
+        PostGUIMessage(msg);
         g_playlistPlayer.SetCurrentSong(m_nextPlaylistItem);
         m_itemCurrentFile.reset(new CFileItem(*item));
       }
@@ -4461,10 +4471,6 @@ void CApplication::Process()
 
   // dispatch the messages generated by python or other threads to the current window
   g_windowManager.DispatchThreadMessages();
-
-  // process messages which have to be send to the gui
-  // (this can only be done after g_windowManager.Render())
-  CApplicationMessenger::GetInstance().ProcessWindowMessages();
 
   if (m_autoExecScriptExecuted)
   {

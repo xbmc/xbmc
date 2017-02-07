@@ -137,9 +137,6 @@
 #define TMSG_CALLBACK                     800
 
 
-
-class CGUIMessage;
-
 namespace KODI
 {
 namespace MESSAGING
@@ -385,20 +382,15 @@ public:
    */
   void ProcessWindowMessages();
 
-  /*! \brief Send a GUIMessage, optionally waiting before it's processed to return.
-   * This is kept for backward compat and is just a convenience wrapper for for SendMsg and PostMsg
-   * specifically for UI messages
-   * \param msg the GUIMessage to send.
-   * \param windowID optional window to send the message to (defaults to no specified window).
-   * \param waitResult whether to wait for the result (defaults to false).
-   */
-  void SendGUIMessage(const CGUIMessage &msg, int windowID = WINDOW_INVALID, bool waitResult=false);
-
   /*!
    * \brief This should be called any class implementing \sa IMessageTarget before it
    * can receive any messages
    */
   void RegisterReceiver(IMessageTarget* target);
+
+  // method to removed queued messages with message id in the requested message id list.
+  // pMessageIDList: point to first integer of a 0 ends integer array.
+  int RemoveThreadMessageByMessageIds(std::vector<int>& pMessageIDList);
 
 private:
   // private construction, and no assignments; use the provided singleton methods
@@ -410,9 +402,9 @@ private:
   int SendMsg(ThreadMessage&& msg, bool wait);
   void ProcessMessage(ThreadMessage *pMsg);
 
-  std::queue<ThreadMessage*> m_vecMessages; /*!< queue for regular messages */
-  std::queue<ThreadMessage*> m_vecWindowMessages; /*!< queue for UI messages */
-  std::map<int, IMessageTarget*> m_mapTargets; /*!< a map of registered receivers indexed on the message mask*/
+  std::deque<ThreadMessage*> m_vecMessages;
+  std::deque<ThreadMessage*> m_vecWindowMessages;
+  std::map<int, IMessageTarget*> m_mapTargets;
   CCriticalSection m_critSection;
 };
 }

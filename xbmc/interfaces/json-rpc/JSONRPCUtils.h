@@ -24,6 +24,7 @@
 #include "FileItem.h"
 #include "GUIUserMessages.h"
 #include "guilib/GUIWindowManager.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 
 class CVariant;
 
@@ -168,14 +169,17 @@ namespace JSONRPC
   public:
     static inline void NotifyItemUpdated()
     {
-      CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE, g_windowManager.GetActiveWindow());
-      g_windowManager.SendThreadMessage(message);
+      using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
+      PostGUIMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE, g_windowManager.GetActiveWindow());
     }
     static inline void NotifyItemUpdated(const CVideoInfoTag &info)
     {
+      using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
       CFileItemPtr msgItem(new CFileItem(info));
       CGUIMessage message(GUI_MSG_NOTIFY_ALL, g_windowManager.GetActiveWindow(), 0, GUI_MSG_UPDATE_ITEM, 0, msgItem);
-      g_windowManager.SendThreadMessage(message);
+      PostGUIMessage(message);
     }
   };
 }

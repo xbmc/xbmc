@@ -25,6 +25,7 @@
 
 #include "Application.h"
 #include "guilib/GraphicContext.h"
+#include "guilib/GUIMessage.h"
 #include "threads/SingleLock.h"
 
 namespace KODI
@@ -75,7 +76,7 @@ void CApplicationMessenger::Cleanup()
       pMsg->waitEvent->Set();
 
     delete pMsg;
-    m_vecMessages.pop();
+    m_vecMessages.pop_front();
   }
 
   while (!m_vecWindowMessages.empty())
@@ -86,7 +87,7 @@ void CApplicationMessenger::Cleanup()
       pMsg->waitEvent->Set();
 
     delete pMsg;
-    m_vecWindowMessages.pop();
+    m_vecWindowMessages.pop_front();
   }
 }
 
@@ -125,9 +126,9 @@ int CApplicationMessenger::SendMsg(ThreadMessage&& message, bool wait)
   CSingleLock lock (m_critSection);
 
   if (msg->dwMessage == TMSG_GUI_MESSAGE)
-    m_vecWindowMessages.push(msg);
+    m_vecWindowMessages.push_back(msg);
   else
-    m_vecMessages.push(msg);
+    m_vecMessages.push_back(msg);
   lock.Leave();  // this releases the lock on the vec of messages and
                  //   allows the ProcessMessage to execute and therefore
                  //   delete the message itself. Therefore any access
@@ -194,7 +195,7 @@ void CApplicationMessenger::ProcessMessages()
   {
     ThreadMessage* pMsg = m_vecMessages.front();
     //first remove the message from the queue, else the message could be processed more then once
-    m_vecMessages.pop();
+    m_vecMessages.pop_front();
 
     //Leave here as the message might make another
     //thread call processmessages or sendmessage
@@ -241,7 +242,7 @@ void CApplicationMessenger::ProcessWindowMessages()
   {
     ThreadMessage* pMsg = m_vecWindowMessages.front();
     //first remove the message from the queue, else the message could be processed more then once
-    m_vecWindowMessages.pop();
+    m_vecWindowMessages.pop_front();
 
     // leave here in case we make more thread messages from this one
 
@@ -257,19 +258,40 @@ void CApplicationMessenger::ProcessWindowMessages()
   }
 }
 
-void CApplicationMessenger::SendGUIMessage(const CGUIMessage &message, int windowID, bool waitResult)
-{
-  ThreadMessage tMsg(TMSG_GUI_MESSAGE);
-  tMsg.param1 = windowID == WINDOW_INVALID ? 0 : windowID;
-  tMsg.lpVoid = new CGUIMessage(message);
-  SendMsg(std::move(tMsg), waitResult);
-}
-
 void CApplicationMessenger::RegisterReceiver(IMessageTarget* target)
 {
   CSingleLock lock(m_critSection);
   m_mapTargets.insert(std::make_pair(target->GetMessageMask(), target));
 }
 
+int CApplicationMessenger::RemoveThreadMessageByMessageIds(std::vector<int>& pMessageIDList)
+{
+  CSingleLock lock(m_critSection);
+  int removedMsgCount = 0;
+  for (auto it = m_vecWindowMessages.begin(); it != m_vecWindowMessages.end();)
+  {
+    auto msg = *it;
+    auto guiMsg = static_cast<CGUIMessage*>((*it)->lpVoid);
+    auto found = false;
+    for (auto id : pMessageIDList)
+    {
+      if (guiMsg->GetMessage() == id)
+      {
+        found = true;
+        break;
+      }
+    }
+    if (found)
+    {
+      it = m_vecWindowMessages.erase(it);
+      delete guiMsg;
+      delete msg;
+      ++removedMsgCount;
+    }
+    else
+      ++it;
+  }
+  return removedMsgCount;
+}
 }
 }

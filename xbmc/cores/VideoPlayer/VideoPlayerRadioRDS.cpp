@@ -53,6 +53,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "interfaces/AnnouncementManager.h"
 #include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 #include "music/tags/MusicInfoTag.h"
 #include "pictures/Picture.h"
 #include "pvr/channels/PVRChannel.h"
@@ -567,6 +568,8 @@ void CDVDRadioRDSData::CloseStream(bool bWaitForBuffers)
 
 void CDVDRadioRDSData::ResetRDSCache()
 {
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
   CSingleLock lock(m_critSection);
 
   m_currentFileUpdate = false;
@@ -633,8 +636,7 @@ void CDVDRadioRDSData::ResetRDSCache()
   g_infoManager.SetCurrentItem(itemptr);
 
   // send a message to all windows to tell them to update the radiotext
-  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_RADIOTEXT);
-  g_windowManager.SendThreadMessage(msg);
+  PostGUIMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_RADIOTEXT);
 }
 
 void CDVDRadioRDSData::Process()

@@ -25,6 +25,7 @@
 #include "XBDateTime.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
+#include "messaging/helpers/GUIMessageHelper.h"
 #include "music/MusicDatabase.h"
 #include "music/MusicDbUrl.h"
 #include "playlists/SmartPlayList.h"
@@ -211,6 +212,8 @@ void CGUIDialogMediaFilter::OnInitWindow()
 
 void CGUIDialogMediaFilter::OnSettingChanged(const CSetting *setting)
 {
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
   CGUIDialogSettingsManualBase::OnSettingChanged(setting);
 
   std::map<std::string, Filter>::iterator it = m_filters.find(setting->GetId());
@@ -333,7 +336,7 @@ void CGUIDialogMediaFilter::OnSettingChanged(const CSetting *setting)
   }
 
   CGUIMessage msg(GUI_MSG_REFRESH_LIST, GetID(), 0);
-  g_windowManager.SendThreadMessage(msg, WINDOW_DIALOG_MEDIA_FILTER);
+  PostGUIMessage(msg, WINDOW_DIALOG_MEDIA_FILTER);
 }
 
 void CGUIDialogMediaFilter::SetupView()
@@ -601,11 +604,12 @@ void CGUIDialogMediaFilter::UpdateControls()
 
 void CGUIDialogMediaFilter::TriggerFilter() const
 {
+  using KODI::MESSAGING::HELPERS::PostGUIMessage;
+
   if (m_filter == NULL)
     return;
 
-  CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_FILTER_ITEMS, 10); // 10 for advanced
-  g_windowManager.SendThreadMessage(message);
+  PostGUIMessage(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_FILTER_ITEMS, 10); // 10 for advanced
 }
 
 void CGUIDialogMediaFilter::Reset(bool filtersOnly /* = false */)
