@@ -14,13 +14,10 @@ if(CMAKE_SYSTEM_NAME MATCHES "Linux")
      string(COMPARE EQUAL "sse2" "${_SSE_THERE}" _SSE2_TRUE)
      CHECK_CXX_ACCEPTS_FLAG("-msse2" _SSE2_OK)
 
-     # /proc/cpuinfo apparently omits sse3 :(
-     string(REGEX REPLACE "^.*[^s](sse3).*$" "\\1" _SSE_THERE ${CPUINFO})
-     string(COMPARE EQUAL "sse3" "${_SSE_THERE}" _SSE3_TRUE)
-     if(NOT _SSE3_TRUE)
-        string(REGEX REPLACE "^.*(T2300).*$" "\\1" _SSE_THERE ${CPUINFO})
-        string(COMPARE EQUAL "T2300" "${_SSE_THERE}" _SSE3_TRUE)
-     endif()
+     # SSE3 is also known as the Prescott New Instructions (PNI)
+     # it's labeled as pni in /proc/cpuinfo
+     string(REGEX REPLACE "^.*(pni).*$" "\\1" _SSE_THERE ${CPUINFO})
+     string(COMPARE EQUAL "pni" "${_SSE_THERE}" _SSE3_TRUE)
      CHECK_CXX_ACCEPTS_FLAG("-msse3" _SSE3_OK)
 
      string(REGEX REPLACE "^.*(ssse3).*$" "\\1" _SSE_THERE ${CPUINFO})
