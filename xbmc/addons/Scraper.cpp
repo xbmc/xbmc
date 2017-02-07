@@ -496,6 +496,20 @@ CScraperUrl CScraper::ResolveIDToUrl(const std::string& externalID)
 {
   CScraperUrl scurlRet;
 
+  if (m_isPython)
+  {
+    std::stringstream str;
+    str << "plugin://" << ID()
+        << "?action=resolveid&key=" << CURL::Encode(externalID);
+
+    CFileItem item("resolve me", false);
+
+    if (XFILE::CPluginDirectory::GetPluginResult(str.str(), item))
+      scurlRet.ParseString(item.GetPath());
+
+    return scurlRet;
+  }
+
   // scraper function takes an external ID, returns XML (see below)
   std::vector<std::string> vcsIn;
   vcsIn.push_back(externalID);
