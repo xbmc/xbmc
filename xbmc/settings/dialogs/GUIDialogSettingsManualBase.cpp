@@ -237,8 +237,8 @@ CSettingString* CGUIDialogSettingsManualBase::AddPasswordMd5(CSettingGroup *grou
   return setting;
 }
 
-CSettingAction* CGUIDialogSettingsManualBase::AddButton(CSettingGroup *group, const std::string &id, int label, int level, bool delayed /* = false */,
-                                                        bool visible /* = true */, int help /* = -1 */)
+CSettingAction* CGUIDialogSettingsManualBase::AddButton(CSettingGroup *group, const std::string &id, int label, int level, const std::string& data /* = "" */,
+                                                        bool delayed /* = false */, bool visible /* = true */, int help /* = -1 */)
 {
   if (group == NULL || id.empty() || label < 0 ||
       GetSetting(id) != NULL)
@@ -249,6 +249,7 @@ CSettingAction* CGUIDialogSettingsManualBase::AddButton(CSettingGroup *group, co
     return NULL;
 
   setting->SetControl(GetButtonControl("action", delayed));
+  setting->SetData(data);
   setSettingDetails(setting, level, visible, help);
 
   group->AddSetting(setting);

@@ -75,7 +75,7 @@ protected:
   CSettingString* AddPasswordMd5(CSettingGroup *group, const std::string &id, int label, int level, std::string value, bool allowEmpty = false,
                                  int heading = -1, bool delayed = false, bool visible = true, int help = -1);
   // button controls
-  CSettingAction* AddButton(CSettingGroup *group, const std::string &id, int label, int level, bool delayed = false, bool visible = true, int help = -1);
+  CSettingAction* AddButton(CSettingGroup *group, const std::string &id, int label, int level, const std::string& data = "", bool delayed = false, bool visible = true, int help = -1);
   CSettingString* AddInfoLabelButton(CSettingGroup *group, const std::string &id, int label, int level, std::string info, bool visible = true, int help = -1);
   CSettingAddon* AddAddon(CSettingGroup *group, const std::string &id, int label, int level, std::string value, ADDON::TYPE addonType,
                           bool allowEmpty = false, int heading = -1, bool hideValue = false, bool showInstalledAddons = true, bool showInstallableAddons = false,

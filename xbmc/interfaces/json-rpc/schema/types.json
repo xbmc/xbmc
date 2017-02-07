@@ -1819,6 +1819,9 @@
   },
   "Setting.Details.SettingAction": {
     "extends": "Setting.Details.SettingBase",
+    "properties": {
+      "data": { "type": "string", "required": true }
+    },
     "additionalProperties": false
   },
   "Setting.Details.SettingList": {

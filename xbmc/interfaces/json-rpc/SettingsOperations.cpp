@@ -639,6 +639,8 @@ bool CSettingsOperations::SerializeSettingAction(const CSettingAction* setting, 
   if (setting == NULL)
     return false;
 
+  obj["data"] = setting->GetData();
+
   return true;
 }
 

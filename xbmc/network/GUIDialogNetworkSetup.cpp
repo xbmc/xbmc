@@ -211,7 +211,7 @@ void CGUIDialogNetworkSetup::InitializeSettings()
 
   AddSpinner(group, SETTING_PROTOCOL, 1008, 0, m_protocol, labels);
   AddEdit(group, SETTING_SERVER_ADDRESS, 1010, 0, m_server, true);
-  CSettingAction *subsetting = AddButton(group, SETTING_SERVER_BROWSE, 1024, 0, false);
+  CSettingAction *subsetting = AddButton(group, SETTING_SERVER_BROWSE, 1024, 0, "", false);
   if (subsetting != NULL)
     subsetting->SetParent(SETTING_SERVER_ADDRESS);
 
