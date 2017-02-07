@@ -1459,15 +1459,13 @@ void CApplication::OnSettingAction(const CSetting *setting)
     ActivateScreenSaver(true);
   else if (settingId == CSettings::SETTING_SCREENSAVER_SETTINGS)
   {
-    AddonPtr addon;
-    if (CAddonMgr::GetInstance().GetAddon(m_ServiceManager->GetSettings().GetString(CSettings::SETTING_SCREENSAVER_MODE), addon, ADDON_SCREENSAVER))
-      CGUIDialogAddonSettings::ShowAndGetInput(addon);
+    AddonInfoPtr addon = CAddonMgr::GetInstance().GetInstalledAddonInfo(m_ServiceManager->GetSettings().GetString(CSettings::SETTING_SCREENSAVER_MODE), ADDON_SCREENSAVER);
+    CGUIDialogAddonSettings::ShowAndGetInput(addon);
   }
   else if (settingId == CSettings::SETTING_AUDIOCDS_SETTINGS)
   {
-    AddonPtr addon;
-    if (CAddonMgr::GetInstance().GetAddon(m_ServiceManager->GetSettings().GetString(CSettings::SETTING_AUDIOCDS_ENCODER), addon, ADDON_AUDIOENCODER))
-      CGUIDialogAddonSettings::ShowAndGetInput(addon);
+    AddonInfoPtr addon = CAddonMgr::GetInstance().GetInstalledAddonInfo(m_ServiceManager->GetSettings().GetString(CSettings::SETTING_AUDIOCDS_ENCODER), ADDON_AUDIOENCODER);
+    CGUIDialogAddonSettings::ShowAndGetInput(addon);
   }
   else if (settingId == CSettings::SETTING_VIDEOSCREEN_GUICALIBRATION)
     g_windowManager.ActivateWindow(WINDOW_SCREEN_CALIBRATION);
@@ -3017,8 +3015,8 @@ bool CApplication::PlayMedia(const CFileItem& item, const std::string &player, i
   CURL path(item.GetPath());
   if (path.GetProtocol() == "game")
   {
-    AddonPtr addon;
-    if (CAddonMgr::GetInstance().GetAddon(path.GetHostName(), addon, ADDON_GAMEDLL))
+    AddonInfoPtr addon = CAddonMgr::GetInstance().GetInstalledAddonInfo(path.GetHostName(), ADDON_GAMEDLL);
+    if (addon)
     {
       CFileItem addonItem(addon);
       return PlayFile(addonItem, player, false) == PLAYBACK_OK;
@@ -3978,7 +3976,7 @@ bool CApplication::WakeUpScreenSaver(bool bPowerOffKeyPressed /* = false */)
         * makes sure the addon gets terminated after we've moved out of the screensaver window.
         * If we don't do this, we may simply lockup.
         */
-        g_alarmClock.Start(SCRIPT_ALARM, SCRIPT_TIMEOUT, "StopScript(" + m_pythonScreenSaver->LibPath() + ")", true, false);
+        g_alarmClock.Start(SCRIPT_ALARM, SCRIPT_TIMEOUT, "StopScript(" + m_pythonScreenSaver->Type(ADDON_SCREENSAVER)->LibPath() + ")", true, false);
         m_pythonScreenSaver.reset();
       }
       if (g_windowManager.GetActiveWindow() == WINDOW_SCREENSAVER)
@@ -4084,17 +4082,18 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
   }
   else if (m_screensaverIdInUse.empty())
     return;
-  else if (CAddonMgr::GetInstance().GetAddon(m_screensaverIdInUse, m_pythonScreenSaver))
+  else if (CAddonMgr::GetInstance().GetAddon(m_screensaverIdInUse, m_pythonScreenSaver, ADDON_SCREENSAVER))
   {
-    if (CScriptInvocationManager::GetInstance().HasLanguageInvoker(m_pythonScreenSaver->LibPath()))
+    std::string libPath = m_pythonScreenSaver->Type(ADDON_SCREENSAVER)->LibPath();
+    if (CScriptInvocationManager::GetInstance().HasLanguageInvoker(libPath))
     {
       CLog::Log(LOGDEBUG, "using python screensaver add-on %s", m_screensaverIdInUse.c_str());
 
       // Don't allow a previously-scheduled alarm to kill our new screensaver
       g_alarmClock.Stop(SCRIPT_ALARM, true);
 
-      if (!CScriptInvocationManager::GetInstance().Stop(m_pythonScreenSaver->LibPath()))
-        CScriptInvocationManager::GetInstance().ExecuteAsync(m_pythonScreenSaver->LibPath(), AddonPtr(new CAddonDll(dynamic_cast<ADDON::CAddonDll&>(*m_pythonScreenSaver))));
+      if (!CScriptInvocationManager::GetInstance().Stop(libPath))
+        CScriptInvocationManager::GetInstance().ExecuteAsync(libPath, AddonPtr(new CAddonDll(dynamic_cast<ADDON::CAddonDll&>(*m_pythonScreenSaver))));
       return;
     }
     m_pythonScreenSaver.reset();

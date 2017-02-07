@@ -68,7 +68,7 @@ bool CSettingAddon::Deserialize(const TiXmlNode *node, bool update /* = false */
     // get the addon type
     if (XMLUtils::GetString(constraints, "addontype", strAddonType) && !strAddonType.empty())
     {
-      m_addonType = ADDON::TranslateType(strAddonType);
+      m_addonType = ADDON::CAddonInfo::TranslateType(strAddonType);
       if (m_addonType != ADDON::ADDON_UNKNOWN)
         ok = true;
     }

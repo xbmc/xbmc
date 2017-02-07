@@ -54,48 +54,33 @@ using namespace KODI::MESSAGING;
 
 using KODI::MESSAGING::HELPERS::DialogResponse;
 
-std::unique_ptr<CRepository> CRepository::FromExtension(AddonProps props, const cp_extension_t* ext)
+CRepository::CRepository(AddonInfoPtr addonInfo)
+  : CAddon(addonInfo)
 {
-  DirList dirs;
-  AddonVersion version("0.0.0");
-  AddonPtr addonver;
-  if (CAddonMgr::GetInstance().GetAddon("xbmc.addon", addonver))
-    version = addonver->Version();
-  for (size_t i = 0; i < ext->configuration->num_children; ++i)
+  for (auto element : Type(ADDON_REPOSITORY)->GetElements("dir"))
   {
-    if(ext->configuration->children[i].name &&
-       strcmp(ext->configuration->children[i].name, "dir") == 0)
+    AddonVersion min_version(element.second.GetValue("@minversion").asString());
+    if (min_version <= CAddonMgr::GetInstance().GetInstalledAddonInfo("xbmc.addon")->Version())
     {
-      AddonVersion min_version(CAddonMgr::GetInstance().GetExtValue(&ext->configuration->children[i], "@minversion"));
-      if (min_version <= version)
-      {
-        DirInfo dir;
-        dir.version = min_version;
-        dir.checksum = CAddonMgr::GetInstance().GetExtValue(&ext->configuration->children[i], "checksum");
-        dir.info = CAddonMgr::GetInstance().GetExtValue(&ext->configuration->children[i], "info");
-        dir.datadir = CAddonMgr::GetInstance().GetExtValue(&ext->configuration->children[i], "datadir");
-        dir.hashes = CAddonMgr::GetInstance().GetExtValue(&ext->configuration->children[i], "hashes") == "true";
-        dirs.push_back(std::move(dir));
-      }
+      DirInfo dir;
+      dir.version = min_version;
+      dir.checksum = element.second.GetValue("checksum").asString();
+      dir.info = element.second.GetValue("info").asString();
+      dir.datadir = element.second.GetValue("datadir").asString();
+      dir.hashes = element.second.GetValue("hashes").asBoolean();
+      m_dirs.push_back(std::move(dir));
     }
   }
-  if (!CAddonMgr::GetInstance().GetExtValue(ext->configuration, "info").empty())
+  if (!Type(ADDON_REPOSITORY)->GetValue("info").empty())
   {
     DirInfo info;
-    info.checksum = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "checksum");
-    info.info = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "info");
-    info.datadir = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "datadir");
-    info.hashes = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "hashes") == "true";
-    dirs.push_back(std::move(info));
+    info.checksum = Type(ADDON_REPOSITORY)->GetValue("checksum").asString();
+    info.info = Type(ADDON_REPOSITORY)->GetValue("info").asString();
+    info.datadir = Type(ADDON_REPOSITORY)->GetValue("datadir").asString();
+    info.hashes = Type(ADDON_REPOSITORY)->GetValue("hashes").asBoolean();
+    m_dirs.push_back(std::move(info));
   }
-  return std::unique_ptr<CRepository>(new CRepository(std::move(props), std::move(dirs)));
 }
-
-CRepository::CRepository(AddonProps props, DirList dirs)
-    : CAddon(std::move(props)), m_dirs(std::move(dirs))
-{
-}
-
 
 bool CRepository::GetAddonHash(const std::string& addonPath, std::string& checksum) const
 {
@@ -143,7 +128,7 @@ bool CRepository::FetchChecksum(const std::string& url, std::string& checksum) n
   return true;
 }
 
-bool CRepository::FetchIndex(const DirInfo& repo, VECADDONS& addons) noexcept
+bool CRepository::FetchIndex(const DirInfo& repo, AddonInfos& addons) noexcept
 {
   XFILE::CCurlFile http;
   http.SetAcceptEncoding("gzip");
@@ -168,11 +153,39 @@ bool CRepository::FetchIndex(const DirInfo& repo, VECADDONS& addons) noexcept
     response = std::move(buffer);
   }
 
-  return CAddonMgr::GetInstance().AddonsFromRepoXML(repo, response, addons);
+  return AddonsFromRepoXML(repo, response, addons);
+}
+
+bool CRepository::AddonsFromRepoXML(const CRepository::DirInfo& repo, const std::string& xml, AddonInfos& addonInfos)
+{
+  CXBMCTinyXML doc;
+  if (!doc.Parse(xml))
+  {
+    CLog::Log(LOGERROR, "CRepository: Failed to parse addons.xml.");
+    return false;
+  }
+
+  if (doc.RootElement() == nullptr || doc.RootElement()->ValueStr() != "addons")
+  {
+    CLog::Log(LOGERROR, "CRepository: Failed to parse addons.xml. Malformed.");
+    return false;
+  }
+
+  auto element = doc.RootElement()->FirstChildElement("addon");
+  while (element)
+  {
+    AddonInfoPtr props = std::make_shared<CAddonInfo>(element, repo.datadir);
+    if (props->IsUsable())
+      addonInfos.push_back(std::move(props));
+
+    element = element->NextSiblingElement("addon");
+  }
+
+  return true;
 }
 
 CRepository::FetchStatus CRepository::FetchIfChanged(const std::string& oldChecksum,
-    std::string& checksum, VECADDONS& addons) const
+    std::string& checksum, AddonInfos& addons) const
 {
   checksum = "";
   for (const auto& dir : m_dirs)
@@ -194,7 +207,7 @@ CRepository::FetchStatus CRepository::FetchIfChanged(const std::string& oldCheck
 
   for (const auto& dir : m_dirs)
   {
-    VECADDONS tmp;
+    AddonInfos tmp;
     if (!FetchIndex(dir, tmp))
       return STATUS_ERROR;
     addons.insert(addons.end(), tmp.begin(), tmp.end());
@@ -215,7 +228,7 @@ bool CRepositoryUpdateJob::DoWork()
     oldChecksum = "";
 
   std::string newChecksum;
-  VECADDONS addons;
+  AddonInfos addons;
   auto status = m_repo->FetchIfChanged(oldChecksum, newChecksum, addons);
 
   database.SetLastChecked(m_repo->ID(), m_repo->Version(),
@@ -240,8 +253,8 @@ bool CRepositoryUpdateJob::DoWork()
 
     for (const auto& addon : addons)
     {
-      AddonPtr oldAddon;
-      if (database.GetAddon(addon->ID(), oldAddon) && addon->Version() > oldAddon->Version())
+      AddonInfoPtr oldAddon;
+      if (database.GetAddonInfo(addon->ID(), oldAddon) && addon->Version() > oldAddon->Version())
       {
         if (!oldAddon->Icon().empty() || !oldAddon->FanArt().empty() || !oldAddon->Screenshots().empty())
           CLog::Log(LOGDEBUG, "CRepository: invalidating cached art for '%s'", addon->ID().c_str());
@@ -269,8 +282,8 @@ bool CRepositoryUpdateJob::DoWork()
       //We have a newer version locally
       continue;
 
-    AddonPtr oldAddon;
-    database.GetAddon(addon->ID(), oldAddon);
+    AddonInfoPtr oldAddon;
+    database.GetAddonInfo(addon->ID(), oldAddon);
 
     if (database.GetAddonVersion(addon->ID()).first > addon->Version())
       //Newer version in db (ie. in a different repo)

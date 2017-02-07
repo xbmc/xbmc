@@ -89,7 +89,7 @@ static int SetAddon(const std::vector<std::string>& params)
   std::vector<ADDON::TYPE> types;
   for (unsigned int i = 1 ; i < params.size() ; i++)
   {
-    ADDON::TYPE type = TranslateType(params[i]);
+    ADDON::TYPE type = CAddonInfo::TranslateType(params[i]);
     if (type != ADDON_UNKNOWN)
       types.push_back(type);
   }
@@ -233,11 +233,11 @@ static int SetFile(const std::vector<std::string>& params)
 
   // Note. can only browse one addon type from here
   // if browsing for addons, required param[1] is addontype string, with optional param[2]
-  // as contenttype string see IAddon.h & ADDON::TranslateXX
+  // as contenttype string see Addon.h & ADDON::TranslateXX
   std::string strMask = (params.size() > 1) ? params[1] : "";
   StringUtils::ToLower(strMask);
   ADDON::TYPE type;
-  if ((type = TranslateType(strMask)) != ADDON_UNKNOWN)
+  if ((type = CAddonInfo::TranslateType(strMask)) != ADDON_UNKNOWN)
   {
     CURL url;
     url.SetProtocol("addons");
@@ -251,7 +251,7 @@ static int SetFile(const std::vector<std::string>& params)
     if (type == ADDON_SCRIPT)
       strMask = ".py";
     std::string replace;
-    if (CGUIDialogFileBrowser::ShowAndGetFile(url.Get(), strMask, TranslateType(type, true), replace, true, true, true))
+    if (CGUIDialogFileBrowser::ShowAndGetFile(url.Get(), strMask, CAddonInfo::TranslateType(type, true), replace, true, true, true))
     {
       if (StringUtils::StartsWithNoCase(replace, "addons://"))
         CSkinSettings::GetInstance().SetString(string, URIUtils::GetFileName(replace));

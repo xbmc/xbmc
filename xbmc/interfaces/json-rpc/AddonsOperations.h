@@ -20,7 +20,7 @@
  */
 
 #include "JSONRPC.h"
-#include "addons/IAddon.h"
+#include "addons/Addon.h"
 
 class CAddonDatabase;
 class CVariant;
@@ -37,6 +37,6 @@ namespace JSONRPC
     static JSONRPC_STATUS ExecuteAddon(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
     
   private:
-    static void FillDetails(ADDON::AddonPtr addon, const CVariant& fields, CVariant &result, CAddonDatabase &addondb, bool append = false);
+    static void FillDetails(ADDON::AddonInfoPtr addon, const CVariant& fields, CVariant &result, CAddonDatabase &addondb, bool append = false);
   };
 }

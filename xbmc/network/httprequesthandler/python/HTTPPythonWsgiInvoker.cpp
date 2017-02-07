@@ -121,8 +121,8 @@ HTTPPythonRequest* CHTTPPythonWsgiInvoker::GetRequest()
 
 void CHTTPPythonWsgiInvoker::executeScript(void *fp, const std::string &script, void *module, void *moduleDict)
 {
-  if (m_request == NULL || m_addon == NULL || m_addon->Type() != ADDON::ADDON_WEB_INTERFACE ||
-      fp == NULL || script.empty() || module == NULL || moduleDict == NULL)
+  if (m_request == nullptr || m_addon == nullptr || !m_addon->IsType(ADDON::ADDON_WEB_INTERFACE) ||
+      fp == nullptr || script.empty() || module == nullptr || moduleDict == nullptr)
     return;
 
   ADDON::CWebinterface* webinterface = static_cast<ADDON::CWebinterface*>(m_addon.get());

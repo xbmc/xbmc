@@ -23,7 +23,6 @@
 #include "addons/Addon.h"
 #include "addons/ContextMenuAddon.h"
 #include "addons/ContextMenus.h"
-#include "addons/IAddon.h"
 #include "music/ContextMenus.h"
 #include "pvr/PVRContextMenus.h"
 #include "video/ContextMenus.h"
@@ -142,18 +141,21 @@ void CContextMenuManager::OnEvent(const ADDON::AddonEvent& event)
   }
   else if (auto enableEvent = dynamic_cast<const AddonEvents::Enabled*>(&event))
   {
-    AddonPtr addon;
-    if (m_addonMgr.GetAddon(enableEvent->id, addon, ADDON_CONTEXT_ITEM))
+    if (enableEvent->addonInfo->IsType(ADDON_CONTEXT_ITEM))
     {
-      CSingleLock lock(m_criticalSection);
-      auto items = std::static_pointer_cast<CContextMenuAddon>(addon)->GetItems();
-      for (auto& item : items)
+      AddonPtr addon;
+      if (m_addonMgr.GetAddon(enableEvent->addonInfo->ID(), addon, ADDON_CONTEXT_ITEM))
       {
-        auto it = std::find(m_addonItems.begin(), m_addonItems.end(), item);
-        if (it == m_addonItems.end())
-          m_addonItems.push_back(item);
+        CSingleLock lock(m_criticalSection);
+        auto items = std::static_pointer_cast<CContextMenuAddon>(addon)->GetItems();
+        for (auto& item : items)
+        {
+          auto it = std::find(m_addonItems.begin(), m_addonItems.end(), item);
+          if (it == m_addonItems.end())
+            m_addonItems.push_back(item);
+        }
+        CLog::Log(LOGDEBUG, "ContextMenuManager: loaded %s.", enableEvent->addonInfo->ID().c_str());
       }
-      CLog::Log(LOGDEBUG, "ContextMenuManager: loaded %s.", enableEvent->id.c_str());
     }
   }
 }

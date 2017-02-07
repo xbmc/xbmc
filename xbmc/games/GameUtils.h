@@ -21,7 +21,6 @@
 
 #include "GameTypes.h"
 #include "addons/Addon.h"
-#include "addons/IAddon.h"
 
 #include <set>
 #include <string>
@@ -64,7 +63,7 @@ namespace GAME
      *
      * \return true if the add-on can be launched, false otherwise
      */
-    static bool IsStandaloneGame(const ADDON::AddonPtr& addon);
+    static bool IsStandaloneGame(const ADDON::AddonInfoPtr& addon);
 
   private:
     static void GetGameClients(const CFileItem& file, GameClientVector& candidates, GameClientVector& installable, bool& bHasVfsGameClient);

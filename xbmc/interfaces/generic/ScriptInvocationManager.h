@@ -24,7 +24,7 @@
 #include <set>
 #include <vector>
 
-#include "addons/IAddon.h"
+#include "addons/Addon.h"
 #include "interfaces/generic/ILanguageInvoker.h"
 #include "threads/CriticalSection.h"
 

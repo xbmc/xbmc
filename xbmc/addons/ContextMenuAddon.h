@@ -27,25 +27,17 @@
 #include "Addon.h"
 #include "ContextMenuItem.h"
 
-typedef struct cp_cfg_element_t cp_cfg_element_t;
-
-
 namespace ADDON
 {
   class CContextMenuAddon : public CAddon
   {
   public:
-    static std::unique_ptr<CContextMenuAddon> FromExtension(AddonProps props, const cp_extension_t* ext);
-
-    explicit CContextMenuAddon(AddonProps props) : CAddon(std::move(props)) {}
-    CContextMenuAddon(AddonProps props, std::vector<CContextMenuItem> items);
+    CContextMenuAddon(AddonInfoPtr addonInfo);
 
     const std::vector<CContextMenuItem>& GetItems() const { return m_items; };
 
   private:
-    static void ParseMenu(const AddonProps& props, cp_cfg_element_t* elem, const std::string& parent,
-        int& anonGroupCount, std::vector<CContextMenuItem>& items);
-
+    void ParseMenu(const CAddonExtensions* elem, const std::string& parent, int& anonGroupCount);
     std::vector<CContextMenuItem> m_items;
   };
 }

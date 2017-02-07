@@ -1,5 +1,0 @@
-<?xml version="1.0"?>
-<plugin id="symuser" name="Symbol User">
-	<runtime library="libruntime" funcs="su_runtime"/>
-	<extension-point id="strings"/>
-</plugin>

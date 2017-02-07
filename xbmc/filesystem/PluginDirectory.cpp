@@ -25,7 +25,7 @@
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
 #include "addons/AddonInstaller.h"
-#include "addons/IAddon.h"
+#include "addons/Addon.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "threads/SingleLock.h"
 #include "guilib/GUIWindowManager.h"
@@ -116,12 +116,16 @@ bool CPluginDirectory::StartScript(const std::string& strPath, bool retrievingDi
 {
   CURL url(strPath);
 
-  // try the plugin type first, and if not found, try an unknown type
-  if (!CAddonMgr::GetInstance().GetAddon(url.GetHostName(), m_addon, ADDON_PLUGIN) &&
-      !CAddonMgr::GetInstance().GetAddon(url.GetHostName(), m_addon, ADDON_UNKNOWN) &&
-      !CAddonInstaller::GetInstance().InstallModal(url.GetHostName(), m_addon))
+  if (!CAddonMgr::GetInstance().IsAddonEnabled(url.GetHostName()) &&
+      !CAddonInstaller::GetInstance().InstallModal(url.GetHostName()))
   {
     CLog::Log(LOGERROR, "Unable to find plugin %s", url.GetHostName().c_str());
+    return false;
+  }
+
+  if (!CAddonMgr::GetInstance().GetAddon(url.GetHostName(), m_addon, ADDON_PLUGIN) )
+  {
+    CLog::Log(LOGERROR, "Unable to create plugin %s", url.GetHostName().c_str());
     return false;
   }
 
@@ -154,7 +158,7 @@ bool CPluginDirectory::StartScript(const std::string& strPath, bool retrievingDi
   // run the script
   CLog::Log(LOGDEBUG, "%s - calling plugin %s('%s','%s','%s')", __FUNCTION__, m_addon->Name().c_str(), argv[0].c_str(), argv[1].c_str(), argv[2].c_str());
   bool success = false;
-  std::string file = m_addon->LibPath();
+  std::string file = m_addon->Type(ADDON_PLUGIN)->LibPath();
   int id = CScriptInvocationManager::GetInstance().ExecuteAsync(file, m_addon, argv);
   if (id >= 0)
   { // wait for our script to finish
@@ -443,10 +447,16 @@ bool CPluginDirectory::RunScriptWithParams(const std::string& strPath)
   if (url.GetHostName().empty()) // called with no script - should never happen
     return false;
 
-  AddonPtr addon;
-  if (!CAddonMgr::GetInstance().GetAddon(url.GetHostName(), addon, ADDON_PLUGIN) && !CAddonInstaller::GetInstance().InstallModal(url.GetHostName(), addon))
+  if (!CAddonMgr::GetInstance().IsAddonEnabled(url.GetHostName()) && !CAddonInstaller::GetInstance().InstallModal(url.GetHostName()))
   {
     CLog::Log(LOGERROR, "Unable to find plugin %s", url.GetHostName().c_str());
+    return false;
+  }
+
+  AddonPtr addon;
+  if (!CAddonMgr::GetInstance().GetAddon(url.GetHostName(), addon, ADDON_PLUGIN) )
+  {
+    CLog::Log(LOGERROR, "Unable to create plugin %s", url.GetHostName().c_str());
     return false;
   }
 
@@ -466,7 +476,7 @@ bool CPluginDirectory::RunScriptWithParams(const std::string& strPath)
 
   // run the script
   CLog::Log(LOGDEBUG, "%s - calling plugin %s('%s','%s','%s')", __FUNCTION__, addon->Name().c_str(), argv[0].c_str(), argv[1].c_str(), argv[2].c_str());
-  if (CScriptInvocationManager::GetInstance().ExecuteAsync(addon->LibPath(), addon, argv) >= 0)
+  if (CScriptInvocationManager::GetInstance().ExecuteAsync(addon->Type(ADDON_PLUGIN)->LibPath(), addon, argv) >= 0)
     return true;
   else
     CLog::Log(LOGERROR, "Unable to run plugin %s", addon->Name().c_str());

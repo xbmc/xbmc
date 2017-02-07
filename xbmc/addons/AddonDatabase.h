@@ -25,7 +25,6 @@
 #include "addons/Addon.h"
 #include "dbwrappers/Database.h"
 #include "FileItem.h"
-#include "AddonBuilder.h"
 
 class CAddonDatabase : public CDatabase
 {
@@ -35,13 +34,13 @@ public:
   virtual bool Open();
 
   /*! @deprecated: use CAddonMgr::FindInstallableById */
-  bool GetAddon(const std::string& addonID, ADDON::AddonPtr& addon);
+  bool GetAddonInfo(const std::string& addonID, ADDON::AddonInfoPtr& info);
 
   /*! \brief Get an addon with a specific version and repository. */
-  bool GetAddon(const std::string& addonID, const ADDON::AddonVersion& version, const std::string& repoId, ADDON::AddonPtr& addon);
+  bool GetAddonInfo(const std::string& addonID, const ADDON::AddonVersion& version, const std::string& repoId, ADDON::AddonInfoPtr& info);
 
-  /*! Get the addon IDs that has been set to disabled */
-  bool GetDisabled(std::set<std::string>& addons);
+  /*! Get the addon IDs that has been set to enabled */
+  bool GetEnabled(std::set<std::string>& addons);
 
   /*! @deprecated: use FindByAddonId */
   bool GetAvailableVersions(const std::string& addonId,
@@ -51,10 +50,10 @@ public:
   std::pair<ADDON::AddonVersion, std::string> GetAddonVersion(const std::string &id);
 
   /*! Returns all addons in the repositories with id `addonId`. */
-  bool FindByAddonId(const std::string& addonId, ADDON::VECADDONS& addons);
+  bool FindByAddonId(const std::string& addonId, ADDON::AddonInfos& addonInfos);
 
   bool UpdateRepositoryContent(const std::string& repositoryId, const ADDON::AddonVersion& version,
-      const std::string& checksum, const std::vector<ADDON::AddonPtr>& addons);
+      const std::string& checksum, const ADDON::AddonInfos& addonInfos);
 
   int GetRepoChecksum(const std::string& id, std::string& checksum);
 
@@ -63,10 +62,12 @@ public:
    \param id id of the repository
    \returns true on success, false on error or if repository have never been synced.
    */
-  bool GetRepositoryContent(const std::string& id, ADDON::VECADDONS& addons);
+  bool GetRepositoryContent(const std::string& id, ADDON::AddonInfos& addons);
 
   /*! Get addons across all repositories */
-  bool GetRepositoryContent(ADDON::VECADDONS& addons);
+  bool GetRepositoryContent(ADDON::AddonInfos& addons);
+
+  bool GetRepositoryContent(ADDON::AddonInfos& addons, ADDON::TYPE type, const std::string& repoId = "");
 
   bool SetLastChecked(const std::string& id, const ADDON::AddonVersion& version, const std::string& timestamp);
 
@@ -77,7 +78,7 @@ public:
    */
   std::pair<CDateTime, ADDON::AddonVersion> LastChecked(const std::string& id);
 
-  bool Search(const std::string& search, ADDON::VECADDONS& items);
+  bool Search(const std::string& search, ADDON::AddonInfos& items);
 
   /*! \brief Disable an addon.
    Sets a flag that this addon has been disabled.  If disabled, it is usually still available on disk.
@@ -138,7 +139,7 @@ public:
                      const std::set<std::string>& system,
                      const std::set<std::string>& optional);
 
-  void GetInstalled(std::vector<ADDON::CAddonBuilder>& addons);
+  void GetInstallData(ADDON::AddonInfoPtr addonInfo);
 
   bool SetLastUpdated(const std::string& addonId, const CDateTime& dateTime);
   bool SetOrigin(const std::string& addonId, const std::string& origin);
@@ -153,7 +154,7 @@ protected:
   virtual int GetSchemaVersion() const;
   const char *GetBaseDBName() const { return "Addons"; }
 
-  bool GetAddon(int id, ADDON::AddonPtr& addon);
+  bool GetAddonInfo(int id, ADDON::AddonInfoPtr& info);
   void DeleteRepository(const std::string& id);
 };
 

@@ -54,23 +54,13 @@ using namespace XFILE;
   #define SAFE_DELETE(p)  do { delete (p); (p) = NULL; } while (0)
 #endif
 
-std::unique_ptr<CPeripheralAddon> CPeripheralAddon::FromExtension(ADDON::AddonProps props, const cp_extension_t* ext)
+CPeripheralAddon::CPeripheralAddon(ADDON::AddonInfoPtr addonInfo) :
+  CAddonDll(addonInfo),
+  m_apiVersion("0.0.0")
 {
-  std::string strProvidesJoysticks = ADDON::CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@provides_joysticks");
-  std::string strProvidesButtonMaps = ADDON::CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@provides_buttonmaps");
+  m_bProvidesJoysticks = Type(ADDON::ADDON_PERIPHERALDLL)->GetValue("@provides_joysticks").asBoolean();
+  m_bProvidesButtonMaps = Type(ADDON::ADDON_PERIPHERALDLL)->GetValue("@provides_buttonmaps").asBoolean();
 
-  bool bProvidesJoysticks = StringUtils::EqualsNoCase(strProvidesJoysticks, "true");
-  bool bProvidesButtonMaps = StringUtils::EqualsNoCase(strProvidesButtonMaps, "true");
-
-  return std::unique_ptr<CPeripheralAddon>(new CPeripheralAddon(std::move(props), bProvidesJoysticks, bProvidesButtonMaps));
-}
-
-CPeripheralAddon::CPeripheralAddon(ADDON::AddonProps props, bool bProvidesJoysticks, bool bProvidesButtonMaps) :
-  CAddonDll(std::move(props)),
-  m_apiVersion("0.0.0"),
-  m_bProvidesJoysticks(bProvidesJoysticks),
-  m_bProvidesButtonMaps(bProvidesButtonMaps)
-{
   ResetProperties();
 }
 

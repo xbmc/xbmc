@@ -51,7 +51,7 @@ GameClientPtr CGameUtils::OpenGameClient(const CFileItem& file)
   // If the fileitem is an add-on, fall back to that
   if (gameClientId.empty())
   {
-    if (file.HasAddonInfo() && file.GetAddonInfo()->Type() == ADDON::ADDON_GAMEDLL)
+    if (file.HasAddonInfo() && file.GetAddonInfo()->IsType(ADDON_GAMEDLL))
       gameClientId = file.GetAddonInfo()->ID();
   }
 
@@ -113,12 +113,12 @@ void CGameUtils::GetGameClients(const CFileItem& file, GameClientVector& candida
   bHasVfsGameClient |= bVfs;
 
   // Get remote candidates
-  VECADDONS remoteAddons;
+  /*VECADDONS remoteAddons;
   if (CAddonMgr::GetInstance().GetInstallableAddons(remoteAddons, ADDON_GAMEDLL))
   {
     GetGameClients(remoteAddons, translatedUrl, installable, bVfs);
     bHasVfsGameClient |= bVfs;
-  }
+  }*/
 
   // Sort by name
   //! @todo Move to presentation code
@@ -195,7 +195,7 @@ bool CGameUtils::HasGameExtension(const std::string &path)
   }
 
   // Check remote add-ons
-  gameClients.clear();
+  /*gameClients.clear();
   if (CAddonMgr::GetInstance().GetInstallableAddons(gameClients, ADDON_GAMEDLL))
   {
     for (auto& gameClient : gameClients)
@@ -204,7 +204,7 @@ bool CGameUtils::HasGameExtension(const std::string &path)
       if (gc->IsExtensionValid(extension))
         return true;
     }
-  }
+  }*/
 
   return false;
 }
@@ -225,7 +225,7 @@ std::set<std::string> CGameUtils::GetGameExtensions()
   }
 
   // Check remote add-ons
-  gameClients.clear();
+  /*gameClients.clear();
   if (CAddonMgr::GetInstance().GetInstallableAddons(gameClients, ADDON_GAMEDLL))
   {
     for (auto& gameClient : gameClients)
@@ -233,28 +233,18 @@ std::set<std::string> CGameUtils::GetGameExtensions()
       GameClientPtr gc(std::static_pointer_cast<CGameClient>(gameClient));
       extensions.insert(gc->GetExtensions().begin(), gc->GetExtensions().end());
     }
-  }
+  }*/
 
   return extensions;
 }
 
-bool CGameUtils::IsStandaloneGame(const ADDON::AddonPtr& addon)
+bool CGameUtils::IsStandaloneGame(const ADDON::AddonInfoPtr& addon)
 {
   using namespace ADDON;
 
-  switch (addon->Type())
-  {
-    case ADDON_GAMEDLL:
-    {
-      return std::static_pointer_cast<GAME::CGameClient>(addon)->SupportsStandalone();
-    }
-    case ADDON_SCRIPT:
-    {
-      return addon->IsType(ADDON_GAME);
-    }
-    default:
-      break;
-  }
-
+  if (addon->IsType(ADDON_GAMEDLL))
+    return addon->Type(ADDON_GAMEDLL)->GetValue("supports_standalone").asBoolean();
+  else if (addon->IsType(ADDON_SCRIPT))
+    return addon->IsType(ADDON_GAME);
   return false;
 }

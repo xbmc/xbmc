@@ -20,7 +20,7 @@
 #pragma once
 
 #include "addons/AddonManager.h"
-#include "addons/IAddon.h"
+#include "addons/Addon.h"
 #include "guilib/IWindowManagerCallback.h"
 #include "peripherals/PeripheralTypes.h"
 #include "peripherals/bus/PeripheralBus.h"
@@ -50,7 +50,7 @@ namespace PERIPHERALS
     /*!
     * \brief Get peripheral add-on that can provide button maps
     */
-    bool GetAddonWithButtonMap(PeripheralAddonPtr &addon) const;
+    bool GetAddonWithButtonMap(ADDON::AddonInfoPtr &addon) const;
 
     /*!
      * \brief Get peripheral add-on that can provide button maps for the given device
@@ -86,7 +86,6 @@ namespace PERIPHERALS
 
     // implementation of IAddonMgrCallback
     bool RequestRestart(ADDON::AddonPtr addon, bool datachanged) override;
-    bool RequestRemoval(ADDON::AddonPtr addon) override;
 
     bool SplitLocation(const std::string& strLocation, PeripheralAddonPtr& addon, unsigned int& peripheralIndex) const;
 
@@ -98,7 +97,7 @@ namespace PERIPHERALS
   private:
     void OnEvent(const ADDON::AddonEvent& event);
 
-    bool PromptEnableAddons(const ADDON::VECADDONS& disabledAddons);
+    bool PromptEnableAddons(const ADDON::AddonInfos& disabledAddons);
 
     PeripheralAddonVector m_addons;
     PeripheralAddonVector m_failedAddons;

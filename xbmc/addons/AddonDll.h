@@ -34,7 +34,7 @@ namespace ADDON
   class CAddonDll : public CAddon
   {
   public:
-    CAddonDll(AddonProps props);
+    CAddonDll(AddonInfoPtr addonInfo);
 
     //FIXME: does shallow pointer copy. no copy assignment op
     CAddonDll(const CAddonDll &rhs);
@@ -109,7 +109,6 @@ namespace ADDON
     std::string Name() const { return m_addon->Name(); }
     std::string Path() const { return m_addon->Path(); }
     std::string Profile() const { return m_addon->Profile(); }
-    std::string LibPath() const { return m_addon->LibPath(); }
 
   protected:
     ADDON::AddonDllPtr m_addon;

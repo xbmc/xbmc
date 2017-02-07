@@ -39,10 +39,7 @@ namespace ADDON
       LOGIN
     };
 
-    static std::unique_ptr<CService> FromExtension(AddonProps props, const cp_extension_t* ext);
-
-    explicit CService(AddonProps props) : CAddon(std::move(props)), m_type(UNKNOWN), m_startOption(LOGIN) {}
-    CService(AddonProps props, TYPE type, START_OPTION startOption);
+    CService(AddonInfoPtr addonInfo);
 
     bool Start();
     bool Stop();

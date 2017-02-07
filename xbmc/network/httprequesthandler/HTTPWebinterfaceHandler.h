@@ -21,7 +21,7 @@
 
 #include <string>
 
-#include "addons/IAddon.h"
+#include "addons/Addon.h"
 #include "network/httprequesthandler/HTTPFileHandler.h"
 
 class CHTTPWebinterfaceHandler : public CHTTPFileHandler

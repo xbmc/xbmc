@@ -32,8 +32,8 @@ bool CHTTPWebinterfaceAddonsHandler::CanHandleRequest(const HTTPRequest &request
 int CHTTPWebinterfaceAddonsHandler::HandleRequest()
 {
   m_responseData = ADDON_HEADER;
-  ADDON::VECADDONS addons;
-  if (!ADDON::CAddonMgr::GetInstance().GetAddons(addons, ADDON::ADDON_WEB_INTERFACE) || addons.empty())
+  ADDON::AddonInfos addons = ADDON::CAddonMgr::GetInstance().GetAddonInfos(true, ADDON::ADDON_WEB_INTERFACE);
+  if (!addons.empty())
   {
     m_response.type = HTTPError;
     m_response.status = MHD_HTTP_INTERNAL_SERVER_ERROR;
@@ -41,8 +41,8 @@ int CHTTPWebinterfaceAddonsHandler::HandleRequest()
     return MHD_YES;
   }
 
-  for (ADDON::IVECADDONS addon = addons.begin(); addon != addons.end(); ++addon)
-    m_responseData += "<li><a href=/addons/" + (*addon)->ID() + "/>" + (*addon)->Name() + "</a></li>\n";
+  for (auto addon : addons)
+    m_responseData += "<li><a href=/addons/" + addon->ID() + "/>" + addon->Name() + "</a></li>\n";
 
   m_responseData += "</ul>\n</body></html>";
 

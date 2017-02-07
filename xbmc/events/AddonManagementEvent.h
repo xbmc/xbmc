@@ -24,17 +24,22 @@
 class CAddonManagementEvent : public CAddonEvent
 {
 public:
-  CAddonManagementEvent(ADDON::AddonPtr addon, const CVariant& description);
-  CAddonManagementEvent(ADDON::AddonPtr addon, const CVariant& description, const CVariant& details);
-  CAddonManagementEvent(ADDON::AddonPtr addon, const CVariant& description, const CVariant& details, const CVariant& executionLabel);
-  CAddonManagementEvent(ADDON::AddonPtr addon, EventLevel level, const CVariant& description);
-  CAddonManagementEvent(ADDON::AddonPtr addon, EventLevel level, const CVariant& description, const CVariant& details);
-  CAddonManagementEvent(ADDON::AddonPtr addon, EventLevel level, const CVariant& description, const CVariant& details, const CVariant& executionLabel);
+  CAddonManagementEvent(ADDON::AddonInfoPtr addonInfo, const CVariant& description);
+  CAddonManagementEvent(ADDON::AddonInfoPtr addonInfo, const CVariant& description, const CVariant& details);
+  CAddonManagementEvent(ADDON::AddonInfoPtr addonInfo, const CVariant& description, const CVariant& details, const CVariant& executionLabel);
+  CAddonManagementEvent(ADDON::AddonInfoPtr addonInfo, EventLevel level, const CVariant& description);
+  CAddonManagementEvent(ADDON::AddonInfoPtr addonInfo, EventLevel level, const CVariant& description, const CVariant& details);
+  CAddonManagementEvent(ADDON::AddonInfoPtr addonInfo, EventLevel level, const CVariant& description, const CVariant& details, const CVariant& executionLabel);
   virtual ~CAddonManagementEvent() { }
 
   virtual const char* GetType() const { return "AddonManagementEvent"; }
   virtual std::string GetExecutionLabel() const;
 
-  virtual bool CanExecute() const { return m_addon != NULL; }
+  virtual bool CanExecute() const
+  {
+    if (m_addonInfo != nullptr)
+      return true;
+    return false;
+  }
   virtual bool Execute() const;
 };

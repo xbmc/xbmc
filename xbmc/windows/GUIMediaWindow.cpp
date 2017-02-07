@@ -32,7 +32,6 @@
 #include "Util.h"
 #include "addons/AddonManager.h"
 #include "addons/GUIDialogAddonSettings.h"
-#include "addons/PluginSource.h"
 #if defined(TARGET_ANDROID)
 #include "platform/android/activity/XBMCApp.h"
 #endif
@@ -923,10 +922,10 @@ bool CGUIMediaWindow::OnClick(int iItem, const std::string &player)
     AddonPtr addon;
     if (CAddonMgr::GetInstance().GetAddon(url.GetHostName(), addon, ADDON_SCRIPT))
     {
-      if (!CScriptInvocationManager::GetInstance().Stop(addon->LibPath()))
+      if (!CScriptInvocationManager::GetInstance().Stop(addon->Type(ADDON_SCRIPT)->LibPath()))
       {
         CAddonMgr::GetInstance().UpdateLastUsed(addon->ID());
-        CScriptInvocationManager::GetInstance().ExecuteAsync(addon->LibPath(), addon);
+        CScriptInvocationManager::GetInstance().ExecuteAsync(addon->Type(ADDON_SCRIPT)->LibPath(), addon);
       }
       return true;
     }
@@ -1015,11 +1014,10 @@ bool CGUIMediaWindow::OnClick(int iItem, const std::string &player)
     if (m_vecItems->IsPlugin())
     {
       CURL url(m_vecItems->GetPath());
-      AddonPtr addon;
-      if (CAddonMgr::GetInstance().GetAddon(url.GetHostName(),addon))
+      AddonInfoPtr addon = CAddonMgr::GetInstance().GetInstalledAddonInfo(url.GetHostName(), ADDON_PLUGIN);
+      if (addon)
       {
-        PluginPtr plugin = std::dynamic_pointer_cast<CPluginSource>(addon);
-        if (plugin && plugin->Provides(CPluginSource::AUDIO))
+        if (addon->ProvidesSubContent(ADDON_AUDIO))
         {
           CFileItemList items;
           std::unique_ptr<CGUIViewState> state(CGUIViewState::GetViewState(GetID(), items));

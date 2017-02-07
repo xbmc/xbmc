@@ -20,7 +20,7 @@
 
 #include "GameClientProperties.h"
 #include "GameClient.h"
-#include "addons/IAddon.h"
+#include "addons/Addon.h"
 #include "addons/AddonManager.h"
 #include "addons/GameResource.h"
 #include "dialogs/GUIDialogYesNo.h"
@@ -81,7 +81,7 @@ const char* CGameClientProperties::GetLibraryPath(void)
   if (m_strLibraryPath.empty())
   {
     // Get the parent add-on's real path
-    std::string strLibPath = m_parent->CAddon::LibPath();
+    std::string strLibPath = m_parent->CAddon::MainLibPath();
     m_strLibraryPath = CSpecialProtocol::TranslatePath(strLibPath);
   }
   return m_strLibraryPath.c_str();
@@ -98,10 +98,10 @@ const char** CGameClientProperties::GetProxyDllPaths(void)
     {
       const std::string& strAddonId = it->first;
       AddonPtr addon;
-      if (CAddonMgr::GetInstance().GetAddon(strAddonId, addon, ADDON_GAMEDLL, false))
+      if (CAddonMgr::GetInstance().GetAddon(strAddonId, addon, ADDON_GAMEDLL))
       {
         // If add-on is disabled, ask the user to enable it
-        if (CAddonMgr::GetInstance().IsAddonDisabled(addon->ID()))
+        if (!CAddonMgr::GetInstance().IsAddonEnabled(addon->ID()))
         {
           // Failed to play game
           // This game depends on a disabled add-on. Would you like to enable it?
@@ -196,7 +196,7 @@ const char** CGameClientProperties::GetExtensions(void)
 void CGameClientProperties::AddProxyDll(const GameClientPtr& gameClient)
 {
   // Get the add-on's real path
-  std::string strLibPath = gameClient->CAddon::LibPath();
+  std::string strLibPath = gameClient->CAddon::MainLibPath();
 
   // Ignore add-on if it is already added
   if (!HasProxyDll(strLibPath))
