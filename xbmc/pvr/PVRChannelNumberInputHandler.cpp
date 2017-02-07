@@ -62,7 +62,7 @@ void CPVRChannelNumberInputHandler::AppendChannelNumberDigit(int iDigit)
 
   // recalc channel string
   m_strChannel.erase();
-  if (m_digits.size() != m_iMaxDigits || GetChannelNumber() > 0)
+  if (m_digits.size() != (size_t)m_iMaxDigits || GetChannelNumber() > 0)
   {
     for (int digit : m_digits)
       m_strChannel.append(StringUtils::Format("%d", digit));
