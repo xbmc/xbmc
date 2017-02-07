@@ -36,10 +36,6 @@ namespace KodiAPI { namespace GUI { class CAddonCallbacksGUI; } }
 
 namespace ADDON
 {
-  class CAddonInfo;
-  typedef std::shared_ptr<CAddonInfo> AddonInfoPtr;
-  typedef std::vector<AddonInfoPtr> AddonInfos;
-  typedef std::vector<AddonInfoPtr>::iterator AddonInfosIter;
 
   typedef enum
   {
@@ -128,8 +124,9 @@ namespace ADDON
     EXT_ELEMENTS m_childs;
   };
 
-  class AddonVersion;
-  typedef std::map<std::string, std::pair<const AddonVersion, bool> > ADDONDEPS;
+  class CAddonInfo;
+  typedef std::shared_ptr<CAddonInfo> AddonInfoPtr;
+  typedef std::vector<AddonInfoPtr> AddonInfos;
 
   /*!
    */
@@ -151,6 +148,11 @@ namespace ADDON
       return m_providedSubContent.size() > 1;
     }
 
+    int ProvidedSubContents() const
+    {
+      return m_providedSubContent.size();
+    }
+
     const char* GetPlatformLibraryName(const TiXmlElement* element);
     void SetProvides(const std::string &content);
 
@@ -162,6 +164,9 @@ namespace ADDON
     std::string m_libname;
     std::set<TYPE> m_providedSubContent;
   };
+
+  class AddonVersion;
+  typedef std::map<std::string, std::pair<const AddonVersion, bool> > ADDONDEPS;
 
   /*!
    * @brief Add-on Information class
@@ -353,9 +358,10 @@ namespace ADDON
     const std::string& Description() const { return m_description; }
 
     /*!
-     * @brief To get the used library name of add-on
+     * @brief To get the master library name of an add-on
      *
-     * This is optional and several types don't need this (e.g. skin)
+     * Currently is this used only for binary add-ons where only one library is
+     * present where everything becomes included.
      *
      * @return the library name of add-on
      */
@@ -493,10 +499,7 @@ namespace ADDON
      *
      * @return true if more as one is supported
      */
-    bool ProvidesSeveralSubContents() const
-    {
-      return m_types[0].m_providedSubContent.size() > 1;
-    }
+    bool ProvidesSeveralSubContents() const;
   
     std::string SerializeMetadata();
     bool DeserializeMetadata(const std::string& document);
@@ -528,6 +531,7 @@ namespace ADDON
     std::string m_id;
     TYPE m_mainType;
     std::vector<CAddonType> m_types;
+
     AddonVersion m_version{"0.0.0"};
     AddonVersion m_minversion{"0.0.0"};
     std::string m_name;
@@ -549,7 +553,6 @@ namespace ADDON
     CDateTime m_lastUsed;
     std::string m_origin;
     uint64_t m_packageSize;
-    std::set<TYPE> m_providedSubContent;
     std::string m_language;
 
     /*!
@@ -561,15 +564,6 @@ namespace ADDON
      * @return true if successfully done, otherwise false
      */
     bool LoadAddonXML(const TiXmlElement* element, std::string addonXmlPath);
-  
-    /*!
-     * @brief Set the provided content for this plugin
-     * 
-     * If no valid content types are passed in, we set the EXECUTABLE type
-     * 
-     * @param content a space-separated list of content types
-     */
-    void SetProvides(const std::string &content);
   };
 
 } /* namespace ADDON */

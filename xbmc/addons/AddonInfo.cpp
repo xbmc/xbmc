@@ -833,21 +833,6 @@ std::string CAddonInfo::MainLibPath() const
   return m_types[0].LibPath();
 }
 
-void CAddonInfo::SetProvides(const std::string &content)
-{
-  if (!content.empty())
-  {
-    for (auto provide : StringUtils::Split(content, ' '))
-    {
-      TYPE content = TranslateSubContent(provide);
-      if (content != ADDON_UNKNOWN)
-        m_providedSubContent.insert(content);
-    }
-  }
-  if (m_mainType == ADDON_SCRIPT && m_providedSubContent.empty())
-    m_providedSubContent.insert(ADDON_EXECUTABLE);
-}
-
 bool CAddonInfo::IsType(TYPE type) const
 {
   return (m_mainType == type || ProvidesSubContent(type));
@@ -865,6 +850,14 @@ bool CAddonInfo::ProvidesSubContent(const TYPE& content, const TYPE& mainType/* 
   }
 
   return false;
+}
+
+bool CAddonInfo::ProvidesSeveralSubContents() const
+{
+  int contents = 0;
+  for (auto addonType : m_types)
+    contents += addonType.ProvidedSubContents();
+  return contents > 0 ? true : false;
 }
 
 } /* namespace ADDON */
