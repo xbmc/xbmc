@@ -23,7 +23,7 @@
 #include "addons/AddonDll.h"
 #include "guilib/GUIWindow.h"
 
-class CGUIWindowScreensaver : public CGUIWindow
+class CGUIWindowScreensaver : public CGUIWindow, public ADDON::IAddonInstanceHandler
 {
 public:
   CGUIWindowScreensaver(void);

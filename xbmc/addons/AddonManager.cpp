@@ -328,6 +328,78 @@ bool CAddonMgr::GetAddon(const std::string &addonId, AddonPtr &addon, const TYPE
   return nullptr != addon.get();
 }
 
+/// @todo New parts to handle multi instance addon, still in todo
+//@{
+AddonDllPtr CAddonMgr::GetAddon(const std::string &addonId, const IAddonInstanceHandler* handler)
+{
+  if (handler == nullptr)
+  {
+    CLog::Log(LOGERROR, "ADDONS: GetAddon for Id '%s' called with empty instance handler", addonId.c_str());
+    return nullptr;
+  }
+
+  CSingleLock lock(m_critSection);
+
+  const auto& itr = m_installedAddons.find(addonId);
+  if (itr == m_installedAddons.end())
+  {
+    CLog::Log(LOGERROR, "ADDONS: GetAddon for Id '%s' is not present", addonId.c_str());
+    return nullptr;
+  }
+
+  AddonInfoPtr addonInfo = itr->second;
+
+  // If no 'm_activeAddon' is defined create it new.
+  if (addonInfo->m_activeAddon == nullptr)
+    addonInfo->m_activeAddon = std::make_shared<CAddonDll>(addonInfo);
+
+  // add the instance handler to the info to know used amount on addon
+  addonInfo->m_activeAddonHandlers.insert(handler);
+
+  return addonInfo->m_activeAddon;
+}
+
+void CAddonMgr::ReleaseAddon(AddonDllPtr& addon, const IAddonInstanceHandler* handler)
+{
+  if (addon == nullptr)
+  {
+    CLog::Log(LOGERROR, "ADDONS: ReleaseAddon called with empty addon handler");
+    return;
+  }
+
+  if (handler == nullptr)
+  {
+    CLog::Log(LOGERROR, "ADDONS: ReleaseAddon for Id '%s' called with empty instance handler", addon->ID().c_str());
+    return;
+  }
+
+  CSingleLock lock(m_critSection);
+
+  const auto& itr = m_installedAddons.find(addon->ID());
+  if (itr == m_installedAddons.end())
+  {
+    CLog::Log(LOGERROR, "ADDONS: ReleaseAddon for Id '%s' is not present", addon->ID().c_str());
+    return;
+  }
+
+  AddonInfoPtr addonInfo = itr->second;
+
+  const auto& presentHandler = addonInfo->m_activeAddonHandlers.find(handler);
+  if (presentHandler == addonInfo->m_activeAddonHandlers.end())
+    return;
+
+  addonInfo->m_activeAddonHandlers.erase(presentHandler);
+
+  // if no handler is present anymore reset and delete the add-on class on informations
+  if (addonInfo->m_activeAddonHandlers.empty())
+  {
+    addonInfo->m_activeAddon.reset();
+  }
+
+  addon.reset();
+}
+//@}
+
 AddonDllPtr CAddonMgr::GetAddon(const TYPE &type, const std::string &id)
 {
   AddonPtr addon;

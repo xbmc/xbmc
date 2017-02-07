@@ -72,6 +72,7 @@ void CAudioBuffer::Set(const float* psBuffer, int iSize)
 
 CGUIVisualisationControl::CGUIVisualisationControl(int parentID, int controlID, float posX, float posY, float width, float height)
   : CGUIControl(parentID, controlID, posX, posY, width, height),
+    IAddonInstanceHandler(ADDON_VIZ),
     m_callStart(false),
     m_alreadyStarted(false),
     m_attemptedLoad(false),
@@ -84,6 +85,7 @@ CGUIVisualisationControl::CGUIVisualisationControl(int parentID, int controlID, 
 
 CGUIVisualisationControl::CGUIVisualisationControl(const CGUIVisualisationControl &from)
   : CGUIControl(from),
+    IAddonInstanceHandler(ADDON_VIZ),
     m_callStart(false),
     m_alreadyStarted(false),
     m_attemptedLoad(false),
@@ -398,7 +400,7 @@ bool CGUIVisualisationControl::InitVisualization()
   if (x + w > g_graphicsContext.GetWidth()) w = g_graphicsContext.GetWidth() - x;
   if (y + h > g_graphicsContext.GetHeight()) h = g_graphicsContext.GetHeight() - y;
 
-  m_addon = CAddonMgr::GetInstance().GetAddon(ADDON_VIZ, CServiceBroker::GetSettings().GetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION));
+  m_addon = CAddonMgr::GetInstance().GetAddon(CServiceBroker::GetSettings().GetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION), this);
   if (!m_addon)
   {
     g_graphicsContext.ApplyStateBlock();
@@ -470,7 +472,7 @@ void CGUIVisualisationControl::DeInitVisualization()
   if (m_addon)
   {
     m_addon->DestroyInstance(m_addon->ID());
-    m_addon.reset();
+    CAddonMgr::GetInstance().ReleaseAddon(m_addon, this);
   }
 
   memset(&m_struct, 0, sizeof(m_struct));

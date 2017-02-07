@@ -33,6 +33,7 @@ using namespace ADDON;
 
 CGUIWindowScreensaver::CGUIWindowScreensaver(void)
   : CGUIWindow(WINDOW_SCREENSAVER, ""),
+    IAddonInstanceHandler(ADDON_SCREENSAVER),
     m_addon(nullptr)
 {
   memset(&m_struct, 0, sizeof(m_struct));
@@ -78,7 +79,7 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
       if (m_addon)
       {
         m_addon->DestroyInstance(m_addon->ID());
-        m_addon.reset();
+        CAddonMgr::GetInstance().ReleaseAddon(m_addon, this);
       }
 
       memset(&m_struct, 0, sizeof(m_struct));
@@ -94,7 +95,7 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
 
       g_graphicsContext.CaptureStateBlock();
 
-      m_addon = CAddonMgr::GetInstance().GetAddon(ADDON_SCREENSAVER, CServiceBroker::GetSettings().GetString(CSettings::SETTING_SCREENSAVER_MODE));
+      m_addon = CAddonMgr::GetInstance().GetAddon(CServiceBroker::GetSettings().GetString(CSettings::SETTING_SCREENSAVER_MODE), this);
       if (!m_addon)
         return false;
 
