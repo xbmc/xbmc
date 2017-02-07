@@ -28,6 +28,7 @@
 #include <set>
 #include <stdlib.h>
 #include <string>
+#include <unordered_set>
 #include <vector>
 
 class TiXmlElement;
@@ -165,6 +166,20 @@ namespace ADDON
     std::set<TYPE> m_providedSubContent;
   };
 
+  class IAddonInstanceHandler
+  {
+  public:
+    IAddonInstanceHandler(TYPE type) : m_type(type) { }
+
+    TYPE UsedType() { return m_type; }
+
+  private:
+    TYPE m_type;
+  };
+
+  class CAddonMgr;
+  class CAddonDll;
+  typedef std::shared_ptr<CAddonDll> AddonDllPtr;
   class AddonVersion;
   typedef std::map<std::string, std::pair<const AddonVersion, bool> > ADDONDEPS;
 
@@ -564,6 +579,24 @@ namespace ADDON
      * @return true if successfully done, otherwise false
      */
     bool LoadAddonXML(const TiXmlElement* element, std::string addonXmlPath);
+
+  /*!
+   * @brief active addon handle parts
+   *
+   * This area contains the created addon class and all active instances of the
+   * add-on. If active ones are empty becomes the pointer reseted. For this
+   * reasons is CAddonMgr added as friend here and the private separated from
+   * the rest.
+   *
+   * @todo the AddonDllPtr need to removed in future and everything done only
+   * with AddonPtr.
+   */
+  //@{
+  private:
+    friend class CAddonMgr;
+    AddonDllPtr m_activeAddon;
+    std::unordered_set<const IAddonInstanceHandler*> m_activeAddonHandlers;
+  //@}
   };
 
 } /* namespace ADDON */

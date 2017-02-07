@@ -78,6 +78,12 @@ namespace ADDON
      */
     bool GetAddon(const std::string &addonId, AddonPtr &addon, const TYPE &type = ADDON_UNKNOWN);
 
+    /// @todo New parts to handle multi instance addon, still in todo
+    //@{
+    AddonDllPtr GetAddon(const std::string &addonId, const IAddonInstanceHandler* handler);
+    void ReleaseAddon(AddonDllPtr& addon, const IAddonInstanceHandler* handler);
+    //@}
+
     AddonDllPtr GetAddon(const TYPE &type, const std::string &id);    
 
     /*!

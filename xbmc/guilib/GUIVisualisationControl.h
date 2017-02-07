@@ -41,7 +41,7 @@ private:
   int m_iLen;
 };
 
-class CGUIVisualisationControl : public CGUIControl, public IAudioCallback
+class CGUIVisualisationControl : public CGUIControl, public ADDON::IAddonInstanceHandler, public IAudioCallback
 {
 public:
   CGUIVisualisationControl(int parentID, int controlID, float posX, float posY, float width, float height);
