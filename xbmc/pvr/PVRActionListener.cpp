@@ -19,11 +19,15 @@
  */
 
 #include "Application.h"
+#include "ServiceBroker.h"
+#include "dialogs/GUIDialogNumeric.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
+#include "settings/Settings.h"
 
 #include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannel.h"
 
 #include "PVRActionListener.h"
@@ -36,6 +40,26 @@ CPVRActionListener &CPVRActionListener::GetInstance()
   static CPVRActionListener instance;
   return instance;
 }
+
+void CPVRActionListener::Init()
+{
+  std::set<std::string> settingSet;
+  settingSet.insert(CSettings::SETTING_PVRPARENTAL_ENABLED);
+  settingSet.insert(CSettings::SETTING_PVRMANAGER_RESETDB);
+  settingSet.insert(CSettings::SETTING_EPG_RESETEPG);
+  settingSet.insert(CSettings::SETTING_PVRMANAGER_CHANNELMANAGER);
+  settingSet.insert(CSettings::SETTING_PVRMANAGER_GROUPMANAGER);
+  settingSet.insert(CSettings::SETTING_PVRMANAGER_CHANNELSCAN);
+  settingSet.insert(CSettings::SETTING_PVRMENU_SEARCHICONS);
+  settingSet.insert(CSettings::SETTING_PVRCLIENT_MENUHOOK);
+  settingSet.insert(CSettings::SETTING_EPG_DAYSTODISPLAY);
+  CServiceBroker::GetSettings().RegisterCallback(this, settingSet);
+}
+
+void CPVRActionListener::Deinit()
+{
+  CServiceBroker::GetSettings().UnregisterCallback(this);
+}  
 
 bool CPVRActionListener::OnAction(const CAction &action)
 {
@@ -111,4 +135,75 @@ bool CPVRActionListener::OnAction(const CAction &action)
   return false;
 }
 
+void CPVRActionListener::OnSettingChanged(const CSetting *setting)
+{
+  if (setting == nullptr)
+    return;
+
+  const std::string &settingId = setting->GetId();
+  if (settingId == CSettings::SETTING_PVRPARENTAL_ENABLED)
+  {
+    if (dynamic_cast<const CSettingBool*>(setting)->GetValue() && CServiceBroker::GetSettings().GetString(CSettings::SETTING_PVRPARENTAL_PIN).empty())
+    {
+      std::string newPassword = "";
+      // password set... save it
+      if (CGUIDialogNumeric::ShowAndVerifyNewPassword(newPassword))
+        CServiceBroker::GetSettings().SetString(CSettings::SETTING_PVRPARENTAL_PIN, newPassword);
+      // password not set... disable parental
+      else
+        dynamic_cast<CSettingBool*>(const_cast<CSetting*>(setting))->SetValue(false);
+    }
+  }
+}
+
+void CPVRActionListener::OnSettingAction(const CSetting *setting)
+{
+  if (setting == nullptr)
+    return;
+
+  const std::string &settingId = setting->GetId();
+  if (settingId == CSettings::SETTING_PVRMANAGER_RESETDB)
+  {
+    CPVRGUIActions::GetInstance().ResetPVRDatabase(false);
+  }
+  else if (settingId == CSettings::SETTING_EPG_RESETEPG)
+  {
+    CPVRGUIActions::GetInstance().ResetPVRDatabase(true);
+  }
+  else if (settingId == CSettings::SETTING_PVRMANAGER_CHANNELMANAGER)
+  {
+    if (g_PVRManager.IsStarted())
+    {
+      CGUIDialog *dialog = dynamic_cast<CGUIDialog *>(g_windowManager.GetWindow(WINDOW_DIALOG_PVR_CHANNEL_MANAGER));
+      if (dialog)
+        dialog->Open();
+    }
+  }
+  else if (settingId == CSettings::SETTING_PVRMANAGER_GROUPMANAGER)
+  {
+    if (g_PVRManager.IsStarted())
+    {
+      CGUIDialog *dialog = dynamic_cast<CGUIDialog *>(g_windowManager.GetWindow(WINDOW_DIALOG_PVR_GROUP_MANAGER));
+      if (dialog)
+        dialog->Open();
+    }
+  }
+  else if (settingId == CSettings::SETTING_PVRMANAGER_CHANNELSCAN)
+  {
+    CPVRGUIActions::GetInstance().StartChannelScan();
+  }
+  else if (settingId == CSettings::SETTING_PVRMENU_SEARCHICONS)
+  {
+    g_PVRManager.TriggerSearchMissingChannelIcons();
+  }
+  else if (settingId == CSettings::SETTING_PVRCLIENT_MENUHOOK)
+  {
+    CPVRGUIActions::GetInstance().ProcessMenuHooks(CFileItemPtr());
+  }
+  else if (settingId == CSettings::SETTING_EPG_DAYSTODISPLAY)
+  {
+    g_PVRClients->SetEPGTimeFrame(static_cast<const CSettingInt*>(setting)->GetValue());
+  }
+}
+  
 } // namespace PVR

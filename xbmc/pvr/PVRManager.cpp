@@ -28,7 +28,6 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogNumeric.h"
 #include "dialogs/GUIDialogOK.h"
-#include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "epg/EpgContainer.h"
 #include "GUIInfoManager.h"
@@ -45,8 +44,6 @@
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroupInternal.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
-#include "pvr/dialogs/GUIDialogPVRChannelManager.h"
-#include "pvr/dialogs/GUIDialogPVRGroupManager.h"
 #include "pvr/PVRActionListener.h"
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRGUIInfo.h"
@@ -171,7 +168,6 @@ CPVRManager::CPVRManager(void) :
 
 CPVRManager::~CPVRManager(void)
 {
-  CServiceBroker::GetSettings().UnregisterCallback(this);
   CAnnouncementManager::GetInstance().RemoveAnnouncer(this);
   CLog::Log(LOGDEBUG,"PVRManager - destroyed");
 }
@@ -255,89 +251,6 @@ CPVRClientsPtr CPVRManager::Clients(void) const
   return m_addons;
 }
 
-void CPVRManager::OnSettingChanged(const CSetting *setting)
-{
-  if (setting == NULL)
-    return;
-
-  const std::string &settingId = setting->GetId();
-  if (settingId == CSettings::SETTING_PVRPARENTAL_ENABLED)
-  {
-    if (((CSettingBool*)setting)->GetValue() && CServiceBroker::GetSettings().GetString(CSettings::SETTING_PVRPARENTAL_PIN).empty())
-    {
-      std::string newPassword = "";
-      // password set... save it
-      if (CGUIDialogNumeric::ShowAndVerifyNewPassword(newPassword))
-        CServiceBroker::GetSettings().SetString(CSettings::SETTING_PVRPARENTAL_PIN, newPassword);
-      // password not set... disable parental
-      else
-        ((CSettingBool*)setting)->SetValue(false);
-    }
-  }
-  else if(settingId == CSettings::SETTING_EPG_DAYSTODISPLAY)
-  {
-    m_addons->SetEPGTimeFrame(static_cast<const CSettingInt*>(setting)->GetValue());
-  }
-}
-
-void CPVRManager::OnSettingAction(const CSetting *setting)
-{
-  if (setting == NULL)
-    return;
-
-  const std::string &settingId = setting->GetId();
-  if (settingId == CSettings::SETTING_PVRMENU_SEARCHICONS)
-  {
-    if (IsStarted())
-      TriggerSearchMissingChannelIcons();
-  }
-  else if (settingId == CSettings::SETTING_PVRMANAGER_RESETDB)
-  {
-    if (CheckParentalPIN(g_localizeStrings.Get(19262)) &&
-      HELPERS::ShowYesNoDialogText(CVariant{19098}, CVariant{19186}) == DialogResponse::YES)
-    {
-      CDateTime::ResetTimezoneBias();
-      ResetDatabase(false);
-    }
-  }
-  else if (settingId == CSettings::SETTING_EPG_RESETEPG)
-  {
-    if (HELPERS::ShowYesNoDialogText(CVariant{19098}, CVariant{19188}) == DialogResponse::YES)
-    {
-      CDateTime::ResetTimezoneBias();
-      ResetDatabase(true);
-    }
-  }
-  else if (settingId == CSettings::SETTING_PVRMANAGER_CHANNELSCAN)
-  {
-    if (IsStarted())
-      StartChannelScan();
-  }
-  else if (settingId == CSettings::SETTING_PVRMANAGER_CHANNELMANAGER)
-  {
-    if (IsStarted())
-    {
-      CGUIDialogPVRChannelManager *dialog = (CGUIDialogPVRChannelManager *)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_CHANNEL_MANAGER);
-      if (dialog)
-        dialog->Open();
-    }
-  }
-  else if (settingId == CSettings::SETTING_PVRMANAGER_GROUPMANAGER)
-  {
-    if (IsStarted())
-    {
-      CGUIDialogPVRGroupManager *dialog = (CGUIDialogPVRGroupManager *)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_GROUP_MANAGER);
-      if (dialog)
-        dialog->Open();
-    }
-  }
-  else if (settingId == CSettings::SETTING_PVRCLIENT_MENUHOOK)
-  {
-    if (IsStarted())
-      m_addons->ProcessMenuHooks(-1, PVR_MENUHOOK_SETTING, NULL);
-  }
-}
-
 void CPVRManager::Clear(void)
 {
   g_application.UnregisterActionListener(&CPVRActionListener::GetInstance());
@@ -375,17 +288,8 @@ void CPVRManager::ResetProperties(void)
 
 void CPVRManager::Init()
 {
-  std::set<std::string> settingSet;
-  settingSet.insert(CSettings::SETTING_PVRMANAGER_CHANNELMANAGER);
-  settingSet.insert(CSettings::SETTING_PVRMANAGER_GROUPMANAGER);
-  settingSet.insert(CSettings::SETTING_PVRMANAGER_CHANNELSCAN);
-  settingSet.insert(CSettings::SETTING_PVRMANAGER_RESETDB);
-  settingSet.insert(CSettings::SETTING_PVRCLIENT_MENUHOOK);
-  settingSet.insert(CSettings::SETTING_PVRMENU_SEARCHICONS);
-  settingSet.insert(CSettings::SETTING_EPG_RESETEPG);
-  settingSet.insert(CSettings::SETTING_EPG_DAYSTODISPLAY);
-  settingSet.insert(CSettings::SETTING_PVRPARENTAL_ENABLED);
-  CServiceBroker::GetSettings().RegisterCallback(this, settingSet);
+  // Create and init action listener
+  CPVRActionListener::GetInstance().Init();
 
   // Note: we're holding the progress bar dialog instance pointer in a member because it is needed by pvr core
   //       components. The latter might run in a different thread than the gui and g_windowManager.GetWindow()
@@ -494,6 +398,9 @@ void CPVRManager::Shutdown()
 
   // release addons
   m_addons.reset();
+
+  // deinit action listener
+  CPVRActionListener::GetInstance().Deinit();
 }
 
 CPVRManager::ManagerState CPVRManager::GetState(void) const
@@ -787,91 +694,6 @@ bool CPVRManager::ContinueLastChannel(void)
                                                -1,
                                                static_cast<void*>(new CAction(ACTION_CONTINUE_LAST_CHANNEL)));
   return true;
-}
-
-void CPVRManager::ResetDatabase(bool bResetEPGOnly /* = false */)
-{
-  CLog::Log(LOGNOTICE,"PVRManager - %s - clearing the PVR database", __FUNCTION__);
-
-  g_EpgContainer.Stop();
-
-  CGUIDialogProgress* pDlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-  pDlgProgress->SetHeading(CVariant{313});
-  pDlgProgress->SetLine(0, CVariant{g_localizeStrings.Get(19187)}); // All data in the PVR database is being erased
-  pDlgProgress->SetLine(1, CVariant{""});
-  pDlgProgress->SetLine(2, CVariant{""});
-  pDlgProgress->Open();
-  pDlgProgress->Progress();
-
-  if (m_addons->IsPlaying())
-  {
-    CLog::Log(LOGNOTICE,"PVRManager - %s - stopping playback", __FUNCTION__);
-    CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_STOP);
-  }
-
-  pDlgProgress->SetPercentage(10);
-  pDlgProgress->Progress();
-
-  /* reset the EPG pointers */
-  const CPVRDatabasePtr database(GetTVDatabase());
-  if (database)
-    database->ResetEPG();
-
-  /* stop the thread, close database */
-  Stop();
-
-  pDlgProgress->SetPercentage(20);
-  pDlgProgress->Progress();
-
-  if (database && database->Open())
-  {
-    /* clean the EPG database */
-    g_EpgContainer.Reset();
-    pDlgProgress->SetPercentage(30);
-    pDlgProgress->Progress();
-
-    if (!bResetEPGOnly)
-    {
-      database->DeleteChannelGroups();
-      pDlgProgress->SetPercentage(50);
-      pDlgProgress->Progress();
-
-      /* delete all channels */
-      database->DeleteChannels();
-      pDlgProgress->SetPercentage(70);
-      pDlgProgress->Progress();
-
-      /* delete all channel and recording settings */
-      CVideoDatabase videoDatabase;
-
-      if (videoDatabase.Open())
-      {
-        videoDatabase.EraseVideoSettings("pvr://channels/");
-        videoDatabase.EraseVideoSettings(CPVRRecordingsPath::PATH_RECORDINGS);
-        videoDatabase.Close();
-      }
-
-      pDlgProgress->SetPercentage(80);
-      pDlgProgress->Progress();
-
-      /* delete all client information */
-      pDlgProgress->SetPercentage(90);
-      pDlgProgress->Progress();
-    }
-
-    database->Close();
-  }
-
-  CLog::Log(LOGNOTICE,"PVRManager - %s - %s database cleared", __FUNCTION__, bResetEPGOnly ? "EPG" : "PVR and EPG");
-
-  if (database)
-    database->Open();
-
-  CLog::Log(LOGNOTICE,"PVRManager - %s - restarting the PVRManager", __FUNCTION__);
-  Start();
-
-  pDlgProgress->SetPercentage(100);
-  pDlgProgress->Close();
 }
 
 bool CPVRManager::IsPlaying(void) const
@@ -1783,17 +1605,6 @@ bool CPVRManager::IsPlayingRecording(void) const
   return IsStarted() && m_addons->IsPlayingRecording();
 }
 
-bool CPVRManager::IsRunningChannelScan(void) const
-{
-  return IsStarted() && m_addons->IsRunningChannelScan();
-}
-
-void CPVRManager::StartChannelScan(void)
-{
-  if (IsStarted())
-    m_addons->StartChannelScan();
-}
-
 void CPVRManager::SearchMissingChannelIcons(void)
 {
   if (IsStarted() && m_channelGroups)
@@ -1827,7 +1638,8 @@ void CPVRManager::TriggerChannelGroupsUpdate(void)
 
 void CPVRManager::TriggerSearchMissingChannelIcons(void)
 {
-  CJobManager::GetInstance().AddJob(new CPVRSearchMissingChannelIconsJob(), NULL);
+  if (IsStarted())
+    CJobManager::GetInstance().AddJob(new CPVRSearchMissingChannelIconsJob(), NULL);
 }
 
 void CPVRManager::ConnectionStateChange(CPVRClient *client, std::string connectString, PVR_CONNECTION_STATE state, std::string message)

@@ -22,7 +22,6 @@
 #include "FileItem.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
 #include "interfaces/IAnnouncer.h"
-#include "settings/lib/ISettingCallback.h"
 #include "threads/Event.h"
 #include "threads/Thread.h"
 #include "utils/EventStream.h"
@@ -95,7 +94,7 @@ namespace PVR
     bool m_bStopped;
   };
 
-  class CPVRManager : public ISettingCallback, private CThread, public Observable, public ANNOUNCEMENT::IAnnouncer
+  class CPVRManager : private CThread, public Observable, public ANNOUNCEMENT::IAnnouncer
   {
     friend class CPVRClients;
 
@@ -132,9 +131,6 @@ namespace PVR
      */
     static CPVRManager &GetInstance();
 
-    virtual void OnSettingChanged(const CSetting *setting) override;
-    virtual void OnSettingAction(const CSetting *setting) override;
-
     /*!
      * @brief Get the channel groups container.
      * @return The groups container.
@@ -168,6 +164,11 @@ namespace PVR
      * @brief Reinit PVRManager.
      */
     void Reinit(void);
+
+    /*!
+     * @brief Start the PVRManager, which loads all PVR data and starts some threads to update the PVR data.
+     */
+    void Start();
 
     /*!
      * @brief Stop PVRManager.
@@ -217,12 +218,6 @@ namespace PVR
      * @todo not really the right place for this :-)
      */
     void ShowPlayerInfo(int iTimeout);
-
-    /*!
-     * @brief Reset the TV database to it's initial state and delete all the data inside.
-     * @param bResetEPGOnly True to only reset the EPG database, false to reset both PVR and EPG.
-     */
-    void ResetDatabase(bool bResetEPGOnly = false);
 
     /*!
      * @brief Check if a TV channel, radio channel or recording is playing.
@@ -494,16 +489,6 @@ namespace PVR
     bool IsPlayingRecording(void) const;
 
     /*!
-     * @return True when a channel scan is currently running, false otherwise.
-     */
-    bool IsRunningChannelScan(void) const;
-
-    /*!
-     * @brief Open a selection dialog and start a channel scan on the selected client.
-     */
-    void StartChannelScan(void);
-
-    /*!
      * @brief Try to find missing channel icons automatically
      */
     void SearchMissingChannelIcons(void);
@@ -590,11 +575,6 @@ namespace PVR
     CGUIDialogProgressBarHandle* ShowProgressDialog(const std::string &strTitle) const;
 
   protected:
-    /*!
-     * @brief Start the PVRManager, which loads all PVR data and starts some threads to update the PVR data.
-     */
-    void Start();
-    
     /*!
      * @brief PVR update and control thread.
      */

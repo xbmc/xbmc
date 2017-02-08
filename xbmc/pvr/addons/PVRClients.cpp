@@ -28,12 +28,9 @@
 #include "ServiceBroker.h"
 #include "cores/IPlayer.h"
 #include "dialogs/GUIDialogOK.h"
-#include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "events/EventLog.h"
 #include "events/NotificationEvent.h"
-#include "guilib/GUIWindowManager.h"
-#include "GUIUserMessages.h"
 #include "messaging/ApplicationMessenger.h"
 #include "pvr/channels/PVRChannelGroupInternal.h"
 #include "pvr/channels/PVRChannelGroups.h"
@@ -54,7 +51,6 @@ using namespace KODI::MESSAGING;
 #define PVR_CLIENT_AVAHI_SLEEP_TIME_MS     (250)
 
 CPVRClients::CPVRClients(void) :
-    m_bChannelScanRunning(false),
     m_bIsSwitchingChannels(false),
     m_playingClientId(-EINVAL),
     m_bIsPlayingLiveTV(false),
@@ -153,7 +149,6 @@ void CPVRClients::Unload(void)
   CSingleLock lock(m_critSection);
 
   /* reset class properties */
-  m_bChannelScanRunning  = false;
   m_bIsPlayingLiveTV     = false;
   m_bIsPlayingRecording  = false;
   m_strPlayingClientName = "";
@@ -863,78 +858,6 @@ bool CPVRClients::HasMenuHooks(int iClientID, PVR_MENUHOOK_CAT cat)
       client->HaveMenuHooks(cat));
 }
 
-void CPVRClients::ProcessMenuHooks(int iClientID, PVR_MENUHOOK_CAT cat, const CFileItem *item)
-{
-  // get client id
-  if (iClientID < 0 && cat == PVR_MENUHOOK_SETTING)
-  {
-    PVR_CLIENTMAP clients;
-    GetCreatedClients(clients);
-
-    if (clients.size() == 1)
-    {
-      iClientID = clients.begin()->first;
-    }
-    else if (clients.size() > 1)
-    {
-      // have user select client
-      CGUIDialogSelect* pDialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
-      pDialog->Reset();
-      pDialog->SetHeading(CVariant{19196});
-
-      for (const auto client : clients)
-      {
-        pDialog->Add(client.second->GetBackendName());
-      }
-      pDialog->Open();
-
-      int selection = pDialog->GetSelectedItem();
-      if (selection >= 0)
-      {
-        auto client = clients.begin();
-        std::advance(client, selection);
-        iClientID = client->first;
-      }
-    }
-  }
-
-  if (iClientID < 0)
-    iClientID = GetPlayingClientID();
-
-  PVR_CLIENT client;
-  if (GetCreatedClient(iClientID, client) && client->HaveMenuHooks(cat))
-  {
-    PVR_MENUHOOKS *hooks = client->GetMenuHooks();
-    std::vector<int> hookIDs;
-    int selection = 0;
-
-    CGUIDialogSelect* pDialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
-    pDialog->Reset();
-    pDialog->SetHeading(CVariant{19196});
-    for (unsigned int i = 0; i < hooks->size(); ++i)
-    {
-      if (hooks->at(i).category == cat || hooks->at(i).category == PVR_MENUHOOK_ALL)
-      {
-        pDialog->Add(g_localizeStrings.GetAddonString(client->ID(), hooks->at(i).iLocalizedStringId));
-        hookIDs.push_back(i);
-      }
-    }
-    if (hookIDs.size() > 1)
-    {
-      pDialog->Open();
-      selection = pDialog->GetSelectedItem();
-    }
-    if (selection >= 0)
-      client->CallMenuHook(hooks->at(hookIDs.at(selection)), item);
-  }
-}
-
-bool CPVRClients::IsRunningChannelScan(void) const
-{
-  CSingleLock lock(m_critSection);
-  return m_bChannelScanRunning;
-}
-
 std::vector<PVR_CLIENT> CPVRClients::GetClientsSupportingChannelScan(void) const
 {
   std::vector<PVR_CLIENT> possibleScanClients;
@@ -948,57 +871,6 @@ std::vector<PVR_CLIENT> CPVRClients::GetClientsSupportingChannelScan(void) const
   }
 
   return possibleScanClients;
-}
-
-void CPVRClients::StartChannelScan(void)
-{
-  PVR_CLIENT scanClient;
-  CSingleLock lock(m_critSection);
-  std::vector<PVR_CLIENT> possibleScanClients = GetClientsSupportingChannelScan();
-  m_bChannelScanRunning = true;
-
-  /* multiple clients found */
-  if (possibleScanClients.size() > 1)
-  {
-    CGUIDialogSelect* pDialog= (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
-
-    pDialog->Reset();
-    pDialog->SetHeading(CVariant{19119});
-
-    for (const auto client : possibleScanClients)
-      pDialog->Add(client->GetFriendlyName());
-
-    pDialog->Open();
-
-    int selection = pDialog->GetSelectedItem();
-    if (selection >= 0)
-      scanClient = possibleScanClients[selection];
-  }
-  /* one client found */
-  else if (possibleScanClients.size() == 1)
-  {
-    scanClient = possibleScanClients[0];
-  }
-  /* no clients found */
-  else if (!scanClient)
-  {
-    CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19192});
-    return;
-  }
-
-  /* start the channel scan */
-  CLog::Log(LOGNOTICE,"PVR - %s - starting to scan for channels on client %s",
-      __FUNCTION__, scanClient->GetFriendlyName().c_str());
-  long perfCnt = XbmcThreads::SystemClockMillis();
-
-  /* do the scan */
-  if (scanClient->StartChannelScan() != PVR_ERROR_NO_ERROR)
-    /* an error occured */
-    CGUIDialogOK::ShowAndGetInput(CVariant{19111}, CVariant{19193});
-
-  CLog::Log(LOGNOTICE, "PVRManager - %s - channel scan finished after %li.%li seconds",
-      __FUNCTION__, (XbmcThreads::SystemClockMillis()-perfCnt)/1000, (XbmcThreads::SystemClockMillis()-perfCnt)%1000);
-  m_bChannelScanRunning = false;
 }
 
 std::vector<PVR_CLIENT> CPVRClients::GetClientsSupportingChannelSettings(bool bRadio) const

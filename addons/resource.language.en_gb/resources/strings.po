@@ -1179,6 +1179,7 @@ msgid "Fetching CD information"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogFileBrowser.cpp
+#: xbmc/pvr/PVRGUIActions.cpp
 #: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
 #: xbmc/music/windows/GUIWindowMusicBase.cpp
 #: xbmc/video/windows/GUIWindowVideoNav.cpp
@@ -9604,7 +9605,7 @@ msgid "An unexpected error occurred. Try again later or check the log for more i
 msgstr ""
 
 #. message box text stating that a PVR backend error occured
-#: xbmc/pvr/addons/PVRClients.cpp
+#: xbmc/pvr/PVRGUIActions.cpp
 #: xbmc/pvr/recording/PVRRecording.cpp
 #: xbmc/pvr/timers/PVRTimerInfoTag.cpp
 msgctxt "#19111"
@@ -9653,7 +9654,7 @@ msgid "Can't use PVR functions while searching."
 msgstr ""
 
 #. channel scan backend selection dialog text
-#: xbmc/pvr/addons/PVRClients.cpp
+#: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19119"
 msgid "On which backend do you want to search?"
 msgstr ""
@@ -10078,13 +10079,13 @@ msgid "PVR service"
 msgstr ""
 
 #. error message box text stating that none of the available pvr clients does support channel scanning
-#: xbmc/pvr/addons/PVRClients.cpp
+#: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19192"
 msgid "None of the connected PVR backends supports scanning for channels."
 msgstr ""
 
 #. error message box text stating that a given pvr channel could not be played
-#: xbmc/pvr/addons/PVRClients.cpp
+#: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19193"
 msgid "The channel scan can't be started. Check the log for more information about this message."
 msgstr ""
@@ -10101,7 +10102,7 @@ msgid "Client actions"
 msgstr ""
 
 #. value for "pvr client specific actions" dialog headers
-#: xbmc/pvr/addons/PVRClients.cpp
+#: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19196"
 msgid "PVR client specific actions"
 msgstr ""

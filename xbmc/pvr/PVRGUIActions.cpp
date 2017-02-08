@@ -21,7 +21,10 @@
 #include "Application.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogOK.h"
+#include "dialogs/GUIDialogProgress.h"
+#include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogYesNo.h"
+#include "epg/EpgContainer.h"
 #include "epg/EpgInfoTag.h"
 #include "FileItem.h"
 #include "filesystem/Directory.h"
@@ -31,14 +34,17 @@
 #include "guilib/LocalizeStrings.h"
 #include "input/Key.h"
 #include "messaging/ApplicationMessenger.h"
+#include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/dialogs/GUIDialogPVRGuideInfo.h"
 #include "pvr/dialogs/GUIDialogPVRRecordingInfo.h"
 #include "pvr/dialogs/GUIDialogPVRTimerSettings.h"
+#include "pvr/PVRDatabase.h"
 #include "pvr/PVRItem.h"
 #include "pvr/PVRManager.h"
 #include "pvr/timers/PVRTimers.h"
 #include "pvr/recordings/PVRRecordings.h"
+#include "pvr/recordings/PVRRecordingsPath.h"
 #include "pvr/windows/GUIWindowPVRSearch.h"
 #include "ServiceBroker.h"
 #include "settings/MediaSettings.h"
@@ -59,6 +65,11 @@ namespace PVR
   {
     static CPVRGUIActions instance;
     return instance;
+  }
+
+  CPVRGUIActions::CPVRGUIActions()
+  : m_bChannelScanRunning(false)
+  {
   }
 
   bool CPVRGUIActions::ShowEPGInfo(const CFileItemPtr &item) const
@@ -849,6 +860,300 @@ namespace PVR
     else
       CLog::Log(LOGERROR, "CPVRGUIActions - %s - called on non-pvr window. no refresh possible.", __FUNCTION__);
 
+    return true;
+  }
+
+  bool CPVRGUIActions::StartChannelScan()
+  {
+    if (!g_PVRManager.IsStarted() || IsRunningChannelScan())
+      return false;
+
+    PVR_CLIENT scanClient;
+    std::vector<PVR_CLIENT> possibleScanClients = g_PVRClients->GetClientsSupportingChannelScan();
+    m_bChannelScanRunning = true;
+
+    /* multiple clients found */
+    if (possibleScanClients.size() > 1)
+    {
+      CGUIDialogSelect* pDialog= dynamic_cast<CGUIDialogSelect*>(g_windowManager.GetWindow(WINDOW_DIALOG_SELECT));
+      if (!pDialog)
+      {
+        CLog::Log(LOGERROR, "CPVRGUIActions - %s - unable to get WINDOW_DIALOG_SELECT!", __FUNCTION__);
+        m_bChannelScanRunning = false;
+        return false;
+      }
+
+      pDialog->Reset();
+      pDialog->SetHeading(CVariant{19119}); // "On which backend do you want to search?"
+
+      for (const auto client : possibleScanClients)
+        pDialog->Add(client->GetFriendlyName());
+
+      pDialog->Open();
+
+      int selection = pDialog->GetSelectedItem();
+      if (selection >= 0)
+        scanClient = possibleScanClients[selection];
+    }
+    /* one client found */
+    else if (possibleScanClients.size() == 1)
+    {
+      scanClient = possibleScanClients[0];
+    }
+    /* no clients found */
+    else if (!scanClient)
+    {
+      CGUIDialogOK::ShowAndGetInput(CVariant{19033},  // "Information"
+                                    CVariant{19192}); // "None of the connected PVR backends supports scanning for channels."
+      m_bChannelScanRunning = false;
+      return false;
+    }
+
+    /* start the channel scan */
+    CLog::Log(LOGNOTICE,"CPVRGUIActions - %s - starting to scan for channels on client %s",
+              __FUNCTION__, scanClient->GetFriendlyName().c_str());
+    long perfCnt = XbmcThreads::SystemClockMillis();
+
+    /* do the scan */
+    if (scanClient->StartChannelScan() != PVR_ERROR_NO_ERROR)
+      CGUIDialogOK::ShowAndGetInput(CVariant{257},    // "Error"
+                                    CVariant{19193}); // "The channel scan can't be started. Check the log for more information about this message."
+
+    CLog::Log(LOGNOTICE, "CPVRGUIActions - %s - channel scan finished after %li.%li seconds",
+              __FUNCTION__, (XbmcThreads::SystemClockMillis() - perfCnt) / 1000, (XbmcThreads::SystemClockMillis() - perfCnt) % 1000);
+    m_bChannelScanRunning = false;
+    return true;
+  }
+
+  bool CPVRGUIActions::ProcessMenuHooks(const CFileItemPtr &item)
+  {
+    if (!g_PVRManager.IsStarted())
+      return false;
+
+    int iClientID = -1;
+    PVR_MENUHOOK_CAT menuCategory = PVR_MENUHOOK_SETTING;
+
+    if (item->IsEPG())
+    {
+      if (item->GetEPGInfoTag()->HasPVRChannel())
+      {
+        iClientID = item->GetEPGInfoTag()->ChannelTag()->ClientID();
+        menuCategory = PVR_MENUHOOK_EPG;
+      }
+      else
+        return false;
+    }
+    else if (item->IsPVRChannel())
+    {
+      iClientID = item->GetPVRChannelInfoTag()->ClientID();
+      menuCategory = PVR_MENUHOOK_CHANNEL;
+    }
+    else if (item->IsDeletedPVRRecording())
+    {
+      iClientID = item->GetPVRRecordingInfoTag()->m_iClientId;
+      menuCategory = PVR_MENUHOOK_DELETED_RECORDING;
+    }
+    else if (item->IsUsablePVRRecording())
+    {
+      iClientID = item->GetPVRRecordingInfoTag()->m_iClientId;
+      menuCategory = PVR_MENUHOOK_RECORDING;
+    }
+    else if (item->IsPVRTimer())
+    {
+      iClientID = item->GetPVRTimerInfoTag()->m_iClientId;
+      menuCategory = PVR_MENUHOOK_TIMER;
+    }
+
+    // get client id
+    if (iClientID < 0 && menuCategory == PVR_MENUHOOK_SETTING)
+    {
+      PVR_CLIENTMAP clients;
+      g_PVRClients->GetCreatedClients(clients);
+
+      if (clients.size() == 1)
+      {
+        iClientID = clients.begin()->first;
+      }
+      else if (clients.size() > 1)
+      {
+        // have user select client
+        CGUIDialogSelect* pDialog= dynamic_cast<CGUIDialogSelect*>(g_windowManager.GetWindow(WINDOW_DIALOG_SELECT));
+        if (!pDialog)
+        {
+          CLog::Log(LOGERROR, "CPVRGUIActions - %s - unable to get WINDOW_DIALOG_SELECT!", __FUNCTION__);
+          return false;
+        }
+
+        pDialog->Reset();
+        pDialog->SetHeading(CVariant{19196}); // "PVR client specific actions"
+
+        for (const auto client : clients)
+        {
+          pDialog->Add(client.second->GetBackendName());
+        }
+
+        pDialog->Open();
+
+        int selection = pDialog->GetSelectedItem();
+        if (selection >= 0)
+        {
+          auto client = clients.begin();
+          std::advance(client, selection);
+          iClientID = client->first;
+        }
+      }
+    }
+
+    if (iClientID < 0)
+      iClientID = g_PVRClients->GetPlayingClientID();
+
+    PVR_CLIENT client;
+    if (g_PVRClients->GetCreatedClient(iClientID, client) && client->HaveMenuHooks(menuCategory))
+    {
+      CGUIDialogSelect* pDialog= dynamic_cast<CGUIDialogSelect*>(g_windowManager.GetWindow(WINDOW_DIALOG_SELECT));
+      if (!pDialog)
+      {
+        CLog::Log(LOGERROR, "CPVRGUIActions - %s - unable to get WINDOW_DIALOG_SELECT!", __FUNCTION__);
+        return false;
+      }
+
+      pDialog->Reset();
+      pDialog->SetHeading(CVariant{19196}); // "PVR client specific actions"
+
+      PVR_MENUHOOKS *hooks = client->GetMenuHooks();
+      std::vector<int> hookIDs;
+      int selection = 0;
+
+      for (unsigned int i = 0; i < hooks->size(); ++i)
+      {
+        if (hooks->at(i).category == menuCategory || hooks->at(i).category == PVR_MENUHOOK_ALL)
+        {
+          pDialog->Add(g_localizeStrings.GetAddonString(client->ID(), hooks->at(i).iLocalizedStringId));
+          hookIDs.push_back(i);
+        }
+      }
+
+      if (hookIDs.size() > 1)
+      {
+        pDialog->Open();
+        selection = pDialog->GetSelectedItem();
+      }
+
+      if (selection >= 0)
+        client->CallMenuHook(hooks->at(hookIDs.at(selection)), item.get());
+      else
+        return false;
+    }
+
+    return true;
+  }
+
+  bool CPVRGUIActions::ResetPVRDatabase(bool bResetEPGOnly)
+  {
+    CLog::Log(LOGNOTICE,"CPVRGUIActions - %s - clearing the PVR database", __FUNCTION__);
+
+    CGUIDialogProgress* pDlgProgress = dynamic_cast<CGUIDialogProgress*>(g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS));
+    if (!pDlgProgress)
+    {
+      CLog::Log(LOGERROR, "CPVRGUIActions - %s - unable to get WINDOW_DIALOG_PROGRESS!", __FUNCTION__);
+      return false;
+    }
+
+    if (bResetEPGOnly)
+    {
+      if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{19098},  // "Warning!"
+                                            CVariant{19188})) // "All your guide data will be cleared. Are you sure?"
+        return false;
+    }
+    else
+    {
+      if (!g_PVRManager.CheckParentalPIN(g_localizeStrings.Get(19262)) || // "Parental control. Enter PIN:"
+          !CGUIDialogYesNo::ShowAndGetInput(CVariant{19098},  // "Warning!"
+                                            CVariant{19186})) // "All your TV related data (channels, groups, guide) will be cleared. Are you sure?"
+        return false;
+    }
+
+    CDateTime::ResetTimezoneBias();
+
+    g_EpgContainer.Stop();
+
+    pDlgProgress->SetHeading(CVariant{313}); // "Cleaning database"
+    pDlgProgress->SetLine(0, CVariant{g_localizeStrings.Get(19187)}); // "Clearing all related data."
+    pDlgProgress->SetLine(1, CVariant{""});
+    pDlgProgress->SetLine(2, CVariant{""});
+
+    pDlgProgress->Open();
+    pDlgProgress->Progress();
+
+    if (g_PVRManager.IsPlaying())
+    {
+      CLog::Log(LOGNOTICE,"CPVRGUIActions - %s - stopping playback", __FUNCTION__);
+      CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_STOP);
+    }
+
+    pDlgProgress->SetPercentage(10);
+    pDlgProgress->Progress();
+
+    /* reset the EPG pointers */
+    const CPVRDatabasePtr database(g_PVRManager.GetTVDatabase());
+    if (database)
+      database->ResetEPG();
+
+    /* stop the thread, close database */
+    g_PVRManager.Stop();
+
+    pDlgProgress->SetPercentage(20);
+    pDlgProgress->Progress();
+
+    if (database && database->Open())
+    {
+      /* clean the EPG database */
+      g_EpgContainer.Reset();
+      pDlgProgress->SetPercentage(30);
+      pDlgProgress->Progress();
+
+      if (!bResetEPGOnly)
+      {
+        database->DeleteChannelGroups();
+        pDlgProgress->SetPercentage(50);
+        pDlgProgress->Progress();
+
+        /* delete all channels */
+        database->DeleteChannels();
+        pDlgProgress->SetPercentage(70);
+        pDlgProgress->Progress();
+
+        /* delete all channel and recording settings */
+        CVideoDatabase videoDatabase;
+
+        if (videoDatabase.Open())
+        {
+          videoDatabase.EraseVideoSettings("pvr://channels/");
+          videoDatabase.EraseVideoSettings(CPVRRecordingsPath::PATH_RECORDINGS);
+          videoDatabase.Close();
+        }
+
+        pDlgProgress->SetPercentage(80);
+        pDlgProgress->Progress();
+
+        /* delete all client information */
+        pDlgProgress->SetPercentage(90);
+        pDlgProgress->Progress();
+      }
+
+      database->Close();
+    }
+
+    CLog::Log(LOGNOTICE,"CPVRGUIActions - %s - %s database cleared", __FUNCTION__, bResetEPGOnly ? "EPG" : "PVR and EPG");
+
+    if (database)
+      database->Open();
+
+    CLog::Log(LOGNOTICE,"CPVRGUIActions - %s - restarting the PVRManager", __FUNCTION__);
+    g_PVRManager.Start();
+
+    pDlgProgress->SetPercentage(100);
+    pDlgProgress->Close();
     return true;
   }
 

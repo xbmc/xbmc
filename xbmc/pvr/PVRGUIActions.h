@@ -254,13 +254,38 @@ namespace PVR
     bool HideChannel(const CFileItemPtr &item) const;
 
     /*!
+     * @brief Open a selection dialog and start a channel scan on the selected client.
+     * @return true on success, false otherwise.
+     */
+    bool StartChannelScan();
+
+    /*!
+     * @return True when a channel scan is currently running, false otherwise.
+     */
+    bool IsRunningChannelScan() const { return m_bChannelScanRunning; }
+
+    /*!
+     * @brief Open selection and progress PVR actions.
+     * @param item The selected file item for which the hook was called.
+     * @return true on success, false otherwise.
+     */
+    bool ProcessMenuHooks(const CFileItemPtr &item);
+
+    /*!
+     * @brief Reset the TV database to it's initial state and delete all the data.
+     * @param bResetEPGOnly True to only reset the EPG database, false to reset both PVR and EPG database.
+     * @return true on success, false otherwise.
+     */
+    bool ResetPVRDatabase(bool bResetEPGOnly);
+
+    /*!
      * @brief Get the currently active channel number input handler.
      * @return the handler.
      */
     CPVRChannelNumberInputHandler &GetChannelNumberInputHandler();
 
   private:
-    CPVRGUIActions() = default;
+    CPVRGUIActions();
     CPVRGUIActions(const CPVRGUIActions&) = delete;
     CPVRGUIActions const& operator=(CPVRGUIActions const&) = delete;
     virtual ~CPVRGUIActions() {}
@@ -360,6 +385,8 @@ namespace PVR
 
   private:
     CPVRChannelSwitchingInputHandler m_channelNumberInputHandler;
+    bool m_bChannelScanRunning;
+
   };
 
 } // namespace PVR

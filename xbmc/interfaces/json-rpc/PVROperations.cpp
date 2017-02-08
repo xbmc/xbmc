@@ -21,6 +21,7 @@
 #include "PVROperations.h"
 #include "messaging/ApplicationMessenger.h"
 
+#include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/channels/PVRChannel.h"
@@ -239,9 +240,7 @@ JSONRPC_STATUS CPVROperations::Scan(const std::string &method, ITransportLayer *
   if (!g_PVRManager.IsStarted())
     return FailedToExecute;
 
-  if (!g_PVRManager.IsRunningChannelScan())
-    g_PVRManager.StartChannelScan();
-
+  CPVRGUIActions::GetInstance().StartChannelScan();
   return ACK;
 }
 
@@ -261,7 +260,7 @@ JSONRPC_STATUS CPVROperations::GetPropertyValue(const std::string &property, CVa
   else if (property == "scanning")
   {
     if (started)
-      result = g_PVRManager.IsRunningChannelScan();
+      result = CPVRGUIActions::GetInstance().IsRunningChannelScan();
     else
       result = false;
   }
