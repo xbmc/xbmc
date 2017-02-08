@@ -356,6 +356,9 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     float GetDisplayLatency(float refreshrate);
     bool m_initialized;
 
+    //! \brief Returns a list of picture extension for filtering in the GUI
+    std::string GetPictureExtensions() const;
+
     //! \brief Returns a list of music extension for filtering in the GUI
     std::string GetMusicExtensions() const;
 
@@ -365,7 +368,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     void ToggleDirtyRegionVisualization() { m_guiVisualizeDirtyRegions = !m_guiVisualizeDirtyRegions; };
 
     // runtime settings which cannot be set from advancedsettings.xml
-    std::string m_pictureExtensions;
     std::string m_videoExtensions;
     std::string m_discStubExtensions;
     std::string m_subtitlesExtensions;
@@ -385,6 +387,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
 
   private:
     std::string m_musicExtensions;
+    std::string m_pictureExtensions;
     void setExtraLogLevel(const std::vector<CVariant> &components);
 };
 

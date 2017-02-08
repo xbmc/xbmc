@@ -44,7 +44,8 @@
 #define ADDON_INSTANCE_VERSION_ADSP                   "0.1.10"
 #define ADDON_INSTANCE_VERSION_AUDIODECODER           "1.0.1"
 #define ADDON_INSTANCE_VERSION_AUDIOENCODER           "1.0.1"
-#define ADDON_INSTANCE_VERSION_GAME                   "1.0.29"
+#define ADDON_INSTANCE_VERSION_GAME                   "1.0.30"
+#define ADDON_INSTANCE_VERSION_IMAGEDECODER           "1.0.0"
 #define ADDON_INSTANCE_VERSION_INPUTSTREAM            "1.0.8"
 #define ADDON_INSTANCE_VERSION_PERIPHERAL             "1.3.0"
 #define ADDON_INSTANCE_VERSION_PVR                    "5.2.3"
@@ -75,6 +76,7 @@ typedef enum ADDON_TYPE
   ADDON_INSTANCE_SCREENSAVER = 108,
   ADDON_INSTANCE_VISUALIZATION = 109,
   ADDON_INSTANCE_VFS = 110,
+  ADDON_INSTANCE_IMAGEDECODER = 111,
 } ADDON_TYPE;
 
 #ifdef __cplusplus
@@ -110,6 +112,8 @@ inline const char* GetTypeVersion(int type)
       return ADDON_INSTANCE_VERSION_AUDIOENCODER;
     case ADDON_INSTANCE_GAME:
       return ADDON_INSTANCE_VERSION_GAME;
+    case ADDON_INSTANCE_IMAGEDECODER:
+      return ADDON_INSTANCE_VERSION_IMAGEDECODER;
     case ADDON_INSTANCE_INPUTSTREAM:
       return ADDON_INSTANCE_VERSION_INPUTSTREAM;
     case ADDON_INSTANCE_PERIPHERAL:
@@ -150,6 +154,8 @@ inline const char* GetTypeName(int type)
       return "AudioEncoder";
     case ADDON_INSTANCE_GAME:
       return "Game";
+    case ADDON_INSTANCE_IMAGEDECODER:
+      return "ImageDecocer";
     case ADDON_INSTANCE_INPUTSTREAM:
       return "Inputstream";
     case ADDON_INSTANCE_PERIPHERAL:
@@ -189,6 +195,8 @@ inline int GetTypeId(const char* name)
       return ADDON_INSTANCE_AUDIOENCODER;
     else if (strcmp(name, "game") == 0)
       return ADDON_INSTANCE_GAME;
+    else if (strcmp(name, "imagedecoder") == 0)
+      return ADDON_INSTANCE_IMAGEDECODER;
     else if (strcmp(name, "inputstream") == 0)
       return ADDON_INSTANCE_INPUTSTREAM;
     else if (strcmp(name, "peripheral") == 0)

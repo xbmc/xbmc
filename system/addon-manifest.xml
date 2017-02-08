@@ -8,6 +8,7 @@
   <addon>kodi.instance.audiodecoder</addon>
   <addon>kodi.instance.audioencoder</addon>
   <addon>kodi.instance.game</addon>
+  <addon>kodi.instance.imagedecoder</addon>
   <addon>kodi.instance.inputstream</addon>
   <addon>kodi.instance.peripheral</addon>
   <addon>kodi.instance.pvr</addon>

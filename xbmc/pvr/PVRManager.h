@@ -38,6 +38,7 @@
 #include <string>
 #include <vector>
 
+class CGUIDialogExtendedProgressBar;
 class CGUIDialogProgressBarHandle;
 class CStopWatch;
 class CAction;
@@ -603,6 +604,13 @@ namespace PVR
      */
     void PublishEvent(PVREvent state);
 
+    /*!
+     * @brief Show an extended progress bar dialog.
+     * @param strTitle the title for the dialog.
+     * @return the handle that can be used to control the progress dialog.
+     */
+    CGUIDialogProgressBarHandle* ShowProgressDialog(const std::string &strTitle) const;
+
   protected:
     /*!
      * @brief Start the PVRManager, which loads all PVR data and starts some threads to update the PVR data.
@@ -695,6 +703,7 @@ namespace PVR
     bool                            m_bFirstStart;                 /*!< true when the PVR manager was started first, false otherwise */
     bool                            m_bIsSwitchingChannels;        /*!< true while switching channels */
     bool                            m_bEpgsCreated;                /*!< true if epg data for channels has been created */
+    CGUIDialogExtendedProgressBar * m_progressBar;                 /*!< extended progress dialog instance pointer */
     CGUIDialogProgressBarHandle *   m_progressHandle;              /*!< progress dialog that is displayed while the pvrmanager is loading */
 
     CCriticalSection                m_managerStateMutex;

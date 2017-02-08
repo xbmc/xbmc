@@ -46,7 +46,6 @@ void CFanart::Pack()
   for (std::vector<SFanartData>::const_iterator it = m_fanart.begin(); it != m_fanart.end(); ++it)
   {
     TiXmlElement thumb("thumb");
-    thumb.SetAttribute("dim", it->strResolution.c_str());
     thumb.SetAttribute("colors", it->strColors.c_str());
     thumb.SetAttribute("preview", it->strPreview.c_str());
     TiXmlText text(it->strImage);
@@ -54,6 +53,21 @@ void CFanart::Pack()
     fanart.InsertEndChild(thumb);
   }
   m_xml << fanart;
+}
+
+void CFanart::AddFanart(const std::string& image, const std::string& preview, const std::string& colors)
+{
+  SFanartData info;
+  info.strPreview = preview;
+  info.strImage = image;
+  ParseColors(colors, info.strColors);
+  m_fanart.push_back(std::move(info));
+}
+
+void CFanart::Clear()
+{
+  m_fanart.clear();
+  m_xml.clear();
 }
 
 bool CFanart::Unpack()
@@ -84,7 +98,6 @@ bool CFanart::Unpack()
           if (fanartThumb->Attribute("preview"))
             data.strPreview = URIUtils::AddFileToFolder(url, fanartThumb->Attribute("preview"));
         }
-        data.strResolution = XMLUtils::GetAttribute(fanartThumb, "dim");
         ParseColors(XMLUtils::GetAttribute(fanartThumb, "colors"), data.strColors);
         m_fanart.push_back(data);
       }

@@ -470,7 +470,7 @@ typedef struct KodiToAddonFuncTable_Game
   GAME_ERROR  (__cdecl* Serialize)(uint8_t*, size_t);
   GAME_ERROR  (__cdecl* Deserialize)(const uint8_t*, size_t);
   GAME_ERROR  (__cdecl* CheatReset)(void);
-  GAME_ERROR  (__cdecl* GetMemory)(GAME_MEMORY, const uint8_t**, size_t*);
+  GAME_ERROR  (__cdecl* GetMemory)(GAME_MEMORY, uint8_t**, size_t*);
   GAME_ERROR  (__cdecl* SetCheat)(unsigned int, bool, const char*);
 } KodiToAddonFuncTable_Game;
 

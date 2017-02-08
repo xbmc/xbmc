@@ -20,6 +20,7 @@
 
 #include "GameClient.h"
 #include "GameClientCallbacks.h"
+#include "GameClientInGameSaves.h"
 #include "GameClientInput.h"
 #include "GameClientKeyboard.h"
 #include "GameClientMouse.h"
@@ -227,6 +228,9 @@ bool CGameClient::OpenFile(const CFileItem& file, IGameAudioCallback* audio, IGa
 
   if (!InitializeGameplay(file.GetPath(), audio, video))
     return false;
+
+  m_inGameSaves.reset(new CGameClientInGameSaves(this, &m_struct));
+  m_inGameSaves->Load();
 
   return true;
 }
@@ -437,6 +441,9 @@ void CGameClient::CloseFile()
 
   if (m_bIsPlaying)
   {
+    m_inGameSaves->Save();
+    m_inGameSaves.reset();
+
     try { LogError(m_struct.UnloadGame(), "UnloadGame()"); }
     catch (...) { LogException("UnloadGame()"); }
   }

@@ -677,7 +677,7 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference&          action,
             // this is the only way to hide unplayable items in the 'files'
             // view as we cannot tell what context (eg music vs video) the
             // request came from
-            std::string supported = g_advancedSettings.m_pictureExtensions + "|"
+            std::string supported = g_advancedSettings.GetPictureExtensions() + "|"
                                   + g_advancedSettings.m_videoExtensions + "|"
                                   + g_advancedSettings.GetMusicExtensions() + "|"
                                   + g_advancedSettings.m_discStubExtensions;

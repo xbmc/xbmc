@@ -10619,13 +10619,13 @@ msgctxt "#19285"
 msgid "Browse for icon"
 msgstr ""
 
-#. unused?
+#. Label for channel icon search progress dialog
+#: xbmc/pvr/channels/PVRChannelGroup.cpp
 msgctxt "#19286"
 msgid "Searching for channel icons"
 msgstr ""
 
 #. Label for the default pvr channel group
-#: xbmc/pvr/channels/PVRChannelGroup.cpp
 #: xbmc/pvr/channels/PVRChannelGroupInternal.cpp
 msgctxt "#19287"
 msgid "All channels"
@@ -20427,4 +20427,9 @@ msgstr ""
 #: xbmc/addons/GUIDialogAddonInfo.cpp
 msgctxt "#39014"
 msgid "Would you also like to remove all related data (e.g. settings) of this add-on?"
+msgstr ""
+
+#: /xbmc/addons/Addon.cpp
+msgctxt "#39015"
+msgid "Image decoder"
 msgstr ""

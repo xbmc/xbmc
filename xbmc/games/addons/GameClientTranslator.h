@@ -47,6 +47,13 @@ namespace GAME
     static const char* ToString(GAME_ERROR error);
 
     /*!
+     * \brief Translates game memory types to string representation (e.g. for logging).
+     * \param memory The memory type to translate.
+     * \return Translated memory type.
+     */
+    static const char* ToString(GAME_MEMORY error);
+
+    /*!
      * \brief Translate pixel format (Game API to FFMPEG).
      * \param format The pixel format to translate.
      * \return Translated pixel format.

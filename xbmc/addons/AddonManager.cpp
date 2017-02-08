@@ -48,6 +48,7 @@
 #include "addons/AudioEncoder.h"
 #include "addons/ContextMenuAddon.h"
 #include "addons/GameResource.h"
+#include "addons/ImageDecoder.h"
 #include "addons/ImageResource.h"
 #include "addons/InputStream.h"
 #include "addons/LanguageResource.h"
@@ -748,6 +749,8 @@ std::shared_ptr<CAddon> CAddonMgr::CreateAddon(AddonInfoPtr addonInfo, TYPE addo
       return std::make_shared<CAudioEncoder>(addonInfo);
     case ADDON_AUDIODECODER:
       return std::make_shared<CAudioDecoder>(addonInfo);
+    case ADDON_IMAGEDECODER:
+      return std::make_shared<CImageDecoder>(addonInfo);
     case ADDON_INPUTSTREAM:
       return std::make_shared<CInputStream>(addonInfo);
     case ADDON_PERIPHERALDLL:

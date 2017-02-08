@@ -20,7 +20,15 @@
 
 #include "imagefactory.h"
 #include "guilib/FFmpegImage.h"
+#include "addons/BinaryAddonCache.h"
+#include "addons/ImageDecoder.h"
 #include "utils/Mime.h"
+#include "utils/StringUtils.h"
+#include "ServiceBroker.h"
+
+#include <algorithm>
+
+using namespace ADDON;
 
 IImage* ImageFactory::CreateLoader(const std::string& strFileName)
 {
@@ -38,5 +46,20 @@ IImage* ImageFactory::CreateLoader(const CURL& url)
 
 IImage* ImageFactory::CreateLoaderFromMimeType(const std::string& strMimeType)
 {
+  VECADDONS codecs;
+  ADDON::CBinaryAddonCache &addonCache = CServiceBroker::GetBinaryAddonCache();
+  addonCache.GetAddons(codecs, ADDON::ADDON_IMAGEDECODER);
+  for (auto& codec : codecs)
+  {
+    std::shared_ptr<CImageDecoder> enc(std::static_pointer_cast<CImageDecoder>(codec));
+    std::vector<std::string> mime = StringUtils::Split(enc->GetMimetypes(), "|");
+    if (std::find(mime.begin(), mime.end(), strMimeType) != mime.end())
+    {
+      CImageDecoder* result = new CImageDecoder(*enc);
+      result->Create(strMimeType);
+      return result;
+    }
+  }
+
   return new CFFmpegImage(strMimeType);
 }

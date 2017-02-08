@@ -406,7 +406,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
               // convert mask qualifiers
               StringUtils::Replace(strMask, "$AUDIO", g_advancedSettings.GetMusicExtensions());
               StringUtils::Replace(strMask, "$VIDEO", g_advancedSettings.m_videoExtensions);
-              StringUtils::Replace(strMask, "$IMAGE", g_advancedSettings.m_pictureExtensions);
+              StringUtils::Replace(strMask, "$IMAGE", g_advancedSettings.GetPictureExtensions());
 #if defined(_WIN32_WINNT)
               StringUtils::Replace(strMask, "$EXECUTABLE", ".exe|.bat|.cmd|.py");
 #else

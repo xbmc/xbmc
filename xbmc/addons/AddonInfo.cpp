@@ -82,6 +82,7 @@ static const TypeMapping types[] =
    {"kodi.adsp",                         ADDON_ADSPDLL,             24135, "DefaultAddonAudioDSP.png" },
    {"kodi.inputstream",                  ADDON_INPUTSTREAM,         24048, "DefaultAddonInputstream.png" },
    {"kodi.vfs",                          ADDON_VFS,                 39013, "DefaultAddonVfs.png" },
+   {"kodi.imagedecoder",                 ADDON_IMAGEDECODER,        39015, "DefaultAddonImageDecoder.png" },
   };
 
 bool CAddonExtensions::ParseExtension(const TiXmlElement* element)
