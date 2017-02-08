@@ -29,9 +29,18 @@
 #include "threads/Thread.h"
 #include "utils/Observer.h"
 
+#include <memory>
 #include <set>
 #include <string>
 #include <vector>
+
+namespace KODI
+{
+namespace KEYBOARD
+{
+  class IActionMap;
+}
+}
 
 namespace GAME
 {
@@ -45,7 +54,7 @@ namespace GAME
   public:
     CGUIConfigurationWizard(bool bEmulation, unsigned int controllerNumber = 0);
 
-    virtual ~CGUIConfigurationWizard(void) { }
+    virtual ~CGUIConfigurationWizard(void);
 
     // implementation of IConfigurationWizard
     virtual void Run(const std::string& strControllerId, const std::vector<IFeatureButton*>& buttons) override;
@@ -107,5 +116,8 @@ namespace GAME
     CEvent                               m_motionlessEvent;
     CCriticalSection                     m_motionMutex;
     std::set<const KODI::JOYSTICK::IButtonMap*> m_bInMotion;
+
+    // Keyboard handling
+    std::unique_ptr<KODI::KEYBOARD::IActionMap> m_actionMap;
   };
 }
