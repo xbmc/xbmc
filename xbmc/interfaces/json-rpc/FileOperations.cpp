@@ -100,7 +100,7 @@ JSONRPC_STATUS CFileOperations::GetDirectory(const std::string &method, ITranspo
   else if (media == "pictures")
   {
     regexps = g_advancedSettings.m_pictureExcludeFromListingRegExps;
-    extensions = g_advancedSettings.m_pictureExtensions;
+    extensions = g_advancedSettings.GetPictureExtensions();
   }
 
   if (CDirectory::GetDirectory(strPath, items, extensions))
@@ -362,7 +362,7 @@ bool CFileOperations::FillFileItemList(const CVariant &parameterObject, CFileIte
       else if (media == "pictures")
       {
         regexps = g_advancedSettings.m_pictureExcludeFromListingRegExps;
-        extensions = g_advancedSettings.m_pictureExtensions;
+        extensions = g_advancedSettings.GetPictureExtensions();
       }
 
       CDirectory directory;

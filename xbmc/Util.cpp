@@ -543,7 +543,7 @@ bool CUtil::IsTVRecording(const std::string& strFile)
 bool CUtil::IsPicture(const std::string& strFile)
 {
   return URIUtils::HasExtension(strFile,
-                  g_advancedSettings.m_pictureExtensions + "|.tbn|.dds");
+                  g_advancedSettings.GetPictureExtensions()+ "|.tbn|.dds");
 }
 
 bool CUtil::ExcludeFileOrFolder(const std::string& strFileOrFolder, const std::vector<std::string>& regexps)

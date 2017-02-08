@@ -20424,3 +20424,8 @@ msgstr ""
 msgctxt "#39014"
 msgid "Would you also like to remove all related data (e.g. settings) of this add-on?"
 msgstr ""
+
+#: /xbmc/addons/Addon.cpp
+msgctxt "#39015"
+msgid "Image decoder"
+msgstr ""

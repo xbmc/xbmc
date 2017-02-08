@@ -28,6 +28,7 @@
 #include "addons/AudioDecoder.h"
 #include "addons/BinaryAddonCache.h"
 #include "addons/IAddon.h"
+#include "addons/ImageDecoder.h"
 #include "Application.h"
 #include "ServiceBroker.h"
 #include "filesystem/File.h"
@@ -1431,6 +1432,23 @@ std::string CAdvancedSettings::GetMusicExtensions() const
   for (size_t i=0;i<codecs.size();++i)
   {
     std::shared_ptr<CAudioDecoder> dec(std::static_pointer_cast<CAudioDecoder>(codecs[i]));
+    result += '|';
+    result += dec->GetExtensions();
+  }
+
+  return result;
+}
+
+std::string CAdvancedSettings::GetPictureExtensions() const
+{
+  std::string result(m_pictureExtensions);
+
+  VECADDONS codecs;
+  CBinaryAddonCache &addonCache = CServiceBroker::GetBinaryAddonCache();
+  addonCache.GetAddons(codecs, ADDON_IMAGEDECODER);
+  for (size_t i=0;i<codecs.size();++i)
+  {
+    std::shared_ptr<CImageDecoder> dec(std::static_pointer_cast<CImageDecoder>(codecs[i]));
     result += '|';
     result += dec->GetExtensions();
   }

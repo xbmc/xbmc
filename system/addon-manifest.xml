@@ -6,6 +6,7 @@
   <addon>kodi.audiodecoder</addon>
   <addon>kodi.game</addon>
   <addon>kodi.guilib</addon>
+  <addon>kodi.imagedecoder</addon>
   <addon>kodi.inputstream</addon>
   <addon>kodi.peripheral</addon>
   <addon>kodi.resource</addon>
