@@ -746,8 +746,8 @@ void CPeripheralAddon::GetJoystickInfo(const CPeripheral* device, ADDON::Joystic
   else if (device->Type() == PERIPHERAL_JOYSTICK_EMULATION)
   {
     const CPeripheralJoystickEmulation* joystick = static_cast<const CPeripheralJoystickEmulation*>(device);
-    joystickInfo.SetName(JOYSTICK_EMULATION_BUTTON_MAP_NAME); // Override name with non-localized version
-    joystickInfo.SetProvider(JOYSTICK_EMULATION_PROVIDER);
+    joystickInfo.SetName(GetDeviceName(PERIPHERAL_JOYSTICK_EMULATION)); // Override name with non-localized version
+    joystickInfo.SetProvider(GetProvider(PERIPHERAL_JOYSTICK_EMULATION));
     joystickInfo.SetIndex(joystick->ControllerNumber());
   }
 }
@@ -772,4 +772,30 @@ bool CPeripheralAddon::LogError(const PERIPHERAL_ERROR error, const char *strMet
     return false;
   }
   return true;
+}
+
+std::string CPeripheralAddon::GetDeviceName(PeripheralType type)
+{
+  switch (type)
+  {
+  case PERIPHERAL_JOYSTICK_EMULATION:
+    return JOYSTICK_EMULATION_BUTTON_MAP_NAME;
+  default:
+    break;
+  }
+
+  return "";
+}
+
+std::string CPeripheralAddon::GetProvider(PeripheralType type)
+{
+  switch (type)
+  {
+  case PERIPHERAL_JOYSTICK_EMULATION:
+    return JOYSTICK_EMULATION_PROVIDER;
+  default:
+    break;
+  }
+
+  return "";
 }

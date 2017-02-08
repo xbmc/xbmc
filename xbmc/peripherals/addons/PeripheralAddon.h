@@ -139,6 +139,9 @@ namespace PERIPHERALS
 
     bool LogError(const PERIPHERAL_ERROR error, const char *strMethod) const;
 
+    static std::string GetDeviceName(PeripheralType type);
+    static std::string GetProvider(PeripheralType type);
+
     /* @brief Cache for const char* members in PERIPHERAL_PROPERTIES */
     std::string         m_strUserPath;    /*!< @brief translated path to the user profile */
     std::string         m_strClientPath;  /*!< @brief translated path to this add-on */
