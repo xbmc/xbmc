@@ -164,6 +164,79 @@ struct ThreadMessageCallback
 
 class IMessageTarget;
 
+/*!
+ * \class CApplicationMessenger ApplicationMessenger.h "messaging/ApplicationMessenger.h"
+ * \brief This implements a simple message dispatcher/router for Kodi
+ * 
+ * For most users that wants to send message go to the documentation for these
+ * \sa CApplicationMessenger::SendMsg
+ * \sa CApplicationMessenger::PostMsg
+ *
+ * For anyone wanting to implement a message receiver, go to the documentation for
+ * \sa IMessageTarget
+ *
+ * IMPLEMENTATION SPECIFIC NOTES - DOCUMENTED HERE FOR THE SOLE PURPOSE OF IMPLEMENTERS OF THIS CLASS
+ * On a high level this implements two methods for dispatching messages, SendMsg and PostMsg.
+ * These are roughly modeled on the implementation of SendMessage and PostMessage in Windows.
+ * 
+ * PostMsg is the preferred method to use as it's non-blocking and does not wait for any response before
+ * returning to the caller. Messages will be stored in a queue and processed in order.
+ * 
+ * SendMsg is a blocking version and has a bit more subtleties to it regarding how inter-process
+ * dispatching is handled.
+ *
+ * Calling SendMsg with a message type that doesn't require marshalling will bypass the message queue
+ * and call the receiver directly
+ * 
+ * Calling SendMsg with a message type that require marshalling to a specific thread when not on that thread
+ * will add a message to the queue with a an event, it will then block the calling thread waiting on this event
+ * to be signaled.
+ * The message will be processed by the correct thread in it's message pump and the event will be signaled, unblocking
+ * the calling thread
+ * 
+ * Calling SendMsg with a message type that require marshalling to a specific thread when already on that thread
+ * will behave as scenario one, it will bypass the queue and call the receiver directly.
+ * 
+ * Currently there is a hack implemented in the message dispatcher that releases the graphicslock before dispatching
+ * a message. This was here before the redesign and removing it will require careful inspection of every call site.
+ * TODO: add logging if the graphicslock is held during message dispatch
+ * 
+ * Current design has three different message types
+ * 1. Normal messages that can be processed on any thread
+ * 2. GUI messages that require marshalling to the UI thread
+ * 3. A thread message that will spin up a background thread and wait a specified amount of time before posting the message
+ *    This should probably be removed, it's left for compatibility
+ *    
+ * Heavy emphasis on current design, the idea is that we can easily add more message types to route messages
+ * to more threads or other scenarios.
+ * 
+ * \sa CApplicationMessenger::ProcessMessages()
+ * handles regular messages that require no marshalling, this can be called from any thread to drive the message
+ * pump
+ * 
+ * \sa CApplicationMessenger::ProcessWindowMessages()
+ * handles GUI messages and currently should only be called on the UI thread
+ * 
+ * If/When this is expanded upon ProcessMessage() and ProcessWindowMessages() should be combined into a single method
+ * taking an enum or similar to indicate which message it's interested in.
+ * 
+ * The above methods are backed by two messages queues, one for each type of message. If more types are added
+ * this might need to be redesigned to simplify the lookup of the correct message queue but currently they're implemented
+ * as two member variables
+ *
+ * The design is meant to be very encapsulated and easy to extend without altering the public interface.
+ * e.g. If GUI messages should be handled on another thread, call \sa CApplicationMessenger::ProcessWindowMessage() on that
+ * thread and nothing else has to change. The callers have no knowledge of how this is implemented.
+ * 
+ * The design is also meant to be very dependency free to work as a bridge between lower layer functionality without
+ * having to have knowledge of the GUI or having a dependency on the GUI in any way. This is not the reality currently as
+ * this depends on \sa CApplication and the graphicslock but should be fixed soon enough.
+ * 
+ * To keep things simple the current implementation routes messages based on a mask that the receiver provides.
+ * Any message fitting that mask will be routed to that specific receiver.
+ * This will likely need to change if many different receivers are added but it should be possible to do it without
+ * any of the callers being changed.
+ */
 class CApplicationMessenger
 {
 public:
@@ -175,27 +248,156 @@ public:
 
   void Cleanup();
   // if a message has to be send to the gui, use MSG_TYPE_WINDOW instead
+  /*!
+   * \brief Send a blocking message and wait for a response
+   *
+   * If and what the response is depends entirely on the message being sent and
+   * should be documented on the message.
+   *
+   * Under no circumestances shall the caller hold a lock when calling SendMsg as there's
+   * no guarantee what the receiver will do to answer the request.
+   * 
+   * \param [in] messageId defined further up in this file
+   * \return meaning of the return varies based on the message
+   */
   int SendMsg(uint32_t messageId);
+
+  /*!
+   * \brief Send a blocking message and wait for a response
+   *
+   * If and what the response is depends entirely on the message being sent and
+   * should be documented on the message.
+   *
+   * Under no circumestances shall the caller hold a lock when calling SendMsg as there's
+   * no guarantee what the receiver will do to answer the request.
+   * 
+   * \param [in] messageId defined further up in this file
+   * \param [in] param1 value depends on the message being sent
+   * \param [in] param2 value depends on the message being sent, defaults to -1
+   * \param [in] payload this is a void pointer that is meant to send larger objects to the receiver
+   *             what to send depends on the message
+   * \return meaning of the return varies based on the message
+   */
   int SendMsg(uint32_t messageId, int param1, int param2 = -1, void* payload = nullptr);
+
+  /*!
+   * \brief Send a blocking message and wait for a response
+   *
+   * If and what the response is depends entirely on the message being sent and
+   * should be documented on the message.
+   *
+   * Under no circumestances shall the caller hold a lock when calling SendMsg as there's
+   * no guarantee what the receiver will do to answer the request.
+   * 
+   * \param [in] messageId defined further up in this file
+   * \param [in] param1 value depends on the message being sent
+   * \param [in] param2 value depends on the message being sent
+   * \param [in,out] payload this is a void pointer that is meant to send larger objects to the receiver
+   *             what to send depends on the message
+   * \param [in] strParam value depends on the message being sent, remains for backward compat
+   * \return meaning of the return varies based on the message
+   */
   int SendMsg(uint32_t messageId, int param1, int param2, void* payload, std::string strParam);
+
+  /*!
+   * \brief Send a blocking message and wait for a response
+   *
+   * If and what the response is depends entirely on the message being sent and
+   * should be documented on the message.
+   *
+   * Under no circumestances shall the caller hold a lock when calling SendMsg as there's
+   * no guarantee what the receiver will do to answer the request.
+   * 
+   * \param [in] messageId defined further up in this file
+   * \param [in] param1 value depends on the message being sent
+   * \param [in] param2 value depends on the message being sent
+   * \param [in,out] payload this is a void pointer that is meant to send larger objects to the receiver
+   *             what to send depends on the message
+   * \param [in] strParam value depends on the message being sent, remains for backward compat
+   * \param [in] params value depends on the message being sent, kept for backward compatiblity
+   * \return meaning of the return varies based on the message
+   */
   int SendMsg(uint32_t messageId, int param1, int param2, void* payload, std::string strParam, std::vector<std::string> params);
 
+  /*!
+   * \brief Send a non-blocking message and return immediately
+   * 
+   * If and what the response is depends entirely on the message being sent and
+   * should be documented on the message.
+   *
+   * \param [in] messageId defined further up in this file
+   */
   void PostMsg(uint32_t messageId);
+
+  /*!
+   * \brief Send a non-blocking message and return immediately
+   *
+   * If and what the response is depends entirely on the message being sent and
+   * should be documented on the message.
+   *
+   * \param [in] messageId defined further up in this file
+   * \param [in] param1 value depends on the message being sent
+   * \param [in] param2 value depends on the message being sent
+   * \param [in,out] payload this is a void pointer that is meant to send larger objects to the receiver
+   *             what to send depends on the message
+   */
   void PostMsg(uint32_t messageId, int param1, int param2 = -1, void* payload = nullptr);
+
+  /*!
+   * \brief Send a non-blocking message and return immediately
+   *
+   * If and what the response is depends entirely on the message being sent and
+   * should be documented on the message.
+   *
+   * \param [in] messageId defined further up in this file
+   * \param [in] param1 value depends on the message being sent
+   * \param [in] param2 value depends on the message being sent
+   * \param [in,out] payload this is a void pointer that is meant to send larger objects to the receiver
+   *             what to send depends on the message
+   * \param [in] strParam value depends on the message being sent, remains for backward compat
+   */
   void PostMsg(uint32_t messageId, int param1, int param2, void* payload, std::string strParam);
+  /*!
+   * \brief Send a non-blocking message and return immediately
+   *
+   * If and what the response is depends entirely on the message being sent and
+   * should be documented on the message.
+   *
+   * \param [in] messageId defined further up in this file
+   * \param [in] param1 value depends on the message being sent
+   * \param [in] param2 value depends on the message being sent
+   * \param [in,out] payload this is a void pointer that is meant to send larger objects to the receiver
+   *             what to send depends on the message
+   * \param [in] strParam value depends on the message being sent, remains for backward compat
+   * \param [in] params value depends on the message being sent, kept for backward compatiblity
+   */
   void PostMsg(uint32_t messageId, int param1, int param2, void* payload, std::string strParam, std::vector<std::string> params);
 
-  void ProcessMessages(); // only call from main thread.
+  /*!
+   * \brief Called from any thread to dispatch messages
+   */
+  void ProcessMessages();
+
+  /*!
+   * \brief Called from the UI thread to dispatch UI messages
+   * This is only of value to implementers of the message pump, do not rely on a specific thread
+   * being used other than that it's appropriate for UI messages
+   */
   void ProcessWindowMessages();
 
   /*! \brief Send a GUIMessage, optionally waiting before it's processed to return.
-   Should be used to send messages to the GUI from other threads.
-   \param msg the GUIMessage to send.
-   \param windowID optional window to send the message to (defaults to no specified window).
-   \param waitResult whether to wait for the result (defaults to false).
+   * This is kept for backward compat and is just a convenience wrapper for for SendMsg and PostMsg
+   * specifically for UI messages
+   * \param msg the GUIMessage to send.
+   * \param windowID optional window to send the message to (defaults to no specified window).
+   * \param waitResult whether to wait for the result (defaults to false).
    */
   void SendGUIMessage(const CGUIMessage &msg, int windowID = WINDOW_INVALID, bool waitResult=false);
 
+  /*!
+   * \brief This should be called any class implementing \sa IMessageTarget before it
+   * can receive any messages
+   */
   void RegisterReceiver(IMessageTarget* target);
 
 private:
@@ -208,9 +410,9 @@ private:
   int SendMsg(ThreadMessage&& msg, bool wait);
   void ProcessMessage(ThreadMessage *pMsg);
 
-  std::queue<ThreadMessage*> m_vecMessages;
-  std::queue<ThreadMessage*> m_vecWindowMessages;
-  std::map<int, IMessageTarget*> m_mapTargets;
+  std::queue<ThreadMessage*> m_vecMessages; /*!< queue for regular messages */
+  std::queue<ThreadMessage*> m_vecWindowMessages; /*!< queue for UI messages */
+  std::map<int, IMessageTarget*> m_mapTargets; /*!< a map of registered receivers indexed on the message mask*/
   CCriticalSection m_critSection;
 };
 }
