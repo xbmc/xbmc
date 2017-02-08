@@ -141,7 +141,7 @@ namespace JSONRPC
      \return True if the given object contains a member with 
      the given key otherwise false
      */
-    static inline bool IsValueMember(const CVariant &value, std::string key) { return value.isObject() && value.isMember(key); }
+    static inline bool IsValueMember(const CVariant &value, std::string key) { return value.isMember(key); }
     
     /*!
      \brief Returns the json value of a parameter
