@@ -34,7 +34,7 @@
 	<constant name="list_y_offset">0</constant>
 	<constant name="list_item_height">80</constant>
 	<expression name="infodialog_active">Window.IsActive(musicinformation) | Window.IsActive(songinformation) | Window.IsActive(movieinformation) | Window.IsActive(addoninformation) | Window.IsActive(pvrguideinfo) | Window.IsActive(pvrrecordinginfo) | Window.IsActive(pictureinfo) | Window.IsVisible(script-script.extendedinfo-DialogVideoInfo.xml) | Window.IsVisible(script-script.extendedinfo-DialogInfo.xml) | Window.IsVisible(script-script.extendedinfo-VideoList.xml)</expression>
-	<expression name="sidebar_focused">ControlGroup(9000).HasFocus | Control.HasFocus(6130)</expression>
+	<expression name="sidebar_visible">ControlGroup(9000).HasFocus | Control.HasFocus(6130) | Window.IsActive(MyPlaylist.xml)</expression>
 	<include name="CommonScrollbars">
 		<control type="group">
 			<animation effect="fade" start="100" end="0" time="150">WindowClose</animation>
@@ -320,6 +320,7 @@
 					<font>$PARAM[font]</font>
 					<aligny>center</aligny>
 					<label>$INFO[ListItem.Label]</label>
+					<scroll>true</scroll>
 				</control>
 			</focusedlayout>
 		</definition>
