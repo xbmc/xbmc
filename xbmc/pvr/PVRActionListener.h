@@ -31,13 +31,14 @@ public:
 
   static CPVRActionListener &GetInstance();
 
-  bool OnAction(const CAction &action);
+  // IActionListener implementation
+  bool OnAction(const CAction &action) override;
 
 private:
-  CPVRActionListener();
-  CPVRActionListener(const CPVRActionListener&);
-  CPVRActionListener& operator=(const CPVRActionListener&);
-  ~CPVRActionListener() {};
+  CPVRActionListener() = default;
+  ~CPVRActionListener() = default;
+  CPVRActionListener(const CPVRActionListener&) = delete;
+  CPVRActionListener& operator=(const CPVRActionListener&) = delete;
 };
 
 } // namespace PVR

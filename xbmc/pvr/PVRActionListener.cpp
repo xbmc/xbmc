@@ -31,10 +31,6 @@
 namespace PVR
 {
 
-CPVRActionListener::CPVRActionListener()
-{
-}
-
 CPVRActionListener &CPVRActionListener::GetInstance()
 {
   static CPVRActionListener instance;
