@@ -75,8 +75,7 @@ bool CInputStream::Create()
 void CInputStream::SaveSettings()
 {
   CAddon::SaveSettings();
-  if (!m_bIsChild)
-    UpdateConfig();
+  UpdateConfig();
 }
 
 void CInputStream::CheckConfig()
@@ -89,7 +88,7 @@ void CInputStream::CheckConfig()
     hasConfig = it != m_configMap.end();
   }
 
-  if (!m_bIsChild && !hasConfig)
+  if (!hasConfig)
     UpdateConfig();
 }
 
@@ -111,32 +110,11 @@ void CInputStream::UpdateConfig()
     StringUtils::Trim(path);
   }
 
-  CSingleLock lock(m_parentSection);
-  auto it = m_configMap.find(ID());
-  if (it == m_configMap.end())
-    config.m_parentBusy = false;
-  else
-    config.m_parentBusy = it->second.m_parentBusy;
-
   config.m_ready = true;
   if (status == ADDON_STATUS_PERMANENT_FAILURE)
     config.m_ready = false;
 
   m_configMap[ID()] = config;
-}
-
-bool CInputStream::UseParent()
-{
-  CSingleLock lock(m_parentSection);
-
-  auto it = m_configMap.find(ID());
-  if (it == m_configMap.end())
-    return false;
-  if (it->second.m_parentBusy)
-    return false;
-
-  it->second.m_parentBusy = true;
-  return true;
 }
 
 bool CInputStream::Supports(const CFileItem &fileitem)
@@ -232,14 +210,6 @@ bool CInputStream::Open(CFileItem &fileitem)
 void CInputStream::Close()
 {
   m_struct.toAddon.Close(m_addonInstance);
-
-  if (!m_bIsChild)
-  {
-    CSingleLock lock(m_parentSection);
-    auto it = m_configMap.find(ID());
-    if (it != m_configMap.end())
-      it->second.m_parentBusy = false;
-  }
 }
 
 // IDisplayTime

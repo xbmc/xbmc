@@ -70,17 +70,13 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IVideoPlayer* pPlayer
 
     if (input->Supports(fileitem))
     {
-      std::shared_ptr<ADDON::CInputStream> addon = input;
-      if (!input->UseParent())
-        addon = std::shared_ptr<ADDON::CInputStream>(new ADDON::CInputStream(*input));
-
-      if (addon->Create())
+      if (input->Create())
       {
         unsigned int videoWidth, videoHeight;
         pPlayer->GetVideoResolution(videoWidth, videoHeight);
-        addon->SetVideoResolution(videoWidth, videoHeight);
+        input->SetVideoResolution(videoWidth, videoHeight);
 
-        return new CInputStreamAddon(fileitem, addon);
+        return new CInputStreamAddon(fileitem, input);
       }
     }
   }
