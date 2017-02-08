@@ -101,8 +101,9 @@ namespace ADDON
     static std::map<std::string, Config> m_configMap;
 
   private:
-    INPUTSTREAM_PROPS m_info;
-    KodiToAddonFuncTable_InputStream m_struct;
+    ADDON::AddonDllPtr m_addon;
+    void* m_addonInstance;
+    AddonInstance_InputStream m_struct;
   };
 
 } /*namespace ADDON*/

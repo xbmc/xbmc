@@ -66,7 +66,7 @@ CInputStream::CInputStream(AddonInfoPtr addonInfo)
 
 bool CInputStream::Create()
 {
-  if (CAddonDll::Create(ADDON_INSTANCE_INPUTSTREAM, &m_struct, &m_info) == ADDON_STATUS_OK)
+  if (CAddonDll::Create(ADDON_INSTANCE_INPUTSTREAM, &m_struct, &m_struct.props) == ADDON_STATUS_OK)
     return true;
 
   return false;
@@ -96,11 +96,11 @@ void CInputStream::CheckConfig()
 void CInputStream::UpdateConfig()
 {
   std::string pathList;
-  ADDON_STATUS status = CAddonDll::Create(ADDON_INSTANCE_INPUTSTREAM, &m_struct, &m_info);
+  ADDON_STATUS status = CAddonDll::Create(ADDON_INSTANCE_INPUTSTREAM, &m_struct, &m_struct.props);
 
   if (status != ADDON_STATUS_PERMANENT_FAILURE)
   {
-    pathList = m_struct.GetPathList();
+    pathList = m_struct.toAddon.GetPathList(m_addonInstance);
     Destroy();
   }
 
@@ -218,11 +218,11 @@ bool CInputStream::Open(CFileItem &fileitem)
   props.m_libFolder = libFolder.c_str();
   props.m_profileFolder = profileFolder.c_str();
 
-  bool ret = m_struct.Open(props);
+  bool ret = m_struct.toAddon.Open(m_addonInstance, props);
   if (ret)
   {
     memset(&m_caps, 0, sizeof(m_caps));
-    m_struct.GetCapabilities(&m_caps);
+    m_struct.toAddon.GetCapabilities(m_addonInstance, &m_caps);
   }
 
   UpdateStreams();
@@ -231,7 +231,7 @@ bool CInputStream::Open(CFileItem &fileitem)
 
 void CInputStream::Close()
 {
-  m_struct.Close();
+  m_struct.toAddon.Close(m_addonInstance);
 
   if (!m_bIsChild)
   {
@@ -245,18 +245,18 @@ void CInputStream::Close()
 // IDisplayTime
 int CInputStream::GetTotalTime()
 {
-  return m_struct.GetTotalTime();
+  return m_struct.toAddon.GetTotalTime(m_addonInstance);
 }
 
 int CInputStream::GetTime()
 {
-  return m_struct.GetTime();
+  return m_struct.toAddon.GetTime(m_addonInstance);
 }
 
 // IPosTime
 bool CInputStream::PosTime(int ms)
 {
-  return m_struct.PosTime(ms);
+  return m_struct.toAddon.PosTime(m_addonInstance, ms);
 }
 
 // IDemux
@@ -264,7 +264,7 @@ void CInputStream::UpdateStreams()
 {
   DisposeStreams();
 
-  INPUTSTREAM_IDS streamIDs = m_struct.GetStreamIds();
+  INPUTSTREAM_IDS streamIDs = m_struct.toAddon.GetStreamIds(m_addonInstance);
   if (streamIDs.m_streamCount > INPUTSTREAM_IDS::MAX_STREAM_COUNT)
   {
     DisposeStreams();
@@ -273,7 +273,7 @@ void CInputStream::UpdateStreams()
 
   for (unsigned int i=0; i<streamIDs.m_streamCount; i++)
   {
-    INPUTSTREAM_INFO stream = m_struct.GetStream(streamIDs.m_streamIds[i]);
+    INPUTSTREAM_INFO stream = m_struct.toAddon.GetStream(m_addonInstance, streamIDs.m_streamIds[i]);
     if (stream.m_streamType == INPUTSTREAM_INFO::TYPE_NONE)
       continue;
 
@@ -390,12 +390,12 @@ void CInputStream::EnableStream(int iStreamId, bool enable)
   if (it == m_streams.end())
     return;
 
-  m_struct.EnableStream(it->second->uniqueId, enable);
+  m_struct.toAddon.EnableStream(m_addonInstance, it->second->uniqueId, enable);
 }
 
 DemuxPacket* CInputStream::ReadDemux()
 {
-  DemuxPacket* pPacket = m_struct.DemuxRead();
+  DemuxPacket* pPacket = m_struct.toAddon.DemuxRead(m_addonInstance);
 
   if (!pPacket)
   {
@@ -415,57 +415,57 @@ DemuxPacket* CInputStream::ReadDemux()
 
 bool CInputStream::SeekTime(double time, bool backward, double* startpts)
 {
-  return m_struct.DemuxSeekTime(time, backward, startpts);
+  return m_struct.toAddon.DemuxSeekTime(m_addonInstance, time, backward, startpts);
 }
 
 void CInputStream::AbortDemux()
 {
-  m_struct.DemuxAbort();
+  m_struct.toAddon.DemuxAbort(m_addonInstance);
 }
 
 void CInputStream::FlushDemux()
 {
-  m_struct.DemuxFlush();
+  m_struct.toAddon.DemuxFlush(m_addonInstance);
 }
 
 void CInputStream::SetSpeed(int iSpeed)
 {
-  m_struct.DemuxSetSpeed(iSpeed);
+  m_struct.toAddon.DemuxSetSpeed(m_addonInstance, iSpeed);
 }
 
 int CInputStream::ReadStream(uint8_t* buf, unsigned int size)
 {
-  return m_struct.ReadStream(buf, size);
+  return m_struct.toAddon.ReadStream(m_addonInstance, buf, size);
 }
 
 int64_t CInputStream::SeekStream(int64_t offset, int whence)
 {
-  return m_struct.SeekStream(offset, whence);
+  return m_struct.toAddon.SeekStream(m_addonInstance, offset, whence);
 }
 
 int64_t CInputStream::PositionStream()
 {
-  return m_struct.PositionStream();
+  return m_struct.toAddon.PositionStream(m_addonInstance);
 }
 
 int64_t CInputStream::LengthStream()
 {
-  return m_struct.LengthStream();
+  return m_struct.toAddon.LengthStream(m_addonInstance);
 }
 
 void CInputStream::PauseStream(double time)
 {
-  m_struct.PauseStream(time);
+  m_struct.toAddon.PauseStream(m_addonInstance, time);
 }
 
 bool CInputStream::IsRealTimeStream()
 {
-  return m_struct.IsRealTimeStream();
+  return m_struct.toAddon.IsRealTimeStream(m_addonInstance);
 }
 
 void CInputStream::SetVideoResolution(int width, int height)
 {
-  m_struct.SetVideoResolution(width, height);
+  m_struct.toAddon.SetVideoResolution(m_addonInstance, width, height);
 }
 
 } /*namespace ADDON*/

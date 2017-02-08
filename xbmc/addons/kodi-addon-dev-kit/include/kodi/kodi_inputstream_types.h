@@ -34,13 +34,6 @@
 
 extern "C" {
 
-  // this are properties given to the addon on create
-  // at this time we have no parameters for the addon
-  typedef struct INPUTSTREAM_PROPS
-  {
-    int dummy;
-  } INPUTSTREAM_PROPS;
-
   /*!
    * @brief InputStream add-on capabilities. All capabilities are set to "false" as default.
    */
@@ -145,46 +138,64 @@ extern "C" {
     uint16_t m_CryptoSessionIdSize;      /*!< @brief The size of the crypto session key id */
   } INPUTSTREAM_INFO;
 
-  /*!
-   * @brief Structure to transfer the methods from xbmc_inputstream_dll.h to XBMC
-   */
+
+  // this are properties given to the addon on create
+  // at this time we have no parameters for the addon
+  typedef struct AddonProps_InputStream
+  {
+    int dummy;
+  } AddonProps_InputStream;
+
+  typedef struct AddonToKodiFuncTable_InputStream
+  {
+    KODI_HANDLE kodiInstance;
+  } AddonToKodiFuncTable_InputStream;
+
   typedef struct KodiToAddonFuncTable_InputStream
   {
-    bool (__cdecl* Open)(INPUTSTREAM&);
-    void (__cdecl* Close)(void);
-    const char* (__cdecl* GetPathList)(void);
-    void (__cdecl* GetCapabilities)(INPUTSTREAM_CAPABILITIES*);
+    bool (__cdecl* Open)(void* addonInstance, INPUTSTREAM&);
+    void (__cdecl* Close)(void* addonInstance);
+    const char* (__cdecl* GetPathList)(void* addonInstance);
+    void (__cdecl* GetCapabilities)(void* addonInstance, INPUTSTREAM_CAPABILITIES*);
 
     // IDemux
-    struct INPUTSTREAM_IDS (__cdecl* GetStreamIds)();
-    struct INPUTSTREAM_INFO (__cdecl* GetStream)(int);
-    void (__cdecl* EnableStream)(int, bool);
-    void (__cdecl* DemuxReset)(void);
-    void (__cdecl* DemuxAbort)(void);
-    void (__cdecl* DemuxFlush)(void);
-    DemuxPacket* (__cdecl* DemuxRead)(void);
-    bool (__cdecl* DemuxSeekTime)(double, bool, double*);
-    void (__cdecl* DemuxSetSpeed)(int);
-    void (__cdecl* SetVideoResolution)(int, int);
+    struct INPUTSTREAM_IDS (__cdecl* GetStreamIds)(void* addonInstance);
+    struct INPUTSTREAM_INFO (__cdecl* GetStream)(void* addonInstance, int);
+    void (__cdecl* EnableStream)(void* addonInstance, int, bool);
+    void (__cdecl* DemuxReset)(void* addonInstance);
+    void (__cdecl* DemuxAbort)(void* addonInstance);
+    void (__cdecl* DemuxFlush)(void* addonInstance);
+    DemuxPacket* (__cdecl* DemuxRead)(void* addonInstance);
+    bool (__cdecl* DemuxSeekTime)(void* addonInstance, double, bool, double*);
+    void (__cdecl* DemuxSetSpeed)(void* addonInstance, int);
+    void (__cdecl* SetVideoResolution)(void* addonInstance, int, int);
 
     // IDisplayTime
-    int (__cdecl* GetTotalTime)(void);
-    int (__cdecl* GetTime)(void);
+    int (__cdecl* GetTotalTime)(void* addonInstance);
+    int (__cdecl* GetTime)(void* addonInstance);
 
     // IPosTime
-    bool (__cdecl* PosTime)(int);
+    bool (__cdecl* PosTime)(void* addonInstance, int);
 
     // Seekable (mandatory)
-    bool (__cdecl* CanPauseStream)(void);
-    bool (__cdecl* CanSeekStream)(void);
+    bool (__cdecl* CanPauseStream)(void* addonInstance);
+    bool (__cdecl* CanSeekStream)(void* addonInstance);
 
-    int (__cdecl* ReadStream)(uint8_t*, unsigned int);
-    int64_t(__cdecl* SeekStream)(int64_t, int);
-    int64_t (__cdecl* PositionStream)(void);
-    int64_t (__cdecl* LengthStream)(void);
-    void (__cdecl* PauseStream)(double);
-    bool (__cdecl* IsRealTimeStream)(void);
+    int (__cdecl* ReadStream)(void* addonInstance, uint8_t*, unsigned int);
+    int64_t(__cdecl* SeekStream)(void* addonInstance, int64_t, int);
+    int64_t (__cdecl* PositionStream)(void* addonInstance);
+    int64_t (__cdecl* LengthStream)(void* addonInstance);
+    void (__cdecl* PauseStream)(void* addonInstance, double);
+    bool (__cdecl* IsRealTimeStream)(void* addonInstance);
   } KodiToAddonFuncTable_InputStream;
+
+  typedef struct AddonInstance_InputStream
+  {
+    AddonProps_InputStream props;
+    AddonToKodiFuncTable_InputStream toKodi;
+    KodiToAddonFuncTable_InputStream toAddon;
+  } AddonInstance_InputStream;
+
 }
 
 
