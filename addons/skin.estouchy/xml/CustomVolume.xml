@@ -11,7 +11,7 @@
 			<texturenofocus></texturenofocus>
 			<texturefocus></texturefocus>
 			<onclick>Back</onclick>
-			<visible>![Window.IsVisible(Notification) | Window.IsVisible(VolumeBar)]</visible>
+			<visible>![Window.IsVisible(Notification) | Window.IsVisible(VolumeBar) | Window.IsVisible(SeekBar)]</visible>
 		</control>
 		<control type="group">
 			<posx>430</posx>
@@ -19,7 +19,7 @@
 			<width>420</width>
 			<height>78</height>
 			<include>16x9_xPos_Relocation</include>
-			<visible>![Window.IsVisible(Notification) | Window.IsVisible(VolumeBar)]</visible>
+			<visible>![Window.IsVisible(Notification) | Window.IsVisible(VolumeBar) | Window.IsVisible(SeekBar)]</visible>
 			<control type="label">
 				<description>label</description>
 				<posx>20</posx>
