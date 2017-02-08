@@ -66,7 +66,7 @@
 							<right>120</right>
 							<aligny>top</aligny>
 							<font>font14</font>
-							<animation effect="slide" start="0,0" end="0,18" time="0">Conditional</animation>
+							<animation effect="slide" start="0,0" end="0,14" time="0" condition="String.IsEmpty(ListItem.Title)">Conditional</animation>
 							<label>$INFO[ListItem.Label]</label>
 							<shadowcolor>text_shadow</shadowcolor>
 						</control>
@@ -125,7 +125,7 @@
 							<aligny>top</aligny>
 							<font>font14</font>
 							<label>$INFO[ListItem.Label]</label>
-							<animation effect="slide" start="0,0" end="0,18" time="0">Conditional</animation>
+							<animation effect="slide" start="0,0" end="0,14" time="0" condition="String.IsEmpty(ListItem.Title)">Conditional</animation>
 							<shadowcolor>text_shadow</shadowcolor>
 						</control>
 						<control type="label">
