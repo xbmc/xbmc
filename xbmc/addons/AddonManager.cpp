@@ -751,8 +751,6 @@ std::shared_ptr<CAddon> CAddonMgr::CreateAddon(AddonInfoPtr addonInfo, TYPE addo
       return std::make_shared<CAudioDecoder>(addonInfo);
     case ADDON_IMAGEDECODER:
       return std::make_shared<CImageDecoder>(addonInfo);
-//     case ADDON_INPUTSTREAM:
-//       return std::make_shared<CInputStream>(addonInfo);
     case ADDON_PERIPHERALDLL:
       return std::make_shared<PERIPHERALS::CPeripheralAddon>(addonInfo);
     case ADDON_GAMEDLL:

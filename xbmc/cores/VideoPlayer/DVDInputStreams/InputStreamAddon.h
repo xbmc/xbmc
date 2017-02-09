@@ -24,18 +24,23 @@
 #include <vector>
 
 #include "DVDInputStream.h"
-#include "addons/InputStream.h"
+#include "IVideoPlayer.h"
+#include "addons/AddonDll.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/kodi_inputstream_types.h"
 
 //! \brief Input stream class
 class CInputStreamAddon :
   public CDVDInputStream,
   public CDVDInputStream::IDisplayTime,
   public CDVDInputStream::IPosTime,
-  public CDVDInputStream::IDemux
+  public CDVDInputStream::IDemux,
+  public ADDON::IAddonInstanceHandler
 {
 public:
   //! \brief constructor
-  CInputStreamAddon(const CFileItem& fileitem, std::shared_ptr<ADDON::CInputStream> inputStream);
+  CInputStreamAddon(ADDON::AddonInfoPtr addonInfo, IVideoPlayer* player, const CFileItem& fileitem);
+
+  static bool Supports(ADDON::AddonInfoPtr& addonInfo, const CFileItem& fileitem);
 
   //! \brief Destructor.
   virtual ~CInputStreamAddon();
@@ -85,12 +90,27 @@ public:
   virtual void AbortDemux() override;
   virtual void FlushDemux() override;
   virtual void SetVideoResolution(int width, int height) override;
+  int64_t PositionStream();
+  bool IsRealTimeStream();
 
 protected:
-  std::shared_ptr<ADDON::CInputStream> m_addon;
   bool m_hasDemux;
   bool m_hasDisplayTime;
   bool m_hasPosTime;
   bool m_canPause;
   bool m_canSeek;
+
+  void UpdateStreams();
+  void DisposeStreams();
+
+  IVideoPlayer* m_player;
+
+private:
+  std::vector<std::string> m_fileItemProps;
+  INPUTSTREAM_CAPABILITIES m_caps;
+  std::map<int, CDemuxStream*> m_streams;
+
+  ADDON::AddonDllPtr m_addon;
+  void* m_addonInstance;
+  AddonInstance_InputStream m_struct;
 };
