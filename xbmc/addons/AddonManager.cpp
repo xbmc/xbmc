@@ -50,7 +50,6 @@
 #include "addons/GameResource.h"
 #include "addons/ImageDecoder.h"
 #include "addons/ImageResource.h"
-#include "addons/InputStream.h"
 #include "addons/LanguageResource.h"
 #include "addons/Repository.h"
 #include "addons/Scraper.h"

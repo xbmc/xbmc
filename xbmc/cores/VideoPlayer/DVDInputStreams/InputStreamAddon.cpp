@@ -21,7 +21,6 @@
 #include "InputStreamAddon.h"
 
 #include "FileItem.h"
-#include "addons/InputStream.h"
 #include "cores/VideoPlayer/DVDClock.h"
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemux.h"
 #include "cores/VideoPlayer/DVDDemuxers/DemuxCrypto.h"

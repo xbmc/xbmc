@@ -40,7 +40,6 @@
 #include "filesystem/File.h"
 #include "utils/URIUtils.h"
 #include "ServiceBroker.h"
-#include "addons/InputStream.h"
 #include "addons/AddonManager.h"
 #include "Util.h"
 
