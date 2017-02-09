@@ -31,16 +31,14 @@
 namespace ADDON
 {
 
-std::map<std::string, CInputStream::Config> CInputStream::m_configMap;
-CCriticalSection CInputStream::m_parentSection;
-
-CInputStream::CInputStream(AddonInfoPtr addonInfo)
-  : CAddonDll(addonInfo)
+CInputStream::CInputStream(AddonInfoPtr addonInfo, IVideoPlayer* player)
+  : CAddonDll(addonInfo),
+    m_player(player)
 {
-  std::string listitemprops = Type(ADDON_INPUTSTREAM)->GetValue("@listitemprops").asString();
-  std::string extensions = Type(ADDON_INPUTSTREAM)->GetValue("@extension").asString();
-  std::string protocols = Type(ADDON_INPUTSTREAM)->GetValue("@protocols").asString();
-  std::string name(ID());
+  std::string listitemprops = AddonInfo()->Type(ADDON_INPUTSTREAM)->GetValue("@listitemprops").asString();
+  std::string extensions = AddonInfo()->Type(ADDON_INPUTSTREAM)->GetValue("@extension").asString();
+  std::string protocols = AddonInfo()->Type(ADDON_INPUTSTREAM)->GetValue("@protocols").asString();
+  std::string name(AddonInfo()->ID());
 
   m_fileItemProps = StringUtils::Tokenize(listitemprops, "|");
   for (auto &key : m_fileItemProps)
@@ -60,80 +58,15 @@ CInputStream::CInputStream(AddonInfoPtr addonInfo)
   {
     StringUtils::Trim(ext);
   }
-
-  CheckConfig();
-}
-
-bool CInputStream::Create()
-{
-  if (CAddonDll::Create(ADDON_INSTANCE_INPUTSTREAM, &m_struct, &m_struct.props) == ADDON_STATUS_OK)
-    return true;
-
-  return false;
-}
-
-void CInputStream::SaveSettings()
-{
-  CAddon::SaveSettings();
-  UpdateConfig();
-}
-
-void CInputStream::CheckConfig()
-{
-  bool hasConfig = false;
-
-  {
-    CSingleLock lock(m_parentSection);
-    auto it = m_configMap.find(ID());
-    hasConfig = it != m_configMap.end();
-  }
-
-  if (!hasConfig)
-    UpdateConfig();
-}
-
-void CInputStream::UpdateConfig()
-{
-  std::string pathList;
-  ADDON_STATUS status = CAddonDll::Create(ADDON_INSTANCE_INPUTSTREAM, &m_struct, &m_struct.props);
-
-  if (status != ADDON_STATUS_PERMANENT_FAILURE)
-  {
-    pathList = m_struct.toAddon.GetPathList(m_addonInstance);
-    Destroy();
-  }
-
-  Config config;
-  config.m_pathList = StringUtils::Tokenize(pathList, "|");
-  for (auto &path : config.m_pathList)
-  {
-    StringUtils::Trim(path);
-  }
-
-  config.m_ready = true;
-  if (status == ADDON_STATUS_PERMANENT_FAILURE)
-    config.m_ready = false;
-
-  m_configMap[ID()] = config;
 }
 
 bool CInputStream::Supports(const CFileItem &fileitem)
 {
-  {
-    CSingleLock lock(m_parentSection);
-
-    auto it = m_configMap.find(ID());
-    if (it == m_configMap.end())
-      return false;
-    if (!it->second.m_ready)
-      return false;
-  }
-
   // check if a specific inputstream addon is requested
   CVariant addon = fileitem.GetProperty("inputstreamaddon");
   if (!addon.isNull())
   {
-    if (addon.asString() != ID())
+    if (addon.asString() != AddonInfo()->ID())
       return false;
     else
       return true;
@@ -148,30 +81,28 @@ bool CInputStream::Supports(const CFileItem &fileitem)
       return true;
   }
 
-  // check paths
-  CSingleLock lock(m_parentSection);
-  auto it = m_configMap.find(ID());
-  if (it == m_configMap.end())
-    return false;
-
-  bool match = false;
-  for (auto &path : it->second.m_pathList)
+  std::string filetype = fileitem.GetURL().GetFileType();
+  if (!filetype.empty())
   {
-    if (path.empty())
-      continue;
-
-    CRegExp r(true, CRegExp::asciiOnly, path.c_str());
-    if (r.RegFind(fileitem.GetPath().c_str()) == 0 && r.GetFindLen() > 5)
-    {
-      match = true;
-      break;
-    }
+    if (std::find(m_extensionsList.begin(),
+                  m_extensionsList.end(), filetype) != m_extensionsList.end())
+      return true;
   }
-  return match;
+
+  return false;
 }
 
 bool CInputStream::Open(CFileItem &fileitem)
 {
+  if (CAddonDll::Create(ADDON_INSTANCE_INPUTSTREAM, &m_struct, &m_struct.props) != ADDON_STATUS_OK)
+    return false;
+
+  unsigned int videoWidth = 720;
+  unsigned int videoHeight = 578;
+  if (m_player)
+    m_player->GetVideoResolution(videoWidth, videoHeight);
+  SetVideoResolution(videoWidth, videoHeight);
+
   INPUTSTREAM props;
   std::map<std::string, std::string> propsMap;
   for (auto &key : m_fileItemProps)

@@ -20,6 +20,7 @@
 
 #include "AddonDll.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/kodi_inputstream_types.h"
+#include "cores/VideoPlayer/IVideoPlayer.h"
 #include "FileItem.h"
 #include "threads/CriticalSection.h"
 #include <vector>
@@ -33,12 +34,8 @@ namespace ADDON
   class CInputStream : public CAddonDll
   {
   public:
-    CInputStream(AddonInfoPtr addonInfo);
+    CInputStream(AddonInfoPtr addonInfo, IVideoPlayer* player);
     virtual ~CInputStream() {}
-
-    virtual void SaveSettings() override;
-
-    bool Create();
 
     bool Supports(const CFileItem &fileitem);
     bool Open(CFileItem &fileitem);
@@ -80,8 +77,6 @@ namespace ADDON
   protected:
     void UpdateStreams();
     void DisposeStreams();
-    void UpdateConfig();
-    void CheckConfig();
 
     std::vector<std::string> m_fileItemProps;
     std::vector<std::string> m_extensionsList;
@@ -89,16 +84,8 @@ namespace ADDON
     INPUTSTREAM_CAPABILITIES m_caps;
     std::map<int, CDemuxStream*> m_streams;
 
-    static CCriticalSection m_parentSection;
-
-    struct Config
-    {
-      std::vector<std::string> m_pathList;
-      bool m_ready;
-    };
-    static std::map<std::string, Config> m_configMap;
-
   private:
+    IVideoPlayer* m_player;
     ADDON::AddonDllPtr m_addon;
     void* m_addonInstance;
     AddonInstance_InputStream m_struct;
