@@ -282,7 +282,7 @@ CButtonMapping::CButtonMapping(IButtonMapper* buttonMapper, IButtonMap* buttonMa
       axisConfig.center = primitive.Center();
       axisConfig.range = primitive.Range();
 
-      GetAxis(primitive.Index(), primitive.Center(), axisConfig).SetEmitted(primitive);
+      GetAxis(primitive.Index(), static_cast<float>(primitive.Center()), axisConfig).SetEmitted(primitive);
     }
   }
 }
