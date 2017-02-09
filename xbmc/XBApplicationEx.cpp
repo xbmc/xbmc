@@ -118,7 +118,7 @@ INT CXBApplicationEx::Run(const CAppParamParser &params)
   unsigned int frameTime = 0;
   const unsigned int noRenderFrameTime = 15;  // Simulates ~66fps
 
-  EnqueuePlayList(playlist, EOpReplace);
+  EnqueuePlayList(params.Playlist(), EOpReplace);
 
   // Run xbmc
   while (!m_bStop)
