@@ -51,6 +51,7 @@ public:
   virtual void SetRenderGUI(bool renderGUI) {};
 
 public:
+  void AddPlayList(CFileItemList &playlist);
   INT Run(CFileItemList &playlist);
   VOID Destroy();
 
