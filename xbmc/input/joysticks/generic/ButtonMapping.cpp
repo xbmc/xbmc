@@ -185,6 +185,12 @@ void CAxisDetector::SetEmitted(const CDriverPrimitive& activePrimitive)
 
 void CAxisDetector::DetectType(float position)
 {
+  // Some platforms don't report a value until the axis is first changed.
+  // Detection relies on an initial value, so this axis will be disabled until
+  // the user begins button mapping again.
+  if (m_config.bLateDiscovery)
+    return;
+
   // Update range if a range of > 1 is observed
   if (std::abs(position - m_config.center) > 1.0f)
     m_config.range = 2;
@@ -241,7 +247,8 @@ CButtonMapping::CButtonMapping(IButtonMapper* buttonMapper, IButtonMap* buttonMa
   m_buttonMapper(buttonMapper),
   m_buttonMap(buttonMap),
   m_actionMap(actionMap),
-  m_lastAction(0)
+  m_lastAction(0),
+  m_frameCount(0)
 {
   assert(m_buttonMapper != nullptr);
   assert(m_buttonMap != nullptr);
@@ -274,7 +281,7 @@ CButtonMapping::CButtonMapping(IButtonMapper* buttonMapper, IButtonMap* buttonMa
       axisConfig.center = primitive.Center();
       axisConfig.range = primitive.Range();
 
-      GetAxis(primitive.Index(), axisConfig).SetEmitted(primitive);
+      GetAxis(primitive.Index(), primitive.Center(), axisConfig).SetEmitted(primitive);
     }
   }
 }
@@ -291,7 +298,7 @@ bool CButtonMapping::OnHatMotion(unsigned int hatIndex, HAT_STATE state)
 
 bool CButtonMapping::OnAxisMotion(unsigned int axisIndex, float position, int center, unsigned int range)
 {
-  return GetAxis(axisIndex).OnMotion(position);
+  return GetAxis(axisIndex, position).OnMotion(position);
 }
 
 void CButtonMapping::ProcessAxisMotions(void)
@@ -300,6 +307,8 @@ void CButtonMapping::ProcessAxisMotions(void)
     axis.second.ProcessMotion();
 
   m_buttonMapper->OnEventFrame(m_buttonMap, IsMapping());
+
+  m_frameCount++;
 }
 
 void CButtonMapping::SaveButtonMap()
@@ -389,15 +398,33 @@ CHatDetector& CButtonMapping::GetHat(unsigned int hatIndex)
 }
 
 CAxisDetector& CButtonMapping::GetAxis(unsigned int axisIndex,
+                                       float position,
                                        const AxisConfiguration& initialConfig /* = AxisConfiguration() */)
 {
   auto itAxis = m_axes.find(axisIndex);
 
   if (itAxis == m_axes.end())
   {
-    m_axes.insert(std::make_pair(axisIndex, CAxisDetector(this, axisIndex, initialConfig)));
+    AxisConfiguration config(initialConfig);
+
+    if (m_frameCount >= 2)
+    {
+      config.bLateDiscovery = true;
+      OnLateDiscovery(axisIndex);
+    }
+
+    // Report axis
+    CLog::Log(LOGDEBUG, "Axis %u discovered at position %.04f after %lu frames",
+              axisIndex, position, static_cast<unsigned long>(m_frameCount));
+
+    m_axes.insert(std::make_pair(axisIndex, CAxisDetector(this, axisIndex, config)));
     itAxis = m_axes.find(axisIndex);
   }
 
   return itAxis->second;
+}
+
+void CButtonMapping::OnLateDiscovery(unsigned int axisIndex)
+{
+  m_buttonMapper->OnLateAxis(m_buttonMap, axisIndex);
 }
