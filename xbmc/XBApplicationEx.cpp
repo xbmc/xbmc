@@ -62,6 +62,17 @@ VOID CXBApplicationEx::Destroy()
 }
 
 /* Function that runs the application */
+void CXBApplicationEx::AddPlayList(CFileItemList &playlist)
+{
+    if (playlist.Size() > 0)
+    {
+        g_playlistPlayer.Add(0, playlist);
+        g_playlistPlayer.SetCurrentPlaylist(0);
+        KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_PLAYLISTPLAYER_PLAY, -1);
+    }
+}
+
+/* Function that runs the application */
 INT CXBApplicationEx::Run(CFileItemList &playlist)
 {
   CLog::Log(LOGNOTICE, "Running the application..." );
@@ -70,12 +81,7 @@ INT CXBApplicationEx::Run(CFileItemList &playlist)
   unsigned int frameTime = 0;
   const unsigned int noRenderFrameTime = 15;  // Simulates ~66fps
 
-  if (playlist.Size() > 0)
-  {
-    g_playlistPlayer.Add(0, playlist);
-    g_playlistPlayer.SetCurrentPlaylist(0);
-    KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_PLAYLISTPLAYER_PLAY, -1);
-  }
+  AddPlayList(playlist);
 
   // Run xbmc
   while (!m_bStop)

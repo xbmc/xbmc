@@ -22,5 +22,6 @@
 
 class CFileItemList;
 
+extern "C" void XBMC_AddPlayList(CFileItemList &playlist);
 extern "C" int XBMC_Run(bool renderGUI, CFileItemList &playlist);
 

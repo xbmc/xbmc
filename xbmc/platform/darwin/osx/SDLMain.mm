@@ -22,6 +22,8 @@
 #import "PlatformDefs.h"
 #import "messaging/ApplicationMessenger.h"
 #import "storage/osx/DarwinStorageProvider.h"
+#import "AppParamParser.h"
+#import "platform/xbmc.h"
 #undef BOOL
 
 #import "platform/darwin/osx/HotKeyController.h"
@@ -392,27 +394,33 @@ static void setupWindowMenu(void)
     return FALSE;
 
   // app has started, ignore this document.
-  if (gCalledAppMainline)
-    return FALSE;
-
-  temparg = [filename UTF8String];
-  arglen = SDL_strlen(temparg) + 1;
-  arg = (char *) SDL_malloc(arglen);
-  if (arg == NULL)
-    return FALSE;
-
-  newargv = (char **) realloc(gArgv, sizeof (char *) * (gArgc + 2));
-  if (newargv == NULL)
-  {
-    SDL_free(arg);
-    return FALSE;
+  if (gCalledAppMainline) {
+    const char* argv[2] = { "", [filename UTF8String] };
+    CAppParamParser appParamParser;
+    
+    appParamParser.Parse(argv, 2);
+    XBMC_AddPlayList(appParamParser.m_playlist);
   }
-  gArgv = newargv;
+  else {
+    temparg = [filename UTF8String];
+    arglen = SDL_strlen(temparg) + 1;
+    arg = (char *) SDL_malloc(arglen);
+    if (arg == NULL)
+      return FALSE;
 
-  SDL_strlcpy(arg, temparg, arglen);
-  gArgv[gArgc++] = arg;
-  gArgv[gArgc] = NULL;
+    newargv = (char **) realloc(gArgv, sizeof (char *) * (gArgc + 2));
+    if (newargv == NULL)
+    {
+      SDL_free(arg);
+      return FALSE;
+    }
+    gArgv = newargv;
 
+    SDL_strlcpy(arg, temparg, arglen);
+    gArgv[gArgc++] = arg;
+    gArgv[gArgc] = NULL;
+  }
+    
   return TRUE;
 }
 
