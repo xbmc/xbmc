@@ -24,6 +24,8 @@ namespace PERIPHERALS
   class CPeripheral;
 }
 
+namespace KODI
+{
 namespace JOYSTICK
 {
   class IButtonMap;
@@ -84,4 +86,5 @@ namespace JOYSTICK
     IButtonMap* const               m_buttonMap;
     PERIPHERALS::CPeripheral* const m_peripheral;
   };
+}
 }

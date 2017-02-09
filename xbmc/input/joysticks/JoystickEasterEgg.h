@@ -23,6 +23,8 @@
 
 #include <vector>
 
+namespace KODI
+{
 namespace JOYSTICK
 {
   /*!
@@ -44,4 +46,5 @@ namespace JOYSTICK
 
     unsigned int m_state;
   };
+}
 }

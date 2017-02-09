@@ -29,6 +29,7 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 
+using namespace KODI;
 using namespace GAME;
 
 #define ESC_KEY_CODE  27

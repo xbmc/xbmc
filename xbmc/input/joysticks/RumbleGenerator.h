@@ -21,6 +21,8 @@
 
 #include "threads/Thread.h"
 
+namespace KODI
+{
 namespace JOYSTICK
 {
   class IInputReceiver;
@@ -58,4 +60,5 @@ namespace JOYSTICK
     IInputReceiver* m_receiver;
     RUMBLE_TYPE     m_type;
   };
+}
 }

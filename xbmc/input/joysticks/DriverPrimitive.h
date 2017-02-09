@@ -23,6 +23,8 @@
 
 #include <stdint.h>
 
+namespace KODI
+{
 namespace JOYSTICK
 {
   /*!
@@ -145,4 +147,5 @@ namespace JOYSTICK
     SEMIAXIS_DIRECTION m_semiAxisDirection;
     unsigned int       m_range;
   };
+}
 }

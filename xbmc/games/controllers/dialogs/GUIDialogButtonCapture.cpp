@@ -37,6 +37,7 @@
 #include <algorithm>
 #include <iterator>
 
+using namespace KODI;
 using namespace GAME;
 
 CGUIDialogButtonCapture::CGUIDialogButtonCapture() :

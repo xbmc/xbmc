@@ -24,6 +24,7 @@
 #include "guilib/WindowIDs.h"
 #include "settings/Settings.h"
 
+using namespace KODI;
 using namespace JOYSTICK;
 
 std::vector<FeatureName> CJoystickEasterEgg::m_sequence = {

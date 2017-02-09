@@ -23,6 +23,8 @@
 
 #include <vector>
 
+namespace KODI
+{
 namespace JOYSTICK
 {
   class IDriverHandler;
@@ -62,4 +64,5 @@ namespace KEYBOARD
     JOYSTICK::IDriverHandler* const m_handler;
     std::vector<KeyEvent>           m_pressedKeys;
   };
+}
 }

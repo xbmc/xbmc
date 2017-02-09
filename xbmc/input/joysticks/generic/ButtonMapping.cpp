@@ -36,6 +36,7 @@
 #include <assert.h>
 #include <cmath>
 
+using namespace KODI;
 using namespace JOYSTICK;
 using namespace XbmcThreads;
 

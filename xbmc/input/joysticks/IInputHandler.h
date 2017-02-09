@@ -23,6 +23,8 @@
 
 #include <string>
 
+namespace KODI
+{
 namespace JOYSTICK
 {
   class IInputReceiver;
@@ -132,4 +134,5 @@ namespace JOYSTICK
   private:
     IInputReceiver* m_receiver;
   };
+}
 }

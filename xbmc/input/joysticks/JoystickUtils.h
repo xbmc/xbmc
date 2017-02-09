@@ -24,29 +24,37 @@
 /// \ingroup joystick
 /// \{
 
-inline JOYSTICK::HAT_DIRECTION& operator|=(JOYSTICK::HAT_DIRECTION& lhs, JOYSTICK::HAT_DIRECTION rhs)
+namespace KODI
 {
-  return lhs = static_cast<JOYSTICK::HAT_DIRECTION>(static_cast<int>(lhs) | static_cast<int>(rhs));
+namespace JOYSTICK
+{
+
+inline HAT_DIRECTION& operator|=(HAT_DIRECTION& lhs, HAT_DIRECTION rhs)
+{
+  return lhs = static_cast<HAT_DIRECTION>(static_cast<int>(lhs) | static_cast<int>(rhs));
 }
 
-inline JOYSTICK::HAT_STATE& operator|=(JOYSTICK::HAT_STATE& lhs, JOYSTICK::HAT_STATE rhs)
+inline HAT_STATE& operator|=(HAT_STATE& lhs, HAT_STATE rhs)
 {
-  return lhs = static_cast<JOYSTICK::HAT_STATE>(static_cast<int>(lhs) | static_cast<int>(rhs));
+  return lhs = static_cast<HAT_STATE>(static_cast<int>(lhs) | static_cast<int>(rhs));
 }
 
-inline bool operator&(JOYSTICK::HAT_STATE lhs, JOYSTICK::HAT_DIRECTION rhs)
+inline bool operator&(HAT_STATE lhs, HAT_DIRECTION rhs)
 {
   return (static_cast<int>(lhs) & static_cast<int>(rhs)) ? true : false;
 }
 
-inline JOYSTICK::SEMIAXIS_DIRECTION operator*(JOYSTICK::SEMIAXIS_DIRECTION lhs, int rhs)
+inline SEMIAXIS_DIRECTION operator*(SEMIAXIS_DIRECTION lhs, int rhs)
 {
-  return static_cast<JOYSTICK::SEMIAXIS_DIRECTION>(static_cast<int>(lhs) * rhs);
+  return static_cast<SEMIAXIS_DIRECTION>(static_cast<int>(lhs) * rhs);
 }
 
-inline float operator*(float lhs, JOYSTICK::SEMIAXIS_DIRECTION rhs)
+inline float operator*(float lhs, SEMIAXIS_DIRECTION rhs)
 {
   return lhs * static_cast<int>(rhs);
+}
+
+}
 }
 
 /// \}

@@ -33,6 +33,7 @@
  // From game.controller.default profile
 #define WEAK_MOTOR_NAME        "rightmotor"
 
+using namespace KODI;
 using namespace JOYSTICK;
 
 CRumbleGenerator::CRumbleGenerator(const std::string& controllerId) :
@@ -130,7 +131,7 @@ std::vector<std::string> CRumbleGenerator::GetMotors(const std::string& controll
   {
     for (const CControllerFeature& feature : controller->Layout().Features())
     {
-      if (feature.Type() == JOYSTICK::FEATURE_TYPE::MOTOR)
+      if (feature.Type() == FEATURE_TYPE::MOTOR)
         motors.push_back(feature.Name());
     }
   }

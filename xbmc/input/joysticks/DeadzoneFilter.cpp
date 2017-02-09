@@ -27,6 +27,7 @@
 #include <cmath>
 #include <vector>
 
+using namespace KODI;
 using namespace JOYSTICK;
 
 #define AXIS_EPSILON  0.01f // Allowed noise for detecting discrete D-pads (value of 0.007 when centered has been observed)

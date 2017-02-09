@@ -19,6 +19,8 @@
  */
 #pragma once
 
+namespace KODI
+{
 namespace JOYSTICK
 {
   /*!
@@ -40,4 +42,5 @@ namespace JOYSTICK
      */
     virtual bool SetMotorState(unsigned int motorIndex, float magnitude) = 0;
   };
+}
 }

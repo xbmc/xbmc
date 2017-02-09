@@ -69,7 +69,7 @@
 #include "bus/virtual/PeripheralBusCEC.h"
 #endif
 
-
+using namespace KODI;
 using namespace JOYSTICK;
 using namespace PERIPHERALS;
 using namespace XFILE;
@@ -132,7 +132,7 @@ void CPeripherals::Initialise()
   m_eventScanner.Start();
 
   m_bInitialised = true;
-  KODI::MESSAGING::CApplicationMessenger::GetInstance().RegisterReceiver(this);
+  MESSAGING::CApplicationMessenger::GetInstance().RegisterReceiver(this);
 }
 
 void CPeripherals::Clear()
@@ -964,7 +964,7 @@ void CPeripherals::OnSettingAction(const CSetting *setting)
     TestFeature(FEATURE_RUMBLE);
 }
 
-void CPeripherals::OnApplicationMessage(KODI::MESSAGING::ThreadMessage* pMsg)
+void CPeripherals::OnApplicationMessage(MESSAGING::ThreadMessage* pMsg)
 {
   switch (pMsg->dwMessage)
   {

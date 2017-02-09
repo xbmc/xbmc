@@ -27,6 +27,7 @@
 #include <algorithm>
 #include <assert.h>
 
+using namespace KODI;
 using namespace GAME;
 
 CGameClientInput::CGameClientInput(CGameClient* gameClient, int port, const ControllerPtr& controller, const KodiToAddonFuncTable_Game *dllStruct) :

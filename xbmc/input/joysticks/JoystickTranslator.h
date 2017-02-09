@@ -21,6 +21,8 @@
 
 #include "JoystickTypes.h"
 
+namespace KODI
+{
 namespace JOYSTICK
 {
   /*!
@@ -61,4 +63,5 @@ namespace JOYSTICK
      */
     static ANALOG_STICK_DIRECTION VectorToAnalogStickDirection(float x, float y);
   };
+}
 }

@@ -24,6 +24,7 @@
 #include <algorithm>
 #include <iterator>
 
+using namespace KODI;
 using namespace JOYSTICK;
 using namespace PERIPHERALS;
 

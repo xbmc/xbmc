@@ -22,6 +22,8 @@
 #include <map>
 #include <string>
 
+namespace KODI
+{
 namespace JOYSTICK
 {
   class CDriverPrimitive;
@@ -128,4 +130,5 @@ namespace JOYSTICK
   private:
     std::map<std::string, IButtonMapCallback*> m_callbacks;
   };
+}
 }
