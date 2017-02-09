@@ -36,8 +36,6 @@ CInputStream::CInputStream(AddonInfoPtr addonInfo, IVideoPlayer* player)
     m_player(player)
 {
   std::string listitemprops = AddonInfo()->Type(ADDON_INPUTSTREAM)->GetValue("@listitemprops").asString();
-  std::string extensions = AddonInfo()->Type(ADDON_INPUTSTREAM)->GetValue("@extension").asString();
-  std::string protocols = AddonInfo()->Type(ADDON_INPUTSTREAM)->GetValue("@protocols").asString();
   std::string name(AddonInfo()->ID());
 
   m_fileItemProps = StringUtils::Tokenize(listitemprops, "|");
@@ -46,47 +44,51 @@ CInputStream::CInputStream(AddonInfoPtr addonInfo, IVideoPlayer* player)
     StringUtils::Trim(key);
     key = name + "." + key;
   }
-
-  m_extensionsList = StringUtils::Tokenize(extensions, "|");
-  for (auto &ext : m_extensionsList)
-  {
-    StringUtils::Trim(ext);
-  }
-
-  m_protocolsList = StringUtils::Tokenize(protocols, "|");
-  for (auto &ext : m_protocolsList)
-  {
-    StringUtils::Trim(ext);
-  }
 }
 
-bool CInputStream::Supports(const CFileItem &fileitem)
+bool CInputStream::Supports(AddonInfoPtr& addonInfo, const CFileItem &fileitem)
 {
   // check if a specific inputstream addon is requested
   CVariant addon = fileitem.GetProperty("inputstreamaddon");
   if (!addon.isNull())
   {
-    if (addon.asString() != AddonInfo()->ID())
+    if (addon.asString() != addonInfo->ID())
       return false;
     else
       return true;
   }
-
+  
   // check protocols
   std::string protocol = fileitem.GetURL().GetProtocol();
   if (!protocol.empty())
   {
-    if (std::find(m_protocolsList.begin(),
-                  m_protocolsList.end(), protocol) != m_protocolsList.end())
-      return true;
+    std::string protocols = addonInfo->Type(ADDON_INPUTSTREAM)->GetValue("@protocols").asString();
+    if (!protocols.empty())
+    {
+      std::vector<std::string> protocolsList = StringUtils::Tokenize(protocols, "|");
+      for (auto& value : protocolsList)
+      {
+        StringUtils::Trim(value);
+        if (value == protocol)
+          return true;
+      }
+    }
   }
 
   std::string filetype = fileitem.GetURL().GetFileType();
   if (!filetype.empty())
   {
-    if (std::find(m_extensionsList.begin(),
-                  m_extensionsList.end(), filetype) != m_extensionsList.end())
-      return true;
+    std::string extensions = addonInfo->Type(ADDON_INPUTSTREAM)->GetValue("@extension").asString();
+    if (!extensions.empty())
+    {
+      std::vector<std::string> extensionsList = StringUtils::Tokenize(extensions, "|");
+      for (auto& value : extensionsList)
+      {
+        StringUtils::Trim(value);
+        if (value == filetype)
+          return true;
+      }
+    }
   }
 
   return false;

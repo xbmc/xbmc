@@ -37,7 +37,7 @@ namespace ADDON
     CInputStream(AddonInfoPtr addonInfo, IVideoPlayer* player);
     virtual ~CInputStream() {}
 
-    bool Supports(const CFileItem &fileitem);
+    static bool Supports(AddonInfoPtr& addonInfo, const CFileItem& fileitem);
     bool Open(CFileItem &fileitem);
     void Close();
 
@@ -79,8 +79,6 @@ namespace ADDON
     void DisposeStreams();
 
     std::vector<std::string> m_fileItemProps;
-    std::vector<std::string> m_extensionsList;
-    std::vector<std::string> m_protocolsList;
     INPUTSTREAM_CAPABILITIES m_caps;
     std::map<int, CDemuxStream*> m_streams;
 

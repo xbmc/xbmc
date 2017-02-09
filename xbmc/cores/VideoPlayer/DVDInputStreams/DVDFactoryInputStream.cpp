@@ -65,9 +65,9 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IVideoPlayer* pPlayer
 
   for (auto addonInfo : CAddonMgr::GetInstance().GetAddonInfos(true /*enabled only*/, ADDON_INPUTSTREAM))
   {
-    std::shared_ptr<CInputStream> input(std::make_shared<CInputStream>(addonInfo, pPlayer));
-    if (input->Supports(fileitem))
+    if (CInputStream::Supports(addonInfo, fileitem))
     {
+      std::shared_ptr<CInputStream> input(std::make_shared<CInputStream>(addonInfo, pPlayer));
       return new CInputStreamAddon(fileitem, input);
     }
   }
