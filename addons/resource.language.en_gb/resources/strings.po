@@ -20421,5 +20421,5 @@ msgid ""%s" is not available for instant playback."
 msgstr ""
 
 msgctxt "#40002"
-msgid "Please, check your offline library for:"
+msgid "Please check your offline library."
 msgstr ""
