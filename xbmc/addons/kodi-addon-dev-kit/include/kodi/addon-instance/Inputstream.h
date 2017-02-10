@@ -20,14 +20,10 @@
  *
  */
 
-#ifndef __cdecl
-#define __cdecl
-#endif
-
-#include "AddonBase.h"
+#include "../AddonBase.h"
 
 #ifdef BUILD_KODI_ADDON
-#include "DVDDemuxPacket.h"
+#include "../DVDDemuxPacket.h"
 #else
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemuxPacket.h"
 #endif
