@@ -3292,7 +3292,7 @@ PlayBackRet CApplication::PlayFile(CFileItem item, const std::string& player, bo
       if (strTitle.empty())
         strTitle = item.GetLabel();
 
-	  CGUIDialogOK::ShowAndGetInput(g_localizeStrings.Get(40000), CVariant{StringUtils::Format(g_localizeStrings.Get(40001).c_str(),strTitle.c_str())}, g_localizeStrings.Get(40002), CVariant{std::move(strMessage)});
+      CGUIDialogOK::ShowAndGetInput(g_localizeStrings.Get(40000), CVariant{StringUtils::Format(g_localizeStrings.Get(40001).c_str(),strTitle.c_str())}, g_localizeStrings.Get(40002), CVariant{std::move(strMessage)});
     }
 
     return PLAYBACK_OK;
