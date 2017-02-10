@@ -227,20 +227,22 @@ bool CPeripheralAddon::Register(unsigned int peripheralIndex, const PeripheralPt
 
 void CPeripheralAddon::UnregisterRemovedDevices(const PeripheralScanResults &results, PeripheralVector& removedPeripherals)
 {
-  CSingleLock lock(m_critSection);
   std::vector<unsigned int> removedIndexes;
-  for (auto& it : m_peripherals)
+
   {
-    const PeripheralPtr& peripheral = it.second;
-    PeripheralScanResult updatedDevice(PERIPHERAL_BUS_ADDON);
-    if (!results.GetDeviceOnLocation(peripheral->Location(), &updatedDevice) ||
-      *peripheral != updatedDevice)
+    CSingleLock lock(m_critSection);
+    for (auto& it : m_peripherals)
     {
-      // Device removed
-      removedIndexes.push_back(it.first);
+      const PeripheralPtr& peripheral = it.second;
+      PeripheralScanResult updatedDevice(PERIPHERAL_BUS_ADDON);
+      if (!results.GetDeviceOnLocation(peripheral->Location(), &updatedDevice) ||
+        *peripheral != updatedDevice)
+      {
+        // Device removed
+        removedIndexes.push_back(it.first);
+      }
     }
   }
-  lock.Leave();
 
   for (auto index : removedIndexes)
   {

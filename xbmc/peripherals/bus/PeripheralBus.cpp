@@ -75,38 +75,37 @@ void CPeripheralBus::OnDeviceRemoved(const std::string &strLocation)
 
 void CPeripheralBus::Clear(void)
 {
+  if (m_bNeedsPolling)
   {
-    CSingleLock lock(m_critSection);
-    if (m_bNeedsPolling)
-    {
-      m_bStop = true;
-      lock.Leave();
-      m_triggerEvent.Set();
-      StopThread(true);
-    }
+    StopThread(false);
+    m_triggerEvent.Set();
+    StopThread(true);
   }
 
   CSingleLock lock(m_critSection);
+
   m_peripherals.clear();
 }
 
 void CPeripheralBus::UnregisterRemovedDevices(const PeripheralScanResults &results)
 {
-  CSingleLock lock(m_critSection);
   PeripheralVector removedPeripherals;
-  for (int iDevicePtr = (int) m_peripherals.size() - 1; iDevicePtr >= 0; iDevicePtr--)
+
   {
-    const PeripheralPtr& peripheral = m_peripherals.at(iDevicePtr);
-    PeripheralScanResult updatedDevice(m_type);
-    if (!results.GetDeviceOnLocation(peripheral->Location(), &updatedDevice) ||
-        *peripheral != updatedDevice)
+    CSingleLock lock(m_critSection);
+    for (int iDevicePtr = (int) m_peripherals.size() - 1; iDevicePtr >= 0; iDevicePtr--)
     {
-      /* device removed */
-      removedPeripherals.push_back(peripheral);
-      m_peripherals.erase(m_peripherals.begin() + iDevicePtr);
+      const PeripheralPtr& peripheral = m_peripherals.at(iDevicePtr);
+      PeripheralScanResult updatedDevice(m_type);
+      if (!results.GetDeviceOnLocation(peripheral->Location(), &updatedDevice) ||
+          *peripheral != updatedDevice)
+      {
+        /* device removed */
+        removedPeripherals.push_back(peripheral);
+        m_peripherals.erase(m_peripherals.begin() + iDevicePtr);
+      }
     }
   }
-  lock.Leave();
 
   for (auto& peripheral : removedPeripherals)
   {
@@ -246,15 +245,19 @@ void CPeripheralBus::Process(void)
 
 void CPeripheralBus::Initialise(void)
 {
-  CSingleLock lock(m_critSection);
-  if (m_bIsStarted)
-    return;
+  bool bNeedsPolling = false;
 
-  m_bIsStarted = true;
-
-  if (m_bNeedsPolling)
   {
-    lock.Leave();
+    CSingleLock lock(m_critSection);
+    if (!m_bIsStarted)
+    {
+      m_bIsStarted = true;
+      bNeedsPolling = m_bNeedsPolling;
+    }
+  }
+
+  if (bNeedsPolling)
+  {
     m_triggerEvent.Reset();
     Create();
     SetPriority(-1);
@@ -266,30 +269,37 @@ void CPeripheralBus::Register(const PeripheralPtr& peripheral)
   if (!peripheral)
     return;
 
-  CSingleLock lock(m_critSection);
-  if (!HasPeripheral(peripheral->Location()))
-  {
-    m_peripherals.push_back(peripheral);
-    CLog::Log(LOGNOTICE, "%s - new %s device registered on %s->%s: %s (%s:%s)", __FUNCTION__, PeripheralTypeTranslator::TypeToString(peripheral->Type()), PeripheralTypeTranslator::BusTypeToString(m_type), peripheral->Location().c_str(), peripheral->DeviceName().c_str(), peripheral->VendorIdAsString(), peripheral->ProductIdAsString());
-    lock.Leave();
+  bool bPeripheralAdded = false;
 
+  {
+    CSingleLock lock(m_critSection);
+    if (!HasPeripheral(peripheral->Location()))
+    {
+      m_peripherals.push_back(peripheral);
+      bPeripheralAdded = true;
+    }
+  }
+
+  if (bPeripheralAdded)
+  {
+    CLog::Log(LOGNOTICE, "%s - new %s device registered on %s->%s: %s (%s:%s)", __FUNCTION__, PeripheralTypeTranslator::TypeToString(peripheral->Type()), PeripheralTypeTranslator::BusTypeToString(m_type), peripheral->Location().c_str(), peripheral->DeviceName().c_str(), peripheral->VendorIdAsString(), peripheral->ProductIdAsString());
     m_manager->OnDeviceAdded(*this, *peripheral);
   }
 }
 
 void CPeripheralBus::TriggerDeviceScan(void)
 {
-  CSingleLock lock(m_critSection);
-  if (m_bNeedsPolling)
+  bool bNeedsPolling;
+
   {
-    lock.Leave();
+    CSingleLock lock(m_critSection);
+    bNeedsPolling = m_bNeedsPolling;
+  }
+
+  if (bNeedsPolling)
     m_triggerEvent.Set();
-  }
   else
-  {
-    lock.Leave();
     ScanForDevices();
-  }
 }
 
 bool CPeripheralBus::HasPeripheral(const std::string &strLocation) const
