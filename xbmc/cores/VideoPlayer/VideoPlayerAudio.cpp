@@ -38,7 +38,7 @@
 #include <math.h>
 
 // allow audio for slow and fast speeds (but not rewind/fastforward)
-#define ALLOW_AUDIO(speed) ((speed) > 5*DVD_PLAYSPEED_NORMAL/10 && (speed) <= 15*DVD_PLAYSPEED_NORMAL/10)
+#define ALLOW_AUDIO(speed) ((speed) > DVD_PLAYSPEED_NORMAL * (IPlayer::MinTempo() - 0.05) && (speed) <= DVD_PLAYSPEED_NORMAL * (IPlayer::MaxTempo() + 0.05))
 
 class CDVDMsgAudioCodecChange : public CDVDMsg
 {

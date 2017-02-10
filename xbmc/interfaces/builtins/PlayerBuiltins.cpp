@@ -142,7 +142,7 @@ static int PlayerControl(const std::vector<std::string>& params)
     if (g_application.m_pPlayer->IsPlaying() && !g_application.m_pPlayer->IsPaused())
     {
       float playSpeed = g_application.m_pPlayer->GetPlaySpeed();
-      if (playSpeed >= 0.75 && playSpeed <= 1.55)
+      if (playSpeed >= IPlayer::MinTempo() - 0.05 && playSpeed <= IPlayer::MaxTempo() + 0.05)
         playSpeed = 1;
 
       if (paramlow == "rewind" && playSpeed == 1) // Enables Rewinding
@@ -170,11 +170,11 @@ static int PlayerControl(const std::vector<std::string>& params)
         g_application.m_pPlayer->IsPlaying() && !g_application.m_pPlayer->IsPaused())
     {
       float playSpeed = g_application.m_pPlayer->GetPlaySpeed();
-      if (playSpeed >= 0.75 && playSpeed <= 1.55)
+      if (playSpeed >= IPlayer::MinTempo() - 0.05 && playSpeed <= IPlayer::MaxTempo() + 0.05)
       {
-        if (paramlow == "tempodown" && playSpeed > 0.85)
+        if (paramlow == "tempodown" && playSpeed > IPlayer::MinTempo() + 0.05)
           playSpeed -= 0.1;
-        else if (paramlow == "tempoup" && playSpeed < 1.45)
+        else if (paramlow == "tempoup" && playSpeed < IPlayer::MaxTempo() - 0.05)
           playSpeed += 0.1;
 
         playSpeed = floor(playSpeed * 100 + 0.5) / 100;

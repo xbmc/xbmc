@@ -388,6 +388,9 @@ public:
   virtual void RenderCapture(unsigned int captureId, unsigned int width, unsigned int height, int flags) {};
   virtual bool RenderCaptureGetPixels(unsigned int captureId, unsigned int millis, uint8_t *buffer, unsigned int size) { return false; };
 
+  static constexpr float const MinTempo() { return 0.8; };
+  static constexpr float const MaxTempo() { return 1.5; };
+
   std::string m_name;
   std::string m_type;
 

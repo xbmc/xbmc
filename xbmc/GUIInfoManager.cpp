@@ -7164,7 +7164,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     case PLAYER_PLAYING:
       {
         float speed = g_application.m_pPlayer->GetPlaySpeed();
-        bReturn = (speed >= 0.75 && speed <= 1.55);
+        bReturn = (speed >= IPlayer::MinTempo() - 0.05 && speed <= IPlayer::MaxTempo() + 0.05);
       }
       break;
     case PLAYER_PAUSED:
@@ -7174,7 +7174,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
       bReturn = g_application.m_pPlayer->GetPlaySpeed() < 0;
       break;
     case PLAYER_FORWARDING:
-      bReturn = g_application.m_pPlayer->GetPlaySpeed() > 1.5;
+      bReturn = g_application.m_pPlayer->GetPlaySpeed() > IPlayer::MaxTempo() + 0.05;
       break;
     case PLAYER_REWINDING_2x:
       bReturn = g_application.m_pPlayer->GetPlaySpeed() == -2;
@@ -7221,7 +7221,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     case PLAYER_IS_TEMPO:
       {
         float speed = g_application.m_pPlayer->GetPlaySpeed();
-        bReturn = (speed >= 0.75 && speed <= 1.55 && speed != 1);
+        bReturn = (speed >= IPlayer::MinTempo() - 0.05 && speed <= IPlayer::MaxTempo() + 0.05 && speed != 1);
       }
       break;
     case PLAYER_RECORDING:
@@ -7939,7 +7939,7 @@ std::string CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextW
     CDateTime time(CDateTime::GetCurrentDateTime());
     int playTimeRemaining = GetPlayTimeRemaining();
     float speed = g_application.m_pPlayer->GetPlaySpeed();
-    if (speed >= 0.75 && speed <= 1.55)
+    if (speed >= IPlayer::MinTempo() - 0.05 && speed <= IPlayer::MaxTempo() + 0.05)
       playTimeRemaining /= speed;
     time += CDateTimeSpan(0, 0, 0, playTimeRemaining);
     return LocalizeTime(time, (TIME_FORMAT)info.GetData1());
@@ -7954,7 +7954,7 @@ std::string CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextW
   {
     std::string strTime;
     float speed = g_application.m_pPlayer->GetPlaySpeed();
-    if (speed < 0.8 || speed > 1.5)
+    if (speed < IPlayer::MinTempo() - 0.05 || speed > IPlayer::MaxTempo() + 0.05)
       strTime = StringUtils::Format("%s (%ix)", GetCurrentPlayTime((TIME_FORMAT)info.GetData1()).c_str(), (int)speed);
     else
       strTime = GetCurrentPlayTime();
