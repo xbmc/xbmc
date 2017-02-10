@@ -20429,3 +20429,15 @@ msgstr ""
 msgctxt "#39015"
 msgid "Image decoder"
 msgstr ""
+
+#: xbmc/Application.cpp
+msgctxt "#40000"
+msgid "Not available"
+msgstr ""
+
+msgctxt "#40001"
+msgid ""%s" is not available for instant playback."
+msgstr ""
+
+msgctxt "#40002"
+msgstr ""
