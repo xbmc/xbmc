@@ -234,6 +234,7 @@ public:
   virtual void OnNothingToQueueNotify() {}
   virtual bool CloseFile(bool reopen = false) = 0;
   virtual bool IsPlaying() const { return false;}
+  virtual bool IsPlayingTempo() {return IsPlaying(); }
   virtual bool CanPause() { return true; };
   virtual void Pause() = 0;
   virtual bool HasVideo() const = 0;
@@ -328,6 +329,8 @@ public:
   virtual void SetSpeed(float speed) = 0;
   virtual float GetSpeed() = 0;
   virtual bool SupportsTempo() { return false; }
+  virtual float const MinTempo() { return 1.0f; };
+  virtual float const MaxTempo() { return 1.0f; };
 
   // Skip to next track/item inside the current media (if supported).
   virtual bool SkipNext(){return false;}
@@ -387,9 +390,6 @@ public:
   virtual void RenderCaptureRelease(unsigned int captureId) {};
   virtual void RenderCapture(unsigned int captureId, unsigned int width, unsigned int height, int flags) {};
   virtual bool RenderCaptureGetPixels(unsigned int captureId, unsigned int millis, uint8_t *buffer, unsigned int size) { return false; };
-
-  static constexpr float const MinTempo() { return 0.8; };
-  static constexpr float const MaxTempo() { return 1.5; };
 
   std::string m_name;
   std::string m_type;

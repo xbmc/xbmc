@@ -2236,7 +2236,7 @@ bool CApplication::OnAction(const CAction &action)
       if (action.GetID() == ACTION_PLAYER_FORWARD || action.GetID() == ACTION_PLAYER_REWIND)
       {
         float playSpeed = m_pPlayer->GetPlaySpeed();
-        if (playSpeed >= IPlayer::MinTempo() - 0.05 && playSpeed <= IPlayer::MaxTempo() + 0.05)
+        if (m_pPlayer->IsPlayingTempo())
           playSpeed = 1;
 
         if (action.GetID() == ACTION_PLAYER_REWIND && (playSpeed == 1)) // Enables Rewinding

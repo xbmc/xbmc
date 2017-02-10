@@ -140,6 +140,7 @@ public:
   bool  IsPausedPlayback();
   bool  IsPassthrough() const;
   bool  IsPlaying() const;
+  bool  IsPlayingTempo() const;
   bool  IsPlayingAudio() const;
   bool  IsPlayingVideo() const;
   bool  IsPlayingGame() const;
@@ -172,6 +173,8 @@ public:
   bool  SwitchChannel(const PVR::CPVRChannelPtr &channel);
   void  SetSpeed(float speed);
   bool SupportsTempo();
+  float MinTempo() const;
+  float MaxTempo() const;
 
   protected:
     std::shared_ptr<IPlayer> GetInternal() const;

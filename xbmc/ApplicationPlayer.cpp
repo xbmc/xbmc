@@ -210,6 +210,12 @@ bool CApplicationPlayer::IsPlaying() const
   return (player && player->IsPlaying());
 }
 
+bool CApplicationPlayer::IsPlayingTempo() const
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  return (IsPlaying() && player->IsPlayingTempo());
+}
+
 bool CApplicationPlayer::IsPausedPlayback()
 {
   return (IsPlaying() && (GetPlaySpeed() == 0));
@@ -743,6 +749,24 @@ bool CApplicationPlayer::SupportsTempo()
     return player->SupportsTempo();
   else
     return false;
+}
+
+float CApplicationPlayer::MinTempo() const
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+    return player->MinTempo();
+  else
+    return 1.0f;
+}
+
+float CApplicationPlayer::MaxTempo() const
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+    return player->MaxTempo();
+  else
+    return 1.0f;
 }
 
 void CApplicationPlayer::FrameMove()

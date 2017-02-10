@@ -7162,10 +7162,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
       bReturn = g_application.m_pPlayer->IsPlayingGame();
       break;
     case PLAYER_PLAYING:
-      {
-        float speed = g_application.m_pPlayer->GetPlaySpeed();
-        bReturn = (speed >= IPlayer::MinTempo() - 0.05 && speed <= IPlayer::MaxTempo() + 0.05);
-      }
+      bReturn = g_application.m_pPlayer->IsPlayingTempo();
       break;
     case PLAYER_PAUSED:
       bReturn = g_application.m_pPlayer->IsPausedPlayback();
@@ -7174,7 +7171,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
       bReturn = g_application.m_pPlayer->GetPlaySpeed() < 0;
       break;
     case PLAYER_FORWARDING:
-      bReturn = g_application.m_pPlayer->GetPlaySpeed() > IPlayer::MaxTempo() + 0.05;
+      bReturn = g_application.m_pPlayer->GetPlaySpeed() > g_application.m_pPlayer->MaxTempo() + 0.05;
       break;
     case PLAYER_REWINDING_2x:
       bReturn = g_application.m_pPlayer->GetPlaySpeed() == -2;
@@ -7219,10 +7216,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
       bReturn = g_application.m_pPlayer->SupportsTempo();
       break;
     case PLAYER_IS_TEMPO:
-      {
-        float speed = g_application.m_pPlayer->GetPlaySpeed();
-        bReturn = (speed >= IPlayer::MinTempo() - 0.05 && speed <= IPlayer::MaxTempo() + 0.05 && speed != 1);
-      }
+      bReturn = g_application.m_pPlayer->IsPlayingTempo();
       break;
     case PLAYER_RECORDING:
       bReturn = g_application.m_pPlayer->IsRecording();
@@ -7939,7 +7933,7 @@ std::string CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextW
     CDateTime time(CDateTime::GetCurrentDateTime());
     int playTimeRemaining = GetPlayTimeRemaining();
     float speed = g_application.m_pPlayer->GetPlaySpeed();
-    if (speed >= IPlayer::MinTempo() - 0.05 && speed <= IPlayer::MaxTempo() + 0.05)
+    if (g_application.m_pPlayer->IsPlayingTempo())
       playTimeRemaining /= speed;
     time += CDateTimeSpan(0, 0, 0, playTimeRemaining);
     return LocalizeTime(time, (TIME_FORMAT)info.GetData1());
@@ -7954,7 +7948,7 @@ std::string CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextW
   {
     std::string strTime;
     float speed = g_application.m_pPlayer->GetPlaySpeed();
-    if (speed < IPlayer::MinTempo() - 0.05 || speed > IPlayer::MaxTempo() + 0.05)
+    if (!g_application.m_pPlayer->IsPlayingTempo())
       strTime = StringUtils::Format("%s (%ix)", GetCurrentPlayTime((TIME_FORMAT)info.GetData1()).c_str(), (int)speed);
     else
       strTime = GetCurrentPlayTime();

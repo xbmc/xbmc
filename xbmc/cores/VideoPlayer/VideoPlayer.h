@@ -296,6 +296,7 @@ public:
   virtual bool OpenFile(const CFileItem& file, const CPlayerOptions &options);
   virtual bool CloseFile(bool reopen = false);
   virtual bool IsPlaying() const;
+  virtual bool IsPlayingTempo();
   virtual void Pause() override;
   virtual bool HasVideo() const;
   virtual bool HasAudio() const;
@@ -357,6 +358,8 @@ public:
   virtual void SetSpeed(float speed) override;
   virtual float GetSpeed() override;
   virtual bool SupportsTempo() override;
+  virtual float const MinTempo() const;
+  virtual float const MaxTempo() const;
   virtual bool OnAction(const CAction &action);
 
   virtual int GetSourceBitrate();
