@@ -19,11 +19,13 @@
  */
 
 #include "InputStreamAddon.h"
+#include "../../../addons/kodi-addon-dev-kit/include/kodi/kodi_inputstream_types.h"
 
 #include "FileItem.h"
 #include "cores/VideoPlayer/DVDClock.h"
-#include "cores/VideoPlayer/DVDDemuxers/DVDDemux.h"
 #include "cores/VideoPlayer/DVDDemuxers/DemuxCrypto.h"
+#include "cores/VideoPlayer/DVDDemuxers/DVDDemux.h"
+#include "cores/VideoPlayer/DVDDemuxers/DVDDemuxUtils.h"
 #include "filesystem/SpecialProtocol.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
@@ -111,14 +113,12 @@ bool CInputStreamAddon::Supports(AddonInfoPtr& addonInfo, const CFileItem &filei
 
 bool CInputStreamAddon::Open()
 {
-  if (m_addon->Create(ADDON_INSTANCE_INPUTSTREAM, &m_struct, &m_struct.props) != ADDON_STATUS_OK)
+  m_struct.toKodi.kodiInstance = this;
+  m_struct.toKodi.FreeDemuxPacket = InputStreamFreeDemuxPacket;
+  m_struct.toKodi.AllocateDemuxPacket = InputStreamAllocateDemuxPacket;
+  m_struct.toKodi.AllocateEncryptedDemuxPacket = InputStreamAllocateEncryptedDemuxPacket;
+  if (m_addon->CreateInstance(ADDON_INSTANCE_INPUTSTREAM, m_addon->ID(), &m_struct, reinterpret_cast<KODI_HANDLE*>(&m_addonInstance)) != ADDON_STATUS_OK || !m_struct.toAddon.Open)
     return false;
-
-  unsigned int videoWidth = 720;
-  unsigned int videoHeight = 578;
-  if (m_player)
-    m_player->GetVideoResolution(videoWidth, videoHeight);
-  SetVideoResolution(videoWidth, videoHeight);
 
   INPUTSTREAM props;
   std::map<std::string, std::string> propsMap;
@@ -147,12 +147,18 @@ bool CInputStreamAddon::Open()
   bool ret = m_struct.toAddon.Open(m_addonInstance, props);
   if (ret)
   {
+    unsigned int videoWidth = 1280;
+    unsigned int videoHeight = 720;
+    if (m_player)
+      m_player->GetVideoResolution(videoWidth, videoHeight);
+    SetVideoResolution(videoWidth, videoHeight);
+
     memset(&m_caps, 0, sizeof(m_caps));
     m_struct.toAddon.GetCapabilities(m_addonInstance, &m_caps);
 
     m_hasDemux = (m_caps.m_mask & INPUTSTREAM_CAPABILITIES::SUPPORTSIDEMUX) != 0;
-    m_hasDisplayTime = (m_caps.m_mask & INPUTSTREAM_CAPABILITIES::SUPPORTSIPOSTIME) != 0;
-    m_hasPosTime = (m_caps.m_mask & INPUTSTREAM_CAPABILITIES::SUPPORTSIDISPLAYTIME) != 0;
+    m_hasPosTime = (m_caps.m_mask & INPUTSTREAM_CAPABILITIES::SUPPORTSIPOSTIME) != 0;
+    m_hasDisplayTime = (m_caps.m_mask & INPUTSTREAM_CAPABILITIES::SUPPORTSIDISPLAYTIME) != 0;
     m_canPause = (m_caps.m_mask & INPUTSTREAM_CAPABILITIES::SUPPORTSPAUSE) != 0;
     m_canSeek = (m_caps.m_mask & INPUTSTREAM_CAPABILITIES::SUPPORTSSEEK) != 0;
   }
@@ -165,6 +171,7 @@ void CInputStreamAddon::Close()
 {
   if (m_struct.toAddon.Close)
     m_struct.toAddon.Close(m_addonInstance);
+  m_addon->DestroyInstance(m_addon->ID());
   memset(&m_struct, 0, sizeof(m_struct));
 }
 
@@ -394,7 +401,7 @@ void CInputStreamAddon::SetVideoResolution(int width, int height)
 
 bool CInputStreamAddon::IsRealTimeStream()
 {
-  if (m_struct.toAddon.SetVideoResolution)
+  if (m_struct.toAddon.IsRealTimeStream)
     return m_struct.toAddon.IsRealTimeStream(m_addonInstance);
   return false;
 }
@@ -496,4 +503,19 @@ void CInputStreamAddon::DisposeStreams()
   for (auto &stream : m_streams)
     delete stream.second;
   m_streams.clear();
+}
+
+void CInputStreamAddon::InputStreamFreeDemuxPacket(void* kodiInstanceBase, DemuxPacket* pPacket)
+{
+  CDVDDemuxUtils::FreeDemuxPacket(pPacket);
+}
+
+DemuxPacket* CInputStreamAddon::InputStreamAllocateDemuxPacket(void* kodiInstanceBase, int iDataSize)
+{
+  return CDVDDemuxUtils::AllocateDemuxPacket(iDataSize);
+}
+
+DemuxPacket* CInputStreamAddon::InputStreamAllocateEncryptedDemuxPacket(void* kodiInstanceBase, unsigned int iDataSize, unsigned int encryptedSubsampleCount)
+{
+  return CDVDDemuxUtils::AllocateDemuxPacket(iDataSize, encryptedSubsampleCount);
 }

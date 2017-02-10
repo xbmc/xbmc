@@ -56,10 +56,11 @@ typedef struct AddonToKodiFuncTable_kodi_filesystem
   bool (*copy_file)(void* kodiBase, const char *filename, const char *dest);
   bool (*file_set_hidden)(void* kodiBase, const char *filename, bool hidden);
 
-  char* (*get_file_md5)(void* kodiInstance, const char* filename);
-  char* (*get_cache_thumb_name)(void* kodiInstance, const char* filename);
-  char* (*make_legal_filename)(void* kodiInstance, const char* filename);
-  char* (*make_legal_path)(void* kodiInstance, const char* path);
+  char* (*get_file_md5)(void* kodiBase, const char* filename);
+  char* (*get_cache_thumb_name)(void* kodiBase, const char* filename);
+  char* (*make_legal_filename)(void* kodiBase, const char* filename);
+  char* (*make_legal_path)(void* kodiBase, const char* path);
+  char* (*translate_special_protocol)(void* kodiBase, const char *strSource);
 
   void* (*open_file)(void* kodiBase, const char* filename, unsigned int flags);
   void* (*open_file_for_write)(void* kodiBase, const char* filename, bool overwrite);

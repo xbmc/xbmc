@@ -25,6 +25,7 @@
 #include "addons/AddonDll.h"
 #include "filesystem/File.h"
 #include "filesystem/Directory.h"
+#include "filesystem/SpecialProtocol.h"
 #include "utils/Crc32.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
@@ -56,6 +57,7 @@ void Interface_Filesystem::Init(AddonGlobalInterface* addonInterface)
   addonInterface->toKodi.kodi->filesystem.get_cache_thumb_name = get_cache_thumb_name;
   addonInterface->toKodi.kodi->filesystem.make_legal_filename = make_legal_filename;
   addonInterface->toKodi.kodi->filesystem.make_legal_path = make_legal_path;
+  addonInterface->toKodi.kodi->filesystem.translate_special_protocol = translate_special_protocol;
 
   addonInterface->toKodi.kodi->filesystem.open_file = open_file;
   addonInterface->toKodi.kodi->filesystem.open_file_for_write = open_file_for_write;
@@ -324,6 +326,18 @@ char* Interface_Filesystem::make_legal_path(void* kodiBase, const char* path)
   std::string string = CUtil::MakeLegalPath(path);;
   char* buffer = strdup(string.c_str());
   return buffer;
+}
+
+char* Interface_Filesystem::translate_special_protocol(void* kodiBase, const char *strSource)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  if (addon == nullptr || strSource == nullptr)
+  {
+    CLog::Log(LOGERROR, "Interface_Filesystem::%s - invalid data (addon='%p', strSource='%p)", __FUNCTION__, addon, strSource);
+    return nullptr;
+  }
+
+  return strdup(CSpecialProtocol::TranslatePath(strSource).c_str());
 }
 
 //------------------------------------------------------------------------------

@@ -62,6 +62,7 @@ namespace ADDON
     static char* get_cache_thumb_name(void* kodiBase, const char* filename);
     static char* make_legal_filename(void* kodiBase, const char* filename);
     static char* make_legal_path(void* kodiBase, const char* path);
+    static char* translate_special_protocol(void* kodiBase, const char *strSource);
 
     static void* open_file(void* kodiBase, const char* filename, unsigned int flags);
     static void* open_file_for_write(void* kodiBase, const char* filename, bool overwrite);

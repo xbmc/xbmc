@@ -111,6 +111,30 @@ private:
   std::map<int, CDemuxStream*> m_streams;
 
   ADDON::AddonDllPtr m_addon;
-  void* m_addonInstance;
+  kodi::addon::CInstanceInputStream* m_addonInstance;
   AddonInstance_InputStream m_struct;
+
+  /*!
+   * @brief Allocate a demux packet. Free with FreeDemuxPacket
+   * @param kodiInstanceBase A pointer to this.
+   * @param iDataSize The size of the data that will go into the packet
+   * @return The allocated packet.
+   */
+  static DemuxPacket* InputStreamAllocateDemuxPacket(void* kodiInstanceBase, int iDataSize = 0);
+
+  /*!
+   * @brief Allocate a demux packet with crypto data. Free with FreeDemuxPacket
+   * @param kodiInstanceBase A pointer to this.
+   * @param iDataSize The size of the data that will go into the packet
+   * @param encryptedSubsampleCount The number of encrypted subSamples that will go into the packet
+   * @return The allocated packet.
+   */
+  static DemuxPacket* InputStreamAllocateEncryptedDemuxPacket(void* kodiInstanceBase, unsigned int iDataSize, unsigned int encryptedSubsampleCount);
+
+  /*!
+   * @brief Free a packet that was allocated with AllocateDemuxPacket
+   * @param kodiInstanceBase A pointer to this.
+   * @param pPacket The packet to free.
+   */
+  static void InputStreamFreeDemuxPacket(void* kodiInstanceBase, DemuxPacket* pPacket);
 };
