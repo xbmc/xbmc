@@ -32,9 +32,9 @@
 
 #include "platform/MessagePrinter.h"
 
-extern "C" void XBMC_AddPlayList(CFileItemList &playlist)
+extern "C" void XBMC_ReplaceCurrentPlayList(CFileItemList &playlist)
 {
-  g_application.AddPlayList(playlist);
+  g_application.ReplaceCurrentPlayList(playlist);
 }
 
 extern "C" int XBMC_Run(bool renderGUI, CFileItemList &playlist)
