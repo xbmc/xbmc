@@ -20418,7 +20418,6 @@ msgstr ""
 msgctxt "#39013"
 msgid "Virtual filesystems"
 msgstr ""
-
 #. Message of a dialog, asking if related data of an add-on should also be removed on uninstall
 #: xbmc/addons/GUIDialogAddonInfo.cpp
 msgctxt "#39014"
