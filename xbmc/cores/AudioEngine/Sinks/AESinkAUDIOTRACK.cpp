@@ -825,7 +825,7 @@ void CAESinkAUDIOTRACK::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
     else
     {
       bool supports_192khz = false;
-      int test_sample[] = { 32000, 44100, 48000, 96000, 192000 };
+      int test_sample[] = { 32000, 44100, 48000, 88200, 96000, 192000 };
       int test_sample_sz = sizeof(test_sample) / sizeof(int);
       int encoding = CJNIAudioFormat::ENCODING_PCM_16BIT;
       if (CJNIAudioManager::GetSDKVersion() >= 21)
