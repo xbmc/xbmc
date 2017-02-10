@@ -22,6 +22,6 @@
 
 class CAppParamParser;
 
-extern "C" void XBMC_AddPlayList(CFileItemList &playlist);
+extern "C" void XBMC_ReplaceCurrentPlayList(CFileItemList &playlist);
 extern "C" int XBMC_Run(bool renderGUI, const CAppParamParser &params);
 

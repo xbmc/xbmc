@@ -51,7 +51,7 @@ public:
   virtual void SetRenderGUI(bool renderGUI) {};
 
 public:
-  void AddPlayList(CFileItemList &playlist);
+  void ReplaceCurrentPlayList(CFileItemList &playlist);
   INT Run(const CAppParamParser &params);
   VOID Destroy();
 
