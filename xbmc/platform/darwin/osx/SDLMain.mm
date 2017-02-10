@@ -53,10 +53,12 @@ extern OSErr	CPSSetFrontProcess(CPSProcessSerNum *psn);
 }
 #endif /* SDL_USE_CPS */
 
+const NSTimeInterval cOpenFileScheduleTimeoutInterval = 1.0f; // 1 sec timeout for repeated openFile request fro Finder
 static int    gArgc;
 static char  **gArgv;
 static BOOL   gFinderLaunch;
 static BOOL   gCalledAppMainline = FALSE;
+static CAppParamParser gAppParamParser;
 
 static NSString *getApplicationName(void)
 {
@@ -367,6 +369,12 @@ static void setupWindowMenu(void)
   [NSApp postEvent: event atStart: true];
 }
 
+- (void)replaceCurrentPlaylist
+{
+    XBMC_ReplaceCurrentPlayList(gAppParamParser.m_playlist);
+    gAppParamParser.m_playlist.Clear();
+}
+
 /*
  * Catch document open requests...this lets us notice files when the app
  *  was launched by double-clicking a document, or when a document was
@@ -374,34 +382,59 @@ static void setupWindowMenu(void)
  *  CFBundleDocumentsType section in your Info.plist to get this message,
  *  apparently.
  *
- * Files are added to gArgv, so to the app, they'll look like command line
- *  arguments. Previously, apps launched from the finder had nothing but
- *  an argv[0].
+ * If invoked at app startup files are added to gArgv, so to the app, they'll 
+ *  look like command line arguments. 
+ *  Previously, apps launched from the finder had nothing but an argv[0].
+ *
+ * If invoked after app already strated just collects requested files than
+ *  replaces the current playlist with the newly requested file list.
  *
  * This message may be received multiple times to open several docs on launch.
- *
- * This message is ignored once the app's mainline has been called.
  */
 - (BOOL)application:(NSApplication *)theApplication openFile:(NSString *)filename
 {
-  const char *temparg;
-  size_t arglen;
-  char *arg;
-  char **newargv;
+  const char *temparg = NULL;
+  size_t arglen = 0;
+  char *arg = NULL;
+  char **newargv = NULL;
 
   // MacOS is passing command line args.
   if (!gFinderLaunch)
     return FALSE;
 
-  // app has started, ignore this document.
   if (gCalledAppMainline) {
+    // If app has started already, collect files to open and replace the current
+    // playlist with a new collected file list if no new file open request
+    // received after a given time period.
+    //
+    // NOTE: We could also use here the already existing gArgv as we do not use
+    //       it further currently, but if we ever would like to use it later it
+    //       might be a good idea to preserv the original startup arguments,
+    //       so instead now using a separately maintained list for the newly
+    //       scheduled files
+    //
     const char* argv[2] = { "", [filename UTF8String] };
-    CAppParamParser appParamParser;
     
-    appParamParser.Parse(argv, 2);
-    XBMC_AddPlayList(appParamParser.m_playlist);
+    gAppParamParser.Parse(argv, 2); // Append to the collection
+    
+    // Here we need a little trick as [NSApplicartionDelegate application:openFile:]
+    // can be called several times in case of multiple file open requested at once.
+    // We will replace the current playlist only we have not received new request
+    // after a while, now cOpenFileScheduleTimeoutInterval.
+    //
+    // First cancel possible previous request if it is not the first openFile
+    // request within the timeout period.
+    //
+    [NSObject cancelPreviousPerformRequestsWithTarget:self
+                                             selector:@selector(replaceCurrentPlaylist)
+                                               object:nil];
+    [self performSelector:@selector(replaceCurrentPlaylist)
+                   withObject:nil
+               afterDelay:cOpenFileScheduleTimeoutInterval];
   }
   else {
+    // If app starting right now just append the new filename to our gArgv list
+    // and let it be processed later as it would come from the command line.
     temparg = [filename UTF8String];
     arglen = SDL_strlen(temparg) + 1;
     arg = (char *) SDL_malloc(arglen);
@@ -409,8 +442,7 @@ static void setupWindowMenu(void)
       return FALSE;
 
     newargv = (char **) realloc(gArgv, sizeof (char *) * (gArgc + 2));
-    if (newargv == NULL)
-    {
+    if (newargv == NULL) {
       SDL_free(arg);
       return FALSE;
     }
@@ -575,16 +607,18 @@ int main(int argc, char *argv[])
   [[NSApplication sharedApplication] setDelegate:xbmc_delegate];
 
   // Start the main event loop
+  // NOTE: will exit from it immediately after app initialization finished
+  //       to enter into our real main bellow with our own event loop handling
   [NSApp run];
 
   // call SDL_main which calls our real main in xbmc.cpp
   // see http://lists.libsdl.org/pipermail/sdl-libsdl.org/2008-September/066542.html
-  int status;
-  status = SDL_main(gArgc, gArgv);
+  int status = SDL_main(gArgc, gArgv);
   SDL_Quit();
 
-  [xbmc_delegate applicationWillTerminate:NULL];
+  [xbmc_delegate applicationWillTerminate:[NSNotification notificationWithName:NSApplicationWillTerminateNotification object:NSApp]];
   [xbmc_delegate release];
+  SDL_free(gArgv); // FIXME: We are still leaking here as few pointed parameters (from openFile) were also allocated dynamically
   [pool release];
 
   return status;

@@ -62,12 +62,19 @@ VOID CXBApplicationEx::Destroy()
 }
 
 /* Function that runs the application */
-void CXBApplicationEx::AddPlayList(CFileItemList &playlist)
+void CXBApplicationEx::ReplaceCurrentPlayList(CFileItemList &playlist)
 {
     if (playlist.Size() > 0)
     {
-        g_playlistPlayer.Add(0, playlist);
-        g_playlistPlayer.SetCurrentPlaylist(0);
+        int currentPlayListNdx = g_playlistPlayer.GetCurrentPlaylist();
+        
+        if (currentPlayListNdx == -1)
+        {
+            currentPlayListNdx = 0;
+        }
+        g_playlistPlayer.ClearPlaylist(currentPlayListNdx);
+        g_playlistPlayer.Add(currentPlayListNdx, playlist);
+        g_playlistPlayer.SetCurrentPlaylist(currentPlayListNdx);
         KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_PLAYLISTPLAYER_PLAY, -1);
     }
 }
@@ -81,7 +88,7 @@ INT CXBApplicationEx::Run(CFileItemList &playlist)
   unsigned int frameTime = 0;
   const unsigned int noRenderFrameTime = 15;  // Simulates ~66fps
 
-  AddPlayList(playlist);
+  ReplaceCurrentPlayList(playlist);
 
   // Run xbmc
   while (!m_bStop)
