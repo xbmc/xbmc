@@ -29,7 +29,7 @@ namespace ADDON
 {
 
 std::unique_ptr<CImageDecoder>
-CImageDecoder::FromExtension(AddonProps props, const cp_extension_t* ext)
+CImageDecoder::FromExtension(AddonProps&& props, const cp_extension_t* ext)
 {
   std::string mime = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@mimetype");
   std::string extension = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@extension");
@@ -38,7 +38,7 @@ CImageDecoder::FromExtension(AddonProps props, const cp_extension_t* ext)
                                                           std::move(extension)));
 }
 
-CImageDecoder::CImageDecoder(AddonProps props, std::string mime, std::string extension) :
+CImageDecoder::CImageDecoder(AddonProps&& props, std::string mime, std::string extension) :
   CAddonDll(std::move(props)),
   m_mimetype(std::move(mime)),
   m_extension(std::move(extension))
