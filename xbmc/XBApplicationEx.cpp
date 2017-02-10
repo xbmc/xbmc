@@ -77,7 +77,7 @@ void CXBApplicationEx::EnqueuePlayList(CFileItemList &playlist, EnqueueOperation
 		    	CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(0);
 			    KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_PLAYLISTPLAYER_PLAY, -1);
 	        break;
-        
+
 			case EOpNext: {
 		        int currItemNdx = CServiceBroker::GetPlaylistPlayer().GetCurrentSong();
 		        bool shouldStartPlaylist = false;
