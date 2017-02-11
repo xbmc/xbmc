@@ -9115,7 +9115,7 @@ msgstr ""
 
 #. generic 'information' label used in different places, like labels for message box headers
 #: xbmc/event/windows/GUIWindowEventLog.cpp
-#: xbmc/pvr/addons/PVRClients.cpp
+#: xbmc/pvr/dialogs/GUIDialogPVRChannelManager.cpp
 #: xbmc/pvr/dialogs/GUIDialogPVRGroupManager.cpp
 #: xbmc/pvr/dialogs/GUIDialogPVRGuideInfo.cpp
 #: xbmc/pvr/recordings/PVRRecording.cpp
@@ -9156,7 +9156,7 @@ msgid "Show signal quality"
 msgstr ""
 
 #. message box text stating that a PVR backend does not support a certain functionality.
-#: xbmc/pvr/addons/PVRClients.cpp
+#: xbmc/pvr/dialogs/GUIDialogPVRChannelManager.cpp
 msgctxt "#19038"
 msgid "Not supported by the PVR backend."
 msgstr ""

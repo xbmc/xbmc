@@ -608,23 +608,23 @@ namespace PVR
     /*!
      * @brief Open addon settings dialog to add a channel
      * @param channel The channel to edit.
-     * @return True if the edit was successful, false otherwise.
+     * @return PVR_ERROR_NO_ERROR if the dialog was opened successfully, the respective error code otherwise.
      */
-    bool OpenDialogChannelAdd(const CPVRChannelPtr &channel);
+    PVR_ERROR OpenDialogChannelAdd(const CPVRChannelPtr &channel);
 
     /*!
      * @brief Open addon settings dialog to related channel
      * @param channel The channel to edit.
-     * @return True if the edit was successful, false otherwise.
+     * @return PVR_ERROR_NO_ERROR if the dialog was opened successfully, the respective error code otherwise.
      */
-    bool OpenDialogChannelSettings(const CPVRChannelPtr &channel);
+    PVR_ERROR OpenDialogChannelSettings(const CPVRChannelPtr &channel);
 
     /*!
      * @brief Inform addon to delete channel
      * @param channel The channel to delete.
-     * @return True if it was successful, false otherwise.
+     * @return PVR_ERROR_NO_ERROR if the channel was deleted successfully, the respective error code otherwise.
      */
-    bool DeleteChannel(const CPVRChannelPtr &channel);
+    PVR_ERROR DeleteChannel(const CPVRChannelPtr &channel);
 
     /*!
      * @brief Request the client to rename given channel

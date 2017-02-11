@@ -470,10 +470,13 @@ bool CGUIDialogPVRChannelManager::OnClickButtonNewChannel()
     channel->SetEPGEnabled(g_PVRClients->SupportsEPG(iClientID));
     channel->SetClientID(iClientID);
 
-    if (g_PVRClients->OpenDialogChannelAdd(channel))
+    PVR_ERROR ret = g_PVRClients->OpenDialogChannelAdd(channel);
+    if (ret == PVR_ERROR_NO_ERROR)
       Update();
+    else if (ret == PVR_ERROR_NOT_IMPLEMENTED)
+      CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19038}); // "Information", "Not supported by the PVR backend."
     else
-      CGUIDialogOK::ShowAndGetInput(CVariant{2103}, CVariant{16029});  // Add-on error;Check the log file for details.
+      CGUIDialogOK::ShowAndGetInput(CVariant{2103}, CVariant{16029});  // "Add-on error", "Check the log for more information about this message."
   }
   return true;
 }
@@ -599,8 +602,11 @@ bool CGUIDialogPVRChannelManager::OnContextButton(int itemNumber, CONTEXT_BUTTON
   }
   else if (button == CONTEXT_BUTTON_SETTINGS)
   {
-    if (!g_PVRClients->OpenDialogChannelSettings(pItem->GetPVRChannelInfoTag()))
-      CGUIDialogOK::ShowAndGetInput(CVariant{2103}, CVariant{16029});  // Add-on error;Check the log file for details.
+    PVR_ERROR ret = g_PVRClients->OpenDialogChannelSettings(pItem->GetPVRChannelInfoTag());
+    if (ret == PVR_ERROR_NOT_IMPLEMENTED)
+      CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19038}); // "Information", "Not supported by the PVR backend."
+    else if (ret != PVR_ERROR_NO_ERROR)
+      CGUIDialogOK::ShowAndGetInput(CVariant{2103}, CVariant{16029});  // "Add-on error", "Check the log for more information about this message."
   }
   else if (button == CONTEXT_BUTTON_DELETE)
   {
@@ -615,15 +621,18 @@ bool CGUIDialogPVRChannelManager::OnContextButton(int itemNumber, CONTEXT_BUTTON
     if (pDialog->IsConfirmed())
     {
       CPVRChannelPtr channel = pItem->GetPVRChannelInfoTag();
-      if (g_PVRClients->DeleteChannel(channel))
+      PVR_ERROR ret = g_PVRClients->DeleteChannel(channel);
+      if (ret == PVR_ERROR_NO_ERROR)
       {
         g_PVRChannelGroups->GetGroupAll(channel->IsRadio())->RemoveFromGroup(channel);
         m_channelItems->Remove(m_iSelected);
         m_viewControl.SetItems(*m_channelItems);
         Renumber();
       }
+      else if (ret == PVR_ERROR_NOT_IMPLEMENTED)
+        CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19038}); // "Information", "Not supported by the PVR backend."
       else
-        CGUIDialogOK::ShowAndGetInput(CVariant{2103}, CVariant{16029});  // Add-on error;Check the log file for details.
+        CGUIDialogOK::ShowAndGetInput(CVariant{2103}, CVariant{16029});  // "Add-on error", "Check the log for more information about this message."
     }
   }
   else if (button == CONTEXT_BUTTON_EDIT_SOURCE)

@@ -49,4 +49,21 @@ namespace PVR
     bool DoWork() override;
   };
 
+  class CPVREventlogJob : public CJob
+  {
+  public:
+    CPVREventlogJob(bool bNotifyUser, bool bError, const std::string &label, const std::string &msg, const std::string &icon)
+    : m_bNotifyUser(bNotifyUser), m_bError(bError), m_label(label), m_msg(msg), m_icon(icon) {}
+    virtual ~CPVREventlogJob() {}
+    const char *GetType() const override { return "pvr-eventlog-job"; }
+
+    bool DoWork() override;
+  private:
+    bool m_bNotifyUser;
+    bool m_bError;
+    std::string m_label;
+    std::string m_msg;
+    std::string m_icon;
+  };
+
 } // namespace PVR

@@ -20,6 +20,10 @@
 
 #include "PVRJobs.h"
 
+#include "dialogs/GUIDialogKaiToast.h"
+#include "events/EventLog.h"
+#include "events/NotificationEvent.h"
+
 #include "pvr/PVRGUIActions.h"
 
 namespace PVR
@@ -33,6 +37,18 @@ bool CPVRSetRecordingOnChannelJob::DoWork()
 bool CPVRContinueLastChannelJob::DoWork()
 {
   return CPVRGUIActions::GetInstance().ContinueLastPlayedChannel();
+}
+
+bool CPVREventlogJob::DoWork()
+{
+  if (m_bNotifyUser)
+    CGUIDialogKaiToast::QueueNotification(
+      m_bError ? CGUIDialogKaiToast::Error : CGUIDialogKaiToast::Info, m_label.c_str(), m_msg, 5000, true);
+
+  // Write event log entry.
+  CEventLog::GetInstance().Add(
+      EventPtr(new CNotificationEvent(m_label, m_msg, m_icon, m_bError ? EventLevel::Error : EventLevel::Information)));
+  return true;
 }
 
 } // namespace PVR

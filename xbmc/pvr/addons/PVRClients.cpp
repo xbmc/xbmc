@@ -27,18 +27,14 @@
 #include "Application.h"
 #include "ServiceBroker.h"
 #include "cores/IPlayer.h"
-#include "dialogs/GUIDialogOK.h"
-#include "dialogs/GUIDialogKaiToast.h"
-#include "events/EventLog.h"
-#include "events/NotificationEvent.h"
 #include "messaging/ApplicationMessenger.h"
 #include "pvr/channels/PVRChannelGroupInternal.h"
 #include "pvr/channels/PVRChannelGroups.h"
+#include "pvr/PVRJobs.h"
 #include "pvr/PVRManager.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimers.h"
 #include "utils/log.h"
-#include "utils/Variant.h"
 
 using namespace ADDON;
 using namespace PVR;
@@ -888,8 +884,7 @@ std::vector<PVR_CLIENT> CPVRClients::GetClientsSupportingChannelSettings(bool bR
   return possibleSettingsClients;
 }
 
-
-bool CPVRClients::OpenDialogChannelAdd(const CPVRChannelPtr &channel)
+PVR_ERROR CPVRClients::OpenDialogChannelAdd(const CPVRChannelPtr &channel)
 {
   PVR_ERROR error = PVR_ERROR_UNKNOWN;
 
@@ -899,16 +894,10 @@ bool CPVRClients::OpenDialogChannelAdd(const CPVRChannelPtr &channel)
   else
     CLog::Log(LOGERROR, "PVR - %s - cannot find client %d",__FUNCTION__, channel->ClientID());
 
-  if (error == PVR_ERROR_NOT_IMPLEMENTED)
-  {
-    CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19038});
-    return true;
-  }
-
-  return error == PVR_ERROR_NO_ERROR;
+  return error;
 }
 
-bool CPVRClients::OpenDialogChannelSettings(const CPVRChannelPtr &channel)
+PVR_ERROR CPVRClients::OpenDialogChannelSettings(const CPVRChannelPtr &channel)
 {
   PVR_ERROR error = PVR_ERROR_UNKNOWN;
 
@@ -918,16 +907,10 @@ bool CPVRClients::OpenDialogChannelSettings(const CPVRChannelPtr &channel)
   else
     CLog::Log(LOGERROR, "PVR - %s - cannot find client %d",__FUNCTION__, channel->ClientID());
 
-  if (error == PVR_ERROR_NOT_IMPLEMENTED)
-  {
-    CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19038});
-    return true;
-  }
-
-  return error == PVR_ERROR_NO_ERROR;
+  return error;
 }
 
-bool CPVRClients::DeleteChannel(const CPVRChannelPtr &channel)
+PVR_ERROR CPVRClients::DeleteChannel(const CPVRChannelPtr &channel)
 {
   PVR_ERROR error = PVR_ERROR_UNKNOWN;
 
@@ -937,13 +920,7 @@ bool CPVRClients::DeleteChannel(const CPVRChannelPtr &channel)
   else
     CLog::Log(LOGERROR, "PVR - %s - cannot find client %d",__FUNCTION__, channel->ClientID());
 
-  if (error == PVR_ERROR_NOT_IMPLEMENTED)
-  {
-    CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19038});
-    return true;
-  }
-
-  return error == PVR_ERROR_NO_ERROR;
+  return error;
 }
 
 bool CPVRClients::RenameChannel(const CPVRChannelPtr &channel)
@@ -1013,8 +990,8 @@ void CPVRClients::UpdateAddons(void)
         CLog::Log(LOGERROR, "%s - failed to create add-on %s, status = %d", __FUNCTION__, addon->Name().c_str(), status);
         if (status == ADDON_STATUS_PERMANENT_FAILURE)
         {
-          CGUIDialogOK::ShowAndGetInput(CVariant{24070}, CVariant{16029});
           CAddonMgr::GetInstance().DisableAddon(addon->ID());
+          CJobManager::GetInstance().AddJob(new CPVREventlogJob(true, true, addon->Name(), g_localizeStrings.Get(24070), addon->Icon()), nullptr);
         }
       }
     }
@@ -1412,13 +1389,7 @@ void CPVRClients::ConnectionStateChange(CPVRClient *client, std::string &strConn
     strMsg = g_localizeStrings.Get(iMsg);
 
   // Notify user.
-  if (bNotify)
-    CGUIDialogKaiToast::QueueNotification(bError ? CGUIDialogKaiToast::Error : CGUIDialogKaiToast::Info, client->Name().c_str(),
-                                          strMsg, 5000, true);
-
-  // Write event log entry.
-  CEventLog::GetInstance().Add(EventPtr(new CNotificationEvent(client->Name(), strMsg, client->Icon(),
-                                                               bError ? EventLevel::Error : EventLevel::Information)));
+  CJobManager::GetInstance().AddJob(new CPVREventlogJob(bNotify, bError, client->Name(), strMsg, client->Icon()), nullptr);
 
   if (newState == PVR_CONNECTION_STATE_CONNECTED)
   {
