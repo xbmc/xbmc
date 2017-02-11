@@ -19,9 +19,7 @@
  */
 
 #include "ServiceBroker.h"
-#include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogOK.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "epg/Epg.h"
 #include "epg/EpgContainer.h"
 #include "messaging/ApplicationMessenger.h"

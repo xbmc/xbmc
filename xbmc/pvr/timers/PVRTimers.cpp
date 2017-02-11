@@ -25,13 +25,11 @@
 #include <utility>
 
 #include "ServiceBroker.h"
-#include "dialogs/GUIDialogKaiToast.h"
 #include "epg/EpgContainer.h"
-#include "events/EventLog.h"
-#include "events/NotificationEvent.h"
 #include "FileItem.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/PVRJobs.h"
 #include "pvr/PVRManager.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
@@ -324,22 +322,27 @@ bool CPVRTimers::UpdateEntries(const CPVRTimers &timers, const std::vector<int> 
     g_PVRManager.SetChanged();
     g_PVRManager.NotifyObservers(bAddedOrDeleted ? ObservableMessageTimersReset : ObservableMessageTimers);
 
-    if (g_PVRManager.IsStarted())
+    if (!timerNotifications.empty() && g_PVRManager.IsStarted())
     {
+      CPVREventlogJob *job = new CPVREventlogJob;
+
       /* queue notifications / fill eventlog */
       for (const auto &entry : timerNotifications)
       {
-        if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRRECORD_TIMERNOTIFICATIONS))
-          CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(19166), entry.second);
-
         std::string strName;
         g_PVRClients->GetClientAddonName(entry.first, strName);
 
         std::string strIcon;
         g_PVRClients->GetClientAddonIcon(entry.first, strIcon);
 
-        CEventLog::GetInstance().Add(EventPtr(new CNotificationEvent(strName, entry.second, strIcon, EventLevel::Information)));
+        job->AddEvent(CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRRECORD_TIMERNOTIFICATIONS),
+                      false, // info, no error
+                      strName,
+                      entry.second,
+                      strIcon);
       }
+
+      CJobManager::GetInstance().AddJob(job, nullptr);
     }
   }
 

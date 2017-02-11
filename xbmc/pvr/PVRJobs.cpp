@@ -39,15 +39,28 @@ bool CPVRContinueLastChannelJob::DoWork()
   return CPVRGUIActions::GetInstance().ContinueLastPlayedChannel();
 }
 
+CPVREventlogJob::CPVREventlogJob(bool bNotifyUser, bool bError, const std::string &label, const std::string &msg, const std::string &icon)
+{
+  AddEvent(bNotifyUser, bError, label, msg, icon);
+}
+
+void CPVREventlogJob::AddEvent(bool bNotifyUser, bool bError, const std::string &label, const std::string &msg, const std::string &icon)
+{
+  m_events.emplace_back(Event(bNotifyUser, bError, label, msg, icon));
+}
+
 bool CPVREventlogJob::DoWork()
 {
-  if (m_bNotifyUser)
-    CGUIDialogKaiToast::QueueNotification(
-      m_bError ? CGUIDialogKaiToast::Error : CGUIDialogKaiToast::Info, m_label.c_str(), m_msg, 5000, true);
+  for (const auto &event : m_events)
+  {
+    if (event.m_bNotifyUser)
+      CGUIDialogKaiToast::QueueNotification(
+        event.m_bError ? CGUIDialogKaiToast::Error : CGUIDialogKaiToast::Info, event.m_label.c_str(), event.m_msg, 5000, true);
 
-  // Write event log entry.
-  CEventLog::GetInstance().Add(
-      EventPtr(new CNotificationEvent(m_label, m_msg, m_icon, m_bError ? EventLevel::Error : EventLevel::Information)));
+    // Write event log entry.
+    CEventLog::GetInstance().Add(
+      EventPtr(new CNotificationEvent(event.m_label, event.m_msg, event.m_icon, event.m_bError ? EventLevel::Error : EventLevel::Information)));
+  }
   return true;
 }
 

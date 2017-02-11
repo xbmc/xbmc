@@ -3632,7 +3632,7 @@ msgstr ""
 #empty strings from id 824 to 827
 
 #. Text for notification that a timer rule has been deleted
-#: xbmc/pvr/timers/PVRTimers.cpp
+#: xbmc/pvr/timers/PVRTimerInfoTag.cpp
 msgctxt "#828"
 msgid "Timer rule deleted"
 msgstr ""
