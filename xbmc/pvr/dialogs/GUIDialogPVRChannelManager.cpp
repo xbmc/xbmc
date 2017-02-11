@@ -36,6 +36,7 @@
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 
+#include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
@@ -291,7 +292,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonRadioParentalLocked(CGUIMessage &
   bool selected(msg.GetParam1() == 1);
 
   // ask for PIN first
-  if (!g_PVRManager.CheckParentalPIN(g_localizeStrings.Get(19262).c_str()))
+  if (!CPVRGUIActions::GetInstance().CheckParentalPIN())
   { // failed - reset to previous
     SET_CONTROL_SELECTED(GetID(), RADIOBUTTON_PARENTAL_LOCK, !selected);
     return false;

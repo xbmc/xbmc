@@ -26,8 +26,6 @@
 #include "Application.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "dialogs/GUIDialogKaiToast.h"
-#include "dialogs/GUIDialogNumeric.h"
-#include "dialogs/GUIDialogOK.h"
 #include "epg/EpgContainer.h"
 #include "GUIInfoManager.h"
 #include "guilib/GUIWindowManager.h"
@@ -760,15 +758,10 @@ void CPVRManager::StartRecordingOnPlayingChannel(bool bOnOff)
   CJobManager::GetInstance().AddJob(new CPVRSetRecordingOnChannelJob(m_addons->GetPlayingChannel(), bOnOff), NULL);
 }
 
-bool CPVRManager::CheckParentalLock(const CPVRChannelPtr &channel)
+void CPVRManager::RestartParentalTimer()
 {
-  bool bReturn = !IsParentalLocked(channel) ||
-      CheckParentalPIN();
-
-  if (!bReturn)
-    CLog::Log(LOGERROR, "PVRManager - %s - parental lock verification failed for channel '%s': wrong PIN entered.", __FUNCTION__, channel->ChannelName().c_str());
-
-  return bReturn;
+  if (m_parentalTimer)
+    m_parentalTimer->StartZero();
 }
 
 bool CPVRManager::IsParentalLocked(const CPVRChannelPtr &channel)
@@ -792,27 +785,6 @@ bool CPVRManager::IsParentalLocked(const CPVRChannelPtr &channel)
   }
 
   return bReturn;
-}
-
-bool CPVRManager::CheckParentalPIN(const std::string& strTitle /* = "" */)
-{
-  std::string pinCode = CServiceBroker::GetSettings().GetString(CSettings::SETTING_PVRPARENTAL_PIN);
-
-  if (!CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRPARENTAL_ENABLED) || pinCode.empty())
-    return true;
-
-  // Locked channel. Enter PIN:
-  bool bValidPIN = CGUIDialogNumeric::ShowAndVerifyInput(pinCode, !strTitle.empty() ? strTitle : g_localizeStrings.Get(19263), true);
-  if (!bValidPIN)
-    // display message: The entered PIN number was incorrect
-    CGUIDialogOK::ShowAndGetInput(CVariant{19264}, CVariant{19265});
-  else if (m_parentalTimer)
-  {
-    // reset the timer
-    m_parentalTimer->StartZero();
-  }
-
-  return bValidPIN;
 }
 
 void CPVRManager::SetPlayingGroup(const CPVRChannelGroupPtr &group)

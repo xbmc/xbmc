@@ -183,26 +183,26 @@ namespace PVR
 
     /*!
      * @brief Add a timer to the client. Doesn't add the timer to the container. The backend will do this.
-     * @return True if it was sent correctly, false if not.
+     * @return True if timer add request was sent correctly, false if not.
      */
-    static bool AddTimer(const CPVRTimerInfoTagPtr &item);
+     static bool AddTimer(const CPVRTimerInfoTagPtr &item);
 
     /*!
      * @brief Delete a timer on the client. Doesn't delete the timer from the container. The backend will do this.
      * @param bDeleteRule Also delete the timer rule that scheduled the timer instead of single timer only.
-     * @return True if it was sent correctly, false if not.
+     * @return True if timer delete request was sent correctly, false if not.
      */
     static bool DeleteTimer(const CPVRTimerInfoTagPtr &tag, bool bForce = false, bool bDeleteRule = false);
 
     /*!
      * @brief Rename a timer on the client. Doesn't update the timer in the container. The backend will do this.
-     * @return True if it was sent correctly, false if not.
+     * @return True if timer rename request was sent correctly, false if not.
      */
     static bool RenameTimer(CFileItem &item, const std::string &strNewName);
 
     /*!
      * @brief Update the timer on the client. Doesn't update the timer in the container. The backend will do this.
-     * @return True if it was sent correctly, false if not.
+     * @return True if timer update request was sent correctly, false if not.
      */
     static bool UpdateTimer(const CPVRTimerInfoTagPtr &item);
 

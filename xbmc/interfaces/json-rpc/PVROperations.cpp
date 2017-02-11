@@ -344,7 +344,7 @@ JSONRPC_STATUS CPVROperations::AddTimer(const std::string &method, ITransportLay
   CPVRTimerInfoTagPtr newTimer = CPVRTimerInfoTag::CreateFromEpg(epgTag, parameterObject["timerrule"].asBoolean(false));
   if (newTimer)
   {
-    if (g_PVRTimers->AddTimer(newTimer))
+    if (CPVRGUIActions::GetInstance().AddTimer(newTimer))
       return ACK;
   }
   return FailedToExecute;
@@ -397,7 +397,7 @@ JSONRPC_STATUS CPVROperations::ToggleTimer(const std::string &method, ITransport
     if (!timer)
       return InvalidParams;
 
-    sentOkay = g_PVRTimers->AddTimer(timer);
+    sentOkay = CPVRGUIActions::GetInstance().AddTimer(timer);
   }
 
   if (sentOkay)

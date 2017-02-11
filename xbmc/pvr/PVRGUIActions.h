@@ -98,6 +98,12 @@ namespace PVR
     bool AddTimer(const CFileItemPtr &item, bool bShowTimerSettings) const;
 
     /*!
+     * @brief Add a timer to the client. Doesn't add the timer to the container. The backend will do this.
+     * @return True if it was sent correctly, false if not.
+     */
+    bool AddTimer(const CPVRTimerInfoTagPtr &item) const;
+
+    /*!
      * @brief Create a new timer rule, either interactive or non-interactive.
      * @param item containing epg data to create a timer rule for. item must be an epg tag or a channel.
      * @param bShowTimerSettings is used to control whether a settings dialog will be opened prior creating the timer rule.
@@ -285,6 +291,19 @@ namespace PVR
      * @return true on success, false otherwise.
      */
     bool ResetPVRDatabase(bool bResetEPGOnly);
+
+    /*!
+     * @brief Check if channel is parental locked. Ask for PIN if necessary.
+     * @param channel The channel to do the check for.
+     * @return True if channel is unlocked (by default or PIN unlocked), false otherwise.
+     */
+    bool CheckParentalLock(const CPVRChannelPtr &channel) const;
+
+    /*!
+     * @brief Open Numeric dialog to check for parental PIN.
+     * @return True if entered PIN was correct, false otherwise.
+     */
+    bool CheckParentalPIN() const;
 
     /*!
      * @brief Get the currently active channel number input handler.

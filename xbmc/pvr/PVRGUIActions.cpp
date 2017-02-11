@@ -20,6 +20,7 @@
 
 #include "Application.h"
 #include "dialogs/GUIDialogKaiToast.h"
+#include "dialogs/GUIDialogNumeric.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogSelect.h"
@@ -75,7 +76,7 @@ namespace PVR
   bool CPVRGUIActions::ShowEPGInfo(const CFileItemPtr &item) const
   {
     const CPVRChannelPtr channel(CPVRItem(item).GetChannel());
-    if (channel && !g_PVRManager.CheckParentalLock(channel))
+    if (channel && !CheckParentalLock(channel))
       return false;
 
     const CEpgInfoTagPtr epgTag(CPVRItem(item).GetEpgInfoTag());
@@ -158,7 +159,7 @@ namespace PVR
     if (ShowTimerSettings(newTimer))
     {
       /* Add timer to backend */
-      return g_PVRTimers->AddTimer(newTimer);
+      return AddTimer(newTimer);
     }
     return false;
   }
@@ -182,7 +183,7 @@ namespace PVR
       return false;
     }
 
-    if (!g_PVRManager.CheckParentalLock(channel))
+    if (!CheckParentalLock(channel))
       return false;
 
     const CEpgInfoTagPtr epgTag(CPVRItem(item).GetEpgInfoTag());
@@ -216,7 +217,28 @@ namespace PVR
         return false;
     }
 
-    return g_PVRTimers->AddTimer(newTimer);
+    return AddTimer(newTimer);
+  }
+
+  bool CPVRGUIActions::AddTimer(const CPVRTimerInfoTagPtr &item) const
+  {
+    if (!item->m_channel && item->GetTimerType() && !item->GetTimerType()->IsEpgBasedTimerRule())
+    {
+      CLog::Log(LOGERROR, "CPVRGUIActions - %s - no channel given", __FUNCTION__);
+      CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19109}); // "Information", "Couldn't save timer. Check the log for more information about this message."
+      return false;
+    }
+
+    if (!g_PVRClients->SupportsTimers(item->m_iClientId))
+    {
+      CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19215}); // "Information", "The PVR backend does not support timers."
+      return false;
+    }
+
+    if (!CheckParentalLock(item->m_channel))
+      return false;
+
+    return g_PVRTimers->AddTimer(item);
   }
 
   namespace
@@ -335,7 +357,7 @@ namespace PVR
     if (!channel)
       return bReturn;
 
-    if (!g_PVRManager.CheckParentalLock(channel))
+    if (!CheckParentalLock(channel))
       return bReturn;
 
     if (g_PVRClients->HasTimerSupport(channel->ClientID()))
@@ -516,11 +538,11 @@ namespace PVR
         // end up with one timer missing wrt to the rule defined by the new timer.
         if (g_PVRTimers->DeleteTimer(timer, timer->IsRecording(), false))
         {
-          if (g_PVRTimers->AddTimer(newTimer))
+          if (AddTimer(newTimer))
             return true;
 
           // rollback.
-          return g_PVRTimers->AddTimer(timer);
+          return AddTimer(timer);
         }
       }
     }
@@ -917,7 +939,7 @@ namespace PVR
     // switch to channel or if recording present, ask whether to switch or play recording...
     bool bSwitchSuccessful(false);
 
-    if (channel && g_PVRManager.CheckParentalLock(channel))
+    if (channel && CheckParentalLock(channel))
     {
       const CPVRRecordingPtr recording(channel->GetRecording());
       if (recording)
@@ -1306,7 +1328,7 @@ namespace PVR
     }
     else
     {
-      if (!g_PVRManager.CheckParentalPIN(g_localizeStrings.Get(19262)) || // "Parental control. Enter PIN:"
+      if (!CheckParentalPIN() ||
           !CGUIDialogYesNo::ShowAndGetInput(CVariant{19098},  // "Warning!"
                                             CVariant{19186})) // "All your TV related data (channels, groups, guide) will be cleared. Are you sure?"
         return false;
@@ -1394,6 +1416,39 @@ namespace PVR
     pDlgProgress->SetPercentage(100);
     pDlgProgress->Close();
     return true;
+  }
+
+  bool CPVRGUIActions::CheckParentalLock(const CPVRChannelPtr &channel) const
+  {
+    bool bReturn = !g_PVRManager.IsParentalLocked(channel) || CheckParentalPIN();
+
+    if (!bReturn)
+      CLog::Log(LOGERROR, "CPVRGUIActions - %s - parental lock verification failed for channel '%s': wrong PIN entered.", __FUNCTION__, channel->ChannelName().c_str());
+
+    return bReturn;
+  }
+
+  bool CPVRGUIActions::CheckParentalPIN() const
+  {
+    std::string pinCode = CServiceBroker::GetSettings().GetString(CSettings::SETTING_PVRPARENTAL_PIN);
+
+    if (!CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRPARENTAL_ENABLED) || pinCode.empty())
+      return true;
+
+    // Locked channel. Enter PIN:
+    bool bValidPIN = CGUIDialogNumeric::ShowAndVerifyInput(pinCode, g_localizeStrings.Get(19262), true); // "Parental control. Enter PIN:"
+    if (!bValidPIN)
+    {
+      // display message: The entered PIN number was incorrect
+      CGUIDialogOK::ShowAndGetInput(CVariant{19264}, CVariant{19265}); // "Incorrect PIN", "The entered PIN was incorrect."
+    }
+    else
+    {
+      // restart the parental timer
+      g_PVRManager.RestartParentalTimer();
+    }
+
+    return bValidPIN;
   }
 
   CPVRChannelNumberInputHandler &CPVRGUIActions::GetChannelNumberInputHandler()

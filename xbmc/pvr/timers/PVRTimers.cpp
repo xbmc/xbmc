@@ -26,7 +26,6 @@
 
 #include "ServiceBroker.h"
 #include "dialogs/GUIDialogKaiToast.h"
-#include "dialogs/GUIDialogOK.h"
 #include "epg/EpgContainer.h"
 #include "events/EventLog.h"
 #include "events/NotificationEvent.h"
@@ -39,7 +38,6 @@
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
-#include "utils/Variant.h"
 
 using namespace PVR;
 using namespace EPG;
@@ -677,22 +675,6 @@ bool CPVRTimers::DeleteTimersOnChannel(const CPVRChannelPtr &channel, bool bDele
 
 bool CPVRTimers::AddTimer(const CPVRTimerInfoTagPtr &item)
 {
-  if (!item->m_channel && item->GetTimerType() && !item->GetTimerType()->IsEpgBasedTimerRule())
-  {
-    CLog::Log(LOGERROR, "PVRTimers - %s - no channel given", __FUNCTION__);
-    CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19109}); // Couldn't save timer
-    return false;
-  }
-
-  if (!g_PVRClients->SupportsTimers(item->m_iClientId))
-  {
-    CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19215});
-    return false;
-  }
-
-  if (!g_PVRManager.CheckParentalLock(item->m_channel))
-    return false;
-
   return item->AddToClient();
 }
 

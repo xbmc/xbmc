@@ -5089,9 +5089,6 @@ bool CVideoPlayer::SwitchChannel(const CPVRChannelPtr &channel)
   if (g_PVRManager.IsPlayingChannel(channel))
     return false; // desired channel already active, nothing to do.
 
-  if (!g_PVRManager.CheckParentalLock(channel))
-    return false;
-
   /* set GUI info */
   if (!g_PVRManager.PerformChannelSwitch(channel, true))
     return false;

@@ -479,13 +479,6 @@ namespace PVR
     void SearchMissingChannelIcons(void);
 
     /*!
-     * @brief Check if channel is parental locked. Ask for PIN if necessary.
-     * @param channel The channel to open.
-     * @return True if channel is unlocked (by default or PIN unlocked), false otherwise.
-     */
-    bool CheckParentalLock(const CPVRChannelPtr &channel);
-
-    /*!
      * @brief Check if parental lock is overridden at the given moment.
      * @param channel The channel to open.
      * @return True if parental lock is overridden, false otherwise.
@@ -493,11 +486,9 @@ namespace PVR
     bool IsParentalLocked(const CPVRChannelPtr &channel);
 
     /*!
-     * @brief Open Numeric dialog to check for parental PIN.
-     * @param strTitle Override the title of the dialog if set.
-     * @return True if entered PIN was correct, false otherwise.
+     * @brief Restart the parantal timer.
      */
-    bool CheckParentalPIN(const std::string& strTitle = "");
+    void RestartParentalTimer();
 
     /*!
      * @brief Executes "pvrpowermanagement.setwakeupcmd"

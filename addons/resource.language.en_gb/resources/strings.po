@@ -9120,7 +9120,6 @@ msgstr ""
 #: xbmc/pvr/dialogs/GUIDialogPVRGuideInfo.cpp
 #: xbmc/pvr/recordings/PVRRecording.cpp
 #: xbmc/pvr/timers/PVRTimerInfoTag.cpp
-#: xbmc/pvr/timers/PVRTimers.cpp
 #: xbmc/pvr/windows/GUIWindowPVRTimersBase.cpp
 #: xbmc/pvr/PVRGUIActions.cpp
 #: xbmc/pvr/PVRManager.cpp
@@ -9593,7 +9592,7 @@ msgstr ""
 
 #. message box text stating that a timer could not be saved
 #: xbmc/pvr/timers/PVRTimerInfoTag.cpp
-#: xbmc/pvr/timers/PVRTimers.cpp
+#: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19109"
 msgid "Couldn't save timer. Check the log for more information about this message."
 msgstr ""
@@ -10211,7 +10210,7 @@ msgid "Enter a valid URL for the new channel"
 msgstr ""
 
 #. message box text stating that a pvr backend does not support timers
-#: xbmc/pvr/timers/PVRTimers.cpp
+#: xbmc/pvr/timers/PVRGUIActions.cpp
 #: xbmc/pvr/windows/GUIWindowsPVRTimersBase.cpp
 msgctxt "#19215"
 msgid "The PVR backend does not support timers."
@@ -10485,27 +10484,21 @@ msgid "Change PIN"
 msgstr ""
 
 #. generic 'parental control enter pin' label
-#: xbmc/pvr/dialogs/GUIDialogPVRChannelManager.cpp
-#: xbmc/pvr/PVRManager.cpp
-#: xbmc/settings/SettingConditions.cpp
+#: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19262"
 msgid "Parental control. Enter PIN:"
 msgstr ""
 
-#. label for 'parental control pin' verification dialog
-#: xbmc/pvr/PVRManager.cpp
-msgctxt "#19263"
-msgid "Locked channel. Enter PIN:"
-msgstr ""
+# empty string with id 19263
 
 #. label for 'incorrect pin' error dialog header
-#: xbmc/pvr/PVRManager.cpp
+#: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19264"
 msgid "Incorrect PIN"
 msgstr ""
 
 #. label for 'incorrect pin' error dialog text
-#: xbmc/pvr/PVRManager.cpp
+#: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19265"
 msgid "The entered PIN was incorrect."
 msgstr ""

@@ -59,7 +59,7 @@ void CPVRActionListener::Init()
 void CPVRActionListener::Deinit()
 {
   CServiceBroker::GetSettings().UnregisterCallback(this);
-}  
+}
 
 bool CPVRActionListener::OnAction(const CAction &action)
 {
@@ -202,5 +202,5 @@ void CPVRActionListener::OnSettingAction(const CSetting *setting)
     g_PVRClients->SetEPGTimeFrame(static_cast<const CSettingInt*>(setting)->GetValue());
   }
 }
-  
+
 } // namespace PVR
