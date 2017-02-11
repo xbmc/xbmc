@@ -28,6 +28,7 @@
 #include <assert.h>
 #include <vector>
 
+using namespace KODI;
 using namespace JOYSTICK;
 using namespace PERIPHERALS;
 

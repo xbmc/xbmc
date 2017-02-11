@@ -29,7 +29,7 @@
 
 namespace GAME
 {
-  class CGUIDialogButtonCapture : public JOYSTICK::IButtonMapper,
+  class CGUIDialogButtonCapture : public KODI::JOYSTICK::IButtonMapper,
                                   public Observer,
                                   protected CThread
   {
@@ -41,11 +41,11 @@ namespace GAME
     virtual bool NeedsCooldown(void) const override { return false; }
     virtual bool Emulation(void) const override { return false; }
     virtual unsigned int ControllerNumber(void) const override { return 0; }
-    virtual bool MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
-                              JOYSTICK::IActionMap* actionMap,
-                              const JOYSTICK::CDriverPrimitive& primitive) override;
-    virtual void OnEventFrame(const JOYSTICK::IButtonMap* buttonMap, bool bMotion) override { }
-    virtual void OnLateAxis(const JOYSTICK::IButtonMap* buttonMap, unsigned int axisIndex) override { }
+    virtual bool MapPrimitive(KODI::JOYSTICK::IButtonMap* buttonMap,
+                              KODI::JOYSTICK::IActionMap* actionMap,
+                              const KODI::JOYSTICK::CDriverPrimitive& primitive) override;
+    virtual void OnEventFrame(const KODI::JOYSTICK::IButtonMap* buttonMap, bool bMotion) override { }
+    virtual void OnLateAxis(const KODI::JOYSTICK::IButtonMap* buttonMap, unsigned int axisIndex) override { }
 
     // implementation of Observer
     virtual void Notify(const Observable &obs, const ObservableMessage msg) override;
@@ -57,18 +57,18 @@ namespace GAME
     virtual void Process() override;
 
   private:
-    bool AddPrimitive(const JOYSTICK::CDriverPrimitive& primitive);
+    bool AddPrimitive(const KODI::JOYSTICK::CDriverPrimitive& primitive);
 
     std::string GetDialogText();
 
     void InstallHooks();
     void RemoveHooks();
 
-    static std::string GetPrimitiveName(const JOYSTICK::CDriverPrimitive& primitive);
+    static std::string GetPrimitiveName(const KODI::JOYSTICK::CDriverPrimitive& primitive);
 
     // Button capture parameters
     std::string m_deviceName;
-    std::vector<JOYSTICK::CDriverPrimitive> m_capturedPrimitives;
+    std::vector<KODI::JOYSTICK::CDriverPrimitive> m_capturedPrimitives;
     CEvent m_captureEvent;
   };
 }

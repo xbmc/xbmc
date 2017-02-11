@@ -22,6 +22,7 @@
 #include "input/mouse/IMouseButtonMap.h"
 #include "input/mouse/IMouseInputHandler.h"
 
+using namespace KODI;
 using namespace MOUSE;
 
 CMouseInputHandling::CMouseInputHandling(IMouseInputHandler* handler, IMouseButtonMap* buttonMap) :

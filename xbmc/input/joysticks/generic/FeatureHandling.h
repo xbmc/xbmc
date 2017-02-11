@@ -23,6 +23,8 @@
 
 #include <memory>
 
+namespace KODI
+{
 namespace JOYSTICK
 {
   class CDriverPrimitive;
@@ -224,4 +226,5 @@ namespace JOYSTICK
     float m_yAxisState;
     float m_zAxisState;
   };
+}
 }

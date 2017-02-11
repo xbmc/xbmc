@@ -22,6 +22,8 @@
 #include "JoystickTypes.h"
 #include "input/Key.h"
 
+namespace KODI
+{
 namespace JOYSTICK
 {
   class CDriverPrimitive;
@@ -54,4 +56,5 @@ namespace JOYSTICK
      */
     virtual int GetActionID(const FeatureName& feature) = 0;
   };
+}
 }

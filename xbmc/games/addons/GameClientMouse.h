@@ -33,7 +33,7 @@ namespace GAME
    *
    * Listens to mouse events and forwards them to the games (as game_input_event).
    */
-  class CGameClientMouse : public MOUSE::IMouseInputHandler
+  class CGameClientMouse : public KODI::MOUSE::IMouseInputHandler
   {
   public:
     /*!

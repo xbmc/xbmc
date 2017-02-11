@@ -25,6 +25,8 @@
 
 #include <map>
 
+namespace KODI
+{
 namespace JOYSTICK
 {
   class CDriverPrimitive;
@@ -71,4 +73,5 @@ namespace JOYSTICK
 
     static CGUIDialogNewJoystick* const m_dialog;
   };
+}
 }

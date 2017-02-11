@@ -34,6 +34,7 @@
 #include "guilib/GUIWindow.h"
 #include "messaging/ApplicationMessenger.h"
 
+using namespace KODI;
 using namespace GAME;
 
 CGUIFeatureList::CGUIFeatureList(CGUIWindow* window, const std::string& windowParam) :

@@ -26,6 +26,8 @@
 
 #include <string>
 
+namespace KODI
+{
 namespace JOYSTICK
 {
   /*!
@@ -136,4 +138,5 @@ namespace JOYSTICK
     SEMIAXIS,    // the positive or negative half of an axis
     MOTOR,       // a rumble motor
   };
+}
 }

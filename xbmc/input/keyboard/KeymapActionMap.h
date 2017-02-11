@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2016 Team Kodi
+ *      Copyright (C) 2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,28 +19,21 @@
  */
 #pragma once
 
+#include "input/keyboard/IActionMap.h"
+
 namespace KODI
 {
-namespace JOYSTICK
+namespace KEYBOARD
 {
-  /*!
-   * \ingroup joystick
-   * \brief Interface for sending input events to joystick drivers
-   */
-  class IDriverReceiver
+  class CKeymapActionMap : public IActionMap
   {
   public:
-    virtual ~IDriverReceiver(void) { }
+    CKeymapActionMap(void) = default;
 
-    /*!
-     * \brief Set the value of a rumble motor
-     *
-     * \param motorIndex   The driver index of the motor to rumble
-     * \param magnitude    The motor's new magnitude of vibration in the closed interval [0, 1]
-     *
-     * \return True if the event was handled otherwise false
-     */
-    virtual bool SetMotorState(unsigned int motorIndex, float magnitude) = 0;
+    virtual ~CKeymapActionMap(void) = default;
+
+    // implementation of IActionMap
+    virtual unsigned int GetActionID(const CKey& key) override;
   };
 }
 }

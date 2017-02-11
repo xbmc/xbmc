@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2016 Team Kodi
+ *      Copyright (C) 2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,28 +19,29 @@
  */
 #pragma once
 
+class CKey;
+
 namespace KODI
 {
-namespace JOYSTICK
+namespace KEYBOARD
 {
   /*!
-   * \ingroup joystick
-   * \brief Interface for sending input events to joystick drivers
+   * \brief Interface for translating keys to action IDs
    */
-  class IDriverReceiver
+  class IActionMap
   {
   public:
-    virtual ~IDriverReceiver(void) { }
+    virtual ~IActionMap() = default;
 
     /*!
-     * \brief Set the value of a rumble motor
+     * \brief Get the action ID mapped to the specified key
      *
-     * \param motorIndex   The driver index of the motor to rumble
-     * \param magnitude    The motor's new magnitude of vibration in the closed interval [0, 1]
+     * \param key The key to look up
      *
-     * \return True if the event was handled otherwise false
+     * \return The action ID from Action.h, or ACTION_NONE if no action is
+     *         mapped to the specified key
      */
-    virtual bool SetMotorState(unsigned int motorIndex, float magnitude) = 0;
+    virtual unsigned int GetActionID(const CKey& key) = 0;
   };
 }
 }

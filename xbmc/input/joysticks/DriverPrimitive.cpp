@@ -20,6 +20,7 @@
 
 #include "DriverPrimitive.h"
 
+using namespace KODI;
 using namespace JOYSTICK;
 
 CDriverPrimitive::CDriverPrimitive(void)

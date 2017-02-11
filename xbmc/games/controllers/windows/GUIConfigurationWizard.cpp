@@ -24,11 +24,13 @@
 #include "games/controllers/ControllerFeature.h"
 #include "input/joysticks/IButtonMap.h"
 #include "input/joysticks/IButtonMapCallback.h"
+#include "input/keyboard/KeymapActionMap.h"
 #include "input/InputManager.h"
 #include "peripherals/Peripherals.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 
+using namespace KODI;
 using namespace GAME;
 
 #define ESC_KEY_CODE  27
@@ -40,9 +42,14 @@ using namespace GAME;
 CGUIConfigurationWizard::CGUIConfigurationWizard(bool bEmulation, unsigned int controllerNumber /* = 0 */) :
   CThread("GUIConfigurationWizard"),
   m_bEmulation(bEmulation),
-  m_controllerNumber(controllerNumber)
+  m_controllerNumber(controllerNumber),
+  m_actionMap(new KEYBOARD::CKeymapActionMap)
 {
   InitializeState();
+}
+
+CGUIConfigurationWizard::~CGUIConfigurationWizard(void)
+{
 }
 
 void CGUIConfigurationWizard::InitializeState(void)
@@ -265,7 +272,38 @@ void CGUIConfigurationWizard::OnMotionless(const JOYSTICK::IButtonMap* buttonMap
 
 bool CGUIConfigurationWizard::OnKeyPress(const CKey& key)
 {
-  return Abort(false);
+  using namespace KEYBOARD;
+
+  bool bHandled = false;
+
+  switch (m_actionMap->GetActionID(key))
+  {
+  case ACTION_MOVE_LEFT:
+  case ACTION_MOVE_RIGHT:
+  case ACTION_MOVE_UP:
+  case ACTION_MOVE_DOWN:
+  case ACTION_PAGE_UP:
+  case ACTION_PAGE_DOWN:
+    // Abort and allow motion
+    Abort(false);
+    bHandled = false;
+    break;
+
+  case ACTION_PARENT_DIR:
+  case ACTION_PREVIOUS_MENU:
+  case ACTION_STOP:
+    // Abort and prevent action
+    Abort(false);
+    bHandled = true;
+    break;
+
+  default:
+    // Absorb keypress
+    bHandled = true;
+    break;
+  }
+
+  return bHandled;
 }
 
 bool CGUIConfigurationWizard::OnButtonPress(const std::string& button)

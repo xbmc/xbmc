@@ -26,6 +26,8 @@
 #include <map>
 #include <stdint.h>
 
+namespace KODI
+{
 namespace JOYSTICK
 {
   class CButtonMapping;
@@ -259,4 +261,5 @@ namespace JOYSTICK
     unsigned int m_lastAction;
     uint64_t m_frameCount;
   };
+}
 }

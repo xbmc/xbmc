@@ -19,6 +19,8 @@
  */
 #pragma once
 
+namespace KODI
+{
 namespace JOYSTICK
 {
   /*!
@@ -52,4 +54,5 @@ namespace JOYSTICK
      */
     virtual void RevertButtonMap() = 0;
   };
+}
 }

@@ -28,6 +28,7 @@
 #include <array>
 #include <cmath>
 
+using namespace KODI;
 using namespace JOYSTICK;
 
 CGUIDialogNewJoystick* const CInputHandling::m_dialog = new CGUIDialogNewJoystick;
