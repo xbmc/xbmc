@@ -39,4 +39,14 @@ namespace PVR
     bool m_bOnOff;
   };
 
+  class CPVRContinueLastChannelJob : public CJob
+  {
+  public:
+    CPVRContinueLastChannelJob() = default;
+    virtual ~CPVRContinueLastChannelJob() {}
+    const char *GetType() const override { return "pvr-continue-last-channel-job"; }
+
+    bool DoWork() override;
+  };
+
 } // namespace PVR

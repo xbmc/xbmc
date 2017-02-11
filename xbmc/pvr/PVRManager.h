@@ -606,10 +606,9 @@ namespace PVR
     bool ChannelUpDown(unsigned int *iNewChannelNumber, bool bPreview, bool bUp);
 
     /*!
-     * @brief Continue playback on the last channel if it was stored in the database.
-     * @return True if playback was continued, false otherwise.
+     * @brief Continue playback on the last played channel.
      */
-    bool ContinueLastChannel(void);
+    void TriggerContinueLastChannel(void);
 
     enum ManagerState
     {

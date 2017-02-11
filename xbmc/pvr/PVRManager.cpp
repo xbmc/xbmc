@@ -193,7 +193,7 @@ void CPVRManager::Announce(AnnouncementFlag flag, const char *sender, const char
       TriggerSearchMissingChannelIcons();
 
       /* continue last watched channel */
-      ContinueLastChannel();
+      TriggerContinueLastChannel();
 
       /* trigger PVR data updates */
       TriggerChannelGroupsUpdate();
@@ -503,9 +503,8 @@ void CPVRManager::Process(void)
       /* start job to search for missing channel icons */
       TriggerSearchMissingChannelIcons();
 
-      /* try to continue last watched channel otherwise set group to last played group */
-      if (!ContinueLastChannel())
-        SetPlayingGroup(m_channelGroups->GetLastPlayedGroup());
+      /* try to continue last watched channel */
+      TriggerContinueLastChannel();
     }
     /* execute the next pending jobs if there are any */
     try
@@ -687,13 +686,9 @@ bool CPVRManager::ChannelUpDown(unsigned int *iNewChannelNumber, bool bPreview, 
   return bReturn;
 }
 
-bool CPVRManager::ContinueLastChannel(void)
+void CPVRManager::TriggerContinueLastChannel(void)
 {
-  CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION,
-                                               WINDOW_INVALID,
-                                               -1,
-                                               static_cast<void*>(new CAction(ACTION_CONTINUE_LAST_CHANNEL)));
-  return true;
+  CJobManager::GetInstance().AddJob(new CPVRContinueLastChannelJob(), nullptr);
 }
 
 bool CPVRManager::IsPlaying(void) const

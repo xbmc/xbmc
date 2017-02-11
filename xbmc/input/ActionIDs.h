@@ -227,7 +227,6 @@
 #define ACTION_PVR_PLAY_TV            189
 #define ACTION_PVR_PLAY_RADIO         190
 #define ACTION_PVR_SHOW_TIMER_RULE    191
-#define ACTION_CONTINUE_LAST_CHANNEL  192
 
 #define ACTION_TOGGLE_FULLSCREEN      199 //!< switch 2 desktop resolution
 #define ACTION_TOGGLE_WATCHED         200 //!< Toggle watched status (videos)

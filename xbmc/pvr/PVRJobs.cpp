@@ -30,4 +30,9 @@ bool CPVRSetRecordingOnChannelJob::DoWork()
   return CPVRGUIActions::GetInstance().SetRecordingOnChannel(m_channel, m_bOnOff);
 }
 
+bool CPVRContinueLastChannelJob::DoWork()
+{
+  return CPVRGUIActions::GetInstance().ContinueLastPlayedChannel();
+}
+
 } // namespace PVR
