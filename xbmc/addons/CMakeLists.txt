@@ -20,7 +20,6 @@ set(SOURCES Addon.cpp
             GUIWindowAddonBrowser.cpp
             ImageDecoder.cpp
             ImageResource.cpp
-            InputStream.cpp
             LanguageResource.cpp
             PVRClient.cpp
             Repository.cpp
@@ -56,7 +55,6 @@ set(HEADERS Addon.h
             GUIWindowAddonBrowser.h
             ImageDecoder.h
             ImageResource.h
-            InputStream.h
             LanguageResource.h
             PVRClient.h
             Repository.h

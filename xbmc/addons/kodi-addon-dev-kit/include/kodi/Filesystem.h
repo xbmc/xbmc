@@ -281,6 +281,22 @@ namespace vfs
 
   //============================================================================
   ///
+  inline std::string TranslateSpecialProtocol(const std::string& source)
+  {
+    std::string strReturn;
+    char* protocol = ::kodi::addon::CAddonBase::m_interface->toKodi.kodi->filesystem.translate_special_protocol(::kodi::addon::CAddonBase::m_interface->toKodi.kodiBase, source.c_str());
+    if (protocol != nullptr)
+    {
+      if (std::strlen(protocol))
+        strReturn = protocol;
+      ::kodi::addon::CAddonBase::m_interface->toKodi.free_string(::kodi::addon::CAddonBase::m_interface->toKodi.kodiBase, protocol);
+    }
+    return strReturn;
+  }
+  //----------------------------------------------------------------------------
+  
+  //============================================================================
+  ///
   inline std::string GetFileName(const std::string& path)
   {
     /* find the last slash */
@@ -355,7 +371,7 @@ namespace vfs
 
     //==========================================================================
     ///
-    bool CURLCreate(std::string& url)
+    bool CURLCreate(const std::string& url)
     {
       m_file = ::kodi::addon::CAddonBase::m_interface->toKodi.kodi->filesystem.curl_create(::kodi::addon::CAddonBase::m_interface->toKodi.kodiBase, url.c_str());
       return m_file != nullptr;
@@ -364,7 +380,7 @@ namespace vfs
 
     //==========================================================================
     ///
-    bool CURLAddOption(CURLOptiontype type, std::string& name, std::string& value)
+    bool CURLAddOption(CURLOptiontype type, const std::string& name, const std::string& value)
     {
       if (!m_file)
       {
@@ -495,6 +511,16 @@ namespace vfs
       if (!m_file)
         return 0;
       return ::kodi::addon::CAddonBase::m_interface->toKodi.kodi->filesystem.get_file_chunk_size(::kodi::addon::CAddonBase::m_interface->toKodi.kodiBase, m_file);
+    }
+    //--------------------------------------------------------------------------
+
+    //==========================================================================
+    ///
+    double GetFileDownloadSpeed()
+    {
+      if (!m_file)
+        return 0.0;
+      return ::kodi::addon::CAddonBase::m_interface->toKodi.kodi->filesystem.get_file_download_speed(::kodi::addon::CAddonBase::m_interface->toKodi.kodiBase, m_file);
     }
     //--------------------------------------------------------------------------
 
