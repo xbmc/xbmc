@@ -214,6 +214,7 @@ public:
     startpts = DVD_NOPTS_VALUE;
     lastdts = DVD_NOPTS_VALUE;
     avsync = AV_SYNC_FORCE;
+    dispTime = 0;
   }
 
   double dts_end()

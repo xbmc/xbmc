@@ -1270,6 +1270,9 @@ void CVideoPlayer::Process()
     m_OmxPlayerState.av_clock.OMXPause();
   }
 
+  if (m_PlayerOptions.starttime > 0)
+    m_State.time = m_PlayerOptions.starttime * 1000;
+
   OpenDefaultStreams();
 
   // look for any EDL files
@@ -1345,6 +1348,11 @@ void CVideoPlayer::Process()
         CLog::Log(LOGDEBUG, "%s - starting subtitle demuxer from: %d", __FUNCTION__, starttime);
       else
         CLog::Log(LOGDEBUG, "%s - failed to start subtitle demuxing from: %d", __FUNCTION__, starttime);
+    }
+    if (m_pInputStream)
+    {
+      m_CurrentVideo.dts = 0;
+      m_CurrentVideo.dispTime = starttime;
     }
   }
 
