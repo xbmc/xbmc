@@ -162,6 +162,14 @@ namespace PVR
     bool ShowRecordingInfo(const CFileItemPtr &item) const;
 
     /*!
+     * @brief Start or stop recording on a given channel.
+     * @param channel the channel to start/stop recording.
+     * @param bOnOff True to start recording, false to stop.
+     * @return True if the recording was started or stopped successfully, false otherwise.
+     */
+    bool SetRecordingOnChannel(const CPVRChannelPtr &channel, bool bOnOff);
+
+    /*!
      * @brief Stop a currently active recording, always showing a confirmation dialog.
      * @param item containing a recording to stop. item must be a timer, an epg tag or a channel.
      * @return true, if the recording was stopped successfully, false otherwise.

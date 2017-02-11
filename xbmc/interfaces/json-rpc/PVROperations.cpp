@@ -228,7 +228,7 @@ JSONRPC_STATUS CPVROperations::Record(const std::string &method, ITransportLayer
 
   if (toggle)
   {
-    if (!g_PVRManager.ToggleRecordingOnChannel(pChannel->ChannelID()))
+    if (!CPVRGUIActions::GetInstance().SetRecordingOnChannel(pChannel, pChannel->IsRecording()))
       return FailedToExecute;
   }
 

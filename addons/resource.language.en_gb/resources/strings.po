@@ -9453,7 +9453,7 @@ msgstr ""
 
 #. Label for "Instant recording action" setting
 #: system/settings/settings.xml
-#: xbmc/pvr/PVRManager.cpp
+#: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19086"
 msgid "Instant recording action"
 msgstr ""
@@ -9477,19 +9477,19 @@ msgid "Ask what to do"
 msgstr ""
 
 #. Label for "Instant recording action" dialog settings value
-#: xbmc/pvr/PVRManager.cpp
+#: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19090"
 msgid "Record the next %d minutes"
 msgstr ""
 
 #. Label for "Instant recording action" dialog settings value
-#: xbmc/pvr/PVRManager.cpp
+#: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19091"
 msgid "Record current show (%s)"
 msgstr ""
 
 #. Label for "Instant recording action" dialog settings value
-#: xbmc/pvr/PVRManager.cpp
+#: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19092"
 msgid "Record next show (%s)"
 msgstr ""
@@ -9911,7 +9911,7 @@ msgid "Recordings"
 msgstr ""
 
 #. error box text stating that recording could not be started
-#: xbmc/pvr/PVRManager.cpp
+#: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19164"
 msgid "Can't start recording. Check the log for more information about this message."
 msgstr ""
