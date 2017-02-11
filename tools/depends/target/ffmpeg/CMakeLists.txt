@@ -57,15 +57,10 @@ elseif(CORE_SYSTEM_NAME STREQUAL osx)
                           --target-os=darwin
                           --disable-securetransport)
 elseif(CORE_SYSTEM_NAME STREQUAL rbpi)
-  if(CPU STREQUAL "cortex-a7" OR CPU STREQUAL "cortex-a53")
-    list(APPEND ffmpeg_conf --cpu=${CPU} --enable-pic --disable-armv5te --disable-armv6t2)
-  endif()
-  list(APPEND ffmpeg_conf --enable-hardcoded-tables --disable-vaapi --disable-vdpau --enable-mmal
-                          --enable-omx-rpi)
-
+  list(APPEND ffmpeg_conf --cpu=${CPU} --disable-vaapi --disable-vdpau)
 endif()
 
-if(CPU MATCHES arm)
+if(CPU MATCHES arm OR CORE_SYSTEM_NAME STREQUAL rbpi)
   list(APPEND ffmpeg_conf --enable-pic --disable-armv5te --disable-armv6t2)
 elseif(CPU MATCHES mips)
   list(APPEND ffmpeg_conf --disable-mips32r2 --disable-mipsdspr1 --disable-mipsdspr2)
