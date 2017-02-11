@@ -20,7 +20,7 @@
  */
 
 #include "GUIControl.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/visualization/Visualization.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/addon-instance/Visualization.h"
 #include "addons/AddonDll.h"
 #include "cores/AudioEngine/Interfaces/IAudioCallback.h"
 #include "utils/rfft.h"

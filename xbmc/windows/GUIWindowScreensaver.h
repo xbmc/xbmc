@@ -19,7 +19,7 @@
  *
  */
 
-#include "addons/kodi-addon-dev-kit/include/kodi/screensaver/Screensaver.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/addon-instance/Screensaver.h"
 #include "addons/AddonDll.h"
 #include "guilib/GUIWindow.h"
 
