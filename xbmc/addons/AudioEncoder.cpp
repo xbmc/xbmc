@@ -16,77 +16,66 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 #include "AudioEncoder.h"
+#include "utils/log.h"
 
 namespace ADDON
 {
 
 CAudioEncoder::CAudioEncoder(AddonInfoPtr addonInfo)
-  : CAddonDll(addonInfo),
-    m_context(nullptr)
+  : IAddonInstanceHandler(ADDON_AUDIOENCODER)
 {
-  m_extension = Type(ADDON_AUDIOENCODER)->GetValue("@extension").asString();
+  m_addon = CAddonMgr::GetInstance().GetAddon(addonInfo->ID(), this);
+  if (!m_addon)
+    CLog::Log(LOGFATAL, "ADDON::CAudioEncoder: Tried to get add-on '%s' who not available!", addonInfo->ID().c_str());
+
+  memset(&m_struct, 0, sizeof(m_struct));
 }
 
-bool CAudioEncoder::Create()
+CAudioEncoder::~CAudioEncoder()
 {
-  if (CAddonDll::Create(ADDON_INSTANCE_AUDIOENCODER, &m_struct, &m_info) == ADDON_STATUS_OK)
-    return true;
-
-  return false;
+  CAddonMgr::GetInstance().ReleaseAddon(m_addon, this);
 }
 
-bool CAudioEncoder::Init(audioenc_callbacks &callbacks)
+bool CAudioEncoder::Init(AddonToKodiFuncTable_AudioEncoder &callbacks)
 {
-  if (!Initialized())
+  m_struct.toKodi = callbacks;
+  if (m_addon->CreateInstance(ADDON_INSTANCE_AUDIOENCODER, m_addon->ID(), &m_struct, reinterpret_cast<KODI_HANDLE*>(&m_addonInstance)) != ADDON_STATUS_OK || !m_struct.toAddon.Start)
     return false;
 
-  // create encoder instance
-  m_context = m_struct.Create(&callbacks);
-  if (!m_context)
-    return false;
-
-  return m_struct.Start(m_context,
-                          m_iInChannels,
-                          m_iInSampleRate,
-                          m_iInBitsPerSample,
-                          m_strTitle.c_str(),
-                          m_strArtist.c_str(),
-                          m_strAlbumArtist.c_str(),
-                          m_strAlbum.c_str(),
-                          m_strYear.c_str(),
-                          m_strTrack.c_str(),
-                          m_strGenre.c_str(),
-                          m_strComment.c_str(),
-                          m_iTrackLength);
+  return m_struct.toAddon.Start(m_addonInstance,
+                                m_iInChannels,
+                                m_iInSampleRate,
+                                m_iInBitsPerSample,
+                                m_strTitle.c_str(),
+                                m_strArtist.c_str(),
+                                m_strAlbumArtist.c_str(),
+                                m_strAlbum.c_str(),
+                                m_strYear.c_str(),
+                                m_strTrack.c_str(),
+                                m_strGenre.c_str(),
+                                m_strComment.c_str(),
+                                m_iTrackLength);
 }
 
 int CAudioEncoder::Encode(int nNumBytesRead, uint8_t* pbtStream)
 {
-  if (!Initialized() || !m_context)
-    return 0;
-
-  return m_struct.Encode(m_context, nNumBytesRead, pbtStream);
+  if (m_struct.toAddon.Encode)
+    return m_struct.toAddon.Encode(m_addonInstance, nNumBytesRead, pbtStream);
+  return 0;
 }
 
 bool CAudioEncoder::Close()
 {
-  if (!Initialized() || !m_context)
-    return false;
+  bool ret = false;
+  if (m_struct.toAddon.Finish)
+    ret = m_struct.toAddon.Finish(m_addonInstance);
 
-  if (!m_struct.Finish(m_context))
-    return false;
+  m_addon->DestroyInstance(m_addon->ID());
+  memset(&m_struct, 0, sizeof(m_struct));
 
-  m_struct.Free(m_context);
-  m_context = NULL;
-
-  return true;
+  return ret;
 }
 
-void CAudioEncoder::Destroy()
-{
-  CAddonDll::Destroy();
-}
-
-} /*namespace ADDON*/
-
+} /* namespace ADDON */

@@ -290,13 +290,9 @@ std::string CCDDARipper::GetTrackName(CFileItem *item)
   if (track.empty())
     track = StringUtils::Format("%s%02i", "Track-", trackNumber);
 
-  AddonPtr addon;
-  CAddonMgr::GetInstance().GetAddon(CServiceBroker::GetSettings().GetString(CSettings::SETTING_AUDIOCDS_ENCODER), addon);
-  if (addon)
-  {
-    std::shared_ptr<CAudioEncoder> enc = std::static_pointer_cast<CAudioEncoder>(addon);
-    track += enc->Extension();
-  }
+  const AddonInfoPtr addonInfo = CAddonMgr::GetInstance().GetInstalledAddonInfo(CServiceBroker::GetSettings().GetString(CSettings::SETTING_AUDIOCDS_ENCODER), ADDON_AUDIOENCODER);
+  if (addonInfo)
+    track += addonInfo->Type(ADDON_AUDIOENCODER)->GetValue("@extension").asString();
 
   return track;
 }

@@ -1,3 +1,4 @@
+#pragma once
 /*
  *      Copyright (C) 2013 Arne Morten Kvarving
  *
@@ -16,34 +17,28 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#pragma once
 
 #include "AddonDll.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/xbmc_audioenc_types.h"
 #include "cdrip/IEncoder.h"
 
 namespace ADDON
 {
 
-  class CAudioEncoder : public CAddonDll, public IEncoder
+  class CAudioEncoder : public IEncoder, public IAddonInstanceHandler
   {
   public:
     CAudioEncoder(AddonInfoPtr addonInfo);
-    virtual ~CAudioEncoder() {}
+    virtual ~CAudioEncoder();
 
-    // Things that MUST be supplied by the child classes
-    bool Create();
-    bool Init(audioenc_callbacks &callbacks);
+    // Child functions related to IEncoder
+    bool Init(AddonToKodiFuncTable_AudioEncoder& callbacks);
     int Encode(int nNumBytesRead, uint8_t* pbtStream);
     bool Close();
-    void Destroy();
-    const std::string& Extension() { return m_extension; }
 
   private:
-    std::string m_extension;
-    void *m_context; ///< audio encoder context
-    AUDIOENC_PROPS m_info;
-    KodiToAddonFuncTable_AudioEncoder m_struct;
+    ADDON::AddonDllPtr m_addon;
+    kodi::addon::CInstanceAudioEncoder* m_addonInstance;
+    AddonInstance_AudioEncoder m_struct;
   };
 
-} /*namespace ADDON*/
+} /* namespace ADDON */
