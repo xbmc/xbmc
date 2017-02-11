@@ -98,6 +98,8 @@ public:
   CDVDVideoCodecAndroidMediaCodec(CProcessInfo &processInfo, bool surface_render = false);
   virtual ~CDVDVideoCodecAndroidMediaCodec();
 
+  // track instances - we can only allow exactly one
+  static int instances;
   // required overrides
   virtual bool    Open(CDVDStreamInfo &hints, CDVDCodecOptions &options);
   virtual int     Decode(uint8_t *pData, int iSize, double dts, double pts);
@@ -158,3 +160,4 @@ protected:
   int             m_src_offset[4];
   int             m_src_stride[4];
 };
+CDVDVideoCodecAndroidMediaCodec::instances = 0;

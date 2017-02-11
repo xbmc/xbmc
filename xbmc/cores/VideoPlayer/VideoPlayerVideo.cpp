@@ -118,7 +118,7 @@ double CVideoPlayerVideo::GetOutputDelay()
     return time;
 }
 
-bool CVideoPlayerVideo::OpenStream( CDVDStreamInfo &hint )
+bool CVideoPlayerVideo::OpenStream(CDVDStreamInfo &hint)
 {
   m_processInfo.ResetVideoCodecInfo();
 
@@ -131,10 +131,9 @@ bool CVideoPlayerVideo::OpenStream( CDVDStreamInfo &hint )
 
   CLog::Log(LOGNOTICE, "Creating video codec with codec id: %i", hint.codec);
   CDVDVideoCodec* codec = CDVDFactoryCodec::CreateVideoCodec(hint, m_processInfo, info);
-  if(!codec)
+  if (!codec)
   {
-    CLog::Log(LOGERROR, "Unsupported video codec");
-    return false;
+    CLog::Log(LOGINFO, "CVideoPlayerVideo::OpenStream - could not open video codec");
   }
 
   if(m_messageQueue.IsInited())
@@ -191,6 +190,21 @@ void CVideoPlayerVideo::OpenStream(CDVDStreamInfo &hint, CDVDVideoCodec* codec)
   {
     m_pVideoCodec->ClearPicture(&m_picture);
     delete m_pVideoCodec;
+    m_pVideoCodec = nullptr;
+  }
+  if (!codec)
+  {
+    CLog::Log(LOGNOTICE, "Creating video codec with codec id: %i", hint.codec);
+    CRenderInfo info;
+    info = m_renderManager.GetRenderInfo();
+    hint.codecOptions |= CODEC_ALLOW_FALLBACK;
+    codec = CDVDFactoryCodec::CreateVideoCodec(hint, m_processInfo, info);
+    if (!codec)
+    {
+      CLog::Log(LOGERROR, "CVideoPlayerVideo::OpenStream - could not open video codec");
+      m_messageParent.Put(new CDVDMsg(CDVDMsg::PLAYER_ABORT));
+      StopThread();
+    }
   }
   m_pVideoCodec = codec;
   m_hints   = hint;
