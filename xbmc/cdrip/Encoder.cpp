@@ -72,8 +72,8 @@ bool CEncoder::Init(const char* strFile, int iInChannels, int iInRate, int iInBi
     return false;
   }
 
-  audioenc_callbacks callbacks;
-  callbacks.opaque = this;
+  AddonToKodiFuncTable_AudioEncoder callbacks;
+  callbacks.kodiInstance = this;
   callbacks.write  = WriteCallback;
   callbacks.seek   = SeekCallback;
   return m_impl->Init(callbacks);
