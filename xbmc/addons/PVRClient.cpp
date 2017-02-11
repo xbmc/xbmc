@@ -1253,7 +1253,7 @@ DemuxPacket* CPVRClient::DemuxRead(void)
   return NULL;
 }
 
-bool CPVRClient::HaveMenuHooks(PVR_MENUHOOK_CAT cat) const
+bool CPVRClient::HasMenuHooks(PVR_MENUHOOK_CAT cat) const
 {
   bool bReturn(false);
   if (m_bReadyToUse && !m_menuhooks.empty())

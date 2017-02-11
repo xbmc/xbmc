@@ -854,8 +854,7 @@ bool CPVRClients::HasMenuHooks(int iClientID, PVR_MENUHOOK_CAT cat)
     iClientID = GetPlayingClientID();
 
   PVR_CLIENT client;
-  return (GetCreatedClient(iClientID, client) &&
-      client->HaveMenuHooks(cat));
+  return (GetCreatedClient(iClientID, client) && client->HasMenuHooks(cat));
 }
 
 std::vector<PVR_CLIENT> CPVRClients::GetClientsSupportingChannelScan(void) const

@@ -1008,7 +1008,7 @@ namespace PVR
       iClientID = g_PVRClients->GetPlayingClientID();
 
     PVR_CLIENT client;
-    if (g_PVRClients->GetCreatedClient(iClientID, client) && client->HaveMenuHooks(menuCategory))
+    if (g_PVRClients->GetCreatedClient(iClientID, client) && client->HasMenuHooks(menuCategory))
     {
       CGUIDialogSelect* pDialog= dynamic_cast<CGUIDialogSelect*>(g_windowManager.GetWindow(WINDOW_DIALOG_SELECT));
       if (!pDialog)
