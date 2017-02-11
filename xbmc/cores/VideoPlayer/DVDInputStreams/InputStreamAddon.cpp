@@ -504,6 +504,10 @@ void CInputStreamAddon::DisposeStreams()
   m_streams.clear();
 }
 
+/*!
+  * Callbacks from add-on to kodi
+  */
+//@{
 void CInputStreamAddon::InputStreamFreeDemuxPacket(void* kodiInstanceBase, DemuxPacket* pPacket)
 {
   CDVDDemuxUtils::FreeDemuxPacket(pPacket);
@@ -518,3 +522,4 @@ DemuxPacket* CInputStreamAddon::InputStreamAllocateEncryptedDemuxPacket(void* ko
 {
   return CDVDDemuxUtils::AllocateDemuxPacket(iDataSize, encryptedSubsampleCount);
 }
+//@}

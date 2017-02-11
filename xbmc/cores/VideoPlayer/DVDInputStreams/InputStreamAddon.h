@@ -115,6 +115,10 @@ private:
   AddonInstance_InputStream m_struct;
 
   /*!
+   * Callbacks from add-on to kodi
+   */
+  //@{
+  /*!
    * @brief Allocate a demux packet. Free with FreeDemuxPacket
    * @param kodiInstanceBase A pointer to this.
    * @param iDataSize The size of the data that will go into the packet
@@ -137,4 +141,5 @@ private:
    * @param pPacket The packet to free.
    */
   static void InputStreamFreeDemuxPacket(void* kodiInstanceBase, DemuxPacket* pPacket);
+  //@}
 };

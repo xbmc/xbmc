@@ -1,7 +1,6 @@
 #pragma once
-
 /*
- *      Copyright (C) 2005-2016 Team Kodi
+ *      Copyright (C) 2005-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -20,6 +19,11 @@
  *
  */
 
+/*
+ * Parts with a comment named "internal" are only used inside header and not
+ * used or accessed direct during add-on development!
+ */
+
 #include "../AddonBase.h"
 
 #ifdef BUILD_KODI_ADDON
@@ -30,7 +34,8 @@
 
 namespace kodi { namespace addon { class CInstanceInputStream; }}
 
-extern "C" {
+extern "C"
+{
 
   /*!
    * @brief InputStream add-on capabilities. All capabilities are set to "false" as default.
@@ -139,12 +144,12 @@ extern "C" {
 
   // this are properties given to the addon on create
   // at this time we have no parameters for the addon
-  typedef struct AddonProps_InputStream
+  typedef struct AddonProps_InputStream /* internal */
   {
     int dummy;
   } AddonProps_InputStream;
 
-  typedef struct AddonToKodiFuncTable_InputStream
+  typedef struct AddonToKodiFuncTable_InputStream /* internal */
   {
     KODI_HANDLE kodiInstance;
     void (*FreeDemuxPacket)(void* kodiInstanceBase, DemuxPacket* pPacket);
@@ -152,7 +157,7 @@ extern "C" {
     DemuxPacket* (*AllocateEncryptedDemuxPacket)(void* kodiInstanceBase, unsigned int iDataSize, unsigned int encryptedSubsampleCount);
   } AddonToKodiFuncTable_InputStream;
 
-  typedef struct KodiToAddonFuncTable_InputStream
+  typedef struct KodiToAddonFuncTable_InputStream /* internal */
   {
     bool (__cdecl* Open)(kodi::addon::CInstanceInputStream* addonInstance, INPUTSTREAM&);
     void (__cdecl* Close)(kodi::addon::CInstanceInputStream* addonInstance);
@@ -189,15 +194,14 @@ extern "C" {
     bool (__cdecl* IsRealTimeStream)(kodi::addon::CInstanceInputStream* addonInstance);
   } KodiToAddonFuncTable_InputStream;
 
-  typedef struct AddonInstance_InputStream
+  typedef struct AddonInstance_InputStream /* internal */
   {
     AddonProps_InputStream props;
     AddonToKodiFuncTable_InputStream toKodi;
     KodiToAddonFuncTable_InputStream toAddon;
   } AddonInstance_InputStream;
 
-}
-
+} /* extern "C" */
 
 namespace kodi
 {
@@ -234,7 +238,7 @@ namespace addon
 
     /*!
     * Get Capabilities of this addon.
-    * @param pCapabilities The add-on's capabilities.
+    * @param capabilities The add-on's capabilities.
     * @remarks
     */
     virtual void GetCapabilities(INPUTSTREAM_CAPABILITIES& capabilities) { }
@@ -354,21 +358,21 @@ namespace addon
     
     /*!
     * Read from an open stream.
-    * @param pBuffer The buffer to store the data in.
-    * @param iBufferSize The amount of bytes to read.
+    * @param buffer The buffer to store the data in.
+    * @param bufferSize The amount of bytes to read.
     * @return The amount of bytes that were actually read from the stream.
     * @remarks Return -1 if this add-on won't provide this function.
     */
-    virtual int ReadStream(uint8_t* pBuffer, unsigned int iBufferSize) { return -1; }
+    virtual int ReadStream(uint8_t* buffer, unsigned int bufferSize) { return -1; }
 
     /*!
     * Seek in a stream.
-    * @param iPosition The position to seek to.
-    * @param iWhence ?
+    * @param position The position to seek to.
+    * @param whence ?
     * @return The new position.
     * @remarks Return -1 if this add-on won't provide this function.
     */
-    virtual int64_t SeekStream(int64_t iPosition, int iWhence = SEEK_SET) { return -1; }
+    virtual int64_t SeekStream(int64_t position, int whence = SEEK_SET) { return -1; }
 
     /*!
     * @return The position in the stream that's currently being read.
@@ -400,9 +404,9 @@ namespace addon
     * @param iDataSize The size of the data that will go into the packet
     * @return The allocated packet
     */
-    DemuxPacket* AllocateDemuxPacket(int iDataSize)
+    DemuxPacket* AllocateDemuxPacket(int dataSize)
     {
-      return m_instanceData->toKodi.AllocateDemuxPacket(m_instanceData->toKodi.kodiInstance, iDataSize);
+      return m_instanceData->toKodi.AllocateDemuxPacket(m_instanceData->toKodi.kodiInstance, dataSize);
     }
 
     /*!
@@ -411,18 +415,18 @@ namespace addon
     * @param encryptedSubsampleCount The number of encrypted subSamples that will go into the packet
     * @return The allocated packet
     */
-    DemuxPacket* AllocateEncryptedDemuxPacket(unsigned int iDataSize, unsigned int encryptedSubsampleCount)
+    DemuxPacket* AllocateEncryptedDemuxPacket(unsigned int dataSize, unsigned int encryptedSubsampleCount)
     {
-      return m_instanceData->toKodi.AllocateEncryptedDemuxPacket(m_instanceData->toKodi.kodiInstance, iDataSize, encryptedSubsampleCount);
+      return m_instanceData->toKodi.AllocateEncryptedDemuxPacket(m_instanceData->toKodi.kodiInstance, dataSize, encryptedSubsampleCount);
     }
 
     /*!
     * @brief Free a packet that was allocated with AllocateDemuxPacket
     * @param pPacket The packet to free
     */
-    void FreeDemuxPacket(DemuxPacket* pPacket)
+    void FreeDemuxPacket(DemuxPacket* packet)
     {
-      return m_instanceData->toKodi.FreeDemuxPacket(m_instanceData->toKodi.kodiInstance, pPacket);
+      return m_instanceData->toKodi.FreeDemuxPacket(m_instanceData->toKodi.kodiInstance, packet);
     }
 
   private:
@@ -474,9 +478,9 @@ namespace addon
       addonInstance->Close();
     }
 
-    inline static void ADDON_GetCapabilities(CInstanceInputStream* addonInstance, INPUTSTREAM_CAPABILITIES* pCapabilities)
+    inline static void ADDON_GetCapabilities(CInstanceInputStream* addonInstance, INPUTSTREAM_CAPABILITIES* capabilities)
     {
-      addonInstance->GetCapabilities(*pCapabilities);
+      addonInstance->GetCapabilities(*capabilities);
     }
     
 
@@ -562,14 +566,14 @@ namespace addon
     }
 
 
-    inline static int ADDON_ReadStream(CInstanceInputStream* addonInstance, uint8_t* pBuffer, unsigned int iBufferSize)
+    inline static int ADDON_ReadStream(CInstanceInputStream* addonInstance, uint8_t* buffer, unsigned int bufferSize)
     {
-      return addonInstance->ReadStream(pBuffer, iBufferSize);
+      return addonInstance->ReadStream(buffer, bufferSize);
     }
 
-    inline static int64_t ADDON_SeekStream(CInstanceInputStream* addonInstance, int64_t iPosition, int iWhence)
+    inline static int64_t ADDON_SeekStream(CInstanceInputStream* addonInstance, int64_t position, int whence)
     {
-      return addonInstance->SeekStream(iPosition, iWhence);
+      return addonInstance->SeekStream(position, whence);
     }
 
     inline static int64_t ADDON_PositionStream(CInstanceInputStream* addonInstance)
