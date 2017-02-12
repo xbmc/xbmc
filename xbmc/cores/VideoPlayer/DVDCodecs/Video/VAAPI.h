@@ -433,6 +433,9 @@ public:
   void FFReleaseBuffer(uint8_t *data);
   static int FFGetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags);
 
+  static void CheckCaps(EGLDisplay eglDisplay);
+  static bool IsCapGeneral() { return m_capGeneral; }
+
 protected:
   void SetWidthHeight(int width, int height);
   bool ConfigVAAPI();
@@ -468,6 +471,9 @@ protected:
 
   int m_codecControl;
   CProcessInfo& m_processInfo;
+
+  static bool m_capGeneral;
+  static bool m_capHevc;
 };
 
 //-----------------------------------------------------------------------------

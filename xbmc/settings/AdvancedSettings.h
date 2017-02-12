@@ -177,7 +177,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     bool m_useFfmpegVda;
 
     int   m_videoVDPAUScaling;
-    bool  m_videoVAAPIforced;
     float m_videoNonLinStretchRatio;
     bool  m_videoEnableHighQualityHwScalers;
     float m_videoAutoScaleMaxFps;
