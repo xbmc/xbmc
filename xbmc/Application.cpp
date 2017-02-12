@@ -3266,8 +3266,13 @@ PlayBackRet CApplication::PlayFile(CFileItem item, const std::string& player, bo
     else
 #endif
     {	
+<<<<<<< HEAD
 	  // Since there is no DVD Drive, display a CGUIDialogOK instead
 	  // Figure out lines 0, 1 and 2 of the dialog
+=======
+      // Since there is no DVD Drive, display a CGUIDialogOK instead
+      // Figure out lines 0, 1 and 2 of the dialog
+>>>>>>> origin
       std::string strTitle, strMessage;
       CXBMCTinyXML discStubXML;
       if (discStubXML.LoadFile(item.GetPath()))
@@ -3277,7 +3282,11 @@ PlayBackRet CApplication::PlayFile(CFileItem item, const std::string& player, bo
           CLog::Log(LOGERROR, "Error loading %s, no <discstub> node", item.GetPath().c_str());
         else
         {
+<<<<<<< HEAD
 		  // Get Title and Message from the discstub file
+=======
+          // Get Title and Message from the discstub file
+>>>>>>> origin
           XMLUtils::GetString(pRootElement, "title", strTitle);
           XMLUtils::GetString(pRootElement, "message", strMessage);
         }
@@ -3287,7 +3296,11 @@ PlayBackRet CApplication::PlayFile(CFileItem item, const std::string& player, bo
       if (strTitle.empty())
         strTitle = item.GetLabel();
 
+<<<<<<< HEAD
 	  CGUIDialogOK::ShowAndGetInput(g_localizeStrings.Get(40000), CVariant{StringUtils::Format(g_localizeStrings.Get(40001).c_str(),strTitle.c_str())}, g_localizeStrings.Get(40002), CVariant{std::move(strMessage)});
+=======
+      CGUIDialogOK::ShowAndGetInput(g_localizeStrings.Get(40000), CVariant{StringUtils::Format(g_localizeStrings.Get(40001).c_str(),strTitle.c_str())}, g_localizeStrings.Get(40002), CVariant{std::move(strMessage)});
+>>>>>>> origin
     }
 
     return PLAYBACK_OK;
