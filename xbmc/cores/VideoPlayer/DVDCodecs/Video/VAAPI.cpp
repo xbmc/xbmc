@@ -503,6 +503,9 @@ bool CVideoSurfaces::HasRefs()
 // VAAPI
 //-----------------------------------------------------------------------------
 
+bool CDecoder::m_capGeneral = false;
+bool CDecoder::m_capHevc = false;
+
 CDecoder::CDecoder(CProcessInfo& processInfo) :
   m_vaapiOutput(&m_inMsgEvent),
   m_processInfo(processInfo)
@@ -526,23 +529,8 @@ CDecoder::~CDecoder()
 
 bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat fmt, unsigned int surfaces)
 {
-  // don't support broken wrappers by default
-  // nvidia cards with a vaapi to vdpau wrapper
-  // fglrx cards with xvba-va-driver
-  std::string gpuvendor = g_Windowing.GetRenderVendor();
-  std::transform(gpuvendor.begin(), gpuvendor.end(), gpuvendor.begin(), ::tolower);
-  if (gpuvendor.compare(0, 5, "intel") != 0)
-  {
-    // user might force VAAPI enabled, cause he might know better
-    if (g_advancedSettings.m_videoVAAPIforced)
-    {
-      CLog::Log(LOGWARNING, "VAAPI was not tested on your hardware / driver stack: %s. If it will crash and burn complain with your gpu vendor.", gpuvendor.c_str());
-    }
-    else
-    {
-      return false;
-    }
-  }
+  if (!m_capGeneral)
+    return false;
 
   // check if user wants to decode this format with VAAPI
   std::map<AVCodecID, std::string> settings_map = {
@@ -619,6 +607,9 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
     }
     case AV_CODEC_ID_HEVC:
     {
+      if (!m_capHevc)
+        return false;
+
       if (avctx->profile == FF_PROFILE_HEVC_MAIN_10)
         profile = VAProfileHEVCMain10;
       else if (avctx->profile == FF_PROFILE_HEVC_MAIN)
@@ -1194,6 +1185,145 @@ void CDecoder::ReturnRenderPicture(CVaapiRenderPicture *renderPic)
 void CDecoder::ReturnProcPicture(int id)
 {
   m_vaapiOutput.m_dataPort.SendOutMessage(COutputDataProtocol::RETURNPROCPIC, &id, sizeof(int));
+}
+
+void CDecoder::CheckCaps(EGLDisplay eglDisplay)
+{
+  CVaapiConfig config;
+  if (!CVAAPIContext::EnsureContext(&config.context, nullptr))
+    return;
+
+  config.dpy = config.context->GetDisplay();
+  config.surfaceWidth = 1920;
+  config.surfaceHeight = 1080;
+  config.profile = VAProfileH264Main;
+  config.attrib = config.context->GetAttrib(config.profile);
+  if ((config.attrib.value & (VA_RT_FORMAT_YUV420 | VA_RT_FORMAT_YUV420_10BPP)) == 0)
+  {
+    config.context->Release(nullptr);
+    return;
+  }
+
+  config.configId = config.context->CreateConfig(config.profile, config.attrib);
+  if (config.configId == VA_INVALID_ID)
+  {
+    config.context->Release(nullptr);
+    return;
+  }
+
+  // create surfaces
+  VASurfaceID surface;
+  VAStatus status;
+  VAImage image;
+  VABufferInfo bufferInfo;
+
+  if (vaCreateSurfaces(config.dpy,  VA_RT_FORMAT_YUV420,
+                       config.surfaceWidth, config.surfaceHeight,
+                       &surface, 1, NULL, 0) != VA_STATUS_SUCCESS)
+  {
+    config.context->Release(nullptr);
+    return;
+  }
+
+  // check interop
+  PFNEGLCREATEIMAGEKHRPROC eglCreateImageKHR = (PFNEGLCREATEIMAGEKHRPROC)eglGetProcAddress("eglCreateImageKHR");
+  PFNEGLDESTROYIMAGEKHRPROC eglDestroyImageKHR = (PFNEGLDESTROYIMAGEKHRPROC)eglGetProcAddress("eglDestroyImageKHR");
+  if (!eglCreateImageKHR || !eglDestroyImageKHR)
+  {
+    config.context->Release(nullptr);
+    return;
+  }
+
+  status = vaDeriveImage(config.dpy, surface, &image);
+  if (status == VA_STATUS_SUCCESS)
+  {
+    memset(&bufferInfo, 0, sizeof(bufferInfo));
+    bufferInfo.mem_type = VA_SURFACE_ATTRIB_MEM_TYPE_DRM_PRIME;
+    status = vaAcquireBufferHandle(config.dpy, image.buf, &bufferInfo);
+    if (status == VA_STATUS_SUCCESS)
+    {
+      EGLImageKHR eglImage;
+      GLint attribs[23], *attrib;
+
+      attrib = attribs;
+      *attrib++ = EGL_LINUX_DRM_FOURCC_EXT;
+      *attrib++ = fourcc_code('R', '8', ' ', ' ');
+      *attrib++ = EGL_WIDTH;
+      *attrib++ = image.width;
+      *attrib++ = EGL_HEIGHT;
+      *attrib++ = image.height;
+      *attrib++ = EGL_DMA_BUF_PLANE0_FD_EXT;
+      *attrib++ = (intptr_t)bufferInfo.handle;
+      *attrib++ = EGL_DMA_BUF_PLANE0_OFFSET_EXT;
+      *attrib++ = image.offsets[0];
+      *attrib++ = EGL_DMA_BUF_PLANE0_PITCH_EXT;
+      *attrib++ = image.pitches[0];
+      *attrib++ = EGL_NONE;
+      eglImage = eglCreateImageKHR(eglDisplay,
+                                   EGL_NO_CONTEXT, EGL_LINUX_DMA_BUF_EXT, (EGLClientBuffer)NULL,
+                                   attribs);
+      if (eglImage)
+      {
+        eglDestroyImageKHR(eglDisplay, eglImage);
+        m_capGeneral = true;
+      }
+
+    }
+    vaDestroyImage(config.dpy, image.image_id);
+  }
+  vaDestroySurfaces(config.dpy, &surface, 1);
+
+  // check hevc
+  // create surfaces
+  if (vaCreateSurfaces(config.dpy,  VA_RT_FORMAT_YUV420_10BPP,
+                       config.surfaceWidth, config.surfaceHeight,
+                       &surface, 1, NULL, 0) != VA_STATUS_SUCCESS)
+  {
+    config.context->Release(nullptr);
+    return;
+  }
+
+  // check interop
+  status = vaDeriveImage(config.dpy, surface, &image);
+  if (status == VA_STATUS_SUCCESS)
+  {
+    memset(&bufferInfo, 0, sizeof(bufferInfo));
+    bufferInfo.mem_type = VA_SURFACE_ATTRIB_MEM_TYPE_DRM_PRIME;
+    status = vaAcquireBufferHandle(config.dpy, image.buf, &bufferInfo);
+    if (status == VA_STATUS_SUCCESS)
+    {
+      EGLImageKHR eglImage;
+      GLint attribs[23], *attrib;
+
+      attrib = attribs;
+      *attrib++ = EGL_LINUX_DRM_FOURCC_EXT;
+      *attrib++ = fourcc_code('G', 'R', '3', '2');
+      *attrib++ = EGL_WIDTH;
+      *attrib++ = (image.width +1) >> 1;
+      *attrib++ = EGL_HEIGHT;
+      *attrib++ = (image.height +1) >> 1;
+      *attrib++ = EGL_DMA_BUF_PLANE0_FD_EXT;
+      *attrib++ = (intptr_t)bufferInfo.handle;
+      *attrib++ = EGL_DMA_BUF_PLANE0_OFFSET_EXT;
+      *attrib++ = image.offsets[1];
+      *attrib++ = EGL_DMA_BUF_PLANE0_PITCH_EXT;
+      *attrib++ = image.pitches[1];
+      *attrib++ = EGL_NONE;
+      eglImage = eglCreateImageKHR(eglDisplay,
+                                   EGL_NO_CONTEXT, EGL_LINUX_DMA_BUF_EXT, (EGLClientBuffer)NULL,
+                                   attribs);
+      if (eglImage)
+      {
+        eglDestroyImageKHR(eglDisplay, eglImage);
+        m_capHevc = true;
+      }
+
+    }
+    vaDestroyImage(config.dpy, image.image_id);
+  }
+  vaDestroySurfaces(config.dpy, &surface, 1);
+
+  config.context->Release(nullptr);
 }
 
 //-----------------------------------------------------------------------------
