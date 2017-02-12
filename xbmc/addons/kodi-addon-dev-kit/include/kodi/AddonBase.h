@@ -165,6 +165,8 @@ typedef struct AddonToKodiFuncTable_Addon
  */
 typedef struct KodiToAddonFuncTable_Addon
 {
+  ADDON_STATUS (*create_instance)(int instanceType, const char* instanceID, KODI_HANDLE instance, KODI_HANDLE* addonInstance, KODI_HANDLE parent);
+  void (*destroy_instance)(int instanceType, KODI_HANDLE instance);
   ADDON_STATUS (*set_setting)(const char *settingName, const void *settingValue, bool lastSetting);
 } KodiToAddonFuncTable_Addon;
 
@@ -219,6 +221,11 @@ public:
   IAddonInstance(ADDON_TYPE type) : m_type(type) { }
   virtual ~IAddonInstance() { }
 
+  virtual ADDON_STATUS CreateInstance(int instanceType, std::string instanceID, KODI_HANDLE instance, KODI_HANDLE& addonInstance)
+  {
+    return ADDON_STATUS_NOT_IMPLEMENTED;
+  }
+
   const ADDON_TYPE m_type;
 };
 } /* namespace addon */
@@ -256,6 +263,8 @@ class CAddonBase
 public:
   CAddonBase()
   {
+    CAddonBase::m_interface->toAddon.create_instance = ADDONBASE_CreateInstance;
+    CAddonBase::m_interface->toAddon.destroy_instance = ADDONBASE_DestroyInstance;
     CAddonBase::m_interface->toAddon.set_setting = ADDONBASE_SetSetting;
   }
 
@@ -304,9 +313,13 @@ public:
     return CAddonBase::m_interface->addonBase->SetSetting(settingName, CSettingValue(settingValue), lastSetting);
   }
 
-  static inline ADDON_STATUS ADDONBASE_CreateInstance(int instanceType, const char* instanceID, KODI_HANDLE instance, KODI_HANDLE* addonInstance)
+  static inline ADDON_STATUS ADDONBASE_CreateInstance(int instanceType, const char* instanceID, KODI_HANDLE instance, KODI_HANDLE* addonInstance, KODI_HANDLE parent)
   {
-    ADDON_STATUS status = CAddonBase::m_interface->addonBase->CreateInstance(instanceType, instanceID, instance, *addonInstance);
+    ADDON_STATUS status = ADDON_STATUS_NOT_IMPLEMENTED;
+    if (parent != nullptr)
+      status = static_cast<IAddonInstance*>(parent)->CreateInstance(instanceType, instanceID, instance, *addonInstance);
+    if (status == ADDON_STATUS_NOT_IMPLEMENTED)
+      status = CAddonBase::m_interface->addonBase->CreateInstance(instanceType, instanceID, instance, *addonInstance);
     if (*addonInstance == nullptr)
       throw std::logic_error("kodi::addon::CAddonBase CreateInstance returns a empty instance pointer!");
 
@@ -412,13 +425,5 @@ inline void Log(const AddonLog loglevel, const char* format, ...)
   extern "C" __declspec(dllexport) const char* ADDON_GetTypeVersion(int type) \
   { \
     return kodi::addon::GetTypeVersion(type); \
-  } \
-  extern "C" __declspec(dllexport) ADDON_STATUS ADDON_CreateInstance(int instanceType, const char* instanceID, KODI_HANDLE instance, KODI_HANDLE* addonInstance) \
-  { \
-    return kodi::addon::CAddonBase::ADDONBASE_CreateInstance(instanceType, instanceID, instance, addonInstance); \
-  } \
-  extern "C" __declspec(dllexport) void ADDON_DestroyInstance(int instanceType, KODI_HANDLE instance) \
-  { \
-    kodi::addon::CAddonBase::ADDONBASE_DestroyInstance(instanceType, instance); \
   } \
   AddonGlobalInterface* kodi::addon::CAddonBase::m_interface = nullptr;

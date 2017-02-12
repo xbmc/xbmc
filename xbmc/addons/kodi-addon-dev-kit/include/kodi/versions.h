@@ -43,14 +43,14 @@
 
 #define ADDON_INSTANCE_VERSION_ADSP                   "0.1.10"
 #define ADDON_INSTANCE_VERSION_AUDIODECODER           "1.0.1"
-#define ADDON_INSTANCE_VERSION_AUDIOENCODER           "1.0.1"
+#define ADDON_INSTANCE_VERSION_AUDIOENCODER           "1.0.2"
 #define ADDON_INSTANCE_VERSION_GAME                   "1.0.30"
 #define ADDON_INSTANCE_VERSION_IMAGEDECODER           "1.0.0"
-#define ADDON_INSTANCE_VERSION_INPUTSTREAM            "1.0.8"
+#define ADDON_INSTANCE_VERSION_INPUTSTREAM            "1.0.9"
 #define ADDON_INSTANCE_VERSION_PERIPHERAL             "1.3.0"
 #define ADDON_INSTANCE_VERSION_PVR                    "5.2.3"
-#define ADDON_INSTANCE_VERSION_SCREENSAVER            "1.0.1"
-#define ADDON_INSTANCE_VERSION_VISUALIZATION          "1.0.1"
+#define ADDON_INSTANCE_VERSION_SCREENSAVER            "1.0.2"
+#define ADDON_INSTANCE_VERSION_VISUALIZATION          "1.0.2"
 
 /*
  * The currently used types for Kodi add-ons

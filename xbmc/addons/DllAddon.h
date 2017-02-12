@@ -32,8 +32,6 @@ public:
   virtual ADDON_STATUS GetStatus() =0;
   virtual ADDON_STATUS SetSetting(const char *settingName, const void *settingValue) =0;
   virtual const char* GetAddonTypeVersion(int type)=0;
-  virtual ADDON_STATUS CreateInstance(int instanceType, const char* instanceID, KODI_HANDLE instance, KODI_HANDLE* addonInstance) =0;
-  virtual void DestroyInstance(int instanceType, KODI_HANDLE instance) =0;
 };
 
 class DllAddon : public DllDynamic, public DllAddonInterface
@@ -46,8 +44,6 @@ public:
   DEFINE_METHOD2(ADDON_STATUS, SetSetting, (const char *p1, const void *p2))
   DEFINE_METHOD1(void, GetAddon, (void* p1))
   DEFINE_METHOD1(const char*, GetAddonTypeVersion, (int p1))
-  DEFINE_METHOD4(ADDON_STATUS, CreateInstance, (int p1, const char* p2, KODI_HANDLE p3, KODI_HANDLE* p4))
-  DEFINE_METHOD2(void, DestroyInstance, (int p1, KODI_HANDLE p2))
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD_RENAME(get_addon,GetAddon)
     RESOLVE_METHOD_RENAME(ADDON_Create, Create)
@@ -55,8 +51,6 @@ public:
     RESOLVE_METHOD_RENAME(ADDON_GetStatus, GetStatus)
     RESOLVE_METHOD_RENAME(ADDON_SetSetting, SetSetting)
     RESOLVE_METHOD_RENAME(ADDON_GetTypeVersion, GetAddonTypeVersion)
-    RESOLVE_METHOD_RENAME(ADDON_CreateInstance, CreateInstance)
-    RESOLVE_METHOD_RENAME(ADDON_DestroyInstance, DestroyInstance)
   END_METHOD_RESOLVE()
 };
 
