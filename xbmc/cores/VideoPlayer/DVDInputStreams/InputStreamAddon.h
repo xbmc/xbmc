@@ -26,7 +26,21 @@
 #include "DVDInputStream.h"
 #include "IVideoPlayer.h"
 #include "addons/AddonDll.h"
+#include "addons/AddonProvider.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/addon-instance/Inputstream.h"
+
+class CInputStreamProvider
+  : public ADDON::CAddonProvider
+{
+public:
+  CInputStreamProvider(ADDON::AddonInfoPtr addonInfo, kodi::addon::IAddonInstance* parentInstance);
+
+  virtual void getAddonInstance(INSTANCE_TYPE instance_type, ADDON::AddonInfoPtr& addonInfo, kodi::addon::IAddonInstance*& parentInstance);
+
+private:
+  ADDON::AddonInfoPtr m_addonInfo;
+  kodi::addon::IAddonInstance* m_parentInstance;
+};
 
 //! \brief Input stream class
 class CInputStreamAddon :
@@ -94,12 +108,6 @@ public:
   bool IsRealTimeStream();
 
 protected:
-  bool m_hasDemux;
-  bool m_hasDisplayTime;
-  bool m_hasPosTime;
-  bool m_canPause;
-  bool m_canSeek;
-
   void UpdateStreams();
   void DisposeStreams();
 
@@ -110,9 +118,11 @@ private:
   INPUTSTREAM_CAPABILITIES m_caps;
   std::map<int, CDemuxStream*> m_streams;
 
+  ADDON::AddonInfoPtr m_addonInfo;
   ADDON::AddonDllPtr m_addon;
   kodi::addon::CInstanceInputStream* m_addonInstance;
   AddonInstance_InputStream m_struct;
+  std::shared_ptr<CInputStreamProvider> m_subAddonProvider;
 
   /*!
    * Callbacks from add-on to kodi

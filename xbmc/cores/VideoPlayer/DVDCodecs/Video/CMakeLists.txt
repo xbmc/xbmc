@@ -1,7 +1,9 @@
-set(SOURCES DVDVideoCodec.cpp
+set(SOURCES AddonVideoCodec.cpp
+            DVDVideoCodec.cpp
             DVDVideoCodecFFmpeg.cpp)
 
-set(HEADERS DVDVideoCodec.h
+set(HEADERS AddonVideoCodec.h
+            DVDVideoCodec.h
             DVDVideoCodecFFmpeg.h)
 
 if(NOT ENABLE_EXTERNAL_LIBAV)

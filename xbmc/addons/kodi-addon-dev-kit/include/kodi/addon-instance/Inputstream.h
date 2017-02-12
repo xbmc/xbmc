@@ -25,6 +25,7 @@
  */
 
 #include "../AddonBase.h"
+#include "../StreamCrypto.h"
 
 #ifdef BUILD_KODI_ADDON
 #include "../DVDDemuxPacket.h"
@@ -57,7 +58,10 @@ extern "C"
       SUPPORTSSEEK = (1 << 3),
 
       /// supports pause
-      SUPPORTSPAUSE = (1 << 4)
+      SUPPORTSPAUSE = (1 << 4),
+
+      /// supports decode
+      SUPPORTSDECODE = (1 << 5)
     };
 
     /// set of supported capabilities
@@ -130,15 +134,7 @@ extern "C"
     unsigned int m_BitsPerSample;        /*!< @brief (required) bits per sample */
     unsigned int m_BlockAlign;
 
-    enum CRYPTO_KEY_SYSTEM :uint16_t
-    {
-      CRYPTO_KEY_SYSTEM_NONE = 0,
-      CRYPTO_KEY_SYSTEM_WIDEVINE,
-      CRYPTO_KEY_SYSTEM_PLAYREADY,
-      CRYPTO_KEY_SYSTEM_COUNT
-    } m_CryptoKeySystem;                 /*!< @brief keysystem for encrypted media, KEY_SYSTEM_NONE for unencrypted media */
-    char m_CryptoSessionId[32];          /*!< @brief The crypto session key id */
-    uint16_t m_CryptoSessionIdSize;      /*!< @brief The size of the crypto session key id */
+    CRYPTO_INFO m_cryptoInfo;
   } INPUTSTREAM_INFO;
 
 
