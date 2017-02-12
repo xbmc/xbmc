@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <node order="4" type="filter">
-  <label>344</label>
-  <icon>DefaultActor.png</icon>
-  <content>tvshows</content>
-  <group>actors</group>
+	<label>344</label>
+	<icon>DefaultActor.png</icon>
+	<content>tvshows</content>
+	<group>actors</group>
 </node>

@@ -344,7 +344,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo, bool filein
             }
             else if (trySPDIFonly)
             {
-              // not dts either, return false in case we were explicitely
+              // not dts either, return false in case we were explicitly
               // requested to only check for S/PDIF padded compressed audio
               CLog::Log(LOGDEBUG, "%s - not spdif or dts file, falling back", __FUNCTION__);
               return false;
@@ -508,7 +508,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo, bool filein
     unsigned int nProgram = UINT_MAX;
     if (m_pFormatContext->nb_programs > 0)
     {
-      // select the corrrect program if requested
+      // select the correct program if requested
       CVariant programProp(pInput->GetProperty("program"));
       if (!programProp.isNull())
       {
@@ -826,7 +826,7 @@ double CDVDDemuxFFmpeg::ConvertTimestamp(int64_t pts, int den, int num)
     return DVD_NOPTS_VALUE;
 
   // do calculations in floats as they can easily overflow otherwise
-  // we don't care for having a completly exact timestamp anyway
+  // we don't care for having a completely exact timestamp anyway
   double timestamp = (double)pts * num  / den;
   double starttime = 0.0f;
 
@@ -1225,7 +1225,7 @@ int CDVDDemuxFFmpeg::GetNrOfStreams() const
 
 double CDVDDemuxFFmpeg::SelectAspect(AVStream* st, bool& forced)
 {
-  // trust matroshka container
+  // trust matroska container
   if (m_bMatroska && st->sample_aspect_ratio.num != 0)
   {
     forced = true;
@@ -1397,6 +1397,7 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
         st->fAspect = SelectAspect(pStream, st->bForcedAspect) * pStream->codec->width / pStream->codec->height;
         st->iOrientation = 0;
         st->iBitsPerPixel = pStream->codec->bits_per_coded_sample;
+        st->iBitRate = pStream->codecpar->bit_rate;
 
         AVDictionaryEntry *rtag = av_dict_get(pStream->metadata, "rotate", NULL, 0);
         if (rtag) 

@@ -164,7 +164,7 @@ public:
   int64_t demuxerId; // demuxer's id of current playing stream
   int id;     // id of current playing stream
   int source;
-  double dts;    // last dts from demuxer, used to find disncontinuities
+  double dts;    // last dts from demuxer, used to find discontinuities
   double dur;    // last frame expected duration
   int dispTime; // display time from input stream
   CDVDStreamInfo hint;   // stream hints, used to notice stream changes

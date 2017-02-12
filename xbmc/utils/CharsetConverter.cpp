@@ -55,10 +55,8 @@
   #define UTF8_SOURCE "UTF-8"
   #define WCHAR_CHARSET UTF16_CHARSET 
 #if _DEBUG
-  #pragma comment(lib, "libfribidi.lib")
   #pragma comment(lib, "libiconvd.lib")
 #else
-  #pragma comment(lib, "libfribidi.lib")
   #pragma comment(lib, "libiconv.lib")
 #endif
 #elif defined(TARGET_ANDROID)

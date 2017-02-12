@@ -45,7 +45,13 @@ CContextMenuManager::CContextMenuManager(CAddonMgr& addonMgr)
 
 CContextMenuManager::~CContextMenuManager()
 {
+  Deinit();
+}
+
+void CContextMenuManager::Deinit()
+{
   m_addonMgr.Events().Unsubscribe(this);
+  m_items.clear();
 }
 
 CContextMenuManager& CContextMenuManager::GetInstance()

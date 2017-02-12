@@ -19,10 +19,13 @@
  */
 
 #include "RumbleGenerator.h"
-#include "addons/AddonManager.h"
 #include "games/controllers/Controller.h"
 #include "games/controllers/ControllerFeature.h"
+#include "games/GameServices.h"
 #include "input/joysticks/IInputReceiver.h"
+#include "ServiceBroker.h"
+
+#include <algorithm>
 
 #define RUMBLE_TEST_DURATION_MS          1000 // Per motor
 #define RUMBLE_NOTIFICATION_DURATION_MS  300
@@ -30,6 +33,7 @@
  // From game.controller.default profile
 #define WEAK_MOTOR_NAME        "rightmotor"
 
+using namespace KODI;
 using namespace JOYSTICK;
 
 CRumbleGenerator::CRumbleGenerator(const std::string& controllerId) :
@@ -117,22 +121,18 @@ void CRumbleGenerator::Process(void)
 
 std::vector<std::string> CRumbleGenerator::GetMotors(const std::string& controllerId)
 {
-  using namespace ADDON;
   using namespace GAME;
 
   std::vector<std::string> motors;
 
-  AddonPtr addon;
-  if (CAddonMgr::GetInstance().GetAddon(controllerId, addon, ADDON_GAME_CONTROLLER))
+  CGameServices& gameServices = CServiceBroker::GetGameServices();
+  ControllerPtr controller = gameServices.GetController(controllerId);
+  if (controller)
   {
-    ControllerPtr controller = std::static_pointer_cast<CController>(addon);
-    if (controller->LoadLayout())
+    for (const CControllerFeature& feature : controller->Layout().Features())
     {
-      for (const CControllerFeature& feature : controller->Layout().Features())
-      {
-        if (feature.Type() == JOYSTICK::FEATURE_TYPE::MOTOR)
-          motors.push_back(feature.Name());
-      }
+      if (feature.Type() == FEATURE_TYPE::MOTOR)
+        motors.push_back(feature.Name());
     }
   }
 

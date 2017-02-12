@@ -1,0 +1,36 @@
+<h1 id="add-on-support">Add-on Support</h1>
+<p>Chorus supports add-ons, but at a generic level. As each add-on does things differently, not all functionality will be
+available. The <a href="#addons/all">Add-Ons</a> page lists add-ons that are executable (eg. Global Search) or add-ons that provide
+a list of audio/video content (eg. YouTube). Add-ons that provide lists can also be accessed via the <a href="#browser">browser</a>.</p>
+<h2 id="custom-add-on-search">Custom Add-on Search</h2>
+<p>Out of the box, Chorus includes search functionality for some of the more popular add-ons, this allows you to search
+content provided by that add-on via the search page. For example you could type in &quot;crazy cat videos&quot; in the search box
+and then on the search page, click &quot;YouTube&quot; to get a list of videos provided by YouTube on that subject.</p>
+<p>If you wish to search content provided by an add-on that isn&#39;t included with Chorus, you can add your own
+<a href="#settings/search">custom add-on search</a> which tells Chorus how it can search for the content provided by that add-on.</p>
+<p>To add a custom search, you need to know what url the add-on is using internally to provide the search results. This
+isn&#39;t always easy or obvious to find out and may involve looking through the add-on code or kodi logs to determine the
+correct url to use. Chorus will substitute the token <code>[QUERY]</code> with the search term.</p>
+<h3 id="examples-of-add-on-search-urls">Examples of add-on search urls</h3>
+<ul>
+<li>YouTube: <code>plugin://plugin.video.youtube/search/?q=[QUERY]</code></li>
+<li>SoundCloud: <code>plugin://plugin.audio.soundcloud/search/query/?q=[QUERY]</code></li>
+<li>Radio: <code>plugin://plugin.audio.radio_de/stations/search/[QUERY]</code></li>
+<li>MixCloud: <code>plugin://plugin.audio.mixcloud/?mode=30&amp;key=cloudcast&amp;offset=0&amp;query=[QUERY]</code></li>
+</ul>
+<h3 id="contributing">Contributing</h3>
+<p>If you find a good custom add-on search that should be included in Chorus out of the box then you should consider
+submitting a <a href="https://github.com/xbmc/chorus2/pulls">pull request</a> for it. Look at the <a href="https://github.com/xbmc/chorus2/blob/master/src/js/apps/addon/soundcloud/addon_soundcloud_app.js.coffee">SoundCloud module</a>
+as an example of the code structure. NOTE: Only add-ons that are in the official repository will accepted.</p>
+<h2 id="enabling-and-disabling-add-ons">Enabling and disabling Add-ons</h2>
+<p>Chorus provides a <a href="#settings/addons">settings page</a> for enabling and disabling add-ons, be aware that disabling certain
+add-ons may have adverse effects so use with care.</p>
+<h2 id="known-issues-and-limitations">Known issues and limitations</h2>
+<p>A few things that have been observed with using add-ons in Chorus</p>
+<ul>
+<li>You cannot download add-on content.</li>
+<li>You can only play add-on content via Kodi, it cannot be streamed to the web browser.</li>
+<li>Adding a single add-on media to the playlist often results in the playlist entry having a weird title or missing a
+title altogether. Adding an add-on folder seems to populate it correctly. This appears to be an issue with the Kodi API.</li>
+<li>Some add-ons won&#39;t work at all, this should be raised up with the add-on author.</li>
+</ul>

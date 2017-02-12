@@ -645,7 +645,7 @@ void CGUIWindowMusicBase::OnQueueItem(int iItem)
 /// \param pItem The file item to add
 void CGUIWindowMusicBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItemList &queuedItems)
 {
-  if (!pItem->CanQueue() || pItem->IsRAR() || pItem->IsZIP() || pItem->IsParentFolder()) // no zip/rar enques thank you!
+  if (!pItem->CanQueue() || pItem->IsRAR() || pItem->IsZIP() || pItem->IsParentFolder()) // no zip/rar enqueues thank you!
     return;
 
   // fast lookup is needed here
@@ -669,7 +669,7 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
       return;
     }
   }
-  if (pItem->m_bIsFolder || (g_windowManager.GetActiveWindow() == WINDOW_MUSIC_NAV && pItem->IsPlayList()))
+  if (pItem->m_bIsFolder)
   {
     // Check if we add a locked share
     if ( pItem->m_bIsShareOrDrive )
@@ -982,7 +982,7 @@ void CGUIWindowMusicBase::OnRipTrack(int iItem)
 
 void CGUIWindowMusicBase::PlayItem(int iItem)
 {
-  // restrictions should be placed in the appropiate window code
+  // restrictions should be placed in the appropriate window code
   // only call the base code if the item passes since this clears
   // the current playlist
 
@@ -996,7 +996,7 @@ void CGUIWindowMusicBase::PlayItem(int iItem)
 #endif
 
   // if its a folder, build a playlist
-  if ((pItem->m_bIsFolder && !pItem->IsPlugin()) || (g_windowManager.GetActiveWindow() == WINDOW_MUSIC_NAV && pItem->IsPlayList()))
+  if (pItem->m_bIsFolder && !pItem->IsPlugin())
   {
     // make a copy so that we can alter the queue state
     CFileItemPtr item(new CFileItem(*m_vecItems->Get(iItem)));
@@ -1163,7 +1163,7 @@ void CGUIWindowMusicBase::UpdateThumb(const CAlbum &album, const std::string &pa
   }
 
   // update the file listing - we have to update the whole lot, as it's likely that
-  // more than just our thumbnaias changed
+  // more than just our thumbnails changed
   //! @todo Ideally this would only be done when needed - at the moment we appear to be
   //!       doing this for every lookup, possibly twice (see ShowAlbumInfo)
   Refresh(true);
@@ -1253,7 +1253,7 @@ bool CGUIWindowMusicBase::GetDirectory(const std::string &strDirectory, CFileIte
     {
       CFileItemPtr newPlaylist(new CFileItem(CProfilesManager::GetInstance().GetUserDataItem("PartyMode.xsp"),false));
       newPlaylist->SetLabel(g_localizeStrings.Get(16035));
-      newPlaylist->SetLabelPreformated(true);
+      newPlaylist->SetLabelPreformatted(true);
       newPlaylist->SetIconImage("DefaultPartyMode.png");
       newPlaylist->m_bIsFolder = true;
       items.Add(newPlaylist);
@@ -1261,7 +1261,7 @@ bool CGUIWindowMusicBase::GetDirectory(const std::string &strDirectory, CFileIte
       newPlaylist.reset(new CFileItem("newplaylist://", false));
       newPlaylist->SetLabel(g_localizeStrings.Get(525));
       newPlaylist->SetIconImage("DefaultAddSource.png");
-      newPlaylist->SetLabelPreformated(true);
+      newPlaylist->SetLabelPreformatted(true);
       newPlaylist->SetSpecialSort(SortSpecialOnBottom);
       newPlaylist->SetCanQueue(false);
       items.Add(newPlaylist);
@@ -1269,7 +1269,7 @@ bool CGUIWindowMusicBase::GetDirectory(const std::string &strDirectory, CFileIte
       newPlaylist.reset(new CFileItem("newsmartplaylist://music", false));
       newPlaylist->SetLabel(g_localizeStrings.Get(21437));
       newPlaylist->SetIconImage("DefaultAddSource.png");
-      newPlaylist->SetLabelPreformated(true);
+      newPlaylist->SetLabelPreformatted(true);
       newPlaylist->SetSpecialSort(SortSpecialOnBottom);
       newPlaylist->SetCanQueue(false);
       items.Add(newPlaylist);

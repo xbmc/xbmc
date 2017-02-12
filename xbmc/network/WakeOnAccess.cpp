@@ -92,11 +92,11 @@ public:
 
   virtual bool DoWork();
 
-  const std::string& GetMAC() const { return m_macAddres; }
+  const std::string& GetMAC() const { return m_macAddress; }
   const std::string& GetHost() const { return m_host; }
 
 private:
-  std::string m_macAddres;
+  std::string m_macAddress;
   std::string m_host;
 };
 
@@ -113,7 +113,7 @@ bool CMACDiscoveryJob::DoWork()
   std::vector<CNetworkInterface*>& ifaces = g_application.getNetwork().GetInterfaceList();
   for (std::vector<CNetworkInterface*>::const_iterator it = ifaces.begin(); it != ifaces.end(); ++it)
   {
-    if ((*it)->GetHostMacAddress(ipAddress, m_macAddres))
+    if ((*it)->GetHostMacAddress(ipAddress, m_macAddress))
       return true;
   }
 
@@ -426,7 +426,7 @@ bool CWakeOnAccess::WakeUpHost(const WakeUpEntry& server)
   // we have ping response ; just add extra wait-for-services before returning if requested
 
   {
-    WaitCondition waitObj ; // wait uninteruptable fixed time for services ..
+    WaitCondition waitObj ; // wait uninterruptable fixed time for services ..
 
     dlg.ShowAndWait (waitObj, server.wait_services_sec, LOCALIZED(13032));
 

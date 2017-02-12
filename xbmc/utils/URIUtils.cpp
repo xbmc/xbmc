@@ -127,7 +127,7 @@ void URIUtils::RemoveExtension(std::string& strFileName)
     strExtension += "|";
 
     std::string strFileMask;
-    strFileMask = g_advancedSettings.m_pictureExtensions;
+    strFileMask = g_advancedSettings.GetPictureExtensions();
     strFileMask += "|" + g_advancedSettings.GetMusicExtensions();
     strFileMask += "|" + g_advancedSettings.m_videoExtensions;
     strFileMask += "|" + g_advancedSettings.m_subtitlesExtensions;

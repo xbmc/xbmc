@@ -255,7 +255,7 @@ typedef union _LARGE_INTEGER
 #define MAKELONG(low,high)     ((LONG)(((WORD)((DWORD_PTR)(low) & 0xFFFF)) | ((DWORD)((WORD)((DWORD_PTR)(high) & 0xFFFF))) << 16))
 LONGLONG Int32x32To64(LONG Multiplier, LONG Multiplicand);
 
-void OutputDebugString(LPCTSTR lpOuputString);
+void OutputDebugString(LPCTSTR lpOutputString);
 
 // Date / Time
 

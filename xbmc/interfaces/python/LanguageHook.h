@@ -59,13 +59,13 @@ namespace XBMCAddon
       
       /**
        * PythonCallbackHandler expects to be instantiated PER AddonClass instance
-       *  that is to be used as a callback. This is why this cannot be instantited
+       *  that is to be used as a callback. This is why this cannot be instantiated
        *  once.
        *
        * There is an expectation that this method is called from the Python thread
        *  that instantiated an AddonClass that has the potential for a callback.
        *
-       * See RetardedAsynchCallbackHandler for more details.
+       * See RetardedAsyncCallbackHandler for more details.
        * See PythonCallbackHandler for more details
        * See PythonCallbackHandler::PythonCallbackHandler for more details
        */

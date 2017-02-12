@@ -28,8 +28,8 @@ namespace XBMCAddon
   LanguageHook::~LanguageHook() {}
 
   static XbmcThreads::ThreadLocal<LanguageHook> addonLanguageHookTls;
-  static bool threadLocalInitilialized = false;
-  static xbmcutil::InitFlag initer(threadLocalInitilialized);
+  static bool threadLocalInitialized = false;
+  static xbmcutil::InitFlag initer(threadLocalInitialized);
 
   void LanguageHook::SetLanguageHook(LanguageHook* languageHook)
   {
@@ -40,7 +40,7 @@ namespace XBMCAddon
 
   LanguageHook* LanguageHook::GetLanguageHook()
   {
-    return threadLocalInitilialized ? addonLanguageHookTls.get() : NULL;
+    return threadLocalInitialized ? addonLanguageHookTls.get() : NULL;
   }
 
   void LanguageHook::ClearLanguageHook()

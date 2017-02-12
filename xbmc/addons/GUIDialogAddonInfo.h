@@ -66,7 +66,7 @@ private:
   bool CanRun() const;
 
   /*!
-   * Returns true if current addon is of a type that can only have one activly
+   * Returns true if current addon is of a type that can only have one active
    * in use at a time and can be changed (e.g skins)*/
   bool CanUse() const;
 

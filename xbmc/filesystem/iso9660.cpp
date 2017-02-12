@@ -91,7 +91,7 @@ const std::string iso9660::ParseName(struct iso9660_Directory& isodir)
     {
       if (isodir.FileName[iPos] == 'N' && isodir.FileName[iPos + 1] == 'M')
       {
-        // altername name
+        // alternate name
         // "N" "M"  LEN_NM  1  FLAGS  NAMECONTENT
         // BP1 BP2    BP3      BP4  BP5     BP6-LEN_NM
         int iNameLen = isodir.FileName[iPos + 2] - 5;
@@ -377,7 +377,7 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, const cha
         if (bContinue)
         {
 
-          //     int semipos = temp_text.find(";",0); //the directory is not seperate by ";",but by its length
+          //     int semipos = temp_text.find(";",0); //the directory is not separate by ";",but by its length
           //     if (semipos >= 0)
           //       temp_text.erase(semipos,temp_text.length()-semipos);
 

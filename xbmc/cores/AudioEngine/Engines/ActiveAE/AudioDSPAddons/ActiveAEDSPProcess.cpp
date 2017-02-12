@@ -60,7 +60,7 @@ CActiveAEDSPProcess::CActiveAEDSPProcess(AE_DSP_STREAM_ID streamId)
    * Create predefined process arrays on every supported channel for audio dsp's.
    * All are set if used or not for safety reason and unsued ones can be used from
    * dsp addons as buffer arrays.
-   * If a bigger size is neeeded it becomes reallocated during DSP processing.
+   * If a bigger size is needed it becomes reallocated during DSP processing.
    */
   m_processArraySize = MIN_DSP_ARRAY_SIZE;
   for (int i = 0; i < AE_DSP_CH_MAX; ++i)
@@ -371,7 +371,7 @@ bool CActiveAEDSPProcess::Create(const AEAudioFormat &inputFormat, const AEAudio
     }
 
     /*!
-     * Now init all other dsp relavant addons
+     * Now init all other dsp relevant addons
      */
     for (AE_DSP_ADDONMAP_ITR itr = addonMap.begin(); itr != addonMap.end(); ++itr)
     {
@@ -1576,7 +1576,7 @@ void CActiveAEDSPProcess::SetFFMpegDSPProcessorArray(float *array_ffmpeg[2][AE_D
    * already present channel memory storage.
    */
 
-  //! Initialize input channel alignmment for ffmpeg process array
+  //! Initialize input channel alignment for ffmpeg process array
   if (array_in)
   {
     if (m_addonSettings.lInChannelPresentFlags & AE_DSP_PRSNT_CH_FL)   array_ffmpeg[FFMPEG_PROC_ARRAY_IN][m_idx_in[AE_CH_FL]]    = array_in[AE_DSP_CH_FL];
@@ -1601,7 +1601,7 @@ void CActiveAEDSPProcess::SetFFMpegDSPProcessorArray(float *array_ffmpeg[2][AE_D
     if (m_addonSettings.lInChannelPresentFlags & AE_DSP_PRSNT_CH_BROC) array_ffmpeg[FFMPEG_PROC_ARRAY_IN][m_idx_in[AE_CH_BROC]]  = array_in[AE_DSP_CH_BROC];
   }
 
-  //! Initialize output channel alignmment for ffmpeg process array
+  //! Initialize output channel alignment for ffmpeg process array
   if (array_out)
   {
     if (m_addonSettings.lOutChannelPresentFlags & AE_DSP_PRSNT_CH_FL)   array_ffmpeg[FFMPEG_PROC_ARRAY_OUT][m_idx_out[AE_CH_FL]]    = array_out[AE_DSP_CH_FL];

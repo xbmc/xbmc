@@ -53,7 +53,7 @@ void TestBasicEnvironment::SetUp()
   if (!g_application.m_ServiceManager->Init1())
     exit(1);
 
-  /* NOTE: The below is done to fix memleak warning about unitialized variable
+  /* NOTE: The below is done to fix memleak warning about uninitialized variable
    * in xbmcutil::GlobalsSingleton<CAdvancedSettings>::getInstance().
    */
   g_advancedSettings.Initialize();

@@ -6,7 +6,7 @@
 ; -> sqlite-3.7.12.1-win32\system\sqlite3.dll
 ; -> ...
 ;PLEASE KEEP THIS LIST IN ALPHABETICAL ORDER!
-cpluff-2b8e20-win32-vc140.7z
+cpluff-ed7874fc-win32-vc140.7z
 crossguid-8f399e-win32-vc140-v3.7z
 curl-7.48-win32-vc140.7z
 dnssd-541-win32.zip
@@ -37,11 +37,12 @@ mysql-connector-c-6.1.6-win32-vc140-v2.7z
 openssl-1.0.2g-win32-vc140-v2.7z
 pcre-8.37-win32-vc140-v3.7z
 pillow-3.1.0-win32-vc140.7z
+pycryptodome-3.4.3-win32.7z
 python-2.7.11-win32-vc140-v2.7z
 shairplay-0.9.0-win32-vc140-v2.7z
 sqlite-3.10.2-win32-vc140.7z
 swig-3.0.10-win32.7z
-taglib-1.11-win32-vc140-v2.7z
+taglib-1.11.1_80df30-win32-vc140.7z
 texturepacker-1.1.1-win32.7z
 tinyxmlstl-2.6.2-win32-vc140-v2.7z
 zlib-1.2.8-win32-vc140-v3.7z

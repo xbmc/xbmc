@@ -25,6 +25,8 @@
 #include <utility>
 #include <vector>
 
+namespace KODI
+{
 namespace MOUSE
 {
   /*!
@@ -46,4 +48,5 @@ namespace MOUSE
     static std::vector<std::pair<unsigned int, std::string>> m_buttonMap;
     static std::string m_pointerName;
   };
+}
 }

@@ -164,6 +164,10 @@ void COverlayQuadsDX::Render(SRenderState &state)
   if (m_count == 0)
     return;
 
+  ID3D11Buffer* vertexBuffer = m_vertex.Get();
+  if (vertexBuffer == nullptr)
+    return;
+
   ID3D11DeviceContext* pContext = g_Windowing.Get3D11Context();
   CGUIShaderDX* pGUIShader = g_Windowing.GetGUIShader();
 
@@ -186,7 +190,6 @@ void COverlayQuadsDX::Render(SRenderState &state)
   const unsigned stride = sizeof(Vertex);
   const unsigned offset = 0;
 
-  ID3D11Buffer* vertexBuffer = m_vertex.Get();
   // Set the vertex buffer to active in the input assembler so it can be rendered.
   pContext->IASetVertexBuffers(0, 1, &vertexBuffer, &stride, &offset);
   // Set the type of primitive that should be rendered from this vertex buffer, in this case triangles.
@@ -329,6 +332,10 @@ void COverlayImageDX::Load(uint32_t* rgba, int width, int height, int stride)
 
 void COverlayImageDX::Render(SRenderState &state)
 {
+  ID3D11Buffer* vertexBuffer = m_vertex.Get();
+  if (vertexBuffer == nullptr)
+    return;
+
   ID3D11DeviceContext* pContext = g_Windowing.Get3D11Context();
   CGUIShaderDX* pGUIShader = g_Windowing.GetGUIShader();
 
@@ -353,7 +360,6 @@ void COverlayImageDX::Render(SRenderState &state)
   const unsigned stride = m_vertex.GetStride();
   const unsigned offset = 0;
 
-  ID3D11Buffer* vertexBuffer = m_vertex.Get();
   pContext->IASetVertexBuffers(0, 1, &vertexBuffer, &stride, &offset);
   pContext->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 

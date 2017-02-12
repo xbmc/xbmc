@@ -37,7 +37,7 @@ namespace XFILE
 /* open without caching. regardless to file type. */
   static const unsigned int READ_NO_CACHE = 0x08;
 
-/* calcuate bitrate for file while reading */
+/* calculate bitrate for file while reading */
   static const unsigned int READ_BITRATE = 0x10;
 
 /* indicate to the caller we will seek between multiple streams in the file frequently */

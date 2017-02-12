@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="kodi.game" version="1.0.28" provider-name="Team-Kodi">
-	<backwards-compatibility abi="1.0.28"/>
+<addon id="kodi.game" version="1.0.29" provider-name="Team-Kodi">
+	<backwards-compatibility abi="1.0.29"/>
 	<requires>
 		<import addon="xbmc.core" version="0.1.0"/>
 	</requires>

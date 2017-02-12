@@ -346,7 +346,7 @@ void CGUIEPGGridContainerModel::FreeProgrammeMemory(int channel, int keepStart, 
           m_gridIndex[channel][i].item->FreeMemory();
           // FreeMemory() is smart enough to not cause any problems when called multiple times on same item
           // but we can make use of condition needed to not call FreeMemory() on item that is partially visible
-          // to avoid calling FreeMemory() multiple times on item that ocupy few blocks in a row
+          // to avoid calling FreeMemory() multiple times on item that occupy few blocks in a row
           last = m_gridIndex[channel][i].item;
         }
       }
@@ -363,7 +363,7 @@ void CGUIEPGGridContainerModel::FreeProgrammeMemory(int channel, int keepStart, 
           m_gridIndex[channel][i].item->FreeMemory();
           // FreeMemory() is smart enough to not cause any problems when called multiple times on same item
           // but we can make use of condition needed to not call FreeMemory() on item that is partially visible
-          // to avoid calling FreeMemory() multiple times on item that ocupy few blocks in a row
+          // to avoid calling FreeMemory() multiple times on item that occupy few blocks in a row
           last = m_gridIndex[channel][i].item;
         }
       }

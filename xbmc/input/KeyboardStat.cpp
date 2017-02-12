@@ -197,7 +197,7 @@ void CKeyboardStat::ProcessKeyUp(void)
 }
 
 // Return the key name given a key ID
-// Used to make the debug log more intelligable
+// Used to make the debug log more intelligible
 // The KeyID includes the flags for ctrl, alt etc
 
 std::string CKeyboardStat::GetKeyName(int KeyID)
@@ -232,7 +232,7 @@ std::string CKeyboardStat::GetKeyName(int KeyID)
     keyname += StringUtils::Format("%i", keyid);
   
   // in case this might be an universalremote keyid
-  // we also print the possile corresponding obc code
+  // we also print the possible corresponding obc code
   // so users can easily find it in their universalremote
   // map xml
   if (VKeyFound || keyid > 255)

@@ -39,7 +39,7 @@ namespace ADDON
 /**********************************************************
  * CAddonStatusHandler - AddOn Status Report Class
  *
- * Used to informate the user about occurred errors and
+ * Used to inform the user about occurred errors and
  * changes inside Add-on's, and ask him what to do.
  *
  */

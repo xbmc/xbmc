@@ -31,6 +31,7 @@
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 
+using namespace KODI;
 using namespace PERIPHERALS;
 
 static const std::string DeviceLocationPrefix = "android/inputdevice/";

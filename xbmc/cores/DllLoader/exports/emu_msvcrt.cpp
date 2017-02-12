@@ -385,7 +385,7 @@ extern "C"
     not_implement("msvcrt.dll fake function dll_onexit() called\n");
 
     // register to dll unload list
-    // return func if succsesfully added to the dll unload list
+    // return func if successfully added to the dll unload list
     return NULL;
   }
 

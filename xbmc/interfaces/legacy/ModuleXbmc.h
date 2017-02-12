@@ -56,7 +56,7 @@ namespace XBMCAddon
     /// Write a string to Kodi's log file and the debug window.
     ///
     /// @param msg                 string - text to output.
-    /// @param level               [opt] integer - log level to ouput at.
+    /// @param level               [opt] integer - log level to output at.
     ///                            <em>(default=LOGDEBUG)</em>
     ///  |  Value:         | Description:                                      |
     ///  |----------------:|---------------------------------------------------|
@@ -641,7 +641,7 @@ namespace XBMCAddon
     ///
     /// @param filename              string or unicode - filename/path to
     ///                              make legal
-    /// @paran fatX                  [opt] bool - True=Xbox file system(Default)
+    /// @param fatX                  [opt] bool - True=Xbox file system(Default)
     /// @return                      Legal filename or path as a string
     ///
     ///

@@ -198,7 +198,7 @@
 						<onleft>14100</onleft>
 						<onup>8</onup>
 						<ondown>6056</ondown>
-						<visible>Player.HasMedia + [$EXP[sidebar_focused]]</visible>
+						<visible>Player.HasMedia + [$EXP[sidebar_visible]]</visible>
 						<visible>!System.HasActiveModalDialog</visible>
 						<include content="BottomMainMenuToggleItem">
 							<param name="control_id" value="14101" />
@@ -241,7 +241,7 @@
 		<include>OpenClose_Left</include>
 		<depth>DepthSideBlade</depth>
 		<left>-520</left>
-		<animation type="Conditional" condition="$EXP[sidebar_focused]" reversible="true">
+		<animation type="Conditional" condition="$EXP[sidebar_visible]" reversible="true">
 			<effect type="slide" start="0" end="520" time="400" tween="cubic" easing="out" />
 		</animation>
 		<control type="image">
@@ -249,7 +249,7 @@
 			<height>100%</height>
 			<aspectratio>scale</aspectratio>
 			<texture colordiffuse="80FFFFFF">colors/black.png</texture>
-			<visible>$EXP[sidebar_focused] + !System.HasActiveModalDialog</visible>
+			<visible>$EXP[sidebar_visible] + !System.HasActiveModalDialog</visible>
 			<animation effect="fade" time="200">VisibleChange</animation>
 		</control>
 		<control type="image">
@@ -269,41 +269,45 @@
 		</control>
 	</include>
 	<include name="MediaMenuNowPlaying">
-		<control type="grouplist" id="14100">
-			<animation effect="fade" start="0" end="100" time="400">WindowOpen</animation>
-			<animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
-			<animation effect="fade" time="300">VisibleChange</animation>
-			<orientation>horizontal</orientation>
-			<itemgap>-17</itemgap>
-			<left>5</left>
-			<onleft>14100</onleft>
-			<width>450</width>
-			<visible>Player.HasMedia + [$EXP[sidebar_focused]]</visible>
-			<visible>!System.HasActiveModalDialog</visible>
-			<include content="BottomMainMenuToggleItem">
-				<param name="control_id" value="14101" />
-				<param name="onclick" value="PlayerControl(Play)" />
-				<param name="icon_on" value="icons/now-playing/play.png" />
-				<param name="icon_off" value="icons/now-playing/pause.png" />
-				<param name="selected" value="Player.Paused" />
-			</include>
-			<include content="IconButton">
-				<param name="control_id" value="14102" />
-				<param name="onclick" value="Stop" />
-				<param name="onclick_2" value="SetFocus(50)" />
-				<param name="icon" value="icons/now-playing/stop.png" />
-			</include>
-			<include content="IconButton">
-				<param name="control_id" value="14104" />
-				<param name="onclick" value="PlayerControl(Next)" />
-				<param name="icon" value="icons/now-playing/next.png" />
-			</include>
-			<include content="IconButton">
-				<param name="control_id" value="14105" />
-				<param name="onclick" value="Fullscreen" />
-				<param name="icon" value="icons/now-playing/fullscreen.png" />
-			</include>
-		</control>
+        <param name="left">5</param>
+		<definition>
+			<control type="grouplist" id="14100">
+				<animation effect="fade" start="0" end="100" time="400">WindowOpen</animation>
+				<animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
+				<animation effect="fade" time="300">VisibleChange</animation>
+				<animation effect="slide" end="-10,0" time="0" condition ="Window.IsActive(MyPlaylist.xml)">Conditional</animation>
+				<orientation>horizontal</orientation>
+				<itemgap>-17</itemgap>
+				<left>$PARAM[left]</left>
+				<onleft>14100</onleft>
+				<width>450</width>
+				<visible>Player.HasMedia + [$EXP[sidebar_visible]]</visible>
+				<visible>!System.HasActiveModalDialog</visible>
+				<include content="BottomMainMenuToggleItem">
+					<param name="control_id" value="14101" />
+					<param name="onclick" value="PlayerControl(Play)" />
+					<param name="icon_on" value="icons/now-playing/play.png" />
+					<param name="icon_off" value="icons/now-playing/pause.png" />
+					<param name="selected" value="Player.Paused" />
+				</include>
+				<include content="IconButton">
+					<param name="control_id" value="14102" />
+					<param name="onclick" value="Stop" />
+					<param name="onclick_2" value="SetFocus(50)" />
+					<param name="icon" value="icons/now-playing/stop.png" />
+				</include>
+				<include content="IconButton">
+					<param name="control_id" value="14104" />
+					<param name="onclick" value="PlayerControl(Next)" />
+					<param name="icon" value="icons/now-playing/next.png" />
+				</include>
+				<include content="IconButton">
+					<param name="control_id" value="14105" />
+					<param name="onclick" value="Fullscreen" />
+					<param name="icon" value="icons/now-playing/fullscreen.png" />
+				</include>
+			</control>
+		</definition>
 	</include>
 	<include name="MediaMenuListCommon">
 		<definition>
@@ -343,7 +347,6 @@
 			</control>
 			<control type="button" id="19">
 				<visible>Container.CanFilter + !Container.CanFilterAdvanced</visible>
-				<visible>!Container.Content()</visible>
 				<include>MediaMenuItemsCommon</include>
 				<label>$LOCALIZE[137]</label>
 			</control>

@@ -412,12 +412,24 @@ CEpgInfoTagPtr CEpgContainer::GetTagById(const CPVRChannelPtr &channel, unsigned
 {
   CEpgInfoTagPtr retval;
 
-  if (!channel || iBroadcastId == EPG_TAG_INVALID_UID)
+  if (iBroadcastId == EPG_TAG_INVALID_UID)
     return retval;
 
-  const CEpgPtr epg(channel->GetEPG());
-  if (epg)
-    retval = epg->GetTagByBroadcastId(iBroadcastId);
+  if (channel)
+  {
+    const CEpgPtr epg(channel->GetEPG());
+    if (epg)
+      retval = epg->GetTagByBroadcastId(iBroadcastId);
+  }
+  else
+  {
+    for (const auto &epgEntry : m_epgs)
+    {
+      retval = epgEntry.second->GetTagByBroadcastId(iBroadcastId);
+      if (retval)
+        break;
+    }
+  }
 
   return retval;
 }
@@ -758,7 +770,7 @@ const CDateTime CEpgContainer::GetLastEPGDate(void)
   return returnValue;
 }
 
-int CEpgContainer::GetEPGSearch(CFileItemList &results, const EpgSearchFilter &filter)
+int CEpgContainer::GetEPGSearch(CFileItemList &results, const CEpgSearchFilter &filter)
 {
   int iInitialSize = results.Size();
 
@@ -770,8 +782,8 @@ int CEpgContainer::GetEPGSearch(CFileItemList &results, const EpgSearchFilter &f
   }
 
   /* remove duplicate entries */
-  if (filter.m_bPreventRepeats)
-    EpgSearchFilter::RemoveDuplicates(results);
+  if (filter.ShouldRemoveDuplicates())
+    filter.RemoveDuplicates(results);
 
   return results.Size() - iInitialSize;
 }

@@ -665,11 +665,22 @@
           <control type="spinner" format="integer" delayed="true"/>
         </setting>
         <setting id="subtitles.font" type="string" label="14089" help="36185">
-          <level>3</level>
+          <level>1</level>
           <default>arial.ttf</default>
           <constraints>
             <options>fonts</options>
           </constraints>
+          <control type="list" format="string" />
+        </setting>
+        <setting id="subtitles.charset" type="string" parent="subtitles.font" label="735" help="36189">
+          <level>1</level>
+          <default>DEFAULT</default>
+          <constraints>
+            <options>charsets</options>
+          </constraints>
+          <dependencies>
+            <dependency type="enable" on="property" name="IsUsingTTFSubtitles" setting="subtitles.font" />
+          </dependencies>
           <control type="list" format="string" />
         </setting>
         <setting id="subtitles.height" type="integer" parent="subtitles.font" label="289" help="36186">
@@ -715,17 +726,6 @@
               <option label="766">6</option> <!-- Light grey -->
               <option label="767">7</option> <!-- Grey -->
             </options>
-          </constraints>
-          <dependencies>
-            <dependency type="enable" on="property" name="IsUsingTTFSubtitles" setting="subtitles.font" />
-          </dependencies>
-          <control type="list" format="string" />
-        </setting>
-        <setting id="subtitles.charset" type="string" parent="subtitles.font" label="735" help="36189">
-          <level>3</level>
-          <default>DEFAULT</default>
-          <constraints>
-            <options>charsets</options>
           </constraints>
           <dependencies>
             <dependency type="enable" on="property" name="IsUsingTTFSubtitles" setting="subtitles.font" />
@@ -1172,6 +1172,11 @@
     </category>
     <category id="pictures" label="14217" help="38109">
       <group id="1" label="744">
+        <setting id="pictures.usetags" type="boolean" label="38207" help="38208">
+          <level>1</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
         <setting id="pictures.generatethumbs" type="boolean" label="13360" help="36307">
           <level>0</level>
           <default>true</default>
@@ -1225,14 +1230,7 @@
   </section>
   <section id="pvr" label="14204" help="36201">
     <category id="pvrmanager" label="128" help="36202">
-      <group id="1" label="14300">
-        <setting id="pvrmanager.hideconnectionlostwarning" type="boolean" label="19269" help="36210">
-          <level>2</level>
-          <default>false</default>
-          <control type="toggle" />
-        </setting>
-      </group>
-      <group id="2" label="14301">
+      <group id="1" label="14301">
         <setting id="pvrmanager.syncchannelgroups" type="boolean" label="19221" help="36204">
           <level>1</level>
           <default>true</default>
@@ -1411,7 +1409,7 @@
         </setting>
         <setting id="pvrplayback.confirmchannelswitch" type="boolean" label="19281" help="36231">
           <level>1</level>
-          <default>false</default>
+          <default>true</default>
           <control type="toggle" />
         </setting>
         <setting id="pvrplayback.channelentrytimeout" type="integer" label="19073" help="36232">

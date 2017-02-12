@@ -49,7 +49,7 @@ public:
   //! \brief Read data from stream
   virtual int Read(uint8_t* buf, int buf_size) override;
 
-  //! \brief Seeek in stream
+  //! \brief Seek in stream
   virtual int64_t Seek(int64_t offset, int whence) override;
 
   //! \brief Pause stream

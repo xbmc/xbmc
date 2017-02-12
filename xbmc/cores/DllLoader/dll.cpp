@@ -201,7 +201,7 @@ extern "C" FARPROC __stdcall dllGetProcAddress(HMODULE hModule, LPCSTR function)
     {
       DllTrackInfo* track = tracker_get_dlltrackinfo(loc);
       /* some dll's require us to always return a function or it will fail, other's  */
-      /* decide functionallity depending on if the functions exist and may fail      */
+      /* decide functionality depending on if the functions exist and may fail      */
       if( dll->IsSystemDll() && track
        && stricmp(track->pDll->GetName(), "CoreAVCDecoder.ax") == 0 )
       {

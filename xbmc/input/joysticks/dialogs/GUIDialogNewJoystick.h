@@ -21,6 +21,8 @@
 
 #include "threads/Thread.h"
 
+namespace KODI
+{
 namespace JOYSTICK
 {
   class CGUIDialogNewJoystick : protected CThread
@@ -35,4 +37,5 @@ namespace JOYSTICK
     // implementation of CThread
     virtual void Process() override;
   };
+}
 }

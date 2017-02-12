@@ -33,7 +33,7 @@ namespace GAME
    *
    * Listens to keyboard events and forwards them to the games (as game_input_event).
    */
-  class CGameClientKeyboard : public KEYBOARD::IKeyboardHandler
+  class CGameClientKeyboard : public KODI::KEYBOARD::IKeyboardHandler
   {
   public:
     /*!

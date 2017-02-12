@@ -175,7 +175,7 @@ namespace ActiveAE
     const std::string &IconOwnModePath(void) const;
 
     /*!
-     * @brief Get the path to a from addon set mode identification image to overirde the from KODI used one, e.g. Dolby Digital with Dolby Digital EX
+     * @brief Get the path to a from addon set mode identification image to override the from KODI used one, e.g. Dolby Digital with Dolby Digital EX
      * @return the path to the image or empty if not present
      */
     const std::string &IconOverrideModePath(void) const;
@@ -203,7 +203,7 @@ namespace ActiveAE
     //@{
     /*!
      * @brief Get the identifier of this mode used on database
-     * @return the mode identifier or -1 if unknown and not safed to database
+     * @return the mode identifier or -1 if unknown and not saved to database
      */
     int ModeID(void) const;
 
@@ -221,7 +221,7 @@ namespace ActiveAE
     bool Delete(void);
 
     /*!
-     * @brief Ask database about this mode that it is alread known
+     * @brief Ask database about this mode that it is already known
      * @return true if present inside database
      */
     bool IsKnown(void) const;

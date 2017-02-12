@@ -25,6 +25,8 @@
 #include <string>
 #include <vector>
 
+namespace KODI
+{
 namespace JOYSTICK
 {
   /*!
@@ -226,6 +228,17 @@ namespace JOYSTICK
     virtual bool IsIgnored(const CDriverPrimitive& primitive) = 0;
 
     /*!
+     * \brief Get the properties of an axis
+     *
+     * \param axisIndex The index of the axis to check
+     * \param center[out] The center, if known
+     * \param range[out] The range, if known
+     *
+     * \return True if the properties are known, false otherwise
+     */
+    virtual bool GetAxisProperties(unsigned int axisIndex, int& center, unsigned int& range) = 0;
+
+    /*!
      * \brief Save the button map
      */
     virtual void SaveButtonMap() = 0;
@@ -236,4 +249,5 @@ namespace JOYSTICK
     */
     virtual void RevertButtonMap() = 0;
   };
+}
 }

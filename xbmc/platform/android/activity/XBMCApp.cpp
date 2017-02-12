@@ -44,6 +44,8 @@
 #include "platform/xbmc.h"
 #include "windowing/WinEvents.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/GraphicContext.h"
+#include "settings/DisplaySettings.h"
 #include "utils/log.h"
 #include "messaging/ApplicationMessenger.h"
 #include "utils/StringUtils.h"
@@ -526,7 +528,7 @@ CRect CXBMCApp::MapRenderToDroid(const CRect& srcRect)
   float scaleY = 1.0;
 
   CJNIRect r = m_xbmcappinstance->getVideoViewSurfaceRect();
-  RESOLUTION_INFO renderRes = g_graphicsContext.GetResInfo(g_graphicsContext.GetVideoResolution());
+  RESOLUTION_INFO renderRes = CDisplaySettings::GetInstance().GetResolutionInfo(g_graphicsContext.GetVideoResolution());
   scaleX = (double)r.width() / renderRes.iWidth;
   scaleY = (double)r.height() / renderRes.iHeight;
 
@@ -843,7 +845,7 @@ void CXBMCApp::onNewIntent(CJNIIntent intent)
 
 void CXBMCApp::onVolumeChanged(int volume)
 {
-  // System volume was used; Reset Kodi volume to 100% if it'not, already
+  // System volume was used; Reset Kodi volume to 100% if it isn't, already
   if (g_application.GetVolume(false) != 1.0)
     CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(
                                                  new CAction(ACTION_VOLUME_SET, static_cast<float>(CXBMCApp::GetMaxSystemVolume()))));

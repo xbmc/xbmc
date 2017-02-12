@@ -573,7 +573,7 @@ void CPlayListPlayer::ReShuffle(int iPlaylist, int iPosition)
   {
     GetPlaylist(iPlaylist).Shuffle();
   }
-  // we're trying to shuffle new items into the curently playing playlist
+  // we're trying to shuffle new items into the currently playing playlist
   // so we shuffle starting at two positions below the current item
   else if (iPlaylist == m_iCurrentPlayList)
   {

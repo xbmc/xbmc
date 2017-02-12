@@ -32,6 +32,7 @@
 #include "games/controllers/Controller.h"
 #include "games/controllers/guicontrols/GUIControllerButton.h"
 #include "games/controllers/guicontrols/GUIGameController.h"
+#include "games/GameServices.h"
 #include "guilib/GUIButtonControl.h"
 #include "guilib/GUIControlGroupList.h"
 #include "guilib/GUIWindow.h"
@@ -39,6 +40,10 @@
 #include "input/joysticks/DefaultJoystick.h" // for DEFAULT_CONTROLLER_ID
 #include "messaging/ApplicationMessenger.h"
 #include "peripherals/Peripherals.h"
+#include "ServiceBroker.h"
+
+#include <algorithm>
+#include <iterator>
 
 using namespace ADDON;
 using namespace GAME;
@@ -154,30 +159,28 @@ void CGUIControllerList::OnEvent(const ADDON::AddonEvent& event)
 
 bool CGUIControllerList::RefreshControllers(void)
 {
-  // Cache discovered add-ons between function calls
-  VECADDONS addonCache;
+  // Get current controllers
+  CGameServices& gameServices = CServiceBroker::GetGameServices();
+  ControllerVector newControllers = gameServices.GetControllers();
 
-  std::set<std::string> currentIds = GetControllerIDs();
-  std::set<std::string> newIds = GetNewControllerIDs(addonCache);
+  // Check for changes
+  std::set<std::string> oldControllerIds;
+  std::set<std::string> newControllerIds;
 
-  std::set<std::string> added;
-  std::set<std::string> removed;
+  auto GetControllerID = [](const ControllerPtr& controller)
+    {
+      return controller->ID();
+    };
 
-  std::set_difference(newIds.begin(), newIds.end(), currentIds.begin(), currentIds.end(), std::inserter(added, added.end()));
-  std::set_difference(currentIds.begin(), currentIds.end(), newIds.begin(), newIds.end(), std::inserter(removed, removed.end()));
+  std::transform(m_controllers.begin(), m_controllers.end(), std::inserter(oldControllerIds, oldControllerIds.begin()), GetControllerID);
+  std::transform(newControllers.begin(), newControllers.end(), std::inserter(newControllerIds, newControllerIds.begin()), GetControllerID);
 
-  // Register new controllers
-  for (const std::string& addonId : added)
-    RegisterController(addonId, addonCache);
-
-  // Erase removed controllers
-  for (const std::string& addonId : removed)
-    UnregisterController(addonId);
-
-  // Sort add-ons, with default controller first
-  const bool bChanged = !added.empty() || !removed.empty();
+  const bool bChanged = (oldControllerIds != newControllerIds);
   if (bChanged)
   {
+    m_controllers = std::move(newControllers);
+
+    // Sort add-ons, with default controller first
     std::sort(m_controllers.begin(), m_controllers.end(),
       [](const ControllerPtr& i, const ControllerPtr& j)
       {
@@ -189,59 +192,6 @@ bool CGUIControllerList::RefreshControllers(void)
   }
 
   return bChanged;
-}
-
-std::set<std::string> CGUIControllerList::GetControllerIDs() const
-{
-  std::set<std::string> controllerIds;
-
-  std::transform(m_controllers.begin(), m_controllers.end(), std::inserter(controllerIds, controllerIds.end()),
-    [](const ControllerPtr& addon)
-    {
-      return addon->ID();
-    });
-
-  return controllerIds;
-}
-
-std::set<std::string> CGUIControllerList::GetNewControllerIDs(ADDON::VECADDONS& addonCache) const
-{
-  std::set<std::string> controllerIds;
-
-  CAddonMgr::GetInstance().GetAddons(addonCache, ADDON_GAME_CONTROLLER);
-
-  std::transform(addonCache.begin(), addonCache.end(), std::inserter(controllerIds, controllerIds.end()),
-    [](const AddonPtr& addon)
-    {
-      return addon->ID();
-    });
-
-  return controllerIds;
-}
-
-void CGUIControllerList::RegisterController(const std::string& addonId, const ADDON::VECADDONS& addonCache)
-{
-  auto it = std::find_if(addonCache.begin(), addonCache.end(),
-    [addonId](const AddonPtr& addon)
-    {
-      return addon->ID() == addonId;
-    });
-
-  if (it != addonCache.end())
-  {
-    ControllerPtr newController = std::dynamic_pointer_cast<CController>(*it);
-    if (newController && newController->LoadLayout())
-      m_controllers.push_back(newController);
-  }
-}
-
-void CGUIControllerList::UnregisterController(const std::string& controllerId)
-{
-  m_controllers.erase(std::remove_if(m_controllers.begin(), m_controllers.end(),
-    [controllerId](const ControllerPtr& controller)
-    {
-      return controller->ID() == controllerId;
-    }), m_controllers.end());
 }
 
 void CGUIControllerList::CleanupButtons(void)

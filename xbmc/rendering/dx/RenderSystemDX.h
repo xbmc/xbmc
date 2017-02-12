@@ -179,7 +179,7 @@ protected:
   ID3D11Texture2D*            m_pTextureRight{nullptr};
   ID3D11RenderTargetView*     m_pRenderTargetViewRight{nullptr};
   ID3D11ShaderResourceView*   m_pShaderResourceViewRight{nullptr};
-  bool                        m_bResizeRequred{false};
+  bool                        m_bResizeRequired{false};
   bool                        m_bHWStereoEnabled{false};
   // improve get current mode
   DXGI_MODE_DESC              m_cachedMode;

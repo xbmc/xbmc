@@ -167,7 +167,7 @@ private:
   volatile bool           m_abort;
 };
 
-// Generell description of a buffer used by
+// General description of a buffer used by
 // the IMX context, e.g. for blitting
 class CIMXBuffer {
 public:

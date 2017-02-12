@@ -21,6 +21,8 @@
 
 #include "IDriverHandler.h"
 
+namespace KODI
+{
 namespace JOYSTICK
 {
   /*!
@@ -34,7 +36,7 @@ namespace JOYSTICK
     // implementation of IDriverHandler
     virtual bool OnButtonMotion(unsigned int buttonIndex, bool bPressed) override;
     virtual bool OnHatMotion(unsigned int hatIndex, HAT_STATE state) override;
-    virtual bool OnAxisMotion(unsigned int axisIndex, float position) override;
+    virtual bool OnAxisMotion(unsigned int axisIndex, float position, int center, unsigned int range) override;
     virtual void ProcessAxisMotions(void) override { }
 
   private:
@@ -44,4 +46,5 @@ namespace JOYSTICK
      */
     bool ResetTimers(void);
   };
+}
 }

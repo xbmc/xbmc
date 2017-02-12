@@ -80,7 +80,7 @@ The fix:
     CJNIFile myFile = getExternalFilesDir("foo");
     if (myFile)
       externalDir myFile.getAbsolutePath();
-    retrun externalDir;
+    return externalDir;
   }
 
 b. Java has an understanding of arrays like Type[] which contain size info.

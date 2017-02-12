@@ -197,8 +197,13 @@ std::string CFavouritesDirectory::GetExecutePath(const CFileItem &item, const st
       execute = StringUtils::Format("ActivateWindow(%s,%s,return)", contextWindow.c_str(), StringUtils::Paramify(item.GetPath()).c_str());
   }
   //! @todo STRING_CLEANUP
-  else if (item.IsScript() && item.GetPath().size() > 9) // plugin://<foo>
+  else if (item.IsScript() && item.GetPath().size() > 9) // script://<foo>
     execute = StringUtils::Format("RunScript(%s)", StringUtils::Paramify(item.GetPath().substr(9)).c_str());
+  else if (item.IsAddonsPath() && item.GetPath().size() > 9) // addons://<foo>
+  {
+    CURL url(item.GetPath());
+    execute = StringUtils::Format("RunAddon(%s)", url.GetFileName().c_str());
+  }
   else if (item.IsAndroidApp() && item.GetPath().size() > 26) // androidapp://sources/apps/<foo>
     execute = StringUtils::Format("StartAndroidActivity(%s)", StringUtils::Paramify(item.GetPath().substr(26)).c_str());
   else  // assume a media file

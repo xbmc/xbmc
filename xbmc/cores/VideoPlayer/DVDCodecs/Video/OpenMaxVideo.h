@@ -148,7 +148,7 @@ protected:
   pthread_cond_t    m_omx_queue_available;
 
   // OpenMax input buffers (demuxer packets)
-  std::queue<OMX_BUFFERHEADERTYPE*> m_omx_input_avaliable;
+  std::queue<OMX_BUFFERHEADERTYPE*> m_omx_input_available;
   std::vector<OMX_BUFFERHEADERTYPE*> m_omx_input_buffers;
   bool              m_omx_input_eos;
   int               m_omx_input_port;

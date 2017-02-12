@@ -70,7 +70,7 @@ float CVideoSyncIos::GetFps()
   return m_fps;
 }
 
-void CVideoSyncIos::OnResetDevice()
+void CVideoSyncIos::OnResetDisplay()
 {
   m_abort = true;
 }

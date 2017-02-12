@@ -279,10 +279,10 @@ void CAEStreamParser::GetPacket(uint8_t **buffer, unsigned int *bufferSize)
 /* SYNC FUNCTIONS */
 
 /*
-  This function looks for sync words across the types in paralell, and only does an exhaustive
+  This function looks for sync words across the types in parallel, and only does an exhaustive
   test if it finds a syncword. Once sync has been established, the relevent sync function sets
   m_syncFunc to itself. This function will only be called again if total sync is lost, which
-  allows is to switch stream types on the fly much like a real reicever does.
+  allows is to switch stream types on the fly much like a real receiver does.
 */
 unsigned int CAEStreamParser::DetectType(uint8_t *data, unsigned int size)
 {

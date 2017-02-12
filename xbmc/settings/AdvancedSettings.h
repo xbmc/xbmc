@@ -191,7 +191,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     bool m_DXVAAllowHqScaling;
     int  m_videoFpsDetect;
     int  m_videoBusyDialogDelay_ms;
-    bool m_mediacodecForceSoftwareRendring;
+    bool m_mediacodecForceSoftwareRendering;
 
     std::string m_videoDefaultPlayer;
     float m_videoPlayCountMinimumPercent;
@@ -311,7 +311,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     int m_iSkipLoopFilter;
 
     unsigned int m_RestrictCapsMask;
-    float m_sleepBeforeFlip; ///< if greather than zero, XBMC waits for raster to be this amount through the frame prior to calling the flip
+    float m_sleepBeforeFlip; ///< if greater than zero, XBMC waits for raster to be this amount through the frame prior to calling the flip
     bool m_bVirtualShares;
     bool m_bAllowDeferredRendering;
 
@@ -356,6 +356,9 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     float GetDisplayLatency(float refreshrate);
     bool m_initialized;
 
+    //! \brief Returns a list of picture extension for filtering in the GUI
+    std::string GetPictureExtensions() const;
+
     //! \brief Returns a list of music extension for filtering in the GUI
     std::string GetMusicExtensions() const;
 
@@ -365,7 +368,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     void ToggleDirtyRegionVisualization() { m_guiVisualizeDirtyRegions = !m_guiVisualizeDirtyRegions; };
 
     // runtime settings which cannot be set from advancedsettings.xml
-    std::string m_pictureExtensions;
     std::string m_videoExtensions;
     std::string m_discStubExtensions;
     std::string m_subtitlesExtensions;
@@ -376,7 +378,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
 
     bool m_useDisplayControlHWStereo;
 
-    /*!< @brief position behavior of ass subtitiles when setting "subtitle position on screen" set to "fixed"
+    /*!< @brief position behavior of ass subtitles when setting "subtitle position on screen" set to "fixed"
     True to show at the fixed position set in video calibration
     False to show at the bottom of video (default) */
     bool m_videoAssFixedWorks;
@@ -385,6 +387,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
 
   private:
     std::string m_musicExtensions;
+    std::string m_pictureExtensions;
     void setExtraLogLevel(const std::vector<CVariant> &components);
 };
 

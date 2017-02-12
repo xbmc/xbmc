@@ -459,10 +459,12 @@ namespace XBMCAddon
     void ControlSlider::setInt(int value, int min, int delta, int max)
     {
       if (pGUIControl)
+      {
         static_cast<CGUISliderControl*>(pGUIControl)->SetType(SLIDER_CONTROL_TYPE_INT);
         static_cast<CGUISliderControl*>(pGUIControl)->SetRange(min, max);
         static_cast<CGUISliderControl*>(pGUIControl)->SetIntInterval(delta);
         static_cast<CGUISliderControl*>(pGUIControl)->SetIntValue(value);
+      }
     }
 
     float ControlSlider::getFloat()
@@ -473,10 +475,12 @@ namespace XBMCAddon
     void ControlSlider::setFloat(float value, float min, float delta, float max)
     {
       if (pGUIControl)
+      {
         static_cast<CGUISliderControl*>(pGUIControl)->SetType(SLIDER_CONTROL_TYPE_FLOAT);
         static_cast<CGUISliderControl*>(pGUIControl)->SetFloatRange(min, max);
         static_cast<CGUISliderControl*>(pGUIControl)->SetFloatInterval(delta);
         static_cast<CGUISliderControl*>(pGUIControl)->SetFloatValue(value);
+      }
     }
 
     CGUIControl* ControlSlider::Create ()

@@ -23,7 +23,7 @@
 #include "utils/log.h"
 
 #ifndef TARGET_WINDOWS
-#error This file is for Win32 platfrom only
+#error This file is for Win32 platform only
 #endif // TARGET_WINDOWS
 
 

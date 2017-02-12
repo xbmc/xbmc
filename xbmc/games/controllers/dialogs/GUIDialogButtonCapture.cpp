@@ -37,6 +37,7 @@
 #include <algorithm>
 #include <iterator>
 
+using namespace KODI;
 using namespace GAME;
 
 CGUIDialogButtonCapture::CGUIDialogButtonCapture() :
@@ -59,7 +60,7 @@ void CGUIDialogButtonCapture::Show()
 
     Create();
 
-    bool bAccepted = CGUIDialogOK::ShowAndGetInput(CVariant{ 35013 }, CVariant{ GetDialogText() }); // "Fix skipping"
+    bool bAccepted = CGUIDialogOK::ShowAndGetInput(CVariant{ 35019 }, CVariant{ GetDialogText() }); // "Ignore input"
 
     StopThread(false);
 
@@ -155,17 +156,16 @@ bool CGUIDialogButtonCapture::AddPrimitive(const JOYSTICK::CDriverPrimitive& pri
 {
   bool bValid = false;
 
-  if (primitive.Type() == JOYSTICK::PRIMITIVE_TYPE::BUTTON)
+  if (primitive.Type() == JOYSTICK::PRIMITIVE_TYPE::BUTTON ||
+      primitive.Type() == JOYSTICK::PRIMITIVE_TYPE::SEMIAXIS)
   {
-    bValid = std::find(m_capturedPrimitives.begin(), m_capturedPrimitives.end(), primitive) == m_capturedPrimitives.end();
-  }
-  else if (primitive.Type() == JOYSTICK::PRIMITIVE_TYPE::SEMIAXIS)
-  {
-    // Don't need to do anything if opposite semiaxis is already captured
-    JOYSTICK::CDriverPrimitive opposite(primitive.Index(), primitive.SemiAxisDirection() * -1);
+    auto PrimitiveMatch = [&primitive](const JOYSTICK::CDriverPrimitive& other)
+      {
+        return primitive.Type() == other.Type() &&
+               primitive.Index() == other.Index();
+      };
 
-    bValid = std::find(m_capturedPrimitives.begin(), m_capturedPrimitives.end(), primitive) == m_capturedPrimitives.end() &&
-             std::find(m_capturedPrimitives.begin(), m_capturedPrimitives.end(), opposite) == m_capturedPrimitives.end();
+    bValid = std::find_if(m_capturedPrimitives.begin(), m_capturedPrimitives.end(), PrimitiveMatch) == m_capturedPrimitives.end();
   }
 
   if (bValid)

@@ -27,6 +27,7 @@
 
 #define BUTTON_INDEX_MASK  0x01ff
 
+using namespace KODI;
 using namespace KEYBOARD;
 
 CJoystickEmulation::CJoystickEmulation(JOYSTICK::IDriverHandler* handler) :

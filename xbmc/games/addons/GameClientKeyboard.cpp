@@ -26,6 +26,7 @@
 #include "input/Key.h"
 #include "utils/log.h"
 
+using namespace KODI;
 using namespace GAME;
 
 #define BUTTON_INDEX_MASK  0x01ff

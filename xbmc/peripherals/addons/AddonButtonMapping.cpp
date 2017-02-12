@@ -25,6 +25,7 @@
 #include "peripherals/Peripherals.h"
 #include "utils/log.h"
 
+using namespace KODI;
 using namespace JOYSTICK;
 using namespace PERIPHERALS;
 
@@ -73,10 +74,10 @@ bool CAddonButtonMapping::OnHatMotion(unsigned int hatIndex, HAT_STATE state)
   return false;
 }
 
-bool CAddonButtonMapping::OnAxisMotion(unsigned int axisIndex, float position)
+bool CAddonButtonMapping::OnAxisMotion(unsigned int axisIndex, float position, int center, unsigned int range)
 {
   if (m_buttonMapping)
-    return m_buttonMapping->OnAxisMotion(axisIndex, position);
+    return m_buttonMapping->OnAxisMotion(axisIndex, position, center, range);
 
   return false;
 }

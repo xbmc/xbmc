@@ -68,4 +68,4 @@ private:
 
 } /* namespace Game */
 
-} /* namespace KoidAPI */
+} /* namespace KodiAPI */

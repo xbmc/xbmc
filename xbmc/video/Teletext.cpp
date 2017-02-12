@@ -1647,7 +1647,7 @@ void CTeletextDecoder::Decode_ADIP() /* additional information table */
         return;
       }
 
-      if (b1>8 || b2>9 || b3>9) /* ignore extries with invalid or hex page numbers */
+      if (b1>8 || b2>9 || b3>9) /* ignore entries with invalid or hex page numbers */
       {
         continue;
       }
@@ -2747,7 +2747,7 @@ int CTeletextDecoder::RenderChar(color_t *buffer,    // pointer to render buffer
 
 TextPageinfo_t* CTeletextDecoder::DecodePage(bool showl25,             // 1=decode Level2.5-graphics
                                             unsigned char* PageChar,  // page buffer, min. 25*40
-                                            TextPageAttr_t *PageAtrb, // attribut buffer, min 25*40
+                                            TextPageAttr_t *PageAtrb, // attribute buffer, min 25*40
                                             bool HintMode,            // 1=show hidden information
                                             bool showflof)            // 1=decode FLOF-line
 {
@@ -2899,7 +2899,7 @@ TextPageinfo_t* CTeletextDecoder::DecodePage(bool showl25,             // 1=deco
     held_mosaic  = ' ';
     dhset        = 0;
     IgnoreAtBlackBgSubst = 0;
-    mosaic_pending = esc_pending = 0; // we need to render at least one mosaic char if 'esc' is received immediatly after mosac charset switch on
+    mosaic_pending = esc_pending = 0; // we need to render at least one mosaic char if 'esc' is received immediately after mosaic charset switch on
 
     if (boxed && memchr(&PageChar[row*40], start_box, 40) == 0)
     {

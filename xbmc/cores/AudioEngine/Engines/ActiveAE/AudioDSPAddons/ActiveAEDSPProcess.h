@@ -131,7 +131,7 @@ namespace ActiveAE
       CAEChannelInfo GetChannelLayout();
 
       /*!>
-       * Get the currently used output data fromat
+       * Get the currently used output data format
        * @note Is normally float
        */
       AEDataFormat GetDataFormat();
@@ -185,7 +185,7 @@ namespace ActiveAE
 
       /*!>
        * Returns the information class from the currently used dsp addon
-       * @return pointer to the info class, or unitialized class if no master processing present
+       * @return pointer to the info class, or uninitialized class if no master processing present
        */
       CActiveAEDSPModePtr GetActiveMasterMode() const;
 
@@ -210,7 +210,7 @@ namespace ActiveAE
       bool GetMasterModeStreamInfoString(std::string &strInfo);
 
       /*!>
-       * Get all dsp addon relavant information to detect processing mode type and base values.
+       * Get all dsp addon relevant information to detect processing mode type and base values.
        * @retval streamTypeUsed The current stream type processed by addon
        * @retval baseType The current base type type processed by addon
        * @retval iModeID The database identification code of the mode

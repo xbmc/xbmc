@@ -40,7 +40,7 @@ private:
   virtual void DrawCircle(int originX, int originY, int radius);
   virtual void BeginRender();
   virtual void EndRender();
-  virtual void UpdateVertexBuffer(Vertex *vertecies, unsigned count);
+  virtual void UpdateVertexBuffer(Vertex *vertices, unsigned count);
 
   void DrawRectangle(float x, float y, float x2, float y2, DWORD color);
   void DrawCircleEx(float originX, float originY, float radius, DWORD color);

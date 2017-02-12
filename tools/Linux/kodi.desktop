@@ -3,6 +3,7 @@ Version=1.0
 Name=Kodi
 GenericName=Media Center
 Comment=Manage and view your media
+Comment[ru]=Просмотр и управление мультимедиа
 Exec=kodi
 Icon=kodi
 Terminal=false

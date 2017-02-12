@@ -416,7 +416,7 @@ public:
 /**
  * COutput is embedded in CDecoder and embeds CMixer
  * The class has its own OpenGl context which is shared with render thread
- * COuput generated ready to render textures and passes them back to
+ * COutput generated ready to render textures and passes them back to
  * CDecoder
  */
 class COutput : private CThread

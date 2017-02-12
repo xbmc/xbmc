@@ -106,7 +106,7 @@ namespace PVR
 
     /*!
      * @brief Load all channels from the clients.
-     * @return True when updated succesfully, false otherwise.
+     * @return True when updated successfully, false otherwise.
      */
     bool LoadFromClients(void);
 

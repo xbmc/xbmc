@@ -26,7 +26,7 @@
 namespace PERIPHERALS
 {
   class CPeripheralJoystickEmulation : public CPeripheral,
-                                       public KEYBOARD::IKeyboardHandler
+                                       public KODI::KEYBOARD::IKeyboardHandler
   {
   public:
     CPeripheralJoystickEmulation(const PeripheralScanResult& scanResult, CPeripheralBus* bus);
@@ -35,8 +35,8 @@ namespace PERIPHERALS
 
     // implementation of CPeripheral
     virtual bool InitialiseFeature(const PeripheralFeature feature) override;
-    virtual void RegisterJoystickDriverHandler(JOYSTICK::IDriverHandler* handler, bool bPromiscuous) override;
-    virtual void UnregisterJoystickDriverHandler(JOYSTICK::IDriverHandler* handler) override;
+    virtual void RegisterJoystickDriverHandler(KODI::JOYSTICK::IDriverHandler* handler, bool bPromiscuous) override;
+    virtual void UnregisterJoystickDriverHandler(KODI::JOYSTICK::IDriverHandler* handler) override;
 
     // implementation of IKeyboardHandler
     virtual bool OnKeyPress(const CKey& key) override;
@@ -50,11 +50,11 @@ namespace PERIPHERALS
   private:
     struct KeyboardHandle
     {
-      KEYBOARD::IKeyboardHandler* handler;
+      KODI::KEYBOARD::IKeyboardHandler* handler;
       bool bPromiscuous;
     };
 
-    typedef std::map<JOYSTICK::IDriverHandler*, KeyboardHandle> KeyboardHandlers;
+    typedef std::map<KODI::JOYSTICK::IDriverHandler*, KeyboardHandle> KeyboardHandlers;
 
     KeyboardHandlers m_keyboardHandlers;
     CCriticalSection m_mutex;

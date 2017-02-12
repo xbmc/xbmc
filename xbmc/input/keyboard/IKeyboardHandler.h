@@ -21,6 +21,8 @@
 
 class CKey;
 
+namespace KODI
+{
 namespace KEYBOARD
 {
   /*!
@@ -48,4 +50,5 @@ namespace KEYBOARD
      */
     virtual void OnKeyRelease(const CKey& key) = 0;
   };
+}
 }

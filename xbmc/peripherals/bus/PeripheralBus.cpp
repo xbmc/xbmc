@@ -231,7 +231,7 @@ void CPeripheralBus::Process(void)
 
     // depending on bus implementation
     // needsPolling can be set properly
-    // only after unitial scan.
+    // only after initial scan.
     // if this is the case, bail out.
     if (!m_bNeedsPolling)
       break;

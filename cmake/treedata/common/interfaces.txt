@@ -4,6 +4,3 @@ xbmc/interfaces/generic         interfaces/generic
 xbmc/interfaces/info            interfaces/info
 xbmc/interfaces/json-rpc        interfaces/json-rpc
 xbmc/interfaces/json-rpc/schema interfaces/json-rpc/schema
-xbmc/interfaces/legacy          interfaces/legacy
-xbmc/interfaces/legacy/wsgi     interfaces/legacy/wsgi
-xbmc/interfaces/python          interfaces/python

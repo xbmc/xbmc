@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <node order="5" type="filter">
-  <label>20388</label>
-  <icon>DefaultStudios.png</icon>
-  <content>tvshows</content>
-  <group>studios</group>
+	<label>20388</label>
+	<icon>DefaultStudios.png</icon>
+	<content>tvshows</content>
+	<group>studios</group>
 </node>

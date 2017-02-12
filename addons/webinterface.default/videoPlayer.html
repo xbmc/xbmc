@@ -2,18 +2,29 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Chorus video</title>
+    <title>Chorus Video Player</title>
 
-    <link href="//vjs.zencdn.net/5.11.7/video-js.css" rel="stylesheet">
-    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <link href="lib/video-js/video-js.min.css" rel="stylesheet">
+    <link href="lib/video-js/plugins/videojs-chromecast/videojs-chromecast.css?01217" rel="stylesheet">
+
+    <script src="lib/jquery/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="lib/video-js/plugins/videojs-chromecast/cast_sender.js"></script>
 
     <script>
+
+        // Helpers.
         function getParameterByName(name) {
             name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
             var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
                     results = regex.exec(location.search);
             return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
         }
+        function getBaseURL() {
+            var parts = window.location.href.split('videoPlayer.html');
+            return parts[0];
+        }
+
+        // Vars.
         var src = getParameterByName('src'),
           player = getParameterByName('player'),
           yt = getParameterByName('yt'),
@@ -23,7 +34,7 @@
           height = '90%',
           id = "videoplayer";
 
-        // do we have something to play?
+        // Do we have something to play?
         if(src != ''){
 
             // Make the html5 player
@@ -35,16 +46,16 @@
                     "preload": "auto",
                     "autoplay": "autoplay",
                     "data-setup": JSON.stringify({}),
-                    "poster": bg
+                    "poster": getBaseURL() + bg
                 });
                 $player.append($('<source>', {
                     "type": 'video/mp4',
-                    "src": src
+                    "src": getBaseURL() + src
                 }));
                 $player.attr('width', width).attr('height', height);
             }
 
-            // Make the VLC player
+            // Make the VLC player.
             if(player == 'vlc'){
                 $player = $('<embed>', {
                     "type": "application/x-vlc-plugin",
@@ -57,7 +68,7 @@
                 });
             }
 
-            // Make the divX player
+            // Make the divX player.
             if(player == 'divx'){
                 $player = $('<object>', {
                     "id": id,
@@ -82,24 +93,30 @@
                 }));
             }
 
-
-            // Dom ready actions
+            // Dom ready actions.
             $(document).ready(function(){
 
                 // update download link
-                $('#download').attr('href', src);
+                $('.dl').attr('href', src);
 
-                // Switch player
+                $('#stream').click(function(e){
+                    e.preventDefault($(this).attr('href'));
+                    console.log($(this).attr('href'));
+                    window.location = $(this).attr('href');
+                });
+
+                // Switch player.
                 $('#switch-player')
                   .val(player)
                   .on('change', function(e){
-                    var url = 'videoPlayer.html?player=' + $(this).val() + '&src=' + src;
+                    var url = 'videoPlayer.html?player=' + $(this).val() + '&src=' + encodeURIComponent(src) + '&bg=' + encodeURIComponent(bg);
                     window.location = url;
                   });
 
             });
         }
         else if (yt != '') {
+            // If playing a youtube video.
             $player = $('<iframe>', {
                 width: width,
                 height: height,
@@ -108,8 +125,8 @@
                 allowfullscreen: 'allowfullscreen'
             });
             $(document).ready(function(){
-               $('switch-player').empty();
-               $('download').empty();
+               $('#switch-player').empty();
+               $('#download').empty();
             });
         }
     </script>
@@ -118,7 +135,11 @@
             height: 100%;
         }
         body {
-            margin: 0; background: #000; padding: 0; overflow: hidden;
+            margin: 0; background: #000; padding: 0; overflow: hidden; color: #333;
+        }
+        a {
+            color: #333;
+            text-decoration: none;
         }
         #player {
             margin: 0px 10px 0;
@@ -126,21 +147,19 @@
             margin-top: 1%;
         }
         #switch-player,
-        #download {
+        #actions {
             display: block;
-            color: #333;
             font: 12px Arial, Helvetica, "Nimbus Sans L", sans-serif;
             margin: 1px 0 0;
             padding: 5px 10px 0 0;
             float: right;
-            text-decoration: none;
         }
         #switch-player {
             float: left;
             padding: 5px 0 0 10px;
         }
         select:hover,
-        #download:hover {
+        .dl:hover {
             color: #aaa;
         }
         #videoplayer {
@@ -170,22 +189,37 @@
             height: 100%;
             border: none;
         }
+        .vjs-error .vjs-error-display .vjs-modal-dialog-content {
+            background: rgba(0,0,0,0.5);
+            height: auto;
+            font-size: 1.7em;
+            padding: 2% 15%;
+            top: auto;
+            bottom: 5%;
+        }
+        .vjs-error .vjs-error-display:before {
+            display: none;
+        }
     </style>
 </head>
 <body>
-<div class="player-wrapper">
-    <div id="player">
+    <div class="player-wrapper">
+        <div id="player">
+        </div>
+        <div id="player-actions">
+            <div id="actions">
+                <a href="" title="Force download of this video" class="dl" id="download" download>Download</a> -
+                <a href="" title="Navigate to video so the browser can try and native stream it. Some browsers may still download" class="dl" id="stream">Stream</a>
+            </div>
+            <select id="switch-player">
+                <option value="html5">html5</option>
+                <option value="vlc">VLC Web player</option>
+                <option value="divx">DivX Webplayer</option>
+            </select>
+        </div>
     </div>
-    <div id="player-actions">
-        <a href="" id="download" download>Download video</a>
-        <select id="switch-player">
-            <option value="html5">html5</option>
-            <option value="vlc">VLC Web player</option>
-            <option value="divx">DivX Webplayer</option>
-        </select>
-    </div>
-</div>
-<script> $('#player').prepend($player);</script>
-<script src="//vjs.zencdn.net/5.11.7/video.js"></script>
+    <script> $('#player').prepend($player);</script>
+    <script src="lib/video-js/video.min.js"></script>
+    <script src="lib/video-js/plugins/videojs-chromecast/videojs-chromecast.min.js"></script>
 </body>
 </html>

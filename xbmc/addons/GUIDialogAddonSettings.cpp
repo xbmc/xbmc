@@ -400,7 +400,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
               // convert mask qualifiers
               StringUtils::Replace(strMask, "$AUDIO", g_advancedSettings.GetMusicExtensions());
               StringUtils::Replace(strMask, "$VIDEO", g_advancedSettings.m_videoExtensions);
-              StringUtils::Replace(strMask, "$IMAGE", g_advancedSettings.m_pictureExtensions);
+              StringUtils::Replace(strMask, "$IMAGE", g_advancedSettings.GetPictureExtensions());
 #if defined(_WIN32_WINNT)
               StringUtils::Replace(strMask, "$EXECUTABLE", ".exe|.bat|.cmd|.py");
 #else
@@ -484,7 +484,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
               bool multiSelect = strMultiselect && strcmpi(strMultiselect, "true") == 0;
               if (multiSelect)
               {
-                // construct vector of addon IDs (IDs are comma seperated in single string)
+                // construct vector of addon IDs (IDs are comma separated in single string)
                 std::vector<std::string> addonIDs = StringUtils::Split(value, ',');
                 if (CGUIWindowAddonBrowser::SelectAddonID(types, addonIDs, false) == 1)
                 {
@@ -1001,7 +1001,7 @@ bool CGUIDialogAddonSettings::GetCondition(const std::string &condition, const i
 
   bool bCondition = true;
   bool bCompare = true;
-  bool bControlDependend = false;//flag if the condition depends on another control
+  bool bControlDependent = false;//flag if the condition depends on another control
   std::vector<std::string> conditionVec;
 
   if (condition.find("+") != std::string::npos)
@@ -1022,7 +1022,7 @@ bool CGUIDialogAddonSettings::GetCondition(const std::string &condition, const i
     if (!control2)
       continue;
       
-    bControlDependend = true; //once we are here - this condition depends on another control
+    bControlDependent = true; //once we are here - this condition depends on another control
 
     std::string value;
     switch (control2->GetControlType())
@@ -1073,7 +1073,7 @@ bool CGUIDialogAddonSettings::GetCondition(const std::string &condition, const i
     }
   }
   
-  if (!bControlDependend)//if condition doesn't depend on another control - try if its an infobool expression
+  if (!bControlDependent)//if condition doesn't depend on another control - try if its an infobool expression
   {
     bCondition = g_infoManager.EvaluateBool(condition);
   }

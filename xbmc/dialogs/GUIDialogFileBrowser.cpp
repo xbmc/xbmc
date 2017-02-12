@@ -653,12 +653,12 @@ bool CGUIDialogFileBrowser::ShowAndGetImage(const CFileItemList &items, const VE
 
 bool CGUIDialogFileBrowser::ShowAndGetImage(const VECSOURCES &shares, const std::string &heading, std::string &path)
 {
-  return ShowAndGetFile(shares, g_advancedSettings.m_pictureExtensions, heading, path, true); // true for use thumbs
+  return ShowAndGetFile(shares, g_advancedSettings.GetPictureExtensions(), heading, path, true); // true for use thumbs
 }
 
 bool CGUIDialogFileBrowser::ShowAndGetImageList(const VECSOURCES &shares, const std::string &heading, std::vector<std::string> &path)
 {
-  return ShowAndGetFileList(shares, g_advancedSettings.m_pictureExtensions, heading, path, true); // true for use thumbs
+  return ShowAndGetFileList(shares, g_advancedSettings.GetPictureExtensions(), heading, path, true); // true for use thumbs
 }
 
 bool CGUIDialogFileBrowser::ShowAndGetDirectory(const VECSOURCES &shares, const std::string &heading, std::string &path, bool bWriteOnly)

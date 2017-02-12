@@ -19,7 +19,7 @@
 from lib.common import log
 
 def compare_version(version_installed, versionlist):
-    # Create seperate version lists
+    # Create separate version lists
     versionlist_stable = versionlist['releases']['stable']
     versionlist_rc = versionlist['releases']['releasecandidate']
     versionlist_beta = versionlist['releases']['beta']

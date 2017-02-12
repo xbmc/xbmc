@@ -66,7 +66,7 @@ struct MONITOR_DETAILS
 
 #define GC_ALLGESTURES 0x00000001
 
-// Zoom Gesture Confiration Flags
+// Zoom Gesture Configuration Flags
 #define GC_ZOOM 0x00000001
 
 // Pan Gesture Configuration Flags

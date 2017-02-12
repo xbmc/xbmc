@@ -49,6 +49,11 @@ class XBPython;
 class CDataCacheCore;
 class CSettings;
 
+namespace GAME
+{
+  class CGameServices;
+}
+
 class CServiceBroker
 {
 public:
@@ -62,5 +67,6 @@ public:
   static CDataCacheCore& GetDataCacheCore();
   static PLAYLIST::CPlayListPlayer& GetPlaylistPlayer();
   static CSettings& GetSettings();
+  static GAME::CGameServices& GetGameServices();
   static bool IsBinaryAddonCacheUp();
 };

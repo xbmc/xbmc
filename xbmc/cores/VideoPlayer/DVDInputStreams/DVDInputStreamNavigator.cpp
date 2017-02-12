@@ -269,7 +269,7 @@ int CDVDInputStreamNavigator::Read(uint8_t* buf, int buf_size)
   return iBytesRead;
 }
 
-// not working yet, but it is the recommanded way for seeking
+// not working yet, but it is the recommended way for seeking
 int64_t CDVDInputStreamNavigator::Seek(int64_t offset, int whence)
 {
   if(whence == SEEK_POSSIBLE)
@@ -400,13 +400,13 @@ int CDVDInputStreamNavigator::ProcessBlock(uint8_t* dest_buffer, int* read)
       // Player applications should inform their audio decoder to switch channels
       {
 
-        //dvdnav_get_audio_logical_stream actually does the oposite to the docs..
+        //dvdnav_get_audio_logical_stream actually does the opposite to the docs..
         //taking a audiostream as given on dvd, it gives the physical stream that
         //refers to in the mpeg file
 
         dvdnav_audio_stream_change_event_t* event = (dvdnav_audio_stream_change_event_t*)buf;
 
-        //wroong... stupid docs..
+        //wrong... stupid docs..
         //event->logical = dvdnav_get_audio_logical_stream(m_dvdnav, event->physical);
         //logical should actually be set to the (vm->state).AST_REG
 
@@ -483,7 +483,7 @@ int CDVDInputStreamNavigator::ProcessBlock(uint8_t* dest_buffer, int* read)
 
           if (times)
           {
-            // the times array stores the end timestampes of the chapters, e.g., times[0] stores the position/beginning of chapter 2
+            // the times array stores the end timestamps of the chapters, e.g., times[0] stores the position/beginning of chapter 2
             m_mapTitleChapters[m_iTitle][1] = 0;
             for (int i = 0; i < entries - 1; ++i)
             {

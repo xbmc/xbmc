@@ -27,6 +27,7 @@
 
 #include <vector>
 
+using namespace KODI;
 using namespace JOYSTICK;
 
 #define ANALOG_DIGITAL_THRESHOLD  0.5f

@@ -272,7 +272,7 @@ XBMCController *g_xbmcController;
   //3 finger single tap
   [self addTapGesture:3];
 
-  //1 finger single long tap - right mouse - alernative
+  //1 finger single long tap - right mouse - alternative
   UILongPressGestureRecognizer *singleFingerSingleLongTap = [[UILongPressGestureRecognizer alloc]
     initWithTarget:self action:@selector(handleSingleFingerSingleLongTap:)];  
 
@@ -521,7 +521,7 @@ XBMCController *g_xbmcController;
 - (IBAction)handleTap:(UIGestureRecognizer *)sender
 {
   //Allow the tap gesture during init
-  //(for allowing the user to tap away any messagboxes during init)
+  //(for allowing the user to tap away any messageboxes during init)
   if( ([m_glView isReadyToRun] && [sender numberOfTouches] == 1) || [m_glView isXBMCAlive])
   {
     CGPoint point = [sender locationOfTouch:0 inView:m_glView];
@@ -1005,7 +1005,7 @@ XBMCController *g_xbmcController;
         }
       }
     }
-    // these proprity keys are ios5+ only
+    // these property keys are ios5+ only
     NSNumber *elapsed = [item objectForKey:@"elapsed"];
     if (elapsed)
       [dict setObject:elapsed forKey:MPNowPlayingInfoPropertyElapsedPlaybackTime];
@@ -1020,7 +1020,7 @@ XBMCController *g_xbmcController;
       [dict setObject:total forKey:MPNowPlayingInfoPropertyPlaybackQueueCount];
   }
   /*
-   other properities can be set:
+   other properties can be set:
    MPMediaItemPropertyAlbumTrackCount
    MPMediaItemPropertyComposer
    MPMediaItemPropertyDiscCount

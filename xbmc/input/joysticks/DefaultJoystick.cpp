@@ -31,6 +31,7 @@
 
 #define ANALOG_DIGITAL_THRESHOLD   0.5f
 
+using namespace KODI;
 using namespace JOYSTICK;
 
 CDefaultJoystick::CDefaultJoystick(void) :

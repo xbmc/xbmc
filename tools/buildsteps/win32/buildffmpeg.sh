@@ -81,7 +81,7 @@ do_removeOption() {
 do_getFFmpegConfig
 
 if [[ "$tools" = "msvc" ]]; then
-  # this experimental feature for debuging purpose
+  # this experimental feature for debugging purpose
   do_removeOption "--enable-gnutls"
   do_removeOption "--disable-debug"
   do_addOption "--disable-gnutls"

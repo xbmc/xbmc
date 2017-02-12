@@ -556,7 +556,7 @@ bool CPVRTimers::GetRootDirectory(const CPVRTimersPath &path, CFileItemList &ite
 {
   CFileItemPtr item(new CFileItem(CPVRTimersPath::PATH_ADDTIMER, false));
   item->SetLabel(g_localizeStrings.Get(19026)); // "Add timer..."
-  item->SetLabelPreformated(true);
+  item->SetLabelPreformatted(true);
   item->SetSpecialSort(SortSpecialOnTop);
   items.Add(item);
 

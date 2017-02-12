@@ -22,6 +22,8 @@
 #include <map>
 #include <string>
 
+namespace KODI
+{
 namespace JOYSTICK
 {
   class CDriverPrimitive;
@@ -103,11 +105,22 @@ namespace JOYSTICK
      * when mapping ends and immediately sends Volume Down actions.
      *
      * The fix is to allow implementers to wait until all axes are motionless
-     * before deattaching themselves.
+     * before detaching themselves.
      *
      * Called in the same thread as \ref IButtonMapper::MapPrimitive.
      */
     virtual void OnEventFrame(const IButtonMap* buttonMap, bool bMotion) = 0;
+
+    /*!
+     * \brief Called when an axis has been detected after mapping began
+     *
+     * \param axisIndex The index of the axis being discovered
+     *
+     * Some joystick drivers don't report an initial value for analog axes.
+     *
+     * Called in the same thread as \ref IButtonMapper::MapPrimitive.
+     */
+    virtual void OnLateAxis(const IButtonMap* buttonMap, unsigned int axisIndex) = 0;
 
     // Button map callback interface
     void SetButtonMapCallback(const std::string& deviceName, IButtonMapCallback* callback) { m_callbacks[deviceName] = callback; }
@@ -117,4 +130,5 @@ namespace JOYSTICK
   private:
     std::map<std::string, IButtonMapCallback*> m_callbacks;
   };
+}
 }

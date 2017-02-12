@@ -38,6 +38,7 @@
 #include <string>
 #include <vector>
 
+class CGUIDialogExtendedProgressBar;
 class CGUIDialogProgressBarHandle;
 class CStopWatch;
 class CAction;
@@ -322,7 +323,7 @@ namespace PVR
      * @brief Switch to the given channel.
      * @param channel The channel to switch to.
      * @param bPreview True to show a preview, false otherwise.
-     * @return Trrue if the switch was successful, false otherwise.
+     * @return True if the switch was successful, false otherwise.
      */
     bool PerformChannelSwitch(const CPVRChannelPtr &channel, bool bPreview);
 
@@ -530,16 +531,16 @@ namespace PVR
     void SearchMissingChannelIcons(void);
 
     /*!
-     * @brief Check if channel is parental locked. Ask for PIN if neccessary.
+     * @brief Check if channel is parental locked. Ask for PIN if necessary.
      * @param channel The channel to open.
      * @return True if channel is unlocked (by default or PIN unlocked), false otherwise.
      */
     bool CheckParentalLock(const CPVRChannelPtr &channel);
 
     /*!
-     * @brief Check if parental lock is overriden at the given moment.
+     * @brief Check if parental lock is overridden at the given moment.
      * @param channel The channel to open.
-     * @return True if parental lock is overriden, false otherwise.
+     * @return True if parental lock is overridden, false otherwise.
      */
     bool IsParentalLocked(const CPVRChannelPtr &channel);
 
@@ -602,6 +603,13 @@ namespace PVR
      * @param state the event
      */
     void PublishEvent(PVREvent state);
+
+    /*!
+     * @brief Show an extended progress bar dialog.
+     * @param strTitle the title for the dialog.
+     * @return the handle that can be used to control the progress dialog.
+     */
+    CGUIDialogProgressBarHandle* ShowProgressDialog(const std::string &strTitle) const;
 
   protected:
     /*!
@@ -695,6 +703,7 @@ namespace PVR
     bool                            m_bFirstStart;                 /*!< true when the PVR manager was started first, false otherwise */
     bool                            m_bIsSwitchingChannels;        /*!< true while switching channels */
     bool                            m_bEpgsCreated;                /*!< true if epg data for channels has been created */
+    CGUIDialogExtendedProgressBar * m_progressBar;                 /*!< extended progress dialog instance pointer */
     CGUIDialogProgressBarHandle *   m_progressHandle;              /*!< progress dialog that is displayed while the pvrmanager is loading */
 
     CCriticalSection                m_managerStateMutex;

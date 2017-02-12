@@ -79,6 +79,7 @@ public:
 
   void        AnnounceOnLostDevice();
   void        AnnounceOnResetDevice();
+  void        HandleOnResetDevice();
   void        StartLostDeviceTimer();
   void        StopLostDeviceTimer();
   
@@ -119,6 +120,8 @@ protected:
   CCriticalSection             m_resourceSection;
   std::vector<IDispResource*>  m_resources;
   CTimer                       m_lostDeviceTimer;
+  bool                         m_delayDispReset;
+  XbmcThreads::EndTime         m_dispResetTimer;
 };
 
 #endif

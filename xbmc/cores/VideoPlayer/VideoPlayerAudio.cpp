@@ -210,7 +210,7 @@ void CVideoPlayerAudio::UpdatePlayerInfo()
 {
   std::ostringstream s;
   s << "aq:"     << std::setw(2) << std::min(99,m_messageQueue.GetLevel()) << "%";
-  s << ", Kb/s:" << std::fixed << std::setprecision(2) << (double)GetAudioBitrate() / 1024.0;
+  s << ", Kb/s:" << std::fixed << std::setprecision(2) << (double)m_audioStats.GetBitrate() / 1024.0;
 
   //print the inverse of the resample ratio, since that makes more sense
   //if the resample ratio is 0.5, then we're playing twice as fast
@@ -434,7 +434,7 @@ void CVideoPlayerAudio::Process()
         if (m_streaminfo.codec == AV_CODEC_ID_FLAC && m_streaminfo.channellayout)
           audioframe.format.m_channelLayout = CAEUtil::GetAEChannelLayout(m_streaminfo.channellayout);
 
-        // we have succesfully decoded an audio frame, setup renderer to match
+        // we have successfully decoded an audio frame, setup renderer to match
         if (!m_dvdAudio.IsValidFormat(audioframe))
         {
           if(m_speed)
@@ -616,11 +616,6 @@ std::string CVideoPlayerAudio::GetPlayerInfo()
 {
   CSingleLock lock(m_info_section);
   return m_info.info;
-}
-
-int CVideoPlayerAudio::GetAudioBitrate()
-{
-  return (int)m_audioStats.GetBitrate();
 }
 
 int CVideoPlayerAudio::GetAudioChannels()

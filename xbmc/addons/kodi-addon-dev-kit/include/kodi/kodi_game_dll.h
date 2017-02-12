@@ -233,7 +233,7 @@ GAME_ERROR CheatReset(void);
  *
  * \return the error, or GAME_ERROR_NO_ERROR if data was set to a valid buffer
  */
-GAME_ERROR GetMemory(GAME_MEMORY type, const uint8_t** data, size_t* size);
+GAME_ERROR GetMemory(GAME_MEMORY type, uint8_t** data, size_t* size);
 
 /*!
  * \brief Set a cheat code

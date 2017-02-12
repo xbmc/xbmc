@@ -66,7 +66,7 @@ NPT_SET_LOCAL_LOGGER("xbmc.upnp")
 DLNA_ORG_PS = 'DLNA.ORG_PS'
 DLNA_ORG_PS_VAL = '1'
 
-# Convertion Indicator
+# Conversion Indicator
 #    1 transcoded
 #    0 not transcoded
 DLNA_ORG_CI = 'DLNA.ORG_CI'

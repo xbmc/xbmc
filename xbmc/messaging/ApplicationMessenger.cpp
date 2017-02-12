@@ -130,8 +130,8 @@ int CApplicationMessenger::SendMsg(ThreadMessage&& message, bool wait)
     m_vecMessages.push(msg);
   lock.Leave();  // this releases the lock on the vec of messages and
                  //   allows the ProcessMessage to execute and therefore
-                 //   delete the message itself. Therefore any accesss
-                 //   of the message itself after this point consittutes
+                 //   delete the message itself. Therefore any access
+                 //   of the message itself after this point constitutes
                  //   a race condition (yarc - "yet another race condition")
                  //
   if (waitEvent) // ... it just so happens we have a spare reference to the

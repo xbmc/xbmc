@@ -115,7 +115,7 @@ public:
   typedef std::map<std::string, CDownloadJob> JobMap;
 
 private:
-  // private construction, and no assignements; use the provided singleton methods
+  // private construction, and no assignments; use the provided singleton methods
   CAddonInstaller();
   CAddonInstaller(const CAddonInstaller&);
   CAddonInstaller const& operator=(CAddonInstaller const&);
@@ -191,7 +191,7 @@ private:
 class CAddonUnInstallJob : public CFileOperationJob
 {
 public:
-  CAddonUnInstallJob(const ADDON::AddonPtr &addon);
+  CAddonUnInstallJob(const ADDON::AddonPtr &addon, bool removeData);
 
   virtual bool DoWork();
 
@@ -199,4 +199,5 @@ private:
   void ClearFavourites();
 
   ADDON::AddonPtr m_addon;
+  bool m_removeData;
 };

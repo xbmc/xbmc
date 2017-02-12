@@ -109,7 +109,7 @@ namespace XbmcCommons
     /**
      * Construct a buffer given an externally managed memory buffer.
      * The ownership of the buffer is assumed to be the code that called
-     * this constructor, therefore the Buffer descrutor will not free it.
+     * this constructor, therefore the Buffer destructor will not free it.
      *
      * The newly constructed buffer is considered empty and is ready to
      * have data written into it.
@@ -125,7 +125,7 @@ namespace XbmcCommons
 
     /**
      * Construct a buffer buffer using the size buffer provided. The
-     * buffer will be internally managed and potentiall shared with 
+     * buffer will be internally managed and potentially shared with 
      * other Buffer instances. It will be freed upon destruction of
      * the last Buffer that references it.
      */

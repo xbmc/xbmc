@@ -87,6 +87,7 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 
+#include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/channels/PVRRadioRDSInfoTag.h"
@@ -2063,12 +2064,12 @@ const infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
 ///   \table_row3{   <b>`VideoPlayer.ChannelName`</b>,
 ///                  \anchor VideoPlayer_ChannelName
 ///                  _string_,
-///     Name of the curently tuned channel (PVR).
+///     Name of the currently tuned channel (PVR).
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.ChannelNumber`</b>,
 ///                  \anchor VideoPlayer_ChannelNumber
 ///                  _string_,
-///     Number of the curently tuned channel (PVR).
+///     Number of the currently tuned channel (PVR).
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.SubChannelNumber`</b>,
 ///                  \anchor VideoPlayer_SubChannelNumber
@@ -2083,7 +2084,7 @@ const infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
 ///   \table_row3{   <b>`VideoPlayer.ChannelGroup`</b>,
 ///                  \anchor VideoPlayer_ChannelGroup
 ///                  _string_,
-///     Group of the curently tuned channel (PVR).
+///     Group of the currently tuned channel (PVR).
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.ParentalRating`</b>,
 ///                  \anchor VideoPlayer_ParentalRating
@@ -2130,8 +2131,10 @@ const infomap videoplayer[] =    {{ "title",            VIDEOPLAYER_TITLE },
                                   { "videocodec",       VIDEOPLAYER_VIDEO_CODEC },
                                   { "videoresolution",  VIDEOPLAYER_VIDEO_RESOLUTION },
                                   { "videoaspect",      VIDEOPLAYER_VIDEO_ASPECT },
+                                  { "videobitrate",     VIDEOPLAYER_VIDEO_BITRATE },
                                   { "audiocodec",       VIDEOPLAYER_AUDIO_CODEC },
                                   { "audiochannels",    VIDEOPLAYER_AUDIO_CHANNELS },
+                                  { "audiobitrate",     VIDEOPLAYER_AUDIO_BITRATE },
                                   { "audiolanguage",    VIDEOPLAYER_AUDIO_LANG },
                                   { "hasteletext",      VIDEOPLAYER_HASTELETEXT },
                                   { "lastplayed",       VIDEOPLAYER_LASTPLAYED },
@@ -4409,7 +4412,7 @@ const infomap playlist[] =       {{ "length",           PLAYLIST_LENGTH },
 ///   \table_row3{   <b>`Pvr.TimeShiftProgress`</b>,
 ///                  \anchor Pvr_TimeShiftProgress
 ///                  _integer_,
-///     Returns the position of currently timeshifted title on TV as interger
+///     Returns the position of currently timeshifted title on TV as integer
 ///   }
 ///   \table_row3{   <b>`Pvr.TVNowRecordingTitle`</b>,
 ///                  \anchor Pvr_TVNowRecordingTitle
@@ -4521,6 +4524,11 @@ const infomap playlist[] =       {{ "length",           PLAYLIST_LENGTH },
 ///                  _boolean_,
 ///     Returns true if there are radio timers present who currently not do recording
 ///   }
+///   \table_row3{   <b>`Pvr.ChannelNumberInput`</b>,
+///                  \anchor Pvr_ChannelNumberInput
+///                  _string_,
+///     Returns the currently entered channel number while in numeric channel input mode, an empty string otherwise
+///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
@@ -4604,7 +4612,8 @@ const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING
                                   { "hasnonrecordingtvtimer",     PVR_HAS_NONRECORDING_TV_TIMER },
                                   { "isrecordingradio",           PVR_IS_RECORDING_RADIO },
                                   { "hasradiotimer",              PVR_HAS_RADIO_TIMER },
-                                  { "hasnonrecordingradiotimer",  PVR_HAS_NONRECORDING_RADIO_TIMER }};
+                                  { "hasnonrecordingradiotimer",  PVR_HAS_NONRECORDING_RADIO_TIMER },
+                                  { "channelnumberinput",         PVR_CHANNEL_NUMBER_INPUT }};
 
 /// \page modules__General__List_of_gui_access
 /// \section modules__General__List_of_gui_access_ADSP ADSP
@@ -4664,7 +4673,7 @@ const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING
 ///   \table_row3{   <b>`ADSP.MasterName`</b>,
 ///                  \anchor ADSP_MasterName
 ///                  _string_,
-///     Name of the curently selected and used master dsp mode
+///     Name of the currently selected and used master dsp mode
 ///   }
 ///   \table_row3{   <b>`ADSP.MasterInfo`</b>,
 ///                  \anchor ADSP_MasterInfo
@@ -4679,7 +4688,7 @@ const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING
 ///   \table_row3{   <b>`ADSP.MasterOverrideIcon`</b>,
 ///                  \anchor ADSP_MasterOverrideIcon
 ///                  _path_,
-///     Icon to overrite Kodi's codec icon with one of add-on\, e.g. Dolby
+///     Icon to override Kodi's codec icon with one of add-on\, e.g. Dolby
 ///     Digital EX on Dolby Digital
 ///   }
 /// \table_end
@@ -4748,7 +4757,7 @@ const infomap adsp[] =           {{ "isactive",                 ADSP_IS_ACTIVE }
 ///   \table_row3{   <b>`RDS.GetLine(number)`</b>,
 ///                  \anchor RDS_GetLine
 ///                  _string_,
-///     Returns the last sended RDS text messages on givern number\, 0 is the
+///     Returns the last sended RDS text messages on given number\, 0 is the
 ///     last and 4 rows are supported (0-3)
 ///   }
 ///   \table_row3{   <b>`RDS.Title`</b>,
@@ -5004,13 +5013,13 @@ const infomap adsp[] =           {{ "isactive",                 ADSP_IS_ACTIVE }
 ///   \table_row3{   <b>`RDS.EmailHotline`</b>,
 ///                  \anchor RDS_EmailHotline
 ///                  _string_,
-///     The email adress of the radio stations hotline (if available)\n
+///     The email address of the radio stations hotline (if available)\n
 ///     (Only be available on RadiotextPlus)
 ///   }
 ///   \table_row3{   <b>`RDS.EmailStudio`</b>,
 ///                  \anchor RDS_EmailStudio
 ///                  _string_,
-///     The email adress of the radio stations studio (if available)\n
+///     The email address of the radio stations studio (if available)\n
 ///     (Only be available on RadiotextPlus)
 ///   }
 /// \table_end
@@ -5919,6 +5928,9 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case PVR_RADIO_NEXT_RECORDING_DATETIME:
     g_PVRManager.TranslateCharInfo(info, strLabel);
     break;
+  case PVR_CHANNEL_NUMBER_INPUT:
+    strLabel = CPVRGUIActions::GetInstance().GetChannelNumberInputHandler().GetChannelNumberAsString();
+    break;
   case ADSP_ACTIVE_STREAM_TYPE:
   case ADSP_DETECTED_STREAM_TYPE:
   case ADSP_MASTER_NAME:
@@ -6164,6 +6176,24 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
     {
       if (m_audioInfo.channels > 0)
         strLabel = StringUtils::Format("%i", m_audioInfo.channels);
+    }
+    break;
+  case VIDEOPLAYER_AUDIO_BITRATE:
+    if(g_application.m_pPlayer->IsPlaying())
+    {
+      std::string strBitrate = "";
+      if (m_audioInfo.bitrate > 0)
+        strBitrate = StringUtils::Format("%li", lrint(static_cast<double>(m_audioInfo.bitrate) / 1000.0));
+      return strBitrate;
+    }
+    break;
+  case VIDEOPLAYER_VIDEO_BITRATE:
+    if(g_application.m_pPlayer->IsPlaying())
+    {
+      std::string strBitrate = "";
+      if (m_videoInfo.bitrate > 0)
+        strBitrate = StringUtils::Format("%li", lrint(static_cast<double>(m_videoInfo.bitrate) / 1000.0));
+      return strBitrate;
     }
     break;
   case VIDEOPLAYER_AUDIO_LANG:
@@ -7657,9 +7687,22 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
       case CONTAINER_ISUPDATING:
       case CONTAINER_HAS_PARENT_ITEM:
         {
-          auto activeContainer = GetActiveContainer(info.GetData1(), contextWindow);
-          if (activeContainer)
-            bReturn = activeContainer->GetCondition(condition, info.GetData2());
+          if (info.GetData1())
+          {
+            auto *window = GetWindowWithCondition(contextWindow, 0);
+            if (window)
+            {
+              auto control = window->GetControl(info.GetData1());
+              if (control)
+                bReturn = control->GetCondition(condition, info.GetData2());
+            }
+          }
+          else
+          {
+            auto activeContainer = GetActiveContainer(0, contextWindow);
+            if (activeContainer)
+              bReturn = activeContainer->GetCondition(condition, info.GetData2());
+          }
         }
         break;
       case CONTAINER_HAS_FOCUS:

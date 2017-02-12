@@ -40,7 +40,6 @@
 #include "pvr/PVRManager.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimers.h"
-#include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/Variant.h"
 
@@ -180,9 +179,13 @@ int CPVRClients::GetFirstConnectedClientID(void)
 int CPVRClients::EnabledClientAmount(void) const
 {
   int iReturn(0);
-  CSingleLock lock(m_critSection);
+  PVR_CLIENTMAP clientMap;
+  {
+    CSingleLock lock(m_critSection);
+    clientMap = m_clientMap;
+  }
 
-  for (const auto &client : m_clientMap)
+  for (const auto &client : clientMap)
     if (!CAddonMgr::GetInstance().IsAddonDisabled(client.second->ID()))
       ++iReturn;
 
@@ -191,7 +194,13 @@ int CPVRClients::EnabledClientAmount(void) const
 
 bool CPVRClients::HasEnabledClients(void) const
 {
-  for (const auto &client : m_clientMap)
+  PVR_CLIENTMAP clientMap;
+  {
+    CSingleLock lock(m_critSection);
+    clientMap = m_clientMap;
+  }
+
+  for (const auto &client : clientMap)
     if (!CAddonMgr::GetInstance().IsAddonDisabled(client.second->ID()))
       return true;
   return false;
@@ -199,8 +208,9 @@ bool CPVRClients::HasEnabledClients(void) const
 
 bool CPVRClients::StopClient(const AddonPtr &client, bool bRestart)
 {
-  /* stop playback */
-  CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_STOP);
+  /* stop playback if needed */
+  if (IsPlaying())
+    CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_STOP);
 
   CSingleLock lock(m_critSection);
   int iId = GetClientId(client);
@@ -210,8 +220,13 @@ bool CPVRClients::StopClient(const AddonPtr &client, bool bRestart)
     if (bRestart)
       mappedClient->ReCreate();
     else
-      mappedClient->Destroy();
+    {
+      const auto it = m_clientMap.find(iId);
+      if (it != m_clientMap.end())
+        m_clientMap.erase(it);
 
+      mappedClient->Destroy();
+    }
     return true;
   }
 
@@ -1526,7 +1541,7 @@ void CPVRClients::ConnectionStateChange(CPVRClient *client, std::string &strConn
     strMsg = g_localizeStrings.Get(iMsg);
 
   // Notify user.
-  if (bNotify && !CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRMANAGER_HIDECONNECTIONLOSTWARNING))
+  if (bNotify)
     CGUIDialogKaiToast::QueueNotification(bError ? CGUIDialogKaiToast::Error : CGUIDialogKaiToast::Info, client->Name().c_str(),
                                           strMsg, 5000, true);
 

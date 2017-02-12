@@ -50,7 +50,6 @@
 #endif
 
 #ifdef TARGET_WINDOWS
-#pragma comment(lib, "python27.lib")
 extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
 #else
 #define fopen_utf8 fopen
@@ -187,7 +186,7 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
   URIUtils::RemoveSlashAtEnd(scriptDir);
   addPath(scriptDir);
 
-  // add all addon module dependecies to path
+  // add all addon module dependencies to path
   if (m_addon)
   {
     std::set<std::string> paths;
@@ -398,7 +397,7 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
 
   // run the gc before finishing
   //
-  // if the script exited by throwing a SystemExit excepton then going back
+  // if the script exited by throwing a SystemExit exception then going back
   // into the interpreter causes this python bug to get hit:
   //    http://bugs.python.org/issue10582
   // and that causes major failures. So we are not going to go back in

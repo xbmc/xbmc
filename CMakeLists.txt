@@ -43,6 +43,7 @@ option(ENABLE_UPNP        "Enable UPnP support?" ON)
 option(ENABLE_NONFREE     "Enable non-free components?" ON)
 option(ENABLE_AIRTUNES    "Enable AirTunes support?" ON)
 option(ENABLE_OPTICAL     "Enable optical support?" ON)
+option(ENABLE_PYTHON      "Enable python support?" ON)
 # use ffmpeg from depends or system
 option(ENABLE_INTERNAL_FFMPEG "Enable internal ffmpeg?" OFF)
 if(UNIX)
@@ -102,7 +103,7 @@ list(APPEND DEPLIBS ${CMAKE_THREAD_LIBS_INIT})
 
 # Required dependencies
 set(required_deps Sqlite3 FreeType PCRE Cpluff LibDvd
-                  TinyXML Python Yajl
+                  TinyXML Yajl Cdio
                   Lzo2 Fribidi TagLib FFMPEG CrossGUID)
 if(NOT WIN32)
   list(APPEND required_deps ZLIB)
@@ -116,7 +117,7 @@ endif()
 # Optional dependencies
 set(optional_deps MicroHttpd MySqlClient SSH XSLT
                   Alsa UDEV DBus Avahi MDNS SmbClient CCache
-                  PulseAudio VDPAU VAAPI Bluetooth CAP)
+                  PulseAudio VDPAU VAAPI Bluetooth CAP Python)
 
 # Required, dyloaded deps
 set(required_dyload Curl ASS)
@@ -170,7 +171,6 @@ endif()
 
 if(ENABLE_OPTICAL)
   list(APPEND DEP_DEFINES -DHAS_DVD_DRIVE)
-  core_require_dep(Cdio)
 endif()
 
 if(ENABLE_LIRC)
@@ -193,7 +193,7 @@ endif()
 
 if(NOT WIN32)
   core_optional_dep(OpenGl)
-  if(OPENGL_FOUND)
+  if(OPENGL_FOUND AND NOT APPLE)
     if(ENABLE_MIR)
       core_require_dep(Mir ENABLE_MIR)
       core_optional_dep(LibDRM ENABLE_MIR)
@@ -225,7 +225,6 @@ if(CORE_SYSTEM_NAME STREQUAL android OR CORE_SYSTEM_NAME STREQUAL linux)
 elseif(CORE_SYSTEM_NAME STREQUAL rbpi)
   core_require_dep(MMAL)
 endif()
-
 
 # Compile Info
 add_custom_command(OUTPUT ${CORE_BUILD_DIR}/xbmc/CompileInfo.cpp
@@ -306,9 +305,6 @@ endif()
 add_library(lib${APP_NAME_LC} STATIC $<TARGET_OBJECTS:compileinfo>)
 set_target_properties(lib${APP_NAME_LC} PROPERTIES PREFIX "")
 add_dependencies(lib${APP_NAME_LC} libcpluff ffmpeg dvdnav crossguid)
-
-# Codegen
-add_subdirectory(${CMAKE_SOURCE_DIR}/xbmc/interfaces/swig build/swig)
 
 # Other files (IDE)
 set(OTHER_FILES cmake/README.md)

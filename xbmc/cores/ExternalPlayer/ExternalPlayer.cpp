@@ -721,7 +721,7 @@ void CExternalPlayer::GetCustomRegexpReplacers(TiXmlElement *pRootElement,
         CLog::Log(LOGDEBUG,"  Registering replacer:");
         CLog::Log(LOGDEBUG,"    Match:[%s] Pattern:[%s] Replacement:[%s]", strMatch.c_str(), strPat.c_str(), strRep.c_str());
         CLog::Log(LOGDEBUG,"    Global:[%s] Stop:[%s]", bGlobal?"true":"false", bStop?"true":"false");
-        // keep literal commas since we use comma as a seperator
+        // keep literal commas since we use comma as a separator
         StringUtils::Replace(strMatch, ",",",,");
         StringUtils::Replace(strPat, ",",",,");
         StringUtils::Replace(strRep, ",",",,");

@@ -66,24 +66,24 @@ public:
     */
   const CProfile& GetMasterProfile() const;
 
-  /*! \brief Retreive the current profile
+  /*! \brief Retrieve the current profile
     \return const reference to the current profile
     */
   const CProfile& GetCurrentProfile() const;
 
-  /*! \brief Retreive the profile from an index
+  /*! \brief Retrieve the profile from an index
     \param unsigned index of the profile to retrieve
     \return const pointer to the profile, NULL if the index is invalid
     */
   const CProfile* GetProfile(size_t index) const;
 
-  /*! \brief Retreive the profile from an index
+  /*! \brief Retrieve the profile from an index
     \param unsigned index of the profile to retrieve
     \return pointer to the profile, NULL if the index is invalid
     */
   CProfile* GetProfile(size_t index);
 
-  /*! \brief Retreive index of a particular profile by name
+  /*! \brief Retrieve index of a particular profile by name
     \param name name of the profile index to retrieve
     \return index of this profile, -1 if invalid.
     */
@@ -124,7 +124,7 @@ public:
     */
   void LoadMasterProfileForLogin();
 
-  /*! \brief Retreive the last used profile index
+  /*! \brief Retrieve the last used profile index
     \return the last used profile that logged in.  Does not count the
     master user during login.
     */

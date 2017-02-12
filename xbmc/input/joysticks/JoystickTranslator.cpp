@@ -20,6 +20,7 @@
 
 #include "JoystickTranslator.h"
 
+using namespace KODI;
 using namespace JOYSTICK;
 
 const char* CJoystickTranslator::HatStateToString(HAT_STATE state)

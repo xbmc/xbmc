@@ -69,7 +69,7 @@ std::shared_ptr<CIMXCodec> g_IMXCodec;
 
 std::list<VpuFrameBuffer*> m_recycleBuffers;
 
-// Number of fb pages used for paning
+// Number of fb pages used for panning
 const int CIMXContext::m_fbPages = 3;
 
 // Experiments show that we need at least one more (+1) VPU buffer than the min value returned by the VPU
@@ -133,7 +133,7 @@ bool CIMXCodec::VpuAllocBuffers(VpuMemInfo *pMemBlock)
       m_decMemInfo.virtMem[m_decMemInfo.nVirtNum-1] = ptr;
     }
     else
-    { // Allocate contigous mem for DMA
+    { // Allocate contiguous mem for DMA
       vpuMem.nSize = size;
       if(!VpuAlloc(&vpuMem))
         return false;
@@ -903,7 +903,7 @@ void CIMXCodec::Process()
     inData.pPhyAddr = NULL;
     inData.pVirAddr = task->demux.pData;
 
-    // some streams have problem with getting intial info after seek into (during playback start).
+    // some streams have problem with getting initial info after seek into (during playback start).
     // feeding VPU with extra data helps
     if (!m_vpuFrameBuffers.size() && !task->IsEmpty() && m_decRet & VPU_DEC_NO_ENOUGH_INBUF)
       AddExtraData(&inData, true);
@@ -1670,7 +1670,7 @@ void CIMXContext::PrepareTask(IPUTaskPtr &ipu, CRect srcRect, CRect dstRect)
   // the source rect otherwise the IPU task will fail
   // This is under the assumption that the srcRect is always
   // inside the input buffer rect. If that is not the case
-  // it needs to be projected to the ouput buffer rect as well
+  // it needs to be projected to the output buffer rect as well
   if (dstRect.x1 < 0)
   {
     srcRect.x1 -= dstRect.x1*srcWidth / dstWidth;

@@ -124,7 +124,7 @@ We also supply a Makefile in lib/taglib to make it easy to install into /usr/loc
     $ make -C lib/taglib
     $ sudo make -C lib/taglib install
 
-[NOTICE] crossguid / libcrossguid-dev all Linux destributions.
+[NOTICE] crossguid / libcrossguid-dev all Linux distributions.
 Kodi now requires crossguid which is not available in Ubuntu repositories at this time.
 If build-deps PPA doesn't provide a pre-packaged version for your distribution, see (1.) below.
 

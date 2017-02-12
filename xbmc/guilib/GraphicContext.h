@@ -26,7 +26,7 @@
 #pragma once
 
 #ifdef __GNUC__
-// under gcc, inline will only take place if optimizations are applied (-O). this will force inline even whith optimizations.
+// under gcc, inline will only take place if optimizations are applied (-O). this will force inline even with optimizations.
 #define XBMC_FORCE_INLINE __attribute__((always_inline))
 #else
 #define XBMC_FORCE_INLINE

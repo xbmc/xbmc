@@ -247,7 +247,7 @@ unsigned int AEDeviceEnumerationOSX::GetNumPlanes() const
   if (m_isPlanar)
     return m_caStreamInfos.size();
   else
-    return 1;//interlaved - one plane
+    return 1;//interleaved - one plane
 }
 
 bool AEDeviceEnumerationOSX::hasSampleRate(const AESampleRateList &list, const unsigned int samplerate) const

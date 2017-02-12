@@ -921,7 +921,7 @@ bool CButtonTranslator::HasLonpressMapping(int window, const CKey &key)
     buttonMap::const_iterator it2 = (*it).second.find(code);
 
     if (it2 != (*it).second.end())
-      return true;
+      return it2->second.id != ACTION_NOOP;
 
 #ifdef TARGET_POSIX
     // Some buttoncodes changed in Hardy

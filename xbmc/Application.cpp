@@ -257,6 +257,9 @@ using KODI::MESSAGING::HELPERS::DialogResponse;
 //extern IDirectSoundRenderer* m_pAudioDecoder;
 CApplication::CApplication(void)
   : m_pPlayer(new CApplicationPlayer)
+#ifdef HAS_DVD_DRIVE
+  , m_Autorun(new CAutorun())
+#endif
   , m_iScreenSaveLock(0)
   , m_bPlaybackStarting(false)
   , m_ePlayState(PLAY_STATE_NONE)
@@ -266,10 +269,10 @@ CApplication::CApplication(void)
   , m_autoExecScriptExecuted(false)
   , m_bScreenSave(false)
   , m_bInhibitIdleShutdown(false)
-  , m_dpms(nullptr)
   , m_dpmsIsActive(false)
   , m_dpmsIsManual(false)
   , m_itemCurrentFile(new CFileItem)
+  , m_currentStack(new CFileItemList)
   , m_stackFileItemToUpdate(new CFileItem)
   , m_threadID(0)
   , m_bInitializing(true)
@@ -299,27 +302,13 @@ CApplication::CApplication(void)
 #ifdef HAS_GLX
   XInitThreads();
 #endif
-
-  /* for now always keep this around */
-  m_currentStack = new CFileItemList;
-
-#ifdef HAS_DVD_DRIVE
-  m_Autorun = new CAutorun();
-#endif
 }
 
 CApplication::~CApplication(void)
 {
-  delete m_musicInfoScanner;
   delete &m_progressTrackingVideoResumeBookmark;
-#ifdef HAS_DVD_DRIVE
-  delete m_Autorun;
-#endif
-  delete m_currentStack;
 
-  delete m_dpms;
   delete m_pInertialScrollingHandler;
-  delete m_pPlayer;
 
   m_actionListeners.clear();
 }
@@ -962,6 +951,10 @@ bool CApplication::InitDirectoriesOSX()
   else
     userHome = "/root";
 
+  std::string binaddonAltDir;
+  if (getenv("KODI_BINADDON_PATH"))
+    binaddonAltDir = getenv("KODI_BINADDON_PATH");
+
   std::string appPath = CUtil::GetHomePath();
   setenv("KODI_HOME", appPath.c_str(), 0);
 
@@ -980,6 +973,7 @@ bool CApplication::InitDirectoriesOSX()
   {
     // map our special drives
     CSpecialProtocol::SetXBMCBinPath(appPath);
+    CSpecialProtocol::SetXBMCAltBinAddonPath(binaddonAltDir);
     CSpecialProtocol::SetXBMCPath(appPath);
     #if defined(TARGET_DARWIN_IOS)
       std::string appName = CCompileInfo::GetAppName();
@@ -1017,6 +1011,7 @@ bool CApplication::InitDirectoriesOSX()
     URIUtils::AddSlashAtEnd(appPath);
 
     CSpecialProtocol::SetXBMCBinPath(appPath);
+    CSpecialProtocol::SetXBMCAltBinAddonPath(binaddonAltDir);
     CSpecialProtocol::SetXBMCPath(appPath);
     CSpecialProtocol::SetHomePath(URIUtils::AddFileToFolder(appPath, "portable_data"));
     CSpecialProtocol::SetMasterProfilePath(URIUtils::AddFileToFolder(appPath, "portable_data/userdata"));
@@ -1072,10 +1067,10 @@ void CApplication::CreateUserDirs() const
 
   //Let's clear our archive cache before starting up anything more
   auto archiveCachePath = CSpecialProtocol::TranslatePath("special://temp/archive_cache/");
-  if (CDirectory::RemoveRecursive(archiveCachePath))
-    CDirectory::Create(archiveCachePath);
-  else
-    CLog::Log(LOGWARNING, "Failed to remove the archive cache at %s", archiveCachePath.c_str());
+  if (CDirectory::Exists(archiveCachePath))
+    if (!CDirectory::RemoveRecursive(archiveCachePath))
+      CLog::Log(LOGWARNING, "Failed to remove the archive cache at %s", archiveCachePath.c_str());
+  CDirectory::Create(archiveCachePath);
 
 }
 
@@ -1144,7 +1139,7 @@ bool CApplication::Initialize()
   StartServices();
 
   // Init DPMS, before creating the corresponding setting control.
-  m_dpms = new DPMSSupport();
+  m_dpms.reset(new DPMSSupport());
   bool uiInitializationFinished = true;
   if (g_windowManager.Initialized())
   {
@@ -2590,7 +2585,7 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
       else
         pathToUrl = URIUtils::CreateArchivePath("rar", CURL(pMsg->strParam), "");
 
-      CUtil::GetRecursiveListing(pathToUrl.Get(), items, g_advancedSettings.m_pictureExtensions, XFILE::DIR_FLAG_NO_FILE_DIRS);
+      CUtil::GetRecursiveListing(pathToUrl.Get(), items, g_advancedSettings.GetPictureExtensions(), XFILE::DIR_FLAG_NO_FILE_DIRS);
       if (items.Size() > 0)
       {
         pSlideShow->Reset();
@@ -2625,7 +2620,7 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
 
     CFileItemList items;
     std::string strPath = pMsg->strParam;
-    std::string extensions = g_advancedSettings.m_pictureExtensions;
+    std::string extensions = g_advancedSettings.GetPictureExtensions();
     if (pMsg->param1)
       extensions += "|.tbn";
     CUtil::GetRecursiveListing(strPath, items, extensions);
@@ -2716,7 +2711,7 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
     // currently we calculate the repeat time (ie time from last similar keypress) just global as fps
     float frameTime = m_frameTime.GetElapsedSeconds();
     m_frameTime.StartZero();
-    // never set a frametime less than 2 fps to avoid problems when debuggin and on breaks
+    // never set a frametime less than 2 fps to avoid problems when debugging and on breaks
     if( frameTime > 0.5 ) frameTime = 0.5;
 
     if (processGUI && m_renderGUI)
@@ -3977,7 +3972,7 @@ bool CApplication::WakeUpScreenSaverAndDPMS(bool bPowerOffKeyPressed /* = false 
 
   if(result)
   {
-    // allow listeners to ignore the deactivation if it preceeds a powerdown/suspend etc
+    // allow listeners to ignore the deactivation if it precedes a powerdown/suspend etc
     CVariant data(CVariant::VariantTypeObject);
     data["shuttingdown"] = bPowerOffKeyPressed;
     CAnnouncementManager::GetInstance().Announce(GUI, "xbmc", "OnScreensaverDeactivated", data);
@@ -4550,7 +4545,7 @@ void CApplication::ProcessSlow()
   }
 #endif
 
-  // Temporarely pause pausable jobs when viewing video/picture
+  // Temporarily pause pausable jobs when viewing video/picture
   int currentWindow = g_windowManager.GetActiveWindow();
   if (CurrentFileItem().IsVideo() || CurrentFileItem().IsPicture() || currentWindow == WINDOW_FULLSCREEN_VIDEO || currentWindow == WINDOW_SLIDESHOW)
   {
@@ -4636,7 +4631,7 @@ void CApplication::ProcessSlow()
 }
 
 // Global Idle Time in Seconds
-// idle time will be resetet if on any OnKey()
+// idle time will be reset if on any OnKey()
 // int return: system Idle time in seconds! 0 is no idle!
 int CApplication::GlobalIdleTime()
 {
@@ -4706,6 +4701,11 @@ void CApplication::Restart(bool bSamePosition)
 const std::string& CApplication::CurrentFile()
 {
   return m_itemCurrentFile->GetPath();
+}
+
+std::shared_ptr<CFileItem> CApplication::CurrentFileItemPtr()
+{
+  return m_itemCurrentFile;
 }
 
 CFileItem& CApplication::CurrentFileItem()

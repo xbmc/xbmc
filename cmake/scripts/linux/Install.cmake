@@ -191,6 +191,12 @@ install(FILES ${CMAKE_SOURCE_DIR}/xbmc/cores/AudioEngine/Utils/AEChannelData.h
         DESTINATION ${includedir}/${APP_NAME_LC}
         COMPONENT kodi-audio-dev)
 
+# Install kodi-image-dev
+install(FILES ${CMAKE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/kodi_imagedec_types.h
+              ${CMAKE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/kodi_imagedec_dll.h
+        DESTINATION ${includedir}/${APP_NAME_LC}
+        COMPONENT kodi-image-dev)
+
 if(ENABLE_EVENTCLIENTS)
   # Install kodi-eventclients-common BT python files
   install(PROGRAMS ${CMAKE_SOURCE_DIR}/tools/EventClients/lib/python/bt/__init__.py

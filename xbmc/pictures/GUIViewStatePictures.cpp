@@ -73,7 +73,7 @@ std::string CGUIViewStateWindowPictures::GetLockType()
 
 std::string CGUIViewStateWindowPictures::GetExtensions()
 {
-  std::string extensions = g_advancedSettings.m_pictureExtensions;
+  std::string extensions = g_advancedSettings.GetPictureExtensions();
   if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PICTURES_SHOWVIDEOS))
     extensions += "|" + g_advancedSettings.m_videoExtensions;
 

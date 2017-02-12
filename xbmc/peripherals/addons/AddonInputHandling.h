@@ -24,37 +24,40 @@
 
 #include <memory>
 
+namespace KODI
+{
 namespace JOYSTICK
 {
   class IButtonMap;
   class IDriverReceiver;
   class IInputHandler;
 }
+}
 
 namespace PERIPHERALS
 {
   class CPeripheral;
 
-  class CAddonInputHandling : public JOYSTICK::IDriverHandler,
-                              public JOYSTICK::IInputReceiver
+  class CAddonInputHandling : public KODI::JOYSTICK::IDriverHandler,
+                              public KODI::JOYSTICK::IInputReceiver
   {
   public:
-    CAddonInputHandling(CPeripheral* peripheral, JOYSTICK::IInputHandler* handler, JOYSTICK::IDriverReceiver* receiver);
+    CAddonInputHandling(CPeripheral* peripheral, KODI::JOYSTICK::IInputHandler* handler, KODI::JOYSTICK::IDriverReceiver* receiver);
 
     virtual ~CAddonInputHandling(void);
 
     // implementation of IDriverHandler
     virtual bool OnButtonMotion(unsigned int buttonIndex, bool bPressed) override;
-    virtual bool OnHatMotion(unsigned int hatIndex, JOYSTICK::HAT_STATE state) override;
-    virtual bool OnAxisMotion(unsigned int axisIndex, float position) override;
+    virtual bool OnHatMotion(unsigned int hatIndex, KODI::JOYSTICK::HAT_STATE state) override;
+    virtual bool OnAxisMotion(unsigned int axisIndex, float position, int center, unsigned int range) override;
     virtual void ProcessAxisMotions(void) override;
 
     // implementation of IInputReceiver
-    virtual bool SetRumbleState(const JOYSTICK::FeatureName& feature, float magnitude) override;
+    virtual bool SetRumbleState(const KODI::JOYSTICK::FeatureName& feature, float magnitude) override;
 
   private:
-    std::unique_ptr<JOYSTICK::IDriverHandler> m_driverHandler;
-    std::unique_ptr<JOYSTICK::IInputReceiver> m_inputReceiver;
-    std::unique_ptr<JOYSTICK::IButtonMap>     m_buttonMap;
+    std::unique_ptr<KODI::JOYSTICK::IDriverHandler> m_driverHandler;
+    std::unique_ptr<KODI::JOYSTICK::IInputReceiver> m_inputReceiver;
+    std::unique_ptr<KODI::JOYSTICK::IButtonMap>     m_buttonMap;
   };
 }

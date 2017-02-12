@@ -54,7 +54,7 @@ public:
   void FlushCurrentPacket(); // flushes current unparsed data
 
   // m_clut set by libdvdnav once in a time
-  // color lokup table is representing 16 different yuv colors
+  // color lookup table is representing 16 different yuv colors
   // [][0] = Y, [][1] = Cr, [][2] = Cb
   uint8_t m_clut[16][3];
   bool m_bHasClut;

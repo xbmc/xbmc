@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<node order="10" type="folder" visible="Library.HasContent(Movies)">
-  <label>20386</label>
-  <icon>DefaultRecentlyAddedMovies.png</icon>
-  <path>videodb://recentlyaddedmovies/</path>
+<node order="10" type="folder">
+	<label>20386</label>
+	<icon>DefaultRecentlyAddedMovies.png</icon>
+	<path>videodb://recentlyaddedmovies/</path>
 </node>

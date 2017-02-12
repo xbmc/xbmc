@@ -23,7 +23,6 @@
 #include "epg/EpgContainer.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "dialogs/GUIDialogKaiToast.h"
-#include "dialogs/GUIDialogNumeric.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIRadioButtonControl.h"
@@ -47,6 +46,7 @@ using namespace EPG;
 
 CGUIWindowPVRChannels::CGUIWindowPVRChannels(bool bRadio) :
   CGUIWindowPVRBase(bRadio, bRadio ? WINDOW_RADIO_CHANNELS : WINDOW_TV_CHANNELS, "MyPVRChannels.xml"),
+  CPVRChannelNumberInputHandler(1000),
   m_bShowHiddenChannels(false)
 {
   g_EpgContainer.RegisterObserver(this);
@@ -119,6 +119,7 @@ bool CGUIWindowPVRChannels::OnAction(const CAction &action)
 {
   switch (action.GetID())
   {
+    case REMOTE_0:
     case REMOTE_1:
     case REMOTE_2:
     case REMOTE_3:
@@ -128,7 +129,8 @@ bool CGUIWindowPVRChannels::OnAction(const CAction &action)
     case REMOTE_7:
     case REMOTE_8:
     case REMOTE_9:
-      return InputChannelNumber(action.GetID() - REMOTE_0);
+      AppendChannelNumberDigit(action.GetID() - REMOTE_0);
+      return true;
   }
 
   return CGUIWindowPVRBase::OnAction(action);
@@ -310,26 +312,20 @@ void CGUIWindowPVRChannels::ShowGroupManager(void)
   return;
 }
 
-bool CGUIWindowPVRChannels::InputChannelNumber(int input)
+void CGUIWindowPVRChannels::OnInputDone()
 {
-  std::string strInput = StringUtils::Format("%i", input);
-  if (CGUIDialogNumeric::ShowAndGetNumber(strInput, g_localizeStrings.Get(19103)))
+  const int iChannelNumber = GetChannelNumber();
+  if (iChannelNumber >= 0)
   {
-    int iChannelNumber = atoi(strInput.c_str());
-    if (iChannelNumber >= 0)
+    int itemIndex = 0;
+    for (const CFileItemPtr channel : m_vecItems->GetList())
     {
-      int itemIndex = 0;
-      for (auto channel : m_vecItems->GetList())
+      if (channel->GetPVRChannelInfoTag()->ChannelNumber() == iChannelNumber)
       {
-        if (channel->GetPVRChannelInfoTag()->ChannelNumber() == iChannelNumber)
-        {
-          m_viewControl.SetSelectedItem(itemIndex);
-          return true;
-        }
-        ++itemIndex;
+        m_viewControl.SetSelectedItem(itemIndex);
+        return;
       }
+      ++itemIndex;
     }
   }
-
-  return false;
 }

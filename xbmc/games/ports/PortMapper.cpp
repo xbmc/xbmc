@@ -23,6 +23,7 @@
 #include "peripherals/devices/Peripheral.h"
 #include "peripherals/Peripherals.h"
 
+using namespace KODI;
 using namespace GAME;
 using namespace JOYSTICK;
 using namespace PERIPHERALS;

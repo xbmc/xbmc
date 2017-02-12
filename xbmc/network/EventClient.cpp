@@ -82,7 +82,7 @@ void CEventButtonState::Load()
       {
         m_iKeyCode = CButtonTranslator::TranslateRemoteString( m_buttonName.c_str() );
       }
-      else if  ( m_mapName.compare("R2") == 0 ) // xbox unviversal remote map
+      else if  ( m_mapName.compare("R2") == 0 ) // xbox universal remote map
       {
         m_iKeyCode = CButtonTranslator::TranslateUniversalRemoteString( m_buttonName.c_str() );
       }
@@ -449,7 +449,7 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
     {
       if(!active && it->m_bActive)
       {
-        /* since modifying the list invalidates the referse iteratator */
+        /* since modifying the list invalidates the reverse iterator */
         std::list<CEventButtonState>::iterator it2 = (++it).base();
 
         /* if last event had an amount, we must resend without amount */

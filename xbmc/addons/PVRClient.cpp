@@ -103,6 +103,24 @@ void CPVRClient::OnEnabled()
   CPVRManager::GetInstance().Clients()->UpdateAddons();
 }
 
+void CPVRClient::StopRunningInstance()
+{
+  const ADDON::AddonPtr addon(GetRunningInstance());
+  if (addon)
+  {
+    // stop the pvr manager and stop and unload the running pvr addon
+    PVR::CPVRManager::GetInstance().Stop();
+    CPVRManager::GetInstance().Clients()->StopClient(addon, false);
+  }
+}
+
+void CPVRClient::OnPreInstall()
+{
+  // note: this method is also called on update; thus stop and unload possibly running instance
+  StopRunningInstance();
+  CAddon::OnPreInstall();
+}
+
 void CPVRClient::OnPostInstall(bool update, bool modal)
 {
   CAddon::OnPostInstall(update, modal);
@@ -111,8 +129,7 @@ void CPVRClient::OnPostInstall(bool update, bool modal)
 
 void CPVRClient::OnPreUnInstall()
 {
-  // stop the pvr manager, so running pvr add-ons are stopped and closed
-  PVR::CPVRManager::GetInstance().Stop();
+  StopRunningInstance();
   CAddon::OnPreUnInstall();
 }
 

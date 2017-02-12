@@ -128,7 +128,7 @@ void CGUIFontTTFDX::LastEnd()
 
     // Store current GPU transform
     XMMATRIX view = pGUIShader->GetView();
-    // Store currect scissor
+    // Store current scissor
     CRect scissor = g_graphicsContext.StereoCorrection(g_graphicsContext.GetScissors());
 
     for (size_t i = 0; i < m_vertexTrans.size(); i++)
@@ -348,7 +348,7 @@ void CGUIFontTTFDX::CreateStaticIndexBuffer(void)
 bool CGUIFontTTFDX::m_staticIndexBufferCreated = false;
 ID3D11Buffer* CGUIFontTTFDX::m_staticIndexBuffer = nullptr;
 
-void CGUIFontTTFDX::OnDestroyDevice(void)
+void CGUIFontTTFDX::OnDestroyDevice(bool fatal)
 {
   SAFE_RELEASE(m_staticIndexBuffer);
   m_staticIndexBufferCreated = false;

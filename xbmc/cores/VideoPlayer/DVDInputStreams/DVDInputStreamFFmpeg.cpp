@@ -79,7 +79,7 @@ bool CDVDInputStreamFFmpeg::Open()
   return true;
 }
 
-// close file and reset everyting
+// close file and reset everything
 void CDVDInputStreamFFmpeg::Close()
 {
   CDVDInputStream::Close();

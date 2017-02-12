@@ -21,6 +21,8 @@
 
 #include "JoystickTypes.h"
 
+namespace KODI
+{
 namespace JOYSTICK
 {
   /*!
@@ -42,4 +44,5 @@ namespace JOYSTICK
      */
     virtual bool SetRumbleState(const FeatureName& feature, float magnitude) = 0;
   };
+}
 }

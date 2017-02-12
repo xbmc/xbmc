@@ -217,7 +217,7 @@ void CGUIWindowLoginScreen::Update()
     item->SetArt("thumb", profile->getThumb());
     if (profile->getThumb().empty() || profile->getThumb() == "-")
       item->SetArt("thumb", "DefaultUser.png");
-    item->SetLabelPreformated(true);
+    item->SetLabelPreformatted(true);
     m_vecItems->Add(item);
   }
   m_viewControl.SetItems(*m_vecItems);
@@ -273,6 +273,8 @@ CFileItemPtr CGUIWindowLoginScreen::GetCurrentListItem(int offset)
 
 void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
 {
+  CServiceBroker::GetContextMenuManager().Deinit();
+
   // stop service addons and give it some time before we start it again
   ADDON::CAddonMgr::GetInstance().StopServices(true);
 
@@ -322,6 +324,9 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
 #ifdef HAS_JSONRPC
   JSONRPC::CJSONRPC::Initialize();
 #endif
+
+  // Restart context menu manager
+  CServiceBroker::GetContextMenuManager().Init();
 
   // restart PVR services
   CServiceBroker::GetPVRManager().Reinit();

@@ -125,6 +125,7 @@ cmake_install.cmake
 /addons/skin.estouchy/media/Textures.xbt
 /addons/skin.pm3-hd/media/Textures.xbt
 /addons/script.module.pil/
+/addons/script.module.pycryptodome/
 /addons/audioencoder.*
 /addons/pvr.*
 /addons/adsp.*

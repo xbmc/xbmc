@@ -88,23 +88,35 @@ The command to get the build dependencies, used to compile the version on the PP
 -----------------------------------------------------------------------------
 4. How to compile
 -----------------------------------------------------------------------------
+Cmake build instructions V18.0 Leia and higher
 
-To create the Kodi executable manually perform these steps:
-.0  $ ./bootstrap
+Create and change to build directory 
+    $ mkdir kodi-build && cd kodi-build
+    $ cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local
+    $ cmake --build . -- VERBOSE=1
+    
+Tip: By adding -j<number> to the make command, you describe how many
+     concurrent jobs will be used, it will speed up the build process.
+     So for quadcore the command is:
+    
+    $ cmake --build . -- VERBOSE=1 -j4
 
-.1  $ ./configure <option1> <option2> PREFIX=<system prefix>... (See --help for available options)
-       A full listing of supported options can be viewed by typing './configure --help'.
+If the build process completes succesfully you would want to test if it is working.
+Still in the build directory type the following:
 
-.2  $ make
+    $ ./kodi.bin
+
+If everything was okay during your test you can now install the binaries to their place
+in this example "/usr/local".
+
+    $ sudo make install
+
+This will install Kodi in the prefix provided in 4.1 as well as a launcher script.
 
 Tip: By adding -j<number> to the make command, you describe how many
      concurrent jobs will be used. So for dualcore the command is:
 
-    $ make -j2
-
-.3  $ sudo make install
-
-This will install Kodi in the prefix provided in 4.1 as well as a launcher script.
+    $ sudo make install -j2
 
 Tip: To override the location that Kodi is installed, use PREFIX=<path>.
 For example.
@@ -184,7 +196,7 @@ The most useful options are,
       List the names of all tests instead of running them.
 	  The name of TEST(Foo, Bar) is "Foo.Bar".
 
-    --gtest_filter=POSTIVE_PATTERNS[-NEGATIVE_PATTERNS]
+    --gtest_filter=POSITIVE_PATTERNS[-NEGATIVE_PATTERNS]
       Run only the tests whose name matches one of the positive patterns but
       none of the negative patterns. '?' matches any single character; '*'
       matches any substring; ':' separates two patterns.

@@ -29,6 +29,7 @@
 #include "guilib/GUIShaderDX.h"
 #include "guilib/GUITextureD3D.h"
 #include "guilib/GUIWindowManager.h"
+#include "messaging/ApplicationMessenger.h"
 #include "settings/AdvancedSettings.h"
 #include "threads/SingleLock.h"
 #include "utils/MathUtils.h"
@@ -45,9 +46,7 @@
 #else
 #pragma comment(lib, "EasyHook64.lib")
 #endif
-#pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "dxgi.lib")
-#pragma comment(lib, "dxguid.lib")
 
 #define RATIONAL_TO_FLOAT(rational) ((rational.Denominator != 0) ? \
  static_cast<float>(rational.Numerator) / static_cast<float>(rational.Denominator) : 0.0f)
@@ -300,7 +299,7 @@ void CRenderSystemDX::SetFullScreenInternal()
     OnDisplayLost();
     hr = m_pSwapChain->SetFullscreenState(false, nullptr);
     if (SUCCEEDED(hr))
-      m_bResizeRequred = true;
+      m_bResizeRequired = true;
     else
       CLog::Log(LOGERROR, "%s - Failed switch full screen state: %s.", __FUNCTION__, GetErrorDescription(hr).c_str());
   }
@@ -322,7 +321,7 @@ void CRenderSystemDX::SetFullScreenInternal()
       OnDisplayLost();
       hr = m_pSwapChain->SetFullscreenState(true, m_pOutput);
       if (SUCCEEDED(hr))
-        m_bResizeRequred = true;
+        m_bResizeRequired = true;
       else
         CLog::Log(LOGERROR, "%s - Failed switch full screen state: %s.", __FUNCTION__, GetErrorDescription(hr).c_str());
     }
@@ -345,7 +344,7 @@ void CRenderSystemDX::SetFullScreenInternal()
     float currentRefreshRate = RATIONAL_TO_FLOAT(currentMode.RefreshRate);
     CLog::Log(LOGDEBUG, "%s - Current display mode is: %dx%d@%0.3f", __FUNCTION__, currentMode.Width, currentMode.Height, currentRefreshRate);
 
-    // use backbuffer dimention to find required display mode
+    // use backbuffer dimension to find required display mode
     toMatchMode.Width = m_nBackBufferWidth;
     toMatchMode.Height = m_nBackBufferHeight;
     bool useDefaultRefreshRate = 0 == m_refreshRate;
@@ -373,12 +372,12 @@ void CRenderSystemDX::SetFullScreenInternal()
       // change monitor resolution (in fullscreen mode) to required mode
       CLog::Log(LOGDEBUG, "%s - Switching mode to %dx%d@%0.3f.", __FUNCTION__, matchedMode.Width, matchedMode.Height, matchedRefreshRate);
 
-      if (!m_bResizeRequred)
+      if (!m_bResizeRequired)
         OnDisplayLost();
 
       hr = m_pSwapChain->ResizeTarget(&matchedMode);
       if (SUCCEEDED(hr))
-        m_bResizeRequred = true;
+        m_bResizeRequired = true;
       else
         CLog::Log(LOGERROR, "%s - Failed to switch output mode: %s", __FUNCTION__, GetErrorDescription(hr).c_str());
     }
@@ -418,7 +417,14 @@ void CRenderSystemDX::DeleteDevice()
 
   // tell any shared resources
   for (std::vector<ID3DResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
-    (*i)->OnDestroyDevice();
+  {
+    // the most of resources like textures and buffers try to 
+    // receive and save their status from current device.
+    // m_nDeviceStatus contains the last device status and
+    // DXGI_ERROR_DEVICE_REMOVED means that we have no possibility
+    // to use the device anymore, tell all resouces about this.
+    (*i)->OnDestroyDevice(DXGI_ERROR_DEVICE_REMOVED == m_nDeviceStatus);
+  }
 
   if (m_pSwapChain)
     m_pSwapChain->SetFullscreenState(false, nullptr);
@@ -456,7 +462,7 @@ void CRenderSystemDX::DeleteDevice()
     SAFE_RELEASE(m_d3dDebug);
   }
 #endif
-  m_bResizeRequred = false;
+  m_bResizeRequired = false;
   m_bHWStereoEnabled = false;
   m_bRenderCreated = false;
   m_bStereoEnabled = false;
@@ -750,7 +756,7 @@ bool CRenderSystemDX::CreateWindowSizeDependentResources()
   if (m_pSwapChain)
   {
     m_pSwapChain->GetDesc(&scDesc);
-    bNeedResize = m_bResizeRequred || 
+    bNeedResize = m_bResizeRequired || 
                   m_nBackBufferWidth != scDesc.BufferDesc.Width || 
                   m_nBackBufferHeight != scDesc.BufferDesc.Height;
   }
@@ -795,10 +801,10 @@ bool CRenderSystemDX::CreateWindowSizeDependentResources()
 
   if (bNeedRecreate)
   {
-    if (!m_bResizeRequred)
+    if (!m_bResizeRequired)
     {
       OnDisplayLost();
-      m_bResizeRequred = true;
+      m_bResizeRequired = true;
     }
 
     BOOL fullScreen;
@@ -864,7 +870,7 @@ bool CRenderSystemDX::CreateWindowSizeDependentResources()
         bHWStereoEnabled = false;
         hr = dxgiFactory2->CreateSwapChainForHwnd(m_pD3DDev, m_hFocusWnd, &scDesc1, &scFSDesc, nullptr, &m_pSwapChain1);
 
-        // fallback to split_horisontal mode.
+        // fallback to split_horizontal mode.
         g_graphicsContext.SetStereoMode(RENDER_STEREO_MODE_SPLIT_HORIZONTAL);
       }
 
@@ -1009,12 +1015,12 @@ bool CRenderSystemDX::CreateWindowSizeDependentResources()
   if (bRestoreRTView)
     m_pContext->OMSetRenderTargets(1, &m_pRenderTargetView, m_depthStencilView);
 
-  // notify about resurection of display
-  if (m_bResizeRequred)
+  // notify about resurrection of display
+  if (m_bResizeRequired)
     OnDisplayBack();
 
   m_resizeInProgress = false;
-  m_bResizeRequred = false;
+  m_bResizeRequired = false;
 
   return true;
 }
@@ -1284,6 +1290,8 @@ bool CRenderSystemDX::BeginRender()
     {
       OnDeviceLost();
       OnDeviceReset();
+      if (m_bRenderCreated)
+        KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, "ReloadSkin");
     }
     return false;
   }
@@ -1319,7 +1327,7 @@ bool CRenderSystemDX::ClearBuffers(color_t color)
   if ( m_stereoMode != RENDER_STEREO_MODE_OFF
     && m_stereoMode != RENDER_STEREO_MODE_MONO)
   {
-    // if stereo anaglyph/tab/sbs, data was cleared when left view was rendererd
+    // if stereo anaglyph/tab/sbs, data was cleared when left view was rendered
     if (m_stereoView == RENDER_STEREO_VIEW_RIGHT)
     {
       // execute command's queue
@@ -1478,7 +1486,7 @@ bool CRenderSystemDX::TestRender()
   }
 
   // Now we fill the vertex buffer. To do this, we need to Lock() the VB to
-  // gain access to the vertices. This mechanism is required becuase vertex
+  // gain access to the vertices. This mechanism is required because vertex
   // buffers may be in device memory.
   VOID* pVertices;
   if( FAILED( pVB->Lock( 0, sizeof( vertices ), ( void** )&pVertices, 0 ) ) )

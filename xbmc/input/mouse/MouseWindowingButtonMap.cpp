@@ -23,6 +23,7 @@
 
 #include <algorithm>
 
+using namespace KODI;
 using namespace MOUSE;
 
 #define CONTROLLER_PROFILE  "game.controller.mouse"

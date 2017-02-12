@@ -29,6 +29,7 @@
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
+#include "input/Key.h"
 #include "messaging/ApplicationMessenger.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/dialogs/GUIDialogPVRGuideInfo.h"
@@ -120,8 +121,9 @@ namespace PVR
     if (windowToClose)
       windowToClose->Close();
 
+    windowSearch->SetItemToSearch(item);
     g_windowManager.ActivateWindow(windowSearchId);
-    return windowSearch->FindSimilar(item);
+    return true;
   };
 
   bool CPVRGUIActions::ShowTimerSettings(const CPVRTimerInfoTagPtr &timer) const
@@ -757,6 +759,80 @@ namespace PVR
       CLog::Log(LOGERROR, "CPVRGUIActions - %s - called on non-pvr window. no refresh possible.", __FUNCTION__);
 
     return true;
+  }
+
+  CPVRChannelNumberInputHandler &CPVRGUIActions::GetChannelNumberInputHandler()
+  {
+    // window/dialog specific input handler
+    CPVRChannelNumberInputHandler *windowInputHandler
+      = dynamic_cast<CPVRChannelNumberInputHandler *>(g_windowManager.GetWindow(g_windowManager.GetFocusedWindow()));
+    if (windowInputHandler)
+      return *windowInputHandler;
+
+    // default
+    return m_channelNumberInputHandler;
+  }
+
+  void CPVRChannelSwitchingInputHandler::OnInputDone()
+  {
+    int iChannelNumber;
+    bool bSwitchToPreviousChannel;
+    {
+      CSingleLock lock(m_mutex);
+      iChannelNumber = GetChannelNumber();
+      // special case. if only a single zero was typed in, switch to previously played channel.
+      bSwitchToPreviousChannel = (iChannelNumber == 0 && GetCurrentDigitCount() == 1);
+    }
+
+    if (iChannelNumber > 0)
+      SwitchToChannel(iChannelNumber);
+    else if (bSwitchToPreviousChannel)
+      SwitchToPreviousChannel();
+  }
+
+  void CPVRChannelSwitchingInputHandler::SwitchToChannel(int iChannelNumber)
+  {
+    if (iChannelNumber > 0 && g_PVRManager.IsPlaying())
+    {
+      const CPVRChannelPtr playingChannel(g_PVRManager.GetCurrentChannel());
+      if (playingChannel)
+      {
+        if (iChannelNumber != playingChannel->ChannelNumber())
+        {
+          const CPVRChannelGroupPtr selectedGroup(g_PVRManager.GetPlayingGroup(playingChannel->IsRadio()));
+          const CFileItemPtr channel(selectedGroup->GetByChannelNumber(iChannelNumber));
+          if (channel && channel->HasPVRChannelInfoTag())
+          {
+            CApplicationMessenger::GetInstance().PostMsg(
+              TMSG_GUI_ACTION, WINDOW_INVALID, -1,
+              static_cast<void*>(new CAction(ACTION_CHANNEL_SWITCH, static_cast<float>(iChannelNumber))));
+          }
+        }
+      }
+    }
+  }
+
+  void CPVRChannelSwitchingInputHandler::SwitchToPreviousChannel()
+  {
+    if (g_PVRManager.IsPlaying())
+    {
+      const CPVRChannelPtr playingChannel(g_PVRManager.GetCurrentChannel());
+      if (playingChannel)
+      {
+        const CPVRChannelGroupPtr group(g_PVRChannelGroups->GetPreviousPlayedGroup());
+        if (group)
+        {
+          g_PVRManager.SetPlayingGroup(group);
+          const CFileItemPtr channel(group->GetLastPlayedChannel(playingChannel->ChannelID()));
+          if (channel && channel->HasPVRChannelInfoTag())
+          {
+            CApplicationMessenger::GetInstance().SendMsg(
+              TMSG_GUI_ACTION, WINDOW_INVALID, -1,
+              static_cast<void*>(new CAction(ACTION_CHANNEL_SWITCH, static_cast<float>(channel->GetPVRChannelInfoTag()->ChannelNumber()))));
+          }
+        }
+      }
+    }
   }
 
 } // namespace PVR

@@ -211,7 +211,7 @@ const char* CCoreAudioChannelLayout::ChannelLayoutToString(AudioChannelLayout& l
   }
   else
   {
-    // Predefinied layout 'tag'
+    // Predefined layout 'tag'
     UInt32 propSize = 0;
     AudioFormatGetPropertyInfo(kAudioFormatProperty_ChannelLayoutForTag,
       sizeof(layout.mChannelLayoutTag), &layout.mChannelLayoutTag, &propSize);
@@ -260,7 +260,7 @@ bool CCoreAudioChannelLayout::AllChannelUnknown()
   }
   else
   {
-    // Predefinied layout 'tag'
+    // Predefined layout 'tag'
     UInt32 propSize = 0;
     AudioFormatGetPropertyInfo(kAudioFormatProperty_ChannelLayoutForTag,
       sizeof(m_pLayout->mChannelLayoutTag), &m_pLayout->mChannelLayoutTag, &propSize);

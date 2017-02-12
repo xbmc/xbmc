@@ -101,7 +101,7 @@ public:
   static bool GetConditionalVisibility(const TiXmlNode* control, std::string &condition);
   static bool GetActions(const TiXmlNode* pRootNode, const char* strTag, CGUIAction& actions);
   static void GetRectFromString(const std::string &string, CRect &rect);
-  static bool GetHitRect(const TiXmlNode* pRootNode, CRect &rect);
+  static bool GetHitRect(const TiXmlNode* pRootNode, CRect &rect, const CRect &parentRect);
   static bool GetScroller(const TiXmlNode *pControlNode, const std::string &scrollerTag, CScroller& scroller);
 private:
   static std::string GetType(const TiXmlElement *pControlNode);

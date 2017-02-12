@@ -64,7 +64,7 @@ void GUIFontManager::RescaleFontSizeAndAspect(float *size, float *aspect, const 
   }
   else
   {
-    // font streched like the rest of the UI, aspect parameter being the original aspect
+    // font stretched like the rest of the UI, aspect parameter being the original aspect
 
     // adjust aspect ratio
     *aspect *= sourceRes.fPixelRatio;

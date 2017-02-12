@@ -28,12 +28,10 @@
 #include <algorithm>
 
 using namespace KODI;
-using namespace MESSAGING;
+using namespace JOYSTICK;
 
 #define HOLD_TIMEOUT_MS     500
 #define REPEAT_TIMEOUT_MS   50
-
-using namespace JOYSTICK;
 
 CKeymapHandler::CKeymapHandler(void) :
     m_lastButtonPress(0),
@@ -139,6 +137,25 @@ bool CKeymapHandler::SendDigitalAction(unsigned int keyId, unsigned int holdTime
   CAction action(CButtonTranslator::GetInstance().GetAction(g_windowManager.GetActiveWindowID(), CKey(keyId, holdTimeMs)));
   if (action.GetID() > 0)
   {
+    //! @todo Add "holdtime" parameter to joystick.xml. For now we MUST only
+    // send held actions for basic navigation commands!
+    if (holdTimeMs > 0)
+    {
+      switch (action.GetID())
+      {
+      case ACTION_MOVE_LEFT:
+      case ACTION_MOVE_RIGHT:
+      case ACTION_MOVE_UP:
+      case ACTION_MOVE_DOWN:
+      case ACTION_PAGE_UP:
+      case ACTION_PAGE_DOWN:
+        break;
+
+      default:
+        return true;
+      }
+    }
+
     CInputManager::GetInstance().QueueAction(action);
     return true;
   }

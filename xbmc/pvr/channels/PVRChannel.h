@@ -85,7 +85,7 @@ namespace PVR
 
     /*!
      * @brief Persists the changes in the database.
-     * @return True if the changes were saved succesfully, false otherwise.
+     * @return True if the changes were saved successfully, false otherwise.
      */
     bool Persist();
 

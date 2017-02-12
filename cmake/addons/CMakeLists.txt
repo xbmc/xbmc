@@ -327,7 +327,12 @@ foreach(addon ${addons})
             file(DOWNLOAD "${url}" "${BUILD_DIR}/download/${archive_name}.tar.gz" STATUS dlstatus LOG dllog SHOW_PROGRESS)
             list(GET dlstatus 0 retcode)
             if(NOT ${retcode} EQUAL 0)
-              message(FATAL_ERROR "ERROR downloading ${url} - status: ${dlstatus} log: ${dllog}")
+              file(REMOVE ${BUILD_DIR}/download/${archive_name}.tar.gz)
+              message(STATUS "ERROR downloading ${url} - status: ${dlstatus} log: ${dllog}")
+              # add a dummy target for addons to get it in addons failure file
+              list(APPEND ALL_ADDONS_BUILDING ${id})
+              add_custom_target(${id} COMMAND ${CMAKE_COMMAND} -E echo "IGNORED ${id} - download failed" COMMAND exit 1)
+              continue()
             endif()
           endif()
 

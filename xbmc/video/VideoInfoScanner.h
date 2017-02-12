@@ -214,7 +214,7 @@ namespace VIDEO
     /*! \brief Decide whether a folder listing could use the "fast" hash
      Fast hashing can be done whenever the folder contains no scannable subfolders, as the
      fast hash technique uses modified time to determine when folder content changes, which
-     is generally not propogated up the directory tree.
+     is generally not propagated up the directory tree.
      \param items the directory listing
      \param excludes string array of exclude expressions
      \return true if this directory listing can be fast hashed, false otherwise

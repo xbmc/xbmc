@@ -19,24 +19,17 @@
  */
 
 #include "Application.h"
-#include "ServiceBroker.h"
-#include "dialogs/GUIDialogNumeric.h"
-#include "guilib/LocalizeStrings.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
-#include "messaging/ApplicationMessenger.h"
-#include "settings/AdvancedSettings.h"
-#include "settings/Settings.h"
-#include "utils/log.h"
-#include "utils/StringUtils.h"
 
+#include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
-#include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/channels/PVRChannel.h"
 
 #include "PVRActionListener.h"
 
-using namespace PVR;
-using namespace KODI::MESSAGING;
+namespace PVR
+{
 
 CPVRActionListener::CPVRActionListener()
 {
@@ -50,6 +43,8 @@ CPVRActionListener &CPVRActionListener::GetInstance()
 
 bool CPVRActionListener::OnAction(const CAction &action)
 {
+  bool bIsJumpSMS = false;
+
   switch (action.GetID())
   {
     case ACTION_PVR_PLAY:
@@ -76,6 +71,16 @@ bool CPVRActionListener::OnAction(const CAction &action)
       }
       return true;
     }
+    case ACTION_JUMP_SMS2:
+    case ACTION_JUMP_SMS3:
+    case ACTION_JUMP_SMS4:
+    case ACTION_JUMP_SMS5:
+    case ACTION_JUMP_SMS6:
+    case ACTION_JUMP_SMS7:
+    case ACTION_JUMP_SMS8:
+    case ACTION_JUMP_SMS9:
+      bIsJumpSMS = true;
+      // fallthru is intended
     case REMOTE_0:
     case REMOTE_1:
     case REMOTE_2:
@@ -96,48 +101,8 @@ bool CPVRActionListener::OnAction(const CAction &action)
         if (g_windowManager.IsPythonWindow(g_windowManager.GetTopMostModalDialogID()))
           return false;
 
-        if(g_PVRManager.IsPlaying())
-        {
-          // pvr client addon
-          CPVRChannelPtr playingChannel(g_PVRManager.GetCurrentChannel());
-          if(!playingChannel)
-            return false;
-
-          if (action.GetID() == REMOTE_0)
-          {
-            CPVRChannelGroupPtr group = g_PVRChannelGroups->GetPreviousPlayedGroup();
-            if (group)
-            {
-              g_PVRManager.SetPlayingGroup(group);
-              CFileItemPtr fileItem = group->GetLastPlayedChannel(playingChannel->ChannelID());
-              if (fileItem && fileItem->HasPVRChannelInfoTag())
-              {
-                CLog::Log(LOGDEBUG, "%s - switch to channel number %d", __FUNCTION__, fileItem->GetPVRChannelInfoTag()->ChannelNumber());
-                CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,static_cast<void*>(
-                  new CAction(ACTION_CHANNEL_SWITCH, static_cast<float>(fileItem->GetPVRChannelInfoTag()->ChannelNumber()))));
-              }
-            }
-          }
-          else
-          {
-            int autoCloseTime = CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRPLAYBACK_CONFIRMCHANNELSWITCH) ? 0 : g_advancedSettings.m_iPVRNumericChannelSwitchTimeout;
-            std::string strChannel = StringUtils::Format("%i", action.GetID() - REMOTE_0);
-            if (CGUIDialogNumeric::ShowAndGetNumber(strChannel, g_localizeStrings.Get(19000), autoCloseTime) || autoCloseTime)
-            {
-              int iChannelNumber = atoi(strChannel.c_str());
-              if (iChannelNumber > 0 && iChannelNumber != playingChannel->ChannelNumber())
-              {
-                CPVRChannelGroupPtr selectedGroup = g_PVRManager.GetPlayingGroup(playingChannel->IsRadio());
-                CFileItemPtr channel = selectedGroup->GetByChannelNumber(iChannelNumber);
-                if (!channel || !channel->HasPVRChannelInfoTag())
-                  return false;
-
-                CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(
-                  new CAction(ACTION_CHANNEL_SWITCH, static_cast<float>(iChannelNumber))));
-              }
-            }
-          }
-        }
+        int iRemote = bIsJumpSMS ? action.GetID() - (ACTION_JUMP_SMS2 - REMOTE_2) : action.GetID();
+        CPVRGUIActions::GetInstance().GetChannelNumberInputHandler().AppendChannelNumberDigit(iRemote - REMOTE_0);
       }
       return true;
     }
@@ -145,3 +110,5 @@ bool CPVRActionListener::OnAction(const CAction &action)
   }
   return false;
 }
+
+} // namespace PVR

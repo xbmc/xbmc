@@ -39,6 +39,8 @@
 
 class CKey;
 
+namespace KODI
+{
 namespace KEYBOARD
 {
   class IKeyboardHandler;
@@ -49,6 +51,7 @@ namespace MOUSE
   class IMouseButtonMap;
   class IMouseDriverHandler;
   class IMouseInputHandler;
+}
 }
 
 /// \addtogroup input
@@ -137,7 +140,7 @@ public:
   /*! \brief Handle an input event
    * 
    * \param newEvent event details
-   * \return true on succesfully handled event
+   * \return true on successfully handled event
    * \sa XBMC_Event
    */
   bool OnEvent(XBMC_Event& newEvent);
@@ -244,13 +247,13 @@ public:
    *
    * \param handler The handler to call on keyboard input.
    */
-  void RegisterKeyboardHandler(KEYBOARD::IKeyboardHandler* handler);
+  void RegisterKeyboardHandler(KODI::KEYBOARD::IKeyboardHandler* handler);
 
   /*! \brief Unregisters handler from keyboard input.
    *
    * \param[in] handler The handler to unregister from keyboard input.
    */
-  void UnregisterKeyboardHandler(KEYBOARD::IKeyboardHandler* handler);
+  void UnregisterKeyboardHandler(KODI::KEYBOARD::IKeyboardHandler* handler);
 
   /*! \brief Registers a handler to be called on mouse input (e.g a game client).
    *
@@ -258,20 +261,20 @@ public:
    * \return[in] The controller ID that serves as a context for incoming events.
    * \sa IMouseButtonMap
    */
-  std::string RegisterMouseHandler(MOUSE::IMouseInputHandler* handler);
+  std::string RegisterMouseHandler(KODI::MOUSE::IMouseInputHandler* handler);
 
   /*! \brief Unregisters handler from mouse input.
    *
    * \param[in] handler The handler to unregister from mouse input.
    */
-  void UnregisterMouseHandler(MOUSE::IMouseInputHandler* handler);
+  void UnregisterMouseHandler(KODI::MOUSE::IMouseInputHandler* handler);
 
 private:
 
   /*! \brief Process keyboard event and translate into an action
   *
   * \param CKey keypress details
-  * \return true on succesfully handled event
+  * \return true on successfully handled event
   * \sa CKey
   */
   bool OnKey(const CKey& key);
@@ -316,18 +319,18 @@ private:
   std::vector<CAction> m_queuedActions;
   CCriticalSection     m_actionMutex;
 
-  std::vector<KEYBOARD::IKeyboardHandler*> m_keyboardHandlers;
+  std::vector<KODI::KEYBOARD::IKeyboardHandler*> m_keyboardHandlers;
 
   struct MouseHandlerHandle
   {
-    MOUSE::IMouseInputHandler*                  inputHandler;
-    std::unique_ptr<MOUSE::IMouseDriverHandler> driverHandler;
+    KODI::MOUSE::IMouseInputHandler*                  inputHandler;
+    std::unique_ptr<KODI::MOUSE::IMouseDriverHandler> driverHandler;
   };
 
   std::vector<MouseHandlerHandle> m_mouseHandlers;
-  std::unique_ptr<MOUSE::IMouseButtonMap> m_mouseButtonMap;
+  std::unique_ptr<KODI::MOUSE::IMouseButtonMap> m_mouseButtonMap;
 
-  std::unique_ptr<KEYBOARD::IKeyboardHandler> m_keyboardEasterEgg;
+  std::unique_ptr<KODI::KEYBOARD::IKeyboardHandler> m_keyboardEasterEgg;
 };
 
 /// \}

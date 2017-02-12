@@ -1119,17 +1119,17 @@ std::string CSysInfo::GetUserAgent()
   if (iDevStrDigit == 0)
     iDev = "unknown";
   result += iDev + "; ";
-  std::string iOSVerison(GetOsVersion());
-  size_t lastDotPos = iOSVerison.rfind('.');
-  if (lastDotPos != std::string::npos && iOSVerison.find('.') != lastDotPos
-      && iOSVerison.find_first_not_of('0', lastDotPos + 1) == std::string::npos)
-    iOSVerison.erase(lastDotPos);
-  StringUtils::Replace(iOSVerison, '.', '_');
+  std::string iOSVersion(GetOsVersion());
+  size_t lastDotPos = iOSVersion.rfind('.');
+  if (lastDotPos != std::string::npos && iOSVersion.find('.') != lastDotPos
+      && iOSVersion.find_first_not_of('0', lastDotPos + 1) == std::string::npos)
+    iOSVersion.erase(lastDotPos);
+  StringUtils::Replace(iOSVersion, '.', '_');
   if (iDev == "iPad" || iDev == "AppleTV")
     result += "CPU OS ";
   else
     result += "CPU iPhone OS ";
-  result += iOSVerison + " like Mac OS X";
+  result += iOSVersion + " like Mac OS X";
 #else
   result += "Macintosh; ";
   std::string cpuFam(GetBuildTargetCpuFamily());

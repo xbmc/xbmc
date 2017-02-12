@@ -132,7 +132,7 @@ static int MasterMode(const std::vector<std::string>& params)
 ///     ,
 ///     Load the specified profile. If prompt is not specified\, and a password
 ///     would be required for the requested profile\, this command will silently
-///     fail. If promp' is specified and a password is required\, a password
+///     fail. If prompt is specified and a password is required\, a password
 ///     dialog will be shown.
 ///     @param[in] profilename           The profile name.
 ///     @param[in] prompt                Add "prompt" to allow unlocking dialogs (optional)

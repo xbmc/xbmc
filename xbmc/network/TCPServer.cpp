@@ -394,7 +394,7 @@ bool CTCPServer::InitializeBlue()
   sdp_uuid128_create(&svc_uuid, &bt_service_guid);
   sdp_set_service_id(record, svc_uuid);
 
-  // make the service record publicly browsable
+  // make the service record publicly browseable
   sdp_uuid16_create(&root_uuid, PUBLIC_BROWSE_GROUP);
   root_list = sdp_list_append(0, &root_uuid);
   sdp_set_browse_groups(record, root_list);

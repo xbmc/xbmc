@@ -1533,7 +1533,7 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
   }
   am_private->gcodec.param = (void *)((std::uintptr_t)am_private->gcodec.param | (am_private->video_rotation_degree << 16));
 
-  // translate from generic to firemware version dependent
+  // translate from generic to firmware version dependent
   m_dll->codec_init_para(&am_private->gcodec, &am_private->vcodec);
 
   int ret = m_dll->codec_init(&am_private->vcodec);
@@ -1697,7 +1697,7 @@ void CAMLCodec::Reset()
   // restore the saved system blackout_policy value
   SysfsUtils::SetInt("/sys/class/video/blackout_policy", blackout_policy);
 
-  // reset some interal vars
+  // reset some internal vars
   m_1st_pts = 0;
   m_cur_pts = 0;
   m_ptsQueue.clear();

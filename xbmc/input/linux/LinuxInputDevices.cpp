@@ -859,7 +859,7 @@ XBMC_Event CLinuxInputDevice::ReadEvent()
 
       //printf("read event readlen = %d device name %s m_fileName %s\n", readlen, m_deviceName, m_fileName.c_str());
 
-      // sanity check if we realy read the event
+      // sanity check if we really read the event
       if(readlen != sizeof(levt))
       {
         CLog::Log(LOGERROR,"CLinuxInputDevice: read error : %s\n", strerror(errno));

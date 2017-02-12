@@ -372,8 +372,8 @@ void CGUIDialogContentSettings::InitializeSettings()
         ->Add(CSettingDependencyConditionPtr(new CSettingDependencyCondition(SETTING_USE_DIRECTORY_NAMES, "false", SettingDependencyOperatorEquals, false, m_settingsManager)));      // !m_useDirectoryNames
 
       // define an enable dependency with m_useDirectoryNames && !m_scanRecursive
-      CSettingDependency depdendencyContainsSingleItem(SettingDependencyTypeEnable, m_settingsManager);
-      depdendencyContainsSingleItem.And()
+      CSettingDependency dependencyContainsSingleItem(SettingDependencyTypeEnable, m_settingsManager);
+      dependencyContainsSingleItem.And()
         ->Add(CSettingDependencyConditionPtr(new CSettingDependencyCondition(SETTING_USE_DIRECTORY_NAMES, "true", SettingDependencyOperatorEquals, false, m_settingsManager)))        // m_useDirectoryNames
         ->Add(CSettingDependencyConditionPtr(new CSettingDependencyCondition(SETTING_SCAN_RECURSIVE, "false", SettingDependencyOperatorEquals, false, m_settingsManager)));           // !m_scanRecursive
 
@@ -382,7 +382,7 @@ void CGUIDialogContentSettings::InitializeSettings()
       settingScanRecursive->SetDependencies(deps);
 
       deps.clear();
-      deps.push_back(depdendencyContainsSingleItem);
+      deps.push_back(dependencyContainsSingleItem);
       settingContainsSingleItem->SetDependencies(deps);
       break;
     }

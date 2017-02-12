@@ -1064,7 +1064,7 @@ bool CMusicDatabase::GetAlbum(int idAlbum, CAlbum& album, bool getSongs /* = tru
         }
 
         int idSongArtistRole = record->at(songArtistOffset + artistCredit_idRole).get_asInt();
-        //By query order song is the last one appened to the album song vector.                
+        //By query order song is the last one appended to the album song vector.                
         if (idSongArtistRole == ROLE_ARTIST)
           album.songs.back().artistCredits.emplace_back(GetArtistCreditFromDataset(record, songArtistOffset));
         else 
@@ -1234,7 +1234,7 @@ int CMusicDatabase::AddArtist(const std::string& strArtist, const std::string& s
       }
 
     // 2) No MusicBrainz - search for any artist (MB ID or non) with the same name.
-    //    With MusicBrainz IDs this could return multiple artists and is non-determinstic
+    //    With MusicBrainz IDs this could return multiple artists and is non-deterministic
     //    Always pick the first artist ID returned by the DB to return.
     }
     else
@@ -1535,7 +1535,7 @@ bool CMusicDatabase::GetRolesByArtist(int idArtist, CFileItem* item)
   try
   {
     std::string strSQL = PrepareSQL("SELECT DISTINCT song_artist.idRole, Role.strRole FROM song_artist JOIN role ON "
-                                    " song_artist.idRole = Role.idRole WHERE idArtist = %i ORDER BY song_artist.idRole ASC", idArtist);
+                                    " song_artist.idRole = role.idRole WHERE idArtist = %i ORDER BY song_artist.idRole ASC", idArtist);
     if (!m_pDS->query(strSQL))
       return false;
     if (m_pDS->num_rows() == 0)
@@ -1759,7 +1759,7 @@ bool CMusicDatabase::GetGenresByArtist(int idArtist, CFileItem* item)
 {
   try
   {
-    std::string strSQL = PrepareSQL("SELECT DISTINCT song_genre.idGenre, Genre.strGenre FROM "
+    std::string strSQL = PrepareSQL("SELECT DISTINCT song_genre.idGenre, genre.strGenre FROM "
       "song_artist JOIN song ON song_artist.idSong = song.idSong JOIN "
       "song_genre ON song.idSong = song_genre.idSong JOIN "
       "genre ON song_genre.idGenre = genre.idGenre "
@@ -3086,7 +3086,7 @@ bool CMusicDatabase::CleanupRoles()
   try
   {
     // Cleanup orphaned roles (ie those that don't belong to a song entry)
-    // Must be executed AFTER the song, and song_srtist tables have been cleaned.
+    // Must be executed AFTER the song, and song_artist tables have been cleaned.
     // Do not remove default role (ROLE_ARTIST)
     std::string strSQL = "DELETE FROM role WHERE idRole > 1 AND idRole NOT IN (SELECT idRole FROM song_artist)";
     m_pDS->exec(strSQL);
@@ -3785,7 +3785,7 @@ bool CMusicDatabase::GetArtistsNav(const std::string& strBaseDir, CFileItemList&
       musicUrl.AddOption("songid", idSong);
 
     // Override albumArtistsOnly parameter (usually externally set to SETTING_MUSICLIBRARY_SHOWCOMPILATIONARTISTS)
-    // when local option already present in muscic URL thus allowing it to be an option in custom nodes
+    // when local option already present in music URL thus allowing it to be an option in custom nodes
     if (!musicUrl.HasOption("albumartistsonly"))
       musicUrl.AddOption("albumartistsonly", albumArtistsOnly);
 
@@ -4141,7 +4141,7 @@ bool CMusicDatabase::GetAlbumsByWhere(const std::string &baseDir, const Filter &
     // Get data from album, album_artist and artist tables to fully populate albums with album artists
     // All albums have at least one artist so inner join sufficient
     if (limited)
-      //Apply where clause and limits to albumview, then join as mutiple records in result set per album
+      //Apply where clause and limits to albumview, then join as multiple records in result set per album
       strSQL = "SELECT av.*, albumartistview.* "
                "FROM (SELECT albumview.* FROM albumview " + strSQLExtra + ") AS av "
                "JOIN albumartistview ON albumartistview.idalbum = av.idalbum ";
@@ -4262,7 +4262,7 @@ bool CMusicDatabase::GetSongsFullByWhere(const std::string &baseDir, const Filte
       // All songs now have at least one artist so inner join sufficient
       // Need guaranteed ordering for dataset processing to extract songs
       if (limited)
-        //Apply where clause and limits to songview, then join as mutiple records in result set per song
+        //Apply where clause and limits to songview, then join as multiple records in result set per song
         strSQL = "SELECT sv.*, songartistview.* "
           "FROM (SELECT songview.* FROM songview " + strSQLExtra + ") AS sv "
           "JOIN songartistview ON songartistview.idsong = sv.idsong ";
@@ -4955,7 +4955,7 @@ void CMusicDatabase::UpdateTables(int version)
         CLog::Log(LOGERROR, "Setting artist missing for albums without an artist has failed");
       }
     }
-    //Remove temp indices, full analyics for database created later
+    //Remove temp indices, full analytics for database created later
     m_pDS->exec("DROP INDEX idxSongArtist1 ON song_artist");
     m_pDS->exec("DROP INDEX idxAlbumArtist1 ON album_artist");
 
@@ -6676,7 +6676,7 @@ void CMusicDatabase::UpdateFileDateAdded(int songId, const std::string& strFileN
     if (NULL == m_pDB.get()) return;
     if (NULL == m_pDS.get()) return;
 
-    // 1 prefering to use the files mtime(if it's valid) and only using the file's ctime if the mtime isn't valid
+    // 1 preferring to use the files mtime(if it's valid) and only using the file's ctime if the mtime isn't valid
     if (g_advancedSettings.m_iMusicLibraryDateAdded == 1)
       dateAdded = CFileUtils::GetModificationDate(strFileNameAndPath, false);
     //2 using the newer datetime of the file's mtime and ctime

@@ -64,7 +64,7 @@ namespace ActiveAE
     //@{
     /*!
      * @brief Used to check for present mode types
-     * @param modeType The mode type identfier
+     * @param modeType The mode type identifier
      * @return True if modes present of given type
      */
     bool ContainsModes(int modeType);
@@ -77,7 +77,7 @@ namespace ActiveAE
 
     /*!
      * @brief Remove all modes from the database of a type.
-     * @param modeType The mode type identfier of functions to delete.
+     * @param modeType The mode type identifier of functions to delete.
      * @return True if the modes were deleted, false otherwise.
      */
     bool DeleteModes(int modeType);

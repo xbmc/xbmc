@@ -48,9 +48,9 @@ enum /* indices in atrtable */
   ATR_MSGDRM1, /* message */
   ATR_MSGDRM2, /* message */
   ATR_MSGDRM3, /* message */
-  ATR_MENUHIL0, /* hilit menu line */
-  ATR_MENUHIL1, /* hilit menu line */
-  ATR_MENUHIL2, /* hilit menu line */
+  ATR_MENUHIL0, /* highlight menu line */
+  ATR_MENUHIL1, /* highlight menu line */
+  ATR_MENUHIL2, /* highlight menu line */
   ATR_MENU0, /* menu line */
   ATR_MENU1, /* menu line */
   ATR_MENU2, /* menu line */

@@ -29,13 +29,13 @@ public:
   CVideoSyncIos(CVideoReferenceClock *clock) : CVideoSync(clock), m_LastVBlankTime(0), m_abort(false){}
   
   // CVideoSync interface
-  virtual bool Setup(PUPDATECLOCK func);
-  virtual void Run(std::atomic<bool>& stop);
-  virtual void Cleanup();
-  virtual float GetFps();
+  virtual bool Setup(PUPDATECLOCK func) override;
+  virtual void Run(std::atomic<bool>& stop) override;
+  virtual void Cleanup() override;
+  virtual float GetFps() override;
   
   // IDispResource interface
-  virtual void OnResetDevice();
+  virtual void OnResetDisplay() override;
 
   // used in the displaylink callback
   void IosVblankHandler();

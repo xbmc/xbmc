@@ -24,11 +24,13 @@
 #include "games/controllers/ControllerFeature.h"
 #include "input/joysticks/IButtonMap.h"
 #include "input/joysticks/IButtonMapCallback.h"
+#include "input/keyboard/KeymapActionMap.h"
 #include "input/InputManager.h"
 #include "peripherals/Peripherals.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 
+using namespace KODI;
 using namespace GAME;
 
 #define ESC_KEY_CODE  27
@@ -41,9 +43,13 @@ CGUIConfigurationWizard::CGUIConfigurationWizard(bool bEmulation, unsigned int c
   CThread("GUIConfigurationWizard"),
   m_bEmulation(bEmulation),
   m_controllerNumber(controllerNumber),
-  m_callback(nullptr)
+  m_actionMap(new KEYBOARD::CKeymapActionMap)
 {
   InitializeState();
+}
+
+CGUIConfigurationWizard::~CGUIConfigurationWizard(void)
+{
 }
 
 void CGUIConfigurationWizard::InitializeState(void)
@@ -51,10 +57,9 @@ void CGUIConfigurationWizard::InitializeState(void)
   m_currentButton = nullptr;
   m_currentDirection = JOYSTICK::ANALOG_STICK_DIRECTION::UNKNOWN;
   m_history.clear();
-  m_lastMappingActionMs = 0;
 }
 
-void CGUIConfigurationWizard::Run(const std::string& strControllerId, const std::vector<IFeatureButton*>& buttons, IConfigurationWizardCallback* callback)
+void CGUIConfigurationWizard::Run(const std::string& strControllerId, const std::vector<IFeatureButton*>& buttons)
 {
   Abort();
 
@@ -64,7 +69,6 @@ void CGUIConfigurationWizard::Run(const std::string& strControllerId, const std:
     // Set Run() parameters
     m_strControllerId = strControllerId;
     m_buttons = buttons;
-    m_callback = callback;
 
     // Reset synchronization variables
     m_inputEvent.Reset();
@@ -106,8 +110,6 @@ bool CGUIConfigurationWizard::Abort(bool bWait /* = true */)
 void CGUIConfigurationWizard::Process(void)
 {
   CLog::Log(LOGDEBUG, "Starting configuration wizard");
-
-  m_lastMappingActionMs = XbmcThreads::SystemClockMillis();
 
   InstallHooks();
 
@@ -231,16 +233,6 @@ bool CGUIConfigurationWizard::MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
       {
         m_history.insert(primitive);
 
-        // Detect button skipping
-        unsigned int elapsed = XbmcThreads::SystemClockMillis() - m_lastMappingActionMs;
-        if (elapsed <= SKIPPING_DETECTION_MS)
-        {
-          CLog::Log(LOGDEBUG, "%s: Possible skip detected after %ums", m_strControllerId.c_str(), elapsed);
-          if (m_callback)
-            m_callback->OnSkipDetected();
-        }
-        m_lastMappingActionMs = XbmcThreads::SystemClockMillis();
-
         OnMotion(buttonMap);
         m_inputEvent.Set();
       }
@@ -256,6 +248,11 @@ void CGUIConfigurationWizard::OnEventFrame(const JOYSTICK::IButtonMap* buttonMap
 
   if (m_bInMotion.find(buttonMap) != m_bInMotion.end() && !bMotion)
     OnMotionless(buttonMap);
+}
+
+void CGUIConfigurationWizard::OnLateAxis(const JOYSTICK::IButtonMap* buttonMap, unsigned int axisIndex)
+{
+  //! @todo
 }
 
 void CGUIConfigurationWizard::OnMotion(const JOYSTICK::IButtonMap* buttonMap)
@@ -275,7 +272,38 @@ void CGUIConfigurationWizard::OnMotionless(const JOYSTICK::IButtonMap* buttonMap
 
 bool CGUIConfigurationWizard::OnKeyPress(const CKey& key)
 {
-  return Abort(false);
+  using namespace KEYBOARD;
+
+  bool bHandled = false;
+
+  switch (m_actionMap->GetActionID(key))
+  {
+  case ACTION_MOVE_LEFT:
+  case ACTION_MOVE_RIGHT:
+  case ACTION_MOVE_UP:
+  case ACTION_MOVE_DOWN:
+  case ACTION_PAGE_UP:
+  case ACTION_PAGE_DOWN:
+    // Abort and allow motion
+    Abort(false);
+    bHandled = false;
+    break;
+
+  case ACTION_PARENT_DIR:
+  case ACTION_PREVIOUS_MENU:
+  case ACTION_STOP:
+    // Abort and prevent action
+    Abort(false);
+    bHandled = true;
+    break;
+
+  default:
+    // Absorb keypress
+    bHandled = true;
+    break;
+  }
+
+  return bHandled;
 }
 
 bool CGUIConfigurationWizard::OnButtonPress(const std::string& button)

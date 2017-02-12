@@ -63,8 +63,8 @@ private:
   std::vector<std::string> GetFileEnumValues(const std::string &path, const std::string &mask, const std::string &options) const;
 
   /*! \brief Translate list of addon IDs to list of addon names
-   \param addonIDslist comma seperated list of addon IDs
-   \return comma seperated list of addon names
+   \param addonIDslist comma separated list of addon IDs
+   \return comma separated list of addon names
    */
   std::string GetAddonNames(const std::string& addonIDslist) const;
 

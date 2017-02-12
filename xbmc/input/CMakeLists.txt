@@ -1,4 +1,5 @@
-set(SOURCES ButtonTranslator.cpp
+set(SOURCES Action.cpp
+            ButtonTranslator.cpp
             InertialScrollingHandler.cpp
             InputCodingTableBaiduPY.cpp
             InputCodingTableBasePY.cpp
@@ -12,7 +13,9 @@ set(SOURCES ButtonTranslator.cpp
             MouseStat.cpp
             XBMC_keytable.cpp)
 
-set(HEADERS ButtonTranslator.h
+set(HEADERS Action.h
+            ActionIDs.h
+            ButtonTranslator.h
             InertialScrollingHandler.h
             InputCodingTable.h
             InputCodingTableBaiduPY.h

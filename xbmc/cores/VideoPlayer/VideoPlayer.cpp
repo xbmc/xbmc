@@ -533,6 +533,7 @@ void CSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer, std::
         s.width = ((CDemuxStreamVideo*)stream)->iWidth;
         s.height = ((CDemuxStreamVideo*)stream)->iHeight;
         s.stereo_mode = ((CDemuxStreamVideo*)stream)->stereo_mode;
+        s.bitrate = ((CDemuxStreamVideo*)stream)->iBitRate;
       }
       if(stream->type == STREAM_AUDIO)
       {
@@ -545,6 +546,7 @@ void CSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer, std::
           s.name += type;
         }
         s.channels = ((CDemuxStreamAudio*)stream)->iChannels;
+        s.bitrate = ((CDemuxStreamAudio*)stream)->iBitRate;
       }
       Update(s);
     }
@@ -2013,7 +2015,8 @@ void CVideoPlayer::HandlePlaySpeed()
                  (m_CurrentAudio.packets == 0 && m_CurrentVideo.packets > threshold);
 
     if (m_CurrentAudio.syncState == IDVDStreamPlayer::SYNC_WAITSYNC &&
-        m_CurrentAudio.avsync == CCurrentStream::AV_SYNC_CONT)
+        (m_CurrentAudio.avsync == CCurrentStream::AV_SYNC_CONT ||
+         m_CurrentVideo.syncState == IDVDStreamPlayer::SYNC_INSYNC))
     {
       m_CurrentAudio.syncState = IDVDStreamPlayer::SYNC_INSYNC;
       m_CurrentAudio.avsync = CCurrentStream::AV_SYNC_NONE;
@@ -2079,7 +2082,7 @@ void CVideoPlayer::HandlePlaySpeed()
     else
     {
       // exceptions for which stream players won't start properly
-      // 1. videoplayer has not detected a keyframe within lenght of demux buffers
+      // 1. videoplayer has not detected a keyframe within length of demux buffers
       if (m_CurrentAudio.id >= 0 && m_CurrentVideo.id >= 0 &&
           !m_VideoPlayerAudio->AcceptsData() &&
           m_CurrentVideo.syncState == IDVDStreamPlayer::SYNC_STARTING &&
@@ -2814,7 +2817,7 @@ void CVideoPlayer::HandleMessages()
       if (speed != DVD_PLAYSPEED_PAUSE && m_playSpeed != DVD_PLAYSPEED_PAUSE && speed != m_playSpeed)
         m_callback.OnPlayBackSpeedChanged(speed / DVD_PLAYSPEED_NORMAL);
 
-      // notifiy GUI, skins may want to show the seekbar
+      // notify GUI, skins may want to show the seekbar
       g_infoManager.SetDisplayAfterSeek();
 
       if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER) && speed != m_playSpeed)
@@ -2886,8 +2889,8 @@ void CVideoPlayer::HandleMessages()
     {
       FlushBuffers(false);
       CDVDInputStreamPVRManager* input = dynamic_cast<CDVDInputStreamPVRManager*>(m_pInputStream);
-      //! @todo find a better solution for the "otherStreaHack"
-      //! a stream is not sopposed to be terminated before demuxer
+      //! @todo find a better solution for the "otherStreamHack"
+      //! a stream is not supposed to be terminated before demuxer
       if (input && input->IsOtherStreamHack())
       {
         CloseDemuxer();
@@ -3422,7 +3425,6 @@ void CVideoPlayer::UpdateStreamInfos()
   if (streamId >= 0 && streamId < GetVideoStreamCount())
   {
     SelectionStream& s = m_SelectionStreams.Get(STREAM_VIDEO, streamId);
-    s.bitrate = m_VideoPlayerVideo->GetVideoBitrate();
     s.aspect_ratio = m_renderManager.GetAspectRatio();
     CRect viewRect;
     m_renderManager.GetVideoRect(s.SrcRect, s.DestRect, viewRect);
@@ -3456,13 +3458,13 @@ void CVideoPlayer::UpdateStreamInfos()
   if (streamId >= 0 && streamId < GetAudioStreamCount())
   {
     SelectionStream& s = m_SelectionStreams.Get(STREAM_AUDIO, streamId);
-    s.bitrate = m_VideoPlayerAudio->GetAudioBitrate();
     s.channels = m_VideoPlayerAudio->GetAudioChannels();
 
     CDemuxStream* stream = m_pDemuxer->GetStream(m_CurrentAudio.demuxerId, m_CurrentAudio.id);
     if (stream && stream->type == STREAM_AUDIO)
     {
       s.codec = m_pDemuxer->GetStreamCodecName(stream->demuxerId, stream->uniqueId);
+      s.bitrate = ((CDemuxStreamAudio*)stream)->iBitRate;
     }
   }
 }
@@ -3630,7 +3632,7 @@ int64_t CVideoPlayer::GetTotalTimeInMsec()
   return llrint(m_State.time_total);
 }
 
-// return length in seconds.. this should be changed to return in milleseconds throughout xbmc
+// return length in seconds.. this should be changed to return in milliseconds throughout xbmc
 int64_t CVideoPlayer::GetTotalTime()
 {
   return GetTotalTimeInMsec();
@@ -3789,7 +3791,7 @@ bool CVideoPlayer::OpenStream(CCurrentStream& current, int64_t demuxerId, int iS
   {
     if(stream)
     {
-      /* mark stream as disabled, to disallaw further attempts*/
+      /* mark stream as disabled, to disallow further attempts*/
       CLog::Log(LOGWARNING, "%s - Unsupported stream %d. Stream disabled.", __FUNCTION__, stream->uniqueId);
       stream->disabled = true;
     }

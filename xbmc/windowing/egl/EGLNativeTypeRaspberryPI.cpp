@@ -362,7 +362,7 @@ bool CEGLNativeTypeRaspberryPI::SetNativeResolution(const RESOLUTION_INFO &res)
     (DISPMANX_RESOURCE_HANDLE_T)0,  // src
     &src_rect,
     DISPMANX_PROTECTION_NONE,
-    &alpha,                         //alphe
+    &alpha,                         //alpha
     &clamp,                         //clamp
     transform);                     // transform
 
@@ -488,7 +488,7 @@ bool CEGLNativeTypeRaspberryPI::ProbeResolutions(std::vector<RESOLUTION_INFO> &r
 
   /* read initial desktop resolution before probe resolutions.
    * probing will replace the desktop resolution when it finds the same one.
-   * we raplace it because probing will generate more detailed 
+   * we replace it because probing will generate more detailed 
    * resolution flags we don't get with vc_tv_get_state.
    */
 
