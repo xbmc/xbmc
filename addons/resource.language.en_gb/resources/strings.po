@@ -11266,23 +11266,7 @@ msgctxt "#19687"
 msgid "Play recording"
 msgstr ""
 
-#. label for 'scanning for pvr services' dialog header
-#: xbmc/addons/PVRClient.cpp
-msgctxt "#19688"
-msgid "Scanning for PVR services"
-msgstr ""
-
-#. label for 'scanning for pvr services' dialog text
-#: xbmc/addons/PVRClient.cpp
-msgctxt "#19689"
-msgid "%s service found at %s"
-msgstr ""
-
-#. label for 'scanning for pvr services' dialog text
-#: xbmc/addons/PVRClient.cpp
-msgctxt "#19690"
-msgid "Do you want to use this service?"
-msgstr ""
+#empty strings from id 19688 to 19690
 
 #. Text for shutdown confirmation dialog.
 #: xbmc/pvr/PVRManager.cpp

@@ -18,18 +18,21 @@
  *
  */
 
-#include "Application.h"
+#include "PVRClient.h"
+
+#include <cassert>
+#include <cmath>
+#include <memory>
+#include <algorithm>
+
 #include "ServiceBroker.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/libKODI_guilib.h"
 #include "epg/Epg.h"
 #include "filesystem/SpecialProtocol.h"
-#include "messaging/ApplicationMessenger.h"
-#include "messaging/helpers/DialogHelper.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
-#include "utils/Variant.h"
 
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
@@ -39,55 +42,26 @@
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/timers/PVRTimerType.h"
 
-#include "PVRClient.h"
-
-#include <assert.h>
-#include <cmath>
-#include <memory>
-#include <algorithm>
-
 using namespace ADDON;
 using namespace PVR;
 using namespace EPG;
-using namespace KODI::MESSAGING;
-
-using KODI::MESSAGING::HELPERS::DialogResponse;
 
 #define DEFAULT_INFO_STRING_VALUE "unknown"
 
 std::unique_ptr<CPVRClient> CPVRClient::FromExtension(AddonProps props, const cp_extension_t* ext)
 {
-  std::string strAvahiType = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@avahi_type");
-  std::string strAvahiIpSetting = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@avahi_ip_setting");
-  std::string strAvahiPortSetting = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@avahi_port_setting");
-  return std::unique_ptr<CPVRClient>(new CPVRClient(std::move(props), strAvahiType,
-      strAvahiIpSetting, strAvahiPortSetting));
+  return std::unique_ptr<CPVRClient>(new CPVRClient(std::move(props)));
 }
 
 CPVRClient::CPVRClient(AddonProps props)
   : CAddonDll(std::move(props)),
-    m_apiVersion("0.0.0"),
-    m_bAvahiServiceAdded(false)
-{
-  ResetProperties();
-}
-
-CPVRClient::CPVRClient(AddonProps props, const std::string& strAvahiType, const std::string& strAvahiIpSetting,
-    const std::string& strAvahiPortSetting)
-  : CAddonDll(std::move(props)),
-    m_strAvahiType(strAvahiType),
-    m_strAvahiIpSetting(strAvahiIpSetting),
-    m_strAvahiPortSetting(strAvahiPortSetting),
-    m_apiVersion("0.0.0"),
-    m_bAvahiServiceAdded(false)
+    m_apiVersion("0.0.0")
 {
   ResetProperties();
 }
 
 CPVRClient::~CPVRClient(void)
 {
-  if (m_bAvahiServiceAdded)
-    CZeroconfBrowser::GetInstance()->RemoveServiceType(m_strAvahiType);
   Destroy();
 }
 
@@ -1616,77 +1590,6 @@ time_t CPVRClient::GetBufferTimeEnd(void) const
     time = m_struct.GetBufferTimeEnd();
   }
   return time;
-}
-
-bool CPVRClient::CanAutoconfigure(void) const
-{
-  /** can only auto-configure when avahi details are provided in addon.xml */
-  return !m_strAvahiType.empty() &&
-      !m_strAvahiIpSetting.empty() &&
-      !m_strAvahiPortSetting.empty();
-}
-
-bool CPVRClient::AutoconfigureRegisterType(void)
-{
-  if (!m_strAvahiType.empty())
-  {
-    // AddServiceType() returns false when already registered
-    m_bAvahiServiceAdded |= CZeroconfBrowser::GetInstance()->AddServiceType(m_strAvahiType);
-    return true;
-  }
-
-  return false;
-}
-
-bool CPVRClient::Autoconfigure(void)
-{
-  bool bReturn(false);
-
-  if (!CanAutoconfigure())
-    return bReturn;
-
-  std::string strHostPort;
-  std::vector<CZeroconfBrowser::ZeroconfService> found_services = CZeroconfBrowser::GetInstance()->GetFoundServices();
-  for(std::vector<CZeroconfBrowser::ZeroconfService>::iterator it = found_services.begin(); !bReturn && it != found_services.end(); ++it)
-  {
-    /** found the type that we are looking for */
-    if ((*it).GetType() == m_strAvahiType && std::find(m_rejectedAvahiHosts.begin(), m_rejectedAvahiHosts.end(), *it) == m_rejectedAvahiHosts.end())
-    {
-      /** try to resolve */
-      if(!CZeroconfBrowser::GetInstance()->ResolveService((*it)))
-      {
-        CLog::Log(LOGWARNING, "%s - %s service found but the host name couldn't be resolved", __FUNCTION__, (*it).GetName().c_str());
-      }
-      else
-      {
-        // %s service found at %s
-        std::string strLogLine(StringUtils::Format(g_localizeStrings.Get(19689).c_str(), (*it).GetName().c_str(), (*it).GetIP().c_str()));
-        CLog::Log(LOGDEBUG, "%s - %s", __FUNCTION__, strLogLine.c_str());
-
-        if (DialogResponse::YES != 
-          HELPERS::ShowYesNoDialogLines(CVariant{19688}, // Scanning for PVR services
-                                        CVariant{strLogLine},
-                                        CVariant{19690})) // Do you want to use this service?
-        {
-          CLog::Log(LOGDEBUG, "%s - %s service found but not enabled by the user", __FUNCTION__, (*it).GetName().c_str());
-          m_rejectedAvahiHosts.push_back(*it);
-        }
-        else
-        {
-          /** update the settings and return */
-          std::string strPort(StringUtils::Format("%d", (*it).GetPort()));
-          UpdateSetting(m_strAvahiIpSetting, (*it).GetIP());
-          UpdateSetting(m_strAvahiPortSetting, strPort);
-          SaveSettings();
-          CLog::Log(LOGNOTICE, "%s - auto-configured %s using host '%s' and port '%d'", __FUNCTION__, (*it).GetName().c_str(), (*it).GetIP().c_str(), (*it).GetPort());
-
-          bReturn = true;
-        }
-      }
-    }
-  }
-
-  return bReturn;
 }
 
 bool CPVRClient::IsRealTimeStream(void) const
