@@ -51,7 +51,7 @@ namespace ADDON
 
     bool DllLoaded(void) const;
 
-    ADDON_STATUS CreateInstance(int instanceType, const std::string& instanceID, KODI_HANDLE instance, KODI_HANDLE* addonInstance);
+    ADDON_STATUS CreateInstance(int instanceType, const std::string& instanceID, KODI_HANDLE instance, KODI_HANDLE* addonInstance, KODI_HANDLE parentInstance = nullptr);
     void DestroyInstance(const std::string& instanceID);
 
     virtual void UpdateSettings(std::map<std::string, std::string>& settings);
