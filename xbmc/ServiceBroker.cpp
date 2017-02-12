@@ -83,6 +83,11 @@ PERIPHERALS::CPeripherals& CServiceBroker::GetPeripherals()
   return g_application.m_ServiceManager->GetPeripherals();
 }
 
+CFavouritesService& CServiceBroker::GetFavouritesService()
+{
+  return g_application.m_ServiceManager->GetFavouritesService();
+}
+
 bool CServiceBroker::IsBinaryAddonCacheUp()
 {
   return g_application.m_ServiceManager->init_level > 1;

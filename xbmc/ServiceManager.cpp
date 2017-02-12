@@ -23,9 +23,11 @@
 #include "ContextMenuManager.h"
 #include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
 #include "cores/DataCacheCore.h"
+#include "favourites/FavouritesService.h"
 #include "games/GameServices.h"
 #include "peripherals/Peripherals.h"
 #include "PlayListPlayer.h"
+#include "profiles/ProfilesManager.h"
 #include "utils/log.h"
 #include "interfaces/AnnouncementManager.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
@@ -80,6 +82,7 @@ bool CServiceManager::Init2()
   m_binaryAddonCache.reset( new ADDON::CBinaryAddonCache());
   m_binaryAddonCache->Init();
 
+  m_favouritesService.reset(new CFavouritesService(CProfilesManager::GetInstance().GetProfileUserDataFolder()));
   m_contextMenuManager.reset(new CContextMenuManager(*m_addonMgr.get()));
 
   init_level = 2;
@@ -131,6 +134,7 @@ void CServiceManager::Deinit()
   m_gameServices->Deinit();
   m_peripherals.reset();
   m_contextMenuManager.reset();
+  m_favouritesService.reset();
   m_binaryAddonCache.reset();
   if (m_PVRManager)
     m_PVRManager->Deinit();
@@ -212,6 +216,11 @@ PERIPHERALS::CPeripherals& CServiceManager::GetPeripherals()
   return *m_peripherals;
 }
 
+CFavouritesService& CServiceManager::GetFavouritesService()
+{
+  return *m_favouritesService;
+}
+
 // deleters for unique_ptr
 void CServiceManager::delete_dataCacheCore::operator()(CDataCacheCore *p) const
 {
@@ -224,6 +233,11 @@ void CServiceManager::delete_contextMenuManager::operator()(CContextMenuManager 
 }
 
 void CServiceManager::delete_activeAE::operator()(ActiveAE::CActiveAE *p) const
+{
+  delete p;
+}
+
+void CServiceManager::delete_favouritesService::operator()(CFavouritesService *p) const
 {
   delete p;
 }

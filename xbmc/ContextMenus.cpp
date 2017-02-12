@@ -19,8 +19,8 @@
  */
 
 #include "FileItem.h"
+#include "ServiceBroker.h"
 #include "dialogs/GUIDialogFavourites.h"
-#include "filesystem/FavouritesDirectory.h"
 #include "storage/MediaManager.h"
 #include "utils/URIUtils.h"
 
@@ -65,15 +65,13 @@ namespace CONTEXTMENU
   bool CFavouriteContextMenuAction::Execute(const CFileItemPtr& item) const
   {
     CFileItemList items;
-    if (XFILE::CFavouritesDirectory::Load(items))
+    CServiceBroker::GetFavouritesService().GetAll(items);
+    for (const auto& favourite : items)
     {
-      for (auto favourite : items)
+      if (favourite->GetPath() == item->GetPath())
       {
-        if (favourite->GetPath() == item->GetPath())
-        {
-          if (DoExecute(items, favourite))
-            return XFILE::CFavouritesDirectory::Save(items);
-        }
+        if (DoExecute(items, favourite))
+          return CServiceBroker::GetFavouritesService().Save(items);
       }
     }
     return false;
