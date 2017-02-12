@@ -14783,7 +14783,10 @@ msgctxt "#24093"
 msgid "Checking %s..."
 msgstr ""
 
-#empty string with id 24094
+#: xbmc/addons/AddonInstaller.cpp
+msgctxt "#24094"
+msgid "Add-on disabled due to being marked broken in repository."
+msgstr ""
 
 #: xbmc/addons/GUIDialogAddonInfo.cpp
 msgctxt "#24095"
