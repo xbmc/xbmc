@@ -37,9 +37,9 @@
 #include "platform/MessagePrinter.h"
 #include "utils/log.h"
 
-extern "C" void XBMC_ReplaceCurrentPlayList(CFileItemList &playlist)
+extern "C" void XBMC_EnqueuePlayList(CFileItemList &playlist, EnqueueOperation op)
 {
-  g_application.ReplaceCurrentPlayList(playlist);
+  g_application.EnqueuePlayList(playlist, op);
 }
 
 extern "C" int XBMC_Run(bool renderGUI, const CAppParamParser &params)
