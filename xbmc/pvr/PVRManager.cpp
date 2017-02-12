@@ -183,7 +183,15 @@ void CPVRManager::Announce(AnnouncementFlag flag, const char *sender, const char
 
   if ((flag & (ANNOUNCEMENT::System)))
   {
-    if (strcmp(message, "OnWake") == 0)
+    if (strcmp(message, "OnQuit") == 0 ||
+        strcmp(message, "OnSleep") == 0)
+    {
+      // save the currently playing channel.
+      const CPVRChannelPtr playingChannel(GetCurrentChannel());
+      if (playingChannel)
+        playingChannel->SetWasPlayingOnLastQuit(true);
+    }
+    else if (strcmp(message, "OnWake") == 0)
     {
       /* start job to search for missing channel icons */
       TriggerSearchMissingChannelIcons();

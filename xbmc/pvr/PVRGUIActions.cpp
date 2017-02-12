@@ -778,21 +778,27 @@ namespace PVR
 
   bool CPVRGUIActions::ContinueLastPlayedChannel() const
   {
+    const CFileItemPtr item(g_PVRChannelGroups->GetLastPlayedChannel());
+    const CPVRChannelPtr channel(item ? item->GetPVRChannelInfoTag() : CPVRChannelPtr());
+    bool bWasPlaying = false;
+    if (channel)
+    {
+      // Obtain previous 'was playing on last app quit' flag and reset it, then.
+      channel->SetWasPlayingOnLastQuit(false, bWasPlaying);
+    }
+
     int iPlayMode = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_PVRPLAYBACK_STARTLAST);
     if (iPlayMode == CONTINUE_LAST_CHANNEL_OFF)
       return false;
 
-    const CFileItemPtr item(g_PVRChannelGroups->GetLastPlayedChannel());
-    if (item && item->HasPVRChannelInfoTag())
+    // Only switch to the channel if it was playing on last app quit.
+    if (bWasPlaying)
     {
-      const CPVRChannelPtr channel(item->GetPVRChannelInfoTag());
-
       CLog::Log(LOGNOTICE, "PVRGUIActions - %s - continue playback on channel '%s'", __FUNCTION__, channel->ChannelName().c_str());
-
       g_PVRManager.SetPlayingGroup(g_PVRChannelGroups->GetLastPlayedGroup(channel->ChannelID()));
-
       return SwitchToChannel(item, true, iPlayMode == CONTINUE_LAST_CHANNEL_IN_FOREGROUND);
     }
+
     return false;
   }
 
