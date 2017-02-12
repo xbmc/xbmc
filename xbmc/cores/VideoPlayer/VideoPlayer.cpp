@@ -1377,6 +1377,9 @@ void CVideoPlayer::Process()
       continue;
     }
 
+    // check if in a cut or commercial break that should be automatically skipped
+    CheckAutoSceneSkip();
+
     // handle messages send to this thread, like seek or demuxer reset requests
     HandleMessages();
 
@@ -1616,9 +1619,6 @@ void CVideoPlayer::Process()
 
     // process the packet
     ProcessPacket(pStream, pPacket);
-
-    // check if in a cut or commercial break that should be automatically skipped
-    CheckAutoSceneSkip();
 
     // update the player info for streams
     if (m_player_status_timer.IsTimePast())
@@ -2337,6 +2337,7 @@ void CVideoPlayer::CheckAutoSceneSkip()
     return;
 
   const int64_t clock = GetTime();
+  int lastPos = m_Edl.GetLastQueryTime();
 
   CEdl::Cut cut;
   if (!m_Edl.InCut(clock, &cut))
@@ -2366,7 +2367,8 @@ void CVideoPlayer::CheckAutoSceneSkip()
   }
   else if (cut.action == CEdl::COMM_BREAK)
   {
-    if (GetPlaySpeed() > 0 && clock < cut.end - 1000)
+    // marker for commbrak may be inaccurate. allow user to skip into break from the back
+    if (GetPlaySpeed() >= 0 && lastPos <= cut.start && clock < cut.end - 1000)
     {
       std::string strTimeString = StringUtils::SecondsToTimeString((cut.end - cut.start) / 1000, TIME_FORMAT_MM_SS);
       CGUIDialogKaiToast::QueueNotification(g_localizeStrings.Get(25011), strTimeString);
