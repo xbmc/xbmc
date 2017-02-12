@@ -14790,7 +14790,6 @@ msgctxt "#24095"
 msgid "Local package cache"
 msgstr ""
 
-#: xbmc/addons/Repository.cpp
 #: addons/skin.estuary/xml/DialogAddonInfo.xml
 msgctxt "#24096"
 msgid "Add-on is incompatible or has been marked broken in repository."
