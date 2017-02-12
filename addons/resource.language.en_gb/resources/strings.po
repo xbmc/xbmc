@@ -14792,7 +14792,7 @@ msgstr ""
 
 #: addons/skin.estuary/xml/DialogAddonInfo.xml
 msgctxt "#24096"
-msgid "Add-on is incompatible or has been marked broken in repository."
+msgid "Add-on has been marked broken in repository."
 msgstr ""
 
 #: xbmc/addons/Repository.cpp
