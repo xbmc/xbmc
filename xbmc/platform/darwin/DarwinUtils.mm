@@ -218,7 +218,7 @@ enum iosPlatform getIosPlatform()
   return eDev;
 }
 
-bool CDarwinUtils::IsMavericks(void)
+bool CDarwinUtils::IsMavericksOrHigher(void)
 {
   static int isMavericks = -1;
 #if defined(TARGET_DARWIN_OSX)

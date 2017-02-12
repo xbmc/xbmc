@@ -53,11 +53,11 @@ extern OSErr	CPSSetFrontProcess(CPSProcessSerNum *psn);
 }
 #endif /* SDL_USE_CPS */
 
-const NSTimeInterval cOpenFileScheduleTimeoutInterval = 1.0f; // 1 sec timeout for repeated openFile request fro Finder
+const NSTimeInterval cOpenFileScheduleTimeoutInterval = 1.0f; // 1 sec timeout for repeated openFile request from Finder
 static int    gArgc;
-static char  **gArgv;
+static char   **gArgv;
 static BOOL   gFinderLaunch;
-static BOOL   gCalledAppMainline = FALSE;
+static BOOL   gCalledAppMainline = NO;
 static CAppParamParser gAppParamParser;
 
 static NSString *getApplicationName(void)
@@ -238,9 +238,9 @@ static void setupWindowMenu(void)
     if (CFURLGetFileSystemRepresentation(url2, true, (UInt8 *)parentdir, MAXPATHLEN))
     {
       assert( chdir (parentdir) == 0 );   /* chdir to the binary app's parent */
-		}
-		CFRelease(url);
-		CFRelease(url2);
+    }
+	CFRelease(url);
+	CFRelease(url2);
   }
 }
 
@@ -291,10 +291,30 @@ static void setupWindowMenu(void)
   [pool release];
 }
 
+// Add App Services
+- (void) registerService
+{
+    [NSApp setServicesProvider:self];
+    NSUpdateDynamicServices();
+}
+
+// Remove App Service
+- (void) unregisterService
+{
+    // NSUnregisterServicesProvider Unregisters a service provider.
+    //      You should not use this function to unregister the services provided by your application.
+    //      For your application’s services, you should use the setServicesProvider: method of NSApplication, passing a nil argument.
+    [NSApp setServicesProvider:nil];
+    NSUpdateDynamicServices();
+}
+
 // Called after the internal event loop has started running.
 - (void) applicationDidFinishLaunching: (NSNotification *) note
 {
-  // enable multithreading, we should NOT have to do this but as we are mixing NSThreads/pthreads...
+  [self unregisterService]; // Try to update (delete not yet existing entries f.e.)
+  [self registerService];
+
+    // enable multithreading, we should NOT have to do this but as we are mixing NSThreads/pthreads...
   if (![NSThread isMultiThreaded])
     [NSThread detachNewThreadSelector:@selector(kickstartMultiThreaded:) toTarget:self withObject:nil];
 
@@ -348,7 +368,7 @@ static void setupWindowMenu(void)
   setenv("SDL_VIDEO_ALLOW_SCREENSAVER", "1", true);
 
   // Hand off to main application code
-  gCalledAppMainline = TRUE;
+  gCalledAppMainline = YES;
 
   // stop the main loop so we return to main (below) and can
   // call SDL_main there.
@@ -366,13 +386,112 @@ static void setupWindowMenu(void)
     data1: 0
     data2: 0];
   //
-  [NSApp postEvent: event atStart: true];
+  [NSApp postEvent:event atStart:YES];
 }
 
-- (void)replaceCurrentPlaylist
+- (NSArray*) fileListFromPasteboard:(NSPasteboard*)pboard
 {
-    XBMC_ReplaceCurrentPlayList(gAppParamParser.m_playlist);
+    NSArray* pboardItems = pboard.pasteboardItems;  // copy as soon as you can, may change, disappear etc...
+    NSMutableArray* foundFiles = [[[NSMutableArray alloc] init] autorelease];
+    
+    for (NSPasteboardItem* item in pboardItems) {
+        for (NSString* type in item.types) {
+            if ([type isEqualToString:@"public.file-url"]) {
+                NSString* string = [item stringForType:type];
+                
+                NSDataDetector* linkDetector = [NSDataDetector dataDetectorWithTypes:NSTextCheckingTypeLink error:nil];
+                NSArray* matches = [linkDetector matchesInString:string options:0 range:NSMakeRange(0, [string length])];
+                
+                if (matches.count) {
+                    // Enumerat all of the links and open one by one
+                    for (NSTextCheckingResult* nextMatch in matches) {
+                        NSString* substringForMatch = [string substringWithRange:nextMatch.range];
+                        
+                        if (substringForMatch) {
+                            NSURL* foundURL = [NSURL URLWithString:substringForMatch];
+                            NSString* fileName = nil;
+                            
+                            if (foundURL.isFileReferenceURL || [foundURL.scheme caseInsensitiveCompare:@"file"] == NSOrderedSame)   // Already a file system path URL
+                                fileName = foundURL.path;
+                            else {
+                                foundURL = [NSURL fileURLWithPath:substringForMatch];
+                                if (foundURL.isFileReferenceURL || [foundURL.scheme caseInsensitiveCompare:@"file"] == NSOrderedSame)   // Already a file system path URL
+                                    fileName = foundURL.path;
+                            }
+                            if (fileName)
+                                [foundFiles addObject:fileName];
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    return foundFiles;
+}
+
+- (void) enqueuePlayListNext:(NSPasteboard*)pboard userData:(NSString *)userData error:(NSString **)error
+{
+    NSArray* fileNames = [self fileListFromPasteboard:pboard];
+    
+    if (fileNames.count)
+        [self openFiles:fileNames operation:EOpNext];
+}
+
+- (void) enqueuePlayListLast:(NSPasteboard*)pboard userData:(NSString *)userData error:(NSString **)error
+{
+    NSArray* fileNames = [self fileListFromPasteboard:pboard];
+    
+    if (fileNames.count)
+        [self openFiles:fileNames operation:EOpLast];
+}
+
+- (void) replacePlaylist
+{
+    // Will ignore empty lists
+    XBMC_EnqueuePlayList(gAppParamParser.m_playlist, EOpReplace);
     gAppParamParser.m_playlist.Clear();
+}
+
+- (void) enqueueNextPlaylist
+{
+    // Will ignore empty lists
+    XBMC_EnqueuePlayList(gAppParamParser.m_playlist, EOpNext);
+    gAppParamParser.m_playlist.Clear();
+}
+
+- (void) enqueueLastPlaylist
+{
+    // Will ignore empty lists
+    XBMC_EnqueuePlayList(gAppParamParser.m_playlist, EOpLast);
+    gAppParamParser.m_playlist.Clear();
+}
+
+- (BOOL) openFiles:(NSArray *)fileNames operation:(EnqueueOperation)operation
+{
+    assert(operation >= EOpReplace && operation <= EOpLast && "Invalid Enqueue operation");
+    BOOL result = YES;
+    
+    for (NSString* fileName in fileNames)
+        result = (result && [self openFile:fileName]);
+    
+    // Here we need a little trick as even [NSApplicartionDelegate application:openFiles:]
+    // can be called several times in case of multiple file open requested at once.
+    // We will replace the current playlist only we have not received new request
+    // after a while, now cOpenFileScheduleTimeoutInterval.
+    //
+    // First cancel possible previous request if it is not the first openFile
+    // request within the timeout period.
+    //
+    SEL operations[] = { @selector(replacePlaylist), @selector(enqueueNextPlaylist), @selector(enqueueLastPlaylist) };
+    [NSObject cancelPreviousPerformRequestsWithTarget:self
+                                             selector:operations[operation]
+                                               object:nil];
+    [self performSelector:operations[operation]
+               withObject:nil
+               afterDelay:cOpenFileScheduleTimeoutInterval];
+    
+    return result;
 }
 
 /*
@@ -382,81 +501,37 @@ static void setupWindowMenu(void)
  *  CFBundleDocumentsType section in your Info.plist to get this message,
  *  apparently.
  *
- * If invoked at app startup files are added to gArgv, so to the app, they'll 
- *  look like command line arguments. 
- *  Previously, apps launched from the finder had nothing but an argv[0].
- *
- * If invoked after app already strated just collects requested files than
+ * If invoked after app already started just collects requested files than
  *  replaces the current playlist with the newly requested file list.
- *
- * This message may be received multiple times to open several docs on launch.
  */
-- (BOOL)application:(NSApplication *)theApplication openFile:(NSString *)filename
+- (BOOL) openFile:(NSString *)fileName
 {
-  const char *temparg = NULL;
-  size_t arglen = 0;
-  char *arg = NULL;
-  char **newargv = NULL;
-
-  // MacOS is passing command line args.
-  if (!gFinderLaunch)
-    return FALSE;
-
-  if (gCalledAppMainline) {
-    // If app has started already, collect files to open and replace the current
-    // playlist with a new collected file list if no new file open request
-    // received after a given time period.
-    //
-    // NOTE: We could also use here the already existing gArgv as we do not use
-    //       it further currently, but if we ever would like to use it later it
-    //       might be a good idea to preserv the original startup arguments,
-    //       so instead now using a separately maintained list for the newly
-    //       scheduled files
-    //
-    const char* argv[2] = { "", [filename UTF8String] };
+    // MacOS is passing command line args.
+    if (!gFinderLaunch)
+        return NO;
     
+    const char* argv[2] = { "", [fileName UTF8String] };
     gAppParamParser.Parse(argv, 2); // Append to the collection
     
-    // Here we need a little trick as [NSApplicartionDelegate application:openFile:]
-    // can be called several times in case of multiple file open requested at once.
-    // We will replace the current playlist only we have not received new request
-    // after a while, now cOpenFileScheduleTimeoutInterval.
-    //
-    // First cancel possible previous request if it is not the first openFile
-    // request within the timeout period.
-    //
-    [NSObject cancelPreviousPerformRequestsWithTarget:self
-                                             selector:@selector(replaceCurrentPlaylist)
-                                               object:nil];
-    [self performSelector:@selector(replaceCurrentPlaylist)
-                   withObject:nil
-               afterDelay:cOpenFileScheduleTimeoutInterval];
-  }
-  else {
-    // If app starting right now just append the new filename to our gArgv list
-    // and let it be processed later as it would come from the command line.
-    temparg = [filename UTF8String];
-    arglen = SDL_strlen(temparg) + 1;
-    arg = (char *) SDL_malloc(arglen);
-    if (arg == NULL)
-      return FALSE;
-
-    newargv = (char **) realloc(gArgv, sizeof (char *) * (gArgc + 2));
-    if (newargv == NULL) {
-      SDL_free(arg);
-      return FALSE;
-    }
-    gArgv = newargv;
-
-    SDL_strlcpy(arg, temparg, arglen);
-    gArgv[gArgc++] = arg;
-    gArgv[gArgc] = NULL;
-  }
-    
-  return TRUE;
+    return YES;
 }
 
-- (void) deviceDidMountNotification:(NSNotification *) note 
+/*
+ * Catch document open requests...this lets us notice files when the app
+ *  was launched by double-clicking a document, or when a document was
+ *  dragged/dropped on the app's icon. You need to have a
+ *  CFBundleDocumentsType section in your Info.plist to get this message,
+ *  apparently.
+ *
+ * This message may be received multiple times to open several docs on launch 
+ *  or at runtime from finder. (even if this called openFiles: :-O)
+ */
+- (void) application:(NSApplication *)theApplication openFiles:(NSArray *)fileNames
+{
+    [self openFiles:fileNames operation:EOpReplace];
+}
+
+- (void) deviceDidMountNotification:(NSNotification *) note
 {
   // calling into c++ code, need to use autorelease pools
   NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
@@ -580,8 +655,8 @@ int main(int argc, char *argv[])
   // as the whole ProcessSerialNumber approach is deprecated
   // in that case assume finder launch - else
   // we wouldn't handle documents/movies someone dragged on the app icon
-  if (CDarwinUtils::IsMavericks())
-    gFinderLaunch = TRUE;
+  if (CDarwinUtils::IsMavericksOrHigher())
+    gFinderLaunch = YES;
 
   // Ensure the application object is initialised
   [XBMCApplication sharedApplication];

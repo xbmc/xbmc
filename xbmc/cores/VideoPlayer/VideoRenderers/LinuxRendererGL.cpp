@@ -303,7 +303,7 @@ bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsign
   // on osx 10.9 mavericks we get a strange ripple
   // effect when rendering with pbo
   // when used on intel gpu - we have to quirk it here
-  if (CDarwinUtils::IsMavericks())
+  if (CDarwinUtils::IsMavericksOrHigher())
   {
     std::string rendervendor = g_Windowing.GetRenderVendor();
     StringUtils::ToLower(rendervendor);

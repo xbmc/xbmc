@@ -19,9 +19,10 @@
  */
 
 #pragma once
+#include "XBApplicationEx.h"
 
 class CFileItemList;
 
-extern "C" void XBMC_ReplaceCurrentPlayList(CFileItemList &playlist);
+extern "C" void XBMC_EnqueuePlayList(CFileItemList &playlist, EnqueueOperation op);
 extern "C" int XBMC_Run(bool renderGUI, CFileItemList &playlist);
 
