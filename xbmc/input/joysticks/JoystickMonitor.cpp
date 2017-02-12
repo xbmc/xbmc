@@ -22,6 +22,7 @@
 #include "Application.h"
 #include "input/InputManager.h"
 
+using namespace KODI;
 using namespace JOYSTICK;
 
 bool CJoystickMonitor::OnButtonMotion(unsigned int buttonIndex, bool bPressed)

@@ -22,6 +22,7 @@
 #include "input/joysticks/JoystickEasterEgg.h"
 #include "input/Key.h"
 
+using namespace KODI;
 using namespace KEYBOARD;
 
 std::vector<XBMCVKey> CKeyboardEasterEgg::m_sequence = {

@@ -21,6 +21,8 @@
 
 #include <string>
 
+namespace KODI
+{
 namespace MOUSE
 {
   /*!
@@ -72,4 +74,5 @@ namespace MOUSE
      */
     virtual bool GetButtonIndex(const std::string& feature, unsigned int& buttonIndex) = 0;
   };
+}
 }

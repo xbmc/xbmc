@@ -30,10 +30,13 @@
 #include <memory>
 #include <vector>
 
+namespace KODI
+{
 namespace JOYSTICK
 {
   class IButtonMap;
   class IDriverHandler;
+}
 }
 
 namespace PERIPHERALS
@@ -42,7 +45,7 @@ namespace PERIPHERALS
   class CPeripheralJoystick;
 
   typedef std::vector<ADDON::DriverPrimitive> PrimitiveVector;
-  typedef std::map<JOYSTICK::FeatureName, ADDON::JoystickFeature> FeatureMap;
+  typedef std::map<KODI::JOYSTICK::FeatureName, ADDON::JoystickFeature> FeatureMap;
 
   class CPeripheralAddon : public ADDON::CAddonDll
   {
@@ -90,8 +93,8 @@ namespace PERIPHERALS
     void PowerOffJoystick(unsigned int index);
     //@}
 
-    void RegisterButtonMap(CPeripheral* device, JOYSTICK::IButtonMap* buttonMap);
-    void UnregisterButtonMap(JOYSTICK::IButtonMap* buttonMap);
+    void RegisterButtonMap(CPeripheral* device, KODI::JOYSTICK::IButtonMap* buttonMap);
+    void UnregisterButtonMap(KODI::JOYSTICK::IButtonMap* buttonMap);
     void RefreshButtonMaps(const std::string& strDeviceName = "");
 
   private:
@@ -130,7 +133,7 @@ namespace PERIPHERALS
     std::map<unsigned int, PeripheralPtr>  m_peripherals;
 
     /* @brief Button map observers */
-    std::vector<std::pair<CPeripheral*, JOYSTICK::IButtonMap*> > m_buttonMaps;
+    std::vector<std::pair<CPeripheral*, KODI::JOYSTICK::IButtonMap*> > m_buttonMaps;
     CCriticalSection m_buttonMapMutex;
 
     /* @brief Thread synchronization */

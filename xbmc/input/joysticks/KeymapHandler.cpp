@@ -28,12 +28,10 @@
 #include <algorithm>
 
 using namespace KODI;
-using namespace MESSAGING;
+using namespace JOYSTICK;
 
 #define HOLD_TIMEOUT_MS     500
 #define REPEAT_TIMEOUT_MS   50
-
-using namespace JOYSTICK;
 
 CKeymapHandler::CKeymapHandler(void) :
     m_lastButtonPress(0),

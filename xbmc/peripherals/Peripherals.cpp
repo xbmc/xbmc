@@ -69,7 +69,7 @@
 #include "bus/virtual/PeripheralBusCEC.h"
 #endif
 
-using namespace JOYSTICK;
+using namespace KODI::JOYSTICK;
 using namespace PERIPHERALS;
 using namespace XFILE;
 

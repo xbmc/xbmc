@@ -28,6 +28,8 @@
 class TiXmlDocument;
 class CSetting;
 
+namespace KODI
+{
 namespace JOYSTICK
 {
   class IActionMap;
@@ -35,6 +37,7 @@ namespace JOYSTICK
   class IDriverHandler;
   class IDriverReceiver;
   class IInputHandler;
+}
 }
 
 namespace PERIPHERALS
@@ -192,18 +195,18 @@ namespace PERIPHERALS
 
     virtual bool ErrorOccured(void) const { return m_bError; }
 
-    virtual void RegisterJoystickDriverHandler(JOYSTICK::IDriverHandler* handler, bool bPromiscuous) { }
-    virtual void UnregisterJoystickDriverHandler(JOYSTICK::IDriverHandler* handler) { }
+    virtual void RegisterJoystickDriverHandler(KODI::JOYSTICK::IDriverHandler* handler, bool bPromiscuous) { }
+    virtual void UnregisterJoystickDriverHandler(KODI::JOYSTICK::IDriverHandler* handler) { }
 
-    virtual void RegisterJoystickInputHandler(JOYSTICK::IInputHandler* handler);
-    virtual void UnregisterJoystickInputHandler(JOYSTICK::IInputHandler* handler);
+    virtual void RegisterJoystickInputHandler(KODI::JOYSTICK::IInputHandler* handler);
+    virtual void UnregisterJoystickInputHandler(KODI::JOYSTICK::IInputHandler* handler);
 
-    virtual void RegisterJoystickButtonMapper(JOYSTICK::IButtonMapper* mapper);
-    virtual void UnregisterJoystickButtonMapper(JOYSTICK::IButtonMapper* mapper);
+    virtual void RegisterJoystickButtonMapper(KODI::JOYSTICK::IButtonMapper* mapper);
+    virtual void UnregisterJoystickButtonMapper(KODI::JOYSTICK::IButtonMapper* mapper);
 
-    virtual JOYSTICK::IDriverReceiver* GetDriverReceiver() { return nullptr; }
+    virtual KODI::JOYSTICK::IDriverReceiver* GetDriverReceiver() { return nullptr; }
 
-    virtual JOYSTICK::IActionMap* GetActionMap() { return nullptr; }
+    virtual KODI::JOYSTICK::IActionMap* GetActionMap() { return nullptr; }
 
   protected:
     virtual void ClearSettings(void);
@@ -228,7 +231,7 @@ namespace PERIPHERALS
     std::map<std::string, PeripheralDeviceSetting> m_settings;
     std::set<std::string>             m_changedSettings;
     CPeripheralBus*                  m_bus;
-    std::map<JOYSTICK::IInputHandler*, std::unique_ptr<JOYSTICK::IDriverHandler>> m_inputHandlers;
-    std::map<JOYSTICK::IButtonMapper*, JOYSTICK::IDriverHandler*> m_buttonMappers;
+    std::map<KODI::JOYSTICK::IInputHandler*, std::unique_ptr<KODI::JOYSTICK::IDriverHandler>> m_inputHandlers;
+    std::map<KODI::JOYSTICK::IButtonMapper*, KODI::JOYSTICK::IDriverHandler*> m_buttonMappers;
   };
 }

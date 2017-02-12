@@ -39,9 +39,12 @@ class TiXmlElement;
 class CAction;
 class CKey;
 
+namespace KODI
+{
 namespace JOYSTICK
 {
   class IButtonMapper;
+}
 }
 
 namespace PERIPHERALS
@@ -277,13 +280,13 @@ namespace PERIPHERALS
      * \ref CPeripheral::RegisterJoystickButtonMapper for what is done to the
      * mapper after being given to the peripheral.
      */
-    void RegisterJoystickButtonMapper(JOYSTICK::IButtonMapper* mapper);
+    void RegisterJoystickButtonMapper(KODI::JOYSTICK::IButtonMapper* mapper);
 
     /*!
      * \brief Unregister a button mapper interface
      * \param mapper The button mapper
      */
-    void UnregisterJoystickButtonMapper(JOYSTICK::IButtonMapper* mapper);
+    void UnregisterJoystickButtonMapper(KODI::JOYSTICK::IButtonMapper* mapper);
 
     virtual void OnSettingChanged(const CSetting *setting) override;
     virtual void OnSettingAction(const CSetting *setting) override;

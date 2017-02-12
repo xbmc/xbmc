@@ -21,6 +21,8 @@
 
 #include <string>
 
+namespace KODI
+{
 namespace MOUSE
 {
   /*!
@@ -66,4 +68,5 @@ namespace MOUSE
      */
     virtual void OnButtonRelease(const std::string& button) = 0;
   };
+}
 }

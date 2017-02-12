@@ -28,6 +28,7 @@
 
 #include <sstream>
 
+using namespace KODI;
 using namespace GAME;
 using namespace JOYSTICK;
 

@@ -82,9 +82,6 @@ public:
     VIDEO_SET_ASPECT,               // set aspectratio of video
     VIDEO_DRAIN,                    // wait for decoder to output last frame
 
-    // audio related messages
-    AUDIO_SILENCE,
-
     // subtitle related messages
     SUBTITLE_CLUTCHANGE,
     SUBTITLE_ADDFILE
@@ -215,7 +212,6 @@ public:
     double time = 0;
     bool relative = false;
     bool backward = false;
-    bool flush = true;
     bool accurate = true;
     bool sync = true;
     bool restore = true;
@@ -228,7 +224,6 @@ public:
   double GetTime() { return m_mode.time; }
   bool GetRelative() { return m_mode.relative; }
   bool GetBackward() { return m_mode.backward; }
-  bool GetFlush() { return m_mode.flush; }
   bool GetAccurate() { return m_mode.accurate; }
   bool GetRestore() { return m_mode.restore; }
   bool GetTrickPlay() { return m_mode.trickplay; }

@@ -43,6 +43,7 @@
 #include <string.h>
 #include <utility>
 
+using namespace KODI;
 using namespace JOYSTICK;
 using namespace PERIPHERALS;
 using namespace XFILE;

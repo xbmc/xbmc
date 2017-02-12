@@ -24,6 +24,8 @@
 
 #include <map>
 
+namespace KODI
+{
 namespace JOYSTICK
 {
   class IDriverReceiver;
@@ -51,4 +53,5 @@ namespace JOYSTICK
     IDriverReceiver* const m_receiver;
     IButtonMap*      const m_buttonMap;
   };
+}
 }

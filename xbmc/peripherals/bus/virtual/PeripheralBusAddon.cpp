@@ -31,6 +31,7 @@
 #include <algorithm>
 #include <memory>
 
+using namespace KODI;
 using namespace PERIPHERALS;
 
 CPeripheralBusAddon::CPeripheralBusAddon(CPeripherals *manager) :
@@ -472,7 +473,7 @@ void CPeripheralBusAddon::UpdateAddons(void)
 bool CPeripheralBusAddon::PromptEnableAddons(const ADDON::AddonInfos& disabledAddons)
 {
   using namespace ADDON;
-  using namespace KODI::MESSAGING::HELPERS;
+  using namespace MESSAGING::HELPERS;
 
   // True if the user confirms enabling the disabled peripheral add-on
   bool bAccepted = false;

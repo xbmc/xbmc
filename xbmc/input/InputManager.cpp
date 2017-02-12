@@ -70,7 +70,8 @@
 using EVENTSERVER::CEventServer;
 #endif
 
-using namespace KODI::MESSAGING;
+using namespace KODI;
+using namespace MESSAGING;
 using PERIPHERALS::CPeripherals;
 
 CInputManager::CInputManager() :

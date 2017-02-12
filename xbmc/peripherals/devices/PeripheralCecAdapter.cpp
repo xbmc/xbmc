@@ -38,7 +38,8 @@
 
 #include <libcec/cec.h>
 
-using namespace KODI::MESSAGING;
+using namespace KODI;
+using namespace MESSAGING;
 using namespace PERIPHERALS;
 using namespace ANNOUNCEMENT;
 using namespace CEC;

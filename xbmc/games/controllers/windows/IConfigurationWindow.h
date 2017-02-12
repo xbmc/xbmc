@@ -173,7 +173,7 @@ namespace GAME
      * \return The next direction to be prompted, or UNKNOWN if this isn't an
      *         analog stick or the prompt is finished
      */
-    virtual JOYSTICK::ANALOG_STICK_DIRECTION GetDirection(void) const = 0;
+    virtual KODI::JOYSTICK::ANALOG_STICK_DIRECTION GetDirection(void) const = 0;
 
     /*!
      * \brief Reset button after prompting for input has finished

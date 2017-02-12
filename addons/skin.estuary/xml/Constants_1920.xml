@@ -7,5 +7,5 @@
 	<constant name="tvrecordings_width">1060</constant>
 	<constant name="eventloglist_width">1430</constant>
 	<constant name="playlisteditorlist_width">770</constant>
-	<constant name="playlistlist_width">904</constant>
+	<constant name="playlistlist_width">896</constant>
 </includes>

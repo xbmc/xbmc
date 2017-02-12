@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2016 Team Kodi
+ *      Copyright (C) 2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -17,30 +17,18 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#pragma once
 
-namespace KODI
-{
-namespace JOYSTICK
-{
-  /*!
-   * \ingroup joystick
-   * \brief Interface for sending input events to joystick drivers
-   */
-  class IDriverReceiver
-  {
-  public:
-    virtual ~IDriverReceiver(void) { }
+#include "KeymapActionMap.h"
+#include "guilib/GUIWindowManager.h"
+#include "input/Action.h"
+#include "input/ButtonTranslator.h"
+#include "input/Key.h"
 
-    /*!
-     * \brief Set the value of a rumble motor
-     *
-     * \param motorIndex   The driver index of the motor to rumble
-     * \param magnitude    The motor's new magnitude of vibration in the closed interval [0, 1]
-     *
-     * \return True if the event was handled otherwise false
-     */
-    virtual bool SetMotorState(unsigned int motorIndex, float magnitude) = 0;
-  };
-}
+using namespace KODI;
+using namespace KEYBOARD;
+
+unsigned int CKeymapActionMap::GetActionID(const CKey& key)
+{
+  CAction action = CButtonTranslator::GetInstance().GetAction(g_windowManager.GetActiveWindowID(), key);
+  return action.GetID();
 }

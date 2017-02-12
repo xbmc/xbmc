@@ -56,6 +56,7 @@
 #include <iterator>
 #include <utility>
 
+using namespace KODI;
 using namespace GAME;
 
 #define EXTENSION_SEPARATOR          "|"

@@ -21,6 +21,8 @@
 
 #include "JoystickTypes.h"
 
+namespace KODI
+{
 namespace JOYSTICK
 {
   class IButtonSequence
@@ -30,4 +32,5 @@ namespace JOYSTICK
 
     virtual bool OnButtonPress(const FeatureName& feature) = 0;
   };
+}
 }
