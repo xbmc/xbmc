@@ -691,7 +691,10 @@ namespace PVR
       return false;
 
     if (!g_PVRRecordings->RenameRecording(*item, strNewName))
+    {
+      CGUIDialogOK::ShowAndGetInput(CVariant{257}, CVariant{19111}); // "Error", "PVR backend error. Check the log for more information about this message."
       return false;
+    }
 
     g_PVRManager.TriggerRecordingsUpdate();
     return true;
@@ -706,7 +709,10 @@ namespace PVR
       return false;
 
     if (!g_PVRRecordings->Delete(*item))
+    {
+      CGUIDialogOK::ShowAndGetInput(CVariant{257}, CVariant{19111}); // "Error", "PVR backend error. Check the log for more information about this message."
       return false;
+    }
 
     g_PVRManager.TriggerRecordingsUpdate();
     return true;
@@ -749,7 +755,10 @@ namespace PVR
 
     /* undelete the recording */
     if (!g_PVRRecordings->Undelete(*item))
+    {
+      CGUIDialogOK::ShowAndGetInput(CVariant{257}, CVariant{19111}); // "Error", "PVR backend error. Check the log for more information about this message."
       return false;
+    }
 
     g_PVRManager.TriggerRecordingsUpdate();
     return true;

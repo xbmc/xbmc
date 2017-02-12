@@ -9118,7 +9118,6 @@ msgstr ""
 #: xbmc/pvr/dialogs/GUIDialogPVRChannelManager.cpp
 #: xbmc/pvr/dialogs/GUIDialogPVRGroupManager.cpp
 #: xbmc/pvr/dialogs/GUIDialogPVRGuideInfo.cpp
-#: xbmc/pvr/recordings/PVRRecording.cpp
 #: xbmc/pvr/timers/PVRTimerInfoTag.cpp
 #: xbmc/pvr/windows/GUIWindowPVRTimersBase.cpp
 #: xbmc/pvr/PVRGUIActions.cpp
@@ -9345,11 +9344,7 @@ msgctxt "#19067"
 msgid "This event is already being recorded."
 msgstr ""
 
-#. error box text stating that a given pvr recording could not be deleted
-#: xbmc/pvr/recording/PVRRecording.cpp
-msgctxt "#19068"
-msgid "This recording couldn't be deleted. Check the log for more information about this message."
-msgstr ""
+#empty string with id 19068
 
 #. Electronic program guide
 #: addons/skin.estuary/xml/Variables.xml
@@ -9605,7 +9600,6 @@ msgstr ""
 
 #. message box text stating that a PVR backend error occured
 #: xbmc/pvr/PVRGUIActions.cpp
-#: xbmc/pvr/recording/PVRRecording.cpp
 #: xbmc/pvr/timers/PVRTimerInfoTag.cpp
 msgctxt "#19111"
 msgid "PVR backend error. Check the log for more information about this message."
@@ -9810,11 +9804,7 @@ msgctxt "#19146"
 msgid "Groups"
 msgstr ""
 
-#. message box text stating that a PVR backend does not support a certain functionality.
-#: xbmc/pvr/recording/PVRRecording.cpp
-msgctxt "#19147"
-msgid "The PVR backend does not support this action. Check the log for more information about this message."
-msgstr ""
+#empty string with id 191407
 
 #: addons/skin.estuary/xml/DialogPVRRadioRDSInfo.xml
 #: addons/skin.estuary/xml/DialogPVRGuideSearch.xml
