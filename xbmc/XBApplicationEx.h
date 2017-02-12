@@ -33,6 +33,12 @@ enum {
   EXITCODE_REBOOT    = 66,
 };
 
+enum EnqueueOperation {
+    EOpReplace,
+    EOpNext,
+    EOpLast
+};
+
 class CXBApplicationEx : public IWindowManagerCallback
 {
 public:
@@ -51,7 +57,7 @@ public:
   virtual void SetRenderGUI(bool renderGUI) {};
 
 public:
-  void ReplaceCurrentPlayList(CFileItemList &playlist);
+  void EnqueuePlayList(CFileItemList &playlist, EnqueueOperation op);
   INT Run(CFileItemList &playlist);
   VOID Destroy();
 
