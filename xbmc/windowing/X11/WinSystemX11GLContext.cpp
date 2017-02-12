@@ -36,6 +36,7 @@
 #include "Application.h"
 #include "VideoSyncDRM.h"
 #include "VideoSyncGLX.h"
+#include "cores/VideoPlayer/DVDCodecs/Video/VAAPI.h"
 
 CWinSystemX11GLContext::CWinSystemX11GLContext()
 {
@@ -193,32 +194,25 @@ XVisualInfo* CWinSystemX11GLContext::GetVisual()
 
 bool CWinSystemX11GLContext::RefreshGLContext(bool force)
 {
-  bool firstrun = false;
   if (!m_pGLContext)
   {
     m_pGLContext = new CGLContextEGL(m_dpy);
-    firstrun = true;
   }
-  bool ret = m_pGLContext->Refresh(force, m_nScreen, m_glWindow, m_newGlContext);
 
-  if (ret && !firstrun)
-    return ret;
+  bool success = m_pGLContext->Refresh(force, m_nScreen, m_glWindow, m_newGlContext);
+  if (success)
+  {
+    VAAPI::CDecoder::CheckCaps(static_cast<CGLContextEGL*>(m_pGLContext)->m_eglDisplay);
+    if (VAAPI::CDecoder::IsCapGeneral())
+      return true;
+  }
 
-  std::string gpuvendor;
-  if (ret)
-  {
-    const char* vend = (const char*) glGetString(GL_VENDOR);
-    if (vend)
-      gpuvendor = vend;
-  }
-  std::transform(gpuvendor.begin(), gpuvendor.end(), gpuvendor.begin(), ::tolower);
-  if (firstrun && (!ret || gpuvendor.compare(0, 5, "intel") != 0))
-  {
-    delete m_pGLContext;
-    m_pGLContext = new CGLContextGLX(m_dpy);
-    ret = m_pGLContext->Refresh(force, m_nScreen, m_glWindow, m_newGlContext);
-  }
-  return ret;
+  // fallback for vdpau and NVIdia crap
+  delete m_pGLContext;
+  m_pGLContext = new CGLContextGLX(m_dpy);
+  success = m_pGLContext->Refresh(force, m_nScreen, m_glWindow, m_newGlContext);
+
+  return success;
 }
 
 std::unique_ptr<CVideoSync> CWinSystemX11GLContext::GetVideoSync(void *clock)
