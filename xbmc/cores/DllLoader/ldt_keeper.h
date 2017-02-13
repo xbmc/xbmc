@@ -32,9 +32,12 @@ typedef struct {
   int fd;
 } ldt_fs_t;
 
+#if !defined(__mips__)
 void      Setup_FS_Segment(void);
 ldt_fs_t* Setup_LDT_Keeper(void);
 void      Restore_LDT_Keeper(ldt_fs_t* ldt_fs);
+#endif /*!defined(__mips__)*/
+
 #ifdef __cplusplus
 }
 #endif
