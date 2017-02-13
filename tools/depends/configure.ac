@@ -186,6 +186,14 @@ case $host in
     #android builds are always cross
     cross_compiling="yes"
   ;;
+  mipsel-*-linux*)
+    use_cpu=$host_cpu
+    use_toolchain="${use_toolchain:-/usr}"
+    platform_cflags="-Os -fPIC -DPIC"
+    platform_ldflags="-Wl,-rpath-link=$prefix/$deps_dir/lib"
+    platform_cxxflags="$platform_cflags"
+    platform_os="linux"
+  ;;
   arm*-*-linux-gnu*|arm*-*-linux-uclibc*)
     if test "$use_platform" = "auto"; then
       if test "x$use_cpu" = "xauto"; then
