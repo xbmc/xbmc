@@ -64,50 +64,50 @@ VOID CXBApplicationEx::Destroy()
 /* Function that runs the application */
 void CXBApplicationEx::EnqueuePlayList(CFileItemList &playlist, EnqueueOperation op)
 {
-    if (playlist.Size() > 0)
-    {
-        int currentPlayListNdx = g_playlistPlayer.GetCurrentPlaylist();
+  if (playlist.Size() > 0)
+  {
+    int currentPlayListNdx = g_playlistPlayer.GetCurrentPlaylist();
+    
+    if (currentPlayListNdx < 0)
+      currentPlayListNdx = 0;
+    
+    switch (op) {
+      case EOpReplace:
+        g_playlistPlayer.ClearPlaylist(currentPlayListNdx);
+        g_playlistPlayer.Add(currentPlayListNdx, playlist);
+        g_playlistPlayer.SetCurrentPlaylist(currentPlayListNdx);
+        KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_PLAYLISTPLAYER_PLAY, -1);
+        break;
         
-        if (currentPlayListNdx < 0)
-            currentPlayListNdx = 0;
+      case EOpNext: {
+        int currItemNdx = g_playlistPlayer.GetCurrentSong();
+        bool shouldStartPlaylist = false;
         
-        switch (op) {
-            case EOpReplace:
-                g_playlistPlayer.ClearPlaylist(currentPlayListNdx);
-                g_playlistPlayer.Add(currentPlayListNdx, playlist);
-                g_playlistPlayer.SetCurrentPlaylist(currentPlayListNdx);
-                KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_PLAYLISTPLAYER_PLAY, -1);
-                break;
-                
-            case EOpNext: {
-                int currItemNdx = g_playlistPlayer.GetCurrentSong();
-                bool shouldStartPlaylist = false;
-
-                if (currItemNdx < 0) {
-                    currItemNdx = 0;
-                    shouldStartPlaylist = true;
-                }
-                else
-                    ++currItemNdx;
-                g_playlistPlayer.Insert(currentPlayListNdx, playlist, currItemNdx);
-                g_playlistPlayer.SetCurrentPlaylist(currentPlayListNdx);
-                if (shouldStartPlaylist)
-                    KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_PLAYLISTPLAYER_PLAY, -1);
-                break;
-            }
-                
-            case EOpLast: {
-                int currItemNdx = g_playlistPlayer.GetCurrentSong();
-                bool shouldStartPlaylist = (currItemNdx < 0);
-
-                g_playlistPlayer.Add(currentPlayListNdx, playlist);
-                g_playlistPlayer.SetCurrentPlaylist(currentPlayListNdx);
-                if (shouldStartPlaylist)
-                    KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_PLAYLISTPLAYER_PLAY, -1);
-                break;
-            }
+        if (currItemNdx < 0) {
+          currItemNdx = 0;
+          shouldStartPlaylist = true;
         }
+        else
+          ++currItemNdx;
+        g_playlistPlayer.Insert(currentPlayListNdx, playlist, currItemNdx);
+        g_playlistPlayer.SetCurrentPlaylist(currentPlayListNdx);
+        if (shouldStartPlaylist)
+          KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_PLAYLISTPLAYER_PLAY, -1);
+        break;
+      }
+        
+      case EOpLast: {
+        int currItemNdx = g_playlistPlayer.GetCurrentSong();
+        bool shouldStartPlaylist = (currItemNdx < 0);
+        
+        g_playlistPlayer.Add(currentPlayListNdx, playlist);
+        g_playlistPlayer.SetCurrentPlaylist(currentPlayListNdx);
+        if (shouldStartPlaylist)
+          KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_PLAYLISTPLAYER_PLAY, -1);
+        break;
+      }
     }
+  }
 }
 
 /* Function that runs the application */
