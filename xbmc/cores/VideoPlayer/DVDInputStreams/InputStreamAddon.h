@@ -118,8 +118,6 @@ private:
   INPUTSTREAM_CAPABILITIES m_caps;
   std::map<int, CDemuxStream*> m_streams;
 
-  ADDON::AddonInfoPtr m_addonInfo;
-  ADDON::AddonDllPtr m_addon;
   kodi::addon::CInstanceInputStream* m_addonInstance;
   AddonInstance_InputStream m_struct;
   std::shared_ptr<CInputStreamProvider> m_subAddonProvider;

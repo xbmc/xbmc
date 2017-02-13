@@ -41,8 +41,6 @@ public:
 private:
   bool CopyToInitData(VIDEOCODEC_INITDATA &initData, CDVDStreamInfo &hints);
 
-  std::string m_id;
-  ADDON::AddonDllPtr m_addon;
   kodi::addon::CInstanceVideoCodec* m_addonInstance;
   AddonInstance_VideoCodec m_struct;
   kodi::addon::IAddonInstance* m_parentInstance;

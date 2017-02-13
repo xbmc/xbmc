@@ -31,6 +31,28 @@ namespace ADDON
   class CAddonDll;
   typedef std::shared_ptr<CAddonDll> AddonDllPtr;
 
+  class IAddonInstanceHandler
+  {
+  public:
+    IAddonInstanceHandler(TYPE type);
+    IAddonInstanceHandler(TYPE type, const AddonInfoPtr& addonInfo);
+    virtual ~IAddonInstanceHandler();
+
+    TYPE UsedType() { return m_type; }
+    const std::string& UUID() { return m_uuid; }
+    const AddonInfoPtr& AddonInfo() { return m_addonInfo; }
+
+    bool CreateInstance(int instanceType, const std::string& instanceID, KODI_HANDLE instance, KODI_HANDLE* addonInstance, KODI_HANDLE parentInstance = nullptr);
+    void DestroyInstance(const std::string& instanceID);
+    const AddonDllPtr& Addon() { return m_addon; }
+
+  private:
+    TYPE m_type;
+    std::string m_uuid;
+    AddonInfoPtr m_addonInfo;
+    AddonDllPtr m_addon;
+  };
+
   class CAddonDll : public CAddon
   {
   public:

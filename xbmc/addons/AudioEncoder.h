@@ -28,7 +28,6 @@ namespace ADDON
   {
   public:
     CAudioEncoder(AddonInfoPtr addonInfo);
-    virtual ~CAudioEncoder();
 
     // Child functions related to IEncoder
     bool Init(AddonToKodiFuncTable_AudioEncoder& callbacks);

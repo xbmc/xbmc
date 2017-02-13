@@ -24,24 +24,15 @@ namespace ADDON
 {
 
 CAudioEncoder::CAudioEncoder(AddonInfoPtr addonInfo)
-  : IAddonInstanceHandler(ADDON_AUDIOENCODER)
+  : IAddonInstanceHandler(ADDON_AUDIOENCODER, addonInfo)
 {
-  m_addon = CAddonMgr::GetInstance().GetAddon(addonInfo->ID(), this);
-  if (!m_addon)
-    CLog::Log(LOGFATAL, "ADDON::CAudioEncoder: Tried to get add-on '%s' who not available!", addonInfo->ID().c_str());
-
   memset(&m_struct, 0, sizeof(m_struct));
-}
-
-CAudioEncoder::~CAudioEncoder()
-{
-  CAddonMgr::GetInstance().ReleaseAddon(m_addon, this);
 }
 
 bool CAudioEncoder::Init(AddonToKodiFuncTable_AudioEncoder &callbacks)
 {
   m_struct.toKodi = callbacks;
-  if (m_addon->CreateInstance(ADDON_INSTANCE_AUDIOENCODER, m_addon->ID(), &m_struct, reinterpret_cast<KODI_HANDLE*>(&m_addonInstance)) != ADDON_STATUS_OK || !m_struct.toAddon.Start)
+  if (!CreateInstance(ADDON_INSTANCE_AUDIOENCODER, UUID(), &m_struct, reinterpret_cast<KODI_HANDLE*>(&m_addonInstance)) || !m_struct.toAddon.Start)
     return false;
 
   return m_struct.toAddon.Start(m_addonInstance,
@@ -72,7 +63,7 @@ bool CAudioEncoder::Close()
   if (m_struct.toAddon.Finish)
     ret = m_struct.toAddon.Finish(m_addonInstance);
 
-  m_addon->DestroyInstance(m_addon->ID());
+  DestroyInstance(UUID());
   memset(&m_struct, 0, sizeof(m_struct));
 
   return ret;

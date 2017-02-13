@@ -28,21 +28,12 @@ using namespace ADDON;
 
 CAddonVideoCodec::CAddonVideoCodec(CProcessInfo &processInfo, ADDON::AddonInfoPtr& addonInfo, kodi::addon::IAddonInstance* parentInstance)
   : CDVDVideoCodec(processInfo),
-  IAddonInstanceHandler(ADDON::ADDON_VIDEOCODEC),
+  IAddonInstanceHandler(ADDON::ADDON_VIDEOCODEC, addonInfo),
   m_parentInstance(parentInstance)
 {
-  m_id = StringUtils::CreateUUID();
-
-  m_addon = CAddonMgr::GetInstance().GetAddon(addonInfo->ID(), this);
-  if (m_addon == nullptr)
-  {
-    CLog::Log(LOGFATAL, "CInputStreamAddon: Tried to get add-on '%s' who not available!", addonInfo->ID().c_str());
-    return;
-  }
-
   memset(&m_struct, 0, sizeof(m_struct));
   m_struct.toKodi.kodiInstance = this;
-  if (m_addon->CreateInstance(ADDON_INSTANCE_INPUTSTREAM, m_id, &m_struct, reinterpret_cast<KODI_HANDLE*>(&m_addonInstance), m_parentInstance) != ADDON_STATUS_OK || !m_struct.toAddon.Open)
+  if (!CreateInstance(ADDON_INSTANCE_INPUTSTREAM, UUID(), &m_struct, reinterpret_cast<KODI_HANDLE*>(&m_addonInstance), m_parentInstance) || !m_struct.toAddon.Open)
   {
     CLog::Log(LOGERROR, "CInputStreamAddon: Failed to create add-on instance for '%s'", addonInfo->ID().c_str());
     return;
@@ -51,8 +42,7 @@ CAddonVideoCodec::CAddonVideoCodec(CProcessInfo &processInfo, ADDON::AddonInfoPt
 
 CAddonVideoCodec::~CAddonVideoCodec()
 {
-  m_addon->DestroyInstance(m_id);
-  CAddonMgr::GetInstance().ReleaseAddon(m_addon, this);
+  DestroyInstance(UUID());
 }
 
 bool CAddonVideoCodec::CopyToInitData(VIDEOCODEC_INITDATA &initData, CDVDStreamInfo &hints)

@@ -53,16 +53,9 @@ using namespace ADDON;
 
 CInputStreamAddon::CInputStreamAddon(ADDON::AddonInfoPtr addonInfo, IVideoPlayer* player, const CFileItem& fileitem)
   : CDVDInputStream(DVDSTREAM_TYPE_ADDON, fileitem)
-  , IAddonInstanceHandler(ADDON_INPUTSTREAM)
+  , IAddonInstanceHandler(ADDON_INPUTSTREAM, addonInfo)
   , m_player(player)
-  , m_addonInfo(addonInfo)
 {
-  m_addon = CAddonMgr::GetInstance().GetAddon(addonInfo->ID(), this);
-  if (m_addon == nullptr)
-  {
-    CLog::Log(LOGFATAL, "CInputStreamAddon: Tried to get add-on '%s' who not available!", addonInfo->ID().c_str());
-  }
-
   std::string listitemprops = addonInfo->Type(ADDON_INPUTSTREAM)->GetValue("@listitemprops").asString();
   std::string name(addonInfo->ID());
 
@@ -79,7 +72,6 @@ CInputStreamAddon::CInputStreamAddon(ADDON::AddonInfoPtr addonInfo, IVideoPlayer
 CInputStreamAddon::~CInputStreamAddon()
 {
   Close();
-  CAddonMgr::GetInstance().ReleaseAddon(m_addon, this);
 }
 
 bool CInputStreamAddon::Supports(AddonInfoPtr& addonInfo, const CFileItem &fileitem)
@@ -136,7 +128,7 @@ bool CInputStreamAddon::Open()
   m_struct.toKodi.FreeDemuxPacket = InputStreamFreeDemuxPacket;
   m_struct.toKodi.AllocateDemuxPacket = InputStreamAllocateDemuxPacket;
   m_struct.toKodi.AllocateEncryptedDemuxPacket = InputStreamAllocateEncryptedDemuxPacket;
-  if (m_addon->CreateInstance(ADDON_INSTANCE_INPUTSTREAM, m_addon->ID(), &m_struct, reinterpret_cast<KODI_HANDLE*>(&m_addonInstance)) != ADDON_STATUS_OK || !m_struct.toAddon.Open)
+  if (!CreateInstance(ADDON_INSTANCE_INPUTSTREAM, UUID(), &m_struct, reinterpret_cast<KODI_HANDLE*>(&m_addonInstance)) || !m_struct.toAddon.Open)
     return false;
 
   INPUTSTREAM props;
@@ -158,8 +150,8 @@ bool CInputStreamAddon::Open()
 
   props.m_strURL = m_item.GetPath().c_str();
   
-  std::string libFolder = URIUtils::GetDirectory(m_addon->MainLibPath());
-  std::string profileFolder = CSpecialProtocol::TranslatePath(m_addon->Profile());
+  std::string libFolder = URIUtils::GetDirectory(Addon()->MainLibPath());
+  std::string profileFolder = CSpecialProtocol::TranslatePath(Addon()->Profile());
   props.m_libFolder = libFolder.c_str();
   props.m_profileFolder = profileFolder.c_str();
 
@@ -184,7 +176,7 @@ void CInputStreamAddon::Close()
 {
   if (m_struct.toAddon.Close)
     m_struct.toAddon.Close(m_addonInstance);
-  m_addon->DestroyInstance(m_addon->ID());
+  DestroyInstance(UUID());
   memset(&m_struct, 0, sizeof(m_struct));
 }
 
@@ -509,7 +501,7 @@ void CInputStreamAddon::UpdateStreams()
       if ((m_caps.m_mask & INPUTSTREAM_CAPABILITIES::SUPPORTSDECODE) != 0)
       {
         if (!m_subAddonProvider)
-          m_subAddonProvider = std::shared_ptr<CInputStreamProvider>(new CInputStreamProvider(m_addonInfo, m_addonInstance));
+          m_subAddonProvider = std::shared_ptr<CInputStreamProvider>(new CInputStreamProvider(AddonInfo(), m_addonInstance));
 
         demuxStream->externalInterfaces = m_subAddonProvider;
       }

@@ -42,6 +42,38 @@
 namespace ADDON
 {
 
+IAddonInstanceHandler::IAddonInstanceHandler(TYPE type)
+  : m_type(type),
+    m_uuid(StringUtils::CreateUUID())
+{
+}
+
+IAddonInstanceHandler::IAddonInstanceHandler(TYPE type, const AddonInfoPtr& addonInfo)
+  : m_type(type),
+    m_uuid(StringUtils::CreateUUID()),
+    m_addonInfo(addonInfo)
+{
+  m_addon = CAddonMgr::GetInstance().GetAddon(addonInfo->ID(), this);
+  if (!m_addon)
+    CLog::Log(LOGFATAL, "ADDON::IAddonInstanceHandler: Tried to get add-on '%s' who not available!", addonInfo->ID().c_str());
+}
+
+IAddonInstanceHandler::~IAddonInstanceHandler()
+{
+  if (m_addon)
+    CAddonMgr::GetInstance().ReleaseAddon(m_addon, this);
+}
+
+bool IAddonInstanceHandler::CreateInstance(int instanceType, const std::string& instanceID, KODI_HANDLE instance, KODI_HANDLE* addonInstance, KODI_HANDLE parentInstance/* = nullptr*/)
+{
+  return m_addon->CreateInstance(instanceType, instanceID, instance, addonInstance, parentInstance) == ADDON_STATUS_OK;
+}
+
+void IAddonInstanceHandler::DestroyInstance(const std::string& instanceID)
+{
+  m_addon->DestroyInstance(instanceID);
+}
+
 CAddonDll::CAddonDll(AddonInfoPtr props)
   : CAddon(props),
     m_bIsChild(false)
