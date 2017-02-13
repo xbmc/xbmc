@@ -33,9 +33,9 @@ CAddonVideoCodec::CAddonVideoCodec(CProcessInfo &processInfo, ADDON::AddonInfoPt
 {
   memset(&m_struct, 0, sizeof(m_struct));
   m_struct.toKodi.kodiInstance = this;
-  if (!CreateInstance(ADDON_INSTANCE_INPUTSTREAM, UUID(), &m_struct, reinterpret_cast<KODI_HANDLE*>(&m_addonInstance), m_parentInstance) || !m_struct.toAddon.Open)
+  if (!CreateInstance(ADDON_INSTANCE_VIDEOCODEC, UUID(), &m_struct, reinterpret_cast<KODI_HANDLE*>(&m_addonInstance), m_parentInstance) || !m_struct.toAddon.Open)
   {
-    CLog::Log(LOGERROR, "CInputStreamAddon: Failed to create add-on instance for '%s'", addonInfo->ID().c_str());
+    CLog::Log(LOGERROR, "CAddonVideoCodec: Failed to create add-on instance for '%s'", addonInfo->ID().c_str());
     return;
   }
 }
