@@ -13,6 +13,12 @@ ifeq (@USE_IMXVPU@,1)
 SRCS+= EGLNativeTypeIMX.cpp
 endif
 SRCS+= EGLWrapper.cpp
+ifeq (@USE_VUPLUS_EGL@,1)
+SRCS+= EGLNativeTypeVuplus.cpp
+endif
+ifeq (@USE_VUPLUS_ARM_EGL@,1)
+SRCS+= EGLNativeTypeVuplus.cpp
+endif
 
 LIB = windowing_egl.a
 
