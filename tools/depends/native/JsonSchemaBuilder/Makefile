@@ -1,4 +1,9 @@
 ROOT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
+
+LD=ld
+CC=gcc
+CXX=g++
+
 -include ../../Makefile.include
 
 ifeq ($(NATIVEPREFIX),)
@@ -18,6 +23,8 @@ SOURCE=$(ROOT_DIR)/src
 CONFIGURE=./configure --prefix=$(PREFIX)
 APP=$(SOURCE)/JsonSchemaBuilder
 APPBIN=$(PREFIX)/bin/JsonSchemaBuilder
+
+.PHONY:$(PLATFORM)
 
 all: .installed-$(PLATFORM)
 
