@@ -34,9 +34,9 @@ enum {
 };
 
 enum EnqueueOperation {
-    EOpReplace,
-    EOpNext,
-    EOpLast
+  EOpReplace,
+  EOpNext,
+  EOpLast
 };
 
 class CXBApplicationEx : public IWindowManagerCallback
