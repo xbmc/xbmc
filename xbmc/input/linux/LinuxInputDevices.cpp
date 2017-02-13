@@ -6,7 +6,7 @@
  *      Written by Denis Oliver Kropp <dok@directfb.org>,
  *      Andreas Hundt <andi@fischlustig.de>,
  *      Sven Neumann <neo@directfb.org>,
- *      Ville Syrjälä <syrjala@sci.fi> and
+ *      Ville SyrjÃ¤lÃ¤ <syrjala@sci.fi> and
  *      Claudio Ciccani <klan@users.sf.net>.
  *
  *      Copyright (C) 2005-2013 Team XBMC
@@ -27,6 +27,8 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#define VKEY_ENABLE (0)
+
 #include "system.h"
 #if defined(HAS_LINUX_EVENTS)
 
@@ -275,6 +277,26 @@ KeyMap keyMap[] = {
   { 378               , XBMCK_RIGHT       }, // Green
   { 381               , XBMCK_UP          }, // Yellow
   { 366               , XBMCK_DOWN        }, // Blue
+#if defined(TARGET_VUPLUS) || defined(TARGET_VUPLUS_ARM)
+  { KEY_OK            , XBMCK_RETURN      }, // Ok
+  { KEY_EXIT          , XBMCK_ESCAPE      }, // EXIT
+  { 139               , XBMCK_MENU        }, // Menu
+  { 358               , XBMCK_e           }, // EPG
+  { 370               , XBMCK_l           }, // Subtitle
+  { 377               , XBMCK_z           }, // TV
+  { 385               , XBMCK_j           }, // Radio
+  { 388               , XBMCK_y           }, // Teletext
+  { 392               , XBMCK_o           }, // Audio
+  { 393               , XBMCK_x           }, // Unknown
+  { 398               , XBMCK_F1          }, // Red
+  { 399               , XBMCK_F2          }, // Green
+  { 400               , XBMCK_F3          }, // Yellow
+  { 401               , XBMCK_F4          }, // Blue
+  { 402               , XBMCK_PAGEUP      }, // PageUP
+  { 403               , XBMCK_PAGEDOWN    }, // PageDown
+  { 407               , XBMCK_MEDIA_NEXT_TRACK }, // Next
+  { 412               , XBMCK_MEDIA_PREV_TRACK }, // Prev
+#endif
 };
 
 typedef enum
@@ -552,6 +574,15 @@ bool CLinuxInputDevice::KeyEvent(const struct input_event& levt, XBMC_Event& dev
 
     KeymapEntry entry;
     entry.code = code;
+
+    int keyMapValue;
+#if defined(TARGET_VUPLUS) || defined(TARGET_VUPLUS_ARM)
+    if (devt.key.keysym.mod & (XBMCKMOD_SHIFT | XBMCKMOD_CAPS)) keyMapValue = entry.shift;
+    else if (devt.key.keysym.mod & XBMCKMOD_ALT) keyMapValue = entry.alt;
+    else if (devt.key.keysym.mod & XBMCKMOD_META) keyMapValue = entry.altShift;
+    else keyMapValue = entry.base;
+    devt.key.keysym.unicode = devt.key.keysym.sym;
+#else
     if (GetKeymapEntry(entry))
     {
       int keyMapValue;
@@ -569,6 +600,7 @@ bool CLinuxInputDevice::KeyEvent(const struct input_event& levt, XBMC_Event& dev
         }
       }
     }
+#endif
   }
 
   return true;
@@ -856,6 +888,12 @@ XBMC_Event CLinuxInputDevice::ReadEvent()
 
         break;
       }
+
+#if defined(TARGET_VUPLUS) || defined(TARGET_VUPLUS_ARM)
+      if (access("/tmp/playing.lock", F_OK) == 0) {
+       break;
+      }
+#endif
 
       //printf("read event readlen = %d device name %s m_fileName %s\n", readlen, m_deviceName, m_fileName.c_str());
 
@@ -1194,6 +1232,7 @@ bool CLinuxInputDevices::CheckDevice(const char *device)
     return false;
   }
 
+#if !defined(TARGET_VUPLUS) && !defined(TARGET_VUPLUS_ARM) && !VKEY_ENABLE
   if (ioctl(fd, EVIOCGRAB, 1) && errno != EINVAL)
   {
     close(fd);
@@ -1201,6 +1240,7 @@ bool CLinuxInputDevices::CheckDevice(const char *device)
   }
 
   ioctl(fd, EVIOCGRAB, 0);
+#endif
 
   close(fd);
 
@@ -1293,6 +1333,7 @@ bool CLinuxInputDevice::Open()
     return false;
   }
 
+#if !defined(TARGET_VUPLUS) && !defined(TARGET_VUPLUS_ARM) && !VKEY_ENABLE
   /* grab device */
   ret = ioctl(fd, EVIOCGRAB, 1);
   if (ret && errno != EINVAL)
@@ -1301,6 +1342,7 @@ bool CLinuxInputDevice::Open()
     close(fd);
     return false;
   }
+#endif
 
   // Set the socket to non-blocking
   int opts = 0;
@@ -1368,7 +1410,9 @@ bool CLinuxInputDevice::Open()
 
 driver_open_device_error:
 
+#if !defined(TARGET_VUPLUS) && !defined(TARGET_VUPLUS_ARM) && !VKEY_ENABLE
   ioctl(fd, EVIOCGRAB, 0);
+#endif
   if (m_vt_fd >= 0)
   {
     close(m_vt_fd);
@@ -1442,8 +1486,10 @@ bool CLinuxInputDevice::GetKeymapEntry(KeymapEntry& entry)
  */
 void CLinuxInputDevice::Close()
 {
+#if !defined(TARGET_VUPLUS) && !defined(TARGET_VUPLUS_ARM) && !VKEY_ENABLE
   /* release device */
   ioctl(m_fd, EVIOCGRAB, 0);
+#endif
 
   if (m_vt_fd >= 0)
     close(m_vt_fd);
