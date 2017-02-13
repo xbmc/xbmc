@@ -21,6 +21,8 @@
 
 #include "IDriverHandler.h"
 
+namespace KODI
+{
 namespace JOYSTICK
 {
   /*!
@@ -44,4 +46,5 @@ namespace JOYSTICK
      */
     bool ResetTimers(void);
   };
+}
 }

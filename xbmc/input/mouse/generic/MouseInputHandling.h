@@ -21,6 +21,8 @@
 
 #include "input/mouse/IMouseDriverHandler.h"
 
+namespace KODI
+{
 namespace MOUSE
 {
   class IMouseInputHandler;
@@ -52,4 +54,5 @@ namespace MOUSE
     int m_x;
     int m_y;
   };
+}
 }

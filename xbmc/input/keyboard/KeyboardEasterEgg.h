@@ -24,6 +24,8 @@
 
 #include <vector>
 
+namespace KODI
+{
 namespace KEYBOARD
 {
   /*!
@@ -44,4 +46,5 @@ namespace KEYBOARD
 
     unsigned int m_state;
   };
+}
 }

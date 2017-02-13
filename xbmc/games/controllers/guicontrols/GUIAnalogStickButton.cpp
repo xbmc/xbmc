@@ -24,6 +24,7 @@
 
 #include <string>
 
+using namespace KODI;
 using namespace GAME;
 
 CGUIAnalogStickButton::CGUIAnalogStickButton(const CGUIButtonControl& buttonTemplate,

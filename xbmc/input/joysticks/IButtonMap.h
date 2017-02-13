@@ -25,6 +25,8 @@
 #include <string>
 #include <vector>
 
+namespace KODI
+{
 namespace JOYSTICK
 {
   /*!
@@ -247,4 +249,5 @@ namespace JOYSTICK
     */
     virtual void RevertButtonMap() = 0;
   };
+}
 }

@@ -25,6 +25,7 @@
 
 #include <sstream>
 
+using namespace KODI;
 using namespace PERIPHERALS;
 
 CPeripheralJoystickEmulation::CPeripheralJoystickEmulation(const PeripheralScanResult& scanResult, CPeripheralBus* bus) :

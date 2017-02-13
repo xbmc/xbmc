@@ -24,7 +24,10 @@
 #include "input/joysticks/IDriverHandler.h"
 
 #include <map>
+#include <stdint.h>
 
+namespace KODI
+{
 namespace JOYSTICK
 {
   class CButtonMapping;
@@ -75,6 +78,7 @@ namespace JOYSTICK
     bool bKnown = false;
     int center = 0;
     unsigned int range = 1;
+    bool bLateDiscovery = false;
   };
 
   class CAxisDetector
@@ -240,9 +244,11 @@ namespace JOYSTICK
   private:
     bool IsMapping() const;
 
+    void OnLateDiscovery(unsigned int axisIndex);
+
     CButtonDetector& GetButton(unsigned int buttonIndex);
     CHatDetector& GetHat(unsigned int hatIndex);
-    CAxisDetector& GetAxis(unsigned int axisIndex, const AxisConfiguration& initialConfig = AxisConfiguration());
+    CAxisDetector& GetAxis(unsigned int axisIndex, float position, const AxisConfiguration& initialConfig = AxisConfiguration());
 
     // Construction parameters
     IButtonMapper* const m_buttonMapper;
@@ -252,6 +258,8 @@ namespace JOYSTICK
     std::map<unsigned int, CButtonDetector> m_buttons;
     std::map<unsigned int, CHatDetector> m_hats;
     std::map<unsigned int, CAxisDetector> m_axes;
-    unsigned int               m_lastAction;
+    unsigned int m_lastAction;
+    uint64_t m_frameCount;
   };
+}
 }

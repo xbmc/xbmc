@@ -25,6 +25,7 @@
 #include "peripherals/Peripherals.h"
 #include "utils/log.h"
 
+using namespace KODI;
 using namespace JOYSTICK;
 using namespace PERIPHERALS;
 

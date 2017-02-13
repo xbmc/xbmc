@@ -34,6 +34,8 @@
 #define DEFAULT_LEFT_STICK_NAME   "leftstick"
 #define DEFAULT_RIGHT_STICK_NAME  "rightstick"
 
+namespace KODI
+{
 namespace JOYSTICK
 {
   class IKeymapHandler;
@@ -104,4 +106,5 @@ namespace JOYSTICK
 
     std::unique_ptr<IButtonSequence> m_easterEgg;
   };
+}
 }

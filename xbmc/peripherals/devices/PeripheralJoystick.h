@@ -32,17 +32,20 @@
 
 #define JOYSTICK_PORT_UNKNOWN  (-1)
 
+namespace KODI
+{
 namespace JOYSTICK
 {
   class CDeadzoneFilter;
   class IButtonMap;
   class IDriverHandler;
 }
+}
 
 namespace PERIPHERALS
 {
   class CPeripheralJoystick : public CPeripheral, //! @todo extend CPeripheralHID
-                              public JOYSTICK::IDriverReceiver
+                              public KODI::JOYSTICK::IDriverReceiver
   {
   public:
     CPeripheralJoystick(const PeripheralScanResult& scanResult, CPeripheralBus* bus);
@@ -53,13 +56,13 @@ namespace PERIPHERALS
     virtual bool InitialiseFeature(const PeripheralFeature feature) override;
     virtual void OnUserNotification() override;
     virtual bool TestFeature(PeripheralFeature feature) override;
-    virtual void RegisterJoystickDriverHandler(JOYSTICK::IDriverHandler* handler, bool bPromiscuous) override;
-    virtual void UnregisterJoystickDriverHandler(JOYSTICK::IDriverHandler* handler) override;
-    virtual JOYSTICK::IDriverReceiver* GetDriverReceiver() override { return this; }
-    virtual JOYSTICK::IActionMap* GetActionMap() override { return &m_defaultInputHandler; }
+    virtual void RegisterJoystickDriverHandler(KODI::JOYSTICK::IDriverHandler* handler, bool bPromiscuous) override;
+    virtual void UnregisterJoystickDriverHandler(KODI::JOYSTICK::IDriverHandler* handler) override;
+    virtual KODI::JOYSTICK::IDriverReceiver* GetDriverReceiver() override { return this; }
+    virtual KODI::JOYSTICK::IActionMap* GetActionMap() override { return &m_defaultInputHandler; }
 
     bool OnButtonMotion(unsigned int buttonIndex, bool bPressed);
-    bool OnHatMotion(unsigned int hatIndex, JOYSTICK::HAT_STATE state);
+    bool OnHatMotion(unsigned int hatIndex, KODI::JOYSTICK::HAT_STATE state);
     bool OnAxisMotion(unsigned int axisIndex, float position);
     void ProcessAxisMotions(void);
 
@@ -107,7 +110,7 @@ namespace PERIPHERALS
 
     struct DriverHandler
     {
-      JOYSTICK::IDriverHandler* handler;
+      KODI::JOYSTICK::IDriverHandler* handler;
       bool                      bPromiscuous;
     };
 
@@ -118,10 +121,10 @@ namespace PERIPHERALS
     unsigned int                        m_axisCount;
     unsigned int                        m_motorCount;
     bool                                m_supportsPowerOff;
-    JOYSTICK::CDefaultJoystick          m_defaultInputHandler;
-    JOYSTICK::CJoystickMonitor          m_joystickMonitor;
-    std::unique_ptr<JOYSTICK::IButtonMap>      m_buttonMap;
-    std::unique_ptr<JOYSTICK::CDeadzoneFilter> m_deadzoneFilter;
+    KODI::JOYSTICK::CDefaultJoystick          m_defaultInputHandler;
+    KODI::JOYSTICK::CJoystickMonitor          m_joystickMonitor;
+    std::unique_ptr<KODI::JOYSTICK::IButtonMap>      m_buttonMap;
+    std::unique_ptr<KODI::JOYSTICK::CDeadzoneFilter> m_deadzoneFilter;
     std::vector<DriverHandler>          m_driverHandlers;
     CCriticalSection                    m_handlerMutex;
   };

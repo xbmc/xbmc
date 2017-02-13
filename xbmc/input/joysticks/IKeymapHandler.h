@@ -21,6 +21,8 @@
 
 #include "JoystickTypes.h"
 
+namespace KODI
+{
 namespace JOYSTICK
 {
   /*!
@@ -74,4 +76,5 @@ namespace JOYSTICK
      */
     virtual void OnAnalogKey(unsigned int buttonKeyId, float magnitude) = 0;
   };
+}
 }

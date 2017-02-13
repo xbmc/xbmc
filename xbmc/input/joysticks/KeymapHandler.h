@@ -23,6 +23,8 @@
 
 #include <vector>
 
+namespace KODI
+{
 namespace JOYSTICK
 {
   /*!
@@ -60,4 +62,5 @@ namespace JOYSTICK
     unsigned int              m_lastDigitalActionMs;
     std::vector<unsigned int> m_pressedButtons;
   };
+}
 }

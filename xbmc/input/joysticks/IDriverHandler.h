@@ -21,6 +21,8 @@
 
 #include "JoystickTypes.h"
 
+namespace KODI
+{
 namespace JOYSTICK
 {
   /*!
@@ -79,4 +81,5 @@ namespace JOYSTICK
      */
     virtual void ProcessAxisMotions(void) = 0;
   };
+}
 }

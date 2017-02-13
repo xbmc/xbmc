@@ -38,6 +38,7 @@
 #include "Util.h"
 #include "filesystem/File.h"
 
+using namespace KODI;
 using namespace JOYSTICK;
 using namespace PERIPHERALS;
 

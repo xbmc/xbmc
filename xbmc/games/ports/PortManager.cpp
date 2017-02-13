@@ -26,6 +26,7 @@
 
 #include <algorithm>
 
+using namespace KODI;
 using namespace GAME;
 using namespace JOYSTICK;
 using namespace PERIPHERALS;

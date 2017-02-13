@@ -19,6 +19,8 @@
  */
 #pragma once
 
+namespace KODI
+{
 namespace MOUSE
 {
   /*!
@@ -56,4 +58,5 @@ namespace MOUSE
      */
     virtual void OnButtonRelease(unsigned int button) = 0;
   };
+}
 }
