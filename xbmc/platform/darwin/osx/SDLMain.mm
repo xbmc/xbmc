@@ -294,18 +294,15 @@ static void setupWindowMenu(void)
 // Add App Services
 - (void) registerService
 {
-    [NSApp setServicesProvider:self];
-    NSUpdateDynamicServices();
+  [NSApp setServicesProvider:self];
+  NSUpdateDynamicServices();
 }
 
 // Remove App Service
 - (void) unregisterService
 {
-    // NSUnregisterServicesProvider Unregisters a service provider.
-    //      You should not use this function to unregister the services provided by your application.
-    //      For your application’s services, you should use the setServicesProvider: method of NSApplication, passing a nil argument.
-    [NSApp setServicesProvider:nil];
-    NSUpdateDynamicServices();
+  [NSApp setServicesProvider:nil];
+  NSUpdateDynamicServices();
 }
 
 // Called after the internal event loop has started running.
@@ -391,107 +388,107 @@ static void setupWindowMenu(void)
 
 - (NSArray*) fileListFromPasteboard:(NSPasteboard*)pboard
 {
-    NSArray* pboardItems = pboard.pasteboardItems;  // copy as soon as you can, may change, disappear etc...
-    NSMutableArray* foundFiles = [[[NSMutableArray alloc] init] autorelease];
-    
-    for (NSPasteboardItem* item in pboardItems) {
-        for (NSString* type in item.types) {
-            if ([type isEqualToString:@"public.file-url"]) {
-                NSString* string = [item stringForType:type];
-                
-                NSDataDetector* linkDetector = [NSDataDetector dataDetectorWithTypes:NSTextCheckingTypeLink error:nil];
-                NSArray* matches = [linkDetector matchesInString:string options:0 range:NSMakeRange(0, [string length])];
-                
-                if (matches.count) {
-                    // Enumerat all of the links and open one by one
-                    for (NSTextCheckingResult* nextMatch in matches) {
-                        NSString* substringForMatch = [string substringWithRange:nextMatch.range];
-                        
-                        if (substringForMatch) {
-                            NSURL* foundURL = [NSURL URLWithString:substringForMatch];
-                            NSString* fileName = nil;
-                            
-                            if (foundURL.isFileReferenceURL || [foundURL.scheme caseInsensitiveCompare:@"file"] == NSOrderedSame)   // Already a file system path URL
-                                fileName = foundURL.path;
-                            else {
-                                foundURL = [NSURL fileURLWithPath:substringForMatch];
-                                if (foundURL.isFileReferenceURL || [foundURL.scheme caseInsensitiveCompare:@"file"] == NSOrderedSame)   // Already a file system path URL
-                                    fileName = foundURL.path;
-                            }
-                            if (fileName)
-                                [foundFiles addObject:fileName];
-                        }
-                    }
-                }
+  NSArray* pboardItems = pboard.pasteboardItems;  // copy as soon as you can, may change, disappear etc...
+  NSMutableArray* foundFiles = [[[NSMutableArray alloc] init] autorelease];
+  
+  for (NSPasteboardItem* item in pboardItems) {
+    for (NSString* type in item.types) {
+      if ([type isEqualToString:@"public.file-url"]) {
+        NSString* string = [item stringForType:type];
+        
+        NSDataDetector* linkDetector = [NSDataDetector dataDetectorWithTypes:NSTextCheckingTypeLink error:nil];
+        NSArray* matches = [linkDetector matchesInString:string options:0 range:NSMakeRange(0, [string length])];
+        
+        if (matches.count) {
+          // Enumerat all of the links and open one by one
+          for (NSTextCheckingResult* nextMatch in matches) {
+            NSString* substringForMatch = [string substringWithRange:nextMatch.range];
+            
+            if (substringForMatch) {
+              NSURL* foundURL = [NSURL URLWithString:substringForMatch];
+              NSString* fileName = nil;
+              
+              if (foundURL.isFileReferenceURL || [foundURL.scheme caseInsensitiveCompare:@"file"] == NSOrderedSame)   // Already a file system path URL
+                fileName = foundURL.path;
+              else {
+                foundURL = [NSURL fileURLWithPath:substringForMatch];
+                if (foundURL.isFileReferenceURL || [foundURL.scheme caseInsensitiveCompare:@"file"] == NSOrderedSame)   // Already a file system path URL
+                  fileName = foundURL.path;
+              }
+              if (fileName)
+                [foundFiles addObject:fileName];
             }
+          }
         }
+      }
     }
-    
-    return foundFiles;
+  }
+  
+  return foundFiles;
 }
 
 - (void) enqueuePlayListNext:(NSPasteboard*)pboard userData:(NSString *)userData error:(NSString **)error
 {
-    NSArray* fileNames = [self fileListFromPasteboard:pboard];
-    
-    if (fileNames.count)
-        [self openFiles:fileNames operation:EOpNext];
+  NSArray* fileNames = [self fileListFromPasteboard:pboard];
+  
+  if (fileNames.count)
+    [self openFiles:fileNames operation:EOpNext];
 }
 
 - (void) enqueuePlayListLast:(NSPasteboard*)pboard userData:(NSString *)userData error:(NSString **)error
 {
-    NSArray* fileNames = [self fileListFromPasteboard:pboard];
-    
-    if (fileNames.count)
-        [self openFiles:fileNames operation:EOpLast];
+  NSArray* fileNames = [self fileListFromPasteboard:pboard];
+  
+  if (fileNames.count)
+    [self openFiles:fileNames operation:EOpLast];
 }
 
 - (void) replacePlaylist
 {
-    // Will ignore empty lists
-    XBMC_EnqueuePlayList(gAppParamParser.m_playlist, EOpReplace);
-    gAppParamParser.m_playlist.Clear();
+  // Will ignore empty lists
+  XBMC_EnqueuePlayList(gAppParamParser.m_playlist, EOpReplace);
+  gAppParamParser.m_playlist.Clear();
 }
 
 - (void) enqueueNextPlaylist
 {
-    // Will ignore empty lists
-    XBMC_EnqueuePlayList(gAppParamParser.m_playlist, EOpNext);
-    gAppParamParser.m_playlist.Clear();
+  // Will ignore empty lists
+  XBMC_EnqueuePlayList(gAppParamParser.m_playlist, EOpNext);
+  gAppParamParser.m_playlist.Clear();
 }
 
 - (void) enqueueLastPlaylist
 {
-    // Will ignore empty lists
-    XBMC_EnqueuePlayList(gAppParamParser.m_playlist, EOpLast);
-    gAppParamParser.m_playlist.Clear();
+  // Will ignore empty lists
+  XBMC_EnqueuePlayList(gAppParamParser.m_playlist, EOpLast);
+  gAppParamParser.m_playlist.Clear();
 }
 
 - (BOOL) openFiles:(NSArray *)fileNames operation:(EnqueueOperation)operation
 {
-    assert(operation >= EOpReplace && operation <= EOpLast && "Invalid Enqueue operation");
-    BOOL result = YES;
-    
-    for (NSString* fileName in fileNames)
-        result = (result && [self openFile:fileName]);
-    
-    // Here we need a little trick as even [NSApplicartionDelegate application:openFiles:]
-    // can be called several times in case of multiple file open requested at once.
-    // We will replace the current playlist only we have not received new request
-    // after a while, now cOpenFileScheduleTimeoutInterval.
-    //
-    // First cancel possible previous request if it is not the first openFile
-    // request within the timeout period.
-    //
-    SEL operations[] = { @selector(replacePlaylist), @selector(enqueueNextPlaylist), @selector(enqueueLastPlaylist) };
-    [NSObject cancelPreviousPerformRequestsWithTarget:self
-                                             selector:operations[operation]
-                                               object:nil];
-    [self performSelector:operations[operation]
-               withObject:nil
-               afterDelay:cOpenFileScheduleTimeoutInterval];
-    
-    return result;
+  assert(operation >= EOpReplace && operation <= EOpLast && "Invalid Enqueue operation");
+  BOOL result = YES;
+  
+  for (NSString* fileName in fileNames)
+    result = (result && [self openFile:fileName]);
+  
+  // Here we need a little trick as even [NSApplicartionDelegate application:openFiles:]
+  // can be called several times in case of multiple file open requested at once.
+  // We will replace the current playlist only we have not received new request
+  // after a while, now cOpenFileScheduleTimeoutInterval.
+  //
+  // First cancel possible previous request if it is not the first openFile
+  // request within the timeout period.
+  //
+  SEL operations[] = { @selector(replacePlaylist), @selector(enqueueNextPlaylist), @selector(enqueueLastPlaylist) };
+  [NSObject cancelPreviousPerformRequestsWithTarget:self
+                                           selector:operations[operation]
+                                             object:nil];
+  [self performSelector:operations[operation]
+             withObject:nil
+             afterDelay:cOpenFileScheduleTimeoutInterval];
+  
+  return result;
 }
 
 /*
@@ -506,14 +503,14 @@ static void setupWindowMenu(void)
  */
 - (BOOL) openFile:(NSString *)fileName
 {
-    // MacOS is passing command line args.
-    if (!gFinderLaunch)
-        return NO;
-    
-    const char* argv[2] = { "", [fileName UTF8String] };
-    gAppParamParser.Parse(argv, 2); // Append to the collection
-    
-    return YES;
+  // MacOS is passing command line args.
+  if (!gFinderLaunch)
+    return NO;
+  
+  const char* argv[2] = { "", [fileName UTF8String] };
+  gAppParamParser.Parse(argv, 2); // Append to the collection
+  
+  return YES;
 }
 
 /*
@@ -523,12 +520,12 @@ static void setupWindowMenu(void)
  *  CFBundleDocumentsType section in your Info.plist to get this message,
  *  apparently.
  *
- * This message may be received multiple times to open several docs on launch 
+ * This message may be received multiple times to open several docs on launch
  *  or at runtime from finder. (even if this called openFiles: :-O)
  */
 - (void) application:(NSApplication *)theApplication openFiles:(NSArray *)fileNames
 {
-    [self openFiles:fileNames operation:EOpReplace];
+  [self openFiles:fileNames operation:EOpReplace];
 }
 
 - (void) deviceDidMountNotification:(NSNotification *) note
