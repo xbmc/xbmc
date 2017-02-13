@@ -114,27 +114,5 @@ namespace ADDON
     //@}
   };
 
-  /*!
-   * Class to make use of standard add-on functions more easy available on
-   * Kodi's add-on instance classes.
-   *
-   * This functions in class are needed on several places, without them must be
-   * on every instance class the same function added, with them can it be
-   * prevent.
-   */
-  class CAddonInstanceInfo
-  {
-  public:
-    CAddonInstanceInfo(AddonDllPtr addon) : m_addon(addon) { }
-
-    std::string ID() const { return m_addon->ID(); }
-    std::string Name() const { return m_addon->Name(); }
-    std::string Path() const { return m_addon->Path(); }
-    std::string Profile() const { return m_addon->Profile(); }
-
-  protected:
-    ADDON::AddonDllPtr m_addon;
-  };
-
 }; /* namespace ADDON */
 
