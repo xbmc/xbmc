@@ -611,6 +611,19 @@ case $host in
      CORE_SYSTEM_NAME=linux
      ARCH="powerpc64-linux"
      ;;
+   arm-oe-linux-gnueabi)
+     target_platform=target_vuplus_arm
+     ARCH="arm"
+     use_arch="arm"
+     ffmpeg_target_os=linux
+     use_joystick=no
+     use_gles=yes
+     use_sdl=no
+     use_x11=no
+     use_wayland=no
+     use_optical_drive=no
+     USE_STATIC_FFMPEG=0
+     ;;   
   arm*-*-linux-gnu*|arm*-*-linux-uclibc*)
      target_platform=target_linux
      CORE_SYSTEM_NAME=linux
@@ -647,6 +660,19 @@ case $host in
      use_x11=no
      build_shared_lib=yes
      ;;
+  mipsel-*-linux*|mipsel*linux)
+     target_platform=target_vuplus
+     ARCH="mips"
+     use_arch="mips"
+     ffmpeg_target_os=linux
+     use_joystick=no
+     use_gles=yes
+     use_sdl=no
+     use_x11=no
+     use_wayland=no
+     use_optical_drive=no
+     USE_STATIC_FFMPEG=0
+     ;;
   mips*-*-linux-gnu*)
      target_platform=target_linux
      CORE_SYSTEM_NAME=linux
@@ -655,7 +681,7 @@ case $host in
      use_gles=no
      use_gl=yes
      use_sdl=yes
-     USE_STATIC_FFMPEG=1
+     USE_STATIC_FFMPEG=0
      ;;
   *)
      AC_MSG_ERROR(unsupported host ($host))
@@ -681,6 +707,42 @@ case $use_platform in
      use_neon=yes
      use_cpu=cortex-a7
      ;;
+  vuplus)
+     target_platform=target_vuplus
+     ARCH="mips"
+     use_arch="mips"
+     ffmpeg_target_os=linux
+     use_joystick=no
+     use_gles=yes
+     use_sdl=no
+     use_x11=no
+     use_wayland=no
+     use_wayland=no
+     use_optical_drive=no
+     USE_STATIC_FFMPEG=0
+     AC_DEFINE(HAS_EGLGLES, [1], [Define if supporting EGL based GLES Framebuffer])
+     USE_VUPLUS_EGL=1
+     CFLAGS="$CFLAGS"
+     CXXFLAGS="$CXXFLAGS"
+     ;;
+  vuplus-arm)
+     target_platform=target_vuplus_arm
+     ARCH="arm"
+     use_arch="arm"
+     ffmpeg_target_os=linux
+     use_joystick=no
+     use_gles=yes
+     use_sdl=no
+     use_x11=no
+     use_wayland=no
+     use_wayland=no
+     use_optical_drive=no
+     USE_STATIC_FFMPEG=0
+     AC_DEFINE(HAS_EGLGLES, [1], [Define if supporting EGL based GLES Framebuffer])
+     USE_VUPLUS_ARM_EGL=1
+     CFLAGS="$CFLAGS"
+     CXXFLAGS="$CXXFLAGS" 
+     ;;   
 esac
 
 if test "$target_platform" = "target_raspberry_pi" ; then
@@ -1056,7 +1118,7 @@ int main() {
   )])
 AC_LANG_POP([C++])
 
-if test "${target_platform}" = "target_linux" || test "${target_platform}" = "target_raspberry_pi" || test "${target_platform}" = "target_android"; then
+if test "${target_platform}" = "target_linux" || test "${target_platform}" = "target_raspberry_pi" || test "${target_platform}" = "target_android" || test "${target_platform}" = "target_vuplus" || test "${target_platform}" = "target_vuplus_arm"; then 
   PKG_CHECK_MODULES([UUID], [uuid],, AC_MSG_ERROR(libuuid not found))
 fi
 
@@ -1537,7 +1599,7 @@ ffmpeg_build="${abs_top_srcdir}/tools/depends/target/ffmpeg"
 FFMPEG_VER_SHA=$(grep "VERSION=" ${ffmpeg_build}/FFMPEG-VERSION | sed 's/VERSION=//g')
 AC_DEFINE_UNQUOTED([FFMPEG_VER_SHA], ["$FFMPEG_VER_SHA"], [FFmpeg version hash])
 
-if test "$with_ffmpeg" = "shared"; then
+if test "$with_ffmpeg" = "shared" || test "$with_ffmpeg" = "force_vuplus_mips"; then
   # allow linking against shared ffmpeg libs
   # a proper version must be installed, we won't build ffmpeg
   USE_STATIC_FFMPEG=0
@@ -1607,15 +1669,32 @@ if test "${USE_STATIC_FFMPEG}" = "1"; then
   fi
 fi
 
+if test "$with_ffmpeg" = "force_vuplus_mips"; then
+  # always build our ffmpeg
+  AC_MSG_NOTICE("FFmpeg installation forced by user - installing our version")
+  CFLAGS="$CFLAGS" CXXFLAGS="$CXXFLAGS" ${ffmpeg_build}/autobuild_vuplus_mips.sh ${FFMPEG_OPTS}
+  export PKG_CONFIG_PATH="${ffmpeg_build}/ffmpeg-install/lib/pkgconfig:$PKG_CONFIG_PATH"
+fi
+
+if test "$with_ffmpeg" = "force_vuplus_arm"; then
+  # always build our ffmpeg
+  AC_MSG_NOTICE("FFmpeg installation forced by user - installing our version")
+  CFLAGS="$CFLAGS" CXXFLAGS="$CXXFLAGS" ${ffmpeg_build}/autobuild_vuplus_arm.sh ${FFMPEG_OPTS}
+  export PKG_CONFIG_PATH="${ffmpeg_build}/ffmpeg-install/lib/pkgconfig:$PKG_CONFIG_PATH"
+fi 
 if test "$FFMPEG_FOUND" != "true"; then
   PKG_CHECK_MODULES([FFMPEG], [$FFMPEG_LIBNAMES],
-    [INCLUDES="$INCLUDES $FFMPEG_CFLAGS"; LIBS="$LIBS $FFMPEG_LIBS"; FFMPEG_FOUND="true"],
+    [FFMPEG_FOUND="true";USE_STATIC_FFMPEG=1],
     [AC_MSG_ERROR("ffmpeg not found")])
+  FFMPEG_LIBS=$(PKG_CONFIG_SYSROOT_DIR="" ${PKG_CONFIG} --libs libavcodec 2>/dev/null)
+  FFMPEG_CFLAGS=$(PKG_CONFIG_SYSROOT_DIR="" ${PKG_CONFIG} --cflags libavcodec 2>/dev/null)
+  INCLUDES="$INCLUDES $FFMPEG_CFLAGS"
+  LIBS="$LIBS $FFMPEG_LIBS";     
 fi
 
 if test "${USE_STATIC_FFMPEG}" = "1"; then
   # get the libdir for static linking
-  FFMPEG_LIBDIR=${pkg_cfg_prefix}$(PKG_CONFIG_SYSROOT_DIR="" ${PKG_CONFIG} --static --variable=libdir libavcodec)
+  FFMPEG_LIBDIR=$(PKG_CONFIG_SYSROOT_DIR="" ${PKG_CONFIG} --static --variable=libdir libavcodec)
   GNUTLS_ALL_LIBS=$(${PKG_CONFIG} --static --libs-only-l --silence-errors gnutls)
 
   # check if static libs are available
@@ -2198,6 +2277,7 @@ OUTPUT_FILES="Makefile \
     lib/addons/library.kodi.peripheral/Makefile \
     lib/addons/library.xbmc.pvr/Makefile \
     lib/addons/library.kodi.inputstream/Makefile \
+    tools/Linux/${APP_NAME_LC}.run \
     tools/Linux/kodi.sh \
     tools/Linux/kodi-standalone.sh \
     tools/Linux/kodi-xsession.desktop \
@@ -2328,6 +2408,8 @@ AC_SUBST(HAVE_SSE2)
 AC_SUBST(HAVE_SSE4)
 AC_SUBST(USE_MMAL)
 AC_SUBST(USE_X11)
+AC_SUBST(USE_VUPLUS_EGL)
+AC_SUBST(USE_VUPLUS_ARM_EGL)
 AC_SUBST(USE_OPTICAL_DRIVE)
 
 # pushd and popd are not available in other shells besides bash, so implement
