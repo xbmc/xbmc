@@ -68,8 +68,10 @@ using namespace KODI::MESSAGING;
 #define OMX_VC1_DECODER         "OMX.Nvidia.vc1.decode"
 
 // EGL extension functions
+#ifndef EGL_EGLEXT_PROTOTYPES
 static PFNEGLCREATEIMAGEKHRPROC eglCreateImageKHR;
 static PFNEGLDESTROYIMAGEKHRPROC eglDestroyImageKHR;
+#endif
 
 #if defined(EGL_KHR_reusable_sync)
 static PFNEGLCREATESYNCKHRPROC eglCreateSyncKHR;
@@ -77,6 +79,7 @@ static PFNEGLDESTROYSYNCKHRPROC eglDestroySyncKHR;
 static PFNEGLCLIENTWAITSYNCKHRPROC eglClientWaitSyncKHR;
 #endif
 
+#ifndef EGL_EGLEXT_PROTOTYPES
 #define GETEXTENSION(type, ext) \
 do \
 { \
@@ -86,6 +89,7 @@ do \
         CLog::Log(LOGERROR, "%s::%s - ERROR getting proc addr of " #ext "\n", CLASSNAME, __func__); \
     } \
 } while (0);
+#endif
 
 #define OMX_INIT_STRUCTURE(a) \
   memset(&(a), 0, sizeof(a)); \
@@ -718,10 +722,12 @@ void OpenMaxDeleteTextures(void *userdata)
   EGLDisplay eglDisplay = eglGetCurrentDisplay();
   EGLContext eglContext = eglGetCurrentContext();
 
+#ifndef EGL_EGLEXT_PROTOTYPES
   if (!eglDestroyImageKHR)
   {
     GETEXTENSION(PFNEGLDESTROYIMAGEKHRPROC, eglDestroyImageKHR);
   }
+#endif
 
   DeleteImageInfo *deleteInfo = (DeleteImageInfo*)userdata;
 
@@ -784,6 +790,7 @@ OMX_ERRORTYPE COpenMaxVideo::AllocOMXOutputEGLTextures(void)
 {
   OMX_ERRORTYPE omx_err;
 
+#ifndef EGL_EGLEXT_PROTOTYPES
   if (!eglCreateImageKHR)
   {
     GETEXTENSION(PFNEGLCREATEIMAGEKHRPROC,  eglCreateImageKHR);
@@ -793,6 +800,7 @@ OMX_ERRORTYPE COpenMaxVideo::AllocOMXOutputEGLTextures(void)
     GETEXTENSION(PFNEGLCLIENTWAITSYNCKHRPROC, eglClientWaitSyncKHR);
 #endif
   }
+#endif
 
   EGLint attrib = EGL_NONE;
   OpenMaxVideoBuffer *egl_buffer;
@@ -1213,7 +1221,9 @@ void OpenMaxVideoBuffer::ReleaseTexture()
   // add egl resources to deletion info
   //! @todo delete from constructor!
   deleteInfo->egl_image = egl_image;
+#if defined(EGL_KHR_reusable_sync)
   deleteInfo->egl_sync = eglSync;
+#endif
   deleteInfo->texture_id = texture_id;
 
   if ( g_application.IsCurrentThread() )
