@@ -25,7 +25,23 @@ prefix="@prefix@"
 exec_prefix="@exec_prefix@"
 datarootdir="@datarootdir@"
 LIBDIR="@libdir@"
-CRASHLOG_DIR=${CRASHLOG_DIR:-$HOME}
+
+HDD_MOUNT_POINT="$(grep '/media/hdd' /proc/mounts)"
+if [ "$HDD_MOUNT_POINT" != "" ]; then
+    export HOME="/media/hdd"
+else
+    export HOME="/home/root"
+fi
+ 
+export KODI_TEMP="/tmp/kodi"
+CRASHLOG_DIR=${CRASHLOG_DIR:-$KODI_TEMP}
+
+echo "-----------------+ XBMC ENVIRONMENTS +"
+echo "  + CRASHLOG_DIR    : "$CRASHLOG_DIR
+echo "  + HOME            : "$HOME
+echo "  + HDD_MOUNT_POINT : "$HDD_MOUNT_POINT
+echo ""
+
 USERDATA_DIR="${HOME}/.${bin_name}"
 
 
@@ -161,14 +177,14 @@ while [ $(( $LOOP )) = "1" ]
 do
   LOOP=0
   "$LIBDIR/${bin_name}/${bin_name}.bin" $SAVED_ARGS
-  RET=$?
-  if [ $(( $RET == 65 )) = "1" ]
-  then # User requested to restart app
-    LOOP=1
-  elif [ $(( ($RET >= 131 && $RET <= 136) || $RET == 139 )) = "1" ]
-  then # Crashed with core dump
-    print_crash_report
-  fi
+#  RET=$?
+#  if [ $(( $RET == 65 )) = "1" ]
+#  then # User requested to restart app
+#    LOOP=1
+#  elif [ $(( ($RET >= 131 && $RET <= 136) || $RET == 139 )) = "1" ]
+#  then # Crashed with core dump
+#    print_crash_report
+#  fi
 done
 
 exit $RET
