@@ -238,7 +238,7 @@ INCLUDES=$(sort @INCLUDES@)
 
 CLEAN_FILES=@APP_NAME_LC@.bin @APP_NAME_LC@-xrandr lib@APP_NAME_LC@.so
 
-DISTCLEAN_FILES=config.h config.log config.status tools/Linux/kodi.sh \
+DISTCLEAN_FILES=config.h config.log config.status tools/Linux/kodi.sh tools/Linux/@APP_NAME_LC@.run \
         tools/Linux/kodi-standalone.sh autom4te.cache config.h.in~ \
         system/libcpluff-@ARCH@.so
 
@@ -274,8 +274,11 @@ CHECK_LIBS = xbmc/addons/test/addonsTest.a \
              xbmc/video/test/videoTest.a \
              xbmc/threads/test/threadTest.a \
              xbmc/interfaces/python/test/pythonSwigTest.a \
-             xbmc/cores/AudioEngine/Sinks/test/AESinkTest.a \
              xbmc/test/xbmc-test.a
+
+ifeq ($(or $(findstring mips,@ARCH@)),)
+CHECK_LIBS+=xbmc/cores/AudioEngine/Sinks/test/AESinkTest.a
+endif
 
 ifeq (@HAVE_SSE4@,1)
 LIBSSE4+=sse4
@@ -420,6 +423,10 @@ MAINOBJS+=xbmc/platform/darwin/osx/sdlmain.a
 endif
 endif # USE_ANDROID
 
+ifeq ($(findstring @ARCH@,arm,mips), @ARCH@)
+VUPLUS_SUPPORT=$(shell cd ../xbmc-support; pwd)
+VUPLUS_EXTLIBS= xbmc/windowing/egl/gles_init.a -ldvb_base -lnxpl -ldvb_client -L$(VUPLUS_SUPPORT) -lxbmc_base
+endif 
 
 OBJSXBMC =$(DIRECTORY_ARCHIVES)
 OBJSXBMC:=$(filter-out $(DYNOBJSXBMC), $(OBJSXBMC))
@@ -447,7 +454,7 @@ endif
 ifeq ($(findstring osx,@ARCH@), osx)
 	$(SILENT_LD) $(CXX) $(LDFLAGS) -o @APP_NAME_LC@.bin $(MAINOBJS) -Wl,-all_load,-ObjC $(MAINOBJS) $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(OBJSXBMC) $(LIBS) -rdynamic
 else
-	$(SILENT_LD) $(CXX) $(CXXFLAGS) $(LDFLAGS) -o @APP_NAME_LC@.bin $(MAINOBJS) -Wl,--start-group $(MAINOBJS) $(DYNOBJSXBMC) $(OBJSXBMC) -Wl,--end-group $(NWAOBJSXBMC) $(LIBS) -rdynamic
+$(SILENT_LD) $(CXX) $(CXXFLAGS) $(LDFLAGS) -o @APP_NAME_LC@.bin $(MAINOBJS) -Wl,--start-group $(MAINOBJS) $(DYNOBJSXBMC) $(OBJSXBMC) -Wl,--end-group $(NWAOBJSXBMC) $(LIBS) -rdynamic $(VUPLUS_EXTLIBS)
 endif
 
 @APP_NAME_LC@-xrandr: xbmc-xrandr.c
@@ -523,7 +530,10 @@ install-scripts:
 	@install -d $(DESTDIR)$(datarootdir)/xsessions
 	@install -m 0644 tools/Linux/kodi-xsession.desktop $(DESTDIR)$(datarootdir)/xsessions/@APP_NAME_LC@.desktop
 	@cd $(DESTDIR)$(datarootdir)/xsessions; [ -L xbmc.desktop ] || [ -f xbmc.desktop ] || ln -s @APP_NAME_LC@.desktop xbmc.desktop
-
+        @install -d $(DESTDIR)$(libdir)
+	@install -d $(DESTDIR)$(libdir)/@APP_NAME_LC@
+	@install tools/Linux/@APP_NAME_LC@.run $(DESTDIR)$(libdir)/@APP_NAME_LC@/@APP_NAME_LC@.run
+    
 install-datas: install-scripts
 	@echo "Copying support and legal files..."
 	@install -d $(DESTDIR)$(docdir)
