@@ -491,16 +491,6 @@ static void setupWindowMenu(void)
   return result;
 }
 
-/*
- * Catch document open requests...this lets us notice files when the app
- *  was launched by double-clicking a document, or when a document was
- *  dragged/dropped on the app's icon. You need to have a
- *  CFBundleDocumentsType section in your Info.plist to get this message,
- *  apparently.
- *
- * If invoked after app already started just collects requested files than
- *  replaces the current playlist with the newly requested file list.
- */
 - (BOOL) openFile:(NSString *)fileName
 {
   // MacOS is passing command line args.
@@ -508,17 +498,17 @@ static void setupWindowMenu(void)
     return NO;
   
   const char* argv[2] = { "", [fileName UTF8String] };
-  gAppParamParser.Parse(argv, 2); // Append to the collection
+  gAppParamParser.Parse(argv, 2); // Just append to the collection, process later
   
   return YES;
 }
 
 /*
  * Catch document open requests...this lets us notice files when the app
- *  was launched by double-clicking a document, or when a document was
- *  dragged/dropped on the app's icon. You need to have a
- *  CFBundleDocumentsType section in your Info.plist to get this message,
- *  apparently.
+ *  was launched by double-clicking a document, via |Open with..." finder menu 
+ *  or when a document was dragged/dropped on the app's icon. For the latter you 
+ *  need to have a CFBundleDocumentsType section in your Info.plist to get 
+ *  this message, apparently.
  *
  * This message may be received multiple times to open several docs on launch
  *  or at runtime from finder. (even if this called openFiles: :-O)
