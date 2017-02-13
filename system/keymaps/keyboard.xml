@@ -1,741 +1,241 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- This file contains the mapping of keyboard keys to actions within Kodi.              -->
-<!--                                                                                      -->
-<!-- The format is:                                                                       -->
-<!--  <window>                                                                            -->
-<!--    <device>                                                                          -->
-<!--      <button>action</button>                                                         -->
-<!--    </device>                                                                         -->
-<!--  </window>                                                                           -->
-<!--                                                                                      -->
-<!-- The <global> section is a fall through - they will only be used if the button is     -->
-<!-- not used in the current window's section.                                            -->
-<!--                                                                                      -->
-<!-- Actions can be built-in functions.                                                   -->
-<!--  eg <B>ActivateWindow(Music)</B>                                                     -->
-<!-- would automatically go to Music on the press of the B button.                        -->
-<!--                                                                                      -->
-<!--  Long presses                                                                        -->
-<!--   A limitation is that if a single press is mapped in a section, a global "longpress"-->
-<!--   will be ignored. The workaround is to duplicate the long mapping in the section.   -->
-<!--                                                                                      -->
-<!-- An empty action removes the corresponding mapping from default and parent keymaps.   -->
-<!-- This is different from a "noop" action, which disables a button.                     -->
-<!--                                                                                      -->
-<!-- More documentation on keymaps can be found on http://kodi.wiki/view/keymaps          -->
+<!-- This file contains the mapping of keys (RCU Vuplus) to actions within Kodi -->
+<!-- keyboard created and adapted for Vuplus RCU by Darkmantk and Evox, members of OpenSPA Team -->
+
 <keymap>
-  <global>
-    <keyboard>
-      <p>Play</p>
-      <q>Queue</q>
-      <f>FastForward</f>
-      <r>Rewind</r>
-      <y>SwitchPlayer</y>
-      <left>Left</left>
-      <right>Right</right>
-      <up>Up</up>
-      <down>Down</down>
-      <left mod="ctrl">analogseekback</left>
-      <right mod="ctrl">analogseekforward</right>
-      <pageup>PageUp</pageup>
-      <pagedown>PageDown</pagedown>
-      <return>Select</return>
-      <return mod="longpress">ContextMenu</return>
-      <return mod="ctrl">Enter</return>
-      <enter>Select</enter>
-      <enter mod="longpress">ContextMenu</enter>
-      <enter mod="ctrl">Enter</enter>
-      <backspace>Back</backspace>
-      <browser_back>Back</browser_back>
-      <browser_back mod="longpress">ActivateWindow(Home)</browser_back>
-      <key id='65446'>Back</key>
-      <m>Menu</m>
-      <n mod="ctrl">ActivateWindow(PlayerControls)</n>
-      <s>ActivateWindow(ShutdownMenu)</s>
-      <escape>PreviousMenu</escape>
-      <escape mod="longpress">Back</escape>
-      <i>Info</i>
-      <menu>ContextMenu</menu>
-      <menu mod="longpress">Menu</menu>
-      <c>ContextMenu</c>
-      <c mod="longpress">Menu</c>
-      <space>Pause</space>
-      <x>Stop</x>
-      <period>SkipNext</period>
-      <comma>SkipPrevious</comma>
-      <tab>FullScreen</tab>
-      <printscreen>Screenshot</printscreen>
-      <s mod="ctrl">Screenshot</s>
-      <minus>VolumeDown</minus>
-      <plus>VolumeUp</plus>
-      <equals>VolumeUp</equals>
-      <zero>Number0</zero>
-      <one>Number1</one>
-      <two>Number2</two>
-      <three>Number3</three>
-      <four>Number4</four>
-      <five>Number5</five>
-      <six>Number6</six>
-      <seven>Number7</seven>
-      <eight>Number8</eight>
-      <nine>Number9</nine>
-      <numpadminus>VolumeDown</numpadminus>
-      <numpadplus>VolumeUp</numpadplus>
-      <numpadzero>Number0</numpadzero>
-      <numpadone>Number1</numpadone>
-      <numpadtwo>Number2</numpadtwo>
-      <numpadthree>Number3</numpadthree>
-      <numpadfour>Number4</numpadfour>
-      <numpadfive>Number5</numpadfive>
-      <numpadsix>Number6</numpadsix>
-      <numpadseven>Number7</numpadseven>
-      <numpadeight>Number8</numpadeight>
-      <numpadnine>Number9</numpadnine>
-      <backslash>ToggleFullScreen</backslash>
-      <home>FirstPage</home>
-      <end>LastPage</end>
-      <power>ActivateWindow(ShutdownMenu)</power>
-      <sleep>ActivateWindow(ShutdownMenu)</sleep>
-      <!-- PVR windows -->
-      <e>ActivateWindow(TVGuide)</e>
-      <epg>ActivateWindow(TVGuide)</epg>
-      <h>ActivateWindow(TVChannels)</h>
-      <j>ActivateWindow(RadioChannels)</j>
-      <k>ActivateWindow(TVRecordings)</k>
-      <b>ActivateWindow(TVTimers)</b>
-      <!-- PVR -->
-      <red>ActivateWindow(TVChannels)</red>
-      <green>ActivateWindow(Videos)</green>
-      <yellow>ActivateWindow(Music)</yellow>
-      <blue>ActivateWindow(Pictures)</blue>
-      <!-- Multimedia keyboard keys -->
-      <browser_back>Back</browser_back>
-      <browser_forward/>
-      <browser_refresh/>
-      <browser_stop/>
-      <browser_search/>
-      <browser_favorites>ActivateWindow(Favourites)</browser_favorites>
-      <favorites>ActivateWindow(Favourites)</favorites>
-      <config>ActivateWindow(Settings)</config>
-      <browser_home>ActivateWindow(Home)</browser_home>
-      <homepage>ActivateWindow(Home)</homepage>
-      <volume_mute>Mute</volume_mute>
-      <volume_down>VolumeDown</volume_down>
-      <volume_up>VolumeUp</volume_up>
-      <next_track>SkipNext</next_track>
-      <prev_track>SkipPrevious</prev_track>
-      <stop>Stop</stop>
-      <play_pause>PlayPause</play_pause>
-      <play_pause mod="longpress">Info</play_pause>
-      <fastforward>FastForward</fastforward>
-      <rewind>Rewind</rewind>
-      <record/>
-      <launch_mail></launch_mail>
-      <launch_media_select>ActivateWindow(Music)</launch_media_select>
-      <launch_app1_pc_icon>ActivateWindow(Programs)</launch_app1_pc_icon>
-      <launch_app2_pc_icon>ActivateWindow(Programs)</launch_app2_pc_icon>
-      <launch_file_browser/>
-      <launch_media_center/>
-      <!-- ****************************************************** -->
-      <!-- MS Media Center keyboard shortcuts sent by MCE remotes -->
-      <!-- See http://msdn.microsoft.com/en-us/library/bb189249.aspx -->
-      <p mod="ctrl,shift">Play</p>        <!-- Play -->
-      <s mod="ctrl,shift">Stop</s>        <!-- Stop -->
-      <p mod="ctrl">Pause</p>             <!-- Pause -->
-      <f mod="ctrl,shift">FastForward</f> <!-- Fwd -->
-      <b mod="ctrl,shift">Rewind</b>      <!-- Rew -->
-      <f mod="ctrl">SkipNext</f>          <!-- Skip -->
-      <b mod="ctrl">SkipPrevious</b>      <!-- Replay -->
-      <d mod="ctrl">Info</d>              <!-- MCE Details -->
-      <r mod="ctrl">Record</r>            <!-- Record -->
-      <f4 mod="alt">PreviousMenu</f4>     <!-- Exit -->
-      <f10>VolumeUp</f10>                 <!-- MCE Vol up -->
-      <f9>VolumeDown</f9>                 <!-- MCE Vol down -->
-      <f8>Mute</f8>                       <!-- MCE mute -->
-      <g mod="ctrl">ActivateWindow(TVGuide)</g>  <!-- MCE Guide -->
-      <m mod="ctrl">ActivateWindow(music)</m>    <!-- MCE My music -->
-      <i mod="ctrl">ActivateWindow(pictures)</i> <!-- MCE My pictures -->
-      <e mod="ctrl">ActivateWindow(videos)</e>    <!-- MCE videos -->
-      <m mod="ctrl,shift">PlayerControl(ShowVideoMenu)</m>         <!-- MCE DVD menu -->
-      <o mod="ctrl">ActivateWindow(TVRecordings)</o>  <!-- MCE Recorded TV -->
-      <t mod="ctrl">ActivateWindow(TVChannels)</t>  <!-- MCE Live TV  -->
-      <t mod="ctrl,shift">ActivateWindow(TVChannels)</t>  <!-- MCE TV -->
-      <a mod="ctrl">ActivateWindow(RadioChannels)</a>  <!-- MCE Radio -->
-      <!-- MCE keypresses without an obvious use in Kodi -->
-      <u mod="ctrl">Notification(MCEKeypress, DVD subtitle, 3)</u>
-      <a mod="ctrl,shift">Notification(MCEKeypress, DVD audio, 3)</a>
-      <k mod="ctrl,shift">ReloadKeymaps</k>
-      <d mod="ctrl,shift">ToggleDebug</d>
-      <r mod="ctrl,shift">ToggleDirtyRegionVisualization</r>
-    </keyboard>
-  </global>
-  <LoginScreen>
-    <keyboard>
-      <end mod="ctrl">ShutDown()</end>
-    </keyboard>
-  </LoginScreen>
-  <Home>
-    <keyboard>
-      <i>info</i>
-      <end mod="ctrl">ShutDown()</end>
-      <backspace mod="longpress">ActivateWindow(ShutdownMenu)</backspace>
-    </keyboard>
-  </Home>
-  <VirtualKeyboard>
-    <keyboard>
-      <c mod="longpress">noop</c>
-      <left>Left</left>
-      <right>Right</right>
-      <up>Up</up>
-      <down>Down</down>
-      <return>Select</return>
-      <enter>Select</enter>
-      <backspace>Backspace</backspace>
-      <browser_back>Backspace</browser_back>
-      <browser_back mod="longpress">PreviousMenu</browser_back>
-      <play_pause mod="longpress">Enter</play_pause>
-    </keyboard>
-  </VirtualKeyboard>
-  <TVChannels>
-    <keyboard>
-      <m mod="ctrl">Move</m>
-      <h>PreviousMenu</h>
-    </keyboard>
-  </TVChannels>
-  <TVRecordings>
-    <keyboard>
-      <delete>Delete</delete>
-      <r>Rename</r>
-      <k>PreviousMenu</k>
-      <red>Red</red>
-      <green>Green</green>
-      <yellow>Yellow</yellow>
-      <blue>Blue</blue>
-    </keyboard>
-  </TVRecordings>
-  <TVTimers>
-    <keyboard>
-      <delete>Delete</delete>
-      <r>Rename</r>
-      <b>PreviousMenu</b>
-      <red>Red</red>
-      <green>Green</green>
-      <yellow>Yellow</yellow>
-      <blue>Blue</blue>
-    </keyboard>
-  </TVTimers>
-  <TVTimerRules>
-    <keyboard>
-      <delete>Delete</delete>
-      <r>Rename</r>
-      <b>PreviousMenu</b>
-      <red>Red</red>
-      <green>Green</green>
-      <yellow>Yellow</yellow>
-      <blue>Blue</blue>
-    </keyboard>
-  </TVTimerRules>
-  <TVGuide>
-    <keyboard>
-      <e>PreviousMenu</e>
-      <t>ShowTimerRule</t>
-      <epg>PreviousMenu</epg>
-      <g>NextChannelGroup</g>
-      <backspace mod="longpress">Number0</backspace> <!-- 0 key goes to "now" on EPG timeline -->
-      <browser_back mod="longpress">Number0</browser_back> <!-- 0 key goes to "now" on EPG timeline -->
-    </keyboard>
-  </TVGuide>
-  <RadioChannels>
-    <keyboard>
-      <m mod="ctrl">Move</m>
-      <j>PreviousMenu</j>
-    </keyboard>
-  </RadioChannels>
-  <RadioRecordings>
-    <keyboard>
-      <delete>Delete</delete>
-      <r>Rename</r>
-      <red>Red</red>
-      <green>Green</green>
-      <yellow>Yellow</yellow>
-      <blue>Blue</blue>
-    </keyboard>
-  </RadioRecordings>
-  <RadioTimers>
-    <keyboard>
-      <delete>Delete</delete>
-      <r>Rename</r>
-      <red>Red</red>
-      <green>Green</green>
-      <yellow>Yellow</yellow>
-      <blue>Blue</blue>
-    </keyboard>
-  </RadioTimers>
-  <RadioTimerRules>
-    <keyboard>
-      <delete>Delete</delete>
-      <r>Rename</r>
-      <red>Red</red>
-      <green>Green</green>
-      <yellow>Yellow</yellow>
-      <blue>Blue</blue>
-    </keyboard>
-  </RadioTimerRules>
-  <RadioGuide>
-    <keyboard>
-      <e>PreviousMenu</e>
-      <t>ShowTimerRule</t>
-      <backspace mod="longpress">Number0</backspace> <!-- 0 key goes to "now" on EPG timeline -->
-      <browser_back mod="longpress">Number0</browser_back> <!-- 0 key goes to "now" on EPG timeline -->
-    </keyboard>
-  </RadioGuide>
-  <FileManager>
-    <keyboard>
-      <space>Highlight</space>
-      <delete>Delete</delete>
-      <m>Move</m>
-      <r>Rename</r>
-      <play_pause mod="longpress">Highlight</play_pause>
-      <backspace mod="longpress">ActivateWindow(Home)</backspace>
-    </keyboard>
-  </FileManager>
-  <MusicPlaylist>
-    <keyboard>
-      <n>Back</n>
-      <delete>Delete</delete>
-      <u>MoveItemUp</u>
-      <d>MoveItemDown</d>
-      <backspace mod="longpress">ActivateWindow(Home)</backspace>
-    </keyboard>
-  </MusicPlaylist>
-  <MusicPlaylistEditor>
-    <keyboard>
-      <u>MoveItemUp</u>
-      <d>MoveItemDown</d>
-      <delete>Delete</delete>
-      <backspace mod="longpress">ActivateWindow(Home)</backspace>
-    </keyboard>
-  </MusicPlaylistEditor>
-  <Music>
-    <keyboard>
-      <n>Playlist</n>
-      <q>Queue</q>
-      <backspace mod="longpress">ActivateWindow(Home)</backspace>
-    </keyboard>
-  </Music>
-  <FullscreenVideo>
-    <keyboard>
-      <f>FastForward</f>
-      <r>Rewind</r>
-      <period>StepForward</period>
-      <comma>StepBack</comma>
-      <backspace>Fullscreen</backspace>
-      <backspace mod="longpress">Stop</backspace>
-      <browser_back>Fullscreen</browser_back>
-      <browser_back mod="longpress">Stop</browser_back>
-      <quote>Seek(-7)</quote> <!-- Replaces smallstepback -->
-      <opensquarebracket>BigStepForward</opensquarebracket>
-      <closesquarebracket>BigStepBack</closesquarebracket>
-      <return>OSD</return>
-      <enter>OSD</enter>
-      <return mod="longpress">PlayPause</return>
-      <enter mod="longpress">PlayPause</enter>
-      <m>OSD</m>
-      <menu>OSD</menu>
-      <i>Info</i>
-      <o>PlayerProcessInfo</o>
-      <o mod="ctrl,shift">PlayerDebug</o>
-      <z>AspectRatio</z>
-      <zoom>AspectRatio</zoom>
-      <t>ShowSubtitles</t>
-      <t mod="ctrl">SubtitleAlign</t>
-      <l>NextSubtitle</l>
-      <left>StepBack</left>
-      <right>StepForward</right>
-      <up>ChapterOrBigStepForward</up>
-      <down>ChapterOrBigStepBack</down>
-      <up mod="longpress">AudioNextLanguage</up>
-      <down mod="longpress">NextSubtitle</down>
-      <left mod="alt">PlayerControl(tempodown)</left>
-      <right mod="alt">PlayerControl(tempoup)</right>
-      <a>AudioDelay</a>
-      <a mod="ctrl">AudioNextLanguage</a>
-      <escape>Fullscreen</escape>
-      <c>Playlist</c>
-      <v>ActivateWindow(Teletext)</v>
-      <text>ActivateWindow(Teletext)</text>
-      <up mod="ctrl">SubtitleShiftUp</up>
-      <down mod="ctrl">SubtitleShiftDown</down>
-      <pageup>SkipNext</pageup>
-      <pagedown>SkipPrevious</pagedown>
-      <plus mod="ctrl">VolAmpUp</plus>
-      <equals mod="ctrl">VolAmpUp</equals>
-      <minus mod="ctrl">VolAmpDown</minus>
-      <b mod="ctrl">CreateBookmark</b>
-      <b mod="alt">CreateEpisodeBookmark</b>
-    </keyboard>
-  </FullscreenVideo>
-  <VideoTimeSeek>
-    <keyboard>
-      <return>Select</return>
-      <enter>Select</enter>
-    </keyboard>
-  </VideoTimeSeek>
-  <FullscreenInfo>
-    <keyboard>
-      <f>FastForward</f>
-      <r>Rewind</r>
-      <period>StepForward</period>
-      <o>PlayerProcessInfo</o>
-      <i>Back</i>
-      <d mod="ctrl">Back</d>
-      <m>OSD</m>
-      <menu>OSD</menu>
-    </keyboard>
-  </FullscreenInfo>
-  <PlayerControls>
-    <keyboard>
-      <m mod="ctrl">Back</m>
-    </keyboard>
-  </PlayerControls>
-  <Visualisation>
-    <keyboard>
-      <f>FastForward</f>
-      <r>Rewind</r>
-      <period>SkipNext</period>
-      <comma>SkipPrevious</comma>
-      <pageup>IncreaseRating</pageup>
-      <pagedown>DecreaseRating</pagedown>
-      <backspace>Fullscreen</backspace>
-      <backspace mod="longpress">Stop</backspace>
-      <browser_back>Fullscreen</browser_back>
-      <browser_back mod="longpress">Stop</browser_back>
-      <return>OSD</return>
-      <return mod="longpress">PlayPause</return>
-      <enter>OSD</enter>
-      <enter mod="longpress">PlayPause</enter>
-      <m>OSD</m>
-      <menu>OSD</menu>
-      <i>Info</i>
-      <p>ActivateWindow(VisualisationPresetList)</p>
-      <v>Addon.Default.OpenSettings(xbmc.player.musicviz)</v>
-      <text>Addon.Default.OpenSettings(xbmc.player.musicviz)</text>
-      <n>ActivateWindow(MusicPlaylist)</n>
-      <left>StepBack</left>
-      <right>StepForward</right>
-      <left mod="longpress">Rewind</left>
-      <right mod="longpress">FastForward</right>
-      <up>SkipNext</up>
-      <down>SkipPrevious</down>
-      <o>PlayerProcessInfo</o>
-      <l>LockPreset</l>
-      <escape>FullScreen</escape>
-      <g>ActivateWindow(PVROSDGuide)</g>
-      <c>ActivateWindow(PVROSDChannels)</c>
-    </keyboard>
-  </Visualisation>
-  <MusicOSD>
-    <keyboard>
-      <f>FastForward</f>
-      <r>Rewind</r>
-      <period>SkipNext</period>
-      <comma>SkipPrevious</comma>
-      <m>Back</m>
-      <menu>Back</menu>
-      <i>Info</i>
-      <o>PlayerProcessInfo</o>
-      <p>ActivateWindow(VisualisationPresetList)</p>
-      <v>Addon.Default.OpenSettings(xbmc.player.musicviz)</v>
-      <text>Addon.Default.OpenSettings(xbmc.player.musicviz)</text>
-      <n>ActivateWindow(MusicPlaylist)</n>
-    </keyboard>
-  </MusicOSD>
-  <VisualisationPresetList>
-    <keyboard>
-      <f>FastForward</f>
-      <r>Rewind</r>
-      <period>SkipNext</period>
-      <comma>SkipPrevious</comma>
-      <m>Back</m>
-      <i>Info</i>
-      <o>PlayerProcessInfo</o>
-      <p>Back</p>
-      <v>Back</v>
-      <text>Back</text>
-      <n>ActivateWindow(MusicPlaylist)</n>
-    </keyboard>
-  </VisualisationPresetList>
-  <SlideShow>
-    <keyboard>
-      <zero>ZoomNormal</zero>
-      <one>ZoomLevel1</one>
-      <two>ZoomLevel2</two>
-      <three>ZoomLevel3</three>
-      <four>ZoomLevel4</four>
-      <five>ZoomLevel5</five>
-      <six>ZoomLevel6</six>
-      <seven>ZoomLevel7</seven>
-      <eight>ZoomLevel8</eight>
-      <nine>ZoomLevel9</nine>
-      <i>Info</i>
-      <o>Info</o>
-      <period>NextPicture</period>
-      <comma>PreviousPicture</comma>
-      <plus>ZoomIn</plus>
-      <minus>ZoomOut</minus>
-      <return>Rotate</return>
-      <enter>Rotate</enter>
-      <r>Rotate</r>
-      <backspace mod="longpress">ActivateWindow(Home)</backspace>
-    </keyboard>
-  </SlideShow>
-  <ScreenCalibration>
-    <keyboard>
-      <return>NextCalibration</return>
-      <enter>NextCalibration</enter>
-      <d>ResetCalibration</d>
-      <r>NextResolution</r>
-    </keyboard>
-  </ScreenCalibration>
-  <ScreenCalibration>
-    <keyboard>
-      <return>NextCalibration</return>
-      <enter>NextCalibration</enter>
-      <d>ResetCalibration</d>
-    </keyboard>
-  </ScreenCalibration>
-  <VideoOSD>
-    <keyboard>
-      <m>Back</m>
-      <menu>Back</menu>
-      <g mod="ctrl">Back</g> <!-- MCE Guide button -->
-      <i>Info</i>
-      <o>PlayerProcessInfo</o>
-    </keyboard>
-  </VideoOSD>
-  <VideoMenu>
-    <keyboard>
-      <opensquarebracket>BigStepForward</opensquarebracket>
-      <closesquarebracket>BigStepBack</closesquarebracket>
-      <m>OSD</m>
-      <menu>OSD</menu>
-      <i>Info</i>
-      <o>PlayerProcessInfo</o>
-      <z>AspectRatio</z>
-      <zoom>AspectRatio</zoom>
-      <t>ShowSubtitles</t>
-      <l>NextSubtitle</l>
-      <a>AudioDelay</a>
-      <escape>Fullscreen</escape>
-      <return>Select</return>
-      <enter>Select</enter>      <!-- backspace>Fullscreen</backspace -->
-      <pageup>SkipNext</pageup>
-      <pagedown>SkipPrevious</pagedown>
-    </keyboard>
-  </VideoMenu>
-  <OSDVideoSettings>
-    <keyboard>
-      <i>Info</i>
-      <o>PlayerProcessInfo</o>
-    </keyboard>
-  </OSDVideoSettings>
-  <OSDAudioSettings>
-    <keyboard>
-      <i>Info</i>
-      <o>PlayerProcessInfo</o>
-    </keyboard>
-  </OSDAudioSettings>
-  <VideoBookmarks>
-    <keyboard>
-      <delete>Delete</delete>
-    </keyboard>
-  </VideoBookmarks>
-  <Videos>
-    <keyboard>
-      <delete>Delete</delete>
-      <n>Playlist</n>
-      <w>ToggleWatched</w>
-      <backspace mod="longpress">ActivateWindow(Home)</backspace>
-    </keyboard>
-  </Videos>
-  <VideoPlaylist>
-    <keyboard>
-      <n>Back</n>
-      <delete>Delete</delete>
-      <u>MoveItemUp</u>
-      <d>MoveItemDown</d>
-      <backspace mod="longpress">ActivateWindow(Home)</backspace>
-    </keyboard>
-  </VideoPlaylist>
-  <Pictures>
-    <keyboard>
-      <delete>Delete</delete>
-      <backspace mod="longpress">ActivateWindow(Home)</backspace>
-    </keyboard>
-  </Pictures>
-  <ContextMenu>
-    <keyboard>
-      <c>Back</c>
-      <menu>Back</menu>
-    </keyboard>
-  </ContextMenu>
-  <MusicInformation>
-    <keyboard>
-      <i>Back</i>
-      <d mod="ctrl">Back</d>
-      <backspace mod="longpress">ActivateWindow(Home)</backspace>
-    </keyboard>
-  </MusicInformation>
-  <MovieInformation>
-    <keyboard>
-      <i>Back</i>
-      <backspace mod="longpress">ActivateWindow(Home)</backspace>
-    </keyboard>
-  </MovieInformation>
-  <PictureInfo>
-    <keyboard>
-      <period>NextPicture</period>
-      <comma>PreviousPicture</comma>
-      <i>Back</i>
-      <d mod="ctrl">Back</d>
-      <o>Back</o>
-      <space>Pause</space>
-      <backspace mod="longpress">ActivateWindow(Home)</backspace>
-    </keyboard>
-  </PictureInfo>
-  <Teletext>
-    <keyboard>
-      <v>Back</v>
-      <text>Back</text>
-      <red>Red</red>
-      <green>Green</green>
-      <yellow>Yellow</yellow>
-      <blue>Blue</blue>
-    </keyboard>
-  </Teletext>
-  <Favourites>
-    <keyboard>
-      <backspace>Close</backspace>
-      <browser_back>Close</browser_back>
-      <u>MoveItemUp</u>
-      <d>MoveItemDown</d>
-      <backspace mod="longpress">ActivateWindow(Home)</backspace>
-    </keyboard>
-  </Favourites>
-  <NumericInput>
-    <keyboard>
-      <backspace>Close</backspace>
-      <browser_back>Close</browser_back>
-    </keyboard>
-  </NumericInput>
-  <FullscreenLiveTV>
-    <keyboard>
-      <left>StepBack</left>
-      <right>StepForward</right>
-      <up>Up</up>
-      <down>Down</down>
-      <return>OSD</return>
-      <enter>OSD</enter>
-      <return mod="longpress">ActivateWindow(PVROSDChannels)</return>
-      <enter mod="longpress">ActivateWindow(PVROSDChannels)</enter>
-      <pageup>ChannelUp</pageup>
-      <pagedown>ChannelDown</pagedown>
-    </keyboard>
-  </FullscreenLiveTV>
-  <FullscreenRadio>
-    <keyboard>
-      <left>StepBack</left>
-      <right>StepForward</right>
-      <up>Up</up>
-      <down>Down</down>
-      <return>OSD</return>
-      <enter>OSD</enter>
-      <return mod="longpress">ActivateWindow(PVROSDChannels)</return>
-      <enter mod="longpress">ActivateWindow(PVROSDChannels)</enter>
-      <pageup>ChannelUp</pageup>
-      <pagedown>ChannelDown</pagedown>
-    </keyboard>
-  </FullscreenRadio>
-  <PVROSDChannels>
-    <keyboard>
-      <backspace>Close</backspace>
-      <escape>Close</escape>
-      <browser_back>Close</browser_back>
-      <c>Close</c>
-    </keyboard>
-  </PVROSDChannels>
-  <PVROSDGuide>
-    <keyboard>
-      <backspace>Close</backspace>
-      <escape>Close</escape>
-      <browser_back>Close</browser_back>
-    </keyboard>
-  </PVROSDGuide>
-  <PVRSettings>
-    <keyboard>
-      <backspace>PreviousMenu</backspace>
-      <browser_back>PreviousMenu</browser_back>
-    </keyboard>
-  </PVRSettings>
-  <FileBrowser>
-    <keyboard>
-      <space>Highlight</space>
-      <backspace mod="longpress">ActivateWindow(Home)</backspace>
-    </keyboard>
-  </FileBrowser>
-  <ShutdownMenu>
-    <keyboard>
-      <s>Back</s>
-    </keyboard>
-  </ShutdownMenu>
-  <AddonInformation>
-    <keyboard>
-      <i>Back</i>
-      <backspace mod="longpress">ActivateWindow(Home)</backspace>
-    </keyboard>
-  </AddonInformation>
-  <AddonSettings>
-    <keyboard>
-      <delete>Delete</delete>
-      <backspace mod="longpress">ActivateWindow(Home)</backspace>
-    </keyboard>
-  </AddonSettings>
-  <Addon>
-    <keyboard>
-      <f1>Red</f1>
-      <red>Red</red>
-      <f2>Green</f2>
-      <green>Green</green>
-      <f3>Yellow</f3>
-      <yellow>Yellow</yellow>
-      <f4>Blue</f4>
-      <blue>Blue</blue>
-      <backspace mod="longpress">ActivateWindow(Home)</backspace>
-    </keyboard>
-  </Addon>
-  <Programs>
-    <keyboard>
-      <backspace mod="longpress">ActivateWindow(Home)</backspace>
-    </keyboard>
-  </Programs>
-  <Settings>
-    <keyboard>
-      <backspace mod="longpress">ActivateWindow(Home)</backspace>
-    </keyboard>
-  </Settings>
-  <MediaFilter>
-    <keyboard>
-      <backspace mod="longpress">ActivateWindow(Home)</backspace>
-    </keyboard>
-  </MediaFilter>
-  <Weather>
-    <keyboard>
-      <backspace mod="longpress">ActivateWindow(Home)</backspace>
-    </keyboard>
-  </Weather>
-  <PlayerProcessInfo>
-    <keyboard>
-      <o>PlayerProcessInfo</o>
-    </keyboard>
-  </PlayerProcessInfo>
+	<global>
+		<keyboard>
+			<power>XBMC.Quit()</power>
+			<menu>ActivateWindow(Home)</menu>
+			<x>SwitchPlayer</x>
+			<text>ContextMenu</text>
+			<z>SwitchToEnigma2</z>
+			<e>Info</e>
+
+			<up>Up</up>
+			<down>Down</down>
+			<left>Left</left>
+			<right>Right</right>
+			<pageup>PageUp</pageup>
+			<pagedown>PageDown</pagedown>
+			<return>Select</return>
+			<escape>Back</escape>
+			<prev_track>SkipPrevious</prev_track>
+			<next_track>SkipNext</next_track>
+
+			<volume_mute>Mute</volume_mute>
+			<volume_up>VolumeUp</volume_up>
+			<volume_down>VolumeDown</volume_down>
+
+			<zero>Number0</zero>
+			<one>Number1</one>
+			<two>Number2</two>
+			<three>Number3</three>
+			<four>Number4</four>
+			<five>Number5</five>
+			<six>Number6</six>
+			<seven>Number7</seven>
+			<eight>Number8</eight>
+			<nine>Number9</nine>
+
+			<play_pause>PlayPause</play_pause>
+			<fastforward>FastForward</fastforward>
+			<rewind>Rewind</rewind>
+			<record>Screenshot</record>
+			<stop>Stop</stop>
+
+			<red>ActivateWindow(pictures)</red>
+			<green>ActivateWindow(video)</green>
+			<yellow>ActivateWindow(music)</yellow>
+			<blue>ActivateWindow(programs)</blue>
+		</keyboard>
+	</global>
+
+	<FullscreenVideo>
+		<keyboard>
+			<fastforward>FastForward</fastforward>
+			<rewind>Rewind</rewind>
+			<next_track>StepForward</next_track>
+			<prev_track>StepBack</prev_track>
+			<return>OSD</return>
+			<e>Info</e>
+			<j>CodecInfo</j>
+			<z>AspectRatio</z>
+			<l>ShowSubtitles</l>
+			<left>StepBack</left>
+			<right>StepForward</right>
+			<up>ChapterOrBigStepForward</up>
+			<down>ChapterOrBigStepBack</down>
+			<o>AudioDelay</o>
+			<escape>Fullscreen</escape>
+			<x>Playlist</x>
+			<y>ActivateWindow(Teletext)</y>
+			<pageup>SkipNext</pageup>
+			<pagedown>SkipPrevious</pagedown>
+		</keyboard>
+	</FullscreenVideo>
+
+	<VideoTimeSeek>
+		<keyboard>
+			<return>Select</return>
+		</keyboard>
+	</VideoTimeSeek>
+
+	<FullscreenInfo>
+		<keyboard>
+			<fastforward>FastForward</fastforward>
+			<rewind>Rewind</rewind>
+			<next_track>StepForward</next_track>
+			<j>CodecInfo</j>
+			<escape>Back</escape>
+			<return>OSD</return>
+		</keyboard>
+	</FullscreenInfo>
+
+	<PlayerControls>
+		<keyboard>
+			<escape>Back</escape>
+		</keyboard>
+	</PlayerControls>
+
+	<VideoOSD>
+		<keyboard>
+			<escape>Back</escape>
+			<e>Info</e>
+			<j>CodecInfo</j>
+		</keyboard>
+	</VideoOSD>
+
+	<OSDVideoSettings>
+		<keyboard>
+			<e>Info</e>
+			<j>CodecInfo</j>
+		</keyboard>
+	</OSDVideoSettings>
+
+	<OSDAudioSettings>
+		<keyboard>
+			<e>Info</e>
+			<j>CodecInfo</j>
+		</keyboard>
+	</OSDAudioSettings>
+
+	<MyVideoPlaylist>
+		<keyboard>
+			<escape>Back</escape>
+			<red>Delete</red>
+			<pageup>MoveItemUp</pageup>
+			<pagedown>MoveItemDown</pagedown>
+		</keyboard>
+	</MyVideoPlaylist>
+
+	<MyPictures>
+		<keyboard>
+			<red>Delete</red>
+		</keyboard>
+	</MyPictures>
+
+	<ContextMenu>
+		<keyboard>
+			<escape>Back</escape>
+		</keyboard>
+	</ContextMenu>
+
+	<Scripts>
+		<keyboard>
+			<e>Info</e>
+		</keyboard>
+	</Scripts>
+
+	<MusicInformation>
+		<keyboard>
+			<escape>Back</escape>
+		</keyboard>
+	</MusicInformation>
+
+	<MovieInformation>
+		<keyboard>
+			<escape>Back</escape>
+		</keyboard>
+	</MovieInformation>
+
+	<PictureInfo>
+		<keyboard>
+			<prev_track>NextPicture</prev_track>
+			<next_track>PreviousPicture</next_track>
+			<escape>Back</escape>
+			<play_pause>Pause</play_pause>
+		</keyboard>
+	</PictureInfo>
+
+	<Teletext>
+		<keyboard>
+			<escape>Back</escape>
+		</keyboard>
+	</Teletext>
+
+	<Favourites>
+		<keyboard>
+			<escape>Close</escape>
+			<pageup>MoveItemUp</pageup>
+			<pagedown>MoveItemDown</pagedown>
+		</keyboard>
+	</Favourites>
+
+	<NumericInput>
+		<keyboard>
+			<escape>Close</escape>
+		</keyboard>
+	</NumericInput>
+
+	<FullscreenLiveTV>
+		<keyboard>
+			<left>StepBack</left>
+			<right>StepForward</right>
+			<up>ChannelUp</up>
+			<down>ChannelDown</down>
+		</keyboard>
+	</FullscreenLiveTV>
+
+	<FullscreenRadio>
+		<keyboard>
+			<left>StepBack</left>
+			<right>StepForward</right>
+			<up>ChannelUp</up>
+			<down>ChannelDown</down>
+		</keyboard>
+	</FullscreenRadio>
+
+	<PVROSDChannels>
+		<keyboard>
+			<escape>Close</escape>
+		</keyboard>
+	</PVROSDChannels>
+
+	<PVROSDGuide>
+		<keyboard>
+			<escape>Close</escape>
+		</keyboard>
+	</PVROSDGuide>
+
+	<AddonInformation>
+		<keyboard>
+			<escape>Back</escape>
+		</keyboard>
+	</AddonInformation>
+
+	<AddonSettings>
+		<keyboard>
+			<red>Delete</red>
+		</keyboard>
+	</AddonSettings>
+
+	<Addon>
+		<keyboard>
+			<red>Red</red>
+			<green>Green</green>
+			<yellow>Yellow</yellow>
+			<blue>Blue</blue>
+		</keyboard>
+	</Addon>
 </keymap>
