@@ -53,14 +53,14 @@ Frame::Frame(const Frame& src) :
 {
   if (src.m_pImage)
   {
-    m_pImage = new unsigned char[m_imageSize];
+    m_pImage = (unsigned char*) av_malloc(m_imageSize);
     memcpy(m_pImage, src.m_pImage, m_imageSize);
   }
 }
 
 Frame::~Frame()
 {
-  delete[] m_pImage;
+  av_free(m_pImage);
   m_pImage = nullptr;
 }
 
@@ -710,7 +710,7 @@ std::shared_ptr<Frame> CFFmpegImage::ReadFrame()
   std::shared_ptr<Frame> frame(new Frame());
   frame->m_delay = (unsigned int)av_frame_get_pkt_duration(avframe);
   frame->m_pitch = avframe->width * 4;
-  frame->m_pImage = new unsigned char[avframe->height * frame->m_pitch];
+  frame->m_pImage = (unsigned char*) av_malloc(avframe->height * frame->m_pitch);
   DecodeFrame(avframe, avframe->width, avframe->height, frame->m_pitch, frame->m_pImage);
   av_frame_free(&avframe);
   return frame;
