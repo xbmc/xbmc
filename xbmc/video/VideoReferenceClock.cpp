@@ -50,6 +50,9 @@
 #if defined(TARGET_ANDROID)
 #include "video/videosync/VideoSyncAndroid.h"
 #endif
+#if defined(HAS_LIBAMCODEC)
+#include "video/videosync/VideoSyncAML.h"
+#endif
 
 #ifdef TARGET_POSIX
 #include "linux/XTimeUtils.h"
@@ -126,6 +129,8 @@ void CVideoReferenceClock::Process()
     m_pVideoSync = new CVideoSyncIMX(this);
 #elif defined(TARGET_ANDROID)
     m_pVideoSync = new CVideoSyncAndroid(this);
+#elif defined(HAS_LIBAMCODEC)
+    m_pVideoSync = new CVideoSyncAML(this);
 #endif
 
     if (m_pVideoSync)
