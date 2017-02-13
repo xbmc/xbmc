@@ -24,7 +24,6 @@
 #include "threads/CriticalSection.h"
 #include "File.h"
 #include "threads/Thread.h"
-#include <atomic>
 
 namespace XFILE
 {
@@ -78,7 +77,7 @@ namespace XFILE
     unsigned     m_writeRate;
     unsigned     m_writeRateActual;
     int64_t      m_forwardCacheSize;
-    std::atomic<int64_t> m_fileSize;
+    int64_t      m_fileSize;
     unsigned int m_flags;
     CCriticalSection m_sync;
   };
