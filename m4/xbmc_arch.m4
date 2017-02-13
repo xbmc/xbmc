@@ -26,6 +26,9 @@ case $build in
   arm*-*-linux-gnu*|arm*-*-linux-uclibc*)
      AC_SUBST(NATIVE_ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_LINUX -D_LINUX")
      ;;
+  mipsel-*-linux*)
+     AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_LINUX -D_LINUX -D_MIPSEL")
+     ;;   
   *)
      AC_MSG_ERROR(unsupported native build platform: $build)
 esac
@@ -80,4 +83,13 @@ fi
 if test "$target_platform" = "target_raspberry_pi" ; then
   AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_LINUX -D_LINUX -D_ARMEL -DTARGET_RASPBERRY_PI")
 fi
+
+case $use_platform in
+  vuplus)
+     AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_LINUX -D_LINUX -D_MIPSEL -DTARGET_VUPLUS")
+     ;;
+  vuplus-arm)
+     AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_LINUX -D_LINUX -DTARGET_VUPLUS_ARM")
+     ;;
+esac 
 ])
