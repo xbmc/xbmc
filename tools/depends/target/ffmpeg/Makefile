@@ -58,7 +58,7 @@ ifeq ($(findstring arm, $(CPU)), arm)
   ffmpg_config += --enable-pic --disable-armv5te --disable-armv6t2
 endif
 ifeq ($(findstring mips, $(CPU)), mips)
-  ffmpg_config += --disable-mips32r2 --disable-mipsdspr1 --disable-mipsdspr2
+  ffmpg_config += --disable-mips32r2 --disable-mipsdsp --disable-mipsdspr2
 endif
 ifeq ($(Configuration), Release)
   ffmpg_config += --disable-debug
