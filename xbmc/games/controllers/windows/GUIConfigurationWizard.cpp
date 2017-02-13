@@ -256,6 +256,11 @@ void CGUIConfigurationWizard::OnEventFrame(const JOYSTICK::IButtonMap* buttonMap
     OnMotionless(buttonMap);
 }
 
+void CGUIConfigurationWizard::OnLateAxis(const JOYSTICK::IButtonMap* buttonMap, unsigned int axisIndex)
+{
+  //! @todo
+}
+
 void CGUIConfigurationWizard::OnMotion(const JOYSTICK::IButtonMap* buttonMap)
 {
   CSingleLock lock(m_motionMutex);
