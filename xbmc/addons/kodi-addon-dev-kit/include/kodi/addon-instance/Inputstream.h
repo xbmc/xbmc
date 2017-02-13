@@ -25,6 +25,7 @@
  */
 
 #include "../AddonBase.h"
+#include "../StreamCrypto.h"
 
 #ifdef BUILD_KODI_ADDON
 #include "../DVDDemuxPacket.h"
@@ -57,7 +58,10 @@ extern "C"
       SUPPORTSSEEK = (1 << 3),
 
       /// supports pause
-      SUPPORTSPAUSE = (1 << 4)
+      SUPPORTSPAUSE = (1 << 4),
+
+      /// supports decode
+      SUPPORTSDECODE = (1 << 5)
     };
 
     /// set of supported capabilities
@@ -130,15 +134,7 @@ extern "C"
     unsigned int m_BitsPerSample;        /*!< @brief (required) bits per sample */
     unsigned int m_BlockAlign;
 
-    enum CRYPTO_KEY_SYSTEM :uint16_t
-    {
-      CRYPTO_KEY_SYSTEM_NONE = 0,
-      CRYPTO_KEY_SYSTEM_WIDEVINE,
-      CRYPTO_KEY_SYSTEM_PLAYREADY,
-      CRYPTO_KEY_SYSTEM_COUNT
-    } m_CryptoKeySystem;                 /*!< @brief keysystem for encrypted media, KEY_SYSTEM_NONE for unencrypted media */
-    char m_CryptoSessionId[32];          /*!< @brief The crypto session key id */
-    uint16_t m_CryptoSessionIdSize;      /*!< @brief The size of the crypto session key id */
+    CRYPTO_INFO m_cryptoInfo;
   } INPUTSTREAM_INFO;
 
 
@@ -228,26 +224,26 @@ namespace addon
     * @return True if the stream has been opened successfully, false otherwise.
     * @remarks
     */
-    virtual bool Open(INPUTSTREAM& props) { return false; }
+    virtual bool Open(INPUTSTREAM& props) = 0;
 
     /*!
     * Close an open stream.
     * @remarks
     */
-    virtual void Close() { }
+    virtual void Close() = 0;
 
     /*!
     * Get Capabilities of this addon.
     * @param capabilities The add-on's capabilities.
     * @remarks
     */
-    virtual void GetCapabilities(INPUTSTREAM_CAPABILITIES& capabilities) { }
+    virtual void GetCapabilities(INPUTSTREAM_CAPABILITIES& capabilities) = 0;
 
     /*!
     * Get IDs of available streams
     * @remarks
     */
-    virtual INPUTSTREAM_IDS GetStreamIds() { INPUTSTREAM_IDS ids; ids.m_streamCount = 0; return ids; }
+    virtual INPUTSTREAM_IDS GetStreamIds() = 0;
 
     /*!
     * Get stream properties of a stream.
@@ -255,7 +251,7 @@ namespace addon
     * @return struc of stream properties
     * @remarks
     */
-    virtual INPUTSTREAM_INFO GetStream(int streamid) { INPUTSTREAM_INFO info; return info; }
+    virtual INPUTSTREAM_INFO GetStream(int streamid) = 0;
 
     /*!
     * Enable or disable a stream.
@@ -264,7 +260,7 @@ namespace addon
     * @param enable true for enable, false for disable
     * @remarks
     */
-    virtual void EnableStream(int streamid, bool enable) { }
+    virtual void EnableStream(int streamid, bool enable) = 0;
 
     /*!
     * Reset the demultiplexer in the add-on.

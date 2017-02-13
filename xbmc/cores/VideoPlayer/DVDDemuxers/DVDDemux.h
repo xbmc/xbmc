@@ -26,8 +26,13 @@
 #include "system.h"
 
 struct DemuxPacket;
-class CDVDInputStream;
 struct DemuxCryptoSession;
+
+class CDVDInputStream;
+
+namespace ADDON {
+  class CAddonProvider;
+}
 
 #ifndef __GNUC__
 #pragma warning(push)
@@ -139,6 +144,7 @@ public:
   } flags;
 
   std::shared_ptr<DemuxCryptoSession> cryptoSession;
+  std::shared_ptr<ADDON::CAddonProvider> externalInterfaces;
 };
 
 class CDemuxStreamVideo : public CDemuxStream

@@ -21,6 +21,7 @@
 #include "InputStreamAddon.h"
 
 #include "FileItem.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/addon-instance/VideoCodec.h"
 #include "cores/VideoPlayer/DVDClock.h"
 #include "cores/VideoPlayer/DVDDemuxers/DemuxCrypto.h"
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemux.h"
@@ -29,12 +30,32 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 
+CInputStreamProvider::CInputStreamProvider(ADDON::AddonInfoPtr addonInfo, kodi::addon::IAddonInstance* parentInstance)
+  : m_addonInfo(addonInfo),
+  m_parentInstance(parentInstance)
+{
+
+}
+
+void CInputStreamProvider::getAddonInstance(INSTANCE_TYPE instance_type, ADDON::AddonInfoPtr& addonInfo, kodi::addon::IAddonInstance*& parentInstance)
+{
+  if (instance_type == ADDON::CAddonProvider::INSTANCE_VIDEOCODEC)
+  {
+    addonInfo = m_addonInfo;
+    parentInstance = m_parentInstance;
+  }
+  return;
+}
+
+/*****************************************************************************************************************/
+
 using namespace ADDON;
 
 CInputStreamAddon::CInputStreamAddon(ADDON::AddonInfoPtr addonInfo, IVideoPlayer* player, const CFileItem& fileitem)
-  : CDVDInputStream(DVDSTREAM_TYPE_ADDON, fileitem),
-    IAddonInstanceHandler(ADDON_INPUTSTREAM),
-    m_player(player)
+  : CDVDInputStream(DVDSTREAM_TYPE_ADDON, fileitem)
+  , IAddonInstanceHandler(ADDON_INPUTSTREAM)
+  , m_player(player)
+  , m_addonInfo(addonInfo)
 {
   m_addon = CAddonMgr::GetInstance().GetAddon(addonInfo->ID(), this);
   if (m_addon == nullptr)
@@ -51,8 +72,7 @@ CInputStreamAddon::CInputStreamAddon(ADDON::AddonInfoPtr addonInfo, IVideoPlayer
     StringUtils::Trim(key);
     key = name + "." + key;
   }
-  m_hasDemux = false;
-
+  m_caps.m_mask = 0;
   memset(&m_struct, 0, sizeof(m_struct));
 }
 
@@ -154,12 +174,6 @@ bool CInputStreamAddon::Open()
 
     memset(&m_caps, 0, sizeof(m_caps));
     m_struct.toAddon.GetCapabilities(m_addonInstance, &m_caps);
-
-    m_hasDemux = (m_caps.m_mask & INPUTSTREAM_CAPABILITIES::SUPPORTSIDEMUX) != 0;
-    m_hasPosTime = (m_caps.m_mask & INPUTSTREAM_CAPABILITIES::SUPPORTSIPOSTIME) != 0;
-    m_hasDisplayTime = (m_caps.m_mask & INPUTSTREAM_CAPABILITIES::SUPPORTSIDISPLAYTIME) != 0;
-    m_canPause = (m_caps.m_mask & INPUTSTREAM_CAPABILITIES::SUPPORTSPAUSE) != 0;
-    m_canSeek = (m_caps.m_mask & INPUTSTREAM_CAPABILITIES::SUPPORTSSEEK) != 0;
   }
 
   UpdateStreams();
@@ -222,18 +236,18 @@ bool CInputStreamAddon::Pause(double dTime)
 
 bool CInputStreamAddon::CanSeek()
 {
-  return m_canSeek;
+  return (m_caps.m_mask & INPUTSTREAM_CAPABILITIES::SUPPORTSSEEK) != 0;
 }
 
 bool CInputStreamAddon::CanPause()
 {
-  return m_canPause;
+  return (m_caps.m_mask & INPUTSTREAM_CAPABILITIES::SUPPORTSPAUSE) != 0;
 }
 
 // IDisplayTime
 CDVDInputStream::IDisplayTime* CInputStreamAddon::GetIDisplayTime()
 {
-  if (!m_hasDisplayTime)
+  if ((m_caps.m_mask & INPUTSTREAM_CAPABILITIES::SUPPORTSIDISPLAYTIME) == 0)
     return nullptr;
 
   return this;
@@ -258,7 +272,7 @@ int CInputStreamAddon::GetTime()
 // IPosTime
 CDVDInputStream::IPosTime* CInputStreamAddon::GetIPosTime()
 {
-  if (!m_hasPosTime)
+  if ((m_caps.m_mask & INPUTSTREAM_CAPABILITIES::SUPPORTSIPOSTIME) == 0)
     return nullptr;
 
   return this;
@@ -275,7 +289,7 @@ bool CInputStreamAddon::PosTime(int ms)
 // IDemux
 CDVDInputStream::IDemux* CInputStreamAddon::GetIDemux()
 {
-  if (!m_hasDemux)
+  if ((m_caps.m_mask & INPUTSTREAM_CAPABILITIES::SUPPORTSIDEMUX) == 0)
     return nullptr;
 
   return this;
@@ -283,7 +297,7 @@ CDVDInputStream::IDemux* CInputStreamAddon::GetIDemux()
 
 bool CInputStreamAddon::OpenDemux()
 {
-  if (m_hasDemux)
+  if ((m_caps.m_mask & INPUTSTREAM_CAPABILITIES::SUPPORTSIDEMUX) != 0)
     return true;
   else
     return false;
@@ -325,10 +339,10 @@ std::vector<CDemuxStream*> CInputStreamAddon::GetStreams() const
 CDemuxStream* CInputStreamAddon::GetStream(int iStreamId) const
 {
   std::map<int, CDemuxStream*>::const_iterator it = m_streams.find(iStreamId);
-  if (it != m_streams.end())
-    return it->second;
+  if (it == m_streams.end())
+    return nullptr;
 
-  return nullptr;
+  return it->second;
 }
 
 void CInputStreamAddon::EnableStream(int iStreamId, bool enable)
@@ -361,7 +375,7 @@ bool CInputStreamAddon::SeekTime(double time, bool backward, double* startpts)
   if (!m_struct.toAddon.DemuxSeekTime)
     return false;
 
-  if (m_hasPosTime)
+  if ((m_caps.m_mask & INPUTSTREAM_CAPABILITIES::SUPPORTSIPOSTIME) != 0)
   {
     if (!PosTime(time))
       return false;
@@ -480,8 +494,8 @@ void CInputStreamAddon::UpdateStreams()
         demuxStream->ExtraData[j] = stream.m_ExtraData[j];
     }
 
-    if (stream.m_CryptoKeySystem != INPUTSTREAM_INFO::CRYPTO_KEY_SYSTEM_NONE &&
-      stream.m_CryptoKeySystem < INPUTSTREAM_INFO::CRYPTO_KEY_SYSTEM_COUNT)
+    if (stream.m_cryptoInfo.m_CryptoKeySystem != CRYPTO_INFO::CRYPTO_KEY_SYSTEM_NONE &&
+      stream.m_cryptoInfo.m_CryptoKeySystem < CRYPTO_INFO::CRYPTO_KEY_SYSTEM_COUNT)
     {
       static const CryptoSessionSystem map[] =
       {
@@ -490,7 +504,15 @@ void CInputStreamAddon::UpdateStreams()
         CRYPTO_SESSION_SYSTEM_PLAYREADY
       };
       demuxStream->cryptoSession = std::shared_ptr<DemuxCryptoSession>(new DemuxCryptoSession(
-        map[stream.m_CryptoKeySystem], stream.m_CryptoSessionIdSize, stream.m_CryptoSessionId));
+        map[stream.m_cryptoInfo.m_CryptoKeySystem], stream.m_cryptoInfo.m_CryptoSessionIdSize, stream.m_cryptoInfo.m_CryptoSessionId));
+
+      if ((m_caps.m_mask & INPUTSTREAM_CAPABILITIES::SUPPORTSDECODE) != 0)
+      {
+        if (!m_subAddonProvider)
+          m_subAddonProvider = std::shared_ptr<CInputStreamProvider>(new CInputStreamProvider(m_addonInfo, m_addonInstance));
+
+        demuxStream->externalInterfaces = m_subAddonProvider;
+      }
     }
 
     m_streams[demuxStream->uniqueId] = demuxStream;
@@ -522,4 +544,5 @@ DemuxPacket* CInputStreamAddon::InputStreamAllocateEncryptedDemuxPacket(void* ko
 {
   return CDVDDemuxUtils::AllocateDemuxPacket(iDataSize, encryptedSubsampleCount);
 }
+
 //@}

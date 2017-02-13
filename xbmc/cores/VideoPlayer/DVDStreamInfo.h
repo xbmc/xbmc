@@ -90,6 +90,7 @@ public:
 
   // Crypto initialization Data
   std::shared_ptr<DemuxCryptoSession> cryptoSession;
+  std::shared_ptr<ADDON::CAddonProvider> externalInterfaces;
 
   bool operator==(const CDVDStreamInfo& right)      { return Equal(right, true);}
   bool operator!=(const CDVDStreamInfo& right)      { return !Equal(right, true);}

@@ -53,6 +53,7 @@ void CDVDStreamInfo::Clear()
   extrasize = 0;
 
   cryptoSession = nullptr;
+  externalInterfaces = nullptr;
 
   fpsscale = 0;
   fpsrate  = 0;
@@ -162,6 +163,7 @@ void CDVDStreamInfo::Assign(const CDVDStreamInfo& right, bool withextradata)
   }
 
   cryptoSession = right.cryptoSession;
+  externalInterfaces = right.externalInterfaces;
 
   // VIDEO
   fpsscale = right.fpsscale;
@@ -214,6 +216,7 @@ void CDVDStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
   }
 
   cryptoSession = right.cryptoSession;
+  externalInterfaces = right.externalInterfaces;
 
   if( right.type == STREAM_AUDIO )
   {
