@@ -1364,7 +1364,6 @@ void CVideoPlayer::Process()
         CDVDMsgPlayerSeek::CMode mode;
         mode.time = (int)GetTime();
         mode.backward = true;
-        mode.flush = true;
         mode.accurate = true;
         mode.sync = true;
         m_messenger.Put(new CDVDMsgPlayerSeek(mode));
