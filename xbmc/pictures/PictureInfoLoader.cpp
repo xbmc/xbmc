@@ -20,6 +20,7 @@
 
 #include "PictureInfoLoader.h"
 #include "PictureInfoTag.h"
+#include "ServiceBroker.h"
 #include "settings/Settings.h"
 #include "FileItem.h"
 
@@ -43,7 +44,7 @@ void CPictureInfoLoader::OnLoaderStart()
   m_mapFileItems->SetFastLookup(true);
 
   m_tagReads = 0;
-  m_loadTags = CSettings::GetInstance().GetBool(CSettings::SETTING_PICTURES_USETAGS);
+  m_loadTags = CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PICTURES_USETAGS);
 
   if (m_pProgressCallback)
     m_pProgressCallback->SetProgressMax(m_pVecItems->GetFileCount());
