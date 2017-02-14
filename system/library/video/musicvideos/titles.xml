@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<node order="2" type="filter">
+<node order="3" type="filter">
 	<label>10024</label>
 	<icon>DefaultMusicVideoTitle.png</icon>
 	<content>musicvideos</content>
