@@ -144,6 +144,10 @@ msgctxt "#31303"
 msgid "Data provider"
 msgstr "Adatszolgáltató"
 
+msgctxt "#31309"
+msgid "System Memory Used:"
+msgstr "Használt Rendszermemória:"
+
 msgctxt "#31320"
 msgid "Last Logged In"
 msgstr "Utoljára bejelentkezve"
@@ -211,6 +215,14 @@ msgstr "Rendszerinformációk megjelenítése · Hardverstatisztika · Tárolóe
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Az Kodi profilod kiválasztása[CR]bejelentkezéshez és folytatás"
+
+msgctxt "#31548"
+msgid "Home menu"
+msgstr "Főmenü"
+
+msgctxt "#31549"
+msgid "Home Add-ons"
+msgstr "Főmenü kiegészítők"
 
 msgctxt "#31550"
 msgid "Backgrounds"

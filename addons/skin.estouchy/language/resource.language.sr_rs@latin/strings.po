@@ -84,6 +84,10 @@ msgctxt "#31045"
 msgid "REWIND"
 msgstr "PREMOTAVANjE UNAZAD"
 
+msgctxt "#31046"
+msgid "Play speed"
+msgstr "Brzina reprodukcije"
+
 msgctxt "#31049"
 msgid "End Time"
 msgstr "Vreme završetka"
@@ -140,6 +144,10 @@ msgctxt "#31303"
 msgid "Data provider"
 msgstr "Provajder podataka"
 
+msgctxt "#31309"
+msgid "System Memory Used:"
+msgstr "Iskorišćenost memorije sistema:"
+
 msgctxt "#31320"
 msgid "Last Logged In"
 msgstr "Poslednja prijava"
@@ -174,11 +182,11 @@ msgstr "Promenite masku · Postavite jezik i regiju - Promenite opcije izlistava
 
 msgctxt "#31405"
 msgid "Configure & manage media sharing services · Configure & manage the weather service"
-msgstr "Podesi & upravljaj servisima deljenja medija · Podesi & upravljaj servisom vremenske prognoze"
+msgstr "Podesite & upravljajte servisima deljenja medija · Podesite & upravljajte servisom vremenske prognoze"
 
 msgctxt "#31406"
 msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
-msgstr "Podesi prikaz ·  Podesi audio · Podesi pristup internetu · Podesi uštedu energije · Podesi evidentiranje"
+msgstr "Podesite prikaz ·  Podesite audio · Podesite pristup internetu · Podesite uštedu energije · Podesite evidentiranje"
 
 msgctxt "#31407"
 msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
@@ -188,9 +196,13 @@ msgctxt "#31408"
 msgid "Configure actions that can be used during playback · Configure how media content is played"
 msgstr "Podesite akcije koje se mogu koristiti tokom reprodukcije · Podesite kako se medijski sadržaji reprodukuju"
 
+msgctxt "#31409"
+msgid "Configure library sources · Show the media lists display content · Configure how library lists are navigated"
+msgstr "Podesite izvore biblioteke · Prikaži sadržaj prikazivanja medijskih listi · Podesite kako se vrši navigacija lista biblioteke"
+
 msgctxt "#31410"
 msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
-msgstr "Podesi masku · Podesi region · Podesi kontrolu · Podesi čuvara ekrana · Podesi glavno zaključavanje"
+msgstr "Podesite masku · Podesite region · Podesite kontrolu · Podesite čuvara ekrana · Podesite glavno zaključavanje"
 
 msgctxt "#31411"
 msgid "Configure your profiles · Set locking options · Enable login screen"
@@ -202,7 +214,15 @@ msgstr "Prikaži sistemske informacije · Hardverska statistika · Proveri dostu
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
-msgstr "Izaberite vaš Kodi korisnički Profil[CR]za prijavu, a potom nastavite dalje"
+msgstr "Odaberite vaš Kodi korisnički Profil[CR]za prijavu, a potom nastavite dalje"
+
+msgctxt "#31548"
+msgid "Home menu"
+msgstr "Glavni meni"
+
+msgctxt "#31549"
+msgid "Home Add-ons"
+msgstr "Dodatni programi glavnog ekrana"
 
 msgctxt "#31550"
 msgid "Backgrounds"

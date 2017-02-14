@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="skin.estouchy" version="1.1.7" name="Estouchy" provider-name="Team Kodi">
+<addon id="skin.estouchy" version="1.1.8" name="Estouchy" provider-name="Team Kodi">
 	<requires>
 		<import addon="xbmc.gui" version="5.12.0"/>
 	</requires>
@@ -18,7 +18,7 @@
 		<summary lang="en_GB">Skin for touchscreen devices</summary>
 		<summary lang="en_NZ">Skin for touchscreen devices</summary>
 		<summary lang="en_US">Skin for touchscreen devices</summary>
-		<summary lang="es_ES">Plantilla para dispositivos táctiles</summary>
+		<summary lang="es_ES">Skin para dispositivos táctiles</summary>
 		<summary lang="es_MX">Máscara para dispositivos con pantalla táctil</summary>
 		<summary lang="fi_FI">Ulkoasu kosketusnäyttölaitteille</summary>
 		<summary lang="fr_CA">Habillage pour appareils à écran tactile</summary>
@@ -30,8 +30,9 @@
 		<summary lang="it_IT">Skin per dispositivi touchscreen</summary>
 		<summary lang="ko_KR">터치 스크린 기기를 위한 스킨</summary>
 		<summary lang="lt_LT">Teminė išvaizda liečiamiesiems įrenginiams</summary>
+		<summary lang="lv_LV">Apvalks skārienekrāna ierīcēm</summary>
 		<summary lang="ms_MY">Kulit untuk peranti skrin sentuh</summary>
-		<summary lang="nb_NO">Skinn for enheter med berøringsskjerm</summary>
+		<summary lang="nb_NO">Drakt for enheter med berøringsskjerm</summary>
 		<summary lang="nl_NL">Skin voor aanraakschermapparaten</summary>
 		<summary lang="pl_PL">Skóra dedykowana urządzeniom z ekranem dotykowym</summary>
 		<summary lang="pt_BR">Skin para dispositivos com telas de toque</summary>
@@ -56,7 +57,7 @@
 		<description lang="en_GB">Skin designed to be used on touchscreen devices like tablets and smartphones</description>
 		<description lang="en_NZ">Skin designed to be used on touchscreen devices like tablets and smartphones</description>
 		<description lang="en_US">Skin designed to be used on touchscreen devices like tablets and smartphones</description>
-		<description lang="es_ES">Esta plantilla está diseñada para usarla en dispositivos táctiles como tabletas y smartphones</description>
+		<description lang="es_ES">Esta skin está diseñada para usarla en dispositivos táctiles como tabletas y smartphones</description>
 		<description lang="es_MX">Máscara diseñada para ser usada en dispositivos de pantalla táctil como tabletas y teléfonos inteligentes</description>
 		<description lang="fi_FI">Ulkoasu on suunniteltu käytettäväksi kosketusnäyttölaitteissa, esimerkiksi tableteissa ja älypuhelimissa</description>
 		<description lang="fr_CA">Habillage conçu pour être utilisé sur les appareils à écran tactile comme les tablettes et les téléphones intelligents</description>

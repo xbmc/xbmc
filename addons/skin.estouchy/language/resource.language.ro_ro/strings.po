@@ -144,6 +144,10 @@ msgctxt "#31303"
 msgid "Data provider"
 msgstr "Furnizor informații"
 
+msgctxt "#31309"
+msgid "System Memory Used:"
+msgstr "Utilizare memorie sistem:"
+
 msgctxt "#31320"
 msgid "Last Logged In"
 msgstr "Ultima intrare"
@@ -211,6 +215,14 @@ msgstr "Afișează informații sistem · Statistici componente · Verificați di
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Selectați profilul dumneavoastră de utilizator Kodi[CR]pentru a vă autentifica și a continua"
+
+msgctxt "#31548"
+msgid "Home menu"
+msgstr "Meniu Acasă"
+
+msgctxt "#31549"
+msgid "Home Add-ons"
+msgstr "Suplimente Acasă"
 
 msgctxt "#31550"
 msgid "Backgrounds"

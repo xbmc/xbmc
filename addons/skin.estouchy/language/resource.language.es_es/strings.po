@@ -26,7 +26,7 @@ msgstr "IP"
 
 msgctxt "#31004"
 msgid "Caps[CR]Lock"
-msgstr "Bloqueo[CR]Mayúsculas"
+msgstr "Bloq.[CR]Mays."
 
 msgctxt "#31005"
 msgid "Visualization Options"
@@ -78,7 +78,7 @@ msgstr "Actualizado:"
 
 msgctxt "#31044"
 msgid "FAST FORWARD"
-msgstr "AVANCE RÁPIDO"
+msgstr "AVANZAR"
 
 msgctxt "#31045"
 msgid "REWIND"
@@ -86,7 +86,7 @@ msgstr "REBOBINAR"
 
 msgctxt "#31046"
 msgid "Play speed"
-msgstr "velocidad de Reproducción"
+msgstr "Velocidad de reproducción"
 
 msgctxt "#31049"
 msgid "End Time"
@@ -154,7 +154,7 @@ msgstr "Última Sesión el"
 
 msgctxt "#31322"
 msgid "Aired"
-msgstr "Salió al Aire el"
+msgstr "Emitido el"
 
 msgctxt "#31355"
 msgid "Video Menu"
@@ -178,43 +178,43 @@ msgstr "Basada en Arial"
 
 msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
-msgstr "Cambiar la skin - Seleccionar idioma y zona - Cambiar la visualización de los archivos - Elegir un salvapantallas"
+msgstr "Cambiar la skin - Seleccionar idioma y zona - Cambiar opciones de listados - Elegir un salvapantallas"
 
 msgctxt "#31405"
 msgid "Configure & manage media sharing services · Configure & manage the weather service"
-msgstr "Configure y gestione los servicios para compartir medios · Configure y gestione el servicio de clima"
+msgstr "Configurar y gestionar los servicios para compartir contenido · Configurar y gestionar el servicio del Tiempo"
 
 msgctxt "#31406"
 msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
-msgstr "Configure la pantalla · Configure el sonido · Configure el acceso a internet · Configure el ahorro de energia · Configure la depuración de errores"
+msgstr "Configurar la pantalla · Configurar el sonido · Configurar el acceso a internet · Configurar el ahorro de energia · Configurar el registro de eventos"
 
 msgctxt "#31407"
 msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
-msgstr "Gestiona los add-ons instalados · Busca e instala add-ons desde kodi.tv · Modifica los ajustes de los add-ons"
+msgstr "Gestionar los add-ons instalados · Buscar e instalar add-ons desde kodi.tv · Modificar los ajustes de los add-ons"
 
 msgctxt "#31408"
 msgid "Configure actions that can be used during playback · Configure how media content is played"
-msgstr "Configure acciones que se pueden usar durante la reproducción · Configure cómo se reproducen los contenidos"
+msgstr "Configurar acciones a usar durante la reproducción · Configurar cómo se reproducen los contenidos"
 
 msgctxt "#31409"
 msgid "Configure library sources · Show the media lists display content · Configure how library lists are navigated"
-msgstr "Configurar fuentes de colección · Mostrar el contenido desplegable de las listas de medios · Configurar como se navegan las listas de colección"
+msgstr "Configurar fuentes de colección · Mostrar el contenido desplegable de las listas de contenido · Configurar como se navega por las listas de colección"
 
 msgctxt "#31410"
 msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
-msgstr "Configure el skin · Configure la región · Configure el control · Configure el salvapantallas · Configure el bloqueo maestro"
+msgstr "Configurar el skin · Configurar la región · Configurar el control · Configurar el salvapantallas · Configurar el bloqueo maestro"
 
 msgctxt "#31411"
 msgid "Configure your profiles · Set locking options · Enable login screen"
-msgstr "Configure sus perfiles · Añada opciones de bloqueo · Habilite una pantalla de inicio de sesión"
+msgstr "Configurar perfiles · Añadir opciones de bloqueo · Activar pantalla de inicio de sesión"
 
 msgctxt "#31412"
 msgid "Display system information · Hardware statistics · Check storage availability · View network configuration"
-msgstr "Muestre información del sistema · Estadísticas de Hardware · Compruebe el espacio disponible · Vea la configuración de red"
+msgstr "Mostrar información del sistema · Estadísticas de Hardware · Comprobar el espacio disponible · Ver la configuración de red"
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
-msgstr "Selecciona tu usuario [CR] y continua"
+msgstr "Seleccione su perfil de usuario Kodi[CR]para iniciar sesión y continuar"
 
 msgctxt "#31548"
 msgid "Home menu"
@@ -230,11 +230,11 @@ msgstr "Fondos"
 
 msgctxt "#31551"
 msgid "Add-on Shortcut"
-msgstr "Acceso directo a Complemento"
+msgstr "Acceso directo a Add-on"
 
 msgctxt "#31552"
 msgid "SYNC"
-msgstr "SYNC"
+msgstr "SINC"
 
 msgctxt "#31553"
 msgid "Use Custom Background"
@@ -246,7 +246,7 @@ msgstr "Fondo:"
 
 msgctxt "#31555"
 msgid "Configure TV settings · Change full screen info · Manage EPG data settings"
-msgstr "Configura los ajustes de TV · Cambia la información en pantalla · Gestiona los ajustes de los datos EPG"
+msgstr "Configurar los ajustes de TV · Cambiar la información en pantalla · Gestionar los ajustes de los datos EPG"
 
 msgctxt "#31556"
 msgid "Live TV"
@@ -270,15 +270,15 @@ msgstr "Grupos disponibles"
 
 msgctxt "#31561"
 msgid "Add Group"
-msgstr "Añadir Grupo"
+msgstr "Añadir grupo"
 
 msgctxt "#31562"
 msgid "Rename Group"
-msgstr "Renombrar Grupo"
+msgstr "Renombrar grupo"
 
 msgctxt "#31563"
 msgid "Delete Group"
-msgstr "Eliminar Grupo"
+msgstr "Eliminar grupo"
 
 msgctxt "#31564"
 msgid "Show hidden"
@@ -294,7 +294,7 @@ msgstr "Primer uso"
 
 msgctxt "#31901"
 msgid "There are two things to know about navigating Estouchy"
-msgstr "Aprende un par de cosas que debes conocer sobre la navegación en Estouchy"
+msgstr "Hay un par de cosas que debe conocer sobre la navegación en Estouchy"
 
 msgctxt "#31902"
 msgid "The Kodi logo functions as a 'HOME' button. Whenever you touch it, you will be taken back to the home screen."
