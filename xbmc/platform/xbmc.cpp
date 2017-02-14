@@ -117,5 +117,10 @@ extern "C" int XBMC_Run(bool renderGUI, CFileItemList &playlist)
   g_RBP.Deinitialize();
 #endif
 
+#if defined(TARGET_VUPLUS) || defined(TARGET_VUPLUS_ARM)
+  system("xbmc.helper --stop");
+#endif
+
   return status;
 }
+
