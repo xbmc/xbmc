@@ -1422,7 +1422,7 @@ std::string CAdvancedSettings::GetMusicExtensions() const
 {
   std::string result(m_musicExtensions);
 
-  for (auto addon : CAddonMgr::GetInstance().GetAddonInfos(true, ADDON_AUDIODECODER))
+  for (const auto& addon : CAddonMgr::GetInstance().GetAddonInfos(true, ADDON_AUDIODECODER))
   {
     result += '|';
     result += addon->Type(ADDON_AUDIODECODER)->GetValue("@extension").asString();
@@ -1435,14 +1435,10 @@ std::string CAdvancedSettings::GetPictureExtensions() const
 {
   std::string result(m_pictureExtensions);
 
-  VECADDONS codecs;
-  CBinaryAddonCache &addonCache = CServiceBroker::GetBinaryAddonCache();
-  addonCache.GetAddons(codecs, ADDON_IMAGEDECODER);
-  for (size_t i=0;i<codecs.size();++i)
+  for (const auto& addonInfo : CAddonMgr::GetInstance().GetAddonInfos(true, ADDON_IMAGEDECODER))
   {
-    std::shared_ptr<CImageDecoder> dec(std::static_pointer_cast<CImageDecoder>(codecs[i]));
     result += '|';
-    result += dec->GetExtensions();
+    result += addonInfo->Type(ADDON_IMAGEDECODER)->GetValue("@extension").asString();
   }
 
   return result;

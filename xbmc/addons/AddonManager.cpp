@@ -43,12 +43,12 @@
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
 
+#include "addons/ImageDecoder.h"
+
 /* CAddon class included add-on's */
 #include "addons/AudioDecoder.h"
-#include "addons/AudioEncoder.h"
 #include "addons/ContextMenuAddon.h"
 #include "addons/GameResource.h"
-#include "addons/ImageDecoder.h"
 #include "addons/ImageResource.h"
 #include "addons/LanguageResource.h"
 #include "addons/Repository.h"
@@ -221,6 +221,9 @@ AddonInfos CAddonMgr::GetAddonInfos(bool enabledOnly, const TYPE &type, bool use
   return infos;
 }
 
+/**
+ * @todo need bigger speed improvement!!!
+ */
 void CAddonMgr::GetAddonInfos(AddonInfos& addonInfos, bool enabledOnly, const TYPE &type, bool useTimeData/* = false*/)
 {
   CSingleLock lock(m_critSection);
@@ -231,7 +234,7 @@ void CAddonMgr::GetAddonInfos(AddonInfos& addonInfos, bool enabledOnly, const TY
   else
     addons = &m_installedAddons;
 
-  for (auto info : *addons)
+  for (auto& info : *addons)
   {
     if (type == ADDON_UNKNOWN || info.second->IsType(type))
     {
@@ -765,8 +768,6 @@ std::shared_ptr<CAddon> CAddonMgr::CreateAddon(AddonInfoPtr addonInfo, TYPE addo
       return std::make_shared<ActiveAE::CActiveAEDSPAddon>(addonInfo);
     case ADDON_AUDIODECODER:
       return std::make_shared<CAudioDecoder>(addonInfo);
-    case ADDON_IMAGEDECODER:
-      return std::make_shared<CImageDecoder>(addonInfo);
     case ADDON_PERIPHERALDLL:
       return std::make_shared<PERIPHERALS::CPeripheralAddon>(addonInfo);
     case ADDON_GAMEDLL:
