@@ -128,7 +128,7 @@ bool CInputStreamAddon::Open()
   m_struct.toKodi.FreeDemuxPacket = InputStreamFreeDemuxPacket;
   m_struct.toKodi.AllocateDemuxPacket = InputStreamAllocateDemuxPacket;
   m_struct.toKodi.AllocateEncryptedDemuxPacket = InputStreamAllocateEncryptedDemuxPacket;
-  if (!CreateInstance(ADDON_INSTANCE_INPUTSTREAM, UUID(), &m_struct, reinterpret_cast<KODI_HANDLE*>(&m_addonInstance)) || !m_struct.toAddon.Open)
+  if (!CreateInstance(ADDON_INSTANCE_INPUTSTREAM, &m_struct, reinterpret_cast<KODI_HANDLE*>(&m_addonInstance)) || !m_struct.toAddon.Open)
     return false;
 
   INPUTSTREAM props;
@@ -176,7 +176,7 @@ void CInputStreamAddon::Close()
 {
   if (m_struct.toAddon.Close)
     m_struct.toAddon.Close(m_addonInstance);
-  DestroyInstance(UUID());
+  DestroyInstance();
   memset(&m_struct, 0, sizeof(m_struct));
 }
 

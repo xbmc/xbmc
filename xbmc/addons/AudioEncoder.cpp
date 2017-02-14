@@ -32,7 +32,7 @@ CAudioEncoder::CAudioEncoder(AddonInfoPtr addonInfo)
 bool CAudioEncoder::Init(AddonToKodiFuncTable_AudioEncoder &callbacks)
 {
   m_struct.toKodi = callbacks;
-  if (!CreateInstance(ADDON_INSTANCE_AUDIOENCODER, UUID(), &m_struct, reinterpret_cast<KODI_HANDLE*>(&m_addonInstance)) || !m_struct.toAddon.Start)
+  if (!CreateInstance(ADDON_INSTANCE_AUDIOENCODER, &m_struct, reinterpret_cast<KODI_HANDLE*>(&m_addonInstance)) || !m_struct.toAddon.Start)
     return false;
 
   return m_struct.toAddon.Start(m_addonInstance,
@@ -63,7 +63,7 @@ bool CAudioEncoder::Close()
   if (m_struct.toAddon.Finish)
     ret = m_struct.toAddon.Finish(m_addonInstance);
 
-  DestroyInstance(UUID());
+  DestroyInstance();
   memset(&m_struct, 0, sizeof(m_struct));
 
   return ret;

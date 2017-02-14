@@ -29,7 +29,7 @@ class CAddonVideoCodec
 {
 public:
   CAddonVideoCodec(CProcessInfo &processInfo, ADDON::AddonInfoPtr& addonInfo, kodi::addon::IAddonInstance* parentInstance);
-  ~CAddonVideoCodec();
+  virtual ~CAddonVideoCodec();
 
   virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options) override;
   virtual bool Reconfigure(CDVDStreamInfo &hints) override;
@@ -43,7 +43,6 @@ private:
 
   kodi::addon::CInstanceVideoCodec* m_addonInstance;
   AddonInstance_VideoCodec m_struct;
-  kodi::addon::IAddonInstance* m_parentInstance;
   
   int m_codecFlags;
   VIDEOCODEC_FORMAT m_formats[VIDEOCODEC_FORMAT::MaxVideoFormats + 1];

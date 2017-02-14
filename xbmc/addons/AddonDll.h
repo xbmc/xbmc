@@ -34,21 +34,22 @@ namespace ADDON
   class IAddonInstanceHandler
   {
   public:
-    IAddonInstanceHandler(TYPE type);
-    IAddonInstanceHandler(TYPE type, const AddonInfoPtr& addonInfo);
+    IAddonInstanceHandler(TYPE type, const std::string& instanceID = "");
+    IAddonInstanceHandler(TYPE type, const AddonInfoPtr& addonInfo, kodi::addon::IAddonInstance* parentInstance = nullptr, const std::string& instanceID = "");
     virtual ~IAddonInstanceHandler();
 
     TYPE UsedType() { return m_type; }
-    const std::string& UUID() { return m_uuid; }
+    const std::string& InstanceID() { return m_instanceId; }
     const AddonInfoPtr& AddonInfo() { return m_addonInfo; }
 
-    bool CreateInstance(int instanceType, const std::string& instanceID, KODI_HANDLE instance, KODI_HANDLE* addonInstance, KODI_HANDLE parentInstance = nullptr);
-    void DestroyInstance(const std::string& instanceID);
+    bool CreateInstance(int instanceType, KODI_HANDLE instance, KODI_HANDLE* addonInstance);
+    void DestroyInstance();
     const AddonDllPtr& Addon() { return m_addon; }
 
   private:
     TYPE m_type;
-    std::string m_uuid;
+    std::string m_instanceId;
+    kodi::addon::IAddonInstance* m_parentInstance;
     AddonInfoPtr m_addonInfo;
     AddonDllPtr m_addon;
   };

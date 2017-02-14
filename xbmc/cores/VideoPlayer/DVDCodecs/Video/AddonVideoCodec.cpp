@@ -28,12 +28,11 @@ using namespace ADDON;
 
 CAddonVideoCodec::CAddonVideoCodec(CProcessInfo &processInfo, ADDON::AddonInfoPtr& addonInfo, kodi::addon::IAddonInstance* parentInstance)
   : CDVDVideoCodec(processInfo),
-  IAddonInstanceHandler(ADDON::ADDON_VIDEOCODEC, addonInfo),
-  m_parentInstance(parentInstance)
+    IAddonInstanceHandler(ADDON::ADDON_VIDEOCODEC, addonInfo, parentInstance)
 {
   memset(&m_struct, 0, sizeof(m_struct));
   m_struct.toKodi.kodiInstance = this;
-  if (!CreateInstance(ADDON_INSTANCE_VIDEOCODEC, UUID(), &m_struct, reinterpret_cast<KODI_HANDLE*>(&m_addonInstance), m_parentInstance) || !m_struct.toAddon.Open)
+  if (!CreateInstance(ADDON_INSTANCE_VIDEOCODEC, &m_struct, reinterpret_cast<KODI_HANDLE*>(&m_addonInstance)) || !m_struct.toAddon.Open)
   {
     CLog::Log(LOGERROR, "CAddonVideoCodec: Failed to create add-on instance for '%s'", addonInfo->ID().c_str());
     return;
@@ -42,7 +41,7 @@ CAddonVideoCodec::CAddonVideoCodec(CProcessInfo &processInfo, ADDON::AddonInfoPt
 
 CAddonVideoCodec::~CAddonVideoCodec()
 {
-  DestroyInstance(UUID());
+  DestroyInstance();
 }
 
 bool CAddonVideoCodec::CopyToInitData(VIDEOCODEC_INITDATA &initData, CDVDStreamInfo &hints)
