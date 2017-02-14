@@ -146,7 +146,7 @@ void CFileCache::SetCacheStrategy(CCacheStrategy *pCache, bool bDeleteCache /* =
 
 IFile *CFileCache::GetFileImp()
 {
-  return m_source.GetImplemenation();
+  return m_source.GetImplementation();
 }
 
 bool CFileCache::Open(const CURL& url)
@@ -568,15 +568,15 @@ void CFileCache::StopThread(bool bWait /*= true*/)
 
 std::string CFileCache::GetContent()
 {
-  if (!m_source.GetImplemenation())
+  if (!m_source.GetImplementation())
     return IFile::GetContent();
 
-  return m_source.GetImplemenation()->GetContent();
+  return m_source.GetImplementation()->GetContent();
 }
 
 std::string CFileCache::GetContentCharset(void)
 {
-  IFile* impl = m_source.GetImplemenation();
+  IFile* impl = m_source.GetImplementation();
   if (!impl)
     return IFile::GetContentCharset();
 

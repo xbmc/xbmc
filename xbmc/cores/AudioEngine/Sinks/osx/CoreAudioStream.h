@@ -60,7 +60,7 @@ public:
   bool    GetAvailablePhysicalFormats(StreamFormatList *pList);
   static bool GetAvailableVirtualFormats(AudioStreamID id, StreamFormatList *pList);
   static bool GetAvailablePhysicalFormats(AudioStreamID id, StreamFormatList *pList);
-  static bool IsDigitalOuptut(AudioStreamID id);
+  static bool IsDigitalOutput(AudioStreamID id);
   static bool GetStartingChannelInDevice(AudioStreamID id, UInt32 &startingChannel);
 
 protected:

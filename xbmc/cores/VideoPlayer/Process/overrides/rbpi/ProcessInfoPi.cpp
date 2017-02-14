@@ -48,7 +48,7 @@ EINTERLACEMETHOD CProcessInfoPi::GetFallbackDeintMethod()
 
 bool CProcessInfoPi::AllowDTSHDDecode()
 {
-  if (g_RBP.RasberryPiVersion() == 1)
+  if (g_RBP.RaspberryPiVersion() == 1)
     return false;
   return true;
 }

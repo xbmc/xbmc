@@ -65,7 +65,7 @@ bool COMXAudioCodecOMX::Open(CDVDStreamInfo &hints)
 {
   AVCodec* pCodec = NULL;
 
-  if (hints.codec == AV_CODEC_ID_DTS && g_RBP.RasberryPiVersion() > 1)
+  if (hints.codec == AV_CODEC_ID_DTS && g_RBP.RaspberryPiVersion() > 1)
     pCodec = avcodec_find_decoder_by_name("dcadec");
 
   if (!pCodec)
