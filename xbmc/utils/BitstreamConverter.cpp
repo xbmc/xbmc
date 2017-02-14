@@ -74,6 +74,34 @@ enum {
     HEVC_NAL_SEI_SUFFIX = 40
 };
 
+enum {
+  SEI_BUFFERING_PERIOD = 0,
+  SEI_PIC_TIMING,
+  SEI_PAN_SCAN_RECT,
+  SEI_FILLER_PAYLOAD,
+  SEI_USER_DATA_REGISTERED_ITU_T_T35,
+  SEI_USER_DATA_UNREGISTERED,
+  SEI_RECOVERY_POINT,
+  SEI_DEC_REF_PIC_MARKING_REPETITION,
+  SEI_SPARE_PIC,
+  SEI_SCENE_INFO,
+  SEI_SUB_SEQ_INFO,
+  SEI_SUB_SEQ_LAYER_CHARACTERISTICS,
+  SEI_SUB_SEQ_CHARACTERISTICS,
+  SEI_FULL_FRAME_FREEZE,
+  SEI_FULL_FRAME_FREEZE_RELEASE,
+  SEI_FULL_FRAME_SNAPSHOT,
+  SEI_PROGRESSIVE_REFINEMENT_SEGMENT_START,
+  SEI_PROGRESSIVE_REFINEMENT_SEGMENT_END,
+  SEI_MOTION_CONSTRAINED_SLICE_GROUP_SET,
+  SEI_FILM_GRAIN_CHARACTERISTICS,
+  SEI_DEBLOCKING_FILTER_DISPLAY_PREFERENCE,
+  SEI_STEREO_VIDEO_INFO,
+  SEI_POST_FILTER_HINTS,
+  SEI_TONE_MAPPING
+};
+
+
 ////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////
 // GStreamer h264 parser
@@ -207,6 +235,34 @@ static const uint8_t* avc_find_startcode(const uint8_t *p, const uint8_t *end)
   return out;
 }
 
+static bool has_sei_recovery_point(const uint8_t *p, const uint8_t *end)
+{
+  int pt(0), ps(0), offset(1);
+
+  do
+  {
+    pt = 0;
+    do {
+      pt += p[offset];
+    } while (p[offset++] == 0xFF);
+
+    ps = 0;
+    do {
+      ps += p[offset];
+    } while (p[offset++] == 0xFF);
+
+    if (pt == SEI_RECOVERY_POINT)
+    {
+      nal_bitstream bs;
+      nal_bs_init(&bs, p + offset, ps);
+      return nal_bs_read_ue(&bs) >= 0;
+    }
+    offset += ps;
+  } while(p + offset < end && p[offset] != 0x80);
+
+  return false;
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////
 CBitstreamParser::CBitstreamParser()
@@ -217,49 +273,44 @@ CBitstreamParser::~CBitstreamParser()
 {
 }
 
-bool CBitstreamParser::FindIdrSlice(const uint8_t *buf, int buf_size)
+bool CBitstreamParser::HasKeyframe(const uint8_t *buf, int buf_size)
 {
   if (!buf)
     return false;
 
   bool rtn = false;
   uint32_t state = -1;
-  const uint8_t *buf_end = buf + buf_size;
+  const uint8_t *buf_begin, *buf_end = buf + buf_size;
 
-  for(;;)
+  for(;rtn == false;)
   {
     buf = find_start_code(buf, buf_end, &state);
     if (buf >= buf_end)
     {
-      //CLog::Log(LOGDEBUG, "FindIdrSlice: buf(%p), buf_end(%p)", buf, buf_end);
       break;
     }
 
-    --buf;
-    int src_length = buf_end - buf;
     switch (state & 0x1f)
     {
-      default:
-        CLog::Log(LOGDEBUG, "FindIdrSlice: found nal_type(%d)", state & 0x1f);
-        break;
       case AVC_NAL_SLICE:
-        CLog::Log(LOGDEBUG, "FindIdrSlice: found NAL_SLICE");
         break;
       case AVC_NAL_IDR_SLICE:
-        CLog::Log(LOGDEBUG, "FindIdrSlice: found NAL_IDR_SLICE");
         rtn = true;
         break;
       case AVC_NAL_SEI:
-        CLog::Log(LOGDEBUG, "FindIdrSlice: found NAL_SEI");
+        buf_begin = buf - 1;
+        buf = find_start_code(buf, buf_end, &state) - 4;
+        if (has_sei_recovery_point(buf_begin, buf))
+          rtn = true;
         break;
       case AVC_NAL_SPS:
-        CLog::Log(LOGDEBUG, "FindIdrSlice: found NAL_SPS");
+        rtn = true;
         break;
       case AVC_NAL_PPS:
-        CLog::Log(LOGDEBUG, "FindIdrSlice: found NAL_PPS");
+        break;
+      default:
         break;
     }
-    buf += src_length;
   }
 
   return rtn;
@@ -280,6 +331,7 @@ CBitstreamConverter::CBitstreamConverter()
   m_convert_3byteTo4byteNALSize = false;
   m_convert_bytestream = false;
   m_sps_pps_context.sps_pps_data = NULL;
+  m_has_keyframe = true;
 }
 
 CBitstreamConverter::~CBitstreamConverter()
@@ -359,7 +411,7 @@ bool CBitstreamConverter::Open(enum AVCodecID codec, uint8_t *in_extradata, int 
             // are valid, setup to convert 3 byte NAL sizes to 4 byte.
             in_extradata[4] = 0xFF;
             m_convert_3byteTo4byteNALSize = true;
-           
+
             m_extradata = (uint8_t *)av_malloc(in_extrasize);
             memcpy(m_extradata, in_extradata, in_extrasize);
             m_extrasize = in_extrasize;
@@ -470,7 +522,7 @@ void CBitstreamConverter::Close(void)
 bool CBitstreamConverter::Convert(uint8_t *pData, int iSize)
 {
   if (m_convertBuffer)
-  {  
+  {
     av_free(m_convertBuffer);
     m_convertBuffer = NULL;
   }
@@ -520,7 +572,7 @@ bool CBitstreamConverter::Convert(uint8_t *pData, int iSize)
       {
         m_inputSize = iSize;
         m_inputBuffer = pData;
-  
+
         if (m_convert_bytestream)
         {
           if(m_convertBuffer)
@@ -606,6 +658,16 @@ int CBitstreamConverter::GetExtraSize() const
     return m_sps_pps_context.size;
   else
     return m_extrasize;
+}
+
+void CBitstreamConverter::ResetKeyframe(void)
+{
+  m_has_keyframe = false;
+}
+
+bool CBitstreamConverter::HasKeyframe() const
+{
+  return m_has_keyframe;
 }
 
 bool CBitstreamConverter::BitstreamConvertInitAVC(void *in_extradata, int in_extrasize)
@@ -822,7 +884,7 @@ bool CBitstreamConverter::BitstreamConvert(uint8_t* pData, int iSize, uint8_t **
   int i;
   uint8_t *buf = pData;
   uint32_t buf_size = iSize;
-  uint8_t  unit_type, nal_sps, nal_pps;
+  uint8_t  unit_type, nal_sps, nal_pps, nal_sei;
   int32_t  nal_size;
   uint32_t cumul_size = 0;
   const uint8_t *buf_end = buf + buf_size;
@@ -832,10 +894,12 @@ bool CBitstreamConverter::BitstreamConvert(uint8_t* pData, int iSize, uint8_t **
     case AV_CODEC_ID_H264:
       nal_sps = AVC_NAL_SPS;
       nal_pps = AVC_NAL_PPS;
+      nal_sei = AVC_NAL_SEI;
       break;
     case AV_CODEC_ID_HEVC:
       nal_sps = HEVC_NAL_SPS;
       nal_pps = HEVC_NAL_PPS;
+      nal_sei = HEVC_NAL_SEI_PREFIX;
       break;
     default:
       return false;
@@ -866,7 +930,10 @@ bool CBitstreamConverter::BitstreamConvert(uint8_t* pData, int iSize, uint8_t **
     if (m_sps_pps_context.first_idr && (unit_type == nal_sps || unit_type == nal_pps))
       m_sps_pps_context.idr_sps_pps_seen = 1;
 
-      // prepend only to the first access unit of an IDR picture, if no sps/pps already present
+    if (!m_has_keyframe && (unit_type == nal_sps || IsIDR(unit_type) || (unit_type == nal_sei && has_sei_recovery_point(buf, buf + nal_size))))
+      m_has_keyframe = true;
+
+    // prepend only to the first access unit of an IDR picture, if no sps/pps already present
     if (m_sps_pps_context.first_idr && IsIDR(unit_type) && !m_sps_pps_context.idr_sps_pps_seen)
     {
       BitstreamAllocAndCopy(poutbuf, poutbuf_size,

@@ -40,6 +40,11 @@ if(IMX_FOUND)
   list(APPEND HEADERS VideoSyncIMX.h)
 endif()
 
+if(AML_FOUND)
+  list(APPEND SOURCES VideoSyncAML.cpp)
+  list(APPEND HEADERS VideoSyncAML.h)
+endif()
+
 if(SOURCES AND HEADERS)
   core_add_library(video_sync)
 endif()
