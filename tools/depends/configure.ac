@@ -341,7 +341,7 @@ case $host in
           found_sdk_version=[`$use_xcodebuild -showsdks | grep $target_platform | sort | tail -n 1 | awk '{ print $2}'`]
           use_sdk="${use_sdk:-$found_sdk_version}"
           sdk_name=$target_platform$use_sdk
-          platform_min_version="$target_platform-version-min=5.1"
+          platform_min_version="$target_platform-version-min=6.0"
         fi
 	case $use_sdk in
           4.*);;
@@ -350,6 +350,7 @@ case $host in
           7.*);;
           8.*);;
           9.*);;
+          10.*);;
             *)
               AC_MSG_ERROR(error in configure of --with-sdk=$use_sdk)
             ;;

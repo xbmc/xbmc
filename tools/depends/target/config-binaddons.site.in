@@ -128,6 +128,12 @@ fi
 
 
 if test "@platform_os@" = "ios"; then
+  # Xcode 8 + 10.11, clock_gettime getentropy is present
+  # in 10.12 but will get wrongly detected if building on 10.11
+  ac_cv_search_clock_gettime=no
+  ac_cv_func_clock_gettime=no
+  ac_cv_func_getentropy=no
+
   # tweaks for libffi (ios must use llvm-gcc-4.2)
   if test "${PACKAGE_NAME}" = "libffi" ; then
       case "@use_xcode@" in
