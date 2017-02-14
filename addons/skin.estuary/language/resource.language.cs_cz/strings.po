@@ -110,7 +110,11 @@ msgstr "Typ zobrazení"
 
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
-msgstr "Nenalezeny žádné oblíbené. Na tento seznam můžete přidat jakoukoliv položku ze zobrazení médií pomocí místní nabídky."
+msgstr "Nenalezeny žádné oblíbené. Pomocí místní nabídky můžete na tento seznam přidat jakoukoliv položku ze zobrazení médií."
+
+msgctxt "#31026"
+msgid "Timeshift"
+msgstr "Časový posun"
 
 msgctxt "#31028"
 msgid "Show fanart"

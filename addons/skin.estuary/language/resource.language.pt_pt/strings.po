@@ -112,6 +112,10 @@ msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
 msgstr "Não há favoritos. Pode adicionar qualquer item a esta lista, usando o menu de contexto."
 
+msgctxt "#31026"
+msgid "Timeshift"
+msgstr "Ver Mais Tarde"
+
 msgctxt "#31028"
 msgid "Show fanart"
 msgstr "Mostrar fanart"
@@ -307,6 +311,10 @@ msgstr "Opções do canal"
 msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "Selecione o seu perfil de utilizador do Kodi[CR]para iniciar sessão e continuar"
+
+msgctxt "#31099"
+msgid "IconWall"
+msgstr "MuroIcon"
 
 msgctxt "#31100"
 msgid "Shift"

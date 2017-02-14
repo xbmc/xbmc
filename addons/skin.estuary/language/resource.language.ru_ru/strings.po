@@ -112,6 +112,10 @@ msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
 msgstr "Список избранного пуст. Вы можете добавить сюда любой медиаконтент с помощью контекстного меню."
 
+msgctxt "#31026"
+msgid "Timeshift"
+msgstr "Таймшифт"
+
 msgctxt "#31028"
 msgid "Show fanart"
 msgstr "Показать фанарт"

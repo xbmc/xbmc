@@ -18,7 +18,7 @@ msgstr ""
 
 msgctxt "#31000"
 msgid "Now playing"
-msgstr "Reproduciendo ahora"
+msgstr "Reproduciendo"
 
 msgctxt "#31001"
 msgid "Search..."
@@ -26,7 +26,7 @@ msgstr "Buscar..."
 
 msgctxt "#31002"
 msgid "Show media fanart as background"
-msgstr "Mostrar fanarts de medios como fondo"
+msgstr "Mostrar fanarts de contenido como fondo"
 
 msgctxt "#31003"
 msgid "Cinema mode"
@@ -66,7 +66,7 @@ msgstr "Álbumes aleatorios"
 
 msgctxt "#31013"
 msgid "Random artists"
-msgstr "Artistas al azar"
+msgstr "Intérpretes aleatorios"
 
 msgctxt "#31014"
 msgid "Unplayed albums"
@@ -110,7 +110,11 @@ msgstr "Tipo de vista"
 
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
-msgstr "No se han encontrado favoritos. Puede añadir cualquier elemento desde las vistas de medios a esta lista usando el menú de contexto."
+msgstr "No se han encontrado favoritos. Puede añadir cualquier elemento desde las vistas de contenido a esta lista usando el menú contextual."
+
+msgctxt "#31026"
+msgid "Timeshift"
+msgstr "Timeshift"
 
 msgctxt "#31028"
 msgid "Show fanart"
@@ -134,7 +138,7 @@ msgstr "Ordenar"
 
 msgctxt "#31033"
 msgid "Your rating"
-msgstr "Tu puntuación"
+msgstr "Su puntuación"
 
 msgctxt "#31034"
 msgid "Extended info"
@@ -150,11 +154,11 @@ msgstr "elementos"
 
 msgctxt "#31038"
 msgid "Rewind"
-msgstr "Retroceder"
+msgstr "Rebobinar"
 
 msgctxt "#31039"
 msgid "Fast forward"
-msgstr "Avance rápido"
+msgstr "Avanzar"
 
 msgctxt "#31041"
 msgid "Camera manufacturer"
@@ -170,15 +174,15 @@ msgstr "Escoja el tipo y añada reglas para crear listas de reproducción inteli
 
 msgctxt "#31044"
 msgid "Add group"
-msgstr "Añadir Grupo"
+msgstr "Añadir grupo"
 
 msgctxt "#31045"
 msgid "Rename group"
-msgstr "Renombrar Grupo"
+msgstr "Renombrar grupo"
 
 msgctxt "#31046"
 msgid "Delete group"
-msgstr "Borrar Grupo"
+msgstr "Borrar grupo"
 
 msgctxt "#31048"
 msgid "Available"
@@ -186,7 +190,7 @@ msgstr "Disponible"
 
 msgctxt "#31050"
 msgid "Press [B]OK[/B] to stop"
-msgstr "Presione [B]OK[/B] para detener"
+msgstr "Pulse [B]OK[/B] para detener"
 
 msgctxt "#31051"
 msgid "Toggle language"
@@ -202,7 +206,7 @@ msgstr "Basada en Arial"
 
 msgctxt "#31054"
 msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
-msgstr "Presione [B]Izquierda[/B] para rebobinar, o [B]Derecha[/B] para adelantar"
+msgstr "Pulse [B]Izquierda[/B] para rebobinar, o [B]Derecha[/B] para avanzar"
 
 msgctxt "#31056"
 msgid "Go to playlist"
@@ -210,7 +214,7 @@ msgstr "Ir a lista de reproducción"
 
 msgctxt "#31057"
 msgid "Show login screen on startup"
-msgstr "Mostrar pantalla de inicio de sesión al inicio"
+msgstr "Mostrar pantalla de inicio de sesión al arrancar"
 
 msgctxt "#31058"
 msgid "Automatic Login on startup"
@@ -222,7 +226,7 @@ msgstr "Elementos del menú principal"
 
 msgctxt "#31062"
 msgid "Choose weather fanart pack"
-msgstr "Elija un pack de fanarts para el tiempo"
+msgstr "Elegir pack de fanarts para el tiempo"
 
 msgctxt "#31063"
 msgid "Sections"
@@ -238,11 +242,11 @@ msgstr "Lista de reproducción de música"
 
 msgctxt "#31067"
 msgid "Event log"
-msgstr "Log de eventos"
+msgstr "Registro de eventos"
 
 msgctxt "#31068"
 msgid "Choose presets"
-msgstr "Escoge ajustes por defecto"
+msgstr "Escoja ajustes por defecto"
 
 msgctxt "#31069"
 msgid "Last Updated"
@@ -250,7 +254,7 @@ msgstr "Última actualización"
 
 msgctxt "#31071"
 msgid "by"
-msgstr "pot"
+msgstr "por"
 
 msgctxt "#31072"
 msgid "Power Options"
@@ -274,7 +278,7 @@ msgstr "Add-on para letras"
 
 msgctxt "#31083"
 msgid "Lyrics add-on settings"
-msgstr "Ajustes del addon de letras"
+msgstr "Ajustes del add-on de letras"
 
 msgctxt "#31084"
 msgid "Visualisation settings"
@@ -302,7 +306,7 @@ msgstr "Usar animaciones de desplazamiento"
 
 msgctxt "#31096"
 msgid "Local subtitle available"
-msgstr "Subtítulo local disponible"
+msgstr "Subtítulos locales disponibles"
 
 msgctxt "#31097"
 msgid "Channel options"
@@ -334,11 +338,11 @@ msgstr "Introduzca el texto aquí..."
 
 msgctxt "#31104"
 msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
-msgstr "Su colección se encuentra vacia. Para proveerla de contenidos, entre en la sección \"Archivos\", añada un origen de medios y configúrelo. Después de que se añada e indexe esta nueva fuente, podrá navegar su colección."
+msgstr "Su colección se encuentra vacía. Para proveerla de contenidos, entre en la sección \"Archivos\", añada un origen de contenido y configúrelo. Después de que se añada e indexe esta nueva fuente, podrá navegar por su colección."
 
 msgctxt "#31105"
 msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
-msgstr "Añada fuentes de vídeo y configure el tipo de contenido apropiado para poblar tus colecciones de vídeo."
+msgstr "Añada fuentes de vídeo y configure el tipo de contenido apropiado para poblar las colecciones de vídeo."
 
 msgctxt "#31106"
 msgid "Teletext"
@@ -354,7 +358,7 @@ msgstr "Entrar en la sección Archivos"
 
 msgctxt "#31111"
 msgid "View your personal pictures or download one of the many image add-ons from the official repository."
-msgstr "Vea sus imágenes personales o descargue uno de los múltiples addons de imágenes del repositorio oficial."
+msgstr "Vea sus imágenes personales o descargue uno de los múltiples add-ons de imágenes del repositorio oficial."
 
 msgctxt "#31112"
 msgid "Toggle audio stream"
@@ -382,15 +386,15 @@ msgstr "Editar nodos"
 
 msgctxt "#31118"
 msgid "Enter add-on browser"
-msgstr "Entrar en el navegador de Addons"
+msgstr "Entrar en el navegador de Add-ons"
 
 msgctxt "#31119"
 msgid "You do not have any add-ons installed yet. Visit our add-on browser to browse through our collection and improve your Kodi experience."
-msgstr "No tiene instalado ningún addon aun. Visite nuestro navegador de addons para navegar a través de nuestra colección y mejorar la experiencia de Kodi."
+msgstr "No tiene instalado ningún add-on aún. Visite nuestro navegador de add-ons para navegar a través de nuestra colección y mejorar la experiencia de Kodi."
 
 msgctxt "#31120"
 msgid "You did not set up a weather provider yet. In order to view weather information, choose a weather provider and set up your location."
-msgstr "No ha configurado aun un proveedor de Tiempo. Para poder consultar el Tiempo, elija un proveedor y establezca su localización."
+msgstr "No ha configurado aún un proveedor de Tiempo. Para poder consultar el Tiempo, elija un proveedor y establezca su ubicación."
 
 msgctxt "#31121"
 msgid "Set weather provider"
@@ -410,15 +414,15 @@ msgstr "Mostrar imágenes en un mapa"
 
 msgctxt "#31125"
 msgid "Press up for actor info"
-msgstr "Presione Arriba para ver información del actor"
+msgstr "Pulse Arriba para ver información del actor"
 
 msgctxt "#31126"
 msgid "Press OK to read plot"
-msgstr "Presione Ok para leer el argumento"
+msgstr "Pulse OK para leer el argumento"
 
 msgctxt "#31127"
 msgid "Show icons"
-msgstr "Mostrar Iconos"
+msgstr "Mostrar iconos"
 
 msgctxt "#31128"
 msgid "Contributors"
@@ -430,11 +434,11 @@ msgstr "Los ajustes generales aplican a todas las áreas del skin."
 
 msgctxt "#31130"
 msgid "Main menu-related settings: Configure the home screen to your likings."
-msgstr "Ajustes relativos al menú principal: configuré la pantalla principal a su gusto."
+msgstr "Ajustes relativos al menú principal: configure la pantalla principal a su gusto."
 
 msgctxt "#31131"
 msgid "Choose skin fanart pack"
-msgstr "Elija un pack de fanart de skin"
+msgstr "Elegir pack de fanart de skin"
 
 msgctxt "#31132"
 msgid "min"
@@ -454,7 +458,7 @@ msgstr "Información de PVR"
 
 msgctxt "#31138"
 msgid "Player process info"
-msgstr "Información de proceso de Reproductores"
+msgstr "Información de procesos del Reproductor"
 
 msgctxt "#31139"
 msgid "Video decoder"
@@ -470,15 +474,15 @@ msgstr "Cambios para versión"
 
 msgctxt "#31142"
 msgid "Play speed"
-msgstr "velocidad de Reproducción"
+msgstr "Velocidad de reproducción"
 
 msgctxt "#31143"
 msgid "You did not set up PVR yet. In order to use PVR, choose a PVR client addon and configure it. Please visit http://kodi.wiki/view/PVR to learn more."
-msgstr "Todavía no se ha configurado el PVR. Para usar PVR, elija un Add-on cliente de PCR y configurelo. Por favor, visite http://kodi.wiki/view/PVR para saber mas."
+msgstr "Todavía no se ha configurado el PVR. Para usar PVR, elija un Add-on cliente de PVR y configurelo. Por favor, visite http://kodi.wiki/view/PVR para saber mas."
 
 msgctxt "#31144"
 msgid "Enter add-on browser"
-msgstr "Entrar en el navegador de Addons"
+msgstr "Entrar en el navegador de add-ons"
 
 msgctxt "#31145"
 msgid "Search add-ons"
@@ -490,7 +494,7 @@ msgstr "Categorías"
 
 msgctxt "#31149"
 msgid "Select genre fanart pack"
-msgstr "Elija un pack de fanart para los géneros"
+msgstr "Elegir pack de fanart para los géneros"
 
 msgctxt "#31150"
 msgid "Repository"
@@ -510,7 +514,7 @@ msgstr "No tiene ningun Add-on de este tipo instalado. Visite nuestro navegador 
 
 msgctxt "#31154"
 msgid "Press OK to switch between locations"
-msgstr "Pulse OK para cambiar entre localizaciones"
+msgstr "Pulse OK para cambiar entre ubicaciones"
 
 msgctxt "#31155"
 msgid "No bookmarks created yet."
@@ -518,7 +522,7 @@ msgstr "No se han creado marcadores aún."
 
 msgctxt "#31156"
 msgid "Choose background pattern"
-msgstr "Elija patrón del fondo"
+msgstr "Elegir patrón del fondo"
 
 msgctxt "#31157"
 msgid "Edit categories"
@@ -534,7 +538,7 @@ msgstr "Arte"
 
 msgctxt "#31160"
 msgid "Show media flags"
-msgstr "Mostrar banderas de medios"
+msgstr "Mostrar marcas de contenido"
 
 msgctxt "#31161"
 msgid "Numeric pad"

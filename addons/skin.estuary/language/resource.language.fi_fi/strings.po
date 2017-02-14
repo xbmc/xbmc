@@ -112,6 +112,10 @@ msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
 msgstr "Suosikkeja ei löytynyt. Avaa sisältövalikko haluamasi mediatiedoston kohdalla ja valitse \"Lisää suosikkeihin\"."
 
+msgctxt "#31026"
+msgid "Timeshift"
+msgstr "Ajansiirto"
+
 msgctxt "#31028"
 msgid "Show fanart"
 msgstr "Näytä fanitaide"

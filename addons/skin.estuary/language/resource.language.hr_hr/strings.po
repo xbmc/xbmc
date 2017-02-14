@@ -112,6 +112,10 @@ msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
 msgstr "Omiljeno nije pronađeno. Možete dodati bilo koju stavku iz medija na ovaj popis pomoću sadržajnog izbornika."
 
+msgctxt "#31026"
+msgid "Timeshift"
+msgstr "Vremensko premotavanje"
+
 msgctxt "#31028"
 msgid "Show fanart"
 msgstr "Prikaži poster obožavatelja"

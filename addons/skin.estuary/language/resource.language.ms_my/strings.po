@@ -112,6 +112,10 @@ msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
 msgstr "Tiada kegemaran ditemui. Anda boleh tambah apa-apa item dari paparan media ke senarai ini menggunakan menu konteks."
 
+msgctxt "#31026"
+msgid "Timeshift"
+msgstr "Anjak Masa"
+
 msgctxt "#31028"
 msgid "Show fanart"
 msgstr "Tunjuk seni peminat"

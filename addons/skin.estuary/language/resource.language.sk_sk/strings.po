@@ -112,6 +112,10 @@ msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
 msgstr "Nenašli sa žiadne obľúbené položky. Akúkoľvek položku z prehľadov médií môžete pridať do tohto zoznamu použitím kontextovej ponuky."
 
+msgctxt "#31026"
+msgid "Timeshift"
+msgstr "Časový posun"
+
 msgctxt "#31028"
 msgid "Show fanart"
 msgstr "Zobraziť fanart"

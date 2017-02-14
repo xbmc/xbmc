@@ -44,6 +44,10 @@ msgctxt "#31021"
 msgid "Misc options"
 msgstr "Ýmsir valkostir"
 
+msgctxt "#31026"
+msgid "Timeshift"
+msgstr "Tímaflakk"
+
 msgctxt "#31029"
 msgid "Last logged in"
 msgstr "Síðast skráður inn"

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="screensaver.xbmc.builtin.dim"
        name="Dim"
-       version="1.0.36"
+       version="1.0.37"
        provider-name="Team Kodi">
   <extension point="xbmc.ui.screensaver" library=""/>
   <extension point="xbmc.addon.metadata">
@@ -43,7 +43,7 @@
     <summary lang="ms_MY">Penyelamat skrin yang memalapkan skrin anda</summary>
     <summary lang="mt_MT">Skrinsejver li jbaxxilek id-dawl tal-iskrin</summary>
     <summary lang="my_MM">သင်၏စကရင်ကို မှေးမှိန်စေသော Screensaver</summary>
-    <summary lang="nb_NO">Skjermsparer som demper skjermen din</summary>
+    <summary lang="nb_NO">Skjermsparer som dimmer skjermen din</summary>
     <summary lang="nl_NL">Schermbeveiliging die je scherm dimt</summary>
     <summary lang="pl_PL">Wygaszacz ekranu przyciemniający ekran</summary>
     <summary lang="pt_BR">Protetor de tela que escurece sua tela</summary>
@@ -69,7 +69,7 @@
     <description lang="be_BY">The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a setable value between 20 and 100% .</description>
     <description lang="bg_BG">Скрийнсейвърът "Dim" затъмнява екрана, до стойност, която Вие определяте предварително (между 20 и 100%).</description>
     <description lang="ca_ES">L'estalvi de pantalla Dim és un estalvi de pantalla simple que enfosquirà (fos en negre) la seva pantalla a un valor que es pot configurar entre 20 i 100%.</description>
-    <description lang="cs_CZ">Jednoduchý spořič obrazovky Ztmavení ztmaví (začerní) vaši obrazovku podle nastavitelné hodnoty mezi 20 a 100%.</description>
+    <description lang="cs_CZ">Spořič obrazovky Dim je jednoduchý spořič obrazovky, který ztmaví (posupně) vaši obrazovku podle nastavitelné hodnoty mezi 20 a 100 %.</description>
     <description lang="cy_GB">Mae arbedwr sgrin Dim yn arbedwr sgrin syml sy'n pylu (tywyllu) eich sgrin i werth gosodadwy rhwyg 20 a 100%.</description>
     <description lang="da_DK">Dæmpningspauseskærmen er en simpel pauseskærm, der dæmper (nedtoner) din skærm til en valgfri værdi mellem 20 og 100%.</description>
     <description lang="de_DE">Der Dimmer-Bildschirmschoner ist ein einfacher Bildschirmschoner, welcher den Bildschirm auf einen benutzerdefinierten Wert zwischen 20 und 100% abdunkelt.</description>
@@ -102,7 +102,7 @@
     <description lang="ms_MY">Penyelamat skrin malap adapah penyelamat skrin ringkas yang memalapkan (lenyapkan) skrin anda kepada nilai boleh ditetap diantara 20 hingga 100%.</description>
     <description lang="mt_MT">L-iskrinsejver Dim huwa skrinsejver sempliċi li jbaxxilek (bil-mod) il-qawwa tal-iskrin sa valur li tista' tagħżel bejn 20 u 100%.</description>
     <description lang="my_MM">Dim screensaver သည် ရိုးရှင်းသော Screensaver တစ်ခုဖြစ်သည်။ ၎င်းသည် သင်၏ စခရင် ကို ၂၀% မှ ၁၀၀% အတွင်း မှေးမှိန်သွားအောင်ပြုလုပ်လိမ့်မည်</description>
-    <description lang="nb_NO">Dim er en enkel skjermsparer som demper skjermen din til en justerbar verdi mellom 20-100%</description>
+    <description lang="nb_NO">Dim er en enkel skjermsparer som dimmer skjermen din til en justerbar verdi mellom 20-100%</description>
     <description lang="nl_NL">De Dim-schermbeveiliging is een eenvoudige schermbeveiliging die uw scherm geleidelijk dimt. U kan een waarde gaande van 20 tot 100% instellen.</description>
     <description lang="pl_PL">Wygaszacz Przyciemnienie jest prostym wygaszaczem, który płynnie przyciemnia (wygasza) ekran do ustawionego poziomu między 20-100%.</description>
     <description lang="pt_BR">O Dim ("Escurecer") é um protetor de tela simples que diminui a intensidade da luz de sua tela (escurece), com um valor selecionável entre 20 e 100%.</description>

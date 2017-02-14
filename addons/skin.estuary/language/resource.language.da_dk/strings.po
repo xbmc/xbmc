@@ -104,6 +104,10 @@ msgctxt "#31022"
 msgid "Sort by"
 msgstr "Sorter efter"
 
+msgctxt "#31026"
+msgid "Timeshift"
+msgstr "Tidsforskydning"
+
 msgctxt "#31028"
 msgid "Show fanart"
 msgstr "Vis fankunst"

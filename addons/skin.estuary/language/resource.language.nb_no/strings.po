@@ -112,6 +112,10 @@ msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
 msgstr "Ingen favoritter funnet. Du kan legge til artikler fra media listen til denne listen ved å bruke hurtigmenyen."
 
+msgctxt "#31026"
+msgid "Timeshift"
+msgstr "Tdsforskyvning"
+
 msgctxt "#31028"
 msgid "Show fanart"
 msgstr "Vis fanart"
@@ -426,7 +430,7 @@ msgstr "Bidragsytere"
 
 msgctxt "#31129"
 msgid "General settings applying to all areas of the skin."
-msgstr "Generelle innstillinger gjelder for alle områder av skinnet"
+msgstr "Generelle innstillinger gjelder for alle deler av drakten"
 
 msgctxt "#31130"
 msgid "Main menu-related settings: Configure the home screen to your likings."
@@ -434,7 +438,7 @@ msgstr "Hovedmeny relaterte innstillinger. Tilpass hjemmeskjermen slik du ønske
 
 msgctxt "#31131"
 msgid "Choose skin fanart pack"
-msgstr "Velg skinn fanart pakke"
+msgstr "Velg brukerkunstbidragspakke for drakt"
 
 msgctxt "#31132"
 msgid "min"

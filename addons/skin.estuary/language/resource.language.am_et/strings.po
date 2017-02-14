@@ -16,6 +16,10 @@ msgstr ""
 "Language: am_ET\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
+msgctxt "#31000"
+msgid "Now playing"
+msgstr "አሁን የሚጫወተው"
+
 msgctxt "#31001"
 msgid "Search..."
 msgstr "መፈለጊያ..."
@@ -36,9 +40,33 @@ msgctxt "#31020"
 msgid "Actions"
 msgstr "ተግባሮች"
 
+msgctxt "#31029"
+msgid "Last logged in"
+msgstr "መጨረሻ የገባው በ"
+
 msgctxt "#31038"
 msgid "Rewind"
 msgstr "ወደ ኋላ ማሳለፊያ"
+
+msgctxt "#31039"
+msgid "Fast forward"
+msgstr "ወደ ፊት ማሳለፊያ"
+
+msgctxt "#31042"
+msgid "Playlist options"
+msgstr "የሚያጫውቱት ምርጫዎች "
+
+msgctxt "#31044"
+msgid "Add group"
+msgstr "ቡድን መጨመሪያ"
+
+msgctxt "#31045"
+msgid "Rename group"
+msgstr "ቡድን እንደገና መሰየሚያ"
+
+msgctxt "#31046"
+msgid "Delete group"
+msgstr "ቡድን ማጥፊያ"
 
 msgctxt "#31053"
 msgid "Arial based"

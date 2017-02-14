@@ -112,6 +112,10 @@ msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
 msgstr "즐겨찾기가 없습니다. 미디어 보기에서 컨텐스트 메뉴를 사용하여 항목을 추가할 수 있습니다."
 
+msgctxt "#31026"
+msgid "Timeshift"
+msgstr "타임시프트"
+
 msgctxt "#31028"
 msgid "Show fanart"
 msgstr "팬아트 표시"
@@ -119,6 +123,10 @@ msgstr "팬아트 표시"
 msgctxt "#31029"
 msgid "Last logged in"
 msgstr "마지막 로그인"
+
+msgctxt "#31030"
+msgid "System memory usage"
+msgstr "시스템 메모리 사용량"
 
 msgctxt "#31031"
 msgid "Version info"
@@ -475,3 +483,55 @@ msgstr "애드온 탐색기 들어가기"
 msgctxt "#31145"
 msgid "Search add-ons"
 msgstr "애드온 검색"
+
+msgctxt "#31148"
+msgid "Categories"
+msgstr "카테고리"
+
+msgctxt "#31149"
+msgid "Select genre fanart pack"
+msgstr "장르 팬아트 팩 선택"
+
+msgctxt "#31150"
+msgid "Repository"
+msgstr "저장소"
+
+msgctxt "#31151"
+msgid "Unwatched music videos"
+msgstr "시청하지 않은 뮤직 비디오"
+
+msgctxt "#31152"
+msgid "Random music videos"
+msgstr "무작위 뮤직 비디오"
+
+msgctxt "#31153"
+msgid "You do not have any add-ons of this type installed. Enter the add-on browser to download add-ons created by our community."
+msgstr "이 형식의 애드온이 설치되지 않았습니다. 애드온을 다운로드하려면 애드온 탐색기를 사용하세요."
+
+msgctxt "#31155"
+msgid "No bookmarks created yet."
+msgstr "생성된 북마크가 없습니다"
+
+msgctxt "#31156"
+msgid "Choose background pattern"
+msgstr "배경 패던 선택"
+
+msgctxt "#31157"
+msgid "Edit categories"
+msgstr "카테고리 편집"
+
+msgctxt "#31158"
+msgid "Touch mode"
+msgstr "터치 모드"
+
+msgctxt "#31159"
+msgid "Artwork"
+msgstr "아크워크"
+
+msgctxt "#31160"
+msgid "Show media flags"
+msgstr "미디어 플래그 표시"
+
+msgctxt "#31161"
+msgid "Numeric pad"
+msgstr "숫자 패드"

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="screensaver.xbmc.builtin.black"
        name="Black"
-       version="1.0.30"
+       version="1.0.31"
        provider-name="Team Kodi">
   <extension point="xbmc.ui.screensaver" library=""/>
   <extension point="xbmc.addon.metadata">
@@ -11,7 +11,7 @@
     <summary lang="be_BY">Ахоўнік экрану што робіць экран чорным</summary>
     <summary lang="bg_BG">Скрийнсейвър, който прави екрана черен</summary>
     <summary lang="ca_ES">Estalvi de pantalla que posa la pantalla en negre</summary>
-    <summary lang="cs_CZ">Šetřič obrazovky, který začerní vaši obrazovku</summary>
+    <summary lang="cs_CZ">Spořič obrazovky, který začerní vaši obrazovku</summary>
     <summary lang="cy_GB">Ardwr sgrin sy'n troi eich sgrin yn ddu</summary>
     <summary lang="da_DK">Pauseskærm som gør din skærm sort</summary>
     <summary lang="de_DE">Bildschirmshoner, welcher den Bildschirm schwarz färbt</summary>
@@ -69,7 +69,7 @@
     <description lang="be_BY">Black is a simple screensaver that will turn your screen black.</description>
     <description lang="bg_BG">"Black" е просто скрийнсейвър, който ще направи екрана Ви черен.</description>
     <description lang="ca_ES">Black és un estalvi de pantalla simple que posarà la teva pantalla en negre.</description>
-    <description lang="cs_CZ">Black je jednoduchý šetřič obrazovky, který začerní vaši obrazovku.</description>
+    <description lang="cs_CZ">Black je jednoduchý spořič obrazovky, který začerní vaši obrazovku.</description>
     <description lang="cy_GB">Mae Black yn arbedwr sgrin syml sy'n troi eich sgrin yn ddu.</description>
     <description lang="da_DK">Black er en simpel pauseskærm, der gør din skærm sort.</description>
     <description lang="de_DE">Black ist ein einfacher Bildschirmschoner, welcher den Bildschirm schwarz abdunkelt</description>

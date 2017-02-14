@@ -102,7 +102,7 @@ msgstr "Opcje dodatkowe"
 
 msgctxt "#31022"
 msgid "Sort by"
-msgstr "Sortuj"
+msgstr "Sortowanie"
 
 msgctxt "#31023"
 msgid "Viewtype"
@@ -111,6 +111,10 @@ msgstr "Widok"
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
 msgstr "Brak ulubionych. Możesz dodać dowolną pozycję do tej listy, z poziomu widoków mediów, przy użyciu menu kontekstowego."
+
+msgctxt "#31026"
+msgid "Timeshift"
+msgstr "Przesunięcie czasowe"
 
 msgctxt "#31028"
 msgid "Show fanart"
@@ -322,7 +326,7 @@ msgstr "Kolejka"
 
 msgctxt "#31101"
 msgid "InfoWall"
-msgstr "Kafelki 3"
+msgstr "Plakaty i informacje"
 
 msgctxt "#31102"
 msgid "Wall"
@@ -386,7 +390,7 @@ msgstr "Przejdź do przeglądarki dodatków"
 
 msgctxt "#31119"
 msgid "You do not have any add-ons installed yet. Visit our add-on browser to browse through our collection and improve your Kodi experience."
-msgstr "Posiadanie wcześniej zainstalowanych dodatków nie jest niezbędne. Odwiedź przeglądarkę dodatków, aby przejrzeć naszą kolekcję i rozszerzyć Kodi o dodatkowe funkcje."
+msgstr "Jeszcze nie zainstalowałeś żadnego dodatku. Odwiedź przeglądarkę dodatków, aby przejrzeć naszą kolekcję i rozszerzyć Kodi o dodatkowe funkcje."
 
 msgctxt "#31120"
 msgid "You did not set up a weather provider yet. In order to view weather information, choose a weather provider and set up your location."
@@ -462,7 +466,7 @@ msgstr "Dekoder wideo"
 
 msgctxt "#31140"
 msgid "Pixel format"
-msgstr "Format piksela"
+msgstr "Format pikseli"
 
 msgctxt "#31141"
 msgid "Changes for version"
@@ -506,7 +510,7 @@ msgstr "Teledyski losowe"
 
 msgctxt "#31153"
 msgid "You do not have any add-ons of this type installed. Enter the add-on browser to download add-ons created by our community."
-msgstr "Nie zainstalowano żadnego dodatku tego typu. Przejdź do przeglądarki dodatków, aby pobrać dodatki stworzone przez naszą społeczność."
+msgstr "Brak zainstalowanych dodatków tego typu. Przejdź do przeglądarki dodatków, aby pobrać dodatki stworzone przez naszą społeczność."
 
 msgctxt "#31154"
 msgid "Press OK to switch between locations"

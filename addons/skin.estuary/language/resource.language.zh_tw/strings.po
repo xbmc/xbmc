@@ -112,6 +112,10 @@ msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
 msgstr "沒有找到最愛項目。你可以使用快捷選單來將媒體檔檢視器中的物件加入此列表。"
 
+msgctxt "#31026"
+msgid "Timeshift"
+msgstr "時間平移"
+
 msgctxt "#31028"
 msgid "Show fanart"
 msgstr "顯示劇照"

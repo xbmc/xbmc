@@ -112,6 +112,10 @@ msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
 msgstr "No se han encontrado favoritos. Puede agregar cualquier elemento de las vistas de medios a esta lista mediante el menú contextual."
 
+msgctxt "#31026"
+msgid "Timeshift"
+msgstr "Cambio de hora"
+
 msgctxt "#31028"
 msgid "Show fanart"
 msgstr "Mostrar fanart"

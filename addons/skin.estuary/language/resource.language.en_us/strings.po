@@ -112,6 +112,10 @@ msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
 msgstr "No favorites found. You can add any item from media views to this list by using the context menu."
 
+msgctxt "#31026"
+msgid "Timeshift"
+msgstr "Timeshift"
+
 msgctxt "#31028"
 msgid "Show fanart"
 msgstr "Show fanart"
@@ -119,6 +123,10 @@ msgstr "Show fanart"
 msgctxt "#31029"
 msgid "Last logged in"
 msgstr "Last logged in"
+
+msgctxt "#31030"
+msgid "System memory usage"
+msgstr "System memory usage"
 
 msgctxt "#31031"
 msgid "Version info"
@@ -216,6 +224,10 @@ msgctxt "#31061"
 msgid "Main menu items"
 msgstr "Main menu items"
 
+msgctxt "#31062"
+msgid "Choose weather fanart pack"
+msgstr "Choose weather fanart pack"
+
 msgctxt "#31063"
 msgid "Sections"
 msgstr "Sections"
@@ -303,6 +315,10 @@ msgstr "Channel options"
 msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "Select your Kodi user profile[CR]to login and continue"
+
+msgctxt "#31099"
+msgid "IconWall"
+msgstr "IconWall"
 
 msgctxt "#31100"
 msgid "Shift"
@@ -420,6 +436,10 @@ msgctxt "#31130"
 msgid "Main menu-related settings: Configure the home screen to your likings."
 msgstr "Main menu-related settings: Configure the home screen to your likings."
 
+msgctxt "#31131"
+msgid "Choose skin fanart pack"
+msgstr "Choose skin fanart pack"
+
 msgctxt "#31132"
 msgid "min"
 msgstr "min"
@@ -456,6 +476,70 @@ msgctxt "#31142"
 msgid "Play speed"
 msgstr "Play speed"
 
+msgctxt "#31143"
+msgid "You did not set up PVR yet. In order to use PVR, choose a PVR client addon and configure it. Please visit http://kodi.wiki/view/PVR to learn more."
+msgstr "You did not set up PVR yet. In order to use PVR, choose a PVR client addon and configure it. Please visit http://kodi.wiki/view/PVR to learn more."
+
 msgctxt "#31144"
 msgid "Enter add-on browser"
 msgstr "Enter add-on browser"
+
+msgctxt "#31145"
+msgid "Search add-ons"
+msgstr "Search add-ons"
+
+msgctxt "#31148"
+msgid "Categories"
+msgstr "Categories"
+
+msgctxt "#31149"
+msgid "Select genre fanart pack"
+msgstr "Select genre fanart pack"
+
+msgctxt "#31150"
+msgid "Repository"
+msgstr "Repository"
+
+msgctxt "#31151"
+msgid "Unwatched music videos"
+msgstr "Unwatched music videos"
+
+msgctxt "#31152"
+msgid "Random music videos"
+msgstr "Random music videos"
+
+msgctxt "#31153"
+msgid "You do not have any add-ons of this type installed. Enter the add-on browser to download add-ons created by our community."
+msgstr "You do not have any add-ons of this type installed. Enter the add-on browser to download add-ons created by our community."
+
+msgctxt "#31154"
+msgid "Press OK to switch between locations"
+msgstr "Press OK to switch between locations"
+
+msgctxt "#31155"
+msgid "No bookmarks created yet."
+msgstr "No bookmarks created yet."
+
+msgctxt "#31156"
+msgid "Choose background pattern"
+msgstr "Choose background pattern"
+
+msgctxt "#31157"
+msgid "Edit categories"
+msgstr "Edit categories"
+
+msgctxt "#31158"
+msgid "Touch mode"
+msgstr "Touch mode"
+
+msgctxt "#31159"
+msgid "Artwork"
+msgstr "Artwork"
+
+msgctxt "#31160"
+msgid "Show media flags"
+msgstr "Show media flags"
+
+msgctxt "#31161"
+msgid "Numeric pad"
+msgstr "Numeric pad"

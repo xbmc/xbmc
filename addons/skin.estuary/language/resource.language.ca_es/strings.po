@@ -112,9 +112,13 @@ msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
 msgstr "No s'ha trobat cap preferit. Podeu afegir qualsevol element des de les vistes dels mitjans a aquesta llista mitjançant el menú contextual."
 
+msgctxt "#31026"
+msgid "Timeshift"
+msgstr "Salts en el temps"
+
 msgctxt "#31028"
 msgid "Show fanart"
-msgstr "Mostr el fanart"
+msgstr "Mostra el fanart"
 
 msgctxt "#31029"
 msgid "Last logged in"
@@ -138,7 +142,7 @@ msgstr "La vostra valoració"
 
 msgctxt "#31034"
 msgid "Extended info"
-msgstr "Info estesa"
+msgstr "Informació estesa"
 
 msgctxt "#31035"
 msgid "Pages"
@@ -474,7 +478,7 @@ msgstr "Velocitat de reproducció"
 
 msgctxt "#31143"
 msgid "You did not set up PVR yet. In order to use PVR, choose a PVR client addon and configure it. Please visit http://kodi.wiki/view/PVR to learn more."
-msgstr "Encara no heu configurat el PVR. Per utilitzar el PVR, trieu un complement  de client PVR i configureu-lo. Consulteu http://kodi.wiki/view/PVR per a més detalls."
+msgstr "Encara no heu configurat el PVR. Per utilitzar el PVR, trieu un complement de client PVR i configureu-lo. Consulteu http://kodi.wiki/view/PVR per a més detalls."
 
 msgctxt "#31144"
 msgid "Enter add-on browser"
