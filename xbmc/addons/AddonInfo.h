@@ -168,20 +168,11 @@ namespace ADDON
     std::set<TYPE> m_providedSubContent;
   };
 
-  class IAddonInstanceHandler
-  {
-  public:
-    IAddonInstanceHandler(TYPE type) : m_type(type) { }
-
-    TYPE UsedType() { return m_type; }
-
-  private:
-    TYPE m_type;
-  };
-
+  class IAddonInstanceHandler;
   class CAddonMgr;
   class CAddonDll;
   typedef std::shared_ptr<CAddonDll> AddonDllPtr;
+
   class AddonVersion;
   typedef std::map<std::string, std::pair<const AddonVersion, bool> > ADDONDEPS;
 

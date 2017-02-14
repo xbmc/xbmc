@@ -620,7 +620,9 @@ void CActiveAEDSP::UpdateAddons()
       }
       else
       {
-        dspAddon = std::dynamic_pointer_cast<CActiveAEDSPAddon>(CAddonMgr::GetInstance().GetAddon(ADDON_ADSPDLL, addonInfo->ID()));
+        AddonPtr addon;
+        CAddonMgr::GetInstance().GetAddon(addonInfo->ID(), addon, ADDON_ADSPDLL);
+        dspAddon = std::dynamic_pointer_cast<CActiveAEDSPAddon>(addon);
         if (!dspAddon)
         {
           CLog::Log(LOGERROR, "CActiveAEDSP::UpdateAndInitialiseAddons - severe error, incorrect add type");
@@ -640,7 +642,9 @@ void CActiveAEDSP::UpdateAddons()
     else if (!bEnabled && IsKnownAudioDSPAddon(addonInfo))
     {
       CLog::Log(LOGDEBUG, "Disabling AudioDSP add-on: %s", addonInfo->ID().c_str());
-      dspAddon = std::dynamic_pointer_cast<CActiveAEDSPAddon>(CAddonMgr::GetInstance().GetAddon(ADDON_ADSPDLL, addonInfo->ID()));
+      AddonPtr addon;
+      CAddonMgr::GetInstance().GetAddon(addonInfo->ID(), addon, ADDON_ADSPDLL);
+      dspAddon = std::dynamic_pointer_cast<CActiveAEDSPAddon>(addon);
     
       CSingleLock lock(m_critSection);
       AE_DSP_ADDONMAP::iterator iter = m_addonMap.find(dspAddon->GetID());

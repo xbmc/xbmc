@@ -330,7 +330,7 @@ bool CAddonMgr::GetAddon(const std::string &addonId, AddonPtr &addon, const TYPE
 
 /// @todo New parts to handle multi instance addon, still in todo
 //@{
-AddonDllPtr CAddonMgr::GetAddon(const std::string &addonId, const IAddonInstanceHandler* handler)
+AddonDllPtr CAddonMgr::GetAddon(const std::string& addonId, const IAddonInstanceHandler* handler)
 {
   if (handler == nullptr)
   {
@@ -359,6 +359,32 @@ AddonDllPtr CAddonMgr::GetAddon(const std::string &addonId, const IAddonInstance
   return addonInfo->m_activeAddon;
 }
 
+AddonDllPtr CAddonMgr::GetAddon(const AddonInfoPtr& addonInfo, const IAddonInstanceHandler* handler)
+{
+  if (addonInfo == nullptr)
+  {
+    CLog::Log(LOGERROR, "ADDONS: GetAddon called with empty addon info handler");
+    return nullptr;
+  }
+
+  if (handler == nullptr)
+  {
+    CLog::Log(LOGERROR, "ADDONS: GetAddon for Id '%s' called with empty instance handler", addonInfo->ID().c_str());
+    return nullptr;
+  }
+
+  CSingleLock lock(m_critSection);
+
+  // If no 'm_activeAddon' is defined create it new.
+  if (addonInfo->m_activeAddon == nullptr)
+    addonInfo->m_activeAddon = std::make_shared<CAddonDll>(addonInfo);
+
+  // add the instance handler to the info to know used amount on addon
+  addonInfo->m_activeAddonHandlers.insert(handler);
+
+  return addonInfo->m_activeAddon;
+}
+
 void CAddonMgr::ReleaseAddon(AddonDllPtr& addon, const IAddonInstanceHandler* handler)
 {
   if (addon == nullptr)
@@ -375,14 +401,7 @@ void CAddonMgr::ReleaseAddon(AddonDllPtr& addon, const IAddonInstanceHandler* ha
 
   CSingleLock lock(m_critSection);
 
-  const auto& itr = m_installedAddons.find(addon->ID());
-  if (itr == m_installedAddons.end())
-  {
-    CLog::Log(LOGERROR, "ADDONS: ReleaseAddon for Id '%s' is not present", addon->ID().c_str());
-    return;
-  }
-
-  AddonInfoPtr addonInfo = itr->second;
+  AddonInfoPtr addonInfo = addon->AddonInfo();
 
   const auto& presentHandler = addonInfo->m_activeAddonHandlers.find(handler);
   if (presentHandler == addonInfo->m_activeAddonHandlers.end())

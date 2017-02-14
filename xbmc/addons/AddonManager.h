@@ -80,7 +80,8 @@ namespace ADDON
 
     /// @todo New parts to handle multi instance addon, still in todo
     //@{
-    AddonDllPtr GetAddon(const std::string &addonId, const IAddonInstanceHandler* handler);
+    AddonDllPtr GetAddon(const std::string& addonId, const IAddonInstanceHandler* handler);
+    AddonDllPtr GetAddon(const AddonInfoPtr& addonInfo, const IAddonInstanceHandler* handler);
     void ReleaseAddon(AddonDllPtr& addon, const IAddonInstanceHandler* handler);
     //@}
 
