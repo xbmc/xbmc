@@ -1039,6 +1039,12 @@ bool CGUIDialogAddonSettings::GetCondition(const std::string &condition, const i
         else
           value = StringUtils::Format("%i", ((CGUISpinControlEx*) control2)->GetValue());
         break;
+      case CGUIControl::GUICONTROL_SETTINGS_SLIDER:
+        if (((CGUISettingsSliderControl *)control2)->GetType() == SLIDER_CONTROL_TYPE_INT)
+          value = StringUtils::Format("%i", ((CGUISettingsSliderControl *)control2)->GetIntValue());
+        else
+          value = StringUtils::Format("%f", ((CGUISettingsSliderControl *)control2)->GetFloatValue());
+        break;
       default:
         break;
     }
