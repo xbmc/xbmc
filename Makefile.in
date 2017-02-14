@@ -57,7 +57,6 @@ DIRECTORY_ARCHIVES=$(VideoPlayer_ARCHIVES) \
                    xbmc/games/controllers/dialogs/controllerdialogs.a \
                    xbmc/games/controllers/guicontrols/controllerguicontrols.a \
                    xbmc/games/controllers/windows/controllerwindows.a \
-                   xbmc/games/games.a \
                    xbmc/guilib/guilib.a \
                    xbmc/input/input.a \
                    xbmc/interfaces/builtins/builtins.a \
@@ -426,7 +425,7 @@ endif # USE_ANDROID
 ifeq ($(findstring @ARCH@,arm,mips), @ARCH@)
 VUPLUS_SUPPORT=$(shell cd ../xbmc-support; pwd)
 VUPLUS_EXTLIBS= xbmc/windowing/egl/gles_init.a -ldvb_base -lnxpl -ldvb_client -L$(VUPLUS_SUPPORT) -lxbmc_base
-endif 
+endif
 
 OBJSXBMC =$(DIRECTORY_ARCHIVES)
 OBJSXBMC:=$(filter-out $(DYNOBJSXBMC), $(OBJSXBMC))
@@ -454,7 +453,7 @@ endif
 ifeq ($(findstring osx,@ARCH@), osx)
 	$(SILENT_LD) $(CXX) $(LDFLAGS) -o @APP_NAME_LC@.bin $(MAINOBJS) -Wl,-all_load,-ObjC $(MAINOBJS) $(DYNOBJSXBMC) $(NWAOBJSXBMC) $(OBJSXBMC) $(LIBS) -rdynamic
 else
-$(SILENT_LD) $(CXX) $(CXXFLAGS) $(LDFLAGS) -o @APP_NAME_LC@.bin $(MAINOBJS) -Wl,--start-group $(MAINOBJS) $(DYNOBJSXBMC) $(OBJSXBMC) -Wl,--end-group $(NWAOBJSXBMC) $(LIBS) -rdynamic $(VUPLUS_EXTLIBS)
+	$(SILENT_LD) $(CXX) $(CXXFLAGS) $(LDFLAGS) -o @APP_NAME_LC@.bin $(MAINOBJS) -Wl,--start-group $(MAINOBJS) $(DYNOBJSXBMC) $(OBJSXBMC) -Wl,--end-group $(NWAOBJSXBMC) $(LIBS) -rdynamic $(VUPLUS_EXTLIBS)
 endif
 
 @APP_NAME_LC@-xrandr: xbmc-xrandr.c
@@ -530,10 +529,10 @@ install-scripts:
 	@install -d $(DESTDIR)$(datarootdir)/xsessions
 	@install -m 0644 tools/Linux/kodi-xsession.desktop $(DESTDIR)$(datarootdir)/xsessions/@APP_NAME_LC@.desktop
 	@cd $(DESTDIR)$(datarootdir)/xsessions; [ -L xbmc.desktop ] || [ -f xbmc.desktop ] || ln -s @APP_NAME_LC@.desktop xbmc.desktop
-        @install -d $(DESTDIR)$(libdir)
+	@install -d $(DESTDIR)$(libdir)
 	@install -d $(DESTDIR)$(libdir)/@APP_NAME_LC@
 	@install tools/Linux/@APP_NAME_LC@.run $(DESTDIR)$(libdir)/@APP_NAME_LC@/@APP_NAME_LC@.run
-    
+
 install-datas: install-scripts
 	@echo "Copying support and legal files..."
 	@install -d $(DESTDIR)$(docdir)
