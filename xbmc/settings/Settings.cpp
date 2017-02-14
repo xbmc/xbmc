@@ -296,7 +296,6 @@ const std::string CSettings::SETTING_AUDIOCDS_SETTINGS = "audiocds.settings";
 const std::string CSettings::SETTING_AUDIOCDS_EJECTONRIP = "audiocds.ejectonrip";
 const std::string CSettings::SETTING_MYMUSIC_SONGTHUMBINVIS = "mymusic.songthumbinvis";
 const std::string CSettings::SETTING_MYMUSIC_DEFAULTLIBVIEW = "mymusic.defaultlibview";
-const std::string CSettings::SETTING_PICTURES_USETAGS = "pictures.usetags";
 const std::string CSettings::SETTING_PICTURES_GENERATETHUMBS = "pictures.generatethumbs";
 const std::string CSettings::SETTING_PICTURES_SHOWVIDEOS = "pictures.showvideos";
 const std::string CSettings::SETTING_PICTURES_DISPLAYRESOLUTION = "pictures.displayresolution";
@@ -819,6 +818,9 @@ bool CSettings::InitializeDefinitions()
 #elif defined(TARGET_LINUX)
   if (CFile::Exists(SETTINGS_XML_FOLDER "linux.xml") && !Initialize(SETTINGS_XML_FOLDER "linux.xml"))
     CLog::Log(LOGFATAL, "Unable to load linux-specific settings definitions");
+#elif defined(TARGET_VUPLUS) || defined(TARGET_VUPLUS_ARM)
+  if (CFile::Exists(SETTINGS_XML_FOLDER "vuplus.xml") && !Initialize(SETTINGS_XML_FOLDER "vuplus.xml"))
+    CLog::Log(LOGFATAL, "Unable to load vuplus-specific settings definitions");
 #if defined(HAS_LIBAMCODEC)
   if (aml_present() && CFile::Exists(SETTINGS_XML_FOLDER "aml-linux.xml") && !Initialize(SETTINGS_XML_FOLDER "aml-linux.xml"))
     CLog::Log(LOGFATAL, "Unable to load aml-linux-specific settings definitions");
