@@ -4,16 +4,16 @@ ARCH=@ARCH@
 CC=@CC@
 CXX=@CXX@
 
-ifeq (@CROSS_COMPILING@,yes)
-  DEPENDS_DIR = $(shell grep "^PREFIX=/" @abs_top_srcdir@/tools/depends/Makefile.include | sed 's/PREFIX=//g')
-  DVDNAV_A = $(DEPENDS_DIR)/lib/libdvdnav.a
-  DVDREAD_A = $(DEPENDS_DIR)/lib/libdvdread.a
-  DVDCSS_A = $(DEPENDS_DIR)/lib/libdvdcss.a
-else
+#ifeq (@CROSS_COMPILING@,yes)
+#  DEPENDS_DIR = $(shell grep "^PREFIX=/" @abs_top_srcdir@/tools/depends/Makefile.include | sed 's/PREFIX=//g')
+#  DVDNAV_A = $(DEPENDS_DIR)/lib/libdvdnav.a
+#  DVDREAD_A = $(DEPENDS_DIR)/lib/libdvdread.a
+#  DVDCSS_A = $(DEPENDS_DIR)/lib/libdvdcss.a
+#else
   DVDNAV_A = @abs_top_srcdir@/tools/depends/target/libdvdnav/dvdnav-install/lib/libdvdnav.a
   DVDREAD_A = @abs_top_srcdir@/tools/depends/target/libdvdread/dvdread-install/lib/libdvdread.a
   DVDCSS_A = @abs_top_srcdir@/tools/depends/target/libdvdcss/dvdcss-install/lib/libdvdcss.a
-endif
+#endif
 
 SYSDIR = @abs_top_srcdir@/system/players/VideoPlayer
 SOS = libdvdnav-$(ARCH).so
