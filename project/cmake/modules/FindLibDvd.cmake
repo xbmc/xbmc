@@ -76,7 +76,7 @@ if(NOT WIN32)
     endforeach()
 
     set(DVDREAD_CFLAGS "${DVDREAD_CFLAGS} -I${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/include")
-    if(KODI_DEPENDSBUILD)
+    if(CMAKE_CROSSCOMPILING)
       set(EXTRA_FLAGS "CC=${CMAKE_C_COMPILER}")
     endif()
 
