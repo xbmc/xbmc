@@ -12638,7 +12638,10 @@ msgctxt "#20381"
 msgid "Specials"
 msgstr ""
 
-#empty string with id 20382
+#: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeOverview.cpp
+msgctxt "#20382"
+msgid "Recently added"
+msgstr ""
 
 msgctxt "#20383"
 msgid "Selected folder contains a single video"
