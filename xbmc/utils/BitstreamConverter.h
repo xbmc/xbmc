@@ -87,8 +87,8 @@ public:
   CBitstreamParser();
   ~CBitstreamParser();
 
-  static bool Open();
-  static void Close();
+  static bool Open(){};
+  static void Close(){};
   static bool HasKeyframe(const uint8_t *buf, int buf_size);
 };
 
