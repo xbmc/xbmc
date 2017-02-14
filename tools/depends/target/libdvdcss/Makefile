@@ -3,7 +3,7 @@ include DVDCSS-VERSION
 DEPS= DVDCSS-VERSION Makefile
 
 ifeq ($(CROSS_COMPILING), yes)
-  DEPS += ../../Makefile.include
+#  DEPS += ../../Makefile.include
 else
   ROOT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
   PREFIX := $(ROOT_DIR)/dvdcss-install
@@ -19,7 +19,7 @@ RETRIEVE_TOOL := curl -Ls --create-dirs --retry 10 --retry-delay 3
 ARCHIVE_TOOL := tar --strip-components=1 -xf
 
 # configuration settings
-config = --prefix=$(PREFIX) --disable-shared --enable-static --with-pic
+config = --build=$(BUILD_SYS) --host=$(HOST_SYS) --prefix=$(PREFIX) --disable-shared --enable-static --with-pic
 
 CLEAN_FILES=$(ARCHIVE) $(PLATFORM)
 
