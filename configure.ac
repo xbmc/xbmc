@@ -611,7 +611,7 @@ case $host in
      CORE_SYSTEM_NAME=linux
      ARCH="powerpc64-linux"
      ;;
-   arm-oe-linux-gnueabi)
+  arm-oe-linux-gnueabi)
      target_platform=target_vuplus_arm
      ARCH="arm"
      use_arch="arm"
@@ -623,7 +623,7 @@ case $host in
      use_wayland=no
      use_optical_drive=no
      USE_STATIC_FFMPEG=0
-     ;;   
+     ;;
   arm*-*-linux-gnu*|arm*-*-linux-uclibc*)
      target_platform=target_linux
      CORE_SYSTEM_NAME=linux
@@ -741,8 +741,8 @@ case $use_platform in
      AC_DEFINE(HAS_EGLGLES, [1], [Define if supporting EGL based GLES Framebuffer])
      USE_VUPLUS_ARM_EGL=1
      CFLAGS="$CFLAGS"
-     CXXFLAGS="$CXXFLAGS" 
-     ;;   
+     CXXFLAGS="$CXXFLAGS"
+     ;;
 esac
 
 if test "$target_platform" = "target_raspberry_pi" ; then
@@ -1118,7 +1118,7 @@ int main() {
   )])
 AC_LANG_POP([C++])
 
-if test "${target_platform}" = "target_linux" || test "${target_platform}" = "target_raspberry_pi" || test "${target_platform}" = "target_android" || test "${target_platform}" = "target_vuplus" || test "${target_platform}" = "target_vuplus_arm"; then 
+if test "${target_platform}" = "target_linux" || test "${target_platform}" = "target_raspberry_pi" || test "${target_platform}" = "target_android" || test "${target_platform}" = "target_vuplus" || test "${target_platform}" = "target_vuplus_arm"; then
   PKG_CHECK_MODULES([UUID], [uuid],, AC_MSG_ERROR(libuuid not found))
 fi
 
@@ -1675,21 +1675,21 @@ if test "$with_ffmpeg" = "force_vuplus_mips"; then
   CFLAGS="$CFLAGS" CXXFLAGS="$CXXFLAGS" ${ffmpeg_build}/autobuild_vuplus_mips.sh ${FFMPEG_OPTS}
   export PKG_CONFIG_PATH="${ffmpeg_build}/ffmpeg-install/lib/pkgconfig:$PKG_CONFIG_PATH"
 fi
-
 if test "$with_ffmpeg" = "force_vuplus_arm"; then
   # always build our ffmpeg
   AC_MSG_NOTICE("FFmpeg installation forced by user - installing our version")
   CFLAGS="$CFLAGS" CXXFLAGS="$CXXFLAGS" ${ffmpeg_build}/autobuild_vuplus_arm.sh ${FFMPEG_OPTS}
   export PKG_CONFIG_PATH="${ffmpeg_build}/ffmpeg-install/lib/pkgconfig:$PKG_CONFIG_PATH"
-fi 
+fi
+
 if test "$FFMPEG_FOUND" != "true"; then
   PKG_CHECK_MODULES([FFMPEG], [$FFMPEG_LIBNAMES],
-    [FFMPEG_FOUND="true";USE_STATIC_FFMPEG=1],
+    [FFMPEG_FOUND="true";USE_STATIC_FFMPEG=1], 
     [AC_MSG_ERROR("ffmpeg not found")])
   FFMPEG_LIBS=$(PKG_CONFIG_SYSROOT_DIR="" ${PKG_CONFIG} --libs libavcodec 2>/dev/null)
   FFMPEG_CFLAGS=$(PKG_CONFIG_SYSROOT_DIR="" ${PKG_CONFIG} --cflags libavcodec 2>/dev/null)
   INCLUDES="$INCLUDES $FFMPEG_CFLAGS"
-  LIBS="$LIBS $FFMPEG_LIBS";     
+  LIBS="$LIBS $FFMPEG_LIBS";
 fi
 
 if test "${USE_STATIC_FFMPEG}" = "1"; then
