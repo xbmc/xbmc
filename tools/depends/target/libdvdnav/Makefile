@@ -3,11 +3,11 @@ include DVDNAV-VERSION
 DEPS = DVDNAV-VERSION Makefile
 
 # configuration settings
-config = --prefix=$(PREFIX) --disable-shared --enable-static --with-pic
+config = --build=$(BUILD_SYS) --host=$(HOST_SYS) --prefix=$(PREFIX) --disable-shared --enable-static --with-pic
 EXTRA_CFLAGS = -D_XBMC -DHAVE_DVDCSS_DVDCSS_H
 
 ifeq ($(CROSS_COMPILING), yes)
-  DEPS += ../../Makefile.include
+#  DEPS += ../../Makefile.include
 else
   ROOT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
   PREFIX := $(ROOT_DIR)/dvdnav-install
