@@ -674,6 +674,7 @@ void CActiveAESink::EnumerateSinkList(bool force)
     return;
 
   unsigned int c_retry = 4;
+
   m_sinkInfoList.clear();
   CAESinkFactory::EnumerateEx(m_sinkInfoList);
   while(m_sinkInfoList.empty() && c_retry > 0)
@@ -1140,3 +1141,4 @@ void CActiveAESink::SetSilenceTimer()
 
   m_extSilenceTimer.Set(m_extSilenceTimeout);
 }
+
