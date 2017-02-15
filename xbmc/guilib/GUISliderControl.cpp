@@ -212,7 +212,7 @@ bool CGUISliderControl::OnAction(const CAction &action)
     break;
 
   case ACTION_MOVE_UP:
-    if (IsActive() && m_orientation == VERTICAL)
+    if (IsActive())
     {
       Move(1);
       return true;
@@ -220,7 +220,7 @@ bool CGUISliderControl::OnAction(const CAction &action)
     break;
 
   case ACTION_MOVE_DOWN:
-    if (IsActive() && m_orientation == VERTICAL)
+    if (IsActive())
     {
       Move(-1);
       return true;
