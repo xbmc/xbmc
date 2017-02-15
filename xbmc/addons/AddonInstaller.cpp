@@ -615,6 +615,16 @@ bool CAddonInstallJob::DoWork()
       database.SetLastUpdated(m_addon->ID(), CDateTime::GetCurrentDateTime());
   }
 
+  if (!m_addon->Broken().empty())
+  {
+    CAddonMgr::GetInstance().DisableAddon(m_addon->ID());
+    CLog::Log(LOGDEBUG, "CAddonInstallJob[%s]: disabled because addon is marked as broken", m_addon->ID().c_str());
+    CEventLog::GetInstance().Add(
+      EventPtr(new CAddonManagementEvent(m_addon, 24094)),
+      !IsModal() && CServiceBroker::GetSettings().GetBool(CSettings::SETTING_ADDONS_NOTIFICATIONS), false);
+    return false;
+  }
+
   CEventLog::GetInstance().Add(
     EventPtr(new CAddonManagementEvent(m_addon, m_update ? 24065 : 24064)),
     !IsModal() && CServiceBroker::GetSettings().GetBool(CSettings::SETTING_ADDONS_NOTIFICATIONS), false);
