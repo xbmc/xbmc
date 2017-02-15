@@ -276,6 +276,7 @@ void CAdvancedSettings::Initialize()
 
   m_bMusicLibraryAllItemsOnBottom = false;
   m_bMusicLibraryCleanOnUpdate = false;
+  m_bMusicLibraryPromptFullTagScan = false;
   m_iMusicLibraryRecentlyAddedItems = 25;
   m_strMusicLibraryAlbumFormat = "";
   m_prioritiseAPEv2tags = false;
@@ -733,6 +734,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetBoolean(pElement, "prioritiseapetags", m_prioritiseAPEv2tags);
     XMLUtils::GetBoolean(pElement, "allitemsonbottom", m_bMusicLibraryAllItemsOnBottom);
     XMLUtils::GetBoolean(pElement, "cleanonupdate", m_bMusicLibraryCleanOnUpdate);
+    XMLUtils::GetBoolean(pElement, "promptfulltagscan", m_bMusicLibraryPromptFullTagScan);
     XMLUtils::GetString(pElement, "albumformat", m_strMusicLibraryAlbumFormat);
     XMLUtils::GetString(pElement, "itemseparator", m_musicItemSeparator);
     XMLUtils::GetInt(pElement, "dateadded", m_iMusicLibraryDateAdded);

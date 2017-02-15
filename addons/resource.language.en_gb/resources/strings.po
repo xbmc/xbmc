@@ -20266,7 +20266,13 @@ msgctxt "#38061"
 msgid "Fetch additional information for albums and artists? This could take some time so you may prefer to do this later"
 msgstr ""
 
-#empty strings from id 38062 to 38099
+#. Full tag scanning question on library update (by default tags are only scanned when the file has changed since last time)
+#: xbmc/Application.cpp
+msgctxt "#38062"
+msgid "Do full tag scan even when music files are unchanged?"
+msgstr ""
+
+#empty strings from id 38063 to 38099
 
 #. Description of section #14200 "Player""
 #: system/settings/settings.xml
