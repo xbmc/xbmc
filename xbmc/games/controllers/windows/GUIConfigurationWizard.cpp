@@ -295,31 +295,34 @@ bool CGUIConfigurationWizard::OnKeyPress(const CKey& key)
 
   bool bHandled = false;
 
-  switch (m_actionMap->GetActionID(key))
+  if (!m_bStop)
   {
-  case ACTION_MOVE_LEFT:
-  case ACTION_MOVE_RIGHT:
-  case ACTION_MOVE_UP:
-  case ACTION_MOVE_DOWN:
-  case ACTION_PAGE_UP:
-  case ACTION_PAGE_DOWN:
-    // Abort and allow motion
-    Abort(false);
-    bHandled = false;
-    break;
+    switch (m_actionMap->GetActionID(key))
+    {
+    case ACTION_MOVE_LEFT:
+    case ACTION_MOVE_RIGHT:
+    case ACTION_MOVE_UP:
+    case ACTION_MOVE_DOWN:
+    case ACTION_PAGE_UP:
+    case ACTION_PAGE_DOWN:
+      // Abort and allow motion
+      Abort(false);
+      bHandled = false;
+      break;
 
-  case ACTION_PARENT_DIR:
-  case ACTION_PREVIOUS_MENU:
-  case ACTION_STOP:
-    // Abort and prevent action
-    Abort(false);
-    bHandled = true;
-    break;
+    case ACTION_PARENT_DIR:
+    case ACTION_PREVIOUS_MENU:
+    case ACTION_STOP:
+      // Abort and prevent action
+      Abort(false);
+      bHandled = true;
+      break;
 
-  default:
-    // Absorb keypress
-    bHandled = true;
-    break;
+    default:
+      // Absorb keypress
+      bHandled = true;
+      break;
+    }
   }
 
   return bHandled;
