@@ -111,7 +111,7 @@ namespace PERIPHERALS
     struct DriverHandler
     {
       KODI::JOYSTICK::IDriverHandler* handler;
-      bool                      bPromiscuous;
+      bool bPromiscuous;
     };
 
     std::string                         m_strProvider;
