@@ -109,6 +109,7 @@ protected:
   bool              m_failed_eos;
   OMX_DISPLAYTRANSFORMTYPE m_transform;
   bool              m_settings_changed;
+  bool              m_isPi1;
   CRenderManager&   m_renderManager;
   CProcessInfo&     m_processInfo;
   static bool NaluFormatStartCodes(enum AVCodecID codec, uint8_t *in_extradata, int in_extrasize);

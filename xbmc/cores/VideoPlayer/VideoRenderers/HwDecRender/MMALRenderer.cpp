@@ -598,6 +598,7 @@ CMMALRenderer::CMMALRenderer() : CThread("MMALRenderer"), m_processThread(this, 
   m_deint_aligned_height = 0;
   m_cachedSourceRect.SetRect(0, 0, 0, 0);
   m_cachedDestRect.SetRect(0, 0, 0, 0);
+  m_isPi1 = g_RBP.RaspberryPiVersion() == 1;
 
   m_queue_process = mmal_queue_create();
   m_processThread.Create();
@@ -740,7 +741,7 @@ void CMMALRenderer::Run()
         {
           interlace_method = VS_INTERLACEMETHOD_MMAL_ADVANCED;
           // avoid advanced deinterlace when using software decode and HD resolution
-          if (omvb->m_state == MMALStateFFDec && omvb->Width() * omvb->Height() > 720*576)
+          if ((omvb->m_state == MMALStateFFDec || m_isPi1) && omvb->Width() * omvb->Height() > 720*576)
             interlace_method = VS_INTERLACEMETHOD_MMAL_BOB;
         }
         bool interlace = (omvb->mmal_buffer->flags & MMAL_BUFFER_HEADER_VIDEO_FLAG_INTERLACED) ? true:false;
