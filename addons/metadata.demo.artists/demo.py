@@ -46,6 +46,9 @@ if action == 'find':
     liz.setProperty('artist.genre', 'classical / jazz')
     liz.setProperty('artist.born', '2012')
     xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url="/path/to/artist2", listitem=liz, isFolder=True)
+elif action == 'resolveid':
+    liz=xbmcgui.ListItem(path='/path/to/artist2', offscreen=True)
+    xbmcplugin.setResolvedUrl(handle=int(sys.argv[1]), succeeded=True, listitem=liz)
 elif action == 'getdetails':
     url=urllib.unquote_plus(params["url"])
     print 'Artist with url %s' %(url)

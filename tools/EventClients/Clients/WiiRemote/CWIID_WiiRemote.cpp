@@ -163,7 +163,7 @@ void CWiiRemote::SetBluetoothAddress(const char *btaddr)
     bacpy(&m_btaddr, &b);
 }
 
-void CWiiRemote::SetSensativity(float DeadX, float DeadY, int NumSamples)
+void CWiiRemote::SetSensitivity(float DeadX, float DeadY, int NumSamples)
 {
   m_NumSamples = NumSamples;
 
@@ -742,8 +742,8 @@ int main(int argc, char **argv)
   g_Ping = new CPacketHELO("WiiRemote", ICON_PNG, g_BluetoothIconPath.c_str());
   g_WiiRemote.Initialize(my_addr, sockfd);
   g_WiiRemote.SetBluetoothAddress(btaddr);
-  g_WiiRemote.SetSensativity(DeadX, DeadY, NumSamples);
-  g_WiiRemote.SetSensativity(DeadX, DeadY, NumSamples);
+  g_WiiRemote.SetSensitivity(DeadX, DeadY, NumSamples);
+  g_WiiRemote.SetSensitivity(DeadX, DeadY, NumSamples);
   g_WiiRemote.SetJoystickMap(JoyMap);
   if (g_AllowMouse)
     g_WiiRemote.EnableMouseEmulation();

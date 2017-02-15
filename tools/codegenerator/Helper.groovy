@@ -43,7 +43,7 @@ public class Helper
    public static String newline = System.getProperty("line.separator");
    public static File curTemplateFile = null;
 
-   public static void setTempateFile(File templateFile) { curTemplateFile = templateFile }
+   public static void setTemplateFile(File templateFile) { curTemplateFile = templateFile }
 
    /**
     * In order to use any of the typemap helper features, the Helper class needs to be initialized with
@@ -57,7 +57,7 @@ public class Helper
     public static void setup(def template,List pclasses, Map poutTypemap, def defaultOutTypemap,
                              Map pinTypemap, def defaultInTypemap)
     {
-      setTempateFile(template.binding.templateFile)
+      setTemplateFile(template.binding.templateFile)
       classes = pclasses ? pclasses : []
       if (poutTypemap) outTypemap.putAll(poutTypemap)
       if (defaultOutTypemap) defaultOutTypeConversion = defaultOutTypemap

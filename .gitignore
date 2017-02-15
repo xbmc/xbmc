@@ -276,6 +276,7 @@ cmake_install.cmake
 
 #/tools/depends
 /tools/depends/native/*/*native/
+/tools/depends/target/*/aarch64-linux-gnu/
 /tools/depends/native/JsonSchemaBuilder/bin/
 /tools/depends/native/TexturePacker/bin/
 /tools/depends/target/ffmpeg/.ffmpeg-installed

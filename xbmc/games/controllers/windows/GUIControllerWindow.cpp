@@ -26,7 +26,7 @@
 #include "addons/GUIWindowAddonBrowser.h"
 #include "addons/Addon.h"
 #include "addons/AddonManager.h"
-#include "games/controllers/dialogs/GUIDialogButtonCapture.h"
+#include "games/controllers/dialogs/GUIDialogIgnoreInput.h"
 #include "guilib/GUIButtonControl.h"
 #include "guilib/GUIControl.h"
 #include "guilib/GUIMessage.h"
@@ -323,6 +323,6 @@ void CGUIControllerWindow::ShowHelp(void)
 
 void CGUIControllerWindow::ShowButtonCaptureDialog(void)
 {
-  CGUIDialogButtonCapture dialog;
+  CGUIDialogIgnoreInput dialog;
   dialog.Show();
 }

@@ -109,6 +109,7 @@ namespace GAME
     IFeatureButton*                      m_currentButton;
     KODI::JOYSTICK::ANALOG_STICK_DIRECTION     m_currentDirection;
     std::set<KODI::JOYSTICK::CDriverPrimitive> m_history; // History to avoid repeated features
+    bool                                 m_lateAxisDetected; // Set to true if an axis is detected during button mapping
     CCriticalSection                     m_stateMutex;
 
     // Synchronization events

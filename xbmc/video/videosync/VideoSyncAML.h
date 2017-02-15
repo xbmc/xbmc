@@ -1,5 +1,6 @@
+#pragma once
 /*
- *      Copyright (C) 2005-2016 Team XBMC
+ *      Copyright (C) 2017 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -18,41 +19,23 @@
  *
  */
 
-#include "ProcessInfoPi.h"
-#include "linux/RBP.h"
+#if defined(HAS_LIBAMCODEC)
 
-// Override for platform ports
-#if defined(TARGET_RASPBERRY_PI)
+#include "video/videosync/VideoSync.h"
+#include "guilib/DispResource.h"
 
-CProcessInfo* CProcessInfo::CreateInstance()
+class CVideoSyncAML : public CVideoSync, IDispResource
 {
-  return new CProcessInfoPi();
-}
-
-
-// base class definitions
-CProcessInfoPi::CProcessInfoPi()
-{
-
-}
-
-CProcessInfoPi::~CProcessInfoPi()
-{
-
-}
-
-EINTERLACEMETHOD CProcessInfoPi::GetFallbackDeintMethod()
-{
-  return EINTERLACEMETHOD::VS_INTERLACEMETHOD_DEINTERLACE_HALF;
-}
-
-bool CProcessInfoPi::AllowDTSHDDecode()
-{
-  if (g_RBP.RaspberryPiVersion() == 1)
-    return false;
-  return true;
-}
-
+public:
+  CVideoSyncAML(CVideoReferenceClock *clock);
+  virtual ~CVideoSyncAML();
+  virtual bool Setup(PUPDATECLOCK func);
+  virtual void Run(std::atomic<bool>& stop);
+  virtual void Cleanup();
+  virtual float GetFps();
+  virtual void OnResetDisplay();
+private:
+  volatile bool m_abort;
+};
 
 #endif
-

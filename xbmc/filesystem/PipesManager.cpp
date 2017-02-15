@@ -46,7 +46,7 @@ Pipe::~Pipe()
 {
 }
 
-void Pipe::SetOpenThreashold(int threshold)
+void Pipe::SetOpenThreshold(int threshold)
 {
   m_nOpenThreshold = threshold;
 }

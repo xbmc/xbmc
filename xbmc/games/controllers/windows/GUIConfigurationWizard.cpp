@@ -19,6 +19,7 @@
  */
 
 #include "GUIConfigurationWizard.h"
+#include "games/controllers/dialogs/GUIDialogAxisDetection.h"
 #include "games/controllers/guicontrols/GUIFeatureButton.h"
 #include "games/controllers/Controller.h"
 #include "games/controllers/ControllerFeature.h"
@@ -57,6 +58,7 @@ void CGUIConfigurationWizard::InitializeState(void)
   m_currentButton = nullptr;
   m_currentDirection = JOYSTICK::ANALOG_STICK_DIRECTION::UNKNOWN;
   m_history.clear();
+  m_lateAxisDetected = false;
 }
 
 void CGUIConfigurationWizard::Run(const std::string& strControllerId, const std::vector<IFeatureButton*>& buttons)
@@ -92,7 +94,7 @@ void CGUIConfigurationWizard::OnUnfocus(IFeatureButton* button)
 
 bool CGUIConfigurationWizard::Abort(bool bWait /* = true */)
 {
-  if (IsRunning())
+  if (!m_bStop)
   {
     StopThread(false);
 
@@ -112,6 +114,8 @@ void CGUIConfigurationWizard::Process(void)
   CLog::Log(LOGDEBUG, "Starting configuration wizard");
 
   InstallHooks();
+
+  bool bLateAxisDetected = false;
 
   {
     CSingleLock lock(m_stateMutex);
@@ -145,6 +149,8 @@ void CGUIConfigurationWizard::Process(void)
         break;
     }
 
+    bLateAxisDetected = m_lateAxisDetected;
+
     // Finished mapping
     InitializeState();
   }
@@ -152,17 +158,27 @@ void CGUIConfigurationWizard::Process(void)
   for (auto callback : ButtonMapCallbacks())
     callback.second->SaveButtonMap();
 
-  bool bInMotion;
-
+  if (bLateAxisDetected)
   {
-    CSingleLock lock(m_motionMutex);
-    bInMotion = !m_bInMotion.empty();
+    CGUIDialogAxisDetection dialog;
+    dialog.Show();
   }
-
-  if (bInMotion)
+  else
   {
-    CLog::Log(LOGDEBUG, "Configuration wizard: waiting %ums for axes to neutralize", POST_MAPPING_WAIT_TIME_MS);
-    m_motionlessEvent.WaitMSec(POST_MAPPING_WAIT_TIME_MS);
+    // Wait for motion to stop to avoid sending analog actions for the button
+    // that is pressed immediately after button mapping finishes.
+    bool bInMotion;
+
+    {
+      CSingleLock lock(m_motionMutex);
+      bInMotion = !m_bInMotion.empty();
+    }
+
+    if (bInMotion)
+    {
+      CLog::Log(LOGDEBUG, "Configuration wizard: waiting %ums for axes to neutralize", POST_MAPPING_WAIT_TIME_MS);
+      m_motionlessEvent.WaitMSec(POST_MAPPING_WAIT_TIME_MS);
+    }
   }
 
   RemoveHooks();
@@ -252,7 +268,10 @@ void CGUIConfigurationWizard::OnEventFrame(const JOYSTICK::IButtonMap* buttonMap
 
 void CGUIConfigurationWizard::OnLateAxis(const JOYSTICK::IButtonMap* buttonMap, unsigned int axisIndex)
 {
-  //! @todo
+  CSingleLock lock(m_stateMutex);
+
+  m_lateAxisDetected = true;
+  Abort(false);
 }
 
 void CGUIConfigurationWizard::OnMotion(const JOYSTICK::IButtonMap* buttonMap)

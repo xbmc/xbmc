@@ -60,6 +60,8 @@ constellations of Xcode and macOS versions (to be updated once we know more):
 5. Xcode 7.x against iOS SDK 9.x on 10.10 (Yosemite)
 6. Xcode 7.x against iOS SDK 9.x on 10.11 (El Capitan)
 7. Xcode 7.x against iOS SDK 9.x on 10.12 (Sierra)
+8. Xcode 8.x against iOS SDK 10.x (El Capitan)
+9. Xcode 8.x against iOS SDK 10.x (Sierra)
 
 The preferred iOS SDK Version is 8.1.
 

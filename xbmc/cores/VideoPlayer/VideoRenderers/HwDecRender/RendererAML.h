@@ -24,17 +24,29 @@
 
 #if defined(HAS_LIBAMCODEC)
 
-#include "cores/VideoPlayer/VideoRenderers/LinuxRendererGLES.h"
+#include "cores/VideoPlayer/VideoRenderers/BaseRenderer.h"
 
-class CRendererAML : public CLinuxRendererGLES
+class CRendererAML : public CBaseRenderer
 {
 public:
   CRendererAML();
   virtual ~CRendererAML();
-  
+
   virtual bool RenderCapture(CRenderCapture* capture);
   virtual void AddVideoPictureHW(DVDVideoPicture &picture, int index);
   virtual void ReleaseBuffer(int idx);
+  virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_formatl, unsigned int orientation);
+  virtual bool IsConfigured(){ return m_bConfigured; };
+  virtual CRenderInfo GetRenderInfo();
+  virtual int GetImage(YV12Image *image, int source = -1, bool readonly = false);
+  virtual void ReleaseImage(int source, bool preserve = false){};
+  virtual void FlipPage(int source);
+  virtual void PreInit(){};
+  virtual void UnInit(){};
+  virtual void Reset();
+  virtual void Update(){};
+  virtual void RenderUpdate(bool clear, unsigned int flags = 0, unsigned int alpha = 255);
+  virtual bool SupportsMultiPassRendering(){ return false; };
 
   // Player functions
   virtual bool IsGuiLayer();
@@ -47,16 +59,19 @@ public:
 
   virtual EINTERLACEMETHOD AutoInterlaceMethod();
 
-protected:
-
-  // hooks for hw dec renderer
-  virtual bool LoadShadersHook();
-  virtual bool RenderHook(int index);  
-  virtual int  GetImageHook(YV12Image *image, int source = AUTOSOURCE, bool readonly = false);
-  virtual bool RenderUpdateVideoHook(bool clear, DWORD flags = 0, DWORD alpha = 255);
-
 private:
-  int m_prevPts;
+
+  int m_iRenderBuffer;
+  static const int m_numRenderBuffers = 4;
+
+  struct BUFFER
+  {
+    void *hwDec;
+    int duration;
+  } m_buffers[m_numRenderBuffers];
+
+  int m_prevVPts;
+  bool m_bConfigured;
 };
 
 #endif

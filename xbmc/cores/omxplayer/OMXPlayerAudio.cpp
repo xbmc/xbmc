@@ -85,7 +85,6 @@ OMXPlayerAudio::OMXPlayerAudio(OMXClock *av_clock, CDVDMessageQueue& parent, CPr
 
   m_messageQueue.SetMaxTimeSize(8.0);
   m_passthrough = false;
-  m_silence = false;
   m_flush = false;  
 }
 
@@ -134,7 +133,6 @@ void OMXPlayerAudio::OpenStream(CDVDStreamInfo &hints, COMXAudioCodecOMX *codec)
 
   m_speed           = DVD_PLAYSPEED_NORMAL;
   m_audioClock      = DVD_NOPTS_VALUE;
-  m_silence         = false;
   m_syncState = IDVDStreamPlayer::SYNC_STARTING;
   m_flush           = false;
   m_stalled         = m_messageQueue.GetPacketCount(CDVDMsg::DEMUXER_PACKET) == 0;
@@ -277,12 +275,7 @@ bool OMXPlayerAudio::Decode(DemuxPacket *pkt, bool bDropPacket, bool bTrickPlay)
         
         if(!bDropPacket)
         {
-          // Zero out the frame data if we are supposed to silence the audio
-          if(m_silence)
-            memset(decoded, 0x0, decoded_size);
-
           ret = m_omxAudio.AddPackets(decoded, decoded_size, dts, pts, m_pAudioCodec->GetFrameSize(), settings_changed);
-
           if(ret != decoded_size)
           {
             CLog::Log(LOGERROR, "error ret %d decoded_size %d\n", ret, decoded_size);
@@ -316,9 +309,6 @@ bool OMXPlayerAudio::Decode(DemuxPacket *pkt, bool bDropPacket, bool bTrickPlay)
         
       if(!bDropPacket)
       {
-        if(m_silence)
-          memset(pkt->pData, 0x0, pkt->iSize);
-
         m_omxAudio.AddPackets(pkt->pData, pkt->iSize, m_audioClock, m_audioClock, 0, settings_changed);
       }
 
@@ -455,14 +445,6 @@ void OMXPlayerAudio::Process()
         m_speed = static_cast<CDVDMsgInt*>(pMsg)->m_value;
         CLog::Log(LOGDEBUG, "COMXPlayerAudio - CDVDMsg::PLAYER_SETSPEED %d", m_speed);
       }
-    }
-    else if (pMsg->IsType(CDVDMsg::AUDIO_SILENCE))
-    {
-      m_silence = static_cast<CDVDMsgBool*>(pMsg)->m_value;
-      if (m_silence)
-        CLog::Log(LOGDEBUG, "COMXPlayerAudio - CDVDMsg::AUDIO_SILENCE(%f, 1)", m_audioClock);
-      else
-        CLog::Log(LOGDEBUG, "COMXPlayerAudio - CDVDMsg::AUDIO_SILENCE(%f, 0)", m_audioClock);
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_STREAMCHANGE))
     {

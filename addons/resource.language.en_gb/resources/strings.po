@@ -12638,7 +12638,10 @@ msgctxt "#20381"
 msgid "Specials"
 msgstr ""
 
-#empty string with id 20382
+#: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeOverview.cpp
+msgctxt "#20382"
+msgid "Recently added"
+msgstr ""
 
 msgctxt "#20383"
 msgid "Selected folder contains a single video"
@@ -16469,16 +16472,19 @@ msgstr ""
 #empty string with id 35013
 
 #. Help text of the button to fix the bug where buttons are skipped in the controller dialog. %s - list of disabled buttons and axes
+#: xbmc/games/controllers/dialogs/GUIDialogButtonCapture.cpp
 msgctxt "#35014"
 msgid "Some controllers have buttons and axes that interfere with mapping. Press these now to disable them:[CR]%s"
 msgstr ""
 
-#. Name of a controller button, e.g. Button 1. %d - button index
+#. Name of a controller button, e.g. "Button 1". %d - button index
+#: xbmc/input/joysticks/JoystickTranslator.cpp
 msgctxt "#35015"
 msgid "Button %d"
 msgstr ""
 
-#. Name of a controller axis, e.g. Axis 2. %d - axis index
+#. Name of a controller axis, e.g. "Axis 2". %d - axis index
+#: xbmc/input/joysticks/JoystickTranslator.cpp
 msgctxt "#35016"
 msgid "Axis %d"
 msgstr ""
@@ -16502,7 +16508,13 @@ msgctxt "#35019"
 msgid "Ignore input"
 msgstr ""
 
-#empty strings from id 35020 to 35048
+#. Help text of the dialog to detect analog buttons on controllers. %s - list of detected axes
+#: xbmc/games/controllers/dialogs/GUIDialogAxisDetection.cpp
+msgctxt "#35020"
+msgid "Press all analog buttons now to detect them:[CR][CR]%s"
+msgstr ""
+
+#empty strings from id 35021 to 35048
 
 #. Name of game add-ons category
 #: xbmc/addons/Addon.cpp

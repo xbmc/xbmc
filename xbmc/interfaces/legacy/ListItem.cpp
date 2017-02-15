@@ -857,7 +857,7 @@ namespace XBMCAddon
       for (const auto& el : alt.later())
       {
         if (el.which() == second)
-          throw WrongTypeException(StringUtils::Format("When using \"%s\" you need to supply a string or list of strings for the value in the dictionary", tag.c_str()).c_str());
+          throw WrongTypeException("When using \"%s\" you need to supply a string or list of strings for the value in the dictionary", tag.c_str());
         els.emplace_back(el.former());
       }
       return els;

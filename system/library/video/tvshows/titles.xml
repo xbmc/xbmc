@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<node order="2" type="filter">
+<node order="4" type="filter">
 	<label>10024</label>
 	<icon>DefaultTVShowTitle.png</icon>
 	<content>tvshows</content>

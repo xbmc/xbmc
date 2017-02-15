@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<node order="4" type="folder">
-	<label>626</label>
+<node order="2" type="folder">
+	<label>575</label>
 	<icon>DefaultInProgressShows.png</icon>
 	<path>videodb://inprogresstvshows/</path>
 </node>

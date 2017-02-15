@@ -307,7 +307,7 @@ bool CGUIDialogAudioDSPManager::OnClickListActive(CGUIMessage &message)
   return false;
 }
 
-bool CGUIDialogAudioDSPManager::OnClickRadioContinousSaving(CGUIMessage &message)
+bool CGUIDialogAudioDSPManager::OnClickRadioContinuousSaving(CGUIMessage &message)
 {
   CGUIRadioButtonControl *radioButton = dynamic_cast<CGUIRadioButtonControl*>(GetControl(CONTROL_RADIO_BUTTON_CONTINUOUS_SAVING));
   CGUIButtonControl *applyChangesButton = dynamic_cast<CGUIButtonControl*>(GetControl(CONTROL_BUTTON_APPLY_CHANGES));
@@ -384,7 +384,7 @@ bool CGUIDialogAudioDSPManager::OnMessageClick(CGUIMessage &message)
   case CONTROL_LIST_ACTIVE:
     return OnClickListActive(message);
   case CONTROL_RADIO_BUTTON_CONTINUOUS_SAVING:
-    return OnClickRadioContinousSaving(message);
+    return OnClickRadioContinuousSaving(message);
   case CONTROL_BUTTON_CLEAR_ACTIVE_MODES:
     return OnClickClearActiveModes(message);
   case CONTROL_BUTTON_APPLY_CHANGES:
