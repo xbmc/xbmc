@@ -122,6 +122,7 @@ public:
 
   bool IsInUse() const;
   bool IsNoop();
+  bool IsPython() const { return m_isPython; }
 
   // scraper media functions
   CScraperUrl NfoUrl(const std::string &sNfoContent);

@@ -1477,7 +1477,7 @@ bool CMusicInfoScanner::ResolveMusicBrainz(const std::string &strMusicBrainzID, 
       return false;
   }
 
-  if (!musicBrainzURL.m_url.empty())
+  if (!musicBrainzURL.m_url.empty() && !preferredScraper->IsPython())
   {
     Sleep(2000); // MusicBrainz rate-limits queries to 1 p.s - once we hit the rate-limiter
                  // they start serving up the 'you hit the rate-limiter' page fast - meaning
