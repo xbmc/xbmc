@@ -1,7 +1,7 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2014 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2015 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,30 +19,30 @@
  *
  */
 
-#if defined(HAVE_X11)
-
-#include "video/videosync/VideoSync.h"
+#if defined(TARGET_ANDROID)
+#include "windowing/VideoSync.h"
 #include "guilib/DispResource.h"
 
-class CVideoSyncDRM : public CVideoSync, IDispResource
+class CVideoSyncAndroid : public CVideoSync, IDispResource
 {
 public:
-  CVideoSyncDRM(CVideoReferenceClock *clock) : CVideoSync(clock) {};
-  virtual bool Setup(PUPDATECLOCK func);
-  virtual void Run(std::atomic<bool>& stop);
-  virtual void Cleanup();
-  virtual float GetFps();
-  virtual void OnResetDisplay();
-  virtual void RefreshChanged();
+  CVideoSyncAndroid(void *clock) : CVideoSync(clock), m_LastVBlankTime(0), m_abort(false){}
+
+  // CVideoSync interface
+  virtual bool Setup(PUPDATECLOCK func) override;
+  virtual void Run(std::atomic<bool>& stop) override;
+  virtual void Cleanup() override;
+  virtual float GetFps() override;
+
+  // IDispResource interface
+  virtual void OnResetDisplay() override;
+
+  // Choreographer callback
+  void FrameCallback(int64_t frameTimeNanos);
+
 private:
-  static void EventHandler(int fd, unsigned int frame, unsigned int sec, unsigned int usec, void *data);
-  int m_fd;
+  int64_t m_LastVBlankTime;  //timestamp of the last vblank, used for calculating how many vblanks happened
   volatile bool m_abort;
-  struct VblInfo
-  {
-    uint64_t start;
-    CVideoSyncDRM *videoSync;
-  };
 };
 
-#endif
+#endif// TARGET_ANDROID

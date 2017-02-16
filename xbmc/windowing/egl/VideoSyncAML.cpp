@@ -22,7 +22,7 @@
 
 #if defined(HAS_LIBAMCODEC)
 
-#include "video/videosync/VideoSyncAML.h"
+#include "VideoSyncAML.h"
 #include "guilib/GraphicContext.h"
 #include "windowing/WindowingFactory.h"
 #include "utils/TimeUtils.h"
@@ -35,7 +35,7 @@
 
 extern CEvent g_aml_sync_event;
 
-CVideoSyncAML::CVideoSyncAML(CVideoReferenceClock *clock)
+CVideoSyncAML::CVideoSyncAML(void *clock)
 : CVideoSync(clock)
 , m_abort(false)
 {

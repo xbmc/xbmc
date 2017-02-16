@@ -31,8 +31,8 @@
 #include "utils/log.h"
 #include "utils/CharsetConverter.h"
 #include "utils/SystemInfo.h"
+#include "VideoSyncD3D.h"
 
-#ifdef TARGET_WINDOWS
 #include <tpcshrd.h>
 
 CWinSystemWin32::CWinSystemWin32()
@@ -939,4 +939,8 @@ void CWinSystemWin32::SetForegroundWindowInternal(HWND hWnd)
   }
 }
 
-#endif
+std::unique_ptr<CVideoSync> CWinSystemWin32::GetVideoSync(void *clock)
+{
+  std::unique_ptr<CVideoSync> pVSync(new CVideoSyncD3D(clock));
+  return pVSync;
+}

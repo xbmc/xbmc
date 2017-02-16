@@ -22,7 +22,7 @@
 
 #if defined(HAS_GLX)
 
-#include "video/videosync/VideoSyncGLX.h"
+#include "VideoSyncGLX.h"
 #include <sstream>
 #include <X11/extensions/Xrandr.h>
 #include "windowing/WindowingFactory.h"

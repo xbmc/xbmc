@@ -18,23 +18,30 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#include <atomic>
 
-class CVideoReferenceClock;
-typedef void (*PUPDATECLOCK)(int NrVBlanks, uint64_t time, CVideoReferenceClock *clock);
+#include "windowing/VideoSync.h"
+#include "guilib/DispResource.h"
+#include "threads/Event.h"
 
-class CVideoSync
+class CVideoSyncD3D : public CVideoSync, IDispResource
 {
 public:
-  CVideoSync(CVideoReferenceClock *clock) { m_refClock = clock; };
-  virtual ~CVideoSync() {};
-  virtual bool Setup(PUPDATECLOCK func) = 0;
-  virtual void Run(std::atomic<bool>& stop) = 0;
-  virtual void Cleanup() = 0;
-  virtual float GetFps() = 0;
-  virtual void RefreshChanged() {};
-protected:
-  PUPDATECLOCK UpdateClock;
-  float m_fps;
-  CVideoReferenceClock *m_refClock;
+  CVideoSyncD3D(void *clock) : CVideoSync(clock) {};
+  bool Setup(PUPDATECLOCK func) override;
+  void Run(std::atomic<bool>& stop) override;
+  void Cleanup() override;
+  float GetFps() override;
+  void RefreshChanged() override;
+  // IDispResource overrides
+  void OnLostDisplay() override;
+  void OnResetDisplay() override;
+
+private:
+  static std::string GetErrorDescription(HRESULT hr);
+
+  volatile bool m_displayLost;
+  volatile bool m_displayReset;
+  CEvent m_lostEvent;
+  int64_t m_lastUpdateTime;
 };
+
