@@ -624,7 +624,6 @@ bool CAddonMgr::EnableSingle(const std::string& addonId)
 {
   CSingleLock lock(m_critSection);
 
-<<<<<<< HEAD
   if (IsAddonEnabled(addonId))
     return true; //already enabled
   if (!m_database.DisableAddon(addonId, false))
@@ -645,11 +644,6 @@ bool CAddonMgr::EnableSingle(const std::string& addonId)
   CLog::Log(LOGDEBUG, "CAddonMgr: enabled %s", addonInfo->ID().c_str());
   m_events.Publish(AddonEvents::Enabled(addonInfo));
   return true;
-=======
-bool CAddonMgr::CanAddonBeInstalled(const AddonPtr& addon)
-{
-  return addon != nullptr &&!IsAddonInstalled(addon->ID());
->>>>>>> mainline/master
 }
 
 bool CAddonMgr::CanAddonBeEnabled(const std::string& addonId)

@@ -228,14 +228,9 @@ void CAddonInstaller::Install(const std::string& addonId, const AddonVersion& ve
   DoInstall(addon, std::static_pointer_cast<CRepository>(repo), hash, true, false);
 }
 
-<<<<<<< HEAD
 bool CAddonInstaller::DoInstall(const AddonInfoPtr &addon, const RepositoryPtr& repo,
-    const std::string &hash /* = "" */, bool background /* = true */, bool modal /* = false */)
-=======
-bool CAddonInstaller::DoInstall(const AddonPtr &addon, const RepositoryPtr& repo,
     const std::string &hash /* = "" */, bool background /* = true */, bool modal /* = false */,
     bool autoUpdate /* = false*/)
->>>>>>> mainline/master
 {
   // check whether we already have the addon installing
   CSingleLock lock(m_critSection);
@@ -433,7 +428,7 @@ void CAddonInstaller::InstallUpdates()
   {
     if (!CAddonMgr::GetInstance().IsBlacklisted(addon->ID()))
     {
-      AddonPtr toInstall;
+      AddonInfoPtr toInstall;
       RepositoryPtr repo;
       std::string hash;
       if (CAddonInstallJob::GetAddonWithHash(addon->ID(), repo, toInstall, hash))
@@ -474,23 +469,14 @@ int64_t CAddonInstaller::EnumeratePackageFolder(std::map<std::string,CFileItemLi
   return size;
 }
 
-<<<<<<< HEAD
-CAddonInstallJob::CAddonInstallJob(const AddonInfoPtr &addon, const AddonPtr &repo, const std::string &hash /* = "" */)
-=======
-CAddonInstallJob::CAddonInstallJob(const AddonPtr &addon, const AddonPtr &repo,
+CAddonInstallJob::CAddonInstallJob(const AddonInfoPtr &addon, const AddonPtr &repo,
     const std::string &hash, bool isAutoUpdate)
->>>>>>> mainline/master
   : m_addon(addon),
     m_repo(repo),
     m_hash(hash),
     m_isAutoUpdate(isAutoUpdate)
 {
-<<<<<<< HEAD
-  m_update = CAddonMgr::GetInstance().IsAddonInstalled(addon->ID(), ADDON_UNKNOWN);
-=======
-  AddonPtr dummy;
-  m_isUpdate = CAddonMgr::GetInstance().GetAddon(addon->ID(), dummy, ADDON_UNKNOWN, false);
->>>>>>> mainline/master
+  m_isUpdate = CAddonMgr::GetInstance().IsAddonInstalled(addon->ID(), ADDON_UNKNOWN);
 }
 
 bool CAddonInstallJob::GetAddonWithHash(const std::string& addonID, RepositoryPtr& repo,
@@ -625,11 +611,7 @@ bool CAddonInstallJob::DoWork()
   g_localizeStrings.LoadAddonStrings(URIUtils::AddFileToFolder(m_addon->Path(), "resources/language/"),
       CServiceBroker::GetSettings().GetString(CSettings::SETTING_LOCALE_LANGUAGE), m_addon->ID());
 
-<<<<<<< HEAD
-  //ADDON::OnPostInstall(m_addon, m_update, IsModal());
-=======
-  ADDON::OnPostInstall(m_addon, m_isUpdate, IsModal());
->>>>>>> mainline/master
+  //ADDON::OnPostInstall(m_addon, m_isUpdate, IsModal());
 
   {
     CAddonDatabase database;
