@@ -49,6 +49,8 @@
 
 using namespace KODI::MESSAGING;
 
+#include <limits.h>
+
 #define EGL_NO_CONFIG (EGLConfig)0
 
 CWinSystemX11::CWinSystemX11() : CWinSystemBase()
@@ -1069,6 +1071,62 @@ void CWinSystemX11::UpdateCrtc()
 
   m_crtc = g_xrandr.GetCrtc(posx+winattr.width/2, posy+winattr.height/2, fps);
   g_graphicsContext.SetFPS(fps);
+}
+
+std::string CWinSystemX11::GetClipboardText(void)
+{
+  if (!m_dpy)
+     return "";
+
+  Atom utf8_string = XInternAtom(m_dpy, "UTF8_STRING", False);
+  if (utf8_string == None)
+    return "";
+
+  Atom clipboard = XInternAtom(m_dpy, "CLIPBOARD", False);
+  if (clipboard == None)
+    return "";
+
+  // if no selection or there is no owner for the selection (ancient X ?!)
+  if (XGetSelectionOwner(m_dpy, clipboard) == None)
+    return "";
+
+  std::string result = "";
+  XConvertSelection(m_dpy, clipboard, utf8_string, None, m_glWindow, CurrentTime);
+//  Wait for clipboard event (SelectionNotify) sync, code copied from
+//  https://github.com/vinniefalco/SimpleDJ/blob/master/Extern/JUCE/modules/juce_gui_basics/native/juce_linux_Clipboard.cpp
+//  clipboard content requesting is inherently slow on x11, it
+//  often takes 50ms or more so...
+  int count = 20; // will wait at most for 200 ms
+  while (--count >= 0)
+  {
+    CLog::Log(LOGNOTICE, "GetClipboardText calls MessagePump count = %d ", count);
+    if (CWinEventsX11Imp::MessagePump())
+      break;
+    Sleep(10);
+  }
+
+  Atom real_type = None;
+  int real_format = 0;
+  for (unsigned long offset = 0;;)
+  {
+    unsigned long items_read = 0;
+    unsigned long items_left = 0;
+    unsigned char *data;
+
+    if (XGetWindowProperty(m_dpy, m_glWindow, utf8_string, offset, INT_MAX, 
+      False, AnyPropertyType, &real_type, &real_format, &items_read,
+      &items_left, &data) == Success) 
+    {
+      result.append(reinterpret_cast<const char*>(data), items_read);
+      offset += items_read;
+      XFree(data);
+    } else 
+      break;
+    if (!items_left)
+      break;
+  }
+
+  return result;
 }
 
 #endif
