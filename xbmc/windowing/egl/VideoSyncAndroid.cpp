@@ -23,7 +23,7 @@
 #if defined(TARGET_ANDROID)
 #include "utils/log.h"
 #include "VideoSyncAndroid.h"
-#include "video/VideoReferenceClock.h"
+#include "cores/VideoPlayer/VideoReferenceClock.h"
 #include "utils/TimeUtils.h"
 #include "platform/android/activity/XBMCApp.h"
 #include "windowing/WindowingFactory.h"
@@ -35,12 +35,12 @@
 bool CVideoSyncAndroid::Setup(PUPDATECLOCK func)
 {
   CLog::Log(LOGDEBUG, "CVideoSyncAndroid::%s setting up", __FUNCTION__);
-  
+
   //init the vblank timestamp
   m_LastVBlankTime = CurrentHostCounter();
   UpdateClock = func;
   m_abort = false;
-  
+
   CXBMCApp::InitFrameCallback(this);
   g_Windowing.Register(this);
 
@@ -79,14 +79,14 @@ void CVideoSyncAndroid::FrameCallback(int64_t frameTimeNanos)
   int           NrVBlanks;
   double        VBlankTime;
   int64_t       nowtime = CurrentHostCounter();
-  
+
   //calculate how many vblanks happened
   VBlankTime = (double)(nowtime - m_LastVBlankTime) / (double)CurrentHostFrequency();
   NrVBlanks = MathUtils::round_int(VBlankTime * m_fps);
 
   //save the timestamp of this vblank so we can calculate how many happened next time
   m_LastVBlankTime = nowtime;
-  
+
   //update the vblank timestamp, update the clock and send a signal that we got a vblank
   UpdateClock(NrVBlanks, nowtime, m_refClock);
 }
