@@ -445,7 +445,6 @@ protected:
    * one of the DVD_PLAYSPEED defines
    */
   void SetPlaySpeed(int iSpeed);
-  int GetPlaySpeed() { return m_playSpeed; }
 
   enum ECacheState
   {
