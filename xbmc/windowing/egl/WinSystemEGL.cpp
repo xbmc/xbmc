@@ -32,9 +32,7 @@
 #include "settings/DisplaySettings.h"
 #include "guilib/DispResource.h"
 #include "threads/SingleLock.h"
-<<<<<<< HEAD
 #include "VideoSyncPi.h"
-=======
 
 #if defined(TARGET_RASPBERRY_PI)
 #include "VideoSyncPi.h"
@@ -44,7 +42,6 @@
 #include "VideoSyncAML.h"
 #endif
 
->>>>>>> mainline/master
 #ifdef HAS_IMXVPU
 // This has to go into another header file
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodecIMX.h"
@@ -574,15 +571,12 @@ std::unique_ptr<CVideoSync> CWinSystemEGL::GetVideoSync(void *clock)
 #if defined(TARGET_RASPBERRY_PI)
   std::unique_ptr<CVideoSync> pVSync(new CVideoSyncPi(clock));
   return pVSync;
-<<<<<<< HEAD
-=======
 #elif defined(TARGET_ANDROID)
   std::unique_ptr<CVideoSync> pVSync(new CVideoSyncAndroid(clock));
   return pVSync;
 #elif defined(HAS_LIBAMCODEC)
   std::unique_ptr<CVideoSync> pVSync(new CVideoSyncAML(clock));
   return pVSync;
->>>>>>> mainline/master
 #else
   return nullptr;
 #endif
