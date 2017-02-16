@@ -17,6 +17,9 @@ ifeq ($(NATIVE_OS), osx)
 endif
 
 CONFIGURE=./bootstrap --prefix=$(NATIVEPREFIX) --system-curl
+ifeq ($(USE_CCACHE), yes)
+	CONFIGURE+=--enable-ccache
+endif
 
 APP=$(PLATFORM)/bin/$(APPNAME)
 
