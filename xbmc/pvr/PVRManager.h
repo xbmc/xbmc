@@ -486,7 +486,7 @@ namespace PVR
     bool IsParentalLocked(const CPVRChannelPtr &channel);
 
     /*!
-     * @brief Restart the parantal timer.
+     * @brief Restart the parental timer.
      */
     void RestartParentalTimer();
 
@@ -652,8 +652,8 @@ namespace PVR
   class CPVRStartupJob : public CJob
   {
   public:
-    CPVRStartupJob(void) {}
-    virtual ~CPVRStartupJob() {}
+    CPVRStartupJob(void) = default;
+    virtual ~CPVRStartupJob() = default;
     virtual const char *GetType() const { return "pvr-startup"; }
 
     virtual bool DoWork();
@@ -662,8 +662,8 @@ namespace PVR
   class CPVREpgsCreateJob : public CJob
   {
   public:
-    CPVREpgsCreateJob(void) {}
-    virtual ~CPVREpgsCreateJob() {}
+    CPVREpgsCreateJob(void) = default;
+    virtual ~CPVREpgsCreateJob() = default;
     virtual const char *GetType() const { return "pvr-create-epgs"; }
 
     virtual bool DoWork();
@@ -672,8 +672,8 @@ namespace PVR
   class CPVRRecordingsUpdateJob : public CJob
   {
   public:
-    CPVRRecordingsUpdateJob(void) {}
-    virtual ~CPVRRecordingsUpdateJob() {}
+    CPVRRecordingsUpdateJob(void) = default;
+    virtual ~CPVRRecordingsUpdateJob() = default;
     virtual const char *GetType() const { return "pvr-update-recordings"; }
 
     virtual bool DoWork();
@@ -682,8 +682,8 @@ namespace PVR
   class CPVRTimersUpdateJob : public CJob
   {
   public:
-    CPVRTimersUpdateJob(void) {}
-    virtual ~CPVRTimersUpdateJob() {}
+    CPVRTimersUpdateJob(void) = default;
+    virtual ~CPVRTimersUpdateJob() = default;
     virtual const char *GetType() const { return "pvr-update-timers"; }
 
     virtual bool DoWork();
@@ -692,8 +692,8 @@ namespace PVR
   class CPVRChannelsUpdateJob : public CJob
   {
   public:
-    CPVRChannelsUpdateJob(void) {}
-    virtual ~CPVRChannelsUpdateJob() {}
+    CPVRChannelsUpdateJob(void) = default;
+    virtual ~CPVRChannelsUpdateJob() = default;
     virtual const char *GetType() const { return "pvr-update-channels"; }
 
     virtual bool DoWork();
@@ -702,8 +702,8 @@ namespace PVR
   class CPVRChannelGroupsUpdateJob : public CJob
   {
   public:
-    CPVRChannelGroupsUpdateJob(void) {}
-    virtual ~CPVRChannelGroupsUpdateJob() {}
+    CPVRChannelGroupsUpdateJob(void) = default;
+    virtual ~CPVRChannelGroupsUpdateJob() = default;
     virtual const char *GetType() const { return "pvr-update-channelgroups"; }
 
     virtual bool DoWork();
@@ -713,7 +713,7 @@ namespace PVR
   {
   public:
     CPVRChannelSwitchJob(const CFileItemPtr &previous, const CFileItemPtr & next) : m_previous(previous), m_next(next) {}
-    virtual ~CPVRChannelSwitchJob() {}
+    virtual ~CPVRChannelSwitchJob() = default;
     virtual const char *GetType() const { return "pvr-channel-switch"; }
 
     virtual bool DoWork();
@@ -725,8 +725,8 @@ namespace PVR
   class CPVRSearchMissingChannelIconsJob : public CJob
   {
   public:
-    CPVRSearchMissingChannelIconsJob(void) {}
-    virtual ~CPVRSearchMissingChannelIconsJob() {}
+    CPVRSearchMissingChannelIconsJob(void) = default;
+    virtual ~CPVRSearchMissingChannelIconsJob() = default;
     virtual const char *GetType() const { return "pvr-search-missing-channel-icons"; }
 
     bool DoWork();
@@ -737,7 +737,7 @@ namespace PVR
   public:
     CPVRClientConnectionJob(CPVRClient *client, std::string connectString, PVR_CONNECTION_STATE state, std::string message)
     : m_client(client), m_connectString(connectString), m_state(state), m_message(message) {}
-    virtual ~CPVRClientConnectionJob() {}
+    virtual ~CPVRClientConnectionJob() = default;
     virtual const char *GetType() const { return "pvr-client-connection"; }
 
     virtual bool DoWork();

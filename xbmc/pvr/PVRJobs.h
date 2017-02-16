@@ -30,9 +30,9 @@ namespace PVR
   class CPVRSetRecordingOnChannelJob : public CJob
   {
   public:
-    CPVRSetRecordingOnChannelJob(const CPVRChannelPtr &channel, bool bOnOff) :
-    m_channel(channel), m_bOnOff(bOnOff) {}
-    virtual ~CPVRSetRecordingOnChannelJob() {}
+    CPVRSetRecordingOnChannelJob(const CPVRChannelPtr &channel, bool bOnOff)
+    : m_channel(channel), m_bOnOff(bOnOff) {}
+    virtual ~CPVRSetRecordingOnChannelJob() = default;
     const char *GetType() const override { return "pvr-set-recording-on-channel"; }
 
     bool DoWork() override;
@@ -45,7 +45,7 @@ namespace PVR
   {
   public:
     CPVRContinueLastChannelJob() = default;
-    virtual ~CPVRContinueLastChannelJob() {}
+    virtual ~CPVRContinueLastChannelJob() = default;
     const char *GetType() const override { return "pvr-continue-last-channel-job"; }
 
     bool DoWork() override;
@@ -56,7 +56,7 @@ namespace PVR
   public:
     CPVREventlogJob() = default;
     CPVREventlogJob(bool bNotifyUser, bool bError, const std::string &label, const std::string &msg, const std::string &icon);
-    virtual ~CPVREventlogJob() {}
+    virtual ~CPVREventlogJob() = default;
     const char *GetType() const override { return "pvr-eventlog-job"; }
 
     void AddEvent(bool bNotifyUser, bool bError, const std::string &label, const std::string &msg, const std::string &icon);
