@@ -166,7 +166,7 @@ void doMethod(Node method, MethodType methodType)
 <%    }
       params.each { 
 %>         
-    ${SwigTypeParser.SwigType_str(SwigTypeParser.convertTypeToLTypeForParam(it.@type))} ${it.@name} ${it.@value != null ? ' = ' + it.@value : ''};<%
+    ${SwigTypeParser.SwigType_str(SwigTypeParser.convertTypeToLTypeForParam(it.@type))} ${it.@name} ${it.@value != null ? ' = ' + it.@value : SwigTypeParser.SwigType_ispointer(it.@type) ? ' = nullptr' :  ''};<%
         if (!PythonTools.parameterCanBeUsedDirectly(it) && !doAsMappingIndex)
         { %>
     PyObject* py${it.@name} = NULL;<%
