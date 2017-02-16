@@ -766,8 +766,6 @@ std::shared_ptr<CAddon> CAddonMgr::CreateAddon(AddonInfoPtr addonInfo, TYPE addo
       return std::make_shared<PVR::CPVRClient>(addonInfo);
     case ADDON_ADSPDLL:
       return std::make_shared<ActiveAE::CActiveAEDSPAddon>(addonInfo);
-    case ADDON_AUDIODECODER:
-      return std::make_shared<CAudioDecoder>(addonInfo);
     case ADDON_PERIPHERALDLL:
       return std::make_shared<PERIPHERALS::CPeripheralAddon>(addonInfo);
     case ADDON_GAMEDLL:

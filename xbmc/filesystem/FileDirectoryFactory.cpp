@@ -68,20 +68,18 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
   StringUtils::ToLower(strExtension);
   if (!strExtension.empty())
   {
-    VECADDONS codecs;
-    CBinaryAddonCache &addonCache = CServiceBroker::GetBinaryAddonCache();
-    addonCache.GetAddons(codecs, ADDON_AUDIODECODER);
-    for (size_t i=0;i<codecs.size();++i)
+    for (const auto& addonInfo : CAddonMgr::GetInstance().GetAddonInfos(true, ADDON_AUDIODECODER))
     {
-      std::shared_ptr<CAudioDecoder> dec(std::static_pointer_cast<CAudioDecoder>(codecs[i]));
-      if (dec->HasTracks() && dec->GetExtensions().find(strExtension) != std::string::npos)
+      if (addonInfo->Type(ADDON_AUDIODECODER)->GetValue("@tags").asBoolean() &&
+          addonInfo->Type(ADDON_AUDIODECODER)->GetValue("@extension").asString().find(strExtension) != std::string::npos)
       {
-        CAudioDecoder* result = new CAudioDecoder(*dec);
-        result->Create();
-        if (result->ContainsFiles(url))
-          return result;
-        delete result;
-        return NULL;
+        CAudioDecoder* result = new CAudioDecoder(addonInfo);
+        if (!result->Create() || !result->ContainsFiles(url))
+        {
+          delete result;
+          return nullptr;
+        }
+        return result;
       }
     }
   }
