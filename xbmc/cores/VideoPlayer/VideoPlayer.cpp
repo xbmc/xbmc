@@ -2143,7 +2143,7 @@ void CVideoPlayer::HandlePlaySpeed()
             double iTime = (m_clock.GetClock() + m_State.time_offset + 1000000.0 * direction) / 1000;
             CDVDMsgPlayerSeek::CMode mode;
             mode.time = iTime;
-            mode.backward = (GetPlaySpeed() < 0);
+            mode.backward = (m_playSpeed < 0);
             mode.accurate = false;
             mode.restore = false;
             mode.trickplay = true;
@@ -2346,15 +2346,15 @@ void CVideoPlayer::CheckAutoSceneSkip()
 
   if (cut.action == CEdl::CUT)
   {
-    if ((GetPlaySpeed() > 0 && clock < cut.end - 1000) ||
-        (GetPlaySpeed() < 0 && clock < cut.start + 1000))
+    if ((m_playSpeed > 0 && clock < cut.end - 1000) ||
+        (m_playSpeed < 0 && clock < cut.start + 1000))
     {
       CLog::Log(LOGDEBUG, "%s - Clock in EDL cut [%s - %s]: %s. Automatically skipping over.",
                 __FUNCTION__, CEdl::MillisecondsToTimeString(cut.start).c_str(),
                 CEdl::MillisecondsToTimeString(cut.end).c_str(), CEdl::MillisecondsToTimeString(clock).c_str());
 
       //Seeking either goes to the start or the end of the cut depending on the play direction.
-      int seek = GetPlaySpeed() >= 0 ? cut.end : cut.start;
+      int seek = m_playSpeed >= 0 ? cut.end : cut.start;
 
       CDVDMsgPlayerSeek::CMode mode;
       mode.time = seek;
@@ -2369,7 +2369,7 @@ void CVideoPlayer::CheckAutoSceneSkip()
   else if (cut.action == CEdl::COMM_BREAK)
   {
     // marker for commbrak may be inaccurate. allow user to skip into break from the back
-    if (GetPlaySpeed() >= 0 && lastPos <= cut.start && clock < cut.end - 1000)
+    if (m_playSpeed >= 0 && lastPos <= cut.start && clock < cut.end - 1000)
     {
       std::string strTimeString = StringUtils::SecondsToTimeString((cut.end - cut.start) / 1000, TIME_FORMAT_MM_SS);
       CGUIDialogKaiToast::QueueNotification(g_localizeStrings.Get(25011), strTimeString);
