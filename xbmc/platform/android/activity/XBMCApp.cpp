@@ -88,7 +88,7 @@
 #include "AndroidKey.h"
 
 #include "CompileInfo.h"
-#include "video/videosync/VideoSyncAndroid.h"
+#include "windowing/egl/VideoSyncAndroid.h"
 
 #define GIGABYTES       1073741824
 

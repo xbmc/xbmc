@@ -37,7 +37,7 @@
 #include "utils/StringUtils.h"
 #include "guilib/DispResource.h"
 #include "threads/SingleLock.h"
-#include "video/videosync/VideoSyncIos.h"
+#include "VideoSyncIos.h"
 #include <vector>
 #undef BOOL
 

@@ -87,11 +87,7 @@ void CRepositoryUpdater::OnJobComplete(unsigned int jobID, bool success, CJob* j
 
     if (CServiceBroker::GetSettings().GetInt(CSettings::SETTING_ADDONS_AUTOUPDATES) == AUTO_UPDATES_ON)
     {
-      for (const auto& addon : updates)
-      {
-        if (!CAddonMgr::GetInstance().IsBlacklisted(addon->ID()))
-          CAddonInstaller::GetInstance().InstallOrUpdate(addon->ID());
-      }
+      CAddonInstaller::GetInstance().InstallUpdates();
     }
 
     ScheduleUpdate();

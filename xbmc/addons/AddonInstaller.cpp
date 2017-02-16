@@ -228,15 +228,21 @@ void CAddonInstaller::Install(const std::string& addonId, const AddonVersion& ve
   DoInstall(addon, std::static_pointer_cast<CRepository>(repo), hash, true, false);
 }
 
+<<<<<<< HEAD
 bool CAddonInstaller::DoInstall(const AddonInfoPtr &addon, const RepositoryPtr& repo,
     const std::string &hash /* = "" */, bool background /* = true */, bool modal /* = false */)
+=======
+bool CAddonInstaller::DoInstall(const AddonPtr &addon, const RepositoryPtr& repo,
+    const std::string &hash /* = "" */, bool background /* = true */, bool modal /* = false */,
+    bool autoUpdate /* = false*/)
+>>>>>>> mainline/master
 {
   // check whether we already have the addon installing
   CSingleLock lock(m_critSection);
   if (m_downloadJobs.find(addon->ID()) != m_downloadJobs.end())
     return false;
 
-  CAddonInstallJob* installJob = new CAddonInstallJob(addon, repo, hash);
+  CAddonInstallJob* installJob = new CAddonInstallJob(addon, repo, hash, autoUpdate);
   if (background)
   {
     // Workaround: because CAddonInstallJob is blocking waiting for other jobs, it needs to be run
@@ -426,9 +432,18 @@ void CAddonInstaller::InstallUpdates()
   for (const auto& addon : updates)
   {
     if (!CAddonMgr::GetInstance().IsBlacklisted(addon->ID()))
-      CAddonInstaller::GetInstance().InstallOrUpdate(addon->ID());
+    {
+      AddonPtr toInstall;
+      RepositoryPtr repo;
+      std::string hash;
+      if (CAddonInstallJob::GetAddonWithHash(addon->ID(), repo, toInstall, hash))
+        DoInstall(toInstall, repo, hash, true, false, true);
+    }
   }
+}
 
+void CAddonInstaller::InstallUpdatesAndWait()
+{
   CSingleLock lock(m_critSection);
   if (!m_downloadJobs.empty())
   {
@@ -459,12 +474,23 @@ int64_t CAddonInstaller::EnumeratePackageFolder(std::map<std::string,CFileItemLi
   return size;
 }
 
+<<<<<<< HEAD
 CAddonInstallJob::CAddonInstallJob(const AddonInfoPtr &addon, const AddonPtr &repo, const std::string &hash /* = "" */)
+=======
+CAddonInstallJob::CAddonInstallJob(const AddonPtr &addon, const AddonPtr &repo,
+    const std::string &hash, bool isAutoUpdate)
+>>>>>>> mainline/master
   : m_addon(addon),
     m_repo(repo),
-    m_hash(hash)
+    m_hash(hash),
+    m_isAutoUpdate(isAutoUpdate)
 {
+<<<<<<< HEAD
   m_update = CAddonMgr::GetInstance().IsAddonInstalled(addon->ID(), ADDON_UNKNOWN);
+=======
+  AddonPtr dummy;
+  m_isUpdate = CAddonMgr::GetInstance().GetAddon(addon->ID(), dummy, ADDON_UNKNOWN, false);
+>>>>>>> mainline/master
 }
 
 bool CAddonInstallJob::GetAddonWithHash(const std::string& addonID, RepositoryPtr& repo,
@@ -599,19 +625,33 @@ bool CAddonInstallJob::DoWork()
   g_localizeStrings.LoadAddonStrings(URIUtils::AddFileToFolder(m_addon->Path(), "resources/language/"),
       CServiceBroker::GetSettings().GetString(CSettings::SETTING_LOCALE_LANGUAGE), m_addon->ID());
 
+<<<<<<< HEAD
   //ADDON::OnPostInstall(m_addon, m_update, IsModal());
+=======
+  ADDON::OnPostInstall(m_addon, m_isUpdate, IsModal());
+>>>>>>> mainline/master
 
   {
     CAddonDatabase database;
     database.Open();
     database.SetOrigin(m_addon->ID(), m_repo ? m_repo->ID() : "");
-    if (m_update)
+    if (m_isUpdate)
       database.SetLastUpdated(m_addon->ID(), CDateTime::GetCurrentDateTime());
   }
 
   CEventLog::GetInstance().Add(
-    EventPtr(new CAddonManagementEvent(m_addon, m_update ? 24065 : 24064)),
+    EventPtr(new CAddonManagementEvent(m_addon, m_isUpdate ? 24065 : 24064)),
     !IsModal() && CServiceBroker::GetSettings().GetBool(CSettings::SETTING_ADDONS_NOTIFICATIONS), false);
+
+  if (m_isAutoUpdate && !m_addon->Broken().empty())
+  {
+    CLog::Log(LOGDEBUG, "CAddonInstallJob[%s]: auto-disabling due to being marked as broken", m_addon->ID().c_str());
+    CAddonMgr::GetInstance().DisableAddon(m_addon->ID());
+    CEventLog::GetInstance().Add(
+        EventPtr(new CAddonManagementEvent(m_addon, 24094)),
+        CServiceBroker::GetSettings().GetBool(CSettings::SETTING_ADDONS_NOTIFICATIONS),
+        false);
+  }
 
   // and we're done!
   MarkFinished();
@@ -718,7 +758,7 @@ bool CAddonInstallJob::Install(const std::string &installFrom, const AddonPtr& r
             return false;
           }
 
-          CAddonInstallJob dependencyJob(addon, repoForDep, hash);
+          CAddonInstallJob dependencyJob(addon, repoForDep, hash, false);
 
           // pass our progress indicators to the temporary job and don't allow it to
           // show progress or information updates (no progress, title or text changes)

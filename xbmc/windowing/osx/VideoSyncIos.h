@@ -20,7 +20,7 @@
  */
 
 #if defined(TARGET_DARWIN_IOS)
-#include "VideoSync.h"
+#include "windowing/VideoSync.h"
 #include "guilib/DispResource.h"
 
 class CVideoSyncIos : public CVideoSync, IDispResource

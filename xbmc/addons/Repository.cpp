@@ -270,6 +270,7 @@ bool CRepositoryUpdateJob::DoWork()
   }
 
   database.UpdateRepositoryContent(m_repo->ID(), m_repo->Version(), newChecksum, addons);
+<<<<<<< HEAD
 
   //Notify about broken status changes
   for (const auto& addon : addons)
@@ -313,5 +314,7 @@ bool CRepositoryUpdateJob::DoWork()
           m_repo->ID().c_str(), addon->ID().c_str());
     }
   }
+=======
+>>>>>>> mainline/master
   return true;
 }

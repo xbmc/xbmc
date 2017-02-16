@@ -104,6 +104,7 @@ std::map<std::string, std::string> fillMimeTypes()
   mimeTypes.insert(std::pair<std::string, std::string>("dir",       "application/x-director"));
   mimeTypes.insert(std::pair<std::string, std::string>("dl",        "video/dl"));
   mimeTypes.insert(std::pair<std::string, std::string>("divx",      "video/x-msvideo"));
+  mimeTypes.insert(std::pair<std::string, std::string>("dng",       "image/dng"));
   mimeTypes.insert(std::pair<std::string, std::string>("doc",       "application/msword"));
   mimeTypes.insert(std::pair<std::string, std::string>("docx",      "application/vnd.openxmlformats-officedocument.wordprocessingml.document"));
   mimeTypes.insert(std::pair<std::string, std::string>("dot",       "application/msword"));

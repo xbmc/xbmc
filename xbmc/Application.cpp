@@ -5076,6 +5076,11 @@ void CApplication::StartMusicScan(const std::string &strDirectory, bool userInit
       flags |= CMusicInfoScanner::SCAN_ONLINE;
     if (!userInitiated || m_ServiceManager->GetSettings().GetBool(CSettings::SETTING_MUSICLIBRARY_BACKGROUNDUPDATE))
       flags |= CMusicInfoScanner::SCAN_BACKGROUND;
+    // Ask for full rescan of music files
+    //! @todo replace with a music library setting in UI
+    if (g_advancedSettings.m_bMusicLibraryPromptFullTagScan)
+      if (CGUIDialogYesNo::ShowAndGetInput(CVariant{ 799 }, CVariant{ 38062 }))
+        flags |= CMusicInfoScanner::SCAN_RESCAN;
   }
 
   if (!(flags & CMusicInfoScanner::SCAN_BACKGROUND))

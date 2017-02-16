@@ -1,7 +1,7 @@
 #pragma once
 /*
- *      Copyright (C) 2015 Team Kodi
- *      http://kodi.tv
+ *      Copyright (C) 2017 Team XBMC
+ *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,30 +19,23 @@
  *
  */
 
-#if defined(TARGET_ANDROID)
+#if defined(HAS_LIBAMCODEC)
+
 #include "windowing/VideoSync.h"
 #include "guilib/DispResource.h"
 
-class CVideoSyncAndroid : public CVideoSync, IDispResource
+class CVideoSyncAML : public CVideoSync, IDispResource
 {
 public:
-  CVideoSyncAndroid(void *clock) : CVideoSync(clock), m_LastVBlankTime(0), m_abort(false){}
-
-  // CVideoSync interface
-  virtual bool Setup(PUPDATECLOCK func) override;
-  virtual void Run(std::atomic<bool>& stop) override;
-  virtual void Cleanup() override;
-  virtual float GetFps() override;
-
-  // IDispResource interface
-  virtual void OnResetDisplay() override;
-
-  // Choreographer callback
-  void FrameCallback(int64_t frameTimeNanos);
-
+  CVideoSyncAML(void *clock);
+  virtual ~CVideoSyncAML();
+  virtual bool Setup(PUPDATECLOCK func)override;
+  virtual void Run(std::atomic<bool>& stop)override;
+  virtual void Cleanup()override;
+  virtual float GetFps()override;
+  virtual void OnResetDisplay()override;
 private:
-  int64_t m_LastVBlankTime;  //timestamp of the last vblank, used for calculating how many vblanks happened
   volatile bool m_abort;
 };
 
-#endif// TARGET_ANDROID
+#endif

@@ -146,7 +146,7 @@ std::vector<std::string> CAddonSystemSettings::MigrateAddons(std::function<void(
       CRepositoryUpdater::GetInstance().Await();
 
     CLog::Log(LOGINFO, "ADDON: waiting for add-ons to update...");
-    CAddonInstaller::GetInstance().InstallUpdates();
+    CAddonInstaller::GetInstance().InstallUpdatesAndWait();
   }
 
   auto incompatible = getIncompatible();

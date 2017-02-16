@@ -19,7 +19,7 @@
  *
  */
 
-#if defined(TARGET_DARWIN_OSX)
+
 #include "windowing/VideoSync.h"
 #include "guilib/DispResource.h"
 #include "threads/Event.h"
@@ -58,4 +58,3 @@ private:
   CEvent m_lostEvent;
 };
 
-#endif// TARGET_DARWIN_OSX
