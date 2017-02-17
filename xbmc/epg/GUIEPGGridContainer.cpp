@@ -39,7 +39,6 @@
 using namespace PVR;
 using namespace EPG;
 
-#define SHORTGAP     5 // how many blocks is considered a short-gap in nav logic
 #define BLOCKJUMP    4 // how many blocks are jumped with each analogue scroll action
 static const int BLOCK_SCROLL_OFFSET = 60 / CGUIEPGGridContainerModel::MINSPERBLOCK; // how many blocks are jumped if we are at left/right edge of grid
 static const int PAGE_NOW_OFFSET = CGUIEPGGridContainerModel::GRID_START_PADDING / CGUIEPGGridContainerModel::MINSPERBLOCK; // this is the 'now' block relative to page start  
@@ -62,6 +61,7 @@ CGUIEPGGridContainer::CGUIEPGGridContainer(int parentID, int controlID, float po
   m_blocksPerPage(timeBlocks),
   m_blockCursor(0),
   m_blockOffset(0),
+  m_blockTravelAxis(0),
   m_cacheChannelItems(preloadItems),
   m_cacheProgrammeItems(preloadItems),
   m_cacheRulerItems(preloadItems),
@@ -698,8 +698,8 @@ void CGUIEPGGridContainer::OnDown()
   }
   else if (action.GetNavigation() == GetID() || !action.HasActionsMeetingCondition()) // wrap around
   {
-    SetChannel(0);
     ScrollToChannelOffset(0);
+    SetChannel(0);
   }
   else
     CGUIControl::OnDown();
@@ -784,31 +784,24 @@ void CGUIEPGGridContainer::SetChannel(const CPVRChannelPtr &channel)
   }
 }
 
-void CGUIEPGGridContainer::SetChannel(int channel, bool bFindClosestItem /* = true */)
+void CGUIEPGGridContainer::SetChannel(int channel)
 {
   CSingleLock lock(m_critSection);
 
-  if (!bFindClosestItem || m_blockCursor + m_blockOffset == 0 || m_blockOffset + m_blockCursor + GetItemSize(m_item) == m_gridModel->GetBlockCount())
+  int channelIndex = channel + m_channelOffset;
+  int blockIndex = m_blockCursor + m_blockOffset;
+  if (channelIndex < m_gridModel->ChannelItemsSize() && blockIndex < m_gridModel->GetBlockCount())
   {
-    m_item = GetItem(channel);
+    m_item = m_gridModel->GetGridItemPtr(channelIndex, m_blockTravelAxis);
     if (m_item)
     {
       m_channelCursor = channel;
-      SetBlock(GetBlock(m_item->item, channel));
+      SetBlock(GetBlock(m_item->item, channel), false);
     }
-    return;
-  }
-
-  /* basic checks failed, need to correctly identify nearest item */
-  m_item = GetClosestItem(channel);
-  if (m_item)
-  {
-    m_channelCursor = channel;
-    SetBlock(GetBlock(m_item->item, m_channelCursor));
   }
 }
 
-void CGUIEPGGridContainer::SetBlock(int block)
+void CGUIEPGGridContainer::SetBlock(int block, bool bUpdateBlockTravelAxis /* = true */)
 {
   CSingleLock lock(m_critSection);
 
@@ -818,6 +811,9 @@ void CGUIEPGGridContainer::SetBlock(int block)
     m_blockCursor = m_blocksPerPage - 1;
   else
     m_blockCursor = block;
+
+  if (bUpdateBlockTravelAxis)
+    m_blockTravelAxis = m_blockOffset + m_blockCursor;
 
   m_item = GetItem(m_channelCursor);
 }
@@ -1088,48 +1084,6 @@ std::string CGUIEPGGridContainer::GetLabel(int info) const
       break;
   }
   return label;
-}
-
-GridItem *CGUIEPGGridContainer::GetClosestItem(int channel)
-{
-  GridItem *closest = GetItem(channel);
-
-  if (!closest)
-    return nullptr;
-
-  int block = GetBlock(closest->item, channel);
-  int left;   // num blocks to start of previous item
-  int right;  // num blocks to start of next item
-
-  if (block == m_blockCursor)
-    return closest; // item & m_item start together
-
-  if (block + GetItemSize(closest) == m_blockCursor + GetItemSize(m_item))
-    return closest; // closest item ends when current does
-
-  if (block > m_blockCursor)  // item starts after m_item
-  {
-    left = m_blockCursor - GetBlock(closest->item, channel);
-    right = block - m_blockCursor;
-  }
-  else
-  {
-    left  = m_blockCursor - block;
-    right = GetBlock(GetNextItem(channel)->item, channel) - m_blockCursor;
-  }
-
-  if (right <= SHORTGAP && right <= left && m_blockCursor + right < m_blocksPerPage)
-    return m_gridModel->GetGridItemPtr(channel + m_channelOffset, m_blockCursor + right + m_blockOffset);
-
-  return m_gridModel->GetGridItemPtr(channel + m_channelOffset, m_blockCursor - left + m_blockOffset);
-}
-
-int CGUIEPGGridContainer::GetItemSize(GridItem *item)
-{
-  if (!item)
-    return MathUtils::round_int(m_blockSize); // stops it crashing
-
-  return MathUtils::round_int(item->width / m_blockSize);
 }
 
 int CGUIEPGGridContainer::GetBlock(const CGUIListItemPtr &item, int channel)
@@ -1428,18 +1382,18 @@ void CGUIEPGGridContainer::GoToChannel(int channelIndex)
   {
     // last page
     ScrollToChannelOffset(m_gridModel->ChannelItemsSize() - m_channelsPerPage);
-    SetChannel(channelIndex - (m_gridModel->ChannelItemsSize() - m_channelsPerPage), false);
+    SetChannel(channelIndex - (m_gridModel->ChannelItemsSize() - m_channelsPerPage));
   }
   else if (channelIndex < m_channelsPerPage)
   {
     // first page
     ScrollToChannelOffset(0);
-    SetChannel(channelIndex, false);
+    SetChannel(channelIndex);
   }
   else
   {
     ScrollToChannelOffset(channelIndex - m_channelCursor);
-    SetChannel(m_channelCursor, false);
+    SetChannel(m_channelCursor);
   }
 }
 
