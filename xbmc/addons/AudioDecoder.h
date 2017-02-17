@@ -19,7 +19,7 @@
 #pragma once
 
 #include "AddonDll.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/kodi_audiodec_types.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/addon-instance/AudioDecoder.h"
 #include "cores/paplayer/ICodec.h"
 #include "music/tags/ImusicInfoTagLoader.h"
 #include "filesystem/MusicFileDirectory.h"
@@ -32,7 +32,7 @@ namespace MUSIC_INFO
 
 namespace ADDON
 {
-  class CAudioDecoder : public CAddonDll,
+  class CAudioDecoder : public IAddonInstanceHandler,
                         public ICodec,
                         public MUSIC_INFO::IMusicInfoTagLoader,
                         public XFILE::CMusicFileDirectory
@@ -47,11 +47,10 @@ namespace ADDON
     int ReadPCM(uint8_t* buffer, int size, int* actualsize);
     bool Seek(int64_t time);
     bool CanInit() { return true; }
-    void DeInit();
     void Destroy();
     bool Load(const std::string& strFileName,
               MUSIC_INFO::CMusicInfoTag& tag,
-              MUSIC_INFO::EmbeddedArt *art = NULL);
+              MUSIC_INFO::EmbeddedArt *art = nullptr);
     int GetTrackCount(const std::string& strPath);
 
     const std::string& GetExtensions() const { return m_extension; }
@@ -61,12 +60,11 @@ namespace ADDON
   protected:
     std::string m_extension;
     std::string m_mimetype;
-    void* m_context;
     bool m_tags;
     bool m_tracks;
     const AEChannel* m_channel;
-    AUDIODEC_PROPS m_info;
-    KodiToAddonFuncTable_AudioDecoder m_struct;
+    kodi::addon::CInstanceAudioDecoder* m_addonInstance;
+    AddonInstance_AudioDecoder m_struct;
   };
 
 } /*namespace ADDON*/
