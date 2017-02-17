@@ -73,11 +73,6 @@ namespace ADDON
     void*               GetHelperADSP()               { return m_helperADSP; }
     /*\_________________________________________________________________________
     \*/
-    static void*        PeripheralLib_RegisterMe       (void *addonData);
-    static void         PeripheralLib_UnRegisterMe     (void *addonData, void* cbTable);
-    void*               GetHelperPeripheral()         { return m_helperPeripheral; }
-    /*\_________________________________________________________________________
-    \*/
     static void*        GameLib_RegisterMe             (void *addonData);
     static void         GameLib_UnRegisterMe           (void *addonData, void* cbTable);
     void*               GetHelperGame()               { return m_helperGame; }
@@ -95,7 +90,6 @@ namespace ADDON
     void*     m_helperGUI;
     void*     m_helperPVR;
     void*     m_helperADSP;
-    void*     m_helperPeripheral;
     void*     m_helperGame;
   };
 

@@ -19,8 +19,8 @@
  */
 #pragma once
 
-#include "addons/kodi-addon-dev-kit/include/kodi/kodi_peripheral_types.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/kodi_peripheral_utils.hpp"
+#include "addons/kodi-addon-dev-kit/include/kodi/addon-instance/Peripheral.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/addon-instance/PeripheralUtils.h"
 #include "input/joysticks/DriverPrimitive.h"
 #include "input/joysticks/JoystickTypes.h"
 #include "peripherals/PeripheralTypes.h"
@@ -37,11 +37,11 @@ namespace PERIPHERALS
     static PeripheralType  TranslateType(PERIPHERAL_TYPE type);
     static PERIPHERAL_TYPE TranslateType(PeripheralType type);
 
-    static KODI::JOYSTICK::CDriverPrimitive TranslatePrimitive(const ADDON::DriverPrimitive& primitive);
-    static ADDON::DriverPrimitive     TranslatePrimitive(const KODI::JOYSTICK::CDriverPrimitive& primitive);
+    static KODI::JOYSTICK::CDriverPrimitive TranslatePrimitive(const kodi::addon::DriverPrimitive& primitive);
+    static kodi::addon::DriverPrimitive TranslatePrimitive(const KODI::JOYSTICK::CDriverPrimitive& primitive);
 
-    static std::vector<KODI::JOYSTICK::CDriverPrimitive> TranslatePrimitives(const std::vector<ADDON::DriverPrimitive>& primitives);
-    static std::vector<ADDON::DriverPrimitive>     TranslatePrimitives(const std::vector<KODI::JOYSTICK::CDriverPrimitive>& primitives);
+    static std::vector<KODI::JOYSTICK::CDriverPrimitive> TranslatePrimitives(const std::vector<kodi::addon::DriverPrimitive>& primitives);
+    static std::vector<kodi::addon::DriverPrimitive> TranslatePrimitives(const std::vector<KODI::JOYSTICK::CDriverPrimitive>& primitives);
 
     static KODI::JOYSTICK::HAT_DIRECTION       TranslateHatDirection(JOYSTICK_DRIVER_HAT_DIRECTION dir);
     static JOYSTICK_DRIVER_HAT_DIRECTION TranslateHatDirection(KODI::JOYSTICK::HAT_DIRECTION dir);
@@ -54,6 +54,6 @@ namespace PERIPHERALS
     static KODI::JOYSTICK::FEATURE_TYPE TranslateFeatureType(JOYSTICK_FEATURE_TYPE type);
     static JOYSTICK_FEATURE_TYPE  TranslateFeatureType(KODI::JOYSTICK::FEATURE_TYPE type);
 
-    static ADDON::DriverPrimitive Opposite(const ADDON::DriverPrimitive& semiaxis);
+    static kodi::addon::DriverPrimitive Opposite(const kodi::addon::DriverPrimitive& semiaxis);
   };
 }

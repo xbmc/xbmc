@@ -20,7 +20,6 @@
 #pragma once
 
 #include "PeripheralAddon.h" // for FeatureMap
-#include "addons/kodi-addon-dev-kit/include/kodi/kodi_peripheral_utils.hpp"
 #include "input/joysticks/DriverPrimitive.h"
 #include "input/joysticks/IButtonMap.h"
 #include "input/joysticks/JoystickTypes.h"
