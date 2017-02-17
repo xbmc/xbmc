@@ -47,19 +47,16 @@ namespace PERIPHERALS
   typedef std::vector<kodi::addon::DriverPrimitive> PrimitiveVector;
   typedef std::map<KODI::JOYSTICK::FeatureName, kodi::addon::JoystickFeature> FeatureMap;
 
-  class CPeripheralAddon : public ADDON::CAddonDll
+  class CPeripheralAddon : public ADDON::IAddonInstanceHandler
   {
   public:
     CPeripheralAddon(ADDON::AddonInfoPtr addonInfo);
     virtual ~CPeripheralAddon(void);
 
-    // implementation of CAddon
-    virtual ADDON::AddonPtr GetRunningInstance(void) const override;
-
     /*!
      * @brief Initialise the instance of this add-on
      */
-    ADDON_STATUS CreateAddon(void);
+    bool CreateAddon(void);
 
     bool         Register(unsigned int peripheralIndex, const PeripheralPtr& peripheral);
     void         UnregisterRemovedDevices(const PeripheralScanResults &results, PeripheralVector& removedPeripherals);
@@ -130,7 +127,6 @@ namespace PERIPHERALS
     std::string         m_strClientPath;  /*!< @brief translated path to this add-on */
 
     /* @brief Add-on properties */
-    ADDON::AddonVersion m_apiVersion;
     bool                m_bProvidesJoysticks;
     bool                m_bProvidesButtonMaps;
 

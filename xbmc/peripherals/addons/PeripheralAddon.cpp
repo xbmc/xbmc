@@ -59,12 +59,11 @@ using namespace XFILE;
   #define SAFE_DELETE(p)  do { delete (p); (p) = NULL; } while (0)
 #endif
 
-CPeripheralAddon::CPeripheralAddon(ADDON::AddonInfoPtr addonInfo) :
-  CAddonDll(addonInfo),
-  m_apiVersion("0.0.0")
+CPeripheralAddon::CPeripheralAddon(ADDON::AddonInfoPtr addonInfo)
+  : IAddonInstanceHandler(ADDON::ADDON_PERIPHERALDLL, addonInfo)
 {
-  m_bProvidesJoysticks = Type(ADDON::ADDON_PERIPHERALDLL)->GetValue("@provides_joysticks").asBoolean();
-  m_bProvidesButtonMaps = Type(ADDON::ADDON_PERIPHERALDLL)->GetValue("@provides_buttonmaps").asBoolean();
+  m_bProvidesJoysticks = addonInfo->Type(ADDON::ADDON_PERIPHERALDLL)->GetValue("@provides_joysticks").asBoolean();
+  m_bProvidesButtonMaps = addonInfo->Type(ADDON::ADDON_PERIPHERALDLL)->GetValue("@provides_buttonmaps").asBoolean();
 
   ResetProperties();
 }
@@ -90,7 +89,7 @@ CPeripheralAddon::~CPeripheralAddon(void)
   // only clear buttonMaps but don't delete them as they are owned by a CAddonJoystickInputHandling instance
   m_buttonMaps.clear();
 
-  CAddonDll::DestroyInstance(ID());
+  DestroyInstance();
 }
 
 void CPeripheralAddon::ResetProperties(void)
@@ -107,23 +106,9 @@ void CPeripheralAddon::ResetProperties(void)
   m_struct.toKodi.TriggerScan = trigger_scan;
   m_struct.toKodi.RefreshButtonMaps = refresh_button_maps;
   m_struct.toKodi.FeatureCount = feature_count;
-
-  m_apiVersion = ADDON::AddonVersion("0.0.0");
 }
 
-ADDON::AddonPtr CPeripheralAddon::GetRunningInstance(void) const
-{
-  PeripheralBusAddonPtr addonBus = std::static_pointer_cast<CPeripheralBusAddon>(g_peripherals.GetBusByType(PERIPHERAL_BUS_ADDON));
-  if (addonBus)
-  {
-    ADDON::AddonPtr peripheralAddon;
-    if (addonBus->GetAddon(ID(), peripheralAddon))
-      return peripheralAddon;
-  }
-  return CAddon::GetRunningInstance();
-}
-
-ADDON_STATUS CPeripheralAddon::CreateAddon(void)
+bool CPeripheralAddon::CreateAddon(void)
 {
   // Reset all properties to defaults
   ResetProperties();
@@ -134,17 +119,16 @@ ADDON_STATUS CPeripheralAddon::CreateAddon(void)
 
   // Initialise the add-on
   CLog::Log(LOGDEBUG, "PERIPHERAL - %s - creating peripheral add-on instance '%s'", __FUNCTION__, Name().c_str());
-  ADDON_STATUS status = CAddonDll::CreateInstance(ADDON_INSTANCE_PERIPHERAL, ID(), &m_struct, reinterpret_cast<KODI_HANDLE*>(&m_addonInstance));
-  if (status == ADDON_STATUS_OK)
+  if (CreateInstance(ADDON_INSTANCE_PERIPHERAL, &m_struct, reinterpret_cast<KODI_HANDLE*>(&m_addonInstance)))
   {
     if (!GetAddonProperties())
     {
-      CAddonDll::DestroyInstance(ID());
-      status = ADDON_STATUS_PERMANENT_FAILURE;
+      DestroyInstance();
+      return false;
     }
   }
 
-  return status;
+  return true;
 }
 
 bool CPeripheralAddon::GetAddonProperties(void)

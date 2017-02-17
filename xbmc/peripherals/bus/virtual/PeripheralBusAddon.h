@@ -43,11 +43,6 @@ namespace PERIPHERALS
     void UpdateAddons(void);
 
     /*!
-     * \brief Get peripheral add-on by ID
-     */
-    bool GetAddon(const std::string &strId, ADDON::AddonPtr &addon) const;
-
-    /*!
     * \brief Get peripheral add-on that can provide button maps
     */
     bool GetAddonWithButtonMap(ADDON::AddonInfoPtr &addon) const;
