@@ -667,48 +667,6 @@
 			<key>CFBundleTypeRole</key>
 			<string>Viewer</string>
 		</dict>
-		<dict>
-			<key>CFBundleTypeExtensions</key>
-			<array>
-				<string>rec</string>
-			</array>
-			<key>CFBundleTypeName</key>
-			<string>Topfield PVR Recording</string>
-			<key>CFBundleTypeRole</key>
-			<string>Viewer</string>
-		</dict>
-		<dict>
-			<key>CFBundleTypeExtensions</key>
-			<array>
-				<string>nsv</string>
-			</array>
-			<key>CFBundleTypeMIMETypes</key>
-			<array>
-				<string>video/nsv</string>
-			</array>
-			<key>CFBundleTypeName</key>
-			<string>Nullsoft Streaming Video</string>
-			<key>CFBundleTypeRole</key>
-			<string>Viewer</string>
-			<key>LSTypeIsPackage</key>
-			<false/>
-			<key>NSPersistentStoreTypeKey</key>
-			<string>Binary</string>
-		</dict>
-		<dict>
-			<key>CFBundleTypeExtensions</key>
-			<array>
-				<string>nuv</string>
-			</array>
-			<key>CFBundleTypeName</key>
-			<string>NuppleVideo File</string>
-			<key>CFBundleTypeRole</key>
-			<string>Viewer</string>
-			<key>LSTypeIsPackage</key>
-			<false/>
-			<key>NSPersistentStoreTypeKey</key>
-			<string>Binary</string>
-		</dict>
 	</array>
 	<key>NSServices</key>
 	<array>
