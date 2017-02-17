@@ -226,10 +226,8 @@ bool CPVRRecording::Delete(void)
 {
   PVR_ERROR error = g_PVRClients->DeleteRecording(*this);
   if (error != PVR_ERROR_NO_ERROR)
-  {
-    DisplayError(error);
     return false;
-  }
+
   OnDelete();
   return true;
 }
@@ -252,10 +250,7 @@ bool CPVRRecording::Undelete(void)
 {
   PVR_ERROR error = g_PVRClients->UndeleteRecording(*this);
   if (error != PVR_ERROR_NO_ERROR)
-  {
-    DisplayError(error);
     return false;
-  }
 
   return true;
 }
@@ -265,10 +260,7 @@ bool CPVRRecording::Rename(const std::string &strNewName)
   m_strTitle = StringUtils::Format("%s", strNewName.c_str());
   PVR_ERROR error = g_PVRClients->RenameRecording(*this);
   if (error != PVR_ERROR_NO_ERROR)
-  {
-    DisplayError(error);
     return false;
-  }
 
   return true;
 }
@@ -278,10 +270,7 @@ bool CPVRRecording::SetPlayCount(int count)
   PVR_ERROR error;
   if (g_PVRClients->SupportsRecordingPlayCount(m_iClientId) &&
       !g_PVRClients->SetRecordingPlayCount(*this, count, &error))
-  {
-    DisplayError(error);
     return false;
-  }
 
   return CVideoInfoTag::SetPlayCount(count);
 }
@@ -291,10 +280,7 @@ bool CPVRRecording::IncrementPlayCount()
   PVR_ERROR error;
   if (g_PVRClients->SupportsRecordingPlayCount(m_iClientId) &&
       !g_PVRClients->SetRecordingPlayCount(*this, CVideoInfoTag::GetPlayCount(), &error))
-  {
-    DisplayError(error);
     return false;
-  }
 
   return CVideoInfoTag::IncrementPlayCount();
 }
@@ -304,10 +290,7 @@ bool CPVRRecording::SetResumePoint(const CBookmark &resumePoint)
   PVR_ERROR error;
   if (g_PVRClients->SupportsLastPlayedPosition(m_iClientId) &&
       !g_PVRClients->SetRecordingLastPlayedPosition(*this, lrint(resumePoint.timeInSeconds), &error))
-  {
-    DisplayError(error);
     return false;
-  }
 
   return CVideoInfoTag::SetResumePoint(resumePoint);
 }
@@ -317,10 +300,7 @@ bool CPVRRecording::SetResumePoint(double timeInSeconds, double totalTimeInSecon
   PVR_ERROR error;
   if (g_PVRClients->SupportsLastPlayedPosition(m_iClientId) &&
       !g_PVRClients->SetRecordingLastPlayedPosition(*this, lrint(timeInSeconds), &error))
-  {
-    DisplayError(error);
     return false;
-  }
 
   return CVideoInfoTag::SetResumePoint(timeInSeconds, totalTimeInSeconds, playerState);
 }
@@ -330,11 +310,7 @@ CBookmark CPVRRecording::GetResumePoint() const
   if (g_PVRClients->SupportsLastPlayedPosition(m_iClientId))
   {
     int pos = g_PVRClients->GetRecordingLastPlayedPosition(*this);
-    if (pos < 0)
-    {
-      DisplayError(PVR_ERROR_SERVER_ERROR);
-    }
-    else
+    if (pos >= 0)
     {
       CBookmark resumePoint(CVideoInfoTag::GetResumePoint());
       resumePoint.timeInSeconds = pos;
@@ -372,18 +348,6 @@ std::vector<PVR_EDL_ENTRY> CPVRRecording::GetEdl() const
     return g_PVRClients->GetRecordingEdl(*this);
   }
   return std::vector<PVR_EDL_ENTRY>();
-}
-
-void CPVRRecording::DisplayError(PVR_ERROR err) const
-{
-  if (err == PVR_ERROR_SERVER_ERROR)
-    CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19111}); /* print info dialog "Server error!" */
-  else if (err == PVR_ERROR_REJECTED)
-    CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19068}); /* print info dialog "Couldn't delete recording!" */
-  else
-    CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19147}); /* print info dialog "Unknown error!" */
-
-  return;
 }
 
 void CPVRRecording::Update(const CPVRRecording &tag)

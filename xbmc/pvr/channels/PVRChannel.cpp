@@ -376,6 +376,24 @@ bool CPVRChannel::SetLastWatched(time_t iLastWatched)
   return false;
 }
 
+bool CPVRChannel::SetWasPlayingOnLastQuit(bool bSet)
+{
+  const CPVRDatabasePtr database(g_PVRManager.GetTVDatabase());
+  if (database)
+    return database->SetWasPlayingOnLastQuit(*this, bSet);
+
+  return false;
+}
+
+bool CPVRChannel::SetWasPlayingOnLastQuit(bool bSet, bool& bWasPlaying)
+{
+  const CPVRDatabasePtr database(g_PVRManager.GetTVDatabase());
+  if (database)
+    return database->SetWasPlayingOnLastQuit(*this, bSet, bWasPlaying);
+
+  return false;
+}
+
 bool CPVRChannel::IsEmpty() const
 {
   CSingleLock lock(m_critSection);

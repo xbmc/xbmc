@@ -21,6 +21,7 @@
 #include "PVROperations.h"
 #include "messaging/ApplicationMessenger.h"
 
+#include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/channels/PVRChannel.h"
@@ -227,7 +228,7 @@ JSONRPC_STATUS CPVROperations::Record(const std::string &method, ITransportLayer
 
   if (toggle)
   {
-    if (!g_PVRManager.ToggleRecordingOnChannel(pChannel->ChannelID()))
+    if (!CPVRGUIActions::GetInstance().SetRecordingOnChannel(pChannel, pChannel->IsRecording()))
       return FailedToExecute;
   }
 
@@ -239,9 +240,7 @@ JSONRPC_STATUS CPVROperations::Scan(const std::string &method, ITransportLayer *
   if (!g_PVRManager.IsStarted())
     return FailedToExecute;
 
-  if (!g_PVRManager.IsRunningChannelScan())
-    g_PVRManager.StartChannelScan();
-
+  CPVRGUIActions::GetInstance().StartChannelScan();
   return ACK;
 }
 
@@ -261,7 +260,7 @@ JSONRPC_STATUS CPVROperations::GetPropertyValue(const std::string &property, CVa
   else if (property == "scanning")
   {
     if (started)
-      result = g_PVRManager.IsRunningChannelScan();
+      result = CPVRGUIActions::GetInstance().IsRunningChannelScan();
     else
       result = false;
   }
@@ -345,7 +344,7 @@ JSONRPC_STATUS CPVROperations::AddTimer(const std::string &method, ITransportLay
   CPVRTimerInfoTagPtr newTimer = CPVRTimerInfoTag::CreateFromEpg(epgTag, parameterObject["timerrule"].asBoolean(false));
   if (newTimer)
   {
-    if (g_PVRTimers->AddTimer(newTimer))
+    if (CPVRGUIActions::GetInstance().AddTimer(newTimer))
       return ACK;
   }
   return FailedToExecute;
@@ -398,7 +397,7 @@ JSONRPC_STATUS CPVROperations::ToggleTimer(const std::string &method, ITransport
     if (!timer)
       return InvalidParams;
 
-    sentOkay = g_PVRTimers->AddTimer(timer);
+    sentOkay = CPVRGUIActions::GetInstance().AddTimer(timer);
   }
 
   if (sentOkay)

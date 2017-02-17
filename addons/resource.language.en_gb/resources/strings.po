@@ -1179,6 +1179,7 @@ msgid "Fetching CD information"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogFileBrowser.cpp
+#: xbmc/pvr/PVRGUIActions.cpp
 #: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
 #: xbmc/music/windows/GUIWindowMusicBase.cpp
 #: xbmc/video/windows/GUIWindowVideoNav.cpp
@@ -3631,7 +3632,7 @@ msgstr ""
 #empty strings from id 824 to 827
 
 #. Text for notification that a timer rule has been deleted
-#: xbmc/pvr/timers/PVRTimers.cpp
+#: xbmc/pvr/timers/PVRTimerInfoTag.cpp
 msgctxt "#828"
 msgid "Timer rule deleted"
 msgstr ""
@@ -9016,7 +9017,7 @@ msgstr ""
 #: addons/skin.estuary/xml/SkinSettings.xml:
 #: addons/skin.estuary/xml/Variables.xml
 #: xbmc/pvr/channels/PVRChannelGroupsContainer.cpp
-#: xbmc/pvr/PVRManager.cpp
+#: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19020"
 msgid "TV"
 msgstr ""
@@ -9026,7 +9027,7 @@ msgstr ""
 #: addons/skin.estuary/xml/SkinSettings.xml
 #: addons/skin.estuary/xml/Variables.xml
 #: xbmc/pvr/channels/PVRChannelGroupsContainer.cpp
-#: xbmc/pvr/PVRManager.cpp
+#: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19021"
 msgid "Radio"
 msgstr ""
@@ -9114,12 +9115,10 @@ msgstr ""
 
 #. generic 'information' label used in different places, like labels for message box headers
 #: xbmc/event/windows/GUIWindowEventLog.cpp
-#: xbmc/pvr/addons/PVRClients.cpp
+#: xbmc/pvr/dialogs/GUIDialogPVRChannelManager.cpp
 #: xbmc/pvr/dialogs/GUIDialogPVRGroupManager.cpp
 #: xbmc/pvr/dialogs/GUIDialogPVRGuideInfo.cpp
-#: xbmc/pvr/recordings/PVRRecording.cpp
 #: xbmc/pvr/timers/PVRTimerInfoTag.cpp
-#: xbmc/pvr/timers/PVRTimers.cpp
 #: xbmc/pvr/windows/GUIWindowPVRTimersBase.cpp
 #: xbmc/pvr/PVRGUIActions.cpp
 #: xbmc/pvr/PVRManager.cpp
@@ -9156,7 +9155,7 @@ msgid "Show signal quality"
 msgstr ""
 
 #. message box text stating that a PVR backend does not support a certain functionality.
-#: xbmc/pvr/addons/PVRClients.cpp
+#: xbmc/pvr/dialogs/GUIDialogPVRChannelManager.cpp
 msgctxt "#19038"
 msgid "Not supported by the PVR backend."
 msgstr ""
@@ -9345,11 +9344,7 @@ msgctxt "#19067"
 msgid "This event is already being recorded."
 msgstr ""
 
-#. error box text stating that a given pvr recording could not be deleted
-#: xbmc/pvr/recording/PVRRecording.cpp
-msgctxt "#19068"
-msgid "This recording couldn't be deleted. Check the log for more information about this message."
-msgstr ""
+#empty string with id 19068
 
 #. Electronic program guide
 #: addons/skin.estuary/xml/Variables.xml
@@ -9452,7 +9447,7 @@ msgstr ""
 
 #. Label for "Instant recording action" setting
 #: system/settings/settings.xml
-#: xbmc/pvr/PVRManager.cpp
+#: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19086"
 msgid "Instant recording action"
 msgstr ""
@@ -9476,19 +9471,19 @@ msgid "Ask what to do"
 msgstr ""
 
 #. Label for "Instant recording action" dialog settings value
-#: xbmc/pvr/PVRManager.cpp
+#: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19090"
 msgid "Record the next %d minutes"
 msgstr ""
 
 #. Label for "Instant recording action" dialog settings value
-#: xbmc/pvr/PVRManager.cpp
+#: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19091"
 msgid "Record current show (%s)"
 msgstr ""
 
 #. Label for "Instant recording action" dialog settings value
-#: xbmc/pvr/PVRManager.cpp
+#: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19092"
 msgid "Record next show (%s)"
 msgstr ""
@@ -9592,7 +9587,7 @@ msgstr ""
 
 #. message box text stating that a timer could not be saved
 #: xbmc/pvr/timers/PVRTimerInfoTag.cpp
-#: xbmc/pvr/timers/PVRTimers.cpp
+#: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19109"
 msgid "Couldn't save timer. Check the log for more information about this message."
 msgstr ""
@@ -9604,8 +9599,7 @@ msgid "An unexpected error occurred. Try again later or check the log for more i
 msgstr ""
 
 #. message box text stating that a PVR backend error occured
-#: xbmc/pvr/addons/PVRClients.cpp
-#: xbmc/pvr/recording/PVRRecording.cpp
+#: xbmc/pvr/PVRGUIActions.cpp
 #: xbmc/pvr/timers/PVRTimerInfoTag.cpp
 msgctxt "#19111"
 msgid "PVR backend error. Check the log for more information about this message."
@@ -9653,7 +9647,7 @@ msgid "Can't use PVR functions while searching."
 msgstr ""
 
 #. channel scan backend selection dialog text
-#: xbmc/pvr/addons/PVRClients.cpp
+#: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19119"
 msgid "On which backend do you want to search?"
 msgstr ""
@@ -9810,11 +9804,7 @@ msgctxt "#19146"
 msgid "Groups"
 msgstr ""
 
-#. message box text stating that a PVR backend does not support a certain functionality.
-#: xbmc/pvr/recording/PVRRecording.cpp
-msgctxt "#19147"
-msgid "The PVR backend does not support this action. Check the log for more information about this message."
-msgstr ""
+#empty string with id 191407
 
 #: addons/skin.estuary/xml/DialogPVRRadioRDSInfo.xml
 #: addons/skin.estuary/xml/DialogPVRGuideSearch.xml
@@ -9910,7 +9900,7 @@ msgid "Recordings"
 msgstr ""
 
 #. error box text stating that recording could not be started
-#: xbmc/pvr/PVRManager.cpp
+#: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19164"
 msgid "Can't start recording. Check the log for more information about this message."
 msgstr ""
@@ -9920,8 +9910,10 @@ msgctxt "#19165"
 msgid "Switch"
 msgstr ""
 
-#. label for header of system information's PVR section
+#. label for header of misc PVR GUI elements
 #: xbmc/windows/GUIWindowSystemInfo.cpp
+#: xbmc/pvr/PVRManager.cpp
+#: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19166"
 msgid "PVR information"
 msgstr ""
@@ -10076,13 +10068,13 @@ msgid "PVR service"
 msgstr ""
 
 #. error message box text stating that none of the available pvr clients does support channel scanning
-#: xbmc/pvr/addons/PVRClients.cpp
+#: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19192"
 msgid "None of the connected PVR backends supports scanning for channels."
 msgstr ""
 
 #. error message box text stating that a given pvr channel could not be played
-#: xbmc/pvr/addons/PVRClients.cpp
+#: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19193"
 msgid "The channel scan can't be started. Check the log for more information about this message."
 msgstr ""
@@ -10099,7 +10091,7 @@ msgid "Client actions"
 msgstr ""
 
 #. value for "pvr client specific actions" dialog headers
-#: xbmc/pvr/addons/PVRClients.cpp
+#: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19196"
 msgid "PVR client specific actions"
 msgstr ""
@@ -10208,7 +10200,7 @@ msgid "Enter a valid URL for the new channel"
 msgstr ""
 
 #. message box text stating that a pvr backend does not support timers
-#: xbmc/pvr/timers/PVRTimers.cpp
+#: xbmc/pvr/timers/PVRGUIActions.cpp
 #: xbmc/pvr/windows/GUIWindowsPVRTimersBase.cpp
 msgctxt "#19215"
 msgid "The PVR backend does not support timers."
@@ -10482,27 +10474,21 @@ msgid "Change PIN"
 msgstr ""
 
 #. generic 'parental control enter pin' label
-#: xbmc/pvr/dialogs/GUIDialogPVRChannelManager.cpp
-#: xbmc/pvr/PVRManager.cpp
-#: xbmc/settings/SettingConditions.cpp
+#: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19262"
 msgid "Parental control. Enter PIN:"
 msgstr ""
 
-#. label for 'parental control pin' verification dialog
-#: xbmc/pvr/PVRManager.cpp
-msgctxt "#19263"
-msgid "Locked channel. Enter PIN:"
-msgstr ""
+# empty string with id 19263
 
 #. label for 'incorrect pin' error dialog header
-#: xbmc/pvr/PVRManager.cpp
+#: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19264"
 msgid "Incorrect PIN"
 msgstr ""
 
 #. label for 'incorrect pin' error dialog text
-#: xbmc/pvr/PVRManager.cpp
+#: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19265"
 msgid "The entered PIN was incorrect."
 msgstr ""
@@ -11270,23 +11256,7 @@ msgctxt "#19687"
 msgid "Play recording"
 msgstr ""
 
-#. label for 'scanning for pvr services' dialog header
-#: xbmc/addons/PVRClient.cpp
-msgctxt "#19688"
-msgid "Scanning for PVR services"
-msgstr ""
-
-#. label for 'scanning for pvr services' dialog text
-#: xbmc/addons/PVRClient.cpp
-msgctxt "#19689"
-msgid "%s service found at %s"
-msgstr ""
-
-#. label for 'scanning for pvr services' dialog text
-#: xbmc/addons/PVRClient.cpp
-msgctxt "#19690"
-msgid "Do you want to use this service?"
-msgstr ""
+#empty strings from id 19688 to 19690
 
 #. Text for shutdown confirmation dialog.
 #: xbmc/pvr/PVRManager.cpp
