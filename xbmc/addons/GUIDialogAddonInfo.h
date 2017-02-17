@@ -77,6 +77,13 @@ private:
    */
   bool PromptIfDependency(int heading, int line2);
 
+  /*! \brief check if the add-on is a system addon, and if so prompt the user
+   \param heading the label for the heading of the prompt dialog
+   \param line2 the action that could not be completed.
+   \return true if prompted, false otherwise.
+   */
+  bool PromptIfSystem(int heading, int line2);
+
   CFileItemPtr m_item;
   ADDON::AddonPtr m_localAddon;
   bool m_addonEnabled;

@@ -14705,7 +14705,10 @@ msgctxt "#24083"
 msgid "Information libraries"
 msgstr ""
 
-#empty string with id 24084
+#: xbmc/addons/GUIDialogAddonInfo.cpp
+msgctxt "#24084"
+msgid "%s is a system add-on"
+msgstr ""
 
 #. Used as a text in the progress dialog when installing an add-on
 #: xbmc/addons/AddonInstaller.cpp

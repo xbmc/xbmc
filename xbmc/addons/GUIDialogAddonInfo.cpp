@@ -402,6 +402,21 @@ bool CGUIDialogAddonInfo::CanUse() const
     m_localAddon->Type() == ADDON_RESOURCE_UISOUNDS);
 }
 
+bool CGUIDialogAddonInfo::PromptIfSystem(int heading, int line2)
+{
+  if (!m_localAddon)
+    return false;
+
+  if (CAddonMgr::GetInstance().IsSystemAddon(m_localAddon->ID()))
+  {
+    std::string line0 = StringUtils::Format(g_localizeStrings.Get(24084).c_str(), m_localAddon->Name().c_str());
+    std::string line1 = "";
+    CGUIDialogOK::ShowAndGetInput(CVariant{heading}, CVariant{std::move(line0)}, CVariant{std::move(line1)}, CVariant{line2});
+    return true;
+  }
+  return false;
+}
+
 bool CGUIDialogAddonInfo::PromptIfDependency(int heading, int line2)
 {
   if (!m_localAddon)
@@ -436,6 +451,10 @@ void CGUIDialogAddonInfo::OnUninstall()
   if (!g_passwordManager.CheckMenuLock(WINDOW_ADDON_BROWSER))
     return;
 
+  // ensure the addon is not a system addon
+  if (PromptIfSystem(24037, 24047))
+    return;
+
   // ensure the addon is not a dependency of other installed addons
   if (PromptIfDependency(24037, 24047))
     return;
@@ -463,6 +482,9 @@ void CGUIDialogAddonInfo::OnEnableDisable()
 
   if (m_addonEnabled)
   {
+    if (PromptIfSystem(24075, 24091))
+      return; //system. can't disable
+
     if (PromptIfDependency(24075, 24091))
       return; //required. can't disable
 
