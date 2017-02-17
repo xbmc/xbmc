@@ -92,18 +92,6 @@ void CMusicInfoScanner::Process()
   ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "OnScanStarted");
   try
   {
-    if (m_bClean)
-    {
-      CleanDatabase(false);
-      m_bRunning = false;
-
-      return;
-    }
-
-    unsigned int tick = XbmcThreads::SystemClockMillis();
-
-    m_musicDatabase.Open();
-
     if (m_showDialog && !CServiceBroker::GetSettings().GetBool(CSettings::SETTING_MUSICLIBRARY_BACKGROUNDUPDATE))
     {
       CGUIDialogExtendedProgressBar* dialog =
@@ -112,8 +100,18 @@ void CMusicInfoScanner::Process()
         m_handle = dialog->GetHandle(g_localizeStrings.Get(314));
     }
 
-    m_bClean = g_advancedSettings.m_bMusicLibraryCleanOnUpdate;
+    // check if we only need to perform a cleaning
+    if (m_bClean && m_pathsToScan.empty())
+    {
+      CleanDatabase(false);
+      m_handle = NULL;
+      m_bRunning = false;
 
+      return;
+    }
+    
+    unsigned int tick = XbmcThreads::SystemClockMillis();
+    m_musicDatabase.Open();
     m_bCanInterrupt = true;
 
     if (m_scanType == 0) // load info from files
@@ -287,7 +285,8 @@ void CMusicInfoScanner::Start(const std::string& strDirectory, int flags)
   }
   else
     m_pathsToScan.insert(strDirectory);
-  m_bClean = false;
+  
+  m_bClean = g_advancedSettings.m_bMusicLibraryCleanOnUpdate;
 
   m_scanType = 0;
   Create();
