@@ -265,6 +265,8 @@
 		6838CF821D6665510057F17B /* DeadzoneFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6838CF7F1D6665510057F17B /* DeadzoneFilter.cpp */; };
 		6861B9EA1CC248EE00F62655 /* DriverReceiving.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6861B9E81CC248EE00F62655 /* DriverReceiving.cpp */; };
 		6861B9EB1CC248EE00F62655 /* DriverReceiving.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6861B9E81CC248EE00F62655 /* DriverReceiving.cpp */; };
+		686668231E54091200B5C990 /* KeymapActionMap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 686668211E54091200B5C990 /* KeymapActionMap.cpp */; };
+		686668241E54091200B5C990 /* KeymapActionMap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 686668211E54091200B5C990 /* KeymapActionMap.cpp */; };
 		68AE5BA51C92412900C4D527 /* AddonCallbacksPeripheral.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 68AE5BA31C92412900C4D527 /* AddonCallbacksPeripheral.cpp */; };
 		68AE5BA61C92412900C4D527 /* AddonCallbacksPeripheral.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 68AE5BA31C92412900C4D527 /* AddonCallbacksPeripheral.cpp */; };
 		68AE5BBD1C9241DF00C4D527 /* DefaultJoystick.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 68AE5BAC1C9241DF00C4D527 /* DefaultJoystick.cpp */; };
@@ -2784,6 +2786,10 @@
 		6861B9E91CC248EE00F62655 /* DriverReceiving.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DriverReceiving.h; path = joysticks/generic/DriverReceiving.h; sourceTree = "<group>"; };
 		6861B9EC1CC248F600F62655 /* IDriverReceiver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IDriverReceiver.h; path = joysticks/IDriverReceiver.h; sourceTree = "<group>"; };
 		6861B9ED1CC248F600F62655 /* IInputReceiver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IInputReceiver.h; path = joysticks/IInputReceiver.h; sourceTree = "<group>"; };
+		6866681F1E54091200B5C990 /* IActionMap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IActionMap.h; path = keyboard/IActionMap.h; sourceTree = "<group>"; };
+		686668201E54091200B5C990 /* IKeyboardHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IKeyboardHandler.h; path = keyboard/IKeyboardHandler.h; sourceTree = "<group>"; };
+		686668211E54091200B5C990 /* KeymapActionMap.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = KeymapActionMap.cpp; path = keyboard/KeymapActionMap.cpp; sourceTree = "<group>"; };
+		686668221E54091200B5C990 /* KeymapActionMap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = KeymapActionMap.h; path = keyboard/KeymapActionMap.h; sourceTree = "<group>"; };
 		68AE5BA01C923E5300C4D527 /* kodi_vfs_utils.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = kodi_vfs_utils.hpp; path = "kodi-addon-dev-kit/include/kodi/kodi_vfs_utils.hpp"; sourceTree = "<group>"; };
 		68AE5BA31C92412900C4D527 /* AddonCallbacksPeripheral.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonCallbacksPeripheral.cpp; path = addons/binary/interfaces/api1/Peripheral/AddonCallbacksPeripheral.cpp; sourceTree = "<group>"; };
 		68AE5BA41C92412900C4D527 /* AddonCallbacksPeripheral.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonCallbacksPeripheral.h; path = addons/binary/interfaces/api1/Peripheral/AddonCallbacksPeripheral.h; sourceTree = "<group>"; };
@@ -5491,6 +5497,7 @@
 			isa = PBXGroup;
 			children = (
 				68AE5BAB1C92419500C4D527 /* joysticks */,
+				6866681E1E54090000B5C990 /* keyboard */,
 				E4991332174E5E5C00741B6D /* touch */,
 				18B7C8CB12942546009E7A26 /* ButtonTranslator.cpp */,
 				18B7C8CC12942546009E7A26 /* ButtonTranslator.h */,
@@ -6169,6 +6176,17 @@
 				680E23B21DD3D65200D2B766 /* GUIDialogButtonCapture.h */,
 			);
 			name = dialogs;
+			sourceTree = "<group>";
+		};
+		6866681E1E54090000B5C990 /* keyboard */ = {
+			isa = PBXGroup;
+			children = (
+				6866681F1E54091200B5C990 /* IActionMap.h */,
+				686668201E54091200B5C990 /* IKeyboardHandler.h */,
+				686668211E54091200B5C990 /* KeymapActionMap.cpp */,
+				686668221E54091200B5C990 /* KeymapActionMap.h */,
+			);
+			name = keyboard;
 			sourceTree = "<group>";
 		};
 		68AE5BA21C92410300C4D527 /* Peripheral */ = {
@@ -10746,6 +10764,7 @@
 				DF56EF241A798A5E00CAAEFB /* HttpRangeUtils.cpp in Sources */,
 				7C140992183224B8009F9411 /* SettingCategoryAccess.cpp in Sources */,
 				7C140995183224B8009F9411 /* SettingConditions.cpp in Sources */,
+				686668231E54091200B5C990 /* KeymapActionMap.cpp in Sources */,
 				7C140998183224B8009F9411 /* SettingDependency.cpp in Sources */,
 				2AC7EB5B1C21F6BA00BDAA95 /* GUIWindowPVRTimersBase.cpp in Sources */,
 				7C14099B183224B8009F9411 /* SettingRequirement.cpp in Sources */,
@@ -11225,6 +11244,7 @@
 				E499128E174E5D9900741B6D /* DirectoryNodeYearAlbum.cpp in Sources */,
 				E499128F174E5D9900741B6D /* DirectoryNodeYearSong.cpp in Sources */,
 				E4991290174E5D9900741B6D /* QueryParams.cpp in Sources */,
+				686668241E54091200B5C990 /* KeymapActionMap.cpp in Sources */,
 				E4991291174E5D9900741B6D /* MusicDatabaseDirectory.cpp in Sources */,
 				E4991292174E5D9900741B6D /* MusicDatabaseFile.cpp in Sources */,
 				E4991293174E5D9900741B6D /* MusicFileDirectory.cpp in Sources */,
