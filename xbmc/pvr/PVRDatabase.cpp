@@ -98,7 +98,7 @@ void CPVRDatabase::CreateTables()
 void CPVRDatabase::CreateAnalytics()
 {
   CLog::Log(LOGINFO, "%s - creating indices", __FUNCTION__);
-  m_pDS->exec("CREATE UNIQUE INDEX idx_channels_iClientId_iUniqueId on channels(iClientId, iUniqueId);");
+  m_pDS->exec("CREATE UNIQUE INDEX idx_channels_iClientId_iUniqueId_bIsRadio on channels(iClientId, iUniqueId, bIsRadio);");
   m_pDS->exec("CREATE INDEX idx_channelgroups_bIsRadio on channelgroups(bIsRadio);");
   m_pDS->exec("CREATE UNIQUE INDEX idx_idGroup_idChannel on map_channelgroups_channels(idGroup, idChannel);");
 }
@@ -144,6 +144,9 @@ void CPVRDatabase::UpdateTables(int iVersion)
 
   if (iVersion < 29)
     m_pDS->exec("ALTER TABLE channelgroups ADD iPosition integer");
+
+  if (iVersion < 30)
+    m_pDS->exec("DROP INDEX IF EXISTS idx_channels_iClientId_iUniqueId");
 }
 
 /********** Channel methods **********/
@@ -511,7 +514,7 @@ bool CPVRDatabase::PersistChannels(CPVRChannelGroup &group)
     std::string strValue;
     for (PVR_CHANNEL_GROUP_MEMBERS::iterator it = group.m_members.begin(); it != group.m_members.end(); ++it)
     {
-      strQuery = PrepareSQL("iUniqueId = %u AND iClientId = %u", it->second.channel->UniqueID(), it->second.channel->ClientID());
+      strQuery = PrepareSQL("iUniqueId = %u AND iClientId = %u AND bIsRadio = %u", it->second.channel->UniqueID(), it->second.channel->ClientID(), it->second.channel->IsRadio());
       strValue = GetSingleValue("channels", "idChannel", strQuery);
       if (!strValue.empty() && StringUtils::IsInteger(strValue))
         it->second.channel->SetChannelID(atoi(strValue.c_str()));
