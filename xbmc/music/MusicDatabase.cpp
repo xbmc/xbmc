@@ -4254,19 +4254,25 @@ bool CMusicDatabase::GetSongsFullByWhere(const std::string &baseDir, const Filte
     // Count number of songs that satisfy selection criteria
     total = (int)strtol(GetSingleValue("SELECT COUNT(1) FROM songview " + strSQLExtra, m_pDS).c_str(), NULL, 10);
 
-    // Apply the limiting directly here if there's no special sorting but limiting
-    bool limited = extFilter.limit.empty() && sortDescription.sortBy == SortByNone &&
+    // Apply any limiting directly in SQL if there is either no special sorting or random sort
+    // When limited, random sort is also applied in SQL
+    bool limitedInSQL = extFilter.limit.empty() && 
+      (sortDescription.sortBy == SortByNone || sortDescription.sortBy == SortByRandom) &&
       (sortDescription.limitStart > 0 || sortDescription.limitEnd > 0);
-    if (limited)
+    if (limitedInSQL)
+    {
+      if (sortDescription.sortBy == SortByRandom)
+        strSQLExtra += PrepareSQL(" ORDER BY RANDOM()");
       strSQLExtra += DatabaseUtils::BuildLimitClause(sortDescription.limitEnd, sortDescription.limitStart);
+    }
 
     std::string strSQL;
     if (artistData)
     { // Get data from song and song_artist tables to fully populate songs with artists
       // All songs now have at least one artist so inner join sufficient
       // Need guaranteed ordering for dataset processing to extract songs
-      if (limited)
-        //Apply where clause and limits to songview, then join as multiple records in result set per song
+      if (limitedInSQL)
+        //Apply where clause, limits and random order to songview, then join as multiple records in result set per song
         strSQL = "SELECT sv.*, songartistview.* "
           "FROM (SELECT songview.* FROM songview " + strSQLExtra + ") AS sv "
           "JOIN songartistview ON songartistview.idsong = sv.idsong ";
@@ -4359,8 +4365,9 @@ bool CMusicDatabase::GetSongsFullByWhere(const std::string &baseDir, const Filte
     // cleanup
     m_pDS->close();
 
-    // When have join with songartistview apply sort (and limit) to items rather than dataset
-    if (artistData && sortDescription.sortBy != SortByNone)
+    // Finally do any sorting in items list we have not been able to do before in SQL or dataset,
+    // that is when have join with songartistview and sorting other than random with limit
+    if (artistData && sortDescription.sortBy != SortByNone && !(limitedInSQL && sortDescription.sortBy == SortByRandom))
       items.Sort(sortDescription);
 
     if (cueSheetData)
