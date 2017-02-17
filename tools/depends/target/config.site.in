@@ -5,9 +5,9 @@ host_alias=@use_host@
 fi
 
 LD="@LD@"
-CC="@CC@"
-CXX="@CXX@"
-CPP="@CPP@"
+CC="@CCACHE@ @CC@"
+CXX="@CCACHE@ @CXX@"
+CPP="@CCACHE@ @CPP@"
 AR="@AR@"
 AS="@AS@"
 NM="@NM@"
@@ -16,8 +16,8 @@ RANLIB="@RANLIB@"
 OBJDUMP="@OBJDUMP@"
 
 if test "@platform_os@" = "ios" ; then
-  export AS="@prefix@/@tool_dir@/bin/gas-preprocessor.pl @CC@ -arch @use_cpu@"
-  export CCAS="--tag CC @prefix@/@tool_dir@/bin/gas-preprocessor.pl @CC@ -arch @use_cpu@"
+  export AS="@prefix@/@tool_dir@/bin/gas-preprocessor.pl @CCACHE@ @CC@ -arch @use_cpu@"
+  export CCAS="--tag CC @prefix@/@tool_dir@/bin/gas-preprocessor.pl @CCACHE@ @CC@ -arch @use_cpu@"
 fi
 
 CFLAGS="@platform_cflags@ @platform_includes@ -isystem @prefix@/@deps_dir@/include $CFLAGS"
