@@ -81,6 +81,8 @@
 			<array>
 				<string>ape</string>
 			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>audio.icns</string>
 			<key>CFBundleTypeName</key>
 			<string>Monkey's Audio Lossless Audio Compression</string>
 			<key>CFBundleTypeRole</key>
