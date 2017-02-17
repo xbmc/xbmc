@@ -149,7 +149,12 @@ void CGUIDialogPVRTimerSettings::SetTimer(const CPVRTimerInfoTagPtr &timer)
   m_iPriority           = m_timerInfoTag->m_iPriority;
   m_iLifetime           = m_timerInfoTag->m_iLifetime;
   m_iMaxRecordings      = m_timerInfoTag->m_iMaxRecordings;
-  m_strDirectory        = m_timerInfoTag->m_strDirectory;
+
+  if (m_bIsNewTimer && m_timerInfoTag->m_strDirectory.empty() && m_timerType->SupportsRecordingFolders())
+    m_strDirectory = m_strTitle;
+  else
+    m_strDirectory = m_timerInfoTag->m_strDirectory;
+
   m_iRecordingGroup     = m_timerInfoTag->m_iRecordingGroup;
 
   InitializeChannelsList();
