@@ -299,6 +299,8 @@
 			<array>
 				<string>wtv</string>
 			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>movie.icns</string>
 			<key>CFBundleTypeName</key>
 			<string>Windows Recorded TV Show</string>
 			<key>CFBundleTypeRole</key>
