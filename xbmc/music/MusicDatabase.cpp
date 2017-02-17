@@ -192,6 +192,10 @@ void CMusicDatabase::CreateTables()
 
   CLog::Log(LOGINFO, "create cue table");
   m_pDS->exec("CREATE TABLE cue (idPath integer, strFileName text, strCuesheet text)");
+
+  CLog::Log(LOGINFO, "create versiontagscan table");
+  m_pDS->exec("CREATE TABLE versiontagscan (idVersion integer, iNeedsScan integer)");
+  m_pDS->exec(PrepareSQL("INSERT INTO versiontagscan (idVersion, iNeedsScan) values(%i, 0)", GetSchemaVersion()));
 }
 
 void CMusicDatabase::CreateAnalytics()
@@ -4662,8 +4666,6 @@ void CMusicDatabase::UpdateTables(int version)
   if (version < 53)
   {
     m_pDS->exec("ALTER TABLE song ADD dateAdded text");
-    CMediaSettings::GetInstance().SetMusicNeedsUpdate(53);
-    CServiceBroker::GetSettings().Save();
   }
   if (version < 54)
   {
@@ -4958,17 +4960,78 @@ void CMusicDatabase::UpdateTables(int version)
     //Remove temp indices, full analytics for database created later
     m_pDS->exec("DROP INDEX idxSongArtist1 ON song_artist");
     m_pDS->exec("DROP INDEX idxAlbumArtist1 ON album_artist");
-
-    // Prompt for rescan of library to read tags that were not processed by previous versions
-    // and accomodate changes to the way some tags are processed
-    CMediaSettings::GetInstance().SetMusicNeedsUpdate(60);
-    CServiceBroker::GetSettings().Save();
   }
+  if (version < 61)
+  {
+    // Create versiontagscan table
+    m_pDS->exec("CREATE TABLE versiontagscan (idVersion integer, iNeedsScan integer)");
+    m_pDS->exec("INSERT INTO versiontagscan (idVersion, iNeedsScan) values(0, 0)");
+  }
+
+  // Set the version of tag scanning required. 
+  // Not every schema change requires the tags to be rescanned, set to the highest schema version 
+  // that needs this. Forced rescanning (of music files that have not changed since they were 
+  // previously scanned) also accommodates any changes to the way tags are processed 
+  // e.g. read tags that were not processed by previous versions.
+  // The original db version when the tags were scanned, and the minimal db version needed are 
+  // later used to determine if a forced rescan should be prompted
+  
+  // The last schema change needing forced rescanning was 60.
+  // Mostly because of the new tags processed by v17 rather than a schema change.
+  SetMusicNeedsTagScan(60);
+
+  // After all updates, store the original db version. 
+  // This indicates the version of tag processing that was used to populate db
+  SetMusicTagScanVersion(version);
 }
 
 int CMusicDatabase::GetSchemaVersion() const
 {
-  return 60;
+  return 61;
+}
+
+int CMusicDatabase::GetMusicNeedsTagScan()
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return -1;
+    if (NULL == m_pDS.get()) return -1;
+
+    std::string sql = "SELECT * FROM versiontagscan";
+    if (!m_pDS->query(sql)) return -1;
+
+    if (m_pDS->num_rows() != 1)
+    {
+      m_pDS->close();
+      return -1;
+    }
+
+    int idVersion = m_pDS->fv("idVersion").get_asInt();
+    int iNeedsScan = m_pDS->fv("iNeedsScan").get_asInt();
+    m_pDS->close();
+    if (idVersion < iNeedsScan)
+      return idVersion;
+    else
+      return 0;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
+  return -1;
+}
+
+void CMusicDatabase::SetMusicNeedsTagScan(int version)
+{
+  m_pDS->exec(PrepareSQL("UPDATE versiontagscan SET iNeedsScan=%i", version));
+}
+
+void CMusicDatabase::SetMusicTagScanVersion(int version /* = 0 */)
+{
+  if (version == 0)
+    m_pDS->exec(PrepareSQL("UPDATE versiontagscan SET idVersion=%i", GetSchemaVersion()));
+  else
+    m_pDS->exec(PrepareSQL("UPDATE versiontagscan SET idVersion=%i", version));
 }
 
 unsigned int CMusicDatabase::GetSongIDs(const Filter &filter, std::vector<std::pair<int,int> > &songIDs)

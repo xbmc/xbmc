@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2017 Team XBMC
+ *      Copyright (C) 2005-2014 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -18,24 +18,23 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#include <atomic>
 
-#if defined(HAS_LIBAMCODEC)
+class CVideoReferenceClock;
+typedef void (*PUPDATECLOCK)(int NrVBlanks, uint64_t time, void *clock);
 
-#include "video/videosync/VideoSync.h"
-#include "guilib/DispResource.h"
-
-class CVideoSyncAML : public CVideoSync, IDispResource
+class CVideoSync
 {
 public:
-  CVideoSyncAML(CVideoReferenceClock *clock);
-  virtual ~CVideoSyncAML();
-  virtual bool Setup(PUPDATECLOCK func);
-  virtual void Run(std::atomic<bool>& stop);
-  virtual void Cleanup();
-  virtual float GetFps();
-  virtual void OnResetDisplay();
-private:
-  volatile bool m_abort;
+  CVideoSync(void *clock) { m_refClock = clock; };
+  virtual ~CVideoSync() {};
+  virtual bool Setup(PUPDATECLOCK func) = 0;
+  virtual void Run(std::atomic<bool>& stop) = 0;
+  virtual void Cleanup() = 0;
+  virtual float GetFps() = 0;
+  virtual void RefreshChanged() {};
+protected:
+  PUPDATECLOCK UpdateClock;
+  float m_fps;
+  void *m_refClock;
 };
-
-#endif

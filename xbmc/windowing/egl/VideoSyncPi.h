@@ -19,32 +19,24 @@
  *
  */
 
-#if defined(TARGET_WINDOWS)
+#if defined(TARGET_RASPBERRY_PI)
 
-#include "video/videosync/VideoSync.h"
+#include "windowing/VideoSync.h"
 #include "guilib/DispResource.h"
-#include "threads/Event.h"
 
-class CVideoSyncD3D : public CVideoSync, IDispResource
+class CVideoSyncPi : public CVideoSync, IDispResource
 {
 public:
-  CVideoSyncD3D(CVideoReferenceClock *clock) : CVideoSync(clock) {};
-  bool Setup(PUPDATECLOCK func) override;
-  void Run(std::atomic<bool>& stop) override;
-  void Cleanup() override;
-  float GetFps() override;
-  void RefreshChanged() override;
-  // IDispResource overrides
-  void OnLostDisplay() override;
-  void OnResetDisplay() override;
+  CVideoSyncPi(void *clock) : CVideoSync(clock) {};
+  virtual bool Setup(PUPDATECLOCK func);
+  virtual void Run(std::atomic<bool>& stop);
+  virtual void Cleanup();
+  virtual float GetFps();
+  virtual void OnResetDisplay();
+  virtual void RefreshChanged();
 
 private:
-  static std::string GetErrorDescription(HRESULT hr);
-
-  volatile bool m_displayLost;
-  volatile bool m_displayReset;
-  CEvent m_lostEvent;
-  int64_t m_lastUpdateTime;
+  volatile bool m_abort;
 };
 
 #endif

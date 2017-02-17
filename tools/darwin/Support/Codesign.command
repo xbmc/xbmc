@@ -28,7 +28,12 @@ if [ "${PLATFORM_NAME}" == "iphoneos" ] || [ "${PLATFORM_NAME}" == "appletvos" ]
 
   # pull the CFBundleIdentifier out of the built xxx.app
   BUNDLEID=`mdls -raw -name kMDItemCFBundleIdentifier ${CODESIGNING_FOLDER_PATH}`
+  if [ "${BUNDLEID}" == "(null)" ] ; then
+    BUNDLEID=`/usr/libexec/PlistBuddy -c 'Print CFBundleIdentifier' ${CODESIGNING_FOLDER_PATH}/Info.plist`
+  fi
+
   echo "CFBundleIdentifier is ${BUNDLEID}"
+
 
   # Prefer the expanded name, if available.
   CODE_SIGN_IDENTITY_FOR_ITEMS="${EXPANDED_CODE_SIGN_IDENTITY_NAME}"

@@ -19,8 +19,7 @@
  *
  */
 
-#if defined(TARGET_DARWIN_OSX)
-#include "VideoSync.h"
+#include "windowing/VideoSync.h"
 #include "guilib/DispResource.h"
 #include "threads/Event.h"
 
@@ -28,7 +27,7 @@ class CVideoSyncOsx : public CVideoSync, IDispResource
 {
 public:
 
-  CVideoSyncOsx(CVideoReferenceClock *clock) :
+  CVideoSyncOsx(void *clock) :
     CVideoSync(clock),
     m_LastVBlankTime(0),
     m_displayLost(false),
@@ -58,4 +57,3 @@ private:
   CEvent m_lostEvent;
 };
 
-#endif// TARGET_DARWIN_OSX

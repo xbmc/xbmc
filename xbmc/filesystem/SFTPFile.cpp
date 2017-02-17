@@ -111,7 +111,7 @@ CSFTPSession::~CSFTPSession()
   Disconnect();
 }
 
-sftp_file CSFTPSession::CreateFileHande(const std::string &file)
+sftp_file CSFTPSession::CreateFileHandle(const std::string &file)
 {
   if (m_connected)
   {
@@ -603,7 +603,7 @@ bool CSFTPFile::Open(const CURL& url)
   if (m_session)
   {
     m_file = url.GetFileName().c_str();
-    m_sftp_handle = m_session->CreateFileHande(m_file);
+    m_sftp_handle = m_session->CreateFileHandle(m_file);
 
     return (m_sftp_handle != NULL);
   }

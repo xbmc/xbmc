@@ -21,6 +21,7 @@
 
 #include "threads/Thread.h"
 #include "threads/CriticalSection.h"
+#include <memory>
 
 class CVideoSync;
 
@@ -43,7 +44,7 @@ class CVideoReferenceClock : public CThread
     void    UpdateClock(int NrVBlanks, bool CheckMissed);
     double  UpdateInterval() const;
     int64_t TimeOfNextVblank() const;
-    static void CBUpdateClock(int NrVBlanks, uint64_t time, CVideoReferenceClock *clock);
+    static void CBUpdateClock(int NrVBlanks, uint64_t time, void *clock);
 
     int64_t m_CurrTime;          //the current time of the clock when using vblank as clock source
     int64_t m_LastIntTime;       //last interpolated clock value, to make sure the clock doesn't go backwards
@@ -60,5 +61,5 @@ class CVideoReferenceClock : public CThread
 
     CCriticalSection m_CritSection;
 
-    CVideoSync *m_pVideoSync;
+    std::unique_ptr<CVideoSync> m_pVideoSync;
 };

@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2014 Team XBMC
+ *      Copyright (C) 2017 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,21 +19,21 @@
  *
  */
 
-#if defined(TARGET_RASPBERRY_PI)
+#if defined(HAS_LIBAMCODEC)
 
-#include "video/videosync/VideoSync.h"
+#include "windowing/VideoSync.h"
 #include "guilib/DispResource.h"
 
-class CVideoSyncPi : public CVideoSync, IDispResource
+class CVideoSyncAML : public CVideoSync, IDispResource
 {
 public:
-  CVideoSyncPi(CVideoReferenceClock *clock) : CVideoSync(clock) {};
-  virtual bool Setup(PUPDATECLOCK func);
-  virtual void Run(std::atomic<bool>& stop);
-  virtual void Cleanup();
-  virtual float GetFps();
-  virtual void OnResetDisplay();
-
+  CVideoSyncAML(void *clock);
+  virtual ~CVideoSyncAML();
+  virtual bool Setup(PUPDATECLOCK func)override;
+  virtual void Run(std::atomic<bool>& stop)override;
+  virtual void Cleanup()override;
+  virtual float GetFps()override;
+  virtual void OnResetDisplay()override;
 private:
   volatile bool m_abort;
 };

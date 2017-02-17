@@ -37,6 +37,12 @@ AC_ARG_ENABLE([debug],
   [use_debug=$enableval],
   [use_debug=yes])
 
+AC_ARG_ENABLE([ccache],
+  [AS_HELP_STRING([--disable-ccache],
+  [disable ccache])],
+  [use_ccache=no],
+  [use_ccache=yes])
+
 AC_ARG_WITH([toolchain],
   [AS_HELP_STRING([--with-toolchain],
   [specify path to toolchain. Required for android. Defaults to xcode root for darwin, /usr for linux])],
@@ -83,6 +89,12 @@ AC_ARG_ENABLE([gplv3],
   [use_gplv3=$enableval],
   [use_gplv3=yes])
 
+if test "$use_ccache" = "yes"; then
+  AC_CHECK_PROG(HAVE_CCACHE,ccache,"yes","no",)
+  if test "x$HAVE_CCACHE" = "xno" ; then
+    use_ccache=no
+  fi
+fi
 
 AC_CHECK_PROG(HAVE_UNZIP,unzip,"yes","no",)
 if test "x$HAVE_UNZIP" = "xno" ; then
@@ -341,7 +353,7 @@ case $host in
           found_sdk_version=[`$use_xcodebuild -showsdks | grep $target_platform | sort | tail -n 1 | awk '{ print $2}'`]
           use_sdk="${use_sdk:-$found_sdk_version}"
           sdk_name=$target_platform$use_sdk
-          platform_min_version="$target_platform-version-min=5.1"
+          platform_min_version="$target_platform-version-min=6.0"
         fi
 	case $use_sdk in
           4.*);;
@@ -350,6 +362,7 @@ case $host in
           7.*);;
           8.*);;
           9.*);;
+          10.*);;
             *)
               AC_MSG_ERROR(error in configure of --with-sdk=$use_sdk)
             ;;
@@ -489,6 +502,10 @@ if test "x$prefix" = "xNONE"; then
   AC_MSG_ERROR([No prefix path defined. Use for ex: --prefix=/opt/xbmc-depends]);
 fi
 
+if test "$use_ccache" = "yes"; then
+  AC_PATH_TOOL([CCACHE], [ccache],, $PATH_FOR_HOST)
+fi
+
 if test -z $use_tarballs; then
   use_tarballs=$prefix/xbmc-tarballs
 fi
@@ -620,8 +637,10 @@ AC_SUBST(need_libiconv)
 AC_SUBST(use_gplv3)
 AC_SUBST(has_libcrystax)
 AC_SUBST(use_xcode)
+AC_SUBST(use_ccache)
 
 AC_OUTPUT
+echo -e "ccache:\t $use_ccache"
 echo -e "toolchain:\t $use_toolchain"
 echo -e "cpu:\t\t $use_cpu"
 echo -e "host:\t\t $use_host"

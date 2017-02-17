@@ -44,10 +44,18 @@ CONFIG_GUESS=@prefix@/@tool_dir@/share/automake-1.15/config.guess
 
 RPL=@prefix@/@tool_dir@/bin/python @prefix@/@tool_dir@/bin/rpl
 
+USE_CCACHE=@use_ccache@
+
 LD=@LD@
-CC=@CC@
-CXX=@CXX@
-CPP=@CPP@
+ifneq (@use_ccache@,yes)
+  CC=@CC@
+  CXX=@CXX@
+  CPP=@CPP@
+else
+  CC=@CCACHE@ @CC@
+  CXX=@CCACHE@ @CXX@
+  CPP=@CCACHE@ @CPP@
+endif
 AR=@AR@
 RANLIB=@RANLIB@
 AS=@AS@
@@ -67,8 +75,13 @@ ifneq (@use_build_toolchain@,)
   PATH:=@use_build_toolchain@/bin:@use_build_toolchain@/usr/bin:$(PATH)
 endif
 LD_FOR_BUILD=@LD_FOR_BUILD@
-CC_FOR_BUILD=@CC_FOR_BUILD@
-CXX_FOR_BUILD=@CXX_FOR_BUILD@
+ifneq (@use_ccache@,yes)
+  CC_FOR_BUILD=@CC_FOR_BUILD@
+  CXX_FOR_BUILD=@CXX_FOR_BUILD@
+else
+  CC_FOR_BUILD=@CCACHE@ @CC_FOR_BUILD@
+  CXX_FOR_BUILD=@CCACHE@ @CXX_FOR_BUILD@
+endif
 AR_FOR_BUILD=@AR_FOR_BUILD@
 RANLIB_FOR_BUILD=@RANLIB_FOR_BUILD@
 AS_FOR_BUILD=@AS_FOR_BUILD@

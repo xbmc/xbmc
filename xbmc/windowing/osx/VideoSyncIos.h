@@ -19,30 +19,34 @@
  *
  */
 
-#if defined(TARGET_ANDROID)
-#include "VideoSync.h"
+#if defined(TARGET_DARWIN_IOS)
+#include "windowing/VideoSync.h"
 #include "guilib/DispResource.h"
 
-class CVideoSyncAndroid : public CVideoSync, IDispResource
+class CVideoSyncIos : public CVideoSync, IDispResource
 {
 public:
-  CVideoSyncAndroid(CVideoReferenceClock *clock) : CVideoSync(clock), m_LastVBlankTime(0), m_abort(false){}
+  CVideoSyncIos(void *clock) : CVideoSync(clock), m_LastVBlankTime(0), m_abort(false){}
   
   // CVideoSync interface
-  virtual bool Setup(PUPDATECLOCK func);
-  virtual void Run(std::atomic<bool>& stop);
-  virtual void Cleanup();
-  virtual float GetFps();
+  virtual bool Setup(PUPDATECLOCK func) override;
+  virtual void Run(std::atomic<bool>& stop) override;
+  virtual void Cleanup() override;
+  virtual float GetFps() override;
   
   // IDispResource interface
-  virtual void OnResetDisplay();
+  virtual void OnResetDisplay() override;
 
-  // Choreographer callback
-  void FrameCallback(int64_t frameTimeNanos);
+  // used in the displaylink callback
+  void IosVblankHandler();
   
 private:
+  // CVideoSyncDarwin interface
+  virtual bool InitDisplayLink();
+  virtual void DeinitDisplayLink();
+
   int64_t m_LastVBlankTime;  //timestamp of the last vblank, used for calculating how many vblanks happened
   volatile bool m_abort;
 };
 
-#endif// TARGET_ANDROID
+#endif// TARGET_DARWIN_IOS

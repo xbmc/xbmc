@@ -22,7 +22,7 @@
 
 #if defined(HAVE_X11)
 
-#include "video/videosync/VideoSyncDRM.h"
+#include "VideoSyncDRM.h"
 #include "xf86drm.h"
 #include <sys/poll.h>
 #include <sys/time.h>

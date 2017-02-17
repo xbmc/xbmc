@@ -13,4 +13,4 @@ if(NOT KODI_DEPENDSBUILD AND NOT TARGET_ARCH_ARM)
   return()
 endif()
 
-find_path(EMBEDDED_FOUND NAMES include/linux/imxfb.h include/bcm_host.h PATHS /opt/vc)
+find_path(EMBEDDED_FOUND NAMES include/linux/mxcfb.h include/bcm_host.h PATHS /opt/vc)

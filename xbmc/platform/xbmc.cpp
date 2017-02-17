@@ -62,7 +62,7 @@ extern "C" int XBMC_Run(bool renderGUI, CFileItemList &playlist)
 #ifdef TARGET_RASPBERRY_PI
   if(!g_RBP.Initialize())
     return false;
-  g_RBP.LogFirmwareVerison();
+  g_RBP.LogFirmwareVersion();
 #endif
 
   if (renderGUI && !g_application.CreateGUI())

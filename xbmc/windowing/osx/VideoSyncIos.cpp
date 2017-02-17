@@ -20,61 +20,62 @@
 
 #include "system.h"
 
-#if defined(TARGET_ANDROID)
+#if defined(TARGET_DARWIN_IOS)
 #include "utils/log.h"
-#include "VideoSyncAndroid.h"
-#include "video/VideoReferenceClock.h"
-#include "utils/TimeUtils.h"
-#include "platform/android/activity/XBMCApp.h"
-#include "windowing/WindowingFactory.h"
-#include "guilib/GraphicContext.h"
+#include "VideoSyncIos.h"
 #include "utils/MathUtils.h"
-#include "linux/XTimeUtils.h"
+#include "cores/VideoPlayer/VideoReferenceClock.h"
+#include "guilib/GraphicContext.h"
+#include "windowing/WindowingFactory.h"
+#include "utils/TimeUtils.h"
 
-
-bool CVideoSyncAndroid::Setup(PUPDATECLOCK func)
+bool CVideoSyncIos::Setup(PUPDATECLOCK func)
 {
-  CLog::Log(LOGDEBUG, "CVideoSyncAndroid::%s setting up", __FUNCTION__);
+  CLog::Log(LOGDEBUG, "CVideoSyncIos::%s setting up OSX", __FUNCTION__);
   
   //init the vblank timestamp
   m_LastVBlankTime = CurrentHostCounter();
   UpdateClock = func;
   m_abort = false;
   
-  CXBMCApp::InitFrameCallback(this);
-  g_Windowing.Register(this);
-
-  return true;
+  bool setupOk = InitDisplayLink();
+  if (setupOk)
+  {
+    g_Windowing.Register(this);
+  }
+  
+  return setupOk;
 }
 
-void CVideoSyncAndroid::Run(std::atomic<bool>& stop)
+void CVideoSyncIos::Run(std::atomic<bool>& stop)
 {
+  //because cocoa has a vblank callback, we just keep sleeping until we're asked to stop the thread
   while(!stop && !m_abort)
   {
-    Sleep(100);
+    usleep(100000);
   }
 }
 
-void CVideoSyncAndroid::Cleanup()
+void CVideoSyncIos::Cleanup()
 {
-  CLog::Log(LOGDEBUG, "CVideoSyncAndroid::%s cleaning up", __FUNCTION__);
-  CXBMCApp::DeinitFrameCallback();
+  CLog::Log(LOGDEBUG, "CVideoSyncIos::%s cleaning up OSX", __FUNCTION__);
+  DeinitDisplayLink();
   g_Windowing.Unregister(this);
 }
 
-float CVideoSyncAndroid::GetFps()
+float CVideoSyncIos::GetFps()
 {
   m_fps = g_graphicsContext.GetFPS();
-  CLog::Log(LOGDEBUG, "CVideoSyncAndroid::%s Detected refreshrate: %f hertz", __FUNCTION__, m_fps);
+  CLog::Log(LOGDEBUG, "CVideoSyncIos::%s Detected refreshrate: %f hertz", __FUNCTION__, m_fps);
   return m_fps;
 }
 
-void CVideoSyncAndroid::OnResetDisplay()
+void CVideoSyncIos::OnResetDisplay()
 {
   m_abort = true;
 }
 
-void CVideoSyncAndroid::FrameCallback(int64_t frameTimeNanos)
+void CVideoSyncIos::IosVblankHandler()
 {
   int           NrVBlanks;
   double        VBlankTime;
@@ -83,7 +84,7 @@ void CVideoSyncAndroid::FrameCallback(int64_t frameTimeNanos)
   //calculate how many vblanks happened
   VBlankTime = (double)(nowtime - m_LastVBlankTime) / (double)CurrentHostFrequency();
   NrVBlanks = MathUtils::round_int(VBlankTime * m_fps);
-
+  
   //save the timestamp of this vblank so we can calculate how many happened next time
   m_LastVBlankTime = nowtime;
   
@@ -91,4 +92,21 @@ void CVideoSyncAndroid::FrameCallback(int64_t frameTimeNanos)
   UpdateClock(NrVBlanks, nowtime, m_refClock);
 }
 
-#endif //TARGET_ANDROID
+bool CVideoSyncIos::InitDisplayLink()
+{
+  bool ret = true;
+  CLog::Log(LOGDEBUG, "CVideoSyncIos: setting up displaylink");
+  if (!g_Windowing.InitDisplayLink(this))
+  {
+    CLog::Log(LOGDEBUG, "CVideoSyncIos: InitDisplayLink failed");
+    ret = false;
+  }
+  return ret;
+}
+
+void CVideoSyncIos::DeinitDisplayLink()
+{
+  g_Windowing.DeinitDisplayLink();
+}
+
+#endif//TARGET_DARWIN_IOS

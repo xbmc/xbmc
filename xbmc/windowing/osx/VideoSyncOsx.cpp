@@ -20,11 +20,9 @@
 
 #include "system.h"
 
-#if defined(TARGET_DARWIN_OSX)
 #include "utils/log.h"
 #include "VideoSyncOsx.h"
 #include "utils/MathUtils.h"
-#include "video/VideoReferenceClock.h"
 #include "guilib/GraphicContext.h"
 #include "utils/TimeUtils.h"
 #include "windowing/WindowingFactory.h"
@@ -159,4 +157,3 @@ void CVideoSyncOsx::DeinitDisplayLink()
   Cocoa_CVDisplayLinkRelease();
 }
 
-#endif//TARGET_DARWIN_OSX

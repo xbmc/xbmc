@@ -730,7 +730,7 @@ void Xcddb::addInexactListLine(int line_cnt, const char *line, int len)
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-void Xcddb::setCDDBIpAdress(const std::string& ip_address)
+void Xcddb::setCDDBIpAddress(const std::string& ip_address)
 {
   m_cddb_ip_address = ip_address;
 }
