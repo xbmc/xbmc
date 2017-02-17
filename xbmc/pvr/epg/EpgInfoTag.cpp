@@ -247,9 +247,9 @@ bool CPVREpgInfoTag::IsPlayable(void) const
   return CServiceBroker::GetPVRManager().Clients()->IsPlayable(shared_from_this());
 }
 
-const std::string CPVREpgInfoTag::GetStreamUrl(void) const
+const std::string CPVREpgInfoTag::GetStreamUrl(CStringPropertyMapPtr &properties) const
 {
-  return CServiceBroker::GetPVRManager().Clients()->GetEpgTagUrl(shared_from_this());
+  return CServiceBroker::GetPVRManager().Clients()->GetEpgTagUrl(shared_from_this(), properties);
 }
 
 bool CPVREpgInfoTag::IsRecordable(void) const

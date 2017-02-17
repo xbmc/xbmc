@@ -1243,13 +1243,13 @@ bool CPVRClients::IsPlayable(const CConstPVREpgInfoTagPtr &tag)
   return NULL;
 }
 
-const std::string CPVRClients::GetEpgTagUrl(const CConstPVREpgInfoTagPtr &tag)
+const std::string CPVRClients::GetEpgTagUrl(const CConstPVREpgInfoTagPtr &tag, const CStringPropertyMapPtr &properties)
 {
   PVR_CLIENT client;
 
   if (GetClient(tag->ChannelTag()->ClientID(), client))
   {
-    return client->GetEpgTagUrl(tag);
+    return client->GetEpgTagUrl(tag, properties);
   }
 
   return "";

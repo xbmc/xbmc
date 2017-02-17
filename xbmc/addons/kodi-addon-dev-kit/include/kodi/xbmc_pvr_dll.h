@@ -582,11 +582,12 @@ extern "C"
    * @param tag The EPG tag
    * @param url The url to be returnd
    * @param urlLen The length of the url buffer
+   * @param properties The properties to be provided to the file item
    * @return The length of the url. -1 if the tag is not playable
    * @remarks Required, always return -1 if not supported by the addon
    *
    */
-  int GetEpgTagUrl(const EPG_TAG &tag, char *url, int urlLen);
+  int GetEpgTagUrl(const EPG_TAG &tag, char *url, int urlLen, const CStringPropertyMapPtr&);
 
   /*!
    * @brief Notify the pvr addon that XBMC (un)paused the currently playing stream

@@ -382,11 +382,12 @@ namespace PVR
     /*
      * Get the URL to play a given EPG tag
      * @param tag The EPG tag
+     * @param properties The properties to be provided to the file item
      * @return The url to play for the EPG tag, empty string if it cannot be played
      * @remarks Required, always return empty string if not supported by the addon
      *
      */
-    const std::string GetEpgTagUrl(const CConstPVREpgInfoTagPtr &tag);
+    const std::string GetEpgTagUrl(const CConstPVREpgInfoTagPtr &tag, const CStringPropertyMapPtr &properties);
 
     /*!
      * @return True if this add-on has menu hooks, false otherwise.

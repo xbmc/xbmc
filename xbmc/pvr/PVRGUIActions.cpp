@@ -1092,13 +1092,17 @@ namespace PVR
       if (!epgTag)
         return false;
 
-      std::string stream = epgTag->GetStreamUrl();
+      CStringPropertyMapPtr properties(new CStringPropertyMap());
+      std::string stream = epgTag->GetStreamUrl(properties);
       if (stream.empty())
       {
         return false;
       }
 
       item->SetPath(stream);
+      for (auto const &entry : *properties.get()) {
+        item->SetProperty(entry.first, entry.second);
+      }
 
       if (!bCheckResume || CheckResumeRecording(item))
         CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(new CFileItem(*item)));

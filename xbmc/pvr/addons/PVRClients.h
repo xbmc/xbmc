@@ -630,7 +630,7 @@ namespace PVR
 
     bool IsPlayable(const CConstPVREpgInfoTagPtr &tag);
 
-    const std::string GetEpgTagUrl(const CConstPVREpgInfoTagPtr &tag);
+    const std::string GetEpgTagUrl(const CConstPVREpgInfoTagPtr &tag, const CStringPropertyMapPtr &properties);
 
     bool IsRealTimeStream() const;
 

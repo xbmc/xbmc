@@ -94,9 +94,10 @@ namespace PVR
     bool IsPlayable(void) const;
 
     /* @brief Get the stream url for this event
+     * @param properties The properties to be provided to the file item
      * @return The stream url, empty string if playing is not possible
      */
-    const std::string GetStreamUrl(void) const;
+    const std::string GetStreamUrl(CStringPropertyMapPtr &properties) const;
 
     /*!
      * @return True when this event has already passed, false otherwise.

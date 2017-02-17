@@ -67,6 +67,8 @@ class CVariant;
 class CFileItemList;
 class CCueDocument;
 typedef std::shared_ptr<CCueDocument> CCueDocumentPtr;
+typedef std::map<std::string, std::string> CStringPropertyMap;
+typedef std::shared_ptr<CStringPropertyMap> CStringPropertyMapPtr;
 
 class IEvent;
 typedef std::shared_ptr<const IEvent> EventPtr;

@@ -692,7 +692,7 @@ bool CPVRClient::IsPlayable(const CConstPVREpgInfoTagPtr &tag)
   return m_struct.toAddon.IsPlayable(pvrTag);
 }
 
-const std::string CPVRClient::GetEpgTagUrl(const CConstPVREpgInfoTagPtr &tag)
+const std::string CPVRClient::GetEpgTagUrl(const CConstPVREpgInfoTagPtr &tag, const CStringPropertyMapPtr &properties)
 {
   if (!m_bReadyToUse)
     return nullptr;
@@ -700,7 +700,7 @@ const std::string CPVRClient::GetEpgTagUrl(const CConstPVREpgInfoTagPtr &tag)
   EPG_TAG pvrTag;
   WriteEpgTag(tag, pvrTag);
   char url[4096];
-  m_struct.toAddon.GetEpgTagUrl(pvrTag, url, sizeof(url));
+  m_struct.toAddon.GetEpgTagUrl(pvrTag, url, sizeof(url), properties);
   return url;
 }
 
