@@ -41,7 +41,6 @@ using namespace EPG;
 
 #define BLOCKJUMP    4 // how many blocks are jumped with each analogue scroll action
 static const int BLOCK_SCROLL_OFFSET = 60 / CGUIEPGGridContainerModel::MINSPERBLOCK; // how many blocks are jumped if we are at left/right edge of grid
-static const int PAGE_NOW_OFFSET = CGUIEPGGridContainerModel::GRID_START_PADDING / CGUIEPGGridContainerModel::MINSPERBLOCK; // this is the 'now' block relative to page start  
 
 CGUIEPGGridContainer::CGUIEPGGridContainer(int parentID, int controlID, float posX, float posY, float width, float height,
                                            ORIENTATION orientation, int scrollTime, int preloadItems, int timeBlocks, int rulerUnit,
@@ -1300,6 +1299,11 @@ CEpgInfoTagPtr CGUIEPGGridContainer::GetSelectedEpgInfoTag() const
   return tag;
 }
 
+unsigned int CGUIEPGGridContainer::GetPageNowOffset() const
+{
+  return m_gridModel->GetGridStartPadding() / CGUIEPGGridContainerModel::MINSPERBLOCK; // this is the 'now' block relative to page start
+}
+
 CGUIListItemPtr CGUIEPGGridContainer::GetListItem(int offset, unsigned int flag) const
 {
   if (!m_gridModel->HasChannelItems())
@@ -1619,9 +1623,9 @@ void CGUIEPGGridContainer::GoToEnd()
 void CGUIEPGGridContainer::GoToNow()
 {
   CDateTime currentDate = CDateTime::GetCurrentDateTime().GetAsUTCDateTime();
-  int offset = (currentDate - m_gridModel->GetGridStart()).GetSecondsTotal() / 60 / CGUIEPGGridContainerModel::MINSPERBLOCK - PAGE_NOW_OFFSET;
+  int offset = (currentDate - m_gridModel->GetGridStart()).GetSecondsTotal() / 60 / CGUIEPGGridContainerModel::MINSPERBLOCK - GetPageNowOffset();
   ScrollToBlockOffset(offset);
-  SetBlock(PAGE_NOW_OFFSET);
+  SetBlock(GetPageNowOffset());
 }
 
 void CGUIEPGGridContainer::SetTimelineItems(const std::unique_ptr<CFileItemList> &items, const CDateTime &gridStart, const CDateTime &gridEnd)
