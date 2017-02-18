@@ -20408,7 +20408,6 @@ msgstr ""
 msgctxt "#39013"
 msgid "Virtual filesystems"
 msgstr ""
-
 #. Message of a dialog, asking if related data of an add-on should also be removed on uninstall
 #: xbmc/addons/GUIDialogAddonInfo.cpp
 msgctxt "#39014"
@@ -20418,4 +20417,17 @@ msgstr ""
 #: /xbmc/addons/Addon.cpp
 msgctxt "#39015"
 msgid "Image decoder"
+msgstr ""
+
+#: xbmc/Application.cpp
+msgctxt "#40000"
+msgid "Not available"
+msgstr ""
+
+msgctxt "#40001"
+msgid ""%s" is not available for instant playback."
+msgstr ""
+
+msgctxt "#40002"
+msgid "Please check your offline library."
 msgstr ""
