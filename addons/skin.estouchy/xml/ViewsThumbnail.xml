@@ -17,7 +17,7 @@
 			<animation effect="slide" start="0,0" end="-1,0" time="0" condition="String.IsEqual(Skin.AspectRatio,4:3)">Conditional</animation>
 			<animation effect="slide" start="0,0" end="-1,0" time="0" condition="String.IsEqual(Skin.AspectRatio,16:9) + Container.Content(Episodes)">Conditional</animation>
 			<animation effect="slide" start="0,0" end="28,0" time="0" condition="String.IsEqual(Skin.AspectRatio,4:3) + Container.Content(Episodes)">Conditional</animation>
-			<itemlayout condition="!Container.Content(Movies) + !Container.Content(Seasons) + !Container.Content(Episodes) + !Container.Content(TVShows) + !Container.Content(MusicVideos)" height="250" width="218">
+			<itemlayout condition="!Container.Content(Movies) + !Container.Content(Seasons) + !Container.Content(Episodes) + !Container.Content(TVShows) + !Container.Content(MusicVideos) + !Container.Content(Videos)" height="250" width="218">
 				<control type="image">
 					<posx>5</posx>
 					<posy>0</posy>
@@ -73,7 +73,7 @@
 					<visible>Window.IsVisible(AddonBrowser) + String.IsEqual(ListItem.Label2,$LOCALIZE[305])</visible>
 				</control>
 			</itemlayout>
-			<focusedlayout condition="!Container.Content(Movies) + !Container.Content(Seasons) + !Container.Content(Episodes) + !Container.Content(TVShows) + !Container.Content(MusicVideos)" height="250" width="218">
+			<focusedlayout condition="!Container.Content(Movies) + !Container.Content(Seasons) + !Container.Content(Episodes) + !Container.Content(TVShows) + !Container.Content(MusicVideos) + !Container.Content(Videos)" height="250" width="218">
 				<control type="image">
 					<posx>5</posx>
 					<posy>0</posy>
@@ -247,7 +247,7 @@
 					<texture>$INFO[ListItem.Overlay]</texture>
 				</control>
 			</focusedlayout>
-			<itemlayout condition="Container.Content(Episodes) | Container.Content(MusicVideos)" height="250" width="$PARAM[layout-width]">
+			<itemlayout condition="Container.Content(Episodes) | Container.Content(MusicVideos) | Container.Content(Videos)" height="250" width="$PARAM[layout-width]">
 				<control type="image">
 					<posx>0</posx>
 					<posy>0</posy>
@@ -298,7 +298,7 @@
 					<texture>$INFO[ListItem.Overlay]</texture>
 				</control>
 			</itemlayout>
-			<focusedlayout condition="Container.Content(Episodes) | Container.Content(MusicVideos)" height="250" width="$PARAM[layout-width]">
+			<focusedlayout condition="Container.Content(Episodes) | Container.Content(MusicVideos) | Container.Content(Videos)" height="250" width="$PARAM[layout-width]">
 				<control type="image">
 					<posx>0</posx>
 					<posy>0</posy>
