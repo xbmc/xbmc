@@ -42,7 +42,7 @@
 					<height>62</height>
 					<texture background="true">$VAR[PosterThumb]</texture>
 					<aspectratio>keep</aspectratio>
-					<visible>Container.Content(Movies) | Container.Content(Seasons) | Container.Content(TVShows) | Container.Content(Episodes) | Container.Content(MusicVideos) | Container.Content(Artists) | Container.Content(Albums) | Container.Content(Songs) | [Container.Content(Addons) + !ListItem.IsFolder] | Container.Content(Actors) | Container.Content(Sets) | [Window.IsVisible(Pictures) + !String.IsEmpty(Container.FolderPath)]</visible>
+					<visible>Container.Content(Movies) | Container.Content(Seasons) | Container.Content(TVShows) | Container.Content(Episodes) | Container.Content(MusicVideos) | Container.Content(Videos) | Container.Content(Artists) | Container.Content(Albums) | Container.Content(Songs) | [Container.Content(Addons) + !ListItem.IsFolder] | Container.Content(Actors) | Container.Content(Sets) | [Window.IsVisible(Pictures) + !String.IsEmpty(Container.FolderPath)]</visible>
 				</control>
 				<control type="image">
 					<posx>4</posx>
@@ -74,7 +74,7 @@
 					<align>right</align>
 					<aligny>center</aligny>
 					<label>$INFO[ListItem.Label2]</label>
-					<animation effect="slide" start="0" end ="100,0" time="0" condition="![Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)]">Conditional</animation>
+					<animation effect="slide" start="0" end ="100,0" time="0" condition="![Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos) | Container.Content(Videos)]">Conditional</animation>
 					<animation effect="slide" start="0" end ="-40,0" time="0" condition="Container.Content(TVShows)">Conditional</animation>
 					<visible>!Window.IsVisible(AddonBrowser)</visible>
 				</control>
@@ -105,7 +105,7 @@
 					<width>60</width>
 					<height>40</height>
 					<texture>$INFO[ListItem.VideoResolution,flagging/resolution/,.png]</texture>
-					<visible>[Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)]</visible>
+					<visible>[Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos) | Container.Content(Videos)]</visible>
 				</control>
 				<control type="image">
 					<posx>110r</posx>
@@ -122,7 +122,7 @@
 					<height>26</height>
 					<aspectratio>keep</aspectratio>
 					<texture>OverlayWatching.png</texture>
-					<visible>[Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)] + ListItem.IsResumable</visible>
+					<visible>[Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos) | Container.Content(Videos)] + ListItem.IsResumable</visible>
 				</control>
 				<control type="image">
 					<posx>50r</posx>
@@ -130,7 +130,7 @@
 					<width>30</width>
 					<height>30</height>
 					<texture>$INFO[ListItem.Overlay]</texture>
-					<visible>[Container.Content(Movies) | Container.Content(TVShows) | Container.Content(Seasons) | Container.Content(Episodes) | Container.Content(MusicVideos)] + !ListItem.IsResumable</visible>
+					<visible>[Container.Content(Movies) | Container.Content(TVShows) | Container.Content(Seasons) | Container.Content(Episodes) | Container.Content(MusicVideos) | Container.Content(Videos)] + !ListItem.IsResumable</visible>
 				</control>
 				<control type="label">
 					<posx>$PARAM[label2-posx]</posx>
@@ -184,7 +184,7 @@
 					<height>62</height>
 					<texture background="true">$VAR[PosterThumb]</texture>
 					<aspectratio>keep</aspectratio>
-					<visible>Container.Content(Movies) | Container.Content(Seasons) | Container.Content(TVShows) | Container.Content(Episodes) | Container.Content(MusicVideos) | Container.Content(Artists) | Container.Content(Albums) | Container.Content(Songs) | [Container.Content(Addons) + !ListItem.IsFolder] | Container.Content(Actors) | Container.Content(Sets) | [Window.IsVisible(Pictures) + !String.IsEmpty(Container.FolderPath)]</visible>
+					<visible>Container.Content(Movies) | Container.Content(Seasons) | Container.Content(TVShows) | Container.Content(Episodes) | Container.Content(MusicVideos) | Container.Content(Videos) | Container.Content(Artists) | Container.Content(Albums) | Container.Content(Songs) | [Container.Content(Addons) + !ListItem.IsFolder] | Container.Content(Actors) | Container.Content(Sets) | [Window.IsVisible(Pictures) + !String.IsEmpty(Container.FolderPath)]</visible>
 				</control>
 				<control type="image">
 					<posx>4</posx>
@@ -216,7 +216,7 @@
 					<align>right</align>
 					<aligny>center</aligny>
 					<label>$INFO[ListItem.Label2]</label>
-					<animation effect="slide" start="0" end ="100,0" time="0" condition="![Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)]">Conditional</animation>
+					<animation effect="slide" start="0" end ="100,0" time="0" condition="![Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos) | Container.Content(Videos)]">Conditional</animation>
 					<animation effect="slide" start="0" end ="-40,0" time="0" condition="Container.Content(TVShows)">Conditional</animation>
 					<visible>!Window.IsVisible(AddonBrowser)</visible>
 				</control>
@@ -247,7 +247,7 @@
 					<width>60</width>
 					<height>40</height>
 					<texture>$INFO[ListItem.VideoResolution,flagging/resolution/,.png]</texture>
-					<visible>[Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)]</visible>
+					<visible>[Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos) | Container.Content(Videos)]</visible>
 				</control>
 				<control type="image">
 					<posx>110r</posx>
@@ -264,7 +264,7 @@
 					<height>26</height>
 					<aspectratio>keep</aspectratio>
 					<texture>OverlayWatching.png</texture>
-					<visible>[Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)] + ListItem.IsResumable</visible>
+					<visible>[Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos) | Container.Content(Videos)] + ListItem.IsResumable</visible>
 				</control>
 				<control type="image">
 					<posx>50r</posx>
@@ -272,7 +272,7 @@
 					<width>30</width>
 					<height>30</height>
 					<texture>$INFO[ListItem.Overlay]</texture>
-					<visible>[Container.Content(Movies) | Container.Content(TVShows) | Container.Content(Seasons) | Container.Content(Episodes) | Container.Content(MusicVideos)] + !ListItem.IsResumable</visible>
+					<visible>[Container.Content(Movies) | Container.Content(TVShows) | Container.Content(Seasons) | Container.Content(Episodes) | Container.Content(MusicVideos) | Container.Content(Videos)] + !ListItem.IsResumable</visible>
 				</control>
 				<control type="label">
 					<posx>$PARAM[label2-posx]</posx>
