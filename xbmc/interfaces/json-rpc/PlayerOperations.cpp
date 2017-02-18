@@ -375,11 +375,9 @@ JSONRPC_STATUS CPlayerOperations::Seek(const std::string &method, ITransportLaye
         return FailedToExecute;
 
       const CVariant& value = parameterObject["value"];
-      if (IsType(value, NumberValue) ||
-         (value.isObject() && value.isMember("percentage")))
+      if (IsType(value, NumberValue) || value.isMember("percentage"))
         g_application.SeekPercentage(IsType(value, NumberValue) ? value.asFloat() : value["percentage"].asFloat());
-      else if (value.isString() ||
-              (value.isObject() && value.isMember("step")))
+      else if (value.isString() || value.isMember("step"))
       {
         std::string step = value.isString() ? value.asString() : value["step"].asString();
         if (step == "smallforward")
@@ -393,7 +391,7 @@ JSONRPC_STATUS CPlayerOperations::Seek(const std::string &method, ITransportLaye
         else
           return InvalidParams;
       }
-      else if (value.isObject() && value.isMember("seconds") && value.size() == 1)
+      else if (value.isMember("seconds") && value.size() == 1)
         CSeekHandler::GetInstance().SeekSeconds(static_cast<int>(value["seconds"].asInteger()));
       else if (value.isObject())
         g_application.SeekTime(ParseTimeInSeconds(value.isMember("time") ? value["time"] : value));
@@ -507,7 +505,7 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
   CVariant optionResume = options["resume"];
   CVariant optionPlayer = options["playername"];
 
-  if (parameterObject["item"].isObject() && parameterObject["item"].isMember("playlistid"))
+  if (parameterObject["item"].isMember("playlistid"))
   {
     int playlistid = (int)parameterObject["item"]["playlistid"].asInteger();
 
@@ -553,7 +551,7 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
 
     return ACK;
   }
-  else if (parameterObject["item"].isObject() && parameterObject["item"].isMember("path"))
+  else if (parameterObject["item"].isMember("path"))
   {
     bool random = (optionShuffled.isBoolean() && optionShuffled.asBoolean()) ||
                   (!optionShuffled.isBoolean() && parameterObject["item"]["random"].asBoolean());
@@ -566,7 +564,7 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
     CApplicationMessenger::GetInstance().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, "playercontrol(partymode(" + parameterObject["item"]["partymode"].asString() + "))");
     return ACK;
   }
-  else if (parameterObject["item"].isObject() && parameterObject["item"].isMember("channelid"))
+  else if (parameterObject["item"].isMember("channelid"))
   {
     if (!g_PVRManager.IsStarted())
       return FailedToExecute;
@@ -591,7 +589,7 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
 
     return ACK;
   }
-  else if (parameterObject["item"].isObject() && parameterObject["item"].isMember("recordingid"))
+  else if (parameterObject["item"].isMember("recordingid"))
   {
     if (!g_PVRManager.IsStarted())
       return FailedToExecute;
@@ -1759,17 +1757,14 @@ int CPlayerOperations::ParseRepeatState(const CVariant &repeat)
 double CPlayerOperations::ParseTimeInSeconds(const CVariant &time)
 {
   double seconds = 0.0;
-  if (time.isObject())
-  {
-    if (time.isMember("hours"))
-      seconds += time["hours"].asInteger() * 60 * 60;
-    if (time.isMember("minutes"))
-      seconds += time["minutes"].asInteger() * 60;
-    if (time.isMember("seconds"))
-      seconds += time["seconds"].asInteger();
-    if (time.isMember("milliseconds"))
-      seconds += time["milliseconds"].asDouble() / 1000.0;
-  }
+  if (time.isMember("hours"))
+    seconds += time["hours"].asInteger() * 60 * 60;
+  if (time.isMember("minutes"))
+    seconds += time["minutes"].asInteger() * 60;
+  if (time.isMember("seconds"))
+    seconds += time["seconds"].asInteger();
+  if (time.isMember("milliseconds"))
+    seconds += time["milliseconds"].asDouble() / 1000.0;
 
   return seconds;
 }

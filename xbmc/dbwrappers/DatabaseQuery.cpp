@@ -128,8 +128,7 @@ bool CDatabaseQueryRule::Load(const TiXmlNode *node, const std::string &encoding
 
 bool CDatabaseQueryRule::Load(const CVariant &obj)
 {
-  if (!obj.isObject() ||
-      !obj.isMember("field") || !obj["field"].isString() ||
+  if (!obj.isMember("field") || !obj["field"].isString() ||
       !obj.isMember("operator") || !obj["operator"].isString())
     return false;
 

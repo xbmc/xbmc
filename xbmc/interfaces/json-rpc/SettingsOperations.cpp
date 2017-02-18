@@ -141,7 +141,7 @@ JSONRPC_STATUS CSettingsOperations::GetSettings(const std::string &method, ITran
 {
   SettingLevel level = (SettingLevel)ParseSettingLevel(parameterObject["level"].asString());
   const CVariant &filter = parameterObject["filter"];
-  bool doFilter = filter.isObject() && filter.isMember("section") && filter.isMember("category");
+  bool doFilter = filter.isMember("section") && filter.isMember("category");
   std::string strSection, strCategory;
   if (doFilter)
   {
