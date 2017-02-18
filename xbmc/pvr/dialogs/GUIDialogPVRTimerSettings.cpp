@@ -778,7 +778,7 @@ void CGUIDialogPVRTimerSettings::InitializeChannelsList()
   {
     const CPVRChannelPtr channel(channelsList[i]->GetPVRChannelInfoTag());
     std::string channelDescription(
-      StringUtils::Format("%i %s", channel->ChannelNumber(), channel->ChannelName().c_str()));
+      StringUtils::Format("%s %s", channel->FormattedChannelNumber().c_str(), channel->ChannelName().c_str()));
     m_channelEntries.insert(
       std::make_pair(i, ChannelDescriptor(channel->UniqueID(), channel->ClientID(), channelDescription)));
   }
