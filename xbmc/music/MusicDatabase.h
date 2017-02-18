@@ -250,6 +250,13 @@ public:
   bool HasAlbumBeenScraped(int idAlbum);
   int  AddAlbumInfoSong(int idAlbum, const CSong& song);
 
+  /////////////////////////////////////////////////
+  // Audiobook
+  /////////////////////////////////////////////////
+  bool AddAudioBook(const CFileItem& item);
+  bool SetResumeBookmarkForAudioBook(const CFileItem& item, int bookmark);
+  bool GetResumeBookmarkForAudioBook(const std::string& path, int& bookmark);
+
   /*! \brief Checks if the given path is inside a folder that has already been scanned into the library
    \param path the path we want to check
    */

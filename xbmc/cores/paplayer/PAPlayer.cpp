@@ -284,6 +284,13 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
   /* trigger playback start */
   m_isPlaying = true;
   m_startEvent.Set();
+
+  if (options.startpercent > 0.0)
+  {
+    Sleep(50);
+    SeekPercentage(options.startpercent);
+  }
+
   return true;
 }
 

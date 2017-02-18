@@ -79,6 +79,7 @@
               <uap:FileType>.m3u</uap:FileType>
               <uap:FileType>.m3u8</uap:FileType>
               <uap:FileType>.m4a</uap:FileType>
+              <uap:FileType>.m4b</uap:FileType>
               <uap:FileType>.mac</uap:FileType>
               <uap:FileType>.mk3d</uap:FileType>
               <uap:FileType>.mka</uap:FileType>

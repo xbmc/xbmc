@@ -1,4 +1,5 @@
 set(SOURCES AddonsDirectory.cpp
+            AudioBookFileDirectory.cpp
             CacheStrategy.cpp
             CDDADirectory.cpp
             CDDAFile.cpp
