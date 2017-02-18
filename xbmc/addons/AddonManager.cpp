@@ -33,6 +33,7 @@
 #include "events/AddonManagementEvent.h"
 #include "events/EventLog.h"
 #include "filesystem/Directory.h"
+#include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
@@ -46,7 +47,6 @@
 #include "addons/ImageDecoder.h"
 
 /* CAddon class included add-on's */
-#include "addons/AudioDecoder.h"
 #include "addons/ContextMenuAddon.h"
 #include "addons/GameResource.h"
 #include "addons/ImageResource.h"
@@ -61,7 +61,6 @@
 #include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.h"
 #include "games/addons/GameClient.h"
 #include "games/controllers/Controller.h"
-#include "peripherals/addons/PeripheralAddon.h"
 #include "addons/PVRClient.h"
 
 using namespace XFILE;
@@ -759,15 +758,10 @@ std::shared_ptr<CAddon> CAddonMgr::CreateAddon(AddonInfoPtr addonInfo, TYPE addo
     case ADDON_SCRAPER_TVSHOWS:
     case ADDON_SCRAPER_LIBRARY:
       return std::make_shared<CScraper>(addonType, addonInfo);
-    case ADDON_VIZ:
-    case ADDON_SCREENSAVER:
-      return std::make_shared<CAddonDll>(addonInfo);
     case ADDON_PVRDLL:
       return std::make_shared<PVR::CPVRClient>(addonInfo);
     case ADDON_ADSPDLL:
       return std::make_shared<ActiveAE::CActiveAEDSPAddon>(addonInfo);
-    case ADDON_PERIPHERALDLL:
-      return std::make_shared<PERIPHERALS::CPeripheralAddon>(addonInfo);
     case ADDON_GAMEDLL:
       return std::make_shared<GAME::CGameClient>(addonInfo);
     case ADDON_VFS:

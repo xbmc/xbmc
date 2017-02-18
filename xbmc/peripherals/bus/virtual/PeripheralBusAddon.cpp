@@ -60,34 +60,12 @@ CPeripheralBusAddon::~CPeripheralBusAddon()
   m_addons.clear();
 }
 
-bool CPeripheralBusAddon::GetAddon(const std::string &strId, ADDON::AddonPtr &addon) const
-{
-  CSingleLock lock(m_critSection);
-  for (const auto& addonIt : m_addons)
-  {
-    if (addonIt->ID() == strId)
-    {
-      addon = addonIt;
-      return true;
-    }
-  }
-  for (const auto& addonIt : m_failedAddons)
-  {
-    if (addonIt->ID() == strId)
-    {
-      addon = addonIt;
-      return true;
-    }
-  }
-  return false;
-}
-
 bool CPeripheralBusAddon::GetAddonWithButtonMap(ADDON::AddonInfoPtr &addon) const
 {
   CSingleLock lock(m_critSection);
 
   auto it = std::find_if(m_addons.begin(), m_addons.end(),
-    [](const ADDON::AddonPtr& addon)
+    [](const PeripheralAddonPtr& addon)
     {
       return addon->Type(ADDON::ADDON_PERIPHERALDLL)->GetValue("@provides_buttonmaps").asBoolean();
     });
@@ -391,7 +369,7 @@ void CPeripheralBusAddon::UpdateAddons(void)
   using namespace ADDON;
 
   auto GetPeripheralAddonID = [](const PeripheralAddonPtr& addon) { return addon->ID(); };
-  auto GetAddonID = [](const AddonPtr& addon) { return addon->ID(); };
+  auto GetAddonID = [](const AddonInfoPtr& addon) { return addon->ID(); };
 
   std::set<std::string> currentIds;
   std::set<std::string> newIds;
@@ -400,8 +378,8 @@ void CPeripheralBusAddon::UpdateAddons(void)
   std::set<std::string> removed;
 
   // Get new add-ons
-  VECADDONS newAddons;
-  CAddonMgr::GetInstance().GetAddons(newAddons, ADDON_PERIPHERALDLL);
+  AddonInfos newAddons;
+  CAddonMgr::GetInstance().GetAddonInfos(newAddons, true, ADDON_PERIPHERALDLL);
   std::transform(newAddons.begin(), newAddons.end(), std::inserter(newIds, newIds.end()), GetAddonID);
 
   CSingleLock lock(m_critSection);
@@ -419,19 +397,19 @@ void CPeripheralBusAddon::UpdateAddons(void)
   {
     CLog::Log(LOGDEBUG, "Add-on bus: Registering add-on %s", addonId.c_str());
 
-    auto GetAddon = [addonId](const AddonPtr& addon) { return addon->ID() == addonId; };
+    auto GetAddon = [addonId](const AddonInfoPtr& addon) { return addon->ID() == addonId; };
 
-    VECADDONS::iterator it = std::find_if(newAddons.begin(), newAddons.end(), GetAddon);
+    AddonInfos::iterator it = std::find_if(newAddons.begin(), newAddons.end(), GetAddon);
     if (it != newAddons.end())
     {
-      PeripheralAddonPtr newAddon = std::dynamic_pointer_cast<CPeripheralAddon>(*it);
+      PeripheralAddonPtr newAddon = std::make_shared<CPeripheralAddon>(*it);
       if (newAddon)
       {
         bool bCreated;
 
         {
           CSingleExit exit(m_critSection);
-          bCreated = (newAddon->CreateAddon() == ADDON_STATUS_OK);
+          bCreated = newAddon->CreateAddon();
         }
 
         if (bCreated)
@@ -461,12 +439,6 @@ void CPeripheralBusAddon::UpdateAddons(void)
     m_addons.erase(std::remove_if(m_addons.begin(), m_addons.end(), ErasePeripheralAddon), m_addons.end());
     if (!erased)
       m_failedAddons.erase(std::remove_if(m_failedAddons.begin(), m_failedAddons.end(), ErasePeripheralAddon), m_failedAddons.end());
-
-    if (erased)
-    {
-      CSingleExit exit(m_critSection);
-      erased->Destroy();
-    }
   }
 }
 

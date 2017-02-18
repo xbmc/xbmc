@@ -79,8 +79,6 @@ typedef void* (*KODICodecLib_RegisterMe)(void *addonData);
 typedef void (*KODICodecLib_UnRegisterMe)(void *addonData, void *cbTable);
 typedef void* (*KODIINPUTSTREAMLib_RegisterMe)(void *addonData);
 typedef void (*KODIINPUTSTREAMLib_UnRegisterMe)(void *addonData, void *cbTable);
-typedef void* (*KODIPeripheralLib_RegisterMe)(void *addonData);
-typedef void (*KODIPeripheralLib_UnRegisterMe)(void *addonData, void *cbTable);
 typedef void* (*KODIGameLib_RegisterMe)(void *addonData);
 typedef void (*KODIGameLib_UnRegisterMe)(void *addonData, void *cbTable);
 
@@ -102,8 +100,6 @@ typedef struct AddonCB
   KODIADSPLib_UnRegisterMe          ADSPLib_UnRegisterMe;
   KODIINPUTSTREAMLib_RegisterMe     INPUTSTREAMLib_RegisterMe;
   KODIINPUTSTREAMLib_UnRegisterMe   INPUTSTREAMLib_UnRegisterMe;
-  KODIPeripheralLib_RegisterMe      PeripheralLib_RegisterMe;
-  KODIPeripheralLib_UnRegisterMe    PeripheralLib_UnRegisterMe;
   KODIGameLib_RegisterMe            GameLib_RegisterMe;
   KODIGameLib_UnRegisterMe          GameLib_UnRegisterMe;
 } AddonCB;

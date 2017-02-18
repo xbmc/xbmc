@@ -31,29 +31,6 @@ namespace ADDON
   class CAddonDll;
   typedef std::shared_ptr<CAddonDll> AddonDllPtr;
 
-  class IAddonInstanceHandler
-  {
-  public:
-    IAddonInstanceHandler(TYPE type, const std::string& instanceID = "");
-    IAddonInstanceHandler(TYPE type, const AddonInfoPtr& addonInfo, kodi::addon::IAddonInstance* parentInstance = nullptr, const std::string& instanceID = "");
-    virtual ~IAddonInstanceHandler();
-
-    TYPE UsedType() { return m_type; }
-    const std::string& InstanceID() { return m_instanceId; }
-    const AddonInfoPtr& AddonInfo() { return m_addonInfo; }
-
-    bool CreateInstance(int instanceType, KODI_HANDLE instance, KODI_HANDLE* addonInstance);
-    void DestroyInstance();
-    const AddonDllPtr& Addon() { return m_addon; }
-
-  private:
-    TYPE m_type;
-    std::string m_instanceId;
-    kodi::addon::IAddonInstance* m_parentInstance;
-    AddonInfoPtr m_addonInfo;
-    AddonDllPtr m_addon;
-  };
-
   class CAddonDll : public CAddon
   {
   public:
@@ -113,6 +90,38 @@ namespace ADDON
     static void addon_log_msg(void* kodiInstance, const int addonLogLevel, const char* strMessage);
     static void free_string(void* kodiInstance, char* str);
     //@}
+  };
+
+  class IAddonInstanceHandler
+  {
+  public:
+    IAddonInstanceHandler(TYPE type, const std::string& instanceID = "");
+    IAddonInstanceHandler(TYPE type, const AddonInfoPtr& addonInfo, kodi::addon::IAddonInstance* parentInstance = nullptr, const std::string& instanceID = "");
+    virtual ~IAddonInstanceHandler();
+
+    const TYPE UsedType() const { return m_type; }
+    const CAddonType* Type(TYPE type) const { return m_addon->Type(type); }
+    const std::string& InstanceID() { return m_instanceId; }
+
+    std::string ID() const { return m_addon->ID(); }
+    std::string Name() const { return m_addon->Name(); }
+    std::string Author() const { return m_addon->Author(); }
+    std::string Icon() const { return m_addon->Icon(); }
+    std::string Path() const { return m_addon->Path(); }
+    std::string Profile() const { return m_addon->Profile(); }
+
+    const AddonInfoPtr& AddonInfo() { return m_addonInfo; }
+
+    bool CreateInstance(int instanceType, KODI_HANDLE instance, KODI_HANDLE* addonInstance);
+    void DestroyInstance();
+    const AddonDllPtr& Addon() { return m_addon; }
+
+  private:
+    TYPE m_type;
+    std::string m_instanceId;
+    kodi::addon::IAddonInstance* m_parentInstance;
+    AddonInfoPtr m_addonInfo;
+    AddonDllPtr m_addon;
   };
 
 }; /* namespace ADDON */

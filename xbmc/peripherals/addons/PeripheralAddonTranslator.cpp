@@ -87,7 +87,7 @@ PERIPHERAL_TYPE CPeripheralAddonTranslator::TranslateType(PeripheralType type)
   return PERIPHERAL_TYPE_UNKNOWN;
 }
 
-CDriverPrimitive CPeripheralAddonTranslator::TranslatePrimitive(const ADDON::DriverPrimitive& primitive)
+CDriverPrimitive CPeripheralAddonTranslator::TranslatePrimitive(const kodi::addon::DriverPrimitive& primitive)
 {
   CDriverPrimitive retVal;
 
@@ -120,30 +120,30 @@ CDriverPrimitive CPeripheralAddonTranslator::TranslatePrimitive(const ADDON::Dri
   return retVal;
 }
 
-ADDON::DriverPrimitive CPeripheralAddonTranslator::TranslatePrimitive(const CDriverPrimitive& primitive)
+kodi::addon::DriverPrimitive CPeripheralAddonTranslator::TranslatePrimitive(const CDriverPrimitive& primitive)
 {
-  ADDON::DriverPrimitive retVal;
+  kodi::addon::DriverPrimitive retVal;
 
   switch (primitive.Type())
   {
     case BUTTON:
     {
-      retVal = ADDON::DriverPrimitive::CreateButton(primitive.Index());
+      retVal = kodi::addon::DriverPrimitive::CreateButton(primitive.Index());
       break;
     }
     case HAT:
     {
-      retVal = ADDON::DriverPrimitive(primitive.Index(), TranslateHatDirection(primitive.HatDirection()));
+      retVal = kodi::addon::DriverPrimitive(primitive.Index(), TranslateHatDirection(primitive.HatDirection()));
       break;
     }
     case SEMIAXIS:
     {
-      retVal = ADDON::DriverPrimitive(primitive.Index(), primitive.Center(), TranslateSemiAxisDirection(primitive.SemiAxisDirection()), primitive.Range());
+      retVal = kodi::addon::DriverPrimitive(primitive.Index(), primitive.Center(), TranslateSemiAxisDirection(primitive.SemiAxisDirection()), primitive.Range());
       break;
     }
     case MOTOR:
     {
-      retVal = ADDON::DriverPrimitive::CreateMotor(primitive.Index());
+      retVal = kodi::addon::DriverPrimitive::CreateMotor(primitive.Index());
       break;
     }
     default:
@@ -153,20 +153,20 @@ ADDON::DriverPrimitive CPeripheralAddonTranslator::TranslatePrimitive(const CDri
   return retVal;
 }
 
-std::vector<JOYSTICK::CDriverPrimitive> CPeripheralAddonTranslator::TranslatePrimitives(const std::vector<ADDON::DriverPrimitive>& primitives)
+std::vector<JOYSTICK::CDriverPrimitive> CPeripheralAddonTranslator::TranslatePrimitives(const std::vector<kodi::addon::DriverPrimitive>& primitives)
 {
   std::vector<JOYSTICK::CDriverPrimitive> ret;
   std::transform(primitives.begin(), primitives.end(), std::back_inserter(ret),
-    [](const ADDON::DriverPrimitive& primitive)
+    [](const kodi::addon::DriverPrimitive& primitive)
     {
       return CPeripheralAddonTranslator::TranslatePrimitive(primitive);
     });
   return ret;
 }
 
-std::vector<ADDON::DriverPrimitive> CPeripheralAddonTranslator::TranslatePrimitives(const std::vector<JOYSTICK::CDriverPrimitive>& primitives)
+std::vector<kodi::addon::DriverPrimitive> CPeripheralAddonTranslator::TranslatePrimitives(const std::vector<JOYSTICK::CDriverPrimitive>& primitives)
 {
-  std::vector<ADDON::DriverPrimitive> ret;
+  std::vector<kodi::addon::DriverPrimitive> ret;
   std::transform(primitives.begin(), primitives.end(), std::back_inserter(ret),
     [](const JOYSTICK::CDriverPrimitive& primitive)
     {
@@ -267,7 +267,7 @@ JOYSTICK_FEATURE_TYPE CPeripheralAddonTranslator::TranslateFeatureType(JOYSTICK:
   return JOYSTICK_FEATURE_TYPE_UNKNOWN;
 }
 
-ADDON::DriverPrimitive CPeripheralAddonTranslator::Opposite(const ADDON::DriverPrimitive& primitive)
+kodi::addon::DriverPrimitive CPeripheralAddonTranslator::Opposite(const kodi::addon::DriverPrimitive& primitive)
 {
-  return ADDON::DriverPrimitive(primitive.DriverIndex(), primitive.Center() * -1, primitive.SemiAxisDirection() * -1, primitive.Range());
+  return kodi::addon::DriverPrimitive(primitive.DriverIndex(), primitive.Center() * -1, primitive.SemiAxisDirection() * -1, primitive.Range());
 }
