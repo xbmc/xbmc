@@ -2925,7 +2925,7 @@
         </setting>
         <setting id="general.addonnotifications" type="boolean" label="36609" help="36612">
           <level>0</level>
-          <default>true</default>
+          <default>false</default>
           <control type="toggle" />
           <dependencies>
             <dependency type="enable" setting="general.addonupdates">0</dependency>
