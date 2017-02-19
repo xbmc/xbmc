@@ -751,6 +751,9 @@ bool CPeripherals::GetNextKeypress(float frameTime, CKey &key)
 
 void CPeripherals::OnUserNotification()
 {
+  if (!CSettings::GetInstance().GetBool(CSettings::SETTING_INPUT_RUMBLENOTIFY))
+    return;
+
   PeripheralVector peripherals;
   GetPeripheralsWithFeature(peripherals, FEATURE_RUMBLE);
 

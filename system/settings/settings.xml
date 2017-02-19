@@ -2621,6 +2621,14 @@
           <level>0</level>
           <control type="button" format="action" />
         </setting>
+        <setting id="input.rumblenotify" type="boolean" label="35053" help="35054">
+          <level>0</level>
+          <dependencies>
+            <dependency type="visible" on="property" name="HasRumbleFeature" />
+          </dependencies>
+          <control type="toggle" />
+          <default>false</default>
+        </setting>
         <setting id="input.testrumble" type="action" label="35051" help="35052">
           <level>2</level>
           <dependencies>

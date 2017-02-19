@@ -375,6 +375,7 @@ const std::string CSettings::SETTING_INPUT_PERIPHERALS = "input.peripherals";
 const std::string CSettings::SETTING_INPUT_ENABLEMOUSE = "input.enablemouse";
 const std::string CSettings::SETTING_INPUT_ASKNEWCONTROLLERS = "input.asknewcontrollers";
 const std::string CSettings::SETTING_INPUT_CONTROLLERCONFIG = "input.controllerconfig";
+const std::string CSettings::SETTING_INPUT_RUMBLENOTIFY = "input.rumblenotify";
 const std::string CSettings::SETTING_INPUT_TESTRUMBLE = "input.testrumble";
 const std::string CSettings::SETTING_INPUT_CONTROLLERPOWEROFF = "input.controllerpoweroff";
 const std::string CSettings::SETTING_INPUT_APPLEREMOTEMODE = "input.appleremotemode";
