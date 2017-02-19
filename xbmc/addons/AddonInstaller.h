@@ -95,6 +95,7 @@ public:
   bool HasJob(const std::string& ID) const;
 
   /*! Install update and block until all updates have installed. */
+  void InstallUpdatesAndWait();
   void InstallUpdates();
 
   void OnJobComplete(unsigned int jobID, bool success, CJob* job);
@@ -129,7 +130,7 @@ private:
    \return true on successful install, false on failure.
    */
   bool DoInstall(const ADDON::AddonPtr &addon, const ADDON::RepositoryPtr &repo,
-      const std::string &hash = "", bool background = true, bool modal = false);
+      const std::string &hash = "", bool background = true, bool modal = false, bool autoUpdate = false);
 
   /*! \brief Check whether dependencies of an addon exist or are installable.
    Iterates through the addon's dependencies, checking they're installed or installable.
@@ -153,7 +154,8 @@ private:
 class CAddonInstallJob : public CFileOperationJob
 {
 public:
-  CAddonInstallJob(const ADDON::AddonPtr &addon, const ADDON::AddonPtr &repo, const std::string &hash = "");
+  CAddonInstallJob(const ADDON::AddonPtr& addon, const ADDON::AddonPtr& repo,
+      const std::string& hash, bool isAutoUpdate);
 
   virtual bool DoWork();
 
@@ -185,7 +187,8 @@ private:
   ADDON::AddonPtr m_addon;
   ADDON::AddonPtr m_repo;
   std::string m_hash;
-  bool m_update;
+  bool m_isUpdate;
+  bool m_isAutoUpdate;
 };
 
 class CAddonUnInstallJob : public CFileOperationJob
