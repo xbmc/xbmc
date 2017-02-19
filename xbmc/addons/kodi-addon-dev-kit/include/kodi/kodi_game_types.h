@@ -457,7 +457,7 @@ typedef struct game_client_properties
 typedef struct KodiToAddonFuncTable_Game
 {
   const char* (__cdecl* GetGameAPIVersion)(void);
-  const char* (__cdecl* GetMininumGameAPIVersion)(void);
+  const char* (__cdecl* GetMinimumGameAPIVersion)(void);
   GAME_ERROR  (__cdecl* LoadGame)(const char*);
   GAME_ERROR  (__cdecl* LoadGameSpecial)(SPECIAL_GAME_TYPE, const char**, size_t);
   GAME_ERROR  (__cdecl* LoadStandalone)(void);
