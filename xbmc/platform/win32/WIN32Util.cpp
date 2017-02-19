@@ -39,6 +39,7 @@
 #include "utils/Environment.h"
 #include "utils/StringUtils.h"
 #include "platform/win32/crts_caller.h"
+#include "CompileInfo.h"
 
 #include <cassert>
 
@@ -405,7 +406,7 @@ std::string CWIN32Util::GetProfilePath()
   std::string strHomePath = CUtil::GetHomePath();
 
   if(g_application.PlatformDirectoriesEnabled())
-    strProfilePath = URIUtils::AddFileToFolder(GetSpecialFolder(CSIDL_APPDATA|CSIDL_FLAG_CREATE), "Kodi");
+    strProfilePath = URIUtils::AddFileToFolder(GetSpecialFolder(CSIDL_APPDATA|CSIDL_FLAG_CREATE), CCompileInfo::GetAppName());
   else
     strProfilePath = URIUtils::AddFileToFolder(strHomePath , "portable_data");
 
