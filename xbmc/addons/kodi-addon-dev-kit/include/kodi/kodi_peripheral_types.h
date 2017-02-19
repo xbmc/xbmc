@@ -50,10 +50,10 @@
 #endif
 
 /* current Peripheral API version */
-#define PERIPHERAL_API_VERSION "1.3.0"
+#define PERIPHERAL_API_VERSION "1.3.1"
 
 /* min. Peripheral API version */
-#define PERIPHERAL_MIN_API_VERSION "1.3.0"
+#define PERIPHERAL_MIN_API_VERSION "1.3.1"
 
 /* indicates a joystick has no preference for port number */
 #define NO_PORT_REQUESTED     (-1)
@@ -111,6 +111,8 @@ extern "C"
   typedef struct PERIPHERAL_CAPABILITIES
   {
     bool provides_joysticks;            /*!< @brief true if the add-on provides joysticks */
+    bool provides_joystick_rumble;
+    bool provides_joystick_power_off;
     bool provides_buttonmaps;           /*!< @brief true if the add-on provides button maps */
   } ATTRIBUTE_PACKED PERIPHERAL_CAPABILITIES;
   ///}

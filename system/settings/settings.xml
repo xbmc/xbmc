@@ -2624,12 +2624,16 @@
         <setting id="input.testrumble" type="action" label="35051" help="35052">
           <level>2</level>
           <dependencies>
-            <dependency type="enable" on="property" name="HasRumbleFeature" />
+            <dependency type="visible" on="property" name="HasRumbleFeature" />
+            <dependency type="enable" on="property" name="HasRumbleController" />
           </dependencies>
           <control type="button" format="action" />
         </setting>
         <setting id="input.controllerpoweroff" type="boolean" label="35088" help="35089">
           <level>0</level>
+          <dependencies>
+            <dependency type="visible" on="property" name="HasPowerOffFeature" />
+          </dependencies>
           <default>false</default>
           <control type="toggle" />
         </setting>
