@@ -628,7 +628,7 @@ bool CAddonInstallJob::DoWork()
   }
 
   CEventLog::GetInstance().Add(
-    EventPtr(new CAddonManagementEvent(m_addon, m_isUpdate ? 24065 : 24064)),
+    EventPtr(new CAddonManagementEvent(m_addon, m_isUpdate ? 24065 : 24084)),
     !IsModal() && CServiceBroker::GetSettings().GetBool(CSettings::SETTING_ADDONS_NOTIFICATIONS), false);
 
   if (m_isAutoUpdate && !m_addon->Broken().empty())
