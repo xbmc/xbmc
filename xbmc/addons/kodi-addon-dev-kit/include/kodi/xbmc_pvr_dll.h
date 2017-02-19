@@ -65,7 +65,7 @@ extern "C"
    * @remarks Valid implementation required.
    * @note see libKODI_guilib.h about related parts
    */
-  const char* GetMininumGUIAPIVersion(void);
+  const char* GetMinimumGUIAPIVersion(void);
 
   /*!
    * Get the list of features that this add-on provides.
@@ -666,7 +666,7 @@ extern "C"
     pClient->GetPVRAPIVersion               = GetPVRAPIVersion;
     pClient->GetMinimumPVRAPIVersion        = GetMinimumPVRAPIVersion;
     pClient->GetGUIAPIVersion               = GetGUIAPIVersion;
-    pClient->GetMininumGUIAPIVersion        = GetMininumGUIAPIVersion;
+    pClient->GetMinimumGUIAPIVersion        = GetMinimumGUIAPIVersion;
     pClient->GetAddonCapabilities           = GetAddonCapabilities;
     pClient->GetStreamProperties            = GetStreamProperties;
     pClient->GetConnectionString            = GetConnectionString;
