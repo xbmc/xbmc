@@ -1413,7 +1413,7 @@ void CGUIWindowMusicBase::OnPrepareFileItems(CFileItemList &items)
 {
   CGUIMediaWindow::OnPrepareFileItems(items);
 
-  if (!items.IsMusicDb())
+  if (!items.IsMusicDb() && !items.IsSmartPlayList())
     RetrieveMusicInfo();
 }
 
