@@ -24,6 +24,9 @@
 
 #include "addons/PeripheralAddon.h"
 #include "addons/AddonButtonMap.h"
+#include "addons/AddonManager.h"
+#include "addons/GUIDialogAddonSettings.h"
+#include "addons/GUIWindowAddonBrowser.h"
 #include "bus/PeripheralBus.h"
 #include "bus/PeripheralBusUSB.h"
 #if defined(TARGET_ANDROID)
@@ -980,6 +983,17 @@ void CPeripherals::OnSettingAction(const CSetting *setting)
     g_windowManager.ActivateWindow(WINDOW_DIALOG_GAME_CONTROLLERS);
   else if (settingId == CSettings::SETTING_INPUT_TESTRUMBLE)
     TestFeature(FEATURE_RUMBLE);
+  else if (settingId == CSettings::SETTING_INPUT_PERIPHERALLIBRARIES)
+  {
+    std::string strAddonId;
+    CGUIWindowAddonBrowser::SelectAddonID(ADDON::ADDON_PERIPHERALDLL, strAddonId, false, true, true, false, true);
+    if (!strAddonId.empty())
+    {
+      ADDON::AddonPtr addon;
+      if (ADDON::CAddonMgr::GetInstance().GetAddon(strAddonId, addon))
+        CGUIDialogAddonSettings::ShowAndGetInput(addon);
+    }
+  }
 }
 
 void CPeripherals::OnApplicationMessage(MESSAGING::ThreadMessage* pMsg)
