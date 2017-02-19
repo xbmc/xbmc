@@ -47,7 +47,7 @@ extern "C"
    * @return The XBMC_PVR_MIN_API_VERSION that was used to compile this add-on.
    * @remarks Valid implementation required.
    */
-  const char* GetMininumPVRAPIVersion(void);
+  const char* GetMinimumPVRAPIVersion(void);
 
   /*!
    * Get the XBMC_GUI_API_VERSION that was used to compile this add-on.
@@ -664,7 +664,7 @@ extern "C"
     KodiToAddonFuncTable_PVR* pClient = static_cast<KodiToAddonFuncTable_PVR*>(ptr);
     
     pClient->GetPVRAPIVersion               = GetPVRAPIVersion;
-    pClient->GetMininumPVRAPIVersion        = GetMininumPVRAPIVersion;
+    pClient->GetMinimumPVRAPIVersion        = GetMinimumPVRAPIVersion;
     pClient->GetGUIAPIVersion               = GetGUIAPIVersion;
     pClient->GetMininumGUIAPIVersion        = GetMininumGUIAPIVersion;
     pClient->GetAddonCapabilities           = GetAddonCapabilities;

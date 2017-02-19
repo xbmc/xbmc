@@ -533,7 +533,7 @@ extern "C" {
   typedef struct KodiToAddonFuncTable_PVR
   {
     const char*  (__cdecl* GetPVRAPIVersion)(void);
-    const char*  (__cdecl* GetMininumPVRAPIVersion)(void);
+    const char*  (__cdecl* GetMinimumPVRAPIVersion)(void);
     const char*  (__cdecl* GetGUIAPIVersion)(void);
     const char*  (__cdecl* GetMininumGUIAPIVersion)(void);
     PVR_ERROR    (__cdecl* GetAddonCapabilities)(PVR_ADDON_CAPABILITIES*);
