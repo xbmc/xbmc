@@ -103,7 +103,7 @@ namespace PERIPHERALS
     void SetHatCount(unsigned int hatCount)       { m_hatCount      = hatCount; }
     void SetAxisCount(unsigned int axisCount)     { m_axisCount     = axisCount; }
     void SetMotorCount(unsigned int motorCount); // specialized to update m_features
-    void SetSupportsPowerOff(bool supportsPowerOff) { m_supportsPowerOff = supportsPowerOff; }
+    void SetSupportsPowerOff(bool bSupportsPowerOff); // specialized to update m_features
 
   protected:
     void InitializeDeadzoneFiltering();

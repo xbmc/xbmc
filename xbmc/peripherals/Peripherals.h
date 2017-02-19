@@ -94,6 +94,13 @@ namespace PERIPHERALS
     PeripheralBusPtr GetBusWithDevice(const std::string &strLocation) const;
 
     /*!
+     * @brief Check if any busses support the given feature
+     * @param feature The feature to check for
+     * @return True if a bus supports the feature, false otherwise
+     */
+    bool SupportsFeature(PeripheralFeature feature) const;
+
+    /*!
      * @brief Get all peripheral instances that have the given feature.
      * @param results The list of results.
      * @param feature The feature to search for.

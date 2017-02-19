@@ -77,6 +77,7 @@ namespace PERIPHERALS
     virtual bool         HasFeature(const PeripheralFeature feature) const override;
     virtual PeripheralPtr GetPeripheral(const std::string &strLocation) const override;
     virtual PeripheralPtr GetByPath(const std::string &strPath) const override;
+    virtual bool         SupportsFeature(PeripheralFeature feature) const override;
     virtual int          GetPeripheralsWithFeature(PeripheralVector &results, const PeripheralFeature feature) const override;
     virtual size_t       GetNumberOfPeripherals(void) const override;
     virtual size_t       GetNumberOfPeripheralsWithId(const int iVendorId, const int iProductId) const override;

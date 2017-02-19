@@ -62,6 +62,7 @@ namespace PERIPHERALS
     FEATURE_IMON,
     FEATURE_JOYSTICK,
     FEATURE_RUMBLE,
+    FEATURE_POWER_OFF,
   };
 
   enum PeripheralType

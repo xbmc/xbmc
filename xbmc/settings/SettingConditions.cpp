@@ -84,9 +84,21 @@ bool HasRumbleFeature(const std::string &condition, const std::string &value, co
 {
   using namespace PERIPHERALS;
 
-  PeripheralVector results;
-  g_peripherals.GetPeripheralsWithFeature(results, FEATURE_RUMBLE);
-  return !results.empty();
+  return g_peripherals.SupportsFeature(FEATURE_RUMBLE);
+}
+
+bool HasRumbleController(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
+{
+  using namespace PERIPHERALS;
+
+  return g_peripherals.HasPeripheralWithFeature(FEATURE_RUMBLE);
+}
+
+bool HasPowerOffFeature(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
+{
+  using namespace PERIPHERALS;
+
+  return g_peripherals.SupportsFeature(FEATURE_POWER_OFF);
 }
 
 bool IsFullscreen(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
@@ -347,6 +359,8 @@ void CSettingConditions::Initialize()
   m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("checkpvrparentalpin",           CheckPVRParentalPin));
   m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("hasperipherals",                HasPeripherals));
   m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("hasrumblefeature",              HasRumbleFeature));
+  m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("hasrumblecontroller",           HasRumbleController));
+  m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("haspowerofffeature",            HasPowerOffFeature));
   m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("isfullscreen",                  IsFullscreen));
   m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("ismasteruser",                  IsMasterUser));
   m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("isusingttfsubtitles",           IsUsingTTFSubtitles));
