@@ -626,9 +626,10 @@ bool CAddonInstallJob::DoWork()
       database.SetLastUpdated(m_addon->ID(), CDateTime::GetCurrentDateTime());
   }
 
+  bool notify = (CSettings::GetInstance().GetBool(CSettings::SETTING_ADDONS_NOTIFICATIONS)
+        || !m_isAutoUpdate) && !IsModal();
   CEventLog::GetInstance().Add(
-    EventPtr(new CAddonManagementEvent(m_addon, m_isUpdate ? 24065 : 24084)),
-    !IsModal() && CSettings::GetInstance().GetBool(CSettings::SETTING_ADDONS_NOTIFICATIONS), false);
+      EventPtr(new CAddonManagementEvent(m_addon, m_isUpdate ? 24065 : 24084)), notify, false);
 
   if (m_isAutoUpdate && !m_addon->Broken().empty())
   {
