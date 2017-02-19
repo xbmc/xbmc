@@ -54,6 +54,7 @@ CMediaSettings::CMediaSettings()
   m_watchedModes["movies"] = WatchedModeAll;
   m_watchedModes["tvshows"] = WatchedModeAll;
   m_watchedModes["musicvideos"] = WatchedModeAll;
+  m_watchedModes["recordings"] = WatchedModeAll;
 
   m_musicPlaylistRepeat = false;
   m_musicPlaylistShuffle = false;
@@ -177,6 +178,8 @@ bool CMediaSettings::Load(const TiXmlNode *settings)
       m_watchedModes["tvshows"] = (WatchedMode)tmp;
     if (XMLUtils::GetInt(pElement, "watchmodemusicvideos", tmp, (int)WatchedModeAll, (int)WatchedModeWatched))
       m_watchedModes["musicvideos"] = (WatchedMode)tmp;
+    if (XMLUtils::GetInt(pElement, "watchmoderecordings", tmp, static_cast<int>(WatchedModeAll), static_cast<int>(WatchedModeWatched)))
+      m_watchedModes["recordings"] = static_cast<WatchedMode>(tmp);
 
     const TiXmlElement *pChild = pElement->FirstChildElement("playlist");
     if (pChild != NULL)
@@ -283,6 +286,7 @@ bool CMediaSettings::Save(TiXmlNode *settings) const
   XMLUtils::SetInt(pNode, "watchmodemovies", m_watchedModes.find("movies")->second);
   XMLUtils::SetInt(pNode, "watchmodetvshows", m_watchedModes.find("tvshows")->second);
   XMLUtils::SetInt(pNode, "watchmodemusicvideos", m_watchedModes.find("musicvideos")->second);
+  XMLUtils::SetInt(pNode, "watchmoderecordings", m_watchedModes.find("recordings")->second);
 
   TiXmlElement videoPlaylistNode("playlist");
   playlistNode = pNode->InsertEndChild(videoPlaylistNode);

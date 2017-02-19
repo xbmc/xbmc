@@ -43,6 +43,7 @@ namespace PVR
   protected:
     virtual std::string GetDirectoryPath(void) override;
     virtual void OnPrepareFileItems(CFileItemList &items) override;
+    bool GetFilteredItems(const std::string &filter, CFileItemList &items) override;
 
   private:
     bool OnContextButtonDeleteAll(CFileItem *item, CONTEXT_BUTTON button);

@@ -1306,10 +1306,21 @@ std::string CGUIBaseContainer::GetLabel(int info) const
     break;
   case CONTAINER_ACTUAL_ITEMS:
   case CONTAINER_NUM_ITEMS:
+  case CONTAINER_NONFOLDER_ITEMS:
     {
       unsigned int numItems = GetNumItems();
       if (info == CONTAINER_NUM_ITEMS && numItems && m_items[0]->IsFileItem() && (std::static_pointer_cast<CFileItem>(m_items[0]))->IsParentFolder())
         label = StringUtils::Format("%u", numItems-1);
+      else if (info == CONTAINER_NONFOLDER_ITEMS)
+      {
+        int iNonFolderItems = 0;
+        for (auto item : m_items)
+        {
+          if (!item->m_bIsFolder)
+            iNonFolderItems++;
+        }
+        label = StringUtils::Format("%u", iNonFolderItems);
+      }
       else
         label = StringUtils::Format("%u", numItems);
     }
