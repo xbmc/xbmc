@@ -263,10 +263,8 @@ namespace PERIPHERALS
      * controller profiles.
      *
      * If user input is required, a blocking dialog may be shown.
-     *
-     * \return True if button mapping is enabled for at least one bus
      */
-    bool EnableButtonMapping();
+    void EnableButtonMapping();
 
     /*!
      * \brief Get an add-on that can provide button maps for a device

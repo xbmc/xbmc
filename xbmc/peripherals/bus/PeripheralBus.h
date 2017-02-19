@@ -170,7 +170,7 @@ namespace PERIPHERALS
     * \brief Initialize button mapping
     * \return True if button mapping is enabled for this bus
     */
-    virtual bool EnableButtonMapping() { return false; }
+    virtual void EnableButtonMapping() { }
 
     /*!
      * \brief Power off the specified device

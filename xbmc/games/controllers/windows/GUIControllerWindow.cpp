@@ -232,8 +232,7 @@ void CGUIControllerWindow::OnInitWindow(void)
   OnMessage(msgFocus);
 
   // Enable button mapping support
-  if (!CServiceBroker::GetPeripherals().EnableButtonMapping())
-    CLog::Log(LOGDEBUG, "Joystick support not found");
+  CServiceBroker::GetPeripherals().EnableButtonMapping();
 
   // FIXME: not thread safe
 //  ADDON::CRepositoryUpdater::GetInstance().Events().Subscribe(this, &CGUIControllerWindow::OnEvent);
