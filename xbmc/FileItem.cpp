@@ -1262,7 +1262,6 @@ void CFileItem::FillInDefaultIcon()
   //   default picture for videos
   //   default picture for shortcuts
   //   default picture for playlists
-  //   or the icon embedded in an .xbe
   //
   // for folders
   //   for .. folders the default picture for parent folder
