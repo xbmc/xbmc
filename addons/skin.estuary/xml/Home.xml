@@ -50,7 +50,7 @@
 					</include>
 					<control type="grouplist" id="5001">
 						<include>WidgetGroupListCommon</include>
-						<include content="WidgetListCategories" condition="Library.HasContent(movies) + !Skin.HasSetting(home_no_categories_widget)">
+						<include content="WidgetListCategories" condition="Library.HasContent(movies)">
 							<param name="content_path" value="library://video/movies/"/>
 							<param name="widget_header" value="$LOCALIZE[31148]"/>
 							<param name="widget_target" value="videos"/>
@@ -111,7 +111,7 @@
 					</include>
 					<control type="grouplist" id="6001">
 						<include>WidgetGroupListCommon</include>
-						<include content="WidgetListCategories" condition="Library.HasContent(tvshows) + !Skin.HasSetting(home_no_categories_widget)">
+						<include content="WidgetListCategories" condition="Library.HasContent(tvshows)">
 							<param name="content_path" value="library://video/tvshows/"/>
 							<param name="widget_header" value="$LOCALIZE[31148]"/>
 							<param name="widget_target" value="videos"/>
@@ -150,7 +150,7 @@
 							<param name="widget_header" value="$LOCALIZE[20388]"/>
 							<param name="widget_target" value="videos"/>
 							<param name="list_id" value="6500"/>
-							<param name="icon" value="$INFO[ListItem.Label,resource://resource.images.studios.white/,.png]"/>
+							<param name="icon" value="$VAR[WidgetStudioIconVar]"/>
 							<param name="icon_height" value="70"/>
 						</include>
 					</control>
@@ -169,7 +169,7 @@
 					</include>
 					<control type="grouplist" id="7001">
 						<include>WidgetGroupListCommon</include>
-						<include content="WidgetListCategories" condition="Library.HasContent(music) + !Skin.HasSetting(home_no_categories_widget)">
+						<include content="WidgetListCategories" condition="Library.HasContent(music)">
 							<param name="content_path" value="library://music/"/>
 							<param name="widget_header" value="$LOCALIZE[31148]"/>
 							<param name="widget_target" value="music"/>
@@ -235,12 +235,11 @@
 					</include>
 					<control type="grouplist" id="8001">
 						<include>WidgetGroupListCommon</include>
-						<include content="WidgetListCategories" condition="!Skin.HasSetting(home_no_categories_widget)" >
-							<param name="content_path" value="addons://"/>
+						<include content="WidgetListCategories">
 							<param name="widget_header" value="$LOCALIZE[31148]"/>
-							<param name="widget_target" value="addonbrowser"/>
 							<param name="list_id" value="8900"/>
 							<param name="visible" value="Integer.IsGreater(Container(8100).NumItems,0) | Integer.IsGreater(Container(8200).NumItems,0) | Integer.IsGreater(Container(8300).NumItems,0) | Integer.IsGreater(Container(8400).NumItems,0) | Integer.IsGreater(Container(8500).NumItems,0)"/>
+							<param name="addon_submenu" value="true"/>
 						</include>
 						<include content="WidgetListSquare">
 							<param name="content_path" value="addons://sources/video/"/>
@@ -259,16 +258,6 @@
 							<param name="sortorder" value="descending"/>
 							<param name="list_id" value="8200"/>
 							<param name="fallback_icon" value="DefaultAddon.png"/>
-						</include>
-						<include content="WidgetListSquare">
-							<param name="content_path" value="addons://sources/game/"/>
-							<param name="widget_header" value="$LOCALIZE[35049]"/>
-							<param name="widget_target" value="games"/>
-							<param name="sortby" value="lastused"/>
-							<param name="sortorder" value="descending"/>
-							<param name="list_id" value="8700"/>
-							<param name="fallback_icon" value="DefaultAddon.png"/>
-							<param name="visible" value="System.GetBool(gamesgeneral.enable)"/>
 						</include>
 						<include content="WidgetListSquare">
 							<param name="content_path" value="addons://sources/executable/"/>
@@ -552,7 +541,7 @@
 								<texture border="21">dialogs/dialog-bg.png</texture>
 							</control>
 							<control type="label">
-								<left>300</left>
+								<left>840</left>
 								<top>60</top>
 								<aligny>center</aligny>
 								<height>24</height>
@@ -562,7 +551,7 @@
 								<label>$INFO[Weather.Location]</label>
 							</control>
 							<control type="label">
-								<left>300</left>
+								<left>840</left>
 								<top>120</top>
 								<aligny>center</aligny>
 								<height>24</height>
@@ -633,7 +622,7 @@
 					</include>
 					<control type="grouplist" id="16001">
 						<include>WidgetGroupListCommon</include>
-						<include content="WidgetListCategories" condition="Library.HasContent(musicvideos) + !Skin.HasSetting(home_no_categories_widget)">
+						<include content="WidgetListCategories" condition="Library.HasContent(musicvideos)">
 							<param name="content_path" value="library://music/musicvideos/"/>
 							<param name="widget_header" value="$LOCALIZE[31148]"/>
 							<param name="widget_target" value="videos"/>
@@ -681,7 +670,7 @@
 							<param name="widget_header" value="$LOCALIZE[20388]"/>
 							<param name="widget_target" value="music"/>
 							<param name="list_id" value="16600"/>
-							<param name="icon" value="$INFO[ListItem.Label,resource://resource.images.studios.white/,.png]"/>
+							<param name="icon" value="$VAR[WidgetStudioIconVar]"/>
 							<param name="icon_height" value="70"/>
 						</include>
 					</control>
@@ -708,33 +697,6 @@
 						</include>
 					</control>
 				</control>
-				<control type="group" id="17000">
-					<visible>String.IsEqual(Container(9000).ListItem.Property(id),games)</visible>
-					<include content="Visible_Right_Delayed">
-						<param name="id" value="games"/>
-					</include>
-					<include content="ImageWidget">
-						<param name="text_label" value="$LOCALIZE[31162]" />
-						<param name="button_label" value="$LOCALIZE[31110]" />
-						<param name="button_onclick" value="ActivateWindow(games)"/>
-						<param name="button_id" value="17100"/>
-						<param name="button2_onclick" value="Skin.SetBool(HomeMenuNoGamesButton)"/>
-					</include>
-					<!--
-										<control type="grouplist" id="17001">
-											<include>WidgetGroupListCommon</include>
-											<include content="ImageWidget">
-
-												<param name="text_label" value="$LOCALIZE[31162]" />
-												<param name="button_label" value="$LOCALIZE[31110]" />
-												<param name="button_onclick" value="ActivateWindow(games)"/>
-												<param name="button_id" value="17100"/>
-												<param name="visible" value="true"/>
-												<param name="button2_onclick" value="Skin.SetBool(HomeMenuNoGamesButton)"/>
-											</include>
-										</control>
-										-->
-				</control>
 				<control type="group" id="21000">
 					<visible>String.IsEqual(Container(9000).ListItem.Property(id),disc)</visible>
 					<include content="Visible_Right_Delayed">
@@ -743,7 +705,7 @@
 					<include content="ImageWidget">
 						<param name="text_label" value="$INFO[System.DVDLabel]" />
 						<param name="button_label" value="$LOCALIZE[341]" />
-						<param name="button_onclick" value="PlayDVD"/>
+						<param name="button_onclick" value="PlayDisc"/>
 						<param name="button_id" value="21100"/>
 						<param name="visible" value="true"/>
 						<param name="button2_label" value="$LOCALIZE[13391]"/>
@@ -778,7 +740,7 @@
 								<width>462</width>
 								<height>95</height>
 								<texture colordiffuse="button_focus">lists/focus.png</texture>
-								<animation effect="fade" start="100" end="0" time="0" condition="[!Control.HasFocus(9000) + !ControlGroup(700).HasFocus] | System.HasActiveModalDialog">Conditional</animation>
+								<animation effect="fade" start="100" end="0" time="0" condition="[!Control.HasFocus(9000) + !ControlGroup(700).HasFocus] | System.HasModalDialog">Conditional</animation>
 							</control>
 							<control type="image">
 								<left>-3</left>
@@ -794,7 +756,7 @@
 								<width>95</width>
 								<height>95</height>
 								<texture colordiffuse="51FFFFFF">colors/black.png</texture>
-								<animation effect="fade" start="100" end="0" time="0" condition="[!Control.HasFocus(9000) + !ControlGroup(700).HasFocus] | System.HasActiveModalDialog">Conditional</animation>
+								<animation effect="fade" start="100" end="0" time="0" condition="[!Control.HasFocus(9000) + !ControlGroup(700).HasFocus] | System.HasModalDialog">Conditional</animation>
 							</control>
 						</control>
 						<control type="image">
@@ -837,8 +799,7 @@
 					<content>
 						<item>
 							<label>$LOCALIZE[342]</label>
-							<onclick condition="Library.HasContent(movies) + Skin.HasSetting(home_no_categories_widget)">ActivateWindow(Videos,videodb://movies/,return)</onclick>
-							<onclick condition="Library.HasContent(movies) + !Skin.HasSetting(home_no_categories_widget)">ActivateWindow(Videos,videodb://movies/titles/,return)</onclick>
+							<onclick condition="Library.HasContent(movies)">ActivateWindow(Videos,videodb://movies/titles/,return)</onclick>
 							<onclick condition="!Library.HasContent(movies)">ActivateWindow(Videos,sources://video/,return)</onclick>
 							<property name="menu_id">$NUMBER[5000]</property>
 							<thumb>icons/sidemenu/movies.png</thumb>
@@ -847,8 +808,7 @@
 						</item>
 						<item>
 							<label>$LOCALIZE[20343]</label>
-							<onclick condition="Library.HasContent(tvshows) + Skin.HasSetting(home_no_categories_widget)">ActivateWindow(Videos,videodb://tvshows/,return)</onclick>
-							<onclick condition="Library.HasContent(tvshows) + !Skin.HasSetting(home_no_categories_widget)">ActivateWindow(Videos,videodb://tvshows/titles/,return)</onclick>
+							<onclick condition="Library.HasContent(tvshows)">ActivateWindow(Videos,videodb://tvshows/titles/,return)</onclick>
 							<onclick condition="!Library.HasContent(tvshows)">ActivateWindow(Videos,sources://video/,return)</onclick>
 							<property name="menu_id">$NUMBER[6000]</property>
 							<thumb>icons/sidemenu/tv.png</thumb>
@@ -865,7 +825,7 @@
 						</item>
 						<item>
 							<label>$LOCALIZE[427]</label>
-							<onclick>PlayDVD</onclick>
+							<onclick>PlayDisc</onclick>
 							<property name="menu_id">$NUMBER[21000]</property>
 							<thumb>icons/sidemenu/disc.png</thumb>
 							<property name="id">disc</property>
@@ -894,14 +854,6 @@
 							<thumb>icons/sidemenu/radio.png</thumb>
 							<property name="id">radio</property>
 							<visible>!Skin.HasSetting(HomeMenuNoRadioButton)</visible>
-						</item>
-						<item>
-							<label>$LOCALIZE[15016]</label>
-							<property name="menu_id">$NUMBER[17000]</property>
-							<onclick>ActivateWindow(Games)</onclick>
-							<thumb>icons/sidemenu/games.png</thumb>
-							<property name="id">games</property>
-							<visible>System.GetBool(gamesgeneral.enable) + !Skin.HasSetting(HomeMenuNoGamesButton)</visible>
 						</item>
 						<item>
 							<label>$LOCALIZE[24001]</label>
@@ -953,8 +905,12 @@
 					<width>480</width>
 					<height>110</height>
 					<top>100</top>
-					<onup>SetFocus(9000,99,absolute)</onup>
-					<ondown>SetFocus(9000,0,absolute)</ondown>
+					<onup>SetFocus(9000)</onup>
+					<onup>PageDown</onup>
+					<onup>PageDown</onup>
+					<ondown>SetFocus(9000)</ondown>
+					<ondown>PageUp</ondown>
+					<ondown>PageUp</ondown>
 					<onright>2000</onright>
 					<align>justify</align>
 					<include content="IconButton">
@@ -963,6 +919,17 @@
 						<param name="icon" value="icons/power.png" />
 						<param name="label" value="$LOCALIZE[33060]" />
 					</include>
+                    <!-- Ricarica libreria -->
+                    <include content="IconButton">
+						<param name="control_id" value="10069" />
+						<param name="onclick" value="UpdateLibrary(video,,true)" />
+						<param name="icon" value="icons/submenu/updatelibrary.png" />
+						<param name="label" value="ricarica libreria" />
+					</include>
+                    <!--<control type="button" id="900">
+                        <label>R</label>
+                        <onclick>exportlibrary(video,true,thumbs,overwrite,actorthumbs)</onclick>
+                    </control>-->
 					<include content="IconButton">
 						<param name="control_id" value="802" />
 						<param name="onclick" value="ActivateWindow(settings)" />
@@ -1010,23 +977,20 @@
 					<texture>icons/logo-text.png</texture>
 				</control>
 			</control>
-			<control type="group">
+			<control type="rss">
 				<animation effect="slide" end="0,90" time="300" tween="sine" easing="inout" condition="$EXP[infodialog_active]">conditional</animation>
 				<animation effect="fade" start="0" end="100" time="400">WindowOpen</animation>
 				<animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
-				<control type="rss">
-					<left>0</left>
-					<bottom>0</bottom>
-					<height>39</height>
-					<width>100%</width>
-					<font>font12</font>
-					<urlset>1</urlset>
-					<hitrect x="-100" y="0" w="1" h="1" />
-					<titlecolor>button_focus</titlecolor>
-					<shadowcolor>text_shadow</shadowcolor>
-					<headlinecolor>FFC0C0C0</headlinecolor>
-					<visible>!Player.hasMedia</visible>
-				</control>
+				<left>0</left>
+				<bottom>0</bottom>
+				<height>39</height>
+				<width>100%</width>
+				<font>font12</font>
+				<urlset>1</urlset>
+				<hitrect x="-100" y="0" w="1" h="1" />
+				<titlecolor>button_focus</titlecolor>
+				<shadowcolor>text_shadow</shadowcolor>
+				<headlinecolor>FFC0C0C0</headlinecolor>
 			</control>
 		</control>
 	</controls>
