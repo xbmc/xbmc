@@ -1757,6 +1757,8 @@ bool CDVDDemuxFFmpeg::IsProgramChange()
       return true;
     if (m_pFormatContext->streams[idx]->codecpar->codec_id != stream->codec)
       return true;
+    if (m_pFormatContext->streams[idx]->codecpar->extradata_size != stream->ExtraSize)
+      return true;
   }
   return false;
 }
