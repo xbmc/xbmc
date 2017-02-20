@@ -361,6 +361,7 @@ bool CSeekHandler::SeekTimeCode(const CAction &action)
     case ACTION_STEP_BACK:
     case ACTION_BIG_STEP_BACK:
     case ACTION_CHAPTER_OR_BIG_STEP_BACK:
+    case ACTION_MOVE_LEFT:
     {
       SeekSeconds(-GetTimeCodeSeconds());
       return true;
@@ -368,6 +369,7 @@ bool CSeekHandler::SeekTimeCode(const CAction &action)
     case ACTION_STEP_FORWARD:
     case ACTION_BIG_STEP_FORWARD:
     case ACTION_CHAPTER_OR_BIG_STEP_FORWARD:
+    case ACTION_MOVE_RIGHT:
     {
       SeekSeconds(GetTimeCodeSeconds());
       return true;
