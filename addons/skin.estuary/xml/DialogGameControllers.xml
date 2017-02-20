@@ -162,7 +162,7 @@
 				<include content="DefaultDialogButton">
 					<param name="width" value="350" />
 					<param name="id" value="21" />
-					<param name="label" value="$LOCALIZE[35019]" />
+					<param name="label" value="$LOCALIZE[35013]" />
 				</include>
 			</control>
 		</control>

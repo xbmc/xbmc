@@ -172,10 +172,6 @@
 		<value condition="!String.IsEmpty(ListItem.Art(season.poster))">$INFO[ListItem.Art(season.poster)]</value>
 		<value condition="!String.IsEmpty(ListItem.Art(tvshow.poster))">$INFO[ListItem.Art(tvshow.poster)]</value>
 	</variable>
-	<variable name="ListPosterVar">
-		<value condition="ListItem.IsParentFolder">DefaultFolderBackPoster.png</value>
-		<value>$INFO[ListItem.Art(poster)]</value>
-	</variable>
 	<variable name="BannerLabel2Var">
 		<value condition="String.IsEqual(Listitem.DBType,tvshow)">$INFO[ListItem.Property(WatchedEpisodes)]$INFO[ListItem.Property(TotalEpisodes), / ,]</value>
 		<!-- <value>$INFO[ListItem.Year]</value>

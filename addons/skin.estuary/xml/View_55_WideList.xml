@@ -21,7 +21,7 @@
 				<ondown>55</ondown>
 				<viewtype label="$LOCALIZE[31107]">list</viewtype>
 				<visible>Container.Content(artists) | Container.Content(albums) | Container.Content(songs) | Container.Content(addons) | Container.Content(actors) | Container.Content(directors) | Container.Content(files) | Container.Content(mixed) | Container.Content(musicvideos) | Container.Content(videos) | Container.Content() | Container.Content(episodes) | Container.Content(movies) | Container.Content(tvshows) | Container.Content(seasons) | Container.Content(unknown)</visible>
-				<focusedlayout height="list_item_height" width="widelist_width" condition="Container.Content(artists) | Container.Content(albums) | Container.Content(actors) | Container.Content(directors) | Container.Content(files) | Container.Content(mixed) | Container.Content(videos) | Container.Content(episodes) | Container.Content(movies) | Container.Content(tvshows) | Container.Content(seasons) | Container.Content(unknown)">
+				<focusedlayout height="list_item_height" width="widelist_width" condition="Container.Content(artists) | Container.Content(albums) | Container.Content(actors) | Container.Content(directors) | Container.Content(files) | Container.Content(mixed) | Container.Content(videos) | Container.Content(musicvideos) | Container.Content(episodes) | Container.Content(movies) | Container.Content(tvshows) | Container.Content(seasons) | Container.Content(unknown)">
 					<control type="image">
 						<left>0</left>
 						<right>0</right>
@@ -37,7 +37,7 @@
 						<aligny>center</aligny>
 						<label>$INFO[ListItem.Year]</label>
 						<shadowcolor>text_shadow</shadowcolor>
-						<visible>!Container.Content(tvshows) + !Container.Content(seasons) + !Container.Content(episodes) + !Container.Content(movies) + !Container.Content(videos)</visible>
+						<visible>!Container.Content(tvshows) + !Container.Content(seasons) + !Container.Content(episodes) + !Container.Content(videos) + !Container.Content(musicvideos) + !Container.Content(movies)</visible>
 					</control>
 					<control type="image">
 						<left>35</left>
@@ -45,7 +45,7 @@
 						<width>32</width>
 						<height>32</height>
 						<texture>$VAR[ListWatchedIconVar]</texture>
-						<visible>Container.Content(tvshows) | Container.Content(seasons) | Container.Content(episodes) | Container.Content(movies) | Container.Content(videos) | String.IsEmpty(ListItem.Year)</visible>
+						<visible>Container.Content(tvshows) | Container.Content(seasons) | Container.Content(episodes) | Container.Content(movies) | Container.Content(videos) | Container.Content(musicvideos) | String.IsEmpty(ListItem.Year)</visible>
 					</control>
 					<control type="label">
 						<left>105</left>
@@ -68,7 +68,7 @@
 						<shadowcolor>text_shadow</shadowcolor>
 					</control>
 				</focusedlayout>
-				<itemlayout height="list_item_height" width="widelist_width" condition="Container.Content(artists) | Container.Content(albums) | Container.Content(actors) | Container.Content(directors) | Container.Content(files) | Container.Content(mixed) | Container.Content(videos) | Container.Content(episodes) | Container.Content(movies) | Container.Content(tvshows) | Container.Content(seasons) | Container.Content(unknown)">
+				<itemlayout height="list_item_height" width="widelist_width" condition="Container.Content(artists) | Container.Content(albums) | Container.Content(actors) | Container.Content(directors) | Container.Content(files) | Container.Content(mixed) | Container.Content(videos) | Container.Content(musicvideos) | Container.Content(episodes) | Container.Content(movies) | Container.Content(tvshows) | Container.Content(seasons) | Container.Content(unknown)">
 					<control type="label">
 						<left>18</left>
 						<top>0</top>
@@ -78,7 +78,7 @@
 						<label>$INFO[ListItem.Year]</label>
 						<textcolor>button_focus</textcolor>
 						<shadowcolor>text_shadow</shadowcolor>
-						<visible>!Container.Content(tvshows) + !Container.Content(seasons) + !Container.Content(episodes) + !Container.Content(movies) + !Container.Content(videos)</visible>
+						<visible>!Container.Content(tvshows) + !Container.Content(seasons) + !Container.Content(episodes) + !Container.Content(videos) + !Container.Content(musicvideos) + !Container.Content(movies)</visible>
 					</control>
 					<control type="image">
 						<left>35</left>
@@ -86,7 +86,7 @@
 						<width>32</width>
 						<height>32</height>
 						<texture colordiffuse="grey">$VAR[ListWatchedIconVar]</texture>
-						<visible>Container.Content(tvshows) | Container.Content(seasons) | Container.Content(episodes) | Container.Content(movies) | Container.Content(videos) | String.IsEmpty(ListItem.Year)</visible>
+						<visible>Container.Content(tvshows) | Container.Content(seasons) | Container.Content(episodes) | Container.Content(movies) | Container.Content(videos) | Container.Content(musicvideos) | String.IsEmpty(ListItem.Year)</visible>
 					</control>
 					<control type="label">
 						<left>105</left>

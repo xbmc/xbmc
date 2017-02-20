@@ -92,6 +92,7 @@
 						<width>700</width>
 						<include>DialogSettingButton</include>
 						<label>$LOCALIZE[22006]</label>
+						<label2>$INFO[Player.SubtitleDelay,[B],[/B]]</label2>
 						<onclick>SubtitleDelay</onclick>
 						<enable>VideoPlayer.HasSubtitles + VideoPlayer.SubtitlesEnabled</enable>
 					</control>
@@ -99,7 +100,7 @@
 						<width>700</width>
 						<include>DialogSettingButton</include>
 						<label>$LOCALIZE[31051]</label>
-						<label2>[B]$INFO[VideoPlayer.SubtitlesLanguage][/B]</label2>
+						<label2>$INFO[VideoPlayer.SubtitlesLanguage,[B],[/B]]</label2>
 						<onclick>CycleSubtitle</onclick>
 						<enable>VideoPlayer.HasSubtitles + VideoPlayer.SubtitlesEnabled</enable>
 					</control>

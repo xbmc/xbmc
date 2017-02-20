@@ -405,8 +405,7 @@
 					<include content="InfoDialogButton">
 						<param name="id" value="441" />
 						<param name="icon" value="icons/infodialogs/cinema.png" />
-						<param name="onclick_1" value="Dialog.Close(MovieInformation)" />
-						<param name="onclick_2" value="RunScript(script.cinemavision,experience)" />
+						<param name="onclick_1" value="RunScript(script.cinemavision,dbtype=$INFO[ListItem.DBType],dbid=$INFO[ListItem.DBID])" />
 						<param name="label" value="$LOCALIZE[31003]" />
 						<param name="visible" value="System.HasAddon(script.cinemavision) + [String.IsEqual(ListItem.DBType,movie) | String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season) | String.IsEqual(ListItem.DBType,episode)]" />
 					</include>
