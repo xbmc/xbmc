@@ -62,7 +62,7 @@
 							<width>600</width>
 							<aligny>top</aligny>
 							<animation effect="slide" start="0,0" end="0,18" time="0" condition="String.IsEmpty(ListItem.Title)">Conditional</animation>
-							<label>$INFO[ListItem.Label]</label>
+							<label>$INFO[ListItem.Title]</label>
 							<font>font14</font>
 							<shadowcolor>text_shadow</shadowcolor>
 						</control>
@@ -73,7 +73,7 @@
 							<width>580</width>
 							<aligny>top</aligny>
 							<font>font12</font>
-							<label>$INFO[ListItem.Title]</label>
+							<label>$INFO[ListItem.Label]</label>
 							<shadowcolor>text_shadow</shadowcolor>
 						</control>
 						<control type="label">
@@ -118,7 +118,7 @@
 							<height>90</height>
 							<width>640</width>
 							<aligny>top</aligny>
-							<label>$INFO[ListItem.Label]</label>
+							<label>$INFO[ListItem.Title]</label>
 							<font>font14</font>
 							<animation effect="slide" start="0,0" end="0,18" time="0" condition="String.IsEmpty(ListItem.Title)">Conditional</animation>
 							<shadowcolor>text_shadow</shadowcolor>
@@ -130,7 +130,7 @@
 							<width>580</width>
 							<aligny>top</aligny>
 							<font>font12</font>
-							<label>$INFO[ListItem.Title]</label>
+							<label>$INFO[ListItem.Label]</label>
 							<shadowcolor>text_shadow</shadowcolor>
 							<textcolor>grey</textcolor>
 						</control>
