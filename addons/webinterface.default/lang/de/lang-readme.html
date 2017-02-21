@@ -1,0 +1,60 @@
+<h1 id="-bersetzungen">Übersetzungen</h1>
+<p>Um die Sprachdateien zu aktualisieren, brauchst du nicht viel über GIT zu wissen.
+Diese Seite hilft dir dabei, mit Sprachdateien umzugehen.</p>
+<h2 id="wo-sind-die-sprachdateien-">Wo sind die Sprachdateien?</h2>
+<p>Die Sprachdateien werden an zwei Orten gespeichert. Das Sprachkürzel LANG_CODE 
+ist der zweistellige Code für diese Sprache, z.B. en, fr, de, pl, nl.</p>
+<h3 id="zeichenketten-strings-">Zeichenketten (Strings)</h3>
+<p><code>src/lang/_strings/LANG_CODE.po</code></p>
+<ul>
+<li>Das sind die Zeichenketten, die in der Anwendung verwendet werden. Üblicherweise
+wird nur <code>msgstr</code> verändert.</li>
+<li>Wenn <code>msgstr</code> für die Zeichenkette nicht vorhanden ist, kopier sie von en.po und
+aktualisiere deine Sprachdatei, etwa de.po für Deutsch.</li>
+</ul>
+<pre><code>msgctxt <span class="hljs-string">""</span>
+msgid <span class="hljs-string">"Select a filter"</span>
+msgstr <span class="hljs-string">"Filter wählen"</span>
+</code></pre><h3 id="seiten">Seiten</h3>
+<p><code>src/lang/LANG_CODE/PAGE.md</code></p>
+<ul>
+<li>Das sind die Seiten, die in anderen Sprachen überschrieben werden können.</li>
+<li>Die Seiten sind in <a href="https://en.wikipedia.org/wiki/Markdown">markdown</a> verfasst.</li>
+<li>Wenn die Datei <em>PAGE</em>.md in deiner Sprache nicht vorhanden ist, kopier die aus
+dem en-Ordner und bearbeite sie.</li>
+<li>Mach das bitte nur, wenn du die Seite auch komplett übersetzt.</li>
+</ul>
+<h2 id="eine-neue-sprache-hinzuf-gen">Eine neue Sprache hinzufügen</h2>
+<p><strong>Beispiel:</strong> Wenn deine Sprache <code>Deutsch</code> ist, würde sie das Kürzel (<em>LANG_KEY</em>)
+<code>de</code> haben.</p>
+<h3 id="sag-der-anwendung-bescheid">Sag der Anwendung Bescheid</h3>
+<p>Die neue Sprache muss jetzt in der Anwendung eingetragen werden. Also trage in die
+Datei <code>/src/js/helpers/translate.js.coffee</code> die neue Sprache <code>de: &quot;Deutsch&quot;</code> in
+<code>getLanguages</code> ein. (Für Deutsch schon passiert.)</p>
+<h3 id="ordner-und-dateistruktur-von-en-kopieren">Ordner- und Dateistruktur von en kopieren</h3>
+<p>Kopiere die Dateien, die du übersetzen möchtest:</p>
+<ul>
+<li><strong>Strings:</strong> copy <code>/src/_strings/en.po</code> to <code>/src/_strings/fr.po</code></li>
+<li><strong>Pages:</strong> copy <code>/src/en/readme.md</code> to <code>/src/fr/readme.md</code></li>
+</ul>
+<h2 id="ausprobieren">Ausprobieren</h2>
+<p>Um deine Version zu testen, muss ein neue Version (build) erstellt werden,
+vielleicht klappt es aber auch ohne, wenn du dich an die vorhandene Struktur 
+gehalten hast.</p>
+<p>Wenn du <strong>wirklich</strong> deine neue Sprache in der Anwendung mit einer neuen Version
+testen möchtest, kannst du:</p>
+<ol>
+<li>Sicherstellen, dass <code>nodejs</code>, <code>npm</code> installiert sind</li>
+<li><code>cd /chorus/folder</code></li>
+<li><code>npm install</code> (nur beim ersten Mal)</li>
+<li><code>grunt lang</code> (das wird nur die Sprachen im Ordner <code>dist/lang</code> erneuern)</li>
+<li>Chorus2 aktualisieren</li>
+</ol>
+<h2 id="r-ckgriff-auf-englisch">Rückgriff auf Englisch</h2>
+<p>Solange <code>msgid</code> in deiner <code>LANG_CODE.po</code> noch nicht vorhanden sind, wird die
+englische Zeichenkette als Standard verwendet. Gleiches gilt für die Seite
+<code>LANG_CODE/PAGE.md</code>, falls sie vorhanden ist.</p>
+<h2 id="eine-aktualisierung-einreichen">Eine Aktualisierung einreichen</h2>
+<p>Einen <strong>pull request</strong> <a href="https://github.com/jez500/chorus2">GitHub</a> von einem
+neuen Zweig (fork) aus zu senden, ist der beste Weg.
+Aktualisierungen über andere Wege werden aber auch berücksichtigt.</p>
