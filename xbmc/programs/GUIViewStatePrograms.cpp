@@ -57,7 +57,7 @@ std::string CGUIViewStateWindowPrograms::GetLockType()
 
 std::string CGUIViewStateWindowPrograms::GetExtensions()
 {
-  return ".xbe|.cut";
+  return ".cut";
 }
 
 VECSOURCES& CGUIViewStateWindowPrograms::GetSources()

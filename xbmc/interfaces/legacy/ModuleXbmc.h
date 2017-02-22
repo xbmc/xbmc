@@ -180,7 +180,7 @@ namespace XBMCAddon
     /// **Example:**
     /// ~~~~~~~~~~~~~{.py}
     /// ..
-    /// xbmc.executebuiltin('RunXBE(c:\\avalaunch.xbe)')
+    /// xbmc.executebuiltin('Skin.SetString(abc,def)')
     /// ..
     /// ~~~~~~~~~~~~~
     ///
