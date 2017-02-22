@@ -795,8 +795,11 @@ void CAESinkPULSE::Deinitialize()
   if (m_Stream)
     Drain();
 
-  if (m_MainLoop)
-    pa_threaded_mainloop_stop(m_MainLoop);
+  {
+    CSingleExit exit(m_sec);
+    if (m_MainLoop)
+      pa_threaded_mainloop_stop(m_MainLoop);
+  }
 
   if (m_Stream)
   {
