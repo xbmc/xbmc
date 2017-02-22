@@ -21,6 +21,7 @@
 #include "utils/SystemInfo.h"
 #include "settings/Settings.h"
 #include "GUIInfoManager.h"
+#include "platform/win32/CharsetConverter.h"
 
 #include "gtest/gtest.h"
 
@@ -311,11 +312,12 @@ TEST_F(TestSystemInfo, GetDiskSpace)
   EXPECT_EQ(100, iPercentFree + iPercentUsed) << "'GetDiskSpace()' return 'PercentFree + PercentUsed' not equal to '100' for disk ''";
 
 #ifdef TARGET_WINDOWS
-  char sysDrive[300];
-  DWORD res = GetEnvironmentVariableA("SystemDrive", sysDrive, sizeof(sysDrive) / sizeof(char));
+  using KODI::PLATFORM::WINDOWS::FromW;
+  wchar_t sysDrive[300];
+  DWORD res = GetEnvironmentVariableW(L"SystemDrive", sysDrive, sizeof(sysDrive) / sizeof(wchar_t));
   std::string sysDriveLtr;
-  if (res != 0 && res <= sizeof(sysDrive) / sizeof(char))
-    sysDriveLtr.assign(sysDrive, 1);
+  if (res != 0 && res <= sizeof(sysDrive) / sizeof(wchar_t))
+    sysDriveLtr.assign(FromW(sysDrive), 1);
   else
     sysDriveLtr = "C"; // fallback
 

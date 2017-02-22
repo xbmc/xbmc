@@ -19,11 +19,6 @@
  *
  */
 
-#include <algorithm>
-#include "system.h"
-#include "utils/log.h"
-#include <stdlib.h>
-
 /*
  Redbook   : CDDA
  Yellowbook : CDROM
@@ -49,12 +44,18 @@ ISO9660
 #include "utils/CharsetConverter.h"
 #include "threads/SingleLock.h"
 #include "IFile.h"
+#include "system.h"
+#include "utils/log.h"
 
 #ifndef TARGET_WINDOWS
 #include "storage/DetectDVDType.h"  // for MODE2_DATA_SIZE etc.
 #include "linux/XFileUtils.h"
 #include "linux/XTimeUtils.h"
+#else
+#include "platform/win32/CharsetConverter.h"
 #endif
+#include <stdlib.h>
+#include <algorithm>
 #include <cdio/bytesex.h>
 //#define _DEBUG_OUTPUT 1
 
@@ -632,7 +633,7 @@ struct iso_dirtree *iso9660::FindFolder( char *Folder )
 //******************************************************************************************************************
 HANDLE iso9660::FindFirstFile( char *szLocalFolder, WIN32_FIND_DATA *wfdFile )
 {
-  if (m_info.ISO_HANDLE == 0) return (HANDLE)0;
+  if (m_info.ISO_HANDLE == nullptr) return static_cast<HANDLE>(nullptr);
   memset( wfdFile, 0, sizeof(WIN32_FIND_DATA));
 
   m_searchpointer = FindFolder( szLocalFolder );
@@ -643,7 +644,11 @@ HANDLE iso9660::FindFirstFile( char *szLocalFolder, WIN32_FIND_DATA *wfdFile )
 
     if ( m_searchpointer )
     {
+#ifdef TARGET_WINDOWS
+      wcscpy_s(wfdFile->cFileName, MAX_PATH, KODI::PLATFORM::WINDOWS::ToW(m_searchpointer->name).c_str());
+#else
       strcpy(wfdFile->cFileName, m_searchpointer->name );
+#endif
 
       if ( m_searchpointer->type == 2 )
         wfdFile->dwFileAttributes |= FILE_ATTRIBUTE_DIRECTORY;
@@ -653,10 +658,10 @@ HANDLE iso9660::FindFirstFile( char *szLocalFolder, WIN32_FIND_DATA *wfdFile )
       wfdFile->ftCreationTime = m_searchpointer->filetime;
 
       wfdFile->nFileSizeLow = m_searchpointer->Length;
-      return (HANDLE)1;
+      return reinterpret_cast<HANDLE>(1);
     }
   }
-  return (HANDLE)0;
+  return static_cast<HANDLE>(nullptr);
 }
 
 //******************************************************************************************************************
@@ -669,7 +674,11 @@ int iso9660::FindNextFile( HANDLE szLocalFolder, WIN32_FIND_DATA *wfdFile )
 
   if ( m_searchpointer )
   {
+#ifdef TARGET_WINDOWS
+    wcscpy_s(wfdFile->cFileName, MAX_PATH, KODI::PLATFORM::WINDOWS::ToW(m_searchpointer->name).c_str());
+#else
     strcpy(wfdFile->cFileName, m_searchpointer->name );
+#endif
 
     if ( m_searchpointer->type == 2 )
       wfdFile->dwFileAttributes |= FILE_ATTRIBUTE_DIRECTORY;
@@ -738,9 +747,17 @@ HANDLE iso9660::OpenFile(const char *filename)
   *(pointer2 + 1) = 0;
 
   intptr_t loop = (intptr_t)FindFirstFile( work, &fileinfo );
+
+#ifdef TARGET_WINDOWS
+  auto wpointer = KODI::PLATFORM::WINDOWS::ToW(pointer);
+#endif
   while ( loop > 0)
   {
+#ifdef TARGET_WINDOWS
+    if (!_wcsicmp(fileinfo.cFileName, wpointer.c_str()))
+#else
     if ( !stricmp(fileinfo.cFileName, pointer ) )
+#endif
       loop = -1;
     else
       loop = FindNextFile( NULL, &fileinfo );

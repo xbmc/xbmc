@@ -18,6 +18,7 @@
  *
  */
 
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
 #include <memory>
 
 #include "CharsetConverter.h"
@@ -69,3 +70,4 @@ std::wstring ToW(const std::string& str)
 }
 }
 }
+#endif

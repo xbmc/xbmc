@@ -89,7 +89,7 @@ SHChangeNotifyEntry shcne;
 
 void DIB_InitOSKeymap()
 {
-  char current_layout[KL_NAMELENGTH];
+  wchar_t current_layout[KL_NAMELENGTH];
 
   GetKeyboardLayoutName(current_layout);
 
@@ -749,7 +749,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
 
         if (hLock)
         {
-          char drivePath[MAX_PATH+1];
+          wchar_t drivePath[MAX_PATH+1];
           if (!SHGetPathFromIDList(ppidl[0], drivePath))
             break;
 

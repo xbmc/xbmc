@@ -91,9 +91,6 @@ bool SubAllocator::StartSubAllocator(int SASize)
     return FALSE;
   }
 
-  if(AllocSize != AllocSize2)
-    OutputDebugString("ERROR - had to allocate smaller data than required, extract can very well fail");
-
 #endif
   HeapEnd=HeapStart+AllocSize-UNIT_SIZE;
   SubAllocatorSize=t;

@@ -248,7 +248,7 @@ HANDLE FindFile::Win32Find(HANDLE hFind,const char *Mask,const wchar *MaskW,stru
     WIN32_FIND_DATA FindData;
     if (hFind==INVALID_HANDLE_VALUE)
     {
-      hFind=FindFirstFile(CharMask,&FindData);
+      hFind=FindFirstFile(unrarxlib::ToW(CharMask).c_str(),&FindData);
       if (hFind==INVALID_HANDLE_VALUE)
       {
         int SysErr=GetLastError();
@@ -265,11 +265,11 @@ HANDLE FindFile::Win32Find(HANDLE hFind,const char *Mask,const wchar *MaskW,stru
     if (hFind!=INVALID_HANDLE_VALUE)
     {
       strcpy(fd->Name,CharMask);
-      strcpy(PointToName(fd->Name),FindData.cFileName);
+      strcpy(PointToName(fd->Name),unrarxlib::FromW(FindData.cFileName).c_str());
       CharToWide(fd->Name,fd->NameW);
       fd->Size=int32to64(FindData.nFileSizeHigh,FindData.nFileSizeLow);
       fd->FileAttr=FindData.dwFileAttributes;
-      strcpy(fd->ShortName,FindData.cAlternateFileName);
+      strcpy(fd->ShortName,unrarxlib::FromW(FindData.cAlternateFileName).c_str());
       fd->ftCreationTime=FindData.ftCreationTime;
       fd->ftLastAccessTime=FindData.ftLastAccessTime;
       fd->ftLastWriteTime=FindData.ftLastWriteTime;

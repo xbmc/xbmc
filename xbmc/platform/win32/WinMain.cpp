@@ -21,10 +21,12 @@
 #include "CompileInfo.h"
 #include "threads/Thread.h"
 #include "threads/platform/win/Win32Exception.h"
+#include "platform/win32/CharsetConverter.h"
 #include "platform/xbmc.h"
 #include "utils/CPUInfo.h"
 #include "utils/Environment.h"
 #include "utils/CharsetConverter.h" // Required to initialize converters before usage
+
 
 #include <dbghelp.h>
 #include <shellapi.h>
@@ -46,6 +48,7 @@ LONG WINAPI CreateMiniDump(EXCEPTION_POINTERS* pEp)
 //-----------------------------------------------------------------------------
 INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT)
 {
+  using KODI::PLATFORM::WINDOWS::ToW;
   // this fixes crash if OPENSSL_CONF is set to existed openssl.cfg  
   // need to set it as soon as possible  
   CEnvironment::unsetenv("OPENSSL_CONF");
@@ -67,11 +70,12 @@ INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT)
 
   // check if Kodi is already running
   std::string appName = CCompileInfo::GetAppName();
-  CreateMutex(nullptr, FALSE, (appName + " Media Center").c_str());
+  CreateMutex(nullptr, FALSE, ToW(appName + " Media Center").c_str());
   if (GetLastError() == ERROR_ALREADY_EXISTS)
   {
-    HWND hwnd = FindWindow(appName.c_str(), appName.c_str());
-    if (hwnd != NULL)
+    auto appNameW = ToW(appName);
+    HWND hwnd = FindWindow(appNameW.c_str(), appNameW.c_str());
+    if (hwnd != nullptr)
     {
       // switch to the running instance
       ShowWindow(hwnd, SW_RESTORE);
@@ -82,7 +86,7 @@ INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT)
 
   if ((g_cpuInfo.GetCPUFeatures() & CPU_FEATURE_SSE2) == 0)
   {
-    MessageBox(NULL, "No SSE2 support detected", (appName + ": Fatal Error").c_str(), MB_OK | MB_ICONERROR);
+    MessageBox(NULL, L"No SSE2 support detected", ToW(appName + ": Fatal Error").c_str(), MB_OK | MB_ICONERROR);
     return 0;
   }
 
