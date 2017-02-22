@@ -23,7 +23,7 @@
       </group>
     </category>
     <category id="input">
-      <group id="2">
+      <group id="3">
         <setting id="input.appleremotemode" type="integer" label="13600" help="36416">
           <level>1</level>
           <default>1</default> <!-- APPLE_REMOTE_STANDARD -->
@@ -35,7 +35,7 @@
               <option label="13613">3</option> <!-- APPLE_REMOTE_MULTIREMOTE -->
             </options>
           </constraints>
-          <control type="spinner" format="string"/>
+          <control type="list" format="string"/>
         </setting>
         <setting id="input.appleremotealwayson" type="boolean" label="13602" help="36417">
           <level>4</level>

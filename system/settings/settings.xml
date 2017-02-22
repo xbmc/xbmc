@@ -2767,6 +2767,8 @@
           <control type="toggle" />
         </setting>
       </group>
+      <group id="3" label="13600">
+      </group>
     </category>
     <category id="network" label="798" help="36379">
       <group id="1" label="16000">

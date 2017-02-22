@@ -9,7 +9,7 @@
       </group>
     </category>
     <category id="input">
-      <group id="2">
+      <group id="3">
         <setting id="input.appleremotealwayson">
           <level>1</level>
         </setting>
