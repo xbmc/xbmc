@@ -83,6 +83,10 @@
 		<value condition="Player.HasAudio">[B]$INFO[MusicPlayer.Title][/B]</value>
 		<value condition="Player.HasVideo">[B]$INFO[VideoPlayer.Title][/B]</value>
 	</variable>
+	<variable name="VideoHWDecoder">
+		<value condition="Player.Process(videohwdecoder)">HW</value>
+		<value>SW</value>
+	</variable>
 
 	<include name="ScreenWidth">
 		<include condition="String.IsEqual(Skin.AspectRatio,16:9)">ScreenWidth-16x9</include>
@@ -977,7 +981,7 @@
 					<posx>0</posx>
 					<posy>$PARAM[panel-posy]</posy>
 					<width>350</width>
-					<height>560</height>
+					<height>640</height>
 					<onleft>9000</onleft>
 					<onright>50</onright>
 					<onup>9000</onup>
@@ -2452,7 +2456,6 @@
 		<control type="button">
 			<label>31358</label>
 			<include>MenuButtonCommonValues</include>
-			<onclick>ActivateWindow(PVROSDChannels)</onclick>
 			<onclick>ActivateWindow(Teletext)</onclick>
 			<visible>VideoPlayer.Content(LiveTV)</visible>
 		</control>
@@ -2499,6 +2502,12 @@
 			<include>MenuButtonCommonValues</include>
 			<onclick>ActivateWindow(OSDAudioDSPSettings)</onclick>
 			<visible>system.getbool(audiooutput.dspaddonsenabled)</visible>
+		</control>
+		<control type="button">
+			<label>Player info</label>
+			<include>MenuButtonCommonValues</include>
+			<onclick>ClearProperty(PopupMenuVisible,Home)</onclick>
+			<onclick>ActivateWindow(playerprocessinfo)</onclick>
 		</control>
 	</include>
 	<include name="VideoPlaylistMenu">
