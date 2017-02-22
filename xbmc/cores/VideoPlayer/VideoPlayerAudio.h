@@ -96,7 +96,6 @@ protected:
 
   int m_speed;
   bool m_stalled;
-  bool m_silence;
   bool m_paused;
   IDVDStreamPlayer::ESyncState m_syncState;
   XbmcThreads::EndTime m_syncTimer;

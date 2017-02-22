@@ -463,8 +463,7 @@ protected:
   double GetQueueTime();
   bool GetCachingTimes(double& play_left, double& cache_left, double& file_offset);
 
-
-  void FlushBuffers(bool queued, double pts = DVD_NOPTS_VALUE, bool accurate = true, bool sync = true);
+  void FlushBuffers(double pts, bool accurate, bool sync);
 
   void HandleMessages();
   void HandlePlaySpeed();
@@ -585,25 +584,6 @@ protected:
 
   CEdl m_Edl;
   bool m_SkipCommercials;
-
-  struct SEdlAutoSkipMarkers {
-
-    void Clear()
-    {
-      cut = -1;
-      commbreak_start = -1;
-      commbreak_end = -1;
-      seek_to_start = false;
-      mute = false;
-    }
-
-    int cut;              // last automatically skipped EDL cut seek position
-    int commbreak_start;  // start time of the last commercial break automatically skipped
-    int commbreak_end;    // end time of the last commercial break automatically skipped
-    bool seek_to_start;   // whether seeking can go back to the start of a previously skipped break
-    bool mute;            // whether EDL mute is on
-
-  } m_EdlAutoSkipMarkers;
 
   CPlayerOptions m_PlayerOptions;
 
