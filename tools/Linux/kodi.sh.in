@@ -32,6 +32,9 @@ USERDATA_DIR="${HOME}/.${bin_name}"
 # Workaround for high CPU load with nvidia GFX
 export __GL_YIELD=USLEEP
 
+# Fix wasting RAM due to fragmentation
+export MALLOC_MMAP_THRESHOLD_=131072
+
 
 # Check for some options used by this script
 while [ "$#" -gt "0" ]
