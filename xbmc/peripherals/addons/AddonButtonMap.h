@@ -75,9 +75,9 @@ namespace PERIPHERALS
     ) override;
 
     virtual void AddAnalogStick(
-        const KODI::JOYSTICK::FeatureName& feature,
-        KODI::JOYSTICK::ANALOG_STICK_DIRECTION direction,
-        const KODI::JOYSTICK::CDriverPrimitive& primitive
+      const KODI::JOYSTICK::FeatureName& feature,
+      KODI::JOYSTICK::ANALOG_STICK_DIRECTION direction,
+      const KODI::JOYSTICK::CDriverPrimitive& primitive
     ) override;
 
     virtual bool GetAccelerometer(

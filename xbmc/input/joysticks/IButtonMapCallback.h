@@ -50,7 +50,7 @@ namespace JOYSTICK
 
     /*!
      * \brief Revert changes to the button map since the last time it was loaded
-     *        or commited to disk
+     *        or committed to disk
      */
     virtual void RevertButtonMap() = 0;
   };
