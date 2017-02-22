@@ -7,6 +7,9 @@ if(ENABLE_X11 AND X_FOUND AND XRANDR_FOUND)
 endif()
 
 # WiiRemote
-if(ENABLE_EVENTCLIENTS AND BLUETOOTH_FOUND AND CWIID_FOUND)
-  add_subdirectory(${CORE_SOURCE_DIR}/tools/EventClients/Clients/WiiRemote build/WiiRemote)
+if(ENABLE_EVENTCLIENTS AND BLUETOOTH_FOUND)
+  find_package(CWiid QUIET)
+  if(CWIID_FOUND)
+    add_subdirectory(${CORE_SOURCE_DIR}/tools/EventClients/Clients/WiiRemote build/WiiRemote)
+  endif()
 endif()
