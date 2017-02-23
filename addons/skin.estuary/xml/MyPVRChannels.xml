@@ -26,7 +26,7 @@
 					<viewtype label="List">list</viewtype>
 					<preloaditems>1</preloaditems>
 					<pagecontrol>60</pagecontrol>
-					<focusedlayout height="90" width="tvchannelslist_width">
+					<focusedlayout height="90">
 						<control type="image">
 							<left>0</left>
 							<top>0</top>
@@ -66,7 +66,7 @@
 							<right>120</right>
 							<aligny>top</aligny>
 							<font>font14</font>
-							<animation effect="slide" start="0,0" end="0,18" time="0">Conditional</animation>
+							<animation effect="slide" start="0,0" end="0,14" time="0" condition="String.IsEmpty(ListItem.Title)">Conditional</animation>
 							<label>$INFO[ListItem.Label]</label>
 							<shadowcolor>text_shadow</shadowcolor>
 						</control>
@@ -92,7 +92,7 @@
 							<shadowcolor>text_shadow</shadowcolor>
 						</control>
 					</focusedlayout>
-					<itemlayout height="90" width="tvchannelslist_width">
+					<itemlayout height="90">
 						<control type="image">
 							<right>20</right>
 							<top>10</top>
@@ -125,7 +125,7 @@
 							<aligny>top</aligny>
 							<font>font14</font>
 							<label>$INFO[ListItem.Label]</label>
-							<animation effect="slide" start="0,0" end="0,18" time="0">Conditional</animation>
+							<animation effect="slide" start="0,0" end="0,14" time="0" condition="String.IsEmpty(ListItem.Title)">Conditional</animation>
 							<shadowcolor>text_shadow</shadowcolor>
 						</control>
 						<control type="label">
@@ -169,7 +169,7 @@
 					<viewtype label="List">list</viewtype>
 					<preloaditems>1</preloaditems>
 					<pagecontrol>60</pagecontrol>
-					<focusedlayout height="70" width="tvchannelslist_width">
+					<focusedlayout height="70">
 						<control type="image">
 							<left>0</left>
 							<top>0</top>
@@ -224,7 +224,7 @@
 							<shadowcolor>text_shadow</shadowcolor>
 						</control>
 					</focusedlayout>
-					<itemlayout height="70" width="tvchannelslist_width">
+					<itemlayout height="70">
 						<control type="progress">
 							<right>10</right>
 							<top>25</top>

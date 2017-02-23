@@ -25,7 +25,7 @@
 					<focusposition>3</focusposition>
 					<pagecontrol>77</pagecontrol>
 					<scrolltime>200</scrolltime>
-					<itemlayout height="100" width="tvchannelslist_width">
+					<itemlayout height="100">
 						<control type="label">
 							<visible>String.IsEmpty(ListItem.Date)</visible>
 							<left>120</left>
@@ -66,7 +66,7 @@
 							</control>
 						</control>
 					</itemlayout>
-					<focusedlayout height="100" width="tvchannelslist_width">
+					<focusedlayout height="100">
 						<control type="image">
 							<left>0</left>
 							<top>0</top>

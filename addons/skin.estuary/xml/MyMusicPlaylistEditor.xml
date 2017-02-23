@@ -8,8 +8,6 @@
 			<include>OpenClose_Left</include>
 			<left>302</left>
 			<include content="FileManagerPanel">
-				<param name="header_id" value="22" />
-				<param name="header_label" value="$LOCALIZE[20094]" />
 				<param name="list_id" value="50" />
 				<param name="scrollbar_id" value="60" />
 				<param name="onleft_id" value="9000" />
@@ -61,8 +59,6 @@
 				<param name="left" value="-21" />
 			</include>
 			<include content="FileManagerPanel">
-				<param name="header_id" value="23" />
-				<param name="header_label" value="$LOCALIZE[13350]" />
 				<param name="list_id" value="100" />
 				<param name="scrollbar_id" value="61" />
 				<param name="onleft_id" value="60" />

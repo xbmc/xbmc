@@ -48,7 +48,7 @@
 					<visible>player.chaptercount</visible>
 				</control>
 				<control type="group">
-					<visible>Player.Recording</visible>
+					<visible>Player.Recording + !PVR.ChannelPreviewActive</visible>
 					<control type="image">
 						<top>100</top>
 						<left>20</left>
@@ -104,6 +104,50 @@
 				<label>$VAR[SeekLabel]</label>
 				<shadowcolor>black</shadowcolor>
 			</control>
+			<control type="group" id="6000">
+				<top>-5</top>
+				<visible>PVR.IsTimeShift + !Player.ChannelPreviewActive</visible>
+				<animation effect="fade" time="300">VisibleChange</animation>
+				<control type="label">
+					<top>0</top>
+					<right>20</right>
+					<width>400</width>
+					<height>50</height>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>font30</font>
+					<label>$INFO[PVR.TimeShiftEnd]</label>
+				</control>
+				<control type="label">
+					<top>0</top>
+					<left>20</left>
+					<width>400</width>
+					<height>50</height>
+					<align>left</align>
+					<aligny>center</aligny>
+					<font>font30</font>
+					<label>$INFO[PVR.TimeShiftStart]</label>
+				</control>
+				<control type="label">
+					<top>0</top>
+					<left>20</left>
+					<right>20</right>
+					<height>50</height>
+					<align>center</align>
+					<aligny>center</aligny>
+					<font>font30</font>
+					<label>[B]$LOCALIZE[31026][/B] $INFO[PVR.timeshiftcur]</label>
+				</control>
+				<control type="progress">
+					<left>0</left>
+					<top>50</top>
+					<width>100%</width>
+					<height>15</height>
+					<info>PVR.timeshiftprogress</info>
+					<texturebg border="3" colordiffuse="60FFFFFF">colors/white50.png</texturebg>
+					<midtexture>colors/white50.png</midtexture>
+				</control>
+			</control>
 			<control type="progress">
 				<left>0</left>
 				<top>70</top>
@@ -112,6 +156,7 @@
 				<info>Player.ProgressCache</info>
 				<texturebg border="3" colordiffuse="60FFFFFF">colors/white50.png</texturebg>
 				<midtexture>colors/white50.png</midtexture>
+				<visible>!Player.ChannelPreviewActive</visible>
 			</control>
 			<control type="progress">
 				<left>0</left>
@@ -134,8 +179,9 @@
 			</control>
 		</control>
 		<control type="group">
-			<visible>Player.ShowInfo + VideoPlayer.Content(LiveTV) + Window.IsActive(fullscreenvideo) + !Window.IsActive(fullscreeninfo)</visible>
+			<visible>Player.ShowInfo + VideoPlayer.Content(LiveTV) + Window.IsActive(fullscreenvideo)</visible>
 			<animation effect="fade" time="400">VisibleChange</animation>
+			<animation effect="slide" end="0,-80" time="150" condition="Control.IsVisible(6000)">conditional</animation>
 			<bottom>0</bottom>
 			<height>380</height>
 			<control type="image">

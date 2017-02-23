@@ -6,22 +6,22 @@
 	</include>
 	<include name="Animation_DialogPopupOpenClose">
 		<animation type="WindowOpen" reversible="false">
-			<effect type="zoom" start="80" end="100" center="width_center,540" delay="160" tween="back" time="240" />
+			<effect type="zoom" start="80" end="100" center="50%,50%" delay="160" tween="back" time="240" />
 			<effect type="fade" delay="160" end="100" time="240" />
 		</animation>
 		<animation type="WindowClose" reversible="false">
-			<effect type="zoom" start="100" end="80" center="width_center,540" easing="in" tween="back" time="240" />
+			<effect type="zoom" start="100" end="80" center="50%,50%" easing="in" tween="back" time="240" />
 			<effect type="fade" start="100" end="0" time="240" />
 		</animation>
 		<depth>DepthDialog</depth>
 	</include>
 	<include name="Animation_DialogPopupVisible">
 		<animation type="Visible" reversible="false">
-			<effect type="zoom" start="80" end="100" center="width_center,540" delay="160" tween="back" time="240" />
+			<effect type="zoom" start="80" end="100" center="50%,50%" delay="160" tween="back" time="240" />
 			<effect type="fade" delay="160" end="100" time="240" />
 		</animation>
 		<animation type="Hidden" reversible="false">
-			<effect type="zoom" start="100" end="80" center="width_center,540" easing="in" tween="back" time="240" />
+			<effect type="zoom" start="100" end="80" center="50%,50%" easing="in" tween="back" time="240" />
 			<effect type="fade" start="100" end="0" time="240" />
 		</animation>
 	</include>

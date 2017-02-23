@@ -173,7 +173,8 @@
 			</control>
 		</control>
 		<control type="group">
-			<top>960</top>
+			<bottom>0</bottom>
+			<height>120</height>
 			<animation effect="fade" start="0" end="100" time="250">WindowOpen</animation>
 			<animation effect="fade" start="100" end="0" time="250">WindowClose</animation>
 			<control type="button" id="87">

@@ -23,7 +23,7 @@
 					<focusposition>5</focusposition>
 					<pagecontrol>73</pagecontrol>
 					<scrolltime>200</scrolltime>
-					<focusedlayout height="80" width="tvrecordings_width">
+					<focusedlayout height="80">
 						<control type="image">
 							<left>0</left>
 							<top>0</top>
@@ -58,7 +58,7 @@
 							<label>$INFO[ListItem.Label2]</label>
 						</control>
 					</focusedlayout>
-					<itemlayout height="80" width="tvrecordings_width">
+					<itemlayout height="80">
 						<control type="image">
 							<left>21</left>
 							<top>30</top>

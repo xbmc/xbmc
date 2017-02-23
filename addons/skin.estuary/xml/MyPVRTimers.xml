@@ -22,7 +22,7 @@
 					<focusposition>4</focusposition>
 					<pagecontrol>73</pagecontrol>
 					<scrolltime>200</scrolltime>
-					<itemlayout height="100" width="tvrecordings_width">
+					<itemlayout height="100">
 						<control type="label">
 							<left>30</left>
 							<top>0</top>
@@ -74,7 +74,7 @@
 							</control>
 						</control>
 					</itemlayout>
-					<focusedlayout height="100" width="tvrecordings_width">
+					<focusedlayout height="100">
 						<control type="image">
 							<left>0</left>
 							<top>0</top>

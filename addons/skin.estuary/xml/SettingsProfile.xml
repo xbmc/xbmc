@@ -74,7 +74,6 @@
 						<width>305</width>
 						<height>100</height>
 						<font>font10</font>
-						<textcolor>grey</textcolor>
 						<align>center</align>
 						<aligny>top</aligny>
 						<label>$LOCALIZE[31029]:</label>
@@ -85,7 +84,6 @@
 						<top>321</top>
 						<width>305</width>
 						<height>100</height>
-						<textcolor>grey</textcolor>
 						<font>font10</font>
 						<align>center</align>
 						<aligny>top</aligny>

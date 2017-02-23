@@ -29,7 +29,6 @@
 				<width>477</width>
 				<height>80</height>
 				<font>font37</font>
-				<textcolor>button_focus</textcolor>
 				<align>center</align>
 				<aligny>center</aligny>
 			</control>

@@ -56,6 +56,7 @@
 					<onright>502</onright>
 					<orientation>vertical</orientation>
 					<animation effect="zoom" end="50,100" time="300" tween="sine" center="20,0" easing="inout" condition="!Control.HasFocus(502600)">conditional</animation>
+					<hitrect x="-30" y="0" w="120" h="100%" />
 				</control>
 				<control type="group">
 					<left>40</left>
