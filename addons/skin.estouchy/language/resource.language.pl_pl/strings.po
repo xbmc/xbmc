@@ -46,7 +46,7 @@ msgstr "Uruchamianie"
 
 msgctxt "#31011"
 msgid "Recent"
-msgstr "Najnowsze"
+msgstr "Ostatnio dodane"
 
 msgctxt "#31013"
 msgid "Movies"

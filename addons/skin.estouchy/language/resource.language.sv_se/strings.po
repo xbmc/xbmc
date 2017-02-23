@@ -94,11 +94,11 @@ msgstr "Sluttid"
 
 msgctxt "#31050"
 msgid "Sort: Ascending"
-msgstr "Sort: Stigande"
+msgstr "Sortera: Stigande"
 
 msgctxt "#31051"
 msgid "Sort: Descending"
-msgstr "Sort: Fallande"
+msgstr "Sortera: Fallande"
 
 msgctxt "#31055"
 msgid "Open playlist"
@@ -138,7 +138,7 @@ msgstr "Nuvarande temp"
 
 msgctxt "#31301"
 msgid "Last Updated"
-msgstr "Sist uppdatera"
+msgstr "Senast uppdaterad"
 
 msgctxt "#31303"
 msgid "Data provider"
@@ -150,7 +150,7 @@ msgstr "Systemets minnesanvändning:"
 
 msgctxt "#31320"
 msgid "Last Logged In"
-msgstr "Sist inloggad"
+msgstr "Senast inloggad"
 
 msgctxt "#31322"
 msgid "Aired"
@@ -170,7 +170,7 @@ msgstr "Texttv"
 
 msgctxt "#31390"
 msgid "Skin default"
-msgstr "Skalstandard"
+msgstr "Skalets standard"
 
 msgctxt "#31391"
 msgid "Arial based"
@@ -246,7 +246,7 @@ msgstr "Bakgrund:"
 
 msgctxt "#31555"
 msgid "Configure TV settings · Change full screen info · Manage EPG data settings"
-msgstr "Konfigurera TV-inställningar · Ändra helskärms information · Hantera EPG datainställningar "
+msgstr "Konfigurera TV-inställningar · Ändra helskärmsinformation · Hantera EPG datainställningar"
 
 msgctxt "#31556"
 msgid "Live TV"
@@ -278,7 +278,7 @@ msgstr "Döp om grupp"
 
 msgctxt "#31563"
 msgid "Delete Group"
-msgstr "Ta bort grupp"
+msgstr "Radera grupp"
 
 msgctxt "#31564"
 msgid "Show hidden"
@@ -294,7 +294,7 @@ msgstr "Första körningen"
 
 msgctxt "#31901"
 msgid "There are two things to know about navigating Estouchy"
-msgstr "Det finns två saker att veta om navigering av Estouchy"
+msgstr "Det finns två saker att veta om navigering i Estouchy"
 
 msgctxt "#31902"
 msgid "The Kodi logo functions as a 'HOME' button. Whenever you touch it, you will be taken back to the home screen."
