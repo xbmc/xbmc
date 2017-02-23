@@ -470,28 +470,10 @@ static int PlayMedia(const std::vector<std::string>& params)
     g_playlistPlayer.SetCurrentPlaylist(playlist);
     g_playlistPlayer.Play(playOffset, "");
   }
+  else if (item.IsAudio() || item.IsVideo())
+    g_playlistPlayer.Play(std::make_shared<CFileItem>(item), "");
   else
-  {
-    int playlist = PLAYLIST_NONE;
-
-    if (item.IsAudio())
-      playlist = PLAYLIST_MUSIC;
-    else if (item.IsVideo())
-      playlist = PLAYLIST_VIDEO;
-
-    if (playlist != PLAYLIST_NONE)
-    {
-      g_playlistPlayer.ClearPlaylist(playlist);
-      g_playlistPlayer.SetCurrentPlaylist(playlist);
-    }
-
-    // play media
-    if (!g_application.PlayMedia(item, "", playlist))
-    {
-      CLog::Log(LOGERROR, "PlayMedia could not play media: %s", params[0].c_str());
-      return false;
-    }
-  }
+    g_application.PlayMedia(item, "", PLAYLIST_NONE);
 
   return 0;
 }
