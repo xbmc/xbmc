@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="webinterface.default"
-  version="2.4.2"
+  version="2.4.3"
   name="Kodi web interface - Chorus2"
   provider-name="jez500, Team Kodi">
   <requires>

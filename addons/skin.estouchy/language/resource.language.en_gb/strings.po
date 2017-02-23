@@ -68,7 +68,27 @@ msgctxt "#31016"
 msgid "Albums"
 msgstr ""
 
-#empty strings from id 31017 to 31023
+msgctxt "#31017"
+msgid "PVR info"
+msgstr ""
+
+msgctxt "#31018"
+msgid "Player process info"
+msgstr ""
+
+msgctxt "#31019"
+msgid "Video decoder"
+msgstr ""
+
+msgctxt "#31020"
+msgid "Pixel format"
+msgstr ""
+
+msgctxt "#31021"
+msgid "System memory usage"
+msgstr ""
+
+#empty strings from id 31022 to 31023
 
 msgctxt "#31024"
 msgid "Page"

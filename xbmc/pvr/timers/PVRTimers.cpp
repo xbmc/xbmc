@@ -25,21 +25,17 @@
 #include <utility>
 
 #include "ServiceBroker.h"
-#include "dialogs/GUIDialogKaiToast.h"
-#include "dialogs/GUIDialogOK.h"
 #include "epg/EpgContainer.h"
-#include "events/EventLog.h"
-#include "events/NotificationEvent.h"
 #include "FileItem.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/PVRJobs.h"
 #include "pvr/PVRManager.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
-#include "utils/Variant.h"
 
 using namespace PVR;
 using namespace EPG;
@@ -326,22 +322,27 @@ bool CPVRTimers::UpdateEntries(const CPVRTimers &timers, const std::vector<int> 
     g_PVRManager.SetChanged();
     g_PVRManager.NotifyObservers(bAddedOrDeleted ? ObservableMessageTimersReset : ObservableMessageTimers);
 
-    if (g_PVRManager.IsStarted())
+    if (!timerNotifications.empty() && g_PVRManager.IsStarted())
     {
+      CPVREventlogJob *job = new CPVREventlogJob;
+
       /* queue notifications / fill eventlog */
       for (const auto &entry : timerNotifications)
       {
-        if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRRECORD_TIMERNOTIFICATIONS))
-          CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(19166), entry.second);
-
         std::string strName;
         g_PVRClients->GetClientAddonName(entry.first, strName);
 
         std::string strIcon;
         g_PVRClients->GetClientAddonIcon(entry.first, strIcon);
 
-        CEventLog::GetInstance().Add(EventPtr(new CNotificationEvent(strName, entry.second, strIcon, EventLevel::Information)));
+        job->AddEvent(CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRRECORD_TIMERNOTIFICATIONS),
+                      false, // info, no error
+                      strName,
+                      entry.second,
+                      strIcon);
       }
+
+      CJobManager::GetInstance().AddJob(job, nullptr);
     }
   }
 
@@ -677,22 +678,6 @@ bool CPVRTimers::DeleteTimersOnChannel(const CPVRChannelPtr &channel, bool bDele
 
 bool CPVRTimers::AddTimer(const CPVRTimerInfoTagPtr &item)
 {
-  if (!item->m_channel && item->GetTimerType() && !item->GetTimerType()->IsEpgBasedTimerRule())
-  {
-    CLog::Log(LOGERROR, "PVRTimers - %s - no channel given", __FUNCTION__);
-    CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19109}); // Couldn't save timer
-    return false;
-  }
-
-  if (!g_PVRClients->SupportsTimers(item->m_iClientId))
-  {
-    CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19215});
-    return false;
-  }
-
-  if (!g_PVRManager.CheckParentalLock(item->m_channel))
-    return false;
-
   return item->AddToClient();
 }
 

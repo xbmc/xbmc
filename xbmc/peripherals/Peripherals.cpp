@@ -147,6 +147,9 @@ void CPeripherals::Clear()
     busses = m_busses;
     m_busses.clear();
   }
+
+  for (const auto& bus : busses)
+    bus->Clear();
   busses.clear();
 
   {

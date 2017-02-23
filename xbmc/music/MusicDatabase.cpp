@@ -149,6 +149,11 @@ void CMusicDatabase::CreateTables()
               " lastScraped varchar(20) default NULL, "
               " strReleaseType text, "
               " iVotes INTEGER NOT NULL DEFAULT 0)");
+  CLog::Log(LOGINFO, "create audiobook table");
+  m_pDS->exec("CREATE TABLE audiobook (idBook integer primary key, "
+              " strBook varchar(256), strAuthor text,"
+              " bookmark integer, file text,"
+              " dateAdded varchar (20) default NULL)");
   CLog::Log(LOGINFO, "create album_artist table");
   m_pDS->exec("CREATE TABLE album_artist (idArtist integer, idAlbum integer, iOrder integer, strArtist text)");
   CLog::Log(LOGINFO, "create album_genre table");
@@ -4254,19 +4259,25 @@ bool CMusicDatabase::GetSongsFullByWhere(const std::string &baseDir, const Filte
     // Count number of songs that satisfy selection criteria
     total = (int)strtol(GetSingleValue("SELECT COUNT(1) FROM songview " + strSQLExtra, m_pDS).c_str(), NULL, 10);
 
-    // Apply the limiting directly here if there's no special sorting but limiting
-    bool limited = extFilter.limit.empty() && sortDescription.sortBy == SortByNone &&
+    // Apply any limiting directly in SQL if there is either no special sorting or random sort
+    // When limited, random sort is also applied in SQL
+    bool limitedInSQL = extFilter.limit.empty() && 
+      (sortDescription.sortBy == SortByNone || sortDescription.sortBy == SortByRandom) &&
       (sortDescription.limitStart > 0 || sortDescription.limitEnd > 0);
-    if (limited)
+    if (limitedInSQL)
+    {
+      if (sortDescription.sortBy == SortByRandom)
+        strSQLExtra += PrepareSQL(" ORDER BY RANDOM()");
       strSQLExtra += DatabaseUtils::BuildLimitClause(sortDescription.limitEnd, sortDescription.limitStart);
+    }
 
     std::string strSQL;
     if (artistData)
     { // Get data from song and song_artist tables to fully populate songs with artists
       // All songs now have at least one artist so inner join sufficient
       // Need guaranteed ordering for dataset processing to extract songs
-      if (limited)
-        //Apply where clause and limits to songview, then join as multiple records in result set per song
+      if (limitedInSQL)
+        //Apply where clause, limits and random order to songview, then join as multiple records in result set per song
         strSQL = "SELECT sv.*, songartistview.* "
           "FROM (SELECT songview.* FROM songview " + strSQLExtra + ") AS sv "
           "JOIN songartistview ON songartistview.idsong = sv.idsong ";
@@ -4359,8 +4370,9 @@ bool CMusicDatabase::GetSongsFullByWhere(const std::string &baseDir, const Filte
     // cleanup
     m_pDS->close();
 
-    // When have join with songartistview apply sort (and limit) to items rather than dataset
-    if (artistData && sortDescription.sortBy != SortByNone)
+    // Finally do any sorting in items list we have not been able to do before in SQL or dataset,
+    // that is when have join with songartistview and sorting other than random with limit
+    if (artistData && sortDescription.sortBy != SortByNone && !(limitedInSQL && sortDescription.sortBy == SortByRandom))
       items.Sort(sortDescription);
 
     if (cueSheetData)
@@ -4967,6 +4979,14 @@ void CMusicDatabase::UpdateTables(int version)
     m_pDS->exec("CREATE TABLE versiontagscan (idVersion integer, iNeedsScan integer)");
     m_pDS->exec("INSERT INTO versiontagscan (idVersion, iNeedsScan) values(0, 0)");
   }
+  if (version < 62)
+  {
+    CLog::Log(LOGINFO, "create audiobook table");
+    m_pDS->exec("CREATE TABLE audiobook (idBook integer primary key, "
+        " strBook varchar(256), strAuthor text,"
+        " bookmark integer, file text,"
+        " dateAdded varchar (20) default NULL)");
+  }
 
   // Set the version of tag scanning required. 
   // Not every schema change requires the tags to be rescanned, set to the highest schema version 
@@ -4987,7 +5007,7 @@ void CMusicDatabase::UpdateTables(int version)
 
 int CMusicDatabase::GetSchemaVersion() const
 {
-  return 61;
+  return 62;
 }
 
 int CMusicDatabase::GetMusicNeedsTagScan()
@@ -6755,4 +6775,41 @@ void CMusicDatabase::UpdateFileDateAdded(int songId, const std::string& strFileN
   {
     CLog::Log(LOGERROR, "%s (%s, %s) failed", __FUNCTION__, CURL::GetRedacted(strFileNameAndPath).c_str(), dateAdded.GetAsDBDateTime().c_str());
   }
+}
+
+bool CMusicDatabase::AddAudioBook(const CFileItem& item)
+{
+  std::string strSQL = PrepareSQL("INSERT INTO audiobook (idBook,strBook,strAuthor,bookmark,file,dateAdded) VALUES (NULL,'%s','%s',%i,'%s','%s')",
+                                 item.GetMusicInfoTag()->GetAlbum().c_str(),
+                                 item.GetMusicInfoTag()->GetArtist()[0].c_str(), 0,
+                                 item.GetPath().c_str(),
+                                 CDateTime::GetCurrentDateTime().GetAsDBDateTime().c_str());
+  return ExecuteQuery(strSQL);
+}
+
+bool CMusicDatabase::SetResumeBookmarkForAudioBook(const CFileItem& item, int bookmark)
+{
+  std::string strSQL = PrepareSQL("select bookmark from audiobook where file='%s'",
+                                 item.GetPath().c_str());
+  if (!m_pDS->query(strSQL.c_str()) || m_pDS->num_rows() == 0)
+  {
+    if (!AddAudioBook(item))
+      return false;
+  }
+
+  strSQL = PrepareSQL("UPDATE audiobook SET bookmark=%i WHERE file='%s'",
+                      bookmark, item.GetPath().c_str());
+
+  return ExecuteQuery(strSQL);
+}
+
+bool CMusicDatabase::GetResumeBookmarkForAudioBook(const std::string& path, int& bookmark)
+{
+  std::string strSQL = PrepareSQL("SELECT bookmark FROM audiobook WHERE file='%s'",
+                                 path.c_str());
+  if (!m_pDS->query(strSQL.c_str()) || m_pDS->num_rows() == 0)
+    return false;
+
+  bookmark = m_pDS->fv(0).get_asInt();
+  return true;
 }

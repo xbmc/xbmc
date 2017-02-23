@@ -216,9 +216,9 @@ void CAddonButtonMap::AddAnalogStick(const FeatureName& feature,
 }
 
 bool CAddonButtonMap::GetAccelerometer(const FeatureName& feature,
-                                               CDriverPrimitive& positiveX,
-                                               CDriverPrimitive& positiveY,
-                                               CDriverPrimitive& positiveZ)
+                                       CDriverPrimitive& positiveX,
+                                       CDriverPrimitive& positiveY,
+                                       CDriverPrimitive& positiveZ)
 {
   bool retVal(false);
 
@@ -242,9 +242,9 @@ bool CAddonButtonMap::GetAccelerometer(const FeatureName& feature,
 }
 
 void CAddonButtonMap::AddAccelerometer(const FeatureName& feature,
-                                               const CDriverPrimitive& positiveX,
-                                               const CDriverPrimitive& positiveY,
-                                               const CDriverPrimitive& positiveZ)
+                                       const CDriverPrimitive& positiveX,
+                                       const CDriverPrimitive& positiveY,
+                                       const CDriverPrimitive& positiveZ)
 {
   using namespace JOYSTICK;
 

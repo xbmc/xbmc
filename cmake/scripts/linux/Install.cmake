@@ -41,6 +41,10 @@ configure_file(${CMAKE_SOURCE_DIR}/cmake/KodiConfig.cmake.in
 
 # Configure xsession entry
 configure_file(${CMAKE_SOURCE_DIR}/tools/Linux/kodi-xsession.desktop.in
+               ${CORE_BUILD_DIR}/${APP_NAME_LC}-xsession.desktop @ONLY)
+
+# Configure desktop entry
+configure_file(${CMAKE_SOURCE_DIR}/tools/Linux/kodi.desktop.in
                ${CORE_BUILD_DIR}/${APP_NAME_LC}.desktop @ONLY)
 
 # Install app
@@ -78,12 +82,13 @@ foreach(file ${install_data})
 endforeach()
 
 # Install xsession entry
-install(FILES ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/${APP_NAME_LC}.desktop
+install(FILES ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/${APP_NAME_LC}-xsession.desktop
+        RENAME ${APP_NAME_LC}.desktop
         DESTINATION ${datarootdir}/xsessions
         COMPONENT kodi)
 
 # Install desktop entry
-install(FILES ${CMAKE_SOURCE_DIR}/tools/Linux/kodi.desktop
+install(FILES ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/${APP_NAME_LC}.desktop
         DESTINATION ${datarootdir}/applications
         COMPONENT kodi)
 
@@ -272,7 +277,7 @@ if(ENABLE_EVENTCLIENTS)
           DESTINATION ${bindir}
           COMPONENT kodi-eventclients-ps3)
 
-  if(BLUETOOTH_FOUND)
+  if(BLUETOOTH_FOUND AND CWIID_FOUND)
     # Install kodi-eventclients-wiiremote
     install(PROGRAMS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/WiiRemote/${APP_NAME_LC}-wiiremote
             DESTINATION ${bindir}

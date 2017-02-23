@@ -313,13 +313,13 @@ bool CJSONRPC::HandleMethodCall(const CVariant& request, CVariant& response, ITr
 
 inline bool CJSONRPC::IsProperJSONRPC(const CVariant& inputroot)
 {
-  return inputroot.isObject() && inputroot.isMember("jsonrpc") && inputroot["jsonrpc"].isString() && inputroot["jsonrpc"] == CVariant("2.0") && inputroot.isMember("method") && inputroot["method"].isString() && (!inputroot.isMember("params") || inputroot["params"].isArray() || inputroot["params"].isObject());
+  return inputroot.isMember("jsonrpc") && inputroot["jsonrpc"].isString() && inputroot["jsonrpc"] == CVariant("2.0") && inputroot.isMember("method") && inputroot["method"].isString() && (!inputroot.isMember("params") || inputroot["params"].isArray() || inputroot["params"].isObject());
 }
 
 inline void CJSONRPC::BuildResponse(const CVariant& request, JSONRPC_STATUS code, const CVariant& result, CVariant& response)
 {
   response["jsonrpc"] = "2.0";
-  response["id"] = request.isObject() && request.isMember("id") ? request["id"] : CVariant();
+  response["id"] = request.isMember("id") ? request["id"] : CVariant();
 
   switch (code)
   {

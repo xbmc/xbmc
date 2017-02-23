@@ -38,21 +38,21 @@ namespace PERIPHERALS
     static PERIPHERAL_TYPE TranslateType(PeripheralType type);
 
     static KODI::JOYSTICK::CDriverPrimitive TranslatePrimitive(const ADDON::DriverPrimitive& primitive);
-    static ADDON::DriverPrimitive     TranslatePrimitive(const KODI::JOYSTICK::CDriverPrimitive& primitive);
+    static ADDON::DriverPrimitive           TranslatePrimitive(const KODI::JOYSTICK::CDriverPrimitive& primitive);
 
     static std::vector<KODI::JOYSTICK::CDriverPrimitive> TranslatePrimitives(const std::vector<ADDON::DriverPrimitive>& primitives);
-    static std::vector<ADDON::DriverPrimitive>     TranslatePrimitives(const std::vector<KODI::JOYSTICK::CDriverPrimitive>& primitives);
+    static std::vector<ADDON::DriverPrimitive>           TranslatePrimitives(const std::vector<KODI::JOYSTICK::CDriverPrimitive>& primitives);
 
-    static KODI::JOYSTICK::HAT_DIRECTION       TranslateHatDirection(JOYSTICK_DRIVER_HAT_DIRECTION dir);
+    static KODI::JOYSTICK::HAT_DIRECTION TranslateHatDirection(JOYSTICK_DRIVER_HAT_DIRECTION dir);
     static JOYSTICK_DRIVER_HAT_DIRECTION TranslateHatDirection(KODI::JOYSTICK::HAT_DIRECTION dir);
 
     static KODI::JOYSTICK::HAT_STATE TranslateHatState(JOYSTICK_STATE_HAT state);
 
-    static KODI::JOYSTICK::SEMIAXIS_DIRECTION       TranslateSemiAxisDirection(JOYSTICK_DRIVER_SEMIAXIS_DIRECTION dir);
+    static KODI::JOYSTICK::SEMIAXIS_DIRECTION TranslateSemiAxisDirection(JOYSTICK_DRIVER_SEMIAXIS_DIRECTION dir);
     static JOYSTICK_DRIVER_SEMIAXIS_DIRECTION TranslateSemiAxisDirection(KODI::JOYSTICK::SEMIAXIS_DIRECTION dir);
 
     static KODI::JOYSTICK::FEATURE_TYPE TranslateFeatureType(JOYSTICK_FEATURE_TYPE type);
-    static JOYSTICK_FEATURE_TYPE  TranslateFeatureType(KODI::JOYSTICK::FEATURE_TYPE type);
+    static JOYSTICK_FEATURE_TYPE        TranslateFeatureType(KODI::JOYSTICK::FEATURE_TYPE type);
 
     static ADDON::DriverPrimitive Opposite(const ADDON::DriverPrimitive& semiaxis);
   };

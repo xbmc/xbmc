@@ -39,13 +39,13 @@ public:
 
   CControllerFeature& operator=(const CControllerFeature& rhs);
 
-  KODI::JOYSTICK::FEATURE_TYPE Type(void) const       { return m_type; }
+  KODI::JOYSTICK::FEATURE_TYPE Type(void) const { return m_type; }
   KODI::JOYSTICK::FEATURE_CATEGORY Category(void) const { return m_category; }
   const std::string&     CategoryLabel(void) const { return m_strCategory; }
   const std::string&     Name(void) const       { return m_strName; }
   const std::string&     Label(void) const      { return m_strLabel; }
   unsigned int           LabelID(void) const    { return m_labelId; }
-  KODI::JOYSTICK::INPUT_TYPE   InputType(void) const  { return m_inputType; }
+  KODI::JOYSTICK::INPUT_TYPE InputType(void) const { return m_inputType; }
 
   bool Deserialize(const TiXmlElement* pElement,
                    const CController* controller,
@@ -59,7 +59,7 @@ private:
   std::string            m_strName;
   std::string            m_strLabel;
   unsigned int           m_labelId;
-  KODI::JOYSTICK::INPUT_TYPE   m_inputType;
+  KODI::JOYSTICK::INPUT_TYPE m_inputType;
 };
 
 }

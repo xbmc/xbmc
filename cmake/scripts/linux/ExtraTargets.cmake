@@ -8,5 +8,8 @@ endif()
 
 # WiiRemote
 if(ENABLE_EVENTCLIENTS AND BLUETOOTH_FOUND)
-  add_subdirectory(${CMAKE_SOURCE_DIR}/tools/EventClients/Clients/WiiRemote build/WiiRemote)
+  find_package(CWiid QUIET)
+  if(CWIID_FOUND)
+    add_subdirectory(${CMAKE_SOURCE_DIR}/tools/EventClients/Clients/WiiRemote build/WiiRemote)
+  endif()
 endif()

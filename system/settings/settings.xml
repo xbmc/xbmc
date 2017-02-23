@@ -2212,7 +2212,7 @@
         <setting id="videoscreen.dither" type="boolean" label="36099" help="36598">
           <requirement>HAS_GL</requirement>
           <level>3</level>
-          <default>true</default>
+          <default>false</default>
           <control type="toggle" />
         </setting>
         <setting id="videoscreen.ditherdepth" type="integer" label="36100" help="36599">
@@ -2767,6 +2767,8 @@
           <control type="toggle" />
         </setting>
       </group>
+      <group id="3" label="13600">
+      </group>
     </category>
     <category id="network" label="798" help="36379">
       <group id="1" label="16000">
@@ -2925,7 +2927,7 @@
         </setting>
         <setting id="general.addonnotifications" type="boolean" label="36609" help="36612">
           <level>0</level>
-          <default>true</default>
+          <default>false</default>
           <control type="toggle" />
           <dependencies>
             <dependency type="enable" setting="general.addonupdates">0</dependency>

@@ -627,18 +627,16 @@ bool CAddonInstallJob::DoWork()
       database.SetLastUpdated(m_addon->ID(), CDateTime::GetCurrentDateTime());
   }
 
+  bool notify = (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_ADDONS_NOTIFICATIONS)
+        || !m_isAutoUpdate) && !IsModal();
   CEventLog::GetInstance().Add(
-    EventPtr(new CAddonManagementEvent(m_addon, m_isUpdate ? 24065 : 24064)),
-    !IsModal() && CServiceBroker::GetSettings().GetBool(CSettings::SETTING_ADDONS_NOTIFICATIONS), false);
+      EventPtr(new CAddonManagementEvent(m_addon, m_isUpdate ? 24065 : 24084)), notify, false);
 
   if (m_isAutoUpdate && !m_addon->Broken().empty())
   {
     CLog::Log(LOGDEBUG, "CAddonInstallJob[%s]: auto-disabling due to being marked as broken", m_addon->ID().c_str());
     CAddonMgr::GetInstance().DisableAddon(m_addon->ID());
-    CEventLog::GetInstance().Add(
-        EventPtr(new CAddonManagementEvent(m_addon, 24094)),
-        CServiceBroker::GetSettings().GetBool(CSettings::SETTING_ADDONS_NOTIFICATIONS),
-        false);
+    CEventLog::GetInstance().Add(EventPtr(new CAddonManagementEvent(m_addon, 24094)), true, false);
   }
 
   // and we're done!
