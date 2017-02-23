@@ -17,6 +17,7 @@
 			<animation effect="fade" start="0" end="100" time="400">WindowOpen</animation>
 			<animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
 			<texture background="true" colordiffuse="88FFFFFF">$INFO[Player.Art(fanart)]</texture>
+			<visible>!Skin.HasSetting(hide_background_fanart)</visible>
 		</control>
 		<control type="group">
 			<animation effect="fade" start="100" end="30" time="0" condition="!String.IsEmpty(Player.Art(fanart)) | Visualisation.Enabled">Conditional</animation>
