@@ -622,7 +622,12 @@ void CGUIWindowFileManager::OnStart(CFileItem *pItem, const std::string &player)
     g_application.ProcessAndStartPlaylist(strPlayList, *pPlayList, PLAYLIST_MUSIC);
     return;
   }
-  if (pItem->IsAudio() || pItem->IsVideo() || pItem->IsGame())
+  if (pItem->IsAudio() || pItem->IsVideo())
+  {
+    g_playlistPlayer.Play(std::make_shared<CFileItem>(*pItem), player);
+    return;
+  }
+  if (pItem->IsGame())
   {
     g_application.PlayFile(*pItem, player);
     return ;
