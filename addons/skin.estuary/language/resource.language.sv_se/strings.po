@@ -170,7 +170,7 @@ msgstr "Alternativ för spellista"
 
 msgctxt "#31043"
 msgid "Set the type and add rules to create a smart playlist. These playlists are dynamic and include all media items from your database which apply to your chosen rules."
-msgstr "Ställ in typ och lägg till regler för att skapa en smart spellista. Dessa spellistor är dynamiska och omfattar alla mediaobjekt från databasen matchar dins valda regler."
+msgstr "Ställ in typ och lägg till regler för att skapa en smart spellista. Dessa spellistor är dynamiska och omfattar alla mediaobjekt från databasen som matchar dina valda regler."
 
 msgctxt "#31044"
 msgid "Add group"
@@ -182,7 +182,7 @@ msgstr "Byt namn på grupp"
 
 msgctxt "#31046"
 msgid "Delete group"
-msgstr "Ta bort grupp"
+msgstr "Radera grupp"
 
 msgctxt "#31048"
 msgid "Available"
@@ -194,7 +194,7 @@ msgstr "Tryck på [B]OK[/B] för att stoppa"
 
 msgctxt "#31051"
 msgid "Toggle language"
-msgstr "Välj språk"
+msgstr "Växla språk"
 
 msgctxt "#31052"
 msgid "filtered"
@@ -362,7 +362,7 @@ msgstr "Visa dina personliga bilder eller ladda ner en av de många bild tilläg
 
 msgctxt "#31112"
 msgid "Toggle audio stream"
-msgstr "Välj ljudström"
+msgstr "Växla ljudström"
 
 msgctxt "#31113"
 msgid "Search local library"
@@ -426,7 +426,7 @@ msgstr "Visa ikoner"
 
 msgctxt "#31128"
 msgid "Contributors"
-msgstr "Medarbetare"
+msgstr "Bidragsgivare"
 
 msgctxt "#31129"
 msgid "General settings applying to all areas of the skin."
@@ -434,7 +434,7 @@ msgstr "Allmänna inställningar som gäller för alla områden av skalet."
 
 msgctxt "#31130"
 msgid "Main menu-related settings: Configure the home screen to your likings."
-msgstr "Huvudmeny relaterade inställningar: Konfigurera startskärmen till ditt tycke och smak."
+msgstr "Huvudmeny-relaterade inställningar: Konfigurera startskärmen till ditt tycke och smak."
 
 msgctxt "#31131"
 msgid "Choose skin fanart pack"

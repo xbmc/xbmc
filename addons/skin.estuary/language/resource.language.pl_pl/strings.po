@@ -74,7 +74,7 @@ msgstr "Albumy nieodtwarzane"
 
 msgctxt "#31015"
 msgid "Recent recordings"
-msgstr "Najnowsze nagrania"
+msgstr "Nagrania ostatnio dodane"
 
 msgctxt "#31016"
 msgid "Recently played channels"

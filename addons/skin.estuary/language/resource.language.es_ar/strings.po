@@ -478,7 +478,7 @@ msgstr "Velocidad de reproducción"
 
 msgctxt "#31143"
 msgid "You did not set up PVR yet. In order to use PVR, choose a PVR client addon and configure it. Please visit http://kodi.wiki/view/PVR to learn more."
-msgstr "Todavía no ha configurado PVR. Para usar PVR, seleccione un addon cliente PVR y configurelo. Por favor visite http://kodi.wiki/view/PVR  para concer más."
+msgstr "Todavía no ha configurado PVR. Para usar PVR, seleccione un addon cliente PVR y configurelo. Por favor visite http://kodi.wiki/view/PVR  para conocer más."
 
 msgctxt "#31144"
 msgid "Enter add-on browser"

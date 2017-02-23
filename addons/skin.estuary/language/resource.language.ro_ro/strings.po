@@ -342,7 +342,7 @@ msgstr "Mediateca dumneavoastră este momentan goală. Pentru a o popula cu fiș
 
 msgctxt "#31105"
 msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
-msgstr "Adăugați surse video și stabiliți tipul de conținut potrivit pentru a vă umple mediatecile video."
+msgstr "Adăugați surse video și setați tipul de conținut potrivit pentru ca să populați mediatecile video."
 
 msgctxt "#31106"
 msgid "Teletext"

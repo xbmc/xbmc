@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="skin.estuary" version="1.9.11" name="Estuary" provider-name="phil65, Ichabod Fletchman">
+<addon id="skin.estuary" version="1.9.12" name="Estuary" provider-name="phil65, Ichabod Fletchman">
 	<requires>
 		<import addon="xbmc.gui" version="5.12.0"/>
 	</requires>
@@ -47,7 +47,7 @@
 		<summary lang="sk_SK">Vzhľad Estuary, vytvorili phil65 a Piers. (predvolený vzhľad pre Kodi)</summary>
 		<summary lang="sr_RS">Маска Estuary аутора phil65 и Piers. (Подразумевана Коди маска)</summary>
 		<summary lang="sr_RS@latin">Maska Estuary autora phil65 i Piers. (Podrazumevana Kodi maska)</summary>
-		<summary lang="sv_SE">Estuary-skin av phil65 och Piers. (Kodi's standard-skin)</summary>
+		<summary lang="sv_SE">Estuary, ett skal av phil65. (Kodi's standardskal)</summary>
 		<summary lang="szl">Skōra Estuary ôd phil65 i Piers. (Wychodnŏ skōra Kodi)</summary>
 		<summary lang="th_TH">สกิน Estuary โดย phil65 และ Piers (หน้าตาเริ่มต้นของKodi)</summary>
 		<summary lang="tr_TR">Estuary dış görünümü. phil65 (Kodi'nin varsayılan dış görünümü)</summary>
@@ -89,7 +89,7 @@
 		<description lang="sk_SK">Estuary je predvolený vzhľad pre Kodi 17.0 a vyššie. Pokúša sa byť pre prvotných používateľov Kodi jednoduchým na pochopenie a používanie.</description>
 		<description lang="sr_RS">Estuary је подразумевана маска за Kodi 17.0 и изнад. Покушава да буде једноставан за разумевање и коришћење новим корисницима Kodi-ја.</description>
 		<description lang="sr_RS@latin">Estuary je podrazumevana maska za Kodi 17.0 i iznad. Pokušava da bude jednostavan za razumevanje i korišćenje novim korisnicima Kodija.</description>
-		<description lang="sv_SE">Estuary är standard-skin för Kodi 17.0 och uppåt. Det försöker att vara lättförståeligt för förstagångsanvändare av Kodi att förstå och använda.</description>
+		<description lang="sv_SE">Estuary är standardskal för Kodi 17.0 och uppåt. Det försöker att vara lättförståeligt och användarvänligt för förstagångsanvändare av Kodi.</description>
 		<description lang="szl">Estuary je wychodnōm skōrōm Kodi dlŏ wersyje 17.0 i dalszych. Prōbuje być proste dlŏ używŏczōw, dlŏ kerych Kodi je nowe</description>
 		<description lang="th_TH">Estuary คือหน้าตาเริ่มต้นของ Kodi 17.0 และสูงกว่า เป็นความพยายามที่จะทำให้ง่ายสำหรับผู้ใช้ Kodi ในครั้งแรก ที่จะเข้าใจและใช้งาน</description>
 		<description lang="tr_TR">Estuary Kodi 17.0 ve yukarısı için varsayılan dış görünümdür. İlk kez Kodi kullananlar için anlaşılması ve kullanımı kolaydır.</description>
@@ -131,7 +131,7 @@
 		<disclaimer lang="sk_SK">Estuary je predvolený vzhľad pre Kodi, jeho odstránenie môže spôsobiť problémy</disclaimer>
 		<disclaimer lang="sr_RS">Estuary је подразумевана маска за Kodi, уклањање може изазвати проблеме</disclaimer>
 		<disclaimer lang="sr_RS@latin">Estuary je podrazumevana maska za Kodi, uklanjanje može izazvati probleme</disclaimer>
-		<disclaimer lang="sv_SE">Estuary är standard skalet för Kodi, ta bort den kan orsaka problem</disclaimer>
+		<disclaimer lang="sv_SE">Estuary är standard skalet för Kodi, om du tar bort den kan det orsaka problem</disclaimer>
 		<disclaimer lang="szl">Estuary je wychodnōm skōrōm Kodi, jij uchrōniynie może sprŏwiać niyprzileżytości</disclaimer>
 		<disclaimer lang="th_TH">Estuary เป็นหน้าตาเริ่มต้นสำหรับ Kodi, การลบมัน อาจทำให้เกิดปัญหา</disclaimer>
 		<disclaimer lang="tr_TR">Estuary Kodi için varsayılan dış görünümdür, kaldırmak sorunlara yol açabilir</disclaimer>

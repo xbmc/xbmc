@@ -162,7 +162,7 @@ msgstr "Avance rapide"
 
 msgctxt "#31041"
 msgid "Camera manufacturer"
-msgstr "Fabricant de l'appareil-photo"
+msgstr "Fabricant de l'appareil photo"
 
 msgctxt "#31042"
 msgid "Playlist options"
