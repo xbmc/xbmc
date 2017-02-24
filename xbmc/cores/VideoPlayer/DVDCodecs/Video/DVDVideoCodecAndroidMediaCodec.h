@@ -30,7 +30,7 @@
 #include "DVDStreamInfo.h"
 #include "threads/Thread.h"
 #include "threads/SingleLock.h"
-#include "platform/android/jni/Surface.h"
+#include "androidjni/Surface.h"
 #include "guilib/Geometry.h"
 
 class CJNISurface;

@@ -25,10 +25,10 @@
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 
-#include "platform/android/jni/AudioFormat.h"
-#include "platform/android/jni/AudioManager.h"
-#include "platform/android/jni/AudioTrack.h"
-#include "platform/android/jni/Build.h"
+#include "androidjni/AudioFormat.h"
+#include "androidjni/AudioManager.h"
+#include "androidjni/AudioTrack.h"
+#include "androidjni/Build.h"
 #include "utils/TimeUtils.h"
 
 #include "utils/AMLUtils.h"

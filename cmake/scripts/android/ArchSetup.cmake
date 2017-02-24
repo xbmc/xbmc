@@ -31,4 +31,4 @@ set(ENABLE_AML OFF CACHE BOOL "" FORCE)
 set(ENABLE_OPTICAL OFF CACHE BOOL "" FORCE)
 set(ENABLE_MDNS OFF CACHE BOOL "" FORCE)
 
-list(APPEND DEPLIBS android log jnigraphics)
+list(APPEND DEPLIBS android log jnigraphics androidjni)

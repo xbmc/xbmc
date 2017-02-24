@@ -211,7 +211,7 @@
 #if defined(TARGET_ANDROID)
 #include "platform/android/activity/XBMCApp.h"
 #include "platform/android/activity/AndroidFeatures.h"
-#include "platform/android/jni/Build.h"
+#include "androidjni/Build.h"
 #endif
 
 #ifdef TARGET_WINDOWS

@@ -25,9 +25,9 @@
 
 #include "AndroidStorageProvider.h"
 #include "platform/android/activity/XBMCApp.h"
-#include "platform/android/jni/Context.h"
-#include "platform/android/jni/StorageManager.h"
-#include "platform/android/jni/Environment.h"
+#include "androidjni/Context.h"
+#include "androidjni/StorageManager.h"
+#include "androidjni/Environment.h"
 #include "guilib/LocalizeStrings.h"
 #include "filesystem/File.h"
 #include "filesystem/Directory.h"

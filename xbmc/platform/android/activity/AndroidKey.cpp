@@ -23,7 +23,7 @@
 #include "XBMCApp.h"
 #include "input/Key.h"
 #include "windowing/WinEvents.h"
-#include "platform/android/jni/KeyCharacterMap.h"
+#include "androidjni/KeyCharacterMap.h"
 
 
 typedef struct {

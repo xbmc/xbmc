@@ -24,7 +24,7 @@
 #include <vector>
 
 #include "EGLNativeType.h"
-#include "platform/android/jni/Display.h"
+#include "androidjni/Display.h"
 
 class CEGLNativeTypeAndroid : public CEGLNativeType
 {

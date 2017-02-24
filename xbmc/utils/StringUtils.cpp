@@ -33,7 +33,7 @@
 #include "StringUtils.h"
 #include "CharsetConverter.h"
 #if defined(TARGET_ANDROID)
-#include "platform/android/jni/JNIThreading.h"
+#include "androidjni/JNIThreading.h"
 #endif
 #include "utils/fstrcmp.h"
 #include "Util.h"

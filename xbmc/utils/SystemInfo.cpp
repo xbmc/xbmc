@@ -57,7 +57,7 @@
 #include "utils/StringUtils.h"
 #include "utils/XMLUtils.h"
 #if defined(TARGET_ANDROID)
-#include "platform/android/jni/Build.h"
+#include "androidjni/Build.h"
 #if defined(HAS_LIBAMCODEC)
 #include "utils/AMLUtils.h"
 #endif

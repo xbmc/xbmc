@@ -41,14 +41,14 @@
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
 
-#include "platform/android/jni/ByteBuffer.h"
-#include "platform/android/jni/MediaCodec.h"
-#include "platform/android/jni/MediaCrypto.h"
-#include "platform/android/jni/MediaFormat.h"
-#include "platform/android/jni/MediaCodecList.h"
-#include "platform/android/jni/MediaCodecInfo.h"
-#include "platform/android/jni/Surface.h"
-#include "platform/android/jni/SurfaceTexture.h"
+#include "androidjni/ByteBuffer.h"
+#include "androidjni/MediaCodec.h"
+#include "androidjni/MediaCrypto.h"
+#include "androidjni/MediaFormat.h"
+#include "androidjni/MediaCodecList.h"
+#include "androidjni/MediaCodecInfo.h"
+#include "androidjni/Surface.h"
+#include "androidjni/SurfaceTexture.h"
 #include "platform/android/activity/AndroidFeatures.h"
 #include "settings/Settings.h"
 
@@ -136,7 +136,7 @@ public:
   CNULL_Listener() : CJNISurfaceTextureOnFrameAvailableListener(jni::jhobject(NULL)) {};
 
 protected:
-  virtual void OnFrameAvailable(CJNISurfaceTexture &surface) {};
+  virtual void OnFrameAvailable() {};
 };
 
 class CDVDMediaCodecOnFrameAvailable : public CEvent, CJNISurfaceTextureOnFrameAvailableListener
@@ -156,7 +156,7 @@ public:
   }
 
 protected:
-  virtual void OnFrameAvailable(CJNISurfaceTexture &surface)
+  virtual void OnFrameAvailable()
   {
     Set();
   }
