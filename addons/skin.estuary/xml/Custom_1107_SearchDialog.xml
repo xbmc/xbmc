@@ -34,7 +34,21 @@
 						<onclick condition="System.hasAddon(plugin.video.youtube)">ActivateWindow(videos,"plugin://plugin.video.youtube/kodion/search/list/",return)</onclick>
 						<onclick condition="!System.hasAddon(plugin.video.youtube)">InstallAddon(plugin.video.youtube)</onclick>
 					</item>
+					<!-- ricercaglobale streamondemand -->
 					<item>
+						<label>SerieTV Ondemand</label>
+						<onclick>Dialog.Close(all)</onclick>
+						<onclick condition="System.hasAddon(plugin.video.streamondemand)">ActivateWindow (videos,"plugin://plugin.video.streamondemand/?eyJpc1BsYXlhYmxlIjogImZhbHNlIiwgImluZm9MYWJlbHMiOiB7fSwgInRvdGFsSXRlbXMiOiAxOCwgImZ1bGx0aXRsZSI6ICJbQ09MT1IgbGltZV1DZXJjYSBTZXJpZSBUVi4uLlsvQ09MT1JdIiwgImNhdGVnb3J5IjogIiIsICJ0aXRsZSI6ICJbQ09MT1IgbGltZV1DZXJjYSBTZXJpZSBUVi4uLlsvQ09MT1JdIiwgInVybCI6ICJzZWFyY2hfdHZzaG93X2J5X3RpdGxlIiwgImZhbmFydCI6ICJDOlxcVXNlcnNcXHJvbWJhXFxBcHBEYXRhXFxSb2FtaW5nXFxLb2RpXFxhZGRvbnNcXHBsdWdpbi52aWRlby5zdHJlYW1vbmRlbWFuZFxcZmFuYXJ0LmpwZyIsICJjb250ZXh0IjogIiIsICJhY3Rpb24iOiAic2VhcmNoIiwgInRodW1ibmFpbCI6ICJodHRwczovL2kuaW1ndXIuY29tLzJaV2pMbjUuanBnPzEiLCAiY2hhbm5lbCI6ICJidXNjYWRvcmFsbCJ9",return)</onclick>
+						<onclick condition="!System.hasAddon(plugin.video.streamondemand)">InstallAddon(plugin.video.streamondemand)</onclick>
+					</item>
+					<item>
+						<label>Film Ondemand</label>
+						<onclick>Dialog.Close(all)</onclick>
+						<onclick condition="System.hasAddon(plugin.video.streamondemand)">ActivateWindow (videos,"plugin://plugin.video.streamondemand/?eyJpc1BsYXlhYmxlIjogImZhbHNlIiwgImluZm9MYWJlbHMiOiB7fSwgInRvdGFsSXRlbXMiOiAxOCwgImZ1bGx0aXRsZSI6ICJbQ09MT1IgeWVsbG93XUNlcmNhIFRpdG9sby4uLlsvQ09MT1JdIiwgImNhdGVnb3J5IjogIiIsICJ0aXRsZSI6ICJbQ09MT1IgeWVsbG93XUNlcmNhIFRpdG9sby4uLlsvQ09MT1JdIiwgInVybCI6ICJzZWFyY2hfbW92aWVfYnlfdGl0bGUiLCAiZmFuYXJ0IjogIkM6XFxVc2Vyc1xccm9tYmFcXEFwcERhdGFcXFJvYW1pbmdcXEtvZGlcXGFkZG9uc1xccGx1Z2luLnZpZGVvLnN0cmVhbW9uZGVtYW5kXFxmYW5hcnQuanBnIiwgImNvbnRleHQiOiAiIiwgImFjdGlvbiI6ICJzZWFyY2giLCAidGh1bWJuYWlsIjogImh0dHA6Ly9pLmltZ3VyLmNvbS9CMUgxRzhVLnBuZyIsICJjaGFubmVsIjogImJ1c2NhZG9yYWxsIn0%3D",return)</onclick>
+						<onclick condition="!System.hasAddon(plugin.video.streamondemand)">InstallAddon(plugin.video.streamondemand)</onclick>
+					</item>
+						<!-- --------------------------------------------- -->					
+				        <item>
 						<label>$LOCALIZE[31115]</label>
 						<onclick>Dialog.Close(all)</onclick>
 						<onclick condition="System.hasAddon(script.extendedinfo)">RunScript(script.extendedinfo,info=moviedbbrowser,search=True)</onclick>
