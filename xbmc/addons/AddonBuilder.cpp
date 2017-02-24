@@ -236,6 +236,10 @@ AddonPtr CAddonBuilder::FromProps(AddonProps addonProps)
       return AddonPtr(new GAME::CController(std::move(addonProps)));
     case ADDON_GAMEDLL:
       return AddonPtr(new GAME::CGameClient(std::move(addonProps)));
+    case ADDON_IMAGEDECODER:
+      return AddonPtr(new CImageDecoder(std::move(addonProps)));
+    case ADDON_VFS:
+      return AddonPtr(new CVFSEntry(std::move(addonProps),"","",false,false,false));
     default:
       break;
   }
