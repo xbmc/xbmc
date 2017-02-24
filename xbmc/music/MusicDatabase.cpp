@@ -230,7 +230,8 @@ void CMusicDatabase::CreateAnalytics()
   m_pDS->exec("CREATE INDEX idxSong2 ON song(lastplayed)");
   m_pDS->exec("CREATE INDEX idxSong3 ON song(idAlbum)");
   m_pDS->exec("CREATE INDEX idxSong6 ON song( idPath, strFileName(255) )");
-  m_pDS->exec("CREATE UNIQUE INDEX idxSong7 ON song( idAlbum, strMusicBrainzTrackID(36) )");
+  //Musicbrainz Track ID is not unique on an album, recordings are sometimes repeated e.g. "[silence]" or on a disc set
+  m_pDS->exec("CREATE UNIQUE INDEX idxSong7 ON song( idAlbum, iTrack, strMusicBrainzTrackID(36) )");
 
   m_pDS->exec("CREATE UNIQUE INDEX idxSongArtist_1 ON song_artist ( idSong, idArtist, idRole )");
   m_pDS->exec("CREATE INDEX idxSongArtist_2 ON song_artist ( idSong, idRole )");
@@ -684,8 +685,9 @@ int CMusicDatabase::AddSong(const int idAlbum,
     int idPath = AddPath(strPath);
 
     if (!strMusicBrainzTrackID.empty())
-      strSQL = PrepareSQL("SELECT idSong FROM song WHERE idAlbum = %i AND strMusicBrainzTrackID = '%s'",
-                          idAlbum,
+      strSQL = PrepareSQL("SELECT idSong FROM song WHERE idAlbum = %i AND iTrack=%i AND strMusicBrainzTrackID = '%s'",
+                          idAlbum, 
+                          iTrack,
                           strMusicBrainzTrackID.c_str());
     else
       strSQL = PrepareSQL("SELECT idSong FROM song WHERE idAlbum=%i AND strFileName='%s' AND strTitle='%s' AND iTrack=%i AND strMusicBrainzTrackID IS NULL",
@@ -5196,7 +5198,7 @@ void CMusicDatabase::UpdateTables(int version)
 
 int CMusicDatabase::GetSchemaVersion() const
 {
-  return 63;
+  return 64;
 }
 
 int CMusicDatabase::GetMusicNeedsTagScan()
