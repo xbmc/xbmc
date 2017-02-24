@@ -429,8 +429,6 @@ void CGUIDialogMusicInfo::OnGetThumb()
     newThumb = localThumb;
   else if (CFile::Exists(result))
     newThumb = result;
-  else // none
-    newThumb = "-"; // force local thumbs to be ignored
 
   // update thumb in the database
   CMusicDatabase db;
