@@ -190,12 +190,19 @@ bool win32_exception::write_stacktrace(EXCEPTION_POINTERS* pEp)
     goto cleanup;
   }
 
-  frame.AddrPC.Offset         = pEp->ContextRecord->Eip;      // Current location in program
-  frame.AddrPC.Mode           = AddrModeFlat;                 // Address mode for this pointer: flat 32 bit addressing
-  frame.AddrStack.Offset      = pEp->ContextRecord->Esp;      // Stack pointers current value
-  frame.AddrStack.Mode        = AddrModeFlat;                 // Address mode for this pointer: flat 32 bit addressing
-  frame.AddrFrame.Offset      = pEp->ContextRecord->Ebp;      // Value of register used to access local function variables.
-  frame.AddrFrame.Mode        = AddrModeFlat;                 // Address mode for this pointer: flat 32 bit addressing
+  frame.AddrPC.Mode = AddrModeFlat; // Address mode for this pointer: flat 32 bit addressing
+  frame.AddrStack.Mode = AddrModeFlat; // Address mode for this pointer: flat 32 bit addressing
+  frame.AddrFrame.Mode = AddrModeFlat; // Address mode for this pointer: flat 32 bit addressing
+
+#if defined(_X86_)
+  frame.AddrPC.Offset = pEp->ContextRecord->Eip; // Current location in program
+  frame.AddrStack.Offset = pEp->ContextRecord->Esp; // Stack pointers current value
+  frame.AddrFrame.Offset = pEp->ContextRecord->Ebp; // Value of register used to access local function variables.
+#else
+  frame.AddrPC.Offset = pEp->ContextRecord->Rip; // Current location in program
+  frame.AddrStack.Offset = pEp->ContextRecord->Rsp; // Stack pointers current value
+  frame.AddrFrame.Offset = pEp->ContextRecord->Rbp; // Value of register used to access local function variables.
+#endif
 
   if(pSI(hCurProc, NULL, TRUE) == FALSE)
     goto cleanup;
