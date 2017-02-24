@@ -17,7 +17,7 @@
 				<left>0</left>
 				<top>4</top>
 				<width>100%</width>
-				<height>400</height>
+				<height>410</height>
 				<animation effect="fade" start="0" end="100" time="300">WindowOpen</animation>
 				<animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
 				<animation effect="fade" time="200">VisibleChange</animation>
@@ -49,105 +49,27 @@
 					<itemlayout width="317">
 						<control type="group">
 							<left>-220</left>
-							<control type="image">
-								<left>20</left>
-								<top>8</top>
-								<width>276</width>
-								<height>394</height>
-								<aspectratio>scale</aspectratio>
-								<texture fallback="DefaultVideo.png">$VAR[ListPosterVar]</texture>
-								<bordertexture border="21">overlays/shadow.png</bordertexture>
-								<bordersize>20</bordersize>
-							</control>
-							<control type="textbox">
-								<left>51</left>
-								<top>252</top>
-								<width>214</width>
-								<height>100</height>
-								<label>$INFO[ListItem.Label]</label>
-								<font>font25_title</font>
-								<shadowcolor>text_shadow</shadowcolor>
-								<align>center</align>
-								<aligny>center</aligny>
-								<visible>String.IsEmpty(ListItem.Art(poster)) + !Listitem.IsParentFolder</visible>
-							</control>
-							<control type="group">
-								<left>133</left>
-								<top>10</top>
-								<include>UserRatingCircle</include>
-							</control>
-							<control type="image">
-								<left>40</left>
-								<top>302</top>
-								<width>80</width>
-								<height>80</height>
-								<texture>overlays/overlay-bg.png</texture>
-								<visible>Listitem.IsCollection | ListItem.IsResumable | ListItem.IsPlaying | Integer.IsGreater(ListItem.Playcount,0)</visible>
-							</control>
-							<control type="image">
-								<left>40</left>
-								<top>349</top>
-								<width>32</width>
-								<height>32</height>
-								<texture>$VAR[WallWatchedIconVar]</texture>
-							</control>
+							<top>18</top>
+							<include>InfoWallMovieLayout</include>
 						</control>
 					</itemlayout>
 					<focusedlayout width="490">
 						<control type="group">
-							<left>-220</left>
-							<control type="image">
-								<left>20</left>
-								<top>8</top>
-								<width>276</width>
-								<height>394</height>
-								<aspectratio>scale</aspectratio>
-								<texture fallback="DefaultVideo.png">$VAR[ListPosterVar]</texture>
-								<bordertexture border="21">overlays/shadow.png</bordertexture>
-								<bordersize>20</bordersize>
+							<control type="group">
+								<left>-220</left>
+								<top>18</top>
 								<visible>Container.OnScrollPrevious</visible>
-								<animation effect="fade" time="200" start="100" end="0">Hidden</animation>
 								<visible>Control.IsVisible(20000)</visible>
+								<animation effect="fade" time="200" start="100" end="0">Hidden</animation>
+								<include>InfoWallMovieLayout</include>
 							</control>
-							<control type="image">
-								<left>173</left>
-								<top>8</top>
-								<width>276</width>
-								<height>394</height>
-								<aspectratio>scale</aspectratio>
-								<texture fallback="DefaultVideo.png">$VAR[ListPosterVar]</texture>
-								<bordertexture border="21">overlays/shadow.png</bordertexture>
-								<bordersize>20</bordersize>
+							<control type="group">
+								<left>-40</left>
+								<top>18</top>
 								<visible>Container.OnScrollNext</visible>
-								<animation effect="fade" time="200" start="100" end="0">Hidden</animation>
 								<visible>Control.IsVisible(20000)</visible>
-							</control>
-							<control type="textbox">
-								<left>51</left>
-								<top>252</top>
-								<width>214</width>
-								<height>100</height>
-								<label>$INFO[ListItem.Label]</label>
-								<font>font25_title</font>
-								<shadowcolor>text_shadow</shadowcolor>
-								<align>center</align>
-								<aligny>center</aligny>
-								<visible>String.IsEmpty(ListItem.Art(poster)) + !Listitem.IsParentFolder</visible>
-							</control>
-							<control type="image">
-								<left>40</left>
-								<top>328</top>
-								<width>54</width>
-								<height>54</height>
-								<texture>overlays/overlay-bg.png</texture>
-								<visible>Listitem.IsCollection | ListItem.IsResumable | ListItem.IsPlaying | Integer.IsGreater(ListItem.Playcount,0)</visible>
-							</control>
-							<control type="image">
-								<left>38</left>
-								<top>349</top>
-								<width>32</width>
-								<height>32</height>
-								<texture>$VAR[WallWatchedIconVar]</texture>
+								<animation effect="fade" time="200" start="100" end="0">Hidden</animation>
+								<include>InfoWallMovieLayout</include>
 							</control>
 						</control>
 					</focusedlayout>
@@ -233,7 +155,7 @@
 			<control type="group">
 				<left>216</left>
 				<top>-18</top>
-				<include content="UserRatingCircle">
+				<include content="RatingCircle">
 					<param name="animation" value="True" />
 				</include>
 			</control>

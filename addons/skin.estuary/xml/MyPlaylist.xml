@@ -25,7 +25,7 @@
 					<pagecontrol>60</pagecontrol>
 					<viewtype label="List">list</viewtype>
 					<preloaditems>1</preloaditems>
-					<focusedlayout height="list_item_height" width="playlistlist_width">
+					<focusedlayout height="list_item_height">
 						<control type="image">
 							<left>0</left>
 							<right>0</right>
@@ -53,7 +53,7 @@
 							<shadowcolor>text_shadow</shadowcolor>
 						</control>
 					</focusedlayout>
-					<itemlayout height="list_item_height" width="playlistlist_width">
+					<itemlayout height="list_item_height">
 						<control type="label">
 							<left>30</left>
 							<bottom>0</bottom>

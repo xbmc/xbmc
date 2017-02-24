@@ -12,7 +12,7 @@
 				<param name="scrollbar_id" value="60" />
 				<param name="onleft_id" value="9000" />
 				<param name="onright_id" value="60" />
-				<param name="width" value="playlisteditorlist_width" />
+				<param name="right" value="848" />
 			</include>
 		</control>
 		<control type="group">
@@ -63,7 +63,7 @@
 				<param name="scrollbar_id" value="61" />
 				<param name="onleft_id" value="60" />
 				<param name="onright_id" value="61" />
-				<param name="width" value="850" />
+				<param name="right" value="-5" />
 			</include>
 			<control type="scrollbar" id="60">
 				<left>0</left>
