@@ -23,7 +23,7 @@ set(PYTHON_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/project/BuildDependencies/include/pyt
 
 add_options(CXX ALL_BUILDS "/wd\"4996\"")
 set(ARCH_DEFINES -D_WINDOWS -DTARGET_WINDOWS -D__SSE__ -D__SSE2__)
-set(SYSTEM_DEFINES -DNOMINMAX -D_USE_32BIT_TIME_T -DHAS_DX -D__STDC_CONSTANT_MACROS
+set(SYSTEM_DEFINES -DNOMINMAX -DHAS_DX -D__STDC_CONSTANT_MACROS
                    -DTAGLIB_STATIC -DNPT_CONFIG_ENABLE_LOGGING
                    -DPLT_HTTP_DEFAULT_USER_AGENT="UPnP/1.0 DLNADOC/1.50 Kodi"
                    -DPLT_HTTP_DEFAULT_SERVER="UPnP/1.0 DLNADOC/1.50 Kodi"
@@ -49,7 +49,7 @@ link_directories(${CMAKE_SOURCE_DIR}/lib/win32/ffmpeg/bin
 
 # Additional libraries
 list(APPEND DEPLIBS d3d11.lib DInput8.lib DSound.lib winmm.lib Mpr.lib Iphlpapi.lib WS2_32.lib
-                    PowrProf.lib setupapi.lib dwmapi.lib yajl.lib dxguid.lib DelayImp.lib)
+                    PowrProf.lib setupapi.lib dwmapi.lib dxguid.lib DelayImp.lib)
 
 # NODEFAULTLIB option
 set(_nodefaultlibs_RELEASE libcmt)
