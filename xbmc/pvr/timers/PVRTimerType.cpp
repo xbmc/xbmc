@@ -24,7 +24,6 @@
 #include "pvr/timers/PVRTimerType.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/PVRManager.h"
-#include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 
@@ -159,12 +158,12 @@ void CPVRTimerType::InitPriorityValues(const PVR_TIMER_TYPE &type)
     for (int i = 1; i < 101; ++i)
       m_priorityValues.push_back(std::make_pair(StringUtils::Format("%d", i), i));
 
-    m_iPriorityDefault = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_PVRRECORD_DEFAULTPRIORITY);
+    m_iPriorityDefault = DEFAULT_RECORDING_PRIORITY;
   }
   else
   {
     // No priority supported.
-    m_iPriorityDefault = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_PVRRECORD_DEFAULTPRIORITY);
+    m_iPriorityDefault = DEFAULT_RECORDING_PRIORITY;
   }
 }
 
@@ -198,12 +197,12 @@ void CPVRTimerType::InitLifetimeValues(const PVR_TIMER_TYPE &type)
     {
       m_lifetimeValues.push_back(std::make_pair(StringUtils::Format(g_localizeStrings.Get(17999).c_str(), i), i)); // "%s days"
     }
-    m_iLifetimeDefault = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_PVRRECORD_DEFAULTLIFETIME);
+    m_iLifetimeDefault = DEFAULT_RECORDING_LIFETIME;
   }
   else
   {
     // No lifetime supported.
-    m_iLifetimeDefault = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_PVRRECORD_DEFAULTLIFETIME);
+    m_iLifetimeDefault = DEFAULT_RECORDING_LIFETIME;
   }
 }
 
@@ -260,12 +259,12 @@ void CPVRTimerType::InitPreventDuplicateEpisodesValues(const PVR_TIMER_TYPE &typ
     // No values given by addon, but prevent duplicate episodes supported. Use default values 0..1
     m_preventDupEpisodesValues.push_back(std::make_pair(g_localizeStrings.Get(815), 0)); // "Record all episodes"
     m_preventDupEpisodesValues.push_back(std::make_pair(g_localizeStrings.Get(816), 1)); // "Record only new episodes"
-    m_iPreventDupEpisodesDefault = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_PVRRECORD_PREVENTDUPLICATEEPISODES);
+    m_iPreventDupEpisodesDefault = DEFAULT_RECORDING_DUPLICATEHANDLING;
   }
   else
   {
     // No prevent duplicate episodes supported.
-    m_iPreventDupEpisodesDefault = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_PVRRECORD_PREVENTDUPLICATEEPISODES);
+    m_iPreventDupEpisodesDefault = DEFAULT_RECORDING_DUPLICATEHANDLING;
   }
 }
 

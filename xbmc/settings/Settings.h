@@ -200,11 +200,8 @@ public:
   static const std::string SETTING_PVRPLAYBACK_FPS;
   static const std::string SETTING_PVRRECORD_INSTANTRECORDACTION;
   static const std::string SETTING_PVRRECORD_INSTANTRECORDTIME;
-  static const std::string SETTING_PVRRECORD_DEFAULTPRIORITY;
-  static const std::string SETTING_PVRRECORD_DEFAULTLIFETIME;
   static const std::string SETTING_PVRRECORD_MARGINSTART;
   static const std::string SETTING_PVRRECORD_MARGINEND;
-  static const std::string SETTING_PVRRECORD_PREVENTDUPLICATEEPISODES;
   static const std::string SETTING_PVRRECORD_TIMERNOTIFICATIONS;
   static const std::string SETTING_PVRRECORD_GROUPRECORDINGS;
   static const std::string SETTING_PVRPOWERMANAGEMENT_ENABLED;
