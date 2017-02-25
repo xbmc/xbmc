@@ -33,7 +33,7 @@ public:
   ~CAEBitstreamPacker();
 
   void Pack(CAEStreamInfo &info, uint8_t* data, int size);
-  void PackPause(CAEStreamInfo &info, unsigned int millis);
+  void PackPause(CAEStreamInfo &info, unsigned int millis, bool iecBursts);
   void Reset();
   uint8_t* GetBuffer();
   unsigned int GetSize();
