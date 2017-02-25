@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
-	<visible>[[Player.Seeking | Player.DisplayAfterSeek | [Player.Paused + !Player.Caching] | Player.Forwarding | Player.Rewinding | Player.ShowInfo | Window.IsActive(fullscreeninfo) | Window.IsActive(videoosd) | Window.IsActive(playerprocessinfo)] + Window.IsActive(fullscreenvideo)] | Window.IsActive(visualisation) | !String.IsEmpty(Player.SeekNumeric) | [[Window.IsActive(fullscreenvideo) | Window.IsActive(visualisation)] + !Window.IsActive(pvrosdchannels) + !String.IsEmpty(PVR.ChannelNumberInput)]</visible>
+	<visible>Player.Seeking | Player.DisplayAfterSeek | [Player.Paused + !Player.Caching] | Player.Forwarding | Player.Rewinding | Player.ShowInfo | Window.IsActive(videoosd) | Window.IsActive(musicosd) | Window.IsActive(playerprocessinfo) | !String.IsEmpty(Player.SeekNumeric) | !String.IsEmpty(PVR.ChannelNumberInput)</visible>
 	<visible>!Window.IsActive(sliderdialog)</visible>
+	<visible>Window.IsActive(fullscreenvideo) | Window.IsActive(visualisation)</visible>
 	<include>Animation_BottomSlide</include>
 	<depth>DepthOSD</depth>
 	<zorder>0</zorder>
 	<controls>
-		<include>PVRChannelNumberInput</include>
 		<control type="group">
 			<bottom>0</bottom>
 			<height>190</height>
@@ -75,9 +75,9 @@
 					<aligny>center</aligny>
 					<font>font30</font>
 					<wrapmultiline>true</wrapmultiline>
-					<visible>!Window.IsActive(fullscreeninfo)</visible>
 					<animation effect="fade" time="200">VisibleChange</animation>
 					<label>$INFO[Player.TimeRemaining,[COLOR button_focus]$LOCALIZE[31134]:[CR][/COLOR]]</label>
+					<visible>!Player.ShowInfo</visible>
 				</control>
 			</control>
 			<control type="label">
@@ -266,5 +266,72 @@
 				</include>
 			</control>
 		</control>
+		<control type="group">
+			<bottom>0</bottom>
+			<height>230</height>
+			<visible>!Window.IsVisible(playerprocessinfo)</visible>
+			<visible>Player.ShowInfo + !VideoPlayer.Content(LiveTV) + Window.IsActive(fullscreenvideo)</visible>
+			<animation effect="fade" time="200">VisibleChange</animation>
+			<control type="group">
+				<animation effect="slide" end="0,-80" time="150" condition="PVR.IsTimeShift">conditional</animation>
+				<control type="image">
+					<depth>DepthOSD+</depth>
+					<left>10</left>
+					<top>-490</top>
+					<width>400</width>
+					<height>600</height>
+					<aspectratio aligny="bottom">keep</aspectratio>
+					<texture fallback="DefaultVideo.png" background="true">$VAR[NowPlayingPosterVar]</texture>
+					<bordertexture border="21">overlays/shadow.png</bordertexture>
+					<bordersize>20</bordersize>
+					<include>OpenClose_Left</include>
+				</control>
+				<control type="group">
+					<include>OpenClose_Right</include>
+					<control type="image">
+						<left>400</left>
+						<top>-240</top>
+						<right>20</right>
+						<height>350</height>
+						<texture>dialogs/dialog-bg-nobo.png</texture>
+						<bordertexture border="21">overlays/shadow.png</bordertexture>
+						<bordersize>20</bordersize>
+					</control>
+					<control type="textbox">
+						<left>443</left>
+						<top>-207</top>
+						<right>80</right>
+						<height>290</height>
+						<label fallback="416">$INFO[VideoPlayer.Tagline,[B],[/B][CR]]$INFO[VideoPlayer.Plot]</label>
+						<align>left</align>
+						<autoscroll delay="5000" repeat="7500" time="5000"></autoscroll>
+					</control>
+				</control>
+			</control>
+			<control type="grouplist">
+				<right>20</right>
+				<top>155</top>
+				<width>1000</width>
+				<height>100</height>
+				<align>right</align>
+				<include>Animation_BottomSlide</include>
+				<orientation>horizontal</orientation>
+				<itemgap>10</itemgap>
+				<visible>!Player.ChannelPreviewActive</visible>
+				<include content="MediaFlag">
+					<param name="texture" value="$INFO[VideoPlayer.AudioChannels,flags/audiochannel/,.png]" />
+				</include>
+				<include content="MediaFlag">
+					<param name="texture" value="$INFO[VideoPlayer.AudioCodec,flags/audiocodec/,.png]" />
+				</include>
+				<include content="MediaFlag">
+					<param name="texture" value="$INFO[VideoPlayer.VideoAspect,flags/aspectratio/,.png]" />
+				</include>
+				<include content="MediaFlag">
+					<param name="texture" value="$INFO[VideoPlayer.VideoCodec,flags/videocodec/,.png]" />
+				</include>
+			</control>
+		</control>
+
 	</controls>
 </window>

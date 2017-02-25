@@ -3,10 +3,11 @@
 	<include name="View_502_FanArt">
 		<control type="group">
 			<include>OpenClose_Left</include>
-			<left>-5</left>
 			<visible>Control.IsVisible(502)</visible>
 			<include>Visible_Left</include>
 			<include content="ListContainer">
+				<param name="left" value="-5" />
+				<param name="right" value="1195" />
 				<param name="list_id" value="502" />
 				<param name="viewtype_label" value="$LOCALIZE[20445]" />
 			</include>
@@ -37,7 +38,7 @@
 				<control type="group">
 					<left>600</left>
 					<top>82</top>
-					<include>UserRatingCircle</include>
+					<include condition="Skin.HasSetting(circle_rating) | Skin.HasSetting(circle_userrating)">RatingCircle</include>
 				</control>
 				<control type="textbox">
 					<left>50</left>

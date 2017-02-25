@@ -47,7 +47,7 @@
 						</control>
 						<control type="group">
 							<left>405</left>
-							<include>UserRatingCircle</include>
+							<include condition="Skin.HasSetting(circle_rating) | Skin.HasSetting(circle_userrating)">RatingCircle</include>
 						</control>
 					</control>
 				</itemlayout>
@@ -157,7 +157,7 @@
 						</control>
 						<control type="group">
 							<left>405</left>
-							<include>UserRatingCircle</include>
+							<include condition="Skin.HasSetting(circle_rating) | Skin.HasSetting(circle_userrating)">RatingCircle</include>
 						</control>
 					</control>
 				</focusedlayout>
