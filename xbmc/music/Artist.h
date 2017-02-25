@@ -62,6 +62,7 @@ public:
     styles.clear();
     moods.clear();
     instruments.clear();
+    art.clear();
     strBorn.clear();
     strFormed.clear();
     strDied.clear();
@@ -93,6 +94,7 @@ public:
   std::vector<std::string> styles;
   std::vector<std::string> moods;
   std::vector<std::string> instruments;
+  std::map<std::string, std::string> art;
   std::string strBorn;
   std::string strFormed;
   std::string strDied;

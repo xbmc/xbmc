@@ -49,6 +49,11 @@ void CArtist::MergeScrapedArtist(const CArtist& source, bool override /* = true 
   thumbURL = source.thumbURL;
   fanart = source.fanart;
   discography = source.discography;
+  for (std::map<std::string, std::string>::const_iterator i = source.art.begin(); i != source.art.end(); ++i)
+  {
+    if (override || art.find(i->first) == art.end())
+      art[i->first] = i->second;
+  }
 }
 
 
