@@ -22,17 +22,12 @@
 #include "system.h"
 #include "filesystem/SpecialProtocol.h"
 
-#ifdef TARGET_POSIX
-#include <sys/stat.h>
-#endif
-#if !defined(TARGET_DARWIN) && !defined(TARGET_FREEBSD) && !defined(TARGET_ANDROID)
-#include <sys/vfs.h>
-#else
+#if defined(TARGET_LINUX)
+#include <sys/statvfs.h>
+#elif defined(TARGET_DARWIN) || defined(TARGET_FREEBSD)
 #include <sys/param.h>
 #include <sys/mount.h>
-#endif
-
-#if defined(TARGET_ANDROID)
+#elif defined(TARGET_ANDROID)
 #include <sys/statfs.h>
 #endif
 
@@ -47,13 +42,13 @@ space_info space(const std::string& path, std::error_code& ec)
 {
   ec.clear();
   space_info sp;
-#if defined(TARGET_ANDROID) || defined(TARGET_DARWIN)
+#if defined(TARGET_LINUX)
+  struct statvfs64 fsInfo;
+  auto result = statvfs64(CSpecialProtocol::TranslatePath(path).c_str(), &fsInfo);
+#else
   struct statfs fsInfo;
   // is 64-bit on android and darwin (10.6SDK + any iOS)
   auto result = statfs(CSpecialProtocol::TranslatePath(path).c_str(), &fsInfo);
-#else
-  struct statfs64 fsInfo;
-  auto result = statfs64(CSpecialProtocol::TranslatePath(path).c_str(), &fsInfo);
 #endif
 
   if (result != 0)
