@@ -888,8 +888,11 @@ CFileItemPtr CPVRTimers::GetTimerRule(const CFileItem *item) const
     timer = item->GetPVRTimerInfoTag();
 
   if (timer)
-    return CFileItemPtr(new CFileItem(GetTimerRule(timer)));
-
+  {
+    timer = GetTimerRule(timer);
+    if (timer)
+      return CFileItemPtr(new CFileItem(timer));
+  }
   return CFileItemPtr();
 }
 
