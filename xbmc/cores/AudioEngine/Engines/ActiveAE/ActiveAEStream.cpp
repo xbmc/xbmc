@@ -29,10 +29,6 @@
 
 using namespace ActiveAE;
 
-/* typecast AE to CActiveAE */
-#define AE (*((CActiveAE*)CAEFactory::GetEngine()))
-
-
 CActiveAEStream::CActiveAEStream(AEAudioFormat *format, unsigned int streamid, CActiveAE *ae)
 {
   m_activeAE = ae;

@@ -29,9 +29,6 @@
 
 using namespace ActiveAE;
 
-/* typecast AE to CActiveAE */
-#define AE (*((CActiveAE*)CAEFactory::GetEngine()))
-
 CSoundPacket::CSoundPacket(SampleConfig conf, int samples) : config(conf)
 {
   data = CActiveAE::AllocSoundSample(config, samples, bytes_per_sample, planes, linesize);
