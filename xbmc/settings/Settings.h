@@ -332,6 +332,7 @@ public:
   static const std::string SETTING_INPUT_ENABLEMOUSE;
   static const std::string SETTING_INPUT_ASKNEWCONTROLLERS;
   static const std::string SETTING_INPUT_CONTROLLERCONFIG;
+  static const std::string SETTING_INPUT_RUMBLENOTIFY;
   static const std::string SETTING_INPUT_TESTRUMBLE;
   static const std::string SETTING_INPUT_CONTROLLERPOWEROFF;
   static const std::string SETTING_INPUT_APPLEREMOTEMODE;

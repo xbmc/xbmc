@@ -16101,7 +16101,17 @@ msgctxt "#35052"
 msgid "Activate the rumble motors of all controllers."
 msgstr ""
 
-#empty strings from id 35053 to 35054
+#. Setting to enable rumble for GUI notifications
+#: system/settings/settings.xml
+msgctxt "#35053"
+msgid "Enable rumble for notifications"
+msgstr ""
+
+#. Description of setting to enable rumble for GUI notifications
+#: system/settings/settings.xml
+msgctxt "#35054"
+msgid "Activates controller rumble motors when a notification occurs."
+msgstr ""
 
 #. Help text for controller window
 #: xbmc/games/controllers/windows/GUIControllerWindow.cpp

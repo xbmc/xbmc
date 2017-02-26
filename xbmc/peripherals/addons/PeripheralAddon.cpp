@@ -64,6 +64,8 @@ CPeripheralAddon::CPeripheralAddon(ADDON::AddonProps props, bool bProvidesJoysti
   CAddonDll<DllPeripheral, PeripheralAddon, PERIPHERAL_PROPERTIES>(std::move(props)),
   m_apiVersion("0.0.0"),
   m_bProvidesJoysticks(bProvidesJoysticks),
+  m_bSupportsJoystickRumble(false),
+  m_bSupportsJoystickPowerOff(false),
   m_bProvidesButtonMaps(bProvidesButtonMaps)
 {
   ResetProperties();
@@ -180,6 +182,10 @@ bool CPeripheralAddon::GetAddonProperties(void)
         m_bProvidesButtonMaps ? "true" : "false", Author().c_str());
     return false;
   }
+
+  // Read properties that depend on underlying driver
+  m_bSupportsJoystickRumble = addonCapabilities.provides_joystick_rumble;
+  m_bSupportsJoystickPowerOff = addonCapabilities.provides_joystick_power_off;
 
   return true;
 }
@@ -299,6 +305,21 @@ PeripheralPtr CPeripheralAddon::GetByPath(const std::string &strPath) const
   }
 
   return result;
+}
+
+bool CPeripheralAddon::SupportsFeature(PeripheralFeature feature) const
+{
+  switch (feature)
+  {
+    case FEATURE_RUMBLE:
+      return m_bSupportsJoystickRumble;
+    case FEATURE_POWER_OFF:
+      return m_bSupportsJoystickPowerOff;
+    default:
+      break;
+  }
+
+  return false;
 }
 
 int CPeripheralAddon::GetPeripheralsWithFeature(PeripheralVector &results, const PeripheralFeature feature) const

@@ -76,6 +76,13 @@ namespace PERIPHERALS
     virtual bool HasPeripheral(const std::string &strLocation) const;
 
     /*!
+     * @brief Check if the bus supports the given feature
+     * @param feature The feature to check for
+     * @return True if the bus supports the feature, false otherwise
+     */
+    virtual bool SupportsFeature(PeripheralFeature feature) const { return false; }
+
+    /*!
      * @brief Get all peripheral instances that have the given feature.
      * @param results The list of results.
      * @param feature The feature to search for.

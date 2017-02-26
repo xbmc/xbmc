@@ -245,6 +245,17 @@ PeripheralBusPtr CPeripherals::GetBusWithDevice(const std::string &strLocation) 
   return nullptr;
 }
 
+bool CPeripherals::SupportsFeature(PeripheralFeature feature) const
+{
+  bool bSupportsFeature = false;
+
+  CSingleLock lock(m_critSectionBusses);
+  for (const auto& bus : m_busses)
+    bSupportsFeature |= bus->SupportsFeature(feature);
+
+  return bSupportsFeature;
+}
+
 int CPeripherals::GetPeripheralsWithFeature(PeripheralVector &results, const PeripheralFeature feature, PeripheralBusType busType /* = PERIPHERAL_BUS_UNKNOWN */) const
 {
   CSingleLock lock(m_critSectionBusses);
@@ -740,6 +751,9 @@ bool CPeripherals::GetNextKeypress(float frameTime, CKey &key)
 
 void CPeripherals::OnUserNotification()
 {
+  if (!CSettings::GetInstance().GetBool(CSettings::SETTING_INPUT_RUMBLENOTIFY))
+    return;
+
   PeripheralVector peripherals;
   GetPeripheralsWithFeature(peripherals, FEATURE_RUMBLE);
 
