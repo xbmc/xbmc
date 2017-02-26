@@ -97,12 +97,14 @@ namespace XBMCAddon
     WindowXML::WindowXML(const String& xmlFilename,
                          const String& scriptPath,
                          const String& defaultSkin,
-                         const String& defaultRes) :
+                         const String& defaultRes,
+                         bool isMedia) :
       Window(true)
     {
       XBMC_TRACE;
       RESOLUTION_INFO res;
       std::string strSkinPath = g_SkinInfo->GetSkinPath(xmlFilename, &res);
+      m_isMedia = isMedia;
 
       if (!XFILE::CFile::Exists(strSkinPath))
       {
@@ -283,14 +285,6 @@ namespace XBMCAddon
       XBMC_TRACE;
       LOCKGUI;
       return A(m_viewControl.GetCurrentControl());
-    }
-
-    bool WindowXML::IsMediaWindow()
-    {
-      XBMC_TRACE;
-      if (A(m_viewControl.GetViewModeCount()) == 0)
-        return false;
-      return true;
     }
 
     bool WindowXML::OnAction(const CAction &action)

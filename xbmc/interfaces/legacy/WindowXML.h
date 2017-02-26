@@ -57,6 +57,9 @@ namespace XBMCAddon
     ///                             (default='Default')
     /// @param defaultRes           [opt] string - default skins resolution.
     ///                             (default='720p')
+    /// @param isMedia              [opt] bool - if False, create a regular window.
+    ///                             if True, create a mediawindow.
+    ///                             (default=False)
     /// @throws Exception           if more then 200 windows are created.
     ///
     /// \remark Skin folder structure is e.g. **resources/skins/Default/720p**
@@ -66,11 +69,12 @@ namespace XBMCAddon
     /// window.
     ///
     ///--------------------------------------------------------------------------
+    /// @python_v18 New param added **isMedia**.
     ///
     /// **Example:**
     /// ~~~~~~~~~~~~~{.py}
     /// ..
-    /// win = xbmcgui.WindowXML('script-Lyrics-main.xml', xbmcaddon.Addon().getAddonInfo('path').decode('utf-8'), 'default', '1080p')
+    /// win = xbmcgui.WindowXML('script-Lyrics-main.xml', xbmcaddon.Addon().getAddonInfo('path').decode('utf-8'), 'default', '1080p', False)
     /// win.doModal()
     /// del win
     /// ..
@@ -113,7 +117,8 @@ namespace XBMCAddon
      public:
       WindowXML(const String& xmlFilename, const String& scriptPath,
                 const String& defaultSkin = "Default",
-                const String& defaultRes = "720p");
+                const String& defaultRes = "720p",
+                bool isMedia = false);
       virtual ~WindowXML();
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -431,7 +436,7 @@ namespace XBMCAddon
       SWIGHIDDENVIRTUAL bool      OnDoubleClick(int iItem);
       SWIGHIDDENVIRTUAL void      Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
 
-      SWIGHIDDENVIRTUAL bool IsMediaWindow();
+      SWIGHIDDENVIRTUAL bool IsMediaWindow() const { XBMC_TRACE; return m_isMedia; };
 
       // This method is identical to the Window::OnDeinitWindow method
       //  except it passes the message on to their respective parents.
@@ -451,6 +456,7 @@ namespace XBMCAddon
       void             SetupShares();
       String       m_scriptPath;
       String       m_mediaDir;
+      bool m_isMedia;
 
       friend class WindowXMLInterceptor;
 #endif
