@@ -92,7 +92,7 @@ bool CRetroPlayerAudio::OpenPCMStream(AEDataFormat format, unsigned int samplera
   audioFormat.m_dataFormat = format;
   audioFormat.m_sampleRate = samplerate;
   audioFormat.m_channelLayout = channelLayout;
-  //m_pAudioStream = CAEFactory::MakeStream(audioFormat);
+  m_pAudioStream = CServiceBroker::GetActiveAE().MakeStream(audioFormat);
 
   if (!m_pAudioStream)
   {
@@ -179,7 +179,7 @@ void CRetroPlayerAudio::CloseStream()
   }
   if (m_pAudioStream)
   {
-    //CAEFactory::FreeStream(m_pAudioStream);
+    CServiceBroker::GetActiveAE().FreeStream(m_pAudioStream);
     m_pAudioStream = nullptr;
   }
 }
