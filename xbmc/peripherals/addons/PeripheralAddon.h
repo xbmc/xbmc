@@ -70,6 +70,7 @@ namespace PERIPHERALS
     bool         HasFeature(const PeripheralFeature feature) const;
     PeripheralPtr GetPeripheral(unsigned int index) const;
     PeripheralPtr GetByPath(const std::string &strPath) const;
+    bool         SupportsFeature(PeripheralFeature feature) const;
     int          GetPeripheralsWithFeature(PeripheralVector &results, const PeripheralFeature feature) const;
     size_t       GetNumberOfPeripherals(void) const;
     size_t       GetNumberOfPeripheralsWithId(const int iVendorId, const int iProductId) const;
@@ -149,6 +150,8 @@ namespace PERIPHERALS
     /* @brief Add-on properties */
     ADDON::AddonVersion m_apiVersion;
     bool                m_bProvidesJoysticks;
+    bool                m_bSupportsJoystickRumble;
+    bool                m_bSupportsJoystickPowerOff;
     bool                m_bProvidesButtonMaps;
 
     /* @brief Map of peripherals belonging to the add-on */
