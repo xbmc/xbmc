@@ -443,6 +443,7 @@ void CAddonInstaller::InstallUpdates()
 
 void CAddonInstaller::InstallUpdatesAndWait()
 {
+  InstallUpdates();
   CSingleLock lock(m_critSection);
   if (!m_downloadJobs.empty())
   {
