@@ -451,75 +451,48 @@ const std::string& CSysInfo::GetAppName(void)
   return appName;
 }
 
-bool CSysInfo::GetDiskSpace(const std::string& drive,int& iTotal, int& iTotalFree, int& iTotalUsed, int& iPercentFree, int& iPercentUsed)
+bool CSysInfo::GetDiskSpace(std::string drive,int& iTotal, int& iTotalFree, int& iTotalUsed, int& iPercentFree, int& iPercentUsed)
 {
   using namespace KODI::PLATFORM::FILESYSTEM;
 
-  bool bRet = false;
   space_info total = { 0 };
   std::error_code ec;
 
-  if (!drive.empty() && drive != "*")
+  // None of this makes sense but the idea of total space
+  // makes no sense on any system really.
+  // Return space for / or for C: as it's correct in a sense
+  // and not much worse than trying to count a total for different
+  // drives/mounts
+  if (drive.empty() || drive == "*")
   {
-#ifdef TARGET_WINDOWS
-    UINT uidriveType = GetDriveType((drive + ":\\").c_str());
-    if (uidriveType != DRIVE_UNKNOWN && uidriveType != DRIVE_NO_ROOT_DIR)
-      total = space(drive + ":\\", ec);
+#if defined(TARGET_WINDOWS)
+    drive = "C";
 #elif defined(TARGET_POSIX)
-    total = space(drive, ec);
+    drive = "/";
 #endif
-    bRet = ec.value() == 0;
   }
-  else
-  {
+
 #ifdef TARGET_WINDOWS
-    space_info si;
-    char* pcBuffer = nullptr;
-    DWORD dwStrLength = GetLogicalDriveStrings(0, pcBuffer);
-    if (dwStrLength != 0)
-    {
-      dwStrLength += 1;
-      pcBuffer = new char[dwStrLength];
-      GetLogicalDriveStrings(dwStrLength, pcBuffer);
-      int iPos = 0;
-      do {
-        if (DRIVE_FIXED == GetDriveType(pcBuffer + iPos))
-        {
-          si = space(pcBuffer + iPos, ec);
-          if (ec.value() == 0)
-          {
-            total.capacity += si.capacity;
-            total.free += si.free;
-          }
-        }
-        iPos += (strlen(pcBuffer + iPos) + 1);
-      } while (strlen(pcBuffer + iPos) > 0);
-    }
-    delete[] pcBuffer;
-#else // for linux and osx
-    total = space("/", ec);
+  UINT uidriveType = GetDriveType((drive + ":\\").c_str());
+  if (uidriveType != DRIVE_UNKNOWN && uidriveType != DRIVE_NO_ROOT_DIR)
+    total = space(drive + ":\\", ec);
+#elif defined(TARGET_POSIX)
+  total = space(drive, ec);
 #endif
-    // if capacity is zero things probably wen't quite bad
-    bRet = total.capacity > 0;
-  }
+  if (ec.value() != 0)
+    return false;
 
-  if (bRet)
-  {
-    iTotal = static_cast<int>(total.capacity / MB);
-    iTotalFree = static_cast<int>(total.free / MB);
-    iTotalUsed = iTotal - iTotalFree;
-    if (total.capacity > 0)
-    {
-      iPercentUsed = static_cast<int>(100.0f * (total.capacity - total.free) / total.capacity + 0.5f);
-    }
-    else
-    {
-      iPercentUsed = 0;
-    }
-    iPercentFree = 100 - iPercentUsed;
-  }
+  iTotal = static_cast<int>(total.capacity / MB);
+  iTotalFree = static_cast<int>(total.free / MB);
+  iTotalUsed = iTotal - iTotalFree;
+  if (total.capacity > 0)
+    iPercentUsed = static_cast<int>(100.0f * (total.capacity - total.free) / total.capacity + 0.5f);
+  else
+    iPercentUsed = 0;
 
-  return bRet;
+  iPercentFree = 100 - iPercentUsed;
+
+  return true;
 }
 
 std::string CSysInfo::GetCPUModel()
