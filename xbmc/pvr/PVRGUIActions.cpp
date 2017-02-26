@@ -1203,35 +1203,38 @@ namespace PVR
     int iClientID = -1;
     PVR_MENUHOOK_CAT menuCategory = PVR_MENUHOOK_SETTING;
 
-    if (item->IsEPG())
+    if (item)
     {
-      if (item->GetEPGInfoTag()->HasPVRChannel())
+      if (item->IsEPG())
       {
-        iClientID = item->GetEPGInfoTag()->ChannelTag()->ClientID();
-        menuCategory = PVR_MENUHOOK_EPG;
+        if (item->GetEPGInfoTag()->HasPVRChannel())
+        {
+          iClientID = item->GetEPGInfoTag()->ChannelTag()->ClientID();
+          menuCategory = PVR_MENUHOOK_EPG;
+        }
+        else
+          return false;
       }
-      else
-        return false;
-    }
-    else if (item->IsPVRChannel())
-    {
-      iClientID = item->GetPVRChannelInfoTag()->ClientID();
-      menuCategory = PVR_MENUHOOK_CHANNEL;
-    }
-    else if (item->IsDeletedPVRRecording())
-    {
-      iClientID = item->GetPVRRecordingInfoTag()->m_iClientId;
-      menuCategory = PVR_MENUHOOK_DELETED_RECORDING;
-    }
-    else if (item->IsUsablePVRRecording())
-    {
-      iClientID = item->GetPVRRecordingInfoTag()->m_iClientId;
-      menuCategory = PVR_MENUHOOK_RECORDING;
-    }
-    else if (item->IsPVRTimer())
-    {
-      iClientID = item->GetPVRTimerInfoTag()->m_iClientId;
-      menuCategory = PVR_MENUHOOK_TIMER;
+      else if (item->IsPVRChannel())
+      {
+        iClientID = item->GetPVRChannelInfoTag()->ClientID();
+        menuCategory = PVR_MENUHOOK_CHANNEL;
+      }
+      else if (item->IsDeletedPVRRecording())
+      {
+        iClientID = item->GetPVRRecordingInfoTag()->m_iClientId;
+        menuCategory = PVR_MENUHOOK_DELETED_RECORDING;
+      }
+      else if (item->IsUsablePVRRecording())
+      {
+        iClientID = item->GetPVRRecordingInfoTag()->m_iClientId;
+        menuCategory = PVR_MENUHOOK_RECORDING;
+      }
+      else if (item->IsPVRTimer())
+      {
+        iClientID = item->GetPVRTimerInfoTag()->m_iClientId;
+        menuCategory = PVR_MENUHOOK_TIMER;
+      }
     }
 
     // get client id
