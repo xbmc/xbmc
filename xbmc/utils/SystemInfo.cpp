@@ -27,7 +27,6 @@
 #include <conio.h>
 #else
 #include <sys/utsname.h>
-#include "linux/XFileUtils.h"
 #endif
 #include "guiinfo/GUIInfoLabels.h"
 #include "filesystem/CurlFile.h"
@@ -40,6 +39,7 @@
 #include "CPUInfo.h"
 #include "CompileInfo.h"
 #include "settings/Settings.h"
+#include "platform/Filesystem.h"
 
 #ifdef TARGET_WINDOWS
 #include "dwmapi.h"
@@ -77,6 +77,8 @@
 #elif defined(TARGET_LINUX)
 #include <linux/version.h>
 #endif
+
+#include <system_error>
 
 /* Expand macro before stringify */
 #define STR_MACRO(x) #x
@@ -449,78 +451,48 @@ const std::string& CSysInfo::GetAppName(void)
   return appName;
 }
 
-bool CSysInfo::GetDiskSpace(const std::string& drive,int& iTotal, int& iTotalFree, int& iTotalUsed, int& iPercentFree, int& iPercentUsed)
+bool CSysInfo::GetDiskSpace(std::string drive,int& iTotal, int& iTotalFree, int& iTotalUsed, int& iPercentFree, int& iPercentUsed)
 {
-  bool bRet= false;
-  ULARGE_INTEGER ULTotal= { { 0 } };
-  ULARGE_INTEGER ULTotalFree= { { 0 } };
+  using namespace KODI::PLATFORM::FILESYSTEM;
 
-  if( !drive.empty() && drive != "*" )
+  space_info total = { 0 };
+  std::error_code ec;
+
+  // None of this makes sense but the idea of total space
+  // makes no sense on any system really.
+  // Return space for / or for C: as it's correct in a sense
+  // and not much worse than trying to count a total for different
+  // drives/mounts
+  if (drive.empty() || drive == "*")
   {
-#ifdef TARGET_WINDOWS
-    UINT uidriveType = GetDriveType(( drive + ":\\" ).c_str());
-    if(uidriveType != DRIVE_UNKNOWN && uidriveType != DRIVE_NO_ROOT_DIR)
-      bRet= ( 0 != GetDiskFreeSpaceEx( ( drive + ":\\" ).c_str(), NULL, &ULTotal, &ULTotalFree) );
+#if defined(TARGET_WINDOWS)
+    drive = "C";
 #elif defined(TARGET_POSIX)
-    bRet = (0 != GetDiskFreeSpaceEx(drive.c_str(), NULL, &ULTotal, &ULTotalFree));
+    drive = "/";
 #endif
   }
-  else
-  {
-    ULARGE_INTEGER ULTotalTmp= { { 0 } };
-    ULARGE_INTEGER ULTotalFreeTmp= { { 0 } };
+
 #ifdef TARGET_WINDOWS
-    char* pcBuffer= NULL;
-    DWORD dwStrLength= GetLogicalDriveStrings( 0, pcBuffer );
-    if( dwStrLength != 0 )
-    {
-      dwStrLength+= 1;
-      pcBuffer= new char [dwStrLength];
-      GetLogicalDriveStrings( dwStrLength, pcBuffer );
-      int iPos= 0;
-      do {
-        if( DRIVE_FIXED == GetDriveType( pcBuffer + iPos  ) &&
-            GetDiskFreeSpaceEx( ( pcBuffer + iPos ), NULL, &ULTotal, &ULTotalFree ) )
-        {
-          ULTotalTmp.QuadPart+= ULTotal.QuadPart;
-          ULTotalFreeTmp.QuadPart+= ULTotalFree.QuadPart;
-        }
-        iPos += (strlen( pcBuffer + iPos) + 1 );
-      }while( strlen( pcBuffer + iPos ) > 0 );
-    }
-    delete[] pcBuffer;
-#else // for linux and osx
-    if( GetDiskFreeSpaceEx( "/", NULL, &ULTotal, &ULTotalFree ) )
-    {
-      ULTotalTmp.QuadPart+= ULTotal.QuadPart;
-      ULTotalFreeTmp.QuadPart+= ULTotalFree.QuadPart;
-    }
+  UINT uidriveType = GetDriveType((drive + ":\\").c_str());
+  if (uidriveType != DRIVE_UNKNOWN && uidriveType != DRIVE_NO_ROOT_DIR)
+    total = space(drive + ":\\", ec);
+#elif defined(TARGET_POSIX)
+  total = space(drive, ec);
 #endif
-    if( ULTotalTmp.QuadPart || ULTotalFreeTmp.QuadPart )
-    {
-      ULTotal.QuadPart= ULTotalTmp.QuadPart;
-      ULTotalFree.QuadPart= ULTotalFreeTmp.QuadPart;
-      bRet= true;
-    }
-  }
+  if (ec.value() != 0)
+    return false;
 
-  if( bRet )
-  {
-    iTotal = (int)( ULTotal.QuadPart / MB );
-    iTotalFree = (int)( ULTotalFree.QuadPart / MB );
-    iTotalUsed = iTotal - iTotalFree;
-    if( ULTotal.QuadPart > 0 )
-    {
-      iPercentUsed = (int)( 100.0f * ( ULTotal.QuadPart - ULTotalFree.QuadPart ) / ULTotal.QuadPart + 0.5f );
-    }
-    else
-    {
-      iPercentUsed = 0;
-    }
-    iPercentFree = 100 - iPercentUsed;
-  }
+  iTotal = static_cast<int>(total.capacity / MB);
+  iTotalFree = static_cast<int>(total.free / MB);
+  iTotalUsed = iTotal - iTotalFree;
+  if (total.capacity > 0)
+    iPercentUsed = static_cast<int>(100.0f * (total.capacity - total.free) / total.capacity + 0.5f);
+  else
+    iPercentUsed = 0;
 
-  return bRet;
+  iPercentFree = 100 - iPercentUsed;
+
+  return true;
 }
 
 std::string CSysInfo::GetCPUModel()
