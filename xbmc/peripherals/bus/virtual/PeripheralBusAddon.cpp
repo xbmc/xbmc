@@ -55,6 +55,9 @@ CPeripheralBusAddon::~CPeripheralBusAddon()
   Clear();
 
   // destroy any (loaded) addons
+  for (const auto& addon : m_addons)
+    addon->Destroy();
+
   m_failedAddons.clear();
   m_addons.clear();
 }
