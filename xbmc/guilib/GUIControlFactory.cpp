@@ -355,7 +355,7 @@ bool CGUIControlFactory::GetTexture(const TiXmlNode* pRootNode, const char* strT
   const char *background = pNode->Attribute("background");
   if (background && strnicmp(background, "true", 4) == 0)
     image.useLarge = true;
-  image.filename = (pNode->FirstChild() && pNode->FirstChild()->ValueStr() != "-") ? pNode->FirstChild()->Value() : "";
+  image.filename = pNode->FirstChild() ? pNode->FirstChild()->Value() : "";
   return true;
 }
 
@@ -575,7 +575,7 @@ bool CGUIControlFactory::GetInfoLabelFromElement(const TiXmlElement *element, CG
     return false;
 
   std::string label = element->FirstChild()->Value();
-  if (label.empty() || label == "-")
+  if (label.empty())
     return false;
 
   std::string fallback = XMLUtils::GetAttribute(element, "fallback");
@@ -645,8 +645,6 @@ bool CGUIControlFactory::GetString(const TiXmlNode* pRootNode, const char *strTa
 {
   if (!XMLUtils::GetString(pRootNode, strTag, text))
     return false;
-  if (text == "-")
-    text.clear();
   if (StringUtils::IsNaturalNumber(text))
     text = g_localizeStrings.Get(atoi(text.c_str()));
   return true;

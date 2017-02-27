@@ -56,6 +56,9 @@ CPeripheralBusAddon::~CPeripheralBusAddon()
   Clear();
 
   // destroy any (loaded) addons
+  for (const auto& addon : m_addons)
+    addon->Destroy();
+
   m_failedAddons.clear();
   m_addons.clear();
 }
@@ -299,6 +302,17 @@ PeripheralPtr CPeripheralBusAddon::GetByPath(const std::string &strPath) const
   }
 
   return result;
+}
+
+bool CPeripheralBusAddon::SupportsFeature(PeripheralFeature feature) const
+{
+  bool bSupportsFeature = false;
+
+  CSingleLock lock(m_critSection);
+  for (const auto& addon : m_addons)
+    bSupportsFeature |= addon->SupportsFeature(feature);
+
+  return bSupportsFeature;
 }
 
 int CPeripheralBusAddon::GetPeripheralsWithFeature(PeripheralVector &results, const PeripheralFeature feature) const

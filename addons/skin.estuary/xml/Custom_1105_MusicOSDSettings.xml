@@ -14,43 +14,73 @@
 				<param name="header_label" value="$LOCALIZE[5]" />
 				<param name="header_id" value="" />
 			</include>
-			<control type="panel" id="5000">
-				<include>ButtonMenuList</include>
-				<content>
-					<item>
+			<control type="group">
+				<left>0</left>
+				<top>80</top>
+				<control type="grouplist" id="5000">
+					<width>600</width>
+					<height>700</height>
+					<itemgap>0</itemgap>
+					<onup>5000</onup>
+					<ondown>5000</ondown>
+					<orientation>vertical</orientation>
+					<control type="radiobutton" id="5001">
+						<width>600</width>
+						<include>DialogSettingButton</include>
+						<label>$LOCALIZE[31163]</label>
+						<onclick>Skin.ToggleSetting(hide_background_fanart)</onclick>
+						<selected>!Skin.HasSetting(hide_background_fanart)</selected>
+					</control>
+					<control type="button" id="5002">
+						<width>600</width>
+						<include>DialogSettingButton</include>
 						<label>$LOCALIZE[15047]</label>
 						<onclick>ActivateWindow(OSDAudioDSPSettings)</onclick>
 						<visible>system.getbool(audiooutput.dspaddonsenabled)</visible>
-					</item>
-					<item>
+					</control>
+					<control type="button" id="5003">
+						<width>600</width>
+						<include>DialogSettingButton</include>
 						<label>$LOCALIZE[15020]</label>
 						<onclick>ActivateWindow(AudioDSPManager)</onclick>
 						<visible>system.getbool(audiooutput.dspaddonsenabled)</visible>
-					</item>
-					<item>
-						<label>$LOCALIZE[250]$INFO[Visualisation.Name,: [COLOR button_focus],[/COLOR]]</label>
+					</control>
+					<control type="button" id="5004">
+						<width>600</width>
+						<include>DialogSettingButton</include>
+						<label>$LOCALIZE[250]</label>
+						<label2>[B]$INFO[Visualisation.Name][/B]</label2>
 						<onclick>Dialog.Close(all)</onclick>
 						<onclick>SendClick(500)</onclick>
-					</item>
-					<item>
+					</control>
+					<control type="button" id="5005">
+						<width>600</width>
+						<include>DialogSettingButton</include>
 						<label>$LOCALIZE[31084]</label>
 						<onclick>Addon.Default.OpenSettings(xbmc.player.musicviz)</onclick>
-					</item>
-					<item>
+					</control>
+					<control type="button" id="5006">
+						<width>600</width>
+						<include>DialogSettingButton</include>
 						<label>$LOCALIZE[31068]</label>
 						<onclick>ActivateWindow(visualisationpresetlist)</onclick>
 						<visible>Visualisation.HasPresets</visible>
-					</item>
-					<item>
-						<label>$LOCALIZE[31082]$INFO[Skin.String(LyricScript_Path),: [COLOR button_focus],[/COLOR]]</label>
+					</control>
+					<control type="button" id="5007">
+						<width>600</width>
+						<include>DialogSettingButton</include>
+						<label>$LOCALIZE[31082]</label>
+						<label2>[B]$INFO[Skin.String(LyricScript_Path)][/B]</label2>
 						<onclick>Skin.SetAddon(LyricScript_Path,xbmc.python.lyrics)</onclick>
-					</item>
-					<item>
+					</control>
+					<control type="button" id="5008">
+						<width>600</width>
+						<include>DialogSettingButton</include>
 						<label>$LOCALIZE[31083]</label>
 						<onclick>Addon.OpenSettings($INFO[Skin.String(LyricScript_Path)])</onclick>
 						<visible>!String.IsEmpty(Skin.String(LyricScript_Path))</visible>
-					</item>
-				</content>
+					</control>
+				</control>
 			</control>
 		</control>
 	</controls>

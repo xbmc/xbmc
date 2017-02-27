@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="skin.estuary" version="1.9.5" name="Estuary" provider-name="phil65, Piers">
+<addon id="skin.estuary" version="2.0.0" name="Estuary" provider-name="phil65, Ichabod Fletchman">
 	<requires>
 		<import addon="xbmc.gui" version="5.13.0"/>
 	</requires>
@@ -7,6 +7,7 @@
 		<res width="1920" height="1440" aspect="4:3" default="false" folder="xml" />
 		<res width="1920" height="1280" aspect="3:2" default="false" folder="xml" />
 		<res width="1920" height="1200" aspect="16:10" default="false" folder="xml" />
+		<res width="2040" height="1080" aspect="17:9" default="false" folder="xml" />
 		<res width="1920" height="1080" aspect="16:9" default="true" folder="xml" />
 		<res width="2560" height="1080" aspect="21:9" default="false" folder="xml" />
 	</extension>
@@ -16,7 +17,7 @@
 		<summary lang="cs_CZ">Motiv vzhledu Estuary od autorů phil65 a Piers. (výchozí vzhled Kodi)</summary>
 		<summary lang="de_DE">Estuary Skin von phil65 und Piers. (Kodi Standardskin)</summary>
 		<summary lang="el_GR">Το κέλυφος Estuary από τον phil65 και τον Pier. (προεπιλεγμένο κέλυφος του Kodi)</summary>
-		<summary lang="en_GB">Estuary skin by phil65 and Piers. (Kodi's default skin)</summary>
+		<summary lang="en_GB">Estuary skin by phil65. (Kodi's default skin)</summary>
 		<summary lang="en_NZ">Estuary skin by phil65 and Piers. (Kodi's default skin)</summary>
 		<summary lang="en_US">Estuary skin by phil65 and Piers. (Kodi's default skin)</summary>
 		<summary lang="es_AR">Skin Estuary por phil65 y Piers. (Skin por defecto de Kodi)</summary>

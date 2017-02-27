@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
-	<visible>[[Player.Seeking | Player.DisplayAfterSeek | [Player.Paused + !Player.Caching] | Player.Forwarding | Player.Rewinding | Player.ShowInfo | Window.IsActive(fullscreeninfo) | Window.IsActive(videoosd) | Window.IsActive(playerprocessinfo)] + Window.IsActive(fullscreenvideo)] | Window.IsActive(visualisation) | !String.IsEmpty(Player.SeekNumeric) | [[Window.IsActive(fullscreenvideo) | Window.IsActive(visualisation)] + !Window.IsActive(pvrosdchannels) + !String.IsEmpty(PVR.ChannelNumberInput)]</visible>
-	<visible>!Window.IsActive(sliderdialog)</visible>
+	<visible>Player.Seeking | Player.DisplayAfterSeek | [Player.Paused + !Player.Caching] | Player.Forwarding | Player.Rewinding | Player.ShowInfo | Window.IsActive(videoosd) | Window.IsActive(musicosd) | Window.IsActive(playerprocessinfo) | !String.IsEmpty(Player.SeekNumeric) | !String.IsEmpty(PVR.ChannelNumberInput)</visible>
+	<visible>![Window.IsActive(sliderdialog) | Window.IsActive(pvrosdchannels)]</visible>
+	<visible>Window.IsActive(fullscreenvideo) | Window.IsActive(visualisation)</visible>
 	<include>Animation_BottomSlide</include>
 	<depth>DepthOSD</depth>
 	<zorder>0</zorder>
@@ -48,7 +49,7 @@
 					<visible>player.chaptercount</visible>
 				</control>
 				<control type="group">
-					<visible>Player.Recording</visible>
+					<visible>Player.Recording + !PVR.ChannelPreviewActive</visible>
 					<control type="image">
 						<top>100</top>
 						<left>20</left>
@@ -75,9 +76,9 @@
 					<aligny>center</aligny>
 					<font>font30</font>
 					<wrapmultiline>true</wrapmultiline>
-					<visible>!Window.IsActive(fullscreeninfo)</visible>
 					<animation effect="fade" time="200">VisibleChange</animation>
 					<label>$INFO[Player.TimeRemaining,[COLOR button_focus]$LOCALIZE[31134]:[CR][/COLOR]]</label>
+					<visible>!Player.ShowInfo</visible>
 				</control>
 			</control>
 			<control type="label">
@@ -104,6 +105,50 @@
 				<label>$VAR[SeekLabel]</label>
 				<shadowcolor>black</shadowcolor>
 			</control>
+			<control type="group" id="6000">
+				<top>-5</top>
+				<visible>PVR.IsTimeShift + !Player.ChannelPreviewActive</visible>
+				<animation effect="fade" time="300">VisibleChange</animation>
+				<control type="label">
+					<top>0</top>
+					<right>20</right>
+					<width>400</width>
+					<height>50</height>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>font30</font>
+					<label>$INFO[PVR.TimeShiftEnd]</label>
+				</control>
+				<control type="label">
+					<top>0</top>
+					<left>20</left>
+					<width>400</width>
+					<height>50</height>
+					<align>left</align>
+					<aligny>center</aligny>
+					<font>font30</font>
+					<label>$INFO[PVR.TimeShiftStart]</label>
+				</control>
+				<control type="label">
+					<top>0</top>
+					<left>20</left>
+					<right>20</right>
+					<height>50</height>
+					<align>center</align>
+					<aligny>center</aligny>
+					<font>font30</font>
+					<label>[B]$LOCALIZE[31026][/B] $INFO[PVR.timeshiftcur]</label>
+				</control>
+				<control type="progress">
+					<left>0</left>
+					<top>50</top>
+					<width>100%</width>
+					<height>15</height>
+					<info>PVR.timeshiftprogress</info>
+					<texturebg border="3" colordiffuse="60FFFFFF">colors/white50.png</texturebg>
+					<midtexture>colors/white50.png</midtexture>
+				</control>
+			</control>
 			<control type="progress">
 				<left>0</left>
 				<top>70</top>
@@ -112,6 +157,7 @@
 				<info>Player.ProgressCache</info>
 				<texturebg border="3" colordiffuse="60FFFFFF">colors/white50.png</texturebg>
 				<midtexture>colors/white50.png</midtexture>
+				<visible>!Player.ChannelPreviewActive</visible>
 			</control>
 			<control type="progress">
 				<left>0</left>
@@ -134,8 +180,9 @@
 			</control>
 		</control>
 		<control type="group">
-			<visible>Player.ShowInfo + VideoPlayer.Content(LiveTV) + Window.IsActive(fullscreenvideo) + !Window.IsActive(fullscreeninfo)</visible>
+			<visible>Player.ShowInfo + VideoPlayer.Content(LiveTV) + Window.IsActive(fullscreenvideo)</visible>
 			<animation effect="fade" time="400">VisibleChange</animation>
+			<animation effect="slide" end="0,-80" time="150" condition="Control.IsVisible(6000)">conditional</animation>
 			<bottom>0</bottom>
 			<height>380</height>
 			<control type="image">
@@ -151,17 +198,6 @@
 				<height>200</height>
 				<aspectratio aligny="center">keep</aspectratio>
 				<texture>$INFO[Player.Art(thumb)]</texture>
-			</control>
-			<control type="label">
-				<left>20</left>
-				<width>220</width>
-				<top>-80</top>
-				<height>25</height>
-				<label>$INFO[VideoPlayer.ChannelNumberLabel]</label>
-				<shadowcolor>black</shadowcolor>
-				<align>center</align>
-				<font>WeatherTemp</font>
-				<aligny>center</aligny>
 			</control>
 			<control type="label">
 				<right>20</right>
@@ -220,5 +256,72 @@
 				</include>
 			</control>
 		</control>
+		<control type="group">
+			<bottom>0</bottom>
+			<height>230</height>
+			<visible>!Window.IsVisible(playerprocessinfo)</visible>
+			<visible>Player.ShowInfo + !VideoPlayer.Content(LiveTV) + Window.IsActive(fullscreenvideo)</visible>
+			<animation effect="fade" time="200">VisibleChange</animation>
+			<control type="group">
+				<animation effect="slide" end="0,-80" time="150" condition="PVR.IsTimeShift">conditional</animation>
+				<control type="image">
+					<depth>DepthOSD+</depth>
+					<left>10</left>
+					<top>-490</top>
+					<width>400</width>
+					<height>600</height>
+					<aspectratio aligny="bottom">keep</aspectratio>
+					<texture fallback="DefaultVideo.png" background="true">$VAR[NowPlayingPosterVar]</texture>
+					<bordertexture border="21">overlays/shadow.png</bordertexture>
+					<bordersize>20</bordersize>
+					<include>OpenClose_Left</include>
+				</control>
+				<control type="group">
+					<include>OpenClose_Right</include>
+					<control type="image">
+						<left>400</left>
+						<top>-240</top>
+						<right>20</right>
+						<height>350</height>
+						<texture>dialogs/dialog-bg-nobo.png</texture>
+						<bordertexture border="21">overlays/shadow.png</bordertexture>
+						<bordersize>20</bordersize>
+					</control>
+					<control type="textbox">
+						<left>443</left>
+						<top>-207</top>
+						<right>80</right>
+						<height>290</height>
+						<label fallback="416">$INFO[VideoPlayer.Tagline,[B],[/B][CR]]$INFO[VideoPlayer.Plot]</label>
+						<align>left</align>
+						<autoscroll delay="5000" repeat="7500" time="5000"></autoscroll>
+					</control>
+				</control>
+			</control>
+			<control type="grouplist">
+				<right>20</right>
+				<top>155</top>
+				<width>1000</width>
+				<height>100</height>
+				<align>right</align>
+				<include>Animation_BottomSlide</include>
+				<orientation>horizontal</orientation>
+				<itemgap>10</itemgap>
+				<visible>!Player.ChannelPreviewActive</visible>
+				<include content="MediaFlag">
+					<param name="texture" value="$INFO[VideoPlayer.AudioChannels,flags/audiochannel/,.png]" />
+				</include>
+				<include content="MediaFlag">
+					<param name="texture" value="$INFO[VideoPlayer.AudioCodec,flags/audiocodec/,.png]" />
+				</include>
+				<include content="MediaFlag">
+					<param name="texture" value="$INFO[VideoPlayer.VideoAspect,flags/aspectratio/,.png]" />
+				</include>
+				<include content="MediaFlag">
+					<param name="texture" value="$INFO[VideoPlayer.VideoCodec,flags/videocodec/,.png]" />
+				</include>
+			</control>
+		</control>
+
 	</controls>
 </window>

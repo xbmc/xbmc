@@ -820,7 +820,7 @@ std::string CEdl::GetInfo() const
   if (HasSceneMarker())
     strInfo += StringUtils::Format("s%" PRIuS, m_vecSceneMarkers.size());
 
-  return strInfo.empty() ? "-" : strInfo;
+  return strInfo;
 }
 
 bool CEdl::InCut(const int iSeek, Cut *pCut)

@@ -151,6 +151,13 @@
 					<onclick>Container.SetSortDirection</onclick>
 					<visible>!Window.IsActive(MyPVRGuide.xml)</visible>
 				</control>
+				<control type="button" id="10">
+					<description>Watched Toggle</description>
+					<include>MediaMenuItemsCommon</include>
+					<label>$LOCALIZE[20367]</label>
+					<label2>[B]$INFO[Container.NonFolderItems][/B]</label2>
+					<visible>Window.IsActive(MyPVRRecordings.xml)</visible>
+				</control>
 				<control type="label" id="300">
 					<label>$LOCALIZE[31021]</label>
 					<include>MediaMenuLabelCommon</include>
@@ -259,6 +266,15 @@
 			<height>100%</height>
 			<texture border="0,0,52,0">lists/panel-mediamenu.png</texture>
 		</control>
+		<control type="button" id="6131">
+			<left>0</left>
+			<top>0</top>
+			<width>500</width>
+			<height>100%</height>
+			<label></label>
+			<texturefocus />
+			<texturenofocus />
+		</control>
 		<control type="button" id="3">
 			<description>Viewtype Toggle</description>
 			<include>HiddenObject</include>
@@ -362,10 +378,10 @@
 	<include name="MediaMenuMouseOverlay">
 		<control type="button" id="6130">
 			<label></label>
-			<height>100%</height>
-			<width>50</width>
 			<left>-50</left>
-			<top>0</top>
+			<top>200</top>
+			<bottom>0</bottom>
+			<width>50</width>
 			<texturefocus />
 			<texturenofocus />
 		</control>

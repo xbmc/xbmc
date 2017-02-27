@@ -29,6 +29,10 @@ struct PVR_TIMER_TYPE;
 
 namespace PVR
 {
+  static const int DEFAULT_RECORDING_PRIORITY = 50;
+  static const int DEFAULT_RECORDING_LIFETIME = 99; // days
+  static const unsigned int DEFAULT_RECORDING_DUPLICATEHANDLING = 0;
+
   class CPVRTimerType
   {
   public:

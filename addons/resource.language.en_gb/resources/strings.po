@@ -9953,17 +9953,7 @@ msgctxt "#19172"
 msgid "Instant recording duration"
 msgstr ""
 
-#. pvr settings "default priority for recordings" setting label
-#: system/settings/settings.xml
-msgctxt "#19173"
-msgid "Default recording priority"
-msgstr ""
-
-#. pvr settings "default lifetime for recordings" setting label
-#: system/settings/settings.xml
-msgctxt "#19174"
-msgid "Default recording lifetime"
-msgstr ""
+#empty strings from id 19173 to 19174
 
 #. pvr settings "default time to add before the start of an event to record (according to its epg data)" setting label
 #: system/settings/settings.xml
@@ -16513,7 +16503,17 @@ msgctxt "#35052"
 msgid "Activate the rumble motors of all controllers."
 msgstr ""
 
-#empty strings from id 35053 to 35054
+#. Setting to enable rumble for GUI notifications
+#: system/settings/settings.xml
+msgctxt "#35053"
+msgid "Enable rumble for notifications"
+msgstr ""
+
+#. Description of setting to enable rumble for GUI notifications
+#: system/settings/settings.xml
+msgctxt "#35054"
+msgid "Activates controller rumble motors when a notification occurs."
+msgstr ""
 
 #. Help text for controller window
 #: xbmc/games/controllers/windows/GUIControllerWindow.cpp
@@ -17969,15 +17969,7 @@ msgctxt "#36234"
 msgid "Duration of instant recordings when pressing the record button. This value will be taken into account if \"Instant recording action\" is set to \"Record for a fixed period of time\""
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#36235"
-msgid "Priority of the recording. Higher number means higher priority. Not supported by all add-ons and backends."
-msgstr ""
-
-#: system/settings/settings.xml
-msgctxt "#36236"
-msgid "Delete recording after this time. Not supported by all add-ons and backends."
-msgstr ""
+#empty strings from id 36235 to 36236
 
 #: system/settings/settings.xml
 msgctxt "#36237"
@@ -18993,11 +18985,7 @@ msgctxt "#36422"
 msgid "Enable hardware video decode using Amlogic decoder."
 msgstr ""
 
-#. Description of setting with label #812 "Prevent duplicate episodes"
-#: system/settings/settings.xml
-msgctxt "#36423"
-msgid "Timer rules shall only record new episodes. Not supported by all add-ons and backends."
-msgstr ""
+#empty string with id 36423
 
 #: system/settings/settings.xml
 msgctxt "#36424"
