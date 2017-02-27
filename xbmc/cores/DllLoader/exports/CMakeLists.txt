@@ -1,9 +1,7 @@
 set(SOURCES emu_dummy.cpp
-            emu_kernel32.cpp
             emu_msvcrt.cpp)
 
 set(HEADERS emu_dummy.h
-            emu_kernel32.h
             emu_msvcrt.h)
 
 core_add_library(dllexports)

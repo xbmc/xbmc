@@ -67,7 +67,6 @@
 
 #include "emu_msvcrt.h"
 #include "emu_dummy.h"
-#include "emu_kernel32.h"
 #include "util/EmuFileWrapper.h"
 #include "utils/log.h"
 #include "threads/SingleLock.h"
