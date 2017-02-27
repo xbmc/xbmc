@@ -57,6 +57,7 @@ if(UNIX)
     option(ENABLE_X11         "Enable X11 support?" ON)
     option(ENABLE_AML         "Enable AML?" OFF)
     option(ENABLE_IMX         "Enable IMX?" OFF)
+    option(ENABLE_ROCKCHIP    "Enable ROCKCHIP?" OFF)
   endif()
 endif()
 # System options
@@ -114,10 +115,15 @@ if(CORE_SYSTEM_NAME STREQUAL android)
   list(APPEND required_deps Zip)
 endif()
 
+if(ENABLE_ROCKCHIP)
+	set(ENABLE_VDPAU OFF CACHE BOOL "Disabling VDPAU since not supported with ROCKCHIP" FORCE)
+	set(ENABLE_VAAPI OFF CACHE BOOL "Disabling VAAPI since not supported with ROCKCHIP" FORCE)
+endif()
+
 # Optional dependencies
 set(optional_deps MicroHttpd MySqlClient SSH XSLT
                   Alsa UDEV DBus Avahi MDNS SmbClient CCache
-                  PulseAudio VDPAU VAAPI Bluetooth CAP Python)
+		  PulseAudio VDPAU VAAPI ROCKCHIP Bluetooth CAP Python)	
 
 # Required, dyloaded deps
 set(required_dyload Curl ASS)
@@ -192,8 +198,12 @@ else()
 endif()
 
 if(NOT WIN32)
-  core_optional_dep(OpenGl)
-  if(OPENGL_FOUND AND NOT APPLE)
+  if(NOT ROCKCHIP_FOUND)
+    core_optional_dep(OpenGl)
+  else()
+    core_optional_dep(XRandR ENABLE_X11)
+  endif()
+  if(OPENGL_FOUND AND NOT APPLE AND NOT ROCKCHIP_FOUND)
     if(ENABLE_MIR)
       core_require_dep(Mir ENABLE_MIR)
       core_optional_dep(LibDRM ENABLE_MIR)

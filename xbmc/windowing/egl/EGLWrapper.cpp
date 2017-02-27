@@ -31,7 +31,7 @@
 #if defined(HAS_IMXVPU)
   #include "EGLNativeTypeIMX.h"
 #endif
-#if defined(TARGET_LINUX) && defined(HAS_LIBAMCODEC)
+#if defined(TARGET_LINUX) && (defined(HAS_LIBAMCODEC) || defined(HAVE_ROCKCHIP))
 #include "EGLNativeTypeAmlogic.h"
 #endif
 #include "EGLWrapper.h"
@@ -94,7 +94,7 @@ bool CEGLWrapper::Initialize(const std::string &implementation)
       (nativeGuess = CreateEGLNativeType<CEGLNativeTypeRaspberryPI>(implementation))
 #elif defined(HAS_IMXVPU)
       (nativeGuess = CreateEGLNativeType<CEGLNativeTypeIMX>(implementation))
-#elif defined(TARGET_LINUX) && defined(HAS_LIBAMCODEC)
+#elif defined(TARGET_LINUX) && (defined(HAS_LIBAMCODEC) || defined(HAVE_ROCKCHIP))
       (nativeGuess = CreateEGLNativeType<CEGLNativeTypeAmlogic>(implementation))
 #endif
       )

@@ -27,6 +27,11 @@ if(AML_FOUND)
   list(APPEND SOURCES VideoSyncAML.cpp)
 endif()
 
+if(ROCKCHIP_FOUND)
+  list(APPEND SOURCES EGLNativeTypeAmlogic.cpp)
+  list(APPEND HEADERS EGLNativeTypeAmlogic.h)
+endif()
+
 if(MMAL_FOUND)
   list(APPEND SOURCES EGLNativeTypeRaspberryPI.cpp)
   list(APPEND HEADERS EGLNativeTypeRaspberryPI.h)
