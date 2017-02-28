@@ -349,7 +349,7 @@ namespace PVR
 
     bool DeleteTimerRule::Execute(const CFileItemPtr &item) const
     {
-      CFileItemPtr parentTimer(g_PVRTimers->GetTimerRule(item.get()));
+      const CFileItemPtr parentTimer(g_PVRTimers->GetTimerRule(item));
       if (parentTimer)
         return CPVRGUIActions::GetInstance().DeleteTimerRule(parentTimer);
 
