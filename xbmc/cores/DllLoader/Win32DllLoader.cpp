@@ -24,11 +24,10 @@
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "filesystem/SpecialProtocol.h"
-#include "utils/CharsetConverter.h"
+#include "platform/win32/CharsetConverter.h"
 
 #include "dll_tracker_library.h"
 #include "dll_tracker_file.h"
-#include "exports/emu_kernel32.h"
 #include "exports/emu_msvcrt.h"
 
 #include <limits>
@@ -38,31 +37,6 @@ extern "C" FARPROC WINAPI dllWin32GetProcAddress(HMODULE hModule, LPCSTR functio
 // our exports
 Export win32_exports[] =
 {
-  // kernel32
-  { "FindFirstFileA",                               -1, (void*)dllFindFirstFileA,                            NULL },
-  { "FindNextFileA",                                -1, (void*)dllFindNextFileA,                             NULL },
-  { "GetFileAttributesA",                           -1, (void*)dllGetFileAttributesA,                        NULL },
-  { "LoadLibraryA",                                 -1, (void*)dllLoadLibraryA,                              (void*)track_LoadLibraryA },
-  { "FreeLibrary",                                  -1, (void*)dllFreeLibrary,                               (void*)track_FreeLibrary },
-  { "GetProcAddress",                               -1, (void*)dllWin32GetProcAddress,                       NULL },
-  { "SetEvent",                                     -1, (void*)SetEvent,                                     NULL },
-//  { "GetModuleHandleA",                             -1, (void*)dllGetModuleHandleA,                          NULL },
-  { "CreateFileA",                                  -1, (void*)dllCreateFileA,                               NULL },
-  { "LoadLibraryExA",                               -1, (void*)dllLoadLibraryExA,                            (void*)track_LoadLibraryExA },
-  { "GetModuleFileNameA",                           -1, (void*)dllGetModuleFileNameA,                        NULL },
-// potential vfs stuff
-//  { "CreateDirectoryA",                             -1, (void*)dllCreateDirectoryA,                          NULL },
-//  { "LockFile",                                     -1, (void*)dllLockFile,                                  NULL },
-//  { "LockFileEx",                                   -1, (void*)dllLockFileEx,                                NULL },
-//  { "UnlockFile",                                   -1, (void*)dllUnlockFile,                                NULL },
-//  { "CreateFileW",                                  -1, (void*)CreateFileW,                                  NULL },
-  { "GetFullPathNameW",                             -1, (void*)dllGetFullPathNameW,                            NULL },
-  { "GetFullPathNameA",                             -1, (void*)dllGetFullPathNameA,                            NULL },
-//  { "GetTempPathW",                                 -1, (void*)GetTempPathW,                                 NULL },
-//  { "GetFileAttributesW",                           -1, (void*)GetFileAttributesW,                           NULL },
-//  { "DeleteFileW",                                  -1, (void*)DeleteFileW,                                  NULL },
-//  { "GetFileSize",                                  -1, (void*)GetFileSize,                                  NULL },
-
 // msvcrt
   { "_close",                     -1, (void*)dll_close,                     (void*)track_close},
   { "_lseek",                     -1, (void*)dll_lseek,                     NULL },
@@ -149,13 +123,14 @@ Win32DllLoader::~Win32DllLoader()
 
 bool Win32DllLoader::Load()
 {
+  using namespace KODI::PLATFORM::WINDOWS;
+
   if (m_dllHandle != NULL)
     return true;
 
   std::string strFileName = GetFileName();
 
-  std::wstring strDllW;
-  g_charsetConverter.utf8ToW(CSpecialProtocol::TranslatePath(strFileName), strDllW, false, false, false);
+  auto strDllW = ToW(CSpecialProtocol::TranslatePath(strFileName));
   m_dllHandle = LoadLibraryExW(strDllW.c_str(), NULL, LOAD_WITH_ALTERED_SEARCH_PATH);
   if (!m_dllHandle)
   {
@@ -167,8 +142,7 @@ bool Win32DllLoader::Load()
 
     if (strLen != 0)
     {
-      std::string strMessage;
-      g_charsetConverter.wToUTF8(std::wstring(lpMsgBuf, strLen), strMessage);
+      auto strMessage = FromW(lpMsgBuf, strLen);
       CLog::Log(LOGERROR, "%s: Failed to load \"%s\" with error %lu: \"%s\"", __FUNCTION__, CSpecialProtocol::TranslatePath(strFileName).c_str(), dw, strMessage.c_str());
     }
     else
@@ -238,8 +212,8 @@ bool Win32DllLoader::HasSymbols()
 
 void Win32DllLoader::OverrideImports(const std::string &dll)
 {
-  std::wstring strdllW;
-  g_charsetConverter.utf8ToW(CSpecialProtocol::TranslatePath(dll), strdllW, false);
+  using KODI::PLATFORM::WINDOWS::ToW;
+  auto strdllW = ToW(CSpecialProtocol::TranslatePath(dll));
   BYTE* image_base = (BYTE*)GetModuleHandleW(strdllW.c_str());
 
   if (!image_base)
@@ -265,13 +239,15 @@ void Win32DllLoader::OverrideImports(const std::string &dll)
   {
     char *dllName = (char*)(image_base + imp_desc[i].Name);
 
+    auto dllNameW = ToW(dllName);
+
     // check whether this is one of our dll's.
     if (NeedsHooking(dllName))
     {
       // this will do a loadlibrary on it, which should effectively make sure that it's hooked
       // Note that the library has obviously already been loaded by the OS (as it's implicitly linked)
       // so all this will do is insert our hook and make sure our DllLoaderContainer knows about it
-      HMODULE hModule = dllLoadLibraryA(dllName);
+      HMODULE hModule = LoadLibraryW(dllNameW.c_str());
       if (hModule)
         m_referencedDlls.push_back(hModule);
     }
@@ -346,7 +322,7 @@ void Win32DllLoader::RestoreImports()
   for (unsigned int i = 0; i < m_referencedDlls.size(); i++)
   {
     HMODULE module = m_referencedDlls[i];
-    dllFreeLibrary(module);  // should unhook things for us
+    FreeLibrary(module);  // should unhook things for us
   }
   m_referencedDlls.clear();
 
