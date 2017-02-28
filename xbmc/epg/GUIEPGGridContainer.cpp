@@ -121,6 +121,7 @@ CGUIEPGGridContainer::CGUIEPGGridContainer(const CGUIEPGGridContainer &other)
   m_blocksPerPage(other.m_blocksPerPage),
   m_blockCursor(other.m_blockCursor),
   m_blockOffset(other.m_blockOffset),
+  m_blockTravelAxis(other.m_blockTravelAxis),
   m_cacheChannelItems(other.m_cacheChannelItems),
   m_cacheProgrammeItems(other.m_cacheProgrammeItems),
   m_cacheRulerItems(other.m_cacheRulerItems),
