@@ -133,7 +133,34 @@ CFileItem::CFileItem(const CEpgInfoTagPtr& tag)
   m_bIsFolder = false;
   m_epgInfoTag = tag;
   m_strPath = tag->Path();
-  SetLabel(tag->Title());
+
+  std::string strLabel("");
+  std::string strTitleEpisodeName("");
+  //Title and Episode
+  if (tag->EpisodeName().empty())
+    strTitleEpisodeName = tag->Title();
+  else
+    strTitleEpisodeName = StringUtils::Format("%s (%s)", tag->Title().c_str(), tag->EpisodeName().c_str());
+  //Season + Episode
+  int iSeason(-1);
+  int iEpisode(-1);
+  if (tag->SeriesNumber() > 0)
+    iSeason = tag->SeriesNumber();
+  if (tag->EpisodeNumber() > 0)
+    iEpisode = tag->EpisodeNumber();
+  if (iEpisode >= 0)
+  {
+    if (iSeason == 0) // prefix episode with 'S'
+      strLabel = StringUtils::Format("%s S%d", strTitleEpisodeName.c_str(), iEpisode);
+    else
+      strLabel = StringUtils::Format("%s %dx%d", strTitleEpisodeName.c_str(), iSeason, iEpisode);
+  }
+  else
+  {
+    strLabel = StringUtils::Format("%s", strTitleEpisodeName.c_str());
+  }
+  SetLabel(strLabel);
+
   m_strLabel2 = tag->Plot();
   m_dateTime = tag->StartAsLocalTime();
 
@@ -198,7 +225,34 @@ CFileItem::CFileItem(const CPVRRecordingPtr& record)
   m_bIsFolder = false;
   m_pvrRecordingInfoTag = record;
   m_strPath = record->m_strFileNameAndPath;
-  SetLabel(record->m_strTitle);
+
+  std::string strLabel("");
+  std::string strTitleEpisodeName("");
+  //Title and Episode
+  if (record->EpisodeName().empty())
+    strTitleEpisodeName = record->m_strTitle;
+  else
+    strTitleEpisodeName = StringUtils::Format("%s (%s)", record->m_strTitle.c_str(), record->EpisodeName().c_str());
+  //Season + Episode
+  int iSeason(-1);
+  int iEpisode(-1);
+  if (record->m_iSeason > 0)
+    iSeason = record->m_iSeason;
+  if (record->m_iEpisode > 0)
+    iEpisode = record->m_iEpisode;
+  if (iEpisode >= 0)
+  {
+    if (iSeason == 0) // prefix episode with 'S'
+      strLabel = StringUtils::Format("%s S%d", strTitleEpisodeName.c_str(), iEpisode);
+    else
+      strLabel = StringUtils::Format("%s %dx%d", strTitleEpisodeName.c_str(), iSeason, iEpisode);
+  }
+  else
+  {
+    strLabel = StringUtils::Format("%s", strTitleEpisodeName.c_str());
+  }
+  SetLabel(strLabel);
+
   m_strLabel2 = record->m_strPlot;
   FillInMimeType(false);
 }
@@ -212,7 +266,36 @@ CFileItem::CFileItem(const CPVRTimerInfoTagPtr& timer)
   m_bIsFolder = timer->IsTimerRule();
   m_pvrTimerInfoTag = timer;
   m_strPath = timer->Path();
-  SetLabel(timer->Title());
+
+  std::string strLabel("");
+  const CEpgInfoTagPtr tag(timer->GetEpgInfoTag());
+  if (tag)
+  {
+    //Season + Episode
+    int iSeason(-1);
+		int iEpisode(-1);
+    if (tag->SeriesNumber() > 0)
+      iSeason = tag->SeriesNumber();
+    if (tag->EpisodeNumber() > 0)
+      iEpisode = tag->EpisodeNumber();
+    if (iEpisode >= 0)
+    {
+      if (iSeason == 0) // prefix episode with 'S'
+        strLabel = StringUtils::Format("%s S%d", timer->Title().c_str(), iEpisode);
+      else
+        strLabel = StringUtils::Format("%s %dx%d", timer->Title().c_str(), iSeason, iEpisode);
+    }
+    else
+    {
+      strLabel = timer->Title();
+    }
+  }
+  else
+  {
+    strLabel = timer->Title();
+  }
+  SetLabel(strLabel);
+
   m_strLabel2 = timer->Summary();
   m_dateTime = timer->StartAsLocalTime();
 
