@@ -379,8 +379,6 @@ const CTextureArray& CGUITextureManager::Load(const std::string& strTextureName,
   else if (StringUtils::EndsWithNoCase(strPath, ".gif") ||
            StringUtils::EndsWithNoCase(strPath, ".apng"))
   {
-    CTextureMap* pMap = nullptr;
-
     std::string mimeType;
     if (StringUtils::EndsWithNoCase(strPath, ".gif"))
       mimeType = "image/gif";
@@ -390,7 +388,6 @@ const CTextureArray& CGUITextureManager::Load(const std::string& strTextureName,
     XFILE::CFile file;
     XFILE::auto_buffer buf;
     CFFmpegImage anim(mimeType);
-    pMap = new CTextureMap(strTextureName, 0, 0, 0);
 
     if (file.LoadFile(strPath, buf) <= 0 ||
        !anim.Initialize((uint8_t*)buf.get(), buf.size()))
@@ -400,6 +397,7 @@ const CTextureArray& CGUITextureManager::Load(const std::string& strTextureName,
       return emptyTexture;
     }
 
+    CTextureMap* pMap = new CTextureMap(strTextureName, 0, 0, 0);
     unsigned int maxWidth = 0;
     unsigned int maxHeight = 0;
     uint64_t maxMemoryUsage = 91238400;// 1920*1080*4*11 bytes, i.e, a total of approx. 12 full hd frames
