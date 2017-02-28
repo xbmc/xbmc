@@ -235,11 +235,11 @@ bool CCueDocument::IsOneFilePerTrack() const
   return m_bOneFilePerTrack;
 }
 
-bool CCueDocument::GetSong(int aTrackNumber, CSong& aSong)
+bool CCueDocument::GetSong(int aTrackIndex, CSong& aSong)
 {
-  if (aTrackNumber < 0 || aTrackNumber >= static_cast<int>(m_tracks.size()))
+  if (aTrackIndex < 0 || aTrackIndex >= static_cast<int>(m_tracks.size()))
     return false;
-  const CCueTrack& track = m_tracks[aTrackNumber];
+  const CCueTrack& track = m_tracks[aTrackIndex];
   //Pass artist to MusicInfoTag object by setting artist description string only.
   //Artist credits not used during loading from cue sheet.
   if ((track.strArtist.length() == 0) && (m_strArtist.length() > 0))
@@ -272,6 +272,16 @@ bool CCueDocument::GetSong(int aTrackNumber, CSong& aSong)
   if (track.replayGain.Valid())
     aSong.replayGain.Set(ReplayGain::TRACK, track.replayGain);
   return true;
+}
+
+bool CCueDocument::GetSongByTrack(int aTrackNumber, CSong & aSong)
+{  //Find track with that tracknumber in the vector (position != track number)
+  for (size_t i = 0; i < m_tracks.size(); ++i)
+  {
+    if (m_tracks[i].iTrackNumber == aTrackNumber)
+      return GetSong(i, aSong);
+  }
+  return false;
 }
 
 // Private Functions start here

@@ -56,6 +56,7 @@ public:
   bool ParseTag(const std::string &strContent);
   void GetSongs(VECSONGS &songs);
   bool GetSong(int aTrackNumber, CSong& aSong);
+  bool GetSongByTrack(int aTrackNumber, CSong& aSong);
   std::string GetMediaPath();
   std::string GetMediaTitle();
   void GetMediaFiles(std::vector<std::string>& mediaFiles);

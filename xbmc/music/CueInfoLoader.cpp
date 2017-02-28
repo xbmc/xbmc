@@ -40,7 +40,7 @@ void CueInfoLoader::Load(const std::string& aStrCuesheet, CFileItemPtr aFileItem
   }
 
   CSong song;
-  if (doc.GetSong(aFileItem->GetMusicInfoTag()->GetTrackNumber(), song))
+  if (doc.GetSongByTrack(aFileItem->GetMusicInfoTag()->GetTrackNumber(), song))
   {
     aFileItem->GetMusicInfoTag()->SetReplayGain(song.replayGain);
   }
