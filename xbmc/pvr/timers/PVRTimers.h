@@ -232,7 +232,7 @@ namespace PVR
      * @param item The timer to query the timer rule for
      * @return The timer rule, or an empty fileitemptr if none was found.
      */
-    CFileItemPtr GetTimerRule(const CFileItem *item) const;
+    CFileItemPtr GetTimerRule(const CFileItemPtr &item) const;
 
     /*!
      * @brief Update the channel pointers.

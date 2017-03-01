@@ -551,7 +551,7 @@ namespace PVR
 
   bool CPVRGUIActions::EditTimerRule(const CFileItemPtr &item) const
   {
-    CFileItemPtr parentTimer(g_PVRTimers->GetTimerRule(item.get()));
+    const CFileItemPtr parentTimer(g_PVRTimers->GetTimerRule(item));
     if (parentTimer)
       return EditTimer(parentTimer);
 
