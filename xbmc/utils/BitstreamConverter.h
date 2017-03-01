@@ -87,9 +87,9 @@ public:
   CBitstreamParser();
   ~CBitstreamParser();
 
-  static bool Open(){};
-  static void Close(){};
-  static bool HasKeyframe(const uint8_t *buf, int buf_size);
+  static bool Open();
+  static void Close();
+  static bool CanStartDecode(const uint8_t *buf, int buf_size);
 };
 
 class CBitstreamConverter
@@ -106,8 +106,8 @@ public:
   int               GetConvertSize() const;
   uint8_t*          GetExtraData(void) const;
   int               GetExtraSize() const;
-  void              ResetKeyframe(void);
-  bool              HasKeyframe() const;
+  void              ResetStartDecode(void);
+  bool              CanStartDecode() const;
 
   static void       parseh264_sps(const uint8_t *sps, const uint32_t sps_size, bool *interlaced, int32_t *max_ref_frames);
   static bool       mpeg2_sequence_header(const uint8_t *data, const uint32_t size, mpeg2_sequence *sequence);
@@ -148,5 +148,5 @@ protected:
   bool              m_convert_3byteTo4byteNALSize;
   bool              m_convert_bytestream;
   AVCodecID         m_codec;
-  bool              m_has_keyframe;
+  bool              m_start_decode;
 };

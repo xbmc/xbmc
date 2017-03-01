@@ -1,7 +1,6 @@
 #pragma once
-
 /*
- *      Copyright (C) 2005-2013 Team XBMC
+ *      Copyright (C) 2016 Team Kodi
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -20,30 +19,13 @@
  *
  */
 
-#include <assert.h>
-#include <atomic>
+#include "JNIBase.h"
 
-template<typename T> struct IDVDResourceCounted
+class CJNIUUID : public CJNIBase
 {
-  IDVDResourceCounted() : m_refs(1) {}
-  virtual ~IDVDResourceCounted() {}
+public:
+  CJNIUUID(int64_t mostSigBits, int64_t leastSigBits);
+  CJNIUUID(const jni::jhobject &object) : CJNIBase(object) {}
+  ~CJNIUUID() {}
 
-  IDVDResourceCounted(const IDVDResourceCounted &) = delete;
-  IDVDResourceCounted &operator=(const IDVDResourceCounted &) = delete;
-
-  virtual T*  Acquire()
-  {
-    ++m_refs;
-    return (T*)this;
-  }
-
-  virtual long Release()
-  {
-    long count = --m_refs;
-    assert(count >= 0);
-    if (count == 0)
-      delete (T*)this;
-    return count;
-  }
-  std::atomic<long> m_refs;
 };

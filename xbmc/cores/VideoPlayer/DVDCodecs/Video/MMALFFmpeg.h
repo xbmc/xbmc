@@ -22,7 +22,6 @@
 
 #include <memory>
 #include <queue>
-#include "DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
 #include "libavcodec/avcodec.h"
 #include "MMALCodec.h"
 
@@ -49,15 +48,15 @@ private:
 };
 
 class CDecoder
-  : public CDVDVideoCodecFFmpeg::IHardwareDecoder
+  : public IHardwareDecoder
 {
 public:
   CDecoder(CProcessInfo& processInfo, CDVDStreamInfo &hints);
   virtual ~CDecoder();
   virtual bool Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat, unsigned int surfaces);
-  virtual int Decode(AVCodecContext* avctx, AVFrame* frame);
-  virtual bool GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* picture);
-  virtual int Check(AVCodecContext* avctx);
+  virtual CDVDVideoCodec::VCReturn Decode(AVCodecContext* avctx, AVFrame* frame);
+  virtual bool GetPicture(AVCodecContext* avctx, DVDVideoPicture* picture);
+  virtual CDVDVideoCodec::VCReturn Check(AVCodecContext* avctx);
   virtual void Close();
   virtual const std::string Name() { return "mmal"; }
   virtual unsigned GetAllowedReferences();
@@ -74,6 +73,7 @@ protected:
   std::shared_ptr<CMMALPool> m_pool;
   enum AVPixelFormat m_fmt;
   CDVDStreamInfo m_hints;
+  CGPUMEM *m_gmem;
 };
 
 };

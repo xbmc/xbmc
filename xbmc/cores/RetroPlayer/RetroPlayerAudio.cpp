@@ -27,7 +27,7 @@
 #include "cores/VideoPlayer/DVDCodecs/Audio/DVDAudioCodec.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemux.h"
-#include "cores/VideoPlayer/DVDClock.h"
+#include "cores/VideoPlayer/TimingConstants.h"
 #include "cores/VideoPlayer/DVDStreamInfo.h"
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
 #include "threads/Thread.h"
@@ -119,7 +119,7 @@ bool CRetroPlayerAudio::OpenEncodedStream(AVCodecID codec, unsigned int samplera
   audioStream.iChannelLayout = CAEUtil::GetAVChannelLayout(channelLayout);
 
   CDVDStreamInfo hint(audioStream);
-  m_pAudioCodec.reset(CDVDFactoryCodec::CreateAudioCodec(hint, m_processInfo, false));
+  m_pAudioCodec.reset(CDVDFactoryCodec::CreateAudioCodec(hint, m_processInfo, false, true));
 
   if (!m_pAudioCodec)
   {

@@ -103,6 +103,7 @@ CDecoder::CDecoder(CProcessInfo &processInfo, CDVDStreamInfo &hints) : m_process
   m_shared = 0;
   m_avctx = nullptr;
   m_pool = nullptr;
+  m_gmem = nullptr;
 }
 
 CDecoder::~CDecoder()
@@ -127,8 +128,8 @@ void CDecoder::Close()
 
 void CDecoder::FFReleaseBuffer(void *opaque, uint8_t *data)
 {
-  CGPUMEM *gmem = (CGPUMEM *)opaque;
-  CMMALYUVBuffer *YUVBuffer = (CMMALYUVBuffer *)gmem->m_opaque;
+  CGPUMEM *gmem = static_cast<CGPUMEM *>(opaque);
+  CMMALYUVBuffer *YUVBuffer = static_cast<CMMALYUVBuffer *>(gmem->m_opaque);
   if (g_advancedSettings.CanLogComponent(LOGVIDEO))
     CLog::Log(LOGDEBUG,"%s::%s buf:%p gmem:%p", CLASSNAME, __FUNCTION__, YUVBuffer, gmem);
 
@@ -137,8 +138,8 @@ void CDecoder::FFReleaseBuffer(void *opaque, uint8_t *data)
 
 int CDecoder::FFGetBuffer(AVCodecContext *avctx, AVFrame *frame, int flags)
 {
-  CDVDVideoCodecFFmpeg *ctx = (CDVDVideoCodecFFmpeg*)avctx->opaque;
-  CDecoder *dec = (CDecoder*)ctx->GetHardware();
+  ICallbackHWAccel* ctx = static_cast<ICallbackHWAccel*>(avctx->opaque);
+  CDecoder* dec = static_cast<CDecoder*>(ctx->GetHWAccel());
   if (g_advancedSettings.CanLogComponent(LOGVIDEO))
     CLog::Log(LOGDEBUG,"%s::%s %dx%d format:%x:%x flags:%x", CLASSNAME, __FUNCTION__, frame->width, frame->height, frame->format, dec->m_fmt, flags);
 
@@ -260,54 +261,60 @@ bool CDecoder::Open(AVCodecContext *avctx, AVCodecContext* mainctx, enum AVPixel
   return true;
 }
 
-int CDecoder::Decode(AVCodecContext* avctx, AVFrame* frame)
+CDVDVideoCodec::VCReturn CDecoder::Decode(AVCodecContext* avctx, AVFrame* frame)
 {
-  int status = Check(avctx);
-  if(status)
+  CSingleLock lock(m_section);
+
+  if (frame)
+  {
+    if ((frame->format != AV_PIX_FMT_YUV420P && frame->format != AV_PIX_FMT_BGR0 && frame->format != AV_PIX_FMT_RGB565LE) ||
+        frame->buf[1] != nullptr || frame->buf[0] == nullptr)
+    {
+      CLog::Log(LOGERROR, "%s::%s frame format invalid format:%d buf:%p,%p", CLASSNAME, __func__, frame->format, frame->buf[0], frame->buf[1]);
+      return CDVDVideoCodec::VC_ERROR;
+    }
+    AVBufferRef *buf = frame->buf[0];
+    m_gmem = (CGPUMEM *)av_buffer_get_opaque(buf);
+  }
+  CDVDVideoCodec::VCReturn status = Check(avctx);
+  if (status != CDVDVideoCodec::VC_NONE)
     return status;
 
   if(frame)
-    return VC_BUFFER | VC_PICTURE;
+    return CDVDVideoCodec::VC_PICTURE;
   else
-    return VC_BUFFER;
+    return CDVDVideoCodec::VC_BUFFER;
 }
 
-bool CDecoder::GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* picture)
+bool CDecoder::GetPicture(AVCodecContext* avctx, DVDVideoPicture* picture)
 {
-  CDVDVideoCodecFFmpeg* ctx = (CDVDVideoCodecFFmpeg*)avctx->opaque;
-  bool ret = ctx->GetPictureCommon(picture);
-  if (!ret)
-    return false;
-
-  if ((frame->format != AV_PIX_FMT_YUV420P && frame->format != AV_PIX_FMT_BGR0 && frame->format != AV_PIX_FMT_RGB565LE) ||
-      frame->buf[1] != nullptr || frame->buf[0] == nullptr)
-    return false;
-
   CSingleLock lock(m_section);
 
-  AVBufferRef *buf = frame->buf[0];
-  CGPUMEM *gmem = (CGPUMEM *)av_buffer_get_opaque(buf);
+  ICallbackHWAccel* ctx = static_cast<ICallbackHWAccel*>(avctx->opaque);
+  bool ret = ctx->GetPictureCommon(picture);
+  if (!ret || !m_gmem)
+    return false;
 
-  picture->MMALBuffer = (CMMALYUVBuffer *)gmem->m_opaque;
+  picture->MMALBuffer = (CMMALYUVBuffer *)m_gmem->m_opaque;
   assert(picture->MMALBuffer);
   picture->format = RENDER_FMT_MMAL;
   assert(picture->MMALBuffer->mmal_buffer);
-  picture->MMALBuffer->mmal_buffer->data = (uint8_t *)gmem->m_vc_handle;
-  picture->MMALBuffer->mmal_buffer->alloc_size = picture->MMALBuffer->mmal_buffer->length = gmem->m_numbytes;
+  picture->MMALBuffer->mmal_buffer->data = (uint8_t *)m_gmem->m_vc_handle;
+  picture->MMALBuffer->mmal_buffer->alloc_size = picture->MMALBuffer->mmal_buffer->length = m_gmem->m_numbytes;
   picture->MMALBuffer->m_stills = m_hints.stills;
 
   // need to flush ARM cache so GPU can see it
-  gmem->Flush();
+  m_gmem->Flush();
 
   if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-    CLog::Log(LOGDEBUG, "%s::%s - mmal:%p dts:%.3f pts:%.3f buf:%p gpu:%p", CLASSNAME, __FUNCTION__, picture->MMALBuffer->mmal_buffer, 1e-6*picture->dts, 1e-6*picture->pts, picture->MMALBuffer, gmem);
+    CLog::Log(LOGDEBUG, "%s::%s - mmal:%p dts:%.3f pts:%.3f buf:%p gpu:%p", CLASSNAME, __FUNCTION__, picture->MMALBuffer->mmal_buffer, 1e-6*picture->dts, 1e-6*picture->pts, picture->MMALBuffer, m_gmem);
   return true;
 }
 
-int CDecoder::Check(AVCodecContext* avctx)
+CDVDVideoCodec::VCReturn CDecoder::Check(AVCodecContext* avctx)
 {
   CSingleLock lock(m_section);
-  return 0;
+  return CDVDVideoCodec::VC_NONE;
 }
 
 unsigned CDecoder::GetAllowedReferences()

@@ -342,7 +342,7 @@ void CVideoPlayerAudio::Process()
       {
         m_dvdAudio.Pause();
       }
-      m_speed = speed;
+      m_speed = (int)speed;
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_STREAMCHANGE))
     {
@@ -360,10 +360,10 @@ void CVideoPlayerAudio::Process()
       DemuxPacket* pPacket = ((CDVDMsgDemuxerPacket*)pMsg)->GetPacket();
       bool bPacketDrop  = ((CDVDMsgDemuxerPacket*)pMsg)->GetPacketDrop();
 
-      int consumed = m_pAudioCodec->Decode(pPacket->pData, pPacket->iSize, pPacket->dts, pPacket->pts);
-      if (consumed < 0)
+      int ret = m_pAudioCodec->AddData(pPacket->pData, pPacket->iSize, pPacket->dts, pPacket->pts);
+      if (ret < 0)
       {
-        CLog::Log(LOGERROR, "CVideoPlayerAudio::DecodeFrame - Decode Error. Skipping audio packet (%d)", consumed);
+        CLog::Log(LOGERROR, "CVideoPlayerAudio::DecodeFrame - Decode Error. Skipping audio packet");
         m_pAudioCodec->Reset();
         pMsg->Release();
         continue;
@@ -380,17 +380,7 @@ void CVideoPlayerAudio::Process()
 
         if (audioframe.nb_frames == 0)
         {
-          if (consumed >= pPacket->iSize)
-            break;
-          int ret = m_pAudioCodec->Decode(pPacket->pData+consumed, pPacket->iSize-consumed, DVD_NOPTS_VALUE, DVD_NOPTS_VALUE);
-          if (ret < 0)
-          {
-            CLog::Log(LOGERROR, "CVideoPlayerAudio::DecodeFrame - Decode Error. Skipping audio packet (%d)", ret);
-            m_pAudioCodec->Reset();
-            break;
-          }
-          consumed += ret;
-          continue;
+          break;
         }
 
         audioframe.hasTimestamp = true;
@@ -471,15 +461,6 @@ void CVideoPlayerAudio::Process()
               msg.cachetime = cachetime;
               msg.timestamp = audioframe.hasTimestamp ? audioframe.pts : DVD_NOPTS_VALUE;
               m_messageParent.Put(new CDVDMsgType<SStartMsg>(CDVDMsg::PLAYER_STARTED, msg));
-
-              if (consumed < pPacket->iSize)
-              {
-                pPacket->iSize -= consumed;
-                memmove(pPacket->pData, pPacket->pData + consumed, pPacket->iSize);
-                m_messageQueue.Put(pMsg, 0, false);
-                pMsg->Acquire();
-                break;
-              }
             }
           }
         }
@@ -487,13 +468,6 @@ void CVideoPlayerAudio::Process()
         // guess next pts
         m_audioClock += audioframe.duration;
 
-        int ret = m_pAudioCodec->Decode(nullptr, 0, DVD_NOPTS_VALUE, DVD_NOPTS_VALUE);
-        if (ret < 0)
-        {
-          CLog::Log(LOGERROR, "CVideoPlayerAudio::DecodeFrame - Decode Error. Skipping audio packet (%d)", ret);
-          m_pAudioCodec->Reset();
-          break;
-        }
       } // while decoder produces output
 
     } // demuxer packet

@@ -591,7 +591,7 @@ void CExternalPlayer::SetSpeed(float iSpeed)
 
 float CExternalPlayer::GetSpeed()
 {
-  return m_speed;
+  return (float)m_speed;
 }
 
 void CExternalPlayer::ShowOSD(bool bOnoff)

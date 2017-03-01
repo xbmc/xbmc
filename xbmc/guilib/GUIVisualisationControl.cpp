@@ -27,6 +27,7 @@
 #include "addons/Visualisation.h"
 #include "utils/log.h"
 #include "input/Key.h"
+#include "windowing/WindowingFactory.h"
 
 using namespace ADDON;
 

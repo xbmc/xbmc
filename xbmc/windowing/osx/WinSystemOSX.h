@@ -93,7 +93,8 @@ public:
 
 protected:
   void  HandlePossibleRefreshrateChange();
-  void* CreateWindowedContext(void* shareCtx);
+  void* CreateWindowe
+dContext(void* shareCtx);
   void* CreateFullScreenContext(int screen_index, void* shareCtx);
   void  GetScreenResolution(int* w, int* h, double* fps, int screenIdx);
   void  EnableVSync(bool enable); 

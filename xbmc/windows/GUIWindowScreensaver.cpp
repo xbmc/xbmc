@@ -29,6 +29,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
+#include "windowing/WindowingFactory.h"
 
 using namespace ADDON;
 

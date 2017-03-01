@@ -35,7 +35,6 @@ void CBinaryAddonCache::Init()
   m_addonsToCache = {
     ADDON_AUDIODECODER,
     ADDON_IMAGEDECODER,
-    ADDON_INPUTSTREAM,
     ADDON_PVRDLL,
     ADDON_GAMEDLL,
     ADDON_VFS

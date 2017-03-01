@@ -54,11 +54,26 @@ extern "C" {
    */
   typedef struct INPUTSTREAM_CAPABILITIES
   {
-    bool m_supportsIDemux;                  /*!< @brief supports interface IDemux */
-    bool m_supportsIPosTime;                /*!< @brief supports interface IPosTime */
-    bool m_supportsIDisplayTime;            /*!< @brief supports interface IDisplayTime */
-    bool m_supportsSeek;                    /*!< @brief supports seek */
-    bool m_supportsPause;                   /*!< @brief supports pause */
+    enum MASKTYPE: uint32_t
+    {
+      /// supports interface IDemux
+      SUPPORTSIDEMUX = (1 << 0),
+
+      /// supports interface IPosTime
+      SUPPORTSIPOSTIME = (1 << 1),
+
+      /// supports interface IDisplayTime
+      SUPPORTSIDISPLAYTIME = (1 << 2),
+
+      /// supports seek
+      SUPPORTSSEEK = (1 << 3),
+
+      /// supports pause
+      SUPPORTSPAUSE = (1 << 4)
+    };
+
+    /// set of supported capabilities
+    uint32_t m_mask;
   } INPUTSTREAM_CAPABILITIES;
 
   /*!
@@ -126,6 +141,16 @@ extern "C" {
     unsigned int m_BitRate;              /*!< @brief (required) bit rate */
     unsigned int m_BitsPerSample;        /*!< @brief (required) bits per sample */
     unsigned int m_BlockAlign;
+
+    enum CRYPTO_KEY_SYSTEM :uint16_t
+    {
+      CRYPTO_KEY_SYSTEM_NONE = 0,
+      CRYPTO_KEY_SYSTEM_WIDEVINE,
+      CRYPTO_KEY_SYSTEM_PLAYREADY,
+      CRYPTO_KEY_SYSTEM_COUNT
+    } m_CryptoKeySystem;                 /*!< @brief keysystem for encrypted media, KEY_SYSTEM_NONE for unencrypted media */
+    char m_CryptoSessionId[32];          /*!< @brief The crypto session key id */
+    uint16_t m_CryptoSessionIdSize;      /*!< @brief The size of the crypto session key id */
   } INPUTSTREAM_INFO;
 
   /*!

@@ -24,9 +24,6 @@
 #include <EGL/eglext.h>
 
 #include "DVDVideoCodec.h"
-#include "DVDVideoCodecFFmpeg.h"
-#include "DVDVideoCodec.h"
-#include "DVDVideoCodecFFmpeg.h"
 #include "settings/VideoSettings.h"
 #include "threads/CriticalSection.h"
 #include "threads/SharedSection.h"
@@ -44,6 +41,7 @@
 extern "C" {
 #include "libavutil/avutil.h"
 #include "libavcodec/vaapi.h"
+#include "libavfilter/avfilter.h"
 }
 
 using namespace Actor;
@@ -410,7 +408,7 @@ private:
  *  VAAPI main class
  */
 class CDecoder
- : public CDVDVideoCodecFFmpeg::IHardwareDecoder
+ : public IHardwareDecoder
 {
    friend class CVaapiRenderPicture;
 
@@ -419,21 +417,24 @@ public:
   CDecoder(CProcessInfo& processInfo);
   virtual ~CDecoder();
 
-  virtual bool Open      (AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat, unsigned int surfaces = 0);
-  virtual int  Decode    (AVCodecContext* avctx, AVFrame* frame);
-  virtual bool GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* picture);
-  virtual void Reset();
+  virtual bool Open (AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat, unsigned int surfaces = 0) override;
+  virtual CDVDVideoCodec::VCReturn Decode (AVCodecContext* avctx, AVFrame* frame);
+  virtual bool GetPicture(AVCodecContext* avctx, DVDVideoPicture* picture) override;
+  virtual void Reset() override;
   virtual void Close();
-  virtual long Release();
-  virtual bool CanSkipDeint();
-  virtual unsigned GetAllowedReferences() { return 4; }
+  virtual long Release() override;
+  virtual bool CanSkipDeint() override;
+  virtual unsigned GetAllowedReferences() override { return 4; }
 
-  virtual int  Check(AVCodecContext* avctx);
-  virtual const std::string Name() { return "vaapi"; }
-  virtual void SetCodecControl(int flags);
+  virtual CDVDVideoCodec::VCReturn Check(AVCodecContext* avctx) override;
+  virtual const std::string Name() override { return "vaapi"; }
+  virtual void SetCodecControl(int flags) override;
 
   void FFReleaseBuffer(uint8_t *data);
   static int FFGetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags);
+
+  static void CheckCaps(EGLDisplay eglDisplay);
+  static bool IsCapGeneral() { return m_capGeneral; }
 
 protected:
   void SetWidthHeight(int width, int height);
@@ -470,6 +471,9 @@ protected:
 
   int m_codecControl;
   CProcessInfo& m_processInfo;
+
+  static bool m_capGeneral;
+  static bool m_capHevc;
 };
 
 //-----------------------------------------------------------------------------

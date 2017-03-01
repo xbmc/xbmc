@@ -37,16 +37,17 @@ public:
   CDVDAudioCodecPassthrough(CProcessInfo &processInfo);
   virtual ~CDVDAudioCodecPassthrough();
 
-  virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options);
-  virtual void Dispose();
-  virtual int Decode(uint8_t* pData, int iSize, double dts, double pts);
-  virtual void GetData(DVDAudioFrame &frame);
-  virtual int GetData(uint8_t** dst);
-  virtual void Reset();
-  virtual AEAudioFormat GetFormat() { return m_format; }
-  virtual bool NeedPassthrough() { return true; }
-  virtual const char* GetName() { return "passthrough"; }
-  virtual int GetBufferSize();
+  virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options) override;
+  virtual void Dispose() override;
+  virtual int AddData(uint8_t* pData, int iSize, double dts, double pts) override;
+  virtual void GetData(DVDAudioFrame &frame) override;
+  virtual int GetData(uint8_t** dst) override;
+  virtual void Reset() override;
+  virtual AEAudioFormat GetFormat() override{ return m_format; }
+  virtual bool NeedPassthrough() override { return true; }
+  virtual const char* GetName() override { return "passthrough"; }
+  virtual int GetBufferSize() override;
+
 private:
   CAEStreamParser m_parser;
   uint8_t* m_buffer;

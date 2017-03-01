@@ -108,8 +108,6 @@ public:
   virtual int GetVideoBitrate() = 0;
   virtual std::string GetStereoMode() = 0;
   virtual void SetSpeed(int iSpeed) = 0;
-  virtual int  GetDecoderBufferSize() { return 0; }
-  virtual int  GetDecoderFreeSpace() = 0;
   virtual bool IsEOS() { return false; };
 };
 

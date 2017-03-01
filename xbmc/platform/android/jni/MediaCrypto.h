@@ -21,9 +21,15 @@
 
 #include "JNIBase.h"
 
+class CJNIUUID;
+
 class CJNIMediaCrypto : public CJNIBase
 {
 public:
   CJNIMediaCrypto(const jni::jhobject &object) : CJNIBase(object) {};
-  ~CJNIMediaCrypto() {};
+  CJNIMediaCrypto(const CJNIUUID& uuid, const std::vector<char>& initData);
+  ~CJNIMediaCrypto() {}
+
+  void setMediaDrmSession(const std::vector<char> & sessionId);
+  bool requiresSecureDecoderComponent(const std::string& mime);
 };

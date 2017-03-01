@@ -886,7 +886,7 @@ bool PAPlayer::QueueData(StreamInfo *si)
         CLog::Log(LOGERROR, "PAPlayer::QueueData - unknown error");
         return false;
       }
-      si->m_framesSent += si->m_audioFormat.m_streamInfo.GetDuration() / 1000 * si->m_audioFormat.m_streamInfo.m_sampleRate;
+      si->m_framesSent += (int)(si->m_audioFormat.m_streamInfo.GetDuration() / 1000 * si->m_audioFormat.m_streamInfo.m_sampleRate);
     }
   }
 
@@ -978,7 +978,7 @@ float PAPlayer::GetSpeed()
   if (m_isPaused)
     return 0;
 
-  return m_playbackSpeed;
+  return (float)m_playbackSpeed;
 }
 
 int64_t PAPlayer::GetTimeInternal()
@@ -1016,7 +1016,7 @@ void PAPlayer::SetTimeInternal(int64_t time)
   m_currentStream->m_framesSent = time / 1000 * m_currentStream->m_audioFormat.m_sampleRate;
   
   if (m_currentStream->m_stream)
-    m_currentStream->m_framesSent += m_currentStream->m_stream->GetDelay() * m_currentStream->m_audioFormat.m_sampleRate;
+    m_currentStream->m_framesSent += (int)(m_currentStream->m_stream->GetDelay() * m_currentStream->m_audioFormat.m_sampleRate);
 }
 
 void PAPlayer::SetTime(int64_t time)

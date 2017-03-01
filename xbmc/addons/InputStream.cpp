@@ -22,6 +22,7 @@
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemux.h"
+#include "cores/VideoPlayer/DVDDemuxers/DemuxCrypto.h"
 #include "threads/SingleLock.h"
 #include "utils/RegExp.h"
 #include "utils/URIUtils.h"
@@ -347,6 +348,19 @@ void CInputStream::UpdateStreams()
       demuxStream->ExtraSize = stream.m_ExtraSize;
       for (unsigned int j=0; j<stream.m_ExtraSize; j++)
         demuxStream->ExtraData[j] = stream.m_ExtraData[j];
+    }
+
+    if (stream.m_CryptoKeySystem != INPUTSTREAM_INFO::CRYPTO_KEY_SYSTEM_NONE &&
+      stream.m_CryptoKeySystem < INPUTSTREAM_INFO::CRYPTO_KEY_SYSTEM_COUNT)
+    {
+      static const CryptoSessionSystem map[] =
+      {
+        CRYPTO_SESSION_SYSTEM_NONE,
+        CRYPTO_SESSION_SYSTEM_WIDEVINE,
+        CRYPTO_SESSION_SYSTEM_PLAYREADY
+      };
+      demuxStream->cryptoSession = std::shared_ptr<DemuxCryptoSession>(new DemuxCryptoSession(
+        map[stream.m_CryptoKeySystem], stream.m_CryptoSessionIdSize, stream.m_CryptoSessionId));
     }
 
     m_streams[demuxStream->uniqueId] = demuxStream;

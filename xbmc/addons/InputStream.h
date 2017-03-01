@@ -56,11 +56,11 @@ namespace ADDON
     bool Open(CFileItem &fileitem);
     void Close();
 
-    bool HasDemux() { return m_caps.m_supportsIDemux; };
-    bool HasPosTime() { return m_caps.m_supportsIPosTime; };
-    bool HasDisplayTime() { return m_caps.m_supportsIDisplayTime; };
-    bool CanPause() { return m_caps.m_supportsPause; };
-    bool CanSeek() { return m_caps.m_supportsSeek; };
+    bool HasDemux() { return (m_caps.m_mask & INPUTSTREAM_CAPABILITIES::SUPPORTSIDEMUX) != 0; };
+    bool HasPosTime() { return (m_caps.m_mask & INPUTSTREAM_CAPABILITIES::SUPPORTSIPOSTIME) != 0; };
+    bool HasDisplayTime() { return (m_caps.m_mask & INPUTSTREAM_CAPABILITIES::SUPPORTSIDISPLAYTIME) != 0; };
+    bool CanPause() { return (m_caps.m_mask & INPUTSTREAM_CAPABILITIES::SUPPORTSPAUSE) != 0; };
+    bool CanSeek() { return (m_caps.m_mask & INPUTSTREAM_CAPABILITIES::SUPPORTSSEEK) != 0; };
 
     // IDisplayTime
     int GetTotalTime();

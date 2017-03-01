@@ -1,7 +1,5 @@
-#pragma once
-
 /*
- *      Copyright (C) 2005-2013 Team XBMC
+ *      Copyright (C) 2016 Team Kodi
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -20,30 +18,16 @@
  *
  */
 
-#include <assert.h>
-#include <atomic>
 
-template<typename T> struct IDVDResourceCounted
+#include "UUID.h"
+
+#include "jutils/jutils-details.hpp"
+
+using namespace jni;
+
+CJNIUUID::CJNIUUID(int64_t mostSigBits, int64_t leastSigBits)
+  : CJNIBase("java/util/UUID")
 {
-  IDVDResourceCounted() : m_refs(1) {}
-  virtual ~IDVDResourceCounted() {}
-
-  IDVDResourceCounted(const IDVDResourceCounted &) = delete;
-  IDVDResourceCounted &operator=(const IDVDResourceCounted &) = delete;
-
-  virtual T*  Acquire()
-  {
-    ++m_refs;
-    return (T*)this;
-  }
-
-  virtual long Release()
-  {
-    long count = --m_refs;
-    assert(count >= 0);
-    if (count == 0)
-      delete (T*)this;
-    return count;
-  }
-  std::atomic<long> m_refs;
-};
+  m_object = new_object(GetClassName(), "<init>", "(JJ)V", mostSigBits, leastSigBits);
+  m_object.setGlobal();
+}
