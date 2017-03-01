@@ -38,7 +38,7 @@ static bool ReadString(FILE* file, char* str, size_t max_length)
   if (file == nullptr || str == nullptr || max_length <= 0)
     return false;
 
-  return (fgets(str, max_length, file) != nullptr);
+  return (fread(str, max_length, 1, file) == 1);
 }
 
 static bool ReadUInt32(FILE* file, uint32_t& value)
@@ -94,7 +94,7 @@ bool CXBTFReader::Open(const std::string& path)
     return false;
 
   // read the magic word
-  char magic[5];
+  char magic[4];
   if (!ReadString(m_file, magic, sizeof(magic)))
     return false;
 
@@ -102,7 +102,7 @@ bool CXBTFReader::Open(const std::string& path)
     return false;
 
   // read the version
-  char version[2];
+  char version[1];
   if (!ReadString(m_file, version, sizeof(version)))
     return false;
 
@@ -119,9 +119,10 @@ bool CXBTFReader::Open(const std::string& path)
     uint32_t u32;
     uint64_t u64;
 
-    char path[CXBTFFile::MaximumPathLength];
+    // one extra char to null terminate the string with the following memset
+    char path[CXBTFFile::MaximumPathLength + 1];
     memset(path, 0, sizeof(path));
-    if (!ReadString(m_file, path, sizeof(path)))
+    if (!ReadString(m_file, path, sizeof(path) - 1))
       return false;
     xbtfFile.SetPath(path);
 
