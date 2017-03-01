@@ -38,7 +38,8 @@
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "guilib/LocalizeStrings.h"
-#include "cores/AudioEngine/AEFactory.h"
+#include "ServiceBroker.h"
+#include "cores/AudioEngine/Interfaces/AE.h"
 #include "Util.h"
 #include <algorithm>
 #include <cassert>
@@ -102,7 +103,7 @@ COMXAudio::COMXAudio() :
   m_format.m_streamInfo.m_channels = 2;
   m_format.m_sampleRate = 16000;
   m_format.m_frameSize = 1;
-  m_pAudioStream = CAEFactory::MakeStream(m_format, 0, nullptr);
+  m_pAudioStream = CServiceBroker::GetActiveAE().MakeStream(m_format);
 }
 
 COMXAudio::~COMXAudio()
@@ -110,7 +111,7 @@ COMXAudio::~COMXAudio()
   Deinitialize();
 
   if (m_pAudioStream)
-    CAEFactory::FreeStream(m_pAudioStream);
+    CServiceBroker::GetActiveAE().FreeStream(m_pAudioStream);
 }
 
 bool COMXAudio::PortSettingsChanged()

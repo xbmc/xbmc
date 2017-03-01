@@ -39,7 +39,8 @@
 #include "utils/TimeUtils.h"
 
 #include "linux/RBP.h"
-#include "cores/AudioEngine/AEFactory.h"
+#include "ServiceBroker.h"
+#include "cores/AudioEngine/Interfaces/AE.h"
 #include "cores/DataCacheCore.h"
 #include "ServiceBroker.h"
 
@@ -514,12 +515,12 @@ AEAudioFormat OMXPlayerAudio::GetDataFormat(CDVDStreamInfo hints)
       format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_NULL;
   }
 
-  m_passthrough = CAEFactory::SupportsRaw(format);
+  m_passthrough = CServiceBroker::GetActiveAE().SupportsRaw(format);
 
   if (!m_passthrough && hints.codec == AV_CODEC_ID_DTS)
   {
     format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_DTSHD_CORE;
-    m_passthrough = CAEFactory::SupportsRaw(format);
+    m_passthrough = CServiceBroker::GetActiveAE().SupportsRaw(format);
   }
 
   if(!m_passthrough)
