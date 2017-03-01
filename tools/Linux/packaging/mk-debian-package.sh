@@ -46,6 +46,7 @@ function checkEnv {
     echo "REPO_DIR: $REPO_DIR"
     getVersion
     echo "RELEASEV: $RELEASEV"
+    echo "REVISION: $TAGREV"
     [[ -n $TAG ]] && echo "TAG: $TAG"
     echo "DISTS: $DISTS"
     echo "ARCHS: $ARCHS"
