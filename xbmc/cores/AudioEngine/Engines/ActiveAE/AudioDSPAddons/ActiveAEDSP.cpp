@@ -48,7 +48,7 @@ extern "C" {
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "utils/JobManager.h"
-#include "utils/Log.h"
+#include "utils/log.h"
 #include "utils/StringUtils.h"
 
 

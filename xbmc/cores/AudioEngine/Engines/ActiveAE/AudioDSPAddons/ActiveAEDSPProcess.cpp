@@ -35,7 +35,7 @@ extern "C" {
 #include "cores/IPlayer.h"
 #include "settings/MediaSettings.h"
 #include "utils/TimeUtils.h"
-#include "utils/Log.h"
+#include "utils/log.h"
 
 using namespace ADDON;
 using namespace ActiveAE;
