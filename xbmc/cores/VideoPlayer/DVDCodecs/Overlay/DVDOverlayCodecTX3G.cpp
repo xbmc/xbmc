@@ -29,6 +29,7 @@
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/auto_buffer.h"
+#include "utils/RegExp.h"
 
 // 3GPP/TX3G (aka MPEG-4 Timed Text) Subtitle support
 // 3GPP -> 3rd Generation Partnership Program
@@ -247,6 +248,18 @@ int CDVDOverlayCodecTX3G::Decode(DemuxPacket *pPacket)
 
   if (strUTF8[strUTF8.size()-1] == '\n')
     strUTF8.erase(strUTF8.size()-1);
+
+  // erase unsupport tags
+  CRegExp tags;
+  if (tags.RegComp("(\\{[^\\}]*\\})"))
+  {
+    int pos = 0;
+    while ((pos = tags.RegFind(strUTF8.c_str(), pos)) >= 0)
+    {
+      std::string tag = tags.GetMatch(0);
+      strUTF8.erase(pos, tag.length());
+    }
+  }
 
   // add a new text element to our container
   m_pOverlay->AddElement(new CDVDOverlayText::CElementText(strUTF8.c_str()));
