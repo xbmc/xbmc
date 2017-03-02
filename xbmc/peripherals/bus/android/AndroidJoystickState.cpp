@@ -390,7 +390,7 @@ bool CAndroidJoystickState::SetAxisValue(const std::vector<int>& axisIds, JOYSTI
   if (!GetAxesIndex(axisIds, m_axes, axisIndex) || axisIndex >= GetAxisCount())
     return false;
 
-  const JoystickAxis axis = m_axes[axisIndex];
+  const JoystickAxis& axis = m_axes[axisIndex];
 
   // make sure that the axis value is in the valid range
   axisValue = Contain(axisValue, axis.min, axis.max);
@@ -430,7 +430,7 @@ float CAndroidJoystickState::Deadzone(float value, float deadzone)
 CAndroidJoystickState::JoystickAxes::const_iterator CAndroidJoystickState::GetAxis(const std::vector<int>& axisIds, const JoystickAxes& axes)
 {
   return std::find_if(axes.cbegin(), axes.cend(),
-                     [axisIds](const JoystickAxis& axis)
+                     [&axisIds](const JoystickAxis& axis)
                      {
                        std::vector<int> matches(std::max(axisIds.size(), axis.ids.size()));
                        const auto& matchesEnd = std::set_intersection(axisIds.begin(), axisIds.end(),
