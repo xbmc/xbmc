@@ -131,7 +131,7 @@ public:
   std::string GetCPUSerial();
   static std::string GetManufacturerName(void);
   static std::string GetModelName(void);
-  bool GetDiskSpace(const std::string& drive,int& iTotal, int& iTotalFree, int& iTotalUsed, int& iPercentFree, int& iPercentUsed);
+  bool GetDiskSpace(std::string drive,int& iTotal, int& iTotalFree, int& iTotalUsed, int& iPercentFree, int& iPercentUsed);
   std::string GetHddSpaceInfo(int& percent, int drive, bool shortText=false);
   std::string GetHddSpaceInfo(int drive, bool shortText=false);
 

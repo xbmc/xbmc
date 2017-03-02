@@ -735,7 +735,8 @@ void CGUIDialogPVRTimerSettings::InitializeTypesList()
     return;
   }
 
-  int idx = 0;
+  bool bFoundThisType(false);
+  int idx(0);
   const std::vector<CPVRTimerTypePtr> types(CPVRTimerType::GetAllTypes());
   for (const auto &type : types)
   {
@@ -750,11 +751,11 @@ void CGUIDialogPVRTimerSettings::InitializeTypesList()
       continue;
 
     // Drop TimerTypes that require EPGInfo, if none is populated
-    if (m_bIsNewTimer && type->RequiresEpgTagOnCreate() && !m_timerInfoTag->GetEpgInfoTag())
+    if (type->RequiresEpgTagOnCreate() && !m_timerInfoTag->GetEpgInfoTag())
       continue;
 
     // Drop TimerTypes without 'Series' EPG attributes if none are set
-    if (m_bIsNewTimer && type->RequiresEpgSeriesOnCreate())
+    if (type->RequiresEpgSeriesOnCreate())
     {
       const EPG::CEpgInfoTagPtr epgTag(m_timerInfoTag->GetEpgInfoTag());
       if (epgTag && !epgTag->IsSeries())
@@ -762,15 +763,21 @@ void CGUIDialogPVRTimerSettings::InitializeTypesList()
     }
 
     // Drop TimerTypes that forbid EPGInfo, if it is populated
-    if (m_bIsNewTimer && type->ForbidsEpgTagOnCreate() && m_timerInfoTag->GetEpgInfoTag())
+    if (type->ForbidsEpgTagOnCreate() && m_timerInfoTag->GetEpgInfoTag())
       continue;
 
     // Drop TimerTypes that aren't rules if end time is in the past
     if (!type->IsTimerRule() && m_timerInfoTag->EndAsLocalTime() < CDateTime::GetCurrentDateTime())
       continue;
 
+    if (!bFoundThisType && *type == *m_timerType)
+      bFoundThisType = true;
+
     m_typeEntries.insert(std::make_pair(idx++, type));
   }
+
+  if (!bFoundThisType)
+    m_typeEntries.insert(std::make_pair(idx++, m_timerType));
 }
 
 void CGUIDialogPVRTimerSettings::InitializeChannelsList()

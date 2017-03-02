@@ -362,6 +362,8 @@ bool CTagLoaderTagLib::ParseTag(ID3v2::Tag *id3v2, MUSIC_INFO::EmbeddedArt *art,
           SetArtistHints(tag, StringListToVectorString(stringList));
         else if (desc == "ALBUMARTISTS" || desc == "ALBUM ARTISTS")
           SetAlbumArtistHints(tag, StringListToVectorString(stringList));
+        else if (desc == "WRITER")  // How Picard >1.3 tags writer in ID3
+          AddArtistRole(tag, "Writer", StringListToVectorString(stringList));
         else if (desc == "MOOD")
           tag.SetMood(stringList.front().to8Bit(true));
         else if (g_advancedSettings.m_logLevel == LOG_LEVEL_MAX)
@@ -502,10 +504,14 @@ bool CTagLoaderTagLib::ParseTag(APE::Tag *ape, EmbeddedArt *art, CMusicInfoTag& 
       AddArtistRole(tag, "Composer", StringListToVectorString(it->second.toStringList()));
     else if (it->first == "CONDUCTOR")
       AddArtistRole(tag, "Conductor", StringListToVectorString(it->second.toStringList()));
-    else if ((it->first == "BAND") || (it->first == "ENSEMBLE"))
-      AddArtistRole(tag, "Orchestra", StringListToVectorString(it->second.toStringList()));
+    else if (it->first == "BAND")
+      AddArtistRole(tag, "Band", StringListToVectorString(it->second.toStringList()));
+    else if (it->first == "ENSEMBLE")
+      AddArtistRole(tag, "Ensemble", StringListToVectorString(it->second.toStringList()));
     else if (it->first == "LYRICIST")
       AddArtistRole(tag, "Lyricist", StringListToVectorString(it->second.toStringList()));
+    else if (it->first == "WRITER")
+      AddArtistRole(tag, "Writer", StringListToVectorString(it->second.toStringList()));
     else if ((it->first == "MIXARTIST") || (it->first == "REMIXER"))
       AddArtistRole(tag, "Remixer", StringListToVectorString(it->second.toStringList()));
     else if (it->first == "ARRANGER") 
@@ -603,10 +609,14 @@ bool CTagLoaderTagLib::ParseTag(Ogg::XiphComment *xiph, EmbeddedArt *art, CMusic
       AddArtistRole(tag, "Composer", StringListToVectorString(it->second));
     else if (it->first == "CONDUCTOR")
       AddArtistRole(tag, "Conductor", StringListToVectorString(it->second));
-    else if ((it->first == "BAND") || (it->first == "ENSEMBLE"))
-      AddArtistRole(tag, "Orchestra", StringListToVectorString(it->second));
+    else if (it->first == "BAND")
+      AddArtistRole(tag, "Band", StringListToVectorString(it->second));
+    else if (it->first == "ENSEMBLE")
+      AddArtistRole(tag, "Ensemble", StringListToVectorString(it->second));
     else if (it->first == "LYRICIST")
       AddArtistRole(tag, "Lyricist", StringListToVectorString(it->second));
+    else if (it->first == "WRITER")
+      AddArtistRole(tag, "Writer", StringListToVectorString(it->second));
     else if ((it->first == "MIXARTIST") || (it->first == "REMIXER"))
       AddArtistRole(tag, "Remixer", StringListToVectorString(it->second));
     else if (it->first == "ARRANGER")
@@ -1042,6 +1052,10 @@ void CTagLoaderTagLib::AddArtistInstrument(CMusicInfoTag &tag, const std::vector
 
 bool CTagLoaderTagLib::Load(const std::string& strFileName, CMusicInfoTag& tag, const std::string& fallbackFileExtension, MUSIC_INFO::EmbeddedArt *art /* = NULL */)
 {
+  // Dont try to read the tags for streams & shoutcast  
+  if (URIUtils::IsInternetStream(strFileName))
+    return false;
+
   std::string strExtension = URIUtils::GetExtension(strFileName);
   StringUtils::TrimLeft(strExtension, ".");
 

@@ -166,6 +166,7 @@ CDVDDemuxFFmpeg::CDVDDemuxFFmpeg() : CDVDDemux()
   m_currentPts = DVD_NOPTS_VALUE;
   m_bMatroska = false;
   m_bAVI = false;
+  m_bSup = false;
   m_speed = DVD_PLAYSPEED_NORMAL;
   m_program = UINT_MAX;
   m_pkt.result = -1;
@@ -438,9 +439,10 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo, bool filein
       m_pFormatContext->iformat->flags |= AVFMT_NOGENSEARCH;
   }
 
-  // we need to know if this is matroska or avi later
+  // we need to know if this is matroska, avi or sup later
   m_bMatroska = strncmp(m_pFormatContext->iformat->name, "matroska", 8) == 0;	// for "matroska.webm"
   m_bAVI = strcmp(m_pFormatContext->iformat->name, "avi") == 0;
+  m_bSup = strcmp(m_pFormatContext->iformat->name, "sup") == 0;
 
   if (m_streaminfo)
   {
@@ -827,18 +829,21 @@ double CDVDDemuxFFmpeg::ConvertTimestamp(int64_t pts, int den, int num)
 
   // do calculations in floats as they can easily overflow otherwise
   // we don't care for having a completely exact timestamp anyway
-  double timestamp = (double)pts * num  / den;
+  double timestamp = (double)pts * num / den;
   double starttime = 0.0f;
 
   CDVDInputStream::IMenus* menu = dynamic_cast<CDVDInputStream::IMenus*>(m_pInput);
   if (!menu && m_pFormatContext->start_time != (int64_t)AV_NOPTS_VALUE)
     starttime = (double)m_pFormatContext->start_time / AV_TIME_BASE;
 
-  if(timestamp > starttime)
-    timestamp -= starttime;
-  // allow for largest possible difference in pts and dts for a single packet
-  else if( timestamp + 0.5f > starttime )
-    timestamp = 0;
+  if (!m_bSup)
+  {
+    if (timestamp > starttime)
+      timestamp -= starttime;
+    // allow for largest possible difference in pts and dts for a single packet
+    else if (timestamp + 0.5f > starttime)
+      timestamp = 0;
+  }
 
   return timestamp*DVD_TIME_BASE;
 }
@@ -1109,7 +1114,7 @@ bool CDVDDemuxFFmpeg::SeekTime(double time, bool backwards, double *startpts)
 
   int64_t seek_pts = (int64_t)time * (AV_TIME_BASE / 1000);
   bool ismp3 = m_pFormatContext->iformat && (strcmp(m_pFormatContext->iformat->name, "mp3") == 0);
-  if (m_pFormatContext->start_time != (int64_t)AV_NOPTS_VALUE && !ismp3)
+  if (m_pFormatContext->start_time != (int64_t)AV_NOPTS_VALUE && !ismp3 && !m_bSup)
     seek_pts += m_pFormatContext->start_time;
 
   int ret;

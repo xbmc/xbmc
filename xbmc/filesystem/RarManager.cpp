@@ -518,7 +518,13 @@ void CRarManager::ExtractArchive(const std::string& strArchive, const std::strin
 int64_t CRarManager::CheckFreeSpace(const std::string& strDrive)
 {
   ULARGE_INTEGER lTotalFreeBytes;
-  if (GetDiskFreeSpaceEx(CSpecialProtocol::TranslatePath(strDrive).c_str(), NULL, NULL, &lTotalFreeBytes))
+#ifdef TARGET_WINDOWS
+  std::wstring path;
+  g_charsetConverter.utf8ToW(CSpecialProtocol::TranslatePath(strDrive), path);
+#else
+  auto path = CSpecialProtocol::TranslatePath(strDrive);
+#endif
+  if (GetDiskFreeSpaceEx(path.c_str(), NULL, NULL, &lTotalFreeBytes))
     return lTotalFreeBytes.QuadPart;
 
   return 0;
