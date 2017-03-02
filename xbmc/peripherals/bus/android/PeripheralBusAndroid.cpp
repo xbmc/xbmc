@@ -138,19 +138,11 @@ void CPeripheralBusAndroid::ProcessEvents()
       case PERIPHERAL_EVENT_TYPE_DRIVER_BUTTON:
       {
         const bool bPressed = (event.ButtonState() == JOYSTICK_STATE_BUTTON_PRESSED);
-        CLog::Log(LOGDEBUG, "Button [ %u ] on %s %s", event.DriverIndex(),
-                  joystick->DeviceName().c_str(), bPressed ? "pressed" : "released");
-        if (joystick->OnButtonMotion(event.DriverIndex(), bPressed))
-          CLog::Log(LOGDEBUG, "Joystick button event handled");
         break;
       }
       case PERIPHERAL_EVENT_TYPE_DRIVER_HAT:
       {
         const JOYSTICK::HAT_STATE state = CPeripheralAddonTranslator::TranslateHatState(event.HatState());
-        CLog::Log(LOGDEBUG, "Hat [ %u ] on %s %s", event.DriverIndex(),
-                  joystick->DeviceName().c_str(), JOYSTICK::CJoystickTranslator::HatStateToString(state));
-        if (joystick->OnHatMotion(event.DriverIndex(), state))
-          CLog::Log(LOGDEBUG, "Joystick hat event handled");
         break;
       }
       case PERIPHERAL_EVENT_TYPE_DRIVER_AXIS:
