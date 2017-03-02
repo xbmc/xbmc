@@ -22,6 +22,7 @@
 #include "Util.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
+#include "platform/win32/CharsetConverter.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
@@ -56,13 +57,15 @@ public:
     strcpy(tmp, m_ptempFilePath.c_str());
 
 #ifdef TARGET_WINDOWS
-    if (!GetTempFileName(CSpecialProtocol::TranslatePath("special://temp/").c_str(),
-                         "xbmctempfile", 0, tmp))
+    using namespace KODI::PLATFORM::WINDOWS;
+    wchar_t tmpW[MAX_PATH];
+    if (!GetTempFileName(ToW(CSpecialProtocol::TranslatePath("special://temp/")).c_str(),
+                         L"xbmctempfile", 0, tmpW))
     {
       m_ptempFilePath = "";
       return false;
     }
-    m_ptempFilePath = tmp;
+    m_ptempFilePath = FromW(tmpW);
 #else
     int fd;
     if ((fd = mkstemps(tmp, suffix.length())) < 0)

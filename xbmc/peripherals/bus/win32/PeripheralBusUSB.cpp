@@ -20,6 +20,7 @@
 
 #include "PeripheralBusUSB.h"
 #include "peripherals/Peripherals.h"
+#include "platform/win32/CharsetConverter.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 
@@ -50,6 +51,8 @@ bool CPeripheralBusUSB::PerformDeviceScan(PeripheralScanResults &results)
 
 bool CPeripheralBusUSB::PerformDeviceScan(const GUID *guid, const PeripheralType defaultType, PeripheralScanResults &results)
 {
+  using KODI::PLATFORM::WINDOWS::FromW;
+
   bool     bReturn(false);
   DWORD    required = 0, iMemberIndex = 0;
   int      nBufferSize = 200;  // Just initial guess, will be increased if required
@@ -146,10 +149,10 @@ bool CPeripheralBusUSB::PerformDeviceScan(const GUID *guid, const PeripheralType
           std::string strVendorId(strTmp, posVid + 5, 4);
           std::string strProductId(strTmp, posPid + 5, 4);
           PeripheralScanResult prevDevice(m_type);
-          if (!results.GetDeviceOnLocation(devicedetailData->DevicePath, &prevDevice))
+          if (!results.GetDeviceOnLocation(FromW(devicedetailData->DevicePath), &prevDevice))
           {
             PeripheralScanResult result(m_type);
-            result.m_strLocation  = devicedetailData->DevicePath;
+            result.m_strLocation  = FromW(devicedetailData->DevicePath);
             result.m_iVendorId    = PeripheralTypeTranslator::HexStringToInt(strVendorId.c_str());
             result.m_iProductId   = PeripheralTypeTranslator::HexStringToInt(strProductId.c_str());
             result.m_iSequence    = GetNumberOfPeripheralsWithId(result.m_iVendorId, result.m_iProductId);

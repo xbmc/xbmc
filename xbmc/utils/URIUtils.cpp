@@ -30,6 +30,10 @@
 #include "URL.h"
 #include "StringUtils.h"
 
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
+#include "platform/win32/CharsetConverter.h"
+#endif
+
 #include <cassert>
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -581,8 +585,9 @@ bool URIUtils::IsRemote(const std::string& strFile)
 bool URIUtils::IsOnDVD(const std::string& strFile)
 {
 #ifdef TARGET_WINDOWS
+  using KODI::PLATFORM::WINDOWS::ToW;
   if (strFile.size() >= 2 && strFile.substr(1,1) == ":")
-    return (GetDriveType(strFile.substr(0, 3).c_str()) == DRIVE_CDROM);
+    return (GetDriveType(ToW(strFile.substr(0, 3)).c_str()) == DRIVE_CDROM);
 #endif
 
   if (IsProtocol(strFile, "dvd"))
@@ -711,7 +716,7 @@ bool URIUtils::IsDVD(const std::string& strFile)
   if(strFile.size() < 2 || (strFile.substr(1) != ":\\" && strFile.substr(1) != ":"))
     return false;
 
-  if(GetDriveType(strFile.c_str()) == DRIVE_CDROM)
+  if(GetDriveType(KODI::PLATFORM::WINDOWS::ToW(strFile).c_str()) == DRIVE_CDROM)
     return true;
 #else
   if (strFileLow == "iso9660://" || strFileLow == "udf://" || strFileLow == "dvd://1" )

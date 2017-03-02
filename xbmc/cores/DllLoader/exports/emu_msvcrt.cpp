@@ -82,6 +82,10 @@
 #include "utils/Environment.h"
 #include "utils/StringUtils.h"
 
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
+#include "platform/win32/CharsetConverter.h"
+#endif
+
 using namespace XFILE;
 
 struct SDirData
@@ -116,6 +120,7 @@ extern "C" void __stdcall init_emu_environ()
 
   // python
 #if defined(TARGET_WINDOWS)
+  using KODI::PLATFORM::WINDOWS::FromW;
   // fill our array with the windows system vars
   LPTSTR lpszVariable;
   LPTCH lpvEnv;
@@ -125,7 +130,7 @@ extern "C" void __stdcall init_emu_environ()
     lpszVariable = (LPTSTR) lpvEnv;
     while (*lpszVariable)
     {
-      dll_putenv(lpszVariable);
+      dll_putenv(FromW(lpszVariable).c_str());
       lpszVariable += lstrlen(lpszVariable) + 1;
     }
     FreeEnvironmentStrings(lpvEnv);

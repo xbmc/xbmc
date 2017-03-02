@@ -93,7 +93,7 @@ bool win32_exception::write_minidump(EXCEPTION_POINTERS* pEp)
   }
 
   // Load the DBGHELP DLL
-  HMODULE hDbgHelpDll = ::LoadLibrary("DBGHELP.DLL");
+  HMODULE hDbgHelpDll = ::LoadLibrary(L"DBGHELP.DLL");
   if (!hDbgHelpDll)
   {
     goto cleanup;
@@ -154,7 +154,7 @@ bool win32_exception::write_stacktrace(EXCEPTION_POINTERS* pEp)
   HANDLE hDumpFile = INVALID_HANDLE_VALUE;
   tSC pSC = NULL;
 
-  HMODULE hDbgHelpDll = ::LoadLibrary("DBGHELP.DLL");
+  HMODULE hDbgHelpDll = ::LoadLibrary(L"DBGHELP.DLL");
   if (!hDbgHelpDll)
   {
     goto cleanup;
@@ -278,7 +278,7 @@ bool win32_exception::ShouldHook()
 
   bool result = true;
 
-  auto module = ::LoadLibrary("kernel32.dll");
+  auto module = ::LoadLibrary(L"kernel32.dll");
   if (module)
   {
     auto func = reinterpret_cast<GCPFN>(::GetProcAddress(module, "GetCurrentPackageFullName"));

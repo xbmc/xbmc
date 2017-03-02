@@ -41,6 +41,10 @@ static const char     bt_service_prov[] = "XBMC JSON-RPC Provider";
 static const uint32_t bt_service_guid[] = {0x65AE4CC0, 0x775D11E0, 0xBE16CE28, 0x4824019B};
 #endif
 
+#if defined(TARGET_WINDOWS)
+#include "platform/win32/CharsetConverter.h"
+#endif
+
 #ifdef HAVE_LIBBLUETOOTH
 #include <bluetooth/bluetooth.h>
 #include <bluetooth/rfcomm.h>
@@ -329,11 +333,13 @@ bool CTCPServer::InitializeBlue()
   addrinfo.RemoteAddr.lpSockaddr      = (SOCKADDR*)&sa;
   addrinfo.RemoteAddr.iSockaddrLength = sizeof(sa);
 
+  using KODI::PLATFORM::WINDOWS::ToW;
+
   WSAQUERYSET service = {};
   service.dwSize = sizeof(service);
-  service.lpszServiceInstanceName = (LPSTR)bt_service_name;
+  service.lpszServiceInstanceName = const_cast<LPWSTR>(ToW(bt_service_name).c_str());
   service.lpServiceClassId        = (LPGUID)&bt_service_guid;
-  service.lpszComment             = (LPSTR)bt_service_desc;
+  service.lpszComment             = const_cast<LPWSTR>(ToW(bt_service_desc).c_str());
   service.dwNameSpace             = NS_BTH;
   service.lpNSProviderId          = NULL; /* RFCOMM? */
   service.lpcsaBuffer             = &addrinfo;

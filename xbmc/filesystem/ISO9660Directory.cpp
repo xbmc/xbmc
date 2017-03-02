@@ -28,6 +28,9 @@
 #ifdef TARGET_POSIX
 #include "linux/XTimeUtils.h"
 #endif
+#ifdef TARGET_WINDOWS
+#include "platform/win32/CharsetConverter.h"
+#endif
 
 using namespace XFILE;
 
@@ -76,11 +79,15 @@ bool CISO9660Directory::GetDirectory(const CURL& url, CFileItemList &items)
     {
       if ( (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) )
       {
+#ifdef TARGET_WINDOWS
+        auto strDir = KODI::PLATFORM::WINDOWS::FromW(wfd.cFileName);
+#else
         std::string strDir = wfd.cFileName;
+#endif
         if (strDir != "." && strDir != "..")
         {
-          CFileItemPtr pItem(new CFileItem(wfd.cFileName));
-          std::string path = strRoot + wfd.cFileName;
+          CFileItemPtr pItem(new CFileItem(strDir));
+          std::string path = strRoot + strDir;
           URIUtils::AddSlashAtEnd(path);
           pItem->SetPath(path);
           pItem->m_bIsFolder = true;
@@ -92,8 +99,13 @@ bool CISO9660Directory::GetDirectory(const CURL& url, CFileItemList &items)
       }
       else
       {
-        CFileItemPtr pItem(new CFileItem(wfd.cFileName));
-        pItem->SetPath(strRoot + wfd.cFileName);
+#ifdef TARGET_WINDOWS
+        auto strDir = KODI::PLATFORM::WINDOWS::FromW(wfd.cFileName);
+#else
+        std::string strDir = wfd.cFileName;
+#endif
+        CFileItemPtr pItem(new CFileItem(strDir));
+        pItem->SetPath(strRoot + strDir);
         pItem->m_bIsFolder = false;
         pItem->m_dwSize = CUtil::ToInt64(wfd.nFileSizeHigh, wfd.nFileSizeLow);
         FILETIME localTime;

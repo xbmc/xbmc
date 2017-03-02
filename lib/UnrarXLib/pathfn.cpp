@@ -345,7 +345,7 @@ bool EnumConfigPaths(char *Path,int Number)
   if (Number!=0)
     return(false);
 #if !defined(TARGET_POSIX)
-  GetModuleFileName(NULL,Path,NM);
+  GetModuleFileName(NULL,(LPWSTR)unrarxlib::ToW(Path).c_str(),NM);
   RemoveNameFromPath(Path);
 #endif
   return(true);

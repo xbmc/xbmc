@@ -252,33 +252,3 @@ extern "C" HMODULE WINAPI dllGetModuleHandleA(LPCSTR lpModuleName)
   CLog::Log(LOGDEBUG, "GetModuleHandleA('%s') failed", lpModuleName);
   return NULL;
 }
-
-extern "C" DWORD WINAPI dllGetModuleFileNameA(HMODULE hModule, LPSTR lpFilename, DWORD nSize)
-{
-  if (NULL == hModule)
-  {
-#ifdef TARGET_WINDOWS
-    return GetModuleFileNameA(hModule, lpFilename, nSize);
-#else
-    CLog::Log(LOGDEBUG, "%s - No hModule specified", __FUNCTION__);
-    return 0;
-#endif
-  }
-
-  LibraryLoader* dll = DllLoaderContainer::GetModule(hModule);
-  if( !dll )
-  {
-    CLog::Log(LOGERROR, "%s - Invalid hModule specified", __FUNCTION__);
-    return 0;
-  }
-
-  const char* sName = dll->GetFileName();
-  if (sName)
-  {
-    strncpy(lpFilename, sName, nSize);
-    lpFilename[nSize] = 0;
-    return strlen(lpFilename);
-  }
-
-  return 0;
-}
