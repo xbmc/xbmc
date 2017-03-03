@@ -330,9 +330,44 @@ SectionEnd
 SectionGroupEnd
 
 Function .onInit
+  ; WinVista SP2 is minimum requirement
   ${IfNot} ${AtLeastWinVista}
-    MessageBox MB_OK|MB_ICONSTOP|MB_TOPMOST|MB_SETFOREGROUND "Windows Vista or above required.$\nThis program can not be run on Windows XP"
+  ${OrIf} ${IsWinVista}
+  ${AndIfNot} ${AtLeastServicePack} 2
+    MessageBox MB_OK|MB_ICONSTOP|MB_TOPMOST|MB_SETFOREGROUND "Windows Vista SP2 or above required.$\nInstall Service Pack 2 for Windows Vista and run setup again."
     Quit
+  ${EndIf}
+  ; Win7 SP1 is minimum requirement
+  ${If} ${IsWin7}
+  ${AndIfNot} ${AtLeastServicePack} 1
+    MessageBox MB_OK|MB_ICONSTOP|MB_TOPMOST|MB_SETFOREGROUND "Windows 7 SP1 or above required.$\nInstall Service Pack 1 for Windows 7 and run setup again."
+    Quit
+  ${EndIf}
+
+  Var /GLOBAL HotFixID
+  ${If} ${IsWinVista}
+    StrCpy $HotFixID "971644" ; Platform Update for Windows Vista SP2
+  ${ElseIf} ${IsWin7}
+    StrCpy $HotFixID "2670838" ; Platform Update for Windows 7 SP1
+  ${Else}
+    StrCpy $HotFixID ""
+  ${Endif}
+  ${If} $HotFixID != ""
+    SetOutPath "$TEMP\PS"
+    FileOpen $0 ps.ps1 w
+    FileWrite $0 "Get-HotFix -Id KB$HotFixID -ea SilentlyContinue"
+    FileClose $0
+    nsExec::ExecToStack 'powershell -noprofile -inputformat none -ExecutionPolicy RemoteSigned -File "$TEMP\PS\ps.ps1"'
+    Pop $0 ; return value (it always 0 even if an error occured)
+    Pop $1 ; command output
+    RMDir /r "$TEMP\PS"
+    ${If} $0 != 0
+    ${OrIf} $1 == ""
+      MessageBox MB_OK|MB_ICONSTOP|MB_TOPMOST|MB_SETFOREGROUND "Platform Update for Windows (KB$HotFixID) is required.$\nDownload and install Platform Update for Windows then run setup again."
+      ExecShell "open" "http://support.microsoft.com/kb/$HotFixID"
+      Quit
+    ${EndIf}
+    SetOutPath "$INSTDIR"
   ${EndIf}
   StrCpy $CleanDestDir "-1"
 FunctionEnd
