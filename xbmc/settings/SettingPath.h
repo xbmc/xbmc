@@ -40,10 +40,16 @@ public:
   void SetWritable(bool writable) { m_writable = writable; }
   const std::vector<std::string>& GetSources() const { return m_sources; }
   void SetSources(const std::vector<std::string> &sources) { m_sources = sources; }
+  bool HideExtension() const { return m_hideExtension; }
+  void SetHideExtension(bool hideExtension) { m_hideExtension = hideExtension; }
+  const std::string& GetMasking() const { return m_masking; }
+  void SetMasking(const std::string& masking) { m_masking = masking; }
 
 private:
   void copy(const CSettingPath &setting);
 
   bool m_writable;
   std::vector<std::string> m_sources;
+  bool m_hideExtension;
+  std::string m_masking;
 };
