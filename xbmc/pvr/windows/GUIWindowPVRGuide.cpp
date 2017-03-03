@@ -280,6 +280,40 @@ bool CGUIWindowPVRGuide::OnMessage(CGUIMessage& message)
                   CPVRGUIActions::GetInstance().ToggleTimer(pItem);
                   bReturn = true;
                   break;
+                case EPG_SELECT_ACTION_SMART_SELECT:
+                {
+                  const CEpgInfoTagPtr tag(pItem->GetEPGInfoTag());
+                  if (tag)
+                  {
+                    const CDateTime start(tag->StartAsUTC());
+                    const CDateTime end(tag->EndAsUTC());
+                    const CDateTime now(CDateTime::GetUTCDateTime());
+
+                    if (start <= now && now <= end)
+                    {
+                      // current event
+                      CPVRGUIActions::GetInstance().SwitchToChannel(pItem, true);
+                    }
+                    else if (now < start)
+                    {
+                      // future event
+                      if (tag->HasTimer())
+                        CPVRGUIActions::GetInstance().EditTimer(pItem);
+                      else
+                        CPVRGUIActions::GetInstance().AddTimer(pItem, false);
+                    }
+                    else
+                    {
+                      // past event
+                      if (tag->HasRecording())
+                        CPVRGUIActions::GetInstance().PlayRecording(pItem, true);
+                      else
+                        CPVRGUIActions::GetInstance().ShowEPGInfo(pItem);
+                    }
+                    bReturn = true;
+                  }
+                  break;
+                }
               }
               break;
             case ACTION_SHOW_INFO:
