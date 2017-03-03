@@ -1,4 +1,4 @@
-if (NOT MIR_FOUND)
+if (NOT MIR_FOUND AND NOT ROCKCHIP_FOUND)
   if(OPENGLES_FOUND OR AML_FOUND OR IMX_FOUND OR MMAL_FOUND)
     set(SOURCES EGLWrapper.cpp)
 
@@ -25,11 +25,6 @@ if(AML_FOUND)
   list(APPEND HEADERS EGLNativeTypeAmlogic.h)
   list(APPEND SOURCES VideoSyncAML.h)
   list(APPEND SOURCES VideoSyncAML.cpp)
-endif()
-
-if(ROCKCHIP_FOUND)
-  list(APPEND SOURCES EGLNativeTypeAmlogic.cpp)
-  list(APPEND HEADERS EGLNativeTypeAmlogic.h)
 endif()
 
 if(MMAL_FOUND)
