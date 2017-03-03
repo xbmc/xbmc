@@ -446,10 +446,10 @@ public:
   virtual bool Deserialize(const TiXmlNode *node, bool update = false) override;
 
   virtual int GetType() const override { return SettingTypeAction; }
-  virtual bool FromString(const std::string &value) override { return false; }
+  virtual bool FromString(const std::string &value) override { return CheckValidity(value); }
   virtual std::string ToString() const override { return ""; }
-  virtual bool Equals(const std::string &value) const override { return false; }
-  virtual bool CheckValidity(const std::string &value) const override { return false; }
+  virtual bool Equals(const std::string &value) const override { return value.empty(); }
+  virtual bool CheckValidity(const std::string &value) const override { return value.empty(); }
   virtual void Reset() override { }
 
   // this needs to be public so it can be triggered when activated
