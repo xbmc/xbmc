@@ -374,7 +374,8 @@ void CGUIDialogSettingsBase::SetupControls(bool createSettings /* = true */)
     return;
   
   // update the screen string
-  SetHeading(section->GetLabel());
+  if (section->GetLabel() >= 0)
+    SetHeading(section->GetLabel());
 
   // get the categories we need
   m_categories = section->GetCategories((SettingLevel)GetSettingLevel());
