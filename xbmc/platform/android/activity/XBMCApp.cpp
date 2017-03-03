@@ -84,7 +84,6 @@
 #include "windowing/XBMC_events.h"
 #include "input/XBMC_keysym.h"
 
-
 #define GIGABYTES       1073741824
 
 using namespace KODI::MESSAGING;
@@ -795,7 +794,7 @@ void CXBMCApp::onReceive(CJNIIntent intent)
     if (newstate != m_headsetPlugged)
     {
       m_headsetPlugged = newstate;
-      CAEFactory::DeviceChange();
+      CServiceBroker::GetActiveAE().DeviceChange();
     }
   }
   else if (action == "android.intent.action.MEDIA_BUTTON")
