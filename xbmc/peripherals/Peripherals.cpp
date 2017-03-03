@@ -121,14 +121,14 @@ void CPeripherals::Initialise()
 #endif
   busses.push_back(std::make_shared<CPeripheralBusApplication>(this));
 
+  {
+    CSingleLock bussesLock(m_critSectionBusses);
+    m_busses = busses;
+  }
+
   /* initialise all known busses and run an initial scan for devices */
   for (auto& bus : busses)
     bus->Initialise();
-
-  {
-    CSingleLock bussesLock(m_critSectionBusses);
-    m_busses = std::move(busses);
-  }
 
   m_eventScanner.Start();
 
