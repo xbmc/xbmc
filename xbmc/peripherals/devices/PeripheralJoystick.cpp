@@ -20,6 +20,7 @@
 
 #include "PeripheralJoystick.h"
 #include "input/joysticks/DeadzoneFilter.h"
+#include "input/joysticks/JoystickTranslator.h"
 #include "peripherals/Peripherals.h"
 #include "peripherals/addons/AddonButtonMap.h"
 #include "peripherals/bus/android/PeripheralBusAndroid.h"
@@ -154,6 +155,9 @@ void CPeripheralJoystick::UnregisterJoystickDriverHandler(IDriverHandler* handle
 
 bool CPeripheralJoystick::OnButtonMotion(unsigned int buttonIndex, bool bPressed)
 {
+  CLog::Log(LOGDEBUG, "BUTTON [ %u ] on \"%s\" %s", buttonIndex,
+            DeviceName().c_str(), bPressed ? "pressed" : "released");
+
   CSingleLock lock(m_handlerMutex);
 
   // Process promiscuous handlers
@@ -188,6 +192,9 @@ bool CPeripheralJoystick::OnButtonMotion(unsigned int buttonIndex, bool bPressed
 
 bool CPeripheralJoystick::OnHatMotion(unsigned int hatIndex, HAT_STATE state)
 {
+  CLog::Log(LOGDEBUG, "HAT [ %u ] on \"%s\" %s", hatIndex,
+            DeviceName().c_str(), JOYSTICK::CJoystickTranslator::HatStateToString(state));
+
   CSingleLock lock(m_handlerMutex);
 
   // Process promiscuous handlers
