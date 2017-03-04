@@ -9506,7 +9506,11 @@ msgctxt "#19095"
 msgid "Timer rule creation failed. The PVR add-on does not support a suitable timer rule type."
 msgstr ""
 
-#empty string with id 19096
+#. label of a value for default epg event select action, where the action is choosen depending on whether the event is in the past, now or in the future
+#: system/settings/settings.xml
+msgctxt "#19096"
+msgid "\"Smart select\""
+msgstr ""
 
 #. label of the help text for the timer name edit field in PVR timer settings dialog
 #: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
@@ -18989,7 +18993,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36424"
-msgid "Select what will happen when an item is selected in the guide: [Show context menu] Will trigger the context menu from where you can choose further actions; [Switch to channel] Will instantly tune to the related channel; [Show information] Will display a detailed information with plot and further options; [Record] Will create a recording timer for the selected item."
+msgid "Select what will happen when an item is selected in the guide: [Show context menu] Will trigger the context menu from where you can choose further actions; [Switch to channel] Will instantly tune to the related channel; [Show information] Will display a detailed information with plot and further options; [Record] Will create a recording timer for the selected item. [\"Smart select\"] The action is choosen dynamically, depending on whether the event is in the past, now or in the future."
 msgstr ""
 
 #: system/settings/settings.xml

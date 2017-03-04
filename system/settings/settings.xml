@@ -1325,13 +1325,14 @@
         </setting>
         <setting id="epg.selectaction" type="integer" label="22079" help="36424">
           <level>1</level>
-          <default>2</default> <!-- EPG_SELECT_ACTION_INFO -->
+          <default>5</default> <!-- EPG_SELECT_ACTION_SMART_SELECT -->
           <constraints>
             <options>
               <option label="36425">0</option> <!-- EPG_SELECT_ACTION_CONTEXT_MENU -->
               <option label="36426">1</option> <!-- EPG_SELECT_ACTION_SWITCH -->
               <option label="36427">2</option> <!-- EPG_SELECT_ACTION_INFO -->
               <option label="36428">3</option> <!-- EPG_SELECT_ACTION_RECORD -->
+              <option label="19096">5</option> <!-- EPG_SELECT_ACTION_SMART_SELECT -->
             </options>
           </constraints>
           <control type="list" format="string" />
