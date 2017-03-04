@@ -29,7 +29,8 @@
 #include "Application.h"
 #include "windowing/WindowingFactory.h"
 #include "settings/DisplaySettings.h"
-#include "cores/AudioEngine/AEFactory.h"
+#include "ServiceBroker.h"
+#include "cores/AudioEngine/Interfaces/AE.h"
 #include "platform/darwin/DarwinUtils.h"
 #undef BOOL
 
@@ -229,7 +230,7 @@ static CEvent screenChangeEvent;
 
   // re-enumerate audio devices in that case too
   // as we might gain passthrough capabilities via HDMI
-  CAEFactory::DeviceChange();
+  CServiceBroker::GetActiveAE().DeviceChange();
   return true;
 }
 //--------------------------------------------------------------
