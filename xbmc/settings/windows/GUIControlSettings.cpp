@@ -51,6 +51,14 @@
 
 using namespace ADDON;
 
+static std::string Localize(std::uint32_t code, ILocalizer* localizer)
+{
+  if (localizer == nullptr)
+    return "";
+
+  return localizer->Localize(code);
+}
+
 template<typename TValueType>
 static CFileItemPtr GetFileItem(const std::string& label, const TValueType& value, const std::set<TValueType>& selectedValues)
 {
@@ -63,7 +71,7 @@ static CFileItemPtr GetFileItem(const std::string& label, const TValueType& valu
   return item;
 }
 
-static bool GetIntegerOptions(const CSetting* setting, DynamicIntegerSettingOptions& options, std::set<int>& selectedOptions)
+static bool GetIntegerOptions(const CSetting* setting, DynamicIntegerSettingOptions& options, std::set<int>& selectedOptions, ILocalizer* localizer)
 {
   const CSettingInt *pSettingInt = NULL;
   if (setting->GetType() == SettingTypeInteger)
@@ -95,7 +103,7 @@ static bool GetIntegerOptions(const CSetting* setting, DynamicIntegerSettingOpti
     {
       const StaticIntegerSettingOptions& settingOptions = pSettingInt->GetOptions();
       for (const auto& option : settingOptions)
-        options.push_back(std::make_pair(g_localizeStrings.Get(option.first), option.second));
+        options.push_back(std::make_pair(Localize(option.first, localizer), option.second));
       break;
     }
 
@@ -115,9 +123,9 @@ static bool GetIntegerOptions(const CSetting* setting, DynamicIntegerSettingOpti
       {
         std::string strLabel;
         if (i == pSettingInt->GetMinimum() && control->GetMinimumLabel() > -1)
-          strLabel = g_localizeStrings.Get(control->GetMinimumLabel());
+          strLabel = Localize(control->GetMinimumLabel(), localizer);
         else if (control->GetFormatLabel() > -1)
-          strLabel = StringUtils::Format(g_localizeStrings.Get(control->GetFormatLabel()).c_str(), i);
+          strLabel = StringUtils::Format(Localize(control->GetFormatLabel(), localizer).c_str(), i);
         else
           strLabel = StringUtils::Format(control->GetFormatString().c_str(), i);
 
@@ -168,9 +176,10 @@ static bool GetStringOptions(const CSetting* setting, DynamicStringSettingOption
   return true;
 }
 
-CGUIControlBaseSetting::CGUIControlBaseSetting(int id, CSetting *pSetting)
+CGUIControlBaseSetting::CGUIControlBaseSetting(int id, CSetting *pSetting, ILocalizer* localizer)
   : m_id(id),
     m_pSetting(pSetting),
+    m_localizer(localizer),
     m_delayed(false),
     m_valid(true)
 { }
@@ -195,8 +204,13 @@ void CGUIControlBaseSetting::Update(bool updateDisplayOnly /* = false */)
   SetValid(true);
 }
 
-CGUIControlRadioButtonSetting::CGUIControlRadioButtonSetting(CGUIRadioButtonControl *pRadioButton, int id, CSetting *pSetting)
-  : CGUIControlBaseSetting(id, pSetting)
+std::string CGUIControlBaseSetting::Localize(std::uint32_t code) const
+{
+  return ::Localize(code, m_localizer);
+}
+
+CGUIControlRadioButtonSetting::CGUIControlRadioButtonSetting(CGUIRadioButtonControl *pRadioButton, int id, CSetting *pSetting, ILocalizer* localizer)
+  : CGUIControlBaseSetting(id, pSetting, localizer)
 {
   m_pRadioButton = pRadioButton;
   if (m_pRadioButton == NULL)
@@ -225,8 +239,8 @@ void CGUIControlRadioButtonSetting::Update(bool updateDisplayOnly /* = false */)
   m_pRadioButton->SetSelected(((CSettingBool *)m_pSetting)->GetValue());
 }
 
-CGUIControlSpinExSetting::CGUIControlSpinExSetting(CGUISpinControlEx *pSpin, int id, CSetting *pSetting)
-  : CGUIControlBaseSetting(id, pSetting)
+CGUIControlSpinExSetting::CGUIControlSpinExSetting(CGUISpinControlEx *pSpin, int id, CSetting *pSetting, ILocalizer* localizer)
+  : CGUIControlBaseSetting(id, pSetting, localizer)
 {
   m_pSpin = pSpin;
   if (m_pSpin == NULL)
@@ -331,7 +345,7 @@ void CGUIControlSpinExSetting::FillIntegerSettingControl()
   DynamicIntegerSettingOptions options;
   std::set<int> selectedValues;
   // get the integer options
-  if (!GetIntegerOptions(m_pSetting, options, selectedValues) || selectedValues.size() != 1)
+  if (!GetIntegerOptions(m_pSetting, options, selectedValues, m_localizer) || selectedValues.size() != 1)
     return;
 
   // add them to the spinner
@@ -342,8 +356,8 @@ void CGUIControlSpinExSetting::FillIntegerSettingControl()
   m_pSpin->SetValue(*selectedValues.begin());
 }
 
-CGUIControlListSetting::CGUIControlListSetting(CGUIButtonControl *pButton, int id, CSetting *pSetting)
-  : CGUIControlBaseSetting(id, pSetting)
+CGUIControlListSetting::CGUIControlListSetting(CGUIButtonControl *pButton, int id, CSetting *pSetting, ILocalizer* localizer)
+  : CGUIControlBaseSetting(id, pSetting, localizer)
 {
   m_pButton = pButton;
   if (m_pButton == NULL)
@@ -372,7 +386,7 @@ bool CGUIControlListSetting::OnClick()
   const CSettingControlList *control = static_cast<const CSettingControlList*>(m_pSetting->GetControl());
   
   dialog->Reset();
-  dialog->SetHeading(CVariant{g_localizeStrings.Get(m_pSetting->GetLabel())});
+  dialog->SetHeading(CVariant{Localize(m_pSetting->GetLabel())});
   dialog->SetItems(options);
   dialog->SetMultiSelection(control->CanMultiSelect());
   dialog->Open();
@@ -459,7 +473,7 @@ void CGUIControlListSetting::Update(bool updateDisplayOnly /* = false */)
     m_pButton->SetEnabled(false);
 }
 
-bool CGUIControlListSetting::GetItems(const CSetting *setting, CFileItemList &items)
+bool CGUIControlListSetting::GetItems(const CSetting *setting, CFileItemList &items) const
 {
   const CSettingControlList *control = static_cast<const CSettingControlList*>(setting->GetControl());
   const std::string &controlFormat = control->GetFormat();
@@ -481,12 +495,12 @@ bool CGUIControlListSetting::GetItems(const CSetting *setting, CFileItemList &it
   return true;
 }
 
-bool CGUIControlListSetting::GetIntegerItems(const CSetting *setting, CFileItemList &items)
+bool CGUIControlListSetting::GetIntegerItems(const CSetting *setting, CFileItemList &items) const
 {
   DynamicIntegerSettingOptions options;
   std::set<int> selectedValues;
   // get the integer options
-  if (!GetIntegerOptions(setting, options, selectedValues))
+  if (!GetIntegerOptions(setting, options, selectedValues, m_localizer))
     return false;
 
   // turn them into CFileItems and add them to the item list
@@ -511,8 +525,8 @@ bool CGUIControlListSetting::GetStringItems(const CSetting *setting, CFileItemLi
   return true;
 }
 
-CGUIControlButtonSetting::CGUIControlButtonSetting(CGUIButtonControl *pButton, int id, CSetting *pSetting)
-  : CGUIControlBaseSetting(id, pSetting)
+CGUIControlButtonSetting::CGUIControlButtonSetting(CGUIButtonControl *pButton, int id, CSetting *pSetting, ILocalizer* localizer)
+  : CGUIControlBaseSetting(id, pSetting, localizer)
 {
   m_pButton = pButton;
   if (m_pButton == NULL)
@@ -549,7 +563,7 @@ bool CGUIControlButtonSetting::OnClick()
       SetValid(setting->SetValue(addonID));
     }
     else if (controlFormat == "path")
-      SetValid(GetPath((CSettingPath *)m_pSetting));
+      SetValid(GetPath((CSettingPath *)m_pSetting, m_localizer));
     else if (controlFormat == "action")
     {
       // simply call the OnSettingAction callback and whoever knows what to
@@ -582,7 +596,7 @@ bool CGUIControlButtonSetting::OnClick()
       return false;
 
     const CSettingControlSlider *sliderControl = static_cast<const CSettingControlSlider*>(control);
-    CGUIDialogSlider::ShowAndGetInput(g_localizeStrings.Get(sliderControl->GetHeading()), value, min, step, max, this, NULL);
+    CGUIDialogSlider::ShowAndGetInput(Localize(sliderControl->GetHeading()), value, min, step, max, this, NULL);
     SetValid(true);
   }
 
@@ -645,7 +659,7 @@ void CGUIControlButtonSetting::Update(bool updateDisplayOnly /* = false */)
       {
         const CSettingInt *settingInt = static_cast<CSettingInt*>(m_pSetting);
         strText = CGUIControlSliderSetting::GetText(static_cast<const CSettingControlSlider*>(m_pSetting->GetControl()),
-          settingInt->GetValue(), settingInt->GetMinimum(), settingInt->GetStep(), settingInt->GetMaximum());
+          settingInt->GetValue(), settingInt->GetMinimum(), settingInt->GetStep(), settingInt->GetMaximum(), m_localizer);
         break;
       }
 
@@ -653,7 +667,7 @@ void CGUIControlButtonSetting::Update(bool updateDisplayOnly /* = false */)
       {
         const CSettingNumber *settingNumber = static_cast<CSettingNumber*>(m_pSetting);
         strText = CGUIControlSliderSetting::GetText(static_cast<const CSettingControlSlider*>(m_pSetting->GetControl()),
-          settingNumber->GetValue(), settingNumber->GetMinimum(), settingNumber->GetStep(), settingNumber->GetMaximum());
+          settingNumber->GetValue(), settingNumber->GetMinimum(), settingNumber->GetStep(), settingNumber->GetMaximum(), m_localizer);
         break;
       }
     
@@ -665,7 +679,7 @@ void CGUIControlButtonSetting::Update(bool updateDisplayOnly /* = false */)
   m_pButton->SetLabel2(strText);
 }
 
-bool CGUIControlButtonSetting::GetPath(CSettingPath *pathSetting)
+bool CGUIControlButtonSetting::GetPath(CSettingPath *pathSetting, ILocalizer* localizer)
 {
   if (pathSetting == NULL)
     return false;
@@ -684,7 +698,7 @@ bool CGUIControlButtonSetting::GetPath(CSettingPath *pathSetting)
   g_mediaManager.GetNetworkLocations(shares);
   g_mediaManager.GetLocalDrives(shares);
 
-  if (!CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(static_cast<const CSettingControlButton*>(pathSetting->GetControl())->GetHeading()), path, pathSetting->Writable()))
+  if (!CGUIDialogFileBrowser::ShowAndGetDirectory(shares, ::Localize(static_cast<const CSettingControlButton*>(pathSetting->GetControl())->GetHeading(), localizer), path, pathSetting->Writable()))
     return false;
 
   return pathSetting->SetValue(path);
@@ -703,7 +717,7 @@ void CGUIControlButtonSetting::OnSliderChange(void *data, CGUISliderControl *sli
       CSettingInt *settingInt = static_cast<CSettingInt*>(m_pSetting);
       if (settingInt->SetValue(slider->GetIntValue()))
         strText = CGUIControlSliderSetting::GetText(static_cast<const CSettingControlSlider*>(m_pSetting->GetControl()),
-          settingInt->GetValue(), settingInt->GetMinimum(), settingInt->GetStep(), settingInt->GetMaximum());
+          settingInt->GetValue(), settingInt->GetMinimum(), settingInt->GetStep(), settingInt->GetMaximum(), m_localizer);
       break;
     }
 
@@ -712,7 +726,7 @@ void CGUIControlButtonSetting::OnSliderChange(void *data, CGUISliderControl *sli
       CSettingNumber *settingNumber = static_cast<CSettingNumber*>(m_pSetting);
       if (settingNumber->SetValue(static_cast<double>(slider->GetFloatValue())))
         strText = CGUIControlSliderSetting::GetText(static_cast<const CSettingControlSlider*>(m_pSetting->GetControl()),
-          settingNumber->GetValue(), settingNumber->GetMinimum(), settingNumber->GetStep(), settingNumber->GetMaximum());
+          settingNumber->GetValue(), settingNumber->GetMinimum(), settingNumber->GetStep(), settingNumber->GetMaximum(), m_localizer);
       break;
     }
     
@@ -724,8 +738,8 @@ void CGUIControlButtonSetting::OnSliderChange(void *data, CGUISliderControl *sli
     slider->SetTextValue(strText);
 }
 
-CGUIControlEditSetting::CGUIControlEditSetting(CGUIEditControl *pEdit, int id, CSetting *pSetting)
-  : CGUIControlBaseSetting(id, pSetting)
+CGUIControlEditSetting::CGUIControlEditSetting(CGUIEditControl *pEdit, int id, CSetting *pSetting, ILocalizer* localizer)
+  : CGUIControlBaseSetting(id, pSetting, localizer)
 {
   const CSettingControlEdit* control = static_cast<const CSettingControlEdit*>(pSetting->GetControl());
   m_pEdit = pEdit;
@@ -803,8 +817,8 @@ bool CGUIControlEditSetting::InputValidation(const std::string &input, void *dat
   return editControl->IsValid();
 }
 
-CGUIControlSliderSetting::CGUIControlSliderSetting(CGUISettingsSliderControl *pSlider, int id, CSetting *pSetting)
-  : CGUIControlBaseSetting(id, pSetting)
+CGUIControlSliderSetting::CGUIControlSliderSetting(CGUISettingsSliderControl *pSlider, int id, CSetting *pSetting, ILocalizer* localizer)
+  : CGUIControlBaseSetting(id, pSetting, localizer)
 {
   m_pSlider = pSlider;
   if (m_pSlider == NULL)
@@ -892,7 +906,7 @@ void CGUIControlSliderSetting::Update(bool updateDisplayOnly /* = false */)
       }
 
       strText = CGUIControlSliderSetting::GetText(static_cast<const CSettingControlSlider*>(m_pSetting->GetControl()),
-        value, settingInt->GetMinimum(), settingInt->GetStep(), settingInt->GetMaximum());
+        value, settingInt->GetMinimum(), settingInt->GetStep(), settingInt->GetMaximum(), m_localizer);
       break;
     }
 
@@ -909,7 +923,7 @@ void CGUIControlSliderSetting::Update(bool updateDisplayOnly /* = false */)
       }
 
       strText = CGUIControlSliderSetting::GetText(static_cast<const CSettingControlSlider*>(m_pSetting->GetControl()),
-        value, settingNumber->GetMinimum(), settingNumber->GetStep(), settingNumber->GetMaximum());
+        value, settingNumber->GetMinimum(), settingNumber->GetStep(), settingNumber->GetMaximum(), m_localizer);
       break;
     }
     
@@ -921,7 +935,7 @@ void CGUIControlSliderSetting::Update(bool updateDisplayOnly /* = false */)
     m_pSlider->SetTextValue(strText);
 }
 
-std::string CGUIControlSliderSetting::GetText(const CSettingControlSlider *control, const CVariant &value, const CVariant &minimum, const CVariant &step, const CVariant &maximum)
+std::string CGUIControlSliderSetting::GetText(const CSettingControlSlider *control, const CVariant &value, const CVariant &minimum, const CVariant &step, const CVariant &maximum, ILocalizer* localizer)
 {
   if (control == NULL ||
       !(value.isInteger() || value.isDouble()))
@@ -933,7 +947,7 @@ std::string CGUIControlSliderSetting::GetText(const CSettingControlSlider *contr
 
   std::string formatString = control->GetFormatString();
   if (control->GetFormatLabel() > -1)
-    formatString = g_localizeStrings.Get(control->GetFormatLabel());
+    formatString = ::Localize(control->GetFormatLabel(), localizer);
 
   if (value.isDouble())
     return StringUtils::Format(formatString.c_str(), value.asDouble());
@@ -941,8 +955,8 @@ std::string CGUIControlSliderSetting::GetText(const CSettingControlSlider *contr
   return StringUtils::Format(formatString.c_str(), static_cast<int>(value.asInteger()));
 }
 
-CGUIControlRangeSetting::CGUIControlRangeSetting(CGUISettingsSliderControl *pSlider, int id, CSetting *pSetting)
-  : CGUIControlBaseSetting(id, pSetting)
+CGUIControlRangeSetting::CGUIControlRangeSetting(CGUISettingsSliderControl *pSlider, int id, CSetting *pSetting, ILocalizer* localizer)
+  : CGUIControlBaseSetting(id, pSetting, localizer)
 {
   m_pSlider = pSlider;
   if (m_pSlider == NULL)
@@ -1046,10 +1060,10 @@ void CGUIControlRangeSetting::Update(bool updateDisplayOnly /* = false */)
 
   std::string strText;
   std::string strTextLower, strTextUpper;
-  std::string formatString = g_localizeStrings.Get(controlRange->GetFormatLabel() > -1 ? controlRange->GetFormatLabel() : 21469);
+  std::string formatString = Localize(controlRange->GetFormatLabel() > -1 ? controlRange->GetFormatLabel() : 21469);
   std::string valueFormat = controlRange->GetValueFormat();
   if (controlRange->GetValueFormatLabel() > -1)
-    valueFormat = g_localizeStrings.Get(controlRange->GetValueFormatLabel());
+    valueFormat = Localize(controlRange->GetValueFormatLabel());
 
   switch (listDefintion->GetType())
   {
@@ -1145,8 +1159,8 @@ void CGUIControlRangeSetting::Update(bool updateDisplayOnly /* = false */)
     m_pSlider->SetTextValue(strText);
 }
 
-CGUIControlSeparatorSetting::CGUIControlSeparatorSetting(CGUIImage *pImage, int id)
-    : CGUIControlBaseSetting(id, NULL)
+CGUIControlSeparatorSetting::CGUIControlSeparatorSetting(CGUIImage *pImage, int id, ILocalizer* localizer)
+    : CGUIControlBaseSetting(id, NULL, localizer)
 {
   m_pImage = pImage;
   if (m_pImage == NULL)
@@ -1158,8 +1172,8 @@ CGUIControlSeparatorSetting::CGUIControlSeparatorSetting(CGUIImage *pImage, int 
 CGUIControlSeparatorSetting::~CGUIControlSeparatorSetting()
 { }
 
-CGUIControlGroupTitleSetting::CGUIControlGroupTitleSetting(CGUILabelControl *pLabel, int id)
-  : CGUIControlBaseSetting(id, NULL)
+CGUIControlGroupTitleSetting::CGUIControlGroupTitleSetting(CGUILabelControl *pLabel, int id, ILocalizer* localizer)
+  : CGUIControlBaseSetting(id, NULL, localizer)
 {
   m_pLabel = pLabel;
   if (m_pLabel == NULL)

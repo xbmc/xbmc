@@ -26,6 +26,7 @@
 #include "settings/SettingControl.h"
 #include "settings/lib/ISettingCallback.h"
 #include "threads/Timer.h"
+#include "utils/ILocalizer.h"
 
 #define CONTROL_SETTINGS_LABEL          2
 #define CONTROL_SETTINGS_DESCRIPTION    6
@@ -64,6 +65,7 @@ typedef std::shared_ptr<CGUIControlBaseSetting> BaseSettingControlPtr;
 class CGUIDialogSettingsBase
   : public CGUIDialog,
     public CSettingControlCreator,
+    public ILocalizer,
     protected ITimerCallback,
     protected ISettingCallback
 {
@@ -78,6 +80,9 @@ public:
   virtual void DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;
 
   virtual bool IsConfirmed() const { return m_confirmed; }
+
+  // implementation of ILocalizer
+  std::string Localize(std::uint32_t code) const override { return GetLocalizedString(code); }
 
 protected:
   // specializations of CGUIWindow
