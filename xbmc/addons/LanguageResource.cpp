@@ -137,13 +137,6 @@ void CLanguageResource::OnPostInstall(bool update, bool modal)
      (!update && !modal && 
        (HELPERS::ShowYesNoDialogText(CVariant{Name()}, CVariant{24132}) == DialogResponse::YES)))
   {
-    CGUIDialogKaiToast *toast = (CGUIDialogKaiToast *)g_windowManager.GetWindow(WINDOW_DIALOG_KAI_TOAST);
-    if (toast)
-    {
-      toast->ResetTimer();
-      toast->Close(true);
-    }
-
     if (IsInUse())
       g_langInfo.SetLanguage(ID());
     else
