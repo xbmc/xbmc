@@ -26,6 +26,7 @@
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "messaging/helpers/DialogHelper.h"
+#include "Skin.h"
 
 using namespace KODI::MESSAGING;
 
@@ -133,6 +134,9 @@ bool CLanguageResource::IsInUse() const
 
 void CLanguageResource::OnPostInstall(bool update, bool modal)
 {
+  if (!g_SkinInfo)
+    return;
+
   if (IsInUse() ||
      (!update && !modal && 
        (HELPERS::ShowYesNoDialogText(CVariant{Name()}, CVariant{24132}) == DialogResponse::YES)))
