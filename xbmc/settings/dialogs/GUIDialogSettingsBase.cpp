@@ -272,6 +272,24 @@ bool CGUIDialogSettingsBase::OnAction(const CAction &action)
       return true;
     }
 
+    case ACTION_DELETE_ITEM:
+    {
+      if (m_iSetting >= CONTROL_SETTINGS_START_CONTROL && m_iSetting < (int)(CONTROL_SETTINGS_START_CONTROL + m_settingControls.size()))
+      {
+        auto settingControl = GetSettingControl(m_iSetting);
+        if (settingControl != nullptr)
+        {
+          CSetting *setting = settingControl->GetSetting();
+          if (setting != nullptr)
+          {
+            setting->Reset();
+            return true;
+          }
+        }
+      }
+      break;
+    }
+
     default:
       break;
   }
