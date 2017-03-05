@@ -352,7 +352,7 @@ std::vector<std::string> CWIN32Util::GetDiskUsage()
       if( DRIVE_FIXED == GetDriveType( strDrive.c_str()  ) &&
         GetDiskFreeSpaceEx( ( strDrive.c_str() ), nullptr, &ULTotal, &ULTotalFree ) )
       {
-        strRet = StringUtils::Format("%s %d MB %s",strDrive.c_str(), int(ULTotalFree.QuadPart/(1024*1024)),g_localizeStrings.Get(160).c_str());
+        strRet = KODI::PLATFORM::WINDOWS::FromW(StringUtils::Format(L"%s %d MB %s",strDrive.c_str(), int(ULTotalFree.QuadPart/(1024*1024)),g_localizeStrings.Get(160).c_str()));
         result.push_back(strRet);
       }
       iPos += (wcslen( pcBuffer.get() + iPos) + 1 );

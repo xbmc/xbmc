@@ -10,7 +10,7 @@ DEPENDS = \
 	openssl gmp nettle gnutls curl \
 	libjpeg-turbo libpng fribidi libass \
 	libxml2 yajl libmicrohttpd mysql libffi \
-	python27 libshairplay \
+	python27 libshairplay libfmt \
 	libplist libcec libbluray tinyxml dummy-libxbmc \
 	libssh taglib libusb libnfs \
 	pythonmodule-pil pythonmodule-pycryptodome pythonmodule-setuptools \

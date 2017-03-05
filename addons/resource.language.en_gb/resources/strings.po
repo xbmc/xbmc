@@ -718,7 +718,7 @@ msgstr ""
 
 #: xbmc/settings/windows/GUIWindowSettingsCategory.cpp
 msgctxt "#168"
-msgid "%s- %s"
+msgid "{0:s}- {1:s}"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -766,13 +766,13 @@ msgstr ""
 #. <application name> successfully started
 #: xbmc/Application.cpp
 msgctxt "#177"
-msgid "%s successfully started"
+msgid "{0:s} successfully started"
 msgstr ""
 
 #. <application name> has been successfully started.
 #: xbmc/Application.cpp
 msgctxt "#178"
-msgid "%s has been successfully started."
+msgid "{0:s} has been successfully started."
 msgstr ""
 
 #: xbmc/media/MediaTypes.cpp
@@ -872,7 +872,7 @@ msgid "Select movie:"
 msgstr ""
 
 msgctxt "#197"
-msgid "Querying %s information"
+msgid "Querying {0:s} information"
 msgstr ""
 
 msgctxt "#198"
@@ -1105,7 +1105,7 @@ msgid "Display mode"
 msgstr ""
 
 msgctxt "#241"
-msgid "Full screen #%d"
+msgid "Full screen #{0:d}"
 msgstr ""
 
 msgctxt "#242"
@@ -1123,7 +1123,7 @@ msgid "Full screen"
 msgstr ""
 
 msgctxt "#245"
-msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
+msgid "Sizing: ({0:d},{1:d})->({2:d},{3:d}) (Zoom x{4:2.2f}) AR:{5:2.2f}:1 (Pixels: {6:2.2f}:1) (VShift: {7:2.2f})"
 msgstr ""
 
 msgctxt "#246"
@@ -1293,7 +1293,7 @@ msgid "Please check the XML files"
 msgstr ""
 
 msgctxt "#282"
-msgid "Found %i items"
+msgid "Found {0:d} items"
 msgstr ""
 
 #: xbmc/filesystem/AddonsDirectory.cpp
@@ -1373,7 +1373,7 @@ msgid "Bookmarks"
 msgstr ""
 
 msgctxt "#299"
-msgid "Bookmark %i"
+msgid "Bookmark {0:d}"
 msgstr ""
 
 msgctxt "#300"
@@ -1432,7 +1432,7 @@ msgstr ""
 #. Keyboard layout name e.g. "English QWERTY"
 #: xbmc/input/KeyboardLayout.cpp
 msgctxt "#311"
-msgid "%s %s"
+msgid "{0:s} {1:s}"
 msgstr ""
 
 msgctxt "#312"
@@ -1992,12 +1992,12 @@ msgid "Remove movie from library"
 msgstr ""
 
 msgctxt "#433"
-msgid "Would you really like to remove '%s' from library?"
+msgid "Would you really like to remove '{0:s}' from library?"
 msgstr ""
 
 #. From <wind dir.> at <speed> <unit>
 msgctxt "#434"
-msgid "From %s at %i %s"
+msgid "From {0:s} at {1:d} {2:s}"
 msgstr ""
 
 #: xbmc/Application.cpp
@@ -2404,7 +2404,7 @@ msgid "Enter genre"
 msgstr ""
 
 msgctxt "#534"
-msgid "View: %s"
+msgid "View: {0:s}"
 msgstr ""
 
 #: addons/skin.estuary/xml/View_50_List.xml
@@ -2477,7 +2477,7 @@ msgstr ""
 
 #: xbmc/windows/GUIMediaWindow.cpp
 msgctxt "#550"
-msgid "Sort by: %s"
+msgid "Sort by: {0:s}"
 msgstr ""
 
 #. generic "name" label used in different places
@@ -3356,7 +3356,7 @@ msgstr ""
 #strings 768 and 769 reserved for more subtitle colours
 
 msgctxt "#770"
-msgid "Error %i: share not available"
+msgid "Error {0:d}: share not available"
 msgstr ""
 
 #empty string with id 771
@@ -3499,7 +3499,7 @@ msgstr ""
 #. Label of progress bar which shows the available/total space of pvr backend
 #: xbmc/pvr/PVRGUIInfo.cpp
 msgctxt "#802"
-msgid "%s of %s available"
+msgid "{0:s} of {1:s} available"
 msgstr ""
 
 #. Label of list control for choosing the timer type (one time, repeating, ...) in PVR timer settings dialog
@@ -3953,11 +3953,11 @@ msgid "Loading directory"
 msgstr ""
 
 msgctxt "#1041"
-msgid "Retrieved %i items"
+msgid "Retrieved {0:d} items"
 msgstr ""
 
 msgctxt "#1042"
-msgid "Retrieved %i of %i items"
+msgid "Retrieved {0:d} of {1:d} items"
 msgstr ""
 
 #: xbmc/addons/Addon.cpp
@@ -4217,7 +4217,7 @@ msgstr ""
 #. Filter movies/tvshows/music/episodes/artists/musicvideos/albums/songs
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
 msgctxt "#1275"
-msgid "Filter %s"
+msgid "Filter {0:s}"
 msgstr ""
 
 #empty strings from id 1276 to 1299
@@ -4648,7 +4648,7 @@ msgstr ""
 #. Notification message indicating an add-on error. "<Add-on name> error".
 #: xbmc/interfaces/python/PythonInvoker.cpp
 msgctxt "#2102"
-msgid "%s error"
+msgid "{0:s} error"
 msgstr ""
 
 #. Fallback message indicating an add-on error.
@@ -5194,7 +5194,7 @@ msgstr ""
 #: xbmc/pvr/PVRGUIActions.cpp
 #: xbmc/video/windows/GUIWindowVideoBase.cpp
 msgctxt "#12022"
-msgid "Resume from %s"
+msgid "Resume from {0:s}"
 msgstr ""
 
 #. unused?
@@ -5487,7 +5487,7 @@ msgstr ""
 #. time format with meridiem (xx) e.g. "HH:mm:ss xx"
 #: xbmc/LangInfo.cpp
 msgctxt "#12382"
-msgid "%s xx"
+msgid "{0:s} xx"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -5700,7 +5700,7 @@ msgstr ""
 
 #: xbmc/network/WakeOnAccess.cpp
 msgctxt "#13027"
-msgid "Wake-on-LAN (%s)"
+msgid "Wake-on-LAN ({0:s})"
 msgstr ""
 
 #: xbmc/network/WakeOnAccess.cpp
@@ -5735,17 +5735,17 @@ msgstr ""
 
 #: xbmc/network/WakeOnAccess.cpp
 msgctxt "#13034"
-msgid "Updated for %s"
+msgid "Updated for {0:s}"
 msgstr ""
 
 #: xbmc/network/WakeOnAccess.cpp
 msgctxt "#13035"
-msgid "Found for %s"
+msgid "Found for {0:s}"
 msgstr ""
 
 #: xbmc/network/WakeOnAccess.cpp
 msgctxt "#13036"
-msgid "Failed for %s"
+msgid "Failed for {0:s}"
 msgstr ""
 
 #empty strings from id 13037 to 13049
@@ -5932,7 +5932,7 @@ msgstr ""
 
 #. unused?
 msgctxt "#13172"
-msgid "After %i secs"
+msgid "After {0:d} secs"
 msgstr ""
 
 #. unused?
@@ -5958,7 +5958,7 @@ msgstr ""
 
 #: xbmc/profiles/ProfilesManager.cpp
 msgctxt "#13201"
-msgid "Delete profile '%s'?"
+msgid "Delete profile '{0:s}'?"
 msgstr ""
 
 #empty strings from id 13202 to 13203
@@ -6007,7 +6007,7 @@ msgstr ""
 
 #: xbmc/utils/AlarmClock.cpp
 msgctxt "#13210"
-msgid "Started, alarm in %im"
+msgid "Started, alarm in {0:d}m"
 msgstr ""
 
 #: xbmc/utils/AlarmClock.cpp
@@ -6017,19 +6017,19 @@ msgstr ""
 
 #: xbmc/utils/AlarmClock.cpp
 msgctxt "#13212"
-msgid "Cancelled with %im%is left"
+msgid "Cancelled with {0:d}m{1:d}s left"
 msgstr ""
 
 #. minutes (left from countdown)
 #: xbmc/GUIInfoManager.cpp
 msgctxt "#13213"
-msgid "%2.0fm"
+msgid "{0:2.0f}m"
 msgstr ""
 
 #. seconds (left from countdown)
 #: xbmc/GUIInfoManager.cpp
 msgctxt "#13214"
-msgid "%2.0fs"
+msgid "{0:2.0f}s"
 msgstr ""
 
 #empty strings from id 13215 to 13248
@@ -6275,15 +6275,15 @@ msgstr ""
 #empty string with id 13327
 
 msgctxt "#13328"
-msgid "%s not found"
+msgid "{0:s} not found"
 msgstr ""
 
 msgctxt "#13329"
-msgid "Error opening %s"
+msgid "Error opening {0:s}"
 msgstr ""
 
 msgctxt "#13330"
-msgid "Unable to load %s"
+msgid "Unable to load {0:s}"
 msgstr ""
 
 msgctxt "#13331"
@@ -6534,7 +6534,7 @@ msgstr ""
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
 #: xbmc/dialogs/GUIDialogSmartPlaylistRule.cpp
 msgctxt "#13401"
-msgid "Browse for %s"
+msgid "Browse for {0:s}"
 msgstr ""
 
 msgctxt "#13402"
@@ -6560,7 +6560,7 @@ msgid "Picture information"
 msgstr ""
 
 msgctxt "#13407"
-msgid "%s presets"
+msgid "{0:s} presets"
 msgstr ""
 
 msgctxt "#13408"
@@ -6887,19 +6887,19 @@ msgid "Off"
 msgstr ""
 
 msgctxt "#13552"
-msgid "%.1f second"
+msgid "{0:.1f} second"
 msgstr ""
 
 msgctxt "#13553"
-msgid "%.1f seconds"
+msgid "{0:.1f} seconds"
 msgstr ""
 
 msgctxt "#13554"
-msgid "%d Minute"
+msgid "{0:d} Minute"
 msgstr ""
 
 msgctxt "#13555"
-msgid "%d Minutes"
+msgid "{0:d} Minutes"
 msgstr ""
 
 #. Label of a setting that allows to select the skip step sizes to use for skipping
@@ -7154,39 +7154,39 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14044"
-msgid "%i min"
+msgid "{0:d} min"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14045"
-msgid "%i sec"
+msgid "{0:d} sec"
 msgstr ""
 
 #: system/settings/darwin.xml
 #: system/settings/settings.xml
 msgctxt "#14046"
-msgid "%i ms"
+msgid "{0:d} ms"
 msgstr ""
 
 #: system/settings/settings.xml
 #: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#14047"
-msgid "%i %%"
+msgid "{0:d} %"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14048"
-msgid "%i kbps"
+msgid "{0:d} kbps"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14049"
-msgid "%i kb"
+msgid "{0:d} kb"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14050"
-msgid "%i.0 dB"
+msgid "{0:d}.0 dB"
 msgstr ""
 
 msgctxt "#14051"
@@ -7203,7 +7203,7 @@ msgstr ""
 
 #: xbmc/video/dialogs/GUIDialogAudioSubtitleSettings.cpp
 msgctxt "#14054"
-msgid "%2.1f dB"
+msgid "{0:2.1f} dB"
 msgstr ""
 
 msgctxt "#14055"
@@ -7519,7 +7519,7 @@ msgstr ""
 #. Label to show the currently active/displayed event level in the event log window
 #: xbmc/event/windows/GUIWindowEventLog.cpp
 msgctxt "#14119"
-msgid "Level: %s"
+msgid "Level: {0:s}"
 msgstr ""
 
 #. Label for the option to show/hide higher level events in the event log window
@@ -7906,7 +7906,7 @@ msgstr ""
 #: xbmc/music/MusicDatabase.cpp
 #: xbmc/video/VideoDatabase.cpp
 msgctxt "#15011"
-msgid "%i Items failed to export"
+msgid "{0:d} Items failed to export"
 msgstr ""
 
 #: xbmc/video/VideoDatabase.cpp
@@ -7916,7 +7916,7 @@ msgstr ""
 
 #: xbmc/video/VideoDatabase.cpp
 msgctxt "#15013"
-msgid "What would you like to do with media items from %s"
+msgid "What would you like to do with media items from {0:s}"
 msgstr ""
 
 #: xbmc/video/VideoDatabase.cpp
@@ -8174,13 +8174,13 @@ msgstr ""
 #. Audio DSP process chain indication
 #: xbmc/settings/dialogs/GUIDialogAudioDSPSettings.cpp
 msgctxt "#15082"
-msgid "Resampling to %i Hz"
+msgid "Resampling to {0:d} Hz"
 msgstr ""
 
 #. Audio DSP process chain indication
 #: xbmc/settings/dialogs/GUIDialogAudioDSPSettings.cpp
 msgctxt "#15083"
-msgid "Final resampling to %i Hz"
+msgid "Final resampling to {0:d} Hz"
 msgstr ""
 
 #. Audio DSP process chain indication
@@ -8873,17 +8873,17 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#17997"
-msgid "%i MByte"
+msgid "{0:d} MByte"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#17998"
-msgid "%i hours"
+msgid "{0:d} hours"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#17999"
-msgid "%i days"
+msgid "{0:d} days"
 msgstr ""
 
 #empty strings from id 18000 to 18999
@@ -8983,7 +8983,7 @@ msgstr ""
 
 #. unused?
 msgctxt "#19016"
-msgid "PVR backend %i - %s"
+msgid "PVR backend {0:d} - {1:s}"
 msgstr ""
 
 #. generic label for pvr recordings used in different places
@@ -9138,7 +9138,7 @@ msgstr ""
 #: xbmc/pvr/PVRGUIActions.cpp
 #: xbmc/pvr/PVRManager.cpp
 msgctxt "#19035"
-msgid "%s can't be played. Check the log for more information about this message."
+msgid "{0:s} can't be played. Check the log for more information about this message."
 msgstr ""
 
 #. message box text stating that a recording could not be played.
@@ -9442,7 +9442,7 @@ msgstr ""
 #. default for channels without a name. place holder will be filled with channel number.
 #: xbmc/pvr/channels/PVRChannel.cpp
 msgctxt "#19085"
-msgid "Unknown channel %u"
+msgid "Unknown channel {0:d}"
 msgstr ""
 
 #. Label for "Instant recording action" setting
@@ -9473,25 +9473,25 @@ msgstr ""
 #. Label for "Instant recording action" dialog settings value
 #: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19090"
-msgid "Record the next %d minutes"
+msgid "Record the next {0:d} minutes"
 msgstr ""
 
 #. Label for "Instant recording action" dialog settings value
 #: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19091"
-msgid "Record current show (%s)"
+msgid "Record current show ({0:s})"
 msgstr ""
 
 #. Label for "Instant recording action" dialog settings value
 #: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19092"
-msgid "Record next show (%s)"
+msgid "Record next show ({0:s})"
 msgstr ""
 
 #. Instant recording summary. Expands to "Instant recording: <recording start and end times>", for example "Instant recording: 31/05/2016 from 9:00 to 11:00"
 #: xbmc/pvr/PVRTimerInfoTag.cpp
 msgctxt "#19093"
-msgid "Instant recording: %s"
+msgid "Instant recording: {0:s}"
 msgstr ""
 
 #. error message displayed in case adding a timer failed because no suitable epg-based timer type could be found.
@@ -10093,13 +10093,13 @@ msgstr ""
 #. text for "recording started on <pvr client name>" pvr client addon callback notification
 #: xbmc/addons/binary/interfaces/api1/PVR/AddonCallbacksPVR.cpp
 msgctxt "#19197"
-msgid "Recording started on: %s"
+msgid "Recording started on: {0:s}"
 msgstr ""
 
 #. text for "recording finished on <pvr client name>" pvr client addon callback notification
 #: xbmc/addons/binary/interfaces/api1/PVR/AddonCallbacksPVR.cpp
 msgctxt "#19198"
-msgid "Recording finished on: %s"
+msgid "Recording finished on: {0:s}"
 msgstr ""
 
 #. pvr settings "channel manager" action button label
@@ -10430,7 +10430,7 @@ msgstr ""
 #. for a timer rule, the number of child timers which are currently scheduled to record. For use in "status" fields.
 #: xbmc/pvr/timers/PVRTimerInfoTag.cpp
 msgctxt "#19255"
-msgid "%d scheduled"
+msgid "{0:d} scheduled"
 msgstr ""
 
 #. for a timer rule or timer to indicate this item has completed the intended recordings. For use in "status" fields.
@@ -11255,25 +11255,25 @@ msgstr ""
 #. Text for shutdown confirmation dialog.
 #: xbmc/pvr/PVRManager.cpp
 msgctxt "#19691"
-msgid "PVR is currently recording '%s' on channel '%s'."
+msgid "PVR is currently recording '{0:s}' on channel '{1:s}'."
 msgstr ""
 
 #. Text for shutdown confirmation dialog
 #: xbmc/pvr/PVRManager.cpp
 msgctxt "#19692"
-msgid "PVR will start recording '%s' on channel '%s' in %s."
+msgid "PVR will start recording '{0:s}' on channel '{1:s}' in {2:s}."
 msgstr ""
 
 #. Text for shutdown confirmation dialog
 #: xbmc/pvr/PVRManager.cpp
 msgctxt "#19693"
-msgid "Daily wakeup is due in %s."
+msgid "Daily wakeup is due in {0:s}."
 msgstr ""
 
 #. Text for shutdown confirmation dialog
 #: xbmc/pvr/PVRManager.cpp
 msgctxt "#19694"
-msgid "%d minutes"
+msgid "{0:d} minutes"
 msgstr ""
 
 #. Text for shutdown confirmation dialog
@@ -11423,13 +11423,13 @@ msgstr ""
 
 #: xbmc/LangInfo.cpp
 msgctxt "#20035"
-msgid "Regional (%s)"
+msgid "Regional ({0:s})"
 msgstr ""
 
 #. Used for date/time format settings like "10:00:00 (HH:mm:ss)"
 #: xbmc/LangInfo.cpp
 msgctxt "#20036"
-msgid "%s (%s)"
+msgid "{0:s} ({1:s})"
 msgstr ""
 
 #: addons/skin.estuary/xml/SettingsSystemInfo.xml
@@ -11476,7 +11476,7 @@ msgid "Leave master mode"
 msgstr ""
 
 msgctxt "#20047"
-msgid "Create profile '%s'?"
+msgid "Create profile '{0:s}'?"
 msgstr ""
 
 #: xbmc/profiles/dialogs/GUIDialogProfileSettings.cpp
@@ -11748,7 +11748,7 @@ msgstr ""
 
 #: xbmc/windows/GUIWindowLoginScreen.cpp
 msgctxt "#20112"
-msgid "Last login: %s"
+msgid "Last login: {0:s}"
 msgstr ""
 
 #: xbmc/windows/GUIWindowLoginScreen.cpp
@@ -11758,7 +11758,7 @@ msgstr ""
 
 #: xbmc/windows/GUIWindowLoginScreen.cpp
 msgctxt "#20114"
-msgid "Profile %i / %i"
+msgid "Profile {0:d} / {1:d}"
 msgstr ""
 
 #: xbmc/windows/GUIWindowLoginScreen.cpp
@@ -11859,7 +11859,7 @@ msgid "Unable to mount memory unit"
 msgstr ""
 
 msgctxt "#20139"
-msgid "In port %i, slot %i"
+msgid "In port {0:d}, slot {1:d}"
 msgstr ""
 
 msgctxt "#20140"
@@ -11888,7 +11888,7 @@ msgid "Shutdown interval (in minutes)"
 msgstr ""
 
 msgctxt "#20146"
-msgid "Started, shutdown in %im"
+msgid "Started, shutdown in {0:d}m"
 msgstr ""
 
 msgctxt "#20147"
@@ -11914,7 +11914,7 @@ msgid "Cancel shutdown timer"
 msgstr ""
 
 msgctxt "#20152"
-msgid "Lock preferences for %s"
+msgid "Lock preferences for {0:s}"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogFileBrowser.cpp
@@ -12282,23 +12282,23 @@ msgid "Sort by: ID"
 msgstr ""
 
 msgctxt "#20317"
-msgid "Scanning movies using %s"
+msgid "Scanning movies using {0:s}"
 msgstr ""
 
 msgctxt "#20318"
-msgid "Scanning music videos using %s"
+msgid "Scanning music videos using {0:s}"
 msgstr ""
 
 msgctxt "#20319"
-msgid "Scanning TV shows using %s"
+msgid "Scanning TV shows using {0:s}"
 msgstr ""
 
 msgctxt "#20320"
-msgid "Scanning artists using %s"
+msgid "Scanning artists using {0:s}"
 msgstr ""
 
 msgctxt "#20321"
-msgid "Scanning albums using %s"
+msgid "Scanning albums using {0:s}"
 msgstr ""
 
 #: xbmc/settings/dialogs/GUIDialogContentSettings.cpp
@@ -12320,7 +12320,7 @@ msgid "Calibration reset"
 msgstr ""
 
 msgctxt "#20326"
-msgid "This will reset the calibration values for %s"
+msgid "This will reset the calibration values for {0:s}"
 msgstr ""
 
 msgctxt "#20327"
@@ -12447,7 +12447,7 @@ msgstr ""
 #. Label for showing media rating and votes (combined), for example: "9.1 (87 votes)"
 #: xbmc/GUIInfoManager.cpp
 msgctxt "#20350"
-msgid "%s (%s votes)"
+msgid "{0:s} ({1:s} votes)"
 msgstr ""
 
 #: xbmc/video/jobs/VideoLibraryRefreshingJob.cpp
@@ -12484,7 +12484,7 @@ msgstr ""
 
 #: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeSeasons.cpp
 msgctxt "#20358"
-msgid "Season %i"
+msgid "Season {0:d}"
 msgstr ""
 
 #: xbmc/media/MediaTypes.cpp
@@ -12986,11 +12986,11 @@ msgid "Tags"
 msgstr ""
 
 msgctxt "#20460"
-msgid "Add %s"
+msgid "Add {0:s}"
 msgstr ""
 
 msgctxt "#20461"
-msgid "Remove %s"
+msgid "Remove {0:s}"
 msgstr ""
 
 msgctxt "#20462"
@@ -12998,11 +12998,11 @@ msgid "New tag..."
 msgstr ""
 
 msgctxt "#20463"
-msgid "A tag with the name '%s' already exists."
+msgid "A tag with the name '{0:s}' already exists."
 msgstr ""
 
 msgctxt "#20464"
-msgid "Select %s"
+msgid "Select {0:s}"
 msgstr ""
 
 msgctxt "#20465"
@@ -13014,7 +13014,7 @@ msgid "Select movie set"
 msgstr ""
 
 msgctxt "#20467"
-msgid "No set (remove from %s)"
+msgid "No set (remove from {0:s})"
 msgstr ""
 
 msgctxt "#20468"
@@ -13022,7 +13022,7 @@ msgid "Add movie to a new set"
 msgstr ""
 
 msgctxt "#20469"
-msgid "Keep current set (%s)"
+msgid "Keep current set ({0:s})"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -13070,7 +13070,7 @@ msgstr ""
 
 #: xbmc/peripherals/devices/peripheralcecadapter.cpp
 msgctxt "#21336"
-msgid "Connecting to: %s"
+msgid "Connecting to: {0:s}"
 msgstr ""
 
 #. Used in the add-on browser under "Last updated" when a repository has never been updated
@@ -13086,7 +13086,7 @@ msgstr ""
 
 #: xbmc/addons/GUIDialogAddonInfo.cpp
 msgctxt "#21339"
-msgid "Version %s"
+msgid "Version {0:s}"
 msgstr ""
 
 #: xbmc/addons/GUIDialogAddonInfo.cpp
@@ -13457,7 +13457,7 @@ msgstr ""
 
 #: xbmc/dialogs/GUIDialogSmartPlaylistEditor.cpp
 msgctxt "#21436"
-msgid "%i items"
+msgid "{0:d} items"
 msgstr ""
 
 msgctxt "#21437"
@@ -13465,7 +13465,7 @@ msgid "New smart playlist..."
 msgstr ""
 
 msgctxt "#21438"
-msgid "%c Drive"
+msgid "{0:c} Drive"
 msgstr ""
 
 msgctxt "#21439"
@@ -13615,26 +13615,26 @@ msgstr ""
 #. Filter (media data) from float value to float value
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
 msgctxt "#21467"
-msgid "%.1f to %.1f"
+msgid "{0:.1f} to {1:.1f}"
 msgstr ""
 
 #. Filter (media data) from int value to int value
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
 msgctxt "#21468"
-msgid "%d to %d"
+msgid "{0:d} to {1:d}"
 msgstr ""
 
 #. Filter (media data) from string value to string value
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
 #: xbmc/settings/SettingControl.cpp
 msgctxt "#21469"
-msgid "%s to %s"
+msgid "{0:s} to {1:s}"
 msgstr ""
 
 #. Field (e.g. "Genre") [count]
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
 msgctxt "#21470"
-msgid "%s [%d]"
+msgid "{0:s} [{1:d}]"
 msgstr ""
 
 #. One of the values valid for "Videos -> Library -> Select first unwatched TV show season / episode" with label #21416
@@ -14078,15 +14078,15 @@ msgid "DNS suffix"
 msgstr ""
 
 msgctxt "#22003"
-msgid "%2.3fs"
+msgid "{0:2.3f}s"
 msgstr ""
 
 msgctxt "#22004"
-msgid "Delayed by: %2.3fs"
+msgid "Delayed by: {0:2.3f}s"
 msgstr ""
 
 msgctxt "#22005"
-msgid "Ahead by: %2.3fs"
+msgid "Ahead by: {0:2.3f}s"
 msgstr ""
 
 msgctxt "#22006"
@@ -14230,11 +14230,11 @@ msgid "Activate teletext"
 msgstr ""
 
 msgctxt "#23051"
-msgid "Part %i"
+msgid "Part {0:d}"
 msgstr ""
 
 msgctxt "#23052"
-msgid "Buffering %i bytes"
+msgid "Buffering {0:d} bytes"
 msgstr ""
 
 msgctxt "#23053"
@@ -14489,7 +14489,7 @@ msgstr ""
 
 #: xbmc/addons/GUIViewStateAddonBrowser.cpp
 msgctxt "#24042"
-msgid "Downloading %i%%"
+msgid "Downloading {0:d}%"
 msgstr ""
 
 #: xbmc/addons/GUIViewStateAddonBrowser.cpp
@@ -14508,7 +14508,7 @@ msgstr ""
 
 #: xbmc/addons/GUIDialogAddonInfo.cpp
 msgctxt "#24046"
-msgid "%s is used by the following installed add-on(s)"
+msgid "{0:s} is used by the following installed add-on(s)"
 msgstr ""
 
 #: xbmc\addons\GUIDialogAddonInfo.cpp
@@ -14559,13 +14559,13 @@ msgstr ""
 #. Used in the Add-on Manager to specify last update time
 #: xbmc/addons/GUIViewStateAddonBrowser.cpp
 msgctxt "#24056"
-msgid "Last updated %s"
+msgid "Last updated {0:s}"
 msgstr ""
 
 #. Used as a title in the progress dialog when installing an add-on
 #: xbmc/addons/AddonInstaller.cpp
 msgctxt "#24057"
-msgid "Installing %s..."
+msgid "Installing {0:s}..."
 msgstr ""
 
 #. Used as a text in the progress dialog when installing an add-on
@@ -14746,10 +14746,10 @@ msgctxt "#24092"
 msgid "Checking for add-on updates"
 msgstr ""
 
-#. Used as a text in the progress dialog when checking for add-on updates. %s contains repository name
+#. Used as a text in the progress dialog when checking for add-on updates. {0:s} contains repository name
 #: xbmc/addons/Repository.cpp
 msgctxt "#24093"
-msgid "Checking %s..."
+msgid "Checking {0:s}..."
 msgstr ""
 
 #: xbmc/addons/AddonInstaller.cpp
@@ -14825,7 +14825,7 @@ msgstr ""
 
 #: xbmc/dialogs/GUIDialogSubtitles.cpp
 msgctxt "#24108"
-msgid "%d subtitles found"
+msgid "{0:d} subtitles found"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogSubtitles.cpp
@@ -15009,13 +15009,13 @@ msgstr ""
 #. The dependency on <addon id> version <addon version> could not be satisfied.
 #: xbmc/addons/AddonInstaller.cpp
 msgctxt "#24142"
-msgid "The dependency on %s version %s could not be satisfied."
+msgid "The dependency on {0:s} version {1:s} could not be satisfied."
 msgstr ""
 
 #. Installing the addon from zip file located at <path to zip file> failed due to an invalid structure.
 #: xbmc/addons/AddonInstaller.cpp
 msgctxt "#24143"
-msgid "Installing the Add-on from zip file located at %s failed due to an invalid structure."
+msgid "Installing the Add-on from zip file located at {0:s} failed due to an invalid structure."
 msgstr ""
 
 #. Used as an event log description for add-ons that have been uninstalled
@@ -15041,7 +15041,7 @@ msgstr ""
 #: xbmc/music/infoscanner/MusicInfoScanner.cpp
 #: xbmc/video/VideoInfoScanner.cpp
 msgctxt "#24147"
-msgid "Failed to scan %s: %s"
+msgid "Failed to scan {0:s}: {1:s}"
 msgstr ""
 
 msgctxt "#24148"
@@ -15049,7 +15049,7 @@ msgid "Incompatible add-ons"
 msgstr ""
 
 msgctxt "#24149"
-msgid "The following add-ons are incompatible with this version of Kodi and have been automatically disabled: %s."
+msgid "The following add-ons are incompatible with this version of Kodi and have been automatically disabled: {0:s}."
 msgstr ""
 
 #. Progress text on splash screen
@@ -15142,12 +15142,12 @@ msgstr ""
 
 #: xbmc/filesystem/BlurayDirectory.cpp
 msgctxt "#25004"
-msgid "Play main title: %d"
+msgid "Play main title: {0:d}"
 msgstr ""
 
 #: xbmc/filesystem/BlurayDirectory.cpp
 msgctxt "#25005"
-msgid "Title: %d"
+msgid "Title: {0:d}"
 msgstr ""
 
 #: xbmc/video/windows/GUIWindowVideoBase.cpp
@@ -15157,7 +15157,7 @@ msgstr ""
 
 #: xbmc/filesystem/BlurayDirectory.cpp
 msgctxt "#25007"
-msgid "Chapters: %u - duration: %s"
+msgid "Chapters: {0:d} - duration: {1:s}"
 msgstr ""
 
 #: xbmc/cores/VideoPlayer/VideoPlayer.cpp
@@ -15172,7 +15172,7 @@ msgstr ""
 
 #: xbmc/video/dialogs/GUIDialogVideoBookmarks.cpp
 msgctxt "#25010"
-msgid "Chapter %u"
+msgid "Chapter {0:d}"
 msgstr ""
 
 #: xbmc/cores/VideoPlayer/VideoPlayer.cpp
@@ -15863,7 +15863,7 @@ msgid "Translate text"
 msgstr ""
 
 msgctxt "#33033"
-msgid "Map list %s category"
+msgid "Map list {0:s} category"
 msgstr ""
 
 msgctxt "#33034"
@@ -15885,7 +15885,7 @@ msgid "Weekend"
 msgstr ""
 
 msgctxt "#33038"
-msgid "%s day"
+msgid "{0:s} day"
 msgstr ""
 
 #empty string with id 33039
@@ -15893,7 +15893,7 @@ msgstr ""
 #. Used in the media source dialog. Will result in "HDHomerun Devices"
 #: dialogs/GUIDialogMediaSource.cpp
 msgctxt "#33040"
-msgid "%s devices"
+msgid "{0:s} devices"
 msgstr ""
 
 #empty strings from id 33041 to 33048
@@ -16435,22 +16435,22 @@ msgstr ""
 
 #empty string with id 35013
 
-#. Help text of the button to fix the bug where buttons are skipped in the controller dialog. %s - list of disabled buttons and axes
+#. Help text of the button to fix the bug where buttons are skipped in the controller dialog. {0:s} - list of disabled buttons and axes
 #: xbmc/games/controllers/dialogs/GUIDialogButtonCapture.cpp
 msgctxt "#35014"
-msgid "Some controllers have buttons and axes that interfere with mapping. Press these now to disable them:[CR]%s"
+msgid "Some controllers have buttons and axes that interfere with mapping. Press these now to disable them:[CR]{0:s}"
 msgstr ""
 
-#. Name of a controller button, e.g. "Button 1". %d - button index
+#. Name of a controller button, e.g. Button 1. {0:d} - button index
 #: xbmc/input/joysticks/JoystickTranslator.cpp
 msgctxt "#35015"
-msgid "Button %d"
+msgid "Button {0:d}"
 msgstr ""
 
-#. Name of a controller axis, e.g. "Axis 2". %d - axis index
+#. Name of a controller axis, e.g. Axis 2. {0:d} - axis index
 #: xbmc/input/joysticks/JoystickTranslator.cpp
 msgctxt "#35016"
-msgid "Axis %d"
+msgid "Axis {0:d}"
 msgstr ""
 
 #. Error dialog title when the controller dialog is opened but peripheral add-ons are disabled
@@ -16472,10 +16472,10 @@ msgctxt "#35019"
 msgid "Ignore input"
 msgstr ""
 
-#. Help text of the dialog to detect analog buttons on controllers. %s - list of detected axes
+#. Help text of the dialog to detect analog buttons on controllers. {0:s} - list of detected axes
 #: xbmc/games/controllers/dialogs/GUIDialogAxisDetection.cpp
 msgctxt "#35020"
-msgid "Press all analog buttons now to detect them:[CR][CR]%s"
+msgid "Press all analog buttons now to detect them:[CR][CR]{0:s}"
 msgstr ""
 
 #empty strings from id 35021 to 35048
@@ -16617,64 +16617,64 @@ msgctxt "#35089"
 msgid "Powers off any controller that supports it on exit."
 msgstr ""
 
-#. Button prompt without timeout. %s - button name
+#. Button prompt without timeout. {0:s} - button name
 #: xbmc/games/controllers/guicontrols/GUIScalarFeatureButton.cpp
 msgctxt "#35090"
-msgid "Press %s"
+msgid "Press {0:s}"
 msgstr ""
 
-#. Button prompt with timeout. %s - button name, %d - seconds left in prompt
+#. Button prompt with timeout. {0:s} - button name, {1:d} - seconds left in prompt
 #: xbmc/games/controllers/guicontrols/GUIScalarFeatureButton.cpp
 msgctxt "#35091"
-msgid "Press %s (%d)"
+msgid "Press {0:s} ({1:d})"
 msgstr ""
 
-#. Analog stick up prompt without timeout. %s - analog stick name
+#. Analog stick up prompt without timeout. {0:s} - analog stick name
 #: xbmc/games/controllers/guicontrols/GUIAnalogStickButton.cpp
 msgctxt "#35092"
-msgid "Move %s up"
+msgid "Move {0:s} up"
 msgstr ""
 
-#. Analog stick up prompt with timeout. %s - analog stick name, %d - seconds left in prompt
+#. Analog stick up prompt with timeout. {0:s} - analog stick name, {1:d} - seconds left in prompt
 #: xbmc/games/controllers/guicontrols/GUIAnalogStickButton.cpp
 msgctxt "#35093"
-msgid "Move %s up (%d)"
+msgid "Move {0:s} up ({1:d})"
 msgstr ""
 
-#. Analog stick down prompt without timeout. %s - analog stick name
+#. Analog stick down prompt without timeout. {0:s} - analog stick name
 #: xbmc/games/controllers/guicontrols/GUIAnalogStickButton.cpp
 msgctxt "#35094"
-msgid "Move %s down"
+msgid "Move {0:s} down"
 msgstr ""
 
-#. Analog stick down prompt with timeout. %s - analog stick name, %d - seconds left in prompt
+#. Analog stick down prompt with timeout. {0:s} - analog stick name, {1:d} - seconds left in prompt
 #: xbmc/games/controllers/guicontrols/GUIAnalogStickButton.cpp
 msgctxt "#35095"
-msgid "Move %s down (%d)"
+msgid "Move {0:s} down ({1:d})"
 msgstr ""
 
-#. Analog stick right prompt without timeout. %s - analog stick name
+#. Analog stick right prompt without timeout. {0:s} - analog stick name
 #: xbmc/games/controllers/guicontrols/GUIAnalogStickButton.cpp
 msgctxt "#35096"
-msgid "Move %s right"
+msgid "Move {0:s} right"
 msgstr ""
 
-#. Analog stick right prompt with timeout. %s - analog stick name, %d - seconds left in prompt
+#. Analog stick right prompt with timeout. {0:s} - analog stick name, {1:d} - seconds left in prompt
 #: xbmc/games/controllers/guicontrols/GUIAnalogStickButton.cpp
 msgctxt "#35097"
-msgid "Move %s right (%d)"
+msgid "Move {0:s} right ({1:d})"
 msgstr ""
 
-#. Analog stick left prompt without timeout. %s - analog stick name
+#. Analog stick left prompt without timeout. {0:s} - analog stick name
 #: xbmc/games/controllers/guicontrols/GUIAnalogStickButton.cpp
 msgctxt "#35098"
-msgid "Move %s left"
+msgid "Move {0:s} left"
 msgstr ""
 
-#. Analog stick left prompt with timeout. %s - analog stick name, %d - seconds left in prompt
+#. Analog stick left prompt with timeout. {0:s} - analog stick name, {1:d} - seconds left in prompt
 #: xbmc/games/controllers/guicontrols/GUIAnalogStickButton.cpp
 msgctxt "#35099"
-msgid "Move %s left (%d)"
+msgid "Move {0:s} left ({1:d})"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -16739,7 +16739,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#35156"
-msgid "%i"
+msgid "{0:i}"
 msgstr ""
 
 #. Name of setting to configure a keyboard player's controller configuration
@@ -16856,10 +16856,10 @@ msgctxt "#35210"
 msgid "Failed to play game"
 msgstr ""
 
-#. Error dialog text when the game requires restricted files to play. %s - emulator ID
+#. Error dialog text when the game requires restricted files to play. {0:s} - emulator ID
 #: xbmc/games/addons/GameClient.cpp
 msgctxt "#35211"
-msgid "This game requires the following add-on: %s"
+msgid "This game requires the following add-on: {0:s}"
 msgstr ""
 
 #. Error dialog text when launching a game and no emulators are compatible
@@ -16868,10 +16868,10 @@ msgctxt "#35212"
 msgid "This game isn't compatible with any available emulators."
 msgstr ""
 
-#. Error dialog text when launching a game and the emulator has an internal error. %s - emulator name
+#. Error dialog text when launching a game and the emulator has an internal error. {0:s} - emulator name
 #: xbmc/games/GameClient.cpp
 msgctxt "#35213"
-msgid "The emulator \"%s\" had an internal error."
+msgid "The emulator \"{0:s}\" had an internal error."
 msgstr ""
 
 #. Error dialog text when the game can't be played because it's not on a hard drive or partition
@@ -17167,7 +17167,7 @@ msgstr ""
 
 #: xbmc/peripherals/devices/peripheralcecadapter.cpp
 msgctxt "#36040"
-msgid "Detected version of libCEC interface (%x) is lower than the supported version %x."
+msgid "Detected version of libCEC interface ({0:x}) is lower than the supported version {1:x}."
 msgstr ""
 
 #: xbmc/video/dialogs/guidialogvideoinfo.cpp
@@ -19562,7 +19562,7 @@ msgid "256x256x256"
 msgstr ""
 
 msgctxt "#36597"
-msgid "%1.2f"
+msgid "{0:1.2f}"
 msgstr ""
 
 #. Description of setting with label #36099 "Dither"
@@ -20055,10 +20055,10 @@ msgctxt "#38015"
 msgid "Unlimited"
 msgstr ""
 
-#. Used to format framerate values. %d will be replaced with the according number/integer, like "24 fps", "50 fps"
+#. Used to format framerate values. {0:d} will be replaced with the according number/integer, like "24 fps", "50 fps"
 #: system/settings/settings.xml
 msgctxt "#38016"
-msgid "%d fps"
+msgid "{0:d} fps"
 msgstr ""
 
 #. Description of setting #14111 "Blu-ray region code"
