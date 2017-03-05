@@ -39,7 +39,7 @@
 						</include>
 					</control>
 				</focusedlayout>
-				<itemlayout height="300" width="300" condition="Container.Content(episodes) | Container.Content(videos) | Container.Content(musicvideos)">
+				<itemlayout height="300" width="300" condition="Container.Content(episodes) | Container.Content(videos)">
 					<control type="group">
 						<top>110</top>
 						<include content="InfoWallEpisodeLayout">
@@ -48,7 +48,7 @@
 						</include>
 					</control>
 				</itemlayout>
-				<focusedlayout height="300" width="300" condition="Container.Content(episodes) | Container.Content(videos) | Container.Content(musicvideos)">
+				<focusedlayout height="300" width="300" condition="Container.Content(episodes) | Container.Content(videos)">
 					<control type="group">
 						<depth>DepthContentPopout</depth>
 						<animation effect="zoom" start="100" end="110" time="200" tween="sine" easing="inout" center="160,280">Focus</animation>
@@ -79,7 +79,7 @@
 						</include>
 					</control>
 				</focusedlayout>
-				<itemlayout height="400" width="300" condition="Container.Content(artists) | Container.Content(albums)">
+				<itemlayout height="400" width="300" condition="Container.Content(artists) | Container.Content(albums) | Container.Content(musicvideos)">
 					<control type="group">
 						<top>150</top>
 						<include content="InfoWallMusicLayout">
@@ -87,7 +87,7 @@
 						</include>
 					</control>
 				</itemlayout>
-				<focusedlayout height="400" width="300" condition="Container.Content(artists) | Container.Content(albums)">
+				<focusedlayout height="400" width="300" condition="Container.Content(artists) | Container.Content(albums) | Container.Content(musicvideos)">
 					<control type="group">
 						<depth>DepthContentPopout</depth>
 						<top>150</top>
