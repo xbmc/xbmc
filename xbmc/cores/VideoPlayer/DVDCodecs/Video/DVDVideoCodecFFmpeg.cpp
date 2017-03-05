@@ -706,11 +706,18 @@ int CDVDVideoCodecFFmpeg::Decode(uint8_t* pData, int iSize, double dts, double p
 
   if (!m_started)
   {
-    if (m_iLastKeyframe >= 300 && m_pDecodedFrame->pict_type == AV_PICTURE_TYPE_I)
+    int frames = 300;
+    if (m_dropCtrl.m_state == CDropControl::VALID)
+      frames = 6000000 / m_dropCtrl.m_diffPTS;
+    if (m_iLastKeyframe >= frames && m_pDecodedFrame->pict_type == AV_PICTURE_TYPE_I)
+    {
       m_started = true;
-
-    av_frame_unref(m_pDecodedFrame);
-    return VC_BUFFER;
+    }
+    else
+    {
+      av_frame_unref(m_pDecodedFrame);
+      return VC_BUFFER;
+    }
   }
 
   if (m_pDecodedFrame->interlaced_frame)
