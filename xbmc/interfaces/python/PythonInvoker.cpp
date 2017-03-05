@@ -147,7 +147,12 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
 
   // copy the arguments into a local buffer
   m_argc = arguments.size();
-  m_argv = new char*[m_argc];
+  
+  if(m_argc > 0)
+  {
+    m_argv = new char*[m_argc];
+  }
+
   for (unsigned int i = 0; i < m_argc; i++)
   {
     m_argv[i] = new char[arguments.at(i).length() + 1];
