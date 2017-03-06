@@ -1,6 +1,12 @@
 # -------- Architecture settings ---------
 
-set(ARCH win32)
+if(CMAKE_SIZEOF_VOID_P EQUAL 4)
+  set(ARCH win32)
+  set(SDK_TARGET_ARCH x86)
+elseif(CMAKE_SIZEOF_VOID_P EQUAL 8)
+  set(ARCH x64)
+  set(SDK_TARGET_ARCH x64)
+endif()
 
 
 # -------- Paths (mainly for find_package) ---------
