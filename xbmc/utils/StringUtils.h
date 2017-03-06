@@ -37,6 +37,7 @@
 #include <locale>
 
 #include <fmt/format.h>
+#include <fmt/printf.h>
 
 #include "LangInfo.h"
 #include "XBDateTime.h"
