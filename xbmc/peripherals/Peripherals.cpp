@@ -780,18 +780,28 @@ void CPeripherals::OnUserNotification()
     peripheral->OnUserNotification();
 }
 
-bool CPeripherals::TestFeature(PeripheralFeature feature)
+void CPeripherals::TestFeature(PeripheralFeature feature)
 {
   PeripheralVector peripherals;
   GetPeripheralsWithFeature(peripherals, feature);
 
-  if (!peripherals.empty())
+  for (auto& peripheral : peripherals)
   {
-    for (auto& peripheral : peripherals)
-      peripheral->TestFeature(feature);
-    return true;
+    if (peripheral->TestFeature(feature))
+    {
+      CLog::Log(LOGDEBUG, "PERIPHERALS: Device \"%s\" tested %s feature",
+          peripheral->DeviceName().c_str(), PeripheralTypeTranslator::FeatureToString(feature));
+    }
+    else
+    {
+      if (peripheral->HasFeature(feature))
+        CLog::Log(LOGDEBUG, "PERIPHERALS: Device \"%s\" failed to test %s feature",
+            peripheral->DeviceName().c_str(), PeripheralTypeTranslator::FeatureToString(feature));
+      else
+        CLog::Log(LOGDEBUG, "PERIPHERALS: Device \"%s\" doesn't support %s feature",
+            peripheral->DeviceName().c_str(), PeripheralTypeTranslator::FeatureToString(feature));
+    }
   }
-  return false;
 }
 
 void CPeripherals::PowerOffDevices()
