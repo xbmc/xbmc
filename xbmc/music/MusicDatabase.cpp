@@ -3049,8 +3049,14 @@ bool CMusicDatabase::CleanupArtists()
     m_pDS->exec("INSERT INTO tmp_delartists select idArtist from song_artist");
     m_pDS->exec("INSERT INTO tmp_delartists select idArtist from album_artist");
     m_pDS->exec(PrepareSQL("INSERT INTO tmp_delartists VALUES(%i)", BLANKARTIST_ID));
-    m_pDS->exec("delete from artist where idArtist not in (select idArtist from tmp_delartists)");
+    // tmp_delartists contains duplicate ids, and on a large library with small changes can be very large.
+    // To avoid MySQL hanging or timeout create a table of unique ids with primary key
+    m_pDS->exec("CREATE TEMPORARY TABLE tmp_keep (idArtist INTEGER PRIMARY KEY)");
+    m_pDS->exec("INSERT INTO tmp_keep SELECT DISTINCT idArtist from tmp_delartists");
+    m_pDS->exec("DELETE FROM artist WHERE idArtist NOT IN (SELECT idArtist FROM tmp_keep)");
+    // Tidy up temp tables
     m_pDS->exec("DROP TABLE tmp_delartists");
+    m_pDS->exec("DROP TABLE tmp_keep");
 
     return true;
   }
