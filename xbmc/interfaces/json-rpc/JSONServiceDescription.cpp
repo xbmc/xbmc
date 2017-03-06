@@ -768,8 +768,8 @@ JSONRPC_STATUS JSONSchemaTypeDefinition::Check(const CVariant &value, CVariant &
       // allowed there is no need to check every element
       if (value.size() < items.size() || (value.size() != items.size() && additionalItems.size() == 0))
       {
-        CLog::Log(LOGDEBUG, "JSONRPC: One of the array elements does not match in type %s", name.c_str());
-        errorMessage = StringUtils::Format("%" PRIuS" array elements expected but %d received", items.size(), value.size());
+        CLog::Log(LOGDEBUG, "JSONRPC: One of the array elements does not match in type {0}", name.c_str());
+        errorMessage = StringUtils::Format("{0} array elements expected but {1} received", items.size(), value.size());
         errorData["message"] = errorMessage.c_str();
         return InvalidParams;
       }

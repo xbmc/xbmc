@@ -296,7 +296,7 @@ bool CEdl::ReadEdl(const std::string& strMovie, const float fFramesPerSecond)
 
   if (HasCut() || HasSceneMarker())
   {
-    CLog::Log(LOGDEBUG, "%s - Read %" PRIuS" cuts and %" PRIuS" scene markers in EDL file: %s", __FUNCTION__,
+    CLog::Log(LOGDEBUG, "{0} - Read {1} cuts and {2} scene markers in EDL file: {3}", __FUNCTION__,
               m_vecCuts.size(), m_vecSceneMarkers.size(), edlFilename.c_str());
     return true;
   }
@@ -377,7 +377,7 @@ bool CEdl::ReadComskip(const std::string& strMovie, const float fFramesPerSecond
   }
   else if (HasCut())
   {
-    CLog::Log(LOGDEBUG, "%s - Read %" PRIuS" commercial breaks from Comskip file: %s", __FUNCTION__, m_vecCuts.size(),
+    CLog::Log(LOGDEBUG, "{0} - Read {1} commercial breaks from Comskip file: {2}", __FUNCTION__, m_vecCuts.size(),
               comskipFilename.c_str());
     return true;
   }
@@ -467,7 +467,7 @@ bool CEdl::ReadVideoReDo(const std::string& strMovie)
   }
   else if (HasCut() || HasSceneMarker())
   {
-    CLog::Log(LOGDEBUG, "%s - Read %" PRIuS" cuts and %" PRIuS" scene markers in VideoReDo file: %s", __FUNCTION__,
+    CLog::Log(LOGDEBUG, "{0} - Read {1} cuts and {2} scene markers in VideoReDo file: {3}", __FUNCTION__,
               m_vecCuts.size(), m_vecSceneMarkers.size(), videoReDoFilename.c_str());
     return true;
   }
@@ -550,7 +550,7 @@ bool CEdl::ReadBeyondTV(const std::string& strMovie)
   }
   else if (HasCut())
   {
-    CLog::Log(LOGDEBUG, "%s - Read %" PRIuS" commercial breaks from Beyond TV file: %s", __FUNCTION__, m_vecCuts.size(),
+    CLog::Log(LOGDEBUG, "{0} - Read {1} commercial breaks from Beyond TV file: {2}", __FUNCTION__, m_vecCuts.size(),
               beyondTVFilename.c_str());
     return true;
   }
@@ -818,7 +818,7 @@ std::string CEdl::GetInfo() const
       strInfo += StringUtils::Format("b%i", commBreakCount);
   }
   if (HasSceneMarker())
-    strInfo += StringUtils::Format("s%" PRIuS, m_vecSceneMarkers.size());
+    strInfo += StringUtils::Format("s{0}", m_vecSceneMarkers.size());
 
   return strInfo;
 }

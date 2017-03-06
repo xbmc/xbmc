@@ -353,19 +353,19 @@ bool CEpg::UpdateEntries(const CEpg &epg, bool bStoreInDb /* = true */)
 {
   CSingleLock lock(m_critSection);
 #if EPG_DEBUGGING
-  CLog::Log(LOGDEBUG, "EPG - %s - %" PRIuS" entries in memory before merging", __FUNCTION__, m_tags.size());
+  CLog::Log(LOGDEBUG, "EPG - {0} - {1} entries in memory before merging", __FUNCTION__, m_tags.size());
 #endif
   /* copy over tags */
   for (std::map<CDateTime, CEpgInfoTagPtr>::const_iterator it = epg.m_tags.begin(); it != epg.m_tags.end(); ++it)
     UpdateEntry(it->second, bStoreInDb);
 
 #if EPG_DEBUGGING
-  CLog::Log(LOGDEBUG, "EPG - %s - %" PRIuS" entries in memory after merging and before fixing", __FUNCTION__, m_tags.size());
+  CLog::Log(LOGDEBUG, "EPG - {0} - {1} entries in memory after merging and before fixing", __FUNCTION__, m_tags.size());
 #endif
   FixOverlappingEvents(bStoreInDb);
 
 #if EPG_DEBUGGING
-  CLog::Log(LOGDEBUG, "EPG - %s - %" PRIuS" entries in memory after fixing", __FUNCTION__, m_tags.size());
+  CLog::Log(LOGDEBUG, "EPG - {0} - {1} entries in memory after fixing", __FUNCTION__, m_tags.size());
 #endif
   /* update the last scan time of this table */
   m_lastScanTime = CDateTime::GetCurrentDateTime().GetAsUTCDateTime();

@@ -6556,7 +6556,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
     strLabel = CProfilesManager::GetInstance().GetCurrentProfile().getName();
     break;
   case SYSTEM_PROFILECOUNT:
-    strLabel = StringUtils::Format("%" PRIuS, CProfilesManager::GetInstance().GetNumberOfProfiles());
+    strLabel = StringUtils::Format("{0}", CProfilesManager::GetInstance().GetNumberOfProfiles());
     break;
   case SYSTEM_PROFILEAUTOLOGIN:
     {
