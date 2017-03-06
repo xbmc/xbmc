@@ -915,7 +915,7 @@ long StringUtils::TimeStringToSeconds(const std::string &timeString)
 std::string StringUtils::SecondsToTimeString(long lSeconds, TIME_FORMAT format)
 {
   bool isNegative = lSeconds < 0;
-  lSeconds = abs(lSeconds);
+  lSeconds = std::abs(lSeconds);
   int hh = lSeconds / 3600;
   lSeconds = lSeconds % 3600;
   int mm = lSeconds / 60;
