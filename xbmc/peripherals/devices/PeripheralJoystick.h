@@ -108,6 +108,8 @@ namespace PERIPHERALS
   protected:
     void InitializeDeadzoneFiltering();
 
+    void PowerOff();
+
     struct DriverHandler
     {
       KODI::JOYSTICK::IDriverHandler* handler;

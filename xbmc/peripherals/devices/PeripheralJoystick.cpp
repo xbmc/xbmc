@@ -127,11 +127,23 @@ bool CPeripheralJoystick::TestFeature(PeripheralFeature feature)
   case FEATURE_RUMBLE:
     bSuccess = m_defaultInputHandler.TestRumble();
     break;
+  case FEATURE_POWER_OFF:
+    if (m_supportsPowerOff)
+    {
+      PowerOff();
+      bSuccess = true;
+    }
+    break;
   default:
     break;
   }
 
   return bSuccess;
+}
+
+void CPeripheralJoystick::PowerOff()
+{
+  m_bus->PowerOff(m_strLocation);
 }
 
 void CPeripheralJoystick::RegisterJoystickDriverHandler(IDriverHandler* handler, bool bPromiscuous)

@@ -47,6 +47,7 @@
 #include "FileItem.h"
 #include "bus/virtual/PeripheralBusApplication.h"
 #include "input/joysticks/IButtonMapper.h"
+#include "interfaces/AnnouncementManager.h"
 #include "filesystem/Directory.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
@@ -136,10 +137,13 @@ void CPeripherals::Initialise()
 
   m_bInitialised = true;
   MESSAGING::CApplicationMessenger::GetInstance().RegisterReceiver(this);
+  ANNOUNCEMENT::CAnnouncementManager::GetInstance().AddAnnouncer(this);
 }
 
 void CPeripherals::Clear()
 {
+  ANNOUNCEMENT::CAnnouncementManager::GetInstance().RemoveAnnouncer(this);
+
   m_eventScanner.Stop();
 
   // avoid deadlocks by copying all busses into a temporary variable and destroying them from there
@@ -807,6 +811,11 @@ bool CPeripherals::TestFeature(PeripheralFeature feature)
   return false;
 }
 
+void CPeripherals::PowerOffDevices()
+{
+  TestFeature(FEATURE_POWER_OFF);
+}
+
 void CPeripherals::ProcessEvents(void)
 {
   std::vector<PeripheralBusPtr> busses;
@@ -1005,4 +1014,16 @@ void CPeripherals::OnApplicationMessage(MESSAGING::ThreadMessage* pMsg)
 int CPeripherals::GetMessageMask()
 {
   return TMSG_MASK_PERIPHERALS;
+}
+
+void CPeripherals::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
+{
+  if (flag == ANNOUNCEMENT::Player && strcmp(sender, "xbmc") == 0)
+  {
+    if (strcmp(message, "OnQuit") == 0)
+    {
+      if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_INPUT_CONTROLLERPOWEROFF))
+        PowerOffDevices();
+    }
+  }
 }

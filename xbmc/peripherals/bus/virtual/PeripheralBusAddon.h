@@ -84,6 +84,7 @@ namespace PERIPHERALS
     virtual void         GetDirectory(const std::string &strPath, CFileItemList &items) const override;
     virtual void         ProcessEvents(void) override;
     virtual bool         EnableButtonMapping() override;
+    virtual void         PowerOff(const std::string& strLocation) override;
 
     // implementation of IAddonMgrCallback
     bool RequestRestart(ADDON::AddonPtr addon, bool datachanged) override;
