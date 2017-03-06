@@ -161,8 +161,6 @@ namespace PERIPHERALS
 
     virtual bool FindComPort(std::string &strLocation) { return false; }
 
-    virtual bool IsInitialised(void) const { CSingleLock lock(m_critSection); return m_bInitialised; }
-
     /*!
      * \brief Poll for events
      */
@@ -195,8 +193,6 @@ namespace PERIPHERALS
 
     PeripheralVector           m_peripherals;
     int                        m_iRescanTime;
-    bool                       m_bInitialised;
-    bool                       m_bIsStarted;
     bool                       m_bNeedsPolling; /*!< true when this bus needs to be polled for new devices, false when it uses callbacks to notify this bus of changed */
     CPeripherals&              m_manager;
     const PeripheralBusType    m_type;

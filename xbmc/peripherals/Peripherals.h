@@ -319,8 +319,6 @@ namespace PERIPHERALS
 
     void OnDeviceChanged();
 
-    bool                                 m_bInitialised;
-    bool                                 m_bIsStarted;
 #if !defined(HAVE_LIBCEC)
     bool                                 m_bMissingLibCecWarningDisplayed = false;
 #endif
@@ -328,7 +326,6 @@ namespace PERIPHERALS
     std::vector<PeripheralDeviceMapping> m_mappings;
     CEventScanner                        m_eventScanner;
 	GAME::CPortMapper                    m_portMapper; //! @todo Find me a better place
-    CCriticalSection                     m_critSection;
     CCriticalSection                     m_critSectionBusses;
     CCriticalSection                     m_critSectionMappings;
   };

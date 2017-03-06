@@ -34,8 +34,6 @@ using namespace PERIPHERALS;
 CPeripheralBus::CPeripheralBus(const std::string &threadname, CPeripherals& manager, PeripheralBusType type) :
     CThread(threadname.c_str()),
     m_iRescanTime(PERIPHERAL_DEFAULT_RESCAN_INTERVAL),
-    m_bInitialised(false),
-    m_bIsStarted(false),
     m_bNeedsPolling(true),
     m_manager(manager),
     m_type(type),
@@ -147,8 +145,6 @@ bool CPeripheralBus::ScanForDevices(void)
     bReturn = true;
   }
 
-  CSingleLock lock(m_critSection);
-  m_bInitialised = true;
   return bReturn;
 }
 
@@ -238,22 +234,16 @@ void CPeripheralBus::Process(void)
     if (!m_bStop)
       m_triggerEvent.WaitMSec(m_iRescanTime);
   }
-
-  CSingleLock lock(m_critSection);
-  m_bIsStarted = false;
 }
 
 void CPeripheralBus::Initialise(void)
 {
   bool bNeedsPolling = false;
 
+  if (!IsRunning())
   {
     CSingleLock lock(m_critSection);
-    if (!m_bIsStarted)
-    {
-      m_bIsStarted = true;
-      bNeedsPolling = m_bNeedsPolling;
-    }
+    bNeedsPolling = m_bNeedsPolling;
   }
 
   if (bNeedsPolling)
