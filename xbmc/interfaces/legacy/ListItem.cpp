@@ -399,7 +399,6 @@ namespace XBMCAddon
               throw WrongTypeException("When using \"cast\" or \"castandrole\" you need to supply a list of tuples for the value in the dictionary");
 
             videotag.m_cast.clear();
-            const std::vector<InfoLabelStringOrTuple>& listValue = alt.later();
             for (const auto& castEntry: alt.later())
             {
               // castEntry can be a string meaning it's the actor or it can be a tuple meaning it's the 
@@ -419,7 +418,6 @@ namespace XBMCAddon
             
             videotag.m_artist.clear();
 
-            const std::vector<InfoLabelStringOrTuple>& listValue = alt.later();
             for (const auto& castEntry: alt.later())
             {
               const String& actor = castEntry.which() == first ? castEntry.former() : castEntry.later().first();
