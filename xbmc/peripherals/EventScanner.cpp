@@ -45,6 +45,7 @@ void CEventScanner::Start(void)
 
 void CEventScanner::Stop(void)
 {
+  StopThread(false);
   m_scanEvent.Set();
   StopThread(true);
 }
