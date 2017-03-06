@@ -171,8 +171,11 @@ bool CEGLNativeTypeAmlogic::ProbeResolutions(std::vector<RESOLUTION_INFO> &resol
   RESOLUTION_INFO res;
   for (std::vector<std::string>::const_iterator i = probe_str.begin(); i != probe_str.end(); ++i)
   {
-    if(aml_mode_to_resolution(i->c_str(), &res))
-      resolutions.push_back(res);
+    if (((StringUtils::StartsWith(i->c_str(), "4k2k")) && (aml_support_h264_4k2k() > AML_NO_H264_4K2K)) || !(StringUtils::StartsWith(i->c_str(), "4k2k")))
+    {
+      if (aml_mode_to_resolution(i->c_str(), &res))
+        resolutions.push_back(res);
+    }
   }
   return resolutions.size() > 0;
 
