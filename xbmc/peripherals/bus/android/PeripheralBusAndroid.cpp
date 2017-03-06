@@ -138,11 +138,13 @@ void CPeripheralBusAndroid::ProcessEvents()
       case PERIPHERAL_EVENT_TYPE_DRIVER_BUTTON:
       {
         const bool bPressed = (event.ButtonState() == JOYSTICK_STATE_BUTTON_PRESSED);
+        joystick->OnButtonMotion(event.DriverIndex(), bPressed);
         break;
       }
       case PERIPHERAL_EVENT_TYPE_DRIVER_HAT:
       {
         const JOYSTICK::HAT_STATE state = CPeripheralAddonTranslator::TranslateHatState(event.HatState());
+        joystick->OnHatMotion(event.DriverIndex(), state);
         break;
       }
       case PERIPHERAL_EVENT_TYPE_DRIVER_AXIS:
