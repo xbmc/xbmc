@@ -97,7 +97,6 @@ static const std::string getListOfAddonClassesAsString(XBMCAddon::AddonClass::Re
 
 CPythonInvoker::CPythonInvoker(ILanguageInvocationHandler *invocationHandler)
   : ILanguageInvoker(invocationHandler),
-    m_argc(0), m_argv(NULL),
     m_threadState(NULL), m_stop(false)
 { }
 
@@ -114,12 +113,6 @@ CPythonInvoker::~CPythonInvoker()
   Stop(true);
   pulseGlobalEvent();
 
-  if (m_argv != NULL)
-  {
-    for (unsigned int i = 0; i < m_argc; i++)
-      delete [] m_argv[i];
-    delete [] m_argv;
-  }
   onExecutionFinalized();
 }
 
@@ -146,17 +139,18 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
   m_sourceFile = script;
 
   // copy the arguments into a local buffer
-  m_argc = arguments.size();
+  unsigned int argc = arguments.size();
+  char ** argv = nullptr;
   
-  if(m_argc > 0)
+  if (argc > 0)
   {
-    m_argv = new char*[m_argc];
+    argv = new char*[argc];
   }
 
-  for (unsigned int i = 0; i < m_argc; i++)
+  for (unsigned int i = 0; i < argc; i++)
   {
-    m_argv[i] = new char[arguments.at(i).length() + 1];
-    strcpy(m_argv[i], arguments.at(i).c_str());
+    argv[i] = new char[arguments.at(i).length() + 1];
+    strcpy(argv[i], arguments.at(i).c_str());
   }
 
   CLog::Log(LOGDEBUG, "CPythonInvoker(%d, %s): start processing", GetId(), m_sourceFile.c_str());
@@ -232,8 +226,15 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
   Py_DECREF(sysMod); // release ref to sysMod
 
   // set current directory and python's path.
-  if (m_argv != NULL)
-    PySys_SetArgv(m_argc, m_argv);
+  if (argv != nullptr)
+  {
+    PySys_SetArgv(argc, argv);
+
+    for (unsigned int i = 0; i < argc; i++)
+      delete [] argv[i];
+
+    delete [] argv;
+  }
 
 #ifdef TARGET_WINDOWS
   std::string pyPathUtf8;
