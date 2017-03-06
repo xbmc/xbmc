@@ -174,6 +174,12 @@ namespace PERIPHERALS
     */
     virtual bool EnableButtonMapping() { return false; }
 
+    /*!
+     * \brief Power off the specified device
+     * \param strLocation The device's location
+     */
+    virtual void PowerOff(const std::string& strLocation) { }
+
   protected:
     virtual void Process(void);
     virtual bool ScanForDevices(void);

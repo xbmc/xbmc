@@ -73,20 +73,6 @@ CPeripheralAddon::CPeripheralAddon(ADDON::AddonProps props, bool bProvidesJoysti
 
 CPeripheralAddon::~CPeripheralAddon(void)
 {
-  // delete all peripherals provided by this addon
-  for (const auto& peripheral : m_peripherals)
-  {
-    if (CSettings::GetInstance().GetBool(CSettings::SETTING_INPUT_CONTROLLERPOWEROFF))
-    {
-      // shutdown the joystick if it is supported
-      if (peripheral.second->Type() == PERIPHERAL_JOYSTICK)
-      {
-        std::shared_ptr<CPeripheralJoystick> joystick = std::static_pointer_cast<CPeripheralJoystick>(peripheral.second);
-        if (joystick->SupportsPowerOff())
-          PowerOffJoystick(peripheral.first);
-      }
-    }
-  }
   m_peripherals.clear();
 
   // only clear buttonMaps but don't delete them as they are owned by a CAddonJoystickInputHandling instance
@@ -754,6 +740,9 @@ void CPeripheralAddon::ResetButtonMap(const CPeripheral* device, const std::stri
 void CPeripheralAddon::PowerOffJoystick(unsigned int index)
 {
   if (!HasFeature(FEATURE_JOYSTICK))
+    return;
+
+  if (!SupportsFeature(FEATURE_POWER_OFF))
     return;
 
   try { m_pStruct->PowerOffJoystick(index); }

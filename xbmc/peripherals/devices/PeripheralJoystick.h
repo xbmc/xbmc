@@ -105,6 +105,8 @@ namespace PERIPHERALS
   protected:
     void InitializeDeadzoneFiltering();
 
+    void PowerOff();
+
     struct DriverHandler
     {
       JOYSTICK::IDriverHandler* handler;
