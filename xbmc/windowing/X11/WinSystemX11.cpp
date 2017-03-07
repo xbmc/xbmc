@@ -1066,7 +1066,8 @@ void CWinSystemX11::UpdateCrtc()
                         &posx, &posy, &child);
 
   m_crtc = g_xrandr.GetCrtc(posx+winattr.width/2, posy+winattr.height/2, fps);
-  g_graphicsContext.SetFPS(fps);
+  if (fps)
+    g_graphicsContext.SetFPS(fps);
 }
 
 
