@@ -1219,8 +1219,8 @@ extern "C"
   {
     FILE* file = NULL;
 #if defined(TARGET_LINUX) && !defined(TARGET_ANDROID)
-    if (strcmp(filename, MOUNTED) == 0
-    ||  strcmp(filename, MNTTAB) == 0)
+    if (strcmp(filename, _PATH_MOUNTED) == 0
+    ||  strcmp(filename, _PATH_MNTTAB) == 0)
     {
       CLog::Log(LOGINFO, "%s - something opened the mount file, let's hope it knows what it's doing", __FUNCTION__);
       return fopen(filename, mode);
