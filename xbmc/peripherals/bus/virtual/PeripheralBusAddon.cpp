@@ -57,7 +57,7 @@ CPeripheralBusAddon::~CPeripheralBusAddon()
 
   // destroy any (loaded) addons
   for (const auto& addon : m_addons)
-    addon->Destroy();
+    addon->DestroyAddon();
 
   m_failedAddons.clear();
   m_addons.clear();
@@ -509,7 +509,7 @@ void CPeripheralBusAddon::UpdateAddons(void)
     if (erased)
     {
       CSingleExit exit(m_critSection);
-      erased->Destroy();
+      erased->DestroyAddon();
     }
   }
 }

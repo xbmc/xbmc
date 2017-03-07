@@ -79,12 +79,7 @@ CPeripheralAddon::CPeripheralAddon(ADDON::AddonProps props, bool bProvidesJoysti
 
 CPeripheralAddon::~CPeripheralAddon(void)
 {
-  m_peripherals.clear();
-
-  // only clear buttonMaps but don't delete them as they are owned by a CAddonJoystickInputHandling instance
-  m_buttonMaps.clear();
-
-  Destroy();
+  DestroyAddon();
 }
 
 void CPeripheralAddon::ResetProperties(void)
@@ -113,6 +108,8 @@ ADDON::AddonPtr CPeripheralAddon::GetRunningInstance(void) const
 
 ADDON_STATUS CPeripheralAddon::CreateAddon(void)
 {
+  CExclusiveLock lock(m_dllSection);
+
   // Reset all properties to defaults
   ResetProperties();
 
@@ -133,6 +130,25 @@ ADDON_STATUS CPeripheralAddon::CreateAddon(void)
   }
 
   return status;
+}
+
+void CPeripheralAddon::DestroyAddon()
+{
+  {
+    CSingleLock lock(m_critSection);
+    m_peripherals.clear();
+  }
+
+  {
+    CSingleLock lock(m_buttonMapMutex);
+    // only clear buttonMaps but don't delete them as they are owned by a CAddonJoystickInputHandling instance
+    m_buttonMaps.clear();
+  }
+
+  {
+    CExclusiveLock lock(m_dllSection);
+    Destroy();
+  }
 }
 
 bool CPeripheralAddon::GetAddonProperties(void)
@@ -367,7 +383,13 @@ bool CPeripheralAddon::PerformDeviceScan(PeripheralScanResults &results)
   PERIPHERAL_INFO*  pScanResults;
   PERIPHERAL_ERROR  retVal;
 
+  CSharedLock lock(m_dllSection);
+
+  if (!DllLoaded())
+    return false;
+
   LogError(retVal = m_struct.PerformDeviceScan(&peripheralCount, &pScanResults), "PerformDeviceScan()");
+
   if (retVal == PERIPHERAL_NO_ERROR)
   {
     for (unsigned int i = 0; i < peripheralCount; i++)
@@ -407,6 +429,11 @@ bool CPeripheralAddon::PerformDeviceScan(PeripheralScanResults &results)
 bool CPeripheralAddon::ProcessEvents(void)
 {
   if (!m_bProvidesJoysticks)
+    return false;
+
+  CSharedLock lock(m_dllSection);
+
+  if (!DllLoaded())
     return false;
 
   PERIPHERAL_ERROR retVal;
@@ -481,6 +508,14 @@ bool CPeripheralAddon::ProcessEvents(void)
 
 bool CPeripheralAddon::SendRumbleEvent(unsigned int peripheralIndex, unsigned int driverIndex, float magnitude)
 {
+  if (!m_bProvidesJoysticks)
+    return false;
+
+  CSharedLock lock(m_dllSection);
+
+  if (!DllLoaded())
+    return false;
+
   PERIPHERAL_EVENT eventStruct = { };
 
   eventStruct.peripheral_index = peripheralIndex;
@@ -494,6 +529,11 @@ bool CPeripheralAddon::SendRumbleEvent(unsigned int peripheralIndex, unsigned in
 bool CPeripheralAddon::GetJoystickProperties(unsigned int index, CPeripheralJoystick& joystick)
 {
   if (!m_bProvidesJoysticks)
+    return false;
+
+  CSharedLock lock(m_dllSection);
+
+  if (!DllLoaded())
     return false;
 
   PERIPHERAL_ERROR retVal;
@@ -519,6 +559,11 @@ bool CPeripheralAddon::GetFeatures(const CPeripheral* device,
                                    FeatureMap& features)
 {
   if (!m_bProvidesButtonMaps)
+    return false;
+
+  CSharedLock lock(m_dllSection);
+
+  if (!DllLoaded())
     return false;
 
   PERIPHERAL_ERROR retVal;
@@ -561,6 +606,11 @@ bool CPeripheralAddon::MapFeature(const CPeripheral* device,
   if (!m_bProvidesButtonMaps)
     return false;
 
+  CSharedLock lock(m_dllSection);
+
+  if (!DllLoaded())
+    return false;
+
   PERIPHERAL_ERROR retVal;
 
   ADDON::Joystick joystickInfo;
@@ -584,6 +634,11 @@ bool CPeripheralAddon::MapFeature(const CPeripheral* device,
 bool CPeripheralAddon::GetIgnoredPrimitives(const CPeripheral* device, PrimitiveVector& primitives)
 {
   if (!m_bProvidesButtonMaps)
+    return false;
+
+  CSharedLock lock(m_dllSection);
+
+  if (!DllLoaded())
     return false;
 
   PERIPHERAL_ERROR retVal;
@@ -621,6 +676,11 @@ bool CPeripheralAddon::SetIgnoredPrimitives(const CPeripheral* device, const Pri
   if (!m_bProvidesButtonMaps)
     return false;
 
+  CSharedLock lock(m_dllSection);
+
+  if (!DllLoaded())
+    return false;
+
   PERIPHERAL_ERROR retVal;
 
   ADDON::Joystick joystickInfo;
@@ -646,6 +706,11 @@ void CPeripheralAddon::SaveButtonMap(const CPeripheral* device)
   if (!m_bProvidesButtonMaps)
     return;
 
+  CSharedLock lock(m_dllSection);
+
+  if (!DllLoaded())
+    return;
+
   ADDON::Joystick joystickInfo;
   GetJoystickInfo(device, joystickInfo);
 
@@ -663,6 +728,11 @@ void CPeripheralAddon::SaveButtonMap(const CPeripheral* device)
 void CPeripheralAddon::RevertButtonMap(const CPeripheral* device)
 {
   if (!m_bProvidesButtonMaps)
+    return;
+
+  CSharedLock lock(m_dllSection);
+
+  if (!DllLoaded())
     return;
 
   ADDON::Joystick joystickInfo;
@@ -701,6 +771,11 @@ void CPeripheralAddon::PowerOffJoystick(unsigned int index)
     return;
 
   if (!SupportsFeature(FEATURE_POWER_OFF))
+    return;
+
+  CSharedLock lock(m_dllSection);
+
+  if (!DllLoaded())
     return;
 
   m_struct.PowerOffJoystick(index);
