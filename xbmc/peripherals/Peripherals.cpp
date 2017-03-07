@@ -76,6 +76,8 @@ using namespace PERIPHERALS;
 using namespace XFILE;
 
 CPeripherals::CPeripherals() :
+  m_bInitialised(false),
+  m_bIsStarted(false),
   m_eventScanner(this)
 {
   RegisterObserver(&m_portMapper);
