@@ -9,14 +9,10 @@ endif
 
 ifeq ($(NATIVEPLATFORM),)
   PLATFORM = native
-  EXTRA_CONFIGURE = --enable-static
 else
   PLATFORM = $(NATIVEPLATFORM)
 endif
 
-ifeq ($(NATIVE_OS), linux)
-  EXTRA_CONFIGURE = --enable-static
-endif
 ifeq ($(NATIVE_OS), android)
   EXTRA_CONFIGURE = --enable-static
 endif
