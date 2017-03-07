@@ -1743,7 +1743,15 @@ void CPeripheralCecAdapter::ProcessActivateSource(void)
   }
 
   if (bActivate)
+  {
+   // devices to wake are set
+    cec_logical_addresses tvOnly;
+    tvOnly.Clear(); tvOnly.Set(CECDEVICE_TV);
+    if (!m_configuration.wakeDevices.IsEmpty() && (m_configuration.wakeDevices != tvOnly || m_configuration.bActivateSource == 0))
+      m_cecAdapter->PowerOnDevices(CECDEVICE_BROADCAST);
+
     m_cecAdapter->SetActiveSource();
+  }
 }
 
 void CPeripheralCecAdapter::StandbyDevices(void)
