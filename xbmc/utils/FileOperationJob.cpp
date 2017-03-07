@@ -266,6 +266,7 @@ bool CFileOperationJob::CFileOperation::ExecuteOperation(CFileOperationJob *base
     return false;
 
   base->SetText(base->GetCurrentFile());
+  base->SetProgress((float)current);
 
   DataHolder data = {base, current, opWeight};
 
@@ -340,6 +341,7 @@ bool CFileOperationJob::CFileOperation::OnFileCallback(void* pContext, int iperc
                               data->base->GetCurrentFile().c_str(),
                               data->base->GetAverageSpeed().c_str());
   data->base->SetText(line);
+  data->base->SetProgress((float)current);
   return !data->base->ShouldCancel((unsigned)current, 100);
 }
 
