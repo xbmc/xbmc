@@ -237,7 +237,7 @@ void CPlayListPLS::Save(const std::string& strFileName) const
     write += StringUtils::Format("Length%i=%u\n", i + 1, item->GetMusicInfoTag()->GetDuration() / 1000 );
   }
 
-  write += StringUtils::Format("NumberOfEntries=%" PRIuS"\n", m_vecItems.size());
+  write += StringUtils::Format("NumberOfEntries={0}\n", m_vecItems.size());
   write += StringUtils::Format("Version=2\n");
   file.Write(write.c_str(), write.size());
   file.Close();

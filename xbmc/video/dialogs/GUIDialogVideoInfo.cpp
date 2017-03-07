@@ -1771,7 +1771,7 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const CFileItemPtr &item, const
 
     for (size_t i = 0; i < thumbs.size(); i++)
     {
-      CFileItemPtr item(new CFileItem(StringUtils::Format("thumb://Remote%" PRIuS, i), false));
+      CFileItemPtr item(new CFileItem(StringUtils::Format("thumb://Remote{0}", i), false));
       item->SetArt("thumb", thumbs[i]);
       item->SetIconImage("DefaultPicture.png");
       item->SetLabel(g_localizeStrings.Get(13513));

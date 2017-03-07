@@ -114,9 +114,9 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url,
     else
       item->GetMusicInfoTag()->SetArtist(chapauthor);
 
-    item->SetLabel(StringUtils::Format("%02" PRIdS ". %s - %s",i+1,
+    item->SetLabel(StringUtils::Format("{0:02}. {1} - {2}",i+1,
                    item->GetMusicInfoTag()->GetAlbum().c_str(),
-                   item->GetMusicInfoTag()->GetTitle().c_str()));
+                   item->GetMusicInfoTag()->GetTitle()).c_str());
     item->m_lStartOffset = m_fctx->chapters[i]->start*av_q2d(m_fctx->chapters[i]->time_base)*75;
     item->m_lEndOffset = m_fctx->chapters[i]->end*av_q2d(m_fctx->chapters[i]->time_base);
     int compare = m_fctx->duration / (AV_TIME_BASE);
