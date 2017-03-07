@@ -74,6 +74,12 @@
 				</RegExp>
 				<expression>IMDb</expression>
 			</RegExp>
+			<RegExp input="$INFO[RatingS]" output="&lt;chain function=&quot;GetIMDBTOP250ById&quot;&gt;$$6&lt;/chain&gt;" dest="5+">
+				<RegExp input="$$1" output="\1" dest="6">
+					<expression noclean="1">&quot;id&quot;:[0-9]*,&quot;imdb_id&quot;:&quot;([^&quot;]*)</expression>
+				</RegExp>
+				<expression>IMDb</expression>
+			</RegExp>
 			<RegExp input="$INFO[RatingS]" output="&lt;chain function=&quot;GetTMDBRatingByIdChain&quot;&gt;$$2&lt;/chain&gt;" dest="5+">
 				<expression>TMDb</expression>
 			</RegExp>
