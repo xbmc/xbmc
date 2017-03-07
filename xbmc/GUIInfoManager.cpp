@@ -10078,7 +10078,7 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
   case LISTITEM_FOLDERNAME:
   case LISTITEM_PATH:
     {
-      std::string path;
+      std::string path(item->GetPath());
       if (item->IsMusicDb() && item->HasMusicInfoTag())
         path = URIUtils::GetDirectory(item->GetMusicInfoTag()->GetURL());
       else if (item->IsVideoDb() && item->HasVideoInfoTag())
@@ -10088,8 +10088,6 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
         else
           URIUtils::GetParentPath(item->GetVideoInfoTag()->m_strFileNameAndPath, path);
       }
-      else
-        URIUtils::GetParentPath(item->GetPath(), path);
       path = CURL(path).GetWithoutUserDetails();
       if (info==LISTITEM_FOLDERNAME)
       {
