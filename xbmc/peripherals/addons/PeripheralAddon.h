@@ -26,6 +26,7 @@
 #include "input/joysticks/JoystickTypes.h"
 #include "peripherals/PeripheralTypes.h"
 #include "threads/CriticalSection.h"
+#include "threads/SharedSection.h"
 
 #include <map>
 #include <memory>
@@ -61,6 +62,11 @@ namespace PERIPHERALS
      * @brief Initialise the instance of this add-on
      */
     ADDON_STATUS CreateAddon(void);
+
+    /*!
+     * \brief Deinitialize the instance of this add-on
+     */
+    void DestroyAddon();
 
     bool         Register(unsigned int peripheralIndex, const PeripheralPtr& peripheral);
     void         UnregisterRemovedDevices(const PeripheralScanResults &results, PeripheralVector& removedPeripherals);
@@ -159,5 +165,7 @@ namespace PERIPHERALS
 
     /* @brief Thread synchronization */
     CCriticalSection    m_critSection;
+
+    CSharedSection      m_dllSection;
   };
 }
