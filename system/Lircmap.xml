@@ -87,6 +87,7 @@
 		<myvideo>KEY_VIDEO</myvideo>
 		<mymusic>KEY_AUDIO</mymusic>
 		<livetv>LiveTV</livetv>
+		<livetv>KEY_TV</livetv>
 		<guide>KEY_EPG</guide>
 		<one>KEY_1</one>
 		<two>KEY_2</two>
@@ -105,6 +106,9 @@
 		<menu>KEY_DVD</menu>
 		<clear>KEY_CLEAR</clear>
 		<enter>KEY_ENTER</enter>
+		<star>KEY_NUMERIC_STAR</star>
+		<hash>KEY_NUMERIC_POUND</hash>
+		<info>KEY_INFO</info>
 	</remote>
 	
 	<remote device="XboxDVDDongle">
