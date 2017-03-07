@@ -20,6 +20,7 @@
  */
 
 #include <emmintrin.h>
+#include <smmintrin.h>
 
 // gpu_memcpy is a memcpy style function that copied data very fast from a
 // GPU tiled memory (write back)
