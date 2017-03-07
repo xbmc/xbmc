@@ -139,7 +139,8 @@ void CMusicInfoScanner::Process()
       bool commit = true;
       for (std::set<std::string>::const_iterator it = m_pathsToScan.begin(); it != m_pathsToScan.end(); ++it)
       {
-        if (!CDirectory::Exists(*it) && !m_bClean)
+        CURL url(*it);
+        if ((!CDirectory::Exists(*it) && url.GetProtocol() != "plugin") && !m_bClean)
         {
           /*
            * Note that this will skip scanning (if m_bClean is disabled) if the directory really
