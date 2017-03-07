@@ -28,6 +28,7 @@
 #include "guilib/GraphicContext.h"
 #include "platform/win32/dxerr.h"
 #include "utils/StringUtils.h"
+#include "utils/CharsetConverter.h"
 
 void CVideoSyncD3D::OnLostDisplay()
 {
@@ -150,6 +151,9 @@ std::string CVideoSyncD3D::GetErrorDescription(HRESULT hr)
   DXGetErrorDescription(hr, buff, 1024);
   std::wstring error(DXGetErrorString(hr));
   std::wstring descr(buff);
-  return StringUtils::Format("%ls: %ls", error.c_str(), descr.c_str());
+  std::wstring errMsgW = StringUtils::Format(L"%s: %s", error.c_str(), descr.c_str());
+  std::string errMsg;
+  g_charsetConverter.wToUTF8(errMsgW, errMsg);
+  return errMsg;
 }
 

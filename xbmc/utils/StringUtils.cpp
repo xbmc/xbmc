@@ -217,15 +217,6 @@ static const wchar_t unicode_uppers[] = {
   (wchar_t)0xFF32, (wchar_t)0xFF33, (wchar_t)0xFF34, (wchar_t)0xFF35, (wchar_t)0xFF36, (wchar_t)0xFF37, (wchar_t)0xFF38, (wchar_t)0xFF39, (wchar_t)0xFF3A
 };
 
-std::string StringUtils::Format(const char *fmt, ...)
-{
-  va_list args;
-  va_start(args, fmt);
-  std::string str = FormatV(fmt, args);
-  va_end(args);
-
-  return str;
-}
 
 std::string StringUtils::FormatV(const char *fmt, va_list args)
 {
@@ -269,16 +260,6 @@ std::string StringUtils::FormatV(const char *fmt, va_list args)
   }
 
   return ""; // unreachable
-}
-
-std::wstring StringUtils::Format(const wchar_t *fmt, ...)
-{
-  va_list args;
-  va_start(args, fmt);
-  std::wstring str = FormatV(fmt, args);
-  va_end(args);
-  
-  return str;
 }
 
 std::wstring StringUtils::FormatV(const wchar_t *fmt, va_list args)

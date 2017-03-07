@@ -185,11 +185,11 @@
 			<include>PVRSideBar</include>
 		</control>
 		<control type="label" id="29">
-			<font>-</font>
+			<font></font>
 			<include>HiddenObject</include>
 		</control>
 		<control type="label" id="30">
-			<font>-</font>
+			<font></font>
 			<include>HiddenObject</include>
 		</control>
 	</controls>

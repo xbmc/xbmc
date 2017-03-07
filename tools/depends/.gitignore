@@ -12,6 +12,7 @@
 
 /target/*/.patched-*
 /target/*/.installed-*
+/target/*/native/*
 /target/*/x86/*
 /target/*/x86_64-linux-gnu/*
 /target/*/armeabi-v7a/*
@@ -47,3 +48,4 @@ config.site.native
 /tools/depends/target/ffmpeg/ffmpeg-install/
 /tools/depends/target/Toolchain_binaddons.cmake
 /tools/depends/target/config-binaddons.site
+/target/libfmt/fmt-*.tar.gz

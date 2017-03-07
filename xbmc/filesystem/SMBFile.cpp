@@ -28,7 +28,6 @@
 #include "ServiceBroker.h"
 #include "SMBDirectory.h"
 #include <libsmbclient.h>
-#include "filesystem/SpecialProtocol.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
@@ -99,12 +98,12 @@ void CSMB::Init()
     // http://us1.samba.org/samba/docs/man/manpages-3/libsmbclient.7.html
     // http://us1.samba.org/samba/docs/man/manpages-3/smb.conf.5.html
     char smb_conf[MAX_PATH];
-    std::string home = CSpecialProtocol::TranslatePath("special://home");
+    std::string home(getenv("HOME"));
     URIUtils::RemoveSlashAtEnd(home);
     snprintf(smb_conf, sizeof(smb_conf), "%s/.smb", home.c_str());
     if (mkdir(smb_conf, 0755) == 0)
     {
-      snprintf(smb_conf, sizeof(smb_conf), "%s/.smb/smb.conf", home.c_str());
+      snprintf(smb_conf, sizeof(smb_conf), "%s/.smb/smb.conf", getenv("HOME"));
       FILE* f = fopen(smb_conf, "w");
       if (f != NULL)
       {
@@ -120,7 +119,7 @@ void CSMB::Init()
         fprintf(f, "\tlanman auth = yes\n");
 
         fprintf(f, "\tsocket options = TCP_NODELAY IPTOS_LOWDELAY SO_RCVBUF=65536 SO_SNDBUF=65536\n");      
-        fprintf(f, "\tlock directory = %s/.smb/\n", home.c_str());
+        fprintf(f, "\tlock directory = %s/.smb/\n", getenv("HOME"));
 
         // set wins server if there's one. name resolve order defaults to 'lmhosts host wins bcast'.
         // if no WINS server has been specified the wins method will be ignored.

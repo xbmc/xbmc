@@ -103,7 +103,7 @@ list(APPEND DEPLIBS ${CMAKE_THREAD_LIBS_INIT})
 
 # Required dependencies
 set(required_deps Sqlite3 FreeType PCRE Cpluff LibDvd
-                  TinyXML Yajl Cdio
+                  TinyXML Yajl Cdio Fmt
                   Lzo2 Fribidi TagLib FFMPEG CrossGUID)
 if(NOT WIN32)
   list(APPEND required_deps ZLIB)
@@ -210,6 +210,7 @@ if(NOT WIN32)
         core_optional_dep(LibDRM ENABLE_MIR)
       else()
         core_optional_dep(X ENABLE_X11)
+        core_optional_dep(XRandR ENABLE_X11)
         core_optional_dep(LibDRM ENABLE_X11)
       endif()
     endif()

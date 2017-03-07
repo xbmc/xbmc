@@ -135,6 +135,12 @@ We also supply a Makefile in tools/depends/target/crossguid
 to make it easy to install into /usr/local.
 1.  $ make -C tools/depends/target/crossguid PREFIX=/usr/local
 
+[NOTICE] libfmt / libfmt3-dev all Linux distributions.
+Kodi now requires libfmt which is not available in Ubuntu repositories at this time.
+If build-deps PPA doesn't provide a pre-packaged version for your distribution, we supply a
+Makefile in tools/depends/target/libfmt to make it easy to install into /usr/local.
+1.  $ make -C tools/depends/target/libfmt PREFIX=/usr/local
+
 Unless you are proficient with how Linux libraries and versions work, do not
 try to provide it yourself, as you will likely mess up for other programs.
 

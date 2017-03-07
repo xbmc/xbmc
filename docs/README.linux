@@ -48,7 +48,7 @@ Build-Depends: autoconf, automake, autopoint, autotools-dev, cmake, curl,
   libass-dev (>= 0.9.8), libavahi-client-dev, libavahi-common-dev, libbluetooth-dev,
   libbluray-dev (>= 0.7.0), libbz2-dev, libcap-dev,
   libcdio-dev, libcec-dev, libcurl4-openssl-dev | libcurl4-gnutls-dev | libcurl-dev,
-  libcwiid-dev, libdbus-1-dev, libegl1-mesa-dev, libfontconfig-dev, libfreetype6-dev,
+  libcwiid-dev, libdbus-1-dev, libegl1-mesa-dev, libfmt3-dev, libfontconfig-dev, libfreetype6-dev,
   libfribidi-dev, libgif-dev (>= 4.1.6), libgl1-mesa-dev | libgl-dev, libglu1-mesa-dev | libglu-dev,
   libiso9660-dev, libjpeg-dev, libltdl-dev, liblzo2-dev, libmicrohttpd-dev,
   libmpcdec-dev, libmysqlclient-dev, libnfs-dev,
@@ -65,6 +65,12 @@ Kodi now requires crossguid which is not available in Ubuntu repositories at thi
 We supply a Makefile in tools/depends/target/crossguid
 to make it easy to install into /usr/local.
     $ make -C tools/depends/target/crossguid PREFIX=/usr/local
+
+[NOTICE] libfmt / libfmt3-dev all Linux distributions.
+Kodi now requires libfmt which is not available in Ubuntu repositories at this time.
+We supply a Makefile in tools/depends/target/libfmt
+to make it easy to install into /usr/local.
+    $ make -C tools/depends/target/libfmt PREFIX=/usr/local
 
 Note: For developers and anyone else who compiles frequently it is recommended to use ccache.
     $ sudo apt-get install ccache
