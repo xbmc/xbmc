@@ -246,10 +246,12 @@ lib/cpluff/stamp-h1
 /project/BuildDependencies/bin/swig
 /project/BuildDependencies/bin/doxygen
 /project/BuildDependencies/bin/json-rpc
+/project/BuildDependencies/x64
 
 # /system
 /system/cpluff.dll
 /system/EasyHook32.dll
+/system/EasyHook64.dll
 /system/libcurl.dll
 /system/libeay32.dll
 /system/libexif.dll
