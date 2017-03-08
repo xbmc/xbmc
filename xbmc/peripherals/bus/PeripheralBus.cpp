@@ -31,7 +31,7 @@ using namespace PERIPHERALS;
 
 #define PERIPHERAL_DEFAULT_RESCAN_INTERVAL 5000
 
-CPeripheralBus::CPeripheralBus(const std::string &threadname, CPeripherals *manager, PeripheralBusType type) :
+CPeripheralBus::CPeripheralBus(const std::string &threadname, CPeripherals& manager, PeripheralBusType type) :
     CThread(threadname.c_str()),
     m_iRescanTime(PERIPHERAL_DEFAULT_RESCAN_INTERVAL),
     m_bInitialised(false),
@@ -48,7 +48,7 @@ bool CPeripheralBus::InitializeProperties(CPeripheral& peripheral)
   if (peripheral.Type() == PERIPHERAL_JOYSTICK)
   {
     // Ensure an add-on is present to translate input
-    if (!g_peripherals.GetInstance().GetAddonWithButtonMap(&peripheral))
+    if (!m_manager.GetAddonWithButtonMap(&peripheral))
     {
       CLog::Log(LOGWARNING, "Button mapping add-on not present for %s (%s), skipping", peripheral.Location().c_str(), peripheral.DeviceName().c_str());
       return false;
@@ -118,7 +118,7 @@ void CPeripheralBus::UnregisterRemovedDevices(const PeripheralScanResults &resul
       peripheral->OnDeviceRemoved();
     }
 
-    m_manager->OnDeviceDeleted(*this, *peripheral);
+    m_manager.OnDeviceDeleted(*this, *peripheral);
   }
 }
 
@@ -128,7 +128,7 @@ void CPeripheralBus::RegisterNewDevices(const PeripheralScanResults &results)
   {
     const PeripheralScanResult& result = results.m_results.at(iResultPtr);
     if (!HasPeripheral(result.m_strLocation))
-      g_peripherals.CreatePeripheral(*this, result);
+      m_manager.CreatePeripheral(*this, result);
   }
 }
 
@@ -142,7 +142,7 @@ bool CPeripheralBus::ScanForDevices(void)
     UnregisterRemovedDevices(results);
     RegisterNewDevices(results);
 
-    CPeripherals::GetInstance().NotifyObservers(ObservableMessagePeripheralsChanged);
+    m_manager.NotifyObservers(ObservableMessagePeripheralsChanged);
 
     bReturn = true;
   }
@@ -283,7 +283,7 @@ void CPeripheralBus::Register(const PeripheralPtr& peripheral)
   if (bPeripheralAdded)
   {
     CLog::Log(LOGNOTICE, "%s - new %s device registered on %s->%s: %s (%s:%s)", __FUNCTION__, PeripheralTypeTranslator::TypeToString(peripheral->Type()), PeripheralTypeTranslator::BusTypeToString(m_type), peripheral->Location().c_str(), peripheral->DeviceName().c_str(), peripheral->VendorIdAsString(), peripheral->ProductIdAsString());
-    m_manager->OnDeviceAdded(*this, *peripheral);
+    m_manager.OnDeviceAdded(*this, *peripheral);
   }
 }
 

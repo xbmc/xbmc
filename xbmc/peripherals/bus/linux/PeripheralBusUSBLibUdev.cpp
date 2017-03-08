@@ -76,7 +76,7 @@ extern "C" {
 
 using namespace PERIPHERALS;
 
-CPeripheralBusUSB::CPeripheralBusUSB(CPeripherals *manager) :
+CPeripheralBusUSB::CPeripheralBusUSB(CPeripherals& manager) :
     CPeripheralBus("PeripBusUSBUdev", manager, PERIPHERAL_BUS_USB)
 {
   /* the Process() method in this class overrides the one in CPeripheralBus, so leave this set to true */

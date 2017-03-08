@@ -26,7 +26,7 @@ namespace PERIPHERALS
   class CPeripheralNyxboard : public CPeripheralHID
   {
   public:
-    CPeripheralNyxboard(const PeripheralScanResult& scanResult, CPeripheralBus* bus);
+    CPeripheralNyxboard(CPeripherals& manager, const PeripheralScanResult& scanResult, CPeripheralBus* bus);
     virtual ~CPeripheralNyxboard(void) {};
     virtual bool LookupSymAndUnicode(XBMC_keysym &keysym, uint8_t *key, char *unicode);
   };

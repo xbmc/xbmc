@@ -44,6 +44,7 @@ namespace PERIPHERALS
 {
   class CGUIDialogPeripheralSettings;
   class CPeripheralBus;
+  class CPeripherals;
 
   typedef enum
   {
@@ -57,7 +58,7 @@ namespace PERIPHERALS
     friend class CGUIDialogPeripheralSettings;
 
   public:
-    CPeripheral(const PeripheralScanResult& scanResult, CPeripheralBus* bus);
+    CPeripheral(CPeripherals& manager, const PeripheralScanResult& scanResult, CPeripheralBus* bus);
     virtual ~CPeripheral(void);
 
     bool operator ==(const CPeripheral &right) const;
@@ -211,6 +212,7 @@ namespace PERIPHERALS
   protected:
     virtual void ClearSettings(void);
 
+    CPeripherals&                    m_manager;
     PeripheralType                   m_type;
     PeripheralBusType                m_busType;
     PeripheralBusType                m_mappedBusType;

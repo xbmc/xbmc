@@ -57,6 +57,7 @@
 #include "utils/StringUtils.h"
 #include "Util.h"
 #include "settings/Settings.h"
+#include "ServiceBroker.h"
 
 #ifdef HAS_PERFORMANCE_SAMPLE
 #include "utils/PerformanceSample.h"
@@ -72,7 +73,6 @@ using EVENTSERVER::CEventServer;
 
 using namespace KODI;
 using namespace MESSAGING;
-using PERIPHERALS::CPeripherals;
 
 CInputManager::CInputManager() :
   m_mouseButtonMap(new MOUSE::CMouseWindowingButtonMap),
@@ -125,7 +125,7 @@ bool CInputManager::ProcessRemote(int windowId)
 bool CInputManager::ProcessPeripherals(float frameTime)
 {
   CKey key;
-  if (g_peripherals.GetNextKeypress(frameTime, key))
+  if (CServiceBroker::GetPeripherals().GetNextKeypress(frameTime, key))
     return OnKey(key);
   return false;
 }

@@ -50,8 +50,6 @@ namespace JOYSTICK
 
 namespace PERIPHERALS
 {
-  #define g_peripherals CPeripherals::GetInstance()
-
   class CPeripherals :  public ISettingCallback,
                         public Observable,
                         public KODI::MESSAGING::IMessageTarget,
@@ -59,7 +57,8 @@ namespace PERIPHERALS
                         public ANNOUNCEMENT::IAnnouncer
   {
   public:
-    static CPeripherals &GetInstance();
+    CPeripherals();
+
     virtual ~CPeripherals();
 
     /*!
@@ -314,7 +313,6 @@ namespace PERIPHERALS
     virtual void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data) override;
 
   private:
-    CPeripherals();
     bool LoadMappings();
     bool GetMappingForDevice(const CPeripheralBus &bus, PeripheralScanResult& result) const;
     static void GetSettingsFromMappingsFile(TiXmlElement *xmlNode, std::map<std::string, PeripheralDeviceSetting> &m_settings);

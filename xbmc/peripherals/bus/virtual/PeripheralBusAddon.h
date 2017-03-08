@@ -37,7 +37,7 @@ namespace PERIPHERALS
                               public ADDON::IAddonMgrCallback
   {
   public:
-    CPeripheralBusAddon(CPeripherals *manager);
+    CPeripheralBusAddon(CPeripherals& manager);
     virtual ~CPeripheralBusAddon(void);
 
     void UpdateAddons(void);

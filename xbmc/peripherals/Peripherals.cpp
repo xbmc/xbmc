@@ -79,7 +79,8 @@ using namespace XFILE;
 CPeripherals::CPeripherals() :
   m_bInitialised(false),
   m_bIsStarted(false),
-  m_eventScanner(this)
+  m_eventScanner(this),
+  m_portMapper(*this)
 {
   RegisterObserver(&m_portMapper);
   Clear();
@@ -91,14 +92,9 @@ CPeripherals::~CPeripherals()
   UnregisterObserver(&m_portMapper);
 }
 
-CPeripherals &CPeripherals::GetInstance()
-{
-  static CPeripherals peripheralsInstance;
-  return peripheralsInstance;
-}
-
 void CPeripherals::Initialise()
 {
+#if !defined(TARGET_DARWIN_IOS)
   CSingleLock lock(m_critSection);
   if (m_bIsStarted)
     return;
@@ -113,16 +109,16 @@ void CPeripherals::Initialise()
   std::vector<PeripheralBusPtr> busses;
 
 #if defined(HAVE_PERIPHERAL_BUS_USB)
-  busses.push_back(std::make_shared<CPeripheralBusUSB>(this));
+  busses.push_back(std::make_shared<CPeripheralBusUSB>(*this));
 #endif
 #if defined(HAVE_LIBCEC)
-  busses.push_back(std::make_shared<CPeripheralBusCEC>(this));
+  busses.push_back(std::make_shared<CPeripheralBusCEC>(*this));
 #endif
-  busses.push_back(std::make_shared<CPeripheralBusAddon>(this));
+  busses.push_back(std::make_shared<CPeripheralBusAddon>(*this));
 #if defined(TARGET_ANDROID)
-  busses.push_back(std::make_shared<CPeripheralBusAndroid>(this));
+  busses.push_back(std::make_shared<CPeripheralBusAndroid>(*this));
 #endif
-  busses.push_back(std::make_shared<CPeripheralBusApplication>(this));
+  busses.push_back(std::make_shared<CPeripheralBusApplication>(*this));
 
   {
     CSingleLock bussesLock(m_critSectionBusses);
@@ -138,6 +134,7 @@ void CPeripherals::Initialise()
   m_bInitialised = true;
   MESSAGING::CApplicationMessenger::GetInstance().RegisterReceiver(this);
   ANNOUNCEMENT::CAnnouncementManager::GetInstance().AddAnnouncer(this);
+#endif
 }
 
 void CPeripherals::Clear()
@@ -317,33 +314,33 @@ void CPeripherals::CreatePeripheral(CPeripheralBus &bus, const PeripheralScanRes
   switch(mappedResult.m_mappedType)
   {
   case PERIPHERAL_HID:
-    peripheral = PeripheralPtr(new CPeripheralHID(mappedResult, &bus));
+    peripheral = PeripheralPtr(new CPeripheralHID(*this, mappedResult, &bus));
     break;
 
   case PERIPHERAL_NIC:
-    peripheral = PeripheralPtr(new CPeripheralNIC(mappedResult, &bus));
+    peripheral = PeripheralPtr(new CPeripheralNIC(*this, mappedResult, &bus));
     break;
 
   case PERIPHERAL_DISK:
-    peripheral = PeripheralPtr(new CPeripheralDisk(mappedResult, &bus));
+    peripheral = PeripheralPtr(new CPeripheralDisk(*this, mappedResult, &bus));
     break;
 
   case PERIPHERAL_NYXBOARD:
-    peripheral = PeripheralPtr(new CPeripheralNyxboard(mappedResult, &bus));
+    peripheral = PeripheralPtr(new CPeripheralNyxboard(*this, mappedResult, &bus));
     break;
 
   case PERIPHERAL_TUNER:
-    peripheral = PeripheralPtr(new CPeripheralTuner(mappedResult, &bus));
+    peripheral = PeripheralPtr(new CPeripheralTuner(*this, mappedResult, &bus));
     break;
 
   case PERIPHERAL_BLUETOOTH:
-    peripheral = PeripheralPtr(new CPeripheralBluetooth(mappedResult, &bus));
+    peripheral = PeripheralPtr(new CPeripheralBluetooth(*this, mappedResult, &bus));
     break;
 
   case PERIPHERAL_CEC:
 #if defined(HAVE_LIBCEC)
     if (bus.Type() == PERIPHERAL_BUS_CEC)
-      peripheral = PeripheralPtr(new CPeripheralCecAdapter(mappedResult, &bus));
+      peripheral = PeripheralPtr(new CPeripheralCecAdapter(*this, mappedResult, &bus));
 #else
     if (!m_bMissingLibCecWarningDisplayed)
     {
@@ -355,15 +352,15 @@ void CPeripherals::CreatePeripheral(CPeripheralBus &bus, const PeripheralScanRes
     break;
 
   case PERIPHERAL_IMON:
-    peripheral = PeripheralPtr(new CPeripheralImon(mappedResult, &bus));
+    peripheral = PeripheralPtr(new CPeripheralImon(*this, mappedResult, &bus));
     break;
 
   case PERIPHERAL_JOYSTICK:
-    peripheral = PeripheralPtr(new CPeripheralJoystick(mappedResult, &bus));
+    peripheral = PeripheralPtr(new CPeripheralJoystick(*this, mappedResult, &bus));
     break;
 
   case PERIPHERAL_JOYSTICK_EMULATION:
-    peripheral = PeripheralPtr(new CPeripheralJoystickEmulation(mappedResult, &bus));
+    peripheral = PeripheralPtr(new CPeripheralJoystickEmulation(*this, mappedResult, &bus));
     break;
 
   default:

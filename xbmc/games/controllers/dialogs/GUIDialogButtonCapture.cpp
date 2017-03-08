@@ -30,6 +30,7 @@
 #include "input/ActionIDs.h"
 #include "peripherals/Peripherals.h"
 #include "utils/Variant.h"
+#include "ServiceBroker.h"
 
 #include <algorithm>
 #include <iterator>
@@ -115,30 +116,24 @@ bool CGUIDialogButtonCapture::MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
 
 void CGUIDialogButtonCapture::InstallHooks(void)
 {
-  using namespace PERIPHERALS;
-
-  g_peripherals.RegisterJoystickButtonMapper(this);
-  g_peripherals.RegisterObserver(this);
+  CServiceBroker::GetPeripherals().RegisterJoystickButtonMapper(this);
+  CServiceBroker::GetPeripherals().RegisterObserver(this);
 }
 
 void CGUIDialogButtonCapture::RemoveHooks(void)
 {
-  using namespace PERIPHERALS;
-
-  g_peripherals.UnregisterObserver(this);
-  g_peripherals.UnregisterJoystickButtonMapper(this);
+  CServiceBroker::GetPeripherals().UnregisterObserver(this);
+  CServiceBroker::GetPeripherals().UnregisterJoystickButtonMapper(this);
 }
 
 void CGUIDialogButtonCapture::Notify(const Observable& obs, const ObservableMessage msg)
 {
-  using namespace PERIPHERALS;
-
   switch (msg)
   {
   case ObservableMessagePeripheralsChanged:
   {
-    g_peripherals.UnregisterJoystickButtonMapper(this);
-    g_peripherals.RegisterJoystickButtonMapper(this);
+    CServiceBroker::GetPeripherals().UnregisterJoystickButtonMapper(this);
+    CServiceBroker::GetPeripherals().RegisterJoystickButtonMapper(this);
     break;
   }
   default:

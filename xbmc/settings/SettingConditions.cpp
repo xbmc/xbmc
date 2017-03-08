@@ -32,7 +32,6 @@
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
 #include "guilib/LocalizeStrings.h"
 #include "peripherals/Peripherals.h"
-#include "peripherals/bus/virtual/PeripheralBusAddon.h"
 #include "profiles/ProfilesManager.h"
 #include "pvr/PVRGUIActions.h"
 #include "settings/SettingAddon.h"
@@ -45,6 +44,7 @@
 #if defined(TARGET_DARWIN_OSX)
 #include "platform/darwin/DarwinUtils.h"
 #endif// defined(TARGET_DARWIN_OSX)
+#include "ServiceBroker.h"
 
 bool AddonHasSettings(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
 {
@@ -77,28 +77,22 @@ bool CheckPVRParentalPin(const std::string &condition, const std::string &value,
 
 bool HasPeripherals(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
 {
-  return PERIPHERALS::g_peripherals.GetNumberOfPeripherals() > 0;
+  return CServiceBroker::GetPeripherals().GetNumberOfPeripherals() > 0;
 }
 
 bool HasRumbleFeature(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
 {
-  using namespace PERIPHERALS;
-
-  return g_peripherals.SupportsFeature(FEATURE_RUMBLE);
+  return CServiceBroker::GetPeripherals().SupportsFeature(PERIPHERALS::FEATURE_RUMBLE);
 }
 
 bool HasRumbleController(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
 {
-  using namespace PERIPHERALS;
-
-  return g_peripherals.HasPeripheralWithFeature(FEATURE_RUMBLE);
+  return CServiceBroker::GetPeripherals().HasPeripheralWithFeature(PERIPHERALS::FEATURE_RUMBLE);
 }
 
 bool HasPowerOffFeature(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
 {
-  using namespace PERIPHERALS;
-
-  return g_peripherals.SupportsFeature(FEATURE_POWER_OFF);
+  return CServiceBroker::GetPeripherals().SupportsFeature(PERIPHERALS::FEATURE_POWER_OFF);
 }
 
 bool IsFullscreen(const std::string &condition, const std::string &value, const CSetting *setting, void *data)

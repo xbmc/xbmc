@@ -29,7 +29,7 @@ namespace PERIPHERALS
                                        public KODI::KEYBOARD::IKeyboardHandler
   {
   public:
-    CPeripheralJoystickEmulation(const PeripheralScanResult& scanResult, CPeripheralBus* bus);
+    CPeripheralJoystickEmulation(CPeripherals& manager, const PeripheralScanResult& scanResult, CPeripheralBus* bus);
 
     virtual ~CPeripheralJoystickEmulation(void);
 
