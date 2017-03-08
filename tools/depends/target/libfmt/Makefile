@@ -4,7 +4,6 @@ DEPS = Makefile
 # lib name, version
 LIBNAME=fmt
 VERSION=3.0.1
-BASE_URL=https://github.com/fmtlib/fmt/archive
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
