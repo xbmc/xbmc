@@ -2606,7 +2606,7 @@ void COutput::ReleaseBufferPool(bool precleanup)
     if (pic->texture)
     {
       glDeleteTextures(1, &pic->texture);
-      pic->texture = None;
+      pic->texture = 0;
     }
     av_frame_free(&pic->avFrame);
     pic->valid = false;

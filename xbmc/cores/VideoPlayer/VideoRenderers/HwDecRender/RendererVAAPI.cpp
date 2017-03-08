@@ -171,9 +171,9 @@ void CRendererVAAPI::DeleteTexture(int index)
   m_buffers[index].hwDec = NULL;
 
   YUVFIELDS &fields = m_buffers[index].fields;
-  fields[FIELD_FULL][0].id = None;
-  fields[FIELD_FULL][1].id = None;
-  fields[FIELD_FULL][2].id = None;
+  fields[FIELD_FULL][0].id = 0;
+  fields[FIELD_FULL][1].id = 0;
+  fields[FIELD_FULL][2].id = 0;
 }
 
 bool CRendererVAAPI::UploadTexture(int index)
