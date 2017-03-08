@@ -83,7 +83,6 @@ CPeripherals::CPeripherals() :
   m_portMapper(*this)
 {
   RegisterObserver(&m_portMapper);
-  Clear();
 }
 
 CPeripherals::~CPeripherals()
