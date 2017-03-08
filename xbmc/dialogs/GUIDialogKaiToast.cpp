@@ -22,6 +22,7 @@
 #include "peripherals/Peripherals.h"
 #include "threads/SingleLock.h"
 #include "utils/TimeUtils.h"
+#include "ServiceBroker.h"
 
 #define POPUP_ICON                400
 #define POPUP_CAPTION_TEXT        401
@@ -136,7 +137,7 @@ bool CGUIDialogKaiToast::DoWork()
     SetSound(toast.withSound);
 
     // Activate haptics for this notification
-    PERIPHERALS::g_peripherals.OnUserNotification();
+    CServiceBroker::GetPeripherals().OnUserNotification();
 
     ResetTimer();
     return true;

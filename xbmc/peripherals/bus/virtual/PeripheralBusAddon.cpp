@@ -33,7 +33,7 @@
 
 using namespace PERIPHERALS;
 
-CPeripheralBusAddon::CPeripheralBusAddon(CPeripherals *manager) :
+CPeripheralBusAddon::CPeripheralBusAddon(CPeripherals& manager) :
     CPeripheralBus("PeripBusAddon", manager, PERIPHERAL_BUS_ADDON)
 {
   using namespace ADDON;
@@ -242,7 +242,7 @@ void CPeripheralBusAddon::UnregisterRemovedDevices(const PeripheralScanResults &
     addon->UnregisterRemovedDevices(results, removedPeripherals);
 
   for (const auto& peripheral : removedPeripherals)
-    m_manager->OnDeviceDeleted(*this, *peripheral);
+    m_manager.OnDeviceDeleted(*this, *peripheral);
 }
 
 void CPeripheralBusAddon::Register(const PeripheralPtr& peripheral)
@@ -258,7 +258,7 @@ void CPeripheralBusAddon::Register(const PeripheralPtr& peripheral)
   if (SplitLocation(peripheral->Location(), addon, peripheralIndex))
   {
     if (addon->Register(peripheralIndex, peripheral))
-      m_manager->OnDeviceAdded(*this, *peripheral);
+      m_manager.OnDeviceAdded(*this, *peripheral);
   }
 }
 

@@ -70,3 +70,9 @@ GAME::CGameServices& CServiceBroker::GetGameServices()
 {
   return g_application.m_ServiceManager->GetGameServices();
 }
+
+PERIPHERALS::CPeripherals& CServiceBroker::GetPeripherals()
+{
+  return g_application.m_ServiceManager->GetPeripherals();
+}
+

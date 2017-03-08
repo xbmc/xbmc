@@ -41,11 +41,13 @@ namespace JOYSTICK
 
 namespace PERIPHERALS
 {
+  class CPeripherals;
+
   class CPeripheralJoystick : public CPeripheral, //! @todo extend CPeripheralHID
                               public JOYSTICK::IDriverReceiver
   {
   public:
-    CPeripheralJoystick(const PeripheralScanResult& scanResult, CPeripheralBus* bus);
+    CPeripheralJoystick(CPeripherals& manager, const PeripheralScanResult& scanResult, CPeripheralBus* bus);
 
     virtual ~CPeripheralJoystick(void);
 

@@ -52,6 +52,7 @@
 #include "utils/StringUtils.h"
 #include "Util.h"
 #include "settings/Settings.h"
+#include "ServiceBroker.h"
 
 #ifdef HAS_PERFORMANCE_SAMPLE
 #include "utils/PerformanceSample.h"
@@ -66,7 +67,6 @@ using EVENTSERVER::CEventServer;
 #endif
 
 using namespace KODI::MESSAGING;
-using PERIPHERALS::CPeripherals;
 
 CInputManager& CInputManager::GetInstance()
 {
@@ -107,7 +107,7 @@ bool CInputManager::ProcessRemote(int windowId)
 bool CInputManager::ProcessPeripherals(float frameTime)
 {
   CKey key;
-  if (g_peripherals.GetNextKeypress(frameTime, key))
+  if (CServiceBroker::GetPeripherals().GetNextKeypress(frameTime, key))
     return OnKey(key);
   return false;
 }

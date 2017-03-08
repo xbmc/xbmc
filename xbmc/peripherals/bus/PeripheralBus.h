@@ -43,7 +43,7 @@ namespace PERIPHERALS
   class CPeripheralBus : protected CThread
   {
   public:
-    CPeripheralBus(const std::string &threadname, CPeripherals *manager, PeripheralBusType type);
+    CPeripheralBus(const std::string &threadname, CPeripherals& manager, PeripheralBusType type);
     virtual ~CPeripheralBus(void) { Clear(); }
 
     /*!
@@ -198,7 +198,7 @@ namespace PERIPHERALS
     bool                       m_bInitialised;
     bool                       m_bIsStarted;
     bool                       m_bNeedsPolling; /*!< true when this bus needs to be polled for new devices, false when it uses callbacks to notify this bus of changed */
-    CPeripherals *const        m_manager;
+    CPeripherals&              m_manager;
     const PeripheralBusType    m_type;
     CCriticalSection           m_critSection;
     CEvent                     m_triggerEvent;

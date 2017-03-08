@@ -34,12 +34,13 @@ namespace JOYSTICK
 namespace PERIPHERALS
 {
   class CPeripheral;
+  class CPeripherals;
 
   class CAddonButtonMapping : public JOYSTICK::IDriverHandler,
                               public JOYSTICK::IButtonMapCallback
   {
   public:
-    CAddonButtonMapping(CPeripheral* peripheral, JOYSTICK::IButtonMapper* mapper);
+    CAddonButtonMapping(CPeripherals& manager, CPeripheral* peripheral, JOYSTICK::IButtonMapper* mapper);
 
     virtual ~CAddonButtonMapping(void);
 
