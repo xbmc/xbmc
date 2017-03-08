@@ -77,7 +77,6 @@ CPeripherals::CPeripherals() :
   m_bIsStarted(false),
   m_eventScanner(this)
 {
-  Clear();
 }
 
 CPeripherals::~CPeripherals()
