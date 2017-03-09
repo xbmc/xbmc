@@ -485,7 +485,7 @@ void CDVDInputStreamBluray::ProcessEvent() {
   case BD_EVENT_STILL_TIME:
     CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - BD_EVENT_STILL_TIME %d", m_event.param);
     pid = m_event.param;
-    m_player->OnDVDNavResult((void*) &pid, 5);
+    m_player->OnDiscNavResult(static_cast<void*>(&pid), BD_EVENT_STILL_TIME);
     m_hold = HOLD_STILL;
     break;
 
@@ -553,14 +553,14 @@ void CDVDInputStreamBluray::ProcessEvent() {
       pid = m_title->clips[m_clip].audio_streams[m_event.param - 1].pid;
     CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - BD_EVENT_AUDIO_STREAM %d %d",
         m_event.param, pid);
-    m_player->OnDVDNavResult((void*) &pid, 2);
+    m_player->OnDiscNavResult(static_cast<void*>(&pid), BD_EVENT_AUDIO_STREAM);
     break;
 
   case BD_EVENT_PG_TEXTST:
     CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - BD_EVENT_PG_TEXTST %d",
         m_event.param);
     pid = m_event.param;
-    m_player->OnDVDNavResult((void*) &pid, 4);
+    m_player->OnDiscNavResult(static_cast<void*>(&pid), BD_EVENT_PG_TEXTST);
     break;
 
   case BD_EVENT_PG_TEXTST_STREAM:
@@ -572,7 +572,7 @@ void CDVDInputStreamBluray::ProcessEvent() {
     CLog::Log(LOGDEBUG,
         "CDVDInputStreamBluray - BD_EVENT_PG_TEXTST_STREAM %d, %d",
         m_event.param, pid);
-    m_player->OnDVDNavResult((void*) &pid, 3);
+    m_player->OnDiscNavResult(static_cast<void*>(&pid), BD_EVENT_PG_TEXTST_STREAM);
     break;
 
 #if (BLURAY_VERSION >= BLURAY_VERSION_CODE(0,2,2))
@@ -588,7 +588,7 @@ void CDVDInputStreamBluray::ProcessEvent() {
     Sleep(100);
 #else
     m_hold = HOLD_ERROR;
-    m_player->OnDVDNavResult(NULL, 6);
+    m_player->OnDiscNavResult(nullptr, 6);
 #endif
     break;
 #endif
@@ -722,7 +722,7 @@ void CDVDInputStreamBluray::OverlayClose()
     m_planes[i].o.clear();
   CDVDOverlayGroup* group   = new CDVDOverlayGroup();
   group->bForced = true;
-  m_player->OnDVDNavResult(group, 0);
+  m_player->OnDiscNavResult(static_cast<void*>(group), BD_EVENT_MENU_OVERLAY);
   group->Release();
 #endif
 }
@@ -793,7 +793,7 @@ void CDVDInputStreamBluray::OverlayFlush(int64_t pts)
       group->m_overlays.push_back((*it)->Acquire());
   }
 
-  m_player->OnDVDNavResult(group, 0);
+  m_player->OnDiscNavResult(static_cast<void*>(group), BD_EVENT_MENU_OVERLAY);
   group->Release();
 #endif
 }
