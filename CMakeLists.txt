@@ -468,10 +468,7 @@ endif()
 
 # Prepare add-on build env
 core_file_read_filtered(bindings ${CMAKE_SOURCE_DIR}/xbmc/addons/addon-bindings.mk)
-foreach(binding ${bindings})
-  string(REPLACE " =" ";" binding "${binding}")
-  string(REPLACE "+=" ";" binding "${binding}")
-  list(GET binding 1 header)
+foreach(header ${bindings})
   get_filename_component(file ${header} NAME)
   configure_file(${CMAKE_SOURCE_DIR}/${header} ${CORE_BUILD_DIR}/include/${APP_NAME_LC}/${file} COPYONLY)
 endforeach()

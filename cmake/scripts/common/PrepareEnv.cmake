@@ -43,10 +43,7 @@ file(COPY ${CORE_SOURCE_DIR}/cmake/scripts/common/AddonHelpers.cmake
 ### copy all the addon binding header files to include/kodi
 # parse addon-bindings.mk to get the list of header files to copy
 core_file_read_filtered(bindings ${CORE_SOURCE_DIR}/xbmc/addons/addon-bindings.mk)
-foreach(binding ${bindings})
-  string(REPLACE " =" ";" binding "${binding}")
-  string(REPLACE "+=" ";" binding "${binding}")
-  list(GET binding 1 header)
+foreach(header ${bindings})
   # copy the header file to include/kodi
   configure_file(${CORE_SOURCE_DIR}/${header} ${APP_INCLUDE_DIR} COPYONLY)
 endforeach()
