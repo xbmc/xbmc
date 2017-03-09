@@ -22,7 +22,7 @@ else
     TARBALLS_LOCATION = $(ROOT_DIR)
     RETRIEVE_TOOL := curl
     ARCHIVE_TOOL := tar --strip-components=1 -xf
-    CMAKE := cmake
+    CMAKE := cmake -DCMAKE_INSTALL_PREFIX=$(PREFIX)
   endif
 endif
 
