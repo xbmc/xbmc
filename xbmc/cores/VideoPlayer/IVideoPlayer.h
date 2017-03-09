@@ -36,7 +36,6 @@
 template <typename T> class CRectGen;
 typedef CRectGen<float>  CRect;
 
-class DVDNavResult;
 class CDVDMsg;
 class CDVDStreamInfo;
 class CProcessInfo;
