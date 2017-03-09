@@ -4,7 +4,6 @@ DEPS = Makefile
 # lib name, version
 LIBNAME=fmt
 VERSION=3.0.1
-BASE_URL=https://github.com/fmtlib/fmt/archive
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
@@ -23,7 +22,7 @@ else
     TARBALLS_LOCATION = $(ROOT_DIR)
     RETRIEVE_TOOL := curl
     ARCHIVE_TOOL := tar --strip-components=1 -xf
-    CMAKE := cmake
+    CMAKE := cmake -DCMAKE_INSTALL_PREFIX=$(PREFIX)
   endif
 endif
 
