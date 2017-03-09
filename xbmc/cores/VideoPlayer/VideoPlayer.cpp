@@ -4068,11 +4068,20 @@ int CVideoPlayer::OnDiscNavResult(void* pData, int iMessage)
       }
     }
     break;
-    case 6:
+    case BD_EVENT_MENU_ERROR:
+    {
       m_dvd.state = DVDSTATE_NORMAL;
-      CLog::Log(LOGDEBUG, "CVideoPlayer::OnDVDNavResult - libbluray read error (DVDSTATE_NORMAL)");
+      CLog::Log(LOGDEBUG, "CVideoPlayer::OnDiscNavResult - libbluray menu not supported (DVDSTATE_NORMAL)");
       CGUIDialogKaiToast::QueueNotification(g_localizeStrings.Get(25008), g_localizeStrings.Get(25009));
-      break;
+    }
+    break;
+    case BD_EVENT_ENC_ERROR:
+    {
+      m_dvd.state = DVDSTATE_NORMAL;
+      CLog::Log(LOGDEBUG, "CVideoPlayer::OnDiscNavResult - libbluray .m2ts file is encrypted and can't be played (DVDSTATE_NORMAL)");
+      CGUIDialogKaiToast::QueueNotification(g_localizeStrings.Get(16026), g_localizeStrings.Get(16029));
+    }
+    break;
     default:
       break;
     }

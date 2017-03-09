@@ -464,9 +464,30 @@ void CDVDInputStreamBluray::ProcessEvent() {
 
   int pid = -1;
   switch (m_event.event) {
+  
+   /* errors */
 
   case BD_EVENT_ERROR:
-    CLog::Log(LOGERROR, "CDVDInputStreamBluray - BD_EVENT_ERROR");
+    switch (m_event.param)
+    {
+    case BD_ERROR_HDMV:
+    case BD_ERROR_BDJ:
+      m_player->OnDiscNavResult(nullptr, BD_EVENT_MENU_ERROR);
+      break;
+    case BD_ERROR_AACS:
+      break;
+    case BD_ERROR_BDPLUS:
+      break;
+    default:
+      break;
+
+    }
+    CLog::Log(LOGERROR, "CDVDInputStreamBluray - BD_EVENT_ERROR: Fatal error. Playback can't be continued.");
+    m_hold = HOLD_ERROR;
+    break;
+
+  case BD_EVENT_READ_ERROR:
+    CLog::Log(LOGERROR, "CDVDInputStreamBluray - BD_EVENT_READ_ERROR");
     break;
 
   case BD_EVENT_ENCRYPTED:

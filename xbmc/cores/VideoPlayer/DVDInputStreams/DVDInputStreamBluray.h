@@ -35,6 +35,8 @@ extern "C"
 
 #define MAX_PLAYLIST_ID 99999
 #define BD_EVENT_MENU_OVERLAY -1
+#define BD_EVENT_MENU_ERROR   -2
+#define BD_EVENT_ENC_ERROR    -3
 
 class CDVDOverlayImage;
 class DllLibbluray;
