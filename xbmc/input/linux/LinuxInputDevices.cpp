@@ -228,6 +228,7 @@ KeyMap keyMap[] = {
   { KEY_VOLUMEDOWN    , XBMCK_VOLUME_DOWN },
   { KEY_VOLUMEUP      , XBMCK_VOLUME_UP   },
   { KEY_POWER         , XBMCK_POWER       },
+  { KEY_SLEEP         , XBMCK_POWER       },
   { KEY_KPEQUAL       , XBMCK_KP_EQUALS   },
   { KEY_PAUSE         , XBMCK_PAUSE       },
   { KEY_PAUSECD       , XBMCK_PAUSE       },
