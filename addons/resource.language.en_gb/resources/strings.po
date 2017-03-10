@@ -4620,7 +4620,12 @@ msgctxt "#1450"
 msgid "Put display to sleep when idle"
 msgstr ""
 
-#empty strings from id 1451 to 2049
+#: system/settings/settings.xml
+msgctxt "#1451"
+msgid "Disable OS Screensaver"
+msgstr ""
+
+#empty strings from id 1452 to 2049
 #strings through to 1470 reserved for power-saving
 
 msgctxt "#2050"
@@ -18989,7 +18994,11 @@ msgctxt "#36422"
 msgid "Enable hardware video decode using Amlogic decoder."
 msgstr ""
 
-#empty string with id 36423
+#. Description of setting with label #1451 "Disable OS screensaver"
+#: system/settings/settings.xml
+msgctxt "#36423"
+msgid "Prevents the operating system from starting the screensaver while Kodi is in in windowed mode."
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36424"

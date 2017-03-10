@@ -454,7 +454,7 @@ void CWinSystemX11::ShowOSMouse(bool show)
 
 void CWinSystemX11::ResetOSScreensaver()
 {
-  if (m_bFullScreen)
+  if (m_bFullScreen || CServiceBroker::GetSettings().GetBool(CSettings::SETTING_POWERMANAGEMENT_SCREENSAVEROFF))
   {
     //disallow the screensaver when we're fullscreen by periodically calling XResetScreenSaver(),
     //normally SDL does this but we disable that in CApplication::Create()

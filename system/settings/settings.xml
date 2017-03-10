@@ -2850,6 +2850,11 @@
             <formatlabel>14044</formatlabel>
           </control>
         </setting>
+        <setting id="powermanagement.screensaveroff" type="boolean" label="1451" help="36423">
+          <level>0</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
         <setting id="powermanagement.shutdowntime" type="integer" label="357" help="36389">
           <level>2</level>
           <default>0</default>
