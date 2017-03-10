@@ -596,23 +596,15 @@ void CDVDInputStreamBluray::ProcessEvent() {
     m_player->OnDiscNavResult(static_cast<void*>(&pid), BD_EVENT_PG_TEXTST_STREAM);
     break;
 
-#if (BLURAY_VERSION >= BLURAY_VERSION_CODE(0,2,2))
   case BD_EVENT_MENU:
     CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - BD_EVENT_MENU %d",
         m_event.param);
-    m_menu = !!m_event.param;
+    m_menu = (m_event.param != 0);
     break;
-#endif
-#if (BLURAY_VERSION >= BLURAY_VERSION_CODE(0,3,0))
+
   case BD_EVENT_IDLE:
-#ifdef HAVE_LIBBLURAY_BDJ
     Sleep(100);
-#else
-    m_hold = HOLD_ERROR;
-    m_player->OnDiscNavResult(nullptr, 6);
-#endif
     break;
-#endif
 
   case BD_EVENT_SOUND_EFFECT:
   {
@@ -1083,17 +1075,8 @@ void CDVDInputStreamBluray::GetStreamInfo(int pid, char* language)
 
 CDVDInputStream::ENextStream CDVDInputStreamBluray::NextStream()
 {
-  if(!m_navmode || m_hold == HOLD_EXIT)
+  if(!m_navmode || m_hold == HOLD_EXIT || m_hold == HOLD_ERROR)
     return NEXTSTREAM_NONE;
-
-  if (m_hold == HOLD_ERROR)
-  {
-#if (BLURAY_VERSION < BLURAY_VERSION_CODE(0,3,0))
-    CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::NextStream - libbluray navigation mode read error");
-    CGUIDialogKaiToast::QueueNotification(g_localizeStrings.Get(25008), g_localizeStrings.Get(25009));
-#endif
-    return NEXTSTREAM_NONE;
-  }
 
   /* process any current event */
   ProcessEvent();
