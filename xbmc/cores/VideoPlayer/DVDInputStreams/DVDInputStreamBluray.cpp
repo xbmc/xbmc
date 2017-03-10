@@ -633,6 +633,10 @@ void CDVDInputStreamBluray::ProcessEvent() {
   case BD_EVENT_PLAYMARK:
     break;
 
+  case BD_EVENT_PLAYLIST_STOP:
+    CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - BD_EVENT_PLAYLIST_STOP: flush buffers");
+    m_player->OnDiscNavResult(nullptr, BD_EVENT_PLAYLIST_STOP);
+    break;
   case BD_EVENT_NONE:
     break;
 
