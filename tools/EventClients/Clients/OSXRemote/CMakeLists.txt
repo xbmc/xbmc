@@ -1,8 +1,8 @@
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules)
 
-set(SOURCES xbmchelper_main.mm
+set(SOURCES xbmcclientwrapper.mm
+            xbmchelper_main.mm
             XBMCHelper.m
-            xbmcclientwrapper.mm
             HIDRemote/HIDRemote.m)
 
 set(HEADERS XBMCDebugHelpers.h)
