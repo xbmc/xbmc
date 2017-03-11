@@ -161,7 +161,7 @@ void CGUIWindowPVRGuide::GetContextButtons(int itemNumber, CContextButtons &butt
 
 void CGUIWindowPVRGuide::UpdateSelectedItemPath()
 {
-  CGUIEPGGridContainer *epgGridContainer = (CGUIEPGGridContainer*) GetControl(m_viewControl.GetCurrentControl());
+  CGUIEPGGridContainer *epgGridContainer = GetGridControl();
   if (epgGridContainer)
   {
     CPVRChannelPtr channel(epgGridContainer->GetSelectedChannel());
@@ -495,7 +495,7 @@ bool CGUIWindowPVRGuide::OnContextButtonBegin(CFileItem *item, CONTEXT_BUTTON bu
 
   if (button == CONTEXT_BUTTON_BEGIN)
   {
-    CGUIEPGGridContainer* epgGridContainer = (CGUIEPGGridContainer*) GetControl(m_viewControl.GetCurrentControl());
+    CGUIEPGGridContainer* epgGridContainer = GetGridControl();
     epgGridContainer->GoToBegin();
     bReturn = true;
   }
@@ -509,7 +509,7 @@ bool CGUIWindowPVRGuide::OnContextButtonEnd(CFileItem *item, CONTEXT_BUTTON butt
 
   if (button == CONTEXT_BUTTON_END)
   {
-    CGUIEPGGridContainer* epgGridContainer = (CGUIEPGGridContainer*) GetControl(m_viewControl.GetCurrentControl());
+    CGUIEPGGridContainer* epgGridContainer = GetGridControl();
     epgGridContainer->GoToEnd();
     bReturn = true;
   }
@@ -523,7 +523,7 @@ bool CGUIWindowPVRGuide::OnContextButtonNow(CFileItem *item, CONTEXT_BUTTON butt
 
   if (button == CONTEXT_BUTTON_NOW)
   {
-    CGUIEPGGridContainer* epgGridContainer = (CGUIEPGGridContainer*) GetControl(m_viewControl.GetCurrentControl());
+    CGUIEPGGridContainer* epgGridContainer = GetGridControl();
     epgGridContainer->GoToNow();
     bReturn = true;
   }
@@ -541,7 +541,7 @@ void CGUIWindowPVRGuide::OnInputDone()
       const CEpgInfoTagPtr tag(event->GetEPGInfoTag());
       if (tag->HasPVRChannel() && tag->PVRChannelNumber() == iChannelNumber)
       {
-        CGUIEPGGridContainer* epgGridContainer = dynamic_cast<CGUIEPGGridContainer*>(GetControl(m_viewControl.GetCurrentControl()));
+        CGUIEPGGridContainer* epgGridContainer = GetGridControl();
         if (epgGridContainer)
         {
           epgGridContainer->SetChannel(tag->ChannelTag());
