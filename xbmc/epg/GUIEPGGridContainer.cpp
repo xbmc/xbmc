@@ -1015,7 +1015,7 @@ void CGUIEPGGridContainer::OnRight()
   }
 }
 
-void CGUIEPGGridContainer::SetChannel(const std::string &channel)
+bool CGUIEPGGridContainer::SetChannel(const std::string &channel)
 {
   for (int iIndex = 0; iIndex < m_gridModel->ChannelItemsSize(); iIndex++)
   {
@@ -1023,12 +1023,13 @@ void CGUIEPGGridContainer::SetChannel(const std::string &channel)
     if (strPath == channel)
     {
       GoToChannel(iIndex);
-      break;
+      return true;
     }
   }
+  return false;
 }
 
-void CGUIEPGGridContainer::SetChannel(const CPVRChannelPtr &channel)
+bool CGUIEPGGridContainer::SetChannel(const CPVRChannelPtr &channel)
 {
   for (int iIndex = 0; iIndex < m_gridModel->ChannelItemsSize(); iIndex++)
   {
@@ -1036,9 +1037,10 @@ void CGUIEPGGridContainer::SetChannel(const CPVRChannelPtr &channel)
     if (iChannelId == channel->ChannelID())
     {
       GoToChannel(iIndex);
-      break;
+      return true;
     }
   }
+  return false;
 }
 
 void CGUIEPGGridContainer::SetChannel(int channel)

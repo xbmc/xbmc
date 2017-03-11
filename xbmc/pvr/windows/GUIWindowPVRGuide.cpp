@@ -45,7 +45,8 @@ using namespace EPG;
 CGUIWindowPVRGuide::CGUIWindowPVRGuide(bool bRadio) :
   CGUIWindowPVRBase(bRadio, bRadio ? WINDOW_RADIO_GUIDE : WINDOW_TV_GUIDE, "MyPVRGuide.xml"),
   CPVRChannelNumberInputHandler(1000),
-  m_cachedChannelGroup(new CPVRChannelGroup)
+  m_cachedChannelGroup(new CPVRChannelGroup),
+  m_bChannelSelectionRestored(false)
 {
   m_bRefreshTimelineItems = false;
   g_EpgContainer.RegisterObserver(this);
@@ -67,7 +68,7 @@ void CGUIWindowPVRGuide::Init()
   CGUIEPGGridContainer *epgGridContainer = GetGridControl();
   if (epgGridContainer)
   {
-    epgGridContainer->SetChannel(GetSelectedItemPath(m_bRadio));
+    m_bChannelSelectionRestored = epgGridContainer->SetChannel(GetSelectedItemPath(m_bRadio));
     epgGridContainer->GoToNow();
   }
 
@@ -101,6 +102,8 @@ void CGUIWindowPVRGuide::OnDeinitWindow(int nextWindowID)
 {
   StopRefreshTimelineItemsThread();
   m_bRefreshTimelineItems = false;
+
+  m_bChannelSelectionRestored = false;
 
   CGUIWindowPVRBase::OnDeinitWindow(nextWindowID);
 }
@@ -172,6 +175,20 @@ void CGUIWindowPVRGuide::UpdateButtons(void)
   CGUIWindowPVRBase::UpdateButtons();
   SET_CONTROL_LABEL(CONTROL_LABEL_HEADER1, g_localizeStrings.Get(19032));
   SET_CONTROL_LABEL(CONTROL_LABEL_HEADER2, GetChannelGroup()->GroupName());
+}
+
+bool CGUIWindowPVRGuide::Update(const std::string &strDirectory, bool updateFilterPath /* = true */)
+{
+  bool bReturn = CGUIWindowPVRBase::Update(strDirectory, updateFilterPath);
+
+  if (bReturn && !m_bChannelSelectionRestored)
+  {
+    CGUIEPGGridContainer* epgGridContainer = GetGridControl();
+    if (epgGridContainer)
+      m_bChannelSelectionRestored = epgGridContainer->SetChannel(GetSelectedItemPath(m_bRadio));
+  }
+
+  return bReturn;
 }
 
 bool CGUIWindowPVRGuide::GetDirectory(const std::string &strDirectory, CFileItemList &items)

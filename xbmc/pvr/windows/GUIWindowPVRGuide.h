@@ -51,6 +51,7 @@ namespace PVR
     virtual void UpdateButtons(void) override;
     virtual void Notify(const Observable &obs, const ObservableMessage msg) override;
     virtual void SetInvalid() override;
+    bool Update(const std::string &strDirectory, bool updateFilterPath = true) override;
 
     bool RefreshTimelineItems();
 
@@ -83,6 +84,8 @@ namespace PVR
 
     CPVRChannelGroupPtr m_cachedChannelGroup;
     std::unique_ptr<CFileItemList> m_newTimeline;
+
+    bool m_bChannelSelectionRestored;
   };
 
   class CPVRRefreshTimelineItemsThread : public CThread
