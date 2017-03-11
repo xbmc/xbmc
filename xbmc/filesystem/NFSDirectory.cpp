@@ -153,7 +153,7 @@ bool CNFSDirectory::ResolveSymlink( const std::string &dirName, struct nfsdirent
 
     if (ret != 0) 
     {
-      CLog::Log(LOGERROR, "NFS: Failed to stat(%s) on link resolve %s\n", fullpath.c_str(), gNfsConnection.GetImpl()->nfs_get_error(gNfsConnection.GetNfsContext()));
+      CLog::Log(LOGERROR, "NFS: Failed to stat(%s) on link resolve %s", fullpath.c_str(), gNfsConnection.GetImpl()->nfs_get_error(gNfsConnection.GetNfsContext()));
       retVal = false;
     }
     else
@@ -177,7 +177,7 @@ bool CNFSDirectory::ResolveSymlink( const std::string &dirName, struct nfsdirent
   }
   else
   {
-    CLog::Log(LOGERROR, "Failed to readlink(%s) %s\n", fullpath.c_str(), gNfsConnection.GetImpl()->nfs_get_error(gNfsConnection.GetNfsContext()));
+    CLog::Log(LOGERROR, "Failed to readlink(%s) %s", fullpath.c_str(), gNfsConnection.GetImpl()->nfs_get_error(gNfsConnection.GetNfsContext()));
     retVal = false;
   }
   return retVal;
@@ -220,7 +220,7 @@ bool CNFSDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 
   if(ret != 0)
   {
-    CLog::Log(LOGERROR, "Failed to open(%s) %s\n", strDirName.c_str(), gNfsConnection.GetImpl()->nfs_get_error(gNfsConnection.GetNfsContext()));
+    CLog::Log(LOGERROR, "Failed to open(%s) %s", strDirName.c_str(), gNfsConnection.GetImpl()->nfs_get_error(gNfsConnection.GetNfsContext()));
     return false;
   }
   lock.Leave();
@@ -311,7 +311,7 @@ bool CNFSDirectory::Create(const CURL& url2)
 
   success = (ret == 0 || -EEXIST == ret);
   if(!success)
-    CLog::Log(LOGERROR, "NFS: Failed to create(%s) %s\n", folderName.c_str(), gNfsConnection.GetImpl()->nfs_get_error(gNfsConnection.GetNfsContext()));
+    CLog::Log(LOGERROR, "NFS: Failed to create(%s) %s", folderName.c_str(), gNfsConnection.GetImpl()->nfs_get_error(gNfsConnection.GetNfsContext()));
   return success;
 }
 

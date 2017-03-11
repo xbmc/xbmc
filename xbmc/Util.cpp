@@ -1908,7 +1908,7 @@ void CUtil::ScanPathsForAssociatedItems(const std::string& videoName,
       else
       {
         associatedFiles.push_back(pItem->GetPath());
-        CLog::Log(LOGINFO, "%s: found associated file %s\n", __FUNCTION__, CURL::GetRedacted(pItem->GetPath()).c_str());
+        CLog::Log(LOGINFO, "%s: found associated file %s", __FUNCTION__, CURL::GetRedacted(pItem->GetPath()).c_str());
       }
     }
     else
@@ -1957,7 +1957,7 @@ int CUtil::ScanArchiveForAssociatedItems(const std::string& strArchivePath,
     {
       if (StringUtils::EqualsNoCase(strExt, ext))
       {
-        CLog::Log(LOGINFO, "%s: found associated file %s\n", __FUNCTION__, CURL::GetRedacted(strPathInRar).c_str());
+        CLog::Log(LOGINFO, "%s: found associated file %s", __FUNCTION__, CURL::GetRedacted(strPathInRar).c_str());
         associatedFiles.push_back(strPathInRar);
         nItemsAdded++;
         break;
@@ -2047,7 +2047,7 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
             std::string strDest = StringUtils::Format("special://temp/subtitle.%s.%d.smi", TagConv.m_Langclass[k].Name.c_str(), i);
             if (CFile::Copy(vecSubtitles[i], strDest))
             {
-              CLog::Log(LOGINFO, " cached subtitle %s->%s\n", CURL::GetRedacted(vecSubtitles[i]).c_str(), strDest.c_str());
+              CLog::Log(LOGINFO, " cached subtitle %s->%s", CURL::GetRedacted(vecSubtitles[i]).c_str(), strDest.c_str());
               vecSubtitles.push_back(strDest);
             }
           }

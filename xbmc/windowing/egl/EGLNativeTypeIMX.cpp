@@ -66,12 +66,12 @@ void CEGLNativeTypeIMX::Initialize()
   fd = open("/sys/class/graphics/fb0/mode", O_RDWR);
   if (fd >= 0)
   {
-    CLog::Log(LOGNOTICE, "%s - graphics sysfs is writable\n", __FUNCTION__);
+    CLog::Log(LOGNOTICE, "%s - graphics sysfs is writable", __FUNCTION__);
     m_readonly = false;
   }
   else
   {
-    CLog::Log(LOGNOTICE, "%s - graphics sysfs is read-only\n", __FUNCTION__);
+    CLog::Log(LOGNOTICE, "%s - graphics sysfs is read-only", __FUNCTION__);
     m_readonly = true;
   }
   close(fd);
@@ -80,19 +80,19 @@ void CEGLNativeTypeIMX::Initialize()
   std::string bpp;
   if (SysfsUtils::GetString("/sys/class/graphics/fb0/bits_per_pixel", bpp))
   {
-    CLog::Log(LOGWARNING, "%s - determining current bits per pixel failed, assuming 16bpp\n", __FUNCTION__);
+    CLog::Log(LOGWARNING, "%s - determining current bits per pixel failed, assuming 16bpp", __FUNCTION__);
   }
   else
   {
     StringUtils::Trim(bpp);
     if (bpp == "32")
     {
-      CLog::Log(LOGNOTICE, "%s - 32bpp: configure alpha blending\n", __FUNCTION__);
+      CLog::Log(LOGNOTICE, "%s - 32bpp: configure alpha blending", __FUNCTION__);
       alphaBlending = true;
     }
     else
     {
-      CLog::Log(LOGNOTICE, "%s - %sbpp: configure color keying\n", __FUNCTION__, bpp.c_str());
+      CLog::Log(LOGNOTICE, "%s - %sbpp: configure color keying", __FUNCTION__, bpp.c_str());
     }
   }
 
@@ -101,7 +101,7 @@ void CEGLNativeTypeIMX::Initialize()
   fd = open("/dev/fb0",O_RDWR);
   if (fd < 0)
   {
-    CLog::Log(LOGERROR, "%s - Error while opening /dev/fb0.\n", __FUNCTION__);
+    CLog::Log(LOGERROR, "%s - Error while opening /dev/fb0.", __FUNCTION__);
     return;
   }
 #ifdef HAS_IMXVPU
@@ -114,17 +114,17 @@ void CEGLNativeTypeIMX::Initialize()
   lalpha.enable = alphaBlending?1:0;
   lalpha.alpha_in_pixel = 1;
   if (ioctl(fd, MXCFB_SET_LOC_ALPHA, &lalpha) < 0)
-    CLog::Log(LOGERROR, "%s - Failed to setup alpha blending\n", __FUNCTION__);
+    CLog::Log(LOGERROR, "%s - Failed to setup alpha blending", __FUNCTION__);
 
   gbl_alpha.alpha = 255;
   gbl_alpha.enable = alphaBlending?0:1;
   if (ioctl(fd, MXCFB_SET_GBL_ALPHA, &gbl_alpha) < 0)
-    CLog::Log(LOGERROR, "%s - Failed to setup global alpha\n", __FUNCTION__);
+    CLog::Log(LOGERROR, "%s - Failed to setup global alpha", __FUNCTION__);
 
   colorKey.enable = alphaBlending?0:1;
   colorKey.color_key = (16 << 16)|(8 << 8)|16;
   if (ioctl(fd, MXCFB_SET_CLR_KEY, &colorKey) < 0)
-    CLog::Log(LOGERROR, "%s - Failed to setup color keying\n", __FUNCTION__);
+    CLog::Log(LOGERROR, "%s - Failed to setup color keying", __FUNCTION__);
 
   close(fd);
   ShowWindow(true);
@@ -144,7 +144,7 @@ void CEGLNativeTypeIMX::Destroy()
   fd = open("/dev/fb0",O_RDWR);
   if (fd < 0)
   {
-    CLog::Log(LOGERROR, "%s - Error while opening /dev/fb0.\n", __FUNCTION__);
+    CLog::Log(LOGERROR, "%s - Error while opening /dev/fb0.", __FUNCTION__);
     return;
   }
 
@@ -153,7 +153,7 @@ void CEGLNativeTypeIMX::Destroy()
   fb_buffer = mmap(NULL, fixed_info.smem_len, PROT_WRITE, MAP_SHARED, fd, 0);
   if (fb_buffer == MAP_FAILED)
   {
-    CLog::Log(LOGERROR, "%s - fb mmap failed %s.\n", __FUNCTION__, strerror(errno));
+    CLog::Log(LOGERROR, "%s - fb mmap failed %s.", __FUNCTION__, strerror(errno));
   }
   else
   {

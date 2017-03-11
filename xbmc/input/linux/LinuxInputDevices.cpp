@@ -531,7 +531,7 @@ bool CLinuxInputDevice::KeyEvent(const struct input_event& levt, XBMC_Event& dev
         break;
 
       default:
-        CLog::Log(LOGWARNING, "CLinuxInputDevice::KeyEvent: Unknown mouse button code: %d\n", levt.code);
+        CLog::Log(LOGWARNING, "CLinuxInputDevice::KeyEvent: Unknown mouse button code: %d", levt.code);
         return false;
     }
   }
@@ -599,7 +599,7 @@ bool CLinuxInputDevice::RelEvent(const struct input_event& levt, XBMC_Event& dev
     break;
   case REL_Z:
   default:
-    CLog::Log(LOGWARNING, "CLinuxInputDevice::RelEvent: Unknown rel event code: %d\n", levt.code);
+    CLog::Log(LOGWARNING, "CLinuxInputDevice::RelEvent: Unknown rel event code: %d", levt.code);
     return false;
   }
 
@@ -907,7 +907,7 @@ void CLinuxInputDevice::SetupKeyboardAutoRepeat(int fd)
     event.value = 0;
     write(fd, &event, sizeof(event));
 
-    CLog::Log(LOGINFO, "CLinuxInputDevice: auto key repeat disabled on device '%s'\n", m_deviceName);
+    CLog::Log(LOGINFO, "CLinuxInputDevice: auto key repeat disabled on device '%s'", m_deviceName);
   }
 }
 
@@ -938,7 +938,7 @@ void CLinuxInputDevice::GetInfo(int fd)
   {
     m_bSkipNonKeyEvents = false;
   }
-  CLog::Log(LOGINFO, "opened device '%s' (file name %s), m_bSkipNonKeyEvents %d\n", m_deviceName, m_fileName.c_str(), m_bSkipNonKeyEvents);
+  CLog::Log(LOGINFO, "opened device '%s' (file name %s), m_bSkipNonKeyEvents %d", m_deviceName, m_fileName.c_str(), m_bSkipNonKeyEvents);
 
   /* get event type bits */
   ioctl(fd, EVIOCGBIT(0, sizeof(evbit)), evbit);
@@ -1275,7 +1275,7 @@ bool CLinuxInputDevice::Open()
   fd = open(m_fileName.c_str(), O_RDWR | O_NONBLOCK);
   if (fd < 0)
   {
-    CLog::Log(LOGERROR, "CLinuxInputDevice: could not open device: %s\n", m_fileName.c_str());
+    CLog::Log(LOGERROR, "CLinuxInputDevice: could not open device: %s", m_fileName.c_str());
     return false;
   }
 
@@ -1283,7 +1283,7 @@ bool CLinuxInputDevice::Open()
   ret = ioctl(fd, EVIOCGRAB, 1);
   if (ret && errno != EINVAL)
   {
-    CLog::Log(LOGERROR, "CLinuxInputDevice: could not grab device: %s\n", m_fileName.c_str());
+    CLog::Log(LOGERROR, "CLinuxInputDevice: could not grab device: %s", m_fileName.c_str());
     close(fd);
     return false;
   }

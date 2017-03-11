@@ -969,7 +969,7 @@ void CPVRChannelGroup::OnSettingChanged(std::shared_ptr<const CSetting> setting)
   //! @todo while pvr manager is starting up do accept setting changes.
   if(!CServiceBroker::GetPVRManager().IsStarted())
   {
-    CLog::Log(LOGWARNING, "CPVRChannelGroup setting change ignored while PVRManager is starting\n");
+    CLog::Log(LOGWARNING, "CPVRChannelGroup setting change ignored while PVRManager is starting");
     return;
   }
 

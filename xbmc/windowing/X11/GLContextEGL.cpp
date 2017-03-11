@@ -57,7 +57,7 @@ bool CGLContextEGL::Refresh(bool force, int screen, Window glWindow, bool &newCo
       m_eglSurface = eglCreateWindowSurface(m_eglDisplay, m_eglConfig, glWindow, NULL);
       if (m_eglSurface == EGL_NO_SURFACE)
       {
-        CLog::Log(LOGERROR, "failed to create EGL window surface %d\n", eglGetError());
+        CLog::Log(LOGERROR, "failed to create EGL window surface %d", eglGetError());
         return false;
       }
     }
@@ -76,12 +76,12 @@ bool CGLContextEGL::Refresh(bool force, int screen, Window glWindow, bool &newCo
     m_eglDisplay = eglGetDisplay((EGLNativeDisplayType)m_dpy);
     if (m_eglDisplay == EGL_NO_DISPLAY)
     {
-      CLog::Log(LOGERROR, "failed to get egl display\n");
+      CLog::Log(LOGERROR, "failed to get egl display");
       return false;
     }
     if (!eglInitialize(m_eglDisplay, NULL, NULL))
     {
-      CLog::Log(LOGERROR, "failed to initialize egl display\n");
+      CLog::Log(LOGERROR, "failed to initialize egl display");
       return false;
     }
   }
@@ -164,7 +164,7 @@ bool CGLContextEGL::Refresh(bool force, int screen, Window glWindow, bool &newCo
     }
     if (!eglInitialize(m_eglDisplay, NULL, NULL))
     {
-      CLog::Log(LOGERROR, "failed to initialize egl\n");
+      CLog::Log(LOGERROR, "failed to initialize egl");
       return false;
     }
 
@@ -206,13 +206,13 @@ bool CGLContextEGL::Refresh(bool force, int screen, Window glWindow, bool &newCo
     m_eglContext = eglCreateContext(m_eglDisplay, m_eglConfig, EGL_NO_CONTEXT, contextAttributes);
     if (m_eglContext == EGL_NO_CONTEXT)
     {
-      CLog::Log(LOGERROR, "failed to create EGL context\n");
+      CLog::Log(LOGERROR, "failed to create EGL context");
       return false;
     }
 
     if (!eglMakeCurrent(m_eglDisplay, m_eglSurface, m_eglSurface, m_eglContext))
     {
-      CLog::Log(LOGERROR, "Failed to make context current %p %p %p\n", m_eglDisplay, m_eglSurface, m_eglContext);
+      CLog::Log(LOGERROR, "Failed to make context current %p %p %p", m_eglDisplay, m_eglSurface, m_eglContext);
       return false;
     }
     XFree(vInfo);

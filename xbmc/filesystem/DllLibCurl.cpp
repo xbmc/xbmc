@@ -150,7 +150,7 @@ void DllLibCurlGlobal::CheckIdle()
   {
     if( !it->m_busy && (XbmcThreads::SystemClockMillis() - it->m_idletimestamp) > idletime )
     {
-      CLog::Log(LOGINFO, "%s - Closing session to %s://%s (easy=%p, multi=%p)\n", __FUNCTION__, it->m_protocol.c_str(), it->m_hostname.c_str(), (void*)it->m_easy, (void*)it->m_multi);
+      CLog::Log(LOGINFO, "%s - Closing session to %s://%s (easy=%p, multi=%p)", __FUNCTION__, it->m_protocol.c_str(), it->m_hostname.c_str(), (void*)it->m_easy, (void*)it->m_multi);
 
       if(it->m_multi && it->m_easy)
         multi_remove_handle(it->m_multi, it->m_easy);
@@ -234,7 +234,7 @@ void DllLibCurlGlobal::easy_acquire(const char *protocol, const char *hostname, 
   m_sessions.push_back(session);
 
 
-  CLog::Log(LOGINFO, "%s - Created session to %s://%s\n", __FUNCTION__, protocol, hostname);
+  CLog::Log(LOGINFO, "%s - Created session to %s://%s", __FUNCTION__, protocol, hostname);
 
   return;
 

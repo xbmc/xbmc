@@ -275,7 +275,7 @@ bool OMXPlayerAudio::Decode(DemuxPacket *pkt, bool bDropPacket, bool bTrickPlay)
           ret = m_omxAudio.AddPackets(decoded, decoded_size, dts, pts, m_pAudioCodec->GetFrameSize(), settings_changed);
           if(ret != decoded_size)
           {
-            CLog::Log(LOGERROR, "error ret %d decoded_size %d\n", ret, decoded_size);
+            CLog::Log(LOGERROR, "error ret %d decoded_size %d", ret, decoded_size);
           }
         }
 
@@ -562,7 +562,7 @@ bool OMXPlayerAudio::OpenDecoder()
   }
   else
   {
-    CLog::Log(LOGINFO, "Audio codec %s channels %d samplerate %d bitspersample %d\n",
+    CLog::Log(LOGINFO, "Audio codec %s channels %d samplerate %d bitspersample %d",
       m_codec_name.c_str(), m_hints.channels, m_hints.samplerate, m_hints.bitspersample);
   }
 

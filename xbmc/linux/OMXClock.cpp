@@ -158,7 +158,7 @@ bool OMXClock::OMXStateExecute(bool lock /* = true */)
     omx_err = m_omx_clock.SetStateForComponent(OMX_StateExecuting);
     if (omx_err != OMX_ErrorNone)
     {
-      CLog::Log(LOGERROR, "OMXClock::StateExecute m_omx_clock.SetStateForComponent\n");
+      CLog::Log(LOGERROR, "OMXClock::StateExecute m_omx_clock.SetStateForComponent");
       if(lock)
         UnLock();
       return false;
@@ -201,7 +201,7 @@ bool  OMXClock::OMXStop(bool lock /* = true */)
   if(lock)
     Lock();
 
-  CLog::Log(LOGDEBUG, "OMXClock::OMXStop\n");
+  CLog::Log(LOGDEBUG, "OMXClock::OMXStop");
 
   OMX_TIME_CONFIG_CLOCKSTATETYPE clock;
   OMX_INIT_STRUCTURE(clock);
@@ -212,7 +212,7 @@ bool  OMXClock::OMXStop(bool lock /* = true */)
   OMX_ERRORTYPE omx_err = m_omx_clock.SetConfig(OMX_IndexConfigTimeClockState, &clock);
   if(omx_err != OMX_ErrorNone)
   {
-    CLog::Log(LOGERROR, "OMXClock::Stop error setting OMX_IndexConfigTimeClockState\n");
+    CLog::Log(LOGERROR, "OMXClock::Stop error setting OMX_IndexConfigTimeClockState");
     if(lock)
       UnLock();
     return false;
@@ -243,7 +243,7 @@ bool OMXClock::OMXStep(int steps /* = 1 */, bool lock /* = true */)
   OMX_ERRORTYPE omx_err = m_omx_clock.SetConfig(OMX_IndexConfigSingleStep, &param);
   if(omx_err != OMX_ErrorNone)
   {
-    CLog::Log(LOGERROR, "OMXClock::Error setting OMX_IndexConfigSingleStep\n");
+    CLog::Log(LOGERROR, "OMXClock::Error setting OMX_IndexConfigSingleStep");
     if(lock)
       UnLock();
     return false;
@@ -287,12 +287,12 @@ bool OMXClock::OMXReset(bool has_video, bool has_audio, bool lock /* = true */)
       OMX_ERRORTYPE omx_err = m_omx_clock.SetConfig(OMX_IndexConfigTimeClockState, &clock);
       if(omx_err != OMX_ErrorNone)
       {
-        CLog::Log(LOGERROR, "OMXClock::OMXReset error setting OMX_IndexConfigTimeClockState\n");
+        CLog::Log(LOGERROR, "OMXClock::OMXReset error setting OMX_IndexConfigTimeClockState");
         if(lock)
           UnLock();
         return false;
       }
-      CLog::Log(LOGDEBUG, "OMXClock::OMXReset audio / video : %d / %d wait mask %d->%d state : %d->%d\n",
+      CLog::Log(LOGDEBUG, "OMXClock::OMXReset audio / video : %d / %d wait mask %d->%d state : %d->%d",
           has_audio, has_video, m_WaitMask, clock.nWaitMask, m_eState, clock.eState);
       if (m_eState != OMX_TIME_ClockStateStopped)
         m_WaitMask = clock.nWaitMask;
@@ -326,7 +326,7 @@ double OMXClock::OMXMediaTime(bool lock /* = true */)
     OMX_ERRORTYPE omx_err = m_omx_clock.GetConfig(OMX_IndexConfigTimeCurrentMediaTime, &timeStamp);
     if(omx_err != OMX_ErrorNone)
     {
-      CLog::Log(LOGERROR, "OMXClock::MediaTime error getting OMX_IndexConfigTimeCurrentMediaTime\n");
+      CLog::Log(LOGERROR, "OMXClock::MediaTime error getting OMX_IndexConfigTimeCurrentMediaTime");
       if(lock)
         UnLock();
       return 0;
@@ -366,14 +366,14 @@ double OMXClock::OMXClockAdjustment(bool lock /* = true */)
   OMX_ERRORTYPE omx_err = m_omx_clock.GetConfig(OMX_IndexConfigClockAdjustment, &timeStamp);
   if(omx_err != OMX_ErrorNone)
   {
-    CLog::Log(LOGERROR, "OMXClock::MediaTime error getting OMX_IndexConfigClockAdjustment\n");
+    CLog::Log(LOGERROR, "OMXClock::MediaTime error getting OMX_IndexConfigClockAdjustment");
     if(lock)
       UnLock();
     return 0;
   }
 
   pts = (double)FromOMXTime(timeStamp.nTimestamp);
-  //CLog::Log(LOGINFO, "OMXClock::ClockAdjustment %.0f %.0f\n", (double)FromOMXTime(timeStamp.nTimestamp), pts);
+  //CLog::Log(LOGINFO, "OMXClock::ClockAdjustment %.0f %.0f", (double)FromOMXTime(timeStamp.nTimestamp), pts);
   if(lock)
     UnLock();
 
@@ -485,7 +485,7 @@ bool OMXClock::OMXSetSpeed(int speed, bool lock /* = true */, bool pause_resume 
     OMX_ERRORTYPE omx_err = m_omx_clock.SetConfig(OMX_IndexConfigTimeScale, &scaleType);
     if(omx_err != OMX_ErrorNone)
     {
-      CLog::Log(LOGERROR, "OMXClock::OMXSetSpeed error setting OMX_IndexConfigTimeClockState\n");
+      CLog::Log(LOGERROR, "OMXClock::OMXSetSpeed error setting OMX_IndexConfigTimeClockState");
       if(lock)
         UnLock();
       return false;
@@ -557,7 +557,7 @@ bool OMXClock::HDMIClockSync(bool lock /* = true */)
   OMX_ERRORTYPE omx_err = m_omx_clock.SetConfig(OMX_IndexConfigLatencyTarget, &latencyTarget);
   if(omx_err != OMX_ErrorNone)
   {
-    CLog::Log(LOGERROR, "OMXClock::Speed error setting OMX_IndexConfigLatencyTarget\n");
+    CLog::Log(LOGERROR, "OMXClock::Speed error setting OMX_IndexConfigLatencyTarget");
     if(lock)
       UnLock();
     return false;

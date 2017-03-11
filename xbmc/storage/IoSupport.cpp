@@ -144,8 +144,8 @@ INT CIoSupport::ReadSector(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer)
 
     if (lseek(fd, offset, SEEK_SET) < 0)
     {
-      CLog::Log(LOGERROR, "CD: ReadSector Request to read sector %d\n", (int)dwSector);
-      CLog::Log(LOGERROR, "CD: ReadSector error: %s\n", strerror(errno));
+      CLog::Log(LOGERROR, "CD: ReadSector Request to read sector %d", (int)dwSector);
+      CLog::Log(LOGERROR, "CD: ReadSector error: %s", strerror(errno));
       OutputDebugString("CD Read error\n");
       return (-1);
     }
@@ -158,8 +158,8 @@ INT CIoSupport::ReadSector(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer)
         continue;
 
       // error reading sector
-      CLog::Log(LOGERROR, "CD: ReadSector Request to read sector %d\n", (int)dwSector);
-      CLog::Log(LOGERROR, "CD: ReadSector error: %s\n", strerror(errno));
+      CLog::Log(LOGERROR, "CD: ReadSector Request to read sector %d", (int)dwSector);
+      CLog::Log(LOGERROR, "CD: ReadSector error: %s", strerror(errno));
       OutputDebugString("CD Read error\n");
       return (-1);
     }
@@ -239,9 +239,9 @@ INT CIoSupport::ReadSectorMode2(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer
       memcpy(lpczBuffer, arg.buffer, MODE2_DATA_SIZE); // don't think offset is needed here
       return MODE2_DATA_SIZE;
     }
-    CLog::Log(LOGERROR, "CD: ReadSectorMode2 Request to read sector %d\n", (int)dwSector);
-    CLog::Log(LOGERROR, "CD: ReadSectorMode2 error: %s\n", strerror(errno));
-    CLog::Log(LOGERROR, "CD: ReadSectorMode2 minute %d, second %d, frame %d\n", m, s, f);
+    CLog::Log(LOGERROR, "CD: ReadSectorMode2 Request to read sector %d", (int)dwSector);
+    CLog::Log(LOGERROR, "CD: ReadSectorMode2 error: %s", strerror(errno));
+    CLog::Log(LOGERROR, "CD: ReadSectorMode2 minute %d, second %d, frame %d", m, s, f);
     OutputDebugString("CD Read error\n");
     return -1;
   }

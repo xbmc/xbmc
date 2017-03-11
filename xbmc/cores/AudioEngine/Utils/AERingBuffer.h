@@ -132,7 +132,7 @@ public:
     if ( m_iSize > size + m_iWritePos )
     {
 #ifdef AE_RING_BUFFER_DEBUG
-      CLog::Log(LOGDEBUG, "AERingBuffer: Written to: %u size: %u space before: %u\n", m_iWritePos, size, space);
+      CLog::Log(LOGDEBUG, "AERingBuffer: Written to: %u size: %u space before: %u", m_iWritePos, size, space);
 #endif
       memcpy(m_Buffer[plane] + m_iWritePos, src, size);
     }
@@ -142,7 +142,7 @@ public:
       unsigned int first = m_iSize - m_iWritePos;
       unsigned int second = size - first;
 #ifdef AE_RING_BUFFER_DEBUG
-      CLog::Log(LOGDEBUG, "AERingBuffer: Written to (split) first: %u second: %u size: %u space before: %u\n", first, second, size, space);
+      CLog::Log(LOGDEBUG, "AERingBuffer: Written to (split) first: %u second: %u size: %u space before: %u", first, second, size, space);
 #endif
       memcpy(m_Buffer[plane] + m_iWritePos, src, first);
       memcpy(m_Buffer[plane], src + first, second);
@@ -186,7 +186,7 @@ public:
     if ( size + m_iReadPos < m_iSize )
     {
 #ifdef AE_RING_BUFFER_DEBUG
-      CLog::Log(LOGDEBUG, "AERingBuffer: Reading from: %u size: %u space before: %u\n", m_iWritePos, size, space);
+      CLog::Log(LOGDEBUG, "AERingBuffer: Reading from: %u size: %u space before: %u", m_iWritePos, size, space);
 #endif
       if (dest)
         memcpy(dest, m_Buffer[plane] + m_iReadPos, size);
@@ -197,7 +197,7 @@ public:
       unsigned int first = m_iSize - m_iReadPos;
       unsigned int second = size - first;
 #ifdef AE_RING_BUFFER_DEBUG
-      CLog::Log(LOGDEBUG, "AERingBuffer: Reading from (split) first: %u second: %u size: %u space before: %u\n", first, second, size, space);
+      CLog::Log(LOGDEBUG, "AERingBuffer: Reading from (split) first: %u second: %u size: %u space before: %u", first, second, size, space);
 #endif
       if (dest)
       {

@@ -229,7 +229,7 @@ void CVAAPIContext::QueryCaps()
   for(int i = 0; i < m_attributeCount; i++)
   {
     VADisplayAttribute * const display_attr = &m_attributes[i];
-    CLog::Log(LOGDEBUG, LOGVIDEO, "VAAPI - attrib %d (%s/%s) min %d max %d value 0x%x\n"
+    CLog::Log(LOGDEBUG, LOGVIDEO, "VAAPI - attrib %d (%s/%s) min %d max %d value 0x%x"
                          , display_attr->type
                          ,(display_attr->flags & VA_DISPLAY_ATTRIB_GETTABLE) ? "get" : "---"
                          ,(display_attr->flags & VA_DISPLAY_ATTRIB_SETTABLE) ? "set" : "---"

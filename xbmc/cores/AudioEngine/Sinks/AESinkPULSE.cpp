@@ -876,7 +876,7 @@ unsigned int CAESinkPULSE::AddPackets(uint8_t **data, unsigned int frames, unsig
 
   if (error)
   {
-    CLog::Log(LOGERROR, "CPulseAudioDirectSound::AddPackets - pa_stream_write failed\n");
+    CLog::Log(LOGERROR, "CPulseAudioDirectSound::AddPackets - pa_stream_write failed");
     return 0;
   }
   unsigned int res = (unsigned int)(length / m_format.m_frameSize);

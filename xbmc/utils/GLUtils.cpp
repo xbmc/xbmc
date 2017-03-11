@@ -41,7 +41,7 @@ void _VerifyGLState(const char* szfile, const char* szfunction, int lineno){
   GLenum err = glGetError();
   if (err==GL_NO_ERROR)
     return;
-  CLog::Log(LOGERROR, "GL ERROR: %s\n", gluErrorString(err));
+  CLog::Log(LOGERROR, "GL ERROR: %s", gluErrorString(err));
   if (szfile && szfunction)
       CLog::Log(LOGERROR, "In file:%s function:%s line:%d", szfile, szfunction, lineno);
   GLboolean bools[16];

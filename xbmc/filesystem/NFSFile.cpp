@@ -617,7 +617,7 @@ int CNFSFile::Stat(const CURL& url, struct __stat64* buffer)
   //if buffer == NULL we where called from Exists - in that case don't spam the log with errors
   if (ret != 0 && buffer != NULL) 
   {
-    CLog::Log(LOGERROR, "NFS: Failed to stat(%s) %s\n", url.GetFileName().c_str(), gNfsConnection.GetImpl()->nfs_get_error(gNfsConnection.GetNfsContext()));
+    CLog::Log(LOGERROR, "NFS: Failed to stat(%s) %s", url.GetFileName().c_str(), gNfsConnection.GetImpl()->nfs_get_error(gNfsConnection.GetNfsContext()));
     ret = -1;
   }
   else
@@ -719,7 +719,7 @@ void CNFSFile::Close()
         
 	  if (ret < 0) 
     {
-      CLog::Log(LOGERROR, "Failed to close(%s) - %s\n", m_url.GetFileName().c_str(), gNfsConnection.GetImpl()->nfs_get_error(m_pNfsContext));
+      CLog::Log(LOGERROR, "Failed to close(%s) - %s", m_url.GetFileName().c_str(), gNfsConnection.GetImpl()->nfs_get_error(m_pNfsContext));
     }
     m_pFileHandle = NULL;
     m_pNfsContext = NULL;    
@@ -764,7 +764,7 @@ ssize_t CNFSFile::Write(const void* lpBuf, size_t uiBufSize)
     //danger - something went wrong
     if (writtenBytes < 0) 
     {
-      CLog::Log(LOGERROR, "Failed to pwrite(%s) %s\n", m_url.GetFileName().c_str(), gNfsConnection.GetImpl()->nfs_get_error(m_pNfsContext));
+      CLog::Log(LOGERROR, "Failed to pwrite(%s) %s", m_url.GetFileName().c_str(), gNfsConnection.GetImpl()->nfs_get_error(m_pNfsContext));
       if (numberOfBytesWritten == 0)
         return -1;
 

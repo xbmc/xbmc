@@ -61,13 +61,13 @@ bool CGLContextEGL::CreateDisplay(MirConnection* connection,
 
   if (m_eglDisplay == EGL_NO_DISPLAY)
   {
-    CLog::Log(LOGERROR, "failed to get EGL display\n");
+    CLog::Log(LOGERROR, "failed to get EGL display");
     return false;
   }
 
   if (!eglInitialize(m_eglDisplay, &major, &minor))
   {
-    CLog::Log(LOGERROR, "failed to initialize EGL display\n");
+    CLog::Log(LOGERROR, "failed to initialize EGL display");
     return false;
   }
 
@@ -102,14 +102,14 @@ bool CGLContextEGL::CreateContext()
 
   if (m_eglContext == EGL_NO_CONTEXT)
   {
-    CLog::Log(LOGERROR, "failed to create EGL context\n");
+    CLog::Log(LOGERROR, "failed to create EGL context");
     return false;
   }
 
   if (!eglMakeCurrent(m_eglDisplay, m_eglSurface,
                       m_eglSurface, m_eglContext))
   {
-    CLog::Log(LOGERROR, "Failed to make context current %p %p %p\n",
+    CLog::Log(LOGERROR, "Failed to make context current %p %p %p",
                          m_eglDisplay, m_eglSurface, m_eglContext);
     return false;
   }
@@ -129,7 +129,7 @@ bool CGLContextEGL::CreateSurface(MirWindow* window)
 
   if (m_eglSurface == EGL_NO_SURFACE)
   {
-    CLog::Log(LOGERROR, "failed to create EGL window surface %d\n", eglGetError());
+    CLog::Log(LOGERROR, "failed to create EGL window surface %d", eglGetError());
     return false;
   }
 

@@ -117,7 +117,7 @@ void DllLibbluray::dir_close(BD_DIR_H *dir)
 {
   if (dir)
   {
-    CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - Closed dir (%p)\n", static_cast<void*>(dir));
+    CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - Closed dir (%p)", static_cast<void*>(dir));
     delete static_cast<SDirState*>(dir->internal);
     delete dir;
   }
@@ -151,13 +151,13 @@ BD_DIR_H* DllLibbluray::dir_open(void *handle, const char* rel_path)
   if (URIUtils::HasSlashAtEnd(strDirname))
     URIUtils::RemoveSlashAtEnd(strDirname);
 
-  CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - Opening dir %s\n", CURL::GetRedacted(strDirname).c_str());
+  CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - Opening dir %s", CURL::GetRedacted(strDirname).c_str());
 
   SDirState *st = new SDirState();
   if (!CDirectory::GetDirectory(strDirname, st->list))
   {
     if (!CFile::Exists(strDirname))
-      CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - Error opening dir! (%s)\n", CURL::GetRedacted(strDirname).c_str());
+      CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - Error opening dir! (%s)", CURL::GetRedacted(strDirname).c_str());
     delete st;
     return NULL;
   }

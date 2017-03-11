@@ -988,14 +988,14 @@ static int mpeg_add_header(am_private_t *para, am_packet_t *pkt)
     packet_wrapper[5] = size & 0xff ;
     memcpy(pkt->hdr->data, packet_wrapper, sizeof(packet_wrapper));
     size = sizeof(packet_wrapper);
-    //CLog::Log(LOGDEBUG, "[mpeg_add_header:%d]wrapper size=%d\n",__LINE__,size);
+    //CLog::Log(LOGDEBUG, "[mpeg_add_header:%d]wrapper size=%d",__LINE__,size);
     memcpy(pkt->hdr->data + size, para->extradata, para->extrasize);
     size += para->extrasize;
-    //CLog::Log(LOGDEBUG, "[mpeg_add_header:%d]wrapper+seq size=%d\n",__LINE__,size);
+    //CLog::Log(LOGDEBUG, "[mpeg_add_header:%d]wrapper+seq size=%d",__LINE__,size);
     memset(pkt->hdr->data + size, 0xff, STUFF_BYTES_LENGTH);
     size += STUFF_BYTES_LENGTH;
     pkt->hdr->size = size;
-    //CLog::Log(LOGDEBUG, "[mpeg_add_header:%d]hdr_size=%d\n",__LINE__,size);
+    //CLog::Log(LOGDEBUG, "[mpeg_add_header:%d]hdr_size=%d",__LINE__,size);
     if (1) {
         pkt->codec = &para->vcodec;
     } else {
