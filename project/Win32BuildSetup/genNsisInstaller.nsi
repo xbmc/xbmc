@@ -163,7 +163,7 @@ InstType "Minimal" ; 3.
 ;Installer Sections
 
 Section "${APP_NAME}" SecAPP
-  SetShellVarContext current
+  SetShellVarContext all
   SectionIn RO
   SectionIn 1 2 3 #section is in install type Normal/Full/Minimal
 
@@ -285,7 +285,7 @@ FunctionEnd
 
 Section "Uninstall"
 
-  SetShellVarContext current
+  SetShellVarContext all
 
   ;ADD YOUR OWN FILES HERE...
   RMDir /r "$INSTDIR\addons"
