@@ -425,6 +425,9 @@ bool CApplication::SetupNetwork()
 
 bool CApplication::Create()
 {
+  // Grab a handle to our thread to be used later in identifying the render thread.
+  m_threadID = CThread::GetCurrentThreadId();
+
   m_ServiceManager.reset(new CServiceManager());
   if (!m_ServiceManager->Init1())
   {
@@ -439,6 +442,7 @@ bool CApplication::Create()
   CApplicationMessenger::GetInstance().RegisterReceiver(this);
   CApplicationMessenger::GetInstance().RegisterReceiver(&g_playlistPlayer);
   CApplicationMessenger::GetInstance().RegisterReceiver(&g_infoManager);
+  CApplicationMessenger::GetInstance().SetGUIThread(m_threadID);
 
   for (int i = RES_HDTV_1080i; i <= RES_PAL60_16x9; i++)
   {
@@ -451,8 +455,6 @@ bool CApplication::Create()
   tzset();   // Initialize timezone information variables
 #endif
 
-  // Grab a handle to our thread to be used later in identifying the render thread.
-  m_threadID = CThread::GetCurrentThreadId();
 
   //! @todo - move to CPlatformXXX
   #if defined(TARGET_POSIX)
@@ -2899,6 +2901,9 @@ void CApplication::Stop(int exitCode)
       g_SkinInfo->SaveSettings();
 
     m_bStop = true;
+    // Add this here to keep the same ordering behaviour for now
+    // Needs cleaning up
+    CApplicationMessenger::GetInstance().Stop();
     m_AppFocused = false;
     m_ExitCode = exitCode;
     CLog::Log(LOGNOTICE, "stop all");

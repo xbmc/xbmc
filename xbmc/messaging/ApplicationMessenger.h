@@ -144,25 +144,13 @@ namespace KODI
 {
 namespace MESSAGING
 {
-
-class CDelayedMessage : public CThread
-{
-  public:
-    CDelayedMessage(ThreadMessage& msg, unsigned int delay);
-    virtual void Process() override;
-
-  private:
-    unsigned int   m_delay;
-    ThreadMessage  m_msg;
-};
+class IMessageTarget;
 
 struct ThreadMessageCallback
 {
   void (*callback)(void *userptr);
   void *userptr;
 };
-
-class IMessageTarget;
 
 /*!
  * \class CApplicationMessenger ApplicationMessenger.h "messaging/ApplicationMessenger.h"
@@ -400,6 +388,18 @@ public:
    */
   void RegisterReceiver(IMessageTarget* target);
 
+  /*!
+   * \brief Set the UI thread id to avoid messenger being dependent on
+   * CApplication to determine if marshaling is required
+   * \param thread The UI thread ID
+   */
+  void SetGUIThread(ThreadIdentifier thread) { m_guiThreadId = thread; }
+
+  /*
+   * \brief Signals the shutdown of the application and message processing
+   */
+  void Stop() { m_bStop = true; }
+
 private:
   // private construction, and no assignments; use the provided singleton methods
   CApplicationMessenger();
@@ -414,6 +414,8 @@ private:
   std::queue<ThreadMessage*> m_vecWindowMessages; /*!< queue for UI messages */
   std::map<int, IMessageTarget*> m_mapTargets; /*!< a map of registered receivers indexed on the message mask*/
   CCriticalSection m_critSection;
+  ThreadIdentifier m_guiThreadId{0};
+  bool m_bStop{ false };
 };
 }
 }
