@@ -27,7 +27,6 @@
 
 #include "AddonManager.h"
 #include "addons/Service.h"
-#include "ContextMenuManager.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "RepositoryUpdater.h"
@@ -376,9 +375,6 @@ void OnDisabled(const std::string& id)
     if (CAddonMgr::GetInstance().GetAddon(id, addon, ADDON_SERVICE, false))
       std::static_pointer_cast<CService>(addon)->Stop();
   }
-
-  if (CAddonMgr::GetInstance().GetAddon(id, addon, ADDON_CONTEXT_ITEM, false))
-    CContextMenuManager::GetInstance().Unload(*std::static_pointer_cast<CContextMenuAddon>(addon));
 }
 
 void OnPreInstall(const AddonPtr& addon)
