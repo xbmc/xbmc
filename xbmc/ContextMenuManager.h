@@ -46,8 +46,6 @@ public:
 
   ContextMenuView GetAddonItems(const CFileItem& item, const CContextMenuItem& root = MAIN) const;
 
-  bool Unload(const ADDON::CContextMenuAddon& addon);
-
 private:
   CContextMenuManager(const CContextMenuManager&);
   CContextMenuManager const& operator=(CContextMenuManager const&);
