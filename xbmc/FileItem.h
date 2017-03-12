@@ -563,6 +563,12 @@ private:
    */
   CBookmark GetResumePoint() const;
 
+  /*!
+   * brief Return a descriptive list entry in the currently selected format
+   * return a string formated in the currently selected way
+   */
+  std::string FormatListLabel(std::string strTitle, std::string strEpisodeName, int iSeason, int iEpisode, int iYearFirstShown) const;
+
   std::string m_strPath;            ///< complete path to item
 
   SortSpecial m_specialSort;

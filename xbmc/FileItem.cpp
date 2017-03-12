@@ -133,33 +133,7 @@ CFileItem::CFileItem(const CEpgInfoTagPtr& tag)
   m_bIsFolder = false;
   m_epgInfoTag = tag;
   m_strPath = tag->Path();
-
-  std::string strLabel("");
-  std::string strTitleEpisodeName("");
-  //Title and Episode
-  if (tag->EpisodeName().empty())
-    strTitleEpisodeName = tag->Title();
-  else
-    strTitleEpisodeName = StringUtils::Format("%s (%s)", tag->Title().c_str(), tag->EpisodeName().c_str());
-  //Season + Episode
-  int iSeason(-1);
-  int iEpisode(-1);
-  if (tag->SeriesNumber() > 0)
-    iSeason = tag->SeriesNumber();
-  if (tag->EpisodeNumber() > 0)
-    iEpisode = tag->EpisodeNumber();
-  if (iEpisode >= 0)
-  {
-    if (iSeason == 0) // prefix episode with 'S'
-      strLabel = StringUtils::Format("%s S%d", strTitleEpisodeName.c_str(), iEpisode);
-    else
-      strLabel = StringUtils::Format("%s %dx%d", strTitleEpisodeName.c_str(), iSeason, iEpisode);
-  }
-  else
-  {
-    strLabel = StringUtils::Format("%s", strTitleEpisodeName.c_str());
-  }
-  SetLabel(strLabel);
+  SetLabel(FormatListLabel(tag->Title(), tag->EpisodeName(), tag->SeriesNumber(), tag->EpisodeNumber(), tag->FirstAiredAsUTC().GetYear()));
 
   m_strLabel2 = tag->Plot();
   m_dateTime = tag->StartAsLocalTime();
@@ -225,33 +199,7 @@ CFileItem::CFileItem(const CPVRRecordingPtr& record)
   m_bIsFolder = false;
   m_pvrRecordingInfoTag = record;
   m_strPath = record->m_strFileNameAndPath;
-
-  std::string strLabel("");
-  std::string strTitleEpisodeName("");
-  //Title and Episode
-  if (record->EpisodeName().empty())
-    strTitleEpisodeName = record->m_strTitle;
-  else
-    strTitleEpisodeName = StringUtils::Format("%s (%s)", record->m_strTitle.c_str(), record->EpisodeName().c_str());
-  //Season + Episode
-  int iSeason(-1);
-  int iEpisode(-1);
-  if (record->m_iSeason > 0)
-    iSeason = record->m_iSeason;
-  if (record->m_iEpisode > 0)
-    iEpisode = record->m_iEpisode;
-  if (iEpisode >= 0)
-  {
-    if (iSeason == 0) // prefix episode with 'S'
-      strLabel = StringUtils::Format("%s S%d", strTitleEpisodeName.c_str(), iEpisode);
-    else
-      strLabel = StringUtils::Format("%s %dx%d", strTitleEpisodeName.c_str(), iSeason, iEpisode);
-  }
-  else
-  {
-    strLabel = StringUtils::Format("%s", strTitleEpisodeName.c_str());
-  }
-  SetLabel(strLabel);
+  SetLabel(FormatListLabel(record->m_strTitle, record->EpisodeName(), record->m_iSeason, record->m_iEpisode, record->GetYear()));
 
   m_strLabel2 = record->m_strPlot;
   FillInMimeType(false);
@@ -271,30 +219,12 @@ CFileItem::CFileItem(const CPVRTimerInfoTagPtr& timer)
   const CEpgInfoTagPtr tag(timer->GetEpgInfoTag());
   if (tag)
   {
-    //Season + Episode
-    int iSeason(-1);
-		int iEpisode(-1);
-    if (tag->SeriesNumber() > 0)
-      iSeason = tag->SeriesNumber();
-    if (tag->EpisodeNumber() > 0)
-      iEpisode = tag->EpisodeNumber();
-    if (iEpisode >= 0)
-    {
-      if (iSeason == 0) // prefix episode with 'S'
-        strLabel = StringUtils::Format("%s S%d", timer->Title().c_str(), iEpisode);
-      else
-        strLabel = StringUtils::Format("%s %dx%d", timer->Title().c_str(), iSeason, iEpisode);
-    }
-    else
-    {
-      strLabel = timer->Title();
-    }
+    SetLabel(FormatListLabel(tag->Title(), tag->EpisodeName(), tag->SeriesNumber(), tag->EpisodeNumber(), tag->FirstAiredAsUTC().GetYear()));
   }
   else
   {
-    strLabel = timer->Title();
+    SetLabel(timer->Title());
   }
-  SetLabel(strLabel);
 
   m_strLabel2 = timer->Summary();
   m_dateTime = timer->StartAsLocalTime();
@@ -1675,7 +1605,7 @@ void CFileItem::UpdateInfo(const CFileItem &item, bool replaceLabels /*=true*/)
 void CFileItem::SetFromVideoInfoTag(const CVideoInfoTag &video)
 {
   if (!video.m_strTitle.empty())
-    SetLabel(video.m_strTitle);
+    SetLabel(FormatListLabel(video.m_strTitle, video.m_strShowTitle, video.m_iSeason, video.m_iEpisode, video.GetYear()));
   if (video.m_strFileNameAndPath.empty())
   {
     m_strPath = video.m_strPath;
@@ -3664,4 +3594,37 @@ bool CFileItem::GetCurrentResumeTimeAndPartNumber(int& startOffset, int& partNum
     return true;
   }
   return false;
+}
+
+std::string CFileItem::FormatListLabel(std::string strTitle, std::string strEpisodeName, int iSeason, int iEpisode, int iYear) const
+{
+  std::string strLabel;
+  std::string strTitleEpisodeName;
+  //Title and Episode
+  if (strEpisodeName.empty())
+    strTitleEpisodeName = strTitle;
+  else
+    strTitleEpisodeName = StringUtils::Format("%s (%s)", strTitle.c_str(), strEpisodeName.c_str());
+  //Season + Episode
+  int iTempSeason(-1);
+  int iTempEpisode(-1);
+  if (iSeason > 0)
+    iTempSeason = iSeason;
+  if (iEpisode > 0)
+    iTempEpisode = iEpisode;
+  if (iTempEpisode >= 0)
+  {
+    if (iTempSeason <= 0) // prefix episode with 'S'
+      strLabel = StringUtils::Format("%s S%d", strTitleEpisodeName.c_str(), iTempEpisode);
+    else
+      strLabel = StringUtils::Format("%s %d.%d", strTitleEpisodeName.c_str(), iTempSeason, iTempEpisode);
+  }
+  else
+  {
+    if (iYear > 0)
+      strLabel = StringUtils::Format("%s (%d)", strTitleEpisodeName.c_str(), iYear);
+    else
+      strLabel = StringUtils::Format("%s", strTitleEpisodeName.c_str());
+  }
+  return (strLabel);
 }
