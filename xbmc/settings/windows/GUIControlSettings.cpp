@@ -752,16 +752,23 @@ bool CGUIControlButtonSetting::GetPath(CSettingPath *pathSetting, ILocalizer* lo
   std::string path = pathSetting->GetValue();
 
   VECSOURCES shares;
+  bool localSharesOnly = false;
   const std::vector<std::string>& sources = pathSetting->GetSources();
   for (const auto& source : sources)
   {
-    VECSOURCES *sources = CMediaSourceSettings::GetInstance().GetSources(source);
-    if (sources != NULL)
-      shares.insert(shares.end(), sources->begin(), sources->end());
+    if (StringUtils::EqualsNoCase(source, "local"))
+      localSharesOnly = true;
+    else
+    {
+      VECSOURCES *sources = CMediaSourceSettings::GetInstance().GetSources(source);
+      if (sources != NULL)
+        shares.insert(shares.end(), sources->begin(), sources->end());
+    }
   }
 
-  g_mediaManager.GetNetworkLocations(shares);
   g_mediaManager.GetLocalDrives(shares);
+  if (!localSharesOnly)
+    g_mediaManager.GetNetworkLocations(shares);
 
   if (!CGUIDialogFileBrowser::ShowAndGetDirectory(shares, ::Localize(static_cast<const CSettingControlButton*>(pathSetting->GetControl())->GetHeading(), localizer), path, pathSetting->Writable()))
     return false;
