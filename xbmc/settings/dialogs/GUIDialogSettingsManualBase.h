@@ -34,6 +34,7 @@ class CSettingAction;
 class CSettingAddon;
 class CSettingBool;
 class CSettingCategory;
+class CSettingDate;
 class CSettingGroup;
 class CSettingInt;
 class CSettingList;
@@ -42,6 +43,7 @@ class CSettingPath;
 class CSettingSection;
 class CSettingString;
 class CSettingsManager;
+class CSettingTime;
 
 class CGUIDialogSettingsManualBase : public CGUIDialogSettingsManagerBase
 {
@@ -82,6 +84,10 @@ protected:
                           bool showMoreAddons = true, bool delayed = false, bool visible = true, int help = -1);
   CSettingPath* AddPath(CSettingGroup *group, const std::string &id, int label, int level, std::string value, bool writable = true,
                         const std::vector<std::string> &sources = std::vector<std::string>(), bool allowEmpty = false, int heading = -1, bool hideValue = false,
+                        bool delayed = false, bool visible = true, int help = -1);
+  CSettingDate* AddDate(CSettingGroup *group, const std::string &id, int label, int level, std::string value, bool allowEmpty = false, int heading = -1,
+                        bool delayed = false, bool visible = true, int help = -1);
+  CSettingTime* AddTime(CSettingGroup *group, const std::string &id, int label, int level, std::string value, bool allowEmpty = false, int heading = -1,
                         bool delayed = false, bool visible = true, int help = -1);
 
   // spinner controls

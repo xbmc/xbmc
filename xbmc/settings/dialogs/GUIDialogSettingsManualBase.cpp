@@ -23,6 +23,7 @@
 
 #include "GUIDialogSettingsManualBase.h"
 #include "settings/SettingAddon.h"
+#include "settings/SettingDateTime.h"
 #include "settings/SettingPath.h"
 #include "settings/SettingUtils.h"
 #include "settings/lib/Setting.h"
@@ -313,6 +314,43 @@ CSettingPath* CGUIDialogSettingsManualBase::AddPath(CSettingGroup *group, const 
   setting->SetWritable(writable);
   setting->SetSources(sources);
   setting->SetAllowEmpty(allowEmpty);
+  setSettingDetails(setting, level, visible, help);
+
+  group->AddSetting(setting);
+  return setting;
+}
+
+CSettingDate* CGUIDialogSettingsManualBase::AddDate(CSettingGroup *group, const std::string &id, int label, int level, std::string value,
+                                                    bool allowEmpty /* = false */, int heading /* = -1 */, bool delayed /* = false */,
+                                                    bool visible /* = true */, int help /* = -1 */)
+{
+  if (group == NULL || id.empty() || label < 0 || GetSetting(id) != NULL)
+    return NULL;
+
+  CSettingDate *setting = new CSettingDate(id, label, value, GetSettingsManager());
+  if (setting == NULL)
+    return NULL;
+
+  setting->SetControl(GetButtonControl("date", delayed, heading));
+  setting->SetAllowEmpty(allowEmpty);
+  setSettingDetails(setting, level, visible, help);
+
+  group->AddSetting(setting);
+  return setting;
+}
+
+CSettingTime* CGUIDialogSettingsManualBase::AddTime(CSettingGroup *group, const std::string &id, int label, int level, std::string value,
+                                                    bool allowEmpty /* = false */, int heading /* = -1 */, bool delayed /* = false */,
+                                                    bool visible /* = true */, int help /* = -1 */)
+{
+  if (group == NULL || id.empty() || label < 0 || GetSetting(id) != NULL)
+    return NULL;
+
+  CSettingTime *setting = new CSettingTime(id, label, value, GetSettingsManager());
+  if (setting == NULL)
+    return NULL;
+
+  setting->SetControl(GetButtonControl("time", delayed, heading));
   setting->SetAllowEmpty(allowEmpty);
   setSettingDetails(setting, level, visible, help);
 

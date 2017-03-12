@@ -23,6 +23,7 @@
 #include "addons/Addon.h"
 #include "settings/SettingAddon.h"
 #include "settings/SettingControl.h"
+#include "settings/SettingDateTime.h"
 #include "settings/SettingPath.h"
 #include "settings/Settings.h"
 #include "settings/SettingUtils.h"
@@ -630,6 +631,16 @@ bool CSettingsOperations::SerializeSettingString(const CSettingString* setting, 
     if (!SerializeSettingAddon(static_cast<const CSettingAddon*>(setting), obj))
       return false;
   }
+  if (control->GetFormat() == "date")
+  {
+    if (!SerializeSettingDate(static_cast<const CSettingDate*>(setting), obj))
+      return false;
+  }
+  if (control->GetFormat() == "time")
+  {
+    if (!SerializeSettingTime(static_cast<const CSettingTime*>(setting), obj))
+      return false;
+  }
 
   return true;
 }
@@ -680,6 +691,26 @@ bool CSettingsOperations::SerializeSettingAddon(const CSettingAddon* setting, CV
 
   obj["type"] = "addon";
   obj["addontype"] = ADDON::TranslateType(setting->GetAddonType());
+
+  return true;
+}
+
+bool CSettingsOperations::SerializeSettingDate(const CSettingDate* setting, CVariant &obj)
+{
+  if (setting == NULL)
+    return false;
+
+  obj["type"] = "date";
+
+  return true;
+}
+
+bool CSettingsOperations::SerializeSettingTime(const CSettingTime* setting, CVariant &obj)
+{
+  if (setting == NULL)
+    return false;
+
+  obj["type"] = "time";
 
   return true;
 }

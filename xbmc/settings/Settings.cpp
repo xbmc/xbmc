@@ -587,9 +587,10 @@ bool CSettings::InitializeDefinitions()
 
 void CSettings::InitializeSettingTypes()
 {
-  // register "addon" and "path" setting types implemented by CSettingAddon
   GetSettingsManager()->RegisterSettingType("addon", this);
+  GetSettingsManager()->RegisterSettingType("date", this);
   GetSettingsManager()->RegisterSettingType("path", this);
+  GetSettingsManager()->RegisterSettingType("time", this);
 }
 
 void CSettings::InitializeControls()

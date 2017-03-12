@@ -37,6 +37,8 @@ class CSettingAction;
 class CSettingList;
 class CSettingPath;
 class CSettingAddon;
+class CSettingDate;
+class CSettingTime;
 class ISettingControl;
 
 namespace JSONRPC
@@ -68,6 +70,8 @@ namespace JSONRPC
     static bool SerializeSettingList(const CSettingList* setting, CVariant &obj);
     static bool SerializeSettingPath(const CSettingPath* setting, CVariant &obj);
     static bool SerializeSettingAddon(const CSettingAddon* setting, CVariant &obj);
+    static bool SerializeSettingDate(const CSettingDate* setting, CVariant &obj);
+    static bool SerializeSettingTime(const CSettingTime* setting, CVariant &obj);
     static bool SerializeSettingControl(const ISettingControl* control, CVariant &obj);
 
     static void SerializeSettingListValues(const std::vector<CVariant> &values, CVariant &obj);

@@ -26,6 +26,7 @@
 #include "addons/AddonManager.h"
 #include "addons/GUIWindowAddonBrowser.h"
 #include "dialogs/GUIDialogFileBrowser.h"
+#include "dialogs/GUIDialogNumeric.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogSlider.h"
@@ -42,6 +43,7 @@
 #include "settings/MediaSourceSettings.h"
 #include "settings/SettingAddon.h"
 #include "settings/SettingControl.h"
+#include "settings/SettingDateTime.h"
 #include "settings/SettingPath.h"
 #include "settings/SettingUtils.h"
 #include "storage/MediaManager.h"
@@ -596,6 +598,32 @@ bool CGUIControlButtonSetting::OnClick()
     }
     else if (controlFormat == "path")
       SetValid(GetPath((CSettingPath *)m_pSetting, m_localizer));
+    else if (controlFormat == "date")
+    {
+      CSettingDate* settingDate = static_cast<CSettingDate*>(m_pSetting);
+
+      SYSTEMTIME systemdate;
+      settingDate->GetDate().GetAsSystemTime(systemdate);
+      if (CGUIDialogNumeric::ShowAndGetDate(systemdate, Localize(buttonControl->GetHeading())))
+        SetValid(settingDate->SetDate(systemdate));
+    }
+    else if (controlFormat == "time")
+    {
+      CSettingTime* settingTime = static_cast<CSettingTime*>(m_pSetting);
+
+      SYSTEMTIME systemtime;
+      settingTime->GetTime().GetAsSystemTime(systemtime);
+      /* TODO
+      if (value.size() >= 5)
+      {
+        // assumes HH:MM
+        systemtime.wHour = atoi(value.substr(0, 2).c_str());
+        systemtime.wMinute = atoi(value.substr(3, 2).c_str());
+      }
+      */
+      if (CGUIDialogNumeric::ShowAndGetTime(systemtime, Localize(buttonControl->GetHeading())))
+        SetValid(settingTime->SetTime(systemtime));
+    }
     else if (controlFormat == "action")
     {
       // simply call the OnSettingAction callback and whoever knows what to
@@ -670,6 +698,8 @@ void CGUIControlButtonSetting::Update(bool updateDisplayOnly /* = false */)
         if (CUtil::MakeShortenPath(strValue, shortPath, 30))
           strText = shortPath;
       }
+      else if (controlFormat == "date" || controlFormat == "time")
+        strText = strValue;
       else if (controlFormat == "infolabel")
       {
         strText = strValue;
