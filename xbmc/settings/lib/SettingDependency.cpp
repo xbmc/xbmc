@@ -131,10 +131,40 @@ bool CSettingDependencyCondition::Check() const
         return false;
       }
 
-      if (m_operator == SettingDependencyOperatorEquals)
-        result = setting->Equals(m_value);
-      else if (m_operator == SettingDependencyOperatorContains)
-        result = (setting->ToString().find(m_value) != std::string::npos);
+      switch (m_operator)
+      {
+        case SettingDependencyOperatorEquals:
+          result = setting->Equals(m_value);
+          break;
+
+        case SettingDependencyOperatorLessThan:
+        {
+          const auto value = setting->ToString();
+          if (StringUtils::IsInteger(m_value))
+            result = strtol(value.c_str(), nullptr, 0) < strtol(m_value.c_str(), nullptr, 0);
+          else
+            result = value.compare(m_value) < 0;
+          break;
+        }
+
+        case SettingDependencyOperatorGreaterThan:
+        {
+          const auto value = setting->ToString();
+          if (StringUtils::IsInteger(m_value))
+            result = strtol(value.c_str(), nullptr, 0) > strtol(m_value.c_str(), nullptr, 0);
+          else
+            result = value.compare(m_value) > 0;
+          break;
+        }
+
+        case SettingDependencyOperatorContains:
+          result = (setting->ToString().find(m_value) != std::string::npos);
+          break;
+
+        case SettingDependencyOperatorNone:
+        default:
+          break;
+      }        
 
       break;
     }
@@ -180,6 +210,26 @@ bool CSettingDependencyCondition::setOperator(const std::string &op)
   if (StringUtils::EndsWithNoCase(op, "is"))
   {
     m_operator = SettingDependencyOperatorEquals;
+    length = 2;
+  }
+  else if (StringUtils::EndsWithNoCase(op, "lessthan"))
+  {
+    m_operator = SettingDependencyOperatorLessThan;
+    length = 8;
+  }
+  else if (StringUtils::EndsWithNoCase(op, "lt"))
+  {
+    m_operator = SettingDependencyOperatorLessThan;
+    length = 2;
+  }
+  else if (StringUtils::EndsWithNoCase(op, "greaterthan"))
+  {
+    m_operator = SettingDependencyOperatorGreaterThan;
+    length = 11;
+  }
+  else if (StringUtils::EndsWithNoCase(op, "gt"))
+  {
+    m_operator = SettingDependencyOperatorGreaterThan;
     length = 2;
   }
   else if (StringUtils::EndsWithNoCase(op, "contains"))
