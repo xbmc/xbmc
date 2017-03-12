@@ -2,6 +2,7 @@
 <!-- BEGIN_INCLUDE(manifest) -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.xbmc.@APP_NAME_LC@"
+    android:installLocation="auto"
     android:versionCode="@APP_VERSION_CODE@"
     android:versionName="@APP_VERSION@" >
 
