@@ -21,6 +21,7 @@ testMain
 config.cache
 config.status
 config.log
+.last_success_revision
 *.d
 *.depend
 *.pc
