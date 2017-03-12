@@ -861,6 +861,14 @@ std::string CDateTime::GetAsDBDate() const
   return StringUtils::Format("%04i-%02i-%02i", st.wYear, st.wMonth, st.wDay);
 }
 
+std::string CDateTime::GetAsDBTime() const
+{
+  SYSTEMTIME st;
+  GetAsSystemTime(st);
+
+  return StringUtils::Format("%02i:%02i:%02i", st.wHour, st.wMinute, st.wSecond);
+}
+
 std::string CDateTime::GetAsDBDateTime() const
 {
   SYSTEMTIME st;

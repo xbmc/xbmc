@@ -203,6 +203,7 @@ public:
   std::string GetAsSaveString() const;
   std::string GetAsDBDateTime() const;
   std::string GetAsDBDate() const;
+  std::string GetAsDBTime() const;
   std::string GetAsLocalizedDate(bool longDate=false) const;
   std::string GetAsLocalizedDate(const std::string &strFormat) const;
   std::string GetAsLocalizedTime(const std::string &format, bool withSeconds=true) const;
