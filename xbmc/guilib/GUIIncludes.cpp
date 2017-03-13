@@ -435,7 +435,8 @@ void CGUIIncludes::ResolveIncludes(TiXmlElement *node, std::map<INFO::InfoPtr, b
 
     Params params;
     std::string tagName;
-    // normal or old-style include
+
+    // determine which form of include call we have
     const char *name = include->Attribute("content");
     if (name)
     {
@@ -464,22 +465,31 @@ void CGUIIncludes::ResolveIncludes(TiXmlElement *node, std::map<INFO::InfoPtr, b
     auto it = m_includes.find(tagName);
     if (it != m_includes.end())
     {
-      const TiXmlElement *includeBody = &it->second.first;
-      const Params& defaultParams = it->second.second;
-      const TiXmlElement *tag = includeBody->FirstChildElement();
+      const TiXmlElement *includeDefinition = &it->second.first;
+
       // combine passed include parameters with their default values into a single list (no overwrites)
+      const Params& defaultParams = it->second.second;
       params.insert(defaultParams.begin(), defaultParams.end());
-      while (tag)
+
+      // process include definition
+      const TiXmlElement *includeDefinitionChild = includeDefinition->FirstChildElement();
+      while (includeDefinitionChild)
       {
-        // we insert before the <include> element to keep the correct
-        // order (we render in the order given in the xml file)
-        TiXmlElement *insertedTag = static_cast<TiXmlElement*>(node->InsertBeforeChild(include, *tag));
-        // after insertion we resolve parameters even if parameter list is empty (to remove param references)
-        ResolveParametersForNode(insertedTag, params);
-        tag = tag->NextSiblingElement();
+        // insert before <include> element to keep order of occurrence in xml file
+        TiXmlElement *insertedNode = static_cast<TiXmlElement*>(node->InsertBeforeChild(include, *includeDefinitionChild));
+
+        // process nested
+        InsertNested(node, include, insertedNode);
+
+        // resolve parameters even if parameter list is empty (to remove param references)
+        ResolveParametersForNode(insertedNode, params);
+
+        includeDefinitionChild = includeDefinitionChild->NextSiblingElement();
       }
+
       // remove the include element itself
       node->RemoveChild(include);
+
       include = node->FirstChildElement("include");
     }
     else
@@ -488,6 +498,40 @@ void CGUIIncludes::ResolveIncludes(TiXmlElement *node, std::map<INFO::InfoPtr, b
       include = include->NextSiblingElement("include");
     }
   }
+}
+
+void CGUIIncludes::InsertNested(TiXmlElement *controls, TiXmlElement *include, TiXmlElement *node)
+{
+  TiXmlElement *target;
+  TiXmlElement *nested;
+
+  if (node->ValueStr() == "nested")
+  {
+    nested = node;
+    target = controls;
+  }
+  else
+  {
+    nested = node->FirstChildElement("nested");
+    target = node;
+  }
+
+  if (nested)
+  {
+    // copy all child elements except param elements
+    const TiXmlElement *child = include->FirstChildElement();
+    while (child)
+    {
+      if (child->ValueStr() != "param")
+      {
+        // insert before <nested> element to keep order of occurrence in xml file
+        target->InsertBeforeChild(nested, *child);
+      }
+      child = child->NextSiblingElement();
+    }
+    target->RemoveChild(nested);
+  }
+
 }
 
 bool CGUIIncludes::GetParameters(const TiXmlElement *include, const char *valueAttribute, Params& params)
