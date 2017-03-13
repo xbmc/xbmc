@@ -423,9 +423,8 @@ protected:
 
   /** \brief Switches forced subtitles to forced subtitles matching the language of the current audio track.
   *          If these are not available, subtitles are disabled.
-  *   \return true if the subtitles were changed, false otherwise.
   */
-  bool AdaptForcedSubtitles();
+  void AdaptForcedSubtitles();
   bool CloseStream(CCurrentStream& current, bool bWaitForBuffers);
 
   bool CheckIsCurrent(CCurrentStream& current, CDemuxStream* stream, DemuxPacket* pkg);
