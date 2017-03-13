@@ -101,10 +101,21 @@ endif()
 find_package(Threads REQUIRED QUIET)
 list(APPEND DEPLIBS ${CMAKE_THREAD_LIBS_INIT})
 
-# Required dependencies
-set(required_deps Sqlite3 FreeType PCRE Cpluff LibDvd
-                  TinyXML Yajl Cdio Fmt
-                  Lzo2 Fribidi TagLib FFMPEG CrossGUID)
+# Required dependencies. Keep in alphabetical order please
+set(required_deps Cdio
+                  Cpluff
+                  CrossGUID
+                  FFMPEG
+                  Fmt
+                  FreeType
+                  Fribidi
+                  LibDvd
+                  Lzo2
+                  PCRE
+                  Sqlite3
+                  TagLib
+                  TinyXML
+                  Yajl)
 if(NOT WIN32)
   list(APPEND required_deps ZLIB)
 else()
@@ -114,16 +125,35 @@ if(CORE_SYSTEM_NAME STREQUAL android)
   list(APPEND required_deps Zip)
 endif()
 
-# Optional dependencies
-set(optional_deps MicroHttpd MySqlClient SSH XSLT
-                  Alsa UDEV DBus Avahi MDNS SmbClient CCache
-                  PulseAudio VDPAU VAAPI Bluetooth CAP Python)
+# Optional dependencies. Keep in alphabetical order please
+set(optional_deps Alsa
+                  Avahi
+                  Bluetooth
+                  CAP
+                  CCache
+                  DBus
+                  LCMS2
+                  MDNS
+                  MicroHttpd
+                  MySqlClient
+                  PulseAudio
+                  Python
+                  SmbClient
+                  SSH
+                  UDEV
+                  VAAPI
+                  VDPAU
+                  XSLT)
 
-# Required, dyloaded deps
-set(required_dyload Curl ASS)
+# Required, dyloaded deps. Keep in alphabetical order please
+set(required_dyload ASS
+                    Curl)
 
-# Optional, dyloaded deps
-set(dyload_optional CEC Bluray Plist NFS)
+# Optional, dyloaded deps. Keep in alphabetical order please
+set(dyload_optional Bluray
+                    CEC
+                    NFS
+                    Plist)
 
 # Required by shared objects we link
 set(required_dep_libs EXPAT)
