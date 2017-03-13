@@ -19,6 +19,7 @@
  */
 
 #include "Application.h"
+#include "dialogs/GUIDialogBusy.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogNumeric.h"
 #include "dialogs/GUIDialogOK.h"
@@ -51,6 +52,7 @@
 #include "ServiceBroker.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
+#include "threads/Thread.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -63,6 +65,68 @@ using namespace KODI::MESSAGING;
 
 namespace PVR
 {
+  class AsyncRecordingAction : private IRunnable
+  {
+  public:
+    bool Execute(const CFileItemPtr &item);
+
+  protected:
+    AsyncRecordingAction() : m_bSuccess(false) {}
+
+  private:
+    // IRunnable implementation
+    void Run() override;
+
+    // the worker function
+    virtual bool DoRun(const CFileItemPtr &item) = 0;
+
+    CFileItemPtr m_item;
+    bool m_bSuccess;
+  };
+
+  bool AsyncRecordingAction::Execute(const CFileItemPtr &item)
+  {
+    m_item = item;
+    CGUIDialogBusy::Wait(this, 100, false);
+    return m_bSuccess;
+  }
+
+  void AsyncRecordingAction::Run()
+  {
+    m_bSuccess = DoRun(m_item);
+
+    if (m_bSuccess)
+      g_PVRManager.TriggerRecordingsUpdate();
+  }
+
+  class AsyncRenameRecording : public AsyncRecordingAction
+  {
+  public:
+    AsyncRenameRecording(const std::string &strNewName) : m_strNewName(strNewName) {}
+
+  private:
+    bool DoRun(const CFileItemPtr &item) override { return g_PVRRecordings->RenameRecording(*item, m_strNewName); }
+    std::string m_strNewName;
+  };
+
+  class AsyncDeleteRecording : public AsyncRecordingAction
+  {
+  private:
+    bool DoRun(const CFileItemPtr &item) override { return g_PVRRecordings->Delete(*item); }
+  };
+
+  class AsyncEmptyRecordingsTrash : public AsyncRecordingAction
+  {
+  private:
+    bool DoRun(const CFileItemPtr &item) override { return g_PVRRecordings->DeleteAllRecordingsFromTrash(); }
+  };
+
+  class AsyncUndeleteRecording : public AsyncRecordingAction
+  {
+  private:
+    bool DoRun(const CFileItemPtr &item) override { return g_PVRRecordings->Undelete(*item); }
+  };
+
   CPVRGUIActions& CPVRGUIActions::GetInstance()
   {
     static CPVRGUIActions instance;
@@ -710,13 +774,12 @@ namespace PVR
     if (!CGUIKeyboardFactory::ShowAndGetInput(strNewName, CVariant{g_localizeStrings.Get(19041)}, false))
       return false;
 
-    if (!g_PVRRecordings->RenameRecording(*item, strNewName))
+    if (!AsyncRenameRecording(strNewName).Execute(item))
     {
       CGUIDialogOK::ShowAndGetInput(CVariant{257}, CVariant{19111}); // "Error", "PVR backend error. Check the log for more information about this message."
       return false;
     }
 
-    g_PVRManager.TriggerRecordingsUpdate();
     return true;
   }
 
@@ -728,13 +791,12 @@ namespace PVR
     if (!ConfirmDeleteRecording(item))
       return false;
 
-    if (!g_PVRRecordings->Delete(*item))
+    if (!AsyncDeleteRecording().Execute(item))
     {
       CGUIDialogOK::ShowAndGetInput(CVariant{257}, CVariant{19111}); // "Error", "PVR backend error. Check the log for more information about this message."
       return false;
     }
 
-    g_PVRManager.TriggerRecordingsUpdate();
     return true;
   }
 
@@ -755,10 +817,9 @@ namespace PVR
     if (!ConfirmDeleteAllRecordingsFromTrash())
       return false;
 
-    if (!g_PVRRecordings->DeleteAllRecordingsFromTrash())
+    if (!AsyncEmptyRecordingsTrash().Execute(CFileItemPtr()))
       return false;
 
-    g_PVRManager.TriggerRecordingsUpdate();
     return true;
   }
 
@@ -773,14 +834,12 @@ namespace PVR
     if (!item->IsDeletedPVRRecording())
       return false;
 
-    /* undelete the recording */
-    if (!g_PVRRecordings->Undelete(*item))
+    if (!AsyncUndeleteRecording().Execute(item))
     {
       CGUIDialogOK::ShowAndGetInput(CVariant{257}, CVariant{19111}); // "Error", "PVR backend error. Check the log for more information about this message."
       return false;
     }
 
-    g_PVRManager.TriggerRecordingsUpdate();
     return true;
   }
 
