@@ -82,8 +82,18 @@ namespace EPG
     void GoToEnd();
     void GoToNow();
     void SetTimelineItems(const std::unique_ptr<CFileItemList> &items, const CDateTime &gridStart, const CDateTime &gridEnd);
-    void SetChannel(const PVR::CPVRChannelPtr &channel);
-    void SetChannel(const std::string &channel);
+    /*!
+     * @brief Set the control's selection to the given channel and set the control's view port to show the channel.
+     * @param channel the channel.
+     * @return true if the selection was set to the given channel, false otherwise.
+     */
+    bool SetChannel(const PVR::CPVRChannelPtr &channel);
+    /*!
+     * @brief Set the control's selection to the given channel and set the control's view port to show the channel.
+     * @param channel the channel's path.
+     * @return true if the selection was set to the given channel, false otherwise.
+     */
+    bool SetChannel(const std::string &channel);
     void ResetCoordinates();
 
   protected:
