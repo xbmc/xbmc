@@ -27,24 +27,23 @@
 #include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
 
-#include "GUIDialogPVRGuideOSD.h"
+#include "GUIDialogPVRChannelGuide.h"
 
 using namespace PVR;
 
 #define CONTROL_LIST  11
 
-CGUIDialogPVRGuideOSD::CGUIDialogPVRGuideOSD()
-    : CGUIDialog(WINDOW_DIALOG_PVR_OSD_GUIDE, "DialogPVRGuideOSD.xml")
+CGUIDialogPVRChannelGuide::CGUIDialogPVRChannelGuide()
+    : CGUIDialog(WINDOW_DIALOG_PVR_CHANNEL_GUIDE, "DialogPVRChannelGuide.xml")
 {
-  m_vecItems = new CFileItemList;
+  m_vecItems.reset(new CFileItemList);
 }
 
-CGUIDialogPVRGuideOSD::~CGUIDialogPVRGuideOSD()
+CGUIDialogPVRChannelGuide::~CGUIDialogPVRChannelGuide()
 {
-  delete m_vecItems;
 }
 
-bool CGUIDialogPVRGuideOSD::OnMessage(CGUIMessage& message)
+bool CGUIDialogPVRChannelGuide::OnMessage(CGUIMessage& message)
 {
   switch (message.GetMessage())
   {
@@ -70,10 +69,20 @@ bool CGUIDialogPVRGuideOSD::OnMessage(CGUIMessage& message)
   return CGUIDialog::OnMessage(message);
 }
 
-void CGUIDialogPVRGuideOSD::OnInitWindow()
+void CGUIDialogPVRChannelGuide::Open(const CPVRChannelPtr &channel)
 {
-  /* Close dialog immediately if no TV or radio channel is playing */
-  if (!g_PVRManager.IsPlaying())
+  m_channel = channel;
+  CGUIDialog::Open();
+}
+
+void CGUIDialogPVRChannelGuide::OnInitWindow()
+{
+  // no user-specific channel is set use current playing channel
+  if (!m_channel)
+    m_channel = g_PVRManager.GetCurrentChannel();
+
+  // no channel at all, close the dialog
+  if (!m_channel)
   {
     Close();
     return;
@@ -86,7 +95,7 @@ void CGUIDialogPVRGuideOSD::OnInitWindow()
   // empty the list ready for population
   Clear();
 
-  g_PVRManager.GetCurrentEpg(*m_vecItems);
+  m_channel->GetEPG(*m_vecItems);
   m_viewControl.SetItems(*m_vecItems);
 
   g_graphicsContext.Unlock();
@@ -108,19 +117,20 @@ void CGUIDialogPVRGuideOSD::OnInitWindow()
   m_viewControl.SetSelectedItem(iSelectedItem);
 }
 
-void CGUIDialogPVRGuideOSD::OnDeinitWindow(int nextWindowID)
+void CGUIDialogPVRChannelGuide::OnDeinitWindow(int nextWindowID)
 {
   CGUIDialog::OnDeinitWindow(nextWindowID);
+  m_channel.reset();
   Clear();
 }
 
-void CGUIDialogPVRGuideOSD::Clear()
+void CGUIDialogPVRChannelGuide::Clear()
 {
   m_viewControl.Clear();
   m_vecItems->Clear();
 }
 
-void CGUIDialogPVRGuideOSD::ShowInfo(int item)
+void CGUIDialogPVRChannelGuide::ShowInfo(int item)
 {
   if (item < 0 || item >= (int)m_vecItems->Size())
     return;
@@ -128,7 +138,7 @@ void CGUIDialogPVRGuideOSD::ShowInfo(int item)
   CPVRGUIActions::GetInstance().ShowEPGInfo(m_vecItems->Get(item));
 }
 
-void CGUIDialogPVRGuideOSD::OnWindowLoaded()
+void CGUIDialogPVRChannelGuide::OnWindowLoaded()
 {
   CGUIDialog::OnWindowLoaded();
   m_viewControl.Reset();
@@ -136,13 +146,13 @@ void CGUIDialogPVRGuideOSD::OnWindowLoaded()
   m_viewControl.AddView(GetControl(CONTROL_LIST));
 }
 
-void CGUIDialogPVRGuideOSD::OnWindowUnload()
+void CGUIDialogPVRChannelGuide::OnWindowUnload()
 {
   CGUIDialog::OnWindowUnload();
   m_viewControl.Reset();
 }
 
-CGUIControl *CGUIDialogPVRGuideOSD::GetFirstFocusableControl(int id)
+CGUIControl *CGUIDialogPVRChannelGuide::GetFirstFocusableControl(int id)
 {
   if (m_viewControl.HasControl(id))
     id = m_viewControl.GetCurrentControl();

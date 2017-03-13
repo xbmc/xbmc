@@ -49,7 +49,7 @@ void CGUIDialogVideoOSD::FrameMove()
                            || g_windowManager.IsWindowActive(WINDOW_DIALOG_CMS_OSD_SETTINGS)
                            || g_windowManager.IsWindowActive(WINDOW_DIALOG_VIDEO_BOOKMARKS)
                            || g_windowManager.IsWindowActive(WINDOW_DIALOG_PVR_OSD_CHANNELS)
-                           || g_windowManager.IsWindowActive(WINDOW_DIALOG_PVR_OSD_GUIDE)
+                           || g_windowManager.IsWindowActive(WINDOW_DIALOG_PVR_CHANNEL_GUIDE)
                            || g_windowManager.IsWindowActive(WINDOW_DIALOG_OSD_TELETEXT))
       // extend show time by original value
       SetAutoClose(m_showDuration);

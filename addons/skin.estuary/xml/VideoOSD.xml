@@ -18,7 +18,7 @@
 		<control type="group">
 			<bottom>0</bottom>
 			<height>180</height>
-			<visible>![Window.IsVisible(SliderDialog) | Window.IsVisible(osdaudiosettings) | Window.IsVisible(osdvideosettings) | Window.IsVisible(OSDAudioDSPSettings) | Window.IsVisible(VideoBookmarks) | Window.IsVisible(playerprocessinfo) | Window.IsVisible(osdcmssettings) | Window.IsVisible(PVROSDChannels) | Window.IsVisible(PVROSDGuide)]</visible>
+			<visible>![Window.IsVisible(SliderDialog) | Window.IsVisible(osdaudiosettings) | Window.IsVisible(osdvideosettings) | Window.IsVisible(OSDAudioDSPSettings) | Window.IsVisible(VideoBookmarks) | Window.IsVisible(playerprocessinfo) | Window.IsVisible(osdcmssettings) | Window.IsVisible(PVROSDChannels) | Window.IsVisible(pvrchannelguide)]</visible>
 			<animation effect="fade" time="200">VisibleChange</animation>
 			<control type="label">
 				<right>30</right>
@@ -146,7 +146,7 @@
 							<param name="texture" value="osd/fullscreen/buttons/guide.png"/>
 						</include>
 						<onclick>Dialog.Close(VideoOSD)</onclick>
-						<onclick>ActivateWindow(PVROSDGuide)</onclick>
+						<onclick>ActivateWindow(pvrchannelguide)</onclick>
 						<visible>VideoPlayer.Content(livetv)</visible>
 					</control>
 					<control type="radiobutton" id="700">

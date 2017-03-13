@@ -26,14 +26,15 @@ class CFileItemList;
 
 namespace PVR
 {
-  class CGUIDialogPVRGuideOSD : public CGUIDialog
+  class CGUIDialogPVRChannelGuide : public CGUIDialog
   {
   public:
-    CGUIDialogPVRGuideOSD(void);
-    virtual ~CGUIDialogPVRGuideOSD(void);
+    CGUIDialogPVRChannelGuide(void);
+    virtual ~CGUIDialogPVRChannelGuide(void);
     virtual bool OnMessage(CGUIMessage& message);
     virtual void OnWindowLoaded();
     virtual void OnWindowUnload();
+    virtual void Open(const CPVRChannelPtr &channel);
 
   protected:
     virtual void OnInitWindow();
@@ -44,7 +45,10 @@ namespace PVR
 
     CGUIControl *GetFirstFocusableControl(int id);
 
-    CFileItemList    *m_vecItems;
-    CGUIViewControl   m_viewControl;
+    std::unique_ptr<CFileItemList> m_vecItems;
+    CGUIViewControl m_viewControl;
+
+  private:
+    CPVRChannelPtr m_channel;
   };
 }

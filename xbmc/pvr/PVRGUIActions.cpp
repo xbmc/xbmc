@@ -38,6 +38,7 @@
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/dialogs/GUIDialogPVRGuideInfo.h"
+#include "pvr/dialogs/GUIDialogPVRChannelGuide.h"
 #include "pvr/dialogs/GUIDialogPVRRecordingInfo.h"
 #include "pvr/dialogs/GUIDialogPVRTimerSettings.h"
 #include "pvr/PVRDatabase.h"
@@ -97,6 +98,25 @@ namespace PVR
     pDlgInfo->Open();
     return true;
   }
+
+
+  bool CPVRGUIActions::ShowChannelEPG(const CFileItemPtr &item) const
+  {
+    const CPVRChannelPtr channel(CPVRItem(item).GetChannel());
+    if (channel && !CheckParentalLock(channel))
+      return false;
+
+    CGUIDialogPVRChannelGuide* pDlgInfo = dynamic_cast<CGUIDialogPVRChannelGuide*>(g_windowManager.GetWindow(WINDOW_DIALOG_PVR_CHANNEL_GUIDE));
+    if (!pDlgInfo)
+    {
+      CLog::Log(LOGERROR, "CPVRGUIActions - %s - unable to get WINDOW_DIALOG_PVR_CHANNEL_GUIDE!", __FUNCTION__);
+      return false;
+    }
+
+    pDlgInfo->Open(channel);
+    return true;
+  }
+
 
   bool CPVRGUIActions::ShowRecordingInfo(const CFileItemPtr &item) const
   {

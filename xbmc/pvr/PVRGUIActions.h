@@ -75,6 +75,13 @@ namespace PVR
     bool ShowEPGInfo(const CFileItemPtr &item) const;
 
     /*!
+     * @brief Open a dialog with the epg list for a given item.
+     * @param item containing channel info. item must be an epg tag, a channel or a timer.
+     * @return true on success, false otherwise.
+     */
+    bool ShowChannelEPG(const CFileItemPtr &item) const;
+
+    /*!
      * @brief Open a window containing a list of epg tags 'similar' to a given item.
      * @param item containing epg data for matching. item must be an epg tag, a channel or a recording.
      * @param windowToClose is the window to close before opening the window with the search results.

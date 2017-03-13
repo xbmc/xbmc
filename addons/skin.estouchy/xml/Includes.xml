@@ -2450,7 +2450,7 @@
 		<control type="button">
 			<label>19222</label>
 			<include>MenuButtonCommonValues</include>
-			<onclick>ActivateWindow(PVROSDGuide)</onclick>
+			<onclick>ActivateWindow(pvrchannelguide)</onclick>
 			<visible>VideoPlayer.Content(LiveTV)</visible>
 		</control>
 		<control type="button">

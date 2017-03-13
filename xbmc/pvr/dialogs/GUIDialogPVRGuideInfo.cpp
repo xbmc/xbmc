@@ -49,6 +49,7 @@ using namespace KODI::MESSAGING;
 #define CONTROL_BTN_OK                  7
 #define CONTROL_BTN_PLAY_RECORDING      8
 #define CONTROL_BTN_ADD_TIMER           9
+#define CONTROL_BTN_CHANNEL_GUIDE       10
 
 CGUIDialogPVRGuideInfo::CGUIDialogPVRGuideInfo(void)
     : CGUIDialog(WINDOW_DIALOG_PVR_GUIDE_INFO, "DialogPVRInfo.xml")
@@ -67,6 +68,26 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonOK(CGUIMessage &message)
   {
     Close();
     bReturn = true;
+  }
+
+  return bReturn;
+}
+
+bool CGUIDialogPVRGuideInfo::OnClickButtonChannelGuide(CGUIMessage &message)
+{
+  bool bReturn = false;
+
+  if (message.GetSenderId() == CONTROL_BTN_CHANNEL_GUIDE)
+  {
+    if (!m_progItem || !m_progItem->HasPVRChannel())
+    {
+      /* invalid channel */
+      CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19136}); // Information, Channel unavailable
+      Close();
+      return bReturn;
+    }
+
+    bReturn = CPVRGUIActions::GetInstance().ShowChannelEPG(CFileItemPtr(new CFileItem(m_progItem)));
   }
 
   return bReturn;
@@ -168,7 +189,8 @@ bool CGUIDialogPVRGuideInfo::OnMessage(CGUIMessage& message)
            OnClickButtonRecord(message) ||
            OnClickButtonPlay(message) ||
            OnClickButtonFind(message) ||
-           OnClickButtonAddTimer(message);
+           OnClickButtonAddTimer(message) ||
+           OnClickButtonChannelGuide(message);
   }
 
   return CGUIDialog::OnMessage(message);
