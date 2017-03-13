@@ -44,3 +44,7 @@ endif()
 if(ENABLE_MIR)
   set(ENABLE_VDPAU OFF CACHE BOOL "Disabling VDPAU since no Mir support" FORCE)
 endif()
+
+if(CPU MATCHES 64 AND (NOT (DEFINED ENABLE_JEMALLOC) ) )
+  set(ENABLE_JEMALLOC ON CACHE BOOL "Enable jmalloc allocator for 64-bit linux builds" FORCE)
+endif()

@@ -57,6 +57,7 @@ if(UNIX)
     option(ENABLE_X11         "Enable X11 support?" ON)
     option(ENABLE_AML         "Enable AML?" OFF)
     option(ENABLE_IMX         "Enable IMX?" OFF)
+    option(ENABLE_JEMALLOC    "Enable JEMALLOC?" OFF)
   endif()
 endif()
 # System options
@@ -115,7 +116,7 @@ if(CORE_SYSTEM_NAME STREQUAL android)
 endif()
 
 # Optional dependencies
-set(optional_deps MicroHttpd MySqlClient SSH XSLT
+set(optional_deps MicroHttpd MySqlClient SSH XSLT JEMALLOC
                   Alsa UDEV DBus Avahi MDNS SmbClient CCache
                   PulseAudio VDPAU VAAPI Bluetooth CAP Python)
 
