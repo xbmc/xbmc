@@ -36,6 +36,12 @@ CHTTPImageHandler::CHTTPImageHandler(const HTTPRequest &request)
 
     XFILE::CImageFile imageFile;
     const CURL pathToUrl(file);
+    if (pathToUrl.GetHostName().find("..") != std::string::npos)
+    {
+        responseStatus = MHD_HTTP_NOT_FOUND;
+        return;
+    }
+
     if (imageFile.Exists(pathToUrl))
     {
       responseStatus = MHD_HTTP_OK;
