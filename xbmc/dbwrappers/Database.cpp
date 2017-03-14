@@ -29,6 +29,9 @@
 #include "sqlitedataset.h"
 #include "DatabaseManager.h"
 #include "DbUrl.h"
+#if defined(TARGET_RASPBERRY_PI)
+#include "linux/RBP.h"
+#endif
 
 #ifdef HAS_MYSQL
 #include "mysqldataset.h"
@@ -487,8 +490,14 @@ bool CDatabase::Connect(const std::string &dbName, const DatabaseSettings &dbSet
     if (dbSettings.type == "sqlite3")
     {
       m_pDS->exec("PRAGMA cache_size=4096\n");
-      m_pDS->exec("PRAGMA synchronous='NORMAL'\n");
+      m_pDS->exec("PRAGMA synchronous='OFF'\n");
       m_pDS->exec("PRAGMA count_changes='OFF'\n");
+      bool memJournal = true;
+      #if defined(TARGET_RASPBERRY_PI)
+	memJournal = (g_RBP.GetArmMem() >= 384);
+      #endif
+     if (memJournal)
+         m_pDS->exec("PRAGMA journal_mode = 'MEMORY'\n");
     }
   }
   catch (DbErrors &error)
