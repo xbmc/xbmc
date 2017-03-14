@@ -692,6 +692,9 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
             m_state = AE_TOP_CONFIGURED_PLAY;
           }
           return;
+        case CActiveAEDataProtocol::ISPLAYINGSOUND:
+          msg->Reply(m_sounds_playing.empty() ? CActiveAEDataProtocol::ERR : CActiveAEDataProtocol::ACC);
+          return;
         case CActiveAEDataProtocol::NEWSTREAM:
           MsgStreamNew *streamMsg;
           CActiveAEStream *stream;
@@ -3083,6 +3086,19 @@ void CActiveAE::FreeSound(IAESound *sound)
 void CActiveAE::PlaySound(CActiveAESound *sound)
 {
   m_dataPort.SendOutMessage(CActiveAEDataProtocol::PLAYSOUND, &sound, sizeof(CActiveAESound*));
+}
+
+bool CActiveAE::IsPlayingSound()
+{
+  Message *reply;
+  if (m_dataPort.SendOutMessageSync(CActiveAEDataProtocol::ISPLAYINGSOUND,
+                                           &reply, 2000))
+  {
+    bool success = reply->signal == CActiveAEControlProtocol::ACC;
+    reply->Release();
+    return success;
+  }
+  return false;
 }
 
 void CActiveAE::StopSound(CActiveAESound *sound)
