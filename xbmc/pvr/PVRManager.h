@@ -719,6 +719,10 @@ private:
 
     std::atomic_bool m_isChannelPreview;
     CEventSource<PVREvent> m_events;
+
+    // settings cache
+    bool m_bSettingPowerManagementEnabled; // SETTING_PVRPOWERMANAGEMENT_ENABLED
+    std::string m_strSettingWakeupCommand; // SETTING_PVRPOWERMANAGEMENT_SETWAKEUPCMD
   };
 
   class CPVRStartupJob : public CJob

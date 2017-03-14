@@ -163,7 +163,9 @@ CPVRManager::CPVRManager(void) :
     m_progressBar(nullptr),
     m_progressHandle(nullptr),
     m_managerState(ManagerStateStopped),
-    m_isChannelPreview(false)
+    m_isChannelPreview(false),
+    m_bSettingPowerManagementEnabled(CSettings::GetInstance().GetBool(CSettings::SETTING_PVRPOWERMANAGEMENT_ENABLED)),
+    m_strSettingWakeupCommand(CSettings::GetInstance().GetString(CSettings::SETTING_PVRPOWERMANAGEMENT_SETWAKEUPCMD))
 {
   CAnnouncementManager::GetInstance().AddAnnouncer(this);
 }
@@ -268,6 +270,16 @@ void CPVRManager::OnSettingChanged(const CSetting *setting)
   else if(settingId == CSettings::SETTING_EPG_DAYSTODISPLAY)
   {
     m_addons->SetEPGTimeFrame(static_cast<const CSettingInt*>(setting)->GetValue());
+  }
+  else if(settingId == CSettings::SETTING_PVRPOWERMANAGEMENT_ENABLED)
+  {
+    CSingleLock lock(m_critSection);
+    m_bSettingPowerManagementEnabled = static_cast<const CSettingBool*>(setting)->GetValue();
+  }
+  else if(settingId == CSettings::SETTING_PVRPOWERMANAGEMENT_SETWAKEUPCMD)
+  {
+    CSingleLock lock(m_critSection);
+    m_strSettingWakeupCommand = static_cast<const CSettingString*>(setting)->GetValue();
   }
 }
 
@@ -376,6 +388,9 @@ void CPVRManager::Init()
   settingSet.insert(CSettings::SETTING_EPG_RESETEPG);
   settingSet.insert(CSettings::SETTING_EPG_DAYSTODISPLAY);
   settingSet.insert(CSettings::SETTING_PVRPARENTAL_ENABLED);
+  settingSet.insert(CSettings::SETTING_PVRPOWERMANAGEMENT_ENABLED);
+  settingSet.insert(CSettings::SETTING_PVRPOWERMANAGEMENT_SETWAKEUPCMD);
+
   CSettings::GetInstance().RegisterCallback(this, settingSet);
 
   // Note: we're holding the progress bar dialog instance pointer in a member because it is needed by pvr core
@@ -615,11 +630,19 @@ void CPVRManager::Process(void)
 
 bool CPVRManager::SetWakeupCommand(void)
 {
-  if (!CSettings::GetInstance().GetBool(CSettings::SETTING_PVRPOWERMANAGEMENT_ENABLED))
+  bool bSettingPowerManagementEnabled;
+  std::string strSettingWakeupCommand;
+
+  {
+    CSingleLock lock(m_critSection);
+    bSettingPowerManagementEnabled = m_bSettingPowerManagementEnabled;
+    strSettingWakeupCommand = m_strSettingWakeupCommand;
+  }
+
+  if (!bSettingPowerManagementEnabled)
     return false;
 
-  const std::string strWakeupCommand = CSettings::GetInstance().GetString(CSettings::SETTING_PVRPOWERMANAGEMENT_SETWAKEUPCMD);
-  if (!strWakeupCommand.empty() && m_timers)
+  if (!strSettingWakeupCommand.empty() && m_timers)
   {
     time_t iWakeupTime;
     const CDateTime nextEvent = m_timers->GetNextEventTime();
@@ -627,7 +650,7 @@ bool CPVRManager::SetWakeupCommand(void)
     {
       nextEvent.GetAsTime(iWakeupTime);
 
-      std::string strExecCommand = StringUtils::Format("%s %ld", strWakeupCommand.c_str(), iWakeupTime);
+      std::string strExecCommand = StringUtils::Format("%s %ld", strSettingWakeupCommand.c_str(), iWakeupTime);
 
       const int iReturn = system(strExecCommand.c_str());
       if (iReturn != 0)
