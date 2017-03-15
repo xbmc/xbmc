@@ -52,7 +52,6 @@ void CPVRActionListener::Init()
   settingSet.insert(CSettings::SETTING_PVRMANAGER_CHANNELSCAN);
   settingSet.insert(CSettings::SETTING_PVRMENU_SEARCHICONS);
   settingSet.insert(CSettings::SETTING_PVRCLIENT_MENUHOOK);
-  settingSet.insert(CSettings::SETTING_EPG_DAYSTODISPLAY);
   CServiceBroker::GetSettings().RegisterCallback(this, settingSet);
 }
 
@@ -196,10 +195,6 @@ void CPVRActionListener::OnSettingAction(const CSetting *setting)
   else if (settingId == CSettings::SETTING_PVRCLIENT_MENUHOOK)
   {
     CPVRGUIActions::GetInstance().ProcessMenuHooks(CFileItemPtr());
-  }
-  else if (settingId == CSettings::SETTING_EPG_DAYSTODISPLAY)
-  {
-    g_PVRClients->SetEPGTimeFrame(static_cast<const CSettingInt*>(setting)->GetValue());
   }
 }
 

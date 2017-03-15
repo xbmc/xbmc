@@ -94,7 +94,7 @@ namespace PVR
     bool m_bStopped;
   };
 
-  class CPVRManager : private CThread, public Observable, public ANNOUNCEMENT::IAnnouncer
+  class CPVRManager : private CThread, public Observable, public ANNOUNCEMENT::IAnnouncer, public ISettingCallback
   {
     friend class CPVRClients;
 
@@ -130,6 +130,9 @@ namespace PVR
      * @return The PVRManager instance.
      */
     static CPVRManager &GetInstance();
+
+    // ISettingCallback implementation
+    void OnSettingChanged(const CSetting *setting) override;
 
     /*!
      * @brief Get the channel groups container.
@@ -647,6 +650,10 @@ namespace PVR
 
     std::atomic_bool m_isChannelPreview;
     CEventSource<PVREvent> m_events;
+
+    // settings cache
+    bool m_bSettingPowerManagementEnabled; // SETTING_PVRPOWERMANAGEMENT_ENABLED
+    std::string m_strSettingWakeupCommand; // SETTING_PVRPOWERMANAGEMENT_SETWAKEUPCMD
   };
 
   class CPVRStartupJob : public CJob
