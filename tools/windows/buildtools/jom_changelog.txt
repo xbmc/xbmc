@@ -1,0 +1,163 @@
+This is the changelog for jom 1.1.0, the parallel make tool.
+
+Changes since jom 1.0.16
+- Restrict the number of parallel jobs in recursively called instances
+  similar to GNU make's jobserver (QTCREATORBUG-10846).
+
+Changes since jom 1.0.15
+- Fix occasional hang on exit (QTCREATORBUG-14600).
+
+Changes since jom 1.0.14
+- Fix potential hang on error in a sub-jom.
+- Yield error on missing !endif directives (QTCREATORBUG-14211).
+- Fix ignoring exit codes greater than 255.
+- Fix /DUMPGRAPHDOT option (QTCREATORBUG-14004).
+- Fix $? filename macro for nonexistent targets (QTCREATORBUG-14125).
+- Fix quoting of dependencies with spaces (QTCREATORBUG-12296).
+
+Changes since jom 1.0.13
+- Fix exit code forwarding. (QTCREATORBUG-11556)
+- Fix file name macro modifers for $** and $?. (QTCREATORBUG-6932)
+- Fix equal signs in semicolon command syntax. (QTCREATORBUG-7942)
+- Fix error line numbers for inline files. (QTCREATORBUG-8451)
+- Ignore macro assignments in inline files. (QTCREATORBUG-8452)
+- Yield error on unexpected !ENDIF directive.
+- Support wildcards in dependency lines. (QTCREATORBUG-10439)
+- Use IcrediBuild's BuildConsole instead of the XGE interface in ibjom.
+
+Changes since jom 1.0.12
+- Fix spurious "Can't start command" error.
+- Fix passing of -j argument to subjoms.
+- Sanity check the -j argument.
+- Fix regression of non-functional set command in command blocks.
+- Fix handling of environment variables that would cause a syntax errors in
+  makefiles.
+- Fix handling of environment variables with lowercase names.
+
+Changes since jom 1.0.11
+- Performance improvements.
+- Fixed whitespace in command line arguments. (QTCREATORBUG-7428)
+- Enhanced responsiveness of subjom output.
+- Separate output of stdout and stderr.
+- Fix the output of silent commands in /n mode. (QTCREATORBUG-7170)
+- Implemented the /U switch for dumping inline files.
+- Fix expansion of environment variables.
+
+Changes since jom 1.0.10
+- Fix exit code for /k command line switch. (QTCREATORBUG-6987)
+- Fix spurious 0x0d characters in process output. (QTCREATORBUG-6986)
+- Fix process output ordering and printing of large amounts of output
+  in recursive jom scenarios.
+- Improved performance by caching file time stamps.
+
+Changes since jom 1.0.9
+- Fix regression that caused jom to fail on Windows XP.
+
+Changes since jom 1.0.8
+- The GNU Make option -w is now supported to print the current working
+  directory before and after other processing.
+- Fix crash when specifying a target for an empty makefile.
+  (QTCREATORBUG-6552)
+- Fix lookup for targets in the Makefile's directory. (QTCREATORBUG-6546)
+- Fix handling of environment variables. (QTCREATORBUG-6578)
+- Specifying an exit code with the '-' command modifier was fixed.
+- Fix command modifiers in inference rules. (QTCREATORBUG-6742)
+- Fix parsing of the "ignore exit code" command modifier.
+- Fix (very rare) deadlock and zombie processes.
+- The preprocessor directive !include <file> now looks up files in the
+  include directories correctly. (QTCREATORBUG-6869)
+
+Changes since jom 1.0.7
+- Fix spawning of child processes that expect a valid stdin handle.
+  E.g. xcopy couldn't be called anymore.
+- CMakeList.txt was fixed (thanks to Ryan Pavlik).
+
+Changes since jom 1.0.6
+- Fix blank lines in output. (QTCREATORBUG-3974)
+- Small performance improvement due to compilation with
+  QT_USE_FAST_CONCATENATION and QT_USE_FAST_OPERATOR_PLUS.
+- Ctrl-C handling has been revisited. Much simpler and more correct.
+  Before the compiler jobs didn't get a Ctrl-C but were terminated.
+- Special .SYNC dependents implemented. See README for a small description.
+  (QTCREATORBUG-3257)
+- Handle quoted dollar signs in inline files correctly. (QTCREATORBUG-2875)
+- Respect the MAKEFLAGS environment variable. (QTCREATORBUG-5028)
+- Complete detection of cmd builtins. This fixes annoying warnings when building
+  with IncrediBuild.
+
+Changes since jom 1.0.5
+- Fix mean monster spawn issue.
+
+Changes since jom 1.0.4
+- Fix out of date check for pseudotargets. (QTCREATORBUG-3909)
+
+Changes since jom 1.0.3
+- Fix that -j1 wasn't passed to sub jom calls. (QTCREATORBUG-3729)
+- /KEEPTEMPFILES was added for debugging purposes. (QTCREATORBUG-3852)
+- Performance boost for incremental builds.
+- Improved Ctrl-C handling for recursive make.
+
+Changes since jom 1.0.2
+- Support variable names with underscores. (QTCREATORBUG-3235)
+- Keep order of dependencies on build. This is important for makefiles
+  lacking complete dependencies. These might fail in parallel builds
+  otherwise.
+- Fix issues wrt environment variables. (QTCREATORBUG-3108)
+
+Changes since jom 1.0.1
+- Make target names case insensitive. (QTCREATORBUG-3037)
+- Fix reading of include files without newline at the end.
+  (QTBUG-15021)
+- Repair the cmake project file for jom.
+
+Changes since jom 1.0.0
+- Cleaner and faster determination of targets that must be built.
+- Fix incomplete up-to-date check for inference rule targets.
+  (QTCREATORBUG-2713)
+- Don't filter comments in inline files. (QTCREATORBUG-2874)
+
+Changes since jom 0.9.4
+- Inference rule batch mode implemented.
+  This improves performance for makefiles that make heavy use of the batch
+  mode, e.g. qmake generated makefiles.
+- Improved command execution. No more batch file writing.
+- Macro substitution implemented. Macro expansions like
+  $(TARGET:suffix=d) are now possible.
+- .SUFFIXES content is handled properly.
+- Fixed several bugs in file name macro expansion.
+- Output of concurrent processes is explicitely separated.
+
+Changes since jom 0.9.3
+- Opening files from volume mounted to NTFS directory fixed.
+  (QTCREATORBUG-1475)
+- Output buffering issue fixed. (QTBUG-10798)
+
+Changes since jom 0.9.2
+- Support for multiple inline files per command line added.
+- Its now possible to use "." as target name. (QTCREATORBUG-1131)
+- Support file name macros in the file name part of inline file defitions.
+  (QTCREATORBUG-1136)
+- Multiple file name macros per command line are possible now.
+- Single name macro invocation was added.
+  They can be invoked like this: $A instead of $(A).
+- Several bugs related to file name macros have been fixed.
+- Handle quoted arguments from command files correctly.
+
+Changes since jom 0.9.1
+- Fixed conditionals in preprocessor expressions. (QTCREATORBUG-1091)
+- Improved parser error messages. Now we see the file, in which the
+  error occurred. (QTCREATORBUG-1114)
+
+Changes since jom 0.9.0
+- Having too many rules for a target is now a warning and not an error.
+- Fixed several bugs in the preprocessor expression parser, e.g.
+  QTCREATORBUG-1056.
+
+Changes since jom 0.8.9
+- Reset the ERRORLEVEL to zero, if command's exit code should be ignored.
+  (QTCREATORBUG-837)
+- Command files can be used to pass command line options to jom.
+  Usage: jom @commands.txt
+- ANTLR isn't used anymore. We're using QLALR to generate the parser for
+  preprocessor expressions now. This makes building jom much easier.
+

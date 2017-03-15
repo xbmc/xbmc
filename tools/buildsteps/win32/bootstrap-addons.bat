@@ -18,7 +18,10 @@ if "%1" == "clean" (
 )
 
 rem set Visual C++ build environment
-call "%VS140COMNTOOLS%..\..\VC\bin\vcvars32.bat"
+if not defined DevEnvDir (
+:: without this if not defined the script can not be run several times in the same cmd.exe
+  call "%VS140COMNTOOLS%..\..\VC\bin\vcvars32.bat"
+)
 
 SET WORKDIR=%WORKSPACE%
 
@@ -32,6 +35,7 @@ IF "%WORKDIR%" == "" (
 )
 
 rem setup some paths that we need later
+SET BUILD_ON_CORES=8
 SET CUR_PATH=%CD%
 SET BASE_PATH=%WORKDIR%\cmake
 SET ADDONS_PATH=%BASE_PATH%\addons
@@ -81,7 +85,7 @@ IF ERRORLEVEL 1 (
 )
 
 rem execute nmake to prepare the buildsystem
-nmake
+"%WORKDIR%\tools\windows\buildtools\jom.exe" -j%BUILD_ON_CORES%
 IF ERRORLEVEL 1 (
   ECHO nmake failed with error level: %ERRORLEVEL%
 )

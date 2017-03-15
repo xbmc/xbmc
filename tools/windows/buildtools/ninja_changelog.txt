@@ -1,0 +1,106 @@
+SOURCE: https://groups.google.com/forum/#!topic/ninja-build/bkDE7auQwiI/discussion
+
+I've tagged a new release of Ninja, version v1.7.1
+
+(I've also tagged v1.7.0, but don't use that.)
+
+This is the first release after moving the homepage to https://ninja-build.org
+and the repo to github.com/ninja-build.
+
+== Release notes
+* New feature: Implicit outputs (#989)
+  Documented in the manual at https://ninja-build.org/manual.html#ref_outputs
+* Output formatting changes
+  + in non-interactive mode, print commands when finished, not when started --
+    build output is now always preceded by the command that produced it (#999)
+  + as a consequence, the default NINJA_STATUS is now "[%f/%t] " and %p
+    is percentage of finished edges instead of percentage of started (#1142)
+  + for failing commands, print "FAILED: output name" followed by the
+    faiilng command on a new line, instead of "FAILED: command" (#1033)
+
+* Several documentation updates
+
+* Minor changes and bugfixes
+  + "./" in paths is no longer an error but instead canonicalizes to nothing
+    (#1076)
+  + New debugging flag `-d keepdepfile` (#1098)
+  + `-w dupbuild=err` now works in subninjas (#1095)
+  + Don't loop forever in dry-run mode if the generator rule is dirty (#1069)
+  + `msvc_deps_prefix` can now be set per-rule, not just globally (#1043)
+  + allow non-ANSI characters in depfiles (#763)
+  + `-k 0` now works better with pools (#1017, #1023, #1126)
+
+* `-t browse` changes
+  + new --port and --no-browser flags; default to 'all' target (#1112)
+  + make tool work if main build file isn't called build.ninja (#1116)
+
+* Windows-specific changes
+  + don't crash with deps=msvc if the compiler prints very long include notes
+    (#973)
+
+* POSIX-specific changes
+  + Clean up build on SIGHUP (#964)
+  + subprocesses are now spawned via posix_spawn instead of fork/exec, which
+    speeds up builds on some systems (e.g Mac OS X) (#1118)
+  + child processes no longer detached from terminal, restoring 1.5.0 behavior
+    (#1113)
+  + experimentally expose deps=msvc on non-Windows too (#1125)
+
+* Changes to building ninja itself
+  + allow bootstrapping ninja itself in an out-of-source build dir (#979)
+  + make ninja build on AIX (#1007)
+  + ninja's source compiles with MSVC2015 (#1003, #1110, #1130)
+  + ninja's source now also compiles with MSVC2008 (!) (#1101)
+  + ninja's source builds with libc++ on Linux (#1134)
+
+* Changes to scripts
+  + zsh target completion is faster (#1046)
+  + bash target completion is faster (#1047)
+  + ninja_syntax: don't wrap long words in comments (#1042)
+  + ninja_syntax: support implicit outputs
+
+This release brought to you by:
+$ git shortlog -s --no-merges v1.6.0..v1.7.1
+     1  Alex Vallee
+     2  Alex Vallée
+     1  Ben Falconer
+     8  Brad King
+     5  Colin Cross
+     1  Dan Willemsen
+     1  David Emett
+     2  Demetri Obenour
+     1  Ed Baunton
+    10  Evan Martin
+     1  Frank Benkstein
+     3  Fredrik Medley
+     1  Hadi Moshayedi
+     1  James Johnston
+     3  Jason Haslam
+     1  Lindley French
+     7  Mike Seplowitz
+    18  Nico Weber
+     5  Nicolas Despres
+     1  Niklas Rosenstein
+     3  Peter Wu
+    12  Scott Graham
+     1  Shinichiro Hamaji
+     2  Tetsuo Kiso
+     1  Thiago Farina
+     1  g4m4
+     1  peter1000
+     1  ptzz
+     1  sphawk
+
+== Getting this release
+
+To build this release, clone the repository as follows:
+  git clone git://github.com/martine/ninja.git
+  cd ninja
+  git checkout v1.7.1
+or grab a tarball from https://github.com/martine/ninja/releases .
+
+Once you have the code, run `./configure.py --bootstrap` to build and then
+./ninja --version will print the version number.
+
+https://github.com/martine/ninja/releases also has precompiled
+binaries for Linux (64bit), Mac OS X (10.6+, 64bit), and Windows (64bit).

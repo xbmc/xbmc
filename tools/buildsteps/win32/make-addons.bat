@@ -24,7 +24,10 @@ FOR %%b IN (%*) DO (
 SETLOCAL DisableDelayedExpansion
 
 rem set Visual C++ build environment
-call "%VS140COMNTOOLS%..\..\VC\bin\vcvars32.bat"
+if not defined DevEnvDir (
+:: without this if not defined the script can not be run several times in the same cmd.exe
+  call "%VS140COMNTOOLS%..\..\VC\bin\vcvars32.bat"
+)
 
 SET WORKDIR=%base_dir%
 
@@ -38,6 +41,7 @@ IF "%WORKDIR%" == "" (
 )
 
 rem setup some paths that we need later
+SET BUILD_ON_CORES=8
 SET CUR_PATH=%CD%
 SET BASE_PATH=%WORKDIR%\cmake
 SET SCRIPTS_PATH=%BASE_PATH%\scripts\windows
@@ -134,13 +138,13 @@ rem loop over all addons to build
 FOR %%a IN (%ADDONS_TO_MAKE%) DO (
   ECHO Building %%a...
   rem execute nmake to build the addons
-  nmake %%a
+  "%WORKDIR%\tools\windows\buildtools\jom.exe" %%a -j%BUILD_ON_CORES%
   IF ERRORLEVEL 1 (
     ECHO nmake %%a error level: %ERRORLEVEL% > %ERRORFILE%
     ECHO %%a >> %ADDONS_FAILURE_FILE%
   ) ELSE (
     if %package% == true (
-      nmake package-%%a
+      "%WORKDIR%\tools\windows\buildtools\jom.exe" package-%%a -j%BUILD_ON_CORES%
       IF ERRORLEVEL 1 (
         ECHO nmake package-%%a error level: %ERRORLEVEL% > %ERRORFILE%
         ECHO %%a >> %ADDONS_FAILURE_FILE%
