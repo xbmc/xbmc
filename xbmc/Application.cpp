@@ -2755,8 +2755,9 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
       unsigned int sleepTime = std::max(static_cast<unsigned int>(2), std::min(m_ProcessedExternalCalls >> 2, static_cast<unsigned int>(10)));
       Sleep(sleepTime);
       m_frameMoveGuard.lock();
+      m_ProcessedExternalDecay = 5;
     }
-    else
+    if (m_ProcessedExternalDecay && --m_ProcessedExternalDecay == 0)
       m_ProcessedExternalCalls = 0;
   }
 
