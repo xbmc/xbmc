@@ -396,7 +396,7 @@ public:
   virtual bool IsCaching() const override;
   virtual int GetCacheLevel() const override;
 
-  virtual int OnDVDNavResult(void* pData, int iMessage) override;
+  virtual int OnDiscNavResult(void* pData, int iMessage) override;
   void GetVideoResolution(unsigned int &width, unsigned int &height) override;
 
 protected:
