@@ -152,6 +152,7 @@ ifeq ($(findstring osx,@ARCH@),osx)
 DIRECTORY_ARCHIVES += xbmc/input/joysticks/input_joysticks.a
 DIRECTORY_ARCHIVES += xbmc/input/joysticks/dialogs/input_joystick_dialogs.a
 DIRECTORY_ARCHIVES += xbmc/input/joysticks/generic/input_joysticks_generic.a
+DIRECTORY_ARCHIVES += xbmc/input/keyboard/input_keyboard.a
 DIRECTORY_ARCHIVES += xbmc/network/osx/network.a
 DIRECTORY_ARCHIVES += xbmc/network/linux/network_linux.a
 DIRECTORY_ARCHIVES += xbmc/powermanagement/osx/powermanagement.a
@@ -168,6 +169,7 @@ ifeq (@USE_ANDROID@,1)
 DIRECTORY_ARCHIVES += xbmc/input/joysticks/input_joysticks.a
 DIRECTORY_ARCHIVES += xbmc/input/joysticks/dialogs/input_joystick_dialogs.a
 DIRECTORY_ARCHIVES += xbmc/input/joysticks/generic/input_joysticks_generic.a
+DIRECTORY_ARCHIVES += xbmc/input/keyboard/input_keyboard.a
 DIRECTORY_ARCHIVES += xbmc/input/linux/input_linux.a
 DIRECTORY_ARCHIVES += xbmc/input/touch/input_touch.a
 DIRECTORY_ARCHIVES += xbmc/input/touch/generic/input_touch_generic.a
@@ -179,6 +181,7 @@ else
 DIRECTORY_ARCHIVES += xbmc/input/joysticks/input_joysticks.a
 DIRECTORY_ARCHIVES += xbmc/input/joysticks/dialogs/input_joystick_dialogs.a
 DIRECTORY_ARCHIVES += xbmc/input/joysticks/generic/input_joysticks_generic.a
+DIRECTORY_ARCHIVES += xbmc/input/keyboard/input_keyboard.a
 DIRECTORY_ARCHIVES += xbmc/input/linux/input_linux.a
 DIRECTORY_ARCHIVES += xbmc/input/touch/input_touch.a
 DIRECTORY_ARCHIVES += xbmc/input/touch/generic/input_touch_generic.a
