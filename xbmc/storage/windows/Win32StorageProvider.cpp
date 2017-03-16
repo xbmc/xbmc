@@ -21,9 +21,12 @@
 #include "WIN32Util.h"
 #include "guilib/LocalizeStrings.h"
 #include "filesystem/SpecialProtocol.h"
+#include "platform/win32/CharsetConverter.h"
 #include "storage/MediaManager.h"
 #include "utils/JobManager.h"
 #include "utils/log.h"
+
+#include <ShlObj.h>
 
 bool CWin32StorageProvider::xbevent = false;
 
@@ -49,8 +52,14 @@ void CWin32StorageProvider::Initialize()
 
 void CWin32StorageProvider::GetLocalDrives(VECSOURCES &localDrives)
 {
+  using namespace KODI::PLATFORM::WINDOWS;
   CMediaSource share;
-  share.strPath = CSpecialProtocol::TranslatePath("special://home");
+  wchar_t profilePath[MAX_PATH];
+  if (SUCCEEDED(SHGetFolderPath(nullptr, CSIDL_PROFILE, nullptr, 0, profilePath)) ||
+      GetEnvironmentVariable(L"USERPROFILE", profilePath, MAX_PATH) > 0)
+    share.strPath = FromW(profilePath);
+  else
+    share.strPath = CSpecialProtocol::TranslatePath("special://home");
   share.strName = g_localizeStrings.Get(21440);
   share.m_ignore = true;
   share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
