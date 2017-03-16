@@ -244,9 +244,8 @@ bool CRarManager::CacheRarredFile(std::string& strPathInCache, const std::string
         }
       }
     }
-    bool bShowProgress=false;
-    if (iSize > 1024*1024 || iSize == -2) // 1MB
-      bShowProgress=true;
+
+    bool bShowProgress = (iSize > EXTRACTION_WARN_SIZE || iSize == -2);
 
     std::string strDir2 = URIUtils::GetDirectory(strCachedPath);
     URIUtils::RemoveSlashAtEnd(strDir2);
