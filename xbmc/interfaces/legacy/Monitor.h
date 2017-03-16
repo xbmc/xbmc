@@ -41,6 +41,7 @@ namespace XBMCAddon
     class Monitor : public AddonCallback
     {
       String Id;
+      long invokerId;
       CEvent abortEvent;
     public:
       Monitor();
@@ -68,6 +69,7 @@ namespace XBMCAddon
       inline void    OnNotification(const String &sender, const String &method, const String &data) { XBMC_TRACE; invokeCallback(new CallbackFunction<Monitor,const String,const String,const String>(this,&Monitor::onNotification,sender,method,data)); }
 
       inline const String& GetId() { return Id; }
+      inline long GetInvokerId() { return invokerId; }
 
       void OnAbortRequested();
 #endif
