@@ -212,15 +212,18 @@ bool CRenderManager::Configure(DVDVideoPicture& picture, float fps, unsigned fla
   {
     CSingleLock lock(m_presentlock);
     XbmcThreads::EndTime endtime(5000);
+    m_forceNext = true;
     while (m_presentstep != PRESENT_IDLE)
     {
       if(endtime.IsTimePast())
       {
         CLog::Log(LOGWARNING, "CRenderManager::Configure - timeout waiting for state");
+        m_forceNext = false;
         return false;
       }
       m_presentevent.wait(lock, endtime.MillisLeft());
     }
+    m_forceNext = false;
   }
 
   {
