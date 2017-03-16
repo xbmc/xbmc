@@ -101,6 +101,10 @@ static std::vector<std::vector<char>> storeArgumentsCCompatible(std::vector<std:
   std::vector<std::vector<char>> output;
   std::transform(input.begin(), input.end(), std::back_inserter(output),
                 [](std::string const & i) { return std::vector<char>(i.c_str(), i.c_str() + i.length() + 1); });
+
+  if (output.empty())
+    output.push_back(std::vector<char>(1u, '\0'));
+
   return output;
 }
 
@@ -233,10 +237,7 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
   Py_DECREF(sysMod); // release ref to sysMod
 
   // set current directory and python's path.
-  if (argc > 0)
-  {
-    PySys_SetArgv(argc, &argv[0]);
-  }
+  PySys_SetArgv(argc, &argv[0]);
 
 #ifdef TARGET_WINDOWS
   std::string pyPathUtf8;
