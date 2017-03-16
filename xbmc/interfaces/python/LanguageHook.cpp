@@ -156,6 +156,23 @@ namespace XBMCAddon
       return "";
     }
 
+    long PythonLanguageHook::GetInvokerId()
+    {
+      XBMC_TRACE;
+
+      // Get a reference to the main module
+      // and global dictionary
+      PyObject* main_module = PyImport_AddModule((char*)"__main__");
+      PyObject* global_dict = PyModule_GetDict(main_module);
+      // Extract a reference to the function "func_name"
+      // from the global dictionary
+      PyObject* pyid = PyDict_GetItemString(global_dict, "__xbmcinvokerid__");
+      if (pyid)
+        return PyLong_AsLong(pyid);
+      return -1;
+    }
+
+
     void PythonLanguageHook::RegisterPlayerCallback(IPlayerCallback* player) { XBMC_TRACE; g_pythonParser.RegisterPythonPlayerCallBack(player); }
     void PythonLanguageHook::UnregisterPlayerCallback(IPlayerCallback* player) { XBMC_TRACE; g_pythonParser.UnregisterPythonPlayerCallBack(player); }
     void PythonLanguageHook::RegisterMonitorCallback(XBMCAddon::xbmc::Monitor* monitor) { XBMC_TRACE; g_pythonParser.RegisterPythonMonitorCallBack(monitor); }

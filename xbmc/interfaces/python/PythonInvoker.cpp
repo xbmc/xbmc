@@ -574,6 +574,9 @@ void CPythonInvoker::onPythonModuleInitialization(void* moduleDict)
   PyObject *pyxbmcapiversion = PyString_FromString(version.asString().c_str());
   PyDict_SetItemString(moduleDictionary, "__xbmcapiversion__", pyxbmcapiversion);
 
+  PyObject *pyinvokerid = PyLong_FromLong(GetId());
+  PyDict_SetItemString(moduleDictionary, "__xbmcinvokerid__", pyinvokerid);
+
   CLog::Log(LOGDEBUG, "CPythonInvoker(%d, %s): instantiating addon using automatically obtained id of \"%s\" dependent on version %s of the xbmc.python api",
             GetId(), m_sourceFile.c_str(), m_addon->ID().c_str(), version.asString().c_str());
 }
