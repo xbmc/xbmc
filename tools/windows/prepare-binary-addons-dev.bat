@@ -18,7 +18,7 @@ FOR %%b IN (%*) DO (
 SETLOCAL DisableDelayedExpansion
 
 rem set Visual C++ build environment
-call "%VS140COMNTOOLS%..\..\VC\bin\vcvars32.bat"
+call "%VS140COMNTOOLS%..\..\VC\bin\amd64_x86\vcvarsamd64_x86.bat" || call "%VS140COMNTOOLS%..\..\VC\bin\vcvars32.bat"
 
 SET WORKDIR=%WORKSPACE%
 

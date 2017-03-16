@@ -102,5 +102,6 @@ if(CMAKE_GENERATOR MATCHES "Visual Studio")
              "@echo off\n"
              "set KODI_HOME=%~dp0\n"
              "set PATH=%~dp0\\system\n"
+             "set PreferredToolArchitecture=x64\n"
              "start %~dp0\\${PROJECT_NAME}.sln")
 endif()
