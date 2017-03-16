@@ -24,6 +24,7 @@
 #include "games/controllers/ControllerFeature.h"
 #include "input/joysticks/IButtonMap.h"
 #include "input/joysticks/IButtonMapCallback.h"
+#include "input/keyboard/KeymapActionMap.h"
 #include "input/InputManager.h"
 #include "peripherals/Peripherals.h"
 #include "threads/SingleLock.h"
@@ -39,9 +40,14 @@ using namespace GAME;
 
 CGUIConfigurationWizard::CGUIConfigurationWizard() :
   CThread("GUIConfigurationWizard"),
-  m_callback(nullptr)
+  m_callback(nullptr),
+  m_actionMap(new KEYBOARD::CKeymapActionMap)
 {
   InitializeState();
+}
+
+CGUIConfigurationWizard::~CGUIConfigurationWizard(void)
+{
 }
 
 void CGUIConfigurationWizard::InitializeState(void)
@@ -256,6 +262,11 @@ void CGUIConfigurationWizard::OnEventFrame(const JOYSTICK::IButtonMap* buttonMap
     OnMotionless(buttonMap);
 }
 
+void CGUIConfigurationWizard::OnLateAxis(const JOYSTICK::IButtonMap* buttonMap, unsigned int axisIndex)
+{
+  //! @todo
+}
+
 void CGUIConfigurationWizard::OnMotion(const JOYSTICK::IButtonMap* buttonMap)
 {
   CSingleLock lock(m_motionMutex);
@@ -273,7 +284,41 @@ void CGUIConfigurationWizard::OnMotionless(const JOYSTICK::IButtonMap* buttonMap
 
 bool CGUIConfigurationWizard::OnKeyPress(const CKey& key)
 {
-  return Abort(false);
+  using namespace KEYBOARD;
+
+  bool bHandled = false;
+
+  if (!m_bStop)
+  {
+    switch (m_actionMap->GetActionID(key))
+    {
+    case ACTION_MOVE_LEFT:
+    case ACTION_MOVE_RIGHT:
+    case ACTION_MOVE_UP:
+    case ACTION_MOVE_DOWN:
+    case ACTION_PAGE_UP:
+    case ACTION_PAGE_DOWN:
+      // Abort and allow motion
+      Abort(false);
+      bHandled = false;
+      break;
+
+    case ACTION_PARENT_DIR:
+    case ACTION_PREVIOUS_MENU:
+    case ACTION_STOP:
+      // Abort and prevent action
+      Abort(false);
+      bHandled = true;
+      break;
+
+    default:
+      // Absorb keypress
+      bHandled = true;
+      break;
+    }
+  }
+
+  return bHandled;
 }
 
 void CGUIConfigurationWizard::InstallHooks(void)

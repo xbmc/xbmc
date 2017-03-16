@@ -28,9 +28,15 @@
 #include "threads/Thread.h"
 #include "utils/Observer.h"
 
+#include <memory>
 #include <set>
 #include <string>
 #include <vector>
+
+namespace KEYBOARD
+{
+  class IActionMap;
+}
 
 namespace GAME
 {
@@ -43,7 +49,7 @@ namespace GAME
   public:
     CGUIConfigurationWizard();
 
-    virtual ~CGUIConfigurationWizard(void) { }
+    virtual ~CGUIConfigurationWizard(void);
 
     // implementation of IConfigurationWizard
     virtual void Run(const std::string& strControllerId, const std::vector<IFeatureButton*>& buttons, IConfigurationWizardCallback* callback) override;
@@ -57,6 +63,7 @@ namespace GAME
                               JOYSTICK::IActionMap* actionMap,
                               const JOYSTICK::CDriverPrimitive& primitive) override;
     virtual void OnEventFrame(const JOYSTICK::IButtonMap* buttonMap, bool bMotion) override;
+    virtual void OnLateAxis(const JOYSTICK::IButtonMap* buttonMap, unsigned int axisIndex) override;
 
     // implementation of IKeyboardHandler
     virtual bool OnKeyPress(const CKey& key) override;
@@ -95,5 +102,8 @@ namespace GAME
     CEvent                               m_motionlessEvent;
     CCriticalSection                     m_motionMutex;
     std::set<const JOYSTICK::IButtonMap*> m_bInMotion;
+
+    // Keyboard handling
+    std::unique_ptr<KEYBOARD::IActionMap> m_actionMap;
   };
 }
