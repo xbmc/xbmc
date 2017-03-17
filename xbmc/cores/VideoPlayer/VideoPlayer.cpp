@@ -25,7 +25,9 @@
 #include "DVDInputStreams/DVDInputStream.h"
 #include "DVDInputStreams/DVDFactoryInputStream.h"
 #include "DVDInputStreams/DVDInputStreamNavigator.h"
+#if defined(HAVE_LIBBLURAY)
 #include "DVDInputStreams/DVDInputStreamBluray.h"
+#endif
 #include "DVDInputStreams/DVDInputStreamPVRManager.h"
 
 #include "DVDDemuxers/DVDDemux.h"
@@ -4021,6 +4023,7 @@ void CVideoPlayer::FlushBuffers(double pts, bool accurate, bool sync)
 // since we call ffmpeg functions to decode, this is being called in the same thread as ::Process() is
 int CVideoPlayer::OnDiscNavResult(void* pData, int iMessage)
 {
+#if defined(HAVE_LIBBLURAY)
   if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_BLURAY))
   {
     switch (iMessage)
@@ -4088,6 +4091,7 @@ int CVideoPlayer::OnDiscNavResult(void* pData, int iMessage)
 
     return 0;
   }
+#endif
 
   if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
   {
