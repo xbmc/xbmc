@@ -91,13 +91,12 @@ void CActiveAEDSP::Init(void)
   settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_DSPADDONSENABLED);
   settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_DSPSETTINGS);
   settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_DSPRESETDB);
+  //! @todo reimplement this with AudioDSP V2.0
   //CSettings::GetInstance().RegisterCallback(this, settingSet);
 
   CAddonMgr::GetInstance().RegisterAddonMgrCallback(ADDON_ADSPDLL, this);
 
   CSingleLock lock(m_critSection);
-
-  //CLog::Log(LOGNOTICE, "ActiveAE DSP - starting");
 
   UpdateAddons();
   m_isActive = true;

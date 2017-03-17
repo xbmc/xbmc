@@ -714,6 +714,7 @@ void CGUIDialogAudioDSPSettings::InitializeSettings()
       CLog::Log(LOGERROR, "CGUIDialogAudioDSPSettings: unable to setup settings group for '%s'", g_localizeStrings.Get(15089).c_str());
       return;
     }
+//! @todo reimplement this with AudioDSP V2.0
 //    m_InputChannels = StringUtils::Format("%i", m_ActiveStreamProcess->GetInputChannels());
 //    AddInfoLabelButton(group, SETTING_STREAM_INFO_INPUT_CHANNELS, 21444, 0, m_InputChannels);
 //    m_InputChannelNames = m_ActiveStreamProcess->GetInputChannelNames();
@@ -727,6 +728,7 @@ void CGUIDialogAudioDSPSettings::InitializeSettings()
       CLog::Log(LOGERROR, "CGUIDialogAudioDSPSettings: unable to setup settings group for '%s'", g_localizeStrings.Get(15090).c_str());
       return;
     }
+//! @todo reimplement this with AudioDSP V2.0
 //    m_OutputChannels = StringUtils::Format("%i", m_ActiveStreamProcess->GetOutputChannels());
 //    AddInfoLabelButton(group, SETTING_STREAM_INFO_OUTPUT_CHANNELS, 21444, 0, m_OutputChannels);
 //    m_OutputChannelNames = m_ActiveStreamProcess->GetOutputChannelNames();
