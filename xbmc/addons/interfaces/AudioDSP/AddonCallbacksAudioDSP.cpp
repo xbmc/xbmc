@@ -189,7 +189,7 @@ void CAddonCallbacksADSP::ADSPSoundPlay_ReleaseHandle(void *addonData, ADSPHANDL
     return;
   }
 
-  CServiceBroker::GetActiveAE().FreeSound((IAESound*)handle);
+  CServiceBroker::GetActiveAE().FreeSound(reinterpret_cast<IAESound*>(handle));
 }
 
 void CAddonCallbacksADSP::ADSPSoundPlay_Play(void *addonData, ADSPHANDLE handle)

@@ -85,7 +85,7 @@ void CAddonCallbacksAudioEngine::AudioEngine_FreeStream(AEStreamHandle *StreamHa
     return;
   }
 
-  CServiceBroker::GetActiveAE().FreeStream((IAEStream*)StreamHandle);
+  CServiceBroker::GetActiveAE().FreeStream(reinterpret_cast<IAEStream*>(StreamHandle));
 }
 
 bool CAddonCallbacksAudioEngine::AudioEngine_GetCurrentSinkFormat(void *AddonData, AudioEngineFormat *SinkFormat)
