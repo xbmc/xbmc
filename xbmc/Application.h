@@ -108,6 +108,7 @@ struct ReplayGainSettings
   int iPreAmp;
   int iNoGainPreAmp;
   int iType;
+  bool bAvoidClipping;
 };
 
 class CApplication : public CXBApplicationEx, public IPlayerCallback, public IMsgTargetCallback,

@@ -498,8 +498,11 @@ inline bool PAPlayer::PrepareStream(StreamInfo *si)
   if (peak * gain <= 1.0)
     // No clipping protection needed
     si->m_stream->SetReplayGain(gain);
+  else if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_MUSICPLAYER_REPLAYGAINAVOIDCLIPPING))
+    // Normalise volume reducing replaygain to avoid needing clipping protection, plays file at lower level
+    si->m_stream->SetReplayGain(1.0f / fabs(peak));
   else
-    // Clipping protecton provided as audio limiting
+    // Clipping protection (when enabled in AE) by audio limiting, applied just where needed
     si->m_stream->SetAmplification(gain);
 
   /* if its not the first stream and crossfade is not enabled */

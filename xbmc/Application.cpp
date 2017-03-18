@@ -658,6 +658,7 @@ bool CApplication::Create()
   m_replayGainSettings.iType = m_ServiceManager->GetSettings().GetInt(CSettings::SETTING_MUSICPLAYER_REPLAYGAINTYPE);
   m_replayGainSettings.iPreAmp = m_ServiceManager->GetSettings().GetInt(CSettings::SETTING_MUSICPLAYER_REPLAYGAINPREAMP);
   m_replayGainSettings.iNoGainPreAmp = m_ServiceManager->GetSettings().GetInt(CSettings::SETTING_MUSICPLAYER_REPLAYGAINNOGAINPREAMP);
+  m_replayGainSettings.bAvoidClipping = m_ServiceManager->GetSettings().GetBool(CSettings::SETTING_MUSICPLAYER_REPLAYGAINAVOIDCLIPPING);
 
   // Create the Mouse, Keyboard, Remote, and Joystick devices
   // Initialize after loading settings to get joystick deadzone setting
@@ -1462,6 +1463,8 @@ void CApplication::OnSettingChanged(const CSetting *setting)
     m_replayGainSettings.iPreAmp = ((CSettingInt*)setting)->GetValue();
   else if (StringUtils::EqualsNoCase(settingId, CSettings::SETTING_MUSICPLAYER_REPLAYGAINNOGAINPREAMP))
     m_replayGainSettings.iNoGainPreAmp = ((CSettingInt*)setting)->GetValue();
+  else if (StringUtils::EqualsNoCase(settingId, CSettings::SETTING_MUSICPLAYER_REPLAYGAINAVOIDCLIPPING))
+    m_replayGainSettings.bAvoidClipping = ((CSettingBool*)setting)->GetValue();
 }
 
 void CApplication::OnSettingAction(const CSetting *setting)
