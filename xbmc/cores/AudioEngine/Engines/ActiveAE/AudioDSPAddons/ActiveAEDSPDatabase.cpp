@@ -335,10 +335,6 @@ int CActiveAEDSPDatabase::GetModes(AE_DSP_MODELIST &results, int modeType)
 #ifdef ADSPDB_DEBUGGING
         CLog::Log(LOGDEBUG, "Audio DSP - %s - mode '%s' loaded from the database", __FUNCTION__, mode->m_strModeName.c_str());
 #endif
-        AE_DSP_ADDON addon;
-        if (CServiceBroker::GetADSP().GetAudioDSPAddon(mode->m_iAddonId, addon))
-          results.push_back(AE_DSP_MODEPAIR(mode, addon));
-
         m_pDS->next();
         ++iReturn;
       }

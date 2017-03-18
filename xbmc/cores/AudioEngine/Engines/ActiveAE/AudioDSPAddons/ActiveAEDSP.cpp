@@ -111,7 +111,6 @@ public:
 
   bool DoWork(void)
   {
-    CServiceBroker::GetADSP().TriggerModeUpdate(false);
     return true;
   }
 };
@@ -393,8 +392,6 @@ bool CActiveAEDSP::TranslateCharInfo(DWORD dwInfo, std::string &strValue) const
       int modeId = activeMaster->ModeID();
       if (modeId == AE_DSP_MASTER_MODE_ID_PASSOVER || modeId >= AE_DSP_MASTER_MODE_ID_INTERNAL_TYPES)
         strValue = g_localizeStrings.Get(activeMaster->ModeName());
-      else if (CServiceBroker::GetADSP().GetAudioDSPAddon(activeMaster->AddonID(), addon))
-        strValue = g_localizeStrings.GetAddonString(addon->ID(), activeMaster->ModeName());
     }
     break;
   case ADSP_MASTER_INFO:
