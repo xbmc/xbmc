@@ -30,8 +30,6 @@ class CBinaryAddonCache;
 
 namespace ActiveAE {
 class CActiveAE;
-class CActiveAEDSP;
-class CActiveAE;
 }
 
 namespace ANNOUNCEMENT
@@ -87,7 +85,6 @@ public:
   XBPython& GetXBPython();
 #endif
   PVR::CPVRManager& GetPVRManager();
-  ActiveAE::CActiveAEDSP& GetADSPManager();
   IAE& GetActiveAE();
   CContextMenuManager& GetContextMenuManager();
   CDataCacheCore& GetDataCacheCore();
@@ -125,7 +122,6 @@ protected:
   std::unique_ptr<XBPython> m_XBPython;
 #endif
   std::unique_ptr<PVR::CPVRManager> m_PVRManager;
-  std::unique_ptr<ActiveAE::CActiveAEDSP> m_ADSPManager;
   std::unique_ptr<ActiveAE::CActiveAE, delete_activeAE> m_ActiveAE;
   std::unique_ptr<CContextMenuManager, delete_contextMenuManager> m_contextMenuManager;
   std::unique_ptr<CDataCacheCore, delete_dataCacheCore> m_dataCacheCore;
