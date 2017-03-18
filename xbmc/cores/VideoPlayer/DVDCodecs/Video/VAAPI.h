@@ -331,7 +331,9 @@ protected:
   EGLDisplay m_eglDisplay;
   EGLSurface m_eglSurface;
   EGLContext m_eglContext;
+#ifdef HAVE_X11
   Display *m_Display;
+#endif
   CVaapiDecodedPicture m_currentPicture;
   GLenum m_textureTarget;
   CPostproc *m_pp;
