@@ -508,10 +508,16 @@ void CGUIWindowPVRGuide::GetViewNextItems(CFileItemList &items)
 
 bool CGUIWindowPVRGuide::RefreshTimelineItems()
 {
-  if (m_bRefreshTimelineItems)
+  bool bRefreshTimelineItems;
   {
-    m_bRefreshTimelineItems = false;
+    CSingleLock lock(m_critSection);
 
+    bRefreshTimelineItems = m_bRefreshTimelineItems;
+    m_bRefreshTimelineItems = false;
+  }
+
+  if (bRefreshTimelineItems)
+  {
     CGUIEPGGridContainer* epgGridContainer = GetGridControl();
     if (epgGridContainer)
     {
@@ -557,18 +563,11 @@ bool CGUIWindowPVRGuide::RefreshTimelineItems()
 void CGUIWindowPVRGuide::GetViewTimelineItems(CFileItemList &items)
 {
   bool bRefresh = false;
-
   {
     CSingleLock lock(m_critSection);
 
-    // group change detected reset grid coordinates and refresh grid items
     if (!m_bRefreshTimelineItems && *m_cachedChannelGroup != *GetChannelGroup())
     {
-      CGUIEPGGridContainer* epgGridContainer = GetGridControl();
-      if (!epgGridContainer)
-        return;
-
-      epgGridContainer->ResetCoordinates();
       m_bRefreshTimelineItems = true;
       bRefresh = true;
     }

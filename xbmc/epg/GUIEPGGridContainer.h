@@ -84,7 +84,6 @@ namespace EPG
     void SetTimelineItems(const std::unique_ptr<CFileItemList> &items, const CDateTime &gridStart, const CDateTime &gridEnd);
     void SetChannel(const PVR::CPVRChannelPtr &channel);
     void SetChannel(const std::string &channel);
-    void ResetCoordinates();
 
   protected:
     bool OnClick(int actionID);
