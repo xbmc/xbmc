@@ -198,14 +198,8 @@ bool CGUIWindowPVRGuide::GetDirectory(const std::string &strDirectory, CFileItem
   {
     CSingleLock lock(m_critSection);
 
-    // group change detected reset grid coordinates and refresh grid items
     if (!m_bRefreshTimelineItems && *m_cachedChannelGroup != *GetChannelGroup())
     {
-      CGUIEPGGridContainer* epgGridContainer = GetGridControl();
-      if (!epgGridContainer)
-        return true;
-
-      epgGridContainer->ResetCoordinates();
       m_bRefreshTimelineItems = true;
       bRefresh = true;
     }
@@ -443,10 +437,16 @@ bool CGUIWindowPVRGuide::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
 bool CGUIWindowPVRGuide::RefreshTimelineItems()
 {
-  if (m_bRefreshTimelineItems)
+  bool bRefreshTimelineItems;
   {
-    m_bRefreshTimelineItems = false;
+    CSingleLock lock(m_critSection);
 
+    bRefreshTimelineItems = m_bRefreshTimelineItems;
+    m_bRefreshTimelineItems = false;
+  }
+
+  if (bRefreshTimelineItems)
+  {
     CGUIEPGGridContainer* epgGridContainer = GetGridControl();
     if (epgGridContainer)
     {

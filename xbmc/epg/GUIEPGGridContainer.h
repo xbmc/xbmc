@@ -94,7 +94,6 @@ namespace EPG
      * @return true if the selection was set to the given channel, false otherwise.
      */
     bool SetChannel(const std::string &channel);
-    void ResetCoordinates();
 
   protected:
     bool OnClick(int actionID);
