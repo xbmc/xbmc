@@ -281,7 +281,7 @@ void CAdvancedSettings::Initialize()
   m_strMusicLibraryAlbumFormat = "";
   m_prioritiseAPEv2tags = false;
   m_musicItemSeparator = " / ";
-  m_musicArtistSeparators = { ";", ":", "|", " feat. ", " ft. " };
+  m_musicArtistSeparators = { ";", " feat. ", " ft. " };
   m_videoItemSeparator = " / ";
   m_iMusicLibraryDateAdded = 1; // prefer mtime over ctime and current time
 
