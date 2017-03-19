@@ -36,7 +36,7 @@ class CAELimiter
 
     void SetAmplification(float amplify)
     {
-      m_amplify = std::max(std::min(amplify, 1000.0f), 1.0f);
+      m_amplify = std::max(std::min(amplify, 1000.0f), 0.0f);
     }
 
     float GetAmplification()
