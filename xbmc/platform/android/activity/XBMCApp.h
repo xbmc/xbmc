@@ -28,19 +28,17 @@
 
 #include <android/native_activity.h>
 
+#include <androidjni/Activity.h>
+#include <androidjni/AudioManager.h>
+#include <androidjni/BroadcastReceiver.h>
+#include <androidjni/View.h>
+
+#include "threads/Event.h"
+#include "guilib/Geometry.h"
 #include "IActivityHandler.h"
 #include "IInputHandler.h"
-
-#include "platform/xbmc.h"
-#include "androidjni/Activity.h"
-#include "androidjni/BroadcastReceiver.h"
-#include "androidjni/AudioManager.h"
-#include "androidjni/View.h"
-#include "threads/Event.h"
-
 #include "JNIMainActivity.h"
-
-#include "guilib/Geometry.h"
+#include "platform/xbmc.h"
 
 // forward declares
 class CJNIWakeLock;

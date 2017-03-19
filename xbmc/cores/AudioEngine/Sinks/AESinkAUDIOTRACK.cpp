@@ -19,16 +19,17 @@
  */
 
 #include "AESinkAUDIOTRACK.h"
+
+#include <androidjni/AudioFormat.h>
+#include <androidjni/AudioManager.h>
+#include <androidjni/AudioTrack.h>
+#include <androidjni/Build.h>
+
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "platform/android/activity/XBMCApp.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
-
-#include "androidjni/AudioFormat.h"
-#include "androidjni/AudioManager.h"
-#include "androidjni/AudioTrack.h"
-#include "androidjni/Build.h"
 #include "utils/TimeUtils.h"
 
 #include "utils/AMLUtils.h"

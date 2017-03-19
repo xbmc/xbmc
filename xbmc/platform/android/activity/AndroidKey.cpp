@@ -19,11 +19,13 @@
  */
 
 #include "AndroidKey.h"
+
+#include <androidjni/KeyCharacterMap.h>
+
 #include "AndroidExtra.h"
 #include "XBMCApp.h"
 #include "input/Key.h"
 #include "windowing/WinEvents.h"
-#include "androidjni/KeyCharacterMap.h"
 
 
 typedef struct {

@@ -27,7 +27,7 @@
 #include <deque>
 #include <set>
 
-#include "androidjni/AudioTrack.h"
+#include <androidjni/AudioTrack.h>
 
 class CAESinkAUDIOTRACK : public IAESink
 {
