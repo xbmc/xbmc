@@ -495,9 +495,11 @@ inline bool PAPlayer::PrepareStream(StreamInfo *si)
   si->m_stream->SetVolume    (si->m_volume);
   float peak = 1.0;
   float gain = si->m_decoder.GetReplayGain(peak);
-  if (peak == 1.0)
+  if (peak * gain <= 1.0)
+    // No clipping protection needed
     si->m_stream->SetReplayGain(gain);
   else
+    // Clipping protecton provided as audio limiting
     si->m_stream->SetAmplification(gain);
 
   /* if its not the first stream and crossfade is not enabled */
