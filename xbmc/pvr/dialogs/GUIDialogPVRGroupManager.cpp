@@ -47,17 +47,19 @@ using namespace PVR;
 #define BUTTON_RENAMEGROUP            27
 #define BUTTON_DELGROUP               28
 #define BUTTON_OK                     29
+#define BUTTON_TOGGLE_RADIO_TV        34
 
 CGUIDialogPVRGroupManager::CGUIDialogPVRGroupManager() :
     CGUIDialog(WINDOW_DIALOG_PVR_GROUP_MANAGER, "DialogPVRGroupManager.xml")
 {
-  m_bIsRadio = 0;
   m_iSelectedUngroupedChannel = 0;
   m_iSelectedGroupMember = 0;
   m_iSelectedChannelGroup = 0;
   m_ungroupedChannels = new CFileItemList;
   m_groupMembers      = new CFileItemList;
   m_channelGroups     = new CFileItemList;
+
+  SetRadio(false);
 }
 
 CGUIDialogPVRGroupManager::~CGUIDialogPVRGroupManager()
@@ -65,6 +67,12 @@ CGUIDialogPVRGroupManager::~CGUIDialogPVRGroupManager()
   delete m_ungroupedChannels;
   delete m_groupMembers;
   delete m_channelGroups;
+}
+
+void CGUIDialogPVRGroupManager::SetRadio(bool bIsRadio)
+{
+  m_bIsRadio = bIsRadio;
+  SetProperty("IsRadio", m_bIsRadio ? "true" : "");
 }
 
 bool CGUIDialogPVRGroupManager::PersistChanges(void)
@@ -273,6 +281,21 @@ bool CGUIDialogPVRGroupManager::ActionButtonHideGroup(CGUIMessage &message)
   return bReturn;
 }
 
+bool CGUIDialogPVRGroupManager::ActionButtonToggleRadioTV(CGUIMessage &message)
+{
+  bool bReturn = false;
+
+  if (message.GetSenderId() == BUTTON_TOGGLE_RADIO_TV)
+  {
+    PersistChanges();
+    SetRadio(!m_bIsRadio);
+    Update();
+    bReturn = true;
+  }
+
+  return bReturn;
+}
+
 bool CGUIDialogPVRGroupManager::OnMessageClick(CGUIMessage &message)
 {
   return ActionButtonOk(message) ||
@@ -282,7 +305,8 @@ bool CGUIDialogPVRGroupManager::OnMessageClick(CGUIMessage &message)
       ActionButtonUngroupedChannels(message) ||
       ActionButtonGroupMembers(message) ||
       ActionButtonChannelGroups(message) ||
-      ActionButtonHideGroup(message);
+      ActionButtonHideGroup(message) ||
+      ActionButtonToggleRadioTV(message);
 }
 
 bool CGUIDialogPVRGroupManager::OnMessage(CGUIMessage& message)
