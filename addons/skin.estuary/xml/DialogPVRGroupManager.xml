@@ -11,7 +11,7 @@
 			<include content="DialogBackgroundCommons">
 				<param name="width" value="1720" />
 				<param name="height" value="880" />
-				<param name="header_label" value="$LOCALIZE[19143]" />
+				<param name="header_label" value="$VAR[PVRGroupMgrHeader]$INFO[Container(13).NumItems, (,)]" />
 				<param name="header_id" value="1" />
 			</include>
 			<control type="grouplist" id="9000">
@@ -55,6 +55,15 @@
 					<include>SettingsItemCommon</include>
 					<font>font25_title</font>
 					<label>$LOCALIZE[31046]</label>
+				</control>
+				<control type="togglebutton" id="34">
+					<description>TV/Radio toggle</description>
+					<width>370</width>
+					<include>SettingsItemCommon</include>
+					<font>font25_title</font>
+					<label>$LOCALIZE[19174]</label>
+					<altlabel>$LOCALIZE[19173]</altlabel>
+					<usealttexture>!String.IsEmpty(Window.Property(IsRadio))</usealttexture>
 				</control>
 				<control type="button" id="29">
 					<description>OK</description>
