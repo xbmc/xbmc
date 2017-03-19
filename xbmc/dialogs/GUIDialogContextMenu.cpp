@@ -610,7 +610,7 @@ void CGUIDialogContextMenu::SwitchMedia(const std::string& strType, const std::s
 
 int CGUIDialogContextMenu::Show(const CContextButtons& choices)
 {
-  auto dialog = static_cast<CGUIDialogContextMenu*>(g_windowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU));
+  auto dialog = g_windowManager.GetWindow<CGUIDialogContextMenu>();
   if (!dialog)
     return -1;
 
@@ -628,7 +628,7 @@ int CGUIDialogContextMenu::ShowAndGetChoice(const CContextButtons &choices)
   if (choices.empty())
     return -1;
 
-  CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)g_windowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
+  CGUIDialogContextMenu *pMenu = g_windowManager.GetWindow<CGUIDialogContextMenu>();
   if (pMenu)
   {
     pMenu->m_buttons = choices;

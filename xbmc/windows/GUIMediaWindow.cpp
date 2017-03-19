@@ -1665,7 +1665,7 @@ bool CGUIMediaWindow::WaitForNetwork() const
   if (g_application.getNetwork().IsAvailable())
     return true;
 
-  CGUIDialogProgress *progress = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  CGUIDialogProgress *progress = g_windowManager.GetWindow<CGUIDialogProgress>();
   if (!progress)
     return true;
 

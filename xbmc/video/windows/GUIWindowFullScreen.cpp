@@ -142,7 +142,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
 
   case ACTION_SHOW_INFO:
     {
-      CGUIDialogFullScreenInfo* pDialog = (CGUIDialogFullScreenInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_FULLSCREEN_INFO);
+      CGUIDialogFullScreenInfo* pDialog = g_windowManager.GetWindow<CGUIDialogFullScreenInfo>();
       if (pDialog)
       {
         CFileItem item(g_application.CurrentFileItem());
@@ -427,7 +427,7 @@ void CGUIWindowFullScreen::SeekChapter(int iChapter)
 
 void CGUIWindowFullScreen::ToggleOSD()
 {
-  CGUIDialogVideoOSD *pOSD = (CGUIDialogVideoOSD *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_OSD);
+  CGUIDialogVideoOSD *pOSD = g_windowManager.GetWindow<CGUIDialogVideoOSD>();
   if (pOSD)
   {
     if (pOSD->IsDialogRunning())
@@ -441,7 +441,7 @@ void CGUIWindowFullScreen::ToggleOSD()
 
 void CGUIWindowFullScreen::TriggerOSD()
 {
-  CGUIDialogVideoOSD *pOSD = (CGUIDialogVideoOSD *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_OSD);
+  CGUIDialogVideoOSD *pOSD = g_windowManager.GetWindow<CGUIDialogVideoOSD>();
   if (pOSD && !pOSD->IsDialogRunning())
   {
     pOSD->SetAutoClose(3000);

@@ -78,7 +78,7 @@ public:
     if (shown && g_application.IsCurrentThread())
     {
       // close progress dialog
-      CGUIDialogProgress* dlg = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+      CGUIDialogProgress* dlg = g_windowManager.GetWindow<CGUIDialogProgress>();
       if (dlg)
         dlg->Close();
     }
@@ -92,7 +92,7 @@ public:
     if ((shown || showTime.IsTimePast()) && g_application.IsCurrentThread())
     {
       // grab the busy and show it
-      CGUIDialogProgress* dlg = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+      CGUIDialogProgress* dlg = g_windowManager.GetWindow<CGUIDialogProgress>();
       if (dlg)
       {
         if (!shown)
@@ -167,7 +167,7 @@ bool CRarManager::CacheRarredFile(std::string& strPathInCache, const std::string
   int iRes = 0;
   if (iSize > EXTRACTION_WARN_SIZE)
   {
-    CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+    CGUIDialogYesNo* pDialog = g_windowManager.GetWindow<CGUIDialogYesNo>();
     if (pDialog)
     {
       pDialog->SetHeading(CVariant{120});

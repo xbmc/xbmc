@@ -595,7 +595,7 @@ void CPythonInvoker::onError(const std::string &exceptionType /* = "" */, const 
   CPyThreadState releaseGil;
   CSingleLock gc(g_graphicsContext);
 
-  CGUIDialogKaiToast *pDlgToast = (CGUIDialogKaiToast*)g_windowManager.GetWindow(WINDOW_DIALOG_KAI_TOAST);
+  CGUIDialogKaiToast *pDlgToast = g_windowManager.GetWindow<CGUIDialogKaiToast>();
   if (pDlgToast != NULL)
   {
     std::string message;

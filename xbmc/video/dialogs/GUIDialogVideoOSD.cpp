@@ -95,10 +95,10 @@ bool CGUIDialogVideoOSD::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_DEINIT:  // fired when OSD is hidden
     {
       // Remove our subdialogs if visible
-      CGUIDialog *pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_AUDIO_DSP_OSD_SETTINGS);
+      CGUIDialog *pDialog = g_windowManager.GetDialog(WINDOW_DIALOG_AUDIO_DSP_OSD_SETTINGS);
       if (pDialog && pDialog->IsDialogRunning())
         pDialog->Close(true);
-      pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_AUDIO_OSD_SETTINGS);
+      pDialog = g_windowManager.GetDialog(WINDOW_DIALOG_AUDIO_OSD_SETTINGS);
       if (pDialog && pDialog->IsDialogRunning())
         pDialog->Close(true);
     }

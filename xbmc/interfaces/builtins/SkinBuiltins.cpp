@@ -111,7 +111,7 @@ static int SelectBool(const std::vector<std::string>& params)
 {
   std::vector<std::pair<std::string, std::string>> settings;
 
-  CGUIDialogSelect* pDlgSelect = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+  CGUIDialogSelect* pDlgSelect = g_windowManager.GetWindow<CGUIDialogSelect>();
   pDlgSelect->Reset();
   pDlgSelect->SetHeading(CVariant{g_localizeStrings.Get(atoi(params[0].c_str()))});
 

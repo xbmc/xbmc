@@ -361,7 +361,7 @@ bool CGUIControlListSetting::OnClick()
   if (m_pButton == NULL)
     return false;
 
-  CGUIDialogSelect *dialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+  CGUIDialogSelect *dialog = g_windowManager.GetWindow<CGUIDialogSelect>();
   if (dialog == NULL)
     return false;
 

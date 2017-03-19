@@ -240,7 +240,7 @@ JSONRPC_STATUS CPlayerOperations::GetItem(const std::string &method, ITransportL
 
     case Picture:
     {
-      CGUIWindowSlideShow *slideshow = (CGUIWindowSlideShow*)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
+      CGUIWindowSlideShow *slideshow = g_windowManager.GetWindow<CGUIWindowSlideShow>();
       if (!slideshow)
         return FailedToExecute;
 
@@ -287,7 +287,7 @@ JSONRPC_STATUS CPlayerOperations::PlayPause(const std::string &method, ITranspor
       return OK;
 
     case Picture:
-      slideshow = (CGUIWindowSlideShow*)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
+      slideshow = g_windowManager.GetWindow<CGUIWindowSlideShow>();
       if (slideshow && slideshow->IsPlaying() &&
          (parameterObject["play"].isString() ||
          (parameterObject["play"].isBoolean() && parameterObject["play"].asBoolean() == slideshow->IsPaused())))
@@ -534,7 +534,7 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
         std::string firstPicturePath;
         if (playlistStartPosition > 0)
         {
-          CGUIWindowSlideShow *slideshow = (CGUIWindowSlideShow*)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
+          CGUIWindowSlideShow *slideshow = g_windowManager.GetWindow<CGUIWindowSlideShow>();
           if (slideshow != NULL)
           {
             CFileItemList list;
@@ -625,7 +625,7 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
 
       if (slideshow)
       {
-        CGUIWindowSlideShow *slideshow = (CGUIWindowSlideShow*)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
+        CGUIWindowSlideShow *slideshow = g_windowManager.GetWindow<CGUIWindowSlideShow>();
         if (!slideshow)
           return FailedToExecute;
 
@@ -797,7 +797,7 @@ JSONRPC_STATUS CPlayerOperations::SetShuffle(const std::string &method, ITranspo
     }
 
     case Picture:
-      slideshow = (CGUIWindowSlideShow*)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
+      slideshow = g_windowManager.GetWindow<CGUIWindowSlideShow>();
       if (slideshow == NULL)
         return FailedToExecute;
       if (slideshow->IsShuffled())
@@ -1231,7 +1231,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
         break;
 
       case Picture:
-        slideshow = (CGUIWindowSlideShow*)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
+        slideshow = g_windowManager.GetWindow<CGUIWindowSlideShow>();
         if (slideshow && slideshow->IsPlaying() && !slideshow->IsPaused())
           result = slideshow->GetDirection();
         else
@@ -1293,7 +1293,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
       }
 
       case Picture:
-        slideshow = (CGUIWindowSlideShow*)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
+        slideshow = g_windowManager.GetWindow<CGUIWindowSlideShow>();
         if (slideshow && slideshow->NumSlides() > 0)
           result = (double)slideshow->CurrentSlide() / slideshow->NumSlides();
         else
@@ -1351,7 +1351,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
         break;
 
       case Picture:
-        slideshow = (CGUIWindowSlideShow*)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
+        slideshow = g_windowManager.GetWindow<CGUIWindowSlideShow>();
         if (slideshow && slideshow->IsPlaying())
           result = slideshow->CurrentSlide() - 1;
         else
@@ -1412,7 +1412,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
         break;
 
       case Picture:
-        slideshow = (CGUIWindowSlideShow*)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
+        slideshow = g_windowManager.GetWindow<CGUIWindowSlideShow>();
         if (slideshow && slideshow->IsPlaying())
           result = slideshow->IsShuffled();
         else

@@ -265,7 +265,7 @@ bool CGUIWindowPVRBase::CanBeActivated() const
 
 bool CGUIWindowPVRBase::OpenChannelGroupSelectionDialog(void)
 {
-  CGUIDialogSelect *dialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+  CGUIDialogSelect *dialog = g_windowManager.GetWindow<CGUIDialogSelect>();
   if (!dialog)
     return false;
 
@@ -383,7 +383,7 @@ void CGUIWindowPVRBase::ShowProgressDialog(const std::string &strText, int iProg
 {
   if (!m_progressHandle)
   {
-    CGUIDialogExtendedProgressBar *loadingProgressDialog = dynamic_cast<CGUIDialogExtendedProgressBar *>(g_windowManager.GetWindow(WINDOW_DIALOG_EXT_PROGRESS));
+    CGUIDialogExtendedProgressBar *loadingProgressDialog = g_windowManager.GetWindow<CGUIDialogExtendedProgressBar>();
     if (!loadingProgressDialog)
     {
       CLog::Log(LOGERROR, "CGUIWindowPVRBase - %s - unable to get WINDOW_DIALOG_EXT_PROGRESS!", __FUNCTION__);

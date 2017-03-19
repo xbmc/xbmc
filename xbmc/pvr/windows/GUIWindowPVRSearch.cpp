@@ -94,7 +94,7 @@ void CGUIWindowPVRSearch::OnPrepareFileItems(CFileItemList &items)
     bAddSpecialSearchItem = true;
 
     items.Clear();
-    CGUIDialogProgress* dlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+    CGUIDialogProgress* dlgProgress = g_windowManager.GetWindow<CGUIDialogProgress>();
     if (dlgProgress)
     {
       dlgProgress->SetHeading(CVariant{194}); // "Searching..."
@@ -184,7 +184,7 @@ bool CGUIWindowPVRSearch::OnContextButtonClear(CFileItem *item, CONTEXT_BUTTON b
 
 void CGUIWindowPVRSearch::OpenDialogSearch()
 {
-  CGUIDialogPVRGuideSearch* dlgSearch = (CGUIDialogPVRGuideSearch*)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_GUIDE_SEARCH);
+  CGUIDialogPVRGuideSearch* dlgSearch = g_windowManager.GetWindow<CGUIDialogPVRGuideSearch>();
 
   if (!dlgSearch)
     return;

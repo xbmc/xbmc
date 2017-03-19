@@ -636,7 +636,7 @@ void CGUIWindowFileManager::OnStart(CFileItem *pItem, const std::string &player)
 #endif
   if (pItem->IsPicture())
   {
-    CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
+    CGUIWindowSlideShow *pSlideShow = g_windowManager.GetWindow<CGUIWindowSlideShow>();
     if (!pSlideShow)
       return ;
     if (g_application.m_pPlayer->IsPlayingVideo())
@@ -1062,7 +1062,7 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
   if (btnid == CONTROL_BTNCALCSIZE)
   {
     // setup the progress dialog, and show it
-    CGUIDialogProgress *progress = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+    CGUIDialogProgress *progress = g_windowManager.GetWindow<CGUIDialogProgress>();
     if (progress)
     {
       progress->SetHeading(CVariant{13394});

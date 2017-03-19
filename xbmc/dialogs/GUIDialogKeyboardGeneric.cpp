@@ -606,7 +606,7 @@ void CGUIDialogKeyboardGeneric::Cancel()
 
 bool CGUIDialogKeyboardGeneric::ShowAndGetInput(char_callback_t pCallback, const std::string &initialString, std::string &typedString, const std::string &heading, bool bHiddenInput)
 {
-  CGUIDialogKeyboardGeneric *pKeyboard = (CGUIDialogKeyboardGeneric*)g_windowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);
+  CGUIDialogKeyboardGeneric *pKeyboard = g_windowManager.GetWindow<CGUIDialogKeyboardGeneric>();
 
   if (!pKeyboard)
     return false;

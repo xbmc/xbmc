@@ -170,7 +170,7 @@ void CPVRActionListener::OnSettingAction(const CSetting *setting)
   {
     if (g_PVRManager.IsStarted())
     {
-      CGUIDialog *dialog = dynamic_cast<CGUIDialog *>(g_windowManager.GetWindow(WINDOW_DIALOG_PVR_CHANNEL_MANAGER));
+      CGUIDialog *dialog = g_windowManager.GetDialog(WINDOW_DIALOG_PVR_CHANNEL_MANAGER);
       if (dialog)
         dialog->Open();
     }
@@ -179,7 +179,7 @@ void CPVRActionListener::OnSettingAction(const CSetting *setting)
   {
     if (g_PVRManager.IsStarted())
     {
-      CGUIDialog *dialog = dynamic_cast<CGUIDialog *>(g_windowManager.GetWindow(WINDOW_DIALOG_PVR_GROUP_MANAGER));
+      CGUIDialog *dialog = g_windowManager.GetDialog(WINDOW_DIALOG_PVR_GROUP_MANAGER);
       if (dialog)
         dialog->Open();
     }

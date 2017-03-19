@@ -6802,7 +6802,7 @@ bool CGUIInfoManager::GetInt(int &value, int info, int contextWindow, const CGUI
       }
     case SYSTEM_PROGRESS_BAR:
       {
-        CGUIDialogProgress *bar = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+        CGUIDialogProgress *bar = g_windowManager.GetWindow<CGUIDialogProgress>();
         if (bar && bar->IsDialogRunning())
           value = bar->GetPercentage();
         return true;
@@ -7046,8 +7046,8 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
   }
   else if (condition == SYSTEM_HAS_INPUT_HIDDEN)
   {
-    CGUIDialogNumeric *pNumeric = (CGUIDialogNumeric *)g_windowManager.GetWindow(WINDOW_DIALOG_NUMERIC);
-    CGUIDialogKeyboardGeneric *pKeyboard = (CGUIDialogKeyboardGeneric*)g_windowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);
+    CGUIDialogNumeric *pNumeric = g_windowManager.GetWindow<CGUIDialogNumeric>();
+    CGUIDialogKeyboardGeneric *pKeyboard = g_windowManager.GetWindow<CGUIDialogKeyboardGeneric>();
 
     if (pNumeric && pNumeric->IsActive())
       bReturn = pNumeric->IsInputHidden();
@@ -7136,22 +7136,22 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
   }
   else if (condition == SLIDESHOW_ISPAUSED)
   {
-    CGUIWindowSlideShow *slideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
+    CGUIWindowSlideShow *slideShow = g_windowManager.GetWindow<CGUIWindowSlideShow>();
     bReturn = (slideShow && slideShow->IsPaused());
   }
   else if (condition == SLIDESHOW_ISRANDOM)
   {
-    CGUIWindowSlideShow *slideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
+    CGUIWindowSlideShow *slideShow = g_windowManager.GetWindow<CGUIWindowSlideShow>();
     bReturn = (slideShow && slideShow->IsShuffled());
   }
   else if (condition == SLIDESHOW_ISACTIVE)
   {
-    CGUIWindowSlideShow *slideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
+    CGUIWindowSlideShow *slideShow = g_windowManager.GetWindow<CGUIWindowSlideShow>();
     bReturn = (slideShow && slideShow->InSlideShow());
   }
   else if (condition == SLIDESHOW_ISVIDEO)
   {
-    CGUIWindowSlideShow *slideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
+    CGUIWindowSlideShow *slideShow = g_windowManager.GetWindow<CGUIWindowSlideShow>();
     bReturn = (slideShow && slideShow->GetCurrentSlide() && slideShow->GetCurrentSlide()->IsVideo());
   }
   else if (g_application.m_pPlayer->IsPlaying())
@@ -7244,7 +7244,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     break;
     case PLAYER_SEEKBAR:
       {
-        CGUIDialog *seekBar = (CGUIDialog*)g_windowManager.GetWindow(WINDOW_DIALOG_SEEK_BAR);
+        CGUIDialog *seekBar = g_windowManager.GetDialog(WINDOW_DIALOG_SEEK_BAR);
         bReturn = seekBar ? seekBar->IsDialogRunning() : false;
       }
     break;
@@ -10788,7 +10788,7 @@ std::string CGUIInfoManager::GetPictureLabel(int info)
     return GetItemLabel(m_currentSlide, LISTITEM_DATE);
   else if (info == SLIDE_INDEX)
   {
-    CGUIWindowSlideShow *slideshow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
+    CGUIWindowSlideShow *slideshow = g_windowManager.GetWindow<CGUIWindowSlideShow>();
     if (slideshow && slideshow->NumSlides())
     {
       return StringUtils::Format("%d/%d", slideshow->CurrentSlide(), slideshow->NumSlides());

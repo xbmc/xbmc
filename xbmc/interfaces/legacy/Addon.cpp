@@ -78,7 +78,7 @@ namespace XBMCAddon
       bool save=true;
       if (g_windowManager.IsWindowActive(WINDOW_DIALOG_ADDON_SETTINGS))
       {
-        CGUIDialogAddonSettings* dialog = (CGUIDialogAddonSettings*)g_windowManager.GetWindow(WINDOW_DIALOG_ADDON_SETTINGS);
+        CGUIDialogAddonSettings* dialog = g_windowManager.GetWindow<CGUIDialogAddonSettings>();
         if (dialog->GetCurrentID() == addon->ID())
         {
           CGUIMessage message(GUI_MSG_SETTING_UPDATED,0,0);

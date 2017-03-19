@@ -251,7 +251,7 @@ static int CloseDialog(const std::vector<std::string>& params)
   else
   {
     int id = CButtonTranslator::TranslateWindow(params[0]);
-    CGUIWindow *window = (CGUIWindow *)g_windowManager.GetWindow(id);
+    CGUIWindow *window = g_windowManager.GetWindow(id);
     if (window && window->IsDialog())
       ((CGUIDialog *)window)->Close(bForce);
   }

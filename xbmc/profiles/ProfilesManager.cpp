@@ -307,7 +307,7 @@ bool CProfilesManager::DeleteProfile(size_t index)
   if (profile == NULL)
     return false;
 
-  CGUIDialogYesNo* dlgYesNo = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+  CGUIDialogYesNo* dlgYesNo = g_windowManager.GetWindow<CGUIDialogYesNo>();
   if (dlgYesNo == NULL)
     return false;
 

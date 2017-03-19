@@ -347,7 +347,7 @@ void CGUIViewState::SetSortMethod(SortDescription sortDescription)
 bool CGUIViewState::ChooseSortMethod()
 {
   
-  CGUIDialogSelect *dialog = static_cast<CGUIDialogSelect *>(g_windowManager.GetWindow(WINDOW_DIALOG_SELECT));
+  CGUIDialogSelect *dialog = g_windowManager.GetWindow<CGUIDialogSelect>();
   if (!dialog)
     return false;
   dialog->Reset();

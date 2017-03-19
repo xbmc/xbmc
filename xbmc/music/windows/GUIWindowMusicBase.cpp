@@ -145,7 +145,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_WINDOW_INIT:
     {
-      m_dlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+      m_dlgProgress = g_windowManager.GetWindow<CGUIDialogProgress>();
 
       m_musicdatabase.Open();
 
@@ -413,7 +413,7 @@ void CGUIWindowMusicBase::ShowArtistInfo(const CFileItem *pItem, bool bShowInfo 
     if (m_dlgProgress)
       m_dlgProgress->Close();
 
-    CGUIDialogMusicInfo *pDlgArtistInfo = (CGUIDialogMusicInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_INFO);
+    CGUIDialogMusicInfo *pDlgArtistInfo = g_windowManager.GetWindow<CGUIDialogMusicInfo>();
     if (pDlgArtistInfo)
     {
       pDlgArtistInfo->SetArtist(artist, artist.strPath);
@@ -495,7 +495,7 @@ bool CGUIWindowMusicBase::ShowAlbumInfo(const CFileItem *pItem, bool bShowInfo /
     if (m_dlgProgress)
       m_dlgProgress->Close();
 
-    CGUIDialogMusicInfo *pDlgAlbumInfo = (CGUIDialogMusicInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_INFO);
+    CGUIDialogMusicInfo *pDlgAlbumInfo = g_windowManager.GetWindow<CGUIDialogMusicInfo>();
     if (pDlgAlbumInfo)
     {
       pDlgAlbumInfo->SetAlbum(album, album.strPath);
@@ -522,7 +522,7 @@ bool CGUIWindowMusicBase::ShowAlbumInfo(const CFileItem *pItem, bool bShowInfo /
 
 void CGUIWindowMusicBase::ShowSongInfo(CFileItem* pItem)
 {
-  CGUIDialogSongInfo *dialog = (CGUIDialogSongInfo *)g_windowManager.GetWindow(WINDOW_DIALOG_SONG_INFO);
+  CGUIDialogSongInfo *dialog = g_windowManager.GetWindow<CGUIDialogSongInfo>();
   if (dialog)
   {
     if (!pItem->IsMusicDb())

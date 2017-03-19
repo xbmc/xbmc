@@ -166,7 +166,7 @@ public:
   ProgressDialogHelper (const std::string& heading) : m_dialog(0)
   {
     if (g_application.IsCurrentThread())
-      m_dialog = (CGUIDialogProgress*) g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+      m_dialog = g_windowManager.GetWindow<CGUIDialogProgress>();
 
     if (m_dialog)
     {

@@ -749,7 +749,7 @@ bool CGUIWindowSlideShow::OnAction(const CAction &action)
   {
   case ACTION_SHOW_INFO:
     {
-      CGUIDialogPictureInfo *pictureInfo = (CGUIDialogPictureInfo *)g_windowManager.GetWindow(WINDOW_DIALOG_PICTURE_INFO);
+      CGUIDialogPictureInfo *pictureInfo = g_windowManager.GetWindow<CGUIDialogPictureInfo>();
       if (pictureInfo)
       {
         // no need to set the picture here, it's done in Render()
@@ -1289,7 +1289,7 @@ std::string CGUIWindowSlideShow::GetPicturePath(CFileItem *item)
 
 void CGUIWindowSlideShow::RunSlideShow(std::vector<std::string> paths, int start /* = 0*/)
 {
-  auto dialog = static_cast<CGUIWindowSlideShow*>(g_windowManager.GetWindow(WINDOW_SLIDESHOW));
+  auto dialog = g_windowManager.GetWindow<CGUIWindowSlideShow>();
   if (dialog)
   {
     std::vector<CFileItemPtr> items;

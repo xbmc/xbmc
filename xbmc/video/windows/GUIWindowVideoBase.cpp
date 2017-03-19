@@ -127,7 +127,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:
     {
       m_database.Open();
-      m_dlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+      m_dlgProgress = g_windowManager.GetWindow<CGUIDialogProgress>();
       return CGUIMediaWindow::OnMessage(message);
     }
     break;
@@ -298,9 +298,9 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItemPtr item, const ScraperPtr &info2, b
   CLog::Log(LOGDEBUG,"  bFolder   = [%s]", ((int)bFolder ? "true" : "false"));
   */
 
-  CGUIDialogProgress* pDlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-  CGUIDialogSelect* pDlgSelect = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
-  CGUIDialogVideoInfo* pDlgInfo = (CGUIDialogVideoInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_INFO);
+  CGUIDialogProgress* pDlgProgress = g_windowManager.GetWindow<CGUIDialogProgress>();
+  CGUIDialogSelect* pDlgSelect = g_windowManager.GetWindow<CGUIDialogSelect>();
+  CGUIDialogVideoInfo* pDlgInfo = g_windowManager.GetWindow<CGUIDialogVideoInfo>();
 
   ScraperPtr info(info2); // use this as nfo might change it..
 
@@ -902,7 +902,7 @@ bool CGUIWindowVideoBase::OnPlayStackPart(int iItem)
   for (int i = 0; i < parts.Size(); i++)
     parts[i]->SetLabel(StringUtils::Format(g_localizeStrings.Get(23051).c_str(), i+1));
 
-  CGUIDialogSelect* pDialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+  CGUIDialogSelect* pDialog = g_windowManager.GetWindow<CGUIDialogSelect>();
 
   pDialog->Reset();
   pDialog->SetHeading(CVariant{20324});
@@ -1435,7 +1435,7 @@ void CGUIWindowVideoBase::AddToDatabase(int iItem)
     return;
 
   // pick genre
-  CGUIDialogSelect* pSelect = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+  CGUIDialogSelect* pSelect = g_windowManager.GetWindow<CGUIDialogSelect>();
   if (!pSelect)
     return;
 
@@ -1509,7 +1509,7 @@ void CGUIWindowVideoBase::OnSearch()
 
   if (items.Size())
   {
-    CGUIDialogSelect* pDlgSelect = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+    CGUIDialogSelect* pDlgSelect = g_windowManager.GetWindow<CGUIDialogSelect>();
     pDlgSelect->Reset();
     pDlgSelect->SetHeading(CVariant{283});
 
@@ -1650,7 +1650,7 @@ bool CGUIWindowVideoBase::OnUnAssignContent(const std::string &path, int header,
   db.Open();
   if (CGUIDialogYesNo::ShowAndGetInput(CVariant{header}, CVariant{text}, bCanceled, CVariant{ "" }, CVariant{ "" }, CGUIDialogYesNo::NO_TIMEOUT))
   {
-    CGUIDialogProgress *progress = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+    CGUIDialogProgress *progress = g_windowManager.GetWindow<CGUIDialogProgress>();
     db.RemoveContentForPath(path, progress);
     db.Close();
     CUtil::DeleteVideoDatabaseDirectoryCache();

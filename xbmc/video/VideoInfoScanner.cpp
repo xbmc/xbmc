@@ -92,7 +92,7 @@ namespace VIDEO
       if (m_showDialog && !CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOLIBRARY_BACKGROUNDUPDATE))
       {
         CGUIDialogExtendedProgressBar* dialog =
-          (CGUIDialogExtendedProgressBar*)g_windowManager.GetWindow(WINDOW_DIALOG_EXT_PROGRESS);
+          g_windowManager.GetWindow<CGUIDialogExtendedProgressBar>();
         if (dialog)
            m_handle = dialog->GetHandle(g_localizeStrings.Get(314));
       }

@@ -1725,7 +1725,7 @@ bool CApplication::LoadSkin(const std::string& skinID)
     g_windowManager.ActivateWindow(currentWindow);
     for (unsigned int i = 0; i < currentModelessWindows.size(); i++)
     {
-      CGUIDialog *dialog = (CGUIDialog *)g_windowManager.GetWindow(currentModelessWindows[i]);
+      CGUIDialog *dialog = g_windowManager.GetDialog(currentModelessWindows[i]);
       if (dialog)
         dialog->Open();
     }
@@ -2554,7 +2554,7 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
 
   case TMSG_PICTURE_SHOW:
   {
-    CGUIWindowSlideShow *pSlideShow = static_cast<CGUIWindowSlideShow *>(g_windowManager.GetWindow(WINDOW_SLIDESHOW));
+    CGUIWindowSlideShow *pSlideShow = g_windowManager.GetWindow<CGUIWindowSlideShow>();
     if (!pSlideShow) return;
 
     // stop playing file
@@ -2603,7 +2603,7 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
 
   case TMSG_PICTURE_SLIDESHOW:
   {
-    CGUIWindowSlideShow *pSlideShow = static_cast<CGUIWindowSlideShow *>(g_windowManager.GetWindow(WINDOW_SLIDESHOW));
+    CGUIWindowSlideShow *pSlideShow = g_windowManager.GetWindow<CGUIWindowSlideShow>();
     if (!pSlideShow) return;
 
     if (g_application.m_pPlayer->IsPlayingVideo())
@@ -2712,7 +2712,7 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
     {
       g_graphicsContext.Lock();
       // check if there are notifications to display
-      CGUIDialogKaiToast *toast = (CGUIDialogKaiToast *)g_windowManager.GetWindow(WINDOW_DIALOG_KAI_TOAST);
+      CGUIDialogKaiToast *toast = g_windowManager.GetWindow<CGUIDialogKaiToast>();
       if (toast && toast->DoWork())
       {
         if (!toast->IsDialogRunning())
@@ -4709,7 +4709,7 @@ CFileItem& CApplication::CurrentUnstackedItem()
 
 void CApplication::ShowVolumeBar(const CAction *action)
 {
-  CGUIDialog *volumeBar = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_VOLUME_BAR);
+  CGUIDialog *volumeBar = g_windowManager.GetDialog(WINDOW_DIALOG_VOLUME_BAR);
   if (volumeBar)
   {
     volumeBar->Open();
@@ -4975,7 +4975,7 @@ bool CApplication::SwitchToFullScreen(bool force /* = false */)
   // if playing from the video info window, close it first!
   if (g_windowManager.HasModalDialog() && g_windowManager.GetTopMostModalDialogID() == WINDOW_DIALOG_VIDEO_INFO)
   {
-    CGUIDialogVideoInfo* pDialog = (CGUIDialogVideoInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_INFO);
+    CGUIDialogVideoInfo* pDialog = g_windowManager.GetWindow<CGUIDialogVideoInfo>();
     if (pDialog) pDialog->Close(true);
   }
 
