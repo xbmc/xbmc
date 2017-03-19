@@ -30,6 +30,8 @@
 
 #include <list>
 #include <utility>
+#include <typeindex>
+#include <unordered_map>
 #include <vector>
 
 #include "DirtyRegionTracker.h"
@@ -144,7 +146,21 @@ public:
   */
   bool DestroyWindows();
 
+  /*! \brief Return the window for the given type \code{T}.
+   *
+   * \tparam T the window class type
+   * \return the window with for the given type \code{T} or null
+   */
+  template<typename T, typename std::enable_if<std::is_base_of<CGUIWindow,T>::value>::type* = nullptr>
+  T* GetWindow() const { return dynamic_cast<T *>(GetWindow(std::type_index(typeid(T)))); };
+
+  /*! \brief Return the window with the given id or null.
+   *
+   * \param id the window id
+   * \return the window with the given id or null
+   */
   CGUIWindow* GetWindow(int id) const;
+
   void SetCallback(IWindowManagerCallback& callback);
   void DeInitialize();
 
@@ -198,6 +214,8 @@ private:
   void CloseWindowSync(CGUIWindow *window, int nextWindowID = 0);
   CGUIWindow *GetTopMostDialog() const;
 
+  CGUIWindow* GetWindow(std::type_index type) const;
+
   friend class KODI::MESSAGING::CApplicationMessenger;
   
   /*! \brief Activate the given window.
@@ -213,6 +231,7 @@ private:
 
   typedef std::map<int, CGUIWindow *> WindowMap;
   WindowMap m_mapWindows;
+  std::unordered_map<std::type_index, CGUIWindow*> m_mapWindowTypes;
   std::vector <CGUIWindow*> m_vecCustomWindows;
   std::vector <CGUIWindow*> m_activeDialogs;
   std::vector <CGUIWindow*> m_deleteWindows;
