@@ -21,6 +21,7 @@
 
 #include <atomic>
 #include <memory>
+#include "threads/Event.h"
 #include "threads/Thread.h"
 #include "pvr/PVRChannelNumberInputHandler.h"
 #include "GUIWindowPVRBase.h"
@@ -96,7 +97,12 @@ namespace PVR
 
     virtual void Process();
 
+    void DoRefresh();
+    void Stop();
+
   private:
     CGUIWindowPVRGuide *m_pGuideWindow;
+    CEvent m_ready;
+    CEvent m_done;
   };
 }
