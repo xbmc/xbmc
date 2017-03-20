@@ -3613,6 +3613,32 @@ void CVideoDatabase::GetDetailsFromDB(const dbiplus::sql_record* const record, i
 DWORD movieTime = 0;
 DWORD castTime = 0;
 
+CVideoInfoTag CVideoDatabase::GetDetailsByTypeAndId(VIDEODB_CONTENT_TYPE type, int id)
+{
+  CVideoInfoTag details;
+  details.Reset();
+
+  switch (type)
+  {
+    case VIDEODB_CONTENT_MOVIES:
+      GetMovieInfo("", details, id);
+      break;
+    case VIDEODB_CONTENT_TVSHOWS:
+      GetTvShowInfo("", details, id);
+      break;
+    case VIDEODB_CONTENT_EPISODES:
+      GetEpisodeInfo("", details, id);
+      break;
+    case VIDEODB_CONTENT_MUSICVIDEOS:
+      GetMusicVideoInfo("", details, id);
+      break;
+    default:
+      break;
+  }
+
+  return details;
+}
+
 bool CVideoDatabase::GetStreamDetails(CFileItem& item)
 {
   // Note that this function (possibly) creates VideoInfoTags for items that don't have one yet!
