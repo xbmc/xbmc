@@ -51,7 +51,7 @@ Full build dependency list is:
 make cmake autoconf automake gcc gcc-c++ libtool gettext-devel patch boost-devel glew-devel
 libmysqlclient-devel libass-devel libmpeg2-devel libmad-devel libjpeg-devel libsamplerate-devel libogg-devel
 libvorbis-devel libmodplug-devel libcurl-devel flac-devel libbz2-devel libtiff-devel lzo-devel libyajl-devel
-fribidi-devel sqlite3-devel libpng12-devel pcre-devel libcdio-devel libjasper-devel libSDL_mixer-devel libSDL_image-devel
+fribidi-devel sqlite3-devel libpng12-devel pcre-devel libcdio-devel libjasper-devel
 libmicrohttpd-devel libsmbclient-devel python-devel gperf zip nasm tinyxml-devel libtag-devel libbluray-devel
 libnfs-devel shairplay-devel swig libvdpau-devel libavahi-devel libcec-devel libdvdread-devel libva-devel libplist-devel
 libxst-devel alsa-devel libpulse-devel libXrandr-devel libXrender-devel randrproto-devel renderproto-devel libssh-devel
