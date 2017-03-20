@@ -236,54 +236,23 @@ private:
 
   void ProcessRenderLoop(bool renderOnly = false);
 
-  typedef std::map<int, CGUIWindow *> WindowMap;
-  WindowMap m_mapWindows;
+  std::unordered_map<int, CGUIWindow*> m_mapWindows;
   std::unordered_map<std::type_index, CGUIWindow*> m_mapWindowTypes;
-  std::vector <CGUIWindow*> m_vecCustomWindows;
-  std::vector <CGUIWindow*> m_activeDialogs;
-  std::vector <CGUIWindow*> m_deleteWindows;
-  typedef std::vector<CGUIWindow*>::iterator iDialog;
-  typedef std::vector<CGUIWindow*>::const_iterator ciDialog;
-  typedef std::vector<CGUIWindow*>::reverse_iterator rDialog;
-  typedef std::vector<CGUIWindow*>::const_reverse_iterator crDialog;
+  std::vector<CGUIWindow*> m_vecCustomWindows;
+  std::vector<CGUIWindow*> m_activeDialogs;
+  std::vector<CGUIWindow*> m_deleteWindows;
 
   std::stack<int> m_windowHistory;
 
   IWindowManagerCallback* m_pCallback;
-  std::list < std::pair<CGUIMessage*,int> > m_vecThreadMessages;
+  std::list< std::pair<CGUIMessage*,int> > m_vecThreadMessages;
   CCriticalSection m_critSection;
-  std::vector <IMsgTargetCallback*> m_vecMsgTargets;
+  std::vector<IMsgTargetCallback*> m_vecMsgTargets;
 
   int  m_iNested;
   bool m_initialized;
 
   CDirtyRegionTracker m_tracker;
-
-private:
-  class CGUIWindowManagerIdCache
-  {
-  public:
-    CGUIWindowManagerIdCache(void) : m_id(WINDOW_INVALID), m_window(nullptr) {}
-    CGUIWindow *Get(int id)
-    {
-      if (id == m_id)
-        return m_window;
-      return NULL;
-    }
-    void Set(int id, CGUIWindow *window)
-    {
-      m_id = id;
-      m_window = window;
-    }
-    void Invalidate(void)
-    {
-      m_id = WINDOW_INVALID;
-    }
-  private:
-    int m_id;
-    CGUIWindow *m_window;
-  };
-  mutable CGUIWindowManagerIdCache m_idCache;
 };
 
 /*!
