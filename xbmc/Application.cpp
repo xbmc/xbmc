@@ -99,10 +99,8 @@
 
 #include "input/KeyboardLayoutManager.h"
 
-#if HAVE_SDL_VERSION == 1
+#ifdef HAS_SDL
 #include <SDL/SDL.h>
-#elif HAVE_SDL_VERSION == 2
-#include <SDL2/SDL.h>
 #endif
 
 #ifdef HAS_UPNP
