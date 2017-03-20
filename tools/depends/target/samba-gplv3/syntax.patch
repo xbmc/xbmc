@@ -1,0 +1,33 @@
+--- lib/dbwrap/dbwrap_cache.c
++++ lib/dbwrap/dbwrap_cache.c
+@@ -18,7 +18,7 @@
+ */
+ 
+ #include "replace.h"
+-#include "lib/param/loadparm.h"
++// #include "lib/param/loadparm.h"
+ #include "lib/dbwrap/dbwrap_cache.h"
+ #include "lib/dbwrap/dbwrap_private.h"
+ #include "lib/dbwrap/dbwrap_rbt.h"
+--- lib/param/loadparm.h
++++ lib/param/loadparm.h
+@@ -248,6 +248,8 @@
+ #define DEFAULT_SMB2_MAX_TRANSACT (8*1024*1024)
+ #define DEFAULT_SMB2_MAX_CREDITS 8192
+ 
++#include <sys/time.h>
++
+ #define LOADPARM_EXTRA_LOCALS						\
+ 	int usershare;							\
+ 	struct timespec usershare_last_mod;				\
+--- libcli/smbreadline/smbreadline.c
++++ libcli/smbreadline/smbreadline.c
+@@ -136,7 +136,7 @@
+ 		different versions of Readline, so the same function
+ 		works in all of them to date, but we get compiler
+ 		warnings in some.  */
+-		rl_attempted_completion_function = RL_COMPLETION_CAST completion_fn;
++		// rl_attempted_completion_function = RL_COMPLETION_CAST completion_fn;
+ 
+ 		/*
+ 		 * We only want sensible characters as the word-break chars

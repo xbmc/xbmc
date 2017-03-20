@@ -534,7 +534,7 @@ diff -pur samba-3.6.12/source3/registry/regfio.c arm-linux-androideabi-21/source
 diff -pur samba-3.6.12/source3/utils/smbget.c arm-linux-androideabi-21/source3/utils/smbget.c
 --- samba-3.6.12/source3/utils/smbget.c	2013-01-29 09:49:31.000000000 +0100
 +++ arm-linux-androideabi-21/source3/utils/smbget.c	2016-07-27 20:09:47.194885943 +0200
-@@ -36,7 +36,7 @@ static char *outputfile;
+@@ -24,7 +24,7 @@ static char *outputfile;
  
  
  static time_t total_start_time = 0;
@@ -543,7 +543,7 @@ diff -pur samba-3.6.12/source3/utils/smbget.c arm-linux-androideabi-21/source3/u
  
  #define SMB_MAXPATHLEN MAXPATHLEN
  
-@@ -75,7 +75,7 @@ static void change_columns(int sig)
+@@ -85,7 +85,7 @@ static void change_columns(int sig)
  	columns = get_num_cols();
  }
  

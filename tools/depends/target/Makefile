@@ -106,6 +106,7 @@ libcec: p8-platform
 crossguid: $(CROSSGUID_DEPS)
 libdvdnav: libdvdread
 libdvdread: $(DVDREAD_DEPS)
+samba-gplv3: python27
 
 .installed-$(PLATFORM): $(DEPENDS)
 	touch $@

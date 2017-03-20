@@ -1,11 +1,13 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include Makefile samba_android.patch no_fork_and_exec.patch
+DEPS= ../../Makefile.include Makefile syntax.patch samba_android.patch samba_off64_t.patch no_fork_and_exec.patch
 
 # lib name, version
 LIBNAME=samba
-VERSION=3.6.12
+VERSION=4.5.3
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
+# will remove befor merge
+BASE_URL=https://download.samba.org/pub/samba/stable
 
 ifeq ($(OS), ios)
 ifeq ($(CPU), arm64)
@@ -14,13 +16,13 @@ CONFIGURE_EXTRAS= --without-libmsrpc samba_cv_optimize_out_funcation_calls=no ac
 endif
 endif
 
-CONFIGURE= cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
-          ./configure --prefix=$(PREFIX) \
-          --without-cluster-support --disable-swat --without-ldap \
-          --without-pam --without-pam_smbpass --with-fhs --with-libtalloc=no \
-          --with-libtdb=no --without-winbind --disable-cups --without-ads \
-          --disable-avahi --disable-fam --without-libaddns --without-libnetapi \
-          --without-dnsupdate --without-libsmbsharemodes \
+CONFIGURE=./configure -v --prefix=$(PREFIX) \
+          --without-cluster-support --without-ldap \
+          --without-pam --enable-fhs \
+          --without-winbind --disable-cups --without-ads \
+          --disable-avahi --without-gettext \
+          --without-dnsupdate \
+          --without-ad-dc --without-acl-support \
           --with-libiconv=$(STAGING_DIR)
 
 # configuration settings
@@ -36,9 +38,16 @@ export CFLAGS+=-DHAVE_BZERO
 endif
 endif
 
-LIBDYLIB=$(PLATFORM)/source3/bin/libsmbclient.a
+LIBDYLIB=$(PLATFORM)/bin/default/source3/libsmb/libsmbclient.so
+ifeq ($(OS),$(filter $(OS), osx ios))
+LIBDYLIB=$(PLATFORM)/bin/default/source3/libsmb/libsmbclient.dylib
+endif
 
 CLEAN_FILES=$(ARCHIVE) $(PLATFORM)
+
+export CC CXX CPP AR RANLIB LD AS NM STRIP TOOLCHAIN
+export CFLAGS CXXFLAGS CPPFLAGS
+export LDFLAGS := $(NATIVE_LDFLAGS) $(LDFLAGS)
 
 all: .installed-$(PLATFORM)
 
@@ -48,6 +57,7 @@ $(TARBALLS_LOCATION)/$(ARCHIVE):
 $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
+	cd $(PLATFORM); patch -p0 < ../syntax.patch
 ifeq ($(OS),android)
 	cd $(PLATFORM); patch -p0 < ../samba_android.patch
 	cd $(PLATFORM); patch -p1 < ../samba_off64_t.patch
@@ -58,19 +68,20 @@ endif
 ifeq (darwin, $(findstring darwin, $(HOST)))
 	sed -ie "s|ifndef HAVE_CLOCK_GETTIME|if !defined(HAVE_CLOCK_GETTIME) \&\& !defined(CLOCK_REALTIME)|" "$(PLATFORM)/lib/replace/system/time.h"
 endif
-	cd $(PLATFORM)/source3; $(CONFIGURE)
+	cd $(PLATFORM); $(CONFIGURE)
 
 $(LIBDYLIB): $(PLATFORM)
-	$(MAKE) -C $(PLATFORM)/source3 libsmbclient
+	cd $(PLATFORM); WAF_MAKE=1 $(NATIVEPREFIX)/bin/python ./buildtools/bin/waf -v --targets=smbclient
 
 .installed-$(PLATFORM): $(LIBDYLIB)
-	$(MAKE) -C $(PLATFORM)/source3 installlibsmbclient
 ifeq (darwin, $(findstring darwin, $(HOST)))
-	mv $(PREFIX)/lib/libsmbclient.dylib.0 $(PREFIX)/lib/libsmbclient.dylib
-	install_name_tool -id $(PREFIX)/lib/libsmbclient.dylib $(PREFIX)/lib/libsmbclient.dylib
+	cd $(PLATFORM)/bin/default; for file in $$(find * -iregex '.*\.dylib'); do link $$file $$(echo $$file|sed 's/.dylib$$/.inst.dylib/g') 2>/dev/null; done
+else
+	cd $(PLATFORM)/bin/default; for file in $$(find * -iregex '.*\.so'); do link $$file $$(echo $$file|sed 's/.so$$/.inst.so/g') 2>/dev/null; done
 endif
+	cd $(PLATFORM); WAF_MAKE=1 $(NATIVEPREFIX)/bin/python ./buildtools/bin/waf install --targets=smbclient
 ifeq ($(OS),android)
-	rm -f $(PREFIX)/lib/libsmbclient.so 
+	rm -f $(PREFIX)/lib/libsmbclient.so
 	mv -f $(PREFIX)/lib/libsmbclient.so.0 $(PREFIX)/lib/libsmbclient.so
 	$(RPL) -e "libsmbclient.so.0" "libsmbclient.so\x00\x00" $(PREFIX)/lib/libsmbclient.so
 	-$(READELF) --dynamic $(PREFIX)/lib/libsmbclient.so | grep ibrary
@@ -78,7 +89,7 @@ endif
 	touch $@
 
 clean:
-	$(MAKE) -C $(PLATFORM)/source3 clean
+	cd $(PLATFORM); WAF_MAKE=1 $(NATIVEPREFIX)/bin/python ./buildtools/bin/waf uninstall --targets=smbclient
 	rm -f .installed-$(PLATFORM)
 
 distclean::
