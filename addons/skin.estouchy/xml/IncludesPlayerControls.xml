@@ -86,9 +86,9 @@
 					<posy>40</posy>
 					<width>552</width>
 					<height>12</height>
-					<info>Player.Cache</info>
+					<info>Player.ProgressCache</info>
 					<midtexture colordiffuse="grey2">white.png</midtexture>
-					<texturebg></texturebg>
+					<texturebg colordiffuse="grey3">white.png</texturebg>
 				</control>
 				<control type="progress">
 					<description>Progressbar</description>
@@ -97,6 +97,7 @@
 					<width>552</width>
 					<height>12</height>
 					<info>Player.Progress</info>
+					<texturebg colordiffuse="002C2C2C">white.png</texturebg>
 				</control>
 				<control type="slider" id="87">
 					<description>Seek Slider</description>
