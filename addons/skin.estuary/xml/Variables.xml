@@ -354,6 +354,10 @@
 		<value condition="!String.IsEmpty(Window.Property(IsRadio))">$LOCALIZE[19199] - $LOCALIZE[19024]</value>
 		<value>$LOCALIZE[19199] - $LOCALIZE[19023]</value>
 	</variable>
+	<variable name="PVRGroupMgrHeader">
+		<value condition="!String.IsEmpty(Window.Property(IsRadio))">$LOCALIZE[19048] - $LOCALIZE[19174]</value>
+		<value>$LOCALIZE[19048] - $LOCALIZE[19173]</value>
+	</variable>
 	<variable name="PVRAreaVar">
 		<value condition="Control.HasFocus(100)">$LOCALIZE[19019]</value>
 		<value condition="Control.HasFocus(101)">$LOCALIZE[19069]</value>

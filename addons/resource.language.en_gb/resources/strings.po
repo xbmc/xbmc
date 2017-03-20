@@ -9957,7 +9957,19 @@ msgctxt "#19172"
 msgid "Instant recording duration"
 msgstr ""
 
-#empty strings from id 19173 to 19174
+#. generic label for 'Live TV channel groups' used in different places
+#: addons/skin.estuary/xml/DialogPVRGroupManager.xml
+#: addons/skin.estuary/xml/Variables.xml
+msgctxt "#19173"
+msgid "TV channel groups"
+msgstr ""
+
+#. generic label for pvr-provided 'Radio channel groups' used in different places
+#: addons/skin.estuary/xml/DialogPVRGroupManager.xml
+#: addons/skin.estuary/xml/Variables.xml
+msgctxt "#19174"
+msgid "Radio channel groups"
+msgstr ""
 
 #. pvr settings "default time to add before the start of an event to record (according to its epg data)" setting label
 #: system/settings/settings.xml
