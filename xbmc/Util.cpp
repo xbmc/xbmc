@@ -38,9 +38,9 @@
 #include <sys/wait.h>
 #endif
 #if defined(TARGET_ANDROID)
+#include <androidjni/ApplicationInfo.h>
 #include "platform/android/bionic_supplement/bionic_supplement.h"
 #include "platform/android/activity/XBMCApp.h"
-#include "platform/android/jni/ApplicationInfo.h"
 #include "CompileInfo.h"
 #endif
 #include <stdlib.h>

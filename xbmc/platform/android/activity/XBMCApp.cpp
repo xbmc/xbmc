@@ -21,73 +21,70 @@
 #include "XBMCApp.h"
 
 #include <sstream>
-
 #include <unistd.h>
 #include <stdlib.h>
 #include <dlfcn.h>
 #include <string.h>
 
-#include <android/native_window.h>
-#include <android/configuration.h>
 #include <jni.h>
-
-#include "XBMCApp.h"
-
-#include "input/MouseStat.h"
-#include "input/XBMC_keysym.h"
-#include "input/Key.h"
-#include "windowing/XBMC_events.h"
-#include <android/log.h>
-
-#include "Application.h"
-#include "settings/AdvancedSettings.h"
-#include "platform/xbmc.h"
-#include "windowing/WinEvents.h"
-#include "guilib/GUIWindowManager.h"
-#include "guilib/GraphicContext.h"
-#include "settings/DisplaySettings.h"
-#include "utils/log.h"
-#include "messaging/ApplicationMessenger.h"
-#include "utils/StringUtils.h"
-#include "utils/Variant.h"
-#include "AppParamParser.h"
-#include "platform/XbmcContext.h"
+#include <android/configuration.h>
 #include <android/bitmap.h>
+#include <android/log.h>
+#include <android/native_window.h>
+
+#include <androidjni/ApplicationInfo.h>
+#include <androidjni/BroadcastReceiver.h>
+#include <androidjni/Build.h>
+#include <androidjni/CharSequence.h>
+#include <androidjni/ConnectivityManager.h>
+#include <androidjni/ContentResolver.h>
+#include <androidjni/Context.h>
+#include <androidjni/Cursor.h>
+#include <androidjni/Display.h>
+#include <androidjni/Environment.h>
+#include <androidjni/File.h>
+#include <androidjni/Intent.h>
+#include <androidjni/IntentFilter.h>
+#include <androidjni/JNIThreading.h>
+#include <androidjni/KeyEvent.h>
+#include <androidjni/MediaStore.h>
+#include <androidjni/NetworkInfo.h>
+#include <androidjni/PackageManager.h>
+#include <androidjni/PowerManager.h>
+#include <androidjni/StatFs.h>
+#include <androidjni/System.h>
+#include <androidjni/URI.h>
+#include <androidjni/View.h>
+#include <androidjni/WakeLock.h>
+#include <androidjni/Window.h>
+#include <androidjni/WindowManager.h>
+
+#include "AndroidKey.h"
+#include "settings/AdvancedSettings.h"
 #include "cores/AudioEngine/AEFactory.h"
-#include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
+#include "Application.h"
+#include "AppParamParser.h"
+#include "messaging/ApplicationMessenger.h"
+#include "CompileInfo.h"
+#include "settings/DisplaySettings.h"
+#include "guilib/GraphicContext.h"
+#include "guilib/GUIWindowManager.h"
 #include "platform/android/activity/IInputDeviceCallbacks.h"
 #include "platform/android/activity/IInputDeviceEventHandler.h"
-#include "platform/android/jni/JNIThreading.h"
-#include "platform/android/jni/BroadcastReceiver.h"
-#include "platform/android/jni/Intent.h"
-#include "platform/android/jni/PackageManager.h"
-#include "platform/android/jni/Context.h"
-#include "platform/android/jni/PowerManager.h"
-#include "platform/android/jni/WakeLock.h"
-#include "platform/android/jni/Environment.h"
-#include "platform/android/jni/File.h"
-#include "platform/android/jni/IntentFilter.h"
-#include "platform/android/jni/NetworkInfo.h"
-#include "platform/android/jni/ConnectivityManager.h"
-#include "platform/android/jni/System.h"
-#include "platform/android/jni/ApplicationInfo.h"
-#include "platform/android/jni/StatFs.h"
-#include "platform/android/jni/CharSequence.h"
-#include "platform/android/jni/URI.h"
-#include "platform/android/jni/Cursor.h"
-#include "platform/android/jni/ContentResolver.h"
-#include "platform/android/jni/MediaStore.h"
-#include "platform/android/jni/Build.h"
+#include "input/Key.h"
+#include "utils/log.h"
+#include "input/MouseStat.h"
+#include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "filesystem/SpecialProtocol.h"
-#include "platform/android/jni/Window.h"
-#include "platform/android/jni/WindowManager.h"
-#include "platform/android/jni/KeyEvent.h"
-#include "platform/android/jni/Display.h"
-#include "platform/android/jni/View.h"
-#include "AndroidKey.h"
-
-#include "CompileInfo.h"
+#include "utils/StringUtils.h"
+#include "utils/Variant.h"
 #include "windowing/egl/VideoSyncAndroid.h"
+#include "windowing/WinEvents.h"
+#include "platform/xbmc.h"
+#include "platform/XbmcContext.h"
+#include "windowing/XBMC_events.h"
+#include "input/XBMC_keysym.h"
+
 
 #define GIGABYTES       1073741824
 

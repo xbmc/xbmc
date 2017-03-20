@@ -28,19 +28,17 @@
 
 #include <android/native_activity.h>
 
+#include <androidjni/Activity.h>
+#include <androidjni/AudioManager.h>
+#include <androidjni/BroadcastReceiver.h>
+#include <androidjni/View.h>
+
+#include "threads/Event.h"
+#include "guilib/Geometry.h"
 #include "IActivityHandler.h"
 #include "IInputHandler.h"
-
-#include "platform/xbmc.h"
-#include "platform/android/jni/Activity.h"
-#include "platform/android/jni/BroadcastReceiver.h"
-#include "platform/android/jni/AudioManager.h"
-#include "platform/android/jni/View.h"
-#include "threads/Event.h"
-
 #include "JNIMainActivity.h"
-
-#include "guilib/Geometry.h"
+#include "platform/xbmc.h"
 
 // forward declares
 class CJNIWakeLock;
@@ -77,7 +75,8 @@ public:
   virtual void onVolumeChanged(int volume);
   virtual void onAudioFocusChange(int focusChange);
   virtual void doFrame(int64_t frameTimeNanos);
-
+  virtual void onVisibleBehindCanceled() {}
+  
   // implementation of CJNIInputManagerInputDeviceListener
   void onInputDeviceAdded(int deviceId) override;
   void onInputDeviceChanged(int deviceId) override;

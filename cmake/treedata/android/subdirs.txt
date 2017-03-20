@@ -13,5 +13,4 @@ xbmc/windowing/egl                      windowing/egl
 xbmc/platform/posix                     posix
 xbmc/platform/android/activity          android_activity
 xbmc/platform/android/bionic_supplement android_bionicsupplement
-xbmc/platform/android/jni               android_jni
 xbmc/platform/android/loader            android_loader

@@ -23,7 +23,7 @@
 #include <android/input.h>
 
 #include "AndroidJoystickState.h"
-#include "platform/android/jni/View.h"
+#include "androidjni/View.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 

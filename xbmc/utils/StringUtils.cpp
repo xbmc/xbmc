@@ -30,11 +30,12 @@
 
 #include <guid.h>
 
+#if defined(TARGET_ANDROID)
+#include <androidjni/JNIThreading.h>
+#endif
+
 #include "StringUtils.h"
 #include "CharsetConverter.h"
-#if defined(TARGET_ANDROID)
-#include "platform/android/jni/JNIThreading.h"
-#endif
 #include "utils/fstrcmp.h"
 #include "Util.h"
 #include <functional>

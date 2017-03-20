@@ -22,14 +22,16 @@
 
 #include <stdlib.h>
 #include <errno.h>
-#include <android_native_app_glue.h>
-#include "EventLoop.h"
-#include "XBMCApp.h"
-#include "platform/android/jni/SurfaceTexture.h"
-#include "utils/StringUtils.h"
-#include "CompileInfo.h"
 
+#include <android_native_app_glue.h>
+
+#include <androidjni/SurfaceTexture.h>
+
+#include "CompileInfo.h"
+#include "EventLoop.h"
 #include "platform/android/activity/JNIMainActivity.h"
+#include "utils/StringUtils.h"
+#include "XBMCApp.h"
 
 
 // redirect stdout / stderr to logcat

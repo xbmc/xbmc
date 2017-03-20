@@ -19,24 +19,25 @@
  */
 #include <stdlib.h>
 
-#include "system.h"
+#include <androidjni/SystemProperties.h>
+#include <androidjni/Display.h>
+#include <androidjni/View.h>
+#include <androidjni/Window.h>
+#include <androidjni/WindowManager.h>
+#include <androidjni/Build.h>
+#include <androidjni/System.h>
+
 #include <EGL/egl.h>
 #include "EGLNativeTypeAndroid.h"
-#include "ServiceBroker.h"
-#include "utils/log.h"
-#include "settings/Settings.h"
-#include "guilib/gui3d.h"
-#include "platform/android/activity/XBMCApp.h"
-#include "utils/StringUtils.h"
-#include "platform/android/jni/SystemProperties.h"
-#include "platform/android/jni/Display.h"
-#include "platform/android/jni/View.h"
-#include "platform/android/jni/Window.h"
-#include "platform/android/jni/WindowManager.h"
-#include "platform/android/jni/Build.h"
-#include "platform/android/jni/System.h"
 
+#include "guilib/gui3d.h"
+#include "utils/log.h"
+#include "system.h"
+#include "settings/Settings.h"
+#include "ServiceBroker.h"
+#include "utils/StringUtils.h"
 #include "utils/SysfsUtils.h"
+#include "platform/android/activity/XBMCApp.h"
 
 static bool s_hasModeApi = false;
 static std::vector<RESOLUTION_INFO> s_res_displayModes;
