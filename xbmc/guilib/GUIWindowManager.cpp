@@ -1196,6 +1196,14 @@ CGUIWindow* CGUIWindowManager::GetWindow(std::type_index type) const
   return NULL;
 }
 
+CGUIDialog* CGUIWindowManager::GetDialog(int id) const
+{
+  CGUIWindow *window = GetWindow(id);
+  if (window->IsDialog())
+    return dynamic_cast<CGUIDialog*>(window);
+  return nullptr;
+}
+
 CGUIWindow* CGUIWindowManager::GetWindow(int id) const
 {
   CGUIWindow *window;

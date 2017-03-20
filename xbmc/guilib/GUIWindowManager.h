@@ -161,6 +161,13 @@ public:
    */
   CGUIWindow* GetWindow(int id) const;
 
+  /*! \brief Return the dialog window with the given id or null.
+   *
+   * \param id the dialog window id
+   * \return the dialog window with the given id or null
+   */
+  CGUIDialog* GetDialog(int id) const;
+
   void SetCallback(IWindowManagerCallback& callback);
   void DeInitialize();
 
