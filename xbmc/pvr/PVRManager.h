@@ -184,9 +184,19 @@ namespace PVR
     void Unload();
 
     /*!
-     * @brief Stop PVRManager, unload data, unload addons.
+     * @brief Shutdown PVRManager, unload data, unload addons.
      */
     void Shutdown();
+
+    /*!
+     * @brief Propagate event on system sleep
+     */
+    void OnSleep();
+
+    /*!
+     * @brief Propagate event on system wake
+     */
+    void OnWake();
 
     /*!
      * @brief Get the TV database.
@@ -494,21 +504,6 @@ namespace PVR
     void RestartParentalTimer();
 
     /*!
-     * @brief Executes "pvrpowermanagement.setwakeupcmd"
-     */
-    bool SetWakeupCommand(void);
-
-    /*!
-     * @brief Propagate event on system sleep
-     */
-    void OnSleep();
-
-    /*!
-     * @brief Propagate event on system wake
-     */
-    void OnWake();
-
-    /*!
      * @brief Create EPG tags for all channels in internal channel groups
      * @return True if EPG tags where created successfully, false otherwise
      */
@@ -560,6 +555,16 @@ namespace PVR
     virtual void Process(void) override;
 
   private:
+    /*!
+     * @brief Save the currently playing channel as last played channel
+     */
+    void SaveLastPlayedChannel() const;
+
+    /*!
+     * @brief Executes "pvrpowermanagement.setwakeupcmd"
+     */
+    bool SetWakeupCommand(void);
+
     /*!
      * @brief Show or update the progress dialog.
      * @param strText The current status.

@@ -178,33 +178,6 @@ void CPVRManager::Announce(AnnouncementFlag flag, const char *sender, const char
   if (!IsStarted())
     return;
 
-  if ((flag & (ANNOUNCEMENT::System)))
-  {
-    if (strcmp(message, "OnQuit") == 0 ||
-        strcmp(message, "OnSleep") == 0)
-    {
-      // save the currently playing channel.
-      const CPVRChannelPtr playingChannel(GetCurrentChannel());
-      if (playingChannel)
-        playingChannel->SetWasPlayingOnLastQuit(true);
-    }
-    else if (strcmp(message, "OnWake") == 0)
-    {
-      /* start job to search for missing channel icons */
-      TriggerSearchMissingChannelIcons();
-
-      /* continue last watched channel */
-      TriggerContinueLastChannel();
-
-      /* trigger PVR data updates */
-      TriggerChannelGroupsUpdate();
-      TriggerChannelsUpdate();
-      TriggerRecordingsUpdate();
-      TriggerEpgsCreate();
-      TriggerTimersUpdate();
-    }
-  }
-
   if ((flag & (ANNOUNCEMENT::GUI)))
   {
     if (strcmp(message, "OnScreensaverActivated") == 0)
@@ -212,6 +185,13 @@ void CPVRManager::Announce(AnnouncementFlag flag, const char *sender, const char
     else if (strcmp(message, "OnScreensaverDeactivated") == 0)
       g_PVRClients->OnPowerSavingDeactivated();
   }
+}
+
+void CPVRManager::SaveLastPlayedChannel() const
+{
+  const CPVRChannelPtr playingChannel(GetCurrentChannel());
+  if (playingChannel)
+    playingChannel->SetWasPlayingOnLastQuit(true);
 }
 
 CPVRManager &CPVRManager::GetInstance()
@@ -420,9 +400,8 @@ void CPVRManager::Unload()
 
 void CPVRManager::Shutdown()
 {
-  // set system wakeup data
+  SaveLastPlayedChannel();
   SetWakeupCommand();
-
   Unload();
 
   // release addons
@@ -594,12 +573,28 @@ bool CPVRManager::SetWakeupCommand(void)
 
 void CPVRManager::OnSleep()
 {
+  SaveLastPlayedChannel();
+  SetWakeupCommand();
+
   g_PVRClients->OnSystemSleep();
 }
 
 void CPVRManager::OnWake()
 {
   g_PVRClients->OnSystemWake();
+
+  /* start job to search for missing channel icons */
+  TriggerSearchMissingChannelIcons();
+
+  /* continue last watched channel */
+  TriggerContinueLastChannel();
+
+  /* trigger PVR data updates */
+  TriggerChannelGroupsUpdate();
+  TriggerChannelsUpdate();
+  TriggerRecordingsUpdate();
+  TriggerEpgsCreate();
+  TriggerTimersUpdate();
 }
 
 bool CPVRManager::Load(bool bShowProgress)
@@ -725,7 +720,8 @@ bool CPVRManager::ChannelUpDown(unsigned int *iNewChannelNumber, bool bPreview, 
 
 void CPVRManager::TriggerContinueLastChannel(void)
 {
-  CJobManager::GetInstance().AddJob(new CPVRContinueLastChannelJob(), nullptr);
+  if (IsStarted())
+    CJobManager::GetInstance().AddJob(new CPVRContinueLastChannelJob(), nullptr);
 }
 
 bool CPVRManager::IsPlaying(void) const
@@ -1402,7 +1398,8 @@ void CPVRManager::TriggerSearchMissingChannelIcons(void)
 
 void CPVRManager::ConnectionStateChange(CPVRClient *client, std::string connectString, PVR_CONNECTION_STATE state, std::string message)
 {
-  CJobManager::GetInstance().AddJob(new CPVRClientConnectionJob(client, connectString, state, message), NULL);
+  if (IsStarted())
+    CJobManager::GetInstance().AddJob(new CPVRClientConnectionJob(client, connectString, state, message), NULL);
 }
 
 bool CPVRChannelSwitchJob::DoWork(void)

@@ -257,7 +257,6 @@ void CPowerManager::OnSleep()
   CBuiltins::GetInstance().Execute("LIRC.Stop");
 #endif
 
-  PVR::CPVRManager::GetInstance().SetWakeupCommand();
   PVR::CPVRManager::GetInstance().OnSleep();
   g_application.SaveFileState(true);
   g_application.StopPlaying();
