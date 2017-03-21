@@ -51,6 +51,8 @@ CGUIWindowPVRGuide::CGUIWindowPVRGuide(bool bRadio) :
 CGUIWindowPVRGuide::~CGUIWindowPVRGuide(void)
 {
   g_EpgContainer.UnregisterObserver(this);
+
+  m_bRefreshTimelineItems = false;
   StopRefreshTimelineItemsThread();
 }
 
@@ -68,8 +70,13 @@ void CGUIWindowPVRGuide::Init()
     epgGridContainer->GoToNow();
   }
 
+  if (!m_refreshTimelineItemsThread)
+  {
+    CSingleLock lock(m_critSection);
+    m_bRefreshTimelineItems = true; // force data update on first window open
+  }
+
   StartRefreshTimelineItemsThread();
-  m_bRefreshTimelineItems = true; // force data update on window open/re-open
 }
 
 void CGUIWindowPVRGuide::ClearData()
@@ -98,6 +105,16 @@ void CGUIWindowPVRGuide::OnDeinitWindow(int nextWindowID)
 {
   StopRefreshTimelineItemsThread();
 
+  {
+    CSingleLock lock(m_critSection);
+    if (m_vecItems && !m_newTimeline)
+    {
+      // speedup: save a copy of current items for reuse when re-opening the window
+      m_newTimeline.reset(new CFileItemList);
+      m_newTimeline->Copy(*m_vecItems);
+    }
+  }
+
   CGUIWindowPVRBase::OnDeinitWindow(nextWindowID);
 }
 
@@ -111,16 +128,12 @@ void CGUIWindowPVRGuide::StartRefreshTimelineItemsThread()
 void CGUIWindowPVRGuide::StopRefreshTimelineItemsThread()
 {
   if (m_refreshTimelineItemsThread)
-  {
-    m_bRefreshTimelineItems = false;
     m_refreshTimelineItemsThread->Stop();
-  }
 }
 
 void CGUIWindowPVRGuide::Notify(const Observable &obs, const ObservableMessage msg)
 {
-  if (IsActive() &&
-      m_viewControl.GetCurrentControl() == GUIDE_VIEW_TIMELINE &&
+  if (m_viewControl.GetCurrentControl() == GUIDE_VIEW_TIMELINE &&
       (msg == ObservableMessageEpg ||
        msg == ObservableMessageEpgContainer ||
        msg == ObservableMessageChannelGroupReset ||
