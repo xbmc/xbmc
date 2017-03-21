@@ -8305,7 +8305,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const st
     }
     else if (showProgress)
     {
-      progress = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+      progress = g_windowManager.GetWindow<CGUIDialogProgress>();
       if (progress)
       {
         progress->SetHeading(CVariant{700});
@@ -8658,7 +8658,7 @@ std::vector<int> CVideoDatabase::CleanMediaType(const std::string &mediaType, co
             del = false;
           else
           {
-            CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+            CGUIDialogYesNo* pDialog = g_windowManager.GetWindow<CGUIDialogYesNo>();
             if (pDialog != NULL)
             {
               CURL sourceUrl(sourcePath);
@@ -8782,7 +8782,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
       CDirectory::Create(tvshowsDir);
     }
 
-    progress = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+    progress = g_windowManager.GetWindow<CGUIDialogProgress>();
     // find all movies
     std::string sql = "select * from movie_view";
 
@@ -9285,7 +9285,7 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
     TiXmlElement *root = xmlDoc.RootElement();
     if (!root) return;
 
-    progress = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+    progress = g_windowManager.GetWindow<CGUIDialogProgress>();
     if (progress)
     {
       progress->SetHeading(CVariant{648});

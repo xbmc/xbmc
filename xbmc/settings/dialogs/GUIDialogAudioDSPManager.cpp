@@ -565,7 +565,7 @@ bool CGUIDialogAudioDSPManager::OnContextButton(int itemNumber, CONTEXT_BUTTON b
     AE_DSP_ADDON addon;
     if (CServiceBroker::GetADSP().GetAudioDSPAddon((int)pItem->GetProperty("AddonId").asInteger(), addon))
     {
-      CGUIDialogTextViewer* pDlgInfo = (CGUIDialogTextViewer*)g_windowManager.GetWindow(WINDOW_DIALOG_TEXT_VIEWER);
+      CGUIDialogTextViewer* pDlgInfo = g_windowManager.GetWindow<CGUIDialogTextViewer>();
       pDlgInfo->SetHeading(g_localizeStrings.Get(15062) + " - " + pItem->GetProperty("Name").asString());
       pDlgInfo->SetText(g_localizeStrings.GetAddonString(addon->ID(), (uint32_t)pItem->GetProperty("Help").asInteger()));
       pDlgInfo->Open();
@@ -689,7 +689,7 @@ bool CGUIDialogAudioDSPManager::OnContextButton(int itemNumber, CONTEXT_BUTTON b
 
 void CGUIDialogAudioDSPManager::Update()
 {
-  CGUIDialogBusy* pDlgBusy = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
+  CGUIDialogBusy* pDlgBusy = g_windowManager.GetWindow<CGUIDialogBusy>();
   if (!pDlgBusy)
   {
     helper_LogError(__FUNCTION__);
@@ -798,7 +798,7 @@ void CGUIDialogAudioDSPManager::SaveList(void)
    return;
 
   /* display the progress dialog */
-  CGUIDialogBusy* pDlgBusy = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
+  CGUIDialogBusy* pDlgBusy = g_windowManager.GetWindow<CGUIDialogBusy>();
   if (!pDlgBusy)
   {
     helper_LogError(__FUNCTION__);

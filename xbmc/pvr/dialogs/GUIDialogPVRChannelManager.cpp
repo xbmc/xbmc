@@ -238,7 +238,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonRadioTV(CGUIMessage &message)
 {
   if (m_bContainsChanges)
   {
-    CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+    CGUIDialogYesNo* pDialog = g_windowManager.GetWindow<CGUIDialogYesNo>();
     if (!pDialog)
       return true;
 
@@ -430,7 +430,7 @@ bool CGUIDialogPVRChannelManager::OnClickEPGSourceSpin(CGUIMessage &message)
 bool CGUIDialogPVRChannelManager::OnClickButtonGroupManager(CGUIMessage &message)
 {
   /* Load group manager dialog */
-  CGUIDialogPVRGroupManager* pDlgInfo = (CGUIDialogPVRGroupManager*)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_GROUP_MANAGER);
+  CGUIDialogPVRGroupManager* pDlgInfo = g_windowManager.GetWindow<CGUIDialogPVRGroupManager>();
   if (!pDlgInfo)
     return false;
 
@@ -448,7 +448,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonNewChannel()
   int iSelection = 0;
   if (g_PVRClients->CreatedClientAmount() > 1)
   {
-    CGUIDialogSelect* pDlgSelect = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+    CGUIDialogSelect* pDlgSelect = g_windowManager.GetWindow<CGUIDialogSelect>();
     if (!pDlgSelect)
       return false;
 
@@ -610,7 +610,7 @@ bool CGUIDialogPVRChannelManager::OnContextButton(int itemNumber, CONTEXT_BUTTON
   }
   else if (button == CONTEXT_BUTTON_DELETE)
   {
-    CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+    CGUIDialogYesNo* pDialog = g_windowManager.GetWindow<CGUIDialogYesNo>();
     if (!pDialog)
       return true;
 
@@ -768,7 +768,7 @@ void CGUIDialogPVRChannelManager::SaveList(void)
    return;
 
   /* display the progress dialog */
-  CGUIDialogProgress* pDlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  CGUIDialogProgress* pDlgProgress = g_windowManager.GetWindow<CGUIDialogProgress>();
   pDlgProgress->SetHeading(CVariant{190});
   pDlgProgress->SetLine(0, CVariant{""});
   pDlgProgress->SetLine(1, CVariant{328});

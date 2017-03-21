@@ -209,7 +209,7 @@ bool CGUIDialogAddonSettings::ShowAndGetInput(const AddonPtr &addon, bool saveTo
   { 
     // Create the dialog
     CGUIDialogAddonSettings* pDialog = NULL;
-    pDialog = (CGUIDialogAddonSettings*) g_windowManager.GetWindow(WINDOW_DIALOG_ADDON_SETTINGS);
+    pDialog = g_windowManager.GetWindow<CGUIDialogAddonSettings>();
     if (!pDialog)
       return false;
 
@@ -307,7 +307,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
         }
         else if (type == "select")
         {
-          CGUIDialogSelect *pDlg = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+          CGUIDialogSelect *pDlg = g_windowManager.GetWindow<CGUIDialogSelect>();
           if (pDlg)
           {
             pDlg->SetHeading(CVariant{label});

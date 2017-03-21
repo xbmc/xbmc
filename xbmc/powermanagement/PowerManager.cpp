@@ -175,7 +175,7 @@ bool CPowerManager::Powerdown()
 {
   if (CanPowerdown() && m_instance->Powerdown())
   {
-    CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
+    CGUIDialogBusy* dialog = g_windowManager.GetWindow<CGUIDialogBusy>();
     if (dialog)
       dialog->Open();
 
@@ -203,7 +203,7 @@ bool CPowerManager::Reboot()
   {
     CAnnouncementManager::GetInstance().Announce(System, "xbmc", "OnRestart");
 
-    CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
+    CGUIDialogBusy* dialog = g_windowManager.GetWindow<CGUIDialogBusy>();
     if (dialog)
       dialog->Open();
   }
@@ -245,7 +245,7 @@ void CPowerManager::OnSleep()
 {
   CAnnouncementManager::GetInstance().Announce(System, "xbmc", "OnSleep");
 
-  CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
+  CGUIDialogBusy* dialog = g_windowManager.GetWindow<CGUIDialogBusy>();
   if (dialog)
     dialog->Open();
 
@@ -276,7 +276,7 @@ void CPowerManager::OnWake()
   // reset out timers
   g_application.ResetShutdownTimers();
 
-  CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
+  CGUIDialogBusy* dialog = g_windowManager.GetWindow<CGUIDialogBusy>();
   if (dialog)
     dialog->Close(true); // force close. no closing animation, sound etc at this early stage
 

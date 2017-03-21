@@ -780,7 +780,7 @@ void CGUIWindowVideoNav::OnDeleteItem(CFileItemPtr pItem)
   else if (StringUtils::StartsWithNoCase(pItem->GetPath(), "videodb://movies/sets/") &&
            pItem->GetPath().size() > 22 && pItem->m_bIsFolder)
   {
-    CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+    CGUIDialogYesNo* pDialog = g_windowManager.GetWindow<CGUIDialogYesNo>();
     pDialog->SetHeading(CVariant{432});
     std::string strLabel = StringUtils::Format(g_localizeStrings.Get(433).c_str(),pItem->GetLabel().c_str());
     pDialog->SetLine(1, CVariant{std::move(strLabel)});
@@ -801,7 +801,7 @@ void CGUIWindowVideoNav::OnDeleteItem(CFileItemPtr pItem)
   }
   else if (m_vecItems->GetContent() == "tags" && pItem->m_bIsFolder)
   {
-    CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+    CGUIDialogYesNo* pDialog = g_windowManager.GetWindow<CGUIDialogYesNo>();
     pDialog->SetHeading(CVariant{432});
     pDialog->SetLine(1, CVariant{ StringUtils::Format(g_localizeStrings.Get(433).c_str(), pItem->GetLabel().c_str()) });
     pDialog->SetLine(2, CVariant{""});

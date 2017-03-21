@@ -90,7 +90,7 @@ bool CCDDARipJob::DoWork()
 
   // setup the progress dialog
   CGUIDialogExtendedProgressBar* pDlgProgress = 
-      (CGUIDialogExtendedProgressBar*)g_windowManager.GetWindow(WINDOW_DIALOG_EXT_PROGRESS);
+      g_windowManager.GetWindow<CGUIDialogExtendedProgressBar>();
   CGUIDialogProgressBarHandle* handle = pDlgProgress->GetHandle(g_localizeStrings.Get(605));
 
   int iTrack = atoi(m_input.substr(13, m_input.size() - 13 - 5).c_str());

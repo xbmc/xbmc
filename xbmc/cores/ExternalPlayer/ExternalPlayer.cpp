@@ -338,7 +338,7 @@ void CExternalPlayer::Process()
 
     {
       CSingleLock lock(g_graphicsContext);
-      m_dialog = (CGUIDialogOK *)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
+      m_dialog = g_windowManager.GetWindow<CGUIDialogOK>();
       m_dialog->SetHeading(CVariant{23100});
       m_dialog->SetLine(1, CVariant{23104});
       m_dialog->SetLine(2, CVariant{23105});

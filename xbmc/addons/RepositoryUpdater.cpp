@@ -113,7 +113,7 @@ bool CRepositoryUpdater::CheckForUpdates(bool showProgress)
 
 static void SetProgressIndicator(CRepositoryUpdateJob* job)
 {
-  auto* dialog = static_cast<CGUIDialogExtendedProgressBar*>(g_windowManager.GetWindow(WINDOW_DIALOG_EXT_PROGRESS));
+  auto dialog = g_windowManager.GetWindow<CGUIDialogExtendedProgressBar>();
   if (dialog)
     job->SetProgressIndicators(dialog->GetHandle(g_localizeStrings.Get(24092)), nullptr);
 }

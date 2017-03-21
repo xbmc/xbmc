@@ -63,7 +63,7 @@ bool CMultiPathDirectory::GetDirectory(const CURL& url, CFileItemList &items)
     // show the progress dialog if we have passed our time limit
     if (progressTime.IsTimePast() && !dlgProgress)
     {
-      dlgProgress = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+      dlgProgress = g_windowManager.GetWindow<CGUIDialogProgress>();
       if (dlgProgress)
       {
         dlgProgress->SetHeading(CVariant{15310});

@@ -64,7 +64,7 @@ bool CGUIDialogBusy::WaitOnEvent(CEvent &event, unsigned int displaytime /* = 10
   if (!event.WaitMSec(displaytime))
   {
     // throw up the progress
-    CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
+    CGUIDialogBusy* dialog = g_windowManager.GetWindow<CGUIDialogBusy>();
     if (dialog)
     {
       dialog->Open();
