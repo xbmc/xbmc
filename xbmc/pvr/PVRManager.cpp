@@ -398,7 +398,7 @@ void CPVRManager::Unload()
   g_EpgContainer.Clear();
 }
 
-void CPVRManager::Shutdown()
+void CPVRManager::Deinit()
 {
   SaveLastPlayedChannel();
   SetWakeupCommand();

@@ -184,9 +184,9 @@ namespace PVR
     void Unload();
 
     /*!
-     * @brief Shutdown PVRManager, unload data, unload addons.
+     * @brief Deinit PVRManager, unload data, unload addons.
      */
-    void Shutdown();
+    void Deinit();
 
     /*!
      * @brief Propagate event on system sleep
