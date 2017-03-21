@@ -42,8 +42,6 @@ ARCHIVE_TOOL_FLAGS=--strip-components=1 -xf
 CONFIG_SUB=@prefix@/@tool_dir@/share/automake-1.15/config.sub
 CONFIG_GUESS=@prefix@/@tool_dir@/share/automake-1.15/config.guess
 
-RPL=@prefix@/@tool_dir@/bin/python @prefix@/@tool_dir@/bin/rpl
-
 USE_CCACHE=@use_ccache@
 
 LD=@LD@
