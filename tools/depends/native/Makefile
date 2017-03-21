@@ -9,7 +9,7 @@ NATIVE= m4-native gettext-native autoconf-native automake-native \
         gas-preprocessor-native python27-native zlib-native \
         pcre-native swig-native \
         libpng-native libjpeg-turbo-native liblzo2-native giflib-native \
-        distribute-native distutilscross-native JsonSchemaBuilder TexturePacker \
+        setuptools-native distutilscross-native JsonSchemaBuilder TexturePacker \
         google-breakpad-native
 
 
@@ -32,8 +32,8 @@ automake-native: autoconf-native
 libtool-native: automake-native
 libpng-native: zlib-native
 swig-native: pcre-native
-distribute-native: python27-native
-distutilscross-native: python27-native distribute-native
+setuptools-native: python27-native
+distutilscross-native: python27-native setuptools-native
 tar-native: xz-native automake-native
 python27-native: zlib-native
 
