@@ -15,7 +15,16 @@ TOC
 
 We currently recommend Ubuntu "Xenial Xerus" (16.04) 64Bit. This is what our continuous
 integration system "jenkins" is using.
-Additionally, building from OSX Snow Leopard or Mavericks (others on your own risk ;) ) is working (see 3.1).
+
+********************** Note 
+Building on OSX, & Windows system is best done with Virtual Box installation
+of Ubutuntu 16.04. The instructions below assumes a FRESH INSTALLATION of 
+Ubuntu
+
+This instruction has been tested on Kodi Krypton RC-1 compiled
+for ARM architecture running on FireTV.
+This instruction will compile Krypton without any errors. 
+**********************
 
 NOTE TO NEW USERS: All lines that are prefixed with the '$'
 character are commands that need to be typed into a terminal window /
@@ -24,27 +33,23 @@ character itself should NOT be typed as part of the command.
 
 -----------------------------------------------------------------------------
 2. Installing the required Ubuntu packages
+***** Works best from an FRESH install of Ubuntu 16.04 LTS *****
 -----------------------------------------------------------------------------
 These are the minimum packages necessary for building Kodi.
-Non-Ubuntu users will need to get the equivalents.
 
+    $ sudo apt-get update
+    $ sudo apt-get install default-jdk
+    
     $ sudo apt-get install build-essential default-jdk git curl autoconf \
       unzip zip zlib1g-dev gawk gperf cmake
 
-If you run a 64bit operating system you will also need to get ia32-libs
-
-Ubuntu >= 14.04:
     $ sudo apt-get install lib32stdc++6 lib32z1 lib32z1-dev
+    
+    $ sudo apt-get install libcurl4-openssl-dev 
 
-Older versions:
-    $ sudo apt-get install ia32-libs
-
-The following versions are used on our continuous integration system "jenkins". Other (newer)
-versions might work as well.
-
-JDK: openjdk-6-jdk (java version "1.6.0_27")
-JRE: openjre-6-jre (java version "1.6.0_27")
-
+check the JDK, JRE version!!!
+JDK: openjdk version "1.8.0_121"
+JRE: OpenJDK Runtime Environment (build 1.8.0_121-8u121-b13-0ubuntu1.16.04.2-b13)
 
 -----------------------------------------------------------------------------
 3. Installing and setting up the Android environment
@@ -55,64 +60,41 @@ To develop Kodi for Android the Android SDK and NDK are required.
 --------------------------------------------------------------------
 3.1. Prerequisites when compiling on Mac OSX
 --------------------------------------------------------------------
-
-a. When building on Mac OSX you should download the java version from here: http://support.apple.com/kb/DL1572
-Or ensure otherwise that you are using java 1.6 (java -version tells you the version).
-b. The compilation for android needs a case sensitive filesystem. The
-   filesystem used on normal OSX installations is case insensitive. So you
-   need to generate a writeable hdd image and format it with hfs+ (case sensitive).
-   The size should be 20GB.
-c. Generate a writable dmg with the following command:
-    $ hdiutil create -type UDIF -fs 'Case-sensitive Journaled HFS+' -size 20g -volname android-dev ~/android-dev.dmg
-
-d. Whenever you want to compile/develop you need to mount it:
-    $ open ~/android-dev.dmg
-
-e. Your workspace can be accessed in /Volumes/android-dev/ then
-f. Once you have your hdd image with case sensitive hfs+ file system do all steps
-   below inside of this filesystem. In the end you need to adapt all paths in this
-   document so that they match your local environment. As an example here is a
-   configure line from step 5.1 which demonstrates possible paths. In this
-   example the hdd image is mounted on /Volumes/android-dev.
-    $ ./configure --with-tarballs=/Users/Shared/xbmc-depends/tarballs --host=arm-linux-androideabi \
-                  --with-sdk-path=/Volumes/android-dev/android/android-sdk-macosx \
-                  --with-ndk=/Volumes/android-dev/android/android-ndk-r12b \
-                  --with-toolchain=/Volumes/android-dev/android/android-toolchain-arm/android-21 \
-                  --prefix=/Volumes/android-dev/android/xbmc-depends
+Use Virtualbox to setup an Ubuntu Virtual Machine.
 
 --------------------------------------------------------------------
 3.2. Getting the Android SDK and NDK
 --------------------------------------------------------------------
+Get SDK tools at: 
+https://dl.google.com/android/repository/tools_r25.2.3-linux.zip
 
-To get the Android SDK, go to http://developer.android.com/sdk and
-download the latest version for your operating system. The NDK
-can be downloaded from http://developer.android.com/tools/sdk/ndk/
+Get NDK r12b at:
+https://dl.google.com/android/repository/android-ndk-r12b-linux-x86_64.zip
 
-[NOTICE] Compiling Kodi for Android requires Android NDK
-         Revision 12b. For the SDK just use the latest available.
-         It will work.
+Extract SDK tools to: /$HOME/android-sdk-linux/
+Extract NDK r12b to: /$HOME/
 
-After downloading the SDK and NDK extract the files contained in the
-archives to your harddisk. For our example we are extracting in the following
-directories (this matches the example from tools/depends/README as well):
+you will have:
+/$HOME/android-sdk-linux/tools
+/$HOME/android-ndk-r12b
+
+For our example we are extracting in the following
+directories:
 
 NDK (referenced as <android-ndk> from now on):
-/opt/android-ndk-r12b
+/$HOME/android-ndk-r12b
 
 TOOLCHAIN (arm) (referenced as <android-toolchain-arm> from now on):
-/opt/arm-linux-androideabi-4.9-vanilla/android-21
+/$HOME/arm-linux-androideabi-4.9-vanilla/android-21
 
 TOOLCHAIN (aarch64) (referenced as <android-toolchain-aarch64> from now on):
-/opt/aarch64-linux-android-4.9-vanilla/android-21
+/$HOME/aarch64-linux-android-4.9-vanilla/android-21
 
 TOOLCHAIN (x86) (referenced as <android-toolchain-x86> from now on):
-/opt/x86-linux-4.9-vanilla/android-21
+/$HOME/x86-linux-4.9-vanilla/android-21
 
 SDK (referenced as <android-sdk> from now on):
-/opt/android-sdk-linux
-
-Make sure you have a recent JRE and JDK installed otherwise the
-Android SDK will not work. (see point 2.)
+/$HOME/android-sdk-linux
 
 --------------------------------------------------------------------
 3.3. Installing Android SDK packages
@@ -121,7 +103,7 @@ Android SDK will not work. (see point 2.)
 After having extracted the Android SDK to <android-sdk> you need to
 install some android packages using the Android SDK Manager:
 
-    $ cd <android-sdk>/tools
+    $ cd /$HOME/android-sdk-linux/tools
     $ ./android update sdk -u -t platform,platform-tool
     $ ./android update sdk --all -u -t build-tools-20.0.0
 --------------------------------------------------------------------
@@ -133,21 +115,16 @@ Android platform you first need to setup an Android toolchain using
 the Android NDK which you earlier extracted to <android-ndk>. The
 following commands will create a toolchain suitable for the most
 common scenario.
-The --install-dir option (and therefore the <android-toolchain-arm>/<android-toolchain-x86> value)
-specifies where the resulting toolchain should be installed (your choice).
 
-[NOTICE] Kodi uses the android API Version 21 and gcc version 4.9!
+Building for arm architecture: (This has been tested Feb 4, 2017.)
 
-Building for arm architecture:
-
-    $ cd <android-ndk>
-    $ ls platforms
+    $ cd /$HOME/android-ndk-r12b
     $ cd build/tools
     $ ./make-standalone-toolchain.sh --ndk-dir=../../ \
-      --install-dir=<android-toolchain-arm>/android-21 --platform=android-21 \
+      --install-dir=/$HOME/arm-linux-androideabi-4.9-vanilla/android-21 --platform=android-21 \
       --toolchain=arm-linux-androideabi-4.9
 
-Building for aarch64 architecture:
+Building for aarch64 architecture: (untested)
 
     $ cd <android-ndk>
     $ ls platforms
@@ -156,7 +133,7 @@ Building for aarch64 architecture:
       --install-dir=<android-toolchain-aarch64>/android-21 --platform=android-21 \
       --toolchain=aarch64-linux-android-4.9
 
-Building for x86 architecture:
+Building for x86 architecture: (untested)
 
     $ cd <android-ndk>
     $ ls platforms
@@ -182,12 +159,13 @@ probably just means a debug key already existed, no cause for alarm.
       android -storepass android -keyalg RSA -keysize 2048 -validity 10000
 
 -----------------------------------------------------------------------------
-4. Getting the source code
+4. Getting the source code for Krypton
+    We are getting 17RC1
 -----------------------------------------------------------------------------
 
     $ cd $HOME
-    $ git clone git://github.com/xbmc/xbmc.git kodi-android
-    $ cd kodi-android
+    $ git clone -b Krypton git://github.com/xbmc/xbmc.git kodi-krypton
+    $ cd kodi-krypton
 
 -----------------------------------------------------------------------------
 5. How to compile
@@ -201,19 +179,23 @@ on with the Android toolchain and creating an Android Application Package
 5.1. Building dependencies
 --------------------------------------------------------------------
 
-    $ cd $HOME/kodi-android/tools/depends
+    $ cd $HOME/kodi-krypton/tools/depends
     $ ./bootstrap
-    $ ./configure --help
+    $ ./configure --with-tarballs=/$HOME/xbmc-tarballs \
+    --host=arm-linux-androideabi --with-sdk-path=/$HOME/android-sdk-linux \
+    --with-ndk=/$HOME/android-ndk-r12b \
+    --with-toolchain=/$HOME/arm-linux-androideabi-4.9-vanilla/android-21 \
+    --prefix=/$HOME/xbmc-depends
 
-Run configure with the correct settings for you local configuration.
-See tools/depends/README for examples.
+    $ make
+    $ make -C target/binary-addons
 
-Anyone working on the dependencies themselves will want to set the
-environment variables specified in ~/.bashrc or similar, to avoid
-having to input these with each configure.
+NOTE: YOU WILL NOT GET ANY ERRORS. If there are errors in the building
+process, you have incorrectly performed one of the steps above. There's
+no change needed in the config file or source code.
 
-    $ make -j <jobs>
-    $ make -j <jobs> -C target/binary-addons
+*** The rest of section 5.1 below is from the previous version of  ***
+*** README.android. Some of those content may still apply          ***
 
 NOTE: if you only want to build specific addons you can specify like this:
     $ make -C target/binary-addons ADDONS="pvr.hts pvr.dvblink"
@@ -234,10 +216,14 @@ Rinse and repeat until you are really done and all libs are built.
 5.2. Building Kodi
 --------------------------------------------------------------------
 
-    $ cd $HOME/kodi-android
-    $ make -C tools/depends/target/xbmc
+    $ cd $HOME/kodi-krypton
+    $ make -C tools/depends/target/cmakebuildsys
+    $ cd /kodi-krypton/build
     $ make
     $ make apk
+
+>>>>> Happy Happy Joy Joy >>>>>
+your apk is in $HOME/kodi-krypton
 
 After the first build (assuming bootstrap and configure are successful),
 subsequent builds can be run with a simple 'make' and 'make apk'.
