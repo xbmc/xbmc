@@ -25,6 +25,7 @@ class CCompileInfo
 public:
   static int GetMajor();
   static int GetMinor();
+  static const char* GetPackage();
   static const char* GetAppName();
   static const char *GetSuffix();  // Git "Tag", e.g. alpha1
   static const char* GetSCMID();   // Git Revision

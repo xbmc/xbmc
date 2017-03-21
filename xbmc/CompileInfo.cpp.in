@@ -32,6 +32,11 @@ int CCompileInfo::GetMinor()
   return @APP_VERSION_MINOR@;
 }
 
+const char* CCompileInfo::GetPackage()
+{
+  return "@APP_PACKAGE@";
+}
+
 const char* CCompileInfo::GetAppName()
 {
   return "@APP_NAME@";
