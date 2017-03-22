@@ -140,19 +140,6 @@ namespace PVR
     virtual bool DoWork();
   };
 
-  class CPVRChannelSwitchJob : public CJob
-  {
-  public:
-    CPVRChannelSwitchJob(const CFileItemPtr &previous, const CFileItemPtr & next) : m_previous(previous), m_next(next) {}
-    virtual ~CPVRChannelSwitchJob() = default;
-    virtual const char *GetType() const { return "pvr-channel-switch"; }
-
-    virtual bool DoWork();
-  private:
-    CFileItemPtr m_previous;
-    CFileItemPtr m_next;
-  };
-
   class CPVRSearchMissingChannelIconsJob : public CJob
   {
   public:
