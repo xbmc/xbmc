@@ -609,18 +609,15 @@ void CDVDInputStreamBluray::ProcessEvent() {
   case BD_EVENT_SOUND_EFFECT:
   {
     BLURAY_SOUND_EFFECT effect;
-    if (m_event.param >= 0)
+    if (m_dll->bd_get_sound_effect(m_bd, m_event.param, &effect) <= 0)
     {
-      if (m_dll->bd_get_sound_effect(m_bd, m_event.param, &effect) <= 0)
-      {
-        CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - BD_EVENT_SOUND_EFFECT %d not valid",
-          m_event.param);
-      }
-      else
-      {
-        CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - BD_EVENT_SOUND_EFFECT %d",
-          m_event.param);
-      }
+      CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - BD_EVENT_SOUND_EFFECT %d not valid",
+        m_event.param);
+    }
+    else
+    {
+      CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - BD_EVENT_SOUND_EFFECT %d",
+        m_event.param);
     }
   }
 
