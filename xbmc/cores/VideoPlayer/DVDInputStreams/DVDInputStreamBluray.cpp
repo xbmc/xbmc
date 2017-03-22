@@ -156,9 +156,6 @@ int DllLibbluray::dir_read(BD_DIR_H *dir, BD_DIRENT *entry)
 
 BD_DIR_H *DllLibbluray::dir_open(const char* dirname)
 {
-  if (CFile::Exists(dirname))
-    return NULL;
-
     CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - Opening dir %s\n", dirname);
     SDirState *st = new SDirState();
 
