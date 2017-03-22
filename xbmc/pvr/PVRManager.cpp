@@ -850,38 +850,6 @@ CPVRChannelGroupPtr CPVRManager::GetPlayingGroup(bool bRadio /* = false */)
   return CPVRChannelGroupPtr();
 }
 
-bool CPVRStartupJob::DoWork(void)
-{
-  g_PVRClients->Start();
-  return true;
-}
-
-bool CPVREpgsCreateJob::DoWork(void)
-{
-  return g_PVRManager.CreateChannelEpgs();
-}
-
-bool CPVRRecordingsUpdateJob::DoWork(void)
-{
-  g_PVRRecordings->Update();
-  return true;
-}
-
-bool CPVRTimersUpdateJob::DoWork(void)
-{
-  return g_PVRTimers->Update();
-}
-
-bool CPVRChannelsUpdateJob::DoWork(void)
-{
-  return g_PVRChannelGroups->Update(true);
-}
-
-bool CPVRChannelGroupsUpdateJob::DoWork(void)
-{
-  return g_PVRChannelGroups->Update(false);
-}
-
 bool CPVRManager::OpenLiveStream(const CFileItem &fileItem)
 {
   bool bReturn(false);
@@ -1400,40 +1368,6 @@ void CPVRManager::ConnectionStateChange(CPVRClient *client, std::string connectS
 {
   if (IsStarted())
     CJobManager::GetInstance().AddJob(new CPVRClientConnectionJob(client, connectString, state, message), NULL);
-}
-
-bool CPVRChannelSwitchJob::DoWork(void)
-{
-  // announce OnStop and delete m_previous when done
-  if (m_previous)
-  {
-    CVariant data(CVariant::VariantTypeObject);
-    data["end"] = true;
-    ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::Player, "xbmc", "OnStop", CFileItemPtr(m_previous), data);
-  }
-
-  // announce OnPlay if the switch was successful
-  if (m_next)
-  {
-    CVariant param;
-    param["player"]["speed"] = 1;
-    param["player"]["playerid"] = g_playlistPlayer.GetCurrentPlaylist();
-    ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::Player, "xbmc", "OnPlay", CFileItemPtr(new CFileItem(*m_next)), param);
-  }
-
-  return true;
-}
-
-bool CPVRSearchMissingChannelIconsJob::DoWork(void)
-{
-  g_PVRManager.SearchMissingChannelIcons();
-  return true;
-}
-
-bool CPVRClientConnectionJob::DoWork(void)
-{
-  g_PVRClients->ConnectionStateChange(m_client, m_connectString, m_state, m_message);
-  return true;
 }
 
 bool CPVRManager::CreateChannelEpgs(void)
