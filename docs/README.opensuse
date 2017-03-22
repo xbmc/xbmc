@@ -51,7 +51,7 @@ Full build dependency list is:
 make cmake autoconf automake gcc gcc-c++ libtool gettext-devel patch boost-devel glew-devel
 libmysqlclient-devel libass-devel libmpeg2-devel libmad-devel libjpeg-devel libsamplerate-devel libogg-devel
 libvorbis-devel libmodplug-devel libcurl-devel flac-devel libbz2-devel libtiff-devel lzo-devel libyajl-devel
-fribidi-devel sqlite3-devel libpng12-devel pcre-devel libcdio-devel libjasper-devel libSDL_mixer-devel libSDL_image-devel
+fribidi-devel sqlite3-devel libpng12-devel pcre-devel libcdio-devel libjasper-devel
 libmicrohttpd-devel libsmbclient-devel python-devel gperf zip nasm tinyxml-devel libtag-devel libbluray-devel
 libnfs-devel shairplay-devel swig libvdpau-devel libavahi-devel libcec-devel libdvdread-devel libva-devel libplist-devel
 libxst-devel alsa-devel libpulse-devel libXrandr-devel libXrender-devel randrproto-devel renderproto-devel libssh-devel
@@ -68,7 +68,7 @@ Build-Depends: autoconf, automake, autopoint, autotools-dev, cmake, curl,
   libfribidi-dev, libgif-dev (>= 4.1.6), libgl1-mesa-dev | libgl-dev, libglu1-mesa-dev | libglu-dev,
   libiso9660-dev, libjpeg-dev, libltdl-dev, liblzo2-dev, libmicrohttpd-dev,
   libmpcdec-dev, libmysqlclient-dev, libnfs-dev,
-  libpcre3-dev, libplist-dev, libpng12-dev | libpng-dev, libpulse-dev, libsdl2-dev,
+  libpcre3-dev, libplist-dev, libpng12-dev | libpng-dev, libpulse-dev,
   libshairplay-dev, libsmbclient-dev, libsqlite3-dev, libssh-dev, libssl-dev, libswscale-dev,
   libtag1-dev (>= 1.8), libtinyxml-dev (>= 2.6.2), libtool, libudev-dev,
   libusb-dev, libva-dev, libvdpau-dev, libxml2-dev,
