@@ -425,75 +425,69 @@ public class Splash extends Activity {
     ((TextView) myAlertDialog.findViewById(android.R.id.message))
         .setMovementMethod(LinkMovementMethod.getInstance());
   }
-  
-  private void SetupEnvironment() {
-    File fProp = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/xbmc_env.properties");
-    if (fProp.exists()) {
-      Log.i(TAG, "Loading xbmc_env.properties");
-      try {
-        Properties sysProp = new Properties(System.getProperties());
-        FileInputStream xbmcenvprop = new FileInputStream(fProp);
-        sysProp.load(xbmcenvprop);
-        System.setProperties(sysProp);
 
-        sXbmcHome = System.getProperty("xbmc.home", "");
-        if (!sXbmcHome.isEmpty()) {
-          File fXbmcHome = new File(sXbmcHome);
-          int loop = 20;
-          while (!fXbmcHome.exists() && loop > 0) {
-             // Wait a while in case of non-primary sdcard
-            try {
-              Thread.sleep(1000);
-            } catch (InterruptedException e) {
-              continue;
-            }
-            loop--;
-          }
-          if (!fXbmcHome.exists()) {
-            System.setProperty("xbmc.home", "");
-            sXbmcHome = "";
-          }
+  private void SetupEnvironment()
+  {
+    sXbmcHome = XBMCProperties.getStringProperty("xbmc.home", "");
+    if (!sXbmcHome.isEmpty())
+    {
+      fXbmcHome = new File(sXbmcHome);
+      int loop = 20;
+      while (!fXbmcHome.exists() && loop > 0)
+      {
+        // Wait a while in case of non-primary sdcard
+        try
+        {
+          Thread.sleep(1000);
+        } catch (InterruptedException e)
+        {
+          continue;
         }
-
-        sXbmcdata = System.getProperty("xbmc.data", "");
-        if (!sXbmcdata.isEmpty()) {
-          File fXbmcData = new File(sXbmcdata);
-          int loop = 20;
-          while (!fXbmcData.exists() && loop > 0) {
-             // Wait a while in case of non-primary sdcard
-            try {
-              Thread.sleep(1000);
-            } catch (InterruptedException e) {
-              continue;
-            }
-            loop--;
-          }
-
-           if (!fXbmcData.exists()) {
-             sXbmcdata = "";
-             System.setProperty("xbmc.data", "");
-           }
-        }
-
-      } catch (NotFoundException e) {
-        Log.e(TAG, "Cannot find xbmc_env properties file");
-      } catch (IOException e) {
-        Log.e(TAG, "Failed to open xbmc_env properties file");
+        loop--;
+      }
+      if (!fXbmcHome.exists())
+      {
+        System.setProperty("xbmc.home", "");
+        sXbmcHome = "";
       }
     }
     if (sXbmcHome.isEmpty()) {
       File fCacheDir = getCacheDir();
       sXbmcHome = fCacheDir.getAbsolutePath() + "/apk";
+      fXbmcHome = new File(sXbmcHome);
     }
 
-    fXbmcHome = new File(sXbmcHome);
+    sXbmcdata = XBMCProperties.getStringProperty("xbmc.data", "");
+    if (!sXbmcdata.isEmpty())
+    {
+      File fXbmcData = new File(sXbmcdata);
+      int loop = 20;
+      while (!fXbmcData.exists() && loop > 0)
+      {
+        // Wait a while in case of non-primary sdcard
+        try
+        {
+          Thread.sleep(1000);
+        } catch (InterruptedException e)
+        {
+          continue;
+        }
+        loop--;
+      }
+
+      if (!fXbmcData.exists())
+      {
+        sXbmcdata = "";
+        System.setProperty("xbmc.data", "");
+      }
+    }
 
     sPackagePath = getPackageResourcePath();
     fPackagePath = new File(sPackagePath);
     String obbfn = "";
-    if (fPackagePath.length() < 50 * 1024 * 1024)
+    if (fPackagePath.length() < 40 * 1024 * 1024)
     {
-      sPackagePath = System.getProperty("@APP_NAME@.obb", "");
+      sPackagePath = XBMCProperties.getStringProperty("@APP_NAME_LC@.obb", "");
       if (sPackagePath.equals(""))
       {
         try
@@ -666,6 +660,9 @@ public class Splash extends Activity {
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+
+    // Be sure properties are initialized for native
+    XBMCProperties.initializeProperties();
 
     // Check if @APP_NAME@ is not already running
     ActivityManager activityManager = (ActivityManager) getBaseContext()

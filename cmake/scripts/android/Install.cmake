@@ -39,6 +39,7 @@ set(package_files strings.xml
                   src/org/xbmc/kodi/Main.java
                   src/org/xbmc/kodi/XBMCSettingsContentObserver.java
                   src/org/xbmc/kodi/XBMCOnFrameAvailableListener.java
+                  src/org/xbmc/kodi/XBMCProperties.java
                   src/org/xbmc/kodi/XBMCVideoView.java
                   src/org/xbmc/kodi/Splash.java
                   src/org/xbmc/kodi/XBMCBroadcastReceiver.java)
