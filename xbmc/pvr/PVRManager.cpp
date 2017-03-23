@@ -181,9 +181,9 @@ void CPVRManager::Announce(AnnouncementFlag flag, const char *sender, const char
   if ((flag & (ANNOUNCEMENT::GUI)))
   {
     if (strcmp(message, "OnScreensaverActivated") == 0)
-      g_PVRClients->OnPowerSavingActivated();
+      CServiceBroker::GetPVRManager().Clients()->OnPowerSavingActivated();
     else if (strcmp(message, "OnScreensaverDeactivated") == 0)
-      g_PVRClients->OnPowerSavingDeactivated();
+      CServiceBroker::GetPVRManager().Clients()->OnPowerSavingDeactivated();
   }
 }
 
@@ -576,12 +576,12 @@ void CPVRManager::OnSleep()
   SaveLastPlayedChannel();
   SetWakeupCommand();
 
-  g_PVRClients->OnSystemSleep();
+  CServiceBroker::GetPVRManager().Clients()->OnSystemSleep();
 }
 
 void CPVRManager::OnWake()
 {
-  g_PVRClients->OnSystemWake();
+  CServiceBroker::GetPVRManager().Clients()->OnSystemWake();
 
   /* start job to search for missing channel icons */
   TriggerSearchMissingChannelIcons();

@@ -446,7 +446,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonGroupManager(CGUIMessage &message
 bool CGUIDialogPVRChannelManager::OnClickButtonNewChannel()
 {
   int iSelection = 0;
-  if (g_PVRClients->CreatedClientAmount() > 1)
+  if (CServiceBroker::GetPVRManager().Clients()->CreatedClientAmount() > 1)
   {
     CGUIDialogSelect* pDlgSelect = g_windowManager.GetWindow<CGUIDialogSelect>();
     if (!pDlgSelect)
@@ -467,10 +467,10 @@ bool CGUIDialogPVRChannelManager::OnClickButtonNewChannel()
 
     CPVRChannelPtr channel(new CPVRChannel(m_bIsRadio));
     channel->SetChannelName(g_localizeStrings.Get(19204)); // New channel
-    channel->SetEPGEnabled(g_PVRClients->SupportsEPG(iClientID));
+    channel->SetEPGEnabled(CServiceBroker::GetPVRManager().Clients()->SupportsEPG(iClientID));
     channel->SetClientID(iClientID);
 
-    PVR_ERROR ret = g_PVRClients->OpenDialogChannelAdd(channel);
+    PVR_ERROR ret = CServiceBroker::GetPVRManager().Clients()->OpenDialogChannelAdd(channel);
     if (ret == PVR_ERROR_NO_ERROR)
       Update();
     else if (ret == PVR_ERROR_NOT_IMPLEMENTED)
@@ -602,7 +602,7 @@ bool CGUIDialogPVRChannelManager::OnContextButton(int itemNumber, CONTEXT_BUTTON
   }
   else if (button == CONTEXT_BUTTON_SETTINGS)
   {
-    PVR_ERROR ret = g_PVRClients->OpenDialogChannelSettings(pItem->GetPVRChannelInfoTag());
+    PVR_ERROR ret = CServiceBroker::GetPVRManager().Clients()->OpenDialogChannelSettings(pItem->GetPVRChannelInfoTag());
     if (ret == PVR_ERROR_NOT_IMPLEMENTED)
       CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19038}); // "Information", "Not supported by the PVR backend."
     else if (ret != PVR_ERROR_NO_ERROR)
@@ -621,10 +621,10 @@ bool CGUIDialogPVRChannelManager::OnContextButton(int itemNumber, CONTEXT_BUTTON
     if (pDialog->IsConfirmed())
     {
       CPVRChannelPtr channel = pItem->GetPVRChannelInfoTag();
-      PVR_ERROR ret = g_PVRClients->DeleteChannel(channel);
+      PVR_ERROR ret = CServiceBroker::GetPVRManager().Clients()->DeleteChannel(channel);
       if (ret == PVR_ERROR_NO_ERROR)
       {
-        g_PVRChannelGroups->GetGroupAll(channel->IsRadio())->RemoveFromGroup(channel);
+        CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAll(channel->IsRadio())->RemoveFromGroup(channel);
         m_channelItems->Remove(m_iSelected);
         m_viewControl.SetItems(*m_channelItems);
         Renumber();
@@ -671,7 +671,7 @@ void CGUIDialogPVRChannelManager::Update()
   // empty the lists ready for population
   Clear();
 
-  CPVRChannelGroupPtr channels = g_PVRChannelGroups->GetGroupAll(m_bIsRadio);
+  CPVRChannelGroupPtr channels = CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAll(m_bIsRadio);
 
   // No channels available, nothing to do.
   if(!channels)
@@ -695,9 +695,9 @@ void CGUIDialogPVRChannelManager::Update()
     channelFile->SetProperty("Number", StringUtils::Format("%i", channel->ChannelNumber()));
 
     std::string clientName;
-    g_PVRClients->GetClientFriendlyName(channel->ClientID(), clientName);
+    CServiceBroker::GetPVRManager().Clients()->GetClientFriendlyName(channel->ClientID(), clientName);
     channelFile->SetProperty("ClientName", clientName);
-    channelFile->SetProperty("SupportsSettings", g_PVRClients->SupportsChannelSettings(channel->ClientID()));
+    channelFile->SetProperty("SupportsSettings", CServiceBroker::GetPVRManager().Clients()->SupportsChannelSettings(channel->ClientID()));
 
     m_channelItems->Add(channelFile);
   }
@@ -709,7 +709,7 @@ void CGUIDialogPVRChannelManager::Update()
     SET_CONTROL_LABELS(SPIN_EPGSOURCE_SELECTION, 0, &labels);
   }
 
-  m_clientsWithSettingsList = g_PVRClients->GetClientsSupportingChannelSettings(m_bIsRadio);
+  m_clientsWithSettingsList = CServiceBroker::GetPVRManager().Clients()->GetClientsSupportingChannelSettings(m_bIsRadio);
   if (!m_clientsWithSettingsList.empty())
     m_bAllowNewChannel = true;
 
@@ -739,7 +739,7 @@ void CGUIDialogPVRChannelManager::RenameChannel(const CFileItemPtr &pItem)
     CPVRChannelPtr channel = pItem->GetPVRChannelInfoTag();
     channel->SetChannelName(strChannelName);
 
-    if (!g_PVRClients->RenameChannel(channel))
+    if (!CServiceBroker::GetPVRManager().Clients()->RenameChannel(channel))
       CGUIDialogOK::ShowAndGetInput(CVariant{2103}, CVariant{16029});  // Add-on error;Check the log file for details.
   }
 }
@@ -779,7 +779,7 @@ void CGUIDialogPVRChannelManager::SaveList(void)
 
   /* persist all channels */
   unsigned int iNextChannelNumber(0);
-  CPVRChannelGroupPtr group = g_PVRChannelGroups->GetGroupAll(m_bIsRadio);
+  CPVRChannelGroupPtr group = CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAll(m_bIsRadio);
   if (!group)
     return;
 

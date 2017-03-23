@@ -222,11 +222,11 @@ CDateTime CEpgInfoTag::GetCurrentPlayingTime() const
 {
   CDateTime now = CDateTime::GetUTCDateTime();
 
-  CPVRChannelPtr channel(g_PVRClients->GetPlayingChannel());
+  CPVRChannelPtr channel(CServiceBroker::GetPVRManager().Clients()->GetPlayingChannel());
   if (channel == ChannelTag())
   {
     // Timeshifting active?
-    time_t time = g_PVRClients->GetPlayingTime();
+    time_t time = CServiceBroker::GetPVRManager().Clients()->GetPlayingTime();
     if (time > 0) // returns 0 in case no client is currently playing
       now = time;
   }
@@ -349,7 +349,7 @@ bool CEpgInfoTag::IsParentalLocked() const
     channel = m_pvrChannel;
   }
 
-  return channel && g_PVRManager.IsParentalLocked(channel);
+  return channel && CServiceBroker::GetPVRManager().IsParentalLocked(channel);
 }
 
 std::string CEpgInfoTag::Title(bool bOverrideParental /* = false */) const

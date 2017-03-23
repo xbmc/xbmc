@@ -24,6 +24,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
 #include "messaging/ApplicationMessenger.h"
+#include "ServiceBroker.h"
 #include "view/ViewState.h"
 
 #include "pvr/PVRGUIActions.h"
@@ -108,7 +109,7 @@ bool CGUIDialogPVRChannelsOSD::OnMessage(CGUIMessage& message)
 void CGUIDialogPVRChannelsOSD::OnInitWindow()
 {
   /* Close dialog immediately if neither a TV nor a radio channel is playing */
-  if (!g_PVRManager.IsPlayingTV() && !g_PVRManager.IsPlayingRadio())
+  if (!CServiceBroker::GetPVRManager().IsPlayingTV() && !CServiceBroker::GetPVRManager().IsPlayingRadio())
   {
     Close();
     return;
@@ -125,12 +126,12 @@ void CGUIDialogPVRChannelsOSD::OnDeinitWindow(int nextWindowID)
   {
     if (m_group != GetPlayingGroup())
     {
-      CGUIWindowPVRBase::SetSelectedItemPath(g_PVRManager.IsPlayingRadio(), GetLastSelectedItemPath(m_group->GroupID()));
-      g_PVRManager.SetPlayingGroup(m_group);
+      CGUIWindowPVRBase::SetSelectedItemPath(CServiceBroker::GetPVRManager().IsPlayingRadio(), GetLastSelectedItemPath(m_group->GroupID()));
+      CServiceBroker::GetPVRManager().SetPlayingGroup(m_group);
     }
     else
     {
-      CGUIWindowPVRBase::SetSelectedItemPath(g_PVRManager.IsPlayingRadio(), m_viewControl.GetSelectedItemPath());
+      CGUIWindowPVRBase::SetSelectedItemPath(CServiceBroker::GetPVRManager().IsPlayingRadio(), m_viewControl.GetSelectedItemPath());
     }
 
     m_group.reset();
@@ -154,7 +155,7 @@ bool CGUIDialogPVRChannelsOSD::OnAction(const CAction &action)
       // switch to next or previous group
       CPVRChannelGroupPtr group = GetPlayingGroup();
       CPVRChannelGroupPtr nextGroup = action.GetID() == ACTION_NEXT_CHANNELGROUP ? group->GetNextGroup() : group->GetPreviousGroup();
-      g_PVRManager.SetPlayingGroup(nextGroup);
+      CServiceBroker::GetPVRManager().SetPlayingGroup(nextGroup);
       Update();
 
       // restore control states and previously selected item of group
@@ -182,9 +183,9 @@ bool CGUIDialogPVRChannelsOSD::OnAction(const CAction &action)
 
 CPVRChannelGroupPtr CGUIDialogPVRChannelsOSD::GetPlayingGroup()
 {
-  CPVRChannelPtr channel(g_PVRManager.GetCurrentChannel());
+  CPVRChannelPtr channel(CServiceBroker::GetPVRManager().GetCurrentChannel());
   if (channel)
-    return g_PVRManager.GetPlayingGroup(channel->IsRadio());
+    return CServiceBroker::GetPVRManager().GetPlayingGroup(channel->IsRadio());
   else
     return CPVRChannelGroupPtr();
 }
@@ -201,10 +202,10 @@ void CGUIDialogPVRChannelsOSD::Update()
   // empty the list ready for population
   Clear();
 
-  CPVRChannelPtr channel(g_PVRManager.GetCurrentChannel());
+  CPVRChannelPtr channel(CServiceBroker::GetPVRManager().GetCurrentChannel());
   if (channel)
   {
-    CPVRChannelGroupPtr group = g_PVRManager.GetPlayingGroup(channel->IsRadio());
+    CPVRChannelGroupPtr group = CServiceBroker::GetPVRManager().GetPlayingGroup(channel->IsRadio());
     if (group)
     {
       group->GetMembers(*m_vecItems);

@@ -778,7 +778,7 @@ bool CLangInfo::SetLanguage(bool& fallback, const std::string &strLanguage /* = 
   {
     // also tell our weather and skin to reload as these are localized
     g_weatherManager.Refresh();
-    g_PVRManager.LocalizationChanged();
+    CServiceBroker::GetPVRManager().LocalizationChanged();
     CApplicationMessenger::GetInstance().PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, "ReloadSkin");
   }
 

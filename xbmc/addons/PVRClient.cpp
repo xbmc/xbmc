@@ -1156,7 +1156,7 @@ bool CPVRClient::SwitchChannel(const CPVRChannelPtr &channel)
 
   if (bSwitched)
   {
-    CPVRChannelPtr currentChannel(g_PVRChannelGroups->GetByUniqueID(channel->UniqueID(), channel->ClientID()));
+    CPVRChannelPtr currentChannel(CServiceBroker::GetPVRManager().ChannelGroups()->GetByUniqueID(channel->UniqueID(), channel->ClientID()));
     CSingleLock lock(m_critSection);
     m_playingChannel = currentChannel;
   }
@@ -1457,7 +1457,7 @@ bool CPVRClient::OpenStream(const CPVRChannelPtr &channel, bool bIsSwitchingChan
 
   if (bReturn)
   {
-    CPVRChannelPtr currentChannel(g_PVRChannelGroups->GetByUniqueID(channel->UniqueID(), channel->ClientID()));
+    CPVRChannelPtr currentChannel(CServiceBroker::GetPVRManager().ChannelGroups()->GetByUniqueID(channel->UniqueID(), channel->ClientID()));
     CSingleLock lock(m_critSection);
     m_playingChannel      = currentChannel;
     m_bIsPlayingTV        = true;

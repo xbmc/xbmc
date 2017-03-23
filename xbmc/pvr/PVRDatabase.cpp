@@ -448,7 +448,7 @@ int CPVRDatabase::Get(CPVRChannelGroup &group)
       {
         int iChannelId = m_pDS->fv("idChannel").get_asInt();
         int iChannelNumber = m_pDS->fv("iChannelNumber").get_asInt();
-        CPVRChannelPtr channel = g_PVRChannelGroups->GetGroupAll(group.IsRadio())->GetByChannelID(iChannelId);
+        CPVRChannelPtr channel = CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAll(group.IsRadio())->GetByChannelID(iChannelId);
 
         if (channel)
         {

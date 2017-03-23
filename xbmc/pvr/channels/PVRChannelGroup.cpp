@@ -278,7 +278,7 @@ void CPVRChannelGroup::SearchAndSetChannelIcons(bool bUpdateDb /* = false */)
   if (fileItemList.IsEmpty())
     return;
 
-  CGUIDialogProgressBarHandle* dlgProgressHandle = g_PVRManager.ShowProgressDialog(g_localizeStrings.Get(19286)); // Searching for channel icons
+  CGUIDialogProgressBarHandle* dlgProgressHandle = CServiceBroker::GetPVRManager().ShowProgressDialog(g_localizeStrings.Get(19286)); // Searching for channel icons
 
   CSingleLock lock(m_critSection);
 
@@ -446,7 +446,7 @@ CFileItemPtr CPVRChannelGroup::GetLastPlayedChannel(int iCurrentChannel /* = -1 
   {
     channel = it->second.channel;
     if (channel->ChannelID() != iCurrentChannel &&
-        g_PVRClients->IsCreatedClient(channel->ClientID()) &&
+        CServiceBroker::GetPVRManager().Clients()->IsCreatedClient(channel->ClientID()) &&
         channel->LastWatched() > 0 &&
         (!returnChannel || channel->LastWatched() > returnChannel->LastWatched()))
     {
@@ -552,7 +552,7 @@ PVR_CHANNEL_GROUP_SORTED_MEMBERS CPVRChannelGroup::GetMembers(void) const
 
 int CPVRChannelGroup::GetMembers(CFileItemList &results, bool bGroupMembers /* = true */) const
 {
-  const CPVRChannelGroup* channels = bGroupMembers ? this : g_PVRChannelGroups->GetGroupAll(m_bRadio).get();
+  const CPVRChannelGroup* channels = bGroupMembers ? this : CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAll(m_bRadio).get();
   int iOrigSize = results.Size();
 
   CSingleLock lock(channels->m_critSection);
@@ -571,19 +571,19 @@ int CPVRChannelGroup::GetMembers(CFileItemList &results, bool bGroupMembers /* =
 
 CPVRChannelGroupPtr CPVRChannelGroup::GetNextGroup(void) const
 {
-  return g_PVRChannelGroups->Get(m_bRadio)->GetNextGroup(*this);
+  return CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_bRadio)->GetNextGroup(*this);
 }
 
 CPVRChannelGroupPtr CPVRChannelGroup::GetPreviousGroup(void) const
 {
-  return g_PVRChannelGroups->Get(m_bRadio)->GetPreviousGroup(*this);
+  return CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_bRadio)->GetPreviousGroup(*this);
 }
 
 /********** private methods **********/
 
 int CPVRChannelGroup::LoadFromDb(bool bCompress /* = false */)
 {
-  const CPVRDatabasePtr database(g_PVRManager.GetTVDatabase());
+  const CPVRDatabasePtr database(CServiceBroker::GetPVRManager().GetTVDatabase());
   if (!database)
     return -1;
 
@@ -597,14 +597,14 @@ int CPVRChannelGroup::LoadFromDb(bool bCompress /* = false */)
 bool CPVRChannelGroup::LoadFromClients(void)
 {
   /* get the channels from the backends */
-  return g_PVRClients->GetChannelGroupMembers(this) == PVR_ERROR_NO_ERROR;
+  return CServiceBroker::GetPVRManager().Clients()->GetChannelGroupMembers(this) == PVR_ERROR_NO_ERROR;
 }
 
 bool CPVRChannelGroup::AddAndUpdateChannels(const CPVRChannelGroup &channels, bool bUseBackendChannelNumbers)
 {
   bool bReturn(false);
   bool bPreventSortAndRenumber(PreventSortAndRenumber());
-  const CPVRChannelGroupPtr groupAll(g_PVRChannelGroups->GetGroupAll(m_bRadio));
+  const CPVRChannelGroupPtr groupAll(CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAll(m_bRadio));
 
   SetPreventSortAndRenumber();
 
@@ -639,7 +639,7 @@ bool CPVRChannelGroup::AddAndUpdateChannels(const CPVRChannelGroup &channels, bo
 bool CPVRChannelGroup::RemoveDeletedChannels(const CPVRChannelGroup &channels)
 {
   bool bReturn(false);
-  CPVRChannelGroups *groups = g_PVRChannelGroups->Get(m_bRadio);
+  CPVRChannelGroups *groups = CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_bRadio);
 
   CSingleLock lock(m_critSection);
 
@@ -700,7 +700,7 @@ bool CPVRChannelGroup::UpdateGroupEntries(const CPVRChannelGroup &channels)
   bool bChanged(false);
   bool bRemoved(false);
 
-  const CPVRDatabasePtr database(g_PVRManager.GetTVDatabase());
+  const CPVRDatabasePtr database(CServiceBroker::GetPVRManager().GetTVDatabase());
   if (!database)
     return bReturn;
 
@@ -763,7 +763,7 @@ bool CPVRChannelGroup::RemoveFromGroup(const CPVRChannelPtr &channel)
 
 bool CPVRChannelGroup::AddToGroup(const CPVRChannelPtr &channel, int iChannelNumber /* = 0 */)
 {
-  const CPVRChannelGroupPtr groupAll(g_PVRChannelGroups->GetGroupAll(m_bRadio));
+  const CPVRChannelGroupPtr groupAll(CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAll(m_bRadio));
 
   CSingleLock lock(m_critSection);
 
@@ -838,7 +838,7 @@ bool CPVRChannelGroup::SetGroupName(const std::string &strGroupName, bool bSaveI
 bool CPVRChannelGroup::Persist(void)
 {
   bool bReturn(true);
-  const CPVRDatabasePtr database(g_PVRManager.GetTVDatabase());
+  const CPVRDatabasePtr database(CServiceBroker::GetPVRManager().GetTVDatabase());
 
   CSingleLock lock(m_critSection);
 
@@ -871,7 +871,7 @@ bool CPVRChannelGroup::Renumber(void)
 {
   bool bReturn(false);
   unsigned int iChannelNumber(0);
-  bool bUseBackendChannelNumbers(CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRMANAGER_USEBACKENDCHANNELNUMBERS) && g_PVRClients->EnabledClientAmount() == 1);
+  bool bUseBackendChannelNumbers(CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRMANAGER_USEBACKENDCHANNELNUMBERS) && CServiceBroker::GetPVRManager().Clients()->EnabledClientAmount() == 1);
 
   if (PreventSortAndRenumber())
     return true;
@@ -964,7 +964,7 @@ void CPVRChannelGroup::OnSettingChanged(const CSetting *setting)
     return;
 
   //! @todo while pvr manager is starting up do accept setting changes.
-  if(!g_PVRManager.IsStarted())
+  if(!CServiceBroker::GetPVRManager().IsStarted())
   {
     CLog::Log(LOGWARNING, "CPVRChannelGroup setting change ignored while PVRManager is starting\n");
     return;
@@ -1141,7 +1141,7 @@ time_t CPVRChannelGroup::LastWatched(void) const
 
 bool CPVRChannelGroup::SetLastWatched(time_t iLastWatched)
 {
-  const CPVRDatabasePtr database(g_PVRManager.GetTVDatabase());
+  const CPVRDatabasePtr database(CServiceBroker::GetPVRManager().GetTVDatabase());
 
   CSingleLock lock(m_critSection);
 

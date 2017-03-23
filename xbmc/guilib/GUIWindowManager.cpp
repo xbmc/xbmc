@@ -1433,7 +1433,7 @@ int CGUIWindowManager::GetActiveWindowID()
     if (g_application.m_pPlayer->IsInMenu())
       iWin = WINDOW_VIDEO_MENU;
     // check for LiveTV and switch to it's virtual window
-    else if (g_PVRManager.IsStarted() && g_application.CurrentFileItem().HasPVRChannelInfoTag())
+    else if (CServiceBroker::GetPVRManager().IsStarted() && g_application.CurrentFileItem().HasPVRChannelInfoTag())
       iWin = WINDOW_FULLSCREEN_LIVETV;
     // special casing for numeric seek
     else if (CSeekHandler::GetInstance().HasTimeCode())
@@ -1445,7 +1445,7 @@ int CGUIWindowManager::GetActiveWindowID()
   if (iWin == WINDOW_VISUALISATION)
   {
     // special casing for PVR radio
-    if (g_PVRManager.IsStarted() && g_application.CurrentFileItem().HasPVRChannelInfoTag())
+    if (CServiceBroker::GetPVRManager().IsStarted() && g_application.CurrentFileItem().HasPVRChannelInfoTag())
       iWin = WINDOW_FULLSCREEN_RADIO;
     // special casing for numeric seek
     else if (CSeekHandler::GetInstance().HasTimeCode())

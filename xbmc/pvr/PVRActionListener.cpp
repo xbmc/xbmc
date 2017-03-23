@@ -72,7 +72,7 @@ bool CPVRActionListener::OnAction(const CAction &action)
     {
       // see if we're already playing a PVR stream and if not or the stream type
       // doesn't match the demanded type, start playback of according type
-      bool isPlayingPvr(g_PVRManager.IsPlaying() && g_application.CurrentFileItem().HasPVRChannelInfoTag());
+      bool isPlayingPvr(CServiceBroker::GetPVRManager().IsPlaying() && g_application.CurrentFileItem().HasPVRChannelInfoTag());
       switch (action.GetID())
       {
         case ACTION_PVR_PLAY:
@@ -168,7 +168,7 @@ void CPVRActionListener::OnSettingAction(const CSetting *setting)
   }
   else if (settingId == CSettings::SETTING_PVRMANAGER_CHANNELMANAGER)
   {
-    if (g_PVRManager.IsStarted())
+    if (CServiceBroker::GetPVRManager().IsStarted())
     {
       CGUIDialog *dialog = g_windowManager.GetDialog(WINDOW_DIALOG_PVR_CHANNEL_MANAGER);
       if (dialog)
@@ -177,7 +177,7 @@ void CPVRActionListener::OnSettingAction(const CSetting *setting)
   }
   else if (settingId == CSettings::SETTING_PVRMANAGER_GROUPMANAGER)
   {
-    if (g_PVRManager.IsStarted())
+    if (CServiceBroker::GetPVRManager().IsStarted())
     {
       CGUIDialog *dialog = g_windowManager.GetDialog(WINDOW_DIALOG_PVR_GROUP_MANAGER);
       if (dialog)
@@ -190,7 +190,7 @@ void CPVRActionListener::OnSettingAction(const CSetting *setting)
   }
   else if (settingId == CSettings::SETTING_PVRMENU_SEARCHICONS)
   {
-    g_PVRManager.TriggerSearchMissingChannelIcons();
+    CServiceBroker::GetPVRManager().TriggerSearchMissingChannelIcons();
   }
   else if (settingId == CSettings::SETTING_PVRCLIENT_MENUHOOK)
   {

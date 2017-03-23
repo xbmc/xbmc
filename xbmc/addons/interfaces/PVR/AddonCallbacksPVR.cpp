@@ -34,6 +34,7 @@
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimers.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
+#include "ServiceBroker.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
@@ -131,7 +132,7 @@ void CAddonCallbacksPVR::PVRTransferChannelGroupMember(void *addonData, const AD
     return;
   }
 
-  CPVRChannelPtr channel  = g_PVRChannelGroups->GetByUniqueID(member->iChannelUniqueId, client->GetID());
+  CPVRChannelPtr channel  = CServiceBroker::GetPVRManager().ChannelGroups()->GetByUniqueID(member->iChannelUniqueId, client->GetID());
   if (!channel)
   {
     CLog::Log(LOGERROR, "PVR - %s - cannot find group '%s' or channel '%d'", __FUNCTION__, member->strGroupName, member->iChannelUniqueId);
@@ -221,7 +222,7 @@ void CAddonCallbacksPVR::PVRTransferTimerEntry(void *addonData, const ADDON_HAND
   }
 
   /* Note: channel can be NULL here, for instance for epg-based timer rules ("record on any channel" condition). */
-  CPVRChannelPtr channel = g_PVRChannelGroups->GetByUniqueID(timer->iClientChannelUid, client->GetID());
+  CPVRChannelPtr channel = CServiceBroker::GetPVRManager().ChannelGroups()->GetByUniqueID(timer->iClientChannelUid, client->GetID());
 
   /* transfer this entry to the timers container */
   CPVRTimerInfoTagPtr transferTimer(new CPVRTimerInfoTag(*timer, channel, client->GetID()));
@@ -277,25 +278,25 @@ void CAddonCallbacksPVR::PVRRecording(void *addonData, const char *strName, cons
 void CAddonCallbacksPVR::PVRTriggerChannelUpdate(void *addonData)
 {
   /* update the channels table in the next iteration of the pvrmanager's main loop */
-  g_PVRManager.TriggerChannelsUpdate();
+  CServiceBroker::GetPVRManager().TriggerChannelsUpdate();
 }
 
 void CAddonCallbacksPVR::PVRTriggerTimerUpdate(void *addonData)
 {
   /* update the timers table in the next iteration of the pvrmanager's main loop */
-  g_PVRManager.TriggerTimersUpdate();
+  CServiceBroker::GetPVRManager().TriggerTimersUpdate();
 }
 
 void CAddonCallbacksPVR::PVRTriggerRecordingUpdate(void *addonData)
 {
   /* update the recordings table in the next iteration of the pvrmanager's main loop */
-  g_PVRManager.TriggerRecordingsUpdate();
+  CServiceBroker::GetPVRManager().TriggerRecordingsUpdate();
 }
 
 void CAddonCallbacksPVR::PVRTriggerChannelGroupsUpdate(void *addonData)
 {
   /* update all channel groups in the next iteration of the pvrmanager's main loop */
-  g_PVRManager.TriggerChannelGroupsUpdate();
+  CServiceBroker::GetPVRManager().TriggerChannelGroupsUpdate();
 }
 
 void CAddonCallbacksPVR::PVRTriggerEpgUpdate(void *addonData, unsigned int iChannelUid)
@@ -342,7 +343,7 @@ void CAddonCallbacksPVR::PVRConnectionStateChange(void* addonData, const char* s
   if (strMessage != nullptr)
     msg = strMessage;
 
-  g_PVRManager.ConnectionStateChange(client, std::string(strConnectionString), newState, msg);
+  CServiceBroker::GetPVRManager().ConnectionStateChange(client, std::string(strConnectionString), newState, msg);
 }
 
 typedef struct EpgEventStateChange
@@ -362,7 +363,7 @@ typedef struct EpgEventStateChange
 
 void CAddonCallbacksPVR::UpdateEpgEvent(const EpgEventStateChange &ch, bool bQueued)
 {
-  const CPVRChannelPtr channel(g_PVRChannelGroups->GetByUniqueID(ch.iUniqueChannelId, ch.iClientId));
+  const CPVRChannelPtr channel(CServiceBroker::GetPVRManager().ChannelGroups()->GetByUniqueID(ch.iUniqueChannelId, ch.iClientId));
   if (channel)
   {
     const CEpgPtr epg(channel->GetEPG());
@@ -396,7 +397,7 @@ void CAddonCallbacksPVR::PVREpgEventStateChange(void* addonData, EPG_TAG* tag, u
   static std::vector<EpgEventStateChange> queuedChanges;
 
   // during Kodi startup, addons may push updates very early, even before EPGs are ready to use.
-  if (g_PVRManager.EpgsCreated())
+  if (CServiceBroker::GetPVRManager().EpgsCreated())
   {
     {
       // deliver queued changes, if any. discard event if delivery fails.

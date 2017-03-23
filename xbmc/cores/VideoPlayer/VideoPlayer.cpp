@@ -2890,7 +2890,7 @@ void CVideoPlayer::HandleMessages()
         CLog::Log(LOGWARNING, "%s - failed to switch channel. playback stopped", __FUNCTION__);
         CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_STOP);
       }
-      g_PVRManager.SetChannelPreview(false);
+      CServiceBroker::GetPVRManager().SetChannelPreview(false);
       ShowPVRChannelInfo();
     }
     else if (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_NEXT) || pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_PREV) ||
@@ -2937,7 +2937,7 @@ void CVideoPlayer::HandleMessages()
             m_playSpeed = DVD_PLAYSPEED_NORMAL;
 
             g_infoManager.SetDisplayAfterSeek();
-            g_PVRManager.SetChannelPreview(false);
+            CServiceBroker::GetPVRManager().SetChannelPreview(false);
 
             // when using fast channel switching some shortcuts are taken which
             // means we'll have to update the view mode manually
@@ -4268,7 +4268,7 @@ bool CVideoPlayer::ShowPVRChannelInfo(void)
 
   if (CServiceBroker::GetSettings().GetInt(CSettings::SETTING_PVRMENU_DISPLAYCHANNELINFO) > 0)
   {
-    g_PVRManager.ShowPlayerInfo(CServiceBroker::GetSettings().GetInt(CSettings::SETTING_PVRMENU_DISPLAYCHANNELINFO));
+    CServiceBroker::GetPVRManager().ShowPlayerInfo(CServiceBroker::GetSettings().GetInt(CSettings::SETTING_PVRMENU_DISPLAYCHANNELINFO));
 
     bReturn = true;
   }
@@ -5112,11 +5112,11 @@ std::string CVideoPlayer::GetPlayingTitle()
 
 bool CVideoPlayer::SwitchChannel(const CPVRChannelPtr &channel)
 {
-  if (g_PVRManager.IsPlayingChannel(channel))
+  if (CServiceBroker::GetPVRManager().IsPlayingChannel(channel))
     return false; // desired channel already active, nothing to do.
 
   /* set GUI info */
-  if (!g_PVRManager.PerformChannelSwitch(channel, true))
+  if (!CServiceBroker::GetPVRManager().PerformChannelSwitch(channel, true))
     return false;
 
   UpdateApplication(0);

@@ -197,7 +197,7 @@ void CEpgContainer::Start(bool bAsync)
 
   if (!bStop)
   {
-    g_PVRManager.TriggerEpgsCreate();
+    CServiceBroker::GetPVRManager().TriggerEpgsCreate();
     CLog::Log(LOGNOTICE, "%s - EPG thread started", __FUNCTION__);
   }
 }
@@ -325,7 +325,7 @@ void CEpgContainer::Process(void)
     }
 
     /* update the EPG */
-    if (!InterruptUpdate() && bUpdateEpg && g_PVRManager.EpgsCreated() && UpdateEPG())
+    if (!InterruptUpdate() && bUpdateEpg && CServiceBroker::GetPVRManager().EpgsCreated() && UpdateEPG())
       m_bIsInitialising = false;
 
     /* clean up old entries */
@@ -345,7 +345,7 @@ void CEpgContainer::Process(void)
       }
 
       // get the channel
-      CPVRChannelPtr channel = g_PVRChannelGroups->GetByUniqueID(request.channelID, request.clientID);
+      CPVRChannelPtr channel = CServiceBroker::GetPVRManager().ChannelGroups()->GetByUniqueID(request.channelID, request.clientID);
       CEpgPtr epg;
 
       // get the EPG for the channel
@@ -682,13 +682,13 @@ bool CEpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
       UpdateProgressDialog(++iCounter, m_epgs.size(), epg->Name());
 
     // we currently only support update via pvr add-ons. skip update when the pvr manager isn't started
-    if (!g_PVRManager.IsStarted())
+    if (!CServiceBroker::GetPVRManager().IsStarted())
       continue;
 
     // check the pvr manager when the channel pointer isn't set
     if (!epg->Channel())
     {
-      CPVRChannelPtr channel = g_PVRChannelGroups->GetChannelByEpgId(epg->EpgID());
+      CPVRChannelPtr channel = CServiceBroker::GetPVRManager().ChannelGroups()->GetChannelByEpgId(epg->EpgID());
       if (channel)
         epg->SetChannel(channel);
     }
@@ -811,7 +811,7 @@ bool CEpgContainer::CheckPlayingEvents(void)
       iNextEpgActiveTagCheck += g_advancedSettings.m_iEpgActiveTagCheckInterval;
 
       /* pvr tags always start on the full minute */
-      if (g_PVRManager.IsStarted())
+      if (CServiceBroker::GetPVRManager().IsStarted())
         iNextEpgActiveTagCheck -= iNextEpgActiveTagCheck % 60;
 
       bReturn = true;

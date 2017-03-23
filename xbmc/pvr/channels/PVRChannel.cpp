@@ -22,6 +22,7 @@
 #include "epg/EpgContainer.h"
 #include "filesystem/File.h"
 #include "guilib/LocalizeStrings.h"
+#include "ServiceBroker.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
@@ -144,7 +145,7 @@ void CPVRChannel::Serialize(CVariant& value) const
 bool CPVRChannel::Delete(void)
 {
   bool bReturn = false;
-  const CPVRDatabasePtr database(g_PVRManager.GetTVDatabase());
+  const CPVRDatabasePtr database(CServiceBroker::GetPVRManager().GetTVDatabase());
   if (!database)
     return bReturn;
 
@@ -218,7 +219,7 @@ bool CPVRChannel::Persist()
       return true;
   }
 
-  const CPVRDatabasePtr database(g_PVRManager.GetTVDatabase());
+  const CPVRDatabasePtr database(CServiceBroker::GetPVRManager().GetTVDatabase());
   if (database)
   {
     bool bReturn = database->Persist(*this) && database->CommitInsertQueries();
@@ -295,7 +296,7 @@ bool CPVRChannel::SetLocked(bool bIsLocked)
 
 bool CPVRChannel::IsRecording(void) const
 {
-  return g_PVRTimers->IsRecordingOnChannel(*this);
+  return CServiceBroker::GetPVRManager().Timers()->IsRecordingOnChannel(*this);
 }
 
 CPVRRecordingPtr CPVRChannel::GetRecording(void) const
@@ -369,7 +370,7 @@ bool CPVRChannel::SetLastWatched(time_t iLastWatched)
       m_iLastWatched = iLastWatched;
   }
 
-  const CPVRDatabasePtr database(g_PVRManager.GetTVDatabase());
+  const CPVRDatabasePtr database(CServiceBroker::GetPVRManager().GetTVDatabase());
   if (database)
     return database->UpdateLastWatched(*this);
 
@@ -378,7 +379,7 @@ bool CPVRChannel::SetLastWatched(time_t iLastWatched)
 
 bool CPVRChannel::SetWasPlayingOnLastQuit(bool bSet)
 {
-  const CPVRDatabasePtr database(g_PVRManager.GetTVDatabase());
+  const CPVRDatabasePtr database(CServiceBroker::GetPVRManager().GetTVDatabase());
   if (database)
     return database->SetWasPlayingOnLastQuit(*this, bSet);
 
@@ -387,7 +388,7 @@ bool CPVRChannel::SetWasPlayingOnLastQuit(bool bSet)
 
 bool CPVRChannel::SetWasPlayingOnLastQuit(bool bSet, bool& bWasPlaying)
 {
-  const CPVRDatabasePtr database(g_PVRManager.GetTVDatabase());
+  const CPVRDatabasePtr database(CServiceBroker::GetPVRManager().GetTVDatabase());
   if (database)
     return database->SetWasPlayingOnLastQuit(*this, bSet, bWasPlaying);
 
@@ -446,7 +447,7 @@ void CPVRChannel::UpdatePath(CPVRChannelGroupInternal* group)
   strFileNameAndPath = StringUtils::Format("pvr://channels/%s/%s/%s_%d.pvr",
                                            (m_bIsRadio ? "radio" : "tv"),
                                            group->GroupName().c_str(),
-                                           g_PVRClients->GetClientAddonId(m_iClientId).c_str(),
+                                           CServiceBroker::GetPVRManager().Clients()->GetClientAddonId(m_iClientId).c_str(),
                                            m_iUniqueId);
   if (m_strFileNameAndPath != strFileNameAndPath)
   {
@@ -861,5 +862,5 @@ std::string CPVRChannel::EPGScraper(void) const
 
 bool CPVRChannel::CanRecord(void) const
 {
-  return g_PVRClients->SupportsRecordings(m_iClientId);
+  return CServiceBroker::GetPVRManager().Clients()->SupportsRecordings(m_iClientId);
 }
