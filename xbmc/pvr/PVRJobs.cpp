@@ -96,46 +96,46 @@ bool CPVRChannelSwitchJob::DoWork(void)
 
 bool CPVRSearchMissingChannelIconsJob::DoWork(void)
 {
-  CPVRManager::GetInstance().SearchMissingChannelIcons();
+  CServiceBroker::GetPVRManager().SearchMissingChannelIcons();
   return true;
 }
 
 bool CPVRClientConnectionJob::DoWork(void)
 {
-  CPVRManager::GetInstance().Clients()->ConnectionStateChange(m_client, m_connectString, m_state, m_message);
+  CServiceBroker::GetPVRManager().Clients()->ConnectionStateChange(m_client, m_connectString, m_state, m_message);
   return true;
 }
 
 bool CPVRStartupJob::DoWork(void)
 {
-  CPVRManager::GetInstance().Clients()->Start();
+  CServiceBroker::GetPVRManager().Clients()->Start();
   return true;
 }
 
 bool CPVREpgsCreateJob::DoWork(void)
 {
-  return CPVRManager::GetInstance().CreateChannelEpgs();
+  return CServiceBroker::GetPVRManager().CreateChannelEpgs();
 }
 
 bool CPVRRecordingsUpdateJob::DoWork(void)
 {
-  CPVRManager::GetInstance().Recordings()->Update();
+  CServiceBroker::GetPVRManager().Recordings()->Update();
   return true;
 }
 
 bool CPVRTimersUpdateJob::DoWork(void)
 {
-  return CPVRManager::GetInstance().Timers()->Update();
+  return CServiceBroker::GetPVRManager().Timers()->Update();
 }
 
 bool CPVRChannelsUpdateJob::DoWork(void)
 {
-  return CPVRManager::GetInstance().ChannelGroups()->Update(true);
+  return CServiceBroker::GetPVRManager().ChannelGroups()->Update(true);
 }
 
 bool CPVRChannelGroupsUpdateJob::DoWork(void)
 {
-  return CPVRManager::GetInstance().ChannelGroups()->Update(false);
+  return CServiceBroker::GetPVRManager().ChannelGroups()->Update(false);
 }
 
 } // namespace PVR

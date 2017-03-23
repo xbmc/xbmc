@@ -119,12 +119,6 @@ namespace PVR
 
     virtual void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data) override;
 
-    /*!
-     * @brief Get the instance of the PVRManager.
-     * @return The PVRManager instance.
-     */
-    static CPVRManager &GetInstance();
-
     // ISettingCallback implementation
     void OnSettingChanged(const CSetting *setting) override;
 

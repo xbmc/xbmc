@@ -28,6 +28,7 @@
 #include "utils/StringUtils.h"
 #include "storage/MediaManager.h"
 #include "guiinfo/GUIInfoLabels.h"
+#include "ServiceBroker.h"
 
 #define CONTROL_TB_POLICY   30
 #define CONTROL_BT_STORAGE  94
@@ -61,7 +62,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
       CGUIWindow::OnMessage(message);
       SET_CONTROL_LABEL(52, CSysInfo::GetAppName() + " " + CSysInfo::GetVersion());
       SET_CONTROL_LABEL(53, CSysInfo::GetBuildDate());
-      CONTROL_ENABLE_ON_CONDITION(CONTROL_BT_PVR, PVR::CPVRManager::GetInstance().IsStarted());
+      CONTROL_ENABLE_ON_CONDITION(CONTROL_BT_PVR, CServiceBroker::GetPVRManager().IsStarted());
       return true;
     }
     break;

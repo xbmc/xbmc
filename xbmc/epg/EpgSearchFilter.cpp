@@ -190,7 +190,7 @@ bool CEpgSearchFilter::MatchChannelNumber(const CEpgInfoTagPtr &tag) const
   {
     CPVRChannelGroupPtr group = (m_iChannelGroup != EPG_SEARCH_UNSET) ? CServiceBroker::GetPVRManager().ChannelGroups()->GetByIdFromAll(m_iChannelGroup) : CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAllTV();
     if (!group)
-      group = CPVRManager::GetInstance().ChannelGroups()->GetGroupAllTV();
+      group = CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAllTV();
 
     bReturn = (m_iChannelNumber == (int) group->GetChannelNumber(tag->ChannelTag()));
   }

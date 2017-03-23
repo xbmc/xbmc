@@ -194,11 +194,6 @@ void CPVRManager::SaveLastPlayedChannel() const
     playingChannel->SetWasPlayingOnLastQuit(true);
 }
 
-CPVRManager &CPVRManager::GetInstance()
-{
-  return CServiceBroker::GetPVRManager();
-}
-
 CPVRDatabasePtr CPVRManager::GetTVDatabase(void) const
 {
   CSingleLock lock(m_critSection);
