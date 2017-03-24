@@ -19,12 +19,12 @@ find_path(RapidJSON_INCLUDE_DIR NAMES rapidjson/rapidjson.h
 set(RapidJSON_VERSION ${PC_RapidJSON_VERSION})
 
 include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(RapidJSON
+find_package_handle_standard_args(RAPIDJSON
                                   REQUIRED_VARS RapidJSON_INCLUDE_DIR
                                   VERSION_VAR RapidJSON_VERSION)
 
-if(RapidJSON_FOUND)
-  set(RapidJSON_INCLUDE_DIRS ${RapidJSON_INCLUDE_DIR})
+if(RAPIDJSON_FOUND)
+  set(RAPIDJSON_INCLUDE_DIRS ${RapidJSON_INCLUDE_DIR})
 endif()
 
 mark_as_advanced(RapidJSON_INCLUDE_DIR)
