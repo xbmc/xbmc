@@ -76,12 +76,16 @@ static std::string SerializeMetadata(const IAddon& addon)
     variant["extrainfo"].push_back(std::move(info));
   }
 
-  return CJSONVariantWriter::Write(variant, true);
+  std::string json;
+  CJSONVariantWriter::Write(variant, json, true);
+  return json;
 }
 
 static void DeserializeMetadata(const std::string& document, CAddonBuilder& builder)
 {
-  CVariant variant = CJSONVariantParser::Parse(document);
+  CVariant variant;
+  if (!CJSONVariantParser::Parse(document, variant))
+    return;
 
   builder.SetAuthor(variant["author"].asString());
   builder.SetDisclaimer(variant["disclaimer"].asString());

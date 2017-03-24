@@ -1267,7 +1267,10 @@ bool CSmartPlaylist::LoadFromJson(const std::string &json)
   if (json.empty())
     return false;
 
-  CVariant obj = CJSONVariantParser::Parse((const unsigned char *)json.c_str(), json.size());
+  CVariant obj;
+  if (!CJSONVariantParser::Parse(json, obj))
+    return false;
+
   return Load(obj);
 }
 
@@ -1364,8 +1367,7 @@ bool CSmartPlaylist::SaveAsJson(std::string &json, bool full /* = true */) const
   if (!Save(xsp, full))
     return false;
 
-  json = CJSONVariantWriter::Write(xsp, true);
-  return json.size() > 0;
+  return CJSONVariantWriter::Write(xsp, json, true) && !json.empty();
 }
 
 void CSmartPlaylist::Reset()

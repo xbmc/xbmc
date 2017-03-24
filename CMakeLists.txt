@@ -111,10 +111,10 @@ set(required_deps Cdio
                   LibDvd
                   Lzo2
                   PCRE
+                  RapidJSON
                   Sqlite3
                   TagLib
-                  TinyXML
-                  Yajl)
+                  TinyXML)
 if(NOT WIN32)
   list(APPEND required_deps ZLIB)
 else()

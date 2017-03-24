@@ -90,15 +90,11 @@ For Ubuntu (all versions >= 7.04):
       libpcre3-dev libplist-dev libpng-dev libpulse-dev libsmbclient-dev \
       libsqlite3-dev libssh-dev libssl-dev libtinyxml-dev libtool libudev-dev libusb-dev \
       libva-dev libvdpau-dev libxml2-dev libxmu-dev libxrandr-dev \
-      libxrender-dev libxslt1-dev libxt-dev libyajl-dev mesa-utils nasm pmount python-dev \
-      python-imaging python-sqlite swig unzip uuid-dev yasm zip zlib1g-dev
+      libxrender-dev libxslt1-dev libxt-dev mesa-utils nasm pmount python-dev python-imaging \
+      python-sqlite rapidjson-dev swig unzip uuid-dev yasm zip zlib1g-dev
 
 For >= 10.10:
     $ sudo apt-get install autopoint libltdl-dev
-
-For >= 12.04 lts: Backport for Precise of libyajl2
-    $ sudo add-apt-repository ppa:team-xbmc/xbmc-nightly
-    $ sudo apt-get install libyajl-dev
 
 Note: Ubuntu Precise users also need a upgraded GCC, else compile will fail.
 

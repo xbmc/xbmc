@@ -31,7 +31,6 @@ libpng-1.6.21-win32-vc140.7z
 libssh-0.7.0-win32-vc140.7z
 libxml2-2.9.4-win32-vc140-v2.7z
 libxslt-1.1.29-win32-vc140.7z
-libyajl-2.0.1-win32.7z
 lzo-2.09-win32-vc140-v3.7z
 mini_wdk-10.0.14393.0-win32.7z
 mysql-connector-c-6.1.6-win32-vc140-v2.7z
@@ -40,6 +39,7 @@ pcre-8.37-win32-vc140-v3.7z
 pillow-3.1.0-win32-vc140.7z
 pycryptodome-3.4.3-win32.7z
 python-2.7.11-win32-vc140-v2.7z
+rapidjson-1.0.2-win32.7z
 shairplay-0.9.0-win32-vc140-v2.7z
 sqlite-3.10.2-win32-vc140.7z
 swig-3.0.10-win32.7z

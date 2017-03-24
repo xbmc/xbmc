@@ -1,0 +1,18 @@
+diff -rupN a/CMakeLists.txt b/CMakeLists.txt
+--- a/CMakeLists.txt	2015-09-10 18:33:21.048580591 +0200
++++ b/CMakeLists.txt	2015-09-10 18:34:19.136579486 +0200
+@@ -25,14 +25,6 @@ if(RAPIDJSON_HAS_STDSTRING)
+     add_definitions(-DRAPIDJSON_HAS_STDSTRING)
+ endif()
+ 
+-if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native -Wall -Wextra")
+-elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native -Wall -Wextra")
+-elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+-    add_definitions(-D_CRT_SECURE_NO_WARNINGS=1)
+-endif()
+-
+ #add extra search paths for libraries and includes
+ SET(INCLUDE_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/include" CACHE PATH "The directory the headers are installed in")
+ SET(LIB_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/lib" CACHE STRING "Directory where lib will install")
