@@ -138,7 +138,7 @@ msgstr "מיון"
 
 msgctxt "#31033"
 msgid "Your rating"
-msgstr "הציון שלך"
+msgstr "הדירוג שלך"
 
 msgctxt "#31034"
 msgid "Extended info"
@@ -190,7 +190,7 @@ msgstr "זמין"
 
 msgctxt "#31050"
 msgid "Press [B]OK[/B] to stop"
-msgstr "לחץ [B]אישור[B] כדי לעצור"
+msgstr "לחץ [B]אישור[/B] כדי לעצור"
 
 msgctxt "#31051"
 msgid "Toggle language"
@@ -430,7 +430,7 @@ msgstr "תורמים"
 
 msgctxt "#31129"
 msgid "General settings applying to all areas of the skin."
-msgstr "הגדרות כלליות שחלות על כל האזורים של התצוגה (סקין)"
+msgstr "הגדרות כלליות שחלות על כל האזורים של המעטפת"
 
 msgctxt "#31130"
 msgid "Main menu-related settings: Configure the home screen to your likings."
@@ -478,7 +478,7 @@ msgstr "מהירות ניגון"
 
 msgctxt "#31143"
 msgid "You did not set up PVR yet. In order to use PVR, choose a PVR client addon and configure it. Please visit http://kodi.wiki/view/PVR to learn more."
-msgstr "לא הגדרת שום מקליט וידאו אישי עדיין. לצורך שימוש במקליט וידאו אישי, בחר הרחבת לקוח מקליט וידאו אישי והגדר אותו. למידע נוסף בקר ב\nhttp://kodi.wiki/view/PVR"
+msgstr "לא הגדרת שום מקליט וידאו אישי עדיין. לצורך שימוש במקליט וידאו אישי, בחר הרחבת לקוח מקליט וידאו אישי והגדר אותו. למידע נוסף בקר ב http://kodi.wiki/view/PVR"
 
 msgctxt "#31144"
 msgid "Enter add-on browser"
@@ -502,7 +502,7 @@ msgstr "מאגר"
 
 msgctxt "#31151"
 msgid "Unwatched music videos"
-msgstr "קליפי מוזיקה שלא נראו"
+msgstr "קליפי מוזיקה שלא נצפו"
 
 msgctxt "#31152"
 msgid "Random music videos"
@@ -514,7 +514,7 @@ msgstr "אין לך שום הרחבה מסוג זה מותקנת. היכנס ל�
 
 msgctxt "#31154"
 msgid "Press OK to switch between locations"
-msgstr "לחץ אוקי להחלפת מיקום"
+msgstr "לחץ אישור להחלפת מיקום"
 
 msgctxt "#31155"
 msgid "No bookmarks created yet."

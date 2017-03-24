@@ -338,7 +338,7 @@ msgstr "Saisir du texte ici..."
 
 msgctxt "#31104"
 msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
-msgstr "Votre médiathèque est actuellement vide. Afin de la remplir avec vos médias personnels, allez à la section « Fichiers », ajoutez une source de médias et configurez-la. Une fois que la source a été ajoutée et indexée, vous pourrez parcourir votre médiathèque."
+msgstr "Votre médiathèque est actuellement vide. Afin de la remplir avec vos médias personnels, allez à la section « Fichiers », ajoutez une source de médias et configurez-la. Une fois que la source aura été ajoutée et indexée, vous pourrez parcourir votre médiathèque."
 
 msgctxt "#31105"
 msgid "Add video sources and set the appropriate content type in order to populate your video libraries."

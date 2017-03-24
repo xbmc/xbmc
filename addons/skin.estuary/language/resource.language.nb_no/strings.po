@@ -22,7 +22,7 @@ msgstr "Spilles nå"
 
 msgctxt "#31001"
 msgid "Search..."
-msgstr "Søk..."
+msgstr "Søk…"
 
 msgctxt "#31002"
 msgid "Show media fanart as background"
@@ -118,7 +118,7 @@ msgstr "Tdsforskyvning"
 
 msgctxt "#31028"
 msgid "Show fanart"
-msgstr "Vis fanart"
+msgstr "Vis brukerkunstbidrag"
 
 msgctxt "#31029"
 msgid "Last logged in"
@@ -222,11 +222,11 @@ msgstr "Automatisk pålogging ved oppstart"
 
 msgctxt "#31061"
 msgid "Main menu items"
-msgstr "Hovedmeny elementer"
+msgstr "Hovedmenyelementer"
 
 msgctxt "#31062"
 msgid "Choose weather fanart pack"
-msgstr "Velg vært fanart pakke"
+msgstr "Velg brukerkunstbidragspakke for vær"
 
 msgctxt "#31063"
 msgid "Sections"
@@ -334,11 +334,11 @@ msgstr "Vegg"
 
 msgctxt "#31103"
 msgid "Enter text here..."
-msgstr "Skriv tekst her..."
+msgstr "Skriv tekst her…"
 
 msgctxt "#31104"
 msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
-msgstr "Ditt bibliotek er for tiden tomt. For å kunne legge til dine personlige mediafiler gå til \"Filer\", legg til mediakilde og konfigurer denne. Etter at kilden er lagt til og indeksert kan du se gjennom ditt bibliotek."
+msgstr "Ditt bibliotek er for tiden tomt. For å kunne legge til dine personlige mediafiler gå til \"Filer\", legg til mediakilde og sett opp denne. Etter at kilden er lagt til og indeksert kan du se gjennom ditt bibliotek."
 
 msgctxt "#31105"
 msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
@@ -358,7 +358,7 @@ msgstr "Skriv inn filens mappe"
 
 msgctxt "#31111"
 msgid "View your personal pictures or download one of the many image add-ons from the official repository."
-msgstr "Se dine personlige bilder eller last ned en av de mange bildetilleggene fra det offisielle oppbevaringsstedet."
+msgstr "Se dine personlige bilder eller last ned en av de mange bildetilleggene fra den offisielle pakkebrønnen."
 
 msgctxt "#31112"
 msgid "Toggle audio stream"
@@ -434,7 +434,7 @@ msgstr "Generelle innstillinger gjelder for alle deler av drakten"
 
 msgctxt "#31130"
 msgid "Main menu-related settings: Configure the home screen to your likings."
-msgstr "Hovedmeny relaterte innstillinger. Tilpass hjemmeskjermen slik du ønsker."
+msgstr "Hovedmenyrelaterte innstillinger. Tilpass hjemmeskjermen slik du ønsker."
 
 msgctxt "#31131"
 msgid "Choose skin fanart pack"
@@ -450,7 +450,7 @@ msgstr "Gjenstår"
 
 msgctxt "#31136"
 msgid "Click here to see latest changes..."
-msgstr "Klikk her for å se siste endringer..."
+msgstr "Klikk her for å se siste endringer…"
 
 msgctxt "#31137"
 msgid "PVR info"
@@ -478,7 +478,7 @@ msgstr "Avspillingshastighet"
 
 msgctxt "#31143"
 msgid "You did not set up PVR yet. In order to use PVR, choose a PVR client addon and configure it. Please visit http://kodi.wiki/view/PVR to learn more."
-msgstr "Du har ikke satt opp PVR enda. For å bruke PVR, velg en PVR klient tillegg og konfigurer det. Vennligst besøk http://kodi.wiki/view/PVR for å finne ut mer."
+msgstr "Du har ikke satt opp PVR enda. For å bruke PVR, velg et PVR-klient -tillegg og sett det opp. Besøk http://kodi.wiki/view/PVR for å finne ut mer."
 
 msgctxt "#31144"
 msgid "Enter add-on browser"
@@ -494,11 +494,11 @@ msgstr "Kategorier"
 
 msgctxt "#31149"
 msgid "Select genre fanart pack"
-msgstr "Velg sjanger fanart pakke"
+msgstr "Velg brukerkunstbidragspakke for sjanger"
 
 msgctxt "#31150"
 msgid "Repository"
-msgstr "Oppbevaringssted"
+msgstr "Pakkebrønn"
 
 msgctxt "#31151"
 msgid "Unwatched music videos"
@@ -530,7 +530,7 @@ msgstr "Rediger kategorier"
 
 msgctxt "#31158"
 msgid "Touch mode"
-msgstr "Touch modus"
+msgstr "Berøringsmodus"
 
 msgctxt "#31159"
 msgid "Artwork"
@@ -538,7 +538,7 @@ msgstr "Kunstverk"
 
 msgctxt "#31160"
 msgid "Show media flags"
-msgstr "Vis media flagg"
+msgstr "Vis mediaflagg"
 
 msgctxt "#31161"
 msgid "Numeric pad"

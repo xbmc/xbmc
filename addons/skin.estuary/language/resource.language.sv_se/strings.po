@@ -458,7 +458,7 @@ msgstr "PVR-info"
 
 msgctxt "#31138"
 msgid "Player process info"
-msgstr "Spelarprocess info"
+msgstr "Spelarprocessinfo"
 
 msgctxt "#31139"
 msgid "Video decoder"
@@ -478,7 +478,7 @@ msgstr "Uppspelningshastighet"
 
 msgctxt "#31143"
 msgid "You did not set up PVR yet. In order to use PVR, choose a PVR client addon and configure it. Please visit http://kodi.wiki/view/PVR to learn more."
-msgstr "Du har inte konfigurerat PVR ännu. För att kunna nyttja PVR måste du välja PVR-klientstillägg, samt konfigurera det. Besök http://kodi.wiki/view/PVR för att lära dig mer."
+msgstr "Du har inte konfigurerat PVR ännu. För att kunna nyttja PVR måste du välja PVR-klienttillägg, samt konfigurera det. Besök http://kodi.wiki/view/PVR för att lära dig mer."
 
 msgctxt "#31144"
 msgid "Enter add-on browser"

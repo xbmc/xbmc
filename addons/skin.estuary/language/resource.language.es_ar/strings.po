@@ -382,7 +382,7 @@ msgstr "Eliminar este elemento del menú principal"
 
 msgctxt "#31117"
 msgid "Edit nodes"
-msgstr "Editar notas"
+msgstr "Editar nodos"
 
 msgctxt "#31118"
 msgid "Enter add-on browser"

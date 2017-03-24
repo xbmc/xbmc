@@ -26,7 +26,7 @@ msgstr "Buscar..."
 
 msgctxt "#31002"
 msgid "Show media fanart as background"
-msgstr "Mostrar fanarts de contenido como fondo"
+msgstr "Mostrar fanart de contenido como fondo"
 
 msgctxt "#31003"
 msgid "Cinema mode"
@@ -226,7 +226,7 @@ msgstr "Elementos del menú principal"
 
 msgctxt "#31062"
 msgid "Choose weather fanart pack"
-msgstr "Elegir pack de fanarts para el tiempo"
+msgstr "Elegir pack de fanart para el tiempo"
 
 msgctxt "#31063"
 msgid "Sections"
@@ -534,7 +534,7 @@ msgstr "Modo táctil"
 
 msgctxt "#31159"
 msgid "Artwork"
-msgstr "Arte"
+msgstr "Grafismo"
 
 msgctxt "#31160"
 msgid "Show media flags"

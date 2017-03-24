@@ -82,7 +82,7 @@ msgstr "Kanały ostatnio odtwarzane"
 
 msgctxt "#31017"
 msgid "Rated"
-msgstr "Ocenione"
+msgstr "Ograniczenie"
 
 msgctxt "#31018"
 msgid "Recently played channels"
@@ -166,7 +166,7 @@ msgstr "Producent aparatu"
 
 msgctxt "#31042"
 msgid "Playlist options"
-msgstr "Opcje listy odtwarzania"
+msgstr "Opcje listy"
 
 msgctxt "#31043"
 msgid "Set the type and add rules to create a smart playlist. These playlists are dynamic and include all media items from your database which apply to your chosen rules."
@@ -210,7 +210,7 @@ msgstr "Naciśnij [B]Lewo[/B], aby cofać lub [B]Prawo[/B], aby przewijać"
 
 msgctxt "#31056"
 msgid "Go to playlist"
-msgstr "Lista odtwarzania"
+msgstr "Przejdź do Listy"
 
 msgctxt "#31057"
 msgid "Show login screen on startup"
@@ -458,7 +458,7 @@ msgstr "O telewizji"
 
 msgctxt "#31138"
 msgid "Player process info"
-msgstr "O odtwarzaczu"
+msgstr "Właściwości odtwarzania"
 
 msgctxt "#31139"
 msgid "Video decoder"
