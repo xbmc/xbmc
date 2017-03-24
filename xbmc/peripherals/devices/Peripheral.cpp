@@ -50,7 +50,8 @@ struct SortBySettingsOrder
   }
 };
 
-CPeripheral::CPeripheral(const PeripheralScanResult& scanResult, CPeripheralBus* bus) :
+CPeripheral::CPeripheral(CPeripherals& manager, const PeripheralScanResult& scanResult, CPeripheralBus* bus) :
+  m_manager(manager),
   m_type(scanResult.m_mappedType),
   m_busType(scanResult.m_busType),
   m_mappedBusType(scanResult.m_mappedBusType),
@@ -151,7 +152,7 @@ bool CPeripheral::Initialise(void)
   if (m_bInitialised)
     return bReturn;
 
-  g_peripherals.GetSettingsFromMapping(*this);
+  m_manager.GetSettingsFromMapping(*this);
 
   std::string safeDeviceName = m_strDeviceName;
   StringUtils::Replace(safeDeviceName, ' ', '_');
@@ -543,7 +544,7 @@ void CPeripheral::LoadPersistedSettings(void)
 void CPeripheral::ResetDefaultSettings(void)
 {
   ClearSettings();
-  g_peripherals.GetSettingsFromMapping(*this);
+  m_manager.GetSettingsFromMapping(*this);
 
   std::map<std::string, PeripheralDeviceSetting>::iterator it = m_settings.begin();
   while (it != m_settings.end())
@@ -571,7 +572,7 @@ void CPeripheral::RegisterJoystickInputHandler(IInputHandler* handler)
   auto it = m_inputHandlers.find(handler);
   if (it == m_inputHandlers.end())
   {
-    CAddonInputHandling* addonInput = new CAddonInputHandling(this, handler, GetDriverReceiver());
+    CAddonInputHandling* addonInput = new CAddonInputHandling(m_manager, this, handler, GetDriverReceiver());
     RegisterJoystickDriverHandler(addonInput, false);
     m_inputHandlers[handler].reset(addonInput);
   }
@@ -594,7 +595,7 @@ void CPeripheral::RegisterJoystickButtonMapper(IButtonMapper* mapper)
   std::map<IButtonMapper*, IDriverHandler*>::iterator it = m_buttonMappers.find(mapper);
   if (it == m_buttonMappers.end())
   {
-    IDriverHandler* addonMapping = new CAddonButtonMapping(this, mapper);
+    IDriverHandler* addonMapping = new CAddonButtonMapping(m_manager, this, mapper);
     RegisterJoystickDriverHandler(addonMapping, false);
     m_buttonMappers[mapper] = addonMapping;
   }

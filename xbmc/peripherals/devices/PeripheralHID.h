@@ -27,7 +27,7 @@ namespace PERIPHERALS
   class CPeripheralHID : public CPeripheral
   {
   public:
-    CPeripheralHID(const PeripheralScanResult& scanResult, CPeripheralBus* bus);
+    CPeripheralHID(CPeripherals& manager, const PeripheralScanResult& scanResult, CPeripheralBus* bus);
     virtual ~CPeripheralHID(void);
     virtual bool InitialiseFeature(const PeripheralFeature feature);
     virtual bool LookupSymAndUnicode(XBMC_keysym &keysym, uint8_t *key, char *unicode) { return false; }

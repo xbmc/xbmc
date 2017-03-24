@@ -29,9 +29,9 @@ using namespace KODI;
 using namespace JOYSTICK;
 using namespace PERIPHERALS;
 
-CAddonButtonMapping::CAddonButtonMapping(CPeripheral* peripheral, IButtonMapper* mapper)
+CAddonButtonMapping::CAddonButtonMapping(CPeripherals& manager, CPeripheral* peripheral, IButtonMapper* mapper)
 {
-  PeripheralAddonPtr addon = g_peripherals.GetAddonWithButtonMap(peripheral);
+  PeripheralAddonPtr addon = manager.GetAddonWithButtonMap(peripheral);
 
   if (!addon)
   {

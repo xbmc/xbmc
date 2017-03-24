@@ -32,12 +32,17 @@ namespace JOYSTICK
 }
 }
 
+namespace PERIPHERALS
+{
+  class CPeripherals;
+}
+
 namespace GAME
 {
   class CPortMapper : public Observer
   {
   public:
-    CPortMapper();
+    CPortMapper(PERIPHERALS::CPeripherals& peripheralManager);
 
     virtual ~CPortMapper();
 
@@ -46,6 +51,10 @@ namespace GAME
   private:
     void ProcessPeripherals();
 
+    // Construction parameters
+    PERIPHERALS::CPeripherals& m_peripheralManager;
+
+    // Port paremters
     std::map<PERIPHERALS::PeripheralPtr, KODI::JOYSTICK::IInputHandler*>  m_portMap;
   };
 }

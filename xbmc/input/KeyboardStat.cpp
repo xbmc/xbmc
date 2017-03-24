@@ -31,10 +31,9 @@
 #include "peripherals/devices/PeripheralHID.h"
 #include "threads/SystemClock.h"
 #include "utils/log.h"
+#include "ServiceBroker.h"
 
 #define HOLD_THRESHOLD 250
-
-using namespace PERIPHERALS;
 
 bool operator==(const XBMC_keysym& lhs, const XBMC_keysym& rhs)
 {
@@ -60,8 +59,10 @@ void CKeyboardStat::Initialize()
 
 bool CKeyboardStat::LookupSymAndUnicodePeripherals(XBMC_keysym &keysym, uint8_t *key, char *unicode)
 {
+  using namespace PERIPHERALS;
+
   PeripheralVector hidDevices;
-  if (g_peripherals.GetPeripheralsWithFeature(hidDevices, FEATURE_HID))
+  if (CServiceBroker::GetPeripherals().GetPeripheralsWithFeature(hidDevices, FEATURE_HID))
   {
     for (auto& peripheral : hidDevices)
     {

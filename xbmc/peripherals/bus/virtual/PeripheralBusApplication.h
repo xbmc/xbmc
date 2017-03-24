@@ -32,7 +32,7 @@ namespace PERIPHERALS
   class CPeripheralBusApplication : public CPeripheralBus
   {
   public:
-    CPeripheralBusApplication(CPeripherals* manager);
+    CPeripheralBusApplication(CPeripherals& manager);
     virtual ~CPeripheralBusApplication(void) { }
 
     // implementation of CPeripheralBus

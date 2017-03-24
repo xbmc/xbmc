@@ -143,7 +143,7 @@ void CGUIControllerList::ResetController(void)
     if (!CGUIDialogYesNo::ShowAndGetInput(35060, 35061))
       return;
 
-    PERIPHERALS::g_peripherals.ResetButtonMaps(strControllerId);
+    CServiceBroker::GetPeripherals().ResetButtonMaps(strControllerId);
   }
 }
 

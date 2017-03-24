@@ -25,6 +25,7 @@
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
 #include "utils/StringUtils.h"
+#include "ServiceBroker.h"
 
 #include <cstring>
 
@@ -46,7 +47,7 @@ void CGameSettings::OnSettingChanged(const CSetting *setting)
   const std::string& settingId = setting->GetId();
   if (settingId == CSettings::SETTING_GAMES_KEYBOARD_PLAYERS)
   {
-    PERIPHERALS::g_peripherals.TriggerDeviceScan(PERIPHERALS::PERIPHERAL_BUS_APPLICATION);
+    CServiceBroker::GetPeripherals().TriggerDeviceScan(PERIPHERALS::PERIPHERAL_BUS_APPLICATION);
   }
   else if (settingId == CSettings::SETTING_GAMES_ENABLEREWIND ||
            settingId == CSettings::SETTING_GAMES_REWINDTIME)

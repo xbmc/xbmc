@@ -28,8 +28,8 @@
 using namespace KODI;
 using namespace PERIPHERALS;
 
-CPeripheralJoystickEmulation::CPeripheralJoystickEmulation(const PeripheralScanResult& scanResult, CPeripheralBus* bus) :
-  CPeripheral(scanResult, bus)
+CPeripheralJoystickEmulation::CPeripheralJoystickEmulation(CPeripherals& manager, const PeripheralScanResult& scanResult, CPeripheralBus* bus) :
+  CPeripheral(manager, scanResult, bus)
 {
   m_features.push_back(FEATURE_JOYSTICK);
 }

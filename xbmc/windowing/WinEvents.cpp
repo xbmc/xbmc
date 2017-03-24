@@ -21,6 +21,7 @@
 #include "WinEvents.h"
 #include "peripherals/Peripherals.h"
 #include "threads/SingleLock.h"
+#include "ServiceBroker.h"
 
 #if   defined(TARGET_WINDOWS)
 #include "windows/WinEventsWin32.h"
@@ -64,7 +65,7 @@ void Init()
   CSingleLock lock(g_lock);
   if (!g_init)
   {
-    PERIPHERALS::CPeripherals::GetInstance().RegisterObserver(&g_imp);
+    CServiceBroker::GetPeripherals().RegisterObserver(&g_imp);
     g_init = true;
   }
 }
