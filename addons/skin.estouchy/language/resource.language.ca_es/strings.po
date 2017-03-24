@@ -60,6 +60,26 @@ msgctxt "#31016"
 msgid "Albums"
 msgstr "Àlbums"
 
+msgctxt "#31017"
+msgid "PVR info"
+msgstr "Informació PVR"
+
+msgctxt "#31018"
+msgid "Player process info"
+msgstr "Informació del procés del reproductor"
+
+msgctxt "#31019"
+msgid "Video decoder"
+msgstr "Descodificador de vídeo"
+
+msgctxt "#31020"
+msgid "Pixel format"
+msgstr "Format del píxel"
+
+msgctxt "#31021"
+msgid "System memory usage"
+msgstr "Ús de la memòria del sistema"
+
 msgctxt "#31024"
 msgid "Page"
 msgstr "Pàgina"

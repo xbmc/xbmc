@@ -56,6 +56,18 @@ msgctxt "#31016"
 msgid "Albums"
 msgstr "Albumi"
 
+msgctxt "#31017"
+msgid "PVR info"
+msgstr "PVR info"
+
+msgctxt "#31019"
+msgid "Video decoder"
+msgstr "Video dekoders"
+
+msgctxt "#31020"
+msgid "Pixel format"
+msgstr "Pikseļu formāts"
+
 msgctxt "#31024"
 msgid "Page"
 msgstr "Lapa"

@@ -60,6 +60,26 @@ msgctxt "#31016"
 msgid "Albums"
 msgstr "Albümler"
 
+msgctxt "#31017"
+msgid "PVR info"
+msgstr "PVR bilgisi"
+
+msgctxt "#31018"
+msgid "Player process info"
+msgstr "Yürütücü işlem bilgisi"
+
+msgctxt "#31019"
+msgid "Video decoder"
+msgstr "Video kod çözücü"
+
+msgctxt "#31020"
+msgid "Pixel format"
+msgstr "Piksel biçimi"
+
+msgctxt "#31021"
+msgid "System memory usage"
+msgstr "Sistem bellek kullanımı"
+
 msgctxt "#31024"
 msgid "Page"
 msgstr "Sayfa"

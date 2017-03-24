@@ -60,6 +60,26 @@ msgctxt "#31016"
 msgid "Albums"
 msgstr "Άλμπουμ"
 
+msgctxt "#31017"
+msgid "PVR info"
+msgstr "Πληροφορίες PVR"
+
+msgctxt "#31018"
+msgid "Player process info"
+msgstr "Πληροφορίες διεργασίας αναπαραγωγής"
+
+msgctxt "#31019"
+msgid "Video decoder"
+msgstr "Αποκωδικοποιητής βίντεο"
+
+msgctxt "#31020"
+msgid "Pixel format"
+msgstr "Μορφή εικονοστοιχείων"
+
+msgctxt "#31021"
+msgid "System memory usage"
+msgstr "Χρήση μνήμης συστήματος"
+
 msgctxt "#31024"
 msgid "Page"
 msgstr "Σελίδα"

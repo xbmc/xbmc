@@ -60,6 +60,26 @@ msgctxt "#31016"
 msgid "Albums"
 msgstr "Album"
 
+msgctxt "#31017"
+msgid "PVR info"
+msgstr "Maklumat PVR"
+
+msgctxt "#31018"
+msgid "Player process info"
+msgstr "Maklumat proses pemain"
+
+msgctxt "#31019"
+msgid "Video decoder"
+msgstr "Penyahkod video"
+
+msgctxt "#31020"
+msgid "Pixel format"
+msgstr "Format piksel"
+
+msgctxt "#31021"
+msgid "System memory usage"
+msgstr "Penggunaan ingatan sistem"
+
 msgctxt "#31024"
 msgid "Page"
 msgstr "Halaman"

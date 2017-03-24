@@ -60,6 +60,26 @@ msgctxt "#31016"
 msgid "Albums"
 msgstr "專輯"
 
+msgctxt "#31017"
+msgid "PVR info"
+msgstr "PVR 資訊"
+
+msgctxt "#31018"
+msgid "Player process info"
+msgstr "播放器運作資料"
+
+msgctxt "#31019"
+msgid "Video decoder"
+msgstr "影像解碼器"
+
+msgctxt "#31020"
+msgid "Pixel format"
+msgstr "畫面格式"
+
+msgctxt "#31021"
+msgid "System memory usage"
+msgstr "系統記憶體用量"
+
 msgctxt "#31024"
 msgid "Page"
 msgstr "頁"

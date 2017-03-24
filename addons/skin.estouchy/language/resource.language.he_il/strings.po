@@ -60,6 +60,26 @@ msgctxt "#31016"
 msgid "Albums"
 msgstr "אלבומים"
 
+msgctxt "#31017"
+msgid "PVR info"
+msgstr "מידע מקליט וידאו אישי"
+
+msgctxt "#31018"
+msgid "Player process info"
+msgstr "נגן עיבוד מידע"
+
+msgctxt "#31019"
+msgid "Video decoder"
+msgstr "מפענח וידאו"
+
+msgctxt "#31020"
+msgid "Pixel format"
+msgstr "פורמט פיקסל"
+
+msgctxt "#31021"
+msgid "System memory usage"
+msgstr "זיכרון בשימוש ע\"י המערכת"
+
 msgctxt "#31024"
 msgid "Page"
 msgstr "עמוד"

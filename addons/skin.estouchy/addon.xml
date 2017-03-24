@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="skin.estouchy" version="1.1.9" name="Estouchy" provider-name="Team Kodi">
+<addon id="skin.estouchy" version="1.1.10" name="Estouchy" provider-name="Team Kodi">
 	<requires>
 		<import addon="xbmc.gui" version="5.12.0"/>
 	</requires>
@@ -70,7 +70,7 @@
 		<description lang="ko_KR">태블릿이나 스마트폰과 같은 터치 스크린 기기에서 사용할 수 있게 디자인한 스킨</description>
 		<description lang="lt_LT">Teminė išvaizda pritaikyta naudojimui įrenginiuose su liečiamaisiais ekranais, tokiuose kaip planšetiniai kompiuteriai ar išmanieji telefonai</description>
 		<description lang="ms_MY">Kulit direka untuk digunakan pada peranti berskrin sentuh seperti tablet dan telefon pintar</description>
-		<description lang="nb_NO">Skin designet for å bli brukt på enheter med berørningsskjerm som smarttelefoner og lesebrett</description>
+		<description lang="nb_NO">Drakt designet for å bli brukt på enheter med berørningsskjerm, som smarttelefoner og lesebrett</description>
 		<description lang="nl_NL">Skin ontworpen voor gebruik bij aanraakschermapparaten zoals tablets en smartphones</description>
 		<description lang="pl_PL">Skóra dedykowana urządzeniom z ekranem dotykowym takim jak tablety i smartfony.</description>
 		<description lang="pt_BR">Skin concebida para ser usada em dispositivos com telas de toque como tablets e smartphones</description>

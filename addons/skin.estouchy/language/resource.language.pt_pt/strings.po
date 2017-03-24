@@ -60,6 +60,22 @@ msgctxt "#31016"
 msgid "Albums"
 msgstr "Álbuns"
 
+msgctxt "#31017"
+msgid "PVR info"
+msgstr "Info PVR"
+
+msgctxt "#31019"
+msgid "Video decoder"
+msgstr "Descodificador de vídeo"
+
+msgctxt "#31020"
+msgid "Pixel format"
+msgstr "Formato de píxel"
+
+msgctxt "#31021"
+msgid "System memory usage"
+msgstr "Utilização da memória do sistema"
+
 msgctxt "#31024"
 msgid "Page"
 msgstr "Página"

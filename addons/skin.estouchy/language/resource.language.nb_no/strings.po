@@ -42,7 +42,7 @@ msgstr "Hurtigmeny"
 
 msgctxt "#31009"
 msgid "Working..."
-msgstr "Arbeider..."
+msgstr "Arbeider…"
 
 msgctxt "#31011"
 msgid "Recent"
@@ -59,6 +59,26 @@ msgstr "Episoder"
 msgctxt "#31016"
 msgid "Albums"
 msgstr "Album"
+
+msgctxt "#31017"
+msgid "PVR info"
+msgstr "PVR informasjon"
+
+msgctxt "#31018"
+msgid "Player process info"
+msgstr "Spiller prosess informasjon"
+
+msgctxt "#31019"
+msgid "Video decoder"
+msgstr "Video dekoder"
+
+msgctxt "#31020"
+msgid "Pixel format"
+msgstr "Piksel format"
+
+msgctxt "#31021"
+msgid "System memory usage"
+msgstr "System minne bruk"
 
 msgctxt "#31024"
 msgid "Page"
@@ -170,7 +190,7 @@ msgstr "Tekst-TV"
 
 msgctxt "#31390"
 msgid "Skin default"
-msgstr "Standard for skallet"
+msgstr "Forvalg for drakten"
 
 msgctxt "#31391"
 msgid "Arial based"
@@ -178,39 +198,39 @@ msgstr "Arial-basert"
 
 msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
-msgstr "Bytt skall · Velg språl og region · Endre innstillinger for filvisning· Innstillinger for skjermsparer"
+msgstr "Bytt drakt · Velg språk og region · Endre innstillinger for filvisning · Sett opp skjermsparer"
 
 msgctxt "#31405"
 msgid "Configure & manage media sharing services · Configure & manage the weather service"
-msgstr "Konfigurer og administrer media delings tjenester · Konfigurer og administrer vær tjenester"
+msgstr "Settt opp og administrer mediadelingstjenester · Sett opp og administrer værtjenester"
 
 msgctxt "#31406"
 msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
-msgstr "Konfigurer skjerm · Konfigurer lyd · Konfigurer internett tilgang · Konfigurer strømsparing · Konfigurer logging"
+msgstr "Sett opp skjerm · Sett opp lyd · Sett opp internettilgang · Sett opp strømsparing · Sett opp logging"
 
 msgctxt "#31407"
 msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
-msgstr "Administrer dine installerte tillegg · Se etter og administre tillegg fra kodi.tv · Endre tilleggsinnstillinger"
+msgstr "Administrer dine installerte tillegg · Se etter og administre tillegg fra Kodi.tv · Endre tilleggsinnstillinger"
 
 msgctxt "#31408"
 msgid "Configure actions that can be used during playback · Configure how media content is played"
-msgstr "Konfigurer handlinger som kan brukes under avspilling · Konfigurer hvordan mediainnhold avspilles"
+msgstr "Sett opp handlinger som kan brukes under avspilling · Sett opp hvordan mediainnhold avspilles"
 
 msgctxt "#31409"
 msgid "Configure library sources · Show the media lists display content · Configure how library lists are navigated"
-msgstr "Konfigurer bibliotek kilder · Vis medie listen som viser innhold · Konfigurer hvordan biblioteker navigeres"
+msgstr "Sett opp bibliotekkilder · Vis medielistens innhold · Sett opp hvordan bibliotek navigeres"
 
 msgctxt "#31410"
 msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
-msgstr "Konfigurer skin · Konfigurer region · Konfigurer kontroll · Konfigurer skjermsparer · Konfigurer systemlås"
+msgstr "Sett opp dralt · Sett opp region · Sett opp kontroll · Sett opp skjermsparer · Sett opp systemlås"
 
 msgctxt "#31411"
 msgid "Configure your profiles · Set locking options · Enable login screen"
-msgstr "Konfigurer profiler · Sett låseinnstillinger · Slå på innloggingskjerm"
+msgstr "Sett opp profiler · Sett låseinnstillinger · Slå på innloggingskjerm"
 
 msgctxt "#31412"
 msgid "Display system information · Hardware statistics · Check storage availability · View network configuration"
-msgstr "Vis systeminformasjon · Maskinvarestatistikk · Sjekk lagring · Vis nettverkskonfigurasjon"
+msgstr "Vis systeminformasjon · Maskinvarestatistikk · Sjekk lagring · Vis nettverksoppsett"
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
@@ -246,7 +266,7 @@ msgstr "Bakgrunn:"
 
 msgctxt "#31555"
 msgid "Configure TV settings · Change full screen info · Manage EPG data settings"
-msgstr "Konfigurer TV innstillinger · Endre fullskjermsinformasjon · Administrer EPG innstillinger"
+msgstr "Sett opp TV-innstillinger · Endre fullskjermsinformasjon · Administrer EPG-innstillinger"
 
 msgctxt "#31556"
 msgid "Live TV"
@@ -306,4 +326,4 @@ msgstr "Når du spiller av lyd eller video vil tittelen vises i toppen av skjerm
 
 msgctxt "#31904"
 msgid "Now Playing Title..."
-msgstr "Nå spilles Tittel..."
+msgstr "Tittel som spilles nå…"

@@ -60,6 +60,26 @@ msgctxt "#31016"
 msgid "Albums"
 msgstr "Албуми"
 
+msgctxt "#31017"
+msgid "PVR info"
+msgstr "PVR информације"
+
+msgctxt "#31018"
+msgid "Player process info"
+msgstr "Информације процеса уређаја за репродукцију"
+
+msgctxt "#31019"
+msgid "Video decoder"
+msgstr "Видео декодер"
+
+msgctxt "#31020"
+msgid "Pixel format"
+msgstr "Облик приказа пиксела"
+
+msgctxt "#31021"
+msgid "System memory usage"
+msgstr "Коришћење меморије система"
+
 msgctxt "#31024"
 msgid "Page"
 msgstr "Страна"
