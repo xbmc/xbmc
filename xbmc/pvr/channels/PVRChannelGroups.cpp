@@ -58,7 +58,7 @@ bool CPVRChannelGroups::GetGroupsFromClients(void)
   if (! CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRMANAGER_SYNCCHANNELGROUPS))
     return true;
 
-  return g_PVRClients->GetChannelGroups(this) == PVR_ERROR_NO_ERROR;
+  return CServiceBroker::GetPVRManager().Clients()->GetChannelGroups(this) == PVR_ERROR_NO_ERROR;
 }
 
 bool CPVRChannelGroups::Update(const CPVRChannelGroup &group, bool bUpdateFromClient /* = false */)
@@ -150,7 +150,7 @@ CFileItemPtr CPVRChannelGroups::GetByPath(const std::string &strPath) const
       std::vector<std::string> split(StringUtils::Split(strFileName, '_', 2));
       if (split.size() == 2)
       {
-        CPVRChannelPtr channel((*it)->GetByUniqueID(atoi(split[1].c_str()), g_PVRClients->GetClientId(split[0])));
+        CPVRChannelPtr channel((*it)->GetByUniqueID(atoi(split[1].c_str()), CServiceBroker::GetPVRManager().Clients()->GetClientId(split[0])));
         if (channel)
           return CFileItemPtr(new CFileItem(channel));
       }
@@ -284,7 +284,7 @@ bool CPVRChannelGroups::LoadUserDefinedChannelGroups(void)
 
 bool CPVRChannelGroups::Load(void)
 {
-  const CPVRDatabasePtr database(g_PVRManager.GetTVDatabase());
+  const CPVRDatabasePtr database(CServiceBroker::GetPVRManager().GetTVDatabase());
   if (!database)
     return false;
 
@@ -548,12 +548,12 @@ bool CPVRChannelGroups::DeleteGroup(const CPVRChannelGroup &group)
   }
 
   if (playingGroup)
-    g_PVRManager.SetPlayingGroup(playingGroup);
+    CServiceBroker::GetPVRManager().SetPlayingGroup(playingGroup);
 
   if (group.GroupID() > 0)
   {
     // delete the group from the database
-    const CPVRDatabasePtr database(g_PVRManager.GetTVDatabase());
+    const CPVRDatabasePtr database(CServiceBroker::GetPVRManager().GetTVDatabase());
     return database ? database->Delete(group) : false;
   }
   return bFound;

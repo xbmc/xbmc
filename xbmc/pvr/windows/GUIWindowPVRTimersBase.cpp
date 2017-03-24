@@ -177,7 +177,7 @@ bool CGUIWindowPVRTimersBase::OnMessage(CGUIMessage &message)
 
 bool CGUIWindowPVRTimersBase::ActionShowTimer(const CFileItemPtr &item)
 {
-  if (!g_PVRClients->SupportsTimers())
+  if (!CServiceBroker::GetPVRManager().Clients()->SupportsTimers())
   {
     CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19215}); // "Information", "The PVR backend does not support timers."
     return false;

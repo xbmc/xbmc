@@ -30,6 +30,7 @@
 #include "pvr/PVRSettings.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/timers/PVRTimerType.h"
+#include "ServiceBroker.h"
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingsManager.h"
 #include "settings/SettingUtils.h"
@@ -562,7 +563,7 @@ void CGUIDialogPVRTimerSettings::Save()
   m_timerInfoTag->m_bFullTextEpgSearch = m_bFullTextEpgSearch;
 
   // Channel
-  CPVRChannelPtr channel(g_PVRChannelGroups->GetByUniqueID(m_channel.channelUid, m_channel.clientId));
+  CPVRChannelPtr channel(CServiceBroker::GetPVRManager().ChannelGroups()->GetByUniqueID(m_channel.channelUid, m_channel.clientId));
   if (channel)
   {
     m_timerInfoTag->m_iClientChannelUid = channel->UniqueID();
@@ -785,7 +786,7 @@ void CGUIDialogPVRTimerSettings::InitializeChannelsList()
   m_channelEntries.clear();
 
   CFileItemList channelsList;
-  g_PVRChannelGroups->GetGroupAll(m_bIsRadio)->GetMembers(channelsList);
+  CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAll(m_bIsRadio)->GetMembers(channelsList);
 
   for (int i = 0; i < channelsList.Size(); ++i)
   {

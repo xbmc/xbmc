@@ -90,7 +90,7 @@ void CGUIWindowPVRBase::UpdateSelectedItemPath()
 
 void CGUIWindowPVRBase::RegisterObservers(void)
 {
-  g_PVRManager.RegisterObserver(this);
+  CServiceBroker::GetPVRManager().RegisterObserver(this);
 
   CSingleLock lock(m_critSection);
   if (m_channelGroup)
@@ -104,7 +104,7 @@ void CGUIWindowPVRBase::UnregisterObservers(void)
     if (m_channelGroup)
       m_channelGroup->UnregisterObserver(this);
   }
-  g_PVRManager.UnregisterObserver(this);
+  CServiceBroker::GetPVRManager().UnregisterObserver(this);
 };
 
 void CGUIWindowPVRBase::Notify(const Observable &obs, const ObservableMessage msg)
@@ -270,7 +270,7 @@ bool CGUIWindowPVRBase::OpenChannelGroupSelectionDialog(void)
     return false;
 
   CFileItemList options;
-  g_PVRChannelGroups->Get(m_bRadio)->GetGroupList(&options, true);
+  CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_bRadio)->GetGroupList(&options, true);
 
   dialog->Reset();
   dialog->SetHeading(CVariant{g_localizeStrings.Get(19146)});
@@ -286,14 +286,14 @@ bool CGUIWindowPVRBase::OpenChannelGroupSelectionDialog(void)
   if (!item)
     return false;
 
-  SetChannelGroup(g_PVRChannelGroups->Get(m_bRadio)->GetByName(item->m_strTitle));
+  SetChannelGroup(CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_bRadio)->GetByName(item->m_strTitle));
 
   return true;
 }
 
 bool CGUIWindowPVRBase::InitChannelGroup()
 {
-  const CPVRChannelGroupPtr group(g_PVRManager.GetPlayingGroup(m_bRadio));
+  const CPVRChannelGroupPtr group(CServiceBroker::GetPVRManager().GetPlayingGroup(m_bRadio));
   if (group)
   {
     CSingleLock lock(m_critSection);
@@ -336,7 +336,7 @@ void CGUIWindowPVRBase::SetChannelGroup(const CPVRChannelGroupPtr &group, bool b
 
   if (bUpdate && channelGroup)
   {
-    g_PVRManager.SetPlayingGroup(channelGroup);
+    CServiceBroker::GetPVRManager().SetPlayingGroup(channelGroup);
     Update(GetDirectoryPath());
   }
 }

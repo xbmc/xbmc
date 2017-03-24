@@ -180,11 +180,11 @@ namespace PVR
     {
       const CPVRChannelPtr channel(item.GetPVRChannelInfoTag());
       if (channel)
-        return g_PVRClients->SupportsTimers(channel->ClientID()) && !channel->IsRecording();
+        return CServiceBroker::GetPVRManager().Clients()->SupportsTimers(channel->ClientID()) && !channel->IsRecording();
 
       const CEpgInfoTagPtr epg(item.GetEPGInfoTag());
       if (epg)
-        return g_PVRClients->SupportsTimers() && !epg->Timer() && epg->EndAsLocalTime() > CDateTime::GetCurrentDateTime();
+        return CServiceBroker::GetPVRManager().Clients()->SupportsTimers() && !epg->Timer() && epg->EndAsLocalTime() > CDateTime::GetCurrentDateTime();
 
       return false;
     }
@@ -308,7 +308,7 @@ namespace PVR
     {
       const CEpgInfoTagPtr epg(item.GetEPGInfoTag());
       if (epg)
-        return g_PVRClients->SupportsTimers() && !epg->Timer();
+        return CServiceBroker::GetPVRManager().Clients()->SupportsTimers() && !epg->Timer();
 
       return false;
     }
@@ -349,7 +349,7 @@ namespace PVR
 
     bool DeleteTimerRule::Execute(const CFileItemPtr &item) const
     {
-      const CFileItemPtr parentTimer(g_PVRTimers->GetTimerRule(item));
+      const CFileItemPtr parentTimer(CServiceBroker::GetPVRManager().Timers()->GetTimerRule(item));
       if (parentTimer)
         return CPVRGUIActions::GetInstance().DeleteTimerRule(parentTimer);
 
@@ -472,26 +472,26 @@ namespace PVR
     {
       const CPVRChannelPtr channel(item.GetPVRChannelInfoTag());
       if (channel)
-        return g_PVRClients->HasMenuHooks(channel->ClientID(), PVR_MENUHOOK_CHANNEL);
+        return CServiceBroker::GetPVRManager().Clients()->HasMenuHooks(channel->ClientID(), PVR_MENUHOOK_CHANNEL);
 
       const CEpgInfoTagPtr epg(item.GetEPGInfoTag());
       if (epg)
       {
         const CPVRChannelPtr channel(epg->ChannelTag());
-        return (channel && g_PVRClients->HasMenuHooks(channel->ClientID(), PVR_MENUHOOK_EPG));
+        return (channel && CServiceBroker::GetPVRManager().Clients()->HasMenuHooks(channel->ClientID(), PVR_MENUHOOK_EPG));
       }
 
       const CPVRTimerInfoTagPtr timer(item.GetPVRTimerInfoTag());
       if (timer && !URIUtils::PathEquals(item.GetPath(), CPVRTimersPath::PATH_ADDTIMER))
-        return g_PVRClients->HasMenuHooks(timer->m_iClientId, PVR_MENUHOOK_TIMER);
+        return CServiceBroker::GetPVRManager().Clients()->HasMenuHooks(timer->m_iClientId, PVR_MENUHOOK_TIMER);
 
       const CPVRRecordingPtr recording(item.GetPVRRecordingInfoTag());
       if (recording)
       {
         if (recording->IsDeleted())
-          return g_PVRClients->HasMenuHooks(recording->m_iClientId, PVR_MENUHOOK_DELETED_RECORDING);
+          return CServiceBroker::GetPVRManager().Clients()->HasMenuHooks(recording->m_iClientId, PVR_MENUHOOK_DELETED_RECORDING);
         else
-          return g_PVRClients->HasMenuHooks(recording->m_iClientId, PVR_MENUHOOK_RECORDING);
+          return CServiceBroker::GetPVRManager().Clients()->HasMenuHooks(recording->m_iClientId, PVR_MENUHOOK_RECORDING);
       }
 
       return false;

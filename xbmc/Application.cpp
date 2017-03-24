@@ -2050,7 +2050,7 @@ bool CApplication::OnAction(const CAction &action)
   if (action.GetID() == ACTION_BUILT_IN_FUNCTION)
   {
     if (!CBuiltins::GetInstance().IsSystemPowerdownCommand(action.GetName()) ||
-        g_PVRManager.CanSystemPowerdown())
+        CServiceBroker::GetPVRManager().CanSystemPowerdown())
     {
       CBuiltins::GetInstance().Execute(action.GetName());
       m_navigationTimer.StartZero();
@@ -2148,7 +2148,7 @@ bool CApplication::OnAction(const CAction &action)
   }
 
   // Now check with the player if action can be handled.
-  bool bIsPlayingPVRChannel = (g_PVRManager.IsStarted() && g_application.CurrentFileItem().IsPVRChannel());
+  bool bIsPlayingPVRChannel = (CServiceBroker::GetPVRManager().IsStarted() && g_application.CurrentFileItem().IsPVRChannel());
   if (g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO ||
       (g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION && bIsPlayingPVRChannel) ||
       ((g_windowManager.GetActiveWindow() == WINDOW_DIALOG_VIDEO_OSD || (g_windowManager.GetActiveWindow() == WINDOW_DIALOG_MUSIC_OSD && bIsPlayingPVRChannel)) &&
@@ -4117,7 +4117,7 @@ void CApplication::CheckShutdown()
       || m_musicInfoScanner->IsScanning()
       || CVideoLibraryQueue::GetInstance().IsRunning()
       || g_windowManager.IsWindowActive(WINDOW_DIALOG_PROGRESS) // progress dialog is onscreen
-      || !g_PVRManager.CanSystemPowerdown(false))
+      || !CServiceBroker::GetPVRManager().CanSystemPowerdown(false))
   {
     m_shutdownTimer.StartZero();
     return;
@@ -4395,7 +4395,7 @@ bool CApplication::ExecuteXBMCAction(std::string actionStr, const CGUIListItemPt
   if (CBuiltins::GetInstance().HasCommand(actionStr))
   {
     if (!CBuiltins::GetInstance().IsSystemPowerdownCommand(actionStr) ||
-        g_PVRManager.CanSystemPowerdown())
+        CServiceBroker::GetPVRManager().CanSystemPowerdown())
       CBuiltins::GetInstance().Execute(actionStr);
   }
   else

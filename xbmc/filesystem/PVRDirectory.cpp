@@ -18,13 +18,14 @@
  *
  */
 
-#include "PVRDirectory.h"
 #include "FileItem.h"
+#include "guilib/LocalizeStrings.h"
+#include "PVRDirectory.h"
+#include "ServiceBroker.h"
 #include "URL.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
-#include "guilib/LocalizeStrings.h"
 
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
@@ -44,7 +45,7 @@ CPVRDirectory::~CPVRDirectory()
 
 bool CPVRDirectory::Exists(const CURL& url)
 {
-  if (!g_PVRManager.IsStarted())
+  if (!CServiceBroker::GetPVRManager().IsStarted())
     return false;
 
   return (url.IsProtocol("pvr") && StringUtils::StartsWith(url.GetFileName(), "recordings"));
@@ -62,7 +63,7 @@ bool CPVRDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 
   if (fileName == "")
   {
-    if (g_PVRManager.IsStarted())
+    if (CServiceBroker::GetPVRManager().IsStarted())
     {
       CFileItemPtr item;
 
@@ -88,28 +89,28 @@ bool CPVRDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   }
   else if (StringUtils::StartsWith(fileName, "recordings"))
   {
-    if (g_PVRManager.IsStarted())
+    if (CServiceBroker::GetPVRManager().IsStarted())
     {
       const std::string pathToUrl(url.Get());
-      return g_PVRRecordings->GetDirectory(pathToUrl, items);
+      return CServiceBroker::GetPVRManager().Recordings()->GetDirectory(pathToUrl, items);
     }
     return true;
   }
   else if (StringUtils::StartsWith(fileName, "channels"))
   {
-    if (g_PVRChannelGroups && g_PVRChannelGroups->Loaded())
+    if (CServiceBroker::GetPVRManager().ChannelGroups() && CServiceBroker::GetPVRManager().ChannelGroups()->Loaded())
     {
       const std::string pathToUrl(url.Get());
-      return g_PVRChannelGroups->GetDirectory(pathToUrl, items);
+      return CServiceBroker::GetPVRManager().ChannelGroups()->GetDirectory(pathToUrl, items);
     }
     return true;
   }
   else if (StringUtils::StartsWith(fileName, "timers"))
   {
-    if (g_PVRManager.IsStarted())
+    if (CServiceBroker::GetPVRManager().IsStarted())
     {
       const std::string pathToUrl(url.Get());
-      return g_PVRTimers->GetDirectory(pathToUrl, items);
+      return CServiceBroker::GetPVRManager().Timers()->GetDirectory(pathToUrl, items);
     }
     return true;
   }
@@ -135,24 +136,24 @@ bool CPVRDirectory::IsLiveTV(const std::string& strPath)
 
 bool CPVRDirectory::HasTVRecordings()
 {
-  return g_PVRManager.IsStarted() ?
-    g_PVRRecordings->GetNumTVRecordings() > 0 : false;
+  return CServiceBroker::GetPVRManager().IsStarted() ?
+    CServiceBroker::GetPVRManager().Recordings()->GetNumTVRecordings() > 0 : false;
 }
 
 bool CPVRDirectory::HasDeletedTVRecordings()
 {
-  return g_PVRManager.IsStarted() ?
-    g_PVRRecordings->HasDeletedTVRecordings() : false;
+  return CServiceBroker::GetPVRManager().IsStarted() ?
+    CServiceBroker::GetPVRManager().Recordings()->HasDeletedTVRecordings() : false;
 }
 
 bool CPVRDirectory::HasRadioRecordings()
 {
-  return g_PVRManager.IsStarted() ?
-    g_PVRRecordings->GetNumRadioRecordings() > 0 : false;
+  return CServiceBroker::GetPVRManager().IsStarted() ?
+    CServiceBroker::GetPVRManager().Recordings()->GetNumRadioRecordings() > 0 : false;
 }
 
 bool CPVRDirectory::HasDeletedRadioRecordings()
 {
-  return g_PVRManager.IsStarted() ?
-    g_PVRRecordings->HasDeletedRadioRecordings() : false;
+  return CServiceBroker::GetPVRManager().IsStarted() ?
+    CServiceBroker::GetPVRManager().Recordings()->HasDeletedRadioRecordings() : false;
 }

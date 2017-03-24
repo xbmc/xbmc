@@ -5934,7 +5934,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case PVR_RADIO_NEXT_RECORDING_CHANNEL:
   case PVR_RADIO_NEXT_RECORDING_CHAN_ICO:
   case PVR_RADIO_NEXT_RECORDING_DATETIME:
-    g_PVRManager.TranslateCharInfo(info, strLabel);
+    CServiceBroker::GetPVRManager().TranslateCharInfo(info, strLabel);
     break;
   case PVR_CHANNEL_NUMBER_INPUT:
     strLabel = CPVRGUIActions::GetInstance().GetChannelNumberInputHandler().GetChannelNumberAsString();
@@ -6821,7 +6821,7 @@ bool CGUIInfoManager::GetInt(int &value, int info, int contextWindow, const CGUI
     case PVR_ACTUAL_STREAM_SNR_PROGR:
     case PVR_BACKEND_DISKSPACE_PROGR:
     case PVR_TIMESHIFT_PROGRESS:
-      value = g_PVRManager.TranslateIntInfo(info);
+      value = CServiceBroker::GetPVRManager().TranslateIntInfo(info);
       return true;
     case SYSTEM_BATTERY_LEVEL:
       value = g_powerManager.BatteryLevel();
@@ -7036,7 +7036,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
   else if (condition == WEATHER_IS_FETCHED)
     bReturn = g_weatherManager.IsFetched();
   else if (condition >= PVR_CONDITIONS_START && condition <= PVR_CONDITIONS_END)
-    bReturn = g_PVRManager.TranslateBoolInfo(condition);
+    bReturn = CServiceBroker::GetPVRManager().TranslateBoolInfo(condition);
   else if (condition >= ADSP_CONDITIONS_START && condition <= ADSP_CONDITIONS_END)
     bReturn = CServiceBroker::GetADSP().TranslateBoolInfo(condition);
   else if (condition == SYSTEM_INTERNET_STATE)
@@ -8711,7 +8711,7 @@ std::string CGUIInfoManager::GetMusicTagLabel(int info, const CFileItem *item)
   case MUSICPLAYER_CHANNEL_GROUP:
     {
       if (m_currentFile->HasPVRChannelInfoTag() && m_currentFile->GetPVRChannelInfoTag()->IsRadio())
-        return g_PVRManager.GetPlayingGroup(true)->GroupName();
+        return CServiceBroker::GetPVRManager().GetPlayingGroup(true)->GroupName();
     }
     break;
   case MUSICPLAYER_PLAYCOUNT:
@@ -8856,7 +8856,7 @@ std::string CGUIInfoManager::GetVideoLabel(int item)
     case VIDEOPLAYER_CHANNEL_GROUP:
       {
         if (tag && !tag->IsRadio())
-          return g_PVRManager.GetPlayingTVGroupName();
+          return CServiceBroker::GetPVRManager().GetPlayingTVGroupName();
       }
     }
   }
@@ -9036,7 +9036,7 @@ std::string CGUIInfoManager::GetVideoLabel(int item)
             case VIDEOPLAYER_CHANNEL_GROUP:
             {
               if (!tag->IsRadio())
-                return g_PVRManager.GetPlayingTVGroupName();
+                return CServiceBroker::GetPVRManager().GetPlayingTVGroupName();
               break;
             }
             default:
@@ -9437,7 +9437,7 @@ void CGUIInfoManager::UpdateAVInfo()
       m_videoInfo = video;
       m_audioInfo = audio;
 
-      m_isPvrChannelPreview = g_PVRManager.IsChannelPreview();
+      m_isPvrChannelPreview = CServiceBroker::GetPVRManager().IsChannelPreview();
     }
   }
 }
@@ -10638,7 +10638,7 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
     const CFileItem *pItem = (const CFileItem *)item;
     if (condition == LISTITEM_ISRECORDING)
     {
-      if (!g_PVRManager.IsStarted())
+      if (!CServiceBroker::GetPVRManager().IsStarted())
         return false;
 
       if (pItem->HasPVRChannelInfoTag())
@@ -10664,7 +10664,7 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
     }
     else if (condition == LISTITEM_INPROGRESS)
     {
-      if (!g_PVRManager.IsStarted())
+      if (!CServiceBroker::GetPVRManager().IsStarted())
         return false;
 
       if (pItem->HasEPGInfoTag())

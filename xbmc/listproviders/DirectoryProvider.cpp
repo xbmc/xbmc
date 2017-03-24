@@ -336,7 +336,7 @@ void CDirectoryProvider::Reset()
     m_isAnnounced = false;
     CAnnouncementManager::GetInstance().RemoveAnnouncer(this);
     ADDON::CAddonMgr::GetInstance().Events().Unsubscribe(this);
-    g_PVRManager.Events().Unsubscribe(this);
+    CServiceBroker::GetPVRManager().Events().Unsubscribe(this);
   }
 }
 
@@ -443,7 +443,7 @@ bool CDirectoryProvider::UpdateURL()
     m_isAnnounced = true;
     CAnnouncementManager::GetInstance().AddAnnouncer(this);
     ADDON::CAddonMgr::GetInstance().Events().Subscribe(this, &CDirectoryProvider::OnAddonEvent);
-    g_PVRManager.Events().Subscribe(this, &CDirectoryProvider::OnPVRManagerEvent);
+    CServiceBroker::GetPVRManager().Events().Subscribe(this, &CDirectoryProvider::OnPVRManagerEvent);
   }
   return true;
 }

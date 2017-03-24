@@ -25,6 +25,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "messaging/ApplicationMessenger.h"
+#include "ServiceBroker.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 
@@ -244,7 +245,7 @@ void CGUIDialogPVRGuideInfo::OnInitWindow()
       bHideRecord = false;
     }
   }
-  else if (g_PVRClients->SupportsTimers() && m_progItem->EndAsLocalTime() > CDateTime::GetCurrentDateTime())
+  else if (CServiceBroker::GetPVRManager().Clients()->SupportsTimers() && m_progItem->EndAsLocalTime() > CDateTime::GetCurrentDateTime())
   {
     SET_CONTROL_LABEL(CONTROL_BTN_RECORD, 264);     /* Record */
     bHideRecord = false;

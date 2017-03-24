@@ -47,7 +47,7 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(bool bRadio /* = false */) :
   m_strTitle(g_localizeStrings.Get(19056)), // New Timer
   m_bFullTextEpgSearch(false),
   m_state(PVR_TIMER_STATE_SCHEDULED),
-  m_iClientId(g_PVRClients->GetFirstConnectedClientID()),
+  m_iClientId(CServiceBroker::GetPVRManager().Clients()->GetFirstConnectedClientID()),
   m_iClientIndex(PVR_TIMER_NO_CLIENT_INDEX),
   m_iParentClientIndex(PVR_TIMER_NO_PARENT),
   m_iClientChannelUid(PVR_CHANNEL_INVALID_UID),
@@ -69,7 +69,7 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(bool bRadio /* = false */) :
 {
   m_FirstDay.SetValid(false);
 
-  if (g_PVRClients->SupportsTimers(m_iClientId))
+  if (CServiceBroker::GetPVRManager().Clients()->SupportsTimers(m_iClientId))
   {
     // default to manual one-shot timer for given client
     CPVRTimerTypePtr type(CPVRTimerType::CreateFromAttributes(
@@ -113,7 +113,7 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER &timer, const CPVRChannelPtr 
   m_iPreventDupEpisodes(timer.iPreventDuplicateEpisodes),
   m_iRecordingGroup(timer.iRecordingGroup),
   m_strFileNameAndPath(StringUtils::Format("pvr://client%i/timers/%i", m_iClientId, m_iClientIndex)),
-  m_iChannelNumber(channel ? g_PVRChannelGroups->GetGroupAll(channel->IsRadio())->GetChannelNumber(channel) : 0),
+  m_iChannelNumber(channel ? CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAll(channel->IsRadio())->GetChannelNumber(channel) : 0),
   m_bIsRadio(channel && channel->IsRadio()),
   m_iTimerId(0),
   m_channel(channel),
@@ -127,7 +127,7 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER &timer, const CPVRChannelPtr 
   if (m_iClientIndex == PVR_TIMER_NO_CLIENT_INDEX)
     CLog::Log(LOGERROR, "%s: invalid client index supplied by client %d (must be > 0)!", __FUNCTION__, m_iClientId);
 
-  if (g_PVRClients->SupportsTimers(m_iClientId))
+  if (CServiceBroker::GetPVRManager().Clients()->SupportsTimers(m_iClientId))
   {
     // begin compat section
 
@@ -522,7 +522,7 @@ std::string CPVRTimerInfoTag::GetWeekdaysString() const
 
 bool CPVRTimerInfoTag::AddToClient(void) const
 {
-  PVR_ERROR error = g_PVRClients->AddTimer(*this);
+  PVR_ERROR error = CServiceBroker::GetPVRManager().Clients()->AddTimer(*this);
   if (error != PVR_ERROR_NO_ERROR)
   {
     DisplayError(error);
@@ -534,14 +534,14 @@ bool CPVRTimerInfoTag::AddToClient(void) const
 
 bool CPVRTimerInfoTag::DeleteFromClient(bool bForce /* = false */) const
 {
-  PVR_ERROR error = g_PVRClients->DeleteTimer(*this, bForce);
+  PVR_ERROR error = CServiceBroker::GetPVRManager().Clients()->DeleteTimer(*this, bForce);
   if (error == PVR_ERROR_RECORDING_RUNNING)
   {
     // recording running. ask the user if it should be deleted anyway
     if (HELPERS::ShowYesNoDialogText(CVariant{122}, CVariant{19122}) != DialogResponse::YES)
       return false;
 
-    error = g_PVRClients->DeleteTimer(*this, true);
+    error = CServiceBroker::GetPVRManager().Clients()->DeleteTimer(*this, true);
   }
 
   if (error != PVR_ERROR_NO_ERROR)
@@ -561,7 +561,7 @@ bool CPVRTimerInfoTag::RenameOnClient(const std::string &strNewName)
     m_strTitle = strNewName;
   }
 
-  PVR_ERROR error = g_PVRClients->RenameTimer(*this, strNewName);
+  PVR_ERROR error = CServiceBroker::GetPVRManager().Clients()->RenameTimer(*this, strNewName);
   if (error != PVR_ERROR_NO_ERROR)
   {
     if (error == PVR_ERROR_NOT_IMPLEMENTED)
@@ -658,7 +658,7 @@ void CPVRTimerInfoTag::ResetChildState()
 
 bool CPVRTimerInfoTag::UpdateOnClient()
 {
-  PVR_ERROR error = g_PVRClients->UpdateTimer(*this);
+  PVR_ERROR error = CServiceBroker::GetPVRManager().Clients()->UpdateTimer(*this);
   if (error != PVR_ERROR_NO_ERROR)
   {
     DisplayError(error);
@@ -963,7 +963,7 @@ CEpgInfoTagPtr CPVRTimerInfoTag::GetEpgInfoTag(bool bCreate /* = true */) const
 {
   if (!m_epgTag && bCreate)
   {
-    CPVRChannelPtr channel(g_PVRChannelGroups->GetByUniqueID(m_iClientChannelUid, m_iClientId));
+    CPVRChannelPtr channel(CServiceBroker::GetPVRManager().ChannelGroups()->GetByUniqueID(m_iClientChannelUid, m_iClientId));
     if (channel)
     {
       const CEpgPtr epg(channel->GetEPG());
@@ -1025,7 +1025,7 @@ CPVRChannelPtr CPVRTimerInfoTag::ChannelTag(void) const
 
 CPVRChannelPtr CPVRTimerInfoTag::UpdateChannel(void)
 {
-  const CPVRChannelPtr channel(g_PVRChannelGroups->Get(m_bIsRadio)->GetGroupAll()->GetByUniqueID(m_iClientChannelUid, m_iClientId));
+  const CPVRChannelPtr channel(CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_bIsRadio)->GetGroupAll()->GetByUniqueID(m_iClientChannelUid, m_iClientId));
 
   CSingleLock lock(m_critSection);
   m_channel = channel;

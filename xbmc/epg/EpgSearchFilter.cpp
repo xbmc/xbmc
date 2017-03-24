@@ -24,6 +24,7 @@
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimers.h"
+#include "ServiceBroker.h"
 #include "utils/TextSearch.h"
 #include "utils/log.h"
 
@@ -178,18 +179,18 @@ int CEpgSearchFilter::RemoveDuplicates(CFileItemList &results)
 
 bool CEpgSearchFilter::MatchChannelType(const CEpgInfoTagPtr &tag) const
 {
-  return (g_PVRManager.IsStarted() && tag->ChannelTag()->IsRadio() == m_bIsRadio);
+  return (CServiceBroker::GetPVRManager().IsStarted() && tag->ChannelTag()->IsRadio() == m_bIsRadio);
 }
 
 bool CEpgSearchFilter::MatchChannelNumber(const CEpgInfoTagPtr &tag) const
 {
   bool bReturn(true);
 
-  if (m_iChannelNumber != EPG_SEARCH_UNSET && g_PVRManager.IsStarted())
+  if (m_iChannelNumber != EPG_SEARCH_UNSET && CServiceBroker::GetPVRManager().IsStarted())
   {
-    CPVRChannelGroupPtr group = (m_iChannelGroup != EPG_SEARCH_UNSET) ? g_PVRChannelGroups->GetByIdFromAll(m_iChannelGroup) : g_PVRChannelGroups->GetGroupAllTV();
+    CPVRChannelGroupPtr group = (m_iChannelGroup != EPG_SEARCH_UNSET) ? CServiceBroker::GetPVRManager().ChannelGroups()->GetByIdFromAll(m_iChannelGroup) : CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAllTV();
     if (!group)
-      group = CPVRManager::GetInstance().ChannelGroups()->GetGroupAllTV();
+      group = CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAllTV();
 
     bReturn = (m_iChannelNumber == (int) group->GetChannelNumber(tag->ChannelTag()));
   }
@@ -201,9 +202,9 @@ bool CEpgSearchFilter::MatchChannelGroup(const CEpgInfoTagPtr &tag) const
 {
   bool bReturn(true);
 
-  if (m_iChannelGroup != EPG_SEARCH_UNSET && g_PVRManager.IsStarted())
+  if (m_iChannelGroup != EPG_SEARCH_UNSET && CServiceBroker::GetPVRManager().IsStarted())
   {
-    CPVRChannelGroupPtr group = g_PVRChannelGroups->GetByIdFromAll(m_iChannelGroup);
+    CPVRChannelGroupPtr group = CServiceBroker::GetPVRManager().ChannelGroups()->GetByIdFromAll(m_iChannelGroup);
     bReturn = (group && group->IsGroupMember(tag->ChannelTag()));
   }
 
@@ -217,10 +218,10 @@ bool CEpgSearchFilter::MatchFreeToAir(const CEpgInfoTagPtr &tag) const
 
 bool CEpgSearchFilter::MatchTimers(const CEpgInfoTagPtr &tag) const
 {
-  return (!m_bIgnorePresentTimers || !g_PVRTimers->GetTimerForEpgTag(tag));
+  return (!m_bIgnorePresentTimers || !CServiceBroker::GetPVRManager().Timers()->GetTimerForEpgTag(tag));
 }
 
 bool CEpgSearchFilter::MatchRecordings(const CEpgInfoTagPtr &tag) const
 {
-  return (!m_bIgnorePresentRecordings || !g_PVRRecordings->GetRecordingForEpgTag(tag));
+  return (!m_bIgnorePresentRecordings || !CServiceBroker::GetPVRManager().Recordings()->GetRecordingForEpgTag(tag));
 }

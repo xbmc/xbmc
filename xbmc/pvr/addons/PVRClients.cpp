@@ -1002,7 +1002,7 @@ void CPVRClients::UpdateAddons(void)
     }
   }
 
-  g_PVRManager.Start();
+  CServiceBroker::GetPVRManager().Start();
 }
 
 bool CPVRClients::GetClient(const std::string &strId, AddonPtr &addon) const
@@ -1398,7 +1398,7 @@ void CPVRClients::ConnectionStateChange(CPVRClient *client, std::string &strConn
     {
       CLog::Log(LOGERROR, "PVR - %s - error reading properties", __FUNCTION__);
     }
-    g_PVRManager.Start();
+    CServiceBroker::GetPVRManager().Start();
   }
 }
 

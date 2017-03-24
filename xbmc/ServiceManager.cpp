@@ -106,7 +106,7 @@ void CServiceManager::Deinit()
   m_contextMenuManager.reset();
   m_binaryAddonCache.reset();
   if (m_PVRManager)
-    m_PVRManager->Shutdown();
+    m_PVRManager->Deinit();
   m_PVRManager.reset();
   m_ADSPManager.reset();
   m_addonMgr.reset();

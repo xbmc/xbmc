@@ -85,7 +85,7 @@ bool CPVRTimers::Update(void)
   CLog::Log(LOGDEBUG, "CPVRTimers - %s - updating timers", __FUNCTION__);
   CPVRTimers newTimerList;
   std::vector<int> failedClients;
-  g_PVRClients->GetTimers(&newTimerList, failedClients);
+  CServiceBroker::GetPVRManager().Clients()->GetTimers(&newTimerList, failedClients);
   return UpdateEntries(newTimerList, failedClients);
 }
 
@@ -319,10 +319,10 @@ bool CPVRTimers::UpdateEntries(const CPVRTimers &timers, const std::vector<int> 
     UpdateChannels();
     lock.Leave();
 
-    g_PVRManager.SetChanged();
-    g_PVRManager.NotifyObservers(bAddedOrDeleted ? ObservableMessageTimersReset : ObservableMessageTimers);
+    CServiceBroker::GetPVRManager().SetChanged();
+    CServiceBroker::GetPVRManager().NotifyObservers(bAddedOrDeleted ? ObservableMessageTimersReset : ObservableMessageTimers);
 
-    if (!timerNotifications.empty() && g_PVRManager.IsStarted())
+    if (!timerNotifications.empty() && CServiceBroker::GetPVRManager().IsStarted())
     {
       CPVREventlogJob *job = new CPVREventlogJob;
 
@@ -330,10 +330,10 @@ bool CPVRTimers::UpdateEntries(const CPVRTimers &timers, const std::vector<int> 
       for (const auto &entry : timerNotifications)
       {
         std::string strName;
-        g_PVRClients->GetClientAddonName(entry.first, strName);
+        CServiceBroker::GetPVRManager().Clients()->GetClientAddonName(entry.first, strName);
 
         std::string strIcon;
-        g_PVRClients->GetClientAddonIcon(entry.first, strIcon);
+        CServiceBroker::GetPVRManager().Clients()->GetClientAddonIcon(entry.first, strIcon);
 
         job->AddEvent(CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRRECORD_TIMERNOTIFICATIONS),
                       false, // info, no error
@@ -667,9 +667,9 @@ bool CPVRTimers::DeleteTimersOnChannel(const CPVRChannelPtr &channel, bool bDele
   }
 
   if (bChanged)
-    g_PVRManager.SetChanged();
+    CServiceBroker::GetPVRManager().SetChanged();
 
-  g_PVRManager.NotifyObservers(ObservableMessageTimersReset);
+  CServiceBroker::GetPVRManager().NotifyObservers(ObservableMessageTimersReset);
 
   return bReturn;
 }
@@ -689,7 +689,7 @@ bool CPVRTimers::DeleteTimer(const CPVRTimerInfoTagPtr &tag, bool bForce /* = fa
   if (bDeleteRule)
   {
     /* delete the timer rule that scheduled this timer. */
-    CPVRTimerInfoTagPtr ruleTag = g_PVRTimers->GetByClient(tag->m_iClientId, tag->GetTimerRuleId());
+    CPVRTimerInfoTagPtr ruleTag = CServiceBroker::GetPVRManager().Timers()->GetByClient(tag->m_iClientId, tag->GetTimerRuleId());
     if (!ruleTag)
     {
       CLog::Log(LOGERROR, "PVRTimers - %s - unable to obtain timer rule for given timer", __FUNCTION__);
@@ -886,7 +886,7 @@ CFileItemPtr CPVRTimers::GetTimerRule(const CFileItemPtr &item) const
 void CPVRTimers::Notify(const Observable &obs, const ObservableMessage msg)
 {
   if (msg == ObservableMessageEpgContainer)
-    g_PVRManager.TriggerTimersUpdate();
+    CServiceBroker::GetPVRManager().TriggerTimersUpdate();
 }
 
 CDateTime CPVRTimers::GetNextEventTime(void) const

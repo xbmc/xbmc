@@ -1100,11 +1100,11 @@ bool CGUIWindowVideoBase::OnPlayMedia(int iItem, const std::string &player)
     CPVRRecordingsPath path(item.GetPath());
     if (path.IsValid() && path.IsActive())
     {
-      if (!g_PVRManager.IsStarted())
+      if (!CServiceBroker::GetPVRManager().IsStarted())
         return false;
 
       /* For recordings we check here for a available stream URL */
-      CFileItemPtr tag = g_PVRRecordings->GetByPath(item.GetPath());
+      CFileItemPtr tag = CServiceBroker::GetPVRManager().Recordings()->GetByPath(item.GetPath());
       if (tag && tag->HasPVRRecordingInfoTag() && !tag->GetPVRRecordingInfoTag()->m_strStreamURL.empty())
       {
         std::string stream = tag->GetPVRRecordingInfoTag()->m_strStreamURL;

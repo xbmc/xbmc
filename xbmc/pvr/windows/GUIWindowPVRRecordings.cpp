@@ -175,7 +175,7 @@ void CGUIWindowPVRRecordings::UpdateButtons(void)
   CGUIRadioButtonControl *btnShowDeleted = (CGUIRadioButtonControl*) GetControl(CONTROL_BTNSHOWDELETED);
   if (btnShowDeleted)
   {
-    btnShowDeleted->SetVisible(m_bRadio ? g_PVRRecordings->HasDeletedRadioRecordings() : g_PVRRecordings->HasDeletedTVRecordings());
+    btnShowDeleted->SetVisible(m_bRadio ? CServiceBroker::GetPVRManager().Recordings()->HasDeletedRadioRecordings() : CServiceBroker::GetPVRManager().Recordings()->HasDeletedTVRecordings());
     btnShowDeleted->SetSelected(m_bShowDeletedRecordings);
   }
 

@@ -28,6 +28,7 @@
 #include "PlatformDefs.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/PVRManager.h"
+#include "ServiceBroker.h"
 
 #define COMSKIP_HEADER "FILE PROCESSING COMPLETE"
 #define VIDEOREDO_HEADER "<Version>2"
@@ -564,13 +565,13 @@ bool CEdl::ReadBeyondTV(const std::string& strMovie)
 
 bool CEdl::ReadPvr(const std::string &strMovie)
 {
-  if (!PVR::g_PVRManager.IsStarted())
+  if (!CServiceBroker::GetPVRManager().IsStarted())
   {
     CLog::Log(LOGERROR, "%s - PVR Manager not started, cannot read Edl for %s", __FUNCTION__, strMovie.c_str());
     return false;
   }
 
-  CFileItemPtr tag =  PVR::g_PVRRecordings->GetByPath(strMovie);
+  CFileItemPtr tag =  CServiceBroker::GetPVRManager().Recordings()->GetByPath(strMovie);
   if (tag && tag->HasPVRRecordingInfoTag())
   {
     CLog::Log(LOGDEBUG, "%s - Reading Edl for recording: %s", __FUNCTION__, tag->GetPVRRecordingInfoTag()->m_strTitle.c_str());
