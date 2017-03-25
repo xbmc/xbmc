@@ -353,14 +353,17 @@ Function .onInit
     StrCpy $HotFixID ""
   ${Endif}
   ${If} $HotFixID != ""
-    SetOutPath "$TEMP\PS"
-    FileOpen $0 ps.ps1 w
-    FileWrite $0 "Get-HotFix -Id KB$HotFixID -ea SilentlyContinue"
-    FileClose $0
-    nsExec::ExecToStack 'powershell -noprofile -inputformat none -ExecutionPolicy RemoteSigned -File "$TEMP\PS\ps.ps1"'
+    nsExec::ExecToStack 'cmd /Q /C "%SYSTEMROOT%\System32\wbem\wmic.exe /?"'
     Pop $0 ; return value (it always 0 even if an error occured)
     Pop $1 ; command output
-    RMDir /r "$TEMP\PS"
+    ${If} $0 != 0
+    ${OrIf} $1 == ""
+      MessageBox MB_OK|MB_ICONSTOP|MB_TOPMOST|MB_SETFOREGROUND "Unable to run the Windows program wmic.exe to verify that Windows Update KB$HotFixID is installed.$\nWmic is not installed correctly.$\nPlease fix this issue and try again to install Kodi."
+      Quit
+    ${EndIf}  
+    nsExec::ExecToStack 'cmd /Q /C "%SYSTEMROOT%\System32\wbem\wmic.exe qfe get hotfixid | findstr "^KB$HotFixID[^0-9]""'
+    Pop $0 ; return value (it always 0 even if an error occured)
+    Pop $1 ; command output
     ${If} $0 != 0
     ${OrIf} $1 == ""
       MessageBox MB_OK|MB_ICONSTOP|MB_TOPMOST|MB_SETFOREGROUND "Platform Update for Windows (KB$HotFixID) is required.$\nDownload and install Platform Update for Windows then run setup again."
