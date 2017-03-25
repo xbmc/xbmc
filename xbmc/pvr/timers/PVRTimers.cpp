@@ -82,7 +82,15 @@ CPVRTimerInfoTagPtr CPVRTimersContainer::GetByClient(int iClientId, unsigned int
 }
 
 CPVRTimers::CPVRTimers(void)
-: m_bIsUpdating(false)
+: m_bIsUpdating(false),
+  m_settings({
+    CSettings::SETTING_PVRPOWERMANAGEMENT_DAILYWAKEUP,
+    CSettings::SETTING_PVRPOWERMANAGEMENT_PREWAKEUP,
+    CSettings::SETTING_PVRPOWERMANAGEMENT_BACKENDIDLETIME,
+    CSettings::SETTING_PVRPOWERMANAGEMENT_DAILYWAKEUPTIME,
+    CSettings::SETTING_PVRRECORD_TIMERNOTIFICATIONS,
+    CSettings::SETTING_PVRTIMERS_HIDEDISABLEDTIMERS
+  })
 {
 }
 
@@ -373,7 +381,7 @@ bool CPVRTimers::UpdateEntries(const CPVRTimersContainer &timers, const std::vec
         std::string strIcon;
         CServiceBroker::GetPVRManager().Clients()->GetClientAddonIcon(entry.first, strIcon);
 
-        job->AddEvent(CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRRECORD_TIMERNOTIFICATIONS),
+        job->AddEvent(m_settings.GetBoolValue(CSettings::SETTING_PVRRECORD_TIMERNOTIFICATIONS),
                       false, // info, no error
                       strName,
                       entry.second,
@@ -577,7 +585,7 @@ bool CPVRTimers::GetRootDirectory(const CPVRTimersPath &path, CFileItemList &ite
   bool bRadio = path.IsRadio();
   bool bRules = path.IsRules();
 
-  bool bHideDisabled = CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRTIMERS_HIDEDISABLEDTIMERS);
+  bool bHideDisabled = m_settings.GetBoolValue(CSettings::SETTING_PVRTIMERS_HIDEDISABLEDTIMERS);
 
   CSingleLock lock(m_critSection);
   for (const auto &tagsEntry : m_tags)
@@ -605,7 +613,7 @@ bool CPVRTimers::GetSubDirectory(const CPVRTimersPath &path, CFileItemList &item
   unsigned int iParentId = path.GetParentId();
   int          iClientId = path.GetClientId();
 
-  bool bHideDisabled = CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRTIMERS_HIDEDISABLEDTIMERS);
+  bool bHideDisabled = m_settings.GetBoolValue(CSettings::SETTING_PVRTIMERS_HIDEDISABLEDTIMERS);
 
   CFileItemPtr item;
 
@@ -886,10 +894,10 @@ void CPVRTimers::Notify(const Observable &obs, const ObservableMessage msg)
 
 CDateTime CPVRTimers::GetNextEventTime(void) const
 {
-  const bool dailywakup = CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRPOWERMANAGEMENT_DAILYWAKEUP);
+  const bool dailywakup = m_settings.GetBoolValue(CSettings::SETTING_PVRPOWERMANAGEMENT_DAILYWAKEUP);
   const CDateTime now = CDateTime::GetUTCDateTime();
-  const CDateTimeSpan prewakeup(0, 0, CServiceBroker::GetSettings().GetInt(CSettings::SETTING_PVRPOWERMANAGEMENT_PREWAKEUP), 0);
-  const CDateTimeSpan idle(0, 0, CServiceBroker::GetSettings().GetInt(CSettings::SETTING_PVRPOWERMANAGEMENT_BACKENDIDLETIME), 0);
+  const CDateTimeSpan prewakeup(0, 0, m_settings.GetIntValue(CSettings::SETTING_PVRPOWERMANAGEMENT_PREWAKEUP), 0);
+  const CDateTimeSpan idle(0, 0, m_settings.GetIntValue(CSettings::SETTING_PVRPOWERMANAGEMENT_BACKENDIDLETIME), 0);
 
   CDateTime wakeuptime;
 
@@ -908,7 +916,7 @@ CDateTime CPVRTimers::GetNextEventTime(void) const
   if (dailywakup)
   {
     CDateTime dailywakeuptime;
-    dailywakeuptime.SetFromDBTime(CServiceBroker::GetSettings().GetString(CSettings::SETTING_PVRPOWERMANAGEMENT_DAILYWAKEUPTIME));
+    dailywakeuptime.SetFromDBTime(m_settings.GetStringValue(CSettings::SETTING_PVRPOWERMANAGEMENT_DAILYWAKEUPTIME));
     dailywakeuptime = dailywakeuptime.GetAsUTCDateTime();
 
     dailywakeuptime.SetDateTime(
