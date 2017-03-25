@@ -16755,7 +16755,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#35156"
-msgid "{0:i}"
+msgid "{0:d}"
 msgstr ""
 
 #. Name of setting to configure a keyboard player's controller configuration
