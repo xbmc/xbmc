@@ -30,6 +30,7 @@
 
 #include "pvr/PVRActionListener.h"
 #include "pvr/PVREvent.h"
+#include "pvr/PVRSettings.h"
 #include "pvr/PVRTypes.h"
 #include "pvr/recordings/PVRRecording.h"
 
@@ -89,7 +90,7 @@ namespace PVR
     bool m_bStopped;
   };
 
-  class CPVRManager : private CThread, public Observable, public ANNOUNCEMENT::IAnnouncer, public ISettingCallback
+  class CPVRManager : private CThread, public Observable, public ANNOUNCEMENT::IAnnouncer
   {
     friend class CPVRClients;
 
@@ -119,9 +120,6 @@ namespace PVR
     virtual ~CPVRManager(void);
 
     virtual void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data) override;
-
-    // ISettingCallback implementation
-    void OnSettingChanged(const CSetting *setting) override;
 
     /*!
      * @brief Get the channel groups container.
@@ -652,9 +650,7 @@ namespace PVR
     std::atomic_bool m_isChannelPreview;
     CEventSource<PVREvent> m_events;
 
-    // settings cache
-    bool m_bSettingPowerManagementEnabled; // SETTING_PVRPOWERMANAGEMENT_ENABLED
-    std::string m_strSettingWakeupCommand; // SETTING_PVRPOWERMANAGEMENT_SETWAKEUPCMD
     CPVRActionListener m_actionListener;
+    CPVRSettings m_settings;
   };
 }
