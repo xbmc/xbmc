@@ -497,7 +497,7 @@ msgstr ""
 
 #: xbmc/windows/GUIWindowFileManager.cpp
 msgctxt "#125"
-msgid "Would you like to delete the selected file(s)?[CR]Warning - this action can't be undone!"
+msgid "Would you like to delete the selected file(s)? Warning - this action can't be undone!"
 msgstr ""
 
 #: xbmc/peripherals/bus/PeripheralBus.cpp
@@ -13648,7 +13648,7 @@ msgstr ""
 #. Description of setting with label #21416 "Select first unwatched TV show season/episode"
 #: system/settings/settings.xml
 msgctxt "#21466"
-msgid "When entering a TV show season or episode view automatically select the first unwatched season or episode.[CR][On first entry] The first unwatched item will be selected only when a view is entered for the first time.[CR][Always] The first unwatched item will be selected every time a view is entered."
+msgid "When entering a TV show season or episode view automatically select the first unwatched season or episode. [On first entry] The first unwatched item will be selected only when a view is entered for the first time. [Always] The first unwatched item will be selected every time a view is entered."
 msgstr ""
 
 #. Filter (media data) from float value to float value
@@ -14881,7 +14881,7 @@ msgstr ""
 #. Description of setting "Videos -> Subtitles -> Languages to download subtitles for" with label #24111
 #: system/settings/settings.xml
 msgctxt "#24112"
-msgid "Set languages to use when searching for subtitles.[CR]Note: Not all subtitle services will use all languages."
+msgid "Set languages to use when searching for subtitles. Note: Not all subtitle services will use all languages."
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogSubtitles.cpp
@@ -16241,7 +16241,7 @@ msgstr ""
 #. Description of setting with label #421 "Keep audio device alive"
 #: system/settings/settings.xml
 msgctxt "#34111"
-msgid "Select the behaviour when no sound is required for either playback or GUI sounds.[CR][Always] Continuous inaudible signal is output, this keeps the receiving audio device alive for any new sounds, however this might also block sound from other applications.[CR][1-10 Minutes] Same as [Always] except that after the selected period of time audio enters a suspended state.[CR][Off] Audio output enters a suspended state. Note: Sounds can be missed if audio enters suspended state."
+msgid "Select the behaviour when no sound is required for either playback or GUI sounds. [Always] Continuous inaudible signal is output, this keeps the receiving audio device alive for any new sounds, however this might also block sound from other applications. [1-10 Minutes] Same as [Always] except that after the selected period of time audio enters a suspended state. [Off] Audio output enters a suspended state. Note: Sounds can be missed if audio enters suspended state."
 msgstr ""
 
 #. Indicates if Audio Engine should transmit noise or real silence
@@ -16476,7 +16476,7 @@ msgstr ""
 
 #. Help text of the button to fix the bug where buttons are skipped in the controller dialog. %s - list of disabled buttons and axes
 msgctxt "#35014"
-msgid "Some controllers have buttons and axes that interfere with mapping. Press these now to disable them:[CR]%s"
+msgid "Some controllers have buttons and axes that interfere with mapping. Press these now to disable them: %s"
 msgstr ""
 
 #. Name of a controller button, e.g. Button 1. %d - button index
@@ -16814,7 +16814,7 @@ msgstr ""
 #. This string is an early meme from the late 1990's that made fun of the poor translation in the 16-bit game Zero Wing from the late 1980's. DO NOT TRANSLATE!
 #: system/settings/settings.xml
 msgctxt "#35200"
-msgid "ALL YOUR BASE ARE BELONG[CR]TO US"
+msgid "ALL YOUR BASE ARE BELONG TO US"
 msgstr ""
 
 #. Name of group in "Games -> General" for configuring gameplay
@@ -17641,7 +17641,7 @@ msgstr ""
 #. Description of setting with label #13505 "Resample quality"
 #: system/settings/settings.xml
 msgctxt "#36169"
-msgid "Select the quality of resampling for cases where the audio output needs to be at a different sampling rate from that used by the source.[CR][Low] Is fast and will have minimal impact on system resources such as the use of the CPU.[CR][Medium] & [High] Will use progressively more system resources."
+msgid "Select the quality of resampling for cases where the audio output needs to be at a different sampling rate from that used by the source. [Low] Is fast and will have minimal impact on system resources such as the use of the CPU. [Medium] & [High] Will use progressively more system resources."
 msgstr ""
 
 #. Description of setting with label #22021 "Minimise black bars"
@@ -17685,7 +17685,7 @@ msgstr ""
 #. Description of setting with label #22079 "Default select action"
 #: system/settings/settings.xml
 msgctxt "#36177"
-msgid "Toggle between [Choose], [Play] (default), [Resume] and [Show information].[CR][Choose] Will select an item, e.g. open a directory in files mode.[CR][Resume] Will automatically resume videos from the last position that you were viewing them, even after restarting the system."
+msgid "Toggle between [Choose], [Play] (default), [Resume] and [Show information]. [Choose] Will select an item, e.g. open a directory in files mode. [Resume] Will automatically resume videos from the last position that you were viewing them, even after restarting the system."
 msgstr ""
 
 #. Description of setting with label #20433 "Extract thumbnails and video information"
@@ -19292,7 +19292,7 @@ msgstr ""
 #. Description of setting with label #346 "Normalize levels on downmix"
 #: settings/DisplaySettings.cpp
 msgctxt "#36533"
-msgid "Select how audio is downmixed, e.g. from 5.1 to 2.0.[CR][Enabled] Maintains volume level of the original audio source however the dynamic range is compressed.[CR][Disabled] Maintains the dynamic range of the original audio source when downmixed however volume will be lower. Note: Dynamic range is the difference between the quietest and loudest sounds in an audio source. Enable this setting if movie dialogues are barely audible."
+msgid "Select how audio is downmixed, e.g. from 5.1 to 2.0. [Enabled] Maintains volume level of the original audio source however the dynamic range is compressed. [Disabled] Maintains the dynamic range of the original audio source when downmixed however volume will be lower. Note: Dynamic range is the difference between the quietest and loudest sounds in an audio source. Enable this setting if movie dialogues are barely audible."
 msgstr ""
 
 #. Description of setting with label #668 "Component-specific logging..."
@@ -19318,13 +19318,13 @@ msgstr ""
 #. Description of setting with label #36520 "Playback mode of stereoscopic videos"
 #: system/settings/settings.xml
 msgctxt "#36537"
-msgid "Select in which mode stereoscopic 3D videos will be played.[CR][Ask me] Will show a dialogue to select the desired mode for each playback.[CR][Preferred mode] Will use the preferred mode specified in the \"System -> Video hardware\" section of the settings.[CR][Monoscopic / 2D] Will play the video in mono / 2D.[CR][Ignore] Disables any stereoscopic 3D processing and handling."
+msgid "Select in which mode stereoscopic 3D videos will be played. [Ask me] Will show a dialogue to select the desired mode for each playback. [Preferred mode] Will use the preferred mode specified in the \"System -> Video hardware\" section of the settings. [Monoscopic / 2D] Will play the video in mono / 2D. [Ignore] Disables any stereoscopic 3D processing and handling."
 msgstr ""
 
 #. Description of setting with label #36526 Disable stereoscopic mode when playback is stopped
 #: system/settings/settings.xml
 msgctxt "#36538"
-msgid "[Enabled] Switch GUI (and some TVs) back to 2D mode, between videos in a playlist or when playback ended.[CR][Disabled] GUI and TV will stay in stereoscopic 3D mode. For video playlists with mixed stereoscopic 3D and 2D content, then the GUI will also stay in stereoscopic 3D mode even when a non-stereoscopic 2D video is playing."
+msgid "[Enabled] Switch GUI (and some TVs) back to 2D mode, between videos in a playlist or when playback ended. [Disabled] GUI and TV will stay in stereoscopic 3D mode. For video playlists with mixed stereoscopic 3D and 2D content, then the GUI will also stay in stereoscopic 3D mode even when a non-stereoscopic 2D video is playing."
 msgstr ""
 
 #. Description of setting with label #36500 "Stereoscopic mode (current)"
@@ -19397,7 +19397,7 @@ msgstr ""
 #. Description of setting with label #36550 "Stereoscopic 3D effect strength"
 #: system/settings/settings.xml
 msgctxt "#36551"
-msgid "Defines the strength of the stereoscopic 3D effect in the GUI. This is done by controlling the depth of perception within the GUI, so the higher the value, the more elements will pop out of the screen. [Zero] Disables the stereoscopic 3D effect of the GUI.[CR]For a good visual experience, the value should be higher for small screens and lower for large screens. Note: this is not supported by all skins."
+msgid "Defines the strength of the stereoscopic 3D effect in the GUI. This is done by controlling the depth of perception within the GUI, so the higher the value, the more elements will pop out of the screen. [Zero] Disables the stereoscopic 3D effect of the GUI. For a good visual experience, the value should be higher for small screens and lower for large screens. Note: this is not supported by all skins."
 msgstr ""
 
 #. Description of setting "System -> Video output -> NoOfBuffers" with label #36043
@@ -20136,7 +20136,7 @@ msgstr ""
 #. Description of setting with label #38027 "Decode the stereo stream from 3D files"
 #: system/settings/rbp.xml
 msgctxt "#38028"
-msgid "If enabled, videos created in Multiview Video Coding (MVC) format can also be watched in stereoscopic 3D. MVC format is typically found on 3D Blu-rays.[CR]Note: Processing of this data may reduce playback performance, so only enable if you require stereoscopic 3D support."
+msgid "If enabled, videos created in Multiview Video Coding (MVC) format can also be watched in stereoscopic 3D. MVC format is typically found on 3D Blu-rays. Note: Processing of this data may reduce playback performance, so only enable if you require stereoscopic 3D support."
 msgstr ""
 
 #: system/settings/rbp.xml
@@ -20147,7 +20147,7 @@ msgstr ""
 #. Description of setting "Enable Full HD HDMI modes for stereoscopic 3D" with label #38029
 #: system/settings/rbp.xml
 msgctxt "#38030"
-msgid "This option uses frame-packing to output full resolution for 3D through HDMI.[CR]Enabling this improves quality of Multiview Video Coding (MVC) videos, but may not be supported by all displays."
+msgid "This option uses frame-packing to output full resolution for 3D through HDMI. Enabling this improves quality of Multiview Video Coding (MVC) videos, but may not be supported by all displays."
 msgstr ""
 
 #. Label for an option to select the video stream to play if current video has more than one video stream
