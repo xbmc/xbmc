@@ -21,7 +21,7 @@
 			<posy>0</posy>
 			<include>WindowTitleCommons</include>
 			<width>1040</width>
-			<label>$LOCALIZE[19143] - $LOCALIZE[19023]</label>
+			<label>$LOCALIZE[19143] - $LOCALIZE[19173]</label>
 			<visible>String.IsEmpty(Window.Property(IsRadio))</visible>
 		</control>
 		<control type="label">
@@ -29,7 +29,7 @@
 			<posy>0</posy>
 			<include>WindowTitleCommons</include>
 			<width>1040</width>
-			<label>$LOCALIZE[19143] - $LOCALIZE[19024]</label>
+			<label>$LOCALIZE[19143] - $LOCALIZE[19174]</label>
 			<visible>!String.IsEmpty(Window.Property(IsRadio))</visible>
 		</control>
 		<control type="group">
@@ -375,6 +375,16 @@
 				<width>200</width>
 				<include>ButtonInfoDialogsCommonValues</include>
 				<label>31563</label>
+			</control>
+			<control type="togglebutton" id="34">
+				<description>TV/Radio button</description>
+				<width>200</width>
+				<include>ButtonInfoDialogsCommonValues</include>
+				<label>19174</label>
+				<altlabel>19173</altlabel>
+				<alttexturefocus colordiffuse="blue" border="15">dialogbutton-focus.png</alttexturefocus>
+				<alttexturenofocus border="15">dialogbutton-nofocus.png</alttexturenofocus>
+				<usealttexture>!String.IsEmpty(Window.Property(IsRadio))</usealttexture>
 			</control>
 			<control type="button" id="29">
 				<description>OK button</description>
