@@ -281,6 +281,11 @@ void CAEFactory::Shutdown()
 
 IAEStream *CAEFactory::MakeStream(AEAudioFormat &audioFormat, unsigned int options, IAEClockCallback *clock)
 {
+  if (dataFormat == AE_FMT_INVALID || dataFormat == AE_FMT_MAX)
+  {
+    return NULL;
+  }
+
   if(AE)
     return AE->MakeStream(audioFormat, options, clock);
 
