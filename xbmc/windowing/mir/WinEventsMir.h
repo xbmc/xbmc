@@ -27,7 +27,7 @@
 
 #include "../WinEvents.h"
 
-extern void MirHandleEvent(MirSurface* surface, MirEvent const* ev, void* context);
+extern void MirHandleEvent(MirWindow* surface, MirEvent const* ev, void* context);
 
 class CWinEventsMir : public IWinEvents
 {
