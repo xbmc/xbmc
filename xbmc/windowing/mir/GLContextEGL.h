@@ -34,7 +34,7 @@ public:
                      EGLint renderable_type,
                      EGLint rendering_api);
 
-  bool CreateSurface(MirWindow* surface);
+  bool CreateSurface(MirWindow* window);
   bool CreateContext();
   void Destroy();
   void Detach();
