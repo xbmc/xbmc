@@ -155,7 +155,7 @@ void CActiveAEDSP::TriggerModeUpdate(bool bAsync /* = true */)
 
   if (m_usedProcessesCnt > 0)
   {
-    for (int i = 0; i < m_usedProcessesCnt; i++)
+    for (unsigned int i = 0; i < m_usedProcessesCnt; i++)
     {
       m_usedProcesses[i]->ForceReinit();
     }
