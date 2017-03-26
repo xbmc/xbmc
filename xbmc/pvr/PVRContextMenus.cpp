@@ -19,6 +19,7 @@
  */
 
 #include "ContextMenuItem.h"
+#include "ServiceBroker.h"
 #include "epg/EpgInfoTag.h"
 #include "guilib/GUIWindowManager.h"
 #include "pvr/addons/PVRClients.h"
