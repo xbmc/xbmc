@@ -34,6 +34,11 @@
 #define M_DRI   0xDD
 #define M_IPTC  0xED            // IPTC marker
 
+namespace XFILE
+{
+  class CFile;
+}
+
 
 class CJpegParse
 {
@@ -45,8 +50,8 @@ class CJpegParse
     const IPTCInfo_t * GetIptcInfo() const { return &m_IPTCInfo; };
 
   private:
-    bool ExtractInfo    (FILE *infile);
-    bool GetSection     (FILE *infile, const unsigned short sectionLength);
+    bool ExtractInfo    (XFILE::CFile& infile);
+    bool GetSection     (XFILE::CFile& infile, const unsigned short sectionLength);
     void ReleaseSection (void);
     void ProcessSOFn    (void);
 

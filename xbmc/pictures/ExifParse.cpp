@@ -34,12 +34,17 @@
 #else
 #include <memory.h>
 #include <cstring>
-#define min(a,b) (a)>(b)?(b):(a)
-#define max(a,b) (a)<(b)?(b):(a)
 #endif
 #include <math.h>
 #include <stdio.h>
 #include "ExifParse.h"
+
+#ifndef min
+#define min(a,b) (a)>(b)?(b):(a)
+#endif
+#ifndef max
+#define max(a,b) (a)<(b)?(b):(a)
+#endif
 
 
 // Prototypes for exif utility functions.
