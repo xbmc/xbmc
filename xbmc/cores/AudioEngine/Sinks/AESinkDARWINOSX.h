@@ -22,6 +22,7 @@
 #include "cores/AudioEngine/Interfaces/AESink.h"
 #include "cores/AudioEngine/Utils/AEDeviceInfo.h"
 #include "cores/AudioEngine/Sinks/osx/CoreAudioDevice.h"
+#include "threads/Timer.h"
 
 class AERingBuffer;
 struct AEDelayStatus;
@@ -65,4 +66,20 @@ private:
   CAESpinSection         m_render_locker;
   volatile int64_t       m_render_tick;
   volatile double        m_render_delay;
+};
+
+// helper class for having a delayed device changed event
+class CDeviceChangeListTimeout : public ITimerCallback
+{
+public:
+  CDeviceChangeListTimeout();
+  ~CDeviceChangeListTimeout();
+  
+  void ResetDeviceListChangedTimer();
+  
+  // ITimerCallback
+  void OnTimeout();
+
+private:
+  CTimer *m_pDeviceListChangedTimer;
 };
