@@ -10,17 +10,22 @@
 #
 
 if(PKG_CONFIG_FOUND)
-  pkg_check_modules(PC_RapidJSON RapidJSON QUIET)
+  pkg_check_modules(PC_RapidJSON RapidJSON>=1.0.2 QUIET)
+endif()
+
+if(CORE_SYSTEM_NAME STREQUAL windows OR CORE_SYSTEM_NAME STREQUAL windowsstore)
+  set(RapidJSON_VERSION 1.0.2)
+else()
+  set(RapidJSON_VERSION ${PC_RapidJSON_VERSION})
 endif()
 
 find_path(RapidJSON_INCLUDE_DIR NAMES rapidjson/rapidjson.h
                                 PATHS ${PC_RapidJSON_INCLUDEDIR})
 
-set(RapidJSON_VERSION ${PC_RapidJSON_VERSION})
 
 include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(RAPIDJSON
-                                  REQUIRED_VARS RapidJSON_INCLUDE_DIR
+find_package_handle_standard_args(RapidJSON
+                                  REQUIRED_VARS RapidJSON_INCLUDE_DIR RapidJSON_VERSION
                                   VERSION_VAR RapidJSON_VERSION)
 
 if(RAPIDJSON_FOUND)
