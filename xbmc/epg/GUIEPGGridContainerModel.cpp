@@ -318,7 +318,7 @@ void CGUIEPGGridContainerModel::FindChannelAndBlockIndex(int channelUid, unsigne
 
 unsigned int CGUIEPGGridContainerModel::GetGridStartPadding() const
 {
-  int iEpgLingerTime = g_advancedSettings.m_iEpgLingerTime;
+  unsigned int iEpgLingerTime = g_advancedSettings.m_iEpgLingerTime;
 
   if (iEpgLingerTime < GRID_START_PADDING)
     return iEpgLingerTime;
