@@ -20,7 +20,7 @@ endif()
 find_path(CDIO_INCLUDE_DIR NAMES cdio/cdio.h
                            PATHS ${PC_CDIO_libcdio_INCLUDEDIR}
                                  ${PC_CDIO_libiso9660_INCLUDEDIR})
-find_library(CDIO_LIBRARY NAMES cdio
+find_library(CDIO_LIBRARY NAMES cdio libcdio
                           PATHS ${CDIO_libcdio_LIBDIR} ${CDIO_libiso9660_LIBDIR})
 
 set(CDIO_VERSION ${PC_CDIO_libcdio_VERSION})
