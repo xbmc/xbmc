@@ -20,7 +20,7 @@ find_library(MDNS_LIBRARY NAMES mDNSEmbedded dnssd)
 find_path(MDNS_EMBEDDED_INCLUDE_DIR NAMES mDnsEmbedded.h)
 
 include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(mDNS
+find_package_handle_standard_args(MDNS
                                   REQUIRED_VARS MDNS_LIBRARY MDNS_INCLUDE_DIR)
 
 if(MDNS_FOUND)

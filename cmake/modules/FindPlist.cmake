@@ -28,12 +28,12 @@ if(NOT WIN32)
   find_library(PLIST_LIBRARY NAMES plist
                                    PATHS ${PC_PLIST_LIBDIR})
 
-  find_package_handle_standard_args(PLIST
+  find_package_handle_standard_args(Plist
                                     REQUIRED_VARS PLIST_LIBRARY PLIST_INCLUDE_DIR
                                     VERSION_VAR PLIST_VERSION)
 else()
   # Dynamically loaded DLL
-  find_package_handle_standard_args(PLIST
+  find_package_handle_standard_args(Plist
                                     REQUIRED_VARS PLIST_INCLUDE_DIR
                                     VERSION_VAR PLIST_VERSION)
 endif()

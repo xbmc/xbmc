@@ -107,7 +107,7 @@ set(required_deps Cdio
                   FFMPEG
                   Fmt
                   FreeType
-                  Fribidi
+                  FriBidi
                   LibDvd
                   Lzo2
                   PCRE

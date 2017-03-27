@@ -26,7 +26,7 @@ find_library(CDIO_LIBRARY NAMES cdio libcdio
 set(CDIO_VERSION ${PC_CDIO_libcdio_VERSION})
 
 include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(CDIO
+find_package_handle_standard_args(Cdio
                                   REQUIRED_VARS CDIO_LIBRARY CDIO_INCLUDE_DIR
                                   VERSION_VAR CDIO_VERSION)
 
