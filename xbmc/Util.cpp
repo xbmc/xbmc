@@ -1918,7 +1918,7 @@ int CUtil::ScanArchiveForAssociatedItems(const std::string& strArchivePath,
                                          const std::vector<std::string>& item_exts,
                                          std::vector<std::string>& associatedFiles)
 {
-  CLog::LogFunction(LOGDEBUG, __FUNCTION__, "Scanning archive %s", strArchivePath.c_str());
+  CLog::LogFunction(LOGDEBUG, __FUNCTION__, "Scanning archive %s", CURL::GetRedacted(strArchivePath).c_str());
   int nItemsAdded = 0;
   CFileItemList ItemList;
 
@@ -1951,7 +1951,7 @@ int CUtil::ScanArchiveForAssociatedItems(const std::string& strArchivePath,
     {
       if (StringUtils::EqualsNoCase(strExt, ext))
       {
-        CLog::Log(LOGINFO, "%s: found associated file %s\n", __FUNCTION__, strPathInRar.c_str());
+        CLog::Log(LOGINFO, "%s: found associated file %s\n", __FUNCTION__, CURL::GetRedacted(strPathInRar).c_str());
         associatedFiles.push_back(strPathInRar);
         nItemsAdded++;
         break;
