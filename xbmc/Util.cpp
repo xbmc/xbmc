@@ -55,9 +55,6 @@
 #include "filesystem/MultiPathDirectory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "filesystem/RSSDirectory.h"
-#ifdef HAS_FILESYSTEM_RAR
-#include "filesystem/RarManager.h"
-#endif
 #ifdef HAS_UPNP
 #include "filesystem/UPnPDirectory.h"
 #endif
@@ -1933,35 +1930,18 @@ int CUtil::ScanArchiveForAssociatedItems(const std::string& strArchivePath,
     if (!CDirectory::GetDirectory(zipURL, ItemList, "", DIR_FLAG_NO_FILE_DIRS))
       return false;
   }
-  else
+  else if (URIUtils::HasExtension(strArchivePath, ".rar"))
   {
-#ifdef HAS_FILESYSTEM_RAR
-    // get _ALL_files in the rar, even those located in subdirectories because we set the bMask to false.
-    // so now we dont have to find any subdirs anymore, all files in the rar is checked.
-    if (!g_RarManager.GetFilesInRar(ItemList, strArchivePath, false, ""))
+    CURL pathToUrl(strArchivePath);
+    CURL rarURL = URIUtils::CreateArchivePath("rar", pathToUrl, "");
+    if (!CDirectory::GetDirectory(rarURL, ItemList, "", DIR_FLAG_NO_FILE_DIRS))
       return false;
-#else
-    return false;
-#endif
   }
   for (int it = 0; it < ItemList.Size(); ++it)
   {
     std::string strPathInRar = ItemList[it]->GetPath();
     std::string strExt = URIUtils::GetExtension(strPathInRar);
 
-    // checking for embedded archives
-    if (URIUtils::IsArchive(strPathInRar))
-    {
-      std::string archInArch(strPathInRar);
-      if (strExt == ".rar")
-      {
-        CURL pathToUrl(strArchivePath);
-        archInArch = URIUtils::CreateArchivePath("rar", pathToUrl, strPathInRar).Get();
-      }
-
-      ScanArchiveForAssociatedItems(archInArch, videoNameNoExt, item_exts,  associatedFiles);
-      continue;
-    }
     // check that the found filename matches the movie filename
     int fnl = videoNameNoExt.size();
     if (fnl && !StringUtils::StartsWithNoCase(URIUtils::GetFileName(strPathInRar), videoNameNoExt))
@@ -1971,15 +1951,8 @@ int CUtil::ScanArchiveForAssociatedItems(const std::string& strArchivePath,
     {
       if (StringUtils::EqualsNoCase(strExt, ext))
       {
-        CURL pathToURL(strArchivePath);
-        std::string strSourceUrl;
-        if (URIUtils::HasExtension(strArchivePath, ".rar"))
-          strSourceUrl = URIUtils::CreateArchivePath("rar", pathToURL, strPathInRar).Get();
-        else
-          strSourceUrl = strPathInRar;
-
-        CLog::Log(LOGINFO, "%s: found associated file %s\n", __FUNCTION__, strSourceUrl.c_str());
-        associatedFiles.push_back(strSourceUrl);
+        CLog::Log(LOGINFO, "%s: found associated file %s\n", __FUNCTION__, strPathInRar.c_str());
+        associatedFiles.push_back(strPathInRar);
         nItemsAdded++;
         break;
       }

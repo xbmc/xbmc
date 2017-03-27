@@ -45,9 +45,6 @@ set(SOURCES AddonsDirectory.cpp
             PlaylistFileDirectory.cpp
             PluginDirectory.cpp
             PVRDirectory.cpp
-            RarDirectory.cpp
-            RarFile.cpp
-            RarManager.cpp
             ResourceDirectory.cpp
             ResourceFile.cpp
             RSSDirectory.cpp
@@ -125,9 +122,6 @@ set(HEADERS AddonsDirectory.h
             PlaylistFileDirectory.h
             PluginDirectory.h
             RSSDirectory.h
-            RarDirectory.h
-            RarFile.h
-            RarManager.h
             ResourceDirectory.h
             ResourceFile.h
             SFTPDirectory.h

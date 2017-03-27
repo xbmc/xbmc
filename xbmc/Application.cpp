@@ -79,9 +79,6 @@
 #include "GUILargeTextureManager.h"
 #include "TextureCache.h"
 #include "playlists/SmartPlayList.h"
-#ifdef HAS_FILESYSTEM_RAR
-#include "filesystem/RarManager.h"
-#endif
 #include "playlists/PlayList.h"
 #include "profiles/ProfilesManager.h"
 #include "windowing/WindowingFactory.h"
@@ -2899,11 +2896,6 @@ void CApplication::Stop(int exitCode)
       CZeroconfBrowser::GetInstance()->Stop();
       CZeroconfBrowser::ReleaseInstance();
     }
-#endif
-
-    CLog::Log(LOGNOTICE, "clean cached files!");
-#ifdef HAS_FILESYSTEM_RAR
-    g_RarManager.ClearCache(true);
 #endif
 
 #ifdef HAS_FILESYSTEM_SFTP

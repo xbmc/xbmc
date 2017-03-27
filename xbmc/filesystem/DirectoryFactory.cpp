@@ -73,9 +73,6 @@
 #endif
 #include "XbtDirectory.h"
 #include "ZipDirectory.h"
-#ifdef HAS_FILESYSTEM_RAR
-#include "RarDirectory.h"
-#endif
 #include "FileItem.h"
 #include "URL.h"
 #include "RSSDirectory.h"
@@ -141,14 +138,6 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
   if (url.IsProtocol("apk")) return new CAPKDirectory();
 #endif
   if (url.IsProtocol("zip")) return new CZipDirectory();
-  if (url.IsProtocol("rar"))
-  {
-#ifdef HAS_FILESYSTEM_RAR
-    return new CRarDirectory();
-#else
-    CLog::Log(LOGWARNING, "%s - Compiled without non-free, rar support is disabled", __FUNCTION__);
-#endif
-  }
   if (url.IsProtocol("xbt")) return new CXbtDirectory();
   if (url.IsProtocol("multipath")) return new CMultiPathDirectory();
   if (url.IsProtocol("stack")) return new CStackDirectory();

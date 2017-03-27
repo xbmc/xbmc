@@ -78,14 +78,6 @@
   #endif
 #endif
 
-/**********************
- * Non-free Components
- **********************/
-
-#if defined(HAVE_XBMC_NONFREE)
-  #define HAS_FILESYSTEM_RAR
-#endif
-
 /*****************
  * Win32 Specific
  *****************/

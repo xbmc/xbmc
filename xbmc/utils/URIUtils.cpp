@@ -1261,7 +1261,7 @@ CURL URIUtils::CreateArchivePath(const std::string& type,
 
   /* NOTE: on posix systems, the replacement of \ with / is incorrect.
      Ideally this would not be done. We need to check that the ZipManager
-     and RarManager code (and elsewhere) doesn't pass in non-posix paths.
+     code (and elsewhere) doesn't pass in non-posix paths.
    */
   std::string strBuffer(pathInArchive);
   StringUtils::Replace(strBuffer, '\\', '/');
