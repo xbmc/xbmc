@@ -136,7 +136,7 @@ void CGUIDialogPVRChannelGuide::ShowInfo(int item)
   if (item < 0 || item >= (int)m_vecItems->Size())
     return;
 
-  CPVRGUIActions::GetInstance().ShowEPGInfo(m_vecItems->Get(item));
+  CServiceBroker::GetPVRManager().GUIActions()->ShowEPGInfo(m_vecItems->Get(item));
 }
 
 void CGUIDialogPVRChannelGuide::OnWindowLoaded()

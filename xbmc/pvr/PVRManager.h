@@ -28,6 +28,7 @@
 #include "utils/JobManager.h"
 #include "utils/Observer.h"
 
+#include "pvr/PVRActionListener.h"
 #include "pvr/PVREvent.h"
 #include "pvr/PVRTypes.h"
 #include "pvr/recordings/PVRRecording.h"
@@ -145,6 +146,12 @@ namespace PVR
      * @return The timers container.
      */
     CPVRClientsPtr Clients(void) const;
+
+    /*!
+     * @brief Get access to the pvr gui actions.
+     * @return The gui actions.
+     */
+    CPVRGUIActionsPtr GUIActions(void) const;
 
     /*!
      * @brief Init PVRManager.
@@ -622,6 +629,7 @@ namespace PVR
     CPVRTimersPtr                  m_timers;                      /*!< pointer to the timers container */
     CPVRClientsPtr                 m_addons;                      /*!< pointer to the pvr addon container */
     std::unique_ptr<CPVRGUIInfo>   m_guiInfo;                     /*!< pointer to the guiinfo data */
+    CPVRGUIActionsPtr              m_guiActions;                  /*!< pointer to the pvr gui actions */
     //@}
 
     CPVRManagerJobQueue             m_pendingUpdates;              /*!< vector of pending pvr updates */
@@ -647,5 +655,6 @@ namespace PVR
     // settings cache
     bool m_bSettingPowerManagementEnabled; // SETTING_PVRPOWERMANAGEMENT_ENABLED
     std::string m_strSettingWakeupCommand; // SETTING_PVRPOWERMANAGEMENT_SETWAKEUPCMD
+    CPVRActionListener m_actionListener;
   };
 }

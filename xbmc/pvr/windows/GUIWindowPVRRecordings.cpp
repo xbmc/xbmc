@@ -222,7 +222,7 @@ bool CGUIWindowPVRRecordings::OnMessage(CGUIMessage &message)
 
               if (message.GetParam1() == ACTION_PLAY)
               {
-                CPVRGUIActions::GetInstance().PlayRecording(item, true /* check resume */);
+                CServiceBroker::GetPVRManager().GUIActions()->PlayRecording(item, true /* check resume */);
                 bReturn = true;
               }
               else
@@ -234,15 +234,15 @@ bool CGUIWindowPVRRecordings::OnMessage(CGUIMessage &message)
                     bReturn = true;
                     break;
                   case SELECT_ACTION_PLAY_OR_RESUME:
-                    CPVRGUIActions::GetInstance().PlayRecording(item, true /* check resume */);
+                    CServiceBroker::GetPVRManager().GUIActions()->PlayRecording(item, true /* check resume */);
                     bReturn = true;
                     break;
                   case SELECT_ACTION_RESUME:
-                    CPVRGUIActions::GetInstance().ResumePlayRecording(item, true /* fall back to play if no resume possible */);
+                    CServiceBroker::GetPVRManager().GUIActions()->ResumePlayRecording(item, true /* fall back to play if no resume possible */);
                     bReturn = true;
                     break;
                   case SELECT_ACTION_INFO:
-                    CPVRGUIActions::GetInstance().ShowRecordingInfo(item);
+                    CServiceBroker::GetPVRManager().GUIActions()->ShowRecordingInfo(item);
                     bReturn = true;
                     break;
                   default:
@@ -258,11 +258,11 @@ bool CGUIWindowPVRRecordings::OnMessage(CGUIMessage &message)
               bReturn = true;
               break;
             case ACTION_SHOW_INFO:
-              CPVRGUIActions::GetInstance().ShowRecordingInfo(item);
+              CServiceBroker::GetPVRManager().GUIActions()->ShowRecordingInfo(item);
               bReturn = true;
               break;
             case ACTION_DELETE_ITEM:
-              CPVRGUIActions::GetInstance().DeleteRecording(item);
+              CServiceBroker::GetPVRManager().GUIActions()->DeleteRecording(item);
               bReturn = true;
               break;
             default:
@@ -325,7 +325,7 @@ bool CGUIWindowPVRRecordings::OnContextButtonDeleteAll(CFileItem *item, CONTEXT_
 {
   if (button == CONTEXT_BUTTON_DELETE_ALL)
   {
-    CPVRGUIActions::GetInstance().DeleteAllRecordingsFromTrash();
+    CServiceBroker::GetPVRManager().GUIActions()->DeleteAllRecordingsFromTrash();
     return true;
   }
 

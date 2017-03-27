@@ -35,29 +35,25 @@
 namespace PVR
 {
 
-CPVRActionListener &CPVRActionListener::GetInstance()
+CPVRActionListener::CPVRActionListener()
 {
-  static CPVRActionListener instance;
-  return instance;
+  g_application.RegisterActionListener(this);
+  CServiceBroker::GetSettings().RegisterCallback(this, {
+    CSettings::SETTING_PVRPARENTAL_ENABLED,
+    CSettings::SETTING_PVRMANAGER_RESETDB,
+    CSettings::SETTING_EPG_RESETEPG,
+    CSettings::SETTING_PVRMANAGER_CHANNELMANAGER,
+    CSettings::SETTING_PVRMANAGER_GROUPMANAGER,
+    CSettings::SETTING_PVRMANAGER_CHANNELSCAN,
+    CSettings::SETTING_PVRMENU_SEARCHICONS,
+    CSettings::SETTING_PVRCLIENT_MENUHOOK,
+  });
 }
 
-void CPVRActionListener::Init()
-{
-  std::set<std::string> settingSet;
-  settingSet.insert(CSettings::SETTING_PVRPARENTAL_ENABLED);
-  settingSet.insert(CSettings::SETTING_PVRMANAGER_RESETDB);
-  settingSet.insert(CSettings::SETTING_EPG_RESETEPG);
-  settingSet.insert(CSettings::SETTING_PVRMANAGER_CHANNELMANAGER);
-  settingSet.insert(CSettings::SETTING_PVRMANAGER_GROUPMANAGER);
-  settingSet.insert(CSettings::SETTING_PVRMANAGER_CHANNELSCAN);
-  settingSet.insert(CSettings::SETTING_PVRMENU_SEARCHICONS);
-  settingSet.insert(CSettings::SETTING_PVRCLIENT_MENUHOOK);
-  CServiceBroker::GetSettings().RegisterCallback(this, settingSet);
-}
-
-void CPVRActionListener::Deinit()
+CPVRActionListener::~CPVRActionListener()
 {
   CServiceBroker::GetSettings().UnregisterCallback(this);
+  g_application.UnregisterActionListener(this);
 }
 
 bool CPVRActionListener::OnAction(const CAction &action)
@@ -77,15 +73,15 @@ bool CPVRActionListener::OnAction(const CAction &action)
       {
         case ACTION_PVR_PLAY:
           if (!isPlayingPvr)
-            CPVRGUIActions::GetInstance().SwitchToChannel(PlaybackTypeAny);
+            CServiceBroker::GetPVRManager().GUIActions()->SwitchToChannel(PlaybackTypeAny);
           break;
         case ACTION_PVR_PLAY_TV:
           if (!isPlayingPvr || g_application.CurrentFileItem().GetPVRChannelInfoTag()->IsRadio())
-            CPVRGUIActions::GetInstance().SwitchToChannel(PlaybackTypeTV);
+            CServiceBroker::GetPVRManager().GUIActions()->SwitchToChannel(PlaybackTypeTV);
           break;
         case ACTION_PVR_PLAY_RADIO:
           if (!isPlayingPvr || !g_application.CurrentFileItem().GetPVRChannelInfoTag()->IsRadio())
-            CPVRGUIActions::GetInstance().SwitchToChannel(PlaybackTypeRadio);
+            CServiceBroker::GetPVRManager().GUIActions()->SwitchToChannel(PlaybackTypeRadio);
           break;
       }
       return true;
@@ -122,7 +118,7 @@ bool CPVRActionListener::OnAction(const CAction &action)
           return false;
 
         int iRemote = bIsJumpSMS ? action.GetID() - (ACTION_JUMP_SMS2 - REMOTE_2) : action.GetID();
-        CPVRGUIActions::GetInstance().GetChannelNumberInputHandler().AppendChannelNumberDigit(iRemote - REMOTE_0);
+        CServiceBroker::GetPVRManager().GUIActions()->GetChannelNumberInputHandler().AppendChannelNumberDigit(iRemote - REMOTE_0);
       }
       return true;
     }
@@ -160,11 +156,11 @@ void CPVRActionListener::OnSettingAction(const CSetting *setting)
   const std::string &settingId = setting->GetId();
   if (settingId == CSettings::SETTING_PVRMANAGER_RESETDB)
   {
-    CPVRGUIActions::GetInstance().ResetPVRDatabase(false);
+    CServiceBroker::GetPVRManager().GUIActions()->ResetPVRDatabase(false);
   }
   else if (settingId == CSettings::SETTING_EPG_RESETEPG)
   {
-    CPVRGUIActions::GetInstance().ResetPVRDatabase(true);
+    CServiceBroker::GetPVRManager().GUIActions()->ResetPVRDatabase(true);
   }
   else if (settingId == CSettings::SETTING_PVRMANAGER_CHANNELMANAGER)
   {
@@ -186,7 +182,7 @@ void CPVRActionListener::OnSettingAction(const CSetting *setting)
   }
   else if (settingId == CSettings::SETTING_PVRMANAGER_CHANNELSCAN)
   {
-    CPVRGUIActions::GetInstance().StartChannelScan();
+    CServiceBroker::GetPVRManager().GUIActions()->StartChannelScan();
   }
   else if (settingId == CSettings::SETTING_PVRMENU_SEARCHICONS)
   {
@@ -194,7 +190,7 @@ void CPVRActionListener::OnSettingAction(const CSetting *setting)
   }
   else if (settingId == CSettings::SETTING_PVRCLIENT_MENUHOOK)
   {
-    CPVRGUIActions::GetInstance().ProcessMenuHooks(CFileItemPtr());
+    CServiceBroker::GetPVRManager().GUIActions()->ProcessMenuHooks(CFileItemPtr());
   }
 }
 

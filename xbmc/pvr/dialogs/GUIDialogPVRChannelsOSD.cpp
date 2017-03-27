@@ -271,7 +271,7 @@ void CGUIDialogPVRChannelsOSD::GotoChannel(int item)
     return;
 
   Close();
-  CPVRGUIActions::GetInstance().SwitchToChannel(m_vecItems->Get(item), true /* bCheckResume */);
+  CServiceBroker::GetPVRManager().GUIActions()->SwitchToChannel(m_vecItems->Get(item), true /* bCheckResume */);
   m_group = GetPlayingGroup();
 }
 
@@ -280,7 +280,7 @@ void CGUIDialogPVRChannelsOSD::ShowInfo(int item)
   if (item < 0 || item >= (int)m_vecItems->Size())
     return;
 
-  CPVRGUIActions::GetInstance().ShowEPGInfo(m_vecItems->Get(item));
+  CServiceBroker::GetPVRManager().GUIActions()->ShowEPGInfo(m_vecItems->Get(item));
 }
 
 void CGUIDialogPVRChannelsOSD::OnWindowLoaded()

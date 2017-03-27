@@ -3043,7 +3043,7 @@ bool CApplication::PlayMedia(const CFileItem& item, const std::string &player, i
   }
   else if (item.IsPVR())
   {
-    return CPVRGUIActions::GetInstance().PlayMedia(CFileItemPtr(new CFileItem(item)));
+    return CServiceBroker::GetPVRManager().GUIActions()->PlayMedia(CFileItemPtr(new CFileItem(item)));
   }
 
   CURL path(item.GetPath());
@@ -4093,7 +4093,7 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
     // set to Dim in the case of a dialog on screen or playing video
     if (g_windowManager.HasModalDialog() ||
         (m_pPlayer->IsPlayingVideo() && m_ServiceManager->GetSettings().GetBool(CSettings::SETTING_SCREENSAVER_USEDIMONPAUSE)) ||
-        CPVRGUIActions::GetInstance().IsRunningChannelScan())
+        CServiceBroker::GetPVRManager().GUIActions()->IsRunningChannelScan())
     {
       if (!CAddonMgr::GetInstance().GetAddon("screensaver.xbmc.builtin.dim", m_screenSaver))
         m_screenSaver.reset(new CScreenSaver(""));

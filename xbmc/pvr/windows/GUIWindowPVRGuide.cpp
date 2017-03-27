@@ -292,19 +292,19 @@ bool CGUIWindowPVRGuide::OnMessage(CGUIMessage& message)
                   bReturn = true;
                   break;
                 case EPG_SELECT_ACTION_SWITCH:
-                  CPVRGUIActions::GetInstance().SwitchToChannel(pItem, true);
+                  CServiceBroker::GetPVRManager().GUIActions()->SwitchToChannel(pItem, true);
                   bReturn = true;
                   break;
                 case EPG_SELECT_ACTION_PLAY_RECORDING:
-                  CPVRGUIActions::GetInstance().PlayRecording(pItem, true);
+                  CServiceBroker::GetPVRManager().GUIActions()->PlayRecording(pItem, true);
                   bReturn = true;
                   break;
                 case EPG_SELECT_ACTION_INFO:
-                  CPVRGUIActions::GetInstance().ShowEPGInfo(pItem);
+                  CServiceBroker::GetPVRManager().GUIActions()->ShowEPGInfo(pItem);
                   bReturn = true;
                   break;
                 case EPG_SELECT_ACTION_RECORD:
-                  CPVRGUIActions::GetInstance().ToggleTimer(pItem);
+                  CServiceBroker::GetPVRManager().GUIActions()->ToggleTimer(pItem);
                   bReturn = true;
                   break;
                 case EPG_SELECT_ACTION_SMART_SELECT:
@@ -319,23 +319,23 @@ bool CGUIWindowPVRGuide::OnMessage(CGUIMessage& message)
                     if (start <= now && now <= end)
                     {
                       // current event
-                      CPVRGUIActions::GetInstance().SwitchToChannel(pItem, true);
+                      CServiceBroker::GetPVRManager().GUIActions()->SwitchToChannel(pItem, true);
                     }
                     else if (now < start)
                     {
                       // future event
                       if (tag->HasTimer())
-                        CPVRGUIActions::GetInstance().EditTimer(pItem);
+                        CServiceBroker::GetPVRManager().GUIActions()->EditTimer(pItem);
                       else
-                        CPVRGUIActions::GetInstance().AddTimer(pItem, false);
+                        CServiceBroker::GetPVRManager().GUIActions()->AddTimer(pItem, false);
                     }
                     else
                     {
                       // past event
                       if (tag->HasRecording())
-                        CPVRGUIActions::GetInstance().PlayRecording(pItem, true);
+                        CServiceBroker::GetPVRManager().GUIActions()->PlayRecording(pItem, true);
                       else
-                        CPVRGUIActions::GetInstance().ShowEPGInfo(pItem);
+                        CServiceBroker::GetPVRManager().GUIActions()->ShowEPGInfo(pItem);
                     }
                     bReturn = true;
                   }
@@ -344,19 +344,19 @@ bool CGUIWindowPVRGuide::OnMessage(CGUIMessage& message)
               }
               break;
             case ACTION_SHOW_INFO:
-              CPVRGUIActions::GetInstance().ShowEPGInfo(pItem);
+              CServiceBroker::GetPVRManager().GUIActions()->ShowEPGInfo(pItem);
               bReturn = true;
               break;
             case ACTION_PLAY:
-              CPVRGUIActions::GetInstance().PlayRecording(pItem, true);
+              CServiceBroker::GetPVRManager().GUIActions()->PlayRecording(pItem, true);
               bReturn = true;
               break;
             case ACTION_RECORD:
-              CPVRGUIActions::GetInstance().ToggleTimer(pItem);
+              CServiceBroker::GetPVRManager().GUIActions()->ToggleTimer(pItem);
               bReturn = true;
               break;
             case ACTION_PVR_SHOW_TIMER_RULE:
-              CPVRGUIActions::GetInstance().AddTimerRule(pItem, true);
+              CServiceBroker::GetPVRManager().GUIActions()->AddTimerRule(pItem, true);
               bReturn = true;
               break;
             case ACTION_CONTEXT_MENU:
@@ -382,7 +382,7 @@ bool CGUIWindowPVRGuide::OnMessage(CGUIMessage& message)
                 const CFileItemPtr item(epgGridContainer->GetSelectedChannelItem());
                 if (item)
                 {
-                  CPVRGUIActions::GetInstance().SwitchToChannel(item, true);
+                  CServiceBroker::GetPVRManager().GUIActions()->SwitchToChannel(item, true);
                   bReturn = true;
                 }
               }

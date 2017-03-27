@@ -127,12 +127,6 @@ namespace PVR
     bool DoRun(const CFileItemPtr &item) override { return CServiceBroker::GetPVRManager().Recordings()->Undelete(*item); }
   };
 
-  CPVRGUIActions& CPVRGUIActions::GetInstance()
-  {
-    static CPVRGUIActions instance;
-    return instance;
-  }
-
   CPVRGUIActions::CPVRGUIActions()
   : m_bChannelScanRunning(false)
   {

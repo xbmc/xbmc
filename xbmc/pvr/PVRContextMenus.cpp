@@ -122,9 +122,9 @@ namespace PVR
     bool ShowInformation::Execute(const CFileItemPtr &item) const
     {
       if (item->GetPVRRecordingInfoTag())
-        return CPVRGUIActions::GetInstance().ShowRecordingInfo(item);
+        return CServiceBroker::GetPVRManager().GUIActions()->ShowRecordingInfo(item);
 
-      return CPVRGUIActions::GetInstance().ShowEPGInfo(item);
+      return CServiceBroker::GetPVRManager().GUIActions()->ShowEPGInfo(item);
     }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -148,7 +148,7 @@ namespace PVR
 
     bool FindSimilar::Execute(const CFileItemPtr &item) const
     {
-      return CPVRGUIActions::GetInstance().FindSimilar(item);
+      return CServiceBroker::GetPVRManager().GUIActions()->FindSimilar(item);
     }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -170,7 +170,7 @@ namespace PVR
 
     bool PlayRecording::Execute(const CFileItemPtr &item) const
     {
-      return CPVRGUIActions::GetInstance().PlayRecording(item, true /* bCheckResume */);
+      return CServiceBroker::GetPVRManager().GUIActions()->PlayRecording(item, true /* bCheckResume */);
     }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -191,7 +191,7 @@ namespace PVR
 
     bool StartRecording::Execute(const CFileItemPtr &item) const
     {
-      return CPVRGUIActions::GetInstance().AddTimer(item, false);
+      return CServiceBroker::GetPVRManager().GUIActions()->AddTimer(item, false);
     }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -212,7 +212,7 @@ namespace PVR
 
     bool StopRecording::Execute(const CFileItemPtr &item) const
     {
-      return CPVRGUIActions::GetInstance().StopRecording(item);
+      return CServiceBroker::GetPVRManager().GUIActions()->StopRecording(item);
     }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -229,7 +229,7 @@ namespace PVR
 
     bool RenameRecording::Execute(const CFileItemPtr &item) const
     {
-      return CPVRGUIActions::GetInstance().RenameRecording(item);
+      return CServiceBroker::GetPVRManager().GUIActions()->RenameRecording(item);
     }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -254,7 +254,7 @@ namespace PVR
 
     bool DeleteRecording::Execute(const CFileItemPtr &item) const
     {
-      return CPVRGUIActions::GetInstance().DeleteRecording(item);
+      return CServiceBroker::GetPVRManager().GUIActions()->DeleteRecording(item);
     }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -271,7 +271,7 @@ namespace PVR
 
     bool UndeleteRecording::Execute(const CFileItemPtr &item) const
     {
-      return CPVRGUIActions::GetInstance().UndeleteRecording(item);
+      return CServiceBroker::GetPVRManager().GUIActions()->UndeleteRecording(item);
     }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -298,7 +298,7 @@ namespace PVR
 
     bool ToggleTimerState::Execute(const CFileItemPtr &item) const
     {
-      return CPVRGUIActions::GetInstance().ToggleTimerState(item);
+      return CServiceBroker::GetPVRManager().GUIActions()->ToggleTimerState(item);
     }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -315,7 +315,7 @@ namespace PVR
 
     bool AddTimerRule::Execute(const CFileItemPtr &item) const
     {
-      return CPVRGUIActions::GetInstance().AddTimerRule(item, true);
+      return CServiceBroker::GetPVRManager().GUIActions()->AddTimerRule(item, true);
     }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -332,7 +332,7 @@ namespace PVR
 
     bool EditTimerRule::Execute(const CFileItemPtr &item) const
     {
-      return CPVRGUIActions::GetInstance().EditTimerRule(item);
+      return CServiceBroker::GetPVRManager().GUIActions()->EditTimerRule(item);
     }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -351,7 +351,7 @@ namespace PVR
     {
       const CFileItemPtr parentTimer(CServiceBroker::GetPVRManager().Timers()->GetTimerRule(item));
       if (parentTimer)
-        return CPVRGUIActions::GetInstance().DeleteTimerRule(parentTimer);
+        return CServiceBroker::GetPVRManager().GUIActions()->DeleteTimerRule(parentTimer);
 
       return false;
     }
@@ -392,7 +392,7 @@ namespace PVR
 
     bool EditTimer::Execute(const CFileItemPtr &item) const
     {
-      return CPVRGUIActions::GetInstance().EditTimer(item);
+      return CServiceBroker::GetPVRManager().GUIActions()->EditTimer(item);
     }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -417,7 +417,7 @@ namespace PVR
 
     bool RenameTimer::Execute(const CFileItemPtr &item) const
     {
-      return CPVRGUIActions::GetInstance().RenameTimer(item);
+      return CServiceBroker::GetPVRManager().GUIActions()->RenameTimer(item);
     }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -445,7 +445,7 @@ namespace PVR
 
     bool DeleteTimer::Execute(const CFileItemPtr &item) const
     {
-      return CPVRGUIActions::GetInstance().DeleteTimer(item);
+      return CServiceBroker::GetPVRManager().GUIActions()->DeleteTimer(item);
     }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -499,7 +499,7 @@ namespace PVR
 
     bool PVRClientMenuHook::Execute(const CFileItemPtr &item) const
     {
-      return CPVRGUIActions::GetInstance().ProcessMenuHooks(item);;
+      return CServiceBroker::GetPVRManager().GUIActions()->ProcessMenuHooks(item);;
     }
 
   } // namespace CONEXTMENUITEM

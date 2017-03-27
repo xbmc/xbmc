@@ -39,12 +39,12 @@ namespace PVR
 
 bool CPVRSetRecordingOnChannelJob::DoWork()
 {
-  return CPVRGUIActions::GetInstance().SetRecordingOnChannel(m_channel, m_bOnOff);
+  return CServiceBroker::GetPVRManager().GUIActions()->SetRecordingOnChannel(m_channel, m_bOnOff);
 }
 
 bool CPVRContinueLastChannelJob::DoWork()
 {
-  return CPVRGUIActions::GetInstance().ContinueLastPlayedChannel();
+  return CServiceBroker::GetPVRManager().GUIActions()->ContinueLastPlayedChannel();
 }
 
 CPVREventlogJob::CPVREventlogJob(bool bNotifyUser, bool bError, const std::string &label, const std::string &msg, const std::string &icon)

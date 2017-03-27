@@ -41,8 +41,8 @@
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroupInternal.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
-#include "pvr/PVRActionListener.h"
 #include "pvr/PVRDatabase.h"
+#include "pvr/PVRGUIActions.h"
 #include "pvr/PVRGUIInfo.h"
 #include "pvr/PVRJobs.h"
 #include "pvr/recordings/PVRRecordings.h"
@@ -74,7 +74,7 @@ using KODI::MESSAGING::HELPERS::DialogResponse;
 
 CPVRManagerJobQueue::CPVRManagerJobQueue()
 : m_triggerEvent(false),
-m_bStopped(true)
+  m_bStopped(true)
 {
 }
 
@@ -153,6 +153,7 @@ bool CPVRManagerJobQueue::WaitForJobs(unsigned int milliSeconds)
 CPVRManager::CPVRManager(void) :
     CThread("PVRManager"),
     m_addons(new CPVRClients),
+    m_guiActions(new CPVRGUIActions),
     m_bFirstStart(true),
     m_bIsSwitchingChannels(false),
     m_bEpgsCreated(false),
@@ -249,10 +250,14 @@ void CPVRManager::OnSettingChanged(const CSetting *setting)
   }
 }
 
+CPVRGUIActionsPtr CPVRManager::GUIActions(void) const
+{
+  // note: m_guiActions is const (only set/reset in ctor/dtor). no need for a lock here.
+  return m_guiActions;
+}
+
 void CPVRManager::Clear(void)
 {
-  g_application.UnregisterActionListener(&CPVRActionListener::GetInstance());
-
   m_pendingUpdates.Clear();
 
   CSingleLock lock(m_critSection);
@@ -291,9 +296,6 @@ void CPVRManager::Init()
   settingSet.insert(CSettings::SETTING_PVRPOWERMANAGEMENT_ENABLED);
   settingSet.insert(CSettings::SETTING_PVRPOWERMANAGEMENT_SETWAKEUPCMD);
   CServiceBroker::GetSettings().RegisterCallback(this, settingSet);
-
-  // Create and init action listener
-  CPVRActionListener::GetInstance().Init();
 
   // Note: we're holding the progress bar dialog instance pointer in a member because it is needed by pvr core
   //       components. The latter might run in a different thread than the gui and g_windowManager.GetWindow()
@@ -401,9 +403,6 @@ void CPVRManager::Deinit()
 
   // release addons
   m_addons.reset();
-
-  // deinit action listener
-  CPVRActionListener::GetInstance().Deinit();
 }
 
 CPVRManager::ManagerState CPVRManager::GetState(void) const
@@ -465,12 +464,6 @@ void CPVRManager::PublishEvent(PVREvent event)
 
 void CPVRManager::Process(void)
 {
-  /* register application action listener */
-  {
-    CSingleExit exit(m_critSection);
-    g_application.RegisterActionListener(&CPVRActionListener::GetInstance());
-  }
-
   g_EpgContainer.Stop();
 
   /* load the pvr data from the db and clients if it's not already loaded */

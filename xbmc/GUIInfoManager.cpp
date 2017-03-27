@@ -5937,7 +5937,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
     CServiceBroker::GetPVRManager().TranslateCharInfo(info, strLabel);
     break;
   case PVR_CHANNEL_NUMBER_INPUT:
-    strLabel = CPVRGUIActions::GetInstance().GetChannelNumberInputHandler().GetChannelNumberAsString();
+    strLabel = CServiceBroker::GetPVRManager().GUIActions()->GetChannelNumberInputHandler().GetChannelNumberAsString();
     break;
   case ADSP_ACTIVE_STREAM_TYPE:
   case ADSP_DETECTED_STREAM_TYPE:
