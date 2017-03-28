@@ -63,7 +63,7 @@ namespace PVR
     CPVRTimerInfoTagPtr GetByClient(int iClientId, unsigned int iClientTimerId) const;
 
     typedef std::vector<CPVRTimerInfoTagPtr> VecTimerInfoTag;
-    typedef std::map<CDateTime, VecTimerInfoTag*> MapTags;
+    typedef std::map<CDateTime, VecTimerInfoTag> MapTags;
 
     /*!
      * @brief Get the timertags map.
