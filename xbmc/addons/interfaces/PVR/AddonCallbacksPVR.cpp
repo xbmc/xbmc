@@ -213,8 +213,8 @@ void CAddonCallbacksPVR::PVRTransferTimerEntry(void *addonData, const ADDON_HAND
     return;
   }
 
-  CPVRClient *client     = GetPVRClient(addonData);
-  CPVRTimers *xbmcTimers = static_cast<CPVRTimers *>(handle->dataAddress);
+  CPVRClient *client = GetPVRClient(addonData);
+  CPVRTimersContainer *xbmcTimers = static_cast<CPVRTimersContainer *>(handle->dataAddress);
   if (!timer || !client || !xbmcTimers)
   {
     CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);

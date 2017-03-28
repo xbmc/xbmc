@@ -987,7 +987,7 @@ int CPVRClient::GetTimersAmount(void)
   return m_struct.GetTimersAmount();
 }
 
-PVR_ERROR CPVRClient::GetTimers(CPVRTimers *results)
+PVR_ERROR CPVRClient::GetTimers(CPVRTimersContainer *results)
 {
   if (!m_bReadyToUse)
     return PVR_ERROR_SERVER_ERROR;
@@ -997,7 +997,7 @@ PVR_ERROR CPVRClient::GetTimers(CPVRTimers *results)
 
   ADDON_HANDLE_STRUCT handle;
   handle.callerAddress = this;
-  handle.dataAddress = (CPVRTimers*) results;
+  handle.dataAddress = results;
   PVR_ERROR retVal = m_struct.GetTimers(&handle);
 
   LogError(retVal, __FUNCTION__);

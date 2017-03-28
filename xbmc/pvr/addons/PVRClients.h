@@ -353,7 +353,7 @@ namespace PVR
      * @param failedClients in case of errors will contain the ids of the clients for which the timers could not be obtained.
      * @return true on success for all clients, false in case of error for at least one client.
      */
-    bool GetTimers(CPVRTimers *timers, std::vector<int> &failedClients);
+    bool GetTimers(CPVRTimersContainer *timers, std::vector<int> &failedClients);
 
     /*!
      * @brief Add a new timer to a backend.
