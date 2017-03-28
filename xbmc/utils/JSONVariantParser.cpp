@@ -34,6 +34,7 @@ public:
   bool Int64(int64_t i);
   bool Uint64(uint64_t u);
   bool Double(double d);
+  bool RawNumber(const char* str, rapidjson::SizeType length, bool copy);
   bool String(const char* str, rapidjson::SizeType length, bool copy);
   bool StartObject();
   bool Key(const char* str, rapidjson::SizeType length, bool copy);
@@ -110,6 +111,11 @@ bool CJSONVariantParserHandler::Uint64(uint64_t u)
 bool CJSONVariantParserHandler::Double(double d)
 {
   return Primitive(d);
+}
+
+bool CJSONVariantParserHandler::RawNumber(const char* str, rapidjson::SizeType length, bool copy)
+{
+  return Primitive(str, length);
 }
 
 bool CJSONVariantParserHandler::String(const char* str, rapidjson::SizeType length, bool copy)

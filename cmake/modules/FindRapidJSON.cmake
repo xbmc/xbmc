@@ -14,7 +14,7 @@ if(PKG_CONFIG_FOUND)
 endif()
 
 if(CORE_SYSTEM_NAME STREQUAL windows OR CORE_SYSTEM_NAME STREQUAL windowsstore)
-  set(RapidJSON_VERSION 1.0.2)
+  set(RapidJSON_VERSION 1.1.0)
 else()
   set(RapidJSON_VERSION ${PC_RapidJSON_VERSION})
 endif()

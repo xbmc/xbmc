@@ -1,18 +1,29 @@
-diff -rupN a/CMakeLists.txt b/CMakeLists.txt
---- a/CMakeLists.txt	2015-09-10 18:33:21.048580591 +0200
-+++ b/CMakeLists.txt	2015-09-10 18:34:19.136579486 +0200
-@@ -25,14 +25,6 @@ if(RAPIDJSON_HAS_STDSTRING)
-     add_definitions(-DRAPIDJSON_HAS_STDSTRING)
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index ceda71b..efb259e 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -50,7 +50,6 @@ if(CCACHE_FOUND)
+ endif(CCACHE_FOUND)
+ 
+ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native -Wall -Wextra -Werror")
+     if (RAPIDJSON_BUILD_CXX11)
+         if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS "4.7.0")
+             set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+@@ -73,7 +72,6 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+         endif()
+     endif()
+ elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native -Wall -Wextra -Werror -Wno-missing-field-initializers")
+     if (RAPIDJSON_BUILD_CXX11)
+         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+     endif()
+@@ -88,7 +86,6 @@ elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+         endif()
+     endif()
+ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+-    add_definitions(-D_CRT_SECURE_NO_WARNINGS=1)
+     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHsc")
  endif()
  
--if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
--    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native -Wall -Wextra")
--elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
--    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native -Wall -Wextra")
--elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
--    add_definitions(-D_CRT_SECURE_NO_WARNINGS=1)
--endif()
--
- #add extra search paths for libraries and includes
- SET(INCLUDE_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/include" CACHE PATH "The directory the headers are installed in")
- SET(LIB_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/lib" CACHE STRING "Directory where lib will install")
+
