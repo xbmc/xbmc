@@ -116,16 +116,6 @@ bool CGUIDialogAddonInfo::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_BTN_ENABLE)
       {
-        //FIXME: should be moved to somewhere appropriate (e.g CAddonMgs::CanAddonBeDisabled or IsInUse) and button should be disabled
-        if (m_localAddon)
-        {
-          if (m_localAddon->Type() == ADDON_ADSPDLL && CServiceBroker::GetADSP().IsProcessing())
-          {
-            CGUIDialogOK::ShowAndGetInput(24137, 0, 24138, 0);
-            return true;
-          }
-        }
-
         OnEnableDisable();
         return true;
       }
