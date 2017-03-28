@@ -12,11 +12,11 @@
 				<include>OpenClose_Left</include>
 				<control type="fixedlist" id="50">
 					<left>0</left>
-					<top>list_y_offset</top>
+					<top>140</top>
 					<right>918</right>
 					<bottom>list_y_offset</bottom>
-					<movement>3</movement>
-					<focusposition>5</focusposition>
+					<movement>5</movement>
+					<focusposition>4</focusposition>
 					<scrolltime tween="cubic" easing="out">500</scrolltime>
 					<orientation>vertical</orientation>
 					<onleft>9000</onleft>
