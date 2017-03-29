@@ -493,9 +493,6 @@ void CPVRManager::Unload()
 
 void CPVRManager::Shutdown()
 {
-  // set system wakeup data
-  SetWakeupCommand();
-
   Unload();
 
   // release addons
