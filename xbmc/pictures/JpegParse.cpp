@@ -30,17 +30,21 @@
 // pairs (where both description and value fields are of CStdString types).
 //--------------------------------------------------------------------------
 
+#include "filesystem/File.h"
 #ifndef _LINUX
 #include <windows.h>
 #else
 #include <memory.h>
 #include <cstring>
-#define min(a,b) (a)>(b)?(b):(a)
 typedef unsigned char BYTE;
 #endif
 #include "JpegParse.h"
 
+#ifndef min
+#define min(a,b) (a)>(b)?(b):(a)
+#endif
 
+using namespace XFILE;
 
 //--------------------------------------------------------------------------
 #define JPEG_PARSE_STRING_ID_BASE       21500
@@ -98,7 +102,7 @@ void CJpegParse::ProcessSOFn (void)
 // Read a section from a JPEG file. Note that this function allocates memory.
 // It must be called in pair with ReleaseSection
 //--------------------------------------------------------------------------
-bool CJpegParse::GetSection (FILE *infile, const unsigned short sectionLength)
+bool CJpegParse::GetSection (CFile& infile, const unsigned short sectionLength)
 {
   if (sectionLength < 2)
   {
@@ -118,7 +122,7 @@ bool CJpegParse::GetSection (FILE *infile, const unsigned short sectionLength)
 
   unsigned int len = (unsigned int)sectionLength;
 
-  size_t bytesRead = fread(m_SectionBuffer+sizeof(sectionLength), 1, len-sizeof(sectionLength), infile);
+  size_t bytesRead = infile.Read(m_SectionBuffer+sizeof(sectionLength), len-sizeof(sectionLength));
   if (bytesRead != sectionLength-sizeof(sectionLength))
   {
     printf("JpgParse: premature end of file?");
@@ -142,16 +146,16 @@ void CJpegParse::ReleaseSection (void)
 // Parse the marker stream until SOS or EOI is seen; infile has already been
 // successfully open
 //--------------------------------------------------------------------------
-bool CJpegParse::ExtractInfo (FILE *infile)
+bool CJpegParse::ExtractInfo (CFile& infile)
 {
   // Get file marker (two bytes - must be 0xFFD8 for JPEG files
   BYTE a;
-  size_t bytesRead = fread(&a, 1, sizeof(BYTE), infile);
+  size_t bytesRead = infile.Read(&a, sizeof(BYTE));
   if ((bytesRead != sizeof(BYTE)) || (a != 0xFF))
   {
     return false;
   }
-  bytesRead = fread(&a, 1, sizeof(BYTE), infile);
+  bytesRead = infile.Read(&a, sizeof(BYTE));
   if ((bytesRead != sizeof(BYTE)) || (a != M_SOI))
   {
     return false;
@@ -161,7 +165,7 @@ bool CJpegParse::ExtractInfo (FILE *infile)
   {
     BYTE marker = 0;
     for (a=0; a<7; a++) {
-      fread(&marker, 1, sizeof(BYTE), infile);
+      bytesRead = infile.Read(&marker, sizeof(BYTE));
       if (marker != 0xFF)
         break;
 
@@ -175,7 +179,7 @@ bool CJpegParse::ExtractInfo (FILE *infile)
 
     // Read the length of the section.
     unsigned short itemlen = 0;
-    bytesRead = fread(&itemlen, 1, sizeof(itemlen), infile);
+    bytesRead = infile.Read(&itemlen, sizeof(itemlen));
     itemlen = CExifParse::Get16(&itemlen);
 
     if ((bytesRead != sizeof(itemlen)) || (itemlen < sizeof(itemlen)))
@@ -271,10 +275,9 @@ bool CJpegParse::ExtractInfo (FILE *infile)
 //--------------------------------------------------------------------------
 bool CJpegParse::Process (const char *picFileName)
 {
-  FILE *file;
+  CFile file;
 
-  file = fopen(picFileName, "rb");
-  if (!file)
+  if (!file.Open(picFileName))
     return false;
 
   // File exists and successfully opened. Start processing
@@ -318,7 +321,7 @@ bool CJpegParse::Process (const char *picFileName)
   m_JpegInfo[SLIDE_FILE_DATE] = tmp;*/
 
   bool result = ExtractInfo(file);
-  fclose(file);
+  file.Close();
   if (result == false)
     printf("JpgParse: Not a JPEG file %s", picFileName);
   return result;

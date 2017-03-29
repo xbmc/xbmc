@@ -30,11 +30,14 @@
 #include <windows.h>
 #else
 #include <string.h>
-#define min(a,b) (a)>(b)?(b):(a)
 #endif
 #include <stdio.h>
 #include "IptcParse.h"
 #include "ExifParse.h"
+
+#ifndef min
+#define min(a,b) (a)>(b)?(b):(a)
+#endif
 
 // Supported IPTC entry types
 #define IPTC_RECORD_VERSION         0x00
