@@ -1736,6 +1736,8 @@ void CFileItem::LoadEmbeddedCue()
         cuesheet->UpdateMediaFile(*itMedia, GetPath());
       SetCueDocument(cuesheet);
     }
+    // Clear cuesheet tag having added it to item
+    tag.SetCueSheet(""); 
   }
 }
 

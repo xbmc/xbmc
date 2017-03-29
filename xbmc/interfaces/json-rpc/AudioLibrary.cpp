@@ -348,7 +348,7 @@ JSONRPC_STATUS CAudioLibrary::GetSongs(const std::string &method, ITransportLaye
   bool artistData = CheckForAdditionalProperties(parameterObject["properties"], checkProperties, additionalProperties);
  
   CFileItemList items;
-  if (!musicdatabase.GetSongsFullByWhere(musicUrl.ToString(), CDatabase::Filter(), items, sorting, artistData, false))
+  if (!musicdatabase.GetSongsFullByWhere(musicUrl.ToString(), CDatabase::Filter(), items, sorting, artistData))
     return InternalError; 
 
   JSONRPC_STATUS ret = GetAdditionalSongDetails(parameterObject, items, musicdatabase);

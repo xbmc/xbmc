@@ -178,6 +178,7 @@ CSong::CSong(CFileItem& item)
   embeddedArt = tag.GetCoverArtInfo();
   strFileName = tag.GetURL().empty() ? item.GetPath() : tag.GetURL();
   dateAdded = tag.GetDateAdded();
+  replayGain = tag.GetReplayGain();
   strThumb = item.GetUserMusicThumb(true);
   iStartOffset = item.m_lStartOffset;
   iEndOffset = item.m_lEndOffset;
@@ -258,6 +259,7 @@ void CSong::Clear()
   idAlbum = -1;
   bCompilation = false;
   embeddedArt.clear();
+  replayGain = ReplayGain();
 }
 const std::vector<std::string> CSong::GetArtist() const
 {
