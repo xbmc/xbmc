@@ -461,7 +461,7 @@ bool CPVRClients::HasTimerSupport(int iClientId)
   return false;
 }
 
-bool CPVRClients::GetTimers(CPVRTimers *timers, std::vector<int> &failedClients)
+bool CPVRClients::GetTimers(CPVRTimersContainer *timers, std::vector<int> &failedClients)
 {
   bool bSuccess(true);
   PVR_CLIENTMAP clients;

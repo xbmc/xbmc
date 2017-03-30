@@ -41,7 +41,7 @@ namespace PVR
   class CPVRChannelGroup;
   class CPVRChannelGroupInternal;
   class CPVRChannelGroups;
-  class CPVRTimers;
+  class CPVRTimersContainer;
   class CPVRTimerInfoTag;
   class CPVRRecordings;
   class CPVREpgContainer;
@@ -387,7 +387,7 @@ namespace PVR
      * @param results The container to store the result in.
      * @return PVR_ERROR_NO_ERROR if the list has been fetched successfully.
      */
-    PVR_ERROR GetTimers(CPVRTimers *results);
+    PVR_ERROR GetTimers(CPVRTimersContainer *results);
 
     /*!
      * @brief Add a timer on the backend.
