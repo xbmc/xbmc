@@ -2932,6 +2932,9 @@ void CApplication::Stop(int exitCode)
     CLog::Log(LOGNOTICE, "stop player");
     m_pPlayer->ClosePlayer();
 
+    // quick and dirty Krypton-only fix for http://trac.kodi.tv/ticket/17374
+    g_PVRManager.SetWakeupCommand();
+
     StopServices();
 
 #ifdef HAS_ZEROCONF
