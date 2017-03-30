@@ -14,7 +14,7 @@ diff -ru lib/util/charset/iconv.c lib/util/charset/iconv.c
  #undef strcasecmp
  #endif
 @@ -502,6 +507,19 @@ static size_t ucs2hex_push(void *cd, con
-        return 0;
+ 	return 0;
  }
 
 +#if defined(ANDROID)
@@ -31,7 +31,7 @@ diff -ru lib/util/charset/iconv.c lib/util/charset/iconv.c
 +#endif
 +
  static size_t iconv_swab(void *cd, const char **inbuf, size_t *inbytesleft,
-                         char **outbuf, size_t *outbytesleft)
+ 			 char **outbuf, size_t *outbytesleft)
  {
 diff -ru lib/util/system.c lib/util/system.c
 --- lib/util/system.c	2013-01-29 09:49:31.000000000 +0100
@@ -129,6 +129,15 @@ diff -ru nsswitch/libwbclient/wbc_sid.c nsswitch/libwbclient/wbc_sid.c
 diff -ru source3/configure source3/configure
 --- source3/configure	2013-01-29 10:21:59.000000000 +0100
 +++ source3/configure	2015-03-28 08:43:34.903227582 +0100
+@@ -20894,7 +20894,7 @@
+ LIBSMBCLIENT_SOVER=0
+ LIBSMBCLIENT_FULLVER=$LIBSMBCLIENT_SOVER
+ 
+-LIBSMBCLIENT_SHARED_TARGET_SOVER=$LIBSMBCLIENT_SHARED_TARGET.$LIBSMBCLIENT_SOVER
++LIBSMBCLIENT_SHARED_TARGET_SOVER=$LIBSMBCLIENT_SHARED_TARGET
+ LIBSMBCLIENT_SHARED_TARGET_FULLVER=$LIBSMBCLIENT_SHARED_TARGET.$LIBSMBCLIENT_FULLVER
+ 
+ 
 @@ -36540,19 +36540,19 @@
  if test "x$ac_cv_lib_pthread_pthread_attr_init" = xyes; then :
  
@@ -222,6 +231,29 @@ diff -ru source3/libads/dns.c source3/libads/dns.c
  #if !defined(C_IN)	/* AIX 5.3 already defines C_IN */
  #  define C_IN		ns_c_in
 diff -ru source3/passdb/passdb.c source3/passdb/passdb.c
+--- source3/Makefile.in
++++ source3/Makefile.in
+@@ -2507,8 +2507,6 @@
+ 		@SONAMEFLAG@`basename $@`
+ 
+ $(LIBSMBCLIENT_SHARED_TARGET): $(LIBSMBCLIENT_SHARED_TARGET_SONAME)
+-	@rm -f $@
+-	@ln -s `basename $(LIBSMBCLIENT_SHARED_TARGET_SONAME)` $@
+ 
+ $(LIBSMBCLIENT_STATIC_TARGET): $(BINARY_PREREQS) $(LIBSMBCLIENT_OBJ1)
+ 	@echo Linking non-shared library $@
+@@ -2525,11 +2523,6 @@
+ installlibsmbclient:: installdirs libsmbclient
+ 	@$(SHELL) $(srcdir)/script/installdirs.sh $(INSTALLPERMS_BIN) $(DESTDIR) $(LIBDIR)
+ 	-$(INSTALLLIBCMD_SH) $(LIBSMBCLIENT_SHARED_TARGET_SONAME) $(DESTDIR)$(LIBDIR)
+-	@rm -f $(DESTDIR)$(LIBDIR)/`basename $(LIBSMBCLIENT_SHARED_TARGET)`
+-	-if test -r $(LIBSMBCLIENT_SHARED_TARGET_SONAME) ; then \
+-		ln -f -s `basename $(LIBSMBCLIENT_SHARED_TARGET_SONAME)` \
+-			$(DESTDIR)$(LIBDIR)/`basename $(LIBSMBCLIENT_SHARED_TARGET)` ; \
+-	fi
+ 	-$(INSTALLLIBCMD_A) $(LIBSMBCLIENT_STATIC_TARGET) $(DESTDIR)$(LIBDIR)
+ 	@$(SHELL) $(srcdir)/script/installdirs.sh $(INSTALLPERMS_BIN) $(DESTDIR) ${prefix}/include
+ 	-$(INSTALLCMD) -m $(INSTALLPERMS_DATA) $(LIBSMBCLIENT_HEADERS) $(DESTDIR)${prefix}/include
 --- source3/passdb/passdb.c	2013-01-29 09:49:31.000000000 +0100
 +++ source3/passdb/passdb.c	2015-03-28 08:30:54.543217284 +0100
 @@ -163,6 +163,7 @@
