@@ -128,7 +128,15 @@ namespace PVR
   };
 
   CPVRGUIActions::CPVRGUIActions()
-  : m_bChannelScanRunning(false)
+  : m_bChannelScanRunning(false),
+    m_settings({
+      CSettings::SETTING_PVRRECORD_INSTANTRECORDTIME,
+      CSettings::SETTING_PVRRECORD_INSTANTRECORDACTION,
+      CSettings::SETTING_PVRPLAYBACK_SWITCHTOFULLSCREEN,
+      CSettings::SETTING_PVRPLAYBACK_STARTLAST,
+      CSettings::SETTING_PVRPARENTAL_PIN,
+      CSettings::SETTING_PVRPARENTAL_ENABLED
+    })
   {
   }
 
@@ -336,7 +344,7 @@ namespace PVR
     class InstantRecordingActionSelector
     {
     public:
-      InstantRecordingActionSelector();
+      InstantRecordingActionSelector(int iInstantRecordTime);
       virtual ~InstantRecordingActionSelector() {}
 
       void AddAction(PVRRECORD_INSTANTRECORDACTION eAction, const std::string &title);
@@ -344,12 +352,14 @@ namespace PVR
       PVRRECORD_INSTANTRECORDACTION Select();
 
     private:
+      int m_iInstantRecordTime;
       CGUIDialogSelect *m_pDlgSelect; // not owner!
       std::map<PVRRECORD_INSTANTRECORDACTION, int> m_actions;
     };
 
-    InstantRecordingActionSelector::InstantRecordingActionSelector()
-    : m_pDlgSelect(g_windowManager.GetWindow<CGUIDialogSelect>())
+    InstantRecordingActionSelector::InstantRecordingActionSelector(int iInstantRecordTime)
+    : m_iInstantRecordTime(iInstantRecordTime),
+      m_pDlgSelect(g_windowManager.GetWindow<CGUIDialogSelect>())
     {
       if (m_pDlgSelect)
       {
@@ -369,8 +379,7 @@ namespace PVR
         switch (eAction)
         {
           case RECORD_INSTANTRECORDTIME:
-            m_pDlgSelect->Add(StringUtils::Format(g_localizeStrings.Get(19090).c_str(),
-                                                  CServiceBroker::GetSettings().GetInt(CSettings::SETTING_PVRRECORD_INSTANTRECORDTIME))); // Record next <default duration> minutes
+            m_pDlgSelect->Add(StringUtils::Format(g_localizeStrings.Get(19090).c_str(), m_iInstantRecordTime)); // Record next <default duration> minutes
             break;
           case RECORD_30_MINUTES:
             m_pDlgSelect->Add(StringUtils::Format(g_localizeStrings.Get(19090).c_str(), 30));  // Record next 30 minutes
@@ -444,9 +453,9 @@ namespace PVR
       if (bOnOff && !channel->IsRecording())
       {
         CEpgInfoTagPtr epgTag;
-        int iDuration = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_PVRRECORD_INSTANTRECORDTIME);
+        int iDuration = m_settings.GetIntValue(CSettings::SETTING_PVRRECORD_INSTANTRECORDTIME);
 
-        int iAction = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_PVRRECORD_INSTANTRECORDACTION);
+        int iAction = m_settings.GetIntValue(CSettings::SETTING_PVRRECORD_INSTANTRECORDACTION);
         switch (iAction)
         {
           case RECORD_CURRENT_SHOW:
@@ -460,7 +469,8 @@ namespace PVR
           case ASK:
           {
             PVRRECORD_INSTANTRECORDACTION ePreselect = RECORD_INSTANTRECORDTIME;
-            InstantRecordingActionSelector selector;
+            const int iDurationDefault = m_settings.GetIntValue(CSettings::SETTING_PVRRECORD_INSTANTRECORDTIME);
+            InstantRecordingActionSelector selector(iDurationDefault);
             CEpgInfoTagPtr epgTagNext;
 
             // fixed length recordings
@@ -468,7 +478,6 @@ namespace PVR
             selector.AddAction(RECORD_60_MINUTES, "");
             selector.AddAction(RECORD_120_MINUTES, "");
 
-            const int iDurationDefault = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_PVRRECORD_INSTANTRECORDTIME);
             if (iDurationDefault != 30 && iDurationDefault != 60 && iDurationDefault != 120)
               selector.AddAction(RECORD_INSTANTRECORDTIME, "");
 
@@ -528,7 +537,7 @@ namespace PVR
                 break;
 
               default:
-                CLog::Log(LOGERROR, "PVRManager - %s - unknown instant record action selection (%d), defaulting to fixed length recording.", __FUNCTION__, eSelected);
+                CLog::Log(LOGERROR, "PVRGUIActions - %s - unknown instant record action selection (%d), defaulting to fixed length recording.", __FUNCTION__, eSelected);
                 epgTag.reset();
                 break;
             }
@@ -536,7 +545,7 @@ namespace PVR
           }
 
           default:
-            CLog::Log(LOGERROR, "PVRManager - %s - unknown instant record action setting value (%d), defaulting to fixed length recording.", __FUNCTION__, iAction);
+            CLog::Log(LOGERROR, "PVRGUIActions - %s - unknown instant record action setting value (%d), defaulting to fixed length recording.", __FUNCTION__, iAction);
             break;
         }
 
@@ -1001,7 +1010,7 @@ namespace PVR
 
   bool CPVRGUIActions::SwitchToChannel(const CFileItemPtr &item, bool bCheckResume) const
   {
-    return SwitchToChannel(item, bCheckResume, CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRPLAYBACK_SWITCHTOFULLSCREEN));
+    return SwitchToChannel(item, bCheckResume, m_settings.GetBoolValue(CSettings::SETTING_PVRPLAYBACK_SWITCHTOFULLSCREEN));
   }
 
   bool CPVRGUIActions::SwitchToChannel(const CFileItemPtr &item, bool bCheckResume, bool bFullscreen) const
@@ -1141,7 +1150,7 @@ namespace PVR
       channel->SetWasPlayingOnLastQuit(false, bWasPlaying);
     }
 
-    int iPlayMode = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_PVRPLAYBACK_STARTLAST);
+    int iPlayMode = m_settings.GetIntValue(CSettings::SETTING_PVRPLAYBACK_STARTLAST);
     if (iPlayMode == CONTINUE_LAST_CHANNEL_OFF)
       return false;
 
@@ -1515,9 +1524,9 @@ namespace PVR
 
   bool CPVRGUIActions::CheckParentalPIN() const
   {
-    std::string pinCode = CServiceBroker::GetSettings().GetString(CSettings::SETTING_PVRPARENTAL_PIN);
+    std::string pinCode = m_settings.GetStringValue(CSettings::SETTING_PVRPARENTAL_PIN);
 
-    if (!CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRPARENTAL_ENABLED) || pinCode.empty())
+    if (!m_settings.GetBoolValue(CSettings::SETTING_PVRPARENTAL_ENABLED) || pinCode.empty())
       return true;
 
     // Locked channel. Enter PIN:

@@ -19,6 +19,7 @@
  *
  */
 
+#include "pvr/PVRSettings.h"
 #include "pvr/PVRTypes.h"
 #include "pvr/PVRChannelNumberInputHandler.h"
 
@@ -415,6 +416,7 @@ namespace PVR
   private:
     CPVRChannelSwitchingInputHandler m_channelNumberInputHandler;
     bool m_bChannelScanRunning;
+    CPVRSettings m_settings;
 
   };
 
