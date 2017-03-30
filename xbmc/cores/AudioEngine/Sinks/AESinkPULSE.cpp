@@ -224,10 +224,10 @@ static void SinkInputInfoChangedCallback(pa_context *c, pa_subscription_event_ty
   CAESinkPULSE* p = (CAESinkPULSE*) userdata;
   if (!p || !p->IsInitialized())
     return;
-  
+
    if (idx != pa_stream_get_index(p->GetInternalStream()))
      return;
-   
+
    pa_operation* op = pa_context_get_sink_input_info(c, idx, SinkInputInfoCallback, p);
    if (op == NULL)
      CLog::Log(LOGERROR, "PulseAudio: Failed to sync volume");
@@ -257,8 +257,7 @@ static void SinkChangedCallback(pa_context *c, pa_subscription_event_type_t t, u
     else if ((t & PA_SUBSCRIPTION_EVENT_TYPE_MASK) == PA_SUBSCRIPTION_EVENT_CHANGE)
     {
       CLog::Log(LOGDEBUG, "Sink changed");
-      //CAEFactory::DeviceChange();
-    }    
+    }
   }
 }
 
@@ -766,7 +765,7 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
   }
 
   pa_threaded_mainloop_unlock(m_MainLoop);
-  
+
   format.m_frameSize = frameSize;
   m_format = format;
   format.m_dataFormat = m_passthrough ? AE_FMT_S16NE : format.m_dataFormat;
@@ -933,27 +932,27 @@ void CAESinkPULSE::SetVolume(float volume)
     pa_threaded_mainloop_lock(m_MainLoop);
     // clamp possibly too large / low values
     float per_cent_volume = std::max(0.0f, std::min(volume, 1.0f));
-    
+
     if (m_volume_needs_update)
     {
        m_volume_needs_update = false;
-       pa_volume_t n_vol = pa_cvolume_avg(&m_Volume); 
+       pa_volume_t n_vol = pa_cvolume_avg(&m_Volume);
        n_vol = std::min(n_vol, PA_VOLUME_NORM);
-       per_cent_volume = (float) n_vol / PA_VOLUME_NORM; 
+       per_cent_volume = (float) n_vol / PA_VOLUME_NORM;
        // only update internal volume
        pa_threaded_mainloop_unlock(m_MainLoop);
        g_application.SetVolume(per_cent_volume, false);
        return;
     }
-    
+
     pa_volume_t pavolume = per_cent_volume * PA_VOLUME_NORM;
     unsigned int sink_input_idx = pa_stream_get_index(m_Stream);
-    
+
     if ( pavolume <= 0 )
       pa_cvolume_mute(&m_Volume, m_Channels);
     else
       pa_cvolume_set(&m_Volume, m_Channels, pavolume);
-        
+
       pa_operation *op = pa_context_set_sink_input_volume(m_Context, sink_input_idx, &m_Volume, NULL, NULL);
       if (op == NULL)
         CLog::Log(LOGERROR, "PulseAudio: Failed to set volume");
@@ -1004,7 +1003,7 @@ void CAESinkPULSE::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
 bool CAESinkPULSE::IsInitialized()
 {
  CSingleLock lock(m_sec);
- return m_IsAllocated; 
+ return m_IsAllocated;
 }
 
 void CAESinkPULSE::Pause(bool pause)

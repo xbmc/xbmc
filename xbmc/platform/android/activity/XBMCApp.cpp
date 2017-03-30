@@ -61,7 +61,6 @@
 
 #include "AndroidKey.h"
 #include "settings/AdvancedSettings.h"
-#include "cores/AudioEngine/AEFactory.h"
 #include "Application.h"
 #include "AppParamParser.h"
 #include "messaging/ApplicationMessenger.h"
