@@ -41,7 +41,11 @@ using namespace PVR;
 
 CGUIWindowPVRRecordings::CGUIWindowPVRRecordings(bool bRadio) :
   CGUIWindowPVRBase(bRadio, bRadio ? WINDOW_RADIO_RECORDINGS : WINDOW_TV_RECORDINGS, "MyPVRRecordings.xml") ,
-  m_bShowDeletedRecordings(false)
+  m_bShowDeletedRecordings(false),
+  m_settings({
+    CSettings::SETTING_PVRRECORD_GROUPRECORDINGS,
+    CSettings::SETTING_MYVIDEOS_SELECTACTION
+  })
 {
   g_infoManager.RegisterObserver(this);
 }
@@ -169,7 +173,7 @@ void CGUIWindowPVRRecordings::UpdateButtons(void)
 
   SET_CONTROL_LABEL(CONTROL_BTNSHOWMODE, g_localizeStrings.Get(iStringId));
 
-  bool bGroupRecordings = CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRRECORD_GROUPRECORDINGS);
+  bool bGroupRecordings = m_settings.GetBoolValue(CSettings::SETTING_PVRRECORD_GROUPRECORDINGS);
   SET_CONTROL_SELECTED(GetID(), CONTROL_BTNGROUPITEMS, bGroupRecordings);
 
   CGUIRadioButtonControl *btnShowDeleted = (CGUIRadioButtonControl*) GetControl(CONTROL_BTNSHOWDELETED);
@@ -227,7 +231,7 @@ bool CGUIWindowPVRRecordings::OnMessage(CGUIMessage &message)
               }
               else
               {
-                switch (CServiceBroker::GetSettings().GetInt(CSettings::SETTING_MYVIDEOS_SELECTACTION))
+                switch (m_settings.GetIntValue(CSettings::SETTING_MYVIDEOS_SELECTACTION))
                 {
                   case SELECT_ACTION_CHOOSE:
                     OnPopupMenu(iItem);
