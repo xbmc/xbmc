@@ -34,6 +34,7 @@
 #include "peripherals/Peripherals.h"
 #include "profiles/ProfilesManager.h"
 #include "pvr/PVRGUIActions.h"
+#include "pvr/PVRManager.h"
 #include "settings/SettingAddon.h"
 #if defined(HAS_LIBAMCODEC)
 #include "utils/AMLUtils.h"
@@ -72,7 +73,7 @@ bool CheckMasterLock(const std::string &condition, const std::string &value, con
 
 bool CheckPVRParentalPin(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
 {
-  return PVR::CPVRGUIActions::GetInstance().CheckParentalPIN();
+  return CServiceBroker::GetPVRManager().GUIActions()->CheckParentalPIN();
 }
 
 bool HasPeripherals(const std::string &condition, const std::string &value, const CSetting *setting, void *data)

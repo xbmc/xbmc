@@ -18,6 +18,7 @@
  *
  */
 
+#include "ServiceBroker.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "epg/EpgContainer.h"
@@ -145,7 +146,7 @@ bool CGUIWindowPVRSearch::OnMessage(CGUIMessage &message)
             if (URIUtils::PathEquals(pItem->GetPath(), "pvr://guide/searchresults/search/"))
               OpenDialogSearch();
             else
-               CPVRGUIActions::GetInstance().ShowEPGInfo(pItem);
+               CServiceBroker::GetPVRManager().GUIActions()->ShowEPGInfo(pItem);
             return true;
           }
 
@@ -155,7 +156,7 @@ bool CGUIWindowPVRSearch::OnMessage(CGUIMessage &message)
             return true;
 
           case ACTION_RECORD:
-            CPVRGUIActions::GetInstance().ToggleTimer(pItem);
+            CServiceBroker::GetPVRManager().GUIActions()->ToggleTimer(pItem);
             return true;
         }
       }

@@ -61,11 +61,8 @@ namespace PVR
   class CPVRGUIActions
   {
   public:
-    /*!
-     * @brief Request an instance of class CPVRGUIActions.
-     * @return the instance.
-     */
-    static CPVRGUIActions& GetInstance();
+    CPVRGUIActions();
+    virtual ~CPVRGUIActions() = default;
 
     /*!
      * @brief Open a dialog with epg information for a given item.
@@ -319,10 +316,8 @@ namespace PVR
     CPVRChannelNumberInputHandler &GetChannelNumberInputHandler();
 
   private:
-    CPVRGUIActions();
     CPVRGUIActions(const CPVRGUIActions&) = delete;
     CPVRGUIActions const& operator=(CPVRGUIActions const&) = delete;
-    virtual ~CPVRGUIActions() {}
 
     /*!
      * @brief Open the timer settings dialog.

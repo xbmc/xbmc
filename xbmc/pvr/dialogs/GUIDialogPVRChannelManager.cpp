@@ -292,7 +292,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonRadioParentalLocked(CGUIMessage &
   bool selected(msg.GetParam1() == 1);
 
   // ask for PIN first
-  if (!CPVRGUIActions::GetInstance().CheckParentalPIN())
+  if (!CServiceBroker::GetPVRManager().GUIActions()->CheckParentalPIN())
   { // failed - reset to previous
     SET_CONTROL_SELECTED(GetID(), RADIOBUTTON_PARENTAL_LOCK, !selected);
     return false;

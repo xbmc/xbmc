@@ -154,13 +154,13 @@ bool CGUIWindowPVRChannels::OnMessage(CGUIMessage& message)
            case ACTION_SELECT_ITEM:
            case ACTION_MOUSE_LEFT_CLICK:
            case ACTION_PLAY:
-             CPVRGUIActions::GetInstance().SwitchToChannel(m_vecItems->Get(iItem), true);
+             CServiceBroker::GetPVRManager().GUIActions()->SwitchToChannel(m_vecItems->Get(iItem), true);
              break;
            case ACTION_SHOW_INFO:
-             CPVRGUIActions::GetInstance().ShowEPGInfo(m_vecItems->Get(iItem));
+             CServiceBroker::GetPVRManager().GUIActions()->ShowEPGInfo(m_vecItems->Get(iItem));
              break;
            case ACTION_DELETE_ITEM:
-             CPVRGUIActions::GetInstance().HideChannel(m_vecItems->Get(iItem));
+             CServiceBroker::GetPVRManager().GUIActions()->HideChannel(m_vecItems->Get(iItem));
              break;
            case ACTION_CONTEXT_MENU:
            case ACTION_MOUSE_RIGHT_CLICK:
