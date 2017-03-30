@@ -557,21 +557,7 @@ bool CGUIDialogAudioDSPManager::OnContextButton(int itemNumber, CONTEXT_BUTTON b
     return false;
   }
 
-  if (button == CONTEXT_BUTTON_HELP)
-  {
-    /*!
-    * Open audio dsp addon mode help text dialog
-    */
-    AE_DSP_ADDON addon;
-    if (CServiceBroker::GetADSP().GetAudioDSPAddon((int)pItem->GetProperty("AddonId").asInteger(), addon))
-    {
-      CGUIDialogTextViewer* pDlgInfo = g_windowManager.GetWindow<CGUIDialogTextViewer>();
-      pDlgInfo->SetHeading(g_localizeStrings.Get(15062) + " - " + pItem->GetProperty("Name").asString());
-      pDlgInfo->SetText(g_localizeStrings.GetAddonString(addon->ID(), (uint32_t)pItem->GetProperty("Help").asInteger()));
-      pDlgInfo->Open();
-    }
-  }
-  else if (button == CONTEXT_BUTTON_ACTIVATE)
+  if (button == CONTEXT_BUTTON_ACTIVATE)
   {
     /*!
     * Deactivate selected processing mode
@@ -656,32 +642,8 @@ bool CGUIDialogAudioDSPManager::OnContextButton(int itemNumber, CONTEXT_BUTTON b
   else if (button == CONTEXT_BUTTON_SETTINGS)
   {
     int hookId = (int)pItem->GetProperty("SettingsDialog").asInteger();
-    if (hookId > 0)
-    {
-      AE_DSP_ADDON addon;
-      if (CServiceBroker::GetADSP().GetAudioDSPAddon((int)pItem->GetProperty("AddonId").asInteger(), addon))
-      {
-        AE_DSP_MENUHOOK       hook;
-        AE_DSP_MENUHOOK_DATA  hookData;
-
-        hook.category           = AE_DSP_MENUHOOK_ALL;
-        hook.iHookId            = hookId;
-        hook.iRelevantModeId    = (unsigned int)pItem->GetProperty("AddonModeNumber").asInteger();
-        hookData.category       = AE_DSP_MENUHOOK_ALL;
-        hookData.data.iStreamId = -1;
-
-        /*!
-         * @note the addon dialog becomes always opened on the back of Kodi ones for this reason a
-         * "<animation effect="fade" start="100" end="0" time="400" condition="Window.IsVisible(Addon)">Conditional</animation>"
-         * on skin is needed to hide dialog.
-         */
-        addon->CallMenuHook(hook, hookData);
-      }
-    }
-    else
-    {
-      CGUIDialogOK::ShowAndGetInput(19033, 0, 15040, 0);
-    }
+    
+    CGUIDialogOK::ShowAndGetInput(19033, 0, 15040, 0);
   }
 
   return true;
@@ -806,14 +768,6 @@ void CGUIDialogAudioDSPManager::SaveList(void)
   }
   pDlgBusy->Open();
 
-  /* persist all modes */
-  if (UpdateDatabase(pDlgBusy))
-  {
-    CServiceBroker::GetADSP().TriggerModeUpdate();
-
-    m_bContainsChanges = false;
-    SetItemsUnchanged();
-  }
 
   pDlgBusy->Close();
 }
@@ -966,6 +920,7 @@ int CGUIDialogAudioDSPManager::helper_TranslateModeType(std::string ModeString)
 CFileItem *CGUIDialogAudioDSPManager::helper_CreateModeListItem(CActiveAEDSPModePtr &ModePointer, AE_DSP_MENUHOOK_CAT &MenuHook, int *ContinuesNo)
 {
   CFileItem *pItem = NULL;
+  return pItem;
 
   if (!ContinuesNo)
   {
@@ -976,17 +931,7 @@ CFileItem *CGUIDialogAudioDSPManager::helper_CreateModeListItem(CActiveAEDSPMode
   const int AddonID = ModePointer->AddonID();
 
   std::string addonName;
-  if (!CServiceBroker::GetADSP().GetAudioDSPAddonName(AddonID, addonName))
-  {
-    return pItem;
-  }
-
   AE_DSP_ADDON addon;
-  if (!CServiceBroker::GetADSP().GetAudioDSPAddon(AddonID, addon))
-  {
-    return pItem;
-  }
-
   std::string modeName = g_localizeStrings.GetAddonString(addon->ID(), ModePointer->ModeName());
 
   std::string description;
@@ -1051,38 +996,7 @@ int CGUIDialogAudioDSPManager::helper_GetDialogId(CActiveAEDSPModePtr &ModePoint
   if (ModePointer->HasSettingsDialog())
   {
     AE_DSP_MENUHOOKS hooks;
-
-    // Find first general settings dialog about mode
-    if (CServiceBroker::GetADSP().GetMenuHooks(ModePointer->AddonID(), AE_DSP_MENUHOOK_SETTING, hooks))
-    {
-      for (unsigned int i = 0; i < hooks.size() && dialogId == 0; i++)
-      {
-        if (hooks[i].iRelevantModeId == ModePointer->AddonModeNumber())
-        {
-          dialogId = hooks[i].iHookId;
-        }
-      }
-    }
-
-    // If nothing was present, check for playback settings
-    if (dialogId == 0 && CServiceBroker::GetADSP().GetMenuHooks(ModePointer->AddonID(), MenuHook, hooks))
-    {
-      for (unsigned int i = 0; i < hooks.size() && (dialogId == 0 || dialogId != -1); i++)
-      {
-        if (hooks[i].iRelevantModeId == ModePointer->AddonModeNumber())
-        {
-          if (!hooks[i].bNeedPlayback)
-          {
-            dialogId = hooks[i].iHookId;
-          }
-          else
-          {
-            dialogId = -1;
-          }
-        }
-      }
-    }
-
+    
     if (dialogId == 0)
       CLog::Log(LOGERROR, "DSP Dialog Manager - %s - Present marked settings dialog of mode %s on addon %s not found",
                             __FUNCTION__,
