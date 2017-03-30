@@ -2857,9 +2857,10 @@ bool CActiveAE::HasDSP()
   return m_stats.HasDSP();
 };
 
-AEAudioFormat CActiveAE::GetCurrentSinkFormat()
+bool CActiveAE::GetCurrentSinkFormat(AEAudioFormat& format)
 {
-  return m_stats.GetCurrentSinkFormat();
+  format = m_stats.GetCurrentSinkFormat();
+  return true;
 }
 
 void CActiveAE::OnLostDisplay()
