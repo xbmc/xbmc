@@ -61,7 +61,6 @@
 
 #include "AndroidKey.h"
 #include "settings/AdvancedSettings.h"
-#include "cores/AudioEngine/AEFactory.h"
 #include "Application.h"
 #include "AppParamParser.h"
 #include "messaging/ApplicationMessenger.h"
@@ -69,6 +68,8 @@
 #include "settings/DisplaySettings.h"
 #include "guilib/GraphicContext.h"
 #include "guilib/GUIWindowManager.h"
+#include "cores/AudioEngine/Interfaces/AE.h"
+#include "ServiceBroker.h"
 #include "platform/android/activity/IInputDeviceCallbacks.h"
 #include "platform/android/activity/IInputDeviceEventHandler.h"
 #include "input/Key.h"
@@ -84,7 +85,6 @@
 #include "platform/XbmcContext.h"
 #include "windowing/XBMC_events.h"
 #include "input/XBMC_keysym.h"
-
 
 #define GIGABYTES       1073741824
 
@@ -161,6 +161,7 @@ void CXBMCApp::onResume()
   intentFilter.addAction("android.intent.action.BATTERY_CHANGED");
   intentFilter.addAction("android.intent.action.SCREEN_ON");
   intentFilter.addAction("android.intent.action.HEADSET_PLUG");
+  intentFilter.addAction("android.intent.action.HDMI_AUDIO_PLUG");
   registerReceiver(*this, intentFilter);
 
   if (!g_application.IsInScreenSaver())
@@ -785,18 +786,20 @@ void CXBMCApp::onReceive(CJNIIntent intent)
     if (HasFocus())
       g_application.WakeUpScreenSaverAndDPMS();
   }
-  else if (action == "android.intent.action.HEADSET_PLUG" || action == "android.bluetooth.a2dp.profile.action.CONNECTION_STATE_CHANGED")
+  else if (action == "android.intent.action.HEADSET_PLUG" ||
+    action == "android.bluetooth.a2dp.profile.action.CONNECTION_STATE_CHANGED" ||
+    action == "android.intent.action.HDMI_AUDIO_PLUG")
   {
     bool newstate;
-    if (action == "android.intent.action.HEADSET_PLUG")
+    if (action == "android.intent.action.HEADSET_PLUG" || action == "android.intent.action.HDMI_AUDIO_PLUG")
       newstate = (intent.getIntExtra("state", 0) != 0);
-    else
+    else if (action == "android.bluetooth.a2dp.profile.action.CONNECTION_STATE_CHANGED")
       newstate = (intent.getIntExtra("android.bluetooth.profile.extra.STATE", 0) == 2 /* STATE_CONNECTED */);
 
     if (newstate != m_headsetPlugged)
     {
       m_headsetPlugged = newstate;
-      CAEFactory::DeviceChange();
+      CServiceBroker::GetActiveAE().DeviceChange();
     }
   }
   else if (action == "android.intent.action.MEDIA_BUTTON")

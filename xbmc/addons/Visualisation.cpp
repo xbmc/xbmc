@@ -33,7 +33,8 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
-#include "cores/AudioEngine/AEFactory.h"
+#include "ServiceBroker.h"
+#include "cores/AudioEngine/Interfaces/AE.h"
 
 using namespace MUSIC_INFO;
 using namespace ADDON;
@@ -67,7 +68,7 @@ CVisualisation::CVisualisation(AddonProps props)
 {
   memset(&m_info, 0, sizeof(m_info));
 }
-  
+
 bool CVisualisation::Create(int x, int y, int w, int h, void *device)
 {
 #ifdef HAS_DX
@@ -102,7 +103,7 @@ bool CVisualisation::Create(int x, int y, int w, int h, void *device)
 
     CreateBuffers();
 
-    CAEFactory::RegisterAudioCallback(this);
+    CServiceBroker::GetActiveAE().RegisterAudioCallback(this);
 
     return true;
   }
@@ -143,7 +144,7 @@ void CVisualisation::Render()
 
 void CVisualisation::Stop()
 {
-  CAEFactory::UnregisterAudioCallback(this);
+  CServiceBroker::GetActiveAE().UnregisterAudioCallback(this);
   if (Initialized())
   {
     CAddonDll::Stop();
@@ -176,7 +177,7 @@ bool CVisualisation::OnAction(VIS_ACTION action, void *param)
       std::string artist(tag->GetArtistString());
       std::string albumArtist(tag->GetAlbumArtistString());
       std::string genre(StringUtils::Join(tag->GetGenre(), g_advancedSettings.m_musicItemSeparator));
-      
+
       VisTrack track;
       track.title       = tag->GetTitle().c_str();
       track.artist      = artist.c_str();

@@ -641,7 +641,7 @@ const infomap player_param[] =   {{ "art",              PLAYER_ITEM_ART }};
 ///   \table_row3{   <b>`Player.SeekNumeric`</b>,
 ///                  \anchor Player_SeekNumeric
 ///                  _string_,
-///     Time to which the user is seeking via numeric keys. 
+///     Time to which the user is seeking via numeric keys.
 ///   }
 ///   \table_row3{   <b>`Player.SeekNumeric(format)`</b>,
 ///                  \anchor Player_SeekNumeric_format
@@ -5939,14 +5939,6 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case PVR_CHANNEL_NUMBER_INPUT:
     strLabel = CServiceBroker::GetPVRManager().GUIActions()->GetChannelNumberInputHandler().GetChannelNumberAsString();
     break;
-  case ADSP_ACTIVE_STREAM_TYPE:
-  case ADSP_DETECTED_STREAM_TYPE:
-  case ADSP_MASTER_NAME:
-  case ADSP_MASTER_INFO:
-  case ADSP_MASTER_OWN_ICON:
-  case ADSP_MASTER_OVERRIDE_ICON:
-    CServiceBroker::GetADSP().TranslateCharInfo(info, strLabel);
-    break;
   case WEATHER_CONDITIONS:
     strLabel = g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_COND);
     StringUtils::Trim(strLabel);
@@ -7037,8 +7029,6 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     bReturn = g_weatherManager.IsFetched();
   else if (condition >= PVR_CONDITIONS_START && condition <= PVR_CONDITIONS_END)
     bReturn = CServiceBroker::GetPVRManager().TranslateBoolInfo(condition);
-  else if (condition >= ADSP_CONDITIONS_START && condition <= ADSP_CONDITIONS_END)
-    bReturn = CServiceBroker::GetADSP().TranslateBoolInfo(condition);
   else if (condition == SYSTEM_INTERNET_STATE)
   {
     g_sysinfo.GetInfo(condition);
@@ -7904,7 +7894,7 @@ CGUIControl* CGUIInfoManager::GetActiveContainer(int containerId, int contextWin
         return control;
     }
   }
-  
+
   CGUIControl *control = window->GetControl(containerId);
   if (control && control->IsContainer())
     return control;
@@ -8944,7 +8934,7 @@ std::string CGUIInfoManager::GetVideoLabel(int item)
         std::string strEpisode;
         if (m_currentFile->GetVideoInfoTag()->m_iSeason == 0) // prefix episode with 'S'
           strEpisode = StringUtils::Format("S%i", m_currentFile->GetVideoInfoTag()->m_iEpisode);
-        else 
+        else
           strEpisode = StringUtils::Format("%i", m_currentFile->GetVideoInfoTag()->m_iEpisode);
         return strEpisode;
       }
@@ -9059,7 +9049,7 @@ std::string CGUIInfoManager::GetVideoLabel(int item)
       break;
     }
   }
-  
+
   if (item == VIDEOPLAYER_TITLE)
     return GetLabel(PLAYER_TITLE);
 
@@ -9576,7 +9566,7 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
 
     if (rating.rating <= 0.f)
       return "";
-    
+
     if (rating.votes == 0)
       return StringUtils::FormatNumber(rating.rating);
     else
@@ -9584,7 +9574,7 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
   }
 
   if (info >= LISTITEM_PROPERTY_START && info - LISTITEM_PROPERTY_START < (int)m_listitemProperties.size())
-  { 
+  {
     std::string property = m_listitemProperties[info - LISTITEM_PROPERTY_START];
     if (StringUtils::StartsWithNoCase(property, "Role.") && item->HasMusicInfoTag())
     { // "Role.xxxx" properties are held in music tag
@@ -9868,7 +9858,7 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
         if (item->GetMusicInfoTag()->GetVotes() <= 0)
           strRatingAndVotes = StringUtils::FormatNumber(item->GetMusicInfoTag()->GetRating());
         else
-          strRatingAndVotes = FormatRatingAndVotes(item->GetMusicInfoTag()->GetRating(), 
+          strRatingAndVotes = FormatRatingAndVotes(item->GetMusicInfoTag()->GetRating(),
                                                    item->GetMusicInfoTag()->GetVotes());
         return strRatingAndVotes;
       }

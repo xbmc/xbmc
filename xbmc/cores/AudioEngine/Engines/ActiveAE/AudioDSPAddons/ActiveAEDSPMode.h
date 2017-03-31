@@ -35,7 +35,7 @@ namespace ActiveAE
 
   typedef std::shared_ptr<CActiveAEDSPMode>                 CActiveAEDSPModePtr;
   typedef std::pair <CActiveAEDSPModePtr, AE_DSP_ADDON>     AE_DSP_MODEPAIR;
-  typedef std::vector<AE_DSP_MODEPAIR >                     AE_DSP_MODELIST;
+  typedef std::vector<AE_DSP_MODEPAIR>                      AE_DSP_MODELIST;
 
   #define AE_DSP_MASTER_MODE_ID_INTERNAL_TYPES              0xFF00
   #define AE_DSP_MASTER_MODE_ID_INTERNAL_STEREO_UPMIX       (AE_DSP_MASTER_MODE_ID_INTERNAL_TYPES)  /*!< Used to for internal stereo upmix over ffmpeg */

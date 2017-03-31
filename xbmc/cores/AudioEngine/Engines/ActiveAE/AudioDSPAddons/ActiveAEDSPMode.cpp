@@ -339,7 +339,7 @@ int CActiveAEDSPMode::AddUpdate(bool force)
       return m_iModeId;
   }
 
-  CActiveAEDSPDatabase *database = CServiceBroker::GetADSP().GetADSPDatabase();
+  CActiveAEDSPDatabase *database = nullptr;
   if (!database || !database->IsOpen())
   {
     CLog::Log(LOGERROR, "ActiveAE DSP - failed to open the database");
@@ -354,7 +354,7 @@ int CActiveAEDSPMode::AddUpdate(bool force)
 
 bool CActiveAEDSPMode::Delete(void)
 {
-  CActiveAEDSPDatabase *database = CServiceBroker::GetADSP().GetADSPDatabase();
+  CActiveAEDSPDatabase *database = nullptr;
   if (!database || !database->IsOpen())
   {
     CLog::Log(LOGERROR, "ActiveAE DSP - failed to open the database");
@@ -366,7 +366,7 @@ bool CActiveAEDSPMode::Delete(void)
 
 bool CActiveAEDSPMode::IsKnown(void) const
 {
-  CActiveAEDSPDatabase *database = CServiceBroker::GetADSP().GetADSPDatabase();
+  CActiveAEDSPDatabase *database = nullptr;
   if (!database || !database->IsOpen())
   {
     CLog::Log(LOGERROR, "ActiveAE DSP - failed to open the database");

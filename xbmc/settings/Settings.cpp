@@ -29,7 +29,8 @@
 #include "addons/AddonSystemSettings.h"
 #include "addons/RepositoryUpdater.h"
 #include "addons/Skin.h"
-#include "cores/AudioEngine/AEFactory.h"
+#include "cores/AudioEngine/Interfaces/AE.h"
+#include "cores/AudioEngine/Engines/ActiveAE/ActiveAESettings.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "cores/VideoPlayer/VideoRenderers/BaseRenderer.h"
 #include "filesystem/File.h"
@@ -828,8 +829,8 @@ void CSettings::InitializeDefaults()
 #endif
 
 #if !defined(TARGET_WINDOWS)
-  ((CSettingString*)m_settingsManager->GetSetting(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE))->SetDefault(CAEFactory::GetDefaultDevice(false));
-  ((CSettingString*)m_settingsManager->GetSetting(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHDEVICE))->SetDefault(CAEFactory::GetDefaultDevice(true));
+  ((CSettingString*)m_settingsManager->GetSetting(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE))->SetDefault(CServiceBroker::GetActiveAE().GetDefaultDevice(false));
+  ((CSettingString*)m_settingsManager->GetSetting(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHDEVICE))->SetDefault(CServiceBroker::GetActiveAE().GetDefaultDevice(true));
 #endif
 
   if (g_application.IsStandAlone())
@@ -844,10 +845,10 @@ void CSettings::InitializeOptionFillers()
 #ifdef HAS_DVD_DRIVE
   m_settingsManager->RegisterSettingOptionsFiller("audiocdactions", MEDIA_DETECT::CAutorun::SettingOptionAudioCdActionsFiller);
 #endif
-  m_settingsManager->RegisterSettingOptionsFiller("aequalitylevels", CAEFactory::SettingOptionsAudioQualityLevelsFiller);
-  m_settingsManager->RegisterSettingOptionsFiller("audiodevices", CAEFactory::SettingOptionsAudioDevicesFiller);
-  m_settingsManager->RegisterSettingOptionsFiller("audiodevicespassthrough", CAEFactory::SettingOptionsAudioDevicesPassthroughFiller);
-  m_settingsManager->RegisterSettingOptionsFiller("audiostreamsilence", CAEFactory::SettingOptionsAudioStreamsilenceFiller);
+  m_settingsManager->RegisterSettingOptionsFiller("aequalitylevels", ActiveAE::CActiveAESettings::SettingOptionsAudioQualityLevelsFiller);
+  m_settingsManager->RegisterSettingOptionsFiller("audiodevices", ActiveAE::CActiveAESettings::SettingOptionsAudioDevicesFiller);
+  m_settingsManager->RegisterSettingOptionsFiller("audiodevicespassthrough", ActiveAE::CActiveAESettings::SettingOptionsAudioDevicesPassthroughFiller);
+  m_settingsManager->RegisterSettingOptionsFiller("audiostreamsilence", ActiveAE::CActiveAESettings::SettingOptionsAudioStreamsilenceFiller);
   m_settingsManager->RegisterSettingOptionsFiller("charsets", CCharsetConverter::SettingOptionsCharsetsFiller);
   m_settingsManager->RegisterSettingOptionsFiller("fonts", GUIFontManager::SettingOptionsFontsFiller);
   m_settingsManager->RegisterSettingOptionsFiller("languagenames", CLangInfo::SettingOptionsLanguageNamesFiller);

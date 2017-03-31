@@ -19,7 +19,7 @@
  */
 
 #include "ContextMenuItem.h"
-#include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.h"
+#include "ServiceBroker.h"
 #include "epg/EpgInfoTag.h"
 #include "guilib/GUIWindowManager.h"
 #include "pvr/addons/PVRClients.h"
@@ -72,7 +72,6 @@ namespace PVR
     DECL_STATICCONTEXTMENUITEM(UndeleteRecording);
     DECL_CONTEXTMENUITEM(ToggleTimerState);
     DECL_STATICCONTEXTMENUITEM(RenameTimer);
-    DECL_STATICCONTEXTMENUITEM(ShowAudioDSPSettings);
     DECL_STATICCONTEXTMENUITEM(PVRClientMenuHook);
 
     CPVRTimerInfoTagPtr GetTimerInfoTagFromItem(const CFileItem &item)
@@ -449,23 +448,6 @@ namespace PVR
     }
 
     ///////////////////////////////////////////////////////////////////////////////
-    // Show Audio DSP settings
-
-    bool ShowAudioDSPSettings::IsVisible(const CFileItem &item) const
-    {
-      if (item.GetPVRChannelInfoTag() || item.GetPVRRecordingInfoTag())
-        return CServiceBroker::GetADSP().IsProcessing();
-
-      return false;
-    }
-
-    bool ShowAudioDSPSettings::Execute(const CFileItemPtr &item) const
-    {
-      g_windowManager.ActivateWindow(WINDOW_DIALOG_AUDIO_DSP_OSD_SETTINGS);
-      return true;
-    }
-
-    ///////////////////////////////////////////////////////////////////////////////
     // PVR Client menu hook
 
     bool PVRClientMenuHook::IsVisible(const CFileItem &item) const
@@ -529,7 +511,6 @@ namespace PVR
       std::make_shared<CONTEXTMENUITEM::RenameRecording>(118), /* Rename */
       std::make_shared<CONTEXTMENUITEM::DeleteRecording>(),
       std::make_shared<CONTEXTMENUITEM::UndeleteRecording>(19290), /* Undelete */
-      std::make_shared<CONTEXTMENUITEM::ShowAudioDSPSettings>(15047), /* Audio DSP settings */
       std::make_shared<CONTEXTMENUITEM::PVRClientMenuHook>(19195), /* PVR client specific action */
     };
   }

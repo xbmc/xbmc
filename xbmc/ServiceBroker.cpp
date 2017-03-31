@@ -48,9 +48,9 @@ PVR::CPVRManager &CServiceBroker::GetPVRManager()
   return g_application.m_ServiceManager->GetPVRManager();
 }
 
-ActiveAE::CActiveAEDSP &CServiceBroker::GetADSP()
+IAE& CServiceBroker::GetActiveAE()
 {
-  return g_application.m_ServiceManager->GetADSPManager();
+  return g_application.m_ServiceManager->GetActiveAE();
 }
 
 CContextMenuManager& CServiceBroker::GetContextMenuManager()

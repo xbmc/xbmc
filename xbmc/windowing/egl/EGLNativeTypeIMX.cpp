@@ -38,7 +38,6 @@
 #include "utils/Environment.h"
 #include "guilib/gui3d.h"
 #include "windowing/WindowingFactory.h"
-#include "cores/AudioEngine/AEFactory.h"
 #include <fstream>
 
 CEGLNativeTypeIMX::CEGLNativeTypeIMX()
@@ -450,4 +449,3 @@ bool CEGLNativeTypeIMX::ModeToResolution(std::string mode, RESOLUTION_INFO *res)
 
   return res->iWidth > 0 && res->iHeight> 0;
 }
-

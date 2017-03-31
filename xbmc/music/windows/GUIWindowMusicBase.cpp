@@ -63,7 +63,6 @@
 #include "URL.h"
 #include "music/infoscanner/MusicInfoScanner.h"
 #include "guiinfo/GUIInfoLabels.h"
-#include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.h"
 #include "cores/IPlayer.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "CueDocument.h"
@@ -852,8 +851,6 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
 
 void CGUIWindowMusicBase::GetNonContextButtons(CContextButtons &buttons)
 {
-  if (CServiceBroker::GetADSP().IsProcessing())
-    buttons.Add(CONTEXT_BUTTON_ACTIVE_ADSP_SETTINGS, 15047);
 }
 
 bool CGUIWindowMusicBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
@@ -914,10 +911,6 @@ bool CGUIWindowMusicBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
   case CONTEXT_BUTTON_PLAY_PARTYMODE:
     g_partyModeManager.Enable(PARTYMODECONTEXT_MUSIC, item->GetPath());
-    return true;
-
-  case CONTEXT_BUTTON_ACTIVE_ADSP_SETTINGS:
-    g_windowManager.ActivateWindow(WINDOW_DIALOG_AUDIO_DSP_OSD_SETTINGS);
     return true;
 
   case CONTEXT_BUTTON_RIP_CD:

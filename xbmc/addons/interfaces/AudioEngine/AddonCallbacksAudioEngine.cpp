@@ -21,7 +21,8 @@
 #include "system.h"
 #include "AddonCallbacksAudioEngine.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/kodi_audioengine_types.h"
-#include "cores/AudioEngine/AEFactory.h"
+#include "ServiceBroker.h"
+#include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
 #include "cores/AudioEngine/Interfaces/AEStream.h"
 #include "cores/AudioEngine/Utils/AEChannelData.h"
 #include "utils/log.h"
@@ -73,7 +74,7 @@ AEStreamHandle* CAddonCallbacksAudioEngine::AudioEngine_MakeStream(AudioEngineFo
   format.m_dataFormat = StreamFormat.m_dataFormat;
   format.m_sampleRate = StreamFormat.m_sampleRate;
   format.m_channelLayout = StreamFormat.m_channels;
-  return CAEFactory::MakeStream(format, Options);
+  return CServiceBroker::GetActiveAE().MakeStream(format, Options);
 }
 
 void CAddonCallbacksAudioEngine::AudioEngine_FreeStream(AEStreamHandle *StreamHandle)
@@ -84,7 +85,7 @@ void CAddonCallbacksAudioEngine::AudioEngine_FreeStream(AEStreamHandle *StreamHa
     return;
   }
 
-  CAEFactory::FreeStream((IAEStream*)StreamHandle);
+  CServiceBroker::GetActiveAE().FreeStream(reinterpret_cast<IAEStream*>(StreamHandle));
 }
 
 bool CAddonCallbacksAudioEngine::AudioEngine_GetCurrentSinkFormat(void *AddonData, AudioEngineFormat *SinkFormat)
@@ -96,7 +97,7 @@ bool CAddonCallbacksAudioEngine::AudioEngine_GetCurrentSinkFormat(void *AddonDat
   }
 
   AEAudioFormat AESinkFormat;
-  if (!CAEFactory::GetEngine() || !CAEFactory::GetEngine()->GetCurrentSinkFormat(AESinkFormat))
+  if (!CServiceBroker::GetActiveAE().GetCurrentSinkFormat(AESinkFormat))
   {
     CLog::Log(LOGERROR, "libKODI_audioengine - %s - failed to get current sink format from AE!", __FUNCTION__);
     return false;

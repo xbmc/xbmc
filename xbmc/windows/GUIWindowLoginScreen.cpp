@@ -282,9 +282,6 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
   // stop PVR related services
   CServiceBroker::GetPVRManager().Unload();
 
-  // stop audio DSP services with a blocking message
-  CServiceBroker::GetADSP().Deactivate();
-
   if (profile != 0 || !CProfilesManager::GetInstance().IsMasterProfile())
   {
     g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_DOWN,1);
