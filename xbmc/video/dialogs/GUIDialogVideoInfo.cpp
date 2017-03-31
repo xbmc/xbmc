@@ -85,17 +85,17 @@ bool compFileItemsByDbId(const CFileItemPtr& lhs, const CFileItemPtr& rhs)
 }
 
 CGUIDialogVideoInfo::CGUIDialogVideoInfo(void)
-    : CGUIDialog(WINDOW_DIALOG_VIDEO_INFO, "DialogVideoInfo.xml")
-    , m_movieItem(new CFileItem)
+  : CGUIDialog(WINDOW_DIALOG_VIDEO_INFO, "DialogVideoInfo.xml"),
+  m_movieItem(new CFileItem),
+  m_castList(new CFileItemList),
+  m_bViewReview(false),
+  m_bRefresh(false),
+  m_bRefreshAll(true),
+  m_hasUpdatedThumb(false),
+  m_hasUpdatedUserrating(false),
+  m_startUserrating(-1)
 {
-  m_bRefreshAll = true;
-  m_bRefresh = false;
-  m_hasUpdatedThumb = false;
-  m_hasUpdatedUserrating = false;
-  m_bViewReview = false;
-  m_castList = new CFileItemList;
   m_loadType = KEEP_IN_MEMORY;
-  m_startUserrating = -1;
 }
 
 CGUIDialogVideoInfo::~CGUIDialogVideoInfo(void)
@@ -191,16 +191,19 @@ bool CGUIDialogVideoInfo::OnMessage(CGUIMessage& message)
         else
         {
           auto pDlgSelect = g_windowManager.GetWindow<CGUIDialogSelect>();
-          pDlgSelect->Reset();
-          pDlgSelect->SetHeading(CVariant{22080});
-          for (const auto &director: directors)
-            pDlgSelect->Add(director);
-          pDlgSelect->Open();
+          if (pDlgSelect)
+          {
+            pDlgSelect->Reset();
+            pDlgSelect->SetHeading(CVariant{22080});
+            for (const auto &director: directors)
+              pDlgSelect->Add(director);
+            pDlgSelect->Open();
 
-          int iItem = pDlgSelect->GetSelectedItem();
-          if (iItem < 0)
-            return true;
-          OnSearch(directors[iItem]);
+            int iItem = pDlgSelect->GetSelectedItem();
+            if (iItem < 0)
+              return true;
+            OnSearch(directors[iItem]);
+          }
         }
       }
       else if (iControl == CONTROL_LIST)
@@ -358,7 +361,7 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
       {
         m_movieItem->GetVideoInfoTag()->m_strTrailer = localTrailer;
         CVideoDatabase database;
-        if(database.Open())
+        if (database.Open())
         {
           database.SetSingleValue(VIDEODB_CONTENT_MOVIES, VIDEODB_ID_TRAILER,
                                   m_movieItem->GetVideoInfoTag()->m_iDbId,
@@ -471,32 +474,31 @@ void CGUIDialogVideoInfo::OnSearch(std::string& strSearch)
   if (items.Size())
   {
     CGUIDialogSelect* pDlgSelect = g_windowManager.GetWindow<CGUIDialogSelect>();
-    pDlgSelect->Reset();
-    pDlgSelect->SetHeading(CVariant{283});
-
-    CVideoThumbLoader loader;
-    for (int i = 0; i < items.Size(); i++)
+    if (pDlgSelect)
     {
-      if (items[i]->HasVideoInfoTag() &&
+      pDlgSelect->Reset();
+      pDlgSelect->SetHeading(CVariant{283});
+
+      CVideoThumbLoader loader;
+      for (int i = 0; i < items.Size(); i++)
+      {
+        if (items[i]->HasVideoInfoTag() &&
           items[i]->GetVideoInfoTag()->GetPlayCount() > 0)
-        items[i]->SetLabel2(g_localizeStrings.Get(16102));
+          items[i]->SetLabel2(g_localizeStrings.Get(16102));
 
-      loader.LoadItem(items[i].get());
-      pDlgSelect->Add(*items[i]);
+        loader.LoadItem(items[i].get());
+        pDlgSelect->Add(*items[i]);
+      }
+
+      pDlgSelect->SetUseDetails(true);
+      pDlgSelect->Open();
+
+      int iItem = pDlgSelect->GetSelectedItem();
+      if (iItem < 0)
+        return;
+
+      OnSearchItemFound(items[iItem].get());
     }
-
-    pDlgSelect->SetUseDetails(true);
-    pDlgSelect->Open();
-
-    int iItem = pDlgSelect->GetSelectedItem();
-    if (iItem < 0)
-      return;
-
-    CFileItem* pSelItem = new CFileItem(*items[iItem]);
-
-    OnSearchItemFound(pSelItem);
-
-    delete pSelItem;
   }
   else
   {
@@ -1954,11 +1956,14 @@ bool CGUIDialogVideoInfo::LinkMovieToTvShow(const CFileItemPtr &item, bool bRemo
   {
     list.Sort(SortByLabel, SortOrderAscending, CServiceBroker::GetSettings().GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING) ? SortAttributeIgnoreArticle : SortAttributeNone);
     CGUIDialogSelect* pDialog = g_windowManager.GetWindow<CGUIDialogSelect>();
-    pDialog->Reset();
-    pDialog->SetItems(list);
-    pDialog->SetHeading(CVariant{20356});
-    pDialog->Open();
-    iSelectedLabel = pDialog->GetSelectedItem();
+    if (pDialog)
+    {
+      pDialog->Reset();
+      pDialog->SetItems(list);
+      pDialog->SetHeading(CVariant{20356});
+      pDialog->Open();
+      iSelectedLabel = pDialog->GetSelectedItem();
+    }
   }
 
   if (iSelectedLabel > -1 && iSelectedLabel < list.Size())
