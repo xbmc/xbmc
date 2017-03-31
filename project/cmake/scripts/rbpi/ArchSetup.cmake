@@ -23,6 +23,11 @@ else()
   endif()
 endif()
 
+# Make sure we strip binaries in Release build
+if(CMAKE_BUILD_TYPE STREQUAL Release AND CMAKE_COMPILER_IS_GNUCXX)
+  set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -s")
+endif()
+
 find_package(CXX11 REQUIRED)
 
 set(MMAL_FOUND 1 CACHE INTERNAL "MMAL")
