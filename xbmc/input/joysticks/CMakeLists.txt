@@ -1,6 +1,7 @@
 set(SOURCES DeadzoneFilter.cpp
             DefaultController.cpp
             DefaultJoystick.cpp
+            DefaultRemote.cpp
             DriverPrimitive.cpp
             JoystickEasterEgg.cpp
             JoystickMonitor.cpp
@@ -11,6 +12,7 @@ set(SOURCES DeadzoneFilter.cpp
 set(HEADERS DeadzoneFilter.h
             DefaultController.h
             DefaultJoystick.h
+            DefaultRemote.h
             DriverPrimitive.h
             IActionMap.h
             IButtonMap.h

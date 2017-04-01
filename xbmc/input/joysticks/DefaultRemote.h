@@ -19,9 +19,23 @@
  */
 #pragma once
 
-#define DEFAULT_CONTROLLER_ID    "game.controller.default"
-#define DEFAULT_REMOTE_ID        "game.controller.remote"
+#include "DefaultJoystick.h"
 
- // Analog sticks on the default controller
-#define DEFAULT_LEFT_STICK_NAME   "leftstick"
-#define DEFAULT_RIGHT_STICK_NAME  "rightstick"
+namespace KODI
+{
+namespace JOYSTICK
+{
+  class CDefaultRemote : public CDefaultJoystick
+  {
+  public:
+    CDefaultRemote(void);
+
+    virtual ~CDefaultRemote(void) = default;
+
+  protected:
+    // implementation of CDefaultJoystick
+    virtual std::string GetControllerID() const override;
+    virtual unsigned int GetKeyID(const FeatureName& feature, ANALOG_STICK_DIRECTION dir = ANALOG_STICK_DIRECTION::UNKNOWN) const override;
+  };
+}
+}

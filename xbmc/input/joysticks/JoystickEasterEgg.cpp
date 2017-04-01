@@ -45,6 +45,21 @@ const std::map<std::string, std::vector<FeatureName>> CJoystickEasterEgg::m_sequ
       "a",
     },
   },
+  {
+    DEFAULT_REMOTE_ID,
+    {
+      "up",
+      "up",
+      "down",
+      "down",
+      "left",
+      "right",
+      "left",
+      "right",
+      "back",
+      "ok",
+    },
+  },
 };
 
 CJoystickEasterEgg::CJoystickEasterEgg(const std::string& controllerId) :

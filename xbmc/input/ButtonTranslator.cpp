@@ -1645,6 +1645,16 @@ uint32_t CButtonTranslator::TranslateJoystickCommand(const TiXmlElement *pButton
     else if (strButton == "rightbumper") buttonCode = KEY_JOYSTICK_BUTTON_RIGHT_SHOULDER;
     else if (strButton == "guide") buttonCode = KEY_JOYSTICK_BUTTON_GUIDE;
   }
+  else if (controllerId == DEFAULT_REMOTE_ID)
+  {
+    if (strButton == "ok") buttonCode = KEY_REMOTE_BUTTON_OK;
+    else if (strButton == "back") buttonCode = KEY_REMOTE_BUTTON_BACK;
+    else if (strButton == "up") buttonCode = KEY_REMOTE_BUTTON_UP;
+    else if (strButton == "down") buttonCode = KEY_REMOTE_BUTTON_DOWN;
+    else if (strButton == "left") buttonCode = KEY_REMOTE_BUTTON_LEFT;
+    else if (strButton == "right") buttonCode = KEY_REMOTE_BUTTON_RIGHT;
+    else if (strButton == "home") buttonCode = KEY_REMOTE_BUTTON_HOME;
+  }
 
   if (buttonCode == 0)
     CLog::Log(LOGERROR, "Joystick Translator: Can't find button %s for controller %s", strButton.c_str(), controllerId.c_str());
