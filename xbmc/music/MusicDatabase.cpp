@@ -1604,11 +1604,6 @@ bool CMusicDatabase::AddSongGenre(int idGenre, int idSong, int iOrder)
   return ExecuteQuery(strSQL);
 };
 
-bool CMusicDatabase::DeleteSongGenresBySong(int idSong)
-{
-  return ExecuteQuery(PrepareSQL("DELETE FROM song_genre WHERE idSong = %i", idSong));
-}
-
 bool CMusicDatabase::AddAlbumGenre(int idGenre, int idAlbum, int iOrder)
 {
   if (idGenre == -1 || idAlbum == -1)
@@ -2755,11 +2750,8 @@ bool CMusicDatabase::GetSongsByPath(const std::string& strPath1, MAPSONGS& songs
 
 void CMusicDatabase::EmptyCache()
 {
-  m_artistCache.erase(m_artistCache.begin(), m_artistCache.end());
   m_genreCache.erase(m_genreCache.begin(), m_genreCache.end());
   m_pathCache.erase(m_pathCache.begin(), m_pathCache.end());
-  m_albumCache.erase(m_albumCache.begin(), m_albumCache.end());
-  m_thumbCache.erase(m_thumbCache.begin(), m_thumbCache.end());
 }
 
 bool CMusicDatabase::Search(const std::string& search, CFileItemList &items)
@@ -4180,7 +4172,7 @@ bool CMusicDatabase::GetAlbumsByWhere(const std::string &baseDir, const Filter &
     }
 
     DatabaseResults results;
-    results.reserve(iRowsFound);    
+    results.reserve(iRowsFound);
     // Do not apply any limit when sorting as have join with albumartistview so limit would 
     // apply incorrectly (although when SortByNone limit already applied in SQL). 
     // Apply limits later to album list rather than dataset
@@ -4357,7 +4349,7 @@ bool CMusicDatabase::GetSongsFullByWhere(const std::string &baseDir, const Filte
           if (idSongArtistRole == ROLE_ARTIST)
             artistCredits.push_back(GetArtistCreditFromDataset(record, songArtistOffset));
           else
-            items[items.Size() - 1]->GetMusicInfoTag()->AppendArtistRole(GetArtistRoleFromDataset(record, songArtistOffset));           
+            items[items.Size() - 1]->GetMusicInfoTag()->AppendArtistRole(GetArtistRoleFromDataset(record, songArtistOffset));
         }
       }
       catch (...)
@@ -5373,7 +5365,7 @@ bool CMusicDatabase::GetRandomSong(CFileItem* item, int& idSong, const Filter &f
     GetSongsFullByWhere(baseDir, Filter(), items, SortDescription(), true);
     if (items.Size() > 0)
     {
-      *item = *items[0];      
+      *item = *items[0];
       return true;
     }
     return false;
@@ -6437,7 +6429,7 @@ bool CMusicDatabase::GetFilter(CDbUrl &musicUrl, Filter &filter, SortDescription
   }
   
   std::string strRoleSQL; //Role < 0 means all roles, otherwise filter by role
-  if(idRole > 0) strRoleSQL = PrepareSQL(" AND song_artist.idRole = %i ", idRole);  
+  if(idRole > 0) strRoleSQL = PrepareSQL(" AND song_artist.idRole = %i ", idRole);
 
   int idArtist = -1, idGenre = -1, idAlbum = -1, idSong = -1;
   bool albumArtistsOnly = false;
@@ -6628,7 +6620,7 @@ bool CMusicDatabase::GetFilter(CDbUrl &musicUrl, Filter &filter, SortDescription
          songArtistSub.BuildSQL(songArtistSQL);
          albumArtistSub.AppendWhere(songArtistSQL);
          albumArtistSub.BuildSQL(albumArtistSQL);
-         filter.AppendWhere(albumArtistSQL);    
+         filter.AppendWhere(albumArtistSQL);
       }
       else
       {
