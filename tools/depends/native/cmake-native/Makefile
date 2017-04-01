@@ -21,6 +21,10 @@ ifeq ($(USE_CCACHE), yes)
 	CONFIGURE+=--enable-ccache
 endif
 
+ifeq ($(OS),osx)
+  SETENV += SDKROOT=$(SDKROOT)
+endif
+
 APP=$(PLATFORM)/bin/$(APPNAME)
 
 CLEAN_FILES=$(ARCHIVE) $(PLATFORM)
