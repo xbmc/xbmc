@@ -37,7 +37,7 @@
 #include "guilib/GUIControlGroupList.h"
 #include "guilib/GUIWindow.h"
 #include "guilib/WindowIDs.h"
-#include "input/joysticks/DefaultJoystick.h" // for DEFAULT_CONTROLLER_ID
+#include "input/joysticks/JoystickIDs.h"
 #include "messaging/ApplicationMessenger.h"
 #include "peripherals/Peripherals.h"
 #include "ServiceBroker.h"

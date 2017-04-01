@@ -21,6 +21,7 @@
 #include "DefaultJoystick.h"
 #include "KeymapHandler.h"
 #include "JoystickEasterEgg.h"
+#include "JoystickIDs.h"
 #include "JoystickTranslator.h"
 #include "input/Key.h"
 #include "Application.h"

@@ -21,6 +21,7 @@ set(HEADERS DeadzoneFilter.h
             IInputReceiver.h
             IKeymapHandler.h
             JoystickEasterEgg.h
+            JoystickIDs.h
             JoystickMonitor.h
             JoystickTranslator.h
             JoystickTypes.h

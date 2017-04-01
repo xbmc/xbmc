@@ -20,6 +20,7 @@
 
 #include "PeripheralJoystick.h"
 #include "input/joysticks/DeadzoneFilter.h"
+#include "input/joysticks/JoystickIDs.h"
 #include "input/joysticks/JoystickTranslator.h"
 #include "peripherals/Peripherals.h"
 #include "peripherals/addons/AddonButtonMap.h"
