@@ -146,6 +146,12 @@ public:
   */
   bool DestroyWindows();
 
+  /*! \brief Destroy and remove the window or dialog with the given id
+   *
+   *\param id the window id
+   */
+  void DestroyWindow(int id);
+
   /*! \brief Return the window for the given type \code{T}.
    *
    * \tparam T the window class type
