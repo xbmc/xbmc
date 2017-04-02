@@ -47,7 +47,7 @@ distclean:
 	rm -rf $(PLATFORM) .installed-$(PLATFORM) native
 
 .installed-$(PLATFORM): $(DEPS)
-	cd $(ADDON_PROJECT_DIR) && (git clean -xfd || rm -rf CMakeCache.txt CMakeFiles cmake_install.cmake build/*)
+	cd $(ADDON_PROJECT_DIR) && rm -rf CMakeCache.txt CMakeFiles cmake_install.cmake build/*
 	mkdir -p $(PLATFORM)
 ifeq ($(PREFIX),)
 	@echo
