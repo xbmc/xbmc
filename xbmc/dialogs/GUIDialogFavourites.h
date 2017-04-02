@@ -36,7 +36,10 @@ public:
 
   virtual CFileItemPtr GetCurrentListItem(int offset = 0);
 
-  virtual bool HasListItems() const { return true; };
+  virtual bool HasListItems() const { return true; }
+
+  static bool ChooseAndSetNewName(const CFileItemPtr &item);
+  static bool ChooseAndSetNewThumbnail(const CFileItemPtr &item);
 
 protected:
   int GetSelectedItem();
