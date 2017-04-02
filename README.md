@@ -36,20 +36,20 @@ computer will become a fully functional multimedia jukebox.
 
 ## Installation
 
-See [docs/README.xxx] (https://github.com/xbmc/xbmc/tree/master/docs) for specific platform build information.
+See [docs/README.xxx](https://github.com/xbmc/xbmc/tree/master/docs) for specific platform build information.
 
 ## Quick Kodi development links
 
-* [Contributing] (https://github.com/xbmc/xbmc/blob/master/CONTRIBUTING.md)
-* [Submitting a patch] (http://kodi.wiki/view/HOW-TO_submit_a_patch)
-* [Code guidelines] (https://codedocs.xyz/xbmc/xbmc/code_guidelines.html)
-* [Kodi development] (http://kodi.wiki/view/Development)
+* [Contributing](https://github.com/xbmc/xbmc/blob/master/CONTRIBUTING.md)
+* [Submitting a patch](http://kodi.wiki/view/HOW-TO_submit_a_patch)
+* [Code guidelines](https://codedocs.xyz/xbmc/xbmc/code_guidelines.html)
+* [Kodi development](http://kodi.wiki/view/Development)
 
 ## Useful links
 
-* [Kodi wiki] (http://kodi.wiki/)
-* [Kodi bug tracker] (http://trac.kodi.tv)
-* [Kodi community forums] (http://forum.kodi.tv/)
-* [Kodi website] (http://kodi.tv)
+* [Kodi wiki](http://kodi.wiki/)
+* [Kodi bug tracker](http://trac.kodi.tv)
+* [Kodi community forums](http://forum.kodi.tv/)
+* [Kodi website](http://kodi.tv)
 
 **Enjoy Kodi and help us improve it today. :)**
