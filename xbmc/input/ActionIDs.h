@@ -55,6 +55,7 @@
 #define ACTION_SHOW_OSD               24 //!< show/hide OSD. Can b used in videoFullScreen.xml window id=2005
 #define ACTION_SHOW_SUBTITLES         25 //!< turn subtitles on/off. Can b used in videoFullScreen.xml window id=2005
 #define ACTION_NEXT_SUBTITLE          26 //!< switch to next subtitle of movie. Can b used in videoFullScreen.xml window id=2005
+#define ACTION_BROWSE_SUBTITLE       247 //!< Browse for subtitle. Can be used in videofullscreen
 #define ACTION_PLAYER_DEBUG           27 //!< show debug info for VideoPlayer
 #define ACTION_NEXT_PICTURE           28 //!< show next picture of slideshow. Can b used in slideshow.xml window id=2007
 #define ACTION_PREV_PICTURE           29 //!< show previous picture of slideshow. Can b used in slideshow.xml window id=2007

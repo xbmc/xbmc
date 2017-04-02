@@ -86,6 +86,7 @@ static const ActionMapping actions[] =
     { "osd"                      , ACTION_SHOW_OSD },
     { "showsubtitles"            , ACTION_SHOW_SUBTITLES },
     { "nextsubtitle"             , ACTION_NEXT_SUBTITLE },
+    { "browsesubtitle"           , ACTION_BROWSE_SUBTITLE },
     { "cyclesubtitle"            , ACTION_CYCLE_SUBTITLE },
     { "playerdebug"              , ACTION_PLAYER_DEBUG },
     { "codecinfo"                , ACTION_PLAYER_PROCESS_INFO },
