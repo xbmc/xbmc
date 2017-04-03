@@ -342,7 +342,6 @@ public:
 
   bool AddSongGenre(int idGenre, int idSong, int iOrder);
   bool GetGenresBySong(int idSong, std::vector<int>& genres);
-  bool DeleteSongGenresBySong(int idSong);
 
   bool AddAlbumGenre(int idGenre, int idAlbum, int iOrder);
   bool GetGenresByAlbum(int idAlbum, std::vector<int>& genres);
@@ -525,11 +524,8 @@ public:
   void SetMusicTagScanVersion(int version = 0);
 
 protected:
-  std::map<std::string, int> m_artistCache;
   std::map<std::string, int> m_genreCache;
   std::map<std::string, int> m_pathCache;
-  std::map<std::string, int> m_thumbCache;
-  std::map<std::string, CAlbum> m_albumCache;
   typedef std::map<std::string, std::string> CueCache;
   CueCache m_cueCache;
 
