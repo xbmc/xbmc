@@ -1,10 +1,10 @@
 diff -ru lib/util/charset/iconv.c lib/util/charset/iconv.c
 --- lib/util/charset/iconv.c	2013-01-29 09:49:31.000000000 +0100
 +++ lib/util/charset/iconv.c	2015-03-28 08:30:53.191217266 +0100
-@@ -23,6 +23,11 @@
- #include "system/iconv.h"
+@@ -24,6 +24,11 @@
  #include "system/filesys.h"
-
+ #include "charset_proto.h"
+ 
 +#if defined(ANDROID)
 +#include <stdint.h>
 +#include <byteswap.h>
@@ -13,7 +13,7 @@ diff -ru lib/util/charset/iconv.c lib/util/charset/iconv.c
  #ifdef strcasecmp
  #undef strcasecmp
  #endif
-@@ -502,6 +507,19 @@ static size_t ucs2hex_push(void *cd, con
+@@ -546,6 +551,19 @@
  	return 0;
  }
 
@@ -33,49 +33,10 @@ diff -ru lib/util/charset/iconv.c lib/util/charset/iconv.c
  static size_t iconv_swab(void *cd, const char **inbuf, size_t *inbytesleft,
  			 char **outbuf, size_t *outbytesleft)
  {
-diff -ru lib/util/system.c lib/util/system.c
---- lib/util/system.c	2013-01-29 09:49:31.000000000 +0100
-+++ lib/util/system.c	2015-03-28 08:30:53.843217274 +0100
-@@ -83,7 +83,9 @@
- {
- 	struct in_addr in;
- 	struct in_addr in2;
-+#if !defined(ANDROID)
- 	in = inet_makeaddr(net, host);
-+#endif
- 	in2.s_addr = in.s_addr;
- 	return in2;
- }
 diff -ru lib/util/util_pw.c lib/util/util_pw.c
 --- lib/util/util_pw.c	2013-01-29 09:49:31.000000000 +0100
 +++ lib/util/util_pw.c	2015-03-28 08:30:53.843217274 +0100
-@@ -34,17 +34,25 @@
- 
- void sys_setpwent(void)
- {
-+#if !defined(ANDROID)
- 	setpwent();
-+#endif
- }
- 
- struct passwd *sys_getpwent(void)
- {
-+#if !defined(ANDROID)
- 	return getpwent();
-+#else
-+	return NULL;
-+#endif
- }
- 
- void sys_endpwent(void)
- {
-+#if !defined(ANDROID)
- 	endpwent();
-+#endif
- }
- 
- /**************************************************************************
-@@ -83,7 +91,9 @@
+@@ -40,7 +40,9 @@
  	ret->pw_passwd = talloc_strdup(ret, from->pw_passwd);
  	ret->pw_uid = from->pw_uid;
  	ret->pw_gid = from->pw_gid;
@@ -114,7 +75,7 @@ diff -ru nsswitch/libwbclient/wbc_pwd.c nsswitch/libwbclient/wbc_pwd.c
 diff -ru nsswitch/libwbclient/wbc_sid.c nsswitch/libwbclient/wbc_sid.c
 --- nsswitch/libwbclient/wbc_sid.c	2013-01-29 09:49:31.000000000 +0100
 +++ nsswitch/libwbclient/wbc_sid.c	2015-03-28 08:30:53.847217275 +0100
-@@ -950,9 +950,11 @@
+@@ -957,9 +957,11 @@
  
  		wbcFreeMemory(name);
  
@@ -129,7 +90,7 @@ diff -ru nsswitch/libwbclient/wbc_sid.c nsswitch/libwbclient/wbc_sid.c
 diff -ru source3/configure source3/configure
 --- source3/configure	2013-01-29 10:21:59.000000000 +0100
 +++ source3/configure	2015-03-28 08:43:34.903227582 +0100
-@@ -20894,7 +20894,7 @@
+@@ -22645,7 +22645,7 @@
  LIBSMBCLIENT_SOVER=0
  LIBSMBCLIENT_FULLVER=$LIBSMBCLIENT_SOVER
  
@@ -138,7 +99,7 @@ diff -ru source3/configure source3/configure
  LIBSMBCLIENT_SHARED_TARGET_FULLVER=$LIBSMBCLIENT_SHARED_TARGET.$LIBSMBCLIENT_FULLVER
  
  
-@@ -36540,19 +36540,19 @@
+@@ -37803,19 +37803,19 @@
  if test "x$ac_cv_lib_pthread_pthread_attr_init" = xyes; then :
  
  	     PTHREAD_CFLAGS="-D_REENTRANT -D_POSIX_PTHREAD_SEMANTICS"
@@ -162,7 +123,7 @@ diff -ru source3/configure source3/configure
  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
  /* end confdefs.h.  */
  
-@@ -36585,7 +36585,7 @@
+@@ -37848,7 +37848,7 @@
  if test "x$ac_cv_lib_pthreads_pthread_attr_init" = xyes; then :
  
  	     PTHREAD_CFLAGS="-D_THREAD_SAFE"
@@ -171,10 +132,10 @@ diff -ru source3/configure source3/configure
  fi
  
  fi
-diff -ru source3/lib/fault.c source3/lib/fault.c
---- source3/lib/fault.c	2013-01-29 09:49:31.000000000 +0100
-+++ source3/lib/fault.c	2015-03-28 08:30:54.539217284 +0100
-@@ -375,7 +375,7 @@
+diff -ru source3/lib/dumpcore.c source3/lib/dumpcore.c
+--- source3/lib/dumpcore.c
++++ source3/lib/dumpcore.c
+@@ -320,7 +320,7 @@
  	umask(~(0700));
  	dbgflush();
  
@@ -183,37 +144,10 @@ diff -ru source3/lib/fault.c source3/lib/fault.c
  	/* On Linux we lose the ability to dump core when we change our user
  	 * ID. We know how to dump core safely, so let's make sure we have our
  	 * dumpable flag set.
-diff -ru source3/lib/system.c source3/lib/system.c
---- source3/lib/system.c	2013-01-29 09:49:31.000000000 +0100
-+++ source3/lib/system.c	2015-03-28 08:30:54.543217284 +0100
-@@ -921,8 +921,11 @@
- #if defined(HAVE_EXPLICIT_LARGEFILE_SUPPORT) && defined(HAVE_SEEKDIR64)
- 	seekdir64(dirp, offset);
- #else
-+#if !defined(ANDROID)
- 	seekdir(dirp, offset);
- #endif
-+	return;
-+#endif
- }
- 
- /*******************************************************************
-@@ -934,7 +937,11 @@
- #if defined(HAVE_EXPLICIT_LARGEFILE_SUPPORT) && defined(HAVE_TELLDIR64)
- 	return (long)telldir64(dirp);
- #else
-+#if !defined(ANDROID)
- 	return (long)telldir(dirp);
-+#else
-+	return(0);
-+#endif
- #endif
- }
- 
-diff -ru source3/libads/dns.c source3/libads/dns.c
---- source3/libads/dns.c	2013-01-29 09:49:31.000000000 +0100
-+++ source3/libads/dns.c	2015-03-28 08:30:54.543217284 +0100
-@@ -40,6 +40,16 @@
+diff -ru lib/addns/dnsquery.c lib/addns/dnsquery.c
+--- lib/addns/dnsquery.c
++++ lib/addns/dnsquery.c
+@@ -41,6 +41,16 @@
  
  #define MAX_DNS_PACKET_SIZE 0xffff
  
@@ -233,7 +167,7 @@ diff -ru source3/libads/dns.c source3/libads/dns.c
 diff -ru source3/passdb/passdb.c source3/passdb/passdb.c
 --- source3/Makefile.in
 +++ source3/Makefile.in
-@@ -2507,8 +2507,6 @@
+@@ -2410,8 +2410,6 @@
  		@SONAMEFLAG@`basename $@`
  
  $(LIBSMBCLIENT_SHARED_TARGET): $(LIBSMBCLIENT_SHARED_TARGET_SONAME)
@@ -242,7 +176,7 @@ diff -ru source3/passdb/passdb.c source3/passdb/passdb.c
  
  $(LIBSMBCLIENT_STATIC_TARGET): $(BINARY_PREREQS) $(LIBSMBCLIENT_OBJ1)
  	@echo Linking non-shared library $@
-@@ -2525,11 +2523,6 @@
+@@ -2428,11 +2426,6 @@
  installlibsmbclient:: installdirs libsmbclient
  	@$(SHELL) $(srcdir)/script/installdirs.sh $(INSTALLPERMS_BIN) $(DESTDIR) $(LIBDIR)
  	-$(INSTALLLIBCMD_SH) $(LIBSMBCLIENT_SHARED_TARGET_SONAME) $(DESTDIR)$(LIBDIR)
@@ -282,23 +216,19 @@ diff -ru source3/passdb/passdb.c source3/passdb/passdb.c
 diff -ru source3/passdb/pdb_interface.c source3/passdb/pdb_interface.c
 --- source3/passdb/pdb_interface.c	2013-01-29 09:49:31.000000000 +0100
 +++ source3/passdb/pdb_interface.c	2015-03-28 08:30:54.547217284 +0100
-@@ -1464,8 +1464,8 @@
+@@ -1563,6 +1563,7 @@
  	}
  
  	/* Primary group members */
--	setpwent();
--	while ((pwd = getpwent()) != NULL) {
-+	sys_setpwent();
-+	while ((pwd = sys_getpwent()) != NULL) {
++#if !defined(ANDROID)
+ 	setpwent();
+ 	while ((pwd = getpwent()) != NULL) {
  		if (pwd->pw_gid == gid) {
- 			if (!add_uid_to_array_unique(mem_ctx, pwd->pw_uid,
- 						pp_uids, p_num)) {
-@@ -1473,7 +1473,7 @@
- 			}
+@@ -1573,6 +1574,7 @@
  		}
  	}
--	endpwent();
-+	sys_endpwent();
+ 	endpwent();
++#endif
  
  	/* Secondary group members */
  	for (gr = grp->gr_mem; (*gr != NULL) && ((*gr)[0] != '\0'); gr += 1) {
