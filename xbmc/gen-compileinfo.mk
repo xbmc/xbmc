@@ -37,5 +37,6 @@ $(FILEPATH)/CompileInfo.cpp: $(VERSION.TXT) $(FILEPATH)/CompileInfo.cpp.in $(FIL
 	MAJOR=$$(awk '/VERSION_MAJOR/ {print $$2}' $(VERSION.TXT)) ;\
 	MINOR=$$(awk '/VERSION_MINOR/ {print $$2}' $(VERSION.TXT)) ;\
 	TAG=$$(awk '/VERSION_TAG/ {print $$2}' $(VERSION.TXT)) ;\
-	sed -e "s/\@APP_NAME\@/$$APP_NAME/" -e "s/\@APP_VERSION_MAJOR\@/$$MAJOR/" -e "s/\@APP_VERSION_MINOR\@/$$MINOR/" -e "s/\@APP_VERSION_TAG\@/$$TAG/" -e "s/\@APP_SCMID\@/$$GITREV/" $@.in > $@
+	APP_PACKAGE=$$(awk '/APP_PACKAGE/ {print $$2}' $(VERSION.TXT)) ;\
+	sed -e "s/\@APP_NAME\@/$$APP_NAME/" -e "s/\@APP_VERSION_MAJOR\@/$$MAJOR/" -e "s/\@APP_VERSION_MINOR\@/$$MINOR/" -e "s/\@APP_VERSION_TAG\@/$$TAG/" -e "s/\@APP_SCMID\@/$$GITREV/" -e "s/\@APP_PACKAGE\@/$$APP_PACKAGE/" $@.in > $@
 

@@ -1,0 +1,78 @@
+package @APP_PACKAGE@;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.Properties;
+import android.os.Environment;
+import android.util.Base64;
+import android.util.Log;
+
+public class XBMCProperties
+{ 
+  private static final String TAG = "@APP_NAME@properties";
+
+  private static boolean isInitialized()
+  {
+    String isInit = System.getProperty("xbmc.proploaded", "");
+    return isInit.equalsIgnoreCase("yes");
+  }
+
+  public static void initializeProperties()
+  {
+    String propfn = Environment.getExternalStorageDirectory().getAbsolutePath() + "/xbmc_env.properties";
+    File fProp = new File(propfn);
+    if (fProp.exists())
+    {
+      Log.i(TAG, "Loading " + propfn);
+      try
+      {
+        Properties sysProp = new Properties(System.getProperties());
+        FileInputStream xbmcenvprop = new FileInputStream(fProp);
+        sysProp.load(xbmcenvprop);
+        System.setProperties(sysProp);
+      } catch (Exception e)
+      {
+        Log.e(TAG, "Error loading " + propfn + " (" + e.getMessage() + ")");
+      }
+    }
+    System.setProperty("xbmc.proploaded", "yes");
+  }
+
+  public static String getStringProperty(String key, String devValue)
+  {
+    if (!isInitialized())
+      initializeProperties();
+    String value = System.getProperty(key, devValue);
+    return value;
+  }
+
+  public static boolean getBoolProperty(String key)
+  {
+    if (!isInitialized())
+      initializeProperties();
+    String value = System.getProperty(key, "");
+    return (value.equalsIgnoreCase("yes") ? true : false);
+  }
+
+  public static int getIntProperty(String key, int defValue)
+  {
+    if (!isInitialized())
+      initializeProperties();
+    String value = System.getProperty(key, Integer.toString(defValue));
+    return Integer.parseInt(value);
+  }
+
+  public static String getJsonAuthorization()
+  {
+    if (!isInitialized())
+      initializeProperties();
+
+    String jsonUser = System.getProperty("xbmc.jsonUser", "");
+    String jsonPwd = System.getProperty("xbmc.jsonPwd", "");
+
+    if (!jsonPwd.isEmpty())
+      return "Basic " + Base64.encodeToString((jsonUser+":"+jsonPwd).getBytes(), Base64.NO_WRAP);
+
+    return "";
+  }
+}

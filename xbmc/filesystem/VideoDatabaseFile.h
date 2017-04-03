@@ -1,6 +1,7 @@
+#pragma once
 /*
- *      Copyright (C) 2014 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2005-2012 Team XBMC
+ *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,36 +19,21 @@
  *
  */
 
-#include "CompileInfo.h"
-#include <cstddef>
+#include "filesystem/OverrideFile.h"
+#include "video/VideoDatabase.h"
 
-
-int CCompileInfo::GetMajor()
+namespace XFILE
 {
-  return @APP_VERSION_MAJOR@;
-}
-
-int CCompileInfo::GetMinor()
+class CVideoDatabaseFile : public COverrideFile
 {
-  return @APP_VERSION_MINOR@;
-}
+public:
+  CVideoDatabaseFile(void);
+  virtual ~CVideoDatabaseFile(void);
 
-const char* CCompileInfo::GetPackage()
-{
-  return "@APP_PACKAGE@";
-}
-
-const char* CCompileInfo::GetAppName()
-{
-  return "@APP_NAME@";
-}
-
-const char* CCompileInfo::GetSuffix()
-{
-  return "@APP_VERSION_TAG@";
-}
-
-const char* CCompileInfo::GetSCMID()
-{
-  return "@APP_SCMID@";
+  static CVideoInfoTag GetVideoTag(const CURL& url);
+  
+protected:
+  virtual std::string TranslatePath(const CURL& url);
+  static VIDEODB_CONTENT_TYPE GetType(const CURL& url);
+};
 }

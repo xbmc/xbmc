@@ -470,7 +470,11 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
     {
       if (m_vecItems->GetPath() == "?")
         m_vecItems->SetPath("");
+      std::string path, fileName;
       std::string dir = message.GetStringParam(0);
+      URIUtils::Split(dir, path, fileName);
+      if (StringUtils::IsInteger(fileName))
+        dir = path;
       const std::string &ret = message.GetStringParam(1);
       bool returning = StringUtils::EqualsNoCase(ret, "return");
       if (!dir.empty())
