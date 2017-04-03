@@ -111,7 +111,7 @@ BD_FILE_H * DllLibbluray::file_open(const char* filename, const char *mode)
       return file;
     }
 
-    CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - Error opening file! (%p)", file);
+    CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - Error opening file! (%s)", CURL::GetRedacted(filename).c_str());
     
     delete fp;
     delete file;
