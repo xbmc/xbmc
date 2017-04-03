@@ -1,5 +1,4 @@
 --enable-shared
---enable-memalign-hack
 --enable-postproc
 --enable-zlib
 --disable-static
