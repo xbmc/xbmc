@@ -173,8 +173,8 @@ public:
   virtual void ResetControlStates();
 
   void       SetRunActionsManually();
-  void       RunLoadActions();
-  void       RunUnloadActions();
+  void       RunLoadActions() const;
+  void       RunUnloadActions() const;
 
   /*! \brief Set a property
    Sets the value of a property referenced by a key.
@@ -207,7 +207,7 @@ protected:
   /*! \brief Check if XML file needs (re)loading
    XML file has to be (re)loaded when window is not loaded or include conditions values were changed
    */
-  bool NeedXMLReload();
+  bool NeedXMLReload() const;
   virtual void LoadAdditionalTags(TiXmlElement *root) {}; ///< Load additional information from the XML document
 
   virtual void SetDefaults();

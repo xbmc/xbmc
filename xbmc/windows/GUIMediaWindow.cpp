@@ -31,14 +31,12 @@
 #include "URL.h"
 #include "Util.h"
 #include "addons/AddonManager.h"
-#include "addons/GUIDialogAddonSettings.h"
 #include "addons/PluginSource.h"
 #if defined(TARGET_ANDROID)
 #include "platform/android/activity/XBMCApp.h"
 #endif
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogMediaFilter.h"
-#include "dialogs/GUIDialogMediaSource.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogSmartPlaylistEditor.h"
@@ -52,7 +50,6 @@
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
-#include "interfaces/builtins/Builtins.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "input/Key.h"
 #include "network/Network.h"
@@ -69,7 +66,6 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
-#include "video/VideoLibraryQueue.h"
 #include "view/GUIViewState.h"
 
 #define CONTROL_BTNVIEWASICONS       2
@@ -911,7 +907,7 @@ bool CGUIMediaWindow::OnClick(int iItem, const std::string &player)
 
   if (!pItem->m_bIsFolder && pItem->IsFileFolder(EFILEFOLDER_MASK_ONCLICK))
   {
-    XFILE::IFileDirectory *pFileDirectory = NULL;
+    XFILE::IFileDirectory *pFileDirectory = nullptr;
     pFileDirectory = XFILE::CFileDirectoryFactory::Create(pItem->GetURL(), pItem.get(), "");
     if(pFileDirectory)
       pItem->m_bIsFolder = true;
@@ -1077,7 +1073,7 @@ bool CGUIMediaWindow::HaveDiscOrConnection(const std::string& strPath, int iDriv
 }
 
 // \brief Shows a standard errormessage for a given pItem.
-void CGUIMediaWindow::ShowShareErrorMessage(CFileItem* pItem)
+void CGUIMediaWindow::ShowShareErrorMessage(CFileItem* pItem) const
 {
   if (!pItem->m_bIsShareOrDrive)
     return;
@@ -1189,7 +1185,7 @@ void CGUIMediaWindow::RestoreSelectedItemFromHistory()
 
 // \brief Override the function to change the default behavior on how
 // a selected item history should look like
-void CGUIMediaWindow::GetDirectoryHistoryString(const CFileItem* pItem, std::string& strHistoryString)
+void CGUIMediaWindow::GetDirectoryHistoryString(const CFileItem* pItem, std::string& strHistoryString) const
 {
   if (pItem->m_bIsShareOrDrive)
   {
@@ -1809,7 +1805,7 @@ void CGUIMediaWindow::OnFilterItems(const std::string &filter)
     // to be able to select the same item as before we need to adjust
     // the path of the item i.e. add or remove the "filter=" URL option
     // but that's only necessary for folder items
-    if (currentItem.get() != NULL && currentItem->m_bIsFolder)
+    if (currentItem.get() && currentItem->m_bIsFolder)
     {
       CURL curUrl(currentItemPath), newUrl(m_strFilterPath);
       if (newUrl.HasOption("filter"))
@@ -1969,7 +1965,7 @@ bool CGUIMediaWindow::Filter(bool advanced /* = true */)
   if (!m_canFilterAdvanced || !advanced)
   {
     const CGUIControl *btnFilter = GetControl(CONTROL_BTN_FILTER);
-    if (btnFilter != NULL && btnFilter->GetControlType() == CGUIControl::GUICONTROL_EDIT)
+    if (btnFilter && btnFilter->GetControlType() == CGUIControl::GUICONTROL_EDIT)
     { // filter updated
       CGUIMessage selected(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_BTN_FILTER);
       OnMessage(selected);

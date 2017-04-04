@@ -29,7 +29,6 @@
 #include "threads/SingleLock.h"
 #include "utils/URIUtils.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/Settings.h"
 #include "addons/Skin.h"
 #include "GUITexture.h"
 #include "utils/Variant.h"
@@ -154,14 +153,14 @@ using namespace PVR;
 using namespace PERIPHERALS;
 using namespace KODI::MESSAGING;
 
-CGUIWindowManager::CGUIWindowManager(void)
+CGUIWindowManager::CGUIWindowManager()
 {
   m_pCallback = nullptr;
   m_iNested = 0;
   m_initialized = false;
 }
 
-CGUIWindowManager::~CGUIWindowManager(void)
+CGUIWindowManager::~CGUIWindowManager()
 {
 }
 
@@ -447,7 +446,7 @@ bool CGUIWindowManager::SendMessage(CGUIMessage& message)
   bool handled = false;
 //  CLog::Log(LOGDEBUG,"SendMessage: mess=%d send=%d control=%d param1=%d", message.GetMessage(), message.GetSenderId(), message.GetControlId(), message.GetParam1());
   // Send the message to all none window targets
-  for (int i = 0; i < (int) m_vecMsgTargets.size(); i++)
+  for (int i = 0; i < int(m_vecMsgTargets.size()); i++)
   {
     IMsgTargetCallback* pMsgTarget = m_vecMsgTargets[i];
 
@@ -793,7 +792,7 @@ void CGUIWindowManager::ActivateWindow_Internal(int iWindowID, const std::vector
     if (!pNewWindow->IsDialogRunning())
     {
       CSingleExit exitit(g_graphicsContext);
-      ((CGUIDialog *)pNewWindow)->Open(params.size() > 0 ? params[0] : "");
+      static_cast<CGUIDialog *>(pNewWindow)->Open(params.size() > 0 ? params[0] : "");
     }
     return;
   }
@@ -1043,7 +1042,7 @@ void CGUIWindowManager::Process(unsigned int currentTime)
 
 void CGUIWindowManager::MarkDirty()
 {
-  m_tracker.MarkDirtyRegion(CRect(0, 0, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight()));
+  m_tracker.MarkDirtyRegion(CRect(0, 0, float(g_graphicsContext.GetWidth()), float(g_graphicsContext.GetHeight())));
 }
 
 void CGUIWindowManager::MarkDirty(const CRect& rect)
@@ -1255,7 +1254,7 @@ void CGUIWindowManager::DeInitialize()
   m_vecMsgTargets.erase( m_vecMsgTargets.begin(), m_vecMsgTargets.end() );
 
   // destroy our custom windows...
-  for (int i = 0; i < (int)m_vecCustomWindows.size(); i++)
+  for (int i = 0; i < int(m_vecCustomWindows.size()); i++)
   {
     CGUIWindow *pWindow = m_vecCustomWindows[i];
     Remove(pWindow->GetID());
@@ -1421,7 +1420,7 @@ int CGUIWindowManager::GetActiveWindow() const
   return WINDOW_INVALID;
 }
 
-int CGUIWindowManager::GetActiveWindowID()
+int CGUIWindowManager::GetActiveWindowID() const
 {
   // Get the currently active window
   int iWin = GetActiveWindow() & WINDOW_ID_MASK;

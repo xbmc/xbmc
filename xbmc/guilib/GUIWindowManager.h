@@ -66,8 +66,8 @@ class CGUIWindowManager : public KODI::MESSAGING::IMessageTarget
   friend CGUIDialog;
   friend CGUIMediaWindow;
 public:
-  CGUIWindowManager(void);
-  virtual ~CGUIWindowManager(void);
+  CGUIWindowManager();
+  virtual ~CGUIWindowManager();
   bool SendMessage(CGUIMessage& message);
   bool SendMessage(int message, int senderID, int destID, int param1 = 0, int param2 = 0);
   bool SendMessage(CGUIMessage& message, int window);
@@ -192,7 +192,7 @@ public:
   int RemoveThreadMessageByMessageIds(int *pMessageIDList);
   void AddMsgTarget( IMsgTargetCallback* pMsgTarget );
   int GetActiveWindow() const;
-  int GetActiveWindowID();
+  int GetActiveWindowID() const;
   int GetFocusedWindow() const;
   bool HasModalDialog(const std::vector<DialogModalityType>& types = std::vector<DialogModalityType>(), bool ignoreClosing = true) const;
   bool HasVisibleModalDialog(const std::vector<DialogModalityType>& types = std::vector<DialogModalityType>()) const;
