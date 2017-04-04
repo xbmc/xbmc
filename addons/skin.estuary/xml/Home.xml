@@ -522,7 +522,6 @@
 						<onright>9000</onright>
 						<onup>14100</onup>
 						<ondown>14100</ondown>
-						<onclick>$INFO[ListItem.FileNameAndPath]</onclick>
 						<preloaditems>2</preloaditems>
 						<scrolltime tween="cubic" easing="out">500</scrolltime>
 						<orientation>vertical</orientation>

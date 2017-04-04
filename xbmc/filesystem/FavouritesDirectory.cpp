@@ -37,7 +37,6 @@
 namespace XFILE
 {
 
-
 bool CFavouritesDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
   items.Clear();
@@ -103,11 +102,16 @@ bool CFavouritesDirectory::LoadFavourites(const std::string& strPath, CFileItemL
     const char *thumb = favourite->Attribute("thumb");
     if (name && favourite->FirstChild())
     {
-      if(!items.Contains(favourite->FirstChild()->Value()))
+      CURL url;
+      url.SetProtocol("favourites");
+      url.SetHostName(CURL::Encode(favourite->FirstChild()->Value()));
+      const std::string favURL(url.Get());
+      if (!items.Contains(favURL))
       {
-        CFileItemPtr item(new CFileItem(name));
-        item->SetPath(favourite->FirstChild()->Value());
-        if (thumb) item->SetArt("thumb", thumb);
+        const CFileItemPtr item(std::make_shared<CFileItem>(name));
+        item->SetPath(favURL);
+        if (thumb)
+          item->SetArt("thumb", thumb);
         items.Add(item);
       }
     }
@@ -131,7 +135,9 @@ bool CFavouritesDirectory::Save(const CFileItemList &items)
     favNode.SetAttribute("name", item->GetLabel().c_str());
     if (item->HasArt("thumb"))
       favNode.SetAttribute("thumb", item->GetArt("thumb").c_str());
-    TiXmlText execute(item->GetPath());
+
+    const CURL url(item->GetPath());
+    TiXmlText execute(CURL::Decode(url.GetHostName()));
     favNode.InsertEndChild(execute);
     rootNode->InsertEndChild(favNode);
   }
@@ -162,11 +168,16 @@ bool CFavouritesDirectory::AddOrRemove(CFileItem *item, int contextWindow)
   }
   else
   { // create our new favourite item
-    CFileItemPtr favourite(new CFileItem(item->GetLabel()));
+    const CFileItemPtr favourite(std::make_shared<CFileItem>(item->GetLabel()));
     if (item->GetLabel().empty())
       favourite->SetLabel(CUtil::GetTitleFromPath(item->GetPath(), item->m_bIsFolder));
     favourite->SetArt("thumb", item->GetArt("thumb"));
-    favourite->SetPath(executePath);
+
+    CURL url;
+    url.SetProtocol("favourites");
+    url.SetHostName(CURL::Encode(executePath));
+    favourite->SetPath(url.Get());
+
     items.Add(favourite);
   }
 
@@ -177,7 +188,8 @@ bool CFavouritesDirectory::AddOrRemove(CFileItem *item, int contextWindow)
 bool CFavouritesDirectory::IsFavourite(CFileItem *item, int contextWindow)
 {
   CFileItemList items;
-  if (!Load(items)) return false;
+  if (!Load(items))
+    return false;
 
   return items.Contains(GetExecutePath(*item, contextWindow));
 }
@@ -190,8 +202,13 @@ std::string CFavouritesDirectory::GetExecutePath(const CFileItem &item, int cont
 std::string CFavouritesDirectory::GetExecutePath(const CFileItem &item, const std::string &contextWindow)
 {
   std::string execute;
-  if (item.m_bIsFolder && (g_advancedSettings.m_playlistAsFolders ||
-                            !(item.IsSmartPlayList() || item.IsPlayList())))
+  if (URIUtils::IsProtocol(item.GetPath(), "favourites"))
+  {
+    const CURL url(item.GetPath());
+    execute = CURL::Decode(url.GetHostName());
+  }
+  else if (item.m_bIsFolder && (g_advancedSettings.m_playlistAsFolders ||
+                                !(item.IsSmartPlayList() || item.IsPlayList())))
   {
     if (!contextWindow.empty())
       execute = StringUtils::Format("ActivateWindow(%s,%s,return)", contextWindow.c_str(), StringUtils::Paramify(item.GetPath()).c_str());
@@ -220,4 +237,4 @@ std::string CFavouritesDirectory::GetExecutePath(const CFileItem &item, const st
   return execute;
 }
 
-}
+} // namespace XFILE
