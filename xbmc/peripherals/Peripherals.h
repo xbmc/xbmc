@@ -236,7 +236,7 @@ namespace PERIPHERALS
      * @brief Request peripherals with the specified feature to perform a quick test
      * @return true if any peripherals support the feature, false otherwise
      */
-    bool TestFeature(PeripheralFeature feature);
+    void TestFeature(PeripheralFeature feature);
 
     /*!
      * \brief Request all devices with power-off support to power down
@@ -263,10 +263,8 @@ namespace PERIPHERALS
      * controller profiles.
      *
      * If user input is required, a blocking dialog may be shown.
-     *
-     * \return True if button mapping is enabled for at least one bus
      */
-    bool EnableButtonMapping();
+    void EnableButtonMapping();
 
     /*!
      * \brief Get an add-on that can provide button maps for a device
@@ -319,8 +317,6 @@ namespace PERIPHERALS
 
     void OnDeviceChanged();
 
-    bool                                 m_bInitialised;
-    bool                                 m_bIsStarted;
 #if !defined(HAVE_LIBCEC)
     bool                                 m_bMissingLibCecWarningDisplayed = false;
 #endif
@@ -328,7 +324,6 @@ namespace PERIPHERALS
     std::vector<PeripheralDeviceMapping> m_mappings;
     CEventScanner                        m_eventScanner;
 	GAME::CPortMapper                    m_portMapper; //! @todo Find me a better place
-    CCriticalSection                     m_critSection;
     CCriticalSection                     m_critSectionBusses;
     CCriticalSection                     m_critSectionMappings;
   };

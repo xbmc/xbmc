@@ -208,9 +208,6 @@ void CPeripheralBusUSB::Process(void)
     if (bUpdated && !m_bStop)
       ScanForDevices();
   }
-
-  CSingleLock lock(m_critSection);
-  m_bIsStarted = false;
 }
 
 void CPeripheralBusUSB::Clear(void)

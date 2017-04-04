@@ -77,8 +77,6 @@ using namespace PERIPHERALS;
 using namespace XFILE;
 
 CPeripherals::CPeripherals() :
-  m_bInitialised(false),
-  m_bIsStarted(false),
   m_eventScanner(this),
   m_portMapper(*this)
 {
@@ -94,12 +92,6 @@ CPeripherals::~CPeripherals()
 void CPeripherals::Initialise()
 {
 #if !defined(TARGET_DARWIN_IOS)
-  CSingleLock lock(m_critSection);
-  if (m_bIsStarted)
-    return;
-
-  m_bIsStarted = true;
-
   CDirectory::Create("special://profile/peripheral_data");
 
   /* load mappings from peripherals.xml */
@@ -130,7 +122,6 @@ void CPeripherals::Initialise()
 
   m_eventScanner.Start();
 
-  m_bInitialised = true;
   MESSAGING::CApplicationMessenger::GetInstance().RegisterReceiver(this);
   ANNOUNCEMENT::CAnnouncementManager::GetInstance().AddAnnouncer(this);
 #endif
@@ -168,10 +159,6 @@ void CPeripherals::Clear()
     m_mappings.clear();
   }
 
-  CSingleLock lock(m_critSection);
-  /* reset class state */
-  m_bIsStarted   = false;
-  m_bInitialised = false;
 #if !defined(HAVE_LIBCEC)
   m_bMissingLibCecWarningDisplayed = false;
 #endif
@@ -793,18 +780,28 @@ void CPeripherals::OnUserNotification()
     peripheral->OnUserNotification();
 }
 
-bool CPeripherals::TestFeature(PeripheralFeature feature)
+void CPeripherals::TestFeature(PeripheralFeature feature)
 {
   PeripheralVector peripherals;
   GetPeripheralsWithFeature(peripherals, feature);
 
-  if (!peripherals.empty())
+  for (auto& peripheral : peripherals)
   {
-    for (auto& peripheral : peripherals)
-      peripheral->TestFeature(feature);
-    return true;
+    if (peripheral->TestFeature(feature))
+    {
+      CLog::Log(LOGDEBUG, "PERIPHERALS: Device \"%s\" tested %s feature",
+          peripheral->DeviceName().c_str(), PeripheralTypeTranslator::FeatureToString(feature));
+    }
+    else
+    {
+      if (peripheral->HasFeature(feature))
+        CLog::Log(LOGDEBUG, "PERIPHERALS: Device \"%s\" failed to test %s feature",
+            peripheral->DeviceName().c_str(), PeripheralTypeTranslator::FeatureToString(feature));
+      else
+        CLog::Log(LOGDEBUG, "PERIPHERALS: Device \"%s\" doesn't support %s feature",
+            peripheral->DeviceName().c_str(), PeripheralTypeTranslator::FeatureToString(feature));
+    }
   }
-  return false;
 }
 
 void CPeripherals::PowerOffDevices()
@@ -824,10 +821,8 @@ void CPeripherals::ProcessEvents(void)
     bus->ProcessEvents();
 }
 
-bool CPeripherals::EnableButtonMapping()
+void CPeripherals::EnableButtonMapping()
 {
-  bool bEnabled = false;
-
   std::vector<PeripheralBusPtr> busses;
   {
     CSingleLock lock(m_critSectionBusses);
@@ -835,9 +830,7 @@ bool CPeripherals::EnableButtonMapping()
   }
 
   for (PeripheralBusPtr& bus : busses)
-    bEnabled |= bus->EnableButtonMapping();
-
-  return bEnabled;
+    bus->EnableButtonMapping();
 }
 
 PeripheralAddonPtr CPeripherals::GetAddonWithButtonMap(const CPeripheral* device)
