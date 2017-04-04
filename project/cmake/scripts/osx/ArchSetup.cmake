@@ -32,3 +32,5 @@ list(APPEND DEPLIBS "-framework DiskArbitration" "-framework IOKit"
                     "-framework CoreAudio" "-framework AudioToolbox"
                     "-framework CoreGraphics" "-framework CoreMedia"
                     "-framework VideoToolbox")
+
+set(CMAKE_OSX_DEPLOYMENT_TARGET 10.8)
