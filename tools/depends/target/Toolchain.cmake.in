@@ -50,10 +50,7 @@ set(CMAKE_STRIP @STRIP@ CACHE PATH "strip binary" FORCE)
 
 if(PROJECT_SOURCE_DIR MATCHES "tools/depends")
   if(@use_ccache@ STREQUAL "yes")
-    find_program(CCACHE_PROGRAM ccache)
-    if(CCACHE_PROGRAM)
-      set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")
-    endif()
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "@CCACHE@")
   endif()
 endif()
 
