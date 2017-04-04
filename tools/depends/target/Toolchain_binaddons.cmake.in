@@ -36,6 +36,10 @@ set(CMAKE_CXX_COMPILER @CXX@)
 set(CMAKE_AR @AR@ CACHE FILEPATH "Archiver")
 set(CMAKE_LINKER @LD@ CACHE FILEPATH "Linker")
 
+if(@use_ccache@ STREQUAL "yes")
+  set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "@CCACHE@")
+endif()
+
 # where is the target environment
 if(NOT "@use_toolchain@" STREQUAL "")
   list(APPEND CMAKE_FIND_ROOT_PATH @use_toolchain@/sysroot/usr)
