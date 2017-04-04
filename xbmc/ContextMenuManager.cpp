@@ -86,6 +86,9 @@ void CContextMenuManager::Init()
       std::make_shared<CONTEXTMENU::CRemoveFavourite>(),
       std::make_shared<CONTEXTMENU::CRenameFavourite>(),
       std::make_shared<CONTEXTMENU::CChooseThumbnailForFavourite>(),
+      std::make_shared<CONTEXTMENU::CPlayPartymode>(),
+      std::make_shared<CONTEXTMENU::CSetDefault>(),
+      std::make_shared<CONTEXTMENU::CClearDefault>(),
   };
 
   ReloadAddonItems();

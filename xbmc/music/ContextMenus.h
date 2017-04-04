@@ -49,4 +49,26 @@ struct CSongInfo : CMusicInfo
   CSongInfo() : CMusicInfo(MediaTypeSong) {}
 };
 
+struct CPlayPartymode : CStaticContextMenuAction
+{
+  CPlayPartymode() : CStaticContextMenuAction(15216) {} // Play in Partymode
+  bool IsVisible(const CFileItem& item) const override;
+  bool Execute(const CFileItemPtr& item) const override;
+};
+
+struct CSetDefault : CStaticContextMenuAction
+{
+  CSetDefault() : CStaticContextMenuAction(13335) {} // set default
+  bool IsVisible(const CFileItem& item) const override;
+  std::string GetQuickpathName(const std::string& strPath) const;
+  bool Execute(const CFileItemPtr& item) const override;
+};
+
+struct CClearDefault : CStaticContextMenuAction
+{
+  CClearDefault() : CStaticContextMenuAction(13403) {} // clear default
+  bool IsVisible(const CFileItem& item) const override;
+  bool Execute(const CFileItemPtr& item) const override;
+};
+
 }
