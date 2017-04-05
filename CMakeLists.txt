@@ -100,6 +100,9 @@ endif()
 find_package(Threads REQUIRED QUIET)
 list(APPEND DEPLIBS ${CMAKE_THREAD_LIBS_INIT})
 
+find_package(ODB REQUIRED COMPONENTS sqlite mysql)
+list(APPEND DEPLIBS ${ODB_LIBRARIES})
+
 # Required dependencies. Keep in alphabetical order please
 set(required_deps Cdio
                   Cpluff
@@ -115,6 +118,7 @@ set(required_deps Cdio
                   Sqlite3
                   TagLib
                   TinyXML)
+
 if(NOT WIN32)
   list(APPEND required_deps ZLIB)
 else()
@@ -287,6 +291,8 @@ if(WIN32)
   set(RESOURCES $<TARGET_OBJECTS:resources>)
 endif()
 
+list(APPEND DEP_DEFINES -DLIBODB_MYSQL_INCLUDE_LONG)
+
 include_directories(${INCLUDES} ${SYSTEM_INCLUDES})
 add_compile_options(${ARCH_DEFINES} "${SYSTEM_DEFINES}" ${DEP_DEFINES} ${PATH_DEFINES})
 
@@ -333,6 +339,9 @@ endif()
 add_library(lib${APP_NAME_LC} STATIC $<TARGET_OBJECTS:compileinfo>)
 set_target_properties(lib${APP_NAME_LC} PROPERTIES PREFIX "")
 add_dependencies(lib${APP_NAME_LC} libcpluff ffmpeg dvdnav crossguid)
+
+# Codegen
+add_subdirectory(${CORE_SOURCE_DIR}/xbmc/interfaces/odb build/odb)
 
 # Other files (IDE)
 set(OTHER_FILES cmake/README.md)

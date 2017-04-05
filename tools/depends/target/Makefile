@@ -15,7 +15,8 @@ DEPENDS = \
 	libssh taglib libusb libnfs \
 	pythonmodule-pil pythonmodule-pycryptodome pythonmodule-setuptools \
 	libxslt ffmpeg platform crossguid \
-        libdvdread libdvdnav libdvdcss p8-platform
+        libdvdread libdvdnav libdvdcss p8-platform \
+	odb libodb libodb-mysql libodb-sqlite
 
 
 FFMPEG_DEPENDS = gnutls
@@ -103,6 +104,8 @@ libcec: p8-platform
 crossguid: $(CROSSGUID_DEPS)
 libdvdnav: libdvdread
 libdvdread: $(DVDREAD_DEPS)
+libodb-mysql: libodb mysql openssl $(ZLIB)
+libodb-sqlite: libodb
 
 .installed-$(PLATFORM): $(DEPENDS)
 	touch $@

@@ -1,0 +1,12 @@
+--- include/Makefile.am	2011-01-25 16:04:34.000000000 +0100
++++ include/Makefile.am.new	2016-09-22 16:01:37.000000000 +0200
+@@ -19,7 +19,8 @@
+ HEADERS_GEN_CONFIGURE =		mysql_version.h
+ HEADERS_GEN_MAKE =		my_config.h
+ HEADERS_ABI =		mysql.h mysql_com.h mysql_time.h \
+-			my_list.h my_alloc.h typelib.h mysql/plugin.h
++			my_list.h my_alloc.h typelib.h mysql/plugin.h \
++			mysqld_error.h
+ pkginclude_HEADERS =	$(HEADERS_ABI) my_dbug.h m_string.h my_sys.h \
+ 			my_xml.h mysql_embed.h \
+ 		  	my_pthread.h my_no_pthread.h \
