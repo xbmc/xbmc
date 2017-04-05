@@ -16,6 +16,7 @@ testMain
 # CLion
 /.idea
 .vscode/
+cmake-build-debug/
 
 # generated files etc
 .last_success_revision
@@ -253,6 +254,7 @@ lib/cpluff/stamp-h1
 /project/BuildDependencies/x64-uwp
 /project/BuildDependencies/win32
 /project/BuildDependencies/win32-uwp
+/project/BuildDependencies/bin/odb
 
 # /system
 /system/cpluff.dll
@@ -277,6 +279,9 @@ lib/cpluff/stamp-h1
 /system/python27.dll
 /system/zlib.dll
 /system/lcms2.dll
+/system/libodb.dll
+/system/libodb-mysql.dll
+/system/libodb-sqlite.dll
 
 # /system/players/VideoPlayer
 /system/players/VideoPlayer/*
@@ -331,6 +336,10 @@ lib/cpluff/stamp-h1
 /tools/depends/target/Toolchain_binaddons.cmake
 /tools/depends/target/config-binaddons.site
 /tools/depends/target/binary-addons/native
+/tools/depends/target/libodb-mysql/native/
+/tools/depends/target/libodb-sqlite/native/
+/tools/depends/target/libodb/native/
+/tools/depends/target/odb/native/
 
 # /tools/EventClients/
 /tools/EventClients/*.pyc
@@ -387,3 +396,6 @@ exclude_dll.txt
 
 #certificates
 /system/certs/
+
+#temp odb schema files
+/xbmc/interfaces/odb/*.xml

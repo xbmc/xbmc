@@ -16,7 +16,10 @@ CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
 	--without-server --without-bench --without-docs --without-man --disable-shared \
 	--with-ssl=$(PREFIX) LIBS="-ldl -lz"
 
-LIBDYLIB=$(PLATFORM)/lib$(LIBNAME)/.libs/lib$(LIBNAME)client.a
+LIBDYLIB_BASE=$(PLATFORM)/lib$(LIBNAME)/.libs
+LIBDYLIB=$(LIBDYLIB_BASE)/lib$(LIBNAME)client.a
+
+LN_S=ln -sf
 
 CLEAN_FILES=$(ARCHIVE) $(PLATFORM)
 
@@ -35,6 +38,7 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM); patch -p1 < ../05-mysqlclient-ios64.patch
 	cd $(PLATFORM); patch -p0 < ../06-fixsslcheck.patch
 	cd $(PLATFORM); patch -p0 < ../07-no-endpwent.patch
+	cd $(PLATFORM); patch -p0 < ../08-missing-headers.patch
 	cd $(PLATFORM); $(AUTORECONF) -vif
 	cd $(PLATFORM); $(CONFIGURE)
 
@@ -46,6 +50,9 @@ $(LIBDYLIB): $(PLATFORM)
 	$(MAKE) -C $(PLATFORM)/libmysql install
 	$(MAKE) -C $(PLATFORM)/scripts/ install-binSCRIPTS
 	$(MAKE) -C $(PLATFORM)/include/ install
+
+    # libodb-mysql needs the _r.a lib
+	$(LN_S) libmysqlclient.a $(PREFIX)/lib/mysql/libmysqlclient_r.a
 	touch $@
 
 clean:
@@ -54,4 +61,3 @@ clean:
 
 distclean::
 	rm -rf $(PLATFORM) .installed-$(PLATFORM)
-

@@ -14,6 +14,7 @@ export TCLLIBDIR=/dev/null
 CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
           ./configure --prefix=$(PREFIX) --disable-shared \
   --enable-threadsafe --disable-tcl --disable-readline \
+  CPPFLAGS="-DSQLITE_ENABLE_UNLOCK_NOTIFY"
 
 LIBDYLIB=$(PLATFORM)/.libs/lib$(LIBNAME)3.a
 
@@ -52,4 +53,3 @@ clean:
 
 distclean::
 	rm -rf $(PLATFORM) .installed-$(PLATFORM)
-
