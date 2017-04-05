@@ -72,6 +72,8 @@ namespace PVR
     const MapTags& GetTags() const { return m_tags; }
 
   protected:
+    void InsertTimer(const CPVRTimerInfoTagPtr &newTimer);
+
     CCriticalSection m_critSection;
     unsigned int m_iLastId;
     MapTags m_tags;
