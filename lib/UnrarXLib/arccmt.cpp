@@ -88,8 +88,8 @@ bool Archive::GetComment(Array<byte> &CmtData)
   }
 #endif
 #if defined(_WIN_32) && !defined(_WIN_CE) && !defined(_XBOX) && !defined(_LINUX)
-  if (CmtData.Size()>0)
-    OemToCharBuff((char*)&CmtData[0],(char*)&CmtData[0],CmtData.Size());
+  //if (CmtData.Size()>0)
+  //  OemToCharBuff((char*)&CmtData[0],(char*)&CmtData[0],CmtData.Size());
 #endif
   return(CmtData.Size()>0);
 }

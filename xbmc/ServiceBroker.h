@@ -48,6 +48,17 @@ class CContextMenuManager;
 class XBPython;
 class CDataCacheCore;
 class CSettings;
+class IAE;
+
+namespace GAME
+{
+  class CGameServices;
+}
+
+namespace PERIPHERALS
+{
+  class CPeripherals;
+}
 
 class CServiceBroker
 {
@@ -57,9 +68,12 @@ public:
   static ANNOUNCEMENT::CAnnouncementManager &GetAnnouncementManager();
   static XBPython &GetXBPython();
   static PVR::CPVRManager &GetPVRManager();
-  static ActiveAE::CActiveAEDSP& GetADSP();
+  static IAE& GetActiveAE();
   static CContextMenuManager& GetContextMenuManager();
   static CDataCacheCore& GetDataCacheCore();
   static PLAYLIST::CPlayListPlayer& GetPlaylistPlayer();
   static CSettings& GetSettings();
+  static GAME::CGameServices& GetGameServices();
+  static PERIPHERALS::CPeripherals& GetPeripherals();
+  static bool IsBinaryAddonCacheUp();
 };

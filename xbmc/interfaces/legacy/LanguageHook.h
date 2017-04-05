@@ -82,7 +82,7 @@ namespace XBMCAddon
     virtual CallbackHandler* GetCallbackHandler() { return NULL; }
 
     /**
-     * This is a callback method that can be overriden to receive a callback
+     * This is a callback method that can be overridden to receive a callback
      *  when an AddonClass that has this language hook is on is being constructed.
      *  It is called from the constructor of AddonClass so the implementor
      *  cannot assume the subclasses have been built or that calling a
@@ -91,7 +91,7 @@ namespace XBMCAddon
     virtual void Constructing(AddonClass* beingConstructed) { }
 
     /**
-     * This is a callback method that can be overriden to receive a callback
+     * This is a callback method that can be overridden to receive a callback
      *  when an AddonClass that has this language hook is on is being destructed.
      *  It is called from the destructor of AddonClass so the implementor
      *  should assume the subclasses have been torn down and that calling a
@@ -104,13 +104,14 @@ namespace XBMCAddon
      *  I can think to do it requires an InheritableThreadLocal C++ equivalent,
      *  I'm going to defer to this technique for now.
      *
-     * Currently (for python) the scripting languge has the Addon id injected
+     * Currently (for python) the scripting language has the Addon id injected
      *  into it as a global variable. Therefore the only way to retrieve it is
      *  to use scripting language specific calls. So until I figure out a 
      *  better way to do this, this is how I need to retrieve it.
      */
     virtual String GetAddonId() { return emptyString; }
     virtual String GetAddonVersion() { return emptyString; }
+    virtual long GetInvokerId() { return -1; }
 
     virtual void RegisterPlayerCallback(IPlayerCallback* player) = 0;
     virtual void UnregisterPlayerCallback(IPlayerCallback* player) = 0;

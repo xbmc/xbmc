@@ -183,6 +183,7 @@
   </Home>
   <VirtualKeyboard>
     <keyboard>
+      <c mod="longpress">noop</c>
       <left>Left</left>
       <right>Right</right>
       <up>Up</up>

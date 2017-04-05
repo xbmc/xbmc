@@ -79,13 +79,33 @@ namespace PVR
     //@{
 
     /*!
-     * @brief Check whether a client ID points to a valid and connected add-on.
+     * @brief Check whether a given client ID points to a created pvr client.
      * @param iClientId The client ID.
-     * @return True when the client ID is valid and connected, false otherwise.
+     * @return True if the the client ID represents a created client, false otherwise.
      */
     bool IsCreatedClient(int iClientId) const;
 
+    /*!
+     * @brief Check whether an given addon instance is a created pvr client.
+     * @param addon The addon.
+     * @return True if the the addon represents a created client, false otherwise.
+     */
     bool IsCreatedClient(const ADDON::AddonPtr &addon);
+
+    /*!
+     * @brief Get the instance of the client, if it's created.
+     * @param iClientId The id of the client to get.
+     * @param addon The client.
+     * @return True on success, false otherwise.
+     */
+    bool GetCreatedClient(int iClientId, PVR_CLIENT &addon) const;
+
+    /*!
+     * @brief Get all created clients.
+     * @param clients Store the active clients in this map.
+     * @return The amount of added clients.
+     */
+    int GetCreatedClients(PVR_CLIENTMAP &clients) const;
 
     /*!
      * @brief Restart a single client add-on.
@@ -217,7 +237,7 @@ namespace PVR
      * @brief Seek to a position in a stream.
      *        Limited to recordings playback at the moment.
      * @param iFilePosition The position to seek to.
-     * @param iWhence Specify how to seek ("new position=pos", "new position=pos+actual postion" or "new position=filesize-pos")
+     * @param iWhence Specify how to seek ("new position=pos", "new position=pos+actual position" or "new position=filesize-pos")
      * @return The new stream position.
      */
     int64_t SeekStream(int64_t iFilePosition, int iWhence = SEEK_SET);
@@ -281,7 +301,7 @@ namespace PVR
     /*!
      * @brief Switch an opened live tv stream to another channel.
      * @param channel The channel to switch to.
-     * @return True if the switch was successfull, false otherwise.
+     * @return True if the switch was successful, false otherwise.
      */
     bool SwitchChannel(const CPVRChannelPtr &channel);
 
@@ -333,7 +353,7 @@ namespace PVR
      * @param failedClients in case of errors will contain the ids of the clients for which the timers could not be obtained.
      * @return true on success for all clients, false in case of error for at least one client.
      */
-    bool GetTimers(CPVRTimers *timers, std::vector<int> &failedClients);
+    bool GetTimers(CPVRTimersContainer *timers, std::vector<int> &failedClients);
 
     /*!
      * @brief Add a new timer to a backend.
@@ -565,27 +585,10 @@ namespace PVR
      */
     bool HasMenuHooks(int iClientId, PVR_MENUHOOK_CAT cat);
 
-    /*!
-     * @brief Open selection and progress PVR actions.
-     * @param iClientId The ID of the client to process the menu entries for. Process the menu entries for the active channel if iClientId < 0.
-     * @param item The selected file item for which the hook was called.
-     */
-    void ProcessMenuHooks(int iClientID, PVR_MENUHOOK_CAT cat, const CFileItem *item);
-
     //@}
 
     /*! @name Channel scan methods */
     //@{
-
-    /*!
-     * @return True when a channel scan is currently running, false otherwise.
-     */
-    bool IsRunningChannelScan(void) const;
-
-    /*!
-     * @brief Open a selection dialog and start a channel scan on the selected client.
-     */
-    void StartChannelScan(void);
 
     /*!
      * @return All clients that support channel scanning.
@@ -605,28 +608,28 @@ namespace PVR
     /*!
      * @brief Open addon settings dialog to add a channel
      * @param channel The channel to edit.
-     * @return True if the edit was successfull, false otherwise.
+     * @return PVR_ERROR_NO_ERROR if the dialog was opened successfully, the respective error code otherwise.
      */
-    bool OpenDialogChannelAdd(const CPVRChannelPtr &channel);
+    PVR_ERROR OpenDialogChannelAdd(const CPVRChannelPtr &channel);
 
     /*!
      * @brief Open addon settings dialog to related channel
      * @param channel The channel to edit.
-     * @return True if the edit was successfull, false otherwise.
+     * @return PVR_ERROR_NO_ERROR if the dialog was opened successfully, the respective error code otherwise.
      */
-    bool OpenDialogChannelSettings(const CPVRChannelPtr &channel);
+    PVR_ERROR OpenDialogChannelSettings(const CPVRChannelPtr &channel);
 
     /*!
      * @brief Inform addon to delete channel
      * @param channel The channel to delete.
-     * @return True if it was successfull, false otherwise.
+     * @return PVR_ERROR_NO_ERROR if the channel was deleted successfully, the respective error code otherwise.
      */
-    bool DeleteChannel(const CPVRChannelPtr &channel);
+    PVR_ERROR DeleteChannel(const CPVRChannelPtr &channel);
 
     /*!
      * @brief Request the client to rename given channel
      * @param channel The channel to rename
-     * @return True if the edit was successfull, false otherwise.
+     * @return True if the edit was successful, false otherwise.
      */
     bool RenameChannel(const CPVRChannelPtr &channel);
 
@@ -685,21 +688,6 @@ namespace PVR
     bool GetClient(int iClientId, PVR_CLIENT &addon) const;
 
     /*!
-     * @brief Get the instance of the client, if it's created.
-     * @param iClientId The id of the client to get.
-     * @param addon The client.
-     * @return True if the client is connected, false otherwise.
-     */
-    bool GetCreatedClient(int iClientId, PVR_CLIENT &addon) const;
-
-    /*!
-     * @bried Get all created clients.
-     * @param clients Store the active clients in this map.
-     * @return The amount of added clients.
-     */
-    int GetCreatedClients(PVR_CLIENTMAP &clients) const;
-
-    /*!
      * @brief Check whether a client is registered.
      * @param client The client to check.
      * @return True if this client is registered, false otherwise.
@@ -710,12 +698,11 @@ namespace PVR
     int GetClientId(const ADDON::AddonPtr &client) const;
 
 
-    bool                  m_bChannelScanRunning;      /*!< true when a channel scan is currently running, false otherwise */
     bool                  m_bIsSwitchingChannels;        /*!< true while switching channels */
     int                   m_playingClientId;          /*!< the ID of the client that is currently playing */
     bool                  m_bIsPlayingLiveTV;
     bool                  m_bIsPlayingRecording;
-    std::string           m_strPlayingClientName;     /*!< the name client that is currenty playing a stream or an empty string if nothing is playing */
+    std::string           m_strPlayingClientName;     /*!< the name client that is currently playing a stream or an empty string if nothing is playing */
     PVR_CLIENTMAP         m_clientMap;                /*!< a map of all known clients */
     CCriticalSection      m_critSection;
     std::map<std::string, int> m_addonNameIds; /*!< map add-on names to IDs */

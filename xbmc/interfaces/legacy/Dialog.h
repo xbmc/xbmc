@@ -339,7 +339,7 @@ namespace XBMCAddon
       /// @return If enableMultiple is False (default): returns filename and/or path as a string
       ///        to the location of the highlighted item, if user pressed 'Ok' or a masked item
       ///        was selected. Returns the default value if dialog was canceled.
-      ///        If enableMultiple is True: returns tuple of marked filenames as a strin
+      ///        If enableMultiple is True: returns tuple of marked filenames as a string
       ///        if user pressed 'Ok' or a masked item was selected. Returns empty tuple if dialog was canceled.\n\n
       ///        If type is 0 or 3 the enableMultiple parameter is ignore
       ///

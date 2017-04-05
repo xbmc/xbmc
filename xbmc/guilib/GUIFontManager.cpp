@@ -64,7 +64,7 @@ void GUIFontManager::RescaleFontSizeAndAspect(float *size, float *aspect, const 
   }
   else
   {
-    // font streched like the rest of the UI, aspect parameter being the original aspect
+    // font stretched like the rest of the UI, aspect parameter being the original aspect
 
     // adjust aspect ratio
     *aspect *= sourceRes.fPixelRatio;
@@ -283,7 +283,7 @@ CGUIFont* GUIFontManager::GetFont(const std::string& strFontName, bool fallback 
       return pFont;
   }
   // fall back to "font13" if we have none
-  if (fallback && !strFontName.empty() && strFontName != "-" && !StringUtils::EqualsNoCase(strFontName, "font13"))
+  if (fallback && !strFontName.empty() && !StringUtils::EqualsNoCase(strFontName, "font13"))
     return GetFont("font13");
   return NULL;
 }

@@ -665,11 +665,22 @@
           <control type="spinner" format="integer" delayed="true"/>
         </setting>
         <setting id="subtitles.font" type="string" label="14089" help="36185">
-          <level>3</level>
+          <level>1</level>
           <default>arial.ttf</default>
           <constraints>
             <options>fonts</options>
           </constraints>
+          <control type="list" format="string" />
+        </setting>
+        <setting id="subtitles.charset" type="string" parent="subtitles.font" label="735" help="36189">
+          <level>1</level>
+          <default>DEFAULT</default>
+          <constraints>
+            <options>charsets</options>
+          </constraints>
+          <dependencies>
+            <dependency type="enable" on="property" name="IsUsingTTFSubtitles" setting="subtitles.font" />
+          </dependencies>
           <control type="list" format="string" />
         </setting>
         <setting id="subtitles.height" type="integer" parent="subtitles.font" label="289" help="36186">
@@ -715,17 +726,6 @@
               <option label="766">6</option> <!-- Light grey -->
               <option label="767">7</option> <!-- Grey -->
             </options>
-          </constraints>
-          <dependencies>
-            <dependency type="enable" on="property" name="IsUsingTTFSubtitles" setting="subtitles.font" />
-          </dependencies>
-          <control type="list" format="string" />
-        </setting>
-        <setting id="subtitles.charset" type="string" parent="subtitles.font" label="735" help="36189">
-          <level>3</level>
-          <default>DEFAULT</default>
-          <constraints>
-            <options>charsets</options>
           </constraints>
           <dependencies>
             <dependency type="enable" on="property" name="IsUsingTTFSubtitles" setting="subtitles.font" />
@@ -1172,6 +1172,11 @@
     </category>
     <category id="pictures" label="14217" help="38109">
       <group id="1" label="744">
+        <setting id="pictures.usetags" type="boolean" label="38207" help="38208">
+          <level>1</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
         <setting id="pictures.generatethumbs" type="boolean" label="13360" help="36307">
           <level>0</level>
           <default>true</default>
@@ -1225,14 +1230,7 @@
   </section>
   <section id="pvr" label="14204" help="36201">
     <category id="pvrmanager" label="128" help="36202">
-      <group id="1" label="14300">
-        <setting id="pvrmanager.hideconnectionlostwarning" type="boolean" label="19269" help="36210">
-          <level>2</level>
-          <default>false</default>
-          <control type="toggle" />
-        </setting>
-      </group>
-      <group id="2" label="14301">
+      <group id="1" label="14301">
         <setting id="pvrmanager.syncchannelgroups" type="boolean" label="19221" help="36204">
           <level>1</level>
           <default>true</default>
@@ -1334,6 +1332,7 @@
               <option label="36426">1</option> <!-- EPG_SELECT_ACTION_SWITCH -->
               <option label="36427">2</option> <!-- EPG_SELECT_ACTION_INFO -->
               <option label="36428">3</option> <!-- EPG_SELECT_ACTION_RECORD -->
+              <option label="19096">5</option> <!-- EPG_SELECT_ACTION_SMART_SELECT -->
             </options>
           </constraints>
           <control type="list" format="string" />
@@ -1411,7 +1410,7 @@
         </setting>
         <setting id="pvrplayback.confirmchannelswitch" type="boolean" label="19281" help="36231">
           <level>1</level>
-          <default>false</default>
+          <default>true</default>
           <control type="toggle" />
         </setting>
         <setting id="pvrplayback.channelentrytimeout" type="integer" label="19073" help="36232">
@@ -1497,28 +1496,6 @@
             <formatlabel>14044</formatlabel>
           </control>
         </setting>
-        <setting id="pvrrecord.defaultpriority" type="integer" label="19173" help="36235">
-          <level>2</level>
-          <default>50</default>
-          <constraints>
-            <minimum>1</minimum>
-            <step>1</step>
-            <maximum>100</maximum>
-          </constraints>
-          <control type="spinner" format="integer" />
-        </setting>
-        <setting id="pvrrecord.defaultlifetime" type="integer" label="19174" help="36236">
-          <level>2</level>
-          <default>99</default>
-          <constraints>
-            <minimum>1</minimum>
-            <step>1</step>
-            <maximum>365</maximum>
-          </constraints>
-          <control type="spinner" format="string">
-            <formatlabel>17999</formatlabel>
-          </control>
-        </setting>
         <setting id="pvrrecord.marginstart" type="integer" label="19175" help="36237">
           <level>2</level>
           <default>0</default> <!-- 0 mins -->
@@ -1534,17 +1511,6 @@
             <options>pvrrecordmargins</options>
           </constraints>
           <control type="list" format="string"/>
-        </setting>
-        <setting id="pvrrecord.preventduplicateepisodes" type="integer" label="812" help="36423">
-          <level>2</level>
-          <default>0</default>
-          <constraints>
-            <options>
-              <option label="815">0</option>  <!-- record all episodes (no dup detect) -->
-              <option label="816">1</option>  <!-- record only new episodes -->
-            </options>
-          </constraints>
-          <control type="spinner" format="string" />
         </setting>
         <setting id="pvrrecord.timernotifications" type="boolean" label="19233" help="36239">
           <level>2</level>
@@ -2214,7 +2180,7 @@
         <setting id="videoscreen.dither" type="boolean" label="36099" help="36598">
           <requirement>HAS_GL</requirement>
           <level>3</level>
-          <default>true</default>
+          <default>false</default>
           <control type="toggle" />
         </setting>
         <setting id="videoscreen.ditherdepth" type="integer" label="36100" help="36599">
@@ -2692,43 +2658,6 @@
           <control type="toggle" />
         </setting>
       </group>
-      <group id="4" label="14251">
-        <setting id="audiooutput.dspaddonsenabled" type="boolean" label="36441" help="36438">
-          <level>3</level>
-          <default>false</default>
-          <dependencies>
-            <dependency type="visible">
-              <or>
-                <condition on="property" name="aesettingvisible" setting="audiooutput.passthrough">audiooutput.dspaddonsenabled</condition>
-                <condition on="property" name="aesettingvisible" setting="audiooutput.ac3passthrough">audiooutput.dspaddonsenabled</condition>
-              </or>
-            </dependency>
-          </dependencies>
-          <control type="toggle" />
-        </setting>
-        <setting id="audiooutput.dspsettings" type="action" label="36436" help="36437">
-          <level>3</level>
-          <control type="button" format="action" />
-          <dependencies>
-            <dependency type="visible">
-              <or>
-                <condition on="property" name="aesettingvisible" setting="audiooutput.dspaddonsenabled">audiooutput.dspsettings</condition>
-              </or>
-            </dependency>
-          </dependencies>
-        </setting>
-        <setting id="audiooutput.dspresetdb" type="action" label="14082" help="36439">
-          <level>3</level>
-          <control type="button" format="action" />
-          <dependencies>
-            <dependency type="visible">
-              <or>
-                <condition on="property" name="aesettingvisible" setting="audiooutput.dspaddonsenabled">audiooutput.dspresetdb</condition>
-              </or>
-            </dependency>
-          </dependencies>
-        </setting>
-      </group>
     </category>
     <category id="input" label="14125" help="36374">
       <group id="1" label="35000">
@@ -2756,18 +2685,32 @@
           <level>0</level>
           <control type="button" format="action" />
         </setting>
+        <setting id="input.rumblenotify" type="boolean" label="35053" help="35054">
+          <level>1</level>
+          <dependencies>
+            <dependency type="visible" on="property" name="HasRumbleFeature" />
+          </dependencies>
+          <control type="toggle" />
+          <default>false</default>
+        </setting>
         <setting id="input.testrumble" type="action" label="35051" help="35052">
           <level>2</level>
           <dependencies>
-            <dependency type="enable" on="property" name="HasRumbleFeature" />
+            <dependency type="visible" on="property" name="HasRumbleFeature" />
+            <dependency type="enable" on="property" name="HasRumbleController" />
           </dependencies>
           <control type="button" format="action" />
         </setting>
         <setting id="input.controllerpoweroff" type="boolean" label="35088" help="35089">
-          <level>0</level>
+          <level>1</level>
+          <dependencies>
+            <dependency type="visible" on="property" name="HasPowerOffFeature" />
+          </dependencies>
           <default>false</default>
           <control type="toggle" />
         </setting>
+      </group>
+      <group id="3" label="13600">
       </group>
     </category>
     <category id="network" label="798" help="36379">
@@ -2890,6 +2833,18 @@
           </constraints>
           <control type="list" format="string" />
         </setting>
+        <setting id="powermanagement.waitfornetwork" type="integer" label="39011" help="39012">
+          <level>2</level>
+          <default>0</default>
+          <constraints>
+            <minimum label="351">0</minimum>
+            <step>1</step>
+            <maximum>30</maximum>
+          </constraints>
+          <control type="spinner" format="string">
+            <formatlabel>14045</formatlabel>
+          </control>
+        </setting>
       </group>
       <group id="2" label="14256">
         <setting id="powermanagement.wakeonaccess" type="boolean" label="13026" help="36350">
@@ -2915,7 +2870,7 @@
         </setting>
         <setting id="general.addonnotifications" type="boolean" label="36609" help="36612">
           <level>0</level>
-          <default>true</default>
+          <default>false</default>
           <control type="toggle" />
           <dependencies>
             <dependency type="enable" setting="general.addonupdates">0</dependency>

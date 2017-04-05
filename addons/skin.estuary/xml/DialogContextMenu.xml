@@ -5,8 +5,7 @@
 	<coordinates>
 		<left>0</left>
 		<top>0</top>
-		<origin x="1055" y="400">Window.IsActive(Home) + String.IsEqual(Skin.AspectRatio,21:9)</origin>
-		<origin x="735" y="400">Window.IsActive(Home) + !String.IsEqual(Skin.AspectRatio,21:9)</origin>
+		<origin x="50%" y="400">Window.IsActive(Home)</origin>
 	</coordinates>
 	<controls>
 		<control type="image">
@@ -27,21 +26,30 @@
 			<texturenofocus />
 			<onclick>Action(close)</onclick>
 		</control>
-		<control type="image" id="999">
-			<description>background image</description>
-			<left>0</left>
-			<top>0</top>
-			<width>450</width>
-			<height>780</height>
-			<texture colordiffuse="dialog_tint">colors/white.png</texture>
-		</control>
-		<control type="grouplist" id="996">
-			<description>grouplist for context buttons</description>
-			<left>0</left>
-			<top>0</top>
-			<width>450</width>
-			<height max="780">auto</height>
-			<usecontrolcoords>true</usecontrolcoords>
+		<control type="group">
+			<animation effect="slide" end="-225" time="0" condition="Window.IsActive(home)">conditional</animation>
+			<control type="image" id="999">
+				<description>background image</description>
+				<left>0</left>
+				<top>0</top>
+				<width>450</width>
+				<height>780</height>
+				<texture colordiffuse="dialog_tint">colors/white.png</texture>
+			</control>
+			<control type="grouplist" id="996">
+				<description>grouplist for context buttons</description>
+				<left>0</left>
+				<top>0</top>
+				<width>450</width>
+				<height max="780">auto</height>
+				<usecontrolcoords>true</usecontrolcoords>
+			</control>
+			<include content="UpDownArrows">
+				<param name="container_id" value="996" />
+				<param name="posx" value="201" />
+				<param name="up_posy" value="-40" />
+				<param name="down_posy" value="798" />
+			</include>
 		</control>
 		<control type="button" id="1000">
 			<description>button template</description>
@@ -53,11 +61,5 @@
 			<texturefocus colordiffuse="button_focus">lists/focus.png</texturefocus>
 			<texturenofocus />
 		</control>
-		<include content="UpDownArrows">
-			<param name="container_id" value="996" />
-			<param name="posx" value="201" />
-			<param name="up_posy" value="-40" />
-			<param name="down_posy" value="798" />
-		</include>
 	</controls>
 </window>

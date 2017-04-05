@@ -78,11 +78,12 @@ bool CSourcesDirectory::GetDirectory(const VECSOURCES &sources, CFileItemList &i
     }
     else if (URIUtils::IsProtocol(pItem->GetPath(), "addons"))
       strIcon = "DefaultHardDisk.png";
+    else if (   pItem->IsPath("special://musicplaylists/")
+             || pItem->IsPath("special://videoplaylists/"))
+      strIcon = "DefaultPlaylist.png";
     else if (   pItem->IsVideoDb()
              || pItem->IsMusicDb()
              || pItem->IsPlugin()
-             || pItem->IsPath("special://musicplaylists/")
-             || pItem->IsPath("special://videoplaylists/")
              || pItem->IsPath("musicsearch://"))
       strIcon = "DefaultFolder.png";
     else if (pItem->IsRemote())

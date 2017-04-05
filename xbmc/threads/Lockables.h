@@ -36,7 +36,7 @@ namespace XbmcThreads
    *   try_lock();
    *   unlock();
    *
-   * "Exitable" specifially means that, no matter how deep the recursion
+   * "Exitable" specifically means that, no matter how deep the recursion
    * on the mutex/critical section, we can exit from it and then restore
    * the state.
    *
@@ -72,7 +72,7 @@ namespace XbmcThreads
      */
     inline unsigned int exit(unsigned int leave = 0) 
     { 
-      // it's possibe we don't actually own the lock
+      // it's possible we don't actually own the lock
       // so we will try it.
       unsigned int ret = 0;
       if (try_lock())

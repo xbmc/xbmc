@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2015-2016 Team Kodi
+ *      Copyright (C) 2015-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -43,8 +43,8 @@ public:
 
   const std::vector<CControllerFeature>& Features(void) const { return m_features; }
 
-  unsigned int FeatureCount(JOYSTICK::FEATURE_TYPE type = JOYSTICK::FEATURE_TYPE::UNKNOWN,
-                            JOYSTICK::INPUT_TYPE buttonType = JOYSTICK::INPUT_TYPE::UNKNOWN) const;
+  unsigned int FeatureCount(KODI::JOYSTICK::FEATURE_TYPE type = KODI::JOYSTICK::FEATURE_TYPE::UNKNOWN,
+                            KODI::JOYSTICK::INPUT_TYPE buttonType = KODI::JOYSTICK::INPUT_TYPE::UNKNOWN) const;
 
   bool Deserialize(const TiXmlElement* pLayoutElement, const CController* controller);
 

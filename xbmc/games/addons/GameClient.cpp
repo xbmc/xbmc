@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2012-2016 Team Kodi
+ *      Copyright (C) 2012-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -20,6 +20,7 @@
 
 #include "GameClient.h"
 #include "GameClientCallbacks.h"
+#include "GameClientInGameSaves.h"
 #include "GameClientInput.h"
 #include "GameClientKeyboard.h"
 #include "GameClientMouse.h"
@@ -34,9 +35,9 @@
 #include "games/addons/playback/GameClientReversiblePlayback.h"
 #include "games/controllers/Controller.h"
 #include "games/ports/PortManager.h"
+#include "games/GameServices.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/WindowIDs.h"
-#include "input/joysticks/DefaultJoystick.h" // for DEFAULT_CONTROLLER_ID
 #include "input/joysticks/JoystickTypes.h"
 #include "peripherals/Peripherals.h"
 #include "profiles/ProfilesManager.h"
@@ -55,6 +56,7 @@
 #include <iterator>
 #include <utility>
 
+using namespace KODI;
 using namespace GAME;
 
 #define EXTENSION_SEPARATOR          "|"
@@ -276,6 +278,9 @@ bool CGameClient::OpenFile(const CFileItem& file, IGameAudioCallback* audio, IGa
   if (!InitializeGameplay(file.GetPath(), audio, video))
     return false;
 
+  m_inGameSaves.reset(new CGameClientInGameSaves(this, &m_struct));
+  m_inGameSaves->Load();
+
   return true;
 }
 
@@ -316,7 +321,7 @@ bool CGameClient::InitializeGameplay(const std::string& gamePath, IGameAudioCall
     m_serializeSize   = GetSerializeSize();
     m_audio           = audio;
     m_video           = video;
-    m_inputRateHandle = PERIPHERALS::g_peripherals.SetEventScanRate(INPUT_SCAN_RATE);
+    m_inputRateHandle = CServiceBroker::GetPeripherals().SetEventScanRate(INPUT_SCAN_RATE);
 
     if (m_bSupportsKeyboard)
       OpenKeyboard();
@@ -486,6 +491,9 @@ void CGameClient::CloseFile()
 
   if (m_bIsPlaying)
   {
+    m_inGameSaves->Save();
+    m_inGameSaves.reset();
+
     try { LogError(m_struct.UnloadGame(), "UnloadGame()"); }
     catch (...) { LogException("UnloadGame()"); }
   }
@@ -725,21 +733,18 @@ bool CGameClient::OpenPort(unsigned int port)
     //! @todo Choose controller
     ControllerPtr& controller = controllers[0];
 
-    if (controller->LoadLayout())
-    {
-      m_ports[port].reset(new CGameClientInput(this, port, controller, &m_struct));
+    m_ports[port].reset(new CGameClientInput(this, port, controller, &m_struct));
 
-      // If keyboard input is being captured by this add-on, force the port type to PERIPHERAL_JOYSTICK
-      PERIPHERALS::PeripheralType device = PERIPHERALS::PERIPHERAL_UNKNOWN;
-      if (m_bSupportsKeyboard)
-        device = PERIPHERALS::PERIPHERAL_JOYSTICK;
+    // If keyboard input is being captured by this add-on, force the port type to PERIPHERAL_JOYSTICK
+    PERIPHERALS::PeripheralType device = PERIPHERALS::PERIPHERAL_UNKNOWN;
+    if (m_bSupportsKeyboard)
+      device = PERIPHERALS::PERIPHERAL_JOYSTICK;
 
-      CPortManager::GetInstance().OpenPort(m_ports[port].get(), port, device);
+    CPortManager::GetInstance().OpenPort(m_ports[port].get(), port, device);
 
-      UpdatePort(port, controller);
+    UpdatePort(port, controller);
 
-      return true;
-    }
+    return true;
   }
 
   return false;
@@ -806,24 +811,22 @@ ControllerVector CGameClient::GetControllers(void) const
 
   ControllerVector controllers;
 
+  CGameServices& gameServices = CServiceBroker::GetGameServices();
+
   const ADDONDEPS& dependencies = GetDeps();
   for (ADDONDEPS::const_iterator it = dependencies.begin(); it != dependencies.end(); ++it)
   {
-    AddonPtr addon;
-    if (CAddonMgr::GetInstance().GetAddon(it->first, addon, ADDON_GAME_CONTROLLER))
-    {
-      ControllerPtr controller = std::dynamic_pointer_cast<CController>(addon);
-      if (controller)
-        controllers.push_back(controller);
-    }
+    ControllerPtr controller = gameServices.GetController(it->first);
+    if (controller)
+      controllers.push_back(controller);
   }
 
   if (controllers.empty())
   {
     // Use the default controller
-    AddonPtr addon;
-    if (CAddonMgr::GetInstance().GetAddon(DEFAULT_CONTROLLER_ID, addon, ADDON_GAME_CONTROLLER))
-      controllers.push_back(std::static_pointer_cast<CController>(addon));
+    ControllerPtr controller = gameServices.GetDefaultController();
+    if (controller)
+      controllers.push_back(controller);
   }
 
   return controllers;

@@ -37,6 +37,7 @@
 #include "input/Key.h"
 #include "URL.h"
 #include "messaging/ApplicationMessenger.h"
+#include "filesystem/VideoDatabaseFile.h"
 
 using namespace PLAYLIST;
 using namespace KODI::MESSAGING;
@@ -279,6 +280,9 @@ bool CPlayListPlayer::Play(int iSong, std::string player, bool bAutoPlay /* = fa
 
   m_iCurrentSong = iSong;
   CFileItemPtr item = playlist[m_iCurrentSong];
+  if (item->IsVideoDb() && !item->HasVideoInfoTag())
+    *(item->GetVideoInfoTag()) = XFILE::CVideoDatabaseFile::GetVideoTag(CURL(item->GetPath()));
+
   playlist.SetPlayed(true);
 
   m_bPlaybackStarted = false;
@@ -573,7 +577,7 @@ void CPlayListPlayer::ReShuffle(int iPlaylist, int iPosition)
   {
     GetPlaylist(iPlaylist).Shuffle();
   }
-  // we're trying to shuffle new items into the curently playing playlist
+  // we're trying to shuffle new items into the currently playing playlist
   // so we shuffle starting at two positions below the current item
   else if (iPlaylist == m_iCurrentPlayList)
   {

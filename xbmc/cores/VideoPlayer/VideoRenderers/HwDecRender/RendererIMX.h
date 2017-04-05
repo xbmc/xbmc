@@ -42,12 +42,11 @@ public:
   virtual bool IsGuiLayer();
 
   // Feature support
-  virtual bool Supports(EINTERLACEMETHOD method);
   virtual bool Supports(ESCALINGMETHOD method);
+  virtual bool Supports(ERENDERFEATURE feature);
 
   virtual bool WantsDoublePass() override;
 
-  virtual EINTERLACEMETHOD AutoInterlaceMethod();
   virtual CRenderInfo GetRenderInfo();
 
 protected:

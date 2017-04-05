@@ -31,7 +31,7 @@
 					<item>
 						<label>$LOCALIZE[31114]</label>
 						<onclick>Dialog.Close(all)</onclick>
-						<onclick condition="System.hasAddon(plugin.video.youtube)">ActivateWindow(videos,plugin://plugin.video.youtube/kodion/search/input/,return)</onclick>
+						<onclick condition="System.hasAddon(plugin.video.youtube)">ActivateWindow(videos,"plugin://plugin.video.youtube/kodion/search/list/",return)</onclick>
 						<onclick condition="!System.hasAddon(plugin.video.youtube)">InstallAddon(plugin.video.youtube)</onclick>
 					</item>
 					<item>

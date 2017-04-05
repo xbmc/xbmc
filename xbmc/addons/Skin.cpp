@@ -380,7 +380,7 @@ void CSkinInfo::OnPostInstall(bool update, bool modal)
   if (IsInUse() || (!update && !modal && 
     HELPERS::ShowYesNoDialogText(CVariant{Name()}, CVariant{24099}) == DialogResponse::YES))
   {
-    CGUIDialogKaiToast *toast = (CGUIDialogKaiToast *)g_windowManager.GetWindow(WINDOW_DIALOG_KAI_TOAST);
+    CGUIDialogKaiToast *toast = g_windowManager.GetWindow<CGUIDialogKaiToast>();
     if (toast)
     {
       toast->ResetTimer();
@@ -491,7 +491,7 @@ void CSkinInfo::SettingOptionsSkinFontsFiller(const CSetting *setting, std::vect
 
 void CSkinInfo::SettingOptionsSkinThemesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
 {
-  // get the choosen theme and remove the extension from the current theme (backward compat)
+  // get the chosen theme and remove the extension from the current theme (backward compat)
   std::string settingValue = ((const CSettingString*)setting)->GetValue();
   URIUtils::RemoveExtension(settingValue);
   current = "SKINDEFAULT";
@@ -735,7 +735,7 @@ bool CSkinInfo::SettingsFromXML(const CXBMCTinyXML &doc, bool loadDefaults /* = 
     else if (setting->GetType() == "bool")
       m_bools.insert(std::pair<int, CSkinSettingBoolPtr>(number++, std::dynamic_pointer_cast<CSkinSettingBool>(setting)));
     else
-      CLog::Log(LOGWARNING, "CSkinInfo: ignoring setting of unknwon type \"%s\"", setting->GetType().c_str());
+      CLog::Log(LOGWARNING, "CSkinInfo: ignoring setting of unknown type \"%s\"", setting->GetType().c_str());
   }
 
   return true;

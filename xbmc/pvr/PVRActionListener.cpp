@@ -21,35 +21,45 @@
 #include "Application.h"
 #include "ServiceBroker.h"
 #include "dialogs/GUIDialogNumeric.h"
-#include "guilib/LocalizeStrings.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
-#include "messaging/ApplicationMessenger.h"
-#include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
-#include "utils/log.h"
-#include "utils/StringUtils.h"
 
+#include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
-#include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/addons/PVRClients.h"
+#include "pvr/channels/PVRChannel.h"
 
 #include "PVRActionListener.h"
 
-using namespace PVR;
-using namespace KODI::MESSAGING;
+namespace PVR
+{
 
 CPVRActionListener::CPVRActionListener()
 {
+  g_application.RegisterActionListener(this);
+  CServiceBroker::GetSettings().RegisterCallback(this, {
+    CSettings::SETTING_PVRPARENTAL_ENABLED,
+    CSettings::SETTING_PVRMANAGER_RESETDB,
+    CSettings::SETTING_EPG_RESETEPG,
+    CSettings::SETTING_PVRMANAGER_CHANNELMANAGER,
+    CSettings::SETTING_PVRMANAGER_GROUPMANAGER,
+    CSettings::SETTING_PVRMANAGER_CHANNELSCAN,
+    CSettings::SETTING_PVRMENU_SEARCHICONS,
+    CSettings::SETTING_PVRCLIENT_MENUHOOK,
+  });
 }
 
-CPVRActionListener &CPVRActionListener::GetInstance()
+CPVRActionListener::~CPVRActionListener()
 {
-  static CPVRActionListener instance;
-  return instance;
+  CServiceBroker::GetSettings().UnregisterCallback(this);
+  g_application.UnregisterActionListener(this);
 }
 
 bool CPVRActionListener::OnAction(const CAction &action)
 {
+  bool bIsJumpSMS = false;
+
   switch (action.GetID())
   {
     case ACTION_PVR_PLAY:
@@ -58,24 +68,35 @@ bool CPVRActionListener::OnAction(const CAction &action)
     {
       // see if we're already playing a PVR stream and if not or the stream type
       // doesn't match the demanded type, start playback of according type
-      bool isPlayingPvr(g_PVRManager.IsPlaying() && g_application.CurrentFileItem().HasPVRChannelInfoTag());
+      bool isPlayingPvr(CServiceBroker::GetPVRManager().IsPlaying() && g_application.CurrentFileItem().HasPVRChannelInfoTag());
       switch (action.GetID())
       {
         case ACTION_PVR_PLAY:
           if (!isPlayingPvr)
-            g_PVRManager.StartPlayback(PlaybackTypeAny);
+            CServiceBroker::GetPVRManager().GUIActions()->SwitchToChannel(PlaybackTypeAny);
           break;
         case ACTION_PVR_PLAY_TV:
           if (!isPlayingPvr || g_application.CurrentFileItem().GetPVRChannelInfoTag()->IsRadio())
-            g_PVRManager.StartPlayback(PlaybackTypeTv);
+            CServiceBroker::GetPVRManager().GUIActions()->SwitchToChannel(PlaybackTypeTV);
           break;
         case ACTION_PVR_PLAY_RADIO:
           if (!isPlayingPvr || !g_application.CurrentFileItem().GetPVRChannelInfoTag()->IsRadio())
-            g_PVRManager.StartPlayback(PlaybackTypeRadio);
+            CServiceBroker::GetPVRManager().GUIActions()->SwitchToChannel(PlaybackTypeRadio);
           break;
       }
       return true;
     }
+
+    case ACTION_JUMP_SMS2:
+    case ACTION_JUMP_SMS3:
+    case ACTION_JUMP_SMS4:
+    case ACTION_JUMP_SMS5:
+    case ACTION_JUMP_SMS6:
+    case ACTION_JUMP_SMS7:
+    case ACTION_JUMP_SMS8:
+    case ACTION_JUMP_SMS9:
+      bIsJumpSMS = true;
+      // fallthru is intended
     case REMOTE_0:
     case REMOTE_1:
     case REMOTE_2:
@@ -96,48 +117,8 @@ bool CPVRActionListener::OnAction(const CAction &action)
         if (g_windowManager.IsPythonWindow(g_windowManager.GetTopMostModalDialogID()))
           return false;
 
-        if(g_PVRManager.IsPlaying())
-        {
-          // pvr client addon
-          CPVRChannelPtr playingChannel(g_PVRManager.GetCurrentChannel());
-          if(!playingChannel)
-            return false;
-
-          if (action.GetID() == REMOTE_0)
-          {
-            CPVRChannelGroupPtr group = g_PVRChannelGroups->GetPreviousPlayedGroup();
-            if (group)
-            {
-              g_PVRManager.SetPlayingGroup(group);
-              CFileItemPtr fileItem = group->GetLastPlayedChannel(playingChannel->ChannelID());
-              if (fileItem && fileItem->HasPVRChannelInfoTag())
-              {
-                CLog::Log(LOGPVR, "%s - switch to channel number %d", __FUNCTION__, fileItem->GetPVRChannelInfoTag()->ChannelNumber());
-                CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,static_cast<void*>(
-                  new CAction(ACTION_CHANNEL_SWITCH, static_cast<float>(fileItem->GetPVRChannelInfoTag()->ChannelNumber()))));
-              }
-            }
-          }
-          else
-          {
-            int autoCloseTime = CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRPLAYBACK_CONFIRMCHANNELSWITCH) ? 0 : g_advancedSettings.m_iPVRNumericChannelSwitchTimeout;
-            std::string strChannel = StringUtils::Format("%i", action.GetID() - REMOTE_0);
-            if (CGUIDialogNumeric::ShowAndGetNumber(strChannel, g_localizeStrings.Get(19000), autoCloseTime) || autoCloseTime)
-            {
-              int iChannelNumber = atoi(strChannel.c_str());
-              if (iChannelNumber > 0 && iChannelNumber != playingChannel->ChannelNumber())
-              {
-                CPVRChannelGroupPtr selectedGroup = g_PVRManager.GetPlayingGroup(playingChannel->IsRadio());
-                CFileItemPtr channel = selectedGroup->GetByChannelNumber(iChannelNumber);
-                if (!channel || !channel->HasPVRChannelInfoTag())
-                  return false;
-
-                CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(
-                  new CAction(ACTION_CHANNEL_SWITCH, static_cast<float>(iChannelNumber))));
-              }
-            }
-          }
-        }
+        int iRemote = bIsJumpSMS ? action.GetID() - (ACTION_JUMP_SMS2 - REMOTE_2) : action.GetID();
+        CServiceBroker::GetPVRManager().GUIActions()->GetChannelNumberInputHandler().AppendChannelNumberDigit(iRemote - REMOTE_0);
       }
       return true;
     }
@@ -145,3 +126,72 @@ bool CPVRActionListener::OnAction(const CAction &action)
   }
   return false;
 }
+
+void CPVRActionListener::OnSettingChanged(const CSetting *setting)
+{
+  if (setting == nullptr)
+    return;
+
+  const std::string &settingId = setting->GetId();
+  if (settingId == CSettings::SETTING_PVRPARENTAL_ENABLED)
+  {
+    if (dynamic_cast<const CSettingBool*>(setting)->GetValue() && CServiceBroker::GetSettings().GetString(CSettings::SETTING_PVRPARENTAL_PIN).empty())
+    {
+      std::string newPassword = "";
+      // password set... save it
+      if (CGUIDialogNumeric::ShowAndVerifyNewPassword(newPassword))
+        CServiceBroker::GetSettings().SetString(CSettings::SETTING_PVRPARENTAL_PIN, newPassword);
+      // password not set... disable parental
+      else
+        dynamic_cast<CSettingBool*>(const_cast<CSetting*>(setting))->SetValue(false);
+    }
+  }
+}
+
+void CPVRActionListener::OnSettingAction(const CSetting *setting)
+{
+  if (setting == nullptr)
+    return;
+
+  const std::string &settingId = setting->GetId();
+  if (settingId == CSettings::SETTING_PVRMANAGER_RESETDB)
+  {
+    CServiceBroker::GetPVRManager().GUIActions()->ResetPVRDatabase(false);
+  }
+  else if (settingId == CSettings::SETTING_EPG_RESETEPG)
+  {
+    CServiceBroker::GetPVRManager().GUIActions()->ResetPVRDatabase(true);
+  }
+  else if (settingId == CSettings::SETTING_PVRMANAGER_CHANNELMANAGER)
+  {
+    if (CServiceBroker::GetPVRManager().IsStarted())
+    {
+      CGUIDialog *dialog = g_windowManager.GetDialog(WINDOW_DIALOG_PVR_CHANNEL_MANAGER);
+      if (dialog)
+        dialog->Open();
+    }
+  }
+  else if (settingId == CSettings::SETTING_PVRMANAGER_GROUPMANAGER)
+  {
+    if (CServiceBroker::GetPVRManager().IsStarted())
+    {
+      CGUIDialog *dialog = g_windowManager.GetDialog(WINDOW_DIALOG_PVR_GROUP_MANAGER);
+      if (dialog)
+        dialog->Open();
+    }
+  }
+  else if (settingId == CSettings::SETTING_PVRMANAGER_CHANNELSCAN)
+  {
+    CServiceBroker::GetPVRManager().GUIActions()->StartChannelScan();
+  }
+  else if (settingId == CSettings::SETTING_PVRMENU_SEARCHICONS)
+  {
+    CServiceBroker::GetPVRManager().TriggerSearchMissingChannelIcons();
+  }
+  else if (settingId == CSettings::SETTING_PVRCLIENT_MENUHOOK)
+  {
+    CServiceBroker::GetPVRManager().GUIActions()->ProcessMenuHooks(CFileItemPtr());
+  }
+}
+
+} // namespace PVR

@@ -891,7 +891,7 @@ CFileItemPtr BuildObject(PLT_MediaObject* entry,
   NPT_String ObjectClass = entry->m_ObjectClass.type.ToLowercase();
 
   CFileItemPtr pItem(new CFileItem((const char*)entry->m_Title));
-  pItem->SetLabelPreformated(true);
+  pItem->SetLabelPreformatted(true);
   pItem->m_strTitle = (const char*)entry->m_Title;
   pItem->m_bIsFolder = entry->IsContainer();
 
@@ -900,14 +900,14 @@ CFileItemPtr BuildObject(PLT_MediaObject* entry,
 
     // look for metadata
     if( ObjectClass.StartsWith("object.container.album.videoalbum") ) {
-      pItem->SetLabelPreformated(false);
+      pItem->SetLabelPreformatted(false);
       UPNP::PopulateTagFromObject(*pItem->GetVideoInfoTag(), *entry, NULL, upnp_service);
 
     } else if( ObjectClass.StartsWith("object.container.album.photoalbum")) {
       //CPictureInfoTag* tag = pItem->GetPictureInfoTag();
 
     } else if( ObjectClass.StartsWith("object.container.album") ) {
-      pItem->SetLabelPreformated(false);
+      pItem->SetLabelPreformatted(false);
       UPNP::PopulateTagFromObject(*pItem->GetMusicInfoTag(), *entry, NULL, upnp_service);
     }
 
@@ -946,11 +946,11 @@ CFileItemPtr BuildObject(PLT_MediaObject* entry,
     }
     // look for metadata
     if(video) {
-        pItem->SetLabelPreformated(false);
+        pItem->SetLabelPreformatted(false);
         UPNP::PopulateTagFromObject(*pItem->GetVideoInfoTag(), *entry, res, upnp_service);
 
     } else if(audio) {
-        pItem->SetLabelPreformated(false);
+        pItem->SetLabelPreformatted(false);
         UPNP::PopulateTagFromObject(*pItem->GetMusicInfoTag(), *entry, res, upnp_service);
 
     } else if(image) {

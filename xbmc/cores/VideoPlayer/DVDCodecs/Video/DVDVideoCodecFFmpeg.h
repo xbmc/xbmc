@@ -96,7 +96,7 @@ protected:
   AVFilterContext* m_pFilterIn;
   AVFilterContext* m_pFilterOut;
   AVFrame*         m_pFilterFrame;
-  bool m_filterEof;
+  bool m_filterEof = false;
 
   CDVDVideoPPFFmpeg m_postProc;
 
@@ -105,7 +105,7 @@ protected:
 
   int m_iScreenWidth;
   int m_iScreenHeight;
-  int m_iOrientation;// orientation of the video in degress counter clockwise
+  int m_iOrientation;// orientation of the video in degrees counter clockwise
 
   unsigned int m_uSurfacesCount;
 

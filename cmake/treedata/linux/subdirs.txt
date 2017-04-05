@@ -10,4 +10,5 @@ xbmc/storage/linux         storage/linux
 xbmc/filesystem/posix      filesystem/posix
 xbmc/utils/posix           utils_posix
 xbmc/windowing/egl         windowing/egl
+xbmc/windowing/X11         windowing/X11
 xbmc/platform/posix        posix

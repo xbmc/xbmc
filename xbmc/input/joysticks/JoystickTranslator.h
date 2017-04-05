@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2015-2016 Team Kodi
+ *      Copyright (C) 2015-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -21,8 +21,12 @@
 
 #include "JoystickTypes.h"
 
+namespace KODI
+{
 namespace JOYSTICK
 {
+  class CDriverPrimitive;
+
   /*!
    * \brief Joystick translation utilities
    */
@@ -60,5 +64,15 @@ namespace JOYSTICK
      *         ANALOG_STICK_DIRECTION::UNKNOWN if x and y are both 0
      */
     static ANALOG_STICK_DIRECTION VectorToAnalogStickDirection(float x, float y);
+
+    /*!
+     * \brief Get the localized name of the primitive
+     *
+     * \param primitive The primitive, currently only buttons and axes are supported
+     *
+     * \return A title for the primitive, e.g. "Button 0" or "Axis 1"
+     */
+    static std::string GetPrimitiveName(const CDriverPrimitive& primitive);
   };
+}
 }

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2015-2016 Team Kodi
+ *      Copyright (C) 2015-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,7 +19,11 @@
  */
 
 #include "JoystickTranslator.h"
+#include "guilib/LocalizeStrings.h"
+#include "input/joysticks/DriverPrimitive.h"
+#include "utils/StringUtils.h"
 
+using namespace KODI;
 using namespace JOYSTICK;
 
 const char* CJoystickTranslator::HatStateToString(HAT_STATE state)
@@ -58,4 +62,22 @@ ANALOG_STICK_DIRECTION CJoystickTranslator::VectorToAnalogStickDirection(float x
   else if (y >  x && y <= -x) return ANALOG_STICK_DIRECTION::LEFT;
 
   return ANALOG_STICK_DIRECTION::UNKNOWN;
+}
+
+std::string CJoystickTranslator::GetPrimitiveName(const CDriverPrimitive& primitive)
+{
+  std::string primitiveTemplate;
+
+  switch (primitive.Type())
+  {
+    case PRIMITIVE_TYPE::BUTTON:
+      primitiveTemplate = g_localizeStrings.Get(35015); // "Button %d"
+      break;
+    case PRIMITIVE_TYPE::SEMIAXIS:
+      primitiveTemplate = g_localizeStrings.Get(35016); // "Axis %d"
+      break;
+    default: break;
+  }
+
+  return StringUtils::Format(primitiveTemplate.c_str(), primitive.Index());
 }

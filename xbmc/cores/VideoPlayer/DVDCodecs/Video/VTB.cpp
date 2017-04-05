@@ -27,6 +27,7 @@
 #include "utils/log.h"
 #include "VTB.h"
 #include "utils/BitstreamConverter.h"
+#include "utils/BitstreamReader.h"
 
 extern "C" {
 #include "libavcodec/videotoolbox.h"

@@ -43,11 +43,10 @@ namespace XBMCAddon
     /// \python_class{ xbmcvfs.File(filepath, [mode]) }
     ///
     /// @param filepath             string Selected file path
-    /// @param mode                 [opt] string Additional mode options
+    /// @param mode                 [opt] string Additional mode options (if no mode is supplied, the default is Open for Read).
     ///   |  Mode  | Description                     |
     ///   |:------:|:--------------------------------|
     ///   |   w    | Open for write                  |
-    ///
     ///
     ///
     ///--------------------------------------------------------------------------
@@ -55,7 +54,7 @@ namespace XBMCAddon
     /// **Example:**
     /// ~~~~~~~~~~~~~{.py}
     /// ..
-    /// f = xbmcvfs.File(file, ['w'])
+    /// f = xbmcvfs.File(file, 'w')
     /// ..
     /// ~~~~~~~~~~~~~
     //
@@ -150,7 +149,7 @@ namespace XBMCAddon
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
       /// ..
-      /// f = xbmcvfs.File(file, 'w', True)
+      /// f = xbmcvfs.File(file, 'w')
       /// result = f.write(buffer)
       /// f.close()
       /// ..
@@ -195,8 +194,8 @@ namespace XBMCAddon
       /// Seek to position in file.
       ///
       /// @param seekBytes          position in the file
-      /// @param iWhence            where in a file to seek from[0 begining,
-      ///                           1 current , 2 end possition]
+      /// @param iWhence            where in a file to seek from[0 beginning,
+      ///                           1 current , 2 end position]
       ///
       ///
       ///-----------------------------------------------------------------------

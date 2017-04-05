@@ -23,6 +23,7 @@
 #if defined(HAVE_X11)
 #include "GLContext.h"
 #include "EGL/egl.h"
+#include <X11/Xutil.h>
 
 class CGLContextEGL : public CGLContext
 {

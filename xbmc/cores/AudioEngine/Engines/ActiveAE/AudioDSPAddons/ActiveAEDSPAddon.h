@@ -406,7 +406,7 @@ namespace ActiveAE
     bool LogError(const AE_DSP_ERROR error, const char *strMethod) const;
 
     bool                      m_bReadyToUse;            /*!< true if this add-on is connected to the audio DSP, false otherwise */
-    bool                      m_isInUse;                /*!< true if this add-on currentyl processing data */
+    bool                      m_isInUse;                /*!< true if this add-on currently processing data */
     AE_DSP_MENUHOOKS          m_menuhooks;              /*!< the menu hooks for this add-on */
     int                       m_iClientId;              /*!< database ID of the audio DSP */
 

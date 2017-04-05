@@ -24,6 +24,7 @@
 #include "ServiceBroker.h"
 #include "guilib/gui3d.h"
 #include "messaging/ApplicationMessenger.h"
+#include "platform/win32/CharsetConverter.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
@@ -31,8 +32,8 @@
 #include "utils/log.h"
 #include "utils/CharsetConverter.h"
 #include "utils/SystemInfo.h"
+#include "VideoSyncD3D.h"
 
-#ifdef TARGET_WINDOWS
 #include <tpcshrd.h>
 
 CWinSystemWin32::CWinSystemWin32()
@@ -83,13 +84,17 @@ bool CWinSystemWin32::DestroyWindowSystem()
 
 bool CWinSystemWin32::CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction)
 {
+  using KODI::PLATFORM::WINDOWS::ToW;
+
+  auto nameW = ToW(name);
+
   m_hInstance = ( HINSTANCE )GetModuleHandle( NULL );
 
   if(m_hInstance == NULL)
     CLog::Log(LOGDEBUG, "%s : GetModuleHandle failed with %d", __FUNCTION__, GetLastError());
 
   // Load Win32 procs if available
-  HMODULE hUser32 = GetModuleHandleA("user32");
+  HMODULE hUser32 = GetModuleHandle(L"user32");
   if (hUser32)
   {
     PtrGetGestureInfo = (pGetGestureInfo)GetProcAddress(hUser32, "GetGestureInfo");
@@ -118,7 +123,7 @@ bool CWinSystemWin32::CreateNewWindow(const std::string& name, bool fullScreen, 
   wndClass.hCursor = LoadCursor( NULL, IDC_ARROW );
   wndClass.hbrBackground = ( HBRUSH )GetStockObject( BLACK_BRUSH );
   wndClass.lpszMenuName = NULL;
-  wndClass.lpszClassName = name.c_str();
+  wndClass.lpszClassName = nameW.c_str();
 
   if( !RegisterClass( &wndClass ) )
   {
@@ -126,7 +131,7 @@ bool CWinSystemWin32::CreateNewWindow(const std::string& name, bool fullScreen, 
     return false;
   }
 
-  HWND hWnd = CreateWindow( name.c_str(), name.c_str(), fullScreen ? WS_POPUP : WS_OVERLAPPEDWINDOW,
+  HWND hWnd = CreateWindow( nameW.c_str(), nameW.c_str(), fullScreen ? WS_POPUP : WS_OVERLAPPEDWINDOW,
     0, 0, m_nWidth, m_nHeight, 0,
     NULL, m_hInstance, userFunction );
   if( hWnd == NULL )
@@ -173,7 +178,7 @@ bool CWinSystemWin32::CreateBlankWindows()
   wcex.hCursor= NULL;
   wcex.hbrBackground= (HBRUSH)CreateSolidBrush(RGB(0, 0, 0));
   wcex.lpszMenuName= 0;
-  wcex.lpszClassName= "BlankWindowClass";
+  wcex.lpszClassName= L"BlankWindowClass";
   wcex.hIconSm= 0;
 
   // Now we can go ahead and register our new window class
@@ -188,7 +193,7 @@ bool CWinSystemWin32::CreateBlankWindows()
 
   for (int i=0; i < BlankWindowsCount; i++)
   {
-    HWND hBlankWindow = CreateWindowEx(WS_EX_TOPMOST, "BlankWindowClass", "", WS_POPUP | WS_DISABLED,
+    HWND hBlankWindow = CreateWindowEx(WS_EX_TOPMOST, L"BlankWindowClass", L"", WS_POPUP | WS_DISABLED,
     CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, NULL, NULL, NULL, NULL);
 
     if(hBlankWindow ==  NULL)
@@ -939,4 +944,8 @@ void CWinSystemWin32::SetForegroundWindowInternal(HWND hWnd)
   }
 }
 
-#endif
+std::unique_ptr<CVideoSync> CWinSystemWin32::GetVideoSync(void *clock)
+{
+  std::unique_ptr<CVideoSync> pVSync(new CVideoSyncD3D(clock));
+  return pVSync;
+}

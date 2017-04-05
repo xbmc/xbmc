@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2015-2016 Team Kodi
+ *      Copyright (C) 2015-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -21,6 +21,8 @@
 
 #include "JoystickTypes.h"
 
+namespace KODI
+{
 namespace JOYSTICK
 {
   /*!
@@ -74,4 +76,5 @@ namespace JOYSTICK
      */
     virtual void OnAnalogKey(unsigned int buttonKeyId, float magnitude) = 0;
   };
+}
 }

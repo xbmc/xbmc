@@ -21,18 +21,27 @@
  */
 
 #include "interfaces/IActionListener.h"
+#include "settings/lib/ISettingCallback.h"
 
-class CPVRActionListener : public IActionListener
+namespace PVR
+{
+
+class CPVRActionListener : public IActionListener, public ISettingCallback
 {
 public:
+  CPVRActionListener();
+  virtual ~CPVRActionListener();
 
-  static CPVRActionListener &GetInstance();
+  // IActionListener implementation
+  bool OnAction(const CAction &action) override;
 
-  bool OnAction(const CAction &action);
+  // ISettingCallback implementation
+  void OnSettingChanged(const CSetting *setting) override;
+  void OnSettingAction(const CSetting *setting) override;
 
 private:
-  CPVRActionListener();
-  CPVRActionListener(const CPVRActionListener&);
-  CPVRActionListener& operator=(const CPVRActionListener&);
-  ~CPVRActionListener() {};
+  CPVRActionListener(const CPVRActionListener&) = delete;
+  CPVRActionListener& operator=(const CPVRActionListener&) = delete;
 };
+
+} // namespace PVR

@@ -25,6 +25,7 @@
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/timers/PVRTimers.h"
 #include "pvr/PVRManager.h"
+#include "ServiceBroker.h"
 #include "utils/log.h"
 
 #include "PVRItem.h"
@@ -92,12 +93,12 @@ namespace PVR
       CPVRTimerInfoTagPtr timer;
       const CEpgInfoTagPtr epgTag(m_item->GetPVRChannelInfoTag()->GetEPGNow());
       if (epgTag)
-        timer = epgTag->Timer(); // cheap method, but not reliable as timers get set at epg tags asychrounously
+        timer = epgTag->Timer(); // cheap method, but not reliable as timers get set at epg tags asynchronously
 
       if (timer)
         return timer;
 
-      return g_PVRTimers->GetActiveTimerForChannel(m_item->GetPVRChannelInfoTag()); // more expensive, but reliable and works even for channels with no epg data
+      return CServiceBroker::GetPVRManager().Timers()->GetActiveTimerForChannel(m_item->GetPVRChannelInfoTag()); // more expensive, but reliable and works even for channels with no epg data
     }
     else
     {

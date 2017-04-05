@@ -114,7 +114,9 @@ void XBPython::Announce(AnnouncementFlag flag, const char *sender, const char *m
      OnDPMSActivated();
   }
 
-  OnNotification(sender, std::string(ANNOUNCEMENT::AnnouncementFlagToString(flag)) + "." + std::string(message), CJSONVariantWriter::Write(data, g_advancedSettings.m_jsonOutputCompact));
+  std::string jsonData;
+  if (CJSONVariantWriter::Write(data, jsonData, g_advancedSettings.m_jsonOutputCompact))
+    OnNotification(sender, std::string(ANNOUNCEMENT::AnnouncementFlagToString(flag)) + "." + std::string(message), jsonData);
 }
 
 // message all registered callbacks that we started playing
@@ -636,22 +638,16 @@ void XBPython::OnScriptAbortRequested(ILanguageInvoker *invoker)
 {
   XBMC_TRACE;
 
-  std::string addonId;
+  long invokerId(-1);
   if (invoker != NULL)
-  {
-    const ADDON::AddonPtr& addon = invoker->GetAddon();
-    if (addon != NULL)
-      addonId = addon->ID();
-  }
+    invokerId = invoker->GetId();
 
   LOCK_AND_COPY(std::vector<XBMCAddon::xbmc::Monitor*>, tmp, m_vecMonitorCallbackList);
   for (MonitorCallbackList::iterator it = tmp.begin(); (it != tmp.end()); ++it)
   {
     if (CHECK_FOR_ENTRY(m_vecMonitorCallbackList, (*it)))
     {
-      if (addonId.empty())
-        (*it)->OnAbortRequested();
-      else if ((*it)->GetId() == addonId)
+      if (invokerId < 0 || (*it)->GetInvokerId() == invokerId)
         (*it)->OnAbortRequested();
     }
   }

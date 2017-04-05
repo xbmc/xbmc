@@ -3,7 +3,7 @@ XBMC_PLATFORM_DIR=android
 . $WORKSPACE/tools/buildsteps/defaultenv
 
 NDK_ARCH=aarch64
-#the following pathes must exist on the slave and use the defined scheme here!
+#the following paths must exist on the slave and use the defined scheme here!
 NDK_PATH=$ANDROID_DEV_ROOT/android-ndk-r$NDK_VERSION
 TOOLCHAIN=$ANDROID_DEV_ROOT/android-toolchain-$NDK_ARCH-$SDK_VERSION-r$NDK_VERSION
 

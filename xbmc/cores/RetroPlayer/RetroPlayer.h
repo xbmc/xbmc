@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2012-2016 Team Kodi
+ *      Copyright (C) 2012-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -36,8 +36,7 @@ namespace GAME
   class CRetroPlayerVideo;
 
   class CRetroPlayer : public IPlayer,
-                       public IRenderMsg,
-                       public IDispResource
+                       public IRenderMsg
   {
   public:
     CRetroPlayer(IPlayerCallback& callback);
@@ -143,11 +142,7 @@ namespace GAME
     virtual void GetDebugInfo(std::string &audio, std::string &video, std::string &general) override { }
     virtual void UpdateClockSync(bool enabled) override;
     virtual void UpdateRenderInfo(CRenderInfo &info) override;
-
-    // implementation of IDispResource
-    //virtual void OnLostDisplay() override { }
-    //virtual void OnResetDisplay() override { }
-    //virtual void OnAppFocusChange(bool focus) override { }
+    virtual void UpdateRenderBuffers(int queued, int discard, int free) override {}
 
   private:
     /**

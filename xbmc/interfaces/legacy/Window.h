@@ -96,7 +96,7 @@ namespace XBMCAddon
       /// ..
       /// def onAction(self, action):
       ///   if action.getId() == ACTION_PREVIOUS_MENU:
-      ///     print('action recieved: previous')
+      ///     print('action received: previous')
       /// ..
       /// ~~~~~~~~~~~~~
       ///
@@ -249,7 +249,7 @@ namespace XBMCAddon
       void setWindow(InterceptorBase* _window);
 
       /**
-       * This is a helper method since poping the previous window id is a common
+       * This is a helper method since popping the previous window id is a common
        * function.
        */
       void popActiveWindowId();
@@ -340,14 +340,14 @@ namespace XBMCAddon
       /// # Define own function where becomes called from Kodi
       /// def onAction(self, action):
       ///   if action.getId() == ACTION_PREVIOUS_MENU:
-      ///     print('action recieved: previous')
+      ///     print('action received: previous')
       ///     self.close()
       ///   if action.getId() == ACTION_SHOW_INFO:
-      ///     print('action recieved: show info')
+      ///     print('action received: show info')
       ///   if action.getId() == ACTION_STOP:
-      ///     print('action recieved: stop')
+      ///     print('action received: stop')
       ///   if action.getId() == ACTION_PAUSE:
-      ///     print('action recieved: pause')
+      ///     print('action received: pause')
       /// ..
       /// ~~~~~~~~~~~~~
       ///
@@ -376,7 +376,7 @@ namespace XBMCAddon
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
       /// ..
-      /// # Define own funtion where becomes called from Kodi
+      /// # Define own function where becomes called from Kodi
       /// def onControl(self, control):
       ///   print("Window.onControl(control=[%s])"%control)
       /// ..
@@ -407,7 +407,7 @@ namespace XBMCAddon
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
       /// ..
-      /// # Define own funtion where becomes called from Kodi
+      /// # Define own function where becomes called from Kodi
       /// def onClick(self,controlId):
       ///   if controlId == 10:
       ///     print("The control with Id 10 is clicked")
@@ -439,7 +439,7 @@ namespace XBMCAddon
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
       /// ..
-      /// # Define own funtion where becomes called from Kodi
+      /// # Define own function where becomes called from Kodi
       /// def onDoubleClick(self,controlId):
       ///   if controlId == 10:
       ///     print("The control with Id 10 is double clicked")
@@ -470,7 +470,7 @@ namespace XBMCAddon
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
       /// ..
-      /// # Define own funtion where becomes called from Kodi
+      /// # Define own function where becomes called from Kodi
       ///  def onDoubleClick(self,controlId):
       ///    if controlId == 10:
       ///      print("The control with Id 10 is focused")
@@ -499,7 +499,7 @@ namespace XBMCAddon
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
       /// ..
-      /// # Define own funtion where becomes called from Kodi
+      /// # Define own function where becomes called from Kodi
       /// def onInit(self):
       ///   print("Window.onInit method called from Kodi")
       /// ..

@@ -92,9 +92,5 @@ extern "C" char * strptime(const char *buf, const char *fmt, struct tm *tm);
 extern "C" int strverscmp (const char *s1, const char *s2);
 extern "C" char * strcasestr(const char* haystack, const char* needle);
 
-#if _MSC_VER >= 1800
-#define PRIdS       "Id"
-#define PRIuS       "Iu"
-#endif
 #endif // TARGET_WINDOWS
 

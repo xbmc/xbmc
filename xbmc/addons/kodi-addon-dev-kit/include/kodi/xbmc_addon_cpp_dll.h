@@ -101,7 +101,7 @@ class DllUtils
 {
 public:
 
-  static unsigned int VecToStruct(std::vector<DllSetting> &vecSet, ADDON_StructSetting*** sSet) 
+  static unsigned int VecToStruct(const std::vector<DllSetting> &vecSet, ADDON_StructSetting*** sSet)
   {
     *sSet = NULL;
     if (vecSet.empty())
@@ -143,7 +143,7 @@ public:
     return uiElements;
   }
 
-  static void StructToVec(unsigned int iElements, ADDON_StructSetting*** sSet, std::vector<DllSetting> *vecSet) 
+  static void StructToVec(unsigned int iElements, ADDON_StructSetting*** sSet, std::vector<DllSetting> *vecSet)
   {
     if(iElements == 0)
       return;

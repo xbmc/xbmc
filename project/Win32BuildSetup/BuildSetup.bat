@@ -58,6 +58,7 @@ FOR %%b in (%1, %2, %3, %4, %5, %6) DO (
   IF %%b==sh SET useshell=sh
 )
 
+SET PreferredToolArchitecture=x64
 SET buildconfig=Release
 set WORKSPACE=%CD%\..\..\kodi-build
 

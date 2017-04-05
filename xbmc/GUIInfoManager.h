@@ -341,7 +341,7 @@ protected:
   int m_libraryHasCompilations;
   
   //Count of artists in music library contributing to song by role e.g. composers, conductors etc.
-  //For checking visibiliy of custom nodes for a role.
+  //For checking visibility of custom nodes for a role.
   std::vector<std::pair<std::string, int>> m_libraryRoleCounts; 
 
   SPlayerVideoStreamInfo m_videoInfo;

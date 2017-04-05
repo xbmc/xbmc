@@ -1,4 +1,4 @@
-This folder holds all the platform dependend build scripts which are called from the jenkins buildserver.
+This folder holds all the platform dependent build scripts which are called from the jenkins buildserver.
 
 The following ENV variables are available on all scripts:
 

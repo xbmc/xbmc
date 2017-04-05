@@ -1,8 +1,8 @@
 # kodi debian package metadata
 #
-# Setting PACKAGE_SHLIBDEPS to 'ON' will cause CPack to ignore PACKAGE_DEPENDS
-# content and use dpkg-shlibdeps to automatically generate the package dependency
-# list. Only useful for packages that contain binaries.
+# Setting PACKAGE_SHLIBDEPS to 'ON' will cause CPack to use dpkg-shlibdeps to
+# automatically generate the package dependency list and append its output to
+# PACKAGE_DEPENDS list. Only useful for packages that contain binaries.
 #
 # PACKAGE_ARCHITECTURE should be set to 'all' only if package contains
 # architecture agnostic data. CPack will set proper architecture (amd64/i386/etc)

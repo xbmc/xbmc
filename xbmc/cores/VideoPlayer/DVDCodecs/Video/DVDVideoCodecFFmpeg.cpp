@@ -594,7 +594,12 @@ int CDVDVideoCodecFFmpeg::Decode(uint8_t* pData, int iSize, double dts, double p
     return VC_ERROR;
 
   if (pData)
+  {
     m_iLastKeyframe++;
+    // put a limit on convergence count to avoid huge mem usage on streams without keyframes
+    if (m_iLastKeyframe > 300)
+      m_iLastKeyframe = 300;
+  }
 
   if (m_pHardware)
   {
@@ -701,18 +706,24 @@ int CDVDVideoCodecFFmpeg::Decode(uint8_t* pData, int iSize, double dts, double p
 
   if (!m_started)
   {
-    av_frame_unref(m_pDecodedFrame);
-    return VC_BUFFER;
+    int frames = 300;
+    if (m_dropCtrl.m_state == CDropControl::VALID)
+      frames = 6000000 / m_dropCtrl.m_diffPTS;
+    if (m_iLastKeyframe >= frames && m_pDecodedFrame->pict_type == AV_PICTURE_TYPE_I)
+    {
+      m_started = true;
+    }
+    else
+    {
+      av_frame_unref(m_pDecodedFrame);
+      return VC_BUFFER;
+    }
   }
 
   if (m_pDecodedFrame->interlaced_frame)
     m_interlaced = true;
   else
     m_interlaced = false;
-
-  // put a limit on convergence count to avoid huge mem usage on streams without keyframes
-  if (m_iLastKeyframe > 300)
-    m_iLastKeyframe = 300;
 
   //! @todo check if this work-around is still required
   if(m_pCodecContext->codec_id == AV_CODEC_ID_SVQ3)

@@ -8,28 +8,33 @@ A complete rebuild using Coffee Script, Backbone, Marionette and much, much more
 <h2 id="author">Author</h2>
 <p><a href="http://jez.me">Jeremy Graham </a> with help from <a href="https://github.com/xbmc/chorus2/graphs/contributors">these kind people</a></p>
 <h2 id="current-state">Current state</h2>
-<p>Pretty good, most things work really well. Other things need <a href="https://github.com/xbmc/chorus2/issues">polish/finishing/fixing</a>. </p>
+<p>Pretty good, most things work really well. Other things need <a href="https://github.com/xbmc/chorus2/issues">polish/finishing/fixing</a>. 
+Still considered beta software, expect bugs, changes, nuclear war, etc.</p>
 <h2 id="getting-it-working">Getting it working</h2>
-<p>Disclaimer: Beta software, expect bugs, changes, nuclear war, etc.</p>
-<h3 id="installing">Installing</h3>
-<p>Install via zip is the easiest way to go. Grab the latest release of webinterface.default.2.X.X.zip from the <a href="https://github.com/xbmc/chorus2/releases">releases page</a> then install it <a href="http://kodi.wiki/view/Add-on_manager#How_to_install_from_a_ZIP_file">like this</a></p>
-<h3 id="configuring">Configuring</h3>
+<p>As of Kodi v17, Chorus2 comes pre-installed out of the box, you just need to enable it and tick a few boxes.</p>
+<h3 id="enabling-configuring">Enabling &amp; Configuring</h3>
+<p>Kodi &gt; Settings (cog) &gt; Services &gt; Control</p>
 <ul>
-<li>Kodi &gt; System &gt; Settings &gt; Services</li>
-<li>Remote Control<ul>
+<li>Enable &quot;Allow control of Kodi via HTTP&quot;</li>
+<li>Select Web interface</li>
+<li>Select &quot;Kodi web interface - Chorus2&quot;</li>
 <li>Enable &quot;Allow programs on this system to control Kodi&quot;</li>
 <li>Enable &quot;Allow programs on other systems to control Kodi&quot;</li>
 </ul>
-</li>
-<li>Webserver<ul>
-<li>Enable &quot;Allow control of Kodi via HTTP&quot;</li>
-<li>Select Web interface</li>
-<li>Select Chorus2</li>
-</ul>
-</li>
-</ul>
+<p><strong>For security reasons you should set a username and password to prevent unauthorised access</strong></p>
+<h3 id="manual-install">Manual install</h3>
+<p>For Kodi v16 and below or if you want to get the latest version ASAP, an install via zip is the easiest way to go. Grab the
+latest release of <code>webinterface.default.2.X.X.zip</code> from the <a href="https://github.com/xbmc/chorus2/releases">releases page</a> then
+install it <a href="http://kodi.wiki/view/Add-on_manager#How_to_install_from_a_ZIP_file">like this</a>. <strong>NOTE:</strong> Chorus2 is intended to
+be used with the latest version of Kodi and some (or all) things might not work in older versions due to API changes.</p>
+<h3 id="using-it">Using it</h3>
+<p>Point your web browser to <code>http://localhost:8080</code> - replace <code>localhost</code> with your IP address if using remotely and if
+you have changed your port to something other than <code>8080</code> be sure to change that too. More information and advanced
+usage can be found over on the <a href="http://kodi.wiki/view/Web_interface">Kodi Wiki page</a>.</p>
 <h2 id="feature-requests-bugs">Feature requests / Bugs</h2>
-<p>Add them to the <a href="https://github.com/xbmc/chorus2/issues">list</a></p>
+<p>Add them to the <a href="https://github.com/xbmc/chorus2/issues">list</a>. For bugs please include Kodi version, Web browser version,
+Chorus version and any errors that display in the console. For feature requests, checkout the API browser to see if your
+request is currently possible.</p>
 <h2 id="streaming">Streaming</h2>
 <p>Disclaimer: The success of this depends on the file formats vs what the browser supports.  In general most things work.</p>
 <h3 id="audio-streaming">Audio streaming</h3>
@@ -41,19 +46,29 @@ playlists by clicking the menu buttons (three dots vertical) on most media items
 <h3 id="video-streaming">Video streaming</h3>
 <p>Video streaming via HTML5 &quot;sort of&quot; works, it really depends on the codec used. An embedded VLC player is also available with better codec support.
 This looks like the best we can get until Kodi supports transcoding.
-<strong>Chrome users</strong>: Chrome has removed support for vlc/divx plugins so streaming a video requires a <a href="https://en.wikipedia.org/wiki/HTML5_video#Browser_support">Chrome friendly codec</a>.</p>
+<strong>Chrome users</strong>: Chrome has removed support for vlc/divx plugins so streaming a video requires a <a href="https://en.wikipedia.org/wiki/HTML5_video#Browser_support">Chrome friendly codec</a>.
+For best results use Chrome with mp4 video that has 2 channel audio (5.1 audio doesn&#39;t seem to work).</p>
 <h2 id="kodi-settings-via-the-web-interface">Kodi settings via the web interface</h2>
 <p>You can change most of the settings you would find in Kodi via the settings page in the web interface.
 Some settings have been omitted as they require interaction with the GUI and others are just a basic text field with no options.</p>
+<h2 id="kodi-api-browser">Kodi API browser</h2>
+<p>There is a hidden feature in Chorus that allows you to play with the Kodi API and see what is capable via the JSON-RPC
+interface. If you are building an app or addon that uses the API this can be super useful for both finding and testing
+all the methods and types available. If you are thinking about a new feature for Chorus, this is also a great place to
+test if it is possible (and fast track development by adding a working example to an issue). You can find the API browser
+via &quot;Chorus Lab&quot; (bottom right 3 vertical dots &gt; &quot;The Lab&quot;) or directly via <code>http://localhost:8080/#lab/api-browser</code>.</p>
 <h2 id="contributing">Contributing</h2>
-<p>If you would like to make this project better I would appreciate any help. Please do pull requests against the <code>develop</code> branch.</p>
+<p>If you would like to make this project better I would appreciate any help. Please do pull requests against the <code>develop</code> branch.
+I am happy to assist with getting an development environment up and running if you are happy to contribute.</p>
 <h3 id="translations">Translations</h3>
-<p>I only know English so definitely need help with this.<br>I also don&#39;t know heaps about javascript multilingual stuff but thanks to @mizaki we have a structure ready to go. 
-So it should be nice and easy to translate the UI. </p>
-<p>At the moment, there is 5 languages (english,french,german,dutch,chinese) more can be easily added.
-To contribute, send me a PR on a new branch against <code>develop</code>, or if you don&#39;t know git, a link to the language file.</p>
+<p>I only know English so definitely need help with this. I also don&#39;t know heaps about javascript multilingual stuff but
+thanks to <a href="https://github.com/mizaki">@mizaki</a> we have a structure ready to go. So it should be nice and easy to translate the UI.</p>
+<p>At the moment, there are <a href="https://github.com/xbmc/chorus2/tree/master/src/lang/_strings">a handful</a> of languages available
+but more can be easily added. More strings are always being added so always consider english as the source of truth.</p>
+<p>So if you see something in english but want it in your language, I need you! To contribute, send me a PR on a new branch
+against <code>develop</code>, or if you don&#39;t know git, a link to the language file.</p>
 <p>Language Files <a href="https://github.com/xbmc/chorus2/tree/master/src/lang">here</a>. 
-English is the only real complete translation file so start with that as your base. </p>
+<em>English is the only real complete translation file so start with that as your base.</em></p>
 <h3 id="compiling">Compiling</h3>
 <p>Sass and Grunt are used to compile css and js in the dist folder.
 To get your environment setup first install <a href="http://bundler.io">Bundler</a> and <a href="https://www.npmjs.org/">npm</a>.</p>
@@ -70,6 +85,20 @@ To get your environment setup first install <a href="http://bundler.io">Bundler<
 </ul>
 <h2 id="donate">Donate</h2>
 <p>Are you a fan of Chorus? You can <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&amp;business=ZCGV976794JHE&amp;lc=AU&amp;item_name=Chorus%20Beer%20Fund&amp;currency_code=AUD&amp;bn=PP%2dDonationsBF%3abtn_donate_SM%2egif%3aNonHosted">buy Jeremy a beer</a> to say thanks :)</p>
+<h2 id="license">License</h2>
+<p>This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.</p>
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.</p>
+<p>You should have received a copy of the GNU General Public License
+<a href="https://github.com/xbmc/chorus2/blob/master/LICENSE">along with this program</a>;
+if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
+Fifth Floor, Boston, MA 02110-1301 USA.</p>
+<p><a href="https://github.com/xbmc/chorus2/blob/master/src/lang/en/license.md">Click here for more information </a>.</p>
 <h2 id="screenshots">Screenshots</h2>
 <h3 id="homepage-now-playing-">Homepage (now playing)</h3>
 <p><img src="https://raw.githubusercontent.com/xbmc/chorus2/master/dist/screenshots/now-playing.jpg" alt="alt text" title="Homepage/Now Playing"></p>
@@ -86,3 +115,5 @@ To get your environment setup first install <a href="http://bundler.io">Bundler<
 <p><img src="https://raw.githubusercontent.com/xbmc/chorus2/master/dist/screenshots/settings.jpg" alt="alt text" title="Settings"></p>
 <h3 id="add-ons">Add-ons</h3>
 <p><img src="https://raw.githubusercontent.com/xbmc/chorus2/master/dist/screenshots/addons.jpg" alt="alt text" title="Add-ons"></p>
+<h3 id="editing-media">Editing media</h3>
+<p><img src="https://raw.githubusercontent.com/xbmc/chorus2/master/dist/screenshots/edit-media.jpg" alt="alt text" title="Editing Media"></p>

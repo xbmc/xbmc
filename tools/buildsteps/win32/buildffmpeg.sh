@@ -12,6 +12,17 @@ FFMPEG_TARGET_OS=mingw32
 do_loaddeps $FFMPEG_VERSION_FILE
 FFMPEGDESTDIR=/xbmc/lib/win32/$LIBNAME
 
+if [ "$(pathChanged $FFMPEGDESTDIR $FFMPEG_VERSION_FILE /xbmc/project/BuildDependencies/DownloadMingwBuildEnv.bat /xbmc/tools/buildsteps/win32)" == "0" ]
+then
+  cp $FFMPEGDESTDIR/bin/*.dll /xbmc/system/
+  if [ -f $BGPROCESSFILE ]; then
+    rm $BGPROCESSFILE
+  fi
+  exit
+else
+  git clean -dffx $FFMPEGDESTDIR
+fi
+
 do_getFFmpegConfig() {
   if [[ -f "$FFMPEG_CONFIG_FILE" ]]; then
     FFMPEG_OPTS_SHARED="$FFMPEG_BASE_OPTS $(cat "$FFMPEG_CONFIG_FILE" | sed -e 's:\\::g' -e 's/#.*//')"
@@ -81,7 +92,7 @@ do_removeOption() {
 do_getFFmpegConfig
 
 if [[ "$tools" = "msvc" ]]; then
-  # this experimental feature for debuging purpose
+  # this experimental feature for debugging purpose
   do_removeOption "--enable-gnutls"
   do_removeOption "--disable-debug"
   do_addOption "--disable-gnutls"
@@ -148,7 +159,8 @@ do_print_status "$LIBNAME-$VERSION (${BITS})" "$blue_color" "Configuring"
   --extra-cflags="$extra_cflags" --extra-ldflags="$extra_ldflags"
 
 do_makelib &&
-cp $FFMPEGDESTDIR/bin/*.dll /xbmc/system/
+cp $FFMPEGDESTDIR/bin/*.dll /xbmc/system/ &&
+tagSuccessFulBuild $FFMPEGDESTDIR $FFMPEG_VERSION_FILE /xbmc/project/BuildDependencies/DownloadMingwBuildEnv.bat /xbmc/tools/buildsteps/win32
 
 #remove the bgprocessfile for signaling the process end
 if [ -f $BGPROCESSFILE ]; then

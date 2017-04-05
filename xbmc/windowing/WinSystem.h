@@ -21,8 +21,10 @@
 #ifndef WINDOW_SYSTEM_BASE_H
 #define WINDOW_SYSTEM_BASE_H
 
+#include "VideoSync.h"
 #include "WinEvents.h"
 #include "guilib/Resolution.h"
+#include <memory>
 #include <vector>
 
 typedef enum _WindowSystemType
@@ -72,7 +74,7 @@ public:
   virtual void NotifyAppActiveChange(bool bActivated) {}
   virtual void ShowOSMouse(bool show) {};
   virtual bool HasCursor(){ return true; }
-  //some plattforms have api for gesture inertial scrolling - default to false and use the InertialScrollingHandler
+  //some platforms have api for gesture inertial scrolling - default to false and use the InertialScrollingHandler
   virtual bool HasInertialGestures(){ return false; }
   //does the output expect limited color range (ie 16-235)
   virtual bool UseLimitedColor();
@@ -83,6 +85,9 @@ public:
   virtual bool Restore() { return false; }
   virtual bool Hide() { return false; }
   virtual bool Show(bool raise = true) { return false; }
+
+  // videosync
+  virtual std::unique_ptr<CVideoSync> GetVideoSync(void *clock) { return nullptr; }
 
   // notifications
   virtual void OnMove(int x, int y) {}

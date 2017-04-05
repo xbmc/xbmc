@@ -85,7 +85,7 @@ MACHDESTLIB=$(BINLIBDEST)
 DESTPATH=
 
 # Site specific path components -- should begin with : if non-empty
-SITEPATH=
+SITEPATH=:site-packages
 
 # Standard path components for test modules
 TESTPATH=

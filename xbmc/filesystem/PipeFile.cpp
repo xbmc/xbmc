@@ -217,8 +217,8 @@ void CPipeFile::RemoveListener(IPipeListener *l)
   }
 }
 
-void CPipeFile::SetOpenThreashold(int threashold)
+void CPipeFile::SetOpenThreshold(int threshold)
 {
-  m_pipe->SetOpenThreashold(threashold);
+  m_pipe->SetOpenThreshold(threshold);
 }
 

@@ -74,11 +74,14 @@ public:
   virtual int GetNumScreens();
   virtual int GetCurrentScreen();
   virtual double GetCurrentRefreshrate() { return m_refreshRate; }
+
+  virtual std::unique_ptr<CVideoSync> GetVideoSync(void *clock) override;
   
   void        WindowChangedScreen();
 
   void        AnnounceOnLostDevice();
   void        AnnounceOnResetDevice();
+  void        HandleOnResetDevice();
   void        StartLostDeviceTimer();
   void        StopLostDeviceTimer();
   
@@ -86,6 +89,7 @@ public:
   void* GetNSOpenGLContext();
 
   std::string GetClipboardText(void);
+
 
 protected:
   void  HandlePossibleRefreshrateChange();
@@ -119,6 +123,8 @@ protected:
   CCriticalSection             m_resourceSection;
   std::vector<IDispResource*>  m_resources;
   CTimer                       m_lostDeviceTimer;
+  bool                         m_delayDispReset;
+  XbmcThreads::EndTime         m_dispResetTimer;
 };
 
 #endif

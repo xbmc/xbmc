@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2012-2016 Team Kodi
+ *      Copyright (C) 2012-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -35,9 +35,8 @@
 
 using namespace GAME;
 
-CRetroPlayerVideo::CRetroPlayerVideo(CDVDClock& clock, CRenderManager& renderManager, CProcessInfo& processInfo) :
+CRetroPlayerVideo::CRetroPlayerVideo(CRenderManager& renderManager, CProcessInfo& processInfo) :
   //CThread("RetroPlayerVideo"),
-  m_clock(clock),
   m_renderManager(renderManager),
   m_processInfo(processInfo),
   m_framerate(0.0),

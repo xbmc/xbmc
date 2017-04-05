@@ -189,7 +189,7 @@ bool CProcessorHD::InitProcessor()
     D3D11_VIDEO_PROCESSOR_RATE_CONVERSION_CAPS convCaps;
     LOGIFERROR(m_pEnumerator->GetVideoProcessorRateConversionCaps(i, &convCaps))
 
-    // check only deintelace caps
+    // check only deinterlace caps
     if ((convCaps.ProcessorCaps & 15) > maxProcCaps)
     {
       m_procIndex = i;
@@ -369,7 +369,7 @@ bool CProcessorHD::CreateSurfaces()
   size_t idx;
   ID3D11Device* pD3DDevice = g_Windowing.Get3D11Device();
 
-  // we cannot use texture array (like in decoder) for USAGE_DYNAMIC, so create separete textures
+  // we cannot use texture array (like in decoder) for USAGE_DYNAMIC, so create separate textures
   CD3D11_TEXTURE2D_DESC texDesc(m_textureFormat, FFALIGN(m_width, 16), FFALIGN(m_height, 16), 1, 1, D3D11_BIND_DECODER, D3D11_USAGE_DYNAMIC, D3D11_CPU_ACCESS_WRITE);
   D3D11_VIDEO_PROCESSOR_INPUT_VIEW_DESC pivd = { 0, D3D11_VPIV_DIMENSION_TEXTURE2D };
   pivd.Texture2D.ArraySlice = 0;

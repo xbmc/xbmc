@@ -244,6 +244,7 @@
 			<include content="BusyListSpinner">
 				<param name="list_id" value="$PARAM[list_id]"/>
 				<param name="posy" value="220"/>
+				<param name="visible" value="$PARAM[visible]"/>
 			</include>
 			<control type="panel" id="$PARAM[list_id]">
 				<left>0</left>
@@ -866,7 +867,7 @@
 		</control>
 		<control type="button" id="700$PARAM[item_id]0">
 			<left>1000</left>
-			<top>-0</top>
+			<top>0</top>
 			<width>340</width>
 			<height>100</height>
 			<align>center</align>
@@ -877,7 +878,7 @@
 			<animation effect="slide" end="0,-90" time="0" condition="true">Conditional</animation>
 			<texturefocus border="21" colordiffuse="button_focus">buttons/button-fo.png</texturefocus>
 			<font>font30_title</font>
-			<onclick>Weather.LocationNext</onclick>
+			<onclick>noop</onclick>
 			<label>$INFO[Window(weather).Property(Map.$PARAM[item_id].Heading)]</label>
 			<visible>Weather.IsFetched + !String.IsEmpty(Window(weather).Property(Map.$PARAM[item_id].Area)) + !String.IsEmpty(Window(weather).Property(Map.IsFetched))</visible>
 		</control>
@@ -919,5 +920,27 @@
 				</control>
 			</control>
 		</definition>
+	</include>
+	<include name="WidgetScrollbar">
+		<control type="group">
+			<right>0</right>
+			<top>80</top>
+			<bottom>80</bottom>
+			<width>60</width>
+			<control type="scrollbar" id="$PARAM[scrollbar_id]">
+				<right>0</right>
+				<top>0</top>
+				<bottom>0</bottom>
+				<width>13</width>
+				<onleft>50</onleft>
+				<onright>50</onright>
+				<orientation>vertical</orientation>
+				<texturesliderbackground />
+				<hitrect x="0" y="0" w="60" h="100%" />
+				<animation effect="fade" start="0" end="100" time="200" delay="300">Visible</animation>
+				<animation effect="fade" start="100" end="0" time="200">Hidden</animation>
+				<animation effect="slide" end="6,0" time="300" tween="sine" easing="inout" condition="!Control.HasFocus($PARAM[scrollbar_id])">conditional</animation>
+			</control>
+		</control>
 	</include>
 </includes>

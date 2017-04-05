@@ -41,6 +41,8 @@ public:
   static std::string FormatDecibel(float value);
   static std::string FormatPercentAsDecibel(float value);
 
+  static std::string BrowseForSubtitle();
+
 protected:
   // implementations of ISettingCallback
   virtual void OnSettingChanged(const CSetting *setting);

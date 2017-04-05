@@ -2,7 +2,7 @@ python directory structure
 
 DLLs dir:
   Library directory used by python.
-  python exensions (.pyd) from cvs can be placed here
+  python extensions (.pyd) from cvs can be placed here
   
 Lib dir:
   Library directory used by python.

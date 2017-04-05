@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2015-2016 Team Kodi
+ *      Copyright (C) 2015-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -33,7 +33,7 @@ namespace GAME
    *
    * Listens to keyboard events and forwards them to the games (as game_input_event).
    */
-  class CGameClientKeyboard : public KEYBOARD::IKeyboardHandler
+  class CGameClientKeyboard : public KODI::KEYBOARD::IKeyboardHandler
   {
   public:
     /*!

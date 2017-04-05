@@ -36,7 +36,7 @@ namespace PVR
     virtual bool OnMessage(CGUIMessage& message);
     virtual void OnWindowLoaded();
     virtual void OnWindowUnload();
-    void SetRadio(bool IsRadio) { m_bIsRadio = IsRadio; }
+    void SetRadio(bool bIsRadio);
 
   protected:
     virtual void OnInitWindow();
@@ -56,6 +56,7 @@ namespace PVR
     bool ActionButtonGroupMembers(CGUIMessage &message);
     bool ActionButtonChannelGroups(CGUIMessage &message);
     bool ActionButtonHideGroup(CGUIMessage &message);
+    bool ActionButtonToggleRadioTV(CGUIMessage &message);
     bool OnMessageClick(CGUIMessage &message);
 
     CPVRChannelGroupPtr m_selectedGroup;

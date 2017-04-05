@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2015-2016 Team Kodi
+ *      Copyright (C) 2015-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -26,8 +26,18 @@
 #include <map>
 #include <vector>
 
-namespace JOYSTICK { class IInputHandler; }
-namespace PERIPHERALS { class CPeripheral; }
+namespace KODI
+{
+namespace JOYSTICK
+{
+  class IInputHandler;
+}
+}
+
+namespace PERIPHERALS
+{
+  class CPeripheral;
+}
 
 namespace GAME
 {
@@ -50,7 +60,7 @@ namespace GAME
      * \param port         The port number belonging to the game client
      * \param requiredType Used to restrict port to devices of only a certain type
      */
-    void OpenPort(JOYSTICK::IInputHandler* handler,
+    void OpenPort(KODI::JOYSTICK::IInputHandler* handler,
                   unsigned int port,
                   PERIPHERALS::PeripheralType requiredType = PERIPHERALS::PERIPHERAL_UNKNOWN);
 
@@ -59,7 +69,7 @@ namespace GAME
      *
      * \param handler  The handler used to open the port
      */
-    void ClosePort(JOYSTICK::IInputHandler* handler);
+    void ClosePort(KODI::JOYSTICK::IInputHandler* handler);
 
     /*!
      * \brief Map a list of devices to the available ports
@@ -72,14 +82,14 @@ namespace GAME
      * attempt to honor that request.
      */
     void MapDevices(const PERIPHERALS::PeripheralVector& devices,
-                    std::map<PERIPHERALS::PeripheralPtr, JOYSTICK::IInputHandler*>& deviceToPortMap);
+                    std::map<PERIPHERALS::PeripheralPtr, KODI::JOYSTICK::IInputHandler*>& deviceToPortMap);
 
   private:
-    JOYSTICK::IInputHandler* AssignToPort(const PERIPHERALS::PeripheralPtr& device, bool checkPortNumber = true);
+    KODI::JOYSTICK::IInputHandler* AssignToPort(const PERIPHERALS::PeripheralPtr& device, bool checkPortNumber = true);
 
     struct SPort
     {
-      JOYSTICK::IInputHandler*    handler; // Input handler for this port
+      KODI::JOYSTICK::IInputHandler*    handler; // Input handler for this port
       unsigned int                port;    // Port number belonging to the game client
       PERIPHERALS::PeripheralType requiredType;
       void*                       device;

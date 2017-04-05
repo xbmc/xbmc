@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2014-2016 Team Kodi
+ *      Copyright (C) 2014-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -173,26 +173,12 @@ namespace GAME
      * \return The next direction to be prompted, or UNKNOWN if this isn't an
      *         analog stick or the prompt is finished
      */
-    virtual JOYSTICK::ANALOG_STICK_DIRECTION GetDirection(void) const = 0;
+    virtual KODI::JOYSTICK::ANALOG_STICK_DIRECTION GetDirection(void) const = 0;
 
     /*!
      * \brief Reset button after prompting for input has finished
      */
     virtual void Reset(void) = 0;
-  };
-
-  /*!
-   * \brief Callback handler passed to the button mapping wizard
-   */
-  class IConfigurationWizardCallback
-  {
-  public:
-    virtual ~IConfigurationWizardCallback() = default;
-
-    /*!
-     * \brief Called when a "skip" is detected, defined as two mapping commands within a short duration
-     */
-    virtual void OnSkipDetected() = 0;
   };
 
   /*!
@@ -207,7 +193,7 @@ namespace GAME
      * \brief Start the wizard at the specified feature
      * \param featureIndex The index of the feature to start at
      */
-    virtual void Run(const std::string& strControllerId, const std::vector<IFeatureButton*>& buttons, IConfigurationWizardCallback* callback) = 0;
+    virtual void Run(const std::string& strControllerId, const std::vector<IFeatureButton*>& buttons) = 0;
 
     /*!
      * \brief Callback for feature losing focus

@@ -26,11 +26,12 @@
 #include <vector>
 #include <memory>
 
+#include <androidjni/Surface.h>
+
 #include "DVDVideoCodec.h"
 #include "DVDStreamInfo.h"
 #include "threads/Thread.h"
 #include "threads/SingleLock.h"
-#include "platform/android/jni/Surface.h"
 #include "guilib/Geometry.h"
 
 class CJNISurface;
@@ -61,7 +62,7 @@ public:
   CDVDMediaCodecInfo* Retain();
   long                Release();
 
-  // meat and potatos
+  // meat and potatoes
   void                Validate(bool state);
   bool                WaitForFrame(int millis);
   // MediaCodec related

@@ -10,12 +10,21 @@ ifeq ($(Configuration),)
   endif
 endif
 
+BUILD_DIR=$(CMAKE_SOURCE_DIR)/build
+
 all:
-	mkdir -p $(CMAKE_SOURCE_DIR)/build
-	cd $(CMAKE_SOURCE_DIR)/build; $(CMAKE) -DCMAKE_BUILD_TYPE=$(Configuration) -DENABLE_INTERNAL_CROSSGUID=OFF -DENABLE_INTERNAL_FFMPEG=OFF $(CMAKE_SOURCE_DIR)
+	mkdir -p $(BUILD_DIR)
+	cd $(BUILD_DIR); $(CMAKE) -DCMAKE_BUILD_TYPE=$(Configuration) -DENABLE_INTERNAL_CROSSGUID=OFF -DENABLE_INTERNAL_FFMPEG=OFF $(CMAKE_SOURCE_DIR)
+
+
+kodi:
+	$(MAKE) -C $(BUILD_DIR)
+
+install:
+	$(MAKE) -C $(BUILD_DIR) install
 
 clean:
-	cd $(CMAKE_SOURCE_DIR)/build; $(MAKE) clean
+	$(MAKE) -C $(BUILD_DIR) clean
 
 distclean:
-	cd $(CMAKE_SOURCE_DIR)/build; $(MAKE) clean
+	cd $(BUILD_DIR) && rm -rf *

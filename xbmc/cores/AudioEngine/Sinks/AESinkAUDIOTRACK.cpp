@@ -19,16 +19,17 @@
  */
 
 #include "AESinkAUDIOTRACK.h"
+
+#include <androidjni/AudioFormat.h>
+#include <androidjni/AudioManager.h>
+#include <androidjni/AudioTrack.h>
+#include <androidjni/Build.h>
+
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "platform/android/activity/XBMCApp.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
-
-#include "platform/android/jni/AudioFormat.h"
-#include "platform/android/jni/AudioManager.h"
-#include "platform/android/jni/AudioTrack.h"
-#include "platform/android/jni/Build.h"
 #include "utils/TimeUtils.h"
 
 #include "utils/AMLUtils.h"
@@ -178,9 +179,10 @@ static int AEChannelMapToAUDIOTRACKChannelMask(CAEChannelInfo info)
   return atMask;
 }
 
-static jni::CJNIAudioTrack *CreateAudioTrack(int stream, int sampleRate, int channelMask, int encoding, int bufferSize)
+jni::CJNIAudioTrack *CAESinkAUDIOTRACK::CreateAudioTrack(int stream, int sampleRate, int channelMask, int encoding, int bufferSize)
 {
   jni::CJNIAudioTrack *jniAt = NULL;
+  m_jniAudioFormat = encoding;
 
   try
   {
@@ -199,6 +201,54 @@ static jni::CJNIAudioTrack *CreateAudioTrack(int stream, int sampleRate, int cha
   return jniAt;
 }
 
+int CAESinkAUDIOTRACK::AudioTrackWrite(char* audioData, int offsetInBytes, int sizeInBytes)
+{
+  int     written = 0;
+  if (CJNIBase::GetSDKVersion() >= 21 && m_jniAudioFormat == CJNIAudioFormat::ENCODING_PCM_FLOAT)
+  {
+    if (m_floatbuf.size() != (sizeInBytes - offsetInBytes) / sizeof(float))
+      m_floatbuf.resize((sizeInBytes - offsetInBytes) / sizeof(float));
+    memcpy(m_floatbuf.data(), audioData + offsetInBytes, sizeInBytes - offsetInBytes);
+    written = m_at_jni->write(m_floatbuf, 0, (sizeInBytes - offsetInBytes) / sizeof(float), CJNIAudioTrack::WRITE_NON_BLOCKING);
+    written *= sizeof(float);
+  }
+  else if (m_jniAudioFormat == CJNIAudioFormat::ENCODING_IEC61937)
+  {
+    if (m_shortbuf.size() != (sizeInBytes - offsetInBytes) / sizeof(int16_t))
+      m_shortbuf.resize((sizeInBytes - offsetInBytes) / sizeof(int16_t));
+    memcpy(m_shortbuf.data(), audioData + offsetInBytes, sizeInBytes - offsetInBytes);
+    if (CJNIBase::GetSDKVersion() >= 23)
+      written = m_at_jni->write(m_shortbuf, 0, (sizeInBytes - offsetInBytes) / sizeof(int16_t), CJNIAudioTrack::WRITE_NON_BLOCKING);
+    else
+      written = m_at_jni->write(m_shortbuf, 0, (sizeInBytes - offsetInBytes) / sizeof(int16_t));
+    written *= sizeof(uint16_t);
+  }
+  else
+  {
+    if (m_charbuf.size() != (sizeInBytes - offsetInBytes))
+      m_charbuf.resize(sizeInBytes - offsetInBytes);
+    memcpy(m_charbuf.data(), audioData + offsetInBytes, sizeInBytes - offsetInBytes);
+    if (CJNIBase::GetSDKVersion() >= 23)
+      written = m_at_jni->write(m_charbuf, 0, sizeInBytes - offsetInBytes, CJNIAudioTrack::WRITE_NON_BLOCKING);
+    else
+      written = m_at_jni->write(m_charbuf, 0, sizeInBytes - offsetInBytes);
+  }
+  
+  return written;
+}
+
+int CAESinkAUDIOTRACK::AudioTrackWrite(char* audioData, int sizeInBytes, int64_t timestamp)
+{
+  int     written = 0;
+  std::vector<char> buf;
+  buf.reserve(sizeInBytes);
+  memcpy(buf.data(), audioData, sizeInBytes);
+
+  CJNIByteBuffer bytebuf = CJNIByteBuffer::wrap(buf);
+  written = m_at_jni->write(bytebuf.get_raw(), sizeInBytes, CJNIAudioTrack::WRITE_BLOCKING, timestamp);
+
+  return written;
+}
 
 CAEDeviceInfo CAESinkAUDIOTRACK::m_info;
 std::set<unsigned int> CAESinkAUDIOTRACK::m_sink_sampleRates;
@@ -245,7 +295,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
   int stream = CJNIAudioManager::STREAM_MUSIC;
   m_encoding = CJNIAudioFormat::ENCODING_PCM_16BIT;
 
-  uint32_t distance = 192000; // max upper distance
+  uint32_t distance = UINT32_MAX; // max upper distance, update at least ones to use one of our samplerates
   for (auto& s : m_sink_sampleRates)
   {
      // prefer best match or alternatively something that divides nicely and
@@ -469,7 +519,10 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
       Deinitialize();
       return false;
     }
-    CLog::Log(LOGDEBUG, "CAESinkAUDIOTRACK::Initialize returned: m_sampleRate %u; format:%s; min_buffer_size %u; m_frames %u; m_frameSize %u; channels: %d", m_sink_sampleRate, CAEUtil::DataFormatToStr(m_format.m_dataFormat), m_min_buffer_size, m_format.m_frames, m_format.m_frameSize, m_format.m_channelLayout.Count());
+    const char* method = m_passthrough ? (m_info.m_wantsIECPassthrough ? "IEC (PT)" : "RAW (PT)") : "PCM";
+    CLog::Log(LOGNOTICE, "CAESinkAUDIOTRACK::Initializing with: m_sampleRate: %u format: %s (AE) method: %s stream-type: %s min_buffer_size: %u m_frames: %u m_frameSize: %u channels: %d",
+                          m_sink_sampleRate, CAEUtil::DataFormatToStr(m_format.m_dataFormat), method, m_passthrough ? CAEUtil::StreamTypeToStr(m_format.m_streamInfo.m_type) : "PCM-STREAM",
+                          m_min_buffer_size, m_format.m_frames, m_format.m_frameSize, m_format.m_channelLayout.Count());
   }
   format = m_format;
 
@@ -532,7 +585,7 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
 
   // In their infinite wisdom, Google decided to make getPlaybackHeadPosition
   // return a 32bit "int" that you should "interpret as unsigned."  As such,
-  // for wrap saftey, we need to do all ops on it in 32bit integer math.
+  // for wrap safety, we need to do all ops on it in 32bit integer math.
 
   uint32_t head_pos = (uint32_t)m_at_jni->getPlaybackHeadPosition();
 
@@ -634,7 +687,7 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
     int size_left = size;
     while (written < size)
     {
-      loop_written = m_at_jni->write((char*)out_buf, 0, size_left);
+      loop_written = AudioTrackWrite((char*)out_buf, 0, size_left);
       written += loop_written;
       size_left -= loop_written;
 
@@ -822,7 +875,7 @@ void CAESinkAUDIOTRACK::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
     else
     {
       bool supports_192khz = false;
-      int test_sample[] = { 32000, 44100, 48000, 96000, 192000 };
+      int test_sample[] = { 32000, 44100, 48000, 88200, 96000, 176400, 192000 };
       int test_sample_sz = sizeof(test_sample) / sizeof(int);
       int encoding = CJNIAudioFormat::ENCODING_PCM_16BIT;
       if (CJNIAudioManager::GetSDKVersion() >= 21)

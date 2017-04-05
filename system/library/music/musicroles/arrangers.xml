@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<node order="5" type="folder" visible="Library.HasContent(Role, Arranger)">
+	<label>29988</label>
+	<icon>DefaultMusicGenres.png</icon>
+	<path>musicdb://artists/?role=Arranger&amp;albumartistsonly=false</path>
+</node>

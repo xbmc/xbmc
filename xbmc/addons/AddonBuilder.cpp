@@ -23,6 +23,7 @@
 #include "addons/AudioEncoder.h"
 #include "addons/ContextMenuAddon.h"
 #include "addons/GameResource.h"
+#include "addons/ImageDecoder.h"
 #include "addons/ImageResource.h"
 #include "addons/InputStream.h"
 #include "addons/LanguageResource.h"
@@ -33,6 +34,7 @@
 #include "addons/Service.h"
 #include "addons/Skin.h"
 #include "addons/UISoundsResource.h"
+#include "addons/VFSEntry.h"
 #include "addons/Visualisation.h"
 #include "addons/Webinterface.h"
 #include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.h"
@@ -89,6 +91,8 @@ std::shared_ptr<IAddon> CAddonBuilder::Build()
       type == ADDON_ADSPDLL ||
       type == ADDON_AUDIOENCODER ||
       type == ADDON_AUDIODECODER ||
+      type == ADDON_VFS ||
+      type == ADDON_IMAGEDECODER ||
       type == ADDON_INPUTSTREAM ||
       type == ADDON_PERIPHERALDLL ||
       type == ADDON_GAMEDLL)
@@ -136,12 +140,16 @@ std::shared_ptr<IAddon> CAddonBuilder::Build()
       return CAudioEncoder::FromExtension(std::move(m_props), m_extPoint);
     case ADDON_AUDIODECODER:
       return CAudioDecoder::FromExtension(std::move(m_props), m_extPoint);
+    case ADDON_IMAGEDECODER:
+      return CImageDecoder::FromExtension(std::move(m_props), m_extPoint);
     case ADDON_INPUTSTREAM:
       return CInputStream::FromExtension(std::move(m_props), m_extPoint);
     case ADDON_PERIPHERALDLL:
       return PERIPHERALS::CPeripheralAddon::FromExtension(std::move(m_props), m_extPoint);
     case ADDON_GAMEDLL:
       return GAME::CGameClient::FromExtension(std::move(m_props), m_extPoint);
+    case ADDON_VFS:
+      return CVFSEntry::FromExtension(std::move(m_props), m_extPoint);
     case ADDON_SKIN:
       return CSkinInfo::FromExtension(std::move(m_props), m_extPoint);
     case ADDON_RESOURCE_IMAGES:
@@ -228,6 +236,10 @@ AddonPtr CAddonBuilder::FromProps(AddonProps addonProps)
       return AddonPtr(new GAME::CController(std::move(addonProps)));
     case ADDON_GAMEDLL:
       return AddonPtr(new GAME::CGameClient(std::move(addonProps)));
+    case ADDON_IMAGEDECODER:
+      return AddonPtr(new CImageDecoder(std::move(addonProps)));
+    case ADDON_VFS:
+      return AddonPtr(new CVFSEntry(std::move(addonProps),"","",false,false,false));
     default:
       break;
   }

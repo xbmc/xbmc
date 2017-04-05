@@ -66,7 +66,7 @@ struct MONITOR_DETAILS
 
 #define GC_ALLGESTURES 0x00000001
 
-// Zoom Gesture Confiration Flags
+// Zoom Gesture Configuration Flags
 #define GC_ZOOM 0x00000001
 
 // Pan Gesture Configuration Flags
@@ -153,6 +153,9 @@ public:
   virtual bool Restore();
   virtual bool Hide();
   virtual bool Show(bool raise = true);
+
+  // videosync
+  virtual std::unique_ptr<CVideoSync> GetVideoSync(void *clock) override;
 
   // CWinSystemWin32
   HWND GetHwnd() { return m_hWnd; }

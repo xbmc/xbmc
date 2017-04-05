@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+Please use English language names instead.
+Default font lacks support for all characters
+-->
+<keyboardlayouts>
+  <layout language="Thai" layout="Kedmanee">
+    <keyboard>
+      <row>ๅ/-ภถุึคตจขช</row>
+      <row>ๆไำพะัีรนยบลฃ</row>
+      <row>ฟหกดเ้่าสวง</row>
+      <row>ผปแอิืทมใฝ</row>
+    </keyboard>
+    <keyboard modifiers="shift">
+      <row>+๑๒๓๔ู฿๕๖๗๘๙</row>
+      <row>๐"ฎฑธํ๊ณฯญฐ,ฅ</row>
+      <row>ฤฆฏโฌ็๋ษศซ.</row>
+      <row>()ฉฮฺ์?ฒฬฦ</row>
+    </keyboard>
+    <keyboard modifiers="symbol,shift+symbol">
+      <row>)!@#€§$%^&amp;*(</row>
+      <row>[]{}-_=+;:μ</row>
+      <row>'",.&lt;&gt;/?\|</row>
+      <row>`~</row>
+    </keyboard>
+  </layout>
+</keyboardlayouts>

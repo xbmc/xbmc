@@ -349,6 +349,22 @@ void CProcessInfo::UpdateRenderInfo(CRenderInfo &info)
   }
 }
 
+void CProcessInfo::UpdateRenderBuffers(int queued, int discard, int free)
+{
+  CSingleLock lock(m_renderSection);
+  m_renderBufQueued = queued;
+  m_renderBufDiscard = discard;
+  m_renderBufFree = free;
+}
+
+void CProcessInfo::GetRenderBuffers(int &queued, int &discard, int &free)
+{
+  CSingleLock lock(m_renderSection);
+  queued = m_renderBufQueued;
+  discard = m_renderBufDiscard;
+  free = m_renderBufFree;
+}
+
 // player states
 void CProcessInfo::SetStateSeeking(bool active)
 {

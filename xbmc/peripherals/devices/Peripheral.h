@@ -28,6 +28,8 @@
 class TiXmlDocument;
 class CSetting;
 
+namespace KODI
+{
 namespace JOYSTICK
 {
   class IActionMap;
@@ -36,11 +38,13 @@ namespace JOYSTICK
   class IDriverReceiver;
   class IInputHandler;
 }
+}
 
 namespace PERIPHERALS
 {
   class CGUIDialogPeripheralSettings;
   class CPeripheralBus;
+  class CPeripherals;
 
   typedef enum
   {
@@ -54,7 +58,7 @@ namespace PERIPHERALS
     friend class CGUIDialogPeripheralSettings;
 
   public:
-    CPeripheral(const PeripheralScanResult& scanResult, CPeripheralBus* bus);
+    CPeripheral(CPeripherals& manager, const PeripheralScanResult& scanResult, CPeripheralBus* bus);
     virtual ~CPeripheral(void);
 
     bool operator ==(const CPeripheral &right) const;
@@ -96,14 +100,14 @@ namespace PERIPHERALS
 
     /*!
      * @brief Initialises the peripheral.
-     * @return True when the peripheral has been initialised succesfully, false otherwise.
+     * @return True when the peripheral has been initialised successfully, false otherwise.
      */
     bool Initialise(void);
 
     /*!
      * @brief Initialise one of the features of this peripheral.
      * @param feature The feature to initialise.
-     * @return True when the feature has been initialised succesfully, false otherwise.
+     * @return True when the feature has been initialised successfully, false otherwise.
      */
     virtual bool InitialiseFeature(const PeripheralFeature feature) { return true; }
 
@@ -192,22 +196,23 @@ namespace PERIPHERALS
 
     virtual bool ErrorOccured(void) const { return m_bError; }
 
-    virtual void RegisterJoystickDriverHandler(JOYSTICK::IDriverHandler* handler, bool bPromiscuous) { }
-    virtual void UnregisterJoystickDriverHandler(JOYSTICK::IDriverHandler* handler) { }
+    virtual void RegisterJoystickDriverHandler(KODI::JOYSTICK::IDriverHandler* handler, bool bPromiscuous) { }
+    virtual void UnregisterJoystickDriverHandler(KODI::JOYSTICK::IDriverHandler* handler) { }
 
-    virtual void RegisterJoystickInputHandler(JOYSTICK::IInputHandler* handler);
-    virtual void UnregisterJoystickInputHandler(JOYSTICK::IInputHandler* handler);
+    virtual void RegisterJoystickInputHandler(KODI::JOYSTICK::IInputHandler* handler);
+    virtual void UnregisterJoystickInputHandler(KODI::JOYSTICK::IInputHandler* handler);
 
-    virtual void RegisterJoystickButtonMapper(JOYSTICK::IButtonMapper* mapper);
-    virtual void UnregisterJoystickButtonMapper(JOYSTICK::IButtonMapper* mapper);
+    virtual void RegisterJoystickButtonMapper(KODI::JOYSTICK::IButtonMapper* mapper);
+    virtual void UnregisterJoystickButtonMapper(KODI::JOYSTICK::IButtonMapper* mapper);
 
-    virtual JOYSTICK::IDriverReceiver* GetDriverReceiver() { return nullptr; }
+    virtual KODI::JOYSTICK::IDriverReceiver* GetDriverReceiver() { return nullptr; }
 
-    virtual JOYSTICK::IActionMap* GetActionMap() { return nullptr; }
+    virtual KODI::JOYSTICK::IActionMap* GetActionMap() { return nullptr; }
 
   protected:
     virtual void ClearSettings(void);
 
+    CPeripherals&                    m_manager;
     PeripheralType                   m_type;
     PeripheralBusType                m_busType;
     PeripheralBusType                m_mappedBusType;
@@ -228,7 +233,7 @@ namespace PERIPHERALS
     std::map<std::string, PeripheralDeviceSetting> m_settings;
     std::set<std::string>             m_changedSettings;
     CPeripheralBus*                  m_bus;
-    std::map<JOYSTICK::IInputHandler*, std::unique_ptr<JOYSTICK::IDriverHandler>> m_inputHandlers;
-    std::map<JOYSTICK::IButtonMapper*, JOYSTICK::IDriverHandler*> m_buttonMappers;
+    std::map<KODI::JOYSTICK::IInputHandler*, std::unique_ptr<KODI::JOYSTICK::IDriverHandler>> m_inputHandlers;
+    std::map<KODI::JOYSTICK::IButtonMapper*, KODI::JOYSTICK::IDriverHandler*> m_buttonMappers;
   };
 }

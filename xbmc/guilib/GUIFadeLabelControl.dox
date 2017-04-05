@@ -46,7 +46,7 @@ important, as `xml` tags are case-sensitive.
 
 | Tag                 | Description                                                   |
 |--------------------:|:--------------------------------------------------------------|
-| label               | Specifies the text which should be drawn. You should specify an entry from the strings.xml here, however you may also specify a piece of text yourself if you wish, though ofcourse it will not be localisable. [You may also specify more than one piece of information here by using the $INFO and $LOCALIZE formats](http://kodi.wiki/view/Label_Parsing).
+| label               | Specifies the text which should be drawn. You should specify an entry from the strings.xml here, however you may also specify a piece of text yourself if you wish, though of course it will not be localisable. [You may also specify more than one piece of information here by using the $INFO and $LOCALIZE formats](http://kodi.wiki/view/Label_Parsing).
 | info                | Specifies the information that should be presented. Kodi will auto-fill in this info in place of the <b>`<label>`</b>. [See here for more information](http://kodi.wiki/view/InfoLabels).
 | font                | Specifies the font to use from the font.xml file.
 | textcolor           | Specified the color the text should be, in hex **AARRGGBB** format, or a name from the [colour theme](http://kodi.wiki/view/Colour_Themes).

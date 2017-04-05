@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2016 Team Kodi
+ *      Copyright (C) 2016-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -21,6 +21,8 @@
 
 #include "input/mouse/IMouseDriverHandler.h"
 
+namespace KODI
+{
 namespace MOUSE
 {
   class IMouseInputHandler;
@@ -52,4 +54,5 @@ namespace MOUSE
     int m_x;
     int m_y;
   };
+}
 }

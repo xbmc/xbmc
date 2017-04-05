@@ -28,6 +28,7 @@
 #include "guilib/GUIProgressControl.h"
 #include "guilib/GUILabelControl.h"
 #include "video/dialogs/GUIDialogVideoOSD.h"
+#include "video/dialogs/GUIDialogAudioSubtitleSettings.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
 #include "video/dialogs/GUIDialogFullScreenInfo.h"
@@ -142,7 +143,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
 
   case ACTION_SHOW_INFO:
     {
-      CGUIDialogFullScreenInfo* pDialog = (CGUIDialogFullScreenInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_FULLSCREEN_INFO);
+      CGUIDialogFullScreenInfo* pDialog = g_windowManager.GetWindow<CGUIDialogFullScreenInfo>();
       if (pDialog)
       {
         CFileItem item(g_application.CurrentFileItem());
@@ -177,6 +178,13 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
     }
     return true;
     break;
+  case ACTION_BROWSE_SUBTITLE:
+    {
+      std::string path = CGUIDialogAudioSubtitleSettings::BrowseForSubtitle();
+      if (!path.empty())
+        g_application.m_pPlayer->AddSubtitle(path);
+      return true;
+    }
   default:
       break;
   }
@@ -414,6 +422,7 @@ void CGUIWindowFullScreen::RenderEx()
   CGUIWindow::RenderEx();
   g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetVideoResolution(), false);
   g_application.m_pPlayer->Render(false, 255, false);
+  g_graphicsContext.SetRenderingResolution(m_coordsRes, m_needsScaling);
 }
 
 void CGUIWindowFullScreen::SeekChapter(int iChapter)
@@ -426,7 +435,7 @@ void CGUIWindowFullScreen::SeekChapter(int iChapter)
 
 void CGUIWindowFullScreen::ToggleOSD()
 {
-  CGUIDialogVideoOSD *pOSD = (CGUIDialogVideoOSD *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_OSD);
+  CGUIDialogVideoOSD *pOSD = g_windowManager.GetWindow<CGUIDialogVideoOSD>();
   if (pOSD)
   {
     if (pOSD->IsDialogRunning())
@@ -440,7 +449,7 @@ void CGUIWindowFullScreen::ToggleOSD()
 
 void CGUIWindowFullScreen::TriggerOSD()
 {
-  CGUIDialogVideoOSD *pOSD = (CGUIDialogVideoOSD *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_OSD);
+  CGUIDialogVideoOSD *pOSD = g_windowManager.GetWindow<CGUIDialogVideoOSD>();
   if (pOSD && !pOSD->IsDialogRunning())
   {
     pOSD->SetAutoClose(3000);

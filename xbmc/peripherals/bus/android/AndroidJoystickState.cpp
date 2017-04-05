@@ -23,7 +23,7 @@
 #include <android/input.h>
 
 #include "AndroidJoystickState.h"
-#include "platform/android/jni/View.h"
+#include "androidjni/View.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 
@@ -264,8 +264,6 @@ bool CAndroidJoystickState::ProcessEvent(const AInputEvent* event)
     case AINPUT_EVENT_TYPE_MOTION:
     {
       size_t count = AMotionEvent_getPointerCount(event);
-      CLog::Log(LOGDEBUG, "CAndroidJoystickState::ProcessEvent(type = motion, pointers = %u)",
-                static_cast<unsigned int>(count));
 
       bool success = false;
       for (size_t pointer = 0; pointer < count; ++pointer)
@@ -275,8 +273,6 @@ bool CAndroidJoystickState::ProcessEvent(const AInputEvent* event)
         {
           float valueX = AMotionEvent_getAxisValue(event, hat.ids[0], pointer);
           float valueY = AMotionEvent_getAxisValue(event, hat.ids[1], pointer);
-          CLog::Log(LOGDEBUG, "CAndroidJoystickState::ProcessEvent(type = hat, axis = %s, pointers = %u): [%u] x = %f | y = %f",
-                    PrintAxisIds(hat.ids).c_str(), static_cast<unsigned int>(count), static_cast<unsigned int>(pointer), valueX, valueY);
 
           int hatValue = JOYSTICK_STATE_HAT_UNPRESSED;
           if (valueX < -hat.flat)
@@ -306,8 +302,6 @@ bool CAndroidJoystickState::ProcessEvent(const AInputEvent* event)
           // pick the first non-zero value
           if (!values.empty())
             value = values.front();
-          CLog::Log(LOGDEBUG, "CAndroidJoystickState::ProcessEvent(type = axis, axis = %s, pointers = %u): [%u] value = %f",
-                    PrintAxisIds(axis.ids).c_str(), static_cast<unsigned int>(count), static_cast<unsigned int>(pointer), value);
 
           success |= SetAxisValue(axis.ids, value);
         }
@@ -361,10 +355,7 @@ void CAndroidJoystickState::GetAxisEvents(std::vector<ADDON::PeripheralEvent>& e
   const std::vector<JOYSTICK_STATE_AXIS>& axes = m_stateBuffer.axes;
 
   for (unsigned int i = 0; i < axes.size(); i++)
-  {
-    if (axes[i] != 0.0f || m_state.axes[i] != 0.0f)
-      events.push_back(ADDON::PeripheralEvent(m_deviceId, i, axes[i]));
-  }
+    events.push_back(ADDON::PeripheralEvent(m_deviceId, i, axes[i]));
 
   m_state.axes.assign(axes.begin(), axes.end());
 }
@@ -386,7 +377,6 @@ bool CAndroidJoystickState::SetHatValue(const std::vector<int>& axisIds, JOYSTIC
   if (!GetAxesIndex(axisIds, m_hats, hatIndex) || hatIndex >= GetHatCount())
     return false;
 
-  CLog::Log(LOGDEBUG, "CAndroidJoystickState: setting value for hat %s to %d", PrintAxisIds(axisIds).c_str(), hatValue);
   m_stateBuffer.hats[hatIndex] = hatValue;
   return true;
 }
@@ -397,7 +387,7 @@ bool CAndroidJoystickState::SetAxisValue(const std::vector<int>& axisIds, JOYSTI
   if (!GetAxesIndex(axisIds, m_axes, axisIndex) || axisIndex >= GetAxisCount())
     return false;
 
-  const JoystickAxis axis = m_axes[axisIndex];
+  const JoystickAxis& axis = m_axes[axisIndex];
 
   // make sure that the axis value is in the valid range
   axisValue = Contain(axisValue, axis.min, axis.max);
@@ -406,7 +396,6 @@ bool CAndroidJoystickState::SetAxisValue(const std::vector<int>& axisIds, JOYSTI
   // scale the axis value down to a value between -1.0f and 1.0f
   axisValue = Scale(axisValue, axis.max, 1.0f);
 
-  CLog::Log(LOGDEBUG, "CAndroidJoystickState: setting value for axis %s to %f", PrintAxisIds(axisIds).c_str(), axisValue);
   m_stateBuffer.axes[axisIndex] = axisValue;
   return true;
 }
@@ -438,7 +427,7 @@ float CAndroidJoystickState::Deadzone(float value, float deadzone)
 CAndroidJoystickState::JoystickAxes::const_iterator CAndroidJoystickState::GetAxis(const std::vector<int>& axisIds, const JoystickAxes& axes)
 {
   return std::find_if(axes.cbegin(), axes.cend(),
-                     [axisIds](const JoystickAxis& axis)
+                     [&axisIds](const JoystickAxis& axis)
                      {
                        std::vector<int> matches(std::max(axisIds.size(), axis.ids.size()));
                        const auto& matchesEnd = std::set_intersection(axisIds.begin(), axisIds.end(),

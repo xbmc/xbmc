@@ -237,7 +237,7 @@ std::wstring CInputCodingTableKorean::InputToKorean(const std::wstring& input)
       if (jongseong != -1) // If previous character has jongseong and this key is jungseong, 
                            // actually latest vowel is not jongseong. It's choseong of new character.
       {
-        // If jongseong of previous character is double consonant, we will seperate it to two vowel again. 
+        // If jongseong of previous character is double consonant, we will separate it to two vowel again. 
         // First part of double consonant is jongseong of previous character. 
         // Second part of double consonant is choseong of current character.
         int newCho;

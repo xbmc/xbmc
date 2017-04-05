@@ -30,7 +30,7 @@ public class PacketMOUSE extends Packet {
 
 	/**
 	 * A MOUSE packets sets the mouse position in XBMC
-	 * @param x horitontal position ranging from 0 to 65535
+	 * @param x horizontal position ranging from 0 to 65535
 	 * @param y vertical position ranging from 0 to 65535
 	 */
 	public PacketMOUSE(int x, int y)

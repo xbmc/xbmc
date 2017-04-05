@@ -40,7 +40,7 @@ namespace PERIPHERALS
   class CPeripheralBusCEC : public CPeripheralBus
   {
   public:
-    CPeripheralBusCEC(CPeripherals *manager);
+    CPeripheralBusCEC(CPeripherals& manager);
     virtual ~CPeripheralBusCEC(void);
 
     /*!

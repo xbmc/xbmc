@@ -149,3 +149,58 @@ do_clean_get() {
   do_clean $1
   do_download
 }
+
+
+PATH_CHANGE_REV_FILENAME=".last_success_revision"
+
+#hash a dir based on the git revision, $BITS and $tools 
+#param1 path to be hashed
+function getBuildHash ()
+{
+  local checkPath
+  checkPath="$1"
+  shift 1
+  local hashStr
+  hashStr="$(git rev-list HEAD --max-count=1  -- $checkPath $@)"
+  hashStr="$hashStr $@ $BITS $tools"
+  echo $hashStr
+}
+
+#param1 path to be checked for changes
+function pathChanged ()
+{
+  local ret
+  local checkPath
+  ret="0"
+  #no optims in release builds!
+  if [ "$Configuration" == "Release" ]
+  then
+    echo "1"
+    return
+  fi
+
+  checkPath="$1"
+  shift 1
+  if [ -e $checkPath/$PATH_CHANGE_REV_FILENAME ]
+  then
+    if [ "$(cat $checkPath/$PATH_CHANGE_REV_FILENAME)" != "$(getBuildHash $checkPath $@)" ]
+    then
+      ret="1"
+    fi
+  else
+    ret="1"
+  fi
+  
+  echo $ret
+}
+
+#param1 path to be tagged with hash
+function tagSuccessFulBuild ()
+{
+  local pathToTag
+  pathToTag="$1"
+  shift 1
+  # tag last successful build with revisions of the given dir
+  # needs to match the checks in function getBuildHash
+  echo "$(getBuildHash $pathToTag $@)" > $pathToTag/$PATH_CHANGE_REV_FILENAME
+}

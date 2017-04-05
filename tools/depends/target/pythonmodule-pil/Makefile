@@ -48,7 +48,7 @@ $(LIBDYLIB): $(PLATFORM)
 ifeq ($(OS),android)
 	mkdir -p $(PREFIX)/share/$(APP_NAME)/addons/script.module.pil/lib
 	cd $(PLATFORM); $(CROSSFLAGS) $(NATIVEPREFIX)/bin/python setup.py install --install-lib  $(PREFIX)/share/$(APP_NAME)/addons/script.module.pil
-	cd $(PREFIX)/share/$(APP_NAME)/addons/script.module.pil/lib && unzip ../Pillow-*.egg
+	cd $(PREFIX)/share/$(APP_NAME)/addons/script.module.pil/lib && unzip -o ../Pillow-*.egg
 	cd $(PREFIX)/share/$(APP_NAME)/addons/script.module.pil && rm -rf Pillow-*.egg
 else
 	cd $(PLATFORM); $(CROSSFLAGS) $(NATIVEPREFIX)/bin/python setup.py install --prefix=$(PREFIX)

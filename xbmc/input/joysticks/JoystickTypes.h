@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2014-2016 Team Kodi
+ *      Copyright (C) 2014-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -26,6 +26,8 @@
 
 #include <string>
 
+namespace KODI
+{
 namespace JOYSTICK
 {
   /*!
@@ -56,6 +58,20 @@ namespace JOYSTICK
     ACCELEROMETER,
     MOTOR,
     RELPOINTER,
+  };
+
+  /*!
+   * \brief Categories of features used in the joystick library
+   */
+  enum class FEATURE_CATEGORY
+  {
+    UNKNOWN,
+    FACE,
+    SHOULDER,
+    TRIGGER,
+    ANALOG_STICK,
+    ACCELEROMETER,
+    HAPTICS,
   };
 
   /*!
@@ -122,4 +138,5 @@ namespace JOYSTICK
     SEMIAXIS,    // the positive or negative half of an axis
     MOTOR,       // a rumble motor
   };
+}
 }

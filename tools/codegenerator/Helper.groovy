@@ -43,7 +43,7 @@ public class Helper
    public static String newline = System.getProperty("line.separator");
    public static File curTemplateFile = null;
 
-   public static void setTempateFile(File templateFile) { curTemplateFile = templateFile }
+   public static void setTemplateFile(File templateFile) { curTemplateFile = templateFile }
 
    /**
     * In order to use any of the typemap helper features, the Helper class needs to be initialized with
@@ -57,7 +57,7 @@ public class Helper
     public static void setup(def template,List pclasses, Map poutTypemap, def defaultOutTypemap,
                              Map pinTypemap, def defaultInTypemap)
     {
-      setTempateFile(template.binding.templateFile)
+      setTemplateFile(template.binding.templateFile)
       classes = pclasses ? pclasses : []
       if (poutTypemap) outTypemap.putAll(poutTypemap)
       if (defaultOutTypemap) defaultOutTypeConversion = defaultOutTypemap
@@ -267,7 +267,7 @@ public class Helper
           String relative = cwd.getAbsoluteFile().toURI().relativize(convertTemplate.getAbsoluteFile().toURI()).getPath()
           convertTemplate = new File(parent,relative)
 
-          // This is a fallback case which is hit occationally on OSX as a result
+          // This is a fallback case which is hit occasionally on OSX as a result
           // of case mismatches between the two paths in the relativize call above.
           if (!convertTemplate.exists())
             convertTemplate = new File(parent,cur.toString())
@@ -291,7 +291,7 @@ public class Helper
     * </code>
     * @param apiType - is the Swig typecode that describes the parameter type from the native method
     * @param apiName - is the name of the parameter from the method parameter list in the api
-    * @param slName - is the name of the varialbe that holds the parameter from the scripting language
+    * @param slName - is the name of the variable that holds the parameter from the scripting language
     * @param method - is the node from the module xml that contains the method description
     * @return the code chunk as a string ready to be placed into the generated code.
     */
@@ -312,9 +312,9 @@ public class Helper
     *    if (${slarg}) PyXBMCGetUnicodeString(${api},${slarg},"${api}");
     * </code>
     * @param apiType - is the Swig typecode that describes the parameter type from the native method
-    * @param apiName - is the name of the varialbe that holds the api parameter
+    * @param apiName - is the name of the variable that holds the api parameter
     * @param paramName - is the name of the parameter from the method parameter list in the api
-    * @param slName - is the name of the varialbe that holds the parameter from the scripting language
+    * @param slName - is the name of the variable that holds the parameter from the scripting language
     * @param method - is the node from the module xml that contains the method description
     * @return the code chunk as a string ready to be placed into the generated code.
     */
@@ -397,7 +397,7 @@ public class Helper
              String relative = cwd.getAbsoluteFile().toURI().relativize(convertTemplate.getAbsoluteFile().toURI()).getPath()
              convertTemplate = new File(parent,relative)
 
-             // This is a fallback case which is hit occationally on OSX as a result
+             // This is a fallback case which is hit occasionally on OSX as a result
              // of case mismatches between the two paths in the relativize call above.
              if (!convertTemplate.exists())
                convertTemplate = new File(parent,cur.toString())

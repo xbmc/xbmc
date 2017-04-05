@@ -84,7 +84,7 @@ bool CGUIDialogMusicOSD::OnAction(const CAction &action)
   
     case ACTION_SET_RATING:
     {
-      CGUIDialogSelect *dialog = static_cast<CGUIDialogSelect *>(g_windowManager.GetWindow(WINDOW_DIALOG_SELECT));
+      CGUIDialogSelect *dialog = g_windowManager.GetWindow<CGUIDialogSelect>();
       if (dialog)
       {
         dialog->SetHeading(CVariant{ 38023 });
@@ -92,7 +92,7 @@ bool CGUIDialogMusicOSD::OnAction(const CAction &action)
         for (int i = 1; i <= 10; i++)
           dialog->Add(StringUtils::Format("%s: %i", g_localizeStrings.Get(563).c_str(), i));
 
-        auto track = std::make_shared<CFileItem>(g_application.CurrentFileItem());
+        auto track = g_application.CurrentFileItemPtr();
         dialog->SetSelected(track->GetMusicInfoTag()->GetUserrating());
 
         dialog->Open();

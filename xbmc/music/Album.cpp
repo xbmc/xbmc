@@ -72,14 +72,14 @@ CAlbum::CAlbum(const CFileItem& item)
         (int)tag.GetAlbumArtist().size(),
         strAlbum.c_str(), strArtistDesc.c_str());
       /*
-      Most likey we have no hints and a single artist name like "Artist1 feat. Artist2"
+      Most likely we have no hints and a single artist name like "Artist1 feat. Artist2"
       or "Composer; Conductor, Orchestra, Soloist" or "Artist1/Artist2" where the
       expected single item separator (default = space-slash-space) as not been used.
       Comma and slash (no spaces) are poor delimiters as could be in name e.g. AC/DC,
       but here treat them as such in attempt to find artist names.
       When there are hints they could be poorly formatted using unexpected separators, 
       so attempt to split them. Or we could have more hints or artist names than 
-      musicbrainz so ingore them but raise warning.
+      musicbrainz so ignore them but raise warning.
       */
        
       // Do hints exist yet mis-match
@@ -143,7 +143,7 @@ CAlbum::CAlbum(const CFileItem& item)
          We try and get the mbrainzid <-> name matching from the hints and match on the same index.
          Some album artist hints could be blank (if populated from artist or artist hints).
          If not found, use the mbrainzid and hope we later on can update that entry
-         If we have more names than musicbrainz id they are ingored, but raise a warning.
+         If we have more names than musicbrainz id they are ignored, but raise a warning.
       */
 
       if (i < musicBrainzAlbumArtistHints.size())
@@ -256,18 +256,18 @@ const std::vector<std::string> CAlbum::GetAlbumArtist() const
 const std::vector<std::string> CAlbum::GetMusicBrainzAlbumArtistID() const
 {
   //Get artist MusicBrainz IDs as vector from artist credits
-  std::vector<std::string> muisicBrainzID;
+  std::vector<std::string> musicBrainzID;
   for (VECARTISTCREDITS::const_iterator artistCredit = artistCredits.begin(); artistCredit != artistCredits.end(); ++artistCredit)
   {
-    muisicBrainzID.push_back(artistCredit->GetMusicBrainzArtistID());
+    musicBrainzID.push_back(artistCredit->GetMusicBrainzArtistID());
   }
-  return muisicBrainzID;
+  return musicBrainzID;
 }
 
 const std::string CAlbum::GetAlbumArtistString() const
 {
   //Artist description may be different from the artists in artistcredits (see ALBUMARTISTS tag processing)
-  //but is takes precidence as a string because artistcredits is not always filled during processing
+  //but is takes precedence as a string because artistcredits is not always filled during processing
   if (!strArtistDesc.empty())
     return strArtistDesc;
   std::vector<std::string> artistvector;

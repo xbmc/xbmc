@@ -97,14 +97,14 @@ bool CDVDInputStreamFile::Open()
     return false;
   }
 
-  if (m_pFile->GetImplemenation() && (content.empty() || content == "application/octet-stream"))
-    m_content = m_pFile->GetImplemenation()->GetContent();
+  if (m_pFile->GetImplementation() && (content.empty() || content == "application/octet-stream"))
+    m_content = m_pFile->GetImplementation()->GetContent();
 
   m_eof = false;
   return true;
 }
 
-// close file and reset everyting
+// close file and reset everything
 void CDVDInputStreamFile::Close()
 {
   if (m_pFile)

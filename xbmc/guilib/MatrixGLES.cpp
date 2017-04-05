@@ -113,12 +113,12 @@ void CMatrixGL::Scalef(GLfloat x, GLfloat y, GLfloat z)
 
 void CMatrixGL::Rotatef(GLfloat angle, GLfloat x, GLfloat y, GLfloat z)
 {
-  GLfloat modulous = sqrt((x*x)+(y*y)+(z*z));
-  if (modulous != 0.0)
+  GLfloat modulus = sqrt((x*x)+(y*y)+(z*z));
+  if (modulus != 0.0)
   {
-    x /= modulous;
-    y /= modulous;
-    z /= modulous;
+    x /= modulus;
+    y /= modulus;
+    z /= modulus;
   }
   GLfloat cosine = cos(angle);
   GLfloat sine   = sin(angle);

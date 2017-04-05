@@ -44,18 +44,20 @@ public:
    Creates a thread to run the given runnable, and while waiting
    it displays the busy dialog.
    \param runnable the IRunnable to run.
+   \param displaytime the time in ms to wait prior to showing the busy dialog (defaults to 100ms)
+   \param allowCancel whether the user can cancel the wait, defaults to true.
    \return true if the runnable completes, false if the user cancels early.
    */
-  static bool Wait(IRunnable *runnable);
+  static bool Wait(IRunnable *runnable, unsigned int displaytime = 100, bool allowCancel = true);
 
   /*! \brief Wait on an event while displaying the busy dialog.
    Throws up the busy dialog after the given time.
-   \param even the CEvent to wait on.
+   \param event the CEvent to wait on.
    \param displaytime the time in ms to wait prior to showing the busy dialog (defaults to 100ms)
    \param allowCancel whether the user can cancel the wait, defaults to true.
    \return true if the event completed, false if cancelled.
    */
-  static bool WaitOnEvent(CEvent &event, unsigned int timeout = 100, bool allowCancel = true);
+  static bool WaitOnEvent(CEvent &event, unsigned int displaytime = 100, bool allowCancel = true);
 protected:
   virtual void Open_Internal(const std::string &param = "");
   bool m_bCanceled;

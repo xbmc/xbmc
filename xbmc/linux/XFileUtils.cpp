@@ -109,7 +109,7 @@ HANDLE CreateFile(LPCTSTR lpFileName, DWORD dwDesiredAccess,
 
   // we always open files with fileflag O_NONBLOCK to support
   // cdrom devices, but we then turn it of for actual reads
-  // apperently it's used for multiple things, read mode
+  // apparently it's used for multiple things, read mode
   // and how opens are handled. devices must be opened
   // with this flag set to work correctly
   flags |= O_NONBLOCK;
@@ -128,7 +128,7 @@ HANDLE CreateFile(LPCTSTR lpFileName, DWORD dwDesiredAccess,
     fd = open(igFileName.c_str(), flags, mode);
     if (fd != -1)
     {
-      CLog::Log(LOGWARNING,"%s, successfuly opened <%s> instead of <%s>", __FUNCTION__, igFileName.c_str(), lpFileName);
+      CLog::Log(LOGWARNING,"%s, successfully opened <%s> instead of <%s>", __FUNCTION__, igFileName.c_str(), lpFileName);
       strResultFile = igFileName;
     }
   }

@@ -85,7 +85,7 @@ def set_pair_all(mac):
 def update_pair(dev, mac):
     old = get_pair(dev)
     if old != mac:
-        print "Reparing sixaxis from:" + mac_to_string(old) + " to:" + mac_to_string(mac)
+        print "Re-pairing sixaxis from:" + mac_to_string(old) + " to:" + mac_to_string(mac)
     set_pair(dev, mac)
 
 if __name__=="__main__":

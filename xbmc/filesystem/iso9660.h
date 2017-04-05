@@ -94,7 +94,7 @@ struct iso9660_Directory
 #define Flag_NotExist  0x01     /* 1-file not exists */
  #define Flag_Directory 0x02     /* 0-normal file, 1-directory */
  #define Flag_Associated 0x03     /* 0-not associated file */
- #define Flag_Protection 0x04     /* 0-normal acces */
+ #define Flag_Protection 0x04     /* 0-normal access */
  #define Flag_Multi   0x07     /* 0-final Directory Record for the file */
 
   BYTE ucRecordLength;      //0      the number of bytes in the record (which must be even)

@@ -36,7 +36,7 @@ namespace XBMCAddon
     /// @{
     /// @brief **Virtual file system functions on Kodi.**
     ///
-    /// Offers classes and functions offers acces to the Virtual File Server
+    /// Offers classes and functions offers access to the Virtual File Server
     /// (VFS) which you can use to manipulate files and folders.
     //
 
@@ -63,7 +63,7 @@ namespace XBMCAddon
     ///
     copy(...);
 #else
-    bool copy(const String& strSource, const String& strDestnation);
+    bool copy(const String& strSource, const String& strDestination);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -125,7 +125,7 @@ namespace XBMCAddon
     /// \ingroup python_xbmcvfs
     /// @brief \python_func{ xbmcvfs.exists(path) }
     ///-------------------------------------------------------------------------
-    /// @brief Check for a file or folder existance
+    /// @brief Check for a file or folder existence
     ///
     /// @param path                  File or folder (folder must end with
     ///                              slash or backslash)

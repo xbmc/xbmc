@@ -103,14 +103,10 @@ void CGUIDialogFavourites::OnClick(int item)
   if (item < 0 || item >= m_favourites->Size())
     return;
 
-  // grab our message, close the dialog, and send
-  CFileItemPtr pItem = (*m_favourites)[item];
-  std::string execute(pItem->GetPath());
-
   Close();
 
   CGUIMessage message(GUI_MSG_EXECUTE, 0, GetID());
-  message.SetStringParam(execute);
+  message.SetStringParam(CFavouritesDirectory::GetExecutePath(*(*m_favourites)[item], GetID()));
   g_windowManager.SendMessage(message);
 }
 
@@ -125,12 +121,12 @@ void CGUIDialogFavourites::OnPopupMenu(int item)
   CContextButtons choices;
   if (m_favourites->Size() > 1)
   {
-    choices.Add(1, 13332);
-    choices.Add(2, 13333);
+    choices.Add(1, 13332); // Move up
+    choices.Add(2, 13333); // Move down
   }
-  choices.Add(3, 15015);
-  choices.Add(4, 118);
-  choices.Add(5, 20019);
+  choices.Add(3, 15015); // Remove
+  choices.Add(4, 118); // Rename
+  choices.Add(5, 20019); // Choose thumbnail
 
   CFileItemPtr itemPtr = m_favourites->Get(item);
 
@@ -193,13 +189,11 @@ void CGUIDialogFavourites::OnRename(int item)
   if (item < 0 || item >= m_favourites->Size())
     return;
 
-  std::string label((*m_favourites)[item]->GetLabel());
-  if (CGUIKeyboardFactory::ShowAndGetInput(label, CVariant{g_localizeStrings.Get(16008)}, false))
-    (*m_favourites)[item]->SetLabel(label);
-
-  CFavouritesDirectory::Save(*m_favourites);
-
-  UpdateList();
+  if (ChooseAndSetNewName((*m_favourites)[item]))
+  {
+    CFavouritesDirectory::Save(*m_favourites);
+    UpdateList();
+  }
 }
 
 void CGUIDialogFavourites::OnSetThumb(int item)
@@ -207,34 +201,11 @@ void CGUIDialogFavourites::OnSetThumb(int item)
   if (item < 0 || item >= m_favourites->Size())
     return;
 
-  CFileItemPtr pItem = (*m_favourites)[item];
-
-  CFileItemList items;
-
-  // Current
-  if (pItem->HasArt("thumb"))
+  if (ChooseAndSetNewThumbnail((*m_favourites)[item]))
   {
-    CFileItemPtr current(new CFileItem("thumb://Current", false));
-    current->SetArt("thumb", pItem->GetArt("thumb"));
-    current->SetLabel(g_localizeStrings.Get(20016));
-    items.Add(current);
+    CFavouritesDirectory::Save(*m_favourites);
+    UpdateList();
   }
-
-  // None
-  CFileItemPtr none(new CFileItem("thumb://None", false));
-  none->SetIconImage(pItem->GetIconImage());
-  none->SetLabel(g_localizeStrings.Get(20018));
-  items.Add(none);
-
-  std::string thumb;
-  VECSOURCES sources;
-  g_mediaManager.GetLocalDrives(sources);
-  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(1030), thumb))
-    return;
-
-  (*m_favourites)[item]->SetArt("thumb", thumb);
-  CFavouritesDirectory::Save(*m_favourites);
-  UpdateList();
 }
 
 void CGUIDialogFavourites::UpdateList()
@@ -254,3 +225,40 @@ CFileItemPtr CGUIDialogFavourites::GetCurrentListItem(int offset)
   return (*m_favourites)[item];
 }
 
+bool CGUIDialogFavourites::ChooseAndSetNewName(const CFileItemPtr &item)
+{
+  std::string label(item->GetLabel());
+  if (CGUIKeyboardFactory::ShowAndGetInput(label, CVariant{g_localizeStrings.Get(16008)}, false)) // Enter new title
+  {
+    item->SetLabel(label);
+    return true;
+  }
+  return false;
+}
+
+bool CGUIDialogFavourites::ChooseAndSetNewThumbnail(const CFileItemPtr &item)
+{
+  CFileItemList prefilledItems;
+  if (item->HasArt("thumb"))
+  {
+    const CFileItemPtr current(std::make_shared<CFileItem>("thumb://Current", false));
+    current->SetArt("thumb", item->GetArt("thumb"));
+    current->SetLabel(g_localizeStrings.Get(20016)); // Current thumb
+    prefilledItems.Add(current);
+  }
+
+  const CFileItemPtr none(std::make_shared<CFileItem>("thumb://None", false));
+  none->SetIconImage(item->GetIconImage());
+  none->SetLabel(g_localizeStrings.Get(20018)); // No thumb
+  prefilledItems.Add(none);
+
+  std::string thumb;
+  VECSOURCES sources;
+  g_mediaManager.GetLocalDrives(sources);
+  if (CGUIDialogFileBrowser::ShowAndGetImage(prefilledItems, sources, g_localizeStrings.Get(1030), thumb)) // Browse for image
+  {
+    item->SetArt("thumb", thumb);
+    return true;
+  }
+  return false;
+}

@@ -22,6 +22,7 @@
 RELEASEV=${RELEASEV:-"auto"}
 VERSION_PREFIX=${VERSION_PREFIX:-""}
 TAG=${TAG}
+TAGREV=${TAGREV:-""}
 REPO_DIR=${WORKSPACE:-$(cd "$(dirname $0)/../../../" ; pwd)}
 [[ $(which lsb_release) ]] && DISTS=${DISTS:-$(lsb_release -cs)} || DISTS=${DISTS:-"stable"}
 ARCHS=${ARCHS:-$(dpkg --print-architecture)}
@@ -45,6 +46,7 @@ function checkEnv {
     echo "REPO_DIR: $REPO_DIR"
     getVersion
     echo "RELEASEV: $RELEASEV"
+    echo "REVISION: $TAGREV"
     [[ -n $TAG ]] && echo "TAG: $TAG"
     echo "DISTS: $DISTS"
     echo "ARCHS: $ARCHS"

@@ -731,8 +731,9 @@ bool CGUIFontTTFBase::CacheCharacter(wchar_t letter, uint32_t style, Character *
     if (bitGlyph->left < 0)
       m_posX += -bitGlyph->left;
 
-    // check we have enough room for the character
-    if ((m_posX + bitGlyph->left + bitmap.width) > static_cast<int>(m_textureWidth))
+    // check we have enough room for the character.
+    // cast-fest is here to avoid warnings due to freeetype version differences (signedness of width).
+    if (static_cast<int>(m_posX + bitGlyph->left + bitmap.width) > static_cast<int>(m_textureWidth))
     { // no space - gotta drop to the next line (which means creating a new texture and copying it across)
       m_posX = 0;
       m_posY += GetTextureLineHeight();

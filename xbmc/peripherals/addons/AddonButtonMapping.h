@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2014-2016 Team Kodi
+ *      Copyright (C) 2014-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -24,29 +24,33 @@
 
 #include <memory>
 
+namespace KODI
+{
 namespace JOYSTICK
 {
   class CButtonMapping;
   class IButtonMap;
   class IButtonMapper;
 }
+}
 
 namespace PERIPHERALS
 {
   class CPeripheral;
+  class CPeripherals;
 
-  class CAddonButtonMapping : public JOYSTICK::IDriverHandler,
-                              public JOYSTICK::IButtonMapCallback
+  class CAddonButtonMapping : public KODI::JOYSTICK::IDriverHandler,
+                              public KODI::JOYSTICK::IButtonMapCallback
   {
   public:
-    CAddonButtonMapping(CPeripheral* peripheral, JOYSTICK::IButtonMapper* mapper);
+    CAddonButtonMapping(CPeripherals& manager, CPeripheral* peripheral, KODI::JOYSTICK::IButtonMapper* mapper);
 
     virtual ~CAddonButtonMapping(void);
 
     // implementation of IDriverHandler
     virtual bool OnButtonMotion(unsigned int buttonIndex, bool bPressed) override;
-    virtual bool OnHatMotion(unsigned int hatIndex, JOYSTICK::HAT_STATE state) override;
-    virtual bool OnAxisMotion(unsigned int axisIndex, float position) override;
+    virtual bool OnHatMotion(unsigned int hatIndex, KODI::JOYSTICK::HAT_STATE state) override;
+    virtual bool OnAxisMotion(unsigned int axisIndex, float position, int center, unsigned int range) override;
     virtual void ProcessAxisMotions(void) override;
 
     // implementation of IButtonMapCallback
@@ -55,7 +59,7 @@ namespace PERIPHERALS
     virtual void RevertButtonMap() override;
 
   private:
-    std::unique_ptr<JOYSTICK::CButtonMapping> m_buttonMapping;
-    std::unique_ptr<JOYSTICK::IButtonMap>     m_buttonMap;
+    std::unique_ptr<KODI::JOYSTICK::CButtonMapping> m_buttonMapping;
+    std::unique_ptr<KODI::JOYSTICK::IButtonMap>     m_buttonMap;
   };
 }

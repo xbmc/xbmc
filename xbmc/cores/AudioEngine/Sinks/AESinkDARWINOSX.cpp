@@ -18,7 +18,7 @@
  *
  */
 
-#include "cores/AudioEngine/AEFactory.h"
+#include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
 #include "cores/AudioEngine/Sinks/AESinkDARWINOSX.h"
 #include "cores/AudioEngine/Utils/AERingBuffer.h"
 #include "cores/AudioEngine/Sinks/osx/CoreAudioHelpers.h"
@@ -28,6 +28,8 @@
 #include "utils/StringUtils.h"
 #include "utils/TimeUtils.h"
 #include "linux/XMemUtils.h"
+#include "ServiceBroker.h"
+
 
 static void EnumerateDevices(CADeviceList &list)
 {
@@ -51,7 +53,7 @@ static void EnumerateDevices(CADeviceList &list)
     //(allows transition from headphones to speaker and stuff
     //like that)
     //fixme taking the first stream device is wrong here
-    //we rather might need the concatination of all streams *sucks*
+    //we rather might need the concatenation of all streams *sucks*
     if(defaultDeviceName == devEnum.GetMasterDeviceName())
     {
       struct CADeviceInstance deviceInstance;
@@ -127,7 +129,7 @@ OSStatus deviceChangedCB(AudioObjectID                       inObjectID,
   if  (deviceChanged)
   {
     CLog::Log(LOGDEBUG, "CoreAudio: audiodevicelist changed - reenumerating");
-    CAEFactory::DeviceChange();
+    CServiceBroker::GetActiveAE().DeviceChange();
     CLog::Log(LOGDEBUG, "CoreAudio: audiodevicelist changed - done");
   }
   return noErr;
@@ -408,7 +410,7 @@ unsigned int CAESinkDARWINOSX::AddPackets(uint8_t **data, unsigned int frames, u
     if (!m_started)
       timeout = 4500;
 
-    // we are using a timer here for beeing sure for timeouts
+    // we are using a timer here for being sure for timeouts
     // condvar can be woken spuriously as signaled
     XbmcThreads::EndTime timer(timeout);
     condVar.wait(mutex, timeout);
@@ -442,7 +444,7 @@ void CAESinkDARWINOSX::Drain()
 
     bytes = m_buffer->GetReadSize();
     // if we timeout and don't
-    // consum bytes - decrease maxNumTimeouts
+    // consume bytes - decrease maxNumTimeouts
     if (timer.IsTimePast() && bytes == totalBytes)
       maxNumTimeouts--;
     totalBytes = bytes;

@@ -1,0 +1,84 @@
+package @APP_PACKAGE@;
+
+import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.Bundle;
+import android.app.Activity;
+import android.app.SearchManager;
+import android.support.v4.widget.SimpleCursorAdapter;
+import android.util.Log;
+import android.widget.ListView;
+
+public class XBMCSearchableActivity extends Activity
+{
+
+  private static final String TAG = "@APP_NAME@Search";
+
+  private ListView mListView;
+  
+  public void onCreate(Bundle savedInstanceState)
+  {
+    super.onCreate(savedInstanceState);
+    this.setContentView(R.layout.search_result);
+
+    mListView = (ListView) findViewById(R.id.searchList);
+
+    handleIntent(getIntent());
+  }
+
+  public void onNewIntent(Intent intent)
+  {
+    setIntent(intent);
+    handleIntent(getIntent());
+  }
+
+  private void search(String query)
+  {
+    Cursor c = getContentResolver().query(
+        Uri.parse("content://@APP_PACKAGE@.media/search/" + query), null, null,
+        null, null);
+
+    // Specify the columns we want to display in the result
+    String[] from = new String[]
+    { XBMCJsonRPC.COLUMN_TITLE, XBMCJsonRPC.COLUMN_TAGLINE };
+
+    // Specify the corresponding layout elements where we want the columns to go
+    int[] to = new int[]
+    { R.id.title, R.id.tagline };
+
+    // Create a simple cursor adapter for the definitions and apply them to the
+    // ListView
+    SimpleCursorAdapter words = new SimpleCursorAdapter(this, R.layout.result,
+        c, from, to);
+    mListView.setAdapter(words);
+  }
+  
+  private void doAction(Intent origIntent)
+  {
+    Uri data = origIntent.getData();
+    Log.d(TAG, "LAUNCH: " + data.toString());
+
+    Intent newIntent = new Intent(origIntent.getAction(), data);
+    newIntent.setDataAndType(data, "video/*");
+    newIntent.setClass(this, @APP_PACKAGE@.Main.class);
+    newIntent.addFlags(Intent.FLAG_ACTIVITY_PREVIOUS_IS_TOP);
+    startActivity(newIntent);
+    finish();
+}
+
+  private void handleIntent(Intent intent)
+  {
+    Log.d(TAG, "NEW INTENT: " + intent.getAction() + "; DATA=" + intent.getData().toString());
+
+    if (Intent.ACTION_SEARCH.equals(intent.getAction())) 
+    {
+      search(intent.getStringExtra(SearchManager.QUERY));
+    }
+    else if (Intent.ACTION_VIEW.equals(intent.getAction()) || Intent.ACTION_GET_CONTENT.equals(intent.getAction()))
+    {
+      // Handle a suggestions click (because the suggestions all use ACTION_VIEW)
+      doAction(intent);
+    }
+  }
+}

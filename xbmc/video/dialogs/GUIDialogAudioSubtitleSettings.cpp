@@ -184,6 +184,44 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(const CSetting *setting)
   }
 }
 
+std::string CGUIDialogAudioSubtitleSettings::BrowseForSubtitle()
+{
+  std::string strPath;
+  if (URIUtils::IsInRAR(g_application.CurrentFileItem().GetPath()) || URIUtils::IsInZIP(g_application.CurrentFileItem().GetPath()))
+    strPath = CURL(g_application.CurrentFileItem().GetPath()).GetHostName();
+  else
+    strPath = g_application.CurrentFileItem().GetPath();
+
+  std::string strMask = ".utf|.utf8|.utf-8|.sub|.srt|.smi|.rt|.txt|.ssa|.aqt|.jss|.ass|.idx|.rar|.zip";
+  if (g_application.GetCurrentPlayer() == "VideoPlayer")
+    strMask = ".srt|.rar|.zip|.ifo|.smi|.sub|.idx|.ass|.ssa|.txt";
+  VECSOURCES shares(*CMediaSourceSettings::GetInstance().GetSources("video"));
+  if (CMediaSettings::GetInstance().GetAdditionalSubtitleDirectoryChecked() != -1 && !CServiceBroker::GetSettings().GetString(CSettings::SETTING_SUBTITLES_CUSTOMPATH).empty())
+  {
+    CMediaSource share;
+    std::vector<std::string> paths;
+    paths.push_back(URIUtils::GetDirectory(strPath));
+    paths.push_back(CServiceBroker::GetSettings().GetString(CSettings::SETTING_SUBTITLES_CUSTOMPATH));
+    share.FromNameAndPaths("video",g_localizeStrings.Get(21367),paths);
+    shares.push_back(share);
+    strPath = share.strPath;
+    URIUtils::AddSlashAtEnd(strPath);
+  }
+
+  if (CGUIDialogFileBrowser::ShowAndGetFile(shares, strMask, g_localizeStrings.Get(293), strPath, false, true)) // "subtitles"
+  {
+    if (URIUtils::HasExtension(strPath, ".sub"))
+    {
+      if (XFILE::CFile::Exists(URIUtils::ReplaceExtension(strPath, ".idx")))
+        strPath = URIUtils::ReplaceExtension(strPath, ".idx");
+    }
+
+    return strPath;
+  }
+
+  return "";
+}
+
 void CGUIDialogAudioSubtitleSettings::OnSettingAction(const CSetting *setting)
 {
   if (setting == NULL)
@@ -198,35 +236,9 @@ void CGUIDialogAudioSubtitleSettings::OnSettingAction(const CSetting *setting)
   }
   else if (settingId == SETTING_SUBTITLE_BROWSER)
   {
-    std::string strPath;
-    if (URIUtils::IsInRAR(g_application.CurrentFileItem().GetPath()) || URIUtils::IsInZIP(g_application.CurrentFileItem().GetPath()))
-      strPath = CURL(g_application.CurrentFileItem().GetPath()).GetHostName();
-    else
-      strPath = g_application.CurrentFileItem().GetPath();
-
-    std::string strMask = ".utf|.utf8|.utf-8|.sub|.srt|.smi|.rt|.txt|.ssa|.aqt|.jss|.ass|.idx|.rar|.zip";
-    if (g_application.GetCurrentPlayer() == "VideoPlayer")
-      strMask = ".srt|.rar|.zip|.ifo|.smi|.sub|.idx|.ass|.ssa|.txt";
-    VECSOURCES shares(*CMediaSourceSettings::GetInstance().GetSources("video"));
-    if (CMediaSettings::GetInstance().GetAdditionalSubtitleDirectoryChecked() != -1 && !CServiceBroker::GetSettings().GetString(CSettings::SETTING_SUBTITLES_CUSTOMPATH).empty())
+    std::string strPath = BrowseForSubtitle();
+    if (!strPath.empty())
     {
-      CMediaSource share;
-      std::vector<std::string> paths;
-      paths.push_back(URIUtils::GetDirectory(strPath));
-      paths.push_back(CServiceBroker::GetSettings().GetString(CSettings::SETTING_SUBTITLES_CUSTOMPATH));
-      share.FromNameAndPaths("video",g_localizeStrings.Get(21367),paths);
-      shares.push_back(share);
-      strPath = share.strPath;
-      URIUtils::AddSlashAtEnd(strPath);
-    }
-    if (CGUIDialogFileBrowser::ShowAndGetFile(shares, strMask, g_localizeStrings.Get(293), strPath, false, true)) // "subtitles"
-    {
-      if (URIUtils::HasExtension(strPath, ".sub"))
-      {
-        if (XFILE::CFile::Exists(URIUtils::ReplaceExtension(strPath, ".idx")))
-          strPath = URIUtils::ReplaceExtension(strPath, ".idx");
-      }
-      
       g_application.m_pPlayer->AddSubtitle(strPath);
       Close();
     }
@@ -362,7 +374,7 @@ void CGUIDialogAudioSubtitleSettings::InitializeSettings()
     AddToggle(groupAudio, SETTING_AUDIO_PASSTHROUGH, 348, 0, m_passthrough);
   }
 
-  // subitlte settings
+  // subtitle settings
   m_subtitleVisible = g_application.m_pPlayer->GetSubtitleVisible();
   // subtitle enabled setting
   AddToggle(groupSubtitles, SETTING_SUBTITLE_ENABLE, 13397, 0, m_subtitleVisible);

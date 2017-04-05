@@ -21,21 +21,21 @@
 #include <android/input.h>
 
 #include "PeripheralBusAndroid.h"
-#include "input/joysticks/JoystickTranslator.h"
 #include "input/joysticks/JoystickTypes.h"
 #include "peripherals/addons/PeripheralAddonTranslator.h"
 #include "peripherals/devices/PeripheralJoystick.h"
 #include "platform/android/activity/XBMCApp.h"
-#include "platform/android/jni/View.h"
+#include "androidjni/View.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 
+using namespace KODI;
 using namespace PERIPHERALS;
 
 static const std::string DeviceLocationPrefix = "android/inputdevice/";
 
-CPeripheralBusAndroid::CPeripheralBusAndroid(CPeripherals *manager) :
+CPeripheralBusAndroid::CPeripheralBusAndroid(CPeripherals& manager) :
     CPeripheralBus("PeripBusAndroid", manager, PERIPHERAL_BUS_ANDROID)
 {
   // we don't need polling as we get notified through the IInputDeviceCallbacks interface
@@ -138,19 +138,13 @@ void CPeripheralBusAndroid::ProcessEvents()
       case PERIPHERAL_EVENT_TYPE_DRIVER_BUTTON:
       {
         const bool bPressed = (event.ButtonState() == JOYSTICK_STATE_BUTTON_PRESSED);
-        CLog::Log(LOGDEBUG, "Button [ %u ] on %s %s", event.DriverIndex(),
-                  joystick->DeviceName().c_str(), bPressed ? "pressed" : "released");
-        if (joystick->OnButtonMotion(event.DriverIndex(), bPressed))
-          CLog::Log(LOGDEBUG, "Joystick button event handled");
+        joystick->OnButtonMotion(event.DriverIndex(), bPressed);
         break;
       }
       case PERIPHERAL_EVENT_TYPE_DRIVER_HAT:
       {
         const JOYSTICK::HAT_STATE state = CPeripheralAddonTranslator::TranslateHatState(event.HatState());
-        CLog::Log(LOGDEBUG, "Hat [ %u ] on %s %s", event.DriverIndex(),
-                  joystick->DeviceName().c_str(), JOYSTICK::CJoystickTranslator::HatStateToString(state));
-        if (joystick->OnHatMotion(event.DriverIndex(), state))
-          CLog::Log(LOGDEBUG, "Joystick hat event handled");
+        joystick->OnHatMotion(event.DriverIndex(), state);
         break;
       }
       case PERIPHERAL_EVENT_TYPE_DRIVER_AXIS:

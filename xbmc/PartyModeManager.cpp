@@ -101,7 +101,7 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
     m_type = m_bIsVideo ? "musicvideos" : "songs";
   }
 
-  CGUIDialogProgress* pDialog = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  CGUIDialogProgress* pDialog = g_windowManager.GetWindow<CGUIDialogProgress>();
   int iHeading = (m_bIsVideo ? 20250 : 20121);
   int iLine0 = (m_bIsVideo ? 20251 : 20123);
   pDialog->SetHeading(CVariant{iHeading});
@@ -629,7 +629,7 @@ bool CPartyModeManager::AddInitialSongs(std::vector< std::pair<int,int > > &song
       sqlWhereMusic[sqlWhereMusic.size() - 1] = ')'; // replace the last comma with closing bracket
       CMusicDatabase database;
       database.Open();
-      database.GetSongsByWhere("musicdb://songs/", sqlWhereMusic, items);
+      database.GetSongsFullByWhere("musicdb://songs/", sqlWhereMusic, items, SortDescription(), true);
     }
     if (sqlWhereVideo.size() > 19)
     {

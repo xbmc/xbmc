@@ -197,7 +197,7 @@ void CEpgContainer::Start(bool bAsync)
 
   if (!bStop)
   {
-    g_PVRManager.TriggerEpgsCreate();
+    CServiceBroker::GetPVRManager().TriggerEpgsCreate();
     CLog::Log(LOGNOTICE, "%s - EPG thread started", __FUNCTION__);
   }
 }
@@ -325,7 +325,7 @@ void CEpgContainer::Process(void)
     }
 
     /* update the EPG */
-    if (!InterruptUpdate() && bUpdateEpg && g_PVRManager.EpgsCreated() && UpdateEPG())
+    if (!InterruptUpdate() && bUpdateEpg && CServiceBroker::GetPVRManager().EpgsCreated() && UpdateEPG())
       m_bIsInitialising = false;
 
     /* clean up old entries */
@@ -345,7 +345,7 @@ void CEpgContainer::Process(void)
       }
 
       // get the channel
-      CPVRChannelPtr channel = g_PVRChannelGroups->GetByUniqueID(request.channelID, request.clientID);
+      CPVRChannelPtr channel = CServiceBroker::GetPVRManager().ChannelGroups()->GetByUniqueID(request.channelID, request.clientID);
       CEpgPtr epg;
 
       // get the EPG for the channel
@@ -412,12 +412,24 @@ CEpgInfoTagPtr CEpgContainer::GetTagById(const CPVRChannelPtr &channel, unsigned
 {
   CEpgInfoTagPtr retval;
 
-  if (!channel || iBroadcastId == EPG_TAG_INVALID_UID)
+  if (iBroadcastId == EPG_TAG_INVALID_UID)
     return retval;
 
-  const CEpgPtr epg(channel->GetEPG());
-  if (epg)
-    retval = epg->GetTagByBroadcastId(iBroadcastId);
+  if (channel)
+  {
+    const CEpgPtr epg(channel->GetEPG());
+    if (epg)
+      retval = epg->GetTagByBroadcastId(iBroadcastId);
+  }
+  else
+  {
+    for (const auto &epgEntry : m_epgs)
+    {
+      retval = epgEntry.second->GetTagByBroadcastId(iBroadcastId);
+      if (retval)
+        break;
+    }
+  }
 
   return retval;
 }
@@ -563,7 +575,7 @@ void CEpgContainer::ShowProgressDialog(bool bUpdating /* = true */)
 {
   if (!m_progressHandle)
   {
-    CGUIDialogExtendedProgressBar *progressDialog = (CGUIDialogExtendedProgressBar *)g_windowManager.GetWindow(WINDOW_DIALOG_EXT_PROGRESS);
+    CGUIDialogExtendedProgressBar *progressDialog = g_windowManager.GetWindow<CGUIDialogExtendedProgressBar>();
     if (progressDialog)
       m_progressHandle = progressDialog->GetHandle(bUpdating ? g_localizeStrings.Get(19004) : g_localizeStrings.Get(19250));
   }
@@ -670,13 +682,13 @@ bool CEpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
       UpdateProgressDialog(++iCounter, m_epgs.size(), epg->Name());
 
     // we currently only support update via pvr add-ons. skip update when the pvr manager isn't started
-    if (!g_PVRManager.IsStarted())
+    if (!CServiceBroker::GetPVRManager().IsStarted())
       continue;
 
     // check the pvr manager when the channel pointer isn't set
     if (!epg->Channel())
     {
-      CPVRChannelPtr channel = g_PVRChannelGroups->GetChannelByEpgId(epg->EpgID());
+      CPVRChannelPtr channel = CServiceBroker::GetPVRManager().ChannelGroups()->GetChannelByEpgId(epg->EpgID());
       if (channel)
         epg->SetChannel(channel);
     }
@@ -758,7 +770,7 @@ const CDateTime CEpgContainer::GetLastEPGDate(void)
   return returnValue;
 }
 
-int CEpgContainer::GetEPGSearch(CFileItemList &results, const EpgSearchFilter &filter)
+int CEpgContainer::GetEPGSearch(CFileItemList &results, const CEpgSearchFilter &filter)
 {
   int iInitialSize = results.Size();
 
@@ -770,8 +782,8 @@ int CEpgContainer::GetEPGSearch(CFileItemList &results, const EpgSearchFilter &f
   }
 
   /* remove duplicate entries */
-  if (filter.m_bPreventRepeats)
-    EpgSearchFilter::RemoveDuplicates(results);
+  if (filter.ShouldRemoveDuplicates())
+    filter.RemoveDuplicates(results);
 
   return results.Size() - iInitialSize;
 }
@@ -799,7 +811,7 @@ bool CEpgContainer::CheckPlayingEvents(void)
       iNextEpgActiveTagCheck += g_advancedSettings.m_iEpgActiveTagCheckInterval;
 
       /* pvr tags always start on the full minute */
-      if (g_PVRManager.IsStarted())
+      if (CServiceBroker::GetPVRManager().IsStarted())
         iNextEpgActiveTagCheck -= iNextEpgActiveTagCheck % 60;
 
       bReturn = true;

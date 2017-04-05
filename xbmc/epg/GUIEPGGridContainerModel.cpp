@@ -18,18 +18,22 @@
  *
  */
 
+#include "GUIEPGGridContainerModel.h"
+
 #include "FileItem.h"
 #include "epg/EpgInfoTag.h"
+#include "settings/AdvancedSettings.h"
 #include "utils/Variant.h"
-#include "pvr/channels/PVRChannel.h"
 
-#include "GUIEPGGridContainerModel.h"
+#include "pvr/channels/PVRChannel.h"
 
 class CGUIListItem;
 typedef std::shared_ptr<CGUIListItem> CGUIListItemPtr;
 
 using namespace EPG;
 using namespace PVR;
+
+static const unsigned int GRID_START_PADDING = 30; // minutes
 
 void CGUIEPGGridContainerModel::SetInvalid()
 {
@@ -109,13 +113,13 @@ void CGUIEPGGridContainerModel::Refresh(const std::unique_ptr<CFileItemList> &it
   if (gridStart >= gridEnd)
   {
     // default to start "now minus GRID_START_PADDING minutes" and end "start plus one page".
-    m_gridStart = CDateTime::GetCurrentDateTime().GetAsUTCDateTime() - CDateTimeSpan(0, 0, GRID_START_PADDING, 0);
+    m_gridStart = CDateTime::GetCurrentDateTime().GetAsUTCDateTime() - CDateTimeSpan(0, 0, GetGridStartPadding(), 0);
     m_gridEnd = m_gridStart + CDateTimeSpan(0, 0, iBlocksPerPage * MINSPERBLOCK, 0);
   }
-  else if (gridStart > (CDateTime::GetCurrentDateTime().GetAsUTCDateTime() - CDateTimeSpan(0, 0, GRID_START_PADDING, 0)))
+  else if (gridStart > (CDateTime::GetCurrentDateTime().GetAsUTCDateTime() - CDateTimeSpan(0, 0, GetGridStartPadding(), 0)))
   {
     // adjust to start "now minus GRID_START_PADDING minutes".
-    m_gridStart = CDateTime::GetCurrentDateTime().GetAsUTCDateTime() - CDateTimeSpan(0, 0, GRID_START_PADDING, 0);
+    m_gridStart = CDateTime::GetCurrentDateTime().GetAsUTCDateTime() - CDateTimeSpan(0, 0, GetGridStartPadding(), 0);
     m_gridEnd = gridEnd;
   }
   else
@@ -268,6 +272,9 @@ void CGUIEPGGridContainerModel::FindChannelAndBlockIndex(int channelUid, unsigne
   const CDateTimeSpan blockDuration(0, 0, MINSPERBLOCK, 0);
   bool bFoundPrevChannel = false;
 
+  newChannelIndex = INVALID_INDEX;
+  newBlockIndex = INVALID_INDEX;
+
   for (size_t channel = 0; channel < m_channelItems.size(); ++channel)
   {
     CDateTime gridCursor(m_gridStart); //reset cursor for new channel
@@ -312,6 +319,16 @@ void CGUIEPGGridContainerModel::FindChannelAndBlockIndex(int channelUid, unsigne
   }
 }
 
+unsigned int CGUIEPGGridContainerModel::GetGridStartPadding() const
+{
+  int iEpgLingerTime = g_advancedSettings.m_iEpgLingerTime;
+
+  if (iEpgLingerTime < GRID_START_PADDING)
+    return iEpgLingerTime;
+
+  return GRID_START_PADDING; // minutes
+}
+
 void CGUIEPGGridContainerModel::FreeChannelMemory(int keepStart, int keepEnd)
 {
   if (keepStart < keepEnd)
@@ -346,7 +363,7 @@ void CGUIEPGGridContainerModel::FreeProgrammeMemory(int channel, int keepStart, 
           m_gridIndex[channel][i].item->FreeMemory();
           // FreeMemory() is smart enough to not cause any problems when called multiple times on same item
           // but we can make use of condition needed to not call FreeMemory() on item that is partially visible
-          // to avoid calling FreeMemory() multiple times on item that ocupy few blocks in a row
+          // to avoid calling FreeMemory() multiple times on item that occupy few blocks in a row
           last = m_gridIndex[channel][i].item;
         }
       }
@@ -363,7 +380,7 @@ void CGUIEPGGridContainerModel::FreeProgrammeMemory(int channel, int keepStart, 
           m_gridIndex[channel][i].item->FreeMemory();
           // FreeMemory() is smart enough to not cause any problems when called multiple times on same item
           // but we can make use of condition needed to not call FreeMemory() on item that is partially visible
-          // to avoid calling FreeMemory() multiple times on item that ocupy few blocks in a row
+          // to avoid calling FreeMemory() multiple times on item that occupy few blocks in a row
           last = m_gridIndex[channel][i].item;
         }
       }

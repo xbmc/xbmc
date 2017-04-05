@@ -46,7 +46,8 @@
 #include "settings/Settings.h"
 #include "guilib/TextureManager.h"
 #include "Util.h"
-#include "cores/AudioEngine/AEFactory.h"
+#include "ServiceBroker.h"
+#include "cores/AudioEngine/Interfaces/AE.h"
 #include "storage/MediaManager.h"
 #include "utils/LangCodeExpander.h"
 #include "utils/StringUtils.h"
@@ -461,7 +462,7 @@ namespace XBMCAddon
       else if (strcmpi(mediaType, "music") == 0)
         result = g_advancedSettings.GetMusicExtensions();
       else if (strcmpi(mediaType, "picture") == 0)
-        result = g_advancedSettings.m_pictureExtensions;
+        result = g_advancedSettings.GetPictureExtensions();
 
       //! @todo implement
       //    else
@@ -486,12 +487,12 @@ namespace XBMCAddon
 
     void audioSuspend()
     {  
-      CAEFactory::Suspend();
+      CServiceBroker::GetActiveAE().Suspend();
     }
 
     void audioResume()
     { 
-      CAEFactory::Resume();
+      CServiceBroker::GetActiveAE().Resume();
     }
 
     String convertLanguage(const char* language, int format)

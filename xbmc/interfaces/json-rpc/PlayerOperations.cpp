@@ -146,7 +146,7 @@ JSONRPC_STATUS CPlayerOperations::GetItem(const std::string &method, ITransportL
       fileItem = CFileItemPtr(new CFileItem(g_application.CurrentFileItem()));
       if (IsPVRChannel())
       {
-        CPVRChannelPtr currentChannel(g_PVRManager.GetCurrentChannel());
+        CPVRChannelPtr currentChannel(CServiceBroker::GetPVRManager().GetCurrentChannel());
         if (currentChannel)
           fileItem = CFileItemPtr(new CFileItem(currentChannel));
       }
@@ -240,7 +240,7 @@ JSONRPC_STATUS CPlayerOperations::GetItem(const std::string &method, ITransportL
 
     case Picture:
     {
-      CGUIWindowSlideShow *slideshow = (CGUIWindowSlideShow*)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
+      CGUIWindowSlideShow *slideshow = g_windowManager.GetWindow<CGUIWindowSlideShow>();
       if (!slideshow)
         return FailedToExecute;
 
@@ -287,7 +287,7 @@ JSONRPC_STATUS CPlayerOperations::PlayPause(const std::string &method, ITranspor
       return OK;
 
     case Picture:
-      slideshow = (CGUIWindowSlideShow*)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
+      slideshow = g_windowManager.GetWindow<CGUIWindowSlideShow>();
       if (slideshow && slideshow->IsPlaying() &&
          (parameterObject["play"].isString() ||
          (parameterObject["play"].isBoolean() && parameterObject["play"].asBoolean() == slideshow->IsPaused())))
@@ -375,11 +375,9 @@ JSONRPC_STATUS CPlayerOperations::Seek(const std::string &method, ITransportLaye
         return FailedToExecute;
 
       const CVariant& value = parameterObject["value"];
-      if (IsType(value, NumberValue) ||
-         (value.isObject() && value.isMember("percentage")))
+      if (IsType(value, NumberValue) || value.isMember("percentage"))
         g_application.SeekPercentage(IsType(value, NumberValue) ? value.asFloat() : value["percentage"].asFloat());
-      else if (value.isString() ||
-              (value.isObject() && value.isMember("step")))
+      else if (value.isString() || value.isMember("step"))
       {
         std::string step = value.isString() ? value.asString() : value["step"].asString();
         if (step == "smallforward")
@@ -393,7 +391,7 @@ JSONRPC_STATUS CPlayerOperations::Seek(const std::string &method, ITransportLaye
         else
           return InvalidParams;
       }
-      else if (value.isObject() && value.isMember("seconds") && value.size() == 1)
+      else if (value.isMember("seconds") && value.size() == 1)
         CSeekHandler::GetInstance().SeekSeconds(static_cast<int>(value["seconds"].asInteger()));
       else if (value.isObject())
         g_application.SeekTime(ParseTimeInSeconds(value.isMember("time") ? value["time"] : value));
@@ -507,7 +505,7 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
   CVariant optionResume = options["resume"];
   CVariant optionPlayer = options["playername"];
 
-  if (parameterObject["item"].isObject() && parameterObject["item"].isMember("playlistid"))
+  if (parameterObject["item"].isMember("playlistid"))
   {
     int playlistid = (int)parameterObject["item"]["playlistid"].asInteger();
 
@@ -536,7 +534,7 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
         std::string firstPicturePath;
         if (playlistStartPosition > 0)
         {
-          CGUIWindowSlideShow *slideshow = (CGUIWindowSlideShow*)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
+          CGUIWindowSlideShow *slideshow = g_windowManager.GetWindow<CGUIWindowSlideShow>();
           if (slideshow != NULL)
           {
             CFileItemList list;
@@ -553,7 +551,7 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
 
     return ACK;
   }
-  else if (parameterObject["item"].isObject() && parameterObject["item"].isMember("path"))
+  else if (parameterObject["item"].isMember("path"))
   {
     bool random = (optionShuffled.isBoolean() && optionShuffled.asBoolean()) ||
                   (!optionShuffled.isBoolean() && parameterObject["item"]["random"].asBoolean());
@@ -566,12 +564,12 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
     CApplicationMessenger::GetInstance().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, "playercontrol(partymode(" + parameterObject["item"]["partymode"].asString() + "))");
     return ACK;
   }
-  else if (parameterObject["item"].isObject() && parameterObject["item"].isMember("channelid"))
+  else if (parameterObject["item"].isMember("channelid"))
   {
-    if (!g_PVRManager.IsStarted())
+    if (!CServiceBroker::GetPVRManager().IsStarted())
       return FailedToExecute;
 
-    CPVRChannelGroupsContainerPtr channelGroupContainer = g_PVRChannelGroups;
+    CPVRChannelGroupsContainerPtr channelGroupContainer = CServiceBroker::GetPVRManager().ChannelGroups();
     if (!channelGroupContainer)
       return FailedToExecute;
 
@@ -579,8 +577,8 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
     if (channel == NULL)
       return InvalidParams;
 
-    if ((g_PVRManager.IsPlayingRadio() && channel->IsRadio()) ||
-        (g_PVRManager.IsPlayingTV() && !channel->IsRadio()))
+    if ((CServiceBroker::GetPVRManager().IsPlayingRadio() && channel->IsRadio()) ||
+        (CServiceBroker::GetPVRManager().IsPlayingTV() && !channel->IsRadio()))
       g_application.m_pPlayer->SwitchChannel(channel);
     else
     {
@@ -591,12 +589,12 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
 
     return ACK;
   }
-  else if (parameterObject["item"].isObject() && parameterObject["item"].isMember("recordingid"))
+  else if (parameterObject["item"].isMember("recordingid"))
   {
-    if (!g_PVRManager.IsStarted())
+    if (!CServiceBroker::GetPVRManager().IsStarted())
       return FailedToExecute;
 
-    CPVRRecordingsPtr recordingsContainer = g_PVRRecordings;
+    CPVRRecordingsPtr recordingsContainer = CServiceBroker::GetPVRManager().Recordings();
     if (!recordingsContainer)
       return FailedToExecute;
 
@@ -627,7 +625,7 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
 
       if (slideshow)
       {
-        CGUIWindowSlideShow *slideshow = (CGUIWindowSlideShow*)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
+        CGUIWindowSlideShow *slideshow = g_windowManager.GetWindow<CGUIWindowSlideShow>();
         if (!slideshow)
           return FailedToExecute;
 
@@ -799,7 +797,7 @@ JSONRPC_STATUS CPlayerOperations::SetShuffle(const std::string &method, ITranspo
     }
 
     case Picture:
-      slideshow = (CGUIWindowSlideShow*)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
+      slideshow = g_windowManager.GetWindow<CGUIWindowSlideShow>();
       if (slideshow == NULL)
         return FailedToExecute;
       if (slideshow->IsShuffled())
@@ -1074,9 +1072,9 @@ int CPlayerOperations::GetActivePlayers()
 {
   int activePlayers = 0;
 
-  if (g_application.m_pPlayer->IsPlayingVideo() || g_PVRManager.IsPlayingTV() || g_PVRManager.IsPlayingRecording())
+  if (g_application.m_pPlayer->IsPlayingVideo() || CServiceBroker::GetPVRManager().IsPlayingTV() || CServiceBroker::GetPVRManager().IsPlayingRecording())
     activePlayers |= Video;
-  if (g_application.m_pPlayer->IsPlayingAudio() || g_PVRManager.IsPlayingRadio())
+  if (g_application.m_pPlayer->IsPlayingAudio() || CServiceBroker::GetPVRManager().IsPlayingRadio())
     activePlayers |= Audio;
   if (g_windowManager.IsWindowActive(WINDOW_SLIDESHOW))
     activePlayers |= Picture;
@@ -1156,7 +1154,7 @@ JSONRPC_STATUS CPlayerOperations::StartSlideshow(const std::string& path, bool r
   g_application.WakeUpScreenSaverAndDPMS();
   CGUIMessage msg(GUI_MSG_START_SLIDESHOW, 0, 0, flags);
   msg.SetStringParams(params);
-  CApplicationMessenger::GetInstance().SendGUIMessage(msg, WINDOW_SLIDESHOW, true);
+  CApplicationMessenger::GetInstance().SendGUIMessage(msg, WINDOW_SLIDESHOW);
 
   return ACK;
 }
@@ -1233,7 +1231,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
         break;
 
       case Picture:
-        slideshow = (CGUIWindowSlideShow*)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
+        slideshow = g_windowManager.GetWindow<CGUIWindowSlideShow>();
         if (slideshow && slideshow->IsPlaying() && !slideshow->IsPaused())
           result = slideshow->GetDirection();
         else
@@ -1295,7 +1293,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
       }
 
       case Picture:
-        slideshow = (CGUIWindowSlideShow*)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
+        slideshow = g_windowManager.GetWindow<CGUIWindowSlideShow>();
         if (slideshow && slideshow->NumSlides() > 0)
           result = (double)slideshow->CurrentSlide() / slideshow->NumSlides();
         else
@@ -1353,7 +1351,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
         break;
 
       case Picture:
-        slideshow = (CGUIWindowSlideShow*)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
+        slideshow = g_windowManager.GetWindow<CGUIWindowSlideShow>();
         if (slideshow && slideshow->IsPlaying())
           result = slideshow->CurrentSlide() - 1;
         else
@@ -1414,7 +1412,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
         break;
 
       case Picture:
-        slideshow = (CGUIWindowSlideShow*)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
+        slideshow = g_windowManager.GetWindow<CGUIWindowSlideShow>();
         if (slideshow && slideshow->IsPlaying())
           result = slideshow->IsShuffled();
         else
@@ -1759,32 +1757,29 @@ int CPlayerOperations::ParseRepeatState(const CVariant &repeat)
 double CPlayerOperations::ParseTimeInSeconds(const CVariant &time)
 {
   double seconds = 0.0;
-  if (time.isObject())
-  {
-    if (time.isMember("hours"))
-      seconds += time["hours"].asInteger() * 60 * 60;
-    if (time.isMember("minutes"))
-      seconds += time["minutes"].asInteger() * 60;
-    if (time.isMember("seconds"))
-      seconds += time["seconds"].asInteger();
-    if (time.isMember("milliseconds"))
-      seconds += time["milliseconds"].asDouble() / 1000.0;
-  }
+  if (time.isMember("hours"))
+    seconds += time["hours"].asInteger() * 60 * 60;
+  if (time.isMember("minutes"))
+    seconds += time["minutes"].asInteger() * 60;
+  if (time.isMember("seconds"))
+    seconds += time["seconds"].asInteger();
+  if (time.isMember("milliseconds"))
+    seconds += time["milliseconds"].asDouble() / 1000.0;
 
   return seconds;
 }
 
 bool CPlayerOperations::IsPVRChannel()
 {
-  return g_PVRManager.IsPlayingTV() || g_PVRManager.IsPlayingRadio();
+  return CServiceBroker::GetPVRManager().IsPlayingTV() || CServiceBroker::GetPVRManager().IsPlayingRadio();
 }
 
 EPG::CEpgInfoTagPtr CPlayerOperations::GetCurrentEpg()
 {
-  if (!g_PVRManager.IsPlayingTV() && !g_PVRManager.IsPlayingRadio())
+  if (!CServiceBroker::GetPVRManager().IsPlayingTV() && !CServiceBroker::GetPVRManager().IsPlayingRadio())
     return EPG::CEpgInfoTagPtr();
 
-  CPVRChannelPtr currentChannel(g_PVRManager.GetCurrentChannel());
+  CPVRChannelPtr currentChannel(CServiceBroker::GetPVRManager().GetCurrentChannel());
   if (!currentChannel)
     return EPG::CEpgInfoTagPtr();
 

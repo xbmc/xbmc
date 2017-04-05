@@ -168,7 +168,7 @@ int CBuiltins::Execute(const std::string& execString)
       return it->second.Execute(params);
     else
     {
-      CLog::Log(LOGERROR, "%s called with invalid number of parameters (should be: %" PRIdS ", is %" PRIdS")",
+      CLog::Log(LOGERROR, "{0} called with invalid number of parameters (should be: {1}, is {2})",
                           execute.c_str(), it->second.parameters, params.size());
       return -1;
     }

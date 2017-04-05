@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2014-2016 Team Kodi
+ *      Copyright (C) 2014-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -31,8 +31,7 @@ class CGUIWindow;
 
 namespace GAME
 {
-  class CGUIFeatureList : public IFeatureList,
-                          public IConfigurationWizardCallback
+  class CGUIFeatureList : public IFeatureList
   {
   public:
     CGUIFeatureList(CGUIWindow* window, const std::string& windowParam);
@@ -44,9 +43,6 @@ namespace GAME
     virtual void Load(const ControllerPtr& controller) override;
     virtual void OnFocus(unsigned int index) override { }
     virtual void OnSelect(unsigned int index) override;
-
-    // implementation of IConfigurationWizardCallback
-    virtual void OnSkipDetected() override;
 
   private:
     IFeatureButton* GetButtonControl(unsigned int featureIndex);

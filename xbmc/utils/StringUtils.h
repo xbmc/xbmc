@@ -1,7 +1,7 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2005-2015 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -36,6 +36,8 @@
 #include <sstream>
 #include <locale>
 
+#include <fmt/format.h>
+
 #include "LangInfo.h"
 #include "XBDateTime.h"
 #include "utils/params_check_macros.h"
@@ -54,9 +56,26 @@ public:
   \param ... variable number of value type arguments
   \return Formatted string
   */
-  static std::string Format(PRINTF_FORMAT_STRING const char *fmt, ...) PARAM1_PRINTF_FORMAT;
+  template<typename... Args>
+  static std::string Format(const std::string& fmt, Args&&... args)
+  {
+    auto result = fmt::format(fmt, std::forward<Args>(args)...);
+    if (result == fmt)
+      result = fmt::sprintf(fmt, std::forward<Args>(args)...);
+
+    return result;
+  }
+  template<typename... Args>
+  static std::wstring Format(const std::wstring& fmt, Args&&... args)
+  {
+    auto result = fmt::format(fmt, std::forward<Args>(args)...);
+    if (result == fmt)
+      result = fmt::sprintf(fmt, std::forward<Args>(args)...);
+
+    return result;
+  }
+
   static std::string FormatV(PRINTF_FORMAT_STRING const char *fmt, va_list args);
-  static std::wstring Format(PRINTF_FORMAT_STRING const wchar_t *fmt, ...);
   static std::wstring FormatV(PRINTF_FORMAT_STRING const wchar_t *fmt, va_list args);
   static void ToUpper(std::string &str);
   static void ToUpper(std::wstring &str);
@@ -125,7 +144,7 @@ public:
   an array containing an empty string).
 
   Delimiter strings are applied in order, so once the (optional) maximum number of 
-  items is produced no other delimters are applied. This produces different results
+  items is produced no other delimiters are applied. This produces different results
   to applying all delimiters at once e.g. "a/b#c/d" becomes "a", "b#c", "d" rather
   than "a", "b", "c/d"
 

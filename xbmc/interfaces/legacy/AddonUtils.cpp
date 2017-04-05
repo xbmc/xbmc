@@ -49,7 +49,7 @@ namespace XBMCAddonUtils
 
   static char defaultImage[1024];
 
-  const char *getDefaultImage(char* cControlType, char* cTextureType, char* cDefault)
+  const char *getDefaultImage(char* cControlType, char* cTextureType)
   {
     // create an xml block so that we can resolve our defaults
     // <control type="type">
@@ -74,7 +74,7 @@ namespace XBMCAddonUtils
         return defaultImage;
       }
     }
-    return cDefault;
+    return "";
   }
 
 #ifdef ENABLE_XBMC_TRACE_API

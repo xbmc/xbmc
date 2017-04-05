@@ -129,7 +129,7 @@ namespace PVR
      * @param strBase The directory path.
      * @param results The file list to store the results in.
      * @param bRadio Get radio channels or tv channels.
-     * @return True if the list was filled succesfully.
+     * @return True if the list was filled successfully.
      */
     bool GetGroupsDirectory(CFileItemList *results, bool bRadio) const;
 
@@ -183,7 +183,7 @@ namespace PVR
 
     /*!
      * @brief Create EPG tags for channels in all internal channel groups.
-     * @return True if EPG tags were created succesfully.
+     * @return True if EPG tags were created successfully.
      */
     bool CreateChannelEpgs(void);
 

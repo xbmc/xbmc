@@ -30,6 +30,7 @@
 #include "settings/lib/SettingSection.h"
 #include "utils/log.h"
 #include "utils/Variant.h"
+#include "ServiceBroker.h"
 
 using namespace PERIPHERALS;
 
@@ -91,7 +92,7 @@ void CGUIDialogPeripheralSettings::Save()
   if (m_item == NULL || m_initialising)
     return;
 
-  PeripheralPtr peripheral = g_peripherals.GetByPath(m_item->GetPath());
+  PeripheralPtr peripheral = CServiceBroker::GetPeripherals().GetByPath(m_item->GetPath());
   if (!peripheral)
     return;
 
@@ -103,7 +104,7 @@ void CGUIDialogPeripheralSettings::OnResetSettings()
   if (m_item == NULL)
     return;
 
-  PeripheralPtr peripheral = g_peripherals.GetByPath(m_item->GetPath());
+  PeripheralPtr peripheral = CServiceBroker::GetPeripherals().GetByPath(m_item->GetPath());
   if (!peripheral)
     return;
 
@@ -138,7 +139,7 @@ void CGUIDialogPeripheralSettings::InitializeSettings()
   m_initialising = true;
   bool usePopup = g_SkinInfo->HasSkinFile("DialogSlider.xml");
 
-  PeripheralPtr peripheral = g_peripherals.GetByPath(m_item->GetPath());
+  PeripheralPtr peripheral = CServiceBroker::GetPeripherals().GetByPath(m_item->GetPath());
   if (!peripheral)
   {
     CLog::Log(LOGDEBUG, "%s - no peripheral", __FUNCTION__);

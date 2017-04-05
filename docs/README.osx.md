@@ -34,7 +34,7 @@ The minimum version of OSX you need to run(!) Kodi is 10.7 atm.
 - On Mavericks (OSX 10.9.x) we recommend using Xcode 6.1.
 - On Yosemite (OSX 10.10.x) we recommend using Xcode 6.4.
 - On El Capitan (OSX 10.11.x) we recommend using Xcode 7.x or Xcode 8.x.
-- On Sierra (macOS 10.12.x) we recomment using Xcode 8.x.
+- On Sierra (macOS 10.12.x) we recommend using Xcode 8.x.
 
 **ATTENTION**: You need to download and install XQuartz from <https://xquartz.macosforge.org/landing/>
 since its not part of macOS anymore since 10.8.
@@ -124,7 +124,7 @@ plugins and more). They can be built as shown below:
 
 #### 4.1.1 Generate CMake project files
 
-Before you can use Xode to build Kodi, the Xcode project has to be generated
+Before you can use Xcode to build Kodi, the Xcode project has to be generated
 with CMake. Note that CMake is compiled as parts of the depends doesn't have
 to be installed separately. Also a Toolchain-file has been generated with is
 used to configure CMake.

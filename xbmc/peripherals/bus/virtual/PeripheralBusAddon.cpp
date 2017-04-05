@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2014-2016 Team Kodi
+ *      Copyright (C) 2014-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -31,9 +31,10 @@
 #include <algorithm>
 #include <memory>
 
+using namespace KODI;
 using namespace PERIPHERALS;
 
-CPeripheralBusAddon::CPeripheralBusAddon(CPeripherals *manager) :
+CPeripheralBusAddon::CPeripheralBusAddon(CPeripherals& manager) :
     CPeripheralBus("PeripBusAddon", manager, PERIPHERAL_BUS_ADDON)
 {
   using namespace ADDON;
@@ -55,6 +56,9 @@ CPeripheralBusAddon::~CPeripheralBusAddon()
   Clear();
 
   // destroy any (loaded) addons
+  for (const auto& addon : m_addons)
+    addon->DestroyAddon();
+
   m_failedAddons.clear();
   m_addons.clear();
 }
@@ -199,26 +203,28 @@ void CPeripheralBusAddon::ProcessEvents(void)
     addon->ProcessEvents();
 }
 
-bool CPeripheralBusAddon::EnableButtonMapping()
+void CPeripheralBusAddon::EnableButtonMapping()
 {
   using namespace ADDON;
-
-  bool bEnabled = false;
 
   CSingleLock lock(m_critSection);
 
   PeripheralAddonPtr dummy;
 
-  if (GetAddonWithButtonMap(dummy))
-    bEnabled = true;
-  else
+  if (!GetAddonWithButtonMap(dummy))
   {
     VECADDONS disabledAddons;
     if (CAddonMgr::GetInstance().GetDisabledAddons(disabledAddons, ADDON_PERIPHERALDLL))
-      bEnabled = PromptEnableAddons(disabledAddons);
+      PromptEnableAddons(disabledAddons);
   }
+}
 
-  return bEnabled;
+void CPeripheralBusAddon::PowerOff(const std::string& strLocation)
+{
+  PeripheralAddonPtr addon;
+  unsigned int peripheralIndex;
+  if (SplitLocation(strLocation, addon, peripheralIndex))
+    addon->PowerOffJoystick(peripheralIndex);
 }
 
 void CPeripheralBusAddon::UnregisterRemovedDevices(const PeripheralScanResults &results)
@@ -231,7 +237,7 @@ void CPeripheralBusAddon::UnregisterRemovedDevices(const PeripheralScanResults &
     addon->UnregisterRemovedDevices(results, removedPeripherals);
 
   for (const auto& peripheral : removedPeripherals)
-    m_manager->OnDeviceDeleted(*this, *peripheral);
+    m_manager.OnDeviceDeleted(*this, *peripheral);
 }
 
 void CPeripheralBusAddon::Register(const PeripheralPtr& peripheral)
@@ -247,7 +253,7 @@ void CPeripheralBusAddon::Register(const PeripheralPtr& peripheral)
   if (SplitLocation(peripheral->Location(), addon, peripheralIndex))
   {
     if (addon->Register(peripheralIndex, peripheral))
-      m_manager->OnDeviceAdded(*this, *peripheral);
+      m_manager.OnDeviceAdded(*this, *peripheral);
   }
 }
 
@@ -298,6 +304,17 @@ PeripheralPtr CPeripheralBusAddon::GetByPath(const std::string &strPath) const
   }
 
   return result;
+}
+
+bool CPeripheralBusAddon::SupportsFeature(PeripheralFeature feature) const
+{
+  bool bSupportsFeature = false;
+
+  CSingleLock lock(m_critSection);
+  for (const auto& addon : m_addons)
+    bSupportsFeature |= addon->SupportsFeature(feature);
+
+  return bSupportsFeature;
 }
 
 int CPeripheralBusAddon::GetPeripheralsWithFeature(PeripheralVector &results, const PeripheralFeature feature) const
@@ -486,15 +503,15 @@ void CPeripheralBusAddon::UpdateAddons(void)
     if (erased)
     {
       CSingleExit exit(m_critSection);
-      erased->Destroy();
+      erased->DestroyAddon();
     }
   }
 }
 
-bool CPeripheralBusAddon::PromptEnableAddons(const ADDON::VECADDONS& disabledAddons)
+void CPeripheralBusAddon::PromptEnableAddons(const ADDON::VECADDONS& disabledAddons)
 {
   using namespace ADDON;
-  using namespace KODI::MESSAGING::HELPERS;
+  using namespace MESSAGING::HELPERS;
 
   // True if the user confirms enabling the disabled peripheral add-on
   bool bAccepted = false;
@@ -520,7 +537,4 @@ bool CPeripheralBusAddon::PromptEnableAddons(const ADDON::VECADDONS& disabledAdd
         CAddonMgr::GetInstance().EnableAddon(addon->ID());
     }
   }
-
-  PeripheralAddonPtr dummy;
-  return GetAddonWithButtonMap(dummy);
 }

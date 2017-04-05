@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2016 Team Kodi
+ *      Copyright (C) 2016-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -44,7 +44,7 @@ namespace GAME
 
     // partial implementation of IFeatureButton
     virtual const CControllerFeature& Feature(void) const override { return m_feature; }
-    virtual JOYSTICK::ANALOG_STICK_DIRECTION GetDirection(void) const override { return JOYSTICK::ANALOG_STICK_DIRECTION::UNKNOWN; }
+    virtual KODI::JOYSTICK::ANALOG_STICK_DIRECTION GetDirection(void) const override { return KODI::JOYSTICK::ANALOG_STICK_DIRECTION::UNKNOWN; }
 
   protected:
     bool DoPrompt(const std::string& strPrompt, const std::string& strWarn, const std::string& strFeature, CEvent& waitEvent);

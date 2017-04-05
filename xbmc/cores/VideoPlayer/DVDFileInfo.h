@@ -33,7 +33,7 @@ class CTextureDetails;
 class CDVDFileInfo
 {
 public:
-  // Extract a thumbnail immage from the media at strPath, optionally populating a streamdetails class with the data
+  // Extract a thumbnail image from the media at strPath, optionally populating a streamdetails class with the data
   static bool ExtractThumb(const std::string &strPath,
                            CTextureDetails &details,
                            CStreamDetails *pStreamDetails, int pos=-1);

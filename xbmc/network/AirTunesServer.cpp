@@ -231,7 +231,7 @@ void CAirTunesServer::Process()
     if (m_streamStarted)
       SetupRemoteControl();// check for remote controls
 
-    m_processActions.WaitMSec(1000);// timeout for beeing able to stop
+    m_processActions.WaitMSec(1000);// timeout for being able to stop
     std::list<CAction> currentActions;
     {
       CSingleLock lock(m_actionQueueLock);// copy and clear the source queue
@@ -365,7 +365,7 @@ void* CAirTunesServer::AudioOutputFunctions::audio_init(void *cls, int bits, int
   XFILE::CPipeFile *pipe=(XFILE::CPipeFile *)cls;
   const CURL pathToUrl(XFILE::PipesManager::GetInstance().GetUniquePipeName());
   pipe->OpenForWrite(pathToUrl);
-  pipe->SetOpenThreashold(300);
+  pipe->SetOpenThreshold(300);
 
   Demux_BXA_FmtHeader header;
   strncpy(header.fourcc, "BXA ", 4);

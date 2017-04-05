@@ -23,33 +23,33 @@ msgstr ""
 
 #: xbmc/addons/Addon.cpp
 #: system/settings/settings.xml
-#: addons/skin.estuary/1080i/Includes.xml
+#: addons/skin.estuary/xml/Includes.xml
 msgctxt "#0"
 msgid "Programs"
 msgstr ""
 
-#: addons/skin.estuary/1080i/Home.xml
-#: addons/skin.estuary/1080i/SkinSettings.xml
-#: addons/skin.estuary/1080i/Custom_1103_SourcesDialog.xml
-#: addons/skin.estuary/1080i/Includes.xml
+#: addons/skin.estuary/xml/Home.xml
+#: addons/skin.estuary/xml/SkinSettings.xml
+#: addons/skin.estuary/xml/Custom_1103_SourcesDialog.xml
+#: addons/skin.estuary/xml/Includes.xml
 msgctxt "#1"
 msgid "Pictures"
 msgstr ""
 
-#: addons/skin.estuary/1080i/Home.xml
-#: addons/skin.estuary/1080i/Custom_1103_SourcesDialog.xml
-#: addons/skin.estuary/1080i/SkinSettings.xml
-#: addons/skin.estuary/1080i/Includes.xml
+#: addons/skin.estuary/xml/Home.xml
+#: addons/skin.estuary/xml/Custom_1103_SourcesDialog.xml
+#: addons/skin.estuary/xml/SkinSettings.xml
+#: addons/skin.estuary/xml/Includes.xml
 msgctxt "#2"
 msgid "Music"
 msgstr ""
 
 #: system/settings/settings.xml
 #: xbmc/media/MediaTypes.cpp
-#: addons/skin.estuary/1080i/Custom_1103_SourcesDialog.xml
-#: addons/skin.estuary/1080i/Variables.xml
-#: addons/skin.estuary/1080i/SkinSettings.xml
-#: addons/skin.estuary/1080i/Home.xml
+#: addons/skin.estuary/xml/Custom_1103_SourcesDialog.xml
+#: addons/skin.estuary/xml/Variables.xml
+#: addons/skin.estuary/xml/SkinSettings.xml
+#: addons/skin.estuary/xml/Home.xml
 msgctxt "#3"
 msgid "Videos"
 msgstr ""
@@ -59,7 +59,7 @@ msgid "TV guide"
 msgstr ""
 
 #: xbmc/windows/GUIWindowFileManager.cpp
-#: addons/skin.estuary/1080i/Variables.xml
+#: addons/skin.estuary/xml/Variables.xml
 msgctxt "#5"
 msgid "Settings"
 msgstr ""
@@ -77,9 +77,9 @@ msgctxt "#7"
 msgid "File manager"
 msgstr ""
 
-#: addons/skin.estuary/1080i/Includes.xml
-#: addons/skin.estuary/1080i/SkinSettings.xml
-#: addons/skin.estuary/1080i/Home.xml
+#: addons/skin.estuary/xml/Includes.xml
+#: addons/skin.estuary/xml/SkinSettings.xml
+#: addons/skin.estuary/xml/Home.xml
 msgctxt "#8"
 msgid "Weather"
 msgstr ""
@@ -429,7 +429,7 @@ msgctxt "#111"
 msgid "Shortcuts"
 msgstr ""
 
-#: addons/skin.estuary/1080i/Variables.xml
+#: addons/skin.estuary/xml/Variables.xml
 msgctxt "#112"
 msgid "Paused"
 msgstr ""
@@ -516,8 +516,8 @@ msgstr ""
 
 #: xbmc/addons/guidialogaddonsettings.cpp
 #: system/settings/settings.xml
-#: addons/skin.estuary/1080i/SkinSettings.xml
-#: addons/skin.estuary/1080i/SettingsProfile.xml
+#: addons/skin.estuary/xml/SkinSettings.xml
+#: addons/skin.estuary/xml/SettingsProfile.xml
 msgctxt "#128"
 msgid "General"
 msgstr ""
@@ -551,7 +551,7 @@ msgstr ""
 #: xbmc/filesystem/MusicDatabaseDirectory/DirectoryNodeOverview.cpp
 #: xbmc/media/MediaTypes.cpp
 #: xbmc/playlists/SmartPlaylist.cpp
-#: addons/skin.estuary/1080i/Home.xml
+#: addons/skin.estuary/xml/Home.xml
 msgctxt "#133"
 msgid "Artists"
 msgstr ""
@@ -578,13 +578,13 @@ msgid "Playlists"
 msgstr ""
 
 #: xbmc/addons/GUIViewStateAddonBrowser.cpp
-#: addons/skin.estuary/1080i/Includes_MediaMenu.xml
-#: addons/skin.estuary/1080i/Variables.xml
+#: addons/skin.estuary/xml/Includes_MediaMenu.xml
+#: addons/skin.estuary/xml/Variables.xml
 msgctxt "#137"
 msgid "Search"
 msgstr ""
 
-#: addons/skin.estuary/1080i/Includes.xml
+#: addons/skin.estuary/xml/Includes.xml
 msgctxt "#138"
 msgid "System information"
 msgstr ""
@@ -609,7 +609,7 @@ msgctxt "#143"
 msgid "Current:"
 msgstr ""
 
-#: addons/skin.estuary/1080i/SettingsSystemInfo.xml
+#: addons/skin.estuary/xml/SettingsSystemInfo.xml
 msgctxt "#144"
 msgid "Build:"
 msgstr ""
@@ -665,7 +665,7 @@ msgid "Free"
 msgstr ""
 
 #: xbmc/settings/dialogs/GUIDialogAudioDSPSettings.cpp
-#: addons/skin.estuary/1080i/Includes.xml
+#: addons/skin.estuary/xml/Includes.xml
 msgctxt "#157"
 msgid "Video"
 msgstr ""
@@ -683,7 +683,7 @@ msgctxt "#160"
 msgid "Free"
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogPVRRadioRDSInfo.xml
+#: addons/skin.estuary/xml/DialogPVRRadioRDSInfo.xml
 msgctxt "#161"
 msgid "Unavailable"
 msgstr ""
@@ -718,11 +718,11 @@ msgstr ""
 
 #: xbmc/settings/windows/GUIWindowSettingsCategory.cpp
 msgctxt "#168"
-msgid "%s- %s"
+msgid "{0:s}- {1:s}"
 msgstr ""
 
 #: system/settings/settings.xml
-#: addons/skin.estuary/1080i/Variables.xml
+#: addons/skin.estuary/xml/Variables.xml
 msgctxt "#169"
 msgid "Resolution"
 msgstr ""
@@ -747,13 +747,13 @@ msgctxt "#173"
 msgid "Display 4:3 videos as"
 msgstr ""
 
-#: addons/skin.estuary/1080i/SettingsSystemInfo.xml
+#: addons/skin.estuary/xml/SettingsSystemInfo.xml
 msgctxt "#174"
 msgid "Compiled:"
 msgstr ""
 
 #: xbmc/playlists/SmartPlaylist.cpp
-#: addons/skin.estuary/1080i/Variables.xml
+#: addons/skin.estuary/xml/Variables.xml
 msgctxt "#175"
 msgid "Moods"
 msgstr ""
@@ -766,13 +766,13 @@ msgstr ""
 #. <application name> successfully started
 #: xbmc/Application.cpp
 msgctxt "#177"
-msgid "%s successfully started"
+msgid "{0:s} successfully started"
 msgstr ""
 
 #. <application name> has been successfully started.
 #: xbmc/Application.cpp
 msgctxt "#178"
-msgid "%s has been successfully started."
+msgid "{0:s} has been successfully started."
 msgstr ""
 
 #: xbmc/media/MediaTypes.cpp
@@ -784,9 +784,9 @@ msgstr ""
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
 #: xbmc/playlists/SmartPlaylist.cpp
 #: xbmc/xbmc/pvr/windows/GUIViewStatePVR.cpp
-#: addons/skin.estuary/1080i/Variables.xml
-#: addons/skin.estuary/1080i/View_51_Poster.xml
-#: addons/skin.estuary/1080i/DialogVideoInfo.xml
+#: addons/skin.estuary/xml/Variables.xml
+#: addons/skin.estuary/xml/View_51_Poster.xml
+#: addons/skin.estuary/xml/DialogVideoInfo.xml
 msgctxt "#180"
 msgid "Duration"
 msgstr ""
@@ -816,7 +816,7 @@ msgstr ""
 
 #: xbmc/addons/GUIViewStateAddonBrowser.cpp
 #: xbmc/dialogs/GUIDialogSelect.cpp
-#: addons/skin.estuary/1080i/DialogPVRGroupManager.xml
+#: addons/skin.estuary/xml/DialogPVRGroupManager.xml
 msgctxt "#186"
 msgid "OK"
 msgstr ""
@@ -872,7 +872,7 @@ msgid "Select movie:"
 msgstr ""
 
 msgctxt "#197"
-msgid "Querying %s information"
+msgid "Querying {0:s} information"
 msgstr ""
 
 msgctxt "#198"
@@ -916,24 +916,24 @@ msgctxt "#205"
 msgid "Votes"
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogFullScreenInfo.xml
-#: addons/skin.estuary/1080i/DialogPVRInfo.xml
+#: addons/skin.estuary/xml/DialogFullScreenInfo.xml
+#: addons/skin.estuary/xml/DialogPVRInfo.xml
 msgctxt "#206"
 msgid "Cast"
 msgstr ""
 
 #: xbmc/playlists/SmartPlaylist.cpp
-#: addons/skin.estuary/1080i/DialogFullScreenInfo.xml
-#: addons/skin.estuary/1080i/DialogVideoInfo.xml
-#: addons/skin.estuary/1080i/DialogPVRInfo.xml
-#: addons/skin.estuary/1080i/Includes_PVR.xml
-#: addons/skin.estuary/1080i/MyVideoNav.xml
+#: addons/skin.estuary/xml/DialogFullScreenInfo.xml
+#: addons/skin.estuary/xml/DialogVideoInfo.xml
+#: addons/skin.estuary/xml/DialogPVRInfo.xml
+#: addons/skin.estuary/xml/Includes_PVR.xml
+#: addons/skin.estuary/xml/MyVideoNav.xml
 msgctxt "#207"
 msgid "Plot"
 msgstr ""
 
 #. generic "play" (some sort of media) label used in different places
-#: addons/skin.estuary/1080i/DialogVideoInfo.xml
+#: addons/skin.estuary/xml/DialogVideoInfo.xml
 #: xbmc/dialogs/GUIDialogPlayEject.cpp
 #: xbmc/games/windows/GUIWindowGames.cpp
 #: xbmc/video/ContextMenus.cpp
@@ -944,7 +944,7 @@ msgid "Play"
 msgstr ""
 
 #. used as label for an action/button to play or navigate to the next item
-#: addons/skin.estuary/1080i/VideoOSD.xml
+#: addons/skin.estuary/xml/VideoOSD.xml
 msgctxt "#209"
 msgid "Next"
 msgstr ""
@@ -1017,7 +1017,7 @@ msgctxt "#221"
 msgid "Network is not connected"
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogKeyboard.xml
+#: addons/skin.estuary/xml/DialogKeyboard.xml
 msgctxt "#222"
 msgid "Cancel"
 msgstr ""
@@ -1105,7 +1105,7 @@ msgid "Display mode"
 msgstr ""
 
 msgctxt "#241"
-msgid "Full screen #%d"
+msgid "Full screen #{0:d}"
 msgstr ""
 
 msgctxt "#242"
@@ -1117,13 +1117,13 @@ msgctxt "#243"
 msgid "Refresh rate"
 msgstr ""
 
-#: addons/skin.estuary/1080i/Home.xml
+#: addons/skin.estuary/xml/Home.xml
 msgctxt "#244"
 msgid "Full screen"
 msgstr ""
 
 msgctxt "#245"
-msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
+msgid "Sizing: ({0:d},{1:d})->({2:d},{3:d}) (Zoom x{4:2.2f}) AR:{5:2.2f}:1 (Pixels: {6:2.2f}:1) (VShift: {7:2.2f})"
 msgstr ""
 
 msgctxt "#246"
@@ -1147,7 +1147,7 @@ msgid "Music"
 msgstr ""
 
 #: system/settings/settings.xml
-#: addons/skin.estuary/1080i/Custom_1105_MusicOSDSettings.xml
+#: addons/skin.estuary/xml/Custom_1105_MusicOSDSettings.xml
 msgctxt "#250"
 msgid "Visualisation"
 msgstr ""
@@ -1179,6 +1179,7 @@ msgid "Fetching CD information"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogFileBrowser.cpp
+#: xbmc/pvr/PVRGUIActions.cpp
 #: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
 #: xbmc/music/windows/GUIWindowMusicBase.cpp
 #: xbmc/video/windows/GUIWindowVideoNav.cpp
@@ -1216,7 +1217,7 @@ msgstr ""
 #: xbmc/music/windows/GUIWindowMusicBase.cpp
 #: xbmc/pvr/dialogs/GUIDialogPVRGuideInfo.cpp
 #: xbmc/pvr/PVRContextMenus.cpp
-#: addons/skin.estuary/1080i/Variables.xml
+#: addons/skin.estuary/xml/Variables.xml
 msgctxt "#264"
 msgid "Record"
 msgstr ""
@@ -1292,7 +1293,7 @@ msgid "Please check the XML files"
 msgstr ""
 
 msgctxt "#282"
-msgid "Found %i items"
+msgid "Found {0:d} items"
 msgstr ""
 
 #: xbmc/filesystem/AddonsDirectory.cpp
@@ -1300,7 +1301,7 @@ msgctxt "#283"
 msgid "Search results"
 msgstr ""
 
-#. generic "no search results found" label used in diferent places
+#. generic "no search results found" label used in different places
 #: xbmc/pvr/windows/GUIWindowPVRSearch.cpp
 #: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
 #: xbmc/video/windows/GUIWindowVideoBase.cpp
@@ -1328,7 +1329,7 @@ msgid "Font"
 msgstr ""
 
 #: system/settings/settings.xml
-#: addons/skin.estuary/1080i/Variables.xml
+#: addons/skin.estuary/xml/Variables.xml
 msgctxt "#289"
 msgid "Size"
 msgstr ""
@@ -1365,14 +1366,14 @@ msgctxt "#297"
 msgid "Audio offset"
 msgstr ""
 
-#: addons/skin.estuary/1080i/VideoOSD.xml
-#: addons/skin.estuary/1080i/Variables.xml
+#: addons/skin.estuary/xml/VideoOSD.xml
+#: addons/skin.estuary/xml/Variables.xml
 msgctxt "#298"
 msgid "Bookmarks"
 msgstr ""
 
 msgctxt "#299"
-msgid "Bookmark %i"
+msgid "Bookmark {0:d}"
 msgstr ""
 
 msgctxt "#300"
@@ -1431,7 +1432,7 @@ msgstr ""
 #. Keyboard layout name e.g. "English QWERTY"
 #: xbmc/input/KeyboardLayout.cpp
 msgctxt "#311"
-msgid "%s %s"
+msgid "{0:s} {1:s}"
 msgstr ""
 
 msgctxt "#312"
@@ -1566,8 +1567,8 @@ msgid "Play disc"
 msgstr ""
 
 #: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeOverview.cpp
-#: addons/skin.estuary/1080i/Home.xml
-#: addons/skin.estuary/1080i/SkinSettings.xml
+#: addons/skin.estuary/xml/Home.xml
+#: addons/skin.estuary/xml/SkinSettings.xml
 msgctxt "#342"
 msgid "Movies"
 msgstr ""
@@ -1583,7 +1584,7 @@ msgctxt "#344"
 msgid "Actors"
 msgstr ""
 
-#: addons/skin.estuary/1080i/Variables.xml
+#: addons/skin.estuary/xml/Variables.xml
 msgctxt "#345"
 msgid "Year"
 msgstr ""
@@ -1694,9 +1695,6 @@ msgctxt "#368"
 msgid "IMDb"
 msgstr ""
 
-#: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeMoviesOverview.cpp
-#: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeMusicVideosOverview.cpp
-#: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeTvShowOverview.cpp
 msgctxt "#369"
 msgid "Title"
 msgstr ""
@@ -1862,7 +1860,7 @@ msgid "Temp"
 msgstr ""
 
 #: xbmc/windows/GUIWindowWeather.cpp
-#: addons/skin.estuary/1080i/MyWeather.xml
+#: addons/skin.estuary/xml/MyWeather.xml
 msgctxt "#402"
 msgid "Feels like"
 msgstr ""
@@ -1919,7 +1917,7 @@ msgid "Downloading thumbnail..."
 msgstr ""
 
 #: xbmc/music/dialogs/GUIDialogMusicInfo.cpp
-#: addons/skin.estuary/1080i/DialogFullScreenInfo.xml
+#: addons/skin.estuary/xml/DialogFullScreenInfo.xml
 msgctxt "#416"
 msgid "Not available"
 msgstr ""
@@ -1994,12 +1992,12 @@ msgid "Remove movie from library"
 msgstr ""
 
 msgctxt "#433"
-msgid "Would you really like to remove '%s' from library?"
+msgid "Would you really like to remove '{0:s}' from library?"
 msgstr ""
 
 #. From <wind dir.> at <speed> <unit>
 msgctxt "#434"
-msgid "From %s at %i %s"
+msgid "From {0:s} at {1:d} {2:s}"
 msgstr ""
 
 #: xbmc/Application.cpp
@@ -2091,7 +2089,7 @@ msgctxt "#455"
 msgid "Rows"
 msgstr ""
 
-#: addons/skin.estuary/1080i/Includes_MediaMenu.xml
+#: addons/skin.estuary/xml/Includes_MediaMenu.xml
 msgctxt "#456"
 msgid "Mode"
 msgstr ""
@@ -2140,7 +2138,7 @@ msgctxt "#466"
 msgid "Gamma"
 msgstr ""
 
-#: addons/skin.estuary/1080i/SmartPlaylistEditor.xml
+#: addons/skin.estuary/xml/SmartPlaylistEditor.xml
 msgctxt "#467"
 msgid "Type"
 msgstr ""
@@ -2188,7 +2186,7 @@ msgid "Skin & language"
 msgstr ""
 
 #: system/settings/settings.xml
-#: addons/skin.estuary/1080i/Includes.xml
+#: addons/skin.estuary/xml/Includes.xml
 msgctxt "#480"
 msgid "Appearance"
 msgstr ""
@@ -2207,8 +2205,8 @@ msgctxt "#485"
 msgid "Delete album"
 msgstr ""
 
-#: addons/skin.estuary/1080i/PlayerControls.xml
-#: addons/skin.estuary/1080i/MusicOSD.xml
+#: addons/skin.estuary/xml/PlayerControls.xml
+#: addons/skin.estuary/xml/MusicOSD.xml
 msgctxt "#486"
 msgid "Repeat"
 msgstr ""
@@ -2322,13 +2320,13 @@ msgstr ""
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
 #: xbmc/dialogs/GUIDialogSmartPlaylistRule.cpp
 #: xbmc/playlists/SmartPlaylist.cpp
-#: addons/skin.estuary/1080i/MyPVRRecordings.xml
-#: addons/skin.estuary/1080i/Variables.xml
-#: addons/skin.estuary/1080i/DialogPVRInfo.xml
-#: addons/skin.estuary/1080i/MyPVRGuide.xml
-#: addons/skin.estuary/1080i/View_51_Poster.xml
-#: addons/skin.estuary/1080i/Includes_PVR.xml
-#: addons/skin.estuary/1080i/DialogPVRGuideSearch.xml
+#: addons/skin.estuary/xml/MyPVRRecordings.xml
+#: addons/skin.estuary/xml/Variables.xml
+#: addons/skin.estuary/xml/DialogPVRInfo.xml
+#: addons/skin.estuary/xml/MyPVRGuide.xml
+#: addons/skin.estuary/xml/View_51_Poster.xml
+#: addons/skin.estuary/xml/Includes_PVR.xml
+#: addons/skin.estuary/xml/DialogPVRGuideSearch.xml
 msgctxt "#515"
 msgid "Genre"
 msgstr ""
@@ -2406,11 +2404,11 @@ msgid "Enter genre"
 msgstr ""
 
 msgctxt "#534"
-msgid "View: %s"
+msgid "View: {0:s}"
 msgstr ""
 
-#: addons/skin.estuary/1080i/View_50_List.xml
-#: addons/skin.estuary/1080i/EventLog.xml
+#: addons/skin.estuary/xml/View_50_List.xml
+#: addons/skin.estuary/xml/EventLog.xml
 msgctxt "#535"
 msgid "List"
 msgstr ""
@@ -2479,7 +2477,7 @@ msgstr ""
 
 #: xbmc/windows/GUIMediaWindow.cpp
 msgctxt "#550"
-msgid "Sort by: %s"
+msgid "Sort by: {0:s}"
 msgstr ""
 
 #. generic "name" label used in different places
@@ -2490,7 +2488,7 @@ msgid "Name"
 msgstr ""
 
 #. generic "date" label used in different places
-#: addons/skin.estuary/1080i/Variables.xml
+#: addons/skin.estuary/xml/Variables.xml
 #: xbmc/xbmc/pvr/windows/GUIViewStatePVR.cpp
 msgctxt "#552"
 msgid "Date"
@@ -2513,7 +2511,7 @@ msgstr ""
 
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
 #: xbmc/playlists/SmartPlaylist.cpp
-#: addons/skin.estuary/1080i/DialogPVRRadioRDSInfo.xml
+#: addons/skin.estuary/xml/DialogPVRRadioRDSInfo.xml
 msgctxt "#556"
 msgid "Title"
 msgstr ""
@@ -2522,7 +2520,7 @@ msgstr ""
 #: xbmc/dialogs/GUIDialogSmartPlaylistRule.cpp
 #: xbmc/media/MediaTypes.cpp
 #: xbmc/playlists/SmartPlaylist.cpp
-#: addons/skin.estuary/1080i/DialogPVRRadioRDSInfo.xml
+#: addons/skin.estuary/xml/DialogPVRRadioRDSInfo.xml
 msgctxt "#557"
 msgid "Artist"
 msgstr ""
@@ -2531,7 +2529,7 @@ msgstr ""
 #: xbmc/dialogs/GUIDialogSmartPlaylistRule.cpp
 #: xbmc/media/MediaTypes.cpp
 #: xbmc/playlists/SmartPlaylist.cpp
-#: addons/skin.estuary/1080i/DialogPVRRadioRDSInfo.xml
+#: addons/skin.estuary/xml/DialogPVRRadioRDSInfo.xml
 msgctxt "#558"
 msgid "Album"
 msgstr ""
@@ -2553,9 +2551,6 @@ msgstr ""
 
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
 #: xbmc/dialogs/GUIDialogSmartPlaylistRule.cpp
-#: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeMoviesOverview.cpp
-#: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeMusicVideosOverview.cpp
-#: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeTvShowOverview.cpp
 #: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#562"
 msgid "Year"
@@ -2564,8 +2559,8 @@ msgstr ""
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
 #: xbmc/playlists/SmartPlaylist.cpp
 #: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
-#: addons/skin.estuary/1080i/DialogVideoInfo.xml
-#: addons/skin.estuary/1080i/DialogFullScreenInfo.xml
+#: addons/skin.estuary/xml/DialogVideoInfo.xml
+#: addons/skin.estuary/xml/DialogFullScreenInfo.xml
 msgctxt "#563"
 msgid "Rating"
 msgstr ""
@@ -2586,7 +2581,7 @@ msgid "Album artist"
 msgstr ""
 
 #: xbmc/playlists/SmartPlaylist.cpp
-#: addons/skin.estuary/1080i/Variables.xml
+#: addons/skin.estuary/xml/Variables.xml
 msgctxt "#567"
 msgid "Play count"
 msgstr ""
@@ -2600,7 +2595,7 @@ msgid "Last played"
 msgstr ""
 
 #: xbmc/playlists/SmartPlaylist.cpp
-#: addons/skin.estuary/1080i/DialogPVRRadioRDSInfo.xml
+#: addons/skin.estuary/xml/DialogPVRRadioRDSInfo.xml
 msgctxt "#569"
 msgid "Comment"
 msgstr ""
@@ -2671,13 +2666,13 @@ msgid "Remember views for different folders"
 msgstr ""
 
 #: xbmc/view/GUIViewState.cpp
-#: addons/skin.estuary/1080i/EventLog.xml
+#: addons/skin.estuary/xml/EventLog.xml
 msgctxt "#584"
 msgid "Ascending"
 msgstr ""
 
 #: xbmc/view/GUIViewState.cpp
-#: addons/skin.estuary/1080i/EventLog.xml
+#: addons/skin.estuary/xml/EventLog.xml
 msgctxt "#585"
 msgid "Descending"
 msgstr ""
@@ -2686,7 +2681,7 @@ msgctxt "#586"
 msgid "Edit playlist"
 msgstr ""
 
-#: addons/skin.estuary/1080i/Includes_MediaMenu.xml
+#: addons/skin.estuary/xml/Includes_MediaMenu.xml
 msgctxt "#587"
 msgid "Filter"
 msgstr ""
@@ -2695,15 +2690,15 @@ msgctxt "#588"
 msgid "Cancel party mode"
 msgstr ""
 
-#: addons/skin.estuary/1080i/MyVideoNav.xml
-#: addons/skin.estuary/1080i/MyMusicNav.xml
+#: addons/skin.estuary/xml/MyVideoNav.xml
+#: addons/skin.estuary/xml/MyMusicNav.xml
 msgctxt "#589"
 msgid "Party mode"
 msgstr ""
 
 #: xbmc/playlists/SmartPlaylist.cpp
-#: addons/skin.estuary/1080i/PlayerControls.xml
-#: addons/skin.estuary/1080i/MusicOSD.xml
+#: addons/skin.estuary/xml/PlayerControls.xml
+#: addons/skin.estuary/xml/MusicOSD.xml
 msgctxt "#590"
 msgid "Random"
 msgstr ""
@@ -2716,7 +2711,7 @@ msgctxt "#592"
 msgid "One"
 msgstr ""
 
-#. Label used for buttons and select options as a reference to match all items or ocurrences.
+#. Label used for buttons and select options as a reference to match all items or occurrences.
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
 #: xbmc/filesystem/AddonsDirectory.cpp
 #: xbmc/PlayListPlayer.cpp
@@ -2791,13 +2786,13 @@ msgctxt "#611"
 msgid "Enter number"
 msgstr ""
 
-#: addons/skin.estuary/1080i/MusicVisualisation.xml
+#: addons/skin.estuary/xml/MusicVisualisation.xml
 msgctxt "#612"
 msgid "Bits/sample"
 msgstr ""
 
 #: xbmc/settings/dialogs/GUIDialogAudioDSPSettings.cpp
-#: addons/skin.estuary/1080i/MusicVisualisation.xml
+#: addons/skin.estuary/xml/MusicVisualisation.xml
 msgctxt "#613"
 msgid "Sample rate"
 msgstr ""
@@ -2825,7 +2820,7 @@ msgid "Quality"
 msgstr ""
 
 #: system/settings/settings.xml
-#: addons/skin.estuary/1080i/MusicVisualisation.xml
+#: addons/skin.estuary/xml/MusicVisualisation.xml
 msgctxt "#623"
 msgid "Bitrate"
 msgstr ""
@@ -2955,13 +2950,16 @@ msgid "Browse for library"
 msgstr ""
 
 #: xbmc/filesystem/MusicDatabaseDirectory/DirectoryNodeOverview.cpp
+#: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeMoviesOverview.cpp
+#: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeMusicVideosOverview.cpp
+#: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeTvShowOverview.cpp
 #: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#652"
 msgid "Years"
 msgstr ""
 
-#: addons/skin.estuary/1080i/Variables.xml
-#: addons/skin.estuary/1080i/MyVideoNav.xml
+#: addons/skin.estuary/xml/Variables.xml
+#: addons/skin.estuary/xml/MyVideoNav.xml
 msgctxt "#653"
 msgid "Update library"
 msgstr ""
@@ -3231,7 +3229,7 @@ msgid "Character set"
 msgstr ""
 
 #: system/settings/settings.xml
-#: addons/skin.estuary/1080i/Variables.xml
+#: addons/skin.estuary/xml/Variables.xml
 msgctxt "#736"
 msgid "Style"
 msgstr ""
@@ -3358,7 +3356,7 @@ msgstr ""
 #strings 768 and 769 reserved for more subtitle colours
 
 msgctxt "#770"
-msgid "Error %i: share not available"
+msgid "Error {0:d}: share not available"
 msgstr ""
 
 #empty string with id 771
@@ -3368,7 +3366,7 @@ msgctxt "#772"
 msgid "Audio"
 msgstr ""
 
-#: addons/skin.estuary/1080i/Variables.xml
+#: addons/skin.estuary/xml/Variables.xml
 msgctxt "#773"
 msgid "Seeking"
 msgstr ""
@@ -3498,10 +3496,10 @@ msgstr ""
 
 #empty strings from id 800 to 801
 
-#. Label of progess bar which shows the available/total space of pvr backend
+#. Label of progress bar which shows the available/total space of pvr backend
 #: xbmc/pvr/PVRGUIInfo.cpp
 msgctxt "#802"
-msgid "%s of %s available"
+msgid "{0:s} of {1:s} available"
 msgstr ""
 
 #. Label of list control for choosing the timer type (one time, repeating, ...) in PVR timer settings dialog
@@ -3634,7 +3632,7 @@ msgstr ""
 #empty strings from id 824 to 827
 
 #. Text for notification that a timer rule has been deleted
-#: xbmc/pvr/timers/PVRTimers.cpp
+#: xbmc/pvr/timers/PVRTimerInfoTag.cpp
 msgctxt "#828"
 msgid "Timer rule deleted"
 msgstr ""
@@ -3791,7 +3789,7 @@ msgctxt "#1007"
 msgid "Add network location"
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogNetworkSetup.xml
+#: addons/skin.estuary/xml/DialogNetworkSetup.xml
 msgctxt "#1008"
 msgid "Protocol"
 msgstr ""
@@ -3816,12 +3814,12 @@ msgctxt "#1012"
 msgid "Shared folder"
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogNetworkSetup.xml
+#: addons/skin.estuary/xml/DialogNetworkSetup.xml
 msgctxt "#1013"
 msgid "Port"
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogNetworkSetup.xml
+#: addons/skin.estuary/xml/DialogNetworkSetup.xml
 msgctxt "#1014"
 msgid "Username"
 msgstr ""
@@ -3854,13 +3852,13 @@ msgstr ""
 #empty string with id 1020
 
 #: xbmc/dialogs/GUIDialogMediaSource.cpp
-#: addons/skin.estuary/1080i/DialogMediaSource.xml
+#: addons/skin.estuary/xml/DialogMediaSource.xml
 msgctxt "#1021"
 msgid "Enter the paths or browse for the media locations."
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogMediaSource.cpp
-#: addons/skin.estuary/1080i/DialogMediaSource.xml
+#: addons/skin.estuary/xml/DialogMediaSource.xml
 msgctxt "#1022"
 msgid "Enter a name for this media source."
 msgstr ""
@@ -3870,8 +3868,8 @@ msgctxt "#1023"
 msgid "Browse for new share"
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogNetworkSetup.xml
-#: addons/skin.estuary/1080i/SmartPlaylistRule.xml
+#: addons/skin.estuary/xml/DialogNetworkSetup.xml
+#: addons/skin.estuary/xml/SmartPlaylistRule.xml
 msgctxt "#1024"
 msgid "Browse"
 msgstr ""
@@ -3932,19 +3930,19 @@ msgid "Favourites"
 msgstr ""
 
 #: xbmc/addons/Addon.cpp
-#: addons/skin.estuary/1080i/Includes.xml
+#: addons/skin.estuary/xml/Includes.xml
 msgctxt "#1037"
 msgid "Video add-ons"
 msgstr ""
 
 #: xbmc/addons/Addon.cpp
-#: addons/skin.estuary/1080i/Includes.xml
+#: addons/skin.estuary/xml/Includes.xml
 msgctxt "#1038"
 msgid "Music add-ons"
 msgstr ""
 
 #: xbmc/addons/Addon.cpp
-#: addons/skin.estuary/1080i/Includes.xml
+#: addons/skin.estuary/xml/Includes.xml
 msgctxt "#1039"
 msgid "Picture add-ons"
 msgstr ""
@@ -3955,11 +3953,11 @@ msgid "Loading directory"
 msgstr ""
 
 msgctxt "#1041"
-msgid "Retrieved %i items"
+msgid "Retrieved {0:d} items"
 msgstr ""
 
 msgctxt "#1042"
-msgid "Retrieved %i of %i items"
+msgid "Retrieved {0:d} of {1:d} items"
 msgstr ""
 
 #: xbmc/addons/Addon.cpp
@@ -4219,7 +4217,7 @@ msgstr ""
 #. Filter movies/tvshows/music/episodes/artists/musicvideos/albums/songs
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
 msgctxt "#1275"
-msgid "Filter %s"
+msgid "Filter {0:s}"
 msgstr ""
 
 #empty strings from id 1276 to 1299
@@ -4650,7 +4648,7 @@ msgstr ""
 #. Notification message indicating an add-on error. "<Add-on name> error".
 #: xbmc/interfaces/python/PythonInvoker.cpp
 msgctxt "#2102"
-msgid "%s error"
+msgid "{0:s} error"
 msgstr ""
 
 #. Fallback message indicating an add-on error.
@@ -4690,7 +4688,7 @@ msgstr ""
 
 #: xbmc/addons/GUIDialogAddonSettings.cpp
 #: xbmc/guilib/WindowIDs.h
-#: addons/skin.estuary/1080i/AddonBrowser.xml
+#: addons/skin.estuary/xml/AddonBrowser.xml
 #: xbmc/settings/dialogs/GUIDialogContentSettings.cpp
 msgctxt "#10004"
 msgid "Settings"
@@ -4778,7 +4776,14 @@ msgctxt "#10021"
 msgid "Settings - TV"
 msgstr ""
 
-#empty strings from id 10022 to 10024
+#empty strings from id 10022 to 10023
+
+#: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeMoviesOverview.cpp
+#: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeMusicVideosOverview.cpp
+#: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeTvShowOverview.cpp
+msgctxt "#10024"
+msgid "Titles"
+msgstr ""
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#10025"
@@ -4986,7 +4991,7 @@ msgctxt "#10139"
 msgid "Pictures / Info"
 msgstr ""
 
-#: addons/skin.estuary/1080i/MyGames.xml
+#: addons/skin.estuary/xml/MyGames.xml
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#10140"
 msgid "Add-on settings"
@@ -5194,7 +5199,7 @@ msgstr ""
 #: xbmc/pvr/PVRGUIActions.cpp
 #: xbmc/video/windows/GUIWindowVideoBase.cpp
 msgctxt "#12022"
-msgid "Resume from %s"
+msgid "Resume from {0:s}"
 msgstr ""
 
 #. unused?
@@ -5204,61 +5209,61 @@ msgstr ""
 
 #empty strings from id 12024 to 12309
 
-#: addons/skin.estuary/1080i/DialogNumeric.xml
+#: addons/skin.estuary/xml/DialogNumeric.xml
 #: addons/skin.estouchy/xml/DialogNumeric.xml
 msgctxt "#12310"
 msgid "0"
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogNumeric.xml
+#: addons/skin.estuary/xml/DialogNumeric.xml
 #: addons/skin.estouchy/xml/DialogNumeric.xml
 msgctxt "#12311"
 msgid "1"
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogNumeric.xml
+#: addons/skin.estuary/xml/DialogNumeric.xml
 #: addons/skin.estouchy/xml/DialogNumeric.xml
 msgctxt "#12312"
 msgid "2"
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogNumeric.xml
+#: addons/skin.estuary/xml/DialogNumeric.xml
 #: addons/skin.estouchy/xml/DialogNumeric.xml
 msgctxt "#12313"
 msgid "3"
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogNumeric.xml
+#: addons/skin.estuary/xml/DialogNumeric.xml
 #: addons/skin.estouchy/xml/DialogNumeric.xml
 msgctxt "#12314"
 msgid "4"
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogNumeric.xml
+#: addons/skin.estuary/xml/DialogNumeric.xml
 #: addons/skin.estouchy/xml/DialogNumeric.xml
 msgctxt "#12315"
 msgid "5"
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogNumeric.xml
+#: addons/skin.estuary/xml/DialogNumeric.xml
 #: addons/skin.estouchy/xml/DialogNumeric.xml
 msgctxt "#12316"
 msgid "6"
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogNumeric.xml
+#: addons/skin.estuary/xml/DialogNumeric.xml
 #: addons/skin.estouchy/xml/DialogNumeric.xml
 msgctxt "#12317"
 msgid "7"
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogNumeric.xml
+#: addons/skin.estuary/xml/DialogNumeric.xml
 #: addons/skin.estouchy/xml/DialogNumeric.xml
 msgctxt "#12318"
 msgid "8"
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogNumeric.xml
+#: addons/skin.estuary/xml/DialogNumeric.xml
 #: addons/skin.estouchy/xml/DialogNumeric.xml
 msgctxt "#12319"
 msgid "9"
@@ -5487,7 +5492,7 @@ msgstr ""
 #. time format with meridiem (xx) e.g. "HH:mm:ss xx"
 #: xbmc/LangInfo.cpp
 msgctxt "#12382"
-msgid "%s xx"
+msgid "{0:s} xx"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -5523,7 +5528,7 @@ msgid "System uptime"
 msgstr ""
 
 #: xbmc/utils/SystemInfo.cpp
-#: addons/skin.estuary/1080i/Variables.xml
+#: addons/skin.estuary/xml/Variables.xml
 msgctxt "#12391"
 msgid "Minutes"
 msgstr ""
@@ -5571,7 +5576,7 @@ msgstr ""
 #string id 12902 to 12905 match in WindowIDs.h
 
 #: system/settings/settings.xml
-#: addons/skin.estuary/1080i/Includes.xml
+#: addons/skin.estuary/xml/Includes.xml
 msgctxt "#13000"
 msgid "System"
 msgstr ""
@@ -5615,25 +5620,25 @@ msgid "Quit"
 msgstr ""
 
 #: system/settings/settings.xml
-#: addons/skin.estuary/1080i/DialogButtonMenu.xml
+#: addons/skin.estuary/xml/DialogButtonMenu.xml
 msgctxt "#13010"
 msgid "Hibernate"
 msgstr ""
 
 #: system/settings/settings.xml
 #: system/peripherals.xml
-#: addons/skin.estuary/1080i/DialogButtonMenu.xml
+#: addons/skin.estuary/xml/DialogButtonMenu.xml
 msgctxt "#13011"
 msgid "Suspend"
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogButtonMenu.xml
+#: addons/skin.estuary/xml/DialogButtonMenu.xml
 #: addons/skin.estouchy/xml/Home.xml
 msgctxt "#13012"
 msgid "Exit"
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogButtonMenu.xml
+#: addons/skin.estuary/xml/DialogButtonMenu.xml
 msgctxt "#13013"
 msgid "Reboot"
 msgstr ""
@@ -5648,17 +5653,17 @@ msgctxt "#13015"
 msgid "Power button action"
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogButtonMenu.xml
+#: addons/skin.estuary/xml/DialogButtonMenu.xml
 msgctxt "#13016"
 msgid "Power off system"
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogButtonMenu.xml
+#: addons/skin.estuary/xml/DialogButtonMenu.xml
 msgctxt "#13017"
 msgid "Inhibit idle shutdown"
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogButtonMenu.xml
+#: addons/skin.estuary/xml/DialogButtonMenu.xml
 msgctxt "#13018"
 msgid "Allow idle shutdown"
 msgstr ""
@@ -5700,7 +5705,7 @@ msgstr ""
 
 #: xbmc/network/WakeOnAccess.cpp
 msgctxt "#13027"
-msgid "Wake-on-LAN (%s)"
+msgid "Wake-on-LAN ({0:s})"
 msgstr ""
 
 #: xbmc/network/WakeOnAccess.cpp
@@ -5735,17 +5740,17 @@ msgstr ""
 
 #: xbmc/network/WakeOnAccess.cpp
 msgctxt "#13034"
-msgid "Updated for %s"
+msgid "Updated for {0:s}"
 msgstr ""
 
 #: xbmc/network/WakeOnAccess.cpp
 msgctxt "#13035"
-msgid "Found for %s"
+msgid "Found for {0:s}"
 msgstr ""
 
 #: xbmc/network/WakeOnAccess.cpp
 msgctxt "#13036"
-msgid "Failed for %s"
+msgid "Failed for {0:s}"
 msgstr ""
 
 #empty strings from id 13037 to 13049
@@ -5920,7 +5925,7 @@ msgstr ""
 
 #empty strings from id 13163 to 13169
 
-#: addons/skin.estuary/1080i/SettingsProfile.xml
+#: addons/skin.estuary/xml/SettingsProfile.xml
 msgctxt "#13170"
 msgid "Never"
 msgstr ""
@@ -5932,7 +5937,7 @@ msgstr ""
 
 #. unused?
 msgctxt "#13172"
-msgid "After %i secs"
+msgid "After {0:d} secs"
 msgstr ""
 
 #. unused?
@@ -5950,15 +5955,15 @@ msgstr ""
 #: addons/skin.estouchy/xml/SettingsProfile.xml
 #: xbmc/profiles/ProfilesManager.cpp
 #: xbmc/profiles/dialogs/GUIDialogProfileSettings.cpp
-#: addons/skin.estuary/1080i/SettingsProfile.xml
-#: addons/skin.estuary/1080i/Includes.xml
+#: addons/skin.estuary/xml/SettingsProfile.xml
+#: addons/skin.estuary/xml/Includes.xml
 msgctxt "#13200"
 msgid "Profiles"
 msgstr ""
 
 #: xbmc/profiles/ProfilesManager.cpp
 msgctxt "#13201"
-msgid "Delete profile '%s'?"
+msgid "Delete profile '{0:s}'?"
 msgstr ""
 
 #empty strings from id 13202 to 13203
@@ -6007,7 +6012,7 @@ msgstr ""
 
 #: xbmc/utils/AlarmClock.cpp
 msgctxt "#13210"
-msgid "Started, alarm in %im"
+msgid "Started, alarm in {0:d}m"
 msgstr ""
 
 #: xbmc/utils/AlarmClock.cpp
@@ -6017,19 +6022,19 @@ msgstr ""
 
 #: xbmc/utils/AlarmClock.cpp
 msgctxt "#13212"
-msgid "Cancelled with %im%is left"
+msgid "Cancelled with {0:d}m{1:d}s left"
 msgstr ""
 
 #. minutes (left from countdown)
 #: xbmc/GUIInfoManager.cpp
 msgctxt "#13213"
-msgid "%2.0fm"
+msgid "{0:2.0f}m"
 msgstr ""
 
 #. seconds (left from countdown)
 #: xbmc/GUIInfoManager.cpp
 msgctxt "#13214"
-msgid "%2.0fs"
+msgid "{0:2.0f}s"
 msgstr ""
 
 #empty strings from id 13215 to 13248
@@ -6061,7 +6066,7 @@ msgid "Hardware:"
 msgstr ""
 
 #: xbmc/windows/GUIWindowSystemInfo.cpp
-#: addons/skin.estuary/1080i/SettingsSystemInfo.xml
+#: addons/skin.estuary/xml/SettingsSystemInfo.xml
 msgctxt "#13271"
 msgid "System CPU usage:"
 msgstr ""
@@ -6080,7 +6085,7 @@ msgctxt "#13276"
 msgid "DVD-ROM"
 msgstr ""
 
-#: addons/skin.estuary/1080i/SettingsSystemInfo.xml
+#: addons/skin.estuary/xml/SettingsSystemInfo.xml
 msgctxt "#13277"
 msgid "Storage"
 msgstr ""
@@ -6089,17 +6094,17 @@ msgctxt "#13278"
 msgid "Default"
 msgstr ""
 
-#: addons/skin.estuary/1080i/SettingsSystemInfo.xml
+#: addons/skin.estuary/xml/SettingsSystemInfo.xml
 msgctxt "#13279"
 msgid "Network"
 msgstr ""
 
-#: addons/skin.estuary/1080i/SettingsSystemInfo.xml
+#: addons/skin.estuary/xml/SettingsSystemInfo.xml
 msgctxt "#13280"
 msgid "Video"
 msgstr ""
 
-#: addons/skin.estuary/1080i/SettingsSystemInfo.xml
+#: addons/skin.estuary/xml/SettingsSystemInfo.xml
 msgctxt "#13281"
 msgid "Hardware"
 msgstr ""
@@ -6230,18 +6235,18 @@ msgctxt "#13316"
 msgid "Recursive thumbnails"
 msgstr ""
 
-#: addons/skin.estuary/1080i/MyPics.xml
+#: addons/skin.estuary/xml/MyPics.xml
 msgctxt "#13317"
 msgid "View slideshow"
 msgstr ""
 
-#: addons/skin.estuary/1080i/MyPics.xml
+#: addons/skin.estuary/xml/MyPics.xml
 msgctxt "#13318"
 msgid "Recursive slideshow"
 msgstr ""
 
 #: system/settings/settings.xml
-#: addons/skin.estuary/1080i/MyPics.xml
+#: addons/skin.estuary/xml/MyPics.xml
 msgctxt "#13319"
 msgid "Randomise"
 msgstr ""
@@ -6275,15 +6280,15 @@ msgstr ""
 #empty string with id 13327
 
 msgctxt "#13328"
-msgid "%s not found"
+msgid "{0:s} not found"
 msgstr ""
 
 msgctxt "#13329"
-msgid "Error opening %s"
+msgid "Error opening {0:s}"
 msgstr ""
 
 msgctxt "#13330"
-msgid "Unable to load %s"
+msgid "Unable to load {0:s}"
 msgstr ""
 
 msgctxt "#13331"
@@ -6371,8 +6376,8 @@ msgctxt "#13352"
 msgid "Scan item to library"
 msgstr ""
 
-#: addons/skin.estuary/1080i/MyVideoNav.xml
-#: addons/skin.estuary/1080i/Variables.xml
+#: addons/skin.estuary/xml/MyVideoNav.xml
+#: addons/skin.estuary/xml/Variables.xml
 msgctxt "#13353"
 msgid "Stop scanning"
 msgstr ""
@@ -6465,7 +6470,7 @@ msgctxt "#13387"
 msgid "Track naming template - right"
 msgstr ""
 
-#: addons/skin.estuary/1080i/MusicVisualisation.xml
+#: addons/skin.estuary/xml/MusicVisualisation.xml
 msgctxt "#13388"
 msgid "Preset"
 msgstr ""
@@ -6500,15 +6505,15 @@ msgid "Calculating folder size"
 msgstr ""
 
 #: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
-#: addons/skin.estuary/1080i/Variables.xml
-#: addons/skin.estuary/1080i/Custom_1106_VideoOSDSettings.xml
+#: addons/skin.estuary/xml/Variables.xml
+#: addons/skin.estuary/xml/Custom_1106_VideoOSDSettings.xml
 msgctxt "#13395"
 msgid "Video settings"
 msgstr ""
 
 #: xbmc/video/dialogs/GUIDialogAudioSubtitleSettings.cpp
-#: addons/skin.estuary/1080i/Custom_1106_VideoOSDSettings.xml
-#: addons/skin.estuary/1080i/Variables.xml
+#: addons/skin.estuary/xml/Custom_1106_VideoOSDSettings.xml
+#: addons/skin.estuary/xml/Variables.xml
 msgctxt "#13396"
 msgid "Audio and subtitle settings"
 msgstr ""
@@ -6534,7 +6539,7 @@ msgstr ""
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
 #: xbmc/dialogs/GUIDialogSmartPlaylistRule.cpp
 msgctxt "#13401"
-msgid "Browse for %s"
+msgid "Browse for {0:s}"
 msgstr ""
 
 msgctxt "#13402"
@@ -6560,7 +6565,7 @@ msgid "Picture information"
 msgstr ""
 
 msgctxt "#13407"
-msgid "%s presets"
+msgid "{0:s} presets"
 msgstr ""
 
 msgctxt "#13408"
@@ -6887,19 +6892,19 @@ msgid "Off"
 msgstr ""
 
 msgctxt "#13552"
-msgid "%.1f second"
+msgid "{0:.1f} second"
 msgstr ""
 
 msgctxt "#13553"
-msgid "%.1f seconds"
+msgid "{0:.1f} seconds"
 msgstr ""
 
 msgctxt "#13554"
-msgid "%d Minute"
+msgid "{0:d} Minute"
 msgstr ""
 
 msgctxt "#13555"
-msgid "%d Minutes"
+msgid "{0:d} Minutes"
 msgstr ""
 
 #. Label of a setting that allows to select the skip step sizes to use for skipping
@@ -7037,7 +7042,7 @@ msgctxt "#14017"
 msgid "Percentage of thumbs"
 msgstr ""
 
-#: addons/skin.estuary/1080i/Includes_MediaMenu.xml
+#: addons/skin.estuary/xml/Includes_MediaMenu.xml
 msgctxt "#14018"
 msgid "View options"
 msgstr ""
@@ -7119,7 +7124,7 @@ msgid "Local network"
 msgstr ""
 
 #: system/settings/settings.xml
-#: addons/skin.estuary/1080i/Includes.xml
+#: addons/skin.estuary/xml/Includes.xml
 msgctxt "#14036"
 msgid "Services"
 msgstr ""
@@ -7154,39 +7159,39 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14044"
-msgid "%i min"
+msgid "{0:d} min"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14045"
-msgid "%i sec"
+msgid "{0:d} sec"
 msgstr ""
 
 #: system/settings/darwin.xml
 #: system/settings/settings.xml
 msgctxt "#14046"
-msgid "%i ms"
+msgid "{0:d} ms"
 msgstr ""
 
 #: system/settings/settings.xml
 #: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#14047"
-msgid "%i %%"
+msgid "{0:d} %"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14048"
-msgid "%i kbps"
+msgid "{0:d} kbps"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14049"
-msgid "%i kb"
+msgid "{0:d} kb"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14050"
-msgid "%i.0 dB"
+msgid "{0:d}.0 dB"
 msgstr ""
 
 msgctxt "#14051"
@@ -7203,7 +7208,7 @@ msgstr ""
 
 #: xbmc/video/dialogs/GUIDialogAudioSubtitleSettings.cpp
 msgctxt "#14054"
-msgid "%2.1f dB"
+msgid "{0:2.1f} dB"
 msgstr ""
 
 msgctxt "#14055"
@@ -7519,7 +7524,7 @@ msgstr ""
 #. Label to show the currently active/displayed event level in the event log window
 #: xbmc/event/windows/GUIWindowEventLog.cpp
 msgctxt "#14119"
-msgid "Level: %s"
+msgid "Level: {0:s}"
 msgstr ""
 
 #. Label for the option to show/hide higher level events in the event log window
@@ -7849,13 +7854,7 @@ msgctxt "#14277"
 msgid "Allow remote control from applications on other systems"
 msgstr ""
 
-#empty strings from id 14278 to 14299
-
-#. "pvr manager" settings group label
-#: system/settings/settings.xml
-msgctxt "#14300"
-msgid "PVR Manager"
-msgstr ""
+#empty strings from id 14278 to 14300
 
 #. pvr "channels" settings group label
 #: system/settings/settings.xml
@@ -7912,7 +7911,7 @@ msgstr ""
 #: xbmc/music/MusicDatabase.cpp
 #: xbmc/video/VideoDatabase.cpp
 msgctxt "#15011"
-msgid "%i Items failed to export"
+msgid "{0:d} Items failed to export"
 msgstr ""
 
 #: xbmc/video/VideoDatabase.cpp
@@ -7922,7 +7921,7 @@ msgstr ""
 
 #: xbmc/video/VideoDatabase.cpp
 msgctxt "#15013"
-msgid "What would you like to do with media items from %s"
+msgid "What would you like to do with media items from {0:s}"
 msgstr ""
 
 #: xbmc/video/VideoDatabase.cpp
@@ -7948,8 +7947,8 @@ msgctxt "#15019"
 msgid "Add"
 msgstr ""
 
-#: addons/skin.estuary/1080i/Custom_1106_VideoOSDSettings.xml
-#: addons/skin.estuary/1080i/Custom_1105_MusicOSDSettings.xml
+#: addons/skin.estuary/xml/Custom_1106_VideoOSDSettings.xml
+#: addons/skin.estuary/xml/Custom_1105_MusicOSDSettings.xml
 msgctxt "#15020"
 msgid "Audio DSP manager"
 msgstr ""
@@ -8053,7 +8052,7 @@ msgctxt "#15041"
 msgid "Unknown mode name"
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogAudioDSPSettings.xml
+#: addons/skin.estuary/xml/DialogAudioDSPSettings.xml
 msgctxt "#15042"
 msgid "Content:"
 msgstr ""
@@ -8063,7 +8062,7 @@ msgstr ""
 #. Label for a context menu entry and dialog button to open audio DSP settings dialog
 #: xbmc/pvr/PVRContextMenus.cpp
 #: xbmc/music/windows/GUIWindowMusicBase.cpp
-#: addons/skin.estuary/1080i/Custom_1105_MusicOSDSettings.xml
+#: addons/skin.estuary/xml/Custom_1105_MusicOSDSettings.xml
 msgctxt "#15047"
 msgid "Audio DSP settings"
 msgstr ""
@@ -8080,7 +8079,7 @@ msgctxt "#15051"
 msgid "Active modes"
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogNetworkSetup.xml
+#: addons/skin.estuary/xml/DialogNetworkSetup.xml
 msgctxt "#15052"
 msgid "Password"
 msgstr ""
@@ -8088,31 +8087,31 @@ msgstr ""
 #empty strings from id 15053 to 15056
 
 #. Chain select button name
-#: addons/skin.estuary/1080i/DialogAudioDSPManager.xml
+#: addons/skin.estuary/xml/DialogAudioDSPManager.xml
 msgctxt "#15057"
 msgid "Input resampling"
 msgstr ""
 
 #. Chain select button name
-#: addons/skin.estuary/1080i/DialogAudioDSPManager.xml
+#: addons/skin.estuary/xml/DialogAudioDSPManager.xml
 msgctxt "#15058"
 msgid "Pre-processing"
 msgstr ""
 
 #. Chain select button name
-#: addons/skin.estuary/1080i/DialogAudioDSPManager.xml
+#: addons/skin.estuary/xml/DialogAudioDSPManager.xml
 msgctxt "#15059"
 msgid "Master processing"
 msgstr ""
 
 #. Chain select button name
-#: addons/skin.estuary/1080i/DialogAudioDSPManager.xml
+#: addons/skin.estuary/xml/DialogAudioDSPManager.xml
 msgctxt "#15060"
 msgid "Post-processing"
 msgstr ""
 
 #. Chain select button name
-#: addons/skin.estuary/1080i/DialogAudioDSPManager.xml
+#: addons/skin.estuary/xml/DialogAudioDSPManager.xml
 msgctxt "#15061"
 msgid "Output resampling"
 msgstr ""
@@ -8130,7 +8129,7 @@ msgid "No description available"
 msgstr ""
 
 #. DSP manager boolean enable/disable value text
-#: addons/skin.estuary/1080i/DialogAudioDSPManager.xml
+#: addons/skin.estuary/xml/DialogAudioDSPManager.xml
 msgctxt "#15064"
 msgid "Apply changes directly"
 msgstr ""
@@ -8180,13 +8179,13 @@ msgstr ""
 #. Audio DSP process chain indication
 #: xbmc/settings/dialogs/GUIDialogAudioDSPSettings.cpp
 msgctxt "#15082"
-msgid "Resampling to %i Hz"
+msgid "Resampling to {0:d} Hz"
 msgstr ""
 
 #. Audio DSP process chain indication
 #: xbmc/settings/dialogs/GUIDialogAudioDSPSettings.cpp
 msgctxt "#15083"
-msgid "Final resampling to %i Hz"
+msgid "Final resampling to {0:d} Hz"
 msgstr ""
 
 #. Audio DSP process chain indication
@@ -8312,27 +8311,27 @@ msgctxt "#15112"
 msgid "Default theme"
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogAudioDSPManager.xml
+#: addons/skin.estuary/xml/DialogAudioDSPManager.xml
 msgctxt "#15113"
 msgid "Here you can configure pre-processing modes. This processing stage only change the input data stream."
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogAudioDSPManager.xml
+#: addons/skin.estuary/xml/DialogAudioDSPManager.xml
 msgctxt "#15114"
 msgid "Here you can configure an input resampling process. Notice: Only one active mode is allowed!"
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogAudioDSPManager.xml
+#: addons/skin.estuary/xml/DialogAudioDSPManager.xml
 msgctxt "#15115"
 msgid "Here you can configure master processing modes. Notice: On playback only one active mode can be selected!"
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogAudioDSPManager.xml
+#: addons/skin.estuary/xml/DialogAudioDSPManager.xml
 msgctxt "#15116"
 msgid "Here you can configure a output resampling process. Notice: Only one active mode is allowed!"
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogAudioDSPManager.xml
+#: addons/skin.estuary/xml/DialogAudioDSPManager.xml
 msgctxt "#15117"
 msgid "Here you can configure post-processing modes. This processing stage can be used for equalizing and volume correction..."
 msgstr ""
@@ -8599,7 +8598,7 @@ msgctxt "#16101"
 msgid "Unwatched"
 msgstr ""
 
-#: addons/skin.estuary/1080i/Home.xml
+#: addons/skin.estuary/xml/Home.xml
 msgctxt "#16102"
 msgid "Watched"
 msgstr ""
@@ -8879,17 +8878,17 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#17997"
-msgid "%i MByte"
+msgid "{0:d} MByte"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#17998"
-msgid "%i hours"
+msgid "{0:d} hours"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#17999"
-msgid "%i days"
+msgid "{0:d} days"
 msgstr ""
 
 #empty strings from id 18000 to 18999
@@ -8900,12 +8899,12 @@ msgctxt "#19000"
 msgid "Switch to channel"
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogPVRGuideSearch.xml
+#: addons/skin.estuary/xml/DialogPVRGuideSearch.xml
 msgctxt "#19001"
 msgid "Separate the search words by using AND, OR and / or NOT."
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogPVRGuideSearch.xml
+#: addons/skin.estuary/xml/DialogPVRGuideSearch.xml
 msgctxt "#19002"
 msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
 msgstr ""
@@ -8916,7 +8915,7 @@ msgctxt "#19003"
 msgid "Find similar"
 msgstr ""
 
-#. label for epg import progess control
+#. label for epg import progress control
 #: xbmc/epg/EpgContainer.cpp
 msgctxt "#19004"
 msgid "Importing guide from clients"
@@ -8928,37 +8927,37 @@ msgid "PVR stream information"
 msgstr ""
 
 #. label for 'tuner name' in pvr player information dialog
-#: addons/skin.estuary/1080i/DialogPlayerProcessInfo.xml
+#: addons/skin.estuary/xml/DialogPlayerProcessInfo.xml
 msgctxt "#19006"
 msgid "Receiving device"
 msgstr ""
 
 #. label for 'device status' in pvr player information dialog
-#: addons/skin.estuary/1080i/DialogPlayerProcessInfo.xml
+#: addons/skin.estuary/xml/DialogPlayerProcessInfo.xml
 msgctxt "#19007"
 msgid "Device status"
 msgstr ""
 
 #. label for 'signal quality' in pvr player information dialog
-#: addons/skin.estuary/1080i/DialogPlayerProcessInfo.xml
+#: addons/skin.estuary/xml/DialogPlayerProcessInfo.xml
 msgctxt "#19008"
 msgid "Signal quality"
 msgstr ""
 
 #. label for 'signal noise ratio' in pvr player information dialog
-#: addons/skin.estuary/1080i/DialogPlayerProcessInfo.xml
+#: addons/skin.estuary/xml/DialogPlayerProcessInfo.xml
 msgctxt "#19009"
 msgid "SNR"
 msgstr ""
 
 #. label for 'bit error ratio' in pvr player information dialog
-#: addons/skin.estuary/1080i/DialogPlayerProcessInfo.xml
+#: addons/skin.estuary/xml/DialogPlayerProcessInfo.xml
 msgctxt "#19010"
 msgid "BER"
 msgstr ""
 
 #. label for 'number of uncorrected errors' in pvr player information dialog
-#: addons/skin.estuary/1080i/DialogPlayerProcessInfo.xml
+#: addons/skin.estuary/xml/DialogPlayerProcessInfo.xml
 msgctxt "#19011"
 msgid "UNC"
 msgstr ""
@@ -8982,19 +8981,19 @@ msgid "Fixed"
 msgstr ""
 
 #. label for 'channel encryption' in pvr player information dialog
-#: addons/skin.estuary/1080i/DialogPlayerProcessInfo.xml
+#: addons/skin.estuary/xml/DialogPlayerProcessInfo.xml
 msgctxt "#19015"
 msgid "Encryption"
 msgstr ""
 
 #. unused?
 msgctxt "#19016"
-msgid "PVR backend %i - %s"
+msgid "PVR backend {0:d} - {1:s}"
 msgstr ""
 
 #. generic label for pvr recordings used in different places
-#: addons/skin.estuary/1080i/Home.xml
-#: addons/skin.estuary/1080i/Variables.xml
+#: addons/skin.estuary/xml/Home.xml
+#: addons/skin.estuary/xml/Variables.xml
 #: xbmc/dialogs/GUIDialogMediaSource.cpp
 #: xbmc/filesystem/PVRDirectory.cpp
 msgctxt "#19017"
@@ -9008,32 +9007,32 @@ msgid "Folder with channel icons"
 msgstr ""
 
 #. label for PVR backend number of channels in system information's PVR section
-#: addons/skin.estuary/1080i/DialogPVRGuideOSD.xml
-#: addons/skin.estuary/1080i/DialogPVRChannelManager.xml
-#: addons/skin.estuary/1080i/DialogPVRChannelsOSD.xml
-#: addons/skin.estuary/1080i/Variables.xml
-#: addons/skin.estuary/1080i/Home.xml
+#: addons/skin.estuary/xml/DialogPVRChannelGuide.xml
+#: addons/skin.estuary/xml/DialogPVRChannelManager.xml
+#: addons/skin.estuary/xml/DialogPVRChannelsOSD.xml
+#: addons/skin.estuary/xml/Variables.xml
+#: addons/skin.estuary/xml/Home.xml
 #: xbmc/windows/GUIWindowSystemInfo.cpp
 msgctxt "#19019"
 msgid "Channels"
 msgstr ""
 
 #. generic label for 'Live TV' used in different places
-#: addons/skin.estuary/1080i/Home.xml
-#: addons/skin.estuary/1080i/SkinSettings.xml:
-#: addons/skin.estuary/1080i/Variables.xml
+#: addons/skin.estuary/xml/Home.xml
+#: addons/skin.estuary/xml/SkinSettings.xml:
+#: addons/skin.estuary/xml/Variables.xml
 #: xbmc/pvr/channels/PVRChannelGroupsContainer.cpp
-#: xbmc/pvr/PVRManager.cpp
+#: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19020"
 msgid "TV"
 msgstr ""
 
 #. generic label for pvr-provided 'Radio' used in different places
-#: addons/skin.estuary/1080i/Home.xml
-#: addons/skin.estuary/1080i/SkinSettings.xml
-#: addons/skin.estuary/1080i/Variables.xml
+#: addons/skin.estuary/xml/Home.xml
+#: addons/skin.estuary/xml/SkinSettings.xml
+#: addons/skin.estuary/xml/Variables.xml
 #: xbmc/pvr/channels/PVRChannelGroupsContainer.cpp
-#: xbmc/pvr/PVRManager.cpp
+#: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19021"
 msgid "Radio"
 msgstr ""
@@ -9047,16 +9046,16 @@ msgstr ""
 
 #. generic label for 'Live TV channels' used in different places
 #: xbmc/pvr/dialogs/GUIDialogPVRGroupManager.cpp
-#: addons/skin.estuary/1080i/Variables.xml
-#: addons/skin.estuary/1080i/DialogPVRChannelManager.xml
+#: addons/skin.estuary/xml/Variables.xml
+#: addons/skin.estuary/xml/DialogPVRChannelManager.xml
 msgctxt "#19023"
 msgid "TV channels"
 msgstr ""
 
 #. generic label for pvr-provided 'Radio channels' used in different places
 #: xbmc/pvr/dialogs/GUIDialogPVRGroupManager.cpp
-#: addons/skin.estuary/1080i/DialogPVRChannelManager.xml
-#: addons/skin.estuary/1080i/Variables.xml
+#: addons/skin.estuary/xml/DialogPVRChannelManager.xml
+#: addons/skin.estuary/xml/Variables.xml
 msgctxt "#19024"
 msgid "Radio channels"
 msgstr ""
@@ -9086,7 +9085,7 @@ msgid "No guide entries"
 msgstr ""
 
 #. generic 'channel' label used in different places
-#: addons/skin.estuary/1080i/DialogFullScreenInfo.xml
+#: addons/skin.estuary/xml/DialogFullScreenInfo.xml
 #: xbmc/filesystem/PluginDirectory.cpp
 #: xbmc/pvr/channels/PVRChannel.cpp
 #: xbmc/pvr/PVRGUIActions.cpp
@@ -9095,25 +9094,25 @@ msgctxt "#19029"
 msgid "Channel"
 msgstr ""
 
-#. generic 'now' label used in diffrent places
-#: addons/skin.estuary/1080i/DialogPVRRadioRDSInfo.xml
-#: addons/skin.estuary/1080i/MyWeather.xml
+#. generic 'now' label used in different places
+#: addons/skin.estuary/xml/DialogPVRRadioRDSInfo.xml
+#: addons/skin.estuary/xml/MyWeather.xml
 #: xbmc/pvr/windows/GUIWindowPVRGuide.cpp
 msgctxt "#19030"
 msgid "Now"
 msgstr ""
 
-#. generic 'next' label used in diffrent places in pvr context
-#: addons/skin.estuary/1080i/DialogFullScreenInfo.xml
-#: addons/skin.estuary/1080i/DialogPVRRadioRDSInfo.xml
-#: addons/skin.estuary/1080i/MyPVRChannels.xml
+#. generic 'next' label used in different places in pvr context
+#: addons/skin.estuary/xml/DialogFullScreenInfo.xml
+#: addons/skin.estuary/xml/DialogPVRRadioRDSInfo.xml
+#: addons/skin.estuary/xml/MyPVRChannels.xml
 #: xbmc/pvr/windows/GUIWindowPVRGuide.cpp
 msgctxt "#19031"
 msgid "Next"
 msgstr ""
 
 #. 'timeline' label used in pvr guide window
-#: addons/skin.estuary/1080i/MyPVRGuide.xml
+#: addons/skin.estuary/xml/MyPVRGuide.xml
 #. xbmc/pvr/windows/GUIWindowPVRGuide.cpp
 msgctxt "#19032"
 msgid "Timeline"
@@ -9121,17 +9120,15 @@ msgstr ""
 
 #. generic 'information' label used in different places, like labels for message box headers
 #: xbmc/event/windows/GUIWindowEventLog.cpp
-#: xbmc/pvr/addons/PVRClients.cpp
+#: xbmc/pvr/dialogs/GUIDialogPVRChannelManager.cpp
 #: xbmc/pvr/dialogs/GUIDialogPVRGroupManager.cpp
 #: xbmc/pvr/dialogs/GUIDialogPVRGuideInfo.cpp
-#: xbmc/pvr/recordings/PVRRecording.cpp
 #: xbmc/pvr/timers/PVRTimerInfoTag.cpp
-#: xbmc/pvr/timers/PVRTimers.cpp
 #: xbmc/pvr/windows/GUIWindowPVRTimersBase.cpp
 #: xbmc/pvr/PVRGUIActions.cpp
 #: xbmc/pvr/PVRManager.cpp
 #: xbmc/video/windows/GUIWindowVideoBase.cpp
-#: addons/skin.estuary/1080i/VideoOSD.xml
+#: addons/skin.estuary/xml/VideoOSD.xml
 msgctxt "#19033"
 msgid "Information"
 msgstr ""
@@ -9146,7 +9143,7 @@ msgstr ""
 #: xbmc/pvr/PVRGUIActions.cpp
 #: xbmc/pvr/PVRManager.cpp
 msgctxt "#19035"
-msgid "%s can't be played. Check the log for more information about this message."
+msgid "{0:s} can't be played. Check the log for more information about this message."
 msgstr ""
 
 #. message box text stating that a recording could not be played.
@@ -9163,7 +9160,7 @@ msgid "Show signal quality"
 msgstr ""
 
 #. message box text stating that a PVR backend does not support a certain functionality.
-#: xbmc/pvr/addons/PVRClients.cpp
+#: xbmc/pvr/dialogs/GUIDialogPVRChannelManager.cpp
 msgctxt "#19038"
 msgid "Not supported by the PVR backend."
 msgstr ""
@@ -9174,7 +9171,7 @@ msgctxt "#19039"
 msgid "Are you sure you want to hide this channel?"
 msgstr ""
 
-#: addons/skin.estuary/1080i/Variables.xml
+#: addons/skin.estuary/xml/Variables.xml
 msgctxt "#19040"
 msgid "Timers"
 msgstr ""
@@ -9236,7 +9233,7 @@ msgctxt "#19050"
 msgid "Show visible channels"
 msgstr ""
 
-#: addons/skin.estuary/1080i/Includes_MediaMenu.xml
+#: addons/skin.estuary/xml/Includes_MediaMenu.xml
 msgctxt "#19051"
 msgid "Show hidden channels"
 msgstr ""
@@ -9259,14 +9256,14 @@ msgid "Hide channel"
 msgstr ""
 
 #. generic text used in several places to state that there is no information available
-#: addons/skin.estuary/1080i/DialogMusicInfo.xml
-#: addons/skin.estuary/1080i/DialogVideoInfo.xml
-#: addons/skin.estuary/1080i/Includes_PVR.xml
-#: addons/skin.estuary/1080i/MyGames.xml
-#: addons/skin.estuary/1080i/MyMusicNav.xml
-#: addons/skin.estuary/1080i/MyPics.xml
-#: addons/skin.estuary/1080i/MyVideoNav.xml
-#: addons/skin.estuary/1080i/View_50_List.xml
+#: addons/skin.estuary/xml/DialogMusicInfo.xml
+#: addons/skin.estuary/xml/DialogVideoInfo.xml
+#: addons/skin.estuary/xml/Includes_PVR.xml
+#: addons/skin.estuary/xml/MyGames.xml
+#: addons/skin.estuary/xml/MyMusicNav.xml
+#: addons/skin.estuary/xml/MyPics.xml
+#: addons/skin.estuary/xml/MyVideoNav.xml
+#: addons/skin.estuary/xml/View_50_List.xml
 #: xbmc/epg/EpgInfoTag.cpp
 #: xbmc/FileItem.cpp
 #: xbmc/GUIInfoManager.cpp
@@ -9311,7 +9308,7 @@ msgstr ""
 
 #. Label for a context menu entry to open the timer settings dialog
 #: xbmc/pvr/PVRContextMenus.cpp
-#: addons/skin.estuary/1080i/DialogPVRInfo.xml
+#: addons/skin.estuary/xml/DialogPVRInfo.xml
 msgctxt "#19061"
 msgid "Add timer"
 msgstr ""
@@ -9352,14 +9349,10 @@ msgctxt "#19067"
 msgid "This event is already being recorded."
 msgstr ""
 
-#. error box text stating that a given pvr recording could not be deleted
-#: xbmc/pvr/recording/PVRRecording.cpp
-msgctxt "#19068"
-msgid "This recording couldn't be deleted. Check the log for more information about this message."
-msgstr ""
+#empty string with id 19068
 
 #. Electronic program guide
-#: addons/skin.estuary/1080i/Variables.xml
+#: addons/skin.estuary/xml/Variables.xml
 msgctxt "#19069"
 msgid "Guide"
 msgstr ""
@@ -9388,7 +9381,7 @@ msgctxt "#19073"
 msgid "Delay channel switch"
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogPVRChannelManager.xml
+#: addons/skin.estuary/xml/DialogPVRChannelManager.xml
 msgctxt "#19074"
 msgid "Active"
 msgstr ""
@@ -9405,7 +9398,7 @@ msgctxt "#19076"
 msgid "Folder"
 msgstr ""
 
-#: addons/skin.estuary/1080i/Includes_MediaMenu.xml
+#: addons/skin.estuary/xml/Includes_MediaMenu.xml
 msgctxt "#19077"
 msgid "Hide disabled"
 msgstr ""
@@ -9454,12 +9447,12 @@ msgstr ""
 #. default for channels without a name. place holder will be filled with channel number.
 #: xbmc/pvr/channels/PVRChannel.cpp
 msgctxt "#19085"
-msgid "Unknown channel %u"
+msgid "Unknown channel {0:d}"
 msgstr ""
 
 #. Label for "Instant recording action" setting
 #: system/settings/settings.xml
-#: xbmc/pvr/PVRMananger.cpp
+#: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19086"
 msgid "Instant recording action"
 msgstr ""
@@ -9483,27 +9476,27 @@ msgid "Ask what to do"
 msgstr ""
 
 #. Label for "Instant recording action" dialog settings value
-#: xbmc/pvr/PVRMananger.cpp
+#: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19090"
-msgid "Record the next %d minutes"
+msgid "Record the next {0:d} minutes"
 msgstr ""
 
 #. Label for "Instant recording action" dialog settings value
-#: xbmc/pvr/PVRMananger.cpp
+#: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19091"
-msgid "Record current show (%s)"
+msgid "Record current show ({0:s})"
 msgstr ""
 
 #. Label for "Instant recording action" dialog settings value
-#: xbmc/pvr/PVRMananger.cpp
+#: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19092"
-msgid "Record next show (%s)"
+msgid "Record next show ({0:s})"
 msgstr ""
 
 #. Instant recording summary. Expands to "Instant recording: <recording start and end times>", for example "Instant recording: 31/05/2016 from 9:00 to 11:00"
 #: xbmc/pvr/PVRTimerInfoTag.cpp
 msgctxt "#19093"
-msgid "Instant recording: %s"
+msgid "Instant recording: {0:s}"
 msgstr ""
 
 #. error message displayed in case adding a timer failed because no suitable epg-based timer type could be found.
@@ -9518,7 +9511,11 @@ msgctxt "#19095"
 msgid "Timer rule creation failed. The PVR add-on does not support a suitable timer rule type."
 msgstr ""
 
-#empty string with id 19096
+#. label of a value for default epg event select action, where the action is choosen depending on whether the event is in the past, now or in the future
+#: system/settings/settings.xml
+msgctxt "#19096"
+msgid "\"Smart select\""
+msgstr ""
 
 #. label of the help text for the timer name edit field in PVR timer settings dialog
 #: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
@@ -9537,19 +9534,19 @@ msgid "Warning!"
 msgstr ""
 
 #. service label in pvr info dialog
-#: addons/skin.estuary/1080i/DialogPlayerProcessInfo.xml
+#: addons/skin.estuary/xml/DialogPlayerProcessInfo.xml
 msgctxt "#19099"
 msgid "Service"
 msgstr ""
 
 #. mux label in pvr info dialog
-#: addons/skin.estuary/1080i/DialogPlayerProcessInfo.xml
+#: addons/skin.estuary/xml/DialogPlayerProcessInfo.xml
 msgctxt "#19100"
 msgid "Mux"
 msgstr ""
 
 #. provider label in pvr info dialog
-#: addons/skin.estuary/1080i/DialogPlayerProcessInfo.xml
+#: addons/skin.estuary/xml/DialogPlayerProcessInfo.xml
 msgctxt "#19101"
 msgid "Provider"
 msgstr ""
@@ -9599,7 +9596,7 @@ msgstr ""
 
 #. message box text stating that a timer could not be saved
 #: xbmc/pvr/timers/PVRTimerInfoTag.cpp
-#: xbmc/pvr/timers/PVRTimers.cpp
+#: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19109"
 msgid "Couldn't save timer. Check the log for more information about this message."
 msgstr ""
@@ -9611,8 +9608,7 @@ msgid "An unexpected error occurred. Try again later or check the log for more i
 msgstr ""
 
 #. message box text stating that a PVR backend error occured
-#: xbmc/pvr/addons/PVRClients.cpp
-#: xbmc/pvr/recording/PVRRecording.cpp
+#: xbmc/pvr/PVRGUIActions.cpp
 #: xbmc/pvr/timers/PVRTimerInfoTag.cpp
 msgctxt "#19111"
 msgid "PVR backend error. Check the log for more information about this message."
@@ -9660,7 +9656,7 @@ msgid "Can't use PVR functions while searching."
 msgstr ""
 
 #. channel scan backend selection dialog text
-#: xbmc/pvr/addons/PVRClients.cpp
+#: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19119"
 msgid "On which backend do you want to search?"
 msgstr ""
@@ -9671,7 +9667,7 @@ msgctxt "#19120"
 msgid "Client number"
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogPVRGuideSearch.xml
+#: addons/skin.estuary/xml/DialogPVRGuideSearch.xml
 msgctxt "#19121"
 msgid "Avoid repeats"
 msgstr ""
@@ -9682,80 +9678,80 @@ msgctxt "#19122"
 msgid "This timer is still recording. Are you sure you want to delete this timer?"
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogPVRGuideSearch.xml
+#: addons/skin.estuary/xml/DialogPVRGuideSearch.xml
 msgctxt "#19123"
 msgid "Free to air channels only"
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogPVRGuideSearch.xml
+#: addons/skin.estuary/xml/DialogPVRGuideSearch.xml
 msgctxt "#19124"
 msgid "Ignore present timers"
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogPVRGuideSearch.xml
+#: addons/skin.estuary/xml/DialogPVRGuideSearch.xml
 msgctxt "#19125"
 msgid "Ignore present recordings"
 msgstr ""
 
 #. Label of "Start time" spinner in PVR timer settings dialog
 #: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
-#: addons/skin.estuary/1080i/DialogPVRGuideSearch.xml
+#: addons/skin.estuary/xml/DialogPVRGuideSearch.xml
 msgctxt "#19126"
 msgid "Start time"
 msgstr ""
 
 #. Label of "End time" edit field in PVR timer settings dialog
 #: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
-#: addons/skin.estuary/1080i/DialogPVRGuideSearch.xml
+#: addons/skin.estuary/xml/DialogPVRGuideSearch.xml
 msgctxt "#19127"
 msgid "End time"
 msgstr ""
 
 #. Label of "Start date" spinner field in PVR timer settings dialog
 #: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
-#: addons/skin.estuary/1080i/DialogPVRGuideSearch.xml
+#: addons/skin.estuary/xml/DialogPVRGuideSearch.xml
 msgctxt "#19128"
 msgid "Start date"
 msgstr ""
 
 #. Label of "End date" edit field in PVR timer settings dialog
 #: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
-#: addons/skin.estuary/1080i/DialogPVRGuideSearch.xml
+#: addons/skin.estuary/xml/DialogPVRGuideSearch.xml
 msgctxt "#19129"
 msgid "End date"
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogPVRGuideSearch.xml
+#: addons/skin.estuary/xml/DialogPVRGuideSearch.xml
 msgctxt "#19130"
 msgid "Minimum duration"
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogPVRGuideSearch.xml
+#: addons/skin.estuary/xml/DialogPVRGuideSearch.xml
 msgctxt "#19131"
 msgid "Maximum duration"
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogPVRGuideSearch.xml
+#: addons/skin.estuary/xml/DialogPVRGuideSearch.xml
 msgctxt "#19132"
 msgid "Include unknown genres"
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogPVRGuideSearch.xml
+#: addons/skin.estuary/xml/DialogPVRGuideSearch.xml
 msgctxt "#19133"
 msgid "Search string"
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogPVRGuideSearch.xml
+#: addons/skin.estuary/xml/DialogPVRGuideSearch.xml
 msgctxt "#19134"
 msgid "Include description"
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogPVRGuideSearch.xml
+#: addons/skin.estuary/xml/DialogPVRGuideSearch.xml
 msgctxt "#19135"
 msgid "Case sensitive"
 msgstr ""
 
-#. unused?
+#: xbmc/pvr/dialogs/GUIDialogPVRGuideInfo.cpp
 msgctxt "#19136"
 msgid "Channel unavailable"
 msgstr ""
@@ -9767,7 +9763,7 @@ msgid "No groups defined. Please create a group first"
 msgstr ""
 
 #. Label of timer rules tv/radio home submenu item
-#: addons/skin.estuary/1080i/Variables.xml
+#: addons/skin.estuary/xml/Variables.xml
 msgctxt "#19138"
 msgid "Timer rules"
 msgstr ""
@@ -9785,19 +9781,19 @@ msgid "Search..."
 msgstr ""
 
 #. part of PVR window's active channel group label (e.g. "Group: HD Sports Channels")
-#: addons/skin.estuary/1080i/Includes_MediaMenu.xml
-#: addons/skin.estuary/1080i/DialogPVRGuideSearch.xml
+#: addons/skin.estuary/xml/Includes_MediaMenu.xml
+#: addons/skin.estuary/xml/DialogPVRGuideSearch.xml
 #: xbmc/pvr/windows/GUIWindowPVRBase.cpp
 msgctxt "#19141"
 msgid "Group"
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogPVRGuideSearch.xml
+#: addons/skin.estuary/xml/DialogPVRGuideSearch.xml
 msgctxt "#19142"
 msgid "Search guide"
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogPVRGroupManager.xml
+#: addons/skin.estuary/xml/DialogPVRGroupManager.xml
 msgctxt "#19143"
 msgid "Group management"
 msgstr ""
@@ -9812,19 +9808,15 @@ msgctxt "#19145"
 msgid "Grouped"
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogPVRChannelsOSD.xml
+#: addons/skin.estuary/xml/DialogPVRChannelsOSD.xml
 msgctxt "#19146"
 msgid "Groups"
 msgstr ""
 
-#. message box text stating that a PVR backend does not support a certain functionality.
-#: xbmc/pvr/recording/PVRRecording.cpp
-msgctxt "#19147"
-msgid "The PVR backend does not support this action. Check the log for more information about this message."
-msgstr ""
+#empty string with id 191407
 
-#: addons/skin.estuary/1080i/DialogPVRRadioRDSInfo.xml
-#: addons/skin.estuary/1080i/DialogPVRGuideSearch.xml
+#: addons/skin.estuary/xml/DialogPVRRadioRDSInfo.xml
+#: addons/skin.estuary/xml/DialogPVRGuideSearch.xml
 msgctxt "#19148"
 msgid "Channel"
 msgstr ""
@@ -9876,12 +9868,12 @@ msgctxt "#19156"
 msgid "from"
 msgstr ""
 
-#: addons/skin.estuary/1080i/Home.xml
+#: addons/skin.estuary/xml/Home.xml
 msgctxt "#19157"
 msgid "Next recording"
 msgstr ""
 
-#: addons/skin.estuary/1080i/Home.xml
+#: addons/skin.estuary/xml/Home.xml
 msgctxt "#19158"
 msgid "Currently recording"
 msgstr ""
@@ -9917,18 +9909,20 @@ msgid "Recordings"
 msgstr ""
 
 #. error box text stating that recording could not be started
-#: xbmc/pvr/PVRManager.cpp
+#: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19164"
 msgid "Can't start recording. Check the log for more information about this message."
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogPVRInfo.xml
+#: addons/skin.estuary/xml/DialogPVRInfo.xml
 msgctxt "#19165"
 msgid "Switch"
 msgstr ""
 
-#. label for header of system information's PVR section
+#. label for header of misc PVR GUI elements
 #: xbmc/windows/GUIWindowSystemInfo.cpp
+#: xbmc/pvr/PVRManager.cpp
+#: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19166"
 msgid "PVR information"
 msgstr ""
@@ -9968,16 +9962,18 @@ msgctxt "#19172"
 msgid "Instant recording duration"
 msgstr ""
 
-#. pvr settings "default priority for recordings" setting label
-#: system/settings/settings.xml
+#. generic label for 'Live TV channel groups' used in different places
+#: addons/skin.estuary/xml/DialogPVRGroupManager.xml
+#: addons/skin.estuary/xml/Variables.xml
 msgctxt "#19173"
-msgid "Default recording priority"
+msgid "TV channel groups"
 msgstr ""
 
-#. pvr settings "default lifetime for recordings" setting label
-#: system/settings/settings.xml
+#. generic label for pvr-provided 'Radio channel groups' used in different places
+#: addons/skin.estuary/xml/DialogPVRGroupManager.xml
+#: addons/skin.estuary/xml/Variables.xml
 msgctxt "#19174"
-msgid "Default recording lifetime"
+msgid "Radio channel groups"
 msgstr ""
 
 #. pvr settings "default time to add before the start of an event to record (according to its epg data)" setting label
@@ -10035,7 +10031,7 @@ msgid "Radio channels"
 msgstr ""
 
 #. label for "deleted recordings" data source in media source window
-#: addons/skin.estuary/1080i/Includes_MediaMenu.xml
+#: addons/skin.estuary/xml/Includes_MediaMenu.xml
 #: xbmc/dialogs/GUIDialogMediaSource.cpp
 msgctxt "#19184"
 msgid "Deleted recordings"
@@ -10077,19 +10073,19 @@ msgctxt "#19190"
 msgid "Background"
 msgstr ""
 
-#: addons/skin.estuary/1080i/SettingsSystemInfo.xml
+#: addons/skin.estuary/xml/SettingsSystemInfo.xml
 msgctxt "#19191"
 msgid "PVR service"
 msgstr ""
 
 #. error message box text stating that none of the available pvr clients does support channel scanning
-#: xbmc/pvr/addons/PVRClients.cpp
+#: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19192"
 msgid "None of the connected PVR backends supports scanning for channels."
 msgstr ""
 
 #. error message box text stating that a given pvr channel could not be played
-#: xbmc/pvr/addons/PVRClients.cpp
+#: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19193"
 msgid "The channel scan can't be started. Check the log for more information about this message."
 msgstr ""
@@ -10106,7 +10102,7 @@ msgid "Client actions"
 msgstr ""
 
 #. value for "pvr client specific actions" dialog headers
-#: xbmc/pvr/addons/PVRClients.cpp
+#: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19196"
 msgid "PVR client specific actions"
 msgstr ""
@@ -10114,33 +10110,33 @@ msgstr ""
 #. text for "recording started on <pvr client name>" pvr client addon callback notification
 #: xbmc/addons/binary/interfaces/api1/PVR/AddonCallbacksPVR.cpp
 msgctxt "#19197"
-msgid "Recording started on: %s"
+msgid "Recording started on: {0:s}"
 msgstr ""
 
 #. text for "recording finished on <pvr client name>" pvr client addon callback notification
 #: xbmc/addons/binary/interfaces/api1/PVR/AddonCallbacksPVR.cpp
 msgctxt "#19198"
-msgid "Recording finished on: %s"
+msgid "Recording finished on: {0:s}"
 msgstr ""
 
 #. pvr settings "channel manager" action button label
 #: system/settings/settings.xml
-#: addons/skin.estuary/1080i/Variables.xml
+#: addons/skin.estuary/xml/Variables.xml
 msgctxt "#19199"
 msgid "Channel manager"
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogPVRChannelManager.xml
+#: addons/skin.estuary/xml/DialogPVRChannelManager.xml
 msgctxt "#19200"
 msgid "Guide source:"
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogPVRChannelManager.xml
+#: addons/skin.estuary/xml/DialogPVRChannelManager.xml
 msgctxt "#19201"
 msgid "Channel name:"
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogPVRChannelManager.xml
+#: addons/skin.estuary/xml/DialogPVRChannelManager.xml
 msgctxt "#19202"
 msgid "Channel icon:"
 msgstr ""
@@ -10151,18 +10147,18 @@ msgid "Edit channel"
 msgstr ""
 
 #. initial name for new channels, used in pvr channel manager dialog
-#: addons/skin.estuary/1080i/DialogPVRChannelManager.xml
+#: addons/skin.estuary/xml/DialogPVRChannelManager.xml
 #: xbmc/pvr/dialogs/GUIDialogPVRChannelManager.cpp
 msgctxt "#19204"
 msgid "New channel"
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogPVRChannelManager.xml
+#: addons/skin.estuary/xml/DialogPVRChannelManager.xml
 msgctxt "#19205"
 msgid "Group management"
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogPVRChannelManager.xml
+#: addons/skin.estuary/xml/DialogPVRChannelManager.xml
 msgctxt "#19206"
 msgid "Activate guide:"
 msgstr ""
@@ -10184,7 +10180,7 @@ msgid "Kodi virtual backend"
 msgstr ""
 
 #. pvr channel manager "epg source" selector value
-#: addons/skin.estuary/1080i/DialogPVRChannelManager.xml
+#: addons/skin.estuary/xml/DialogPVRChannelManager.xml
 #: xbmc/pvr/dialogs/GUIDialogPVRChannelManager.cpp
 msgctxt "#19210"
 msgid "Client"
@@ -10215,7 +10211,7 @@ msgid "Enter a valid URL for the new channel"
 msgstr ""
 
 #. message box text stating that a pvr backend does not support timers
-#: xbmc/pvr/timers/PVRTimers.cpp
+#: xbmc/pvr/timers/PVRGUIActions.cpp
 #: xbmc/pvr/windows/GUIWindowsPVRTimersBase.cpp
 msgctxt "#19215"
 msgid "The PVR backend does not support timers."
@@ -10451,7 +10447,7 @@ msgstr ""
 #. for a timer rule, the number of child timers which are currently scheduled to record. For use in "status" fields.
 #: xbmc/pvr/timers/PVRTimerInfoTag.cpp
 msgctxt "#19255"
-msgid "%d scheduled"
+msgid "{0:d} scheduled"
 msgstr ""
 
 #. for a timer rule or timer to indicate this item has completed the intended recordings. For use in "status" fields.
@@ -10489,27 +10485,21 @@ msgid "Change PIN"
 msgstr ""
 
 #. generic 'parental control enter pin' label
-#: xbmc/pvr/dialogs/GUIDialogPVRChannelManager.cpp
-#: xbmc/pvr/PVRManager.cpp
-#: xbmc/settings/SettingConditions.cpp
+#: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19262"
 msgid "Parental control. Enter PIN:"
 msgstr ""
 
-#. label for 'parental control pin' verification dialog
-#: xbmc/pvr/PVRManager.cpp
-msgctxt "#19263"
-msgid "Locked channel. Enter PIN:"
-msgstr ""
+# empty string with id 19263
 
 #. label for 'incorrect pin' error dialog header
-#: xbmc/pvr/PVRManager.cpp
+#: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19264"
 msgid "Incorrect PIN"
 msgstr ""
 
 #. label for 'incorrect pin' error dialog text
-#: xbmc/pvr/PVRManager.cpp
+#: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19265"
 msgid "The entered PIN was incorrect."
 msgstr ""
@@ -10520,7 +10510,7 @@ msgctxt "#19266"
 msgid "Parental locked"
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogPVRChannelManager.xml
+#: addons/skin.estuary/xml/DialogPVRChannelManager.xml
 msgctxt "#19267"
 msgid "Parental locked:"
 msgstr ""
@@ -10531,14 +10521,10 @@ msgctxt "#19268"
 msgid "Hide \"No information available\" labels"
 msgstr ""
 
-#. pvr settings 'hide connection lost warnings' setting label. Do not display notification message in case Kodi cannot reach a pvr backend
-#: system/settings/settings.xml
-msgctxt "#19269"
-msgid "Disable \"Connection lost\" warnings"
-msgstr ""
+# empty string with id 19269
 
 #. Label of the option to switch between a grouped recordings list and a non-grouped recordings list in pvr recordings window.
-#: addons/skin.estuary/1080i/Includes_MediaMenu.xml
+#: addons/skin.estuary/xml/Includes_MediaMenu.xml
 msgctxt "#19270"
 msgid "Group Items"
 msgstr ""
@@ -10630,13 +10616,13 @@ msgctxt "#19285"
 msgid "Browse for icon"
 msgstr ""
 
-#. unused?
+#. Label for channel icon search progress dialog
+#: xbmc/pvr/channels/PVRChannelGroup.cpp
 msgctxt "#19286"
 msgid "Searching for channel icons"
 msgstr ""
 
 #. Label for the default pvr channel group
-#: xbmc/pvr/channels/PVRChannelGroup.cpp
 #: xbmc/pvr/channels/PVRChannelGroupInternal.cpp
 msgctxt "#19287"
 msgid "All channels"
@@ -10649,7 +10635,7 @@ msgid "Foreground"
 msgstr ""
 
 #. Label for button to hide a group in the group manager
-#: addons/skin.estuary/1080i/DialogPVRGroupManager.xml
+#: addons/skin.estuary/xml/DialogPVRGroupManager.xml
 msgctxt "#19289"
 msgid "Hide group"
 msgstr ""
@@ -11272,7 +11258,11 @@ msgctxt "#19685"
 msgid "Confirm shutdown"
 msgstr ""
 
-#empty string with id 19686
+#: Label for buttons to open channel guide dialog
+#: addons/skin.estuary/xml/DialogPVRInfo.xml
+msgctxt "#19686"
+msgid "Channel guide"
+msgstr ""
 
 #: Label for context menu entries, dialog heading, button to start playing a recording
 #: xbmc/pvr/PVRContextMenus.cpp
@@ -11281,46 +11271,30 @@ msgctxt "#19687"
 msgid "Play recording"
 msgstr ""
 
-#. label for 'scanning for pvr services' dialog header
-#: xbmc/addons/PVRClient.cpp
-msgctxt "#19688"
-msgid "Scanning for PVR services"
-msgstr ""
-
-#. label for 'scanning for pvr services' dialog text
-#: xbmc/addons/PVRClient.cpp
-msgctxt "#19689"
-msgid "%s service found at %s"
-msgstr ""
-
-#. label for 'scanning for pvr services' dialog text
-#: xbmc/addons/PVRClient.cpp
-msgctxt "#19690"
-msgid "Do you want to use this service?"
-msgstr ""
+#empty strings from id 19688 to 19690
 
 #. Text for shutdown confirmation dialog.
 #: xbmc/pvr/PVRManager.cpp
 msgctxt "#19691"
-msgid "PVR is currently recording '%s' on channel '%s'."
+msgid "PVR is currently recording '{0:s}' on channel '{1:s}'."
 msgstr ""
 
 #. Text for shutdown confirmation dialog
 #: xbmc/pvr/PVRManager.cpp
 msgctxt "#19692"
-msgid "PVR will start recording '%s' on channel '%s' in %s."
+msgid "PVR will start recording '{0:s}' on channel '{1:s}' in {2:s}."
 msgstr ""
 
 #. Text for shutdown confirmation dialog
 #: xbmc/pvr/PVRManager.cpp
 msgctxt "#19693"
-msgid "Daily wakeup is due in %s."
+msgid "Daily wakeup is due in {0:s}."
 msgstr ""
 
 #. Text for shutdown confirmation dialog
 #: xbmc/pvr/PVRManager.cpp
 msgctxt "#19694"
-msgid "%d minutes"
+msgid "{0:d} minutes"
 msgstr ""
 
 #. Text for shutdown confirmation dialog
@@ -11433,14 +11407,14 @@ msgstr ""
 
 #. Name of an artwork type
 #: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
-#: addons/skin.estuary/1080i/View_501_Banner.xml
+#: addons/skin.estuary/xml/View_501_Banner.xml
 msgctxt "#20020"
 msgid "Banner"
 msgstr ""
 
 #. Name of an artwork type
 #: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
-#: addons/skin.estuary/1080i/View_51_Poster.xml
+#: addons/skin.estuary/xml/View_51_Poster.xml
 msgctxt "#20021"
 msgid "Poster"
 msgstr ""
@@ -11470,16 +11444,16 @@ msgstr ""
 
 #: xbmc/LangInfo.cpp
 msgctxt "#20035"
-msgid "Regional (%s)"
+msgid "Regional ({0:s})"
 msgstr ""
 
 #. Used for date/time format settings like "10:00:00 (HH:mm:ss)"
 #: xbmc/LangInfo.cpp
 msgctxt "#20036"
-msgid "%s (%s)"
+msgid "{0:s} ({1:s})"
 msgstr ""
 
-#: addons/skin.estuary/1080i/SettingsSystemInfo.xml
+#: addons/skin.estuary/xml/SettingsSystemInfo.xml
 msgctxt "#20037"
 msgid "Summary"
 msgstr ""
@@ -11512,18 +11486,18 @@ msgctxt "#20044"
 msgid "Start fresh"
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogButtonMenu.xml
+#: addons/skin.estuary/xml/DialogButtonMenu.xml
 msgctxt "#20045"
 msgid "Enter master mode"
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogButtonMenu.xml
+#: addons/skin.estuary/xml/DialogButtonMenu.xml
 msgctxt "#20046"
 msgid "Leave master mode"
 msgstr ""
 
 msgctxt "#20047"
-msgid "Create profile '%s'?"
+msgid "Create profile '{0:s}'?"
 msgstr ""
 
 #: xbmc/profiles/dialogs/GUIDialogProfileSettings.cpp
@@ -11574,7 +11548,7 @@ msgctxt "#20059"
 msgid "Query info for all albums"
 msgstr ""
 
-#: addons/skin.estuary/1080i/Variables.xml
+#: addons/skin.estuary/xml/Variables.xml
 msgctxt "#20060"
 msgid "Media info"
 msgstr ""
@@ -11619,7 +11593,7 @@ msgid "Couldn't create folder"
 msgstr ""
 
 #: xbmc/windows/GUIWindowFileManager.cpp
-#: addons/skin.estuary/1080i/ProfileSettings.xml
+#: addons/skin.estuary/xml/ProfileSettings.xml
 msgctxt "#20070"
 msgid "Profile directory"
 msgstr ""
@@ -11715,12 +11689,12 @@ msgctxt "#20092"
 msgid "Load profile"
 msgstr ""
 
-#: addons/skin.estuary/1080i/ProfileSettings.xml
+#: addons/skin.estuary/xml/ProfileSettings.xml
 msgctxt "#20093"
 msgid "Profile name"
 msgstr ""
 
-#: addons/skin.estuary/1080i/Includes.xml
+#: addons/skin.estuary/xml/Includes.xml
 msgctxt "#20094"
 msgid "Media sources"
 msgstr ""
@@ -11795,7 +11769,7 @@ msgstr ""
 
 #: xbmc/windows/GUIWindowLoginScreen.cpp
 msgctxt "#20112"
-msgid "Last login: %s"
+msgid "Last login: {0:s}"
 msgstr ""
 
 #: xbmc/windows/GUIWindowLoginScreen.cpp
@@ -11805,7 +11779,7 @@ msgstr ""
 
 #: xbmc/windows/GUIWindowLoginScreen.cpp
 msgctxt "#20114"
-msgid "Profile %i / %i"
+msgid "Profile {0:d} / {1:d}"
 msgstr ""
 
 #: xbmc/windows/GUIWindowLoginScreen.cpp
@@ -11853,7 +11827,7 @@ msgctxt "#20125"
 msgid "Logged on as"
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogButtonMenu.xml
+#: addons/skin.estuary/xml/DialogButtonMenu.xml
 msgctxt "#20126"
 msgid "Log off"
 msgstr ""
@@ -11906,7 +11880,7 @@ msgid "Unable to mount memory unit"
 msgstr ""
 
 msgctxt "#20139"
-msgid "In port %i, slot %i"
+msgid "In port {0:d}, slot {1:d}"
 msgstr ""
 
 msgctxt "#20140"
@@ -11935,7 +11909,7 @@ msgid "Shutdown interval (in minutes)"
 msgstr ""
 
 msgctxt "#20146"
-msgid "Started, shutdown in %im"
+msgid "Started, shutdown in {0:d}m"
 msgstr ""
 
 msgctxt "#20147"
@@ -11950,18 +11924,18 @@ msgctxt "#20149"
 msgid "Shutdown in 120 minutes"
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogButtonMenu.xml
+#: addons/skin.estuary/xml/DialogButtonMenu.xml
 msgctxt "#20150"
 msgid "Custom shutdown timer"
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogButtonMenu.xml
+#: addons/skin.estuary/xml/DialogButtonMenu.xml
 msgctxt "#20151"
 msgid "Cancel shutdown timer"
 msgstr ""
 
 msgctxt "#20152"
-msgid "Lock preferences for %s"
+msgid "Lock preferences for {0:s}"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogFileBrowser.cpp
@@ -12023,7 +11997,7 @@ msgctxt "#20165"
 msgid "Not locked"
 msgstr ""
 
-#: addons/skin.estuary/1080i/MusicVisualisation.xml
+#: addons/skin.estuary/xml/MusicVisualisation.xml
 msgctxt "#20166"
 msgid "Locked"
 msgstr ""
@@ -12069,18 +12043,18 @@ msgctxt "#20176"
 msgid "Show video information"
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogNumeric.xml
-#: addons/skin.estuary/1080i/DialogKeyboard.xml
+#: addons/skin.estuary/xml/DialogNumeric.xml
+#: addons/skin.estuary/xml/DialogKeyboard.xml
 msgctxt "#20177"
 msgid "Done"
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogKeyboard.xml
+#: addons/skin.estuary/xml/DialogKeyboard.xml
 msgctxt "#20178"
 msgid "Shift"
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogKeyboard.xml
+#: addons/skin.estuary/xml/DialogKeyboard.xml
 msgctxt "#20179"
 msgid "Caps Lock"
 msgstr ""
@@ -12089,13 +12063,13 @@ msgctxt "#20180"
 msgid "Symbols"
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogKeyboard.xml
-#: addons/skin.estuary/1080i/DialogNumeric.xml
+#: addons/skin.estuary/xml/DialogKeyboard.xml
+#: addons/skin.estuary/xml/DialogNumeric.xml
 msgctxt "#20181"
 msgid "Backspace"
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogKeyboard.xml
+#: addons/skin.estuary/xml/DialogKeyboard.xml
 msgctxt "#20182"
 msgid "Space"
 msgstr ""
@@ -12125,7 +12099,7 @@ msgctxt "#20188"
 msgid "Announce library updates"
 msgstr ""
 
-#: addons/skin.estuary/1080i/SkinSettings.xml
+#: addons/skin.estuary/xml/SkinSettings.xml
 msgctxt "#20189"
 msgid "Enable auto scrolling for plot & review"
 msgstr ""
@@ -12219,7 +12193,7 @@ msgctxt "#20243"
 msgid "Android photos"
 msgstr ""
 
-#: addons/skin.estuary/1080i/Includes.xml
+#: addons/skin.estuary/xml/Includes.xml
 msgctxt "#20244"
 msgid "Android apps"
 msgstr ""
@@ -12329,23 +12303,23 @@ msgid "Sort by: ID"
 msgstr ""
 
 msgctxt "#20317"
-msgid "Scanning movies using %s"
+msgid "Scanning movies using {0:s}"
 msgstr ""
 
 msgctxt "#20318"
-msgid "Scanning music videos using %s"
+msgid "Scanning music videos using {0:s}"
 msgstr ""
 
 msgctxt "#20319"
-msgid "Scanning TV shows using %s"
+msgid "Scanning TV shows using {0:s}"
 msgstr ""
 
 msgctxt "#20320"
-msgid "Scanning artists using %s"
+msgid "Scanning artists using {0:s}"
 msgstr ""
 
 msgctxt "#20321"
-msgid "Scanning albums using %s"
+msgid "Scanning albums using {0:s}"
 msgstr ""
 
 #: xbmc/settings/dialogs/GUIDialogContentSettings.cpp
@@ -12367,7 +12341,7 @@ msgid "Calibration reset"
 msgstr ""
 
 msgctxt "#20326"
-msgid "This will reset the calibration values for %s"
+msgid "This will reset the calibration values for {0:s}"
 msgstr ""
 
 msgctxt "#20327"
@@ -12406,7 +12380,7 @@ msgctxt "#20335"
 msgid "Look for content recursively?"
 msgstr ""
 
-#: addons/skin.estuary/1080i/MyVideoNav.xml
+#: addons/skin.estuary/xml/MyVideoNav.xml
 msgctxt "#20336"
 msgid "Unlock sources"
 msgstr ""
@@ -12426,10 +12400,10 @@ msgstr ""
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
 #: xbmc/dialogs/GUIDialogSmartPlaylistRule.cpp
 #: xbmc/playlists/SmartPlaylist.cpp
-#: addons/skin.estuary/1080i/DialogPVRInfo.xml
-#: addons/skin.estuary/1080i/View_51_Poster.xml
-#: addons/skin.estuary/1080i/DialogVideoInfo.xml
-#: addons/skin.estuary/1080i/Variables.xml
+#: addons/skin.estuary/xml/DialogPVRInfo.xml
+#: addons/skin.estuary/xml/View_51_Poster.xml
+#: addons/skin.estuary/xml/DialogVideoInfo.xml
+#: addons/skin.estuary/xml/Variables.xml
 msgctxt "#20339"
 msgid "Director"
 msgstr ""
@@ -12447,7 +12421,7 @@ msgstr ""
 #: xbmc/dialogs/GUIDialogSmartPlaylistEditor.cpp
 #: xbmc/dialogs/GUIDialogSmartPlaylistRule.cpp
 #: xbmc/media/MediaTypes.cpp
-#: addons/skin.estuary/1080i/Variables.xml
+#: addons/skin.estuary/xml/Variables.xml
 msgctxt "#20342"
 msgid "Movies"
 msgstr ""
@@ -12455,14 +12429,14 @@ msgstr ""
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
 #: xbmc/dialogs/GUIDialogSmartPlaylistEditor.cpp
 #: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeOverview.cpp
-#: addons/skin.estuary/1080i/Home.xml
-#: addons/skin.estuary/1080i/SkinSettings.xml
-#: addons/skin.estuary/1080i/Variables.xml
+#: addons/skin.estuary/xml/Home.xml
+#: addons/skin.estuary/xml/SkinSettings.xml
+#: addons/skin.estuary/xml/Variables.xml
 msgctxt "#20343"
 msgid "TV shows"
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogContentSettings.xml
+#: addons/skin.estuary/xml/DialogContentSettings.xml
 msgctxt "#20344"
 msgid "This directory contains"
 msgstr ""
@@ -12494,7 +12468,7 @@ msgstr ""
 #. Label for showing media rating and votes (combined), for example: "9.1 (87 votes)"
 #: xbmc/GUIInfoManager.cpp
 msgctxt "#20350"
-msgid "%s (%s votes)"
+msgid "{0:s} ({1:s} votes)"
 msgstr ""
 
 #: xbmc/video/jobs/VideoLibraryRefreshingJob.cpp
@@ -12531,13 +12505,13 @@ msgstr ""
 
 #: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeSeasons.cpp
 msgctxt "#20358"
-msgid "Season %i"
+msgid "Season {0:d}"
 msgstr ""
 
 #: xbmc/media/MediaTypes.cpp
 #: xbmc/playlists/SmartPlaylist.cpp
-#: addons/skin.estuary/1080i/DialogFullScreenInfo.xml
-#: addons/skin.estuary/1080i/Variables.xml
+#: addons/skin.estuary/xml/DialogFullScreenInfo.xml
+#: addons/skin.estuary/xml/Variables.xml
 msgctxt "#20359"
 msgid "Episode"
 msgstr ""
@@ -12547,8 +12521,8 @@ msgstr ""
 #: xbmc/dialogs/GUIDialogSmartPlaylistRule.cpp
 #: xbmc/media/MediaTypes.cpp
 #: xbmc/playlists/SmartPlaylist.cpp
-#: addons/skin.estuary/1080i/View_51_Poster.xml
-#: addons/skin.estuary/1080i/Variables.xml
+#: addons/skin.estuary/xml/View_51_Poster.xml
+#: addons/skin.estuary/xml/Variables.xml
 msgctxt "#20360"
 msgid "Episodes"
 msgstr ""
@@ -12580,7 +12554,7 @@ msgctxt "#20366"
 msgid "* All seasons"
 msgstr ""
 
-#: addons/skin.estuary/1080i/MyVideoNav.xml
+#: addons/skin.estuary/xml/MyVideoNav.xml
 msgctxt "#20367"
 msgid "Hide watched"
 msgstr ""
@@ -12608,8 +12582,8 @@ msgstr ""
 
 #: xbmc/media/MediaTypes.cpp
 #: xbmc/playlists/SmartPlaylist.cpp
-#: addons/skin.estuary/1080i/DialogFullScreenInfo.xml
-#: addons/skin.estuary/1080i/Variables.xml
+#: addons/skin.estuary/xml/DialogFullScreenInfo.xml
+#: addons/skin.estuary/xml/Variables.xml
 msgctxt "#20373"
 msgid "Season"
 msgstr ""
@@ -12649,7 +12623,10 @@ msgctxt "#20381"
 msgid "Specials"
 msgstr ""
 
-#empty string with id 20382
+#: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeOverview.cpp
+msgctxt "#20382"
+msgid "Recently added"
+msgstr ""
 
 msgctxt "#20383"
 msgid "Selected folder contains a single video"
@@ -12686,7 +12663,7 @@ msgstr ""
 #: xbmc/dialogs/GUIDialogSmartPlaylistRule.cpp
 #: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeOverview.cpp
 #: xbmc/media/MediaTypes.cpp
-#: addons/skin.estuary/1080i/Variables.xml
+#: addons/skin.estuary/xml/Variables.xml
 msgctxt "#20389"
 msgid "Music videos"
 msgstr ""
@@ -12806,17 +12783,17 @@ msgstr ""
 
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
 #: xbmc/playlists/SmartPlaylist.cpp
-#: addons/skin.estuary/1080i/Variables.xml
-#: addons/skin.estuary/1080i/DialogVideoInfo.xml
+#: addons/skin.estuary/xml/Variables.xml
+#: addons/skin.estuary/xml/DialogVideoInfo.xml
 msgctxt "#20416"
 msgid "First aired"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogSmartPlaylistRule.cpp
 #: xbmc/playlists/SmartPlaylist.cpp
-#: addons/skin.estuary/1080i/DialogVideoInfo.xml
-#: addons/skin.estuary/1080i/DialogPVRInfo.xml
-#: addons/skin.estuary/1080i/Variables.xml
+#: addons/skin.estuary/xml/DialogVideoInfo.xml
+#: addons/skin.estuary/xml/DialogPVRInfo.xml
+#: addons/skin.estuary/xml/Variables.xml
 msgctxt "#20417"
 msgid "Writer"
 msgstr ""
@@ -12951,7 +12928,7 @@ msgid "Add to library"
 msgstr ""
 
 #: xbmc/music/dialogs/GUIDialogMusicInfo.cpp
-#: addons/skin.estuary/1080i/View_502_FanArt.xml
+#: addons/skin.estuary/xml/View_502_FanArt.xml
 msgctxt "#20445"
 msgid "Fanart"
 msgstr ""
@@ -12990,7 +12967,7 @@ msgctxt "#20452"
 msgid "episode"
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogVideoInfo.xml
+#: addons/skin.estuary/xml/DialogVideoInfo.xml
 msgctxt "#20453"
 msgid "episodes"
 msgstr ""
@@ -13030,11 +13007,11 @@ msgid "Tags"
 msgstr ""
 
 msgctxt "#20460"
-msgid "Add %s"
+msgid "Add {0:s}"
 msgstr ""
 
 msgctxt "#20461"
-msgid "Remove %s"
+msgid "Remove {0:s}"
 msgstr ""
 
 msgctxt "#20462"
@@ -13042,11 +13019,11 @@ msgid "New tag..."
 msgstr ""
 
 msgctxt "#20463"
-msgid "A tag with the name '%s' already exists."
+msgid "A tag with the name '{0:s}' already exists."
 msgstr ""
 
 msgctxt "#20464"
-msgid "Select %s"
+msgid "Select {0:s}"
 msgstr ""
 
 msgctxt "#20465"
@@ -13058,7 +13035,7 @@ msgid "Select movie set"
 msgstr ""
 
 msgctxt "#20467"
-msgid "No set (remove from %s)"
+msgid "No set (remove from {0:s})"
 msgstr ""
 
 msgctxt "#20468"
@@ -13066,7 +13043,7 @@ msgid "Add movie to a new set"
 msgstr ""
 
 msgctxt "#20469"
-msgid "Keep current set (%s)"
+msgid "Keep current set ({0:s})"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -13114,7 +13091,7 @@ msgstr ""
 
 #: xbmc/peripherals/devices/peripheralcecadapter.cpp
 msgctxt "#21336"
-msgid "Connecting to: %s"
+msgid "Connecting to: {0:s}"
 msgstr ""
 
 #. Used in the add-on browser under "Last updated" when a repository has never been updated
@@ -13130,7 +13107,7 @@ msgstr ""
 
 #: xbmc/addons/GUIDialogAddonInfo.cpp
 msgctxt "#21339"
-msgid "Version %s"
+msgid "Version {0:s}"
 msgstr ""
 
 #: xbmc/addons/GUIDialogAddonInfo.cpp
@@ -13310,8 +13287,8 @@ msgctxt "#21395"
 msgid "Unable to cache files bigger than 4GB"
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogSeekBar.xml
-#: addons/skin.estuary/1080i/DialogFullScreenInfo.xml
+#: addons/skin.estuary/xml/DialogSeekBar.xml
+#: addons/skin.estuary/xml/DialogFullScreenInfo.xml
 msgctxt "#21396"
 msgid "Chapter"
 msgstr ""
@@ -13432,7 +13409,7 @@ msgctxt "#21421"
 msgid "Smart playlist rule"
 msgstr ""
 
-#: addons/skin.estuary/1080i/SmartPlaylistRule.xml
+#: addons/skin.estuary/xml/SmartPlaylistRule.xml
 msgctxt "#21422"
 msgid "Match items where"
 msgstr ""
@@ -13442,7 +13419,7 @@ msgctxt "#21423"
 msgid "New rule..."
 msgstr ""
 
-#: addons/skin.estuary/1080i/SmartPlaylistEditor.xml
+#: addons/skin.estuary/xml/SmartPlaylistEditor.xml
 msgctxt "#21424"
 msgid "Items must match"
 msgstr ""
@@ -13457,7 +13434,7 @@ msgctxt "#21426"
 msgid "one or more of the rules"
 msgstr ""
 
-#: addons/skin.estuary/1080i/SmartPlaylistEditor.xml
+#: addons/skin.estuary/xml/SmartPlaylistEditor.xml
 msgctxt "#21427"
 msgid "Limit to"
 msgstr ""
@@ -13467,17 +13444,17 @@ msgctxt "#21428"
 msgid "No limit"
 msgstr ""
 
-#: addons/skin.estuary/1080i/SmartPlaylistEditor.xml
+#: addons/skin.estuary/xml/SmartPlaylistEditor.xml
 msgctxt "#21429"
 msgid "Order by"
 msgstr ""
 
-#: addons/skin.estuary/1080i/SmartPlaylistEditor.xml
+#: addons/skin.estuary/xml/SmartPlaylistEditor.xml
 msgctxt "#21430"
 msgid "ascending"
 msgstr ""
 
-#: addons/skin.estuary/1080i/SmartPlaylistEditor.xml
+#: addons/skin.estuary/xml/SmartPlaylistEditor.xml
 msgctxt "#21431"
 msgid "descending"
 msgstr ""
@@ -13486,7 +13463,7 @@ msgctxt "#21432"
 msgid "Edit smart playlist"
 msgstr ""
 
-#: addons/skin.estuary/1080i/SmartPlaylistEditor.xml
+#: addons/skin.estuary/xml/SmartPlaylistEditor.xml
 msgctxt "#21433"
 msgid "Playlist name"
 msgstr ""
@@ -13501,7 +13478,7 @@ msgstr ""
 
 #: xbmc/dialogs/GUIDialogSmartPlaylistEditor.cpp
 msgctxt "#21436"
-msgid "%i items"
+msgid "{0:d} items"
 msgstr ""
 
 msgctxt "#21437"
@@ -13509,7 +13486,7 @@ msgid "New smart playlist..."
 msgstr ""
 
 msgctxt "#21438"
-msgid "%c Drive"
+msgid "{0:c} Drive"
 msgstr ""
 
 msgctxt "#21439"
@@ -13534,7 +13511,7 @@ msgid "Video resolution"
 msgstr ""
 
 #: xbmc/playlists/SmartPlaylist.cpp
-#: addons/skin.estuary/1080i/MusicVisualisation.xml
+#: addons/skin.estuary/xml/MusicVisualisation.xml
 msgctxt "#21444"
 msgid "Audio channels"
 msgstr ""
@@ -13545,7 +13522,7 @@ msgid "Video codec"
 msgstr ""
 
 #: xbmc/playlists/SmartPlaylist.cpp
-#: addons/skin.estuary/1080i/MusicVisualisation.xml
+#: addons/skin.estuary/xml/MusicVisualisation.xml
 msgctxt "#21446"
 msgid "Audio codec"
 msgstr ""
@@ -13578,12 +13555,12 @@ msgstr ""
 
 #: xbmc/addons/GUIViewStateAddonBrowser.cpp
 #: xbmc/filesystem/AddonsDirectory.cpp
-#: addons/skin.estuary/1080i/MyPrograms.xml
-#: addons/skin.estuary/1080i/Includes.xml
-#: addons/skin.estuary/1080i/MyVideoNav.xml
-#: addons/skin.estuary/1080i/MyPics.xml
-#: addons/skin.estuary/1080i/MyMusicNav.xml
-#: addons/skin.estuary/1080i/MyGames.xml
+#: addons/skin.estuary/xml/MyPrograms.xml
+#: addons/skin.estuary/xml/Includes.xml
+#: addons/skin.estuary/xml/MyVideoNav.xml
+#: addons/skin.estuary/xml/MyPics.xml
+#: addons/skin.estuary/xml/MyMusicNav.xml
+#: addons/skin.estuary/xml/MyGames.xml
 msgctxt "#21452"
 msgid "Get more..."
 msgstr ""
@@ -13610,12 +13587,12 @@ msgctxt "#21457"
 msgid "Watched episode count"
 msgstr ""
 
-#: addons/skin.estuary/1080i/SmartPlaylistEditor.xml
+#: addons/skin.estuary/xml/SmartPlaylistEditor.xml
 msgctxt "#21458"
 msgid "Group by"
 msgstr ""
 
-#: addons/skin.estuary/1080i/SmartPlaylistEditor.xml
+#: addons/skin.estuary/xml/SmartPlaylistEditor.xml
 msgctxt "#21459"
 msgid "mixed"
 msgstr ""
@@ -13659,26 +13636,26 @@ msgstr ""
 #. Filter (media data) from float value to float value
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
 msgctxt "#21467"
-msgid "%.1f to %.1f"
+msgid "{0:.1f} to {1:.1f}"
 msgstr ""
 
 #. Filter (media data) from int value to int value
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
 msgctxt "#21468"
-msgid "%d to %d"
+msgid "{0:d} to {1:d}"
 msgstr ""
 
 #. Filter (media data) from string value to string value
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
 #: xbmc/settings/SettingControl.cpp
 msgctxt "#21469"
-msgid "%s to %s"
+msgid "{0:s} to {1:s}"
 msgstr ""
 
 #. Field (e.g. "Genre") [count]
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
 msgctxt "#21470"
-msgid "%s [%d]"
+msgid "{0:s} [{1:d}]"
 msgstr ""
 
 #. One of the values valid for "Videos -> Library -> Select first unwatched TV show season / episode" with label #21416
@@ -13806,7 +13783,7 @@ msgctxt "#21822"
 msgid "Camera make"
 msgstr ""
 
-#: addons/skin.estuary/1080i/Variables.xml
+#: addons/skin.estuary/xml/Variables.xml
 msgctxt "#21823"
 msgid "Camera model"
 msgstr ""
@@ -13819,12 +13796,12 @@ msgctxt "#21825"
 msgid "Firmware"
 msgstr ""
 
-#: addons/skin.estuary/1080i/Variables.xml
+#: addons/skin.estuary/xml/Variables.xml
 msgctxt "#21826"
 msgid "Aperture"
 msgstr ""
 
-#: addons/skin.estuary/1080i/Variables.xml
+#: addons/skin.estuary/xml/Variables.xml
 msgctxt "#21827"
 msgid "Focal length"
 msgstr ""
@@ -13837,7 +13814,7 @@ msgctxt "#21829"
 msgid "Exposure"
 msgstr ""
 
-#: addons/skin.estuary/1080i/Variables.xml
+#: addons/skin.estuary/xml/Variables.xml
 msgctxt "#21830"
 msgid "Exposure time"
 msgstr ""
@@ -13978,7 +13955,7 @@ msgctxt "#21874"
 msgid "State"
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogVideoInfo.xml
+#: addons/skin.estuary/xml/DialogVideoInfo.xml
 msgctxt "#21875"
 msgid "Country"
 msgstr ""
@@ -14032,13 +14009,13 @@ msgstr ""
 
 #: xbmc/music/dialogs/GUIDialogMusicInfo.cpp
 #: xbmc/playlists/SmartPlaylist.cpp
-#: addons/skin.estuary/1080i/Variables.xml
+#: addons/skin.estuary/xml/Variables.xml
 msgctxt "#21887"
 msgid "Biography"
 msgstr ""
 
 #: xbmc/music/dialogs/GUIDialogMusicInfo.cpp
-#: addons/skin.estuary/1080i/Variables.xml
+#: addons/skin.estuary/xml/Variables.xml
 msgctxt "#21888"
 msgid "Discography"
 msgstr ""
@@ -14088,13 +14065,13 @@ msgctxt "#21897"
 msgid "Died"
 msgstr ""
 
-#: addons/skin.estuary/1080i/Variables.xml
+#: addons/skin.estuary/xml/Variables.xml
 msgctxt "#21898"
 msgid "Years active"
 msgstr ""
 
 #: xbmc/playlists/SmartPlaylist.cpp
-#: addons/skin.estuary/1080i/Variables.xml
+#: addons/skin.estuary/xml/Variables.xml
 msgctxt "#21899"
 msgid "Label"
 msgstr ""
@@ -14122,15 +14099,15 @@ msgid "DNS suffix"
 msgstr ""
 
 msgctxt "#22003"
-msgid "%2.3fs"
+msgid "{0:2.3f}s"
 msgstr ""
 
 msgctxt "#22004"
-msgid "Delayed by: %2.3fs"
+msgid "Delayed by: {0:2.3f}s"
 msgstr ""
 
 msgctxt "#22005"
-msgid "Ahead by: %2.3fs"
+msgid "Ahead by: {0:2.3f}s"
 msgstr ""
 
 msgctxt "#22006"
@@ -14274,11 +14251,11 @@ msgid "Activate teletext"
 msgstr ""
 
 msgctxt "#23051"
-msgid "Part %i"
+msgid "Part {0:d}"
 msgstr ""
 
 msgctxt "#23052"
-msgid "Buffering %i bytes"
+msgid "Buffering {0:d} bytes"
 msgstr ""
 
 msgctxt "#23053"
@@ -14321,9 +14298,9 @@ msgid "Add-on"
 msgstr ""
 
 #: xbmc/filesystem/AddonsDirectory.cpp
-#: addons/skin.estuary/1080i/Includes.xml
-#: addons/skin.estuary/1080i/SkinSettings.xml
-#: addons/skin.estuary/1080i/Home.xml
+#: addons/skin.estuary/xml/Includes.xml
+#: addons/skin.estuary/xml/SkinSettings.xml
+#: addons/skin.estuary/xml/Home.xml
 msgctxt "#24001"
 msgid "Add-ons"
 msgstr ""
@@ -14381,7 +14358,7 @@ msgid "Add-on repository"
 msgstr ""
 
 #: xbmc/addons/Addon.cpp
-#: addons/skin.estuary/1080i/Variables.xml
+#: addons/skin.estuary/xml/Variables.xml
 msgctxt "#24012"
 msgid "Subtitles"
 msgstr ""
@@ -14412,7 +14389,7 @@ msgid "Artist information"
 msgstr ""
 
 #: xbmc/addons/Addon.cpp
-#: addons/skin.estuary/1080i/DialogSubtitles.xml
+#: addons/skin.estuary/xml/DialogSubtitles.xml
 msgctxt "#24018"
 msgid "Services"
 msgstr ""
@@ -14490,7 +14467,7 @@ msgctxt "#24033"
 msgid "Install from repository"
 msgstr ""
 
-#: addons/skin.estuary/1080i/AddonBrowser.xml
+#: addons/skin.estuary/xml/AddonBrowser.xml
 #: xbmc/addons/ContextMenus.h
 #: xbmc/addons/GUIViewStateAddonBrowser.cpp
 msgctxt "#24034"
@@ -14533,7 +14510,7 @@ msgstr ""
 
 #: xbmc/addons/GUIViewStateAddonBrowser.cpp
 msgctxt "#24042"
-msgid "Downloading %i%%"
+msgid "Downloading {0:d}%"
 msgstr ""
 
 #: xbmc/addons/GUIViewStateAddonBrowser.cpp
@@ -14552,7 +14529,7 @@ msgstr ""
 
 #: xbmc/addons/GUIDialogAddonInfo.cpp
 msgctxt "#24046"
-msgid "%s is used by the following installed add-on(s)"
+msgid "{0:s} is used by the following installed add-on(s)"
 msgstr ""
 
 #: xbmc\addons\GUIDialogAddonInfo.cpp
@@ -14578,7 +14555,7 @@ msgctxt "#24051"
 msgid "Version:"
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogAddonInfo.xml
+#: addons/skin.estuary/xml/DialogAddonInfo.xml
 #: addons/skin.estouchy/xml/DialogAddonInfo.xml
 msgctxt "#24052"
 msgid "Disclaimer"
@@ -14589,7 +14566,7 @@ msgctxt "#24053"
 msgid "License:"
 msgstr ""
 
-#: addons/skin.estuary/1080i/DialogAddonInfo.xml
+#: addons/skin.estuary/xml/DialogAddonInfo.xml
 msgctxt "#24054"
 msgid "What's new"
 msgstr ""
@@ -14603,13 +14580,13 @@ msgstr ""
 #. Used in the Add-on Manager to specify last update time
 #: xbmc/addons/GUIViewStateAddonBrowser.cpp
 msgctxt "#24056"
-msgid "Last updated %s"
+msgid "Last updated {0:s}"
 msgstr ""
 
 #. Used as a title in the progress dialog when installing an add-on
 #: xbmc/addons/AddonInstaller.cpp
 msgctxt "#24057"
-msgid "Installing %s..."
+msgid "Installing {0:s}..."
 msgstr ""
 
 #. Used as a text in the progress dialog when installing an add-on
@@ -14643,7 +14620,6 @@ msgid "Auto update"
 msgstr ""
 
 #. Used as an event log description for add-ons that have been installed/enabled
-#: xbmc/addons/AddonInstaller.cpp
 #: xbmc/addons/AddonManager.cpp
 msgctxt "#24064"
 msgid "Add-on enabled"
@@ -14743,7 +14719,10 @@ msgctxt "#24083"
 msgid "Information libraries"
 msgstr ""
 
-#empty string with id 24084
+#: xbmc/addons/AddonInstaller.cpp
+msgctxt "#24084"
+msgid "Add-on installed"
+msgstr ""
 
 #. Used as a text in the progress dialog when installing an add-on
 #: xbmc/addons/AddonInstaller.cpp
@@ -14788,23 +14767,25 @@ msgctxt "#24092"
 msgid "Checking for add-on updates"
 msgstr ""
 
-#. Used as a text in the progress dialog when checking for add-on updates. %s contains repository name
+#. Used as a text in the progress dialog when checking for add-on updates. {0:s} contains repository name
 #: xbmc/addons/Repository.cpp
 msgctxt "#24093"
-msgid "Checking %s..."
+msgid "Checking {0:s}..."
 msgstr ""
 
-#empty string with id 24094
+#: xbmc/addons/AddonInstaller.cpp
+msgctxt "#24094"
+msgid "Add-on disabled due to being marked broken in repository."
+msgstr ""
 
 #: xbmc/addons/GUIDialogAddonInfo.cpp
 msgctxt "#24095"
 msgid "Local package cache"
 msgstr ""
 
-#: xbmc/addons/Repository.cpp
-#: addons/skin.estuary/1080i/DialogAddonInfo.xml
+#: addons/skin.estuary/xml/DialogAddonInfo.xml
 msgctxt "#24096"
-msgid "Add-on is incompatible or has been marked broken in repository."
+msgid "Add-on has been marked broken in repository."
 msgstr ""
 
 #: xbmc/addons/Repository.cpp
@@ -14865,7 +14846,7 @@ msgstr ""
 
 #: xbmc/dialogs/GUIDialogSubtitles.cpp
 msgctxt "#24108"
-msgid "%d subtitles found"
+msgid "{0:d} subtitles found"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogSubtitles.cpp
@@ -15046,16 +15027,16 @@ msgctxt "#24141"
 msgid "Add-on disabled"
 msgstr ""
 
-#. The dependency on <addon id> version <addon version> coult not be satisfied.
+#. The dependency on <addon id> version <addon version> could not be satisfied.
 #: xbmc/addons/AddonInstaller.cpp
 msgctxt "#24142"
-msgid "The dependency on %s version %s could not be satisfied."
+msgid "The dependency on {0:s} version {1:s} could not be satisfied."
 msgstr ""
 
 #. Installing the addon from zip file located at <path to zip file> failed due to an invalid structure.
 #: xbmc/addons/AddonInstaller.cpp
 msgctxt "#24143"
-msgid "Installing the Add-on from zip file located at %s failed due to an invalid structure."
+msgid "Installing the Add-on from zip file located at {0:s} failed due to an invalid structure."
 msgstr ""
 
 #. Used as an event log description for add-ons that have been uninstalled
@@ -15081,7 +15062,7 @@ msgstr ""
 #: xbmc/music/infoscanner/MusicInfoScanner.cpp
 #: xbmc/video/VideoInfoScanner.cpp
 msgctxt "#24147"
-msgid "Failed to scan %s: %s"
+msgid "Failed to scan {0:s}: {1:s}"
 msgstr ""
 
 msgctxt "#24148"
@@ -15089,7 +15070,7 @@ msgid "Incompatible add-ons"
 msgstr ""
 
 msgctxt "#24149"
-msgid "The following add-ons are incompatible with this version of Kodi and have been automatically disabled: %s."
+msgid "The following add-ons are incompatible with this version of Kodi and have been automatically disabled: {0:s}."
 msgstr ""
 
 #. Progress text on splash screen
@@ -15152,7 +15133,7 @@ msgid "My add-ons"
 msgstr ""
 
 #. Used in add-on browser
-#: addons/skin.estuary/1080i/AddonBrowser.xml
+#: addons/skin.estuary/xml/AddonBrowser.xml
 msgctxt "#24999"
 msgid "Hide incompatible"
 msgstr ""
@@ -15163,7 +15144,7 @@ msgid "Notifications"
 msgstr ""
 
 #. Used in add-on browser
-#: addons/skin.estuary/1080i/AddonBrowser.xml
+#: addons/skin.estuary/xml/AddonBrowser.xml
 msgctxt "#25001"
 msgid "Hide foreign"
 msgstr ""
@@ -15182,12 +15163,12 @@ msgstr ""
 
 #: xbmc/filesystem/BlurayDirectory.cpp
 msgctxt "#25004"
-msgid "Play main title: %d"
+msgid "Play main title: {0:d}"
 msgstr ""
 
 #: xbmc/filesystem/BlurayDirectory.cpp
 msgctxt "#25005"
-msgid "Title: %d"
+msgid "Title: {0:d}"
 msgstr ""
 
 #: xbmc/video/windows/GUIWindowVideoBase.cpp
@@ -15197,7 +15178,7 @@ msgstr ""
 
 #: xbmc/filesystem/BlurayDirectory.cpp
 msgctxt "#25007"
-msgid "Chapters: %u - duration: %s"
+msgid "Chapters: {0:d} - duration: {1:s}"
 msgstr ""
 
 #: xbmc/cores/VideoPlayer/VideoPlayer.cpp
@@ -15212,7 +15193,7 @@ msgstr ""
 
 #: xbmc/video/dialogs/GUIDialogVideoBookmarks.cpp
 msgctxt "#25010"
-msgid "Chapter %u"
+msgid "Chapter {0:d}"
 msgstr ""
 
 #: xbmc/cores/VideoPlayer/VideoPlayer.cpp
@@ -15249,94 +15230,94 @@ msgid "Radiotext Plus info"
 msgstr ""
 
 #. Music band name which make the song (if present)
-#: addons/skin.estuary/1080i/DialogPVRRadioRDSInfo.xml
+#: addons/skin.estuary/xml/DialogPVRRadioRDSInfo.xml
 msgctxt "#29901"
 msgid "Band"
 msgstr ""
 
 #. Style of the current playing radio
-#: addons/skin.estuary/1080i/DialogPVRRadioRDSInfo.xml
+#: addons/skin.estuary/xml/DialogPVRRadioRDSInfo.xml
 msgctxt "#29902"
 msgid "Style"
 msgstr ""
 
 #. Concert composer of the music (if present)
 #: Label of ListItem.Property(Role.Composer)
-#: addons/skin.estuary/1080i/DialogPVRRadioRDSInfo.xml
+#: addons/skin.estuary/xml/DialogPVRRadioRDSInfo.xml
 msgctxt "#29903"
 msgid "Composer"
 msgstr ""
 
-#. Artits which sing the music (if present)
-#: addons/skin.estuary/1080i/DialogPVRRadioRDSInfo.xml
+#. Artists which sing the music (if present)
+#: addons/skin.estuary/xml/DialogPVRRadioRDSInfo.xml
 msgctxt "#29904"
 msgid "Artist"
 msgstr ""
 
 #. Conductor of the classic music (if present)
 #: Label of ListItem.Property(Role.Conductor)
-#: addons/skin.estuary/1080i/DialogPVRRadioRDSInfo.xml
+#: addons/skin.estuary/xml/DialogPVRRadioRDSInfo.xml
 msgctxt "#29905"
 msgid "Conductor"
 msgstr ""
 
 #. Moderator currently on radio (if present)
-#: addons/skin.estuary/1080i/DialogPVRRadioRDSInfo.xml
+#: addons/skin.estuary/xml/DialogPVRRadioRDSInfo.xml
 msgctxt "#29906"
 msgid "Moderator"
 msgstr ""
 
 #. List of editoral staff (if present)
-#: addons/skin.estuary/1080i/DialogPVRRadioRDSInfo.xml
+#: addons/skin.estuary/xml/DialogPVRRadioRDSInfo.xml
 msgctxt "#29907"
 msgid "Editorial Staff"
 msgstr ""
 
 #. Current playing program name
-#: addons/skin.estuary/1080i/DialogPVRRadioRDSInfo.xml
+#: addons/skin.estuary/xml/DialogPVRRadioRDSInfo.xml
 msgctxt "#29908"
 msgid "Program"
 msgstr ""
 
 #. Studio name (if present)
-#: addons/skin.estuary/1080i/DialogPVRRadioRDSInfo.xml
-#: addons/skin.estuary/1080i/DialogVideoInfo.xml
+#: addons/skin.estuary/xml/DialogPVRRadioRDSInfo.xml
+#: addons/skin.estuary/xml/DialogVideoInfo.xml
 msgctxt "#29909"
 msgid "Studio"
 msgstr ""
 
 #. Phone number (if present)
-#: addons/skin.estuary/1080i/DialogPVRRadioRDSInfo.xml
+#: addons/skin.estuary/xml/DialogPVRRadioRDSInfo.xml
 msgctxt "#29910"
 msgid "Phone"
 msgstr ""
 
 #. EMail address (if present)
-#: addons/skin.estuary/1080i/DialogPVRRadioRDSInfo.xml
+#: addons/skin.estuary/xml/DialogPVRRadioRDSInfo.xml
 msgctxt "#29911"
 msgid "EMail"
 msgstr ""
 
 #. SMS message number (if present)
-#: addons/skin.estuary/1080i/DialogPVRRadioRDSInfo.xml
+#: addons/skin.estuary/xml/DialogPVRRadioRDSInfo.xml
 msgctxt "#29912"
 msgid "SMS"
 msgstr ""
 
 #. Hotline phone (if present)
-#: addons/skin.estuary/1080i/DialogPVRRadioRDSInfo.xml
+#: addons/skin.estuary/xml/DialogPVRRadioRDSInfo.xml
 msgctxt "#29913"
 msgid "Hotline"
 msgstr ""
 
 #. Website address (if present)
-#: addons/skin.estuary/1080i/DialogPVRRadioRDSInfo.xml
+#: addons/skin.estuary/xml/DialogPVRRadioRDSInfo.xml
 msgctxt "#29914"
 msgid "Website"
 msgstr ""
 
 #. General information news, in list selector (if present)
-#: addons/skin.estuary/1080i/DialogPVRRadioRDSInfo.xml
+#: addons/skin.estuary/xml/DialogPVRRadioRDSInfo.xml
 msgctxt "#29915"
 msgid "Info"
 msgstr ""
@@ -15903,19 +15884,19 @@ msgid "Translate text"
 msgstr ""
 
 msgctxt "#33033"
-msgid "Map list %s category"
+msgid "Map list {0:s} category"
 msgstr ""
 
 msgctxt "#33034"
 msgid "36-hour"
 msgstr ""
 
-#: addons/skin.estuary/1080i/MyWeather.xml
+#: addons/skin.estuary/xml/MyWeather.xml
 msgctxt "#33035"
 msgid "Maps"
 msgstr ""
 
-#: addons/skin.estuary/1080i/MyWeather.xml
+#: addons/skin.estuary/xml/MyWeather.xml
 msgctxt "#33036"
 msgid "Hourly"
 msgstr ""
@@ -15925,7 +15906,7 @@ msgid "Weekend"
 msgstr ""
 
 msgctxt "#33038"
-msgid "%s day"
+msgid "{0:s} day"
 msgstr ""
 
 #empty string with id 33039
@@ -15933,7 +15914,7 @@ msgstr ""
 #. Used in the media source dialog. Will result in "HDHomerun Devices"
 #: dialogs/GUIDialogMediaSource.cpp
 msgctxt "#33040"
-msgid "%s devices"
+msgid "{0:s} devices"
 msgstr ""
 
 #empty strings from id 33041 to 33048
@@ -15964,7 +15945,7 @@ msgstr ""
 
 #: xbmc/filesystem/VideoDatabaseDirectory.cpp
 #: xbmc/media/MediaTypes.cpp
-#: addons/skin.estuary/1080i/View_51_Poster.xml
+#: addons/skin.estuary/xml/View_51_Poster.xml
 msgctxt "#33054"
 msgid "Seasons"
 msgstr ""
@@ -16009,7 +15990,7 @@ msgctxt "#33062"
 msgid "Play the"
 msgstr ""
 
-#: addons/skin.estuary/1080i/Includes.xml
+#: addons/skin.estuary/xml/Includes.xml
 msgctxt "#33063"
 msgid "Options"
 msgstr ""
@@ -16473,25 +16454,24 @@ msgctxt "#35012"
 msgid "A new controller has been detected. Configuration can be done at any time in \"Settings -> System Settings -> Input\". Would you like to configure it now?"
 msgstr ""
 
-#. Label of the button to fix the bug where buttons are skipped in the controller dialog
-#: addons/skin.estuary/1080i/DialogGameControllers.xml
-msgctxt "#35013"
-msgid "Fix skipping"
-msgstr ""
+#empty string with id 35013
 
-#. Help text of the button to fix the bug where buttons are skipped in the controller dialog. %s - list of disabled buttons and axes
+#. Help text of the button to fix the bug where buttons are skipped in the controller dialog. {0:s} - list of disabled buttons and axes
+#: xbmc/games/controllers/dialogs/GUIDialogButtonCapture.cpp
 msgctxt "#35014"
-msgid "Some controllers have buttons and axes that interfere with mapping. Press these now to disable them:[CR]%s"
+msgid "Some controllers have buttons and axes that interfere with mapping. Press these now to disable them:[CR]{0:s}"
 msgstr ""
 
-#. Name of a controller button, e.g. Button 1. %d - button index
+#. Name of a controller button, e.g. Button 1. {0:d} - button index
+#: xbmc/input/joysticks/JoystickTranslator.cpp
 msgctxt "#35015"
-msgid "Button %d"
+msgid "Button {0:d}"
 msgstr ""
 
-#. Name of a controller axis, e.g. Axis 2. %d - axis index
+#. Name of a controller axis, e.g. Axis 2. {0:d} - axis index
+#: xbmc/input/joysticks/JoystickTranslator.cpp
 msgctxt "#35016"
-msgid "Axis %d"
+msgid "Axis {0:d}"
 msgstr ""
 
 #. Error dialog title when the controller dialog is opened but peripheral add-ons are disabled
@@ -16506,7 +16486,20 @@ msgctxt "#35018"
 msgid "Controller configuration depends on a disabled add-on. Would you like to enable it?"
 msgstr ""
 
-#empty strings from id 35019 to 35048
+#. Label of the button to fix the bug where buttons are skipped in the controller dialog
+#: addons/skin.estuary/xml/DialogGameControllers.xml
+#: xbmc/games/controllers/dialogs/GUIDialogButtonCapture.cpp
+msgctxt "#35019"
+msgid "Ignore input"
+msgstr ""
+
+#. Help text of the dialog to detect analog buttons on controllers. {0:s} - list of detected axes
+#: xbmc/games/controllers/dialogs/GUIDialogAxisDetection.cpp
+msgctxt "#35020"
+msgid "Press all analog buttons now to detect them:[CR][CR]{0:s}"
+msgstr ""
+
+#empty strings from id 35021 to 35048
 
 #. Name of game add-ons category
 #: xbmc/addons/Addon.cpp
@@ -16516,7 +16509,7 @@ msgid "Game add-ons"
 msgstr ""
 
 #. Name of controller add-ons
-#: addons/skin.estuary/1080i/DialogGameControllers.xml
+#: addons/skin.estuary/xml/DialogGameControllers.xml
 #: xbmc/addons/Addon.cpp
 #: xbmc/games/controllers/windows/GUIControllerWindow.cpp
 msgctxt "#35050"
@@ -16535,7 +16528,17 @@ msgctxt "#35052"
 msgid "Activate the rumble motors of all controllers."
 msgstr ""
 
-#empty strings from id 35053 to 35054
+#. Setting to enable rumble for GUI notifications
+#: system/settings/settings.xml
+msgctxt "#35053"
+msgid "Enable rumble for notifications"
+msgstr ""
+
+#. Description of setting to enable rumble for GUI notifications
+#: system/settings/settings.xml
+msgctxt "#35054"
+msgid "Activates controller rumble motors when a notification occurs."
+msgstr ""
 
 #. Help text for controller window
 #: xbmc/games/controllers/windows/GUIControllerWindow.cpp
@@ -16546,13 +16549,13 @@ msgstr ""
 #empty strings from id 35056 to 35057
 
 #. Title of controller configuration window
-#: addons/skin.estuary/1080i/DialogGameControllers.xml
+#: addons/skin.estuary/xml/DialogGameControllers.xml
 msgctxt "#35058"
 msgid "Controller Configuration"
 msgstr ""
 
 #. Heading for controller buttons list in controller configuration window
-#: addons/skin.estuary/1080i/DialogGameControllers.xml
+#: addons/skin.estuary/xml/DialogGameControllers.xml
 msgctxt "#35059"
 msgid "Buttons"
 msgstr ""
@@ -16635,64 +16638,64 @@ msgctxt "#35089"
 msgid "Powers off any controller that supports it on exit."
 msgstr ""
 
-#. Button prompt without timeout. %s - button name
+#. Button prompt without timeout. {0:s} - button name
 #: xbmc/games/controllers/guicontrols/GUIScalarFeatureButton.cpp
 msgctxt "#35090"
-msgid "Press %s"
+msgid "Press {0:s}"
 msgstr ""
 
-#. Button prompt with timeout. %s - button name, %d - seconds left in prompt
+#. Button prompt with timeout. {0:s} - button name, {1:d} - seconds left in prompt
 #: xbmc/games/controllers/guicontrols/GUIScalarFeatureButton.cpp
 msgctxt "#35091"
-msgid "Press %s (%d)"
+msgid "Press {0:s} ({1:d})"
 msgstr ""
 
-#. Analog stick up prompt without timeout. %s - analog stick name
+#. Analog stick up prompt without timeout. {0:s} - analog stick name
 #: xbmc/games/controllers/guicontrols/GUIAnalogStickButton.cpp
 msgctxt "#35092"
-msgid "Move %s up"
+msgid "Move {0:s} up"
 msgstr ""
 
-#. Analog stick up prompt with timeout. %s - analog stick name, %d - seconds left in prompt
+#. Analog stick up prompt with timeout. {0:s} - analog stick name, {1:d} - seconds left in prompt
 #: xbmc/games/controllers/guicontrols/GUIAnalogStickButton.cpp
 msgctxt "#35093"
-msgid "Move %s up (%d)"
+msgid "Move {0:s} up ({1:d})"
 msgstr ""
 
-#. Analog stick down prompt without timeout. %s - analog stick name
+#. Analog stick down prompt without timeout. {0:s} - analog stick name
 #: xbmc/games/controllers/guicontrols/GUIAnalogStickButton.cpp
 msgctxt "#35094"
-msgid "Move %s down"
+msgid "Move {0:s} down"
 msgstr ""
 
-#. Analog stick down prompt with timeout. %s - analog stick name, %d - seconds left in prompt
+#. Analog stick down prompt with timeout. {0:s} - analog stick name, {1:d} - seconds left in prompt
 #: xbmc/games/controllers/guicontrols/GUIAnalogStickButton.cpp
 msgctxt "#35095"
-msgid "Move %s down (%d)"
+msgid "Move {0:s} down ({1:d})"
 msgstr ""
 
-#. Analog stick right prompt without timeout. %s - analog stick name
+#. Analog stick right prompt without timeout. {0:s} - analog stick name
 #: xbmc/games/controllers/guicontrols/GUIAnalogStickButton.cpp
 msgctxt "#35096"
-msgid "Move %s right"
+msgid "Move {0:s} right"
 msgstr ""
 
-#. Analog stick right prompt with timeout. %s - analog stick name, %d - seconds left in prompt
+#. Analog stick right prompt with timeout. {0:s} - analog stick name, {1:d} - seconds left in prompt
 #: xbmc/games/controllers/guicontrols/GUIAnalogStickButton.cpp
 msgctxt "#35097"
-msgid "Move %s right (%d)"
+msgid "Move {0:s} right ({1:d})"
 msgstr ""
 
-#. Analog stick left prompt without timeout. %s - analog stick name
+#. Analog stick left prompt without timeout. {0:s} - analog stick name
 #: xbmc/games/controllers/guicontrols/GUIAnalogStickButton.cpp
 msgctxt "#35098"
-msgid "Move %s left"
+msgid "Move {0:s} left"
 msgstr ""
 
-#. Analog stick left prompt with timeout. %s - analog stick name, %d - seconds left in prompt
+#. Analog stick left prompt with timeout. {0:s} - analog stick name, {1:d} - seconds left in prompt
 #: xbmc/games/controllers/guicontrols/GUIAnalogStickButton.cpp
 msgctxt "#35099"
-msgid "Move %s left (%d)"
+msgid "Move {0:s} left ({1:d})"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -16757,7 +16760,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#35156"
-msgid "%i"
+msgid "{0:d}"
 msgstr ""
 
 #. Name of setting to configure a keyboard player's controller configuration
@@ -16874,10 +16877,10 @@ msgctxt "#35210"
 msgid "Failed to play game"
 msgstr ""
 
-#. Error dialog text when the game requires restricted files to play. %s - emulator ID
+#. Error dialog text when the game requires restricted files to play. {0:s} - emulator ID
 #: xbmc/games/addons/GameClient.cpp
 msgctxt "#35211"
-msgid "This game requires the following add-on: %s"
+msgid "This game requires the following add-on: {0:s}"
 msgstr ""
 
 #. Error dialog text when launching a game and no emulators are compatible
@@ -16886,10 +16889,10 @@ msgctxt "#35212"
 msgid "This game isn't compatible with any available emulators."
 msgstr ""
 
-#. Error dialog text when launching a game and the emulator has an internal error. %s - emulator name
+#. Error dialog text when launching a game and the emulator has an internal error. {0:s} - emulator name
 #: xbmc/games/GameClient.cpp
 msgctxt "#35213"
-msgid "The emulator \"%s\" had an internal error."
+msgid "The emulator \"{0:s}\" had an internal error."
 msgstr ""
 
 #. Error dialog text when the game can't be played because it's not on a hard drive or partition
@@ -17185,7 +17188,7 @@ msgstr ""
 
 #: xbmc/peripherals/devices/peripheralcecadapter.cpp
 msgctxt "#36040"
-msgid "Detected version of libCEC interface (%x) is lower than the supported version %x."
+msgid "Detected version of libCEC interface ({0:x}) is lower than the supported version {1:x}."
 msgstr ""
 
 #: xbmc/video/dialogs/guidialogvideoinfo.cpp
@@ -17207,7 +17210,7 @@ msgstr ""
 #. Name of an action to perform on a specific event, like changing the CEC source away from Kodi
 #: xbmc/peripherals/devices/PeripheralCecAdapter.cpp
 #: system/peripherals.xml
-#: addons/skin.estuary/1080i/Variables.xml
+#: addons/skin.estuary/xml/Variables.xml
 msgctxt "#36044"
 msgid "Stop Playback"
 msgstr ""
@@ -17331,7 +17334,7 @@ msgstr ""
 #. Description of setting with label #14091 "Character set"
 #: system/settings/settings.xml
 msgctxt "#36116"
-msgid "Choose which character set is used for displaying text in the user interface."
+msgid "Choose which character set is used for displaying text in the user interface. This doesn't change the character set used for subtitles, for that go to Player > Language."
 msgstr ""
 
 #. Description of setting with label #14079 "Timezone country"
@@ -17871,10 +17874,7 @@ msgctxt "#36209"
 msgid "Delete the databases for channels and guide and reimport the data from the backend afterwards."
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#36210"
-msgid "Prevent the \"Connection lost\" notification window from displaying when the PVR backend server is not available."
-msgstr ""
+#empty string with id 36210
 
 #: system/settings/settings.xml
 msgctxt "#36211"
@@ -17976,7 +17976,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36231"
-msgid "When flipping through channels using channel up/down buttons or when pressing a number button in full screen mode, channel switches must be confirmed using the OK button."
+msgid "When flipping through channels using channel up/down buttons, channel switches must be confirmed using the OK button."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -17994,15 +17994,7 @@ msgctxt "#36234"
 msgid "Duration of instant recordings when pressing the record button. This value will be taken into account if \"Instant recording action\" is set to \"Record for a fixed period of time\""
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#36235"
-msgid "Priority of the recording. Higher number means higher priority. Not supported by all add-ons and backends."
-msgstr ""
-
-#: system/settings/settings.xml
-msgctxt "#36236"
-msgid "Delete recording after this time. Not supported by all add-ons and backends."
-msgstr ""
+#empty strings from id 36235 to 36236
 
 #: system/settings/settings.xml
 msgctxt "#36237"
@@ -19018,15 +19010,11 @@ msgctxt "#36422"
 msgid "Enable hardware video decode using Amlogic decoder."
 msgstr ""
 
-#. Description of setting with label #812 "Prevent duplicate episodes"
-#: system/settings/settings.xml
-msgctxt "#36423"
-msgid "Timer rules shall only record new episodes. Not supported by all add-ons and backends."
-msgstr ""
+#empty string with id 36423
 
 #: system/settings/settings.xml
 msgctxt "#36424"
-msgid "Select what will happen when an item is selected in the guide: [Show context menu] Will trigger the context menu from where you can choose further actions; [Switch to channel] Will instantly tune to the related channel; [Show information] Will display a detailed information with plot and further options; [Record] Will create a recording timer for the selected item."
+msgid "Select what will happen when an item is selected in the guide: [Show context menu] Will trigger the context menu from where you can choose further actions; [Switch to channel] Will instantly tune to the related channel; [Show information] Will display a detailed information with plot and further options; [Record] Will create a recording timer for the selected item. [\"Smart select\"] The action is choosen dynamically, depending on whether the event is in the past, now or in the future."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -19595,7 +19583,7 @@ msgid "256x256x256"
 msgstr ""
 
 msgctxt "#36597"
-msgid "%1.2f"
+msgid "{0:1.2f}"
 msgstr ""
 
 #. Description of setting with label #36099 "Dither"
@@ -19719,7 +19707,7 @@ msgctxt "#36618"
 msgid "Add-ons will be given access to personal data stored on this device. By allowing, you agree that you are solely responsible for any loss of data, unwanted behaviour, or damage to your device. Proceed?"
 msgstr ""
 
-#. Label of a setting, allow the user to specifiy high quality downscaling of pictures
+#. Label of a setting, allow the user to specify high quality downscaling of pictures
 #: system/settings/settings.xml
 msgctxt "#36619"
 msgid "High quality downscaling"
@@ -19759,7 +19747,7 @@ msgid "season"
 msgstr ""
 
 #: xbmc/media/MediaType.cpp
-#: addons/skin.estuary/1080i/DialogVideoInfo.xml
+#: addons/skin.estuary/xml/DialogVideoInfo.xml
 msgctxt "#36905"
 msgid "seasons"
 msgstr ""
@@ -20088,10 +20076,10 @@ msgctxt "#38015"
 msgid "Unlimited"
 msgstr ""
 
-#. Used to format framerate values. %d will be replaced with the according number/integer, like "24 fps", "50 fps"
+#. Used to format framerate values. {0:d} will be replaced with the according number/integer, like "24 fps", "50 fps"
 #: system/settings/settings.xml
 msgctxt "#38016"
-msgid "%d fps"
+msgid "{0:d} fps"
 msgstr ""
 
 #. Description of setting #14111 "Blu-ray region code"
@@ -20265,7 +20253,13 @@ msgctxt "#38061"
 msgid "Fetch additional information for albums and artists? This could take some time so you may prefer to do this later"
 msgstr ""
 
-#empty strings from id 38062 to 38099
+#. Full tag scanning question on library update (by default tags are only scanned when the file has changed since last time)
+#: xbmc/Application.cpp
+msgctxt "#38062"
+msgid "Do full tag scan even when music files are unchanged?"
+msgstr ""
+
+#empty strings from id 38063 to 38099
 
 #. Description of section #14200 "Player""
 #: system/settings/settings.xml
@@ -20339,7 +20333,21 @@ msgctxt "#38111"
 msgid "This category contains other settings for the GUI interface"
 msgstr ""
 
-#empty strings from id 38112 to 38999
+#empty strings from id 38112 to 38206
+
+#. Description of setting "Pictures -> Show EXIF picture information" with label #38207
+#: system/settings/settings.xml
+msgctxt "#38207"
+msgid "Show EXIF picture information"
+msgstr ""
+
+#. Help text of setting "Pictures -> Show EXIF picture information" with label #38208
+#: system/settings/settings.xml
+msgctxt "#38208"
+msgid "If EXIF information exists (date, time, camera used, etc.), it will be displayed."
+msgstr ""
+
+#empty strings from id 38209 to 38999
 
 #: system/settings/settings.xml
 msgctxt "#39000"
@@ -20398,4 +20406,36 @@ msgstr ""
 #: view/GUIViewState.cpp
 msgctxt "#39010"
 msgid "Select sort method"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#39011"
+msgid "Maximum wait time for network"
+msgstr ""
+
+#. Description of setting with label #39011 "Maximum wait time for network"
+#: system/settings/settings.xml
+msgctxt "#39012"
+msgid "Set the maximum time to wait for the network to come up after starting or waking up. When time has passed before network is up startup will continue."
+msgstr ""
+
+#: xbmc/addons/Addon.cpp
+msgctxt "#39013"
+msgid "Virtual filesystems"
+msgstr ""
+
+#. Message of a dialog, asking if related data of an add-on should also be removed on uninstall
+#: xbmc/addons/GUIDialogAddonInfo.cpp
+msgctxt "#39014"
+msgid "Would you also like to remove all related data (e.g. settings) of this add-on?"
+msgstr ""
+
+#: /xbmc/addons/Addon.cpp
+msgctxt "#39015"
+msgid "Image decoder"
+msgstr ""
+
+#: xbmc/music/windows/GUIWindowMusicBase.cpp
+msgctxt "#39016"
+msgid "Resume audiobook"
 msgstr ""

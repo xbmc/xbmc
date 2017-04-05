@@ -1,0 +1,21 @@
+[Desktop Entry]
+Version=1.0
+Name=@APP_NAME@
+GenericName=Media Center
+Comment=Manage and view your media
+Comment[ru]=Просмотр и управление мультимедиа
+Exec=@APP_NAME_LC@
+Icon=@APP_NAME_LC@
+Terminal=false
+Type=Application
+Categories=AudioVideo;Video;Player;TV;
+
+Actions=Fullscreen;Standalone;
+
+[Desktop Action Fullscreen]
+Name=Open in fullscreen
+Exec=@APP_NAME_LC@ -fs
+
+[Desktop Action Standalone]
+Name=Open in standalone mode
+Exec=@APP_NAME_LC@ --standalone

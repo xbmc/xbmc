@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2013-2017 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@ public:
   virtual ~CStaticListProvider();
 
   virtual bool Update(bool forceRefresh) override;
-  virtual void Fetch(std::vector<CGUIListItemPtr> &items) const override;
+  virtual void Fetch(std::vector<CGUIListItemPtr> &items) override;
   virtual bool OnClick(const CGUIListItemPtr &item) override;
   bool OnInfo(const CGUIListItemPtr &item) override { return false; }
   bool OnContextMenu(const CGUIListItemPtr &item) override { return false; }

@@ -41,7 +41,7 @@ bool CWinSystemMirGLContext::CreateNewWindow(const std::string& name,
 
   CWinSystemMir::CreateNewWindow(name, fullScreen, res, userFunction);
 
-  if (!m_pGLContext.CreateSurface(m_surface))
+  if (!m_pGLContext.CreateSurface(m_window))
   {
     return false;
   }

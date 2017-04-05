@@ -281,7 +281,7 @@ bool CPullupCorrection::CheckPattern(std::vector<double>& pattern)
 }
 
 //calculate how long each frame should last from the saved pattern
-//Retreive also information of max and min frame rate duration, for VFR files case
+//Retrieve also information of max and min frame rate duration, for VFR files case
 double CPullupCorrection::CalcFrameDuration()
 {
   if (!m_pattern.empty())

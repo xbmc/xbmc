@@ -25,11 +25,7 @@
 #include "system.h"
 
 #ifdef HAS_SDL
-#if HAVE_SDL_VERSION == 1
 #include <SDL/SDL_events.h>
-#elif HAVE_SDL_VERSION == 2
-#include <SDL/SDL_events.h>
-#endif
 
 #include "WinEvents.h"
 

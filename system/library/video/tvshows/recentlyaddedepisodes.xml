@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<node order="11" type="folder" visible="Library.HasContent(TVShows)">
-  <label>20387</label>
-  <icon>DefaultRecentlyAddedEpisodes.png</icon>
-  <path>videodb://recentlyaddedepisodes/</path>
+<node order="1" type="folder">
+	<label>20382</label>
+	<icon>DefaultRecentlyAddedEpisodes.png</icon>
+	<path>videodb://recentlyaddedepisodes/</path>
 </node>

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2012-2016 Team Kodi
+ *      Copyright (C) 2012-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -67,7 +67,7 @@ bool CGUIWindowGames::OnMessage(CGUIMessage& message)
         message.SetStringParam(CMediaSourceSettings::GetInstance().GetDefaultSource("games"));
 
       //! @todo
-      m_dlgProgress = dynamic_cast<CGUIDialogProgress*>(g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS));
+      m_dlgProgress = g_windowManager.GetWindow<CGUIDialogProgress>();
 
       break;
     }
@@ -323,7 +323,7 @@ void CGUIWindowGames::OnItemInfo(int itemNumber)
 
   //! @todo
   /*
-  CGUIDialogGameInfo* gameInfo = dynamic_cast<CGUIDialogGameInfo*>(g_windowManager.GetWindow(WINDOW_DIALOG_PICTURE_INFO));
+  CGUIDialogGameInfo* gameInfo = g_windowManager.GetWindow<CGUIDialogGameInfo>();
   if (gameInfo)
   {
     gameInfo->SetGame(item);

@@ -27,20 +27,20 @@ using namespace XbmcThreads;
 
 bool destructorCalled = false;
 
-class Thinggy
+class Thingy
 {
 public:
-  inline ~Thinggy() { destructorCalled = true; }
+  inline ~Thingy() { destructorCalled = true; }
 };
 
-Thinggy* staticThinggy = NULL;
+Thingy* staticThingy = NULL;
 CEvent gate;
-ThreadLocal<Thinggy> staticThreadLocal;
+ThreadLocal<Thingy> staticThreadLocal;
 
 void cleanup()
 {
   if (destructorCalled)
-    staticThinggy = NULL;
+    staticThingy = NULL;
   destructorCalled = false;
 }
 
@@ -50,13 +50,13 @@ class Runnable : public IRunnable
 public:
   bool waiting;
   bool threadLocalHadValue;
-  ThreadLocal<Thinggy>& threadLocal;
+  ThreadLocal<Thingy>& threadLocal;
 
-  inline Runnable(ThreadLocal<Thinggy>& tl) : waiting(false), threadLocal(tl) {}
+  inline Runnable(ThreadLocal<Thingy>& tl) : waiting(false), threadLocal(tl) {}
   inline void Run()
   {
-    staticThinggy = new Thinggy;
-    staticThreadLocal.set(staticThinggy);
+    staticThingy = new Thingy;
+    staticThreadLocal.set(staticThingy);
     waiting = true;
     gate.Set();
     waiter.Wait();
@@ -76,7 +76,7 @@ public:
 class StackThreadLocal : public Runnable
 {
 public:
-  ThreadLocal<Thinggy> threadLocal;
+  ThreadLocal<Thingy> threadLocal;
   inline StackThreadLocal() : Runnable(threadLocal) {}
 };
 
@@ -87,13 +87,13 @@ TEST(TestThreadLocal, Simple)
 
   gate.Wait();
   EXPECT_TRUE(runnable.waiting);
-  EXPECT_TRUE(staticThinggy != NULL);
+  EXPECT_TRUE(staticThingy != NULL);
   EXPECT_TRUE(staticThreadLocal.get() == NULL);
   waiter.Set();
   gate.Wait();
   EXPECT_TRUE(runnable.threadLocalHadValue);
   EXPECT_TRUE(!destructorCalled);
-  delete staticThinggy;
+  delete staticThingy;
   EXPECT_TRUE(destructorCalled);
   cleanup();
 }
@@ -105,13 +105,13 @@ TEST(TestThreadLocal, Stack)
 
   gate.Wait();
   EXPECT_TRUE(runnable.waiting);
-  EXPECT_TRUE(staticThinggy != NULL);
+  EXPECT_TRUE(staticThingy != NULL);
   EXPECT_TRUE(runnable.threadLocal.get() == NULL);
   waiter.Set();
   gate.Wait();
   EXPECT_TRUE(runnable.threadLocalHadValue);
   EXPECT_TRUE(!destructorCalled);
-  delete staticThinggy;
+  delete staticThingy;
   EXPECT_TRUE(destructorCalled);
   cleanup();
 }

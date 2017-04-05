@@ -1453,7 +1453,10 @@ void CVideoInfoTag::SetOriginalTitle(std::string originalTitle)
 
 void CVideoInfoTag::SetEpisodeGuide(std::string episodeGuide)
 {
-  m_strEpisodeGuide = Trim(std::move(episodeGuide));
+  if (StringUtils::StartsWith(episodeGuide, "<episodeguide"))
+    m_strEpisodeGuide = Trim(std::move(episodeGuide));
+  else
+    m_strEpisodeGuide = StringUtils::Format("<episodeguide>%s</episodeguide>", Trim(std::move(episodeGuide)).c_str());
 }
 
 void CVideoInfoTag::SetStatus(std::string status)

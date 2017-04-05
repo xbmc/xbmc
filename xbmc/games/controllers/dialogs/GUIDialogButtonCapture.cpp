@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2016 Team Kodi
+ *      Copyright (C) 2016-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -21,22 +21,21 @@
 #include "GUIDialogButtonCapture.h"
 #include "dialogs/GUIDialogOK.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
 #include "input/joysticks/DefaultJoystick.h"
 #include "input/joysticks/IActionMap.h"
 #include "input/joysticks/IButtonMap.h"
 #include "input/joysticks/IButtonMapCallback.h"
 #include "input/joysticks/JoystickUtils.h"
-#include "input/Key.h"
-#include "utils/log.h"
+#include "input/ActionIDs.h"
 #include "peripherals/Peripherals.h"
-#include "utils/StringUtils.h"
 #include "utils/Variant.h"
+#include "ServiceBroker.h"
 
 #include <algorithm>
 #include <iterator>
 
+using namespace KODI;
 using namespace GAME;
 
 CGUIDialogButtonCapture::CGUIDialogButtonCapture() :
@@ -59,27 +58,13 @@ void CGUIDialogButtonCapture::Show()
 
     Create();
 
-    bool bAccepted = CGUIDialogOK::ShowAndGetInput(CVariant{ 35013 }, CVariant{ GetDialogText() }); // "Fix skipping"
+    bool bAccepted = CGUIDialogOK::ShowAndGetInput(CVariant{ GetDialogHeader() }, CVariant{ GetDialogText() });
 
     StopThread(false);
 
     m_captureEvent.Set();
 
-    for (auto& callback : ButtonMapCallbacks())
-    {
-      if (bAccepted)
-      {
-        // See documentation of IButtonMapCallback::ResetIgnoredPrimitives()
-        // for why this call is needed
-        if (m_deviceName.empty())
-          callback.second->ResetIgnoredPrimitives();
-
-        if (m_deviceName.empty() || m_deviceName == callback.first)
-          callback.second->SaveButtonMap();
-      }
-      else
-        callback.second->RevertButtonMap();
-    }
+    OnClose(bAccepted);
 
     RemoveHooks();
   }
@@ -95,7 +80,7 @@ void CGUIDialogButtonCapture::Process()
       break;
 
     //! @todo Move to rendering thread when there is a rendering thread
-    auto dialog = dynamic_cast<CGUIDialogOK*>(g_windowManager.GetWindow(WINDOW_DIALOG_OK));
+    auto dialog = g_windowManager.GetWindow<CGUIDialogOK>();
     if (dialog)
       dialog->SetText(GetDialogText());
   }
@@ -126,121 +111,32 @@ bool CGUIDialogButtonCapture::MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
     }
   }
 
-  // Check if we have already started capturing primitives for a device
-  const bool bHasDevice = !m_deviceName.empty();
-
-  // If a primitive comes from a different device, ignore it
-  if (bHasDevice && m_deviceName != buttonMap->DeviceName())
-  {
-    CLog::Log(LOGDEBUG, "%s: ignoring input from device %s", buttonMap->ControllerID().c_str(), buttonMap->DeviceName().c_str());
-    return false;
-  }
-
-  if (!bHasDevice)
-  {
-    CLog::Log(LOGDEBUG, "%s: capturing input for device %s", buttonMap->ControllerID().c_str(), buttonMap->DeviceName().c_str());
-    m_deviceName = buttonMap->DeviceName();
-  }
-
-  if (AddPrimitive(primitive))
-  {
-    buttonMap->SetIgnoredPrimitives(m_capturedPrimitives);
-    m_captureEvent.Set();
-  }
-
-  return true;
-}
-
-bool CGUIDialogButtonCapture::AddPrimitive(const JOYSTICK::CDriverPrimitive& primitive)
-{
-  bool bValid = false;
-
-  if (primitive.Type() == JOYSTICK::PRIMITIVE_TYPE::BUTTON)
-  {
-    bValid = std::find(m_capturedPrimitives.begin(), m_capturedPrimitives.end(), primitive) == m_capturedPrimitives.end();
-  }
-  else if (primitive.Type() == JOYSTICK::PRIMITIVE_TYPE::SEMIAXIS)
-  {
-    // Don't need to do anything if opposite semiaxis is already captured
-    JOYSTICK::CDriverPrimitive opposite(primitive.Index(), primitive.SemiAxisDirection() * -1);
-
-    bValid = std::find(m_capturedPrimitives.begin(), m_capturedPrimitives.end(), primitive) == m_capturedPrimitives.end() &&
-             std::find(m_capturedPrimitives.begin(), m_capturedPrimitives.end(), opposite) == m_capturedPrimitives.end();
-  }
-
-  if (bValid)
-  {
-    m_capturedPrimitives.emplace_back(primitive);
-    return true;
-  }
-
-  return false;
-}
-
-std::string CGUIDialogButtonCapture::GetDialogText()
-{
-  // "Some controllers have buttons and axes that interfere with mapping. Press
-  // these now to disable them:[CR][CR]%s"
-  std::string dialogText = g_localizeStrings.Get(35014);
-
-  std::vector<std::string> primitives;
-
-  std::transform(m_capturedPrimitives.begin(), m_capturedPrimitives.end(), std::back_inserter(primitives),
-    [](const JOYSTICK::CDriverPrimitive& primitive)
-    {
-      return GetPrimitiveName(primitive);
-    });
-
-  return StringUtils::Format(dialogText.c_str(), StringUtils::Join(primitives, " | ").c_str());
+  return MapPrimitiveInternal(buttonMap, actionMap, primitive);
 }
 
 void CGUIDialogButtonCapture::InstallHooks(void)
 {
-  using namespace PERIPHERALS;
-
-  g_peripherals.RegisterJoystickButtonMapper(this);
-  g_peripherals.RegisterObserver(this);
+  CServiceBroker::GetPeripherals().RegisterJoystickButtonMapper(this);
+  CServiceBroker::GetPeripherals().RegisterObserver(this);
 }
 
 void CGUIDialogButtonCapture::RemoveHooks(void)
 {
-  using namespace PERIPHERALS;
-
-  g_peripherals.UnregisterObserver(this);
-  g_peripherals.UnregisterJoystickButtonMapper(this);
+  CServiceBroker::GetPeripherals().UnregisterObserver(this);
+  CServiceBroker::GetPeripherals().UnregisterJoystickButtonMapper(this);
 }
 
 void CGUIDialogButtonCapture::Notify(const Observable& obs, const ObservableMessage msg)
 {
-  using namespace PERIPHERALS;
-
   switch (msg)
   {
   case ObservableMessagePeripheralsChanged:
   {
-    g_peripherals.UnregisterJoystickButtonMapper(this);
-    g_peripherals.RegisterJoystickButtonMapper(this);
+    CServiceBroker::GetPeripherals().UnregisterJoystickButtonMapper(this);
+    CServiceBroker::GetPeripherals().RegisterJoystickButtonMapper(this);
     break;
   }
   default:
     break;
   }
-}
-
-std::string CGUIDialogButtonCapture::GetPrimitiveName(const JOYSTICK::CDriverPrimitive& primitive)
-{
-  std::string primitiveTemplate;
-
-  switch (primitive.Type())
-  {
-    case JOYSTICK::PRIMITIVE_TYPE::BUTTON:
-      primitiveTemplate = g_localizeStrings.Get(35015); // "Button %d"
-      break;
-    case JOYSTICK::PRIMITIVE_TYPE::SEMIAXIS:
-      primitiveTemplate = g_localizeStrings.Get(35016); // "Axis %d"
-      break;
-    default: break;
-  }
-
-  return StringUtils::Format(primitiveTemplate.c_str(), primitive.Index());
 }

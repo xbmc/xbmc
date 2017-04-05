@@ -54,13 +54,15 @@
         </setting>
       </group>
       <group id="2">
+        <setting id="input.enablemouse">
+          <visible>false</visible>
+        </setting>
+      </group>
+      <group id="3">
         <setting id="input.appleremotemode" type="integer" label="13600" help="36416">
           <visible>false</visible>
         </setting>
         <setting id="input.appleremotesequencetime" type="integer" label="13603" help="36418">
-          <visible>false</visible>
-        </setting>
-        <setting id="input.enablemouse">
           <visible>false</visible>
         </setting>
       </group>

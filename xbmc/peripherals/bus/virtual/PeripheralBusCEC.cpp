@@ -50,7 +50,7 @@ class PERIPHERALS::DllLibCEC : public DllDynamic, DllLibCECInterface
   END_METHOD_RESOLVE()
 };
 
-CPeripheralBusCEC::CPeripheralBusCEC(CPeripherals *manager) :
+CPeripheralBusCEC::CPeripheralBusCEC(CPeripherals& manager) :
     CPeripheralBus("PeripBusCEC", manager, PERIPHERAL_BUS_CEC),
     m_dll(new DllLibCEC),
     m_cecAdapter(NULL)

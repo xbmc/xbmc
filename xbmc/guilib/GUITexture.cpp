@@ -432,7 +432,7 @@ bool CGUITextureBase::CalculateSize()
       m_diffuseScaleV = m_diffuseV;
       m_diffuseOffset = CPoint(0,0);
     }
-    else // stretch'ing diffuse
+    else // stretching diffuse
     { // scale diffuse up or down to match output rect size, rather than image size
       //(m_fX, mfY) -> (m_fX + m_fNW, m_fY + m_fNH)
       //(0,0) -> (m_fU*m_diffuseScaleU, m_fV*m_diffuseScaleV)

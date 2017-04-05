@@ -56,5 +56,8 @@ namespace PVR
   class CPVRTimers;
   typedef std::shared_ptr<CPVRTimers> CPVRTimersPtr;
 
+  class CPVRGUIActions;
+  typedef std::shared_ptr<CPVRGUIActions> CPVRGUIActionsPtr;
+
 } // namespace PVR
 

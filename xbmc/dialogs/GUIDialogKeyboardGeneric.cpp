@@ -305,7 +305,7 @@ bool CGUIDialogKeyboardGeneric::OnMessage(CGUIMessage& message)
   case GUI_MSG_SET_TEXT:
   case GUI_MSG_INPUT_TEXT_EDIT:
     {
-      // the edit control only handles these messages if it is either focues
+      // the edit control only handles these messages if it is either focused
       // or its specific control ID is set in the message. As neither is the
       // case here (focus is on one of the keyboard buttons) we have to force
       // the control ID of the message to the control ID of the edit control
@@ -606,7 +606,7 @@ void CGUIDialogKeyboardGeneric::Cancel()
 
 bool CGUIDialogKeyboardGeneric::ShowAndGetInput(char_callback_t pCallback, const std::string &initialString, std::string &typedString, const std::string &heading, bool bHiddenInput)
 {
-  CGUIDialogKeyboardGeneric *pKeyboard = (CGUIDialogKeyboardGeneric*)g_windowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);
+  CGUIDialogKeyboardGeneric *pKeyboard = g_windowManager.GetWindow<CGUIDialogKeyboardGeneric>();
 
   if (!pKeyboard)
     return false;

@@ -87,11 +87,7 @@ void CRepositoryUpdater::OnJobComplete(unsigned int jobID, bool success, CJob* j
 
     if (CServiceBroker::GetSettings().GetInt(CSettings::SETTING_ADDONS_AUTOUPDATES) == AUTO_UPDATES_ON)
     {
-      for (const auto& addon : updates)
-      {
-        if (!CAddonMgr::GetInstance().IsBlacklisted(addon->ID()))
-          CAddonInstaller::GetInstance().InstallOrUpdate(addon->ID());
-      }
+      CAddonInstaller::GetInstance().InstallUpdates();
     }
 
     ScheduleUpdate();
@@ -117,7 +113,7 @@ bool CRepositoryUpdater::CheckForUpdates(bool showProgress)
 
 static void SetProgressIndicator(CRepositoryUpdateJob* job)
 {
-  auto* dialog = static_cast<CGUIDialogExtendedProgressBar*>(g_windowManager.GetWindow(WINDOW_DIALOG_EXT_PROGRESS));
+  auto dialog = g_windowManager.GetWindow<CGUIDialogExtendedProgressBar>();
   if (dialog)
     job->SetProgressIndicators(dialog->GetHandle(g_localizeStrings.Get(24092)), nullptr);
 }

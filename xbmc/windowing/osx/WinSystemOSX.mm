@@ -18,13 +18,12 @@
  *
  */
 
-#if defined(TARGET_DARWIN_OSX)
-
 //hack around problem with xbmc's typedef int BOOL
 // and obj-c's typedef unsigned char BOOL
 #define BOOL XBMC_BOOL
 #include "WinSystemOSX.h"
 #include "WinEventsOSX.h"
+#include "VideoSyncOsx.h"
 #include "Application.h"
 #include "ServiceBroker.h"
 #include "messaging/ApplicationMessenger.h"
@@ -517,7 +516,7 @@ static void DisplayReconfigured(CGDirectDisplayID display,
     if (flags & kCGDisplaySetModeFlag || flags == 0)
     {
       winsys->StopLostDeviceTimer(); // no need to timeout - we've got the callback
-      winsys->AnnounceOnResetDevice();
+      winsys->HandleOnResetDevice();
     }
   }
   
@@ -541,6 +540,7 @@ CWinSystemOSX::CWinSystemOSX() : CWinSystemBase(), m_lostDeviceTimer(this)
   m_lastDisplayNr = -1;
   m_movedToOtherScreen = false;
   m_refreshRate = 0.0;
+  m_delayDispReset = false;
 }
 
 CWinSystemOSX::~CWinSystemOSX()
@@ -562,7 +562,7 @@ void CWinSystemOSX::StopLostDeviceTimer()
 
 void CWinSystemOSX::OnTimeout()
 {
-  AnnounceOnResetDevice();
+  HandleOnResetDevice();
 }
 
 bool CWinSystemOSX::InitWindowSystem()
@@ -746,7 +746,7 @@ bool CWinSystemOSX::ResizeWindow(int newWidth, int newHeight, int newLeft, int n
       [view setFrameSize:NSMakeSize(newWidth, newHeight)];
       [context update];
       // this is needed in case we traverse from fullscreen screen 2
-      // to windowed on screen 1 directly where in ScreenChangedNotitication
+      // to windowed on screen 1 directly where in ScreenChangedNotification
       // we don't have a window to get the current screen on
       // in that case ResizeWindow is called at a later stage from SetFullScreen(false)
       // and we can grab the correct display number here then
@@ -849,12 +849,12 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
 
     if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN))
     {
-      // This is Cocca Windowed FullScreen Mode
+      // This is Cocoa Windowed FullScreen Mode
       // Get the screen rect of our current display
       NSScreen* pScreen = [[NSScreen screens] objectAtIndex:res.iScreen];
       NSRect    screenRect = [pScreen frame];
 
-      // remove frame origin offset of orginal display
+      // remove frame origin offset of original display
       screenRect.origin = NSZeroPoint;
 
       // make a new window to act as the windowedFullScreen
@@ -988,7 +988,7 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     // Assign view from old context, move back to original screen.
     [newContext setView:last_view];
     [[last_view window] setFrameOrigin:last_window_origin];
-    // return the mouse bounds in SDL view to prevous size
+    // return the mouse bounds in SDL view to previous size
     [ last_view setFrameSize:last_view_size ];
     [ last_view setFrameOrigin:last_view_origin ];
     // done with restoring windowed window, don't set last_view to NULL as we can lose it under dual displays.
@@ -1012,7 +1012,11 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
   ShowHideNSWindow([last_view window], needtoshowme);
   // need to make sure SDL tracks any window size changes
   ResizeWindowInternal(m_nWidth, m_nHeight, -1, -1, last_view);
-  [[last_view window] setFrameOrigin:last_window_origin];
+  // restore origin once again when going to windowed mode
+  if (!fullScreen)
+  {
+    [[last_view window] setFrameOrigin:last_window_origin];
+  }
   HandlePossibleRefreshrateChange();
 
   return true;
@@ -1059,7 +1063,7 @@ void CWinSystemOSX::UpdateResolutions()
 
   if (m_can_display_switch)
   {
-    // now just fill in the possible reolutions for the attached screens
+    // now just fill in the possible resolutions for the attached screens
     // and push to the resolution info vector
     FillInVideoModes();
   }
@@ -1306,7 +1310,7 @@ void CWinSystemOSX::FillInVideoModes()
         // That would cause problems with saving screen overscan calibration
         // because the wrong entry is picked on load.
         // So we just use UpdateDesktopResolutions for the current DESKTOP_RESOLUTIONS
-        // in UpdateResolutions. And on all othere resolutions make a unique
+        // in UpdateResolutions. And on all other resolutions make a unique
         // mode str by doing it without appending "Full Screen".
         // this is what linux does - though it feels that there shouldn't be
         // the same resolution twice... - thats why i add a FIXME here.
@@ -1362,8 +1366,8 @@ bool CWinSystemOSX::IsObscured(void)
 
   if ([window isVisible] == NO)
   {
-    // not visable means the window is not showing.
-    // this should never really happen as we are always visable
+    // not visible means the window is not showing.
+    // this should never really happen as we are always visible
     // even when minimized in dock.
     m_obscured = true;
     return m_obscured;
@@ -1425,7 +1429,7 @@ bool CWinSystemOSX::IsObscured(void)
 
     // Ignore known brightness tools for dimming the screen. They claim to cover
     // the whole XBMC window and therefore would make the framerate limiter
-    // kicking in. Unfortunatly even the alpha of these windows is 1.0 so
+    // kicking in. Unfortunately even the alpha of these windows is 1.0 so
     // we have to check the ownerName.
     if (CFStringCompare(ownerName, CFSTR("Shades"), 0)            == kCFCompareEqualTo ||
         CFStringCompare(ownerName, CFSTR("SmartSaver"), 0)        == kCFCompareEqualTo ||
@@ -1456,7 +1460,7 @@ bool CWinSystemOSX::IsObscured(void)
         break;
       }
 
-      // handle overlaping windows above us that combine
+      // handle overlapping windows above us that combine
       // to obscure by collecting any partial overlaps,
       // then subtract them from our bounds and check
       // for any remaining area.
@@ -1734,16 +1738,41 @@ void CWinSystemOSX::AnnounceOnLostDevice()
   CSingleLock lock(m_resourceSection);
   // tell any shared resources
   CLog::Log(LOGDEBUG, "CWinSystemOSX::AnnounceOnLostDevice");
-  for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); i++)
+  for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
     (*i)->OnLostDisplay();
+}
+
+void CWinSystemOSX::HandleOnResetDevice()
+{
+  
+  int delay = CServiceBroker::GetSettings().GetInt("videoscreen.delayrefreshchange");
+  if (delay > 0)
+  {
+    m_delayDispReset = true;
+    m_dispResetTimer.Set(delay * 100);
+  }
+  else
+  {
+    AnnounceOnResetDevice();
+  }
 }
 
 void CWinSystemOSX::AnnounceOnResetDevice()
 {
+  double currentFps = m_refreshRate;
+  int w = 0;
+  int h = 0;
+  int currentScreenIdx = GetCurrentScreen();
+  // ensure that graphics context knows about the current refreshrate before
+  // doing the callbacks
+  GetScreenResolution(&w, &h, &currentFps, currentScreenIdx);
+
+  g_graphicsContext.SetFPS(currentFps);
+
   CSingleLock lock(m_resourceSection);
   // tell any shared resources
   CLog::Log(LOGDEBUG, "CWinSystemOSX::AnnounceOnResetDevice");
-  for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); i++)
+  for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
     (*i)->OnResetDisplay();
 }
 
@@ -1768,4 +1797,8 @@ std::string CWinSystemOSX::GetClipboardText(void)
   return utf8_text;
 }
 
-#endif
+std::unique_ptr<CVideoSync> CWinSystemOSX::GetVideoSync(void *clock)
+{
+  std::unique_ptr<CVideoSync> pVSync(new CVideoSyncOsx(clock));
+  return pVSync;
+}

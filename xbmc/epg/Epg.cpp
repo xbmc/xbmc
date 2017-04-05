@@ -313,8 +313,8 @@ void CEpg::AddEntry(const CEpgInfoTag &tag)
     newTag->Update(tag);
     newTag->SetPVRChannel(channel);
     newTag->SetEpg(this);
-    newTag->SetTimer(g_PVRTimers->GetTimerForEpgTag(newTag));
-    newTag->SetRecording(g_PVRRecordings->GetRecordingForEpgTag(newTag));
+    newTag->SetTimer(CServiceBroker::GetPVRManager().Timers()->GetTimerForEpgTag(newTag));
+    newTag->SetRecording(CServiceBroker::GetPVRManager().Recordings()->GetRecordingForEpgTag(newTag));
   }
 }
 
@@ -353,19 +353,19 @@ bool CEpg::UpdateEntries(const CEpg &epg, bool bStoreInDb /* = true */)
 {
   CSingleLock lock(m_critSection);
 #if EPG_DEBUGGING
-  CLog::Log(LOGPVR, "EPG - %s - %" PRIuS" entries in memory before merging", __FUNCTION__, m_tags.size());
+  CLog::Log(LOGPVR, "EPG - {0} - {1} entries in memory before merging", __FUNCTION__, m_tags.size());
 #endif
   /* copy over tags */
   for (std::map<CDateTime, CEpgInfoTagPtr>::const_iterator it = epg.m_tags.begin(); it != epg.m_tags.end(); ++it)
     UpdateEntry(it->second, bStoreInDb);
 
 #if EPG_DEBUGGING
-  CLog::Log(LOGPVR, "EPG - %s - %" PRIuS" entries in memory after merging and before fixing", __FUNCTION__, m_tags.size());
+  CLog::Log(LOGPVR, "EPG - {0} - {1} entries in memory after merging and before fixing", __FUNCTION__, m_tags.size());
 #endif
   FixOverlappingEvents(bStoreInDb);
 
 #if EPG_DEBUGGING
-  CLog::Log(LOGPVR, "EPG - %s - %" PRIuS" entries in memory after fixing", __FUNCTION__, m_tags.size());
+  CLog::Log(LOGPVR, "EPG - {0} - {1} entries in memory after fixing", __FUNCTION__, m_tags.size());
 #endif
   /* update the last scan time of this table */
   m_lastScanTime = CDateTime::GetCurrentDateTime().GetAsUTCDateTime();
@@ -445,8 +445,8 @@ bool CEpg::UpdateEntry(const CEpgInfoTagPtr &tag, bool bUpdateDatabase /* = fals
       m_changedTags.insert(std::make_pair(infoTag->UniqueBroadcastID(), infoTag));
   }
 
-  infoTag->SetTimer(g_PVRTimers->GetTimerForEpgTag(infoTag));
-  infoTag->SetRecording(g_PVRRecordings->GetRecordingForEpgTag(infoTag));
+  infoTag->SetTimer(CServiceBroker::GetPVRManager().Timers()->GetTimerForEpgTag(infoTag));
+  infoTag->SetRecording(CServiceBroker::GetPVRManager().Recordings()->GetRecordingForEpgTag(infoTag));
 
   return true;
 }
@@ -546,10 +546,10 @@ bool CEpg::Update(const time_t start, const time_t end, int iUpdateTime, bool bF
 
   if (bGrabSuccess)
   {
-    CPVRChannelPtr channel(g_PVRManager.GetCurrentChannel());
+    CPVRChannelPtr channel(CServiceBroker::GetPVRManager().GetCurrentChannel());
     if (channel &&
         channel->EpgID() == m_iEpgID)
-      g_PVRManager.ResetPlayingTag();
+      CServiceBroker::GetPVRManager().ResetPlayingTag();
     m_bLoaded = true;
   }
   else
@@ -573,7 +573,7 @@ int CEpg::Get(CFileItemList &results) const
   return results.Size() - iInitialSize;
 }
 
-int CEpg::Get(CFileItemList &results, const EpgSearchFilter &filter) const
+int CEpg::Get(CFileItemList &results, const CEpgSearchFilter &filter) const
 {
   int iInitialSize = results.Size();
 
@@ -584,7 +584,7 @@ int CEpg::Get(CFileItemList &results, const EpgSearchFilter &filter) const
 
   for (std::map<CDateTime, CEpgInfoTagPtr>::const_iterator it = m_tags.begin(); it != m_tags.end(); ++it)
   {
-    if (filter.FilterEntry(*it->second))
+    if (filter.FilterEntry(it->second))
       results.Add(CFileItemPtr(new CFileItem(it->second)));
   }
 
@@ -730,14 +730,14 @@ bool CEpg::UpdateFromScraper(time_t start, time_t end)
 #endif
       bGrabSuccess = true;
     }
-    else if (!g_PVRClients->SupportsEPG(channel->ClientID()))
+    else if (!CServiceBroker::GetPVRManager().Clients()->SupportsEPG(channel->ClientID()))
     {
       CLog::Log(LOGPVR, "EPG - %s - the backend for channel '%s' on client '%i' does not support EPGs", __FUNCTION__, channel->ChannelName().c_str(), channel->ClientID());
     }
     else
     {
       CLog::Log(LOGPVR, "EPG - %s - updating EPG for channel '%s' from client '%i'", __FUNCTION__, channel->ChannelName().c_str(), channel->ClientID());
-      bGrabSuccess = (g_PVRClients->GetEPGForChannel(channel, this, start, end) == PVR_ERROR_NO_ERROR);
+      bGrabSuccess = (CServiceBroker::GetPVRManager().Clients()->GetEPGForChannel(channel, this, start, end) == PVR_ERROR_NO_ERROR);
     }
   }
   else if (m_strScraperName.empty()) /* no grabber defined */

@@ -20,8 +20,6 @@
 
 #include "system.h"
 
-#if defined(HAVE_X11)
-
 #include "WinSystemX11.h"
 #include "ServiceBroker.h"
 #include "settings/DisplaySettings.h"
@@ -1071,4 +1069,4 @@ void CWinSystemX11::UpdateCrtc()
   g_graphicsContext.SetFPS(fps);
 }
 
-#endif
+

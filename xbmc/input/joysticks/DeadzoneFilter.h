@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2016 Team Kodi
+ *      Copyright (C) 2016-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -24,6 +24,8 @@ namespace PERIPHERALS
   class CPeripheral;
 }
 
+namespace KODI
+{
 namespace JOYSTICK
 {
   class IButtonMap;
@@ -56,7 +58,7 @@ namespace JOYSTICK
     /*!
      * \brief Apply deadzone filtering to an axis
      * \param axisIndex The axis index
-     * \param axisValud The axis value
+     * \param axisValue The axis value
      * \return The value after applying deadzone filtering
      */
     float FilterAxis(unsigned int axisIndex, float axisValue);
@@ -84,4 +86,5 @@ namespace JOYSTICK
     IButtonMap* const               m_buttonMap;
     PERIPHERALS::CPeripheral* const m_peripheral;
   };
+}
 }

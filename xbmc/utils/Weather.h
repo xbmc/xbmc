@@ -107,9 +107,9 @@ private:
 
   void SetFromProperties();
 
-  /*! \brief Formats a celcius temperature into a string based on the users locale
+  /*! \brief Formats a celsius temperature into a string based on the users locale
    \param text the string to format
-   \param temp the temperature (in degrees celcius).
+   \param temp the temperature (in degrees celsius).
    */
   static void FormatTemperature(std::string &text, double temp);
 

@@ -196,7 +196,7 @@
       <select>OSD</select>
       <title>PlayerProcessInfo</title>
       <info>Info</info>
-      <guide>ActivateWindow(PVROSDGuide)</guide>
+      <guide>ActivateWindow(PVRChannelGuide)</guide>
       <teletext>ActivateWindow(Teletext)</teletext>
       <subtitle>NextSubtitle</subtitle>
       <star>NextSubtitle</star>
@@ -259,8 +259,18 @@
       <rootmenu>OSD</rootmenu>
       <start>OSD</start>
       <info>Info</info>
-      <guide>ActivateWindow(PVROSDGuide)</guide>
+      <guide>ActivateWindow(PVRChannelGuide)</guide>
       <playlist>ActivateWindow(PVROSDChannels)</playlist>
+      <zero>Number0</zero>
+      <one>Number1</one>
+      <two>Number2</two>
+      <three>Number3</three>
+      <four>Number4</four>
+      <five>Number5</five>
+      <six>Number6</six>
+      <seven>Number7</seven>
+      <eight>Number8</eight>
+      <nine>Number9</nine>
     </remote>
   </Visualisation>
   <MusicOSD>
@@ -599,7 +609,7 @@
       <nine>number9</nine>
     </remote>
   </PVROSDChannels>
-  <PVROSDGuide>
+  <PVRChannelGuide>
     <remote>
       <back>Close</back>
       <menu>Close</menu>
@@ -618,7 +628,7 @@
       <eight>number8</eight>
       <nine>number9</nine>
     </remote>
-  </PVROSDGuide>
+  </PVRChannelGuide>
   <TVChannels>
     <remote>
       <zero>Number0</zero>

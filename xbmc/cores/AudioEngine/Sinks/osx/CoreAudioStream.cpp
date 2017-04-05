@@ -130,7 +130,7 @@ UInt32 CCoreAudioStream::GetDirection()
 // WARNING - don't rely on this method - the return value of
 // GetTerminalType is driver specific - the checked return
 // values are only recommendations from apple
-bool CCoreAudioStream::IsDigitalOuptut(AudioStreamID id)
+bool CCoreAudioStream::IsDigitalOutput(AudioStreamID id)
 {
   UInt32 type = GetTerminalType(id);
   // yes apple is mixing types here...
@@ -272,7 +272,7 @@ bool CCoreAudioStream::SetVirtualFormat(AudioStreamBasicDescription* pDesc)
     return false;
   }
 
-  // The AudioStreamSetProperty is not only asynchronious,
+  // The AudioStreamSetProperty is not only asynchronous,
   // it is also not Atomic, in its behaviour.
   // Therefore we check 5 times before we really give up.
   // FIXME: failing isn't actually implemented yet.
@@ -358,7 +358,7 @@ bool CCoreAudioStream::SetPhysicalFormat(AudioStreamBasicDescription* pDesc)
     return false;
   }
 
-  // The AudioStreamSetProperty is not only asynchronious,
+  // The AudioStreamSetProperty is not only asynchronous,
   // it is also not Atomic, in its behaviour.
   // Therefore we check 5 times before we really give up.
   // FIXME: failing isn't actually implemented yet.

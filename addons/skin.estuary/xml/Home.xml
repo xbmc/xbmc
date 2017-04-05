@@ -50,6 +50,7 @@
 					</include>
 					<control type="grouplist" id="5001">
 						<include>WidgetGroupListCommon</include>
+						<pagecontrol>5010</pagecontrol>
 						<include content="WidgetListCategories" condition="Library.HasContent(movies) + !Skin.HasSetting(home_no_categories_widget)">
 							<param name="content_path" value="library://video/movies/"/>
 							<param name="widget_header" value="$LOCALIZE[31148]"/>
@@ -103,6 +104,9 @@
 						<param name="button_id" value="5500"/>
 						<param name="button2_onclick" value="Skin.SetBool(HomeMenuNoMovieButton)"/>
 					</include>
+					<include content="WidgetScrollbar" condition="Skin.HasSetting(touchmode)">
+						<param name="scrollbar_id" value="5010"/>
+					</include>
 				</control>
 				<control type="group" id="6000">
 					<visible>String.IsEqual(Container(9000).ListItem.Property(id),tvshows)</visible>
@@ -111,6 +115,7 @@
 					</include>
 					<control type="grouplist" id="6001">
 						<include>WidgetGroupListCommon</include>
+						<pagecontrol>6010</pagecontrol>
 						<include content="WidgetListCategories" condition="Library.HasContent(tvshows) + !Skin.HasSetting(home_no_categories_widget)">
 							<param name="content_path" value="library://video/tvshows/"/>
 							<param name="widget_header" value="$LOCALIZE[31148]"/>
@@ -150,7 +155,7 @@
 							<param name="widget_header" value="$LOCALIZE[20388]"/>
 							<param name="widget_target" value="videos"/>
 							<param name="list_id" value="6500"/>
-							<param name="icon" value="$INFO[ListItem.Label,resource://resource.images.studios.white/,.png]"/>
+							<param name="icon" value="$VAR[WidgetStudioIconVar]"/>
 							<param name="icon_height" value="70"/>
 						</include>
 					</control>
@@ -161,6 +166,9 @@
 						<param name="button_id" value="6400"/>
 						<param name="button2_onclick" value="Skin.SetBool(HomeMenuNoTVShowButton)"/>
 					</include>
+					<include content="WidgetScrollbar" condition="Skin.HasSetting(touchmode)">
+						<param name="scrollbar_id" value="6010"/>
+					</include>
 				</control>
 				<control type="group" id="7000">
 					<visible>String.IsEqual(Container(9000).ListItem.Property(id),music)</visible>
@@ -169,6 +177,7 @@
 					</include>
 					<control type="grouplist" id="7001">
 						<include>WidgetGroupListCommon</include>
+						<pagecontrol>7010</pagecontrol>
 						<include content="WidgetListCategories" condition="Library.HasContent(music) + !Skin.HasSetting(home_no_categories_widget)">
 							<param name="content_path" value="library://music/"/>
 							<param name="widget_header" value="$LOCALIZE[31148]"/>
@@ -227,6 +236,9 @@
 						<param name="button_id" value="7600"/>
 						<param name="button2_onclick" value="Skin.SetBool(HomeMenuNoMusicButton)"/>
 					</include>
+					<include content="WidgetScrollbar" condition="Skin.HasSetting(touchmode)">
+						<param name="scrollbar_id" value="7010"/>
+					</include>
 				</control>
 				<control type="group" id="8000">
 					<visible>String.IsEqual(Container(9000).ListItem.Property(id),addons)</visible>
@@ -235,12 +247,13 @@
 					</include>
 					<control type="grouplist" id="8001">
 						<include>WidgetGroupListCommon</include>
+						<pagecontrol>8010</pagecontrol>
 						<include content="WidgetListCategories" condition="!Skin.HasSetting(home_no_categories_widget)" >
 							<param name="content_path" value="addons://"/>
 							<param name="widget_header" value="$LOCALIZE[31148]"/>
 							<param name="widget_target" value="addonbrowser"/>
 							<param name="list_id" value="8900"/>
-							<param name="visible" value="Integer.IsGreater(Container(8100).NumItems,0) | Integer.IsGreater(Container(8200).NumItems,0) | Integer.IsGreater(Container(8300).NumItems,0) | Integer.IsGreater(Container(8400).NumItems,0) | Integer.IsGreater(Container(8500).NumItems,0)"/>
+							<param name="visible" value="Integer.IsGreater(Container(8100).NumItems,0) | Integer.IsGreater(Container(8200).NumItems,0) | Integer.IsGreater(Container(8300).NumItems,0) | Integer.IsGreater(Container(8400).NumItems,0) | Integer.IsGreater(Container(8500).NumItems,0) | Integer.IsGreater(Container(8700).NumItems,0)"/>
 						</include>
 						<include content="WidgetListSquare">
 							<param name="content_path" value="addons://sources/video/"/>
@@ -305,6 +318,9 @@
 						<param name="visible" value="!Integer.IsGreater(Container(8001).NumItems,0)"/>
 						<param name="button2_onclick" value="Skin.SetBool(HomeMenuNoProgramsButton)"/>
 					</include>
+					<include content="WidgetScrollbar" condition="Skin.HasSetting(touchmode)">
+						<param name="scrollbar_id" value="8010"/>
+					</include>
 				</control>
 				<control type="group" id="11000">
 					<visible>String.IsEqual(Container(9000).ListItem.Property(id),video)</visible>
@@ -313,6 +329,7 @@
 					</include>
 					<control type="grouplist" id="11001">
 						<include>WidgetGroupListCommon</include>
+						<pagecontrol>11010</pagecontrol>
 						<include content="WidgetListCategories">
 							<param name="content_path" value="library://video/"/>
 							<param name="widget_header" value="$LOCALIZE[31148]"/>
@@ -341,6 +358,9 @@
 						<param name="visible" value="!Integer.IsGreater(Container(11001).NumItems,0)"/>
 						<param name="button2_onclick" value="Skin.SetBool(HomeMenuNoVideosButton)"/>
 					</include>
+					<include content="WidgetScrollbar" condition="Skin.HasSetting(touchmode)">
+						<param name="scrollbar_id" value="11010"/>
+					</include>
 				</control>
 				<control type="group" id="12000">
 					<visible>String.IsEqual(Container(9000).ListItem.Property(id),livetv)</visible>
@@ -349,6 +369,7 @@
 					</include>
 					<control type="grouplist" id="12001">
 						<include>WidgetGroupListCommon</include>
+						<pagecontrol>12010</pagecontrol>
 						<control type="grouplist" id="12855">
 							<height>390</height>
 							<left>0</left>
@@ -410,6 +431,9 @@
 						<param name="button_id" value="12400"/>
 						<param name="button2_onclick" value="Skin.SetBool(HomeMenuNoTVButton)"/>
 					</include>
+					<include content="WidgetScrollbar" condition="Skin.HasSetting(touchmode)">
+						<param name="scrollbar_id" value="12010"/>
+					</include>
 				</control>
 				<control type="group" id="13000">
 					<visible>String.IsEqual(Container(9000).ListItem.Property(id),radio)</visible>
@@ -418,6 +442,7 @@
 					</include>
 					<control type="grouplist" id="13001">
 						<include>WidgetGroupListCommon</include>
+						<pagecontrol>13010</pagecontrol>
 						<control type="grouplist" id="13855">
 							<height>390</height>
 							<left>25</left>
@@ -479,6 +504,9 @@
 						<param name="button_id" value="13400"/>
 						<param name="button2_onclick" value="Skin.SetBool(HomeMenuNoRadioButton)"/>
 					</include>
+					<include content="WidgetScrollbar" condition="Skin.HasSetting(touchmode)">
+						<param name="scrollbar_id" value="13010"/>
+					</include>
 				</control>
 				<control type="group" id="14000">
 					<visible>String.IsEqual(Container(9000).ListItem.Property(id),favorites)</visible>
@@ -494,10 +522,10 @@
 						<onright>9000</onright>
 						<onup>14100</onup>
 						<ondown>14100</ondown>
-						<onclick>$INFO[ListItem.FileNameAndPath]</onclick>
 						<preloaditems>2</preloaditems>
 						<scrolltime tween="cubic" easing="out">500</scrolltime>
 						<orientation>vertical</orientation>
+						<pagecontrol>14010</pagecontrol>
 						<visible>Integer.IsGreater(Container(14100).NumItems,0) | Container(14100).IsUpdating</visible>
 						<itemlayout width="330" height="396">
 							<control type="group">
@@ -531,6 +559,9 @@
 						<param name="visible_1" value="false"/>
 						<param name="button2_onclick" value="Skin.SetBool(HomeMenuNoFavButton)"/>
 					</include>
+					<include content="WidgetScrollbar" condition="Skin.HasSetting(touchmode)">
+						<param name="scrollbar_id" value="14010"/>
+					</include>
 				</control>
 				<control type="group" id="15000">
 					<visible>String.IsEqual(Container(9000).ListItem.Property(id),weather)</visible>
@@ -539,6 +570,7 @@
 					</include>
 					<control type="grouplist" id="15001">
 						<include>WidgetGroupListCommon</include>
+						<pagecontrol>15010</pagecontrol>
 						<control type="group" id="16678">
 							<description>Weather info</description>
 							<left>68</left>
@@ -552,7 +584,7 @@
 								<texture border="21">dialogs/dialog-bg.png</texture>
 							</control>
 							<control type="label">
-								<left>300</left>
+								<left>840</left>
 								<top>60</top>
 								<aligny>center</aligny>
 								<height>24</height>
@@ -562,7 +594,7 @@
 								<label>$INFO[Weather.Location]</label>
 							</control>
 							<control type="label">
-								<left>300</left>
+								<left>840</left>
 								<top>120</top>
 								<aligny>center</aligny>
 								<height>24</height>
@@ -625,6 +657,9 @@
 						<param name="button_id" value="15300"/>
 						<param name="button2_onclick" value="Skin.SetBool(HomeMenuNoWeatherButton)"/>
 					</include>
+					<include content="WidgetScrollbar" condition="Skin.HasSetting(touchmode)">
+						<param name="scrollbar_id" value="15010"/>
+					</include>
 				</control>
 				<control type="group" id="16000">
 					<visible>String.IsEqual(Container(9000).ListItem.Property(id),musicvideos)</visible>
@@ -633,6 +668,7 @@
 					</include>
 					<control type="grouplist" id="16001">
 						<include>WidgetGroupListCommon</include>
+						<pagecontrol>16010</pagecontrol>
 						<include content="WidgetListCategories" condition="Library.HasContent(musicvideos) + !Skin.HasSetting(home_no_categories_widget)">
 							<param name="content_path" value="library://music/musicvideos/"/>
 							<param name="widget_header" value="$LOCALIZE[31148]"/>
@@ -681,7 +717,7 @@
 							<param name="widget_header" value="$LOCALIZE[20388]"/>
 							<param name="widget_target" value="music"/>
 							<param name="list_id" value="16600"/>
-							<param name="icon" value="$INFO[ListItem.Label,resource://resource.images.studios.white/,.png]"/>
+							<param name="icon" value="$VAR[WidgetStudioIconVar]"/>
 							<param name="icon_height" value="70"/>
 						</include>
 					</control>
@@ -691,6 +727,9 @@
 						<param name="button_onclick" value="ActivateWindow(videos,files,return)"/>
 						<param name="button_id" value="16800"/>
 						<param name="button2_onclick" value="Skin.SetBool(HomeMenuNoMusicVideoButton)"/>
+					</include>
+					<include content="WidgetScrollbar" condition="Skin.HasSetting(touchmode)">
+						<param name="scrollbar_id" value="16010"/>
 					</include>
 				</control>
 				<control type="group" id="4000">
@@ -721,19 +760,19 @@
 						<param name="button2_onclick" value="Skin.SetBool(HomeMenuNoGamesButton)"/>
 					</include>
 					<!--
-										<control type="grouplist" id="17001">
-											<include>WidgetGroupListCommon</include>
-											<include content="ImageWidget">
+															<control type="grouplist" id="17001">
+																<include>WidgetGroupListCommon</include>
+																<include content="ImageWidget">
 
-												<param name="text_label" value="$LOCALIZE[31162]" />
-												<param name="button_label" value="$LOCALIZE[31110]" />
-												<param name="button_onclick" value="ActivateWindow(games)"/>
-												<param name="button_id" value="17100"/>
-												<param name="visible" value="true"/>
-												<param name="button2_onclick" value="Skin.SetBool(HomeMenuNoGamesButton)"/>
-											</include>
-										</control>
-										-->
+																	<param name="text_label" value="$LOCALIZE[31162]" />
+																	<param name="button_label" value="$LOCALIZE[31110]" />
+																	<param name="button_onclick" value="ActivateWindow(games)"/>
+																	<param name="button_id" value="17100"/>
+																	<param name="visible" value="true"/>
+																	<param name="button2_onclick" value="Skin.SetBool(HomeMenuNoGamesButton)"/>
+																</include>
+															</control>
+															-->
 				</control>
 				<control type="group" id="21000">
 					<visible>String.IsEqual(Container(9000).ListItem.Property(id),disc)</visible>
@@ -743,7 +782,7 @@
 					<include content="ImageWidget">
 						<param name="text_label" value="$INFO[System.DVDLabel]" />
 						<param name="button_label" value="$LOCALIZE[341]" />
-						<param name="button_onclick" value="PlayDVD"/>
+						<param name="button_onclick" value="PlayDisc"/>
 						<param name="button_id" value="21100"/>
 						<param name="visible" value="true"/>
 						<param name="button2_label" value="$LOCALIZE[13391]"/>
@@ -865,7 +904,7 @@
 						</item>
 						<item>
 							<label>$LOCALIZE[427]</label>
-							<onclick>PlayDVD</onclick>
+							<onclick>PlayDisc</onclick>
 							<property name="menu_id">$NUMBER[21000]</property>
 							<thumb>icons/sidemenu/disc.png</thumb>
 							<property name="id">disc</property>
@@ -985,6 +1024,33 @@
 				</control>
 			</control>
 			<include>BottomBar</include>
+			<control type="group">
+				<depth>DepthBars</depth>
+				<bottom>0</bottom>
+				<height>70</height>
+				<animation effect="fade" start="0" end="100" time="300" delay="300">WindowOpen</animation>
+				<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
+				<include condition="!Skin.HasSetting(hide_mediaflags)" content="MediaFlags">
+					<param name="infolabel_prefix" value="Container." />
+					<param name="resolution_var" value="$VAR[ContainerResolutionFlagVar]" />
+				</include>
+				<control type="rss">
+					<animation effect="slide" end="0,90" time="300" tween="sine" easing="inout" condition="$EXP[infodialog_active]">conditional</animation>
+					<left>0</left>
+					<bottom>0</bottom>
+					<height>39</height>
+					<width>100%</width>
+					<font>font12</font>
+					<urlset>1</urlset>
+					<hitrect x="-100" y="0" w="1" h="1" />
+					<titlecolor>button_focus</titlecolor>
+					<textcolor>button_focus</textcolor>
+					<shadowcolor>text_shadow</shadowcolor>
+					<headlinecolor>FFC0C0C0</headlinecolor>
+					<visible>Skin.HasSetting(hide_mediaflags) | !ControlGroup(2000).HasFocus</visible>
+					<animation effect="fade" time="300">VisibleChange</animation>
+				</control>
+			</control>
 			<include content="TopBar">
 				<param name="breadcrumbs_label" value="" />
 			</include>
@@ -1008,24 +1074,6 @@
 					<width>192</width>
 					<height>36</height>
 					<texture>icons/logo-text.png</texture>
-				</control>
-			</control>
-			<control type="group">
-				<animation effect="slide" end="0,90" time="300" tween="sine" easing="inout" condition="$EXP[infodialog_active]">conditional</animation>
-				<animation effect="fade" start="0" end="100" time="400">WindowOpen</animation>
-				<animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
-				<control type="rss">
-					<left>0</left>
-					<bottom>0</bottom>
-					<height>39</height>
-					<width>100%</width>
-					<font>font12</font>
-					<urlset>1</urlset>
-					<hitrect x="-100" y="0" w="1" h="1" />
-					<titlecolor>button_focus</titlecolor>
-					<shadowcolor>text_shadow</shadowcolor>
-					<headlinecolor>FFC0C0C0</headlinecolor>
-					<visible>!Player.hasMedia</visible>
 				</control>
 			</control>
 		</control>

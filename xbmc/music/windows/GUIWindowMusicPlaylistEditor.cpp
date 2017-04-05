@@ -142,20 +142,20 @@ bool CGUIWindowMusicPlaylistEditor::GetDirectory(const std::string &strDirectory
   { // root listing - list files:// and musicdb://
     CFileItemPtr files(new CFileItem("files://", true));
     files->SetLabel(g_localizeStrings.Get(744));
-    files->SetLabelPreformated(true);
+    files->SetLabelPreformatted(true);
     files->m_bIsShareOrDrive = true;
     items.Add(files);
 
     CFileItemPtr mdb(new CFileItem("musicdb://", true));
     mdb->SetLabel(g_localizeStrings.Get(14022));
-    mdb->SetLabelPreformated(true);
+    mdb->SetLabelPreformatted(true);
     mdb->m_bIsShareOrDrive = true;
     items.SetPath("");
     items.Add(mdb);
 
     CFileItemPtr vdb(new CFileItem("videodb://musicvideos/", true));
     vdb->SetLabel(g_localizeStrings.Get(20389));
-    vdb->SetLabelPreformated(true);
+    vdb->SetLabelPreformatted(true);
     vdb->m_bIsShareOrDrive = true;
     items.SetPath("");
     items.Add(vdb);

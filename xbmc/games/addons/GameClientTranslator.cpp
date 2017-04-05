@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2016 Team Kodi
+ *      Copyright (C) 2016-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -37,6 +37,25 @@ const char* CGameClientTranslator::ToString(GAME_ERROR error)
     break;
   }
   return "unknown error";
+}
+
+const char* CGameClientTranslator::ToString(GAME_MEMORY memory)
+{
+  switch (memory)
+  {
+  case GAME_MEMORY_SAVE_RAM:                return "save ram";
+  case GAME_MEMORY_RTC:                     return "rtc";
+  case GAME_MEMORY_SYSTEM_RAM:              return "system ram";
+  case GAME_MEMORY_VIDEO_RAM:               return "video ram";
+  case GAME_MEMORY_SNES_BSX_RAM:            return "snes bsx ram";
+  case GAME_MEMORY_SNES_SUFAMI_TURBO_A_RAM: return "snes sufami turbo a ram";
+  case GAME_MEMORY_SNES_SUFAMI_TURBO_B_RAM: return "snes sufami turbo b ram";
+  case GAME_MEMORY_SNES_GAME_BOY_RAM:       return "snes game boy ram";
+  case GAME_MEMORY_SNES_GAME_BOY_RTC:       return "snes game boy rtc";
+  default:
+    break;
+  }
+  return "unknown memory";
 }
 
 AVPixelFormat CGameClientTranslator::TranslatePixelFormat(GAME_PIXEL_FORMAT format)

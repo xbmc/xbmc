@@ -43,6 +43,9 @@ public:
 
   bool IsExtSupported(const char* extension) override;
 
+  // videosync
+  virtual std::unique_ptr<CVideoSync> GetVideoSync(void *clock) override;
+
   GLXWindow GetWindow() const;
   GLXContext GetGlxContext() const;
   EGLDisplay GetEGLDisplay() const;

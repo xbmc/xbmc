@@ -1011,7 +1011,7 @@ bool CAESinkWASAPI::InitializeExclusive(AEAudioFormat &format)
   /* The requested format is not supported by the device.  Find something that works */
   for (int layout = -1; layout <= (int)ARRAYSIZE(layoutsList); layout++)
   {
-    // if requested layout is not suppported, try standard layouts with at least
+    // if requested layout is not supported, try standard layouts with at least
     // the number of channels as requested
     // as the last resort try stereo
     if (layout == ARRAYSIZE(layoutsList))
@@ -1118,7 +1118,7 @@ initialize:
   audioSinkBufferDurationMsec = (REFERENCE_TIME)500000;
   if (IsUSBDevice())
   {
-    CLog::Log(LOGDEBUG, __FUNCTION__": detected USB device, increating buffer size");
+    CLog::Log(LOGDEBUG, __FUNCTION__": detected USB device, increasing buffer size");
     audioSinkBufferDurationMsec = (REFERENCE_TIME)1000000;
   }
   audioSinkBufferDurationMsec = (REFERENCE_TIME)((audioSinkBufferDurationMsec / format.m_frameSize) * format.m_frameSize); //even number of frames

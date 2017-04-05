@@ -270,10 +270,10 @@ bool CRendererVTB::NeedBuffer(int idx)
   {
     int syncState = GL_UNSIGNALED_APPLE;
     glGetSyncivAPPLE(buf.m_fence, GL_SYNC_STATUS_APPLE, 1, nullptr, &syncState);
-    if (syncState == GL_SIGNALED_APPLE)
-      return false;
+    if (syncState != GL_SIGNALED_APPLE)
+      return true;
   }
   
-  return true;
+  return false;
 }
 #endif

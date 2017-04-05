@@ -180,7 +180,7 @@ using namespace KODI::MESSAGING;
  * RDS and RBDS relevant
  */
 
-/// RDS Programm type id's
+/// RDS Program type id's
 enum {
   RDS_PTY_NONE = 0,
   RDS_PTY_NEWS,
@@ -216,7 +216,7 @@ enum {
   RDS_PTY_ALARM
 };
 
-/// RBDS Programm type id's
+/// RBDS Program type id's
 enum {
   RBDS_PTY_NONE = 0,
   RBDS_PTY_NEWS,
@@ -491,7 +491,7 @@ static char *rds_entitychar(char *text)
 static unsigned short crc16_ccitt(const unsigned char *data, int len, bool skipfirst)
 {
   // CRC16-CCITT: x^16 + x^12 + x^5 + 1
-  // with start 0xffff and result invers
+  // with start 0xffff and result inverse
   unsigned short crc = 0xffff;
 
   if (skipfirst)
@@ -1107,11 +1107,11 @@ unsigned int CDVDRadioRDSData::DecodeRT(uint8_t *msgElement, unsigned int len)
   }
   else
   {
-  //  bool flagToogle = msgElement[UECP_ME_DATA] & 0x01 ? true : false;
+  //  bool flagToggle = msgElement[UECP_ME_DATA] & 0x01 ? true : false;
   //  int txQty = (msgElement[UECP_ME_DATA] >> 1) & 0x0F;
   //  int bufConf = (msgElement[UECP_ME_DATA] >> 5) & 0x03;
 
-    //! byte 4 = RT-Status bitcodet (0=AB-flagcontrol, 1-4=Transmission-Number, 5+6=Buffer-Config, ingnored, always 0x01 ?)
+    //! byte 4 = RT-Status bitcodet (0=AB-flagcontrol, 1-4=Transmission-Number, 5+6=Buffer-Config, ignored, always 0x01 ?)
     char temptext[RT_MEL];
     memset(temptext, 0x0, RT_MEL);
     for (unsigned int i = 1, ii = 0; i < msgLength; ++i)

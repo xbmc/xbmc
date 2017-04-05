@@ -19,7 +19,6 @@
  */
 
 #include "URL.h"
-#include "dialogs/GUIDialogOK.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
@@ -163,13 +162,13 @@ bool CPVRChannelGroupsContainer::GetDirectory(const std::string& strPath, CFileI
     /* all tv channels */
     item.reset(new CFileItem(strBase + "/tv/", true));
     item->SetLabel(g_localizeStrings.Get(19020));
-    item->SetLabelPreformated(true);
+    item->SetLabelPreformatted(true);
     results.Add(item);
 
     /* all radio channels */
     item.reset(new CFileItem(strBase + "/radio/", true));
     item->SetLabel(g_localizeStrings.Get(19021));
-    item->SetLabelPreformated(true);
+    item->SetLabelPreformatted(true);
     results.Add(item);
 
     return true;

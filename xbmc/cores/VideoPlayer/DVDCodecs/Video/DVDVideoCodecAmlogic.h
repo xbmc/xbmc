@@ -36,7 +36,7 @@ class CDVDVideoCodecAmlogic;
 class CDVDAmlogicInfo
 {
 public:
-  CDVDAmlogicInfo(CDVDVideoCodecAmlogic *codec, CAMLCodec *amlcodec, int omxPts);
+  CDVDAmlogicInfo(CDVDVideoCodecAmlogic *codec, CAMLCodec *amlcodec, int omxPts, int amlDuration, uint32_t bufferIndex);
 
   // reference counting
   CDVDAmlogicInfo* Retain();
@@ -44,7 +44,11 @@ public:
 
   CAMLCodec *getAmlCodec() const;
   int GetOmxPts() const { return m_omxPts; }
+  int GetAmlDuration() const { return m_amlDuration; }
+  uint32_t GetBufferIndex() const { return m_bufferIndex; };
   void invalidate();
+  void SetRendered() { m_rendered = true; };
+  bool IsRendered() { return m_rendered; };
 
 protected:
   long m_refs;
@@ -52,7 +56,9 @@ protected:
 
   CDVDVideoCodecAmlogic* m_codec;
   CAMLCodec* m_amlCodec;
-  int m_omxPts;
+  int m_omxPts, m_amlDuration;
+  uint32_t m_bufferIndex;
+  bool m_rendered;
 };
 
 class CDVDVideoCodecAmlogic : public CDVDVideoCodec
@@ -71,8 +77,6 @@ public:
   virtual bool ClearPicture(DVDVideoPicture* pDvdVideoPicture);
   virtual void SetSpeed(int iSpeed);
   virtual void SetDropState(bool bDrop);
-  virtual int  GetDataSize(void);
-  virtual double GetTimeSize(void);
   virtual const char* GetName(void) { return (const char*)m_pFormatName; }
 
 protected:
@@ -98,6 +102,7 @@ protected:
   mpeg2_sequence *m_mpeg2_sequence;
   double          m_mpeg2_sequence_pts;
   bool            m_drop;
+  bool            m_has_keyframe;
 
   CBitstreamParser *m_bitparser;
   CBitstreamConverter *m_bitstream;

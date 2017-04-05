@@ -49,7 +49,7 @@ const CGFloat timeFadeSecs                    = 2.0;
   
     _internalWindow = [[UIWindow alloc] initWithFrame:frame];
     _touchView = [[UIView alloc] initWithFrame:frame];
-    /* Turn on autoresizing for the whole hirarchy*/
+    /* Turn on autoresizing for the whole hierarchy*/
     [_touchView setAutoresizesSubviews:YES];
     [_touchView setAutoresizingMask:UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight];
     [_touchView setAlpha:0.0];//start with alpha 0 and fade in with animation below
@@ -198,7 +198,7 @@ const CGFloat timeFadeSecs                    = 2.0;
   [[self view] addGestureRecognizer:doubleFingerSingleTap];
   [doubleFingerSingleTap release];
   
-  //1 finger single long tab - right mouse - alernative
+  //1 finger single long tab - right mouse - alternative
   UITapGestureRecognizer *singleFingerSingleLongTap = (UITapGestureRecognizer*)[[UILongPressGestureRecognizer alloc]
                                                         initWithTarget:self action:@selector(handleSingleFingerSingleLongTap:)];  
   singleFingerSingleLongTap.delaysTouchesBegan = YES;

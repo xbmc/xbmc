@@ -18,19 +18,21 @@
  *
  */
 
+#include "AndroidStorageProvider.h"
+
 #include <cstdlib>
 #include <cstdio>
 #include <cstring>
 #include <map>
 
-#include "AndroidStorageProvider.h"
-#include "platform/android/activity/XBMCApp.h"
-#include "platform/android/jni/Context.h"
-#include "platform/android/jni/StorageManager.h"
-#include "platform/android/jni/Environment.h"
-#include "guilib/LocalizeStrings.h"
-#include "filesystem/File.h"
+#include <androidjni/Context.h>
+#include <androidjni/StorageManager.h>
+#include <androidjni/Environment.h>
+
 #include "filesystem/Directory.h"
+#include "filesystem/File.h"
+#include "guilib/LocalizeStrings.h"
+#include "platform/android/activity/XBMCApp.h"
 
 #include "Util.h"
 #include "utils/log.h"

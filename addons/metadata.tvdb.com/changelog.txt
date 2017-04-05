@@ -83,7 +83,7 @@ v1.2.4
 - Added: support for imdb url nfo's
 
 v1.2.3
-- Fixed: fixed broken scraping under certain circumtaces
+- Fixed: fixed broken scraping under certain circumstances
 
 v1.2.2
 - Fixed: episodeguide url won't picked up sometimes

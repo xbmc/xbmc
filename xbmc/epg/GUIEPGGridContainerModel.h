@@ -44,9 +44,8 @@ namespace EPG
   class CGUIEPGGridContainerModel
   {
   public:
-    static const int MINSPERBLOCK       = 5; // minutes
-    static const int MAXBLOCKS          = 33 * 24 * 60 / MINSPERBLOCK; //! 33 days of 5 minute blocks (31 days for upcoming data + 1 day for past data + 1 day for fillers)
-    static const int GRID_START_PADDING = 30; // minutes; latest grid start 'now - GRID_START_PADDING', will be adjusted to this value if shall be set to later
+    static const int MINSPERBLOCK = 5; // minutes
+    static const int MAXBLOCKS = 33 * 24 * 60 / MINSPERBLOCK; //! 33 days of 5 minute blocks (31 days for upcoming data + 1 day for past data + 1 day for fillers)
 
     CGUIEPGGridContainerModel() : m_blocks(0) {}
     virtual ~CGUIEPGGridContainerModel() { Reset(); }
@@ -54,6 +53,7 @@ namespace EPG
     void Refresh(const std::unique_ptr<CFileItemList> &items, const CDateTime &gridStart, const CDateTime &gridEnd, int iRulerUnit, int iBlocksPerPage, float fBlockSize);
     void SetInvalid();
 
+    static const int INVALID_INDEX = -1;
     void FindChannelAndBlockIndex(int channelUid, unsigned int broadcastUid, int eventOffset, int &newChannelIndex, int &newBlockIndex) const;
 
     void FreeChannelMemory(int keepStart, int keepEnd);
@@ -83,6 +83,8 @@ namespace EPG
     bool IsZeroGridDuration() const { return (m_gridEnd - m_gridStart) == CDateTimeSpan(0, 0, 0, 0); }
     const CDateTime &GetGridStart() const { return m_gridStart; }
     const CDateTime &GetGridEnd() const { return m_gridEnd; }
+
+    unsigned int GetGridStartPadding() const;
 
   private:
     void FreeItemsMemory();

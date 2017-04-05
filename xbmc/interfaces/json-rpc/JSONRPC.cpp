@@ -241,8 +241,7 @@ std::string CJSONRPC::MethodCall(const std::string &inputString, ITransportLayer
   if(g_advancedSettings.CanLogComponent(LOGJSONRPC))
     CLog::Log(LOGDEBUG, "JSONRPC: Incoming request: %s", inputString.c_str());
 
-  inputroot = CJSONVariantParser::Parse((unsigned char *)inputString.c_str(), inputString.length());
-  if (!inputroot.isNull())
+  if (CJSONVariantParser::Parse(inputString, inputroot) && !inputroot.isNull())
   {
     if (inputroot.isArray())
     {
@@ -275,7 +274,10 @@ std::string CJSONRPC::MethodCall(const std::string &inputString, ITransportLayer
     hasResponse = true;
   }
 
-  std::string str = hasResponse ? CJSONVariantWriter::Write(outputroot, g_advancedSettings.m_jsonOutputCompact) : "";
+  std::string str;
+  if (hasResponse)
+    CJSONVariantWriter::Write(outputroot, str, g_advancedSettings.m_jsonOutputCompact);
+
   return str;
 }
 
@@ -302,7 +304,10 @@ bool CJSONRPC::HandleMethodCall(const CVariant& request, CVariant& response, ITr
   }
   else
   {
-    CLog::Log(LOGERROR, "JSONRPC: Failed to parse '%s'\n", CJSONVariantWriter::Write(request, true).c_str());
+    std::string str;
+    CJSONVariantWriter::Write(request, str, true);
+
+    CLog::Log(LOGERROR, "JSONRPC: Failed to parse '%s'\n", str.c_str());
     errorCode = InvalidRequest;
   }
 
@@ -313,13 +318,13 @@ bool CJSONRPC::HandleMethodCall(const CVariant& request, CVariant& response, ITr
 
 inline bool CJSONRPC::IsProperJSONRPC(const CVariant& inputroot)
 {
-  return inputroot.isObject() && inputroot.isMember("jsonrpc") && inputroot["jsonrpc"].isString() && inputroot["jsonrpc"] == CVariant("2.0") && inputroot.isMember("method") && inputroot["method"].isString() && (!inputroot.isMember("params") || inputroot["params"].isArray() || inputroot["params"].isObject());
+  return inputroot.isMember("jsonrpc") && inputroot["jsonrpc"].isString() && inputroot["jsonrpc"] == CVariant("2.0") && inputroot.isMember("method") && inputroot["method"].isString() && (!inputroot.isMember("params") || inputroot["params"].isArray() || inputroot["params"].isObject());
 }
 
 inline void CJSONRPC::BuildResponse(const CVariant& request, JSONRPC_STATUS code, const CVariant& result, CVariant& response)
 {
   response["jsonrpc"] = "2.0";
-  response["id"] = request.isObject() && request.isMember("id") ? request["id"] : CVariant();
+  response["id"] = request.isMember("id") ? request["id"] : CVariant();
 
   switch (code)
   {

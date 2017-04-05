@@ -66,7 +66,7 @@ NPT_SET_LOCAL_LOGGER("xbmc.upnp")
 DLNA_ORG_PS = 'DLNA.ORG_PS'
 DLNA_ORG_PS_VAL = '1'
 
-# Convertion Indicator
+# Conversion Indicator
 #    1 transcoded
 #    0 not transcoded
 DLNA_ORG_CI = 'DLNA.ORG_CI'
@@ -215,7 +215,7 @@ public:
             path += id.c_str();
         }
 
-        CLog::Log(LOGDEBUG, "UPNP: notfified container update %s", (const char*)path);
+        CLog::Log(LOGDEBUG, "UPNP: notified container update %s", (const char*)path);
         CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
         message.SetStringParam(path.GetChars());
         g_windowManager.SendThreadMessage(message);

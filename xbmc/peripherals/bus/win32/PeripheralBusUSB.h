@@ -29,7 +29,7 @@ namespace PERIPHERALS
   class CPeripheralBusUSB : public CPeripheralBus
   {
   public:
-    CPeripheralBusUSB(CPeripherals *manager);
+    CPeripheralBusUSB(CPeripherals& manager);
 
     /*!
      * @see PeripheralBus::PerformDeviceScan()

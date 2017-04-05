@@ -122,7 +122,7 @@ extern "C" {
   const unsigned int PVR_TIMER_TYPE_IS_READONLY                       = 0x00000004; /*!< @brief timers of this type must not be edited by Kodi */
   const unsigned int PVR_TIMER_TYPE_FORBIDS_NEW_INSTANCES             = 0x00000008; /*!< @brief timers of this type must not be created by Kodi. All other operations are allowed, though */
 
-  const unsigned int PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE           = 0x00000010; /*!< @brief this type supports enabling/disabling of the timer (PVR_TIMER.state SCHEDULED|DISBALED) */
+  const unsigned int PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE           = 0x00000010; /*!< @brief this type supports enabling/disabling of the timer (PVR_TIMER.state SCHEDULED|DISABLED) */
   const unsigned int PVR_TIMER_TYPE_SUPPORTS_CHANNELS                 = 0x00000020; /*!< @brief this type supports channels (PVR_TIMER.iClientChannelUid) */
   const unsigned int PVR_TIMER_TYPE_SUPPORTS_START_TIME               = 0x00000040; /*!< @brief this type supports a recording start time (PVR_TIMER.startTime) */
   const unsigned int PVR_TIMER_TYPE_SUPPORTS_TITLE_EPG_MATCH          = 0x00000080; /*!< @brief this type supports matching epg episode title using PVR_TIMER.strEpgSearchString */
@@ -166,7 +166,7 @@ extern "C" {
   /*!
    * @brief special PVR_TIMER.iClientChannelUid and PVR_RECORDING.iChannelUid value to indicate that no channel uid is available.
    */
-  const int PVR_CHANNEL_INVALID_UID = -1; /*!< @brief denotes that no channel uid is avaliable. */
+  const int PVR_CHANNEL_INVALID_UID = -1; /*!< @brief denotes that no channel uid is available. */
 
   /*!
    * @brief PVR add-on error codes
@@ -254,7 +254,7 @@ extern "C" {
 
   /*!
    * @brief PVR add-on capabilities. All capabilities are set to "false" as default.
-   * If a capabilty is set to true, then the corresponding methods from xbmc_pvr_dll.h need to be implemented.
+   * If a capability is set to true, then the corresponding methods from xbmc_pvr_dll.h need to be implemented.
    */
   typedef struct PVR_ADDON_CAPABILITIES
   {
@@ -500,7 +500,7 @@ extern "C" {
    */
   typedef enum
   {
-    PVR_EDL_TYPE_CUT      = 0, /*!< @brief cut (completly remove content) */
+    PVR_EDL_TYPE_CUT      = 0, /*!< @brief cut (completely remove content) */
     PVR_EDL_TYPE_MUTE     = 1, /*!< @brief mute audio */
     PVR_EDL_TYPE_SCENE    = 2, /*!< @brief scene markers (chapter seeking) */
     PVR_EDL_TYPE_COMBREAK = 3  /*!< @brief commercial breaks */

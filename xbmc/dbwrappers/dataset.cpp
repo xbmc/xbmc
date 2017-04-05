@@ -338,7 +338,7 @@ bool Dataset::get_index_map_entry(const char *f_name) {
       return true;
     }
   }
-  // indexMap not found on the expected way, either first row strange retrival order
+  // indexMap not found on the expected way, either first row strange retrieval order
   FieldIndexMapEntry tmp(f_name);
   std::vector<unsigned int>::iterator ins(lower_bound(fieldIndexMap_Sorter.begin(), fieldIndexMap_Sorter.end(), tmp, FieldIndexMapComparator(fieldIndexMap_Entries)));
   if (ins == fieldIndexMap_Sorter.end() || (tmp <  fieldIndexMap_Entries[*ins])) //new entry

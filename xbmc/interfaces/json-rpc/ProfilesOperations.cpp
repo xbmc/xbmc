@@ -123,7 +123,7 @@ JSONRPC_STATUS CProfilesOperations::LoadProfile(const std::string &method, ITran
     else if (encryption == "md5")
       md5pword2 = password;
 
-    // Verify profided password
+    // Verify provided password
     if (StringUtils::EqualsNoCase(strToVerify, md5pword2))
       bLoadProfile = true;
   }

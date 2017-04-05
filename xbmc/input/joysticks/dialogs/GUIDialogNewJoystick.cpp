@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2016 Team Kodi
+ *      Copyright (C) 2016-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -25,6 +25,7 @@
 #include "messaging/helpers/DialogHelper.h"
 #include "settings/Settings.h"
 
+using namespace KODI;
 using namespace JOYSTICK;
 
 CGUIDialogNewJoystick::CGUIDialogNewJoystick() :
@@ -49,7 +50,7 @@ void CGUIDialogNewJoystick::ShowAsync()
 
 void CGUIDialogNewJoystick::Process()
 {
-  using namespace KODI::MESSAGING::HELPERS;
+  using namespace MESSAGING::HELPERS;
 
   // "New controller detected"
   // "A new controller has been detected. Configuration can be done at any time in "Settings -> System Settings -> Input". Would you like to configure it now?"

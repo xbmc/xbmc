@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2014-2016 Team Kodi
+ *      Copyright (C) 2014-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -25,12 +25,13 @@
 #include "peripherals/Peripherals.h"
 #include "utils/log.h"
 
+using namespace KODI;
 using namespace JOYSTICK;
 using namespace PERIPHERALS;
 
-CAddonButtonMapping::CAddonButtonMapping(CPeripheral* peripheral, IButtonMapper* mapper)
+CAddonButtonMapping::CAddonButtonMapping(CPeripherals& manager, CPeripheral* peripheral, IButtonMapper* mapper)
 {
-  PeripheralAddonPtr addon = g_peripherals.GetAddonWithButtonMap(peripheral);
+  PeripheralAddonPtr addon = manager.GetAddonWithButtonMap(peripheral);
 
   if (!addon)
   {
@@ -73,10 +74,10 @@ bool CAddonButtonMapping::OnHatMotion(unsigned int hatIndex, HAT_STATE state)
   return false;
 }
 
-bool CAddonButtonMapping::OnAxisMotion(unsigned int axisIndex, float position)
+bool CAddonButtonMapping::OnAxisMotion(unsigned int axisIndex, float position, int center, unsigned int range)
 {
   if (m_buttonMapping)
-    return m_buttonMapping->OnAxisMotion(axisIndex, position);
+    return m_buttonMapping->OnAxisMotion(axisIndex, position, center, range);
 
   return false;
 }

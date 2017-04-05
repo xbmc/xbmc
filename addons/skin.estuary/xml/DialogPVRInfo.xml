@@ -38,7 +38,7 @@
 					<onleft>61</onleft>
 					<onright>61</onright>
 					<ondown>9000</ondown>
-					<onup>49</onup>
+					<onup>9000</onup>
 					<onclick>SetProperty(TextViewer_Header,$LOCALIZE[207],home)</onclick>
 					<onclick>SetProperty(TextViewer_Text,$ESCINFO[ListItem.Plot],home)</onclick>
 					<onclick>ActivateWindow(1102)</onclick>
@@ -63,8 +63,8 @@
 					<defaultcontrol>5</defaultcontrol>
 					<onleft>9000</onleft>
 					<onright>9000</onright>
-					<onup>49</onup>
-					<ondown>49</ondown>
+					<onup>61</onup>
+					<ondown>61</ondown>
 					<include content="InfoDialogButton">
 						<param name="id" value="5" />
 						<param name="icon" value="icons/infodialogs/launch.png" />
@@ -110,5 +110,6 @@
 				<param name="posy" value="40" />
 			</include>
 		</control>
+		<include condition="Skin.HasSetting(touchmode)">TouchBackButton</include>
 	</controls>
 </window>

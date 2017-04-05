@@ -308,7 +308,7 @@ bool CDVDFileInfo::ExtractThumb(const std::string &strPath,
 }
 
 /**
- * \brief Open the item pointed to by pItem and extact streamdetails
+ * \brief Open the item pointed to by pItem and extract streamdetails
  * \return true if the stream details have changed
  */
 bool CDVDFileInfo::GetFileStreamDetails(CFileItem *pItem)

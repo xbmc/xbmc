@@ -119,11 +119,11 @@ rfc2822stamp()
 set(CHANGELOG_FOOTER " -- ${CPACK_DEBIAN_PACKAGE_MAINTAINER}  ${RFC2822_TIMESTAMP}")
 
 if(GIT_FOUND AND GZIP_CMD AND EXISTS ${CMAKE_SOURCE_DIR}/.git)
-  execute_process(COMMAND ${GIT_EXECUTABLE} log --no-merges --pretty=format:"%n  [%an]%n   * %s" --since="last month"
+  execute_process(COMMAND ${GIT_EXECUTABLE} log --no-merges --pretty=format:"%n  [%an]%n   * %s" --since="30 days ago"
                   OUTPUT_VARIABLE CHANGELOG
                   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
                   OUTPUT_STRIP_TRAILING_WHITESPACE)
-  string(REPLACE "\"" "" CHANGELOG ${CHANGELOG})
+    string(REPLACE "\"" "" CHANGELOG ${CHANGELOG})
   file(WRITE ${CPACK_PACKAGE_DIRECTORY}/deb/changelog.Debian ${CHANGELOG_HEADER}\n${CHANGELOG}\n\n${CHANGELOG_FOOTER})
   execute_process(COMMAND ${GZIP_CMD} -f -9 -n ${CPACK_PACKAGE_DIRECTORY}/deb/changelog.Debian)
   unset(CHANGELOG_HEADER)
@@ -266,10 +266,10 @@ foreach(file ${DEBIAN_PACKAGES})
 
   if(DEB_PACKAGE_SHLIBDEPS)
     set(CPACK_DEBIAN_${COMPONENT}_PACKAGE_SHLIBDEPS ON)
-  else()
-    if(DEB_PACKAGE_DEPENDS)
-      set(CPACK_DEBIAN_${COMPONENT}_PACKAGE_DEPENDS "${DEB_PACKAGE_DEPENDS}")
-    endif()
+  endif()
+
+  if(DEB_PACKAGE_DEPENDS)
+    set(CPACK_DEBIAN_${COMPONENT}_PACKAGE_DEPENDS "${DEB_PACKAGE_DEPENDS}")
   endif()
 
   if(DEB_PACKAGE_RECOMMENDS)

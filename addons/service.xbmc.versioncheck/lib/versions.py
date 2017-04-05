@@ -19,7 +19,7 @@
 from lib.common import log
 
 def compare_version(version_installed, versionlist):
-    # Create seperate version lists
+    # Create separate version lists
     versionlist_stable = versionlist['releases']['stable']
     versionlist_rc = versionlist['releases']['releasecandidate']
     versionlist_beta = versionlist['releases']['beta']
@@ -122,6 +122,6 @@ def compare_version(version_installed, versionlist):
                 version_available = versionlist_alpha[0]
                 oldversion = True
                 log('Version available  %s' %versionlist_alpha[0])
-                log('You are running an older non alpah version')     
+                log('You are running an older non alpha version')     
     version_stable = versionlist_stable[0]
     return oldversion, version_installed, version_available, version_stable

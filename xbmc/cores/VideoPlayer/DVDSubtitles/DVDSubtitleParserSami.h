@@ -21,13 +21,16 @@
  */
 
 #include "DVDSubtitleParser.h"
+
+#include <memory>
+
 class CDVDOverlayText;
 class CRegExp;
 
 class CDVDSubtitleParserSami : public CDVDSubtitleParserText
 {
 public:
-  CDVDSubtitleParserSami(CDVDSubtitleStream* pStream, const std::string& strFile);
+  CDVDSubtitleParserSami(std::unique_ptr<CDVDSubtitleStream> && pStream, const std::string& strFile);
   virtual ~CDVDSubtitleParserSami();
   virtual bool Open(CDVDStreamInfo &hints);
 };

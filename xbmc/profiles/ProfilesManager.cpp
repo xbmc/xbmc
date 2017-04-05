@@ -307,7 +307,7 @@ bool CProfilesManager::DeleteProfile(size_t index)
   if (profile == NULL)
     return false;
 
-  CGUIDialogYesNo* dlgYesNo = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+  CGUIDialogYesNo* dlgYesNo = g_windowManager.GetWindow<CGUIDialogYesNo>();
   if (dlgYesNo == NULL)
     return false;
 
@@ -379,7 +379,7 @@ const CProfile& CProfilesManager::GetCurrentProfile() const
   if (m_currentProfile < m_profiles.size())
     return m_profiles[m_currentProfile];
 
-  CLog::Log(LOGERROR, "CProfilesManager: current profile index (%u) is outside of the valid range (%" PRIdS ")", m_currentProfile, m_profiles.size());
+  CLog::Log(LOGERROR, "CProfilesManager: current profile index ({0}) is outside of the valid range ({1})", m_currentProfile, m_profiles.size());
   return EmptyProfile;
 }
 

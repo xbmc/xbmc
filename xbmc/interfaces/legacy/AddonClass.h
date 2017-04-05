@@ -85,7 +85,7 @@ namespace XBMCAddon
      * This method is meant to be called from the destructor of the
      *  lowest level class.
      *
-     * It's virtual because it's a conveinent place to receive messages that
+     * It's virtual because it's a convenient place to receive messages that
      *  we're about to go be deleted but prior to any real tear-down.
      *
      * Any overloading classes need to remember to pass the call up the chain.
@@ -174,7 +174,7 @@ namespace XBMCAddon
 
       /**
        * operator= should work with either another smart pointer or a pointer since it will
-       * be able to convert a pointer to a smart pointer using one of the above constuctors.
+       * be able to convert a pointer to a smart pointer using one of the above constructors.
        *
        * Note: There is a trick here. The temporary variable is necessary because otherwise the
        * following code will fail:

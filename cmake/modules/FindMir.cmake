@@ -11,7 +11,7 @@
 
 
 if(PKG_CONFIG_FOUND)
-  pkg_check_modules (PC_MIR mirclient QUIET)
+  pkg_check_modules (PC_MIR mirclient>=0.26.2 QUIET)
 endif()
 
 find_path(MIR_INCLUDE_DIR NAMES mir_toolkit/mir_client_library.h

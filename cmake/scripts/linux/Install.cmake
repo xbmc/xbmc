@@ -41,6 +41,10 @@ configure_file(${CMAKE_SOURCE_DIR}/cmake/KodiConfig.cmake.in
 
 # Configure xsession entry
 configure_file(${CMAKE_SOURCE_DIR}/tools/Linux/kodi-xsession.desktop.in
+               ${CORE_BUILD_DIR}/${APP_NAME_LC}-xsession.desktop @ONLY)
+
+# Configure desktop entry
+configure_file(${CMAKE_SOURCE_DIR}/tools/Linux/kodi.desktop.in
                ${CORE_BUILD_DIR}/${APP_NAME_LC}.desktop @ONLY)
 
 # Install app
@@ -78,12 +82,13 @@ foreach(file ${install_data})
 endforeach()
 
 # Install xsession entry
-install(FILES ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/${APP_NAME_LC}.desktop
+install(FILES ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/${APP_NAME_LC}-xsession.desktop
+        RENAME ${APP_NAME_LC}.desktop
         DESTINATION ${datarootdir}/xsessions
         COMPONENT kodi)
 
 # Install desktop entry
-install(FILES ${CMAKE_SOURCE_DIR}/tools/Linux/kodi.desktop
+install(FILES ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/${APP_NAME_LC}.desktop
         DESTINATION ${datarootdir}/applications
         COMPONENT kodi)
 
@@ -191,12 +196,20 @@ install(FILES ${CMAKE_SOURCE_DIR}/xbmc/cores/AudioEngine/Utils/AEChannelData.h
         DESTINATION ${includedir}/${APP_NAME_LC}
         COMPONENT kodi-audio-dev)
 
+# Install kodi-image-dev
+install(FILES ${CMAKE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/kodi_imagedec_types.h
+              ${CMAKE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/kodi_imagedec_dll.h
+        DESTINATION ${includedir}/${APP_NAME_LC}
+        COMPONENT kodi-image-dev)
+
 if(ENABLE_EVENTCLIENTS)
+  execute_process(COMMAND ${PYTHON_EXECUTABLE} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(prefix='')"
+                  OUTPUT_VARIABLE PYTHON_LIB_PATH OUTPUT_STRIP_TRAILING_WHITESPACE)
   # Install kodi-eventclients-common BT python files
   install(PROGRAMS ${CMAKE_SOURCE_DIR}/tools/EventClients/lib/python/bt/__init__.py
                    ${CMAKE_SOURCE_DIR}/tools/EventClients/lib/python/bt/bt.py
                    ${CMAKE_SOURCE_DIR}/tools/EventClients/lib/python/bt/hid.py
-          DESTINATION lib/python2.7/dist-packages/${APP_NAME_LC}/bt
+          DESTINATION ${PYTHON_LIB_PATH}/${APP_NAME_LC}/bt
           COMPONENT kodi-eventclients-common)
 
   # Install kodi-eventclients-common PS3 python files
@@ -205,7 +218,7 @@ if(ENABLE_EVENTCLIENTS)
                    ${CMAKE_SOURCE_DIR}/tools/EventClients/lib/python/ps3/sixaxis.py
                    ${CMAKE_SOURCE_DIR}/tools/EventClients/lib/python/ps3/sixpair.py
                    ${CMAKE_SOURCE_DIR}/tools/EventClients/lib/python/ps3/sixwatch.py
-          DESTINATION lib/python2.7/dist-packages/${APP_NAME_LC}/ps3
+          DESTINATION ${PYTHON_LIB_PATH}/${APP_NAME_LC}/ps3
           COMPONENT kodi-eventclients-common)
 
   # Install kodi-eventclients-common python files
@@ -215,7 +228,7 @@ if(ENABLE_EVENTCLIENTS)
                    "${CMAKE_SOURCE_DIR}/tools/EventClients/Clients/PS3 BD Remote/ps3_remote.py"
                    ${CMAKE_SOURCE_DIR}/tools/EventClients/lib/python/xbmcclient.py
                    ${CMAKE_SOURCE_DIR}/tools/EventClients/lib/python/zeroconf.py
-          DESTINATION lib/python2.7/dist-packages/${APP_NAME_LC}
+          DESTINATION ${PYTHON_LIB_PATH}/${APP_NAME_LC}
           COMPONENT kodi-eventclients-common)
 
   # Install kodi-eventclients-common icons
@@ -266,10 +279,12 @@ if(ENABLE_EVENTCLIENTS)
           DESTINATION ${bindir}
           COMPONENT kodi-eventclients-ps3)
 
-  # Install kodi-eventclients-wiiremote
-  install(PROGRAMS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/WiiRemote/${APP_NAME_LC}-wiiremote
-          DESTINATION ${bindir}
-          COMPONENT kodi-eventclients-wiiremote)
+  if(BLUETOOTH_FOUND AND CWIID_FOUND)
+    # Install kodi-eventclients-wiiremote
+    install(PROGRAMS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/WiiRemote/${APP_NAME_LC}-wiiremote
+            DESTINATION ${bindir}
+            COMPONENT kodi-eventclients-wiiremote)
+  endif()
 
   # Install kodi-eventclients-xbmc-send
   install(PROGRAMS "${CMAKE_SOURCE_DIR}/tools/EventClients/Clients/Kodi Send/kodi-send.py"
@@ -316,6 +331,13 @@ install(FILES ${CMAKE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/ko
         DESTINATION ${includedir}/${APP_NAME_LC}
         COMPONENT kodi-game-dev)
 
+# Install kodi-vfs-dev
+install(FILES ${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/kodi_vfs_dll.h
+              ${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/kodi_vfs_types.h
+              ${CORE_SOURCE_DIR}/xbmc/filesystem/IFileTypes.h
+        DESTINATION include/${APP_NAME_LC}
+        COMPONENT kodi-vfs-dev)
+
 # Install XBT skin files
 foreach(texture ${XBT_FILES})
   string(REPLACE "${CMAKE_BINARY_DIR}/" "" dir ${texture})
@@ -350,7 +372,7 @@ endforeach()
 
 # generate packages? yes please, if everything checks out
 if(CPACK_GENERATOR)
-  if(CPACK_GENERATOR STREQUAL DEB AND CORE_SYSTEM_NAME STREQUAL linux)
+  if(CPACK_GENERATOR STREQUAL DEB AND ( CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL rbpi ) )
     if(CMAKE_BUILD_TYPE STREQUAL Debug)
       message(STATUS "DEB Generator: Build type is set to 'Debug'. Packaged binaries will be unstripped.")
     endif()

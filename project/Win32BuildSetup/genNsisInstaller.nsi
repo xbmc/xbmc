@@ -163,7 +163,7 @@ InstType "Minimal" ; 3.
 ;Installer Sections
 
 Section "${APP_NAME}" SecAPP
-  SetShellVarContext current
+  SetShellVarContext all
   SectionIn RO
   SectionIn 1 2 3 #section is in install type Normal/Full/Minimal
 
@@ -286,7 +286,7 @@ FunctionEnd
 
 Section "Uninstall"
 
-  SetShellVarContext current
+  SetShellVarContext all
 
   ;ADD YOUR OWN FILES HERE...
   RMDir /r "$INSTDIR\addons"
@@ -331,9 +331,47 @@ SectionEnd
 SectionGroupEnd
 
 Function .onInit
+  ; WinVista SP2 is minimum requirement
   ${IfNot} ${AtLeastWinVista}
-    MessageBox MB_OK|MB_ICONSTOP|MB_TOPMOST|MB_SETFOREGROUND "Windows Vista or above required.$\nThis program can not be run on Windows XP"
+  ${OrIf} ${IsWinVista}
+  ${AndIfNot} ${AtLeastServicePack} 2
+    MessageBox MB_OK|MB_ICONSTOP|MB_TOPMOST|MB_SETFOREGROUND "Windows Vista SP2 or above required.$\nInstall Service Pack 2 for Windows Vista and run setup again."
     Quit
+  ${EndIf}
+  ; Win7 SP1 is minimum requirement
+  ${If} ${IsWin7}
+  ${AndIfNot} ${AtLeastServicePack} 1
+    MessageBox MB_OK|MB_ICONSTOP|MB_TOPMOST|MB_SETFOREGROUND "Windows 7 SP1 or above required.$\nInstall Service Pack 1 for Windows 7 and run setup again."
+    Quit
+  ${EndIf}
+
+  Var /GLOBAL HotFixID
+  ${If} ${IsWinVista}
+    StrCpy $HotFixID "971644" ; Platform Update for Windows Vista SP2
+  ${ElseIf} ${IsWin7}
+    StrCpy $HotFixID "2670838" ; Platform Update for Windows 7 SP1
+  ${Else}
+    StrCpy $HotFixID ""
+  ${Endif}
+  ${If} $HotFixID != ""
+    nsExec::ExecToStack 'cmd /Q /C "%SYSTEMROOT%\System32\wbem\wmic.exe /?"'
+    Pop $0 ; return value (it always 0 even if an error occured)
+    Pop $1 ; command output
+    ${If} $0 != 0
+    ${OrIf} $1 == ""
+      MessageBox MB_OK|MB_ICONSTOP|MB_TOPMOST|MB_SETFOREGROUND "Unable to run the Windows program wmic.exe to verify that Windows Update KB$HotFixID is installed.$\nWmic is not installed correctly.$\nPlease fix this issue and try again to install Kodi."
+      Quit
+    ${EndIf}  
+    nsExec::ExecToStack 'cmd /Q /C "%SYSTEMROOT%\System32\wbem\wmic.exe qfe get hotfixid | findstr "^KB$HotFixID[^0-9]""'
+    Pop $0 ; return value (it always 0 even if an error occured)
+    Pop $1 ; command output
+    ${If} $0 != 0
+    ${OrIf} $1 == ""
+      MessageBox MB_OK|MB_ICONSTOP|MB_TOPMOST|MB_SETFOREGROUND "Platform Update for Windows (KB$HotFixID) is required.$\nDownload and install Platform Update for Windows then run setup again."
+      ExecShell "open" "http://support.microsoft.com/kb/$HotFixID"
+      Quit
+    ${EndIf}
+    SetOutPath "$INSTDIR"
   ${EndIf}
   StrCpy $CleanDestDir "-1"
 FunctionEnd

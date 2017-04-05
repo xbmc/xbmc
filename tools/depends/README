@@ -21,7 +21,7 @@ TVOS:
   You can target the same --prefix path, each setup will be done in an isolated directory. The
   last configure/make you do is the one used for Kodi/Xcode.
  
-#- Android (the pathes are examples and have to match those of docs/READM.android)
+#- Android (the paths are examples and have to match those of docs/READM.android)
 #----------------------------------------------------------------------------
 
   arm:
@@ -65,5 +65,5 @@ Details:
   2) cmake driven tend to be simple, setup cmake flags right and go. On rare cases, you might
      need to diddle the native cmake setup.
 
-  3) hand crafted Makefiles typically require manual sed tweeks or patching.
+  3) hand crafted Makefiles typically require manual sed tweaks or patching.
 

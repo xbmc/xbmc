@@ -93,7 +93,7 @@ static bool IsPathToMedia(const std::string& strPath )
   return URIUtils::HasExtension(strPath,
                               g_advancedSettings.m_videoExtensions + '|' +
                               g_advancedSettings.GetMusicExtensions() + '|' +
-                              g_advancedSettings.m_pictureExtensions);
+                              g_advancedSettings.GetPictureExtensions());
 }
 
 static bool IsPathToThumbnail(const std::string& strPath )
@@ -101,7 +101,7 @@ static bool IsPathToThumbnail(const std::string& strPath )
   // Currently just check if this is an image, maybe we will add some
   // other checks later
   return URIUtils::HasExtension(strPath,
-                                    g_advancedSettings.m_pictureExtensions);
+                                    g_advancedSettings.GetPictureExtensions());
 }
 
 static time_t ParseDate(const std::string & strDate)

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2015-2016 Team Kodi
+ *      Copyright (C) 2015-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -26,17 +26,17 @@
 namespace PERIPHERALS
 {
   class CPeripheralJoystickEmulation : public CPeripheral,
-                                       public KEYBOARD::IKeyboardHandler
+                                       public KODI::KEYBOARD::IKeyboardHandler
   {
   public:
-    CPeripheralJoystickEmulation(const PeripheralScanResult& scanResult, CPeripheralBus* bus);
+    CPeripheralJoystickEmulation(CPeripherals& manager, const PeripheralScanResult& scanResult, CPeripheralBus* bus);
 
     virtual ~CPeripheralJoystickEmulation(void);
 
     // implementation of CPeripheral
     virtual bool InitialiseFeature(const PeripheralFeature feature) override;
-    virtual void RegisterJoystickDriverHandler(JOYSTICK::IDriverHandler* handler, bool bPromiscuous) override;
-    virtual void UnregisterJoystickDriverHandler(JOYSTICK::IDriverHandler* handler) override;
+    virtual void RegisterJoystickDriverHandler(KODI::JOYSTICK::IDriverHandler* handler, bool bPromiscuous) override;
+    virtual void UnregisterJoystickDriverHandler(KODI::JOYSTICK::IDriverHandler* handler) override;
 
     // implementation of IKeyboardHandler
     virtual bool OnKeyPress(const CKey& key) override;
@@ -50,11 +50,11 @@ namespace PERIPHERALS
   private:
     struct KeyboardHandle
     {
-      KEYBOARD::IKeyboardHandler* handler;
+      KODI::KEYBOARD::IKeyboardHandler* handler;
       bool bPromiscuous;
     };
 
-    typedef std::map<JOYSTICK::IDriverHandler*, KeyboardHandle> KeyboardHandlers;
+    typedef std::map<KODI::JOYSTICK::IDriverHandler*, KeyboardHandle> KeyboardHandlers;
 
     KeyboardHandlers m_keyboardHandlers;
     CCriticalSection m_mutex;

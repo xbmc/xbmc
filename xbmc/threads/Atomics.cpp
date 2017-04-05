@@ -21,7 +21,7 @@
 #include "Atomics.h"
 
 ///////////////////////////////////////////////////////////////////////////
-// Fast spinlock implmentation. No backoff when busy
+// Fast spinlock implementation. No backoff when busy
 ///////////////////////////////////////////////////////////////////////////
 CAtomicSpinLock::CAtomicSpinLock(std::atomic_flag& lock) : m_Lock(lock)
 {

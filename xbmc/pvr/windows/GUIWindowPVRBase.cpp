@@ -90,7 +90,7 @@ void CGUIWindowPVRBase::UpdateSelectedItemPath()
 
 void CGUIWindowPVRBase::RegisterObservers(void)
 {
-  g_PVRManager.RegisterObserver(this);
+  CServiceBroker::GetPVRManager().RegisterObserver(this);
 
   CSingleLock lock(m_critSection);
   if (m_channelGroup)
@@ -104,7 +104,7 @@ void CGUIWindowPVRBase::UnregisterObservers(void)
     if (m_channelGroup)
       m_channelGroup->UnregisterObserver(this);
   }
-  g_PVRManager.UnregisterObserver(this);
+  CServiceBroker::GetPVRManager().UnregisterObserver(this);
 };
 
 void CGUIWindowPVRBase::Notify(const Observable &obs, const ObservableMessage msg)
@@ -168,7 +168,7 @@ void CGUIWindowPVRBase::OnInitWindow(void)
   }
   else
   {
-    CGUIWindow::OnInitWindow(); // do not call CGUIMediaWindow as it will do a Refresh which in no case works in this state (no cahnnelgroup!)
+    CGUIWindow::OnInitWindow(); // do not call CGUIMediaWindow as it will do a Refresh which in no case works in this state (no channelgroup!)
     ShowProgressDialog(g_localizeStrings.Get(19235), 0); // PVR manager is starting up
   }
 }
@@ -265,12 +265,12 @@ bool CGUIWindowPVRBase::CanBeActivated() const
 
 bool CGUIWindowPVRBase::OpenChannelGroupSelectionDialog(void)
 {
-  CGUIDialogSelect *dialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+  CGUIDialogSelect *dialog = g_windowManager.GetWindow<CGUIDialogSelect>();
   if (!dialog)
     return false;
 
   CFileItemList options;
-  g_PVRChannelGroups->Get(m_bRadio)->GetGroupList(&options, true);
+  CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_bRadio)->GetGroupList(&options, true);
 
   dialog->Reset();
   dialog->SetHeading(CVariant{g_localizeStrings.Get(19146)});
@@ -286,23 +286,24 @@ bool CGUIWindowPVRBase::OpenChannelGroupSelectionDialog(void)
   if (!item)
     return false;
 
-  SetChannelGroup(g_PVRChannelGroups->Get(m_bRadio)->GetByName(item->m_strTitle));
+  SetChannelGroup(CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_bRadio)->GetByName(item->m_strTitle));
 
   return true;
 }
 
 bool CGUIWindowPVRBase::InitChannelGroup()
 {
-  const CPVRChannelGroupPtr group(g_PVRManager.GetPlayingGroup(m_bRadio));
+  const CPVRChannelGroupPtr group(CServiceBroker::GetPVRManager().GetPlayingGroup(m_bRadio));
   if (group)
   {
     CSingleLock lock(m_critSection);
     if (m_channelGroup != group)
     {
       m_viewControl.SetSelectedItem(0);
-      m_channelGroup = group;
-      m_vecItems->SetPath(GetDirectoryPath());
+      SetChannelGroup(group, false);
     }
+    // Path might have changed since last init. Set it always, not just on group change.
+    m_vecItems->SetPath(GetDirectoryPath());
     return true;
   }
   return false;
@@ -314,7 +315,7 @@ CPVRChannelGroupPtr CGUIWindowPVRBase::GetChannelGroup(void)
   return m_channelGroup;
 }
 
-void CGUIWindowPVRBase::SetChannelGroup(const CPVRChannelGroupPtr &group)
+void CGUIWindowPVRBase::SetChannelGroup(const CPVRChannelGroupPtr &group, bool bUpdate /* = true */)
 {
   if (!group)
     return;
@@ -333,9 +334,9 @@ void CGUIWindowPVRBase::SetChannelGroup(const CPVRChannelGroupPtr &group)
     }
   }
 
-  if (channelGroup)
+  if (bUpdate && channelGroup)
   {
-    g_PVRManager.SetPlayingGroup(channelGroup);
+    CServiceBroker::GetPVRManager().SetPlayingGroup(channelGroup);
     Update(GetDirectoryPath());
   }
 }
@@ -348,7 +349,28 @@ bool CGUIWindowPVRBase::Update(const std::string &strDirectory, bool updateFilte
     return false;
   }
 
-  return CGUIMediaWindow::Update(strDirectory, updateFilterPath);
+  int iOldCount = m_vecItems->Size();
+  int iSelectedItem = m_viewControl.GetSelectedItem();
+  const std::string oldPath = m_vecItems->GetPath();
+
+  bool bReturn = CGUIMediaWindow::Update(strDirectory, updateFilterPath);
+
+  if (bReturn &&
+      iSelectedItem != -1) // something must have been selected
+  {
+    int iNewCount = m_vecItems->Size();
+    if (iOldCount > iNewCount && // at least one item removed by Update()
+        oldPath == m_vecItems->GetPath()) // update not due changing into another folder
+    {
+      // restore selected item if we just deleted one or more items.
+      if (iSelectedItem >= iNewCount)
+        iSelectedItem = iNewCount - 1;
+
+      m_viewControl.SetSelectedItem(iSelectedItem);
+    }
+  }
+
+  return bReturn;
 }
 
 void CGUIWindowPVRBase::UpdateButtons(void)
@@ -361,7 +383,7 @@ void CGUIWindowPVRBase::ShowProgressDialog(const std::string &strText, int iProg
 {
   if (!m_progressHandle)
   {
-    CGUIDialogExtendedProgressBar *loadingProgressDialog = dynamic_cast<CGUIDialogExtendedProgressBar *>(g_windowManager.GetWindow(WINDOW_DIALOG_EXT_PROGRESS));
+    CGUIDialogExtendedProgressBar *loadingProgressDialog = g_windowManager.GetWindow<CGUIDialogExtendedProgressBar>();
     if (!loadingProgressDialog)
     {
       CLog::Log(LOGERROR, "CGUIWindowPVRBase - %s - unable to get WINDOW_DIALOG_EXT_PROGRESS!", __FUNCTION__);

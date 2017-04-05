@@ -246,10 +246,10 @@ bool CRendererVTB::NeedBuffer(int idx)
 
   if (vtbdata->m_fence && glIsFenceAPPLE(vtbdata->m_fence))
   {
-    if (glTestFenceAPPLE(vtbdata->m_fence))
-      return false;
+    if (!glTestFenceAPPLE(vtbdata->m_fence))
+      return true;
   }
 
-  return true;
+  return false;
 }
 #endif

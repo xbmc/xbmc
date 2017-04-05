@@ -183,11 +183,11 @@ bool CTagLoaderTagLib::ParseTag(ASF::Tag *asf, EmbeddedArt *art, CMusicInfoTag& 
     else if (it->first == "WM/Publisher")
       tag.SetRecordLabel(it->second.front().toString().to8Bit(true));
     else if (it->first == "WM/AlbumArtistSortOrder")
-    {} // Known unsupported, supress warnings
+    {} // Known unsupported, suppress warnings
     else if (it->first == "WM/ArtistSortOrder")
-    {} // Known unsupported, supress warnings
+    {} // Known unsupported, suppress warnings
     else if (it->first == "WM/Script")
-    {} // Known unsupported, supress warnings
+    {} // Known unsupported, suppress warnings
     else if (it->first == "WM/Year")
       tag.SetYear(atoi(it->second.front().toString().toCString(true)));
     else if (it->first == "MusicBrainz/Artist Id")
@@ -362,6 +362,8 @@ bool CTagLoaderTagLib::ParseTag(ID3v2::Tag *id3v2, MUSIC_INFO::EmbeddedArt *art,
           SetArtistHints(tag, StringListToVectorString(stringList));
         else if (desc == "ALBUMARTISTS" || desc == "ALBUM ARTISTS")
           SetAlbumArtistHints(tag, StringListToVectorString(stringList));
+        else if (desc == "WRITER")  // How Picard >1.3 tags writer in ID3
+          AddArtistRole(tag, "Writer", StringListToVectorString(stringList));
         else if (desc == "MOOD")
           tag.SetMood(stringList.front().to8Bit(true));
         else if (g_advancedSettings.m_logLevel == LOG_LEVEL_MAX)
@@ -378,7 +380,7 @@ bool CTagLoaderTagLib::ParseTag(ID3v2::Tag *id3v2, MUSIC_INFO::EmbeddedArt *art,
           AddArtistRole(tag, StringListToVectorString(tiplframe->fieldList()));
       }
     else if (it->first == "TMCL")
-      // Loop through and process the musicain credits list
+      // Loop through and process the musician credits list
       // It is a mapping between the instrument and the person that played it, but also includes "orchestra" or "soloist".
       // In fieldlist every odd field is an instrument, and every even is an artist or a comma delimited list of artists.
       for (ID3v2::FrameList::ConstIterator ip = it->second.begin(); ip != it->second.end(); ++ip)
@@ -502,11 +504,15 @@ bool CTagLoaderTagLib::ParseTag(APE::Tag *ape, EmbeddedArt *art, CMusicInfoTag& 
       AddArtistRole(tag, "Composer", StringListToVectorString(it->second.toStringList()));
     else if (it->first == "CONDUCTOR")
       AddArtistRole(tag, "Conductor", StringListToVectorString(it->second.toStringList()));
-    else if ((it->first == "BAND") || (it->first == "ENSEMBLE"))
-      AddArtistRole(tag, "Orchestra", StringListToVectorString(it->second.toStringList()));
+    else if (it->first == "BAND")
+      AddArtistRole(tag, "Band", StringListToVectorString(it->second.toStringList()));
+    else if (it->first == "ENSEMBLE")
+      AddArtistRole(tag, "Ensemble", StringListToVectorString(it->second.toStringList()));
     else if (it->first == "LYRICIST")
       AddArtistRole(tag, "Lyricist", StringListToVectorString(it->second.toStringList()));
-    else if (it->first == "MIXARTIST")   
+    else if (it->first == "WRITER")
+      AddArtistRole(tag, "Writer", StringListToVectorString(it->second.toStringList()));
+    else if ((it->first == "MIXARTIST") || (it->first == "REMIXER"))
       AddArtistRole(tag, "Remixer", StringListToVectorString(it->second.toStringList()));
     else if (it->first == "ARRANGER") 
       AddArtistRole(tag, "Arranger", StringListToVectorString(it->second.toStringList()));
@@ -561,7 +567,9 @@ bool CTagLoaderTagLib::ParseTag(Ogg::XiphComment *xiph, EmbeddedArt *art, CMusic
   if (!xiph)
     return false;
 
+#if TAGLIB_MAJOR_VERSION <= 1 && TAGLIB_MINOR_VERSION < 11
   FLAC::Picture pictures[3];
+#endif
   ReplayGain replayGainInfo;
 
   const Ogg::FieldListMap& fieldListMap = xiph->fieldListMap();
@@ -596,16 +604,20 @@ bool CTagLoaderTagLib::ParseTag(Ogg::XiphComment *xiph, EmbeddedArt *art, CMusic
     else if (it->first == "CUESHEET")
       tag.SetCueSheet(it->second.front().to8Bit(true));
     else if (it->first == "ENCODEDBY")
-    {} // Known but unsupported, supress warnings
+    {} // Known but unsupported, suppress warnings
     else if (it->first == "COMPOSER")
       AddArtistRole(tag, "Composer", StringListToVectorString(it->second));
     else if (it->first == "CONDUCTOR")
       AddArtistRole(tag, "Conductor", StringListToVectorString(it->second));
-    else if ((it->first == "BAND") || (it->first == "ENSEMBLE"))
-      AddArtistRole(tag, "Orchestra", StringListToVectorString(it->second));
+    else if (it->first == "BAND")
+      AddArtistRole(tag, "Band", StringListToVectorString(it->second));
+    else if (it->first == "ENSEMBLE")
+      AddArtistRole(tag, "Ensemble", StringListToVectorString(it->second));
     else if (it->first == "LYRICIST")
       AddArtistRole(tag, "Lyricist", StringListToVectorString(it->second));
-    else if (it->first == "MIXARTIST")
+    else if (it->first == "WRITER")
+      AddArtistRole(tag, "Writer", StringListToVectorString(it->second));
+    else if ((it->first == "MIXARTIST") || (it->first == "REMIXER"))
       AddArtistRole(tag, "Remixer", StringListToVectorString(it->second));
     else if (it->first == "ARRANGER")
       AddArtistRole(tag, "Arranger", StringListToVectorString(it->second));
@@ -1040,6 +1052,10 @@ void CTagLoaderTagLib::AddArtistInstrument(CMusicInfoTag &tag, const std::vector
 
 bool CTagLoaderTagLib::Load(const std::string& strFileName, CMusicInfoTag& tag, const std::string& fallbackFileExtension, MUSIC_INFO::EmbeddedArt *art /* = NULL */)
 {
+  // Dont try to read the tags for streams & shoutcast  
+  if (URIUtils::IsInternetStream(strFileName))
+    return false;
+
   std::string strExtension = URIUtils::GetExtension(strFileName);
   StringUtils::TrimLeft(strExtension, ".");
 

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2016 Team Kodi
+ *      Copyright (C) 2016-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,55 +19,59 @@
  */
 #pragma once
 
-#include "input/joysticks/DriverPrimitive.h"
 #include "input/joysticks/IButtonMapper.h"
 #include "threads/Event.h"
 #include "threads/Thread.h"
 #include "utils/Observer.h"
 
+#include <string>
 #include <vector>
 
 namespace GAME
 {
-  class CGUIDialogButtonCapture : public JOYSTICK::IButtonMapper,
+  class CGUIDialogButtonCapture : public KODI::JOYSTICK::IButtonMapper,
                                   public Observer,
                                   protected CThread
   {
   public:
     CGUIDialogButtonCapture();
 
+    virtual ~CGUIDialogButtonCapture() = default;
+
     // implementation of IButtonMapper
     virtual std::string ControllerID(void) const override;
     virtual bool NeedsCooldown(void) const override { return false; }
     virtual bool Emulation(void) const override { return false; }
     virtual unsigned int ControllerNumber(void) const override { return 0; }
-    virtual bool MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
-                              JOYSTICK::IActionMap* actionMap,
-                              const JOYSTICK::CDriverPrimitive& primitive) override;
-    virtual void OnEventFrame(const JOYSTICK::IButtonMap* buttonMap, bool bMotion) override { }
+    virtual bool MapPrimitive(KODI::JOYSTICK::IButtonMap* buttonMap,
+                              KODI::JOYSTICK::IActionMap* actionMap,
+                              const KODI::JOYSTICK::CDriverPrimitive& primitive) override;
+    virtual void OnEventFrame(const KODI::JOYSTICK::IButtonMap* buttonMap, bool bMotion) override { }
+    virtual void OnLateAxis(const KODI::JOYSTICK::IButtonMap* buttonMap, unsigned int axisIndex) override { }
 
     // implementation of Observer
     virtual void Notify(const Observable &obs, const ObservableMessage msg) override;
 
+    /*!
+     * \brief Show the dialog
+     */
     void Show();
 
   protected:
     // implementation of CThread
     virtual void Process() override;
 
+    virtual std::string GetDialogText() = 0;
+    virtual std::string GetDialogHeader() = 0;
+    virtual bool MapPrimitiveInternal(KODI::JOYSTICK::IButtonMap* buttonMap,
+                                      KODI::JOYSTICK::IActionMap* actionMap,
+                                      const KODI::JOYSTICK::CDriverPrimitive& primitive) = 0;
+    virtual void OnClose(bool bAccepted) = 0;
+
+    CEvent m_captureEvent;
+
   private:
-    bool AddPrimitive(const JOYSTICK::CDriverPrimitive& primitive);
-
-    std::string GetDialogText();
-
     void InstallHooks();
     void RemoveHooks();
-
-    static std::string GetPrimitiveName(const JOYSTICK::CDriverPrimitive& primitive);
-
-    // Button capture parameters
-    std::string m_deviceName;
-    std::vector<JOYSTICK::CDriverPrimitive> m_capturedPrimitives;
-    CEvent m_captureEvent;
   };
 }

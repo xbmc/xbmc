@@ -1,0 +1,27 @@
+From de87cd7736d52302db330c830adae50b1e667954 Mon Sep 17 00:00:00 2001
+From: Tsuda Kageyu <tsuda.kageyu@gmail.com>
+Date: Tue, 20 Dec 2016 12:06:21 +0900
+Subject: [PATCH] Remove the CMake check for Boost I missed out on.
+
+---
+ ConfigureChecks.cmake | 7 -------
+ 1 file changed, 7 deletions(-)
+
+diff --git a/ConfigureChecks.cmake b/ConfigureChecks.cmake
+index f69b438..e39d97b 100644
+--- a/ConfigureChecks.cmake
++++ b/ConfigureChecks.cmake
+@@ -34,13 +34,6 @@ if(NOT ${SIZEOF_DOUBLE} EQUAL 8)
+   message(FATAL_ERROR "TagLib requires that double is 64-bit wide.")
+ endif()
+ 
+-# Enable check_cxx_source_compiles() to work with Boost "header-only" libraries.
+-
+-find_package(Boost)
+-if(Boost_FOUND)
+-  set(CMAKE_REQUIRED_INCLUDES "${CMAKE_REQUIRED_INCLUDES};${Boost_INCLUDE_DIRS}")
+-endif()
+-
+ # Determine which kind of atomic operations your compiler supports.
+ 
+ check_cxx_source_compiles("
