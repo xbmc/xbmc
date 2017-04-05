@@ -28,6 +28,7 @@
 #include "ODBDate.h"
 #include "ODBArt.h"
 #include "ODBArtistDetail.h"
+#include "ODBInfoSetting.h"
 
 #include <string>
 
@@ -45,6 +46,7 @@ public:
     m_rating = 0.0;
     m_userrating = 0;
     m_votes = 0;
+    m_scrapedMBID = false;
     
     m_synced = false;
   };
@@ -67,9 +69,11 @@ PRAGMA_DB (id auto)
   CODBDate m_lastScraped;
   std::string m_releaseType;
   int m_votes;
+  bool m_scrapedMBID;
+  std::string m_releaseGroupMBID;
   
-  //TODO: See if we can remove those later down the road and use the below foreign objects
-  std::string m_artistsString;
+  std::string m_artistDisp;
+  std::string m_artistSort;
   std::string m_genresString;
   
 PRAGMA_DB (section(section_foreign) )
@@ -78,6 +82,8 @@ PRAGMA_DB (section(section_foreign) )
   std::vector< odb::lazy_shared_ptr<CODBGenre> > m_genres;
 PRAGMA_DB (section(section_foreign) )
   std::vector< odb::lazy_shared_ptr<CODBArt> > m_artwork;
+PRAGMA_DB (section(section_foreign))
+  odb::lazy_shared_ptr<CODBInfoSetting> m_infoSetting;
   
   //Members not stored in the db, used for sync ...
 PRAGMA_DB (transient)

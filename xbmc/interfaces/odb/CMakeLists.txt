@@ -26,15 +26,14 @@ set(OdbCMake_ODB_HEADERS
         ODBSong.h
         ODBArtistDetail.h
         ODBArtistDiscography.h
-        ODBCue.h
         ODBRole.h
-        ODBVersionTagScan.h)
+        ODBVersionTagScan.h
+        ODBInfoSetting.h)
 
 odb_compile(OdbCMake_SOURCES FILES ${OdbCMake_ODB_HEADERS}
     MULTI_DATABASE dynamic
     DB sqlite mysql
     GENERATE_QUERY
-    GENERATE_SESSION
     GENERATE_SCHEMA
     GENERATE_PREPARED
     SCHEMA_FORMAT embedded

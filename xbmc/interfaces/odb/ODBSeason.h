@@ -41,6 +41,7 @@ class CODBSeason
 public:
   CODBSeason()
   {
+    m_idSeason = 0;
     m_name = "";
     m_season = -1;
     m_userrating = 0;
@@ -79,8 +80,11 @@ PRAGMA_DB (view object(CODBSeason) \
                 query(distinct))
 struct ODBView_Season_Episodes
 {
-  std::shared_ptr<CODBSeason> season;
-  std::shared_ptr<CODBEpisode> episode;
+  PRAGMA_DB (column(CODBSeason::m_idSeason))
+  unsigned long m_idSeason;
+  
+  PRAGMA_DB (column(CODBEpisode::m_idEpisode))
+  unsigned long m_idEpisode;
 };
 
 PRAGMA_DB (view object(CODBSeason) \
@@ -89,6 +93,25 @@ PRAGMA_DB (view object(CODBSeason) \
 struct ODBView_Season_Art
 {
   std::shared_ptr<CODBArt> art;
+};
+
+PRAGMA_DB (view object(CODBSeason) \
+           object(CODBEpisode inner: CODBSeason::m_episodes) \
+           object(CODBFile inner: CODBEpisode::m_file) \
+           query(distinct))
+struct ODBView_Season_Play_Count
+{
+  PRAGMA_DB (column("SUM(" + CODBFile::m_playCount + ") AS playCount"))
+  int playCount;
+};
+
+PRAGMA_DB (view object(CODBSeason) \
+           object(CODBEpisode inner: CODBSeason::m_episodes) \
+           query(distinct))
+struct ODBView_Season_Episode_Count
+{
+  PRAGMA_DB (column("COUNT(DISTINCT " + CODBEpisode::m_idEpisode + ")"))
+  int episodesTotal;
 };
 
 

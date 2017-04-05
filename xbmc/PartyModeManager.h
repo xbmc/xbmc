@@ -24,6 +24,9 @@
 #include <utility>
 #include <vector>
 
+#include <odb/odb_gen/ODBSong.h>
+#include <odb/odb_gen/ODBSong_odb.h>
+
 class CFileItem; typedef std::shared_ptr<CFileItem> CFileItemPtr;
 class CFileItemList;
 namespace PLAYLIST
@@ -70,7 +73,6 @@ private:
   void OnError(int iError, const std::string& strLogMessage);
   void ClearState();
   void UpdateStats();
-  std::pair<std::string,std::string> GetWhereClauseWithHistory() const;
   void AddToHistory(int type, int songID);
   void GetRandomSelection(std::vector< std::pair<int,int> > &in, unsigned int number, std::vector< std::pair<int, int> > &out);
   void Announce();
@@ -79,7 +81,7 @@ private:
   bool m_bEnabled;
   bool m_bIsVideo;
   int m_iLastUserSong;
-  std::string m_strCurrentFilterMusic;
+  odb::query<ODBView_Song> m_CurrentFilterMusic;
   std::string m_strCurrentFilterVideo;
   std::string m_type;
 

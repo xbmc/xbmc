@@ -184,6 +184,30 @@ struct ODBView_Movie
 };
 
 PRAGMA_DB (view \
+           object(CODBMovie) \
+           object(CODBGenre = genre: CODBMovie::m_genres) \
+           object(CODBPersonLink = director_link: CODBMovie::m_directors) \
+           object(CODBPerson = director: director_link::m_person) \
+           object(CODBPersonLink = actor_ink: CODBMovie::m_actors) \
+           object(CODBPerson = actor: actor_ink::m_person) \
+           object(CODBPersonLink = writingCredit_link: CODBMovie::m_writingCredits) \
+           object(CODBPerson = writingCredit: writingCredit_link::m_person) \
+           object(CODBStudio = studio: CODBMovie::m_studios) \
+           object(CODBTag = tag: CODBMovie::m_tags) \
+           object(CODBCountry = country: CODBMovie::m_countries) \
+           object(CODBSet = set: CODBMovie::m_set) \
+           object(CODBBookmark = bookmark: CODBMovie::m_bookmarks) \
+           object(CODBFile = fileView: CODBMovie::m_file) \
+           object(CODBPath = pathView: fileView::m_path) \
+           object(CODBStreamDetails: CODBMovie::m_file == CODBStreamDetails::m_file) \
+           object(CODBRating = defaultRating: CODBMovie::m_defaultRating))
+struct ODBView_Movie_Total
+{
+  PRAGMA_DB (column("COUNT(DISTINCT(" + CODBMovie::m_idMovie + "))"))
+  unsigned int total;
+};
+
+PRAGMA_DB (view \
   object(CODBMovie) \
   object(CODBGenre = genre inner: CODBMovie::m_genres) \
   object(CODBFile = file inner: CODBMovie::m_file) \
@@ -259,6 +283,7 @@ PRAGMA_DB (view \
   object(CODBPerson = person inner: person_link::m_person) \
   object(CODBFile = file inner: CODBMovie::m_file) \
   object(CODBPath = path inner: file::m_path) \
+  object(CODBArt: person::m_art) \
   query(distinct))
 struct ODBView_Movie_Actor
 {
@@ -267,6 +292,8 @@ PRAGMA_DB (column(file::m_playCount))
   unsigned int m_playCount;
 PRAGMA_DB (column(path::m_path))
   std::string m_path;
+PRAGMA_DB (column(CODBArt::m_url))
+  std::string m_art_url;
 };
 
 PRAGMA_DB (view \

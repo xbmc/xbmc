@@ -146,7 +146,7 @@ public:
   void SetVotes(int votes, const std::string& type = "");
   void SetUniqueIDs(std::map<std::string, std::string> uniqueIDs);
   void SetPremiered(CDateTime premiered);
-  void SetPremieredFromDBDate(std::string premieredString);
+  void SetPremieredFromDBDate(std::string premieredString); //TODO: Can be deprecated
   void SetYear(int year);
   void SetArtist(std::vector<std::string> artist);
   void SetSet(std::string set);

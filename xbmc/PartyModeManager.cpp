@@ -50,7 +50,6 @@ CPartyModeManager::CPartyModeManager(void)
 {
   m_bIsVideo = false;
   m_bEnabled = false;
-  m_strCurrentFilterMusic.clear();
   m_strCurrentFilterVideo.clear();
   ClearState();
 }
@@ -95,7 +94,7 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
   }
   else
   {
-    m_strCurrentFilterMusic.clear();
+    m_CurrentFilterMusic = odb::query<ODBView_Song>();
     m_strCurrentFilterVideo.clear();
     m_type = m_bIsVideo ? "musicvideos" : "songs";
   }
@@ -120,10 +119,9 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
     {
       std::set<std::string> playlists;
       if ( playlistLoaded )
-        m_strCurrentFilterMusic = playlist.GetWhereClause(db, playlists);
+        m_CurrentFilterMusic = playlist.GetSongWhereClause(playlists);
 
-      CLog::Log(LOGINFO, "PARTY MODE MANAGER: Registering filter:[%s]", m_strCurrentFilterMusic.c_str());
-      m_iMatchingSongs = (int)db.GetSongIDs(CDatabase::Filter(m_strCurrentFilterMusic), songIDs);
+      m_iMatchingSongs = (int)db.GetSongIDs(m_CurrentFilterMusic, songIDs);
       if (m_iMatchingSongs < 1 && StringUtils::EqualsNoCase(m_type, "songs"))
       {
         pDialog->Close();
@@ -352,13 +350,26 @@ bool CPartyModeManager::AddRandomSongs(int iSongs /* = 0 */)
       // only want one here.  Any more than about 3 songs and it is more efficient
       // to use the technique in AddInitialSongs.  As it's unlikely that we'll require
       // more than 1 song at a time here, this method is faster.
+      
+      //Create the where clause for music
+      std::vector<int> historyItemsMusic;
+      for (unsigned int i = 0; i < m_history.size(); i++)
+      {
+        if (m_history[i].first == 1)
+          historyItemsMusic.push_back(m_history[i].second);
+      }
+      odb::query<ODBView_Song> objQuery;
+      if (!historyItemsMusic.empty())
+      {
+        objQuery = !odb::query<ODBView_Song>::CODBSong::idSong.in_range(historyItemsMusic.begin(), historyItemsMusic.end());
+      }
+      
       bool error(false);
       for (int i = 0; i < iSongsToAdd; i++)
       {
-        std::pair<std::string,std::string> whereClause = GetWhereClauseWithHistory();
         CFileItemPtr item(new CFileItem);
         int songID;
-        if (database.GetRandomSong(item.get(), songID, CDatabase::Filter(whereClause.first)))
+        if (database.GetRandomSong(item.get(), songID, objQuery))
         { // success
           Add(item);
           AddToHistory(1,songID);
@@ -403,7 +414,8 @@ bool CPartyModeManager::AddRandomSongs(int iSongs /* = 0 */)
       bool error(false);
       for (int i = 0; i < iVidsToAdd; i++)
       {
-        std::pair<std::string,std::string> whereClause = GetWhereClauseWithHistory();
+        //TODO: To do with Music Videos
+        /*std::pair<std::string,std::string> whereClause = GetWhereClauseWithHistory();
         CFileItemPtr item(new CFileItem);
         int songID;
         if (database.GetRandomMusicVideo(item.get(), songID, whereClause.second))
@@ -415,7 +427,7 @@ bool CPartyModeManager::AddRandomSongs(int iSongs /* = 0 */)
         {
           error = true;
           break;
-        }
+        }*/
       }
 
       if (error)
@@ -650,39 +662,6 @@ bool CPartyModeManager::AddInitialSongs(std::vector< std::pair<int,int > > &song
     }
   }
   return true;
-}
-
-std::pair<std::string,std::string> CPartyModeManager::GetWhereClauseWithHistory() const
-{
-  // now add this on to the normal where clause
-  std::vector<std::string> historyItemsMusic;
-  std::vector<std::string> historyItemsVideo;
-  for (unsigned int i = 0; i < m_history.size(); i++)
-  {
-    std::string number = StringUtils::Format("%i", m_history[i].second);
-    if (m_history[i].first == 1)
-      historyItemsMusic.push_back(number);
-    if (m_history[i].first == 2)
-      historyItemsVideo.push_back(number);
-  }
-
-  std::string historyWhereMusic;
-  if (!historyItemsMusic.empty())
-  {
-    if (!m_strCurrentFilterMusic.empty())
-      historyWhereMusic = m_strCurrentFilterMusic + " and ";
-    historyWhereMusic += "songview.idSong not in (" + StringUtils::Join(historyItemsMusic, ", ") + ")";
-  }
-
-  std::string historyWhereVideo;
-  if (!historyItemsVideo.empty())
-  {
-    if (!m_strCurrentFilterVideo.empty())
-      historyWhereVideo = m_strCurrentFilterVideo + " and ";
-    historyWhereVideo += "idMVideo not in (" + StringUtils::Join(historyItemsVideo, ", ") + ")";
-  }
-
-  return std::make_pair(historyWhereMusic, historyWhereVideo);
 }
 
 void CPartyModeManager::AddToHistory(int type, int songID)

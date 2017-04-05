@@ -67,9 +67,10 @@ PRAGMA_DB (id auto)
   std::string m_comment;
   std::string m_mood;
   int m_votes;
+  std::string m_replayGain;
   
-  //TODO: See if we can remove those later down the road and use the below foreign objects
-  std::string m_artistsString;
+  std::string m_artistDisp;
+  std::string m_artistSort;
   std::string m_genresString;
   
 PRAGMA_DB (section(section_foreign))
@@ -112,6 +113,23 @@ struct ODBView_Song
 };
 
 PRAGMA_DB (view object(CODBSong) \
+           object(CODBAlbum: CODBSong::m_album) \
+           object(CODBPersonLink inner: CODBSong::m_artists) \
+           object(CODBPerson inner: CODBPersonLink::m_person) \
+           object(CODBRole: CODBPersonLink::m_role) \
+           object(CODBPersonLink = albumArtistLink: CODBAlbum::m_artists) \
+           object(CODBPerson = albumArist: albumArtistLink::m_person) \
+           object(CODBRole = albumArtistRole: albumArtistLink::m_role) \
+           object(CODBGenre: CODBAlbum::m_genres) \
+           object(CODBFile: CODBSong::m_file) \
+           object(CODBPath: CODBFile::m_path))
+struct ODBView_Song_Total
+{
+  PRAGMA_DB (column("COUNT(DISTINCT(" + CODBSong::m_idSong + "))"))
+  unsigned int total;
+};
+
+PRAGMA_DB (view object(CODBSong) \
            object(CODBAlbum inner: CODBSong::m_album) \
            object(CODBPersonLink inner: CODBAlbum::m_artists) \
            object(CODBPerson inner: CODBPersonLink::m_person) \
@@ -124,6 +142,37 @@ PRAGMA_DB (view object(CODBSong) \
 struct ODBView_Album
 {
   std::shared_ptr<CODBAlbum> album;
+};
+
+PRAGMA_DB (view object(CODBSong) \
+           object(CODBAlbum inner: CODBSong::m_album) \
+           object(CODBPersonLink inner: CODBAlbum::m_artists) \
+           object(CODBPerson inner: CODBPersonLink::m_person) \
+           object(CODBArtistDetail inner: CODBPersonLink::m_person) \
+           object(CODBRole: CODBPersonLink::m_role) \
+           object(CODBPersonLink = songArtistLink: CODBSong::m_artists) \
+           object(CODBPerson = songArist: songArtistLink::m_person) \
+           object(CODBRole = songArtistRole: songArtistLink::m_role) \
+           object(CODBGenre: CODBAlbum::m_genres) \
+           query(distinct) )
+struct ODBView_Album_Artist_Detail
+{
+  std::shared_ptr<CODBArtistDetail> detail;
+};
+
+PRAGMA_DB (view object(CODBSong) \
+           object(CODBAlbum inner: CODBSong::m_album) \
+           object(CODBPersonLink inner: CODBAlbum::m_artists) \
+           object(CODBPerson inner: CODBPersonLink::m_person) \
+           object(CODBRole: CODBPersonLink::m_role) \
+           object(CODBPersonLink = songArtistLink: CODBSong::m_artists) \
+           object(CODBPerson = songArist: songArtistLink::m_person) \
+           object(CODBRole = songArtistRole: songArtistLink::m_role) \
+           object(CODBGenre: CODBAlbum::m_genres))
+struct ODBView_Album_Total
+{
+  PRAGMA_DB (column("COUNT(DISTINCT(" + CODBAlbum::m_idAlbum+ "))"))
+  unsigned int total;
 };
 
 PRAGMA_DB (view object(CODBSong) \
@@ -257,6 +306,43 @@ PRAGMA_DB (view object(CODBSong) \
 struct ODBView_Song_Artists
 {
   std::shared_ptr<CODBPerson> artist;
+};
+
+PRAGMA_DB (view object(CODBSong) \
+           object(CODBAlbum: CODBSong::m_album) \
+           object(CODBPersonLink inner: CODBSong::m_artists) \
+           object(CODBPerson inner: CODBPersonLink::m_person) \
+           object(CODBRole: CODBPersonLink::m_role) \
+           object(CODBPersonLink = albumArtistLink: CODBAlbum::m_artists) \
+           object(CODBPerson = albumArist: albumArtistLink::m_person) \
+           object(CODBRole = albumArtistRole: albumArtistLink::m_role) \
+           object(CODBArtistDetail inner: CODBPersonLink::m_person == CODBArtistDetail::m_person) \
+           object(CODBGenre = genre: CODBSong::m_genres) \
+           object(CODBFile: CODBSong::m_file) \
+           object(CODBPath: CODBFile::m_path) \
+           query(distinct) )
+struct ODBView_Song_Artist_Detail
+{
+  std::shared_ptr<CODBArtistDetail> detail;
+};
+
+PRAGMA_DB (view object(CODBSong) \
+           object(CODBAlbum: CODBSong::m_album) \
+           object(CODBPersonLink inner: CODBSong::m_artists) \
+           object(CODBPerson inner: CODBPersonLink::m_person) \
+           object(CODBRole: CODBPersonLink::m_role) \
+           object(CODBPersonLink = albumArtistLink: CODBAlbum::m_artists) \
+           object(CODBPerson = albumArist: albumArtistLink::m_person) \
+           object(CODBRole = albumArtistRole: albumArtistLink::m_role) \
+           object(CODBArtistDetail: CODBPersonLink::m_person == CODBArtistDetail::m_person) \
+           object(CODBGenre = genre: CODBSong::m_genres) \
+           object(CODBFile: CODBSong::m_file) \
+           object(CODBPath: CODBFile::m_path) \
+           query(distinct) )
+struct ODBView_Song_Artists_Total
+{
+  PRAGMA_DB (column("COUNT(DISTINCT(" + CODBPerson::m_idPerson + "))"))
+  unsigned int total;
 };
 
 PRAGMA_DB (view object(CODBSong)

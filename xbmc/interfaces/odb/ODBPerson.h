@@ -37,6 +37,7 @@ public:
   CODBPerson()
   {
     m_name = "";
+    m_sortName = "";
     m_synced = false;
   };
   
@@ -44,6 +45,7 @@ PRAGMA_DB (id auto)
   unsigned long m_idPerson;
 PRAGMA_DB (type("VARCHAR(255)"))
   std::string m_name;
+  std::string m_sortName;
   odb::lazy_shared_ptr<CODBArt> m_art;
   
   //Members not stored in the db, used for sync ...

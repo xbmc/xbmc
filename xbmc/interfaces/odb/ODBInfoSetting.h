@@ -18,31 +18,34 @@
  *
  */
 
-#ifndef ODBCUE_H
-#define ODBCUE_H
+#ifndef ODBINFOSETTING_H
+#define ODBINFOSETTING_H
 
 #include <odb/core.hxx>
 
-#include "ODBFile.h"
+#include "ODBPerson.h"
+#include "ODBDate.h"
+#include "ODBGenre.h"
 
 #include <string>
 
 PRAGMA_DB (model version(1, 1, open))
 
 PRAGMA_DB (object pointer(std::shared_ptr) \
-                  table("cue"))
-class CODBCue
+                  table("infosetting"))
+class CODBInfoSetting
 {
 public:
-  CODBCue()
+  CODBInfoSetting()
   {
+
     m_synced = false;
   };
   
 PRAGMA_DB (id auto)
-  unsigned long m_idCue;
-  odb::lazy_shared_ptr<CODBFile> m_file;
-  std::string m_cuesheet;
+  unsigned long m_idInfoSetting;
+  std::string m_scraperPath;
+  std::string m_settings;
   
   //Members not stored in the db, used for sync ...
 PRAGMA_DB (transient)
@@ -52,13 +55,4 @@ private:
   friend class odb::access;
 };
 
-PRAGMA_DB (view object(CODBCue) \
-                object(CODBFile: CODBCue::m_file) \
-                object(CODBPath: CODBFile::m_path) \
-                query(distinct))
-struct ODBView_Cue_Path
-{
-  std::shared_ptr<CODBCue> cue;
-};
-
-#endif /* ODBCUE_H */
+#endif /* ODBINFOSETTING_H */

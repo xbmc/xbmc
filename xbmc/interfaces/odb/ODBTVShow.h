@@ -51,6 +51,7 @@ class CODBTVShow
 public:
   CODBTVShow()
   {
+    m_idTVShow = 0;
     m_title = "";
     m_plot = "";
     m_status = "";
@@ -144,6 +145,22 @@ struct ODBView_TVShow
   std::shared_ptr<CODBTVShow> show;
 };
 
+PRAGMA_DB (view object(CODBTVShow) \
+           object(CODBGenre = genre: CODBTVShow::m_genres) \
+           object(CODBPersonLink = director_link: CODBTVShow::m_directors) \
+           object(CODBPerson = director: director_link::m_person) \
+           object(CODBPersonLink = actor_ink: CODBTVShow::m_actors) \
+           object(CODBPerson = actor: actor_ink::m_person) \
+           object(CODBStudio = studio: CODBTVShow::m_studios) \
+           object(CODBTag = tag: CODBTVShow::m_tags) \
+           object(CODBRating = defaultRating: CODBTVShow::m_defaultRating) \
+           object(CODBPath = path: CODBTVShow::m_paths))
+struct ODBView_TVShow_Total
+{
+  PRAGMA_DB (column("COUNT(DISTINCT(" + CODBTVShow::m_idTVShow + "))"))
+  unsigned int total;
+};
+
 // ODBView_Season and ODBView_Episode are here to avoid forward declarations
 
 PRAGMA_DB (view object(CODBTVShow) \
@@ -153,14 +170,21 @@ PRAGMA_DB (view object(CODBTVShow) \
                 query(distinct))
 struct ODBView_Season
 {
-  std::shared_ptr<CODBTVShow> show;
-  std::shared_ptr<CODBSeason> season;
+PRAGMA_DB(column(CODBTVShow::m_idTVShow))
+  unsigned long m_idTVShow;
   
-PRAGMA_DB (column("COUNT(DISTINCT " + CODBEpisode::m_idEpisode + ")"))
-  int episodesTotal;
-  
-PRAGMA_DB (column("COUNT(" + CODBFile::m_playCount + ") AS playCount"))
-  int playCount;
+PRAGMA_DB(column(CODBSeason::m_idSeason))
+  unsigned long m_idSeason;
+};
+
+PRAGMA_DB (view object(CODBTVShow) \
+           object(CODBSeason inner: CODBTVShow::m_seasons) \
+           object(CODBEpisode inner: CODBSeason::m_episodes) \
+           object(CODBFile inner: CODBEpisode::m_file))
+struct ODBView_Season_Total
+{
+  PRAGMA_DB (column("COUNT(DISTINCT(" + CODBSeason::m_idSeason + "))"))
+  unsigned int total;
 };
 
 PRAGMA_DB (view object(CODBTVShow) \
@@ -183,6 +207,28 @@ PRAGMA_DB (view object(CODBTVShow) \
 struct ODBView_Episode
 {
   std::shared_ptr<CODBEpisode> episode;
+};
+
+PRAGMA_DB (view object(CODBTVShow) \
+           object(CODBSeason inner: CODBTVShow::m_seasons) \
+           object(CODBEpisode inner: CODBSeason::m_episodes) \
+           object(CODBGenre = genre: CODBTVShow::m_genres) \
+           object(CODBPersonLink = director_link: CODBEpisode::m_directors) \
+           object(CODBPerson = director: director_link::m_person) \
+           object(CODBPersonLink = actor_ink: CODBEpisode::m_actors) \
+           object(CODBPerson = actor: actor_ink::m_person) \
+           object(CODBPersonLink = writingCredit_link: CODBEpisode::m_writingCredits) \
+           object(CODBPerson = writingCredit: writingCredit_link::m_person) \
+           object(CODBStudio = studio: CODBTVShow::m_studios) \
+           object(CODBFile = fileView: CODBEpisode::m_file) \
+           object(CODBPath = pathView: fileView::m_path) \
+           object(CODBStreamDetails: CODBEpisode::m_file == CODBStreamDetails::m_file) \
+           object(CODBRating = defaultRating: CODBEpisode::m_defaultRating) \
+           object(CODBTag = tag: CODBTVShow::m_tags))
+struct ODBView_Episode_Total
+{
+  PRAGMA_DB (column("COUNT(DISTINCT(" + CODBEpisode::m_idEpisode + "))"))
+  unsigned int total;
 };
 
 PRAGMA_DB (view object(CODBTVShow) \
@@ -312,12 +358,15 @@ PRAGMA_DB (view object(CODBTVShow) \
                 object(CODBPersonLink = person_link inner: CODBTVShow::m_actors) \
                 object(CODBPerson = person inner: person_link::m_person) \
                 object(CODBPath = path inner: CODBTVShow::m_paths) \
+                object(CODBArt: person::m_art) \
                 query(distinct))
 struct ODBView_TVShow_Actor
 {
   std::shared_ptr<CODBPerson> person;
 PRAGMA_DB (column(path::m_path))
   std::string m_path;
+PRAGMA_DB (column(CODBArt::m_url))
+  std::string m_art_url;
 };
 
 PRAGMA_DB (view object(CODBTVShow))

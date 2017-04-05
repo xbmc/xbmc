@@ -26,6 +26,7 @@
 #include "ODBPerson.h"
 #include "ODBDate.h"
 #include "ODBGenre.h"
+#include "ODBInfoSetting.h"
 
 #include <string>
 
@@ -38,7 +39,7 @@ class CODBArtistDetail
 public:
   CODBArtistDetail()
   {
-    
+    m_scrapedMBID = false;
     m_synced = false;
   };
   
@@ -57,11 +58,14 @@ PRAGMA_DB (id auto)
   CODBDate m_lastScraped;
   std::string m_image;
   std::string m_fanart;
+  bool m_scrapedMBID;
 
 PRAGMA_DB (section(section_foreign))
   odb::lazy_shared_ptr<CODBPerson> m_person;
 PRAGMA_DB (section(section_foreign))
   std::vector<odb::lazy_shared_ptr<CODBGenre> > m_genres;
+PRAGMA_DB (section(section_foreign))
+  odb::lazy_shared_ptr<CODBInfoSetting> m_infoSetting;
   
   //Members not stored in the db, used for sync ...
 PRAGMA_DB (transient)

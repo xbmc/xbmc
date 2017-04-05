@@ -48,6 +48,7 @@ class CODBEpisode
 public:
   CODBEpisode()
   {
+    m_idEpisode = 0;
     m_title = "";
     m_plot = "";
     m_thumbUrl = "";
