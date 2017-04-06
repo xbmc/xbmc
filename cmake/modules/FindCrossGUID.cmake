@@ -42,7 +42,7 @@ if(ENABLE_INTERNAL_CROSSGUID)
   set_target_properties(crossguid PROPERTIES FOLDER "External Projects")
 
   include(FindPackageHandleStandardArgs)
-  find_package_handle_standard_args(CrossGuid
+  find_package_handle_standard_args(CrossGUID
                                     REQUIRED_VARS CROSSGUID_LIBRARY CROSSGUID_INCLUDE_DIR
                                     VERSION_VAR CGUID_VER)
 
@@ -58,7 +58,7 @@ else()
   select_library_configurations(CROSSGUID)
 
   include(FindPackageHandleStandardArgs)
-  find_package_handle_standard_args(CrossGuid
+  find_package_handle_standard_args(CrossGUID
                                     REQUIRED_VARS CROSSGUID_LIBRARY CROSSGUID_INCLUDE_DIR)
 
   if(CROSSGUID_FOUND)

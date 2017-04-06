@@ -19,7 +19,7 @@ if(NOT WIN32)
     endif()
 
     include(FindPackageHandleStandardArgs)
-    find_package_handle_standard_args(LIBDVD REQUIRED_VARS ${_handlevars})
+    find_package_handle_standard_args(LibDvd REQUIRED_VARS ${_handlevars})
     if(LIBDVD_FOUND)
       add_library(dvdnav UNKNOWN IMPORTED)
       set_target_properties(dvdnav PROPERTIES
@@ -206,7 +206,7 @@ else()
   find_path(LIBDVD_INCLUDE_DIR dvdcss/dvdcss.h PATHS ${CMAKE_SOURCE_DIR}/lib/libdvd/include)
 
   include(FindPackageHandleStandardArgs)
-  find_package_handle_standard_args(LIBDVD REQUIRED_VARS LIBDVD_INCLUDE_DIR)
+  find_package_handle_standard_args(LibDvd REQUIRED_VARS LIBDVD_INCLUDE_DIR)
 
   if(LIBDVD_FOUND)
     set(LIBDVD_INCLUDE_DIRS ${LIBDVD_INCLUDE_DIR})

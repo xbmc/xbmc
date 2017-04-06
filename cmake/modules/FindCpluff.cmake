@@ -48,7 +48,7 @@ else()
   find_path(CPLUFF_INCLUDE_DIR cpluff.h)
 
   include(FindPackageHandleStandardArgs)
-  find_package_handle_standard_args(CPLUFF
+  find_package_handle_standard_args(Cpluff
                                     REQUIRED_VARS CPLUFF_INCLUDE_DIR)
 
   if(CPLUFF_FOUND)

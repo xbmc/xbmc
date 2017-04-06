@@ -26,7 +26,7 @@ find_library(ALSA_LIBRARY NAMES asound
 set(ALSA_VERSION ${PC_ALSA_VERSION})
 
 include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(ALSA
+find_package_handle_standard_args(Alsa
                                   REQUIRED_VARS ALSA_LIBRARY ALSA_INCLUDE_DIR
                                   VERSION_VAR ALSA_VERSION)
 
