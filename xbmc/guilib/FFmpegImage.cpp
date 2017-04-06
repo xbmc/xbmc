@@ -53,14 +53,14 @@ Frame::Frame(const Frame& src) :
 {
   if (src.m_pImage)
   {
-    m_pImage = new unsigned char[m_imageSize];
+    m_pImage = (unsigned char*) av_malloc(m_imageSize);
     memcpy(m_pImage, src.m_pImage, m_imageSize);
   }
 }
 
 Frame::~Frame()
 {
-  delete[] m_pImage;
+  av_free(m_pImage);
   m_pImage = nullptr;
 }
 
@@ -400,6 +400,7 @@ bool CFFmpegImage::DecodeFrame(AVFrame* frame, unsigned int width, unsigned int 
     return false;
   }
 
+  // we align on 16 as the input provided by the Texture also aligns the buffer size to 16
   int size = av_image_fill_arrays(pictureRGB->data, pictureRGB->linesize, NULL, AV_PIX_FMT_RGB32, width, height, 16);
   if (size < 0)
   {
@@ -425,7 +426,8 @@ bool CFFmpegImage::DecodeFrame(AVFrame* frame, unsigned int width, unsigned int 
     pictureRGB->format = AV_PIX_FMT_RGB32;
     pictureRGB->width = width;
     pictureRGB->height = height;
-    if (av_frame_get_buffer(pictureRGB, 16) < 0)
+    // we copy the data manually later so give a chance to intrinsics (e.g. mmx, neon)
+    if (av_frame_get_buffer(pictureRGB, 32) < 0)
     {
       CLog::LogFunction(LOGERROR, __FUNCTION__, "Could not allocate temp buffer of size %i bytes", size);
       av_frame_free(&pictureRGB);
@@ -710,7 +712,7 @@ std::shared_ptr<Frame> CFFmpegImage::ReadFrame()
   std::shared_ptr<Frame> frame(new Frame());
   frame->m_delay = (unsigned int)av_frame_get_pkt_duration(avframe);
   frame->m_pitch = avframe->width * 4;
-  frame->m_pImage = new unsigned char[avframe->height * frame->m_pitch];
+  frame->m_pImage = (unsigned char*) av_malloc(avframe->height * frame->m_pitch);
   DecodeFrame(avframe, avframe->width, avframe->height, frame->m_pitch, frame->m_pImage);
   av_frame_free(&avframe);
   return frame;
