@@ -47,18 +47,8 @@ bool CPVRTimersContainer::UpdateFromClient(const CPVRTimerInfoTagPtr &timer)
   if (!tag)
   {
     tag.reset(new CPVRTimerInfoTag());
-    VecTimerInfoTag addEntry;
-    auto itr = m_tags.find(timer->m_bStartAnyTime ? CDateTime() : timer->StartAsUTC());
-    if (itr == m_tags.end())
-    {
-      m_tags.insert(std::make_pair(timer->m_bStartAnyTime ? CDateTime() : timer->StartAsUTC(), addEntry));
-    }
-    else
-    {
-      addEntry = itr->second;
-    }
     tag->m_iTimerId = ++m_iLastId;
-    addEntry.emplace_back(tag);
+    InsertTimer(tag);
   }
 
   return tag->UpdateEntry(timer);
@@ -79,6 +69,20 @@ CPVRTimerInfoTagPtr CPVRTimersContainer::GetByClient(int iClientId, unsigned int
   }
 
   return CPVRTimerInfoTagPtr();
+}
+
+void CPVRTimersContainer::InsertTimer(const CPVRTimerInfoTagPtr &newTimer)
+{
+  auto it = m_tags.find(newTimer->m_bStartAnyTime ? CDateTime() : newTimer->StartAsUTC());
+  if (it == m_tags.end())
+  {
+    VecTimerInfoTag addEntry({newTimer});
+    m_tags.insert(std::make_pair(newTimer->m_bStartAnyTime ? CDateTime() : newTimer->StartAsUTC(), addEntry));
+  }
+  else
+  {
+    it->second.emplace_back(newTimer);;
+  }
 }
 
 CPVRTimers::CPVRTimers(void)
@@ -220,22 +224,10 @@ bool CPVRTimers::UpdateEntries(const CPVRTimersContainer &timers, const std::vec
         /* new timer */
         CPVRTimerInfoTagPtr newTimer = CPVRTimerInfoTagPtr(new CPVRTimerInfoTag);
         newTimer->UpdateEntry(*timerIt);
-
-        VecTimerInfoTag addEntry;
-        MapTags::iterator itr = m_tags.find(newTimer->m_bStartAnyTime ? CDateTime() : newTimer->StartAsUTC());
-        if (itr == m_tags.end())
-        {
-          m_tags.insert(std::make_pair(newTimer->m_bStartAnyTime ? CDateTime() : newTimer->StartAsUTC(), addEntry));
-        }
-        else
-        {
-          addEntry = itr->second;
-        }
-
         newTimer->m_iTimerId = ++m_iLastId;
         SetEpgTagTimer(newTimer);
+        InsertTimer(newTimer);
 
-        addEntry.emplace_back(newTimer);
         bChanged = true;
         bAddedOrDeleted = true;
 
@@ -321,20 +313,8 @@ bool CPVRTimers::UpdateEntries(const CPVRTimersContainer &timers, const std::vec
   /* reinsert timers with changed timer start */
   for (VecTimerInfoTag::const_iterator timerIt = timersToMove.begin(); timerIt != timersToMove.end(); ++timerIt)
   {
-    VecTimerInfoTag addEntry;
-    MapTags::const_iterator itr = m_tags.find((*timerIt)->m_bStartAnyTime ? CDateTime() : (*timerIt)->StartAsUTC());
-    if (itr == m_tags.end())
-    {
-      m_tags.insert(std::make_pair((*timerIt)->m_bStartAnyTime ? CDateTime() : (*timerIt)->StartAsUTC(), addEntry));
-    }
-    else
-    {
-      addEntry = itr->second;
-    }
-
     SetEpgTagTimer(*timerIt);
-
-    addEntry.emplace_back(*timerIt);
+    InsertTimer(*timerIt);
   }
 
   /* update child information for all parent timers */
