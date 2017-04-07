@@ -107,7 +107,7 @@ extern "C" size_t write_callback(char *buffer,
                size_t nitems,
                void *userp)
 {
-  if(userp == NULL) return 0;
+  if(userp == NULL) return size * nitems;
 
   CCurlFile::CReadState *state = (CCurlFile::CReadState *)userp;
   return state->WriteCallback(buffer, size, nitems);
