@@ -64,6 +64,10 @@ msgctxt "#31017"
 msgid "PVR info"
 msgstr "Info PVR"
 
+msgctxt "#31018"
+msgid "Player process info"
+msgstr "Informação do processo do reprodutor"
+
 msgctxt "#31019"
 msgid "Video decoder"
 msgstr "Descodificador de vídeo"

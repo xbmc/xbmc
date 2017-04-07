@@ -74,7 +74,7 @@ msgstr "Dekoder wideo"
 
 msgctxt "#31020"
 msgid "Pixel format"
-msgstr "Format pikseli"
+msgstr "Format piksela"
 
 msgctxt "#31021"
 msgid "System memory usage"
@@ -174,7 +174,7 @@ msgstr "Ostatnio zalogowany"
 
 msgctxt "#31322"
 msgid "Aired"
-msgstr "Data emisji"
+msgstr "Premiera"
 
 msgctxt "#31355"
 msgid "Video Menu"
