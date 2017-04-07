@@ -466,7 +466,7 @@ msgstr "Dekoder wideo"
 
 msgctxt "#31140"
 msgid "Pixel format"
-msgstr "Format pikseli"
+msgstr "Format piksela"
 
 msgctxt "#31141"
 msgid "Changes for version"

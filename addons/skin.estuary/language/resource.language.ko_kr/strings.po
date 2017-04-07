@@ -316,9 +316,13 @@ msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "로그인할 Kodi 사용자 프로파일을[CR]선택하고 계속하세요"
 
+msgctxt "#31099"
+msgid "IconWall"
+msgstr "IconWall"
+
 msgctxt "#31100"
 msgid "Shift"
-msgstr "시프트"
+msgstr "Shift"
 
 msgctxt "#31101"
 msgid "InfoWall"
@@ -508,6 +512,10 @@ msgctxt "#31153"
 msgid "You do not have any add-ons of this type installed. Enter the add-on browser to download add-ons created by our community."
 msgstr "이 형식의 애드온이 설치되지 않았습니다. 애드온을 다운로드하려면 애드온 탐색기를 사용하세요."
 
+msgctxt "#31154"
+msgid "Press OK to switch between locations"
+msgstr "위치를 변경하려면 OK를 누르세요"
+
 msgctxt "#31155"
 msgid "No bookmarks created yet."
 msgstr "생성된 북마크가 없습니다"
@@ -526,7 +534,7 @@ msgstr "터치 모드"
 
 msgctxt "#31159"
 msgid "Artwork"
-msgstr "아크워크"
+msgstr "아트워크"
 
 msgctxt "#31160"
 msgid "Show media flags"

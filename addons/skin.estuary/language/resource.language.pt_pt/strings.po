@@ -448,6 +448,10 @@ msgctxt "#31137"
 msgid "PVR info"
 msgstr "Info PVR"
 
+msgctxt "#31138"
+msgid "Player process info"
+msgstr "Informação do processo do reprodutor"
+
 msgctxt "#31139"
 msgid "Video decoder"
 msgstr "Descodificador de vídeo"
@@ -487,6 +491,10 @@ msgstr "Vídeos de música não vistos"
 msgctxt "#31152"
 msgid "Random music videos"
 msgstr "Vídeos de música aleatórios"
+
+msgctxt "#31154"
+msgid "Press OK to switch between locations"
+msgstr "Pressione OK para mudar entre as localizações"
 
 msgctxt "#31155"
 msgid "No bookmarks created yet."
