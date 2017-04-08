@@ -22,6 +22,8 @@
 #include "video/VideoThumbLoader.h"
 #include "video/VideoDatabase.h"
 
+#include "pvr/PVRSettings.h"
+
 #include "GUIWindowPVRBase.h"
 
 namespace PVR
@@ -51,5 +53,6 @@ namespace PVR
     CVideoThumbLoader m_thumbLoader;
     CVideoDatabase m_database;
     bool m_bShowDeletedRecordings;
+    CPVRSettings m_settings;
   };
 }
