@@ -2894,6 +2894,14 @@
             <formatlabel>14044</formatlabel>
           </control>
         </setting>
+        <setting id="powermanagement.nodpmswhileplayingaudio" type="boolean" label="39200" help="39201">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+          <dependencies>
+            <dependency type="enable" setting="powermanagement.displaysoff" operator="!is">0</dependency>
+          </dependencies>
+        </setting>
         <setting id="powermanagement.shutdowntime" type="integer" label="357" help="36389">
           <level>2</level>
           <default>0</default>
