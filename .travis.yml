@@ -56,6 +56,7 @@ before_install:
       sudo add-apt-repository -y ppa:team-xbmc/xbmc-ppa-build-depends &&
       sudo add-apt-repository -y ppa:wsnipex/vaapi &&
       sudo add-apt-repository -y ppa:george-edison55/cmake-3.x &&
+      sudo add-apt-repository -y ppa:pulse-eight/libcec &&
       sudo apt-get update -qq;
     fi
 
@@ -69,13 +70,13 @@ install:
 #
   - if [[ "$TRAVIS_OS_NAME" == "linux" && "$BUILD" == "Kodi" ]]; then
       sudo apt-get install -qq automake autopoint build-essential cmake curl default-jre gawk gdb gdc
-      gettext git-core gperf libasound2-dev libass-dev libbz2-dev libcap-dev libcdio-dev libcrossguid-dev libcurl3
-      libcurl4-openssl-dev libdbus-1-dev libfontconfig-dev libegl1-mesa-dev libfreetype6-dev libfribidi-dev libgif-dev
-      libiso9660-dev libjpeg-dev libltdl-dev liblzo2-dev libmicrohttpd-dev libmysqlclient-dev libnfs-dev
-      libpcre3-dev libplist-dev libpng-dev libpulse-dev libsdl2-dev libsmbclient-dev libsqlite3-dev libssh-dev
+      gettext git-core gperf libasound2-dev libass-dev libbz2-dev libcap-dev libcdio-dev libcec4-dev libcrossguid-dev libcurl3
+      libcurl4-openssl-dev libdbus-1-dev libfmt3-dev libfontconfig-dev libegl1-mesa-dev libfreetype6-dev libfribidi-dev libgif-dev
+      libiso9660-dev libjpeg-dev liblcms2-dev libltdl-dev liblzo2-dev libmicrohttpd-dev libmysqlclient-dev libnfs-dev
+      libpcre3-dev libplist-dev libpng-dev libpulse-dev libsmbclient-dev libsqlite3-dev libssh-dev
       libssl-dev libtag1-dev libtinyxml-dev libtool libudev-dev libusb-dev libva-dev libvdpau-dev
       libxml2-dev libxmu-dev libxrandr-dev libxrender-dev libxslt1-dev libxt-dev libyajl-dev mesa-utils
-      nasm pmount python-dev python-imaging python-sqlite swig unzip uuid-dev yasm zip zlib1g-dev;
+      nasm pmount python-dev python-imaging python-sqlite rapidjson-dev swig unzip uuid-dev yasm zip zlib1g-dev;
     fi
 
 # Prepare builds
@@ -90,14 +91,14 @@ before_script:
       cd $TRAVIS_BUILD_DIR/build;
     fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" && "$BUILD" == "Kodi" && "$CXX" == "g++" ]]; then
-      cmake -DCMAKE_BUILD_TYPE=Debug ../project/cmake;
+      cmake -DCMAKE_BUILD_TYPE=Debug ..;
     fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" && "$BUILD" == "Kodi" && "$CXX" == "clang++" ]]; then
-      cmake -DCMAKE_CXX_FLAGS="-Qunused-arguments" ../project/cmake;
+      cmake -DCMAKE_CXX_FLAGS="-Qunused-arguments" ..;
     fi
   - if [[ "$BUILD" != "Kodi" ]] && [[ "$ADDONS" == "adsp" || "$ADDONS" == "audiodecoder" || "$ADDONS" == "audioencoder" ||
           "$ADDONS" == "pvr" || "$ADDONS" == "screensaver" || "$ADDONS" == "visualization" ]]; then
-      cd $TRAVIS_BUILD_DIR/project/cmake/addons &&
+      cd $TRAVIS_BUILD_DIR/cmake/addons &&
       mkdir -p build &&
       cd build/ &&
       cmake ../bootstrap -DCMAKE_BUILD_TYPE=Debug &&
@@ -115,7 +116,7 @@ script:
           "$ADDONS" == "pvr" || "$ADDONS" == "screensaver" || "$ADDONS" == "visualization" ]]; then
       cd $TRAVIS_BUILD_DIR/ &&
       mkdir -p build &&
-      cmake -DADDONS_TO_BUILD="$ADDONS".* -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=../addons $TRAVIS_BUILD_DIR/project/cmake/addons &&
+      cmake -DADDONS_TO_BUILD="$ADDONS".* -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=../addons $TRAVIS_BUILD_DIR/cmake/addons &&
       make -j4;
     fi
 

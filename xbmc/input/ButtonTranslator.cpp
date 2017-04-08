@@ -86,6 +86,7 @@ static const ActionMapping actions[] =
     { "osd"                      , ACTION_SHOW_OSD },
     { "showsubtitles"            , ACTION_SHOW_SUBTITLES },
     { "nextsubtitle"             , ACTION_NEXT_SUBTITLE },
+    { "browsesubtitle"           , ACTION_BROWSE_SUBTITLE },
     { "cyclesubtitle"            , ACTION_CYCLE_SUBTITLE },
     { "playerdebug"              , ACTION_PLAYER_DEBUG },
     { "codecinfo"                , ACTION_PLAYER_PROCESS_INFO },
@@ -324,7 +325,8 @@ static const ActionMapping windows[] =
     { "pvrchannelscan"           , WINDOW_DIALOG_PVR_CHANNEL_SCAN },
     { "pvrupdateprogress"        , WINDOW_DIALOG_PVR_UPDATE_PROGRESS },
     { "pvrosdchannels"           , WINDOW_DIALOG_PVR_OSD_CHANNELS },
-    { "pvrosdguide"              , WINDOW_DIALOG_PVR_OSD_GUIDE },
+    { "pvrchannelguide"          , WINDOW_DIALOG_PVR_CHANNEL_GUIDE },
+    { "pvrosdguide"              , WINDOW_DIALOG_PVR_CHANNEL_GUIDE }, // backward compatibility to v17
     { "pvrosdteletext"           , WINDOW_DIALOG_OSD_TELETEXT },
     { "systeminfo"               , WINDOW_SYSTEM_INFORMATION },
     { "testpattern"              , WINDOW_TEST_PATTERN },
@@ -911,7 +913,7 @@ CAction CButtonTranslator::GetGlobalAction(const CKey &key)
   return GetAction(-1, key, true);
 }
 
-bool CButtonTranslator::HasLonpressMapping(int window, const CKey &key)
+bool CButtonTranslator::HasLongpressMapping(int window, const CKey &key)
 {
   std::map<int, buttonMap>::const_iterator it = m_translatorMap.find(window);
   if (it != m_translatorMap.end())
@@ -921,7 +923,7 @@ bool CButtonTranslator::HasLonpressMapping(int window, const CKey &key)
     buttonMap::const_iterator it2 = (*it).second.find(code);
 
     if (it2 != (*it).second.end())
-      return true;
+      return it2->second.id != ACTION_NOOP;
 
 #ifdef TARGET_POSIX
     // Some buttoncodes changed in Hardy
@@ -940,11 +942,11 @@ bool CButtonTranslator::HasLonpressMapping(int window, const CKey &key)
   {
     // first check if we have a fallback for the window
     int fallbackWindow = GetFallbackWindow(window);
-    if (fallbackWindow > -1 && HasLonpressMapping(fallbackWindow, key))
+    if (fallbackWindow > -1 && HasLongpressMapping(fallbackWindow, key))
       return true;
 
     // fallback to default section
-    return HasLonpressMapping(-1, key);
+    return HasLongpressMapping(-1, key);
   }
 
   return false;

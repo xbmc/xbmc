@@ -58,7 +58,7 @@ bool CPVRChannelGroups::GetGroupsFromClients(void)
   if (! CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRMANAGER_SYNCCHANNELGROUPS))
     return true;
 
-  return g_PVRClients->GetChannelGroups(this) == PVR_ERROR_NO_ERROR;
+  return CServiceBroker::GetPVRManager().Clients()->GetChannelGroups(this) == PVR_ERROR_NO_ERROR;
 }
 
 bool CPVRChannelGroups::Update(const CPVRChannelGroup &group, bool bUpdateFromClient /* = false */)
@@ -150,7 +150,7 @@ CFileItemPtr CPVRChannelGroups::GetByPath(const std::string &strPath) const
       std::vector<std::string> split(StringUtils::Split(strFileName, '_', 2));
       if (split.size() == 2)
       {
-        CPVRChannelPtr channel((*it)->GetByUniqueID(atoi(split[1].c_str()), g_PVRClients->GetClientId(split[0])));
+        CPVRChannelPtr channel((*it)->GetByUniqueID(atoi(split[1].c_str()), CServiceBroker::GetPVRManager().Clients()->GetClientId(split[0])));
         if (channel)
           return CFileItemPtr(new CFileItem(channel));
       }
@@ -220,13 +220,16 @@ bool CPVRChannelGroups::Update(bool bChannelsOnly /* = false */)
     GetGroupsFromClients();
 
   // sync channels in groups
+  std::vector<CPVRChannelGroupPtr> groups;
   {
     CSingleLock lock(m_critSection);
-    for (std::vector<CPVRChannelGroupPtr>::iterator it = m_groups.begin(); it != m_groups.end(); ++it)
-    {
-      if (bUpdateAllGroups || (*it)->IsInternalGroup())
-        bReturn = (*it)->Update() && bReturn;
-    }
+    groups = m_groups;
+  }
+
+  for (const auto &group : groups)
+  {
+    if (bUpdateAllGroups || group->IsInternalGroup())
+      bReturn = group->Update() && bReturn;
   }
 
   // persist changes
@@ -244,7 +247,7 @@ bool CPVRChannelGroups::LoadUserDefinedChannelGroups(void)
   if (bSyncWithBackends)
   {
     GetGroupsFromClients();
-    CLog::Log(LOGDEBUG, "CPVRChannelGroups - %s - %" PRIuS" new user defined %s channel groups fetched from clients", __FUNCTION__, (m_groups.size() - iSize), m_bRadio ? "radio" : "TV");
+    CLog::Log(LOGDEBUG, "CPVRChannelGroups - {0} - {1} new user defined {2} channel groups fetched from clients", __FUNCTION__, (m_groups.size() - iSize), m_bRadio ? "radio" : "TV");
   }
   else
     CLog::Log(LOGDEBUG, "CPVRChannelGroups - %s - 'synchannelgroups' is disabled; skipping groups from clients", __FUNCTION__);
@@ -281,7 +284,7 @@ bool CPVRChannelGroups::LoadUserDefinedChannelGroups(void)
 
 bool CPVRChannelGroups::Load(void)
 {
-  CPVRDatabase *database = GetPVRDatabase();
+  const CPVRDatabasePtr database(CServiceBroker::GetPVRManager().GetTVDatabase());
   if (!database)
     return false;
 
@@ -298,7 +301,7 @@ bool CPVRChannelGroups::Load(void)
 
   // load groups from the database
   database->Get(*this);
-  CLog::Log(LOGDEBUG, "CPVRChannelGroups - %s - %" PRIuS" %s groups fetched from the database", __FUNCTION__, m_groups.size(), m_bRadio ? "radio" : "TV");
+  CLog::Log(LOGDEBUG, "CPVRChannelGroups - {0} - {1} {2} groups fetched from the database", __FUNCTION__, m_groups.size(), m_bRadio ? "radio" : "TV");
 
   // load channels of internal group
   if (!internalGroup->Load())
@@ -318,7 +321,7 @@ bool CPVRChannelGroups::Load(void)
   CPVRChannelGroupPtr lastPlayedGroup = GetLastPlayedGroup();
   SetSelectedGroup(lastPlayedGroup ? lastPlayedGroup : internalGroup);
 
-  CLog::Log(LOGDEBUG, "CPVRChannelGroups - %s - %" PRIuS" %s channel groups loaded", __FUNCTION__, m_groups.size(), m_bRadio ? "radio" : "TV");
+  CLog::Log(LOGDEBUG, "CPVRChannelGroups - {0} - {1} %s channel groups loaded", __FUNCTION__, m_groups.size(), m_bRadio ? "radio" : "TV");
 
   // need at least 1 group
   return m_groups.size() > 0;
@@ -545,12 +548,12 @@ bool CPVRChannelGroups::DeleteGroup(const CPVRChannelGroup &group)
   }
 
   if (playingGroup)
-    g_PVRManager.SetPlayingGroup(playingGroup);
+    CServiceBroker::GetPVRManager().SetPlayingGroup(playingGroup);
 
   if (group.GroupID() > 0)
   {
     // delete the group from the database
-    CPVRDatabase *database = GetPVRDatabase();
+    const CPVRDatabasePtr database(CServiceBroker::GetPVRManager().GetTVDatabase());
     return database ? database->Delete(group) : false;
   }
   return bFound;

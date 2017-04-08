@@ -89,15 +89,6 @@ bool CGUIDialogAddonInfo::OnMessage(CGUIMessage& message)
       }
       if (iControl == CONTROL_BTN_INSTALL)
       {
-        if (m_localAddon)
-        {
-          if (m_localAddon->Type() == ADDON_ADSPDLL && CServiceBroker::GetADSP().IsProcessing())
-          {
-            CGUIDialogOK::ShowAndGetInput(24137, 0, 24138, 0);
-            return true;
-          }
-        }
-
         if (!m_localAddon)
         {
           OnInstall();
@@ -116,16 +107,6 @@ bool CGUIDialogAddonInfo::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_BTN_ENABLE)
       {
-        //FIXME: should be moved to somewhere appropriate (e.g CAddonMgs::CanAddonBeDisabled or IsInUse) and button should be disabled
-        if (m_localAddon)
-        {
-          if (m_localAddon->Type() == ADDON_ADSPDLL && CServiceBroker::GetADSP().IsProcessing())
-          {
-            CGUIDialogOK::ShowAndGetInput(24137, 0, 24138, 0);
-            return true;
-          }
-        }
-
         OnEnableDisable();
         return true;
       }
@@ -230,7 +211,7 @@ static const std::string LOCAL_CACHE = "\\0_local_cache"; // \0 to give it the l
 
 int CGUIDialogAddonInfo::AskForVersion(std::vector<std::pair<AddonVersion, std::string>>& versions)
 {
-  auto dialog = static_cast<CGUIDialogSelect*>(g_windowManager.GetWindow(WINDOW_DIALOG_SELECT));
+  auto dialog = g_windowManager.GetWindow<CGUIDialogSelect>();
   dialog->Reset();
   dialog->SetHeading(CVariant{21338});
   dialog->SetUseDetails(true);
@@ -444,7 +425,11 @@ void CGUIDialogAddonInfo::OnUninstall()
   if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{24037}, CVariant{750}))
     return;
 
-  CJobManager::GetInstance().AddJob(new CAddonUnInstallJob(m_localAddon),
+  bool removeData = false;
+  if (CDirectory::Exists("special://profile/addon_data/"+m_localAddon->ID()))
+    removeData = CGUIDialogYesNo::ShowAndGetInput(CVariant{24037}, CVariant{39014});
+
+  CJobManager::GetInstance().AddJob(new CAddonUnInstallJob(m_localAddon, removeData),
                                     &CAddonInstaller::GetInstance());
   Close();
 }
@@ -480,7 +465,7 @@ bool CGUIDialogAddonInfo::ShowForItem(const CFileItemPtr& item)
   if (!item)
     return false;
 
-  CGUIDialogAddonInfo* dialog = (CGUIDialogAddonInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_ADDON_INFO);
+  CGUIDialogAddonInfo* dialog = g_windowManager.GetWindow<CGUIDialogAddonInfo>();
   if (!dialog)
     return false;
   if (!dialog->SetItem(item))

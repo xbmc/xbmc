@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2016 Team Kodi
+ *      Copyright (C) 2016-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -45,6 +45,13 @@ namespace GAME
      * \return Translated error.
      */
     static const char* ToString(GAME_ERROR error);
+
+    /*!
+     * \brief Translates game memory types to string representation (e.g. for logging).
+     * \param memory The memory type to translate.
+     * \return Translated memory type.
+     */
+    static const char* ToString(GAME_MEMORY error);
 
     /*!
      * \brief Translate pixel format (Game API to FFMPEG).

@@ -1,4 +1,4 @@
-# Please also update bindings in ../../project/cmake/scripts/linux/Install.cmake
+# Please also update bindings in ../../cmake/scripts/linux/Install.cmake
 # TODO: Cleanup file after autotools is gone
 
 BINDINGS =xbmc/addons/kodi-addon-dev-kit/include/kodi/xbmc_addon_cpp_dll.h
@@ -15,11 +15,14 @@ BINDINGS+=xbmc/addons/kodi-addon-dev-kit/include/kodi/xbmc_codec_types.h
 BINDINGS+=xbmc/addons/kodi-addon-dev-kit/include/kodi/xbmc_epg_types.h
 BINDINGS+=xbmc/addons/kodi-addon-dev-kit/include/kodi/kodi_game_dll.h
 BINDINGS+=xbmc/addons/kodi-addon-dev-kit/include/kodi/kodi_game_types.h
+BINDINGS+=xbmc/addons/kodi-addon-dev-kit/include/kodi/kodi_imagedec_types.h
+BINDINGS+=xbmc/addons/kodi-addon-dev-kit/include/kodi/kodi_imagedec_dll.h
 BINDINGS+=xbmc/addons/kodi-addon-dev-kit/include/kodi/kodi_inputstream_dll.h
 BINDINGS+=xbmc/addons/kodi-addon-dev-kit/include/kodi/kodi_inputstream_types.h
 BINDINGS+=xbmc/addons/kodi-addon-dev-kit/include/kodi/kodi_peripheral_dll.h
 BINDINGS+=xbmc/addons/kodi-addon-dev-kit/include/kodi/kodi_peripheral_types.h
 BINDINGS+=xbmc/addons/kodi-addon-dev-kit/include/kodi/kodi_peripheral_utils.hpp
+BINDINGS+=xbmc/addons/kodi-addon-dev-kit/include/kodi/kodi_vfs_dll.h
 BINDINGS+=xbmc/addons/kodi-addon-dev-kit/include/kodi/kodi_vfs_types.h
 BINDINGS+=xbmc/addons/kodi-addon-dev-kit/include/kodi/kodi_vfs_utils.hpp
 BINDINGS+=xbmc/addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_dll.h

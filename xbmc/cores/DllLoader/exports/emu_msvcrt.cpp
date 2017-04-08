@@ -67,7 +67,6 @@
 
 #include "emu_msvcrt.h"
 #include "emu_dummy.h"
-#include "emu_kernel32.h"
 #include "util/EmuFileWrapper.h"
 #include "utils/log.h"
 #include "threads/SingleLock.h"
@@ -82,6 +81,10 @@
 #endif
 #include "utils/Environment.h"
 #include "utils/StringUtils.h"
+
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
+#include "platform/win32/CharsetConverter.h"
+#endif
 
 using namespace XFILE;
 
@@ -117,6 +120,7 @@ extern "C" void __stdcall init_emu_environ()
 
   // python
 #if defined(TARGET_WINDOWS)
+  using KODI::PLATFORM::WINDOWS::FromW;
   // fill our array with the windows system vars
   LPTSTR lpszVariable;
   LPTCH lpvEnv;
@@ -126,7 +130,7 @@ extern "C" void __stdcall init_emu_environ()
     lpszVariable = (LPTSTR) lpvEnv;
     while (*lpszVariable)
     {
-      dll_putenv(lpszVariable);
+      dll_putenv(FromW(lpszVariable).c_str());
       lpszVariable += lstrlen(lpszVariable) + 1;
     }
     FreeEnvironmentStrings(lpvEnv);
@@ -308,7 +312,7 @@ extern "C"
     void* pBlock = malloc(size);
     if (!pBlock)
     {
-      CLog::Log(LOGSEVERE, "malloc %" PRIdS" bytes failed, crash imminent", size);
+      CLog::Log(LOGSEVERE, "malloc {0} bytes failed, crash imminent", size);
     }
     return pBlock;
   }
@@ -323,7 +327,7 @@ extern "C"
     void* pBlock = calloc(num, size);
     if (!pBlock)
     {
-      CLog::Log(LOGSEVERE, "calloc %" PRIdS" bytes failed, crash imminent", size);
+      CLog::Log(LOGSEVERE, "calloc {0} bytes failed, crash imminent", size);
     }
     return pBlock;
   }
@@ -333,7 +337,7 @@ extern "C"
     void* pBlock =  realloc(memblock, size);
     if (!pBlock)
     {
-      CLog::Log(LOGSEVERE, "realloc %" PRIdS" bytes failed, crash imminent", size);
+      CLog::Log(LOGSEVERE, "realloc {0} bytes failed, crash imminent", size);
     }
     return pBlock;
   }
@@ -385,7 +389,7 @@ extern "C"
     not_implement("msvcrt.dll fake function dll_onexit() called\n");
 
     // register to dll unload list
-    // return func if succsesfully added to the dll unload list
+    // return func if successfully added to the dll unload list
     return NULL;
   }
 
@@ -1215,8 +1219,8 @@ extern "C"
   {
     FILE* file = NULL;
 #if defined(TARGET_LINUX) && !defined(TARGET_ANDROID)
-    if (strcmp(filename, MOUNTED) == 0
-    ||  strcmp(filename, MNTTAB) == 0)
+    if (strcmp(filename, _PATH_MOUNTED) == 0
+    ||  strcmp(filename, _PATH_MNTTAB) == 0)
     {
       CLog::Log(LOGINFO, "%s - something opened the mount file, let's hope it knows what it's doing", __FUNCTION__);
       return fopen(filename, mode);

@@ -40,20 +40,20 @@
 			<onright>$PARAM[scrollbar_id]</onright>
 			<pagecontrol>$PARAM[scrollbar_id]</pagecontrol>
 			<scrolltime>200</scrolltime>
-			<itemlayout height="70">
+			<itemlayout height="70" width="470">
 				<control type="image">
 					<width>60</width>
 					<height>60</height>
-					<left>405</left>
-					<top>4</top>
-					<texture border="2">$INFO[ListItem.ActualIcon]</texture>
+					<right>5</right>
+					<top>5</top>
+					<texture>$INFO[ListItem.ActualIcon]</texture>
 					<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
 					<bordersize>2</bordersize>
 					<aspectratio>keep</aspectratio>
 				</control>
 				<control type="label">
 					<left>20</left>
-					<width>390</width>
+					<right>70</right>
 					<height>70</height>
 					<aligny>center</aligny>
 					<font>font27</font>
@@ -61,27 +61,27 @@
 					<label>$INFO[ListItem.ChannelNumberLabel,[B],[/B] - ]$INFO[ListItem.ChannelName]</label>
 				</control>
 			</itemlayout>
-			<focusedlayout height="70">
+			<focusedlayout height="70" width="470">
 				<control type="image">
 					<left>0</left>
-					<width>470</width>
-					<height>70</height>
+					<right>0</right>
+					<bottom>0</bottom>
 					<texture colordiffuse="button_focus">lists/focus.png</texture>
 					<visible>Control.HasFocus($PARAM[list_id])</visible>
 				</control>
 				<control type="image">
 					<width>60</width>
 					<height>60</height>
-					<left>405</left>
-					<top>4</top>
-					<texture border="2">$INFO[ListItem.ActualIcon]</texture>
+					<right>5</right>
+					<top>5</top>
+					<texture>$INFO[ListItem.ActualIcon]</texture>
 					<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
 					<bordersize>2</bordersize>
 					<aspectratio>keep</aspectratio>
 				</control>
 				<control type="label">
 					<left>20</left>
-					<width>390</width>
+					<right>70</right>
 					<height>70</height>
 					<font>font27</font>
 					<aligny>center</aligny>
@@ -141,6 +141,20 @@
 			<textcolor>80FFFFFF</textcolor>
 			<label>$LOCALIZE[19055]</label>
 			<visible>String.IsEmpty(Listitem.Plot) + String.IsEmpty(Listitem.Genre)</visible>
+		</control>
+	</include>
+	<include name="PVRChannelNumberInput">
+		<control type="label">
+			<left>0</left>
+			<top>0</top>
+			<width>100%</width>
+			<height>100%</height>
+			<label>$INFO[PVR.ChannelNumberInput]</label>
+			<shadowcolor>black</shadowcolor>
+			<align>center</align>
+			<font>WeatherTemp</font>
+			<aligny>center</aligny>
+			<visible>!String.IsEmpty(PVR.ChannelNumberInput)</visible>
 		</control>
 	</include>
 </includes>

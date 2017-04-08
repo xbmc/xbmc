@@ -151,7 +151,7 @@ bool CDemuxMultiSource::Open(CDVDInputStream* pInput)
 
       m_demuxerMap[demuxer->GetDemuxerId()] = demuxer;
       m_DemuxerToInputStreamMap[demuxer] = *iter;
-      m_demuxerQueue.push(std::make_pair((double)DVD_NOPTS_VALUE, demuxer));
+      m_demuxerQueue.push(std::make_pair(-1.0, demuxer));
       ++iter;
     }
   }
@@ -196,7 +196,7 @@ DemuxPacket* CDemuxMultiSource::Read()
           __FUNCTION__, CURL::GetRedacted(currentDemuxer->GetFileName()).c_str());
       }
       else    //maybe add an error counter?
-        m_demuxerQueue.push(std::make_pair((double)DVD_NOPTS_VALUE, currentDemuxer));
+        m_demuxerQueue.push(std::make_pair(-1.0, currentDemuxer));
     }
   }
 

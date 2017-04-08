@@ -20,6 +20,7 @@
  *
  */
 
+#include <atomic>
 #include <string>
 #include <set>
 #include <vector>
@@ -164,7 +165,7 @@ private:
   bool m_started;
 
   //protects singleton creation/destruction
-  static long sm_singleton_guard;
+  static std::atomic_flag sm_singleton_guard;
   static CZeroconfBrowser* smp_instance;
 };
 #include <iostream>

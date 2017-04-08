@@ -9,7 +9,7 @@ symlinks.
 The files are loaded in numeric order, the structure of the configuration
 has led to the following conventions in usage:
 
- Files begining with:	Contain:
+ Files beginning with:	Contain:
  
  00 through 09		Font directories
  10 through 19		system rendering defaults (AA, etc)

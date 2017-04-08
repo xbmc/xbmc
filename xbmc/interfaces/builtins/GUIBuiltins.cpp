@@ -85,7 +85,7 @@ static int ActivateWindow(const std::vector<std::string>& params2)
   int iWindow = CButtonTranslator::TranslateWindow(strWindow);
   if (iWindow != WINDOW_INVALID)
   {
-    // compate the given directory param with the current active directory
+    // compare the given directory param with the current active directory
     bool bIsSameStartFolder = true;
     if (!params.empty())
     {
@@ -251,7 +251,7 @@ static int CloseDialog(const std::vector<std::string>& params)
   else
   {
     int id = CButtonTranslator::TranslateWindow(params[0]);
-    CGUIWindow *window = (CGUIWindow *)g_windowManager.GetWindow(id);
+    CGUIWindow *window = g_windowManager.GetWindow(id);
     if (window && window->IsDialog())
       ((CGUIDialog *)window)->Close(bForce);
   }

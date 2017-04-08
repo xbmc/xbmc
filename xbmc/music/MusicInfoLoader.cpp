@@ -83,7 +83,8 @@ void CMusicInfoLoader::OnLoaderStart()
 
 bool CMusicInfoLoader::LoadAdditionalTagInfo(CFileItem* pItem)
 {
-  if (!pItem || pItem->m_bIsFolder || pItem->IsPlayList() || pItem->IsNFO() || pItem->IsInternetStream())
+  if (!pItem || (pItem->m_bIsFolder && !pItem->IsAudio()) ||
+      pItem->IsPlayList() || pItem->IsNFO() || pItem->IsInternetStream())
     return false;
 
   if (pItem->GetProperty("hasfullmusictag") == "true")
@@ -135,7 +136,8 @@ bool CMusicInfoLoader::LoadItem(CFileItem* pItem)
 
 bool CMusicInfoLoader::LoadItemCached(CFileItem* pItem)
 {
-  if (pItem->m_bIsFolder || pItem->IsPlayList() || pItem->IsNFO() || pItem->IsInternetStream())
+  if ((pItem->m_bIsFolder && !pItem->IsAudio()) ||
+       pItem->IsPlayList() || pItem->IsNFO() || pItem->IsInternetStream())
     return false;
 
   // Get thumb for item
@@ -149,7 +151,8 @@ bool CMusicInfoLoader::LoadItemLookup(CFileItem* pItem)
   if (m_pProgressCallback && !pItem->m_bIsFolder)
     m_pProgressCallback->SetProgressAdvance();
 
-  if (pItem->m_bIsFolder || pItem->IsPlayList() || pItem->IsNFO() || pItem->IsInternetStream())
+  if ((pItem->m_bIsFolder && !pItem->IsAudio()) || pItem->IsPlayList() ||
+       pItem->IsNFO() || pItem->IsInternetStream())
     return false;
 
   if (!pItem->HasMusicInfoTag() || !pItem->GetMusicInfoTag()->Loaded())

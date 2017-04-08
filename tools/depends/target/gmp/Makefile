@@ -24,6 +24,9 @@ endif
 ifeq ($(OS),osx)
 CONFIGURE_FLAGS=--with-pic
 endif
+ifeq ($(OS), android)
+CONFIGURE_FLAGS=--with-pic
+endif
 
 # configuration settings
 CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \

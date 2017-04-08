@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2014-2016 Team Kodi
+ *      Copyright (C) 2014-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -21,6 +21,8 @@
 
 #include "JoystickTypes.h"
 
+namespace KODI
+{
 namespace JOYSTICK
 {
   /*!
@@ -60,10 +62,12 @@ namespace JOYSTICK
      *
      * \param axisIndex   The index of the axis as reported by the driver
      * \param position    The position of the axis in the closed interval [-1.0, 1.0]
+     * \param center      The center point of the axis (either -1, 0 or 1)
+     * \param range       The maximum distance the axis can move (either 1 or 2)
      *
      * \return True if the motion was handled, false otherwise
      */
-    virtual bool OnAxisMotion(unsigned int axisIndex, float position) = 0;
+    virtual bool OnAxisMotion(unsigned int axisIndex, float position, int center, unsigned int range) = 0;
 
     /*!
      * \brief Handle buffered axis positions for features that require multiple axes
@@ -77,4 +81,5 @@ namespace JOYSTICK
      */
     virtual void ProcessAxisMotions(void) = 0;
   };
+}
 }

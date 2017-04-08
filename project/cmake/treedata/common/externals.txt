@@ -1,2 +1,0 @@
-xbmc/contrib/kissfft                  kissfft
-lib/libexif                           exif

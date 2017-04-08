@@ -19,7 +19,6 @@
  */
 
 #include "threads/Event.h"
-#include "threads/Atomics.h"
 
 #include "threads/test/TestHelpers.h"
 
@@ -531,7 +530,7 @@ TEST(TestEvent, GroupTimedWait)
 #define NUMTHREADS 100l
 
 CEvent* g_event = NULL;
-volatile long g_mutex;
+std::atomic<long> g_mutex;
 
 class mass_waiter : public IRunnable
 {

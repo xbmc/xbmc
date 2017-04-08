@@ -29,10 +29,13 @@
 #include "guilib/GUIShaderDX.h"
 #include "guilib/GUITextureD3D.h"
 #include "guilib/GUIWindowManager.h"
+#include "messaging/ApplicationMessenger.h"
 #include "settings/AdvancedSettings.h"
 #include "threads/SingleLock.h"
+#include "utils/CharsetConverter.h"
 #include "utils/MathUtils.h"
 #include "utils/log.h"
+#include "platform/win32/CharsetConverter.h"
 #include "platform/win32/dxerr.h"
 #include "utils/SystemInfo.h"
 #pragma warning(disable: 4091)
@@ -45,9 +48,7 @@
 #else
 #pragma comment(lib, "EasyHook64.lib")
 #endif
-#pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "dxgi.lib")
-#pragma comment(lib, "dxguid.lib")
 
 #define RATIONAL_TO_FLOAT(rational) ((rational.Denominator != 0) ? \
  static_cast<float>(rational.Numerator) / static_cast<float>(rational.Denominator) : 0.0f)
@@ -203,7 +204,7 @@ void CRenderSystemDX::OnMove()
     SetMonitor(newMonitor);
     if (m_needNewDevice)
     {
-      CLog::Log(LOGDEBUG, "%s - Adapter changed, reseting render system.", __FUNCTION__);
+      CLog::Log(LOGDEBUG, "%s - Adapter changed, resetting render system.", __FUNCTION__);
       ResetRenderSystem(m_nBackBufferWidth, m_nBackBufferHeight, m_bFullScreenDevice, m_refreshRate);
     }
   }
@@ -300,7 +301,7 @@ void CRenderSystemDX::SetFullScreenInternal()
     OnDisplayLost();
     hr = m_pSwapChain->SetFullscreenState(false, nullptr);
     if (SUCCEEDED(hr))
-      m_bResizeRequred = true;
+      m_bResizeRequired = true;
     else
       CLog::Log(LOGERROR, "%s - Failed switch full screen state: %s.", __FUNCTION__, GetErrorDescription(hr).c_str());
   }
@@ -322,7 +323,7 @@ void CRenderSystemDX::SetFullScreenInternal()
       OnDisplayLost();
       hr = m_pSwapChain->SetFullscreenState(true, m_pOutput);
       if (SUCCEEDED(hr))
-        m_bResizeRequred = true;
+        m_bResizeRequired = true;
       else
         CLog::Log(LOGERROR, "%s - Failed switch full screen state: %s.", __FUNCTION__, GetErrorDescription(hr).c_str());
     }
@@ -345,7 +346,7 @@ void CRenderSystemDX::SetFullScreenInternal()
     float currentRefreshRate = RATIONAL_TO_FLOAT(currentMode.RefreshRate);
     CLog::Log(LOGDEBUG, "%s - Current display mode is: %dx%d@%0.3f", __FUNCTION__, currentMode.Width, currentMode.Height, currentRefreshRate);
 
-    // use backbuffer dimention to find required display mode
+    // use backbuffer dimension to find required display mode
     toMatchMode.Width = m_nBackBufferWidth;
     toMatchMode.Height = m_nBackBufferHeight;
     bool useDefaultRefreshRate = 0 == m_refreshRate;
@@ -373,12 +374,12 @@ void CRenderSystemDX::SetFullScreenInternal()
       // change monitor resolution (in fullscreen mode) to required mode
       CLog::Log(LOGDEBUG, "%s - Switching mode to %dx%d@%0.3f.", __FUNCTION__, matchedMode.Width, matchedMode.Height, matchedRefreshRate);
 
-      if (!m_bResizeRequred)
+      if (!m_bResizeRequired)
         OnDisplayLost();
 
       hr = m_pSwapChain->ResizeTarget(&matchedMode);
       if (SUCCEEDED(hr))
-        m_bResizeRequred = true;
+        m_bResizeRequired = true;
       else
         CLog::Log(LOGERROR, "%s - Failed to switch output mode: %s", __FUNCTION__, GetErrorDescription(hr).c_str());
     }
@@ -418,7 +419,14 @@ void CRenderSystemDX::DeleteDevice()
 
   // tell any shared resources
   for (std::vector<ID3DResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
-    (*i)->OnDestroyDevice();
+  {
+    // the most of resources like textures and buffers try to 
+    // receive and save their status from current device.
+    // m_nDeviceStatus contains the last device status and
+    // DXGI_ERROR_DEVICE_REMOVED means that we have no possibility
+    // to use the device anymore, tell all resouces about this.
+    (*i)->OnDestroyDevice(DXGI_ERROR_DEVICE_REMOVED == m_nDeviceStatus);
+  }
 
   if (m_pSwapChain)
     m_pSwapChain->SetFullscreenState(false, nullptr);
@@ -456,7 +464,7 @@ void CRenderSystemDX::DeleteDevice()
     SAFE_RELEASE(m_d3dDebug);
   }
 #endif
-  m_bResizeRequred = false;
+  m_bResizeRequired = false;
   m_bHWStereoEnabled = false;
   m_bRenderCreated = false;
   m_bStereoEnabled = false;
@@ -653,7 +661,7 @@ bool CRenderSystemDX::CreateDevice()
     CLog::Log(LOGDEBUG, "%s - on adapter %S (VendorId: %#x DeviceId: %#x) with feature level %#x.", __FUNCTION__, 
                         m_adapterDesc.Description, m_adapterDesc.VendorId, m_adapterDesc.DeviceId, m_featureLevel);
 
-    m_RenderRenderer = StringUtils::Format("%S", m_adapterDesc.Description);
+    m_RenderRenderer = KODI::PLATFORM::WINDOWS::FromW(StringUtils::Format(L"%s", m_adapterDesc.Description));
     IDXGIFactory2* dxgiFactory2 = nullptr;
     m_dxgiFactory->QueryInterface(__uuidof(IDXGIFactory2), reinterpret_cast<void**>(&dxgiFactory2));
     m_RenderVersion = StringUtils::Format("DirectX %s (FL %d.%d)", 
@@ -750,7 +758,7 @@ bool CRenderSystemDX::CreateWindowSizeDependentResources()
   if (m_pSwapChain)
   {
     m_pSwapChain->GetDesc(&scDesc);
-    bNeedResize = m_bResizeRequred || 
+    bNeedResize = m_bResizeRequired || 
                   m_nBackBufferWidth != scDesc.BufferDesc.Width || 
                   m_nBackBufferHeight != scDesc.BufferDesc.Height;
   }
@@ -766,7 +774,7 @@ bool CRenderSystemDX::CreateWindowSizeDependentResources()
 
   if (!bNeedRecreate && !bNeedResize)
   {
-    CheckInterlasedStereoView();
+    CheckInterlacedStereoView();
     return true;
   }
 
@@ -795,10 +803,10 @@ bool CRenderSystemDX::CreateWindowSizeDependentResources()
 
   if (bNeedRecreate)
   {
-    if (!m_bResizeRequred)
+    if (!m_bResizeRequired)
     {
       OnDisplayLost();
-      m_bResizeRequred = true;
+      m_bResizeRequired = true;
     }
 
     BOOL fullScreen;
@@ -864,7 +872,7 @@ bool CRenderSystemDX::CreateWindowSizeDependentResources()
         bHWStereoEnabled = false;
         hr = dxgiFactory2->CreateSwapChainForHwnd(m_pD3DDev, m_hFocusWnd, &scDesc1, &scFSDesc, nullptr, &m_pSwapChain1);
 
-        // fallback to split_horisontal mode.
+        // fallback to split_horizontal mode.
         g_graphicsContext.SetStereoMode(RENDER_STEREO_MODE_SPLIT_HORIZONTAL);
       }
 
@@ -1004,22 +1012,22 @@ bool CRenderSystemDX::CreateWindowSizeDependentResources()
   CPoint camPoint = { m_nBackBufferWidth * 0.5f, m_nBackBufferHeight * 0.5f };
   SetCameraPosition(camPoint, m_nBackBufferWidth, m_nBackBufferHeight);
 
-  CheckInterlasedStereoView();
+  CheckInterlacedStereoView();
 
   if (bRestoreRTView)
     m_pContext->OMSetRenderTargets(1, &m_pRenderTargetView, m_depthStencilView);
 
-  // notify about resurection of display
-  if (m_bResizeRequred)
+  // notify about resurrection of display
+  if (m_bResizeRequired)
     OnDisplayBack();
 
   m_resizeInProgress = false;
-  m_bResizeRequred = false;
+  m_bResizeRequired = false;
 
   return true;
 }
 
-void CRenderSystemDX::CheckInterlasedStereoView(void)
+void CRenderSystemDX::CheckInterlacedStereoView(void)
 {
   RENDER_STEREO_MODE stereoMode = g_graphicsContext.GetStereoMode();
 
@@ -1189,6 +1197,17 @@ void CRenderSystemDX::PresentRenderImpl(bool rendered)
     CD3DHelper::PSClearShaderResources(m_pContext);
   }
 
+  // time for decoder that may require the context
+  {
+    CSingleLock lock(m_decoderSection);
+    XbmcThreads::EndTime timer;
+    timer.Set(5);
+    while (!m_decodingTimer.IsTimePast() && !timer.IsTimePast())
+    {
+      m_decodingEvent.wait(lock, 1);
+    }
+  }
+
   FinishCommandList();
   m_pImdContext->Flush();
 
@@ -1216,6 +1235,19 @@ void CRenderSystemDX::PresentRenderImpl(bool rendered)
   // after present swapchain unbinds RT view from immediate context, need to restore it because it can be used by something else
   if (m_pContext == m_pImdContext)
     m_pContext->OMSetRenderTargets(1, &m_pRenderTargetView, m_depthStencilView);
+}
+
+void CRenderSystemDX::RequestDecodingTime()
+{
+  CSingleLock lock(m_decoderSection);
+  m_decodingTimer.Set(3);
+}
+
+void CRenderSystemDX::ReleaseDecodingTime()
+{
+  CSingleLock lock(m_decoderSection);
+  m_decodingTimer.SetExpired();
+  m_decodingEvent.notify();
 }
 
 bool CRenderSystemDX::BeginRender()
@@ -1260,6 +1292,8 @@ bool CRenderSystemDX::BeginRender()
     {
       OnDeviceLost();
       OnDeviceReset();
+      if (m_bRenderCreated)
+        KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, "ReloadSkin");
     }
     return false;
   }
@@ -1295,7 +1329,7 @@ bool CRenderSystemDX::ClearBuffers(color_t color)
   if ( m_stereoMode != RENDER_STEREO_MODE_OFF
     && m_stereoMode != RENDER_STEREO_MODE_MONO)
   {
-    // if stereo anaglyph/tab/sbs, data was cleared when left view was rendererd
+    // if stereo anaglyph/tab/sbs, data was cleared when left view was rendered
     if (m_stereoView == RENDER_STEREO_VIEW_RIGHT)
     {
       // execute command's queue
@@ -1454,7 +1488,7 @@ bool CRenderSystemDX::TestRender()
   }
 
   // Now we fill the vertex buffer. To do this, we need to Lock() the VB to
-  // gain access to the vertices. This mechanism is required becuase vertex
+  // gain access to the vertices. This mechanism is required because vertex
   // buffers may be in device memory.
   VOID* pVertices;
   if( FAILED( pVB->Lock( 0, sizeof( vertices ), ( void** )&pVertices, 0 ) ) )
@@ -1592,7 +1626,10 @@ std::string CRenderSystemDX::GetErrorDescription(HRESULT hr)
   DXGetErrorDescription(hr, buff, 1024);
   std::wstring error(DXGetErrorString(hr));
   std::wstring descr(buff);
-  return StringUtils::Format("%X - %ls (%ls)", hr, error.c_str(), descr.c_str());
+  std::wstring errMsgW = StringUtils::Format(L"%X - %s (%s)", hr, error.c_str(), descr.c_str());
+  std::string errMsg;
+  g_charsetConverter.wToUTF8(errMsgW, errMsg);
+  return errMsg;
 }
 
 void CRenderSystemDX::SetStereoMode(RENDER_STEREO_MODE mode, RENDER_STEREO_VIEW view)
@@ -1828,7 +1865,7 @@ void CRenderSystemDX::InitHooks()
   if (!deviceFound)
     return;
 
-  CLog::Log(LOGDEBUG, __FUNCTION__": Hookind into UserModeDriver on device %S. ", displayDevice.DeviceKey);
+  CLog::Log(LOGDEBUG, __FUNCTION__": Hooking into UserModeDriver on device %S. ", displayDevice.DeviceKey);
   wchar_t* keyName =
 #ifndef _M_X64
     // on x64 system and x32 build use UserModeDriverNameWow key
@@ -1892,7 +1929,7 @@ void CRenderSystemDX::InitHooks()
   }
 
   if (lstat != ERROR_SUCCESS)
-    CLog::Log(LOGDEBUG, __FUNCTION__": error open regystry key with error %ld.", lstat);
+    CLog::Log(LOGDEBUG, __FUNCTION__": error open registry key with error %ld.", lstat);
 
   if (hKey != 0)
     RegCloseKey(hKey);

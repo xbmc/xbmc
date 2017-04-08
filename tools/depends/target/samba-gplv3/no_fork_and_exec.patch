@@ -1,29 +1,69 @@
---- lib/util/system.c.orig	2015-12-12 17:56:12.000000000 +0100
-+++ lib/util/system.c	2015-12-12 17:56:46.000000000 +0100
-@@ -96,7 +96,7 @@
- 
- _PUBLIC_ pid_t sys_fork(void)
+--- lib/util/become_daemon.c
++++ lib/util/become_daemon.c
+@@ -76,7 +76,7 @@
+ _PUBLIC_ void become_daemon(bool do_fork, bool no_process_group, bool log_stdout)
  {
--	pid_t forkret = fork();
-+	pid_t forkret = (pid_t)-1;
+ 	if (do_fork) {
+-		if (fork()) {
++		if (-1) {
+ 			_exit(0);
+ 		}
+ 	}
+--- lib/util/fault.c
++++ lib/util/fault.c
+@@ -131,7 +131,7 @@
+ 			snprintf(pidstr, sizeof(pidstr), "%d", (int) getpid());
+ 			all_string_sub(cmdstring, "%d", pidstr, sizeof(cmdstring));
+ 			DEBUG(0, ("smb_panic(): calling panic action [%s]\n", cmdstring));
+-			result = system(cmdstring);
++			result = -1;
  
- 	if (forkret == (pid_t)0) {
- 		/* Child - reset mypid so sys_getpid does a system call. */
+ 			if (result == -1)
+ 				DEBUG(0, ("smb_panic(): fork failed in panic action: %s\n",
+--- source3/lib/server_prefork.c
++++ source3/lib/server_prefork.c
+@@ -106,7 +106,7 @@
+ 		pfp->pool[i].allowed_clients = 1;
+ 		pfp->pool[i].started = now;
+ 
+-		pid = fork();
++		pid = -1;
+ 		switch (pid) {
+ 		case -1:
+ 			DEBUG(1, ("Failed to prefork child n. %d !\n", i));
+@@ -194,7 +194,7 @@
+ 		pfp->pool[i].allowed_clients = 1;
+ 		pfp->pool[i].started = now;
+ 
+-		pid = fork();
++		pid = -1;
+ 		switch (pid) {
+ 		case -1:
+ 			DEBUG(1, ("Failed to prefork child n. %d !\n", j));
 --- source3/lib/system.orig	2015-12-12 17:58:30.000000000 +0100
 +++ source3/lib/system.c	2015-12-12 17:58:45.000000000 +0100
-@@ -1506,7 +1506,7 @@
+@@ -1198,7 +1198,7 @@
+ 		goto err_exit;
+ 	}
+ 
+-	entry->child_pid = fork();
++	entry->child_pid = -1;
+ 
+ 	if (entry->child_pid == -1) {
+ 		DEBUG(0, ("sys_popen: fork failed: %s\n", strerror(errno)));
+@@ -1229,7 +1229,7 @@
  		for (p = popen_chain; p; p = p->next)
  			close(p->fd);
  
--		execv(argl[0], argl);
-+		//execv(argl[0], argl);
- 		_exit (127);
- 	}
- 
+-		ret = execv(argl[0], argl);
++		ret = -1;
+ 		if (ret == -1) {
+ 			DEBUG(0, ("sys_popen: ERROR executing command "
+ 				  "'%s': %s\n", command, strerror(errno)));
 --- source3/lib/util.c.orig	2015-12-12 18:01:38.000000000 +0100
 +++ source3/lib/util.c	2015-12-12 18:01:58.000000000 +0100
-@@ -1120,7 +1120,7 @@
- 	cmd = lp_panic_action();
+@@ -820,7 +820,7 @@
+ 	cmd = lp_panic_action(talloc_tos());
  	if (cmd && *cmd) {
  		DEBUG(0, ("smb_panic(): calling panic action [%s]\n", cmd));
 -		result = system(cmd);
@@ -53,7 +93,16 @@
  	return fd[0];
 --- source3/lib/smbrun.c.orig	2015-12-12 18:00:04.000000000 +0100
 +++ source3/lib/smbrun.c	2015-12-12 18:00:57.000000000 +0100
-@@ -192,8 +192,8 @@
+@@ -93,7 +93,7 @@
+ 
+ 	saved_handler = CatchChildLeaveStatus();
+                                    	
+-	if ((pid=fork()) < 0) {
++	if ((pid=-1) < 0) {
+ 		DEBUG(0,("smbrun: fork failed with error %s\n", strerror(errno) ));
+ 		(void)CatchSignal(SIGCLD, saved_handler);
+ 		if (outfd) {
+@@ -193,8 +193,8 @@
  				exit(82);
  		}
  
@@ -64,7 +113,16 @@
  
  		SAFE_FREE(newcmd);
  	}
-@@ -343,7 +343,7 @@
+@@ -257,7 +257,7 @@
+ 
+ 	saved_handler = CatchChildLeaveStatus();
+                                    	
+-	if ((pid=fork()) < 0) {
++	if ((pid=-1) < 0) {
+ 		DEBUG(0, ("smbrunsecret: fork failed with error %s\n", strerror(errno)));
+ 		(void)CatchSignal(SIGCLD, saved_handler);
+ 		return errno;
+@@ -345,7 +345,7 @@
  	}
  #endif
  

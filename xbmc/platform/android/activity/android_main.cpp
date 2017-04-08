@@ -22,14 +22,16 @@
 
 #include <stdlib.h>
 #include <errno.h>
-#include <android_native_app_glue.h>
-#include "EventLoop.h"
-#include "XBMCApp.h"
-#include "platform/android/jni/SurfaceTexture.h"
-#include "utils/StringUtils.h"
-#include "CompileInfo.h"
 
+#include <android_native_app_glue.h>
+
+#include <androidjni/SurfaceTexture.h>
+
+#include "CompileInfo.h"
+#include "EventLoop.h"
 #include "platform/android/activity/JNIMainActivity.h"
+#include "utils/StringUtils.h"
+#include "XBMCApp.h"
 
 
 // redirect stdout / stderr to logcat
@@ -132,14 +134,14 @@ extern "C" JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved)
   if (vm->GetEnv(reinterpret_cast<void**>(&env), version) != JNI_OK)
     return -1;
 
-  std::string appName = CCompileInfo::GetAppName();
-  StringUtils::ToLower(appName);
-  std::string mainClass = "org/xbmc/" + appName + "/Main";
-  std::string bcReceiver = "org/xbmc/" + appName + "/XBMCBroadcastReceiver";
-  std::string frameListener = "org/xbmc/" + appName + "/XBMCOnFrameAvailableListener";
-  std::string settingsObserver = "org/xbmc/" + appName + "/XBMCSettingsContentObserver";
-  std::string audioFocusChangeListener = "org/xbmc/" + appName + "/XBMCOnAudioFocusChangeListener";
-  std::string inputDeviceListener = "org/xbmc/" + appName + "/XBMCInputDeviceListener";
+  std::string pkgRoot = CCompileInfo::GetPackage();
+  StringUtils::Replace(pkgRoot, '.', '/');
+  std::string mainClass = pkgRoot + "/Main";
+  std::string bcReceiver = pkgRoot + "/XBMCBroadcastReceiver";
+  std::string frameListener = pkgRoot + "/XBMCOnFrameAvailableListener";
+  std::string settingsObserver = pkgRoot + "/XBMCSettingsContentObserver";
+  std::string audioFocusChangeListener = pkgRoot + "/XBMCOnAudioFocusChangeListener";
+  std::string inputDeviceListener = pkgRoot + "/XBMCInputDeviceListener";
 
   jclass cMain = env->FindClass(mainClass.c_str());
   if(cMain)

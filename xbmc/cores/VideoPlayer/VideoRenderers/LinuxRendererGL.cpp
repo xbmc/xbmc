@@ -192,6 +192,13 @@ CLinuxRendererGL::~CLinuxRendererGL()
     delete m_pYUVShader;
     m_pYUVShader = NULL;
   }
+
+  if (m_pVideoFilterShader)
+  {
+    m_pVideoFilterShader->Free();
+    delete m_pVideoFilterShader;
+    m_pVideoFilterShader = NULL;
+  }
 }
 
 bool CLinuxRendererGL::ValidateRenderer()
@@ -376,7 +383,7 @@ void CLinuxRendererGL::ReleaseImage(int source, bool preserve)
 
   im.flags &= ~IMAGE_FLAG_INUSE;
   im.flags |= IMAGE_FLAG_READY;
-  /* if image should be preserved reserve it so it's not auto seleceted */
+  /* if image should be preserved reserve it so it's not auto selected */
 
   if( preserve )
     im.flags |= IMAGE_FLAG_RESERVED;
@@ -788,7 +795,7 @@ void CLinuxRendererGL::UpdateVideoFilter()
 
   if(!Supports(m_scalingMethod))
   {
-    CLog::Log(LOGWARNING, "CLinuxRendererGL::UpdateVideoFilter - choosen scaling method %d, is not supported by renderer", (int)m_scalingMethod);
+    CLog::Log(LOGWARNING, "CLinuxRendererGL::UpdateVideoFilter - chosen scaling method %d, is not supported by renderer", (int)m_scalingMethod);
     m_scalingMethod = VS_SCALINGMETHOD_LINEAR;
   }
 
@@ -1526,7 +1533,7 @@ void CLinuxRendererGL::RenderRGB(int index, int field)
 
 void CLinuxRendererGL::RenderSoftware(int index, int field)
 {
-  // used for textues uploaded from rgba or CVPixelBuffers.
+  // used for textures uploaded from rgba or CVPixelBuffers.
   YUVPLANES &planes = m_buffers[index].fields[field];
 
   glDisable(GL_DEPTH_TEST);

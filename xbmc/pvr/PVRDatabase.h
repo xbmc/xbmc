@@ -56,7 +56,7 @@ namespace PVR
      * @brief Get the minimal database version that is required to operate correctly.
      * @return The minimal database version.
      */
-    virtual int GetSchemaVersion() const { return 29; };
+    virtual int GetSchemaVersion() const { return 30; };
 
     /*!
      * @brief Get the default sqlite database filename.
@@ -145,6 +145,23 @@ namespace PVR
     //@{
 
     /*!
+     * @brief Sets the 'was playing on last app quit' flag for a channel.
+     * @param channel the channel
+     * @param bSet True to set the flag, false to reset the flag
+     * @return True if the operation was successful, false otherwise
+     */
+    bool SetWasPlayingOnLastQuit(const CPVRChannel &channel, bool bSet);
+
+    /*!
+     * @brief Sets the 'was playing on last app quit' flag for a channel.
+     * @param channel the channel
+     * @param bSet True to set the flag, false to reset the flag
+     * @param bWasPlaying on return contains the previous value of the flag
+     * @return True if the operation was successful, false otherwise
+     */
+    bool SetWasPlayingOnLastQuit(const CPVRChannel &channel, bool bSet, bool& bWasPlaying);
+
+    /*!
     * @brief Updates the last watched timestamp for the channel
     * @param channel the channel
     * @return whether the update was successful
@@ -184,20 +201,4 @@ namespace PVR
 
     bool RemoveChannelsFromGroup(const CPVRChannelGroup &group);
   };
-
-  /*!
-   * @brief Try to open the PVR database.
-   * @return The opened database or NULL if the database failed to open.
-   */
-  inline CPVRDatabase *GetPVRDatabase(void)
-  {
-    CPVRDatabase *database = g_PVRManager.GetTVDatabase();
-    if (!database || !database->IsOpen())
-    {
-      CLog::Log(LOGERROR, "PVR - failed to open the database");
-      database = NULL;
-    }
-
-    return database;
-  }
 }

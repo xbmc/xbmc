@@ -26,12 +26,12 @@
 					<viewtype label="List">list</viewtype>
 					<preloaditems>1</preloaditems>
 					<pagecontrol>60</pagecontrol>
-					<focusedlayout height="90" width="tvchannelslist_width">
+					<focusedlayout height="90">
 						<control type="image">
 							<left>0</left>
 							<top>0</top>
 							<right>0</right>
-							<height>90</height>
+							<bottom>0</bottom>
 							<texture colordiffuse="button_focus">lists/focus.png</texture>
 							<visible>Control.hasFocus(50)</visible>
 						</control>
@@ -66,7 +66,7 @@
 							<right>120</right>
 							<aligny>top</aligny>
 							<font>font14</font>
-							<animation effect="slide" start="0,0" end="0,18" time="0">Conditional</animation>
+							<animation effect="slide" start="0,0" end="0,14" time="0" condition="String.IsEmpty(ListItem.Title)">Conditional</animation>
 							<label>$INFO[ListItem.Label]</label>
 							<shadowcolor>text_shadow</shadowcolor>
 						</control>
@@ -92,7 +92,7 @@
 							<shadowcolor>text_shadow</shadowcolor>
 						</control>
 					</focusedlayout>
-					<itemlayout height="90" width="tvchannelslist_width">
+					<itemlayout height="90">
 						<control type="image">
 							<right>20</right>
 							<top>10</top>
@@ -125,7 +125,7 @@
 							<aligny>top</aligny>
 							<font>font14</font>
 							<label>$INFO[ListItem.Label]</label>
-							<animation effect="slide" start="0,0" end="0,18" time="0">Conditional</animation>
+							<animation effect="slide" start="0,0" end="0,14" time="0" condition="String.IsEmpty(ListItem.Title)">Conditional</animation>
 							<shadowcolor>text_shadow</shadowcolor>
 						</control>
 						<control type="label">
@@ -169,12 +169,12 @@
 					<viewtype label="List">list</viewtype>
 					<preloaditems>1</preloaditems>
 					<pagecontrol>60</pagecontrol>
-					<focusedlayout height="70" width="tvchannelslist_width">
+					<focusedlayout height="70">
 						<control type="image">
 							<left>0</left>
 							<top>0</top>
 							<right>0</right>
-							<height>70</height>
+							<bottom>0</bottom>
 							<texture colordiffuse="button_focus">lists/focus.png</texture>
 							<visible>Control.hasFocus(51)</visible>
 						</control>
@@ -198,7 +198,7 @@
 						<control type="label">
 							<left>105</left>
 							<top>0</top>
-							<height>70</height>
+							<bottom>0</bottom>
 							<right>90</right>
 							<aligny>center</aligny>
 							<label>$INFO[ListItem.Label]</label>
@@ -206,7 +206,7 @@
 						<control type="label">
 							<left>320</left>
 							<top>0</top>
-							<height>70</height>
+							<bottom>0</bottom>
 							<right>90</right>
 							<aligny>center</aligny>
 							<align>right</align>
@@ -215,7 +215,7 @@
 						<control type="label">
 							<left>12</left>
 							<top>0</top>
-							<height>70</height>
+							<bottom>0</bottom>
 							<width>75</width>
 							<align>center</align>
 							<aligny>center</aligny>
@@ -224,7 +224,7 @@
 							<shadowcolor>text_shadow</shadowcolor>
 						</control>
 					</focusedlayout>
-					<itemlayout height="70" width="tvchannelslist_width">
+					<itemlayout height="70">
 						<control type="progress">
 							<right>10</right>
 							<top>25</top>
@@ -244,7 +244,7 @@
 						<control type="label">
 							<left>105</left>
 							<top>0</top>
-							<height>70</height>
+							<bottom>0</bottom>
 							<right>90</right>
 							<aligny>center</aligny>
 							<label>$INFO[ListItem.Label]</label>
@@ -253,7 +253,7 @@
 						<control type="label">
 							<left>320</left>
 							<top>0</top>
-							<height>70</height>
+							<bottom>0</bottom>
 							<right>90</right>
 							<aligny>center</aligny>
 							<align>right</align>
@@ -264,7 +264,7 @@
 						<control type="label">
 							<left>12</left>
 							<top>0</top>
-							<height>70</height>
+							<bottom>0</bottom>
 							<width>75</width>
 							<align>center</align>
 							<aligny>center</aligny>
@@ -312,7 +312,6 @@
 						<top>82</top>
 						<width>560</width>
 						<height>262</height>
-						<visible>!String.IsEqual(ListItem.StartTime,ListItem.EndTime)</visible>
 						<label>$INFO[ListItem.StartTime]</label>
 					</control>
 					<control type="label">
@@ -320,7 +319,6 @@
 						<width>520</width>
 						<height>262</height>
 						<align>right</align>
-						<visible>!String.IsEqual(ListItem.StartTime,ListItem.EndTime)</visible>
 						<label>$INFO[ListItem.EndTime]</label>
 					</control>
 					<control type="label">
@@ -355,7 +353,7 @@
 				<control type="textbox">
 					<top>382</top>
 					<width>820</width>
-					<bottom>100</bottom>
+					<bottom>114</bottom>
 					<label>[B]$INFO[ListItem.EpisodeName,,[CR]][/B]$INFO[ListItem.Plot]</label>
 				</control>
 				<control type="textbox">
@@ -369,6 +367,7 @@
 					<visible>String.IsEmpty(Listitem.Plot)</visible>
 				</control>
 			</control>
+			<include>PVRChannelNumberInput</include>
 			<include content="TopBar">
 				<param name="breadcrumbs_label" value="$VAR[BreadcrumbsPVRChannelsVar]" />
 			</include>

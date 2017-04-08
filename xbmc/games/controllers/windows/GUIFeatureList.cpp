@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2014-2016 Team Kodi
+ *      Copyright (C) 2014-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -34,6 +34,7 @@
 #include "guilib/GUIWindow.h"
 #include "messaging/ApplicationMessenger.h"
 
+using namespace KODI;
 using namespace GAME;
 
 CGUIFeatureList::CGUIFeatureList(CGUIWindow* window, const std::string& windowParam) :
@@ -160,12 +161,7 @@ void CGUIFeatureList::OnSelect(unsigned int index)
       buttons.push_back(control);
   }
 
-  m_wizard->Run(m_controller->ID(), buttons, this);
-}
-
-void CGUIFeatureList::OnSkipDetected()
-{
-  //! @todo
+  m_wizard->Run(m_controller->ID(), buttons);
 }
 
 IFeatureButton* CGUIFeatureList::GetButtonControl(unsigned int featureIndex)
@@ -191,8 +187,8 @@ std::vector<CGUIFeatureList::FeatureGroup> CGUIFeatureList::GetFeatureGroups(con
   std::vector<std::string> groupNames;
   for (const CControllerFeature& feature : features)
   {
-    if (std::find(groupNames.begin(), groupNames.end(), feature.Group()) == groupNames.end())
-      groupNames.push_back(feature.Group());
+    if (std::find(groupNames.begin(), groupNames.end(), feature.CategoryLabel()) == groupNames.end())
+      groupNames.push_back(feature.CategoryLabel());
   }
 
   // Divide features into groups
@@ -201,7 +197,7 @@ std::vector<CGUIFeatureList::FeatureGroup> CGUIFeatureList::GetFeatureGroups(con
     FeatureGroup group = { groupName };
     for (const CControllerFeature& feature : features)
     {
-      if (feature.Group() == groupName)
+      if (feature.CategoryLabel() == groupName)
         group.features.push_back(feature);
     }
     groups.emplace_back(std::move(group));

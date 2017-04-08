@@ -39,6 +39,8 @@
 #include "utils/Environment.h"
 #include "utils/StringUtils.h"
 #include "platform/win32/crts_caller.h"
+#include "CompileInfo.h"
+#include "platform/win32/CharsetConverter.h"
 
 #include <cassert>
 
@@ -59,6 +61,9 @@ CWIN32Util::~CWIN32Util(void)
 
 int CWIN32Util::GetDriveStatus(const std::string &strPath, bool bStatusEx)
 {
+  using KODI::PLATFORM::WINDOWS::ToW;
+
+  auto strPathW = ToW(strPath);
   HANDLE hDevice;               // handle to the drive to be examined
   int iResult;                  // results flag
   ULONG ulChanges=0;
@@ -68,7 +73,7 @@ int CWIN32Util::GetDriveStatus(const std::string &strPath, bool bStatusEx)
 
   CLog::Log(LOGDEBUG, __FUNCTION__": Requesting status for drive %s.", strPath.c_str());
 
-  hDevice = CreateFile( strPath.c_str(),                  // drive
+  hDevice = CreateFile( strPathW.c_str(),                  // drive
                         0,                                // no access to the drive
                         FILE_SHARE_READ,                  // share mode
                         NULL,                             // default security attributes
@@ -101,7 +106,7 @@ int CWIN32Util::GetDriveStatus(const std::string &strPath, bool bStatusEx)
   if(!bStatusEx)
     return 0;
 
-  hDevice = CreateFile( strPath.c_str(),
+  hDevice = CreateFile( strPathW.c_str(),
                         GENERIC_READ | GENERIC_WRITE,
                         FILE_SHARE_READ | FILE_SHARE_WRITE,
                         NULL,
@@ -331,29 +336,28 @@ std::vector<std::string> CWIN32Util::GetDiskUsage()
   ULARGE_INTEGER ULTotal= { { 0 } };
   ULARGE_INTEGER ULTotalFree= { { 0 } };
 
-  char* pcBuffer= NULL;
-  DWORD dwStrLength= GetLogicalDriveStrings( 0, pcBuffer );
+  std::unique_ptr<wchar_t> pcBuffer;
+  DWORD dwStrLength= GetLogicalDriveStrings( 0, pcBuffer.get() );
   if( dwStrLength != 0 )
   {
     std::string strRet;
 
     dwStrLength+= 1;
-    pcBuffer= new char [dwStrLength];
-    GetLogicalDriveStrings( dwStrLength, pcBuffer );
+    pcBuffer.reset(new wchar_t[dwStrLength]);
+    GetLogicalDriveStrings( dwStrLength, pcBuffer.get() );
     int iPos= 0;
     do
     {
-      std::string strDrive = pcBuffer + iPos;
+      std::wstring strDrive = pcBuffer.get() + iPos;
       if( DRIVE_FIXED == GetDriveType( strDrive.c_str()  ) &&
-        GetDiskFreeSpaceEx( ( strDrive.c_str() ), NULL, &ULTotal, &ULTotalFree ) )
+        GetDiskFreeSpaceEx( ( strDrive.c_str() ), nullptr, &ULTotal, &ULTotalFree ) )
       {
-        strRet = StringUtils::Format("%s %d MB %s",strDrive.c_str(), int(ULTotalFree.QuadPart/(1024*1024)),g_localizeStrings.Get(160).c_str());
+        strRet = KODI::PLATFORM::WINDOWS::FromW(StringUtils::Format(L"%s %d MB %s",strDrive.c_str(), int(ULTotalFree.QuadPart/(1024*1024)),g_localizeStrings.Get(160).c_str()));
         result.push_back(strRet);
       }
-      iPos += (strlen( pcBuffer + iPos) + 1 );
-    }while( strlen( pcBuffer + iPos ) > 0 );
+      iPos += (wcslen( pcBuffer.get() + iPos) + 1 );
+    }while( wcslen( pcBuffer.get() + iPos ) > 0 );
   }
-  delete[] pcBuffer;
   return result;
 }
 
@@ -405,7 +409,7 @@ std::string CWIN32Util::GetProfilePath()
   std::string strHomePath = CUtil::GetHomePath();
 
   if(g_application.PlatformDirectoriesEnabled())
-    strProfilePath = URIUtils::AddFileToFolder(GetSpecialFolder(CSIDL_APPDATA|CSIDL_FLAG_CREATE), "Kodi");
+    strProfilePath = URIUtils::AddFileToFolder(GetSpecialFolder(CSIDL_APPDATA|CSIDL_FLAG_CREATE), CCompileInfo::GetAppName());
   else
     strProfilePath = URIUtils::AddFileToFolder(strHomePath , "portable_data");
 
@@ -554,6 +558,7 @@ __time64_t CWIN32Util::fileTimeToTimeT(const LARGE_INTEGER& ftimeli)
 
 HRESULT CWIN32Util::ToggleTray(const char cDriveLetter)
 {
+  using namespace KODI::PLATFORM::WINDOWS;
   BOOL bRet= FALSE;
   DWORD dwReq = 0;
   char cDL = cDriveLetter;
@@ -565,24 +570,23 @@ HRESULT CWIN32Util::ToggleTray(const char cDriveLetter)
     cDL = dvdDevice[0];
   }
 
-  std::string strVolFormat = StringUtils::Format("\\\\.\\%c:", cDL);
+  auto strVolFormat = ToW(StringUtils::Format("\\\\.\\%c:", cDL));
   HANDLE hDrive= CreateFile( strVolFormat.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
                              NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-  std::string strRootFormat = StringUtils::Format("%c:\\", cDL);
+  auto strRootFormat = ToW(StringUtils::Format("%c:\\", cDL));
   if( ( hDrive != INVALID_HANDLE_VALUE || GetLastError() == NO_ERROR) &&
     ( GetDriveType( strRootFormat.c_str() ) == DRIVE_CDROM ) )
   {
     DWORD dwDummy;
-    dwReq = (GetDriveStatus(strVolFormat, true) == 1) ? IOCTL_STORAGE_LOAD_MEDIA : IOCTL_STORAGE_EJECT_MEDIA;
+    dwReq = (GetDriveStatus(FromW(strVolFormat), true) == 1) ? IOCTL_STORAGE_LOAD_MEDIA : IOCTL_STORAGE_EJECT_MEDIA;
     bRet = DeviceIoControl( hDrive, dwReq, NULL, 0, NULL, 0, &dwDummy, NULL);
   }
   // Windows doesn't seem to send always DBT_DEVICEREMOVECOMPLETE
   // unmount it here too as it won't hurt
   if(dwReq == IOCTL_STORAGE_EJECT_MEDIA && bRet == 1)
   {
-    strRootFormat = StringUtils::Format("%c:", cDL);
     CMediaSource share;
-    share.strPath = strRootFormat;
+    share.strPath = StringUtils::Format("%c:", cDL);
     share.strName = share.strPath;
     g_mediaManager.RemoveAutoSource(share);
   }
@@ -710,10 +714,12 @@ DEVINST CWIN32Util::GetDrivesDevInstByDiskNumber(long DiskNumber)
 
 bool CWIN32Util::EjectDrive(const char cDriveLetter)
 {
+  using KODI::PLATFORM::WINDOWS::ToW;
+
   if( !cDriveLetter )
     return false;
 
-  std::string strVolFormat = StringUtils::Format("\\\\.\\%c:", cDriveLetter);
+  auto strVolFormat = ToW(StringUtils::Format("\\\\.\\%c:", cDriveLetter));
 
   long DiskNumber = -1;
 
@@ -738,7 +744,7 @@ bool CWIN32Util::EjectDrive(const char cDriveLetter)
   ULONG Status = 0;
   ULONG ProblemNumber = 0;
   PNP_VETO_TYPE VetoType = PNP_VetoTypeUnknown;
-  char VetoName[MAX_PATH];
+  wchar_t VetoName[MAX_PATH];
   bool bSuccess = false;
 
   CM_Get_Parent(&DevInst, DevInst, 0); // disk's parent, e.g. the USB bridge, the SATA controller....
@@ -1351,24 +1357,30 @@ extern "C" {
 
 LONG CWIN32Util::UtilRegGetValue( const HKEY hKey, const char *const pcKey, DWORD *const pdwType, char **const ppcBuffer, DWORD *const pdwSizeBuff, const DWORD dwSizeAdd )
 {
+  using KODI::PLATFORM::WINDOWS::ToW;
+
+  auto pcKeyW = ToW(pcKey);
+
   DWORD dwSize;
-  LONG lRet= RegQueryValueEx(hKey, pcKey, NULL, pdwType, NULL, &dwSize );
+  LONG lRet= RegQueryValueEx(hKey, pcKeyW.c_str(), nullptr, pdwType, nullptr, &dwSize );
   if (lRet == ERROR_SUCCESS)
   {
     if (ppcBuffer)
     {
       char *pcValue=*ppcBuffer, *pcValueTmp;
       if (!pcValue || !pdwSizeBuff || dwSize +dwSizeAdd > *pdwSizeBuff) {
-        pcValueTmp = (char*)realloc(pcValue, dwSize +dwSizeAdd);
-        if(pcValueTmp != NULL)
+        pcValueTmp = static_cast<char*>(realloc(pcValue, dwSize + dwSizeAdd));
+        if(pcValueTmp != nullptr)
         {
           pcValue = pcValueTmp;
         }
       }
-      lRet= RegQueryValueEx(hKey,pcKey,NULL,NULL,(LPBYTE)pcValue,&dwSize);
+      lRet= RegQueryValueEx(hKey, pcKeyW.c_str(), nullptr, nullptr, reinterpret_cast<LPBYTE>(pcValue), &dwSize);
 
-      if ( lRet == ERROR_SUCCESS || *ppcBuffer ) *ppcBuffer= pcValue;
-      else free( pcValue );
+      if ( lRet == ERROR_SUCCESS || *ppcBuffer )
+        *ppcBuffer= pcValue;
+      else
+        free( pcValue );
     }
     if (pdwSizeBuff) *pdwSizeBuff= dwSize +dwSizeAdd;
   }
@@ -1377,8 +1389,12 @@ LONG CWIN32Util::UtilRegGetValue( const HKEY hKey, const char *const pcKey, DWOR
 
 bool CWIN32Util::UtilRegOpenKeyEx( const HKEY hKeyParent, const char *const pcKey, const REGSAM rsAccessRights, HKEY *hKey, const bool bReadX64 )
 {
-  const REGSAM rsAccessRightsTmp= ( CSysInfo::GetKernelBitness() == 64 ? rsAccessRights | ( bReadX64 ? KEY_WOW64_64KEY : KEY_WOW64_32KEY ) : rsAccessRights );
-  bool bRet= ( ERROR_SUCCESS == RegOpenKeyEx(hKeyParent, pcKey, 0, rsAccessRightsTmp, hKey));
+  using KODI::PLATFORM::WINDOWS::ToW;
+
+  const REGSAM rsAccessRightsTmp = (
+    CSysInfo::GetKernelBitness() == 64 ? rsAccessRights |
+      ( bReadX64 ? KEY_WOW64_64KEY : KEY_WOW64_32KEY ) : rsAccessRights );
+  bool bRet = ( ERROR_SUCCESS == RegOpenKeyEx(hKeyParent, ToW(pcKey).c_str(), 0, rsAccessRightsTmp, hKey));
   return bRet;
 }
 
@@ -1388,6 +1404,7 @@ bool CWIN32Util::UtilRegOpenKeyEx( const HKEY hKeyParent, const char *const pcKe
 // process name can help the user fix the problem.
 bool CWIN32Util::GetFocussedProcess(std::string &strProcessFile)
 {
+  using KODI::PLATFORM::WINDOWS::FromW;
   strProcessFile = "";
 
   // Get the window that has the focus
@@ -1406,35 +1423,11 @@ bool CWIN32Util::GetFocussedProcess(std::string &strProcessFile)
 
   // Load QueryFullProcessImageName dynamically because it isn't available
   // in all versions of Windows.
-  char procfile[MAX_PATH+1];
+  wchar_t procfile[MAX_PATH+1];
   DWORD procfilelen = MAX_PATH;
 
-  HINSTANCE hkernel32 = LoadLibrary("kernel32.dll");
-  if (hkernel32)
-  {
-    DWORD (WINAPI *pQueryFullProcessImageNameA)(HANDLE,DWORD,LPTSTR,PDWORD);
-    pQueryFullProcessImageNameA = (DWORD (WINAPI *)(HANDLE,DWORD,LPTSTR,PDWORD)) GetProcAddress(hkernel32, "QueryFullProcessImageNameA");
-    if (pQueryFullProcessImageNameA)
-      if (pQueryFullProcessImageNameA(hproc, 0, procfile, &procfilelen))
-        strProcessFile = procfile;
-    FreeLibrary(hkernel32);
-  }
-
-  // If QueryFullProcessImageName failed fall back to GetModuleFileNameEx.
-  // Note this does not work across x86-x64 boundaries.
-  if (strProcessFile == "")
-  {
-    HINSTANCE hpsapi = LoadLibrary("psapi.dll");
-    if (hpsapi)
-    {
-      DWORD (WINAPI *pGetModuleFileNameExA)(HANDLE,HMODULE,LPTSTR,DWORD);
-      pGetModuleFileNameExA = (DWORD (WINAPI*)(HANDLE,HMODULE,LPTSTR,DWORD)) GetProcAddress(hpsapi, "GetModuleFileNameExA");
-      if (pGetModuleFileNameExA)
-        if (pGetModuleFileNameExA(hproc, NULL, procfile, MAX_PATH))
-          strProcessFile = procfile;
-      FreeLibrary(hpsapi);
-    }
-  }
+  if (QueryFullProcessImageNameW(hproc, 0, procfile, &procfilelen))
+    strProcessFile = FromW(procfile);
 
   CloseHandle(hproc);
 

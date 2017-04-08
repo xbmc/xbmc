@@ -24,6 +24,7 @@
 #include "DVDSubtitleStream.h"
 #include "DVDSubtitleLineCollection.h"
 
+#include <memory>
 #include <string>
 #include <stdio.h>
 
@@ -64,17 +65,13 @@ class CDVDSubtitleParserText
      : public CDVDSubtitleParserCollection
 {
 public:
-  CDVDSubtitleParserText(CDVDSubtitleStream* stream, const std::string& filename)
+  CDVDSubtitleParserText(std::unique_ptr<CDVDSubtitleStream> && stream, const std::string& filename)
     : CDVDSubtitleParserCollection(filename)
+		, m_pStream(std::move(stream)) 
   {
-    m_pStream  = stream;
   }
 
-  virtual ~CDVDSubtitleParserText()
-  {
-    if(m_pStream)
-      delete m_pStream;
-  }
+  virtual ~CDVDSubtitleParserText() = default;
 
 protected:
 
@@ -86,10 +83,10 @@ protected:
         return true;
     }
     else
-      m_pStream = new CDVDSubtitleStream();
+      m_pStream.reset(new CDVDSubtitleStream());
 
     return m_pStream->Open(m_filename);
   }
 
-  CDVDSubtitleStream* m_pStream;
+  std::unique_ptr<CDVDSubtitleStream> m_pStream;
 };

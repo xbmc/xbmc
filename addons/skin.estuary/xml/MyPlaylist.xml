@@ -10,9 +10,9 @@
 			<control type="group">
 				<include>OpenClose_Left</include>
 				<control type="fixedlist" id="50">
-					<left>402</left>
+					<left>410</left>
 					<top>list_y_offset</top>
-					<right>594</right>
+					<right>586</right>
 					<bottom>list_y_offset</bottom>
 					<scrolltime tween="cubic" easing="out">500</scrolltime>
 					<orientation>vertical</orientation>
@@ -25,7 +25,7 @@
 					<pagecontrol>60</pagecontrol>
 					<viewtype label="List">list</viewtype>
 					<preloaditems>1</preloaditems>
-					<focusedlayout height="list_item_height" width="playlistlist_width">
+					<focusedlayout height="list_item_height">
 						<control type="image">
 							<left>0</left>
 							<right>0</right>
@@ -53,7 +53,7 @@
 							<shadowcolor>text_shadow</shadowcolor>
 						</control>
 					</focusedlayout>
-					<itemlayout height="list_item_height" width="playlistlist_width">
+					<itemlayout height="list_item_height">
 						<control type="label">
 							<left>30</left>
 							<bottom>0</bottom>
@@ -79,7 +79,7 @@
 				<control type="group">
 					<depth>DepthContentPanel</depth>
 					<include content="ContentPanel">
-						<param name="width" value="462" />
+						<param name="width" value="470" />
 					</include>
 					<control type="grouplist" id="700">
 						<orientation>vertical</orientation>
@@ -90,9 +90,9 @@
 						<ondown>700</ondown>
 						<onleft>50</onleft>
 						<onright>50</onright>
-						<width>402</width>
+						<width>410</width>
 						<control type="radiobutton" id="20">
-							<width>402</width>
+							<width>410</width>
 							<height>110</height>
 							<align>left</align>
 							<aligny>top</aligny>
@@ -114,6 +114,9 @@
 						<include content="PlaylistWindowButton">
 							<param name="control_id" value="22" />
 							<param name="label" value="$LOCALIZE[192]" />
+						</include>
+						<include content="MediaMenuNowPlaying">
+							<param name="left" value="-5" />
 						</include>
 					</control>
 				</control>

@@ -36,7 +36,6 @@
 template <typename T> class CRectGen;
 typedef CRectGen<float>  CRect;
 
-class DVDNavResult;
 class CDVDMsg;
 class CDVDStreamInfo;
 class CProcessInfo;
@@ -52,7 +51,7 @@ struct SStartMsg
 class IVideoPlayer
 {
 public:
-  virtual int OnDVDNavResult(void* pData, int iMessage) = 0;
+  virtual int OnDiscNavResult(void* pData, int iMessage) = 0;
   virtual void GetVideoResolution(unsigned int &width, unsigned int &height) = 0;
   virtual ~IVideoPlayer() { }
 };
@@ -132,7 +131,6 @@ public:
   virtual void SetMute(bool bOnOff) {};
   virtual void SetDynamicRangeCompression(long drc) = 0;
   virtual std::string GetPlayerInfo() = 0;
-  virtual int GetAudioBitrate() = 0;
   virtual int GetAudioChannels() = 0;
   virtual double GetCurrentPts() = 0;
   virtual bool IsStalled() const = 0;

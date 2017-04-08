@@ -92,28 +92,26 @@ void CMusicInfoScanner::Process()
   ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "OnScanStarted");
   try
   {
-    if (m_bClean)
-    {
-      CleanDatabase(false);
-      m_bRunning = false;
-
-      return;
-    }
-
-    unsigned int tick = XbmcThreads::SystemClockMillis();
-
-    m_musicDatabase.Open();
-
     if (m_showDialog && !CServiceBroker::GetSettings().GetBool(CSettings::SETTING_MUSICLIBRARY_BACKGROUNDUPDATE))
     {
       CGUIDialogExtendedProgressBar* dialog =
-        (CGUIDialogExtendedProgressBar*)g_windowManager.GetWindow(WINDOW_DIALOG_EXT_PROGRESS);
+        g_windowManager.GetWindow<CGUIDialogExtendedProgressBar>();
       if (dialog)
         m_handle = dialog->GetHandle(g_localizeStrings.Get(314));
     }
 
-    m_bClean = g_advancedSettings.m_bMusicLibraryCleanOnUpdate;
+    // check if we only need to perform a cleaning
+    if (m_bClean && m_pathsToScan.empty())
+    {
+      CleanDatabase(false);
+      m_handle = NULL;
+      m_bRunning = false;
 
+      return;
+    }
+    
+    unsigned int tick = XbmcThreads::SystemClockMillis();
+    m_musicDatabase.Open();
     m_bCanInterrupt = true;
 
     if (m_scanType == 0) // load info from files
@@ -133,7 +131,7 @@ void CMusicInfoScanner::Process()
         m_fileCountReader.Create();
 
       // Database operations should not be canceled
-      // using Interupt() while scanning as it could
+      // using Interrupt() while scanning as it could
       // result in unexpected behaviour.
       m_bCanInterrupt = false;
       m_needsCleanup = false;
@@ -287,7 +285,8 @@ void CMusicInfoScanner::Start(const std::string& strDirectory, int flags)
   }
   else
     m_pathsToScan.insert(strDirectory);
-  m_bClean = false;
+  
+  m_bClean = g_advancedSettings.m_bMusicLibraryCleanOnUpdate;
 
   m_scanType = 0;
   Create();
@@ -416,7 +415,7 @@ bool CMusicInfoScanner::IsScanning()
 void CMusicInfoScanner::Stop(bool wait /* = false*/)
 {
   if (m_bCanInterrupt)
-    m_musicDatabase.Interupt();
+    m_musicDatabase.Interrupt();
 
   StopThread(wait);
 }
@@ -721,7 +720,7 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
     if (!compilation && !songsByAlbumName->first.empty() && isCompilation)
     {
       compilation = true;
-      CLog::Log(LOGDEBUG, "Album '%s' is a compilation as all songs are marked aspart of a compilation", songsByAlbumName->first.c_str());
+      CLog::Log(LOGDEBUG, "Album '%s' is a compilation as all songs are marked as part of a compilation", songsByAlbumName->first.c_str());
     }
 
     /*
@@ -1175,7 +1174,7 @@ INFO_RET CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album, const ADDON::
         //show dialog with all albums found
         if (pDialog)
         {
-          pDlg = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+          pDlg = g_windowManager.GetWindow<CGUIDialogSelect>();
           pDlg->SetHeading(CVariant{g_localizeStrings.Get(181)});
           pDlg->Reset();
           pDlg->EnableButton(true, 413); // manual
@@ -1384,7 +1383,7 @@ INFO_RET CMusicInfoScanner::DownloadArtistInfo(const CArtist& artist, const ADDO
       if (pDialog && scraper.GetArtistCount() > 1)
       {
         // if we found more then 1 album, let user choose one
-        CGUIDialogSelect *pDlg = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+        CGUIDialogSelect *pDlg = g_windowManager.GetWindow<CGUIDialogSelect>();
         if (pDlg)
         {
           pDlg->SetHeading(CVariant{g_localizeStrings.Get(21890)});
@@ -1479,10 +1478,13 @@ bool CMusicInfoScanner::ResolveMusicBrainz(const std::string &strMusicBrainzID, 
 
   if (!musicBrainzURL.m_url.empty())
   {
-    Sleep(2000); // MusicBrainz rate-limits queries to 1 p.s - once we hit the rate-limiter
-                 // they start serving up the 'you hit the rate-limiter' page fast - meaning
-                 // we will never get below the rate-limit threshold again in a specific run.
-                 // This helps us to avoidthe rate-limiter as far as possible.
+    if (!preferredScraper->IsPython())
+    {
+      Sleep(2000); // MusicBrainz rate-limits queries to 1 p.s - once we hit the rate-limiter
+                   // they start serving up the 'you hit the rate-limiter' page fast - meaning
+                   // we will never get below the rate-limit threshold again in a specific run.
+                   // This helps us to avoid the rate-limiter as far as possible.
+    }
     CLog::Log(LOGDEBUG,"-- nfo-scraper: %s",preferredScraper->Name().c_str());
     CLog::Log(LOGDEBUG,"-- nfo url: %s", musicBrainzURL.m_url[0].m_url.c_str());
     bMusicBrainz = true;

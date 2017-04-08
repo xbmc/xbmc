@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2015-2016 Team Kodi
+ *      Copyright (C) 2015-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -24,13 +24,25 @@
 
 #include <map>
 
-namespace JOYSTICK { class IInputHandler; }
+namespace KODI
+{
+namespace JOYSTICK
+{
+  class IInputHandler; 
+}
+}
+
+namespace PERIPHERALS
+{
+  class CPeripherals;
+}
+
 namespace GAME
 {
   class CPortMapper : public Observer
   {
   public:
-    CPortMapper();
+    CPortMapper(PERIPHERALS::CPeripherals& peripheralManager);
 
     virtual ~CPortMapper();
 
@@ -39,6 +51,10 @@ namespace GAME
   private:
     void ProcessPeripherals();
 
-    std::map<PERIPHERALS::PeripheralPtr, JOYSTICK::IInputHandler*>  m_portMap;
+    // Construction parameters
+    PERIPHERALS::CPeripherals& m_peripheralManager;
+
+    // Port paremters
+    std::map<PERIPHERALS::PeripheralPtr, KODI::JOYSTICK::IInputHandler*>  m_portMap;
   };
 }

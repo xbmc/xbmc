@@ -95,6 +95,11 @@
 #include "AndroidAppDirectory.h"
 #endif
 #include "ResourceDirectory.h"
+#include "ServiceBroker.h"
+#include "addons/VFSEntry.h"
+#include "addons/BinaryAddonCache.h"
+
+using namespace ADDON;
 
 using namespace XFILE;
 
@@ -194,6 +199,19 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
 #ifdef HAS_FILESYSTEM_NFS
     if (url.IsProtocol("nfs")) return new CNFSDirectory();
 #endif
+  }
+
+  if (!url.GetProtocol().empty() && CServiceBroker::IsBinaryAddonCacheUp())
+  {
+    VECADDONS addons;
+    ADDON::CBinaryAddonCache &addonCache = CServiceBroker::GetBinaryAddonCache();
+    addonCache.GetAddons(addons, ADDON::ADDON_VFS);
+    for (size_t i=0;i<addons.size();++i)
+    {
+      VFSEntryPtr vfs(std::static_pointer_cast<CVFSEntry>(addons[i]));
+      if (vfs->HasDirectories() && vfs->GetProtocols().find(url.GetProtocol()) != std::string::npos)
+        return new CVFSEntryIDirectoryWrapper(vfs);
+    }
   }
 
   CLog::Log(LOGWARNING, "%s - %sunsupported protocol(%s) in %s", __FUNCTION__, networkAvailable ? "" : "Network down or ", url.GetProtocol().c_str(), url.GetRedacted().c_str() );

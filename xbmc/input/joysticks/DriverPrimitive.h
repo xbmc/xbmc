@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2014-2016 Team Kodi
+ *      Copyright (C) 2014-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -23,6 +23,8 @@
 
 #include <stdint.h>
 
+namespace KODI
+{
 namespace JOYSTICK
 {
   /*!
@@ -54,7 +56,9 @@ namespace JOYSTICK
    *
    *    Semiaxis:
    *       - driver index
+   *       - center (-1, 0 or 1)
    *       - semiaxis direction (positive/negative)
+   *       - range (1 or 2)
    *
    *    Motor:
    *       - driver index
@@ -85,7 +89,7 @@ namespace JOYSTICK
      * \brief Construct a driver primitive representing the positive or negative
      *        half of an axis
      */
-    CDriverPrimitive(unsigned int axisIndex, SEMIAXIS_DIRECTION direction);
+    CDriverPrimitive(unsigned int axisIndex, int center, SEMIAXIS_DIRECTION direction, unsigned int range);
 
     bool operator==(const CDriverPrimitive& rhs) const;
     bool operator<(const CDriverPrimitive& rhs) const;
@@ -111,9 +115,19 @@ namespace JOYSTICK
     HAT_DIRECTION HatDirection(void) const { return m_hatDirection; }
 
     /*!
+     * \brief The location of the zero point of the semiaxis
+     */
+    int Center() const { return m_center; }
+
+    /*!
      * \brief The semiaxis direction (valid for semiaxes)
      */
     SEMIAXIS_DIRECTION SemiAxisDirection(void) const { return m_semiAxisDirection; }
+
+    /*!
+     * \brief The distance between the center and the farthest valid value (valid for semiaxes)
+     */
+    unsigned int Range() const { return m_range; }
 
     /*!
      * \brief Test if an driver primitive is valid
@@ -129,6 +143,9 @@ namespace JOYSTICK
     PRIMITIVE_TYPE     m_type;
     unsigned int       m_driverIndex;
     HAT_DIRECTION      m_hatDirection;
+    int                m_center;
     SEMIAXIS_DIRECTION m_semiAxisDirection;
+    unsigned int       m_range;
   };
+}
 }

@@ -24,7 +24,7 @@ FOR %%b IN (%*) DO (
 SETLOCAL DisableDelayedExpansion
 
 rem set Visual C++ build environment
-call "%VS140COMNTOOLS%..\..\VC\bin\vcvars32.bat"
+call "%VS140COMNTOOLS%..\..\VC\bin\amd64_x86\vcvarsamd64_x86.bat" || call "%VS140COMNTOOLS%..\..\VC\bin\vcvars32.bat"
 
 SET WORKDIR=%base_dir%
 
@@ -39,7 +39,7 @@ IF "%WORKDIR%" == "" (
 
 rem setup some paths that we need later
 SET CUR_PATH=%CD%
-SET BASE_PATH=%WORKDIR%\project\cmake
+SET BASE_PATH=%WORKDIR%\cmake
 SET SCRIPTS_PATH=%BASE_PATH%\scripts\windows
 SET ADDONS_PATH=%BASE_PATH%\addons
 SET ADDON_DEPENDS_PATH=%ADDONS_PATH%\output
@@ -108,7 +108,7 @@ cmake "%ADDONS_PATH%" -G "NMake Makefiles" ^
       -DCMAKE_USER_MAKE_RULES_OVERRIDE="%SCRIPTS_PATH%/CFlagOverrides.cmake" ^
       -DCMAKE_USER_MAKE_RULES_OVERRIDE_CXX="%SCRIPTS_PATH%/CXXFlagOverrides.cmake" ^
       -DCMAKE_INSTALL_PREFIX=%ADDONS_INSTALL_PATH% ^
-      -DCORE_SOURCE_DIR=%WORKDIR% ^
+      -DCMAKE_SOURCE_DIR=%WORKDIR% ^
       -DBUILD_DIR=%ADDONS_BUILD_PATH% ^
       -DADDON_DEPENDS_PATH=%ADDON_DEPENDS_PATH% ^
       -DPACKAGE_ZIP=ON ^

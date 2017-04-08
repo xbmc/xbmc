@@ -31,14 +31,12 @@
 #include "URL.h"
 #include "Util.h"
 #include "addons/AddonManager.h"
-#include "addons/GUIDialogAddonSettings.h"
 #include "addons/PluginSource.h"
 #if defined(TARGET_ANDROID)
 #include "platform/android/activity/XBMCApp.h"
 #endif
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogMediaFilter.h"
-#include "dialogs/GUIDialogMediaSource.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogSmartPlaylistEditor.h"
@@ -52,7 +50,6 @@
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
-#include "interfaces/builtins/Builtins.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "input/Key.h"
 #include "network/Network.h"
@@ -69,7 +66,6 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
-#include "video/VideoLibraryQueue.h"
 #include "view/GUIViewState.h"
 
 #define CONTROL_BTNVIEWASICONS       2
@@ -470,7 +466,11 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
     {
       if (m_vecItems->GetPath() == "?")
         m_vecItems->SetPath("");
+      std::string path, fileName;
       std::string dir = message.GetStringParam(0);
+      URIUtils::Split(dir, path, fileName);
+      if (StringUtils::IsInteger(fileName))
+        dir = path;
       const std::string &ret = message.GetStringParam(1);
       bool returning = StringUtils::EqualsNoCase(ret, "return");
       if (!dir.empty())
@@ -490,7 +490,10 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
           resetHistory = true;
         }
         if (resetHistory)
+        {  
+          m_vecItems->RemoveDiscCache(GetID());
           SetHistoryForPath(m_vecItems->GetPath());
+        }
       }
       if (message.GetParam1() != WINDOW_INVALID)
       { // first time to this window - make sure we set the root path
@@ -599,7 +602,7 @@ void CGUIMediaWindow::FormatItemLabels(CFileItemList &items, const LABEL_MASKS &
   {
     CFileItemPtr pItem=items[i];
 
-    if (pItem->IsLabelPreformated())
+    if (pItem->IsLabelPreformatted())
       continue;
 
     if (pItem->m_bIsFolder)
@@ -799,7 +802,7 @@ bool CGUIMediaWindow::Update(const std::string &strDirectory, bool updateFilterP
     pItem->SetPath("add");
     pItem->SetIconImage("DefaultAddSource.png");
     pItem->SetLabel(strLabel);
-    pItem->SetLabelPreformated(true);
+    pItem->SetLabelPreformatted(true);
     pItem->m_bIsFolder = true;
     pItem->SetSpecialSort(SortSpecialOnBottom);
     m_vecItems->Add(pItem);
@@ -904,7 +907,7 @@ bool CGUIMediaWindow::OnClick(int iItem, const std::string &player)
 
   if (!pItem->m_bIsFolder && pItem->IsFileFolder(EFILEFOLDER_MASK_ONCLICK))
   {
-    XFILE::IFileDirectory *pFileDirectory = NULL;
+    XFILE::IFileDirectory *pFileDirectory = nullptr;
     pFileDirectory = XFILE::CFileDirectoryFactory::Create(pItem->GetURL(), pItem.get(), "");
     if(pFileDirectory)
       pItem->m_bIsFolder = true;
@@ -1070,7 +1073,7 @@ bool CGUIMediaWindow::HaveDiscOrConnection(const std::string& strPath, int iDriv
 }
 
 // \brief Shows a standard errormessage for a given pItem.
-void CGUIMediaWindow::ShowShareErrorMessage(CFileItem* pItem)
+void CGUIMediaWindow::ShowShareErrorMessage(CFileItem* pItem) const
 {
   if (!pItem->m_bIsShareOrDrive)
     return;
@@ -1088,7 +1091,7 @@ void CGUIMediaWindow::ShowShareErrorMessage(CFileItem* pItem)
   CGUIDialogOK::ShowAndGetInput(CVariant{220}, CVariant{idMessageText});
 }
 
-// \brief The functon goes up one level in the directory tree
+// \brief The function goes up one level in the directory tree
 bool CGUIMediaWindow::GoParentFolder()
 {
   if (m_vecItems->IsVirtualDirectoryRoot())
@@ -1182,14 +1185,14 @@ void CGUIMediaWindow::RestoreSelectedItemFromHistory()
 
 // \brief Override the function to change the default behavior on how
 // a selected item history should look like
-void CGUIMediaWindow::GetDirectoryHistoryString(const CFileItem* pItem, std::string& strHistoryString)
+void CGUIMediaWindow::GetDirectoryHistoryString(const CFileItem* pItem, std::string& strHistoryString) const
 {
   if (pItem->m_bIsShareOrDrive)
   {
-    // We are in the virual directory
+    // We are in the virtual directory
 
     // History string of the DVD drive
-    // must be handel separately
+    // must be handled separately
     if (pItem->m_iDriveType == CMediaSource::SOURCE_TYPE_DVD)
     {
       // Remove disc label from item label
@@ -1210,7 +1213,7 @@ void CGUIMediaWindow::GetDirectoryHistoryString(const CFileItem* pItem, std::str
     }
     else
     {
-      // Other items in virual directory
+      // Other items in virtual directory
       std::string strPath = pItem->GetPath();
       URIUtils::RemoveSlashAtEnd(strPath);
 
@@ -1393,7 +1396,7 @@ bool CGUIMediaWindow::OnPlayAndQueueMedia(const CFileItemPtr &item, std::string 
   return true;
 }
 
-// \brief Synchonize the fileitems with the playlistplayer
+// \brief Synchronize the fileitems with the playlistplayer
 // It recreated the playlist of the playlistplayer based
 // on the fileitems of the window
 void CGUIMediaWindow::UpdateFileList()
@@ -1662,7 +1665,7 @@ bool CGUIMediaWindow::WaitForNetwork() const
   if (g_application.getNetwork().IsAvailable())
     return true;
 
-  CGUIDialogProgress *progress = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  CGUIDialogProgress *progress = g_windowManager.GetWindow<CGUIDialogProgress>();
   if (!progress)
     return true;
 
@@ -1802,7 +1805,7 @@ void CGUIMediaWindow::OnFilterItems(const std::string &filter)
     // to be able to select the same item as before we need to adjust
     // the path of the item i.e. add or remove the "filter=" URL option
     // but that's only necessary for folder items
-    if (currentItem.get() != NULL && currentItem->m_bIsFolder)
+    if (currentItem.get() && currentItem->m_bIsFolder)
     {
       CURL curUrl(currentItemPath), newUrl(m_strFilterPath);
       if (newUrl.HasOption("filter"))
@@ -1962,7 +1965,7 @@ bool CGUIMediaWindow::Filter(bool advanced /* = true */)
   if (!m_canFilterAdvanced || !advanced)
   {
     const CGUIControl *btnFilter = GetControl(CONTROL_BTN_FILTER);
-    if (btnFilter != NULL && btnFilter->GetControlType() == CGUIControl::GUICONTROL_EDIT)
+    if (btnFilter && btnFilter->GetControlType() == CGUIControl::GUICONTROL_EDIT)
     { // filter updated
       CGUIMessage selected(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_BTN_FILTER);
       OnMessage(selected);

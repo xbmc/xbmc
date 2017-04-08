@@ -28,7 +28,8 @@
 #include "utils/log.h"
 #include "utils/JobManager.h"
 
-#include "cores/AudioEngine/AEFactory.h"
+#include "ServiceBroker.h"
+#include "cores/AudioEngine/Interfaces/AE.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/AudioEngine/Interfaces/AEStream.h"
 #include "cores/DataCacheCore.h"
@@ -167,7 +168,7 @@ void PAPlayer::SoftStop(bool wait/* = false */, bool close/* = true */)
     lock.Enter();
 
     /* be sure they have faded out */
-    while(wait && !CAEFactory::IsSuspended() && !timer.IsTimePast())
+    while(wait && !CServiceBroker::GetActiveAE().IsSuspended() && !timer.IsTimePast())
     {
       wait = false;
       for(StreamList::iterator itt = m_streams.begin(); itt != m_streams.end(); ++itt)
@@ -208,7 +209,7 @@ void PAPlayer::CloseAllStreams(bool fade/* = true */)
       
       if (si->m_stream)
       {
-        CAEFactory::FreeStream(si->m_stream);
+        CServiceBroker::GetActiveAE().FreeStream(si->m_stream);
         si->m_stream = NULL;
       }
 
@@ -223,7 +224,7 @@ void PAPlayer::CloseAllStreams(bool fade/* = true */)
 
       if (si->m_stream)
       {
-        CAEFactory::FreeStream(si->m_stream);
+        CServiceBroker::GetActiveAE().FreeStream(si->m_stream);
         si->m_stream = NULL;
       }
 
@@ -254,7 +255,7 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
   // if audio engine is suspended i.e. by a DisplayLost event (HDMI), MakeStream
   // waits until the engine is resumed. if we block the main thread here, it can't
   // resume the engine after a DisplayReset event
-  if (CAEFactory::IsSuspended())
+  if (CServiceBroker::GetActiveAE().IsSuspended())
   {
     if (!QueueNextFile(file))
       return false;
@@ -284,12 +285,19 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
   /* trigger playback start */
   m_isPlaying = true;
   m_startEvent.Set();
+
+  if (options.startpercent > 0.0)
+  {
+    Sleep(50);
+    SeekPercentage(options.startpercent);
+  }
+
   return true;
 }
 
 void PAPlayer::UpdateCrossfadeTime(const CFileItem& file)
 {
-  // we explicitely disable crossfading for audio cds
+  // we explicitly disable crossfading for audio cds
   if(file.IsCDDA())
    m_upcomingCrossfadeMS = 0;
   else
@@ -345,7 +353,7 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn/* = true */, b
   }
 
   StreamInfo *si = new StreamInfo();
-  if (!si->m_decoder.Create(file, (file.m_lStartOffset * 1000) / 75))
+  if (!si->m_decoder.Create(file, (static_cast<int64_t>(file.m_lStartOffset) * 1000) / 75))
   {
     CLog::Log(LOGWARNING, "PAPlayer::QueueNextFileEx - Failed to create the decoder");
 
@@ -386,8 +394,8 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn/* = true */, b
 
   /* init the streaminfo struct */
   si->m_audioFormat = si->m_decoder.GetFormat();
-  si->m_startOffset = file.m_lStartOffset * 1000 / 75;
-  si->m_endOffset = file.m_lEndOffset   * 1000 / 75;
+  si->m_startOffset = static_cast<int64_t>(file.m_lStartOffset) * 1000 / 75;
+  si->m_endOffset = static_cast<int64_t>(file.m_lEndOffset) * 1000 / 75;
   si->m_bytesPerSample = CAEUtil::DataFormatToBits(si->m_audioFormat.m_dataFormat) >> 3;
   si->m_bytesPerFrame = si->m_bytesPerSample * si->m_audioFormat.m_channelLayout.Count();
   si->m_started = false;
@@ -474,7 +482,7 @@ inline bool PAPlayer::PrepareStream(StreamInfo *si)
 
   /* get a paused stream */
   AEAudioFormat format = si->m_audioFormat;
-  si->m_stream = CAEFactory::MakeStream(
+  si->m_stream = CServiceBroker::GetActiveAE().MakeStream(
     format,
     AESTREAM_PAUSED
   );
@@ -488,9 +496,11 @@ inline bool PAPlayer::PrepareStream(StreamInfo *si)
   si->m_stream->SetVolume    (si->m_volume);
   float peak = 1.0;
   float gain = si->m_decoder.GetReplayGain(peak);
-  if (peak == 1.0)
+  if (peak * gain <= 1.0)
+    // No clipping protection needed
     si->m_stream->SetReplayGain(gain);
   else
+    // Clipping protecton provided as audio limiting
     si->m_stream->SetAmplification(gain);
 
   /* if its not the first stream and crossfade is not enabled */
@@ -528,7 +538,7 @@ inline bool PAPlayer::PrepareStream(StreamInfo *si)
 bool PAPlayer::CloseFile(bool reopen)
 {
   if (reopen)
-    CAEFactory::KeepConfiguration(3000);
+    CServiceBroker::GetActiveAE().KeepConfiguration(3000);
 
   if (!m_isPaused)
     SoftStop(true, true);
@@ -616,7 +626,7 @@ inline void PAPlayer::ProcessStreams(double &freeBufferTime)
     if (si->m_stream->IsDrained())
     {      
       itt = m_finishing.erase(itt);
-      CAEFactory::FreeStream(si->m_stream);
+      CServiceBroker::GetActiveAE().FreeStream(si->m_stream);
       delete si;
       CLog::Log(LOGDEBUG, "PAPlayer::ProcessStreams - Stream Freed");
     }
@@ -782,9 +792,9 @@ inline bool PAPlayer::ProcessStream(StreamInfo *si, double &freeBufferTime)
     if (si == m_currentStream && m_continueStream)
     {
       // update current stream with info of next track
-      si->m_startOffset = m_FileItem->m_lStartOffset * 1000 / 75;
+      si->m_startOffset = static_cast<int64_t>(m_FileItem->m_lStartOffset) * 1000 / 75;
       if (m_FileItem->m_lEndOffset)
-        si->m_endOffset = m_FileItem->m_lEndOffset * 1000 / 75;
+        si->m_endOffset = static_cast<int64_t>(m_FileItem->m_lEndOffset) * 1000 / 75;
       else
         si->m_endOffset = 0;
       si->m_framesSent = 0;

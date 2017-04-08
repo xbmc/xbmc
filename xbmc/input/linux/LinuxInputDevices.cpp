@@ -228,6 +228,7 @@ KeyMap keyMap[] = {
   { KEY_VOLUMEDOWN    , XBMCK_VOLUME_DOWN },
   { KEY_VOLUMEUP      , XBMCK_VOLUME_UP   },
   { KEY_POWER         , XBMCK_POWER       },
+  { KEY_SLEEP         , XBMCK_POWER       },
   { KEY_KPEQUAL       , XBMCK_KP_EQUALS   },
   { KEY_PAUSE         , XBMCK_PAUSE       },
   { KEY_PAUSECD       , XBMCK_PAUSE       },
@@ -859,7 +860,7 @@ XBMC_Event CLinuxInputDevice::ReadEvent()
 
       //printf("read event readlen = %d device name %s m_fileName %s\n", readlen, m_deviceName, m_fileName.c_str());
 
-      // sanity check if we realy read the event
+      // sanity check if we really read the event
       if(readlen != sizeof(levt))
       {
         CLog::Log(LOGERROR,"CLinuxInputDevice: read error : %s\n", strerror(errno));

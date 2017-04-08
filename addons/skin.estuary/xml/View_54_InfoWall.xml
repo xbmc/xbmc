@@ -115,7 +115,7 @@
 			<control type="group">
 				<left>133</left>
 				<top>2</top>
-				<include>UserRatingCircle</include>
+				<include condition="Skin.HasSetting(circle_rating) | Skin.HasSetting(circle_userrating)">RatingCircle</include>
 			</control>
 		</definition>
 	</include>
@@ -225,7 +225,7 @@
 			<control type="group">
 				<left>134</left>
 				<top>8</top>
-				<include>UserRatingCircle</include>
+				<include condition="Skin.HasSetting(circle_rating) | Skin.HasSetting(circle_userrating)">RatingCircle</include>
 			</control>
 		</definition>
 	</include>
@@ -255,7 +255,7 @@
 				</control>
 				<control type="textbox">
 					<left>40</left>
-					<top>250</top>
+					<top>244</top>
 					<width>242</width>
 					<height>120</height>
 					<font>font27</font>
@@ -266,9 +266,9 @@
 					<visible>!ListItem.IsParentFolder</visible>
 				</control>
 				<control type="image">
-					<left>26</left>
-					<top>0</top>
-					<width>270</width>
+					<left>24</left>
+					<top>-1</top>
+					<width>272</width>
 					<height>270</height>
 					<texture fallback="DefaultMovies.png" background="true">$INFO[ListItem.Icon]</texture>
 					<aspectratio>scale</aspectratio>
@@ -304,7 +304,7 @@
 					<width>80</width>
 					<height>80</height>
 					<texture>overlays/overlay-bg.png</texture>
-					<visible>Listitem.IsCollection | ListItem.IsResumable | ListItem.IsPlaying | Integer.IsGreater(ListItem.Playcount,0)</visible>
+					<visible>Listitem.IsCollection | ListItem.IsPlaying | Integer.IsGreater(ListItem.Playcount,0)</visible>
 				</control>
 			</control>
 			<control type="group">
@@ -345,7 +345,7 @@
 			<control type="group">
 				<left>135</left>
 				<top>-8</top>
-				<include>UserRatingCircle</include>
+				<include condition="Skin.HasSetting(circle_rating) | Skin.HasSetting(circle_userrating)">RatingCircle</include>
 			</control>
 			<control type="progress">
 				<left>35</left>

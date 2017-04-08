@@ -62,16 +62,16 @@ namespace dbiplus
 /*!
  \ingroup music
  \brief A set of std::string objects, used for CMusicDatabase
- \sa ISETPATHES, CMusicDatabase
+ \sa ISETPATHS, CMusicDatabase
  */
-typedef std::set<std::string> SETPATHES;
+typedef std::set<std::string> SETPATHS;
 
 /*!
  \ingroup music
- \brief The SETPATHES iterator
- \sa SETPATHES, CMusicDatabase
+ \brief The SETPATHS iterator
+ \sa SETPATHS, CMusicDatabase
  */
-typedef std::set<std::string>::iterator ISETPATHES;
+typedef std::set<std::string>::iterator ISETPATHS;
 
 class CGUIDialogProgress;
 class CFileItemList;
@@ -219,7 +219,7 @@ public:
    \param strArtist the album artist name(s)
    \param strGenre the album genre(s)
    \param year the year
-   \param strRecordLabel the recording lable
+   \param strRecordLabel the recording label
    \param strType album type (Musicbrainz release type e.g. "Broadcast, Soundtrack, live"), 
    \param bCompilation if the album is a compilation
    \param releaseType "album" or "single"
@@ -249,6 +249,13 @@ public:
   bool ClearAlbumLastScrapedTime(int idAlbum);
   bool HasAlbumBeenScraped(int idAlbum);
   int  AddAlbumInfoSong(int idAlbum, const CSong& song);
+
+  /////////////////////////////////////////////////
+  // Audiobook
+  /////////////////////////////////////////////////
+  bool AddAudioBook(const CFileItem& item);
+  bool SetResumeBookmarkForAudioBook(const CFileItem& item, int bookmark);
+  bool GetResumeBookmarkForAudioBook(const std::string& path, int& bookmark);
 
   /*! \brief Checks if the given path is inside a folder that has already been scanned into the library
    \param path the path we want to check
@@ -335,7 +342,6 @@ public:
 
   bool AddSongGenre(int idGenre, int idSong, int iOrder);
   bool GetGenresBySong(int idSong, std::vector<int>& genres);
-  bool DeleteSongGenresBySong(int idSong);
 
   bool AddAlbumGenre(int idGenre, int idAlbum, int iOrder);
   bool GetGenresByAlbum(int idAlbum, std::vector<int>& genres);
@@ -393,7 +399,7 @@ public:
   bool GetSongsNav(const std::string& strBaseDir, CFileItemList& items, int idGenre, int idArtist,int idAlbum, const SortDescription &sortDescription = SortDescription());
   bool GetSongsByYear(const std::string& baseDir, CFileItemList& items, int year);
   bool GetSongsByWhere(const std::string &baseDir, const Filter &filter, CFileItemList& items, const SortDescription &sortDescription = SortDescription());
-  bool GetSongsFullByWhere(const std::string &baseDir, const Filter &filter, CFileItemList& items, const SortDescription &sortDescription = SortDescription(), bool artistData = false, bool cueSheetData = true);
+  bool GetSongsFullByWhere(const std::string &baseDir, const Filter &filter, CFileItemList& items, const SortDescription &sortDescription = SortDescription(), bool artistData = false, bool cueSheetData = false);
   bool GetAlbumsByWhere(const std::string &baseDir, const Filter &filter, CFileItemList &items, const SortDescription &sortDescription = SortDescription(), bool countOnly = false);
   bool GetAlbumsByWhere(const std::string &baseDir, const Filter &filter, VECALBUMS& albums, int& total, const SortDescription &sortDescription = SortDescription(), bool countOnly = false);
   bool GetArtistsByWhere(const std::string& strBaseDir, const Filter &filter, CFileItemList& items, const SortDescription &sortDescription = SortDescription(), bool countOnly = false);
@@ -497,12 +503,29 @@ public:
    */
   std::string GetArtistArtForItem(int mediaId, const std::string &mediaType, const std::string &artType);
 
+  /////////////////////////////////////////////////
+  // Tag Scan Version
+  /////////////////////////////////////////////////
+  /*! \brief Check if music files need all tags rescanning regardless of file being unchanged 
+  because the tag processing has changed (which may happen without db version changes) since they
+  where last scanned.
+  \return -1 if an error occured, 0 if no scan is needed, or the version number of tags if not the same as current.
+  */
+  virtual int GetMusicNeedsTagScan();
+
+  /*! \brief Set minimum version number of db needed when tag data scanned from music files
+  \param version the version number of db
+  */
+  void SetMusicNeedsTagScan(int version);
+
+  /*! \brief Set the version number of tag data 
+  \param version the version number of db when tags last scanned, 0 (default) means current db version
+  */
+  void SetMusicTagScanVersion(int version = 0);
+
 protected:
-  std::map<std::string, int> m_artistCache;
   std::map<std::string, int> m_genreCache;
   std::map<std::string, int> m_pathCache;
-  std::map<std::string, int> m_thumbCache;
-  std::map<std::string, CAlbum> m_albumCache;
   typedef std::map<std::string, std::string> CueCache;
   CueCache m_cueCache;
 

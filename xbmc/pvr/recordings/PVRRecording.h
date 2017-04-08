@@ -94,7 +94,7 @@ namespace PVR
     bool operator ==(const CPVRRecording& right) const;
     bool operator !=(const CPVRRecording& right) const;
 
-    virtual void Serialize(CVariant& value) const;
+    void Serialize(CVariant& value) const override;
 
     /*!
      * @brief Reset this tag to it's initial state.
@@ -276,6 +276,5 @@ namespace PVR
     bool         m_bRadio;        /*!< radio or tv recording */
 
     void UpdatePath(void);
-    void DisplayError(PVR_ERROR err) const;
   };
 }

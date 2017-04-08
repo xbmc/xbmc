@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<defaultcontrol always="true">11</defaultcontrol>
+	<controls>
+		<control type="group">
+			<depth>DepthOSD</depth>
+			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="$EXP[infodialog_active]">Conditional</animation>
+			<control type="group">
+				<include>OpenClose_Left</include>
+				<include content="ContentPanel">
+					<param name="width" value="840" />
+				</include>
+				<control type="fixedlist" id="11">
+					<left>0</left>
+					<width>1600</width>
+					<height>100%</height>
+					<onleft>60</onleft>
+					<onright>60</onright>
+					<onup>11</onup>
+					<ondown>11</ondown>
+					<pagecontrol>60</pagecontrol>
+					<scrolltime tween="cubic" easing="out">500</scrolltime>
+					<movement>4</movement>
+					<focusposition>5</focusposition>
+					<itemlayout height="90" width="1600">
+						<control type="label">
+							<left>20</left>
+							<width>150</width>
+							<bottom>0</bottom>
+							<aligny>center</aligny>
+							<textcolor>grey</textcolor>
+							<label>$INFO[ListItem.StartTime]</label>
+						</control>
+						<control type="label">
+							<left>150</left>
+							<width>610</width>
+							<bottom>0</bottom>
+							<align>right</align>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Label]</label>
+						</control>
+					</itemlayout>
+					<focusedlayout height="90" width="1600">
+						<control type="image">
+							<left>0</left>
+							<width>780</width>
+							<bottom>0</bottom>
+							<texture colordiffuse="button_focus">lists/focus.png</texture>
+							<visible>Control.HasFocus(11)</visible>
+							<animation effect="fade" start="100" end="0" time="0">UnFocus</animation>
+						</control>
+						<control type="label">
+							<left>20</left>
+							<width>150</width>
+							<bottom>0</bottom>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.StartTime]</label>
+						</control>
+						<control type="label">
+							<left>150</left>
+							<width>610</width>
+							<bottom>0</bottom>
+							<align>right</align>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Label]</label>
+						</control>
+						<control type="group">
+							<visible>!String.IsEmpty(ListItem.Plot) + Control.HasFocus(11)</visible>
+							<animation effect="fade" start="0" end="100" time="200">Focus</animation>
+							<control type="image">
+								<left>782</left>
+								<top>-100</top>
+								<width>900</width>
+								<height>350</height>
+								<texture border="40">buttons/dialogbutton-nofo.png</texture>
+							</control>
+							<control type="textbox">
+								<left>815</left>
+								<top>-70</top>
+								<width>760</width>
+								<height>290</height>
+								<label>$INFO[ListItem.Plot]</label>
+							</control>
+						</control>
+					</focusedlayout>
+				</control>
+				<control type="scrollbar" id="60">
+					<left>768</left>
+					<width>12</width>
+					<height>100%</height>
+					<onleft>11</onleft>
+					<texturesliderbackground />
+					<onright>NextChannelGroup</onright>
+					<ondown>61</ondown>
+					<onup>61</onup>
+					<animation effect="zoom" start="100,100" end="50,100" center="780,0" time="300" tween="sine" easing="inout" condition="!Control.HasFocus(60)">conditional</animation>
+					<orientation>vertical</orientation>
+				</control>
+			</control>
+			<control type="image">
+				<left>0</left>
+				<bottom>0</bottom>
+				<width>100%</width>
+				<height>115</height>
+				<texture flipy="true">frame/InfoBar.png</texture>
+			</control>
+			<control type="group">
+				<include>Animation_TopSlide</include>
+				<control type="image">
+					<left>0</left>
+					<width>780</width>
+					<height>110</height>
+					<texture>frame/InfoBar.png</texture>
+				</control>
+				<control type="label" id="2">
+					<description>header label</description>
+					<textoffsetx>40</textoffsetx>
+					<width>1300</width>
+					<height>70</height>
+					<font>font45</font>
+					<aligny>center</aligny>
+					<label>$LOCALIZE[19069]$INFO[Container(11).ListItem.StartDate, - ]</label>
+					<shadowcolor>black</shadowcolor>
+				</control>
+			</control>
+		</control>
+	</controls>
+</window>

@@ -36,12 +36,10 @@ class CURL;
 class CDemuxStreamVideoFFmpeg
   : public CDemuxStreamVideo
 {
-  CDVDDemuxFFmpeg *m_parent;
   AVStream*        m_stream;
 public:
   CDemuxStreamVideoFFmpeg(CDVDDemuxFFmpeg *parent, AVStream* stream)
-    : m_parent(parent)
-    , m_stream(stream)
+    : m_stream(stream)
   {}
   std::string      m_description;
 
@@ -52,12 +50,10 @@ public:
 class CDemuxStreamAudioFFmpeg
   : public CDemuxStreamAudio
 {
-  CDVDDemuxFFmpeg *m_parent;
   AVStream*        m_stream;
 public:
   CDemuxStreamAudioFFmpeg(CDVDDemuxFFmpeg *parent, AVStream* stream)
-    : m_parent(parent)
-    , m_stream(stream)
+    : m_stream(stream)
   {}
   std::string m_description;
 
@@ -67,12 +63,10 @@ public:
 class CDemuxStreamSubtitleFFmpeg
   : public CDemuxStreamSubtitle
 {
-  CDVDDemuxFFmpeg *m_parent;
   AVStream*        m_stream;
 public:
   CDemuxStreamSubtitleFFmpeg(CDVDDemuxFFmpeg *parent, AVStream* stream)
-    : m_parent(parent)
-    , m_stream(stream)
+    : m_stream(stream)
   {}
   std::string m_description;
 
@@ -152,6 +146,7 @@ protected:
   double   m_currentPts; // used for stream length estimation
   bool     m_bMatroska;
   bool     m_bAVI;
+  bool     m_bSup;
   int      m_speed;
   unsigned m_program;
   XbmcThreads::EndTime  m_timeout;

@@ -28,6 +28,7 @@
 
 #include "threads/CriticalSection.h"
 #include "guilib/IMsgTargetCallback.h"
+#include "guilib/GUIControl.h"
 #include "messaging/IMessageTarget.h"
 #include "inttypes.h"
 #include "XBDateTime.h"
@@ -260,6 +261,7 @@ protected:
 
   bool GetMultiInfoBool(const GUIInfo &info, int contextWindow = 0, const CGUIListItem *item = NULL);
   bool GetMultiInfoInt(int &value, const GUIInfo &info, int contextWindow = 0) const;
+  CGUIControl * GetActiveContainer(int containerId, int contextWindow) const;
   std::string GetMultiInfoLabel(const GUIInfo &info, int contextWindow = 0, std::string *fallback = NULL);
   int TranslateListItem(const Property &info);
   int TranslateMusicPlayerString(const std::string &info) const;
@@ -339,7 +341,7 @@ protected:
   int m_libraryHasCompilations;
   
   //Count of artists in music library contributing to song by role e.g. composers, conductors etc.
-  //For checking visibiliy of custom nodes for a role.
+  //For checking visibility of custom nodes for a role.
   std::vector<std::pair<std::string, int>> m_libraryRoleCounts; 
 
   SPlayerVideoStreamInfo m_videoInfo;

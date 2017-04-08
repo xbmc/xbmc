@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<node order="8" type="filter">
-  <label>20451</label>
-  <icon>DefaultCountry.png</icon>
-  <content>movies</content>
-  <group>countries</group>
+<node order="9" type="filter">
+	<label>20451</label>
+	<icon>DefaultCountry.png</icon>
+	<content>movies</content>
+	<group>countries</group>
 </node>

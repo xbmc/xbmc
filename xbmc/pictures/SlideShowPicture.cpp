@@ -32,7 +32,7 @@
 #endif
 #include <math.h>
 
-#define IMMEDIATE_TRANSISTION_TIME          20
+#define IMMEDIATE_TRANSITION_TIME          20
 
 #define PICTURE_MOVE_AMOUNT              0.02f
 #define PICTURE_MOVE_AMOUNT_ANALOG       0.01f
@@ -49,7 +49,7 @@ CSlideShowPic::CSlideShowPic() : m_alpha(0)
   m_bIsLoaded = false;
   m_bIsFinished = false;
   m_bDrawNextImage = false;
-  m_bTransistionImmediately = false;
+  m_bTransitionImmediately = false;
 
   m_bCanMoveHorizontally = false;
   m_bCanMoveVertically = false;
@@ -74,7 +74,7 @@ void CSlideShowPic::Close()
   m_bIsLoaded = false;
   m_bIsFinished = false;
   m_bDrawNextImage = false;
-  m_bTransistionImmediately = false;
+  m_bTransitionImmediately = false;
   m_bIsDirty = true;
   m_alpha = 0;
 #ifdef HAS_DX
@@ -82,7 +82,7 @@ void CSlideShowPic::Close()
 #endif
 }
 
-void CSlideShowPic::Reset(DISPLAY_EFFECT dispEffect, TRANSISTION_EFFECT transEffect)
+void CSlideShowPic::Reset(DISPLAY_EFFECT dispEffect, TRANSITION_EFFECT transEffect)
 {
   CSingleLock lock(m_textureAccess);
   if (m_pImage)
@@ -100,19 +100,19 @@ bool CSlideShowPic::DisplayEffectNeedChange(DISPLAY_EFFECT newDispEffect) const
   return true;
 }
 
-void CSlideShowPic::SetTexture(int iSlideNumber, CBaseTexture* pTexture, DISPLAY_EFFECT dispEffect, TRANSISTION_EFFECT transEffect)
+void CSlideShowPic::SetTexture(int iSlideNumber, CBaseTexture* pTexture, DISPLAY_EFFECT dispEffect, TRANSITION_EFFECT transEffect)
 {
   CSingleLock lock(m_textureAccess);
   Close();
   SetTexture_Internal(iSlideNumber, pTexture, dispEffect, transEffect);
 }
 
-void CSlideShowPic::SetTexture_Internal(int iSlideNumber, CBaseTexture* pTexture, DISPLAY_EFFECT dispEffect, TRANSISTION_EFFECT transEffect)
+void CSlideShowPic::SetTexture_Internal(int iSlideNumber, CBaseTexture* pTexture, DISPLAY_EFFECT dispEffect, TRANSITION_EFFECT transEffect)
 {
   CSingleLock lock(m_textureAccess);
   m_bPause = false;
   m_bNoEffect = false;
-  m_bTransistionImmediately = false;
+  m_bTransitionImmediately = false;
   m_iSlideNumber = iSlideNumber;
 
   m_bIsDirty = true;
@@ -125,9 +125,9 @@ void CSlideShowPic::SetTexture_Internal(int iSlideNumber, CBaseTexture* pTexture
   }
   // reset our counter
   m_iCounter = 0;
-  // initialize our transistion effect
-  m_transistionStart.type = transEffect;
-  m_transistionStart.start = 0;
+  // initialize our transition effect
+  m_transitionStart.type = transEffect;
+  m_transitionStart.start = 0;
 
   // initialize our display effect
   if (dispEffect == EFFECT_RANDOM)
@@ -144,12 +144,12 @@ void CSlideShowPic::SetTexture_Internal(int iSlideNumber, CBaseTexture* pTexture
   float fadeTime = 0.2f;
   if (m_displayEffect != EFFECT_NO_TIMEOUT)
     fadeTime = std::min(0.2f*CServiceBroker::GetSettings().GetInt(CSettings::SETTING_SLIDESHOW_STAYTIME), 3.0f);
-  m_transistionStart.length = (int)(g_graphicsContext.GetFPS() * fadeTime); // transition time in frames
-  m_transistionEnd.type = transEffect;
-  m_transistionEnd.length = m_transistionStart.length;
-  m_transistionTemp.type = TRANSISTION_NONE;
-  m_fTransistionAngle = 0;
-  m_fTransistionZoom = 0;
+  m_transitionStart.length = (int)(g_graphicsContext.GetFPS() * fadeTime); // transition time in frames
+  m_transitionEnd.type = transEffect;
+  m_transitionEnd.length = m_transitionStart.length;
+  m_transitionTemp.type = TRANSITION_NONE;
+  m_fTransitionAngle = 0;
+  m_fTransitionZoom = 0;
   m_fAngle = 0.0f;
   if (pTexture->GetOrientation() == 7)
   { // rotate to 270 degrees
@@ -179,7 +179,7 @@ void CSlideShowPic::SetTexture_Internal(int iSlideNumber, CBaseTexture* pTexture
     if (m_fWidth > m_fHeight)
     {
       iFrames = (int)(iFrames * (m_fWidth - m_fHeight) / m_fHeight);
-      m_iTotalFrames = m_transistionStart.length + m_transistionEnd.length + iFrames;
+      m_iTotalFrames = m_transitionStart.length + m_transitionEnd.length + iFrames;
 
       m_fPosX = 0.5f - (fScreenWidth / fScreenHeight) * (m_fHeight / m_fWidth) * 0.5f;
       if (rand() % 2)
@@ -189,7 +189,7 @@ void CSlideShowPic::SetTexture_Internal(int iSlideNumber, CBaseTexture* pTexture
     else
     {
       iFrames = (int)(iFrames * (m_fHeight - (0.5f * m_fWidth)) / m_fWidth);
-      m_iTotalFrames = m_transistionStart.length + m_transistionEnd.length + iFrames;
+      m_iTotalFrames = m_transitionStart.length + m_transitionEnd.length + iFrames;
 
       m_fPosY = 0.5f - (fScreenHeight / fScreenWidth) * (m_fWidth / m_fHeight) * 0.5f;
       if (rand() % 2)
@@ -199,7 +199,7 @@ void CSlideShowPic::SetTexture_Internal(int iSlideNumber, CBaseTexture* pTexture
   }
   else
   {
-    m_iTotalFrames = m_transistionStart.length + m_transistionEnd.length + iFrames;
+    m_iTotalFrames = m_transitionStart.length + m_transitionEnd.length + iFrames;
 
     if (m_displayEffect == EFFECT_FLOAT)
     {
@@ -218,7 +218,7 @@ void CSlideShowPic::SetTexture_Internal(int iSlideNumber, CBaseTexture* pTexture
     }
   }
 
-  m_transistionEnd.start = m_transistionStart.length + iFrames;
+  m_transitionEnd.start = m_transitionStart.length + iFrames;
 
   m_bIsFinished = false;
   m_bDrawNextImage = false;
@@ -293,32 +293,32 @@ void CSlideShowPic::Process(unsigned int currentTime, CDirtyRegionList &dirtyreg
 {
   if (!m_pImage || !m_bIsLoaded || m_bIsFinished) return ;
   color_t alpha = m_alpha;
-  if (m_iCounter <= m_transistionStart.length)
-  { // do start transistion
-    if (m_transistionStart.type == CROSSFADE)
+  if (m_iCounter <= m_transitionStart.length)
+  { // do start transition
+    if (m_transitionStart.type == CROSSFADE)
     { // fade in at 1x speed
-      alpha = (color_t)((float)m_iCounter / (float)m_transistionStart.length * 255.0f);
+      alpha = (color_t)((float)m_iCounter / (float)m_transitionStart.length * 255.0f);
     }
-    else if (m_transistionStart.type == FADEIN_FADEOUT)
+    else if (m_transitionStart.type == FADEIN_FADEOUT)
     { // fade in at 2x speed, then keep solid
-      alpha = (color_t)((float)m_iCounter / (float)m_transistionStart.length * 255.0f * 2);
+      alpha = (color_t)((float)m_iCounter / (float)m_transitionStart.length * 255.0f * 2);
       if (alpha > 255) alpha = 255;
     }
-    else // m_transistionEffect == TRANSISTION_NONE
+    else // m_transitionEffect == TRANSITION_NONE
     {
       alpha = 0xFF; // opaque
     }
   }
   bool bPaused = m_bPause | (m_fZoomAmount != 1.0f);
   // check if we're doing a temporary effect (such as rotate + zoom)
-  if (m_transistionTemp.type != TRANSISTION_NONE)
+  if (m_transitionTemp.type != TRANSITION_NONE)
   {
     bPaused = true;
-    if (m_iCounter >= m_transistionTemp.start)
+    if (m_iCounter >= m_transitionTemp.start)
     {
-      if (m_iCounter >= m_transistionTemp.start + m_transistionTemp.length)
-      { // we're finished this transistion
-        if (m_transistionTemp.type == TRANSISTION_ZOOM)
+      if (m_iCounter >= m_transitionTemp.start + m_transitionTemp.length)
+      { // we're finished this transition
+        if (m_transitionTemp.type == TRANSITION_ZOOM)
         { // correct for any introduced inaccuracies.
           int i;
           for (i = 0; i < 10; i++)
@@ -331,14 +331,14 @@ void CSlideShowPic::Process(unsigned int currentTime, CDirtyRegionList &dirtyreg
           }
           m_bNoEffect = (m_fZoomAmount != 1.0f); // turn effect rendering back on.
         }
-        m_transistionTemp.type = TRANSISTION_NONE;
+        m_transitionTemp.type = TRANSITION_NONE;
       }
       else
       {
-        if (m_transistionTemp.type == TRANSISTION_ROTATE)
-          m_fAngle += m_fTransistionAngle;
-        if (m_transistionTemp.type == TRANSISTION_ZOOM)
-          m_fZoomAmount += m_fTransistionZoom;
+        if (m_transitionTemp.type == TRANSITION_ROTATE)
+          m_fAngle += m_fTransitionAngle;
+        if (m_transitionTemp.type == TRANSITION_ZOOM)
+          m_fZoomAmount += m_fTransitionZoom;
       }
     }
   }
@@ -391,24 +391,24 @@ void CSlideShowPic::Process(unsigned int currentTime, CDirtyRegionList &dirtyreg
       }*/
     }
   }
-  if (m_displayEffect != EFFECT_NO_TIMEOUT && bPaused && !m_bTransistionImmediately)
-  { // paused - increment the last transistion start time
-    m_transistionEnd.start++;
+  if (m_displayEffect != EFFECT_NO_TIMEOUT && bPaused && !m_bTransitionImmediately)
+  { // paused - increment the last transition start time
+    m_transitionEnd.start++;
   }
-  if (m_iCounter >= m_transistionEnd.start)
-  { // do end transistion
-//    CLog::Log(LOGDEBUG,"Transistioning");
+  if (m_iCounter >= m_transitionEnd.start)
+  { // do end transition
+//    CLog::Log(LOGDEBUG,"Transitioning");
     m_bDrawNextImage = true;
-    if (m_transistionEnd.type == CROSSFADE)
+    if (m_transitionEnd.type == CROSSFADE)
     { // fade out at 1x speed
-      alpha = 255 - (color_t)((float)(m_iCounter - m_transistionEnd.start) / (float)m_transistionEnd.length * 255.0f);
+      alpha = 255 - (color_t)((float)(m_iCounter - m_transitionEnd.start) / (float)m_transitionEnd.length * 255.0f);
     }
-    else if (m_transistionEnd.type == FADEIN_FADEOUT)
+    else if (m_transitionEnd.type == FADEIN_FADEOUT)
     { // keep solid, then fade out at 2x speed
-      alpha = (color_t)((float)(m_transistionEnd.length - m_iCounter + m_transistionEnd.start) / (float)m_transistionEnd.length * 255.0f * 2);
+      alpha = (color_t)((float)(m_transitionEnd.length - m_iCounter + m_transitionEnd.start) / (float)m_transitionEnd.length * 255.0f * 2);
       if (alpha > 255) alpha = 255;
     }
-    else // m_transistionEffect == TRANSISTION_NONE
+    else // m_transitionEffect == TRANSITION_NONE
     {
       alpha = 0xFF; // opaque
     }
@@ -418,15 +418,15 @@ void CSlideShowPic::Process(unsigned int currentTime, CDirtyRegionList &dirtyreg
     m_alpha = alpha;
     m_bIsDirty = true;
   }
-  if (m_displayEffect != EFFECT_NO_TIMEOUT || m_iCounter < m_transistionStart.length || m_iCounter >= m_transistionEnd.start || (m_iCounter >= m_transistionTemp.start && m_iCounter < m_transistionTemp.start + m_transistionTemp.length))
+  if (m_displayEffect != EFFECT_NO_TIMEOUT || m_iCounter < m_transitionStart.length || m_iCounter >= m_transitionEnd.start || (m_iCounter >= m_transitionTemp.start && m_iCounter < m_transitionTemp.start + m_transitionTemp.length))
   {
     /* this really annoying.  there's non-stop logging when viewing a pic outside of the slideshow
     if (m_displayEffect == EFFECT_NO_TIMEOUT)
-      CLog::Log(LOGDEBUG, "Incrementing counter (%i) while not in slideshow (startlength=%i,endstart=%i,endlength=%i)", m_iCounter, m_transistionStart.length, m_transistionEnd.start, m_transistionEnd.length);
+      CLog::Log(LOGDEBUG, "Incrementing counter (%i) while not in slideshow (startlength=%i,endstart=%i,endlength=%i)", m_iCounter, m_transitionStart.length, m_transitionEnd.start, m_transitionEnd.length);
     */
     m_iCounter++;
   }
-  if (m_iCounter > m_transistionEnd.start + m_transistionEnd.length)
+  if (m_iCounter > m_transitionEnd.start + m_transitionEnd.length)
     m_bIsFinished = true;
 
   RESOLUTION_INFO info = g_graphicsContext.GetResInfo();
@@ -645,16 +645,16 @@ void CSlideShowPic::Keep()
   // to wait for the next pic to load
   if (!m_bDrawNextImage) return ; // don't need to keep pic
   // hold off the start of the next frame
-  m_transistionEnd.start = m_iCounter;
+  m_transitionEnd.start = m_iCounter;
 }
 
-bool CSlideShowPic::StartTransistion()
+bool CSlideShowPic::StartTransition()
 {
-  // this is called if we need to start transistioning immediately to the new picture
-  if (m_bDrawNextImage) return false; // don't need to do anything as we are already transistioning
+  // this is called if we need to start transitioning immediately to the new picture
+  if (m_bDrawNextImage) return false; // don't need to do anything as we are already transitioning
   // decrease the number of display frame
-  m_transistionEnd.start = m_iCounter;
-  m_bTransistionImmediately = true;
+  m_transitionEnd.start = m_iCounter;
+  m_bTransitionImmediately = true;
   return true;
 }
 
@@ -670,26 +670,26 @@ void CSlideShowPic::SetInSlideshow(bool slideshow)
     m_displayEffect = EFFECT_NONE;
 }
 
-int CSlideShowPic::GetTransistionTime(int iType) const
+int CSlideShowPic::GetTransitionTime(int iType) const
 {
-  if (iType == 0) // start transistion
-    return m_transistionStart.length;
-  else // iType == 1 // end transistion
-    return m_transistionEnd.length;
+  if (iType == 0) // start transition
+    return m_transitionStart.length;
+  else // iType == 1 // end transition
+    return m_transitionEnd.length;
 }
 
-void CSlideShowPic::SetTransistionTime(int iType, int iTime)
+void CSlideShowPic::SetTransitionTime(int iType, int iTime)
 {
-  if (iType == 0) // start transistion
-    m_transistionStart.length = iTime;
-  else // iType == 1 // end transistion
-    m_transistionEnd.length = iTime;
+  if (iType == 0) // start transition
+    m_transitionStart.length = iTime;
+  else // iType == 1 // end transition
+    m_transitionEnd.length = iTime;
 }
 
 void CSlideShowPic::Rotate(float fRotateAngle, bool immediate /* = false */)
 {
   if (m_bDrawNextImage) return;
-  if (m_transistionTemp.type == TRANSISTION_ZOOM) return;
+  if (m_transitionTemp.type == TRANSITION_ZOOM) return;
   if (immediate)
   {
     m_fAngle += fRotateAngle;
@@ -698,36 +698,36 @@ void CSlideShowPic::Rotate(float fRotateAngle, bool immediate /* = false */)
 
   // if there is a rotation ongoing already
   // add the new angle to the old destination angle
-  if (m_transistionTemp.type == TRANSISTION_ROTATE && 
-      m_transistionTemp.start + m_transistionTemp.length > m_iCounter)
+  if (m_transitionTemp.type == TRANSITION_ROTATE && 
+      m_transitionTemp.start + m_transitionTemp.length > m_iCounter)
   {
-    int remainder = m_transistionTemp.start + m_transistionTemp.length - m_iCounter;
-    fRotateAngle += m_fTransistionAngle * remainder;
+    int remainder = m_transitionTemp.start + m_transitionTemp.length - m_iCounter;
+    fRotateAngle += m_fTransitionAngle * remainder;
   }
 
-  m_transistionTemp.type = TRANSISTION_ROTATE;
-  m_transistionTemp.start = m_iCounter;
-  m_transistionTemp.length = IMMEDIATE_TRANSISTION_TIME;
-  m_fTransistionAngle = (float)fRotateAngle / (float)m_transistionTemp.length;
+  m_transitionTemp.type = TRANSITION_ROTATE;
+  m_transitionTemp.start = m_iCounter;
+  m_transitionTemp.length = IMMEDIATE_TRANSITION_TIME;
+  m_fTransitionAngle = (float)fRotateAngle / (float)m_transitionTemp.length;
   // reset the timer
-  m_transistionEnd.start = m_iCounter + m_transistionStart.length + (int)(g_graphicsContext.GetFPS() * CServiceBroker::GetSettings().GetInt(CSettings::SETTING_SLIDESHOW_STAYTIME));
+  m_transitionEnd.start = m_iCounter + m_transitionStart.length + (int)(g_graphicsContext.GetFPS() * CServiceBroker::GetSettings().GetInt(CSettings::SETTING_SLIDESHOW_STAYTIME));
 }
 
 void CSlideShowPic::Zoom(float fZoom, bool immediate /* = false */)
 {
   if (m_bDrawNextImage) return;
-  if (m_transistionTemp.type == TRANSISTION_ROTATE) return;
+  if (m_transitionTemp.type == TRANSITION_ROTATE) return;
   if (immediate)
   {
     m_fZoomAmount = fZoom;
     return;
   }
-  m_transistionTemp.type = TRANSISTION_ZOOM;
-  m_transistionTemp.start = m_iCounter;
-  m_transistionTemp.length = IMMEDIATE_TRANSISTION_TIME;
-  m_fTransistionZoom = (fZoom - m_fZoomAmount) / (float)m_transistionTemp.length;
+  m_transitionTemp.type = TRANSITION_ZOOM;
+  m_transitionTemp.start = m_iCounter;
+  m_transitionTemp.length = IMMEDIATE_TRANSITION_TIME;
+  m_fTransitionZoom = (fZoom - m_fZoomAmount) / (float)m_transitionTemp.length;
   // reset the timer
-  m_transistionEnd.start = m_iCounter + m_transistionStart.length + (int)(g_graphicsContext.GetFPS() * CServiceBroker::GetSettings().GetInt(CSettings::SETTING_SLIDESHOW_STAYTIME));
+  m_transitionEnd.start = m_iCounter + m_transitionStart.length + (int)(g_graphicsContext.GetFPS() * CServiceBroker::GetSettings().GetInt(CSettings::SETTING_SLIDESHOW_STAYTIME));
   // turn off the render effects until we're back down to normal zoom
   m_bNoEffect = true;
 }
@@ -737,7 +737,7 @@ void CSlideShowPic::Move(float fDeltaX, float fDeltaY)
   m_fZoomLeft += fDeltaX;
   m_fZoomTop += fDeltaY;
   // reset the timer
- // m_transistionEnd.start = m_iCounter + m_transistionStart.length + (int)(g_graphicsContext.GetFPS() * CServiceBroker::GetSettings().GetInt(CSettings::SETTING_SLIDESHOW_STAYTIME));
+ // m_transitionEnd.start = m_iCounter + m_transitionStart.length + (int)(g_graphicsContext.GetFPS() * CServiceBroker::GetSettings().GetInt(CSettings::SETTING_SLIDESHOW_STAYTIME));
 }
 
 void CSlideShowPic::Render()
@@ -755,13 +755,13 @@ void CSlideShowPic::Render()
 }
 
 #ifdef HAS_DX
-bool CSlideShowPic::UpdateVertexBuffer(Vertex* vericies)
+bool CSlideShowPic::UpdateVertexBuffer(Vertex* vertices)
 {
   if (!m_vb) // create new
   {
     CD3D11_BUFFER_DESC desc(sizeof(Vertex) * 5, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DYNAMIC, D3D11_CPU_ACCESS_WRITE);
     D3D11_SUBRESOURCE_DATA initData = {};
-    initData.pSysMem = vericies;
+    initData.pSysMem = vertices;
     initData.SysMemPitch = sizeof(Vertex) * 5;
     if (SUCCEEDED(g_Windowing.Get3D11Device()->CreateBuffer(&desc, &initData, &m_vb)))
       return true;
@@ -772,7 +772,7 @@ bool CSlideShowPic::UpdateVertexBuffer(Vertex* vericies)
     D3D11_MAPPED_SUBRESOURCE res;
     if (SUCCEEDED(pContext->Map(m_vb, 0, D3D11_MAP_WRITE_DISCARD, 0, &res)))
     {
-      memcpy(res.pData, vericies, sizeof(Vertex) * 5);
+      memcpy(res.pData, vertices, sizeof(Vertex) * 5);
       pContext->Unmap(m_vb, 0);
       return true;
     }

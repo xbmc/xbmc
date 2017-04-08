@@ -72,7 +72,7 @@ public:
   *
   * Remarks: Open can only be called once. Calling
   * Open() on an already opened file will fail
-  * exept flag READ_REOPEN is set and the underlying
+  * except if flag READ_REOPEN is set and the underlying
   * file has an implementation of ReOpen().
   */
   bool Open(const CURL& file, const unsigned int flags = 0);
@@ -129,7 +129,7 @@ public:
 
   int IoControl(EIoControl request, void* param);
 
-  IFile *GetImplemenation() { return m_pFile; }
+  IFile *GetImplementation() { return m_pFile; }
 
   // CURL interface
   static bool Exists(const CURL& file, bool bUseCache = true);

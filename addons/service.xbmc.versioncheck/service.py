@@ -52,7 +52,7 @@ def _versioncheck():
     versionlist = get_versionfilelist()
     # retrieve version installed
     version_installed = get_installedversion()
-    # copmpare installed and available
+    # compare installed and available
     oldversion, version_installed, version_available, version_stable = compare_version(version_installed, versionlist)
     return oldversion, version_installed, version_available, version_stable
 

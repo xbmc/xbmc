@@ -44,7 +44,7 @@
 
 #include "threads/Atomics.h"
 
-static long sg_singleton_lock_variable = 0;
+static std::atomic_flag sg_singleton_lock_variable = ATOMIC_FLAG_INIT;
 XBMCHelper* XBMCHelper::smp_instance = 0;
 
 #define XBMC_HELPER_PROGRAM "XBMCHelper"

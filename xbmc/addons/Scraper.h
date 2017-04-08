@@ -122,6 +122,7 @@ public:
 
   bool IsInUse() const;
   bool IsNoop();
+  bool IsPython() const { return m_isPython; }
 
   // scraper media functions
   CScraperUrl NfoUrl(const std::string &sNfoContent);
@@ -177,6 +178,7 @@ private:
                          const std::vector<std::string>* extras);
 
   bool m_fLoaded;
+  bool m_isPython = false;
   bool m_requiressettings;
   CDateTimeSpan m_persistence;
   CONTENT_TYPE m_pathContent;

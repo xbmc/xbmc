@@ -18,7 +18,6 @@
  *
  */
 
-#if defined(TARGET_DARWIN_IOS)
 //hack around problem with xbmc's typedef int BOOL
 // and obj-c's typedef unsigned char BOOL
 #define BOOL XBMC_BOOL 
@@ -26,7 +25,8 @@
 #undef BOOL
 
 #ifdef HAS_EGL
-#define BOOL XBMC_BOOL 
+#define BOOL XBMC_BOOL
+#include "VideoSyncIos.h"
 #include "WinSystemIOS.h"
 #include "utils/log.h"
 #include "filesystem/SpecialProtocol.h"
@@ -37,7 +37,7 @@
 #include "utils/StringUtils.h"
 #include "guilib/DispResource.h"
 #include "threads/SingleLock.h"
-#include "video/videosync/VideoSyncIos.h"
+#include "VideoSyncIos.h"
 #include <vector>
 #undef BOOL
 
@@ -219,7 +219,7 @@ bool CWinSystemIOS::GetScreenResolution(int* w, int* h, double* fps, int screenI
   *w = screenSize.width;
   *h = screenSize.height;
   *fps = 0.0;
-  //if current mode is 0x0 (happens with external screens which arn't active)
+  //if current mode is 0x0 (happens with external screens which aren't active)
   //then use the preferred mode
   if(*h == 0 || *w ==0)
   {
@@ -267,7 +267,7 @@ void CWinSystemIOS::UpdateResolutions()
     }
   }
   
-  //now just fill in the possible reolutions for the attached screens
+  //now just fill in the possible resolutions for the attached screens
   //and push to the resolution info vector
   FillInVideoModes();
 }
@@ -284,7 +284,7 @@ void CWinSystemIOS::FillInVideoModes()
     // atm we don't get refreshrate info from iOS
     // but this may change in the future. In that case
     // we will adapt this code for filling some
-    // usefull info into this local var :)
+    // useful info into this local var :)
     double refreshrate = 0.0;
     //screen 0 is mainscreen - 1 has to be the external one...
     UIScreen *aScreen = [[UIScreen screens]objectAtIndex:disp];
@@ -302,7 +302,7 @@ void CWinSystemIOS::FillInVideoModes()
       //That would cause problems with saving screen overscan calibration
       //because the wrong entry is picked on load.
       //So we just use UpdateDesktopResolutions for the current DESKTOP_RESOLUTIONS
-      //in UpdateResolutions. And on all othere resolutions make a unique
+      //in UpdateResolutions. And on all other resolutions make a unique
       //mode str by doing it without appending "Full Screen".
       //this is what linux does - though it feels that there shouldn't be
       //the same resolution twice... - thats why i add a FIXME here.
@@ -416,7 +416,7 @@ void CWinSystemIOS::DeinitDisplayLink(void)
     [m_pDisplayLink->callbackClass SetVideoSyncImpl:nil];
   }
 }
-//------------DispalyLink stuff end
+//------------DisplayLink stuff end
 //--------------------------------------------------------------
 
 void CWinSystemIOS::PresentRenderImpl(bool rendered)
@@ -485,6 +485,11 @@ void* CWinSystemIOS::GetEAGLContextObj()
   return [g_xbmcController getEAGLContextObj];
 }
 
-#endif
+std::unique_ptr<CVideoSync> CWinSystemIOS::GetVideoSync(void *clock)
+{
+  std::unique_ptr<CVideoSync> pVSync(new CVideoSyncIos(clock));
+  return pVSync;
+}
 
 #endif
+

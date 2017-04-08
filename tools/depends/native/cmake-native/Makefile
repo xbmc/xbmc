@@ -1,6 +1,6 @@
 include ../../Makefile.include
 PLATFORM=$(NATIVEPLATFORM)
-DEPS= ../../Makefile.include.in Makefile
+DEPS= ../../Makefile.include Makefile
 
 APPNAME=cmake
 VERSION=3.6.2
@@ -9,7 +9,7 @@ ARCHIVE=$(SOURCE).tar.gz
 
 # configuration settings
 
-SETENV=CC=$(CC_FOR_BUILD) CXX=$(CXX_FOR_BUILD) LD=$(LD_FOR_BUILD) CFLAGS=$(NATIVE_CFLAGS) \
+SETENV=CC="$(CC_FOR_BUILD)" CXX="$(CXX_FOR_BUILD)" LD=$(LD_FOR_BUILD) CFLAGS=$(NATIVE_CFLAGS) \
 	CXXFLAGS=$(NATIVE_CXXFLAGS) LDFLAGS=$(NATIVE_LDFLAGS)
 
 ifeq ($(NATIVE_OS), osx)
@@ -17,6 +17,9 @@ ifeq ($(NATIVE_OS), osx)
 endif
 
 CONFIGURE=./bootstrap --prefix=$(NATIVEPREFIX) --system-curl
+ifeq ($(USE_CCACHE), yes)
+	CONFIGURE+=--enable-ccache
+endif
 
 APP=$(PLATFORM)/bin/$(APPNAME)
 

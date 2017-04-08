@@ -5,7 +5,7 @@ DEPS= ../../Makefile.include Makefile
 LIBNAME=libcec
 VERSION_MAJOR=4
 VERSION_MINOR=0
-VERSION_PATCH=0
+VERSION_PATCH=1
 
 VERSION=$(VERSION_MAJOR).$(VERSION_MINOR).$(VERSION_PATCH)
 SOURCE=$(LIBNAME)-$(VERSION)
@@ -28,12 +28,6 @@ $(LIBDYLIB): $(PLATFORM)
 
 .installed-$(PLATFORM): $(LIBDYLIB)
 	$(MAKE) -C $(PLATFORM)/build install
-ifeq ($(OS),android)
-	rm -f $(PREFIX)/lib/$(LIBNAME).la $(PREFIX)/lib/$(LIBNAME).so $(PREFIX)/lib/$(LIBNAME).so.$(VERSION_MAJOR) $(PREFIX)/lib/$(LIBNAME).so.$(VERSION_MAJOR).$(VERSION_MINOR)
-	mv -f $(PREFIX)/lib/$(LIBNAME).so.$(VERSION) $(PREFIX)/lib/$(LIBNAME).so
-	$(RPL) -e "$(LIBNAME).so.$(VERSION_MAJOR)" "$(LIBNAME).so\x00\x00" $(PREFIX)/lib/$(LIBNAME).so
-	-$(READELF) --dynamic $(PREFIX)/lib/$(LIBNAME).so | grep ibrary
-endif
 	touch $@
 
 clean:

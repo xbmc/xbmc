@@ -212,15 +212,18 @@ bool CRenderManager::Configure(DVDVideoPicture& picture, float fps, unsigned fla
   {
     CSingleLock lock(m_presentlock);
     XbmcThreads::EndTime endtime(5000);
+    m_forceNext = true;
     while (m_presentstep != PRESENT_IDLE)
     {
       if(endtime.IsTimePast())
       {
         CLog::Log(LOGWARNING, "CRenderManager::Configure - timeout waiting for state");
+        m_forceNext = false;
         return false;
       }
       m_presentevent.wait(lock, endtime.MillisLeft());
     }
+    m_forceNext = false;
   }
 
   {
@@ -237,8 +240,8 @@ bool CRenderManager::Configure(DVDVideoPicture& picture, float fps, unsigned fla
     m_NumberBuffers  = buffers;
     m_renderState = STATE_CONFIGURING;
     m_stateEvent.Reset();
-
-    CheckEnableClockSync();
+    m_clockSync.Reset();
+    m_dvdClock.SetVsyncAdjust(0);
 
     CSingleLock lock2(m_presentlock);
     m_presentstep = PRESENT_READY;
@@ -319,6 +322,7 @@ bool CRenderManager::Configure()
     m_renderedOverlay = false;
     m_renderDebug = false;
     m_clockSync.Reset();
+    m_dvdClock.SetVsyncAdjust(0);
 
     m_renderState = STATE_CONFIGURED;
 
@@ -349,14 +353,13 @@ void CRenderManager::FrameWait(int ms)
     m_presentevent.wait(lock, timeout.MillisLeft());
 }
 
-bool CRenderManager::HasFrame()
+bool CRenderManager::IsPresenting()
 {
   if (!IsConfigured())
     return false;
 
   CSingleLock lock(m_presentlock);
-  if (m_presentstep == PRESENT_READY ||
-      m_presentstep == PRESENT_FRAME || m_presentstep == PRESENT_FRAME2)
+  if (!m_presentTimer.IsTimePast())
     return true;
   else
     return false;
@@ -384,6 +387,8 @@ void CRenderManager::FrameMove()
         CApplicationMessenger::GetInstance().PostMsg(TMSG_SWITCHTOFULLSCREEN);
       }
     }
+
+    CheckEnableClockSync();
   }
   {
     CSingleLock lock2(m_presentlock);
@@ -401,6 +406,7 @@ void CRenderManager::FrameMove()
       m_pRenderer->FlipPage(m_presentsource);
       m_presentstep = PRESENT_FRAME;
       m_presentevent.notifyAll();
+      m_presentTimer.Set(1000);
     }
 
     // release all previous
@@ -416,6 +422,8 @@ void CRenderManager::FrameMove()
       }
       else
         ++it;
+
+      m_playerPort->UpdateRenderBuffers(m_queued.size(), m_discard.size(), m_free.size());
     }
     
     m_bRenderGUI = true;
@@ -842,6 +850,7 @@ void CRenderManager::FlipPage(volatile std::atomic_bool& bStop, double pts,
   m.presentmethod = presentmethod;
   m.pts = pts;
   requeue(m_queued, m_free);
+  m_playerPort->UpdateRenderBuffers(m_queued.size(), m_discard.size(), m_free.size());
 
   // signal to any waiters to check state
   if (m_presentstep == PRESENT_IDLE)
@@ -979,7 +988,7 @@ bool CRenderManager::IsGuiLayer()
     if (!m_pRenderer)
       return false;
 
-    if ((m_pRenderer->IsGuiLayer() && HasFrame()) ||
+    if ((m_pRenderer->IsGuiLayer() && IsPresenting()) ||
         m_renderedOverlay || m_overlays.HasOverlay(m_presentsource))
       return true;
 
@@ -1077,8 +1086,6 @@ void CRenderManager::UpdateResolution()
         RESOLUTION res = CResolutionUtils::ChooseBestResolution(m_fps, m_width, CONF_FLAGS_STEREO_MODE_MASK(m_flags));
         g_graphicsContext.SetVideoResolution(res);
         UpdateDisplayLatency();
-
-        CheckEnableClockSync();
       }
       m_bTriggerUpdateResolution = false;
       m_playerPort->VideoParamsChange();
@@ -1309,7 +1316,7 @@ void CRenderManager::PrepareNextRender()
     while (iter != m_queued.end())
     {
       // the slot for rendering in time is [pts .. (pts +  x * frametime)]
-      // renderer/drivers have internal queues, being slightliy late here does not mean that
+      // renderer/drivers have internal queues, being slightly late here does not mean that
       // we are really late. The likelihood that we recover decreases the greater m_lateframes
       // get. Skipping a frame is easier than having decoder dropping one (lateframes > 10)
       double x = (m_lateframes <= 6) ? 0.98 : 0;
@@ -1338,6 +1345,8 @@ void CRenderManager::PrepareNextRender()
     m_queued.pop_front();
     m_presentpts = m_Queue[idx].pts - totalLatency;
     m_presentevent.notifyAll();
+
+    m_playerPort->UpdateRenderBuffers(m_queued.size(), m_discard.size(), m_free.size());
   }
 }
 

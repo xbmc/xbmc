@@ -27,7 +27,6 @@
 
 #include "AddonManager.h"
 #include "addons/Service.h"
-#include "ContextMenuManager.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "RepositoryUpdater.h"
@@ -109,6 +108,8 @@ static const TypeMapping types[] =
    {"kodi.resource.games",               ADDON_RESOURCE_GAMES,      35209, "DefaultAddonGame.png" },
    {"kodi.adsp",                         ADDON_ADSPDLL,             24135, "DefaultAddonAudioDSP.png" },
    {"kodi.inputstream",                  ADDON_INPUTSTREAM,         24048, "DefaultAddonInputstream.png" },
+   {"kodi.vfs",                          ADDON_VFS,                 39013, "DefaultAddonVfs.png" },
+   {"kodi.imagedecoder",                 ADDON_IMAGEDECODER,        39015, "DefaultAddonImageDecoder.png" },
   };
 
 std::string TranslateType(ADDON::TYPE type, bool pretty/*=false*/)
@@ -348,8 +349,7 @@ void OnEnabled(const std::string& id)
   // If the addon is a special, call enabled handler
   AddonPtr addon;
   if (CAddonMgr::GetInstance().GetAddon(id, addon, ADDON_PVRDLL) ||
-      CAddonMgr::GetInstance().GetAddon(id, addon, ADDON_ADSPDLL) ||
-      CAddonMgr::GetInstance().GetAddon(id, addon, ADDON_PERIPHERALDLL))
+      CAddonMgr::GetInstance().GetAddon(id, addon, ADDON_ADSPDLL))
     return addon->OnEnabled();
 
   if (CAddonMgr::GetInstance().ServicesHasStarted())
@@ -367,8 +367,7 @@ void OnDisabled(const std::string& id)
 
   AddonPtr addon;
   if (CAddonMgr::GetInstance().GetAddon(id, addon, ADDON_PVRDLL, false) ||
-      CAddonMgr::GetInstance().GetAddon(id, addon, ADDON_ADSPDLL, false) ||
-      CAddonMgr::GetInstance().GetAddon(id, addon, ADDON_PERIPHERALDLL, false))
+      CAddonMgr::GetInstance().GetAddon(id, addon, ADDON_ADSPDLL, false))
     return addon->OnDisabled();
 
   if (CAddonMgr::GetInstance().ServicesHasStarted())
@@ -376,9 +375,6 @@ void OnDisabled(const std::string& id)
     if (CAddonMgr::GetInstance().GetAddon(id, addon, ADDON_SERVICE, false))
       std::static_pointer_cast<CService>(addon)->Stop();
   }
-
-  if (CAddonMgr::GetInstance().GetAddon(id, addon, ADDON_CONTEXT_ITEM, false))
-    CContextMenuManager::GetInstance().Unload(*std::static_pointer_cast<CContextMenuAddon>(addon));
 }
 
 void OnPreInstall(const AddonPtr& addon)
@@ -392,9 +388,6 @@ void OnPreInstall(const AddonPtr& addon)
     if (CAddonMgr::GetInstance().GetAddon(addon->ID(), localAddon, ADDON_SERVICE))
       std::static_pointer_cast<CService>(localAddon)->Stop();
   }
-
-  if (CAddonMgr::GetInstance().GetAddon(addon->ID(), localAddon, ADDON_CONTEXT_ITEM))
-    CContextMenuManager::GetInstance().Unload(*std::static_pointer_cast<CContextMenuAddon>(localAddon));
 
   //Fallback to the pre-install callback in the addon.
   //! @bug If primary extension point have changed we're calling the wrong method.
@@ -425,9 +418,6 @@ void OnPreUnInstall(const AddonPtr& addon)
     if (CAddonMgr::GetInstance().GetAddon(addon->ID(), localAddon, ADDON_SERVICE))
       std::static_pointer_cast<CService>(localAddon)->Stop();
   }
-
-  if (CAddonMgr::GetInstance().GetAddon(addon->ID(), localAddon, ADDON_CONTEXT_ITEM))
-    CContextMenuManager::GetInstance().Unload(*std::static_pointer_cast<CContextMenuAddon>(localAddon));
 
   addon->OnPreUnInstall();
 }

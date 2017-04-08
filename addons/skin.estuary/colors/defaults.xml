@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <colors>
-	<color name="primary_background">FF006699</color>
-	<color name="secondary_background">80A6111F</color>
-	<color name="dialog_tint">FF22282A</color>
+	<color name="primary_background">FF0E597E</color>
+	<color name="secondary_background">330BAA8E</color>
+	<color name="dialog_tint">FF1A2123</color>
 	<color name="background">FF000000</color>
 	<color name="bg_image">FF909090</color>
 	<color name="bg_overlay">30FFFFFF</color>

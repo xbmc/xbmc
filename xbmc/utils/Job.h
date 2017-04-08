@@ -81,7 +81,7 @@ class CJobManager;
 
 /*!
  \ingroup jobs
- \brief Base class for jobs that are executed asyncronously.
+ \brief Base class for jobs that are executed asynchronously.
  
  Clients of the CJobManager should subclass CJob and provide the DoWork() function. Data should be
  passed to the job on creation, and any data sharing between the job and the client should be kept to within

@@ -30,14 +30,14 @@
 					<control type="image">
 						<left>0</left>
 						<top>0</top>
-						<width>330</width>
+						<right>0</right>
 						<height>130</height>
 						<texture border="40">buttons/dialogbutton-nofo.png</texture>
 					</control>
 					<control type="label">
 						<left>0</left>
 						<top>0</top>
-						<width>330</width>
+						<right>0</right>
 						<height>130</height>
 						<textcolor>grey</textcolor>
 						<font>font25_title</font>
@@ -50,7 +50,7 @@
 					<control type="image">
 						<left>0</left>
 						<top>0</top>
-						<width>330</width>
+						<right>0</right>
 						<height>130</height>
 						<animation effect="fade" start="100" end="20" time="200" condition="!Control.HasFocus(9000)">Conditional</animation>
 						<texture border="40" colordiffuse="button_focus">buttons/dialogbutton-fo.png</texture>
@@ -58,7 +58,7 @@
 					<control type="label">
 						<left>0</left>
 						<top>0</top>
-						<width>330</width>
+						<right>0</right>
 						<height>130</height>
 						<font>font25_title</font>
 						<aligny>center</aligny>
@@ -68,7 +68,6 @@
 				</focusedlayout>
 			</control>
 			<control type="group" id="200">
-				<description>available- and active mode lists</description>
 				<top>90</top>
 				<control type="group">
 					<left>320</left>

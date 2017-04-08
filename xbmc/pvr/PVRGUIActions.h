@@ -19,7 +19,9 @@
  *
  */
 
+#include "pvr/PVRSettings.h"
 #include "pvr/PVRTypes.h"
+#include "pvr/PVRChannelNumberInputHandler.h"
 
 #include <memory>
 #include <string>
@@ -31,14 +33,37 @@ class CGUIWindow;
 
 namespace PVR
 {
+  enum PlaybackType
+  {
+    PlaybackTypeAny = 0,
+    PlaybackTypeTV,
+    PlaybackTypeRadio
+  };
+
+  class CPVRChannelSwitchingInputHandler : public CPVRChannelNumberInputHandler
+  {
+  public:
+    // CPVRChannelNumberInputHandler implementation
+    void OnInputDone() override;
+
+  private:
+    /*!
+     * @brief Switch to the channel with the given number.
+     * @param iChannelNumber the channel number
+     */
+    void SwitchToChannel(int iChannelNumber);
+
+    /*!
+     * @brief Switch to the previously played channel.
+     */
+    void SwitchToPreviousChannel();
+  };
+
   class CPVRGUIActions
   {
   public:
-    /*!
-     * @brief Request an instance of class CPVRGUIActions.
-     * @return the instance.
-     */
-    static CPVRGUIActions& GetInstance();
+    CPVRGUIActions();
+    virtual ~CPVRGUIActions() = default;
 
     /*!
      * @brief Open a dialog with epg information for a given item.
@@ -48,9 +73,16 @@ namespace PVR
     bool ShowEPGInfo(const CFileItemPtr &item) const;
 
     /*!
+     * @brief Open a dialog with the epg list for a given item.
+     * @param item containing channel info. item must be an epg tag, a channel or a timer.
+     * @return true on success, false otherwise.
+     */
+    bool ShowChannelEPG(const CFileItemPtr &item) const;
+
+    /*!
      * @brief Open a window containing a list of epg tags 'similar' to a given item.
      * @param item containing epg data for matching. item must be an epg tag, a channel or a recording.
-     * @param windowToClose is the window to close before opening the window with the search reasults.
+     * @param windowToClose is the window to close before opening the window with the search results.
      * @return true on success, false otherwise.
      */
     bool FindSimilar(const CFileItemPtr &item, CGUIWindow *windowToClose = nullptr) const;
@@ -69,6 +101,12 @@ namespace PVR
      * @return true, if the timer was created successfully, false otherwise.
      */
     bool AddTimer(const CFileItemPtr &item, bool bShowTimerSettings) const;
+
+    /*!
+     * @brief Add a timer to the client. Doesn't add the timer to the container. The backend will do this.
+     * @return True if it was sent correctly, false if not.
+     */
+    bool AddTimer(const CPVRTimerInfoTagPtr &item) const;
 
     /*!
      * @brief Create a new timer rule, either interactive or non-interactive.
@@ -133,6 +171,14 @@ namespace PVR
      * @return true on success, false otherwise.
      */
     bool ShowRecordingInfo(const CFileItemPtr &item) const;
+
+    /*!
+     * @brief Start or stop recording on a given channel.
+     * @param channel the channel to start/stop recording.
+     * @param bOnOff True to start recording, false to stop.
+     * @return True if the recording was started or stopped successfully, false otherwise.
+     */
+    bool SetRecordingOnChannel(const CPVRChannelPtr &channel, bool bOnOff);
 
     /*!
      * @brief Stop a currently active recording, always showing a confirmation dialog.
@@ -207,17 +253,72 @@ namespace PVR
     bool PlayMedia(const CFileItemPtr &item) const;
 
     /*!
+     * @brief Start playback of the last played channel, and if there is none, play first channel in the current channelgroup.
+     * @param type The type of playback to be started (any, radio, tv). See PlaybackType enum
+     * @return True if playback was started, false otherwise.
+     */
+    bool SwitchToChannel(PlaybackType type) const;
+
+    /*!
+     * @brief Continue playback of the last played channel.
+     * @return True if playback was continued, false otherwise.
+     */
+    bool ContinueLastPlayedChannel() const;
+
+    /*!
      * @brief Hide a channel, always showing a confirmation dialog.
      * @param item containing a channel or an epg tag.
      * @return true on success, false otherwise.
      */
     bool HideChannel(const CFileItemPtr &item) const;
 
+    /*!
+     * @brief Open a selection dialog and start a channel scan on the selected client.
+     * @return true on success, false otherwise.
+     */
+    bool StartChannelScan();
+
+    /*!
+     * @return True when a channel scan is currently running, false otherwise.
+     */
+    bool IsRunningChannelScan() const { return m_bChannelScanRunning; }
+
+    /*!
+     * @brief Open selection and progress PVR actions.
+     * @param item The selected file item for which the hook was called.
+     * @return true on success, false otherwise.
+     */
+    bool ProcessMenuHooks(const CFileItemPtr &item);
+
+    /*!
+     * @brief Reset the TV database to it's initial state and delete all the data.
+     * @param bResetEPGOnly True to only reset the EPG database, false to reset both PVR and EPG database.
+     * @return true on success, false otherwise.
+     */
+    bool ResetPVRDatabase(bool bResetEPGOnly);
+
+    /*!
+     * @brief Check if channel is parental locked. Ask for PIN if necessary.
+     * @param channel The channel to do the check for.
+     * @return True if channel is unlocked (by default or PIN unlocked), false otherwise.
+     */
+    bool CheckParentalLock(const CPVRChannelPtr &channel) const;
+
+    /*!
+     * @brief Open Numeric dialog to check for parental PIN.
+     * @return True if entered PIN was correct, false otherwise.
+     */
+    bool CheckParentalPIN() const;
+
+    /*!
+     * @brief Get the currently active channel number input handler.
+     * @return the handler.
+     */
+    CPVRChannelNumberInputHandler &GetChannelNumberInputHandler();
+
   private:
-    CPVRGUIActions() = default;
     CPVRGUIActions(const CPVRGUIActions&) = delete;
     CPVRGUIActions const& operator=(CPVRGUIActions const&) = delete;
-    virtual ~CPVRGUIActions() {}
 
     /*!
      * @brief Open the timer settings dialog.
@@ -239,7 +340,7 @@ namespace PVR
      * @brief Delete a timer or timer rule, always showing a confirmation dialog.
      * @param item containing a timer or timer rule to delete. item must be a timer, an epg tag or a channel.
      * @param bIsRecording denotes whether the timer is currently recording (controls correct confirmation dialog).
-     * @param bDeleteRule denotes to delete a timer rule. For convenience, one can pass a timer creted by a rule.
+     * @param bDeleteRule denotes to delete a timer rule. For convenience, one can pass a timer created by a rule.
      * @return true, if the timer or timer rule was deleted successfully, false otherwise.
     */
     bool DeleteTimer(const CFileItemPtr &item, bool bIsRecording, bool bDeleteRule) const;
@@ -270,7 +371,7 @@ namespace PVR
     bool ConfirmDeleteRecording(const CFileItemPtr &item) const;
 
     /*!
-     * @brief Open a dialog to confirm to permaantly remove all deleted recordings.
+     * @brief Open a dialog to confirm to permanently remove all deleted recordings.
      * @return true, to proceed with delete, false otherwise.
      */
     bool ConfirmDeleteAllRecordingsFromTrash() const;
@@ -284,21 +385,39 @@ namespace PVR
 
     /*!
      * @brief Check "play minimized" settings value and switch to fullscreen if not set.
+     * @param bFullscreen switch to fullscreen or set windowed playback.
      */
-    void CheckAndSwitchToFullscreen() const;
+    void CheckAndSwitchToFullscreen(bool bFullscreen) const;
+
+    /*!
+     * @brief Switch channel.
+     * @param item containing a channel or an epg tag.
+     * @param bCheckResume controls resume check in case a recording for the current epg event is present.
+     * @param bFullscreen start playback fullscreen or not.
+     * @return true on success, false otherwise.
+     */
+    bool SwitchToChannel(const CFileItemPtr &item, bool bCheckResume, bool bFullscreen) const;
 
     /*!
      * @brief Try a fast Live TV/Radio channel switch. Calls directly into active player instead of using messaging
      * @param channel the channel to switch to.
+     * @param bFullscreen start playback fullscreen or not.
      * @return true if the switch was succesful, false otherwise.
      */
-    bool TryFastChannelSwitch(const CPVRChannelPtr &channel) const;
+    bool TryFastChannelSwitch(const CPVRChannelPtr &channel, bool bFullscreen) const;
 
     /*!
      * @brief Start playback of the given item.
+     * @param bFullscreen start playback fullscreen or not.
      * @param item containing a channel or a recording.
      */
-    void StartPlayback(CFileItem *item) const;
+    void StartPlayback(CFileItem *item, bool bFullscreen) const;
+
+  private:
+    CPVRChannelSwitchingInputHandler m_channelNumberInputHandler;
+    bool m_bChannelScanRunning;
+    CPVRSettings m_settings;
+
   };
 
 } // namespace PVR

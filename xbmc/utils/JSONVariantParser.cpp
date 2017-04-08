@@ -20,200 +20,208 @@
 
 #include "JSONVariantParser.h"
 
-yajl_callbacks CJSONVariantParser::callbacks = {
-  CJSONVariantParser::ParseNull,
-  CJSONVariantParser::ParseBoolean,
-  CJSONVariantParser::ParseInteger,
-  CJSONVariantParser::ParseDouble,
-  NULL,
-  CJSONVariantParser::ParseString,
-  CJSONVariantParser::ParseMapStart,
-  CJSONVariantParser::ParseMapKey,
-  CJSONVariantParser::ParseMapEnd,
-  CJSONVariantParser::ParseArrayStart,
-  CJSONVariantParser::ParseArrayEnd
+#include <rapidjson/reader.h>
+
+class CJSONVariantParserHandler
+{
+public:
+  CJSONVariantParserHandler(CVariant& parsedObject);
+
+  bool Null();
+  bool Bool(bool b);
+  bool Int(int i);
+  bool Uint(unsigned u);
+  bool Int64(int64_t i);
+  bool Uint64(uint64_t u);
+  bool Double(double d);
+  bool RawNumber(const char* str, rapidjson::SizeType length, bool copy);
+  bool String(const char* str, rapidjson::SizeType length, bool copy);
+  bool StartObject();
+  bool Key(const char* str, rapidjson::SizeType length, bool copy);
+  bool EndObject(rapidjson::SizeType memberCount);
+  bool StartArray();
+  bool EndArray(rapidjson::SizeType elementCount);
+
+private:
+  template <typename... TArgs>
+  bool Primitive(TArgs... args)
+  {
+    PushObject(CVariant(std::forward<TArgs>(args)...));
+    PopObject();
+
+    return true;
+  }
+
+  void PushObject(CVariant variant);
+  void PopObject();
+
+  CVariant& m_parsedObject;
+  std::vector<CVariant *> m_parse;
+  std::string m_key;
+
+  enum class PARSE_STATUS
+  {
+    Variable,
+    Array,
+    Object
+  };
+  PARSE_STATUS m_status;
 };
 
-CJSONVariantParser::CJSONVariantParser(IParseCallback *callback)
+CJSONVariantParserHandler::CJSONVariantParserHandler(CVariant& parsedObject)
+  : m_parsedObject(parsedObject),
+    m_parse(),
+    m_key(),
+    m_status(PARSE_STATUS::Variable)
+{ }
+
+bool CJSONVariantParserHandler::Null()
 {
-  m_callback = callback;
+  PushObject(CVariant::ConstNullVariant);
+  PopObject();
 
-  m_handler = yajl_alloc(&callbacks, NULL, this);
-
-  yajl_config(m_handler, yajl_allow_comments, 1);
-  yajl_config(m_handler, yajl_dont_validate_strings, 0);
-
-  m_status = ParseVariable;
+  return true;
 }
 
-CJSONVariantParser::~CJSONVariantParser()
+bool CJSONVariantParserHandler::Bool(bool b)
 {
-  yajl_complete_parse(m_handler);
-  yajl_free(m_handler);
+  return Primitive(b);
 }
 
-void CJSONVariantParser::push_buffer(const unsigned char *buffer, unsigned int length)
+bool CJSONVariantParserHandler::Int(int i)
 {
-  yajl_parse(m_handler, buffer, length);
+  return Primitive(i);
 }
 
-CVariant CJSONVariantParser::Parse(const std::string& json)
+bool CJSONVariantParserHandler::Uint(unsigned u)
 {
-  return Parse(reinterpret_cast<const unsigned char*>(json.c_str()), json.length());
+  return Primitive(u);
 }
 
-CVariant CJSONVariantParser::Parse(const unsigned char *json, unsigned int length)
+bool CJSONVariantParserHandler::Int64(int64_t i)
 {
-  CSimpleParseCallback callback;
-  CJSONVariantParser parser(&callback);
-
-  parser.push_buffer(json, length);
-
-  return callback.GetOutput();
+  return Primitive(i);
 }
 
-int CJSONVariantParser::ParseNull(void * ctx)
+bool CJSONVariantParserHandler::Uint64(uint64_t u)
 {
-  CJSONVariantParser *parser = (CJSONVariantParser *)ctx;
-
-  parser->PushObject(CVariant::VariantTypeNull);
-  parser->PopObject();
-
-  return 1;
+  return Primitive(u);
 }
 
-int CJSONVariantParser::ParseBoolean(void * ctx, int boolean)
+bool CJSONVariantParserHandler::Double(double d)
 {
-  CJSONVariantParser *parser = (CJSONVariantParser *)ctx;
-
-  parser->PushObject(CVariant(boolean != 0));
-  parser->PopObject();
-
-  return 1;
+  return Primitive(d);
 }
 
-int CJSONVariantParser::ParseInteger(void * ctx, long long integerVal)
+bool CJSONVariantParserHandler::RawNumber(const char* str, rapidjson::SizeType length, bool copy)
 {
-  CJSONVariantParser *parser = (CJSONVariantParser *)ctx;
-
-  parser->PushObject(CVariant((int64_t)integerVal));
-  parser->PopObject();
-
-  return 1;
+  return Primitive(str, length);
 }
 
-int CJSONVariantParser::ParseDouble(void * ctx, double doubleVal)
+bool CJSONVariantParserHandler::String(const char* str, rapidjson::SizeType length, bool copy)
 {
-  CJSONVariantParser *parser = (CJSONVariantParser *)ctx;
-
-  parser->PushObject(CVariant((float)doubleVal));
-  parser->PopObject();
-
-  return 1;
+  return Primitive(str, length);
 }
 
-int CJSONVariantParser::ParseString(void * ctx, const unsigned char * stringVal, size_t stringLen)
+bool CJSONVariantParserHandler::StartObject()
 {
-  CJSONVariantParser *parser = (CJSONVariantParser *)ctx;
+  PushObject(CVariant::VariantTypeObject);
 
-  parser->PushObject(CVariant((const char *)stringVal, stringLen));
-  parser->PopObject();
-
-  return 1;
+  return true;
 }
 
-int CJSONVariantParser::ParseMapStart(void * ctx)
+bool CJSONVariantParserHandler::Key(const char* str, rapidjson::SizeType length, bool copy)
 {
-  CJSONVariantParser *parser = (CJSONVariantParser *)ctx;
+  m_key = std::string(str, 0, length);
 
-  parser->PushObject(CVariant::VariantTypeObject);
-
-  return 1;
+  return true;
 }
 
-int CJSONVariantParser::ParseMapKey(void * ctx, const unsigned char * stringVal, size_t stringLen)
+bool CJSONVariantParserHandler::EndObject(rapidjson::SizeType memberCount)
 {
-  CJSONVariantParser *parser = (CJSONVariantParser *)ctx;
+  PopObject();
 
-  parser->m_key = std::string((const char *)stringVal, 0, stringLen);
-
-  return 1;
+  return true;
 }
 
-int CJSONVariantParser::ParseMapEnd(void * ctx)
+bool CJSONVariantParserHandler::StartArray()
 {
-  CJSONVariantParser *parser = (CJSONVariantParser *)ctx;
+  PushObject(CVariant::VariantTypeArray);
 
-  parser->PopObject();
-
-  return 1;
+  return true;
 }
 
-int CJSONVariantParser::ParseArrayStart(void * ctx)
+bool CJSONVariantParserHandler::EndArray(rapidjson::SizeType elementCount)
 {
-  CJSONVariantParser *parser = (CJSONVariantParser *)ctx;
+  PopObject();
 
-  parser->PushObject(CVariant::VariantTypeArray);
-
-  return 1;
+  return true;
 }
 
-int CJSONVariantParser::ParseArrayEnd(void * ctx)
+void CJSONVariantParserHandler::PushObject(CVariant variant)
 {
-  CJSONVariantParser *parser = (CJSONVariantParser *)ctx;
-
-  parser->PopObject();
-
-  return 1;
-}
-
-void CJSONVariantParser::PushObject(CVariant variant)
-{
-  if (m_status == ParseObject)
+  if (m_status == PARSE_STATUS::Object)
   {
     (*m_parse[m_parse.size() - 1])[m_key] = variant;
     m_parse.push_back(&(*m_parse[m_parse.size() - 1])[m_key]);
   }
-  else if (m_status == ParseArray)
+  else if (m_status == PARSE_STATUS::Array)
   {
     CVariant *temp = m_parse[m_parse.size() - 1];
     temp->push_back(variant);
     m_parse.push_back(&(*temp)[temp->size() - 1]);
   }
   else if (m_parse.empty())
-  {
     m_parse.push_back(new CVariant(variant));
-  }
 
   if (variant.isObject())
-    m_status = ParseObject;
+    m_status = PARSE_STATUS::Object;
   else if (variant.isArray())
-    m_status = ParseArray;
+    m_status = PARSE_STATUS::Array;
   else
-    m_status = ParseVariable;
+    m_status = PARSE_STATUS::Variable;
 }
 
-void CJSONVariantParser::PopObject()
+void CJSONVariantParserHandler::PopObject()
 {
   CVariant *variant = m_parse[m_parse.size() - 1];
   m_parse.pop_back();
 
-  if (m_parse.size())
+  if (!m_parse.empty())
   {
     variant = m_parse[m_parse.size() - 1];
     if (variant->isObject())
-      m_status = ParseObject;
+      m_status = PARSE_STATUS::Object;
     else if (variant->isArray())
-      m_status = ParseArray;
+      m_status = PARSE_STATUS::Array;
     else
-      m_status = ParseVariable;
+      m_status = PARSE_STATUS::Variable;
   }
-  else if (m_callback)
+  else
   {
-    m_callback->onParsed(variant);
+    m_parsedObject = *variant;
     delete variant;
 
-    m_parse.clear();
-    m_status = ParseVariable;
+    m_status = PARSE_STATUS::Variable;
   }
+}
+
+bool CJSONVariantParser::Parse(const char* json, CVariant& data)
+{
+  if (json == nullptr)
+    return false;
+
+  rapidjson::Reader reader;
+  rapidjson::StringStream stringStream(json);
+
+  CJSONVariantParserHandler handler(data);
+  if (reader.Parse(stringStream, handler))
+    return true;
+
+  return false;
+}
+
+bool CJSONVariantParser::Parse(const std::string& json, CVariant& data)
+{
+  return Parse(json.c_str(), data);
 }

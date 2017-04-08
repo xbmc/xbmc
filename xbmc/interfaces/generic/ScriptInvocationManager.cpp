@@ -239,11 +239,11 @@ int CScriptInvocationManager::ExecuteAsync(const std::string &script, LanguageIn
 
   CSingleLock lock(m_critSection);
   invokerThread->SetId(m_nextId++);
-  lock.Leave();
 
   LanguageInvokerThread thread = { invokerThread, script, false };
   m_scripts.insert(std::make_pair(invokerThread->GetId(), thread));
   m_scriptPaths.insert(std::make_pair(script, invokerThread->GetId()));
+  lock.Leave();
   invokerThread->Execute(script, arguments);
 
   return invokerThread->GetId();

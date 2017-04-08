@@ -95,7 +95,7 @@ def get_remote_address(remote, target_name = "BD Remote Control"):
                 remote.connect((target_address,19))
                 target_connected = True
                 print "Remote Paired.\a"
-                xbmc.send_notification("Pairing Successfull",
+                xbmc.send_notification("Pairing Successful",
                                        "Your remote was successfully "\
                                            "paired and is ready to be used.",
                                        bticon)

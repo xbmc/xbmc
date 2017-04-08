@@ -6,9 +6,11 @@
   <addon>kodi.audiodecoder</addon>
   <addon>kodi.game</addon>
   <addon>kodi.guilib</addon>
+  <addon>kodi.imagedecoder</addon>
   <addon>kodi.inputstream</addon>
   <addon>kodi.peripheral</addon>
   <addon>kodi.resource</addon>
+  <addon>kodi.vfs</addon>
   <addon>metadata.album.universal</addon>
   <addon>metadata.artists.universal</addon>
   <addon>metadata.common.allmusic.com</addon>
@@ -28,6 +30,7 @@
   <addon>screensaver.xbmc.builtin.black</addon>
   <addon>screensaver.xbmc.builtin.dim</addon>
   <addon>script.module.pil</addon>
+  <addon>script.module.pycryptodome</addon>
   <addon>service.xbmc.versioncheck</addon>
   <addon>skin.estuary</addon>
   <addon>skin.estouchy</addon>

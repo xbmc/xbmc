@@ -13,6 +13,8 @@
 #define DBCS_SUPPORTED
 #endif
 
+#include <string>
+
 bool WideToChar(const wchar *Src,char *Dest,int DestSize=0x10000000);
 bool CharToWide(const char *Src,wchar *Dest,int DestSize=0x10000000);
 byte* WideToRaw(const wchar *Src,byte *Dest,int DestSize=0x10000000);
@@ -72,6 +74,55 @@ inline void InitDBCS() {gdbcs.Init();}
 #define strrchrd strrchr
 #define IsDBCSMode() (true)
 inline void copychrd(char *dest,const char *src) {*dest=*src;}
+#endif
+
+
+
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
+namespace unrarxlib
+{
+/**
+* Convert UTF-16 to UTF-8 strings
+* Windows specific method to avoid initialization issues
+* and locking issues that are unique to Windows as API calls
+* expect UTF-16 strings
+* \param str[in] string to be converted
+* \param length[in] length in characters of the string
+* \returns utf8 string, empty string on failure
+*/
+std::string FromW(const wchar_t* str, size_t length);
+
+/**
+* Convert UTF-16 to UTF-8 strings
+* Windows specific method to avoid initialization issues
+* and locking issues that are unique to Windows as API calls
+* expect UTF-16 strings
+* \param str[in] string to be converted
+* \returns utf8 string, empty string on failure
+*/
+std::string FromW(const std::wstring& str);
+
+/**
+* Convert UTF-8 to UTF-16 strings
+* Windows specific method to avoid initialization issues
+* and locking issues that are unique to Windows as API calls
+* expect UTF-16 strings
+* \param str[in] string to be converted
+* \param length[in] length in characters of the string
+* \returns UTF-16 string, empty string on failure
+*/
+std::wstring ToW(const char* str, size_t length);
+
+/**
+* Convert UTF-8 to UTF-16 strings
+* Windows specific method to avoid initialization issues
+* and locking issues that are unique to Windows as API calls
+* expect UTF-16 strings
+* \param str[in] string to be converted
+* \returns UTF-16 string, empty string on failure
+*/
+std::wstring ToW(const std::string& str);
+}
 #endif
 
 #endif

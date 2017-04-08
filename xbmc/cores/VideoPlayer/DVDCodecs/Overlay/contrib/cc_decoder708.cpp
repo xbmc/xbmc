@@ -338,7 +338,7 @@ int handle_708_C3 (cc708_service_decoder *decoder, unsigned char *data, int data
 
   // These are variable length commands, that can even span several segments
   // (they allow even downloading fonts or graphics).
-  //! @todo Implemen if a sample ever appears
+  //! @todo Implement if a sample ever appears
   return 0; // Unreachable, but otherwise there's compilers warnings
 }
 

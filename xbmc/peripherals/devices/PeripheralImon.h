@@ -21,6 +21,8 @@
 
 #include "PeripheralHID.h"
 
+#include <atomic>
+
 class CSetting;
 
 namespace PERIPHERALS
@@ -28,7 +30,7 @@ namespace PERIPHERALS
   class CPeripheralImon : public CPeripheralHID
   {
   public:
-    CPeripheralImon(const PeripheralScanResult& scanResult, CPeripheralBus* bus);
+    CPeripheralImon(CPeripherals& manager, const PeripheralScanResult& scanResult, CPeripheralBus* bus);
     virtual ~CPeripheralImon(void) {}
     virtual bool InitialiseFeature(const PeripheralFeature feature);
     virtual void OnSettingChanged(const std::string &strChangedSetting);
@@ -42,6 +44,6 @@ namespace PERIPHERALS
 
   private:
     bool m_bImonConflictsWithDInput;
-    static volatile long m_lCountOfImonsConflictWithDInput;
+    static std::atomic<long> m_lCountOfImonsConflictWithDInput;
   };
 }

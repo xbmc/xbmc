@@ -38,7 +38,7 @@
 
 using namespace KODI::MESSAGING;
 
-CGUIKeyboard *CGUIKeyboardFactory::g_activedKeyboard = NULL;
+CGUIKeyboard *CGUIKeyboardFactory::g_activeKeyboard = NULL;
 FILTERING CGUIKeyboardFactory::m_filtering = FILTERING_NONE;
 
 CGUIKeyboardFactory::CGUIKeyboardFactory(void)
@@ -75,9 +75,9 @@ void CGUIKeyboardFactory::keyTypedCB(CGUIKeyboard *ref, const std::string &typed
 
 bool CGUIKeyboardFactory::SendTextToActiveKeyboard(const std::string &aTextString, bool closeKeyboard /* = false */)
 {
-  if (!g_activedKeyboard)
+  if (!g_activeKeyboard)
     return false;
-  return g_activedKeyboard->SetTextToKeyboard(aTextString, closeKeyboard);
+  return g_activeKeyboard->SetTextToKeyboard(aTextString, closeKeyboard);
 }
 
 
@@ -96,17 +96,17 @@ bool CGUIKeyboardFactory::ShowAndGetInput(std::string& aTextString, CVariant hea
     headingStr = g_localizeStrings.Get((uint32_t)heading.asInteger());
 
 #if defined(TARGET_DARWIN_IOS)
-  kb = (CGUIDialogKeyboardTouch*)g_windowManager.GetWindow(WINDOW_DIALOG_KEYBOARD_TOUCH);
+  kb = g_windowManager.GetWindow<CGUIDialogKeyboardTouch>();
 #else
-  kb = (CGUIDialogKeyboardGeneric*)g_windowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);
+  kb = g_windowManager.GetWindow<CGUIDialogKeyboardGeneric>();
 #endif
 
   if (kb)
   {
-    g_activedKeyboard = kb;
+    g_activeKeyboard = kb;
     kb->startAutoCloseTimer(autoCloseMs);
     confirmed = kb->ShowAndGetInput(keyTypedCB, aTextString, aTextString, headingStr, hiddenInput);
-    g_activedKeyboard = NULL;
+    g_activeKeyboard = NULL;
   }
 
   if (confirmed)

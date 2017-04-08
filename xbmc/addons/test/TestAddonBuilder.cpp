@@ -55,7 +55,7 @@ TEST_F(TestAddonBuilder, ShouldBuildDependencyAddons)
   EXPECT_EQ(deps, addon->GetDeps());
 }
 
-TEST_F(TestAddonBuilder, ShouldReturnDeivedType)
+TEST_F(TestAddonBuilder, ShouldReturnDerivedType)
 {
   builder.SetType(ADDON_RESOURCE_LANGUAGE);
   auto addon = std::dynamic_pointer_cast<CLanguageResource>(builder.Build());

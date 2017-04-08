@@ -7,12 +7,13 @@
 void SetDirTime(const char *Name,RarTime *ftm,RarTime *ftc,RarTime *fta)
 {
 #ifdef _WIN_32
+
   bool sm=ftm!=NULL && ftm->IsSet();
   bool sc=ftc!=NULL && ftc->IsSet();
   bool sa=ftc!=NULL && fta->IsSet();
   if (!WinNT())
     return;
-  HANDLE hFile=CreateFile(Name,GENERIC_WRITE,FILE_SHARE_READ|FILE_SHARE_WRITE,
+  HANDLE hFile=CreateFile(unrarxlib::ToW(Name).c_str(),GENERIC_WRITE,FILE_SHARE_READ|FILE_SHARE_WRITE,
                           NULL,OPEN_EXISTING,FILE_FLAG_BACKUP_SEMANTICS,NULL);
   if (hFile==INVALID_HANDLE_VALUE)
     return;
@@ -40,7 +41,7 @@ bool IsRemovable(const char *Name)
 #elif defined(_WIN_32)
   char Root[NM];
   GetPathRoot(Name,Root);
-  int Type=GetDriveType(*Root ? Root:NULL);
+  int Type=GetDriveType(*Root ? unrarxlib::ToW(Root).c_str():NULL);
   return(Type==DRIVE_REMOVABLE || Type==DRIVE_CDROM);
 #elif defined(_EMX)
   char Drive=toupper(Name[0]);
@@ -77,7 +78,7 @@ Int64 GetFreeDisk(const char *Name)
 
   if (pGetDiskFreeSpaceEx==NULL)
   {
-  HMODULE hKernel=GetModuleHandle("kernel32.dll");
+  HMODULE hKernel=GetModuleHandle(L"kernel32.dll");
     if (hKernel!=NULL)
       pGetDiskFreeSpaceEx=(GETDISKFREESPACEEX)GetProcAddress(hKernel,"GetDiskFreeSpaceExA");
   }
@@ -86,13 +87,13 @@ Int64 GetFreeDisk(const char *Name)
     GetFilePath(Name,Root);
     ULARGE_INTEGER uiTotalSize,uiTotalFree,uiUserFree;
     uiUserFree.u.LowPart=uiUserFree.u.HighPart=0;
-    if (pGetDiskFreeSpaceEx(*Root ? Root:NULL,&uiUserFree,&uiTotalSize,&uiTotalFree) &&
+    if (pGetDiskFreeSpaceEx(*Root ? unrarxlib::ToW(Root).c_str():NULL,&uiUserFree,&uiTotalSize,&uiTotalFree) &&
         uiUserFree.u.HighPart<=uiTotalFree.u.HighPart)
       return(int32to64(uiUserFree.u.HighPart,uiUserFree.u.LowPart));
   }
 
   DWORD SectorsPerCluster,BytesPerSector,FreeClusters,TotalClusters;
-  if (!GetDiskFreeSpace(*Root ? Root:NULL,&SectorsPerCluster,&BytesPerSector,&FreeClusters,&TotalClusters))
+  if (!GetDiskFreeSpace(*Root ? unrarxlib::ToW(Root).c_str():NULL,&SectorsPerCluster,&BytesPerSector,&FreeClusters,&TotalClusters))
     return(1457664);
   Int64 FreeSize=SectorsPerCluster*BytesPerSector;
   FreeSize=FreeSize*FreeClusters;
@@ -151,7 +152,7 @@ bool FileExist(const char *Name,const wchar *NameW)
       return(GetFileAttributesW(NameW)!=0xffffffff);
     else
 #endif
-      return(GetFileAttributes(Name)!=0xffffffff);
+      return(GetFileAttributes(unrarxlib::ToW(Name).c_str())!=0xffffffff);
 #elif defined(ENABLE_ACCESS)
   return(access(Name,0)==0);
 #else
@@ -247,7 +248,7 @@ uint GetFileAttr(const char *Name,const wchar *NameW)
       return(GetFileAttributesW(NameW));
     else
 #endif
-      return(GetFileAttributes(Name));
+      return(GetFileAttributes(unrarxlib::ToW(Name).c_str()));
 #elif defined(_DJGPP)
   return(_chmod(Name,0));
 #else
@@ -272,7 +273,7 @@ bool SetFileAttr(const char *Name,const wchar *NameW,uint Attr)
       success=SetFileAttributesW(NameW,Attr)!=0;
     else
 #endif
-      success=SetFileAttributes(Name,Attr)!=0;
+      success=SetFileAttributes(unrarxlib::ToW(Name).c_str(),Attr)!=0;
 #elif defined(_DJGPP)
   success=_chmod(Name,1,Attr)!=-1;
 #elif defined(_EMX)
@@ -291,9 +292,9 @@ void ConvertNameToFull(const char *Src,char *Dest)
 #ifdef _WIN_32
 //#ifndef _WIN_CE
 #if !defined(_WIN_CE) && !defined(TARGET_POSIX)
-  char FullName[NM],*NamePtr;
-  if (GetFullPathName(Src,sizeof(FullName),FullName,&NamePtr))
-    strcpy(Dest,FullName);
+  wchar_t FullName[NM],*NamePtr;
+  if (GetFullPathName(unrarxlib::ToW(Src).c_str(),sizeof(FullName),FullName,&NamePtr))
+    strcpy(Dest,unrarxlib::FromW(FullName).c_str());
   else
 #endif
     if (Src!=Dest)

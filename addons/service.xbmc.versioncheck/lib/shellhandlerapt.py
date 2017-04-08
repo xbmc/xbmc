@@ -56,7 +56,7 @@ class ShellHandlerApt:
             if installed == "(none)":
                 installed = False
             if candidate == "(none)":
-                candiate = False
+                candidate = False
             return installed, candidate
         else:
             log("ShellHandlerApt: error during version check")

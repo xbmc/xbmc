@@ -58,6 +58,7 @@ FOR %%b in (%1, %2, %3, %4, %5, %6) DO (
   IF %%b==sh SET useshell=sh
 )
 
+SET PreferredToolArchitecture=x64
 SET buildconfig=Release
 set WORKSPACE=%CD%\..\..\kodi-build
 
@@ -102,7 +103,7 @@ set WORKSPACE=%CD%\..\..\kodi-build
   MKDIR %WORKSPACE%
   PUSHD %WORKSPACE%
 
-  cmake.exe -G "Visual Studio 14" %base_dir%\project\cmake
+  cmake.exe -G "Visual Studio 14" %base_dir%
   IF %errorlevel%==1 (
     set DIETEXT="%APP_NAME%.EXE failed to build!"
     goto DIE

@@ -19,7 +19,8 @@
  */
 
 #include "Application.h"
-#include "cores/AudioEngine/AEFactory.h"
+#include "ServiceBroker.h"
+#include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
 #include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.h"
 #include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSPMode.h"
 #include "cores/AudioEngine/Interfaces/AESound.h"
@@ -139,7 +140,7 @@ void CAddonCallbacksADSP::ADSPRegisterMode(void* addonData, AE_DSP_MODES::AE_DSP
 
   if (idMode > AE_DSP_INVALID_ADDON_ID)
   {
-	  CLog::Log(LOGDEBUG, "Audio DSP - %s - successfull registered mode %s of %s adsp-addon", __FUNCTION__, mode->strModeName, addon->Name().c_str());
+	  CLog::Log(LOGDEBUG, "Audio DSP - %s - successfully registered mode %s of %s adsp-addon", __FUNCTION__, mode->strModeName, addon->Name().c_str());
   }
   else
   {
@@ -169,7 +170,7 @@ ADSPHANDLE CAddonCallbacksADSP::ADSPSoundPlay_GetHandle(void *addonData, const c
     return NULL;
   }
 
-  IAESound *sound = CAEFactory::MakeSound(filename);
+  IAESound *sound = CServiceBroker::GetActiveAE().MakeSound(filename);
   if (!sound)
   {
     CLog::Log(LOGERROR, "Audio DSP - %s - failed to make sound play data", __FUNCTION__);
@@ -188,7 +189,7 @@ void CAddonCallbacksADSP::ADSPSoundPlay_ReleaseHandle(void *addonData, ADSPHANDL
     return;
   }
 
-  CAEFactory::FreeSound((IAESound*)handle);
+  CServiceBroker::GetActiveAE().FreeSound(reinterpret_cast<IAESound*>(handle));
 }
 
 void CAddonCallbacksADSP::ADSPSoundPlay_Play(void *addonData, ADSPHANDLE handle)

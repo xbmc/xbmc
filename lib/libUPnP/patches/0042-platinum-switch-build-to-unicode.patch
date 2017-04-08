@@ -1,0 +1,85 @@
+diff --git a/lib/libUPnP/Neptune/Source/System/Win32/NptWin32Console.cpp b/lib/libUPnP/Neptune/Source/System/Win32/NptWin32Console.cpp
+index 59ac92e..e897f8a 100644
+--- a/lib/libUPnP/Neptune/Source/System/Win32/NptWin32Console.cpp
++++ b/lib/libUPnP/Neptune/Source/System/Win32/NptWin32Console.cpp
+@@ -15,6 +15,7 @@
+ 
+ #include "NptConfig.h"
+ #include "NptConsole.h"
++#include "NptDebug.h"
+ 
+ /*----------------------------------------------------------------------
+ |   NPT_Console::Output
+@@ -22,7 +23,7 @@
+ void
+ NPT_Console::Output(const char* message)
+ {
+-    OutputDebugString(message);
++    NPT_DebugOutput(message);
+     printf("%s", message);
+ }
+ 
+diff --git a/lib/libUPnP/Neptune/Source/System/Win32/NptWin32Debug.cpp b/lib/libUPnP/Neptune/Source/System/Win32/NptWin32Debug.cpp
+index c5b157d..5d9372a 100644
+--- a/lib/libUPnP/Neptune/Source/System/Win32/NptWin32Debug.cpp
++++ b/lib/libUPnP/Neptune/Source/System/Win32/NptWin32Debug.cpp
+@@ -11,16 +11,13 @@
+ |   includes
+ +---------------------------------------------------------------------*/
+ #include <stdio.h>
+-#if defined(_XBOX)
+-#include <xtl.h>
+-#else
+ #include <windows.h>
+-#endif
+ 
+ #include "NptConfig.h"
+ #include "NptDefs.h"
+ #include "NptTypes.h"
+ #include "NptDebug.h"
++#include <memory>
+ 
+ /*----------------------------------------------------------------------
+ |   NPT_DebugOutput
+@@ -28,9 +25,16 @@
+ void
+ NPT_DebugOutput(const char* message)
+ {
+-#if !defined(_WIN32_WCE)
+-    OutputDebugString(message);
+-#endif
+-    printf("%s", message);
++  int result = MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, message, -1, nullptr, 0);
++  if (result == 0)
++    return;
++
++  auto newStr = std::make_unique<wchar_t[]>(result + 1);
++  result = MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, message, result, newStr.get(), result);
++
++  if (result == 0)
++    return;
++
++  OutputDebugString(newStr.get());
+ }
+ 
+diff --git a/lib/libUPnP/Neptune/Source/System/Win32/NptWin32SerialPort.cpp b/lib/libUPnP/Neptune/Source/System/Win32/NptWin32SerialPort.cpp
+index 8edd0ff..9428648 100644
+--- a/lib/libUPnP/Neptune/Source/System/Win32/NptWin32SerialPort.cpp
++++ b/lib/libUPnP/Neptune/Source/System/Win32/NptWin32SerialPort.cpp
+@@ -207,6 +207,8 @@ NPT_Win32SerialPort::Open(unsigned int              speed,
+                           NPT_SerialPortFlowControl flow_control,
+                           NPT_SerialPortParity      parity)
+ {
++    return NPT_FAILURE; // We don't need serial port suppurt
++#if 0
+     // check if we're already open
+     if (!m_HandleReference.IsNull()) {
+         return NPT_ERROR_SERIAL_PORT_ALREADY_OPEN;
+@@ -278,6 +280,7 @@ NPT_Win32SerialPort::Open(unsigned int              speed,
+     m_HandleReference = new NPT_Win32HandleWrapper(handle);
+ 
+     return NPT_SUCCESS;
++#endif
+ }
+ 
+ /*----------------------------------------------------------------------

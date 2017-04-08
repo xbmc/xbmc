@@ -89,10 +89,10 @@ CDVDOverlaySpu* CDVDDemuxSPU::AddData(uint8_t* data, int iSize, double pts)
   // check if we are about to start a new packet
   if (pSPUData->iSize == pSPUData->iNeededSize)
   {
-    // for now we don't delete the memory assosiated with m_spuData.data
+    // for now we don't delete the memory associated with m_spuData.data
     pSPUData->iSize = 0;
 
-    // check spu data lenght, only needed / possible in the first spu pakcet
+    // check spu data length, only needed / possible in the first spu packet
     uint16_t length = data[0] << 8 | data[1];
     if (length == 0)
     {
@@ -179,7 +179,7 @@ CDVDOverlaySpu* CDVDDemuxSPU::ParsePacket(SPUData* pSPUData)
 
   pUnparsedData = pSPUData->data + 4;
 
-  // if it is set to 0 it means it's a menu overlay by defualt
+  // if it is set to 0 it means it's a menu overlay by default
   // this is not what we want too, cause you get strange results on a parse error
   pSPUInfo->iPTSStartTime = -1;
 
@@ -329,7 +329,7 @@ CDVDOverlaySpu* CDVDDemuxSPU::ParsePacket(SPUData* pSPUData)
   }
 
   // parse the rle.
-  // this should be chnaged so it get's converted to a yuv overlay
+  // this should be changed so it get's converted to a yuv overlay
   return ParseRLE(pSPUInfo, pUnparsedData);
 }
 
@@ -427,10 +427,10 @@ CDVDOverlaySpu* CDVDDemuxSPU::ParseRLE(CDVDOverlaySpu* pSPU, uint8_t* pUnparsedD
         return NULL;
       }
 
-      // keep trace of all occouring pixels, even keeping the background in mind
+      // keep trace of all occurring pixels, even keeping the background in mind
       stats[i_code & 0x3] += i_code >> 2;
 
-      // count the number of pixels for every occouring parts, without background
+      // count the number of pixels for every occurring parts, without background
       if (pSPU->alpha[i_code & 0x3] != 0x00)
       {
         // the last non background pixel is probably the border color

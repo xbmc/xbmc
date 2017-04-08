@@ -9,11 +9,11 @@ DEPENDS = \
 	libgcrypt bzip2 liblzo2 libzip freetype2 fontconfig \
 	openssl gmp nettle gnutls curl \
 	libjpeg-turbo libpng fribidi libass \
-	libxml2 yajl libmicrohttpd mysql libffi \
-	python27 libshairplay \
+	libxml2 rapidjson libmicrohttpd mysql libffi \
+	python27 libshairplay libfmt \
 	libplist libcec libbluray tinyxml dummy-libxbmc \
 	libssh taglib libusb libnfs \
-	pythonmodule-pil pythonmodule-setuptools \
+	pythonmodule-pil pythonmodule-pycryptodome pythonmodule-setuptools \
 	libxslt ffmpeg platform crossguid \
         libdvdread libdvdnav libdvdcss p8-platform
 
@@ -42,7 +42,7 @@ endif
 
 ifeq ($(OS),android)
   EXCLUDED_DEPENDS = libcec libusb
-  DEPENDS += mdnsresponder libuuid
+  DEPENDS += mdnsresponder libuuid libandroidjni
   CROSSGUID_DEPS = libuuid
 endif
 
@@ -61,13 +61,11 @@ ifeq ($(NEED_LIBICONV),1)
 endif
 
 ALSA_LIB=
-LINUX_SYSTEM_LIBS=
 ifeq ($(OS),linux)
   DEPENDS += libuuid
   #not for raspberry pi
   ifneq ($(TARGET_PLATFORM),raspberry-pi)
-    DEPENDS += libsdl2 linux-system-libs
-    LINUX_SYSTEM_LIBS = linux-system-libs
+    DEPENDS += linux-system-libs
   endif
   DEPENDS += alsa-lib
   ALSA_LIB = alsa-lib
@@ -95,9 +93,9 @@ libpng: $(ZLIB)
 openssl: $(ZLIB)
 gnutls: nettle $(ZLIB)
 nettle: gmp
+pythonmodule-pycryptodome: python27 pythonmodule-setuptools
 pythonmodule-pil: $(ZLIB) libjpeg-turbo libpng freetype2 python27 pythonmodule-setuptools
 pythonmodule-setuptools: python27
-libsdl2: $(LINUX_SYSTEM_LIBS)
 libxslt: libgcrypt libxml2
 ffmpeg: $(ICONV) $(ZLIB) bzip2 $(FFMPEG_DEPENDS)
 platform: p8-platform

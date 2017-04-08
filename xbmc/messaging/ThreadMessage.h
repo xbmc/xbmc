@@ -125,10 +125,15 @@ public:
   std::string strParam;
   std::vector<std::string> params;
 
-  void SetResult(int res)
+  /*!
+   * \brief set the message return value, will only be returned when
+   *        the message is sent using SendMsg
+   * \param [in] res the return value or a result status code that is returned to the caller
+   */
+  void SetResult(int res) const
   {
     //On posted messages result will be zero, since they can't
-    //retreive the response we silently ignore this to let message
+    //retrieve the response we silently ignore this to let message
     //handlers not have to worry about it
     if (result)
       *result = res;

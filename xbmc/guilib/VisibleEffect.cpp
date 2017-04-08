@@ -26,6 +26,7 @@
 #include "Tween.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
+#include "GUIControlFactory.h"
 
 CAnimEffect::CAnimEffect(const TiXmlElement *node, EFFECT_TYPE effect)
 {
@@ -268,21 +269,21 @@ CZoomEffect::CZoomEffect(const TiXmlElement *node, const CRect &rect) : CAnimEff
     std::vector<std::string> params = StringUtils::Split(start, ",");
     if (params.size() == 1)
     {
-      m_startX = (float)atof(params[0].c_str());
+      m_startX = CGUIControlFactory::ParsePosition(params[0].c_str(), rect.Width());
       m_startY = m_startX;
     }
     else if (params.size() == 2)
     {
-      m_startX = (float)atof(params[0].c_str());
-      m_startY = (float)atof(params[1].c_str());
+      m_startX = CGUIControlFactory::ParsePosition(params[0].c_str(), rect.Width());
+      m_startY = CGUIControlFactory::ParsePosition(params[1].c_str(), rect.Height());
     }
     else if (params.size() == 4)
     { // format is start="x,y,width,height"
       // use width and height from our rect to calculate our sizing
-      startPosX = (float)atof(params[0].c_str());
-      startPosY = (float)atof(params[1].c_str());
-      m_startX = (float)atof(params[2].c_str());
-      m_startY = (float)atof(params[3].c_str());
+      startPosX = CGUIControlFactory::ParsePosition(params[0].c_str(), rect.Width());
+      startPosY = CGUIControlFactory::ParsePosition(params[1].c_str(), rect.Height());
+      m_startX = CGUIControlFactory::ParsePosition(params[2].c_str(), rect.Width());
+      m_startY = CGUIControlFactory::ParsePosition(params[3].c_str(), rect.Height());
       m_startX *= 100.0f / width;
       m_startY *= 100.0f / height;
     }
@@ -293,21 +294,21 @@ CZoomEffect::CZoomEffect(const TiXmlElement *node, const CRect &rect) : CAnimEff
     std::vector<std::string> params = StringUtils::Split(end, ",");
     if (params.size() == 1)
     {
-      m_endX = (float)atof(params[0].c_str());
+      m_endX = CGUIControlFactory::ParsePosition(params[0].c_str(), rect.Width());
       m_endY = m_endX;
     }
     else if (params.size() == 2)
     {
-      m_endX = (float)atof(params[0].c_str());
-      m_endY = (float)atof(params[1].c_str());
+      m_endX = CGUIControlFactory::ParsePosition(params[0].c_str(), rect.Width());
+      m_endY = CGUIControlFactory::ParsePosition(params[1].c_str(), rect.Height());
     }
     else if (params.size() == 4)
     { // format is start="x,y,width,height"
       // use width and height from our rect to calculate our sizing
-      endPosX = (float)atof(params[0].c_str());
-      endPosY = (float)atof(params[1].c_str());
-      m_endX = (float)atof(params[2].c_str());
-      m_endY = (float)atof(params[3].c_str());
+      endPosX = CGUIControlFactory::ParsePosition(params[0].c_str(), rect.Width());
+      endPosY = CGUIControlFactory::ParsePosition(params[1].c_str(), rect.Height());
+      m_endX = CGUIControlFactory::ParsePosition(params[2].c_str(), rect.Width());
+      m_endY = CGUIControlFactory::ParsePosition(params[3].c_str(), rect.Height());
       m_endX *= 100.0f / width;
       m_endY *= 100.0f / height;
     }
@@ -321,9 +322,9 @@ CZoomEffect::CZoomEffect(const TiXmlElement *node, const CRect &rect) : CAnimEff
     {
       std::vector<std::string> commaSeparated = StringUtils::Split(centerPos, ",");
       if (commaSeparated.size() > 1)
-        m_center.y = (float)atof(commaSeparated[1].c_str());
+        m_center.y = CGUIControlFactory::ParsePosition(commaSeparated[1].c_str(), rect.Height());
       if (!commaSeparated.empty())
-        m_center.x = (float)atof(commaSeparated[0].c_str());
+        m_center.x = CGUIControlFactory::ParsePosition(commaSeparated[0].c_str(), rect.Width());
     }
   }
   else

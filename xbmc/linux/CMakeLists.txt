@@ -40,4 +40,8 @@ if(OMXLIB_FOUND)
                       OMXCore.h)
 endif()
 
+if(IMX_FOUND)
+  add_subdirectory(imx)
+endif()
+
 core_add_library(linuxsupport)

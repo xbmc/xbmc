@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<node order="2" type="filter">
-  <label>369</label>
-  <icon>DefaultMovieTitle.png</icon>
-  <content>movies</content>
-  <order direction="ascending">sorttitle</order>
+<node order="3" type="filter">
+	<label>10024</label>
+	<icon>DefaultMovieTitle.png</icon>
+	<content>movies</content>
+	<order direction="ascending">sorttitle</order>
 </node>

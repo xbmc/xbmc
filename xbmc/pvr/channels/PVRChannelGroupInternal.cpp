@@ -30,6 +30,7 @@
 #include "pvr/PVRManager.h"
 #include "pvr/timers/PVRTimers.h"
 #include "PVRChannelGroupsContainer.h"
+#include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
 #include "utils/Variant.h"
@@ -54,7 +55,7 @@ CPVRChannelGroupInternal::CPVRChannelGroupInternal(const CPVRChannelGroup &group
 CPVRChannelGroupInternal::~CPVRChannelGroupInternal(void)
 {
   Unload();
-  g_PVRManager.Events().Unsubscribe(this);
+  CServiceBroker::GetPVRManager().Events().Unsubscribe(this);
 }
 
 bool CPVRChannelGroupInternal::Load(void)
@@ -62,7 +63,7 @@ bool CPVRChannelGroupInternal::Load(void)
   if (CPVRChannelGroup::Load())
   {
     UpdateChannelPaths();
-    g_PVRManager.Events().Subscribe(this, &CPVRChannelGroupInternal::OnPVRManagerEvent);
+    CServiceBroker::GetPVRManager().Events().Subscribe(this, &CPVRChannelGroupInternal::OnPVRManagerEvent);
     return true;
   }
 
@@ -166,7 +167,7 @@ bool CPVRChannelGroupInternal::RemoveFromGroup(const CPVRChannelPtr &channel)
     return false;
 
   /* check if this channel is currently playing if we are hiding it */
-  CPVRChannelPtr currentChannel(g_PVRManager.GetCurrentChannel());
+  CPVRChannelPtr currentChannel(CServiceBroker::GetPVRManager().GetCurrentChannel());
   if (currentChannel && currentChannel == channel)
   {
     CGUIDialogOK::ShowAndGetInput(CVariant{19098}, CVariant{19102});
@@ -220,7 +221,7 @@ int CPVRChannelGroupInternal::GetMembers(CFileItemList &results, bool bGroupMemb
 
 int CPVRChannelGroupInternal::LoadFromDb(bool bCompress /* = false */)
 {
-  CPVRDatabase *database = GetPVRDatabase();
+  const CPVRDatabasePtr database(CServiceBroker::GetPVRManager().GetTVDatabase());
   if (!database)
     return -1;
 
@@ -245,7 +246,7 @@ int CPVRChannelGroupInternal::LoadFromDb(bool bCompress /* = false */)
 bool CPVRChannelGroupInternal::LoadFromClients(void)
 {
   /* get the channels from the backends */
-  return g_PVRClients->GetChannels(this) == PVR_ERROR_NO_ERROR;
+  return CServiceBroker::GetPVRManager().Clients()->GetChannels(this) == PVR_ERROR_NO_ERROR;
 }
 
 bool CPVRChannelGroupInternal::IsGroupMember(const CPVRChannelPtr &channel) const
@@ -300,7 +301,7 @@ bool CPVRChannelGroupInternal::UpdateGroupEntries(const CPVRChannelGroup &channe
     if (g_advancedSettings.m_bPVRChannelIconsAutoScan)
       SearchAndSetChannelIcons();
 
-    g_PVRTimers->UpdateChannels();
+    CServiceBroker::GetPVRManager().Timers()->UpdateChannels();
     Persist();
 
     bReturn = true;
@@ -351,5 +352,5 @@ bool CPVRChannelGroupInternal::CreateChannelEpgs(bool bForce /* = false */)
 void CPVRChannelGroupInternal::OnPVRManagerEvent(const PVR::PVREvent& event)
 {
   if (event == ManagerStarted)
-    g_PVRManager.TriggerEpgsCreate();
+    CServiceBroker::GetPVRManager().TriggerEpgsCreate();
 }

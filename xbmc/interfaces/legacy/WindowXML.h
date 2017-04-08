@@ -57,6 +57,9 @@ namespace XBMCAddon
     ///                             (default='Default')
     /// @param defaultRes           [opt] string - default skins resolution.
     ///                             (default='720p')
+    /// @param isMedia              [opt] bool - if False, create a regular window.
+    ///                             if True, create a mediawindow.
+    ///                             (default=False)
     /// @throws Exception           if more then 200 windows are created.
     ///
     /// \remark Skin folder structure is e.g. **resources/skins/Default/720p**
@@ -66,11 +69,12 @@ namespace XBMCAddon
     /// window.
     ///
     ///--------------------------------------------------------------------------
+    /// @python_v18 New param added **isMedia**.
     ///
     /// **Example:**
     /// ~~~~~~~~~~~~~{.py}
     /// ..
-    /// win = xbmcgui.WindowXML('script-Lyrics-main.xml', xbmcaddon.Addon().getAddonInfo('path').decode('utf-8'), 'default', '1080p')
+    /// win = xbmcgui.WindowXML('script-Lyrics-main.xml', xbmcaddon.Addon().getAddonInfo('path').decode('utf-8'), 'default', '1080p', False)
     /// win.doModal()
     /// del win
     /// ..
@@ -113,7 +117,8 @@ namespace XBMCAddon
      public:
       WindowXML(const String& xmlFilename, const String& scriptPath,
                 const String& defaultSkin = "Default",
-                const String& defaultRes = "720p");
+                const String& defaultRes = "720p",
+                bool isMedia = false);
       virtual ~WindowXML();
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -352,6 +357,56 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_xbmcgui_window_xml
+      /// @brief \python_func{ setContent(value) }
+      ///-----------------------------------------------------------------------
+      /// Sets the content type of the container.
+      ///
+      /// @param value          string or unicode - content value.
+      ///
+      /// __Available content types__
+      /// | Name        | Media                                    |
+      /// |:-----------:|:-----------------------------------------|
+      /// | actors      | Videos
+      /// | addons      | Addons, Music, Pictures, Programs, Videos
+      /// | albums      | Music, Videos
+      /// | artists     | Music, Videos
+      /// | countries   | Music, Videos
+      /// | directors   | Videos
+      /// | files       | Music, Videos
+      /// | games       | Games
+      /// | genres      | Music, Videos
+      /// | images      | Pictures
+      /// | mixed       | Music, Videos
+      /// | movies      | Videos
+      /// | Musicvideos | Music, Videos
+      /// | playlists   | Music, Videos
+      /// | seasons     | Videos
+      /// | sets        | Videos
+      /// | songs       | Music
+      /// | studios     | Music, Videos
+      /// | tags        | Music, Videos
+      /// | tvshows     | Videos
+      /// | videos      | Videos
+      /// | years       | Music, Videos
+      ///
+      /// ------------------------------------------------------------------------
+      /// @python_v18 Added new function.
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ..
+      /// self.setContent('movies')
+      /// ..
+      /// ~~~~~~~~~~~~~
+      ///
+      setContent(...);
+#else
+      SWIGHIDDENVIRTUAL void setContent(const String &strValue);
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmcgui_window_xml
       /// @brief \python_func{ getCurrentContainerId() }
       ///-----------------------------------------------------------------------
       /// Get the id of the currently visible container.
@@ -381,7 +436,7 @@ namespace XBMCAddon
       SWIGHIDDENVIRTUAL bool      OnDoubleClick(int iItem);
       SWIGHIDDENVIRTUAL void      Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
 
-      SWIGHIDDENVIRTUAL bool IsMediaWindow() const { XBMC_TRACE; return true; };
+      SWIGHIDDENVIRTUAL bool IsMediaWindow() const { XBMC_TRACE; return m_isMedia; };
 
       // This method is identical to the Window::OnDeinitWindow method
       //  except it passes the message on to their respective parents.
@@ -401,6 +456,7 @@ namespace XBMCAddon
       void             SetupShares();
       String       m_scriptPath;
       String       m_mediaDir;
+      bool m_isMedia;
 
       friend class WindowXMLInterceptor;
 #endif

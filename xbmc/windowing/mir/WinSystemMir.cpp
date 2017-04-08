@@ -30,7 +30,7 @@
 
 CWinSystemMir::CWinSystemMir() :
   m_connection(nullptr),
-  m_surface(nullptr),
+  m_window(nullptr),
   m_pixel_format(mir_pixel_format_invalid)
 {
   m_eWindowSystem = WINDOW_SYSTEM_MIR;
@@ -68,36 +68,33 @@ bool CWinSystemMir::CreateNewWindow(const std::string& name,
     return false;
   }
 
-  auto spec = mir_connection_create_spec_for_normal_surface(m_connection,
-                                                            res.iWidth,
-                                                            res.iHeight,
-                                                            m_pixel_format);
+  auto spec = mir_create_normal_window_spec(m_connection, res.iWidth, res.iHeight);
 
-  mir_surface_spec_set_buffer_usage(spec, mir_buffer_usage_hardware);
-  mir_surface_spec_set_name(spec, name.c_str());
+  mir_window_spec_set_pixel_format(spec, m_pixel_format);
+  mir_window_spec_set_buffer_usage(spec, mir_buffer_usage_hardware);
+  mir_window_spec_set_event_handler(spec, MirHandleEvent, nullptr);
+  mir_window_spec_set_name(spec, name.c_str());
 
-  m_surface = mir_surface_create_sync(spec);
-  mir_surface_spec_release(spec);
+  m_window = mir_create_window_sync(spec);
+  mir_window_spec_release(spec);
 
-  if (!mir_surface_is_valid(m_surface))
+  if (!mir_window_is_valid(m_window))
   {
     CLog::Log(LOGERROR, "WinSystemMir::CreateNewWindow - %s",
-      mir_surface_get_error_message(m_surface));
+      mir_window_get_error_message(m_window));
 
     return false;
   }
 
-  mir_surface_set_event_handler(m_surface, MirHandleEvent, NULL);
-
   // Hide the cursor
-  mir_surface_configure_cursor(m_surface, NULL);
+  mir_window_configure_cursor(m_window, nullptr);
 
   return true;
 }
 
 bool CWinSystemMir::DestroyWindow()
 {
-  mir_surface_release_sync(m_surface);
+  mir_window_release_sync(m_window);
 
   return true;
 }
@@ -133,29 +130,29 @@ void CWinSystemMir::UpdateResolutions()
 
 bool CWinSystemMir::ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop)
 {
-  auto spec = mir_connection_create_spec_for_changes(m_connection);
-  mir_surface_spec_set_width (spec, newWidth);
-  mir_surface_spec_set_height(spec, newHeight);
+  auto spec = mir_create_window_spec(m_connection);
+  mir_window_spec_set_width (spec, newWidth);
+  mir_window_spec_set_height(spec, newHeight);
 
-  mir_surface_apply_spec(m_surface, spec);
-  mir_surface_spec_release(spec);
+  mir_window_apply_spec(m_window, spec);
+  mir_window_spec_release(spec);
 
   return true;
 }
 
 bool CWinSystemMir::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
 {
-  auto state = mir_surface_state_fullscreen;
+  auto state = mir_window_state_fullscreen;
   if (!fullScreen)
   {
-    state = mir_surface_state_restored;
+    state = mir_window_state_restored;
   }
 
-  auto spec = mir_connection_create_spec_for_changes(m_connection);
-  mir_surface_spec_set_state(spec, state);
+  auto spec = mir_create_window_spec(m_connection);
+  mir_window_spec_set_state(spec, state);
 
-  mir_surface_apply_spec(m_surface, spec);
-  mir_surface_spec_release(spec);
+  mir_window_apply_spec(m_window, spec);
+  mir_window_spec_release(spec);
 
   m_nWidth      = res.iWidth;
   m_nHeight     = res.iHeight;

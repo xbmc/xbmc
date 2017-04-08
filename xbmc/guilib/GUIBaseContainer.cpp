@@ -1145,14 +1145,14 @@ void CGUIBaseContainer::LoadLayout(TiXmlElement *layout)
   while (itemElement)
   { // we have a new item layout
     m_layouts.emplace_back();
-    m_layouts.back().LoadLayout(itemElement, GetParentID(), false);
+    m_layouts.back().LoadLayout(itemElement, GetParentID(), false, m_width, m_height);
     itemElement = itemElement->NextSiblingElement("itemlayout");
   }
   itemElement = layout->FirstChildElement("focusedlayout");
   while (itemElement)
   { // we have a new item layout
     m_focusedLayouts.emplace_back();
-    m_focusedLayouts.back().LoadLayout(itemElement, GetParentID(), true);
+    m_focusedLayouts.back().LoadLayout(itemElement, GetParentID(), true, m_width, m_height);
     itemElement = itemElement->NextSiblingElement("focusedlayout");
   }
 }
@@ -1304,7 +1304,7 @@ std::string CGUIBaseContainer::GetLabel(int info) const
         label = StringUtils::Format("%i", GetSelectedItem() + 1);
     }
     break;
-  case CONTAINER_ACTUAL_ITEMS:
+  case CONTAINER_NUM_ALL_ITEMS:
   case CONTAINER_NUM_ITEMS:
     {
       unsigned int numItems = GetNumItems();
@@ -1314,8 +1314,19 @@ std::string CGUIBaseContainer::GetLabel(int info) const
         label = StringUtils::Format("%u", numItems);
     }
     break;
+  case CONTAINER_NUM_NONFOLDER_ITEMS:
+    {
+      int numItems = 0;
+      for (auto item : m_items)
+      {
+        if (!item->m_bIsFolder)
+          numItems++;
+      }
+      label = StringUtils::Format("%u", numItems);
+    }
+    break;
   default:
-      break;
+    break;
   }
   return label;
 }

@@ -960,8 +960,9 @@ unsigned int CActiveAESink::OutputSamples(CSampleBuffer* samples)
       }
       else if (samples->pkt->pause_burst_ms > 0)
       {
-        // construct a pause burst
-        m_packer->PackPause(m_sinkFormat.m_streamInfo, samples->pkt->pause_burst_ms);
+        // construct a pause burst if we have already output valid audio
+        bool burst = m_extStreaming && (m_packer->GetBuffer()[0] != 0);
+        m_packer->PackPause(m_sinkFormat.m_streamInfo, samples->pkt->pause_burst_ms, burst);
       }
       else
         m_packer->Reset();

@@ -19,7 +19,6 @@
  */
 
 #include "Util.h"
-#include "threads/Atomics.h"
 #include "MMALRenderer.h"
 #include "ServiceBroker.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"

@@ -1,9 +1,9 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include Makefile samba_android.patch no_fork_and_exec.patch
+DEPS= ../../Makefile.include Makefile configureEndian.patch samba_android.patch samba_off64_t.patch no_fork_and_exec.patch
 
 # lib name, version
 LIBNAME=samba
-VERSION=3.6.12
+VERSION=4.0.26
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
@@ -16,11 +16,12 @@ endif
 
 CONFIGURE= cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
           ./configure --prefix=$(PREFIX) \
-          --without-cluster-support --disable-swat --without-ldap \
-          --without-pam --without-pam_smbpass --with-fhs --with-libtalloc=no \
-          --with-libtdb=no --without-winbind --disable-cups --without-ads \
-          --disable-avahi --disable-fam --without-libaddns --without-libnetapi \
-          --without-dnsupdate --without-libsmbsharemodes \
+          --without-cluster-support --without-ldap \
+          --without-pam --without-pam_smbpass --enable-fhs \
+          --without-winbind --disable-cups --without-ads \
+          --disable-avahi \
+          --without-dnsupdate \
+          --without-ad-dc --without-acl-support \
           --with-libiconv=$(STAGING_DIR)
 
 # configuration settings
@@ -48,6 +49,8 @@ $(TARBALLS_LOCATION)/$(ARCHIVE):
 $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
+	cd $(PLATFORM); patch -p0 -i ../configureEndian.patch
+	cd $(PLATFORM)/source3; ./autogen.sh
 ifeq ($(OS),android)
 	cd $(PLATFORM); patch -p0 < ../samba_android.patch
 	cd $(PLATFORM); patch -p1 < ../samba_off64_t.patch
@@ -55,7 +58,7 @@ endif
 ifeq ($(TARGET_PLATFORM),appletvos)
 	cd $(PLATFORM); patch -p0 < ../no_fork_and_exec.patch
 endif
-ifeq ($(OS),osx)
+ifeq (darwin, $(findstring darwin, $(HOST)))
 	sed -ie "s|ifndef HAVE_CLOCK_GETTIME|if !defined(HAVE_CLOCK_GETTIME) \&\& !defined(CLOCK_REALTIME)|" "$(PLATFORM)/lib/replace/system/time.h"
 endif
 	cd $(PLATFORM)/source3; $(CONFIGURE)
@@ -68,12 +71,6 @@ $(LIBDYLIB): $(PLATFORM)
 ifeq (darwin, $(findstring darwin, $(HOST)))
 	mv $(PREFIX)/lib/libsmbclient.dylib.0 $(PREFIX)/lib/libsmbclient.dylib
 	install_name_tool -id $(PREFIX)/lib/libsmbclient.dylib $(PREFIX)/lib/libsmbclient.dylib
-endif
-ifeq ($(OS),android)
-	rm -f $(PREFIX)/lib/libsmbclient.so 
-	mv -f $(PREFIX)/lib/libsmbclient.so.0 $(PREFIX)/lib/libsmbclient.so
-	$(RPL) -e "libsmbclient.so.0" "libsmbclient.so\x00\x00" $(PREFIX)/lib/libsmbclient.so
-	-$(READELF) --dynamic $(PREFIX)/lib/libsmbclient.so | grep ibrary
 endif
 	touch $@
 

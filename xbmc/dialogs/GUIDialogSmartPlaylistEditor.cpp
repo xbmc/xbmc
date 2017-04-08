@@ -299,7 +299,7 @@ void CGUIDialogSmartPlaylistEditor::OnName()
 void CGUIDialogSmartPlaylistEditor::OnLimit()
 {
   std::vector<int> limits = {0, 10, 25, 50, 100, 250, 500, 1000};
-  CGUIDialogSelect* dialog = static_cast<CGUIDialogSelect*>(g_windowManager.GetWindow(WINDOW_DIALOG_SELECT));
+  CGUIDialogSelect* dialog = g_windowManager.GetWindow<CGUIDialogSelect>();
   dialog->Reset();
   int selected = -1;
   for (auto limit = limits.begin(); limit != limits.end(); limit++)
@@ -324,7 +324,7 @@ void CGUIDialogSmartPlaylistEditor::OnLimit()
 void CGUIDialogSmartPlaylistEditor::OnType()
 {
   std::vector<PLAYLIST_TYPE> allowedTypes = GetAllowedTypes(m_mode);
-  CGUIDialogSelect* dialog = static_cast<CGUIDialogSelect*>(g_windowManager.GetWindow(WINDOW_DIALOG_SELECT));
+  CGUIDialogSelect* dialog = g_windowManager.GetWindow<CGUIDialogSelect>();
   dialog->Reset();
   for (auto allowedType: allowedTypes)
     dialog->Add(GetLocalizedType(allowedType));
@@ -342,7 +342,7 @@ void CGUIDialogSmartPlaylistEditor::OnType()
 void CGUIDialogSmartPlaylistEditor::OnOrder()
 {
   std::vector<SortBy> orders = CSmartPlaylistRule::GetOrders(m_playlist.GetType());
-  CGUIDialogSelect* dialog = static_cast<CGUIDialogSelect*>(g_windowManager.GetWindow(WINDOW_DIALOG_SELECT));
+  CGUIDialogSelect* dialog = g_windowManager.GetWindow<CGUIDialogSelect>();
   dialog->Reset();
   for (auto order: orders)
     dialog->Add(g_localizeStrings.Get(SortUtils::GetSortLabel(order)));
@@ -369,7 +369,7 @@ void CGUIDialogSmartPlaylistEditor::OnGroupBy()
 {
   std::vector<Field> groups = CSmartPlaylistRule::GetGroups(m_playlist.GetType());
   Field currentGroup = CSmartPlaylistRule::TranslateGroup(m_playlist.GetGroup().c_str());
-  CGUIDialogSelect* dialog = static_cast<CGUIDialogSelect*>(g_windowManager.GetWindow(WINDOW_DIALOG_SELECT));
+  CGUIDialogSelect* dialog = g_windowManager.GetWindow<CGUIDialogSelect>();
   dialog->Reset();
   for (auto group : groups)
     dialog->Add(CSmartPlaylistRule::GetLocalizedGroup(group));
@@ -609,7 +609,7 @@ void CGUIDialogSmartPlaylistEditor::OnRuleAdd()
 
 bool CGUIDialogSmartPlaylistEditor::NewPlaylist(const std::string &type)
 {
-  CGUIDialogSmartPlaylistEditor *editor = (CGUIDialogSmartPlaylistEditor *)g_windowManager.GetWindow(WINDOW_DIALOG_SMART_PLAYLIST_EDITOR);
+  CGUIDialogSmartPlaylistEditor *editor = g_windowManager.GetWindow<CGUIDialogSmartPlaylistEditor>();
   if (!editor) return false;
 
   editor->m_path = "";
@@ -622,7 +622,7 @@ bool CGUIDialogSmartPlaylistEditor::NewPlaylist(const std::string &type)
 
 bool CGUIDialogSmartPlaylistEditor::EditPlaylist(const std::string &path, const std::string &type)
 {
-  CGUIDialogSmartPlaylistEditor *editor = (CGUIDialogSmartPlaylistEditor *)g_windowManager.GetWindow(WINDOW_DIALOG_SMART_PLAYLIST_EDITOR);
+  CGUIDialogSmartPlaylistEditor *editor = g_windowManager.GetWindow<CGUIDialogSmartPlaylistEditor>();
   if (!editor) return false;
 
   editor->m_mode = type;
@@ -637,7 +637,7 @@ bool CGUIDialogSmartPlaylistEditor::EditPlaylist(const std::string &path, const 
   { // failed to load
     if (!StringUtils::StartsWithNoCase(editor->m_mode, "party"))
       return false; // only edit normal playlists that exist
-    // party mode playlists can be editted even if they don't exist
+    // party mode playlists can be edited even if they don't exist
     playlist.SetType(editor->m_mode == "partymusic" ? "songs" : "musicvideos");
   }
 

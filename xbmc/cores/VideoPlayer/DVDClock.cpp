@@ -19,7 +19,7 @@
  */
 
 #include "DVDClock.h"
-#include "video/VideoReferenceClock.h"
+#include "VideoReferenceClock.h"
 #include <math.h>
 #include "utils/MathUtils.h"
 #include "threads/SingleLock.h"
@@ -124,7 +124,7 @@ void CDVDClock::Pause(bool pause)
 
 void CDVDClock::SetSpeed(int iSpeed)
 {
-  // this will sometimes be a little bit of due to rounding errors, ie clock might jump abit when changing speed
+  // this will sometimes be a little bit of due to rounding errors, ie clock might jump a bit when changing speed
   CSingleLock lock(m_critSection);
 
   if (m_paused)

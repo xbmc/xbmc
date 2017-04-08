@@ -1,7 +1,9 @@
-set(SOURCES ZeroconfBrowserMDNS.cpp
-            ZeroconfMDNS.cpp)
+if(MDNS_FOUND)
+  set(SOURCES ZeroconfBrowserMDNS.cpp
+              ZeroconfMDNS.cpp)
 
-set(HEADERS ZeroconfBrowserMDNS.h
-            ZeroconfMDNS.h)
+  set(HEADERS ZeroconfBrowserMDNS.h
+              ZeroconfMDNS.h)
 
-core_add_library(network_mdns)
+  core_add_library(network_mdns)
+endif()

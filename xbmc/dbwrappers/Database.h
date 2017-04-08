@@ -78,7 +78,7 @@ public:
   bool IsOpen();
   void Close();
   bool Compress(bool bForce=true);
-  void Interupt();
+  void Interrupt();
 
   bool Open(const DatabaseSettings &db);
 

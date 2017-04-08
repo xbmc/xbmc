@@ -85,7 +85,7 @@ const WCHAR* WINAPI DXGetErrorStringW( _In_ HRESULT hr )
 {
    switch(hr)
    {
-// Commmented out codes are actually alises for other codes
+// Commented out codes are actually aliases for other codes
 
 // -------------------------------------------------------------
 // Common Win32 error codes
@@ -3477,7 +3477,7 @@ void WINAPI DXGetErrorDescriptionW( _In_ HRESULT hr, _Out_cap_(count) WCHAR* des
 
     switch (hr)
     {
-// Commmented out codes are actually alises for other codes
+// Commented out codes are actually aliases for other codes
 
 #if !defined(WINAPI_FAMILY) || (WINAPI_FAMILY == WINAPI_FAMILY_DESKTOP_APP)
 
@@ -3501,7 +3501,7 @@ void WINAPI DXGetErrorDescriptionW( _In_ HRESULT hr, _Out_cap_(count) WCHAR* des
         CHK_ERR(DDERR_INVALIDRECT, "Rectangle provided was invalid.")
         CHK_ERR(DDERR_LOCKEDSURFACES, "Operation could not be carried out because one or more surfaces are locked")
         CHK_ERR(DDERR_NO3D, "There is no 3D present.")
-        CHK_ERR(DDERR_NOALPHAHW, "Operation could not be carried out because there is no alpha accleration hardware present or available.")
+        CHK_ERR(DDERR_NOALPHAHW, "Operation could not be carried out because there is no alpha acceleration hardware present or available.")
         CHK_ERR(DDERR_NOSTEREOHARDWARE, "Operation could not be carried out because there is no stereo hardware present or available.")
         CHK_ERR(DDERR_NOSURFACELEFT, "Operation could not be carried out because there is no hardware present which supports stereo surfaces")
         CHK_ERR(DDERR_NOCLIPLIST, "no clip list available")
@@ -3558,7 +3558,7 @@ void WINAPI DXGetErrorDescriptionW( _In_ HRESULT hr, _Out_cap_(count) WCHAR* des
         CHK_ERR(DDERR_PRIMARYSURFACEALREADYEXISTS, "this process already has created a primary surface")
         CHK_ERR(DDERR_NOEMULATION, "software emulation not available.")
         CHK_ERR(DDERR_REGIONTOOSMALL, "region passed to Clipper::GetClipList is too small.")
-        CHK_ERR(DDERR_CLIPPERISUSINGHWND, "an attempt was made to set a clip list for a clipper objec that is already monitoring an hwnd.")
+        CHK_ERR(DDERR_CLIPPERISUSINGHWND, "an attempt was made to set a clip list for a clipper object that is already monitoring an hwnd.")
         CHK_ERR(DDERR_NOCLIPPERATTACHED, "No clipper object attached to surface object")
         CHK_ERR(DDERR_NOHWND, "Clipper notification requires an HWND or no HWND has previously been set as the CooperativeLevel HWND.")
         CHK_ERR(DDERR_HWNDSUBCLASSED, "HWND used by DirectDraw CooperativeLevel has been subclassed, this prevents DirectDraw from restoring state.")
@@ -3576,7 +3576,7 @@ void WINAPI DXGetErrorDescriptionW( _In_ HRESULT hr, _Out_cap_(count) WCHAR* des
         CHK_ERR(DDERR_NOTFLIPPABLE, "An attempt has been made to flip a surface that is not flippable.")
         CHK_ERR(DDERR_CANTDUPLICATE, "Can't duplicate primary & 3D surfaces, or surfaces that are implicitly created.")
         CHK_ERR(DDERR_NOTLOCKED, "Surface was not locked.  An attempt to unlock a surface that was not locked at all, or by this process, has been attempted.")
-        CHK_ERR(DDERR_CANTCREATEDC, "Windows can not create any more DCs, or a DC was requested for a paltte-indexed surface when the surface had no palette AND the display mode was not palette-indexed (in this case DirectDraw cannot select a proper palette into the DC)")
+        CHK_ERR(DDERR_CANTCREATEDC, "Windows can not create any more DCs, or a DC was requested for a palette-indexed surface when the surface had no palette AND the display mode was not palette-indexed (in this case DirectDraw cannot select a proper palette into the DC)")
         CHK_ERR(DDERR_NODC, "No DC was ever created for this surface.")
         CHK_ERR(DDERR_WRONGMODE, "This surface can not be restored because it was created in a different mode.")
         CHK_ERR(DDERR_IMPLICITLYCREATED, "This surface can not be restored because it is an implicitly created surface.")
@@ -3768,12 +3768,12 @@ void WINAPI DXGetErrorDescriptionW( _In_ HRESULT hr, _Out_cap_(count) WCHAR* des
         CHK_ERR(DXGI_ERROR_UNSUPPORTED, "Unsupported.")
         CHK_ERR(DXGI_ERROR_DEVICE_REMOVED, "Hardware device removed.")
         CHK_ERR(DXGI_ERROR_DEVICE_HUNG, "Device hung due to badly formed commands.")
-        CHK_ERR(DXGI_ERROR_DEVICE_RESET, "Device reset due to a badly formed commant.")
+        CHK_ERR(DXGI_ERROR_DEVICE_RESET, "Device reset due to a badly formed command.")
         CHK_ERR(DXGI_ERROR_WAS_STILL_DRAWING, "Was still drawing.")
         CHK_ERR(DXGI_ERROR_FRAME_STATISTICS_DISJOINT, "The requested functionality is not supported by the device or the driver.")
         CHK_ERR(DXGI_ERROR_GRAPHICS_VIDPN_SOURCE_IN_USE, "The requested functionality is not supported by the device or the driver.")
         CHK_ERR(DXGI_ERROR_DRIVER_INTERNAL_ERROR, "An internal driver error occurred.")
-        CHK_ERR(DXGI_ERROR_NONEXCLUSIVE, "The application attempted to perform an operation on an DXGI output that is only legal after the output has been claimed for exclusive owenership.")
+        CHK_ERR(DXGI_ERROR_NONEXCLUSIVE, "The application attempted to perform an operation on an DXGI output that is only legal after the output has been claimed for exclusive ownership.")
         CHK_ERR(DXGI_ERROR_NOT_CURRENTLY_AVAILABLE, "The requested functionality is not supported by the device or the driver.")
         CHK_ERR(DXGI_ERROR_REMOTE_CLIENT_DISCONNECTED, "Remote desktop client disconnected.")
         CHK_ERR(DXGI_ERROR_REMOTE_OUTOFMEMORY, "Remote desktop client is out of memory.")
@@ -3795,8 +3795,8 @@ void WINAPI DXGetErrorDescriptionW( _In_ HRESULT hr, _Out_cap_(count) WCHAR* des
 //        CHK_ERR(D2DERR_INSUFFICIENT_BUFFER, "The supplied buffer was too small to accomodate the data.")
         CHK_ERR(D2DERR_WRONG_STATE, "The object was not in the correct state to process the method.")
         CHK_ERR(D2DERR_NOT_INITIALIZED, "The object has not yet been initialized.")
-        CHK_ERR(D2DERR_UNSUPPORTED_OPERATION, "The requested opertion is not supported.")
-        CHK_ERR(D2DERR_SCANNER_FAILED, "The geomery scanner failed to process the data.")
+        CHK_ERR(D2DERR_UNSUPPORTED_OPERATION, "The requested operation is not supported.")
+        CHK_ERR(D2DERR_SCANNER_FAILED, "The geometry scanner failed to process the data.")
         CHK_ERR(D2DERR_SCREEN_ACCESS_DENIED, "D2D could not access the screen.")
         CHK_ERR(D2DERR_DISPLAY_STATE_INVALID, "A valid display state could not be determined.")
         CHK_ERR(D2DERR_ZERO_VECTOR, "The supplied vector is zero.")
@@ -3873,7 +3873,7 @@ void WINAPI DXGetErrorDescriptionW( _In_ HRESULT hr, _Out_cap_(count) WCHAR* des
         CHK_ERR(WINCODEC_ERR_UNEXPECTEDSIZE, "Unexpected value size in WIC metadata.")
         CHK_ERR(WINCODEC_ERR_INVALIDQUERYREQUEST, "Invalid metadata query.")
         CHK_ERR(WINCODEC_ERR_UNEXPECTEDMETADATATYPE, "Unexpected metadata type encountered in WIC image.")
-        CHK_ERR(WINCODEC_ERR_REQUESTONLYVALIDATMETADATAROOT, "Operation only valid on meatadata root.")
+        CHK_ERR(WINCODEC_ERR_REQUESTONLYVALIDATMETADATAROOT, "Operation only valid on metadata root.")
         CHK_ERR(WINCODEC_ERR_INVALIDQUERYCHARACTER, "Invalid character in WIC metadata query.")
         CHK_ERR(WINCODEC_ERR_WIN32ERROR, "General Win32 error encountered during WIC operation.")
         CHK_ERR(WINCODEC_ERR_INVALIDPROGRESSIVELEVEL, "Invalid level for progressive WIC image decode.")

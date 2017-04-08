@@ -3,6 +3,7 @@ set(SOURCES CharsetConverter.cpp
             WinMain.cpp
             crts_caller.cpp
             dxerr.cpp
+            Filesystem.cpp
             pch.cpp
             stat_utf8.cpp
             stdio_utf8.cpp

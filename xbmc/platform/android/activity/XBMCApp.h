@@ -28,21 +28,19 @@
 
 #include <android/native_activity.h>
 
+#include <androidjni/Activity.h>
+#include <androidjni/AudioManager.h>
+#include <androidjni/BroadcastReceiver.h>
+#include <androidjni/View.h>
+
+#include "threads/Event.h"
+#include "guilib/Geometry.h"
 #include "IActivityHandler.h"
 #include "IInputHandler.h"
-
-#include "platform/xbmc.h"
-#include "platform/android/jni/Activity.h"
-#include "platform/android/jni/BroadcastReceiver.h"
-#include "platform/android/jni/AudioManager.h"
-#include "platform/android/jni/View.h"
-#include "threads/Event.h"
-
 #include "JNIMainActivity.h"
+#include "platform/xbmc.h"
 
-#include "guilib/Geometry.h"
-
-// forward delares
+// forward declares
 class CJNIWakeLock;
 class CAESinkAUDIOTRACK;
 class CVariant;
@@ -77,7 +75,8 @@ public:
   virtual void onVolumeChanged(int volume);
   virtual void onAudioFocusChange(int focusChange);
   virtual void doFrame(int64_t frameTimeNanos);
-
+  virtual void onVisibleBehindCanceled() {}
+  
   // implementation of CJNIInputManagerInputDeviceListener
   void onInputDeviceAdded(int deviceId) override;
   void onInputDeviceChanged(int deviceId) override;
@@ -108,7 +107,7 @@ public:
   
   static int GetBatteryLevel();
   static bool EnableWakeLock(bool on);
-  static bool HasFocus();
+  static bool HasFocus() { return m_hasFocus; }
   static bool IsHeadsetPlugged();
 
   static bool StartActivity(const std::string &package, const std::string &intent = std::string(), const std::string &dataType = std::string(), const std::string &dataURI = std::string());

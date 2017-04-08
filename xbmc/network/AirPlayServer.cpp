@@ -718,7 +718,7 @@ bool CAirPlayServer::CTCPClient::checkAuthorization(const std::string& authStr,
      }
      else
      {
-       CLog::Log(LOGDEBUG, "AirAuth: successfull authentication from AirPlay client");
+       CLog::Log(LOGDEBUG, "AirAuth: successful authentication from AirPlay client");
      }
   }
   m_bAuthenticated = authValid;

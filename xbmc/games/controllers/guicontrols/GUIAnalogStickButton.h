@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2016 Team Kodi
+ *      Copyright (C) 2016-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -36,7 +36,7 @@ namespace GAME
     // implementation of IFeatureButton
     virtual bool PromptForInput(CEvent& waitEvent) override;
     virtual bool IsFinished(void) const override;
-    virtual JOYSTICK::ANALOG_STICK_DIRECTION GetDirection(void) const override;
+    virtual KODI::JOYSTICK::ANALOG_STICK_DIRECTION GetDirection(void) const override;
     virtual void Reset(void) override;
 
   private:

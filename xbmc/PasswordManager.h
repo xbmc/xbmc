@@ -85,7 +85,7 @@ public:
   void Clear();
 
 private:
-  // private construction, and no assignements; use the provided singleton methods
+  // private construction, and no assignments; use the provided singleton methods
   CPasswordManager();
   CPasswordManager(const CPasswordManager&);
   CPasswordManager const & operator=(CPasswordManager const&);

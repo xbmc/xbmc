@@ -81,7 +81,7 @@ Kodi now requires crossguid which is not available in Ubuntu repositories at thi
 We supply a Makefile in tools/depends/target/crossguid
 to make it easy to install into /usr/local.
     $ make -C tools/depends/target/crossguid PREFIX=/usr/local
-
+    
 [NOTICE] yail got changed for rapidjson which is not available in OpenSuse repositories.
 To build rapidjson for OpenSuse you must get the source from github and configure,build and install them yourself.
 Next lines explain how to do that.

@@ -342,7 +342,7 @@ int MysqlDatabase::copy(const char *backup_name) {
     }
     mysql_free_result(res);
 
-    // we don't recreate views, indicies, or triggers on copy
+    // we don't recreate views, indices, or triggers on copy
     // as we'll be dropping and recreating them anyway
   }
 
@@ -601,7 +601,7 @@ std::string MysqlDatabase::vprepare(const char *format, va_list args)
 */
 #define etRADIX       1 /* Integer types.  %d, %x, %o, and so forth */
 #define etFLOAT       2 /* Floating point.  %f */
-#define etEXP         3 /* Exponentional notation. %e and %E */
+#define etEXP         3 /* Exponential notation. %e and %E */
 #define etGENERIC     4 /* Floating or exponential, depending on exponent. %g */
 #define etSIZE        5 /* Return number of characters processed so far. %n */
 #define etSTRING      6 /* Strings. %s */

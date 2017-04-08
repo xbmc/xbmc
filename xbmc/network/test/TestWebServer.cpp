@@ -384,7 +384,8 @@ TEST_F(TestWebServer, CanGetJsonRpcResponse)
   ASSERT_FALSE(result.empty());
 
   // parse the JSON-RPC response
-  CVariant resultObj = CJSONVariantParser::Parse(reinterpret_cast<const unsigned char*>(result.c_str()), result.size());
+  CVariant resultObj;
+  ASSERT_TRUE(CJSONVariantParser::Parse(result, resultObj));
   // make sure it's an object
   ASSERT_TRUE(resultObj.isObject());
 

@@ -19,7 +19,7 @@
 				<scrolltime tween="cubic" easing="out">500</scrolltime>
 				<visible>Container.Content() | Container.Content(tags) | Container.Content(years) | Container.Content(roles) | Container.Content(genres) | Container.Content(countries) | Container.Content(studios) | Container.Content(playlists) | Container.Content(unknown)</visible>
 				<viewtype label="31099">icon</viewtype>
-				<itemlayout height="280" width="440" condition="Container.Content() | Container.Content(unknown) | Container.Content(tags) | Container.Content(files) | Container.Content(playlists) | [Container.Content(studios) + System.HasAddon(resource.images.studios.white)]">
+				<itemlayout height="280" width="440" condition="Container.Content() | Container.Content(tags) | Container.Content(playlists) | [Container.Content(studios) + System.HasAddon(resource.images.studios.white)]">
 					<control type="group">
 						<top>150</top>
 						<control type="image">
@@ -45,15 +45,6 @@
 							<height>75</height>
 							<texture colordiffuse="border_alpha">colors/black.png</texture>
 						</control>
-						<control type="image">
-							<left>329</left>
-							<top>24</top>
-							<width>50</width>
-							<height>50</height>
-							<aspectratio>keep</aspectratio>
-							<texture>$INFO[ListItem.Overlay]</texture>
-							<visible>!String.EndsWith(ListItem.Overlay,watched.png)</visible>
-						</control>
 						<control type="textbox">
 							<left>25</left>
 							<top>148</top>
@@ -66,14 +57,14 @@
 						</control>
 					</control>
 				</itemlayout>
-				<focusedlayout height="280" width="440" condition="Container.Content() | Container.Content(unknown) | Container.Content(tags) | Container.Content(files) | Container.Content(playlists) | [Container.Content(studios) + System.HasAddon(resource.images.studios.white)]">
+				<focusedlayout height="280" width="440" condition="Container.Content() | Container.Content(tags) | Container.Content(playlists) | [Container.Content(studios) + System.HasAddon(resource.images.studios.white)]">
 					<control type="group">
 						<depth>DepthContentPopout</depth>
-						<animation type="Focus" reversible="false">
-							<effect type="zoom" center="auto" start="100" end="108" time="250" tween="sine" />
+						<animation type="Focus">
+							<effect type="zoom" start="100" end="112" time="200" tween="sine" easing="inout" center="auto" />
 						</animation>
-						<animation type="UnFocus" reversible="false">
-							<effect type="zoom" center="auto" start="108" end="100" time="150" tween="sine" />
+						<animation type="Unfocus">
+							<effect type="zoom" start="112" end="100" time="200" tween="sine" easing="inout" center="auto" />
 						</animation>
 						<top>150</top>
 						<control type="image">
@@ -98,15 +89,6 @@
 							<texture fallback="DefaultStudios.png">$VAR[IconWallThumbVar]</texture>
 							<aspectratio>keep</aspectratio>
 							<align>center</align>
-						</control>
-						<control type="image">
-							<left>329</left>
-							<top>24</top>
-							<width>50</width>
-							<height>50</height>
-							<aspectratio>keep</aspectratio>
-							<texture>$INFO[ListItem.Overlay]</texture>
-							<visible>!String.EndsWith(ListItem.Overlay,watched.png)</visible>
 						</control>
 						<control type="image">
 							<left>20</left>
@@ -152,11 +134,11 @@
 					<control type="group">
 						<depth>DepthContentPopout</depth>
 						<top>120</top>
-						<animation type="Focus" reversible="false">
-							<effect type="zoom" center="auto" start="100" end="108" time="250" tween="sine" />
+						<animation type="Focus">
+							<effect type="zoom" start="100" end="112" time="200" tween="sine" easing="inout" center="auto" />
 						</animation>
-						<animation type="UnFocus" reversible="false">
-							<effect type="zoom" center="auto" start="108" end="100" time="150" tween="sine" />
+						<animation type="Unfocus">
+							<effect type="zoom" start="112" end="100" time="200" tween="sine" easing="inout" center="auto" />
 						</animation>
 						<control type="image">
 							<width>330</width>

@@ -5,7 +5,7 @@ XBMC_PLATFORM_DIR=android
 . $WORKSPACE/tools/buildsteps/$XBMC_PLATFORM_DIR/make-native-depends
 
 #clear the build failed file
-rm -f $WORKSPACE/project/cmake/$FAILED_BUILD_FILENAME
+rm -f $WORKSPACE/cmake/$FAILED_BUILD_FILENAME
 
 ALL_BINARY_ADDONS_BUILT="1"
 #only build binary addons when requested by env/jenkins
@@ -24,8 +24,8 @@ fi
 
 if [ "$ALL_BINARY_ADDONS_BUILT" == "1" ]
 then
-  tagSuccessFulBuild $WORKSPACE/project/cmake
+  tagSuccessFulBuild $WORKSPACE/cmake
 else
   #mark the build failure in the filesystem but leave jenkins running
-  tagFailedBuild $WORKSPACE/project/cmake
+  tagFailedBuild $WORKSPACE/cmake
 fi

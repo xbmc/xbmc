@@ -80,6 +80,18 @@ public:
    \param parentID The parent id
    \return true if a valid info label was read, false otherwise
    */
+
+   /*! \brief Parse a position string
+   Handles strings of the form
+   ###   number of pixels
+   ###r  number of pixels measured from the right
+   ###%  percentage of parent size
+   \param pos the string to parse.
+   \param parentSize the size of the parent.
+   \sa GetPosition
+   */
+  static float ParsePosition(const char* pos, const float parentSize);
+
   static bool GetInfoLabelFromElement(const TiXmlElement *element, CGUIInfoLabel &infoLabel, int parentID);
   static void GetInfoLabel(const TiXmlNode *pControlNode, const std::string &labelTag, CGUIInfoLabel &infoLabel, int parentID);
   static void GetInfoLabels(const TiXmlNode *pControlNode, const std::string &labelTag, std::vector<CGUIInfoLabel> &infoLabels, int parentID);
@@ -89,7 +101,7 @@ public:
   static bool GetConditionalVisibility(const TiXmlNode* control, std::string &condition);
   static bool GetActions(const TiXmlNode* pRootNode, const char* strTag, CGUIAction& actions);
   static void GetRectFromString(const std::string &string, CRect &rect);
-  static bool GetHitRect(const TiXmlNode* pRootNode, CRect &rect);
+  static bool GetHitRect(const TiXmlNode* pRootNode, CRect &rect, const CRect &parentRect);
   static bool GetScroller(const TiXmlNode *pControlNode, const std::string &scrollerTag, CScroller& scroller);
 private:
   static std::string GetType(const TiXmlElement *pControlNode);
@@ -97,17 +109,6 @@ private:
   bool GetString(const TiXmlNode* pRootNode, const char* strTag, std::string& strString);
   static bool GetFloatRange(const TiXmlNode* pRootNode, const char* strTag, float& iMinValue, float& iMaxValue, float& iIntervalValue);
   static bool GetIntRange(const TiXmlNode* pRootNode, const char* strTag, int& iMinValue, int& iMaxValue, int& iIntervalValue);
-
-  /*! \brief Parse a position string
-   Handles strings of the form
-     ###   number of pixels
-     ###r  number of pixels measured from the right
-     ###%  percentage of parent size
-   \param pos the string to parse.
-   \param parentSize the size of the parent.
-   \sa GetPosition
-   */
-  static float ParsePosition(const char* pos, const float parentSize);
 
   /*! \brief Get the value of a position tag from XML
    Handles both absolute and relative values.

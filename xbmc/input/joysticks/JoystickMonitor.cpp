@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2015-2016 Team Kodi
+ *      Copyright (C) 2015-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -22,6 +22,7 @@
 #include "Application.h"
 #include "input/InputManager.h"
 
+using namespace KODI;
 using namespace JOYSTICK;
 
 bool CJoystickMonitor::OnButtonMotion(unsigned int buttonIndex, bool bPressed)
@@ -46,7 +47,7 @@ bool CJoystickMonitor::OnHatMotion(unsigned int hatIndex, HAT_STATE state)
   return false;
 }
 
-bool CJoystickMonitor::OnAxisMotion(unsigned int axisIndex, float position)
+bool CJoystickMonitor::OnAxisMotion(unsigned int axisIndex, float position, int center, unsigned int range)
 {
   if (position)
   {

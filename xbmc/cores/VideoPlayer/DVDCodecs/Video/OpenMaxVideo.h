@@ -36,14 +36,14 @@ template<typename T> struct IDVDResourceCounted2
   virtual ~IDVDResourceCounted2() {}
   virtual T*   Acquire()
   {
-    printf("Acquire %p %d\n", this, m_refs);
+    printf("Acquire %p %d\n", this, m_refs.load());
     ++m_refs;
     return (T*)this;
   }
 
   virtual long Release()
   {
-    printf("Release %p %d\n", this, m_refs);
+    printf("Release %p %d\n", this, m_refs.load());
     --m_refs;
     assert(m_refs >= 0);
     if (m_refs == 0) delete (T*)this;
@@ -148,7 +148,7 @@ protected:
   pthread_cond_t    m_omx_queue_available;
 
   // OpenMax input buffers (demuxer packets)
-  std::queue<OMX_BUFFERHEADERTYPE*> m_omx_input_avaliable;
+  std::queue<OMX_BUFFERHEADERTYPE*> m_omx_input_available;
   std::vector<OMX_BUFFERHEADERTYPE*> m_omx_input_buffers;
   bool              m_omx_input_eos;
   int               m_omx_input_port;

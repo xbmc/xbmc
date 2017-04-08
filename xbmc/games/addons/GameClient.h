@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2012-2016 Team Kodi
+ *      Copyright (C) 2012-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -39,6 +39,7 @@ class CFileItem;
 namespace GAME
 {
 
+class CGameClientInGameSaves;
 class CGameClientInput;
 class CGameClientKeyboard;
 class CGameClientMouse;
@@ -160,6 +161,9 @@ private:
   PERIPHERALS::EventRateHandle m_inputRateHandle; // Handle while keeping the input sampling rate at the frame rate
   std::unique_ptr<IGameClientPlayback> m_playback; // Interface to control playback
   GAME_REGION           m_region;              // Region of the loaded game
+
+  // In-game saves
+  std::unique_ptr<CGameClientInGameSaves> m_inGameSaves;
 
   // Input
   std::map<int, std::unique_ptr<CGameClientInput>> m_ports;

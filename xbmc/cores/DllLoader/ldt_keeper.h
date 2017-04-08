@@ -5,7 +5,7 @@
  * - avifile includes this file from C++ code
  * and initializes it at the start of player!
  * it might sound like a hack and it really is - but
- * as aviplay is deconding video with more than just one
+ * as aviplay is decoding video with more than just one
  * thread currently it's necessary to do it this way
  * this might change in the future
  */

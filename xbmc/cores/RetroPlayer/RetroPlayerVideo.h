@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2012-2016 Team Kodi
+ *      Copyright (C) 2012-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -37,7 +37,7 @@ namespace GAME
                             //protected CThread
   {
   public:
-    CRetroPlayerVideo(CDVDClock& m_clock, CRenderManager& m_renderManager, CProcessInfo& m_processInfo);
+    CRetroPlayerVideo(CRenderManager& m_renderManager, CProcessInfo& m_processInfo);
 
     virtual ~CRetroPlayerVideo();
 
@@ -59,7 +59,6 @@ namespace GAME
     void SendPicture(DVDVideoPicture& picture);
 
     // Construction parameters
-    CDVDClock&      m_clock;
     CRenderManager& m_renderManager;
     CProcessInfo&   m_processInfo;
 

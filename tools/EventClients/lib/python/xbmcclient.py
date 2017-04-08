@@ -337,7 +337,7 @@ class PacketBUTTON (Packet):
                     "LI:devicename" => LIRC remote map where 'devicename' is the
                     actual device's name
         button_name -- a button name defined in the map specified in map_name.
-                       For example, if map_name is "KB" refering to the
+                       For example, if map_name is "KB" referring to the
                        <keyboard> section in Keymap.xml then, valid
                        button_names include "printscreen", "minus", "x", etc.
         amount -- unimplemented for now; in the future it will be used for
@@ -388,7 +388,7 @@ class PacketMOUSE (Packet):
     def __init__(self, x, y):
         """
         Arguments:
-        x -- horitontal position ranging from 0 to 65535
+        x -- horizontal position ranging from 0 to 65535
         y -- vertical position ranging from 0 to 65535
 
         The range will be mapped to the screen width and height in XBMC
@@ -431,7 +431,7 @@ class PacketLOG (Packet):
         Keyword arguments:
         loglevel -- the loglevel, follows XBMC standard.
         logmessage -- the message to log
-        autoprint -- if the logmessage should automaticly be printed to stdout
+        autoprint -- if the logmessage should automatically be printed to stdout
         """
         Packet.__init__(self)
         self.packettype = PT_LOG
@@ -451,7 +451,7 @@ class PacketACTION (Packet):
         Keyword arguments:
         loglevel -- the loglevel, follows XBMC standard.
         logmessage -- the message to log
-        autoprint -- if the logmessage should automaticly be printed to stdout
+        autoprint -- if the logmessage should automatically be printed to stdout
         """
         Packet.__init__(self)
         self.packettype = PT_ACTION
@@ -513,7 +513,7 @@ class XBMCClient:
     def send_notification(self, title="", message="", icon_file=None):
         """Send a notification to the connected XBMC
         Keyword Arguments:
-        title -- The title/heading for the notifcation
+        title -- The title/heading for the notification
         message -- The message to be displayed
         icon_file -- location of an icon file, if any (png, jpg, gif)
         """
@@ -564,7 +564,7 @@ class XBMCClient:
                    "LI:devicename" => LIRC remote map where 'devicename' is the
                                       actual device's name
         button -- a button name defined in the map specified in map, above.
-                  For example, if map is "KB" refering to the <keyboard>
+                  For example, if map is "KB" referring to the <keyboard>
                   section in Keymap.xml then, valid buttons include
                   "printscreen", "minus", "x", etc.
         """
@@ -585,7 +585,7 @@ class XBMCClient:
                    "LI:devicename" => LIRC remote map where 'devicename' is the
                                       actual device's name
         button -- a button name defined in the map specified in map, above.
-                  For example, if map is "KB" refering to the <keyboard>
+                  For example, if map is "KB" referring to the <keyboard>
                   section in Keymap.xml then, valid buttons include
                   "printscreen", "minus", "x", etc.
         """
@@ -613,7 +613,7 @@ class XBMCClient:
         Keyword arguments:
         loglevel -- the loglevel, follows XBMC standard.
         logmessage -- the message to log
-        autoprint -- if the logmessage should automaticly be printed to stdout
+        autoprint -- if the logmessage should automatically be printed to stdout
         """
         packet = PacketLOG(loglevel, logmessage)
         return packet.send(self.sock, self.addr, self.uid)

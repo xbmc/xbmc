@@ -429,8 +429,6 @@ void CGUIDialogMusicInfo::OnGetThumb()
     newThumb = localThumb;
   else if (CFile::Exists(result))
     newThumb = result;
-  else // none
-    newThumb = "-"; // force local thumbs to be ignored
 
   // update thumb in the database
   CMusicDatabase db;
@@ -593,7 +591,7 @@ void CGUIDialogMusicInfo::AddItemPathToFileBrowserSources(VECSOURCES &sources, c
 
 void CGUIDialogMusicInfo::OnSetUserrating() const
 {
-  CGUIDialogSelect *dialog = static_cast<CGUIDialogSelect *>(g_windowManager.GetWindow(WINDOW_DIALOG_SELECT));
+  CGUIDialogSelect *dialog = g_windowManager.GetWindow<CGUIDialogSelect>();
   if (dialog)
   {
     // If we refresh and then try to set the rating there will be an items already here...
@@ -618,7 +616,7 @@ void CGUIDialogMusicInfo::OnSetUserrating() const
 
 void CGUIDialogMusicInfo::ShowFor(CFileItem item)
 {
-  auto window = static_cast<CGUIWindowMusicNav*>(g_windowManager.GetWindow(WINDOW_MUSIC_NAV));
+  auto window = g_windowManager.GetWindow<CGUIWindowMusicNav>();
   if (window)
     window->OnItemInfo(&item);
 }

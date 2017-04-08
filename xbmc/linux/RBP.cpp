@@ -103,7 +103,7 @@ bool CRBP::Initialize()
   return true;
 }
 
-void CRBP::LogFirmwareVerison()
+void CRBP::LogFirmwareVersion()
 {
   char  response[1024];
   m_DllBcmHost->vc_gencmd(response, sizeof response, "version");

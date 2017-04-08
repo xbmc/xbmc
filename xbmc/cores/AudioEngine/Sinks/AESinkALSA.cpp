@@ -696,7 +696,7 @@ bool CAESinkALSA::InitializeHW(const ALSAConfig &inconfig, ALSAConfig &outconfig
   /* try the data format */
   if (snd_pcm_hw_params_set_format(m_pcm, hw_params, fmt) < 0)
   {
-    /* if the chosen format is not supported, try each one in decending order */
+    /* if the chosen format is not supported, try each one in descending order */
     CLog::Log(LOGINFO, "CAESinkALSA::InitializeHW - Your hardware does not support %s, trying other formats", CAEUtil::DataFormatToStr(outconfig.format));
     for (enum AEDataFormat i = AE_FMT_MAX; i > AE_FMT_INVALID; i = (enum AEDataFormat)((int)i - 1))
     {
@@ -801,12 +801,12 @@ bool CAESinkALSA::InitializeHW(const ALSAConfig &inconfig, ALSAConfig &outconfig
       {
         // try only BufferSize
         bufferSize = bufferSizeTemp;
-        snd_pcm_hw_params_copy(hw_params_copy, hw_params); // restory working copy
+        snd_pcm_hw_params_copy(hw_params_copy, hw_params); // restore working copy
         if (snd_pcm_hw_params_set_buffer_size_near(m_pcm, hw_params_copy, &bufferSize) != 0
           || snd_pcm_hw_params(m_pcm, hw_params_copy) != 0)
         {
           // set default that Alsa would choose
-          CLog::Log(LOGWARNING, "CAESinkAlsa::IntializeHW - Using default alsa values - set failed");
+          CLog::Log(LOGWARNING, "CAESinkAlsa::InitializeHW - Using default alsa values - set failed");
           if (snd_pcm_hw_params(m_pcm, hw_params) != 0)
           {
             CLog::Log(LOGDEBUG, "CAESinkALSA::InitializeHW - Could not init a valid sink");
@@ -1551,7 +1551,7 @@ void CAESinkALSA::EnumerateDevice(AEDeviceInfoList &list, const std::string &dev
 
   if (info.m_deviceType == AE_DEVTYPE_HDMI)
   {
-    // we don't trust ELD information and push back our supported formats explicitely
+    // we don't trust ELD information and push back our supported formats explicitly
     info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_AC3);
     info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD);
     info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD_CORE);

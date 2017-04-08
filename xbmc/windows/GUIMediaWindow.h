@@ -38,19 +38,19 @@ public:
   virtual ~CGUIMediaWindow(void);
 
   // specializations of CGUIControl
-  virtual bool OnAction(const CAction &action) override;
-  virtual bool OnBack(int actionID) override;
-  virtual bool OnMessage(CGUIMessage& message) override;
+  bool OnAction(const CAction &action) override;
+  bool OnBack(int actionID) override;
+  bool OnMessage(CGUIMessage& message) override;
 
   // specializations of CGUIWindow
-  virtual void OnWindowLoaded() override;
-  virtual void OnWindowUnload() override;
-  virtual void OnInitWindow() override;
-  virtual bool IsMediaWindow() const  override { return true; }
+  void OnWindowLoaded() override;
+  void OnWindowUnload() override;
+  void OnInitWindow() override;
+  bool IsMediaWindow() const  override { return true; }
   int GetViewContainerID() const  override { return m_viewControl.GetCurrentControl(); }
   int GetViewCount() const  override { return m_viewControl.GetViewModeCount(); };
-  virtual bool HasListItems() const  override { return true; }
-  virtual CFileItemPtr GetCurrentListItem(int offset = 0) override;
+  bool HasListItems() const  override { return true; }
+  CFileItemPtr GetCurrentListItem(int offset = 0) override;
 
   // custom methods
   virtual bool CanFilterAdvanced() { return m_canFilterAdvanced; }
@@ -65,10 +65,10 @@ public:
 
 protected:
   // specializations of CGUIControlGroup
-  virtual CGUIControl *GetFirstFocusableControl(int id) override;
+  CGUIControl *GetFirstFocusableControl(int id) override;
 
   // specializations of CGUIWindow
-  virtual void LoadAdditionalTags(TiXmlElement *root) override;
+  void LoadAdditionalTags(TiXmlElement *root) override;
 
   // custom methods
   virtual void SetupShares();
@@ -88,8 +88,8 @@ protected:
 
   virtual void FormatItemLabels(CFileItemList &items, const LABEL_MASKS &labelMasks);
   virtual void UpdateButtons();
-  virtual void SaveControlStates() override;
-  virtual void RestoreControlStates() override;
+  void SaveControlStates() override;
+  void RestoreControlStates() override;
 
   virtual bool GetDirectory(const std::string &strDirectory, CFileItemList &items);
   /*! \brief Retrieves the items from the given path and updates the list
@@ -153,11 +153,11 @@ protected:
 
   // check for a disc or connection
   virtual bool HaveDiscOrConnection(const std::string& strPath, int iDriveType);
-  void ShowShareErrorMessage(CFileItem* pItem);
+  void ShowShareErrorMessage(CFileItem* pItem) const;
 
   void SaveSelectedItemInHistory();
   void RestoreSelectedItemFromHistory();
-  void GetDirectoryHistoryString(const CFileItem* pItem, std::string& strHistoryString);
+  void GetDirectoryHistoryString(const CFileItem* pItem, std::string& strHistoryString) const;
   void SetHistoryForPath(const std::string& strDirectory);
   virtual void LoadPlayList(const std::string& strFileName) {}
   virtual bool OnPlayMedia(int iItem, const std::string &player = "");
@@ -169,7 +169,7 @@ protected:
   bool WaitForNetwork() const;
 
   /*! \brief Translate the folder to start in from the given quick path
-   \param dir the folder the user wants
+   \param url the folder the user wants
    \return the resulting path */
   virtual std::string GetStartFolder(const std::string &url);
 

@@ -58,7 +58,7 @@ namespace JSONRPC
    \brief Permission categories for json rpc methods
    
    A JSON-RPC method will only be called if the caller 
-   has the correct permissions to exectue the method.
+   has the correct permissions to execute the method.
    The method call needs to be perfectly threadsafe.
   */
   enum OperationPermission

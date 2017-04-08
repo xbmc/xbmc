@@ -62,6 +62,7 @@ public:
   static const std::string SETTING_LOCALE_COUNTRY;
   static const std::string SETTING_LOCALE_CHARSET;
   static const std::string SETTING_LOCALE_KEYBOARDLAYOUTS;
+  static const std::string SETTING_LOCALE_ACTIVEKEYBOARDLAYOUT;
   static const std::string SETTING_LOCALE_TIMEZONECOUNTRY;
   static const std::string SETTING_LOCALE_TIMEZONE;
   static const std::string SETTING_LOCALE_SHORTDATEFORMAT;
@@ -172,7 +173,6 @@ public:
   static const std::string SETTING_SCRAPERS_MOVIESDEFAULT;
   static const std::string SETTING_SCRAPERS_TVSHOWSDEFAULT;
   static const std::string SETTING_SCRAPERS_MUSICVIDEOSDEFAULT;
-  static const std::string SETTING_PVRMANAGER_HIDECONNECTIONLOSTWARNING;
   static const std::string SETTING_PVRMANAGER_SYNCCHANNELGROUPS;
   static const std::string SETTING_PVRMANAGER_BACKENDCHANNELORDER;
   static const std::string SETTING_PVRMANAGER_USEBACKENDCHANNELNUMBERS;
@@ -200,11 +200,8 @@ public:
   static const std::string SETTING_PVRPLAYBACK_FPS;
   static const std::string SETTING_PVRRECORD_INSTANTRECORDACTION;
   static const std::string SETTING_PVRRECORD_INSTANTRECORDTIME;
-  static const std::string SETTING_PVRRECORD_DEFAULTPRIORITY;
-  static const std::string SETTING_PVRRECORD_DEFAULTLIFETIME;
   static const std::string SETTING_PVRRECORD_MARGINSTART;
   static const std::string SETTING_PVRRECORD_MARGINEND;
-  static const std::string SETTING_PVRRECORD_PREVENTDUPLICATEEPISODES;
   static const std::string SETTING_PVRRECORD_TIMERNOTIFICATIONS;
   static const std::string SETTING_PVRRECORD_GROUPRECORDINGS;
   static const std::string SETTING_PVRPOWERMANAGEMENT_ENABLED;
@@ -253,6 +250,7 @@ public:
   static const std::string SETTING_AUDIOCDS_EJECTONRIP;
   static const std::string SETTING_MYMUSIC_SONGTHUMBINVIS;
   static const std::string SETTING_MYMUSIC_DEFAULTLIBVIEW;
+  static const std::string SETTING_PICTURES_USETAGS;
   static const std::string SETTING_PICTURES_GENERATETHUMBS;
   static const std::string SETTING_PICTURES_SHOWVIDEOS;
   static const std::string SETTING_PICTURES_DISPLAYRESOLUTION;
@@ -331,6 +329,7 @@ public:
   static const std::string SETTING_INPUT_ENABLEMOUSE;
   static const std::string SETTING_INPUT_ASKNEWCONTROLLERS;
   static const std::string SETTING_INPUT_CONTROLLERCONFIG;
+  static const std::string SETTING_INPUT_RUMBLENOTIFY;
   static const std::string SETTING_INPUT_TESTRUMBLE;
   static const std::string SETTING_INPUT_CONTROLLERPOWEROFF;
   static const std::string SETTING_INPUT_APPLEREMOTEMODE;
@@ -347,6 +346,7 @@ public:
   static const std::string SETTING_POWERMANAGEMENT_SHUTDOWNTIME;
   static const std::string SETTING_POWERMANAGEMENT_SHUTDOWNSTATE;
   static const std::string SETTING_POWERMANAGEMENT_WAKEONACCESS;
+  static const std::string SETTING_POWERMANAGEMENT_WAITFORNETWORK;
   static const std::string SETTING_DEBUG_SHOWLOGINFO;
   static const std::string SETTING_DEBUG_EXTRALOGGING;
   static const std::string SETTING_DEBUG_SETEXTRALOGLEVEL;

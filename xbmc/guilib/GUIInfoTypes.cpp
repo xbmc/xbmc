@@ -98,11 +98,11 @@ bool CGUIInfoColor::Update()
 
 void CGUIInfoColor::Parse(const std::string &label, int context)
 {
-  // Check for the standard $INFO[] block layout, and strip it if present
-  std::string label2 = label;
-  if (label == "-")
+  if (label.empty())
     return;
 
+  // Check for the standard $INFO[] block layout, and strip it if present
+  std::string label2 = label;
   if (StringUtils::StartsWithNoCase(label, "$var["))
   {
     label2 = label.substr(5, label.length() - 6);

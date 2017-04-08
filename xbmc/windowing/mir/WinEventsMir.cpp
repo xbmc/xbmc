@@ -327,7 +327,7 @@ void MirHandleInput(MirInputEvent const* iev)
 }
 }
 
-void MirHandleEvent(MirSurface* surface, MirEvent const* ev, void* context)
+void MirHandleEvent(MirWindow* window, MirEvent const* ev, void* context)
 {
   MirEventType event_type = mir_event_get_type(ev);
   switch (event_type)

@@ -22,6 +22,8 @@
 #include "video/VideoThumbLoader.h"
 #include "video/VideoDatabase.h"
 
+#include "pvr/PVRSettings.h"
+
 #include "GUIWindowPVRBase.h"
 
 namespace PVR
@@ -43,6 +45,7 @@ namespace PVR
   protected:
     virtual std::string GetDirectoryPath(void) override;
     virtual void OnPrepareFileItems(CFileItemList &items) override;
+    bool GetFilteredItems(const std::string &filter, CFileItemList &items) override;
 
   private:
     bool OnContextButtonDeleteAll(CFileItem *item, CONTEXT_BUTTON button);
@@ -50,5 +53,6 @@ namespace PVR
     CVideoThumbLoader m_thumbLoader;
     CVideoDatabase m_database;
     bool m_bShowDeletedRecordings;
+    CPVRSettings m_settings;
   };
 }

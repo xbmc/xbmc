@@ -153,7 +153,7 @@ int CDVDVideoCodecOpenMax::Decode(uint8_t* pData, int iSize, double dts, double 
     int rtn;
     int demuxer_bytes = iSize;
     uint8_t *demuxer_content = pData;
-    bool bitstream_convered  = false;
+    bool bitstream_converted  = false;
 
     if (m_convert_bitstream)
     {
@@ -164,7 +164,7 @@ int CDVDVideoCodecOpenMax::Decode(uint8_t* pData, int iSize, double dts, double 
       bitstream_convert(demuxer_content, demuxer_bytes, &bytestream_buff, &bytestream_size);
       if (bytestream_buff && (bytestream_size > 0))
       {
-        bitstream_convered = true;
+        bitstream_converted = true;
         demuxer_bytes = bytestream_size;
         demuxer_content = bytestream_buff;
       }
@@ -172,7 +172,7 @@ int CDVDVideoCodecOpenMax::Decode(uint8_t* pData, int iSize, double dts, double 
 
     rtn = m_omx_decoder->Decode(demuxer_content, demuxer_bytes, dts, pts);
 
-    if (bitstream_convered)
+    if (bitstream_converted)
       free(demuxer_content);
 
     return rtn;

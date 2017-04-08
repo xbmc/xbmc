@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2015-2016 Team Kodi
+ *      Copyright (C) 2015-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -24,6 +24,7 @@
 #include <algorithm>
 #include <iterator>
 
+using namespace KODI;
 using namespace JOYSTICK;
 using namespace PERIPHERALS;
 
@@ -104,7 +105,7 @@ CDriverPrimitive CPeripheralAddonTranslator::TranslatePrimitive(const ADDON::Dri
     }
     case JOYSTICK_DRIVER_PRIMITIVE_TYPE_SEMIAXIS:
     {
-      retVal = CDriverPrimitive(primitive.DriverIndex(), TranslateSemiAxisDirection(primitive.SemiAxisDirection()));
+      retVal = CDriverPrimitive(primitive.DriverIndex(), primitive.Center(), TranslateSemiAxisDirection(primitive.SemiAxisDirection()), primitive.Range());
       break;
     }
     case JOYSTICK_DRIVER_PRIMITIVE_TYPE_MOTOR:
@@ -137,7 +138,7 @@ ADDON::DriverPrimitive CPeripheralAddonTranslator::TranslatePrimitive(const CDri
     }
     case SEMIAXIS:
     {
-      retVal = ADDON::DriverPrimitive(primitive.Index(), TranslateSemiAxisDirection(primitive.SemiAxisDirection()));
+      retVal = ADDON::DriverPrimitive(primitive.Index(), primitive.Center(), TranslateSemiAxisDirection(primitive.SemiAxisDirection()), primitive.Range());
       break;
     }
     case MOTOR:
@@ -268,5 +269,5 @@ JOYSTICK_FEATURE_TYPE CPeripheralAddonTranslator::TranslateFeatureType(JOYSTICK:
 
 ADDON::DriverPrimitive CPeripheralAddonTranslator::Opposite(const ADDON::DriverPrimitive& primitive)
 {
-  return ADDON::DriverPrimitive(primitive.DriverIndex(), primitive.SemiAxisDirection() * -1);
+  return ADDON::DriverPrimitive(primitive.DriverIndex(), primitive.Center() * -1, primitive.SemiAxisDirection() * -1, primitive.Range());
 }

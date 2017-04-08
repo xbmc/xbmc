@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <!--
 Please use English language names instead.
 Default font lacks support for all characters
@@ -9,13 +9,33 @@ Default font lacks support for all characters
       <row>1234567890ß</row>
       <row>qwertzuiopü</row>
       <row>asdfghjklöä</row>
-      <row>yxcvbnm</row>
+      <row>yxcvbnm.-/@</row>
     </keyboard>
     <keyboard modifiers="shift">
-      <row>1234567890ß</row>
+      <row>!"§$%&amp;/()=?</row>
       <row>QWERTZUIOPÜ</row>
       <row>ASDFGHJKLÖÄ</row>
-      <row>YXCVBNM</row>
+      <row>YXCVBNM.-/@</row>
+    </keyboard>
+    <keyboard modifiers="symbol,shift+symbol">
+      <row>)!@#€§$%^&amp;*(</row>
+      <row>[]{}-_=+;:μ</row>
+      <row>'",.&lt;&gt;/?\|</row>
+      <row>`~</row>
+    </keyboard>
+  </layout>
+  <layout language="German" layout="ABC">
+    <keyboard>
+      <row>1234567890ß</row>
+      <row>abcdefghijk</row>
+      <row>lmnopqrstuv</row>
+      <row>wxyzöäü.-/@</row>
+    </keyboard>
+    <keyboard modifiers="shift">
+      <row>!"§$%&amp;/()=?</row>
+      <row>ABCDEFGHIJK</row>
+      <row>LMNOPQRSTUV</row>
+      <row>WXYZÄÖÜ.-/@</row>
     </keyboard>
     <keyboard modifiers="symbol,shift+symbol">
       <row>)!@#€§$%^&amp;*(</row>

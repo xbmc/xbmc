@@ -151,7 +151,7 @@ namespace XbmcThreads
 
     /**
      * This will block until any one of the CEvents in the group are
-     * signaled or the timeout is reachec. If an event is signaled then
+     * signaled or the timeout is reached. If an event is signaled then
      * it will return a pointer to that CEvent, otherwise it will return
      * NULL.
      */

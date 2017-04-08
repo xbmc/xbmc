@@ -55,7 +55,7 @@ void usage(void)
   printf("  -p, --port <port>    send events to the specified port.\n");
   printf("  -u, --universal      runs in Universal Remote mode.\n");
   printf("  -t, --timeout <ms>   timeout length for sequences (default: 500ms).\n");
-  printf("  -m, --multiremote    runs in Multi-Remote mode (adds remote identifier as additional idenfier to buttons)\n");
+  printf("  -m, --multiremote    runs in Multi-Remote mode (adds remote identifier as additional identifier to buttons)\n");
   printf("  -a, --appPath        path to Kodi.app (MenuPress launch support).\n");
   printf("  -z, --appHome        path to Kodi.app/Content/Resources \n");
   printf("  -v, --verbose        prints lots of debugging information.\n");

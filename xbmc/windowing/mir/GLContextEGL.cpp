@@ -117,11 +117,11 @@ bool CGLContextEGL::CreateContext()
   return true;
 }
 
-bool CGLContextEGL::CreateSurface(MirSurface* surface)
+bool CGLContextEGL::CreateSurface(MirWindow* window)
 {
   EGLNativeWindowType egl_nwin = (EGLNativeWindowType)
                                  mir_buffer_stream_get_egl_native_window(
-                                 mir_surface_get_buffer_stream(surface));
+                                 mir_window_get_buffer_stream(window));
 
   m_eglSurface = eglCreateWindowSurface(m_eglDisplay,
                                         m_eglConfig,

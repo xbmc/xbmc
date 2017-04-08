@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2014-2016 Team Kodi
+ *      Copyright (C) 2014-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -21,10 +21,12 @@
 #include "AddonCallbacksPeripheral.h"
 #include "games/controllers/Controller.h"
 #include "games/controllers/ControllerLayout.h"
+#include "games/GameServices.h"
 #include "peripherals/Peripherals.h"
 #include "peripherals/addons/PeripheralAddon.h"
 #include "peripherals/addons/PeripheralAddonTranslator.h"
 #include "utils/log.h"
+#include "ServiceBroker.h"
 
 using namespace ADDON;
 using namespace PERIPHERALS;
@@ -64,7 +66,7 @@ CPeripheralAddon* CAddonCallbacksPeripheral::GetPeripheralAddon(void* addonData,
 
 void CAddonCallbacksPeripheral::TriggerScan(void* addonData)
 {
-  g_peripherals.TriggerDeviceScan(PERIPHERAL_BUS_ADDON);
+  CServiceBroker::GetPeripherals().TriggerDeviceScan(PERIPHERAL_BUS_ADDON);
 }
 
 void CAddonCallbacksPeripheral::RefreshButtonMaps(void* addonData, const char* deviceName, const char* controllerId)
@@ -78,18 +80,14 @@ void CAddonCallbacksPeripheral::RefreshButtonMaps(void* addonData, const char* d
 
 unsigned int CAddonCallbacksPeripheral::FeatureCount(void* addonData, const char* controllerId, JOYSTICK_FEATURE_TYPE type)
 {
-  using namespace ADDON;
   using namespace GAME;
 
   unsigned int count = 0;
 
-  AddonPtr addon;
-  if (CAddonMgr::GetInstance().GetAddon(controllerId, addon, ADDON_GAME_CONTROLLER))
-  {
-    ControllerPtr controller = std::static_pointer_cast<CController>(addon);
-    if (controller->LoadLayout())
-      count = controller->Layout().FeatureCount(CPeripheralAddonTranslator::TranslateFeatureType(type));
-  }
+  CGameServices& gameServices = CServiceBroker::GetGameServices();
+  ControllerPtr controller = gameServices.GetController(controllerId);
+  if (controller)
+    count = controller->Layout().FeatureCount(CPeripheralAddonTranslator::TranslateFeatureType(type));
 
   return count;
 }

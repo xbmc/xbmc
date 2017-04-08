@@ -146,7 +146,7 @@ void CFileCache::SetCacheStrategy(CCacheStrategy *pCache, bool bDeleteCache /* =
 
 IFile *CFileCache::GetFileImp()
 {
-  return m_source.GetImplemenation();
+  return m_source.GetImplementation();
 }
 
 bool CFileCache::Open(const CURL& url)
@@ -517,7 +517,7 @@ int64_t CFileCache::Seek(int64_t iFilePosition, int iWhence)
       return -1;
     }
 
-    /* wait for any remainin data */
+    /* wait for any remaining data */
     if(m_seekPos < iTarget)
     {
       CLog::Log(LOGDEBUG,"%s - waiting for position %" PRId64".", __FUNCTION__, iTarget);
@@ -568,15 +568,15 @@ void CFileCache::StopThread(bool bWait /*= true*/)
 
 std::string CFileCache::GetContent()
 {
-  if (!m_source.GetImplemenation())
+  if (!m_source.GetImplementation())
     return IFile::GetContent();
 
-  return m_source.GetImplemenation()->GetContent();
+  return m_source.GetImplementation()->GetContent();
 }
 
 std::string CFileCache::GetContentCharset(void)
 {
-  IFile* impl = m_source.GetImplemenation();
+  IFile* impl = m_source.GetImplementation();
   if (!impl)
     return IFile::GetContentCharset();
 

@@ -201,7 +201,7 @@ extern "C" FARPROC __stdcall dllGetProcAddress(HMODULE hModule, LPCSTR function)
     {
       DllTrackInfo* track = tracker_get_dlltrackinfo(loc);
       /* some dll's require us to always return a function or it will fail, other's  */
-      /* decide functionallity depending on if the functions exist and may fail      */
+      /* decide functionality depending on if the functions exist and may fail      */
       if( dll->IsSystemDll() && track
        && stricmp(track->pDll->GetName(), "CoreAVCDecoder.ax") == 0 )
       {
@@ -251,34 +251,4 @@ extern "C" HMODULE WINAPI dllGetModuleHandleA(LPCSTR lpModuleName)
 
   CLog::Log(LOGDEBUG, "GetModuleHandleA('%s') failed", lpModuleName);
   return NULL;
-}
-
-extern "C" DWORD WINAPI dllGetModuleFileNameA(HMODULE hModule, LPSTR lpFilename, DWORD nSize)
-{
-  if (NULL == hModule)
-  {
-#ifdef TARGET_WINDOWS
-    return GetModuleFileNameA(hModule, lpFilename, nSize);
-#else
-    CLog::Log(LOGDEBUG, "%s - No hModule specified", __FUNCTION__);
-    return 0;
-#endif
-  }
-
-  LibraryLoader* dll = DllLoaderContainer::GetModule(hModule);
-  if( !dll )
-  {
-    CLog::Log(LOGERROR, "%s - Invalid hModule specified", __FUNCTION__);
-    return 0;
-  }
-
-  const char* sName = dll->GetFileName();
-  if (sName)
-  {
-    strncpy(lpFilename, sName, nSize);
-    lpFilename[nSize] = 0;
-    return strlen(lpFilename);
-  }
-
-  return 0;
 }

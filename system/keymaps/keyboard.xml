@@ -183,6 +183,7 @@
   </Home>
   <VirtualKeyboard>
     <keyboard>
+      <c mod="longpress">noop</c>
       <left>Left</left>
       <right>Right</right>
       <up>Up</up>
@@ -240,6 +241,7 @@
       <e>PreviousMenu</e>
       <t>ShowTimerRule</t>
       <epg>PreviousMenu</epg>
+      <g>NextChannelGroup</g>
       <backspace mod="longpress">Number0</backspace> <!-- 0 key goes to "now" on EPG timeline -->
       <browser_back mod="longpress">Number0</browser_back> <!-- 0 key goes to "now" on EPG timeline -->
     </keyboard>

@@ -5,7 +5,9 @@ set(SOURCES PVRActionListener.cpp
             PVRSettings.cpp
             PVRContextMenus.cpp
             PVRGUIActions.cpp
-            PVRItem.cpp)
+            PVRItem.cpp
+            PVRChannelNumberInputHandler.cpp
+            PVRJobs.cpp)
 
 set(HEADERS PVRActionListener.h
             PVRDatabase.h
@@ -16,6 +18,8 @@ set(HEADERS PVRActionListener.h
             PVRContextMenus.h
             PVRGUIActions.h
             PVRItem.h
-            PVRTypes.h)
+            PVRTypes.h
+            PVRChannelNumberInputHandler.h
+            PVRJobs.h)
 
 core_add_library(pvr)

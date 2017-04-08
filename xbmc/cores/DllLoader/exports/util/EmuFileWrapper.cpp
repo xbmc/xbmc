@@ -132,7 +132,7 @@ void CEmuFileWrapper::UnRegisterFileObjectByDescriptor(int fd)
 
   CSingleLock lock(m_criticalSection);
 
-  // we assume the emulated function alreay deleted the CFile object
+  // we assume the emulated function already deleted the CFile object
   if (m_files[i].file_lock)
   {
     delete m_files[i].file_lock;

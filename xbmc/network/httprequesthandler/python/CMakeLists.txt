@@ -1,4 +1,4 @@
-if(MICROHTTPD_FOUND)
+if(MICROHTTPD_FOUND AND PYTHON_FOUND)
   set(SOURCES HTTPPythonInvoker.cpp
               HTTPPythonWsgiInvoker.cpp)
 

@@ -13,7 +13,8 @@ set(SOURCES DVDAudio.cpp
             VideoPlayerRadioRDS.cpp
             VideoPlayerSubtitle.cpp
             VideoPlayerTeletext.cpp
-            VideoPlayerVideo.cpp)
+            VideoPlayerVideo.cpp
+            VideoReferenceClock.cpp)
 
 set(HEADERS DVDAudio.h
             DVDClock.h
@@ -32,6 +33,7 @@ set(HEADERS DVDAudio.h
             VideoPlayerRadioRDS.h
             VideoPlayerSubtitle.h
             VideoPlayerTeletext.h
-            VideoPlayerVideo.h)
+            VideoPlayerVideo.h
+            VideoReferenceClock.h)
 
 core_add_library(VideoPlayer)

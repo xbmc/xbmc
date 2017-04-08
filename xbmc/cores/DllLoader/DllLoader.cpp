@@ -806,7 +806,7 @@ void DllLoader::UnloadSymbols()
   RtlInitAnsiString(&name, GetName());
   InitializeObjectAttributes(&attributes, &name, OBJ_CASE_INSENSITIVE, NULL);
 
-  // Try to unload the sybols from vs.net debugger
+  // Try to unload the symbols from vs.net debugger
   DbgUnLoadImageSymbols(&name, (ULONG)hModule, 0xFFFFFFFF);
 
   LPVOID pBaseAddress=GetXbdmBaseAddress();

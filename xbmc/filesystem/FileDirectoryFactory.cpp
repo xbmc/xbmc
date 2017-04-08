@@ -44,8 +44,10 @@
 #include "utils/StringUtils.h"
 #include "URL.h"
 #include "ServiceBroker.h"
-#include "addons/BinaryAddonCache.h"
 #include "addons/AudioDecoder.h"
+#include "addons/VFSEntry.h"
+#include "addons/BinaryAddonCache.h"
+#include "AudioBookFileDirectory.h"
 
 using namespace ADDON;
 using namespace XFILE;
@@ -85,15 +87,46 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
     }
   }
 
-#ifdef HAS_FILESYSTEM
-  
+  if (CServiceBroker::IsBinaryAddonCacheUp())
+  {
+    VECADDONS vfs;
+    CBinaryAddonCache &addonCache = CServiceBroker::GetBinaryAddonCache();
+    addonCache.GetAddons(vfs, ADDON_VFS);
+    for (size_t i=0;i<vfs.size();++i)
+    {
+      std::shared_ptr<CVFSEntry> dec(std::static_pointer_cast<CVFSEntry>(vfs[i]));
+      if (!strExtension.empty() && dec->HasFileDirectories() &&
+          dec->GetExtensions().find(strExtension) != std::string::npos)
+      {
+        CVFSEntryIFileDirectoryWrapper* wrap = new CVFSEntryIFileDirectoryWrapper(dec);
+        if (wrap->ContainsFiles(url))
+        {
+          if (wrap->m_items.Size() == 1)
+          {
+            // one STORED file - collapse it down
+            *pItem = *wrap->m_items[0];
+          }
+          else
+          { // compressed or more than one file -> create a dir
+            pItem->SetPath(wrap->m_items.GetPath());
+            return wrap;
+          }
+        }
+        else
+          pItem->m_bIsFolder = true;
+
+        delete wrap;
+        return NULL;
+      }
+    }
+  }
+
   if (pItem->IsRSS())
     return new CRSSDirectory();
 
   if (pItem->IsDiscImage())
     return new CUDFDirectory();
 
-#endif
 #if defined(TARGET_ANDROID)
   if (url.IsFileType("apk"))
   {
@@ -203,7 +236,7 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
     if (playlist.OpenAndReadName(url))
     {
       pItem->SetLabel(playlist.GetName());
-      pItem->SetLabelPreformated(true);
+      pItem->SetLabelPreformatted(true);
     }
     IFileDirectory* pDir=new CSmartPlaylistDirectory;
     return pDir; // treat as directory
@@ -221,6 +254,17 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
         return pDir;
     }
     delete pDir;
+    return NULL;
+  }
+
+  if (pItem->IsAudioBook())
+  {
+    if (!pItem->HasMusicInfoTag() || pItem->m_lEndOffset <= 0)
+    {
+      std::unique_ptr<CAudioBookFileDirectory> pDir(new CAudioBookFileDirectory);
+      if (pDir->ContainsFiles(url))
+        return pDir.release();
+    }
     return NULL;
   }
   return NULL;

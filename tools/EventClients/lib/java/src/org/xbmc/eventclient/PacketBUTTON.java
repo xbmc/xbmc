@@ -73,7 +73,7 @@ public class PacketBUTTON extends Packet {
      * <li>"LI:devicename" => LIRC remote map where 'devicename' is the
      * actual device's name</li></ul>
 	 * @param button_name a button name defined in the map specified in map_name.
-     * For example, if map_name is "KB" refering to the <keyboard> section in Keymap.xml 
+     * For example, if map_name is "KB" referring to the <keyboard> section in Keymap.xml 
      * then, valid button_names include "printscreen", "minus", "x", etc.
 	 * @param repeat this key press should repeat until released (default: 1)
      * Note that queued pressed cannot repeat.
@@ -109,7 +109,7 @@ public class PacketBUTTON extends Packet {
      * <li>"LI:devicename" => LIRC remote map where 'devicename' is the
      * actual device's name</li></ul>
 	 * @param button_name a button name defined in the map specified in map_name.
-     * For example, if map_name is "KB" refering to the <keyboard> section in Keymap.xml 
+     * For example, if map_name is "KB" referring to the <keyboard> section in Keymap.xml 
      * then, valid button_names include "printscreen", "minus", "x", etc.
 	 * @param repeat this key press should repeat until released (default: 1)
      * Note that queued pressed cannot repeat.

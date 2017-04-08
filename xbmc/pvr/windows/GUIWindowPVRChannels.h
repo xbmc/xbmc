@@ -19,11 +19,13 @@
  *
  */
 
+#include "pvr/PVRChannelNumberInputHandler.h"
+
 #include "GUIWindowPVRBase.h"
 
 namespace PVR
 {
-  class CGUIWindowPVRChannels : public CGUIWindowPVRBase
+  class CGUIWindowPVRChannels : public CGUIWindowPVRBase, public CPVRChannelNumberInputHandler
   {
   public:
     CGUIWindowPVRChannels(bool bRadio);
@@ -36,6 +38,9 @@ namespace PVR
     virtual void UpdateButtons(void) override;
     virtual bool OnAction(const CAction &action) override;
 
+    // CPVRChannelNumberInputHandler implementation
+    void OnInputDone() override;
+
   protected:
     virtual std::string GetDirectoryPath(void) override;
 
@@ -45,7 +50,6 @@ namespace PVR
     void ShowChannelManager();
     void ShowGroupManager();
     void UpdateEpg(const CFileItemPtr &item);
-    bool InputChannelNumber(int input);
 
     bool m_bShowHiddenChannels;
   };

@@ -122,5 +122,6 @@
 			<param name="main_label" value="$INFO[ListItem.Label]" />
 			<param name="sub_label" value="$INFO[ListItem.PictureDateTime]" />
 		</include>
+		<include condition="Skin.HasSetting(touchmode)">TouchBackButton</include>
 	</controls>
 </window>

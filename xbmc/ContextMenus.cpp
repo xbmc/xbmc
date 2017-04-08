@@ -18,10 +18,13 @@
  *
  */
 
-#include "ContextMenus.h"
 #include "FileItem.h"
+#include "dialogs/GUIDialogFavourites.h"
+#include "filesystem/FavouritesDirectory.h"
 #include "storage/MediaManager.h"
+#include "utils/URIUtils.h"
 
+#include "ContextMenus.h"
 
 namespace CONTEXTMENU
 {
@@ -54,4 +57,43 @@ namespace CONTEXTMENU
     return g_mediaManager.Eject(item->GetPath());
   }
 
-}
+  bool CFavouriteContextMenuAction::IsVisible(const CFileItem& item) const
+  {
+    return URIUtils::IsProtocol(item.GetPath(), "favourites");
+  }
+
+  bool CFavouriteContextMenuAction::Execute(const CFileItemPtr& item) const
+  {
+    CFileItemList items;
+    if (XFILE::CFavouritesDirectory::Load(items))
+    {
+      for (auto favourite : items)
+      {
+        if (favourite->GetPath() == item->GetPath())
+        {
+          if (DoExecute(items, favourite))
+            return XFILE::CFavouritesDirectory::Save(items);
+        }
+      }
+    }
+    return false;
+  }
+
+  bool CRemoveFavourite::DoExecute(CFileItemList &items, const CFileItemPtr& item) const
+  {
+    int iBefore = items.Size();
+    items.Remove(item.get());
+    return items.Size() == iBefore - 1;
+  }
+
+  bool CRenameFavourite::DoExecute(CFileItemList&, const CFileItemPtr& item) const
+  {
+    return CGUIDialogFavourites::ChooseAndSetNewName(item);
+  }
+
+  bool CChooseThumbnailForFavourite::DoExecute(CFileItemList&, const CFileItemPtr& item) const
+  {
+    return CGUIDialogFavourites::ChooseAndSetNewThumbnail(item);
+  }
+
+} // namespace CONTEXTMENU

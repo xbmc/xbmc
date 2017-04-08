@@ -35,7 +35,7 @@ CGUIViewControl::CGUIViewControl(void)
 {
   m_viewAsControl = -1;
   m_parentWindow = WINDOW_INVALID;
-  m_fileItems = NULL;
+  m_fileItems = nullptr;
   Reset();
 }
 
@@ -68,7 +68,7 @@ void CGUIViewControl::SetParentWindow(int window)
 void CGUIViewControl::SetCurrentView(int viewMode, bool bRefresh /* = false */)
 {
   // grab the previous control
-  CGUIControl *previousView = NULL;
+  CGUIControl *previousView = nullptr;
   if (m_currentView >= 0 && m_currentView < (int)m_visibleViews.size())
     previousView = m_visibleViews[m_currentView];
 
@@ -138,7 +138,7 @@ void CGUIViewControl::SetItems(CFileItemList &items)
   UpdateView();
 }
 
-void CGUIViewControl::UpdateContents(const CGUIControl *control, int currentItem)
+void CGUIViewControl::UpdateContents(const CGUIControl *control, int currentItem) const
 {
   if (!control || !m_fileItems) return;
   CGUIMessage msg(GUI_MSG_LABEL_BIND, m_parentWindow, control->GetID(), currentItem, 0, m_fileItems);
@@ -261,7 +261,7 @@ int CGUIViewControl::GetCurrentControl() const
 // returns the number-th view's viewmode (type and id)
 int CGUIViewControl::GetViewModeNumber(int number) const
 {
-  IGUIContainer *nextView = NULL;
+  IGUIContainer *nextView = nullptr;
   if (number >= 0 && number < (int)m_visibleViews.size())
     nextView = (IGUIContainer *)m_visibleViews[number];
   else if (m_visibleViews.size())

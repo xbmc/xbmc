@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2016 Team Kodi
+ *      Copyright (C) 2016-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -21,6 +21,8 @@
 
 #include <string>
 
+namespace KODI
+{
 namespace MOUSE
 {
   /*!
@@ -72,4 +74,5 @@ namespace MOUSE
      */
     virtual bool GetButtonIndex(const std::string& feature, unsigned int& buttonIndex) = 0;
   };
+}
 }

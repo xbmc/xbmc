@@ -1,0 +1,6 @@
+xbmc/interfaces                 interfaces
+xbmc/interfaces/builtins        interfaces/builtins
+xbmc/interfaces/generic         interfaces/generic
+xbmc/interfaces/info            interfaces/info
+xbmc/interfaces/json-rpc        interfaces/json-rpc
+xbmc/interfaces/json-rpc/schema interfaces/json-rpc/schema

@@ -27,7 +27,7 @@
 #import "platform/darwin/osx/HotKeyController.h"
 #import "platform/darwin/DarwinUtils.h"
 
-// For some reaon, Apple removed setAppleMenu from the headers in 10.4,
+// For some reason, Apple removed setAppleMenu from the headers in 10.4,
 // but the method still is there and works. To avoid warnings, we declare
 // it ourselves here.
 @interface NSApplication(SDL_Missing_Methods)
@@ -309,7 +309,7 @@ static void setupWindowMenu(void)
 
   NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
 
-  // create media key handler singlton
+  // create media key handler singleton
   [[HotKeyController sharedController] enableTap];
   // add media key notifications
   [center addObserver:self

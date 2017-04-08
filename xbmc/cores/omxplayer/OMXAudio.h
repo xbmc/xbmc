@@ -24,6 +24,7 @@
 
 #include "cores/AudioEngine/Utils/AEAudioFormat.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
+#include "cores/AudioEngine/Interfaces/AEStream.h"
 #include "linux/PlatformDefs.h"
 #include "DVDStreamInfo.h"
 
@@ -145,18 +146,19 @@ private:
   OMX_AUDIO_PARAM_PCMMODETYPE m_pcm_input;
   OMX_AUDIO_PARAM_DTSTYPE     m_dtsParam;
   WAVEFORMATEXTENSIBLE        m_wave_header;
+  IAEStream *m_pAudioStream;
 protected:
   COMXCoreComponent m_omx_render_analog;
   COMXCoreComponent m_omx_render_hdmi;
   COMXCoreComponent m_omx_splitter;
   COMXCoreComponent m_omx_mixer;
   COMXCoreComponent m_omx_decoder;
-  COMXCoreTunel     m_omx_tunnel_clock_analog;
-  COMXCoreTunel     m_omx_tunnel_clock_hdmi;
-  COMXCoreTunel     m_omx_tunnel_mixer;
-  COMXCoreTunel     m_omx_tunnel_decoder;
-  COMXCoreTunel     m_omx_tunnel_splitter_analog;
-  COMXCoreTunel     m_omx_tunnel_splitter_hdmi;
+  COMXCoreTunnel    m_omx_tunnel_clock_analog;
+  COMXCoreTunnel    m_omx_tunnel_clock_hdmi;
+  COMXCoreTunnel    m_omx_tunnel_mixer;
+  COMXCoreTunnel    m_omx_tunnel_decoder;
+  COMXCoreTunnel    m_omx_tunnel_splitter_analog;
+  COMXCoreTunnel    m_omx_tunnel_splitter_hdmi;
 
   CCriticalSection m_critSection;
 };

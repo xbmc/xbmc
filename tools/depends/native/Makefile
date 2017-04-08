@@ -7,7 +7,7 @@ endif
 NATIVE= m4-native gettext-native autoconf-native automake-native \
         libtool-native pkg-config-native yasm-native cmake-native \
         gas-preprocessor-native python27-native zlib-native \
-        pcre-native swig-native rpl-native \
+        pcre-native swig-native \
         libpng-native libjpeg-turbo-native liblzo2-native giflib-native \
         distribute-native distutilscross-native JsonSchemaBuilder TexturePacker \
         google-breakpad-native

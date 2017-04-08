@@ -24,13 +24,13 @@
 					<viewtype label="535">list</viewtype>
 					<pagecontrol>60</pagecontrol>
 					<scrolltime tween="cubic" easing="out">500</scrolltime>
-					<itemlayout height="141" width="eventloglist_width">
+					<itemlayout height="141">
 						<control type="image">
 							<left>10</left>
 							<top>10</top>
 							<width>120</width>
 							<height>120</height>
-							<texture border="4" fallback="DefaultAddon.png">$INFO[Listitem.Icon]</texture>
+							<texture fallback="DefaultAddon.png">$INFO[Listitem.Icon]</texture>
 							<aspectratio>scale</aspectratio>
 							<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
 							<bordersize>4</bordersize>
@@ -63,12 +63,12 @@
 							<label>$INFO[ListItem.Label2]</label>
 						</control>
 					</itemlayout>
-					<focusedlayout height="141" width="eventloglist_width">
+					<focusedlayout height="141">
 						<control type="image">
 							<left>0</left>
 							<top>0</top>
 							<right>0</right>
-							<height>141</height>
+							<bottom>0</bottom>
 							<texture colordiffuse="button_focus">lists/focus.png</texture>
 							<visible>Control.HasFocus(50)</visible>
 						</control>
@@ -77,7 +77,7 @@
 							<top>10</top>
 							<width>120</width>
 							<height>120</height>
-							<texture border="4" fallback="DefaultAddon.png">$INFO[Listitem.Icon]</texture>
+							<texture fallback="DefaultAddon.png">$INFO[Listitem.Icon]</texture>
 							<aspectratio>scale</aspectratio>
 							<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
 							<bordersize>4</bordersize>
@@ -171,7 +171,7 @@
 					<height>300</height>
 					<fadetime>300</fadetime>
 					<aspectratio aligny="bottom">keep</aspectratio>
-					<texture fallback="DefaultVideo.png">$INFO[ListItem.Icon]</texture>
+					<texture fallback="DefaultAddon.png">$INFO[ListItem.Icon]</texture>
 					<bordertexture border="21">overlays/shadow.png</bordertexture>
 					<bordersize>20</bordersize>
 				</control>

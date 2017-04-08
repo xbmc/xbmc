@@ -2,6 +2,7 @@
 <window>
 	<defaultcontrol always="true">11</defaultcontrol>
 	<controls>
+		<include>PVRChannelNumberInput</include>
 		<control type="group">
 			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="$EXP[infodialog_active]">Conditional</animation>
 			<control type="group">
@@ -21,12 +22,12 @@
 					<pagecontrol>60</pagecontrol>
 					<movement>4</movement>
 					<focusposition>5</focusposition>
-					<scrolltime>200</scrolltime>
+					<scrolltime tween="cubic" easing="out">500</scrolltime>
 					<focusedlayout height="90" width="1000">
 						<control type="image">
 							<left>0</left>
-							<width>1000</width>
-							<height>90</height>
+							<right>0</right>
+							<bottom>0</bottom>
 							<texture colordiffuse="button_focus">lists/focus.png</texture>
 							<visible>Control.hasFocus(11)</visible>
 						</control>
@@ -34,7 +35,7 @@
 							<left>770</left>
 							<top>10</top>
 							<width>90</width>
-							<height>70</height>
+							<bottom>10</bottom>
 							<aspectratio align="right">keep</aspectratio>
 							<texture>$INFO[listitem.icon]</texture>
 						</control>
@@ -48,7 +49,7 @@
 							<info>ListItem.Progress</info>
 						</control>
 						<control type="image">
-							<left>945</left>
+							<right>15</right>
 							<top>9</top>
 							<width>40</width>
 							<height>40</height>
@@ -91,7 +92,7 @@
 							<left>770</left>
 							<top>10</top>
 							<width>90</width>
-							<height>70</height>
+							<bottom>10</bottom>
 							<aspectratio align="right">keep</aspectratio>
 							<texture>$INFO[listitem.icon]</texture>
 						</control>
@@ -105,7 +106,7 @@
 							<info>ListItem.Progress</info>
 						</control>
 						<control type="image">
-							<left>945</left>
+							<right>15</right>
 							<top>9</top>
 							<width>40</width>
 							<height>40</height>

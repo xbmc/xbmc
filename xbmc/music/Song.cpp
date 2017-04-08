@@ -53,14 +53,14 @@ CSong::CSong(CFileItem& item)
       CLog::Log(LOGDEBUG, "Mis-match in song file tags: %i mbid %i names %s %s", 
         (int)tag.GetMusicBrainzArtistID().size(), (int)artist.size(), strTitle.c_str(), strArtistDesc.c_str());
       /*
-        Most likey we have no hints and a single artist name like "Artist1 feat. Artist2"
+        Most likely we have no hints and a single artist name like "Artist1 feat. Artist2"
         or "Composer; Conductor, Orchestra, Soloist" or "Artist1/Artist2" where the
         expected single item separator (default = space-slash-space) as not been used.
         Ampersand (&), comma and slash (no spaces) are poor delimiters as could be in name
         e.g. "AC/DC", "Earth, Wind & Fire", but here treat them as such in attempt to find artist names.
         When there are hints but count not match mbid they could be poorly formatted using unexpected
         separators so attempt to split them. Or we could have more hints or artist names than
-        musicbrainz id so ingore them but raise warning.
+        musicbrainz id so ignore them but raise warning.
       */
       // Do hints exist yet mis-match
       if (musicBrainzArtistHints.size() > 0 &&
@@ -239,8 +239,8 @@ const std::vector<std::string> CSong::GetArtist() const
   {
     songartists.push_back(artistCredit->GetArtist());
   }
-  //When artist credits have not been populated attempt to build an artist vector from the descrpition string
-  //This is a tempory fix, in the longer term other areas should query the song_artist table and populate
+  //When artist credits have not been populated attempt to build an artist vector from the description string
+  //This is a temporary fix, in the longer term other areas should query the song_artist table and populate
   //artist credits. Note that splitting the string may not give the same artists as held in the song_artist table
   if (songartists.empty() && !strArtistDesc.empty())
     songartists = StringUtils::Split(strArtistDesc, g_advancedSettings.m_musicItemSeparator);
@@ -250,18 +250,18 @@ const std::vector<std::string> CSong::GetArtist() const
 const std::vector<std::string> CSong::GetMusicBrainzArtistID() const
 {
   //Get artist MusicBrainz IDs as vector from artist credits
-  std::vector<std::string> muisicBrainzID;
+  std::vector<std::string> musicBrainzID;
   for (VECARTISTCREDITS::const_iterator artistCredit = artistCredits.begin(); artistCredit != artistCredits.end(); ++artistCredit)
   {
-    muisicBrainzID.push_back(artistCredit->GetMusicBrainzArtistID());
+    musicBrainzID.push_back(artistCredit->GetMusicBrainzArtistID());
   }
-  return muisicBrainzID;
+  return musicBrainzID;
 }
 
 const std::string CSong::GetArtistString() const
 {
   //Artist description may be different from the artists in artistcredits (see ARTISTS tag processing)
-  //but is takes precidence as a string because artistcredits is not always filled during processing
+  //but is takes precedence as a string because artistcredits is not always filled during processing
   if (!strArtistDesc.empty())
     return strArtistDesc;
   std::vector<std::string> artistvector;

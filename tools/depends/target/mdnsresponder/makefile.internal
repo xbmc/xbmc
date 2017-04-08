@@ -12,6 +12,7 @@ OBJECTS += mDNSCore/DNSCommon.o mDNSShared/mDNSDebug.o mDNSShared/GenLinkedList.
 OBJECTS += mDNSCore/uDNS.o mDNSShared/PlatformCommon.o mDNSPosix/mDNSUNP.o
 OBJECTS += mDNSCore/DNSDigest.o mDNSCore/mDnsEmbedded.o mDNSShared/dnssd_clientlib.o
 OBJECTS += mDNSCore/CryptoAlg.o
+OBJECTS += mDNSCore/anonymous.o
 
 all: $(LIB)
 install: $(LIBDIR)/$(LIB) $(addprefix $(INCDIR)/,$(HEADERS))

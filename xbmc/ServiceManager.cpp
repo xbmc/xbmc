@@ -21,8 +21,10 @@
 #include "ServiceManager.h"
 #include "addons/BinaryAddonCache.h"
 #include "ContextMenuManager.h"
-#include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.h"
+#include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
 #include "cores/DataCacheCore.h"
+#include "games/GameServices.h"
+#include "peripherals/Peripherals.h"
 #include "PlayListPlayer.h"
 #include "utils/log.h"
 #include "interfaces/AnnouncementManager.h"
@@ -31,27 +33,40 @@
 #include "pvr/PVRManager.h"
 #include "settings/Settings.h"
 
+CServiceManager::CServiceManager() :
+  m_gameServices(new GAME::CGameServices),
+  m_peripherals(new PERIPHERALS::CPeripherals)
+{
+}
+
+CServiceManager::~CServiceManager()
+{
+}
+
 bool CServiceManager::Init1()
 {
   m_announcementManager.reset(new ANNOUNCEMENT::CAnnouncementManager());
   m_announcementManager->Start();
 
+#ifdef HAS_PYTHON
   m_XBPython.reset(new XBPython());
   CScriptInvocationManager::GetInstance().RegisterLanguageInvocationHandler(m_XBPython.get(), ".py");
-  
+#endif
+
   m_Platform.reset(CPlatform::CreateInstance());
 
   m_playlistPlayer.reset(new PLAYLIST::CPlayListPlayer());
 
   m_settings.reset(new CSettings());
 
+  init_level = 1;
   return true;
 }
 
 bool CServiceManager::Init2()
 {
   m_Platform->Init();
-  
+
   m_addonMgr.reset(new ADDON::CAddonMgr());
   if (!m_addonMgr->Init())
   {
@@ -59,7 +74,6 @@ bool CServiceManager::Init2()
     return false;
   }
 
-  m_ADSPManager.reset(new ActiveAE::CActiveAEDSP());
   m_PVRManager.reset(new PVR::CPVRManager());
   m_dataCacheCore.reset(new CDataCacheCore());
 
@@ -68,28 +82,66 @@ bool CServiceManager::Init2()
 
   m_contextMenuManager.reset(new CContextMenuManager(*m_addonMgr.get()));
 
+  init_level = 2;
   return true;
+}
+
+bool CServiceManager::CreateAudioEngine()
+{
+  m_ActiveAE.reset(new ActiveAE::CActiveAE());
+
+  return true;
+}
+
+bool CServiceManager::DestroyAudioEngine()
+{
+  if (m_ActiveAE)
+  {
+    m_ActiveAE->Shutdown();
+    m_ActiveAE.reset();
+  }
+
+  return true;
+}
+
+bool CServiceManager::StartAudioEngine()
+{
+  if (!m_ActiveAE)
+  {
+    CLog::Log(LOGFATAL, "CServiceManager::StartAudioEngine: Unable to start ActiveAE");
+    return false;
+  }
+
+  return m_ActiveAE->Initialize();
 }
 
 bool CServiceManager::Init3()
 {
-  m_ADSPManager->Init();
+  m_peripherals->Initialise();
   m_PVRManager->Init();
   m_contextMenuManager->Init();
+  m_gameServices->Init();
 
+  init_level = 3;
   return true;
 }
 
 void CServiceManager::Deinit()
 {
+  m_gameServices->Deinit();
+  m_peripherals.reset();
   m_contextMenuManager.reset();
   m_binaryAddonCache.reset();
+  if (m_PVRManager)
+    m_PVRManager->Deinit();
   m_PVRManager.reset();
-  m_ADSPManager.reset();
   m_addonMgr.reset();
+#ifdef HAS_PYTHON
   CScriptInvocationManager::GetInstance().UnregisterLanguageInvocationHandler(m_XBPython.get());
   m_XBPython.reset();
+#endif
   m_announcementManager.reset();
+  init_level = 0;
 }
 
 ADDON::CAddonMgr &CServiceManager::GetAddonMgr()
@@ -107,19 +159,22 @@ ANNOUNCEMENT::CAnnouncementManager& CServiceManager::GetAnnouncementManager()
   return *m_announcementManager;
 }
 
+#ifdef HAS_PYTHON
 XBPython& CServiceManager::GetXBPython()
 {
   return *m_XBPython;
 }
+#endif
 
 PVR::CPVRManager& CServiceManager::GetPVRManager()
 {
   return *m_PVRManager;
 }
 
-ActiveAE::CActiveAEDSP& CServiceManager::GetADSPManager()
+IAE& CServiceManager::GetActiveAE()
 {
-  return *m_ADSPManager;
+  ActiveAE::CActiveAE& ae = *m_ActiveAE;
+  return ae;
 }
 
 CContextMenuManager& CServiceManager::GetContextMenuManager()
@@ -147,6 +202,16 @@ CSettings& CServiceManager::GetSettings()
   return *m_settings;
 }
 
+GAME::CGameServices& CServiceManager::GetGameServices()
+{
+  return *m_gameServices;
+}
+
+PERIPHERALS::CPeripherals& CServiceManager::GetPeripherals()
+{
+  return *m_peripherals;
+}
+
 // deleters for unique_ptr
 void CServiceManager::delete_dataCacheCore::operator()(CDataCacheCore *p) const
 {
@@ -154,6 +219,11 @@ void CServiceManager::delete_dataCacheCore::operator()(CDataCacheCore *p) const
 }
 
 void CServiceManager::delete_contextMenuManager::operator()(CContextMenuManager *p) const
+{
+  delete p;
+}
+
+void CServiceManager::delete_activeAE::operator()(ActiveAE::CActiveAE *p) const
 {
   delete p;
 }

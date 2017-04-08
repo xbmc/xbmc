@@ -61,12 +61,12 @@ public:
   ~CRBP();
 
   bool Initialize();
-  void LogFirmwareVerison();
+  void LogFirmwareVersion();
   void Deinitialize();
   int GetArmMem() { return m_arm_mem; }
   int GetGpuMem() { return m_gpu_mem; }
   bool GetCodecMpg2() { return m_codec_mpg2_enabled; }
-  int RasberryPiVersion() { return g_cpuInfo.getCPUCount() == 1 ? 1 : 2; };
+  int RaspberryPiVersion() { return g_cpuInfo.getCPUCount() == 1 ? 1 : 2; };
   bool GetCodecWvc1() { return m_codec_wvc1_enabled; }
   void GetDisplaySize(int &width, int &height);
   DISPMANX_DISPLAY_HANDLE_T OpenDisplay(uint32_t device);

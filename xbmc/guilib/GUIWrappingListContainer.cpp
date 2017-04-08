@@ -125,7 +125,7 @@ bool CGUIWrappingListContainer::GetOffsetRange(int &minOffset, int &maxOffset) c
 
 void CGUIWrappingListContainer::ValidateOffset()
 {
-  // our minimal amount of items - we need to take into acount extra items to display wrapped items when scrolling
+  // our minimal amount of items - we need to take into account extra items to display wrapped items when scrolling
   unsigned int minItems = (unsigned int)m_itemsPerPage + ScrollCorrectionRange() + GetCacheCount() / 2;
   if (minItems <= m_items.size())
     return;

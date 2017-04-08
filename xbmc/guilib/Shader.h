@@ -162,7 +162,7 @@ namespace Shaders {
     // compile and link the shaders
     virtual bool CompileAndLink() = 0;
 
-    // override to to perform custom tasks on successfull compilation
+    // override to to perform custom tasks on successful compilation
     // and linkage. E.g. obtaining handles to shader attributes.
     virtual void OnCompiledAndLinked() {}
 

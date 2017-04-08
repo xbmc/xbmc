@@ -79,7 +79,7 @@ namespace XBMCAddon
     // Ok ... we're going to get it even if it doesn't exist. If it doesn't exist then
     // we're going to assume we're not in control of the interpreter. This (apparently)
     // can be the case. E.g. Libspotify manages to call into a script using a ctypes
-    // extention but under the control of an Interpreter we know nothing about. In
+    // extension but under the control of an Interpreter we know nothing about. In
     // cases like this we're going to use a global interpreter 
     AddonClass::Ref<PythonLanguageHook> PythonLanguageHook::GetIfExists(PyInterpreterState* interp)
     {
@@ -109,13 +109,13 @@ namespace XBMCAddon
 
     /**
      * PythonCallbackHandler expects to be instantiated PER AddonClass instance
-     *  that is to be used as a callback. This is why this cannot be instantited
+     *  that is to be used as a callback. This is why this cannot be instantiated
      *  once.
      *
      * There is an expectation that this method is called from the Python thread
      *  that instantiated an AddonClass that has the potential for a callback.
      *
-     * See RetardedAsynchCallbackHandler for more details.
+     * See RetardedAsyncCallbackHandler for more details.
      * See PythonCallbackHandler for more details
      * See PythonCallbackHandler::PythonCallbackHandler for more details
      */
@@ -155,6 +155,23 @@ namespace XBMCAddon
         return PyString_AsString(pyversion);
       return "";
     }
+
+    long PythonLanguageHook::GetInvokerId()
+    {
+      XBMC_TRACE;
+
+      // Get a reference to the main module
+      // and global dictionary
+      PyObject* main_module = PyImport_AddModule((char*)"__main__");
+      PyObject* global_dict = PyModule_GetDict(main_module);
+      // Extract a reference to the function "func_name"
+      // from the global dictionary
+      PyObject* pyid = PyDict_GetItemString(global_dict, "__xbmcinvokerid__");
+      if (pyid)
+        return PyLong_AsLong(pyid);
+      return -1;
+    }
+
 
     void PythonLanguageHook::RegisterPlayerCallback(IPlayerCallback* player) { XBMC_TRACE; g_pythonParser.RegisterPythonPlayerCallBack(player); }
     void PythonLanguageHook::UnregisterPlayerCallback(IPlayerCallback* player) { XBMC_TRACE; g_pythonParser.UnregisterPythonPlayerCallBack(player); }
