@@ -1135,18 +1135,9 @@ void CGUIDialogAddonSettings::SetDefaultSettings()
     {
       const std::string   id = XMLUtils::GetAttribute(setting, "id");
       const std::string type = XMLUtils::GetAttribute(setting, "type");
-      const char *value = setting->Attribute("default");
       if (!id.empty())
-      {
-        if (value)
-          m_settings[id] = value;
-        else if (type == "bool")
-          m_settings[id] = "false";
-        else if (type == "slider" || type == "enum")
-          m_settings[id] = "0";
-        else
-          m_settings[id] = "";
-      }
+        m_settings[id] = m_addon->GetDefaultValue(setting);
+
       setting = setting->NextSiblingElement("setting");
     }
     category = category->NextSiblingElement("category");
