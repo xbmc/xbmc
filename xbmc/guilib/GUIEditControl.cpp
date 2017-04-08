@@ -117,7 +117,7 @@ bool CGUIEditControl::OnAction(const CAction &action)
 {
   ValidateCursor();
 
-  if (m_inputType != INPUT_TYPE_READONLY)
+  if (m_inputType != INPUT_TYPE_READONLY && GetParentID() == WINDOW_DIALOG_KEYBOARD)
   {
     if (action.GetID() == ACTION_BACKSPACE)
     {
@@ -493,7 +493,7 @@ void CGUIEditControl::ProcessText(unsigned int currentTime)
     {
       changed |= m_label2.SetText(hint);
     }
-    else if ((HasFocus() || GetParentID() == WINDOW_DIALOG_KEYBOARD) &&
+    else if (GetParentID() == WINDOW_DIALOG_KEYBOARD &&
              m_inputType != INPUT_TYPE_READONLY)
     {
       changed |= SetStyledText(text);
