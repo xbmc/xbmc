@@ -1,5 +1,5 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include Makefile configureEndian.patch samba_android.patch samba_off64_t.patch no_fork_and_exec.patch
+DEPS= ../../Makefile.include Makefile configureEndian.patch perlArrayDefinedDeprecated.patch samba_android.patch samba_off64_t.patch no_fork_and_exec.patch
 
 # lib name, version
 LIBNAME=samba
@@ -50,6 +50,7 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); patch -p0 -i ../configureEndian.patch
+	cd $(PLATFORM); patch -p1 -i ../perlArrayDefinedDeprecated.patch
 	cd $(PLATFORM)/source3; ./autogen.sh
 ifeq ($(OS),android)
 	cd $(PLATFORM); patch -p0 < ../samba_android.patch
