@@ -120,8 +120,8 @@ bool CPVRActionListener::OnAction(const CAction &action)
 
         int iRemote = bIsJumpSMS ? action.GetID() - (ACTION_JUMP_SMS2 - REMOTE_2) : action.GetID();
         CServiceBroker::GetPVRManager().GUIActions()->GetChannelNumberInputHandler().AppendChannelNumberDigit(iRemote - REMOTE_0);
+        return true;
       }
-      return true;
     }
     break;
   }
