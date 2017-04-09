@@ -21,6 +21,7 @@
 
 #include "system.h"
 #include "../RenderFlags.h"
+#include "../RenderFormats.h"
 #include "YUV2RGBShader.h"
 #include "settings/AdvancedSettings.h"
 #include "guilib/TransformMatrix.h"
