@@ -19,7 +19,6 @@
  */
 
 #include "system.h"
-#ifdef HAVE_LIBVDPAU
 #include "VDPAU.h"
 #include "ServiceBroker.h"
 #include <dlfcn.h>
@@ -28,8 +27,7 @@
 #include "guilib/TextureManager.h"
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
-#include "DVDVideoCodecFFmpeg.h"
-#include "DVDClock.h"
+#include "TimingConstants.h"
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
@@ -715,7 +713,7 @@ void CDecoder::OnResetDisplay()
   g_graphicsContext.restore(count);
 }
 
-int CDecoder::Check(AVCodecContext* avctx)
+CDVDVideoCodec::VCReturn CDecoder::Check(AVCodecContext* avctx)
 {
   EDisplayState state;
 
@@ -753,11 +751,11 @@ int CDecoder::Check(AVCodecContext* avctx)
     }
 
     if (state == VDPAU_RESET)
-      return VC_FLUSHED;
+      return CDVDVideoCodec::VC_FLUSHED;
     else
-      return VC_ERROR;
+      return CDVDVideoCodec::VC_ERROR;
   }
-  return 0;
+  return CDVDVideoCodec::VC_NONE;
 }
 
 bool CDecoder::IsVDPAUFormat(AVPixelFormat format)
@@ -927,9 +925,8 @@ bool CDecoder::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
 
 int CDecoder::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags)
 {
-  //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
-  CDVDVideoCodecFFmpeg* ctx        = (CDVDVideoCodecFFmpeg*)avctx->opaque;
-  CDecoder*             vdp        = (CDecoder*)ctx->GetHardware();
+  ICallbackHWAccel* cb = static_cast<ICallbackHWAccel*>(avctx->opaque);
+  CDecoder* vdp = static_cast<CDecoder*>(cb->GetHWAccel());
 
   // while we are waiting to recover we can't do anything
   CSingleLock lock(vdp->m_DecoderSection);
@@ -968,7 +965,7 @@ int CDecoder::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags)
   pic->data[0] = (uint8_t*)(uintptr_t)surf;
   pic->data[3] = (uint8_t*)(uintptr_t)surf;
   pic->linesize[0] = pic->linesize[1] =  pic->linesize[2] = 0;
-  AVBufferRef *buffer = av_buffer_create(pic->data[3], 0, FFReleaseBuffer, ctx, 0);
+  AVBufferRef *buffer = av_buffer_create(pic->data[3], 0, FFReleaseBuffer, vdp, 0);
   if (!buffer)
   {
     CLog::Log(LOGERROR, "CVDPAU::%s - error creating buffer", __FUNCTION__);
@@ -982,7 +979,7 @@ int CDecoder::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags)
 
 void CDecoder::FFReleaseBuffer(void *opaque, uint8_t *data)
 {
-  CDecoder *vdp = (CDecoder*)((CDVDVideoCodecFFmpeg*)opaque)->GetHardware();
+  CDecoder *vdp = (CDecoder*)opaque;
 
   VdpVideoSurface surf;
 
@@ -997,8 +994,8 @@ int CDecoder::Render(struct AVCodecContext *s, struct AVFrame *src,
                      const VdpPictureInfo *info, uint32_t buffers_used,
                      const VdpBitstreamBuffer *buffers)
 {
-  CDVDVideoCodecFFmpeg* ctx = (CDVDVideoCodecFFmpeg*)s->opaque;
-  CDecoder*             vdp = (CDecoder*)ctx->GetHardware();
+  ICallbackHWAccel* ctx = (ICallbackHWAccel*)s->opaque;
+  CDecoder* vdp = (CDecoder*)ctx->GetHWAccel();
 
   // while we are waiting to recover we can't do anything
   CSingleLock lock(vdp->m_DecoderSection);
@@ -1061,16 +1058,16 @@ void CDecoder::SetCodecControl(int flags)
     m_bufferStats.SetDraining(false);
 }
 
-int CDecoder::Decode(AVCodecContext *avctx, AVFrame *pFrame)
+CDVDVideoCodec::VCReturn CDecoder::Decode(AVCodecContext *avctx, AVFrame *pFrame)
 {
-  int result = Check(avctx);
-  if (result)
+  CDVDVideoCodec::VCReturn result = Check(avctx);
+  if (result != CDVDVideoCodec::VC_NONE)
     return result;
 
   CSingleLock lock(m_DecoderSection);
 
   if (!m_vdpauConfigured)
-    return VC_ERROR;
+    return CDVDVideoCodec::VC_ERROR;
 
   if(pFrame)
   { // we have a new frame from decoder
@@ -1080,14 +1077,14 @@ int CDecoder::Decode(AVCodecContext *avctx, AVFrame *pFrame)
     if (!m_videoSurfaces.IsValid(surf))
     {
       CLog::Log(LOGWARNING, "CVDPAU::Decode - ignoring invalid buffer");
-      return VC_BUFFER;
+      return CDVDVideoCodec::VC_BUFFER;
     }
     m_videoSurfaces.MarkRender(surf);
 
     // send frame to output for processing
     CVdpauDecodedPicture pic;
     memset(&pic.DVDPic, 0, sizeof(pic.DVDPic));
-    ((CDVDVideoCodecFFmpeg*)avctx->opaque)->GetPictureCommon(&pic.DVDPic);
+    ((ICallbackHWAccel*)avctx->opaque)->GetPictureCommon(&pic.DVDPic);
     pic.videoSurface = surf;
     pic.DVDPic.color_matrix = avctx->colorspace;
     m_bufferStats.IncDecoded();
@@ -1096,7 +1093,6 @@ int CDecoder::Decode(AVCodecContext *avctx, AVFrame *pFrame)
     m_codecControl = pic.DVDPic.iFlags & (DVD_CODEC_CTRL_DRAIN | DVD_CODEC_CTRL_NO_POSTPROC);
   }
 
-  int retval = 0;
   uint16_t decoded, processed, render;
   Message *msg;
   while (m_vdpauOutput.m_controlPort.ReceiveInMessage(&msg))
@@ -1104,27 +1100,28 @@ int CDecoder::Decode(AVCodecContext *avctx, AVFrame *pFrame)
     if (msg->signal == COutputControlProtocol::ERROR)
     {
       m_DisplayState = VDPAU_ERROR;
-      retval |= VC_ERROR;
+      msg->Release();
+      return CDVDVideoCodec::VC_BUFFER;
     }
     msg->Release();
   }
 
+  bool drain = (m_codecControl & DVD_CODEC_CTRL_DRAIN);
+
   m_bufferStats.Get(decoded, processed, render);
+  // if all pics are drained, break the loop by setting VC_EOF
+  if (drain && decoded <= 0 && processed <= 0 && render <= 0)
+    return CDVDVideoCodec::VC_EOF;
 
   uint64_t startTime = CurrentHostCounter();
-  while (!retval)
+  while (true)
   {
-    bool drain = (m_codecControl & DVD_CODEC_CTRL_DRAIN);
-    // if all pics are drained, break the loop by setting VC_BUFFER
-    if (drain && decoded <= 0 && processed <= 0 && render <= 0)
-      drain = false;
-
     // first fill the buffers to keep vdpau busy
     // mixer will run with decoded >= 2. output is limited by number of output surfaces
     // In case mixer is bypassed we limit by looking at processed
-    if (decoded < 3 && processed < 3 && !drain)
+    if (!drain && decoded < 3 && processed < 3)
     {
-      retval |= VC_BUFFER;
+      return CDVDVideoCodec::VC_BUFFER;
     }
     else if (m_vdpauOutput.m_dataPort.ReceiveInMessage(&msg))
     {
@@ -1139,10 +1136,10 @@ int CDecoder::Decode(AVCodecContext *avctx, AVFrame *pFrame)
         m_presentPicture = *(CVdpauRenderPicture**)msg->data;
         m_presentPicture->vdpau = this;
         m_bufferStats.DecRender();
-        m_bufferStats.Get(decoded, processed, render);
-        retval |= VC_PICTURE;
         msg->Release();
-        break;
+        uint64_t diff = CurrentHostCounter() - startTime;
+        m_bufferStats.SetParams(diff, m_codecControl);
+        return CDVDVideoCodec::VC_PICTURE;
       }
       msg->Release();
     }
@@ -1150,46 +1147,32 @@ int CDecoder::Decode(AVCodecContext *avctx, AVFrame *pFrame)
     {
       if (msg->signal == COutputControlProtocol::STATS)
       {
+        msg->Release();
         m_bufferStats.Get(decoded, processed, render);
+        if (!drain && decoded < 3 && processed < 3)
+        {
+          return CDVDVideoCodec::VC_BUFFER;
+        }
       }
       else
       {
         m_DisplayState = VDPAU_ERROR;
-        retval |= VC_ERROR;
+        msg->Release();
+        return CDVDVideoCodec::VC_ERROR;
       }
-      msg->Release();
     }
 
-    if (decoded < 3 && processed < 3)
-    {
-      retval |= VC_BUFFER;
-    }
-
-    if (!retval && !m_inMsgEvent.WaitMSec(2000))
+    if (!m_inMsgEvent.WaitMSec(2000))
       break;
   }
-  uint64_t diff = CurrentHostCounter() - startTime;
-  if (retval & VC_PICTURE)
-  {
-    m_bufferStats.SetParams(diff, m_codecControl);
-  }
-  if (diff*1000/CurrentHostFrequency() > 50)
-  {
-    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-      CLog::Log(LOGDEBUG,"CVDPAU::Decode long wait: %d", (int)((diff*1000)/CurrentHostFrequency()));
-  }
 
-  if (!retval)
-  {
-    CLog::Log(LOGERROR, "VDPAU::%s - timed out waiting for output message", __FUNCTION__);
-    m_DisplayState = VDPAU_ERROR;
-    retval |= VC_ERROR;
-  }
+  CLog::Log(LOGERROR, "VDPAU::%s - timed out waiting for output message", __FUNCTION__);
+  m_DisplayState = VDPAU_ERROR;
 
-  return retval;
+  return CDVDVideoCodec::VC_ERROR;
 }
 
-bool CDecoder::GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* picture)
+bool CDecoder::GetPicture(AVCodecContext* avctx, VideoPicture* picture)
 {
   CSingleLock lock(m_DecoderSection);
 
@@ -1197,7 +1180,7 @@ bool CDecoder::GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture
     return false;
 
   *picture = m_presentPicture->DVDPic;
-  picture->vdpau = m_presentPicture;
+  picture->hwPic = m_presentPicture;
 
   return true;
 }
@@ -1545,7 +1528,7 @@ void CMixer::StateMachine(int signal, Protocol *port, Message *msg)
             m_extTimeout = 1000;
             return;
           }
-          if (m_processPicture.DVDPic.format != RENDER_FMT_VDPAU_420)
+          if (!m_processPicture.isYuv)
             m_outputSurfaces.pop();
           m_config.stats->IncProcessed();
           m_config.stats->DecDecoded();
@@ -1605,7 +1588,7 @@ void CMixer::StateMachine(int signal, Protocol *port, Message *msg)
              m_extTimeout = 1000;
              return;
            }
-           if (m_processPicture.DVDPic.format != RENDER_FMT_VDPAU_420)
+           if (!m_processPicture.isYuv)
              m_outputSurfaces.pop();
            m_config.stats->IncProcessed();
            m_dataPort.SendInMessage(CMixerDataProtocol::PICTURE,&m_processPicture,sizeof(m_processPicture));
@@ -2377,17 +2360,17 @@ void CMixer::InitCycle()
       else
         m_mixerfield = VDP_VIDEO_MIXER_PICTURE_STRUCTURE_BOTTOM_FIELD;
 
-      m_mixerInput[1].DVDPic.format = RENDER_FMT_VDPAU;
       m_mixerInput[1].DVDPic.iFlags &= ~(DVP_FLAG_TOP_FIELD_FIRST |
                                         DVP_FLAG_REPEAT_TOP_FIELD |
                                         DVP_FLAG_INTERLACED);
+      m_mixerInput[1].isYuv = false;
       m_config.useInteropYuv = false;
     }
     else if (method == VS_INTERLACEMETHOD_RENDER_BOB)
     {
       m_mixersteps = 1;
       m_mixerfield = VDP_VIDEO_MIXER_PICTURE_STRUCTURE_FRAME;
-      m_mixerInput[1].DVDPic.format = RENDER_FMT_VDPAU_420;
+      m_mixerInput[1].isYuv = true;
       m_config.useInteropYuv = true;
     }
   }
@@ -2397,19 +2380,20 @@ void CMixer::InitCycle()
     m_mixerfield = VDP_VIDEO_MIXER_PICTURE_STRUCTURE_FRAME;
 
     if (m_config.useInteropYuv)
-      m_mixerInput[1].DVDPic.format = RENDER_FMT_VDPAU_420;
+      m_mixerInput[1].isYuv = true;
     else
     {
-      m_mixerInput[1].DVDPic.format = RENDER_FMT_VDPAU;
       m_mixerInput[1].DVDPic.iFlags &= ~(DVP_FLAG_TOP_FIELD_FIRST |
                                         DVP_FLAG_REPEAT_TOP_FIELD |
                                         DVP_FLAG_INTERLACED);
+      m_mixerInput[1].isYuv = false;
     }
   }
   m_mixerstep = 0;
+  m_mixerInput[1].DVDPic.format = RENDER_FMT_VDPAU;
 
   m_processPicture.crop = false;
-  if (m_mixerInput[1].DVDPic.format == RENDER_FMT_VDPAU)
+  if (!m_mixerInput[1].isYuv)
   {
     m_processPicture.outputSurface = m_outputSurfaces.front();
     m_mixerInput[1].DVDPic.iWidth = m_config.outWidth;
@@ -2427,6 +2411,7 @@ void CMixer::InitCycle()
     m_mixerInput[1].DVDPic.iHeight = m_config.vidHeight;
   }
 
+  m_processPicture.isYuv = m_mixerInput[1].isYuv;
   m_processPicture.DVDPic = m_mixerInput[1].DVDPic;
   m_processPicture.videoSurface = m_mixerInput[1].videoSurface;
 }
@@ -2445,7 +2430,7 @@ void CMixer::FiniCycle()
   while (m_mixerInput.size() > surfToKeep)
   {
     CVdpauDecodedPicture &tmp = m_mixerInput.back();
-    if (m_processPicture.DVDPic.format != RENDER_FMT_VDPAU_420)
+    if (!m_processPicture.isYuv)
     {
       m_config.videoSurfaces->ClearRender(tmp.videoSurface);
     }
@@ -2458,7 +2443,7 @@ void CMixer::FiniCycle()
 
 void CMixer::ProcessPicture()
 {
-  if (m_processPicture.DVDPic.format == RENDER_FMT_VDPAU_420)
+  if (m_processPicture.isYuv)
     return;
 
   VdpStatus vdp_st;
@@ -3041,7 +3026,7 @@ void COutput::Flush()
   for (it = m_bufferPool.usedRenderPics.begin(); it != m_bufferPool.usedRenderPics.end(); ++it)
   {
     CVdpauRenderPicture *pic = m_bufferPool.allRenderPics[*it];
-    if (pic->DVDPic.format == RENDER_FMT_VDPAU_420)
+    if (pic->isYuv)
     {
       std::map<VdpVideoSurface, VdpauBufferPool::GLVideoSurface>::iterator it2;
       it2 = m_bufferPool.glVideoSurfaceMap.find(pic->sourceIdx);
@@ -3060,11 +3045,11 @@ void COutput::Flush()
   while(!m_bufferPool.processedPics.empty())
   {
     CVdpauProcessedPicture procPic = m_bufferPool.processedPics.front();
-    if (procPic.DVDPic.format == RENDER_FMT_VDPAU)
+    if (!procPic.isYuv)
     {
       m_mixer.m_dataPort.SendOutMessage(CMixerDataProtocol::BUFFER, &procPic.outputSurface, sizeof(procPic.outputSurface));
     }
-    else if (procPic.DVDPic.format == RENDER_FMT_VDPAU_420)
+    else if (procPic.isYuv)
     {
       m_config.videoSurfaces->ClearRender(procPic.videoSurface);
     }
@@ -3094,7 +3079,8 @@ CVdpauRenderPicture* COutput::ProcessMixerPicture()
 
     retPic->DVDPic = procPic.DVDPic;
     retPic->valid = true;
-    if (retPic->DVDPic.format == RENDER_FMT_VDPAU)
+    retPic->isYuv = procPic.isYuv;
+    if (!retPic->isYuv)
     {
       m_config.useInteropYuv = false;
       m_bufferPool.numOutputSurfaces = NUM_RENDER_PICS;
@@ -3219,7 +3205,7 @@ bool COutput::ProcessSyncPicture()
 
 void COutput::ProcessReturnPicture(CVdpauRenderPicture *pic)
 {
-  if (pic->DVDPic.format == RENDER_FMT_VDPAU_420)
+  if (pic->isYuv)
   {
     std::map<VdpVideoSurface, VdpauBufferPool::GLVideoSurface>::iterator it;
     it = m_bufferPool.glVideoSurfaceMap.find(pic->sourceIdx);
@@ -3236,7 +3222,7 @@ void COutput::ProcessReturnPicture(CVdpauRenderPicture *pic)
     VdpVideoSurface surf = it->second.sourceVuv;
     m_config.videoSurfaces->ClearRender(surf);
   }
-  else if (pic->DVDPic.format == RENDER_FMT_VDPAU)
+  else
   {
     std::map<VdpOutputSurface, VdpauBufferPool::GLVideoSurface>::iterator it;
     it = m_bufferPool.glOutputSurfaceMap.find(pic->sourceIdx);
@@ -3676,5 +3662,3 @@ bool COutput::DestroyGlxContext()
 
   return true;
 }
-
-#endif
