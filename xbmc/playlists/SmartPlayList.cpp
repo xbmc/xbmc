@@ -72,6 +72,7 @@ static const translateField fields[] = {
   { "label",             FieldMusicLabel,              CDatabaseQueryRule::TEXT_FIELD,     NULL,                                 false, 21899 },
   { "title",             FieldTitle,                   CDatabaseQueryRule::TEXT_FIELD,     NULL,                                 true,  556 },
   { "sorttitle",         FieldSortTitle,               CDatabaseQueryRule::TEXT_FIELD,     NULL,                                 false, 171 },
+  { "originaltitle",     FieldOriginalTitle,           CDatabaseQueryRule::TEXT_FIELD,     NULL,                                 false, 20376 },
   { "year",              FieldYear,                    CDatabaseQueryRule::NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  true,  562 },
   { "time",              FieldTime,                    CDatabaseQueryRule::SECONDS_FIELD,  StringValidation::IsTime,             false, 180 },
   { "playcount",         FieldPlaycount,               CDatabaseQueryRule::NUMERIC_FIELD,  StringValidation::IsPositiveInteger,  false, 567 },
@@ -289,6 +290,7 @@ std::vector<Field> CSmartPlaylistRule::GetFields(const std::string &type)
     fields.push_back(FieldArtist);
     fields.push_back(FieldAlbumArtist);
     fields.push_back(FieldTitle);
+    fields.push_back(FieldOriginalTitle);
     fields.push_back(FieldYear);
     fields.push_back(FieldTime);
     fields.push_back(FieldTrackNumber);
@@ -354,6 +356,7 @@ std::vector<Field> CSmartPlaylistRule::GetFields(const std::string &type)
   else if (type == "tvshows")
   {
     fields.push_back(FieldTitle);
+    fields.push_back(FieldOriginalTitle);
     fields.push_back(FieldPlot);
     fields.push_back(FieldTvShowStatus);
     fields.push_back(FieldVotes);
@@ -378,6 +381,7 @@ std::vector<Field> CSmartPlaylistRule::GetFields(const std::string &type)
   {
     fields.push_back(FieldTitle);
     fields.push_back(FieldTvShowTitle);
+    fields.push_back(FieldOriginalTitle);
     fields.push_back(FieldPlot);
     fields.push_back(FieldVotes);
     fields.push_back(FieldRating);
@@ -405,6 +409,7 @@ std::vector<Field> CSmartPlaylistRule::GetFields(const std::string &type)
   else if (type == "movies")
   {
     fields.push_back(FieldTitle);
+    fields.push_back(FieldOriginalTitle);
     fields.push_back(FieldPlot);
     fields.push_back(FieldPlotOutline);
     fields.push_back(FieldTagline);
@@ -467,7 +472,7 @@ std::vector<Field> CSmartPlaylistRule::GetFields(const std::string &type)
   }
   fields.push_back(FieldPlaylist);
   fields.push_back(FieldVirtualFolder);
-  
+
   return fields;
 }
 
@@ -599,7 +604,7 @@ std::vector<SortBy> CSmartPlaylistRule::GetOrders(const std::string &type)
     orders.push_back(SortByDateAdded);
   }
   orders.push_back(SortByRandom);
-	
+
   return orders;
 }
 
@@ -952,7 +957,7 @@ std::string CSmartPlaylistRule::GetField(int field, const std::string &type) con
 std::string CSmartPlaylistRuleCombination::GetWhereClause(const CDatabase &db, const std::string& strType, std::set<std::string> &referencedPlaylists) const
 {
   std::string rule;
-  
+
   // translate the combinations into SQL
   for (CDatabaseQueryRuleCombinations::const_iterator it = m_combinations.begin(); it != m_combinations.end(); ++it)
   {
