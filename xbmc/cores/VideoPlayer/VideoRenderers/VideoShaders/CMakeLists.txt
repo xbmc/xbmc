@@ -1,7 +1,8 @@
 set(SOURCES ConvolutionKernels.cpp)
 
 set(HEADERS ConvolutionKernels.h
-            dither.h)
+            dither.h
+            ShaderFormats.h)
 
 if(CORE_SYSTEM_NAME STREQUAL windows)
   list(APPEND SOURCES WinVideoFilter.cpp
