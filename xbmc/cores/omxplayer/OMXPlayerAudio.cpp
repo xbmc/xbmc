@@ -95,7 +95,7 @@ OMXPlayerAudio::~OMXPlayerAudio()
   CloseStream(false);
 }
 
-bool OMXPlayerAudio::OpenStream(CDVDStreamInfo &hints)
+bool OMXPlayerAudio::OpenStream(CDVDStreamInfo hints)
 {
   m_bad_state = false;
 
@@ -467,18 +467,6 @@ void OMXPlayerAudio::Flush(bool sync)
   m_messageQueue.Put( new CDVDMsgBool(CDVDMsg::GENERAL_FLUSH, sync), 1);
 }
 
-void OMXPlayerAudio::WaitForBuffers()
-{
-  // make sure there are no more packets available
-  m_messageQueue.WaitUntilEmpty();
-
-  // make sure almost all has been rendered
-  // leave 500ms to avoid buffer underruns
-  double delay = GetCacheTime();
-  if(delay > 0.5)
-    Sleep((int)(1000 * (delay - 0.5)));
-}
-
 bool OMXPlayerAudio::IsPassthrough() const
 {
   return m_passthrough;
@@ -591,21 +579,6 @@ void OMXPlayerAudio::CloseDecoder()
   m_DecoderOpen = false;
 }
 
-double OMXPlayerAudio::GetDelay()
-{
-  return m_omxAudio.GetDelay();
-}
-
-double OMXPlayerAudio::GetCacheTime()
-{
-  return m_omxAudio.GetCacheTime();
-}
-
-double OMXPlayerAudio::GetCacheTotal()
-{
-  return m_omxAudio.GetCacheTotal();
-}
-
 void OMXPlayerAudio::SubmitEOS()
 {
   if(!m_bad_state)
@@ -625,11 +598,6 @@ void OMXPlayerAudio::SetSpeed(int speed)
     m_speed = speed;
 }
 
-int OMXPlayerAudio::GetAudioBitrate()
-{
-  return (int)m_audioStats.GetBitrate();
-}
-
 int OMXPlayerAudio::GetAudioChannels()
 {
   return m_hints.channels;
@@ -638,8 +606,8 @@ int OMXPlayerAudio::GetAudioChannels()
 std::string OMXPlayerAudio::GetPlayerInfo()
 {
   std::ostringstream s;
-  s << "aq:"     << std::setw(2) << std::min(99,m_messageQueue.GetLevel() + MathUtils::round_int(100.0/8.0*GetCacheTime())) << "%";
-  s << ", Kb/s:" << std::fixed << std::setprecision(2) << (double)GetAudioBitrate() / 1024.0;
+  s << "aq:"     << std::setw(2) << std::min(99,m_messageQueue.GetLevel() + MathUtils::round_int(100.0/8.0*m_omxAudio.GetCacheTime())) << "%";
+  s << ", Kb/s:" << std::fixed << std::setprecision(2) << m_audioStats.GetBitrate() / 1024.0;
 
   return s.str();
 }
