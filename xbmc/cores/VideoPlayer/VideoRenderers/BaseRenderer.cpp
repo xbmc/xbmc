@@ -427,6 +427,28 @@ void CBaseRenderer::ManageRenderArea()
   CalcNormalRenderRect(m_viewRect.x1, m_viewRect.y1, m_viewRect.Width(), m_viewRect.Height(), GetAspectRatio() * CDisplaySettings::GetInstance().GetPixelRatio(), CDisplaySettings::GetInstance().GetZoomAmount(), CDisplaySettings::GetInstance().GetVerticalShift());
 }
 
+EShaderFormat CBaseRenderer::GetShaderFormat(ERenderFormat renderFormat)
+{
+  EShaderFormat ret = SHADER_NONE;
+
+  if (m_format == RENDER_FMT_YUV420P)
+    ret = SHADER_YV12;
+  else if (m_format == RENDER_FMT_YUV420P10)
+    ret = SHADER_YV12_10;
+  else if (m_format == RENDER_FMT_YUV420P16)
+    ret = SHADER_YV12_16;
+  else if (m_format == RENDER_FMT_NV12)
+    ret = SHADER_NV12;
+  else if (m_format == RENDER_FMT_YUYV422)
+    ret = SHADER_YUY2;
+  else if (m_format == RENDER_FMT_UYVY422)
+    ret = SHADER_UYVY;
+  else
+    CLog::Log(LOGERROR, "CLinuxRendererGL::GetShaderFormat - unsupported format %d", renderFormat);
+
+  return ret;
+}
+
 void CBaseRenderer::SetViewMode(int viewMode)
 {
   if (viewMode < ViewModeNormal || viewMode > ViewModeZoom110Width)

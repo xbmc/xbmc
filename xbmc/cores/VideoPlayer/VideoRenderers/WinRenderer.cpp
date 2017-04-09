@@ -122,6 +122,18 @@ bool CWinRenderer::HandlesRenderFormat(ERenderFormat format)
   return false;
 }
 
+bool CWinRenderer::ConfigChanged(void *hwPic)
+{
+  if (m_format == RENDER_FMT_DXVA)
+  {
+    DXVA::CRenderPicture *dxvaPic = static_cast<DXVA::CRenderPicture*>(hwPic);
+    if (dxvaPic->extFormat != m_extended_format)
+      return true;
+  }
+
+  return false;
+}
+
 void CWinRenderer::ManageTextures()
 {
   if( m_NumYV12Buffers < m_neededBuffers )
@@ -209,7 +221,7 @@ void CWinRenderer::SelectRenderMethod()
   m_frameIdx = 0;
 }
 
-bool CWinRenderer::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format, unsigned int orientation)
+bool CWinRenderer::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, void *hwPic, unsigned int orientation)
 {
   m_sourceWidth       = width;
   m_sourceHeight      = height;
@@ -220,10 +232,13 @@ bool CWinRenderer::Configure(unsigned int width, unsigned int height, unsigned i
   // reinitialize the filters/shaders
   m_bFilterInitialized = false;
 
+  DXVA::CRenderPicture *dxvaPic = static_cast<DXVA::CRenderPicture*>(hwPic);
+
   m_fps = fps;
   m_iFlags = flags;
   m_format = format;
-  m_extended_format = extended_format;
+  if (format == RENDER_FMT_DXVA)
+    m_extended_format = dxvaPic->extFormat;
 
   // calculate the input frame aspect ratio
   CalculateFrameAspectRatio(d_width, d_height);
@@ -244,7 +259,7 @@ int CWinRenderer::NextYV12Texture()
     return -1;
 }
 
-bool CWinRenderer::IsPictureHW(DVDVideoPicture &picture)
+bool CWinRenderer::IsPictureHW(VideoPicture &picture)
 {
   if (m_renderMethod == RENDER_DXVA
     || picture.format == RENDER_FMT_DXVA)
@@ -254,7 +269,7 @@ bool CWinRenderer::IsPictureHW(DVDVideoPicture &picture)
   return false;
 }
 
-void CWinRenderer::AddVideoPictureHW(DVDVideoPicture &picture, int index)
+void CWinRenderer::AddVideoPictureHW(VideoPicture &picture, int index)
 {
   if (m_renderMethod == RENDER_DXVA)
   {
@@ -602,7 +617,8 @@ void CWinRenderer::UpdatePSVideoFilter()
   }
 
   m_colorShader = new CYUV2RGBShader();
-  if (!m_colorShader->Create(m_sourceWidth, m_sourceHeight, m_format))
+  EShaderFormat shaderFormat = GetShaderFormat(m_format);
+  if (!m_colorShader->Create(m_sourceWidth, m_sourceHeight, shaderFormat))
   {
     if (m_bUseHQScaler)
     {
@@ -1312,11 +1328,12 @@ bool YUVBuffer::IsReadyToRender()
   return !m_locked;
 }
 
-bool YUVBuffer::CopyFromPicture(DVDVideoPicture &picture)
+bool YUVBuffer::CopyFromPicture(VideoPicture &picture)
 {
   if (picture.format == RENDER_FMT_DXVA)
   {
-    return CopyFromDXVA(reinterpret_cast<ID3D11VideoDecoderOutputView*>(picture.dxva->view));
+    DXVA::CRenderPicture *hwpic = static_cast<DXVA::CRenderPicture*>(picture.hwPic);
+    return CopyFromDXVA(reinterpret_cast<ID3D11VideoDecoderOutputView*>(hwpic->view));
   }
   return false;
 }
