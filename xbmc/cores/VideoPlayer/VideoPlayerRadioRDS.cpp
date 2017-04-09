@@ -32,7 +32,7 @@
  */
 
 #include "Application.h"
-#include "DVDClock.h"
+#include "TimingConstants.h"
 #include "DVDStreamInfo.h"
 #include "GUIInfoManager.h"
 #include "GUIUserMessages.h"
@@ -537,7 +537,7 @@ bool CDVDRadioRDSData::CheckStream(CDVDStreamInfo &hints)
   return false;
 }
 
-bool CDVDRadioRDSData::OpenStream(CDVDStreamInfo &hints)
+bool CDVDRadioRDSData::OpenStream(CDVDStreamInfo hints)
 {
   m_messageQueue.Init();
   if (hints.type == STREAM_RADIO_RDS)

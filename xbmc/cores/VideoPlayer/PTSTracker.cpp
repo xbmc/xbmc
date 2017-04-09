@@ -18,7 +18,7 @@
  *
  */
 
-#include "DVDTSCorrection.h"
+#include "PTSTracker.h"
 #include "DVDClock.h"
 #include "DVDCodecs/DVDCodecUtils.h"
 #include "utils/log.h"
@@ -27,26 +27,26 @@
 
 #define MAXERR DVD_MSEC_TO_TIME(2.5)
 
-CPullupCorrection::CPullupCorrection()
+CPtsTracker::CPtsTracker()
 {
   ResetVFRDetection();
   Flush();
 }
 
-void CPullupCorrection::ResetVFRDetection(void)
+void CPtsTracker::ResetVFRDetection(void)
 {
   m_minframeduration = DVD_NOPTS_VALUE;
   m_maxframeduration = DVD_NOPTS_VALUE;
   m_VFRCounter = 0;
   m_patternCounter = 0;
+  m_lastPattern.clear();
 }
 
-void CPullupCorrection::Flush()
+void CPtsTracker::Flush()
 {
   m_pattern.clear();
   m_ringpos       = 0;
   m_prevpts       = DVD_NOPTS_VALUE;
-  m_patternpos    = 0;
   m_ringfill      = 0;
   m_haspattern    = false;
   m_patternlength = 0;
@@ -54,7 +54,7 @@ void CPullupCorrection::Flush()
   memset(m_diffring, 0, sizeof(m_diffring));
 }
 
-void CPullupCorrection::Add(double pts)
+void CPtsTracker::Add(double pts)
 {
   //can't get a diff with just one pts
   if (m_prevpts == DVD_NOPTS_VALUE)
@@ -89,7 +89,7 @@ void CPullupCorrection::Add(double pts)
     {
       m_VFRCounter++;
       m_lastPattern = m_pattern;
-      CLog::Log(LOGDEBUG, "CPullupCorrection: pattern lost on diff %f, number of losses %i", GetDiff(0), m_VFRCounter);
+      CLog::Log(LOGDEBUG, "CPtsTracker: pattern lost on diff %f, number of losses %i", GetDiff(0), m_VFRCounter);
       Flush();
     }
 
@@ -101,25 +101,18 @@ void CPullupCorrection::Add(double pts)
   }
   else
   {
-    //the saved pattern should have moved 1 diff into the past
-    m_patternpos = (m_patternpos + 1) % m_pattern.size();
-
-    //we save the pattern, in case it changes very slowly
-    for (unsigned int i = 0; i < m_pattern.size(); i++)
-      m_pattern[i] = pattern[(m_patternpos + i) % pattern.size()];
-
     if (!m_haspattern)
     {
       m_haspattern = true;
       m_patternlength = m_pattern.size();
 
-      if (!CheckPattern(m_lastPattern))
+      if (!m_lastPattern.empty() && !CheckPattern(m_lastPattern))
       {
         m_patternCounter++;
       }
 
       double frameduration = CalcFrameDuration();
-      CLog::Log(LOGDEBUG, "CPullupCorrection: detected pattern of length %i: %s, frameduration: %f",
+      CLog::Log(LOGDEBUG, "CPtsTracker: detected pattern of length %i: %s, frameduration: %f",
                 (int)pattern.size(), GetPatternStr().c_str(), frameduration);
     }
   }
@@ -128,24 +121,40 @@ void CPullupCorrection::Add(double pts)
 }
 
 //gets a diff diffnr into the past
-inline double CPullupCorrection::GetDiff(int diffnr)
+inline double CPtsTracker::GetDiff(int diffnr)
 {
   //m_ringpos is the last added diff, so if we want to go in the past we have to move back in the ringbuffer
   int pos = m_ringpos - diffnr;
-  if (pos < 0) pos += DIFFRINGSIZE;
+  if (pos < 0)
+    pos += DIFFRINGSIZE;
 
   return m_diffring[pos];
 }
 
 //calculate the current pattern in the ringbuffer
-void CPullupCorrection::GetPattern(std::vector<double>& pattern)
+void CPtsTracker::GetPattern(std::vector<double>& pattern)
 {
   int difftypesbuff[DIFFRINGSIZE]; //difftypes of the diffs, difftypesbuff[0] is the last added diff,
                                    //difftypesbuff[1] the one added before that etc
 
   //get the difftypes
   std::vector<double> difftypes;
-  GetDifftypes(difftypes);
+  for (int i = 0; i < m_ringfill; i++)
+  {
+    bool hasmatch = false;
+    for (unsigned int j = 0; j < difftypes.size(); j++)
+    {
+      if (MatchDiff(GetDiff(i), difftypes[j]))
+      {
+        hasmatch = true;
+        break;
+      }
+    }
+
+    //if we don't have a match with a saved difftype, we add it as a new one
+    if (!hasmatch)
+      difftypes.push_back(GetDiff(i));
+  }
 
   //mark each diff with what difftype it is
   for (int i = 0; i < m_ringfill; i++)
@@ -195,54 +204,28 @@ void CPullupCorrection::GetPattern(std::vector<double>& pattern)
 
     if (hasmatch)
     {
-      BuildPattern(pattern, length);
+      for (int i = 0; i < length; i++)
+      {
+        double avgdiff = 0.0;
+        for (int j = 0; j < m_ringfill / length; j++)
+          avgdiff += GetDiff(j * length + i);
+
+        avgdiff /= m_ringfill / length;
+        pattern.push_back(avgdiff);
+      }
       break;
     }
   }
+  std::sort(pattern.begin(), pattern.end());
 }
 
-//calculate the different types of diffs we have
-void CPullupCorrection::GetDifftypes(std::vector<double>& difftypes)
-{
-  for (int i = 0; i < m_ringfill; i++)
-  {
-    bool hasmatch = false;
-    for (unsigned int j = 0; j < difftypes.size(); j++)
-    {
-      if (MatchDiff(GetDiff(i), difftypes[j]))
-      {
-        hasmatch = true;
-        break;
-      }
-    }
-
-    //if we don't have a match with a saved difftype, we add it as a new one
-    if (!hasmatch)
-      difftypes.push_back(GetDiff(i));
-  }
-}
-
-//builds a pattern of timestamps in the ringbuffer
-void CPullupCorrection::BuildPattern(std::vector<double>& pattern, int patternlength)
-{
-  for (int i = 0; i < patternlength; i++)
-  {
-    double avgdiff = 0.0;
-    for (int j = 0; j < m_ringfill / patternlength; j++)
-      avgdiff += GetDiff(j * patternlength + i);
-
-    avgdiff /= m_ringfill / patternlength;
-    pattern.push_back(avgdiff);
-  }
-}
-
-inline bool CPullupCorrection::MatchDiff(double diff1, double diff2)
+inline bool CPtsTracker::MatchDiff(double diff1, double diff2)
 {
   return fabs(diff1 - diff2) < MAXERR;
 }
 
 //check if diffs1 is the same as diffs2
-inline bool CPullupCorrection::MatchDifftype(int* diffs1, int* diffs2, int nrdiffs)
+inline bool CPtsTracker::MatchDifftype(int* diffs1, int* diffs2, int nrdiffs)
 {
   for (int i = 0; i < nrdiffs; i++)
   {
@@ -253,7 +236,7 @@ inline bool CPullupCorrection::MatchDifftype(int* diffs1, int* diffs2, int nrdif
 }
 
 //check if our current detected pattern is the same as the one we saved
-bool CPullupCorrection::CheckPattern(std::vector<double>& pattern)
+bool CPtsTracker::CheckPattern(std::vector<double>& pattern)
 {
   //if no pattern was detected or if the size of the patterns differ we don't have a match
   if (pattern.empty() || pattern.size() != m_pattern.size())
@@ -265,13 +248,10 @@ bool CPullupCorrection::CheckPattern(std::vector<double>& pattern)
       return false; //all diffs are too close to 0, can't use this
   }
 
-  //the saved pattern should have moved 1 diff into the past
-  int patternpos = (m_patternpos + 1) % m_pattern.size();
-
   //check if the current pattern matches the saved pattern, with an offset of 1
   for (unsigned int i = 0; i < m_pattern.size(); i++)
   {
-    double diff = pattern[(patternpos + i) % pattern.size()];
+    double diff = pattern[i];
 
     if (!MatchDiff(diff, m_pattern[i]))
       return false;
@@ -281,8 +261,8 @@ bool CPullupCorrection::CheckPattern(std::vector<double>& pattern)
 }
 
 //calculate how long each frame should last from the saved pattern
-//Retrieve also information of max and min frame rate duration, for VFR files case
-double CPullupCorrection::CalcFrameDuration()
+//Retreive also information of max and min frame rate duration, for VFR files case
+double CPtsTracker::CalcFrameDuration()
 {
   if (!m_pattern.empty())
   {
@@ -338,7 +318,7 @@ double CPullupCorrection::CalcFrameDuration()
 }
 
 //looks pretty in the log
-std::string CPullupCorrection::GetPatternStr()
+std::string CPtsTracker::GetPatternStr()
 {
   std::string patternstr;
 
@@ -349,4 +329,3 @@ std::string CPullupCorrection::GetPatternStr()
 
   return patternstr;
 }
-
