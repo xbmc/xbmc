@@ -361,8 +361,16 @@ Function .onInit
     ${OrIf} $1 == ""
       MessageBox MB_OK|MB_ICONSTOP|MB_TOPMOST|MB_SETFOREGROUND "Unable to run the Windows program wmic.exe to verify that Windows Update KB$HotFixID is installed.$\nWmic is not installed correctly.$\nPlease fix this issue and try again to install Kodi."
       Quit
-    ${EndIf}  
-    nsExec::ExecToStack 'cmd /Q /C "%SYSTEMROOT%\System32\wbem\wmic.exe qfe get hotfixid | findstr "^KB$HotFixID[^0-9]""'
+    ${EndIf}
+    nsExec::ExecToStack 'cmd /Q /C "%SYSTEMROOT%\System32\findstr.exe /?"'
+    Pop $0 ; return value (it always 0 even if an error occured)
+    Pop $1 ; command output
+    ${If} $0 != 0
+    ${OrIf} $1 == ""
+      MessageBox MB_OK|MB_ICONSTOP|MB_TOPMOST|MB_SETFOREGROUND "Unable to run the Windows program findstr.exe to verify that Windows Update KB$HotFixID is installed.$\nFindstr is not installed correctly.$\nPlease fix this issue and try again to install Kodi."
+      Quit
+    ${EndIf}
+    nsExec::ExecToStack 'cmd /Q /C "%SYSTEMROOT%\System32\wbem\wmic.exe qfe get hotfixid | %SYSTEMROOT%\System32\findstr.exe "^KB$HotFixID[^0-9]""'
     Pop $0 ; return value (it always 0 even if an error occured)
     Pop $1 ; command output
     ${If} $0 != 0
