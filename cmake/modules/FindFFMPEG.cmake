@@ -33,14 +33,14 @@
 #
 
 # required ffmpeg library versions
-set(REQUIRED_FFMPEG_VERSION 3.1)
-set(_avcodec_ver ">=57.48.101")
-set(_avfilter_ver ">=6.47.100")
-set(_avformat_ver ">=57.41.100")
-set(_avutil_ver ">=55.28.100")
-set(_swscale_ver ">=4.1.100")
-set(_swresample_ver ">=2.1.100")
-set(_postproc_ver ">=54.0.100")
+set(REQUIRED_FFMPEG_VERSION 3.3)
+set(_avcodec_ver ">=57.89.100")
+set(_avfilter_ver ">=6.82.100")
+set(_avformat_ver ">=57.71.100")
+set(_avutil_ver ">=55.58.100")
+set(_swscale_ver ">=4.6.100")
+set(_swresample_ver ">=2.7.100")
+set(_postproc_ver ">=54.5.100")
 
 
 # Allows building with external ffmpeg not found in system paths,
