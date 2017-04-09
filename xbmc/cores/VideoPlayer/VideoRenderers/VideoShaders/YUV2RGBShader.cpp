@@ -28,7 +28,6 @@
 #if defined(HAS_GL) || defined(HAS_GLES)
 #include "utils/GLUtils.h"
 #endif
-#include "cores/VideoPlayer/VideoRenderers/RenderFormats.h"
 
 #include <string>
 #include <sstream>
@@ -91,7 +90,7 @@ static float** PickYUVConversionMatrix(unsigned flags)
 
 void CalculateYUVMatrix(TransformMatrix &matrix
                         , unsigned int  flags
-                        , ERenderFormat format
+                        , EShaderFormat format
                         , float         black
                         , float         contrast
                         , bool          limited)
@@ -130,7 +129,7 @@ void CalculateYUVMatrix(TransformMatrix &matrix
                                                , - 16.0f / 255);
   }
 
-  if(format == RENDER_FMT_YUV420P10)
+  if (format == SHADER_YV12_10)
   {
     matrix *= TransformMatrix::CreateScaler(65535.0f / 1023.0f
                                           , 65535.0f / 1023.0f
@@ -144,7 +143,7 @@ using namespace Shaders;
 
 static void CalculateYUVMatrixGL(GLfloat      res[4][4]
                                , unsigned int flags
-                               , ERenderFormat format
+                               , EShaderFormat format
                                , float        black
                                , float        contrast
                                , bool         limited)
@@ -166,7 +165,7 @@ static void CalculateYUVMatrixGL(GLfloat      res[4][4]
 // BaseYUV2RGBGLSLShader - base class for GLSL YUV2RGB shaders
 //////////////////////////////////////////////////////////////////////
 
-BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, unsigned flags, ERenderFormat format, bool stretch,
+BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, unsigned flags, EShaderFormat format, bool stretch,
                                              GLSLOutput *output)
 {
   m_width      = 1;
@@ -210,22 +209,21 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, unsigned flags, ERenderF
   else
     m_defines += "#define XBMC_STRETCH 0\n";
 
-  if (m_format == RENDER_FMT_YUV420P ||
-      m_format == RENDER_FMT_YUV420P10 ||
-      m_format == RENDER_FMT_YUV420P16)
+  if (m_format == SHADER_YV12 ||
+      m_format == SHADER_YV12_10 ||
+      m_format == SHADER_YV12_16)
     m_defines += "#define XBMC_YV12\n";
-  else if (m_format == RENDER_FMT_NV12 ||
-           m_format == RENDER_FMT_VAAPINV12)
+  else if (m_format == SHADER_NV12)
     m_defines += "#define XBMC_NV12\n";
-  else if (m_format == RENDER_FMT_YUYV422)
+  else if (m_format == SHADER_YUY2)
     m_defines += "#define XBMC_YUY2\n";
-  else if (m_format == RENDER_FMT_UYVY422)
+  else if (m_format == SHADER_UYVY)
     m_defines += "#define XBMC_UYVY\n";
-  else if (m_format == RENDER_FMT_VDPAU_420)
+  else if (m_format == SHADER_NV12_RRG)
     m_defines += "#define XBMC_NV12_RRG\n";
-  else if (m_format == RENDER_FMT_VAAPI)
+  else if (m_format == SHADER_NV12_RRG)
     m_defines += "#define XBMC_NV12_RRG\n";
-  else if (m_format == RENDER_FMT_CVBREF)
+  else if (m_format == SHADER_YV12)
     m_defines += "#define XBMC_YV12\n";
   else
     CLog::Log(LOGERROR, "GL: BaseYUV2RGBGLSLShader - unsupported format %d", m_format);
@@ -318,7 +316,7 @@ void BaseYUV2RGBGLSLShader::Free()
 // BaseYUV2RGBGLSLShader - base class for GLSL YUV2RGB shaders
 //////////////////////////////////////////////////////////////////////
 #if HAS_GLES != 2	// No ARB Shader when using GLES2.0
-BaseYUV2RGBARBShader::BaseYUV2RGBARBShader(unsigned flags, ERenderFormat format)
+BaseYUV2RGBARBShader::BaseYUV2RGBARBShader(unsigned flags, EShaderFormat format)
 {
   m_width         = 1;
   m_height        = 1;
@@ -338,7 +336,7 @@ BaseYUV2RGBARBShader::BaseYUV2RGBARBShader(unsigned flags, ERenderFormat format)
 // Use for weave deinterlacing / progressive
 //////////////////////////////////////////////////////////////////////
 
-YUV2RGBProgressiveShader::YUV2RGBProgressiveShader(bool rect, unsigned flags, ERenderFormat format, bool stretch,
+YUV2RGBProgressiveShader::YUV2RGBProgressiveShader(bool rect, unsigned flags, EShaderFormat format, bool stretch,
                                                    GLSLOutput *output)
   : BaseYUV2RGBGLSLShader(rect, flags, format, stretch, output)
 {
@@ -355,7 +353,7 @@ YUV2RGBProgressiveShader::YUV2RGBProgressiveShader(bool rect, unsigned flags, ER
 // YUV2RGBBobShader - YUV2RGB with Bob deinterlacing
 //////////////////////////////////////////////////////////////////////
 
-YUV2RGBBobShader::YUV2RGBBobShader(bool rect, unsigned flags, ERenderFormat format)
+YUV2RGBBobShader::YUV2RGBBobShader(bool rect, unsigned flags, EShaderFormat format)
   : BaseYUV2RGBGLSLShader(rect, flags, format, false)
 {
   m_hStepX = -1;
@@ -393,7 +391,7 @@ bool YUV2RGBBobShader::OnEnabled()
 // YUV2RGBProgressiveShaderARB - YUV2RGB with no deinterlacing
 //////////////////////////////////////////////////////////////////////
 #if HAS_GLES != 2	// No ARB Shader when using GLES2.0
-YUV2RGBProgressiveShaderARB::YUV2RGBProgressiveShaderARB(bool rect, unsigned flags, ERenderFormat format)
+YUV2RGBProgressiveShaderARB::YUV2RGBProgressiveShaderARB(bool rect, unsigned flags, EShaderFormat format)
   : BaseYUV2RGBARBShader(flags, format)
 {
   m_black      = 0.0f;
@@ -401,14 +399,14 @@ YUV2RGBProgressiveShaderARB::YUV2RGBProgressiveShaderARB(bool rect, unsigned fla
 
   std::string shaderfile;
 
-  if (m_format == RENDER_FMT_YUYV422)
+  if (m_format == SHADER_YUY2)
   {
     if(rect)
       shaderfile = "yuv2rgb_basic_rect_YUY2.arb";
     else
       shaderfile = "yuv2rgb_basic_2d_YUY2.arb";
   }
-  else if (m_format == RENDER_FMT_UYVY422)
+  else if (m_format == SHADER_UYVY)
   {
     if(rect)
       shaderfile = "yuv2rgb_basic_rect_UYVY.arb";
