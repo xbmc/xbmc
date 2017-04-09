@@ -25,7 +25,7 @@
 #include <vector>
 
 class CMMALPool;
-struct DVDVideoPicture;
+struct VideoPicture;
 
 class CPixelConverterRBP : public CPixelConverter
 {
@@ -37,18 +37,18 @@ public:
   virtual bool Open(AVPixelFormat pixfmt, AVPixelFormat target, unsigned int width, unsigned int height) override;
   virtual void Dispose() override;
   virtual bool Decode(const uint8_t* pData, unsigned int size) override;
-  virtual void GetPicture(DVDVideoPicture& dvdVideoPicture) override;
+  virtual void GetPicture(VideoPicture& dvdVideoPicture) override;
 
 private:
   /*!
    * \brief Allocate a new picture (AV_PIX_FMT_YUV420P)
    */
-  DVDVideoPicture* AllocatePicture(int iWidth, int iHeight);
+  VideoPicture* AllocatePicture(int iWidth, int iHeight);
 
   /*!
    * \brief Free an allocated picture
    */
-  void FreePicture(DVDVideoPicture* pPicture);
+  void FreePicture(VideoPicture* pPicture);
 
   struct PixelFormatTargetTable
   {
