@@ -21,6 +21,7 @@
 #include "VideoPlayerCodec.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/AudioEngine/AEResampleFactory.h"
+#include "cores/AudioEngine/Interfaces/AE.h"
 
 #include "cores/VideoPlayer/DVDInputStreams/DVDFactoryInputStream.h"
 #include "cores/VideoPlayer/DVDDemuxers/DVDFactoryDemuxer.h"
@@ -31,6 +32,7 @@
 #include "utils/log.h"
 #include "URL.h"
 #include "utils/StringUtils.h"
+#include "ServiceBroker.h"
 
 VideoPlayerCodec::VideoPlayerCodec()
 {
@@ -39,8 +41,6 @@ VideoPlayerCodec::VideoPlayerCodec()
   m_pInputStream = NULL;
   m_pAudioCodec = NULL;
   m_nAudioStream = -1;
-  m_audioPos = 0;
-  m_pPacket = NULL;
   m_nDecodedLen = 0;
   m_bInited = false;
   m_pResampler = NULL;
@@ -69,6 +69,11 @@ void VideoPlayerCodec::SetContentType(const std::string &strContent)
 {
   m_strContentType = strContent;
   StringUtils::ToLower(m_strContentType);
+}
+
+void  VideoPlayerCodec::SetPassthroughStreamType(CAEStreamInfo::DataType streamType)
+{
+  m_srcFormat.m_streamInfo.m_type = streamType;
 }
 
 bool VideoPlayerCodec::Init(const CFileItem &file, unsigned int filecache)
@@ -167,7 +172,8 @@ bool VideoPlayerCodec::Init(const CFileItem &file, unsigned int filecache)
 
   CDVDStreamInfo hint(*pStream, true);
 
-  m_pAudioCodec = CDVDFactoryCodec::CreateAudioCodec(hint, *m_processInfo.get());
+  CAEStreamInfo::DataType ptStreamTye = GetPassthroughStreamType(hint.codec, hint.samplerate);
+  m_pAudioCodec = CDVDFactoryCodec::CreateAudioCodec(hint, *m_processInfo.get(), true, true, ptStreamTye);
   if (!m_pAudioCodec)
   {
     CLog::Log(LOGERROR, "%s: Could not create audio codec", __FUNCTION__);
@@ -285,10 +291,6 @@ bool VideoPlayerCodec::Init(const CFileItem &file, unsigned int filecache)
 
 void VideoPlayerCodec::DeInit()
 {
-  if (m_pPacket)
-    CDVDDemuxUtils::FreeDemuxPacket(m_pPacket);
-  m_pPacket = NULL;
-
   if (m_pDemuxer != NULL)
   {
     delete m_pDemuxer;
@@ -317,7 +319,6 @@ void VideoPlayerCodec::DeInit()
   m_channels = 0;
   m_format.m_dataFormat = AE_FMT_INVALID;
 
-  m_audioPos = 0;
   m_nDecodedLen = 0;
 
   m_strFileName = "";
@@ -329,13 +330,6 @@ bool VideoPlayerCodec::Seek(int64_t iSeekTime)
   // default to announce backwards seek if !m_pPacket to not make FFmpeg
   // skip mpeg audio frames at playback start
   bool seekback = true;
-
-  if (m_pPacket)
-  {
-    seekback = (DVD_MSEC_TO_TIME(iSeekTime) > m_pPacket->pts);
-    CDVDDemuxUtils::FreeDemuxPacket(m_pPacket);
-  }
-  m_pPacket = NULL;
 
   bool ret = m_pDemuxer->SeekTime((int)iSeekTime, seekback);
   m_pAudioCodec->Reset();
@@ -371,52 +365,36 @@ int VideoPlayerCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
   }
 
   m_nDecodedLen = 0;
+  int bytes = m_pAudioCodec->GetData(m_audioPlanes);
 
-  // VideoPlayer returns a read error on a single invalid packet, while
-  // in paplayer READ_ERROR is a fatal error.
-  // Therefore skip over invalid packets here.
-  int decodeLen = -1;
-  for (int tries = 0; decodeLen < 0 && tries < 2; ++tries)
+  if (!bytes)
   {
-    if (m_pPacket && m_audioPos >= m_pPacket->iSize)
+    DemuxPacket* pPacket;
+    do
     {
-      CDVDDemuxUtils::FreeDemuxPacket(m_pPacket);
-      m_audioPos = 0;
-      m_pPacket = NULL;
+      pPacket = m_pDemuxer->Read();
+    } while (pPacket && pPacket->iStreamId != m_nAudioStream);
+
+    if (!pPacket)
+    {
+      return READ_EOF;
     }
 
-    if (m_pPacket == NULL)
-    {
-      do
-      {
-        m_pPacket = m_pDemuxer->Read();
-      } while (m_pPacket && m_pPacket->iStreamId != m_nAudioStream);
+    pPacket->pts = DVD_NOPTS_VALUE;
+    pPacket->dts = DVD_NOPTS_VALUE;
 
-      if (!m_pPacket)
-      {
-        return READ_EOF;
-      }
-      m_audioPos = 0;
+    int ret = m_pAudioCodec->AddData(*pPacket);
+    CDVDDemuxUtils::FreeDemuxPacket(pPacket);
+    if (ret < 0)
+    {
+      return READ_ERROR;
     }
 
-    decodeLen = m_pAudioCodec->Decode(m_pPacket->pData + m_audioPos, m_pPacket->iSize - m_audioPos, DVD_NOPTS_VALUE, DVD_NOPTS_VALUE);
-
-    if (decodeLen < 0)
-      m_audioPos = m_pPacket->iSize; // skip packet
+    bytes = m_pAudioCodec->GetData(m_audioPlanes);
   }
 
-  if (decodeLen < 0)
-  {
-    CDVDDemuxUtils::FreeDemuxPacket(m_pPacket);
-    m_pPacket = NULL;
-    m_audioPos = 0;
-    return READ_ERROR;
-  }
-
-  m_audioPos += decodeLen;
-
+  m_nDecodedLen = bytes;
   // scale decoded bytes to destination format
-  m_nDecodedLen = m_pAudioCodec->GetData(m_audioPlanes);
   if (m_needConvert)
     m_nDecodedLen *= (m_bitsPerSample>>3) / (m_srcFormat.m_frameSize / m_channels);
 
@@ -446,50 +424,32 @@ int VideoPlayerCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
 
 int VideoPlayerCodec::ReadRaw(uint8_t **pBuffer, int *bufferSize)
 {
+  DemuxPacket* pPacket;
+
   m_nDecodedLen = 0;
   DVDAudioFrame audioframe;
 
-  m_pAudioCodec->Decode(nullptr, 0, DVD_NOPTS_VALUE, DVD_NOPTS_VALUE);
   m_pAudioCodec->GetData(audioframe);
   if (audioframe.nb_frames)
   {
     return READ_SUCCESS;
   }
 
-  // VideoPlayer returns a read error on a single invalid packet, while
-  // in paplayer READ_ERROR is a fatal error.
-  // Therefore skip over invalid packets here.
-  int decodeLen = -1;
-  for (int tries = 0; decodeLen < 0 && tries < 2; ++tries)
+  do
   {
-    if (m_pPacket)
-    {
-      CDVDDemuxUtils::FreeDemuxPacket(m_pPacket);
-      m_audioPos = 0;
-      m_pPacket = NULL;
-    }
+    pPacket = m_pDemuxer->Read();
+  } while (pPacket && pPacket->iStreamId != m_nAudioStream);
 
-    if (m_pPacket == NULL)
-    {
-      do
-      {
-        m_pPacket = m_pDemuxer->Read();
-      } while (m_pPacket && m_pPacket->iStreamId != m_nAudioStream);
-
-      if (!m_pPacket)
-      {
-        return READ_EOF;
-      }
-    }
-
-    decodeLen = m_pAudioCodec->Decode(m_pPacket->pData, m_pPacket->iSize, DVD_NOPTS_VALUE, DVD_NOPTS_VALUE);
+  if (!pPacket)
+  {
+    return READ_EOF;
   }
-
-  if (decodeLen < 0)
+  pPacket->pts = DVD_NOPTS_VALUE;
+  pPacket->dts = DVD_NOPTS_VALUE;
+  int ret = m_pAudioCodec->AddData(*pPacket);
+  CDVDDemuxUtils::FreeDemuxPacket(pPacket);
+  if (ret < 0)
   {
-    CDVDDemuxUtils::FreeDemuxPacket(m_pPacket);
-    m_pPacket = NULL;
-    m_audioPos = 0;
     return READ_ERROR;
   }
 
@@ -533,4 +493,39 @@ bool VideoPlayerCodec::NeedConvert(AEDataFormat fmt)
     default:
       return true;
   }
+}
+
+CAEStreamInfo::DataType VideoPlayerCodec::GetPassthroughStreamType(AVCodecID codecId, int samplerate)
+{
+  AEAudioFormat format;
+  format.m_dataFormat = AE_FMT_RAW;
+  format.m_sampleRate = samplerate;
+  format.m_streamInfo.m_type = CAEStreamInfo::DataType::STREAM_TYPE_NULL;
+  switch (codecId)
+  {
+    case AV_CODEC_ID_AC3:
+      format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_AC3;
+      format.m_streamInfo.m_sampleRate = samplerate;
+      break;
+
+    case AV_CODEC_ID_EAC3:
+      format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_EAC3;
+      format.m_streamInfo.m_sampleRate = samplerate;
+      break;
+
+    case AV_CODEC_ID_DTS:
+      format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_DTSHD_CORE;
+      format.m_streamInfo.m_sampleRate = samplerate;
+      break;
+
+    default:
+      format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_NULL;
+  }
+
+  bool supports = CServiceBroker::GetActiveAE().SupportsRaw(format);
+
+  if (supports)
+    return format.m_streamInfo.m_type;
+  else
+    return CAEStreamInfo::DataType::STREAM_TYPE_NULL;
 }
