@@ -1179,19 +1179,10 @@ bool CGUIWindowVideoBase::OnPlayAndQueueMedia(const CFileItemPtr &item, std::str
 
 void CGUIWindowVideoBase::PlayMovie(const CFileItem *item, const std::string &player)
 {
-  CFileItemPtr movieItem(new CFileItem(*item));
-
-  g_playlistPlayer.Reset();
-  g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
-  CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO);
-  playlist.Clear();
-  playlist.Add(movieItem);
-
   if(m_thumbLoader.IsLoading())
     m_thumbLoader.StopAsync();
 
-  // play movie...
-  g_playlistPlayer.Play(0, player);
+  g_playlistPlayer.Play(std::make_shared<CFileItem>(*item), player);
 
   if(!g_application.m_pPlayer->IsPlayingVideo())
     m_thumbLoader.Load(*m_vecItems);

@@ -256,6 +256,24 @@ bool CPlayListPlayer::PlaySongId(int songId)
   return Play();
 }
 
+bool CPlayListPlayer::Play(const CFileItemPtr &pItem, std::string player)
+{
+  int playlist;
+  if (pItem->IsAudio())
+    playlist = PLAYLIST_MUSIC;
+  else if (pItem->IsVideo())
+    playlist = PLAYLIST_VIDEO;
+  else
+    return false;
+
+  ClearPlaylist(playlist);
+  Reset();
+  SetCurrentPlaylist(playlist);
+  Add(playlist, pItem);
+
+  return Play(0, player);
+}
+
 bool CPlayListPlayer::Play(int iSong, std::string player, bool bAutoPlay /* = false */, bool bPlayPrevious /* = false */)
 {
   if (m_iCurrentPlayList == PLAYLIST_NONE)
@@ -855,10 +873,14 @@ void PLAYLIST::CPlayListPlayer::OnApplicationMessage(KODI::MESSAGING::ThreadMess
 
         ClearPlaylist(playlist);
         SetCurrentPlaylist(playlist);
-        //For single item lists try PlayMedia. This covers some more cases where a playlist is not appropriate
-        //It will fall through to PlayFile
         if (list->Size() == 1 && !(*list)[0]->IsPlayList())
-          g_application.PlayMedia(*((*list)[0]), pMsg->strParam, playlist);
+        {
+          CFileItemPtr item = (*list)[0];
+          if (item->IsAudio() || item->IsVideo())
+            Play(item, pMsg->strParam);
+          else
+            g_application.PlayMedia(*item, pMsg->strParam, playlist);
+        }
         else
         {
           // Handle "shuffled" option if present
