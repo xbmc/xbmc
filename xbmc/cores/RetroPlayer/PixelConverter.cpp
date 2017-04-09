@@ -105,7 +105,7 @@ bool CPixelConverter::Decode(const uint8_t* pData, unsigned int size)
   return true;
 }
 
-void CPixelConverter::GetPicture(DVDVideoPicture& dvdVideoPicture)
+void CPixelConverter::GetPicture(VideoPicture& dvdVideoPicture)
 {
   dvdVideoPicture.dts            = DVD_NOPTS_VALUE;
   dvdVideoPicture.pts            = DVD_NOPTS_VALUE;
