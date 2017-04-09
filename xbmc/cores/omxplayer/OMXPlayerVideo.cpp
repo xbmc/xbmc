@@ -86,7 +86,6 @@ OMXPlayerVideo::OMXPlayerVideo(OMXClock *av_clock,
   m_stalled               = false;
   m_iSubtitleDelay        = 0;
   m_bRenderSubs           = false;
-  m_flags                 = 0;
   m_bAllowFullscreen      = false;
   m_iCurrentPts           = DVD_NOPTS_VALUE;
   m_fForcedAspectRatio    = 0.0f;
@@ -110,7 +109,7 @@ OMXPlayerVideo::~OMXPlayerVideo()
   CloseStream(false);
 }
 
-bool OMXPlayerVideo::OpenStream(CDVDStreamInfo &hints)
+bool OMXPlayerVideo::OpenStream(CDVDStreamInfo hints)
 {
   m_hints       = hints;
   m_hdmi_clock_sync = (CServiceBroker::GetSettings().GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) != ADJUST_REFRESHRATE_OFF);
@@ -562,16 +561,6 @@ bool OMXPlayerVideo::OpenDecoder()
   return bVideoDecoderOpen;
 }
 
-int  OMXPlayerVideo::GetDecoderBufferSize()
-{
-  return m_omxVideo.GetInputBufferSize();
-}
-
-int  OMXPlayerVideo::GetDecoderFreeSpace()
-{
-  return m_omxVideo.GetFreeSpace();
-}
-
 void OMXPlayerVideo::SubmitEOS()
 {
   m_omxVideo.SubmitEOS();
@@ -624,11 +613,6 @@ double OMXPlayerVideo::GetOutputDelay()
     time = time * DVD_PLAYSPEED_NORMAL / abs(m_speed);
 
   return time;
-}
-
-int OMXPlayerVideo::GetFreeSpace()
-{
-  return m_omxVideo.GetFreeSpace();
 }
 
 void OMXPlayerVideo::SetVideoRect(const CRect &InSrcRect, const CRect &InDestRect)
@@ -753,8 +737,8 @@ void OMXPlayerVideo::ResolutionUpdateCallBack(uint32_t width, uint32_t height, f
   CLog::Log(LOGDEBUG,"%s - change configuration. video:%dx%d. framerate: %4.2f. %dx%d format: BYPASS",
       __FUNCTION__, video_width, video_height, m_fFrameRate, iDisplayWidth, iDisplayHeight);
 
-  DVDVideoPicture picture;
-  memset(&picture, 0, sizeof(DVDVideoPicture));
+  VideoPicture picture;
+  memset(&picture, 0, sizeof(VideoPicture));
 
   picture.iWidth = width;
   picture.iHeight = height;
