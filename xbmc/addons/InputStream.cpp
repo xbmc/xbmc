@@ -333,7 +333,6 @@ void CInputStream::UpdateStreams()
       continue;
 
     demuxStream->codec = codec->id;
-    demuxStream->bandwidth = stream.m_Bandwidth;
     demuxStream->codecName = stream.m_codecInternalName;
     demuxStream->uniqueId = streamIDs.m_streamIds[i];
     demuxStream->language[0] = stream.m_language[0];
