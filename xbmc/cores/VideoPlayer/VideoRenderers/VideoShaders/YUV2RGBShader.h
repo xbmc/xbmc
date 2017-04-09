@@ -20,11 +20,11 @@
 #pragma once
 
 #include "guilib/TransformMatrix.h"
-#include "cores/VideoPlayer/VideoRenderers/RenderFormats.h"
+#include "ShaderFormats.h"
 
 void CalculateYUVMatrix(TransformMatrix &matrix
                         , unsigned int  flags
-                        , ERenderFormat format
+                        , EShaderFormat format
                         , float         black
                         , float         contrast
                         , bool          limited);
@@ -75,7 +75,7 @@ namespace Shaders {
     , public CGLSLShaderProgram
   {
   public:
-    BaseYUV2RGBGLSLShader(bool rect, unsigned flags, ERenderFormat format, bool stretch, GLSLOutput *output=NULL);
+    BaseYUV2RGBGLSLShader(bool rect, unsigned flags, EShaderFormat format, bool stretch, GLSLOutput *output=NULL);
    ~BaseYUV2RGBGLSLShader();
     virtual void SetField(int field) { m_field  = field; }
     virtual void SetWidth(int w)     { m_width  = w; }
@@ -101,7 +101,7 @@ namespace Shaders {
     void Free();
 
     unsigned m_flags;
-    ERenderFormat m_format;
+    EShaderFormat m_format;
     int   m_width;
     int   m_height;
     int   m_field;
@@ -142,7 +142,7 @@ namespace Shaders {
     , public CARBShaderProgram
   {
   public:
-    BaseYUV2RGBARBShader(unsigned flags, ERenderFormat format);
+    BaseYUV2RGBARBShader(unsigned flags, EShaderFormat format);
    ~BaseYUV2RGBARBShader() {}
     virtual void SetField(int field) { m_field  = field; }
     virtual void SetWidth(int w)     { m_width  = w; }
@@ -153,7 +153,7 @@ namespace Shaders {
 
   protected:
     unsigned m_flags;
-    ERenderFormat m_format;
+    EShaderFormat m_format;
     int   m_width;
     int   m_height;
     int   m_field;
@@ -170,7 +170,7 @@ namespace Shaders {
   class YUV2RGBProgressiveShaderARB : public BaseYUV2RGBARBShader
   {
   public:
-    YUV2RGBProgressiveShaderARB(bool rect=false, unsigned flags=0, ERenderFormat format=RENDER_FMT_NONE);
+    YUV2RGBProgressiveShaderARB(bool rect=false, unsigned flags=0, EShaderFormat format=SHADER_NONE);
     void OnCompiledAndLinked();
     bool OnEnabled();
   };
@@ -181,7 +181,7 @@ namespace Shaders {
   public:
     YUV2RGBProgressiveShader(bool rect=false,
                              unsigned flags=0,
-                             ERenderFormat format=RENDER_FMT_NONE,
+                             EShaderFormat format=SHADER_NONE,
                              bool stretch = false,
                              GLSLOutput *output=NULL);
   };
@@ -189,7 +189,7 @@ namespace Shaders {
   class YUV2RGBBobShader : public BaseYUV2RGBGLSLShader
   {
   public:
-    YUV2RGBBobShader(bool rect=false, unsigned flags=0, ERenderFormat format=RENDER_FMT_NONE);
+    YUV2RGBBobShader(bool rect=false, unsigned flags=0, EShaderFormat format=SHADER_NONE);
     void OnCompiledAndLinked();
     bool OnEnabled();
 
