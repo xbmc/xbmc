@@ -120,7 +120,7 @@ bool CRetroPlayerAudio::OpenEncodedStream(AVCodecID codec, unsigned int samplera
   audioStream.iChannelLayout = CAEUtil::GetAVChannelLayout(channelLayout);
 
   CDVDStreamInfo hint(audioStream);
-  m_pAudioCodec.reset(CDVDFactoryCodec::CreateAudioCodec(hint, m_processInfo, false));
+  m_pAudioCodec.reset(CDVDFactoryCodec::CreateAudioCodec(hint, m_processInfo, false, false, CAEStreamInfo::STREAM_TYPE_NULL));
 
   if (!m_pAudioCodec)
   {
@@ -137,7 +137,8 @@ void CRetroPlayerAudio::AddData(const uint8_t* data, unsigned int size)
   {
     if (m_pAudioCodec)
     {
-      int consumed = m_pAudioCodec->Decode(const_cast<uint8_t*>(data), size, DVD_NOPTS_VALUE, DVD_NOPTS_VALUE);
+      DemuxPacket packet(const_cast<uint8_t*>(data), size, DVD_NOPTS_VALUE, DVD_NOPTS_VALUE);
+      int consumed = m_pAudioCodec->AddData(packet);
       if (consumed < 0)
       {
         CLog::Log(LOGERROR, "CRetroPlayerAudio::AddData - Decode Error (%d)", consumed);
