@@ -22,7 +22,7 @@
 #include "DVDDemuxBXA.h"
 #include "DVDDemuxUtils.h"
 #include "utils/StringUtils.h"
-#include "../DVDClock.h"
+#include "TimingConstants.h"
 
 // AirTunes audio Demuxer.
 
