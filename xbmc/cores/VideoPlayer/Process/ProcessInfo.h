@@ -33,12 +33,12 @@ public:
 
   // player video info
   void ResetVideoCodecInfo();
-  void SetVideoDecoderName(std::string name, bool isHw);
+  void SetVideoDecoderName(const std::string &name, bool isHw);
   std::string GetVideoDecoderName();
   bool IsVideoHwDecoder();
-  void SetVideoDeintMethod(std::string method);
+  void SetVideoDeintMethod(const std::string &method);
   std::string GetVideoDeintMethod();
-  void SetVideoPixelFormat(std::string pixFormat);
+  void SetVideoPixelFormat(const std::string &pixFormat);
   std::string GetVideoPixelFormat();
   void SetVideoDimensions(int width, int height);
   void GetVideoDimensions(int &width, int &height);
@@ -55,9 +55,9 @@ public:
 
   // player audio info
   void ResetAudioCodecInfo();
-  void SetAudioDecoderName(std::string name);
+  void SetAudioDecoderName(const std::string &name);
   std::string GetAudioDecoderName();
-  void SetAudioChannels(std::string channels);
+  void SetAudioChannels(const std::string &channels);
   std::string GetAudioChannels();
   void SetAudioSampleRate(int sampleRate);
   int GetAudioSampleRate();

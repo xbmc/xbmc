@@ -444,7 +444,6 @@ protected:
    * one of the DVD_PLAYSPEED defines
    */
   void SetPlaySpeed(int iSpeed);
-  int GetPlaySpeed() { return m_playSpeed; }
 
   enum ECacheState
   {
@@ -520,7 +519,7 @@ protected:
   {
     double  lastpts;  // holds last display pts during ff/rw operations
     int64_t lasttime;
-    int lastseekpts;
+    double lastseekpts;
     double  lastabstime;
   } m_SpeedState;
   std::atomic_bool m_canTempo;
