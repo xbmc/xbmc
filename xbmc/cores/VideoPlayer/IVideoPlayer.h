@@ -40,14 +40,6 @@ class CDVDMsg;
 class CDVDStreamInfo;
 class CProcessInfo;
 
-struct SStartMsg
-{
-  double timestamp;
-  int player;
-  double cachetime;
-  double cachetotal;
-};
-
 class IVideoPlayer
 {
 public:
@@ -61,7 +53,7 @@ class IDVDStreamPlayer
 public:
   IDVDStreamPlayer(CProcessInfo &processInfo) : m_processInfo(processInfo) {};
   virtual ~IDVDStreamPlayer() {}
-  virtual bool OpenStream(CDVDStreamInfo &hint) = 0;
+  virtual bool OpenStream(CDVDStreamInfo hint) = 0;
   virtual void CloseStream(bool bWaitForBuffers) = 0;
   virtual void SendMessage(CDVDMsg* pMsg, int priority = 0) = 0;
   virtual void FlushMessages() = 0;
@@ -79,6 +71,20 @@ protected:
   CProcessInfo &m_processInfo;
 };
 
+struct SStartMsg
+{
+  double timestamp;
+  int player;
+  double cachetime;
+  double cachetotal;
+};
+
+struct SStateMsg
+{
+  IDVDStreamPlayer::ESyncState syncState;
+  int player;
+};
+
 class CDVDVideoCodec;
 
 class IDVDStreamPlayerVideo : public IDVDStreamPlayer
@@ -86,7 +92,7 @@ class IDVDStreamPlayerVideo : public IDVDStreamPlayer
 public:
   IDVDStreamPlayerVideo(CProcessInfo &processInfo) : IDVDStreamPlayer(processInfo) {};
   ~IDVDStreamPlayerVideo() {}
-  virtual bool OpenStream(CDVDStreamInfo &hint) = 0;
+  virtual bool OpenStream(CDVDStreamInfo hint) = 0;
   virtual void CloseStream(bool bWaitForBuffers) = 0;
   virtual void Flush(bool sync) = 0;
   virtual bool AcceptsData() const = 0;
@@ -107,8 +113,6 @@ public:
   virtual int GetVideoBitrate() = 0;
   virtual std::string GetStereoMode() = 0;
   virtual void SetSpeed(int iSpeed) = 0;
-  virtual int  GetDecoderBufferSize() { return 0; }
-  virtual int  GetDecoderFreeSpace() = 0;
   virtual bool IsEOS() { return false; };
 };
 
@@ -118,7 +122,7 @@ class IDVDStreamPlayerAudio : public IDVDStreamPlayer
 public:
   IDVDStreamPlayerAudio(CProcessInfo &processInfo) : IDVDStreamPlayer(processInfo) {};
   ~IDVDStreamPlayerAudio() {}
-  virtual bool OpenStream(CDVDStreamInfo &hints) = 0;
+  virtual bool OpenStream(CDVDStreamInfo hints) = 0;
   virtual void CloseStream(bool bWaitForBuffers) = 0;
   virtual void SetSpeed(int speed) = 0;
   virtual void Flush(bool sync) = 0;
