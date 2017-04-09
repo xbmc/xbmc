@@ -23,7 +23,7 @@
 #include "DVDDemuxUtils.h"
 #include "utils/log.h"
 #include "settings/Settings.h"
-#include "../DVDClock.h"
+#include "TimingConstants.h"
 
 #define FF_MAX_EXTRADATA_SIZE ((1 << 28) - FF_INPUT_BUFFER_PADDING_SIZE)
 
@@ -421,6 +421,7 @@ void CDVDDemuxClient::RequestStreams()
       streamVideo->iHeight         = source->iHeight;
       streamVideo->iWidth          = source->iWidth;
       streamVideo->fAspect         = source->fAspect;
+      streamVideo->iBitRate = source->iBitRate;
       streamVideo->stereo_mode     = "mono";
       if (source->ExtraSize > 0 && source->ExtraData)
       {
@@ -523,8 +524,9 @@ void CDVDDemuxClient::RequestStreams()
     dStream->uniqueId = stream->uniqueId;
     dStream->codec = stream->codec;
     dStream->codecName = stream->codecName;
-    dStream->bandwidth = stream->bandwidth;
     dStream->uniqueId = stream->uniqueId;
+    dStream->cryptoSession = stream->cryptoSession;
+    dStream->externalInterfaces = stream->externalInterfaces;
     for (int j=0; j<4; j++)
       dStream->language[j] = stream->language[j];
 
