@@ -18,7 +18,6 @@
  *
  */
 #include "system.h"
-#ifdef TARGET_DARWIN
 #include "platform/darwin/osx/CocoaInterface.h"
 #include "platform/darwin/DarwinUtils.h"
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
@@ -28,6 +27,8 @@
 #include "VTB.h"
 #include "utils/BitstreamConverter.h"
 #include "utils/BitstreamReader.h"
+#include "settings/Settings.h"
+#include "ServiceBroker.h"
 
 extern "C" {
 #include "libavcodec/videotoolbox.h"
@@ -57,6 +58,9 @@ void CDecoder::Close()
 
 bool CDecoder::Open(AVCodecContext *avctx, AVCodecContext* mainctx, enum AVPixelFormat fmt, unsigned int surfaces)
 {
+  if (!CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVTB))
+    return false;
+
   if (avctx->codec_id == AV_CODEC_ID_H264)
   {
     CBitstreamConverter bs;
@@ -97,35 +101,36 @@ bool CDecoder::Open(AVCodecContext *avctx, AVCodecContext* mainctx, enum AVPixel
   return true;
 }
 
-int CDecoder::Decode(AVCodecContext* avctx, AVFrame* frame)
+CDVDVideoCodec::VCReturn CDecoder::Decode(AVCodecContext* avctx, AVFrame* frame)
 {
-  int status = Check(avctx);
+  CDVDVideoCodec::VCReturn status = Check(avctx);
   if(status)
     return status;
 
   if(frame)
-    return VC_BUFFER | VC_PICTURE;
+  {
+    m_renderPicture = (CVPixelBufferRef)frame->data[3];
+    return CDVDVideoCodec::VC_PICTURE;
+  }
   else
-    return VC_BUFFER;
+    return CDVDVideoCodec::VC_BUFFER;
 }
 
-bool CDecoder::GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* picture)
+bool CDecoder::GetPicture(AVCodecContext* avctx, VideoPicture* picture)
 {
-  ((CDVDVideoCodecFFmpeg*)avctx->opaque)->GetPictureCommon(picture);
+  ((ICallbackHWAccel*)avctx->opaque)->GetPictureCommon(picture);
 
   picture->format = RENDER_FMT_CVBREF;
-  picture->cvBufferRef = (CVPixelBufferRef)frame->data[3];
+  picture->hwPic = m_renderPicture;
   return true;
 }
 
-int CDecoder::Check(AVCodecContext* avctx)
+CDVDVideoCodec::VCReturn CDecoder::Check(AVCodecContext* avctx)
 {
-  return 0;
+  return CDVDVideoCodec::VC_NONE;
 }
 
 unsigned CDecoder::GetAllowedReferences()
 {
   return 5;
 }
-
-#endif
