@@ -21,13 +21,25 @@
  */
 
 #include <cstdint>
+#include <memory>
 
 #define DMX_SPECIALID_STREAMINFO    -10
 #define DMX_SPECIALID_STREAMCHANGE  -11
 
+struct DemuxCryptoInfo;
+
 typedef struct DemuxPacket
 {
-  unsigned char* pData;   // data
+  DemuxPacket() {};
+
+  DemuxPacket(unsigned char *pData, int const iSize, double const pts, double const dts)
+    : pData(pData)
+    , iSize(iSize)
+    , pts(pts)
+    , dts(dts)
+  {};
+
+  unsigned char *pData;   // data
   int iSize;     // data size
   int iStreamId; // integer representing the stream index
   int64_t demuxerId; // id of the demuxer that created the packet
@@ -38,4 +50,6 @@ typedef struct DemuxPacket
   double duration; // duration in DVD_TIME_BASE if available
 
   int dispTime;
+
+  std::shared_ptr<DemuxCryptoInfo> cryptoInfo;
 } DemuxPacket;
