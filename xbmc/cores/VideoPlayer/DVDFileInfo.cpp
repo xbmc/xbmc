@@ -56,6 +56,10 @@
 #include <cstdlib>
 #include <memory>
 
+extern "C" {
+#include "libavformat/avformat.h"
+}
+
 bool CDVDFileInfo::GetFileDuration(const std::string &path, int& duration)
 {
   std::unique_ptr<CDVDInputStream> input;
@@ -199,7 +203,7 @@ bool CDVDFileInfo::ExtractThumb(const std::string &strPath,
     std::unique_ptr<CProcessInfo> pProcessInfo(CProcessInfo::CreateInstance());
 
     CDVDStreamInfo hint(*pDemuxer->GetStream(demuxerId, nVideoStream), true);
-    hint.software = true;
+    hint.codecOptions = CODEC_FORCE_SOFTWARE;
 
     pVideoCodec = CDVDFactoryCodec::CreateVideoCodec(hint, *pProcessInfo);
 
@@ -211,8 +215,8 @@ bool CDVDFileInfo::ExtractThumb(const std::string &strPath,
       CLog::Log(LOGDEBUG,"%s - seeking to pos %dms (total: %dms) in %s", __FUNCTION__, nSeekTo, nTotalLen, redactPath.c_str());
       if (pDemuxer->SeekTime(nSeekTo, true))
       {
-        int iDecoderState = VC_ERROR;
-        DVDVideoPicture picture;
+        CDVDVideoCodec::VCReturn iDecoderState = CDVDVideoCodec::VC_NONE;
+        VideoPicture picture;
 
         memset(&picture, 0, sizeof(picture));
 
@@ -232,25 +236,25 @@ bool CDVDFileInfo::ExtractThumb(const std::string &strPath,
             continue;
           }
 
-          iDecoderState = pVideoCodec->Decode(pPacket->pData, pPacket->iSize, pPacket->dts, pPacket->pts);
+          pVideoCodec->AddData(*pPacket);
           CDVDDemuxUtils::FreeDemuxPacket(pPacket);
 
-          if (iDecoderState & VC_ERROR)
-            break;
-
-          if (iDecoderState & VC_PICTURE)
+          iDecoderState = CDVDVideoCodec::VC_NONE;
+          while (iDecoderState == CDVDVideoCodec::VC_NONE)
           {
-            memset(&picture, 0, sizeof(DVDVideoPicture));
-            if (pVideoCodec->GetPicture(&picture))
-            {
-              if(!(picture.iFlags & DVP_FLAG_DROPPED))
-                break;
-            }
+            memset(&picture, 0, sizeof(VideoPicture));
+            iDecoderState = pVideoCodec->GetPicture(&picture);
+          }
+
+          if (iDecoderState == CDVDVideoCodec::VC_PICTURE)
+          {
+            if(!(picture.iFlags & DVP_FLAG_DROPPED))
+              break;
           }
 
         } while (abort_index--);
 
-        if (iDecoderState & VC_PICTURE && !(picture.iFlags & DVP_FLAG_DROPPED))
+        if (iDecoderState == CDVDVideoCodec::VC_PICTURE && !(picture.iFlags & DVP_FLAG_DROPPED))
         {
           {
             unsigned int nWidth = g_advancedSettings.m_imageRes;

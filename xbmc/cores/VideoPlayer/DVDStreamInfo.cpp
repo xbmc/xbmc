@@ -41,7 +41,7 @@ void CDVDStreamInfo::Clear()
   type = STREAM_NONE;
   uniqueId = -1;
   realtime = false;
-  software = false;
+  codecOptions = 0;
   codec_tag  = 0;
   flags = 0;
   filename.clear();
@@ -51,6 +51,9 @@ void CDVDStreamInfo::Clear()
 
   extradata = NULL;
   extrasize = 0;
+
+  cryptoSession = nullptr;
+  externalInterfaces = nullptr;
 
   fpsscale = 0;
   fpsrate  = 0;
@@ -159,6 +162,9 @@ void CDVDStreamInfo::Assign(const CDVDStreamInfo& right, bool withextradata)
     extradata = 0;
   }
 
+  cryptoSession = right.cryptoSession;
+  externalInterfaces = right.externalInterfaces;
+
   // VIDEO
   fpsscale = right.fpsscale;
   fpsrate  = right.fpsrate;
@@ -173,7 +179,7 @@ void CDVDStreamInfo::Assign(const CDVDStreamInfo& right, bool withextradata)
   orientation = right.orientation;
   bitsperpixel = right.bitsperpixel;
   vfr = right.vfr;
-  software = right.software;
+  codecOptions = right.codecOptions;
   stereo_mode = right.stereo_mode;
 
   // AUDIO
@@ -208,6 +214,9 @@ void CDVDStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
       return;
     memcpy(extradata, right.ExtraData, extrasize);
   }
+
+  cryptoSession = right.cryptoSession;
+  externalInterfaces = right.externalInterfaces;
 
   if( right.type == STREAM_AUDIO )
   {

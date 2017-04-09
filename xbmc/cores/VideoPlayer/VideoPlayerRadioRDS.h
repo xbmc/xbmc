@@ -47,7 +47,7 @@ public:
   virtual ~CDVDRadioRDSData();
 
   bool CheckStream(CDVDStreamInfo &hints);
-  bool OpenStream(CDVDStreamInfo &hints);
+  bool OpenStream(CDVDStreamInfo hints);
   void CloseStream(bool bWaitForBuffers);
   void Flush();
 
