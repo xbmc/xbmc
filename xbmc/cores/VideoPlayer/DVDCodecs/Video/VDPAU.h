@@ -44,11 +44,8 @@
 #include <GL/glext.h>
 
 #include "DVDVideoCodec.h"
-#include "DVDVideoCodecFFmpeg.h"
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
-#include "DVDVideoCodec.h"
-#include "DVDVideoCodecFFmpeg.h"
 #include "threads/CriticalSection.h"
 #include "threads/SharedSection.h"
 #include "settings/VideoSettings.h"
@@ -193,8 +190,9 @@ struct CVdpauConfig
  */
 struct CVdpauDecodedPicture
 {
-  DVDVideoPicture DVDPic;
+  VideoPicture DVDPic;
   VdpVideoSurface videoSurface;
+  bool isYuv;
 };
 
 /**
@@ -202,16 +200,17 @@ struct CVdpauDecodedPicture
  */
 struct CVdpauProcessedPicture
 {
-  DVDVideoPicture DVDPic;
+  VideoPicture DVDPic;
   VdpVideoSurface videoSurface;
   VdpOutputSurface outputSurface;
   bool crop;
+  bool isYuv;
 };
 
 /**
  * Ready to render textures
  * Sent from COutput back to CDecoder
- * Objects are referenced by DVDVideoPicture and are sent
+ * Objects are referenced by VideoPicture and are sent
  * to renderer
  */
 class CVdpauRenderPicture
@@ -222,12 +221,13 @@ public:
   CVdpauRenderPicture(CCriticalSection &section)
     : refCount(0), renderPicSection(section) { fence = None; }
   void Sync();
-  DVDVideoPicture DVDPic;
+  VideoPicture DVDPic;
   int texWidth, texHeight;
   CRect crop;
   GLuint texture[4];
   uint32_t sourceIdx;
   bool valid;
+  bool isYuv;
   CDecoder *vdpau;
   CVdpauRenderPicture* Acquire();
   long Release();
@@ -544,7 +544,7 @@ private:
  *  VDPAU main class
  */
 class CDecoder
- : public CDVDVideoCodecFFmpeg::IHardwareDecoder
+ : public IHardwareDecoder
  , public IDispResource
 {
    friend class CVdpauRenderPicture;
@@ -562,15 +562,15 @@ public:
   virtual ~CDecoder();
 
   virtual bool Open      (AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat, unsigned int surfaces = 0);
-  virtual int  Decode    (AVCodecContext* avctx, AVFrame* frame);
-  virtual bool GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* picture);
+  virtual CDVDVideoCodec::VCReturn Decode    (AVCodecContext* avctx, AVFrame* frame);
+  virtual bool GetPicture(AVCodecContext* avctx, VideoPicture* picture);
   virtual void Reset();
   virtual void Close();
   virtual long Release();
   virtual bool CanSkipDeint();
   virtual unsigned GetAllowedReferences() { return 5; }
 
-  virtual int  Check(AVCodecContext* avctx);
+  virtual CDVDVideoCodec::VCReturn Check(AVCodecContext* avctx);
   virtual const std::string Name() { return "vdpau"; }
   virtual void SetCodecControl(int flags);
 
