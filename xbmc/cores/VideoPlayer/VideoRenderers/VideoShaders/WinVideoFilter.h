@@ -26,7 +26,7 @@
 
 #include "../../guilib/Geometry.h"
 #include "../WinRenderer.h"
-#include "../RenderFormats.h"
+#include "ShaderFormats.h"
 #include <DirectXMath.h>
 
 using namespace DirectX;
@@ -35,7 +35,7 @@ class CYUV2RGBMatrix
 {
 public:
   CYUV2RGBMatrix();
-  void SetParameters(float contrast, float blacklevel, unsigned int flags, ERenderFormat format);
+  void SetParameters(float contrast, float blacklevel, unsigned int flags, EShaderFormat format);
   XMFLOAT4X4* Matrix();
 
 private:
@@ -44,7 +44,7 @@ private:
   float        m_blacklevel;
   unsigned int m_flags;
   bool         m_limitedRange;
-  ERenderFormat m_format;
+  EShaderFormat m_format;
   XMFLOAT4X4   m_mat;
 };
 
@@ -78,7 +78,7 @@ private:
 class CYUV2RGBShader : public CWinShader
 {
 public:
-  virtual bool Create(unsigned int sourceWidth, unsigned int sourceHeight, ERenderFormat fmt);
+  virtual bool Create(unsigned int sourceWidth, unsigned int sourceHeight, EShaderFormat fmt);
   virtual void Render(CRect sourceRect,
                       CPoint dest[],
                       float contrast,
@@ -88,7 +88,7 @@ public:
   CYUV2RGBShader() : 
     m_sourceWidth (0),
     m_sourceHeight(0),
-    m_format      (RENDER_FMT_NONE)
+    m_format      (SHADER_NONE)
     {
       memset(&m_texSteps,0,sizeof(m_texSteps));
     }
@@ -107,7 +107,7 @@ private:
   unsigned int        m_sourceWidth, m_sourceHeight;
   CRect               m_sourceRect;
   CPoint              m_dest[4];
-  ERenderFormat       m_format;
+  EShaderFormat       m_format;
   float               m_texSteps[2];
 
   struct CUSTOMVERTEX {
