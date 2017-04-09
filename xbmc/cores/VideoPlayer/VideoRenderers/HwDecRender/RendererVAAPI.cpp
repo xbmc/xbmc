@@ -20,8 +20,6 @@
 
 #include "RendererVAAPI.h"
 
-#ifdef HAVE_LIBVA
-
 #include "cores/VideoPlayer/DVDCodecs/Video/VAAPI.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDCodecUtils.h"
 #include "settings/Settings.h"
@@ -42,16 +40,38 @@ CRendererVAAPI::~CRendererVAAPI()
   }
 }
 
-void CRendererVAAPI::AddVideoPictureHW(DVDVideoPicture &picture, int index)
+bool CRendererVAAPI::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height,
+                               float fps, unsigned flags, ERenderFormat format, void *hwPic, unsigned int orientation)
 {
-  VAAPI::CVaapiRenderPicture *vaapi = picture.vaapi;
+  VAAPI::CVaapiRenderPicture *vaapi = static_cast<VAAPI::CVaapiRenderPicture*>(hwPic);
+  if (vaapi->textureY)
+    m_isVAAPIBuffer = true;
+  else
+    m_isVAAPIBuffer = false;
+
+  return CLinuxRendererGL::Configure(width, height, d_width, d_height,
+                                     fps, flags, format, hwPic, orientation);
+}
+
+bool CRendererVAAPI::ConfigChanged(void *hwPic)
+{
+  VAAPI::CVaapiRenderPicture *vaapi = static_cast<VAAPI::CVaapiRenderPicture*>(hwPic);
+  if (vaapi->textureY && !m_isVAAPIBuffer)
+    return true;
+
+  return false;
+}
+
+void CRendererVAAPI::AddVideoPictureHW(VideoPicture &picture, int index)
+{
+  VAAPI::CVaapiRenderPicture *vaapi = static_cast<VAAPI::CVaapiRenderPicture*>(picture.hwPic);
   YUVBUFFER &buf = m_buffers[index];
   VAAPI::CVaapiRenderPicture *pic = vaapi->Acquire();
   if (buf.hwDec)
     ((VAAPI::CVaapiRenderPicture*)buf.hwDec)->Release();
   buf.hwDec = pic;
 
-  if (m_format == RENDER_FMT_VAAPINV12)
+  if (!m_isVAAPIBuffer)
   {
     YV12Image &im = m_buffers[index].image;
     CDVDCodecUtils::CopyNV12Picture(&im, &vaapi->DVDPic);
@@ -71,7 +91,7 @@ CRenderInfo CRendererVAAPI::GetRenderInfo()
   CRenderInfo info;
   info.formats = m_formats;
   info.max_buffer_size = NUM_BUFFERS;
-  if (m_format == RENDER_FMT_VAAPINV12)
+  if (!m_isVAAPIBuffer)
     info.optimal_buffer_size = 4;
   else
     info.optimal_buffer_size = 5;
@@ -88,6 +108,18 @@ bool CRendererVAAPI::Supports(ESCALINGMETHOD method)
   return CLinuxRendererGL::Supports(method);
 }
 
+EShaderFormat CRendererVAAPI::GetShaderFormat(ERenderFormat renderFormat)
+{
+  EShaderFormat ret = SHADER_NONE;
+
+  if (m_isVAAPIBuffer)
+    ret = SHADER_NV12_RRG;
+  else
+    ret = SHADER_NV12;
+
+  return ret;
+}
+
 bool CRendererVAAPI::LoadShadersHook()
 {
   return false;
@@ -100,7 +132,7 @@ bool CRendererVAAPI::RenderHook(int idx)
 
 bool CRendererVAAPI::CreateTexture(int index)
 {
-  if (m_format == RENDER_FMT_VAAPINV12)
+  if (!m_isVAAPIBuffer)
   {
     return CreateNV12Texture(index);
   }
@@ -128,7 +160,7 @@ bool CRendererVAAPI::CreateTexture(int index)
 
 void CRendererVAAPI::DeleteTexture(int index)
 {
-  if (m_format == RENDER_FMT_VAAPINV12)
+  if (!m_isVAAPIBuffer)
   {
     DeleteNV12Texture(index);
     return;
@@ -146,7 +178,7 @@ void CRendererVAAPI::DeleteTexture(int index)
 
 bool CRendererVAAPI::UploadTexture(int index)
 {
-  if (m_format == RENDER_FMT_VAAPINV12)
+  if (!m_isVAAPIBuffer)
   {
     return UploadNV12Texture(index);
   }
@@ -211,4 +243,3 @@ void CRendererVAAPI::AfterRenderHook(int idx)
   }
 }
 
-#endif
