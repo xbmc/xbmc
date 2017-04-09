@@ -36,15 +36,14 @@ typedef struct stDVDAudioFrame DVDAudioFrame;
 class CSingleLock;
 class CDVDClock;
 
-class CDVDAudio : IAEClockCallback
+class CAudioSinkAE : IAEClockCallback
 {
 public:
-  CDVDAudio(CDVDClock *clock);
-  ~CDVDAudio();
+  CAudioSinkAE(CDVDClock *clock);
+  ~CAudioSinkAE();
 
   void SetVolume(float fVolume);
   void SetDynamicRangeCompression(long drc);
-  float GetCurrentAttenuation();
   void Pause();
   void Resume();
   bool Create(const DVDAudioFrame &audioframe, AVCodecID codec, bool needresampler);
@@ -65,10 +64,12 @@ public:
 
   double GetClock();
   double GetClockSpeed();
-  IAEStream *m_pAudioStream;
+
+  CAEStreamInfo::DataType GetPassthroughStreamType(AVCodecID codecId, int samplerate);
 
 protected:
 
+  IAEStream *m_pAudioStream;
   double m_playingPts;
   double m_timeOfPts;
   double m_syncError;

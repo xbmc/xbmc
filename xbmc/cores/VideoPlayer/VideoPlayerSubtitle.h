@@ -49,7 +49,7 @@ public:
   bool AcceptsData() const;
   void SendMessage(CDVDMsg* pMsg, int priority = 0);
   void FlushMessages() {}
-  bool OpenStream(CDVDStreamInfo &hints) { return OpenStream(hints, hints.filename); }
+  bool OpenStream(CDVDStreamInfo hints) { return OpenStream(hints, hints.filename); }
   bool OpenStream(CDVDStreamInfo &hints, std::string& filename);
   void CloseStream(bool bWaitForBuffers);
 
