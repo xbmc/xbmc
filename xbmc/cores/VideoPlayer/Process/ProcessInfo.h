@@ -19,6 +19,7 @@
  */
 #pragma once
 
+#include "VideoBuffer.h"
 #include "cores/IPlayer.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFormats.h"
 #include "threads/CriticalSection.h"
@@ -32,7 +33,7 @@ public:
   static CProcessInfo* CreateInstance();
   virtual ~CProcessInfo();
 
-  // player video info
+  // player video
   void ResetVideoCodecInfo();
   void SetVideoDecoderName(const std::string &name, bool isHw);
   std::string GetVideoDecoderName();
@@ -53,6 +54,7 @@ public:
   bool Supports(EINTERLACEMETHOD method);
   void SetDeinterlacingMethodDefault(EINTERLACEMETHOD method);
   EINTERLACEMETHOD GetDeinterlacingMethodDefault();
+  CVideoBufferManager& GetVideoBufferManager();
 
   // player audio info
   void ResetAudioCodecInfo();
@@ -99,6 +101,7 @@ protected:
   std::list<EINTERLACEMETHOD> m_deintMethods;
   EINTERLACEMETHOD m_deintMethodDefault;
   CCriticalSection m_videoCodecSection;
+  CVideoBufferManager m_videoBufferManager;
 
   // player audio info
   std::string m_audioDecoderName;
