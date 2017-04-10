@@ -34,7 +34,7 @@ public:
                          float fps, unsigned flags, ERenderFormat format, void *hwPic, unsigned int orientation) override;
 
   // Player functions
-  virtual void AddVideoPictureHW(VideoPicture &picture, int index) override;
+  virtual void AddVideoPicture(VideoPicture &picture, int index) override;
   virtual void ReleaseBuffer(int idx) override;
   virtual CRenderInfo GetRenderInfo() override;
   virtual bool ConfigChanged(void *hwPic) override;
