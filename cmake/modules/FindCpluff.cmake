@@ -7,9 +7,7 @@
 # and link Kodi against the cpluff libraries.
 
 if(NOT WIN32)
-  string(REPLACE ";" " " defines "${CMAKE_C_FLAGS} ${SYSTEM_DEFINES} -I${EXPAT_INCLUDE_DIR}")
-  get_filename_component(expat_dir ${EXPAT_LIBRARY} DIRECTORY)
-  set(ldflags "-L${expat_dir}")
+  find_package(EXPAT REQUIRED)
 
   # iOS: Without specifying -arch, configure tries to use /bin/cpp as C-preprocessor
   # http://stackoverflow.com/questions/38836754/cant-cross-compile-c-library-for-arm-ios
@@ -25,7 +23,7 @@ if(NOT WIN32)
                                         --enable-static
                                         --disable-shared
                                         --with-pic
-                                        --prefix=<INSTALL_DIR>
+                                        --prefix=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
                                         --libdir=<INSTALL_DIR>/lib
                                         --host=${ARCH}
                                         CFLAGS=${defines}
@@ -38,12 +36,12 @@ if(NOT WIN32)
                                      COMMAND PATH=${NATIVEPREFIX}/bin:$ENV{PATH} autoreconf -vif
                                      WORKING_DIRECTORY <SOURCE_DIR>)
 
-  set(ldflags "${ldflags};-lexpat")
-  core_link_library(${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/cpluff/lib/libcpluff.a
-                    system/libcpluff libcpluff extras "${ldflags}")
-  set(CPLUFF_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/cpluff/include)
-  set(CPLUFF_FOUND 1)
-  mark_as_advanced(CPLUFF_INCLUDE_DIRS CPLUFF_FOUND)
+  set(CPLUFF_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/include
+                          ${EXPAT_INCLUDE_DIRS})
+  set(CPLUFF_LIBRARIES    ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/cpluff/lib/libcpluff.a
+                          ${EXPAT_LIBRARIES})
+
+  mark_as_advanced(CPLUFF_INCLUDE_DIRS CPLUFF_LIBRARIES)
 else()
   find_path(CPLUFF_INCLUDE_DIR cpluff.h)
 

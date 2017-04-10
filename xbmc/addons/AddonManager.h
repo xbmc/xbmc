@@ -30,7 +30,6 @@
 #include <deque>
 
 
-class DllLibCPluff;
 extern "C"
 {
 #include "lib/cpluff/libcpluff/cpluff.h"
@@ -259,7 +258,6 @@ namespace ADDON
 
     /* libcpluff */
     cp_context_t *m_cp_context;
-    std::unique_ptr<DllLibCPluff> m_cpluff;
     VECADDONS    m_updateableAddons;
 
     /*! \brief Check whether this addon is supported on the current platform

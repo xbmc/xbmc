@@ -33,7 +33,6 @@
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
-#include "DllLibCPluff.h"
 #include "XBDateTime.h"
 
 using namespace ADDON;
@@ -219,46 +218,44 @@ void CAddonDatabase::UpdateTables(int version)
 
     //Ugly hack incoming! As the addon manager isnt created yet, we need to start up our own copy
     //cpluff to find the currently enabled addons.
-    auto cpluff = std::unique_ptr<DllLibCPluff>(new DllLibCPluff());
-    cpluff->Load();
     cp_status_t status;
-    status = cpluff->init();
+    status = cp_init();
     if (status != CP_OK)
     {
       CLog::Log(LOGERROR, "AddonDatabase: Upgrade failed. cp_init() returned status: %i", status);
       return;
     }
 
-    cp_context_t* cp_context = cpluff->create_context(&status);
+    cp_context_t* cp_context = cp_create_context(&status);
 
-    status = cpluff->register_pcollection(cp_context, CSpecialProtocol::TranslatePath("special://home/addons").c_str());
+    status = cp_register_pcollection(cp_context, CSpecialProtocol::TranslatePath("special://home/addons").c_str());
     if (status != CP_OK)
     {
       CLog::Log(LOGERROR, "AddonDatabase: Upgrade failed. cp_register_pcollection() returned status: %i", status);
       return;
     }
 
-    status = cpluff->register_pcollection(cp_context, CSpecialProtocol::TranslatePath("special://xbmc/addons").c_str());
+    status = cp_register_pcollection(cp_context, CSpecialProtocol::TranslatePath("special://xbmc/addons").c_str());
     if (status != CP_OK)
     {
       CLog::Log(LOGERROR, "AddonDatabase: Upgrade failed. cp_register_pcollection() returned status: %i", status);
       return;
     }
 
-    status = cpluff->register_pcollection(cp_context, CSpecialProtocol::TranslatePath("special://xbmcbin/addons").c_str());
+    status = cp_register_pcollection(cp_context, CSpecialProtocol::TranslatePath("special://xbmcbin/addons").c_str());
     if (status != CP_OK)
     {
       CLog::Log(LOGERROR, "AddonDatabase: Upgrade failed. cp_register_pcollection() returned status: %i", status);
       return;
     }
 
-    cpluff->scan_plugins(cp_context, CP_SP_UPGRADE);
+    cp_scan_plugins(cp_context, CP_SP_UPGRADE);
 
     std::string systemPath = CSpecialProtocol::TranslatePath("special://xbmc/addons");
     std::string now = CDateTime::GetCurrentDateTime().GetAsDBDateTime();
     BeginTransaction();
     int n;
-    cp_plugin_info_t** cp_addons = cpluff->get_plugins_info(cp_context, &status, &n);
+    cp_plugin_info_t** cp_addons = cp_get_plugins_info(cp_context, &status, &n);
     for (int i = 0; i < n; ++i)
     {
       const char* id = cp_addons[i]->identifier;
@@ -269,7 +266,7 @@ void CAddonDatabase::UpdateTables(int version)
           "('%s', NOT %d AND NOT EXISTS (SELECT * FROM disabled WHERE addonID='%s'), '%s')",
           id, inSystem, id, now.c_str()));
     }
-    cpluff->release_info(cp_context, cp_addons);
+    cp_release_info(cp_context, cp_addons);
     CommitTransaction();
 
     m_pDS->exec("DROP TABLE disabled");
