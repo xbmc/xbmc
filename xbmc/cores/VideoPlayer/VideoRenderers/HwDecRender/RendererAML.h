@@ -38,7 +38,7 @@ public:
   virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, void *hwPic, unsigned int orientation);
   virtual bool IsConfigured(){ return m_bConfigured; };
   virtual CRenderInfo GetRenderInfo();
-  virtual int GetImage(YV12Image *image, int source = -1, bool readonly = false);
+  virtual int GetImage(YuvImage *image, int source = -1, bool readonly = false);
   virtual void ReleaseImage(int source, bool preserve = false){};
   virtual void FlipPage(int source);
   virtual void PreInit(){};

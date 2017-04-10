@@ -28,26 +28,12 @@
 #include "RenderFormats.h"
 #include "VideoShaders/ShaderFormats.h"
 #include "cores/IPlayer.h"
+#include "cores/VideoPlayer/Process/VideoBuffer.h"
 
-#define MAX_PLANES 3
 #define MAX_FIELDS 3
 #define NUM_BUFFERS 6
 
 class CSetting;
-
-typedef struct YV12Image
-{
-  uint8_t* plane[MAX_PLANES];
-  int      planesize[MAX_PLANES];
-  unsigned stride[MAX_PLANES];
-  unsigned width;
-  unsigned height;
-  unsigned flags;
-
-  unsigned cshift_x; /* this is the chroma shift used */
-  unsigned cshift_y;
-  unsigned bpp; /* bytes per pixel */
-} YV12Image;
 
 enum EFIELDSYNC
 {
@@ -80,7 +66,7 @@ public:
   // Player functions
   virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, void* hwPic, unsigned int orientation) = 0;
   virtual bool IsConfigured() = 0;
-  virtual int GetImage(YV12Image *image, int source = -1, bool readonly = false) = 0;
+  virtual int GetImage(YuvImage *image, int source = -1, bool readonly = false) = 0;
   virtual void ReleaseImage(int source, bool preserve = false) = 0;
   virtual void AddVideoPictureHW(VideoPicture &picture, int index) {};
   virtual bool IsPictureHW(VideoPicture &picture) { return false; };
