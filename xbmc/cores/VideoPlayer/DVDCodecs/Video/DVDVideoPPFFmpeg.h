@@ -21,31 +21,32 @@
  */
 
 #include "DVDVideoCodec.h"
+#include "cores/VideoPlayer/Process/VideoBuffer.h"
 #include <string>
+
+class CProcessInfo;
 
 class CDVDVideoPPFFmpeg
 {
 public:
 
-  CDVDVideoPPFFmpeg();
+  CDVDVideoPPFFmpeg(CProcessInfo &processInfo);
   ~CDVDVideoPPFFmpeg();
 
-
   void SetType(const std::string& mType, bool deinterlace);
-  void SetTarget(VideoPicture *pPicture){ m_pTarget = pPicture; };
-  bool Process   (VideoPicture *pPicture);
+  bool Process(VideoPicture *pPicture);
   bool GetPicture(VideoPicture *pPicture);
 
 protected:
   std::string m_sType;
+  CProcessInfo &m_processInfo;
 
   void *m_pContext;
   void *m_pMode;
   bool m_deinterlace;
 
-  VideoPicture m_FrameBuffer;
-  VideoPicture *m_pSource;
-  VideoPicture *m_pTarget;
+  VideoPicture *m_pSource = nullptr;
+  VideoPicture m_pTarget;
 
   void Dispose();
 
