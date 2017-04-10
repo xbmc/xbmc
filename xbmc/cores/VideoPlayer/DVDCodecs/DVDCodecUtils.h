@@ -27,7 +27,7 @@ extern "C" {
 #include "libavutil/pixfmt.h"
 }
 
-struct YV12Image;
+struct YuvImage;
 
 class CDVDCodecUtils
 {
@@ -35,12 +35,12 @@ public:
   static VideoPicture* AllocatePicture(int iWidth, int iHeight);
   static void FreePicture(VideoPicture* pPicture);
   static bool CopyPicture(VideoPicture* pDst, VideoPicture* pSrc);
-  static bool CopyPicture(YV12Image* pDst, VideoPicture *pSrc);
+  static bool CopyPicture(YuvImage* pDst, VideoPicture *pSrc);
   
   static VideoPicture* ConvertToNV12Picture(VideoPicture *pSrc);
   static VideoPicture* ConvertToYUV422PackedPicture(VideoPicture *pSrc, ERenderFormat format);
-  static bool CopyNV12Picture(YV12Image* pImage, VideoPicture *pSrc);
-  static bool CopyYUV422PackedPicture(YV12Image* pImage, VideoPicture *pSrc);
+  static bool CopyNV12Picture(YuvImage* pImage, VideoPicture *pSrc);
+  static bool CopyYUV422PackedPicture(YuvImage* pImage, VideoPicture *pSrc);
 
   static bool IsVP3CompatibleWidth(int width);
 

@@ -68,7 +68,7 @@ void CRendererIMX::ReleaseBuffer(int idx)
   m_buffers[idx].hwDec = NULL;
 }
 
-int CRendererIMX::GetImageHook(YV12Image *image, int source, bool readonly)
+int CRendererIMX::GetImageHook(YuvImage *image, int source, bool readonly)
 {
   return source;
 }
