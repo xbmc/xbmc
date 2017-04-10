@@ -195,7 +195,7 @@ int CLinuxRendererGLES::NextYV12Texture()
   return (m_iYV12RenderBuffer + 1) % m_NumYV12Buffers;
 }
 
-int CLinuxRendererGLES::GetImage(YV12Image *image, int source, bool readonly)
+int CLinuxRendererGLES::GetImage(YuvImage *image, int source, bool readonly)
 {
   if (!image)
     return -1;
@@ -213,7 +213,7 @@ int CLinuxRendererGLES::GetImage(YV12Image *image, int source, bool readonly)
     return hwSource;
   }
 
-  YV12Image &im = m_buffers[source].image;
+  YuvImage &im = m_buffers[source].image;
 
   if ((im.flags&(~IMAGE_FLAG_READY)) != 0)
   {
@@ -226,7 +226,7 @@ int CLinuxRendererGLES::GetImage(YV12Image *image, int source, bool readonly)
   else
     im.flags |= IMAGE_FLAG_WRITING;
 
-  // copy the image - should be operator of YV12Image
+  // copy the image - should be operator of YuvImage
   for (int p=0;p<MAX_PLANES;p++)
   {
     image->plane[p]  = im.plane[p];
@@ -244,7 +244,7 @@ int CLinuxRendererGLES::GetImage(YV12Image *image, int source, bool readonly)
 
 void CLinuxRendererGLES::ReleaseImage(int source, bool preserve)
 {
-  YV12Image &im = m_buffers[source].image;
+  YuvImage &im = m_buffers[source].image;
 
   im.flags &= ~IMAGE_FLAG_INUSE;
   im.flags |= IMAGE_FLAG_READY;
@@ -259,7 +259,7 @@ void CLinuxRendererGLES::ReleaseImage(int source, bool preserve)
 void CLinuxRendererGLES::CalculateTextureSourceRects(int source, int num_planes)
 {
   YUVBUFFER& buf    =  m_buffers[source];
-  YV12Image* im     = &buf.image;
+  YuvImage* im     = &buf.image;
   YUVFIELDS& fields =  buf.fields;
 
   // calculate the source rectangle
@@ -819,7 +819,7 @@ void CLinuxRendererGLES::Render(DWORD flags, int index)
 
 void CLinuxRendererGLES::RenderSinglePass(int index, int field)
 {
-  YV12Image &im     = m_buffers[index].image;
+  YuvImage &im     = m_buffers[index].image;
   YUVFIELDS &fields = m_buffers[index].fields;
   YUVPLANES &planes = fields[FIELD_FULL];
   YUVPLANES &planesf = fields[field];
@@ -934,7 +934,7 @@ void CLinuxRendererGLES::RenderMultiPass(int index, int field)
   CLog::Log(LOGERROR, "GLES: MULTIPASS rendering was called! But it doesnt work!!!");
   return;
 
-  YV12Image &im     = m_buffers[index].image;
+  YuvImage &im     = m_buffers[index].image;
   YUVPLANES &planes = m_buffers[index].fields[field];
 
   if (m_reloadShaders)
@@ -1181,7 +1181,7 @@ bool CLinuxRendererGLES::RenderCapture(CRenderCapture* capture)
 void CLinuxRendererGLES::UploadYV12Texture(int source)
 {
   YUVBUFFER& buf    =  m_buffers[source];
-  YV12Image* im     = &buf.image;
+  YuvImage* im     = &buf.image;
   YUVFIELDS& fields =  buf.fields;
 
 
@@ -1219,7 +1219,7 @@ void CLinuxRendererGLES::UploadYV12Texture(int source)
 
 void CLinuxRendererGLES::DeleteYV12Texture(int index)
 {
-  YV12Image &im     = m_buffers[index].image;
+  YuvImage &im     = m_buffers[index].image;
   YUVFIELDS &fields = m_buffers[index].fields;
 
   if( fields[FIELD_FULL][0].id == 0 ) return;
@@ -1270,7 +1270,7 @@ static GLint GetInternalFormat(GLint format, int bpp)
 bool CLinuxRendererGLES::CreateYV12Texture(int index)
 {
   /* since we also want the field textures, pitch must be texture aligned */
-  YV12Image &im     = m_buffers[index].image;
+  YuvImage &im     = m_buffers[index].image;
   YUVFIELDS &fields = m_buffers[index].fields;
 
   DeleteYV12Texture(index);
@@ -1380,7 +1380,7 @@ bool CLinuxRendererGLES::CreateYV12Texture(int index)
 bool CLinuxRendererGLES::UploadNV12Texture(int source)
 {
   YUVBUFFER& buf    =  m_buffers[source];
-  YV12Image* im     = &buf.image;
+  YuvImage* im     = &buf.image;
   YUVFIELDS& fields =  buf.fields;
 
   if (!(im->flags & IMAGE_FLAG_READY))
@@ -1443,7 +1443,7 @@ bool CLinuxRendererGLES::UploadNV12Texture(int source)
 bool CLinuxRendererGLES::CreateNV12Texture(int index)
 {
   // since we also want the field textures, pitch must be texture aligned
-  YV12Image &im     = m_buffers[index].image;
+  YuvImage &im     = m_buffers[index].image;
   YUVFIELDS &fields = m_buffers[index].fields;
 
   // Delete any old texture
@@ -1542,7 +1542,7 @@ bool CLinuxRendererGLES::CreateNV12Texture(int index)
 }
 void CLinuxRendererGLES::DeleteNV12Texture(int index)
 {
-  YV12Image &im     = m_buffers[index].image;
+  YuvImage &im     = m_buffers[index].image;
   YUVFIELDS &fields = m_buffers[index].fields;
 
   if( fields[FIELD_FULL][0].id == 0 ) return;

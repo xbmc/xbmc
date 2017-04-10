@@ -120,7 +120,7 @@ public:
   // Player functions
   virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, void *hwPic, unsigned int orientation);
   virtual bool IsConfigured() { return m_bConfigured; }
-  virtual int GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false);
+  virtual int GetImage(YuvImage *image, int source = AUTOSOURCE, bool readonly = false);
   virtual void ReleaseImage(int source, bool preserve = false);
   virtual void FlipPage(int source);
   virtual void PreInit();
@@ -234,7 +234,7 @@ protected:
    ~YUVBUFFER();
 
     YUVFIELDS fields;
-    YV12Image image;
+    YuvImage image;
     unsigned  flipindex; /* used to decide if this has been uploaded */
     GLuint    pbo[MAX_PLANES];
 

@@ -72,10 +72,25 @@ private:
     int duration;
   } m_buffers[m_numRenderBuffers];
 
+<<<<<<< HEAD
   std::chrono::time_point<std::chrono::system_clock> m_prevTime;
   bool m_bConfigured;
   unsigned int m_updateCount;
+<<<<<<< HEAD
   CRect m_surfDestRect;
+=======
+=======
+  // textures
+  virtual bool UploadTexture(int index);
+  virtual void DeleteTexture(int index);
+  virtual bool CreateTexture(int index);
+  
+  // hooks for hw dec renderer
+  virtual bool LoadShadersHook();
+  virtual bool RenderHook(int index);  
+  virtual int  GetImageHook(YuvImage *image, int source = AUTOSOURCE, bool readonly = false);
+>>>>>>> 3548552... VideoPlayer: rename and move YuvImage
+>>>>>>> VideoPlayer: rename and move YuvImage
 };
 
 #endif
