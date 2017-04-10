@@ -66,9 +66,7 @@ public:
   // Player functions
   virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, void* hwPic, unsigned int orientation) = 0;
   virtual bool IsConfigured() = 0;
-  virtual int GetImage(YuvImage *image, int source = -1, bool readonly = false) = 0;
-  virtual void ReleaseImage(int source, bool preserve = false) = 0;
-  virtual void AddVideoPictureHW(VideoPicture &picture, int index) {};
+  virtual void AddVideoPicture(VideoPicture &picture, int index) = 0;
   virtual bool IsPictureHW(VideoPicture &picture) { return false; };
   virtual void FlipPage(int source) = 0;
   virtual void PreInit() = 0;

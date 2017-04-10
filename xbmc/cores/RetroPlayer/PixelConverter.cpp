@@ -97,10 +97,10 @@ bool CPixelConverter::Decode(const uint8_t* pData, unsigned int size)
 
   uint8_t* src[] =       { dataMutable,         0,                   0,                   0 };
   int      srcStride[] = { stride,              0,                   0,                   0 };
-  uint8_t* dst[] =       { m_buf->data[0],      m_buf->data[1],      m_buf->data[2],      0 };
-  int      dstStride[] = { m_buf->iLineSize[0], m_buf->iLineSize[1], m_buf->iLineSize[2], 0 };
+//  uint8_t* dst[] =       { m_buf->data[0],      m_buf->data[1],      m_buf->data[2],      0 };
+//  int      dstStride[] = { m_buf->iLineSize[0], m_buf->iLineSize[1], m_buf->iLineSize[2], 0 };
 
-  sws_scale(m_swsContext, src, srcStride, 0, m_height, dst, dstStride);
+//  sws_scale(m_swsContext, src, srcStride, 0, m_height, dst, dstStride);
 
   return true;
 }
@@ -112,8 +112,8 @@ void CPixelConverter::GetPicture(VideoPicture& dvdVideoPicture)
 
   for (int i = 0; i < 4; i++)
   {
-    dvdVideoPicture.data[i]      = m_buf->data[i];
-    dvdVideoPicture.iLineSize[i] = m_buf->iLineSize[i];
+//    VideoPicture.data[i]      = m_buf->data[i];
+//    VideoPicture.iLineSize[i] = m_buf->iLineSize[i];
   }
 
   dvdVideoPicture.iFlags         = 0; // *not* DVP_FLAG_ALLOCATED

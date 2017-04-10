@@ -57,6 +57,9 @@
 #if defined(HAS_LIBAMCODEC)
 #include "HwDecRender/RendererAML.h"
 #endif
+#if defined(HAVE_LIBOPENMAX)
+#include "HwDecRender/RendererOpenMax.h"
+#endif
 #elif defined(HAS_DX)
   #include "WinRenderer.h"
 #elif defined(HAS_SDL)
@@ -100,6 +103,7 @@ static std::string GetRenderFormatName(ERenderFormat format)
     case RENDER_FMT_VDPAU:     return "VDPAU";
     case RENDER_FMT_DXVA:      return "DXVA";
     case RENDER_FMT_VAAPI:     return "VAAPI";
+    case RENDER_FMT_OMXEGL:    return "OMXEGL";
     case RENDER_FMT_CVBREF:    return "BGRA";
     case RENDER_FMT_BYPASS:    return "BYPASS";
     case RENDER_FMT_MEDIACODEC:return "MEDIACODEC";
@@ -274,7 +278,7 @@ bool CRenderManager::Configure()
     DeleteRenderer();
   }
 
-  if (!m_pRenderer)
+  if(!m_pRenderer)
   {
     CreateRenderer();
     if (!m_pRenderer)
@@ -302,7 +306,6 @@ bool CRenderManager::Configure()
     m_pRenderer->Update();
 
     m_playerPort->UpdateRenderInfo(info);
-    m_playerPort->UpdareVideoRender(!m_pRenderer->IsGuiLayer());
 
     m_queued.clear();
     m_discard.clear();
@@ -564,6 +567,12 @@ void CRenderManager::CreateRenderer()
     {
 #if defined(HAS_IMXVPU)
       m_pRenderer = new CRendererIMX;
+#endif
+    }
+    else if (m_format == RENDER_FMT_OMXEGL)
+    {
+#if defined(HAVE_LIBOPENMAX)
+      m_pRenderer = new CRendererOMX;
 #endif
     }
     else if (m_format == RENDER_FMT_DXVA)
@@ -972,8 +981,6 @@ void CRenderManager::Render(bool clear, DWORD flags, DWORD alpha, bool gui)
 
     m_presentevent.notifyAll();
   }
-
-  m_playerPort->UpdareGuiRender(IsGuiLayer());
 }
 
 bool CRenderManager::IsGuiLayer()
@@ -1132,39 +1139,7 @@ int CRenderManager::AddVideoPicture(VideoPicture& pic)
   if (!m_pRenderer)
     return -1;
 
-  YuvImage image;
-  if (m_pRenderer->GetImage(&image, index) < 0)
-    return -1;
-
-  if(pic.format == RENDER_FMT_VDPAU
-  || pic.format == RENDER_FMT_CVBREF
-  || pic.format == RENDER_FMT_VAAPI
-  || pic.format == RENDER_FMT_MEDIACODEC
-  || pic.format == RENDER_FMT_MEDIACODECSURFACE
-  || pic.format == RENDER_FMT_AML
-  || pic.format == RENDER_FMT_IMXMAP
-  || pic.format == RENDER_FMT_MMAL
-  || m_pRenderer->IsPictureHW(pic))
-  {
-    m_pRenderer->AddVideoPictureHW(pic, index);
-  }
-  else if(pic.format == RENDER_FMT_YUV420P
-       || pic.format == RENDER_FMT_YUV420P10
-       || pic.format == RENDER_FMT_YUV420P16)
-  {
-    CDVDCodecUtils::CopyPicture(&image, &pic);
-  }
-  else if(pic.format == RENDER_FMT_NV12)
-  {
-    CDVDCodecUtils::CopyNV12Picture(&image, &pic);
-  }
-  else if(pic.format == RENDER_FMT_YUYV422
-       || pic.format == RENDER_FMT_UYVY422)
-  {
-    CDVDCodecUtils::CopyYUV422PackedPicture(&image, &pic);
-  }
-
-  m_pRenderer->ReleaseImage(index, false);
+  m_pRenderer->AddVideoPicture(pic, index);
 
   return index;
 }
