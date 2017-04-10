@@ -32,8 +32,6 @@ struct YuvImage;
 class CDVDCodecUtils
 {
 public:
-  static VideoPicture* AllocatePicture(int iWidth, int iHeight);
-  static void FreePicture(VideoPicture* pPicture);
   static bool CopyPicture(VideoPicture* pDst, VideoPicture* pSrc);
   static bool CopyPicture(YuvImage* pDst, VideoPicture *pSrc);
   
