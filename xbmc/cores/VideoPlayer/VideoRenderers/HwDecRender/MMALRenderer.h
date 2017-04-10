@@ -48,7 +48,7 @@
 class CBaseTexture;
 class CMMALBuffer;
 
-struct DVDVideoPicture;
+struct VideoPicture;
 
 class CMMALPool : public std::enable_shared_from_this<CMMALPool>
 {
@@ -94,8 +94,7 @@ public:
 
   bool RenderCapture(CRenderCapture* capture);
 
-  // Player functions
-  virtual bool         Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format, unsigned int orientation);
+  virtual bool         Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, void* hwPic, unsigned int orientation);
   virtual int          GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false);
   virtual void         ReleaseImage(int source, bool preserve = false);
   virtual void         ReleaseBuffer(int idx);
@@ -105,7 +104,7 @@ public:
   virtual void         Reset(); /* resets renderer after seek for example */
   virtual void         Flush();
   virtual bool         IsConfigured() { return m_bConfigured; }
-  virtual void         AddVideoPictureHW(DVDVideoPicture& pic, int index);
+  virtual void         AddVideoPictureHW(VideoPicture& pic, int index);
   virtual CRenderInfo GetRenderInfo();
 
   virtual bool         SupportsMultiPassRendering() { return false; };
