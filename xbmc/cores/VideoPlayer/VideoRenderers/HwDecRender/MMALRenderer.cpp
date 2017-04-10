@@ -753,7 +753,7 @@ bool CMMALRenderer::Configure(unsigned int width, unsigned int height, unsigned 
   return true;
 }
 
-int CMMALRenderer::GetImage(YV12Image *image, int source, bool readonly)
+int CMMALRenderer::GetImage(YuvImage *image, int source, bool readonly)
 {
   if (!image || source < 0 || m_format != RENDER_FMT_MMAL)
   {
