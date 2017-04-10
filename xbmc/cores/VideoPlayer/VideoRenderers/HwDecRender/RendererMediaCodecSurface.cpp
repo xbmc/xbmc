@@ -116,7 +116,11 @@ void CRendererMediaCodecSurface::ReleaseBuffer(int idx)
   }
 }
 
+<<<<<<< HEAD
 void CRendererMediaCodecSurface::FlipPage(int source)
+=======
+int CRendererMediaCodecSurface::GetImageHook(YuvImage *image, int source, bool readonly)
+>>>>>>> 3548552... VideoPlayer: rename and move YuvImage
 {
   if (source >= 0 && source < m_numRenderBuffers)
     m_iRenderBuffer = source;

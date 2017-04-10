@@ -253,7 +253,7 @@ bool CRendererVDPAU::UploadTexture(int index)
 
 bool CRendererVDPAU::CreateVDPAUTexture(int index)
 {
-  YV12Image &im     = m_buffers[index].image;
+  YuvImage &im     = m_buffers[index].image;
   YUVFIELDS &fields = m_buffers[index].fields;
   YUVPLANE  &plane  = fields[FIELD_FULL][0];
 
@@ -329,7 +329,7 @@ bool CRendererVDPAU::UploadVDPAUTexture(int index)
 
 bool CRendererVDPAU::CreateVDPAUTexture420(int index)
 {
-  YV12Image &im     = m_buffers[index].image;
+  YuvImage &im     = m_buffers[index].image;
   YUVFIELDS &fields = m_buffers[index].fields;
   YUVPLANE &plane = fields[0][0];
   GLuint    *pbo    = m_buffers[index].pbo;
@@ -374,7 +374,7 @@ void CRendererVDPAU::DeleteVDPAUTexture420(int index)
 bool CRendererVDPAU::UploadVDPAUTexture420(int index)
 {
   VDPAU::CVdpauRenderPicture *vdpau = (VDPAU::CVdpauRenderPicture*)m_buffers[index].hwDec;
-  YV12Image &im = m_buffers[index].image;
+  YuvImage &im = m_buffers[index].image;
 
   YUVFIELDS &fields = m_buffers[index].fields;
 

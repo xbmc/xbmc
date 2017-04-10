@@ -1133,7 +1133,7 @@ int CRenderManager::AddVideoPicture(VideoPicture& pic)
   if (!m_pRenderer)
     return -1;
 
-  YV12Image image;
+  YuvImage image;
   if (m_pRenderer->GetImage(&image, index) < 0)
     return -1;
 
