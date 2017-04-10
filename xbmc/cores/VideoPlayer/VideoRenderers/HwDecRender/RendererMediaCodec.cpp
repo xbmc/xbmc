@@ -236,14 +236,14 @@ bool CRendererMediaCodec::RenderHook(int index)
   return true;
 }
 
-int CRendererMediaCodec::GetImageHook(YV12Image *image, int source, bool readonly)
+int CRendererMediaCodec::GetImageHook(YuvImage *image, int source, bool readonly)
 {
   return source;
 }
 
 bool CRendererMediaCodec::CreateTexture(int index)
 {
-  YV12Image &im     = m_buffers[index].image;
+  YuvImage &im     = m_buffers[index].image;
   YUVFIELDS &fields = m_buffers[index].fields;
 
   memset(&im    , 0, sizeof(im));

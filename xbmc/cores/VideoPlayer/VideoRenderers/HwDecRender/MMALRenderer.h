@@ -94,8 +94,14 @@ public:
 
   bool RenderCapture(CRenderCapture* capture);
 
+<<<<<<< HEAD
   virtual bool         Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, void* hwPic, unsigned int orientation);
   virtual int          GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false);
+=======
+  // Player functions
+  virtual bool         Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format, unsigned int orientation);
+  virtual int          GetImage(YuvImage *image, int source = AUTOSOURCE, bool readonly = false);
+>>>>>>> 50fb06e... VideoPlayer: rename and move YuvImage
   virtual void         ReleaseImage(int source, bool preserve = false);
   virtual void         ReleaseBuffer(int idx);
   virtual void         FlipPage(int source);

@@ -87,7 +87,7 @@ void CRendererVTB::ReleaseBuffer(int idx)
   }
 }
 
-int CRendererVTB::GetImageHook(YV12Image *image, int source, bool readonly)
+int CRendererVTB::GetImageHook(YuvImage *image, int source, bool readonly)
 {
   return source;
 }
@@ -133,7 +133,7 @@ bool CRendererVTB::LoadShadersHook()
 
 bool CRendererVTB::CreateTexture(int index)
 {
-  YV12Image &im = m_buffers[index].image;
+  YuvImage &im = m_buffers[index].image;
   YUVFIELDS &fields = m_buffers[index].fields;
   YUVPLANES &planes = fields[0];
   
@@ -199,7 +199,7 @@ bool CRendererVTB::UploadTexture(int index)
     CFRelease(buf.m_textureUV);
   buf.m_textureUV = nullptr;
 
-  YV12Image &im = m_buffers[index].image;
+  YuvImage &im = m_buffers[index].image;
   YUVFIELDS &fields = m_buffers[index].fields;
   YUVPLANES &planes = fields[0];
 
