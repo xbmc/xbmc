@@ -240,6 +240,11 @@ EINTERLACEMETHOD CProcessInfo::GetDeinterlacingMethodDefault()
   return m_deintMethodDefault;
 }
 
+CVideoBufferManager& CProcessInfo::GetVideoBufferManager()
+{
+  return m_videoBufferManager;
+}
+
 // player audio info
 void CProcessInfo::ResetAudioCodecInfo()
 {
