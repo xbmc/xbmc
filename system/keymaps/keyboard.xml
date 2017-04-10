@@ -457,8 +457,6 @@
       <o>PlayerProcessInfo</o>
       <l>LockPreset</l>
       <escape>FullScreen</escape>
-      <g>ActivateWindow(PVROSDGuide)</g>
-      <c>ActivateWindow(PVROSDChannels)</c>
     </keyboard>
   </Visualisation>
   <MusicOSD>
@@ -663,6 +661,8 @@
       <down>Down</down>
       <return>OSD</return>
       <enter>OSD</enter>
+      <g>ActivateWindow(PVRChannelGuide)</g>
+      <c>ActivateWindow(PVROSDChannels)</c>
       <return mod="longpress">ActivateWindow(PVROSDChannels)</return>
       <enter mod="longpress">ActivateWindow(PVROSDChannels)</enter>
       <pageup>ChannelUp</pageup>
@@ -677,6 +677,8 @@
       <down>Down</down>
       <return>OSD</return>
       <enter>OSD</enter>
+      <g>ActivateWindow(PVRChannelGuide)</g>
+      <c>ActivateWindow(PVROSDChannels)</c>
       <return mod="longpress">ActivateWindow(PVROSDChannels)</return>
       <enter mod="longpress">ActivateWindow(PVROSDChannels)</enter>
       <pageup>ChannelUp</pageup>
@@ -691,13 +693,13 @@
       <c>Close</c>
     </keyboard>
   </PVROSDChannels>
-  <PVROSDGuide>
+  <PVRChannelGuide>
     <keyboard>
       <backspace>Close</backspace>
       <escape>Close</escape>
       <browser_back>Close</browser_back>
     </keyboard>
-  </PVROSDGuide>
+  </PVRChannelGuide>
   <PVRSettings>
     <keyboard>
       <backspace>PreviousMenu</backspace>
