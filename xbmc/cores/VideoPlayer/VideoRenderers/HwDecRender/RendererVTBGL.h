@@ -22,9 +22,8 @@
 
 #include "system.h"
 
-#if defined(TARGET_DARWIN_OSX)
-
 #include "cores/VideoPlayer/VideoRenderers/LinuxRendererGL.h"
+
 
 class CRendererVTB : public CLinuxRendererGL
 {
@@ -33,7 +32,7 @@ public:
   virtual ~CRendererVTB();
 
   // Player functions
-  virtual void AddVideoPictureHW(DVDVideoPicture &picture, int index) override;
+  virtual void AddVideoPictureHW(VideoPicture &picture, int index) override;
   virtual void ReleaseBuffer(int idx) override;
   virtual bool NeedBuffer(int idx) override;
   virtual CRenderInfo GetRenderInfo() override;
@@ -41,6 +40,7 @@ public:
 protected:
   virtual bool LoadShadersHook() override;
   virtual void AfterRenderHook(int idx) override;
+  virtual EShaderFormat GetShaderFormat(ERenderFormat renderFormat) override;
 
   // textures
   virtual bool UploadTexture(int index) override;
@@ -48,4 +48,3 @@ protected:
   virtual bool CreateTexture(int index) override;
 };
 
-#endif
