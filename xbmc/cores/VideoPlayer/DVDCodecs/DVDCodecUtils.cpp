@@ -29,47 +29,6 @@ extern "C" {
 #include "libswscale/swscale.h"
 }
 
-// allocate a new picture (AV_PIX_FMT_YUV420P)
-VideoPicture* CDVDCodecUtils::AllocatePicture(int iWidth, int iHeight)
-{
-  VideoPicture* pPicture = new VideoPicture;
-  if (pPicture)
-  {
-    pPicture->iWidth = iWidth;
-    pPicture->iHeight = iHeight;
-
-    int w = (iWidth + 1) / 2;
-    int h = (iHeight + 1) / 2;
-    int size = w * h;
-    int totalsize = (iWidth * iHeight) + size * 2;
-    uint8_t* data = static_cast<uint8_t*>(av_malloc(totalsize));
-    if (data)
-    {
-      pPicture->data[0] = data;
-      pPicture->data[1] = pPicture->data[0] + (iWidth * iHeight);
-      pPicture->data[2] = pPicture->data[1] + size;
-      pPicture->data[3] = NULL;
-      pPicture->iLineSize[0] = iWidth;
-      pPicture->iLineSize[1] = w;
-      pPicture->iLineSize[2] = w;
-      pPicture->iLineSize[3] = 0;
-    }
-    else
-    {
-      CLog::Log(LOGFATAL, "CDVDCodecUtils::AllocatePicture, unable to allocate new video picture, out of memory.");
-      delete pPicture;
-      pPicture = NULL;
-    }
-  }
-  return pPicture;
-}
-
-void CDVDCodecUtils::FreePicture(VideoPicture* pPicture)
-{
-  av_free(pPicture->data[0]);
-  delete pPicture;
-}
-
 bool CDVDCodecUtils::CopyPicture(VideoPicture* pDst, VideoPicture* pSrc)
 {
   uint8_t *s, *d;
