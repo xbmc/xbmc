@@ -61,7 +61,7 @@ bool CPixelConverter::Open(AVPixelFormat pixfmt, AVPixelFormat targetfmt, unsign
     return false;
   }
 
-  m_buf = CDVDCodecUtils::AllocatePicture(width, height);
+  //m_buf = CDVDCodecUtils::AllocatePicture(width, height);
   if (!m_buf)
   {
     CLog::Log(LOGERROR, "%s: Failed to allocate picture of dimensions %dx%d", __FUNCTION__, width, height);
@@ -81,7 +81,7 @@ void CPixelConverter::Dispose()
 
   if (m_buf)
   {
-    CDVDCodecUtils::FreePicture(m_buf);
+    //CDVDCodecUtils::FreePicture(m_buf);
     m_buf = nullptr;
   }
 }
