@@ -176,6 +176,8 @@ void CVideoPlayerVideo::OpenStream(CDVDStreamInfo &hint, CDVDVideoCodec* codec)
 {
   CLog::Log(LOGDEBUG, "CVideoPlayerVideo::OpenStream - open stream with codec id: %i", hint.codec);
 
+  m_processInfo.GetVideoBufferManager().ReleasePools();
+
   //reported fps is usually not completely correct
   if (hint.fpsrate && hint.fpsscale)
   {
@@ -264,6 +266,12 @@ void CVideoPlayerVideo::CloseStream(bool bWaitForBuffers)
   {
     delete m_pVideoCodec;
     m_pVideoCodec = NULL;
+  }
+
+  if (m_picture.videoBuffer)
+  {
+    m_picture.videoBuffer->Release();
+    m_picture.videoBuffer = nullptr;
   }
 }
 
@@ -381,8 +389,8 @@ void CVideoPlayerVideo::Process()
         pts += frametime * 4;
       }
 
-      //Waiting timed out, output last picture
-      if (m_picture.iFlags & DVP_FLAG_ALLOCATED)
+      // Waiting timed out, output last picture
+      if (m_picture.videoBuffer)
       {
         OutputPicture(&m_picture, pts);
         pts += frametime;
@@ -420,7 +428,11 @@ void CVideoPlayerVideo::Process()
     {
       if(m_pVideoCodec)
         m_pVideoCodec->Reset();
-      m_picture.iFlags &= ~DVP_FLAG_ALLOCATED;
+      if (m_picture.videoBuffer)
+      {
+        m_picture.videoBuffer->Release();
+        m_picture.videoBuffer = nullptr;
+      }
       m_packets.clear();
       m_droppingStats.Reset();
       m_syncState = IDVDStreamPlayer::SYNC_STARTING;
@@ -431,7 +443,11 @@ void CVideoPlayerVideo::Process()
       bool sync = static_cast<CDVDMsgBool*>(pMsg)->m_value;
       if(m_pVideoCodec)
         m_pVideoCodec->Reset();
-      m_picture.iFlags &= ~DVP_FLAG_ALLOCATED;
+      if (m_picture.videoBuffer)
+      {
+        m_picture.videoBuffer->Release();
+        m_picture.videoBuffer = nullptr;
+      }
       m_packets.clear();
       pts = 0;
       m_rewindStalled = false;
@@ -470,7 +486,11 @@ void CVideoPlayerVideo::Process()
 
       OpenStream(msg->m_hints, msg->m_codec);
       msg->m_codec = NULL;
-      m_picture.iFlags &= ~DVP_FLAG_ALLOCATED;
+      if (m_picture.videoBuffer)
+      {
+        m_picture.videoBuffer->Release();
+        m_picture.videoBuffer = nullptr;
+      }
     }
     else if (pMsg->IsType(CDVDMsg::VIDEO_DRAIN))
     {
