@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2016 Team XBMC
+ *      Copyright (C) 2005-2017 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,18 +19,144 @@
  */
 #pragma once
 
-#define MAX_PLANES 3
+#include "threads/CriticalSection.h"
+#include <atomic>
+#include <deque>
+#include <list>
+#include <memory>
+#include <vector>
 
-typedef struct YuvImage
+extern "C" {
+#include "libavutil/pixfmt.h"
+}
+
+struct YuvImage
 {
-  uint8_t* plane[MAX_PLANES];
-  int      planesize[MAX_PLANES];
-  unsigned stride[MAX_PLANES];
-  unsigned width;
-  unsigned height;
-  unsigned flags;
+  static const int MAX_PLANES = 3;
 
-  unsigned cshift_x; /* this is the chroma shift used */
-  unsigned cshift_y;
-  unsigned bpp; /* bytes per pixel */
-} YuvImage;
+  uint8_t* plane[MAX_PLANES];
+  int planesize[MAX_PLANES];
+  int stride[MAX_PLANES];
+  unsigned int width;
+  unsigned int height;
+  unsigned int cshift_x; // this is the chroma shift used
+  unsigned int cshift_y;
+  unsigned int bpp; // bytes per pixel
+};
+
+//-----------------------------------------------------------------------------
+//
+//-----------------------------------------------------------------------------
+
+#define BUFFER_STATE_DECODER 0x01;
+#define BUFFER_STATE_RENDER  0x02;
+
+class CVideoBuffer;
+class IVideoBufferPool;
+
+class IVideoBufferPool : public std::enable_shared_from_this<IVideoBufferPool>
+{
+public:
+  // get a free buffer from the pool, sets ref count to 1
+  virtual CVideoBuffer* Get() = 0;
+
+  // called by buffer when ref count goes to zero
+  virtual void Return(int id) = 0;
+
+  // required if pool is registered with BufferManager BM call configure
+  // as soon as it knows paramters: pixFmx, width, height
+  virtual void Configure(AVPixelFormat format, int width, int height) {};
+
+  // required if pool is registered with BufferManager
+  virtual bool IsConfigured() { return false;};
+
+  // required if pool is registered with BufferManager
+  // called before Get() to check if buffer pool is suitable
+  virtual bool IsCompatible(AVPixelFormat format, int width, int height) { return false;};
+
+  // callback when BM releases buffer pool. i.e. before a new codec is created
+  // clients can register a new pool on this callback
+  virtual void Released() {};
+
+  // call on Get() before returning buffer to caller
+  std::shared_ptr<IVideoBufferPool> GetPtr() { return shared_from_this(); };
+};
+
+class CVideoBuffer
+{
+public:
+  CVideoBuffer() = delete;
+  void Acquire();
+  void Acquire(std::shared_ptr<IVideoBufferPool> pool);
+  void Release();
+
+  virtual void GetPlanes(uint8_t*(&planes)[YuvImage::MAX_PLANES]) {};
+  virtual void GetStrides(int(&strides)[YuvImage::MAX_PLANES]) {};
+
+  static bool CopyPicture(YuvImage* pDst, YuvImage *pSrc);
+  static bool CopyNV12Picture(YuvImage* pDst, YuvImage *pSrc);
+  static bool CopyYUV422PackedPicture(YuvImage* pDst, YuvImage *pSrc);
+
+protected:
+  CVideoBuffer(int id);
+  std::atomic_int m_refCount;
+  int m_id;
+  std::shared_ptr<IVideoBufferPool> m_pool;
+};
+
+class CVideoBufferSysMem : public CVideoBuffer
+{
+public:
+  CVideoBufferSysMem(IVideoBufferPool &pool, int id, AVPixelFormat format, int width, int height);
+  virtual ~CVideoBufferSysMem();
+  virtual void GetPlanes(uint8_t*(&planes)[YuvImage::MAX_PLANES]) override;
+  virtual void GetStrides(int(&strides)[YuvImage::MAX_PLANES]) override;
+  bool Alloc();
+
+protected:
+  int m_width = 0;
+  int m_height = 0;
+  AVPixelFormat m_pixFormat = AV_PIX_FMT_NONE;
+  YuvImage m_image;
+};
+
+//-----------------------------------------------------------------------------
+//
+//-----------------------------------------------------------------------------
+
+class CVideoBufferPoolSysMem : public IVideoBufferPool
+{
+public:
+  virtual CVideoBuffer* Get() override;
+  virtual void Return(int id) override;
+  virtual void Configure(AVPixelFormat format, int width, int height) override;
+  virtual bool IsConfigured() override;
+  virtual bool IsCompatible(AVPixelFormat format, int width, int height) override;
+
+protected:
+  int m_width = 0;
+  int m_height = 0;
+  AVPixelFormat m_pixFormat = AV_PIX_FMT_NONE;
+  bool m_configured = false;
+  CCriticalSection m_critSection;
+
+  std::vector<CVideoBufferSysMem*> m_all;
+  std::deque<int> m_used;
+  std::deque<int> m_free;
+};
+
+//-----------------------------------------------------------------------------
+//
+//-----------------------------------------------------------------------------
+
+class CVideoBufferManager
+{
+public:
+  CVideoBufferManager();
+  void RegisterPool(std::shared_ptr<IVideoBufferPool> pool);
+  void ReleasePools();
+  CVideoBuffer* Get(AVPixelFormat format, int width, int height);
+
+protected:
+  std::list<std::shared_ptr<IVideoBufferPool>> m_pools;
+};
