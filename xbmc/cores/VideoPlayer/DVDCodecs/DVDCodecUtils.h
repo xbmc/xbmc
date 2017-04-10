@@ -32,11 +32,7 @@ struct YuvImage;
 class CDVDCodecUtils
 {
 public:
-  static bool CopyPicture(VideoPicture* pDst, VideoPicture* pSrc);
   static bool CopyPicture(YuvImage* pDst, VideoPicture *pSrc);
-  
-  static VideoPicture* ConvertToNV12Picture(VideoPicture *pSrc);
-  static VideoPicture* ConvertToYUV422PackedPicture(VideoPicture *pSrc, ERenderFormat format);
   static bool CopyNV12Picture(YuvImage* pImage, VideoPicture *pSrc);
   static bool CopyYUV422PackedPicture(YuvImage* pImage, VideoPicture *pSrc);
 
