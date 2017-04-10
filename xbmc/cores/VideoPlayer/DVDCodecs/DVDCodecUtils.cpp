@@ -20,9 +20,9 @@
 
 #include "DVDCodecUtils.h"
 #include "TimingConstants.h"
-#include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "utils/log.h"
 #include "cores/FFmpeg.h"
+#include "cores/VideoPlayer/Process/VideoBuffer.h"
 #include "Util.h"
 
 extern "C" {
@@ -109,7 +109,7 @@ bool CDVDCodecUtils::CopyPicture(VideoPicture* pDst, VideoPicture* pSrc)
   return true;
 }
 
-bool CDVDCodecUtils::CopyPicture(YV12Image* pImage, VideoPicture *pSrc)
+bool CDVDCodecUtils::CopyPicture(YuvImage* pImage, VideoPicture *pSrc)
 {
   uint8_t *s = pSrc->data[0];
   uint8_t *d = pImage->plane[0];
@@ -275,7 +275,7 @@ VideoPicture* CDVDCodecUtils::ConvertToYUV422PackedPicture(VideoPicture *pSrc, E
   return pPicture;
 }
 
-bool CDVDCodecUtils::CopyNV12Picture(YV12Image* pImage, VideoPicture *pSrc)
+bool CDVDCodecUtils::CopyNV12Picture(YuvImage* pImage, VideoPicture *pSrc)
 {
   uint8_t *s = pSrc->data[0];
   uint8_t *d = pImage->plane[0];
@@ -318,7 +318,7 @@ bool CDVDCodecUtils::CopyNV12Picture(YV12Image* pImage, VideoPicture *pSrc)
   return true;
 }
 
-bool CDVDCodecUtils::CopyYUV422PackedPicture(YV12Image* pImage, VideoPicture *pSrc)
+bool CDVDCodecUtils::CopyYUV422PackedPicture(YuvImage* pImage, VideoPicture *pSrc)
 {
   uint8_t *s = pSrc->data[0];
   uint8_t *d = pImage->plane[0];
