@@ -334,7 +334,7 @@ int CLinuxRendererGL::NextYV12Texture()
   return (m_iYV12RenderBuffer + 1) % m_NumYV12Buffers;
 }
 
-int CLinuxRendererGL::GetImage(YV12Image *image, int source, bool readonly)
+int CLinuxRendererGL::GetImage(YuvImage *image, int source, bool readonly)
 {
   if (!image)
     return -1;
@@ -346,7 +346,7 @@ int CLinuxRendererGL::GetImage(YV12Image *image, int source, bool readonly)
   if( source == AUTOSOURCE )
     source = NextYV12Texture();
 
-  YV12Image &im = m_buffers[source].image;
+  YuvImage &im = m_buffers[source].image;
 
   if ((im.flags&(~IMAGE_FLAG_READY)) != 0)
   {
@@ -359,7 +359,7 @@ int CLinuxRendererGL::GetImage(YV12Image *image, int source, bool readonly)
   else
     im.flags |= IMAGE_FLAG_WRITING;
 
-  // copy the image - should be operator of YV12Image
+  // copy the image - should be operator of YuvImage
   for (int p=0;p<MAX_PLANES;p++)
   {
     image->plane[p]  = im.plane[p];
@@ -377,7 +377,7 @@ int CLinuxRendererGL::GetImage(YV12Image *image, int source, bool readonly)
 
 void CLinuxRendererGL::ReleaseImage(int source, bool preserve)
 {
-  YV12Image &im = m_buffers[source].image;
+  YuvImage &im = m_buffers[source].image;
 
   im.flags &= ~IMAGE_FLAG_INUSE;
   im.flags |= IMAGE_FLAG_READY;
@@ -413,7 +413,7 @@ void CLinuxRendererGL::GetPlaneTextureSize(YUVPLANE& plane)
 void CLinuxRendererGL::CalculateTextureSourceRects(int source, int num_planes)
 {
   YUVBUFFER& buf    =  m_buffers[source];
-  YV12Image* im     = &buf.image;
+  YuvImage* im     = &buf.image;
   YUVFIELDS& fields =  buf.fields;
 
   // calculate the source rectangle
@@ -1676,7 +1676,7 @@ bool CLinuxRendererGL::CreateYV12Texture(int index)
   /* since we also want the field textures, pitch must be texture aligned */
   unsigned p;
 
-  YV12Image &im     = m_buffers[index].image;
+  YuvImage &im     = m_buffers[index].image;
   YUVFIELDS &fields = m_buffers[index].fields;
   GLuint    *pbo    = m_buffers[index].pbo;
 
@@ -1819,7 +1819,7 @@ bool CLinuxRendererGL::CreateYV12Texture(int index)
 bool CLinuxRendererGL::UploadYV12Texture(int source)
 {
   YUVBUFFER& buf    =  m_buffers[source];
-  YV12Image* im     = &buf.image;
+  YuvImage* im     = &buf.image;
   YUVFIELDS& fields =  buf.fields;
 
   if (!(im->flags&IMAGE_FLAG_READY))
@@ -1893,7 +1893,7 @@ bool CLinuxRendererGL::UploadYV12Texture(int source)
 
 void CLinuxRendererGL::DeleteYV12Texture(int index)
 {
-  YV12Image &im     = m_buffers[index].image;
+  YuvImage &im     = m_buffers[index].image;
   YUVFIELDS &fields = m_buffers[index].fields;
   GLuint    *pbo    = m_buffers[index].pbo;
 
@@ -1944,7 +1944,7 @@ void CLinuxRendererGL::DeleteYV12Texture(int index)
 bool CLinuxRendererGL::UploadNV12Texture(int source)
 {
   YUVBUFFER& buf    =  m_buffers[source];
-  YV12Image* im     = &buf.image;
+  YuvImage* im     = &buf.image;
   YUVFIELDS& fields =  buf.fields;
 
   if (!(im->flags & IMAGE_FLAG_READY))
@@ -2007,7 +2007,7 @@ bool CLinuxRendererGL::UploadNV12Texture(int source)
 bool CLinuxRendererGL::CreateNV12Texture(int index)
 {
   // since we also want the field textures, pitch must be texture aligned
-  YV12Image &im     = m_buffers[index].image;
+  YuvImage &im     = m_buffers[index].image;
   YUVFIELDS &fields = m_buffers[index].fields;
   GLuint    *pbo    = m_buffers[index].pbo;
 
@@ -2148,7 +2148,7 @@ bool CLinuxRendererGL::CreateNV12Texture(int index)
 }
 void CLinuxRendererGL::DeleteNV12Texture(int index)
 {
-  YV12Image &im     = m_buffers[index].image;
+  YuvImage &im     = m_buffers[index].image;
   YUVFIELDS &fields = m_buffers[index].fields;
   GLuint    *pbo    = m_buffers[index].pbo;
 
@@ -2199,7 +2199,7 @@ void CLinuxRendererGL::DeleteNV12Texture(int index)
 bool CLinuxRendererGL::UploadYUV422PackedTexture(int source)
 {
   YUVBUFFER& buf    =  m_buffers[source];
-  YV12Image* im     = &buf.image;
+  YuvImage* im     = &buf.image;
   YUVFIELDS& fields =  buf.fields;
 
   if (!(im->flags & IMAGE_FLAG_READY))
@@ -2245,7 +2245,7 @@ bool CLinuxRendererGL::UploadYUV422PackedTexture(int source)
 
 void CLinuxRendererGL::DeleteYUV422PackedTexture(int index)
 {
-  YV12Image &im     = m_buffers[index].image;
+  YuvImage &im     = m_buffers[index].image;
   YUVFIELDS &fields = m_buffers[index].fields;
   GLuint    *pbo    = m_buffers[index].pbo;
 
@@ -2291,7 +2291,7 @@ void CLinuxRendererGL::DeleteYUV422PackedTexture(int index)
 bool CLinuxRendererGL::CreateYUV422PackedTexture(int index)
 {
   // since we also want the field textures, pitch must be texture aligned
-  YV12Image &im     = m_buffers[index].image;
+  YuvImage &im     = m_buffers[index].image;
   YUVFIELDS &fields = m_buffers[index].fields;
   GLuint    *pbo    = m_buffers[index].pbo;
 
