@@ -23,19 +23,9 @@
 #include "Video/DVDVideoCodec.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFormats.h"
 
-extern "C" {
-#include "libavutil/pixfmt.h"
-}
-
-struct YuvImage;
-
 class CDVDCodecUtils
 {
 public:
-  static bool CopyPicture(YuvImage* pDst, VideoPicture *pSrc);
-  static bool CopyNV12Picture(YuvImage* pImage, VideoPicture *pSrc);
-  static bool CopyYUV422PackedPicture(YuvImage* pImage, VideoPicture *pSrc);
-
   static bool IsVP3CompatibleWidth(int width);
 
   static double NormalizeFrameduration(double frameduration, bool *match = NULL);

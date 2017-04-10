@@ -37,6 +37,8 @@ extern "C" {
 #include "libpostproc/postprocess.h"
 }
 
+class CVideoBufferPoolFFmpeg;
+
 class CDVDVideoCodecFFmpeg : public CDVDVideoCodec, public ICallbackHWAccel
 {
 public:
@@ -71,10 +73,10 @@ protected:
   bool HasHardware() { return m_pHardware != nullptr; };
   void SetHardware(IHardwareDecoder *hardware);
 
-
   AVFrame* m_pFrame;
   AVFrame* m_pDecodedFrame;
   AVCodecContext* m_pCodecContext;
+  std::shared_ptr<CVideoBufferPoolFFmpeg> m_videoBufferPool;
 
   std::string m_filters;
   std::string m_filters_next;
