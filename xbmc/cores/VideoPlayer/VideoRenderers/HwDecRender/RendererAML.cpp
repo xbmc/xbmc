@@ -82,7 +82,7 @@ bool CRendererAML::RenderCapture(CRenderCapture* capture)
   return true;
 }
 
-int CRendererAML::GetImage(YV12Image *image, int source, bool readonly)
+int CRendererAML::GetImage(YuvImage *image, int source, bool readonly)
 {
   if (image == nullptr)
     return -1;

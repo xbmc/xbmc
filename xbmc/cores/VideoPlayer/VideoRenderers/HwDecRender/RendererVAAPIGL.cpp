@@ -70,7 +70,7 @@ void CRendererVAAPI::AddVideoPictureHW(VideoPicture &picture, int index)
 
   if (!m_isVAAPIBuffer)
   {
-    YV12Image &im = m_buffers[index].image;
+    YuvImage &im = m_buffers[index].image;
     CDVDCodecUtils::CopyNV12Picture(&im, &vaapi->DVDPic);
   }
 }
@@ -134,7 +134,7 @@ bool CRendererVAAPI::CreateTexture(int index)
     return CreateNV12Texture(index);
   }
 
-  YV12Image &im     = m_buffers[index].image;
+  YuvImage &im     = m_buffers[index].image;
   YUVFIELDS &fields = m_buffers[index].fields;
   YUVPLANE  &plane  = fields[0][0];
 
@@ -182,7 +182,7 @@ bool CRendererVAAPI::UploadTexture(int index)
 
   VAAPI::CVaapiRenderPicture *vaapi = (VAAPI::CVaapiRenderPicture*)m_buffers[index].hwDec;
 
-  YV12Image &im = m_buffers[index].image;
+  YuvImage &im = m_buffers[index].image;
 
   YUVFIELDS &fields = m_buffers[index].fields;
 

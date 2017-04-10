@@ -289,7 +289,7 @@ void CWinRenderer::AddVideoPictureHW(VideoPicture &picture, int index)
   }
 }
 
-int CWinRenderer::GetImage(YV12Image *image, int source, bool readonly)
+int CWinRenderer::GetImage(YuvImage *image, int source, bool readonly)
 {
   if (!image) return -1;
   if (!m_NumYV12Buffers) return -1;
