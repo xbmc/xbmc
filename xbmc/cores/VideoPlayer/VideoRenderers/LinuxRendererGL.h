@@ -51,13 +51,6 @@ namespace Shaders { class BaseVideoFilterShader; }
 #define NOSOURCE   -2
 #define AUTOSOURCE -1
 
-#define IMAGE_FLAG_WRITING   0x01 /* image is in use after a call to GetImage, caller may be reading or writing */
-#define IMAGE_FLAG_READING   0x02 /* image is in use after a call to GetImage, caller is only reading */
-#define IMAGE_FLAG_DYNAMIC   0x04 /* image was allocated due to a call to GetImage */
-#define IMAGE_FLAG_RESERVED  0x08 /* image is reserved, must be asked for specifically used to preserve images */
-#define IMAGE_FLAG_READY     0x16 /* image is ready to be uploaded to texture memory */
-#define IMAGE_FLAG_INUSE (IMAGE_FLAG_WRITING | IMAGE_FLAG_READING | IMAGE_FLAG_RESERVED)
-
 struct DRAWRECT
 {
   float left;
@@ -118,25 +111,25 @@ public:
   virtual ~CLinuxRendererGL();
 
   // Player functions
-  virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, void *hwPic, unsigned int orientation);
-  virtual bool IsConfigured() { return m_bConfigured; }
-  virtual int GetImage(YuvImage *image, int source = AUTOSOURCE, bool readonly = false);
-  virtual void ReleaseImage(int source, bool preserve = false);
-  virtual void FlipPage(int source);
-  virtual void PreInit();
-  virtual void UnInit();
-  virtual void Reset(); /* resets renderer after seek for example */
-  virtual void Flush();
-  virtual void SetBufferSize(int numBuffers) { m_NumYV12Buffers = numBuffers; }
-  virtual void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
-  virtual void Update();
-  virtual bool RenderCapture(CRenderCapture* capture);
-  virtual CRenderInfo GetRenderInfo();
+  virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, void *hwPic, unsigned int orientation) override;
+  virtual bool IsConfigured() override { return m_bConfigured; }
+  virtual void AddVideoPicture(VideoPicture &picture, int index) override;
+  virtual void FlipPage(int source) override;
+  virtual void PreInit() override;
+  virtual void UnInit() override;
+  virtual void Reset() override;
+  virtual void Flush() override;
+  virtual void SetBufferSize(int numBuffers) override { m_NumYV12Buffers = numBuffers; }
+  virtual void ReleaseBuffer(int idx) override;
+  virtual void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255) override;
+  virtual void Update() override;
+  virtual bool RenderCapture(CRenderCapture* capture) override;
+  virtual CRenderInfo GetRenderInfo() override;
 
   // Feature support
-  virtual bool SupportsMultiPassRendering();
-  virtual bool Supports(ERENDERFEATURE feature);
-  virtual bool Supports(ESCALINGMETHOD method);
+  virtual bool SupportsMultiPassRendering() override;
+  virtual bool Supports(ERENDERFEATURE feature) override;
+  virtual bool Supports(ESCALINGMETHOD method) override;
 
 protected:
   virtual void Render(DWORD flags, int renderBuffer);
@@ -195,11 +188,9 @@ protected:
   bool m_bConfigured;
   bool m_bValidated;
   std::vector<ERenderFormat> m_formats;
-  bool m_bImageReady;
   GLenum m_textureTarget;
   int m_renderMethod;
   RenderQuality m_renderQuality;
-  unsigned int m_flipindex; // just a counter to keep track of if a image has been uploaded
   
   // Raw data used by renderer
   int m_currentField;
@@ -221,35 +212,29 @@ protected:
     //pixels per texel
     unsigned pixpertex_x;
     unsigned pixpertex_y;
-
-    unsigned flipindex;
   };
-
-  typedef YUVPLANE           YUVPLANES[MAX_PLANES];
-  typedef YUVPLANES          YUVFIELDS[MAX_FIELDS];
 
   struct YUVBUFFER
   {
     YUVBUFFER();
    ~YUVBUFFER();
 
-    YUVFIELDS fields;
+    YUVPLANE fields[MAX_FIELDS][YuvImage::MAX_PLANES];
     YuvImage image;
-    unsigned  flipindex; /* used to decide if this has been uploaded */
-    GLuint    pbo[MAX_PLANES];
+    GLuint pbo[3]; // one pbo for 3 planes
 
+    CVideoBuffer *videoBuffer;
+    bool loaded;
     void *hwDec;
   };
 
-  typedef YUVBUFFER          YUVBUFFERS[NUM_BUFFERS];
-
   // YV12 decoder textures
   // field index 0 is full image, 1 is odd scanlines, 2 is even scanlines
-  YUVBUFFERS m_buffers;
+  YUVBUFFER m_buffers[NUM_BUFFERS];
 
-  void LoadPlane( YUVPLANE& plane, int type, unsigned flipindex
-                , unsigned width,  unsigned height
-                , int stride, int bpp, void* data, GLuint* pbo = NULL );
+  void LoadPlane(YUVPLANE& plane, int type,
+                 unsigned width,  unsigned height,
+                 int stride, int bpp, void* data);
 
   void GetPlaneTextureSize(YUVPLANE& plane);
 
@@ -263,12 +248,6 @@ protected:
 
   // clear colour for "black" bars
   float m_clearColour;
-
-  // software scale library (fallback if required gl version is not available)
-  BYTE              *m_rgbBuffer;  // if software scale is used, this will hold the result image
-  unsigned int       m_rgbBufferSize;
-  GLuint             m_rgbPbo;
-  struct SwsContext *m_context;
 
   void BindPbo(YUVBUFFER& buff);
   void UnBindPbo(YUVBUFFER& buff);

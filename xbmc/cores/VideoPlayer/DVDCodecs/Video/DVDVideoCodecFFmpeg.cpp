@@ -71,6 +71,132 @@ enum EFilterFlags {
   FILTER_ROTATE              = 0x40,  //< rotate image according to the codec hints
 };
 
+//------------------------------------------------------------------------------
+// Video Buffers
+//------------------------------------------------------------------------------
+
+class CVideoBufferFFmpeg : public CVideoBuffer
+{
+public:
+  CVideoBufferFFmpeg(IVideoBufferPool &pool, int id);
+  virtual ~CVideoBufferFFmpeg();
+  virtual void GetPlanes(uint8_t*(&planes)[YuvImage::MAX_PLANES]) override;
+  virtual void GetStrides(int(&strides)[YuvImage::MAX_PLANES]) override;
+
+  void SetRef(AVFrame *frame);
+  void Unref();
+
+protected:
+  AVFrame* m_pFrame;
+};
+
+CVideoBufferFFmpeg::CVideoBufferFFmpeg(IVideoBufferPool &pool, int id)
+: CVideoBuffer(id)
+{
+  m_pFrame = av_frame_alloc();
+}
+
+CVideoBufferFFmpeg::~CVideoBufferFFmpeg()
+{
+  av_frame_free(&m_pFrame);
+}
+
+void CVideoBufferFFmpeg::GetPlanes(uint8_t*(&planes)[YuvImage::MAX_PLANES])
+{
+  planes[0] = m_pFrame->data[0];
+  planes[1] = m_pFrame->data[1];
+  planes[2] = m_pFrame->data[2];
+}
+
+void CVideoBufferFFmpeg::GetStrides(int(&strides)[YuvImage::MAX_PLANES])
+{
+  strides[0] = m_pFrame->linesize[0];
+  strides[1] = m_pFrame->linesize[1];
+  strides[2] = m_pFrame->linesize[2];
+}
+
+void CVideoBufferFFmpeg::SetRef(AVFrame *frame)
+{
+  av_frame_unref(m_pFrame);
+  av_frame_move_ref(m_pFrame, frame);
+}
+
+void CVideoBufferFFmpeg::Unref()
+{
+  av_frame_unref(m_pFrame);
+}
+
+//------------------------------------------------------------------------------
+
+class CVideoBufferPoolFFmpeg : public IVideoBufferPool
+{
+public:
+  ~CVideoBufferPoolFFmpeg();
+  virtual void Return(int id) override;
+  virtual CVideoBuffer* Get() override;
+
+protected:
+  CCriticalSection m_critSection;
+  std::vector<CVideoBufferFFmpeg*> m_all;
+  std::deque<int> m_used;
+  std::deque<int> m_free;
+};
+
+CVideoBufferPoolFFmpeg::~CVideoBufferPoolFFmpeg()
+{
+  for (auto buf : m_all)
+  {
+    delete buf;
+  }
+}
+
+CVideoBuffer* CVideoBufferPoolFFmpeg::Get()
+{
+  CSingleLock lock(m_critSection);
+
+  CVideoBufferFFmpeg *buf = nullptr;
+  if (!m_free.empty())
+  {
+    int idx = m_free.front();
+    m_free.pop_front();
+    m_used.push_back(idx);
+    buf = m_all[idx];
+  }
+  else
+  {
+    int id = m_all.size();
+    buf = new CVideoBufferFFmpeg(*this, id);
+    m_all.push_back(buf);
+    m_used.push_back(id);
+  }
+
+  buf->Acquire(GetPtr());
+  return buf;
+}
+
+void CVideoBufferPoolFFmpeg::Return(int id)
+{
+  CSingleLock lock(m_critSection);
+
+  m_all[id]->Unref();
+  auto it = m_used.begin();
+  while (it != m_used.end())
+  {
+    if (*it == id)
+    {
+      m_used.erase(it);
+      break;
+    }
+    else
+      ++it;
+  }
+  m_free.push_back(id);
+}
+
+//------------------------------------------------------------------------------
+// main class
+//------------------------------------------------------------------------------
+
 CDVDVideoCodecFFmpeg::CDropControl::CDropControl()
 {
   Reset(true);
@@ -184,7 +310,8 @@ enum AVPixelFormat CDVDVideoCodecFFmpeg::GetFormat(struct AVCodecContext * avctx
   return avcodec_default_get_format(avctx, fmt);
 }
 
-CDVDVideoCodecFFmpeg::CDVDVideoCodecFFmpeg(CProcessInfo &processInfo) : CDVDVideoCodec(processInfo)
+CDVDVideoCodecFFmpeg::CDVDVideoCodecFFmpeg(CProcessInfo &processInfo)
+: CDVDVideoCodec(processInfo), m_postProc(processInfo)
 {
   m_pCodecContext = nullptr;
   m_pFrame = nullptr;
@@ -193,6 +320,7 @@ CDVDVideoCodecFFmpeg::CDVDVideoCodecFFmpeg(CProcessInfo &processInfo) : CDVDVide
   m_pFilterIn = nullptr;
   m_pFilterOut = nullptr;
   m_pFilterFrame = nullptr;
+  m_videoBufferPool = std::make_shared<CVideoBufferPoolFFmpeg>();
 
   m_iPictureWidth = 0;
   m_iPictureHeight = 0;
@@ -698,7 +826,7 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecFFmpeg::GetPicture(VideoPicture* pVideoPi
   {
     SetFilters();
 
-    bool need_scale = std::find( m_formats.begin(),
+    bool need_scale = std::find(m_formats.begin(),
                                 m_formats.end(),
                                 m_pCodecContext->pix_fmt) == m_formats.end();
 
@@ -752,18 +880,19 @@ bool CDVDVideoCodecFFmpeg::SetPictureParams(VideoPicture* pVideoPicture)
   if (!GetPictureCommon(pVideoPicture))
     return false;
 
-  for (int i = 0; i < 4; i++)
-    pVideoPicture->data[i] = m_pFrame->data[i];
-  for (int i = 0; i < 4; i++)
-    pVideoPicture->iLineSize[i] = m_pFrame->linesize[i];
-
-  pVideoPicture->iFlags |= pVideoPicture->data[0] ? 0 : DVP_FLAG_DROPPED;
+  pVideoPicture->iFlags |= m_pFrame->data[0] ? 0 : DVP_FLAG_DROPPED;
   pVideoPicture->hwPic = nullptr;
 
   AVPixelFormat pix_fmt;
   pix_fmt = (AVPixelFormat)m_pFrame->format;
-
   pVideoPicture->format = CDVDCodecUtils::EFormatFromPixfmt(pix_fmt);
+
+  if (pVideoPicture->videoBuffer)
+    pVideoPicture->videoBuffer->Release();
+
+  CVideoBufferFFmpeg *buffer = dynamic_cast<CVideoBufferFFmpeg*>(m_videoBufferPool->Get());
+  buffer->SetRef(m_pFrame);
+  pVideoPicture->videoBuffer = buffer;
 
   if (CMediaSettings::GetInstance().GetCurrentVideoSettings().m_PostProcess)
   {
@@ -859,12 +988,14 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(VideoPicture* pVideoPicture)
   }
 
   pVideoPicture->iRepeatPicture = 0.5 * m_pFrame->repeat_pict;
-  pVideoPicture->iFlags = DVP_FLAG_ALLOCATED;
+  pVideoPicture->iFlags = 0;
   pVideoPicture->iFlags |= m_pFrame->interlaced_frame ? DVP_FLAG_INTERLACED : 0;
   pVideoPicture->iFlags |= m_pFrame->top_field_first ? DVP_FLAG_TOP_FIELD_FIRST: 0;
 
   if (m_codecControlFlags & DVD_CODEC_CTRL_DROP)
+  {
     pVideoPicture->iFlags |= DVP_FLAG_DROPPED;
+  }
 
   pVideoPicture->chroma_position = m_pCodecContext->chroma_sample_location;
   pVideoPicture->color_primaries = m_pCodecContext->color_primaries;

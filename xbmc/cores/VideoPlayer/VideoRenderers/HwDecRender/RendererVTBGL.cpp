@@ -56,7 +56,7 @@ CRenderInfo CRendererVTB::GetRenderInfo()
   return info;
 }
 
-void CRendererVTB::AddVideoPictureHW(VideoPicture &picture, int index)
+void CRendererVTB::AddVideoPicture(VideoPicture &picture, int index)
 {
   YUVBUFFER &buf = m_buffers[index];
   CVTBData *vtbdata = (CVTBData*)buf.hwDec;
@@ -105,14 +105,13 @@ bool CRendererVTB::LoadShadersHook()
 
 bool CRendererVTB::CreateTexture(int index)
 {
-  YuvImage &im     = m_buffers[index].image;
-  YUVFIELDS &fields = m_buffers[index].fields;
-  YUVPLANES &planes = fields[0];
+  YuvImage &im = m_buffers[index].image;
+  YUVPLANE (&planes)[YuvImage::MAX_PLANES] = m_buffers[index].fields[0];
 
   DeleteTexture(index);
 
   memset(&im    , 0, sizeof(im));
-  memset(&fields, 0, sizeof(fields));
+  memset(&planes, 0, sizeof(YUVPLANE[YuvImage::MAX_PLANES]));
 
   im.bpp    = 1;
   im.width  = m_sourceWidth;
@@ -150,7 +149,7 @@ bool CRendererVTB::CreateTexture(int index)
 
 void CRendererVTB::DeleteTexture(int index)
 {
-  YUVPLANES  &planes = m_buffers[index].fields[0];
+  YUVPLANE (&planes)[YuvImage::MAX_PLANES] = m_buffers[index].fields[0];
 
   ReleaseBuffer(index);
   delete (CVTBData*)m_buffers[index].hwDec;
@@ -172,8 +171,7 @@ void CRendererVTB::DeleteTexture(int index)
 bool CRendererVTB::UploadTexture(int index)
 {
   YUVBUFFER &buf = m_buffers[index];
-  YUVFIELDS &fields = buf.fields;
-  YUVPLANES &planes = fields[0];
+  YUVPLANE (&planes)[YuvImage::MAX_PLANES] = m_buffers[index].fields[0];
   CVTBData *vtbdata = (CVTBData*)m_buffers[index].hwDec;
 
   CVImageBufferRef cvBufferRef = vtbdata->m_vtbbuf;
@@ -222,7 +220,6 @@ bool CRendererVTB::UploadTexture(int index)
   glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
   glBindTexture(m_textureTarget, 0);
-  planes[0].flipindex = buf.flipindex;
 
   glDisable(m_textureTarget);
 
