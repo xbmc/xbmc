@@ -140,7 +140,6 @@ protected:
   CDVDMessageQueue& m_messageParent;
   CDVDStreamInfo m_hints;
   CDVDVideoCodec* m_pVideoCodec;
-  VideoPicture* m_pTempOverlayPicture;
   CPtsTracker m_ptsTracker;
   std::list<DVDMessageListItem> m_packets;
   CDroppingStats m_droppingStats;
