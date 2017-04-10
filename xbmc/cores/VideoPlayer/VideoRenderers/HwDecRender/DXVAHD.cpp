@@ -412,7 +412,7 @@ bool CProcessorHD::CreateSurfaces()
   return true;
 }
 
-CRenderPicture *CProcessorHD::Convert(DVDVideoPicture &picture)
+CRenderPicture *CProcessorHD::Convert(VideoPicture &picture)
 {
   if ( picture.format != RENDER_FMT_YUV420P
     && picture.format != RENDER_FMT_YUV420P10
@@ -424,7 +424,10 @@ CRenderPicture *CProcessorHD::Convert(DVDVideoPicture &picture)
   }
 
   if (picture.format == RENDER_FMT_DXVA)
-    return picture.dxva->Acquire();
+  {
+    DXVA::CRenderPicture *hwpic = static_cast<DXVA::CRenderPicture*>(picture.hwPic);
+    return hwpic->Acquire();
+  }
 
   ID3D11View *pView = m_context->GetFree(nullptr);
   if (!pView)
