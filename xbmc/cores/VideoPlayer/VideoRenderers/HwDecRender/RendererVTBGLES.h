@@ -42,7 +42,7 @@ public:
 protected:
   // hooks for hw dec renderer
   virtual bool LoadShadersHook() override;
-  virtual int  GetImageHook(YV12Image *image, int source = AUTOSOURCE, bool readonly = false) override;
+  virtual int  GetImageHook(YuvImage *image, int source = AUTOSOURCE, bool readonly = false) override;
   virtual void AfterRenderHook(int idx) override;
 
   // textures

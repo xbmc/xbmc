@@ -52,7 +52,7 @@ protected:
   // hooks for hw dec renderer
   virtual bool LoadShadersHook();
   virtual bool RenderHook(int index);
-  virtual int  GetImageHook(YV12Image *image, int source = AUTOSOURCE, bool readonly = false);
+  virtual int  GetImageHook(YuvImage *image, int source = AUTOSOURCE, bool readonly = false);
 };
 
 #endif
