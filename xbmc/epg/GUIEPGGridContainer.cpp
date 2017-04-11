@@ -1885,8 +1885,7 @@ void CGUIEPGGridContainer::GetCurrentLayouts()
     }
   }
 
-  if (!m_rulerDateLayout && !m_rulerDateLayouts.empty())
-    m_rulerDateLayout = &m_rulerDateLayouts[0];  // failsafe
+  // Note: m_rulerDateLayout is optional; so no "failsafe" logic here (see above)
 }
 
 void CGUIEPGGridContainer::SetRenderOffset(const CPoint &offset)
