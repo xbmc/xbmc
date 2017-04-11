@@ -28,7 +28,6 @@
 #include "Util.h"
 #include "utils/log.h"
 #include "SpecialProtocol.h"
-#include "PlatformDefs.h" //for PRIdS, PRId64
 #include "URL.h"
 #if defined(TARGET_POSIX)
 #include "posix/PosixFile.h"
