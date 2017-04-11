@@ -34,6 +34,10 @@
 #include "threads/SingleLock.h"
 #include "guilib/Geometry.h"
 
+#include <media/NdkMediaCodec.h>
+#include <android/native_window.h>
+#include <android/native_window_jni.h>
+
 class CJNISurface;
 class CJNISurfaceTexture;
 class CJNIMediaCodec;
@@ -52,9 +56,9 @@ typedef struct amc_demux {
 class CDVDMediaCodecInfo
 {
 public:
-  CDVDMediaCodecInfo( int index,
+  CDVDMediaCodecInfo( ssize_t index,
                       unsigned int texture,
-                      std::shared_ptr<CJNIMediaCodec> &codec,
+                      AMediaCodec* codec,
                       std::shared_ptr<CJNISurfaceTexture> &surfacetexture,
                       std::shared_ptr<CDVDMediaCodecOnFrameAvailable> &frameready);
 
@@ -82,13 +86,13 @@ private:
   long                m_refs;
   bool                m_valid;
   bool                m_isReleased;
-  int                 m_index;
+  ssize_t             m_index;
   unsigned int        m_texture;
   int64_t             m_timestamp;
   CCriticalSection    m_section;
   // shared_ptr bits, shared between
   // CDVDVideoCodecAndroidMediaCodec and LinuxRenderGLES.
-  std::shared_ptr<CJNIMediaCodec> m_codec;
+  AMediaCodec* m_codec;
   std::shared_ptr<CJNISurfaceTexture> m_surfacetexture;
   std::shared_ptr<CDVDMediaCodecOnFrameAvailable> m_frameready;
 };
@@ -117,7 +121,7 @@ protected:
   void            FlushInternal(void);
   bool            ConfigureMediaCodec(void);
   int             GetOutputPicture(void);
-  void            ConfigureOutputFormat(CJNIMediaFormat* mediaformat);
+  void            ConfigureOutputFormat(AMediaFormat* mediaformat);
 
   // surface handling functions
   static void     CallbackInitSurfaceTexture(void*);
@@ -135,19 +139,15 @@ protected:
   int             m_state;
   int             m_noPictureLoop;
 
-  CJNISurface    *m_surface;
+  CJNISurface*    m_jnisurface;
+  CJNISurface     m_jnivideosurface;
   unsigned int    m_textureId;
-  CJNISurface     m_videosurface;
-  // we need these as shared_ptr because CDVDVideoCodecAndroidMediaCodec
-  // will get deleted before CLinuxRendererGLES is shut down and
-  // CLinuxRendererGLES refs them via CDVDMediaCodecInfo.
-  std::shared_ptr<CJNIMediaCodec> m_codec;
+  AMediaCodec*    m_codec;
+  ANativeWindow*  m_surface;
   std::shared_ptr<CJNISurfaceTexture> m_surfaceTexture;
   std::shared_ptr<CDVDMediaCodecOnFrameAvailable> m_frameAvailable;
 
   amc_demux m_demux_pkt;
-  std::vector<CJNIByteBuffer> m_input;
-  std::vector<CJNIByteBuffer> m_output;
   std::vector<CDVDMediaCodecInfo*> m_inflight;
 
   CBitstreamConverter *m_bitstream;
