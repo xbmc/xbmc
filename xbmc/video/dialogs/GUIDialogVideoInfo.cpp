@@ -1197,7 +1197,8 @@ bool CGUIDialogVideoInfo::UpdateVideoItemTitle(const CFileItemPtr &pItem)
   {
     detail.m_strSortTitle = title;
     std::map<std::string, std::string> artwork;
-    database.SetDetailsForSeason(detail, artwork, detail.m_iIdShow, detail.m_iDbId);
+    //TODO: Migrate to the new ODB Function
+    //database.SetDetailsForSeason(detail, artwork, detail.m_iIdShow, detail.m_iDbId);
   }
   else
   {

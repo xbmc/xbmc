@@ -2837,6 +2837,11 @@ bool CFileItemList::Save(int windowID)
   CLog::Log(LOGDEBUG,"Saving fileitems [%s]", CURL::GetRedacted(GetPath()).c_str());
 
   CFile file;
+  CDirectory dir;
+
+  if(!dir.Exists("special://temp/archive_cache"))
+    dir.Create("special://temp/archive_cache");
+
   if (file.OpenForWrite(GetDiscFileCache(windowID), true)) // overwrite always
   {
     CArchive ar(&file, CArchive::store);

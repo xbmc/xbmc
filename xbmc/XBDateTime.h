@@ -188,6 +188,7 @@ public:
   bool SetFromUTCDateTime(const CDateTime &dateTime);
   bool SetFromUTCDateTime(const time_t &dateTime);
   bool SetFromRFC1123DateTime(const std::string &dateTime);
+  bool SetFromULongLong(ULONGLONG time);
 
   /*! \brief set from a database datetime format YYYY-MM-DD HH:MM:SS
    \sa GetAsDBDateTime()
@@ -197,6 +198,7 @@ public:
   void GetAsSystemTime(SYSTEMTIME& time) const;
   void GetAsTime(time_t& time) const;
   void GetAsTm(tm& time) const;
+  tm GetAsTm() const;
   void GetAsTimeStamp(FILETIME& time) const;
 
   CDateTime GetAsUTCDateTime() const;
@@ -210,6 +212,7 @@ public:
   std::string GetAsRFC1123DateTime() const;
   std::string GetAsW3CDate() const;
   std::string GetAsW3CDateTime(bool asUtc = false) const;
+  ULONGLONG GetAsULongLong() const;
 
   void SetValid(bool yesNo);
   bool IsValid() const;
@@ -221,7 +224,7 @@ private:
   bool ToFileTime(const SYSTEMTIME& time, FILETIME& fileTime) const;
   bool ToFileTime(const time_t& time, FILETIME& fileTime) const;
   bool ToFileTime(const tm& time, FILETIME& fileTime) const;
-
+  
   void ToULargeInt(ULARGE_INTEGER& time) const;
   void FromULargeInt(const ULARGE_INTEGER& time);
 

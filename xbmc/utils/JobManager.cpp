@@ -68,6 +68,10 @@ void CJobWorker::Process()
     {
       success = job->DoWork();
     }
+    catch (std::exception& e)
+    {
+      CLog::Log(LOGERROR, "%s exception processing job %s - %s", __FUNCTION__, job->GetType(), e.what());
+    }
     catch (...)
     {
       CLog::Log(LOGERROR, "%s error processing job %s", __FUNCTION__, job->GetType());
@@ -409,6 +413,10 @@ void CJobManager::OnJobComplete(bool success, CJob *job)
     {
       if (item.m_callback)
         item.m_callback->OnJobComplete(item.m_id, success, item.m_job);
+    }
+    catch (std::exception& e)
+    {
+      CLog::Log(LOGERROR, "%s exception processing job %s - %s", __FUNCTION__, item.m_job->GetType(), e.what());
     }
     catch (...)
     {

@@ -382,6 +382,7 @@ void CAdvancedSettings::Initialize()
 
   m_databaseMusic.Reset();
   m_databaseVideo.Reset();
+  m_databaseCommon.Reset();
 
   m_pictureExtensions = ".png|.jpg|.jpeg|.bmp|.gif|.ico|.tif|.tiff|.tga|.pcx|.cbz|.zip|.cbr|.rar|.rss|.webp|.jp2|.apng";
   m_musicExtensions = ".nsv|.m4a|.flac|.aac|.strm|.pls|.rm|.rma|.mpa|.wav|.wma|.ogg|.mp3|.mp2|.m3u|.gdm|.imf|.m15|.sfx|.uni|.ac3|.dts|.cue|.aif|.aiff|.wpl|.ape|.mac|.mpc|.mp+|.mpp|.shn|.zip|.rar|.wv|.dsp|.xsp|.xwav|.waa|.wvs|.wam|.gcm|.idsp|.mpdsp|.mss|.spt|.rsd|.sap|.cmc|.cmr|.dmc|.mpt|.mpd|.rmt|.tmc|.tm8|.tm2|.oga|.url|.pxml|.tta|.rss|.wtv|.mka|.tak|.opus|.dff|.dsf|.m4b";
@@ -1093,6 +1094,23 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetString(pDatabase, "capath", m_databaseVideo.capath);
     XMLUtils::GetString(pDatabase, "ciphers", m_databaseVideo.ciphers);
     XMLUtils::GetBoolean(pDatabase, "compression", m_databaseVideo.compression);
+  }
+  
+  pDatabase = pRootElement->FirstChildElement("commondatabase");
+  if (pDatabase)
+  {
+    XMLUtils::GetString(pDatabase, "type", m_databaseCommon.type);
+    XMLUtils::GetString(pDatabase, "host", m_databaseCommon.host);
+    XMLUtils::GetString(pDatabase, "port", m_databaseCommon.port);
+    XMLUtils::GetString(pDatabase, "user", m_databaseCommon.user);
+    XMLUtils::GetString(pDatabase, "pass", m_databaseCommon.pass);
+    XMLUtils::GetString(pDatabase, "name", m_databaseCommon.name);
+    XMLUtils::GetString(pDatabase, "key", m_databaseCommon.key);
+    XMLUtils::GetString(pDatabase, "cert", m_databaseCommon.cert);
+    XMLUtils::GetString(pDatabase, "ca", m_databaseCommon.ca);
+    XMLUtils::GetString(pDatabase, "capath", m_databaseCommon.capath);
+    XMLUtils::GetString(pDatabase, "ciphers", m_databaseCommon.ciphers);
+    XMLUtils::GetBoolean(pDatabase, "compression", m_databaseCommon.compression);
   }
 
   pDatabase = pRootElement->FirstChildElement("musicdatabase");

@@ -576,8 +576,8 @@ void CVideoThumbLoader::OnJobComplete(unsigned int jobID, bool success, CJob* jo
     if (m_pObserver)
       m_pObserver->OnItemLoaded(&loader->m_item);
     CFileItemPtr pItem(new CFileItem(loader->m_item));
-    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, pItem);
-    g_windowManager.SendThreadMessage(msg);
+    //CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, pItem);
+    //g_windowManager.SendThreadMessage(msg);
   }
   CJobQueue::OnJobComplete(jobID, success, job);
 }

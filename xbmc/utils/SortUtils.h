@@ -211,6 +211,13 @@ public:
   static void Sort(const SortDescription &sortDescription, DatabaseResults& items);
   static void Sort(const SortDescription &sortDescription, SortItems& items);
   static bool SortFromDataset(const SortDescription &sortDescription, const MediaType &mediaType, const std::unique_ptr<dbiplus::Dataset> &dataset, DatabaseResults &results);
+  template<typename T> static T SortODBMovieQuery(const SortDescription &sortDescription);
+  template<typename T> static T SortODBTVShowQuery(const SortDescription &sortDescription);
+  template<typename T> static T SortODBEpisodeQuery(const SortDescription &sortDescription);
+  template<typename T> static T SortODBSeasonQuery(const SortDescription &sortDescription);
+  template<typename T> static T SortODBArtistsQuery(const SortDescription &sortDescription);
+  template<typename T> static T SortODBAlbumQuery(const SortDescription &sortDescription);
+  template<typename T> static T SortODBSongQuery(const SortDescription &sortDescription);
   
   static const Fields& GetFieldsForSorting(SortBy sortBy);
   static std::string RemoveArticles(const std::string &label);

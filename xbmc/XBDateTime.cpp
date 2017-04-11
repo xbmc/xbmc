@@ -848,6 +848,25 @@ void CDateTime::GetAsTm(tm& time) const
   mktime(&time);
 }
 
+tm CDateTime::GetAsTm() const
+{
+  tm time;
+  SYSTEMTIME st;
+  GetAsSystemTime(st);
+  
+  time.tm_year=st.wYear-1900;
+  time.tm_mon=st.wMonth-1;
+  time.tm_wday=st.wDayOfWeek;
+  time.tm_mday=st.wDay;
+  time.tm_hour=st.wHour;
+  time.tm_min=st.wMinute;
+  time.tm_sec=st.wSecond;
+  
+  mktime(&time);
+  
+  return time;
+}
+
 void CDateTime::GetAsTimeStamp(FILETIME& time) const
 {
   ::LocalFileTimeToFileTime(&m_time, &time);
@@ -1104,6 +1123,14 @@ bool CDateTime::SetFromRFC1123DateTime(const std::string &dateTime)
   int sec  = strtol(date.substr(23, 2).c_str(), NULL, 10);
 
   return SetDateTime(year, month, day, hour, min, sec);
+}
+
+bool CDateTime::SetFromULongLong(ULONGLONG time)
+{
+  ULARGE_INTEGER ulint;
+  ulint.QuadPart = time;
+  FromULargeInt(ulint);
+  return true;
 }
 
 CDateTime CDateTime::FromDateString(const std::string &date)
@@ -1520,6 +1547,13 @@ std::string CDateTime::GetAsW3CDateTime(bool asUtc /* = false */) const
 
   CDateTimeSpan bias = GetTimezoneBias();
   return result + StringUtils::Format("%c%02i:%02i", (bias.GetSecondsTotal() >= 0 ? '+' : '-'), abs(bias.GetHours()), abs(bias.GetMinutes())).c_str();
+}
+
+ULONGLONG CDateTime::GetAsULongLong() const
+{
+  ULARGE_INTEGER ulint;
+  ToULargeInt(ulint);
+  return ulint.QuadPart;
 }
 
 int CDateTime::MonthStringToMonthNum(const std::string& month)

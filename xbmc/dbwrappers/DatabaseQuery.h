@@ -24,6 +24,12 @@
 #include <vector>
 #include <memory>
 
+#include "../dbwrappers/CommonDatabase.h"
+#include <odb/odb_gen/ODBMovie.h>
+#include <odb/odb_gen/ODBMovie_odb.h>
+#include <odb/odb_gen/ODBSong.h>
+#include <odb/odb_gen/ODBSong_odb.h>
+
 #define DATABASEQUERY_RULE_VALUE_SEPARATOR  " / "
 
 class CDatabase;
@@ -78,11 +84,21 @@ public:
   void                        SetParameter(const std::vector<std::string> &values);
 
   virtual std::string         GetWhereClause(const CDatabase &db, const std::string& strType) const;
+  virtual odb::query<ODBView_Movie> GetMovieWhereClause(const std::string& strType);
+  virtual odb::query<ODBView_TVShow> GetTVShowWhereClause(const std::string& strType);
+  virtual odb::query<ODBView_Episode> GetEpisodeWhereClause(const std::string& strType);
+  virtual odb::query<ODBView_Song_Artists> GetArtistWhereClause(const std::string& strType);
+  virtual odb::query<ODBView_Album> GetAlbumWhereClause(const std::string& strType);
+  virtual odb::query<ODBView_Song> GetSongWhereClause(const std::string& strType);
 
   int                         m_field;
   SEARCH_OPERATOR             m_operator;
   std::vector<std::string>    m_parameter;
-
+  
+  mutable bool m_hasRoleRule;
+  void SetHasRoleRule(bool val) const { m_hasRoleRule = val; };
+  bool GetHasRoleRule() const { return m_hasRoleRule; };
+  
 protected:
   virtual std::string         GetField(int field, const std::string& type) const=0;
   virtual FIELD_TYPE          GetFieldType(int field) const=0;
@@ -92,9 +108,70 @@ protected:
   virtual std::string         FormatParameter(const std::string &negate, const std::string &oper, const CDatabase &db, const std::string &type) const;
   virtual std::string         FormatWhereClause(const std::string &negate, const std::string &oper, const std::string &param,
                                                 const CDatabase &db, const std::string &type) const;
+  virtual odb::query<ODBView_Movie> FormatMovieWhereClause(const bool &negate,
+                                                           const SEARCH_OPERATOR &oper,
+                                                           const std::string &param,
+                                                           const std::string &strType) const;
+  virtual odb::query<ODBView_Movie> FormatMovieWhereBetweenClause(const bool &negate,
+                                                           const SEARCH_OPERATOR &oper,
+                                                           const std::string &param1,
+                                                           const std::string &param2,
+                                                           const std::string &strType) const;
+  virtual odb::query<ODBView_TVShow> FormatTVShowWhereClause(const bool &negate,
+                                                           const SEARCH_OPERATOR &oper,
+                                                           const std::string &param,
+                                                           const std::string &strType) const;
+  virtual odb::query<ODBView_TVShow> FormatTVShowWhereBetweenClause(const bool &negate,
+                                                                  const SEARCH_OPERATOR &oper,
+                                                                  const std::string &param1,
+                                                                  const std::string &param2,
+                                                                  const std::string &strType) const;
+  virtual odb::query<ODBView_Episode> FormatEpisodeWhereClause(const bool &negate,
+                                                               const SEARCH_OPERATOR &oper,
+                                                               const std::string &param,
+                                                               const std::string &strType) const;
+  virtual odb::query<ODBView_Episode> FormatEpisodeWhereBetweenClause(const bool &negate,
+                                                                      const SEARCH_OPERATOR &oper,
+                                                                      const std::string &param1,
+                                                                      const std::string &param2,
+                                                                      const std::string &strType) const;
+  virtual odb::query<ODBView_Song_Artists> FormatArtistWhereClause(const bool &negate,
+                                                                   const SEARCH_OPERATOR &oper,
+                                                                   const std::string &param,
+                                                                   const std::string &strType) const;
+  virtual odb::query<ODBView_Song_Artists> FormatArtistWhereBetweenClause(const bool &negate,
+                                                                      const SEARCH_OPERATOR &oper,
+                                                                      const std::string &param1,
+                                                                      const std::string &param2,
+                                                                      const std::string &strType) const;
+  virtual odb::query<ODBView_Album> FormatAlbumWhereClause(const bool &negate,
+                                                           const SEARCH_OPERATOR &oper,
+                                                           const std::string &param,
+                                                           const std::string &strType) const;
+  virtual odb::query<ODBView_Album> FormatAlbumWhereBetweenClause(const bool &negate,
+                                                                  const SEARCH_OPERATOR &oper,
+                                                                  const std::string &param1,
+                                                                  const std::string &param2,
+                                                                  const std::string &strType) const;
+  virtual odb::query<ODBView_Song> FormatSongWhereClause(const bool &negate,
+                                                         const SEARCH_OPERATOR &oper,
+                                                         const std::string &param,
+                                                         const std::string &strType) const;
+  virtual odb::query<ODBView_Song> FormatSongWhereBetweenClause(const bool &negate,
+                                                                const SEARCH_OPERATOR &oper,
+                                                                const std::string &param1,
+                                                                const std::string &param2,
+                                                                const std::string &strType) const;
+  
   virtual SEARCH_OPERATOR     GetOperator(const std::string &type) const { return m_operator; };
   virtual std::string         GetOperatorString(SEARCH_OPERATOR op) const;
   virtual std::string         GetBooleanQuery(const std::string &negate, const std::string &strType) const { return ""; }
+  virtual odb::query<ODBView_Movie> GetMovieBooleanQuery(const bool &negate, const std::string &strType) { return odb::query<ODBView_Movie>(); }
+  virtual odb::query<ODBView_TVShow> GetTVShowBooleanQuery(const bool &negate, const std::string &strType) { return odb::query<ODBView_TVShow>(); }
+  virtual odb::query<ODBView_Episode> GetEpisodeBooleanQuery(const bool &negate, const std::string &strType) { return odb::query<ODBView_TVShow>(); }
+  virtual odb::query<ODBView_Song_Artists> GetArtistBooleanQuery(const bool &negate, const std::string &strType) { return odb::query<ODBView_Song_Artists>(); }
+  virtual odb::query<ODBView_Album> GetAlbumBooleanQuery(const bool &negate, const std::string &strType) { return odb::query<ODBView_Album>(); }
+  virtual odb::query<ODBView_Song> GetSongBooleanQuery(const bool &negate, const std::string &strType) { return odb::query<ODBView_Song>(); }
 
   static SEARCH_OPERATOR      TranslateOperator(const char *oper);
   static std::string          TranslateOperator(SEARCH_OPERATOR oper);
@@ -136,6 +213,9 @@ public:
   void SetType(Combination combination) { m_type = combination; }
 
   bool empty() const { return m_combinations.empty() && m_rules.empty(); }
+  
+  void SetHasRoleRule(bool val) const { m_hasRoleRule = val; };
+  bool GetHasRoleRule() const { return m_hasRoleRule; };
 
 protected:
   friend class CGUIDialogSmartPlaylistEditor;
@@ -144,4 +224,6 @@ protected:
   Combination m_type;
   CDatabaseQueryRuleCombinations m_combinations;
   CDatabaseQueryRules m_rules;
+  
+  mutable bool m_hasRoleRule;
 };

@@ -214,7 +214,7 @@ protected:
   bool m_bClean;
   bool m_needsCleanup;
   int m_scanType; // 0 - load from files, 1 - albums, 2 - artists
-  CMusicDatabase m_musicDatabase;
+  std::shared_ptr<CMusicDatabase> m_musicDatabase;
 
   std::map<CAlbum, CAlbum> m_albumCache;
   std::map<CArtistCredit, CArtist> m_artistCache;
