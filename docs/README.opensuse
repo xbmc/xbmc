@@ -83,7 +83,7 @@ to make it easy to install into /usr/local.
     $ make -C tools/depends/target/crossguid PREFIX=/usr/local
     
 [NOTICE] yail got changed for rapidjson which is not available in OpenSuse repositories.
-To build rapidjson for OpenSuse you must get the source from github and configure,build and install them yourself.
+To build rapidjson for OpenSuse you must get the source from github and configure, build and install them yourself.
 Next lines explain how to do that.
 First download the sources from github to your local disk.
 
