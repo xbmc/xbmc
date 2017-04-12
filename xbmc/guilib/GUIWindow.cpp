@@ -660,17 +660,17 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
 //      CLog::Log(LOGDEBUG,"set focus to control:%i window:%i (%i)\n", message.GetControlId(),message.GetSenderId(), GetID());
       if ( message.GetControlId() )
       {
-        // first unfocus the current control
+        // get the control to focus
+        CGUIControl* pFocusedControl = GetFirstFocusableControl(message.GetControlId());
+        if (!pFocusedControl) pFocusedControl = GetControl(message.GetControlId());
+
+        // first unfocus the current control if it's not being focused
         CGUIControl *control = GetFocusedControl();
-        if (control)
+        if (control && control != pFocusedControl)
         {
           CGUIMessage msgLostFocus(GUI_MSG_LOSTFOCUS, GetID(), control->GetID(), message.GetControlId());
           control->OnMessage(msgLostFocus);
         }
-
-        // get the control to focus
-        CGUIControl* pFocusedControl = GetFirstFocusableControl(message.GetControlId());
-        if (!pFocusedControl) pFocusedControl = GetControl(message.GetControlId());
 
         // and focus it
         if (pFocusedControl)
