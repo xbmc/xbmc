@@ -81,11 +81,60 @@ Kodi now requires crossguid which is not available in Ubuntu repositories at thi
 We supply a Makefile in tools/depends/target/crossguid
 to make it easy to install into /usr/local.
     $ make -C tools/depends/target/crossguid PREFIX=/usr/local
+    
+[NOTICE] yail got changed for rapidjson which is not available in OpenSuse repositories.
+To build rapidjson for OpenSuse you must get the source from github and configure,build and install them yourself.
+Next lines explain how to do that.
+First download the sources from github to your local disk.
+
+    $ git clone https://github.com/miloyip/rapidjson
+    $ cd rapidjson
+
+To get the files of thirdparty submodules (google test).
+
+    $ git submodule update --init
+
+Create directory called build in rapidjson source directory.
+    $ mkdir build
+
+Change to build directory
+    $ cd build
+
+Run the following command to configure your build.
+It will default to /usr/local
+    $ cmake ..
+
+Run the following command to build the sources for installation.
+    $ cmake --build .
+
+Tip: By adding -j<number> to the make command, you describe how many
+     concurrent jobs will be used, it will speed up the build process.
+     So for octacore the command is:
+
+    $ cmake --build . -- -j8
+
+Run the following command to install the builded sources.
+    $ sudo make install
+
+Tip: By adding -j<number> to the make command, you describe how many
+     concurrent jobs will be used, it will speed up the build process.
+     So for octacore the command is:
+
+    $ sudo make install -j8
+
+If everything went well it is installed to "/usr/local".
+
+Tip: To override the location that the module is installed, use DESTDIR=<path>.
+For example.
+
+    $ make install DESTDIR=/usr
+
 
 Note: For developers and anyone else who compiles frequently it is recommended to use ccache.
     $ sudo apt-get install ccache
 
     $ sudo apt-get build-dep kodi
+
 
 -----------------------------------------------------------------------------
 4. How to compile
