@@ -38,6 +38,9 @@
 #elif defined(TARGET_ANDROID) && defined(HAS_GLES)
 #include "android/WinSystemAndroidGLESContext.h"
 
+#elif defined(TARGET_LINUX) && defined(HAVE_GBM) && defined(HAS_GLES)
+#include "gbm/WinSystemGbmGLESContext.h"
+
 #elif defined(TARGET_LINUX) && defined(HAVE_MIR) && defined(HAS_GL)
 #include "mir/WinSystemMirGLContext.h"
 
