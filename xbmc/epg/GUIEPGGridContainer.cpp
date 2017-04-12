@@ -158,6 +158,18 @@ CGUIEPGGridContainer::CGUIEPGGridContainer(const CGUIEPGGridContainer &other)
 {
 }
 
+void CGUIEPGGridContainer::AllocResources()
+{
+  IGUIContainer::AllocResources();
+  m_guiProgressIndicatorTexture.AllocResources();
+}
+
+void CGUIEPGGridContainer::FreeResources(bool immediately)
+{
+  m_guiProgressIndicatorTexture.FreeResources(immediately);
+  IGUIContainer::FreeResources(immediately);
+}
+
 void CGUIEPGGridContainer::SetPageControl(int id)
 {
   m_pageControl = id;

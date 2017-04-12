@@ -43,6 +43,9 @@ namespace EPG
 
     virtual CGUIEPGGridContainer *Clone() const { return new CGUIEPGGridContainer(*this); }
 
+    void AllocResources() override;
+    void FreeResources(bool immediately) override;
+
     void SetPageControl(int id);
 
     virtual bool OnAction(const CAction &action);
