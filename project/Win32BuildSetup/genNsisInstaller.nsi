@@ -331,24 +331,16 @@ SectionEnd
 SectionGroupEnd
 
 Function .onInit
-  ; WinVista SP2 is minimum requirement
-  ${IfNot} ${AtLeastWinVista}
-  ${OrIf} ${IsWinVista}
-  ${AndIfNot} ${AtLeastServicePack} 2
-    MessageBox MB_OK|MB_ICONSTOP|MB_TOPMOST|MB_SETFOREGROUND "Windows Vista SP2 or above required.$\nInstall Service Pack 2 for Windows Vista and run setup again."
-    Quit
-  ${EndIf}
   ; Win7 SP1 is minimum requirement
-  ${If} ${IsWin7}
+  ${IfNot} ${AtLeastWin7}
+  ${OrIf} ${IsWin7}
   ${AndIfNot} ${AtLeastServicePack} 1
     MessageBox MB_OK|MB_ICONSTOP|MB_TOPMOST|MB_SETFOREGROUND "Windows 7 SP1 or above required.$\nInstall Service Pack 1 for Windows 7 and run setup again."
     Quit
   ${EndIf}
 
   Var /GLOBAL HotFixID
-  ${If} ${IsWinVista}
-    StrCpy $HotFixID "971644" ; Platform Update for Windows Vista SP2
-  ${ElseIf} ${IsWin7}
+  ${If} ${IsWin7}
     StrCpy $HotFixID "2670838" ; Platform Update for Windows 7 SP1
   ${Else}
     StrCpy $HotFixID ""
