@@ -146,7 +146,7 @@ void CGUIEPGGridContainerModel::Refresh(const std::unique_ptr<CFileItemList> &it
   for (; ruler < rulerEnd; ruler += unit)
   {
     rulerItem.reset(new CFileItem(ruler.GetAsLocalizedTime("", false)));
-    rulerItem->SetLabel2(ruler.GetAsLocalizedDate(true));
+    rulerItem->SetLabel2(ruler.GetAsLocalizedDate(true /* long format */, false /* without year */));
     m_rulerItems.emplace_back(rulerItem);
   }
 

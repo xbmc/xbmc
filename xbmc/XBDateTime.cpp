@@ -1327,12 +1327,12 @@ std::string CDateTime::GetAsLocalizedTime(const std::string &format, bool withSe
   return strOut;
 }
 
-std::string CDateTime::GetAsLocalizedDate(bool longDate/*=false*/) const
+std::string CDateTime::GetAsLocalizedDate(bool longDate/*=false*/, bool withYear /* = true */) const
 {
-  return GetAsLocalizedDate(g_langInfo.GetDateFormat(longDate));
+  return GetAsLocalizedDate(g_langInfo.GetDateFormat(longDate), withYear);
 }
 
-std::string CDateTime::GetAsLocalizedDate(const std::string &strFormat) const
+std::string CDateTime::GetAsLocalizedDate(const std::string &strFormat, bool withYear /* = true */) const
 {
   std::string strOut;
 
@@ -1449,12 +1449,18 @@ std::string CDateTime::GetAsLocalizedDate(const std::string &strFormat) const
         i=length;
       }
 
-      // Format string with the length of the mask
-      std::string str = StringUtils::Format("%d", dateTime.wYear); // four-digit number
-      if (partLength <= 2)
-        str.erase(0, 2); // two-digit number
+      if (withYear)
+      {
+        // Format string with the length of the mask
+        std::string str = StringUtils::Format("%d", dateTime.wYear); // four-digit number
+        if (partLength <= 2)
+          str.erase(0, 2); // two-digit number
 
-      strOut+=str;
+        strOut+=str;
+
+      }
+      else
+        strOut.erase(strOut.size() - 1, 1);
     }
     else // everything else pass to output
       strOut+=c;
