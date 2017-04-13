@@ -158,6 +158,18 @@ CGUIEPGGridContainer::CGUIEPGGridContainer(const CGUIEPGGridContainer &other)
 {
 }
 
+void CGUIEPGGridContainer::AllocResources()
+{
+  IGUIContainer::AllocResources();
+  m_guiProgressIndicatorTexture.AllocResources();
+}
+
+void CGUIEPGGridContainer::FreeResources(bool immediately)
+{
+  m_guiProgressIndicatorTexture.FreeResources(immediately);
+  IGUIContainer::FreeResources(immediately);
+}
+
 void CGUIEPGGridContainer::SetPageControl(int id)
 {
   m_pageControl = id;
@@ -1885,8 +1897,7 @@ void CGUIEPGGridContainer::GetCurrentLayouts()
     }
   }
 
-  if (!m_rulerDateLayout && !m_rulerDateLayouts.empty())
-    m_rulerDateLayout = &m_rulerDateLayouts[0];  // failsafe
+  // Note: m_rulerDateLayout is optional; so no "failsafe" logic here (see above)
 }
 
 void CGUIEPGGridContainer::SetRenderOffset(const CPoint &offset)

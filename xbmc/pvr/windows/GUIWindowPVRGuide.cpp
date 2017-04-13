@@ -404,6 +404,14 @@ bool CGUIWindowPVRGuide::OnMessage(CGUIMessage& message)
     {
       // let's set the view mode first before update
       CGUIWindowPVRBase::OnMessage(message);
+
+      // force data update for the new view control
+      {
+        CSingleLock lock(m_critSection);
+        m_bRefreshTimelineItems = true;
+      }
+      Init();
+
       Refresh(true);
       bReturn = true;
       break;

@@ -10677,7 +10677,19 @@ msgctxt "#19296"
 msgid "No PVR add-on enabled"
 msgstr ""
 
-#empty strings from id 19297 to 19498
+#. 'timeline' label used in pvr guide window
+#: addons/skin.estuary/xml/MyPVRGuide.xml
+msgctxt "#19297"
+msgid "Vertical"
+msgstr ""
+
+#. 'timeline' label used in pvr guide window
+#: addons/skin.estuary/xml/MyPVRGuide.xml
+msgctxt "#19298"
+msgid "Horizontal"
+msgstr ""
+
+#empty strings from id 19299 to 19498
 
 #. label for epg genre value
 #: xbmc/epg/Epg.cpp

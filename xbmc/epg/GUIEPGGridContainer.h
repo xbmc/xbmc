@@ -41,35 +41,33 @@ namespace EPG
                          int rulerUnit, const CTextureInfo& progressIndicatorTexture);
     CGUIEPGGridContainer(const CGUIEPGGridContainer &other);
 
-    virtual CGUIEPGGridContainer *Clone() const { return new CGUIEPGGridContainer(*this); }
+    CGUIEPGGridContainer *Clone() const override { return new CGUIEPGGridContainer(*this); }
 
-    void SetPageControl(int id);
+    void AllocResources() override;
+    void FreeResources(bool immediately) override;
 
-    virtual bool OnAction(const CAction &action);
-    virtual void OnDown();
-    virtual void OnUp();
-    virtual void OnLeft();
-    virtual void OnRight();
-    virtual bool OnMouseOver(const CPoint &point);
-    virtual bool OnMouseClick(int dwButton, const CPoint &point);
-    virtual bool OnMouseDoubleClick(int dwButton, const CPoint &point);
-    virtual bool OnMouseWheel(char wheel, const CPoint &point);
-    virtual bool OnMessage(CGUIMessage& message);
-    virtual void SetFocus(bool focus);
+    bool OnAction(const CAction &action) override;
+    void OnDown() override;
+    void OnUp() override;
+    void OnLeft() override;
+    void OnRight() override;
+    bool OnMouseOver(const CPoint &point) override;
+    bool OnMessage(CGUIMessage& message) override;
+    void SetFocus(bool focus) override;
+    std::string GetDescription() const override;
+    EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event) override;
 
-    virtual std::string GetDescription() const;
-    virtual int GetSelectedItem() const;
+    void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;
+    void Render() override;
+
+    CGUIListItemPtr GetListItem(int offset, unsigned int flag = 0) const override;
+    std::string GetLabel(int info) const override;
+
     CFileItemPtr GetSelectedChannelItem() const;
     PVR::CPVRChannelPtr GetSelectedChannel();
-    virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
 
-    virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
-    virtual void Render();
     void LoadLayout(TiXmlElement *layout);
-    void LoadContent(TiXmlElement *content);
-
-    virtual CGUIListItemPtr GetListItem(int offset, unsigned int flag = 0) const;
-    virtual std::string GetLabel(int info) const;
+    void SetPageControl(int id);
 
     /*! \brief Set the offset of the first item in the container from the container's position
      Useful for lists/panels where the focused item may be larger than the non-focused items and thus
@@ -160,6 +158,10 @@ namespace EPG
     void GetProgrammeCacheOffsets(int &cacheBefore, int &cacheAfter);
 
   private:
+    bool OnMouseClick(int dwButton, const CPoint &point);
+    bool OnMouseDoubleClick(int dwButton, const CPoint &point);
+    bool OnMouseWheel(char wheel, const CPoint &point);
+
     void HandleChannels(bool bRender, unsigned int currentTime, CDirtyRegionList &dirtyregions);
     void HandleRuler(bool bRender, unsigned int currentTime, CDirtyRegionList &dirtyregions);
     void HandleRulerDate(bool bRender, unsigned int currentTime, CDirtyRegionList &dirtyregions);
@@ -170,6 +172,8 @@ namespace EPG
     float GetProgressIndicatorHeight() const;
 
     void UpdateItems();
+
+    int GetSelectedItem() const;
 
     EPG::CEpgInfoTagPtr GetSelectedEpgInfoTag() const;
 
