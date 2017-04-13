@@ -83,7 +83,6 @@ public:
   enum WindowsVersion
   {
     WindowsVersionUnknown = -1, // Undetected, unsupported Windows version or OS in not Windows
-    WindowsVersionVista,        // Windows Vista, Windows Server 2008
     WindowsVersionWin7,         // Windows 7, Windows Server 2008 R2
     WindowsVersionWin8,         // Windows 8, Windows Server 2012
     WindowsVersionWin8_1,       // Windows 8.1
