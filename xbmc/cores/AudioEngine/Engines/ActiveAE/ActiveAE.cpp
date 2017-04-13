@@ -2033,11 +2033,18 @@ bool CActiveAE::RunStages()
               {
 #if defined(HAVE_SSE) && defined(__SSE__)
                 CAEUtil::SSEMulArray((float*)out->pkt->data[j]+i*nb_floats, volume, nb_floats);
+                for (int k = 0; k < nb_floats; ++k)
+                {
+                  if (fabs((out->pkt->data[j]+i)[k]) > 1.0f)
+                    needClamp = true;
+                }
 #else
                 float* fbuffer = (float*) out->pkt->data[j]+i*nb_floats;
                 for (int k = 0; k < nb_floats; ++k)
                 {
                   fbuffer[k] *= volume;
+                  if (fabs(fbuffer[k]) > 1.0f)
+                    needClamp = true;
                 }
 #endif
               }
