@@ -341,7 +341,7 @@ void CPVRManager::Stop(void)
   m_pendingUpdates.Stop();
 
   /* stop the EPG updater, since it might be using the pvr add-ons */
-  g_EpgContainer.Stop();
+  CServiceBroker::GetEpgContainer().Stop();
 
   CLog::Log(LOGNOTICE, "PVRManager - stopping");
 
@@ -368,8 +368,8 @@ void CPVRManager::Unload()
   Clear();
 
   // stop epg container thread and clear all epg data
-  g_EpgContainer.Stop();
-  g_EpgContainer.Clear();
+  CServiceBroker::GetEpgContainer().Stop();
+  CServiceBroker::GetEpgContainer().Clear();
 }
 
 void CPVRManager::Deinit()
@@ -441,7 +441,7 @@ void CPVRManager::PublishEvent(PVREvent event)
 
 void CPVRManager::Process(void)
 {
-  g_EpgContainer.Stop();
+  CServiceBroker::GetEpgContainer().Stop();
 
   /* load the pvr data from the db and clients if it's not already loaded */
   XbmcThreads::EndTime progressTimeout(30000); // 30 secs
@@ -457,7 +457,7 @@ void CPVRManager::Process(void)
   SetState(ManagerStateStarted);
 
   /* start epg container */
-  g_EpgContainer.Start(true);
+  CServiceBroker::GetEpgContainer().Start(true);
 
   /* main loop */
   CLog::Log(LOGDEBUG, "PVRManager - %s - entering main loop", __FUNCTION__);

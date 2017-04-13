@@ -49,12 +49,12 @@ CGUIWindowPVRGuide::CGUIWindowPVRGuide(bool bRadio) :
   m_bChannelSelectionRestored(false)
 {
   m_bRefreshTimelineItems = false;
-  g_EpgContainer.RegisterObserver(this);
+  CServiceBroker::GetEpgContainer().RegisterObserver(this);
 }
 
 CGUIWindowPVRGuide::~CGUIWindowPVRGuide(void)
 {
-  g_EpgContainer.UnregisterObserver(this);
+  CServiceBroker::GetEpgContainer().UnregisterObserver(this);
 
   m_bRefreshTimelineItems = false;
   StopRefreshTimelineItemsThread();

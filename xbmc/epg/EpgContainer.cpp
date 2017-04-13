@@ -70,12 +70,6 @@ CEpgContainer::~CEpgContainer(void)
   Unload();
 }
 
-CEpgContainer &CEpgContainer::GetInstance()
-{
-  static CEpgContainer epgInstance;
-  return epgInstance;
-}
-
 void CEpgContainer::Unload(void)
 {
   Stop();
@@ -147,7 +141,7 @@ public:
 
   bool DoWork(void)
   {
-    g_EpgContainer.Start(false);
+    CServiceBroker::GetEpgContainer().Start(false);
     return true;
   }
 };

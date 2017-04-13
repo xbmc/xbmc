@@ -109,7 +109,7 @@ bool CPVRTimers::Load(void)
   Unload();
 
   // (re)register observer
-  g_EpgContainer.RegisterObserver(this);
+  CServiceBroker::GetEpgContainer().RegisterObserver(this);
 
   // update from clients
   return Update();
@@ -118,7 +118,7 @@ bool CPVRTimers::Load(void)
 void CPVRTimers::Unload()
 {
   // unregister observer
-  g_EpgContainer.UnregisterObserver(this);
+  CServiceBroker::GetEpgContainer().UnregisterObserver(this);
 
   // remove all tags
   CSingleLock lock(m_critSection);
@@ -158,7 +158,7 @@ bool CPVRTimers::SetEpgTagTimer(const CPVRTimerInfoTagPtr &timer)
   if (timer->IsTimerRule() || timer->m_bStartAnyTime || timer->m_bEndAnyTime)
     return false;
 
-  std::vector<CEpgInfoTagPtr> tags(g_EpgContainer.GetEpgTagsForTimer(timer));
+  std::vector<CEpgInfoTagPtr> tags(CServiceBroker::GetEpgContainer().GetEpgTagsForTimer(timer));
 
   if (tags.empty())
     return false;
@@ -178,7 +178,7 @@ bool CPVRTimers::ClearEpgTagTimer(const CPVRTimerInfoTagPtr &timer)
   if (timer->IsTimerRule() || timer->m_bStartAnyTime || timer->m_bEndAnyTime)
     return false;
 
-  std::vector<CEpgInfoTagPtr> tags(g_EpgContainer.GetEpgTagsForTimer(timer));
+  std::vector<CEpgInfoTagPtr> tags(CServiceBroker::GetEpgContainer().GetEpgTagsForTimer(timer));
 
   if (tags.empty())
     return false;
