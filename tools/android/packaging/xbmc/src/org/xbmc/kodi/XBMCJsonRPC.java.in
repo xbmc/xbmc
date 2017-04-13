@@ -58,14 +58,14 @@ public class XBMCJsonRPC
                   + "\"params\": { \"filter\": {\"field\": \"playcount\", \"operator\": \"is\", \"value\": \"0\"}, "
                   + "\"limits\": { \"start\" : 0, \"end\": 10}, "
                   + "\"properties\" : [\"imdbnumber\", \"title\", \"tagline\", \"thumbnail\", \"fanart\"], "
-                  + "\"sort\": { \"order\": \"descending\", \"method\": \"dateadded\", \"ignorearticle\": true } }, "
+                  + "\"sort\": { \"order\": \"descending\", \"method\": \"random\", \"ignorearticle\": true } }, "
                   + "\"id\": \"1\"}";
 
   private String RECOMMENDATIONS_SHOWS_JSON =
                  "{\"jsonrpc\":\"2.0\",\"method\":\"VideoLibrary.GetTVShows\",\"params\":{\"filter\":{\"and\":[{\"field\":\"playcount\",\"operator\":\"is\",\"value\":\"0\"},{\"field\":\"plot\",\"operator\":\"isnot\",\"value\":\"\"}]},\"limits\":{\"start\":0,\"end\":10},\"properties\":[\"imdbnumber\",\"title\",\"plot\",\"thumbnail\",\"fanart\"],\"sort\":{\"order\":\"descending\",\"method\":\"lastplayed\",\"ignorearticle\":true}},\"id\":\"1\"}";
 
   private String RECOMMENDATIONS_ALBUMS_JSON =
-                 "{\"jsonrpc\": \"2.0\", \"method\": \"AudioLibrary.GetAlbums\", \"params\": { \"limits\": { \"start\" : 0, \"end\": 3}, \"properties\" : [\"title\", \"displayartist\", \"thumbnail\", \"fanart\"], \"sort\": { \"order\": \"descending\", \"method\": \"dateadded\", \"ignorearticle\": true } }, \"id\": \"1\"}";
+                 "{\"jsonrpc\": \"2.0\", \"method\": \"AudioLibrary.GetAlbums\", \"params\": { \"limits\": { \"start\" : 0, \"end\": 3}, \"properties\" : [\"title\", \"displayartist\", \"thumbnail\", \"fanart\"], \"sort\": { \"order\": \"descending\", \"method\": \"random\", \"ignorearticle\": true } }, \"id\": \"1\"}";
 
   private String SEARCH_MOVIES_JSON =
                   "{\"jsonrpc\": \"2.0\", \"method\": \"VideoLibrary.GetMovies\", "
