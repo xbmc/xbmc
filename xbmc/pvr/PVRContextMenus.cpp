@@ -248,6 +248,13 @@ namespace PVR
       if (item.GetPVRRecordingInfoTag())
         return true;
 
+      // recordings folder?
+      if (item.m_bIsFolder)
+      {
+        const CPVRRecordingsPath path(item.GetPath());
+        return path.IsValid();
+      }
+
       return false;
     }
 
