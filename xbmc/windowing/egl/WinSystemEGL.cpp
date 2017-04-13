@@ -33,9 +33,7 @@
 #include "guilib/DispResource.h"
 #include "threads/SingleLock.h"
 
-#if defined(TARGET_RASPBERRY_PI)
-#include "VideoSyncPi.h"
-#elif defined(TARGET_ANDROID)
+#if defined(TARGET_ANDROID)
 #include "VideoSyncAndroid.h"
 #elif defined(HAS_LIBAMCODEC)
 #include "VideoSyncAML.h"
@@ -567,10 +565,7 @@ bool CWinSystemEGL::ClampToGUIDisplayLimits(int &width, int &height)
 
 std::unique_ptr<CVideoSync> CWinSystemEGL::GetVideoSync(void *clock)
 {
-#if defined(TARGET_RASPBERRY_PI)
-  std::unique_ptr<CVideoSync> pVSync(new CVideoSyncPi(clock));
-  return pVSync;
-#elif defined(TARGET_ANDROID)
+#if defined(TARGET_ANDROID)
   std::unique_ptr<CVideoSync> pVSync(new CVideoSyncAndroid(clock));
   return pVSync;
 #elif defined(HAS_LIBAMCODEC)

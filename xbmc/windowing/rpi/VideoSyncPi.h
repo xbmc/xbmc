@@ -19,7 +19,6 @@
  *
  */
 
-#if defined(TARGET_RASPBERRY_PI)
 
 #include "windowing/VideoSync.h"
 #include "guilib/DispResource.h"
@@ -38,5 +37,3 @@ public:
 private:
   volatile bool m_abort;
 };
-
-#endif

@@ -20,8 +20,6 @@
 
 #include "system.h"
 
-#if defined(TARGET_RASPBERRY_PI)
-
 #include "VideoSyncPi.h"
 #include "guilib/GraphicContext.h"
 #include "windowing/WindowingFactory.h"
@@ -75,5 +73,3 @@ void CVideoSyncPi::RefreshChanged()
   if (m_fps != g_graphicsContext.GetFPS())
     m_abort = true;
 }
-
-#endif

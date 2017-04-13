@@ -36,6 +36,7 @@ typedef enum _WindowSystemType
   WINDOW_SYSTEM_MIR,
   WINDOW_SYSTEM_SDL,
   WINDOW_SYSTEM_EGL,
+  WINDOW_SYSTEM_RPI,
   WINDOW_SYSTEM_ANDROID
 } WindowSystemType;
 
