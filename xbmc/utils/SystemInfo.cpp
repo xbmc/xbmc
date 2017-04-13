@@ -668,12 +668,6 @@ std::string CSysInfo::GetOsPrettyNameWithVersion(void)
   {
     switch (GetWindowsVersion())
     {
-    case WindowsVersionVista:
-      if (osvi.wProductType == VER_NT_WORKSTATION)
-        osNameVer.append("Vista");
-      else
-        osNameVer.append("Server 2008");
-      break;
     case WindowsVersionWin7:
       if (osvi.wProductType == VER_NT_WORKSTATION)
         osNameVer.append("7");
@@ -841,9 +835,7 @@ CSysInfo::WindowsVersion CSysInfo::GetWindowsVersion()
     OSVERSIONINFOEXW osvi = {};
     if (sysGetVersionExWByRef(osvi))
     {
-      if (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 0)
-        m_WinVer = WindowsVersionVista;
-      else if (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 1)
+      if (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 1)
         m_WinVer = WindowsVersionWin7;
       else if (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 2)
         m_WinVer = WindowsVersionWin8;
@@ -852,7 +844,7 @@ CSysInfo::WindowsVersion CSysInfo::GetWindowsVersion()
       else if (osvi.dwMajorVersion == 10 && osvi.dwMinorVersion == 0)
         m_WinVer = WindowsVersionWin10;
       /* Insert checks for new Windows versions here */
-      else if ( (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion > 3) || osvi.dwMajorVersion > 6)
+      else if ( (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion > 3) || osvi.dwMajorVersion > 10)
         m_WinVer = WindowsVersionFuture;
     }
   }
