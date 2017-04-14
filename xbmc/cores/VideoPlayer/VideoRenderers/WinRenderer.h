@@ -227,7 +227,7 @@ protected:
 
   bool                 m_bFilterInitialized;
   int                  m_iRequestedMethod;
-  unsigned int         m_extended_format;
+  DXGI_FORMAT          m_dxva_format;
 
   // Width and height of the render target
   // the separable HQ scalers need this info, but could the m_destRect be used instead?
