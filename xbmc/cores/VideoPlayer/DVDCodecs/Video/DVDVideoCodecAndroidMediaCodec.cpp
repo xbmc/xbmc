@@ -360,7 +360,6 @@ CDVDVideoCodecAndroidMediaCodec::CDVDVideoCodecAndroidMediaCodec(CProcessInfo &p
 
 CDVDVideoCodecAndroidMediaCodec::~CDVDVideoCodecAndroidMediaCodec()
 {
-  CLog::Log(LOGDEBUG, "CDVDMediaCodecInfo::Dtor");
   Dispose();
 
   if (m_crypto)
@@ -577,11 +576,9 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
 
     m_crypto = AMediaCrypto_new(*uuid, m_hints.cryptoSession->sessionId, m_hints.cryptoSession->sessionIdSize);
 
-    if (xbmc_jnienv()->ExceptionCheck())
+    if (!m_crypto)
     {
       CLog::Log(LOGERROR, "MediaCrypto::ExceptionCheck: <init>");
-      xbmc_jnienv()->ExceptionDescribe();
-      xbmc_jnienv()->ExceptionClear();
       goto FAIL;
     }
   }
@@ -957,14 +954,7 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecAndroidMediaCodec::GetPicture(VideoPictur
   if (m_indexInputBuffer < 0)
     m_indexInputBuffer = AMediaCodec_dequeueInputBuffer(m_codec, 5000 /*timout*/);
 
-  if (xbmc_jnienv()->ExceptionCheck())
-  {
-    CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Decode ExceptionCheck");
-    xbmc_jnienv()->ExceptionDescribe();
-    xbmc_jnienv()->ExceptionClear();
-    return VC_ERROR;
-  }
-  else if (m_indexInputBuffer >= 0)
+  if (m_indexInputBuffer >= 0)
   {
     if (g_advancedSettings.CanLogComponent(LOGVIDEO))
       CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::GetPicture VC_BUFFER");
