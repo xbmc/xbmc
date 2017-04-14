@@ -136,13 +136,20 @@ void CFavouritesService::OnUpdated()
   ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::GUI, "xbmc", "OnFavouritesUpdated");
 }
 
+std::string CFavouritesService::GetFavouritesUrl(const CFileItem& item, int contextWindow) const
+{
+  CURL url;
+  url.SetProtocol("favourites");
+  url.SetHostName(CURL::Encode(GetExecutePath(item, contextWindow)));
+  return url.Get();
+}
+
 bool CFavouritesService::AddOrRemove(const CFileItem& item, int contextWindow)
 {
-  std::string executePath(GetExecutePath(item, contextWindow));
-
+  auto favUrl = GetFavouritesUrl(item, contextWindow);
   {
     CSingleLock lock(m_criticalSection);
-    CFileItemPtr match = m_favourites.Get(executePath);
+    CFileItemPtr match = m_favourites.Get(favUrl);
     if (match)
     { // remove the item
       m_favourites.Remove(match.get());
@@ -153,11 +160,7 @@ bool CFavouritesService::AddOrRemove(const CFileItem& item, int contextWindow)
       if (item.GetLabel().empty())
         favourite->SetLabel(CUtil::GetTitleFromPath(item.GetPath(), item.m_bIsFolder));
       favourite->SetArt("thumb", item.GetArt("thumb"));
-
-      CURL url;
-      url.SetProtocol("favourites");
-      url.SetHostName(CURL::Encode(executePath));
-      favourite->SetPath(url.Get());
+      favourite->SetPath(favUrl);
       m_favourites.Add(favourite);
     }
     Persist();
@@ -169,8 +172,7 @@ bool CFavouritesService::AddOrRemove(const CFileItem& item, int contextWindow)
 bool CFavouritesService::IsFavourited(const CFileItem& item, int contextWindow) const
 {
   CSingleLock lock(m_criticalSection);
-  auto execPath = GetExecutePath(item, contextWindow);
-  return m_favourites.Contains(execPath);
+  return m_favourites.Contains(GetFavouritesUrl(item, contextWindow));
 }
 
 std::string CFavouritesService::GetExecutePath(const CFileItem &item, int contextWindow) const

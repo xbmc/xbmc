@@ -47,6 +47,7 @@ private:
 
   void OnUpdated();
   bool Persist();
+  std::string GetFavouritesUrl(const CFileItem &item, int contextWindow) const;
 
   const std::string m_userDataFolder;
   CFileItemList m_favourites;
