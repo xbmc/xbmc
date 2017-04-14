@@ -292,7 +292,9 @@ float CGUIEPGGridContainer::GetCurrentTimePositionOnPage() const
   if (!m_gridModel->GetGridStart().IsValid())
     return -1.0f;
 
-  return ((CDateTime::GetUTCDateTime() - m_gridModel->GetGridStart()).GetSecondsTotal() * m_blockSize) / (CGUIEPGGridContainerModel::MINSPERBLOCK * 60) - m_programmeScrollOffset;
+  const CDateTimeSpan startDelta(CDateTime::GetUTCDateTime() - m_gridModel->GetGridStart());
+  float fPos = (startDelta.GetSecondsTotal() * m_blockSize) / (CGUIEPGGridContainerModel::MINSPERBLOCK * 60) - m_programmeScrollOffset;
+  return std::min(fPos, m_orientation == VERTICAL ? m_gridWidth : m_gridHeight);
 }
 
 float CGUIEPGGridContainer::GetProgressIndicatorWidth() const
