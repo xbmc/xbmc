@@ -2,6 +2,15 @@
 
 SETLOCAL
 
+SET TARGETPLATFORM=%1
+SET NATIVEPLATFORM=%2
+
+IF "%TARGETPLATFORM%" == "" SET TARGETPLATFORM=win32
+IF "%NATIVEPLATFORM%" == "" SET NATIVEPLATFORM=win32
+
+ECHO TARGETPLATFORM: %TARGETPLATFORM%
+ECHO NATIVEPLATFORM: %NATIVEPLATFORM%
+
 REM If KODI_MIRROR is not set externally to this script, set it to the default mirror URL
 IF "%KODI_MIRROR%" == "" SET KODI_MIRROR=http://mirrors.kodi.tv
 echo Downloading from mirror %KODI_MIRROR%
@@ -19,12 +28,7 @@ IF EXIST lib rmdir lib /S /Q
 IF EXIST include rmdir include /S /Q
 IF EXIST %TMP_PATH% rmdir %TMP_PATH% /S /Q
 
-IF $%1$ == $$ (
-  SET DL_PATH="%BUILD_DEPS_PATH%\downloads"
-) ELSE (
-  SET DL_PATH="%1"
-)
-
+SET DL_PATH="%BUILD_DEPS_PATH%\downloads"
 SET WGET=%BUILD_DEPS_PATH%\bin\wget
 SET ZIP=%BUILD_DEPS_PATH%\..\Win32BuildSetup\tools\7z\7za
 

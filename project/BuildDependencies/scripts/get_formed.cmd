@@ -6,10 +6,10 @@ REM So that we can expand variables inside of IF and FOR
 SETLOCAL enableDelayedExpansion
 
 REM Check presence of required file
-dir 0_package.list >NUL 2>NUL || (
-ECHO 0_package.list not found!
-ECHO Aborting...
-EXIT /B 20
+dir 0_package.native-%NATIVEPLATFORM%.list >NUL 2>NUL && dir 0_package.target-%TARGETPLATFORM%.list >NUL 2>NUL || (
+  ECHO 0_package.native-%NATIVEPLATFORM%.list or 0_package.target-%TARGETPLATFORM%.list not found!
+  ECHO Aborting...
+  EXIT /B 20
 )
 
 REM Clear succeed flag
@@ -31,7 +31,7 @@ echo Downloading from mirror %KODI_MIRROR%
 CALL :setStageName Starting downloads of formed packages...
 SET SCRIPT_PATH=%CD%
 CD %DL_PATH% || EXIT /B 10
-FOR /F "eol=; tokens=1" %%f IN (%SCRIPT_PATH%\0_package.list) DO (
+FOR /F "eol=; tokens=1" %%f IN (%SCRIPT_PATH%\0_package.native-%NATIVEPLATFORM%.list %SCRIPT_PATH%\0_package.target-%TARGETPLATFORM%.list) DO (
   CALL :processFile %%f
 )
 
