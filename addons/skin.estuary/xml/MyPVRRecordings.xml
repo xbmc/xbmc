@@ -46,7 +46,7 @@
 							<right>30</right>
 							<aligny>center</aligny>
 							<scroll>true</scroll>
-							<label>$INFO[ListItem.Label]$INFO[ListItem.EpisodeName, (,)]</label>
+							<label>$INFO[ListItem.Label]$INFO[ListItem.EpisodeName, (,)]$VAR[SeasonEpisode, ,]</label>
 						</control>
 						<control type="label">
 							<left>15</left>
@@ -72,7 +72,7 @@
 							<height>80</height>
 							<right>30</right>
 							<aligny>center</aligny>
-							<label>$INFO[ListItem.Label]$INFO[ListItem.EpisodeName, (,)]</label>
+							<label>$INFO[ListItem.Label]$INFO[ListItem.EpisodeName, (,)]$VAR[SeasonEpisode, ,]</label>
 						</control>
 						<control type="label">
 							<left>15</left>

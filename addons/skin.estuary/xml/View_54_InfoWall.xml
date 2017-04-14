@@ -122,7 +122,7 @@
 	<include name="InfoWallEpisodeLayout">
 		<param name="main_label">$INFO[ListItem.Title]</param>
 		<param name="sub_label">$INFO[ListItem.TVShowTitle]</param>
-		<param name="thumb_label">$INFO[ListItem.Season,,x]$INFO[ListItem.Episode]</param>
+		<param name="thumb_label">$VAR[SeasonEpisode]</param>
 		<param name="fallback_image">DefaultTVShows.png</param>
 		<param name="focused">false</param>
 		<definition>
