@@ -262,6 +262,8 @@ bool CYUV2RGBShader::Create(unsigned int sourceWidth, unsigned int sourceHeight,
   switch (fmt)
   {
   case SHADER_YV12:
+  case SHADER_YV12_10:
+  case SHADER_YV12_16:
     defines["XBMC_YV12"] = "";
     texWidth = sourceWidth;
     break;
