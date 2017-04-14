@@ -963,6 +963,7 @@ CDVDVideoCodec::VCReturn CDecoder::Decode(AVCodecContext* avctx, AVFrame* frame)
       SAFE_RELEASE(m_presentPicture);
       m_presentPicture = new CRenderPicture(m_surface_context);
       m_presentPicture->view = reinterpret_cast<ID3D11View*>(frame->data[3]);
+      m_presentPicture->format = m_format.OutputFormat;
       m_surface_context->MarkRender(m_presentPicture->view);
       return CDVDVideoCodec::VC_PICTURE;
     }
@@ -975,10 +976,9 @@ CDVDVideoCodec::VCReturn CDecoder::Decode(AVCodecContext* avctx, AVFrame* frame)
 
 bool CDecoder::GetPicture(AVCodecContext* avctx, VideoPicture* picture)
 {
-  ((ICallbackHWAccel*)avctx->opaque)->GetPictureCommon(picture);
+  static_cast<ICallbackHWAccel*>(avctx->opaque)->GetPictureCommon(picture);
   CSingleLock lock(m_section);
 
-  m_presentPicture->extFormat = (unsigned int)m_format.OutputFormat;
   picture->hwPic = m_presentPicture;
   picture->format = RENDER_FMT_DXVA;
 
