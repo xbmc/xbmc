@@ -25,6 +25,7 @@
 #include <queue>
 #include <vector>
 #include <memory>
+#include <atomic>
 
 #include <androidjni/Surface.h>
 
@@ -45,6 +46,9 @@ class CJNIMediaFormat;
 class CDVDMediaCodecOnFrameAvailable;
 class CJNIByteBuffer;
 class CBitstreamConverter;
+
+struct AMediaCrypto;
+struct DemuxCryptoInfo;
 
 typedef struct amc_demux {
   uint8_t  *pData;
@@ -104,17 +108,15 @@ public:
   virtual ~CDVDVideoCodecAndroidMediaCodec();
 
   // required overrides
-  virtual bool    Open(CDVDStreamInfo &hints, CDVDCodecOptions &options);
-  virtual int     Decode(uint8_t *pData, int iSize, double dts, double pts);
-  virtual void    Reset();
-  virtual bool    GetPicture(DVDVideoPicture *pDvdVideoPicture);
-  virtual bool    ClearPicture(DVDVideoPicture* pDvdVideoPicture);
-  virtual void    SetDropState(bool bDrop);
-  virtual void    SetCodecControl(int flags);
-  virtual int     GetDataSize(void);
-  virtual double  GetTimeSize(void);
-  virtual const char* GetName(void) { return m_formatname.c_str(); }
-  virtual unsigned GetAllowedReferences();
+  virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options) override;
+  virtual bool AddData(const DemuxPacket &packet) override;
+  virtual void Reset() override;
+  virtual bool Reconfigure(CDVDStreamInfo &hints) override;
+  virtual VCReturn GetPicture(VideoPicture* pVideoPicture) override;
+  virtual bool ClearPicture(VideoPicture* pVideoPicture) override;
+  virtual const char* GetName() override { return m_formatname.c_str(); };
+  virtual void SetCodecControl(int flags) override;
+  virtual unsigned GetAllowedReferences() override;
 
 protected:
   void            Dispose();
@@ -134,6 +136,7 @@ protected:
   int             m_colorFormat;
   std::string     m_formatname;
   bool            m_opened;
+  bool            m_checkForPicture;
   bool            m_drop;
   int             m_codecControlFlags;
   int             m_state;
@@ -141,6 +144,7 @@ protected:
 
   CJNISurface*    m_jnisurface;
   CJNISurface     m_jnivideosurface;
+  AMediaCrypto   *m_crypto;
   unsigned int    m_textureId;
   AMediaCodec*    m_codec;
   ANativeWindow*  m_surface;
@@ -150,10 +154,12 @@ protected:
   amc_demux m_demux_pkt;
   std::vector<CDVDMediaCodecInfo*> m_inflight;
 
-  CBitstreamConverter *m_bitstream;
-  DVDVideoPicture m_videobuffer;
+  static std::atomic<bool> m_InstanceGuard;
 
-  int             m_dec_retcode;
+  CBitstreamConverter *m_bitstream;
+  VideoPicture m_videobuffer;
+
+  int             m_indexInputBuffer;
   bool            m_render_sw;
   bool            m_render_surface;
   int             m_src_offset[4];

@@ -21,7 +21,6 @@
 
 #include "system.h"
 #include "../RenderFlags.h"
-#include "../RenderFormats.h"
 #include "YUV2RGBShader.h"
 #include "settings/AdvancedSettings.h"
 #include "guilib/TransformMatrix.h"
@@ -222,6 +221,8 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, unsigned flags, EShaderF
     m_defines += "#define XBMC_UYVY\n";
   else if (m_format == SHADER_NV12_RRG)
     m_defines += "#define XBMC_NV12_RRG\n";
+  else if (m_format == SHADER_NV12_RRG)
+    m_defines += "#define XBMC_NV12_RRG\n";
   else if (m_format == SHADER_YV12)
     m_defines += "#define XBMC_YV12\n";
   else
@@ -236,12 +237,10 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, unsigned flags, EShaderF
   m_hProj   = -1;
   m_hModel  = -1;
   m_hAlpha  = -1;
-  if (m_format == RENDER_FMT_YUV420P)
+  if (m_format == SHADER_YV12)
     m_defines += "#define XBMC_YV12\n";
-  else if (m_format == RENDER_FMT_NV12)
+  else if (m_format == SHADER_NV12)
     m_defines += "#define XBMC_NV12\n";
-  else if (m_format == RENDER_FMT_CVBREF)
-    m_defines += "#define XBMC_YV12\n";
   else
     CLog::Log(LOGERROR, "GL: BaseYUV2RGBGLSLShader - unsupported format %d", m_format);
 

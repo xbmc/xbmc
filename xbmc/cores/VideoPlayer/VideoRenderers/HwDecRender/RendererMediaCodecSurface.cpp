@@ -42,7 +42,7 @@ bool CRendererMediaCodecSurface::RenderCapture(CRenderCapture* capture)
   return true;
 }
 
-void CRendererMediaCodecSurface::AddVideoPictureHW(DVDVideoPicture &picture, int index)
+void CRendererMediaCodecSurface::AddVideoPictureHW(VideoPicture &picture, int index)
 {
 #ifdef DEBUG_VERBOSE
   unsigned int time = XbmcThreads::SystemClockMillis();
@@ -50,9 +50,9 @@ void CRendererMediaCodecSurface::AddVideoPictureHW(DVDVideoPicture &picture, int
 #endif
 
   YUVBUFFER &buf = m_buffers[index];
-  if (picture.mediacodec)
+  if (picture.hwPic)
   {
-    buf.hwDec = picture.mediacodec->Retain();
+    buf.hwDec = static_cast<CDVDMediaCodecInfo*>(picture.hwPic)->Retain();
 #ifdef DEBUG_VERBOSE
     mindex = ((CDVDMediaCodecInfo *)buf.hwDec)->GetIndex();
 #endif
