@@ -73,7 +73,7 @@ public:
   CRenderPicture(CSurfaceContext *context);
   ~CRenderPicture();
   ID3D11View* view;
-  unsigned int extFormat;
+  DXGI_FORMAT format;
 
 protected:
   CSurfaceContext *surface_context;
