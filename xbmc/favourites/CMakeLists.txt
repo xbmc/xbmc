@@ -1,5 +1,7 @@
-set(SOURCES FavouritesService.cpp)
+set(SOURCES ContextMenus.cpp
+            FavouritesService.cpp)
 
-set(HEADERS FavouritesService.h)
+set(HEADERS ContextMenus.h
+            FavouritesService)
 
 core_add_library(favourites)
