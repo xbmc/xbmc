@@ -20,7 +20,7 @@
 
 #include "FileItem.h"
 #include "ServiceBroker.h"
-#include "dialogs/GUIDialogFavourites.h"
+#include "GUIDialogFavourites.h"
 #include "utils/URIUtils.h"
 
 #include "ContextMenus.h"

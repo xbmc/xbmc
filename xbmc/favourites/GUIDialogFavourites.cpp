@@ -19,8 +19,8 @@
  */
 
 #include "GUIDialogFavourites.h"
-#include "GUIDialogContextMenu.h"
-#include "GUIDialogFileBrowser.h"
+#include "dialogs/GUIDialogContextMenu.h"
+#include "dialogs/GUIDialogFileBrowser.h"
 #include "ServiceBroker.h"
 #include "favourites/FavouritesService.h"
 #include "filesystem/Directory.h"
