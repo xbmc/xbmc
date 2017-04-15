@@ -1640,7 +1640,7 @@ bool CApplication::LoadSkin(const std::string& skinID)
     return false;
   }
 
-  CLog::Log(LOGINFO, "  load skin from: %s (version: %s)", skin->Path().c_str(), skin->Version().asString().c_str());
+  CLog::Log(LOGNOTICE, "  load skin from: %s (version: %s)", skin->Path().c_str(), skin->Version().asString().c_str());
   g_SkinInfo = skin;
 
   CLog::Log(LOGINFO, "  load fonts for skin...");
