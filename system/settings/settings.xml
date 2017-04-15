@@ -471,6 +471,14 @@
             <dependency type="enable" setting="musicplayer.replaygaintype" operator="!is">0</dependency>
           </dependencies>
         </setting>
+        <setting id="musicplayer.replaygainavoidclipping" type="boolean" parent="musicplayer.replaygaintype" label="643" help="36270">
+          <level>3</level>
+          <default>false</default>
+          <control type="toggle" />
+          <dependencies>
+            <dependency type="enable" setting="musicplayer.replaygaintype" operator="!is">0</dependency>
+          </dependencies>
+        </setting>
       </group>
     </category>
     <category id="discs" label="14087" help="36193">
