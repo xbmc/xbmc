@@ -24,6 +24,7 @@
 #include "threads/CriticalSection.h"
 
 #include <set>
+#include <atomic>
 
 class CAMLCodec;
 struct frame_queue;
@@ -70,14 +71,14 @@ public:
   virtual ~CDVDVideoCodecAmlogic();
 
   // Required overrides
-  virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options);
-  virtual int  Decode(uint8_t *pData, int iSize, double dts, double pts);
-  virtual void Reset(void);
-  virtual bool GetPicture(DVDVideoPicture *pDvdVideoPicture);
-  virtual bool ClearPicture(DVDVideoPicture* pDvdVideoPicture);
-  virtual void SetSpeed(int iSpeed);
-  virtual void SetDropState(bool bDrop);
-  virtual const char* GetName(void) { return (const char*)m_pFormatName; }
+  virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options) override;
+  virtual bool AddData(const DemuxPacket &packet) override;
+  virtual void Reset() override;
+  virtual VCReturn GetPicture(VideoPicture* pVideoPicture) override;
+  virtual bool ClearPicture(VideoPicture* pVideoPicture) override;
+  virtual void SetSpeed(int iSpeed) override;
+  virtual void SetCodecControl(int flags) override;
+  virtual const char* GetName(void) override { return (const char*)m_pFormatName; }
 
 protected:
   void            Dispose(void);
@@ -89,8 +90,9 @@ protected:
   CAMLCodec      *m_Codec;
   std::set<CDVDAmlogicInfo*> m_inflight;
   const char     *m_pFormatName;
-  DVDVideoPicture m_videobuffer;
+  VideoPicture m_videobuffer;
   bool            m_opened;
+  int             m_codecControlFlags;
   CDVDStreamInfo  m_hints;
   double          m_last_pts;
   frame_queue    *m_frame_queue;
@@ -101,11 +103,11 @@ protected:
   float           m_aspect_ratio;
   mpeg2_sequence *m_mpeg2_sequence;
   double          m_mpeg2_sequence_pts;
-  bool            m_drop;
   bool            m_has_keyframe;
 
   CBitstreamParser *m_bitparser;
   CBitstreamConverter *m_bitstream;
 private:
   CCriticalSection    m_secure;
+  static std::atomic<bool> m_InstanceGuard;
 };
