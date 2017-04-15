@@ -93,7 +93,7 @@ namespace PVR
   {
   public:
     CPVRRefreshTimelineItemsThread(CGUIWindowPVRGuide *pGuideWindow);
-    virtual ~CPVRRefreshTimelineItemsThread() {}
+    virtual ~CPVRRefreshTimelineItemsThread();
 
     virtual void Process();
 

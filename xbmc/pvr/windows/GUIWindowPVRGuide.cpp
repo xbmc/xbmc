@@ -584,6 +584,14 @@ CPVRRefreshTimelineItemsThread::CPVRRefreshTimelineItemsThread(CGUIWindowPVRGuid
 {
 }
 
+CPVRRefreshTimelineItemsThread::~CPVRRefreshTimelineItemsThread()
+{
+  // Note: CThread dtor will also call StopThread(true), but if thread worker function exits that
+  //       late, it might access member variables of this which are already destroyed. Thus, stop
+  //       the thread worker here and synchronously, while all members of this are still alive.
+  StopThread(true);
+}
+
 void CPVRRefreshTimelineItemsThread::Stop()
 {
   StopThread(false);
