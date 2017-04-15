@@ -49,6 +49,7 @@ public class XBMCJsonRPC
   private static String TAG = "@APP_NAME@json";
 
   private String m_jsonURL = "http://localhost:8080";
+  private java.util.HashSet<Integer> mRecomendationIds = new java.util.HashSet<Integer>();
 
   private int MAX_RECOMMENDATIONS = 3;
 
@@ -556,6 +557,9 @@ public class XBMCJsonRPC
     {
       mNotificationManager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
     }
+    for(Integer id : mRecomendationIds)
+      mNotificationManager.cancel(id);
+    mRecomendationIds.clear();
 
     XBMCRecommendationBuilder builder = new XBMCRecommendationBuilder()
         .setContext(ctx)
@@ -575,7 +579,7 @@ public class XBMCJsonRPC
           try
           {
             JSONObject movie = movies.getJSONObject(i);
-            int id = Integer.parseInt(movie.getString("movieid"));
+            int id = Integer.parseInt(movie.getString("movieid")) + 1000000;
 
             final XBMCRecommendationBuilder notificationBuilder = builder
                 .setBackground(
@@ -590,6 +594,7 @@ public class XBMCJsonRPC
             notificationBuilder.setBitmap(bitmap);
             Notification notification = notificationBuilder.build();
             mNotificationManager.notify(id, notification);
+            mRecomendationIds.add(id);
             ++count;
           } catch (Exception e)
           {
@@ -616,7 +621,7 @@ public class XBMCJsonRPC
           try
           {
             JSONObject tvshow = tvshows.getJSONObject(i);
-            int id = Integer.parseInt(tvshow.getString("tvshowid"));
+            int id = Integer.parseInt(tvshow.getString("tvshowid")) + 2000000;
 
             final XBMCRecommendationBuilder notificationBuilder = builder
                 .setBackground(
@@ -631,6 +636,7 @@ public class XBMCJsonRPC
             notificationBuilder.setBitmap(bitmap);
             Notification notification = notificationBuilder.build();
             mNotificationManager.notify(id, notification);
+            mRecomendationIds.add(id);
             ++count;
           } catch (Exception e)
           {
@@ -658,7 +664,7 @@ public class XBMCJsonRPC
           try
           {
             JSONObject album = albums.getJSONObject(i);
-            int id = Integer.parseInt(album.getString("albumid"));
+            int id = Integer.parseInt(album.getString("albumid")) + 3000000;
 
             final XBMCRecommendationBuilder notificationBuilder = builder
                 .setBackground(
@@ -673,6 +679,7 @@ public class XBMCJsonRPC
             notificationBuilder.setBitmap(bitmap);
             Notification notification = notificationBuilder.build();
             mNotificationManager.notify(id, notification);
+            mRecomendationIds.add(id);
             ++count;
           } catch (Exception e)
           {
