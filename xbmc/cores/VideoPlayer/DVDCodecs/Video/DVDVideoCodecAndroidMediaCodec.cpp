@@ -351,6 +351,7 @@ CDVDVideoCodecAndroidMediaCodec::CDVDVideoCodecAndroidMediaCodec(CProcessInfo &p
 , m_surface(nullptr)
 , m_textureId(0)
 , m_crypto(nullptr)
+, m_codec(nullptr)
 , m_bitstream(nullptr)
 , m_render_sw(false)
 , m_render_surface(surface_render)
