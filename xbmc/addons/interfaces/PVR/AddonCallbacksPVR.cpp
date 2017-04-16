@@ -309,7 +309,7 @@ void CAddonCallbacksPVR::PVRTriggerEpgUpdate(void *addonData, unsigned int iChan
     return;
   }
 
-  g_EpgContainer.UpdateRequest(client->GetID(), iChannelUid);
+  CServiceBroker::GetPVRManager().EpgContainer()->UpdateRequest(client->GetID(), iChannelUid);
 }
 
 void CAddonCallbacksPVR::PVRFreeDemuxPacket(void *addonData, DemuxPacket* pPacket)

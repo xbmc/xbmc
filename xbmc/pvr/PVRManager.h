@@ -152,6 +152,12 @@ namespace PVR
     CPVRGUIActionsPtr GUIActions(void) const;
 
     /*!
+     * @brief Get access to the epg container.
+     * @return The epg container.
+     */
+    EPG::CEpgContainerPtr EpgContainer() const;
+
+    /*!
      * @brief Init PVRManager.
      */
     void Init(void);
@@ -628,6 +634,7 @@ namespace PVR
     CPVRClientsPtr                 m_addons;                      /*!< pointer to the pvr addon container */
     std::unique_ptr<CPVRGUIInfo>   m_guiInfo;                     /*!< pointer to the guiinfo data */
     CPVRGUIActionsPtr              m_guiActions;                  /*!< pointer to the pvr gui actions */
+    EPG::CEpgContainerPtr          m_epgContainer;                /*!< pointer to the epg container */
     //@}
 
     CPVRManagerJobQueue             m_pendingUpdates;              /*!< vector of pending pvr updates */

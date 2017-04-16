@@ -155,7 +155,7 @@ bool CPVRChannel::Delete(void)
   {
     CPVRChannelPtr empty;
     epg->SetChannel(empty);
-    g_EpgContainer.DeleteEpg(*epg, true);
+    CServiceBroker::GetPVRManager().EpgContainer()->DeleteEpg(*epg, true);
     CSingleLock lock(m_critSection);
     m_bEPGCreated = false;
   }
@@ -173,7 +173,7 @@ CEpgPtr CPVRChannel::GetEPG(void) const
       iEpgId = m_iEpgId;
   }
 
-  return iEpgId > 0 ? g_EpgContainer.GetById(iEpgId) : CEpgPtr();
+  return iEpgId > 0 ? CServiceBroker::GetPVRManager().EpgContainer()->GetById(iEpgId) : CEpgPtr();
 }
 
 bool CPVRChannel::UpdateFromClient(const CPVRChannelPtr &channel)

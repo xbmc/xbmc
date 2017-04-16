@@ -49,8 +49,8 @@ void CEpgSearchFilter::Reset()
   m_iGenreSubType            = EPG_SEARCH_UNSET;
   m_iMinimumDuration         = EPG_SEARCH_UNSET;
   m_iMaximumDuration         = EPG_SEARCH_UNSET;
-  m_startDateTime.SetFromUTCDateTime(g_EpgContainer.GetFirstEPGDate());
-  m_endDateTime.SetFromUTCDateTime(g_EpgContainer.GetLastEPGDate());
+  m_startDateTime.SetFromUTCDateTime(CServiceBroker::GetPVRManager().EpgContainer()->GetFirstEPGDate());
+  m_endDateTime.SetFromUTCDateTime(CServiceBroker::GetPVRManager().EpgContainer()->GetLastEPGDate());
   m_bIncludeUnknownGenres    = false;
   m_bRemoveDuplicates        = false;
 

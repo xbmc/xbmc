@@ -121,7 +121,7 @@ void CEpg::SetUpdatePending(bool bUpdatePending /* = true */)
   }
 
   if (bUpdatePending)
-    g_EpgContainer.SetHasPendingUpdates(true);
+    CServiceBroker::GetPVRManager().EpgContainer()->SetHasPendingUpdates(true);
 }
 
 void CEpg::ForceUpdate(void)
@@ -321,7 +321,7 @@ void CEpg::AddEntry(const CEpgInfoTag &tag)
 bool CEpg::Load(void)
 {
   bool bReturn(false);
-  CEpgDatabase *database = g_EpgContainer.GetDatabase();
+  CEpgDatabase *database = CServiceBroker::GetPVRManager().EpgContainer()->GetDatabase();
 
   if (!database || !database->IsOpen())
   {
@@ -389,7 +389,7 @@ CDateTime CEpg::GetLastScanTime(void)
     {
       if (!CServiceBroker::GetSettings().GetBool(CSettings::SETTING_EPG_IGNOREDBFORCLIENT))
       {
-        CEpgDatabase *database = g_EpgContainer.GetDatabase();
+        CEpgDatabase *database = CServiceBroker::GetPVRManager().EpgContainer()->GetDatabase();
         CDateTime dtReturn; dtReturn.SetValid(false);
 
         if (database && database->IsOpen())
@@ -515,7 +515,7 @@ bool CEpg::Update(const time_t start, const time_t end, int iUpdateTime, bool bF
   bool bUpdate(false);
 
   /* load the entries from the db first */
-  if (!m_bLoaded && !g_EpgContainer.IgnoreDB())
+  if (!m_bLoaded && !CServiceBroker::GetPVRManager().EpgContainer()->IgnoreDB())
     Load();
 
   /* clean up if needed */
@@ -600,7 +600,7 @@ bool CEpg::Persist(void)
   CLog::Log(LOGDEBUG, "persist table '%s' (#%d) changed=%d deleted=%d", Name().c_str(), m_iEpgID, m_changedTags.size(), m_deletedTags.size());
 #endif
 
-  CEpgDatabase *database = g_EpgContainer.GetDatabase();
+  CEpgDatabase *database = CServiceBroker::GetPVRManager().EpgContainer()->GetDatabase();
   if (!database || !database->IsOpen())
   {
     CLog::Log(LOGERROR, "EPG - %s - could not open the database", __FUNCTION__);

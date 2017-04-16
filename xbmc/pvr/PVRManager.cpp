@@ -152,6 +152,7 @@ CPVRManager::CPVRManager(void) :
     CThread("PVRManager"),
     m_addons(new CPVRClients),
     m_guiActions(new CPVRGUIActions),
+    m_epgContainer(new CEpgContainer),
     m_bFirstStart(true),
     m_bIsSwitchingChannels(false),
     m_bEpgsCreated(false),
@@ -237,6 +238,12 @@ CPVRGUIActionsPtr CPVRManager::GUIActions(void) const
 {
   // note: m_guiActions is const (only set/reset in ctor/dtor). no need for a lock here.
   return m_guiActions;
+}
+
+EPG::CEpgContainerPtr CPVRManager::EpgContainer() const
+{
+  // note: m_epgContainer is const (only set/reset in ctor/dtor). no need for a lock here.
+  return m_epgContainer;
 }
 
 void CPVRManager::Clear(void)
@@ -341,7 +348,7 @@ void CPVRManager::Stop(void)
   m_pendingUpdates.Stop();
 
   /* stop the EPG updater, since it might be using the pvr add-ons */
-  g_EpgContainer.Stop();
+  m_epgContainer->Stop();
 
   CLog::Log(LOGNOTICE, "PVRManager - stopping");
 
@@ -368,8 +375,8 @@ void CPVRManager::Unload()
   Clear();
 
   // stop epg container thread and clear all epg data
-  g_EpgContainer.Stop();
-  g_EpgContainer.Clear();
+  m_epgContainer->Stop();
+  m_epgContainer->Clear();
 }
 
 void CPVRManager::Deinit()
@@ -441,7 +448,7 @@ void CPVRManager::PublishEvent(PVREvent event)
 
 void CPVRManager::Process(void)
 {
-  g_EpgContainer.Stop();
+  m_epgContainer->Stop();
 
   /* load the pvr data from the db and clients if it's not already loaded */
   XbmcThreads::EndTime progressTimeout(30000); // 30 secs
@@ -457,7 +464,7 @@ void CPVRManager::Process(void)
   SetState(ManagerStateStarted);
 
   /* start epg container */
-  g_EpgContainer.Start(true);
+  m_epgContainer->Start(true);
 
   /* main loop */
   CLog::Log(LOGDEBUG, "PVRManager - %s - entering main loop", __FUNCTION__);
