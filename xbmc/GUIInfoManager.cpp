@@ -9999,7 +9999,7 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
         iEpisode = item->GetVideoInfoTag()->m_iEpisode;
       }
 
-      if (iEpisode >= 0)
+      if (iEpisode > 0)
       {
         if (iSeason == 0) // prefix episode with 'S'
           return StringUtils::Format("S%d", iEpisode);
@@ -10030,7 +10030,7 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
                item->GetVideoInfoTag()->m_iSeason > 0)
         iSeason = item->GetVideoInfoTag()->m_iSeason;
 
-      if (iSeason >= 0)
+      if (iSeason > 0)
         return StringUtils::Format("%d", iSeason);
     }
     break;
