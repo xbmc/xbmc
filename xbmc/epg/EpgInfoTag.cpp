@@ -35,7 +35,6 @@
 #include "EpgContainer.h"
 #include "EpgDatabase.h"
 
-using namespace EPG;
 using namespace PVR;
 
 CEpgInfoTagPtr CEpgInfoTag::CreateDefaultTag()

@@ -33,8 +33,6 @@
 
 #include "PVRContextMenus.h"
 
-using namespace EPG;
-
 namespace PVR
 {
   namespace CONTEXTMENUITEM

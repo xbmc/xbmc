@@ -39,7 +39,6 @@
 #include "PVRGUIInfo.h"
 
 using namespace PVR;
-using namespace EPG;
 
 CPVRGUIInfo::CPVRGUIInfo(void) :
     CThread("PVRGUIInfo")

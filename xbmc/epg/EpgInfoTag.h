@@ -36,7 +36,7 @@
 
 class CVariant;
 /** an EPG info tag */
-namespace EPG
+namespace PVR
 {
   class CEpg;
 

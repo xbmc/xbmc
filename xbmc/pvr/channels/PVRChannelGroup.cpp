@@ -41,7 +41,6 @@
 #include "pvr/addons/PVRClients.h"
 
 using namespace PVR;
-using namespace EPG;
 
 CPVRChannelGroup::CPVRChannelGroup(void) :
     m_bRadio(false),

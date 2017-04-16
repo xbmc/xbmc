@@ -36,7 +36,6 @@
 #include "utils/Variant.h"
 
 using namespace PVR;
-using namespace EPG;
 
 CPVRChannelGroupInternal::CPVRChannelGroupInternal(bool bRadio) :
   m_iHiddenChannels(0)

@@ -80,7 +80,7 @@ namespace PVR
      * @brief Get the currently playing EPG tag.
      * @return The currently playing EPG tag or NULL if no EPG tag is playing.
      */
-    EPG::CEpgInfoTagPtr GetPlayingTag() const;
+    CEpgInfoTagPtr GetPlayingTag() const;
 
     /*!
      * @brief Get playing TV group.
@@ -251,7 +251,7 @@ namespace PVR
 
     PVR_SIGNAL_STATUS               m_qualityInfo;       /*!< stream quality information */
     XbmcThreads::EndTime            m_ToggleShowInfo;
-    EPG::CEpgInfoTagPtr             m_playingEpgTag;
+    CEpgInfoTagPtr                  m_playingEpgTag;
     std::vector<SBackend>           m_backendProperties;
 
     bool                            m_bIsTimeshifting;

@@ -37,7 +37,6 @@
 #include "GUIEPGGridContainer.h"
 
 using namespace PVR;
-using namespace EPG;
 
 #define BLOCKJUMP    4 // how many blocks are jumped with each analogue scroll action
 static const int BLOCK_SCROLL_OFFSET = 60 / CGUIEPGGridContainerModel::MINSPERBLOCK; // how many blocks are jumped if we are at left/right edge of grid

@@ -38,7 +38,6 @@
 
 using namespace ADDON;
 using namespace PVR;
-using namespace EPG;
 using namespace KODI::MESSAGING;
 
 /** number of iterations when scanning for add-ons. don't use a timer because the user may block in the dialog */

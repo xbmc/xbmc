@@ -31,7 +31,7 @@
 #include "EpgDatabase.h"
 
 using namespace dbiplus;
-using namespace EPG;
+using namespace PVR;
 
 bool CEpgDatabase::Open(void)
 {

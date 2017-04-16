@@ -41,7 +41,6 @@
 #include <utility>
 
 using namespace PVR;
-using namespace EPG;
 using namespace KODI::MESSAGING;
 
 #define CONTROL_BTN_FIND                4
@@ -203,7 +202,7 @@ bool CGUIDialogPVRGuideInfo::OnInfo(int actionID)
   return true;
 }
 
-void CGUIDialogPVRGuideInfo::SetProgInfo(const EPG::CEpgInfoTagPtr &tag)
+void CGUIDialogPVRGuideInfo::SetProgInfo(const CEpgInfoTagPtr &tag)
 {
   m_progItem = tag;
 }

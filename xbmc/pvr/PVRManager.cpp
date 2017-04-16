@@ -64,7 +64,6 @@
 
 using namespace MUSIC_INFO;
 using namespace PVR;
-using namespace EPG;
 using namespace ANNOUNCEMENT;
 using namespace KODI::MESSAGING;
 
@@ -240,7 +239,7 @@ CPVRGUIActionsPtr CPVRManager::GUIActions(void) const
   return m_guiActions;
 }
 
-EPG::CEpgContainerPtr CPVRManager::EpgContainer() const
+CEpgContainerPtr CPVRManager::EpgContainer() const
 {
   // note: m_epgContainer is const (only set/reset in ctor/dtor). no need for a lock here.
   return m_epgContainer;

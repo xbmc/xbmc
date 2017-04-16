@@ -31,7 +31,6 @@
 #include "settings/AdvancedSettings.h"
 #include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.h"
 
-using namespace EPG;
 using namespace PVR;
 using namespace ActiveAE;
 

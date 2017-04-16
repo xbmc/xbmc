@@ -21,7 +21,7 @@
 
 #include <memory>
 
-namespace EPG
+namespace PVR
 {
   class CEpg;
   typedef std::shared_ptr<CEpg> CEpgPtr;
@@ -29,5 +29,5 @@ namespace EPG
   class CEpgInfoTag;
   typedef std::shared_ptr<CEpgInfoTag> CEpgInfoTagPtr;
 
-} // namespace EPG
+} // namespace PVR
 

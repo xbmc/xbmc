@@ -238,7 +238,6 @@ using namespace JSONRPC;
 #endif
 using namespace ANNOUNCEMENT;
 using namespace PVR;
-using namespace EPG;
 using namespace PERIPHERALS;
 using namespace KODI::MESSAGING;
 using namespace ActiveAE;

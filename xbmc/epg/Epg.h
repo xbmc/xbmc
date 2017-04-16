@@ -33,7 +33,7 @@
 #include <vector>
 
 /** EPG container for CEpgInfoTag instances */
-namespace EPG
+namespace PVR
 {
   typedef std::map<unsigned int, CEpgPtr> EPGMAP;
 

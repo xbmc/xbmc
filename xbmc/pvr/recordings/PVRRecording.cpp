@@ -37,7 +37,6 @@
 #include "PVRRecording.h"
 
 using namespace PVR;
-using namespace EPG;
 
 CPVRRecordingUid::CPVRRecordingUid(int iClientId, const std::string& strRecordingId) :
   m_iClientId(iClientId),
@@ -240,7 +239,7 @@ void CPVRRecording::OnDelete(void)
     const CPVRChannelPtr channel(Channel());
     if (channel)
     {
-      const EPG::CEpgInfoTagPtr epgTag(CServiceBroker::GetPVRManager().EpgContainer()->GetTagById(channel, m_iEpgEventId));
+      const CEpgInfoTagPtr epgTag(CServiceBroker::GetPVRManager().EpgContainer()->GetTagById(channel, m_iEpgEventId));
       if (epgTag)
         epgTag->ClearRecording();
     }

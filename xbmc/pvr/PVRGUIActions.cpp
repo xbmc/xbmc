@@ -60,7 +60,6 @@
 
 #include "PVRGUIActions.h"
 
-using namespace EPG;
 using namespace KODI::MESSAGING;
 
 namespace PVR

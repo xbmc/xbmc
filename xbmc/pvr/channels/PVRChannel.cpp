@@ -37,7 +37,6 @@
 #include <assert.h>
 
 using namespace PVR;
-using namespace EPG;
 
 bool CPVRChannel::operator==(const CPVRChannel &right) const
 {
@@ -301,7 +300,7 @@ bool CPVRChannel::IsRecording(void) const
 
 CPVRRecordingPtr CPVRChannel::GetRecording(void) const
 {
-  EPG::CEpgInfoTagPtr epgTag = GetEPGNow();
+  CEpgInfoTagPtr epgTag = GetEPGNow();
   return (epgTag && epgTag->HasRecording()) ?
       epgTag->Recording() :
       CPVRRecordingPtr();
@@ -309,7 +308,7 @@ CPVRRecordingPtr CPVRChannel::GetRecording(void) const
 
 bool CPVRChannel::HasRecording(void) const
 {
-  EPG::CEpgInfoTagPtr epgTag = GetEPGNow();
+  CEpgInfoTagPtr epgTag = GetEPGNow();
   return epgTag && epgTag->HasRecording();
 }
 

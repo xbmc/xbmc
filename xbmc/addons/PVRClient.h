@@ -31,11 +31,6 @@
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/PVRTypes.h"
 
-namespace EPG
-{
-  class CEpg;
-}
-
 namespace PVR
 {
   class CPVRChannelGroup;
@@ -44,6 +39,7 @@ namespace PVR
   class CPVRTimersContainer;
   class CPVRTimerInfoTag;
   class CPVRRecordings;
+  class CEpg;
   class CPVREpgContainer;
   class CPVRClient;
   class CPVRTimerType;
@@ -247,7 +243,7 @@ namespace PVR
      * @param bSaveInDb If true, tell the callback method to save any new entry in the database or not. see CAddonCallbacksPVR::PVRTransferEpgEntry()
      * @return PVR_ERROR_NO_ERROR if the table has been fetched successfully.
      */
-    PVR_ERROR GetEPGForChannel(const CPVRChannelPtr &channel, EPG::CEpg *epg, time_t start = 0, time_t end = 0, bool bSaveInDb = false);
+    PVR_ERROR GetEPGForChannel(const CPVRChannelPtr &channel, CEpg *epg, time_t start = 0, time_t end = 0, bool bSaveInDb = false);
 
     /*!
      * Tell the client the time frame to use when notifying epg events back to Kodi. The client might push epg events asynchronously

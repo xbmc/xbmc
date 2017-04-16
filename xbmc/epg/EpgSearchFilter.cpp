@@ -31,7 +31,6 @@
 #include "EpgContainer.h"
 #include "EpgSearchFilter.h"
 
-using namespace EPG;
 using namespace PVR;
 
 

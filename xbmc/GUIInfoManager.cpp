@@ -121,7 +121,6 @@ using namespace MUSIC_INFO;
 using namespace ADDON;
 using namespace PVR;
 using namespace INFO;
-using namespace EPG;
 
 class CSetCurrentItemJob : public CJob
 {
@@ -7334,7 +7333,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     case VIDEOPLAYER_CAN_RESUME_LIVE_TV:
       if (m_currentFile->HasPVRRecordingInfoTag())
       {
-        EPG::CEpgInfoTagPtr epgTag = CServiceBroker::GetPVRManager().EpgContainer()->GetTagById(m_currentFile->GetPVRRecordingInfoTag()->Channel(), m_currentFile->GetPVRRecordingInfoTag()->BroadcastUid());
+        CEpgInfoTagPtr epgTag = CServiceBroker::GetPVRManager().EpgContainer()->GetTagById(m_currentFile->GetPVRRecordingInfoTag()->Channel(), m_currentFile->GetPVRRecordingInfoTag()->BroadcastUid());
         bReturn = (epgTag && epgTag->IsActive() && epgTag->ChannelTag());
       }
       break;

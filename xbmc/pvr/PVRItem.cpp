@@ -30,8 +30,6 @@
 
 #include "PVRItem.h"
 
-using namespace EPG;
-
 namespace PVR
 {
   CEpgInfoTagPtr CPVRItem::GetEpgInfoTag() const

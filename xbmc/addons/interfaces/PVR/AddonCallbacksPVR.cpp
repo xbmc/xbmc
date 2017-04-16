@@ -41,7 +41,6 @@
 
 using namespace ADDON;
 using namespace PVR;
-using namespace EPG;
 
 namespace KodiAPI
 {

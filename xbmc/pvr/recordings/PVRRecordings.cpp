@@ -454,7 +454,7 @@ void CPVRRecordings::UpdateFromClient(const CPVRRecordingPtr &tag)
       const CPVRChannelPtr channel(newTag->Channel());
       if (channel)
       {
-        const EPG::CEpgInfoTagPtr epgTag = CServiceBroker::GetPVRManager().EpgContainer()->GetTagById(channel, newTag->BroadcastUid());
+        const CEpgInfoTagPtr epgTag = CServiceBroker::GetPVRManager().EpgContainer()->GetTagById(channel, newTag->BroadcastUid());
         if (epgTag)
           epgTag->SetRecording(newTag);
       }
@@ -468,7 +468,7 @@ void CPVRRecordings::UpdateFromClient(const CPVRRecordingPtr &tag)
   }
 }
 
-CPVRRecordingPtr CPVRRecordings::GetRecordingForEpgTag(const EPG::CEpgInfoTagPtr &epgTag) const
+CPVRRecordingPtr CPVRRecordings::GetRecordingForEpgTag(const CEpgInfoTagPtr &epgTag) const
 {
   CSingleLock lock(m_critSection);
 

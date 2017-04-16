@@ -21,7 +21,7 @@
 
 #include <memory>
 
-namespace EPG
+namespace PVR
 {
   class CEpgContainer;
   typedef std::shared_ptr<CEpgContainer> CEpgContainerPtr;

@@ -116,6 +116,6 @@ namespace PVR
      * @param epgTag The epg tag.
      * @return The requested recording, or an empty recordingptr if none was found.
      */
-    CPVRRecordingPtr GetRecordingForEpgTag(const EPG::CEpgInfoTagPtr &epgTag) const;
+    CPVRRecordingPtr GetRecordingForEpgTag(const CEpgInfoTagPtr &epgTag) const;
   };
 }

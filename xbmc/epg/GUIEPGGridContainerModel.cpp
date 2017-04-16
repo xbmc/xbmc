@@ -30,7 +30,6 @@
 class CGUIListItem;
 typedef std::shared_ptr<CGUIListItem> CGUIListItemPtr;
 
-using namespace EPG;
 using namespace PVR;
 
 static const unsigned int GRID_START_PADDING = 30; // minutes

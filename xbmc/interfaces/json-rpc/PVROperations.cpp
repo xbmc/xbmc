@@ -35,7 +35,6 @@
 
 using namespace JSONRPC;
 using namespace PVR;
-using namespace EPG;
 using namespace KODI::MESSAGING;
 
 JSONRPC_STATUS CPVROperations::GetProperties(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)

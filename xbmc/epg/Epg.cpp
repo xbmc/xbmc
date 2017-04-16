@@ -38,7 +38,6 @@
 
 
 using namespace PVR;
-using namespace EPG;
 
 CEpg::CEpg(int iEpgID, const std::string &strName /* = "" */, const std::string &strScraperName /* = "" */, bool bLoadedFromDb /* = false */) :
     m_bChanged(!bLoadedFromDb),

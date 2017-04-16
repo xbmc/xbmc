@@ -33,7 +33,7 @@
 class CFileItemList;
 class CGUIDialogProgressBarHandle;
 
-namespace EPG
+namespace PVR
 {
   struct SUpdateRequest
   {

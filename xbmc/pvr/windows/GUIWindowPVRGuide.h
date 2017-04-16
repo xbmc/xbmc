@@ -28,13 +28,9 @@
 
 class CSetting;
 
-namespace EPG
-{
-  class CGUIEPGGridContainer;
-}
-
 namespace PVR
 {
+  class CGUIEPGGridContainer;
   class CPVRRefreshTimelineItemsThread;
 
   class CGUIWindowPVRGuide : public CGUIWindowPVRBase, public CPVRChannelNumberInputHandler
@@ -69,7 +65,7 @@ namespace PVR
   private:
     void Init();
 
-    EPG::CGUIEPGGridContainer* GetGridControl();
+    CGUIEPGGridContainer* GetGridControl();
 
     bool SelectPlayingFile(void);
 

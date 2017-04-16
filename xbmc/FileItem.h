@@ -111,7 +111,7 @@ public:
   CFileItem(const CGenre& genre);
   CFileItem(const MUSIC_INFO::CMusicInfoTag& music);
   CFileItem(const CVideoInfoTag& movie);
-  CFileItem(const EPG::CEpgInfoTagPtr& tag);
+  CFileItem(const PVR::CEpgInfoTagPtr& tag);
   CFileItem(const PVR::CPVRChannelPtr& channel);
   CFileItem(const PVR::CPVRRecordingPtr& record);
   CFileItem(const PVR::CPVRTimerInfoTagPtr& timer);
@@ -278,12 +278,12 @@ public:
     return m_epgInfoTag.get() != NULL;
   }
 
-  inline const EPG::CEpgInfoTagPtr GetEPGInfoTag() const
+  inline const PVR::CEpgInfoTagPtr GetEPGInfoTag() const
   {
     return m_epgInfoTag;
   }
 
-  inline void SetEPGInfoTag(const EPG::CEpgInfoTagPtr& tag)
+  inline void SetEPGInfoTag(const PVR::CEpgInfoTagPtr& tag)
   {
     m_epgInfoTag = tag;
   }
@@ -574,7 +574,7 @@ private:
   bool m_doContentLookup;
   MUSIC_INFO::CMusicInfoTag* m_musicInfoTag;
   CVideoInfoTag* m_videoInfoTag;
-  EPG::CEpgInfoTagPtr m_epgInfoTag;
+  PVR::CEpgInfoTagPtr m_epgInfoTag;
   PVR::CPVRChannelPtr m_pvrChannelInfoTag;
   PVR::CPVRRecordingPtr m_pvrRecordingInfoTag;
   PVR::CPVRTimerInfoTagPtr m_pvrTimerInfoTag;

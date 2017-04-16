@@ -38,7 +38,6 @@
 #include "utils/URIUtils.h"
 
 using namespace PVR;
-using namespace EPG;
 
 bool CPVRTimersContainer::UpdateFromClient(const CPVRTimerInfoTagPtr &timer)
 {

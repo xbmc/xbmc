@@ -24,7 +24,7 @@
 
 #include "Epg.h"
 
-namespace EPG
+namespace PVR
 {
   class CEpgInfoTag;
   class CEpgContainer;

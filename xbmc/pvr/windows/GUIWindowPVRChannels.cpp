@@ -43,7 +43,6 @@
 #include "GUIWindowPVRChannels.h"
 
 using namespace PVR;
-using namespace EPG;
 
 CGUIWindowPVRChannels::CGUIWindowPVRChannels(bool bRadio) :
   CGUIWindowPVRBase(bRadio, bRadio ? WINDOW_RADIO_CHANNELS : WINDOW_TV_CHANNELS, "MyPVRChannels.xml"),

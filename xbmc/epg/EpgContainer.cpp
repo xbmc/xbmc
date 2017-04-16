@@ -40,7 +40,6 @@
 #include "utils/log.h"
 
 
-using namespace EPG;
 using namespace PVR;
 
 CEpgContainer::CEpgContainer(void) :

@@ -37,7 +37,6 @@
 #include "GUIWindowPVRSearch.h"
 
 using namespace PVR;
-using namespace EPG;
 
 CGUIWindowPVRSearch::CGUIWindowPVRSearch(bool bRadio) :
   CGUIWindowPVRBase(bRadio, bRadio ? WINDOW_RADIO_SEARCH : WINDOW_TV_SEARCH, "MyPVRSearch.xml"),

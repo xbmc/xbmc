@@ -24,7 +24,7 @@
 
 class CFileItemList;
 
-namespace EPG
+namespace PVR
 {
   #define EPG_SEARCH_UNSET (-1)
 
