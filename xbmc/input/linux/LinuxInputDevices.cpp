@@ -509,7 +509,7 @@ bool CLinuxInputDevice::KeyEvent(const struct input_event& levt, XBMC_Event& dev
         break;
 
       case BTN_MIDDLE:
-        devt.button.button = XBMC_BUTTON_RIGHT;
+        devt.button.button = XBMC_BUTTON_MIDDLE;
         break;
 
       case BTN_FORWARD:
