@@ -747,7 +747,7 @@ bool CPVRClients::CanSeekStream(void) const
   return false;
 }
 
-PVR_ERROR CPVRClients::GetEPGForChannel(const CPVRChannelPtr &channel, CEpg *epg, time_t start, time_t end)
+PVR_ERROR CPVRClients::GetEPGForChannel(const CPVRChannelPtr &channel, CPVREpg *epg, time_t start, time_t end)
 {
   assert(channel.get());
 

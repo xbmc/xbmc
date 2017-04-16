@@ -396,7 +396,7 @@ namespace PVR
      * @brief Get the EPG table for this channel.
      * @return The EPG for this channel.
      */
-    CEpgPtr GetEPG(void) const;
+    CPVREpgPtr GetEPG(void) const;
 
     /*!
      * @brief Get the EPG table for this channel.
@@ -419,7 +419,7 @@ namespace PVR
      *
      * @return The EPG tag that is active on this channel now.
      */
-    CEpgInfoTagPtr GetEPGNow() const;
+    CPVREpgInfoTagPtr GetEPGNow() const;
 
     /*!
      * @brief Get the EPG tag that is active on this channel next.
@@ -429,7 +429,7 @@ namespace PVR
      *
      * @return The EPG tag that is active on this channel next.
      */
-    CEpgInfoTagPtr GetEPGNext() const;
+    CPVREpgInfoTagPtr GetEPGNext() const;
 
     /*!
      * @return Don't use an EPG for this channel if set to false.

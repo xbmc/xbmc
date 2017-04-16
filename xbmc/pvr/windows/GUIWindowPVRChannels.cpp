@@ -269,7 +269,7 @@ void CGUIWindowPVRChannels::UpdateEpg(const CFileItemPtr &item)
                                         CVariant{channel->ChannelName()}))
     return;
 
-  const CEpgPtr epg = channel->GetEPG();
+  const CPVREpgPtr epg = channel->GetEPG();
   if (epg)
   {
     epg->ForceUpdate();

@@ -34,7 +34,7 @@ namespace PVR
     virtual bool HasListItems() const override { return true; };
     virtual CFileItemPtr GetCurrentListItem(int offset = 0) override;
 
-    void SetProgInfo(const CEpgInfoTagPtr &tag);
+    void SetProgInfo(const CPVREpgInfoTagPtr &tag);
 
   protected:
     virtual void OnInitWindow() override;
@@ -46,6 +46,6 @@ namespace PVR
     bool OnClickButtonAddTimer(CGUIMessage &message);
     bool OnClickButtonChannelGuide(CGUIMessage &message);
 
-    CEpgInfoTagPtr m_progItem;
+    CPVREpgInfoTagPtr m_progItem;
   };
 }

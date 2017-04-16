@@ -202,7 +202,7 @@ bool CGUIDialogPVRGuideInfo::OnInfo(int actionID)
   return true;
 }
 
-void CGUIDialogPVRGuideInfo::SetProgInfo(const CEpgInfoTagPtr &tag)
+void CGUIDialogPVRGuideInfo::SetProgInfo(const CPVREpgInfoTagPtr &tag)
 {
   m_progItem = tag;
 }

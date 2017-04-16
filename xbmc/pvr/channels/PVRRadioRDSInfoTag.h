@@ -46,7 +46,7 @@ private:
   CPVRRadioRDSInfoTag(void);
 
   /*!
-   * @brief Prevent copy construction, even for CEpgInfoTag instances and friends.
+   * @brief Prevent copy construction, even for CPVREpgInfoTag instances and friends.
    * Note: Only declared, but intentionally not implemented
    *       to prevent compiler generated copy ctor and to force.
    *       a linker error in case somebody tries to call it.
@@ -54,7 +54,7 @@ private:
   CPVRRadioRDSInfoTag(const CPVRRadioRDSInfoTag& tag);
 
   /*!
-   * @brief Prevent copy construction, even for CEpgInfoTag instances and friends.
+   * @brief Prevent copy construction, even for CPVREpgInfoTag instances and friends.
    * Note: Only declared, but intentionally not implemented
    *       to prevent compiler generated copy ctor and to force.
    *       a linker error in case somebody tries to call it.

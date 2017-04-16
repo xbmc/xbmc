@@ -38,44 +38,44 @@ class CVariant;
 /** an EPG info tag */
 namespace PVR
 {
-  class CEpg;
+  class CPVREpg;
 
-  class CEpgInfoTag : public ISerializable
+  class CPVREpgInfoTag : public ISerializable
   {
-    friend class CEpg;
-    friend class CEpgDatabase;
+    friend class CPVREpg;
+    friend class CPVREpgDatabase;
 
   public:
     /*!
      * @brief Create a new empty event .
      */
-    static CEpgInfoTagPtr CreateDefaultTag();
+    static CPVREpgInfoTagPtr CreateDefaultTag();
 
     /*!
      * @brief Create a new EPG infotag with 'data' as content.
      * @param data The tag's content.
      */
-    CEpgInfoTag(const EPG_TAG &data);
+    CPVREpgInfoTag(const EPG_TAG &data);
 
   private:
     /*!
      * @brief Create a new empty event.
      */
-    CEpgInfoTag(void);
+    CPVREpgInfoTag(void);
 
     /*!
      * @brief Create a new empty event without a unique ID.
      */
-    CEpgInfoTag(CEpg *epg, const PVR::CPVRChannelPtr &pvrChannel, const std::string &strTableName = "", const std::string &strIconPath = "");
+    CPVREpgInfoTag(CPVREpg *epg, const PVR::CPVRChannelPtr &pvrChannel, const std::string &strTableName = "", const std::string &strIconPath = "");
 
-    CEpgInfoTag(const CEpgInfoTag &tag) = delete;
-    CEpgInfoTag &operator =(const CEpgInfoTag &other) = delete;
+    CPVREpgInfoTag(const CPVREpgInfoTag &tag) = delete;
+    CPVREpgInfoTag &operator =(const CPVREpgInfoTag &other) = delete;
 
   public:
-    virtual ~CEpgInfoTag();
+    virtual ~CPVREpgInfoTag();
 
-    bool operator ==(const CEpgInfoTag& right) const;
-    bool operator !=(const CEpgInfoTag& right) const;
+    bool operator ==(const CPVREpgInfoTag& right) const;
+    bool operator !=(const CPVREpgInfoTag& right) const;
 
     virtual void Serialize(CVariant &value) const;
 
@@ -106,16 +106,16 @@ namespace PVR
     int Progress(void) const;
 
     /*!
-     * @brief Get a pointer to the next event. Set by CEpg in a call to Sort()
+     * @brief Get a pointer to the next event. Set by CPVREpg in a call to Sort()
      * @return A pointer to the next event or NULL if it's not set.
      */
-    CEpgInfoTagPtr GetNextEvent(void) const;
+    CPVREpgInfoTagPtr GetNextEvent(void) const;
 
     /*!
      * @brief The table this event belongs to
      * @return The table this event belongs to
      */
-    const CEpg *GetTable() const;
+    const CPVREpg *GetTable() const;
 
     const int EpgID(void) const;
 
@@ -123,7 +123,7 @@ namespace PVR
      * @brief Sets the epg reference of this event
      * @param epg The epg item
      */
-    void SetEpg(CEpg *epg);
+    void SetEpg(CPVREpg *epg);
 
     /*!
      * @brief Change the unique broadcast ID of this event.
@@ -397,7 +397,7 @@ namespace PVR
      * @param bUpdateBroadcastId If set to false, the tag BroadcastId (locally unique) will not be checked/updated
      * @return True if something changed, false otherwise.
      */
-    bool Update(const CEpgInfoTag &tag, bool bUpdateBroadcastId = true);
+    bool Update(const CPVREpgInfoTag &tag, bool bUpdateBroadcastId = true);
 
     /*!
      * @return True if this tag has any series attributes, false otherwise
@@ -458,7 +458,7 @@ namespace PVR
 
     PVR::CPVRTimerInfoTagPtr m_timer;
 
-    CEpg *                   m_epg;                /*!< the schedule that this event belongs to */
+    CPVREpg *                m_epg;                /*!< the schedule that this event belongs to */
 
     unsigned int             m_iFlags;             /*!< the flags applicable to this EPG entry */
 

@@ -151,7 +151,7 @@ CPVRManager::CPVRManager(void) :
     CThread("PVRManager"),
     m_addons(new CPVRClients),
     m_guiActions(new CPVRGUIActions),
-    m_epgContainer(new CEpgContainer),
+    m_epgContainer(new CPVREpgContainer),
     m_bFirstStart(true),
     m_bIsSwitchingChannels(false),
     m_bEpgsCreated(false),
@@ -239,7 +239,7 @@ CPVRGUIActionsPtr CPVRManager::GUIActions(void) const
   return m_guiActions;
 }
 
-CEpgContainerPtr CPVRManager::EpgContainer() const
+CPVREpgContainerPtr CPVRManager::EpgContainer() const
 {
   // note: m_epgContainer is const (only set/reset in ctor/dtor). no need for a lock here.
   return m_epgContainer;
@@ -921,7 +921,7 @@ bool CPVRManager::UpdateItem(CFileItem& item)
   g_infoManager.SetCurrentItem(m_currentFile);
 
   CPVRChannelPtr channelTag(item.GetPVRChannelInfoTag());
-  CEpgInfoTagPtr epgTagNow(channelTag->GetEPGNow());
+  CPVREpgInfoTagPtr epgTagNow(channelTag->GetEPGNow());
 
   if (channelTag->IsRadio())
   {

@@ -291,7 +291,7 @@ void CPVRClient::WriteClientTimerInfo(const CPVRTimerInfoTag &xbmcTimer, PVR_TIM
   xbmcTimer.StartAsUTC().GetAsTime(start);
   xbmcTimer.EndAsUTC().GetAsTime(end);
   xbmcTimer.FirstDayAsUTC().GetAsTime(firstDay);
-  CEpgInfoTagPtr epgTag = xbmcTimer.GetEpgInfoTag();
+  CPVREpgInfoTagPtr epgTag = xbmcTimer.GetEpgInfoTag();
 
   memset(&addonTimer, 0, sizeof(addonTimer));
 
@@ -696,7 +696,7 @@ void CPVRClient::CallMenuHook(const PVR_MENUHOOK &hook, const CFileItem *item)
   m_struct.MenuHook(hook, hookData);
 }
 
-PVR_ERROR CPVRClient::GetEPGForChannel(const CPVRChannelPtr &channel, CEpg *epg, time_t start /* = 0 */, time_t end /* = 0 */, bool bSaveInDb /* = false*/)
+PVR_ERROR CPVRClient::GetEPGForChannel(const CPVRChannelPtr &channel, CPVREpg *epg, time_t start /* = 0 */, time_t end /* = 0 */, bool bSaveInDb /* = false*/)
 {
   if (!m_bReadyToUse)
     return PVR_ERROR_SERVER_ERROR;

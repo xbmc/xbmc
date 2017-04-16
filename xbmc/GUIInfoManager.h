@@ -290,7 +290,7 @@ protected:
    * @brief Get the EPG tag that is currently active
    * @return the currently active tag or NULL if no active tag was found
    */
-  PVR::CEpgInfoTagPtr GetEpgInfoTag() const;
+  PVR::CPVREpgInfoTagPtr GetEpgInfoTag() const;
 
   void SetCurrentItemJob(const CFileItemPtr item);
 

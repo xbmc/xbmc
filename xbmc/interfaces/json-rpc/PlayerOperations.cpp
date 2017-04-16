@@ -1254,7 +1254,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
           ms = (int)(g_application.GetTime() * 1000.0);
         else
         {
-          CEpgInfoTagPtr epg(GetCurrentEpg());
+          CPVREpgInfoTagPtr epg(GetCurrentEpg());
           if (epg)
             ms = epg->Progress() * 1000;
         }
@@ -1283,7 +1283,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
           result = g_application.GetPercentage();
         else
         {
-          CEpgInfoTagPtr epg(GetCurrentEpg());
+          CPVREpgInfoTagPtr epg(GetCurrentEpg());
           if (epg)
             result = epg->ProgressPercentage();
           else
@@ -1316,7 +1316,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
           ms = (int)(g_application.GetTotalTime() * 1000.0);
         else
         {
-          CEpgInfoTagPtr epg(GetCurrentEpg());
+          CPVREpgInfoTagPtr epg(GetCurrentEpg());
           if (epg)
             ms = epg->GetDuration() * 1000;
         }
@@ -1774,14 +1774,14 @@ bool CPlayerOperations::IsPVRChannel()
   return CServiceBroker::GetPVRManager().IsPlayingTV() || CServiceBroker::GetPVRManager().IsPlayingRadio();
 }
 
-CEpgInfoTagPtr CPlayerOperations::GetCurrentEpg()
+CPVREpgInfoTagPtr CPlayerOperations::GetCurrentEpg()
 {
   if (!CServiceBroker::GetPVRManager().IsPlayingTV() && !CServiceBroker::GetPVRManager().IsPlayingRadio())
-    return CEpgInfoTagPtr();
+    return CPVREpgInfoTagPtr();
 
   CPVRChannelPtr currentChannel(CServiceBroker::GetPVRManager().GetCurrentChannel());
   if (!currentChannel)
-    return CEpgInfoTagPtr();
+    return CPVREpgInfoTagPtr();
 
   return currentChannel->GetEPGNow();
 }

@@ -32,7 +32,7 @@
 
 namespace PVR
 {
-  CEpgInfoTagPtr CPVRItem::GetEpgInfoTag() const
+  CPVREpgInfoTagPtr CPVRItem::GetEpgInfoTag() const
   {
     if (m_item->IsEPG())
     {
@@ -50,7 +50,7 @@ namespace PVR
     {
       CLog::Log(LOGERROR, "CPVRItem - %s - unsupported item type!", __FUNCTION__);
     }
-    return CEpgInfoTagPtr();
+    return CPVREpgInfoTagPtr();
   }
 
   CPVRChannelPtr CPVRItem::GetChannel() const
@@ -65,7 +65,7 @@ namespace PVR
     }
     else if (m_item->IsPVRTimer())
     {
-      const CEpgInfoTagPtr epgTag(m_item->GetPVRTimerInfoTag()->GetEpgInfoTag());
+      const CPVREpgInfoTagPtr epgTag(m_item->GetPVRTimerInfoTag()->GetEpgInfoTag());
       if (epgTag)
         return epgTag->ChannelTag();
     }
@@ -89,7 +89,7 @@ namespace PVR
     else if (m_item->IsPVRChannel())
     {
       CPVRTimerInfoTagPtr timer;
-      const CEpgInfoTagPtr epgTag(m_item->GetPVRChannelInfoTag()->GetEPGNow());
+      const CPVREpgInfoTagPtr epgTag(m_item->GetPVRChannelInfoTag()->GetEPGNow());
       if (epgTag)
         timer = epgTag->Timer(); // cheap method, but not reliable as timers get set at epg tags asynchronously
 

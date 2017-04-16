@@ -123,7 +123,7 @@ void CPVRChannel::Serialize(CVariant& value) const
   value["channelnumber"] = m_iCachedChannelNumber;
   value["subchannelnumber"] = m_iCachedSubChannelNumber;
 
-  CEpgInfoTagPtr epg(GetEPGNow());
+  CPVREpgInfoTagPtr epg(GetEPGNow());
   if (epg)
   {
     // add the properties of the current EPG item to the main object
@@ -149,7 +149,7 @@ bool CPVRChannel::Delete(void)
     return bReturn;
 
   /* delete the EPG table */
-  CEpgPtr epg = GetEPG();
+  CPVREpgPtr epg = GetEPG();
   if (epg)
   {
     CPVRChannelPtr empty;
@@ -163,7 +163,7 @@ bool CPVRChannel::Delete(void)
   return bReturn;
 }
 
-CEpgPtr CPVRChannel::GetEPG(void) const
+CPVREpgPtr CPVRChannel::GetEPG(void) const
 {
   int iEpgId(-1);
   {
@@ -172,7 +172,7 @@ CEpgPtr CPVRChannel::GetEPG(void) const
       iEpgId = m_iEpgId;
   }
 
-  return iEpgId > 0 ? CServiceBroker::GetPVRManager().EpgContainer()->GetById(iEpgId) : CEpgPtr();
+  return iEpgId > 0 ? CServiceBroker::GetPVRManager().EpgContainer()->GetById(iEpgId) : CPVREpgPtr();
 }
 
 bool CPVRChannel::UpdateFromClient(const CPVRChannelPtr &channel)
@@ -300,7 +300,7 @@ bool CPVRChannel::IsRecording(void) const
 
 CPVRRecordingPtr CPVRChannel::GetRecording(void) const
 {
-  CEpgInfoTagPtr epgTag = GetEPGNow();
+  CPVREpgInfoTagPtr epgTag = GetEPGNow();
   return (epgTag && epgTag->HasRecording()) ?
       epgTag->Recording() :
       CPVRRecordingPtr();
@@ -308,7 +308,7 @@ CPVRRecordingPtr CPVRChannel::GetRecording(void) const
 
 bool CPVRChannel::HasRecording(void) const
 {
-  CEpgInfoTagPtr epgTag = GetEPGNow();
+  CPVREpgInfoTagPtr epgTag = GetEPGNow();
   return epgTag && epgTag->HasRecording();
 }
 
@@ -564,7 +564,7 @@ void CPVRChannel::UpdateEncryptionName(void)
 
 int CPVRChannel::GetEPG(CFileItemList &results) const
 {
-  CEpgPtr epg = GetEPG();
+  CPVREpgPtr epg = GetEPG();
   if (!epg)
   {
     CLog::Log(LOGDEBUG, "PVR - %s - cannot get EPG for channel '%s'",
@@ -577,30 +577,30 @@ int CPVRChannel::GetEPG(CFileItemList &results) const
 
 bool CPVRChannel::ClearEPG() const
 {
-  CEpgPtr epg = GetEPG();
+  CPVREpgPtr epg = GetEPG();
   if (epg)
     epg->Clear();
 
   return true;
 }
 
-CEpgInfoTagPtr CPVRChannel::GetEPGNow() const
+CPVREpgInfoTagPtr CPVRChannel::GetEPGNow() const
 {
-  CEpgPtr epg = GetEPG();
+  CPVREpgPtr epg = GetEPG();
   if (epg)
     return epg->GetTagNow();
 
-  CEpgInfoTagPtr empty;
+  CPVREpgInfoTagPtr empty;
   return empty;
 }
 
-CEpgInfoTagPtr CPVRChannel::GetEPGNext() const
+CPVREpgInfoTagPtr CPVRChannel::GetEPGNext() const
 {
-  CEpgPtr epg = GetEPG();
+  CPVREpgPtr epg = GetEPG();
   if (epg)
     return epg->GetTagNext();
 
-  CEpgInfoTagPtr empty;
+  CPVREpgInfoTagPtr empty;
   return empty;
 }
 

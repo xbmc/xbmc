@@ -74,7 +74,7 @@ void CGUIWindowPVRSearch::SetItemToSearch(const CFileItemPtr &item)
   }
   else
   {
-    const CEpgInfoTagPtr epgTag(CPVRItem(item).GetEpgInfoTag());
+    const CPVREpgInfoTagPtr epgTag(CPVRItem(item).GetEpgInfoTag());
     if (epgTag)
       m_searchfilter.SetSearchPhrase(epgTag->Title());
   }

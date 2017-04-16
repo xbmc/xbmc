@@ -77,6 +77,6 @@ namespace JSONRPC
     static int ParseRepeatState(const CVariant &repeat);
     static double ParseTimeInSeconds(const CVariant &time);
     static bool IsPVRChannel();
-    static PVR::CEpgInfoTagPtr GetCurrentEpg();
+    static PVR::CPVREpgInfoTagPtr GetCurrentEpg();
   };
 }

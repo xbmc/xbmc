@@ -308,7 +308,7 @@ bool CGUIWindowPVRGuide::OnMessage(CGUIMessage& message)
                   break;
                 case EPG_SELECT_ACTION_SMART_SELECT:
                 {
-                  const CEpgInfoTagPtr tag(pItem->GetEPGInfoTag());
+                  const CPVREpgInfoTagPtr tag(pItem->GetEPGInfoTag());
                   if (tag)
                   {
                     const CDateTime start(tag->StartAsUTC());
@@ -561,7 +561,7 @@ void CGUIWindowPVRGuide::OnInputDone()
   {
     for (const CFileItemPtr event : m_vecItems->GetList())
     {
-      const CEpgInfoTagPtr tag(event->GetEPGInfoTag());
+      const CPVREpgInfoTagPtr tag(event->GetEPGInfoTag());
       if (tag->HasPVRChannel() && tag->PVRChannelNumber() == iChannelNumber)
       {
         CGUIEPGGridContainer* epgGridContainer = GetGridControl();

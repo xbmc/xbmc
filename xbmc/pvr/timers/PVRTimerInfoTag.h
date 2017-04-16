@@ -97,14 +97,14 @@ namespace PVR
      * @param bCreateRule if true, create a timer rule, create a one shot timer otherwise
      * @return the timer or null if timer could not be created
      */
-    static CPVRTimerInfoTagPtr CreateFromEpg(const CEpgInfoTagPtr &tag, bool bCreateRule = false);
+    static CPVRTimerInfoTagPtr CreateFromEpg(const CPVREpgInfoTagPtr &tag, bool bCreateRule = false);
 
     /*!
      * @brief get the epg info tag associated with this timer, if any
      * @param bCreate if true, try to find the epg tag if not yet set (lazy evaluation)
      * @return the epg info tag associated with this timer or null if there is no tag
      */
-    CEpgInfoTagPtr GetEpgInfoTag(bool bCreate = true) const;
+    CPVREpgInfoTagPtr GetEpgInfoTag(bool bCreate = true) const;
 
     int ChannelNumber(void) const;
     std::string ChannelName(void) const;
@@ -224,7 +224,7 @@ namespace PVR
      * @brief Associate the given epg tag with this timer; before, clear old timer at associated epg tag, if any.
      * @param tag The epg tag to assign.
      */
-    void SetEpgTag(const CEpgInfoTagPtr &tag);
+    void SetEpgTag(const CPVREpgInfoTagPtr &tag);
 
     /*!
      * @brief Clear the epg tag associated with this timer; before, clear this timer at associated epg tag, if any.
@@ -295,6 +295,6 @@ namespace PVR
     bool                  m_bHasChildErrors;      /*!< @brief Has at least one child timer with status PVR_TIMER_STATE_ERROR */
 
     mutable unsigned int  m_iEpgUid;   /*!< id of epg event associated with this timer, EPG_TAG_INVALID_UID if none. */
-    mutable CEpgInfoTagPtr m_epgTag; /*!< epg info tag matching m_iEpgUid. */
+    mutable CPVREpgInfoTagPtr m_epgTag; /*!< epg info tag matching m_iEpgUid. */
   };
 }

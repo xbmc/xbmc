@@ -95,7 +95,7 @@ CPVRRecording::CPVRRecording(const PVR_RECORDING &recording, unsigned int iClien
   m_strPlotOutline                 = recording.strPlotOutline;
   m_strStreamURL                   = recording.strStreamURL;
   m_strChannelName                 = recording.strChannelName;
-  m_genre                          = StringUtils::Split(CEpg::ConvertGenreIdToString(recording.iGenreType, recording.iGenreSubType), g_advancedSettings.m_videoItemSeparator);
+  m_genre                          = StringUtils::Split(CPVREpg::ConvertGenreIdToString(recording.iGenreType, recording.iGenreSubType), g_advancedSettings.m_videoItemSeparator);
   m_strIconPath                    = recording.strIconPath;
   m_strThumbnailPath               = recording.strThumbnailPath;
   m_strFanartPath                  = recording.strFanartPath;
@@ -239,7 +239,7 @@ void CPVRRecording::OnDelete(void)
     const CPVRChannelPtr channel(Channel());
     if (channel)
     {
-      const CEpgInfoTagPtr epgTag(CServiceBroker::GetPVRManager().EpgContainer()->GetTagById(channel, m_iEpgEventId));
+      const CPVREpgInfoTagPtr epgTag(CServiceBroker::GetPVRManager().EpgContainer()->GetTagById(channel, m_iEpgEventId));
       if (epgTag)
         epgTag->ClearRecording();
     }

@@ -33,7 +33,7 @@
 
 namespace PVR
 {
-  class CEpg;
+  class CPVREpg;
   class CPVRGUIInfo;
 
   typedef std::shared_ptr<CPVRClient> PVR_CLIENT;
@@ -522,7 +522,7 @@ namespace PVR
      * @param error An error if it occured.
      * @return True if the EPG was transfered successfully, false otherwise.
      */
-    PVR_ERROR GetEPGForChannel(const CPVRChannelPtr &channel, CEpg *epg, time_t start, time_t end);
+    PVR_ERROR GetEPGForChannel(const CPVRChannelPtr &channel, CPVREpg *epg, time_t start, time_t end);
 
     /*!
      * Tell the client the time frame to use when notifying epg events back to Kodi. The client might push epg events asynchronously

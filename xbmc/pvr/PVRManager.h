@@ -48,11 +48,11 @@ class CVariant;
 
 namespace PVR
 {
-  class CEpgContainer;
   class CPVRClient;
   class CPVRClients;
   class CPVRChannelGroupsContainer;
   class CPVRChannelGroup;
+  class CPVREpgContainer;
   class CPVRRecordings;
   class CPVRTimers;
   class CPVRGUIInfo;
@@ -150,7 +150,7 @@ namespace PVR
      * @brief Get access to the epg container.
      * @return The epg container.
      */
-    CEpgContainerPtr EpgContainer() const;
+    CPVREpgContainerPtr EpgContainer() const;
 
     /*!
      * @brief Init PVRManager.
@@ -629,7 +629,7 @@ namespace PVR
     CPVRClientsPtr                 m_addons;                      /*!< pointer to the pvr addon container */
     std::unique_ptr<CPVRGUIInfo>   m_guiInfo;                     /*!< pointer to the guiinfo data */
     CPVRGUIActionsPtr              m_guiActions;                  /*!< pointer to the pvr gui actions */
-    CEpgContainerPtr               m_epgContainer;                /*!< pointer to the epg container */
+    CPVREpgContainerPtr            m_epgContainer;                /*!< pointer to the epg container */
     //@}
 
     CPVRManagerJobQueue             m_pendingUpdates;              /*!< vector of pending pvr updates */

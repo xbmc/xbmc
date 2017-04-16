@@ -23,11 +23,11 @@
 
 namespace PVR
 {
-  class CEpg;
-  typedef std::shared_ptr<CEpg> CEpgPtr;
+  class CPVREpg;
+  typedef std::shared_ptr<CPVREpg> CPVREpgPtr;
 
-  class CEpgInfoTag;
-  typedef std::shared_ptr<CEpgInfoTag> CEpgInfoTagPtr;
+  class CPVREpgInfoTag;
+  typedef std::shared_ptr<CPVREpgInfoTag> CPVREpgInfoTagPtr;
 
 } // namespace PVR
 

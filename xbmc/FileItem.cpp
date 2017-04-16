@@ -123,7 +123,7 @@ CFileItem::CFileItem(const CVideoInfoTag& movie)
   SetFromVideoInfoTag(movie);
 }
 
-CFileItem::CFileItem(const CEpgInfoTagPtr& tag)
+CFileItem::CFileItem(const CPVREpgInfoTagPtr& tag)
 {
   assert(tag.get());
 
@@ -150,7 +150,7 @@ CFileItem::CFileItem(const CPVRChannelPtr& channel)
 
   Initialize();
 
-  CEpgInfoTagPtr epgNow(channel->GetEPGNow());
+  CPVREpgInfoTagPtr epgNow(channel->GetEPGNow());
 
   m_strPath = channel->Path();
   m_bIsFolder = false;

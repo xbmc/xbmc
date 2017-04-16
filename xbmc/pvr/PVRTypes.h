@@ -23,8 +23,8 @@
 
 namespace PVR
 {
-  class CEpgContainer;
-  typedef std::shared_ptr<CEpgContainer> CEpgContainerPtr;
+  class CPVREpgContainer;
+  typedef std::shared_ptr<CPVREpgContainer> CPVREpgContainerPtr;
 }
 
 namespace PVR

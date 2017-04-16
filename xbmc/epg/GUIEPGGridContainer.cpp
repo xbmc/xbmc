@@ -655,7 +655,7 @@ void CGUIEPGGridContainer::UpdateItems()
     return;
 
   /* Safe currently selected epg tag and grid coordinates. Selection shall be restored after update. */
-  CEpgInfoTagPtr prevSelectedEpgTag(GetSelectedEpgInfoTag());
+  CPVREpgInfoTagPtr prevSelectedEpgTag(GetSelectedEpgInfoTag());
   const int oldChannelIndex = m_channelOffset + m_channelCursor;
   const int oldBlockIndex   = m_blockOffset + m_blockCursor;
   const CDateTime oldGridStart(m_gridModel->GetGridStart());
@@ -706,7 +706,7 @@ void CGUIEPGGridContainer::UpdateItems()
       const GridItem *prevItem(GetPrevItem(m_channelCursor));
       if (prevItem)
       {
-        const CEpgInfoTagPtr tag(prevItem->item->GetEPGInfoTag());
+        const CPVREpgInfoTagPtr tag(prevItem->item->GetEPGInfoTag());
         if (tag && tag->EndAsUTC().IsValid())
         {
           const CDateTime gridStart(m_gridModel->GetGridStart());
@@ -1321,9 +1321,9 @@ CFileItemPtr CGUIEPGGridContainer::GetSelectedChannelItem() const
   return item;
 }
 
-CEpgInfoTagPtr CGUIEPGGridContainer::GetSelectedEpgInfoTag() const
+CPVREpgInfoTagPtr CGUIEPGGridContainer::GetSelectedEpgInfoTag() const
 {
-  CEpgInfoTagPtr tag;
+  CPVREpgInfoTagPtr tag;
 
   if (m_gridModel->HasGridItems() &&
       m_gridModel->HasChannelItems() &&

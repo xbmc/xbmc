@@ -175,7 +175,7 @@ namespace PVR
 
     int GetSelectedItem() const;
 
-    CEpgInfoTagPtr GetSelectedEpgInfoTag() const;
+    CPVREpgInfoTagPtr GetSelectedEpgInfoTag() const;
 
     unsigned int GetPageNowOffset() const;
 

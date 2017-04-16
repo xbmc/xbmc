@@ -24,7 +24,7 @@
 
 namespace PVR
 {
-  class CEpgSearchFilter;
+  class CPVREpgSearchFilter;
 
   class CGUIDialogPVRGuideSearch : public CGUIDialog
   {
@@ -34,7 +34,7 @@ namespace PVR
     virtual bool OnMessage(CGUIMessage& message);
     virtual void OnWindowLoaded();
 
-    void SetFilterData(CEpgSearchFilter *searchFilter) { m_searchFilter = searchFilter; }
+    void SetFilterData(CPVREpgSearchFilter *searchFilter) { m_searchFilter = searchFilter; }
     bool IsConfirmed() const { return m_bConfirmed; }
     bool IsCanceled() const { return m_bCanceled; }
     void OnSearch();
@@ -55,6 +55,6 @@ namespace PVR
 
     bool m_bConfirmed;
     bool m_bCanceled;
-    CEpgSearchFilter *m_searchFilter;
+    CPVREpgSearchFilter *m_searchFilter;
   };
 }

@@ -50,6 +50,6 @@ namespace PVR
     void OpenDialogSearch();
 
     bool                  m_bSearchConfirmed;
-    CEpgSearchFilter m_searchfilter;
+    CPVREpgSearchFilter m_searchfilter;
   };
 }
