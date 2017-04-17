@@ -24,6 +24,7 @@
 #include "addons/ContextMenuAddon.h"
 #include "addons/ContextMenus.h"
 #include "addons/IAddon.h"
+#include "favourites/ContextMenus.h"
 #include "music/ContextMenus.h"
 #include "pvr/PVRContextMenus.h"
 #include "video/ContextMenus.h"

@@ -21,6 +21,7 @@
  */
 
 #include "guilib/GUIDialog.h"
+#include "favourites/FavouritesService.h"
 
 class CFileItem;
 class CFileItemList;
@@ -51,5 +52,7 @@ protected:
   void OnSetThumb(int item);
   void UpdateList();
 
+private:
   CFileItemList* m_favourites;
+  CFavouritesService& m_favouritesService;
 };

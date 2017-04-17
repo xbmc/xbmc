@@ -19,10 +19,11 @@
  */
 
 #include "GUIDialogFavourites.h"
-#include "GUIDialogContextMenu.h"
-#include "GUIDialogFileBrowser.h"
+#include "dialogs/GUIDialogContextMenu.h"
+#include "dialogs/GUIDialogFileBrowser.h"
+#include "ServiceBroker.h"
+#include "favourites/FavouritesService.h"
 #include "filesystem/Directory.h"
-#include "filesystem/FavouritesDirectory.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "input/Key.h"
@@ -37,8 +38,9 @@ using namespace XFILE;
 
 #define FAVOURITES_LIST 450
 
-CGUIDialogFavourites::CGUIDialogFavourites(void)
-    : CGUIDialog(WINDOW_DIALOG_FAVOURITES, "DialogFavourites.xml")
+CGUIDialogFavourites::CGUIDialogFavourites() :
+    CGUIDialog(WINDOW_DIALOG_FAVOURITES, "DialogFavourites.xml"),
+    m_favouritesService(CServiceBroker::GetFavouritesService())
 {
   m_favourites = new CFileItemList;
   m_loadType = KEEP_IN_MEMORY;
@@ -86,7 +88,7 @@ bool CGUIDialogFavourites::OnMessage(CGUIMessage &message)
 
 void CGUIDialogFavourites::OnInitWindow()
 {
-  XFILE::CDirectory::GetDirectory("favourites://", *m_favourites);
+  m_favouritesService.GetAll(*m_favourites);
   UpdateList();
   CGUIWindow::OnInitWindow();
 }
@@ -106,7 +108,7 @@ void CGUIDialogFavourites::OnClick(int item)
   Close();
 
   CGUIMessage message(GUI_MSG_EXECUTE, 0, GetID());
-  message.SetStringParam(CFavouritesDirectory::GetExecutePath(*(*m_favourites)[item], GetID()));
+  message.SetStringParam(m_favouritesService.GetExecutePath(*(*m_favourites)[item], GetID()));
   g_windowManager.SendMessage(message);
 }
 
@@ -163,7 +165,7 @@ void CGUIDialogFavourites::OnMoveItem(int item, int amount)
   if (nextItem < 0) nextItem += m_favourites->Size();
 
   m_favourites->Swap(item, nextItem);
-  CFavouritesDirectory::Save(*m_favourites);
+  m_favouritesService.Save(*m_favourites);
 
   CGUIMessage message(GUI_MSG_ITEM_SELECT, GetID(), FAVOURITES_LIST, nextItem);
   OnMessage(message);
@@ -176,7 +178,7 @@ void CGUIDialogFavourites::OnDelete(int item)
   if (item < 0 || item >= m_favourites->Size())
     return;
   m_favourites->Remove(item);
-  CFavouritesDirectory::Save(*m_favourites);
+  m_favouritesService.Save(*m_favourites);
 
   CGUIMessage message(GUI_MSG_ITEM_SELECT, GetID(), FAVOURITES_LIST, item < m_favourites->Size() ? item : item - 1);
   OnMessage(message);
@@ -191,7 +193,7 @@ void CGUIDialogFavourites::OnRename(int item)
 
   if (ChooseAndSetNewName((*m_favourites)[item]))
   {
-    CFavouritesDirectory::Save(*m_favourites);
+    m_favouritesService.Save(*m_favourites);
     UpdateList();
   }
 }
@@ -203,7 +205,7 @@ void CGUIDialogFavourites::OnSetThumb(int item)
 
   if (ChooseAndSetNewThumbnail((*m_favourites)[item]))
   {
-    CFavouritesDirectory::Save(*m_favourites);
+    m_favouritesService.Save(*m_favourites);
     UpdateList();
   }
 }

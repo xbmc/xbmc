@@ -40,7 +40,7 @@
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogSmartPlaylistEditor.h"
-#include "filesystem/FavouritesDirectory.h"
+#include "favourites/FavouritesService.h"
 #include "filesystem/File.h"
 #include "filesystem/FileDirectoryFactory.h"
 #include "filesystem/MultiPathDirectory.h"
@@ -1617,7 +1617,7 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
       !URIUtils::IsProtocol(item->GetPath(), "musicsearch") &&
       !StringUtils::StartsWith(item->GetPath(), "pvr://guide/") && !StringUtils::StartsWith(item->GetPath(), "pvr://timers/"))
   {
-    if (XFILE::CFavouritesDirectory::IsFavourite(item.get(), GetID()))
+    if (CServiceBroker::GetFavouritesService().IsFavourited(*item.get(), GetID()))
       buttons.Add(CONTEXT_BUTTON_ADD_FAVOURITE, 14077);     // Remove Favourite
     else
       buttons.Add(CONTEXT_BUTTON_ADD_FAVOURITE, 14076);     // Add To Favourites;
@@ -1635,7 +1635,7 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_ADD_FAVOURITE:
     {
       CFileItemPtr item = m_vecItems->Get(itemNumber);
-      XFILE::CFavouritesDirectory::AddOrRemove(item.get(), GetID());
+      CServiceBroker::GetFavouritesService().AddOrRemove(*item.get(), GetID());
       return true;
     }
   case CONTEXT_BUTTON_BROWSE_INTO:

@@ -39,6 +39,7 @@
 
 #include "windows/GUIWindowHome.h"
 #include "events/windows/GUIWindowEventLog.h"
+#include "favourites/GUIDialogFavourites.h"
 #include "settings/windows/GUIWindowSettings.h"
 #include "windows/GUIWindowFileManager.h"
 #include "settings/windows/GUIWindowSettingsCategory.h"
@@ -103,7 +104,6 @@
 #include "dialogs/GUIDialogNumeric.h"
 #include "dialogs/GUIDialogGamepad.h"
 #include "dialogs/GUIDialogSubMenu.h"
-#include "dialogs/GUIDialogFavourites.h"
 #include "dialogs/GUIDialogButtonMenu.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "dialogs/GUIDialogPlayerControls.h"
