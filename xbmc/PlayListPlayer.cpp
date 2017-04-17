@@ -261,7 +261,7 @@ bool CPlayListPlayer::Play(const CFileItemPtr &pItem, std::string player)
   int playlist;
   if (pItem->IsAudio())
     playlist = PLAYLIST_MUSIC;
-  else if (pItem->IsVideo() || pItem->IsLiveTV())
+  else if (pItem->IsVideo())
     playlist = PLAYLIST_VIDEO;
   else
     return false;
