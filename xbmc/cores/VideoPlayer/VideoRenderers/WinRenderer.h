@@ -20,9 +20,8 @@
  *
  */
 
-#if !defined(TARGET_POSIX) && !defined(HAS_GL)
-
 #include "BaseRenderer.h"
+#include "ColorManager.h"
 #include "HwDecRender/DXVAHD.h"
 #include "guilib/D3DResource.h"
 #include "RenderCapture.h"
@@ -42,6 +41,7 @@
 class CBaseTexture;
 class CYUV2RGBShader;
 class CConvolutionShader;
+class COutputShader;
 
 class DllAvUtil;
 class DllAvCodec;
@@ -202,7 +202,10 @@ protected:
   void SelectSWVideoFilter();
   void SelectPSVideoFilter();
   void UpdatePSVideoFilter();
+  void ColorManagmentUpdate();
   bool CreateIntermediateRenderTarget(unsigned int width, unsigned int height, bool dynamic);
+
+  bool LoadCLUT();
 
   int  m_iYV12RenderBuffer;
   int  m_NumYV12Buffers;
@@ -214,18 +217,18 @@ protected:
 
   // software scale libraries (fallback if required pixel shaders version is not available)
   struct SwsContext   *m_sw_scale_ctx;
-  SHADER_SAMPLER       m_TextureFilter;
-  bool                 m_bUseHQScaler;
-  CD3DTexture          m_IntermediateTarget;
-  CYUV2RGBShader*      m_colorShader;
-  CConvolutionShader*  m_scalerShader;
+  bool m_bUseHQScaler;
+  CD3DTexture m_IntermediateTarget;
+  CYUV2RGBShader* m_colorShader;
+  CConvolutionShader* m_scalerShader;
+  COutputShader* m_outputShader;
 
-  ESCALINGMETHOD       m_scalingMethod;
-  ESCALINGMETHOD       m_scalingMethodGui;
+  ESCALINGMETHOD m_scalingMethod;
+  ESCALINGMETHOD m_scalingMethodGui;
 
-  bool                 m_bFilterInitialized;
-  int                  m_iRequestedMethod;
-  DXGI_FORMAT          m_dxva_format;
+  bool m_bFilterInitialized;
+  int m_iRequestedMethod;
+  DXGI_FORMAT m_dxva_format;
 
   // Width and height of the render target
   // the separable HQ scalers need this info, but could the m_destRect be used instead?
@@ -235,8 +238,10 @@ protected:
   int                  m_neededBuffers;
   unsigned int         m_frameIdx = 0;
   CRenderCapture*      m_capture = nullptr;
-};
 
-#else
-#include "LinuxRenderer.h"
-#endif
+  int m_cmsToken{ -1 };
+  bool m_cmsOn{ false };
+  int m_CLUTSize{ 0 };
+  std::unique_ptr<CColorManager> m_colorManager;
+  ID3D11ShaderResourceView *m_pCLUTView{ nullptr };
+};
