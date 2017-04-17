@@ -42,6 +42,11 @@ namespace PVR
 class CPVRManager;
 }
 
+namespace EPG
+{
+  class CEpgContainer;
+}
+
 namespace PLAYLIST
 {
   class CPlayListPlayer;
@@ -84,6 +89,7 @@ public:
 #ifdef HAS_PYTHON
   XBPython& GetXBPython();
 #endif
+  EPG::CEpgContainer& GetEpgContainer();
   PVR::CPVRManager& GetPVRManager();
   IAE& GetActiveAE();
   CContextMenuManager& GetContextMenuManager();
@@ -121,6 +127,7 @@ protected:
 #ifdef HAS_PYTHON
   std::unique_ptr<XBPython> m_XBPython;
 #endif
+  std::unique_ptr<EPG::CEpgContainer> m_EpgContainer;
   std::unique_ptr<PVR::CPVRManager> m_PVRManager;
   std::unique_ptr<ActiveAE::CActiveAE, delete_activeAE> m_ActiveAE;
   std::unique_ptr<CContextMenuManager, delete_contextMenuManager> m_contextMenuManager;

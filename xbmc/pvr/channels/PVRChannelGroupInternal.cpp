@@ -318,7 +318,7 @@ void CPVRChannelGroupInternal::CreateChannelEpg(const CPVRChannelPtr &channel, b
   CSingleLock lock(channel->m_critSection);
   if (!channel->m_bEPGCreated || bForce)
   {
-    CEpgPtr epg = g_EpgContainer.CreateChannelEpg(channel);
+    CEpgPtr epg = CServiceBroker::GetEpgContainer().CreateChannelEpg(channel);
     if (epg)
     {
       channel->m_bEPGCreated = true;
@@ -333,7 +333,7 @@ void CPVRChannelGroupInternal::CreateChannelEpg(const CPVRChannelPtr &channel, b
 
 bool CPVRChannelGroupInternal::CreateChannelEpgs(bool bForce /* = false */)
 {
-  if (!g_EpgContainer.IsStarted())
+  if (!CServiceBroker::GetEpgContainer().IsStarted())
     return false;
   {
     CSingleLock lock(m_critSection);

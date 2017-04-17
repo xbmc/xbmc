@@ -35,8 +35,6 @@ class CGUIDialogProgressBarHandle;
 
 namespace EPG
 {
-  #define g_EpgContainer CEpgContainer::GetInstance()
-
   struct SUpdateRequest
   {
     int clientID;
@@ -60,11 +58,6 @@ namespace EPG
      * @brief Destroy this instance.
      */
     virtual ~CEpgContainer(void);
-
-    /*!
-     * @return An instance of this singleton.
-     */
-    static CEpgContainer &GetInstance();
 
     /*!
      * @brief Get a pointer to the database instance.

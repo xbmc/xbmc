@@ -50,14 +50,14 @@ CGUIWindowPVRChannels::CGUIWindowPVRChannels(bool bRadio) :
   CPVRChannelNumberInputHandler(1000),
   m_bShowHiddenChannels(false)
 {
-  g_EpgContainer.RegisterObserver(this);
+  CServiceBroker::GetEpgContainer().RegisterObserver(this);
   g_infoManager.RegisterObserver(this);
 }
 
 CGUIWindowPVRChannels::~CGUIWindowPVRChannels()
 {
   g_infoManager.UnregisterObserver(this);
-  g_EpgContainer.UnregisterObserver(this);
+  CServiceBroker::GetEpgContainer().UnregisterObserver(this);
 }
 
 void CGUIWindowPVRChannels::GetContextButtons(int itemNumber, CContextButtons &buttons)

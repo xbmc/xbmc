@@ -39,6 +39,11 @@ namespace PVR
   class CPVRManager;
 }
 
+namespace EPG
+{
+  class CEpgContainer;
+}
+
 namespace PLAYLIST
 {
   class CPlayListPlayer;
@@ -67,6 +72,7 @@ public:
   static ADDON::CBinaryAddonCache &GetBinaryAddonCache();
   static ANNOUNCEMENT::CAnnouncementManager &GetAnnouncementManager();
   static XBPython &GetXBPython();
+  static EPG::CEpgContainer& GetEpgContainer();
   static PVR::CPVRManager &GetPVRManager();
   static IAE& GetActiveAE();
   static CContextMenuManager& GetContextMenuManager();

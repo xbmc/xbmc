@@ -43,6 +43,11 @@ XBPython& CServiceBroker::GetXBPython()
 }
 #endif
 
+EPG::CEpgContainer& CServiceBroker::GetEpgContainer()
+{
+  return g_application.m_ServiceManager->GetEpgContainer();
+}
+
 PVR::CPVRManager &CServiceBroker::GetPVRManager()
 {
   return g_application.m_ServiceManager->GetPVRManager();

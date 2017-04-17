@@ -23,6 +23,7 @@
 #include "ContextMenuManager.h"
 #include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
 #include "cores/DataCacheCore.h"
+#include "epg/EpgContainer.h"
 #include "games/GameServices.h"
 #include "peripherals/Peripherals.h"
 #include "PlayListPlayer.h"
@@ -74,6 +75,7 @@ bool CServiceManager::Init2()
     return false;
   }
 
+  m_EpgContainer.reset(new EPG::CEpgContainer());
   m_PVRManager.reset(new PVR::CPVRManager());
   m_dataCacheCore.reset(new CDataCacheCore());
 
@@ -135,6 +137,7 @@ void CServiceManager::Deinit()
   if (m_PVRManager)
     m_PVRManager->Deinit();
   m_PVRManager.reset();
+  m_EpgContainer.reset();
   m_addonMgr.reset();
 #ifdef HAS_PYTHON
   CScriptInvocationManager::GetInstance().UnregisterLanguageInvocationHandler(m_XBPython.get());
@@ -165,6 +168,11 @@ XBPython& CServiceManager::GetXBPython()
   return *m_XBPython;
 }
 #endif
+
+EPG::CEpgContainer& CServiceManager::GetEpgContainer()
+{
+  return *m_EpgContainer;
+}
 
 PVR::CPVRManager& CServiceManager::GetPVRManager()
 {
