@@ -31,7 +31,7 @@
   <addon>screensaver.xbmc.builtin.dim</addon>
   <addon>script.module.pil</addon>
   <addon>script.module.pycryptodome</addon>
-  <addon>service.xbmc.versioncheck</addon>
+  <addon optional="true">service.xbmc.versioncheck</addon>
   <addon>skin.estuary</addon>
   <addon>skin.estouchy</addon>
   <addon>webinterface.default</addon>
