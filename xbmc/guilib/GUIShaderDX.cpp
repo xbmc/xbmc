@@ -22,8 +22,6 @@
 #include <d3dcompiler.h>
 #include "GUIShaderDX.h"
 #include "guilib/GraphicContext.h"
-#include "settings/lib/Setting.h"
-#include "settings/Settings.h"
 #include "utils/log.h"
 #include "windowing/WindowingFactory.h"
 
@@ -38,8 +36,6 @@
 #include "guishader_multi_texture_blend.h"
 #include "guishader_texture.h"
 #include "guishader_texture_noblend.h"
-#include "guishader_video.h"
-#include "guishader_video_control.h"
 
 // shaders bytecode holder
 static const D3D_SHADER_DATA cbPSShaderCode[SHADER_METHOD_RENDER_COUNT] =
@@ -49,8 +45,6 @@ static const D3D_SHADER_DATA cbPSShaderCode[SHADER_METHOD_RENDER_COUNT] =
   { guishader_fonts,               sizeof(guishader_fonts)                }, // SHADER_METHOD_RENDER_FONT
   { guishader_texture,             sizeof(guishader_texture)              }, // SHADER_METHOD_RENDER_TEXTURE_BLEND
   { guishader_multi_texture_blend, sizeof(guishader_multi_texture_blend)  }, // SHADER_METHOD_RENDER_MULTI_TEXTURE_BLEND
-  { guishader_video,               sizeof(guishader_video)                }, // SHADER_METHOD_RENDER_VIDEO
-  { guishader_video_control,       sizeof(guishader_video_control)        }, // SHADER_METHOD_RENDER_VIDEO_CONTROL
   { guishader_interlaced_left,     sizeof(guishader_interlaced_left)      }, // SHADER_METHOD_RENDER_STEREO_INTERLACED_LEFT
   { guishader_interlaced_right,    sizeof(guishader_interlaced_right)     }, // SHADER_METHOD_RENDER_STEREO_INTERLACED_RIGHT
   { guishader_checkerboard_left,   sizeof(guishader_checkerboard_left)    }, // SHADER_METHOD_RENDER_STEREO_CHECKERBOARD_LEFT
@@ -58,11 +52,10 @@ static const D3D_SHADER_DATA cbPSShaderCode[SHADER_METHOD_RENDER_COUNT] =
 };
 
 CGUIShaderDX::CGUIShaderDX() :
-    m_pSampLinear(NULL),
-    m_pSampPoint(NULL),
-    m_pVPBuffer(NULL),
-    m_pWVPBuffer(NULL),
-    m_pVertexBuffer(NULL),
+    m_pSampLinear(nullptr),
+    m_pVPBuffer(nullptr),
+    m_pWVPBuffer(nullptr),
+    m_pVertexBuffer(nullptr),
     m_clipXFactor(0.0f),
     m_clipXOffset(0.0f),
     m_clipYFactor(0.0f),
@@ -177,12 +170,7 @@ bool CGUIShaderDX::CreateSamplers()
   if (FAILED(g_Windowing.Get3D11Device()->CreateSamplerState(&sampDesc, &m_pSampLinear)))
     return false;
 
-  sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
-  if (FAILED(g_Windowing.Get3D11Device()->CreateSamplerState(&sampDesc, &m_pSampPoint)))
-    return false;
-
-  ID3D11SamplerState* samplers[] = { m_pSampLinear, m_pSampPoint };
-  g_Windowing.Get3D11Context()->PSSetSamplers(0, ARRAYSIZE(samplers), samplers);
+  g_Windowing.Get3D11Context()->PSSetSamplers(0, 1, &m_pSampLinear);
 
   return true;
 }
@@ -201,8 +189,7 @@ void CGUIShaderDX::ApplyStateBlock(void)
   pContext->PSSetConstantBuffers(0, 1, &m_pWVPBuffer);
   pContext->PSSetConstantBuffers(1, 1, &m_pVPBuffer);
 
-  ID3D11SamplerState* samplers[] = { m_pSampLinear, m_pSampPoint };
-  pContext->PSSetSamplers(0, ARRAYSIZE(samplers), samplers);
+  pContext->PSSetSamplers(0, 1, &m_pSampLinear);
 
   RestoreBuffers();
 }
@@ -274,21 +261,12 @@ void CGUIShaderDX::SetShaderViews(unsigned int numViews, ID3D11ShaderResourceVie
   g_Windowing.Get3D11Context()->PSSetShaderResources(0, numViews, views);
 }
 
-void CGUIShaderDX::SetSampler(SHADER_SAMPLER sampler)
-{
-  if (!m_bCreated)
-    return;
-
-  g_Windowing.Get3D11Context()->PSSetSamplers(1, 1, sampler == SHADER_SAMPLER_POINT ? &m_pSampPoint : &m_pSampLinear);
-}
-
 void CGUIShaderDX::Release()
 {
   SAFE_RELEASE(m_pVertexBuffer);
   SAFE_RELEASE(m_pWVPBuffer);
   SAFE_RELEASE(m_pVPBuffer);
   SAFE_RELEASE(m_pSampLinear);
-  SAFE_RELEASE(m_pSampPoint);
   m_bCreated = false;
 }
 
