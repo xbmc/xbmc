@@ -23,6 +23,7 @@
 #include <vector>
 #include "FileItem.h"
 #include "threads/CriticalSection.h"
+#include "utils/EventStream.h"
 
 
 class CFavouritesService
@@ -38,6 +39,10 @@ public:
   bool AddOrRemove(const CFileItem& item, int contextWindow);
   bool Save(const CFileItemList& items);
 
+  struct FavouritesUpdated { };
+
+  CEventStream<FavouritesUpdated>& Events() { return m_events; }
+
 private:
   CFavouritesService() = delete;
   CFavouritesService(const CFavouritesService&) = delete;
@@ -51,6 +56,7 @@ private:
 
   const std::string m_userDataFolder;
   CFileItemList m_favourites;
+  CEventSource<FavouritesUpdated> m_events;
   CCriticalSection m_criticalSection;
 };
 

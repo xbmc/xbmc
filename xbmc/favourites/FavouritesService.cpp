@@ -21,7 +21,6 @@
 #include "FavouritesService.h"
 #include "filesystem/File.h"
 #include "Util.h"
-#include "interfaces/AnnouncementManager.h"
 #include "profiles/ProfilesManager.h"
 #include "FileItem.h"
 #include "utils/XBMCTinyXML.h"
@@ -133,7 +132,7 @@ bool CFavouritesService::Save(const CFileItemList& items)
 
 void CFavouritesService::OnUpdated()
 {
-  ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::GUI, "xbmc", "OnFavouritesUpdated");
+  m_events.Publish(FavouritesUpdated{});
 }
 
 std::string CFavouritesService::GetFavouritesUrl(const CFileItem& item, int contextWindow) const
