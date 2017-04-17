@@ -125,7 +125,7 @@ float4 YUV2RGB(VS_OUTPUT In) : SV_TARGET
     float4 YUV    = float4(outY, outUV, 1.0);
 #endif
 
-  return output4(mul(YUV, g_ColorMatrix));
+  return output4(mul(YUV, g_ColorMatrix), In.TextureY);
 }
 
 technique11 YUV2RGB_T

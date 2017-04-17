@@ -31,6 +31,7 @@
 #include "platform/win32/WIN32Util.h"
 #include "YUV2RGBShader.h"
 #include <map>
+#include "dither.h"
 
 using namespace DirectX::PackedVector;
 
@@ -246,14 +247,26 @@ bool CWinShader::Execute(std::vector<ID3D11RenderTargetView*> *vecRT, unsigned i
 COutputShader::~COutputShader()
 {
   m_clutSize = 0;
+  SAFE_RELEASE(m_pDitherView);
 }
 
-void COutputShader::ApplyEffectParameters(CD3DEffect &effect)
+void COutputShader::ApplyEffectParameters(CD3DEffect &effect, unsigned sourceWidth, unsigned sourceHeight)
 {
   if (HasCLUT())
   {
     effect.SetResources("m_CLUT", &m_pCLUTView, 1);
     effect.SetScalar("m_CLUTsize", m_clutSize);
+  }
+  if (m_useDithering)
+  {
+    float ditherParams[3] = 
+    { 
+      static_cast<float>(sourceWidth) / dither_size, 
+      static_cast<float>(sourceHeight) / dither_size,
+      static_cast<float>(1 << m_ditherDepth) - 1.0 
+    };
+    effect.SetResources("m_ditherMatrix", &m_pDitherView, 1);
+    effect.SetFloatArray("m_ditherParams", ditherParams, 3);
   }
 }
 
@@ -263,14 +276,22 @@ void COutputShader::GetDefines(DefinesMap& map) const
   {
     map["KODI_3DLUT"] = "";
   }
+  if (m_useDithering)
+  {
+    map["KODI_DITHER"] = "";
+  }
 }
 
-bool COutputShader::Create(int clutSize, ID3D11ShaderResourceView* pCLUTView)
+bool COutputShader::Create(int clutSize, ID3D11ShaderResourceView* pCLUTView, bool useDithering, int ditherDepth)
 {
   m_clutSize = clutSize;
   m_pCLUTView = pCLUTView;
+  m_ditherDepth = ditherDepth;
 
   CWinShader::CreateVertexBuffer(4, sizeof(CUSTOMVERTEX));
+
+  if (useDithering)
+    CreateDitherView();
 
   DefinesMap defines;
   defines["KODI_OUTPUT_T"] = "";
@@ -422,7 +443,39 @@ void COutputShader::SetShaderParameters(CD3DTexture& sourceTexture, unsigned ran
   float params[3] = { range, contrast, brightness };
   m_effect.SetFloatArray("m_params", params, 3);
 
-  ApplyEffectParameters(m_effect);
+  ApplyEffectParameters(m_effect, sourceTexture.GetWidth(), sourceTexture.GetHeight());
+}
+
+void COutputShader::CreateDitherView()
+{
+  ID3D11Device* pDevice = g_Windowing.Get3D11Device();
+
+  CD3D11_TEXTURE2D_DESC txDesc(DXGI_FORMAT_R16_UNORM, dither_size, dither_size, 1, 1);
+  D3D11_SUBRESOURCE_DATA resData;
+  resData.pSysMem = dither_matrix;
+  resData.SysMemPitch = dither_size * sizeof(uint16_t);
+  resData.SysMemSlicePitch = resData.SysMemPitch * dither_size;
+
+  ID3D11Texture2D* pDitherTex = nullptr;
+  HRESULT hr = pDevice->CreateTexture2D(&txDesc, &resData, &pDitherTex);
+
+  if (FAILED(hr))
+  {
+    CLog::Log(LOGDEBUG, "%s: unable to create 3dlut texture cube.");
+    m_useDithering = false;
+    return;
+  }
+
+  CD3D11_SHADER_RESOURCE_VIEW_DESC srvDesc(D3D11_SRV_DIMENSION_TEXTURE2D, DXGI_FORMAT_R16_UNORM, 0, 1);
+  hr = pDevice->CreateShaderResourceView(pDitherTex, &srvDesc, &m_pDitherView);
+  SAFE_RELEASE(pDitherTex);
+  if (FAILED(hr))
+  {
+    CLog::Log(LOGDEBUG, "%s: unable to create view for 3dlut texture cube.");
+    m_useDithering = false;
+    return;
+  }
+  m_useDithering = true;
 }
 
 //==================================================================================
@@ -600,7 +653,7 @@ void CYUV2RGBShader::SetShaderParameters(YUVBuffer* YUVbuf)
   g_Windowing.Get3D11Context()->RSGetViewports(&numPorts, &viewPort);
   m_effect.SetFloatArray("g_viewPort", &viewPort.Width, 2);
   if (m_pOutShader)
-    m_pOutShader->ApplyEffectParameters(m_effect);
+    m_pOutShader->ApplyEffectParameters(m_effect, m_sourceWidth, m_sourceHeight);
 }
 
 //==================================================================================
@@ -808,7 +861,7 @@ void CConvolutionShader1Pass::SetShaderParameters(CD3DTexture &sourceTexture, fl
   };
   m_effect.SetFloatArray("g_colorRange", colorRange, _countof(colorRange));
   if (m_pOutShader)
-    m_pOutShader->ApplyEffectParameters(m_effect);
+    m_pOutShader->ApplyEffectParameters(m_effect, sourceTexture.GetWidth(), sourceTexture.GetHeight());
 }
 
 //==================================================================================
@@ -1058,7 +1111,7 @@ void CConvolutionShaderSeparable::SetShaderParameters(CD3DTexture &sourceTexture
   };
   m_effect.SetFloatArray("g_colorRange", colorRange, _countof(colorRange));
   if (m_pOutShader)
-    m_pOutShader->ApplyEffectParameters(m_effect);
+    m_pOutShader->ApplyEffectParameters(m_effect, sourceTexture.GetWidth(), sourceTexture.GetHeight());
 }
 
 void CConvolutionShaderSeparable::SetStepParams(UINT iPass)

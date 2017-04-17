@@ -103,7 +103,7 @@ float4 CONVOLUTION6x6Vert(in float2 TextureUV : TEXCOORD0) : SV_TARGET
   float3 ypos1 = ystart + g_StepXY.w * float3(0.0, 1.0, 2.0);
   float3 ypos2 = ystart + g_StepXY.w * float3(3.0, 4.0, 5.0);
 
-  return output(g_colorRange.x + g_colorRange.y * saturate(getRow(TextureUV.x, ypos1, ypos2, columntaps1, columntaps2)));
+  return output(g_colorRange.x + g_colorRange.y * saturate(getRow(TextureUV.x, ypos1, ypos2, columntaps1, columntaps2)), TextureUV);
 }
 
 technique11 SCALER_T

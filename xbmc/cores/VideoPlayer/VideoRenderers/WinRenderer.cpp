@@ -87,6 +87,8 @@ CWinRenderer::CWinRenderer()
   m_neededBuffers = 0;
   m_colorManager.reset(new CColorManager());
   m_outputShader = nullptr;
+  m_useDithering = CServiceBroker::GetSettings().GetBool("videoscreen.dither");
+  m_ditherDepth = CServiceBroker::GetSettings().GetInt("videoscreen.ditherdepth");
 }
 
 CWinRenderer::~CWinRenderer()
@@ -634,7 +636,7 @@ void CWinRenderer::UpdateVideoFilter()
   {
     SAFE_DELETE(m_outputShader);
     m_outputShader = new COutputShader();
-    if (!m_outputShader->Create(m_CLUTSize, m_pCLUTView))
+    if (!m_outputShader->Create(m_CLUTSize, m_pCLUTView, m_useDithering, m_ditherDepth))
     {
       CLog::Log(LOGDEBUG, "%s: Unable to create output shader.", __FUNCTION__);
       SAFE_DELETE(m_outputShader);

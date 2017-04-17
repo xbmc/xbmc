@@ -30,20 +30,37 @@ SamplerState LutSampler : IMMUTABLE
   Filter   = MIN_MAG_MIP_LINEAR;
 };
 #endif
+#if defined(KODI_DITHER)
+float3    m_ditherParams;
+texture2D m_ditherMatrix;
 
-float4 output4(float4 color)
+SamplerState DitherSampler : IMMUTABLE
+{
+  AddressU = WRAP;
+  AddressV = WRAP;
+  Filter   = MIN_MAG_MIP_POINT;
+};
+#endif
+
+float4 output4(float4 color, float2 uv)
 {
 #if defined(KODI_3DLUT)
   half3 scale = (m_CLUTsize - 1.0) / m_CLUTsize;
   half3 offset = 1.0 / (2.0 * m_CLUTsize);
   color.rgb = m_CLUT.Sample(LutSampler, color.rgb*scale + offset).rgb;
 #endif
+#if defined(KODI_DITHER)
+  half2 ditherpos  = uv * m_ditherParams.xy;
+  // scale ditherval to [0,1)
+  float ditherval = m_ditherMatrix.Sample(DitherSampler, ditherpos).r * 16.0;
+  color = floor(color * m_ditherParams.z + ditherval) / m_ditherParams.z;
+#endif
   return color;
 }
 
-float4 output(float3 color)
+float4 output(float3 color, float2 uv)
 {
-    return output4(float4(color, 1.0));
+    return output4(float4(color, 1.0), uv);
 }
 
 #if defined(KODI_OUTPUT_T)
@@ -60,7 +77,7 @@ float4 OUTPUT_PS(VS_OUTPUT In) : SV_TARGET
   color += m_params.z - 0.5;
   color.a = 1.0;
 
-  return output4(color);
+  return output4(color, In.TextureUV);
 }
 
 technique11 OUTPUT_T

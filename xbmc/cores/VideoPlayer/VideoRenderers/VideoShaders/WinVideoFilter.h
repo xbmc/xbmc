@@ -79,9 +79,9 @@ class COutputShader : public CWinShader
 public:
   virtual ~COutputShader();
 
-  void ApplyEffectParameters(CD3DEffect &effect);
+  void ApplyEffectParameters(CD3DEffect &effect, unsigned sourceWidth, unsigned sourceHeight);
   void GetDefines(DefinesMap &map) const;
-  bool Create(int clutSize, ID3D11ShaderResourceView *pCLUTView);
+  bool Create(int clutSize, ID3D11ShaderResourceView *pCLUTView, bool useDithering, int ditherDepth);
   void Render(CD3DTexture &sourceTexture, unsigned sourceWidth, unsigned sourceHeight, CRect sourceRect, const CPoint points[4]
             , unsigned range = 0, float contrast = 0.5f, float brightness = 0.5f);
   void Render(CD3DTexture &sourceTexture, unsigned sourceWidth, unsigned sourceHeight, CRect sourceRect, CRect destRect
@@ -93,6 +93,7 @@ private:
   bool HasCLUT() const { return m_clutSize && m_pCLUTView; }
   void PrepareParameters(unsigned sourceWidth, unsigned sourceHeight, CRect sourceRect, const CPoint points[4]);
   void SetShaderParameters(CD3DTexture &sourceTexture, unsigned range, float contrast, float brightness);
+  void CreateDitherView();
 
   unsigned m_sourceWidth{ 0 };
   unsigned m_sourceHeight{ 0 };
@@ -106,6 +107,9 @@ private:
   };
   int m_clutSize{ 0 };
   ID3D11ShaderResourceView *m_pCLUTView{ nullptr };
+  bool m_useDithering{ false };
+  int m_ditherDepth{ 0 };
+  ID3D11ShaderResourceView* m_pDitherView{ nullptr };
 
   struct CUSTOMVERTEX {
     FLOAT x, y, z;
