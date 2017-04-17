@@ -18,9 +18,10 @@
  *
  */
 
+#include "GUIDialogPVRChannelsOSD.h"
+
 #include "FileItem.h"
 #include "GUIInfoManager.h"
-#include "epg/EpgContainer.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
 #include "messaging/ApplicationMessenger.h"
@@ -30,9 +31,8 @@
 #include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/epg/EpgContainer.h"
 #include "pvr/windows/GUIWindowPVRBase.h"
-
-#include "GUIDialogPVRChannelsOSD.h"
 
 using namespace PVR;
 using namespace KODI::MESSAGING;

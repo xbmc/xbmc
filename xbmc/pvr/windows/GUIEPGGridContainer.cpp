@@ -18,23 +18,24 @@
  *
  */
 
+#include "GUIEPGGridContainer.h"
+
 #include <tinyxml.h>
 
 #include "GUIInfoManager.h"
-#include "epg/Epg.h"
-#include "epg/GUIEPGGridContainerModel.h"
 #include "guiinfo/GUIInfoLabels.h"
 #include "guilib/DirtyRegion.h"
 #include "guilib/GUIControlFactory.h"
 #include "guilib/GUIListItem.h"
 #include "input/Key.h"
-#include "pvr/channels/PVRChannel.h"
 #include "utils/MathUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "threads/SystemClock.h"
 
-#include "GUIEPGGridContainer.h"
+#include "pvr/channels/PVRChannel.h"
+#include "pvr/epg/Epg.h"
+#include "pvr/windows/GUIEPGGridContainerModel.h"
 
 using namespace PVR;
 

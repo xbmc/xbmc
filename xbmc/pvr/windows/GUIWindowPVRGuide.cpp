@@ -18,12 +18,12 @@
  *
  */
 
+#include "GUIWindowPVRGuide.h"
+
 #include "ContextMenuManager.h"
 #include "dialogs/GUIDialogBusy.h"
-#include "epg/GUIEPGGridContainer.h"
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
-#include "epg/EpgContainer.h"
 #include "view/GUIViewState.h"
 #include "input/Key.h"
 #include "messaging/ApplicationMessenger.h"
@@ -32,13 +32,14 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
+
 #include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/epg/EpgContainer.h"
 #include "pvr/timers/PVRTimers.h"
-
-#include "GUIWindowPVRGuide.h"
+#include "pvr/windows/GUIEPGGridContainer.h"
 
 using namespace PVR;
 

@@ -47,7 +47,7 @@
 #include "GUIListContainer.h"
 #include "GUIFixedListContainer.h"
 #include "GUIWrappingListContainer.h"
-#include "epg/GUIEPGGridContainer.h"
+#include "pvr/windows/GUIEPGGridContainer.h"
 #include "GUIPanelContainer.h"
 #include "GUIListLabel.h"
 #include "GUIListGroup.h"

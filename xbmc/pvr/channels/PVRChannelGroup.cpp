@@ -21,12 +21,10 @@
 //! @todo use Observable here, so we can use event driven operations later
 
 #include "PVRChannelGroup.h"
-#include "PVRChannelGroupsContainer.h"
 
 #include "ServiceBroker.h"
 #include "Util.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
-#include "epg/EpgContainer.h"
 #include "filesystem/Directory.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/lib/Setting.h"
@@ -39,6 +37,8 @@
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/epg/EpgContainer.h"
 
 using namespace PVR;
 

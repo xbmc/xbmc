@@ -13,7 +13,6 @@ xbmc/addons/interfaces/PVR                      addonCallbacks_PVR
 xbmc/commons                                    commons
 xbmc/dbwrappers                                 dbwrappers
 xbmc/dialogs                                    dialogs
-xbmc/epg                                        epg
 xbmc/favourites                                 favourites
 xbmc/guilib                                     guilib
 xbmc/input                                      input

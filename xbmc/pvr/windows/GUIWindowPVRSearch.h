@@ -19,7 +19,7 @@
  *
  */
 
-#include "epg/EpgSearchFilter.h"
+#include "pvr/epg/EpgSearchFilter.h"
 #include "GUIWindowPVRBase.h"
 
 namespace PVR

@@ -27,10 +27,10 @@
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/channels/PVRChannel.h"
-#include "pvr/timers/PVRTimers.h"
+#include "pvr/epg/Epg.h"
+#include "pvr/epg/EpgContainer.h"
 #include "pvr/recordings/PVRRecordings.h"
-#include "epg/Epg.h"
-#include "epg/EpgContainer.h"
+#include "pvr/timers/PVRTimers.h"
 #include "utils/Variant.h"
 
 using namespace JSONRPC;

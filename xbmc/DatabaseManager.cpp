@@ -26,7 +26,7 @@
 #include "music/MusicDatabase.h"
 #include "video/VideoDatabase.h"
 #include "pvr/PVRDatabase.h"
-#include "epg/EpgDatabase.h"
+#include "pvr/epg/EpgDatabase.h"
 #include "games/addons/savestates/SavestateDatabase.h"
 #include "settings/AdvancedSettings.h"
 #include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.h"

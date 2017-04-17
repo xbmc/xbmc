@@ -18,9 +18,9 @@
  *
  */
 
+#include "PVRRecording.h"
+
 #include "dialogs/GUIDialogOK.h"
-#include "epg/Epg.h"
-#include "epg/EpgContainer.h"
 #include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
@@ -31,10 +31,10 @@
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/epg/Epg.h"
+#include "pvr/epg/EpgContainer.h"
 #include "pvr/recordings/PVRRecordingsPath.h"
 #include "pvr/timers/PVRTimers.h"
-
-#include "PVRRecording.h"
 
 using namespace PVR;
 

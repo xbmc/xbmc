@@ -18,10 +18,11 @@
  *
  */
 
+#include "GUIWindowPVRSearch.h"
+
 #include "ServiceBroker.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogProgress.h"
-#include "epg/EpgContainer.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
 #include "utils/URIUtils.h"
@@ -33,8 +34,7 @@
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/dialogs/GUIDialogPVRGuideSearch.h"
-
-#include "GUIWindowPVRSearch.h"
+#include "pvr/epg/EpgContainer.h"
 
 using namespace PVR;
 

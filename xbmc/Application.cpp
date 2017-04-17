@@ -152,8 +152,6 @@
 #include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
 
-#include "epg/EpgContainer.h"
-
 #include "video/dialogs/GUIDialogFullScreenInfo.h"
 #include "guilib/GUIControlFactory.h"
 #include "dialogs/GUIDialogCache.h"

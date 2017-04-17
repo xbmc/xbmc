@@ -24,16 +24,17 @@
 #include <utility>
 
 #include "dialogs/GUIDialogOK.h"
-#include "epg/EpgContainer.h"
-#include "pvr/addons/PVRClients.h"
-#include "pvr/PVRDatabase.h"
-#include "pvr/PVRManager.h"
-#include "pvr/timers/PVRTimers.h"
-#include "PVRChannelGroupsContainer.h"
 #include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
 #include "utils/Variant.h"
+
+#include "pvr/PVRDatabase.h"
+#include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClients.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/epg/EpgContainer.h"
+#include "pvr/timers/PVRTimers.h"
 
 using namespace PVR;
 

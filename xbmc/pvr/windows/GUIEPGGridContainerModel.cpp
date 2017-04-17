@@ -21,11 +21,11 @@
 #include "GUIEPGGridContainerModel.h"
 
 #include "FileItem.h"
-#include "epg/EpgInfoTag.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/Variant.h"
 
 #include "pvr/channels/PVRChannel.h"
+#include "pvr/epg/EpgInfoTag.h"
 
 class CGUIListItem;
 typedef std::shared_ptr<CGUIListItem> CGUIListItemPtr;

@@ -18,9 +18,9 @@
  *
  */
 
+#include "GUIWindowPVRChannels.h"
 
 #include "GUIInfoManager.h"
-#include "epg/EpgContainer.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogYesNo.h"
@@ -39,8 +39,7 @@
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/dialogs/GUIDialogPVRChannelManager.h"
 #include "pvr/dialogs/GUIDialogPVRGroupManager.h"
-
-#include "GUIWindowPVRChannels.h"
+#include "pvr/epg/EpgContainer.h"
 
 using namespace PVR;
 

@@ -23,13 +23,14 @@
 #include <utility>
 
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
-#include "epg/EpgSearchFilter.h"
 #include "guilib/GUIEditControl.h"
 #include "guilib/LocalizeStrings.h"
-#include "pvr/channels/PVRChannelGroupsContainer.h"
-#include "pvr/PVRManager.h"
 #include "ServiceBroker.h"
 #include "utils/StringUtils.h"
+
+#include "pvr/PVRManager.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/epg/EpgSearchFilter.h"
 
 using namespace PVR;
 
