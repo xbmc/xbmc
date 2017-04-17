@@ -348,8 +348,8 @@ bool CProcessorHD::OpenProcessor()
     0,                                          // 0 - Playback, 1 - Processing
     0,                                          // 0 - Full (0-255), 1 - Limited (16-235)
     m_flags & CONF_FLAGS_YUVCOEF_BT709 ? 1 : 0, // 0 - BT.601, 1 - BT.709
-    m_flags & CONF_FLAGS_YUV_FULLRANGE ? 1 : 0, // 0 - Conventional YCbCr, 1 - xvYCC
-    0,                                          // 2 - Full luminance range [0-255], 1 - Studio luminance range [16-235], 0 - driver defaults
+    0,                                          // 0 - Conventional YCbCr, 1 - xvYCC
+    m_flags & CONF_FLAGS_YUV_FULLRANGE ? 2 : 1, // 2 - Full luminance range [0-255], 1 - Studio luminance range [16-235], 0 - driver defaults
   };
   if (m_vcaps.DeviceCaps & D3D11_VIDEO_PROCESSOR_DEVICE_CAPS_NOMINAL_RANGE)
     cs.Nominal_Range = m_flags & CONF_FLAGS_YUV_FULLRANGE ? 2 : 1;

@@ -24,15 +24,11 @@
 #include "windowing/WindowingFactory.h"
 #include "../../../../utils/log.h"
 #include "../../../../FileSystem/File.h"
-#include <map>
 #include "ConvolutionKernels.h"
 #include <DirectXPackedVector.h>
-#include "FileSystem/File.h"
 #include "guilib/GraphicContext.h"
 #include "Util.h"
-#include "utils/log.h"
 #include "platform/win32/WIN32Util.h"
-#include "windowing/WindowingFactory.h"
 #include "YUV2RGBShader.h"
 #include <map>
 
@@ -198,7 +194,7 @@ bool CWinShader::Execute(std::vector<ID3D11RenderTargetView*> *vecRT, unsigned i
   if (vecRT != nullptr && !vecRT->empty())
     pContext->OMGetRenderTargets(1, &oldRT, nullptr);
 
-  UINT cPasses, iPass;
+  UINT cPasses;
   if (!m_effect.Begin(&cPasses, 0))
   {
     CLog::Log(LOGERROR, __FUNCTION__" - failed to begin d3d effect");
@@ -214,7 +210,7 @@ bool CWinShader::Execute(std::vector<ID3D11RenderTargetView*> *vecRT, unsigned i
   pContext->IASetInputLayout(m_inputLayout);
   pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
-  for (iPass = 0; iPass < cPasses; iPass++)
+  for (UINT iPass = 0; iPass < cPasses; iPass++)
   {
     if (vecRT != nullptr && vecRT->size() > iPass)
       pContext->OMSetRenderTargets(1, &vecRT->at(iPass), nullptr);
@@ -247,13 +243,198 @@ bool CWinShader::Execute(std::vector<ID3D11RenderTargetView*> *vecRT, unsigned i
 
 //==================================================================================
 
-bool CYUV2RGBShader::Create(unsigned int sourceWidth, unsigned int sourceHeight, ERenderFormat fmt)
+COutputShader::~COutputShader()
+{
+  m_clutSize = 0;
+}
+
+void COutputShader::ApplyEffectParameters(CD3DEffect &effect)
+{
+  if (HasCLUT())
+  {
+    effect.SetResources("m_CLUT", &m_pCLUTView, 1);
+    effect.SetScalar("m_CLUTsize", m_clutSize);
+  }
+}
+
+void COutputShader::GetDefines(DefinesMap& map) const
+{
+  if (HasCLUT())
+  {
+    map["KODI_3DLUT"] = "";
+  }
+}
+
+bool COutputShader::Create(int clutSize, ID3D11ShaderResourceView* pCLUTView)
+{
+  m_clutSize = clutSize;
+  m_pCLUTView = pCLUTView;
+
+  CWinShader::CreateVertexBuffer(4, sizeof(CUSTOMVERTEX));
+
+  DefinesMap defines;
+  defines["KODI_OUTPUT_T"] = "";
+  GetDefines(defines);
+
+  std::string effectString("special://xbmc/system/shaders/output_d3d.fx");
+
+  if (!LoadEffect(effectString, &defines))
+  {
+    CLog::Log(LOGERROR, __FUNCTION__": Failed to load shader %s.", effectString.c_str());
+    return false;
+  }
+
+  // Create input layout
+  D3D11_INPUT_ELEMENT_DESC layout[] =
+  {
+    { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+    { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+  };
+  return CWinShader::CreateInputLayout(layout, ARRAYSIZE(layout));
+}
+
+void COutputShader::Render(CD3DTexture& sourceTexture, unsigned sourceWidth, unsigned sourceHeight, CRect sourceRect, const CPoint points[4]
+                         , unsigned range, float contrast, float brightness)
+{
+  PrepareParameters(sourceWidth, sourceHeight, sourceRect, points);
+  SetShaderParameters(sourceTexture, range, contrast, brightness);
+  Execute(nullptr, 4);
+}
+
+void COutputShader::Render(CD3DTexture &sourceTexture, unsigned sourceWidth, unsigned sourceHeight, CRect sourceRect, CRect destRect
+                         , unsigned range, float contrast, float brightness)
+{
+  CPoint points[] =
+  {
+    { destRect.x1, destRect.y1 },
+    { destRect.x2, destRect.y1 },
+    { destRect.x2, destRect.y2 },
+    { destRect.x1, destRect.y2 },
+  };
+  Render(sourceTexture, sourceWidth, sourceHeight, sourceRect, points, range, contrast, brightness);
+}
+
+bool COutputShader::CreateCLUTView(int clutSize, uint16_t* clutData, ID3D11ShaderResourceView** ppCLUTView)
+{
+  if (!clutSize || !clutData)
+    return false;
+
+  // repack data
+  unsigned lutsamples = clutSize * clutSize * clutSize;
+  uint16_t* pCLUT = static_cast<uint16_t*>(malloc(sizeof(uint16_t) * lutsamples * 4));
+  uint16_t* rgba = pCLUT, *rgb = clutData;
+  for (int i = 0; i < lutsamples; ++i, rgba += 4, rgb += 3)
+  {
+    *(uint64_t*)rgba = *(uint64_t*)rgb;
+  }
+
+  // create 3DLUT texture
+  CLog::Log(LOGDEBUG, "%s: creating 3dlut texture.", __FUNCTION__);
+
+  ID3D11Device* pDevice = g_Windowing.Get3D11Device();
+
+  CD3D11_TEXTURE3D_DESC txDesc(DXGI_FORMAT_R16G16B16A16_UNORM, clutSize, clutSize, clutSize, 1,
+                               D3D11_BIND_SHADER_RESOURCE, D3D11_USAGE_DEFAULT);
+  D3D11_SUBRESOURCE_DATA resData;
+  resData.pSysMem = pCLUT;
+  resData.SysMemPitch = clutSize * sizeof(uint16_t) * 4;
+  resData.SysMemSlicePitch = resData.SysMemPitch * clutSize;
+
+  ID3D11Texture3D* pCLUTTex = nullptr;
+  HRESULT hr = pDevice->CreateTexture3D(&txDesc, &resData, &pCLUTTex);
+  free(pCLUT);
+
+  if (FAILED(hr))
+  {
+    CLog::Log(LOGDEBUG, "%s: unable to create 3dlut texture cube.");
+    return false;
+  }
+
+  CD3D11_SHADER_RESOURCE_VIEW_DESC srvDesc(D3D11_SRV_DIMENSION_TEXTURE3D, DXGI_FORMAT_R16G16B16A16_UNORM, 0, 1);
+  hr = pDevice->CreateShaderResourceView(pCLUTTex, &srvDesc, ppCLUTView);
+  SAFE_RELEASE(pCLUTTex);
+  if (FAILED(hr))
+  {
+    CLog::Log(LOGDEBUG, "%s: unable to create view for 3dlut texture cube.");
+    return false;
+  }
+
+  return true;
+}
+
+void COutputShader::PrepareParameters(unsigned sourceWidth, unsigned sourceHeight, CRect sourceRect, const CPoint points[4])
+{
+  bool changed = false;
+  for(int i= 0; i < 4 && !changed; ++i)
+    changed = points[i] != m_destPoints[i];
+
+  if (m_sourceWidth != sourceWidth || m_sourceHeight != sourceHeight
+    || m_sourceRect != sourceRect || changed)
+  {
+    m_sourceWidth = sourceWidth;
+    m_sourceHeight = sourceHeight;
+    m_sourceRect = sourceRect;
+    for (int i = 0; i < 4; ++i)
+      m_destPoints[i] = points[i];
+
+    CUSTOMVERTEX* v;
+    CWinShader::LockVertexBuffer(reinterpret_cast<void**>(&v));
+
+    v[0].x = m_destPoints[0].x;
+    v[0].y = m_destPoints[0].y;
+    v[0].z = 0;
+    v[0].tu = m_sourceRect.x1 / m_sourceWidth;
+    v[0].tv = m_sourceRect.y1 / m_sourceHeight;
+
+    v[1].x = m_destPoints[1].x;
+    v[1].y = m_destPoints[1].y;
+    v[1].z = 0;
+    v[1].tu = m_sourceRect.x2 / m_sourceWidth;
+    v[1].tv = m_sourceRect.y1 / m_sourceHeight;
+
+    v[2].x = m_destPoints[2].x;
+    v[2].y = m_destPoints[2].y;
+    v[2].z = 0;
+    v[2].tu = m_sourceRect.x2 / m_sourceWidth;
+    v[2].tv = m_sourceRect.y2 / m_sourceHeight;
+
+    v[3].x = m_destPoints[3].x;
+    v[3].y = m_destPoints[3].y;
+    v[3].z = 0;
+    v[3].tu = m_sourceRect.x1 / m_sourceWidth;
+    v[3].tv = m_sourceRect.y2 / m_sourceHeight;
+
+    CWinShader::UnlockVertexBuffer();
+  }
+}
+
+void COutputShader::SetShaderParameters(CD3DTexture& sourceTexture, unsigned range, float contrast, float brightness)
+{
+  m_effect.SetTechnique("OUTPUT_T");
+  ID3D11ShaderResourceView* pTextView = sourceTexture.GetShaderResource();
+  m_effect.SetResources("g_Texture", &pTextView, 1);
+
+  UINT numPorts = 1;
+  D3D11_VIEWPORT viewPort;
+  g_Windowing.Get3D11Context()->RSGetViewports(&numPorts, &viewPort);
+  m_effect.SetFloatArray("g_viewPort", &viewPort.Width, 2);
+
+  float params[3] = { range, contrast, brightness };
+  m_effect.SetFloatArray("m_params", params, 3);
+
+  ApplyEffectParameters(m_effect);
+}
+
+//==================================================================================
+
+bool CYUV2RGBShader::Create(unsigned int sourceWidth, unsigned int sourceHeight, ERenderFormat fmt, COutputShader *pCLUT)
 {
   CWinShader::CreateVertexBuffer(4, sizeof(CUSTOMVERTEX));
 
   m_sourceWidth = sourceWidth;
   m_sourceHeight = sourceHeight;
   m_format = fmt;
+  m_pOutShader = pCLUT;
 
   unsigned int texWidth;
 
@@ -267,6 +448,7 @@ bool CYUV2RGBShader::Create(unsigned int sourceWidth, unsigned int sourceHeight,
     defines["XBMC_YV12"] = "";
     texWidth = sourceWidth;
     break;
+  case RENDER_FMT_DXVA:
   case RENDER_FMT_NV12:
     defines["XBMC_NV12"] = "";
     texWidth = sourceWidth;
@@ -284,8 +466,10 @@ bool CYUV2RGBShader::Create(unsigned int sourceWidth, unsigned int sourceHeight,
     break;
   default:
     return false;
-    break;
   }
+
+  if (m_pOutShader)
+    m_pOutShader->GetDefines(defines);
 
   m_texSteps[0] = 1.0f/(float)texWidth;
   m_texSteps[1] = 1.0f/(float)sourceHeight;
@@ -326,6 +510,15 @@ void CYUV2RGBShader::Render(CRect sourceRect, CPoint dest[],
   Execute(nullptr, 4);
 }
 
+CYUV2RGBShader::CYUV2RGBShader() :
+    m_sourceWidth(0)
+  , m_sourceHeight(0)
+  , m_format(RENDER_FMT_NONE)
+  , m_pOutShader(nullptr)
+{
+  memset(&m_texSteps, 0, sizeof(m_texSteps));
+}
+
 CYUV2RGBShader::~CYUV2RGBShader()
 {
 }
@@ -345,7 +538,7 @@ void CYUV2RGBShader::PrepareParameters(CRect sourceRect,
       m_dest[i] = dest[i];
 
     CUSTOMVERTEX* v;
-    CWinShader::LockVertexBuffer((void**)&v);
+    CWinShader::LockVertexBuffer(reinterpret_cast<void**>(&v));
 
     v[0].x = m_dest[0].x;
     v[0].y = m_dest[0].y;
@@ -406,9 +599,19 @@ void CYUV2RGBShader::SetShaderParameters(YUVBuffer* YUVbuf)
   D3D11_VIEWPORT viewPort;
   g_Windowing.Get3D11Context()->RSGetViewports(&numPorts, &viewPort);
   m_effect.SetFloatArray("g_viewPort", &viewPort.Width, 2);
+  if (m_pOutShader)
+    m_pOutShader->ApplyEffectParameters(m_effect);
 }
 
 //==================================================================================
+
+CConvolutionShader::CConvolutionShader() : CWinShader()
+  , m_KernelFormat(DXGI_FORMAT_UNKNOWN)
+  , m_floattex(false)
+  , m_rgba(false)
+  , m_pOutShader(nullptr)
+{
+}
 
 CConvolutionShader::~CConvolutionShader()
 {
@@ -476,8 +679,10 @@ bool CConvolutionShader::CreateHQKernel(ESCALINGMETHOD method)
   return true;
 }
 //==================================================================================
-bool CConvolutionShader1Pass::Create(ESCALINGMETHOD method)
+bool CConvolutionShader1Pass::Create(ESCALINGMETHOD method, COutputShader *pCLUT)
 {
+  m_pOutShader = pCLUT;
+
   std::string effectString;
   switch(method)
   {
@@ -509,6 +714,9 @@ bool CConvolutionShader1Pass::Create(ESCALINGMETHOD method)
     defines["HAS_FLOAT_TEXTURE"] = "";
   if (m_rgba)
     defines["HAS_RGBA"] = "";
+
+  if (m_pOutShader)
+    m_pOutShader->GetDefines(defines);
 
   if(!LoadEffect(effectString, &defines))
   {
@@ -542,8 +750,7 @@ void CConvolutionShader1Pass::Render(CD3DTexture &sourceTexture,
 }
 
 void CConvolutionShader1Pass::PrepareParameters(unsigned int sourceWidth, unsigned int sourceHeight,
-                                           CRect sourceRect,
-                                           CRect destRect)
+                                                CRect sourceRect, CRect destRect)
 {
   if(m_sourceWidth != sourceWidth || m_sourceHeight != sourceHeight
   || m_sourceRect != sourceRect || m_destRect != destRect)
@@ -554,7 +761,7 @@ void CConvolutionShader1Pass::PrepareParameters(unsigned int sourceWidth, unsign
     m_destRect = destRect;
 
     CUSTOMVERTEX* v;
-    CWinShader::LockVertexBuffer((void**)&v);
+    CWinShader::LockVertexBuffer(reinterpret_cast<void**>(&v));
 
     v[0].x = destRect.x1;
     v[0].y = destRect.y1;
@@ -600,20 +807,25 @@ void CConvolutionShader1Pass::SetShaderParameters(CD3DTexture &sourceTexture, fl
     (useLimitRange ? (235.f - 16.f) : 255.f) / 255.f,
   };
   m_effect.SetFloatArray("g_colorRange", colorRange, _countof(colorRange));
+  if (m_pOutShader)
+    m_pOutShader->ApplyEffectParameters(m_effect);
 }
 
 //==================================================================================
 
 CConvolutionShaderSeparable::CConvolutionShaderSeparable() : CConvolutionShader()
+  , m_IntermediateFormat(DXGI_FORMAT_UNKNOWN)
+  , m_sourceWidth(-1)
+  , m_sourceHeight(-1)
+  , m_destWidth(-1)
+  , m_destHeight(-1)
 {
-  m_sourceWidth = -1;
-  m_sourceHeight = -1;
-  m_destWidth = -1;
-  m_destHeight = -1;
 }
 
-bool CConvolutionShaderSeparable::Create(ESCALINGMETHOD method)
+bool CConvolutionShaderSeparable::Create(ESCALINGMETHOD method, COutputShader *pCLUT)
 {
+  m_pOutShader = pCLUT;
+
   std::string effectString;
   switch(method)
   {
@@ -651,6 +863,9 @@ bool CConvolutionShaderSeparable::Create(ESCALINGMETHOD method)
     defines["HAS_FLOAT_TEXTURE"] = "";
   if (m_rgba)
     defines["HAS_RGBA"] = "";
+
+  if (m_pOutShader)
+    m_pOutShader->GetDefines(defines);
 
   if(!LoadEffect(effectString, &defines))
   {
@@ -842,6 +1057,8 @@ void CConvolutionShaderSeparable::SetShaderParameters(CD3DTexture &sourceTexture
     (useLimitRange ? (235.f - 16.f) : 255.f) / 255.f,
   };
   m_effect.SetFloatArray("g_colorRange", colorRange, _countof(colorRange));
+  if (m_pOutShader)
+    m_pOutShader->ApplyEffectParameters(m_effect);
 }
 
 void CConvolutionShaderSeparable::SetStepParams(UINT iPass)
