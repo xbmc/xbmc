@@ -7024,7 +7024,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
   else if (condition == SYSTEM_HAS_ADSP)
     bReturn = true;
   else if (condition == SYSTEM_HAS_CMS)
-#ifdef HAS_GL
+#if defined(HAS_GL) || defined(HAS_DX)
     bReturn = true;
 #else
     bReturn = false;
