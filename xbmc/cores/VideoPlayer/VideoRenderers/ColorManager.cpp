@@ -67,6 +67,8 @@ CMS_PRIMARIES videoFlagsToPrimaries(int flags)
 {
   if (flags & CONF_FLAGS_COLPRI_BT709)
     return CMS_PRIMARIES_BT709;
+  if (flags & CONF_FLAGS_COLPRI_BT2020)
+    return CMS_PRIMARIES_BT2020;
   if (flags & CONF_FLAGS_COLPRI_170M)
     return CMS_PRIMARIES_170M;
   if (flags & CONF_FLAGS_COLPRI_BT470M)
@@ -463,7 +465,10 @@ cmsHPROFILE CColorManager::CreateSourceProfile(CMS_PRIMARIES primaries, cmsToneC
       0.150, 0.060, 1.0 },
     { 0.630, 0.340, 1.0,        // SMPTE 240M (obsolete HDTV 1988)
       0.310, 0.595, 1.0,
-      0.155, 0.070, 1.0 }
+      0.155, 0.070, 1.0 },
+    { 0.708, 0.292, 1.0,        // BT.2020 UHDTV
+      0.170, 0.797, 1.0,
+      0.131, 0.046, 1.0 }
   };
 
   Gamma3[0] = Gamma3[1] = Gamma3[2] = gamma;
