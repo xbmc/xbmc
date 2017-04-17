@@ -90,7 +90,7 @@ float4 CONVOLUTION4x4Vert(in float2 TextureUV : TEXCOORD0) : SV_TARGET
   float xystart = (-1.0 - f.y) * g_StepXY.w + TextureUV.y;
 
   float4 ypos = xystart + g_StepXY.w * float4(0.0, 1.0, 2.0, 3.0);
-  return output(g_colorRange.x + g_colorRange.y * saturate(getRow(TextureUV.x, ypos, columntaps)));
+  return output(g_colorRange.x + g_colorRange.y * saturate(getRow(TextureUV.x, ypos, columntaps)), TextureUV);
 }
 
 technique11 SCALER_T

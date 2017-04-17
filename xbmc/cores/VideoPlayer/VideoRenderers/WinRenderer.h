@@ -25,6 +25,7 @@
 #include "HwDecRender/DXVAHD.h"
 #include "guilib/D3DResource.h"
 #include "RenderCapture.h"
+#include "settings/Settings.h"
 
 #define ALIGN(value, alignment) (((value)+((alignment)-1))&~((alignment)-1))
 #define CLAMP(a, min, max) ((a) > (max) ? (max) : ( (a) < (min) ? (min) : a ))
@@ -244,4 +245,6 @@ protected:
   int m_CLUTSize{ 0 };
   std::unique_ptr<CColorManager> m_colorManager;
   ID3D11ShaderResourceView *m_pCLUTView{ nullptr };
+  bool m_useDithering;
+  int m_ditherDepth;
 };

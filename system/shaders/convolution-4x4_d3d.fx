@@ -75,7 +75,7 @@ float4 CONVOLUTION4x4(float2 TextureUV : TEXCOORD0) : SV_TARGET
     getLine(ypos.z, xpos, linetaps) * columntaps.b +
     getLine(ypos.w, xpos, linetaps) * columntaps.a;
 
-  return output(g_colorRange.x + g_colorRange.y * saturate(rgb));
+  return output(g_colorRange.x + g_colorRange.y * saturate(rgb), TextureUV);
 }
 
 technique11 SCALER_T
