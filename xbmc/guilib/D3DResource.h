@@ -169,7 +169,7 @@ private:
 
 typedef std::map<std::string, std::string> DefinesMap;
 
-class CD3DEffect : public ID3DResource
+class CD3DEffect : public ID3DResource, public ID3DInclude
 {
 public:
   CD3DEffect();
@@ -192,6 +192,10 @@ public:
 
   void OnDestroyDevice(bool fatal) override;
   void OnCreateDevice() override;
+
+  // ID3DInclude interface
+  __declspec(nothrow) HRESULT __stdcall Open(D3D_INCLUDE_TYPE IncludeType, LPCSTR pFileName, LPCVOID pParentData, LPCVOID *ppData, UINT *pBytes) override;
+  __declspec(nothrow) HRESULT __stdcall Close(LPCVOID pData) override;
 
 private:
   bool         CreateEffect();
