@@ -23,12 +23,6 @@
 
 namespace PVR
 {
-  class CPVREpgContainer;
-  typedef std::shared_ptr<CPVREpgContainer> CPVREpgContainerPtr;
-}
-
-namespace PVR
-{
   class CPVRDatabase;
   typedef std::shared_ptr<CPVRDatabase> CPVRDatabasePtr;
 
@@ -64,6 +58,15 @@ namespace PVR
 
   class CPVRGUIActions;
   typedef std::shared_ptr<CPVRGUIActions> CPVRGUIActionsPtr;
+
+  class CPVREpgContainer;
+  typedef std::shared_ptr<CPVREpgContainer> CPVREpgContainerPtr;
+
+  class CPVREpg;
+  typedef std::shared_ptr<CPVREpg> CPVREpgPtr;
+
+  class CPVREpgInfoTag;
+  typedef std::shared_ptr<CPVREpgInfoTag> CPVREpgInfoTagPtr;
 
 } // namespace PVR
 

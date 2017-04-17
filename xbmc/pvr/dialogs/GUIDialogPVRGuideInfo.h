@@ -19,7 +19,8 @@
  *
  */
 
-#include "epg/EpgTypes.h"
+#include "pvr/PVRTypes.h"
+
 #include "guilib/GUIDialog.h"
 
 namespace PVR

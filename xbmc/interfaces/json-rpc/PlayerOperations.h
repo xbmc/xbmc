@@ -21,7 +21,7 @@
 
 #include "JSONRPC.h"
 #include "FileItemHandler.h"
-#include "epg/EpgTypes.h"
+#include "pvr/PVRTypes.h"
 
 #include <string>
 

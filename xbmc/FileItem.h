@@ -31,7 +31,6 @@
 #include <vector>
 
 #include "addons/IAddon.h"
-#include "epg/EpgTypes.h"
 #include "guilib/GUIListItem.h"
 #include "GUIPassword.h"
 #include "pvr/PVRTypes.h"

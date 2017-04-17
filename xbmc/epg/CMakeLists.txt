@@ -11,7 +11,6 @@ set(HEADERS Epg.h
             EpgDatabase.h
             EpgInfoTag.h
             EpgSearchFilter.h
-            EpgTypes.h
             GUIEPGGridContainer.h
             GUIEPGGridContainerModel.h)
 

@@ -38,7 +38,6 @@
 #include "interfaces/info/SkinVariable.h"
 #include "cores/IPlayer.h"
 #include "FileItem.h"
-#include "epg/EpgTypes.h"
 #include "pvr/PVRTypes.h"
 
 #include <atomic>

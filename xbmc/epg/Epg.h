@@ -26,7 +26,7 @@
 
 #include "EpgInfoTag.h"
 #include "EpgSearchFilter.h"
-#include "EpgTypes.h"
+#include "pvr/PVRTypes.h"
 
 #include <map>
 #include <string>

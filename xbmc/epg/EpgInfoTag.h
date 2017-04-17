@@ -27,8 +27,6 @@
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "utils/ISerializable.h"
 
-#include "epg/EpgTypes.h"
-
 #include <string>
 #include <vector>
 

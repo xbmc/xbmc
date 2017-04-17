@@ -20,7 +20,7 @@
  */
 
 #include "XBDateTime.h"
-#include "EpgTypes.h"
+#include "pvr/PVRTypes.h"
 
 class CFileItemList;
 

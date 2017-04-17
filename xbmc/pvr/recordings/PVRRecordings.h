@@ -19,10 +19,10 @@
  *
  */
 
-#include "epg/EpgTypes.h"
 #include "FileItem.h"
 #include "video/VideoDatabase.h"
 
+#include "pvr/PVRTypes.h"
 #include "pvr/recordings/PVRRecording.h"
 
 #include <map>
