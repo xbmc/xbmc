@@ -18,6 +18,7 @@
  *
  */
 
+#include "filesystem/File.h"
 #ifdef HAS_DX
 
 #include "D3DResource.h"
@@ -541,6 +542,38 @@ void CD3DEffect::OnCreateDevice()
   CreateEffect();
 }
 
+HRESULT CD3DEffect::Open(D3D_INCLUDE_TYPE IncludeType, LPCSTR pFileName, LPCVOID pParentData, LPCVOID* ppData, UINT* pBytes)
+{
+  XFILE::CFile includeFile;
+
+  std::string fileName("special://xbmc/system/shaders/");
+  fileName.append(pFileName);
+
+  if (!includeFile.Open(fileName))
+  {
+    CLog::Log(LOGERROR, "%s: Could not open 3DLUT file: %s", __FUNCTION__, fileName.c_str());
+    return E_FAIL;
+  }
+
+  int64_t length = includeFile.GetLength();
+  void *pData = malloc(length);
+  if (includeFile.Read(pData, length) != length)
+  {
+    free(pData);
+    return E_FAIL;
+  }
+  *ppData = pData;
+  *pBytes = length;
+
+  return S_OK;
+}
+
+HRESULT CD3DEffect::Close(LPCVOID pData)
+{
+  free((void*)pData);
+  return S_OK;
+}
+
 bool CD3DEffect::SetFloatArray(LPCSTR handle, const float* val, unsigned int count)
 {
   if (m_effect)
@@ -694,7 +727,7 @@ bool CD3DEffect::CreateEffect()
   //dwShaderFlags |= D3DCOMPILE_SKIP_OPTIMIZATION;
 #endif
 
-  hr = D3DX11CompileEffectFromMemory(m_effectString.c_str(), m_effectString.length(), "", &definemacros[0], nullptr,
+  hr = D3DX11CompileEffectFromMemory(m_effectString.c_str(), m_effectString.length(), "", &definemacros[0], this,
                                      dwShaderFlags, 0, g_Windowing.Get3D11Device(), &m_effect, &pError);
 
   if(hr == S_OK)
