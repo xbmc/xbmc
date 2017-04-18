@@ -267,6 +267,14 @@ namespace PVR
      */
     bool IsInProgress() const;
 
+    /*!
+    * @brief set the genre for this recording.
+    * @param iGenreType The genre type ID. If set to EPG_GENRE_USE_STRING, set genre to the value provided with strGenre. Otherwise, compile the genre string from the values given by iGenreType and iGenreSubType
+    * @param iGenreSubType The genre subtype ID
+    * @param strGenre The genre
+    */
+   void SetGenre( int iGenreType, int iGenreSubType, const std::string &strGenre);
+
   private:
     CDateTime    m_recordingTime; /*!< start time of the recording */
     bool         m_bGotMetaData;

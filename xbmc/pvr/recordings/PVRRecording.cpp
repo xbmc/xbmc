@@ -96,7 +96,6 @@ CPVRRecording::CPVRRecording(const PVR_RECORDING &recording, unsigned int iClien
   m_strPlotOutline                 = recording.strPlotOutline;
   m_strStreamURL                   = recording.strStreamURL;
   m_strChannelName                 = recording.strChannelName;
-  m_genre                          = StringUtils::Split(CEpg::ConvertGenreIdToString(recording.iGenreType, recording.iGenreSubType), g_advancedSettings.m_videoItemSeparator);
   m_strIconPath                    = recording.strIconPath;
   m_strThumbnailPath               = recording.strThumbnailPath;
   m_strFanartPath                  = recording.strFanartPath;
@@ -104,6 +103,7 @@ CPVRRecording::CPVRRecording(const PVR_RECORDING &recording, unsigned int iClien
   m_iEpgEventId                    = recording.iEpgEventId;
   m_iChannelUid                    = recording.iChannelUid;
 
+  SetGenre(recording.iGenreType, recording.iGenreSubType, recording.strGenreDescription);
   CVideoInfoTag::SetPlayCount(recording.iPlayCount);
   CVideoInfoTag::SetResumePoint(recording.iLastPlayedPosition, recording.iDuration);
   SetDuration(recording.iDuration);
@@ -468,4 +468,19 @@ bool CPVRRecording::IsInProgress() const
   //       actually is recording this.
 
   return CServiceBroker::GetPVRManager().Timers()->HasRecordingTimerForRecording(*this);
+}
+
+void CPVRRecording::SetGenre(int iGenreType, int iGenreSubType, const std::string &strGenre)
+{
+  if ((iGenreType == EPG_GENRE_USE_STRING) && !strGenre.empty())
+  {
+    /* Type and sub type are not given.
+    * Use the provided genre description if available. */
+    m_genre = StringUtils::Split(strGenre, g_advancedSettings.m_videoItemSeparator);
+  }
+  else
+  {
+    /* Determine the genre description from the type and subtype IDs */
+    m_genre = StringUtils::Split(CEpg::ConvertGenreIdToString(iGenreType, iGenreSubType), g_advancedSettings.m_videoItemSeparator);
+  }
 }

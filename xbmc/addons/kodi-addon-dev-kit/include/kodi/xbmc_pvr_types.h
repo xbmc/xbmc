@@ -78,10 +78,10 @@ struct DemuxPacket;
 #define PVR_STREAM_MAX_STREAMS 20
 
 /* current PVR API version */
-#define XBMC_PVR_API_VERSION "5.2.1"
+#define XBMC_PVR_API_VERSION "5.2.2"
 
 /* min. PVR API version */
-#define XBMC_PVR_MIN_API_VERSION "5.2.1"
+#define XBMC_PVR_MIN_API_VERSION "5.2.2"
 
 #ifdef __cplusplus
 extern "C" {
@@ -466,33 +466,34 @@ extern "C" {
    * @brief Representation of a recording.
    */
   typedef struct PVR_RECORDING {
-    char   strRecordingId[PVR_ADDON_NAME_STRING_LENGTH];  /*!< @brief (required) unique id of the recording on the client. */
-    char   strTitle[PVR_ADDON_NAME_STRING_LENGTH];        /*!< @brief (required) the title of this recording */
-    char   strEpisodeName[PVR_ADDON_NAME_STRING_LENGTH];  /*!< @brief (optional) episode name (also known as subtitle) */
-    int    iSeriesNumber;                                 /*!< @brief (optional) series number (usually called season). Set to "0" for specials/pilot. For 'invalid' see iEpisodeNumber or set to -1 */
-    int    iEpisodeNumber;                                /*!< @brief (optional) episode number within the "iSeriesNumber" season. For 'invalid' set to -1 or iSeriesNumber=iEpisodeNumber=0 to show both are invalid */
-    int    iYear;                                         /*!< @brief (optional) year of first release (use to identify a specific movie re-make) / first airing for TV shows. Set to '0' for invalid. */
-
-    char   strStreamURL[PVR_ADDON_URL_STRING_LENGTH];     /*!< @brief (required) stream URL to access this recording */
-    char   strDirectory[PVR_ADDON_URL_STRING_LENGTH];     /*!< @brief (optional) directory of this recording on the client */
-    char   strPlotOutline[PVR_ADDON_DESC_STRING_LENGTH];  /*!< @brief (optional) plot outline */
-    char   strPlot[PVR_ADDON_DESC_STRING_LENGTH];         /*!< @brief (optional) plot */
-    char   strChannelName[PVR_ADDON_NAME_STRING_LENGTH];  /*!< @brief (optional) channel name */
-    char   strIconPath[PVR_ADDON_URL_STRING_LENGTH];      /*!< @brief (optional) icon path */
-    char   strThumbnailPath[PVR_ADDON_URL_STRING_LENGTH]; /*!< @brief (optional) thumbnail path */
-    char   strFanartPath[PVR_ADDON_URL_STRING_LENGTH];    /*!< @brief (optional) fanart path */
-    time_t recordingTime;                                 /*!< @brief (optional) start time of the recording */
-    int    iDuration;                                     /*!< @brief (optional) duration of the recording in seconds */
-    int    iPriority;                                     /*!< @brief (optional) priority of this recording (from 0 - 100) */
-    int    iLifetime;                                     /*!< @brief (optional) life time in days of this recording */
-    int    iGenreType;                                    /*!< @brief (optional) genre type */
-    int    iGenreSubType;                                 /*!< @brief (optional) genre sub type */
-    int    iPlayCount;                                    /*!< @brief (optional) play count of this recording on the client */
-    int    iLastPlayedPosition;                           /*!< @brief (optional) last played position of this recording on the client */
-    bool   bIsDeleted;                                    /*!< @brief (optional) shows this recording is deleted and can be undelete */
-    unsigned int iEpgEventId;                             /*!< @brief (optional) EPG event id associated with this recording. Valid ids must be greater than EPG_TAG_INVALID_UID. */
-    int    iChannelUid;                                   /*!< @brief (optional) unique identifier of the channel for this recording. PVR_CHANNEL_INVALID_UID denotes that channel uid is not available. */
-    PVR_RECORDING_CHANNEL_TYPE channelType;               /*!< @brief (optional) channel type. Set to PVR_RECORDING_CHANNEL_TYPE_UNKNOWN if the type cannot be determined. */
+    char   strRecordingId[PVR_ADDON_NAME_STRING_LENGTH];      /*!< @brief (required) unique id of the recording on the client. */
+    char   strTitle[PVR_ADDON_NAME_STRING_LENGTH];            /*!< @brief (required) the title of this recording */
+    char   strEpisodeName[PVR_ADDON_NAME_STRING_LENGTH];      /*!< @brief (optional) episode name (also known as subtitle) */
+    int    iSeriesNumber;                                     /*!< @brief (optional) series number (usually called season). Set to "0" for specials/pilot. For 'invalid' see iEpisodeNumber or set to -1 */
+    int    iEpisodeNumber;                                    /*!< @brief (optional) episode number within the "iSeriesNumber" season. For 'invalid' set to -1 or iSeriesNumber=iEpisodeNumber=0 to show both are invalid */
+    int    iYear;                                             /*!< @brief (optional) year of first release (use to identify a specific movie re-make) / first airing for TV shows. Set to '0' for invalid. */
+                                                              
+    char   strStreamURL[PVR_ADDON_URL_STRING_LENGTH];         /*!< @brief (required) stream URL to access this recording */
+    char   strDirectory[PVR_ADDON_URL_STRING_LENGTH];         /*!< @brief (optional) directory of this recording on the client */
+    char   strPlotOutline[PVR_ADDON_DESC_STRING_LENGTH];      /*!< @brief (optional) plot outline */
+    char   strPlot[PVR_ADDON_DESC_STRING_LENGTH];             /*!< @brief (optional) plot */
+    char   strGenreDescription[PVR_ADDON_DESC_STRING_LENGTH]; /*!< @brief (optional) genre. Will be used only when iGenreType = EPG_GENRE_USE_STRING */
+    char   strChannelName[PVR_ADDON_NAME_STRING_LENGTH];      /*!< @brief (optional) channel name */
+    char   strIconPath[PVR_ADDON_URL_STRING_LENGTH];          /*!< @brief (optional) icon path */
+    char   strThumbnailPath[PVR_ADDON_URL_STRING_LENGTH];     /*!< @brief (optional) thumbnail path */
+    char   strFanartPath[PVR_ADDON_URL_STRING_LENGTH];        /*!< @brief (optional) fanart path */
+    time_t recordingTime;                                     /*!< @brief (optional) start time of the recording */
+    int    iDuration;                                         /*!< @brief (optional) duration of the recording in seconds */
+    int    iPriority;                                         /*!< @brief (optional) priority of this recording (from 0 - 100) */
+    int    iLifetime;                                         /*!< @brief (optional) life time in days of this recording */
+    int    iGenreType;                                        /*!< @brief (optional) genre type */
+    int    iGenreSubType;                                     /*!< @brief (optional) genre sub type */
+    int    iPlayCount;                                        /*!< @brief (optional) play count of this recording on the client */
+    int    iLastPlayedPosition;                               /*!< @brief (optional) last played position of this recording on the client */
+    bool   bIsDeleted;                                        /*!< @brief (optional) shows this recording is deleted and can be undelete */
+    unsigned int iEpgEventId;                                 /*!< @brief (optional) EPG event id associated with this recording. Valid ids must be greater than EPG_TAG_INVALID_UID. */
+    int    iChannelUid;                                       /*!< @brief (optional) unique identifier of the channel for this recording. PVR_CHANNEL_INVALID_UID denotes that channel uid is not available. */
+    PVR_RECORDING_CHANNEL_TYPE channelType;                   /*!< @brief (optional) channel type. Set to PVR_RECORDING_CHANNEL_TYPE_UNKNOWN if the type cannot be determined. */
   } ATTRIBUTE_PACKED PVR_RECORDING;
 
   /*!
