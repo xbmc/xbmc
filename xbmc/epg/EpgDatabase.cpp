@@ -42,7 +42,7 @@ void CEpgDatabase::CreateTables(void)
 {
   CLog::Log(LOGINFO, "EpgDB - %s - creating tables", __FUNCTION__);
 
-  CLog::Log(LOGDEBUG, "EpgDB - %s - creating table 'epg'", __FUNCTION__);
+  CLog::Log(LOGPVR, "EpgDB - %s - creating table 'epg'", __FUNCTION__);
   m_pDS->exec(
       "CREATE TABLE epg ("
         "idEpg           integer primary key, "
@@ -51,7 +51,7 @@ void CEpgDatabase::CreateTables(void)
       ")"
   );
 
-  CLog::Log(LOGDEBUG, "EpgDB - %s - creating table 'epgtags'", __FUNCTION__);
+  CLog::Log(LOGPVR, "EpgDB - %s - creating table 'epgtags'", __FUNCTION__);
   m_pDS->exec(
       "CREATE TABLE epgtags ("
         "idBroadcast     integer primary key, "
@@ -83,7 +83,7 @@ void CEpgDatabase::CreateTables(void)
         "iFlags          integer"
       ")"
   );
-  CLog::Log(LOGDEBUG, "EpgDB - %s - creating table 'lastepgscan'", __FUNCTION__);
+  CLog::Log(LOGPVR, "EpgDB - %s - creating table 'lastepgscan'", __FUNCTION__);
   m_pDS->exec("CREATE TABLE lastepgscan ("
         "idEpg integer primary key, "
         "sLastScan varchar(20)"
@@ -93,7 +93,7 @@ void CEpgDatabase::CreateTables(void)
 
 void CEpgDatabase::CreateAnalytics()
 {
-  CLog::Log(LOGDEBUG, "%s - creating indices", __FUNCTION__);
+  CLog::Log(LOGPVR, "%s - creating indices", __FUNCTION__);
   m_pDS->exec("CREATE UNIQUE INDEX idx_epg_idEpg_iStartTime on epgtags(idEpg, iStartTime desc);");
   m_pDS->exec("CREATE INDEX idx_epg_iEndTime on epgtags(iEndTime);");
 }
@@ -125,7 +125,7 @@ void CEpgDatabase::UpdateTables(int iVersion)
 bool CEpgDatabase::DeleteEpg(void)
 {
   bool bReturn(false);
-  CLog::Log(LOGDEBUG, "EpgDB - %s - deleting all EPG data from the database", __FUNCTION__);
+  CLog::Log(LOGPVR, "EpgDB - %s - deleting all EPG data from the database", __FUNCTION__);
 
   bReturn = DeleteValues("epg") || bReturn;
   bReturn = DeleteValues("epgtags") || bReturn;

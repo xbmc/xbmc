@@ -552,7 +552,7 @@ bool CEpgContainer::DeleteEpg(const CEpg &epg, bool bDeleteFromDatabase /* = fal
   if (epgEntry == m_epgs.end())
     return false;
 
-  CLog::Log(LOGDEBUG, "deleting EPG table %s (%d)", epg.Name().c_str(), epg.EpgID());
+  CLog::Log(LOGPVR, "deleting EPG table %s (%d)", epg.Name().c_str(), epg.EpgID());
   if (bDeleteFromDatabase && !m_bIgnoreDbForClient && m_database.IsOpen())
     m_database.Delete(*epgEntry->second);
 

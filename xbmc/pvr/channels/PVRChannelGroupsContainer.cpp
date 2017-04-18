@@ -54,7 +54,7 @@ bool CPVRChannelGroupsContainer::Update(bool bChannelsOnly /* = false */)
   m_bUpdateChannelsOnly = bChannelsOnly;
   lock.Leave();
 
-  CLog::Log(LOGDEBUG, "CPVRChannelGroupsContainer - %s - updating %s", __FUNCTION__, bChannelsOnly ? "channels" : "channel groups");
+  CLog::Log(LOGPVR, "CPVRChannelGroupsContainer - %s - updating %s", __FUNCTION__, bChannelsOnly ? "channels" : "channel groups");
   bool bReturn = m_groupsTV->Update(bChannelsOnly) && m_groupsRadio->Update(bChannelsOnly);
 
   lock.Enter();

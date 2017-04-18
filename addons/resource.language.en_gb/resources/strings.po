@@ -5107,7 +5107,12 @@ msgctxt "#10524"
 msgid "Movie information"
 msgstr ""
 
-#empty strings from id 10525 to 11999
+#: xbmc/settings/AdvancedSettings.cpp
+msgctxt "#10525"
+msgid "Verbose logging for the [B]PVR[/B] component"
+msgstr ""
+
+#empty strings from id 10526 to 11999
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#12000"

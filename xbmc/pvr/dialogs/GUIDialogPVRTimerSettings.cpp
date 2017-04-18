@@ -600,7 +600,7 @@ void CGUIDialogPVRTimerSettings::Save()
     {
       if (m_endLocalTime < m_startLocalTime)   // And the end clock is earlier than the start clock
       {
-        CLog::Log(LOGDEBUG, "CGUIDialogPVRTimerSettings::Save - End before start, adding a day.");
+        CLog::Log(LOGPVR, "CGUIDialogPVRTimerSettings::Save - End before start, adding a day.");
         m_endLocalTime += CDateTimeSpan(1, 0, 0, 0);
         if (m_endLocalTime < m_startLocalTime)
         {
@@ -610,7 +610,7 @@ void CGUIDialogPVRTimerSettings::Save()
       }
       else if (m_endLocalTime > (m_startLocalTime + CDateTimeSpan(1, 0, 0, 0))) // Or the duration is more than a day
       {
-        CLog::Log(LOGDEBUG, "CGUIDialogPVRTimerSettings::Save - End > 1 day after start, removing a day.");
+        CLog::Log(LOGPVR, "CGUIDialogPVRTimerSettings::Save - End > 1 day after start, removing a day.");
         m_endLocalTime -= CDateTimeSpan(1, 0, 0, 0);
         if (m_endLocalTime > (m_startLocalTime + CDateTimeSpan(1, 0, 0, 0)))
         {

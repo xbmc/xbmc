@@ -388,7 +388,7 @@ bool CPVRClients::SwitchChannel(const CPVRChannelPtr &channel)
     CSingleLock lock(m_critSection);
     if (m_bIsSwitchingChannels)
     {
-      CLog::Log(LOGDEBUG, "PVRClients - %s - can't switch to channel '%s'. waiting for the previous switch to complete", __FUNCTION__, channel->ChannelName().c_str());
+      CLog::Log(LOGPVR, "PVRClients - %s - can't switch to channel '%s'. waiting for the previous switch to complete", __FUNCTION__, channel->ChannelName().c_str());
       return false;
     }
     m_bIsSwitchingChannels = true;

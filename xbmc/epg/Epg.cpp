@@ -333,13 +333,13 @@ bool CEpg::Load(void)
   int iEntriesLoaded = database->Get(*this);
   if (iEntriesLoaded <= 0)
   {
-    CLog::Log(LOGDEBUG, "EPG - %s - no database entries found for table '%s'.", __FUNCTION__, m_strName.c_str());
+    CLog::Log(LOGPVR, "EPG - %s - no database entries found for table '%s'.", __FUNCTION__, m_strName.c_str());
   }
   else
   {
     m_lastScanTime = GetLastScanTime();
 #if EPG_DEBUGGING
-    CLog::Log(LOGDEBUG, "EPG - %s - %d entries loaded for table '%s'.", __FUNCTION__, (int) m_tags.size(), m_strName.c_str());
+    CLog::Log(LOGPVR, "EPG - %s - %d entries loaded for table '%s'.", __FUNCTION__, (int) m_tags.size(), m_strName.c_str());
 #endif
     bReturn = true;
   }
@@ -353,19 +353,19 @@ bool CEpg::UpdateEntries(const CEpg &epg, bool bStoreInDb /* = true */)
 {
   CSingleLock lock(m_critSection);
 #if EPG_DEBUGGING
-  CLog::Log(LOGDEBUG, "EPG - {0} - {1} entries in memory before merging", __FUNCTION__, m_tags.size());
+  CLog::Log(LOGPVR, "EPG - {0} - {1} entries in memory before merging", __FUNCTION__, m_tags.size());
 #endif
   /* copy over tags */
   for (std::map<CDateTime, CEpgInfoTagPtr>::const_iterator it = epg.m_tags.begin(); it != epg.m_tags.end(); ++it)
     UpdateEntry(it->second, bStoreInDb);
 
 #if EPG_DEBUGGING
-  CLog::Log(LOGDEBUG, "EPG - {0} - {1} entries in memory after merging and before fixing", __FUNCTION__, m_tags.size());
+  CLog::Log(LOGPVR, "EPG - {0} - {1} entries in memory after merging and before fixing", __FUNCTION__, m_tags.size());
 #endif
   FixOverlappingEvents(bStoreInDb);
 
 #if EPG_DEBUGGING
-  CLog::Log(LOGDEBUG, "EPG - {0} - {1} entries in memory after fixing", __FUNCTION__, m_tags.size());
+  CLog::Log(LOGPVR, "EPG - {0} - {1} entries in memory after fixing", __FUNCTION__, m_tags.size());
 #endif
   /* update the last scan time of this table */
   m_lastScanTime = CDateTime::GetCurrentDateTime().GetAsUTCDateTime();
@@ -597,7 +597,7 @@ bool CEpg::Persist(void)
     return true;
 
 #if EPG_DEBUGGING
-  CLog::Log(LOGDEBUG, "persist table '%s' (#%d) changed=%d deleted=%d", Name().c_str(), m_iEpgID, m_changedTags.size(), m_deletedTags.size());
+  CLog::Log(LOGPVR, "persist table '%s' (#%d) changed=%d deleted=%d", Name().c_str(), m_iEpgID, m_changedTags.size(), m_deletedTags.size());
 #endif
 
   CEpgDatabase *database = g_EpgContainer.GetDatabase();
@@ -719,24 +719,24 @@ bool CEpg::UpdateFromScraper(time_t start, time_t end)
     else if (!channel->EPGEnabled())
     {
 #if EPG_DEBUGGING
-      CLog::Log(LOGDEBUG, "EPG - %s - EPG updating disabled in the channel configuration", __FUNCTION__);
+      CLog::Log(LOGPVR, "EPG - %s - EPG updating disabled in the channel configuration", __FUNCTION__);
 #endif
       bGrabSuccess = true;
     }
     else if (channel->IsHidden())
     {
 #if EPG_DEBUGGING
-      CLog::Log(LOGDEBUG, "EPG - %s - channel '%s' on client '%i' is hidden", __FUNCTION__, channel->ChannelName().c_str(), channel->ClientID());
+      CLog::Log(LOGPVR, "EPG - %s - channel '%s' on client '%i' is hidden", __FUNCTION__, channel->ChannelName().c_str(), channel->ClientID());
 #endif
       bGrabSuccess = true;
     }
     else if (!CServiceBroker::GetPVRManager().Clients()->SupportsEPG(channel->ClientID()))
     {
-      CLog::Log(LOGDEBUG, "EPG - %s - the backend for channel '%s' on client '%i' does not support EPGs", __FUNCTION__, channel->ChannelName().c_str(), channel->ClientID());
+      CLog::Log(LOGPVR, "EPG - %s - the backend for channel '%s' on client '%i' does not support EPGs", __FUNCTION__, channel->ChannelName().c_str(), channel->ClientID());
     }
     else
     {
-      CLog::Log(LOGDEBUG, "EPG - %s - updating EPG for channel '%s' from client '%i'", __FUNCTION__, channel->ChannelName().c_str(), channel->ClientID());
+      CLog::Log(LOGPVR, "EPG - %s - updating EPG for channel '%s' from client '%i'", __FUNCTION__, channel->ChannelName().c_str(), channel->ClientID());
       bGrabSuccess = (CServiceBroker::GetPVRManager().Clients()->GetEPGForChannel(channel, this, start, end) == PVR_ERROR_NO_ERROR);
     }
   }
