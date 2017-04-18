@@ -120,7 +120,10 @@ static void SetPathAndPlay(CFileItem& item)
   }
   item.SetProperty("check_resume", false);
 
-  g_playlistPlayer.Play(std::make_shared<CFileItem>(item), "");
+  if (item.IsLiveTV()) // pvr tv or pvr radio?
+    g_application.PlayMedia(item, "", PLAYLIST_NONE);
+  else
+    g_playlistPlayer.Play(std::make_shared<CFileItem>(item), "");
 }
 
 bool CResume::Execute(const CFileItemPtr& itemIn) const
