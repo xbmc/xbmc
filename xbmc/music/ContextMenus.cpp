@@ -19,21 +19,36 @@
  */
 
 #include "ContextMenus.h"
-#include "guilib/GUIWindowManager.h"
 #include "music/dialogs/GUIDialogMusicInfo.h"
 #include "tags/MusicInfoTag.h"
 #include "PartyModeManager.h"
 #include "settings/Settings.h"
 #include "utils/LegacyPathTranslation.h"
+#include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
 #include "utils/log.h"
-#include "filesystem/MusicDatabaseDirectory/DirectoryNode.h"
-#include "Util.h"
 #include "filesystem/MusicDatabaseDirectory.h"
 #include "ServiceBroker.h"
 
 
 namespace CONTEXTMENU
 {
+
+static bool IsMusicLibraryItem(const CFileItem& item)
+{
+  if (!item.IsParentFolder() && URIUtils::IsMusicLibraryContent(item.GetPath()))
+  {
+    XFILE::CMusicDatabaseDirectory dir;
+    XFILE::MUSICDATABASEDIRECTORY::NODE_TYPE nodetype = dir.GetDirectoryType(item.GetPath());
+    if (nodetype == XFILE::MUSICDATABASEDIRECTORY::NODE_TYPE_ROOT ||
+        nodetype == XFILE::MUSICDATABASEDIRECTORY::NODE_TYPE_OVERVIEW ||
+        nodetype == XFILE::MUSICDATABASEDIRECTORY::NODE_TYPE_TOP100)
+    {
+      return true;
+    }
+  }
+  return false;
+}
 
 CMusicInfo::CMusicInfo(MediaType mediaType)
       : CStaticContextMenuAction(19033), m_mediaType(mediaType) {}
@@ -62,22 +77,8 @@ bool CPlayPartymode::Execute(const CFileItemPtr& item) const
 
 bool CSetDefault::IsVisible(const CFileItem& item) const
 {
-  if (!item.IsPath("sources://music/"))
-  {
-    // are we in the playlists location?
-    bool inPlaylists = item.IsPath(CUtil::MusicPlaylistsLocation()) || item.IsPath("special://musicplaylists/");
-    //Set default or clear default
-    XFILE::CMusicDatabaseDirectory dir;
-    XFILE::MUSICDATABASEDIRECTORY::NODE_TYPE nodetype = dir.GetDirectoryType(item.GetPath());
-    if (!item.IsParentFolder() && !inPlaylists &&
-      (nodetype == XFILE::MUSICDATABASEDIRECTORY::NODE_TYPE_ROOT ||
-        nodetype == XFILE::MUSICDATABASEDIRECTORY::NODE_TYPE_OVERVIEW ||
-        nodetype == XFILE::MUSICDATABASEDIRECTORY::NODE_TYPE_TOP100))
-    {
-      return !item.IsPath(CServiceBroker::GetSettings().GetString(CSettings::SETTING_MYMUSIC_DEFAULTLIBVIEW));
-    }
-  }
-  return false;
+  return (!item.IsPath(CServiceBroker::GetSettings().GetString(CSettings::SETTING_MYMUSIC_DEFAULTLIBVIEW)) &&
+          IsMusicLibraryItem(item));
 }
 
 std::string CSetDefault::GetQuickpathName(const std::string& strPath) const
@@ -126,22 +127,8 @@ bool CSetDefault::Execute(const CFileItemPtr& item) const
 
 bool CClearDefault::IsVisible(const CFileItem& item) const
 {
-  if (!item.IsPath("sources://music/"))
-  {
-    // are we in the playlists location?
-    bool inPlaylists = item.IsPath(CUtil::MusicPlaylistsLocation()) || item.IsPath("special://musicplaylists/");
-    //Set default or clear default
-    XFILE::CMusicDatabaseDirectory dir;
-    XFILE::MUSICDATABASEDIRECTORY::NODE_TYPE nodetype = dir.GetDirectoryType(item.GetPath());
-    if (!item.IsParentFolder() && !inPlaylists &&
-      (nodetype == XFILE::MUSICDATABASEDIRECTORY::NODE_TYPE_ROOT ||
-        nodetype == XFILE::MUSICDATABASEDIRECTORY::NODE_TYPE_OVERVIEW ||
-        nodetype == XFILE::MUSICDATABASEDIRECTORY::NODE_TYPE_TOP100))
-    {
-      return !CServiceBroker::GetSettings().GetString(CSettings::SETTING_MYMUSIC_DEFAULTLIBVIEW).empty();
-    }
-  }
-  return false;
+  return (!CServiceBroker::GetSettings().GetString(CSettings::SETTING_MYMUSIC_DEFAULTLIBVIEW).empty() &&
+          IsMusicLibraryItem(item));
 }
 
 bool CClearDefault::Execute(const CFileItemPtr& item) const

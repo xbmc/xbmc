@@ -1050,6 +1050,13 @@ bool URIUtils::IsLibraryContent(const std::string &strFile)
           StringUtils::EndsWith(strFile, ".xsp"));
 }
 
+bool URIUtils::IsMusicLibraryContent(const std::string &strFile)
+{
+  return (IsProtocol(strFile, "musicdb") ||
+          StringUtils::StartsWithNoCase(strFile, "library://music/") ||
+          StringUtils::EqualsNoCase(strFile, "library://music"));
+}
+
 bool URIUtils::IsDOSPath(const std::string &path)
 {
   if (path.size() > 1 && path[1] == ':' && isalpha(path[0]))
