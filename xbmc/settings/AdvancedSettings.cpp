@@ -120,7 +120,7 @@ void CAdvancedSettings::Initialize()
   m_limiterHold = 0.025f;
   m_limiterRelease = 0.1f;
 
-  m_seekSteps = { 10, 30, 60, 180, 300, 600, 1800 };
+  m_seekSteps = { 7, 10, 30, 60, 180, 300, 600, 1800 };
 
   m_omxDecodeStartWithValidFrame = true;
 
