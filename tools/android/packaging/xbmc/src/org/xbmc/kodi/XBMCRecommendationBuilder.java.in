@@ -5,7 +5,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import @APP_PACKAGE@.R;
@@ -102,8 +101,8 @@ public class XBMCRecommendationBuilder
       extras.putString(API_NOTIFICATION_EXTRA_BACKGROUND_IMAGE_URI, mBackgroundUri);
     }
 
-    Notification notification = new NotificationCompat.BigPictureStyle(
-        new NotificationCompat.Builder(mContext)
+    Notification notification = new Notification.BigPictureStyle(
+        new Notification.Builder(mContext)
             .setContentTitle(mTitle)
             .setContentText(mDescription)
             .setPriority(mPriority)
