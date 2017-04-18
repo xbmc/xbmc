@@ -55,7 +55,9 @@ public:
 protected:
   static bool IsSupported(int sampleRateInHz, int channelConfig, int audioFormat);
   static bool HasAmlHD();
-
+  static void UpdateAvailablePCMCapabilities();
+  static void UpdateAvailablePassthroughCapabilities();
+  
 private:
   jni::CJNIAudioTrack  *m_at_jni;
   double                m_duration_written;
@@ -76,6 +78,7 @@ private:
 
   static CAEDeviceInfo m_info;
   static std::set<unsigned int>       m_sink_sampleRates;
+  static bool m_sinkSupportsFloat;
 
   AEAudioFormat      m_format;
   double             m_volume;
