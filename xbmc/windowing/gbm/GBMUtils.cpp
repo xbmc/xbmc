@@ -346,7 +346,7 @@ bool CGBMUtils::GetEncoder()
 
 bool CGBMUtils::GetPreferredMode()
 {
-  for(auto i = 0; i < m_drm_connector->count_modes; i++)
+  for(auto i = 0, area = 0; i < m_drm_connector->count_modes; i++)
   {
     drmModeModeInfo *current_mode = &m_drm_connector->modes[i];
 
@@ -360,6 +360,14 @@ bool CGBMUtils::GetPreferredMode()
                 m_drm->mode->vdisplay,
                 m_drm->mode->flags & DRM_MODE_FLAG_INTERLACE ? "i" : "",
                 m_drm->mode->vrefresh);
+      break;
+    }
+
+    auto current_area = current_mode->hdisplay * current_mode->vdisplay;
+    if (current_area > area)
+    {
+      m_drm->mode = current_mode;
+      area = current_area;
     }
   }
 
