@@ -26,6 +26,7 @@
 #include "Utils/AEUtil.h"
 #include <pulse/pulseaudio.h>
 #include "threads/CriticalSection.h"
+#include <deque>
 
 class CAESinkPULSE : public IAESink
 {
@@ -56,6 +57,9 @@ private:
   void Pause(bool pause);
   static inline bool WaitForOperation(pa_operation *op, pa_threaded_mainloop *mainloop, const char *LogEntry);
   static bool SetupContext(const char *host, pa_context **context, pa_threaded_mainloop **mainloop);
+  // Moving Average computes the weighted average delay over
+  // a fixed size of delay values - current size: 20 values
+  double GetMovingAverageDelay(double newestdelay);
 
   bool m_IsAllocated;
   bool m_passthrough;
@@ -72,6 +76,9 @@ private:
   uint32_t m_periodSize;
   uint64_t m_lastPackageStamp;
   uint64_t m_filled_bytes;
+
+  // delay smoother
+  std::deque<double> m_linearmovingaverage;
 
   pa_context *m_Context;
   pa_threaded_mainloop *m_MainLoop;

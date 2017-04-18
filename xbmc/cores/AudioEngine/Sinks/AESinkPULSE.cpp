@@ -28,6 +28,8 @@
 #include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
 #include "ServiceBroker.h"
 
+const unsigned int MOVING_AVERAGE_MAX_MEMBERS = 20;
+
 static const char *ContextStateToString(pa_context_state s)
 {
   switch (s)
@@ -495,6 +497,7 @@ CAESinkPULSE::CAESinkPULSE()
   m_volume_needs_update = false;
   m_periodSize = 0;
   pa_cvolume_init(&m_Volume);
+  m_linearmovingaverage.clear();
 }
 
 CAESinkPULSE::~CAESinkPULSE()
@@ -517,6 +520,7 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
   m_Stream = NULL;
   m_Context = NULL;
   m_periodSize = 0;
+  m_linearmovingaverage.clear();
 
   if (!SetupContext(NULL, &m_Context, &m_MainLoop))
   {
@@ -792,6 +796,7 @@ void CAESinkPULSE::Deinitialize()
   m_periodSize = 0;
   m_filled_bytes = 0;
   m_lastPackageStamp = 0;
+  m_linearmovingaverage.clear();
 
   if (m_Stream)
     Drain();
@@ -848,7 +853,8 @@ void CAESinkPULSE::GetDelay(AEDelayStatus& status)
   pa_threaded_mainloop_unlock(m_MainLoop);
 
   double delay = buffer_delay / (double) m_BytesPerSecond + sink_delay + transport_delay;
-  status.SetDelay(delay);
+  const double d = GetMovingAverageDelay(delay);
+  status.SetDelay(d);
 }
 
 double CAESinkPULSE::GetCacheTotal()
@@ -901,6 +907,7 @@ void CAESinkPULSE::Drain()
   pa_threaded_mainloop_lock(m_MainLoop);
   WaitForOperation(pa_stream_drain(m_Stream, NULL, NULL), m_MainLoop, "Drain");
   pa_threaded_mainloop_unlock(m_MainLoop);
+  m_linearmovingaverage.clear();
 }
 
 // This is a helper to get stream info during the PA callbacks
@@ -1084,5 +1091,23 @@ bool CAESinkPULSE::SetupContext(const char *host, pa_context **context, pa_threa
 
   pa_threaded_mainloop_unlock(*mainloop);
   return true;
+}
+
+double CAESinkPULSE::GetMovingAverageDelay(double newestdelay)
+{
+  m_linearmovingaverage.push_back(newestdelay);
+  size_t size = m_linearmovingaverage.size();
+  if (size > MOVING_AVERAGE_MAX_MEMBERS)
+  {
+    m_linearmovingaverage.pop_front();
+    size--;
+  }
+  // m_{LWMA}^{(n)}(t) = \frac{2}{n (n+1)} \sum_{i=1}^n i \; x(t-n+i)
+  const double denom = 2.0 / (size * (size + 1));
+  double sum = 0.0;
+  for (size_t i = 0; i < m_linearmovingaverage.size(); i++)
+    sum += (i + 1) * m_linearmovingaverage.at(i);
+
+  return sum * denom;
 }
 #endif
