@@ -33,6 +33,7 @@
 #include "utils/log.h"
 #include "system.h" // for Sleep(), OutputDebugString() and GetLastError()
 #include "utils/URIUtils.h"
+#include "filesystem/File.h"
 
 #ifdef TARGET_WINDOWS
 #pragma comment(lib, "sqlite3.lib")
@@ -41,6 +42,8 @@
 #ifdef TARGET_POSIX
 #include "linux/XTimeUtils.h"
 #endif
+
+using namespace XFILE;
 
 namespace dbiplus {
 //************* Callback function ***************************
@@ -221,6 +224,21 @@ int SqliteDatabase::connect(bool create) {
     int flags = SQLITE_OPEN_READWRITE;
     if (create)
       flags |= SQLITE_OPEN_CREATE;
+
+    if (CFile::Exists(db_fullpath.c_str()))
+    {
+      CFile file;
+      if (file.Open(db_fullpath.c_str()))
+      {
+        if (file.GetLength() == 0)
+        {
+          CLog::Log(LOGWARNING, "Found zero byte SQLite database, deleting %s", db_fullpath.c_str());
+          CFile::Delete(db_fullpath.c_str());
+        }
+        file.Close();
+      }
+    }
+
     if (sqlite3_open_v2(db_fullpath.c_str(), &conn, flags, NULL)==SQLITE_OK)
     {
       sqlite3_busy_handler(conn, busy_callback, NULL);
