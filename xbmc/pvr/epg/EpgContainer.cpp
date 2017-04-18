@@ -140,7 +140,7 @@ public:
 
   bool DoWork(void)
   {
-    CServiceBroker::GetPVRManager().EpgContainer()->Start(false);
+    CServiceBroker::GetPVRManager().EpgContainer().Start(false);
     return true;
   }
 };

@@ -120,7 +120,7 @@ void CPVREpg::SetUpdatePending(bool bUpdatePending /* = true */)
   }
 
   if (bUpdatePending)
-    CServiceBroker::GetPVRManager().EpgContainer()->SetHasPendingUpdates(true);
+    CServiceBroker::GetPVRManager().EpgContainer().SetHasPendingUpdates(true);
 }
 
 void CPVREpg::ForceUpdate(void)
@@ -320,7 +320,7 @@ void CPVREpg::AddEntry(const CPVREpgInfoTag &tag)
 bool CPVREpg::Load(void)
 {
   bool bReturn(false);
-  CPVREpgDatabase *database = CServiceBroker::GetPVRManager().EpgContainer()->GetDatabase();
+  CPVREpgDatabase *database = CServiceBroker::GetPVRManager().EpgContainer().GetDatabase();
 
   if (!database || !database->IsOpen())
   {
@@ -388,7 +388,7 @@ CDateTime CPVREpg::GetLastScanTime(void)
     {
       if (!CServiceBroker::GetSettings().GetBool(CSettings::SETTING_EPG_IGNOREDBFORCLIENT))
       {
-        CPVREpgDatabase *database = CServiceBroker::GetPVRManager().EpgContainer()->GetDatabase();
+        CPVREpgDatabase *database = CServiceBroker::GetPVRManager().EpgContainer().GetDatabase();
         CDateTime dtReturn; dtReturn.SetValid(false);
 
         if (database && database->IsOpen())
@@ -514,7 +514,7 @@ bool CPVREpg::Update(const time_t start, const time_t end, int iUpdateTime, bool
   bool bUpdate(false);
 
   /* load the entries from the db first */
-  if (!m_bLoaded && !CServiceBroker::GetPVRManager().EpgContainer()->IgnoreDB())
+  if (!m_bLoaded && !CServiceBroker::GetPVRManager().EpgContainer().IgnoreDB())
     Load();
 
   /* clean up if needed */
@@ -599,7 +599,7 @@ bool CPVREpg::Persist(void)
   CLog::Log(LOGDEBUG, "persist table '%s' (#%d) changed=%d deleted=%d", Name().c_str(), m_iEpgID, m_changedTags.size(), m_deletedTags.size());
 #endif
 
-  CPVREpgDatabase *database = CServiceBroker::GetPVRManager().EpgContainer()->GetDatabase();
+  CPVREpgDatabase *database = CServiceBroker::GetPVRManager().EpgContainer().GetDatabase();
   if (!database || !database->IsOpen())
   {
     CLog::Log(LOGERROR, "EPG - %s - could not open the database", __FUNCTION__);

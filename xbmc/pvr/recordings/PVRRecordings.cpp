@@ -455,7 +455,7 @@ void CPVRRecordings::UpdateFromClient(const CPVRRecordingPtr &tag)
       const CPVRChannelPtr channel(newTag->Channel());
       if (channel)
       {
-        const CPVREpgInfoTagPtr epgTag = CServiceBroker::GetPVRManager().EpgContainer()->GetTagById(channel, newTag->BroadcastUid());
+        const CPVREpgInfoTagPtr epgTag = CServiceBroker::GetPVRManager().EpgContainer().GetTagById(channel, newTag->BroadcastUid());
         if (epgTag)
           epgTag->SetRecording(newTag);
       }

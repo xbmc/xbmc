@@ -104,7 +104,7 @@ void CGUIWindowPVRSearch::OnPrepareFileItems(CFileItemList &items)
     }
 
     //! @todo should we limit the find similar search to the selected group?
-    CServiceBroker::GetPVRManager().EpgContainer()->GetEPGSearch(items, m_searchfilter);
+    CServiceBroker::GetPVRManager().EpgContainer().GetEPGSearch(items, m_searchfilter);
 
     if (dlgProgress)
       dlgProgress->Close();

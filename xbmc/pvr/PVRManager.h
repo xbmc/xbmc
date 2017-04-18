@@ -32,6 +32,7 @@
 #include "pvr/PVREvent.h"
 #include "pvr/PVRSettings.h"
 #include "pvr/PVRTypes.h"
+#include "pvr/epg/EpgContainer.h"
 #include "pvr/recordings/PVRRecording.h"
 
 #include <atomic>
@@ -52,7 +53,6 @@ namespace PVR
   class CPVRClients;
   class CPVRChannelGroupsContainer;
   class CPVRChannelGroup;
-  class CPVREpgContainer;
   class CPVRRecordings;
   class CPVRTimers;
   class CPVRGUIInfo;
@@ -150,7 +150,7 @@ namespace PVR
      * @brief Get access to the epg container.
      * @return The epg container.
      */
-    CPVREpgContainerPtr EpgContainer() const;
+    CPVREpgContainer& EpgContainer();
 
     /*!
      * @brief Init PVRManager.
@@ -629,7 +629,7 @@ namespace PVR
     CPVRClientsPtr                 m_addons;                      /*!< pointer to the pvr addon container */
     std::unique_ptr<CPVRGUIInfo>   m_guiInfo;                     /*!< pointer to the guiinfo data */
     CPVRGUIActionsPtr              m_guiActions;                  /*!< pointer to the pvr gui actions */
-    CPVREpgContainerPtr            m_epgContainer;                /*!< pointer to the epg container */
+    CPVREpgContainer               m_epgContainer;                /*!< the epg container */
     //@}
 
     CPVRManagerJobQueue             m_pendingUpdates;              /*!< vector of pending pvr updates */

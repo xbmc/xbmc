@@ -239,7 +239,7 @@ void CPVRRecording::OnDelete(void)
     const CPVRChannelPtr channel(Channel());
     if (channel)
     {
-      const CPVREpgInfoTagPtr epgTag(CServiceBroker::GetPVRManager().EpgContainer()->GetTagById(channel, m_iEpgEventId));
+      const CPVREpgInfoTagPtr epgTag(CServiceBroker::GetPVRManager().EpgContainer().GetTagById(channel, m_iEpgEventId));
       if (epgTag)
         epgTag->ClearRecording();
     }

@@ -7333,7 +7333,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     case VIDEOPLAYER_CAN_RESUME_LIVE_TV:
       if (m_currentFile->HasPVRRecordingInfoTag())
       {
-        CPVREpgInfoTagPtr epgTag = CServiceBroker::GetPVRManager().EpgContainer()->GetTagById(m_currentFile->GetPVRRecordingInfoTag()->Channel(), m_currentFile->GetPVRRecordingInfoTag()->BroadcastUid());
+        CPVREpgInfoTagPtr epgTag = CServiceBroker::GetPVRManager().EpgContainer().GetTagById(m_currentFile->GetPVRRecordingInfoTag()->Channel(), m_currentFile->GetPVRRecordingInfoTag()->BroadcastUid());
         bReturn = (epgTag && epgTag->IsActive() && epgTag->ChannelTag());
       }
       break;

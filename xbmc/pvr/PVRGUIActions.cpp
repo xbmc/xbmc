@@ -1429,7 +1429,7 @@ namespace PVR
 
     CDateTime::ResetTimezoneBias();
 
-    CServiceBroker::GetPVRManager().EpgContainer()->Stop();
+    CServiceBroker::GetPVRManager().EpgContainer().Stop();
 
     pDlgProgress->SetHeading(CVariant{313}); // "Cleaning database"
     pDlgProgress->SetLine(0, CVariant{g_localizeStrings.Get(19187)}); // "Clearing all related data."
@@ -1462,7 +1462,7 @@ namespace PVR
     if (database && database->Open())
     {
       /* clean the EPG database */
-      CServiceBroker::GetPVRManager().EpgContainer()->Reset();
+      CServiceBroker::GetPVRManager().EpgContainer().Reset();
       pDlgProgress->SetPercentage(30);
       pDlgProgress->Progress();
 

@@ -53,7 +53,7 @@ CGUIDialogPVRChannelsOSD::~CGUIDialogPVRChannelsOSD()
   delete m_vecItems;
 
   g_infoManager.UnregisterObserver(this);
-  CServiceBroker::GetPVRManager().EpgContainer()->UnregisterObserver(this);
+  CServiceBroker::GetPVRManager().EpgContainer().UnregisterObserver(this);
 }
 
 bool CGUIDialogPVRChannelsOSD::OnMessage(CGUIMessage& message)
@@ -192,7 +192,7 @@ CPVRChannelGroupPtr CGUIDialogPVRChannelsOSD::GetPlayingGroup()
 void CGUIDialogPVRChannelsOSD::Update()
 {
   g_infoManager.RegisterObserver(this);
-  CServiceBroker::GetPVRManager().EpgContainer()->RegisterObserver(this);
+  CServiceBroker::GetPVRManager().EpgContainer().RegisterObserver(this);
 
   // lock our display, as this window is rendered from the player thread
   g_graphicsContext.Lock();
