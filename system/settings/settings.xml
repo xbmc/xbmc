@@ -2186,13 +2186,23 @@
           <control type="toggle" />
         </setting>
         <setting id="videoscreen.dither" type="boolean" label="36099" help="36598">
-          <requirement>HAS_GL</requirement>
+          <requirement>
+            <or>
+              <condition>HAS_GL</condition>
+              <condition>HAS_DX</condition>
+            </or>
+          </requirement>
           <level>3</level>
           <default>false</default>
           <control type="toggle" />
         </setting>
         <setting id="videoscreen.ditherdepth" type="integer" label="36100" help="36599">
-          <requirement>HAS_GL</requirement>
+          <requirement>
+            <or>
+              <condition>HAS_GL</condition>
+              <condition>HAS_DX</condition>
+            </or>
+          </requirement>
           <level>3</level>
           <default>8</default>
           <constraints>
