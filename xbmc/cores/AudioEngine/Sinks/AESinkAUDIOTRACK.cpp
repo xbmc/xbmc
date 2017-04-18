@@ -252,6 +252,7 @@ int CAESinkAUDIOTRACK::AudioTrackWrite(char* audioData, int sizeInBytes, int64_t
 
 CAEDeviceInfo CAESinkAUDIOTRACK::m_info;
 std::set<unsigned int> CAESinkAUDIOTRACK::m_sink_sampleRates;
+bool CAESinkAUDIOTRACK::m_sinkSupportsFloat = false;
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 CAESinkAUDIOTRACK::CAESinkAUDIOTRACK()
@@ -361,7 +362,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
   {
     m_passthrough = false;
     m_format.m_sampleRate     = m_sink_sampleRate;
-    if (CJNIAudioManager::GetSDKVersion() >= 21 && m_format.m_channelLayout.Count() == 2)
+    if (m_sinkSupportsFloat && m_format.m_channelLayout.Count() == 2)
     {
       m_encoding = CJNIAudioFormat::ENCODING_PCM_FLOAT;
       m_format.m_dataFormat     = AE_FMT_FLOAT;
@@ -808,14 +809,117 @@ void CAESinkAUDIOTRACK::Drain()
 
 void CAESinkAUDIOTRACK::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
 {
+  // Clear everything
   m_info.m_channels.Reset();
   m_info.m_dataFormats.clear();
   m_info.m_sampleRates.clear();
+  m_info.m_streamTypes.clear();
+  m_sink_sampleRates.clear();
 
   m_info.m_deviceType = AE_DEVTYPE_PCM;
   m_info.m_deviceName = "AudioTrack";
   m_info.m_displayName = "android";
   m_info.m_displayNameExtra = "audiotrack";
+
+  UpdateAvailablePCMCapabilities();
+
+  if (!CXBMCApp::IsHeadsetPlugged())
+  {
+    UpdateAvailablePassthroughCapabilities();
+  }
+  list.push_back(m_info);
+}
+
+void CAESinkAUDIOTRACK::UpdateAvailablePassthroughCapabilities()
+{
+  m_info.m_deviceType = AE_DEVTYPE_HDMI;
+  m_info.m_wantsIECPassthrough = false;
+  m_info.m_dataFormats.push_back(AE_FMT_RAW);
+  m_info.m_streamTypes.clear();
+  if (CJNIAudioFormat::ENCODING_AC3 != -1)
+  {
+    m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_AC3);
+    CLog::Log(LOGDEBUG, "Firmware implements AC3 RAW");
+  }
+
+  // EAC3 working on shield, broken on FireTV
+  if (CJNIAudioFormat::ENCODING_E_AC3 != -1)
+  {
+    m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_EAC3);
+    CLog::Log(LOGDEBUG, "Firmware implements EAC3 RAW");
+  }
+
+  if (CJNIAudioFormat::ENCODING_DTS != -1)
+  {
+    CLog::Log(LOGDEBUG, "Firmware implements DTS RAW");
+    m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD_CORE);
+    m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_1024);
+    m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_2048);
+    m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_512);
+  }
+
+  if (aml_present() && CJNIAudioManager::GetSDKVersion() < 23)
+  {
+    // passthrough
+    m_info.m_wantsIECPassthrough = true;
+    m_sink_sampleRates.insert(44100);
+    m_sink_sampleRates.insert(48000);
+    if (HasAmlHD())
+    {
+      m_sink_sampleRates.insert(96000);
+      m_sink_sampleRates.insert(192000);
+      m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_EAC3);
+      m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD);
+      m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_TRUEHD);
+    }
+    std::copy(m_sink_sampleRates.begin(), m_sink_sampleRates.end(), std::back_inserter(m_info.m_sampleRates));
+  }
+  else
+  {
+    if (CJNIAudioManager::GetSDKVersion() >= 23)
+    {
+      if (CJNIAudioFormat::ENCODING_DTS_HD != -1)
+      {
+        CLog::Log(LOGDEBUG, "Firmware implements DTS-HD RAW");
+        m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD);
+      }
+      if (CJNIAudioFormat::ENCODING_DOLBY_TRUEHD != -1)
+      {
+        CLog::Log(LOGDEBUG, "Firmware implements TrueHD RAW");
+        m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_TRUEHD);
+      }
+    }
+    // Android v24 and backports can do real IEC API
+    if (CJNIAudioFormat::ENCODING_IEC61937 != -1)
+    {
+      bool supports_192khz = m_sink_sampleRates.find(192000) != m_sink_sampleRates.end();
+      m_info.m_wantsIECPassthrough = true;
+      m_info.m_streamTypes.clear();
+      m_info.m_dataFormats.push_back(AE_FMT_RAW);
+      m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_AC3);
+      m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD_CORE);
+      m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_1024);
+      m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_2048);
+      m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_512);
+      CLog::Log(LOGDEBUG, "AESinkAUDIOTrack: Using IEC PT mode: %d", CJNIAudioFormat::ENCODING_IEC61937);
+      if (supports_192khz)
+      {
+        m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_EAC3);
+       // Check for IEC 8 channel 192 khz PT
+       int atChannelMask = AEChannelMapToAUDIOTRACKChannelMask(AE_CH_LAYOUT_7_1);
+       if (IsSupported(192000, atChannelMask, CJNIAudioFormat::ENCODING_IEC61937))
+       {
+          m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD);
+          m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_TRUEHD);
+          CLog::Log(LOGDEBUG, "8 Channel PT via IEC61937 is supported");
+        }
+     }
+   }
+ }
+}
+
+void CAESinkAUDIOTRACK::UpdateAvailablePCMCapabilities()
+{
 #ifdef LIMIT_TO_STEREO_AND_5POINT1_AND_7POINT1
   if (Has71Support())
     m_info.m_channels = AE_CH_LAYOUT_7_1;
@@ -824,115 +928,40 @@ void CAESinkAUDIOTRACK::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
 #else
   m_info.m_channels = KnownChannels;
 #endif
+
+  // default fallback format
   m_info.m_dataFormats.push_back(AE_FMT_S16LE);
+  unsigned int native_sampleRate = CJNIAudioTrack::getNativeOutputSampleRate(CJNIAudioManager::STREAM_MUSIC);
+  m_sink_sampleRates.insert(native_sampleRate);
 
-  m_sink_sampleRates.clear();
-  m_sink_sampleRates.insert(CJNIAudioTrack::getNativeOutputSampleRate(CJNIAudioManager::STREAM_MUSIC));
+  int encoding = CJNIAudioFormat::ENCODING_PCM_16BIT;
+  m_sinkSupportsFloat = IsSupported(native_sampleRate, CJNIAudioFormat::CHANNEL_OUT_STEREO, CJNIAudioFormat::ENCODING_PCM_FLOAT);
 
-  m_info.m_wantsIECPassthrough = true;
-  if (!CXBMCApp::IsHeadsetPlugged())
+  if (m_sinkSupportsFloat)
   {
-    m_info.m_deviceType = AE_DEVTYPE_HDMI;
-    m_info.m_wantsIECPassthrough = false;
-    m_info.m_dataFormats.push_back(AE_FMT_RAW);
-    if (CJNIAudioFormat::ENCODING_AC3 != -1)
-    {
-      m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_AC3);
-      CLog::Log(LOGDEBUG, "Firmware implements AC3 RAW");
-    }
-
-    // EAC3 working on shield, broken on FireTV
-    if (CJNIAudioFormat::ENCODING_E_AC3 != -1)
-    {
-      m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_EAC3);
-      CLog::Log(LOGDEBUG, "Firmware implements EAC3 RAW");
-    }
-
-    if (CJNIAudioFormat::ENCODING_DTS != -1)
-    {
-      CLog::Log(LOGDEBUG, "Firmware implements DTS RAW");
-      m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD_CORE);
-      m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_1024);
-      m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_2048);
-      m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_512);
-    }
-
-    if (aml_present() && CJNIAudioManager::GetSDKVersion() < 23)
-    {
-      // passthrough
-      m_info.m_wantsIECPassthrough = true;
-      m_sink_sampleRates.insert(44100);
-      m_sink_sampleRates.insert(48000);
-      if (HasAmlHD())
-      {
-        m_sink_sampleRates.insert(96000);
-        m_sink_sampleRates.insert(192000);
-        m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_EAC3);
-        m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD);
-        m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_TRUEHD);
-      }
-    }
-    else
-    {
-      bool supports_192khz = false;
-      int test_sample[] = { 32000, 44100, 48000, 88200, 96000, 176400, 192000 };
-      int test_sample_sz = sizeof(test_sample) / sizeof(int);
-      int encoding = CJNIAudioFormat::ENCODING_PCM_16BIT;
-      if (CJNIAudioManager::GetSDKVersion() >= 21)
-        encoding = CJNIAudioFormat::ENCODING_PCM_FLOAT;
-      for (int i=0; i<test_sample_sz; ++i)
-      {
-        if (IsSupported(test_sample[i], CJNIAudioFormat::CHANNEL_OUT_STEREO, encoding))
-        {
-          m_sink_sampleRates.insert(test_sample[i]);
-          if (test_sample[i] == 192000)
-            supports_192khz = true;
-          CLog::Log(LOGDEBUG, "AESinkAUDIOTRACK - %d supported", test_sample[i]);
-        }
-      }
-      if (CJNIAudioManager::GetSDKVersion() >= 23)
-      {
-        if (CJNIAudioFormat::ENCODING_DTS_HD != -1)
-        {
-          CLog::Log(LOGDEBUG, "Firmware implements DTS-HD RAW");
-          m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD);
-        }
-        if (CJNIAudioFormat::ENCODING_DOLBY_TRUEHD != -1)
-        {
-          CLog::Log(LOGDEBUG, "Firmware implements TrueHD RAW");
-          m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_TRUEHD);
-        }
-      }
-      // Android v24 and backports can do real IEC API
-      if (CJNIAudioFormat::ENCODING_IEC61937 != -1)
-      {
-        m_info.m_wantsIECPassthrough = true;
-        m_info.m_streamTypes.clear();
-        m_info.m_dataFormats.push_back(AE_FMT_RAW);
-        m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_AC3);
-        m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD_CORE);
-        m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_1024);
-        m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_2048);
-        m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_512);
-        CLog::Log(LOGDEBUG, "AESinkAUDIOTrack: Using IEC PT mode: %d", CJNIAudioFormat::ENCODING_IEC61937);
-
-        if (supports_192khz)
-        {
-          m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_EAC3);
-          // Check for IEC 8 channel 192 khz PT
-          int atChannelMask = AEChannelMapToAUDIOTRACKChannelMask(AE_CH_LAYOUT_7_1);
-          if (IsSupported(192000, atChannelMask, CJNIAudioFormat::ENCODING_IEC61937))
-          {
-            m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD);
-            m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_TRUEHD);
-            CLog::Log(LOGDEBUG, "8 Channel PT via IEC61937 is supported");
-          }
-        }
-      }
-    }
-    std::copy(m_sink_sampleRates.begin(), m_sink_sampleRates.end(), std::back_inserter(m_info.m_sampleRates));
+    encoding = CJNIAudioFormat::ENCODING_PCM_FLOAT;
+    m_info.m_dataFormats.push_back(AE_FMT_FLOAT);
+    CLog::Log(LOGNOTICE, "Float is supported");
   }
-  list.push_back(m_info);
+
+  // Still AML API 21 and 22 get hardcoded samplerates - we can drop that
+  // when we stop supporting API < 23 - let's only add the default
+  // music samplerate
+  if (!aml_present() || CJNIAudioManager::GetSDKVersion() >= 23)
+  {
+    int test_sample[] = { 32000, 44100, 48000, 88200, 96000, 176400, 192000 };
+    int test_sample_sz = sizeof(test_sample) / sizeof(int);
+
+    for (int i = 0; i < test_sample_sz; ++i)
+    {
+      if (IsSupported(test_sample[i], CJNIAudioFormat::CHANNEL_OUT_STEREO, encoding))
+      {
+        m_sink_sampleRates.insert(test_sample[i]);
+        CLog::Log(LOGDEBUG, "AESinkAUDIOTRACK - %d supported", test_sample[i]);
+      }
+    }
+  }
+  std::copy(m_sink_sampleRates.begin(), m_sink_sampleRates.end(), std::back_inserter(m_info.m_sampleRates));
 }
 
 double CAESinkAUDIOTRACK::GetMovingAverageDelay(double newestdelay)
