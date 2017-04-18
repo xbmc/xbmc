@@ -487,6 +487,7 @@ extern "C" {
     int    iLifetime;                                     /*!< @brief (optional) life time in days of this recording */
     int    iGenreType;                                    /*!< @brief (optional) genre type */
     int    iGenreSubType;                                 /*!< @brief (optional) genre sub type */
+    char   strGenreDescription[PVR_ADDON_DESC_STRING_LENGTH];/*!< @brief (optional) genre. Will be used only when iGenreType = EPG_GENRE_USE_STRING */
     int    iPlayCount;                                    /*!< @brief (optional) play count of this recording on the client */
     int    iLastPlayedPosition;                           /*!< @brief (optional) last played position of this recording on the client */
     bool   bIsDeleted;                                    /*!< @brief (optional) shows this recording is deleted and can be undelete */

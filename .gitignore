@@ -525,3 +525,4 @@ exclude_dll.txt
 
 #certificates
 /system/certs/
+*.cmake
