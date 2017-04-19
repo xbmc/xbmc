@@ -32,6 +32,34 @@ msgctxt "#31005"
 msgid "Watch as 2D"
 msgstr "እንደ 2ዲ መመልከቻ"
 
+msgctxt "#31006"
+msgid "Random movies"
+msgstr "በደፈናው ሙቪ"
+
+msgctxt "#31007"
+msgid "Unwatched movies"
+msgstr "ያልታዩ ሙቪዎች"
+
+msgctxt "#31009"
+msgid "Download icons"
+msgstr "የወረዱ ምልክቶች"
+
+msgctxt "#31010"
+msgid "In progress movies"
+msgstr "ሙቪ በ ሂደት ላይ"
+
+msgctxt "#31012"
+msgid "Random albums"
+msgstr "በደፈናው አልበም"
+
+msgctxt "#31013"
+msgid "Random artists"
+msgstr "በደፈናው ከያኒ"
+
+msgctxt "#31014"
+msgid "Unplayed albums"
+msgstr "ያልተጫወተ አልበም"
+
 msgctxt "#31019"
 msgid "Forecast"
 msgstr "ግምት "
@@ -40,9 +68,33 @@ msgctxt "#31020"
 msgid "Actions"
 msgstr "ተግባሮች"
 
+msgctxt "#31021"
+msgid "Misc options"
+msgstr "የ ተለያዩ ምርጫዎች"
+
+msgctxt "#31022"
+msgid "Sort by"
+msgstr "መለያ በ"
+
+msgctxt "#31023"
+msgid "Viewtype"
+msgstr "በ መመልከቻ አይነት"
+
 msgctxt "#31029"
 msgid "Last logged in"
 msgstr "መጨረሻ የገባው በ"
+
+msgctxt "#31031"
+msgid "Version info"
+msgstr "የ እትም መረጃ"
+
+msgctxt "#31035"
+msgid "Pages"
+msgstr "ገጾች"
+
+msgctxt "#31036"
+msgid "items"
+msgstr "እቃዎች"
 
 msgctxt "#31038"
 msgid "Rewind"
@@ -51,6 +103,10 @@ msgstr "ወደ ኋላ ማሳለፊያ"
 msgctxt "#31039"
 msgid "Fast forward"
 msgstr "ወደ ፊት ማሳለፊያ"
+
+msgctxt "#31041"
+msgid "Camera manufacturer"
+msgstr "ካሜራ አምራቾች"
 
 msgctxt "#31042"
 msgid "Playlist options"
@@ -68,30 +124,86 @@ msgctxt "#31046"
 msgid "Delete group"
 msgstr "ቡድን ማጥፊያ"
 
+msgctxt "#31048"
+msgid "Available"
+msgstr "ዝግጁ"
+
 msgctxt "#31053"
 msgid "Arial based"
 msgstr "Arial based"
+
+msgctxt "#31063"
+msgid "Sections"
+msgstr "ክፍሎች"
 
 msgctxt "#31069"
 msgid "Last Updated"
 msgstr "መጨረሻ የተሻሻለው"
 
+msgctxt "#31071"
+msgid "by"
+msgstr "በ"
+
 msgctxt "#31072"
 msgid "Power Options"
 msgstr "የሀይል ምርጫዎች"
+
+msgctxt "#31080"
+msgid "Ends at"
+msgstr "መጨረሻ በ"
+
+msgctxt "#31082"
+msgid "Lyrics add-on"
+msgstr "ግጥም መጨ-መሪያ "
 
 msgctxt "#31089"
 msgid "Available groups"
 msgstr "ዝግጁ ቡድኖች"
 
+msgctxt "#31092"
+msgid "Video menu"
+msgstr "የ ቪዲዮ ዝርዝር"
+
 msgctxt "#31096"
 msgid "Local subtitle available"
 msgstr "የ አካባቢ ንዑስ አርእስት ዝግጁ ነው"
+
+msgctxt "#31097"
+msgid "Channel options"
+msgstr "የ ጣቢያ ምርጫዎች "
+
+msgctxt "#31102"
+msgid "Wall"
+msgstr "ግድግዳ"
 
 msgctxt "#31106"
 msgid "Teletext"
 msgstr "ቴሌቴክስት"
 
+msgctxt "#31127"
+msgid "Show icons"
+msgstr "ምልክቶች ማሳያ"
+
+msgctxt "#31128"
+msgid "Contributors"
+msgstr "አበርካቾች"
+
+msgctxt "#31132"
+msgid "min"
+msgstr "ደቂቃ"
+
+msgctxt "#31134"
+msgid "Remaining"
+msgstr "የቀረው"
+
 msgctxt "#31142"
 msgid "Play speed"
 msgstr "የ ማጫወቻ ፍጥነት"
+
+msgctxt "#31145"
+msgid "Search add-ons"
+msgstr "ተጨማ-ሪዎች መፈለጊያ"
+
+msgctxt "#31148"
+msgid "Categories"
+msgstr "ምድቦች"
