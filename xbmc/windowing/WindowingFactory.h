@@ -32,6 +32,9 @@
 #elif defined(TARGET_RASPBERRY_PI) && defined(HAS_GLES)
 #include "rpi/WinSystemRpiGLESContext.h"
 
+#elif defined(TARGET_LINUX) && defined(HAS_LIBAMCODEC) && defined(HAS_GLES)
+#include "amlogic/WinSystemAmlogicGLESContext.h"
+
 #elif defined(TARGET_LINUX) && defined(HAVE_MIR) && defined(HAS_GL)
 #include "mir/WinSystemMirGLContext.h"
 

@@ -1,4 +1,4 @@
-if (NOT MIR_FOUND AND NOT X_FOUND AND NOT MMAL_FOUND)
+if (NOT MIR_FOUND AND NOT X_FOUND AND NOT MMAL_FOUND AND NOT AML_FOUND)
   if(OPENGLES_FOUND OR AML_FOUND OR IMX_FOUND)
     set(SOURCES EGLWrapper.cpp)
 
@@ -18,13 +18,6 @@ if(CORE_SYSTEM_NAME STREQUAL android)
   list(APPEND HEADERS EGLNativeTypeAndroid.h)
   list(APPEND SOURCES VideoSyncAndroid.h)
   list(APPEND SOURCES VideoSyncAndroid.cpp)
-endif()
-
-if(AML_FOUND)
-  list(APPEND SOURCES EGLNativeTypeAmlogic.cpp)
-  list(APPEND HEADERS EGLNativeTypeAmlogic.h)
-  list(APPEND SOURCES VideoSyncAML.h)
-  list(APPEND SOURCES VideoSyncAML.cpp)
 endif()
 
 if(IMX_FOUND)

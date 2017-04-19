@@ -19,8 +19,6 @@
  *
  */
 
-#if defined(HAS_LIBAMCODEC)
-
 #include "windowing/VideoSync.h"
 #include "guilib/DispResource.h"
 
@@ -37,5 +35,3 @@ public:
 private:
   volatile bool m_abort;
 };
-
-#endif

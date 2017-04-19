@@ -22,6 +22,10 @@ if (NOT MIR_FOUND)
     list(APPEND SOURCES WinEventsLinux.cpp)
     list(APPEND HEADERS WinEventsLinux.h)
   endif()
+
+  if(AML_FOUND)
+    add_subdirectory(amlogic)
+  endif()
 endif()
 
 core_add_library(windowing)
