@@ -5128,7 +5128,7 @@ unsigned int CMusicDatabase::GetSongIDs(odb::query<ODBView_Song>& query, std::ve
     
     for (auto objSong : res)
     {
-      songIDs.push_back(std::make_pair<int,int>(1,objSong.song->m_idSong));
+      songIDs.push_back(std::make_pair<int,int>(1, static_cast<int>(objSong.song->m_idSong)));
     }
 
     return songIDs.size();
