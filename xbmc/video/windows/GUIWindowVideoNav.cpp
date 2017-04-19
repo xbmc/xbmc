@@ -141,6 +141,11 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
         for (; i < m_vecItems->Size(); i++)
         {
           CFileItemPtr pItem = m_vecItems->Get(i);
+
+          // skip ".."
+          if (pItem->IsParentFolder())
+            continue;
+
           if (URIUtils::PathEquals(pItem->GetPath(), message.GetStringParam(0), true, true))
           {
             m_viewControl.SetSelectedItem(i);
@@ -153,19 +158,24 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
             break;
           }
         }
-        if (i >= m_vecItems->Size() && url.GetOption("showinfo") == "true")
+        if (i >= m_vecItems->Size())
         {
-          // We are here if the item is filtered out in the nav window
-          std::string path = message.GetStringParam(0);
-          CFileItem item(path, URIUtils::HasSlashAtEnd(path));
-          if (item.IsVideoDb())
+          SelectFirstUnwatched();
+
+          if (url.GetOption("showinfo") == "true")
           {
-            *(item.GetVideoInfoTag()) = XFILE::CVideoDatabaseFile::GetVideoTag(CURL(item.GetPath()));
-            if (!item.GetVideoInfoTag()->IsEmpty())
+            // We are here if the item is filtered out in the nav window
+            std::string path = message.GetStringParam(0);
+            CFileItem item(path, URIUtils::HasSlashAtEnd(path));
+            if (item.IsVideoDb())
             {
-              item.SetPath(item.GetVideoInfoTag()->m_strFileNameAndPath);
-              ADDON::ScraperPtr scrapper;
-              OnItemInfo(item, scrapper);
+              *(item.GetVideoInfoTag()) = XFILE::CVideoDatabaseFile::GetVideoTag(CURL(item.GetPath()));
+              if (!item.GetVideoInfoTag()->IsEmpty())
+              {
+                item.SetPath(item.GetVideoInfoTag()->m_strFileNameAndPath);
+                ADDON::ScraperPtr scrapper;
+                OnItemInfo(item, scrapper);
+              }
             }
           }
         }
