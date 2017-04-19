@@ -22,9 +22,6 @@
 #ifdef HAS_EGL
 #include "utils/log.h"
 #include <assert.h>
-#if defined(TARGET_ANDROID)
-  #include "EGLNativeTypeAndroid.h"
-#endif
 #if defined(HAS_IMXVPU)
   #include "EGLNativeTypeIMX.h"
 #endif
@@ -82,9 +79,7 @@ bool CEGLWrapper::Initialize(const std::string &implementation)
   // Try to create each backend in sequence and go with the first one
   // that we know will work
   if (
-#if defined(TARGET_ANDROID)
-      (nativeGuess = CreateEGLNativeType<CEGLNativeTypeAndroid>(implementation))
-#elif defined(HAS_IMXVPU)
+#if defined(HAS_IMXVPU)
       (nativeGuess = CreateEGLNativeType<CEGLNativeTypeIMX>(implementation))
 #endif
       )

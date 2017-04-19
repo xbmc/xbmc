@@ -19,7 +19,6 @@
  *
  */
 
-#if defined(TARGET_ANDROID)
 #include "windowing/VideoSync.h"
 #include "guilib/DispResource.h"
 
@@ -44,5 +43,3 @@ private:
   int64_t m_LastVBlankTime;  //timestamp of the last vblank, used for calculating how many vblanks happened
   volatile bool m_abort;
 };
-
-#endif// TARGET_ANDROID

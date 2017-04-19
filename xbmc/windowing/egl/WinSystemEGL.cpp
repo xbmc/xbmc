@@ -33,10 +33,6 @@
 #include "guilib/DispResource.h"
 #include "threads/SingleLock.h"
 
-#if defined(TARGET_ANDROID)
-#include "VideoSyncAndroid.h"
-#endif
-
 #ifdef HAS_IMXVPU
 // This has to go into another header file
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodecIMX.h"
@@ -563,12 +559,7 @@ bool CWinSystemEGL::ClampToGUIDisplayLimits(int &width, int &height)
 
 std::unique_ptr<CVideoSync> CWinSystemEGL::GetVideoSync(void *clock)
 {
-#if defined(TARGET_ANDROID)
-  std::unique_ptr<CVideoSync> pVSync(new CVideoSyncAndroid(clock));
-  return pVSync;
-#else
   return nullptr;
-#endif
 }
 
 

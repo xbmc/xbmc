@@ -20,7 +20,6 @@
 
 #include "system.h"
 
-#if defined(TARGET_ANDROID)
 #include "utils/log.h"
 #include "VideoSyncAndroid.h"
 #include "cores/VideoPlayer/VideoReferenceClock.h"
@@ -90,5 +89,3 @@ void CVideoSyncAndroid::FrameCallback(int64_t frameTimeNanos)
   //update the vblank timestamp, update the clock and send a signal that we got a vblank
   UpdateClock(NrVBlanks, nowtime, m_refClock);
 }
-
-#endif //TARGET_ANDROID

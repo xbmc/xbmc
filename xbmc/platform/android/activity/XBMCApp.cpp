@@ -82,7 +82,7 @@
 #include "filesystem/VideoDatabaseFile.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
-#include "windowing/egl/VideoSyncAndroid.h"
+#include "windowing/android/VideoSyncAndroid.h"
 #include "windowing/WinEvents.h"
 #include "platform/xbmc.h"
 #include "platform/XbmcContext.h"
@@ -1039,13 +1039,13 @@ std::string CXBMCApp::GetFilenameFromIntent(const CJNIIntent &intent)
   return ret;
 }
 
-const ANativeWindow** CXBMCApp::GetNativeWindow(int timeout)
+ANativeWindow* CXBMCApp::GetNativeWindow(int timeout)
 {
   if (m_window)
-    return (const ANativeWindow**)&m_window;
+    return m_window;
 
   m_windowCreated.WaitMSec(timeout);
-  return (const ANativeWindow**)&m_window;
+  return m_window;
 }
 
 void CXBMCApp::RegisterInputDeviceCallbacks(IInputDeviceCallbacks* handler)

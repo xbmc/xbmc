@@ -25,33 +25,16 @@
 
 #include <androidjni/Display.h>
 
-#include "EGLNativeType.h"
+#include "guilib/Resolution.h"
 
-class CEGLNativeTypeAndroid : public CEGLNativeType
+class CAndroidUtils
 {
 public:
-  CEGLNativeTypeAndroid();
-  virtual ~CEGLNativeTypeAndroid();
-  virtual std::string GetNativeName() const { return "android"; };
-  virtual bool  CheckCompatibility();
-  virtual void  Initialize();
-  virtual void  Destroy();
-  virtual int   GetQuirks() { return EGL_QUIRK_DESTROY_NATIVE_WINDOW_WITH_SURFACE; };
-
-  virtual bool  CreateNativeDisplay();
-  virtual bool  CreateNativeWindow();
-  virtual bool  GetNativeDisplay(XBNativeDisplayType **nativeDisplay) const;
-  virtual bool  GetNativeWindow(XBNativeWindowType **nativeWindow) const;
-
-  virtual bool  DestroyNativeWindow();
-  virtual bool  DestroyNativeDisplay();
-
+  CAndroidUtils();
+  virtual ~CAndroidUtils();
   virtual bool  GetNativeResolution(RESOLUTION_INFO *res) const;
   virtual bool  SetNativeResolution(const RESOLUTION_INFO &res);
   virtual bool  ProbeResolutions(std::vector<RESOLUTION_INFO> &resolutions);
-  virtual bool  GetPreferredResolution(RESOLUTION_INFO *res) const;
-
-  virtual bool  ShowWindow(bool show);
 
 protected:
   int m_width;

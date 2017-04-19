@@ -35,6 +35,9 @@
 #elif defined(TARGET_LINUX) && defined(HAS_LIBAMCODEC) && defined(HAS_GLES)
 #include "amlogic/WinSystemAmlogicGLESContext.h"
 
+#elif defined(TARGET_ANDROID) && defined(HAS_GLES)
+#include "android/WinSystemAndroidGLESContext.h"
+
 #elif defined(TARGET_LINUX) && defined(HAVE_MIR) && defined(HAS_GL)
 #include "mir/WinSystemMirGLContext.h"
 
