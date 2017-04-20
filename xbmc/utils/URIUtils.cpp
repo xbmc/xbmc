@@ -1042,12 +1042,11 @@ bool URIUtils::IsLibraryFolder(const std::string& strFile)
   return url.IsProtocol("library");
 }
 
-bool URIUtils::IsLibraryContent(const std::string &strFile)
+bool URIUtils::IsMusicLibraryContent(const std::string &strFile)
 {
-  return (IsProtocol(strFile, "library") ||
-          IsProtocol(strFile, "videodb") ||
-          IsProtocol(strFile, "musicdb") ||
-          StringUtils::EndsWith(strFile, ".xsp"));
+  return (IsProtocol(strFile, "musicdb") ||
+          StringUtils::StartsWithNoCase(strFile, "library://music/") ||
+          StringUtils::EqualsNoCase(strFile, "library://music"));
 }
 
 bool URIUtils::IsDOSPath(const std::string &path)
