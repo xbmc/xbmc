@@ -50,6 +50,7 @@ protected:
   virtual std::string GetStartFolder(const std::string &url) override;
 
   bool GetSongsFromPlayList(const std::string& strPlayList, CFileItemList &items);
+  std::string GetQuickpathName(const std::string& strPath) const;
 
   VECSOURCES m_shares;
 
