@@ -1042,14 +1042,6 @@ bool URIUtils::IsLibraryFolder(const std::string& strFile)
   return url.IsProtocol("library");
 }
 
-bool URIUtils::IsLibraryContent(const std::string &strFile)
-{
-  return (IsProtocol(strFile, "library") ||
-          IsProtocol(strFile, "videodb") ||
-          IsProtocol(strFile, "musicdb") ||
-          StringUtils::EndsWith(strFile, ".xsp"));
-}
-
 bool URIUtils::IsMusicLibraryContent(const std::string &strFile)
 {
   return (IsProtocol(strFile, "musicdb") ||
