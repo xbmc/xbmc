@@ -431,11 +431,15 @@ bool CDXVAContext::CreateSurfaces(D3D11_VIDEO_DECODER_DESC format, unsigned int 
 {
   HRESULT hr = S_OK;
   ID3D11Device* pDevice = g_Windowing.Get3D11Device();
+  unsigned bindFlags = D3D11_BIND_DECODER;
+
+  if (g_Windowing.IsFormatSupport(format.OutputFormat, D3D11_FORMAT_SUPPORT_SHADER_SAMPLE))
+    bindFlags |= D3D11_BIND_SHADER_RESOURCE;
 
   CD3D11_TEXTURE2D_DESC texDesc(format.OutputFormat, 
                                 FFALIGN(format.SampleWidth, alignment), 
                                 FFALIGN(format.SampleHeight, alignment), 
-                                count, 1, D3D11_BIND_DECODER);
+                                count, 1, bindFlags);
 
   ID3D11Texture2D *texture = nullptr;
   if (FAILED(pDevice->CreateTexture2D(&texDesc, NULL, &texture)))
@@ -733,15 +737,57 @@ void CDXVABufferPool::Return(int id)
 // DXVA RenderPictures
 //-----------------------------------------------------------------------------
 
+static DXGI_FORMAT plane_formats[][2] = 
+{
+  { DXGI_FORMAT_R8_UNORM,  DXGI_FORMAT_R8G8_UNORM   }, // NV12
+  { DXGI_FORMAT_R16_UNORM, DXGI_FORMAT_R16G16_UNORM }, // P010
+  { DXGI_FORMAT_R16_UNORM, DXGI_FORMAT_R16G16_UNORM }  // P016
+};
+
 CRenderPicture::CRenderPicture(CSurfaceContext *context)
+  : view(nullptr)
+  , format(DXGI_FORMAT_UNKNOWN)
+  , width(0)
+  , height(0)
 {
   surface_context = context->Acquire();
 }
 
 CRenderPicture::~CRenderPicture()
 {
+  SAFE_RELEASE(planes[0]);
+  SAFE_RELEASE(planes[1]);
   surface_context->ClearRender(view);
   surface_context->Release();
+}
+
+ID3D11View* CRenderPicture::GetSRV(unsigned idx)
+{
+  if (!g_Windowing.IsFormatSupport(format, D3D11_FORMAT_SUPPORT_SHADER_SAMPLE))
+    return nullptr;
+
+  if (planes[idx])
+    return planes[idx];
+
+  ID3D11VideoDecoderOutputView* pView = nullptr;
+  ID3D11Resource* pResource = nullptr;
+  D3D11_VIDEO_DECODER_OUTPUT_VIEW_DESC vpivd;
+  
+  pView = reinterpret_cast<ID3D11VideoDecoderOutputView*>(view);
+  pView->GetDesc(&vpivd);
+  pView->GetResource(&pResource);
+    
+  DXGI_FORMAT plane_format = plane_formats[format - DXGI_FORMAT_NV12][idx];
+  CD3D11_SHADER_RESOURCE_VIEW_DESC srvDesc(D3D11_SRV_DIMENSION_TEXTURE2DARRAY, plane_format,
+                                           0, 1, vpivd.Texture2D.ArraySlice, 1);
+
+  HRESULT hr = g_Windowing.Get3D11Device()->CreateShaderResourceView(pResource, &srvDesc, 
+    reinterpret_cast<ID3D11ShaderResourceView**>(&planes[idx]));
+  if (FAILED(hr))
+    CLog::Log(LOGERROR, "Unable to create SRV for decoder surface (%d)", plane_format);
+
+  SAFE_RELEASE(pResource);
+  return planes[idx];
 }
 
 //-----------------------------------------------------------------------------
@@ -809,8 +855,8 @@ void CDecoder::Close()
   CSingleLock lock(m_section);
   SAFE_RELEASE(m_decoder);
   SAFE_RELEASE(m_vcontext);
-  SAFE_RELEASE(m_surface_context);
   SAFE_RELEASE(m_presentPicture);
+  SAFE_RELEASE(m_surface_context);
   memset(&m_format, 0, sizeof(m_format));
 
   if (m_dxva_context)
@@ -1036,6 +1082,8 @@ CDVDVideoCodec::VCReturn CDecoder::Decode(AVCodecContext* avctx, AVFrame* frame)
       auto picture = new CRenderPicture(m_surface_context);
       picture->view = reinterpret_cast<ID3D11View*>(frame->data[3]);
       picture->format = m_format.OutputFormat;
+      picture->width = FFALIGN(m_format.SampleWidth, m_surface_alignment);
+      picture->height = FFALIGN(m_format.SampleHeight, m_surface_alignment);
       m_surface_context->MarkRender(picture->view);
 
       if (m_presentPicture)

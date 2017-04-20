@@ -23,6 +23,7 @@
 #include <vector>
 #include "DVDResource.h"
 #include "guilib/D3DResource.h"
+#include "DVDCodecs/Video/DVDVideoCodec.h"
 #include "libavcodec/avcodec.h"
 #include "libavcodec/d3d11va.h"
 #include "threads/Event.h"
@@ -73,11 +74,17 @@ class CRenderPicture
 public:
   CRenderPicture(CSurfaceContext *context);
   ~CRenderPicture();
+  ID3D11View* GetSRV(unsigned idx);
   ID3D11View* view;
   DXGI_FORMAT format;
+  unsigned width;
+  unsigned height;
 
 protected:
   CSurfaceContext *surface_context;
+
+private:
+  ID3D11View* planes[2]{ nullptr, nullptr };
 };
 
 class CDXVAVideoBuffer : public CVideoBuffer
