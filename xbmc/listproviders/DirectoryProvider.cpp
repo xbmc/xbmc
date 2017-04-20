@@ -253,14 +253,6 @@ void CDirectoryProvider::Announce(AnnouncementFlag flag, const char *sender, con
           m_updateState = INVALIDATED;
       }
     }
-    else if (flag & GUI)
-    {
-      if (strcmp(message, "OnFavouritesUpdated") == 0)
-      {
-        if (URIUtils::IsProtocol(m_currentUrl, "favourites"))
-          m_updateState = INVALIDATED;
-      }
-    }
     else
     {
       // if we're in a database transaction, don't bother doing anything just yet
@@ -316,6 +308,13 @@ void CDirectoryProvider::OnPVRManagerEvent(const PVR::PVREvent& event)
   }
 }
 
+void CDirectoryProvider::OnFavouritesEvent(const CFavouritesService::FavouritesUpdated& event)
+{
+  CSingleLock lock(m_section);
+  if (URIUtils::IsProtocol(m_currentUrl, "favourites"))
+    m_updateState = INVALIDATED;
+}
+
 void CDirectoryProvider::Reset()
 {
   CSingleLock lock(m_section);
@@ -335,6 +334,7 @@ void CDirectoryProvider::Reset()
   {
     m_isAnnounced = false;
     CAnnouncementManager::GetInstance().RemoveAnnouncer(this);
+    CServiceBroker::GetFavouritesService().Events().Unsubscribe(this);
     ADDON::CAddonMgr::GetInstance().Events().Unsubscribe(this);
     CServiceBroker::GetPVRManager().Events().Unsubscribe(this);
   }
@@ -444,6 +444,7 @@ bool CDirectoryProvider::UpdateURL()
     CAnnouncementManager::GetInstance().AddAnnouncer(this);
     ADDON::CAddonMgr::GetInstance().Events().Subscribe(this, &CDirectoryProvider::OnAddonEvent);
     CServiceBroker::GetPVRManager().Events().Subscribe(this, &CDirectoryProvider::OnPVRManagerEvent);
+    CServiceBroker::GetFavouritesService().Events().Subscribe(this, &CDirectoryProvider::OnFavouritesEvent);
   }
   return true;
 }

@@ -24,6 +24,7 @@
 #include <vector>
 #include "addons/AddonEvents.h"
 #include "IListProvider.h"
+#include "favourites/FavouritesService.h"
 #include "guilib/GUIStaticItem.h"
 #include "pvr/PVREvent.h"
 #include "utils/Job.h"
@@ -90,4 +91,5 @@ private:
   bool UpdateSort();
   void OnAddonEvent(const ADDON::AddonEvent& event);
   void OnPVRManagerEvent(const PVR::PVREvent& event);
+  void OnFavouritesEvent(const CFavouritesService::FavouritesUpdated& event);
 };
