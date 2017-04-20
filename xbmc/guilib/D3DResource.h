@@ -104,13 +104,13 @@ public:
 
   bool Create(UINT width, UINT height, UINT mipLevels, D3D11_USAGE usage, DXGI_FORMAT format, const void* pInitData = nullptr, unsigned int srcPitch = 0);
   void Release();
-  bool GetDesc(D3D11_TEXTURE2D_DESC *desc);
-  bool LockRect(UINT subresource, D3D11_MAPPED_SUBRESOURCE *res, D3D11_MAP mapType);
-  bool UnlockRect(UINT subresource);
+  bool GetDesc(D3D11_TEXTURE2D_DESC *desc) const;
+  bool LockRect(UINT subresource, D3D11_MAPPED_SUBRESOURCE *res, D3D11_MAP mapType) const;
+  bool UnlockRect(UINT subresource) const;
 
   // Accessors
   ID3D11Texture2D* Get() const { return m_texture; };
-  ID3D11ShaderResourceView* GetShaderResource();
+  ID3D11ShaderResourceView* GetShaderResource(DXGI_FORMAT format = DXGI_FORMAT_UNKNOWN);
   ID3D11RenderTargetView* GetRenderTarget();
   UINT GetWidth()  const { return m_width; }
   UINT GetHeight() const { return m_height; }
@@ -152,8 +152,9 @@ private:
 
   // created texture
   ID3D11Texture2D* m_texture;
-  ID3D11ShaderResourceView* m_textureView;
   ID3D11RenderTargetView* m_renderTarget;
+  // store views in different formats
+  std::map<DXGI_FORMAT, ID3D11ShaderResourceView*> m_views;
 
   // saved data
   BYTE*     m_data;

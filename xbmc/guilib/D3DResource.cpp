@@ -163,10 +163,12 @@ CD3DTexture::CD3DTexture()
   m_usage = D3D11_USAGE_DEFAULT;
   m_format = DXGI_FORMAT_B8G8R8A8_UNORM;
   m_texture = nullptr;
-  m_textureView = nullptr;
   m_renderTarget = nullptr;
   m_data = nullptr;
   m_pitch = 0;
+  m_bindFlags = 0;
+  m_cpuFlags = 0;
+  m_views.clear();
 }
 
 CD3DTexture::~CD3DTexture()
@@ -206,11 +208,17 @@ bool CD3DTexture::Create(UINT width, UINT height, UINT mipLevels, D3D11_USAGE us
   m_bindFlags = 0; // D3D11_BIND_SHADER_RESOURCE;
   if (D3D11_USAGE_DEFAULT == usage && g_Windowing.IsFormatSupport(format, D3D11_FORMAT_SUPPORT_RENDER_TARGET))
     m_bindFlags |= D3D11_BIND_RENDER_TARGET;
-  if ( D3D11_USAGE_STAGING != m_usage 
-    && ( g_Windowing.IsFormatSupport(format, D3D11_FORMAT_SUPPORT_SHADER_LOAD)
-      || g_Windowing.IsFormatSupport(format, D3D11_FORMAT_SUPPORT_SHADER_SAMPLE)))
+  if ( D3D11_USAGE_STAGING != m_usage )
   {
-    m_bindFlags |= D3D11_BIND_SHADER_RESOURCE;
+    if (g_Windowing.IsFormatSupport(format, D3D11_FORMAT_SUPPORT_SHADER_LOAD)
+      || g_Windowing.IsFormatSupport(format, D3D11_FORMAT_SUPPORT_SHADER_SAMPLE))
+    {
+      m_bindFlags |= D3D11_BIND_SHADER_RESOURCE;
+    }
+    if (g_Windowing.IsFormatSupport(format, D3D11_FORMAT_SUPPORT_DECODER_OUTPUT))
+    {
+      m_bindFlags |= D3D11_BIND_DECODER;
+    }
   }
 
   if (!CreateInternal(pixels, srcPitch))
@@ -257,29 +265,43 @@ bool CD3DTexture::CreateInternal(const void* pixels /* nullptr */, unsigned int 
   return SUCCEEDED(hr);
 }
 
-ID3D11ShaderResourceView* CD3DTexture::GetShaderResource()
+ID3D11ShaderResourceView* CD3DTexture::GetShaderResource(DXGI_FORMAT format /* = DXGI_FORMAT_UNKNOWN */)
 {
   if (!m_texture)
     return nullptr;
 
-  if (!m_textureView) 
-  {
-    CD3D11_SHADER_RESOURCE_VIEW_DESC cSRVDesc(D3D11_SRV_DIMENSION_TEXTURE2D, m_format, 0, -1);
-    HRESULT hr = g_Windowing.Get3D11Device()->CreateShaderResourceView(m_texture, &cSRVDesc, &m_textureView);
+  if (format == DXGI_FORMAT_UNKNOWN)
+    format = m_format;
 
+  if (!g_Windowing.IsFormatSupport(format, D3D11_FORMAT_SUPPORT_SHADER_SAMPLE)
+    && !g_Windowing.IsFormatSupport(format, D3D11_FORMAT_SUPPORT_SHADER_LOAD))
+    return nullptr;
+
+  if (!m_views[format])
+  {
+    ID3D11ShaderResourceView* pView = nullptr;
+    CD3D11_SHADER_RESOURCE_VIEW_DESC cSRVDesc(D3D11_SRV_DIMENSION_TEXTURE2D, format);
+    HRESULT hr = g_Windowing.Get3D11Device()->CreateShaderResourceView(m_texture, &cSRVDesc, &pView);
     if (FAILED(hr))
     {
       CLog::Log(LOGWARNING, __FUNCTION__ " - cannot create texture view.");
-      SAFE_RELEASE(m_textureView);
+      SAFE_RELEASE(pView);
+    }
+    else
+    {
+      m_views.insert_or_assign(format, pView);
     }
   }
 
-  return m_textureView;
+  return m_views[format];
 }
 
 ID3D11RenderTargetView* CD3DTexture::GetRenderTarget()
 {
   if (!m_texture)
+    return nullptr;
+
+  if (!g_Windowing.IsFormatSupport(m_format, D3D11_FORMAT_SUPPORT_RENDER_TARGET))
     return nullptr;
 
   if (!m_renderTarget)
@@ -297,12 +319,14 @@ ID3D11RenderTargetView* CD3DTexture::GetRenderTarget()
 void CD3DTexture::Release()
 {
   g_Windowing.Unregister(this);
-  SAFE_RELEASE(m_texture);
-  SAFE_RELEASE(m_textureView);
+  for (auto it = m_views.begin(); it != m_views.end(); ++it)
+    SAFE_RELEASE(it->second);
   SAFE_RELEASE(m_renderTarget);
+  SAFE_RELEASE(m_texture);
+  m_views.clear();
 }
 
-bool CD3DTexture::GetDesc(D3D11_TEXTURE2D_DESC *desc)
+bool CD3DTexture::GetDesc(D3D11_TEXTURE2D_DESC *desc) const
 {
   if (m_texture)
   {
@@ -312,7 +336,7 @@ bool CD3DTexture::GetDesc(D3D11_TEXTURE2D_DESC *desc)
   return false;
 }
 
-bool CD3DTexture::LockRect(UINT subresource, D3D11_MAPPED_SUBRESOURCE *res, D3D11_MAP mapType)
+bool CD3DTexture::LockRect(UINT subresource, D3D11_MAPPED_SUBRESOURCE *res, D3D11_MAP mapType) const
 {
   if (m_texture)
   {
@@ -326,7 +350,7 @@ bool CD3DTexture::LockRect(UINT subresource, D3D11_MAPPED_SUBRESOURCE *res, D3D1
   return false;
 }
 
-bool CD3DTexture::UnlockRect(UINT subresource)
+bool CD3DTexture::UnlockRect(UINT subresource) const
 {
   if (m_texture)
   {
@@ -388,9 +412,11 @@ void CD3DTexture::OnDestroyDevice(bool fatal)
 {
   if (!fatal)
     SaveTexture();
-  SAFE_RELEASE(m_texture);
-  SAFE_RELEASE(m_textureView);
+  for (auto it = m_views.begin(); it != m_views.end(); ++it)
+    SAFE_RELEASE(it->second);
   SAFE_RELEASE(m_renderTarget);
+  SAFE_RELEASE(m_texture);
+  m_views.clear();
 }
 
 void CD3DTexture::RestoreTexture()
