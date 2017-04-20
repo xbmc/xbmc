@@ -23,14 +23,8 @@
 #include <utility>
 
 #include "ServiceBroker.h"
-#include "epg/EpgContainer.h"
-#include "epg/EpgInfoTag.h"
 #include "FileItem.h"
 #include "filesystem/Directory.h"
-#include "pvr/addons/PVRClients.h"
-#include "pvr/recordings/PVRRecordingsPath.h"
-#include "pvr/PVRManager.h"
-#include "pvr/PVREvent.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
 #include "URL.h"
@@ -38,6 +32,13 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "video/VideoDatabase.h"
+
+#include "pvr/PVRManager.h"
+#include "pvr/PVREvent.h"
+#include "pvr/addons/PVRClients.h"
+#include "pvr/epg/EpgContainer.h"
+#include "pvr/epg/EpgInfoTag.h"
+#include "pvr/recordings/PVRRecordingsPath.h"
 
 using namespace PVR;
 
@@ -454,7 +455,7 @@ void CPVRRecordings::UpdateFromClient(const CPVRRecordingPtr &tag)
       const CPVRChannelPtr channel(newTag->Channel());
       if (channel)
       {
-        const EPG::CEpgInfoTagPtr epgTag = EPG::CEpgContainer::GetInstance().GetTagById(channel, newTag->BroadcastUid());
+        const CPVREpgInfoTagPtr epgTag = CServiceBroker::GetPVRManager().EpgContainer().GetTagById(channel, newTag->BroadcastUid());
         if (epgTag)
           epgTag->SetRecording(newTag);
       }
@@ -468,7 +469,7 @@ void CPVRRecordings::UpdateFromClient(const CPVRRecordingPtr &tag)
   }
 }
 
-CPVRRecordingPtr CPVRRecordings::GetRecordingForEpgTag(const EPG::CEpgInfoTagPtr &epgTag) const
+CPVRRecordingPtr CPVRRecordings::GetRecordingForEpgTag(const CPVREpgInfoTagPtr &epgTag) const
 {
   CSingleLock lock(m_critSection);
 

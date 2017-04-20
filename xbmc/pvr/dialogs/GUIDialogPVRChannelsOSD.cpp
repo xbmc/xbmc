@@ -18,9 +18,10 @@
  *
  */
 
+#include "GUIDialogPVRChannelsOSD.h"
+
 #include "FileItem.h"
 #include "GUIInfoManager.h"
-#include "epg/EpgContainer.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
 #include "messaging/ApplicationMessenger.h"
@@ -30,12 +31,10 @@
 #include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/epg/EpgContainer.h"
 #include "pvr/windows/GUIWindowPVRBase.h"
 
-#include "GUIDialogPVRChannelsOSD.h"
-
 using namespace PVR;
-using namespace EPG;
 using namespace KODI::MESSAGING;
 
 #define MAX_INVALIDATION_FREQUENCY 2000 // limit to one invalidation per X milliseconds
@@ -54,7 +53,7 @@ CGUIDialogPVRChannelsOSD::~CGUIDialogPVRChannelsOSD()
   delete m_vecItems;
 
   g_infoManager.UnregisterObserver(this);
-  g_EpgContainer.UnregisterObserver(this);
+  CServiceBroker::GetPVRManager().EpgContainer().UnregisterObserver(this);
 }
 
 bool CGUIDialogPVRChannelsOSD::OnMessage(CGUIMessage& message)
@@ -193,7 +192,7 @@ CPVRChannelGroupPtr CGUIDialogPVRChannelsOSD::GetPlayingGroup()
 void CGUIDialogPVRChannelsOSD::Update()
 {
   g_infoManager.RegisterObserver(this);
-  g_EpgContainer.RegisterObserver(this);
+  CServiceBroker::GetPVRManager().EpgContainer().RegisterObserver(this);
 
   // lock our display, as this window is rendered from the player thread
   g_graphicsContext.Lock();

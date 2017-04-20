@@ -38,7 +38,6 @@
 #include "interfaces/info/SkinVariable.h"
 #include "cores/IPlayer.h"
 #include "FileItem.h"
-#include "epg/EpgTypes.h"
 #include "pvr/PVRTypes.h"
 
 #include <atomic>
@@ -290,7 +289,7 @@ protected:
    * @brief Get the EPG tag that is currently active
    * @return the currently active tag or NULL if no active tag was found
    */
-  EPG::CEpgInfoTagPtr GetEpgInfoTag() const;
+  PVR::CPVREpgInfoTagPtr GetEpgInfoTag() const;
 
   void SetCurrentItemJob(const CFileItemPtr item);
 

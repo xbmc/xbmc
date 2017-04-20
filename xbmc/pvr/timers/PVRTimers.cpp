@@ -25,20 +25,20 @@
 #include <utility>
 
 #include "ServiceBroker.h"
-#include "epg/EpgContainer.h"
 #include "FileItem.h"
-#include "pvr/addons/PVRClients.h"
-#include "pvr/channels/PVRChannelGroupsContainer.h"
-#include "pvr/PVRJobs.h"
-#include "pvr/PVRManager.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
+#include "pvr/PVRJobs.h"
+#include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClients.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/epg/EpgContainer.h"
+
 using namespace PVR;
-using namespace EPG;
 
 bool CPVRTimersContainer::UpdateFromClient(const CPVRTimerInfoTagPtr &timer)
 {
@@ -109,7 +109,7 @@ bool CPVRTimers::Load(void)
   Unload();
 
   // (re)register observer
-  g_EpgContainer.RegisterObserver(this);
+  CServiceBroker::GetPVRManager().EpgContainer().RegisterObserver(this);
 
   // update from clients
   return Update();
@@ -118,7 +118,7 @@ bool CPVRTimers::Load(void)
 void CPVRTimers::Unload()
 {
   // unregister observer
-  g_EpgContainer.UnregisterObserver(this);
+  CServiceBroker::GetPVRManager().EpgContainer().UnregisterObserver(this);
 
   // remove all tags
   CSingleLock lock(m_critSection);
@@ -158,7 +158,7 @@ bool CPVRTimers::SetEpgTagTimer(const CPVRTimerInfoTagPtr &timer)
   if (timer->IsTimerRule() || timer->m_bStartAnyTime || timer->m_bEndAnyTime)
     return false;
 
-  std::vector<CEpgInfoTagPtr> tags(g_EpgContainer.GetEpgTagsForTimer(timer));
+  std::vector<CPVREpgInfoTagPtr> tags(CServiceBroker::GetPVRManager().EpgContainer().GetEpgTagsForTimer(timer));
 
   if (tags.empty())
     return false;
@@ -178,7 +178,7 @@ bool CPVRTimers::ClearEpgTagTimer(const CPVRTimerInfoTagPtr &timer)
   if (timer->IsTimerRule() || timer->m_bStartAnyTime || timer->m_bEndAnyTime)
     return false;
 
-  std::vector<CEpgInfoTagPtr> tags(g_EpgContainer.GetEpgTagsForTimer(timer));
+  std::vector<CPVREpgInfoTagPtr> tags(CServiceBroker::GetPVRManager().EpgContainer().GetEpgTagsForTimer(timer));
 
   if (tags.empty())
     return false;
@@ -758,7 +758,7 @@ CPVRTimerInfoTagPtr CPVRTimers::GetActiveTimerForChannel(const CPVRChannelPtr &c
   return CPVRTimerInfoTagPtr();
 }
 
-CPVRTimerInfoTagPtr CPVRTimers::GetTimerForEpgTag(const CEpgInfoTagPtr &epgTag) const
+CPVRTimerInfoTagPtr CPVRTimers::GetTimerForEpgTag(const CPVREpgInfoTagPtr &epgTag) const
 {
   if (epgTag)
   {

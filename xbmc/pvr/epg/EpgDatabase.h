@@ -24,25 +24,25 @@
 
 #include "Epg.h"
 
-namespace EPG
+namespace PVR
 {
-  class CEpgInfoTag;
-  class CEpgContainer;
+  class CPVREpgInfoTag;
+  class CPVREpgContainer;
 
   /** The EPG database */
 
-  class CEpgDatabase : public CDatabase
+  class CPVREpgDatabase : public CDatabase
   {
   public:
     /*!
      * @brief Create a new instance of the EPG database.
      */
-    CEpgDatabase(void) {};
+    CPVREpgDatabase(void) {};
 
     /*!
      * @brief Destroy this instance.
      */
-    virtual ~CEpgDatabase(void) {};
+    virtual ~CPVREpgDatabase(void) {};
 
     /*!
      * @brief Open the database.
@@ -76,7 +76,7 @@ namespace EPG
      * @param table The table to remove.
      * @return True if the table was removed successfully, false otherwise.
      */
-    virtual bool Delete(const CEpg &table);
+    virtual bool Delete(const CPVREpg &table);
 
     /*!
      * @brief Erase all EPG entries with an end time less than the given time.
@@ -90,21 +90,21 @@ namespace EPG
      * @param tag The entry to remove.
      * @return True if it was removed successfully, false otherwise.
      */
-    virtual bool Delete(const CEpgInfoTag &tag);
+    virtual bool Delete(const CPVREpgInfoTag &tag);
 
     /*!
      * @brief Get all EPG tables from the database. Does not get the EPG tables' entries.
      * @param container The container to fill.
      * @return The amount of entries that was added.
      */
-    virtual int Get(CEpgContainer &container);
+    virtual int Get(CPVREpgContainer &container);
 
     /*!
      * @brief Get all EPG entries for a table.
      * @param epg The EPG table to get the entries for.
      * @return The amount of entries that was added.
      */
-    virtual int Get(CEpg &epg);
+    virtual int Get(CPVREpg &epg);
 
     /*!
      * @brief Get the last stored EPG scan time.
@@ -130,7 +130,7 @@ namespace EPG
      * @param bQueueWrite Don't execute the query immediately but queue it if true.
      * @return The database ID of this entry or 0 if bSingleUpdate is false and the query was queued.
      */
-    virtual int Persist(const CEpg &epg, bool bQueueWrite = false);
+    virtual int Persist(const CPVREpg &epg, bool bQueueWrite = false);
 
     /*!
      * @brief Persist an infotag.
@@ -138,7 +138,7 @@ namespace EPG
      * @param bSingleUpdate If true, this is a single update and the query will be executed immediately.
      * @return The database ID of this entry or 0 if bSingleUpdate is false and the query was queued.
      */
-    virtual int Persist(const CEpgInfoTag &tag, bool bSingleUpdate = true);
+    virtual int Persist(const CPVREpgInfoTag &tag, bool bSingleUpdate = true);
 
     /*!
      * @return Last EPG id in the database

@@ -26,7 +26,6 @@
 #include "Application.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "dialogs/GUIDialogKaiToast.h"
-#include "epg/EpgContainer.h"
 #include "GUIInfoManager.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
@@ -64,7 +63,6 @@
 
 using namespace MUSIC_INFO;
 using namespace PVR;
-using namespace EPG;
 using namespace ANNOUNCEMENT;
 using namespace KODI::MESSAGING;
 
@@ -239,6 +237,12 @@ CPVRGUIActionsPtr CPVRManager::GUIActions(void) const
   return m_guiActions;
 }
 
+CPVREpgContainer& CPVRManager::EpgContainer()
+{
+  // note: m_epgContainer is const (only set/reset in ctor/dtor). no need for a lock here.
+  return m_epgContainer;
+}
+
 void CPVRManager::Clear(void)
 {
   m_pendingUpdates.Clear();
@@ -341,7 +345,7 @@ void CPVRManager::Stop(void)
   m_pendingUpdates.Stop();
 
   /* stop the EPG updater, since it might be using the pvr add-ons */
-  g_EpgContainer.Stop();
+  m_epgContainer.Stop();
 
   CLog::Log(LOGNOTICE, "PVRManager - stopping");
 
@@ -368,8 +372,8 @@ void CPVRManager::Unload()
   Clear();
 
   // stop epg container thread and clear all epg data
-  g_EpgContainer.Stop();
-  g_EpgContainer.Clear();
+  m_epgContainer.Stop();
+  m_epgContainer.Clear();
 }
 
 void CPVRManager::Deinit()
@@ -441,7 +445,7 @@ void CPVRManager::PublishEvent(PVREvent event)
 
 void CPVRManager::Process(void)
 {
-  g_EpgContainer.Stop();
+  m_epgContainer.Stop();
 
   /* load the pvr data from the db and clients if it's not already loaded */
   XbmcThreads::EndTime progressTimeout(30000); // 30 secs
@@ -457,7 +461,7 @@ void CPVRManager::Process(void)
   SetState(ManagerStateStarted);
 
   /* start epg container */
-  g_EpgContainer.Start(true);
+  m_epgContainer.Start(true);
 
   /* main loop */
   CLog::Log(LOGDEBUG, "PVRManager - %s - entering main loop", __FUNCTION__);
@@ -915,7 +919,7 @@ bool CPVRManager::UpdateItem(CFileItem& item)
   g_infoManager.SetCurrentItem(m_currentFile);
 
   CPVRChannelPtr channelTag(item.GetPVRChannelInfoTag());
-  CEpgInfoTagPtr epgTagNow(channelTag->GetEPGNow());
+  CPVREpgInfoTagPtr epgTagNow(channelTag->GetEPGNow());
 
   if (channelTag->IsRadio())
   {

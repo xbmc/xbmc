@@ -25,27 +25,26 @@
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogSelect.h"
-#include "epg/Epg.h"
 #include "GUIUserMessages.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
 #include "messaging/ApplicationMessenger.h"
-#include "pvr/addons/PVRClients.h"
-#include "pvr/channels/PVRChannelGroup.h"
-#include "pvr/channels/PVRChannelGroupsContainer.h"
-#include "pvr/dialogs/GUIDialogPVRRecordingInfo.h"
-#include "pvr/PVRGUIActions.h"
-#include "pvr/PVRManager.h"
-#include "pvr/timers/PVRTimers.h"
 #include "ServiceBroker.h"
 #include "utils/log.h"
 #include "utils/Variant.h"
 
+#include "pvr/PVRGUIActions.h"
+#include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClients.h"
+#include "pvr/channels/PVRChannelGroup.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/epg/Epg.h"
+#include "pvr/timers/PVRTimers.h"
+
 #define MAX_INVALIDATION_FREQUENCY 2000 // limit to one invalidation per X milliseconds
 
 using namespace PVR;
-using namespace EPG;
 using namespace KODI::MESSAGING;
 
 CCriticalSection CGUIWindowPVRBase::m_selectedItemPathsLock;

@@ -24,13 +24,13 @@
 #include "Application.h"
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemuxUtils.h"
 #include "dialogs/GUIDialogKaiToast.h"
-#include "epg/EpgContainer.h"
 #include "events/EventLog.h"
 #include "events/NotificationEvent.h"
 #include "pvr/PVRManager.h"
 #include "addons/PVRClient.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/channels/PVRChannelGroupInternal.h"
+#include "pvr/epg/EpgContainer.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimers.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
@@ -41,7 +41,6 @@
 
 using namespace ADDON;
 using namespace PVR;
-using namespace EPG;
 
 namespace KodiAPI
 {
@@ -152,7 +151,7 @@ void CAddonCallbacksPVR::PVRTransferEpgEntry(void *addonData, const ADDON_HANDLE
     return;
   }
 
-  CEpg *xbmcEpg = static_cast<CEpg *>(handle->dataAddress);
+  CPVREpg *xbmcEpg = static_cast<CPVREpg *>(handle->dataAddress);
   if (!xbmcEpg)
   {
     CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);
@@ -309,7 +308,7 @@ void CAddonCallbacksPVR::PVRTriggerEpgUpdate(void *addonData, unsigned int iChan
     return;
   }
 
-  g_EpgContainer.UpdateRequest(client->GetID(), iChannelUid);
+  CServiceBroker::GetPVRManager().EpgContainer().UpdateRequest(client->GetID(), iChannelUid);
 }
 
 void CAddonCallbacksPVR::PVRFreeDemuxPacket(void *addonData, DemuxPacket* pPacket)
@@ -350,13 +349,13 @@ typedef struct EpgEventStateChange
 {
   int             iClientId;
   unsigned int    iUniqueChannelId;
-  CEpgInfoTagPtr  event;
+  CPVREpgInfoTagPtr  event;
   EPG_EVENT_STATE state;
 
   EpgEventStateChange(int _iClientId, unsigned int _iUniqueChannelId, EPG_TAG *_event, EPG_EVENT_STATE _state)
   : iClientId(_iClientId),
     iUniqueChannelId(_iUniqueChannelId),
-    event(new CEpgInfoTag(*_event)),
+    event(new CPVREpgInfoTag(*_event)),
     state(_state) {}
 
 } EpgEventStateChange;
@@ -366,7 +365,7 @@ void CAddonCallbacksPVR::UpdateEpgEvent(const EpgEventStateChange &ch, bool bQue
   const CPVRChannelPtr channel(CServiceBroker::GetPVRManager().ChannelGroups()->GetByUniqueID(ch.iUniqueChannelId, ch.iClientId));
   if (channel)
   {
-    const CEpgPtr epg(channel->GetEPG());
+    const CPVREpgPtr epg(channel->GetEPG());
     if (epg)
     {
       if (!epg->UpdateEntry(ch.event, ch.state))

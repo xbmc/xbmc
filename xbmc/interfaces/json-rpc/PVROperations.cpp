@@ -27,15 +27,14 @@
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/channels/PVRChannel.h"
-#include "pvr/timers/PVRTimers.h"
+#include "pvr/epg/Epg.h"
+#include "pvr/epg/EpgContainer.h"
 #include "pvr/recordings/PVRRecordings.h"
-#include "epg/Epg.h"
-#include "epg/EpgContainer.h"
+#include "pvr/timers/PVRTimers.h"
 #include "utils/Variant.h"
 
 using namespace JSONRPC;
 using namespace PVR;
-using namespace EPG;
 using namespace KODI::MESSAGING;
 
 JSONRPC_STATUS CPVROperations::GetProperties(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
@@ -166,7 +165,7 @@ JSONRPC_STATUS CPVROperations::GetBroadcasts(const std::string &method, ITranspo
   if (channel == NULL)
     return InvalidParams;
 
-  CEpgPtr channelEpg = channel->GetEPG();
+  CPVREpgPtr channelEpg = channel->GetEPG();
   if (!channelEpg)
     return InternalError;
 
@@ -183,7 +182,7 @@ JSONRPC_STATUS CPVROperations::GetBroadcastDetails(const std::string &method, IT
   if (!CServiceBroker::GetPVRManager().IsStarted())
     return FailedToExecute;
 
-  const CEpgInfoTagPtr epgTag = g_EpgContainer.GetTagById(CPVRChannelPtr(), parameterObject["broadcastid"].asUnsignedInteger());
+  const CPVREpgInfoTagPtr epgTag = CServiceBroker::GetPVRManager().EpgContainer().GetTagById(CPVRChannelPtr(), parameterObject["broadcastid"].asUnsignedInteger());
 
   if (!epgTag)
     return InvalidParams;
@@ -335,7 +334,7 @@ JSONRPC_STATUS CPVROperations::AddTimer(const std::string &method, ITransportLay
   if (!CServiceBroker::GetPVRManager().IsStarted())
     return FailedToExecute;
 
-  const CEpgInfoTagPtr epgTag = g_EpgContainer.GetTagById(CPVRChannelPtr(), parameterObject["broadcastid"].asUnsignedInteger());
+  const CPVREpgInfoTagPtr epgTag = CServiceBroker::GetPVRManager().EpgContainer().GetTagById(CPVRChannelPtr(), parameterObject["broadcastid"].asUnsignedInteger());
 
   if (!epgTag)
     return InvalidParams;
@@ -377,7 +376,7 @@ JSONRPC_STATUS CPVROperations::ToggleTimer(const std::string &method, ITransport
   if (!CServiceBroker::GetPVRManager().IsStarted())
     return FailedToExecute;
 
-  const CEpgInfoTagPtr epgTag = g_EpgContainer.GetTagById(CPVRChannelPtr(), parameterObject["broadcastid"].asUnsignedInteger());
+  const CPVREpgInfoTagPtr epgTag = CServiceBroker::GetPVRManager().EpgContainer().GetTagById(CPVRChannelPtr(), parameterObject["broadcastid"].asUnsignedInteger());
 
   if (!epgTag)
     return InvalidParams;

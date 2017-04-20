@@ -152,8 +152,6 @@
 #include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
 
-#include "epg/EpgContainer.h"
-
 #include "video/dialogs/GUIDialogFullScreenInfo.h"
 #include "guilib/GUIControlFactory.h"
 #include "dialogs/GUIDialogCache.h"
@@ -238,7 +236,6 @@ using namespace JSONRPC;
 #endif
 using namespace ANNOUNCEMENT;
 using namespace PVR;
-using namespace EPG;
 using namespace PERIPHERALS;
 using namespace KODI::MESSAGING;
 using namespace ActiveAE;

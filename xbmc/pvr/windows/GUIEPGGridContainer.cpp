@@ -18,26 +18,26 @@
  *
  */
 
+#include "GUIEPGGridContainer.h"
+
 #include <tinyxml.h>
 
 #include "GUIInfoManager.h"
-#include "epg/Epg.h"
-#include "epg/GUIEPGGridContainerModel.h"
 #include "guiinfo/GUIInfoLabels.h"
 #include "guilib/DirtyRegion.h"
 #include "guilib/GUIControlFactory.h"
 #include "guilib/GUIListItem.h"
 #include "input/Key.h"
-#include "pvr/channels/PVRChannel.h"
 #include "utils/MathUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "threads/SystemClock.h"
 
-#include "GUIEPGGridContainer.h"
+#include "pvr/channels/PVRChannel.h"
+#include "pvr/epg/Epg.h"
+#include "pvr/windows/GUIEPGGridContainerModel.h"
 
 using namespace PVR;
-using namespace EPG;
 
 #define BLOCKJUMP    4 // how many blocks are jumped with each analogue scroll action
 static const int BLOCK_SCROLL_OFFSET = 60 / CGUIEPGGridContainerModel::MINSPERBLOCK; // how many blocks are jumped if we are at left/right edge of grid
@@ -656,7 +656,7 @@ void CGUIEPGGridContainer::UpdateItems()
     return;
 
   /* Safe currently selected epg tag and grid coordinates. Selection shall be restored after update. */
-  CEpgInfoTagPtr prevSelectedEpgTag(GetSelectedEpgInfoTag());
+  CPVREpgInfoTagPtr prevSelectedEpgTag(GetSelectedEpgInfoTag());
   const int oldChannelIndex = m_channelOffset + m_channelCursor;
   const int oldBlockIndex   = m_blockOffset + m_blockCursor;
   const CDateTime oldGridStart(m_gridModel->GetGridStart());
@@ -707,7 +707,7 @@ void CGUIEPGGridContainer::UpdateItems()
       const GridItem *prevItem(GetPrevItem(m_channelCursor));
       if (prevItem)
       {
-        const CEpgInfoTagPtr tag(prevItem->item->GetEPGInfoTag());
+        const CPVREpgInfoTagPtr tag(prevItem->item->GetEPGInfoTag());
         if (tag && tag->EndAsUTC().IsValid())
         {
           const CDateTime gridStart(m_gridModel->GetGridStart());
@@ -1322,9 +1322,9 @@ CFileItemPtr CGUIEPGGridContainer::GetSelectedChannelItem() const
   return item;
 }
 
-CEpgInfoTagPtr CGUIEPGGridContainer::GetSelectedEpgInfoTag() const
+CPVREpgInfoTagPtr CGUIEPGGridContainer::GetSelectedEpgInfoTag() const
 {
-  CEpgInfoTagPtr tag;
+  CPVREpgInfoTagPtr tag;
 
   if (m_gridModel->HasGridItems() &&
       m_gridModel->HasChannelItems() &&

@@ -33,13 +33,9 @@ class CFileItem;
 class CFileItemList;
 typedef std::shared_ptr<CFileItem> CFileItemPtr;
 
-namespace EPG
-{
-  class CEpgInfoTag;
-}
-
 namespace PVR
 {
+  class CPVREpgInfoTag;
   class CPVRRecording;
   class CPVRTimersPath;
 
@@ -244,7 +240,7 @@ namespace PVR
      * @param epgTag The epg tag.
      * @return The requested timer tag, or an empty fileitemptr if none was found.
      */
-    CPVRTimerInfoTagPtr GetTimerForEpgTag(const EPG::CEpgInfoTagPtr &epgTag) const;
+    CPVRTimerInfoTagPtr GetTimerForEpgTag(const CPVREpgInfoTagPtr &epgTag) const;
 
     /*!
      * @brief Check whether there is a timer currently recording the given recording.

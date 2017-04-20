@@ -40,9 +40,9 @@
 #include "music/MusicThumbLoader.h"
 #include "Util.h"
 #include "pvr/channels/PVRChannel.h"
+#include "pvr/epg/Epg.h"
 #include "pvr/recordings/PVRRecording.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
-#include "epg/Epg.h"
 
 using namespace MUSIC_INFO;
 using namespace JSONRPC;

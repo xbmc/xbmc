@@ -18,9 +18,9 @@
  *
  */
 
+#include "GUIWindowPVRChannels.h"
 
 #include "GUIInfoManager.h"
-#include "epg/EpgContainer.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogYesNo.h"
@@ -39,25 +39,23 @@
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/dialogs/GUIDialogPVRChannelManager.h"
 #include "pvr/dialogs/GUIDialogPVRGroupManager.h"
-
-#include "GUIWindowPVRChannels.h"
+#include "pvr/epg/EpgContainer.h"
 
 using namespace PVR;
-using namespace EPG;
 
 CGUIWindowPVRChannels::CGUIWindowPVRChannels(bool bRadio) :
   CGUIWindowPVRBase(bRadio, bRadio ? WINDOW_RADIO_CHANNELS : WINDOW_TV_CHANNELS, "MyPVRChannels.xml"),
   CPVRChannelNumberInputHandler(1000),
   m_bShowHiddenChannels(false)
 {
-  g_EpgContainer.RegisterObserver(this);
+  CServiceBroker::GetPVRManager().EpgContainer().RegisterObserver(this);
   g_infoManager.RegisterObserver(this);
 }
 
 CGUIWindowPVRChannels::~CGUIWindowPVRChannels()
 {
   g_infoManager.UnregisterObserver(this);
-  g_EpgContainer.UnregisterObserver(this);
+  CServiceBroker::GetPVRManager().EpgContainer().UnregisterObserver(this);
 }
 
 void CGUIWindowPVRChannels::GetContextButtons(int itemNumber, CContextButtons &buttons)
@@ -270,7 +268,7 @@ void CGUIWindowPVRChannels::UpdateEpg(const CFileItemPtr &item)
                                         CVariant{channel->ChannelName()}))
     return;
 
-  const CEpgPtr epg = channel->GetEPG();
+  const CPVREpgPtr epg = channel->GetEPG();
   if (epg)
   {
     epg->ForceUpdate();

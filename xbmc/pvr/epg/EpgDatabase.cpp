@@ -31,14 +31,14 @@
 #include "EpgDatabase.h"
 
 using namespace dbiplus;
-using namespace EPG;
+using namespace PVR;
 
-bool CEpgDatabase::Open(void)
+bool CPVREpgDatabase::Open(void)
 {
   return CDatabase::Open(g_advancedSettings.m_databaseEpg);
 }
 
-void CEpgDatabase::CreateTables(void)
+void CPVREpgDatabase::CreateTables(void)
 {
   CLog::Log(LOGINFO, "EpgDB - %s - creating tables", __FUNCTION__);
 
@@ -91,14 +91,14 @@ void CEpgDatabase::CreateTables(void)
   );
 }
 
-void CEpgDatabase::CreateAnalytics()
+void CPVREpgDatabase::CreateAnalytics()
 {
   CLog::Log(LOGDEBUG, "%s - creating indices", __FUNCTION__);
   m_pDS->exec("CREATE UNIQUE INDEX idx_epg_idEpg_iStartTime on epgtags(idEpg, iStartTime desc);");
   m_pDS->exec("CREATE INDEX idx_epg_iEndTime on epgtags(iEndTime);");
 }
 
-void CEpgDatabase::UpdateTables(int iVersion)
+void CPVREpgDatabase::UpdateTables(int iVersion)
 {
   if (iVersion < 5)
     m_pDS->exec("ALTER TABLE epgtags ADD sGenre varchar(128);");
@@ -122,7 +122,7 @@ void CEpgDatabase::UpdateTables(int iVersion)
   }
 }
 
-bool CEpgDatabase::DeleteEpg(void)
+bool CPVREpgDatabase::DeleteEpg(void)
 {
   bool bReturn(false);
   CLog::Log(LOGDEBUG, "EpgDB - %s - deleting all EPG data from the database", __FUNCTION__);
@@ -134,7 +134,7 @@ bool CEpgDatabase::DeleteEpg(void)
   return bReturn;
 }
 
-bool CEpgDatabase::Delete(const CEpg &table)
+bool CPVREpgDatabase::Delete(const CPVREpg &table)
 {
   /* invalid channel */
   if (table.EpgID() <= 0)
@@ -149,7 +149,7 @@ bool CEpgDatabase::Delete(const CEpg &table)
   return DeleteValues("epg", filter);
 }
 
-bool CEpgDatabase::DeleteEpgEntries(const CDateTime &maxEndTime)
+bool CPVREpgDatabase::DeleteEpgEntries(const CDateTime &maxEndTime)
 {
   time_t iMaxEndTime;
   maxEndTime.GetAsTime(iMaxEndTime);
@@ -160,7 +160,7 @@ bool CEpgDatabase::DeleteEpgEntries(const CDateTime &maxEndTime)
   return DeleteValues("epgtags", filter);
 }
 
-bool CEpgDatabase::Delete(const CEpgInfoTag &tag)
+bool CPVREpgDatabase::Delete(const CPVREpgInfoTag &tag)
 {
   /* tag without a database ID was not persisted */
   if (tag.BroadcastId() <= 0)
@@ -172,7 +172,7 @@ bool CEpgDatabase::Delete(const CEpgInfoTag &tag)
   return DeleteValues("epgtags", filter);
 }
 
-int CEpgDatabase::Get(CEpgContainer &container)
+int CPVREpgDatabase::Get(CPVREpgContainer &container)
 {
   int iReturn(-1);
 
@@ -204,7 +204,7 @@ int CEpgDatabase::Get(CEpgContainer &container)
   return iReturn;
 }
 
-int CEpgDatabase::Get(CEpg &epg)
+int CPVREpgDatabase::Get(CPVREpg &epg)
 {
   int iReturn(-1);
 
@@ -216,7 +216,7 @@ int CEpgDatabase::Get(CEpg &epg)
     {
       while (!m_pDS->eof())
       {
-        CEpgInfoTagPtr newTag(new CEpgInfoTag());
+        CPVREpgInfoTagPtr newTag(new CPVREpgInfoTag());
 
         time_t iStartTime, iEndTime, iFirstAired;
         iStartTime = (time_t) m_pDS->fv("iStartTime").get_asInt();
@@ -273,7 +273,7 @@ int CEpgDatabase::Get(CEpg &epg)
   return iReturn;
 }
 
-bool CEpgDatabase::GetLastEpgScanTime(int iEpgId, CDateTime *lastScan)
+bool CPVREpgDatabase::GetLastEpgScanTime(int iEpgId, CDateTime *lastScan)
 {
   bool bReturn = false;
   std::string strWhereClause = PrepareSQL("idEpg = %u", iEpgId);
@@ -292,7 +292,7 @@ bool CEpgDatabase::GetLastEpgScanTime(int iEpgId, CDateTime *lastScan)
   return bReturn;
 }
 
-bool CEpgDatabase::PersistLastEpgScanTime(int iEpgId /* = 0 */, bool bQueueWrite /* = false */)
+bool CPVREpgDatabase::PersistLastEpgScanTime(int iEpgId /* = 0 */, bool bQueueWrite /* = false */)
 {
   std::string strQuery = PrepareSQL("REPLACE INTO lastepgscan(idEpg, sLastScan) VALUES (%u, '%s');",
       iEpgId, CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsDBDateTime().c_str());
@@ -300,7 +300,7 @@ bool CEpgDatabase::PersistLastEpgScanTime(int iEpgId /* = 0 */, bool bQueueWrite
   return bQueueWrite ? QueueInsertQuery(strQuery) : ExecuteQuery(strQuery);
 }
 
-bool CEpgDatabase::Persist(const EPGMAP &epgs)
+bool CPVREpgDatabase::Persist(const EPGMAP &epgs)
 {
   for (const auto &epgEntry : epgs)
   {
@@ -311,7 +311,7 @@ bool CEpgDatabase::Persist(const EPGMAP &epgs)
   return CommitInsertQueries();
 }
 
-int CEpgDatabase::Persist(const CEpg &epg, bool bQueueWrite /* = false */)
+int CPVREpgDatabase::Persist(const CPVREpg &epg, bool bQueueWrite /* = false */)
 {
   int iReturn(-1);
 
@@ -337,7 +337,7 @@ int CEpgDatabase::Persist(const CEpg &epg, bool bQueueWrite /* = false */)
   return iReturn;
 }
 
-int CEpgDatabase::Persist(const CEpgInfoTag &tag, bool bSingleUpdate /* = true */)
+int CPVREpgDatabase::Persist(const CPVREpgInfoTag &tag, bool bSingleUpdate /* = true */)
 {
   int iReturn(-1);
 
@@ -403,7 +403,7 @@ int CEpgDatabase::Persist(const CEpgInfoTag &tag, bool bSingleUpdate /* = true *
   return iReturn;
 }
 
-int CEpgDatabase::GetLastEPGId(void)
+int CPVREpgDatabase::GetLastEPGId(void)
 {
   std::string strQuery = PrepareSQL("SELECT MAX(idEpg) FROM epg");
   std::string strValue = GetSingleValue(strQuery);

@@ -33,8 +33,6 @@
 
 #include "PVRContextMenus.h"
 
-using namespace EPG;
-
 namespace PVR
 {
   namespace CONTEXTMENUITEM
@@ -78,7 +76,7 @@ namespace PVR
     {
       CPVRTimerInfoTagPtr timer;
 
-      const CEpgInfoTagPtr epg(item.GetEPGInfoTag());
+      const CPVREpgInfoTagPtr epg(item.GetEPGInfoTag());
       if (epg)
         timer = epg->Timer();
 
@@ -157,7 +155,7 @@ namespace PVR
     {
       CPVRRecordingPtr recording;
 
-      const CEpgInfoTagPtr epg(item.GetEPGInfoTag());
+      const CPVREpgInfoTagPtr epg(item.GetEPGInfoTag());
       if (epg)
         recording = epg->Recording();
 
@@ -181,7 +179,7 @@ namespace PVR
       if (channel)
         return CServiceBroker::GetPVRManager().Clients()->SupportsTimers(channel->ClientID()) && !channel->IsRecording();
 
-      const CEpgInfoTagPtr epg(item.GetEPGInfoTag());
+      const CPVREpgInfoTagPtr epg(item.GetEPGInfoTag());
       if (epg)
         return CServiceBroker::GetPVRManager().Clients()->SupportsTimers() && !epg->Timer() && epg->EndAsLocalTime() > CDateTime::GetCurrentDateTime();
 
@@ -312,7 +310,7 @@ namespace PVR
 
     bool AddTimerRule::IsVisible(const CFileItem &item) const
     {
-      const CEpgInfoTagPtr epg(item.GetEPGInfoTag());
+      const CPVREpgInfoTagPtr epg(item.GetEPGInfoTag());
       if (epg)
         return CServiceBroker::GetPVRManager().Clients()->SupportsTimers() && !epg->Timer();
 
@@ -373,7 +371,7 @@ namespace PVR
         const CPVRTimerTypePtr timerType(timer->GetTimerType());
         if (timerType && !timerType->IsReadOnly() && timer->GetTimerRuleId() == PVR_TIMER_NO_PARENT)
         {
-          const CEpgInfoTagPtr epg(item.GetEPGInfoTag());
+          const CPVREpgInfoTagPtr epg(item.GetEPGInfoTag());
           if (epg)
             return g_localizeStrings.Get(19242); /* Edit timer */
           else
@@ -463,7 +461,7 @@ namespace PVR
       if (channel)
         return CServiceBroker::GetPVRManager().Clients()->HasMenuHooks(channel->ClientID(), PVR_MENUHOOK_CHANNEL);
 
-      const CEpgInfoTagPtr epg(item.GetEPGInfoTag());
+      const CPVREpgInfoTagPtr epg(item.GetEPGInfoTag());
       if (epg)
       {
         const CPVRChannelPtr channel(epg->ChannelTag());

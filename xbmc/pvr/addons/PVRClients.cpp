@@ -38,7 +38,6 @@
 
 using namespace ADDON;
 using namespace PVR;
-using namespace EPG;
 using namespace KODI::MESSAGING;
 
 /** number of iterations when scanning for add-ons. don't use a timer because the user may block in the dialog */
@@ -748,7 +747,7 @@ bool CPVRClients::CanSeekStream(void) const
   return false;
 }
 
-PVR_ERROR CPVRClients::GetEPGForChannel(const CPVRChannelPtr &channel, CEpg *epg, time_t start, time_t end)
+PVR_ERROR CPVRClients::GetEPGForChannel(const CPVRChannelPtr &channel, CPVREpg *epg, time_t start, time_t end)
 {
   assert(channel.get());
 

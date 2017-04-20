@@ -44,9 +44,9 @@
 #include "CueDocument.h"
 #include "video/VideoDatabase.h"
 #include "music/MusicDatabase.h"
-#include "epg/Epg.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRRadioRDSInfoTag.h"
+#include "pvr/epg/Epg.h"
 #include "pvr/recordings/PVRRecording.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "video/Bookmark.h"
@@ -73,7 +73,6 @@ using namespace XFILE;
 using namespace PLAYLIST;
 using namespace MUSIC_INFO;
 using namespace PVR;
-using namespace EPG;
 using namespace GAME;
 
 CFileItem::CFileItem(const CSong& song)
@@ -124,7 +123,7 @@ CFileItem::CFileItem(const CVideoInfoTag& movie)
   SetFromVideoInfoTag(movie);
 }
 
-CFileItem::CFileItem(const CEpgInfoTagPtr& tag)
+CFileItem::CFileItem(const CPVREpgInfoTagPtr& tag)
 {
   assert(tag.get());
 
@@ -151,7 +150,7 @@ CFileItem::CFileItem(const CPVRChannelPtr& channel)
 
   Initialize();
 
-  CEpgInfoTagPtr epgNow(channel->GetEPGNow());
+  CPVREpgInfoTagPtr epgNow(channel->GetEPGNow());
 
   m_strPath = channel->Path();
   m_bIsFolder = false;

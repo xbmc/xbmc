@@ -22,6 +22,8 @@
 #include "guilib/GUIDialog.h"
 #include "view/GUIViewControl.h"
 
+#include "pvr/PVRTypes.h"
+
 class CFileItemList;
 
 namespace PVR

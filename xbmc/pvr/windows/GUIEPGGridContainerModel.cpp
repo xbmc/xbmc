@@ -21,16 +21,15 @@
 #include "GUIEPGGridContainerModel.h"
 
 #include "FileItem.h"
-#include "epg/EpgInfoTag.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/Variant.h"
 
 #include "pvr/channels/PVRChannel.h"
+#include "pvr/epg/EpgInfoTag.h"
 
 class CGUIListItem;
 typedef std::shared_ptr<CGUIListItem> CGUIListItemPtr;
 
-using namespace EPG;
 using namespace PVR;
 
 static const unsigned int GRID_START_PADDING = 30; // minutes
@@ -176,7 +175,7 @@ void CGUIEPGGridContainerModel::Refresh(const std::unique_ptr<CFileItemList> &it
     int itemSize          = 1; // size of the programme in blocks
     int savedBlock        = 0;
     CFileItemPtr item;
-    CEpgInfoTagPtr tag;
+    CPVREpgInfoTagPtr tag;
 
     for (int block = 0; block < m_blocks; ++block)
     {
@@ -224,7 +223,7 @@ void CGUIEPGGridContainerModel::Refresh(const std::unique_ptr<CFileItemList> &it
         }
         else
         {
-          CEpgInfoTagPtr gapTag(CEpgInfoTag::CreateDefaultTag());
+          CPVREpgInfoTagPtr gapTag(CPVREpgInfoTag::CreateDefaultTag());
           gapTag->SetPVRChannel(m_channelItems[channel]->GetPVRChannelInfoTag());
           CFileItemPtr gapItem(new CFileItem(gapTag));
           for (int i = block + blockDelta; i >= block - itemSize + sizeDelta; --i)
@@ -249,7 +248,7 @@ void CGUIEPGGridContainerModel::Refresh(const std::unique_ptr<CFileItemList> &it
           }
           else
           {
-            CEpgInfoTagPtr gapTag(CEpgInfoTag::CreateDefaultTag());
+            CPVREpgInfoTagPtr gapTag(CPVREpgInfoTag::CreateDefaultTag());
             gapTag->SetPVRChannel(m_channelItems[channel]->GetPVRChannelInfoTag());
             CFileItemPtr gapItem(new CFileItem(gapTag));
             m_gridIndex[channel][block].item = gapItem;
@@ -281,7 +280,7 @@ void CGUIEPGGridContainerModel::FindChannelAndBlockIndex(int channelUid, unsigne
     unsigned long progIdx = m_epgItemsPtr[channel].start;
     unsigned long lastIdx = m_epgItemsPtr[channel].stop;
     int iEpgId = m_programmeItems[progIdx]->GetEPGInfoTag()->EpgID();
-    CEpgInfoTagPtr tag;
+    CPVREpgInfoTagPtr tag;
     CPVRChannelPtr chan;
 
     for (int block = 0; block < m_blocks; ++block)

@@ -47,7 +47,7 @@
 #include "GUIListContainer.h"
 #include "GUIFixedListContainer.h"
 #include "GUIWrappingListContainer.h"
-#include "epg/GUIEPGGridContainer.h"
+#include "pvr/windows/GUIEPGGridContainer.h"
 #include "GUIPanelContainer.h"
 #include "GUIListLabel.h"
 #include "GUIListGroup.h"
@@ -64,7 +64,7 @@
 #include "games/controllers/guicontrols/GUIGameController.h"
 #include "Util.h"
 
-using namespace EPG;
+using namespace PVR;
 
 typedef struct
 {

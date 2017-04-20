@@ -60,7 +60,6 @@
 
 #include "PVRGUIActions.h"
 
-using namespace EPG;
 using namespace KODI::MESSAGING;
 
 namespace PVR
@@ -146,7 +145,7 @@ namespace PVR
     if (channel && !CheckParentalLock(channel))
       return false;
 
-    const CEpgInfoTagPtr epgTag(CPVRItem(item).GetEpgInfoTag());
+    const CPVREpgInfoTagPtr epgTag(CPVRItem(item).GetEpgInfoTag());
     if (!epgTag)
     {
       CLog::Log(LOGERROR, "CPVRGUIActions - %s - no epg tag!", __FUNCTION__);
@@ -272,7 +271,7 @@ namespace PVR
     if (!CheckParentalLock(channel))
       return false;
 
-    const CEpgInfoTagPtr epgTag(CPVRItem(item).GetEpgInfoTag());
+    const CPVREpgInfoTagPtr epgTag(CPVRItem(item).GetEpgInfoTag());
     if (!epgTag && bCreateRule)
     {
       CLog::Log(LOGERROR, "CPVRGUIActions - %s - no epg tag!", __FUNCTION__);
@@ -452,7 +451,7 @@ namespace PVR
       /* timers are supported on this channel */
       if (bOnOff && !channel->IsRecording())
       {
-        CEpgInfoTagPtr epgTag;
+        CPVREpgInfoTagPtr epgTag;
         int iDuration = m_settings.GetIntValue(CSettings::SETTING_PVRRECORD_INSTANTRECORDTIME);
 
         int iAction = m_settings.GetIntValue(CSettings::SETTING_PVRRECORD_INSTANTRECORDACTION);
@@ -471,7 +470,7 @@ namespace PVR
             PVRRECORD_INSTANTRECORDACTION ePreselect = RECORD_INSTANTRECORDTIME;
             const int iDurationDefault = m_settings.GetIntValue(CSettings::SETTING_PVRRECORD_INSTANTRECORDTIME);
             InstantRecordingActionSelector selector(iDurationDefault);
-            CEpgInfoTagPtr epgTagNext;
+            CPVREpgInfoTagPtr epgTagNext;
 
             // fixed length recordings
             selector.AddAction(RECORD_30_MINUTES, "");
@@ -1430,7 +1429,7 @@ namespace PVR
 
     CDateTime::ResetTimezoneBias();
 
-    g_EpgContainer.Stop();
+    CServiceBroker::GetPVRManager().EpgContainer().Stop();
 
     pDlgProgress->SetHeading(CVariant{313}); // "Cleaning database"
     pDlgProgress->SetLine(0, CVariant{g_localizeStrings.Get(19187)}); // "Clearing all related data."
@@ -1463,7 +1462,7 @@ namespace PVR
     if (database && database->Open())
     {
       /* clean the EPG database */
-      g_EpgContainer.Reset();
+      CServiceBroker::GetPVRManager().EpgContainer().Reset();
       pDlgProgress->SetPercentage(30);
       pDlgProgress->Progress();
 

@@ -20,7 +20,7 @@
  */
 
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
-#include "epg/EpgTypes.h"
+#include "pvr/PVRTypes.h"
 #include "pvr/addons/PVRClients.h"
 #include "threads/CriticalSection.h"
 #include "threads/SystemClock.h"
@@ -80,7 +80,7 @@ namespace PVR
      * @brief Get the currently playing EPG tag.
      * @return The currently playing EPG tag or NULL if no EPG tag is playing.
      */
-    EPG::CEpgInfoTagPtr GetPlayingTag() const;
+    CPVREpgInfoTagPtr GetPlayingTag() const;
 
     /*!
      * @brief Get playing TV group.
@@ -251,7 +251,7 @@ namespace PVR
 
     PVR_SIGNAL_STATUS               m_qualityInfo;       /*!< stream quality information */
     XbmcThreads::EndTime            m_ToggleShowInfo;
-    EPG::CEpgInfoTagPtr             m_playingEpgTag;
+    CPVREpgInfoTagPtr                  m_playingEpgTag;
     std::vector<SBackend>           m_backendProperties;
 
     bool                            m_bIsTimeshifting;

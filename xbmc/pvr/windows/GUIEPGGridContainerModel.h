@@ -29,7 +29,7 @@ typedef std::shared_ptr<CFileItem> CFileItemPtr;
 
 class CFileItemList;
 
-namespace EPG
+namespace PVR
 {
   struct GridItem
   {

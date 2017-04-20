@@ -59,5 +59,11 @@ namespace PVR
   class CPVRGUIActions;
   typedef std::shared_ptr<CPVRGUIActions> CPVRGUIActionsPtr;
 
+  class CPVREpg;
+  typedef std::shared_ptr<CPVREpg> CPVREpgPtr;
+
+  class CPVREpgInfoTag;
+  typedef std::shared_ptr<CPVREpgInfoTag> CPVREpgInfoTagPtr;
+
 } // namespace PVR
 

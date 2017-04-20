@@ -28,7 +28,7 @@
 #include "guilib/GUIListItemLayout.h"
 #include "guilib/IGUIContainer.h"
 
-namespace EPG
+namespace PVR
 {
   struct GridItem;
   class CGUIEPGGridContainerModel;
@@ -175,7 +175,7 @@ namespace EPG
 
     int GetSelectedItem() const;
 
-    EPG::CEpgInfoTagPtr GetSelectedEpgInfoTag() const;
+    CPVREpgInfoTagPtr GetSelectedEpgInfoTag() const;
 
     unsigned int GetPageNowOffset() const;
 

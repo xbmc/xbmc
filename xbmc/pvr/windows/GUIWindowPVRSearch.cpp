@@ -18,10 +18,11 @@
  *
  */
 
+#include "GUIWindowPVRSearch.h"
+
 #include "ServiceBroker.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogProgress.h"
-#include "epg/EpgContainer.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
 #include "utils/URIUtils.h"
@@ -33,11 +34,9 @@
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/dialogs/GUIDialogPVRGuideSearch.h"
-
-#include "GUIWindowPVRSearch.h"
+#include "pvr/epg/EpgContainer.h"
 
 using namespace PVR;
-using namespace EPG;
 
 CGUIWindowPVRSearch::CGUIWindowPVRSearch(bool bRadio) :
   CGUIWindowPVRBase(bRadio, bRadio ? WINDOW_RADIO_SEARCH : WINDOW_TV_SEARCH, "MyPVRSearch.xml"),
@@ -75,7 +74,7 @@ void CGUIWindowPVRSearch::SetItemToSearch(const CFileItemPtr &item)
   }
   else
   {
-    const CEpgInfoTagPtr epgTag(CPVRItem(item).GetEpgInfoTag());
+    const CPVREpgInfoTagPtr epgTag(CPVRItem(item).GetEpgInfoTag());
     if (epgTag)
       m_searchfilter.SetSearchPhrase(epgTag->Title());
   }
@@ -105,7 +104,7 @@ void CGUIWindowPVRSearch::OnPrepareFileItems(CFileItemList &items)
     }
 
     //! @todo should we limit the find similar search to the selected group?
-    g_EpgContainer.GetEPGSearch(items, m_searchfilter);
+    CServiceBroker::GetPVRManager().EpgContainer().GetEPGSearch(items, m_searchfilter);
 
     if (dlgProgress)
       dlgProgress->Close();

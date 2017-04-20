@@ -39,7 +39,6 @@
 #include "PVRGUIInfo.h"
 
 using namespace PVR;
-using namespace EPG;
 
 CPVRGUIInfo::CPVRGUIInfo(void) :
     CThread("PVRGUIInfo")
@@ -833,7 +832,7 @@ void CPVRGUIInfo::ResetPlayingTag(void)
   m_iDuration = 0;
 }
 
-CEpgInfoTagPtr CPVRGUIInfo::GetPlayingTag() const
+CPVREpgInfoTagPtr CPVRGUIInfo::GetPlayingTag() const
 {
   CSingleLock lock(m_critSection);
   return m_playingEpgTag;
@@ -844,7 +843,7 @@ void CPVRGUIInfo::UpdatePlayingTag(void)
   CPVRChannelPtr currentChannel(CServiceBroker::GetPVRManager().GetCurrentChannel());
   if (currentChannel)
   {
-    CEpgInfoTagPtr epgTag(GetPlayingTag());
+    CPVREpgInfoTagPtr epgTag(GetPlayingTag());
     CPVRChannelPtr channel;
     if (epgTag)
       channel = epgTag->ChannelTag();
@@ -855,7 +854,7 @@ void CPVRGUIInfo::UpdatePlayingTag(void)
       {
         CSingleLock lock(m_critSection);
         ResetPlayingTag();
-        CEpgInfoTagPtr newTag(currentChannel->GetEPGNow());
+        CPVREpgInfoTagPtr newTag(currentChannel->GetEPGNow());
         if (newTag)
         {
           m_playingEpgTag = newTag;

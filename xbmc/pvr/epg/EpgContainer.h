@@ -33,44 +33,37 @@
 class CFileItemList;
 class CGUIDialogProgressBarHandle;
 
-namespace EPG
+namespace PVR
 {
-  #define g_EpgContainer CEpgContainer::GetInstance()
-
   struct SUpdateRequest
   {
     int clientID;
     unsigned int channelID;
   };
 
-  class CEpgContainer : public Observer,
+  class CPVREpgContainer : public Observer,
                         public Observable,
                         public ISettingCallback,
                         private CThread
   {
-    friend class CEpgDatabase;
+    friend class CPVREpgDatabase;
 
   public:
     /*!
      * @brief Create a new EPG table container.
      */
-    CEpgContainer(void);
+    CPVREpgContainer(void);
 
     /*!
      * @brief Destroy this instance.
      */
-    virtual ~CEpgContainer(void);
-
-    /*!
-     * @return An instance of this singleton.
-     */
-    static CEpgContainer &GetInstance();
+    virtual ~CPVREpgContainer(void);
 
     /*!
      * @brief Get a pointer to the database instance.
      * @return A pointer to the database instance.
      */
-    CEpgDatabase *GetDatabase(void) { return &m_database; }
+    CPVREpgDatabase *GetDatabase(void) { return &m_database; }
 
     /*!
      * @brief Start the EPG update thread.
@@ -112,7 +105,7 @@ namespace EPG
      * @param bDeleteFromDatabase Delete this table from the database too if true.
      * @return
      */
-    bool DeleteEpg(const CEpg &epg, bool bDeleteFromDatabase = false);
+    bool DeleteEpg(const CPVREpg &epg, bool bDeleteFromDatabase = false);
 
     /*!
      * @brief Process a notification from an observable.
@@ -123,7 +116,7 @@ namespace EPG
 
     virtual void OnSettingChanged(const CSetting *setting) override;
 
-    CEpgPtr CreateChannelEpg(const PVR::CPVRChannelPtr &channel);
+    CPVREpgPtr CreateChannelEpg(const PVR::CPVRChannelPtr &channel);
 
     /*!
      * @brief Get all EPG tables and apply a filter.
@@ -131,7 +124,7 @@ namespace EPG
      * @param filter The filter to apply.
      * @return The amount of entries that were added.
      */
-    int GetEPGSearch(CFileItemList &results, const CEpgSearchFilter &filter);
+    int GetEPGSearch(CFileItemList &results, const CPVREpgSearchFilter &filter);
 
     /*!
      * @brief Get the start time of the first entry.
@@ -150,7 +143,7 @@ namespace EPG
      * @param iEpgId The database ID of the table.
      * @return The table or NULL if it wasn't found.
      */
-    CEpgPtr GetById(int iEpgId) const;
+    CPVREpgPtr GetById(int iEpgId) const;
 
     /*!
      * @brief Get the EPG event with the given event id
@@ -158,14 +151,14 @@ namespace EPG
      * @param iBroadcastId The event id to get
      * @return The requested event, or an empty tag when not found
      */
-    CEpgInfoTagPtr GetTagById(const PVR::CPVRChannelPtr &channel, unsigned int iBroadcastId) const;
+    CPVREpgInfoTagPtr GetTagById(const PVR::CPVRChannelPtr &channel, unsigned int iBroadcastId) const;
 
     /*!
      * @brief Get the EPG events matching the given timer
      * @param timer The timer to get the matching events for.
      * @return The matching events, or an empty vector when no matching tag was found
      */
-    std::vector<CEpgInfoTagPtr> GetEpgTagsForTimer(const PVR::CPVRTimerInfoTagPtr &timer) const;
+    std::vector<CPVREpgInfoTagPtr> GetEpgTagsForTimer(const PVR::CPVRTimerInfoTagPtr &timer) const;
 
     /*!
      * @brief Notify EPG table observers when the currently active tag changed.
@@ -269,7 +262,7 @@ namespace EPG
 
     void InsertFromDatabase(int iEpgID, const std::string &strName, const std::string &strScraperName);
 
-    CEpgDatabase m_database;           /*!< the EPG database */
+    CPVREpgDatabase m_database; /*!< the EPG database */
 
     /** @name Configuration */
     //@{

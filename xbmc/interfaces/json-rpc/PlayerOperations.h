@@ -21,7 +21,7 @@
 
 #include "JSONRPC.h"
 #include "FileItemHandler.h"
-#include "epg/EpgTypes.h"
+#include "pvr/PVRTypes.h"
 
 #include <string>
 
@@ -77,6 +77,6 @@ namespace JSONRPC
     static int ParseRepeatState(const CVariant &repeat);
     static double ParseTimeInSeconds(const CVariant &time);
     static bool IsPVRChannel();
-    static EPG::CEpgInfoTagPtr GetCurrentEpg();
+    static PVR::CPVREpgInfoTagPtr GetCurrentEpg();
   };
 }

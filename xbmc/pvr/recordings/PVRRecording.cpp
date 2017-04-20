@@ -18,9 +18,9 @@
  *
  */
 
+#include "PVRRecording.h"
+
 #include "dialogs/GUIDialogOK.h"
-#include "epg/Epg.h"
-#include "epg/EpgContainer.h"
 #include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
@@ -31,13 +31,12 @@
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/epg/Epg.h"
+#include "pvr/epg/EpgContainer.h"
 #include "pvr/recordings/PVRRecordingsPath.h"
 #include "pvr/timers/PVRTimers.h"
 
-#include "PVRRecording.h"
-
 using namespace PVR;
-using namespace EPG;
 
 CPVRRecordingUid::CPVRRecordingUid(int iClientId, const std::string& strRecordingId) :
   m_iClientId(iClientId),
@@ -96,7 +95,7 @@ CPVRRecording::CPVRRecording(const PVR_RECORDING &recording, unsigned int iClien
   m_strPlotOutline                 = recording.strPlotOutline;
   m_strStreamURL                   = recording.strStreamURL;
   m_strChannelName                 = recording.strChannelName;
-  m_genre                          = StringUtils::Split(CEpg::ConvertGenreIdToString(recording.iGenreType, recording.iGenreSubType), g_advancedSettings.m_videoItemSeparator);
+  m_genre                          = StringUtils::Split(CPVREpg::ConvertGenreIdToString(recording.iGenreType, recording.iGenreSubType), g_advancedSettings.m_videoItemSeparator);
   m_strIconPath                    = recording.strIconPath;
   m_strThumbnailPath               = recording.strThumbnailPath;
   m_strFanartPath                  = recording.strFanartPath;
@@ -240,7 +239,7 @@ void CPVRRecording::OnDelete(void)
     const CPVRChannelPtr channel(Channel());
     if (channel)
     {
-      const EPG::CEpgInfoTagPtr epgTag(EPG::CEpgContainer::GetInstance().GetTagById(channel, m_iEpgEventId));
+      const CPVREpgInfoTagPtr epgTag(CServiceBroker::GetPVRManager().EpgContainer().GetTagById(channel, m_iEpgEventId));
       if (epgTag)
         epgTag->ClearRecording();
     }

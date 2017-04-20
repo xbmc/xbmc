@@ -31,16 +31,15 @@
 #include "EpgContainer.h"
 #include "EpgSearchFilter.h"
 
-using namespace EPG;
 using namespace PVR;
 
 
-CEpgSearchFilter::CEpgSearchFilter()
+CPVREpgSearchFilter::CPVREpgSearchFilter()
 {
   Reset();
 }
 
-void CEpgSearchFilter::Reset()
+void CPVREpgSearchFilter::Reset()
 {
   m_strSearchTerm.clear();
   m_bIsCaseSensitive         = false;
@@ -49,8 +48,8 @@ void CEpgSearchFilter::Reset()
   m_iGenreSubType            = EPG_SEARCH_UNSET;
   m_iMinimumDuration         = EPG_SEARCH_UNSET;
   m_iMaximumDuration         = EPG_SEARCH_UNSET;
-  m_startDateTime.SetFromUTCDateTime(g_EpgContainer.GetFirstEPGDate());
-  m_endDateTime.SetFromUTCDateTime(g_EpgContainer.GetLastEPGDate());
+  m_startDateTime.SetFromUTCDateTime(CServiceBroker::GetPVRManager().EpgContainer().GetFirstEPGDate());
+  m_endDateTime.SetFromUTCDateTime(CServiceBroker::GetPVRManager().EpgContainer().GetLastEPGDate());
   m_bIncludeUnknownGenres    = false;
   m_bRemoveDuplicates        = false;
 
@@ -64,7 +63,7 @@ void CEpgSearchFilter::Reset()
   m_iUniqueBroadcastId       = EPG_TAG_INVALID_UID;
 }
 
-bool CEpgSearchFilter::MatchGenre(const CEpgInfoTagPtr &tag) const
+bool CPVREpgSearchFilter::MatchGenre(const CPVREpgInfoTagPtr &tag) const
 {
   bool bReturn(true);
 
@@ -78,7 +77,7 @@ bool CEpgSearchFilter::MatchGenre(const CEpgInfoTagPtr &tag) const
   return bReturn;
 }
 
-bool CEpgSearchFilter::MatchDuration(const CEpgInfoTagPtr &tag) const
+bool CPVREpgSearchFilter::MatchDuration(const CPVREpgInfoTagPtr &tag) const
 {
   bool bReturn(true);
 
@@ -91,12 +90,12 @@ bool CEpgSearchFilter::MatchDuration(const CEpgInfoTagPtr &tag) const
   return bReturn;
 }
 
-bool CEpgSearchFilter::MatchStartAndEndTimes(const CEpgInfoTagPtr &tag) const
+bool CPVREpgSearchFilter::MatchStartAndEndTimes(const CPVREpgInfoTagPtr &tag) const
 {
   return (tag->StartAsLocalTime() >= m_startDateTime && tag->EndAsLocalTime() <= m_endDateTime);
 }
 
-void CEpgSearchFilter::SetSearchPhrase(const std::string &strSearchPhrase)
+void CPVREpgSearchFilter::SetSearchPhrase(const std::string &strSearchPhrase)
 {
   // match the exact phrase
   m_strSearchTerm = "\"";
@@ -104,7 +103,7 @@ void CEpgSearchFilter::SetSearchPhrase(const std::string &strSearchPhrase)
   m_strSearchTerm.append("\"");
 }
 
-bool CEpgSearchFilter::MatchSearchTerm(const CEpgInfoTagPtr &tag) const
+bool CPVREpgSearchFilter::MatchSearchTerm(const CPVREpgInfoTagPtr &tag) const
 {
   bool bReturn(true);
 
@@ -119,7 +118,7 @@ bool CEpgSearchFilter::MatchSearchTerm(const CEpgInfoTagPtr &tag) const
   return bReturn;
 }
 
-bool CEpgSearchFilter::MatchBroadcastId(const CEpgInfoTagPtr &tag) const
+bool CPVREpgSearchFilter::MatchBroadcastId(const CPVREpgInfoTagPtr &tag) const
 {
   if (m_iUniqueBroadcastId != EPG_TAG_INVALID_UID)
     return (tag->UniqueBroadcastID() == m_iUniqueBroadcastId);
@@ -127,7 +126,7 @@ bool CEpgSearchFilter::MatchBroadcastId(const CEpgInfoTagPtr &tag) const
   return true;
 }
 
-bool CEpgSearchFilter::FilterEntry(const CEpgInfoTagPtr &tag) const
+bool CPVREpgSearchFilter::FilterEntry(const CPVREpgInfoTagPtr &tag) const
 {
   return (MatchGenre(tag) &&
       MatchBroadcastId(tag) &&
@@ -143,13 +142,13 @@ bool CEpgSearchFilter::FilterEntry(const CEpgInfoTagPtr &tag) const
         MatchFreeToAir(tag)));
 }
 
-int CEpgSearchFilter::RemoveDuplicates(CFileItemList &results)
+int CPVREpgSearchFilter::RemoveDuplicates(CFileItemList &results)
 {
   unsigned int iSize = results.Size();
 
   for (unsigned int iResultPtr = 0; iResultPtr < iSize; iResultPtr++)
   {
-    const CEpgInfoTagPtr epgentry_1(results.Get(iResultPtr)->GetEPGInfoTag());
+    const CPVREpgInfoTagPtr epgentry_1(results.Get(iResultPtr)->GetEPGInfoTag());
     if (!epgentry_1)
       continue;
 
@@ -158,7 +157,7 @@ int CEpgSearchFilter::RemoveDuplicates(CFileItemList &results)
       if (iResultPtr == iTagPtr)
         continue;
 
-      const CEpgInfoTagPtr epgentry_2(results.Get(iTagPtr)->GetEPGInfoTag());
+      const CPVREpgInfoTagPtr epgentry_2(results.Get(iTagPtr)->GetEPGInfoTag());
       if (!epgentry_2)
         continue;
 
@@ -177,12 +176,12 @@ int CEpgSearchFilter::RemoveDuplicates(CFileItemList &results)
   return iSize;
 }
 
-bool CEpgSearchFilter::MatchChannelType(const CEpgInfoTagPtr &tag) const
+bool CPVREpgSearchFilter::MatchChannelType(const CPVREpgInfoTagPtr &tag) const
 {
   return (CServiceBroker::GetPVRManager().IsStarted() && tag->ChannelTag()->IsRadio() == m_bIsRadio);
 }
 
-bool CEpgSearchFilter::MatchChannelNumber(const CEpgInfoTagPtr &tag) const
+bool CPVREpgSearchFilter::MatchChannelNumber(const CPVREpgInfoTagPtr &tag) const
 {
   bool bReturn(true);
 
@@ -198,7 +197,7 @@ bool CEpgSearchFilter::MatchChannelNumber(const CEpgInfoTagPtr &tag) const
   return bReturn;
 }
 
-bool CEpgSearchFilter::MatchChannelGroup(const CEpgInfoTagPtr &tag) const
+bool CPVREpgSearchFilter::MatchChannelGroup(const CPVREpgInfoTagPtr &tag) const
 {
   bool bReturn(true);
 
@@ -211,17 +210,17 @@ bool CEpgSearchFilter::MatchChannelGroup(const CEpgInfoTagPtr &tag) const
   return bReturn;
 }
 
-bool CEpgSearchFilter::MatchFreeToAir(const CEpgInfoTagPtr &tag) const
+bool CPVREpgSearchFilter::MatchFreeToAir(const CPVREpgInfoTagPtr &tag) const
 {
   return (!m_bFreeToAirOnly || !tag->ChannelTag()->IsEncrypted());
 }
 
-bool CEpgSearchFilter::MatchTimers(const CEpgInfoTagPtr &tag) const
+bool CPVREpgSearchFilter::MatchTimers(const CPVREpgInfoTagPtr &tag) const
 {
   return (!m_bIgnorePresentTimers || !CServiceBroker::GetPVRManager().Timers()->GetTimerForEpgTag(tag));
 }
 
-bool CEpgSearchFilter::MatchRecordings(const CEpgInfoTagPtr &tag) const
+bool CPVREpgSearchFilter::MatchRecordings(const CPVREpgInfoTagPtr &tag) const
 {
   return (!m_bIgnorePresentRecordings || !CServiceBroker::GetPVRManager().Recordings()->GetRecordingForEpgTag(tag));
 }

@@ -18,10 +18,10 @@
  *
  */
 
+#include "PVRTimers.h"
+
 #include "ServiceBroker.h"
 #include "dialogs/GUIDialogOK.h"
-#include "epg/Epg.h"
-#include "epg/EpgContainer.h"
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "settings/AdvancedSettings.h"
@@ -34,11 +34,10 @@
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
-
-#include "PVRTimers.h"
+#include "pvr/epg/Epg.h"
+#include "pvr/epg/EpgContainer.h"
 
 using namespace PVR;
-using namespace EPG;
 using namespace KODI::MESSAGING;
 
 using KODI::MESSAGING::HELPERS::DialogResponse;
@@ -717,7 +716,7 @@ CPVRTimerInfoTagPtr CPVRTimerInfoTag::CreateInstantTimerTag(const CPVRChannelPtr
     return CPVRTimerInfoTagPtr();
   }
 
-  CEpgInfoTagPtr epgTag(channel->GetEPGNow());
+  CPVREpgInfoTagPtr epgTag(channel->GetEPGNow());
   CPVRTimerInfoTagPtr newTimer;
   if (epgTag)
     newTimer = CreateFromEpg(epgTag);
@@ -775,7 +774,7 @@ CPVRTimerInfoTagPtr CPVRTimerInfoTag::CreateInstantTimerTag(const CPVRChannelPtr
   return newTimer;
 }
 
-CPVRTimerInfoTagPtr CPVRTimerInfoTag::CreateFromEpg(const CEpgInfoTagPtr &tag, bool bCreateRule /* = false */)
+CPVRTimerInfoTagPtr CPVRTimerInfoTag::CreateFromEpg(const CPVREpgInfoTagPtr &tag, bool bCreateRule /* = false */)
 {
   /* create a new timer */
   CPVRTimerInfoTagPtr newTag(new CPVRTimerInfoTag());
@@ -959,14 +958,14 @@ std::string CPVRTimerInfoTag::GetDeletedNotificationText() const
   return StringUtils::Format("%s: '%s'", g_localizeStrings.Get(stringID).c_str(), m_strTitle.c_str());
 }
 
-CEpgInfoTagPtr CPVRTimerInfoTag::GetEpgInfoTag(bool bCreate /* = true */) const
+CPVREpgInfoTagPtr CPVRTimerInfoTag::GetEpgInfoTag(bool bCreate /* = true */) const
 {
   if (!m_epgTag && bCreate)
   {
     CPVRChannelPtr channel(CServiceBroker::GetPVRManager().ChannelGroups()->GetByUniqueID(m_iClientChannelUid, m_iClientId));
     if (channel)
     {
-      const CEpgPtr epg(channel->GetEPG());
+      const CPVREpgPtr epg(channel->GetEPG());
       if (epg)
       {
         CSingleLock lock(m_critSection);
@@ -1000,9 +999,9 @@ CEpgInfoTagPtr CPVRTimerInfoTag::GetEpgInfoTag(bool bCreate /* = true */) const
   return m_epgTag;
 }
 
-void CPVRTimerInfoTag::SetEpgTag(const CEpgInfoTagPtr &tag)
+void CPVRTimerInfoTag::SetEpgTag(const CPVREpgInfoTagPtr &tag)
 {
-  CEpgInfoTagPtr previousTag;
+  CPVREpgInfoTagPtr previousTag;
   {
     CSingleLock lock(m_critSection);
     previousTag = m_epgTag;
@@ -1015,7 +1014,7 @@ void CPVRTimerInfoTag::SetEpgTag(const CEpgInfoTagPtr &tag)
 
 void CPVRTimerInfoTag::ClearEpgTag(void)
 {
-  SetEpgTag(CEpgInfoTagPtr());
+  SetEpgTag(CPVREpgInfoTagPtr());
 }
 
 CPVRChannelPtr CPVRTimerInfoTag::ChannelTag(void) const

@@ -27,7 +27,6 @@
 
 #include "ServiceBroker.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/libKODI_guilib.h"
-#include "epg/Epg.h"
 #include "filesystem/SpecialProtocol.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
@@ -37,6 +36,7 @@
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/epg/Epg.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimers.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
@@ -44,7 +44,6 @@
 
 using namespace ADDON;
 using namespace PVR;
-using namespace EPG;
 
 #define DEFAULT_INFO_STRING_VALUE "unknown"
 
@@ -292,7 +291,7 @@ void CPVRClient::WriteClientTimerInfo(const CPVRTimerInfoTag &xbmcTimer, PVR_TIM
   xbmcTimer.StartAsUTC().GetAsTime(start);
   xbmcTimer.EndAsUTC().GetAsTime(end);
   xbmcTimer.FirstDayAsUTC().GetAsTime(firstDay);
-  CEpgInfoTagPtr epgTag = xbmcTimer.GetEpgInfoTag();
+  CPVREpgInfoTagPtr epgTag = xbmcTimer.GetEpgInfoTag();
 
   memset(&addonTimer, 0, sizeof(addonTimer));
 
@@ -697,7 +696,7 @@ void CPVRClient::CallMenuHook(const PVR_MENUHOOK &hook, const CFileItem *item)
   m_struct.MenuHook(hook, hookData);
 }
 
-PVR_ERROR CPVRClient::GetEPGForChannel(const CPVRChannelPtr &channel, CEpg *epg, time_t start /* = 0 */, time_t end /* = 0 */, bool bSaveInDb /* = false*/)
+PVR_ERROR CPVRClient::GetEPGForChannel(const CPVRChannelPtr &channel, CPVREpg *epg, time_t start /* = 0 */, time_t end /* = 0 */, bool bSaveInDb /* = false*/)
 {
   if (!m_bReadyToUse)
     return PVR_ERROR_SERVER_ERROR;

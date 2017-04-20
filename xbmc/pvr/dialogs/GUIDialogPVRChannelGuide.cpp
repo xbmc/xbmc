@@ -18,8 +18,9 @@
  *
  */
 
+#include "GUIDialogPVRChannelGuide.h"
+
 #include "FileItem.h"
-#include "epg/Epg.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
 #include "ServiceBroker.h"
@@ -27,8 +28,7 @@
 
 #include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
-
-#include "GUIDialogPVRChannelGuide.h"
+#include "pvr/epg/Epg.h"
 
 using namespace PVR;
 

@@ -19,7 +19,7 @@
  *
  */
 
-#include "epg/EpgSearchFilter.h"
+#include "pvr/epg/EpgSearchFilter.h"
 #include "GUIWindowPVRBase.h"
 
 namespace PVR
@@ -50,6 +50,6 @@ namespace PVR
     void OpenDialogSearch();
 
     bool                  m_bSearchConfirmed;
-    EPG::CEpgSearchFilter m_searchfilter;
+    CPVREpgSearchFilter m_searchfilter;
   };
 }

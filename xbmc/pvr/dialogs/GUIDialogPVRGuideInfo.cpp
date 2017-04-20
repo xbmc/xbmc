@@ -18,10 +18,13 @@
  *
  */
 
+#include "GUIDialogPVRGuideInfo.h"
+
+#include <utility>
+
 #include "Application.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogYesNo.h"
-#include "epg/EpgInfoTag.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "messaging/ApplicationMessenger.h"
@@ -33,15 +36,11 @@
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/epg/EpgInfoTag.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/windows/GUIWindowPVRSearch.h"
 
-#include "GUIDialogPVRGuideInfo.h"
-
-#include <utility>
-
 using namespace PVR;
-using namespace EPG;
 using namespace KODI::MESSAGING;
 
 #define CONTROL_BTN_FIND                4
@@ -203,7 +202,7 @@ bool CGUIDialogPVRGuideInfo::OnInfo(int actionID)
   return true;
 }
 
-void CGUIDialogPVRGuideInfo::SetProgInfo(const EPG::CEpgInfoTagPtr &tag)
+void CGUIDialogPVRGuideInfo::SetProgInfo(const CPVREpgInfoTagPtr &tag)
 {
   m_progItem = tag;
 }

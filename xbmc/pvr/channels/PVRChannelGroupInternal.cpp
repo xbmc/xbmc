@@ -24,19 +24,19 @@
 #include <utility>
 
 #include "dialogs/GUIDialogOK.h"
-#include "epg/EpgContainer.h"
-#include "pvr/addons/PVRClients.h"
-#include "pvr/PVRDatabase.h"
-#include "pvr/PVRManager.h"
-#include "pvr/timers/PVRTimers.h"
-#include "PVRChannelGroupsContainer.h"
 #include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
 #include "utils/Variant.h"
 
+#include "pvr/PVRDatabase.h"
+#include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClients.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/epg/EpgContainer.h"
+#include "pvr/timers/PVRTimers.h"
+
 using namespace PVR;
-using namespace EPG;
 
 CPVRChannelGroupInternal::CPVRChannelGroupInternal(bool bRadio) :
   m_iHiddenChannels(0)
@@ -318,7 +318,7 @@ void CPVRChannelGroupInternal::CreateChannelEpg(const CPVRChannelPtr &channel, b
   CSingleLock lock(channel->m_critSection);
   if (!channel->m_bEPGCreated || bForce)
   {
-    CEpgPtr epg = g_EpgContainer.CreateChannelEpg(channel);
+    CPVREpgPtr epg = CServiceBroker::GetPVRManager().EpgContainer().CreateChannelEpg(channel);
     if (epg)
     {
       channel->m_bEPGCreated = true;
@@ -333,7 +333,7 @@ void CPVRChannelGroupInternal::CreateChannelEpg(const CPVRChannelPtr &channel, b
 
 bool CPVRChannelGroupInternal::CreateChannelEpgs(bool bForce /* = false */)
 {
-  if (!g_EpgContainer.IsStarted())
+  if (!CServiceBroker::GetPVRManager().EpgContainer().IsStarted())
     return false;
   {
     CSingleLock lock(m_critSection);

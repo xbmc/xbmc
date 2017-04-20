@@ -21,12 +21,10 @@
 //! @todo use Observable here, so we can use event driven operations later
 
 #include "PVRChannelGroup.h"
-#include "PVRChannelGroupsContainer.h"
 
 #include "ServiceBroker.h"
 #include "Util.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
-#include "epg/EpgContainer.h"
 #include "filesystem/Directory.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/lib/Setting.h"
@@ -39,9 +37,10 @@
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/epg/EpgContainer.h"
 
 using namespace PVR;
-using namespace EPG;
 
 CPVRChannelGroup::CPVRChannelGroup(void) :
     m_bRadio(false),
@@ -1002,14 +1001,14 @@ bool CPVRPersistGroupJob::DoWork(void)
 int CPVRChannelGroup::GetEPGNowOrNext(CFileItemList &results, bool bGetNext) const
 {
   int iInitialSize = results.Size();
-  CEpgInfoTagPtr epgNext;
+  CPVREpgInfoTagPtr epgNext;
   CPVRChannelPtr channel;
   CSingleLock lock(m_critSection);
 
   for (PVR_CHANNEL_GROUP_SORTED_MEMBERS::const_iterator it = m_sortedMembers.begin(); it != m_sortedMembers.end(); ++it)
   {
     channel = (*it).channel;
-    CEpgPtr epg = channel->GetEPG();
+    CPVREpgPtr epg = channel->GetEPG();
     if (epg && !channel->IsHidden())
     {
       epgNext = bGetNext ? epg->GetTagNext() : epg->GetTagNow();
@@ -1030,7 +1029,7 @@ int CPVRChannelGroup::GetEPGNowOrNext(CFileItemList &results, bool bGetNext) con
 int CPVRChannelGroup::GetEPGAll(CFileItemList &results, bool bIncludeChannelsWithoutEPG /* = false */) const
 {
   int iInitialSize = results.Size();
-  CEpgInfoTagPtr epgTag;
+  CPVREpgInfoTagPtr epgTag;
   CPVRChannelPtr channel;
   CSingleLock lock(m_critSection);
 
@@ -1041,7 +1040,7 @@ int CPVRChannelGroup::GetEPGAll(CFileItemList &results, bool bIncludeChannelsWit
     {
       int iAdded = 0;
 
-      CEpgPtr epg = channel->GetEPG();
+      CPVREpgPtr epg = channel->GetEPG();
       if (epg)
       {
         // XXX channel pointers aren't set in some occasions. this works around the issue, but is not very nice
@@ -1052,7 +1051,7 @@ int CPVRChannelGroup::GetEPGAll(CFileItemList &results, bool bIncludeChannelsWit
       if (bIncludeChannelsWithoutEPG && iAdded == 0)
       {
         // Add dummy EPG tag associated with this channel
-        epgTag = CEpgInfoTag::CreateDefaultTag();
+        epgTag = CPVREpgInfoTag::CreateDefaultTag();
         epgTag->SetPVRChannel(channel);
         results.Add(CFileItemPtr(new CFileItem(epgTag)));
       }
@@ -1065,7 +1064,7 @@ int CPVRChannelGroup::GetEPGAll(CFileItemList &results, bool bIncludeChannelsWit
 CDateTime CPVRChannelGroup::GetEPGDate(EpgDateType epgDateType) const
 {
   CDateTime date;
-  CEpgPtr epg;
+  CPVREpgPtr epg;
   CPVRChannelPtr channel;
   CSingleLock lock(m_critSection);
 
