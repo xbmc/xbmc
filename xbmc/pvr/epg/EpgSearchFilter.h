@@ -76,10 +76,10 @@ namespace PVR
     int GetMaximumDuration() const { return m_iMaximumDuration; }
     void SetMaximumDuration(int iMaximumDuration) { m_iMaximumDuration = iMaximumDuration; }
 
-    const CDateTime &GetStartDateTime() const { return m_startDateTime; }
+    const CDateTime &GetStartDateTime();
     void SetStartDateTime(const CDateTime &startDateTime) { m_startDateTime = startDateTime; }
 
-    const CDateTime &GetEndDateTime() const { return m_endDateTime; }
+    const CDateTime &GetEndDateTime();
     void SetEndDateTime(const CDateTime &endDateTime) { m_endDateTime = endDateTime; }
 
     bool ShouldIncludeUnknownGenres() const { return m_bIncludeUnknownGenres; }
@@ -110,6 +110,11 @@ namespace PVR
     void SetUniqueBroadcastId(unsigned int iUniqueBroadcastId) { m_iUniqueBroadcastId = iUniqueBroadcastId; }
 
   private:
+    /*!
+     * @brief Make sure that start and end time match current epg data boundaries.
+     */
+    void ValidateStartAndEndDate();
+
     bool MatchGenre(const CPVREpgInfoTagPtr &tag) const;
     bool MatchDuration(const CPVREpgInfoTagPtr &tag) const;
     bool MatchStartAndEndTimes(const CPVREpgInfoTagPtr &tag) const;
