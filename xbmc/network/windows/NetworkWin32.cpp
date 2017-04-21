@@ -29,6 +29,11 @@
 #include "utils/StringUtils.h"
 #include "platform/win32/WIN32Util.h"
 
+#include <netinet/in.h>
+#include <Mstcpip.h>
+
+#pragma comment(lib, "Ntdll.lib")
+
 // undefine if you want to build without the wlan stuff
 // might be needed for VS2003
 #define HAS_WIN32_WLAN_API
@@ -216,35 +221,31 @@ std::vector<std::string> CNetworkWin32::GetNameServers(void)
 {
   std::vector<std::string> result;
 
-  FIXED_INFO *pFixedInfo;
+  const ULONG flags = GAA_FLAG_SKIP_UNICAST | GAA_FLAG_SKIP_ANYCAST | GAA_FLAG_SKIP_MULTICAST | GAA_FLAG_SKIP_FRIENDLY_NAME;
   ULONG ulOutBufLen;
-  IP_ADDR_STRING *pIPAddr;
 
-  pFixedInfo = (FIXED_INFO *) malloc(sizeof (FIXED_INFO));
-  if (pFixedInfo == NULL)
+  if (GetAdaptersAddresses(AF_UNSPEC, flags, nullptr, nullptr, &ulOutBufLen) != ERROR_BUFFER_OVERFLOW)
     return result;
 
-  ulOutBufLen = sizeof (FIXED_INFO);
-  if (GetNetworkParams(pFixedInfo, &ulOutBufLen) == ERROR_BUFFER_OVERFLOW)
-  {
-    free(pFixedInfo);
-    pFixedInfo = (FIXED_INFO *) malloc(ulOutBufLen);
-    if (pFixedInfo == NULL)
-      return result;
-  }
+  PIP_ADAPTER_ADDRESSES adapterAddresses = static_cast<PIP_ADAPTER_ADDRESSES>(malloc(ulOutBufLen));
+  if (adapterAddresses == nullptr)
+    return result;
 
-  if (GetNetworkParams(pFixedInfo, &ulOutBufLen) == NO_ERROR)
+  if (GetAdaptersAddresses(AF_UNSPEC, flags, nullptr, adapterAddresses, &ulOutBufLen) == NO_ERROR)
   {
-    result.push_back(pFixedInfo->DnsServerList.IpAddress.String);
-    pIPAddr = pFixedInfo->DnsServerList.Next;
-    while(pIPAddr)
+    for (PIP_ADAPTER_ADDRESSES adapter = adapterAddresses; adapter; adapter = adapter->Next)
     {
-      result.push_back(pIPAddr->IpAddress.String);
-      pIPAddr = pIPAddr->Next;
+      if (adapter->IfType == IF_TYPE_SOFTWARE_LOOPBACK || adapter->OperStatus != IF_OPER_STATUS::IfOperStatusUp)
+        continue;
+      for (PIP_ADAPTER_DNS_SERVER_ADDRESS dnsAddress = adapter->FirstDnsServerAddress; dnsAddress; dnsAddress = dnsAddress->Next)
+      {
+        std::string strIp = GetIpStr(dnsAddress->Address.lpSockaddr);
+        if (!strIp.empty())
+          result.push_back(strIp);
+      }
     }
-
   }
-  free(pFixedInfo);
+  free(adapterAddresses);
 
   return result;
 }
@@ -277,6 +278,29 @@ bool CNetworkWin32::PingHost(unsigned long host, unsigned int timeout_ms /* = 20
     return (pEchoReply->Status == IP_SUCCESS);
   }
   return false;
+}
+
+const std::string CNetworkWin32::GetIpStr(const struct sockaddr* sa)
+{
+  std::string result;
+  if (!sa)
+    return result;
+
+  char buffer[INET6_ADDRSTRLEN] = { 0 };
+  switch (sa->sa_family)
+  {
+    case AF_INET:
+      RtlIpv4AddressToStringA(&reinterpret_cast<const struct sockaddr_in *>(sa)->sin_addr, buffer);
+      break;
+    case AF_INET6:
+      RtlIpv6AddressToStringA(&reinterpret_cast<const struct sockaddr_in6 *>(sa)->sin6_addr, buffer);
+      break;
+    default:
+      return result;
+  }
+
+  result = buffer;
+  return result;
 }
 
 bool CNetworkInterfaceWin32::GetHostMacAddress(unsigned long host, std::string& mac)

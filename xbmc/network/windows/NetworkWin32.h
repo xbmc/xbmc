@@ -80,6 +80,17 @@ public:
    virtual std::vector<std::string> GetNameServers(void);
    virtual void SetNameServers(const std::vector<std::string>& nameServers);
 
+   /*!
+    \brief  IPv6/IPv4 compatible conversion of host IP address
+    \param  struct sockaddr
+    \return Function converts binary structure sockaddr to std::string.
+            It can read sockaddr_in and sockaddr_in6, cast as (sockaddr*).
+            IPv4 address is returned in the format x.x.x.x (where x is 0-255),
+            IPv6 address is returned in it's canonised form.
+            On error (or no IPv6/v4 valid input) empty string is returned.
+    */
+   const static std::string GetIpStr(const sockaddr* sa);
+
    friend class CNetworkInterfaceWin32;
 
 private:
