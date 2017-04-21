@@ -20,9 +20,7 @@
 #ifndef __PERIPHERAL_TYPES_H__
 #define __PERIPHERAL_TYPES_H__
 
-#ifdef TARGET_WINDOWS
-  #include <windows.h>
-#else
+#ifndef TARGET_WINDOWS
   #ifndef __cdecl
     #define __cdecl
   #endif
