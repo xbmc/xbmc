@@ -654,7 +654,7 @@ CVideoPlayer::CVideoPlayer(IPlayerCallback& callback)
   memset(&m_SpeedState, 0, sizeof(m_SpeedState));
 
   // omxplayer variables
-  m_OmxPlayerState.last_check_time     = 0.0;
+  m_OmxPlayerState.last_check_time     = 0;
   m_OmxPlayerState.stamp               = 0.0;
   m_OmxPlayerState.bOmxWaitVideo       = false;
   m_OmxPlayerState.bOmxWaitAudio       = false;
@@ -1297,7 +1297,7 @@ void CVideoPlayer::Process()
     }
     else
     {
-      starttime = m_Edl.RestoreCutTime(m_PlayerOptions.starttime * 1000); // s to ms
+      starttime = m_Edl.RestoreCutTime(static_cast<int>(m_PlayerOptions.starttime * 1000)); // s to ms
     }
     CLog::Log(LOGDEBUG, "%s - Start position set to last stopped position: %d", __FUNCTION__, starttime);
   }
@@ -2543,7 +2543,7 @@ void CVideoPlayer::HandleMessages()
       if (msg.GetRelative())
         time = (m_clock.GetClock() + m_State.time_offset) / 1000 + time;
 
-      time = msg.GetRestore() ? m_Edl.RestoreCutTime(time) : time;
+      time = msg.GetRestore() ? static_cast<double>(m_Edl.RestoreCutTime(static_cast<int>(time))) : time;
 
       // if input stream doesn't support ISeekTime, convert back to pts
       //! @todo
@@ -2607,14 +2607,14 @@ void CVideoPlayer::HandleMessages()
 
       CDVDMsgPlayerSeekChapter &msg(*((CDVDMsgPlayerSeekChapter*)pMsg));
       double start = DVD_NOPTS_VALUE;
-      double offset = 0;
+      int offset = 0;
       int64_t beforeSeek = GetTime();
 
       // This should always be the case.
       if(m_pDemuxer && m_pDemuxer->SeekChapter(msg.GetChapter(), &start))
       {
         FlushBuffers(start, true, true);
-        offset = DVD_TIME_TO_MSEC(start) - beforeSeek;
+        offset = DVD_TIME_TO_MSEC(start) - static_cast<int>(beforeSeek);
         m_callback.OnPlayBackSeekChapter(msg.GetChapter());
       }
 
@@ -3198,7 +3198,7 @@ void CVideoPlayer::Seek(bool bPlus, bool bLargeStep, bool bChapterOverride)
   SynchronizeDemuxer();
   if (seekTarget < 0)
     seekTarget = 0;
-  m_callback.OnPlayBackSeek((int)seekTarget, (int)(seekTarget - time));
+  m_callback.OnPlayBackSeek(seekTarget, seekTarget - time);
 }
 
 bool CVideoPlayer::SeekScene(bool bPlus)
@@ -3323,12 +3323,12 @@ float CVideoPlayer::GetCachePercentage()
 
 void CVideoPlayer::SetAVDelay(float fValue)
 {
-  m_renderManager.SetDelay( (fValue * 1000) ) ;
+  m_renderManager.SetDelay(static_cast<int>(fValue * 1000.0f));
 }
 
 float CVideoPlayer::GetAVDelay()
 {
-  return static_cast<float>(m_renderManager.GetDelay()) / 1000;
+  return static_cast<float>(m_renderManager.GetDelay()) / 1000.0f;
 }
 
 void CVideoPlayer::SetSubTitleDelay(float fValue)
@@ -3516,10 +3516,10 @@ std::string CVideoPlayer::GetRadioText(unsigned int line)
 
 void CVideoPlayer::SeekTime(int64_t iTime)
 {
-  int seekOffset = (int)(iTime - GetTime());
+  int64_t seekOffset = iTime - GetTime();
 
   CDVDMsgPlayerSeek::CMode mode;
-  mode.time = (int)iTime;
+  mode.time = static_cast<double>(iTime);
   mode.backward = true;
   mode.accurate = true;
   mode.trickplay = false;
@@ -3527,7 +3527,7 @@ void CVideoPlayer::SeekTime(int64_t iTime)
 
   m_messenger.Put(new CDVDMsgPlayerSeek(mode));
   SynchronizeDemuxer();
-  m_callback.OnPlayBackSeek((int)iTime, seekOffset);
+  m_callback.OnPlayBackSeek(iTime, seekOffset);
 }
 
 bool CVideoPlayer::SeekTimeRelative(int64_t iTime)
@@ -3545,7 +3545,7 @@ bool CVideoPlayer::SeekTimeRelative(int64_t iTime)
   m_messenger.Put(new CDVDMsgPlayerSeek(mode));
   m_processInfo->SetStateSeeking(true);
 
-  m_callback.OnPlayBackSeek((int)abstime, iTime);
+  m_callback.OnPlayBackSeek(abstime, iTime);
   return true;
 }
 
@@ -3590,7 +3590,9 @@ void CVideoPlayer::SetSpeed(float speed)
   if (!CanSeek())
     return;
   
-  m_newPlaySpeed = speed * DVD_PLAYSPEED_NORMAL;
+  int iSpeed = static_cast<int>(speed * DVD_PLAYSPEED_NORMAL);
+
+  m_newPlaySpeed = iSpeed;
   if (m_newPlaySpeed != m_playSpeed)
   {
     if (m_newPlaySpeed == DVD_PLAYSPEED_NORMAL)
@@ -3598,7 +3600,7 @@ void CVideoPlayer::SetSpeed(float speed)
     else if (m_newPlaySpeed == DVD_PLAYSPEED_PAUSE)
       m_callback.OnPlayBackPaused();
   }
-  SetPlaySpeed(speed * DVD_PLAYSPEED_NORMAL);
+  SetPlaySpeed(iSpeed);
 }
 
 float CVideoPlayer::GetSpeed()
@@ -3822,8 +3824,8 @@ bool CVideoPlayer::OpenVideoStream(CDVDStreamInfo& hint, bool reset)
   {
     if (CServiceBroker::GetSettings().GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) != ADJUST_REFRESHRATE_OFF)
     {
-      float framerate = DVD_TIME_BASE / CDVDCodecUtils::NormalizeFrameduration((double)DVD_TIME_BASE * hint.fpsscale / hint.fpsrate);
-      m_renderManager.TriggerUpdateResolution(framerate, hint.width, RenderManager::GetStereoModeFlags(hint.stereo_mode));
+      double framerate = DVD_TIME_BASE / CDVDCodecUtils::NormalizeFrameduration((double)DVD_TIME_BASE * hint.fpsscale / hint.fpsrate);
+      m_renderManager.TriggerUpdateResolution(static_cast<float>(framerate), hint.width, RenderManager::GetStereoModeFlags(hint.stereo_mode));
     }
   }
 

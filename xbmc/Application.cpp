@@ -3667,10 +3667,10 @@ void CApplication::OnPlayBackSpeedChanged(int iSpeed)
   CAnnouncementManager::GetInstance().Announce(Player, "xbmc", "OnSpeedChanged", m_itemCurrentFile, param);
 }
 
-void CApplication::OnPlayBackSeek(int iTime, int seekOffset)
+void CApplication::OnPlayBackSeek(int64_t iTime, int64_t seekOffset)
 {
 #ifdef HAS_PYTHON
-  g_pythonParser.OnPlayBackSeek(iTime, seekOffset);
+  g_pythonParser.OnPlayBackSeek(static_cast<int>(iTime), static_cast<int>(seekOffset));
 #endif
 
   CVariant param;
@@ -3679,7 +3679,7 @@ void CApplication::OnPlayBackSeek(int iTime, int seekOffset)
   param["player"]["playerid"] = g_playlistPlayer.GetCurrentPlaylist();
   param["player"]["speed"] = (int)m_pPlayer->GetPlaySpeed();
   CAnnouncementManager::GetInstance().Announce(Player, "xbmc", "OnSeek", m_itemCurrentFile, param);
-  g_infoManager.SetDisplayAfterSeek(2500, seekOffset);
+  g_infoManager.SetDisplayAfterSeek(2500, static_cast<int>(seekOffset));
 }
 
 void CApplication::OnPlayBackSeekChapter(int iChapter)

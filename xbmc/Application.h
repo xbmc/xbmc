@@ -164,7 +164,7 @@ public:
   virtual void OnPlayBackResumed() override;
   virtual void OnPlayBackStopped() override;
   virtual void OnQueueNextItem() override;
-  virtual void OnPlayBackSeek(int iTime, int seekOffset) override;
+  virtual void OnPlayBackSeek(int64_t iTime, int64_t seekOffset) override;
   virtual void OnPlayBackSeekChapter(int iChapter) override;
   virtual void OnPlayBackSpeedChanged(int iSpeed) override;
 
