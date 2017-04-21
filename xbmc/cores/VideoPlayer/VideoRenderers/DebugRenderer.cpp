@@ -108,7 +108,7 @@ void CDebugRenderer::CRenderer::Render(int idx)
 {
   std::vector<COverlay*> render;
   std::vector<SElement>& list = m_buffers[idx];
-  int posY = 0;
+  float posY = 0.0f;
   for (std::vector<SElement>::iterator it = list.begin(); it != list.end(); ++it)
   {
     COverlay* o = nullptr;

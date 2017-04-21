@@ -516,7 +516,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo, bool filein
       CVariant programProp(pInput->GetProperty("program"));
       if (!programProp.isNull())
       {
-        int programNumber = programProp.asInteger();
+        int programNumber = static_cast<int>(programProp.asInteger());
 
         for (unsigned int i = 0; i < m_pFormatContext->nb_programs; ++i)
         {
@@ -1081,7 +1081,7 @@ bool CDVDDemuxFFmpeg::SeekTime(double time, bool backwards, double *startpts)
   CDVDInputStream::IPosTime* ist = m_pInput->GetIPosTime();
   if (ist)
   {
-    if (!ist->PosTime(time))
+    if (!ist->PosTime(static_cast<int>(time)))
       return false;
 
     if(startpts)
@@ -1332,7 +1332,7 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
         st->iChannels = pStream->codecpar->channels;
         st->iSampleRate = pStream->codecpar->sample_rate;
         st->iBlockAlign = pStream->codecpar->block_align;
-        st->iBitRate = pStream->codecpar->bit_rate;
+        st->iBitRate = static_cast<int>(pStream->codecpar->bit_rate);
         st->iBitsPerSample = pStream->codecpar->bits_per_raw_sample;
         st->iChannelLayout = pStream->codecpar->channel_layout;
         if (st->iBitsPerSample == 0)
@@ -1395,7 +1395,7 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
           st->fAspect *= (double)pStream->codecpar->width / pStream->codecpar->height;
         st->iOrientation = 0;
         st->iBitsPerPixel = pStream->codecpar->bits_per_coded_sample;
-        st->iBitRate = pStream->codecpar->bit_rate;
+        st->iBitRate = static_cast<int>(pStream->codecpar->bit_rate);
 
         AVDictionaryEntry *rtag = av_dict_get(pStream->metadata, "rotate", NULL, 0);
         if (rtag) 
@@ -1678,7 +1678,7 @@ int64_t CDVDDemuxFFmpeg::GetChapterPos(int chapterIdx)
   if(ich)  
     return ich->GetChapterPos(chapterIdx);
 
-  return m_pFormatContext->chapters[chapterIdx-1]->start*av_q2d(m_pFormatContext->chapters[chapterIdx-1]->time_base);
+  return static_cast<int64_t>(m_pFormatContext->chapters[chapterIdx-1]->start*av_q2d(m_pFormatContext->chapters[chapterIdx-1]->time_base));
 }
 
 bool CDVDDemuxFFmpeg::SeekChapter(int chapter, double* startpts)

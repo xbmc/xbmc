@@ -179,7 +179,9 @@ void COverlayQuadsDX::Render(SRenderState &state)
   {
     CRect rect;
     g_Windowing.GetViewPort(rect);
-    g_Windowing.SetCameraPosition(CPoint(rect.Width()*0.5f, rect.Height()*0.5f), rect.Width(), rect.Height());
+    g_Windowing.SetCameraPosition(CPoint(rect.Width() * 0.5f, rect.Height() * 0.5f),
+                                  static_cast<int>(rect.Width()),
+                                  static_cast<int>(rect.Height()));
   }
 
   XMMATRIX trans = XMMatrixTranslation(state.x, state.y, 0.0f);
@@ -347,7 +349,9 @@ void COverlayImageDX::Render(SRenderState &state)
   {
     CRect rect;
     g_Windowing.GetViewPort(rect);
-    g_Windowing.SetCameraPosition(CPoint(rect.Width()*0.5f, rect.Height()*0.5f), rect.Width(), rect.Height());
+    g_Windowing.SetCameraPosition(CPoint(rect.Width() * 0.5f, rect.Height() * 0.5f),
+                                  static_cast<int>(rect.Width()),
+                                  static_cast<int>(rect.Height()));
   }
 
   XMMATRIX trans = m_pos == POSITION_RELATIVE
