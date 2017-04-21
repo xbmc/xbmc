@@ -34,6 +34,7 @@
 #include "platform/android/jni/DisplayMetrics.h"
 #include "platform/android/jni/Resources.h"
 #include "platform/android/jni/Bitmap.h"
+#include "platform/android/jni/Drawable.h"
 #include "platform/android/jni/BitmapDrawable.h"
 #include "platform/android/jni/PackageManager.h"
 using namespace XFILE;
@@ -91,6 +92,8 @@ unsigned int CFileAndroidApp::ReadIcon(unsigned char** lpBuf, unsigned int* widt
   int densities[] = { CJNIDisplayMetrics::DENSITY_XXXHIGH, CJNIDisplayMetrics::DENSITY_XXHIGH, CJNIDisplayMetrics::DENSITY_XHIGH, -1 };
 
   CJNIBitmap bmp;
+  jclass cBmpDrw = env->FindClass("android/graphics/drawable/BitmapDrawable");
+
   if (CJNIBuild::SDK_INT >= 15 && m_icon)
   {
     CJNIResources res = CJNIContext::GetPackageManager().getResourcesForApplication(m_packageName);
@@ -99,18 +102,39 @@ unsigned int CFileAndroidApp::ReadIcon(unsigned char** lpBuf, unsigned int* widt
       for (int i=0; densities[i] != -1 && !bmp; ++i)
       {
         int density = densities[i];
-        CJNIBitmapDrawable resbmp = res.getDrawableForDensity(m_icon, density);
+        CJNIDrawable drw = res.getDrawableForDensity(m_icon, density);
         if (xbmc_jnienv()->ExceptionCheck())
           xbmc_jnienv()->ExceptionClear();
+        else if (!drw);
         else
-          if (resbmp.getBitmap())
-            bmp = resbmp.getBitmap();
+        {
+          if (env->IsInstanceOf(drw.get_raw(), cBmpDrw))
+          {
+            CJNIBitmapDrawable resbmp = drw;
+            if (resbmp)
+              bmp = resbmp.getBitmap();
+          }
+        }
       }
     }
   }
 
   if (!bmp)
-    bmp = ((CJNIBitmapDrawable)(CJNIContext::GetPackageManager().getApplicationIcon(m_packageName))).getBitmap();
+  {
+    CJNIDrawable drw = CJNIContext::GetPackageManager().getApplicationIcon(m_packageName);
+    if (xbmc_jnienv()->ExceptionCheck())
+      xbmc_jnienv()->ExceptionClear();
+    else if (!drw);
+    else
+    {
+      if (env->IsInstanceOf(drw.get_raw(), cBmpDrw))
+      {
+        CJNIBitmapDrawable resbmp = drw;
+        if (resbmp)
+          bmp = resbmp.getBitmap();
+      }
+    }
+  }
   if (!bmp)
     return 0;
 
