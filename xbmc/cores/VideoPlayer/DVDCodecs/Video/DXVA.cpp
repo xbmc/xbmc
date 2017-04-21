@@ -342,7 +342,7 @@ bool CDXVAContext::GetInputAndTarget(int codec, bool bHighBitdepth, GUID &inGuid
 
     for (unsigned i = 0; i < m_input_count && outFormat == DXGI_FORMAT_UNKNOWN; i++)
     {
-      bool supported = IsEqualGUID(m_input_list[i], *mode->guid);
+      bool supported = IsEqualGUID(m_input_list[i], *mode->guid) != 0;
       if (codec == AV_CODEC_ID_HEVC)
       {
         if (bHighBitdepth && !IsEqualGUID(m_input_list[i], D3D11_DECODER_PROFILE_HEVC_VLD_MAIN10))

@@ -1112,13 +1112,13 @@ void PAPlayer::SeekTime(int64_t iTime /*=0*/)
   if (!m_currentStream)
     return;
 
-  int seekOffset = (int)(iTime - GetTimeInternal());
+  int64_t seekOffset = iTime - GetTimeInternal();
 
   if (m_playbackSpeed != 1)
     SetSpeed(1);
 
   m_currentStream->m_seekFrame = (int)((float)m_currentStream->m_audioFormat.m_sampleRate * ((float)iTime + (float)m_currentStream->m_startOffset) / 1000.0f);
-  m_callback.OnPlayBackSeek((int)iTime, seekOffset);
+  m_callback.OnPlayBackSeek(iTime, seekOffset);
 }
 
 void PAPlayer::SeekPercentage(float fPercent /*=0*/)
