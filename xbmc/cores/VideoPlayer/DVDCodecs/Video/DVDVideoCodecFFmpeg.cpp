@@ -479,8 +479,8 @@ bool CDVDVideoCodecFFmpeg::AddData(const DemuxPacket &packet)
   av_init_packet(&avpkt);
   avpkt.data = packet.pData;
   avpkt.size = packet.iSize;
-  avpkt.dts = (packet.dts == DVD_NOPTS_VALUE) ? AV_NOPTS_VALUE : packet.dts / DVD_TIME_BASE * AV_TIME_BASE;
-  avpkt.pts = (packet.pts == DVD_NOPTS_VALUE) ? AV_NOPTS_VALUE : packet.pts / DVD_TIME_BASE * AV_TIME_BASE;
+  avpkt.dts = (packet.dts == DVD_NOPTS_VALUE) ? AV_NOPTS_VALUE : static_cast<int64_t>(packet.dts / DVD_TIME_BASE) * AV_TIME_BASE;
+  avpkt.pts = (packet.pts == DVD_NOPTS_VALUE) ? AV_NOPTS_VALUE : static_cast<int64_t>(packet.pts / DVD_TIME_BASE) * AV_TIME_BASE;
 
   int ret = avcodec_send_packet(m_pCodecContext, &avpkt);
 
@@ -660,7 +660,7 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecFFmpeg::GetPicture(VideoPicture* pVideoPi
   {
     int frames = 300;
     if (m_dropCtrl.m_state == CDropControl::VALID)
-      frames = 6000000 / m_dropCtrl.m_diffPTS;
+      frames = static_cast<int>(6000000 / m_dropCtrl.m_diffPTS);
     if (m_iLastKeyframe >= frames && m_pDecodedFrame->pict_type == AV_PICTURE_TYPE_I)
     {
       m_started = true;
@@ -836,7 +836,7 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(VideoPicture* pVideoPicture)
   if (m_DAR != aspect_ratio)
   {
     m_DAR = aspect_ratio;
-    m_processInfo.SetVideoDAR(m_DAR);
+    m_processInfo.SetVideoDAR(static_cast<float>(m_DAR));
   }
 
   /* XXX: we suppose the screen has a 1.0 pixel ratio */ // CDVDVideo will compensate it.
@@ -1122,7 +1122,7 @@ void CDVDVideoCodecFFmpeg::SetCodecControl(int flags)
 
   if (m_pCodecContext)
   {
-    bool bDrop = (flags & DVD_CODEC_CTRL_DROP_ANY);
+    bool bDrop = (flags & DVD_CODEC_CTRL_DROP_ANY) != 0;
     if (bDrop && m_pHardware && m_pHardware->CanSkipDeint())
     {
       m_requestSkipDeint = true;

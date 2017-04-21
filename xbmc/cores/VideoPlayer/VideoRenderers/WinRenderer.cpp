@@ -731,7 +731,7 @@ void CWinRenderer::RenderSW()
     CLog::Log(LOGERROR, __FUNCTION__" - failed to lock swtarget texture into memory");
 
   uint8_t *dst[] = { (uint8_t*)destlr.pData, 0, 0, 0 };
-  int dstStride[] = { destlr.RowPitch, 0, 0, 0 };
+  int dstStride[] = { static_cast<int>(destlr.RowPitch), 0, 0, 0 };
 
   sws_scale(m_sw_scale_ctx, src, srcStride, 0, m_sourceHeight, dst, dstStride);
 
@@ -902,8 +902,8 @@ void CWinRenderer::RenderHW(DWORD flags)
                        static_cast<float>(m_IntermediateTarget.GetHeight()));
   if (m_capture)
   {
-    target.x2 = m_capture->GetWidth();
-    target.y2 = m_capture->GetHeight();
+    target.x2 = static_cast<float>(m_capture->GetWidth());
+    target.y2 = static_cast<float>(m_capture->GetHeight());
   }
   CWIN32Util::CropSource(src, dst, target, m_renderOrientation);
 
@@ -939,7 +939,10 @@ void CWinRenderer::RenderHW(DWORD flags)
 
       g_Windowing.GetViewPort(oldViewPort);
       g_Windowing.SetViewPort(bbSize);
-      g_Windowing.SetCameraPosition(CPoint(bbSize.Width() / 2.f, bbSize.Height() / 2.f), bbSize.Width(), bbSize.Height(), 0.f);
+      g_Windowing.SetCameraPosition(CPoint(bbSize.Width() / 2.f, bbSize.Height() / 2.f),
+                                    static_cast<int>(bbSize.Width()),
+                                    static_cast<int>(bbSize.Height()),
+                                    0.f);
     }
 
     // render frame
