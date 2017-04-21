@@ -168,7 +168,7 @@ void CVideoPlayerVideo::OpenStream(CDVDStreamInfo &hint, CDVDVideoCodec* codec)
   {
     m_fFrameRate = DVD_TIME_BASE / CDVDCodecUtils::NormalizeFrameduration((double)DVD_TIME_BASE * hint.fpsscale / hint.fpsrate);
     m_bFpsInvalid = false;
-    m_processInfo.SetVideoFps(m_fFrameRate);
+    m_processInfo.SetVideoFps(static_cast<float>(m_fFrameRate));
   }
   else
   {
@@ -191,9 +191,9 @@ void CVideoPlayerVideo::OpenStream(CDVDStreamInfo &hint, CDVDVideoCodec* codec)
 
   // use aspect in stream if available
   if(hint.forced_aspect)
-    m_fForcedAspectRatio = hint.aspect;
+    m_fForcedAspectRatio = static_cast<float>(hint.aspect);
   else
-    m_fForcedAspectRatio = 0.0;
+    m_fForcedAspectRatio = 0.0f;
 
   if (m_pVideoCodec && m_pVideoCodec->Reconfigure(hint))
   {
@@ -374,7 +374,7 @@ void CVideoPlayerVideo::Process()
     else if (pMsg->IsType(CDVDMsg::VIDEO_SET_ASPECT))
     {
       CLog::Log(LOGDEBUG, "CVideoPlayerVideo - CDVDMsg::VIDEO_SET_ASPECT");
-      m_fForcedAspectRatio = *((CDVDMsgDouble*)pMsg);
+      m_fForcedAspectRatio = static_cast<float>(*((CDVDMsgDouble*)pMsg));
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_RESET))
     {
@@ -784,7 +784,7 @@ int CVideoPlayerVideo::OutputPicture(const VideoPicture* src, double pts)
   flags |= stereo_flags;
 
   if(!m_renderManager.Configure(picture,
-                                config_framerate,
+                                static_cast<float>(config_framerate),
                                 flags,
                                 m_hints.orientation,
                                 m_pVideoCodec->GetAllowedReferences()))
@@ -1019,7 +1019,7 @@ void CVideoPlayerVideo::CalcFrameRate()
         CLog::Log(LOGDEBUG,"%s framerate was:%f calculated:%f", __FUNCTION__, m_fFrameRate, m_fStableFrameRate / m_iFrameRateCount);
         m_fFrameRate = m_fStableFrameRate / m_iFrameRateCount;
         m_bFpsInvalid = false;
-        m_processInfo.SetVideoFps(m_fFrameRate);
+        m_processInfo.SetVideoFps(static_cast<float>(m_fFrameRate));
       }
 
       //reset the stored framerates
