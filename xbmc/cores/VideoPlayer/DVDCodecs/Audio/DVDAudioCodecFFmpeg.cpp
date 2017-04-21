@@ -61,7 +61,7 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   // set any special options
   for(std::vector<CDVDCodecOption>::iterator it = options.m_keys.begin(); it != options.m_keys.end(); ++it)
     if (it->m_name == "allowdtshddecode")
-      allowdtshddecode = atoi(it->m_value.c_str());
+      allowdtshddecode = atoi(it->m_value.c_str()) != 0;
 
   if (hints.codec == AV_CODEC_ID_DTS && allowdtshddecode)
     pCodec = avcodec_find_decoder_by_name("dcadec");
@@ -151,8 +151,8 @@ bool CDVDAudioCodecFFmpeg::AddData(const DemuxPacket &packet)
   av_init_packet(&avpkt);
   avpkt.data = packet.pData;
   avpkt.size = packet.iSize;
-  avpkt.dts = (packet.dts == DVD_NOPTS_VALUE) ? AV_NOPTS_VALUE : packet.dts / DVD_TIME_BASE * AV_TIME_BASE;
-  avpkt.pts = (packet.pts == DVD_NOPTS_VALUE) ? AV_NOPTS_VALUE : packet.pts / DVD_TIME_BASE * AV_TIME_BASE;
+  avpkt.dts = (packet.dts == DVD_NOPTS_VALUE) ? AV_NOPTS_VALUE : static_cast<int64_t>(packet.dts / DVD_TIME_BASE) * AV_TIME_BASE;
+  avpkt.pts = (packet.pts == DVD_NOPTS_VALUE) ? AV_NOPTS_VALUE : static_cast<int64_t>(packet.pts / DVD_TIME_BASE) * AV_TIME_BASE;
   int ret = avcodec_send_packet(m_pCodecContext, &avpkt);
 
   // try again
@@ -286,7 +286,7 @@ enum AEDataFormat CDVDAudioCodecFFmpeg::GetDataFormat()
 int CDVDAudioCodecFFmpeg::GetBitRate()
 {
   if (m_pCodecContext)
-    return m_pCodecContext->bit_rate;
+    return static_cast<int>(m_pCodecContext->bit_rate);
   return 0;
 }
 

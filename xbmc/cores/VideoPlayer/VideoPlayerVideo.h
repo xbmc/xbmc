@@ -52,7 +52,7 @@ public:
     double pts;
   };
   std::deque<CGain> m_gain;
-  double m_totalGain;
+  int m_totalGain;
   double m_lastPts;
 };
 
