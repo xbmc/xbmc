@@ -140,7 +140,7 @@ void CDVDAudioCodecFFmpeg::Dispose()
 bool CDVDAudioCodecFFmpeg::AddData(const DemuxPacket &packet)
 {
   if (!m_pCodecContext)
-    return -1;
+    return false;
 
   if (m_eof)
   {
