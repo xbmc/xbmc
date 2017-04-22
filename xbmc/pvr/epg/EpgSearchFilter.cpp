@@ -48,8 +48,6 @@ void CPVREpgSearchFilter::Reset()
   m_iGenreSubType            = EPG_SEARCH_UNSET;
   m_iMinimumDuration         = EPG_SEARCH_UNSET;
   m_iMaximumDuration         = EPG_SEARCH_UNSET;
-  m_startDateTime.SetFromUTCDateTime(CServiceBroker::GetPVRManager().EpgContainer().GetFirstEPGDate());
-  m_endDateTime.SetFromUTCDateTime(CServiceBroker::GetPVRManager().EpgContainer().GetLastEPGDate());
   m_bIncludeUnknownGenres    = false;
   m_bRemoveDuplicates        = false;
 
@@ -61,6 +59,30 @@ void CPVREpgSearchFilter::Reset()
   m_bIgnorePresentTimers     = true;
   m_bIgnorePresentRecordings = true;
   m_iUniqueBroadcastId       = EPG_TAG_INVALID_UID;
+}
+
+void CPVREpgSearchFilter::ValidateStartAndEndDate()
+{
+  const CDateTime start = CServiceBroker::GetPVRManager().EpgContainer().GetFirstEPGDate();
+  const CDateTime end = CServiceBroker::GetPVRManager().EpgContainer().GetLastEPGDate();
+
+  if (m_startDateTime < start || m_startDateTime > end)
+    m_startDateTime.SetFromUTCDateTime(start);
+
+  if (m_endDateTime > end || m_endDateTime < start)
+    m_endDateTime.SetFromUTCDateTime(end);
+}
+
+const CDateTime& CPVREpgSearchFilter::GetStartDateTime()
+{
+  ValidateStartAndEndDate();
+  return m_startDateTime;
+}
+
+const CDateTime& CPVREpgSearchFilter::GetEndDateTime()
+{
+  ValidateStartAndEndDate();
+  return m_endDateTime;
 }
 
 bool CPVREpgSearchFilter::MatchGenre(const CPVREpgInfoTagPtr &tag) const
