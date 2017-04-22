@@ -596,7 +596,7 @@ bool CGUIControlButtonSetting::OnClick()
 
       SetValid(setting->SetValue(addonID));
     }
-    else if (controlFormat == "path")
+    else if (controlFormat == "path" || controlFormat == "file" || controlFormat == "image")
       SetValid(GetPath((CSettingPath *)m_pSetting, m_localizer));
     else if (controlFormat == "date")
     {
@@ -692,7 +692,7 @@ void CGUIControlButtonSetting::Update(bool updateDisplayOnly /* = false */)
         if (strText.empty())
           strText = g_localizeStrings.Get(231); // None
       }
-      else if (controlFormat == "path")
+      else if (controlFormat == "path" || controlFormat == "file" || controlFormat == "image")
       {
         std::string shortPath;
         if (CUtil::MakeShortenPath(strValue, shortPath, 30))
@@ -770,7 +770,17 @@ bool CGUIControlButtonSetting::GetPath(CSettingPath *pathSetting, ILocalizer* lo
   if (!localSharesOnly)
     g_mediaManager.GetNetworkLocations(shares);
 
-  if (!CGUIDialogFileBrowser::ShowAndGetDirectory(shares, ::Localize(static_cast<const CSettingControlButton*>(pathSetting->GetControl())->GetHeading(), localizer), path, pathSetting->Writable()))
+  bool result = false;
+  const CSettingControlButton* control = static_cast<const CSettingControlButton*>(pathSetting->GetControl());
+  const auto heading = ::Localize(control->GetHeading(), localizer);
+  if (control->GetFormat() == "file")
+    result = CGUIDialogFileBrowser::ShowAndGetFile(shares, pathSetting->GetMasking(), heading, path, control->UseImageThumbs(), control->UseFileDirectories());
+  else if (control->GetFormat() == "image")
+    result = CGUIDialogFileBrowser::ShowAndGetImage(shares, heading, path);
+  else
+    result = CGUIDialogFileBrowser::ShowAndGetDirectory(shares, heading, path, pathSetting->Writable());
+
+  if (!result)
     return false;
 
   return pathSetting->SetValue(path);

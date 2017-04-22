@@ -139,7 +139,9 @@ public:
       m_showAddonDetails(true),
       m_showInstalledAddons(true),
       m_showInstallableAddons(false),
-      m_showMoreAddons(true)
+      m_showMoreAddons(true),
+      m_useImageThumbs(false),
+      m_useFileDirectories(false)
   { }
   virtual ~CSettingControlButton() { }
 
@@ -162,6 +164,11 @@ public:
   bool ShowMoreAddons() const { return !m_showInstallableAddons && m_showMoreAddons; }
   void SetShowMoreAddons(bool showMoreAddons) { m_showMoreAddons = showMoreAddons; }
 
+  bool UseImageThumbs() const { return m_useImageThumbs; }
+  void SetUseImageThumbs(bool useImageThumbs) { m_useImageThumbs = useImageThumbs; }
+  bool UseFileDirectories() const { return m_useFileDirectories; }
+  void SetUseFileDirectories(bool useFileDirectories) { m_useFileDirectories = useFileDirectories; }
+
 protected:
   int m_heading;
   bool m_hideValue;
@@ -170,6 +177,9 @@ protected:
   bool m_showInstalledAddons;
   bool m_showInstallableAddons;
   bool m_showMoreAddons;
+
+  bool m_useImageThumbs;
+  bool m_useFileDirectories;
 };
 
 class CSetting;

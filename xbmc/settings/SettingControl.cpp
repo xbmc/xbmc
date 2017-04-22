@@ -202,6 +202,8 @@ bool CSettingControlButton::Deserialize(const TiXmlNode *node, bool update /* = 
 bool CSettingControlButton::SetFormat(const std::string &format)
 {
   if (!StringUtils::EqualsNoCase(format, "path") &&
+      !StringUtils::EqualsNoCase(format, "file") &&
+      !StringUtils::EqualsNoCase(format, "image") &&
       !StringUtils::EqualsNoCase(format, "addon") &&
       !StringUtils::EqualsNoCase(format, "action") &&
       !StringUtils::EqualsNoCase(format, "infolabel") &&
