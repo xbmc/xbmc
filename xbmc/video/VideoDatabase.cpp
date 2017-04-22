@@ -5255,7 +5255,10 @@ bool CVideoDatabase::GetPlayCounts(const std::string &strPath, CFileItemList &it
       CFileItemPtr item = items.Get(path);
       if (item)
       {
-        item->GetVideoInfoTag()->SetPlayCount(m_pDS->fv(1).get_asInt());
+        if (item->GetVideoInfoTag()->GetPlayCount() == -1)
+        {
+          item->GetVideoInfoTag()->SetPlayCount(m_pDS->fv(1).get_asInt());
+        }
         if (!item->GetVideoInfoTag()->GetResumePoint().IsSet())
         {
           item->GetVideoInfoTag()->SetResumePoint(m_pDS->fv(2).get_asInt(), m_pDS->fv(3).get_asInt());
@@ -5263,6 +5266,17 @@ bool CVideoDatabase::GetPlayCounts(const std::string &strPath, CFileItemList &it
       }
       m_pDS->next();
     }
+
+    // if playcount is still -1 set it to zero
+    for (int i = 0; i < items.Size(); i++)
+    {
+      CFileItemPtr pItem = items[i];
+      if (pItem->GetVideoInfoTag()->GetPlayCount() == -1)
+      {
+        pItem->GetVideoInfoTag()->SetPlayCount(0);
+      }
+    }
+	
     return true;
   }
   catch (...)
