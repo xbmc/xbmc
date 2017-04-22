@@ -30,6 +30,33 @@
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
 
+bool ParseSettingIdentifier(const std::string& settingId, std::string& categoryTag, std::string& settingTag)
+{
+  static const std::string Separator = ".";
+
+  if (settingId.empty())
+    return false;
+
+  std::vector<std::string> parts = StringUtils::Split(settingId, Separator);
+  if (parts.size() < 1 || parts.at(0).empty())
+    return false;
+
+  if (parts.size() == 1)
+  {
+    settingTag = parts.at(0);
+    return true;
+  }
+
+  // get the category tag and remove it from the parts
+  categoryTag = parts.at(0);
+  parts.erase(parts.begin());
+
+  // put together the setting tag
+  settingTag = StringUtils::Join(parts, Separator);
+
+  return true;
+}
+
 CSettingsManager::CSettingsManager()
   : m_initialized(false), m_loaded(false)
 { }
@@ -671,31 +698,35 @@ bool CSettingsManager::Serialize(TiXmlNode *parent) const
     if (it->second.setting->GetType() == SettingTypeAction)
       continue;
 
-    std::vector<std::string> parts = StringUtils::Split(it->first, ".");
-    if (parts.size() != 2 || parts.at(0).empty() || parts.at(1).empty())
+    std::string categoryTag, settingTag;
+    if (!ParseSettingIdentifier(it->second.setting->GetId(), categoryTag, settingTag))
     {
       CLog::Log(LOGWARNING, "CSettingsManager: unable to save setting \"%s\"", it->first.c_str());
       continue;
     }
-      
-    TiXmlNode *sectionNode = parent->FirstChild(parts.at(0));
-    if (sectionNode == NULL)
+
+    TiXmlNode *categoryNode = parent;
+    if (!categoryTag.empty())
     {
-      TiXmlElement sectionElement(parts.at(0));
-      sectionNode = parent->InsertEndChild(sectionElement);
-        
-      if (sectionNode == NULL)
+      categoryNode = parent->FirstChild(categoryTag);
+      if (categoryNode == NULL)
       {
-        CLog::Log(LOGWARNING, "CSettingsManager: unable to write <%s> tag", parts.at(0).c_str());
-        continue;
+        TiXmlElement categoryElement(categoryTag);
+        categoryNode = parent->InsertEndChild(categoryElement);
+
+        if (categoryNode == NULL)
+        {
+          CLog::Log(LOGWARNING, "CSettingsManager: unable to write <%s> tag", categoryTag.c_str());
+          continue;
+        }
       }
     }
-      
-    TiXmlElement settingElement(parts.at(1));
-    TiXmlNode *settingNode = sectionNode->InsertEndChild(settingElement);
+
+    TiXmlElement settingElement(settingTag);
+    TiXmlNode *settingNode = categoryNode->InsertEndChild(settingElement);
     if (settingNode == NULL)
     {
-      CLog::Log(LOGWARNING, "CSetting: unable to write <%s> tag in <%s>", parts.at(1).c_str(), parts.at(0).c_str());
+      CLog::Log(LOGWARNING, "CSetting: unable to write <%s> tag in <%s>", settingTag.c_str(), categoryTag.c_str());
       continue;
     }
     if (it->second.setting->IsDefault())
@@ -704,7 +735,7 @@ bool CSettingsManager::Serialize(TiXmlNode *parent) const
       if (settingElem != NULL)
         settingElem->SetAttribute(SETTING_XML_ELM_DEFAULT, "true");
     }
-      
+
     TiXmlText value(it->second.setting->ToString());
     settingNode->InsertEndChild(value);
   }
@@ -985,18 +1016,22 @@ bool CSettingsManager::LoadSetting(const TiXmlNode *node, CSetting *setting, boo
 
   const std::string &settingId = setting->GetId();
 
-  std::vector<std::string> parts = StringUtils::Split(settingId, ".");
-  if (parts.size() != 2 || parts.at(0).empty() || parts.at(1).empty())
+  std::string categoryTag, settingTag;
+  if (!ParseSettingIdentifier(settingId, categoryTag, settingTag))
   {
     CLog::Log(LOGWARNING, "CSettingsManager: unable to load setting \"%s\"", settingId.c_str());
     return false;
   }
 
-  const TiXmlNode *sectionNode = node->FirstChild(parts.at(0));
-  if (sectionNode == NULL)
-    return false;
+  const TiXmlNode *categoryNode = node;
+  if (!categoryTag.empty())
+  {
+    categoryNode = node->FirstChild(categoryTag);
+    if (categoryNode == NULL)
+      return false;
+  }
 
-  const TiXmlElement *settingElement = sectionNode->FirstChildElement(parts.at(1));
+  const TiXmlElement *settingElement = categoryNode->FirstChildElement(settingTag);
   if (settingElement == NULL)
     return false;
 
@@ -1037,15 +1072,19 @@ bool CSettingsManager::UpdateSetting(const TiXmlNode *node, CSetting *setting, c
       return false;
 
     oldSetting = update.GetValue().c_str();
-    std::vector<std::string> parts = StringUtils::Split(oldSetting, ".");
-    if (parts.size() != 2 || parts.at(0).empty() || parts.at(1).empty())
+    std::string categoryTag, settingTag;
+    if (!ParseSettingIdentifier(oldSetting, categoryTag, settingTag))
       return false;
 
-    const TiXmlNode *sectionNode = node->FirstChild(parts.at(0));
-    if (sectionNode == NULL)
-      return false;
+    const TiXmlNode *categoryNode = node;
+    if (!categoryTag.empty())
+    {
+      categoryNode = node->FirstChild(categoryTag);
+      if (categoryNode == NULL)
+        return false;
+    }
 
-    oldSettingNode = sectionNode->FirstChild(parts.at(1));
+    oldSettingNode = categoryNode->FirstChild(settingTag);
     if (oldSettingNode == NULL)
       return false;
 
