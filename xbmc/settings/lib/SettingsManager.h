@@ -457,10 +457,15 @@ private:
     CallbackSet callbacks;
   } Setting;
 
+  typedef std::map<std::string, Setting> SettingMap;
+
+  SettingMap::const_iterator FindSetting(std::string settingId) const;
+  SettingMap::iterator FindSetting(std::string settingId);
+  std::pair<SettingMap::iterator, bool> InsertSetting(std::string settingId, const Setting& setting);
+
   bool m_initialized;
   bool m_loaded;
 
-  typedef std::map<std::string, Setting> SettingMap;
   SettingMap m_settings;
   typedef std::map<std::string, CSettingSection*> SettingSectionMap;
   SettingSectionMap m_sections;

@@ -220,7 +220,7 @@ void CSettingsManager::SetInitialized()
     std::string parentSettingId = itSettingDep->second.setting->GetParent();
     if (!parentSettingId.empty())
     {
-      SettingMap::iterator itParentSetting = m_settings.find(parentSettingId);
+      SettingMap::iterator itParentSetting = FindSetting(parentSettingId);
       if (itParentSetting != m_settings.end())
         itParentSetting->second.children.insert(itSettingDep->first);
     }
@@ -232,7 +232,7 @@ void CSettingsManager::SetInitialized()
       std::set<std::string> settingIds = depIt->GetSettings();
       for (std::set<std::string>::const_iterator itSettingId = settingIds.begin(); itSettingId != settingIds.end(); ++itSettingId)
       {
-        SettingMap::iterator setting = m_settings.find(*itSettingId);
+        SettingMap::iterator setting = FindSetting(*itSettingId);
         if (setting == m_settings.end())
           continue;
 
@@ -273,12 +273,11 @@ void CSettingsManager::AddSection(CSettingSection *section)
       {
         (*settingIt)->CheckRequirements();
 
-        const std::string &settingId = (*settingIt)->GetId();
-        SettingMap::iterator setting = m_settings.find(settingId);
+        SettingMap::iterator setting = FindSetting((*settingIt)->GetId());
         if (setting == m_settings.end())
         {
           Setting tmpSetting = { NULL };
-          std::pair<SettingMap::iterator, bool> tmpIt = m_settings.insert(make_pair(settingId, tmpSetting));
+          std::pair<SettingMap::iterator, bool> tmpIt = InsertSetting((*settingIt)->GetId(), tmpSetting);
           setting = tmpIt.first;
         }
 
@@ -300,17 +299,14 @@ void CSettingsManager::RegisterCallback(ISettingCallback *callback, const std::s
 
   for (std::set<std::string>::const_iterator settingIt = settingList.begin(); settingIt != settingList.end(); ++settingIt)
   {
-    std::string id = *settingIt;
-    StringUtils::ToLower(id);
-
-    SettingMap::iterator setting = m_settings.find(id);
+    SettingMap::iterator setting = FindSetting(*settingIt);
     if (setting == m_settings.end())
     {
       if (m_initialized)
         continue;
 
       Setting tmpSetting = { NULL };
-      std::pair<SettingMap::iterator, bool> tmpIt = m_settings.insert(make_pair(id, tmpSetting));
+      std::pair<SettingMap::iterator, bool> tmpIt = InsertSetting(*settingIt, tmpSetting);
       setting = tmpIt.first;
     }
 
@@ -464,10 +460,7 @@ CSetting* CSettingsManager::GetSetting(const std::string &id) const
   if (id.empty())
     return NULL;
 
-  std::string settingId = id;
-  StringUtils::ToLower(settingId);
-
-  SettingMap::const_iterator setting = m_settings.find(settingId);
+  SettingMap::const_iterator setting = FindSetting(id);
   if (setting != m_settings.end())
     return setting->second.setting;
 
@@ -505,7 +498,7 @@ CSettingSection* CSettingsManager::GetSection(const std::string &section) const
 SettingDependencyMap CSettingsManager::GetDependencies(const std::string &id) const
 {
   CSharedLock lock(m_settingsCritical);
-  SettingMap::const_iterator setting = m_settings.find(id);
+  SettingMap::const_iterator setting = FindSetting(id);
   if (setting == m_settings.end())
     return SettingDependencyMap();
 
@@ -751,7 +744,7 @@ bool CSettingsManager::OnSettingChanging(const CSetting *setting)
   if (!m_loaded)
     return true;
 
-  SettingMap::const_iterator settingIt = m_settings.find(setting->GetId());
+  SettingMap::const_iterator settingIt = FindSetting(setting->GetId());
   if (settingIt == m_settings.end())
     return false;
 
@@ -776,7 +769,7 @@ void CSettingsManager::OnSettingChanged(const CSetting *setting)
   if (!m_loaded || setting == NULL)
     return;
     
-  SettingMap::const_iterator settingIt = m_settings.find(setting->GetId());
+  SettingMap::const_iterator settingIt = FindSetting(setting->GetId());
   if (settingIt == m_settings.end())
     return;
 
@@ -804,7 +797,7 @@ void CSettingsManager::OnSettingAction(const CSetting *setting)
   if (!m_loaded || setting == NULL)
     return;
 
-  SettingMap::const_iterator settingIt = m_settings.find(setting->GetId());
+  SettingMap::const_iterator settingIt = FindSetting(setting->GetId());
   if (settingIt == m_settings.end())
     return;
 
@@ -824,7 +817,7 @@ bool CSettingsManager::OnSettingUpdate(CSetting* &setting, const char *oldSettin
   if (setting == NULL)
     return false;
 
-  SettingMap::const_iterator settingIt = m_settings.find(setting->GetId());
+  SettingMap::const_iterator settingIt = FindSetting(setting->GetId());
   if (settingIt == m_settings.end())
     return false;
 
@@ -847,7 +840,7 @@ void CSettingsManager::OnSettingPropertyChanged(const CSetting *setting, const c
   if (!m_loaded || setting == NULL)
     return;
 
-  SettingMap::const_iterator settingIt = m_settings.find(setting->GetId());
+  SettingMap::const_iterator settingIt = FindSetting(setting->GetId());
   if (settingIt == m_settings.end())
     return;
 
@@ -1126,4 +1119,22 @@ void CSettingsManager::RegisterSettingOptionsFiller(const std::string &identifie
 
   SettingOptionsFiller optionsFiller = { filler, type };
   m_optionsFillers.insert(make_pair(identifier, optionsFiller));
+}
+
+CSettingsManager::SettingMap::const_iterator CSettingsManager::FindSetting(std::string settingId) const
+{
+  StringUtils::ToLower(settingId);
+  return m_settings.find(settingId);
+}
+
+CSettingsManager::SettingMap::iterator CSettingsManager::FindSetting(std::string settingId)
+{
+  StringUtils::ToLower(settingId);
+  return m_settings.find(settingId);
+}
+
+std::pair<CSettingsManager::SettingMap::iterator, bool> CSettingsManager::InsertSetting(std::string settingId, const Setting& setting)
+{
+  StringUtils::ToLower(settingId);
+  return m_settings.insert(std::make_pair(settingId, setting));
 }
