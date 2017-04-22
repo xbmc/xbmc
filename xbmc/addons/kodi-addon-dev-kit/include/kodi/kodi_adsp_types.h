@@ -24,9 +24,7 @@
  * Common data structures shared between KODI and KODI's audio DSP add-ons
  */
 
-#ifdef TARGET_WINDOWS
-#include <windows.h>
-#else
+#ifndef TARGET_WINDOWS
 #ifndef __cdecl
 #define __cdecl
 #endif

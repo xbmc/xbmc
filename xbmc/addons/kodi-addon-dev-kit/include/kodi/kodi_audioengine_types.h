@@ -30,9 +30,7 @@
   #include "cores/AudioEngine/Utils/AEChannelInfo.h"
 #endif
 
-#ifdef TARGET_WINDOWS
-#include <windows.h>
-#else
+#ifndef TARGET_WINDOWS
 #ifndef __cdecl
 #define __cdecl
 #endif

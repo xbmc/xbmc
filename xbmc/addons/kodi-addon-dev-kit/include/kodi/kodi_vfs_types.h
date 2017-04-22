@@ -18,17 +18,7 @@
  */
 #pragma once
 
-#ifdef TARGET_WINDOWS
-#include <windows.h>
-#ifdef BUILD_KODI_ADDON
-#if defined(CreateDirectory)
-#undef CreateDirectory
-#endif
-#if defined(RemoveDirectory)
-#undef RemoveDirectory
-#endif
-#endif // BUILD_KODI_ADDON
-#else
+#ifndef TARGET_WINDOWS
 #ifndef __cdecl
 #define __cdecl
 #endif

@@ -22,10 +22,11 @@
 #include <map>
 
 #include "XBDateTime.h"
-#include "settings/lib/ISettingCallback.h"
 #include "threads/CriticalSection.h"
 #include "threads/Thread.h"
 #include "utils/Observer.h"
+
+#include "pvr/PVRSettings.h"
 
 #include "Epg.h"
 #include "EpgDatabase.h"
@@ -41,10 +42,7 @@ namespace PVR
     unsigned int channelID;
   };
 
-  class CPVREpgContainer : public Observer,
-                        public Observable,
-                        public ISettingCallback,
-                        private CThread
+  class CPVREpgContainer : public Observer, public Observable, private CThread
   {
     friend class CPVREpgDatabase;
 
@@ -113,8 +111,6 @@ namespace PVR
      * @param msg The update message.
      */
     virtual void Notify(const Observable &obs, const ObservableMessage msg) override;
-
-    virtual void OnSettingChanged(const CSetting *setting) override;
 
     CPVREpgPtr CreateChannelEpg(const PVR::CPVRChannelPtr &channel);
 
@@ -194,7 +190,7 @@ namespace PVR
     /*!
      * @return True to not to store EPG entries in the database.
      */
-    bool IgnoreDB(void) const { return m_bIgnoreDbForClient; }
+    bool IgnoreDB() const;
 
     /*!
      * @brief Wait for an EPG update to finish.
@@ -264,13 +260,6 @@ namespace PVR
 
     CPVREpgDatabase m_database; /*!< the EPG database */
 
-    /** @name Configuration */
-    //@{
-    bool         m_bIgnoreDbForClient; /*!< don't save the EPG data in the database */
-    int          m_iDisplayTime;       /*!< hours of EPG data to fetch */
-    int          m_iUpdateTime;        /*!< update the full EPG after this period */
-    //@}
-
     /** @name Class state properties */
     //@{
     bool         m_bIsUpdating;            /*!< true while an update is running */
@@ -295,5 +284,6 @@ namespace PVR
 
   private:
     bool m_bUpdateNotificationPending; /*!< true while an epg updated notification to observers is pending. */
+    CPVRSettings m_settings;
   };
 }
