@@ -68,7 +68,6 @@ public:
   virtual void SetSpeed(float speed = 0) override;
   virtual float GetSpeed() override;
 
-  virtual bool SkipNext(){return false;}
   virtual bool IsCaching() const {return false;};
   virtual int GetCacheLevel() const {return -1;};
   virtual void DoAudioWork();

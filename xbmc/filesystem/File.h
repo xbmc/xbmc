@@ -124,7 +124,6 @@ public:
       return minimum;
   }
 
-  bool SkipNext();
   BitstreamStats* GetBitstreamStats() { return m_bitStreamStats; }
 
   int IoControl(EIoControl request, void* param);

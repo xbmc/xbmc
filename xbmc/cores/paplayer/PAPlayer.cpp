@@ -1133,11 +1133,6 @@ float PAPlayer::GetPercentage()
   return 0.0f;
 }
 
-bool PAPlayer::SkipNext()
-{
-  return false;
-}
-
 void PAPlayer::UpdateGUIData(StreamInfo *si)
 {
   /* Store data need by external threads in member

@@ -493,13 +493,6 @@ int CFile::Stat(struct __stat64 *buffer)
   return m_pFile->Stat(buffer);
 }
 
-bool CFile::SkipNext()
-{
-  if (m_pFile)
-    return m_pFile->SkipNext();
-  return false;
-}
-
 int CFile::Stat(const std::string& strFileName, struct __stat64* buffer)
 {
   const CURL pathToUrl(strFileName);

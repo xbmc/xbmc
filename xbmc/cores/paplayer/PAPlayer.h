@@ -71,7 +71,6 @@ public:
   virtual int64_t GetTime();
   virtual void SetTime(int64_t time);
   virtual void SeekTime(int64_t iTime = 0);
-  virtual bool SkipNext();
   virtual void GetAudioCapabilities(std::vector<int> &audioCaps) {}
 
   static bool HandlesType(const std::string &type);

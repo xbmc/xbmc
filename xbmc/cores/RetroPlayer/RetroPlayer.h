@@ -106,7 +106,6 @@ namespace GAME
     virtual bool GetStreamDetails(CStreamDetails &details) override;
     virtual void SetSpeed(float speed) override;
     virtual float GetSpeed() override;
-    //virtual bool SkipNext() override { return false; }
     //virtual bool IsCaching() const override { return false; }
     //virtual int GetCacheLevel() const override { return -1; }
     //virtual bool IsInMenu() const override { return false; }
