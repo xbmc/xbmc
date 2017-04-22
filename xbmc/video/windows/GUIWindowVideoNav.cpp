@@ -629,7 +629,7 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items, CVideoDatabase &dat
       /* NOTE: Currently we GetPlayCounts on our items regardless of whether content is set
                 as if content is set, GetItemsForPaths doesn't return anything not in the content tables.
                 This code can be removed once the content tables are always filled */
-      if (!pItem->m_bIsFolder && !fetchedPlayCounts)
+      if (!pItem->m_bIsFolder && !fetchedPlayCounts && !items.IsPlugin())
       {
         database.GetPlayCounts(items.GetPath(), items);
         fetchedPlayCounts = true;
