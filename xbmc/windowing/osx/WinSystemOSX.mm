@@ -270,7 +270,7 @@ CGDisplayModeRef BestMatchForMode(CGDirectDisplayID display, size_t bitsPerPixel
     
     if((CGDisplayModeGetWidth(mode) >= width) && (CGDisplayModeGetHeight(mode) >= height))
     {
-      CGDisplayModeRelease(displayMode); // rlease the copy we got before ...
+      CGDisplayModeRelease(displayMode); // release the copy we got before ...
       displayMode = mode;
       match = true;
       break;
@@ -482,7 +482,7 @@ void fadeOutDisplay(NSScreen *theScreen, double fadeTime)
 
 // try to find mode that matches the desired size, refreshrate
 // non interlaced, nonstretched, safe for hardware
-CFDictionaryRef GetMode(int width, int height, double refreshrate, int screenIdx)
+CGDisplayModeRef GetMode(int width, int height, double refreshrate, int screenIdx)
 {
   if ( screenIdx >= (signed)[[NSScreen screens] count])
     return NULL;
@@ -497,7 +497,7 @@ CFDictionaryRef GetMode(int width, int height, double refreshrate, int screenIdx
 
   CLog::Log(LOGDEBUG, "GetMode looking for suitable mode with %d x %d @ %f Hz on display %d\n", width, height, refreshrate, screenIdx);
 
-  CFArrayRef displayModes = CGDisplayAvailableModes(GetDisplayID(screenIdx));
+  CFArrayRef displayModes = CGDisplayCopyAllDisplayModes(GetDisplayID(screenIdx), nullptr);
 
   if (NULL == displayModes)
   {
@@ -507,16 +507,16 @@ CFDictionaryRef GetMode(int width, int height, double refreshrate, int screenIdx
 
   for (int i=0; i < CFArrayGetCount(displayModes); ++i)
   {
-    CFDictionaryRef displayMode = (CFDictionaryRef)CFArrayGetValueAtIndex(displayModes, i);
-
-    stretched = GetDictionaryBoolean(displayMode, kCGDisplayModeIsStretched);
-    interlaced = GetDictionaryBoolean(displayMode, kCGDisplayModeIsInterlaced);
-    bitsperpixel = GetDictionaryInt(displayMode, kCGDisplayBitsPerPixel);
-    safeForHardware = GetDictionaryBoolean(displayMode, kCGDisplayModeIsSafeForHardware);
-    televisionoutput = GetDictionaryBoolean(displayMode, kCGDisplayModeIsTelevisionOutput);
-    w = GetDictionaryInt(displayMode, kCGDisplayWidth);
-    h = GetDictionaryInt(displayMode, kCGDisplayHeight);
-    rate = GetDictionaryDouble(displayMode, kCGDisplayRefreshRate);
+    CGDisplayModeRef displayMode = (CGDisplayModeRef)CFArrayGetValueAtIndex(displayModes, i);
+    uint32_t flags = CGDisplayModeGetIOFlags(displayMode);
+    stretched = flags & kDisplayModeStretchedFlag ? true : false;
+    interlaced = flags & kDisplayModeInterlacedFlag ? true : false;
+    bitsperpixel = DisplayBitsPerPixelForMode(displayMode);
+    safeForHardware = flags & kDisplayModeSafetyFlags ? true : false;
+    televisionoutput = flags & kDisplayModeTelevisionFlag ? true : false;
+    w = CGDisplayModeGetWidth(displayMode);
+    h = CGDisplayModeGetHeight(displayMode);
+    rate = CGDisplayModeGetRefreshRate(displayMode);
 
 
     if ((bitsperpixel == 32)      &&
@@ -531,6 +531,8 @@ CFDictionaryRef GetMode(int width, int height, double refreshrate, int screenIdx
       return displayMode;
     }
   }
+  
+  CFRelease(displayModes);
   CLog::Log(LOGERROR, "GetMode - no match found!");
   return NULL;
 }
@@ -1287,7 +1289,7 @@ bool CWinSystemOSX::SwitchToVideoMode(int width, int height, double refreshrate,
     return false;
 
   boolean_t match = false;
-  CFDictionaryRef dispMode = NULL;
+  CGDisplayModeRef dispMode = NULL;
   // Figure out the screen size. (default to main screen)
   CGDirectDisplayID display_id = GetDisplayID(screenIdx);
 
@@ -1298,10 +1300,10 @@ bool CWinSystemOSX::SwitchToVideoMode(int width, int height, double refreshrate,
   //not found - fallback to bestemdeforparameters
   if (!dispMode)
   {
-    dispMode = CGDisplayBestModeForParameters(display_id, 32, width, height, &match);
+    dispMode = BestMatchForMode(display_id, 32, width, height, match);
 
     if (!match)
-      dispMode = CGDisplayBestModeForParameters(display_id, 16, width, height, &match);
+      dispMode = BestMatchForMode(display_id, 16, width, height, match);
 
     if (!match)
       return false;
@@ -1311,13 +1313,11 @@ bool CWinSystemOSX::SwitchToVideoMode(int width, int height, double refreshrate,
   CGDisplayCapture(display_id);
   CGDisplayConfigRef cfg;
   CGBeginDisplayConfiguration(&cfg);
-  // we don't need to do this, we are already faded.
-  //CGConfigureDisplayFadeEffect(cfg, 0.3f, 0.5f, 0, 0, 0);
-  CGConfigureDisplayMode(cfg, display_id, dispMode);
+  CGConfigureDisplayWithDisplayMode(cfg, display_id, dispMode, nullptr);
   CGError err = CGCompleteDisplayConfiguration(cfg, kCGConfigureForAppOnly);
   CGDisplayRelease(display_id);
   
-  m_refreshRate = GetDictionaryDouble(dispMode, kCGDisplayRefreshRate);
+  m_refreshRate = CGDisplayModeGetRefreshRate(dispMode);
 
   Cocoa_CVDisplayLinkUpdate();
 
@@ -1339,7 +1339,7 @@ void CWinSystemOSX::FillInVideoModes()
     double refreshrate;
     RESOLUTION_INFO res;
 
-    CFArrayRef displayModes = CGDisplayAvailableModes(GetDisplayID(disp));
+    CFArrayRef displayModes = CGDisplayCopyAllDisplayModes(GetDisplayID(disp), nullptr);
     NSString *dispName = screenNameForDisplay(GetDisplayID(disp));
 
     if (dispName != nil)
@@ -1352,22 +1352,23 @@ void CWinSystemOSX::FillInVideoModes()
 
     for (int i=0; i < CFArrayGetCount(displayModes); ++i)
     {
-      CFDictionaryRef displayMode = (CFDictionaryRef)CFArrayGetValueAtIndex(displayModes, i);
+      CGDisplayModeRef displayMode = (CGDisplayModeRef)CFArrayGetValueAtIndex(displayModes, i);
 
-      stretched = GetDictionaryBoolean(displayMode, kCGDisplayModeIsStretched);
-      interlaced = GetDictionaryBoolean(displayMode, kCGDisplayModeIsInterlaced);
-      bitsperpixel = GetDictionaryInt(displayMode, kCGDisplayBitsPerPixel);
-      safeForHardware = GetDictionaryBoolean(displayMode, kCGDisplayModeIsSafeForHardware);
-      televisionoutput = GetDictionaryBoolean(displayMode, kCGDisplayModeIsTelevisionOutput);
+      uint32_t flags = CGDisplayModeGetIOFlags(displayMode);
+      stretched = flags & kDisplayModeStretchedFlag ? true : false;
+      interlaced = flags & kDisplayModeInterlacedFlag ? true : false;
+      bitsperpixel = DisplayBitsPerPixelForMode(displayMode);
+      safeForHardware = flags & kDisplayModeSafetyFlags ? true : false;
+      televisionoutput = flags & kDisplayModeTelevisionFlag ? true : false;
 
       if ((bitsperpixel == 32)      &&
           (safeForHardware == YES)  &&
           (stretched == NO)         &&
           (interlaced == NO))
       {
-        w = GetDictionaryInt(displayMode, kCGDisplayWidth);
-        h = GetDictionaryInt(displayMode, kCGDisplayHeight);
-        refreshrate = GetDictionaryDouble(displayMode, kCGDisplayRefreshRate);
+        w = CGDisplayModeGetWidth(displayMode);
+        h = CGDisplayModeGetHeight(displayMode);
+        refreshrate = CGDisplayModeGetRefreshRate(displayMode);
         if ((int)refreshrate == 0)  // LCD display?
         {
           // NOTE: The refresh rate will be REPORTED AS 0 for many DVI and notebook displays.
@@ -1398,6 +1399,7 @@ void CWinSystemOSX::FillInVideoModes()
         CDisplaySettings::GetInstance().AddResolutionInfo(res);
       }
     }
+    CFRelease(displayModes);
   }
 }
 
