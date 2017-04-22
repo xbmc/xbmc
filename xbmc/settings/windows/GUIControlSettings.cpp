@@ -586,6 +586,9 @@ bool CGUIControlButtonSetting::OnClick()
     SetValid(true);
   }
 
+  // update the displayed value
+  Update();
+
   return IsValid();
 }
 
