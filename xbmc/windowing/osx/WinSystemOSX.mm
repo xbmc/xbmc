@@ -227,6 +227,79 @@ CGDirectDisplayID GetDisplayID(int screen_index)
   return(displayArray[screen_index]);
 }
 
+int DisplayBitsPerPixelForMode(CGDisplayModeRef mode)
+{
+  int bitsPerPixel = 0;
+  
+  CFStringRef pixEnc = CGDisplayModeCopyPixelEncoding(mode);
+  if(CFStringCompare(pixEnc, CFSTR(IO32BitDirectPixels), kCFCompareCaseInsensitive) == kCFCompareEqualTo)
+  {
+    bitsPerPixel = 32;
+  }
+  else if(CFStringCompare(pixEnc, CFSTR(IO16BitDirectPixels), kCFCompareCaseInsensitive) == kCFCompareEqualTo)
+  {
+    bitsPerPixel = 16;
+  }
+  else if(CFStringCompare(pixEnc, CFSTR(IO8BitIndexedPixels), kCFCompareCaseInsensitive) == kCFCompareEqualTo)
+  {
+    bitsPerPixel = 8;
+  }
+  
+  CFRelease(pixEnc);
+  
+  return bitsPerPixel;
+}
+
+// mimic former behavior of deprecated CGDisplayBestModeForParameters
+CGDisplayModeRef BestMatchForMode(CGDirectDisplayID display, size_t bitsPerPixel, size_t width, size_t height, boolean_t &match)
+{
+  // Get a copy of the current display mode
+  CGDisplayModeRef displayMode = CGDisplayCopyDisplayMode(kCGDirectMainDisplay);
+  
+  // Loop through all display modes to determine the closest match.
+  // CGDisplayBestModeForParameters is deprecated on 10.6 so we will emulate it's behavior
+  // Try to find a mode with the requested depth and equal or greater dimensions first.
+  // If no match is found, try to find a mode with greater depth and same or greater dimensions.
+  // If still no match is found, just use the current mode.
+  CFArrayRef allModes = CGDisplayCopyAllDisplayModes(kCGDirectMainDisplay, NULL);
+  for(int i = 0; i < CFArrayGetCount(allModes); i++)	{
+    CGDisplayModeRef mode = (CGDisplayModeRef)CFArrayGetValueAtIndex(allModes, i);
+    
+    if(DisplayBitsPerPixelForMode(mode) != bitsPerPixel)
+      continue;
+    
+    if((CGDisplayModeGetWidth(mode) >= width) && (CGDisplayModeGetHeight(mode) >= height))
+    {
+      CGDisplayModeRelease(displayMode); // rlease the copy we got before ...
+      displayMode = mode;
+      match = true;
+      break;
+    }
+  }
+  
+  // No depth match was found
+  if(!match)
+  {
+    for(int i = 0; i < CFArrayGetCount(allModes); i++)
+    {
+      CGDisplayModeRef mode = (CGDisplayModeRef)CFArrayGetValueAtIndex(allModes, i);
+      if(DisplayBitsPerPixelForMode(mode) >= bitsPerPixel)
+        continue;
+      
+      if((CGDisplayModeGetWidth(mode) >= width) && (CGDisplayModeGetHeight(mode) >= height))
+      {
+        displayMode = mode;
+        match = true;
+        break;
+      }
+    }
+  }
+  
+  CFRelease(allModes);
+  
+  return displayMode;
+}
+
 CGDirectDisplayID GetDisplayIDFromScreen(NSScreen *screen)
 {
   NSDictionary* screenInfo = [screen deviceDescription];
