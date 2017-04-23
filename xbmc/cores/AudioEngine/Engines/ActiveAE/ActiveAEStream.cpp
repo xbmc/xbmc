@@ -205,7 +205,7 @@ double CActiveAEStream::CalcResampleRatio(double error)
   double proportional = 0.0;
 
   double proportionaldiv = 2.0;
-  proportional = error / m_errorInterval / proportionaldiv;
+  proportional = error / GetErrorInterval() / proportionaldiv;
 
   double clockspeed = 1.0;
   if (m_pClock)
@@ -219,6 +219,15 @@ double CActiveAEStream::CalcResampleRatio(double error)
   double ret = 1.0 / clockspeed + proportional + m_resampleIntegral;
   //CLog::Log(LOGNOTICE,"----- error: %f, rr: %f, prop: %f, int: %f",
   //                    error, ret, proportional, m_resampleIntegral);
+  return ret;
+}
+
+int CActiveAEStream::GetErrorInterval()
+{
+  int ret = m_errorInterval;
+  double rr = m_processingBuffers->GetRR();
+  if (rr > 1.02 || rr < 0.98)
+    ret *= 3;
   return ret;
 }
 
