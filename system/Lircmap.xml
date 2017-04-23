@@ -600,4 +600,99 @@
 		<recordedtv>KEY_PVR</recordedtv> 
 		<liveradio>KEY_RADIO</liveradio> 
 	</remote>
+	
+	<remote device="vista_mce">
+		<play>Play</play>
+		<pause>Pause</pause>
+		<stop>Stop</stop>
+		<forward>Fwd</forward>
+		<reverse>Rwd</reverse>
+		<left>Left</left>
+		<right>Right</right>
+		<up>Up</up>
+		<down>Down</down>
+		<select>Ok</select>
+		<pageplus>Chup</pageplus>
+		<pageminus>Chdown</pageminus>
+		<back>Back</back>
+		<menu>Dvdmenu</menu>
+		<title>Guide</title>
+		<info>More</info>
+		<skipplus>Skipfwd</skipplus>
+		<skipminus>Skipback</skipminus>
+		<display>####Aspect</display>
+		<start>Start</start>
+		<record>Rec</record>
+		<volumeplus>Volup</volumeplus>
+		<volumeminus>Voldown</volumeminus>
+		<mute>Mute</mute>
+		<power>Power</power>
+		<myvideo>Videos</myvideo>
+		<mymusic>Music</mymusic>
+		<mypictures>Pictures</mypictures>
+		<mytv>TV</mytv>
+		<one>1</one>
+		<two>2</two>
+		<three>3</three>
+		<four>4</four>
+		<five>5</five>
+		<six>6</six>
+		<seven>7</seven>
+		<eight>8</eight>
+		<nine>9</nine>
+		<zero>0</zero>
+		<star>*</star>
+		<hash>#</hash>
+		<clear>Clear</clear>
+		<enter>Enter</enter>
+		<red>Red</red>
+		<green>Green</green>
+		<yellow>Yellow</yellow>
+		<blue>Blue</blue>
+		<teletext>Teletext</teletext>
+
+		<!-- new kernel-based lirc button names -->
+		<left>KEY_LEFT</left>
+		<right>KEY_RIGHT</right>
+		<up>KEY_UP</up>
+		<down>KEY_DOWN</down>
+		<select>KEY_OK</select>
+		<start>KEY_HOME</start>
+		<back>KEY_BACK</back>
+		<record>KEY_RECORD</record>
+		<play>KEY_PLAY</play>
+		<pause>KEY_PAUSE</pause>
+		<stop>KEY_STOP</stop>
+		<forward>KEY_FORWARD</forward>
+		<reverse>KEY_REWIND</reverse>
+		<volumeplus>KEY_VOLUMEUP</volumeplus>
+		<volumeminus>KEY_VOLUMEDOWN</volumeminus>
+		<pageplus>KEY_CHANNELUP</pageplus>
+		<pageminus>KEY_CHANNELDOWN</pageminus>
+		<skipplus>KEY_NEXT</skipplus>
+		<skipminus>KEY_AGAIN</skipminus>
+		<mute>KEY_MUTE</mute>
+		<power>KEY_POWER</power>
+		<myvideo>KEY_VIDEO</myvideo>
+		<mymusic>KEY_AUDIO</mymusic>
+		<mytv>LiveTV</mytv>
+		<one>KEY_1</one>
+		<two>KEY_2</two>
+		<three>KEY_3</three>
+		<four>KEY_4</four>
+		<five>KEY_5</five>
+		<six>KEY_6</six>
+		<seven>KEY_7</seven>
+		<eight>KEY_8</eight>
+		<nine>KEY_9</nine>
+		<zero>KEY_0</zero>
+		<red>KEY_RED</red>
+		<green>KEY_GREEN</green>
+		<yellow>KEY_YELLOW</yellow>
+		<blue>KEY_BLUE</blue>
+		<menu>KEY_DVD</menu>
+		<clear>KEY_CLEAR</clear>
+		<enter>KEY_ENTER</enter>
+	</remote>
+	
 </lircmap>
