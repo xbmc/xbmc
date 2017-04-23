@@ -1,0 +1,533 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+joystick.Tronsmart.Mars.G01.xml
+2015/12/13 Tom Wizetek <tom@wizetek.com>
+based on joystick.xml.sample plus enhancements
+
+** Of the three Tronsmart X/D/A modes use the X mode. **
+
+A = select, play, pause
+B = back, stop, open Favourites on home screen
+X = context menu, OSD while playing
+Y = toggle full screen, picture zoom reset
+
+Left Shoulder = change video aspect ratio, previous visualisation preset, queue item, delete from playlist, rotate picture
+Right Shoulder = toggle subtitles, next visualisation preset, toggle playlist, picture info
+Left Trigger = audio offset
+Right Trigger = subtitle offset
+
+Start = display info while playing, go to home screen, ENTER, move item up (playlist/favorite), reload keymap on home screen
+Select = back, show time during video play, open visualisation presets, move item down
+
+D-pad = movement, video skip small step (left/right) or big step (up/down), audio step back/forward (left/right) or skip next/previous (up/down), picture zoom (up/down) or skip (left/right)
+
+Left Stick = left/right scan, up/down scroll
+Right Stick = left/right volume, up/down amplification
+Left Stick click = shutdown menu
+Right Stick click = mute (commented out alternative: screenshot), open Favourites from library screen
+
+button IDs:
+1		A
+2		B
+3		X
+4		Y
+5		Left Shoulder
+6		Right Shoulder
+7		Select
+8		Start
+9		Left Stick click
+10	Right Stick click
+
+axis IDs:
+1		Left Stick L/R
+2		Left Stick U/D
+3		L/R Trigger
+4		Right Stick L/R
+5		Right Stick U/D
+-->
+
+<keymap>
+  <global>
+    <joystick name="Gamepad For Windows (Controller)">
+      <altname>Tronsmart</altname>
+      <button id="1">Select</button>
+      <button id="2">Back</button>
+      <button id="3">ContextMenu</button>
+      <button id="4">FullScreen</button>
+      <button id="5">Queue</button>
+      <button id="6">Playlist</button>
+      <button id="7">PreviousMenu</button>
+      <button id="8">ActivateWindow(Home)</button>
+      <button id="9">ActivateWindow(ShutdownMenu)</button>
+<!-- remap -->
+      <!-- <button id="10">ActivateWindow(PlayerControls)</button> -->
+      <button id="10">Mute</button>
+<!-- alternative -->
+      <!-- <button id="10">Screenshot</button> -->
+      <!-- <button id="10">togglefullscreen</button> -->
+<!-- nonexistent buttons beyond 10 -->
+      <!-- <button id="11">Up</button> -->
+      <!-- <button id="12">Down</button> -->
+      <!-- <button id="13">Left</button> -->
+      <!-- <button id="14">Right</button> -->
+      <!-- <button id="15">PreviousMenu</button> -->
+<!-- remap -->
+      <!-- <axis id="1" limit="-1">Up</axis> -->
+      <axis id="1" limit="-1">AnalogSeekBack</axis>
+<!-- remap -->
+      <!-- <axis id="1" limit="+1">Down</axis> -->
+      <axis id="1" limit="+1">AnalogSeekForward</axis>
+<!-- remap -->
+      <!-- <axis id="2" limit="-1">Left</axis> -->
+      <axis id="2" limit="-1">ScrollUp</axis>
+<!-- remap -->
+      <!-- <axis id="2" limit="+1">Right</axis> -->
+      <axis id="2" limit="+1">ScrollDown</axis>
+      <axis id="3" limit="+1">ScrollUp</axis>
+      <axis id="3" limit="-1">ScrollDown</axis>
+<!-- remap -->
+      <!-- <axis id="5" limit="-1">VolumeUp</axis> -->
+      <axis id="5" limit="-1">volampup</axis>
+<!-- remap -->
+      <!-- <axis id="5" limit="+1">VolumeDown</axis> -->
+      <axis id="5" limit="+1">volampdown</axis>
+      <axis id="4" limit="-1">VolumeDown</axis>
+      <axis id="4" limit="+1">VolumeUp</axis>
+      <hat id="1" position="up">Up</hat>
+      <hat id="1" position="down">Down</hat>
+      <hat id="1" position="left">Left</hat>
+      <hat id="1" position="right">Right</hat>
+    </joystick>
+  </global>
+  <Home>
+    <joystick name="Gamepad For Windows (Controller)">
+      <altname>Tronsmart</altname>
+<!-- remap -->
+      <!-- <button id="8">Skin.ToggleSetting(HomeViewToggle)</button> -->
+      <button id="8">reloadkeymaps</button>
+<!-- added -->
+      <button id="6">Playlist</button>
+<!-- added -->
+      <button id="2">XBMC.ActivateWindow(Favourites)</button>
+    </joystick>
+  </Home>
+  <MyFiles>
+    <joystick name="Gamepad For Windows (Controller)">
+      <altname>Tronsmart</altname>
+      <button id="6">Highlight</button>
+    </joystick>
+  </MyFiles>
+  <MyMusicPlaylist>
+    <joystick name="Gamepad For Windows (Controller)">
+      <altname>Tronsmart</altname>
+      <button id="5">Delete</button>
+<!-- added -->
+      <button id="7">MoveItemUp</button>
+      <button id="8">MoveItemDown</button>
+    </joystick>
+  </MyMusicPlaylist>
+  <MyMusicFiles>
+<!-- added entire section -->
+    <joystick name="Gamepad For Windows (Controller)">
+      <altname>Tronsmart</altname>
+      <button id="10">XBMC.ActivateWindow(Favourites)</button>
+    </joystick>
+  </MyMusicFiles>
+  <MyMusicLibrary>
+<!-- added entire section -->
+    <joystick name="Gamepad For Windows (Controller)">
+      <altname>Tronsmart</altname>
+      <button id="10">XBMC.ActivateWindow(Favourites)</button>
+    </joystick>
+  </MyMusicLibrary>
+  <FullscreenVideo>
+    <joystick name="Gamepad For Windows (Controller)">
+      <altname>Tronsmart</altname>
+      <button id="1">Pause</button>
+      <button id="2">Stop</button>
+      <button id="3">OSD</button>
+      <button id="5">AspectRatio</button>
+      <button id="6">ShowSubtitles</button>
+<!-- remap -->
+      <!-- <button id="7">Seek(-7)</button> --><!-- Replaces smallstepback -->
+      <!-- <button id="7">Seek(-4)</button> -->
+      <button id="7">ShowTime</button>
+      <button id="8">Info</button>
+<!-- disable here to use global mapping -->
+      <!-- <button id="10">AudioNextLanguage</button> -->
+<!-- nonexistent buttons beyond 10 -->
+      <!-- <button id="11">BigStepForward</button> -->
+      <!-- <button id="12">BigStepBack</button> -->
+      <!-- <button id="13">StepBack</button> -->
+      <!-- <button id="14">StepForward</button> -->
+<!-- remap -->
+      <!-- <axis id="3" limit="+1">AnalogRewind</axis> -->
+      <axis id="3" limit="+1">audiodelay</axis>
+<!-- remap -->
+      <!-- <axis id="3" limit="-1">AnalogFastForward</axis> -->
+      <axis id="3" limit="-1">subtitledelay</axis>
+      <hat id="1" position="up">BigStepForward</hat>
+      <hat id="1" position="down">BigStepBack</hat>
+<!-- alternative -->
+      <!-- <hat id="1" position="up">ChapterOrBigStepForward</hat> -->
+      <!-- <hat id="1" position="down">ChapterOrBigStepBack</hat> -->
+      <hat id="1" position="left">StepBack</hat>
+      <hat id="1" position="right">StepForward</hat>
+    </joystick>
+  </FullscreenVideo>
+  <FullscreenLiveTV>
+    <joystick name="Gamepad For Windows (Controller)">
+      <altname>Tronsmart</altname>
+<!-- nonexistent buttons beyond 10 -->
+      <!-- <button id="11">ChannelUp</button> -->
+      <!-- <button id="12">ChannelDown</button> -->
+      <!-- <button id="13">StepBack</button> -->
+      <!-- <button id="14">StepForward</button> -->
+      <hat id="1" position="up">ChannelUp</hat>
+      <hat id="1" position="down">ChannelDown</hat>
+      <hat id="1" position="left">StepBack</hat>
+      <hat id="1" position="right">StepForward</hat>
+    </joystick>
+  </FullscreenLiveTV>
+  <FullscreenRadio>
+    <joystick name="Gamepad For Windows (Controller)">
+      <altname>Tronsmart</altname>
+<!-- nonexistent buttons beyond 10 -->
+      <!-- <button id="11">ChannelUp</button> -->
+      <!-- <button id="12">ChannelDown</button> -->
+      <!-- <button id="13">StepBack</button> -->
+      <!-- <button id="14">StepForward</button> -->
+      <hat id="1" position="up">ChannelUp</hat>
+      <hat id="1" position="down">ChannelDown</hat>
+      <hat id="1" position="left">StepBack</hat>
+      <hat id="1" position="right">StepForward</hat>
+    </joystick>
+  </FullscreenRadio>
+  <FullscreenInfo>
+    <joystick name="Gamepad For Windows (Controller)">
+      <altname>Tronsmart</altname>
+      <button id="2">Close</button>
+      <button id="3">OSD</button>
+      <button id="8">Close</button>
+<!-- not needed here -->
+      <!-- <axis id="3" limit="+1">AnalogRewind</axis> -->
+      <!-- <axis id="3" limit="-1">AnalogFastForward</axis> -->
+    </joystick>
+  </FullscreenInfo>
+  <PlayerControls>
+    <joystick name="Gamepad For Windows (Controller)">
+      <altname>Tronsmart</altname>
+      <button id="3">Close</button>
+<!-- remap -->
+      <!-- <button id="9">Close</button> -->
+      <button id="7">Close</button>
+<!-- remap -->
+      <!-- <button id="10">Close</button> -->
+      <button id="8">Close</button>
+    </joystick>
+  </PlayerControls>
+  <Visualisation>
+    <joystick name="Gamepad For Windows (Controller)">
+      <altname>Tronsmart</altname>
+      <button id="1">Pause</button>
+      <button id="2">Stop</button>
+      <button id="3">ActivateWindow(MusicOSD)</button>
+<!-- remap -->
+      <!-- <button id="5">ActivateWindow(VisualisationPresetList)</button> -->
+      <button id="7">ActivateWindow(VisualisationPresetList)</button>
+<!-- remap -->
+      <!-- <button id="6">Info</button> -->
+      <button id="8">Info</button>
+<!-- disable to use global mapping -->
+      <!-- <button id="10">ActivateWindow(MusicOSD)</button> -->
+<!-- nonexistent buttons beyond 10 -->
+      <!-- <button id="11">SkipNext</button> -->
+      <!-- <button id="12">SkipPrevious</button> -->
+<!-- remap -->
+      <!-- <button id="13">PreviousPreset</button> -->
+      <button id="5">PreviousPreset</button>
+<!-- remap -->
+      <!-- <button id="14">NextPreset</button> -->
+      <button id="6">NextPreset</button>
+<!-- remap to avoid freezing -->
+      <!-- <axis id="3" limit="+1">AnalogRewind</axis> -->
+      <axis id="3" limit="+1">AnalogSeekBack</axis>
+<!-- remap to avoid freezing -->
+      <!-- <axis id="3" limit="-1">AnalogFastForward</axis> -->
+      <axis id="3" limit="-1">AnalogSeekForward</axis>
+      <hat id="1" position="up">SkipNext</hat>
+      <hat id="1" position="down">SkipPrevious</hat>
+      <hat id="1" position="left">StepBack</hat>
+      <hat id="1" position="right">StepForward</hat>
+    </joystick>
+  </Visualisation>
+  <MusicOSD>
+    <joystick name="Gamepad For Windows (Controller)">
+      <altname>Tronsmart</altname>
+      <button id="3">Close</button>
+      <button id="6">Info</button>
+    </joystick>
+  </MusicOSD>
+  <VisualisationSettings>
+    <joystick name="Gamepad For Windows (Controller)">
+      <altname>Tronsmart</altname>
+      <button id="2">Close</button>
+    </joystick>
+  </VisualisationSettings>
+  <VisualisationPresetList>
+    <joystick name="Gamepad For Windows (Controller)">
+      <altname>Tronsmart</altname>
+      <button id="2">Close</button>
+    </joystick>
+  </VisualisationPresetList>
+  <SlideShow>
+    <joystick name="Gamepad For Windows (Controller)">
+      <altname>Tronsmart</altname>
+      <button id="1">Pause</button>
+      <button id="2">Stop</button>
+      <button id="4">ZoomNormal</button>
+      <button id="5">Rotate</button>
+      <button id="6">CodecInfo</button>
+<!-- added -->
+      <button id="3">Info</button>
+<!-- added -->
+      <button id="8">Info</button>
+<!-- nonexistent buttons beyond 10 -->
+      <!-- <button id="11">ZoomIn</button> -->
+      <!-- <button id="12">ZoomOut</button> -->
+      <!-- <button id="13">PreviousPicture</button> -->
+      <!-- <button id="14">NextPicture</button> -->
+      <axis id="1">AnalogMove</axis>
+<!-- disable because up/down axis id 2 is moving left/right too -->
+      <!-- <axis id="2">AnalogMove</axis> -->
+<!-- added: up/down digital vs analog is ugly but works -->
+      <axis id="2" limit="-1">Up</axis>
+<!-- added: up/down digital vs analog is ugly but works -->
+      <axis id="2" limit="+1">Down</axis>
+      <axis id="3" limit="+1">ZoomOut</axis>
+      <axis id="3" limit="-1">ZoomIn</axis>
+      <hat id="1" position="up">ZoomIn</hat>
+      <hat id="1" position="down">ZoomOut</hat>
+      <hat id="1" position="left">PreviousPicture</hat>
+      <hat id="1" position="right">NextPicture</hat>
+    </joystick>
+  </SlideShow>
+  <ScreenCalibration>
+    <joystick name="Gamepad For Windows (Controller)">
+      <altname>Tronsmart</altname>
+      <button id="3">ResetCalibration</button>
+      <button id="5">NextResolution</button>
+      <button id="6">NextCalibration</button>
+    </joystick>
+  </ScreenCalibration>
+  <GUICalibration>
+    <joystick name="Gamepad For Windows (Controller)">
+      <altname>Tronsmart</altname>
+      <button id="3">ResetCalibration</button>
+      <button id="5">NextResolution</button>
+      <button id="6">NextCalibration</button>
+    </joystick>
+  </GUICalibration>
+  <VideoOSD>
+    <joystick name="Gamepad For Windows (Controller)">
+      <altname>Tronsmart</altname>
+      <button id="3">Close</button>
+    </joystick>
+  </VideoOSD>
+  <VideoMenu>
+    <joystick name="Gamepad For Windows (Controller)">
+      <altname>Tronsmart</altname>
+      <button id="2">Stop</button>
+      <button id="3">OSD</button>
+      <button id="5">AspectRatio</button>
+      <button id="8">Info</button>
+    </joystick>
+  </VideoMenu>
+  <OSDVideoSettings>
+    <joystick name="Gamepad For Windows (Controller)">
+      <altname>Tronsmart</altname>
+      <button id="5">AspectRatio</button>
+      <button id="3">Close</button>
+    </joystick>
+  </OSDVideoSettings>
+  <OSDAudioSettings>
+    <joystick name="Gamepad For Windows (Controller)">
+      <altname>Tronsmart</altname>
+      <button id="5">AspectRatio</button>
+      <button id="3">Close</button>
+    </joystick>
+  </OSDAudioSettings>
+  <VideoBookmarks>
+    <joystick name="Gamepad For Windows (Controller)">
+      <altname>Tronsmart</altname>
+      <button id="5">Delete</button>
+<!-- added -->
+      <button id="7">MoveItemUp</button>
+      <button id="8">MoveItemDown</button>
+    </joystick>
+  </VideoBookmarks>
+  <MyVideoLibrary>
+<!-- added entire section -->
+    <joystick name="Gamepad For Windows (Controller)">
+      <altname>Tronsmart</altname>
+      <button id="10">XBMC.ActivateWindow(Favourites)</button>
+    </joystick>
+  </MyVideoLibrary>
+  <MyVideoFiles>
+<!-- added entire section -->
+    <joystick name="Gamepad For Windows (Controller)">
+      <altname>Tronsmart</altname>
+      <button id="10">XBMC.ActivateWindow(Favourites)</button>
+    </joystick>
+  </MyVideoFiles>
+  <MyVideoPlaylist>
+    <joystick name="Gamepad For Windows (Controller)">
+      <altname>Tronsmart</altname>
+      <button id="5">Delete</button>
+<!-- added -->
+      <button id="7">MoveItemUp</button>
+      <button id="8">MoveItemDown</button>
+    </joystick>
+  </MyVideoPlaylist>
+  <VirtualKeyboard>
+    <joystick name="Gamepad For Windows (Controller)">
+      <altname>Tronsmart</altname>
+      <button id="2">BackSpace</button>
+      <button id="4">Symbols</button>
+<!-- remap because button id 5 isn't working as SHIFT here -->
+      <!-- <button id="5">Shift</button> -->
+      <button id="3">Shift</button>
+<!-- added -->
+      <button id="5">CursorLeft</button>
+<!-- added -->
+      <button id="6">CursorRight</button>
+<!-- remap -->
+      <!-- <button id="9">Enter</button> -->
+      <button id="8">Enter</button>
+      <axis id="3" limit="+1">CursorLeft</axis>
+      <axis id="3" limit="-1">CursorRight</axis>
+    </joystick>
+  </VirtualKeyboard>
+  <ContextMenu>
+    <joystick name="Gamepad For Windows (Controller)">
+      <altname>Tronsmart</altname>
+      <button id="2">Close</button>
+      <button id="3">Close</button>
+    </joystick>
+  </ContextMenu>
+  <Scripts>
+    <joystick name="Gamepad For Windows (Controller)">
+      <altname>Tronsmart</altname>
+      <button id="3">Info</button>
+    </joystick>
+  </Scripts>
+  <Settings>
+    <joystick name="Gamepad For Windows (Controller)">
+      <altname>Tronsmart</altname>
+      <button id="2">PreviousMenu</button>
+    </joystick>
+  </Settings>
+  <AddonInformation>
+    <joystick name="Gamepad For Windows (Controller)">
+      <altname>Tronsmart</altname>
+      <button id="2">Close</button>
+    </joystick>
+  </AddonInformation>
+  <AddonSettings>
+    <joystick name="Gamepad For Windows (Controller)">
+      <altname>Tronsmart</altname>
+      <button id="2">Close</button>
+    </joystick>
+  </AddonSettings>
+  <TextViewer>
+    <joystick name="Gamepad For Windows (Controller)">
+      <altname>Tronsmart</altname>
+      <button id="2">Close</button>
+    </joystick>
+  </TextViewer>
+  <shutdownmenu>
+    <joystick name="Gamepad For Windows (Controller)">
+      <altname>Tronsmart</altname>
+      <button id="2">PreviousMenu</button>
+      <button id="9">PreviousMenu</button>
+<!-- added -->
+      <button id="7">PreviousMenu</button>
+    </joystick>
+  </shutdownmenu>
+  <submenu>
+    <joystick name="Gamepad For Windows (Controller)">
+      <altname>Tronsmart</altname>
+      <button id="2">PreviousMenu</button>
+    </joystick>
+  </submenu>
+  <MusicInformation>
+    <joystick name="Gamepad For Windows (Controller)">
+      <altname>Tronsmart</altname>
+      <button id="2">Close</button>
+    </joystick>
+  </MusicInformation>
+  <MovieInformation>
+    <joystick name="Gamepad For Windows (Controller)">
+      <altname>Tronsmart</altname>
+      <button id="2">Close</button>
+    </joystick>
+  </MovieInformation>
+  <NumericInput>
+    <joystick name="Gamepad For Windows (Controller)">
+      <altname>Tronsmart</altname>
+      <button id="2">BackSpace</button>
+<!-- remap -->
+      <!-- <button id="9">Enter</button> -->
+      <button id="8">Enter</button>
+    </joystick>
+  </NumericInput>
+  <GamepadInput>
+    <joystick name="Gamepad For Windows (Controller)">
+      <altname>Tronsmart</altname>
+<!-- remap -->
+      <!-- <button id="9">Stop</button> -->
+      <button id="8">Stop</button>
+    </joystick>
+  </GamepadInput>
+  <LockSettings>
+    <joystick name="Gamepad For Windows (Controller)">
+      <altname>Tronsmart</altname>
+      <button id="2">PreviousMenu</button>
+<!-- remap -->
+      <!-- <button id="9">Close</button> -->
+      <button id="8">Close</button>
+    </joystick>
+  </LockSettings>
+  <ProfileSettings>
+    <joystick name="Gamepad For Windows (Controller)">
+      <altname>Tronsmart</altname>
+      <button id="2">PreviousMenu</button>
+<!-- remap -->
+      <!-- <button id="9">Close</button> -->
+      <button id="8">Close</button>
+    </joystick>
+  </ProfileSettings>
+<!-- added entire section -->
+  <Favourites>
+    <joystick name="Gamepad For Windows (Controller)">
+      <altname>Tronsmart</altname>
+      <button id="7">MoveItemUp</button>
+      <button id="8">MoveItemDown</button>
+    </joystick>
+  </Favourites>
+<!-- added entire section -->
+  <PictureInfo>
+    <joystick name="Gamepad For Windows (Controller)">
+      <altname>Tronsmart</altname>
+      <button id="6">Back</button>
+    </joystick>
+  </PictureInfo>
+  <MyPictures>
+<!-- added entire section -->
+    <joystick name="Gamepad For Windows (Controller)">
+      <altname>Tronsmart</altname>
+      <button id="10">XBMC.ActivateWindow(Favourites)</button>
+    </joystick>
+  </MyPictures>
+</keymap>
