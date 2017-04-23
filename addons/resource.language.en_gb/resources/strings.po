@@ -854,7 +854,6 @@ msgstr ""
 
 
 #. label for "searching" message box heading
-#: xbmc/pvr/windows/GUIWindowPVRSearch.cpp
 #: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
 #: xbmc/video/windows/GUIWindowVideoBase.cpp
 msgctxt "#194"
