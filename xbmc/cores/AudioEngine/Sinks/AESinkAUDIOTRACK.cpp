@@ -51,22 +51,7 @@ const unsigned int MOVING_AVERAGE_MAX_MEMBERS = 5;
 const uint64_t UINT64_LOWER_BYTES = 0x00000000FFFFFFFF;
 const uint64_t UINT64_UPPER_BYTES = 0xFFFFFFFF00000000;
 
-/*
- * ADT-1 on L preview as of 2014-10 downmixes all non-5.1/7.1 content
- * to stereo, so use 7.1 or 5.1 for all multichannel content for now to
- * avoid that (except passthrough).
- * If other devices surface that support other multichannel layouts,
- * this should be disabled or adapted accordingly.
- */
-#define LIMIT_TO_STEREO_AND_5POINT1_AND_7POINT1 1
-
 static const AEChannel KnownChannels[] = { AE_CH_FL, AE_CH_FR, AE_CH_FC, AE_CH_LFE, AE_CH_SL, AE_CH_SR, AE_CH_BL, AE_CH_BR, AE_CH_BC, AE_CH_BLOC, AE_CH_BROC, AE_CH_NULL };
-
-static bool Has71Support()
-{
-  /* Android 5.0 introduced side channels */
-  return CJNIAudioManager::GetSDKVersion() >= 21;
-}
 
 // AMLogic helper for HD Audio
 bool CAESinkAUDIOTRACK::HasAmlHD()
@@ -156,19 +141,6 @@ static CAEChannelInfo AUDIOTRACKChannelMaskToAEChannelMap(int atMask)
 
 static int AEChannelMapToAUDIOTRACKChannelMask(CAEChannelInfo info)
 {
-#ifdef LIMIT_TO_STEREO_AND_5POINT1_AND_7POINT1
-  if (info.Count() > 6 && Has71Support())
-    return CJNIAudioFormat::CHANNEL_OUT_5POINT1
-         | CJNIAudioFormat::CHANNEL_OUT_SIDE_LEFT
-         | CJNIAudioFormat::CHANNEL_OUT_SIDE_RIGHT;
-  else if (info.Count() > 2)
-    return CJNIAudioFormat::CHANNEL_OUT_5POINT1;
-  else if (info.Count() == 2)
-    return CJNIAudioFormat::CHANNEL_OUT_STEREO;
-  else
-    return CJNIAudioFormat::CHANNEL_OUT_MONO;
-#endif
-
   info.ResolveChannels(KnownChannels);
 
   int atMask = 0;
@@ -204,7 +176,7 @@ jni::CJNIAudioTrack *CAESinkAUDIOTRACK::CreateAudioTrack(int stream, int sampleR
 int CAESinkAUDIOTRACK::AudioTrackWrite(char* audioData, int offsetInBytes, int sizeInBytes)
 {
   int     written = 0;
-  if (CJNIBase::GetSDKVersion() >= 21 && m_jniAudioFormat == CJNIAudioFormat::ENCODING_PCM_FLOAT)
+  if (m_jniAudioFormat == CJNIAudioFormat::ENCODING_PCM_FLOAT)
   {
     if (m_floatbuf.size() != (sizeInBytes - offsetInBytes) / sizeof(float))
       m_floatbuf.resize((sizeInBytes - offsetInBytes) / sizeof(float));
@@ -920,14 +892,7 @@ void CAESinkAUDIOTRACK::UpdateAvailablePassthroughCapabilities()
 
 void CAESinkAUDIOTRACK::UpdateAvailablePCMCapabilities()
 {
-#ifdef LIMIT_TO_STEREO_AND_5POINT1_AND_7POINT1
-  if (Has71Support())
-    m_info.m_channels = AE_CH_LAYOUT_7_1;
-  else
-    m_info.m_channels = AE_CH_LAYOUT_5_1;
-#else
   m_info.m_channels = KnownChannels;
-#endif
 
   // default fallback format
   m_info.m_dataFormats.push_back(AE_FMT_S16LE);
