@@ -228,7 +228,7 @@ bool CInputStreamAddon::SeekTime(double time, bool backward, double* startpts)
 
   if (m_hasPosTime)
   {
-    if (!PosTime(time))
+    if (!PosTime(static_cast<int>(time)))
       return false;
 
     FlushDemux();
