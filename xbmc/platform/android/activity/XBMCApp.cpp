@@ -61,6 +61,7 @@
 
 #include "AndroidKey.h"
 #include "settings/AdvancedSettings.h"
+#include "interfaces/AnnouncementManager.h"
 #include "Application.h"
 #include "AppParamParser.h"
 #include "messaging/ApplicationMessenger.h"
@@ -91,6 +92,7 @@
 #define GIGABYTES       1073741824
 
 using namespace KODI::MESSAGING;
+using namespace ANNOUNCEMENT;
 
 template<class T, void(T::*fn)()>
 void* thread_run(void* obj)
@@ -113,6 +115,7 @@ CCriticalSection CXBMCApp::m_applicationsMutex;
 std::vector<androidPackage> CXBMCApp::m_applications;
 CVideoSyncAndroid* CXBMCApp::m_syncImpl = NULL;
 CEvent CXBMCApp::m_vsyncEvent;
+std::vector<CActivityResultEvent*> CXBMCApp::m_activityResultEvents;
 
 
 CXBMCApp::CXBMCApp(ANativeActivity* nativeActivity)
@@ -135,6 +138,17 @@ CXBMCApp::~CXBMCApp()
 {
   m_xbmcappinstance = NULL;
   delete m_wakeLock;
+}
+
+void CXBMCApp::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
+{
+  if ((flag & Input) && strcmp(sender, "xbmc") == 0)
+  {
+    if (strcmp(message, "OnInputRequested") == 0)
+      CAndroidKey::SetHandleSearchKeys(true);
+    else if (strcmp(message, "OnInputFinished") == 0)
+      CAndroidKey::SetHandleSearchKeys(false);
+  }
 }
 
 void CXBMCApp::onStart()
@@ -284,6 +298,15 @@ void CXBMCApp::onLostFocus()
 {
   android_printf("%s: ", __PRETTY_FUNCTION__);
   m_hasFocus = false;
+}
+
+void CXBMCApp::Initialize()
+{
+  g_application.m_ServiceManager->GetAnnouncementManager().AddAnnouncer(CXBMCApp::get());  
+}
+
+void CXBMCApp::Deinitialize()
+{
 }
 
 bool CXBMCApp::EnableWakeLock(bool on)
@@ -865,6 +888,36 @@ void CXBMCApp::onNewIntent(CJNIIntent intent)
       CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTIVATE_WINDOW, WINDOW_MUSIC_NAV, 0, nullptr, "", params);
     }
   }
+}
+
+void CXBMCApp::onActivityResult(int requestCode, int resultCode, CJNIIntent resultData)
+{
+  for (auto it = m_activityResultEvents.begin(); it != m_activityResultEvents.end(); ++it)
+  {
+    if ((*it)->GetRequestCode() == requestCode)
+    {
+      m_activityResultEvents.erase(it);
+      (*it)->SetResultCode(resultCode);
+      (*it)->SetResultData(resultData);
+      (*it)->Set();
+      break;
+    }
+  }
+}
+
+int CXBMCApp::WaitForActivityResult(const CJNIIntent &intent, int requestCode, CJNIIntent &result)
+{
+  int ret = 0;
+  CActivityResultEvent* event = new CActivityResultEvent(requestCode);
+  m_activityResultEvents.push_back(event);
+  startActivityForResult(intent, requestCode);
+  if (event->Wait())
+  {
+    result = event->GetResultData();
+    ret = event->GetResultCode();
+  }
+  delete event;
+  return ret;
 }
 
 void CXBMCApp::onVolumeChanged(int volume)

@@ -31,6 +31,7 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
   private Intent mNewIntent = null;
 
   native void _onNewIntent(Intent intent);
+  native void _onActivityResult(int requestCode, int resultCode, Intent resultData);
   native void _doFrame(long frameTimeNanos);
 
   private Runnable leanbackUpdateRunnable = new Runnable()
@@ -246,6 +247,14 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
     super.onPause();
   }
   
+  @Override
+  public void onActivityResult(int requestCode, int resultCode,
+      Intent resultData)
+  {
+    _onActivityResult(requestCode, resultCode, resultData);
+  }
+
+  @Override
   public void onDestroy()
   {
     // unregister the InputDeviceListener implementation

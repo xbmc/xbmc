@@ -159,6 +159,13 @@ extern "C" JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved)
       (void*)&CJNIMainActivity::_doFrame
     };
     env->RegisterNatives(cMain, &mDoFrame, 1);
+    
+    JNINativeMethod mOnActivityResult = {
+      "_onActivityResult",
+      "(IILandroid/content/Intent;)V",
+      (void*)&CJNIMainActivity::_onActivityResult
+    };
+    env->RegisterNatives(cMain, &mOnActivityResult, 1);
 
     JNINativeMethod mCallNative = {
       "_callNative",

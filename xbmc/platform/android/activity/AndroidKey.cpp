@@ -118,7 +118,6 @@ static KeyMap keyMap[] = {
   { AKEYCODE_PLUS            , XBMCK_PLUS },
   { AKEYCODE_MENU            , XBMCK_MENU },
   { AKEYCODE_NOTIFICATION    , XBMCK_LAST },
-  { AKEYCODE_SEARCH          , XBMCK_LAST },
   { AKEYCODE_MUTE            , XBMCK_LAST },
   { AKEYCODE_PAGE_UP         , XBMCK_PAGEUP },
   { AKEYCODE_PAGE_DOWN       , XBMCK_PAGEDOWN },
@@ -182,7 +181,12 @@ static KeyMap MediakeyMap[] = {
   { AKEYCODE_MEDIA_EJECT     , XBMCK_EJECT },
 };
 
+static KeyMap SearchkeyMap[] = {
+  { AKEYCODE_SEARCH          , XBMCK_BROWSER_SEARCH },
+};
+
 bool CAndroidKey::m_handleMediaKeys = false;
+bool CAndroidKey::m_handleSearchKeys = false;
 
 bool CAndroidKey::onKeyboardEvent(AInputEvent *event)
 {
@@ -224,6 +228,18 @@ bool CAndroidKey::onKeyboardEvent(AInputEvent *event)
     if (sym != XBMCK_UNKNOWN)
     {
       ret = m_handleMediaKeys;
+    }
+  }
+
+  if (sym == XBMCK_UNKNOWN && m_handleSearchKeys)
+  {
+    for (unsigned int index = 0; index < sizeof(SearchkeyMap) / sizeof(KeyMap); index++)
+    {
+      if (keycode == SearchkeyMap[index].nativeKey)
+      {
+        sym = SearchkeyMap[index].xbmcKey;
+        break;
+      }
     }
   }
 

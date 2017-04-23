@@ -47,6 +47,14 @@ void CJNIMainActivity::_onNewIntent(JNIEnv *env, jobject context, jobject intent
     m_appInstance->onNewIntent(CJNIIntent(jhobject(intent)));
 }
 
+void CJNIMainActivity::_onActivityResult(JNIEnv *env, jobject context, jint requestCode, jint resultCode, jobject resultData)
+{
+  (void)env;
+  (void)context;
+  if (m_appInstance)
+    m_appInstance->onActivityResult(requestCode, resultCode, CJNIIntent(jhobject(resultData)));
+}
+
 void CJNIMainActivity::_callNative(JNIEnv *env, jobject context, jlong funcAddr, jlong variantAddr)
 {
   (void)env;

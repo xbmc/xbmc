@@ -264,6 +264,9 @@ static const ActionMapping actions[] =
     { "swipeup"                  , ACTION_GESTURE_SWIPE_UP },
     { "swipedown"                , ACTION_GESTURE_SWIPE_DOWN },
 
+    // Voice
+    { "voicerecognizer"          , ACTION_VOICE_RECOGNIZE },
+
     // Do nothing / error action
     { "error"                    , ACTION_ERROR },
     { "noop"                     , ACTION_NOOP }
