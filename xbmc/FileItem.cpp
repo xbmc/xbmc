@@ -1159,6 +1159,11 @@ bool CFileItem::IsMultiPath() const
   return URIUtils::IsMultiPath(m_strPath);
 }
 
+bool CFileItem::IsBluray() const
+{
+  return URIUtils::IsBluray(m_strPath);
+}
+
 bool CFileItem::IsCDDA() const
 {
   return URIUtils::IsCDDA(m_strPath);
