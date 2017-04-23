@@ -58,7 +58,7 @@ Build-Depends: autoconf, automake, autopoint, autotools-dev, cmake, curl,
   libusb-dev, libva-dev, libvdpau-dev, libxml2-dev,
   libxmu-dev, libxrandr-dev, libxslt1-dev, libxt-dev, lsb-release, rapidjson-dev,
   nasm [!amd64], python-dev, python-imaging, python-support, swig, unzip, uuid-dev, yasm,
-  zip, zlib1g-dev
+  zip, zlib1g-dev, libgl-dev | libglew-dev
 
 [NOTICE] crossguid / libcrossguid-dev all Linux distributions.
 Kodi now requires crossguid which is not available in Ubuntu repositories at this time.
