@@ -928,7 +928,7 @@ void CPeripherals::OnSettingAction(const CSetting *setting)
   const std::string &settingId = setting->GetId();
   if (settingId == CSettings::SETTING_INPUT_PERIPHERALS)
   {
-    CGUIDialogSelect* pDialog = g_windowManager.GetWindow<CGUIDialogSelect>();
+    CGUIDialogSelect* pDialog = g_windowManager.GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
 
     CFileItemList items;
     GetDirectory("peripherals://all/", items);
@@ -957,7 +957,7 @@ void CPeripherals::OnSettingAction(const CSetting *setting)
           continue;
         }
 
-        CGUIDialogPeripheralSettings *pSettingsDialog = g_windowManager.GetWindow<CGUIDialogPeripheralSettings>();
+        CGUIDialogPeripheralSettings *pSettingsDialog = g_windowManager.GetWindow<CGUIDialogPeripheralSettings>(WINDOW_DIALOG_PERIPHERAL_SETTINGS);
         if (pItem && pSettingsDialog)
         {
           // pass peripheral item properties to settings dialog so skin authors

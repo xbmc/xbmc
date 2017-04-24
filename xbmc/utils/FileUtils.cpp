@@ -53,7 +53,7 @@ bool CFileUtils::DeleteItem(const CFileItemPtr &item, bool force)
   if (!item || item->IsParentFolder())
     return false;
 
-  CGUIDialogYesNo* pDialog = g_windowManager.GetWindow<CGUIDialogYesNo>();
+  CGUIDialogYesNo* pDialog = g_windowManager.GetWindow<CGUIDialogYesNo>(WINDOW_DIALOG_YES_NO);
   if (!force && pDialog)
   {
     pDialog->SetHeading(CVariant{122});

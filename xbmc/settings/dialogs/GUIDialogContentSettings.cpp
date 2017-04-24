@@ -94,7 +94,7 @@ bool CGUIDialogContentSettings::Show(ADDON::ScraperPtr& scraper, CONTENT_TYPE co
 
 bool CGUIDialogContentSettings::Show(ADDON::ScraperPtr& scraper, VIDEO::SScanSettings& settings, CONTENT_TYPE content /* = CONTENT_NONE */)
 {
-  CGUIDialogContentSettings *dialog = g_windowManager.GetWindow<CGUIDialogContentSettings>();
+  CGUIDialogContentSettings *dialog = g_windowManager.GetWindow<CGUIDialogContentSettings>(WINDOW_DIALOG_CONTENT_SETTINGS);
   if (dialog == NULL)
     return false;
 
@@ -212,7 +212,7 @@ void CGUIDialogContentSettings::OnSettingAction(const CSetting *setting)
     }
     std::sort(labels.begin(), labels.end());
 
-    CGUIDialogSelect *dialog = g_windowManager.GetWindow<CGUIDialogSelect>();
+    CGUIDialogSelect *dialog = g_windowManager.GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
     if (dialog)
     {
       dialog->SetHeading(CVariant{ 20344 }); //Label "This directory contains"

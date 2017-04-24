@@ -96,7 +96,7 @@ bool CGUIDialogSimpleMenu::ShowPlaySelection(CFileItem& item, const std::string&
     return true;
   }
 
-  CGUIDialogSelect* dialog = g_windowManager.GetWindow<CGUIDialogSelect>();
+  CGUIDialogSelect* dialog = g_windowManager.GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
   while (true)
   {
     dialog->Reset();

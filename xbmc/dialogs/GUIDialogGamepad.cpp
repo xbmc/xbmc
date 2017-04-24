@@ -274,7 +274,7 @@ bool CGUIDialogGamepad::ShowAndVerifyInput(std::string& strToVerify, const std::
     const std::string& dlgLine2, bool bGetUserInput, bool bHideInputChars)
 {
   // Prompt user for password input
-  CGUIDialogGamepad *pDialog = g_windowManager.GetWindow<CGUIDialogGamepad>();
+  CGUIDialogGamepad *pDialog = g_windowManager.GetWindow<CGUIDialogGamepad>(WINDOW_DIALOG_GAMEPAD);
   pDialog->m_strPassword = strToVerify;
   pDialog->m_bUserInputCleanup = !bGetUserInput;
   pDialog->m_bHideInputChars = bHideInputChars;

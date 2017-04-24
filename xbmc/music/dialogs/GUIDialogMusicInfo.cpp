@@ -591,7 +591,7 @@ void CGUIDialogMusicInfo::AddItemPathToFileBrowserSources(VECSOURCES &sources, c
 
 void CGUIDialogMusicInfo::OnSetUserrating() const
 {
-  CGUIDialogSelect *dialog = g_windowManager.GetWindow<CGUIDialogSelect>();
+  CGUIDialogSelect *dialog = g_windowManager.GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
   if (dialog)
   {
     // If we refresh and then try to set the rating there will be an items already here...
@@ -616,7 +616,7 @@ void CGUIDialogMusicInfo::OnSetUserrating() const
 
 void CGUIDialogMusicInfo::ShowFor(CFileItem item)
 {
-  auto window = g_windowManager.GetWindow<CGUIWindowMusicNav>();
+  auto window = g_windowManager.GetWindow<CGUIWindowMusicNav>(WINDOW_MUSIC_NAV);
   if (window)
     window->OnItemInfo(&item);
 }

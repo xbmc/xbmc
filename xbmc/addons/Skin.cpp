@@ -380,7 +380,7 @@ void CSkinInfo::OnPostInstall(bool update, bool modal)
   if (IsInUse() || (!update && !modal && 
     HELPERS::ShowYesNoDialogText(CVariant{Name()}, CVariant{24099}) == DialogResponse::YES))
   {
-    CGUIDialogKaiToast *toast = g_windowManager.GetWindow<CGUIDialogKaiToast>();
+    CGUIDialogKaiToast *toast = g_windowManager.GetWindow<CGUIDialogKaiToast>(WINDOW_DIALOG_KAI_TOAST);
     if (toast)
     {
       toast->ResetTimer();

@@ -62,7 +62,7 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool first
   if (firstLogin && iProfile > CProfilesManager::GetInstance().GetNumberOfProfiles())
     return false;
 
-  CGUIDialogProfileSettings *dialog = g_windowManager.GetWindow<CGUIDialogProfileSettings>();
+  CGUIDialogProfileSettings *dialog = g_windowManager.GetWindow<CGUIDialogProfileSettings>(WINDOW_DIALOG_PROFILE_SETTINGS);
   if (dialog == NULL)
     return false;
 

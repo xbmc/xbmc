@@ -247,7 +247,7 @@ void CActiveAEDSP::OnSettingAction(const CSetting *setting)
 
   if (settingId == CSettings::SETTING_AUDIOOUTPUT_DSPSETTINGS)
   {
-    CGUIDialogAudioDSPManager *dialog = g_windowManager.GetWindow<CGUIDialogAudioDSPManager>();
+    CGUIDialogAudioDSPManager *dialog = g_windowManager.GetWindow<CGUIDialogAudioDSPManager>(WINDOW_DIALOG_AUDIO_DSP_MANAGER);
 
     if (dialog)
       dialog->Open();

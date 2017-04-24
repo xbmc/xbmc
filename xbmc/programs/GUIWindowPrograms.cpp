@@ -61,7 +61,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_WINDOW_INIT:
     {
-      m_dlgProgress = g_windowManager.GetWindow<CGUIDialogProgress>();
+      m_dlgProgress = g_windowManager.GetWindow<CGUIDialogProgress>(WINDOW_DIALOG_PROGRESS);
 
       // is this the first time accessing this window?
       if (m_vecItems->GetPath() == "?" && message.GetStringParam().empty())

@@ -233,7 +233,7 @@ void CGUIWindowSettingsProfile::OnInitWindow()
 
 bool CGUIWindowSettingsProfile::GetAutoLoginProfileChoice(int &iProfile)
 {
-  CGUIDialogSelect *dialog = g_windowManager.GetWindow<CGUIDialogSelect>();
+  CGUIDialogSelect *dialog = g_windowManager.GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
   if (!dialog) return false;
 
   // add items

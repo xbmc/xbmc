@@ -549,7 +549,7 @@ void CPVREpgContainer::ShowProgressDialog(bool bUpdating /* = true */)
 {
   if (!m_progressHandle)
   {
-    CGUIDialogExtendedProgressBar *progressDialog = g_windowManager.GetWindow<CGUIDialogExtendedProgressBar>();
+    CGUIDialogExtendedProgressBar *progressDialog = g_windowManager.GetWindow<CGUIDialogExtendedProgressBar>(WINDOW_DIALOG_EXT_PROGRESS);
     if (progressDialog)
       m_progressHandle = progressDialog->GetHandle(bUpdating ? g_localizeStrings.Get(19004) : g_localizeStrings.Get(19250));
   }
