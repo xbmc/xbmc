@@ -373,12 +373,14 @@ bool CDirectory::RemoveRecursive(const CURL& url)
   return false;
 }
 
-void CDirectory::FilterFileDirectories(CFileItemList &items, const std::string &mask)
+void CDirectory::FilterFileDirectories(CFileItemList &items, const std::string &mask,
+                                       bool expandImages)
 {
   for (int i=0; i< items.Size(); ++i)
   {
     CFileItemPtr pItem=items[i];
-    if (!pItem->m_bIsFolder && pItem->IsFileFolder(EFILEFOLDER_TYPE_ALWAYS))
+    auto mode = expandImages ? EFILEFOLDER_TYPE_ONBROWSE : EFILEFOLDER_TYPE_ALWAYS;
+    if (!pItem->m_bIsFolder && pItem->IsFileFolder(mode))
     {
       std::unique_ptr<IFileDirectory> pDirectory(CFileDirectoryFactory::Create(pItem->GetURL(),pItem.get(),mask));
       if (pDirectory.get())

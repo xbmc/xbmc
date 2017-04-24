@@ -36,6 +36,7 @@
 #include "GUIPassword.h"
 #include "PartyModeManager.h"
 #include "GUIInfoManager.h"
+#include "filesystem/Directory.h"
 #include "filesystem/MusicDatabaseDirectory.h"
 #include "music/dialogs/GUIDialogSongInfo.h"
 #include "addons/GUIDialogAddonInfo.h"
@@ -1233,6 +1234,9 @@ bool CGUIWindowMusicBase::GetDirectory(const std::string &strDirectory, CFileIte
   bool bResult = CGUIMediaWindow::GetDirectory(strDirectory, items);
   if (bResult)
   {
+    // We always want to expand disc images in music windows.
+    CDirectory::FilterFileDirectories(items, ".iso", true);
+
     CMusicThumbLoader loader;
     loader.FillThumb(items);
 
