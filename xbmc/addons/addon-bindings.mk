@@ -39,6 +39,7 @@ xbmc/addons/kodi-addon-dev-kit/include/kodi/xbmc_scr_dll.h
 xbmc/addons/kodi-addon-dev-kit/include/kodi/xbmc_scr_types.h
 xbmc/addons/kodi-addon-dev-kit/include/kodi/xbmc_vis_dll.h
 xbmc/addons/kodi-addon-dev-kit/include/kodi/xbmc_vis_types.h
+xbmc/addons/kodi-addon-dev-kit/include/kodi/versions.h
 xbmc/cores/AudioEngine/Utils/AEChannelData.h
 xbmc/cores/VideoPlayer/DVDDemuxers/DVDDemuxPacket.h
 xbmc/filesystem/IFileTypes.h
