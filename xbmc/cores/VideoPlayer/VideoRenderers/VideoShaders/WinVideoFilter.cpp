@@ -116,7 +116,6 @@ CWinShader::~CWinShader()
     m_vb.Release();
   if (m_ib.Get())
     m_ib.Release();
-  SAFE_RELEASE(m_inputLayout);
 }
 
 bool CWinShader::CreateVertexBuffer(unsigned int vertCount, unsigned int vertSize)
@@ -202,7 +201,7 @@ bool CWinShader::LoadEffect(const std::string& filename, DefinesMap* defines)
 bool CWinShader::Execute(const std::vector<CD3DTexture*> &targets, unsigned int vertexIndexStep)
 {
   ID3D11DeviceContext* pContext = g_Windowing.Get3D11Context();
-  ID3D11RenderTargetView* oldRT = nullptr;
+  ComPtr<ID3D11RenderTargetView> oldRT;
 
   // The render target will be overridden: save the caller's original RT
   if (!targets.empty())
@@ -221,7 +220,7 @@ bool CWinShader::Execute(const std::vector<CD3DTexture*> &targets, unsigned int 
   unsigned int offset = 0;
   pContext->IASetVertexBuffers(0, 1, &vertexBuffer, &stride, &offset);
   pContext->IASetIndexBuffer(indexBuffer, m_ib.GetFormat(), 0);
-  pContext->IASetInputLayout(m_inputLayout);
+  pContext->IASetInputLayout(m_inputLayout.Get());
   pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
   for (UINT iPass = 0; iPass < cPasses; iPass++)
@@ -245,11 +244,9 @@ bool CWinShader::Execute(const std::vector<CD3DTexture*> &targets, unsigned int 
   if (!m_effect.End())
     CLog::Log(LOGERROR, __FUNCTION__" - failed to end d3d effect");
 
-  if (oldRT != nullptr)
-  {
-    pContext->OMSetRenderTargets(1, &oldRT, nullptr);
-    SAFE_RELEASE(oldRT);
-  }
+  if (oldRT)
+    pContext->OMSetRenderTargets(1, oldRT.GetAddressOf(), nullptr);
+
   return true;
 }
 
@@ -258,7 +255,6 @@ bool CWinShader::Execute(const std::vector<CD3DTexture*> &targets, unsigned int 
 COutputShader::~COutputShader()
 {
   m_clutSize = 0;
-  SAFE_RELEASE(m_pDitherView);
 }
 
 void COutputShader::ApplyEffectParameters(CD3DEffect &effect, unsigned sourceWidth, unsigned sourceHeight)
@@ -280,9 +276,9 @@ void COutputShader::ApplyEffectParameters(CD3DEffect &effect, unsigned sourceWid
     { 
       static_cast<float>(sourceWidth) / dither_size, 
       static_cast<float>(sourceHeight) / dither_size,
-      static_cast<float>(1 << m_ditherDepth) - 1.0 
+      static_cast<float>(1 << m_ditherDepth) - 1.0f
     };
-    effect.SetResources("m_ditherMatrix", &m_pDitherView, 1);
+    effect.SetResources("m_ditherMatrix", m_pDitherView.GetAddressOf(), 1);
     effect.SetFloatArray("m_ditherParams", ditherParams, 3);
   }
 }
@@ -362,40 +358,43 @@ bool COutputShader::CreateCLUTView(int clutSize, uint16_t* clutData, ID3D11Shade
   if (!clutSize || !clutData)
     return false;
 
-  // repack data
-  unsigned lutsamples = clutSize * clutSize * clutSize;
-  uint16_t* pCLUT = static_cast<uint16_t*>(malloc(sizeof(uint16_t) * lutsamples * 4));
-  uint16_t* rgba = pCLUT, *rgb = clutData;
-  for (int i = 0; i < lutsamples; ++i, rgba += 4, rgb += 3)
-  {
-    *(uint64_t*)rgba = *(uint64_t*)rgb;
-  }
-
-  // create 3DLUT texture
-  CLog::Log(LOGDEBUG, "%s: creating 3dlut texture.", __FUNCTION__);
-
   ID3D11Device* pDevice = g_Windowing.Get3D11Device();
-
+  ID3D11DeviceContext* pContext = g_Windowing.GetImmediateContext();
   CD3D11_TEXTURE3D_DESC txDesc(DXGI_FORMAT_R16G16B16A16_UNORM, clutSize, clutSize, clutSize, 1,
-                               D3D11_BIND_SHADER_RESOURCE, D3D11_USAGE_DEFAULT);
-  D3D11_SUBRESOURCE_DATA resData;
-  resData.pSysMem = pCLUT;
-  resData.SysMemPitch = clutSize * sizeof(uint16_t) * 4;
-  resData.SysMemSlicePitch = resData.SysMemPitch * clutSize;
+                               D3D11_BIND_SHADER_RESOURCE, D3D11_USAGE_DYNAMIC, D3D11_CPU_ACCESS_WRITE);
 
-  ID3D11Texture3D* pCLUTTex = nullptr;
-  HRESULT hr = pDevice->CreateTexture3D(&txDesc, &resData, &pCLUTTex);
-  free(pCLUT);
-
+  ComPtr<ID3D11Texture3D> pCLUTTex;
+  //ID3D11Texture3D* pCLUTTex = nullptr;
+  HRESULT hr = pDevice->CreateTexture3D(&txDesc, nullptr, &pCLUTTex);
   if (FAILED(hr))
   {
     CLog::Log(LOGDEBUG, "%s: unable to create 3dlut texture cube.");
     return false;
   }
 
+  D3D11_MAPPED_SUBRESOURCE mRes;
+  if (FAILED(pContext->Map(pCLUTTex.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mRes)))
+  {
+    CLog::Log(LOGDEBUG, "%s: unable to upload data to 3dlut texture cube.");
+    return false;
+  }
+
+  // repack data
+  unsigned lutsamples = clutSize * clutSize * clutSize;
+  uint16_t* rgba = static_cast<uint16_t*>(mRes.pData);
+  for (int i = 0; i < lutsamples - 1; ++i, rgba += 4, clutData += 3)
+  {
+    *(uint64_t*)rgba = *(uint64_t*)clutData;
+  }
+  // and last one
+  rgba[0] = clutData[0]; rgba[1] = clutData[1]; rgba[2] = clutData[2]; rgba[3] = 0xFFFF;
+
+  pContext->Unmap(pCLUTTex.Get(), 0);
+
   CD3D11_SHADER_RESOURCE_VIEW_DESC srvDesc(D3D11_SRV_DIMENSION_TEXTURE3D, DXGI_FORMAT_R16G16B16A16_UNORM, 0, 1);
-  hr = pDevice->CreateShaderResourceView(pCLUTTex, &srvDesc, ppCLUTView);
-  SAFE_RELEASE(pCLUTTex);
+  hr = pDevice->CreateShaderResourceView(pCLUTTex.Get(), &srvDesc, ppCLUTView);
+  pContext->Flush();
+
   if (FAILED(hr))
   {
     CLog::Log(LOGDEBUG, "%s: unable to create view for 3dlut texture cube.");
@@ -478,7 +477,7 @@ void COutputShader::CreateDitherView()
   resData.SysMemPitch = dither_size * sizeof(uint16_t);
   resData.SysMemSlicePitch = resData.SysMemPitch * dither_size;
 
-  ID3D11Texture2D* pDitherTex = nullptr;
+  ComPtr<ID3D11Texture2D> pDitherTex;
   HRESULT hr = pDevice->CreateTexture2D(&txDesc, &resData, &pDitherTex);
 
   if (FAILED(hr))
@@ -489,8 +488,7 @@ void COutputShader::CreateDitherView()
   }
 
   CD3D11_SHADER_RESOURCE_VIEW_DESC srvDesc(D3D11_SRV_DIMENSION_TEXTURE2D, DXGI_FORMAT_R16_UNORM, 0, 1);
-  hr = pDevice->CreateShaderResourceView(pDitherTex, &srvDesc, &m_pDitherView);
-  SAFE_RELEASE(pDitherTex);
+  hr = pDevice->CreateShaderResourceView(pDitherTex.Get(), &srvDesc, &m_pDitherView);
   if (FAILED(hr))
   {
     CLog::Log(LOGDEBUG, "%s: unable to create view for 3dlut texture cube.");
@@ -982,7 +980,6 @@ CConvolutionShaderSeparable::~CConvolutionShaderSeparable()
 {
   if (m_IntermediateTarget.Get())
     m_IntermediateTarget.Release();
-  SAFE_RELEASE(m_oldRenderTarget);
 }
 
 bool CConvolutionShaderSeparable::ChooseIntermediateD3DFormat()

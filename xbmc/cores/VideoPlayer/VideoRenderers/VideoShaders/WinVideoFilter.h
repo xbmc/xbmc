@@ -26,8 +26,10 @@
 #include "../WinRenderer.h"
 #include "ShaderFormats.h"
 #include <DirectXMath.h>
+#include <wrl.h>
 
 using namespace DirectX;
+using namespace Microsoft::WRL;
 
 class CYUV2RGBMatrix
 {
@@ -68,11 +70,11 @@ protected:
 
 private:
   void SetTarget(CD3DTexture* target);
-  CD3DBuffer          m_vb;
-  CD3DBuffer          m_ib;
-  unsigned int        m_vbsize;
-  unsigned int        m_vertsize;
-  ID3D11InputLayout*  m_inputLayout;
+  CD3DBuffer m_vb;
+  CD3DBuffer m_ib;
+  unsigned int m_vbsize;
+  unsigned int m_vertsize;
+  ComPtr<ID3D11InputLayout> m_inputLayout;
 };
 
 class COutputShader : public CWinShader
@@ -112,7 +114,7 @@ private:
   ID3D11ShaderResourceView *m_pCLUTView{ nullptr };
   bool m_useDithering{ false };
   int m_ditherDepth{ 0 };
-  ID3D11ShaderResourceView* m_pDitherView{ nullptr };
+  ComPtr<ID3D11ShaderResourceView> m_pDitherView;
 
   struct CUSTOMVERTEX {
     FLOAT x, y, z;
@@ -230,7 +232,6 @@ private:
   unsigned int m_sourceWidth, m_sourceHeight;
   unsigned int m_destWidth, m_destHeight;
   CRect m_sourceRect, m_destRect;
-  ID3D11RenderTargetView* m_oldRenderTarget = nullptr;
 };
 
 class CTestShader : public CWinShader
