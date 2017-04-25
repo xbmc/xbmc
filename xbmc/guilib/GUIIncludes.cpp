@@ -211,7 +211,7 @@ bool CGUIIncludes::LoadIncludesFromXML(const TiXmlElement *root)
     if (node->Attribute("name") && node->FirstChild())
     {
       std::string tagName = node->Attribute("name");
-      m_expressions.insert(make_pair(tagName, node->FirstChild()->ValueStr()));
+      m_expressions.insert(make_pair(tagName, "[" + node->FirstChild()->ValueStr() + "]"));
     }
     node = node->NextSiblingElement("expression");
   }
