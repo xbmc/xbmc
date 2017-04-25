@@ -35,16 +35,6 @@ enum ADDON_STATUS
   ADDON_STATUS_PERMANENT_FAILURE   /**< permanent failure, like failing to resolve methods */
 };
 
-typedef struct
-{
-  int           type;
-  char*         id;
-  char*         label;
-  int           current;
-  char**        entry;
-  unsigned int  entry_elements;
-} ADDON_StructSetting;
-
 /*!
  * @brief Handle used to return data from the PVR add-on to CPVRClient
  */

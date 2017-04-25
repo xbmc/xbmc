@@ -27,7 +27,6 @@ xbmc/addons/kodi-addon-dev-kit/include/kodi/libKODI_peripheral.h
 xbmc/addons/kodi-addon-dev-kit/include/kodi/libXBMC_addon.h
 xbmc/addons/kodi-addon-dev-kit/include/kodi/libXBMC_codec.h
 xbmc/addons/kodi-addon-dev-kit/include/kodi/libXBMC_pvr.h
-xbmc/addons/kodi-addon-dev-kit/include/kodi/xbmc_addon_cpp_dll.h
 xbmc/addons/kodi-addon-dev-kit/include/kodi/xbmc_addon_dll.h
 xbmc/addons/kodi-addon-dev-kit/include/kodi/xbmc_addon_types.h
 xbmc/addons/kodi-addon-dev-kit/include/kodi/xbmc_audioenc_dll.h

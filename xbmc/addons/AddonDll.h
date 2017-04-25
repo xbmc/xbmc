@@ -50,7 +50,6 @@ namespace ADDON
 
   protected:
     bool Initialized() { return m_initialized; }
-    virtual bool LoadSettings();
     static uint32_t GetChildCount() { static uint32_t childCounter = 0; return childCounter++; }
     CAddonInterfaces* m_pHelpers;
     bool m_bIsChild;
@@ -63,7 +62,6 @@ namespace ADDON
     bool m_needsavedsettings;
 
     virtual ADDON_STATUS TransferSettings();
-    TiXmlElement MakeSetting(DllSetting& setting) const;
 
     static void AddOnStatusCallback(void *userData, const ADDON_STATUS status, const char* msg);
     static bool AddOnGetSetting(void *userData, const char *settingName, void *settingValue);
