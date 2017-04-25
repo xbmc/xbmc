@@ -599,7 +599,7 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
   }
   m_colorFormat = -1;
   num_codecs = CJNIMediaCodecList::getCodecCount();
-  needSecureDecoder = AMediaCrypto_requiresSecureDecoderComponent(m_mime.c_str());
+  needSecureDecoder = m_crypto ? AMediaCrypto_requiresSecureDecoderComponent(m_mime.c_str()) : false;
 
   for (int i = 0; i < num_codecs; i++)
   {
