@@ -5266,13 +5266,6 @@ bool CVideoDatabase::GetPlayCounts(const std::string &strPath, CFileItemList &it
       m_pDS->next();
     }
 
-    // if playcount is still -1 set it to zero
-    for (CFileItemPtr pItem : items)
-    {
-      if (pItem->GetVideoInfoTag()->GetPlayCount() == -1)
-        pItem->GetVideoInfoTag()->SetPlayCount(0);
-    }
-
     return true;
   }
   catch (...)
