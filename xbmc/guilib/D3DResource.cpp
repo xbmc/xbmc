@@ -163,7 +163,8 @@ CD3DTexture::CD3DTexture()
   m_usage = D3D11_USAGE_DEFAULT;
   m_format = DXGI_FORMAT_B8G8R8A8_UNORM;
   m_texture = nullptr;
-  m_renderTarget = nullptr;
+  m_renderTargets[0] = nullptr;
+  m_renderTargets[1] = nullptr;
   m_data = nullptr;
   m_pitch = 0;
   m_bindFlags = 0;
@@ -228,6 +229,17 @@ bool CD3DTexture::Create(UINT width, UINT height, UINT mipLevels, D3D11_USAGE us
   }
 
   g_Windowing.Register(this);
+  return true;
+}
+
+bool CD3DTexture::CreateFromExternal(UINT width, UINT height, D3D11_USAGE usage, DXGI_FORMAT format, ID3D11Texture2D* pTexture)
+{
+  m_width = width;
+  m_height = height;
+  m_format = format;
+  m_usage = usage;
+  m_texture = pTexture;
+  m_texture->AddRef();
   return true;
 }
 
@@ -296,24 +308,27 @@ ID3D11ShaderResourceView* CD3DTexture::GetShaderResource(DXGI_FORMAT format /* =
   return m_views[format];
 }
 
+ID3D11ShaderResourceView** CD3DTexture::GetAddressOfSRV(DXGI_FORMAT format)
+{
+  if (format == DXGI_FORMAT_UNKNOWN)
+    format = m_format;
+
+  if (!m_views[format])
+    GetShaderResource(format);
+
+  return &m_views[format];
+}
+
 ID3D11RenderTargetView* CD3DTexture::GetRenderTarget()
 {
-  if (!m_texture)
-    return nullptr;
+  return GetRenderTargetInternal(m_viewIdx);
+}
 
-  if (!g_Windowing.IsFormatSupport(m_format, D3D11_FORMAT_SUPPORT_RENDER_TARGET))
-    return nullptr;
-
-  if (!m_renderTarget)
-  {
-    CD3D11_RENDER_TARGET_VIEW_DESC cRTVDesc(D3D11_RTV_DIMENSION_TEXTURE2D);
-    if (FAILED(g_Windowing.Get3D11Device()->CreateRenderTargetView(m_texture, &cRTVDesc, &m_renderTarget)))
-    {
-      CLog::Log(LOGWARNING, __FUNCTION__ " - cannot create texture view.");
-    }
-  }
-
-  return m_renderTarget;
+ID3D11RenderTargetView** CD3DTexture::GetAddressOfRTV()
+{
+  if (!m_renderTargets[m_viewIdx])
+    GetRenderTargetInternal(m_viewIdx);
+  return &m_renderTargets[0];
 }
 
 void CD3DTexture::Release()
@@ -321,7 +336,8 @@ void CD3DTexture::Release()
   g_Windowing.Unregister(this);
   for (auto it = m_views.begin(); it != m_views.end(); ++it)
     SAFE_RELEASE(it->second);
-  SAFE_RELEASE(m_renderTarget);
+  SAFE_RELEASE(m_renderTargets[0]);
+  SAFE_RELEASE(m_renderTargets[1]);
   SAFE_RELEASE(m_texture);
   m_views.clear();
 }
@@ -414,7 +430,8 @@ void CD3DTexture::OnDestroyDevice(bool fatal)
     SaveTexture();
   for (auto it = m_views.begin(); it != m_views.end(); ++it)
     SAFE_RELEASE(it->second);
-  SAFE_RELEASE(m_renderTarget);
+  SAFE_RELEASE(m_renderTargets[0]);
+  SAFE_RELEASE(m_renderTargets[1]);
   SAFE_RELEASE(m_texture);
   m_views.clear();
 }
@@ -438,6 +455,29 @@ void CD3DTexture::RestoreTexture()
 void CD3DTexture::OnCreateDevice()
 {
   RestoreTexture();
+}
+
+ID3D11RenderTargetView* CD3DTexture::GetRenderTargetInternal(unsigned idx)
+{
+  if (idx > 1)
+    return nullptr;
+
+  if (!m_texture)
+    return nullptr;
+
+  if (!g_Windowing.IsFormatSupport(m_format, D3D11_FORMAT_SUPPORT_RENDER_TARGET))
+    return nullptr;
+
+  if (!m_renderTargets[idx])
+  {
+    CD3D11_RENDER_TARGET_VIEW_DESC cRTVDesc(D3D11_RTV_DIMENSION_TEXTURE2DARRAY, DXGI_FORMAT_UNKNOWN, 0, idx, 1);
+    if (FAILED(g_Windowing.Get3D11Device()->CreateRenderTargetView(m_texture, &cRTVDesc, &m_renderTargets[idx])))
+    {
+      CLog::Log(LOGWARNING, __FUNCTION__ " - cannot create texture view.");
+    }
+  }
+
+  return m_renderTargets[idx];
 }
 
 unsigned int CD3DTexture::GetMemoryUsage(unsigned int pitch) const

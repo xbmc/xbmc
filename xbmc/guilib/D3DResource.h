@@ -100,9 +100,11 @@ class CD3DTexture : public ID3DResource
 {
 public:
   CD3DTexture();
-  ~CD3DTexture();
+  virtual ~CD3DTexture();
 
   bool Create(UINT width, UINT height, UINT mipLevels, D3D11_USAGE usage, DXGI_FORMAT format, const void* pInitData = nullptr, unsigned int srcPitch = 0);
+  bool CreateFromExternal(UINT width, UINT height, D3D11_USAGE usage, DXGI_FORMAT format, ID3D11Texture2D* pTexture);
+
   void Release();
   bool GetDesc(D3D11_TEXTURE2D_DESC *desc) const;
   bool LockRect(UINT subresource, D3D11_MAPPED_SUBRESOURCE *res, D3D11_MAP mapType) const;
@@ -111,7 +113,9 @@ public:
   // Accessors
   ID3D11Texture2D* Get() const { return m_texture; };
   ID3D11ShaderResourceView* GetShaderResource(DXGI_FORMAT format = DXGI_FORMAT_UNKNOWN);
+  ID3D11ShaderResourceView** GetAddressOfSRV(DXGI_FORMAT format = DXGI_FORMAT_UNKNOWN);
   ID3D11RenderTargetView* GetRenderTarget();
+  ID3D11RenderTargetView** GetAddressOfRTV();
   UINT GetWidth()  const { return m_width; }
   UINT GetHeight() const { return m_height; }
   DXGI_FORMAT GetFormat() const { return m_format; }
@@ -133,9 +137,11 @@ public:
   void OnDestroyDevice(bool fatal) override;
   void OnCreateDevice() override;
 
-private:
+protected:
+  ID3D11RenderTargetView* GetRenderTargetInternal(unsigned idx = 0);
   unsigned int GetMemoryUsage(unsigned int pitch) const;
   bool CreateInternal(const void* pInitData = nullptr, unsigned int srcPitch = 0);
+  void SetViewIdxProtected(unsigned idx) { m_viewIdx = idx; }
 
   void SaveTexture();
   void RestoreTexture();
@@ -149,10 +155,11 @@ private:
   UINT        m_pitch;
   UINT        m_bindFlags;
   UINT        m_cpuFlags;
+  UINT        m_viewIdx{ 0 };
 
   // created texture
   ID3D11Texture2D* m_texture;
-  ID3D11RenderTargetView* m_renderTarget;
+  ID3D11RenderTargetView* m_renderTargets[2];
   // store views in different formats
   std::map<DXGI_FORMAT, ID3D11ShaderResourceView*> m_views;
 
