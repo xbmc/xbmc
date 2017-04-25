@@ -59,13 +59,15 @@ protected:
   virtual bool LockVertexBuffer(void **data);
   virtual bool UnlockVertexBuffer();
   virtual bool LoadEffect(const std::string& filename, DefinesMap* defines);
-  virtual bool Execute(std::vector<ID3D11RenderTargetView*> *vecRT, unsigned int vertexIndexStep);
+  virtual bool Execute(const std::vector<CD3DTexture*> &targets, unsigned int vertexIndexStep);
   virtual void SetStepParams(UINT stepIndex) { }
   virtual bool CreateInputLayout(D3D11_INPUT_ELEMENT_DESC *layout, unsigned numElements);
 
   CD3DEffect   m_effect;
+  CD3DTexture* m_target{ nullptr };
 
 private:
+  void SetTarget(CD3DTexture* target);
   CD3DBuffer          m_vb;
   CD3DBuffer          m_ib;
   unsigned int        m_vbsize;
@@ -82,9 +84,9 @@ public:
   void GetDefines(DefinesMap &map) const;
   bool Create(bool useCLUT, bool useDithering, int ditherDepth);
   void Render(CD3DTexture &sourceTexture, unsigned sourceWidth, unsigned sourceHeight, CRect sourceRect, const CPoint points[4]
-            , unsigned range = 0, float contrast = 0.5f, float brightness = 0.5f);
+            , CD3DTexture *target, unsigned range = 0, float contrast = 0.5f, float brightness = 0.5f);
   void Render(CD3DTexture &sourceTexture, unsigned sourceWidth, unsigned sourceHeight, CRect sourceRect, CRect destRect
-            , unsigned range = 0, float contrast = 0.5f, float brightness = 0.5f);
+            , CD3DTexture *target, unsigned range = 0, float contrast = 0.5f, float brightness = 0.5f);
   void SetCLUT(int clutSize, ID3D11ShaderResourceView *pCLUTView);
 
   static bool CreateCLUTView(int clutSize, uint16_t* clutData, ID3D11ShaderResourceView** ppCLUTView);
@@ -124,7 +126,7 @@ public:
   CYUV2RGBShader();
   virtual ~CYUV2RGBShader();
   virtual bool Create(EBufferFormat fmt, COutputShader *pOutShader = nullptr);
-  virtual void Render(CRect sourceRect, CPoint dest[], float contrast, float brightness, SWinVideoBuffer* videoBuffer);
+  virtual void Render(CRect sourceRect, CPoint dest[], float contrast, float brightness, SWinVideoBuffer* videoBuffer, CD3DTexture *target);
 
 protected:
   void PrepareParameters(SWinVideoBuffer* videoBuffer, CRect sourceRect, CPoint dest[],
@@ -154,7 +156,8 @@ public:
   virtual void Render(CD3DTexture &sourceTexture,
                       unsigned int sourceWidth, unsigned int sourceHeight,
                       unsigned int destWidth, unsigned int destHeight,
-                      CRect sourceRect, CRect destRect, bool useLimitRange) = 0;
+                      CRect sourceRect, CRect destRect, bool useLimitRange, 
+                      CD3DTexture *target) = 0;
   CConvolutionShader();
   virtual ~CConvolutionShader();
   
@@ -182,7 +185,8 @@ public:
   void Render(CD3DTexture &sourceTexture,
               unsigned int sourceWidth, unsigned int sourceHeight,
               unsigned int destWidth, unsigned int destHeight,
-              CRect sourceRect, CRect destRect, bool useLimitRange) override;
+              CRect sourceRect, CRect destRect, bool useLimitRange, 
+              CD3DTexture *target) override;
   CConvolutionShader1Pass() : CConvolutionShader(), m_sourceWidth(0), m_sourceHeight(0) {}
 
 protected:
@@ -205,7 +209,8 @@ public:
   void Render(CD3DTexture &sourceTexture,
               unsigned int sourceWidth, unsigned int sourceHeight,
               unsigned int destWidth, unsigned int destHeight,
-              CRect sourceRect, CRect destRect, bool useLimitRange) override;
+              CRect sourceRect, CRect destRect, bool useLimitRange,
+              CD3DTexture *target) override;
   virtual ~CConvolutionShaderSeparable();
 
 protected:

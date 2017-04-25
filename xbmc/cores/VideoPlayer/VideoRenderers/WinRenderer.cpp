@@ -298,7 +298,7 @@ void CWinRenderer::RenderUpdate(bool clear, unsigned int flags, unsigned int alp
   g_Windowing.SetAlphaBlendEnable(alpha < 255);
   ManageTextures();
   ManageRenderArea();
-  Render(flags);
+  Render(flags, g_Windowing.GetBackBuffer());
 }
 
 void CWinRenderer::FlipPage(int source)
@@ -658,7 +658,7 @@ void CWinRenderer::UpdateVideoFilter()
   }
 }
 
-void CWinRenderer::Render(DWORD flags)
+void CWinRenderer::Render(DWORD flags, CD3DTexture* target)
 {
   if (!m_VideoBuffers[m_iYV12RenderBuffer]->IsReadyToRender())
     return;
@@ -668,24 +668,24 @@ void CWinRenderer::Render(DWORD flags)
   switch (m_renderMethod)
   {
   case RENDER_DXVA:
-    RenderHW(flags);
+    RenderHW(flags, target);
     break;
   case RENDER_PS:
-    RenderPS();
+    RenderPS(target);
     break;
   case RENDER_SW:
-    RenderSW();
+    RenderSW(target);
     break;
   default:
     return;
   }
-
   if (m_bUseHQScaler)
-    RenderHQ();
+    RenderHQ(target);
+
   g_Windowing.ApplyStateBlock();
 }
 
-void CWinRenderer::RenderSW()
+void CWinRenderer::RenderSW(CD3DTexture* target)
 {
   // if creation failed
   if (!m_outputShader)
@@ -730,37 +730,23 @@ void CWinRenderer::RenderSW()
   // 2. output to display
 
   CVideoSettings settings = CMediaSettings::GetInstance().GetCurrentVideoSettings();
-  m_outputShader->Render(m_IntermediateTarget, m_sourceWidth, m_sourceHeight, m_sourceRect, m_rotatedDestCoords,
+  m_outputShader->Render(m_IntermediateTarget, m_sourceWidth, m_sourceHeight, m_sourceRect, m_rotatedDestCoords, target,
                          g_Windowing.UseLimitedColor(), settings.m_Contrast * 0.01f, settings.m_Brightness * 0.01f);
 }
 
-void CWinRenderer::RenderPS()
+void CWinRenderer::RenderPS(CD3DTexture* target)
 {
-  CD3D11_VIEWPORT viewPort;
-  ID3D11DeviceContext* pContext = g_Windowing.Get3D11Context();
-
-  ID3D11RenderTargetView *oldRTView = nullptr; ID3D11DepthStencilView* oldDSView = nullptr;
   if (m_bUseHQScaler)
-  {
-    // store current render target and depth view.
-    pContext->OMGetRenderTargets(1, &oldRTView, &oldDSView);
-    // change destination for HQ scallers
-    ID3D11RenderTargetView* pRTView = m_IntermediateTarget.GetRenderTarget();
-    pContext->OMSetRenderTargets(1, &pRTView, nullptr);
-    // viewport equals intermediate target size
-    viewPort = CD3D11_VIEWPORT(0.0f, 0.0f, 
-                               static_cast<float>(m_IntermediateTarget.GetWidth()), 
-                               static_cast<float>(m_IntermediateTarget.GetHeight()));
+    target = &m_IntermediateTarget;
+
+  CD3D11_VIEWPORT viewPort(0.0f, 0.0f, static_cast<float>(target->GetWidth()), static_cast<float>(target->GetHeight()));
+
+  if (m_bUseHQScaler)
     g_Windowing.ResetScissors();
-  }
-  else
-  {
-    // viewport equals full backbuffer size
-    CRect bbSize = g_Windowing.GetBackBufferRect();
-    viewPort = CD3D11_VIEWPORT(0.f, 0.f, bbSize.Width(), bbSize.Height());
-  }
+
   // reset view port
-  pContext->RSSetViewports(1, &viewPort);
+  g_Windowing.Get3D11Context()->RSSetViewports(1, &viewPort);
+
   // select destination rectangle 
   CPoint destPoints[4];
   if (m_renderOrientation)
@@ -781,26 +767,19 @@ void CWinRenderer::RenderPS()
   m_colorShader->Render(m_sourceRect, destPoints,
                         CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Contrast,
                         CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Brightness,
-                        m_VideoBuffers[m_iYV12RenderBuffer]);
+                        m_VideoBuffers[m_iYV12RenderBuffer], target);
   // Restore our view port.
   g_Windowing.RestoreViewPort();
-  // Restore the render target and depth view.
-  if (m_bUseHQScaler)
-  {
-    pContext->OMSetRenderTargets(1, &oldRTView, oldDSView);
-    SAFE_RELEASE(oldRTView);
-    SAFE_RELEASE(oldDSView);
-  }
 }
 
-void CWinRenderer::RenderHQ()
+void CWinRenderer::RenderHQ(CD3DTexture* target)
 {
   m_scalerShader->Render(m_IntermediateTarget, m_sourceWidth, m_sourceHeight, m_destWidth, m_destHeight
                        , m_sourceRect, g_graphicsContext.StereoCorrection(m_destRect)
-                       , false);
+                       , false, target);
 }
 
-void CWinRenderer::RenderHW(DWORD flags)
+void CWinRenderer::RenderHW(DWORD flags, CD3DTexture* target)
 {
   SWinVideoBuffer *image = m_VideoBuffers[m_iYV12RenderBuffer];
   if (image->format != BUFFER_FMT_DXVA_BYPASS
@@ -873,62 +852,33 @@ void CWinRenderer::RenderHW(DWORD flags)
   }
 
   CRect src = m_sourceRect, dst = destRect;
-  CRect target = CRect(0.0f, 0.0f,
+  CRect targetRect = CRect(0.0f, 0.0f,
                        static_cast<float>(m_IntermediateTarget.GetWidth()), 
                        static_cast<float>(m_IntermediateTarget.GetHeight()));
-  if (m_capture)
+
+  if (target != g_Windowing.GetBackBuffer())
   {
-    target.x2 = static_cast<float>(m_capture->GetWidth());
-    target.y2 = static_cast<float>(m_capture->GetHeight());
+    // rendering capture
+    targetRect.x2 = target->GetWidth();
+    targetRect.y2 = target->GetHeight();
   }
-  CWIN32Util::CropSource(src, dst, target, m_renderOrientation);
+  CWIN32Util::CropSource(src, dst, targetRect, m_renderOrientation);
 
-  ID3D11RenderTargetView* pView = nullptr;
-  ID3D11Resource* pResource = m_IntermediateTarget.Get();
-  if (m_capture)
+  m_processor->Render(src, dst, m_IntermediateTarget.Get(), views, flags, image->frameIdx, m_renderOrientation);
+
+  if (!m_bUseHQScaler)
   {
-    g_Windowing.Get3D11Context()->OMGetRenderTargets(1, &pView, nullptr);
-    if (pView)
-      pView->GetResource(&pResource);
-  }
-
-  m_processor->Render(src, dst, pResource, views, flags, image->frameIdx, m_renderOrientation);
-
-  if (m_capture)
-  {
-    SAFE_RELEASE(pResource);
-    SAFE_RELEASE(pView);
-  }
-
-  if (!m_bUseHQScaler && !m_capture)
-  {
-    CRect oldViewPort;
-    bool stereoHack = g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_SPLIT_HORIZONTAL
-                   || g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_SPLIT_VERTICAL;
-
-    CGUIShaderDX* pGUIShader = g_Windowing.GetGUIShader();
-    XMMATRIX w, v, p;
-    if (stereoHack)
+    if ( g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_SPLIT_HORIZONTAL
+      || g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_SPLIT_VERTICAL)
     {
-      pGUIShader->GetWVP(w, v, p);
-      CRect bbSize = g_Windowing.GetBackBufferRect();
-
-      g_Windowing.GetViewPort(oldViewPort);
-      g_Windowing.SetViewPort(bbSize);
-      g_Windowing.SetCameraPosition(CPoint(bbSize.Width() / 2.f, bbSize.Height() / 2.f),
-                                    static_cast<int>(bbSize.Width()),
-                                    static_cast<int>(bbSize.Height()),
-                                    0.f);
+      CD3DTexture *backBuffer = g_Windowing.GetBackBuffer();
+      CD3D11_VIEWPORT bbSize(0.f, 0.f, static_cast<float>(backBuffer->GetWidth()), static_cast<float>(backBuffer->GetHeight()));
+      g_Windowing.Get3D11Context()->RSSetViewports(1, &bbSize);
     }
 
     // render frame
-    m_outputShader->Render(m_IntermediateTarget, m_destWidth, m_destHeight, dst, dst);
-
-    if (stereoHack)
-    {
-      g_Windowing.SetViewPort(oldViewPort);
-      pGUIShader->SetWVP(w, v, p);
-    }
+    m_outputShader->Render(m_IntermediateTarget, m_destWidth, m_destHeight, dst, dst, target);
+    g_Windowing.RestoreViewPort();
   }
 }
 
@@ -939,31 +889,19 @@ bool CWinRenderer::RenderCapture(CRenderCapture* capture)
 
   bool succeeded = false;
 
-  ID3D11DeviceContext* pContext = g_Windowing.Get3D11Context();
-
   CRect saveSize = m_destRect;
   saveRotatedCoords();//backup current m_rotatedDestCoords
 
   m_destRect.SetRect(0, 0, static_cast<float>(capture->GetWidth()), static_cast<float>(capture->GetHeight()));
   syncDestRectToRotatedPoints();//syncs the changed destRect to m_rotatedDestCoords
 
-  ID3D11DepthStencilView* oldDepthView;
-  ID3D11RenderTargetView* oldSurface;
-  pContext->OMGetRenderTargets(1, &oldSurface, &oldDepthView);
-
   capture->BeginRender();
   if (capture->GetState() != CAPTURESTATE_FAILED)
   {
-    m_capture = capture;
-    Render(0);
-    m_capture = nullptr;
+    Render(0, capture->GetTarget());
     capture->EndRender();
     succeeded = true;
   }
-
-  pContext->OMSetRenderTargets(1, &oldSurface, oldDepthView);
-  oldSurface->Release();
-  SAFE_RELEASE(oldDepthView); // it can be nullptr
 
   m_destRect = saveSize;
   restoreRotatedCoords();//restores the previous state of the rotated dest coords

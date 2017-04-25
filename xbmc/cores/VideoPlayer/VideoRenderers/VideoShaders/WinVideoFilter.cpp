@@ -146,6 +146,16 @@ bool CWinShader::CreateInputLayout(D3D11_INPUT_ELEMENT_DESC *layout, unsigned nu
   return S_OK == g_Windowing.Get3D11Device()->CreateInputLayout(layout, numElements, desc.pIAInputSignature, desc.IAInputSignatureSize, &m_inputLayout);
 }
 
+void CWinShader::SetTarget(CD3DTexture* target)
+{
+  m_target = target;
+  if (m_target)
+  {
+    ID3D11RenderTargetView* pRTView = target->GetRenderTarget();
+    g_Windowing.Get3D11Context()->OMSetRenderTargets(1, &pRTView, nullptr);
+  }
+}
+
 bool CWinShader::LockVertexBuffer(void **data)
 {
   if (!m_vb.Map(data))
@@ -189,13 +199,13 @@ bool CWinShader::LoadEffect(const std::string& filename, DefinesMap* defines)
   return true;
 }
 
-bool CWinShader::Execute(std::vector<ID3D11RenderTargetView*> *vecRT, unsigned int vertexIndexStep)
+bool CWinShader::Execute(const std::vector<CD3DTexture*> &targets, unsigned int vertexIndexStep)
 {
   ID3D11DeviceContext* pContext = g_Windowing.Get3D11Context();
   ID3D11RenderTargetView* oldRT = nullptr;
 
   // The render target will be overridden: save the caller's original RT
-  if (vecRT != nullptr && !vecRT->empty())
+  if (!targets.empty())
     pContext->OMGetRenderTargets(1, &oldRT, nullptr);
 
   UINT cPasses;
@@ -216,9 +226,7 @@ bool CWinShader::Execute(std::vector<ID3D11RenderTargetView*> *vecRT, unsigned i
 
   for (UINT iPass = 0; iPass < cPasses; iPass++)
   {
-    if (vecRT != nullptr && vecRT->size() > iPass)
-      pContext->OMSetRenderTargets(1, &vecRT->at(iPass), nullptr);
-
+    SetTarget(targets.size() > iPass ? targets.at(iPass) : nullptr);
     SetStepParams(iPass);
 
     if (!m_effect.BeginPass(iPass))
@@ -240,7 +248,7 @@ bool CWinShader::Execute(std::vector<ID3D11RenderTargetView*> *vecRT, unsigned i
   if (oldRT != nullptr)
   {
     pContext->OMSetRenderTargets(1, &oldRT, nullptr);
-    oldRT->Release();
+    SAFE_RELEASE(oldRT);
   }
   return true;
 }
@@ -323,15 +331,15 @@ bool COutputShader::Create(bool useCLUT, bool useDithering, int ditherDepth)
 }
 
 void COutputShader::Render(CD3DTexture& sourceTexture, unsigned sourceWidth, unsigned sourceHeight, CRect sourceRect, const CPoint points[4]
-                         , unsigned range, float contrast, float brightness)
+                         , CD3DTexture *target, unsigned range, float contrast, float brightness)
 {
   PrepareParameters(sourceWidth, sourceHeight, sourceRect, points);
   SetShaderParameters(sourceTexture, range, contrast, brightness);
-  Execute(nullptr, 4);
+  Execute({ target }, 4);
 }
 
 void COutputShader::Render(CD3DTexture &sourceTexture, unsigned sourceWidth, unsigned sourceHeight, CRect sourceRect, CRect destRect
-                         , unsigned range, float contrast, float brightness)
+                         , CD3DTexture *target, unsigned range, float contrast, float brightness)
 {
   CPoint points[] =
   {
@@ -340,7 +348,7 @@ void COutputShader::Render(CD3DTexture &sourceTexture, unsigned sourceWidth, uns
     { destRect.x2, destRect.y2 },
     { destRect.x1, destRect.y2 },
   };
-  Render(sourceTexture, sourceWidth, sourceHeight, sourceRect, points, range, contrast, brightness);
+  Render(sourceTexture, sourceWidth, sourceHeight, sourceRect, points, target, range, contrast, brightness);
 }
 
 void COutputShader::SetCLUT(int clutSize, ID3D11ShaderResourceView* pCLUTView)
@@ -556,11 +564,11 @@ bool CYUV2RGBShader::Create(EBufferFormat fmt, COutputShader *pCLUT)
   return true;
 }
 
-void CYUV2RGBShader::Render(CRect sourceRect, CPoint dest[], float contrast, float brightness, SWinVideoBuffer* videoBuffer)
+void CYUV2RGBShader::Render(CRect sourceRect, CPoint dest[], float contrast, float brightness, SWinVideoBuffer* videoBuffer, CD3DTexture *target)
 {
   PrepareParameters(videoBuffer, sourceRect, dest, contrast, brightness);
   SetShaderParameters(videoBuffer);
-  Execute(nullptr, 4);
+  Execute({ target }, 4);
 }
 
 CYUV2RGBShader::CYUV2RGBShader()
@@ -800,12 +808,13 @@ bool CConvolutionShader1Pass::Create(ESCALINGMETHOD method, COutputShader *pCLUT
 void CConvolutionShader1Pass::Render(CD3DTexture &sourceTexture,
                                      unsigned int sourceWidth, unsigned int sourceHeight,
                                      unsigned int destWidth, unsigned int destHeight,
-                                     CRect sourceRect, CRect destRect, bool useLimitRange)
+                                     CRect sourceRect, CRect destRect, bool useLimitRange, 
+                                     CD3DTexture *target)
 {
   PrepareParameters(sourceWidth, sourceHeight, sourceRect, destRect);
   float texSteps[] = { 1.0f/(float)sourceWidth, 1.0f/(float)sourceHeight};
   SetShaderParameters(sourceTexture, &texSteps[0], ARRAY_SIZE(texSteps), useLimitRange);
-  Execute(nullptr, 4);
+  Execute({ target }, 4);
 }
 
 void CConvolutionShader1Pass::PrepareParameters(unsigned int sourceWidth, unsigned int sourceHeight,
@@ -947,7 +956,8 @@ bool CConvolutionShaderSeparable::Create(ESCALINGMETHOD method, COutputShader *p
 void CConvolutionShaderSeparable::Render(CD3DTexture &sourceTexture,
                                          unsigned int sourceWidth, unsigned int sourceHeight,
                                          unsigned int destWidth, unsigned int destHeight,
-                                         CRect sourceRect, CRect destRect, bool useLimitRange)
+                                         CRect sourceRect, CRect destRect, bool useLimitRange,
+                                         CD3DTexture *target)
 {
   if(m_destWidth != destWidth || m_sourceHeight != sourceHeight)
     CreateIntermediateRenderTarget(destWidth, sourceHeight);
@@ -962,7 +972,7 @@ void CConvolutionShaderSeparable::Render(CD3DTexture &sourceTexture,
   };
   SetShaderParameters(sourceTexture, texSteps, 4, useLimitRange);
 
-  Execute(nullptr, 4);
+  Execute({ &m_IntermediateTarget, target }, 4);
 
   // we changed view port, so we need to restore our real viewport.
   g_Windowing.RestoreViewPort();
@@ -1123,48 +1133,17 @@ void CConvolutionShaderSeparable::SetStepParams(UINT iPass)
   CD3D11_VIEWPORT viewPort(.0f, .0f, .0f, .0f);
   ID3D11DeviceContext* pContext = g_Windowing.Get3D11Context();
 
+  viewPort = CD3D11_VIEWPORT(0.0f, 0.0f,
+    static_cast<float>(m_target->GetWidth()),
+    static_cast<float>(m_target->GetHeight()));
+
   if (iPass == 0)
   {
-    // store old RT
-    pContext->OMGetRenderTargets(1, &m_oldRenderTarget, nullptr);
-    // setting new RT
-    ID3D11RenderTargetView* newRT = m_IntermediateTarget.GetRenderTarget();
-    pContext->OMSetRenderTargets(1, &newRT, nullptr);
-    // new viewport
-    viewPort = CD3D11_VIEWPORT(0.0f, 0.0f, 
-                               static_cast<float>(m_IntermediateTarget.GetWidth()), 
-                               static_cast<float>(m_IntermediateTarget.GetHeight()));
     // reset scissor
     g_Windowing.ResetScissors();
   }
   else if (iPass == 1)
   {
-    if (m_oldRenderTarget)
-    {
-      // get dimension of old render target
-      ID3D11Resource* rtResource = nullptr;
-      m_oldRenderTarget->GetResource(&rtResource);
-      ID3D11Texture2D* rtTexture = nullptr;
-      if (SUCCEEDED(rtResource->QueryInterface(__uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&rtTexture))))
-      {
-        D3D11_TEXTURE2D_DESC rtDescr = {};
-        rtTexture->GetDesc(&rtDescr);
-        viewPort = CD3D11_VIEWPORT(0.0f, 0.0f,
-                                   static_cast<float>(rtDescr.Width),
-                                   static_cast<float>(rtDescr.Height));
-      }
-      SAFE_RELEASE(rtTexture);
-      SAFE_RELEASE(rtResource);
-    }
-    else
-    {
-      // current RT is null so try to restore viewport
-      CRect winViewPort;
-      g_Windowing.GetViewPort(winViewPort);
-      viewPort = CD3D11_VIEWPORT(winViewPort.x1, winViewPort.y1, winViewPort.Width(), winViewPort.Height());
-    }
-    pContext->OMSetRenderTargets(1, &m_oldRenderTarget, nullptr);
-    SAFE_RELEASE(m_oldRenderTarget);
     // at the second pass m_IntermediateTarget is a source of data
     m_effect.SetTexture("g_Texture", m_IntermediateTarget);
     // restore scissor

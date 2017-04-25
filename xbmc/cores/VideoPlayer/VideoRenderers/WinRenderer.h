@@ -121,12 +121,11 @@ public:
   static bool HandlesVideoBuffer(CVideoBuffer *buffer);
 
 protected:
-  void PreInit();
-  void Render(DWORD flags);
-  void RenderSW();
-  void RenderHW(DWORD flags);
-  void RenderPS();
-  void RenderHQ();
+  virtual void Render(DWORD flags, CD3DTexture* target);
+  void RenderSW(CD3DTexture* target);
+  void RenderHW(DWORD flags, CD3DTexture* target);
+  void RenderPS(CD3DTexture* target);
+  void RenderHQ(CD3DTexture* target);
   void ManageTextures();
   void DeleteYV12Texture(int index);
   bool CreateYV12Texture(int index);
