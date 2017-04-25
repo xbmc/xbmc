@@ -64,7 +64,7 @@ namespace XBMCAddon
       if (!path.empty())
         item->SetPath(path);
 
-	  item->GetVideoInfoTag()->SetPlayCount(-1);
+      item->GetVideoInfoTag()->SetPlayCount(-1);
     }
 
     ListItem::~ListItem()
