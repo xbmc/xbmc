@@ -23,7 +23,12 @@
 #include "coffldr.h"
 #include "LibraryLoader.h"
 
-#if defined(__linux__) && !defined(__powerpc__) && !defined(__arm__) && !defined(__aarch64__) && !defined(__mips__)
+#if defined(__linux__) && \
+    !defined(__powerpc__) && \
+    !defined(__arm__) && \
+    !defined(__aarch64__) && \
+    !defined(__mips__) && \
+    !defined(__SH4__)
 #define USE_LDT_KEEPER
 #include "ldt_keeper.h"
 #endif

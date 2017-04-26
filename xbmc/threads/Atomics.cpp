@@ -106,7 +106,11 @@ long cas(volatile long *pAddr, long expectedVal, long swapVal)
 ///////////////////////////////////////////////////////////////////////////
 long long cas2(volatile long long* pAddr, long long expectedVal, long long swapVal)
 {
-#if defined(__ppc__) || defined(__powerpc__) || defined(__arm__) || defined(__aarch64__)// PowerPC and ARM
+#if defined(__ppc__) || \
+    defined(__powerpc__) || \
+    defined(__arm__) || \
+    defined(__aarch64__) || \
+    defined(__SH4__)
 // Not available/required
 // Hack to allow compilation
   throw "cas2 is not implemented";

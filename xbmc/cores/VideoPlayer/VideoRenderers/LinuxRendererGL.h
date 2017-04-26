@@ -293,7 +293,13 @@ protected:
 
 
 inline int NP2( unsigned x ) {
-#if defined(TARGET_POSIX) && !defined(__POWERPC__) && !defined(__PPC__) && !defined(__arm__) && !defined(__aarch64__) && !defined(__mips__)
+#if defined(TARGET_POSIX) && \
+    !defined(__POWERPC__) && \
+    !defined(__PPC__) && \
+    !defined(__arm__) && \
+    !defined(__aarch64__) && \
+    !defined(__mips__) && \
+    !defined(__SH4__)
   // If there are any issues compiling this, just append a ' && 0'
   // to the above to make it '#if defined(TARGET_POSIX) && 0'
 
