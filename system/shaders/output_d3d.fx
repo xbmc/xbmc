@@ -19,7 +19,7 @@
  */
 
 #if defined(KODI_3DLUT)
-float     m_CLUTsize;
+float2    m_CLUTParams; // x- scale, y- offset
 texture3D m_CLUT;
 
 SamplerState LutSampler : IMMUTABLE
@@ -45,9 +45,10 @@ SamplerState DitherSampler : IMMUTABLE
 float4 output4(float4 color, float2 uv)
 {
 #if defined(KODI_3DLUT)
-  half3 scale = (m_CLUTsize - 1.0) / m_CLUTsize;
-  half3 offset = 1.0 / (2.0 * m_CLUTsize);
-  color.rgb = m_CLUT.Sample(LutSampler, color.rgb*scale + offset).rgb;
+  half3 scale = m_CLUTParams.x;
+  half3 offset = m_CLUTParams.y;
+  float3 lutRGB = m_CLUT.Sample(LutSampler, color.rgb*scale + offset).rgb;
+  color.rgb = scale.x ? lutRGB : color.rgb;
 #endif
 #if defined(KODI_DITHER)
   half2 ditherpos  = uv * m_ditherParams.xy;
@@ -70,7 +71,7 @@ float3 m_params; // 0 - range (0 - full, 1 - limited), 1 - contrast, 2 - brightn
 float4 OUTPUT_PS(VS_OUTPUT In) : SV_TARGET
 {
   float4 color = g_Texture.Sample(KernelSampler, In.TextureUV);
-  if (m_params.x)
+  [flatten] if (m_params.x)
     color = saturate(0.0625 + color * 219.0 / 255.0);
 
   color *= m_params.y * 2.0;

@@ -80,11 +80,12 @@ public:
 
   void ApplyEffectParameters(CD3DEffect &effect, unsigned sourceWidth, unsigned sourceHeight);
   void GetDefines(DefinesMap &map) const;
-  bool Create(int clutSize, ID3D11ShaderResourceView *pCLUTView, bool useDithering, int ditherDepth);
+  bool Create(bool useCLUT, bool useDithering, int ditherDepth);
   void Render(CD3DTexture &sourceTexture, unsigned sourceWidth, unsigned sourceHeight, CRect sourceRect, const CPoint points[4]
             , unsigned range = 0, float contrast = 0.5f, float brightness = 0.5f);
   void Render(CD3DTexture &sourceTexture, unsigned sourceWidth, unsigned sourceHeight, CRect sourceRect, CRect destRect
             , unsigned range = 0, float contrast = 0.5f, float brightness = 0.5f);
+  void SetCLUT(int clutSize, ID3D11ShaderResourceView *pCLUTView);
 
   static bool CreateCLUTView(int clutSize, uint16_t* clutData, ID3D11ShaderResourceView** ppCLUTView);
 
@@ -94,6 +95,7 @@ private:
   void SetShaderParameters(CD3DTexture &sourceTexture, unsigned range, float contrast, float brightness);
   void CreateDitherView();
 
+  bool m_useCLUT{ false };
   unsigned m_sourceWidth{ 0 };
   unsigned m_sourceHeight{ 0 };
   CRect m_sourceRect{ 0.f, 0.f, 0.f, 0.f };

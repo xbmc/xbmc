@@ -255,10 +255,16 @@ COutputShader::~COutputShader()
 
 void COutputShader::ApplyEffectParameters(CD3DEffect &effect, unsigned sourceWidth, unsigned sourceHeight)
 {
-  if (HasCLUT())
+  if (m_useCLUT)
   {
+    float clut_params[2] = { 0.0f, 0.0f };
+    if (HasCLUT())
+    {
+      clut_params[0] = (m_clutSize - 1) / static_cast<float>(m_clutSize);
+      clut_params[1] = 0.5f / static_cast<float>(m_clutSize);
+    };
     effect.SetResources("m_CLUT", &m_pCLUTView, 1);
-    effect.SetScalar("m_CLUTsize", m_clutSize);
+    effect.SetFloatArray("m_CLUTParams", clut_params, 2);
   }
   if (m_useDithering)
   {
@@ -275,7 +281,7 @@ void COutputShader::ApplyEffectParameters(CD3DEffect &effect, unsigned sourceWid
 
 void COutputShader::GetDefines(DefinesMap& map) const
 {
-  if (HasCLUT())
+  if (m_useCLUT)
   {
     map["KODI_3DLUT"] = "";
   }
@@ -285,10 +291,9 @@ void COutputShader::GetDefines(DefinesMap& map) const
   }
 }
 
-bool COutputShader::Create(int clutSize, ID3D11ShaderResourceView* pCLUTView, bool useDithering, int ditherDepth)
+bool COutputShader::Create(bool useCLUT, bool useDithering, int ditherDepth)
 {
-  m_clutSize = clutSize;
-  m_pCLUTView = pCLUTView;
+  m_useCLUT = useCLUT;
   m_ditherDepth = ditherDepth;
 
   CWinShader::CreateVertexBuffer(4, sizeof(CUSTOMVERTEX));
@@ -336,6 +341,12 @@ void COutputShader::Render(CD3DTexture &sourceTexture, unsigned sourceWidth, uns
     { destRect.x1, destRect.y2 },
   };
   Render(sourceTexture, sourceWidth, sourceHeight, sourceRect, points, range, contrast, brightness);
+}
+
+void COutputShader::SetCLUT(int clutSize, ID3D11ShaderResourceView* pCLUTView)
+{
+  m_clutSize = clutSize;
+  m_pCLUTView = pCLUTView;
 }
 
 bool COutputShader::CreateCLUTView(int clutSize, uint16_t* clutData, ID3D11ShaderResourceView** ppCLUTView)

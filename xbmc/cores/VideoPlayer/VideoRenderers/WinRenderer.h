@@ -146,6 +146,7 @@ protected:
   bool m_bUseHQScaler;
   bool m_bFilterInitialized;
   bool m_cmsOn{ false };
+  bool m_clutLoaded{ true };
   bool m_useDithering;
 
   unsigned int m_destWidth;
@@ -173,7 +174,7 @@ protected:
   struct SwsContext *m_sw_scale_ctx;
   CYUV2RGBShader* m_colorShader;
   CConvolutionShader* m_scalerShader;
-  COutputShader* m_outputShader;
+  std::unique_ptr<COutputShader> m_outputShader;
   CRenderCapture* m_capture = nullptr;
   std::unique_ptr<CColorManager> m_colorManager;
   ID3D11ShaderResourceView *m_pCLUTView{ nullptr };

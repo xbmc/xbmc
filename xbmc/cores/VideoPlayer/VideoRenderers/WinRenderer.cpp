@@ -30,7 +30,6 @@
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
-#include "utils/CPUInfo.h"
 #include "utils/log.h"
 #include "utils/win32/gpu_memcpy_sse4.h"
 #include "VideoShaders/WinVideoFilter.h"
@@ -101,7 +100,7 @@ CWinRenderer::CWinRenderer()
   m_processor = nullptr;
   m_neededBuffers = 0;
   m_colorManager.reset(new CColorManager());
-  m_outputShader = nullptr;
+  m_outputShader.reset();
   m_useDithering = CServiceBroker::GetSettings().GetBool("videoscreen.dither");
   m_ditherDepth = CServiceBroker::GetSettings().GetInt("videoscreen.ditherdepth");
 
@@ -362,7 +361,7 @@ void CWinRenderer::UnInit()
     SAFE_DELETE(m_processor);
   }
   SAFE_RELEASE(m_pCLUTView);
-  SAFE_DELETE(m_outputShader);
+  m_outputShader.reset();
 }
 
 void CWinRenderer::Flush()
@@ -541,7 +540,7 @@ void CWinRenderer::UpdatePSVideoFilter()
     // First try the more efficient two pass convolution scaler
     m_scalerShader = new CConvolutionShaderSeparable();
 
-    if (!m_scalerShader->Create(m_scalingMethod, m_outputShader))
+    if (!m_scalerShader->Create(m_scalingMethod, m_outputShader.get()))
     {
       SAFE_DELETE(m_scalerShader);
       CLog::Log(LOGNOTICE, "%s: two pass convolution shader init problem, falling back to one pass.", __FUNCTION__);
@@ -552,7 +551,7 @@ void CWinRenderer::UpdatePSVideoFilter()
     {
       m_scalerShader = new CConvolutionShader1Pass();
 
-      if (!m_scalerShader->Create(m_scalingMethod, m_outputShader))
+      if (!m_scalerShader->Create(m_scalingMethod, m_outputShader.get()))
       {
         SAFE_DELETE(m_scalerShader);
         CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(34400), g_localizeStrings.Get(34401));
@@ -579,7 +578,7 @@ void CWinRenderer::UpdatePSVideoFilter()
   }
 
   m_colorShader = new CYUV2RGBShader();
-  if (!m_colorShader->Create(m_bufferFormat, m_bUseHQScaler ? nullptr : m_outputShader))
+  if (!m_colorShader->Create(m_bufferFormat, m_bUseHQScaler ? nullptr : m_outputShader.get()))
   {
     if (m_bUseHQScaler)
     {
@@ -603,7 +602,9 @@ void CWinRenderer::UpdatePSVideoFilter()
 void CWinRenderer::UpdateVideoFilter()
 {
   bool cmsChanged = m_cmsOn != m_colorManager->IsEnabled()
-                    || m_cmsOn && !m_colorManager->CheckConfiguration(m_cmsToken, m_iFlags);
+                 || m_cmsOn && !m_colorManager->CheckConfiguration(m_cmsToken, m_iFlags);
+  cmsChanged &= m_clutLoaded;
+
   if (m_scalingMethodGui == CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ScalingMethod
    && m_bFilterInitialized && !cmsChanged)
     return;
@@ -623,13 +624,14 @@ void CWinRenderer::UpdateVideoFilter()
 
   if (cmsChanged || !m_outputShader)
   {
-    SAFE_DELETE(m_outputShader);
-    m_outputShader = new COutputShader();
-    if (!m_outputShader->Create(m_CLUTSize, m_pCLUTView, m_useDithering, m_ditherDepth))
+    m_outputShader.reset(new COutputShader());
+    if (!m_outputShader->Create(m_cmsOn, m_useDithering, m_ditherDepth))
     {
       CLog::Log(LOGDEBUG, "%s: Unable to create output shader.", __FUNCTION__);
-      SAFE_DELETE(m_outputShader);
+      m_outputShader.reset();
     }
+    else if (m_pCLUTView && m_CLUTSize)
+      m_outputShader->SetCLUT(m_CLUTSize, m_pCLUTView);
   }
 
   RESOLUTION_INFO res = g_graphicsContext.GetResInfo();
@@ -1159,20 +1161,38 @@ void CWinRenderer::ColorManagmentUpdate()
 
 bool CWinRenderer::LoadCLUT()
 {
+  if (m_outputShader)
+    m_outputShader->SetCLUT(0, nullptr);
+  m_CLUTSize = 0;
   SAFE_RELEASE(m_pCLUTView);
-  // load 3DLUT data
-  uint16_t* pCLUT;
-  if (!m_colorManager->GetVideo3dLut(m_iFlags, &m_cmsToken, &m_CLUTSize, &pCLUT))
-  {
-    CLog::Log(LOGERROR, "%s: Error loading the 3DLUT data.", __FUNCTION__);
-    return false;
-  }
-  // create 3DLUT shader view
-  if (!COutputShader::CreateCLUTView(m_CLUTSize, pCLUT, &m_pCLUTView))
-  {
-    CLog::Log(LOGERROR, "%s: Unable to create 3DLUT texture.", __FUNCTION__);
-    SAFE_DELETE(m_pCLUTView);
-  }
-  free(pCLUT);
+  m_clutLoaded = false;
+
+  auto loadLutTask = Concurrency::create_task([this]{
+    // load 3DLUT data
+    uint16_t* pCLUT;
+    int clutSize;
+    if (!m_colorManager->GetVideo3dLut(m_iFlags, &m_cmsToken, &clutSize, &pCLUT))
+    {
+      CLog::Log(LOGERROR, "%s: Error loading the 3DLUT data.", __FUNCTION__);
+      return 0;
+    }
+    // create 3DLUT shader view
+    bool success = COutputShader::CreateCLUTView(clutSize, pCLUT, &m_pCLUTView);
+    free(pCLUT);
+    if (!success)
+    {
+      CLog::Log(LOGERROR, "%s: Unable to create 3DLUT texture.", __FUNCTION__);
+      SAFE_RELEASE(m_pCLUTView);
+      return 0;
+    }
+    return clutSize;
+  });
+
+  loadLutTask.then([this](int clutSize){
+    m_CLUTSize = clutSize;
+    if (m_outputShader)
+        m_outputShader->SetCLUT(m_CLUTSize, m_pCLUTView);
+    m_clutLoaded = true;
+  });
   return true;
 }
