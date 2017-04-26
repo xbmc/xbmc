@@ -20,7 +20,6 @@
  *
  */
 
-#ifdef HAS_DX
 #include <vector>
 
 #include "../../guilib/Geometry.h"
@@ -34,7 +33,7 @@ class CYUV2RGBMatrix
 {
 public:
   CYUV2RGBMatrix();
-  void SetParameters(float contrast, float blacklevel, unsigned int flags, EShaderFormat format);
+  void SetParameters(float contrast, float blacklevel, unsigned int flags, EBufferFormat format);
   XMFLOAT4X4* Matrix();
 
 private:
@@ -43,7 +42,7 @@ private:
   float        m_blacklevel;
   unsigned int m_flags;
   bool         m_limitedRange;
-  EShaderFormat m_format;
+  EBufferFormat m_format;
   XMFLOAT4X4   m_mat;
 };
 
@@ -120,26 +119,22 @@ private:
 class CYUV2RGBShader : public CWinShader
 {
 public:
-  virtual bool Create(unsigned int sourceWidth, unsigned int sourceHeight, EShaderFormat fmt, COutputShader *pOutShader = nullptr);
-  virtual void Render(CRect sourceRect, CPoint dest[], float contrast, float brightness,
-                      unsigned int flags, YUVBuffer* YUVbuf);
   CYUV2RGBShader();
   virtual ~CYUV2RGBShader();
+  virtual bool Create(EBufferFormat fmt, COutputShader *pOutShader = nullptr);
+  virtual void Render(CRect sourceRect, CPoint dest[], float contrast, float brightness, SWinVideoBuffer* videoBuffer);
 
 protected:
-  virtual void PrepareParameters(CRect sourceRect,
-                                 CPoint dest[],
-                                 float contrast,
-                                 float brightness,
-                                 unsigned int flags);
-  virtual void SetShaderParameters(YUVBuffer* YUVbuf);
+  void PrepareParameters(SWinVideoBuffer* videoBuffer, CRect sourceRect, CPoint dest[],
+                         float contrast, float brightness);
+  void SetShaderParameters(SWinVideoBuffer* videoBuffer);
 
 private:
   CYUV2RGBMatrix      m_matrix;
   unsigned int        m_sourceWidth, m_sourceHeight;
   CRect               m_sourceRect;
   CPoint              m_dest[4];
-  EShaderFormat       m_format;
+  EBufferFormat       m_format;
   float               m_texSteps[2];
   COutputShader *m_pOutShader;
 
@@ -236,5 +231,3 @@ class CTestShader : public CWinShader
 public:
   virtual bool Create();
 };
-
-#endif

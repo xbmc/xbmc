@@ -25,6 +25,7 @@
 #include "HwDecRender/DXVAHD.h"
 #include "guilib/D3DResource.h"
 #include "RenderCapture.h"
+#include "WinVideoBuffer.h"
 #include "settings/Settings.h"
 
 #define ALIGN(value, alignment) (((value)+((alignment)-1))&~((alignment)-1))
@@ -77,79 +78,11 @@ enum RenderMethod
 #define PLANE_U 1
 #define PLANE_V 2
 #define PLANE_UV 1
+#define PLANE_DXVA 0
 
 #define FIELD_FULL 0
 #define FIELD_TOP 1
 #define FIELD_BOT 2
-
-struct SVideoBuffer
-{
-  SVideoBuffer() : videoBuffer(nullptr) {}
-  virtual ~SVideoBuffer() {}
-  virtual void Release() {};            // Release any allocated resource
-  virtual void StartDecode() {};        // Prepare the buffer to receive data from VideoPlayer
-  virtual void StartRender() {};        // VideoPlayer finished filling the buffer with data
-  virtual void Clear() {};              // clear the buffer with solid black
-  virtual bool IsReadyToRender() { return true; };
-
-  CVideoBuffer* videoBuffer = nullptr;
-};
-
-// YV12 decoder textures
-struct SVideoPlane
-{
-  CD3DTexture    texture;
-  D3D11_MAPPED_SUBRESOURCE rect;       // rect.pBits != NULL is used to know if the texture is locked
-};
-
-struct YUVBuffer : SVideoBuffer
-{
-  YUVBuffer() : m_width(0), m_height(0)
-              , m_format(AV_PIX_FMT_NONE)
-              , m_activeplanes(0)
-              , m_locked(false)
-              , m_staging(nullptr)
-              , m_bPending(false)
-  {
-    memset(&m_sDesc, 0, sizeof(CD3D11_TEXTURE2D_DESC));
-  }
-  ~YUVBuffer();
-  bool Create(AVPixelFormat format, unsigned int width, unsigned int height, bool dynamic);
-  unsigned int GetActivePlanes() { return m_activeplanes; }
-  bool CopyFromPicture(const VideoPicture &picture);
-
-  // SVideoBuffer overrides
-  void Release() override;
-  void StartDecode() override;
-  void StartRender() override;
-  void Clear() override;
-  bool IsReadyToRender() override;
-
-  SVideoPlane planes[3];
-
-private:
-  bool CopyFromDXVA(ID3D11VideoDecoderOutputView* pView);
-  void PerformCopy();
-
-  unsigned int     m_width;
-  unsigned int     m_height;
-  AVPixelFormat    m_format;
-  unsigned int     m_activeplanes;
-  bool             m_locked;
-  D3D11_MAP        m_mapType;
-  ID3D11Texture2D* m_staging;
-  CD3D11_TEXTURE2D_DESC m_sDesc;
-  bool             m_bPending;
-};
-
-struct DXVABuffer : SVideoBuffer
-{
-  DXVABuffer() { pic = nullptr; }
-  ~DXVABuffer() { SAFE_RELEASE(pic); }
-  DXVA::CRenderPicture *pic;
-  unsigned int frameIdx;
-  unsigned int pictureFlags;
-};
 
 class CWinRenderer : public CBaseRenderer
 {
@@ -197,7 +130,7 @@ protected:
   void ManageTextures();
   void DeleteYV12Texture(int index);
   bool CreateYV12Texture(int index);
-  int NextYV12Texture();
+  int NextYV12Texture() const;
   void SelectRenderMethod();
   void UpdateVideoFilter();
   void SelectSWVideoFilter();
@@ -205,46 +138,45 @@ protected:
   void UpdatePSVideoFilter();
   void ColorManagmentUpdate();
   bool CreateIntermediateRenderTarget(unsigned int width, unsigned int height, bool dynamic);
+  EBufferFormat SelectBufferFormat(const ERenderFormat format, const RenderMethod method) const;
 
   bool LoadCLUT();
 
-  int  m_iYV12RenderBuffer;
-  int  m_NumYV12Buffers;
-
-  bool                 m_bConfigured;
-  SVideoBuffer        *m_VideoBuffers[NUM_BUFFERS];
-  RenderMethod         m_renderMethod;
-  DXVA::CProcessorHD  *m_processor;
-
-  // software scale libraries (fallback if required pixel shaders version is not available)
-  struct SwsContext   *m_sw_scale_ctx;
+  bool m_bConfigured;
   bool m_bUseHQScaler;
-  CD3DTexture m_IntermediateTarget;
-  CYUV2RGBShader* m_colorShader;
-  CConvolutionShader* m_scalerShader;
-  COutputShader* m_outputShader;
+  bool m_bFilterInitialized;
+  bool m_cmsOn{ false };
+  bool m_useDithering;
 
+  unsigned int m_destWidth;
+  unsigned int m_destHeight;
+  unsigned int m_frameIdx;
+
+  int m_iYV12RenderBuffer;
+  int m_NumYV12Buffers;
+  int m_neededBuffers;
+  int m_iRequestedMethod;
+  int m_cmsToken{ -1 };
+  int m_CLUTSize{ 0 };
+  int m_ditherDepth;
+
+  DXGI_FORMAT m_dxva_format;
+  RenderMethod m_renderMethod;
+  EBufferFormat m_bufferFormat;
   ESCALINGMETHOD m_scalingMethod;
   ESCALINGMETHOD m_scalingMethodGui;
 
-  bool m_bFilterInitialized;
-  int m_iRequestedMethod;
-  DXGI_FORMAT m_dxva_format;
+  std::vector<ERenderFormat> m_formats;
 
-  // Width and height of the render target
-  // the separable HQ scalers need this info, but could the m_destRect be used instead?
-  unsigned int         m_destWidth;
-  unsigned int         m_destHeight;
-
-  int                  m_neededBuffers;
-  unsigned int         m_frameIdx = 0;
-  CRenderCapture*      m_capture = nullptr;
-
-  int m_cmsToken{ -1 };
-  bool m_cmsOn{ false };
-  int m_CLUTSize{ 0 };
+  SWinVideoBuffer *m_VideoBuffers[NUM_BUFFERS];
+  DXVA::CProcessorHD *m_processor;
+  struct SwsContext *m_sw_scale_ctx;
+  CYUV2RGBShader* m_colorShader;
+  CConvolutionShader* m_scalerShader;
+  COutputShader* m_outputShader;
+  CRenderCapture* m_capture = nullptr;
   std::unique_ptr<CColorManager> m_colorManager;
   ID3D11ShaderResourceView *m_pCLUTView{ nullptr };
-  bool m_useDithering;
-  int m_ditherDepth;
+
+  CD3DTexture m_IntermediateTarget;
 };
