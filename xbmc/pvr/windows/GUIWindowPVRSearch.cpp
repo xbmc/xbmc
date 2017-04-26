@@ -22,7 +22,7 @@
 
 #include "ServiceBroker.h"
 #include "dialogs/GUIDialogOK.h"
-#include "dialogs/GUIDialogProgress.h"
+#include "dialogs/GUIDialogBusy.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
 #include "utils/URIUtils.h"
@@ -38,6 +38,35 @@
 
 using namespace PVR;
 
+namespace
+{
+  class AsyncSearchAction : private IRunnable
+  {
+  public:
+    AsyncSearchAction() = delete;
+    AsyncSearchAction(CFileItemList* items, CPVREpgSearchFilter* filter) : m_items(items), m_filter(filter) {}
+    bool Execute();
+
+  private:
+    // IRunnable implementation
+    void Run() override;
+
+    CFileItemList* m_items;
+    CPVREpgSearchFilter* m_filter;
+  };
+
+  bool AsyncSearchAction::Execute()
+  {
+    CGUIDialogBusy::Wait(this, 100, false);
+    return true;
+  }
+
+  void AsyncSearchAction::Run()
+  {
+    CServiceBroker::GetPVRManager().EpgContainer().GetEPGSearch(*m_items, *m_filter);
+  }
+} // unnamed namespace
+
 CGUIWindowPVRSearch::CGUIWindowPVRSearch(bool bRadio) :
   CGUIWindowPVRBase(bRadio, bRadio ? WINDOW_RADIO_SEARCH : WINDOW_TV_SEARCH, "MyPVRSearch.xml"),
   m_bSearchConfirmed(false)
@@ -49,7 +78,7 @@ void CGUIWindowPVRSearch::GetContextButtons(int itemNumber, CContextButtons &but
   if (itemNumber < 0 || itemNumber >= m_vecItems->Size())
     return;
 
-  buttons.Add(CONTEXT_BUTTON_CLEAR, 19232);               /* Clear search results */
+  buttons.Add(CONTEXT_BUTTON_CLEAR, 19232); /* Clear search results */
 
   CGUIWindowPVRBase::GetContextButtons(itemNumber, buttons);
 }
@@ -94,24 +123,12 @@ void CGUIWindowPVRSearch::OnPrepareFileItems(CFileItemList &items)
     bAddSpecialSearchItem = true;
 
     items.Clear();
-    CGUIDialogProgress* dlgProgress = g_windowManager.GetWindow<CGUIDialogProgress>();
-    if (dlgProgress)
-    {
-      dlgProgress->SetHeading(CVariant{194}); // "Searching..."
-      dlgProgress->SetText(CVariant{m_searchfilter.GetSearchTerm()});
-      dlgProgress->Open();
-      dlgProgress->Progress();
-    }
 
-    //! @todo should we limit the find similar search to the selected group?
-    CServiceBroker::GetPVRManager().EpgContainer().GetEPGSearch(items, m_searchfilter);
-
-    if (dlgProgress)
-      dlgProgress->Close();
+    AsyncSearchAction(&items, &m_searchfilter).Execute();
 
     if (items.IsEmpty())
-      CGUIDialogOK::ShowAndGetInput(CVariant{194},  // "Searching..."
-                                    CVariant{284}); // "No results found"
+      CGUIDialogOK::ShowAndGetInput(CVariant{284}, // "No results found"
+                                    m_searchfilter.GetSearchTerm());
   }
 
   if (bAddSpecialSearchItem)
