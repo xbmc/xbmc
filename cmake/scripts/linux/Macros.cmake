@@ -78,7 +78,7 @@ function(find_soname lib)
     string(REGEX MATCH ".*lib${liblow}.so" ${lib}_FILENAME ${_TMP_FILENAME})
   endif()
   if(${lib}_FILENAME)
-    execute_process(COMMAND objdump -p ${${lib}_FILENAME}
+    execute_process(COMMAND ${CMAKE_OBJDUMP} -p ${${lib}_FILENAME}
                     COMMAND grep SONAME.*${liblow}
                     ERROR_QUIET
                     OUTPUT_VARIABLE ${lib}_SONAME)

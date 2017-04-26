@@ -47,6 +47,7 @@ set(CMAKE_CXX_COMPILER @CXX@)
 set(CMAKE_AR @AR@ CACHE FILEPATH "Archiver")
 set(CMAKE_LINKER @LD@ CACHE FILEPATH "Linker")
 set(CMAKE_STRIP @STRIP@ CACHE PATH "strip binary" FORCE)
+set(CMAKE_OBJDUMP @OBJDUMP@ CACHE FILEPATH "Objdump")
 
 if(PROJECT_SOURCE_DIR MATCHES "tools/depends")
   if(@use_ccache@ STREQUAL "yes")
