@@ -1335,8 +1335,31 @@ bool CGUIDialogVideoInfo::DeleteVideoItem(const CFileItemPtr &item, bool unavail
       strDeletePath = URIUtils::GetDirectory(strDeletePath);
       if (StringUtils::EndsWithNoCase(strDeletePath, "video_ts/"))
       {
-        URIUtils::RemoveSlashAtEnd(strDeletePath);
-        strDeletePath = URIUtils::GetDirectory(strDeletePath);
+        CFileItemList items;
+        CStdString    candidatePath = strDeletePath;
+
+        URIUtils::RemoveSlashAtEnd(candidatePath);
+        candidatePath = URIUtils::GetDirectory(candidatePath);
+
+        if (CDirectory::GetDirectory(candidatePath, items))
+        {
+          int   nitems    = items.Size();
+          if (nitems <= 2)
+          {
+            bool  only_dvd  = true;
+            for (int i = 0; i < nitems; i++)
+            {
+              if (!StringUtils::CompareNoCase(items[i]->GetAsUrl().GetFileName().c_str(), "AUDIO_TS") &&
+                  !StringUtils::CompareNoCase(items[i]->GetAsUrl().GetFileName().c_str(), "VIDEO_TS"))
+              {
+                only_dvd = false;
+                break;
+              }
+            }
+            if (only_dvd)
+              strDeletePath = candidatePath;
+          }
+        }
       }
     }
     if (URIUtils::HasSlashAtEnd(strDeletePath))
