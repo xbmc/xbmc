@@ -56,8 +56,8 @@ To develop Kodi for Android the Android SDK and NDK are required.
 3.1. Prerequisites when compiling on Mac OSX
 --------------------------------------------------------------------
 
-a. When building on Mac OSX you should download the java version from here: http://support.apple.com/kb/DL1572
-Or ensure otherwise that you are using java 1.6 (java -version tells you the version).
+a. When building on Mac OSX you need to download the java JDK (development kit) from http://www.oracle.com
+   Or ensure otherwise that you are using java 1.8 (java -version tells you the version).
 b. The compilation for android needs a case sensitive filesystem. The
    filesystem used on normal OSX installations is case insensitive. So you
    need to generate a writeable hdd image and format it with hfs+ (case sensitive).
@@ -76,6 +76,7 @@ f. Once you have your hdd image with case sensitive hfs+ file system do all step
    example the hdd image is mounted on /Volumes/android-dev.
     $ ./configure --with-tarballs=/Users/Shared/xbmc-depends/tarballs --host=arm-linux-androideabi \
                   --with-sdk-path=/Volumes/android-dev/android/android-sdk-macosx \
+                  --with-sdk=android-21 \
                   --with-ndk=/Volumes/android-dev/android/android-ndk-r12b \
                   --with-toolchain=/Volumes/android-dev/android/android-toolchain-arm/android-21 \
                   --prefix=/Volumes/android-dev/android/xbmc-depends
@@ -124,6 +125,13 @@ install some android packages using the Android SDK Manager:
     $ cd <android-sdk>/tools
     $ ./android update sdk -u -t platform,platform-tool
     $ ./android update sdk --all -u -t build-tools-20.0.0
+
+As of newest SDKs the android tool is deprecated. Use sdkmanager instead:
+    $ cd <android-sdk>/tools/bin
+    $ ./sdkmanager  platform-tools
+    $ ./sdkmanager "platforms;android-21"
+    $ ./sdkmanager "build-tools;20.0.0"
+
 --------------------------------------------------------------------
 3.4. Setup the Android toolchain
 --------------------------------------------------------------------
@@ -251,7 +259,7 @@ The built APK will be present in $HOME/kodi-android
 
 To install Kodi through the previously built APK in an Android system you can
 either install it on a real device (smartphone/tablet/...) running Android
- >= 2.3.x.
+ >= 5.x
 
 --------------------------------------------------------------------
 6.1. Installing Kodi on the Android device
