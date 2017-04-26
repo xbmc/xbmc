@@ -96,13 +96,21 @@ public:
   void                    SetAlphaBlendEnable(bool enable);
 
   static std::string GetErrorDescription(HRESULT hr);
-  void FixRefreshRateIfNecessary(const D3D10DDIARG_CREATERESOURCE* pResource);
+  void FixRefreshRateIfNecessary(const D3D10DDIARG_CREATERESOURCE* pResource) const;
+  CD3DTexture* GetBackBuffer();
 
   std::vector<AVPixelFormat> m_processorFormats;
   std::vector<AVPixelFormat> m_sharedFormats;
   std::vector<AVPixelFormat> m_shaderFormats;
 
 protected:
+  class CBackBuffer : public CD3DTexture
+  {
+  public:
+    CBackBuffer() : CD3DTexture() {}
+    void SetViewIdx(unsigned idx) { SetViewIdxProtected(idx); }
+  };
+
   bool CreateDevice();
   void DeleteDevice();
   void OnDeviceLost();
@@ -168,7 +176,6 @@ protected:
   ID3D11DeviceContext*        m_pImdContext{nullptr};
   IDXGISwapChain*             m_pSwapChain{nullptr};
   IDXGISwapChain1*            m_pSwapChain1{nullptr};
-  ID3D11RenderTargetView*     m_pRenderTargetView{nullptr};
   ID3D11DepthStencilState*    m_depthStencilState{nullptr};
   ID3D11DepthStencilView*     m_depthStencilView{nullptr};
   D3D11_VIEWPORT              m_viewPort;
@@ -181,12 +188,11 @@ protected:
   ID3D11RasterizerState*      m_RSScissorEnable{nullptr};
   bool                        m_ScissorsEnabled{false};
   DXGI_ADAPTER_DESC           m_adapterDesc;
-  // stereo interlaced/checkerboard intermediate target
-  ID3D11Texture2D*            m_pTextureRight{nullptr};
-  ID3D11RenderTargetView*     m_pRenderTargetViewRight{nullptr};
-  ID3D11ShaderResourceView*   m_pShaderResourceViewRight{nullptr};
   bool                        m_bResizeRequired{false};
   bool                        m_bHWStereoEnabled{false};
+  // stereo interlaced/checkerboard intermediate target
+  CD3DTexture m_rightEyeTex;
+  CBackBuffer m_backBufferTex;
   // improve get current mode
   DXGI_MODE_DESC              m_cachedMode;
 #ifdef _DEBUG
