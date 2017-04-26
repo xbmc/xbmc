@@ -2477,9 +2477,18 @@ bool CLinuxRendererGL::LoadCLUT()
 {
   DeleteCLUT();
 
+  int clutSize, dataSize;
+  if (!CColorManager::Get3dLutSize(CMS_DATA_FMT_RGB, &clutSize, &dataSize))
+    return 0;
+
+  // allocate buffer
+  m_CLUTsize = clutSize;
+  m_CLUT = static_cast<uint16_t*>(malloc(dataSize));
+
   // load 3DLUT
-  if ( !m_ColorManager->GetVideo3dLut(m_iFlags, &m_cmsToken, &m_CLUTsize, &m_CLUT) )
+  if ( !m_ColorManager->GetVideo3dLut(m_iFlags, &m_cmsToken, CMS_DATA_FMT_RGB, m_CLUTsize, m_CLUT) )
   {
+    free(m_CLUT);
     CLog::Log(LOGERROR, "Error loading the LUT");
     return false;
   }

@@ -353,43 +353,48 @@ void COutputShader::SetCLUT(int clutSize, ID3D11ShaderResourceView* pCLUTView)
   m_pCLUTView = pCLUTView;
 }
 
-bool COutputShader::CreateCLUTView(int clutSize, uint16_t* clutData, ID3D11ShaderResourceView** ppCLUTView)
+bool COutputShader::CreateCLUTView(int clutSize, uint16_t* clutData, bool isRGB, ID3D11ShaderResourceView** ppCLUTView)
 {
   if (!clutSize || !clutData)
     return false;
 
+  uint16_t* cData;
+  if (isRGB)
+  {
+    // repack data to RGBA
+    unsigned lutsamples = clutSize * clutSize * clutSize;
+    cData = reinterpret_cast<uint16_t*>(_aligned_malloc(lutsamples * sizeof(uint16_t) * 4, 16));
+    uint16_t* rgba = static_cast<uint16_t*>(cData);
+    for (int i = 0; i < lutsamples - 1; ++i, rgba += 4, clutData += 3)
+    {
+      *(uint64_t*)rgba = *(uint64_t*)clutData;
+    }
+    // and last one
+    rgba[0] = clutData[0]; rgba[1] = clutData[1]; rgba[2] = clutData[2]; rgba[3] = 0xFFFF;
+  }
+  else
+    cData = clutData;
+
   ID3D11Device* pDevice = g_Windowing.Get3D11Device();
   ID3D11DeviceContext* pContext = g_Windowing.GetImmediateContext();
   CD3D11_TEXTURE3D_DESC txDesc(DXGI_FORMAT_R16G16B16A16_UNORM, clutSize, clutSize, clutSize, 1,
-                               D3D11_BIND_SHADER_RESOURCE, D3D11_USAGE_DYNAMIC, D3D11_CPU_ACCESS_WRITE);
+                               D3D11_BIND_SHADER_RESOURCE, D3D11_USAGE_IMMUTABLE);
 
   ComPtr<ID3D11Texture3D> pCLUTTex;
-  //ID3D11Texture3D* pCLUTTex = nullptr;
-  HRESULT hr = pDevice->CreateTexture3D(&txDesc, nullptr, &pCLUTTex);
+  D3D11_SUBRESOURCE_DATA texData;
+  texData.pSysMem = cData;
+  texData.SysMemPitch = clutSize * sizeof(uint16_t) * 4;
+  texData.SysMemSlicePitch = texData.SysMemPitch * clutSize;
+
+  HRESULT hr = pDevice->CreateTexture3D(&txDesc, &texData, &pCLUTTex);
+  if (isRGB)
+    _aligned_free(cData);
+
   if (FAILED(hr))
   {
     CLog::Log(LOGDEBUG, "%s: unable to create 3dlut texture cube.");
     return false;
   }
-
-  D3D11_MAPPED_SUBRESOURCE mRes;
-  if (FAILED(pContext->Map(pCLUTTex.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mRes)))
-  {
-    CLog::Log(LOGDEBUG, "%s: unable to upload data to 3dlut texture cube.");
-    return false;
-  }
-
-  // repack data
-  unsigned lutsamples = clutSize * clutSize * clutSize;
-  uint16_t* rgba = static_cast<uint16_t*>(mRes.pData);
-  for (int i = 0; i < lutsamples - 1; ++i, rgba += 4, clutData += 3)
-  {
-    *(uint64_t*)rgba = *(uint64_t*)clutData;
-  }
-  // and last one
-  rgba[0] = clutData[0]; rgba[1] = clutData[1]; rgba[2] = clutData[2]; rgba[3] = 0xFFFF;
-
-  pContext->Unmap(pCLUTTex.Get(), 0);
 
   CD3D11_SHADER_RESOURCE_VIEW_DESC srvDesc(D3D11_SRV_DIMENSION_TEXTURE3D, DXGI_FORMAT_R16G16B16A16_UNORM, 0, 1);
   hr = pDevice->CreateShaderResourceView(pCLUTTex.Get(), &srvDesc, ppCLUTView);

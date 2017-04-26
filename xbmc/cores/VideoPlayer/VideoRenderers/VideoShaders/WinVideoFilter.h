@@ -91,7 +91,7 @@ public:
             , CD3DTexture *target, unsigned range = 0, float contrast = 0.5f, float brightness = 0.5f);
   void SetCLUT(int clutSize, ID3D11ShaderResourceView *pCLUTView);
 
-  static bool CreateCLUTView(int clutSize, uint16_t* clutData, ID3D11ShaderResourceView** ppCLUTView);
+  static bool CreateCLUTView(int clutSize, uint16_t* clutData, bool isRGB, ID3D11ShaderResourceView** ppCLUTView);
 
 private:
   bool HasCLUT() const { return m_clutSize && m_pCLUTView; }

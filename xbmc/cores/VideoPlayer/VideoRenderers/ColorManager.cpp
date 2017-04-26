@@ -80,7 +80,55 @@ CMS_PRIMARIES videoFlagsToPrimaries(int flags)
   return CMS_PRIMARIES_BT709; // default to bt.709
 }
 
-bool CColorManager::GetVideo3dLut(int videoFlags, int *cmsToken, int *clutSize, uint16_t **clutData)
+bool CColorManager::Get3dLutSize(CMS_DATA_FORMAT format, int *clutSize, int *dataSize)
+{
+  int cmsmode = CServiceBroker::GetSettings().GetInt("videoscreen.cmsmode");
+  switch (cmsmode)
+  {
+  case CMS_MODE_3DLUT:
+  {
+    std::string fileName = CServiceBroker::GetSettings().GetString("videoscreen.cms3dlut");
+    if (fileName.empty())
+      return false;
+
+    int clutDimention;
+    if (!Probe3dLut(fileName, &clutDimention))
+      return false;
+
+    if (clutSize)
+      *clutSize = clutDimention;
+
+    if (dataSize)
+    {
+      int bytesInSample = format == CMS_DATA_FMT_RGBA ? 4 : 3;
+      *dataSize = sizeof(uint16_t) * clutDimention * clutDimention * clutDimention * bytesInSample;
+    }
+    return true;
+  }
+  case CMS_MODE_PROFILE:
+  {
+    int cmslutsize = CServiceBroker::GetSettings().GetInt("videoscreen.cmslutsize");
+    if (cmslutsize <= 0)
+      return false;
+
+    int clutDimention = 1 << cmslutsize;
+    if (clutSize)
+      *clutSize = clutDimention;
+
+    if (dataSize)
+    {
+      int bytesInSample = format == CMS_DATA_FMT_RGBA ? 4 : 3;
+      *dataSize = sizeof(uint16_t) * clutDimention * clutDimention * clutDimention * bytesInSample;
+    }
+    return true;
+  }
+  default:
+    CLog::Log(LOGDEBUG, "ColorManager: unknown CMS mode %d\n", cmsmode);
+    return false;
+  }
+}
+
+bool CColorManager::GetVideo3dLut(int videoFlags, int *cmsToken, CMS_DATA_FORMAT format, int clutSize, uint16_t *clutData)
 {
   CMS_PRIMARIES videoPrimaries = videoFlagsToPrimaries(videoFlags);
   CLog::Log(LOGDEBUG, "ColorManager: video primaries: %d\n", (int)videoPrimaries);
@@ -89,7 +137,7 @@ bool CColorManager::GetVideo3dLut(int videoFlags, int *cmsToken, int *clutSize, 
   case CMS_MODE_3DLUT:
     CLog::Log(LOGDEBUG, "ColorManager: CMS_MODE_3DLUT\n");
     m_cur3dlutFile = CServiceBroker::GetSettings().GetString("videoscreen.cms3dlut");
-    if (!Load3dLut(m_cur3dlutFile, clutData, clutSize))
+    if (!Load3dLut(m_cur3dlutFile, format, clutSize, clutData))
       return false;
     m_curCmsMode = CMS_MODE_3DLUT;
     break;
@@ -126,22 +174,19 @@ bool CColorManager::GetVideo3dLut(int videoFlags, int *cmsToken, int *clutSize, 
       m_curIccWhitePoint = (CMS_WHITEPOINT)CServiceBroker::GetSettings().GetInt("videoscreen.cmswhitepoint");
       m_curIccPrimaries = (CMS_PRIMARIES)CServiceBroker::GetSettings().GetInt("videoscreen.cmsprimaries");
       CLog::Log(LOGDEBUG, "ColorManager: primaries setting: %d\n", (int)m_curIccPrimaries);
-      if (m_curIccPrimaries == CMS_PRIMARIES_AUTO) m_curIccPrimaries = videoPrimaries;
+      if (m_curIccPrimaries == CMS_PRIMARIES_AUTO) 
+        m_curIccPrimaries = videoPrimaries;
       CLog::Log(LOGDEBUG, "ColorManager: source profile primaries: %d\n", (int)m_curIccPrimaries);
-      cmsHPROFILE sourceProfile =
-        CreateSourceProfile(m_curIccPrimaries, gammaCurve, m_curIccWhitePoint);
+      cmsHPROFILE sourceProfile = CreateSourceProfile(m_curIccPrimaries, gammaCurve, m_curIccWhitePoint);
 
       // link profiles
       // TODO: intent selection, switch output to 16 bits?
       cmsSetAdaptationState(0.0);
-      cmsHTRANSFORM deviceLink =
-        cmsCreateTransform(sourceProfile, TYPE_RGB_FLT,
-            m_hProfile, TYPE_RGB_FLT,
-            INTENT_ABSOLUTE_COLORIMETRIC, 0);
+      uint32_t fmt = format == CMS_DATA_FMT_RGBA ? TYPE_RGBA_FLT : TYPE_RGB_FLT;
+      cmsHTRANSFORM deviceLink =  cmsCreateTransform(sourceProfile, fmt, m_hProfile, fmt, INTENT_ABSOLUTE_COLORIMETRIC, 0);
 
       // sample the transformation
-      *clutSize = 1 << CServiceBroker::GetSettings().GetInt("videoscreen.cmslutsize");
-      Create3dLut(deviceLink, clutData, clutSize);
+      Create3dLut(deviceLink, format, clutSize, clutData);
 
       // free gamma curve, source profile and transformation
       cmsDeleteTransform(deviceLink);
@@ -162,7 +207,7 @@ bool CColorManager::GetVideo3dLut(int videoFlags, int *cmsToken, int *clutSize, 
 
   // set current state
   m_curVideoPrimaries = videoPrimaries;
-  m_curClutSize = *clutSize;
+  m_curClutSize = clutSize;
   *cmsToken = ++m_curCmsToken;
   return true;
 }
@@ -232,7 +277,7 @@ struct H3DLUT
   // and by the array 'lutDataxx', of length 'lutCompressedSize'.
 };
 
-bool CColorManager::Probe3dLut(const std::string filename)
+bool CColorManager::Probe3dLut(const std::string filename, int *clutSize)
 {
   struct H3DLUT header;
   CFile lutFile;
@@ -267,11 +312,23 @@ bool CColorManager::Probe3dLut(const std::string filename)
     return false;
   }
 
+  int rSize = 1 << header.inputBitDepth[0];
+  int gSize = 1 << header.inputBitDepth[1];
+  int bSize = 1 << header.inputBitDepth[2];
+  if (rSize != gSize || rSize != bSize)
+  {
+    CLog::Log(LOGERROR, "%s: Different channel resolutions unsupported: %s", __FUNCTION__, filename.c_str());
+    return false;
+  }
+
+  if (clutSize)
+    *clutSize = rSize;
+
   lutFile.Close();
   return true;
 }
 
-bool CColorManager::Load3dLut(const std::string filename, uint16_t **CLUT, int *CLUTsize)
+bool CColorManager::Load3dLut(const std::string filename, CMS_DATA_FORMAT format, int CLUTsize, uint16_t *clutData)
 {
   struct H3DLUT header;
   CFile lutFile;
@@ -292,37 +349,37 @@ bool CColorManager::Load3dLut(const std::string filename, uint16_t **CLUT, int *
   int gSize = 1 << header.inputBitDepth[1];
   int bSize = 1 << header.inputBitDepth[2];
 
-  if ( !((rSize == gSize) && (rSize == bSize)) )
+  if ( rSize != CLUTsize || rSize != gSize || rSize != bSize)
   {
     CLog::Log(LOGERROR, "%s: Different channel resolutions unsupported: %s", __FUNCTION__, filename.c_str());
     return false;
   }
 
-  int lutsamples = rSize * gSize * bSize * 3;
-  *CLUTsize = rSize; // TODO: assumes cube
-  *CLUT = (uint16_t*)malloc(lutsamples * sizeof(uint16_t));
-
   lutFile.Seek(header.lutFileOffset, SEEK_SET);
 
-  for (int rIndex=0; rIndex<rSize; rIndex++) {
-    for (int gIndex=0; gIndex<gSize; gIndex++) {
-      std::vector<uint16_t> input(bSize*3);
-      lutFile.Read(input.data(), input.size()*sizeof(input[0]));
-      int index = (rIndex + gIndex*rSize)*3;
-      for (int bIndex=0; bIndex<bSize; bIndex++) {
-        (*CLUT)[index+bIndex*rSize*gSize*3+0] = input[bIndex*3+2];
-        (*CLUT)[index+bIndex*rSize*gSize*3+1] = input[bIndex*3+1];
-        (*CLUT)[index+bIndex*rSize*gSize*3+2] = input[bIndex*3+0];
+  int components = format == CMS_DATA_FMT_RGBA ? 4 : 3;
+  for (int rIndex = 0; rIndex < rSize; rIndex++)
+  {
+    for (int gIndex = 0; gIndex < gSize; gIndex++) 
+    {
+      std::vector<uint16_t> input(bSize * 3); // always 3 components
+      lutFile.Read(input.data(), input.size() * sizeof(input[0]));
+      int index = (rIndex + gIndex * rSize) * components;
+      for (int bIndex = 0; bIndex < bSize; bIndex++) 
+      {
+        int offset = index + bIndex * rSize * gSize * components;
+        clutData[offset + 0] = input[bIndex * 3 + 2];
+        clutData[offset + 1] = input[bIndex * 3 + 1];
+        clutData[offset + 2] = input[bIndex * 3 + 0];
+        if (format == CMS_DATA_FMT_RGBA)
+          clutData[offset + 3] = 0xFFFF;
       }
     }
   }
 
   lutFile.Close();
-
   return true;
 }
-
-
 
 #if defined(HAVE_LCMS2)
 // ICC profile support
@@ -479,47 +536,51 @@ cmsHPROFILE CColorManager::CreateSourceProfile(CMS_PRIMARIES primaries, cmsToneC
 }
 
 
-void CColorManager::Create3dLut(cmsHTRANSFORM transform, uint16_t **clutData, int *clutSize)
+void CColorManager::Create3dLut(cmsHTRANSFORM transform, CMS_DATA_FORMAT format, int clutSize, uint16_t *clutData)
 {
-  const int lutResolution = *clutSize;
-  int lutsamples = lutResolution * lutResolution * lutResolution * 3;
-  *clutData = static_cast<uint16_t*>(malloc(lutsamples * sizeof(uint16_t)));
+  const int lutResolution = clutSize;
+  int components = format == CMS_DATA_FMT_RGBA ? 4 : 3;
 
-  cmsFloat32Number *input = new cmsFloat32Number[3*lutResolution];
-  cmsFloat32Number *output = new cmsFloat32Number[3*lutResolution];
+  cmsFloat32Number *input = new cmsFloat32Number[components*lutResolution];
+  cmsFloat32Number *output = new cmsFloat32Number[components*lutResolution];
 
 #define clamp(x, l, h) ( ((x) < (l)) ? (l) : ( ((x) > (h)) ? (h) : (x) ) )
 #define videoToPC(x) ( clamp((((x)*255)-16)/219,0,1) )
 #define PCToVideo(x) ( (((x)*219)+16)/255 )
-// #define videoToPC(x) ( x )
-// #define PCToVideo(x) ( x )
-  for (int bIndex=0; bIndex<lutResolution; bIndex++) {
-    for (int gIndex=0; gIndex<lutResolution; gIndex++) {
-      for (int rIndex=0; rIndex<lutResolution; rIndex++) {
-        input[rIndex*3+0] = videoToPC(rIndex / (lutResolution-1.0));
-        input[rIndex*3+1] = videoToPC(gIndex / (lutResolution-1.0));
-        input[rIndex*3+2] = videoToPC(bIndex / (lutResolution-1.0));
+
+  for (int bIndex=0; bIndex<lutResolution; bIndex++) 
+  {
+    for (int gIndex=0; gIndex<lutResolution; gIndex++) 
+    {
+      for (int rIndex=0; rIndex<lutResolution; rIndex++) 
+      {
+        int offset = rIndex * components;
+        input[offset + 0] = videoToPC(rIndex / (lutResolution-1.0));
+        input[offset + 1] = videoToPC(gIndex / (lutResolution-1.0));
+        input[offset + 2] = videoToPC(bIndex / (lutResolution-1.0));
+        if (format == CMS_DATA_FMT_RGBA)
+          input[offset + 3] = 0.0f;
       }
-      int index = (bIndex*lutResolution*lutResolution + gIndex*lutResolution)*3;
+      int index = (bIndex*lutResolution*lutResolution + gIndex*lutResolution)*components;
       cmsDoTransform(transform, input, output, lutResolution);
-      for (int i=0; i<lutResolution*3; i++) {
-        (*clutData)[index+i] = PCToVideo(output[i]) * 65535;
+      for (int i=0; i < lutResolution * components; i++)
+      {
+        clutData[index + i] = PCToVideo(output[i]) * 65535;
       }
     }
   }
 
   for (int y=0; y<lutResolution; y+=1)
   {
-    int index = 3*(y*lutResolution*lutResolution + y*lutResolution + y);
+    int index = components*(y*lutResolution*lutResolution + y*lutResolution + y);
     CLog::Log(LOGDEBUG, "  %d (%d): %d %d %d\n",
         (int)round(y * 255 / (lutResolution-1.0)), y,
-        (int)round((*clutData)[index+0]),
-        (int)round((*clutData)[index+1]),
-        (int)round((*clutData)[index+2]));
+        (int)round(clutData[index+0]),
+        (int)round(clutData[index+1]),
+        (int)round(clutData[index+2]));
   }
   delete[] input;
   delete[] output;
 }
-
 
 #endif //defined(HAVE_LCMS2)

@@ -1107,22 +1107,21 @@ bool CWinRenderer::LoadCLUT()
 
   auto loadLutTask = Concurrency::create_task([this]{
     // load 3DLUT data
-    uint16_t* pCLUT;
-    int clutSize;
-    if (!m_colorManager->GetVideo3dLut(m_iFlags, &m_cmsToken, &clutSize, &pCLUT))
-    {
-      CLog::Log(LOGERROR, "%s: Error loading the 3DLUT data.", __FUNCTION__);
+    int clutSize, dataSize;
+    if (!CColorManager::Get3dLutSize(CMS_DATA_FMT_RGBA, &clutSize, &dataSize))
       return 0;
-    }
-    // create 3DLUT shader view
-    bool success = COutputShader::CreateCLUTView(clutSize, pCLUT, &m_pCLUTView);
-    free(pCLUT);
+
+    uint16_t* clutData = static_cast<uint16_t*>(_aligned_malloc(dataSize, 16));
+    bool success = m_colorManager->GetVideo3dLut(m_iFlags, &m_cmsToken, CMS_DATA_FMT_RGBA, clutSize, clutData);
+    if (success)
+      success = COutputShader::CreateCLUTView(clutSize, clutData, false, &m_pCLUTView);
+    else
+      CLog::Log(LOGERROR, "%s: unable to loading the 3dlut data.", __FUNCTION__);
+
+    _aligned_free(clutData);
     if (!success)
-    {
-      CLog::Log(LOGERROR, "%s: Unable to create 3DLUT texture.", __FUNCTION__);
-      SAFE_RELEASE(m_pCLUTView);
       return 0;
-    }
+
     return clutSize;
   });
 
