@@ -643,12 +643,12 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items, CVideoDatabase &dat
       {
         database.GetPlayCounts(items.GetPath(), items);
         // for addons if playcount is still -1 set it to zero
-        if(items.IsPlugin())
+        if (items.IsPlugin())
         {
-          for (auto pItem : items)
+          for (auto pFI : items)
           {
-            if (pItem->GetVideoInfoTag()->GetPlayCount() == -1)
-              pItem->GetVideoInfoTag()->SetPlayCount(0);
+            if (pFI->GetVideoInfoTag()->GetPlayCount() == -1)
+              pFI->GetVideoInfoTag()->SetPlayCount(0);
           }
         }
         fetchedPlayCounts = true;
