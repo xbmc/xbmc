@@ -34,6 +34,9 @@
 
 #include "utils/AMLUtils.h"
 
+// pcm hack setting
+#include "settings/AdvancedSettings.h"
+
 //#define DEBUG_VERBOSE 1
 
 // This is an alternative to the linear weighted delay smoothing
@@ -832,6 +835,11 @@ void CAESinkAUDIOTRACK::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
   m_info.m_wantsIECPassthrough = true;
   if (!CXBMCApp::IsHeadsetPlugged())
   {
+    if (g_advancedSettings.forcepcmpassthrough)
+    {
+      CLog::Log(LOGWARNING, "You are using PCM passthrough - you were warned!");
+      CJNIAudioFormat::ENCODING_IEC61937 = CJNIAudioFormat::ENCODING_PCM_16BIT;
+    }
     m_info.m_deviceType = AE_DEVTYPE_HDMI;
     m_info.m_wantsIECPassthrough = false;
     m_info.m_dataFormats.push_back(AE_FMT_RAW);

@@ -138,6 +138,9 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
 
     int m_audioHeadRoom;
     float m_ac3Gain;
+    // Android only Setting to make PT on v21, v22 work
+    // while sending it via PCM and 16 bit
+    bool forcepcmpassthrough;
     std::string m_audioDefaultPlayer;
     float m_audioPlayCountMinimumPercent;
     bool m_VideoPlayerIgnoreDTSinWAV;
