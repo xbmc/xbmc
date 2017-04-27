@@ -1890,7 +1890,7 @@ bool CAddonCallbacksGUI::Dialog_YesNo_ShowAndGetInputLineButtonText(const char *
 //@{
 void CAddonCallbacksGUI::Dialog_TextViewer(const char *heading, const char *text)
 {
-  CGUIDialogTextViewer* pDialog = g_windowManager.GetWindow<CGUIDialogTextViewer>();
+  CGUIDialogTextViewer* pDialog = g_windowManager.GetWindow<CGUIDialogTextViewer>(WINDOW_DIALOG_TEXT_VIEWER);
   pDialog->SetHeading(heading);
   pDialog->SetText(text);
   pDialog->Open();
@@ -1901,7 +1901,7 @@ void CAddonCallbacksGUI::Dialog_TextViewer(const char *heading, const char *text
 //@{
 int CAddonCallbacksGUI::Dialog_Select(const char *heading, const char *entries[], unsigned int size, int selected)
 {
-  CGUIDialogSelect* pDialog = g_windowManager.GetWindow<CGUIDialogSelect>();
+  CGUIDialogSelect* pDialog = g_windowManager.GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
   pDialog->Reset();
   pDialog->SetHeading(CVariant{heading});
 

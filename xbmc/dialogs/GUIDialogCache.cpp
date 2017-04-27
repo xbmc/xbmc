@@ -37,7 +37,7 @@ CGUIDialogCache::CGUIDialogCache(DWORD dwDelay, const std::string& strHeader, co
 {
   bSentCancel = false;
 
-  m_pDlg = g_windowManager.GetWindow<CGUIDialogProgress>();
+  m_pDlg = g_windowManager.GetWindow<CGUIDialogProgress>(WINDOW_DIALOG_PROGRESS);
 
   if (!m_pDlg)
     return;

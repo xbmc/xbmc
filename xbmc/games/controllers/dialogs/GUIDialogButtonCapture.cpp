@@ -80,7 +80,7 @@ void CGUIDialogButtonCapture::Process()
       break;
 
     //! @todo Move to rendering thread when there is a rendering thread
-    auto dialog = g_windowManager.GetWindow<CGUIDialogOK>();
+    auto dialog = g_windowManager.GetWindow<CGUIDialogOK>(WINDOW_DIALOG_OK);
     if (dialog)
       dialog->SetText(GetDialogText());
   }

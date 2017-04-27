@@ -93,7 +93,7 @@ void CAddonStatusHandler::Process()
   /* Request to restart the AddOn and data structures need updated */
   if (m_status == ADDON_STATUS_NEED_RESTART)
   {
-    CGUIDialogOK* pDialog = g_windowManager.GetWindow<CGUIDialogOK>();
+    CGUIDialogOK* pDialog = g_windowManager.GetWindow<CGUIDialogOK>(WINDOW_DIALOG_OK);
     if (!pDialog) return;
 
     pDialog->SetHeading(CVariant{heading});
@@ -105,7 +105,7 @@ void CAddonStatusHandler::Process()
   /* Some required settings are missing/invalid */
   else if ((m_status == ADDON_STATUS_NEED_SETTINGS) || (m_status == ADDON_STATUS_NEED_SAVEDSETTINGS))
   {
-    CGUIDialogYesNo* pDialogYesNo = g_windowManager.GetWindow<CGUIDialogYesNo>();
+    CGUIDialogYesNo* pDialogYesNo = g_windowManager.GetWindow<CGUIDialogYesNo>(WINDOW_DIALOG_YES_NO);
     if (!pDialogYesNo) return;
 
     pDialogYesNo->SetHeading(CVariant{heading});

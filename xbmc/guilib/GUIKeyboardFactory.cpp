@@ -96,9 +96,9 @@ bool CGUIKeyboardFactory::ShowAndGetInput(std::string& aTextString, CVariant hea
     headingStr = g_localizeStrings.Get((uint32_t)heading.asInteger());
 
 #if defined(TARGET_DARWIN_IOS)
-  kb = g_windowManager.GetWindow<CGUIDialogKeyboardTouch>();
+  kb = g_windowManager.GetWindow<CGUIDialogKeyboardTouch>(WINDOW_DIALOG_KEYBOARD_TOUCH);
 #else
-  kb = g_windowManager.GetWindow<CGUIDialogKeyboardGeneric>();
+  kb = g_windowManager.GetWindow<CGUIDialogKeyboardGeneric>(WINDOW_DIALOG_KEYBOARD);
 #endif
 
   if (kb)

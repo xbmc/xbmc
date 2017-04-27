@@ -651,7 +651,7 @@ bool CGUIDialogAudioDSPManager::OnContextButton(int itemNumber, CONTEXT_BUTTON b
 
 void CGUIDialogAudioDSPManager::Update()
 {
-  CGUIDialogBusy* pDlgBusy = g_windowManager.GetWindow<CGUIDialogBusy>();
+  CGUIDialogBusy* pDlgBusy = g_windowManager.GetWindow<CGUIDialogBusy>(WINDOW_DIALOG_BUSY);
   if (!pDlgBusy)
   {
     helper_LogError(__FUNCTION__);
@@ -760,7 +760,7 @@ void CGUIDialogAudioDSPManager::SaveList(void)
    return;
 
   /* display the progress dialog */
-  CGUIDialogBusy* pDlgBusy = g_windowManager.GetWindow<CGUIDialogBusy>();
+  CGUIDialogBusy* pDlgBusy = g_windowManager.GetWindow<CGUIDialogBusy>(WINDOW_DIALOG_BUSY);
   if (!pDlgBusy)
   {
     helper_LogError(__FUNCTION__);

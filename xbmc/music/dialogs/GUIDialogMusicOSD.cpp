@@ -84,7 +84,7 @@ bool CGUIDialogMusicOSD::OnAction(const CAction &action)
   
     case ACTION_SET_RATING:
     {
-      CGUIDialogSelect *dialog = g_windowManager.GetWindow<CGUIDialogSelect>();
+      CGUIDialogSelect *dialog = g_windowManager.GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
       if (dialog)
       {
         dialog->SetHeading(CVariant{ 38023 });

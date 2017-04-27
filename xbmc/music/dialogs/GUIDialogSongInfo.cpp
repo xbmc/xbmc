@@ -99,7 +99,7 @@ bool CGUIDialogSongInfo::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_ALBUMINFO)
       {
-        CGUIWindowMusicBase *window = g_windowManager.GetWindow<CGUIWindowMusicBase>();
+        CGUIWindowMusicBase *window = g_windowManager.GetWindow<CGUIWindowMusicBase>(WINDOW_MUSIC_NAV);
         if (window)
         {
           CFileItem item(*m_song);
@@ -128,7 +128,7 @@ bool CGUIDialogSongInfo::OnMessage(CGUIMessage& message)
           int idArtist = m_song->GetMusicInfoTag()->GetContributors()[iItem].GetArtistId();
           if (idArtist > 0)
           {
-              CGUIWindowMusicBase *window = g_windowManager.GetWindow<CGUIWindowMusicBase>();
+              CGUIWindowMusicBase *window = g_windowManager.GetWindow<CGUIWindowMusicBase>(WINDOW_MUSIC_NAV);
               if (window)
               {
                 CFileItem item(*m_song);
@@ -393,7 +393,7 @@ void CGUIDialogSongInfo::OnGetThumb()
 
 void CGUIDialogSongInfo::OnSetUserrating()
 {
-  CGUIDialogSelect *dialog = g_windowManager.GetWindow<CGUIDialogSelect>();
+  CGUIDialogSelect *dialog = g_windowManager.GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
   if (dialog)
   {
     dialog->SetHeading(CVariant{ 38023 });

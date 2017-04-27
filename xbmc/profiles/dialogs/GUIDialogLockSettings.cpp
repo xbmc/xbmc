@@ -76,7 +76,7 @@ bool CGUIDialogLockSettings::ShowAndGetLock(LockType &lockMode, std::string &pas
 
 bool CGUIDialogLockSettings::ShowAndGetLock(CProfile::CLock &locks, int buttonLabel /* = 20091 */, bool conditional /* = false */, bool details /* = true */)
 {
-  CGUIDialogLockSettings *dialog = g_windowManager.GetWindow<CGUIDialogLockSettings>();
+  CGUIDialogLockSettings *dialog = g_windowManager.GetWindow<CGUIDialogLockSettings>(WINDOW_DIALOG_LOCK_SETTINGS);
   if (dialog == NULL)
     return false;
 
@@ -96,7 +96,7 @@ bool CGUIDialogLockSettings::ShowAndGetLock(CProfile::CLock &locks, int buttonLa
 
 bool CGUIDialogLockSettings::ShowAndGetUserAndPassword(std::string &user, std::string &password, const std::string &url, bool *saveUserDetails)
 {
-  CGUIDialogLockSettings *dialog = g_windowManager.GetWindow<CGUIDialogLockSettings>();
+  CGUIDialogLockSettings *dialog = g_windowManager.GetWindow<CGUIDialogLockSettings>(WINDOW_DIALOG_LOCK_SETTINGS);
   if (dialog == NULL)
     return false;
 

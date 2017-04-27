@@ -3132,7 +3132,7 @@ int CMusicDatabase::Cleanup(bool bShowProgress /* = true */)
   // first cleanup any songs with invalid paths
   if (bShowProgress)
   {
-    pDlgProgress = g_windowManager.GetWindow<CGUIDialogProgress>();
+    pDlgProgress = g_windowManager.GetWindow<CGUIDialogProgress>(WINDOW_DIALOG_PROGRESS);
     if (pDlgProgress)
     {
       pDlgProgress->SetHeading(CVariant{700});
@@ -3271,8 +3271,8 @@ bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
   // Do we have to look for cddb information
   if (pCdInfo->HasCDDBInfo() && !cddb.isCDCached(pCdInfo))
   {
-    CGUIDialogProgress* pDialogProgress = g_windowManager.GetWindow<CGUIDialogProgress>();
-    CGUIDialogSelect *pDlgSelect = g_windowManager.GetWindow<CGUIDialogSelect>();
+    CGUIDialogProgress* pDialogProgress = g_windowManager.GetWindow<CGUIDialogProgress>(WINDOW_DIALOG_PROGRESS);
+    CGUIDialogSelect *pDlgSelect = g_windowManager.GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
 
     if (!pDialogProgress) return false;
     if (!pDlgSelect) return false;
@@ -3358,7 +3358,7 @@ void CMusicDatabase::DeleteCDDBInfo()
     return ;
   }
   // Show a selectdialog that the user can select the album to delete
-  CGUIDialogSelect *pDlg = g_windowManager.GetWindow<CGUIDialogSelect>();
+  CGUIDialogSelect *pDlg = g_windowManager.GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
   if (pDlg)
   {
     pDlg->SetHeading(CVariant{g_localizeStrings.Get(181)});
@@ -5904,7 +5904,7 @@ void CMusicDatabase::ExportToXML(const std::string &xmlFile, bool singleFile, bo
     }
     m_pDS->close();
 
-    progress = g_windowManager.GetWindow<CGUIDialogProgress>();
+    progress = g_windowManager.GetWindow<CGUIDialogProgress>(WINDOW_DIALOG_PROGRESS);
     if (progress)
     {
       progress->SetHeading(CVariant{20196});
@@ -6083,7 +6083,7 @@ void CMusicDatabase::ExportToXML(const std::string &xmlFile, bool singleFile, bo
 
 void CMusicDatabase::ImportFromXML(const std::string &xmlFile)
 {
-  CGUIDialogProgress *progress = g_windowManager.GetWindow<CGUIDialogProgress>();
+  CGUIDialogProgress *progress = g_windowManager.GetWindow<CGUIDialogProgress>(WINDOW_DIALOG_PROGRESS);
   try
   {
     if (NULL == m_pDB.get()) return;

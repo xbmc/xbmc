@@ -208,7 +208,7 @@ RENDER_STEREO_MODE CStereoscopicsManager::GetStereoModeByUserChoice(const std::s
   if (mode == RENDER_STEREO_MODE_OFF)
     mode = GetStereoModeOfPlayingVideo();
 
-  CGUIDialogSelect* pDlgSelect = g_windowManager.GetWindow<CGUIDialogSelect>();
+  CGUIDialogSelect* pDlgSelect = g_windowManager.GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
   pDlgSelect->Reset();
   if (heading.empty())
     pDlgSelect->SetHeading(CVariant{g_localizeStrings.Get(36528)});
@@ -566,7 +566,7 @@ void CStereoscopicsManager::OnPlaybackStarted(void)
     {
       CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_PAUSE);
 
-      CGUIDialogSelect* pDlgSelect = g_windowManager.GetWindow<CGUIDialogSelect>();
+      CGUIDialogSelect* pDlgSelect = g_windowManager.GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
       pDlgSelect->Reset();
       pDlgSelect->SetHeading(CVariant{g_localizeStrings.Get(36527)});
 

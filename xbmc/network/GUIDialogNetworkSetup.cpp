@@ -130,7 +130,7 @@ void CGUIDialogNetworkSetup::OnSettingAction(const CSetting *setting)
 // \return True if the network address is valid, false otherwise.
 bool CGUIDialogNetworkSetup::ShowAndGetNetworkAddress(std::string &path)
 {
-  CGUIDialogNetworkSetup *dialog = g_windowManager.GetWindow<CGUIDialogNetworkSetup>();
+  CGUIDialogNetworkSetup *dialog = g_windowManager.GetWindow<CGUIDialogNetworkSetup>(WINDOW_DIALOG_NETWORK_SETUP);
   if (!dialog) return false;
   dialog->Initialize();
   dialog->SetPath(path);

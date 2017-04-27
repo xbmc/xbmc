@@ -576,7 +576,6 @@ void CGUIWindowManager::Add(CGUIWindow* pWindow)
     }
 
     m_mapWindows.insert(std::make_pair(id, pWindow));
-    m_mapWindowTypes.insert(std::make_pair(std::type_index(typeid(*pWindow)), pWindow));
   }
 }
 
@@ -611,7 +610,6 @@ void CGUIWindowManager::Remove(int id)
                                          m_activeDialogs.end(),
                                          [window](CGUIWindow* w){ return w == window; }),
                           m_activeDialogs.end());
-    m_mapWindowTypes.erase(std::type_index(typeid(*window)));
     m_mapWindows.erase(it);
   }
   else
@@ -1183,17 +1181,6 @@ void CGUIWindowManager::FrameMove()
   }
 
   g_infoManager.UpdateAVInfo();
-}
-
-CGUIWindow* CGUIWindowManager::GetWindow(std::type_index type) const
-{
-  CSingleLock lock(g_graphicsContext);
-
-  auto it = m_mapWindowTypes.find(type);
-  if (it != m_mapWindowTypes.end())
-    return (*it).second;
-
-  return nullptr;
 }
 
 CGUIDialog* CGUIWindowManager::GetDialog(int id) const
