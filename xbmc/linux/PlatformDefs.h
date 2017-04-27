@@ -59,6 +59,7 @@
 #endif
 #include <sys/time.h>
 #include <time.h>
+#include <stdlib.h>
 #endif
 
 #if defined(__ppc__) || defined(__powerpc__)
