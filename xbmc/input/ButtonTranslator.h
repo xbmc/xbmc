@@ -117,6 +117,9 @@ public:
 
   bool TranslateTouchAction(int window, int touchAction, int touchPointers, int &action, std::string &actionString);
 
+  int GetKeyList(int window, std::vector<CStdString>& keylist);
+  CStdString GetKeyName(int buttonCode);
+
 private:
   typedef std::multimap<uint32_t, CButtonAction> buttonMap; // our button map to fill in
 
