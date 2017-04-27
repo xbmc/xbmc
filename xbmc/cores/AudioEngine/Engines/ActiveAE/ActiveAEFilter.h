@@ -64,7 +64,8 @@ protected:
   bool m_hasData;
   bool m_needData;
   int m_sampleOffset;
-  int m_bufferedSamples;
+  int64_t m_SamplesIn;
+  int64_t m_SamplesOut;
 };
 
 }

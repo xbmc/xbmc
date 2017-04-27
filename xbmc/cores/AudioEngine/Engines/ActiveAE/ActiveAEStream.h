@@ -137,6 +137,7 @@ protected:
   void InitRemapper();
   void RemapBuffer();
   double CalcResampleRatio(double error);
+  int GetErrorInterval();
 
 public:
   virtual unsigned int GetSpace();
