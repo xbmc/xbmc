@@ -668,6 +668,10 @@ bool CGUIMediaWindow::GetDirectory(const std::string &strDirectory, CFileItemLis
     // assign fetched directory items
     items.Assign(dirItems);
 
+    // path added to m_history should be requested path
+    // instead of path that could be changed by IDirectory implementation
+    items.SetPath(strDirectory);
+
     // took over a second, and not normally cached, so cache it
     if ((XbmcThreads::SystemClockMillis() - time) > 1000  && items.CacheToDiscIfSlow())
       items.Save(GetID());
