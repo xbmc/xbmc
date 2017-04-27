@@ -208,7 +208,12 @@ namespace PVR
     const bool bRadio(CPVRItem(item).IsRadio());
 
     int windowSearchId = bRadio ? WINDOW_RADIO_SEARCH : WINDOW_TV_SEARCH;
-    CGUIWindowPVRSearch *windowSearch = g_windowManager.GetWindow<CGUIWindowPVRSearch>(windowSearchId);
+    CGUIWindowPVRSearchBase *windowSearch;
+    if (bRadio)
+      windowSearch = g_windowManager.GetWindow<CGUIWindowPVRRadioSearch>(windowSearchId);
+    else
+      windowSearch = g_windowManager.GetWindow<CGUIWindowPVRTVSearch>(windowSearchId);
+
     if (!windowSearch)
     {
       CLog::Log(LOGERROR, "PVRGUIActions - %s - unable to get %s!", __FUNCTION__, bRadio ? "WINDOW_RADIO_SEARCH" : "WINDOW_TV_SEARCH");

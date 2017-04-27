@@ -24,11 +24,11 @@
 
 namespace PVR
 {
-  class CGUIWindowPVRSearch : public CGUIWindowPVRBase
+  class CGUIWindowPVRSearchBase : public CGUIWindowPVRBase
   {
   public:
-    CGUIWindowPVRSearch(bool bRadio);
-    virtual ~CGUIWindowPVRSearch(void) {};
+    CGUIWindowPVRSearchBase(bool bRadio, int id, const std::string &xmlFile);
+    virtual ~CGUIWindowPVRSearchBase() {};
 
     virtual bool OnMessage(CGUIMessage& message)  override;
     virtual void GetContextButtons(int itemNumber, CContextButtons &buttons) override;
@@ -49,7 +49,19 @@ namespace PVR
 
     void OpenDialogSearch();
 
-    bool                  m_bSearchConfirmed;
+    bool m_bSearchConfirmed;
     CPVREpgSearchFilter m_searchfilter;
+  };
+
+  class CGUIWindowPVRTVSearch : public CGUIWindowPVRSearchBase
+  {
+  public:
+    CGUIWindowPVRTVSearch() : CGUIWindowPVRSearchBase(false, WINDOW_TV_SEARCH, "MyPVRSearch.xml") {}
+  };
+
+  class CGUIWindowPVRRadioSearch : public CGUIWindowPVRSearchBase
+  {
+  public:
+    CGUIWindowPVRRadioSearch() : CGUIWindowPVRSearchBase(true, WINDOW_RADIO_SEARCH, "MyPVRSearch.xml") {}
   };
 }

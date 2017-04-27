@@ -33,11 +33,11 @@ namespace PVR
   class CGUIEPGGridContainer;
   class CPVRRefreshTimelineItemsThread;
 
-  class CGUIWindowPVRGuide : public CGUIWindowPVRBase, public CPVRChannelNumberInputHandler
+  class CGUIWindowPVRGuideBase : public CGUIWindowPVRBase, public CPVRChannelNumberInputHandler
   {
   public:
-    CGUIWindowPVRGuide(bool bRadio);
-    virtual ~CGUIWindowPVRGuide(void);
+    CGUIWindowPVRGuideBase(bool bRadio, int id, const std::string &xmlFile);
+    virtual ~CGUIWindowPVRGuideBase();
 
     virtual void OnInitWindow() override;
     virtual void OnDeinitWindow(int nextWindowID) override;
@@ -85,10 +85,22 @@ namespace PVR
     bool m_bChannelSelectionRestored;
   };
 
+  class CGUIWindowPVRTVGuide : public CGUIWindowPVRGuideBase
+  {
+  public:
+    CGUIWindowPVRTVGuide() : CGUIWindowPVRGuideBase(false, WINDOW_TV_GUIDE, "MyPVRGuide.xml") {}
+  };
+
+  class CGUIWindowPVRRadioGuide : public CGUIWindowPVRGuideBase
+  {
+  public:
+    CGUIWindowPVRRadioGuide() : CGUIWindowPVRGuideBase(true, WINDOW_RADIO_GUIDE, "MyPVRGuide.xml") {}
+  };
+
   class CPVRRefreshTimelineItemsThread : public CThread
   {
   public:
-    CPVRRefreshTimelineItemsThread(CGUIWindowPVRGuide *pGuideWindow);
+    CPVRRefreshTimelineItemsThread(CGUIWindowPVRGuideBase *pGuideWindow);
     virtual ~CPVRRefreshTimelineItemsThread();
 
     virtual void Process();
@@ -97,7 +109,7 @@ namespace PVR
     void Stop();
 
   private:
-    CGUIWindowPVRGuide *m_pGuideWindow;
+    CGUIWindowPVRGuideBase *m_pGuideWindow;
     CEvent m_ready;
     CEvent m_done;
   };

@@ -257,19 +257,19 @@ void CGUIWindowManager::CreateWindows()
 
   /* Load PVR related Windows and Dialogs */
   Add(new CGUIDialogTeletext);
-  Add(new CGUIWindowPVRChannels(false));
-  Add(new CGUIWindowPVRRecordings(false));
-  Add(new CGUIWindowPVRGuide(false));
-  Add(new CGUIWindowPVRTimers(false));
-  Add(new CGUIWindowPVRTimerRules(false));
-  Add(new CGUIWindowPVRSearch(false));
-  Add(new CGUIWindowPVRChannels(true));
-  Add(new CGUIWindowPVRRecordings(true));
-  Add(new CGUIWindowPVRGuide(true));
-  Add(new CGUIWindowPVRTimers(true));
-  Add(new CGUIWindowPVRTimerRules(true));
+  Add(new CGUIWindowPVRTVChannels);
+  Add(new CGUIWindowPVRTVRecordings);
+  Add(new CGUIWindowPVRTVGuide);
+  Add(new CGUIWindowPVRTVTimers);
+  Add(new CGUIWindowPVRTVTimerRules);
+  Add(new CGUIWindowPVRTVSearch);
+  Add(new CGUIWindowPVRRadioChannels);
+  Add(new CGUIWindowPVRRadioRecordings);
+  Add(new CGUIWindowPVRRadioGuide);
+  Add(new CGUIWindowPVRRadioTimers);
+  Add(new CGUIWindowPVRRadioTimerRules);
+  Add(new CGUIWindowPVRRadioSearch);
   Add(new CGUIDialogPVRRadioRDSInfo);
-  Add(new CGUIWindowPVRSearch(true));
   Add(new CGUIDialogPVRGuideInfo);
   Add(new CGUIDialogPVRRecordingInfo);
   Add(new CGUIDialogPVRTimerSettings);

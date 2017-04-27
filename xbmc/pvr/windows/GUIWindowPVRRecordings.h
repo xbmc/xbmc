@@ -28,11 +28,11 @@
 
 namespace PVR
 {
-  class CGUIWindowPVRRecordings : public CGUIWindowPVRBase
+  class CGUIWindowPVRRecordingsBase : public CGUIWindowPVRBase
   {
   public:
-    CGUIWindowPVRRecordings(bool bRadio);
-    virtual ~CGUIWindowPVRRecordings(void);
+    CGUIWindowPVRRecordingsBase(bool bRadio, int id, const std::string &xmlFile);
+    virtual ~CGUIWindowPVRRecordingsBase();
 
     virtual void OnWindowLoaded() override;
     virtual bool OnMessage(CGUIMessage& message) override;
@@ -40,7 +40,7 @@ namespace PVR
     virtual void GetContextButtons(int itemNumber, CContextButtons &buttons) override;
     virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
     virtual bool Update(const std::string &strDirectory, bool updateFilterPath = true) override;
-    virtual void UpdateButtons(void) override;
+    virtual void UpdateButtons() override;
 
   protected:
     virtual std::string GetDirectoryPath(void) override;
@@ -54,5 +54,17 @@ namespace PVR
     CVideoDatabase m_database;
     bool m_bShowDeletedRecordings;
     CPVRSettings m_settings;
+  };
+
+  class CGUIWindowPVRTVRecordings : public CGUIWindowPVRRecordingsBase
+  {
+  public:
+    CGUIWindowPVRTVRecordings() : CGUIWindowPVRRecordingsBase(false, WINDOW_TV_RECORDINGS, "MyPVRRecordings.xml") {}
+  };
+
+  class CGUIWindowPVRRadioRecordings : public CGUIWindowPVRRecordingsBase
+  {
+  public:
+    CGUIWindowPVRRadioRecordings() : CGUIWindowPVRRecordingsBase(true, WINDOW_RADIO_RECORDINGS, "MyPVRRecordings.xml") {}
   };
 }
