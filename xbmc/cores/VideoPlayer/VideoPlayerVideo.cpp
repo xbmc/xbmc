@@ -119,24 +119,21 @@ double CVideoPlayerVideo::GetOutputDelay()
 
 bool CVideoPlayerVideo::OpenStream(CDVDStreamInfo hint)
 {
-  if (m_pVideoCodec && !m_processInfo.IsVideoHwDecoder())
-  {
-    hint.codecOptions |= CODEC_ALLOW_FALLBACK;
-  }
-
-  m_processInfo.ResetVideoCodecInfo();
-
   CRenderInfo info;
   info = m_renderManager.GetRenderInfo();
 
   m_ptsTracker.ResetVFRDetection();
-  if(hint.flags & AV_DISPOSITION_ATTACHED_PIC)
+  if (hint.flags & AV_DISPOSITION_ATTACHED_PIC)
     return false;
 
   CLog::Log(LOGNOTICE, "Creating video codec with codec id: %i", hint.codec);
 
-  if(m_messageQueue.IsInited())
+  if (m_messageQueue.IsInited())
   {
+    if (m_pVideoCodec && !m_processInfo.IsVideoHwDecoder())
+    {
+      hint.codecOptions |= CODEC_ALLOW_FALLBACK;
+    }
     CDVDVideoCodec* codec = CDVDFactoryCodec::CreateVideoCodec(hint, m_processInfo, info);
     if (!codec)
     {
@@ -146,6 +143,7 @@ bool CVideoPlayerVideo::OpenStream(CDVDStreamInfo hint)
   }
   else
   {
+    m_processInfo.ResetVideoCodecInfo();
     hint.codecOptions |= CODEC_ALLOW_FALLBACK;
     CDVDVideoCodec* codec = CDVDFactoryCodec::CreateVideoCodec(hint, m_processInfo, info);
     if (!codec)
