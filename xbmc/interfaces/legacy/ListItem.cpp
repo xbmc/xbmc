@@ -63,6 +63,8 @@ namespace XBMCAddon
         item->SetArt("thumb",  thumbnailImage );
       if (!path.empty())
         item->SetPath(path);
+
+      item->GetVideoInfoTag()->SetPlayCount(-1);
     }
 
     ListItem::~ListItem()
