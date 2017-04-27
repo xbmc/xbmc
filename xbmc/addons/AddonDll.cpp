@@ -21,6 +21,8 @@
 #include "AddonDll.h"
 
 #include "AddonStatusHandler.h"
+#include "events/EventLog.h"
+#include "events/NotificationEvent.h"
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogOK.h"
 #include "utils/URIUtils.h"
@@ -182,6 +184,13 @@ ADDON_STATUS CAddonDll::Create(void* funcTable, void* info)
 
   if (!LoadDll())
     return ADDON_STATUS_PERMANENT_FAILURE;
+
+  /* Check versions about global parts on add-on (parts used on all types) */
+  for (unsigned int id = ADDON_GLOBAL_MAIN; id <= ADDON_GLOBAL_MAX; ++id)
+  {
+    if (!CheckAPIVersion(id))
+      return ADDON_STATUS_PERMANENT_FAILURE;
+  }
 
   /* Load add-on function table (written by add-on itself) */
   m_pDll->GetAddon(funcTable);
@@ -389,6 +398,32 @@ ADDON_STATUS CAddonDll::TransferSettings()
   }
 
   return ADDON_STATUS_OK;
+}
+
+bool CAddonDll::CheckAPIVersion(int type)
+{
+  /* check the API version */
+  const char* kodiVersion = kodi::addon::GetTypeVersion(type);
+  const char* addonVersion = m_pDll->GetAddonTypeVersion(type);
+
+  if (AddonVersion(addonVersion) != AddonVersion(kodiVersion))
+  {
+    CLog::Log(LOGERROR, "Add-on '%s' is using an incompatible API version for type '%s'. Kodi API version = '%s', add-on API version '%s'",
+                            Name().c_str(),
+                            kodi::addon::GetTypeName(type),
+                            kodiVersion,
+                            addonVersion);
+
+    std::string text = StringUtils::Format(g_localizeStrings.Get(29803).c_str(),
+                                           kodi::addon::GetTypeName(type),
+                                           kodiVersion,
+                                           addonVersion);
+    CEventLog::GetInstance().AddWithNotification(EventPtr(new CNotificationEvent(Name(), text, EventLevel::Error)));
+
+    return false;
+  }
+
+  return true;
 }
 
 }; /* namespace ADDON */

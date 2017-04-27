@@ -40,6 +40,10 @@ extern "C" {
   void         __declspec(dllexport) ADDON_Destroy();
   ADDON_STATUS __declspec(dllexport) ADDON_GetStatus();
   ADDON_STATUS __declspec(dllexport) ADDON_SetSetting(const char *settingName, const void *settingValue);
+  __declspec(dllexport) const char* ADDON_GetTypeVersion(int type)
+  {
+    return kodi::addon::GetTypeVersion(type);
+  }
 
 #ifdef __cplusplus
 };

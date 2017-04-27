@@ -20,6 +20,8 @@
 #ifndef __PERIPHERAL_TYPES_H__
 #define __PERIPHERAL_TYPES_H__
 
+#include "versions.h"
+
 #ifndef TARGET_WINDOWS
   #ifndef __cdecl
     #define __cdecl
@@ -48,10 +50,10 @@
 #endif
 
 /* current Peripheral API version */
-#define PERIPHERAL_API_VERSION "1.3.1"
+#define PERIPHERAL_API_VERSION ADDON_INSTANCE_VERSION_PERIPHERAL
 
 /* min. Peripheral API version */
-#define PERIPHERAL_MIN_API_VERSION "1.3.1"
+#define PERIPHERAL_MIN_API_VERSION ADDON_INSTANCE_VERSION_PERIPHERAL
 
 /* indicates a joystick has no preference for port number */
 #define NO_PORT_REQUESTED     (-1)

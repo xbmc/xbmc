@@ -56,6 +56,8 @@ namespace ADDON
     std::string m_parentLib;
 
   private:
+    bool CheckAPIVersion(int type);
+
     DllAddon* m_pDll;
     bool m_initialized;
     bool LoadDll();

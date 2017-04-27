@@ -20,6 +20,8 @@
  *
  */
 
+#include "versions.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif

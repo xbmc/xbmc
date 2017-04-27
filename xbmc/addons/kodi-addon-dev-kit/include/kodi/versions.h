@@ -53,12 +53,12 @@
 #define ADDON_INSTANCE_VERSION_VFS                    "1.0.0"
 #define ADDON_INSTANCE_VERSION_VISUALIZATION          "1.0.0"
 
-/*
- * The currently used types for Kodi add-ons
- *
- * @note For add of new types take a new number on end. To change
- * existing numbers can be make problems on already compiled add-ons.
- */
+///
+/// The currently used types for Kodi add-ons
+///
+/// @note For add of new types take a new number on end. To change
+/// existing numbers can be make problems on already compiled add-ons.
+///
 typedef enum ADDON_TYPE
 {
   /* addon global parts */
@@ -78,7 +78,6 @@ typedef enum ADDON_TYPE
   ADDON_INSTANCE_VISUALIZATION = 109,
   ADDON_INSTANCE_VFS = 110,
   ADDON_INSTANCE_IMAGEDECODER = 111,
-  ADDON_INSTANCE_VIDEOCODEC = 112,
 } ADDON_TYPE;
 
 #ifdef __cplusplus
@@ -87,14 +86,14 @@ namespace kodi {
 namespace addon {
 #endif
 
-/*
- * This is used from Kodi to get the active version of add-on parts.
- * It is compiled in add-on and also in Kodi itself, with this can be Kodi
- * compare the version from him with them on add-on.
- *
- * @param[in] type The with 'enum ADDON_TYPE' type to ask
- * @return version The current version of asked type
- */
+///
+/// This is used from Kodi to get the active version of add-on parts.
+/// It is compiled in add-on and also in Kodi itself, with this can be Kodi
+/// compare the version from him with them on add-on.
+///
+/// @param[in] type The with 'enum ADDON_TYPE' type to ask
+/// @return version The current version of asked type
+///
 inline const char* GetTypeVersion(int type)
 {
   switch (type)
@@ -132,13 +131,13 @@ inline const char* GetTypeVersion(int type)
   return "0.0.0";
 }
 
-/*
- * Function used internally on add-on and in Kodi itself to get name
- * about given type.
- *
- * @param[in] instanceType The with 'enum ADDON_TYPE' type to ask
- * @return Name of the asked instance type
- */
+///
+/// Function used internally on add-on and in Kodi itself to get name
+/// about given type.
+///
+/// @param[in] instanceType The with 'enum ADDON_TYPE' type to ask
+/// @return Name of the asked instance type
+///
 inline const char* GetTypeName(int type)
 {
   switch (type)
@@ -159,7 +158,7 @@ inline const char* GetTypeName(int type)
     case ADDON_INSTANCE_GAME:
       return "Game";
     case ADDON_INSTANCE_IMAGEDECODER:
-      return "ImageDecocer";
+      return "ImageDecoder";
     case ADDON_INSTANCE_INPUTSTREAM:
       return "Inputstream";
     case ADDON_INSTANCE_PERIPHERAL:
@@ -174,15 +173,15 @@ inline const char* GetTypeName(int type)
   return "unknown";
 }
 
-/*
- * Function used internally on add-on and in Kodi itself to get id number
- * about given type name.
- *
- * @param[in] instanceType The with name type to ask
- * @return Id number of the asked instance type
- *
- * @warning String must be lower case here!
- */
+///
+/// Function used internally on add-on and in Kodi itself to get id number
+/// about given type name.
+///
+/// @param[in] instanceType The with name type to ask
+/// @return Id number of the asked instance type
+///
+/// @warning String must be lower case here!
+///
 inline int GetTypeId(const char* name)
 {
   if (name)

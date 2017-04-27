@@ -36,7 +36,7 @@
 #endif
 
 /* current API version */
-#define INPUTSTREAM_API_VERSION "1.0.6"
+#define INPUTSTREAM_API_VERSION ADDON_INSTANCE_VERSION_INPUTSTREAM
 
 extern "C" {
 

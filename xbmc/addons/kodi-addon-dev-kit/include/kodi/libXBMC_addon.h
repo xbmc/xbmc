@@ -27,6 +27,7 @@
 #include <stdint.h>
 #include <stdarg.h>
 
+#include "versions.h"
 #if defined(BUILD_KODI_ADDON)
 #include "IFileTypes.h"
 #else
@@ -63,7 +64,7 @@ typedef intptr_t      ssize_t;
 #endif
 
 /* current addon API version */
-#define KODI_ADDON_API_VERSION "1.0.0"
+#define KODI_ADDON_API_VERSION ADDON_GLOBAL_VERSION_MAIN
 
 typedef void* (*KODIAddOnLib_RegisterMe)(void *addonData);
 typedef void (*KODIAddOnLib_UnRegisterMe)(void *addonData, void *cbTable);
