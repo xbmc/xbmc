@@ -112,7 +112,8 @@ long long cas2(volatile long long* pAddr, long long expectedVal, long long swapV
     defined(__aarch64__) || \
     defined(__SH4__) || \
     defined(__sparc__) || \
-    defined(__arc__)
+    defined(__arc__) || \
+    defined(__xtensa__)
 // Not available/required
 // Hack to allow compilation
   throw "cas2 is not implemented";

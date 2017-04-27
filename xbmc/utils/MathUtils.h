@@ -39,7 +39,8 @@
     defined(__aarch64__) || \
     defined(__SH4__) || \
     defined(__sparc__) || \
-    defined(__arc__)
+    defined(__arc__) || \
+    defined(__xtensa__)
   #define DISABLE_MATHUTILS_ASM_ROUND_INT
 #endif
 
