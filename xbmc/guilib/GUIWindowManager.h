@@ -158,7 +158,10 @@ public:
    * \return the window with for the given type \code{T} or null
    */
   template<typename T, typename std::enable_if<std::is_base_of<CGUIWindow,T>::value>::type* = nullptr>
-  T* GetWindow() const { return dynamic_cast<T *>(GetWindow(std::type_index(typeid(T)))); };
+  T* GetWindow() const {
+    static_assert(std::is_base_of<CGUIWindow,T>::value, "Type not derived from CGUIWindow in CGUIWindowManager::GetWindow()");
+    return dynamic_cast<T *>(GetWindow(std::type_index(typeid(T))));
+  };
 
   /*! \brief Return the window with the given id or null.
    *
