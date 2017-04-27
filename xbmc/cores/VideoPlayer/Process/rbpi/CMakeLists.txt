@@ -1,5 +1,7 @@
-set(SOURCES ProcessInfoPi.cpp)
+if(CORE_PLATFORM_NAME_LC STREQUAL rbpi)
+  set(SOURCES ProcessInfoPi.cpp)
 
-set(HEADERS ProcessInfoPi.h)
+  set(HEADERS ProcessInfoPi.h)
 
-core_add_library(processPi)
+  core_add_library(processPi)
+endif()
