@@ -9399,7 +9399,7 @@ void CGUIInfoManager::Clear()
 void CGUIInfoManager::UpdateFPS()
 {
   m_frameCounter++;
-  unsigned int curTime = CTimeUtils::GetFrameTime();
+  unsigned int curTime = XbmcThreads::SystemClockMillis();
 
   float fTimeSpan = (float)(curTime - m_lastFPSTime);
   if (fTimeSpan >= 1000.0f)
