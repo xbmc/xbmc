@@ -46,6 +46,10 @@ if(OMXLIB_FOUND)
                       OMXCore.h)
 endif()
 
+if(HAVE_SSE4_1)
+  add_subdirectory(sse4)
+endif()
+
 if(IMX_FOUND)
   add_subdirectory(imx)
 endif()
