@@ -975,7 +975,7 @@ bool CGUIMediaWindow::OnClick(int iItem, const std::string &player)
     }
 
     CFileItem directory(*pItem);
-    if (!Update(directory.GetPath()))
+    if (!Update(directory.GetPath()) && !directory.GetPath().Equals("addons://search/"))
       ShowShareErrorMessage(&directory);
 
     return true;
