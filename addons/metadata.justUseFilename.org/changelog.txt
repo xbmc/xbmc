@@ -1,0 +1,3 @@
+[B]1.0.0[/B]
+
+- Initial rewrite of theMoviedB.org. Thanks. Written for EDEN Beta 3

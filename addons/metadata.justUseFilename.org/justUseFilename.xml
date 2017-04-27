@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scraper framework="1.1" date="2012-02-18">
+	<CreateSearchUrl dest="3">
+		<RegExp input="$$1" output="&lt;url&gt;http://www.elbsolutions.com/xbmc/scraper/justUseFilename.php?task=getsearchresults&amp;string=\1&lt;/url&gt;" dest="3">
+			<expression noclean="1">(.*)</expression>
+		</RegExp>
+	</CreateSearchUrl>
+       <NfoUrl dest="3">
+           <RegExp input="$$1" output="\1" dest="3">
+               <expression noclean="1"></expression>
+           </RegExp>
+	</NfoUrl>
+	<GetSearchResults dest="8">
+	   <RegExp input="$$5" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; standalone=&quot;yes&quot;?&gt;&lt;results&gt;\1&lt;/results&gt;" dest="8">
+        <RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\1&lt;/title&gt;&lt;url&gt;http://www.elbsolutions.com/xbmc/scraper/justUseFilename.php?task=getdetails&amp;string=\1&lt;/url&gt;&lt;/entity&gt;" dest="5">
+		<expression repeat="yes">&lt;title&gt;(.+)&lt;/title&gt;</expression>
+        </RegExp>
+        <expression noclean="1"></expression>
+      </RegExp>	
+           <RegExp1 input="$$1" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; standalone=&quot;yes&quot;?&gt;&lt;results&gt;&lt;entity&gt;&lt;title&gt;Dummy \1&lt;/title&gt;&lt;url&gt;http://http://www.elbsolutions.com/xbmc/scraper/justUseFilename.php?task=getdetails&amp;string=bob&lt;/url>&lt;/entity&gt;" dest="8">
+               <expression></expression>
+           </RegExp1>
+	</GetSearchResults>
+	<GetDetails dest="3">
+           <RegExp input="$$1" output="&lt;details&gt;&lt;title&gt;\1&lt;/title&gt;&lt;year&gt;&lt;/year&gt;&lt;director&gt;&lt;/director&gt;&lt;/details&gt;" dest="3">
+               <expression></expression>
+           </RegExp>
+       </GetDetails>
+</scraper>

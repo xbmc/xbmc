@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<settings>
+    <setting label="30000" type="bool" id="fanart" default="true"/>
+    <setting label="30002" type="labelenum" values="en" id="language" default="en"/>
+</settings>

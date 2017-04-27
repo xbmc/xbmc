@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<settings>
+    <setting label="30002" type="labelenum" values="en" id="language" default="en"/>
+</settings>
