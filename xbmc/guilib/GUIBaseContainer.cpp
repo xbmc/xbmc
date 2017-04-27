@@ -912,11 +912,13 @@ void CGUIBaseContainer::UpdateVisibility(const CGUIListItem *item)
   if (!IsVisible() && !CGUIControl::CanFocus())
     return; // no need to update the content if we're not visible and we can't focus
 
-  // check whether we need to update our layouts
-  if ((m_layout && !m_layout->CheckCondition()) ||
-      (m_focusedLayout && !m_focusedLayout->CheckCondition()))
+  // update layouts in case of condition changed
+  if ((m_layout && m_layout->CheckCondition() != m_layoutCondition) ||
+      (m_focusedLayout && m_focusedLayout->CheckCondition() != m_focusedLayoutCondition))
   {
-    // and do it
+    m_layoutCondition = m_layout->CheckCondition();
+    m_focusedLayoutCondition = m_focusedLayout->CheckCondition();
+
     int itemIndex = GetSelectedItem();
     UpdateLayout(true); // true to refresh all items
     SelectItem(itemIndex);
