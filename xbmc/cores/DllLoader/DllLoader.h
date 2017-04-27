@@ -28,7 +28,8 @@
     !defined(__arm__) && \
     !defined(__aarch64__) && \
     !defined(__mips__) && \
-    !defined(__SH4__)
+    !defined(__SH4__) && \
+    !defined(__sparc__)
 #define USE_LDT_KEEPER
 #include "ldt_keeper.h"
 #endif
