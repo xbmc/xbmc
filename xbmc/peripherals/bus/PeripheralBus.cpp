@@ -252,6 +252,11 @@ void CPeripheralBus::Initialise(void)
     Create();
     SetPriority(-1);
   }
+  else
+  {
+    lock.Leave();
+    ScanForDevices();
+  }
 }
 
 void CPeripheralBus::Register(const PeripheralPtr& peripheral)
