@@ -70,15 +70,19 @@ bool CGUIDialogVideoOSD::OnAction(const CAction &action)
 
 EVENT_RESULT CGUIDialogVideoOSD::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
 {
+  // If the action is a mouse wheel up/down close the OSD so the time bar can be seen
   if (event.m_id == ACTION_MOUSE_WHEEL_UP)
   {
+    Close();
     return g_application.OnAction(CAction(ACTION_ANALOG_SEEK_FORWARD, 0.5f)) ? EVENT_RESULT_HANDLED : EVENT_RESULT_UNHANDLED;
   }
   if (event.m_id == ACTION_MOUSE_WHEEL_DOWN)
   {
+    Close();
     return g_application.OnAction(CAction(ACTION_ANALOG_SEEK_BACK, 0.5f)) ? EVENT_RESULT_HANDLED : EVENT_RESULT_UNHANDLED;
   }
 
+  // Pass any other mouse actions to the parent class
   return CGUIDialog::OnMouseEvent(point, event);
 }
 
