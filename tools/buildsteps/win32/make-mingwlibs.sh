@@ -141,10 +141,6 @@ else
   MAKECLEAN="noclean"
 fi
 
-if [ $NUMBER_OF_PROCESSORS > 1 ]; then
-  MAKEFLAGS=-j`expr $NUMBER_OF_PROCESSORS + $NUMBER_OF_PROCESSORS / 2`
-fi
-
 run_builds
 
 echo -e "\033]0;compiling done...\007"

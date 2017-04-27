@@ -5,9 +5,9 @@ BGPROCESSFILE="$2"
 tools="$3"
 
 cpuCount=1
-if [ $NUMBER_OF_PROCESSORS > 1 ]; then
-  if [ $NUMBER_OF_PROCESSORS > 4 ]; then
-    cpuCount=6
+if [[ $NUMBER_OF_PROCESSORS > 1 ]]; then
+  if [[ $NUMBER_OF_PROCESSORS > 4 ]]; then
+    cpuCount=$NUMBER_OF_PROCESSORS
   else
     cpuCount=`expr $NUMBER_OF_PROCESSORS + $NUMBER_OF_PROCESSORS / 2`
   fi
