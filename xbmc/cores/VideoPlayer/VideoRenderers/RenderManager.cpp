@@ -872,6 +872,7 @@ void CRenderManager::FlipPage(volatile std::atomic_bool& bStop, double pts,
         {
           CLog::Log(LOGWARNING, "CRenderManager::FlipPage - timeout waiting for render");
         }
+        break;
       }
     }
     m_forceNext = false;
