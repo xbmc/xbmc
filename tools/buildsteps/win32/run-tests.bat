@@ -1,17 +1,19 @@
 @ECHO OFF
 SETLOCAL ENABLEDELAYEDEXPANSION
+
 REM setup all paths
-SET cur_dir=%WORKSPACE%\project\Win32BuildSetup
-cd %cur_dir%
-SET base_dir=%cur_dir%\..\..
-SET builddeps_dir=%cur_dir%\..\..\project\BuildDependencies
+PUSHD %~dp0\..\..\..
+SET WORKSPACE=%CD%
+POPD
+cd %WORKSPACE%\kodi-build
+SET builddeps_dir=%WORKSPACE%\project\BuildDependencies
 SET msys_dir=%builddeps_dir%\msys64
 IF NOT EXIST %msys_dir% (SET msys_dir=%builddeps_dir%\msys32)
 SET awk_exe=%msys_dir%\usr\bin\awk.exe
 SET sed_exe=%msys_dir%\usr\bin\sed.exe
 
 REM read the version values from version.txt
-FOR /f %%i IN ('%awk_exe% "/APP_NAME/ {print $2}" %base_dir%\version.txt') DO SET APP_NAME=%%i
+FOR /f %%i IN ('%awk_exe% "/APP_NAME/ {print $2}" %WORKSPACE%\version.txt') DO SET APP_NAME=%%i
 
 CLS
 COLOR 1B
@@ -22,28 +24,9 @@ rem  CONFIG START
 SET exitcode=0
 SET useshell=sh
 SET BRANCH=na
-SET buildconfig=Debug Testsuite
-set WORKSPACE=%CD%\..\..
+SET buildconfig=Release
 
 
-  REM look for MSBuild.exe delivered with Visual Studio 2015
-  FOR /F "tokens=2,* delims= " %%A IN ('REG QUERY HKLM\SOFTWARE\Microsoft\MSBuild\ToolsVersions\14.0 /v MSBuildToolsRoot') DO SET MSBUILDROOT=%%B
-  SET NET="%MSBUILDROOT%14.0\bin\MSBuild.exe"
-
-  IF EXIST "!NET!" (
-    set msbuildemitsolution=1
-    set OPTS_EXE="..\VS2010Express\XBMC for Windows.sln" /t:Build /p:Configuration="%buildconfig%" /property:VCTargetsPath="%MSBUILDROOT%Microsoft.Cpp\v4.0\V140" /m
-    set CLEAN_EXE="..\VS2010Express\XBMC for Windows.sln" /t:Clean /p:Configuration="%buildconfig%" /property:VCTargetsPath="%MSBUILDROOT%Microsoft.Cpp\v4.0\V140"
-  )
-
-  IF NOT EXIST %NET% (
-    set DIETEXT=MSBuild was not found.
-    goto DIE
-  )
-  
-  set EXE= "..\VS2010Express\XBMC\%buildconfig%\%APP_NAME%-test.exe"
-  set PDB= "..\VS2010Express\XBMC\%buildconfig%\%APP_NAME%.pdb"
-  
   :: sets the BRANCH env var
   call getbranch.bat
 
@@ -54,7 +37,7 @@ echo Building %buildconfig%
 IF EXIST buildlog.html del buildlog.html /q
 
 ECHO Compiling testsuite...
-%NET% %OPTS_EXE%
+cmake.exe --build . --config "%buildconfig%" --target %APP_NAME%-test
 
 IF %errorlevel%==1 (
   set DIETEXT="%APP_NAME%-test.exe failed to build!  See %CD%\..\vs2010express\XBMC\%buildconfig%\objs\XBMC.log"
@@ -66,11 +49,7 @@ ECHO ------------------------------------------------------------
 
 :RUNTESTSUITE
 ECHO Running testsuite...
-  cd %WORKSPACE%\project\vs2010express\
-  set KODI_HOME=%WORKSPACE%
-  set PATH=%WORKSPACE%\system;%PATH%
-
-  %EXE% --gtest_output=xml:%WORKSPACE%\gtestresults.xml
+  "%buildconfig%\%APP_NAME%-test.exe" --gtest_output=xml:%WORKSPACE%\gtestresults.xml
 
   rem Adapt gtest xml output to be conform with junit xml
   rem this basically looks for lines which have "notrun" in the <testcase /> tag
