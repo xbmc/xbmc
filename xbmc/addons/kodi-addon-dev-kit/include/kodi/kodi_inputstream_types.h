@@ -36,7 +36,7 @@
 #endif
 
 /* current API version */
-#define INPUTSTREAM_API_VERSION "1.0.6"
+#define INPUTSTREAM_API_VERSION "1.0.7"
 
 extern "C" {
 
@@ -124,6 +124,15 @@ extern "C" {
     unsigned int m_BitRate;              /*!< @brief (required) bit rate */
     unsigned int m_BitsPerSample;        /*!< @brief (required) bits per sample */
     unsigned int m_BlockAlign;
+
+    enum CRYPTO_KEY_SYSTEM :uint16_t
+    {
+      CRYPTO_KEY_SYSTEM_NONE = 0,
+      CRYPTO_KEY_SYSTEM_WIDEVINE,
+      CRYPTO_KEY_SYSTEM_PLAYREADY
+    } crypto_key_system;                 /*!< @brief keysystem for encrypted media, KEY_SYSTEM_NONE for unencrypted media */
+    char * crypto_session_id;            /*!< @brief The crypto session key id */
+    uint16_t crypto_session_id_size;     /*!< @brief The size of the crypto session key id */
   } INPUTSTREAM_INFO;
 
   /*!

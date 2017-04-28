@@ -60,6 +60,13 @@ enum StreamSource {
   STREAM_SOURCE_VIDEOMUX      = 0x500
 };
 
+enum StreamCryptoKeySystem :uint16_t
+{
+  STREAM_CRYPTO_KEY_SYSTEM_NONE,
+  STREAM_CRYPTO_KEY_SYSTEM_WIDEVINE,
+  STREAM_CRYPTO_KEY_SYSTEM_PLAYREADY
+};
+
 #define STREAM_SOURCE_MASK(a) ((a) & 0xf00)
 
 /*
@@ -90,11 +97,15 @@ public:
     flags = FLAG_NONE;
     realtime = false;
     bandwidth = 0;
+    crypto_key_system = STREAM_CRYPTO_KEY_SYSTEM_NONE;
+    crypto_session_id = nullptr;
+    crypto_session_id_size = 0;
   }
 
   virtual ~CDemuxStream()
   {
     delete [] ExtraData;
+    delete[] crypto_session_id;
   }
 
   virtual std::string GetStreamName();
@@ -122,6 +133,11 @@ public:
   std::string codecName;
 
   int  changes; // increment on change which player may need to know about
+
+  // encryped stream infos
+  char * crypto_session_id;
+  uint16_t crypto_session_id_size;
+  StreamCryptoKeySystem crypto_key_system;
 
   enum EFlags
   { FLAG_NONE             = 0x0000 

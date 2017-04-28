@@ -349,6 +349,26 @@ void CInputStream::UpdateStreams()
         demuxStream->ExtraData[j] = stream.m_ExtraData[j];
     }
 
+    if (stream.crypto_key_system != INPUTSTREAM_INFO::CRYPTO_KEY_SYSTEM_NONE)
+    {
+      switch (stream.crypto_key_system) {
+      case INPUTSTREAM_INFO::CRYPTO_KEY_SYSTEM_WIDEVINE:
+        demuxStream->crypto_key_system = STREAM_CRYPTO_KEY_SYSTEM_WIDEVINE;
+        break;
+      case INPUTSTREAM_INFO::CRYPTO_KEY_SYSTEM_PLAYREADY:
+        demuxStream->crypto_key_system = STREAM_CRYPTO_KEY_SYSTEM_PLAYREADY;
+        break;
+      default:;
+      }
+
+      if (demuxStream->crypto_key_system != STREAM_CRYPTO_KEY_SYSTEM_NONE)
+      {
+        demuxStream->crypto_session_id_size = stream.crypto_session_id_size;
+        demuxStream->crypto_session_id = new char[stream.crypto_session_id_size];
+        memcpy(demuxStream->crypto_session_id, stream.crypto_session_id, stream.crypto_session_id_size);
+      }
+    }
+
     m_streams[demuxStream->uniqueId] = demuxStream;
   }
 }

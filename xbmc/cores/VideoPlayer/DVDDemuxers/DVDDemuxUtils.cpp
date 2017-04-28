@@ -36,6 +36,12 @@ void CDVDDemuxUtils::FreeDemuxPacket(DemuxPacket* pPacket)
   if (pPacket)
   {
     try {
+      if (pPacket->cryptoInfo)
+      {
+        delete[] pPacket->cryptoInfo->clearBytes;
+        delete[] pPacket->cryptoInfo->cipherBytes;
+        delete pPacket->cryptoInfo;
+      }
       if (pPacket->pData) _aligned_free(pPacket->pData);
       delete pPacket;
     }
@@ -45,7 +51,7 @@ void CDVDDemuxUtils::FreeDemuxPacket(DemuxPacket* pPacket)
   }
 }
 
-DemuxPacket* CDVDDemuxUtils::AllocateDemuxPacket(int iDataSize)
+DemuxPacket* CDVDDemuxUtils::AllocateDemuxPacket(int iDataSize, unsigned int encryptedSubsampleCount)
 {
   DemuxPacket* pPacket = new DemuxPacket;
   if (!pPacket) return NULL;
@@ -74,6 +80,24 @@ DemuxPacket* CDVDDemuxUtils::AllocateDemuxPacket(int iDataSize)
 
       // reset the last 8 bytes to 0;
       memset(pPacket->pData + iDataSize, 0, FF_INPUT_BUFFER_PADDING_SIZE);
+
+      if (encryptedSubsampleCount)
+      {
+        pPacket->cryptoInfo = new DemuxCryptoInfo;
+        if (!pPacket->cryptoInfo)
+        {
+          FreeDemuxPacket(pPacket);
+          return NULL;
+        }
+        pPacket->cryptoInfo->numSubSamples = encryptedSubsampleCount;
+        pPacket->cryptoInfo->clearBytes = new uint16_t[encryptedSubsampleCount];
+        pPacket->cryptoInfo->cipherBytes = new uint32_t[encryptedSubsampleCount];
+        if (!pPacket->cryptoInfo->clearBytes || !pPacket->cryptoInfo->cipherBytes)
+        {
+          FreeDemuxPacket(pPacket);
+          return NULL;
+        }
+      }
     }
 
     // setup defaults
