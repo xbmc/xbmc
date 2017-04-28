@@ -5255,7 +5255,7 @@ bool CVideoDatabase::GetPlayCounts(const std::string &strPath, CFileItemList &it
       CFileItemPtr item = items.Get(path);
       if (item)
       {
-        if (!items.IsPlugin() || item->GetVideoInfoTag()->GetPlayCount() == -1)
+        if (!items.IsPlugin() || !item->GetVideoInfoTag()->IsPlayCountSet())
           item->GetVideoInfoTag()->SetPlayCount(m_pDS->fv(1).get_asInt());
 
         if (!item->GetVideoInfoTag()->GetResumePoint().IsSet())
