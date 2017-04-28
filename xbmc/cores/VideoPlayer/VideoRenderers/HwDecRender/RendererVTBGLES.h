@@ -34,7 +34,7 @@ public:
   virtual ~CRendererVTB();
 
   // Feature support
-  virtual void AddVideoPictureHW(DVDVideoPicture &picture, int index) override;
+  virtual void AddVideoPictureHW(VideoPicture &picture, int index) override;
   virtual void ReleaseBuffer(int idx) override;
   virtual bool NeedBuffer(int idx) override;
   virtual CRenderInfo GetRenderInfo() override;
