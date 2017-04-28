@@ -105,16 +105,16 @@ CVideoPlayerVideo::~CVideoPlayerVideo()
 
 double CVideoPlayerVideo::GetOutputDelay()
 {
-    double time = m_messageQueue.GetPacketCount(CDVDMsg::DEMUXER_PACKET);
-    if( m_fFrameRate )
-      time = (time * DVD_TIME_BASE) / m_fFrameRate;
-    else
-      time = 0.0;
+  double time = m_messageQueue.GetPacketCount(CDVDMsg::DEMUXER_PACKET);
+  if( m_fFrameRate )
+    time = (time * DVD_TIME_BASE) / m_fFrameRate;
+  else
+    time = 0.0;
 
-    if( m_speed != 0 )
-      time = time * DVD_PLAYSPEED_NORMAL / abs(m_speed);
+  if( m_speed != 0 )
+    time = time * DVD_PLAYSPEED_NORMAL / abs(m_speed);
 
-    return time;
+  return time;
 }
 
 bool CVideoPlayerVideo::OpenStream(CDVDStreamInfo hint)
@@ -122,8 +122,9 @@ bool CVideoPlayerVideo::OpenStream(CDVDStreamInfo hint)
   CRenderInfo info;
   info = m_renderManager.GetRenderInfo();
 
-  m_ptsTracker.ResetVFRDetection();
   if (hint.flags & AV_DISPOSITION_ATTACHED_PIC)
+    return false;
+  if (hint.extrasize == 0)
     return false;
 
   CLog::Log(LOGNOTICE, "Creating video codec with codec id: %i", hint.codec);
