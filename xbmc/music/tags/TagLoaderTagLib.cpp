@@ -71,6 +71,7 @@
 #include "utils/StringUtils.h"
 #include "utils/Base64.h"
 #include "settings/AdvancedSettings.h"
+#include "MusicInfoTagLoaderFFmpeg.h"
 
 using namespace TagLib;
 using namespace MUSIC_INFO;
@@ -1123,6 +1124,12 @@ bool CTagLoaderTagLib::Load(const std::string& strFileName, CMusicInfoTag& tag, 
         file = oggVorbisFile = new Ogg::Vorbis::File(stream);
       }
     }
+    else if (strExtension == "dsf" || strExtension == "mka")
+    {
+		  CMusicInfoTagLoaderFFmpeg dsf;
+		  if (dsf.Load(strFileName, tag, art))
+			  CLog::Log(LOGDEBUG, "reading dsf tags");
+    }
   }
   catch (const std::exception& ex)
   {
@@ -1133,7 +1140,8 @@ bool CTagLoaderTagLib::Load(const std::string& strFileName, CMusicInfoTag& tag, 
   {
     delete file;
     delete stream;
-    CLog::Log(LOGDEBUG, "file %s could not be opened for tag reading", strFileName.c_str());
+    if (strExtension != "dsf" && strExtension != "mka")
+      CLog::Log(LOGDEBUG, "file could not be opened for tag reading");
     return false;
   }
 
