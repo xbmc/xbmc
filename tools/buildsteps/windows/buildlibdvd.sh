@@ -7,7 +7,7 @@ LIBDVDPREFIX=/xbmc/lib/libdvd
 PKG_CONFIG_PATH=$LIBDVDPREFIX/lib/pkgconfig
 export PKG_CONFIG_PATH
 
-if [ "$(pathChanged $LIBDVDPREFIX /xbmc/tools/depends/target/libdvdcss/DVDCSS-VERSION /xbmc/tools/depends/target/libdvdread/DVDREAD-VERSION /xbmc/tools/depends/target/libdvdnav/DVDNAV-VERSION /xbmc/project/BuildDependencies/DownloadMingwBuildEnv.bat /xbmc/tools/buildsteps/win32)" == "0" ]
+if [ "$(pathChanged $LIBDVDPREFIX /xbmc/tools/depends/target/libdvdcss/DVDCSS-VERSION /xbmc/tools/depends/target/libdvdread/DVDREAD-VERSION /xbmc/tools/depends/target/libdvdnav/DVDNAV-VERSION /xbmc/project/BuildDependencies/DownloadMingwBuildEnv.bat /xbmc/tools/buildsteps/windows)" == "0" ]
 then
   cp "$LIBDVDPREFIX/bin/libdvdcss-2.dll" /xbmc/system/
   cp $LIBDVDPREFIX/bin/libdvdnav.dll /xbmc/system/
@@ -75,7 +75,7 @@ gcc \
 
 strip -S $LIBDVDPREFIX/bin/libdvdnav.dll &&
 cp $LIBDVDPREFIX/bin/libdvdnav.dll /xbmc/system/ &&
-tagSuccessFulBuild $LIBDVDPREFIX /xbmc/tools/depends/target/libdvdcss/DVDCSS-VERSION /xbmc/tools/depends/target/libdvdread/DVDREAD-VERSION /xbmc/tools/depends/target/libdvdnav/DVDNAV-VERSION /xbmc/project/BuildDependencies/DownloadMingwBuildEnv.bat /xbmc/tools/buildsteps/win32
+tagSuccessFulBuild $LIBDVDPREFIX /xbmc/tools/depends/target/libdvdcss/DVDCSS-VERSION /xbmc/tools/depends/target/libdvdread/DVDREAD-VERSION /xbmc/tools/depends/target/libdvdnav/DVDNAV-VERSION /xbmc/project/BuildDependencies/DownloadMingwBuildEnv.bat /xbmc/tools/buildsteps/windows
 do_print_status "libdvd (${BITS})" "$green_color" "Done"
 
 #remove the bgprocessfile for signaling the process end

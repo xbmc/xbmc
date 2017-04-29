@@ -62,7 +62,7 @@ runBackgroundProcess() {
 
 
 buildProcess() {
-cd /xbmc/tools/buildsteps/win32
+cd /xbmc/tools/buildsteps/windows
 
 # compile our mingw dlls
 echo "-------------------------------------------------------------------------------"
