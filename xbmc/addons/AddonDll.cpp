@@ -21,6 +21,8 @@
 #include "AddonDll.h"
 
 #include "AddonStatusHandler.h"
+#include "events/EventLog.h"
+#include "events/NotificationEvent.h"
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogOK.h"
 #include "utils/URIUtils.h"
@@ -183,6 +185,13 @@ ADDON_STATUS CAddonDll::Create(void* funcTable, void* info)
   if (!LoadDll())
     return ADDON_STATUS_PERMANENT_FAILURE;
 
+  /* Check versions about global parts on add-on (parts used on all types) */
+  for (unsigned int id = ADDON_GLOBAL_MAIN; id <= ADDON_GLOBAL_MAX; ++id)
+  {
+    if (!CheckAPIVersion(id))
+      return ADDON_STATUS_PERMANENT_FAILURE;
+  }
+
   /* Load add-on function table (written by add-on itself) */
   m_pDll->GetAddon(funcTable);
 
@@ -284,76 +293,6 @@ bool CAddonDll::DllLoaded(void) const
 ADDON_STATUS CAddonDll::GetStatus()
 {
   return m_pDll->GetStatus();
-}
-
-bool CAddonDll::LoadSettings()
-{
-  if (m_settingsLoaded)
-    return true;
-
-  if (!LoadDll())
-    return false;
-
-  ADDON_StructSetting** sSet;
-  std::vector<DllSetting> vSet;
-  unsigned entries = m_pDll->GetSettings(&sSet);
-  DllUtils::StructToVec(entries, &sSet, &vSet);
-  m_pDll->FreeSettings();
-
-  if (vSet.size())
-  {
-    // regenerate XML doc
-    m_addonXmlDoc.Clear();
-    TiXmlElement node("settings");
-    m_addonXmlDoc.InsertEndChild(node);
-
-    for (unsigned i=0; i < entries; i++)
-    {
-       DllSetting& setting = vSet[i];
-       m_addonXmlDoc.RootElement()->InsertEndChild(MakeSetting(setting));
-    }
-    CAddon::SettingsFromXML(m_addonXmlDoc, true);
-  }
-  else
-    return CAddon::LoadSettings();
-
-  m_settingsLoaded = true;
-  CAddon::LoadUserSettings();
-  return true;
-}
-
-TiXmlElement CAddonDll::MakeSetting(DllSetting& setting) const
-{
-  TiXmlElement node("setting");
-
-  switch (setting.type)
-  {
-    case DllSetting::CHECK:
-    {
-      node.SetAttribute("id", setting.id);
-      node.SetAttribute("type", "bool");
-      node.SetAttribute("label", setting.label);
-      break;
-    }
-    case DllSetting::SPIN:
-    {
-      node.SetAttribute("id", setting.id);
-      node.SetAttribute("type", "enum");
-      node.SetAttribute("label", setting.label);
-      std::string values;
-      for (unsigned int i = 0; i < setting.entry.size(); i++)
-      {
-        values.append(setting.entry[i]);
-        values.append("|");
-      }
-      node.SetAttribute("values", values.c_str());
-      break;
-    }
-  default:
-    break;
-  }
-
-  return node;
 }
 
 void CAddonDll::SaveSettings()
@@ -459,6 +398,32 @@ ADDON_STATUS CAddonDll::TransferSettings()
   }
 
   return ADDON_STATUS_OK;
+}
+
+bool CAddonDll::CheckAPIVersion(int type)
+{
+  /* check the API version */
+  const char* kodiVersion = kodi::addon::GetTypeVersion(type);
+  const char* addonVersion = m_pDll->GetAddonTypeVersion(type);
+
+  if (AddonVersion(addonVersion) != AddonVersion(kodiVersion))
+  {
+    CLog::Log(LOGERROR, "Add-on '%s' is using an incompatible API version for type '%s'. Kodi API version = '%s', add-on API version '%s'",
+                            Name().c_str(),
+                            kodi::addon::GetTypeName(type),
+                            kodiVersion,
+                            addonVersion);
+
+    std::string text = StringUtils::Format(g_localizeStrings.Get(29803).c_str(),
+                                           kodi::addon::GetTypeName(type),
+                                           kodiVersion,
+                                           addonVersion);
+    CEventLog::GetInstance().AddWithNotification(EventPtr(new CNotificationEvent(Name(), text, EventLevel::Error)));
+
+    return false;
+  }
+
+  return true;
 }
 
 }; /* namespace ADDON */

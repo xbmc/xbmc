@@ -26,6 +26,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "libXBMC_addon.h"
+#include "versions.h"
 
 #ifdef BUILD_KODI_ADDON
 #include "DVDDemuxPacket.h"
@@ -34,7 +35,7 @@
 #endif
 
 /* current input stream API version */
-#define KODI_INPUTSTREAM_API_VERSION "1.0.0"
+#define KODI_INPUTSTREAM_API_VERSION ADDON_INSTANCE_VERSION_INPUTSTREAM
 
 namespace KodiAPI
 {

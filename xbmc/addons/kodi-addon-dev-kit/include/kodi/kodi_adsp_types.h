@@ -60,10 +60,10 @@
 #define AE_DSP_STREAM_MAX_MODES                 32
 
 /* current Audio DSP API version */
-#define KODI_AE_DSP_API_VERSION                 "0.1.8"
+#define KODI_AE_DSP_API_VERSION                 ADDON_INSTANCE_VERSION_ADSP
 
 /* min. Audio DSP API version */
-#define KODI_AE_DSP_MIN_API_VERSION             "0.1.8"
+#define KODI_AE_DSP_MIN_API_VERSION             ADDON_INSTANCE_VERSION_ADSP
 
 #ifdef __cplusplus
 extern "C" {

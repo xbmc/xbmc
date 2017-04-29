@@ -20,11 +20,13 @@
 #ifndef KODI_GAME_TYPES_H_
 #define KODI_GAME_TYPES_H_
 
+#include "versions.h"
+
 /* current game API version */
-#define GAME_API_VERSION                "1.0.29"
+#define GAME_API_VERSION                ADDON_INSTANCE_VERSION_GAME
 
 /* min. game API version */
-#define GAME_MIN_API_VERSION            "1.0.29"
+#define GAME_MIN_API_VERSION            ADDON_INSTANCE_VERSION_GAME
 
 #include <stddef.h>
 #include <stdint.h>
