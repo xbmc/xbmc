@@ -30,6 +30,7 @@ public:
   CRPIUtils();
   virtual ~CRPIUtils();
   virtual void DestroyDispmanxWindow();
+  virtual void SetVisible(bool enable);
   virtual bool GetNativeResolution(RESOLUTION_INFO *res) const;
   virtual bool SetNativeResolution(const RESOLUTION_INFO res, EGLSurface m_nativeWindow);
   virtual bool ProbeResolutions(std::vector<RESOLUTION_INFO> &resolutions);
@@ -42,6 +43,10 @@ private:
   RESOLUTION_INFO m_desktopRes;
   int m_width;
   int m_height;
+  int m_screen_width;
+  int m_screen_height;
+  bool m_shown;
+
   int m_initDesktopRes;
 
   void GetSupportedModes(HDMI_RES_GROUP_T group, std::vector<RESOLUTION_INFO> &resolutions);
