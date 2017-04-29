@@ -24,6 +24,7 @@
 #include "cores/FFmpeg.h"
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
+#include "ReplayGain.h"
 
 using namespace MUSIC_INFO;
 using namespace XFILE;
@@ -55,6 +56,8 @@ bool CMusicInfoTagLoaderFFmpeg::Load(const std::string& strFileName, CMusicInfoT
 {
   tag.SetLoaded(false);
 
+  ReplayGain replayGainInfo;
+  
   CFile file;
   if (!file.Open(strFileName))
     return false;
@@ -153,7 +156,23 @@ bool CMusicInfoTagLoaderFFmpeg::Load(const std::string& strFileName, CMusicInfoT
 
   AVDictionaryEntry* avtag=nullptr;
   while ((avtag = av_dict_get(fctx->metadata, "", avtag, AV_DICT_IGNORE_SUFFIX)))
-    ParseTag(avtag);
+    {
+	    ParseTag(avtag);
+	    if (StringUtils::EqualsNoCase(URIUtils::GetExtension(strFileName), ".mka") ||
+          StringUtils::EqualsNoCase(URIUtils::GetExtension(strFileName), ".dsf"))
+	    {
+        if (strcasecmp(avtag->key, "replaygain_track_gain") == 0)
+		      replayGainInfo.ParseGain(ReplayGain::TRACK, avtag->value);
+        else if (strcasecmp(avtag->key, "replaygain_album_gain") == 0)
+		      replayGainInfo.ParseGain(ReplayGain::ALBUM, avtag->value);
+        else if (strcasecmp(avtag->key, "replaygain_track_peak") == 0)
+		      replayGainInfo.ParsePeak(ReplayGain::TRACK, avtag->value);
+        else if (strcasecmp(avtag->key, "replaygain_album_peak") == 0)
+		      replayGainInfo.ParsePeak(ReplayGain::ALBUM, avtag->value); 
+	    }
+    }
+
+  tag.SetReplayGain(replayGainInfo);
 
   const AVStream* st = fctx->streams[0];
   if (st)
