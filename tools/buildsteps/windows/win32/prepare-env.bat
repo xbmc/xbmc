@@ -1,5 +1,5 @@
 @ECHO OFF
 
-PUSHD %~dp0\..\windows\win32
+PUSHD %~dp0\..
 CALL prepare-env.bat
 POPD
