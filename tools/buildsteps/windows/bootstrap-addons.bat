@@ -17,19 +17,9 @@ if "%1" == "clean" (
   )
 )
 
-rem set Visual C++ build environment
-call "%VS140COMNTOOLS%..\..\VC\bin\amd64_x86\vcvarsamd64_x86.bat" || call "%VS140COMNTOOLS%..\..\VC\bin\vcvars32.bat"
-
-SET WORKDIR=%WORKSPACE%
-
-IF "%WORKDIR%" == "" (
-  rem resolve the relative path
-  SETLOCAL EnableDelayedExpansion
-  PUSHD ..\..\..
-  SET WORKDIR=!CD!
-  POPD
-  SETLOCAL DisableDelayedExpansion
-)
+PUSHD %~dp0\..\..\..
+SET WORKDIR=%CD%
+POPD
 
 rem setup some paths that we need later
 SET CUR_PATH=%CD%
