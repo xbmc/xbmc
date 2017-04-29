@@ -670,6 +670,10 @@ void CGUIDialogPVRTimerSettings::Save()
 
   // Update summary
   m_timerInfoTag->UpdateSummary();
+
+  // Clear timer tag's epg tag if timer is not/no longer epg-based.
+  if (!m_timerType->IsEpgBased())
+    m_timerInfoTag->ClearEpgTag();
 }
 
 void CGUIDialogPVRTimerSettings::SetButtonLabels()
