@@ -268,7 +268,7 @@ set WORKSPACE=%CD%\..\..\kodi-build
   ECHO Done!
   ECHO Setup is located at %CD%\%APP_SETUPFILE%
   ECHO ------------------------------------------------------------
-  GOTO VIEWLOG_EXE
+  GOTO END
   
 :DIE
   ECHO ------------------------------------------------------------
@@ -280,24 +280,6 @@ set WORKSPACE=%CD%\..\..\kodi-build
   SET exitcode=1
   ECHO ------------------------------------------------------------
   GOTO END
-
-:VIEWLOG_EXE
-  SET log="%CD%\..\vs2010express\XBMC\%buildconfig%\objs\XBMC.log"
-  IF NOT EXIST %log% goto END
-  
-  copy %log% ./buildlog.html > NUL
-
-  IF %promptlevel%==noprompt (
-    goto END
-  )
-
-  set /P APP_BUILD_ANSWER=View the build log in your HTML browser? [y/n]
-  if /I %APP_BUILD_ANSWER% NEQ y goto END
-  
-  SET log="%CD%\..\vs2010express\XBMC\%buildconfig%\objs\" XBMC.log
-  
-  start /D%log%
-  goto END
 
 :END
   IF %promptlevel% NEQ noprompt (
