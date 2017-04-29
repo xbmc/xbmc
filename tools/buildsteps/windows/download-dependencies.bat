@@ -2,6 +2,10 @@
 
 SETLOCAL
 
+PUSHD %~dp0\..\..\..
+SET WORKSPACE=%CD%
+POPD
+
 SET TARGETPLATFORM=%1
 SET NATIVEPLATFORM=%2
 
@@ -16,8 +20,8 @@ IF "%KODI_MIRROR%" == "" SET KODI_MIRROR=http://mirrors.kodi.tv
 echo Downloading from mirror %KODI_MIRROR%
 
 REM Locate the BuildDependencies directory, based on the path of this script
-SET BUILD_DEPS_PATH=%~dp0
-SET APP_PATH=%BUILD_DEPS_PATH%\..\..
+SET BUILD_DEPS_PATH=%WORKSPACE%\project\BuildDependencies
+SET APP_PATH=%WORKSPACE%
 SET TMP_PATH=%BUILD_DEPS_PATH%\scripts\tmp
 
 REM Change to the BuildDependencies directory, if we're not there already
