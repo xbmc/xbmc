@@ -48,7 +48,7 @@
 #define ADDON_INSTANCE_VERSION_IMAGEDECODER           "1.0.0"
 #define ADDON_INSTANCE_VERSION_INPUTSTREAM            "1.0.6"
 #define ADDON_INSTANCE_VERSION_PERIPHERAL             "1.3.1"
-#define ADDON_INSTANCE_VERSION_PVR                    "5.2.1"
+#define ADDON_INSTANCE_VERSION_PVR                    "5.2.2"
 #define ADDON_INSTANCE_VERSION_SCREENSAVER            "1.0.0"
 #define ADDON_INSTANCE_VERSION_VFS                    "1.0.0"
 #define ADDON_INSTANCE_VERSION_VISUALIZATION          "1.0.0"

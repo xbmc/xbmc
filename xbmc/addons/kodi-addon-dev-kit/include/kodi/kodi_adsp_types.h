@@ -36,7 +36,6 @@
 #include <cstddef>
 
 #include "xbmc_addon_types.h"
-#include "xbmc_codec_types.h"
 
 #undef ATTRIBUTE_PACKED
 #undef PRAGMA_PACK_BEGIN

@@ -37,7 +37,6 @@
   <addon>webinterface.default</addon>
   <addon>xbmc.addon</addon>
   <addon>xbmc.audioencoder</addon>
-  <addon>xbmc.codec</addon>
   <addon>xbmc.core</addon>
   <addon>xbmc.gui</addon>
   <addon>xbmc.json</addon>
