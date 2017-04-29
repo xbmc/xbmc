@@ -1,9 +1,10 @@
 @ECHO OFF
 SETLOCAL ENABLEDELAYEDEXPANSION
 REM setup all paths
-SET cur_dir=%CD%
-SET base_dir=%cur_dir%\..\..
-SET builddeps_dir=%cur_dir%\..\..\project\BuildDependencies
+PUSHD %~dp0\..\..\..
+SET base_dir=%CD%
+POPD
+SET builddeps_dir=%base_dir%\project\BuildDependencies
 SET bin_dir=%builddeps_dir%\bin
 SET msys_dir=%builddeps_dir%\msys64
 IF NOT EXIST %msys_dir% (SET msys_dir=%builddeps_dir%\msys32)
@@ -25,11 +26,10 @@ IF NOT [%TAG%] == [] (
 )
 
 rem ----Usage----
-rem BuildSetup [clean|noclean] [noprompt] [nomingwlibs] [nobinaryaddons] [sh]
+rem BuildSetup [clean|noclean] [noprompt] [nobinaryaddons] [sh]
 rem clean to force a full rebuild
 rem noclean to force a build without clean
 rem noprompt to avoid all prompts
-rem nomingwlibs to skip building all libs built with mingw
 rem nobinaryaddons to skip building binary addons
 rem sh to use sh shell instead rxvt
 CLS
@@ -44,23 +44,21 @@ rem -------------------------------------------------------------
 rem  CONFIG START
 SET buildmode=ask
 SET promptlevel=prompt
-SET buildmingwlibs=true
 SET buildbinaryaddons=true
 SET exitcode=0
 SET useshell=rxvt
 SET BRANCH=na
-FOR %%b in (%1, %2, %3, %4, %5, %6) DO (
+FOR %%b in (%1, %2, %3, %4) DO (
   IF %%b==clean SET buildmode=clean
   IF %%b==noclean SET buildmode=noclean
   IF %%b==noprompt SET promptlevel=noprompt
-  IF %%b==nomingwlibs SET buildmingwlibs=false
   IF %%b==nobinaryaddons SET buildbinaryaddons=false
   IF %%b==sh SET useshell=sh
 )
 
 SET PreferredToolArchitecture=x64
 SET buildconfig=Release
-set WORKSPACE=%CD%\..\..\kodi-build
+set WORKSPACE=%base_dir%\kodi-build
 
 
   :: sets the BRANCH env var
@@ -68,30 +66,8 @@ set WORKSPACE=%CD%\..\..\kodi-build
 
   rem  CONFIG END
   rem -------------------------------------------------------------
-  goto COMPILE_MINGW
-
-:COMPILE_MINGW
-  ECHO Buildmode = %buildmode%
-  IF %buildmingwlibs%==true (
-    ECHO Compiling mingw libs
-    ECHO bla>noprompt
-    IF EXIST errormingw del errormingw > NUL
-    IF %buildmode%==clean (
-      ECHO bla>makeclean
-    )
-    rem only use sh to please jenkins
-    IF %useshell%==sh (
-      call %base_dir%\tools\buildsteps\win32\make-mingwlibs.bat sh noprompt %buildmode%
-    ) ELSE (
-      call %base_dir%\tools\buildsteps\win32\make-mingwlibs.bat noprompt %buildmode%
-    )
-    IF EXIST errormingw (
-      set DIETEXT="failed to build mingw libs"
-      goto DIE
-    )
-  )
   goto COMPILE_CMAKE_EXE
-  
+
 :COMPILE_CMAKE_EXE
   ECHO Wait while preparing the build.
   ECHO ------------------------------------------------------------
@@ -103,7 +79,7 @@ set WORKSPACE=%CD%\..\..\kodi-build
   MKDIR %WORKSPACE%
   PUSHD %WORKSPACE%
 
-  cmake.exe -G "Visual Studio 14" %base_dir%
+  cmake.exe -G "%cmakeGenerator%" %base_dir%
   IF %errorlevel%==1 (
     set DIETEXT="%APP_NAME%.EXE failed to build!"
     goto DIE
@@ -127,6 +103,7 @@ set WORKSPACE=%CD%\..\..\kodi-build
 
 :MAKE_BUILD_EXE
   ECHO Copying files...
+  PUSHD %base_dir%\project\Win32BuildSetup
   IF EXIST BUILD_WIN32 rmdir BUILD_WIN32 /S /Q
   rem Add files to exclude.txt that should not be included in the installer
   
@@ -174,13 +151,13 @@ set WORKSPACE=%CD%\..\..\kodi-build
   xcopy %WORKSPACE%\media BUILD_WIN32\application\media /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
 
   REM create AppxManifest.xml
-  "%sed_exe%" -e s/@APP_NAME@/%APP_NAME%/g -e s/@COMPANY_NAME@/%COMPANY_NAME%/g -e s/@APP_VERSION@/%APP_VERSION%/g -e s/@VERSION_NUMBER@/%VERSION_NUMBER%/g "AppxManifest.xml.in" > "BUILD_WIN32\application\AppxManifest.xml"
+  "%sed_exe%" -e s/@APP_NAME@/%APP_NAME%/g -e s/@COMPANY_NAME@/%COMPANY_NAME%/g -e s/@TARGET_ARCHITECTURE@/%TARGET_ARCHITECTURE%/g -e s/@APP_VERSION@/%APP_VERSION%/g -e s/@VERSION_NUMBER@/%VERSION_NUMBER%/g "AppxManifest.xml.in" > "BUILD_WIN32\application\AppxManifest.xml"
 
   SET build_path=%CD%
   IF %buildbinaryaddons%==true (
     ECHO ------------------------------------------------------------
     ECHO Building addons...
-    cd %base_dir%\tools\buildsteps\win32
+    cd %base_dir%\tools\buildsteps\windows
     IF %buildmode%==clean (
       call make-addons.bat clean
     )
@@ -206,6 +183,7 @@ set WORKSPACE=%CD%\..\..\kodi-build
   del /s /q /f BUILD_WIN32\application\*.cpp  > NUL
   del /s /q /f BUILD_WIN32\application\*.exp  > NUL
   del /s /q /f BUILD_WIN32\application\*.lib  > NUL
+  POPD
   
   ECHO ------------------------------------------------------------
   ECHO Build Succeeded!
@@ -214,6 +192,7 @@ set WORKSPACE=%CD%\..\..\kodi-build
 :NSIS_EXE
   ECHO ------------------------------------------------------------
   ECHO Generating installer includes...
+  PUSHD %base_dir%\project\Win32BuildSetup
   call genNsisIncludes.bat
   ECHO ------------------------------------------------------------
   call getdeploydependencies.bat
@@ -258,12 +237,14 @@ set WORKSPACE=%CD%\..\..\kodi-build
   )
 
   SET NSISExe=%NSISExePath%\makensis.exe
-  "%NSISExe%" /V1 /X"SetCompressor /FINAL lzma" /Dapp_root="%CD%\BUILD_WIN32" /DAPP_NAME="%APP_NAME%" /DVERSION_NUMBER="%VERSION_NUMBER%" /DCOMPANY_NAME="%COMPANY_NAME%" /DWEBSITE="%WEBSITE%" /Dapp_revision="%GIT_REV%" /Dapp_target="%target%" /Dapp_branch="%BRANCH%" "genNsisInstaller.nsi"
+  "%NSISExe%" /V1 /X"SetCompressor /FINAL lzma" /Dapp_root="%CD%\BUILD_WIN32" /DAPP_NAME="%APP_NAME%" /DTARGET_ARCHITECTURE="%TARGET_ARCHITECTURE%" /DVERSION_NUMBER="%VERSION_NUMBER%" /DCOMPANY_NAME="%COMPANY_NAME%" /DWEBSITE="%WEBSITE%" /Dapp_revision="%GIT_REV%" /Dapp_branch="%BRANCH%" "genNsisInstaller.nsi"
   IF NOT EXIST "%APP_SETUPFILE%" (
+    POPD
     set DIETEXT=Failed to create %APP_SETUPFILE%. NSIS installed?
     goto DIE
   )
   copy %PDB% %APP_PDBFILE% > nul
+  POPD
   ECHO ------------------------------------------------------------
   ECHO Done!
   ECHO Setup is located at %CD%\%APP_SETUPFILE%

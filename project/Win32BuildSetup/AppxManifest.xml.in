@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <Package IgnorableNamespaces="uap" xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities">
-  <Identity Name="XBMCFoundation.Kodi" ProcessorArchitecture="x86" Publisher="CN=C62BD90A-CDD8-477F-96C3-B25992247B97" Version="@VERSION_NUMBER@" />
+  <Identity Name="XBMCFoundation.Kodi" ProcessorArchitecture="@TARGET_ARCHITECTURE@" Publisher="CN=C62BD90A-CDD8-477F-96C3-B25992247B97" Version="@VERSION_NUMBER@" />
   <Properties>
     <DisplayName>Kodi</DisplayName>
     <PublisherDisplayName>XBMC Foundation</PublisherDisplayName>
