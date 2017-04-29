@@ -1,5 +1,9 @@
 @ECHO OFF
 
+PUSHD %~dp0\..\..\..
+SET WORKSPACE=%CD%
+POPD
+
 ECHO Workspace is %WORKSPACE%
 
 cd %WORKSPACE%
@@ -19,7 +23,3 @@ IF EXIST %WORKSPACE%\project\Win32BuildSetup\dependencies rmdir %WORKSPACE%\proj
 IF EXIST %WORKSPACE%\project\BuildDependencies\include rmdir %WORKSPACE%\project\BuildDependencies\include /S /Q
 IF EXIST %WORKSPACE%\project\BuildDependencies\lib rmdir %WORKSPACE%\project\BuildDependencies\lib /S /Q
 IF EXIST %WORKSPACE%\project\BuildDependencies\msys rmdir %WORKSPACE%\project\BuildDependencies\msys /S /Q
-
-IF EXIST %WORKSPACE%\project\VS2010Express\XBMC rmdir %WORKSPACE%\project\VS2010Express\XBMC /S /Q
-IF EXIST %WORKSPACE%\project\VS2010Express\objs rmdir %WORKSPACE%\project\VS2010Express\objs /S /Q
-IF EXIST %WORKSPACE%\project\VS2010Express\libs rmdir %WORKSPACE%\project\VS2010Express\libs /S /Q
