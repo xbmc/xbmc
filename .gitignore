@@ -117,6 +117,7 @@ cmake_install.cmake
 /libtool
 /*.patch
 /kodi-build/
+/gtestresults.xml
 
 # /addons/
 /addons/packages
