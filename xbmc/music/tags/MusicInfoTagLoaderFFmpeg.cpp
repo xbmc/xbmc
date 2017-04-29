@@ -55,8 +55,12 @@ bool CMusicInfoTagLoaderFFmpeg::Load(const std::string& strFileName, CMusicInfoT
   if (!file.Open(strFileName))
     return false;
 
-  uint8_t* buffer = (uint8_t*)av_malloc(FFMPEG_FILE_BUFFER_SIZE);
-  AVIOContext* ioctx = avio_alloc_context(buffer, FFMPEG_FILE_BUFFER_SIZE, 0,
+  int bufferSize = 4096;
+  int blockSize = file.GetChunkSize();
+  if (blockSize > 1)
+    bufferSize = blockSize;
+  uint8_t* buffer = (uint8_t*)av_malloc(bufferSize);
+  AVIOContext* ioctx = avio_alloc_context(buffer, bufferSize, 0,
                                           &file, vfs_file_read, NULL,
                                           vfs_file_seek);
 
@@ -65,8 +69,6 @@ bool CMusicInfoTagLoaderFFmpeg::Load(const std::string& strFileName, CMusicInfoT
 
   if (file.IoControl(IOCTRL_SEEK_POSSIBLE, NULL) != 1)
     ioctx->seekable = 0;
-
-  ioctx->max_packet_size = FFMPEG_FILE_BUFFER_SIZE;
 
   AVInputFormat* iformat=NULL;
   av_probe_input_buffer(ioctx, &iformat, strFileName.c_str(), NULL, 0, 0);
