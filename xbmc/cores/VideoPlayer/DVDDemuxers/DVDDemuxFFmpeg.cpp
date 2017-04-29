@@ -275,11 +275,12 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo, bool filein
   }
   else
   {
-    unsigned char* buffer = (unsigned char*)av_malloc(FFMPEG_FILE_BUFFER_SIZE);
-    m_ioContext = avio_alloc_context(buffer, FFMPEG_FILE_BUFFER_SIZE, 0, this, dvd_file_read, NULL, dvd_file_seek);
-    m_ioContext->max_packet_size = m_pInput->GetBlockSize();
-    if(m_ioContext->max_packet_size)
-      m_ioContext->max_packet_size *= FFMPEG_FILE_BUFFER_SIZE / m_ioContext->max_packet_size;
+    int bufferSize = 4096;
+    int blockSize = m_pInput->GetBlockSize();
+    if (blockSize > 1)
+      bufferSize = blockSize;
+    unsigned char* buffer = (unsigned char*)av_malloc(bufferSize);
+    m_ioContext = avio_alloc_context(buffer, bufferSize, 0, this, dvd_file_read, NULL, dvd_file_seek);
 
     if(m_pInput->Seek(0, SEEK_POSSIBLE) == 0)
       m_ioContext->seekable = 0;
@@ -306,14 +307,15 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo, bool filein
       if (trySPDIFonly || (iformat && strcmp(iformat->name, "wav") == 0))
       {
         AVProbeData pd;
-        std::unique_ptr<uint8_t[]> probe_buffer (new uint8_t[FFMPEG_FILE_BUFFER_SIZE + AVPROBE_PADDING_SIZE]);
+        int probeBufferSize = 32768;
+        std::unique_ptr<uint8_t[]> probe_buffer (new uint8_t[probeBufferSize + AVPROBE_PADDING_SIZE]);
 
         // init probe data
         pd.buf = probe_buffer.get();
         pd.filename = strFile.c_str();
 
         // av_probe_input_buffer might have changed the buffer_size beyond our allocated amount
-        int buffer_size = std::min((int) FFMPEG_FILE_BUFFER_SIZE, m_ioContext->buffer_size);
+        int buffer_size = std::min((int) probeBufferSize, m_ioContext->buffer_size);
         buffer_size = m_ioContext->max_packet_size ? m_ioContext->max_packet_size : buffer_size;
         // read data using avformat's buffers
         pd.buf_size = avio_read(m_ioContext, pd.buf, buffer_size);
