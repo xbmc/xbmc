@@ -41,8 +41,8 @@ typedef struct mpeg2_sequence
 {
   uint32_t  width;
   uint32_t  height;
-  float     rate;
-  uint32_t  rate_info;
+  uint32_t  fps_rate;
+  uint32_t  fps_scale;
   float     ratio;
   uint32_t  ratio_info;
 } mpeg2_sequence;

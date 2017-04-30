@@ -49,6 +49,8 @@ class CBitstreamConverter;
 
 struct AMediaCrypto;
 struct DemuxCryptoInfo;
+struct mpeg2_sequence;
+
 
 typedef struct amc_demux {
   uint8_t  *pData;
@@ -162,6 +164,7 @@ protected:
   int             m_indexInputBuffer;
   bool            m_render_sw;
   bool            m_render_surface;
+  mpeg2_sequence  *m_mpeg2_sequence;
   int             m_src_offset[4];
   int             m_src_stride[4];
 };

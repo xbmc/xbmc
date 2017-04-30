@@ -109,10 +109,8 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
       m_mpeg2_sequence->width  = m_hints.width;
       m_mpeg2_sequence->height = m_hints.height;
       m_mpeg2_sequence->ratio  = m_hints.aspect;
-      if (m_hints.fpsrate > 0 && m_hints.fpsscale != 0)
-        m_mpeg2_sequence->rate = (float)m_hints.fpsrate / m_hints.fpsscale;
-      else
-        m_mpeg2_sequence->rate = 1.0;
+      m_mpeg2_sequence->fps_rate  = m_hints.fpsrate;
+      m_mpeg2_sequence->fps_scale  = m_hints.fpsscale;
       m_pFormatName = "am-mpeg2";
       break;
     case AV_CODEC_ID_H264:
@@ -505,51 +503,17 @@ void CDVDVideoCodecAmlogic::FrameRateTracking(uint8_t *pData, int iSize, double 
       if (m_mpeg2_sequence_pts == DVD_NOPTS_VALUE)
         m_mpeg2_sequence_pts = dts;
 
-      m_framerate = m_mpeg2_sequence->rate;
+      m_hints.fpsrate = m_mpeg2_sequence->fps_rate;
+      m_hints.fpsscale = m_mpeg2_sequence->fps_scale;
+      m_framerate = static_cast<float>(m_mpeg2_sequence->fps_rate) / m_mpeg2_sequence->fps_scale;
       m_video_rate = (int)(0.5 + (96000.0 / m_framerate));
 
-      m_processInfo.SetVideoFps(m_framerate);
-
-      // update m_hints for 1st frame fixup.
-      switch(m_mpeg2_sequence->rate_info)
-      {
-        default:
-        case 0x01:
-          m_hints.fpsrate = 24000.0;
-          m_hints.fpsscale = 1001.0;
-          break;
-        case 0x02:
-          m_hints.fpsrate = 24000.0;
-          m_hints.fpsscale = 1000.0;
-          break;
-        case 0x03:
-          m_hints.fpsrate = 25000.0;
-          m_hints.fpsscale = 1000.0;
-          break;
-        case 0x04:
-          m_hints.fpsrate = 30000.0;
-          m_hints.fpsscale = 1001.0;
-          break;
-        case 0x05:
-          m_hints.fpsrate = 30000.0;
-          m_hints.fpsscale = 1000.0;
-          break;
-        case 0x06:
-          m_hints.fpsrate = 50000.0;
-          m_hints.fpsscale = 1000.0;
-          break;
-        case 0x07:
-          m_hints.fpsrate = 60000.0;
-          m_hints.fpsscale = 1001.0;
-          break;
-        case 0x08:
-          m_hints.fpsrate = 60000.0;
-          m_hints.fpsscale = 1000.0;
-          break;
-      }
       m_hints.width    = m_mpeg2_sequence->width;
       m_hints.height   = m_mpeg2_sequence->height;
       m_hints.aspect   = m_mpeg2_sequence->ratio;
+
+      m_processInfo.SetVideoFps(m_framerate);
+      m_processInfo.SetVideoDAR(m_hints.aspect);
     }
     return;
   }
