@@ -3,7 +3,7 @@
 [[ -f buildhelpers.sh ]] &&
     source buildhelpers.sh
 
-FFMPEG_CONFIG_FILE=/xbmc/tools/buildsteps/windows/fmpeg_options.txt
+FFMPEG_CONFIG_FILE=/xbmc/tools/buildsteps/windows/ffmpeg_options.txt
 FFMPEG_VERSION_FILE=/xbmc/tools/depends/target/ffmpeg/FFMPEG-VERSION
 FFMPEG_BASE_OPTS="--disable-debug --disable-doc --enable-gpl --enable-gnutls --enable-w32threads"
 FFMPEG_DEFAULT_OPTS=""
@@ -110,7 +110,7 @@ if [[ "$tools" = "msvc" ]]; then
 
   export PATH="$VCTOOLSPATH":$PATH
   export CFLAGS=""
-  export CXXFLAGS="" 
+  export CXXFLAGS=""
   export LDFLAGS=""
 
   extra_cflags="-MDd -I$LOCALDESTDIR/include"
@@ -142,7 +142,7 @@ if do_pkgConfig "gnutls = $GNUTLS_VER"; then
   sed -i 's/-lgnutls *$/-lgnutls -lnettle -lhogweed -lcrypt32 -lws2_32 -lz -lgmp -lintl -liconv/' \
   lib/gnutls.pc
   do_print_status "gnutls-${GNUTLS_VER}" "$blue_color" "Compiling"
-  do_makeinstall 
+  do_makeinstall
   do_pkgConfig "gnutls = $GNUTLS_VER";
 fi
 fi
