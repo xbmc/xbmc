@@ -68,6 +68,8 @@ public:
   void AddSetting(std::shared_ptr<CSetting> setting);
   void AddSettings(const SettingList &settings);
 
+  bool ReplaceSetting(std::shared_ptr<const CSetting> currentSetting, std::shared_ptr<CSetting> newSetting);
+
   std::shared_ptr<const ISettingControl> GetControl() const { return m_control; }
   std::shared_ptr<ISettingControl> GetControl() { return m_control; }
   void SetControl(std::shared_ptr<ISettingControl> control) { m_control = control; }

@@ -129,7 +129,7 @@ bool CSetting::Deserialize(const TiXmlNode *node, bool update /* = false */)
       return false;
     }
   }
-  else if (!update && m_level < SettingLevelInternal)
+  else if (!update && m_level < SettingLevelInternal && GetType() != SettingTypeReference)
   {
     CLog::Log(LOGERROR, "CSetting: missing <control> tag of \"%s\"", m_id.c_str());
     return false;
@@ -278,6 +278,21 @@ void CSetting::Copy(const CSetting &setting)
   m_dependencies = setting.m_dependencies;
   m_updates = setting.m_updates;
   m_changed = setting.m_changed;
+}
+
+CSettingReference::CSettingReference(const std::string &id, CSettingsManager *settingsManager /* = NULL */)
+  : CSetting("#" + id, settingsManager),
+    m_referencedId(id)
+{ }
+
+CSettingReference::CSettingReference(const std::string &id, const CSettingReference &setting)
+  : CSetting("#" + id, setting),
+    m_referencedId(id)
+{ }
+
+std::shared_ptr<CSetting> CSettingReference::Clone(const std::string &id) const
+{
+  return std::make_shared<CSettingReference>(id, *this);
 }
 
 CSettingList::CSettingList(const std::string &id, std::shared_ptr<CSetting> settingDefinition, CSettingsManager *settingsManager /* = NULL */)

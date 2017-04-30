@@ -170,6 +170,24 @@ void CSettingGroup::AddSettings(const SettingList &settings)
     addISetting(NULL, *itSetting, m_settings);
 }
 
+bool CSettingGroup::ReplaceSetting(std::shared_ptr<const CSetting> currentSetting, std::shared_ptr<CSetting> newSetting)
+{
+  for (SettingList::iterator itSetting = m_settings.begin(); itSetting != m_settings.end(); ++itSetting)
+  {
+    if (*itSetting == currentSetting)
+    {
+      if (newSetting == NULL)
+        m_settings.erase(itSetting);
+      else
+        *itSetting = newSetting;
+
+      return true;
+    }
+  }
+
+  return false;
+}
+
 CSettingCategory::CSettingCategory(const std::string &id, CSettingsManager *settingsManager /* = NULL */)
   : ISetting(id, settingsManager),
     m_accessCondition(settingsManager)

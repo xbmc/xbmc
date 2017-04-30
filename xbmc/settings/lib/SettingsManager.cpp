@@ -276,11 +276,56 @@ void CSettingsManager::SetInitialized()
 
   m_initialized = true;
 
+  // resolve any reference settings
+  for (SettingSectionMap::const_iterator section = m_sections.cbegin(); section != m_sections.cend(); ++section)
+  {
+    const SettingCategoryList& categories = section->second->GetCategories();
+    for (SettingCategoryList::const_iterator category = categories.cbegin(); category != categories.cend(); ++category)
+    {
+      SettingGroupList groups = (*category)->GetGroups();
+      for (SettingGroupList::iterator group = groups.begin(); group != groups.end(); ++group)
+      {
+        SettingList settings = (*group)->GetSettings();
+        SettingList referenceSettings;
+        for (SettingList::const_iterator setting = settings.cbegin(); setting != settings.cend(); ++setting)
+        {
+          if ((*setting)->GetType() == SettingTypeReference)
+            referenceSettings.push_back(*setting);
+        }
+
+        for (SettingList::const_iterator referenceSetting = referenceSettings.begin(); referenceSetting != referenceSettings.end(); ++referenceSetting)
+        {
+          const std::string &referencedSettingId = std::static_pointer_cast<const CSettingReference>(*referenceSetting)->GetReferencedId();
+          SettingPtr referencedSetting = NULL;
+          SettingMap::iterator itReferencedSetting = FindSetting(referencedSettingId);
+          if (itReferencedSetting == m_settings.end())
+            CLog::Log(LOGWARNING, "CSettingsManager: missing referenced setting \"%s\"", referencedSettingId.c_str());
+          else
+          {
+            referencedSetting = itReferencedSetting->second.setting;
+            m_settings.erase(FindSetting((*referenceSetting)->GetId()));
+          }
+
+          (*group)->ReplaceSetting(*referenceSetting, referencedSetting);
+        }
+      }
+    }
+  }
+
+  // remove any empty and reference settings
   for (SettingMap::iterator setting = m_settings.begin(); setting != m_settings.end(); )
   {
     SettingMap::iterator tmpIterator = setting++;
     if (tmpIterator->second.setting == NULL)
+    {
+      CLog::Log(LOGWARNING, "CSettingsManager: removing empty setting \"%s\"", tmpIterator->first.c_str());
       m_settings.erase(tmpIterator);
+    }
+    else if (tmpIterator->second.setting->GetType() == SettingTypeReference)
+    {
+      CLog::Log(LOGWARNING, "CSettingsManager: removing missing reference setting \"%s\"", tmpIterator->first.c_str());
+      m_settings.erase(tmpIterator);
+    }
   }
 
   // figure out all the dependencies between settings
@@ -957,6 +1002,8 @@ SettingPtr CSettingsManager::CreateSetting(const std::string &settingType, const
     return std::make_shared<CSettingString>(settingId, const_cast<CSettingsManager*>(this));
   else if (StringUtils::EqualsNoCase(settingType, "action"))
     return std::make_shared<CSettingAction>(settingId, const_cast<CSettingsManager*>(this));
+  else if (StringUtils::EqualsNoCase(settingType, "reference"))
+    return std::make_shared<CSettingReference>(settingId, const_cast<CSettingsManager*>(this));
   else if (settingType.size() > 6 &&
            StringUtils::StartsWith(settingType, "list[") &&
            StringUtils::EndsWith(settingType, "]"))

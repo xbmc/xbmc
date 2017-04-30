@@ -44,7 +44,8 @@ typedef enum {
   SettingTypeNumber,
   SettingTypeString,
   SettingTypeAction,
-  SettingTypeList
+  SettingTypeList,
+  SettingTypeReference
 } SettingType;
 
 /*!
@@ -152,6 +153,29 @@ protected:
 
 typedef std::shared_ptr<CSetting> SettingPtr;
 typedef std::vector<SettingPtr> SettingList;
+
+class CSettingReference : public CSetting
+{
+public:
+  CSettingReference(const std::string &id, CSettingsManager *settingsManager = NULL);
+  CSettingReference(const std::string &id, const CSettingReference &setting);
+  virtual ~CSettingReference() { }
+
+  virtual std::shared_ptr<CSetting> Clone(const std::string &id) const override;
+
+  virtual int GetType() const override { return SettingTypeReference; }
+  virtual bool FromString(const std::string &value) override { return false; }
+  virtual std::string ToString() const override { return ""; }
+  virtual bool Equals(const std::string &value) const override { return false; }
+  virtual bool CheckValidity(const std::string &value) const override { return false; }
+  virtual void Reset() override { }
+
+  const std::string& GetReferencedId() const { return m_referencedId; }
+  void SetReferencedId(const std::string& referencedId) { m_referencedId = referencedId; }
+
+private:
+  std::string m_referencedId;
+};
 
 /*!
  \ingroup settings
