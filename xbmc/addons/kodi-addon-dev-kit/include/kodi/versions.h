@@ -40,6 +40,7 @@
 
 #define ADDON_GLOBAL_VERSION_MAIN                     "1.0.0"
 #define ADDON_GLOBAL_VERSION_GUI                      "5.11.0"
+#define ADDON_GLOBAL_VERSION_GUI_MIN                  "5.10.0"
 
 #define ADDON_INSTANCE_VERSION_ADSP                   "0.1.8"
 #define ADDON_INSTANCE_VERSION_AUDIODECODER           "1.0.0"
