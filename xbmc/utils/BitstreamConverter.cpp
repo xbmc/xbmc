@@ -1174,49 +1174,53 @@ bool CBitstreamConverter::mpeg2_sequence_header(const uint8_t *data, const uint3
 
       // frame rate
       // nal_start + 32 bits == frame_rate_code
-      float rate = sequence->rate;
+      uint32_t fpsrate = sequence->fps_rate;
+      uint32_t fpsscale = sequence->fps_scale;
       uint32_t rate_info = nal_bs_read(&bs, 4);
+
       switch(rate_info)
       {
         default:
         case 0x01:
-          rate = static_cast<float>(24000.0 / 1001.0);
+          fpsrate = 24000.0;
+          fpsscale = 1001.0;
           break;
         case 0x02:
-          rate = 24.0f;
+          fpsrate = 24000.0;
+          fpsscale = 1000.0;
           break;
         case 0x03:
-          rate = 25.0f;
+          fpsrate = 25000.0;
+          fpsscale = 1000.0;
           break;
         case 0x04:
-          rate = static_cast<float>(30000.0 / 1001.0);
+          fpsrate = 30000.0;
+          fpsscale = 1001.0;
           break;
         case 0x05:
-          rate = 30.0f;
+          fpsrate = 30000.0;
+          fpsscale = 1000.0;
           break;
         case 0x06:
-          rate = 50.0f;
+          fpsrate = 50000.0;
+          fpsscale = 1000.0;
           break;
         case 0x07:
-          rate = static_cast<float>(60000.0 / 1001.0);
+          fpsrate = 60000.0;
+          fpsscale = 1001.0;
           break;
         case 0x08:
-          rate = 60.0f;
+          fpsrate = 60000.0;
+          fpsscale = 1000.0;
           break;
       }
-      if (rate_info != sequence->rate_info)
+
+      if (fpsscale != sequence->fps_scale || fpsrate != sequence->fps_rate)
       {
         changed = true;
-        sequence->rate = rate;
-        sequence->rate_info = rate_info;
+        sequence->fps_rate = fpsrate;
+        sequence->fps_scale = fpsscale;
       }
-      /*
-      if (changed)
-      {
-        CLog::Log(LOGDEBUG, "CBitstreamConverter::mpeg2_sequence_header: "
-          "width(%d), height(%d), ratio(%f), rate(%f)", width, height, ratio, rate);
-      }
-      */
     }
     nal_start = nal_end;
   }

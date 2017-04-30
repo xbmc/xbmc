@@ -38,11 +38,12 @@
 #include "ServiceBroker.h"
 #include "messaging/ApplicationMessenger.h"
 #include "TimingConstants.h"
+
 #include "utils/BitstreamConverter.h"
 #include "utils/BitstreamWriter.h"
-
 #include "utils/CPUInfo.h"
 #include "utils/log.h"
+
 #include "settings/AdvancedSettings.h"
 #include "platform/android/activity/XBMCApp.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
@@ -355,6 +356,7 @@ CDVDVideoCodecAndroidMediaCodec::CDVDVideoCodecAndroidMediaCodec(CProcessInfo &p
 , m_bitstream(nullptr)
 , m_render_sw(false)
 , m_render_surface(surface_render)
+, m_mpeg2_sequence(nullptr)
 {
   memset(&m_videobuffer, 0x00, sizeof(VideoPicture));
 }
@@ -367,6 +369,11 @@ CDVDVideoCodecAndroidMediaCodec::~CDVDVideoCodecAndroidMediaCodec()
   {
     AMediaCrypto_delete(m_crypto);
     m_crypto = nullptr;
+  }
+  if (m_mpeg2_sequence)
+  {
+    delete (m_mpeg2_sequence);
+    m_mpeg2_sequence = nullptr;
   }
 }
 
@@ -429,6 +436,12 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
   {
     case AV_CODEC_ID_MPEG2VIDEO:
       m_mime = "video/mpeg2";
+      m_mpeg2_sequence = new mpeg2_sequence;
+      m_mpeg2_sequence->width  = m_hints.width;
+      m_mpeg2_sequence->height = m_hints.height;
+      m_mpeg2_sequence->ratio  = m_hints.aspect;
+      m_mpeg2_sequence->fps_scale = m_hints.fpsscale;
+      m_mpeg2_sequence->fps_rate = m_hints.fpsrate;
       m_formatname = "amc-mpeg2";
       break;
     case AV_CODEC_ID_MPEG4:
@@ -795,6 +808,18 @@ bool CDVDVideoCodecAndroidMediaCodec::AddData(const DemuxPacket &packet)
         m_state = MEDIACODEC_STATE_RUNNING;
       if (!(m_state == MEDIACODEC_STATE_FLUSHED || m_state == MEDIACODEC_STATE_RUNNING))
         CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::AddData: Wrong state (%d)", m_state);
+
+      if (m_mpeg2_sequence && CBitstreamConverter::mpeg2_sequence_header(pData, iSize, m_mpeg2_sequence))
+      {
+        m_hints.fpsrate = m_mpeg2_sequence->fps_rate;
+        m_hints.fpsscale = m_mpeg2_sequence->fps_scale;
+        m_hints.width    = m_mpeg2_sequence->width;
+        m_hints.height   = m_mpeg2_sequence->height;
+        m_hints.aspect   = m_mpeg2_sequence->ratio;
+
+        m_processInfo.SetVideoFps(static_cast<float>(m_hints.fpsrate) / m_hints.fpsscale);
+        m_processInfo.SetVideoDAR(m_hints.aspect);
+      }
 
       // we have an input buffer, fill it.
       if (pData && m_bitstream)
