@@ -114,11 +114,13 @@ public:
   // overrides of ISetting
   virtual bool IsVisible() const override;
 
+  // implementation of ISettingCallback
+  virtual void OnSettingAction(const CSetting *setting) override;
+
 protected:
   // implementation of ISettingCallback
   virtual bool OnSettingChanging(const CSetting *setting) override;
   virtual void OnSettingChanged(const CSetting *setting) override;
-  virtual void OnSettingAction(const CSetting *setting) override;
   virtual bool OnSettingUpdate(CSetting* &setting, const char *oldSettingId, const TiXmlNode *oldSettingNode) override;
   virtual void OnSettingPropertyChanged(const CSetting *setting, const char *propertyName) override;
 
@@ -451,10 +453,6 @@ public:
   virtual bool Equals(const std::string &value) const override { return value.empty(); }
   virtual bool CheckValidity(const std::string &value) const override { return value.empty(); }
   virtual void Reset() override { }
-
-  // this needs to be public so it can be triggered when activated
-  // by the user in the GUI.
-  virtual void OnSettingAction(const CSetting *setting) override { return CSetting::OnSettingAction(this); }
 
   bool HasData() const { return !m_data.empty(); }
   const std::string& GetData() const { return m_data; }

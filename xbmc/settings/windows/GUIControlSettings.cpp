@@ -627,9 +627,8 @@ bool CGUIControlButtonSetting::OnClick()
     else if (controlFormat == "action")
     {
       // simply call the OnSettingAction callback and whoever knows what to
-      // do can do so (based on the setting's identification
-      CSettingAction *pSettingAction = (CSettingAction *)m_pSetting;
-      pSettingAction->OnSettingAction(pSettingAction);
+      // do can do so (based on the setting's identification)
+      m_pSetting->OnSettingAction(m_pSetting);
       SetValid(true);
     }
   }
