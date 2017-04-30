@@ -1182,36 +1182,36 @@ bool CBitstreamConverter::mpeg2_sequence_header(const uint8_t *data, const uint3
       {
         default:
         case 0x01:
-          fpsrate = 24000.0;
-          fpsscale = 1001.0;
+          fpsrate = 24000;
+          fpsscale = 1001;
           break;
         case 0x02:
-          fpsrate = 24000.0;
-          fpsscale = 1000.0;
+          fpsrate = 24000;
+          fpsscale = 1000;
           break;
         case 0x03:
-          fpsrate = 25000.0;
-          fpsscale = 1000.0;
+          fpsrate = 25000;
+          fpsscale = 1000;
           break;
         case 0x04:
-          fpsrate = 30000.0;
-          fpsscale = 1001.0;
+          fpsrate = 30000;
+          fpsscale = 1001;
           break;
         case 0x05:
-          fpsrate = 30000.0;
-          fpsscale = 1000.0;
+          fpsrate = 30000;
+          fpsscale = 1000;
           break;
         case 0x06:
-          fpsrate = 50000.0;
-          fpsscale = 1000.0;
+          fpsrate = 50000;
+          fpsscale = 1000;
           break;
         case 0x07:
-          fpsrate = 60000.0;
-          fpsscale = 1001.0;
+          fpsrate = 60000;
+          fpsscale = 1001;
           break;
         case 0x08:
-          fpsrate = 60000.0;
-          fpsscale = 1000.0;
+          fpsrate = 60000;
+          fpsscale = 1000;
           break;
       }
 
