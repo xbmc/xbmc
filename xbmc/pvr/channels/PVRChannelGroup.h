@@ -61,9 +61,7 @@ namespace PVR
   /** A group of channels */
   class CPVRChannelGroup : public Observable,
                            public ISettingCallback
-
   {
-    friend class CPVRChannelGroups;
     friend class CPVRChannelGroupInternal;
     friend class CPVRChannelGroupsContainer;
     friend class CPVRDatabase;
@@ -100,6 +98,12 @@ namespace PVR
      * Empty group member
      */
     static PVRChannelGroupMember EmptyMember;
+
+    /*!
+     * @brief Load the channels from the database.
+     * @return True when loaded successfully, false otherwise.
+     */
+    virtual bool Load(void);
 
     /*!
      * @return The amount of group members
@@ -258,6 +262,12 @@ namespace PVR
      */
     bool SortAndRenumber(void);
 
+    /*!
+     * @brief Remove invalid channels and updates the channel numbers.
+     * @return True if something changed, false otherwise.
+     */
+    bool Renumber(void);
+
     //@}
 
     void OnSettingChanged(const CSetting *setting) override;
@@ -369,6 +379,13 @@ namespace PVR
     void ResetChannelNumberCache(void);
 
     /*!
+     * @brief Create an EPG table for each channel.
+     * @brief bForce Create the tables, even if they already have been created before.
+     * @return True if all tables were created successfully, false otherwise.
+     */
+    virtual bool CreateChannelEpgs(bool bForce = false);
+
+    /*!
      * @brief Get all EPG tables.
      * @param results The fileitem list to store the results in.
      * @param bIncludeChannelsWithoutEPG, for channels without EPG data, put an empty EPG tag associated with the channel into results
@@ -450,19 +467,6 @@ namespace PVR
     bool RemoveDeletedChannels(const CPVRChannelGroup &channels);
 
     /*!
-     * @brief Create an EPG table for each channel.
-     * @brief bForce Create the tables, even if they already have been created before.
-     * @return True if all tables were created successfully, false otherwise.
-     */
-    virtual bool CreateChannelEpgs(bool bForce = false);
-
-    /*!
-     * @brief Load the channels from the database.
-     * @return True when loaded successfully, false otherwise.
-     */
-    virtual bool Load(void);
-
-    /*!
      * @brief Clear this channel list.
      */
     virtual void Unload(void);
@@ -472,12 +476,6 @@ namespace PVR
      * @return True when loaded successfully, false otherwise.
      */
     virtual bool LoadFromClients(void);
-
-    /*!
-     * @brief Remove invalid channels and updates the channel numbers.
-     * @return True if something changed, false otherwise.
-     */
-    virtual bool Renumber(void);
 
     /*!
      * @brief Sort the current channel list by client channel number.
