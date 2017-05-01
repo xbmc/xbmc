@@ -67,8 +67,8 @@ public:
   bool operator ==(const CPVRRadioRDSInfoTag& tag) const;
   bool operator !=(const CPVRRadioRDSInfoTag& tag) const;
 
-  virtual void Archive(CArchive& ar);
-  virtual void Serialize(CVariant& value) const;
+  void Archive(CArchive& ar) override;
+  void Serialize(CVariant& value) const override;
 
   void Clear();
   void ResetSongInformation();

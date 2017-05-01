@@ -63,7 +63,7 @@ namespace PVR
     bool operator ==(const CPVRChannel &right) const;
     bool operator !=(const CPVRChannel &right) const;
 
-    virtual void Serialize(CVariant& value) const;
+    void Serialize(CVariant& value) const override;
 
     /*! @name XBMC related channel methods
      */
@@ -337,7 +337,7 @@ namespace PVR
      */
     std::string Path(void) const;
 
-    virtual void ToSortable(SortItem& sortable, Field field) const;
+    void ToSortable(SortItem& sortable, Field field) const override;
 
     /*!
      * @brief Update the path this channel got added to the internal group

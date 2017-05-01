@@ -221,7 +221,7 @@ namespace PVR
      */
     void UpdateRequest(int clientID, unsigned int channelID);
 
-  protected:
+  private:
     /*!
      * @brief Load the EPG settings.
      * @return True if the settings were loaded successfully, false otherwise.
@@ -282,7 +282,6 @@ namespace PVR
     std::list<SUpdateRequest> m_updateRequests; /*!< list of update requests triggered by addon */
     CCriticalSection m_updateRequestsLock;      /*!< protect update requests */
 
-  private:
     bool m_bUpdateNotificationPending; /*!< true while an epg updated notification to observers is pending. */
     CPVRSettings m_settings;
   };

@@ -69,8 +69,6 @@ namespace PVR
     void SetInvalid() override;
     bool CanBeActivated() const override;
 
-    virtual bool OpenChannelGroupSelectionDialog(void);
-
     static std::string GetSelectedItemPath(bool bRadio);
     static void SetSelectedItemPath(bool bRadio, const std::string &path);
 
@@ -118,6 +116,8 @@ namespace PVR
     bool m_bRadio;
 
   private:
+    bool OpenChannelGroupSelectionDialog(void);
+
     /*!
      * @brief Show or update the progress dialog.
      * @param strText The current status.

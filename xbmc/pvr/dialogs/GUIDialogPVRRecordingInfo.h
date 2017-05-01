@@ -37,7 +37,7 @@ namespace PVR
 
     static void ShowFor(const CFileItemPtr& item);
 
-  protected:
+  private:
     bool OnClickButtonOK(CGUIMessage &message);
     bool OnClickButtonPlay(CGUIMessage &message);
 

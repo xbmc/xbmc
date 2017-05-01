@@ -282,7 +282,7 @@ namespace PVR
      */
     bool IsValid(void) const;
 
-  protected:
+  private:
     CPVREpg(void);
 
     /*!

@@ -40,6 +40,7 @@ namespace PVR
   protected:
     void OnInitWindow() override;
 
+  private:
     bool OnClickButtonOK(CGUIMessage &message);
     bool OnClickButtonRecord(CGUIMessage &message);
     bool OnClickButtonPlay(CGUIMessage &message);
