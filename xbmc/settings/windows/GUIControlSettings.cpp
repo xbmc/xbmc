@@ -680,40 +680,52 @@ void CGUIControlButtonSetting::Update(bool updateDisplayOnly /* = false */)
 
   if (controlType == "button")
   {
-    if (m_pSetting->GetType() == SettingTypeString &&
-        !std::static_pointer_cast<const CSettingControlButton>(control)->HideValue())
+    if (!std::static_pointer_cast<const CSettingControlButton>(control)->HideValue())
     {
-      std::string strValue = std::static_pointer_cast<CSettingString>(m_pSetting)->GetValue();
-      if (controlFormat == "addon")
+      switch (m_pSetting->GetType())
       {
-        ADDON::AddonPtr addon;
-        if (ADDON::CAddonMgr::GetInstance().GetAddon(strValue, addon))
-          strText = addon->Name();
-        if (strText.empty())
-          strText = g_localizeStrings.Get(231); // None
-      }
-      else if (controlFormat == "path" || controlFormat == "file" || controlFormat == "image")
+      case SettingTypeString:
       {
-        std::string shortPath;
-        if (CUtil::MakeShortenPath(strValue, shortPath, 30))
-          strText = shortPath;
+        std::string strValue = std::static_pointer_cast<CSettingString>(m_pSetting)->GetValue();
+        if (controlFormat == "addon")
+        {
+          ADDON::AddonPtr addon;
+          if (ADDON::CAddonMgr::GetInstance().GetAddon(strValue, addon))
+            strText = addon->Name();
+          if (strText.empty())
+            strText = g_localizeStrings.Get(231); // None
+        }
+        else if (controlFormat == "path" || controlFormat == "file" || controlFormat == "image")
+        {
+          std::string shortPath;
+          if (CUtil::MakeShortenPath(strValue, shortPath, 30))
+            strText = shortPath;
+        }
+        else if (controlFormat == "infolabel")
+        {
+          strText = strValue;
+          if (strText.empty())
+            strText = g_localizeStrings.Get(231); // None
+        }
+        else
+          strText = strValue;
+
+        break;
       }
-      else if (controlFormat == "date" || controlFormat == "time")
-        strText = strValue;
-      else if (controlFormat == "infolabel")
+
+      case SettingTypeAction:
       {
-        strText = strValue;
-        if (strText.empty())
-          strText = g_localizeStrings.Get(231); // None
+        // CSettingAction. 
+        // Note: This can be removed once all settings use a proper control & format combination.
+        // CSettingAction is strictly speaking not designed to have a label2, it does not even have a value.
+        strText = m_pButton->GetLabel2();
+
+        break;
       }
-    }
-    else if (m_pSetting->GetType() == SettingTypeAction &&
-             !std::static_pointer_cast<const CSettingControlButton>(control)->HideValue())
-    {
-      // CSettingAction. 
-      // Note: This can be removed once all settings use a proper control & format combination.
-      // CSettingAction is strictly speaking not designed to have a label2, it does not even have a value.
-      strText = m_pButton->GetLabel2();
+
+      default:
+        break;
+      }
     }
   }
   else if (controlType == "slider")
