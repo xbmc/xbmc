@@ -32,7 +32,6 @@ namespace PVR
 
   class CPVRChannelGroupInternal : public CPVRChannelGroup
   {
-    friend class CPVRChannelGroups;
     friend class CPVRDatabase;
 
   public:
