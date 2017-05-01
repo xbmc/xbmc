@@ -63,7 +63,6 @@ namespace PVR
                            public ISettingCallback
   {
     friend class CPVRChannelGroupInternal;
-    friend class CPVRChannelGroupsContainer;
     friend class CPVRDatabase;
 
   public:
@@ -323,6 +322,13 @@ namespace PVR
     CFileItemPtr GetByChannelDown(const CPVRChannelPtr &channel) const;
 
     /*!
+     * @brief Get a channel given it's channel ID.
+     * @param iChannelID The channel ID.
+     * @return The channel or NULL if it wasn't found.
+     */
+    CPVRChannelPtr GetByChannelID(int iChannelID) const;
+
+    /*!
      * Get the current members of this group
      * @return The group members
      */
@@ -486,13 +492,6 @@ namespace PVR
      * @brief Sort the current channel list by channel number.
      */
     void SortByChannelNumber(void);
-
-    /*!
-     * @brief Get a channel given it's channel ID.
-     * @param iChannelID The channel ID.
-     * @return The channel or NULL if it wasn't found.
-     */
-    CPVRChannelPtr GetByChannelID(int iChannelID) const;
 
     bool             m_bRadio;                      /*!< true if this container holds radio channels, false if it holds TV channels */
     int              m_iGroupType;                  /*!< The type of this group */
