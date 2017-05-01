@@ -317,7 +317,7 @@ TEST_F(TestSystemInfo, GetDiskSpace)
   DWORD res = GetEnvironmentVariableW(L"SystemDrive", sysDrive, sizeof(sysDrive) / sizeof(wchar_t));
   std::string sysDriveLtr;
   if (res != 0 && res <= sizeof(sysDrive) / sizeof(wchar_t))
-    sysDriveLtr.assign(FromW(sysDrive), 1);
+    sysDriveLtr.assign(FromW(sysDrive), 0, 1);
   else
     sysDriveLtr = "C"; // fallback
 
