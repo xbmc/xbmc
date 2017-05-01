@@ -19,6 +19,7 @@
  *
  */
 
+#include <memory>
 #include <string>
 
 class CSetting;
@@ -41,5 +42,5 @@ public:
    \param settingsManager Reference to the settings manager
    \return A new setting object of the given (custom) setting type or NULL if the setting type is unknown
    */
-  virtual CSetting* CreateSetting(const std::string &settingType, const std::string &settingId, CSettingsManager *settingsManager = NULL) const = 0;
+  virtual std::shared_ptr<CSetting> CreateSetting(const std::string &settingType, const std::string &settingId, CSettingsManager *settingsManager = NULL) const = 0;
 };

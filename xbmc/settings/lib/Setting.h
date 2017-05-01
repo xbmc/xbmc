@@ -20,11 +20,10 @@
  */
 
 #include <map>
+#include <memory>
 #include <set>
 #include <string>
 #include <vector>
-
-#include <memory>
 
 #include "ISetting.h"
 #include "ISettingCallback.h"
@@ -67,20 +66,26 @@ typedef enum {
   SettingOptionsTypeDynamic
 } SettingOptionsType;
 
+class CSetting;
+typedef std::shared_ptr<CSetting> SettingPtr;
+typedef std::shared_ptr<const CSetting> SettingConstPtr;
+typedef std::vector<std::shared_ptr<CSetting>> SettingList;
+
 /*!
  \ingroup settings
  \brief Setting base class containing all the properties which are common to
  all settings independent of the setting type.
  */
 class CSetting : public ISetting,
-                 protected ISettingCallback
+                 protected ISettingCallback,
+                 public std::enable_shared_from_this<CSetting>
 {
 public:
   CSetting(const std::string &id, CSettingsManager *settingsManager = NULL);
   CSetting(const std::string &id, const CSetting &setting);
   virtual ~CSetting();
 
-  virtual CSetting* Clone(const std::string &id) const = 0;
+  virtual std::shared_ptr<CSetting> Clone(const std::string &id) const = 0;
 
   virtual bool Deserialize(const TiXmlNode *node, bool update = false) override;
 
@@ -102,9 +107,9 @@ public:
   void SetParent(const std::string& parentSetting) { m_parentSetting = parentSetting; }
   SettingLevel GetLevel() const { return m_level; }
   void SetLevel(SettingLevel level) { m_level = level; }
-  const ISettingControl* GetControl() const { return m_control; }
-  ISettingControl* GetControl() { return m_control; }
-  void SetControl(ISettingControl* control) { m_control = control; }
+  std::shared_ptr<const ISettingControl> GetControl() const { return m_control; }
+  std::shared_ptr<ISettingControl> GetControl() { return m_control; }
+  void SetControl(std::shared_ptr<ISettingControl> control) { m_control = control; }
   const SettingDependencies& GetDependencies() const { return m_dependencies; }
   void SetDependencies(const SettingDependencies &dependencies) { m_dependencies = dependencies; }
   const std::set<CSettingUpdate>& GetUpdates() const { return m_updates; }
@@ -115,16 +120,22 @@ public:
   virtual bool IsVisible() const override;
 
   // implementation of ISettingCallback
-  virtual void OnSettingAction(const CSetting *setting) override;
+  virtual void OnSettingAction(std::shared_ptr<const CSetting> setting) override;
 
 protected:
   // implementation of ISettingCallback
-  virtual bool OnSettingChanging(const CSetting *setting) override;
-  virtual void OnSettingChanged(const CSetting *setting) override;
-  virtual bool OnSettingUpdate(CSetting* &setting, const char *oldSettingId, const TiXmlNode *oldSettingNode) override;
-  virtual void OnSettingPropertyChanged(const CSetting *setting, const char *propertyName) override;
+  virtual bool OnSettingChanging(std::shared_ptr<const CSetting> setting) override;
+  virtual void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
+  virtual bool OnSettingUpdate(std::shared_ptr<CSetting> setting, const char *oldSettingId, const TiXmlNode *oldSettingNode) override;
+  virtual void OnSettingPropertyChanged(std::shared_ptr<const CSetting> setting, const char *propertyName) override;
 
   void Copy(const CSetting &setting);
+
+  template<class TSetting>
+  std::shared_ptr<TSetting> shared_from_base()
+  {
+    return std::static_pointer_cast<TSetting>(shared_from_this());
+  }
 
   ISettingCallback *m_callback;
   int m_label;
@@ -132,7 +143,7 @@ protected:
   bool m_enabled;
   std::string m_parentSetting;
   SettingLevel m_level;
-  ISettingControl *m_control;
+  std::shared_ptr<ISettingControl> m_control;
   SettingDependencies m_dependencies;
   std::set<CSettingUpdate> m_updates;
   bool m_changed;
@@ -140,9 +151,7 @@ protected:
 };
 
 typedef std::shared_ptr<CSetting> SettingPtr;
-
-typedef std::vector<CSetting *> SettingList;
-typedef std::vector<SettingPtr> SettingPtrList;
+typedef std::vector<SettingPtr> SettingList;
 
 /*!
  \ingroup settings
@@ -152,12 +161,12 @@ typedef std::vector<SettingPtr> SettingPtrList;
 class CSettingList : public CSetting
 {
 public:
-  CSettingList(const std::string &id, CSetting *settingDefinition, CSettingsManager *settingsManager = NULL);
-  CSettingList(const std::string &id, CSetting *settingDefinition, int label, CSettingsManager *settingsManager = NULL);
+  CSettingList(const std::string &id, std::shared_ptr<CSetting> settingDefinition, CSettingsManager *settingsManager = NULL);
+  CSettingList(const std::string &id, std::shared_ptr<CSetting> settingDefinition, int label, CSettingsManager *settingsManager = NULL);
   CSettingList(const std::string &id, const CSettingList &setting);
   virtual ~CSettingList();
 
-  virtual CSetting* Clone(const std::string &id) const override;
+  virtual std::shared_ptr<CSetting> Clone(const std::string &id) const override;
 
   virtual bool Deserialize(const TiXmlNode *node, bool update = false) override;
 
@@ -169,9 +178,9 @@ public:
   virtual void Reset() override;
   
   int GetElementType() const;
-  CSetting* GetDefinition() { return m_definition; }
-  const CSetting* GetDefinition() const { return m_definition; }
-  void SetDefinition(CSetting *definition) { m_definition = definition; }
+  std::shared_ptr<CSetting> GetDefinition() { return m_definition; }
+  std::shared_ptr<const CSetting> GetDefinition() const { return m_definition; }
+  void SetDefinition(std::shared_ptr<CSetting> definition) { m_definition = definition; }
 
   const std::string& GetDelimiter() const { return m_delimiter; }
   void SetDelimiter(const std::string &delimiter) { m_delimiter = delimiter; }
@@ -182,21 +191,21 @@ public:
   
   bool FromString(const std::vector<std::string> &value);
 
-  const SettingPtrList& GetValue() const { return m_values; }
-  bool SetValue(const SettingPtrList &values);
-  const SettingPtrList& GetDefault() const { return m_defaults; }
-  void SetDefault(const SettingPtrList &values);
+  const SettingList& GetValue() const { return m_values; }
+  bool SetValue(const SettingList &values);
+  const SettingList& GetDefault() const { return m_defaults; }
+  void SetDefault(const SettingList &values);
 
 protected:
   void copy(const CSettingList &setting);
-  static void copy(const SettingPtrList &srcValues, SettingPtrList &dstValues);
-  bool fromString(const std::string &strValue, SettingPtrList &values) const;
-  bool fromValues(const std::vector<std::string> &strValues, SettingPtrList &values) const;
-  std::string toString(const SettingPtrList &values) const;
+  static void copy(const SettingList &srcValues, SettingList &dstValues);
+  bool fromString(const std::string &strValue, SettingList &values) const;
+  bool fromValues(const std::vector<std::string> &strValues, SettingList &values) const;
+  std::string toString(const SettingList &values) const;
 
-  SettingPtrList m_values;
-  SettingPtrList m_defaults;
-  CSetting *m_definition;
+  SettingList m_values;
+  SettingList m_defaults;
+  std::shared_ptr<CSetting> m_definition;
   std::string m_delimiter;
   int m_minimumItems;
   int m_maximumItems;
@@ -215,7 +224,7 @@ public:
   CSettingBool(const std::string &id, int label, bool value, CSettingsManager *settingsManager = NULL);
   virtual ~CSettingBool() { }
 
-  virtual CSetting* Clone(const std::string &id) const override;
+  virtual std::shared_ptr<CSetting> Clone(const std::string &id) const override;
 
   virtual bool Deserialize(const TiXmlNode *node, bool update = false) override;
 
@@ -254,7 +263,7 @@ public:
   CSettingInt(const std::string &id, int label, int value, const TranslatableIntegerSettingOptions &options, CSettingsManager *settingsManager = NULL);
   virtual ~CSettingInt() { }
 
-  virtual CSetting* Clone(const std::string &id) const override;
+  virtual std::shared_ptr<CSetting> Clone(const std::string &id) const override;
 
   virtual bool Deserialize(const TiXmlNode *node, bool update = false) override;
 
@@ -327,7 +336,7 @@ public:
   CSettingNumber(const std::string &id, int label, float value, float minimum, float step, float maximum, CSettingsManager *settingsManager = NULL);
   virtual ~CSettingNumber() { }
 
-  virtual CSetting* Clone(const std::string &id) const override;
+  virtual std::shared_ptr<CSetting> Clone(const std::string &id) const override;
 
   virtual bool Deserialize(const TiXmlNode *node, bool update = false) override;
 
@@ -375,7 +384,7 @@ public:
   CSettingString(const std::string &id, int label, const std::string &value, CSettingsManager *settingsManager = NULL);
   virtual ~CSettingString() { }
 
-  virtual CSetting* Clone(const std::string &id) const override;
+  virtual std::shared_ptr<CSetting> Clone(const std::string &id) const override;
 
   virtual bool Deserialize(const TiXmlNode *node, bool update = false) override;
 
@@ -443,7 +452,7 @@ public:
   CSettingAction(const std::string &id, const CSettingAction &setting);
   virtual ~CSettingAction() { }
 
-  virtual CSetting* Clone(const std::string &id) const override;
+  virtual std::shared_ptr<CSetting> Clone(const std::string &id) const override;
 
   virtual bool Deserialize(const TiXmlNode *node, bool update = false) override;
 

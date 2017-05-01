@@ -36,8 +36,8 @@ public:
   bool OnAction(const CAction &action) override;
 
   // ISettingCallback implementation
-  void OnSettingChanged(const CSetting *setting) override;
-  void OnSettingAction(const CSetting *setting) override;
+  void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
+  void OnSettingAction(std::shared_ptr<const CSetting> setting) override;
 
 private:
   CPVRActionListener(const CPVRActionListener&) = delete;

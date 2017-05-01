@@ -19,6 +19,7 @@
  *
  */
 
+#include <memory>
 #include <string>
 #include <utility>
 #include <vector>
@@ -78,5 +79,5 @@ typedef std::pair<std::string, std::string> StringSettingOption;
 typedef std::vector<StringSettingOption> StringSettingOptions;
 
 class CSetting;
-typedef void (*IntegerSettingOptionsFiller)(const CSetting *setting, IntegerSettingOptions &list, int &current, void *data);
-typedef void (*StringSettingOptionsFiller)(const CSetting *setting, StringSettingOptions &list, std::string &current, void *data);
+typedef void (*IntegerSettingOptionsFiller)(std::shared_ptr<const CSetting> setting, IntegerSettingOptions &list, int &current, void *data);
+typedef void (*StringSettingOptionsFiller)(std::shared_ptr<const CSetting> setting, StringSettingOptions &list, std::string &current, void *data);

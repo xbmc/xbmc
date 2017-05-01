@@ -38,8 +38,8 @@ protected:
   virtual void OnWindowLoaded();
 
   // implementations of ISettingCallback
-  virtual void OnSettingChanged(const CSetting *setting);
-  virtual void OnSettingAction(const CSetting *setting);
+  virtual void OnSettingChanged(std::shared_ptr<const CSetting> setting);
+  virtual void OnSettingAction(std::shared_ptr<const CSetting> setting);
 
   // specialization of CGUIDialogSettingsBase
   virtual bool AllowResettingSettings() const { return false; }

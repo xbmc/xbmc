@@ -188,7 +188,7 @@ int CGUIWindowSettingsCategory::GetSettingLevel() const
   return (int)CViewStateSettings::GetInstance().GetSettingLevel();
 }
 
-CSettingSection* CGUIWindowSettingsCategory::GetSection()
+SettingSectionPtr CGUIWindowSettingsCategory::GetSection()
 {
   for (size_t index = 0; index < SettingGroupSize; index++)
   {

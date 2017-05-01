@@ -96,8 +96,8 @@ namespace PERIPHERALS
 
   struct PeripheralDeviceSetting
   {
-    CSetting* m_setting;
-    int       m_order;
+    std::shared_ptr<CSetting> m_setting;
+    int m_order;
   };
 
   struct PeripheralDeviceMapping

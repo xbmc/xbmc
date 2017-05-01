@@ -44,7 +44,7 @@ protected:
 
   // implementation of CGUIDialogSettingsBase
   virtual int GetSettingLevel() const;
-  virtual CSettingSection* GetSection();
+  virtual std::shared_ptr<CSettingSection> GetSection();
   virtual void Save();
 
   // implementation of CGUIDialogSettingsManagerBase

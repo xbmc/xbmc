@@ -67,7 +67,7 @@ public:
   CDateTime LastUpdated() const;
 
 
-  virtual void OnSettingChanged(const CSetting* setting) override;
+  virtual void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
 
   struct RepositoryUpdated { };
 

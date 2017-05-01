@@ -116,20 +116,20 @@ public:
    \param id Setting identifier
    \return Setting object with the given identifier or NULL if the identifier is unknown
    */
-  CSetting* GetSetting(const std::string& id) const;
+  std::shared_ptr<CSetting> GetSetting(const std::string& id) const;
   /*!
    \brief Gets the full list of setting sections.
 
    \return List of setting sections
    */
-  std::vector<CSettingSection*> GetSections() const;
+  std::vector<std::shared_ptr<CSettingSection>> GetSections() const;
   /*!
    \brief Gets the setting section with the given identifier.
 
    \param section Setting section identifier
    \return Setting section with the given identifier or NULL if the identifier is unknown
    */
-  CSettingSection* GetSection(const std::string& section) const;
+  std::shared_ptr<CSettingSection> GetSection(const std::string& section) const;
 
   /*!
    \brief Gets the boolean value of the setting with the given identifier.

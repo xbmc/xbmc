@@ -241,7 +241,7 @@ public:
    */
   int ExecuteBuiltin(const std::string& execute, const std::vector<std::string>& params);
 
-  virtual void OnSettingChanged(const CSetting *setting) override;
+  virtual void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
 
   /*! \brief Registers a handler to be called on keyboard input (e.g a game client).
    *

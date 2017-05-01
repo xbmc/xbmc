@@ -128,7 +128,7 @@ bool CPVRActionListener::OnAction(const CAction &action)
   return false;
 }
 
-void CPVRActionListener::OnSettingChanged(const CSetting *setting)
+void CPVRActionListener::OnSettingChanged(std::shared_ptr<const CSetting> setting)
 {
   if (setting == nullptr)
     return;
@@ -136,7 +136,7 @@ void CPVRActionListener::OnSettingChanged(const CSetting *setting)
   const std::string &settingId = setting->GetId();
   if (settingId == CSettings::SETTING_PVRPARENTAL_ENABLED)
   {
-    if (dynamic_cast<const CSettingBool*>(setting)->GetValue() && CServiceBroker::GetSettings().GetString(CSettings::SETTING_PVRPARENTAL_PIN).empty())
+    if (std::static_pointer_cast<const CSettingBool>(setting)->GetValue() && CServiceBroker::GetSettings().GetString(CSettings::SETTING_PVRPARENTAL_PIN).empty())
     {
       std::string newPassword = "";
       // password set... save it
@@ -144,16 +144,16 @@ void CPVRActionListener::OnSettingChanged(const CSetting *setting)
         CServiceBroker::GetSettings().SetString(CSettings::SETTING_PVRPARENTAL_PIN, newPassword);
       // password not set... disable parental
       else
-        dynamic_cast<CSettingBool*>(const_cast<CSetting*>(setting))->SetValue(false);
+        std::static_pointer_cast<CSettingBool>(std::const_pointer_cast<CSetting>(setting))->SetValue(false);
     }
   }
   else if (settingId == CSettings::SETTING_EPG_DAYSTODISPLAY)
   {
-    CServiceBroker::GetPVRManager().Clients()->SetEPGTimeFrame(static_cast<const CSettingInt*>(setting)->GetValue());
+    CServiceBroker::GetPVRManager().Clients()->SetEPGTimeFrame(std::static_pointer_cast<const CSettingInt>(setting)->GetValue());
   }
 }
 
-void CPVRActionListener::OnSettingAction(const CSetting *setting)
+void CPVRActionListener::OnSettingAction(std::shared_ptr<const CSetting> setting)
 {
   if (setting == nullptr)
     return;

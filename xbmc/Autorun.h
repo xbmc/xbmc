@@ -32,6 +32,7 @@
 
 #ifdef HAS_DVD_DRIVE
 
+#include <memory>
 #include <string>
 #include <utility>
 #include <vector>
@@ -66,7 +67,7 @@ public:
   void HandleAutorun();
   static void ExecuteAutorun(const std::string& path = "", bool bypassSettings = false, bool ignoreplaying = false, bool startFromBeginning = false);
 
-  static void SettingOptionAudioCdActionsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
+  static void SettingOptionAudioCdActionsFiller(std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
 
 protected:
   static bool RunDisc(XFILE::IDirectory* pDir, const std::string& strDrive, int& nAddedToPlaylist, bool bRoot, bool bypassSettings, bool startFromBeginning);

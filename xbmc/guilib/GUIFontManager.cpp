@@ -447,7 +447,7 @@ void GUIFontManager::GetStyle(const TiXmlNode *fontNode, int &iStyle)
   }
 }
 
-void GUIFontManager::SettingOptionsFontsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
+void GUIFontManager::SettingOptionsFontsFiller(SettingConstPtr setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
 {
   CFileItemList items;
   CFileItemList items2;

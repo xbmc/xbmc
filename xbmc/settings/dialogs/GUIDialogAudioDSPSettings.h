@@ -46,8 +46,8 @@ namespace ActiveAE
 
   protected:
     // implementations of ISettingCallback
-    virtual void OnSettingChanged(const CSetting *setting);
-    virtual void OnSettingAction(const CSetting *setting);
+    virtual void OnSettingChanged(std::shared_ptr<const CSetting> setting);
+    virtual void OnSettingAction(std::shared_ptr<const CSetting> setting);
 
     // specialization of CGUIDialogSettingsBase
     virtual bool AllowResettingSettings() const { return false; }
@@ -59,12 +59,12 @@ namespace ActiveAE
 
     bool SupportsAudioFeature(int feature);
 
-    static void AudioModeOptionFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
+    static void AudioModeOptionFiller(std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
 
-    static std::string SettingFormatterDelay(const CSettingControlSlider *control, const CVariant &value, const CVariant &minimum, const CVariant &step, const CVariant &maximum);
-    static std::string SettingFormatterPercentAsDecibel(const CSettingControlSlider *control, const CVariant &value, const CVariant &minimum, const CVariant &step, const CVariant &maximum);
+    static std::string SettingFormatterDelay(std::shared_ptr<const CSettingControlSlider> control, const CVariant &value, const CVariant &minimum, const CVariant &step, const CVariant &maximum);
+    static std::string SettingFormatterPercentAsDecibel(std::shared_ptr<const CSettingControlSlider> control, const CVariant &value, const CVariant &minimum, const CVariant &step, const CVariant &maximum);
 
-    std::string GetSettingsLabel(CSetting *pSetting);
+    std::string GetSettingsLabel(std::shared_ptr<CSetting> pSetting);
 
   private:
     typedef struct
@@ -82,7 +82,7 @@ namespace ActiveAE
 
     void OpenMenu(const std::string &id);
     bool HaveActiveMenuHooks(AE_DSP_MENUHOOK_CAT category);
-    void GetAudioDSPMenus(CSettingGroup *group, AE_DSP_MENUHOOK_CAT category);
+    void GetAudioDSPMenus(std::shared_ptr<CSettingGroup> group, AE_DSP_MENUHOOK_CAT category);
     bool OpenAudioDSPMenu(unsigned int setupEntry);
     int FindCategoryIndex(const std::string &catId);
 

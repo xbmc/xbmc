@@ -300,8 +300,8 @@ namespace PERIPHERALS
     void UnregisterJoystickButtonMapper(KODI::JOYSTICK::IButtonMapper* mapper);
 
     // implementation of ISettingCallback
-    virtual void OnSettingChanged(const CSetting *setting) override;
-    virtual void OnSettingAction(const CSetting *setting) override;
+    virtual void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
+    virtual void OnSettingAction(std::shared_ptr<const CSetting> setting) override;
 
     // implementation of IMessageTarget
     virtual void OnApplicationMessage(KODI::MESSAGING::ThreadMessage* pMsg) override;

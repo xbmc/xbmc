@@ -816,14 +816,14 @@ void CInputManager::SetRemoteControlName(const std::string& name)
 #endif
 }
 
-void CInputManager::OnSettingChanged(const CSetting *setting)
+void CInputManager::OnSettingChanged(std::shared_ptr<const CSetting> setting)
 {
   if (setting == nullptr)
     return;
 
   const std::string &settingId = setting->GetId();
   if (settingId == CSettings::SETTING_INPUT_ENABLEMOUSE)
-    m_Mouse.SetEnabled(dynamic_cast<const CSettingBool*>(setting)->GetValue());
+    m_Mouse.SetEnabled(std::dynamic_pointer_cast<const CSettingBool>(setting)->GetValue());
 }
 
 void CInputManager::RegisterKeyboardHandler(KEYBOARD::IKeyboardHandler* handler)

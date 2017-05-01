@@ -609,8 +609,8 @@ void CSettings::InitializeVisibility()
 {
   // hide some settings if necessary
 #if defined(TARGET_DARWIN)
-  CSettingString* timezonecountry = (CSettingString*)GetSettingsManager()->GetSetting(CSettings::SETTING_LOCALE_TIMEZONECOUNTRY);
-  CSettingString* timezone = (CSettingString*)GetSettingsManager()->GetSetting(CSettings::SETTING_LOCALE_TIMEZONE);
+  std::shared_ptr<CSettingString> timezonecountry = std::static_pointer_cast<CSettingString>(GetSettingsManager()->GetSetting(CSettings::SETTING_LOCALE_TIMEZONECOUNTRY));
+  std::shared_ptr<CSettingString> timezone = std::static_pointer_cast<CSettingString>(GetSettingsManager()->GetSetting(CSettings::SETTING_LOCALE_TIMEZONE));
 
   if (CDarwinUtils::GetIOSVersion() >= 4.3)
   {
@@ -624,8 +624,8 @@ void CSettings::InitializeDefaults()
 {
   // set some default values if necessary
 #if defined(TARGET_POSIX)
-  CSettingString* timezonecountry = (CSettingString*)GetSettingsManager()->GetSetting(CSettings::SETTING_LOCALE_TIMEZONECOUNTRY);
-  CSettingString* timezone = (CSettingString*)GetSettingsManager()->GetSetting(CSettings::SETTING_LOCALE_TIMEZONE);
+  std::shared_ptr<CSettingString> timezonecountry = std::static_pointer_cast<CSettingString>(GetSettingsManager()->GetSetting(CSettings::SETTING_LOCALE_TIMEZONECOUNTRY));
+  std::shared_ptr<CSettingString> timezone = std::static_pointer_cast<CSettingString>(GetSettingsManager()->GetSetting(CSettings::SETTING_LOCALE_TIMEZONE));
 
   if (timezonecountry->IsVisible())
     timezonecountry->SetDefault(g_timezone.GetCountryByTimezone(g_timezone.GetOSConfiguredTimezone()));
@@ -635,7 +635,7 @@ void CSettings::InitializeDefaults()
 
 #if defined(TARGET_WINDOWS)
   #if defined(HAS_DX)
-  ((CSettingString*)GetSettingsManager()->GetSetting(CSettings::SETTING_MUSICPLAYER_VISUALISATION))->SetDefault("visualization.milkdrop");
+  std::static_pointer_cast<CSettingString>(GetSettingsManager()->GetSetting(CSettings::SETTING_MUSICPLAYER_VISUALISATION))->SetDefault("visualization.milkdrop");
   #endif
 
   #if !defined(HAS_GL)
@@ -644,17 +644,17 @@ void CSettings::InitializeDefaults()
   // when we do this (eg non-Aero on ATI in particular) and on others (AppleTV) we can't get XBMC to
   // the front
   if (g_sysinfo.IsAeroDisabled())
-    ((CSettingBool*)GetSettingsManager()->GetSetting(CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN))->SetDefault(false);
+    std::static_pointer_cast<CSettingBool>(GetSettingsManager()->GetSetting(CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN))->SetDefault(false);
   #endif
 #endif
 
 #if !defined(TARGET_WINDOWS)
-  ((CSettingString*)GetSettingsManager()->GetSetting(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE))->SetDefault(CServiceBroker::GetActiveAE().GetDefaultDevice(false));
-  ((CSettingString*)GetSettingsManager()->GetSetting(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHDEVICE))->SetDefault(CServiceBroker::GetActiveAE().GetDefaultDevice(true));
+  std::static_pointer_cast<CSettingString>(GetSettingsManager()->GetSetting(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE))->SetDefault(CServiceBroker::GetActiveAE().GetDefaultDevice(false));
+  std::static_pointer_cast<CSettingString>(GetSettingsManager()->GetSetting(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHDEVICE))->SetDefault(CServiceBroker::GetActiveAE().GetDefaultDevice(true));
 #endif
 
   if (g_application.IsStandAlone())
-    ((CSettingInt*)GetSettingsManager()->GetSetting(CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNSTATE))->SetDefault(POWERSTATE_SHUTDOWN);
+    std::static_pointer_cast<CSettingInt>(GetSettingsManager()->GetSetting(CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNSTATE))->SetDefault(POWERSTATE_SHUTDOWN);
 
   g_powerManager.SetDefaults();
 }

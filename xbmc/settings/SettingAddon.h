@@ -30,7 +30,7 @@ public:
   CSettingAddon(const std::string &id, const CSettingAddon &setting);
   virtual ~CSettingAddon() { }
 
-  virtual CSetting* Clone(const std::string &id) const override;
+  virtual SettingPtr Clone(const std::string &id) const override;
 
   virtual bool Deserialize(const TiXmlNode *node, bool update = false) override;
 

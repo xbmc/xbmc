@@ -115,7 +115,7 @@ bool CGUIDialogLockSettings::ShowAndGetUserAndPassword(std::string &user, std::s
   return true;
 }
 
-void CGUIDialogLockSettings::OnSettingChanged(const CSetting *setting)
+void CGUIDialogLockSettings::OnSettingChanged(std::shared_ptr<const CSetting> setting)
 {
   if (setting == NULL)
     return;
@@ -124,30 +124,30 @@ void CGUIDialogLockSettings::OnSettingChanged(const CSetting *setting)
 
   const std::string &settingId = setting->GetId();
   if (settingId == SETTING_USERNAME)
-    m_user = static_cast<const CSettingString*>(setting)->GetValue();
+    m_user = std::static_pointer_cast<const CSettingString>(setting)->GetValue();
   else if (settingId == SETTING_PASSWORD)
-    m_locks.code = static_cast<const CSettingString*>(setting)->GetValue();
+    m_locks.code = std::static_pointer_cast<const CSettingString>(setting)->GetValue();
   else if (settingId == SETTING_PASSWORD_REMEMBER)
-    *m_saveUserDetails = static_cast<const CSettingBool*>(setting)->GetValue();
+    *m_saveUserDetails = std::static_pointer_cast<const CSettingBool>(setting)->GetValue();
   else if (settingId == SETTING_LOCK_MUSIC)
-    m_locks.music = static_cast<const CSettingBool*>(setting)->GetValue();
+    m_locks.music = std::static_pointer_cast<const CSettingBool>(setting)->GetValue();
   else if (settingId == SETTING_LOCK_VIDEOS)
-    m_locks.video = static_cast<const CSettingBool*>(setting)->GetValue();
+    m_locks.video = std::static_pointer_cast<const CSettingBool>(setting)->GetValue();
   else if (settingId == SETTING_LOCK_PICTURES)
-    m_locks.pictures = static_cast<const CSettingBool*>(setting)->GetValue();
+    m_locks.pictures = std::static_pointer_cast<const CSettingBool>(setting)->GetValue();
   else if (settingId == SETTING_LOCK_PROGRAMS)
-    m_locks.programs = static_cast<const CSettingBool*>(setting)->GetValue();
+    m_locks.programs = std::static_pointer_cast<const CSettingBool>(setting)->GetValue();
   else if (settingId == SETTING_LOCK_FILEMANAGER)
-    m_locks.files = static_cast<const CSettingBool*>(setting)->GetValue();
+    m_locks.files = std::static_pointer_cast<const CSettingBool>(setting)->GetValue();
   else if (settingId == SETTING_LOCK_SETTINGS)
-    m_locks.settings = static_cast<LOCK_LEVEL::SETTINGS_LOCK>(static_cast<const CSettingInt*>(setting)->GetValue());
+    m_locks.settings = static_cast<LOCK_LEVEL::SETTINGS_LOCK>(std::static_pointer_cast<const CSettingInt>(setting)->GetValue());
   else if (settingId == SETTING_LOCK_ADDONMANAGER)
-    m_locks.addonManager = static_cast<const CSettingBool*>(setting)->GetValue();
+    m_locks.addonManager = std::static_pointer_cast<const CSettingBool>(setting)->GetValue();
 
   m_changed = true;
 }
 
-void CGUIDialogLockSettings::OnSettingAction(const CSetting *setting)
+void CGUIDialogLockSettings::OnSettingAction(std::shared_ptr<const CSetting> setting)
 {
   if (setting == NULL)
     return;
@@ -238,14 +238,14 @@ void CGUIDialogLockSettings::InitializeSettings()
 {
   CGUIDialogSettingsManualBase::InitializeSettings();
 
-  CSettingCategory *category = AddCategory("locksettings", -1);
+  const std::shared_ptr<CSettingCategory> category = AddCategory("locksettings", -1);
   if (category == NULL)
   {
     CLog::Log(LOGERROR, "CGUIDialogLockSettings: unable to setup settings");
     return;
   }
 
-  CSettingGroup *group = AddGroup(category);
+  const std::shared_ptr<CSettingGroup> group = AddGroup(category);
   if (group == NULL)
   {
     CLog::Log(LOGERROR, "CGUIDialogLockSettings: unable to setup settings");
@@ -266,7 +266,7 @@ void CGUIDialogLockSettings::InitializeSettings()
 
   if (m_details)
   {
-    CSettingGroup *groupDetails = AddGroup(category);
+    const std::shared_ptr<CSettingGroup> groupDetails = AddGroup(category);
     if (groupDetails == NULL)
     {
       CLog::Log(LOGERROR, "CGUIDialogLockSettings: unable to setup settings");

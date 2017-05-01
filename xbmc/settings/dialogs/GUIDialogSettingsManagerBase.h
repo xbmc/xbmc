@@ -34,12 +34,12 @@ protected:
   virtual CSettingsManager* GetSettingsManager() const = 0;
 
   // implementation of CGUIDialogSettingsBase
-  virtual CSetting* GetSetting(const std::string &settingId) override;
+  virtual std::shared_ptr<CSetting> GetSetting(const std::string &settingId) override;
   virtual void OnOkay() override;
 
   virtual std::set<std::string> CreateSettings() override;
   virtual void FreeSettingsControls() override;
 
   // implementation of ISettingControlCreator
-  virtual ISettingControl* CreateControl(const std::string &controlType) const override;
+  virtual std::shared_ptr<ISettingControl> CreateControl(const std::string &controlType) const override;
 };

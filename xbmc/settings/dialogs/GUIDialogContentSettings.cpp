@@ -164,7 +164,7 @@ void CGUIDialogContentSettings::OnInitWindow()
   CGUIDialogSettingsManualBase::OnInitWindow();
 }
 
-void CGUIDialogContentSettings::OnSettingChanged(const CSetting *setting)
+void CGUIDialogContentSettings::OnSettingChanged(std::shared_ptr<const CSetting> setting)
 {
   if (setting == NULL)
     return;
@@ -173,21 +173,21 @@ void CGUIDialogContentSettings::OnSettingChanged(const CSetting *setting)
 
   const std::string &settingId = setting->GetId();
   if (settingId == SETTING_CONTAINS_SINGLE_ITEM)
-    m_containsSingleItem = static_cast<const CSettingBool*>(setting)->GetValue();
+    m_containsSingleItem = std::static_pointer_cast<const CSettingBool>(setting)->GetValue();
   else if (settingId == SETTING_NO_UPDATING)
-    m_noUpdating = static_cast<const CSettingBool*>(setting)->GetValue();
+    m_noUpdating = std::static_pointer_cast<const CSettingBool>(setting)->GetValue();
   else if (settingId == SETTING_USE_DIRECTORY_NAMES)
-    m_useDirectoryNames = static_cast<const CSettingBool*>(setting)->GetValue();
+    m_useDirectoryNames = std::static_pointer_cast<const CSettingBool>(setting)->GetValue();
   else if (settingId == SETTING_SCAN_RECURSIVE)
   {
-    m_scanRecursive = static_cast<const CSettingBool*>(setting)->GetValue();
+    m_scanRecursive = std::static_pointer_cast<const CSettingBool>(setting)->GetValue();
     GetSettingsManager()->SetBool(SETTING_CONTAINS_SINGLE_ITEM, false);
   }
   else if (settingId == SETTING_EXCLUDE)
-    m_exclude = static_cast<const CSettingBool*>(setting)->GetValue();
+    m_exclude = std::static_pointer_cast<const CSettingBool>(setting)->GetValue();
 }
 
-void CGUIDialogContentSettings::OnSettingAction(const CSetting *setting)
+void CGUIDialogContentSettings::OnSettingAction(std::shared_ptr<const CSetting> setting)
 {
   if (setting == NULL)
     return;
@@ -320,14 +320,14 @@ void CGUIDialogContentSettings::InitializeSettings()
   else if (m_scraper != NULL && !CAddonMgr::GetInstance().IsAddonDisabled(m_scraper->ID()))
     m_showScanSettings = true;
 
-  CSettingCategory *category = AddCategory("contentsettings", -1);
+  std::shared_ptr<CSettingCategory> category = AddCategory("contentsettings", -1);
   if (category == NULL)
   {
     CLog::Log(LOGERROR, "CGUIDialogContentSettings: unable to setup settings");
     return;
   }
 
-  CSettingGroup *group = AddGroup(category);
+  std::shared_ptr<CSettingGroup> group = AddGroup(category);
   if (group == NULL)
   {
     CLog::Log(LOGERROR, "CGUIDialogContentSettings: unable to setup settings");
@@ -336,11 +336,11 @@ void CGUIDialogContentSettings::InitializeSettings()
 
   AddButton(group, SETTING_CONTENT_TYPE, 20344, 0);
   AddButton(group, SETTING_SCRAPER_LIST, 38025, 0);
-  CSettingAction *subsetting = AddButton(group, SETTING_SCRAPER_SETTINGS, 10004, 0);
+  std::shared_ptr<CSettingAction> subsetting = AddButton(group, SETTING_SCRAPER_SETTINGS, 10004, 0);
   if (subsetting != NULL)
     subsetting->SetParent(SETTING_SCRAPER_LIST);
 
-  CSettingGroup *groupDetails = AddGroup(category, 20322);
+  std::shared_ptr<CSettingGroup> groupDetails = AddGroup(category, 20322);
   if (groupDetails == NULL)
   {
     CLog::Log(LOGERROR, "CGUIDialogContentSettings: unable to setup scanning settings");
@@ -359,8 +359,8 @@ void CGUIDialogContentSettings::InitializeSettings()
     case CONTENT_MUSICVIDEOS:
     {
       AddToggle(groupDetails, SETTING_USE_DIRECTORY_NAMES, m_content == CONTENT_MOVIES ? 20329 : 20330, 0, m_useDirectoryNames, false, m_showScanSettings);
-      CSettingBool *settingScanRecursive = AddToggle(groupDetails, SETTING_SCAN_RECURSIVE, 20346, 0, m_scanRecursive, false, m_showScanSettings);
-      CSettingBool *settingContainsSingleItem = AddToggle(groupDetails, SETTING_CONTAINS_SINGLE_ITEM, 20383, 0, m_containsSingleItem, false, m_showScanSettings);
+      std::shared_ptr<CSettingBool> settingScanRecursive = AddToggle(groupDetails, SETTING_SCAN_RECURSIVE, 20346, 0, m_scanRecursive, false, m_showScanSettings);
+      std::shared_ptr<CSettingBool> settingContainsSingleItem = AddToggle(groupDetails, SETTING_CONTAINS_SINGLE_ITEM, 20383, 0, m_containsSingleItem, false, m_showScanSettings);
       AddToggle(groupDetails, SETTING_NO_UPDATING, 20432, 0, m_noUpdating, false, m_showScanSettings);
       
       // define an enable dependency with (m_useDirectoryNames && !m_containsSingleItem) || !m_useDirectoryNames

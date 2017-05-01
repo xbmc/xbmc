@@ -38,7 +38,7 @@ public:
 
 protected:
   // implementations of ISettingCallback
-  virtual void OnSettingChanged(const CSetting *setting);
+  virtual void OnSettingChanged(std::shared_ptr<const CSetting> setting);
 
   // specialization of CGUIDialogSettingsBase
   virtual bool AllowResettingSettings() const { return false; }
@@ -51,6 +51,6 @@ protected:
 
   CFileItem *m_item;
   bool m_initialising;
-  std::map<std::string, CSetting*> m_settingsMap;
+  std::map<std::string, std::shared_ptr<CSetting>> m_settingsMap;
 };
 }

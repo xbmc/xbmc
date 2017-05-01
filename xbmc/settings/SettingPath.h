@@ -31,7 +31,7 @@ public:
   CSettingPath(const std::string &id, const CSettingPath &setting);
   virtual ~CSettingPath() { }
 
-  virtual CSetting* Clone(const std::string &id) const override;
+  virtual SettingPtr Clone(const std::string &id) const override;
 
   virtual bool Deserialize(const TiXmlNode *node, bool update = false) override;
   virtual bool SetValue(const std::string &value) override;

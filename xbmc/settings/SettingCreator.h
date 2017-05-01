@@ -28,5 +28,5 @@ public:
   virtual ~CSettingCreator() { }
 
   // implementation of ISettingCreator
-  virtual CSetting* CreateSetting(const std::string &settingType, const std::string &settingId, CSettingsManager *settingsManager = NULL) const override;
+  virtual std::shared_ptr<CSetting> CreateSetting(const std::string &settingType, const std::string &settingId, CSettingsManager *settingsManager = NULL) const override;
 };

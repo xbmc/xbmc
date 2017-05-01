@@ -66,7 +66,7 @@ bool CPeripheralImon::InitialiseFeature(const PeripheralFeature feature)
   return CPeripheralHID::InitialiseFeature(feature);
 }
 
-void CPeripheralImon::AddSetting(const std::string &strKey, const CSetting *setting, int order)
+void CPeripheralImon::AddSetting(const std::string &strKey, std::shared_ptr<const CSetting> setting, int order)
 {
 #if !defined(TARGET_WINDOWS)
   if (strKey.compare("disable_winjoystick")!=0)

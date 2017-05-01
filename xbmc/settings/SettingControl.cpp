@@ -31,24 +31,24 @@
 #define SHOW_ADDONS_INSTALLED         "installed"
 #define SHOW_ADDONS_INSTALLABLE       "installable"
 
-ISettingControl* CSettingControlCreator::CreateControl(const std::string &controlType) const
+std::shared_ptr<ISettingControl> CSettingControlCreator::CreateControl(const std::string &controlType) const
 {
   if (StringUtils::EqualsNoCase(controlType, "toggle"))
-    return new CSettingControlCheckmark();
+    return std::make_shared<CSettingControlCheckmark>();
   else if (StringUtils::EqualsNoCase(controlType, "spinner"))
-    return new CSettingControlSpinner();
+    return std::make_shared<CSettingControlSpinner>();
   else if (StringUtils::EqualsNoCase(controlType, "edit"))
-    return new CSettingControlEdit();
+    return std::make_shared<CSettingControlEdit>();
   else if (StringUtils::EqualsNoCase(controlType, "button"))
-    return new CSettingControlButton();
+    return std::make_shared<CSettingControlButton>();
   else if (StringUtils::EqualsNoCase(controlType, "list"))
-    return new CSettingControlList();
+    return std::make_shared<CSettingControlList>();
   else if (StringUtils::EqualsNoCase(controlType, "slider"))
-    return new CSettingControlSlider();
+    return std::make_shared<CSettingControlSlider>();
   else if (StringUtils::EqualsNoCase(controlType, "range"))
-    return new CSettingControlRange();
+    return std::make_shared<CSettingControlRange>();
   else if (StringUtils::EqualsNoCase(controlType, "title"))
-    return new CSettingControlTitle();
+    return std::make_shared<CSettingControlTitle>();
 
   return NULL;
 }
@@ -129,7 +129,8 @@ bool CSettingControlEdit::SetFormat(const std::string &format)
       !StringUtils::EqualsNoCase(format, "integer") &&
       !StringUtils::EqualsNoCase(format, "number") &&
       !StringUtils::EqualsNoCase(format, "ip") &&
-      !StringUtils::EqualsNoCase(format, "md5"))
+      !StringUtils::EqualsNoCase(format, "md5") &&
+      !StringUtils::EqualsNoCase(format, "urlencoded"))
     return false;
 
   m_format = format;

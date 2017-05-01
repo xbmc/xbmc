@@ -31,7 +31,7 @@ CGUIDialogSettingsManagerBase::CGUIDialogSettingsManagerBase(int windowId, const
 CGUIDialogSettingsManagerBase::~CGUIDialogSettingsManagerBase()
 { }
 
-CSetting* CGUIDialogSettingsManagerBase::GetSetting(const std::string &settingId)
+std::shared_ptr<CSetting> CGUIDialogSettingsManagerBase::GetSetting(const std::string &settingId)
 {
   assert(GetSettingsManager() != nullptr);
 
@@ -65,7 +65,7 @@ void CGUIDialogSettingsManagerBase::FreeSettingsControls()
     GetSettingsManager()->UnregisterCallback(this);
 }
 
-ISettingControl* CGUIDialogSettingsManagerBase::CreateControl(const std::string &controlType) const
+std::shared_ptr<ISettingControl> CGUIDialogSettingsManagerBase::CreateControl(const std::string &controlType) const
 {
   assert(GetSettingsManager() != nullptr);
 

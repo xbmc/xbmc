@@ -155,7 +155,7 @@ void CWeatherJob::LoadLocalizedToken()
 {
   // We load the english strings in to get our tokens
   std::string language = LANGUAGE_DEFAULT;
-  CSettingString* languageSetting = static_cast<CSettingString*>(CServiceBroker::GetSettings().GetSetting(CSettings::SETTING_LOCALE_LANGUAGE));
+  std::shared_ptr<CSettingString> languageSetting = std::static_pointer_cast<CSettingString>(CServiceBroker::GetSettings().GetSetting(CSettings::SETTING_LOCALE_LANGUAGE));
   if (languageSetting != NULL)
     language = languageSetting->GetDefault();
 
@@ -398,7 +398,7 @@ void CWeather::OnJobComplete(unsigned int jobID, bool success, CJob *job)
   CInfoLoader::OnJobComplete(jobID, success, job);
 }
 
-void CWeather::OnSettingChanged(const CSetting *setting)
+void CWeather::OnSettingChanged(std::shared_ptr<const CSetting> setting)
 {
   if (setting == NULL)
     return;
@@ -413,7 +413,7 @@ void CWeather::OnSettingChanged(const CSetting *setting)
   }
 }
 
-void CWeather::OnSettingAction(const CSetting *setting)
+void CWeather::OnSettingAction(std::shared_ptr<const CSetting> setting)
 {
   if (setting == NULL)
     return;

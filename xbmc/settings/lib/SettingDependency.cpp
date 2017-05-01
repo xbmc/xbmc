@@ -124,7 +124,7 @@ bool CSettingDependencyCondition::Check() const
       if (m_setting.empty())
         return false;
 
-      const CSetting *setting = m_settingsManager->GetSetting(m_setting);
+      SettingConstPtr setting = m_settingsManager->GetSetting(m_setting);
       if (setting == NULL)
       {
         CLog::Log(LOGWARNING, "CSettingDependencyCondition: unable to check condition on unknown setting \"%s\"", m_setting.c_str());
@@ -171,7 +171,7 @@ bool CSettingDependencyCondition::Check() const
 
     case SettingDependencyTargetProperty:
     {
-      const CSetting *setting = NULL;
+      SettingConstPtr setting;
       if (!m_setting.empty())
       {
         setting = m_settingsManager->GetSetting(m_setting);

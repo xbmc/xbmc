@@ -168,7 +168,7 @@ void CPowerManager::SetDefaults()
     break;
   }
 
-  ((CSettingInt*)CServiceBroker::GetSettings().GetSetting(CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNSTATE))->SetDefault(defaultShutdown);
+  std::static_pointer_cast<CSettingInt>(CServiceBroker::GetSettings().GetSetting(CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNSTATE))->SetDefault(defaultShutdown);
 }
 
 bool CPowerManager::Powerdown()
@@ -313,7 +313,7 @@ void CPowerManager::OnLowBattery()
   CAnnouncementManager::GetInstance().Announce(System, "xbmc", "OnLowBattery");
 }
 
-void CPowerManager::SettingOptionsShutdownStatesFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
+void CPowerManager::SettingOptionsShutdownStatesFiller(SettingConstPtr setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
 {
   if (g_powerManager.CanPowerdown())
     list.push_back(make_pair(g_localizeStrings.Get(13005), POWERSTATE_SHUTDOWN));

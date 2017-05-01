@@ -33,9 +33,9 @@ CSettingDate::CSettingDate(const std::string &id, const CSettingDate &setting)
   : CSettingString(id, setting)
 { }
 
-CSetting* CSettingDate::Clone(const std::string &id) const
+SettingPtr CSettingDate::Clone(const std::string &id) const
 {
-  return new CSettingDate(id, *this);
+  return std::make_shared<CSettingDate>(id, *this);
 }
 
 bool CSettingDate::CheckValidity(const std::string &value) const
@@ -60,9 +60,9 @@ CSettingTime::CSettingTime(const std::string &id, const CSettingTime &setting)
   : CSettingString(id, setting)
 { }
 
-CSetting* CSettingTime::Clone(const std::string &id) const
+SettingPtr CSettingTime::Clone(const std::string &id) const
 {
-  return new CSettingTime(id, *this);
+  return std::make_shared<CSettingTime>(id, *this);
 }
 
 bool CSettingTime::CheckValidity(const std::string &value) const

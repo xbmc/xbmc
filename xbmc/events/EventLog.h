@@ -68,7 +68,7 @@ protected:
   CEventLog const& operator=(CEventLog const&);
 
   // implementation of ISettingCallback
-  virtual void OnSettingAction(const CSetting *setting) override;
+  virtual void OnSettingAction(std::shared_ptr<const CSetting> setting) override;
 
 private:
   void SendMessage(const EventPtr& event, int message);

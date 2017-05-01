@@ -92,14 +92,14 @@ protected:
   virtual void OnTimeout() override;
 
   // implementations of ISettingCallback
-  virtual void OnSettingChanged(const CSetting *setting) override;
-  virtual void OnSettingPropertyChanged(const CSetting *setting, const char *propertyName) override;
+  virtual void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
+  virtual void OnSettingPropertyChanged(std::shared_ptr<const CSetting> setting, const char *propertyName) override;
 
   // new virtual methods
   virtual bool AllowResettingSettings() const { return true; }
   virtual int GetSettingLevel() const { return 0; }
-  virtual CSettingSection* GetSection() = 0;
-  virtual CSetting* GetSetting(const std::string &settingId) = 0;
+  virtual std::shared_ptr<CSettingSection> GetSection() = 0;
+  virtual std::shared_ptr<CSetting> GetSetting(const std::string &settingId) = 0;
   virtual unsigned int GetDelayMs() const { return 1500; }
   virtual std::string GetLocalizedString(uint32_t labelId) const;
   
@@ -120,9 +120,9 @@ protected:
     \param pSetting Base settings class which need the name
     \return Name used on settings dialog
    */
-  virtual std::string GetSettingsLabel(CSetting *pSetting);
+  virtual std::string GetSettingsLabel(std::shared_ptr<CSetting> pSetting);
 
-  virtual CGUIControl* AddSetting(CSetting *pSetting, float width, int &iControlID);
+  virtual CGUIControl* AddSetting(std::shared_ptr<CSetting> pSetting, float width, int &iControlID);
   virtual CGUIControl* AddSettingControl(CGUIControl *pControl, BaseSettingControlPtr pSettingControl, float width, int &iControlID);
   
   virtual void SetupControls(bool createSettings = true);
@@ -158,13 +158,13 @@ protected:
   CGUIControl* AddSeparator(float width, int &iControlID);
   CGUIControl* AddLabel(float width, int &iControlID, int label);
 
-  std::vector<CSettingCategory*> m_categories;
+  std::vector<std::shared_ptr<CSettingCategory>> m_categories;
   std::vector<BaseSettingControlPtr> m_settingControls;
   
   int m_iSetting;
   int m_iCategory;
-  CSettingAction *m_resetSetting;
-  CSettingCategory *m_dummyCategory;
+  std::shared_ptr<CSettingAction> m_resetSetting;
+  std::shared_ptr<CSettingCategory> m_dummyCategory;
   
   CGUISpinControlEx *m_pOriginalSpin;
   CGUISettingsSliderControl *m_pOriginalSlider;

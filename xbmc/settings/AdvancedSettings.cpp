@@ -92,18 +92,18 @@ void CAdvancedSettings::OnSettingsUnloaded()
   m_initialized = false;
 }
 
-void CAdvancedSettings::OnSettingChanged(const CSetting *setting)
+void CAdvancedSettings::OnSettingChanged(std::shared_ptr<const CSetting> setting)
 {
   if (setting == NULL)
     return;
 
   const std::string &settingId = setting->GetId();
   if (settingId == CSettings::SETTING_DEBUG_SHOWLOGINFO)
-    SetDebugMode(((CSettingBool*)setting)->GetValue());
+    SetDebugMode(std::static_pointer_cast<const CSettingBool>(setting)->GetValue());
   else if (settingId == CSettings::SETTING_DEBUG_EXTRALOGGING)
-    m_extraLogEnabled = static_cast<const CSettingBool*>(setting)->GetValue();
+    m_extraLogEnabled = std::static_pointer_cast<const CSettingBool>(setting)->GetValue();
   else if (settingId == CSettings::SETTING_DEBUG_SETEXTRALOGLEVEL)
-    setExtraLogLevel(CSettingUtils::GetList(static_cast<const CSettingList*>(setting)));
+    setExtraLogLevel(CSettingUtils::GetList(std::static_pointer_cast<const CSettingList>(setting)));
 }
 
 void CAdvancedSettings::Initialize()
@@ -841,7 +841,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     const char* hide = pElement->Attribute("hide");
     if (hide == NULL || strnicmp("false", hide, 4) != 0)
     {
-      CSetting *setting = CServiceBroker::GetSettings().GetSetting(CSettings::SETTING_DEBUG_SHOWLOGINFO);
+      SettingPtr setting = CServiceBroker::GetSettings().GetSetting(CSettings::SETTING_DEBUG_SHOWLOGINFO);
       if (setting != NULL)
         setting->SetVisible(false);
     }
@@ -1389,7 +1389,7 @@ bool CAdvancedSettings::CanLogComponent(int component) const
   return ((m_extraLogLevels & component) == component);
 }
 
-void CAdvancedSettings::SettingOptionsLoggingComponentsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
+void CAdvancedSettings::SettingOptionsLoggingComponentsFiller(SettingConstPtr setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
 {
   list.push_back(std::make_pair(g_localizeStrings.Get(669), LOGSAMBA));
   list.push_back(std::make_pair(g_localizeStrings.Get(670), LOGCURL));

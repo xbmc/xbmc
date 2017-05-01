@@ -589,7 +589,7 @@ void CBaseRenderer::MarkDirty()
   g_windowManager.MarkDirty(m_destRect);
 }
 
-void CBaseRenderer::SettingOptionsRenderMethodsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
+void CBaseRenderer::SettingOptionsRenderMethodsFiller(std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
 {
   list.push_back(make_pair(g_localizeStrings.Get(13416), RENDER_METHOD_AUTO));
 

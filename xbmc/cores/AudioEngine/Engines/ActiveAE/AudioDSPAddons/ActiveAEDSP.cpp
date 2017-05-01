@@ -238,7 +238,7 @@ void CActiveAEDSP::ResetDatabase(void)
 
 /*! @name Settings and action callback methods (OnAction currently unused */
 //@{
-void CActiveAEDSP::OnSettingAction(const CSetting *setting)
+void CActiveAEDSP::OnSettingAction(std::shared_ptr<const CSetting> setting)
 {
   if (setting == NULL)
     return;

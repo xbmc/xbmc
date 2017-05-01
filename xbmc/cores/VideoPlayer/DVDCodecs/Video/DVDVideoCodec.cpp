@@ -24,7 +24,7 @@
 #include "settings/lib/Setting.h"
 #include "windowing/WindowingFactory.h"
 
-bool CDVDVideoCodec::IsSettingVisible(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
+bool CDVDVideoCodec::IsSettingVisible(const std::string &condition, const std::string &value, SettingConstPtr setting, void *data)
 {
   if (setting == NULL || value.empty())
     return false;

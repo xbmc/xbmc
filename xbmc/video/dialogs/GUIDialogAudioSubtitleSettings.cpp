@@ -123,7 +123,7 @@ std::string CGUIDialogAudioSubtitleSettings::FormatPercentAsDecibel(float value)
   return StringUtils::Format(g_localizeStrings.Get(14054).c_str(), CAEUtil::PercentToGain(value));
 }
 
-void CGUIDialogAudioSubtitleSettings::OnSettingChanged(const CSetting *setting)
+void CGUIDialogAudioSubtitleSettings::OnSettingChanged(std::shared_ptr<const CSetting> setting)
 {
   if (setting == NULL)
     return;
@@ -134,22 +134,22 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(const CSetting *setting)
   const std::string &settingId = setting->GetId();
   if (settingId == SETTING_AUDIO_VOLUME)
   {
-    m_volume = static_cast<float>(static_cast<const CSettingNumber*>(setting)->GetValue());
+    m_volume = static_cast<float>(std::static_pointer_cast<const CSettingNumber>(setting)->GetValue());
     g_application.SetVolume(m_volume, false); // false - value is not in percent
   }
   else if (settingId == SETTING_AUDIO_VOLUME_AMPLIFICATION)
   {
-    videoSettings.m_VolumeAmplification = static_cast<float>(static_cast<const CSettingNumber*>(setting)->GetValue());
+    videoSettings.m_VolumeAmplification = static_cast<float>(std::static_pointer_cast<const CSettingNumber>(setting)->GetValue());
     g_application.m_pPlayer->SetDynamicRangeCompression((long)(videoSettings.m_VolumeAmplification * 100));
   }
   else if (settingId == SETTING_AUDIO_DELAY)
   {
-    videoSettings.m_AudioDelay = static_cast<float>(static_cast<const CSettingNumber*>(setting)->GetValue());
+    videoSettings.m_AudioDelay = static_cast<float>(std::static_pointer_cast<const CSettingNumber>(setting)->GetValue());
     g_application.m_pPlayer->SetAVDelay(videoSettings.m_AudioDelay);
   }
   else if (settingId == SETTING_AUDIO_STREAM)
   {
-    m_audioStream = static_cast<const CSettingInt*>(setting)->GetValue();
+    m_audioStream = std::static_pointer_cast<const CSettingInt>(setting)->GetValue();
     // only change the audio stream if a different one has been asked for
     if (g_application.m_pPlayer->GetAudioStream() != m_audioStream)
     {
@@ -159,27 +159,27 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(const CSetting *setting)
   }
   else if (settingId == SETTING_AUDIO_OUTPUT_TO_ALL_SPEAKERS)
   {
-    videoSettings.m_OutputToAllSpeakers = static_cast<const CSettingBool*>(setting)->GetValue();
+    videoSettings.m_OutputToAllSpeakers = std::static_pointer_cast<const CSettingBool>(setting)->GetValue();
     g_application.Restart();
   }
   else if (settingId == SETTING_AUDIO_PASSTHROUGH)
   {
-    m_passthrough = static_cast<const CSettingBool*>(setting)->GetValue();
+    m_passthrough = std::static_pointer_cast<const CSettingBool>(setting)->GetValue();
     CServiceBroker::GetSettings().SetBool(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH, m_passthrough);
   }
   else if (settingId == SETTING_SUBTITLE_ENABLE)
   {
-    m_subtitleVisible = videoSettings.m_SubtitleOn = static_cast<const CSettingBool*>(setting)->GetValue();
+    m_subtitleVisible = videoSettings.m_SubtitleOn = std::static_pointer_cast<const CSettingBool>(setting)->GetValue();
     g_application.m_pPlayer->SetSubtitleVisible(videoSettings.m_SubtitleOn);
   }
   else if (settingId == SETTING_SUBTITLE_DELAY)
   {
-    videoSettings.m_SubtitleDelay = static_cast<float>(static_cast<const CSettingNumber*>(setting)->GetValue());
+    videoSettings.m_SubtitleDelay = static_cast<float>(std::static_pointer_cast<const CSettingNumber>(setting)->GetValue());
     g_application.m_pPlayer->SetSubTitleDelay(videoSettings.m_SubtitleDelay);
   }
   else if (settingId == SETTING_SUBTITLE_STREAM)
   {
-    m_subtitleStream = videoSettings.m_SubtitleStream = static_cast<const CSettingInt*>(setting)->GetValue();
+    m_subtitleStream = videoSettings.m_SubtitleStream = std::static_pointer_cast<const CSettingInt>(setting)->GetValue();
     g_application.m_pPlayer->SetSubtitle(m_subtitleStream);
   }
 }
@@ -222,7 +222,7 @@ std::string CGUIDialogAudioSubtitleSettings::BrowseForSubtitle()
   return "";
 }
 
-void CGUIDialogAudioSubtitleSettings::OnSettingAction(const CSetting *setting)
+void CGUIDialogAudioSubtitleSettings::OnSettingAction(std::shared_ptr<const CSetting> setting)
 {
   if (setting == NULL)
     return;
@@ -285,7 +285,7 @@ void CGUIDialogAudioSubtitleSettings::InitializeSettings()
 {
   CGUIDialogSettingsManualBase::InitializeSettings();
 
-  CSettingCategory *category = AddCategory("audiosubtitlesettings", -1);
+  const std::shared_ptr<CSettingCategory> category = AddCategory("audiosubtitlesettings", -1);
   if (category == NULL)
   {
     CLog::Log(LOGERROR, "CGUIDialogAudioSubtitleSettings: unable to setup settings");
@@ -293,19 +293,19 @@ void CGUIDialogAudioSubtitleSettings::InitializeSettings()
   }
 
   // get all necessary setting groups
-  CSettingGroup *groupAudio = AddGroup(category);
+  const std::shared_ptr<CSettingGroup> groupAudio = AddGroup(category);
   if (groupAudio == NULL)
   {
     CLog::Log(LOGERROR, "CGUIDialogAudioSubtitleSettings: unable to setup settings");
     return;
   }
-  CSettingGroup *groupSubtitles = AddGroup(category);
+  const std::shared_ptr<CSettingGroup> groupSubtitles = AddGroup(category);
   if (groupSubtitles == NULL)
   {
     CLog::Log(LOGERROR, "CGUIDialogAudioSubtitleSettings: unable to setup settings");
     return;
   }
-  CSettingGroup *groupSaveAsDefault = AddGroup(category);
+  const std::shared_ptr<CSettingGroup> groupSaveAsDefault = AddGroup(category);
   if (groupSaveAsDefault == NULL)
   {
     CLog::Log(LOGERROR, "CGUIDialogAudioSubtitleSettings: unable to setup settings");
@@ -337,9 +337,9 @@ void CGUIDialogAudioSubtitleSettings::InitializeSettings()
   // audio settings
   // audio volume setting
   m_volume = g_application.GetVolume(false);
-  CSettingNumber *settingAudioVolume = AddSlider(groupAudio, SETTING_AUDIO_VOLUME, 13376, 0, m_volume, 14054, VOLUME_MINIMUM, VOLUME_MAXIMUM / 100.0f, VOLUME_MAXIMUM);
+  std::shared_ptr<CSettingNumber> settingAudioVolume = AddSlider(groupAudio, SETTING_AUDIO_VOLUME, 13376, 0, m_volume, 14054, VOLUME_MINIMUM, VOLUME_MAXIMUM / 100.0f, VOLUME_MAXIMUM);
   settingAudioVolume->SetDependencies(depsAudioOutputPassthroughDisabled);
-  static_cast<CSettingControlSlider*>(settingAudioVolume->GetControl())->SetFormatter(SettingFormatterPercentAsDecibel);
+  std::static_pointer_cast<CSettingControlSlider>(settingAudioVolume->GetControl())->SetFormatter(SettingFormatterPercentAsDecibel);
 
   if (m_dspEnabled)
     AddButton(groupAudio, SETTING_AUDIO_DSP, 24136, 0);
@@ -347,15 +347,15 @@ void CGUIDialogAudioSubtitleSettings::InitializeSettings()
   // audio volume amplification setting
   if (SupportsAudioFeature(IPC_AUD_AMP) && !m_dspEnabled)
   {
-    CSettingNumber *settingAudioVolumeAmplification = AddSlider(groupAudio, SETTING_AUDIO_VOLUME_AMPLIFICATION, 660, 0, videoSettings.m_VolumeAmplification, 14054, VOLUME_DRC_MINIMUM * 0.01f, (VOLUME_DRC_MAXIMUM - VOLUME_DRC_MINIMUM) / 6000.0f, VOLUME_DRC_MAXIMUM * 0.01f);
+    std::shared_ptr<CSettingNumber> settingAudioVolumeAmplification = AddSlider(groupAudio, SETTING_AUDIO_VOLUME_AMPLIFICATION, 660, 0, videoSettings.m_VolumeAmplification, 14054, VOLUME_DRC_MINIMUM * 0.01f, (VOLUME_DRC_MAXIMUM - VOLUME_DRC_MINIMUM) / 6000.0f, VOLUME_DRC_MAXIMUM * 0.01f);
     settingAudioVolumeAmplification->SetDependencies(depsAudioOutputPassthroughDisabled);
   }
 
   // audio delay setting
   if (SupportsAudioFeature(IPC_AUD_OFFSET) && !m_dspEnabled)
   {
-    CSettingNumber *settingAudioDelay = AddSlider(groupAudio, SETTING_AUDIO_DELAY, 297, 0, videoSettings.m_AudioDelay, 0, -g_advancedSettings.m_videoAudioDelayRange, 0.025f, g_advancedSettings.m_videoAudioDelayRange, 297, usePopup);
-    static_cast<CSettingControlSlider*>(settingAudioDelay->GetControl())->SetFormatter(SettingFormatterDelay);
+    std::shared_ptr<CSettingNumber> settingAudioDelay = AddSlider(groupAudio, SETTING_AUDIO_DELAY, 297, 0, videoSettings.m_AudioDelay, 0, -g_advancedSettings.m_videoAudioDelayRange, 0.025f, g_advancedSettings.m_videoAudioDelayRange, 297, usePopup);
+    std::static_pointer_cast<CSettingControlSlider>(settingAudioDelay->GetControl())->SetFormatter(SettingFormatterDelay);
   }
   
   // audio stream setting
@@ -382,8 +382,8 @@ void CGUIDialogAudioSubtitleSettings::InitializeSettings()
   // subtitle delay setting
   if (SupportsSubtitleFeature(IPC_SUBS_OFFSET))
   {
-    CSettingNumber *settingSubtitleDelay = AddSlider(groupSubtitles, SETTING_SUBTITLE_DELAY, 22006, 0, videoSettings.m_SubtitleDelay, 0, -g_advancedSettings.m_videoSubsDelayRange, 0.1f, g_advancedSettings.m_videoSubsDelayRange, 22006, usePopup);
-    static_cast<CSettingControlSlider*>(settingSubtitleDelay->GetControl())->SetFormatter(SettingFormatterDelay);
+    std::shared_ptr<CSettingNumber> settingSubtitleDelay = AddSlider(groupSubtitles, SETTING_SUBTITLE_DELAY, 22006, 0, videoSettings.m_SubtitleDelay, 0, -g_advancedSettings.m_videoSubsDelayRange, 0.1f, g_advancedSettings.m_videoSubsDelayRange, 22006, usePopup);
+    std::static_pointer_cast<CSettingControlSlider>(settingSubtitleDelay->GetControl())->SetFormatter(SettingFormatterDelay);
   }
 
   // subtitle stream setting
@@ -420,7 +420,7 @@ bool CGUIDialogAudioSubtitleSettings::SupportsSubtitleFeature(int feature)
   return false;
 }
 
-void CGUIDialogAudioSubtitleSettings::AddAudioStreams(CSettingGroup *group, const std::string &settingId)
+void CGUIDialogAudioSubtitleSettings::AddAudioStreams(std::shared_ptr<CSettingGroup> group, const std::string &settingId)
 {
   if (group == NULL || settingId.empty())
     return;
@@ -432,7 +432,7 @@ void CGUIDialogAudioSubtitleSettings::AddAudioStreams(CSettingGroup *group, cons
   AddList(group, settingId, 460, 0, m_audioStream, AudioStreamsOptionFiller, 460);
 }
 
-void CGUIDialogAudioSubtitleSettings::AddSubtitleStreams(CSettingGroup *group, const std::string &settingId)
+void CGUIDialogAudioSubtitleSettings::AddSubtitleStreams(std::shared_ptr<CSettingGroup> group, const std::string &settingId)
 {
   if (group == NULL || settingId.empty())
     return;
@@ -444,12 +444,12 @@ void CGUIDialogAudioSubtitleSettings::AddSubtitleStreams(CSettingGroup *group, c
   AddList(group, settingId, 462, 0, m_subtitleStream, SubtitleStreamsOptionFiller, 462);
 }
 
-bool CGUIDialogAudioSubtitleSettings::IsPlayingPassthrough(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
+bool CGUIDialogAudioSubtitleSettings::IsPlayingPassthrough(const std::string &condition, const std::string &value, SettingConstPtr setting, void *data)
 {
   return g_application.m_pPlayer->IsPassthrough();
 }
 
-void CGUIDialogAudioSubtitleSettings::AudioStreamsOptionFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
+void CGUIDialogAudioSubtitleSettings::AudioStreamsOptionFiller(SettingConstPtr setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
 {
   int audioStreamCount = g_application.m_pPlayer->GetAudioStreamCount();
 
@@ -481,7 +481,7 @@ void CGUIDialogAudioSubtitleSettings::AudioStreamsOptionFiller(const CSetting *s
   }
 }
 
-void CGUIDialogAudioSubtitleSettings::SubtitleStreamsOptionFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
+void CGUIDialogAudioSubtitleSettings::SubtitleStreamsOptionFiller(SettingConstPtr setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
 {
   int subtitleStreamCount = g_application.m_pPlayer->GetSubtitleCount();
 
@@ -515,7 +515,7 @@ void CGUIDialogAudioSubtitleSettings::SubtitleStreamsOptionFiller(const CSetting
   }
 }
 
-std::string CGUIDialogAudioSubtitleSettings::SettingFormatterDelay(const CSettingControlSlider *control, const CVariant &value, const CVariant &minimum, const CVariant &step, const CVariant &maximum)
+std::string CGUIDialogAudioSubtitleSettings::SettingFormatterDelay(std::shared_ptr<const CSettingControlSlider> control, const CVariant &value, const CVariant &minimum, const CVariant &step, const CVariant &maximum)
 {
   if (!value.isDouble())
     return "";
@@ -531,7 +531,7 @@ std::string CGUIDialogAudioSubtitleSettings::SettingFormatterDelay(const CSettin
   return StringUtils::Format(g_localizeStrings.Get(22005).c_str(), fValue);
 }
 
-std::string CGUIDialogAudioSubtitleSettings::SettingFormatterPercentAsDecibel(const CSettingControlSlider *control, const CVariant &value, const CVariant &minimum, const CVariant &step, const CVariant &maximum)
+std::string CGUIDialogAudioSubtitleSettings::SettingFormatterPercentAsDecibel(std::shared_ptr<const CSettingControlSlider> control, const CVariant &value, const CVariant &minimum, const CVariant &step, const CVariant &maximum)
 {
   if (control == NULL || !value.isDouble())
     return "";

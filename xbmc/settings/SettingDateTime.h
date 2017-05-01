@@ -30,7 +30,7 @@ public:
   CSettingDate(const std::string &id, const CSettingDate &setting);
   virtual ~CSettingDate() = default;
 
-  virtual CSetting* Clone(const std::string &id) const override;
+  virtual SettingPtr Clone(const std::string &id) const override;
 
   virtual bool CheckValidity(const std::string &value) const override;
 
@@ -46,7 +46,7 @@ public:
   CSettingTime(const std::string &id, const CSettingTime &setting);
   virtual ~CSettingTime() = default;
 
-  virtual CSetting* Clone(const std::string &id) const override;
+  virtual SettingPtr Clone(const std::string &id) const override;
 
   virtual bool CheckValidity(const std::string &value) const override;
 

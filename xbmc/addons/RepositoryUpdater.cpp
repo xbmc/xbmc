@@ -160,7 +160,7 @@ void CRepositoryUpdater::OnTimeout()
   CheckForUpdates();
 }
 
-void CRepositoryUpdater::OnSettingChanged(const CSetting* setting)
+void CRepositoryUpdater::OnSettingChanged(std::shared_ptr<const CSetting> setting)
 {
   if (setting->GetId() == CSettings::SETTING_ADDONS_AUTOUPDATES)
     ScheduleUpdate();
