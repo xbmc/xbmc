@@ -25,15 +25,10 @@
 
 namespace PVR
 {
-  class CPVRChannelGroups;
-  class CPVRDatabase;
-
   /** XBMC's internal group, the group containing all channels */
 
   class CPVRChannelGroupInternal : public CPVRChannelGroup
   {
-    friend class CPVRDatabase;
-
   public:
     /*!
      * @brief Create a new internal channel group.
