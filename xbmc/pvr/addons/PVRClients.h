@@ -60,7 +60,6 @@ namespace PVR
 
   class CPVRClients : public ADDON::IAddonMgrCallback
   {
-  friend class CPVRClient;
   public:
     CPVRClients(void);
     virtual ~CPVRClients(void);
@@ -70,6 +69,10 @@ namespace PVR
      */
     void Start(void);
 
+    /*!
+     * @brief Update add-ons from the AddonManager
+     */
+    void UpdateAddons(void);
 
     /*! @name Backend methods */
     //@{
@@ -670,11 +673,6 @@ namespace PVR
     void OnPowerSavingDeactivated();
 
   private:
-    /*!
-     * @brief Update add-ons from the AddonManager
-     */
-    void UpdateAddons(void);
-
     /*!
      * @brief Get the instance of the client.
      * @param iClientId The id of the client to get.
