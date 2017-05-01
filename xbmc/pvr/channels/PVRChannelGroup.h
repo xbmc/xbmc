@@ -20,7 +20,6 @@
  */
 
 #include "settings/lib/ISettingCallback.h"
-#include "utils/Job.h"
 
 #include "pvr/PVRTypes.h"
 #include "pvr/channels/PVRChannel.h"
@@ -61,7 +60,6 @@ namespace PVR
 
   /** A group of channels */
   class CPVRChannelGroup : public Observable,
-                           public IJobCallback,
                            public ISettingCallback
 
   {
@@ -370,8 +368,6 @@ namespace PVR
      */
     void ResetChannelNumberCache(void);
 
-    void OnJobComplete(unsigned int jobID, bool success, CJob* job) override {}
-
     /*!
      * @brief Get all EPG tables.
      * @param results The fileitem list to store the results in.
@@ -526,18 +522,5 @@ namespace PVR
      * @return The amount of entries that were added.
      */
     int GetEPGNowOrNext(CFileItemList &results, bool bGetNext) const;
-  };
-
-  class CPVRPersistGroupJob : public CJob
-  {
-  public:
-    CPVRPersistGroupJob(const CPVRChannelGroupPtr &group): m_group(group) {}
-    virtual ~CPVRPersistGroupJob() {}
-    const char *GetType() const { return "pvr-channelgroup-persist"; }
-
-    virtual bool DoWork();
-
-  private:
-    CPVRChannelGroupPtr m_group;
   };
 }
