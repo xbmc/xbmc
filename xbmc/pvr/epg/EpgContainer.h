@@ -110,7 +110,7 @@ namespace PVR
      * @param obs The observable that sent the update.
      * @param msg The update message.
      */
-    virtual void Notify(const Observable &obs, const ObservableMessage msg) override;
+    void Notify(const Observable &obs, const ObservableMessage msg) override;
 
     CPVREpgPtr CreateChannelEpg(const PVR::CPVRChannelPtr &channel);
 
@@ -249,7 +249,7 @@ namespace PVR
     /*!
      * @brief EPG update thread
      */
-    virtual void Process(void) override;
+    void Process(void) override;
 
     /*!
      * @brief Load all tables from the database

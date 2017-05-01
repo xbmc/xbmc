@@ -24,15 +24,15 @@
 
 namespace PVR
 {
-  class CGUIWindowPVRSearch : public CGUIWindowPVRBase
+  class CGUIWindowPVRSearchBase : public CGUIWindowPVRBase
   {
   public:
-    CGUIWindowPVRSearch(bool bRadio);
-    virtual ~CGUIWindowPVRSearch(void) {};
+    CGUIWindowPVRSearchBase(bool bRadio, int id, const std::string &xmlFile);
+    virtual ~CGUIWindowPVRSearchBase() {};
 
-    virtual bool OnMessage(CGUIMessage& message)  override;
-    virtual void GetContextButtons(int itemNumber, CContextButtons &buttons) override;
-    virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
+    bool OnMessage(CGUIMessage& message)  override;
+    void GetContextButtons(int itemNumber, CContextButtons &buttons) override;
+    bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
 
     /*!
      * @brief set the item to search similar events for.
@@ -41,15 +41,27 @@ namespace PVR
     void SetItemToSearch(const CFileItemPtr &item);
 
   protected:
-    virtual void OnPrepareFileItems(CFileItemList &items) override;
-    virtual std::string GetDirectoryPath(void) override { return ""; }
+    void OnPrepareFileItems(CFileItemList &items) override;
+    std::string GetDirectoryPath(void) override { return ""; }
 
   private:
     bool OnContextButtonClear(CFileItem *item, CONTEXT_BUTTON button);
 
     void OpenDialogSearch();
 
-    bool                  m_bSearchConfirmed;
+    bool m_bSearchConfirmed;
     CPVREpgSearchFilter m_searchfilter;
+  };
+
+  class CGUIWindowPVRTVSearch : public CGUIWindowPVRSearchBase
+  {
+  public:
+    CGUIWindowPVRTVSearch() : CGUIWindowPVRSearchBase(false, WINDOW_TV_SEARCH, "MyPVRSearch.xml") {}
+  };
+
+  class CGUIWindowPVRRadioSearch : public CGUIWindowPVRSearchBase
+  {
+  public:
+    CGUIWindowPVRRadioSearch() : CGUIWindowPVRSearchBase(true, WINDOW_RADIO_SEARCH, "MyPVRSearch.xml") {}
   };
 }
