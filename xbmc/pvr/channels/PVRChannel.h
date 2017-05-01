@@ -27,6 +27,7 @@
 
 #include "pvr/PVRTypes.h"
 
+#include <memory>
 #include <string>
 #include <utility>
 
@@ -45,10 +46,12 @@ namespace PVR
   } pvr_channel_num;
 
   /** PVR Channel class */
-  class CPVRChannel : public Observable, public ISerializable, public ISortable
+  class CPVRChannel : public Observable,
+                      public ISerializable,
+                      public ISortable,
+                      public std::enable_shared_from_this<CPVRChannel>
   {
     friend class CPVRDatabase;
-    friend class CPVRChannelGroupInternal;
 
   public:
     /*! @brief Create a new channel */
@@ -390,6 +393,13 @@ namespace PVR
      * @param iEpgId The new epg id
      */
     void SetEpgID(int iEpgId);
+
+    /*!
+     * @brief Create the EPG for this channel, if it does not yet exist
+     * @param bForce to create a new EPG, even if it already exists.
+     * @return true if a new epg was created, false otherwise.
+     */
+    bool CreateEPG(bool bForce);
 
     /*!
      * @brief Get the EPG table for this channel.

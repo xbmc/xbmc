@@ -175,6 +175,26 @@ CPVREpgPtr CPVRChannel::GetEPG(void) const
   return iEpgId > 0 ? CServiceBroker::GetPVRManager().EpgContainer().GetById(iEpgId) : CPVREpgPtr();
 }
 
+bool CPVRChannel::CreateEPG(bool bForce)
+{
+  CSingleLock lock(m_critSection);
+  if (!m_bEPGCreated || bForce)
+  {
+    CPVREpgPtr epg = CServiceBroker::GetPVRManager().EpgContainer().CreateChannelEpg(shared_from_this());
+    if (epg)
+    {
+      m_bEPGCreated = true;
+      if (epg->EpgID() != m_iEpgId)
+      {
+        m_iEpgId = epg->EpgID();
+        m_bChanged = true;
+      }
+      return true;
+    }
+  }
+  return false;
+}
+
 bool CPVRChannel::UpdateFromClient(const CPVRChannelPtr &channel)
 {
   assert(channel.get());
