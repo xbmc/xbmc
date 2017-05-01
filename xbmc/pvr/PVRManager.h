@@ -114,7 +114,7 @@ namespace PVR
      */
     virtual ~CPVRManager(void);
 
-    virtual void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data) override;
+    void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data) override;
 
     /*!
      * @brief Get the channel groups container.
@@ -546,7 +546,7 @@ namespace PVR
     /*!
      * @brief PVR update and control thread.
      */
-    virtual void Process(void) override;
+    void Process(void) override;
 
   private:
     /*!

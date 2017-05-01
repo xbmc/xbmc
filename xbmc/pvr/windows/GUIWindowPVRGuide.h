@@ -39,15 +39,15 @@ namespace PVR
     CGUIWindowPVRGuideBase(bool bRadio, int id, const std::string &xmlFile);
     virtual ~CGUIWindowPVRGuideBase();
 
-    virtual void OnInitWindow() override;
-    virtual void OnDeinitWindow(int nextWindowID) override;
-    virtual bool OnMessage(CGUIMessage& message) override;
-    virtual bool OnAction(const CAction &action) override;
-    virtual void GetContextButtons(int itemNumber, CContextButtons &buttons) override;
-    virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
-    virtual void UpdateButtons(void) override;
-    virtual void Notify(const Observable &obs, const ObservableMessage msg) override;
-    virtual void SetInvalid() override;
+    void OnInitWindow() override;
+    void OnDeinitWindow(int nextWindowID) override;
+    bool OnMessage(CGUIMessage& message) override;
+    bool OnAction(const CAction &action) override;
+    void GetContextButtons(int itemNumber, CContextButtons &buttons) override;
+    bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
+    void UpdateButtons(void) override;
+    void Notify(const Observable &obs, const ObservableMessage msg) override;
+    void SetInvalid() override;
     bool Update(const std::string &strDirectory, bool updateFilterPath = true) override;
 
     bool RefreshTimelineItems();
@@ -56,9 +56,9 @@ namespace PVR
     void OnInputDone() override;
 
   protected:
-    virtual void UpdateSelectedItemPath() override;
-    virtual std::string GetDirectoryPath(void) override { return ""; }
-    virtual bool GetDirectory(const std::string &strDirectory, CFileItemList &items) override;
+    void UpdateSelectedItemPath() override;
+    std::string GetDirectoryPath(void) override { return ""; }
+    bool GetDirectory(const std::string &strDirectory, CFileItemList &items) override;
 
     void ClearData() override;
 

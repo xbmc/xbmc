@@ -34,17 +34,17 @@ namespace PVR
     CGUIWindowPVRRecordingsBase(bool bRadio, int id, const std::string &xmlFile);
     virtual ~CGUIWindowPVRRecordingsBase();
 
-    virtual void OnWindowLoaded() override;
-    virtual bool OnMessage(CGUIMessage& message) override;
-    virtual bool OnAction(const CAction &action) override;
-    virtual void GetContextButtons(int itemNumber, CContextButtons &buttons) override;
-    virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
-    virtual bool Update(const std::string &strDirectory, bool updateFilterPath = true) override;
-    virtual void UpdateButtons() override;
+    void OnWindowLoaded() override;
+    bool OnMessage(CGUIMessage& message) override;
+    bool OnAction(const CAction &action) override;
+    void GetContextButtons(int itemNumber, CContextButtons &buttons) override;
+    bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
+    bool Update(const std::string &strDirectory, bool updateFilterPath = true) override;
+    void UpdateButtons() override;
 
   protected:
-    virtual std::string GetDirectoryPath(void) override;
-    virtual void OnPrepareFileItems(CFileItemList &items) override;
+    std::string GetDirectoryPath(void) override;
+    void OnPrepareFileItems(CFileItemList &items) override;
     bool GetFilteredItems(const std::string &filter, CFileItemList &items) override;
 
   private:

@@ -31,12 +31,12 @@ namespace PVR
     CGUIWindowPVRChannelsBase(bool bRadio, int id, const std::string &xmlFile);
     virtual ~CGUIWindowPVRChannelsBase();
 
-    virtual bool OnMessage(CGUIMessage& message) override;
-    virtual void GetContextButtons(int itemNumber, CContextButtons &buttons) override;
-    virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
-    virtual bool Update(const std::string &strDirectory, bool updateFilterPath = true) override;
-    virtual void UpdateButtons(void) override;
-    virtual bool OnAction(const CAction &action) override;
+    bool OnMessage(CGUIMessage& message) override;
+    void GetContextButtons(int itemNumber, CContextButtons &buttons) override;
+    bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
+    bool Update(const std::string &strDirectory, bool updateFilterPath = true) override;
+    void UpdateButtons(void) override;
+    bool OnAction(const CAction &action) override;
 
     // CPVRChannelNumberInputHandler implementation
     void OnInputDone() override;

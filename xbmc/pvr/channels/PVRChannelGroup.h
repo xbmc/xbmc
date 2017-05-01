@@ -262,7 +262,7 @@ namespace PVR
 
     //@}
 
-    virtual void OnSettingChanged(const CSetting *setting) override;
+    void OnSettingChanged(const CSetting *setting) override;
 
     /*!
      * @brief Get a channel given it's EPG ID.
