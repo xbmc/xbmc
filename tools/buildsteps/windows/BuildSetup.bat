@@ -48,7 +48,7 @@ SET buildbinaryaddons=true
 SET exitcode=0
 SET useshell=rxvt
 SET BRANCH=na
-FOR %%b in (%1, %2, %3, %4) DO (
+FOR %%b in (%1, %2, %3, %4, %5) DO (
   IF %%b==clean SET buildmode=clean
   IF %%b==noclean SET buildmode=noclean
   IF %%b==noprompt SET promptlevel=noprompt
@@ -104,7 +104,7 @@ set WORKSPACE=%base_dir%\kodi-build
 :MAKE_BUILD_EXE
   ECHO Copying files...
   PUSHD %base_dir%\project\Win32BuildSetup
-  IF EXIST BUILD_WIN32 rmdir BUILD_WIN32 /S /Q
+  IF EXIST BUILD_WIN32\application rmdir BUILD_WIN32\application /S /Q
   rem Add files to exclude.txt that should not be included in the installer
   
   Echo Thumbs.db>>exclude.txt
