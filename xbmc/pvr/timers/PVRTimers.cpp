@@ -81,7 +81,7 @@ void CPVRTimersContainer::InsertTimer(const CPVRTimerInfoTagPtr &newTimer)
   }
   else
   {
-    it->second.emplace_back(newTimer);;
+    it->second.emplace_back(newTimer);
   }
 }
 

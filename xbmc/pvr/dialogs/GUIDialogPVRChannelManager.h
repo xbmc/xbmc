@@ -39,7 +39,7 @@ namespace PVR
     bool OnAction(const CAction& action) override;
     void OnWindowLoaded(void) override;
     void OnWindowUnload(void) override;
-    bool HasListItems() const override{ return true; };
+    bool HasListItems() const override{ return true; }
     CFileItemPtr GetCurrentListItem(int offset = 0) override;
 
   protected:

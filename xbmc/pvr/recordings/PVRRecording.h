@@ -259,7 +259,7 @@ namespace PVR
      * @brief Retrieve the recording Episode Name
      * @note Returns an empty string if no Episode Name was provided by the PVR client
      */
-    std::string EpisodeName(void) const { return m_strShowTitle; };
+    std::string EpisodeName(void) const { return m_strShowTitle; }
 
     /*!
      * @brief check whether this recording is currently in progress (according to its start time and duration)

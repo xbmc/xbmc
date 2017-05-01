@@ -299,7 +299,7 @@ float CGUIEPGGridContainer::GetCurrentTimePositionOnPage() const
 
 float CGUIEPGGridContainer::GetProgressIndicatorWidth() const
 {
-  return (m_orientation == VERTICAL) ? GetCurrentTimePositionOnPage() : m_rulerWidth + m_gridWidth;;
+  return (m_orientation == VERTICAL) ? GetCurrentTimePositionOnPage() : m_rulerWidth + m_gridWidth;
 }
 
 float CGUIEPGGridContainer::GetProgressIndicatorHeight() const

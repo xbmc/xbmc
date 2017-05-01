@@ -32,7 +32,7 @@ namespace PVR
     virtual ~CGUIDialogPVRGuideInfo(void);
     bool OnMessage(CGUIMessage& message) override;
     bool OnInfo(int actionID) override;
-    bool HasListItems() const override { return true; };
+    bool HasListItems() const override { return true; }
     CFileItemPtr GetCurrentListItem(int offset = 0) override;
 
     void SetProgInfo(const CPVREpgInfoTagPtr &tag);

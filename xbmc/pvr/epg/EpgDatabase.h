@@ -37,12 +37,12 @@ namespace PVR
     /*!
      * @brief Create a new instance of the EPG database.
      */
-    CPVREpgDatabase(void) = default;;
+    CPVREpgDatabase(void) = default;
 
     /*!
      * @brief Destroy this instance.
      */
-    virtual ~CPVREpgDatabase(void) = default;;
+    virtual ~CPVREpgDatabase(void) = default;
 
     /*!
      * @brief Open the database.
@@ -54,13 +54,13 @@ namespace PVR
      * @brief Get the minimal database version that is required to operate correctly.
      * @return The minimal database version.
      */
-    int GetSchemaVersion(void) const override { return 11; };
+    int GetSchemaVersion(void) const override { return 11; }
 
     /*!
      * @brief Get the default sqlite database filename.
      * @return The default filename.
      */
-    const char *GetBaseDBName(void) const override { return "Epg"; };
+    const char *GetBaseDBName(void) const override { return "Epg"; }
 
     /*! @name EPG methods */
     //@{

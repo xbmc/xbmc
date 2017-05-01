@@ -30,7 +30,7 @@ namespace PVR
     virtual ~CGUIDialogPVRRecordingInfo(void) = default;
     bool OnMessage(CGUIMessage& message) override;
     bool OnInfo(int actionID) override;
-    bool HasListItems() const override { return true; };
+    bool HasListItems() const override { return true; }
     CFileItemPtr GetCurrentListItem(int offset = 0) override;
 
     void SetRecording(const CFileItem *item);

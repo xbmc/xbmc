@@ -56,13 +56,13 @@ namespace PVR
      * @brief Get the minimal database version that is required to operate correctly.
      * @return The minimal database version.
      */
-    int GetSchemaVersion() const override { return 30; };
+    int GetSchemaVersion() const override { return 30; }
 
     /*!
      * @brief Get the default sqlite database filename.
      * @return The default filename.
      */
-    const char *GetBaseDBName() const override { return "TV"; };
+    const char *GetBaseDBName() const override { return "TV"; }
 
     /*! @name Channel methods */
     //@{

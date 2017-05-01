@@ -486,7 +486,7 @@ namespace PVR
 
     bool PVRClientMenuHook::Execute(const CFileItemPtr &item) const
     {
-      return CServiceBroker::GetPVRManager().GUIActions()->ProcessMenuHooks(item);;
+      return CServiceBroker::GetPVRManager().GUIActions()->ProcessMenuHooks(item);
     }
 
   } // namespace CONEXTMENUITEM
