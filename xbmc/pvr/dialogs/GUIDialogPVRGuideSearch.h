@@ -30,7 +30,7 @@ namespace PVR
   {
   public:
     CGUIDialogPVRGuideSearch(void);
-    virtual ~CGUIDialogPVRGuideSearch(void) {}
+    virtual ~CGUIDialogPVRGuideSearch(void) = default;
     bool OnMessage(CGUIMessage& message) override;
     void OnWindowLoaded() override;
 

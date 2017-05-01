@@ -43,8 +43,8 @@ namespace PVR
     /*!
      * @brief Create a new instance of the PVR database.
      */
-    CPVRDatabase(void) {};
-    virtual ~CPVRDatabase(void) {};
+    CPVRDatabase(void) = default;
+    virtual ~CPVRDatabase(void) = default;
 
     /*!
      * @brief Open the database.

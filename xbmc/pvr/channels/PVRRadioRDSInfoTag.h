@@ -45,21 +45,8 @@ private:
    */
   CPVRRadioRDSInfoTag(void);
 
-  /*!
-   * @brief Prevent copy construction, even for CPVREpgInfoTag instances and friends.
-   * Note: Only declared, but intentionally not implemented
-   *       to prevent compiler generated copy ctor and to force.
-   *       a linker error in case somebody tries to call it.
-   */
-  CPVRRadioRDSInfoTag(const CPVRRadioRDSInfoTag& tag);
-
-  /*!
-   * @brief Prevent copy construction, even for CPVREpgInfoTag instances and friends.
-   * Note: Only declared, but intentionally not implemented
-   *       to prevent compiler generated copy ctor and to force.
-   *       a linker error in case somebody tries to call it.
-   */
-  const CPVRRadioRDSInfoTag& operator =(const CPVRRadioRDSInfoTag& tag);
+  CPVRRadioRDSInfoTag(const CPVRRadioRDSInfoTag& tag) = delete;
+  const CPVRRadioRDSInfoTag& operator =(const CPVRRadioRDSInfoTag& tag) = delete;
   
 public:
   virtual ~CPVRRadioRDSInfoTag();

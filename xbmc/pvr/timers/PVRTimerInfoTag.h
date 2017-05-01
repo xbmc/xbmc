@@ -62,8 +62,8 @@ namespace PVR
     CPVRTimerInfoTag(const PVR_TIMER &timer, const CPVRChannelPtr &channel, unsigned int iClientId);
 
   private:
-    CPVRTimerInfoTag(const CPVRTimerInfoTag &tag); // intentionally not implemented.
-    CPVRTimerInfoTag &operator=(const CPVRTimerInfoTag &orig); // intentionally not implemented.
+    CPVRTimerInfoTag(const CPVRTimerInfoTag &tag) = delete;
+    CPVRTimerInfoTag &operator=(const CPVRTimerInfoTag &orig) = delete;
 
   public:
     virtual ~CPVRTimerInfoTag(void);

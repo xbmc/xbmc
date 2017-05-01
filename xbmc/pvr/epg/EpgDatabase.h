@@ -37,12 +37,12 @@ namespace PVR
     /*!
      * @brief Create a new instance of the EPG database.
      */
-    CPVREpgDatabase(void) {};
+    CPVREpgDatabase(void) = default;;
 
     /*!
      * @brief Destroy this instance.
      */
-    virtual ~CPVREpgDatabase(void) {};
+    virtual ~CPVREpgDatabase(void) = default;;
 
     /*!
      * @brief Open the database.

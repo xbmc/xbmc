@@ -56,8 +56,8 @@ namespace PVR
     CPVRChannel(const PVR_CHANNEL &channel, unsigned int iClientId);
 
   private:
-    CPVRChannel(const CPVRChannel &tag); // intentionally not implemented.
-    CPVRChannel &operator=(const CPVRChannel &channel); // intentionally not implemented.
+    CPVRChannel(const CPVRChannel &tag) = delete;
+    CPVRChannel &operator=(const CPVRChannel &channel) = delete;
 
   public:
     bool operator ==(const CPVRChannel &right) const;
