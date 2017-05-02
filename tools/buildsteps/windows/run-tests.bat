@@ -25,6 +25,7 @@ SET exitcode=0
 SET useshell=sh
 SET BRANCH=na
 SET buildconfig=Release
+SET PreferredToolArchitecture=x64
 
 
   :: sets the BRANCH env var
