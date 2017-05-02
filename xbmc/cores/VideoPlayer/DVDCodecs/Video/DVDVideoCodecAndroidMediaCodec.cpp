@@ -248,6 +248,9 @@ void CDVDMediaCodecInfo::ReleaseOutputBuffer(bool render)
     if (m_frameready)
       m_frameready->Reset();
 
+  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+     CLog::Log(LOGERROR, "CDVDMediaCodecInfo::ReleaseOutputBuffer index(%d), render(%d)", m_index, render);
+
   media_status_t mstat = AMediaCodec_releaseOutputBuffer(m_codec, m_index, render);
   m_isReleased = true;
 
@@ -958,11 +961,15 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecAndroidMediaCodec::GetPicture(VideoPictur
 
       // Invalidate our local VideoPicture bits
       m_videobuffer.pts = DVD_NOPTS_VALUE;
+      int index(-1);
       if (!m_render_sw)
+      {
+        index = static_cast<CDVDMediaCodecInfo *>(m_videobuffer.hwPic)->GetIndex();
         m_videobuffer.hwPic = NULL;
+      }
 
       if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-        CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::GetPicture pts:%0.4lf", pVideoPicture->pts);
+        CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::GetPicture index: %d pts:%0.4lf", index, pVideoPicture->pts);
 
       return VC_PICTURE;
     }
