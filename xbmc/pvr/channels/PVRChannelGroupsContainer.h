@@ -27,12 +27,10 @@ class CURL;
 
 namespace PVR
 {
-  class CPVRChannelsUpdateJob;
   class CPVRChannelGroupsUpdateJob;
 
   class CPVRChannelGroupsContainer
   {
-    friend class CPVRChannelsUpdateJob;
     friend class CPVRChannelGroupsUpdateJob;
 
   public:
@@ -62,6 +60,13 @@ namespace PVR
      * @brief Unload and destruct all channel groups and all channels in them.
      */
     void Unload(void);
+
+    /*!
+     * @brief Update the contents of all the groups in this container.
+     * @param bChannelsOnly Set to true to only update channels, not the groups themselves.
+     * @return True if the update was successful, false otherwise.
+     */
+    bool Update(bool bChannelsOnly = false);
 
     /*!
      * @brief Get the TV channel groups.
@@ -198,13 +203,6 @@ namespace PVR
     void SetLastPlayedGroup(const CPVRChannelGroupPtr &group);
 
   protected:
-    /*!
-     * @brief Update the contents of all the groups in this container.
-     * @param bChannelsOnly Set to true to only update channels, not the groups themselves.
-     * @return True if the update was successful, false otherwise.
-     */
-    bool Update(bool bChannelsOnly = false);
-
     CPVRChannelGroups *m_groupsRadio; /*!< all radio channel groups */
     CPVRChannelGroups *m_groupsTV;    /*!< all TV channel groups */
     CCriticalSection   m_critSection;
