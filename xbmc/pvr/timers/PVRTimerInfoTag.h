@@ -50,22 +50,14 @@ class CVariant;
 namespace PVR
 {
   class CGUIDialogPVRTimerSettings;
-  class CPVRTimers;
   class CPVRChannelGroupInternal;
 
   class CPVRTimerInfoTag : public ISerializable
   {
-    friend class CPVRTimers;
-
   public:
     CPVRTimerInfoTag(bool bRadio = false);
     CPVRTimerInfoTag(const PVR_TIMER &timer, const CPVRChannelPtr &channel, unsigned int iClientId);
 
-  private:
-    CPVRTimerInfoTag(const CPVRTimerInfoTag &tag) = delete;
-    CPVRTimerInfoTag &operator=(const CPVRTimerInfoTag &orig) = delete;
-
-  public:
     virtual ~CPVRTimerInfoTag(void);
 
     bool operator ==(const CPVRTimerInfoTag& right) const;
@@ -213,6 +205,12 @@ namespace PVR
     const std::string& Summary(void) const;
     const std::string& Path(void) const;
 
+    /*!
+     * @brief Get the UID of the epg event associated with this timer tag, if any.
+     * @return the UID or EPG_TAG_INVALID_UID.
+     */
+    unsigned int UniqueBroadcastID() const { return m_iEpgUid; }
+
     /* Client control functions */
     bool AddToClient() const;
     bool DeleteFromClient(bool bForce = false) const;
@@ -279,6 +277,9 @@ namespace PVR
     unsigned int          m_iMarginEnd;          /*!< @brief (optional) if set, the backend ends the recording iMarginEnd minutes after endTime. */
 
   private:
+    CPVRTimerInfoTag(const CPVRTimerInfoTag &tag) = delete;
+    CPVRTimerInfoTag &operator=(const CPVRTimerInfoTag &orig) = delete;
+
     std::string GetWeekdaysString() const;
     void UpdateEpgInfoTag(void);
 
