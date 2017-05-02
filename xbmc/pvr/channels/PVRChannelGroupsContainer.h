@@ -27,13 +27,11 @@ class CURL;
 
 namespace PVR
 {
-  class CPVRManager;
   class CPVRChannelsUpdateJob;
   class CPVRChannelGroupsUpdateJob;
 
   class CPVRChannelGroupsContainer
   {
-    friend class CPVRManager;
     friend class CPVRChannelsUpdateJob;
     friend class CPVRChannelGroupsUpdateJob;
 
