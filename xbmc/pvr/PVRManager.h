@@ -87,28 +87,12 @@ namespace PVR
 
   class CPVRManager : private CThread, public Observable, public ANNOUNCEMENT::IAnnouncer
   {
-    friend class CPVRClients;
-
   public:
     /*!
      * @brief Create a new CPVRManager instance, which handles all PVR related operations in XBMC.
      */
     CPVRManager(void);
 
-  private:
-    /*!
-     * @brief Updates the last watched timestamps of the channel and group which are currently playing.
-     * @param channel The channel which is updated
-     */
-    void UpdateLastWatched(const CPVRChannelPtr &channel);
-
-    /*!
-     * @brief Set the playing group to the first group the channel is in if the given channel is not part of the current playing group
-     * @param channel The channel
-     */
-    void SetPlayingGroup(const CPVRChannelPtr &channel);
-
-  public:
     /*!
      * @brief Stop the PVRManager and destroy all objects it created.
      */
@@ -549,6 +533,18 @@ namespace PVR
     void Process(void) override;
 
   private:
+    /*!
+     * @brief Updates the last watched timestamps of the channel and group which are currently playing.
+     * @param channel The channel which is updated
+     */
+    void UpdateLastWatched(const CPVRChannelPtr &channel);
+
+    /*!
+     * @brief Set the playing group to the first group the channel is in if the given channel is not part of the current playing group
+     * @param channel The channel
+     */
+    void SetPlayingGroup(const CPVRChannelPtr &channel);
+
     /*!
      * @brief Save the currently playing channel as last played channel
      */
