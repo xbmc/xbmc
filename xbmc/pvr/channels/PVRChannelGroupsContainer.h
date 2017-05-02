@@ -27,12 +27,8 @@ class CURL;
 
 namespace PVR
 {
-  class CPVRChannelGroupsUpdateJob;
-
   class CPVRChannelGroupsContainer
   {
-    friend class CPVRChannelGroupsUpdateJob;
-
   public:
     /*!
      * @brief Create a new container for all channel groups
