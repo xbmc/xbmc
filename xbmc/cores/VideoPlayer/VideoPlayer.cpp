@@ -2040,10 +2040,13 @@ void CVideoPlayer::HandlePlaySpeed()
             clock = m_CurrentVideo.starttime - m_CurrentVideo.cachetotal;
           else if (m_CurrentVideo.starttime > m_CurrentAudio.starttime)
           {
-            if (m_pInputStream->IsRealtime())
-              clock = m_CurrentVideo.starttime - m_CurrentAudio.cachetotal - DVD_MSEC_TO_TIME(400);
+            int audioLevel = m_VideoPlayerAudio->GetLevel();
+            //@todo hardcoded 8 seconds in message queue
+            double maxAudioTime = clock + DVD_MSEC_TO_TIME(80 * audioLevel);
+            if ((m_CurrentVideo.starttime - m_CurrentVideo.cachetotal) > maxAudioTime)
+              clock = maxAudioTime;
             else
-              clock = m_CurrentVideo.starttime - m_CurrentAudio.cachetime;
+              clock = m_CurrentVideo.starttime - m_CurrentVideo.cachetotal;
           }
         }
       }
