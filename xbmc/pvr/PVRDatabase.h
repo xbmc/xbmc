@@ -30,10 +30,8 @@ namespace PVR
 {
   class CPVRChannelGroup;
   class CPVRChannelGroupInternal;
-  class CPVRChannelsContainer;
   class CPVRChannel;
   class CPVRChannelGroups;
-  class CPVRClient;
 
   /** The PVR database */
 

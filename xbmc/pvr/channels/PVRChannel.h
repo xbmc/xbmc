@@ -36,7 +36,6 @@ class CFileItemList;
 
 namespace PVR
 {
-  class CPVRDatabase;
   class CPVRChannelGroupInternal;
 
   typedef struct

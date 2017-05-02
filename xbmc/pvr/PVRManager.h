@@ -43,20 +43,13 @@
 class CGUIDialogExtendedProgressBar;
 class CGUIDialogProgressBarHandle;
 class CStopWatch;
-class CAction;
 class CFileItemList;
 class CVariant;
 
 namespace PVR
 {
   class CPVRClient;
-  class CPVRClients;
-  class CPVRChannelGroupsContainer;
-  class CPVRChannelGroup;
-  class CPVRRecordings;
-  class CPVRTimers;
   class CPVRGUIInfo;
-  class CPVRDatabase;
 
   enum ContinueLastChannelOnStartup
   {

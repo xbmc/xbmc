@@ -34,7 +34,6 @@
 namespace PVR
 {
   class CPVREpg;
-  class CPVRGUIInfo;
 
   typedef std::shared_ptr<CPVRClient> PVR_CLIENT;
   typedef std::map< int, PVR_CLIENT >                 PVR_CLIENTMAP;

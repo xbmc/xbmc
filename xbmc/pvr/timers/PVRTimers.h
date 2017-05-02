@@ -25,6 +25,7 @@
 
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
 #include "pvr/PVRSettings.h"
+#include "pvr/PVRTypes.h"
 #include "PVRTimerInfoTag.h"
 #include "utils/Observer.h"
 #include "XBDateTime.h"
@@ -35,7 +36,6 @@ typedef std::shared_ptr<CFileItem> CFileItemPtr;
 
 namespace PVR
 {
-  class CPVREpgInfoTag;
   class CPVRRecording;
   class CPVRTimersPath;
 

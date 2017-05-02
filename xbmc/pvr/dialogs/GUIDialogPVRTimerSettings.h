@@ -31,7 +31,6 @@
 #include <vector>
 #include <string>
 
-class CFileItem;
 class CSetting;
 
 namespace PVR

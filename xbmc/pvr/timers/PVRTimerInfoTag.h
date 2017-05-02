@@ -29,10 +29,6 @@
  * a EPG entry by giving the EPG information tag or as instant timer
  * on currently tuned channel, or give a blank tag to modify later.
  *
- * With exception of the blank one, the tag can easily and unmodified added
- * by the PVRManager function "bool AddTimer(const CFileItem &item)" to
- * the backend server.
- *
  * The filename inside the tag is for reference only and gives the index
  * number of the tag reported by the PVR backend and can not be played!
  */
@@ -44,14 +40,10 @@
 #include "utils/ISerializable.h"
 #include "XBDateTime.h"
 
-class CFileItem;
 class CVariant;
 
 namespace PVR
 {
-  class CGUIDialogPVRTimerSettings;
-  class CPVRChannelGroupInternal;
-
   class CPVRTimerInfoTag : public ISerializable
   {
   public:

@@ -19,6 +19,7 @@
  *
  */
 
+#include "XBDateTime.h"
 #include "settings/lib/ISettingCallback.h"
 
 #include "pvr/PVRTypes.h"
@@ -28,7 +29,6 @@
 #include <utility>
 #include <vector>
 
-class CDateTime;
 class CFileItem;
 typedef std::shared_ptr<CFileItem> CFileItemPtr;
 
@@ -37,10 +37,6 @@ namespace PVR
 #define PVR_GROUP_TYPE_DEFAULT      0
 #define PVR_GROUP_TYPE_INTERNAL     1
 #define PVR_GROUP_TYPE_USER_DEFINED 2
-
-  class CPVRChannelGroups;
-  class CPVRChannelGroupInternal;
-  class CPVRChannelGroupsContainer;
 
   typedef struct
   {

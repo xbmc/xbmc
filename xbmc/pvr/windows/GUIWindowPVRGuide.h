@@ -26,8 +26,6 @@
 #include "pvr/PVRChannelNumberInputHandler.h"
 #include "GUIWindowPVRBase.h"
 
-class CSetting;
-
 namespace PVR
 {
   class CGUIEPGGridContainer;

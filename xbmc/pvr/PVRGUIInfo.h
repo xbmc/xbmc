@@ -33,9 +33,6 @@
 
 namespace PVR
 {
-  class CPVRTimerInfoTag;
-  class CPVRRecording;
-
   class CPVRGUIInfo : private CThread,
                       private Observer
   {
