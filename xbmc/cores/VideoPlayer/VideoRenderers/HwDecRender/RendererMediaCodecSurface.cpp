@@ -33,6 +33,8 @@ CRendererMediaCodecSurface::CRendererMediaCodecSurface()
 
 CRendererMediaCodecSurface::~CRendererMediaCodecSurface()
 {
+  for (unsigned int i(0); i < m_NumYV12Buffers; ++i)
+    ReleaseBuffer(i);
 }
 
 bool CRendererMediaCodecSurface::RenderCapture(CRenderCapture* capture)
@@ -44,23 +46,10 @@ bool CRendererMediaCodecSurface::RenderCapture(CRenderCapture* capture)
 
 void CRendererMediaCodecSurface::AddVideoPictureHW(VideoPicture &picture, int index)
 {
-#ifdef DEBUG_VERBOSE
-  unsigned int time = XbmcThreads::SystemClockMillis();
-  int mindex = -1;
-#endif
-
+  ReleaseBuffer(index);
   YUVBUFFER &buf = m_buffers[index];
   if (picture.hwPic)
-  {
-    buf.hwDec = static_cast<CDVDMediaCodecInfo*>(picture.hwPic)->Retain();
-#ifdef DEBUG_VERBOSE
-    mindex = ((CDVDMediaCodecInfo *)buf.hwDec)->GetIndex();
-#endif
-  }
-
-#ifdef DEBUG_VERBOSE
-  CLog::Log(LOGDEBUG, "AddProcessor %d: img:%d tm:%d", index, mindex, XbmcThreads::SystemClockMillis() - time);
-#endif
+    buf.hwDec = static_cast<CDVDMediaCodecInfo*>(picture.hwPic);
 }
 
 bool CRendererMediaCodecSurface::RenderUpdateCheckForEmptyField()
@@ -113,8 +102,8 @@ bool CRendererMediaCodecSurface::LoadShadersHook()
 
 bool CRendererMediaCodecSurface::RenderHook(int index)
 {
-  glClearColor(0,0,0,0);
-  glClear(GL_COLOR_BUFFER_BIT);
+  //glClearColor(0,0,0,0);
+  //glClear(GL_COLOR_BUFFER_BIT);
 
   CDVDMediaCodecInfo *mci = static_cast<CDVDMediaCodecInfo *>(m_buffers[index].hwDec);
   if (mci && !mci->IsReleased())
