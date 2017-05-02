@@ -33,22 +33,18 @@
 
 namespace PVR
 {
-  class CPVRChannelGroup;
-  class CPVRChannelGroupInternal;
   class CPVRChannelGroups;
   class CPVRTimersContainer;
-  class CPVRTimerInfoTag;
-  class CPVRRecordings;
-  class CPVREpg;
-  class CPVREpgContainer;
-  class CPVRClient;
-  class CPVRTimerType;
 
   typedef std::vector<PVR_MENUHOOK> PVR_MENUHOOKS;
-  typedef std::shared_ptr<CPVRClient> PVR_CLIENT;
-  #define PVR_INVALID_CLIENT_ID (-2)
 
+  class CPVRClient;
+  typedef std::shared_ptr<CPVRClient> PVR_CLIENT;
+
+  class CPVRTimerType;
   typedef std::vector<CPVRTimerTypePtr>  CPVRTimerTypes;
+
+  #define PVR_INVALID_CLIENT_ID (-2)
 
   /*!
    * Interface from XBMC to a PVR add-on.
@@ -63,12 +59,12 @@ namespace PVR
     explicit CPVRClient(ADDON::AddonProps props);
     ~CPVRClient(void);
 
-    virtual void OnDisabled() override;
-    virtual void OnEnabled() override;
-    virtual void OnPreInstall() override;
-    virtual void OnPostInstall(bool update, bool modal) override;
-    virtual void OnPreUnInstall() override;
-    virtual void OnPostUnInstall() override;
+    void OnDisabled() override;
+    void OnEnabled() override;
+    void OnPreInstall() override;
+    void OnPostInstall(bool update, bool modal) override;
+    void OnPreUnInstall() override;
+    void OnPostUnInstall() override;
     ADDON::AddonPtr GetRunningInstance() const override;
 
     /** @name PVR add-on methods */
