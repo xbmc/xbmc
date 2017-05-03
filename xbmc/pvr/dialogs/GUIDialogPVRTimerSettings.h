@@ -31,7 +31,6 @@
 #include <vector>
 #include <string>
 
-class CFileItem;
 class CSetting;
 
 namespace PVR
@@ -42,22 +41,22 @@ namespace PVR
     CGUIDialogPVRTimerSettings();
     virtual ~CGUIDialogPVRTimerSettings();
 
-    virtual bool CanBeActivated() const;
+    bool CanBeActivated() const override;
 
     void SetTimer(const CPVRTimerInfoTagPtr &timer);
 
   protected:
     // implementation of ISettingCallback
-    virtual void OnSettingChanged(const CSetting *setting);
-    virtual void OnSettingAction(const CSetting *setting);
+    void OnSettingChanged(const CSetting *setting) override;
+    void OnSettingAction(const CSetting *setting) override;
 
     // specialization of CGUIDialogSettingsBase
-    virtual bool AllowResettingSettings() const { return false; }
-    virtual void Save();
-    virtual void SetupView();
+    bool AllowResettingSettings() const override { return false; }
+    void Save() override;
+    void SetupView() override;
 
     // specialization of CGUIDialogSettingsManualBase
-    virtual void InitializeSettings();
+    void InitializeSettings() override;
     
   private:
     void InitializeTypesList();

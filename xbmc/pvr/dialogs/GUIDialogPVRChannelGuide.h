@@ -33,24 +33,25 @@ namespace PVR
   public:
     CGUIDialogPVRChannelGuide(void);
     virtual ~CGUIDialogPVRChannelGuide(void);
-    virtual bool OnMessage(CGUIMessage& message);
-    virtual void OnWindowLoaded();
-    virtual void OnWindowUnload();
-    virtual void Open(const CPVRChannelPtr &channel);
+    bool OnMessage(CGUIMessage& message) override;
+    void OnWindowLoaded() override;
+    void OnWindowUnload() override;
+
+    void Open(const CPVRChannelPtr &channel);
 
   protected:
-    virtual void OnInitWindow();
-    virtual void OnDeinitWindow(int nextWindowID);
+    void OnInitWindow() override;
+    void OnDeinitWindow(int nextWindowID) override;
 
-    void ShowInfo(int iItem);
-    void Clear();
-
-    CGUIControl *GetFirstFocusableControl(int id);
+    CGUIControl *GetFirstFocusableControl(int id) override;
 
     std::unique_ptr<CFileItemList> m_vecItems;
     CGUIViewControl m_viewControl;
 
   private:
+    void ShowInfo(int iItem);
+    void Clear();
+
     CPVRChannelPtr m_channel;
   };
 }

@@ -35,40 +35,16 @@ namespace PVR
   public:
     CGUIDialogPVRChannelManager(void);
     virtual ~CGUIDialogPVRChannelManager(void);
-    virtual bool OnMessage(CGUIMessage& message);
-    virtual bool OnAction(const CAction& action);
-    virtual void OnWindowLoaded(void);
-    virtual void OnWindowUnload(void);
-    virtual bool HasListItems() const { return true; };
-    virtual CFileItemPtr GetCurrentListItem(int offset = 0);
+    bool OnMessage(CGUIMessage& message) override;
+    bool OnAction(const CAction& action) override;
+    void OnWindowLoaded(void) override;
+    void OnWindowUnload(void) override;
+    bool HasListItems() const override{ return true; }
+    CFileItemPtr GetCurrentListItem(int offset = 0) override;
 
   protected:
-    virtual void OnInitWindow();
-    virtual void OnDeinitWindow(int nextWindowID);
-
-    virtual bool OnPopupMenu(int iItem);
-    virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
-
-    virtual bool OnActionMove(const CAction &action);
-
-    virtual bool OnMessageClick(CGUIMessage &message);
-
-    virtual bool OnClickListChannels(CGUIMessage &message);
-    virtual bool OnClickButtonOK(CGUIMessage &message);
-    virtual bool OnClickButtonApply(CGUIMessage &message);
-    virtual bool OnClickButtonCancel(CGUIMessage &message);
-    virtual bool OnClickButtonRadioTV(CGUIMessage &message);
-    virtual bool OnClickButtonRadioActive(CGUIMessage &message);
-    virtual bool OnClickButtonRadioParentalLocked(CGUIMessage &message);
-    virtual bool OnClickButtonEditName(CGUIMessage &message);
-    virtual bool OnClickButtonChannelLogo(CGUIMessage &message);
-    virtual bool OnClickButtonUseEPG(CGUIMessage &message);
-    virtual bool OnClickEPGSourceSpin(CGUIMessage &message);
-    virtual bool OnClickButtonGroupManager(CGUIMessage &message);
-    virtual bool OnClickButtonNewChannel();
-
-    virtual bool PersistChannel(const CFileItemPtr &pItem, const CPVRChannelGroupPtr &group, unsigned int *iChannelNumber);
-    virtual void SetItemsUnchanged(void);
+    void OnInitWindow() override;
+    void OnDeinitWindow(int nextWindowID) override;
 
   private:
     void Clear(void);
@@ -77,6 +53,28 @@ namespace PVR
     void Renumber(void);
     void SetData(int iItem);
     void RenameChannel(const CFileItemPtr &pItem);
+
+    bool OnPopupMenu(int iItem);
+    bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
+    bool OnActionMove(const CAction &action);
+    bool OnMessageClick(CGUIMessage &message);
+    bool OnClickListChannels(CGUIMessage &message);
+    bool OnClickButtonOK(CGUIMessage &message);
+    bool OnClickButtonApply(CGUIMessage &message);
+    bool OnClickButtonCancel(CGUIMessage &message);
+    bool OnClickButtonRadioTV(CGUIMessage &message);
+    bool OnClickButtonRadioActive(CGUIMessage &message);
+    bool OnClickButtonRadioParentalLocked(CGUIMessage &message);
+    bool OnClickButtonEditName(CGUIMessage &message);
+    bool OnClickButtonChannelLogo(CGUIMessage &message);
+    bool OnClickButtonUseEPG(CGUIMessage &message);
+    bool OnClickEPGSourceSpin(CGUIMessage &message);
+    bool OnClickButtonGroupManager(CGUIMessage &message);
+    bool OnClickButtonNewChannel();
+
+    bool PersistChannel(const CFileItemPtr &pItem, const CPVRChannelGroupPtr &group, unsigned int *iChannelNumber);
+    void SetItemsUnchanged(void);
+
     bool m_bIsRadio;
     bool m_bMovingMode;
     bool m_bContainsChanges;

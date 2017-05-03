@@ -37,30 +37,30 @@ namespace PVR
     /*!
      * @brief Create a new instance of the EPG database.
      */
-    CPVREpgDatabase(void) {};
+    CPVREpgDatabase(void) = default;
 
     /*!
      * @brief Destroy this instance.
      */
-    virtual ~CPVREpgDatabase(void) {};
+    virtual ~CPVREpgDatabase(void) = default;
 
     /*!
      * @brief Open the database.
      * @return True if it was opened successfully, false otherwise.
      */
-    virtual bool Open(void);
+    bool Open(void) override;
 
     /*!
      * @brief Get the minimal database version that is required to operate correctly.
      * @return The minimal database version.
      */
-    virtual int GetSchemaVersion(void) const { return 11; };
+    int GetSchemaVersion(void) const override { return 11; }
 
     /*!
      * @brief Get the default sqlite database filename.
      * @return The default filename.
      */
-    const char *GetBaseDBName(void) const { return "Epg"; };
+    const char *GetBaseDBName(void) const override { return "Epg"; }
 
     /*! @name EPG methods */
     //@{
@@ -69,42 +69,42 @@ namespace PVR
      * @brief Remove all EPG information from the database
      * @return True if the EPG information was erased, false otherwise.
      */
-    virtual bool DeleteEpg(void);
+    bool DeleteEpg(void);
 
     /*!
      * @brief Delete an EPG table.
      * @param table The table to remove.
      * @return True if the table was removed successfully, false otherwise.
      */
-    virtual bool Delete(const CPVREpg &table);
+    bool Delete(const CPVREpg &table);
 
     /*!
      * @brief Erase all EPG entries with an end time less than the given time.
      * @param maxEndTime The maximum allowed end time.
      * @return True if the entries were removed successfully, false otherwise.
      */
-    virtual bool DeleteEpgEntries(const CDateTime &maxEndTime);
+    bool DeleteEpgEntries(const CDateTime &maxEndTime);
 
     /*!
      * @brief Remove a single EPG entry.
      * @param tag The entry to remove.
      * @return True if it was removed successfully, false otherwise.
      */
-    virtual bool Delete(const CPVREpgInfoTag &tag);
+    bool Delete(const CPVREpgInfoTag &tag);
 
     /*!
      * @brief Get all EPG tables from the database. Does not get the EPG tables' entries.
      * @param container The container to fill.
      * @return The amount of entries that was added.
      */
-    virtual int Get(CPVREpgContainer &container);
+    int Get(CPVREpgContainer &container);
 
     /*!
      * @brief Get all EPG entries for a table.
      * @param epg The EPG table to get the entries for.
      * @return The amount of entries that was added.
      */
-    virtual int Get(CPVREpg &epg);
+    int Get(CPVREpg &epg);
 
     /*!
      * @brief Get the last stored EPG scan time.
@@ -112,7 +112,7 @@ namespace PVR
      * @param lastScan The last scan time or -1 if it wasn't found.
      * @return True if the time was fetched successfully, false otherwise.
      */
-    virtual bool GetLastEpgScanTime(int iEpgId, CDateTime *lastScan);
+    bool GetLastEpgScanTime(int iEpgId, CDateTime *lastScan);
 
     /*!
      * @brief Update the last scan time.
@@ -120,7 +120,7 @@ namespace PVR
      * @param bQueueWrite Don't execute the query immediately but queue it if true.
      * @return True if it was updated successfully, false otherwise.
      */
-    virtual bool PersistLastEpgScanTime(int iEpgId = 0, bool bQueueWrite = false);
+    bool PersistLastEpgScanTime(int iEpgId = 0, bool bQueueWrite = false);
 
     bool Persist(const EPGMAP &epgs);
 
@@ -130,7 +130,7 @@ namespace PVR
      * @param bQueueWrite Don't execute the query immediately but queue it if true.
      * @return The database ID of this entry or 0 if bSingleUpdate is false and the query was queued.
      */
-    virtual int Persist(const CPVREpg &epg, bool bQueueWrite = false);
+    int Persist(const CPVREpg &epg, bool bQueueWrite = false);
 
     /*!
      * @brief Persist an infotag.
@@ -138,7 +138,7 @@ namespace PVR
      * @param bSingleUpdate If true, this is a single update and the query will be executed immediately.
      * @return The database ID of this entry or 0 if bSingleUpdate is false and the query was queued.
      */
-    virtual int Persist(const CPVREpgInfoTag &tag, bool bSingleUpdate = true);
+    int Persist(const CPVREpgInfoTag &tag, bool bSingleUpdate = true);
 
     /*!
      * @return Last EPG id in the database
@@ -151,18 +151,19 @@ namespace PVR
     /*!
      * @brief Create the EPG database tables.
      */
-    virtual void CreateTables();
+    void CreateTables() override;
 
     /*!
      * @brief Create the EPG database analytics.
      */
-    virtual void CreateAnalytics();
+    void CreateAnalytics() override;
 
     /*!
      * @brief Update an old version of the database.
      * @param version The version to update the database from.
      */
-    virtual void UpdateTables(int version);
-    virtual int GetMinSchemaVersion() const { return 4; }
+    void UpdateTables(int version) override;
+
+    int GetMinSchemaVersion() const override { return 4; }
   };
 }

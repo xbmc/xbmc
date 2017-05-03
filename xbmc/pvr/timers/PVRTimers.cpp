@@ -81,7 +81,7 @@ void CPVRTimersContainer::InsertTimer(const CPVRTimerInfoTagPtr &newTimer)
   }
   else
   {
-    it->second.emplace_back(newTimer);;
+    it->second.emplace_back(newTimer);
   }
 }
 
@@ -786,8 +786,8 @@ CPVRTimerInfoTagPtr CPVRTimers::GetTimerForEpgTag(const CPVREpgInfoTagPtr &epgTa
           if (timersEntry->m_iClientChannelUid != PVR_CHANNEL_INVALID_UID &&
               timersEntry->m_iClientChannelUid == channel->UniqueID())
           {
-            if (timersEntry->m_iEpgUid != EPG_TAG_INVALID_UID &&
-                timersEntry->m_iEpgUid == epgTag->UniqueBroadcastID())
+            if (timersEntry->UniqueBroadcastID() != EPG_TAG_INVALID_UID &&
+                timersEntry->UniqueBroadcastID() == epgTag->UniqueBroadcastID())
               return timersEntry;
 
             if (timersEntry->m_bIsRadio == channel->IsRadio() &&

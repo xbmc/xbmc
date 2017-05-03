@@ -75,7 +75,7 @@ namespace PVR
     bool operator ==(const CPVREpgInfoTag& right) const;
     bool operator !=(const CPVREpgInfoTag& right) const;
 
-    virtual void Serialize(CVariant &value) const;
+    void Serialize(CVariant &value) const override;
 
     /*!
      * @brief Check if this event is currently active.

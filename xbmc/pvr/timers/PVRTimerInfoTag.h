@@ -29,10 +29,6 @@
  * a EPG entry by giving the EPG information tag or as instant timer
  * on currently tuned channel, or give a blank tag to modify later.
  *
- * With exception of the blank one, the tag can easily and unmodified added
- * by the PVRManager function "bool AddTimer(const CFileItem &item)" to
- * the backend server.
- *
  * The filename inside the tag is for reference only and gives the index
  * number of the tag reported by the PVR backend and can not be played!
  */
@@ -44,34 +40,22 @@
 #include "utils/ISerializable.h"
 #include "XBDateTime.h"
 
-class CFileItem;
 class CVariant;
 
 namespace PVR
 {
-  class CGUIDialogPVRTimerSettings;
-  class CPVRTimers;
-  class CPVRChannelGroupInternal;
-
   class CPVRTimerInfoTag : public ISerializable
   {
-    friend class CPVRTimers;
-
   public:
     CPVRTimerInfoTag(bool bRadio = false);
     CPVRTimerInfoTag(const PVR_TIMER &timer, const CPVRChannelPtr &channel, unsigned int iClientId);
 
-  private:
-    CPVRTimerInfoTag(const CPVRTimerInfoTag &tag); // intentionally not implemented.
-    CPVRTimerInfoTag &operator=(const CPVRTimerInfoTag &orig); // intentionally not implemented.
-
-  public:
     virtual ~CPVRTimerInfoTag(void);
 
     bool operator ==(const CPVRTimerInfoTag& right) const;
     bool operator !=(const CPVRTimerInfoTag& right) const;
 
-    virtual void Serialize(CVariant &value) const;
+    void Serialize(CVariant &value) const override;
 
     void UpdateSummary(void);
 
@@ -213,6 +197,12 @@ namespace PVR
     const std::string& Summary(void) const;
     const std::string& Path(void) const;
 
+    /*!
+     * @brief Get the UID of the epg event associated with this timer tag, if any.
+     * @return the UID or EPG_TAG_INVALID_UID.
+     */
+    unsigned int UniqueBroadcastID() const { return m_iEpgUid; }
+
     /* Client control functions */
     bool AddToClient() const;
     bool DeleteFromClient(bool bForce = false) const;
@@ -279,6 +269,9 @@ namespace PVR
     unsigned int          m_iMarginEnd;          /*!< @brief (optional) if set, the backend ends the recording iMarginEnd minutes after endTime. */
 
   private:
+    CPVRTimerInfoTag(const CPVRTimerInfoTag &tag) = delete;
+    CPVRTimerInfoTag &operator=(const CPVRTimerInfoTag &orig) = delete;
+
     std::string GetWeekdaysString() const;
     void UpdateEpgInfoTag(void);
 

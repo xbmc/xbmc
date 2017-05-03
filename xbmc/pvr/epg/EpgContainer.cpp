@@ -137,8 +137,8 @@ void CPVREpgContainer::Clear(bool bClearDb /* = false */)
 class CPVREpgContainerStartJob : public CJob
 {
 public:
-  CPVREpgContainerStartJob() {}
-  ~CPVREpgContainerStartJob(void) {}
+  CPVREpgContainerStartJob() = default;
+  virtual ~CPVREpgContainerStartJob(void) = default;
 
   bool DoWork(void)
   {

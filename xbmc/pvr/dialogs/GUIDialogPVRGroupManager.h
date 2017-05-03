@@ -33,19 +33,19 @@ namespace PVR
   public:
     CGUIDialogPVRGroupManager(void);
     virtual ~CGUIDialogPVRGroupManager(void);
-    virtual bool OnMessage(CGUIMessage& message);
-    virtual void OnWindowLoaded();
-    virtual void OnWindowUnload();
+    bool OnMessage(CGUIMessage& message) override;
+    void OnWindowLoaded() override;
+    void OnWindowUnload() override;
+
     void SetRadio(bool bIsRadio);
 
   protected:
-    virtual void OnInitWindow();
-    virtual void OnDeinitWindow(int nextWindowID);
-
-    void Clear();
-    void Update();
+    void OnInitWindow() override;
+    void OnDeinitWindow(int nextWindowID) override;
 
   private:
+    void Clear();
+    void Update();
     bool PersistChanges(void);
     bool CancelChanges(void);
     bool ActionButtonOk(CGUIMessage &message);

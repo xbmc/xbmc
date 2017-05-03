@@ -349,7 +349,7 @@ namespace PVR
     {
     public:
       InstantRecordingActionSelector(int iInstantRecordTime);
-      virtual ~InstantRecordingActionSelector() {}
+      virtual ~InstantRecordingActionSelector() = default;
 
       void AddAction(PVRRECORD_INSTANTRECORDACTION eAction, const std::string &title);
       void PreSelectAction(PVRRECORD_INSTANTRECORDACTION eAction);

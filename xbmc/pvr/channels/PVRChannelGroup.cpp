@@ -993,11 +993,6 @@ void CPVRChannelGroup::OnSettingChanged(const CSetting *setting)
   }
 }
 
-bool CPVRPersistGroupJob::DoWork(void)
-{
-  return m_group->Persist();
-}
-
 int CPVRChannelGroup::GetEPGNowOrNext(CFileItemList &results, bool bGetNext) const
 {
   int iInitialSize = results.Size();

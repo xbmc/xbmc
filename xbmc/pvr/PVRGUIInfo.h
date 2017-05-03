@@ -33,9 +33,6 @@
 
 namespace PVR
 {
-  class CPVRTimerInfoTag;
-  class CPVRRecording;
-
   class CPVRGUIInfo : private CThread,
                       private Observer
   {
@@ -93,7 +90,7 @@ namespace PVR
     {
     public:
       TimerInfo();
-      virtual ~TimerInfo() {}
+      virtual ~TimerInfo() = default;
 
       void ResetProperties();
 
@@ -145,7 +142,7 @@ namespace PVR
     class AnyTimerInfo : public TimerInfo
     {
     public:
-      AnyTimerInfo() {};
+      AnyTimerInfo() = default;
 
     private:
       int AmountActiveTimers() override;
@@ -157,7 +154,7 @@ namespace PVR
     class TVTimerInfo : public TimerInfo
     {
     public:
-      TVTimerInfo() {};
+      TVTimerInfo() = default;
 
     private:
       int AmountActiveTimers() override;
@@ -169,7 +166,7 @@ namespace PVR
     class RadioTimerInfo : public TimerInfo
     {
     public:
-      RadioTimerInfo() {};
+      RadioTimerInfo() = default;
 
     private:
       int AmountActiveTimers() override;

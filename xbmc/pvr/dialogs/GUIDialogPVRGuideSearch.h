@@ -30,18 +30,19 @@ namespace PVR
   {
   public:
     CGUIDialogPVRGuideSearch(void);
-    virtual ~CGUIDialogPVRGuideSearch(void) {}
-    virtual bool OnMessage(CGUIMessage& message);
-    virtual void OnWindowLoaded();
+    virtual ~CGUIDialogPVRGuideSearch(void) = default;
+    bool OnMessage(CGUIMessage& message) override;
+    void OnWindowLoaded() override;
 
     void SetFilterData(CPVREpgSearchFilter *searchFilter) { m_searchFilter = searchFilter; }
     bool IsConfirmed() const { return m_bConfirmed; }
     bool IsCanceled() const { return m_bCanceled; }
-    void OnSearch();
 
   protected:
-    virtual void OnInitWindow();
+    void OnInitWindow() override;
 
+  private:
+    void OnSearch();
     void UpdateChannelSpin(void);
     void UpdateGroupsSpin(void);
     void UpdateGenreSpin(void);
