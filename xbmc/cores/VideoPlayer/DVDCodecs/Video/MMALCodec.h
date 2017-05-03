@@ -130,7 +130,7 @@ protected:
   bool Initialize( const std::string &decoder_name);
   void PortSettingsChanged(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer);
   bool SendCodecConfigData();
-  bool ClearPicture(VideoPicture* pVideoPicture);
+  void ReleasePicture();
 
   CDVDStreamInfo    m_hints;
   float             m_fps;
@@ -156,6 +156,8 @@ protected:
   MMAL_ES_FORMAT_T *m_es_format;
 
   MMAL_FOURCC_T m_codingType;
+  VideoPicture* m_lastDvdVideoPicture;
+
   bool change_dec_output_format();
 };
 
