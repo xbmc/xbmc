@@ -115,7 +115,6 @@ public:
   virtual void Reset() override;
   virtual bool Reconfigure(CDVDStreamInfo &hints) override;
   virtual VCReturn GetPicture(VideoPicture* pVideoPicture) override;
-  virtual bool ClearPicture(VideoPicture* pVideoPicture) override;
   virtual const char* GetName() override { return m_formatname.c_str(); };
   virtual void SetCodecControl(int flags) override;
   virtual unsigned GetAllowedReferences() override;
