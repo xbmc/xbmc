@@ -48,8 +48,7 @@ void CRendererMediaCodecSurface::AddVideoPictureHW(VideoPicture &picture, int in
 {
   ReleaseBuffer(index);
   YUVBUFFER &buf = m_buffers[index];
-  if (picture.hwPic)
-    buf.hwDec = static_cast<CDVDMediaCodecInfo*>(picture.hwPic);
+  buf.hwDec = static_cast<CDVDMediaCodecInfo*>(picture.hwPic);
 }
 
 bool CRendererMediaCodecSurface::RenderUpdateCheckForEmptyField()
