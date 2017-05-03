@@ -162,16 +162,6 @@ public:
   virtual VCReturn GetPicture(VideoPicture* pVideoPicture) = 0;
 
   /**
-   * returns true if successfull
-   * the data is cleared to zero
-   */
-  virtual bool ClearPicture(VideoPicture* pVideoPicture)
-  {
-    memset(pVideoPicture, 0, sizeof(VideoPicture));
-    return true;
-  }
-
-  /**
    * will be called by video player indicating the playback speed. see DVD_PLAYSPEED_NORMAL,
    * DVD_PLAYSPEED_PAUSE and friends.
    */

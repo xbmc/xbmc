@@ -118,6 +118,7 @@ CMMALVideo::CMMALVideo(CProcessInfo &processInfo) : CDVDVideoCodec(processInfo)
   m_got_eos = false;
   m_packet_num = 0;
   m_packet_num_eos = ~0;
+  m_lastDvdVideoPicture = nullptr;
 }
 
 CMMALVideo::~CMMALVideo()
@@ -672,6 +673,7 @@ void CMMALVideo::Reset(void)
   if (g_advancedSettings.CanLogComponent(LOGVIDEO))
     CLog::Log(LOGDEBUG, "%s::%s", CLASSNAME, __func__);
 
+  ReleasePicture();
   if (m_dec_input && m_dec_input->is_enabled)
     mmal_port_disable(m_dec_input);
   if (m_dec_output && m_dec_output->is_enabled)
@@ -734,6 +736,7 @@ CDVDVideoCodec::VCReturn CMMALVideo::GetPicture(VideoPicture* pDvdVideoPicture)
   bool drain = (m_codecControlFlags & DVD_CODEC_CTRL_DRAIN) ? true : false;
   bool send_eos = drain && !m_got_eos && m_packet_num_eos != m_packet_num;
 
+  ReleasePicture();
   // we don't get an EOS response if no packets have been sent
   if (m_packet_num == 0 && send_eos)
     m_got_eos = true;
@@ -806,7 +809,6 @@ CDVDVideoCodec::VCReturn CMMALVideo::GetPicture(VideoPicture* pDvdVideoPicture)
 
   if (ret == CDVDVideoCodec::VC_PICTURE)
   {
-    ClearPicture(pDvdVideoPicture);
     assert(buffer && buffer->mmal_buffer);
     memset(pDvdVideoPicture, 0, sizeof *pDvdVideoPicture);
     pDvdVideoPicture->format = RENDER_FMT_MMAL;
@@ -843,6 +845,7 @@ CDVDVideoCodec::VCReturn CMMALVideo::GetPicture(VideoPicture* pDvdVideoPicture)
     assert(!(buffer->mmal_buffer->flags & MMAL_BUFFER_HEADER_FLAG_DECODEONLY));
     buffer->mmal_buffer->flags &= ~MMAL_BUFFER_HEADER_FLAG_USER3;
     buffer->m_stills = m_hints.stills;
+    m_lastDvdVideoPicture = pDvdVideoPicture;
   }
 
   if (ret == CDVDVideoCodec::VC_NONE)
@@ -853,18 +856,17 @@ CDVDVideoCodec::VCReturn CMMALVideo::GetPicture(VideoPicture* pDvdVideoPicture)
   return ret;
 }
 
-bool CMMALVideo::ClearPicture(VideoPicture* pDvdVideoPicture)
+void CMMALVideo::ReleasePicture()
 {
   CSingleLock lock(m_sharedSection);
-  if (pDvdVideoPicture->format == RENDER_FMT_MMAL)
+  if (m_lastDvdVideoPicture)
   {
-    CMMALBuffer *omvb = static_cast<CMMALBuffer*>(pDvdVideoPicture->hwPic);
+    CMMALBuffer *omvb = static_cast<CMMALBuffer*>(m_lastDvdVideoPicture->hwPic);
     if (VERBOSE && g_advancedSettings.CanLogComponent(LOGVIDEO))
       CLog::Log(LOGDEBUG, "%s::%s - %p (%p)", CLASSNAME, __func__, omvb, omvb->mmal_buffer);
     SAFE_RELEASE(omvb);
+    m_lastDvdVideoPicture = nullptr;
   }
-  memset(pDvdVideoPicture, 0, sizeof *pDvdVideoPicture);
-  return true;
 }
 
 void CMMALVideo::SetCodecControl(int flags)
