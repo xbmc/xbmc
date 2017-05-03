@@ -203,7 +203,6 @@ void CVideoPlayerVideo::OpenStream(CDVDStreamInfo &hint, CDVDVideoCodec* codec)
   }
   else if (m_pVideoCodec)
   {
-    m_pVideoCodec->ClearPicture(&m_picture);
     delete m_pVideoCodec;
     m_pVideoCodec = nullptr;
   }
@@ -251,7 +250,6 @@ void CVideoPlayerVideo::CloseStream(bool bWaitForBuffers)
   CLog::Log(LOGNOTICE, "deleting video codec");
   if (m_pVideoCodec)
   {
-    m_pVideoCodec->ClearPicture(&m_picture);
     delete m_pVideoCodec;
     m_pVideoCodec = NULL;
   }
@@ -526,10 +524,6 @@ void CVideoPlayerVideo::Process()
     // all data is used by the decoder, we can safely free it now
     pMsg->Release();
   }
-
-  // we need to let decoder release any picture retained resources.
-  if (m_pVideoCodec)
-    m_pVideoCodec->ClearPicture(&m_picture);
 }
 
 bool CVideoPlayerVideo::ProcessDecoderOutput(double &frametime, double &pts)

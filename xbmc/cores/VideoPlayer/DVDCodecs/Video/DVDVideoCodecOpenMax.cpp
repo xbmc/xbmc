@@ -195,12 +195,6 @@ bool CDVDVideoCodecOpenMax::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   return VC_PICTURE | VC_BUFFER;
 }
 
-bool CDVDVideoCodecOpenMax::ClearPicture(DVDVideoPicture* pDvdVideoPicture)
-{
-  return m_omx_decoder->ClearPicture(pDvdVideoPicture);
-}
-
-
 ////////////////////////////////////////////////////////////////////////////////////////////
 bool CDVDVideoCodecOpenMax::bitstream_convert_init(void *in_extradata, int in_extrasize)
 {
