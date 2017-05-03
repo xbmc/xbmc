@@ -121,6 +121,7 @@ public:
 
 protected:
   void            Dispose();
+  void            ReleasePrevFrame();
   void            FlushInternal(void);
   bool            ConfigureMediaCodec(void);
   int             GetOutputPicture(void);
@@ -164,6 +165,7 @@ protected:
   bool            m_render_sw;
   bool            m_render_surface;
   mpeg2_sequence  *m_mpeg2_sequence;
+  unsigned int    m_lastInflight;
   int             m_src_offset[4];
   int             m_src_stride[4];
 };
