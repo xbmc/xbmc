@@ -33,7 +33,7 @@ CRendererMediaCodecSurface::CRendererMediaCodecSurface()
 
 CRendererMediaCodecSurface::~CRendererMediaCodecSurface()
 {
-  for (unsigned int i(0); i < m_NumYV12Buffers; ++i)
+  for (int i(0); i < m_NumYV12Buffers; ++i)
     ReleaseBuffer(i);
 }
 
@@ -48,7 +48,7 @@ void CRendererMediaCodecSurface::AddVideoPictureHW(VideoPicture &picture, int in
 {
   ReleaseBuffer(index);
   YUVBUFFER &buf = m_buffers[index];
-  buf.hwDec = static_cast<CDVDMediaCodecInfo*>(picture.hwPic);
+  buf.hwDec = picture.hwPic ? static_cast<CDVDMediaCodecInfo*>(picture.hwPic)->Retain() : nullptr;
 }
 
 bool CRendererMediaCodecSurface::RenderUpdateCheckForEmptyField()

@@ -364,6 +364,7 @@ CDVDVideoCodecAndroidMediaCodec::CDVDVideoCodecAndroidMediaCodec(CProcessInfo &p
 , m_render_sw(false)
 , m_render_surface(surface_render)
 , m_mpeg2_sequence(nullptr)
+, m_lastInflight(~0)
 {
   memset(&m_videobuffer, 0x00, sizeof(VideoPicture));
 }
@@ -781,6 +782,15 @@ void CDVDVideoCodecAndroidMediaCodec::Dispose()
   m_opened = false;
 }
 
+void CDVDVideoCodecAndroidMediaCodec::ReleasePrevFrame()
+{
+  if (~m_lastInflight)
+  {
+    m_inflight[m_lastInflight]->Release();
+    m_lastInflight = ~0;
+  }
+}
+
 bool CDVDVideoCodecAndroidMediaCodec::AddData(const DemuxPacket &packet)
 {
   if (!m_opened)
@@ -954,6 +964,8 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecAndroidMediaCodec::GetPicture(VideoPictur
   if (!m_opened)
     return VC_NONE;
 
+  ReleasePrevFrame();
+
   if (m_checkForPicture)
   {
     int retgp = GetOutputPicture();
@@ -1030,6 +1042,8 @@ void CDVDVideoCodecAndroidMediaCodec::FlushInternal()
 
   if (m_render_sw)
     return;
+
+  ReleasePrevFrame();
 
   for (size_t i = 0; i < m_inflight.size(); i++)
   {
@@ -1148,6 +1162,7 @@ int CDVDVideoCodecAndroidMediaCodec::GetOutputPicture(void)
         m_inflight.push_back(
           new CDVDMediaCodecInfo(index, m_textureId, m_codec, m_surfaceTexture, m_frameAvailable)
         );
+      m_lastInflight = i;
       m_videobuffer.hwPic = m_inflight[i]->Retain();
       static_cast<CDVDMediaCodecInfo*>(m_videobuffer.hwPic)->Validate(true);
     }
