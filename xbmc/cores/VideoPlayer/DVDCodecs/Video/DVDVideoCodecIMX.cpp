@@ -100,14 +100,6 @@ unsigned CDVDVideoCodecIMX::GetAllowedReferences()
   return RENDER_QUEUE_SIZE;
 }
 
-bool CDVDVideoCodecIMX::ClearPicture(DVDVideoPicture* pDvdVideoPicture)
-{
-  if (pDvdVideoPicture)
-    SAFE_RELEASE(pDvdVideoPicture->IMXBuffer);
-
-  return true;
-}
-
 bool CIMXCodec::VpuAllocBuffers(VpuMemInfo *pMemBlock)
 {
   int i, size;
