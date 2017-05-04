@@ -876,17 +876,18 @@ class CAddonGUIRenderingControl
 {
 public:
   CAddonGUIRenderingControl(AddonCB* hdl, KodiAPI::GUI::CB_GUILib* cb, CAddonGUIWindow *window, int controlId)
-    : m_Window(window)
-    , m_Handle(hdl)
-    , m_cb(cb)
-    , m_cbhdl(nullptr)
+    : m_cbhdl(nullptr)
     , CBCreate(nullptr)
     , CBRender(nullptr)
     , CBStop(nullptr)
     , CBDirty(nullptr)
+    , m_Window(window)
+    , m_Handle(hdl)
+    , m_cb(cb)
   {
     m_RenderingHandle = m_cb->Window_GetControl_RenderAddon(m_Handle->addonData, m_Window->m_WindowHandle, controlId);
   }
+
   virtual ~CAddonGUIRenderingControl()
   {
     m_cb->RenderAddon_Delete(m_Handle->addonData, m_RenderingHandle);
