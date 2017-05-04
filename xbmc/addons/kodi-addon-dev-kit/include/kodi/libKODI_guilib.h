@@ -179,267 +179,263 @@ typedef struct CB_GUILib
 #define ADDON_ACTION_CLOSE_DIALOG           51
 #define ADDON_ACTION_NAV_BACK               92
 
-class CAddonGUISpinControl;
-class CAddonGUIRadioButton;
-class CAddonGUIProgressControl;
-class CAddonGUIRenderingControl;
-class CAddonGUISliderControl;
-class CAddonGUISettingsSliderControl;
-
-class CAddonListItem
+class CAddonGUIControlBase
 {
-friend class CAddonGUIWindow;
+public:
+  GUIHANDLE GetControlHandle() const { return m_controlHandle; }
 
+protected:
+  CAddonGUIControlBase(AddonCB* hdl, KodiAPI::GUI::CB_GUILib* cb, CAddonGUIControlBase* window)
+  : m_controlHandle(nullptr), m_Handle(hdl), m_cb(cb), m_Window(window) {}
+  virtual ~CAddonGUIControlBase() = default;
+
+  GUIHANDLE m_controlHandle;
+  AddonCB* m_Handle;
+  KodiAPI::GUI::CB_GUILib* m_cb;
+  CAddonGUIControlBase* m_Window;
+
+private:
+  CAddonGUIControlBase() = delete;
+  CAddonGUIControlBase(const CAddonGUIControlBase&) = delete;
+  CAddonGUIControlBase &operator=(const CAddonGUIControlBase&) = delete;
+};
+
+class CAddonListItem : public CAddonGUIControlBase
+{
 public:
   CAddonListItem(AddonCB* hdl, KodiAPI::GUI::CB_GUILib* cb, const char *label, const char *label2, const char *iconImage, const char *thumbnailImage, const char *path)
-    : m_Handle(hdl)
-    , m_cb(cb)
+    : CAddonGUIControlBase(hdl, cb, nullptr)
   {
-    m_ListItemHandle = m_cb->ListItem_Create(m_Handle->addonData, label, label2, iconImage, thumbnailImage, path);
+    m_controlHandle = m_cb->ListItem_Create(m_Handle->addonData, label, label2, iconImage, thumbnailImage, path);
   }
 
-  virtual ~CAddonListItem(void) {}
+  virtual ~CAddonListItem() = default;
 
   const char *GetLabel()
   {
-    if (!m_ListItemHandle)
+    if (!m_controlHandle)
       return "";
 
-    return m_cb->ListItem_GetLabel(m_Handle->addonData, m_ListItemHandle);
+    return m_cb->ListItem_GetLabel(m_Handle->addonData, m_controlHandle);
   }
 
   void SetLabel(const char *label)
   {
-    if (m_ListItemHandle)
-      m_cb->ListItem_SetLabel(m_Handle->addonData, m_ListItemHandle, label);
+    if (m_controlHandle)
+      m_cb->ListItem_SetLabel(m_Handle->addonData, m_controlHandle, label);
   }
 
   const char *GetLabel2()
   {
-    if (!m_ListItemHandle)
+    if (!m_controlHandle)
       return "";
 
-    return m_cb->ListItem_GetLabel2(m_Handle->addonData, m_ListItemHandle);
+    return m_cb->ListItem_GetLabel2(m_Handle->addonData, m_controlHandle);
   }
 
   void SetLabel2(const char *label)
   {
-    if (m_ListItemHandle)
-      m_cb->ListItem_SetLabel2(m_Handle->addonData, m_ListItemHandle, label);
+    if (m_controlHandle)
+      m_cb->ListItem_SetLabel2(m_Handle->addonData, m_controlHandle, label);
   }
 
   void SetIconImage(const char *image)
   {
-    if (m_ListItemHandle)
-      m_cb->ListItem_SetIconImage(m_Handle->addonData, m_ListItemHandle, image);
+    if (m_controlHandle)
+      m_cb->ListItem_SetIconImage(m_Handle->addonData, m_controlHandle, image);
   }
 
   void SetThumbnailImage(const char *image)
   {
-    if (m_ListItemHandle)
-      m_cb->ListItem_SetThumbnailImage(m_Handle->addonData, m_ListItemHandle, image);
+    if (m_controlHandle)
+      m_cb->ListItem_SetThumbnailImage(m_Handle->addonData, m_controlHandle, image);
   }
 
   void SetInfo(const char *Info)
   {
-    if (m_ListItemHandle)
-      m_cb->ListItem_SetInfo(m_Handle->addonData, m_ListItemHandle, Info);
+    if (m_controlHandle)
+      m_cb->ListItem_SetInfo(m_Handle->addonData, m_controlHandle, Info);
   }
 
   void SetProperty(const char *key, const char *value)
   {
-    if (m_ListItemHandle)
-      m_cb->ListItem_SetProperty(m_Handle->addonData, m_ListItemHandle, key, value);
+    if (m_controlHandle)
+      m_cb->ListItem_SetProperty(m_Handle->addonData, m_controlHandle, key, value);
   }
 
   const char *GetProperty(const char *key) const
   {
-    if (!m_ListItemHandle)
+    if (!m_controlHandle)
       return "";
 
-    return m_cb->ListItem_GetProperty(m_Handle->addonData, m_ListItemHandle, key);
+    return m_cb->ListItem_GetProperty(m_Handle->addonData, m_controlHandle, key);
   }
 
   void SetPath(const char *Path)
   {
-    if (m_ListItemHandle)
-      m_cb->ListItem_SetPath(m_Handle->addonData, m_ListItemHandle, Path);
+    if (m_controlHandle)
+      m_cb->ListItem_SetPath(m_Handle->addonData, m_controlHandle, Path);
   }
-
-protected:
-  GUIHANDLE m_ListItemHandle;
-  AddonCB* m_Handle;
-  KodiAPI::GUI::CB_GUILib* m_cb;
 };
 
-class CAddonGUIWindow
+class CAddonGUIWindow : public CAddonGUIControlBase
 {
-friend class CAddonGUISpinControl;
-friend class CAddonGUIRadioButton;
-friend class CAddonGUIProgressControl;
-friend class CAddonGUIRenderingControl;
-friend class CAddonGUISliderControl;
-friend class CAddonGUISettingsSliderControl;
-
 public:
   CAddonGUIWindow(AddonCB* hdl, KodiAPI::GUI::CB_GUILib* cb, const char *xmlFilename, const char *defaultSkin, bool forceFallback, bool asDialog)
-    : m_Handle(hdl),
-      m_cb(cb)
+    : CAddonGUIControlBase(hdl, cb, nullptr)
+    , m_cbhdl(nullptr)
+    , CBOnInit(nullptr)
+    , CBOnFocus(nullptr)
+    , CBOnClick(nullptr)
+    , CBOnAction(nullptr)
   {
-    CBOnInit = nullptr;
-    CBOnClick = nullptr;
-    CBOnFocus = nullptr;
-    CBOnAction = nullptr;
-    m_WindowHandle = nullptr;
-    m_cbhdl = nullptr;
-
     if (hdl && cb)
     {
-      m_WindowHandle = m_cb->Window_New(m_Handle->addonData, xmlFilename, defaultSkin, forceFallback, asDialog);
-      if (!m_WindowHandle)
-        fprintf(stderr, "libXBMC_gui-ERROR: cGUIWindow can't create window class from XBMC !!!\n");
+      m_controlHandle = m_cb->Window_New(m_Handle->addonData, xmlFilename, defaultSkin, forceFallback, asDialog);
+      if (!m_controlHandle)
+        fprintf(stderr, "libKODI_guilib: ERROR: Can't create window class !!!\n");
 
-      m_cb->Window_SetCallbacks(m_Handle->addonData, m_WindowHandle, this, OnInitCB, OnClickCB, OnFocusCB, OnActionCB);
+      m_cb->Window_SetCallbacks(m_Handle->addonData, m_controlHandle, this, OnInitCB, OnClickCB, OnFocusCB, OnActionCB);
     }
   }
 
   virtual ~CAddonGUIWindow()
   {
-    if (m_Handle && m_cb && m_WindowHandle)
+    if (m_Handle && m_cb && m_controlHandle)
     {
-      m_cb->Window_Delete(m_Handle->addonData, m_WindowHandle);
-      m_WindowHandle = NULL;
+      m_cb->Window_Delete(m_Handle->addonData, m_controlHandle);
+      m_controlHandle = nullptr;
     }
   }
 
   bool Show()
   {
-    return m_cb->Window_Show(m_Handle->addonData, m_WindowHandle);
+    return m_cb->Window_Show(m_Handle->addonData, m_controlHandle);
   }
 
   void Close()
   {
-    m_cb->Window_Close(m_Handle->addonData, m_WindowHandle);
+    m_cb->Window_Close(m_Handle->addonData, m_controlHandle);
   }
 
   void DoModal()
   {
-    m_cb->Window_DoModal(m_Handle->addonData, m_WindowHandle);
+    m_cb->Window_DoModal(m_Handle->addonData, m_controlHandle);
   }
 
   bool SetFocusId(int iControlId)
   {
-    return m_cb->Window_SetFocusId(m_Handle->addonData, m_WindowHandle, iControlId);
+    return m_cb->Window_SetFocusId(m_Handle->addonData, m_controlHandle, iControlId);
   }
 
   int GetFocusId()
   {
-    return m_cb->Window_GetFocusId(m_Handle->addonData, m_WindowHandle);
+    return m_cb->Window_GetFocusId(m_Handle->addonData, m_controlHandle);
   }
 
   bool SetCoordinateResolution(int res)
   {
-    return m_cb->Window_SetCoordinateResolution(m_Handle->addonData, m_WindowHandle, res);
+    return m_cb->Window_SetCoordinateResolution(m_Handle->addonData, m_controlHandle, res);
   }
 
   void SetProperty(const char *key, const char *value)
   {
-    m_cb->Window_SetProperty(m_Handle->addonData, m_WindowHandle, key, value);
+    m_cb->Window_SetProperty(m_Handle->addonData, m_controlHandle, key, value);
   }
 
   void SetPropertyInt(const char *key, int value)
   {
-    m_cb->Window_SetPropertyInt(m_Handle->addonData, m_WindowHandle, key, value);
+    m_cb->Window_SetPropertyInt(m_Handle->addonData, m_controlHandle, key, value);
   }
 
   void SetPropertyBool(const char *key, bool value)
   {
-    m_cb->Window_SetPropertyBool(m_Handle->addonData, m_WindowHandle, key, value);
+    m_cb->Window_SetPropertyBool(m_Handle->addonData, m_controlHandle, key, value);
   }
 
   void SetPropertyDouble(const char *key, double value)
   {
-    m_cb->Window_SetPropertyDouble(m_Handle->addonData, m_WindowHandle, key, value);
+    m_cb->Window_SetPropertyDouble(m_Handle->addonData, m_controlHandle, key, value);
   }
 
   const char *GetProperty(const char *key) const
   {
-    return m_cb->Window_GetProperty(m_Handle->addonData, m_WindowHandle, key);
+    return m_cb->Window_GetProperty(m_Handle->addonData, m_controlHandle, key);
   }
 
   int GetPropertyInt(const char *key) const
   {
-    return m_cb->Window_GetPropertyInt(m_Handle->addonData, m_WindowHandle, key);
+    return m_cb->Window_GetPropertyInt(m_Handle->addonData, m_controlHandle, key);
   }
 
   bool GetPropertyBool(const char *key) const
   {
-    return m_cb->Window_GetPropertyBool(m_Handle->addonData, m_WindowHandle, key);
+    return m_cb->Window_GetPropertyBool(m_Handle->addonData, m_controlHandle, key);
   }
 
   double GetPropertyDouble(const char *key) const
   {
-    return m_cb->Window_GetPropertyDouble(m_Handle->addonData, m_WindowHandle, key);
+    return m_cb->Window_GetPropertyDouble(m_Handle->addonData, m_controlHandle, key);
   }
 
   void ClearProperties()
   {
-    m_cb->Window_ClearProperties(m_Handle->addonData, m_WindowHandle);
+    m_cb->Window_ClearProperties(m_Handle->addonData, m_controlHandle);
   }
 
   int GetListSize()
   {
-    return m_cb->Window_GetListSize(m_Handle->addonData, m_WindowHandle);
+    return m_cb->Window_GetListSize(m_Handle->addonData, m_controlHandle);
   }
 
   void ClearList()
   {
-    m_cb->Window_ClearList(m_Handle->addonData, m_WindowHandle);
+    m_cb->Window_ClearList(m_Handle->addonData, m_controlHandle);
   }
 
   GUIHANDLE AddStringItem(const char *name, int itemPosition = -1)
   {
-    return m_cb->Window_AddStringItem(m_Handle->addonData, m_WindowHandle, name, itemPosition);
+    return m_cb->Window_AddStringItem(m_Handle->addonData, m_controlHandle, name, itemPosition);
   }
 
   void AddItem(GUIHANDLE item, int itemPosition = -1)
   {
-    m_cb->Window_AddItem(m_Handle->addonData, m_WindowHandle, item, itemPosition);
+    m_cb->Window_AddItem(m_Handle->addonData, m_controlHandle, item, itemPosition);
   }
 
   void AddItem(CAddonListItem *item, int itemPosition = -1)
   {
-    m_cb->Window_AddItem(m_Handle->addonData, m_WindowHandle, item->m_ListItemHandle, itemPosition);
+    m_cb->Window_AddItem(m_Handle->addonData, m_controlHandle, item->GetControlHandle(), itemPosition);
   }
 
   void RemoveItem(int itemPosition)
   {
-    m_cb->Window_RemoveItem(m_Handle->addonData, m_WindowHandle, itemPosition);
+    m_cb->Window_RemoveItem(m_Handle->addonData, m_controlHandle, itemPosition);
   }
 
   GUIHANDLE GetListItem(int listPos)
   {
-    return m_cb->Window_GetListItem(m_Handle->addonData, m_WindowHandle, listPos);
+    return m_cb->Window_GetListItem(m_Handle->addonData, m_controlHandle, listPos);
   }
 
   void SetCurrentListPosition(int listPos)
   {
-    m_cb->Window_SetCurrentListPosition(m_Handle->addonData, m_WindowHandle, listPos);
+    m_cb->Window_SetCurrentListPosition(m_Handle->addonData, m_controlHandle, listPos);
   }
 
   int GetCurrentListPosition()
   {
-    return m_cb->Window_GetCurrentListPosition(m_Handle->addonData, m_WindowHandle);
+    return m_cb->Window_GetCurrentListPosition(m_Handle->addonData, m_controlHandle);
   }
 
   void SetControlLabel(int controlId, const char *label)
   {
-    m_cb->Window_SetControlLabel(m_Handle->addonData, m_WindowHandle, controlId, label);
+    m_cb->Window_SetControlLabel(m_Handle->addonData, m_controlHandle, controlId, label);
   }
 
   void MarkDirtyRegion()
   {
-    m_cb->Window_MarkDirtyRegion(m_Handle->addonData, m_WindowHandle);
+    m_cb->Window_MarkDirtyRegion(m_Handle->addonData, m_controlHandle);
   }
 
   bool OnClick(int controlId)
@@ -481,13 +477,9 @@ public:
   bool (*CBOnAction)(GUIHANDLE cbhdl, int actionId);
 
 protected:
-  GUIHANDLE m_WindowHandle;
-  AddonCB* m_Handle;
-  KodiAPI::GUI::CB_GUILib* m_cb;
-
   static bool OnInitCB(GUIHANDLE cbhdl);
-  static bool OnClickCB(GUIHANDLE cbhdl, int controlId);
   static bool OnFocusCB(GUIHANDLE cbhdl, int controlId);
+  static bool OnClickCB(GUIHANDLE cbhdl, int controlId);
   static bool OnActionCB(GUIHANDLE cbhdl, int actionId);
 };
 
@@ -512,389 +504,348 @@ inline bool CAddonGUIWindow::OnActionCB(GUIHANDLE cbhdl, int actionId)
   return static_cast<CAddonGUIWindow*>(cbhdl)->OnAction(actionId);
 }
 
-class CAddonGUISpinControl
+class CAddonGUISpinControl: public CAddonGUIControlBase
 {
 public:
   CAddonGUISpinControl(AddonCB* hdl, KodiAPI::GUI::CB_GUILib* cb, CAddonGUIWindow *window, int controlId)
-    : m_Window(window),
-      m_Handle(hdl),
-      m_cb(cb)
+    : CAddonGUIControlBase(hdl, cb, window)
   {
-    m_SpinHandle = m_cb->Window_GetControl_Spin(m_Handle->addonData, m_Window->m_WindowHandle, controlId);
+    m_controlHandle = m_cb->Window_GetControl_Spin(m_Handle->addonData, m_Window->GetControlHandle(), controlId);
   }
   ~CAddonGUISpinControl(void) {}
 
   void SetVisible(bool yesNo)
   {
-    if (m_SpinHandle)
-      m_cb->Control_Spin_SetVisible(m_Handle->addonData, m_SpinHandle, yesNo);
+    if (m_controlHandle)
+      m_cb->Control_Spin_SetVisible(m_Handle->addonData, m_controlHandle, yesNo);
   }
 
   void SetText(const char *label)
   {
-    if (m_SpinHandle)
-      m_cb->Control_Spin_SetText(m_Handle->addonData, m_SpinHandle, label);
+    if (m_controlHandle)
+      m_cb->Control_Spin_SetText(m_Handle->addonData, m_controlHandle, label);
   }
 
   void Clear()
   {
-    if (m_SpinHandle)
-      m_cb->Control_Spin_Clear(m_Handle->addonData, m_SpinHandle);
+    if (m_controlHandle)
+      m_cb->Control_Spin_Clear(m_Handle->addonData, m_controlHandle);
   }
 
   void AddLabel(const char *label, int iValue)
   {
-    if (m_SpinHandle)
-      m_cb->Control_Spin_AddLabel(m_Handle->addonData, m_SpinHandle, label, iValue);
+    if (m_controlHandle)
+      m_cb->Control_Spin_AddLabel(m_Handle->addonData, m_controlHandle, label, iValue);
   }
 
   int GetValue()
   {
-    if (!m_SpinHandle)
+    if (!m_controlHandle)
       return -1;
 
-    return m_cb->Control_Spin_GetValue(m_Handle->addonData, m_SpinHandle);
+    return m_cb->Control_Spin_GetValue(m_Handle->addonData, m_controlHandle);
   }
   
   void SetValue(int iValue)
   {
-    if (m_SpinHandle)
-      m_cb->Control_Spin_SetValue(m_Handle->addonData, m_SpinHandle, iValue);
+    if (m_controlHandle)
+      m_cb->Control_Spin_SetValue(m_Handle->addonData, m_controlHandle, iValue);
   }
-
-private:
-  CAddonGUIWindow* m_Window;
-  GUIHANDLE m_SpinHandle;
-  AddonCB* m_Handle;
-  KodiAPI::GUI::CB_GUILib* m_cb;
 };
 
-class CAddonGUIRadioButton
+class CAddonGUIRadioButton : public CAddonGUIControlBase
 {
 public:
   CAddonGUIRadioButton(AddonCB* hdl, KodiAPI::GUI::CB_GUILib* cb, CAddonGUIWindow *window, int controlId)
-    : m_Window(window)
-    , m_Handle(hdl)
-    , m_cb(cb)
+    : CAddonGUIControlBase(hdl, cb, window)
   {
-    m_ButtonHandle = m_cb->Window_GetControl_RadioButton(m_Handle->addonData, m_Window->m_WindowHandle, controlId);
+    m_controlHandle = m_cb->Window_GetControl_RadioButton(m_Handle->addonData, m_Window->GetControlHandle(), controlId);
   }
   ~CAddonGUIRadioButton() {}
 
   void SetVisible(bool yesNo)
   {
-    if (m_ButtonHandle)
-      m_cb->Control_RadioButton_SetVisible(m_Handle->addonData, m_ButtonHandle, yesNo);
+    if (m_controlHandle)
+      m_cb->Control_RadioButton_SetVisible(m_Handle->addonData, m_controlHandle, yesNo);
   }
 
   void SetText(const char *label)
   {
-    if (m_ButtonHandle)
-      m_cb->Control_RadioButton_SetText(m_Handle->addonData, m_ButtonHandle, label);
+    if (m_controlHandle)
+      m_cb->Control_RadioButton_SetText(m_Handle->addonData, m_controlHandle, label);
   }
 
   void SetSelected(bool yesNo)
   {
-    if (m_ButtonHandle)
-      m_cb->Control_RadioButton_SetSelected(m_Handle->addonData, m_ButtonHandle, yesNo);
+    if (m_controlHandle)
+      m_cb->Control_RadioButton_SetSelected(m_Handle->addonData, m_controlHandle, yesNo);
   }
 
   bool IsSelected()
   {
-    if (!m_ButtonHandle)
+    if (!m_controlHandle)
       return false;
 
-    return m_cb->Control_RadioButton_IsSelected(m_Handle->addonData, m_ButtonHandle);
+    return m_cb->Control_RadioButton_IsSelected(m_Handle->addonData, m_controlHandle);
   }
-
-private:
-  CAddonGUIWindow* m_Window;
-  GUIHANDLE m_ButtonHandle;
-  AddonCB* m_Handle;
-  KodiAPI::GUI::CB_GUILib* m_cb;
 };
 
-class CAddonGUIProgressControl
+class CAddonGUIProgressControl : public CAddonGUIControlBase
 {
 public:
   CAddonGUIProgressControl(AddonCB* hdl, KodiAPI::GUI::CB_GUILib* cb, CAddonGUIWindow *window, int controlId)
-    : m_Window(window)
-    , m_Handle(hdl)
-    , m_cb(cb)
+    : CAddonGUIControlBase(hdl, cb, window)
   {
-    m_ProgressHandle = m_cb->Window_GetControl_Progress(m_Handle->addonData, m_Window->m_WindowHandle, controlId);
+    m_controlHandle = m_cb->Window_GetControl_Progress(m_Handle->addonData, m_Window->GetControlHandle(), controlId);
   }
 
   ~CAddonGUIProgressControl(void) {}
 
   void SetPercentage(float fPercent)
   {
-    if (m_ProgressHandle)
-      m_cb->Control_Progress_SetPercentage(m_Handle->addonData, m_ProgressHandle, fPercent);
+    if (m_controlHandle)
+      m_cb->Control_Progress_SetPercentage(m_Handle->addonData, m_controlHandle, fPercent);
   }
 
   float GetPercentage() const
   {
-    if (!m_ProgressHandle)
+    if (!m_controlHandle)
       return 0.0f;
 
-    return m_cb->Control_Progress_GetPercentage(m_Handle->addonData, m_ProgressHandle);
+    return m_cb->Control_Progress_GetPercentage(m_Handle->addonData, m_controlHandle);
   }
 
   void SetInfo(int iInfo)
   {
-    if (m_ProgressHandle)
-      m_cb->Control_Progress_SetInfo(m_Handle->addonData, m_ProgressHandle, iInfo);
+    if (m_controlHandle)
+      m_cb->Control_Progress_SetInfo(m_Handle->addonData, m_controlHandle, iInfo);
   }
 
   int GetInfo() const
   {
-    if (!m_ProgressHandle)
+    if (!m_controlHandle)
       return -1;
 
-    return m_cb->Control_Progress_GetInfo(m_Handle->addonData, m_ProgressHandle);
+    return m_cb->Control_Progress_GetInfo(m_Handle->addonData, m_controlHandle);
   }
 
   std::string GetDescription() const
   {
-    if (!m_ProgressHandle)
+    if (!m_controlHandle)
       return "";
 
-    return m_cb->Control_Progress_GetDescription(m_Handle->addonData, m_ProgressHandle);
+    return m_cb->Control_Progress_GetDescription(m_Handle->addonData, m_controlHandle);
   }
-
-private:
-  CAddonGUIWindow* m_Window;
-  GUIHANDLE m_ProgressHandle;
-  AddonCB* m_Handle;
-  KodiAPI::GUI::CB_GUILib* m_cb;
 };
 
-class CAddonGUISliderControl
+class CAddonGUISliderControl : public CAddonGUIControlBase
 {
 public:
   CAddonGUISliderControl(AddonCB* hdl, KodiAPI::GUI::CB_GUILib* cb, CAddonGUIWindow *window, int controlId)
-    : m_Window(window)
-    , m_Handle(hdl)
-    , m_cb(cb)
+    : CAddonGUIControlBase(hdl, cb, window)
   {
-    m_SliderHandle = m_cb->Window_GetControl_Slider(m_Handle->addonData, m_Window->m_WindowHandle, controlId);
+    m_controlHandle = m_cb->Window_GetControl_Slider(m_Handle->addonData, m_Window->GetControlHandle(), controlId);
   }
 
   ~CAddonGUISliderControl(void) {}
 
   void SetVisible(bool yesNo)
   {
-    if (m_SliderHandle)
-      m_cb->Control_Slider_SetVisible(m_Handle->addonData, m_SliderHandle, yesNo);
+    if (m_controlHandle)
+      m_cb->Control_Slider_SetVisible(m_Handle->addonData, m_controlHandle, yesNo);
   }
 
   std::string GetDescription() const
   {
-    if (!m_SliderHandle)
+    if (!m_controlHandle)
       return "";
 
-    return m_cb->Control_Slider_GetDescription(m_Handle->addonData, m_SliderHandle);
+    return m_cb->Control_Slider_GetDescription(m_Handle->addonData, m_controlHandle);
   }
 
   void SetIntRange(int iStart, int iEnd)
   {
-    if (m_SliderHandle)
-      m_cb->Control_Slider_SetIntRange(m_Handle->addonData, m_SliderHandle, iStart, iEnd);
+    if (m_controlHandle)
+      m_cb->Control_Slider_SetIntRange(m_Handle->addonData, m_controlHandle, iStart, iEnd);
   }
 
   void SetIntValue(int iValue)
   {
-    if (m_SliderHandle)
-      m_cb->Control_Slider_SetIntValue(m_Handle->addonData, m_SliderHandle, iValue);
+    if (m_controlHandle)
+      m_cb->Control_Slider_SetIntValue(m_Handle->addonData, m_controlHandle, iValue);
   }
 
   int GetIntValue() const
   {
-    if (!m_SliderHandle)
+    if (!m_controlHandle)
       return 0;
-    return m_cb->Control_Slider_GetIntValue(m_Handle->addonData, m_SliderHandle);
+    return m_cb->Control_Slider_GetIntValue(m_Handle->addonData, m_controlHandle);
   }
 
   void SetIntInterval(int iInterval)
   {
-    if (m_SliderHandle)
-      m_cb->Control_Slider_SetIntInterval(m_Handle->addonData, m_SliderHandle, iInterval);
+    if (m_controlHandle)
+      m_cb->Control_Slider_SetIntInterval(m_Handle->addonData, m_controlHandle, iInterval);
   }
 
   void SetPercentage(float fPercent)
   {
-    if (m_SliderHandle)
-      m_cb->Control_Slider_SetPercentage(m_Handle->addonData, m_SliderHandle, fPercent);
+    if (m_controlHandle)
+      m_cb->Control_Slider_SetPercentage(m_Handle->addonData, m_controlHandle, fPercent);
   }
 
   float GetPercentage() const
   {
-    if (!m_SliderHandle)
+    if (!m_controlHandle)
       return 0.0f;
 
-    return m_cb->Control_Slider_GetPercentage(m_Handle->addonData, m_SliderHandle);
+    return m_cb->Control_Slider_GetPercentage(m_Handle->addonData, m_controlHandle);
   }
 
   void SetFloatRange(float fStart, float fEnd)
   {
-    if (m_SliderHandle)
-      m_cb->Control_Slider_SetFloatRange(m_Handle->addonData, m_SliderHandle, fStart, fEnd);
+    if (m_controlHandle)
+      m_cb->Control_Slider_SetFloatRange(m_Handle->addonData, m_controlHandle, fStart, fEnd);
   }
 
   void SetFloatValue(float fValue)
   {
-    if (m_SliderHandle)
-      m_cb->Control_Slider_SetFloatValue(m_Handle->addonData, m_SliderHandle, fValue);
+    if (m_controlHandle)
+      m_cb->Control_Slider_SetFloatValue(m_Handle->addonData, m_controlHandle, fValue);
   }
 
   float GetFloatValue() const
   {
-    if (!m_SliderHandle)
+    if (!m_controlHandle)
       return 0.0f;
-    return m_cb->Control_Slider_GetFloatValue(m_Handle->addonData, m_SliderHandle);
+    return m_cb->Control_Slider_GetFloatValue(m_Handle->addonData, m_controlHandle);
   }
 
   void SetFloatInterval(float fInterval)
   {
-    if (m_SliderHandle)
-      m_cb->Control_Slider_SetFloatInterval(m_Handle->addonData, m_SliderHandle, fInterval);
+    if (m_controlHandle)
+      m_cb->Control_Slider_SetFloatInterval(m_Handle->addonData, m_controlHandle, fInterval);
   }
-
-private:
-  CAddonGUIWindow* m_Window;
-  GUIHANDLE m_SliderHandle;
-  AddonCB* m_Handle;
-  KodiAPI::GUI::CB_GUILib* m_cb;
 };
 
-class CAddonGUISettingsSliderControl
+class CAddonGUISettingsSliderControl : public CAddonGUIControlBase
 {
 public:
   CAddonGUISettingsSliderControl(AddonCB* hdl, KodiAPI::GUI::CB_GUILib* cb, CAddonGUIWindow *window, int controlId)
-    : m_Window(window)
-    , m_Handle(hdl)
-    , m_cb(cb)
+    : CAddonGUIControlBase(hdl, cb, window)
   {
-    m_SettingsSliderHandle = m_cb->Window_GetControl_SettingsSlider(m_Handle->addonData, m_Window->m_WindowHandle, controlId);
+    m_controlHandle = m_cb->Window_GetControl_SettingsSlider(m_Handle->addonData, m_Window->GetControlHandle(), controlId);
   }
   
   ~CAddonGUISettingsSliderControl(void) {}
 
   void SetVisible(bool yesNo)
   {
-    if (m_SettingsSliderHandle)
-      m_cb->Control_SettingsSlider_SetVisible(m_Handle->addonData, m_SettingsSliderHandle, yesNo);
+    if (m_controlHandle)
+      m_cb->Control_SettingsSlider_SetVisible(m_Handle->addonData, m_controlHandle, yesNo);
   }
 
   void SetText(const char *label)
   {
-    if (m_SettingsSliderHandle)
-      m_cb->Control_SettingsSlider_SetText(m_Handle->addonData, m_SettingsSliderHandle, label);
+    if (m_controlHandle)
+      m_cb->Control_SettingsSlider_SetText(m_Handle->addonData, m_controlHandle, label);
   }
 
   std::string GetDescription() const
   {
-    if (!m_SettingsSliderHandle)
+    if (!m_controlHandle)
       return "";
 
-    return m_cb->Control_SettingsSlider_GetDescription(m_Handle->addonData, m_SettingsSliderHandle);
+    return m_cb->Control_SettingsSlider_GetDescription(m_Handle->addonData, m_controlHandle);
   }
 
   void SetIntRange(int iStart, int iEnd)
   {
-    if (m_SettingsSliderHandle)
-      m_cb->Control_SettingsSlider_SetIntRange(m_Handle->addonData, m_SettingsSliderHandle, iStart, iEnd);
+    if (m_controlHandle)
+      m_cb->Control_SettingsSlider_SetIntRange(m_Handle->addonData, m_controlHandle, iStart, iEnd);
   }
 
   void SetIntValue(int iValue)
   {
-    if (m_SettingsSliderHandle)
-      m_cb->Control_SettingsSlider_SetIntValue(m_Handle->addonData, m_SettingsSliderHandle, iValue);
+    if (m_controlHandle)
+      m_cb->Control_SettingsSlider_SetIntValue(m_Handle->addonData, m_controlHandle, iValue);
   }
 
   int GetIntValue() const
   {
-    if (!m_SettingsSliderHandle)
+    if (!m_controlHandle)
       return 0;
-    return m_cb->Control_SettingsSlider_GetIntValue(m_Handle->addonData, m_SettingsSliderHandle);
+    return m_cb->Control_SettingsSlider_GetIntValue(m_Handle->addonData, m_controlHandle);
   }
 
   void SetIntInterval(int iInterval)
   {
-    if (m_SettingsSliderHandle)
-      m_cb->Control_SettingsSlider_SetIntInterval(m_Handle->addonData, m_SettingsSliderHandle, iInterval);
+    if (m_controlHandle)
+      m_cb->Control_SettingsSlider_SetIntInterval(m_Handle->addonData, m_controlHandle, iInterval);
   }
 
   void SetPercentage(float fPercent)
   {
-    if (m_SettingsSliderHandle)
-      m_cb->Control_SettingsSlider_SetPercentage(m_Handle->addonData, m_SettingsSliderHandle, fPercent);
+    if (m_controlHandle)
+      m_cb->Control_SettingsSlider_SetPercentage(m_Handle->addonData, m_controlHandle, fPercent);
   }
 
   float GetPercentage() const
   {
-    if (!m_SettingsSliderHandle)
+    if (!m_controlHandle)
       return 0.0f;
 
-    return m_cb->Control_SettingsSlider_GetPercentage(m_Handle->addonData, m_SettingsSliderHandle);
+    return m_cb->Control_SettingsSlider_GetPercentage(m_Handle->addonData, m_controlHandle);
   }
 
   void SetFloatRange(float fStart, float fEnd)
   {
-    if (m_SettingsSliderHandle)
-      m_cb->Control_SettingsSlider_SetFloatRange(m_Handle->addonData, m_SettingsSliderHandle, fStart, fEnd);
+    if (m_controlHandle)
+      m_cb->Control_SettingsSlider_SetFloatRange(m_Handle->addonData, m_controlHandle, fStart, fEnd);
   }
 
   void SetFloatValue(float fValue)
   {
-    if (m_SettingsSliderHandle)
-      m_cb->Control_SettingsSlider_SetFloatValue(m_Handle->addonData, m_SettingsSliderHandle, fValue);
+    if (m_controlHandle)
+      m_cb->Control_SettingsSlider_SetFloatValue(m_Handle->addonData, m_controlHandle, fValue);
   }
 
   float GetFloatValue() const
   {
-    if (!m_SettingsSliderHandle)
+    if (!m_controlHandle)
       return 0.0f;
-    return m_cb->Control_SettingsSlider_GetFloatValue(m_Handle->addonData, m_SettingsSliderHandle);
+    return m_cb->Control_SettingsSlider_GetFloatValue(m_Handle->addonData, m_controlHandle);
   }
 
   void SetFloatInterval(float fInterval)
   {
-    if (m_SettingsSliderHandle)
-      m_cb->Control_SettingsSlider_SetFloatInterval(m_Handle->addonData, m_SettingsSliderHandle, fInterval);
+    if (m_controlHandle)
+      m_cb->Control_SettingsSlider_SetFloatInterval(m_Handle->addonData, m_controlHandle, fInterval);
   }
-
-private:
-  CAddonGUIWindow* m_Window;
-  GUIHANDLE m_SettingsSliderHandle;
-  AddonCB* m_Handle;
-  KodiAPI::GUI::CB_GUILib* m_cb;
 };
 
-class CAddonGUIRenderingControl
+class CAddonGUIRenderingControl : public CAddonGUIControlBase
 {
 public:
   CAddonGUIRenderingControl(AddonCB* hdl, KodiAPI::GUI::CB_GUILib* cb, CAddonGUIWindow *window, int controlId)
-    : m_Window(window)
-    , m_Handle(hdl)
-    , m_cb(cb)
+    : CAddonGUIControlBase(hdl, cb, window)
     , m_cbhdl(nullptr)
     , CBCreate(nullptr)
     , CBRender(nullptr)
     , CBStop(nullptr)
     , CBDirty(nullptr)
   {
-    m_RenderingHandle = m_cb->Window_GetControl_RenderAddon(m_Handle->addonData, m_Window->m_WindowHandle, controlId);
+    m_controlHandle = m_cb->Window_GetControl_RenderAddon(m_Handle->addonData, m_Window->GetControlHandle(), controlId);
   }
+
   virtual ~CAddonGUIRenderingControl()
   {
-    m_cb->RenderAddon_Delete(m_Handle->addonData, m_RenderingHandle);
+    m_cb->RenderAddon_Delete(m_Handle->addonData, m_controlHandle);
   }
 
   void Init()
   {
-    m_cb->RenderAddon_SetCallbacks(m_Handle->addonData, m_RenderingHandle, this, OnCreateCB, OnRenderCB, OnStopCB, OnDirtyCB);
+    m_cb->RenderAddon_SetCallbacks(m_Handle->addonData, m_controlHandle, this, OnCreateCB, OnRenderCB, OnStopCB, OnDirtyCB);
   }
 
   bool Create(int x, int y, int w, int h, void *device)
@@ -936,11 +887,6 @@ public:
   bool (*CBDirty)(GUIHANDLE cbhdl);
 
 private:
-  CAddonGUIWindow* m_Window;
-  GUIHANDLE m_RenderingHandle;
-  AddonCB* m_Handle;
-  KodiAPI::GUI::CB_GUILib* m_cb;
-
   static bool OnCreateCB(GUIHANDLE cbhdl, int x, int y, int w, int h, void* device);
   static void OnRenderCB(GUIHANDLE cbhdl);
   static void OnStopCB(GUIHANDLE cbhdl);
