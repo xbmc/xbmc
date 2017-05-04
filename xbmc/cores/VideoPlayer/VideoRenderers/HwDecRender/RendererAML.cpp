@@ -25,6 +25,7 @@
 #include "cores/VideoPlayer/DVDCodecs/Video/AMLCodec.h"
 #include "utils/log.h"
 #include "utils/SysfsUtils.h"
+#include "utils/ScreenshotAML.h"
 #include "settings/MediaSettings.h"
 #include "windowing/WindowingFactory.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderCapture.h"
@@ -77,6 +78,7 @@ bool CRendererAML::RenderCapture(CRenderCapture* capture)
 {
   capture->BeginRender();
   capture->EndRender();
+  CScreenshotAML::CaptureVideoFrame((unsigned char *)capture->GetRenderBuffer(), capture->GetWidth(), capture->GetHeight());
   return true;
 }
 
