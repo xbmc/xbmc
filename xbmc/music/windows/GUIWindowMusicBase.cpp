@@ -521,7 +521,7 @@ bool CGUIWindowMusicBase::ShowAlbumInfo(const CFileItem *pItem, bool bShowInfo /
 
 void CGUIWindowMusicBase::ShowSongInfo(CFileItem* pItem)
 {
-  CGUIDialogSongInfo *dialog = g_windowManager.GetWindow<CGUIDialogSongInfo>(WINDOW_DIALOG_MUSIC_INFO);
+  CGUIDialogSongInfo *dialog = g_windowManager.GetWindow<CGUIDialogSongInfo>(WINDOW_DIALOG_SONG_INFO);
   if (dialog)
   {
     if (!pItem->IsMusicDb())
