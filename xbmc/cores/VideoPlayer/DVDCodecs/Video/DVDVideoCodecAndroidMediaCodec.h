@@ -22,7 +22,7 @@
 
 #include "system.h"
 
-#include <queue>
+#include <deque>
 #include <vector>
 #include <memory>
 #include <atomic>
@@ -126,6 +126,7 @@ protected:
   bool            ConfigureMediaCodec(void);
   int             GetOutputPicture(void);
   void            ConfigureOutputFormat(AMediaFormat* mediaformat);
+  void            UpdateFpsDuration();
 
   // surface handling functions
   static void     CallbackInitSurfaceTexture(void*);
@@ -138,8 +139,6 @@ protected:
   int             m_colorFormat;
   std::string     m_formatname;
   bool            m_opened;
-  bool            m_checkForPicture;
-  bool            m_drop;
   int             m_codecControlFlags;
   int             m_state;
   int             m_noPictureLoop;
@@ -155,6 +154,9 @@ protected:
 
   amc_demux m_demux_pkt;
   std::vector<CDVDMediaCodecInfo*> m_inflight;
+
+  uint32_t m_OutputDuration, m_fpsDuration;
+  int64_t m_lastPTS;
 
   static std::atomic<bool> m_InstanceGuard;
 
