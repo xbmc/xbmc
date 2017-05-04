@@ -200,8 +200,7 @@ void COverlayQuadsDX::Render(SRenderState &state)
   g_Windowing.SetAlphaBlendEnable(true);
   pGUIShader->Begin(SHADER_METHOD_RENDER_FONT);
 
-  ID3D11ShaderResourceView* views[] = { m_texture.GetShaderResource() };
-  pGUIShader->SetShaderViews(1, views);
+  pGUIShader->SetShaderViews(1, m_texture.GetAddressOfSRV());
   pGUIShader->Draw(m_count * 6, 0);
 
   // restoring transformation
@@ -370,8 +369,7 @@ void COverlayImageDX::Render(SRenderState &state)
   pGUIShader->Begin(SHADER_METHOD_RENDER_TEXTURE_NOBLEND);
   g_Windowing.SetAlphaBlendEnable(true);
 
-  ID3D11ShaderResourceView* views[] = { m_texture.GetShaderResource() };
-  pGUIShader->SetShaderViews(1, views);
+  pGUIShader->SetShaderViews(1, m_texture.GetAddressOfSRV());
   pGUIShader->Draw(4, 0);
 
   // restoring transformation

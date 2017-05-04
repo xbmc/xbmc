@@ -149,10 +149,7 @@ void CWinShader::SetTarget(CD3DTexture* target)
 {
   m_target = target;
   if (m_target)
-  {
-    ID3D11RenderTargetView* pRTView = target->GetRenderTarget();
-    g_Windowing.Get3D11Context()->OMSetRenderTargets(1, &pRTView, nullptr);
-  }
+    g_Windowing.Get3D11Context()->OMSetRenderTargets(1, target->GetAddressOfRTV(), nullptr);
 }
 
 bool CWinShader::LockVertexBuffer(void **data)
@@ -458,8 +455,7 @@ void COutputShader::PrepareParameters(unsigned sourceWidth, unsigned sourceHeigh
 void COutputShader::SetShaderParameters(CD3DTexture& sourceTexture, unsigned range, float contrast, float brightness)
 {
   m_effect.SetTechnique("OUTPUT_T");
-  ID3D11ShaderResourceView* pTextView = sourceTexture.GetShaderResource();
-  m_effect.SetResources("g_Texture", &pTextView, 1);
+  m_effect.SetResources("g_Texture", sourceTexture.GetAddressOfSRV(), 1);
 
   UINT numPorts = 1;
   D3D11_VIEWPORT viewPort;
@@ -1021,8 +1017,7 @@ bool CConvolutionShaderSeparable::CreateIntermediateRenderTarget(unsigned int wi
 bool CConvolutionShaderSeparable::ClearIntermediateRenderTarget()
 {
   float color[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
-  ID3D11RenderTargetView* intermediateRT = m_IntermediateTarget.GetRenderTarget();
-  g_Windowing.Get3D11Context()->ClearRenderTargetView(intermediateRT, color);
+  g_Windowing.Get3D11Context()->ClearRenderTargetView(m_IntermediateTarget.GetRenderTarget(), color);
   return true;
 }
 
