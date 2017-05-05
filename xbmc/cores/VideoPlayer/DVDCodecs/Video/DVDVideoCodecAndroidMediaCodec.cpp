@@ -1001,15 +1001,18 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecAndroidMediaCodec::GetPicture(VideoPictur
   else
     m_OutputDuration = 0;
 
-  // try to fetch an input buffer
-  if (m_indexInputBuffer < 0)
-    m_indexInputBuffer = AMediaCodec_dequeueInputBuffer(m_codec, 5000 /*timout*/);
-
-  if (m_indexInputBuffer >= 0)
+  if ((m_codecControlFlags & DVD_CODEC_CTRL_DRAIN) == 0)
   {
-    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-      CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::GetPicture VC_BUFFER");
-    return VC_BUFFER;
+    // try to fetch an input buffer
+    if (m_indexInputBuffer < 0)
+      m_indexInputBuffer = AMediaCodec_dequeueInputBuffer(m_codec, 5000 /*timout*/);
+
+    if (m_indexInputBuffer >= 0)
+    {
+      if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+        CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::GetPicture VC_BUFFER");
+      return VC_BUFFER;
+    }
   }
   return VC_NONE;
 }
