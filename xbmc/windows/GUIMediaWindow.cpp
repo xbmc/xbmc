@@ -1499,8 +1499,8 @@ void CGUIMediaWindow::OnInitWindow()
   }
   else
   {
-    CGUIMessage msg(GUI_MSG_WINDOW_INIT, 0, 0, 0, PLUGIN_REFRESH_DELAY);
-    g_windowManager.SendThreadMessage(msg, m_controlID);
+    CGUIMessage msg(GUI_MSG_WINDOW_INIT, 0, 0, WINDOW_INVALID, PLUGIN_REFRESH_DELAY);
+    g_windowManager.SendThreadMessage(msg, GetID());
   }
 
   if (updateStartDirectory)
