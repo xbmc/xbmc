@@ -24,7 +24,7 @@
 
 #include "Application.h"
 #include "addons/AddonDll.h"
-#include "addons/GUIDialogAddonSettings.h"
+#include "addons/settings/GUIDialogAddonSettings.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "utils/CharsetConverter.h"
 #include "utils/log.h"

@@ -22,7 +22,7 @@
 #include "LanguageHook.h"
 
 #include "addons/AddonManager.h"
-#include "addons/GUIDialogAddonSettings.h"
+#include "addons/settings/GUIDialogAddonSettings.h"
 #include "guilib/GUIWindowManager.h"
 #include "GUIUserMessages.h"
 #include "utils/StringUtils.h"

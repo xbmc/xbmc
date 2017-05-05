@@ -112,7 +112,7 @@
 #include "dialogs/GUIDialogSmartPlaylistEditor.h"
 #include "dialogs/GUIDialogSmartPlaylistRule.h"
 #include "pictures/GUIDialogPictureInfo.h"
-#include "addons/GUIDialogAddonSettings.h"
+#include "addons/settings/GUIDialogAddonSettings.h"
 #include "addons/GUIDialogAddonInfo.h"
 #ifdef HAS_LINUX_NETWORK
 #include "network/GUIDialogAccessPoints.h"

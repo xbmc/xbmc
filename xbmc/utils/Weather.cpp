@@ -23,7 +23,7 @@
 #include <utility>
 
 #include "addons/AddonManager.h"
-#include "addons/GUIDialogAddonSettings.h"
+#include "addons/settings/GUIDialogAddonSettings.h"
 #include "Application.h"
 #include "ServiceBroker.h"
 #include "filesystem/Directory.h"

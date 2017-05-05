@@ -25,7 +25,7 @@
 #include "addons/PeripheralAddon.h"
 #include "addons/AddonButtonMap.h"
 #include "addons/AddonManager.h"
-#include "addons/GUIDialogAddonSettings.h"
+#include "addons/settings/GUIDialogAddonSettings.h"
 #include "addons/GUIWindowAddonBrowser.h"
 #include "bus/PeripheralBus.h"
 #include "bus/PeripheralBusUSB.h"
@@ -985,7 +985,7 @@ void CPeripherals::OnSettingAction(std::shared_ptr<const CSetting> setting)
     {
       ADDON::AddonPtr addon;
       if (ADDON::CAddonMgr::GetInstance().GetAddon(strAddonId, addon))
-        CGUIDialogAddonSettings::ShowAndGetInput(addon);
+        CGUIDialogAddonSettings::ShowForAddon(addon);
     }
   }
 }

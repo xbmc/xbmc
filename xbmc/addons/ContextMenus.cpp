@@ -23,7 +23,7 @@
 #include "Repository.h"
 #include "RepositoryUpdater.h"
 #include "GUIDialogAddonInfo.h"
-#include "GUIDialogAddonSettings.h"
+#include "settings/GUIDialogAddonSettings.h"
 
 
 namespace CONTEXTMENU
