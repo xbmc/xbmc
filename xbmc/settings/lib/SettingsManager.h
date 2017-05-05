@@ -131,6 +131,10 @@ public:
    */
   void SetInitialized();
   /*!
+  \brief Returns whether the settings system has been initialized or not.
+  */
+  bool IsInitialized() const { return m_initialized; }
+  /*!
    \brief Tells the settings system that all setting values
    have been loaded.
 
@@ -138,6 +142,10 @@ public:
    being executed.
    */
   void SetLoaded() { m_loaded = true; }
+  /*!
+   \brief Returns whether the settings system has been loaded or not.
+  */
+  bool IsLoaded() const { return m_loaded; }
 
   void AddSection(CSettingSection *section);
 
