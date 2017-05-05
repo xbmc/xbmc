@@ -376,6 +376,18 @@ public:
   bool SetList(const std::string &id, const std::vector< std::shared_ptr<CSetting> > &value);
 
   /*!
+   \brief Sets the value of the setting to its default.
+
+   \param id Setting identifier
+   \return True if setting the value to its default was successful, false otherwise
+   */
+  bool SetDefault(const std::string &id);
+  /*!
+  \brief Sets the value of all settings to their default.
+  */
+  void SetDefaults();
+
+  /*!
    \brief Gets the setting conditions manager used by the settings manager.
 
    \return Setting conditions manager used by the settings manager.

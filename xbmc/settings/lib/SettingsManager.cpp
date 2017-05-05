@@ -630,6 +630,24 @@ bool CSettingsManager::SetList(const std::string &id, const std::vector< std::sh
   return ((CSettingList*)setting)->SetValue(value);
 }
 
+bool CSettingsManager::SetDefault(const std::string &id)
+{
+  CSharedLock lock(m_settingsCritical);
+  SettingPtr setting = GetSetting(id);
+  if (setting == NULL)
+    return false;
+
+  setting->Reset();
+  return true;
+}
+
+void CSettingsManager::SetDefaults()
+{
+  CSharedLock lock(m_settingsCritical);
+  for (SettingMap::iterator setting = m_settings.begin(); setting != m_settings.end(); ++setting)
+    setting->second.setting->Reset();
+}
+
 void CSettingsManager::AddCondition(const std::string &condition)
 {
   CExclusiveLock lock(m_critical);
