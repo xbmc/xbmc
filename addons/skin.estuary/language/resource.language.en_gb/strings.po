@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 # Addon Name: Estuary
 # Addon id: skin.estuary
-# Addon Provider: phil65, Piers
+# Addon Provider: phil65, Ichabod Fletchman
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
@@ -153,6 +153,8 @@ msgstr ""
 msgctxt "#31026"
 msgid "Timeshift"
 msgstr ""
+
+#empty string with id 31027
 
 #: /xml/DialogAlbumInfo.xml /xml/DialogVideoInfo.xml
 msgctxt "#31028"
@@ -734,4 +736,3 @@ msgstr ""
 msgctxt "#31163"
 msgid "Show Fanart background"
 msgstr ""
-
