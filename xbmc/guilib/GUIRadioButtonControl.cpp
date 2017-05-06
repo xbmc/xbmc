@@ -103,6 +103,24 @@ void CGUIRadioButtonControl::Process(unsigned int currentTime, CDirtyRegionList 
   CGUIButtonControl::Process(currentTime, dirtyregions);
 }
 
+void CGUIRadioButtonControl::ProcessText(unsigned int currentTime)
+{
+  bool changed = false;
+
+  if (m_bInvalidated)
+  {
+    changed |= m_label.SetMaxRect(m_posX, m_posY, m_width - m_imgRadioOnFocus.GetWidth(), m_height);
+    changed |= m_label.SetText(m_info.GetLabel(GetParentID()));
+  }
+
+  changed |= m_label.SetScrolling(HasFocus());
+  changed |= m_label.SetColor(GetTextColor());
+  changed |= m_label.Process(currentTime);
+
+  if (changed)
+    MarkDirtyRegion();
+}
+
 bool CGUIRadioButtonControl::OnAction(const CAction &action)
 {
   if (action.GetID() == ACTION_SELECT_ITEM)
@@ -166,7 +184,8 @@ void CGUIRadioButtonControl::SetInvalid()
 void CGUIRadioButtonControl::SetPosition(float posX, float posY)
 {
   CGUIButtonControl::SetPosition(posX, posY);
-  float radioPosX = m_radioPosX ? m_posX + m_radioPosX : (m_posX + m_width - 8) - m_imgRadioOnFocus.GetWidth();
+  const float space = 5;
+  float radioPosX = m_radioPosX ? m_posX + m_radioPosX : (m_posX + m_width - space) - m_imgRadioOnFocus.GetWidth();
   float radioPosY = m_radioPosY ? m_posY + m_radioPosY : m_posY + (m_height - m_imgRadioOnFocus.GetHeight()) / 2;
   m_imgRadioOnFocus.SetPosition(radioPosX, radioPosY);
   m_imgRadioOnNoFocus.SetPosition(radioPosX, radioPosY);
