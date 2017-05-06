@@ -245,10 +245,6 @@ int CWebServer::HandlePartialRequest(struct MHD_Connection *connection, Connecti
   // check if this is the first call to AnswerToConnection for this request
   if (isNewRequest)
   {
-    // parse the Range header and store it in the request object
-    CHttpRanges ranges;
-    bool ranged = ranges.Parse(HTTPRequestHandlerUtils::GetRequestHeaderValue(connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_RANGE));
-
     // look for a IHTTPRequestHandler which can take care of the current request
     for (std::vector<IHTTPRequestHandler *>::const_iterator it = m_requestHandlers.begin(); it != m_requestHandlers.end(); ++it)
     {
@@ -317,6 +313,10 @@ int CWebServer::HandlePartialRequest(struct MHD_Connection *connection, Connecti
                 lastModified.GetAsUTCDateTime() > ifUnmodifiedSinceDate)
                 return SendErrorResponse(connection, MHD_HTTP_PRECONDITION_FAILED, request.method);
             }
+
+            // parse the Range header and store it in the request object
+            CHttpRanges ranges;
+            bool ranged = ranges.Parse(HTTPRequestHandlerUtils::GetRequestHeaderValue(connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_RANGE));
 
             // handle If-Range header but only if the Range header is present
             if (ranged && lastModified.IsValid())
