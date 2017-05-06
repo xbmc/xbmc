@@ -180,15 +180,13 @@ This framework is provided directly in Kodi's source tree.
 It has very little requirements, in order to build and run.
 See the README file for the framework at 'lib/gtest/README' for specific requirements.
 
-To compile and run Kodi's test suite:
-The configure option '--enable-gtest' is enabled by default during the configure stage.
-Once configured, to build the testsuite, type the following:
+To compile and run Kodi's test suite, type the following:
 
     $ make check
 
 To compile the test suite without running it, type the following.
 
-    $ make testsuite
+    $ make kodi-test
 
 The test suite program can be run manually as well.
 The name of the test suite program is 'kodi-test' and will build in the Kodi source tree.
@@ -206,10 +204,6 @@ The most useful options are,
       Run only the tests whose name matches one of the positive patterns but
       none of the negative patterns. '?' matches any single character; '*'
       matches any substring; ':' separates two patterns.
-
-Note: If the '--enable-gtest' option is not set during the configure stage,
-the make targets 'check,' 'testsuite,' and 'testframework' will simply show a message saying
-the framework has not been configured, and then silently succeed (i.e. it will not return an error).
 
 -----------------------------------------------------------------------------
 5. How to run
