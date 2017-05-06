@@ -259,11 +259,11 @@ bool CSettingControlSlider::Deserialize(const TiXmlNode *node, bool update /* = 
 bool CSettingControlSlider::SetFormat(const std::string &format)
 {
   if (StringUtils::EqualsNoCase(format, "percentage"))
-    m_format = "%i %%";
+    m_formatString = "%i %%";
   else if (StringUtils::EqualsNoCase(format, "integer"))
-    m_format = "%d";
+    m_formatString = "%d";
   else if (StringUtils::EqualsNoCase(format, "number"))
-    m_format = "%.1f";
+    m_formatString = "%.1f";
   else
     return false;
 
