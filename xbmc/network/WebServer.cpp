@@ -80,9 +80,10 @@ CWebServer::CWebServer()
     m_daemon_ip6(nullptr),
     m_daemon_ip4(nullptr),
     m_running(false),
-    m_needcredentials(false),
     m_thread_stacksize(0),
-    m_Credentials64Encoded("eGJtYzp4Ym1j") // xbmc:xbmc
+    m_authenticationRequired(false),
+    m_authenticationUsername("xbmc"),
+    m_authenticationPassword("xbmc")
 {
 #if defined(TARGET_DARWIN)
   void *stack_addr;
@@ -121,8 +122,7 @@ int CWebServer::AskForAuthentication(struct MHD_Connection *connection) const
     return MHD_NO;
   }
 
-  int ret = AddHeader(response, MHD_HTTP_HEADER_WWW_AUTHENTICATE, "Basic realm=XBMC");
-  ret |= AddHeader(response, MHD_HTTP_HEADER_CONNECTION, "close");
+  int ret = AddHeader(response, MHD_HTTP_HEADER_CONNECTION, "close");
   if (!ret)
   {
     CLog::Log(LOGERROR, "CWebServer[%hu]: unable to prepare HTTP Unauthorized response", m_port);
@@ -141,7 +141,7 @@ int CWebServer::AskForAuthentication(struct MHD_Connection *connection) const
       CLog::Log(LOGDEBUG, "CWebServer[%hu] [OUT] %s: %s", m_port, header->first.c_str(), header->second.c_str());
   }
 
-  ret = MHD_queue_response(connection, MHD_HTTP_UNAUTHORIZED, response);
+  ret = MHD_queue_basic_auth_fail_response(connection, "XBMC", response);
   MHD_destroy_response(response);
 
   return ret;
@@ -151,15 +151,24 @@ bool CWebServer::IsAuthenticated(struct MHD_Connection *connection) const
 {
   CSingleLock lock(m_critSection);
 
-  if (!m_needcredentials)
+  if (!m_authenticationRequired)
     return true;
 
-  const char *base = "Basic ";
-  std::string authorization = HTTPRequestHandlerUtils::GetRequestHeaderValue(connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_AUTHORIZATION);
-  if (authorization.empty() || !StringUtils::StartsWith(authorization, base))
+  // try to retrieve username and password for basic authentication
+  char* password = nullptr;
+  char* username = MHD_basic_auth_get_username_password(connection, &password);
+
+  if (username == nullptr || password == nullptr)
     return false;
 
-  return m_Credentials64Encoded.compare(StringUtils::Mid(authorization.c_str(), strlen(base))) == 0;
+  // compare the received username and password
+  bool authenticated = m_authenticationUsername.compare(username) == 0 &&
+                       m_authenticationPassword.compare(password) == 0;
+
+  free(username);
+  free(password);
+
+  return authenticated;
 }
 
 #if (MHD_VERSION >= 0x00040001)
@@ -1208,8 +1217,9 @@ void CWebServer::SetCredentials(const std::string &username, const std::string &
 {
   CSingleLock lock(m_critSection);
 
-  Base64::Encode(username + ':' + password, m_Credentials64Encoded);
-  m_needcredentials = !password.empty();
+  m_authenticationUsername = username;
+  m_authenticationPassword = password;
+  m_authenticationRequired = !m_authenticationPassword.empty();
 }
 
 void CWebServer::RegisterRequestHandler(IHTTPRequestHandler *handler)
