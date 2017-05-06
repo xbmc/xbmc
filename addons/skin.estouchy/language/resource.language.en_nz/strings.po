@@ -60,6 +60,26 @@ msgctxt "#31016"
 msgid "Albums"
 msgstr "Albums"
 
+msgctxt "#31017"
+msgid "PVR info"
+msgstr "PVR info"
+
+msgctxt "#31018"
+msgid "Player process info"
+msgstr "Player process info"
+
+msgctxt "#31019"
+msgid "Video decoder"
+msgstr "Video decoder"
+
+msgctxt "#31020"
+msgid "Pixel format"
+msgstr "Pixel format"
+
+msgctxt "#31021"
+msgid "System memory usage"
+msgstr "System memory usage"
+
 msgctxt "#31024"
 msgid "Page"
 msgstr "Page"
@@ -83,6 +103,10 @@ msgstr "FAST FORWARD"
 msgctxt "#31045"
 msgid "REWIND"
 msgstr "REWIND"
+
+msgctxt "#31046"
+msgid "Play speed"
+msgstr "Play speed"
 
 msgctxt "#31049"
 msgid "End Time"
@@ -140,6 +164,10 @@ msgctxt "#31303"
 msgid "Data provider"
 msgstr "Data provider"
 
+msgctxt "#31309"
+msgid "System Memory Used:"
+msgstr "System Memory Used:"
+
 msgctxt "#31320"
 msgid "Last Logged In"
 msgstr "Last Logged In"
@@ -172,13 +200,49 @@ msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 msgstr "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 
+msgctxt "#31405"
+msgid "Configure & manage media sharing services · Configure & manage the weather service"
+msgstr "Configure & manage media sharing services · Configure & manage the weather service"
+
+msgctxt "#31406"
+msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
+msgstr "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
+
 msgctxt "#31407"
 msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
 msgstr "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
 
+msgctxt "#31408"
+msgid "Configure actions that can be used during playback · Configure how media content is played"
+msgstr "Configure actions that can be used during playback · Configure how media content is played"
+
+msgctxt "#31409"
+msgid "Configure library sources · Show the media lists display content · Configure how library lists are navigated"
+msgstr "Configure library sources · Show the media lists display content · Configure how library lists are navigated"
+
+msgctxt "#31410"
+msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
+msgstr "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
+
+msgctxt "#31411"
+msgid "Configure your profiles · Set locking options · Enable login screen"
+msgstr "Configure your profiles · Set locking options · Enable login screen"
+
+msgctxt "#31412"
+msgid "Display system information · Hardware statistics · Check storage availability · View network configuration"
+msgstr "Display system information · Hardware statistics · Check storage availability · View network configuration"
+
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Select your Kodi user Profile[CR]to login and continue"
+
+msgctxt "#31548"
+msgid "Home menu"
+msgstr "Home menu"
+
+msgctxt "#31549"
+msgid "Home Add-ons"
+msgstr "Home Add-ons"
 
 msgctxt "#31550"
 msgid "Backgrounds"

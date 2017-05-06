@@ -60,6 +60,10 @@ msgctxt "#31016"
 msgid "Albums"
 msgstr "Албуми"
 
+msgctxt "#31017"
+msgid "PVR info"
+msgstr "ПВР информация"
+
 msgctxt "#31024"
 msgid "Page"
 msgstr "Страница"

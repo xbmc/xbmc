@@ -60,6 +60,18 @@ msgctxt "#31016"
 msgid "Albums"
 msgstr "Álbumes"
 
+msgctxt "#31017"
+msgid "PVR info"
+msgstr "Info. do PVR"
+
+msgctxt "#31019"
+msgid "Video decoder"
+msgstr "Decodificador de vídeo"
+
+msgctxt "#31021"
+msgid "System memory usage"
+msgstr "Memoria empregada"
+
 msgctxt "#31024"
 msgid "Page"
 msgstr "Páxina"
@@ -83,6 +95,10 @@ msgstr "ADIANTE"
 msgctxt "#31045"
 msgid "REWIND"
 msgstr "ATRÁS"
+
+msgctxt "#31046"
+msgid "Play speed"
+msgstr "Velocidade de reprodución"
 
 msgctxt "#31049"
 msgid "End Time"
@@ -139,6 +155,10 @@ msgstr "Última actualización"
 msgctxt "#31303"
 msgid "Data provider"
 msgstr "Provedor de datos"
+
+msgctxt "#31309"
+msgid "System Memory Used:"
+msgstr "Memoria empregada:"
 
 msgctxt "#31320"
 msgid "Last Logged In"

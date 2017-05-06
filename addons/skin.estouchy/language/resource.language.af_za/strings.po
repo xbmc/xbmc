@@ -44,6 +44,10 @@ msgctxt "#31009"
 msgid "Working..."
 msgstr "Werk..."
 
+msgctxt "#31011"
+msgid "Recent"
+msgstr "Onlangs"
+
 msgctxt "#31013"
 msgid "Movies"
 msgstr "Flieks"
@@ -55,6 +59,26 @@ msgstr "Episodes"
 msgctxt "#31016"
 msgid "Albums"
 msgstr "Albums"
+
+msgctxt "#31017"
+msgid "PVR info"
+msgstr "PVR info"
+
+msgctxt "#31018"
+msgid "Player process info"
+msgstr "Speler proses info"
+
+msgctxt "#31019"
+msgid "Video decoder"
+msgstr "Video dekodeerder"
+
+msgctxt "#31020"
+msgid "Pixel format"
+msgstr "Pixel formaat"
+
+msgctxt "#31021"
+msgid "System memory usage"
+msgstr "Stelsel geheue gebruik"
 
 msgctxt "#31024"
 msgid "Page"
@@ -68,6 +92,10 @@ msgctxt "#31038"
 msgid "Login"
 msgstr "Teken in"
 
+msgctxt "#31039"
+msgid "Updated:"
+msgstr "Opgedateer:"
+
 msgctxt "#31044"
 msgid "FAST FORWARD"
 msgstr "VORENTOE SPOEL"
@@ -75,6 +103,10 @@ msgstr "VORENTOE SPOEL"
 msgctxt "#31045"
 msgid "REWIND"
 msgstr "TERUGSPOEL"
+
+msgctxt "#31046"
+msgid "Play speed"
+msgstr "Speel spoed"
 
 msgctxt "#31049"
 msgid "End Time"
@@ -132,6 +164,10 @@ msgctxt "#31303"
 msgid "Data provider"
 msgstr "Data verskaffer"
 
+msgctxt "#31309"
+msgid "System Memory Used:"
+msgstr "Stelsel Geheue Gebruik:"
+
 msgctxt "#31320"
 msgid "Last Logged In"
 msgstr "Laaste IngeLog"
@@ -148,6 +184,10 @@ msgctxt "#31356"
 msgid "Download Subtitles"
 msgstr "Laai Subtitels Af"
 
+msgctxt "#31358"
+msgid "Teletext"
+msgstr "Teleteks"
+
 msgctxt "#31390"
 msgid "Skin default"
 msgstr "Bestek omslag"
@@ -160,9 +200,49 @@ msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 msgstr "Verander die oortreksel · Stel taal en gebied · Verander lêer lys opsies · Stel 'n skermskut op"
 
+msgctxt "#31405"
+msgid "Configure & manage media sharing services · Configure & manage the weather service"
+msgstr "Stel op en bestuur media deel dienste · Stel op & bestuur die weer diens"
+
+msgctxt "#31406"
+msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
+msgstr "Stel vertoon op · Stel oudio op · Stel internet toegang op · Stel krag spaar op · Stel loghouding op"
+
+msgctxt "#31407"
+msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
+msgstr "Bestuur jou geïnstalleerde byvoegsels · Blaai vir en installeer byvoegsels vanaf kodi.tv · Verander byvoegsel verstellings"
+
+msgctxt "#31408"
+msgid "Configure actions that can be used during playback · Configure how media content is played"
+msgstr "Stel aksies op wat gedurende terugspeel gebruik kan word · Stel op hoe media inhoud gespeel word"
+
+msgctxt "#31409"
+msgid "Configure library sources · Show the media lists display content · Configure how library lists are navigated"
+msgstr "Stel biblioteek bronne op · Wys die media lyste vertoon inhoud · Stel op hoe biblioteek lyste navigeer word"
+
+msgctxt "#31410"
+msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
+msgstr "Stel oortreksel op · Stel streek op · Stel beheer op · Stel skermskut op · Stel meester slot op"
+
+msgctxt "#31411"
+msgid "Configure your profiles · Set locking options · Enable login screen"
+msgstr "Stel jou profiele op · Stel sluit opsies · Stel inteken skerm in staat"
+
+msgctxt "#31412"
+msgid "Display system information · Hardware statistics · Check storage availability · View network configuration"
+msgstr "Vertoon stelsel inligting · Hardeware statistieke · Gaan stoor beskikbaarheid na · Besigtig netwerk opstelling"
+
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Selekteer jou Kodi gebruiker Profiel[CR]om in te log en voort te gaan"
+
+msgctxt "#31548"
+msgid "Home menu"
+msgstr "Tuis kieslys"
+
+msgctxt "#31549"
+msgid "Home Add-ons"
+msgstr "Tuis Byvoegsels"
 
 msgctxt "#31550"
 msgid "Backgrounds"
@@ -172,9 +252,41 @@ msgctxt "#31551"
 msgid "Add-on Shortcut"
 msgstr "Byvoegsel Kitssleutel"
 
+msgctxt "#31552"
+msgid "SYNC"
+msgstr "SYNC"
+
+msgctxt "#31553"
+msgid "Use Custom Background"
+msgstr "Gebruik Pasgemaakte Agtergrond"
+
+msgctxt "#31554"
+msgid "Background:"
+msgstr "Agtergrond:"
+
+msgctxt "#31555"
+msgid "Configure TV settings · Change full screen info · Manage EPG data settings"
+msgstr "Stel TV verstellings op · Verander vol skerm info · Bestuur EPG data verstellings"
+
 msgctxt "#31556"
 msgid "Live TV"
 msgstr "Lewendige TV"
+
+msgctxt "#31557"
+msgid "Hide video background"
+msgstr "Versteek video agtergrond"
+
+msgctxt "#31558"
+msgid "Hide visualization background"
+msgstr "Versteek visualisering agtergrond"
+
+msgctxt "#31559"
+msgid "Channel settings"
+msgstr "Kanaal verstellings"
+
+msgctxt "#31560"
+msgid "Available groups"
+msgstr "Beskikbare groepe"
 
 msgctxt "#31561"
 msgid "Add Group"
@@ -187,3 +299,31 @@ msgstr "Verander Groep naam"
 msgctxt "#31563"
 msgid "Delete Group"
 msgstr "Wis Groep uit"
+
+msgctxt "#31564"
+msgid "Show hidden"
+msgstr "Wys versteekde"
+
+msgctxt "#31565"
+msgid "Show deleted"
+msgstr "Wys uitgewis"
+
+msgctxt "#31900"
+msgid "First Run"
+msgstr "Eerste Lopie"
+
+msgctxt "#31901"
+msgid "There are two things to know about navigating Estouchy"
+msgstr "Daar is twee goed om te weet omtrent die navigeer van Estouchy"
+
+msgctxt "#31902"
+msgid "The Kodi logo functions as a 'HOME' button. Whenever you touch it, you will be taken back to the home screen."
+msgstr "Die Kodi logo dien as 'n 'TUIS' knoppie. Wanneer jy dit ook al raak, sal jy terug na die tuis skerm geneem word."
+
+msgctxt "#31903"
+msgid "When you are playing audio or video, the item title will appear at the top of the screen. Touching it will take you to the fullscreen visualization or video window."
+msgstr "Wanneer jy oudio of video speel, sal die item titel aan die bokant van die skerm verskyn. Aanraking daarvan sal jou na die volskerm visualisering of video venster neem."
+
+msgctxt "#31904"
+msgid "Now Playing Title..."
+msgstr "Speel Nou Titel..."

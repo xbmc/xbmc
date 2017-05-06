@@ -60,6 +60,22 @@ msgctxt "#31016"
 msgid "Albums"
 msgstr "Albōmy"
 
+msgctxt "#31017"
+msgid "PVR info"
+msgstr "Ô telewizyji"
+
+msgctxt "#31018"
+msgid "Player process info"
+msgstr "Ô ôdegrowoczu"
+
+msgctxt "#31019"
+msgid "Video decoder"
+msgstr "Dekoder wideo"
+
+msgctxt "#31020"
+msgid "Pixel format"
+msgstr "Format piksela"
+
 msgctxt "#31024"
 msgid "Page"
 msgstr "Strōna"

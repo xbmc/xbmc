@@ -34,7 +34,7 @@ msgstr "Možnosti vizualizace"
 
 msgctxt "#31006"
 msgid "Visualization Presets"
-msgstr "Přednastavení vizualizace"
+msgstr "Předvolby vizualizace"
 
 msgctxt "#31007"
 msgid "Context Menu"
@@ -42,7 +42,7 @@ msgstr "Místní nabídka"
 
 msgctxt "#31009"
 msgid "Working..."
-msgstr "Pracuji..."
+msgstr "Zpracovávání..."
 
 msgctxt "#31011"
 msgid "Recent"
@@ -54,11 +54,31 @@ msgstr "Filmy"
 
 msgctxt "#31014"
 msgid "Episodes"
-msgstr "Epizod(y)"
+msgstr "Epizody"
 
 msgctxt "#31016"
 msgid "Albums"
 msgstr "Alba"
+
+msgctxt "#31017"
+msgid "PVR info"
+msgstr "Informace o PVR"
+
+msgctxt "#31018"
+msgid "Player process info"
+msgstr "Informace o zpracování přehrávače"
+
+msgctxt "#31019"
+msgid "Video decoder"
+msgstr "Dekodér videa"
+
+msgctxt "#31020"
+msgid "Pixel format"
+msgstr "Formát pixelu"
+
+msgctxt "#31021"
+msgid "System memory usage"
+msgstr "Využití systémové paměti"
 
 msgctxt "#31024"
 msgid "Page"
@@ -84,17 +104,21 @@ msgctxt "#31045"
 msgid "REWIND"
 msgstr "PŘETÁČÍ SE ZPĚT"
 
+msgctxt "#31046"
+msgid "Play speed"
+msgstr "Rychlost přehrávání"
+
 msgctxt "#31049"
 msgid "End Time"
 msgstr "Čas ukončení"
 
 msgctxt "#31050"
 msgid "Sort: Ascending"
-msgstr "Řazení: vzestupně"
+msgstr "Řazení: Vzestupně"
 
 msgctxt "#31051"
 msgid "Sort: Descending"
-msgstr "Řazení: sestupně"
+msgstr "Řazení: Sestupně"
 
 msgctxt "#31055"
 msgid "Open playlist"
@@ -140,6 +164,10 @@ msgctxt "#31303"
 msgid "Data provider"
 msgstr "Poskytovatel dat"
 
+msgctxt "#31309"
+msgid "System Memory Used:"
+msgstr "Použitá systémová paměť:"
+
 msgctxt "#31320"
 msgid "Last Logged In"
 msgstr "Naposledy přihlášen"
@@ -150,7 +178,7 @@ msgstr "Vysíláno"
 
 msgctxt "#31355"
 msgid "Video Menu"
-msgstr "Menu videa"
+msgstr "Nabídka videa"
 
 msgctxt "#31356"
 msgid "Download Subtitles"
@@ -162,23 +190,59 @@ msgstr "Teletext"
 
 msgctxt "#31390"
 msgid "Skin default"
-msgstr "Výchozí vzhled"
+msgstr "Výchozí nastavení vzhledu"
 
 msgctxt "#31391"
 msgid "Arial based"
-msgstr "Písmo Arial"
+msgstr "Založeno na Arial"
 
 msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
-msgstr "Změnit vzhled · Nastavit jazyk a region · Změnit možnosti výpisu souborů · Nastavit spořič obrazovky"
+msgstr "Změňte vzhled · Nastavte jazyk a region · Změňte možnosti výpisu souborů · Nastavte spořič obrazovky"
+
+msgctxt "#31405"
+msgid "Configure & manage media sharing services · Configure & manage the weather service"
+msgstr "Konfigurujte a spravujte služby sdílení médií · Konfigurujte a spravujte služby počasí"
+
+msgctxt "#31406"
+msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
+msgstr "Konfigurujte obrazovku · Konfigurujte zvuk · Konfigurujte přístup k internetu · Konfigurujte úsporu energie · Konfigurujte protokolování"
 
 msgctxt "#31407"
 msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
-msgstr "Spravujte nainstalované doplňky · Procházejte a instalujte doplňky z kodi.tv · Upravujte nastavení doplňků"
+msgstr "Spravujte nainstalované doplňky · Procházejte a instalujte doplňky z kodi.tv · Upravte nastavení doplňků"
+
+msgctxt "#31408"
+msgid "Configure actions that can be used during playback · Configure how media content is played"
+msgstr "Konfigurujte akce, které mohou být použity během přehrávání · Konfigurujte způsob přehrávání médií"
+
+msgctxt "#31409"
+msgid "Configure library sources · Show the media lists display content · Configure how library lists are navigated"
+msgstr "Konfigurujte zdroje knihovny · Upravte obsah zobrazení seznamu médií · Konfigurujte způsob navigace v seznamech knihovny"
+
+msgctxt "#31410"
+msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
+msgstr "Konfigurujte vzhled · Konfigurujte region · Konfigurujte ovládání · Konfigurujte spořič obrazovky · Konfigurujte hlavní zámek"
+
+msgctxt "#31411"
+msgid "Configure your profiles · Set locking options · Enable login screen"
+msgstr "Konfigurujte své profily · Nastavte možnosti uzamknutí · Povolte přihlašovací obrazovku"
+
+msgctxt "#31412"
+msgid "Display system information · Hardware statistics · Check storage availability · View network configuration"
+msgstr "Zobrazte informace o systému · Hardwarové statistiky · Zkontrolujte dostupnost úložiště · Zobrazte konfiguraci sítě"
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
-msgstr "Vyberte váš uživatelské profil Kodi[CR]pro přihlášení a pokračování"
+msgstr "Vyberte svůj uživatelský profil Kodi[CR]pro přihlášení a pokračování"
+
+msgctxt "#31548"
+msgid "Home menu"
+msgstr "Domovská nabídka"
+
+msgctxt "#31549"
+msgid "Home Add-ons"
+msgstr "Doplňky na domovské obrazovce"
 
 msgctxt "#31550"
 msgid "Backgrounds"
@@ -186,11 +250,11 @@ msgstr "Pozadí"
 
 msgctxt "#31551"
 msgid "Add-on Shortcut"
-msgstr "Zkratka rozšíření"
+msgstr "Klávesová zkratka doplňku"
 
 msgctxt "#31552"
 msgid "SYNC"
-msgstr "SYNCHRONIZUJ"
+msgstr "SYNCHRONIZOVAT"
 
 msgctxt "#31553"
 msgid "Use Custom Background"
@@ -202,11 +266,11 @@ msgstr "Pozadí:"
 
 msgctxt "#31555"
 msgid "Configure TV settings · Change full screen info · Manage EPG data settings"
-msgstr "Konfiguruj nastavení TV · Změň celoobrazovkové info · Spravuj nastaveni EPG"
+msgstr "Konfigurujte nastavení TV · Změňte informace na celé obrazovce · Spravujte data televizního programu"
 
 msgctxt "#31556"
 msgid "Live TV"
-msgstr "Televize"
+msgstr "Živé vysílání"
 
 msgctxt "#31557"
 msgid "Hide video background"
@@ -234,7 +298,7 @@ msgstr "Přejmenovat skupinu"
 
 msgctxt "#31563"
 msgid "Delete Group"
-msgstr "Smazat skupinu"
+msgstr "Odstranit skupinu"
 
 msgctxt "#31564"
 msgid "Show hidden"
@@ -242,7 +306,7 @@ msgstr "Zobrazit skryté"
 
 msgctxt "#31565"
 msgid "Show deleted"
-msgstr "Zobrazit smazané"
+msgstr "Zobrazit odstraněné"
 
 msgctxt "#31900"
 msgid "First Run"
@@ -250,16 +314,16 @@ msgstr "První spuštění"
 
 msgctxt "#31901"
 msgid "There are two things to know about navigating Estouchy"
-msgstr "Měli byste vědět dvě věci o navigování v Estouchy"
+msgstr "O navigování v Estouchy byste měli vědět dvě věci "
 
 msgctxt "#31902"
 msgid "The Kodi logo functions as a 'HOME' button. Whenever you touch it, you will be taken back to the home screen."
-msgstr "Kodi logo slouží jako tlačítko 'DOMŮ'. Kdykoliv ho stisknete, přepnete se zpět na domovskou obrazovku."
+msgstr "Logo Kodi slouží jako tlačítko 'DOMŮ'. Kdykoliv se ho dotknete, přepnete se zpět na domovskou obrazovku."
 
 msgctxt "#31903"
 msgid "When you are playing audio or video, the item title will appear at the top of the screen. Touching it will take you to the fullscreen visualization or video window."
-msgstr "Kdykoliv přehrajete hudbu nebo video, název této položky se zobrazí na horním okraji obrazovky. Pokud na něj kliknete, zobrazí se video nebo vizualizace v celoobrazovkovém režimu."
+msgstr "Když přehráváte hudbu nebo video, objeví se na horním okraji obrazovky název položky. Pokud se ho dotknete, přepnete se do okna vizualizace nebo videa na celou obrazovku."
 
 msgctxt "#31904"
 msgid "Now Playing Title..."
-msgstr "Nyní přehrávám..."
+msgstr "Nyní se přehrává..."

@@ -56,6 +56,26 @@ msgctxt "#31016"
 msgid "Albums"
 msgstr "Álbumes"
 
+msgctxt "#31017"
+msgid "PVR info"
+msgstr "Información PVR"
+
+msgctxt "#31018"
+msgid "Player process info"
+msgstr "Info proceso reproductor"
+
+msgctxt "#31019"
+msgid "Video decoder"
+msgstr "Decodificador de video"
+
+msgctxt "#31020"
+msgid "Pixel format"
+msgstr "Formato de píxel"
+
+msgctxt "#31021"
+msgid "System memory usage"
+msgstr "Uso memoria de sistema"
+
 msgctxt "#31024"
 msgid "Page"
 msgstr "Página"
@@ -170,7 +190,7 @@ msgstr "Cambiar el skin · Seleccionar idioma y zona · Cambiar la visualizació
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
-msgstr "Selecciona tu perfil de usuario de Kodi[CR]para ingresar y continuar"
+msgstr "Seleccione su perfil de usuario de Kodi[CR]para ingresar y continuar"
 
 msgctxt "#31550"
 msgid "Backgrounds"

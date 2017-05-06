@@ -56,6 +56,18 @@ msgctxt "#31016"
 msgid "Albums"
 msgstr "Albummer"
 
+msgctxt "#31017"
+msgid "PVR info"
+msgstr "PVR-information"
+
+msgctxt "#31020"
+msgid "Pixel format"
+msgstr "Pixelformat"
+
+msgctxt "#31021"
+msgid "System memory usage"
+msgstr "Hukommelsesforbrug"
+
 msgctxt "#31024"
 msgid "Page"
 msgstr "Side"
@@ -76,6 +88,10 @@ msgctxt "#31045"
 msgid "REWIND"
 msgstr "SPOL TILBAGE"
 
+msgctxt "#31046"
+msgid "Play speed"
+msgstr "Afspilningshastighed"
+
 msgctxt "#31049"
 msgid "End Time"
 msgstr "Sluttidspunkt"
@@ -90,7 +106,7 @@ msgstr "Sorter: Faldende"
 
 msgctxt "#31055"
 msgid "Open playlist"
-msgstr "Åbn afspilningsliste"
+msgstr "Åbn playliste"
 
 msgctxt "#31056"
 msgid "Save playlist"
@@ -98,7 +114,7 @@ msgstr "Gem afspilningsliste"
 
 msgctxt "#31057"
 msgid "Close playlist"
-msgstr "Luk afspilningsliste"
+msgstr "Luk playliste"
 
 msgctxt "#31058"
 msgid "System music files"
@@ -106,7 +122,7 @@ msgstr "Systemmusikfiler"
 
 msgctxt "#31059"
 msgid "Current playlist"
-msgstr "Nuværende afspilningsliste"
+msgstr "Nuværende playliste"
 
 msgctxt "#31200"
 msgid "Back"
@@ -131,6 +147,10 @@ msgstr "Sidst Opdateret"
 msgctxt "#31303"
 msgid "Data provider"
 msgstr "Dataleverandør"
+
+msgctxt "#31309"
+msgid "System Memory Used:"
+msgstr "System hukommelse ibrug:"
 
 msgctxt "#31320"
 msgid "Last Logged In"
@@ -183,6 +203,10 @@ msgstr "Live TV"
 msgctxt "#31557"
 msgid "Hide video background"
 msgstr "Skjul videobaggrund"
+
+msgctxt "#31560"
+msgid "Available groups"
+msgstr "Tilgængelig grupper"
 
 msgctxt "#31561"
 msgid "Add Group"

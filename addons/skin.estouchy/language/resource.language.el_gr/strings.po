@@ -60,6 +60,26 @@ msgctxt "#31016"
 msgid "Albums"
 msgstr "Άλμπουμ"
 
+msgctxt "#31017"
+msgid "PVR info"
+msgstr "Πληροφορίες PVR"
+
+msgctxt "#31018"
+msgid "Player process info"
+msgstr "Πληροφορίες διεργασίας αναπαραγωγής"
+
+msgctxt "#31019"
+msgid "Video decoder"
+msgstr "Αποκωδικοποιητής βίντεο"
+
+msgctxt "#31020"
+msgid "Pixel format"
+msgstr "Μορφή εικονοστοιχείων"
+
+msgctxt "#31021"
+msgid "System memory usage"
+msgstr "Χρήση μνήμης συστήματος"
+
 msgctxt "#31024"
 msgid "Page"
 msgstr "Σελίδα"
@@ -144,6 +164,10 @@ msgctxt "#31303"
 msgid "Data provider"
 msgstr "Πάροχος δεδομένων"
 
+msgctxt "#31309"
+msgid "System Memory Used:"
+msgstr "Χρήση μνήμης συστήματος:"
+
 msgctxt "#31320"
 msgid "Last Logged In"
 msgstr "Τελευταία Είσοδος"
@@ -192,6 +216,10 @@ msgctxt "#31408"
 msgid "Configure actions that can be used during playback · Configure how media content is played"
 msgstr "Ρύθμιση ενεργειών κατά την αναπαραγωγή · Ρύθμσιη της αναπαραγωγή μέσων"
 
+msgctxt "#31409"
+msgid "Configure library sources · Show the media lists display content · Configure how library lists are navigated"
+msgstr "Ρύθμιση πηγών βιβλιοθήκης · Εμφάνιση καταλόγων μέσων · Ρύθμιση πλοήγηση καταλόγων μέσων"
+
 msgctxt "#31410"
 msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
 msgstr "Ρύθμιση κελύφους · Ρύθμιση περιοχής · Ρύθμιση ελέγχου · Ρύθμιση προφύλαξης οθόνης · Ρύθμιση κεντρικού κλειδώματος"
@@ -207,6 +235,14 @@ msgstr "Προβολή πληροφοριών συστήματος · Στατι
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Επιλέξτε προφίλ χρήστη για το Kodi[CR]για να συνδεθείτε και να συνεχίσετε"
+
+msgctxt "#31548"
+msgid "Home menu"
+msgstr "Αρχικό μενού"
+
+msgctxt "#31549"
+msgid "Home Add-ons"
+msgstr "Πρόσθετα"
 
 msgctxt "#31550"
 msgid "Backgrounds"

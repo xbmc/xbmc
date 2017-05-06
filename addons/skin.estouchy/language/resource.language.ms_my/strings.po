@@ -60,6 +60,26 @@ msgctxt "#31016"
 msgid "Albums"
 msgstr "Album"
 
+msgctxt "#31017"
+msgid "PVR info"
+msgstr "Maklumat PVR"
+
+msgctxt "#31018"
+msgid "Player process info"
+msgstr "Maklumat proses pemain"
+
+msgctxt "#31019"
+msgid "Video decoder"
+msgstr "Penyahkod video"
+
+msgctxt "#31020"
+msgid "Pixel format"
+msgstr "Format piksel"
+
+msgctxt "#31021"
+msgid "System memory usage"
+msgstr "Penggunaan ingatan sistem"
+
 msgctxt "#31024"
 msgid "Page"
 msgstr "Halaman"
@@ -215,6 +235,14 @@ msgstr "Papar maklumat sistem · Statistik perkakasan · Periksa kesediaan stora
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Pilih Profil pengguna Kodi anda[CR]untuk daftar masuk dan teruskan"
+
+msgctxt "#31548"
+msgid "Home menu"
+msgstr "Menu rumah"
+
+msgctxt "#31549"
+msgid "Home Add-ons"
+msgstr "Tambahan Rumah"
 
 msgctxt "#31550"
 msgid "Backgrounds"
