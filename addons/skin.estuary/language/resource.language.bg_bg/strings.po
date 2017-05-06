@@ -386,7 +386,7 @@ msgstr "мин"
 
 msgctxt "#31134"
 msgid "Remaining"
-msgstr "Преименуване"
+msgstr "Оставащо"
 
 msgctxt "#31136"
 msgid "Click here to see latest changes..."

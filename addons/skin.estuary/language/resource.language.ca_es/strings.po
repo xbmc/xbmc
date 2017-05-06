@@ -142,7 +142,7 @@ msgstr "La vostra valoració"
 
 msgctxt "#31034"
 msgid "Extended info"
-msgstr "Informació estesa"
+msgstr "Info estesa"
 
 msgctxt "#31035"
 msgid "Pages"
