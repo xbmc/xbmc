@@ -210,7 +210,7 @@ msgstr "Podesite prikaz ·  Podesite audio · Podesite pristup internetu · Pode
 
 msgctxt "#31407"
 msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
-msgstr "Upravljajte vašim instaliranim dodatnim programima · Potražite i instalirajte dodatne programe sa kodi.tv - Podesite podešavanja dodatnih programa"
+msgstr "Upravljajte vašim instaliranim dodatnim programima · Potražite i instalirajte dodatne programe sa kodi.tv - Promenite podešavanja dodatnih programa"
 
 msgctxt "#31408"
 msgid "Configure actions that can be used during playback · Configure how media content is played"
