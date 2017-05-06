@@ -852,7 +852,6 @@ msgctxt "#193"
 msgid "Scan"
 msgstr ""
 
-
 #. label for "searching" message box heading
 #: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
 #: xbmc/video/windows/GUIWindowVideoBase.cpp
@@ -9109,8 +9108,8 @@ msgid "Next"
 msgstr ""
 
 #. 'timeline' label used in pvr guide window
-#: addons/skin.estuary/xml/MyPVRGuide.xml
 #. xbmc/pvr/windows/GUIWindowPVRGuide.cpp
+#: addons/skin.estuary/xml/MyPVRGuide.xml
 msgctxt "#19032"
 msgid "Timeline"
 msgstr ""
@@ -9810,7 +9809,7 @@ msgctxt "#19146"
 msgid "Groups"
 msgstr ""
 
-#empty string with id 191407
+#empty string with id 19147
 
 #: addons/skin.estuary/xml/DialogPVRRadioRDSInfo.xml
 #: addons/skin.estuary/xml/DialogPVRGuideSearch.xml
@@ -10219,7 +10218,7 @@ msgctxt "#19216"
 msgid "All radio channels"
 msgstr ""
 
-#. label for 'all channels' value for 'channels' selector control in pvr guide search dialog 
+#. label for 'all channels' value for 'channels' selector control in pvr guide search dialog
 #: xbmc/pvr/dialogs/GUIDialogPVRGuideSearch.cpp
 msgctxt "#19217"
 msgid "All TV channels"
@@ -10487,7 +10486,7 @@ msgctxt "#19262"
 msgid "Parental control. Enter PIN:"
 msgstr ""
 
-# empty string with id 19263
+#empty string with id 19263
 
 #. label for 'incorrect pin' error dialog header
 #: xbmc/pvr/PVRGUIActions.cpp
@@ -10518,7 +10517,7 @@ msgctxt "#19268"
 msgid "Hide \"No information available\" labels"
 msgstr ""
 
-# empty string with id 19269
+#empty string with id 19269
 
 #. Label of the option to switch between a grouped recordings list and a non-grouped recordings list in pvr recordings window.
 #: addons/skin.estuary/xml/Includes_MediaMenu.xml
@@ -16735,7 +16734,7 @@ msgctxt "#35104"
 msgid "Pointers"
 msgstr ""
 
-#empty strings from id 35103 to 35149
+#empty strings from id 35105 to 35149
 
 #. Name of keyboard category in the settings category window
 #: system/settings/settings.xml
@@ -20352,7 +20351,13 @@ msgctxt "#38111"
 msgid "This category contains other settings for the GUI interface"
 msgstr ""
 
-#empty strings from id 38112 to 38206
+#empty strings from id 38112 to 38189
+
+msgctxt "#38190"
+msgid "Extract thumbnails from video files"
+msgstr ""
+
+#empty strings from id 38191 to 38206
 
 #. Description of setting "Pictures -> Show EXIF picture information" with label #38207
 #: system/settings/settings.xml
@@ -20457,8 +20462,4 @@ msgstr ""
 #: xbmc/music/windows/GUIWindowMusicBase.cpp
 msgctxt "#39016"
 msgid "Resume audiobook"
-msgstr ""
-
-msgctxt "#38190"
-msgid "Extract thumbnails from video files"
 msgstr ""
