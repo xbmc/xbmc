@@ -586,6 +586,9 @@ bool CGUIControlButtonSetting::OnClick()
     SetValid(true);
   }
 
+  // update the displayed value
+  Update();
+
   return IsValid();
 }
 
@@ -787,7 +790,10 @@ void CGUIControlEditSetting::Update(bool updateDisplayOnly /* = false */)
 
   CGUIControlBaseSetting::Update();
 
-  m_pEdit->SetLabel2(m_pSetting->ToString());
+  const CSettingControlEdit* control = static_cast<const CSettingControlEdit*>(m_pSetting->GetControl());
+
+  if (!control->IsHidden() && control->GetFormat() != "md5")
+    m_pEdit->SetLabel2(m_pSetting->ToString());
 }
 
 bool CGUIControlEditSetting::InputValidation(const std::string &input, void *data)

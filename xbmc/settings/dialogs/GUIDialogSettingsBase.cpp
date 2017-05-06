@@ -333,19 +333,6 @@ void CGUIDialogSettingsBase::SetupControls(bool createSettings /* = true */)
   // cleanup first, if necessary
   FreeControls();
 
-  // get the section
-  CSettingSection *section = GetSection();
-  if (section == NULL)
-    return;
-  
-  // update the screen string
-  SetHeading(section->GetLabel());
-
-  // get the categories we need
-  m_categories = section->GetCategories((SettingLevel)GetSettingLevel());
-  if (m_categories.empty())
-    m_categories.push_back(m_dummyCategory);
-
   // get all controls
   m_pOriginalSpin = dynamic_cast<CGUISpinControlEx*>(GetControl(CONTROL_DEFAULT_SPIN));
   m_pOriginalSlider = dynamic_cast<CGUISettingsSliderControl*>(GetControl(CONTROL_DEFAULT_SLIDER));
@@ -356,20 +343,44 @@ void CGUIDialogSettingsBase::SetupControls(bool createSettings /* = true */)
   m_pOriginalEdit = dynamic_cast<CGUIEditControl *>(GetControl(CONTROL_DEFAULT_EDIT));
   m_pOriginalGroupTitle = dynamic_cast<CGUILabelControl *>(GetControl(CONTROL_DEFAULT_SETTING_LABEL));
 
-  if (!m_pOriginalEdit && m_pOriginalButton)
+  // if there's no edit control but there's a button control use that instead
+  if (m_pOriginalEdit == nullptr && m_pOriginalButton != nullptr)
   {
     m_pOriginalEdit = new CGUIEditControl(*m_pOriginalButton);
     m_newOriginalEdit = true;
   }
 
-  if (m_pOriginalSpin) m_pOriginalSpin->SetVisible(false);
-  if (m_pOriginalSlider) m_pOriginalSlider->SetVisible(false);
-  if (m_pOriginalRadioButton) m_pOriginalRadioButton->SetVisible(false);
-  if (m_pOriginalButton) m_pOriginalButton->SetVisible(false);
-  if (m_pOriginalCategoryButton) m_pOriginalCategoryButton->SetVisible(false);
-  if (m_pOriginalEdit) m_pOriginalEdit->SetVisible(false);
-  if (m_pOriginalImage) m_pOriginalImage->SetVisible(false);
-  if (m_pOriginalGroupTitle) m_pOriginalGroupTitle->SetVisible(false);
+  // hide all default controls by default
+  if (m_pOriginalSpin != nullptr)
+    m_pOriginalSpin->SetVisible(false);
+  if (m_pOriginalSlider != nullptr)
+    m_pOriginalSlider->SetVisible(false);
+  if (m_pOriginalRadioButton != nullptr)
+    m_pOriginalRadioButton->SetVisible(false);
+  if (m_pOriginalButton != nullptr)
+    m_pOriginalButton->SetVisible(false);
+  if (m_pOriginalCategoryButton != nullptr)
+    m_pOriginalCategoryButton->SetVisible(false);
+  if (m_pOriginalEdit != nullptr)
+    m_pOriginalEdit->SetVisible(false);
+  if (m_pOriginalImage != nullptr)
+    m_pOriginalImage->SetVisible(false);
+  if (m_pOriginalGroupTitle != nullptr)
+    m_pOriginalGroupTitle->SetVisible(false);
+
+  // get the section
+  CSettingSection *section = GetSection();
+  if (section == NULL)
+    return;
+  
+  // update the screen string
+  if (section->GetLabel() >= 0)
+    SetHeading(section->GetLabel());
+
+  // get the categories we need
+  m_categories = section->GetCategories((SettingLevel)GetSettingLevel());
+  if (m_categories.empty())
+    m_categories.push_back(m_dummyCategory);
 
   if (m_pOriginalCategoryButton != NULL)
   {
