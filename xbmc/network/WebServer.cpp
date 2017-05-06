@@ -82,8 +82,8 @@ CWebServer::CWebServer()
     m_running(false),
     m_thread_stacksize(0),
     m_authenticationRequired(false),
-    m_authenticationUsername("xbmc"),
-    m_authenticationPassword("xbmc")
+    m_authenticationUsername("kodi"),
+    m_authenticationPassword("")
 {
 #if defined(TARGET_DARWIN)
   void *stack_addr;
