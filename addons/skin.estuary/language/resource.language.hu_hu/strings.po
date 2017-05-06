@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 # Addon Name: Estuary
 # Addon id: skin.estuary
-# Addon Provider: phil65, Piers
+# Addon Provider: phil65, Ichabod Fletchman
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
@@ -112,6 +112,10 @@ msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
 msgstr "Nem találhatóak kedvencek. Bármely elemet hozzáadhat ehhez a listához a média nézetekből, a környezeti menü használatával."
 
+msgctxt "#31026"
+msgid "Timeshift"
+msgstr "Csúsztatott felvétel"
+
 msgctxt "#31028"
 msgid "Show fanart"
 msgstr "Illusztráció megjelenítése"
@@ -119,6 +123,10 @@ msgstr "Illusztráció megjelenítése"
 msgctxt "#31029"
 msgid "Last logged in"
 msgstr "Utoljára bejelentkezve"
+
+msgctxt "#31030"
+msgid "System memory usage"
+msgstr "Rendszer memóriahasználata"
 
 msgctxt "#31031"
 msgid "Version info"
@@ -308,6 +316,10 @@ msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "Válaszd ki a Kodi felhasználói profilod[CR]a belépéshez"
 
+msgctxt "#31099"
+msgid "IconWall"
+msgstr "IkonFal"
+
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Shift"
@@ -428,10 +440,6 @@ msgctxt "#31131"
 msgid "Choose skin fanart pack"
 msgstr "Válassz felszín-illusztráció csomagot"
 
-msgctxt "#31132"
-msgid "min"
-msgstr "perc"
-
 msgctxt "#31134"
 msgid "Remaining"
 msgstr "Hátralévő"
@@ -475,3 +483,59 @@ msgstr "Belépés a kiegészítő böngészőbe"
 msgctxt "#31145"
 msgid "Search add-ons"
 msgstr "Bővítmények keresése"
+
+msgctxt "#31148"
+msgid "Categories"
+msgstr "Kategóriák"
+
+msgctxt "#31149"
+msgid "Select genre fanart pack"
+msgstr "Műfaj illusztrációs csomag kiválasztása"
+
+msgctxt "#31150"
+msgid "Repository"
+msgstr "Tároló"
+
+msgctxt "#31151"
+msgid "Unwatched music videos"
+msgstr "Nem látott videóklipek"
+
+msgctxt "#31152"
+msgid "Random music videos"
+msgstr "Véletlenszerű videóklipek"
+
+msgctxt "#31153"
+msgid "You do not have any add-ons of this type installed. Enter the add-on browser to download add-ons created by our community."
+msgstr "Nincs telepítve ilyen típusú kiegészítő. Nyissa meg a kiegészítő-böngészőt a közösségünk által létrehozott kiegészítő letöltéséhez."
+
+msgctxt "#31154"
+msgid "Press OK to switch between locations"
+msgstr "Nyomja meg az OK-t a helyek közötti váltáshoz"
+
+msgctxt "#31155"
+msgid "No bookmarks created yet."
+msgstr "Még nincs létrehozva könyvjelző"
+
+msgctxt "#31156"
+msgid "Choose background pattern"
+msgstr "Válasszon háttérmintát"
+
+msgctxt "#31157"
+msgid "Edit categories"
+msgstr "Kategóriák szerkesztése"
+
+msgctxt "#31158"
+msgid "Touch mode"
+msgstr "Éríntős mód"
+
+msgctxt "#31159"
+msgid "Artwork"
+msgstr "Illusztráció"
+
+msgctxt "#31160"
+msgid "Show media flags"
+msgstr "Média ikonok megjelenítése"
+
+msgctxt "#31161"
+msgid "Numeric pad"
+msgstr "Numerikus billentyűzet"

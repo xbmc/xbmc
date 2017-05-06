@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 # Addon Name: Estuary
 # Addon id: skin.estuary
-# Addon Provider: phil65, Piers
+# Addon Provider: phil65, Ichabod Fletchman
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
@@ -112,6 +112,10 @@ msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
 msgstr "沒有找到最愛項目。你可以使用快捷選單來將媒體檔檢視器中的物件加入此列表。"
 
+msgctxt "#31026"
+msgid "Timeshift"
+msgstr "時間平移"
+
 msgctxt "#31028"
 msgid "Show fanart"
 msgstr "顯示劇照"
@@ -119,6 +123,10 @@ msgstr "顯示劇照"
 msgctxt "#31029"
 msgid "Last logged in"
 msgstr "上次登入在"
+
+msgctxt "#31030"
+msgid "System memory usage"
+msgstr "系統記憶體用量"
 
 msgctxt "#31031"
 msgid "Version info"
@@ -308,6 +316,10 @@ msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "選擇您的 Kodi 使用者設定檔[CR]登入並繼續"
 
+msgctxt "#31099"
+msgid "IconWall"
+msgstr "圖示牆"
+
 msgctxt "#31100"
 msgid "Shift"
 msgstr "轉換"
@@ -424,9 +436,9 @@ msgctxt "#31130"
 msgid "Main menu-related settings: Configure the home screen to your likings."
 msgstr "主選單相關設定：將首頁依照您的喜好做規劃"
 
-msgctxt "#31132"
-msgid "min"
-msgstr "分"
+msgctxt "#31131"
+msgid "Choose skin fanart pack"
+msgstr "選擇佈景主題粉絲自製圖集"
 
 msgctxt "#31134"
 msgid "Remaining"
@@ -471,3 +483,59 @@ msgstr "進入附加元件瀏覽器"
 msgctxt "#31145"
 msgid "Search add-ons"
 msgstr "搜尋附加元件"
+
+msgctxt "#31148"
+msgid "Categories"
+msgstr "分類"
+
+msgctxt "#31149"
+msgid "Select genre fanart pack"
+msgstr "選擇影音類型的粉絲自製圖集"
+
+msgctxt "#31150"
+msgid "Repository"
+msgstr "來源處"
+
+msgctxt "#31151"
+msgid "Unwatched music videos"
+msgstr "還沒看過的音樂影片"
+
+msgctxt "#31152"
+msgid "Random music videos"
+msgstr "隨機音樂影片"
+
+msgctxt "#31153"
+msgid "You do not have any add-ons of this type installed. Enter the add-on browser to download add-ons created by our community."
+msgstr "您尚未安裝本類型的任何附加元件。請到附加元件區下載本社群所製作的附加元件。"
+
+msgctxt "#31154"
+msgid "Press OK to switch between locations"
+msgstr "按下OK以切換地區"
+
+msgctxt "#31155"
+msgid "No bookmarks created yet."
+msgstr "尚未建立任何書籤。"
+
+msgctxt "#31156"
+msgid "Choose background pattern"
+msgstr "選擇背景貼圖樣式"
+
+msgctxt "#31157"
+msgid "Edit categories"
+msgstr "編輯分類"
+
+msgctxt "#31158"
+msgid "Touch mode"
+msgstr "觸控模式"
+
+msgctxt "#31159"
+msgid "Artwork"
+msgstr "美術作品"
+
+msgctxt "#31160"
+msgid "Show media flags"
+msgstr "顯示媒體內容標籤"
+
+msgctxt "#31161"
+msgid "Numeric pad"
+msgstr "數字鍵盤"

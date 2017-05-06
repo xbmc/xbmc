@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 # Addon Name: Estuary
 # Addon id: skin.estuary
-# Addon Provider: phil65, Piers
+# Addon Provider: phil65, Ichabod Fletchman
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
@@ -106,11 +106,15 @@ msgstr "Zoradiť podľa"
 
 msgctxt "#31023"
 msgid "Viewtype"
-msgstr "TypZobrazenia"
+msgstr "Typ zobrazenia"
 
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
 msgstr "Nenašli sa žiadne obľúbené položky. Akúkoľvek položku z prehľadov médií môžete pridať do tohto zoznamu použitím kontextovej ponuky."
+
+msgctxt "#31026"
+msgid "Timeshift"
+msgstr "Časový posun"
 
 msgctxt "#31028"
 msgid "Show fanart"
@@ -119,6 +123,10 @@ msgstr "Zobraziť fanart"
 msgctxt "#31029"
 msgid "Last logged in"
 msgstr "Posledné prihlásenie"
+
+msgctxt "#31030"
+msgid "System memory usage"
+msgstr "Využitie systémovej pamäte"
 
 msgctxt "#31031"
 msgid "Version info"
@@ -308,6 +316,10 @@ msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "Zvoľte si profil používateľa Kodi[CR]pre prihlásenie a pokračovanie"
 
+msgctxt "#31099"
+msgid "IconWall"
+msgstr "Stena ikôn"
+
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Shift"
@@ -428,10 +440,6 @@ msgctxt "#31131"
 msgid "Choose skin fanart pack"
 msgstr "Vyberte fanart balík pre vzhľad"
 
-msgctxt "#31132"
-msgid "min"
-msgstr "min"
-
 msgctxt "#31134"
 msgid "Remaining"
 msgstr "Zostáva"
@@ -475,3 +483,59 @@ msgstr "Vstúpiť do prehliadača doplnkov"
 msgctxt "#31145"
 msgid "Search add-ons"
 msgstr "Prehľadávať doplnky"
+
+msgctxt "#31148"
+msgid "Categories"
+msgstr "Kategórie"
+
+msgctxt "#31149"
+msgid "Select genre fanart pack"
+msgstr "Vyberte fanart balík pre žánre"
+
+msgctxt "#31150"
+msgid "Repository"
+msgstr "Repozitár"
+
+msgctxt "#31151"
+msgid "Unwatched music videos"
+msgstr "Nepozreté hudobné videá"
+
+msgctxt "#31152"
+msgid "Random music videos"
+msgstr "Náhodné hudobné videá"
+
+msgctxt "#31153"
+msgid "You do not have any add-ons of this type installed. Enter the add-on browser to download add-ons created by our community."
+msgstr "Nemáte nainštalované žiadne doplnky tohoto typu. Vstúpte do prehliadača doplnkov a nainštalujte si doplnky vytvorené našou komunitou."
+
+msgctxt "#31154"
+msgid "Press OK to switch between locations"
+msgstr "Stlačte OK pre prepnutie medzi lokáciami"
+
+msgctxt "#31155"
+msgid "No bookmarks created yet."
+msgstr "Neboli vytvorené žiadne záložky."
+
+msgctxt "#31156"
+msgid "Choose background pattern"
+msgstr "Vyberte vzor pozadia"
+
+msgctxt "#31157"
+msgid "Edit categories"
+msgstr "Upraviť kategórie"
+
+msgctxt "#31158"
+msgid "Touch mode"
+msgstr "Dotykový mód"
+
+msgctxt "#31159"
+msgid "Artwork"
+msgstr "Artwork"
+
+msgctxt "#31160"
+msgid "Show media flags"
+msgstr "Zobraziť indikátory medií"
+
+msgctxt "#31161"
+msgid "Numeric pad"
+msgstr "Numerická klávesnica"

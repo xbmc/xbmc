@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 # Addon Name: Estuary
 # Addon id: skin.estuary
-# Addon Provider: phil65, Piers
+# Addon Provider: phil65, Ichabod Fletchman
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
@@ -26,7 +26,7 @@ msgstr "Cerca..."
 
 msgctxt "#31002"
 msgid "Show media fanart as background"
-msgstr "Mostra fanart elementi come sfondo"
+msgstr "Mostra elementi fanart come sfondo"
 
 msgctxt "#31003"
 msgid "Cinema mode"
@@ -38,7 +38,7 @@ msgstr "Cambia modalità"
 
 msgctxt "#31005"
 msgid "Watch as 2D"
-msgstr "Guarda come 2D"
+msgstr "Guarda in 2D"
 
 msgctxt "#31006"
 msgid "Random movies"
@@ -112,6 +112,10 @@ msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
 msgstr "Nessun preferito trovato. Puoi aggiungere qualunque elemento dalle viste multimediali a questa lista usando il menù contestuale."
 
+msgctxt "#31026"
+msgid "Timeshift"
+msgstr "Timeshift"
+
 msgctxt "#31028"
 msgid "Show fanart"
 msgstr "Mostra fanart"
@@ -119,6 +123,10 @@ msgstr "Mostra fanart"
 msgctxt "#31029"
 msgid "Last logged in"
 msgstr "Ultimo login"
+
+msgctxt "#31030"
+msgid "System memory usage"
+msgstr "Utilizzo memoria sistema"
 
 msgctxt "#31031"
 msgid "Version info"
@@ -206,7 +214,7 @@ msgstr "Vai a Playlist"
 
 msgctxt "#31057"
 msgid "Show login screen on startup"
-msgstr "Mostra schermata login all'avvio"
+msgstr "Mostra schermata di login all'avvio"
 
 msgctxt "#31058"
 msgid "Automatic Login on startup"
@@ -307,6 +315,10 @@ msgstr "Opzioni Canali"
 msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "Scegli il tuo profilo utente Kodi[CR]per fare login e continuare"
+
+msgctxt "#31099"
+msgid "IconWall"
+msgstr "Muro di Icone"
 
 msgctxt "#31100"
 msgid "Shift"
@@ -428,10 +440,6 @@ msgctxt "#31131"
 msgid "Choose skin fanart pack"
 msgstr "Scegli pacchetto fanart skin"
 
-msgctxt "#31132"
-msgid "min"
-msgstr "min"
-
 msgctxt "#31134"
 msgid "Remaining"
 msgstr "Rimanenti"
@@ -475,3 +483,59 @@ msgstr "Inserisci browser Add-On"
 msgctxt "#31145"
 msgid "Search add-ons"
 msgstr "Cerca Add-on"
+
+msgctxt "#31148"
+msgid "Categories"
+msgstr "Categorie"
+
+msgctxt "#31149"
+msgid "Select genre fanart pack"
+msgstr "Scegli pacchetto fanart genere"
+
+msgctxt "#31150"
+msgid "Repository"
+msgstr "Repository"
+
+msgctxt "#31151"
+msgid "Unwatched music videos"
+msgstr "Video Musicali non visti"
+
+msgctxt "#31152"
+msgid "Random music videos"
+msgstr "Video Musicali casuali"
+
+msgctxt "#31153"
+msgid "You do not have any add-ons of this type installed. Enter the add-on browser to download add-ons created by our community."
+msgstr "Non hai alcun Add-On di questo tipo installato. Apri il browser Add-On per per scaricare Add-On creati dalla nostra community."
+
+msgctxt "#31154"
+msgid "Press OK to switch between locations"
+msgstr "Premi OK per scorrere fra le località"
+
+msgctxt "#31155"
+msgid "No bookmarks created yet."
+msgstr "Nessun segnalibro ancora creato."
+
+msgctxt "#31156"
+msgid "Choose background pattern"
+msgstr "Scegli motivo sfondo"
+
+msgctxt "#31157"
+msgid "Edit categories"
+msgstr "Modifica categorie"
+
+msgctxt "#31158"
+msgid "Touch mode"
+msgstr "Modalità Touch"
+
+msgctxt "#31159"
+msgid "Artwork"
+msgstr "Artwork"
+
+msgctxt "#31160"
+msgid "Show media flags"
+msgstr "Mostra etichette info media"
+
+msgctxt "#31161"
+msgid "Numeric pad"
+msgstr "Tastierino numerico"

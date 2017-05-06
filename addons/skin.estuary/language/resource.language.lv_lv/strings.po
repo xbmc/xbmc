@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 # Addon Name: Estuary
 # Addon id: skin.estuary
-# Addon Provider: phil65, Piers
+# Addon Provider: phil65, Ichabod Fletchman
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
@@ -204,6 +204,10 @@ msgctxt "#31075"
 msgid "Movie sets"
 msgstr "Filmu kopumi"
 
+msgctxt "#31082"
+msgid "Lyrics add-on"
+msgstr "Dziesmu vārdu pielikums"
+
 msgctxt "#31092"
 msgid "Video menu"
 msgstr "Video izvēlne"
@@ -243,10 +247,6 @@ msgstr "Teleteksts"
 msgctxt "#31114"
 msgid "Search YouTube"
 msgstr "Meklēt YouTube"
-
-msgctxt "#31132"
-msgid "min"
-msgstr "min"
 
 msgctxt "#31137"
 msgid "PVR info"

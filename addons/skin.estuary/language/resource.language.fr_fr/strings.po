@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 # Addon Name: Estuary
 # Addon id: skin.estuary
-# Addon Provider: phil65, Piers
+# Addon Provider: phil65, Ichabod Fletchman
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
@@ -112,6 +112,10 @@ msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
 msgstr "Aucun favori trouvé. Il est possible d'ajouter n'importe quel élément à cette liste à partir des vues média à l'aide du menu contextuel."
 
+msgctxt "#31026"
+msgid "Timeshift"
+msgstr "Différé"
+
 msgctxt "#31028"
 msgid "Show fanart"
 msgstr "Afficher le FanArt"
@@ -119,6 +123,10 @@ msgstr "Afficher le FanArt"
 msgctxt "#31029"
 msgid "Last logged in"
 msgstr "Dernière connexion "
+
+msgctxt "#31030"
+msgid "System memory usage"
+msgstr "Mémoire système utilisée"
 
 msgctxt "#31031"
 msgid "Version info"
@@ -218,7 +226,7 @@ msgstr "Menu principal"
 
 msgctxt "#31062"
 msgid "Choose weather fanart pack"
-msgstr "Choisir le pack de FanArt pour la météo"
+msgstr "Choisir le paquet de FanArts pour la météo"
 
 msgctxt "#31063"
 msgid "Sections"
@@ -308,6 +316,10 @@ msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "Sélectionner le profil utilisateur Kodi[CR]pour s'identifier et poursuivre"
 
+msgctxt "#31099"
+msgid "IconWall"
+msgstr "Mur d'icônes"
+
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Maj."
@@ -326,7 +338,7 @@ msgstr "Saisir le texte ici…"
 
 msgctxt "#31104"
 msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
-msgstr "La bibliothèque est actuellement vide. Pour la peupler avec des médias, aller à la section « Fichiers », ajouter une source de médias puis la configurer. Après ajout et indexation, la bibliothèque pourra être parcourue."
+msgstr "La médiathèque est actuellement vide. Pour la peupler avec des médias, aller à la section « Fichiers », ajouter une source de médias puis la configurer. Après ajout et indexation, la médiathèque pourra être parcourue."
 
 msgctxt "#31105"
 msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
@@ -354,7 +366,7 @@ msgstr "Changer de flux audio"
 
 msgctxt "#31113"
 msgid "Search local library"
-msgstr "Rechercher dans la bibliothèque locale"
+msgstr "Rechercher dans la médiathèque locale"
 
 msgctxt "#31114"
 msgid "Search YouTube"
@@ -426,11 +438,7 @@ msgstr "Paramètres relatifs au menu principal : configurer l'écran d'accueil c
 
 msgctxt "#31131"
 msgid "Choose skin fanart pack"
-msgstr "Choisir le pack de FanArt pour l'habillage"
-
-msgctxt "#31132"
-msgid "min"
-msgstr "min"
+msgstr "Choisir le paquet de FanArts pour l'habillage"
 
 msgctxt "#31134"
 msgid "Remaining"
@@ -475,3 +483,59 @@ msgstr "Aller au navigateur d'extensions"
 msgctxt "#31145"
 msgid "Search add-ons"
 msgstr "Rechercher les extensions"
+
+msgctxt "#31148"
+msgid "Categories"
+msgstr "Catégories"
+
+msgctxt "#31149"
+msgid "Select genre fanart pack"
+msgstr "Sélectionner le type de paquet de FanArts"
+
+msgctxt "#31150"
+msgid "Repository"
+msgstr "Dépôt"
+
+msgctxt "#31151"
+msgid "Unwatched music videos"
+msgstr "Vidéos musicales sans correspondance"
+
+msgctxt "#31152"
+msgid "Random music videos"
+msgstr "Vidéos musicales aléatoires"
+
+msgctxt "#31153"
+msgid "You do not have any add-ons of this type installed. Enter the add-on browser to download add-ons created by our community."
+msgstr "Aucune extension de ce type n'a encore été installée. Utiliser le navigateur d'extensions pour télécharger des extensions créées par la communauté.."
+
+msgctxt "#31154"
+msgid "Press OK to switch between locations"
+msgstr "Presser OK pour changer de lieu"
+
+msgctxt "#31155"
+msgid "No bookmarks created yet."
+msgstr "Aucun signet encore créé."
+
+msgctxt "#31156"
+msgid "Choose background pattern"
+msgstr "Choisir le motif d'arrière-plan"
+
+msgctxt "#31157"
+msgid "Edit categories"
+msgstr "Éditer les catégories"
+
+msgctxt "#31158"
+msgid "Touch mode"
+msgstr "Mode tactile"
+
+msgctxt "#31159"
+msgid "Artwork"
+msgstr "Illustration"
+
+msgctxt "#31160"
+msgid "Show media flags"
+msgstr "Afficher les drapeaux de médias"
+
+msgctxt "#31161"
+msgid "Numeric pad"
+msgstr "Clavier numérique"

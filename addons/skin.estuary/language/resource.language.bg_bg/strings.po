@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 # Addon Name: Estuary
 # Addon id: skin.estuary
-# Addon Provider: phil65, Piers
+# Addon Provider: phil65, Ichabod Fletchman
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
@@ -380,13 +380,9 @@ msgctxt "#31130"
 msgid "Main menu-related settings: Configure the home screen to your likings."
 msgstr "Настройки свързани с началния екран."
 
-msgctxt "#31132"
-msgid "min"
-msgstr "мин"
-
 msgctxt "#31134"
 msgid "Remaining"
-msgstr "Преименуване"
+msgstr "Оставащо"
 
 msgctxt "#31136"
 msgid "Click here to see latest changes..."
@@ -399,3 +395,11 @@ msgstr "ПВР информация"
 msgctxt "#31144"
 msgid "Enter add-on browser"
 msgstr "Браузър за добавки"
+
+msgctxt "#31148"
+msgid "Categories"
+msgstr "Категории"
+
+msgctxt "#31150"
+msgid "Repository"
+msgstr "Хранилище"

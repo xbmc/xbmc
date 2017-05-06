@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 # Addon Name: Estuary
 # Addon id: skin.estuary
-# Addon Provider: phil65, Piers
+# Addon Provider: phil65, Ichabod Fletchman
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
@@ -112,6 +112,10 @@ msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
 msgstr "No se han encontrado favoritos. Puede agregar cualquier elemento de las vistas de medios a esta lista mediante el menú contextual."
 
+msgctxt "#31026"
+msgid "Timeshift"
+msgstr "Cambio de hora"
+
 msgctxt "#31028"
 msgid "Show fanart"
 msgstr "Mostrar fanart"
@@ -119,6 +123,10 @@ msgstr "Mostrar fanart"
 msgctxt "#31029"
 msgid "Last logged in"
 msgstr "Último acceso"
+
+msgctxt "#31030"
+msgid "System memory usage"
+msgstr "Memoria del sistema usada"
 
 msgctxt "#31031"
 msgid "Version info"
@@ -308,6 +316,10 @@ msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "Selecciona tu perfil de usuario Kodi[CR]para acceder y continuar"
 
+msgctxt "#31099"
+msgid "IconWall"
+msgstr "IconWall"
+
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Mays."
@@ -428,10 +440,6 @@ msgctxt "#31131"
 msgid "Choose skin fanart pack"
 msgstr "Elegir paquete de skin fanart"
 
-msgctxt "#31132"
-msgid "min"
-msgstr "mínimo"
-
 msgctxt "#31134"
 msgid "Remaining"
 msgstr "Restante"
@@ -475,3 +483,59 @@ msgstr "Ingresar al navegador de complementos"
 msgctxt "#31145"
 msgid "Search add-ons"
 msgstr "Buscar complementos"
+
+msgctxt "#31148"
+msgid "Categories"
+msgstr "Categorías"
+
+msgctxt "#31149"
+msgid "Select genre fanart pack"
+msgstr "Seleccionar paquete de género fanart "
+
+msgctxt "#31150"
+msgid "Repository"
+msgstr "Repositorio"
+
+msgctxt "#31151"
+msgid "Unwatched music videos"
+msgstr "Videos musicales no vistos"
+
+msgctxt "#31152"
+msgid "Random music videos"
+msgstr "Videos musicales al azar"
+
+msgctxt "#31153"
+msgid "You do not have any add-ons of this type installed. Enter the add-on browser to download add-ons created by our community."
+msgstr "No tiene ningún complemento de este tipo instalado. Introduzca el complemento para descargar complementos creados por nuestra comunidad."
+
+msgctxt "#31154"
+msgid "Press OK to switch between locations"
+msgstr "Pulse OK para cambiar entre ubicaciones"
+
+msgctxt "#31155"
+msgid "No bookmarks created yet."
+msgstr "Aún no se han creado marcadores."
+
+msgctxt "#31156"
+msgid "Choose background pattern"
+msgstr "Elegir patrón de fondo"
+
+msgctxt "#31157"
+msgid "Edit categories"
+msgstr "Editar categorías"
+
+msgctxt "#31158"
+msgid "Touch mode"
+msgstr "Modo táctil"
+
+msgctxt "#31159"
+msgid "Artwork"
+msgstr "Obra de arte"
+
+msgctxt "#31160"
+msgid "Show media flags"
+msgstr "Mostrar indicadores de medios"
+
+msgctxt "#31161"
+msgid "Numeric pad"
+msgstr "Teclado numérico"

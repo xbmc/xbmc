@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 # Addon Name: Estuary
 # Addon id: skin.estuary
-# Addon Provider: phil65, Piers
+# Addon Provider: phil65, Ichabod Fletchman
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
@@ -112,13 +112,17 @@ msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
 msgstr "No s'ha trobat cap preferit. Podeu afegir qualsevol element des de les vistes dels mitjans a aquesta llista mitjançant el menú contextual."
 
+msgctxt "#31026"
+msgid "Timeshift"
+msgstr "Salts en el temps"
+
 msgctxt "#31028"
 msgid "Show fanart"
-msgstr "Mostr el fanart"
+msgstr "Mostra el fanart"
 
 msgctxt "#31029"
 msgid "Last logged in"
-msgstr "Última entrada"
+msgstr "Última autenticació"
 
 msgctxt "#31030"
 msgid "System memory usage"
@@ -186,7 +190,7 @@ msgstr "Disponible"
 
 msgctxt "#31050"
 msgid "Press [B]OK[/B] to stop"
-msgstr "Preu [B]D'ACORD[/B] per aturar"
+msgstr "Premeu [B]D'ACORD[/B] per aturar"
 
 msgctxt "#31051"
 msgid "Toggle language"
@@ -210,11 +214,11 @@ msgstr "Vés a la llista de reproducció"
 
 msgctxt "#31057"
 msgid "Show login screen on startup"
-msgstr "Mostra la pantalla d'inici de sessió a l'inici"
+msgstr "Mostra la pantalla d'autenticació a l'inici"
 
 msgctxt "#31058"
 msgid "Automatic Login on startup"
-msgstr "Inici de sessió automàtic a l'inici"
+msgstr "Autenticació automàtica a l'inici"
 
 msgctxt "#31061"
 msgid "Main menu items"
@@ -310,7 +314,11 @@ msgstr "Opcions del canal"
 
 msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
-msgstr "Seleccioneu el vostre perfil d'usuari de Kodi[CR]per entrar i continuar"
+msgstr "Seleccioneu el vostre perfil d'usuari de Kodi[CR]per autenticar-vos i continuar"
+
+msgctxt "#31099"
+msgid "IconWall"
+msgstr "Mur d'icones"
 
 msgctxt "#31100"
 msgid "Shift"
@@ -432,10 +440,6 @@ msgctxt "#31131"
 msgid "Choose skin fanart pack"
 msgstr "Tria el paquet de fanart de l'aparença"
 
-msgctxt "#31132"
-msgid "min"
-msgstr "min"
-
 msgctxt "#31134"
 msgid "Remaining"
 msgstr "Restant"
@@ -470,7 +474,7 @@ msgstr "Velocitat de reproducció"
 
 msgctxt "#31143"
 msgid "You did not set up PVR yet. In order to use PVR, choose a PVR client addon and configure it. Please visit http://kodi.wiki/view/PVR to learn more."
-msgstr "Encara no heu configurat el PVR. Per utilitzar el PVR, trieu un complement  de client PVR i configureu-lo. Consulteu http://kodi.wiki/view/PVR per a més detalls."
+msgstr "Encara no heu configurat el PVR. Per utilitzar el PVR, trieu un complement de client PVR i configureu-lo. Consulteu http://kodi.wiki/view/PVR per a més detalls."
 
 msgctxt "#31144"
 msgid "Enter add-on browser"
@@ -496,6 +500,10 @@ msgctxt "#31152"
 msgid "Random music videos"
 msgstr "Vídeos musicals aleatoris"
 
+msgctxt "#31153"
+msgid "You do not have any add-ons of this type installed. Enter the add-on browser to download add-ons created by our community."
+msgstr "No teniu cap complement d'aquest tipus instal·lat. Entreu al navegador de complements per baixar complements creats per la nostra comunitat."
+
 msgctxt "#31154"
 msgid "Press OK to switch between locations"
 msgstr "Premeu d'acord per canviar entre ubicacions"
@@ -515,6 +523,10 @@ msgstr "Edita les categories"
 msgctxt "#31158"
 msgid "Touch mode"
 msgstr "Mode tàctil"
+
+msgctxt "#31159"
+msgid "Artwork"
+msgstr "Artwork"
 
 msgctxt "#31160"
 msgid "Show media flags"

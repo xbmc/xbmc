@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 # Addon Name: Estuary
 # Addon id: skin.estuary
-# Addon Provider: phil65, Piers
+# Addon Provider: phil65, Ichabod Fletchman
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
@@ -112,6 +112,10 @@ msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
 msgstr "Δεν βρέθηκαν αγαπημένα. Μπορείτε να προσθέσετε οποιοδήποτε αντικείμενο από την προβολή πολυμέσων σε αυτή τη λίστα χρησιμοποιώντας το κεντρικό μενού."
 
+msgctxt "#31026"
+msgid "Timeshift"
+msgstr "Timeshift"
+
 msgctxt "#31028"
 msgid "Show fanart"
 msgstr "Εμφάνιση fanart"
@@ -119,6 +123,10 @@ msgstr "Εμφάνιση fanart"
 msgctxt "#31029"
 msgid "Last logged in"
 msgstr "Τελευταία σύνδεση"
+
+msgctxt "#31030"
+msgid "System memory usage"
+msgstr "Χρήση μνήμης συστήματος"
 
 msgctxt "#31031"
 msgid "Version info"
@@ -428,10 +436,6 @@ msgctxt "#31131"
 msgid "Choose skin fanart pack"
 msgstr "Επιλογή πακέτου fanart "
 
-msgctxt "#31132"
-msgid "min"
-msgstr "λεπτά"
-
 msgctxt "#31134"
 msgid "Remaining"
 msgstr "Απομένουν"
@@ -471,3 +475,39 @@ msgstr "Εισαγωγή Περιηγητή πρόσθετων"
 msgctxt "#31145"
 msgid "Search add-ons"
 msgstr "Αναζήτηση προσθέτων"
+
+msgctxt "#31148"
+msgid "Categories"
+msgstr "Κατηγορίες"
+
+msgctxt "#31150"
+msgid "Repository"
+msgstr "Αποθετήριο"
+
+msgctxt "#31151"
+msgid "Unwatched music videos"
+msgstr "Μη προβληθέντα βίντεο"
+
+msgctxt "#31152"
+msgid "Random music videos"
+msgstr "Τυχαία μουσικά βίντεο"
+
+msgctxt "#31155"
+msgid "No bookmarks created yet."
+msgstr "Δεν έχουν δημιουργηθεί σελιδοδείκτες ακόμη."
+
+msgctxt "#31156"
+msgid "Choose background pattern"
+msgstr "Επιλέξτε μοτίβο υποβάθρου"
+
+msgctxt "#31157"
+msgid "Edit categories"
+msgstr "Επεξεργασία κατηγοριών"
+
+msgctxt "#31158"
+msgid "Touch mode"
+msgstr "Λειτουργία αφής"
+
+msgctxt "#31161"
+msgid "Numeric pad"
+msgstr "Αριθμητικό πληκτρολόγιο"

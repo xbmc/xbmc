@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 # Addon Name: Estuary
 # Addon id: skin.estuary
-# Addon Provider: phil65, Piers
+# Addon Provider: phil65, Ichabod Fletchman
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
@@ -22,7 +22,7 @@ msgstr "Spilles nå"
 
 msgctxt "#31001"
 msgid "Search..."
-msgstr "Søk..."
+msgstr "Søk…"
 
 msgctxt "#31002"
 msgid "Show media fanart as background"
@@ -112,13 +112,21 @@ msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
 msgstr "Ingen favoritter funnet. Du kan legge til artikler fra media listen til denne listen ved å bruke hurtigmenyen."
 
+msgctxt "#31026"
+msgid "Timeshift"
+msgstr "Tdsforskyvning"
+
 msgctxt "#31028"
 msgid "Show fanart"
-msgstr "Vis fanart"
+msgstr "Vis brukerkunstbidrag"
 
 msgctxt "#31029"
 msgid "Last logged in"
 msgstr "Sist innlogget"
+
+msgctxt "#31030"
+msgid "System memory usage"
+msgstr "System minne bruk"
 
 msgctxt "#31031"
 msgid "Version info"
@@ -214,11 +222,11 @@ msgstr "Automatisk pålogging ved oppstart"
 
 msgctxt "#31061"
 msgid "Main menu items"
-msgstr "Hovedmeny elementer"
+msgstr "Hovedmenyelementer"
 
 msgctxt "#31062"
 msgid "Choose weather fanart pack"
-msgstr "Velg vært fanart pakke"
+msgstr "Velg brukerkunstbidragspakke for vær"
 
 msgctxt "#31063"
 msgid "Sections"
@@ -308,6 +316,10 @@ msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "Velg din Kodi brukerprofil[CR]for å logge inn og fortsette"
 
+msgctxt "#31099"
+msgid "IconWall"
+msgstr "IkonVegg"
+
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Shift"
@@ -322,11 +334,11 @@ msgstr "Vegg"
 
 msgctxt "#31103"
 msgid "Enter text here..."
-msgstr "Skriv tekst her..."
+msgstr "Skriv tekst her…"
 
 msgctxt "#31104"
 msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
-msgstr "Ditt bibliotek er for tiden tomt. For å kunne legge til dine personlige mediafiler gå til \"Filer\", legg til mediakilde og konfigurer denne. Etter at kilden er lagt til og indeksert kan du se gjennom ditt bibliotek."
+msgstr "Ditt bibliotek er for tiden tomt. For å kunne legge til dine personlige mediafiler gå til \"Filer\", legg til mediakilde og sett opp denne. Etter at kilden er lagt til og indeksert kan du se gjennom ditt bibliotek."
 
 msgctxt "#31105"
 msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
@@ -346,7 +358,7 @@ msgstr "Skriv inn filens mappe"
 
 msgctxt "#31111"
 msgid "View your personal pictures or download one of the many image add-ons from the official repository."
-msgstr "Se dine personlige bilder eller last ned en av de mange bildetilleggene fra det offisielle oppbevaringsstedet."
+msgstr "Se dine personlige bilder eller last ned en av de mange bildetilleggene fra den offisielle pakkebrønnen."
 
 msgctxt "#31112"
 msgid "Toggle audio stream"
@@ -418,19 +430,15 @@ msgstr "Bidragsytere"
 
 msgctxt "#31129"
 msgid "General settings applying to all areas of the skin."
-msgstr "Generelle innstillinger gjelder for alle områder av skinnet"
+msgstr "Generelle innstillinger gjelder for alle deler av drakten"
 
 msgctxt "#31130"
 msgid "Main menu-related settings: Configure the home screen to your likings."
-msgstr "Hovedmeny relaterte innstillinger. Tilpass hjemmeskjermen slik du ønsker."
+msgstr "Hovedmenyrelaterte innstillinger. Tilpass hjemmeskjermen slik du ønsker."
 
 msgctxt "#31131"
 msgid "Choose skin fanart pack"
-msgstr "Velg skinn fanart pakke"
-
-msgctxt "#31132"
-msgid "min"
-msgstr "min"
+msgstr "Velg brukerkunstbidragspakke for drakt"
 
 msgctxt "#31134"
 msgid "Remaining"
@@ -438,7 +446,7 @@ msgstr "Gjenstår"
 
 msgctxt "#31136"
 msgid "Click here to see latest changes..."
-msgstr "Klikk her for å se siste endringer..."
+msgstr "Klikk her for å se siste endringer…"
 
 msgctxt "#31137"
 msgid "PVR info"
@@ -466,7 +474,7 @@ msgstr "Avspillingshastighet"
 
 msgctxt "#31143"
 msgid "You did not set up PVR yet. In order to use PVR, choose a PVR client addon and configure it. Please visit http://kodi.wiki/view/PVR to learn more."
-msgstr "Du har ikke satt opp PVR enda. For å bruke PVR, velg en PVR klient tillegg og konfigurer det. Vennligst besøk http://kodi.wiki/view/PVR for å finne ut mer."
+msgstr "Du har ikke satt opp PVR enda. For å bruke PVR, velg et PVR-klient -tillegg og sett det opp. Besøk http://kodi.wiki/view/PVR for å finne ut mer."
 
 msgctxt "#31144"
 msgid "Enter add-on browser"
@@ -475,3 +483,59 @@ msgstr "Skriv inn utvidelsesleseren"
 msgctxt "#31145"
 msgid "Search add-ons"
 msgstr "Søk tillegg"
+
+msgctxt "#31148"
+msgid "Categories"
+msgstr "Kategorier"
+
+msgctxt "#31149"
+msgid "Select genre fanart pack"
+msgstr "Velg brukerkunstbidragspakke for sjanger"
+
+msgctxt "#31150"
+msgid "Repository"
+msgstr "Pakkebrønn"
+
+msgctxt "#31151"
+msgid "Unwatched music videos"
+msgstr "Usette musikk videoer"
+
+msgctxt "#31152"
+msgid "Random music videos"
+msgstr "Tilfeldige musikk videoer"
+
+msgctxt "#31153"
+msgid "You do not have any add-ons of this type installed. Enter the add-on browser to download add-ons created by our community."
+msgstr "Du har ingen tillegg av denne typen installert. Gå til tilleggs modulen for å laste ned tillegg som er laget av vårt miljø."
+
+msgctxt "#31154"
+msgid "Press OK to switch between locations"
+msgstr "Trykk OK for å bytte mellom lokasjoner"
+
+msgctxt "#31155"
+msgid "No bookmarks created yet."
+msgstr "Ingen bokmerker opprettet enda."
+
+msgctxt "#31156"
+msgid "Choose background pattern"
+msgstr "Velg bakgrunnsmønster."
+
+msgctxt "#31157"
+msgid "Edit categories"
+msgstr "Rediger kategorier"
+
+msgctxt "#31158"
+msgid "Touch mode"
+msgstr "Berøringsmodus"
+
+msgctxt "#31159"
+msgid "Artwork"
+msgstr "Kunstverk"
+
+msgctxt "#31160"
+msgid "Show media flags"
+msgstr "Vis mediaflagg"
+
+msgctxt "#31161"
+msgid "Numeric pad"
+msgstr "Talltastatur"

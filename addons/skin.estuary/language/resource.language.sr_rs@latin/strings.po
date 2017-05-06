@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 # Addon Name: Estuary
 # Addon id: skin.estuary
-# Addon Provider: phil65, Piers
+# Addon Provider: phil65, Ichabod Fletchman
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
@@ -86,7 +86,7 @@ msgstr "Ocenjeno"
 
 msgctxt "#31018"
 msgid "Recently played channels"
-msgstr "Skorašnji kanali"
+msgstr "Nedavno reprodukovani kanali"
 
 msgctxt "#31019"
 msgid "Forecast"
@@ -112,6 +112,10 @@ msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
 msgstr "Omiljeno nije pronađeno. Možete dodati bilo koju stavku iz prikaza medija ovoj listi korišćenjem menija opcija."
 
+msgctxt "#31026"
+msgid "Timeshift"
+msgstr "Pomeraj vremena"
+
 msgctxt "#31028"
 msgid "Show fanart"
 msgstr "Prikaži umetnost ljubitelja"
@@ -119,6 +123,10 @@ msgstr "Prikaži umetnost ljubitelja"
 msgctxt "#31029"
 msgid "Last logged in"
 msgstr "Poslednja prijava"
+
+msgctxt "#31030"
+msgid "System memory usage"
+msgstr "Korišćenje memorije sistema"
 
 msgctxt "#31031"
 msgid "Version info"
@@ -162,7 +170,7 @@ msgstr "Opcije liste za reprodukciju"
 
 msgctxt "#31043"
 msgid "Set the type and add rules to create a smart playlist. These playlists are dynamic and include all media items from your database which apply to your chosen rules."
-msgstr "Postavite tip i dodajte pravila da bi napravili pametnu listu za reprodukciju. Ove liste za reprodukciju su dinamične i uključuju sve medijske stavke iz vaše baze podataka na koje mogu da se primene vaša odabrana pravila."
+msgstr "Postavite vrstu i dodajte pravila da bi napravili pametnu listu za reprodukciju. Ove liste za reprodukciju su dinamične i uključuju sve medijske stavke iz vaše baze podataka na koje mogu da se primene vaša odabrana pravila."
 
 msgctxt "#31044"
 msgid "Add group"
@@ -216,6 +224,10 @@ msgctxt "#31061"
 msgid "Main menu items"
 msgstr "Stavke glavnog menija"
 
+msgctxt "#31062"
+msgid "Choose weather fanart pack"
+msgstr "Izaberite paket umetnosti ljubitelja vremenske prognoze"
+
 msgctxt "#31063"
 msgid "Sections"
 msgstr "Sekcije"
@@ -238,7 +250,7 @@ msgstr "Izaberi podešavanja"
 
 msgctxt "#31069"
 msgid "Last Updated"
-msgstr "Poslednje ažuriranje"
+msgstr "Poslednje Ažuriranje"
 
 msgctxt "#31071"
 msgid "by"
@@ -302,7 +314,11 @@ msgstr "Opcije kanala"
 
 msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
-msgstr "Izaberite vaš Kodi korisnički profil[CR]za prijavu, a potom nastavite dalje"
+msgstr "Odaberite vaš Kodi korisnički profil[CR]za prijavu, a potom nastavite dalje"
+
+msgctxt "#31099"
+msgid "IconWall"
+msgstr "IconWall"
 
 msgctxt "#31100"
 msgid "Shift"
@@ -420,10 +436,106 @@ msgctxt "#31130"
 msgid "Main menu-related settings: Configure the home screen to your likings."
 msgstr "Podešavanja vezana za glavni meni: Podesite glavni ekran prema vašim željama."
 
-msgctxt "#31132"
-msgid "min"
-msgstr "min"
+msgctxt "#31131"
+msgid "Choose skin fanart pack"
+msgstr "Izaberite paket umetnosti ljubitelja za masku"
+
+msgctxt "#31134"
+msgid "Remaining"
+msgstr "Preostalo"
+
+msgctxt "#31136"
+msgid "Click here to see latest changes..."
+msgstr "Kliknite ovde da bi videli poslenje promene..."
+
+msgctxt "#31137"
+msgid "PVR info"
+msgstr "PVR informacije"
+
+msgctxt "#31138"
+msgid "Player process info"
+msgstr "Informacije procesa uređaja za reprodukciju"
+
+msgctxt "#31139"
+msgid "Video decoder"
+msgstr "Video dekoder"
+
+msgctxt "#31140"
+msgid "Pixel format"
+msgstr "Oblik prikaza piksela"
+
+msgctxt "#31141"
+msgid "Changes for version"
+msgstr "Promene za verziju"
+
+msgctxt "#31142"
+msgid "Play speed"
+msgstr "Brzina reprodukcije"
+
+msgctxt "#31143"
+msgid "You did not set up PVR yet. In order to use PVR, choose a PVR client addon and configure it. Please visit http://kodi.wiki/view/PVR to learn more."
+msgstr "Još niste podesili PVR. Da bi koristili PVR, izaberite dodatni program PVR klijenta i podesite ga. Molimo, posetite http://kodi.wiki/view/PVR da bi više naučili."
 
 msgctxt "#31144"
 msgid "Enter add-on browser"
 msgstr "Otvori pretraživač dodatnih programa"
+
+msgctxt "#31145"
+msgid "Search add-ons"
+msgstr "Pretraži dodatne programe"
+
+msgctxt "#31148"
+msgid "Categories"
+msgstr "Kategorije"
+
+msgctxt "#31149"
+msgid "Select genre fanart pack"
+msgstr "Izaberite paket umetnosti ljubitelja žanra"
+
+msgctxt "#31150"
+msgid "Repository"
+msgstr "Spremište"
+
+msgctxt "#31151"
+msgid "Unwatched music videos"
+msgstr "Neodgledani muzički spotovi"
+
+msgctxt "#31152"
+msgid "Random music videos"
+msgstr "Nasumični muzički spotovi"
+
+msgctxt "#31153"
+msgid "You do not have any add-ons of this type installed. Enter the add-on browser to download add-ons created by our community."
+msgstr "Još uvek nemate nijedan dodatni program ove vrste instaliran. Posetite naš pretraživač dodatnih programa da bi preuzeli dodatne programe napravljene od strane naše zajednice."
+
+msgctxt "#31154"
+msgid "Press OK to switch between locations"
+msgstr "Pritisnite OK za promenu između lokacija"
+
+msgctxt "#31155"
+msgid "No bookmarks created yet."
+msgstr "Nijedan obeleživač još nije napravljen."
+
+msgctxt "#31156"
+msgid "Choose background pattern"
+msgstr "Izaberite šablon pozadine"
+
+msgctxt "#31157"
+msgid "Edit categories"
+msgstr "Uredi kategorije"
+
+msgctxt "#31158"
+msgid "Touch mode"
+msgstr "Režim dodira"
+
+msgctxt "#31159"
+msgid "Artwork"
+msgstr "Ilustracije"
+
+msgctxt "#31160"
+msgid "Show media flags"
+msgstr "Prikaži medijske oznake"
+
+msgctxt "#31161"
+msgid "Numeric pad"
+msgstr "Numerička tastatura"

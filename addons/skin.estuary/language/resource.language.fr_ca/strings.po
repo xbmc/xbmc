@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 # Addon Name: Estuary
 # Addon id: skin.estuary
-# Addon Provider: phil65, Piers
+# Addon Provider: phil65, Ichabod Fletchman
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
@@ -46,7 +46,7 @@ msgstr "Films aléatoires"
 
 msgctxt "#31007"
 msgid "Unwatched movies"
-msgstr "Films non regardés"
+msgstr "Films non visionnés"
 
 msgctxt "#31009"
 msgid "Download icons"
@@ -112,6 +112,10 @@ msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
 msgstr "Aucun favori trouvé. Vous pouvez ajouter à cette liste n'importe quel élément des vues de médias en utilisant le menu contextuel."
 
+msgctxt "#31026"
+msgid "Timeshift"
+msgstr "Décalage temporel"
+
 msgctxt "#31028"
 msgid "Show fanart"
 msgstr "Afficher le fanart"
@@ -119,6 +123,10 @@ msgstr "Afficher le fanart"
 msgctxt "#31029"
 msgid "Last logged in"
 msgstr "Dernière connexion"
+
+msgctxt "#31030"
+msgid "System memory usage"
+msgstr "Utilisation de la mémoire système"
 
 msgctxt "#31031"
 msgid "Version info"
@@ -134,7 +142,7 @@ msgstr "Votre évaluation"
 
 msgctxt "#31034"
 msgid "Extended info"
-msgstr "Infos supplémentaires"
+msgstr "Infos complémentaires"
 
 msgctxt "#31035"
 msgid "Pages"
@@ -154,7 +162,7 @@ msgstr "Avance rapide"
 
 msgctxt "#31041"
 msgid "Camera manufacturer"
-msgstr "Fabricant de l'appareil-photo"
+msgstr "Fabricant de l'appareil photo"
 
 msgctxt "#31042"
 msgid "Playlist options"
@@ -306,7 +314,11 @@ msgstr "Options de chaînes"
 
 msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
-msgstr "Choisissez votre profil d'utilisateur Kodi[CR]pour vous connecter et continuer"
+msgstr "Choisissez votre profil d'utilisateur Kodi[CR]pour vous connecter et poursuivre"
+
+msgctxt "#31099"
+msgid "IconWall"
+msgstr "Mur d'icônes"
 
 msgctxt "#31100"
 msgid "Shift"
@@ -326,7 +338,7 @@ msgstr "Saisir du texte ici..."
 
 msgctxt "#31104"
 msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
-msgstr "Votre médiathèque est actuellement vide. Afin de la remplir avec vos médias personnels, allez à la section « Fichiers », ajoutez une source de médias et configurez-la. Une fois que la source a été ajoutée et indexée, vous pourrez parcourir votre médiathèque."
+msgstr "Votre médiathèque est actuellement vide. Afin de la remplir avec vos médias personnels, allez à la section « Fichiers », ajoutez une source de médias et configurez-la. Une fois que la source aura été ajoutée et indexée, vous pourrez parcourir votre médiathèque."
 
 msgctxt "#31105"
 msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
@@ -390,7 +402,7 @@ msgstr "Définir le fournisseur météo"
 
 msgctxt "#31122"
 msgid "Unwatched TV Shows"
-msgstr "Émissions télé non regardées"
+msgstr "Émissions télé non visionnées"
 
 msgctxt "#31123"
 msgid "Same director"
@@ -427,10 +439,6 @@ msgstr "Paramètres concernant le menu principal : configurez l'écran d'accueil
 msgctxt "#31131"
 msgid "Choose skin fanart pack"
 msgstr "Choisir le paquet de fanart de l'habillage"
-
-msgctxt "#31132"
-msgid "min"
-msgstr "min"
 
 msgctxt "#31134"
 msgid "Remaining"
@@ -475,3 +483,59 @@ msgstr "Se rendre au navigateur d'addiciels"
 msgctxt "#31145"
 msgid "Search add-ons"
 msgstr "Rechercher des addiciels"
+
+msgctxt "#31148"
+msgid "Categories"
+msgstr "Catégories"
+
+msgctxt "#31149"
+msgid "Select genre fanart pack"
+msgstr "Choisir le paquet de fanart de genre"
+
+msgctxt "#31150"
+msgid "Repository"
+msgstr "Dépôt"
+
+msgctxt "#31151"
+msgid "Unwatched music videos"
+msgstr "Vidéos musicales non visionnées"
+
+msgctxt "#31152"
+msgid "Random music videos"
+msgstr "Vidéos musicales aléatoires"
+
+msgctxt "#31153"
+msgid "You do not have any add-ons of this type installed. Enter the add-on browser to download add-ons created by our community."
+msgstr "Aucun addiciel de ce type n'est installé. Utilisez le navigateur d'addiciels pour télécharger des addiciels créés par notre communauté."
+
+msgctxt "#31154"
+msgid "Press OK to switch between locations"
+msgstr "Pesez sur OK pour basculer entre les emplacements"
+
+msgctxt "#31155"
+msgid "No bookmarks created yet."
+msgstr "Il n'y a pas encore de signets."
+
+msgctxt "#31156"
+msgid "Choose background pattern"
+msgstr "Choisir le modèle d'arrière plan"
+
+msgctxt "#31157"
+msgid "Edit categories"
+msgstr "Modifier les catégories"
+
+msgctxt "#31158"
+msgid "Touch mode"
+msgstr "Mode tactile"
+
+msgctxt "#31159"
+msgid "Artwork"
+msgstr "Illustration"
+
+msgctxt "#31160"
+msgid "Show media flags"
+msgstr "Afficher les drapeaux de médias"
+
+msgctxt "#31161"
+msgid "Numeric pad"
+msgstr "Pavé numérique"

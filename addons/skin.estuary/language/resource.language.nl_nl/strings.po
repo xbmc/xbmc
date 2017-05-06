@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 # Addon Name: Estuary
 # Addon id: skin.estuary
-# Addon Provider: phil65, Piers
+# Addon Provider: phil65, Ichabod Fletchman
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
@@ -82,7 +82,7 @@ msgstr "Onlangs afgespeelde kanalen"
 
 msgctxt "#31017"
 msgid "Rated"
-msgstr "Rated"
+msgstr "Waardering"
 
 msgctxt "#31018"
 msgid "Recently played channels"
@@ -112,6 +112,10 @@ msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
 msgstr "Geen favorieten gevonden. U kunt elk item uit media-weergaven toevoegen aan deze lijst met het contextmenu."
 
+msgctxt "#31026"
+msgid "Timeshift"
+msgstr "Timeshift"
+
 msgctxt "#31028"
 msgid "Show fanart"
 msgstr "Toon fanart"
@@ -119,6 +123,10 @@ msgstr "Toon fanart"
 msgctxt "#31029"
 msgid "Last logged in"
 msgstr "Laatst ingelogd op"
+
+msgctxt "#31030"
+msgid "System memory usage"
+msgstr "Systeemgeheugen gebruik"
 
 msgctxt "#31031"
 msgid "Version info"
@@ -214,7 +222,7 @@ msgstr "Automatisch inloggen tijdens opstarten"
 
 msgctxt "#31061"
 msgid "Main menu items"
-msgstr "Hoofdmenu items"
+msgstr "Hoofdmenu-items"
 
 msgctxt "#31062"
 msgid "Choose weather fanart pack"
@@ -306,7 +314,11 @@ msgstr "Kanaalopties"
 
 msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
-msgstr "Selecteer jouw Kodi Gebruikersprofiel[CR]om in te loggen en door te gaan"
+msgstr "Selecteer je Kodi Gebruikersprofiel[CR]om in te loggen en door te gaan"
+
+msgctxt "#31099"
+msgid "IconWall"
+msgstr "iconenmuur"
 
 msgctxt "#31100"
 msgid "Shift"
@@ -342,7 +354,7 @@ msgstr "Brede lijst"
 
 msgctxt "#31110"
 msgid "Enter files section"
-msgstr "Geef bestandensectie"
+msgstr "Ga naar bestandensectie"
 
 msgctxt "#31111"
 msgid "View your personal pictures or download one of the many image add-ons from the official repository."
@@ -426,11 +438,7 @@ msgstr "Hoofdmenu gerelateerde instellingen: Configureer het homescreen naar wen
 
 msgctxt "#31131"
 msgid "Choose skin fanart pack"
-msgstr "Kies skin fanartpakket"
-
-msgctxt "#31132"
-msgid "min"
-msgstr "min"
+msgstr "Kies skinfanartpakket"
 
 msgctxt "#31134"
 msgid "Remaining"
@@ -475,3 +483,59 @@ msgstr "Ga naar add-on verkenner"
 msgctxt "#31145"
 msgid "Search add-ons"
 msgstr "Zoek add-ons"
+
+msgctxt "#31148"
+msgid "Categories"
+msgstr "Categoriëen"
+
+msgctxt "#31149"
+msgid "Select genre fanart pack"
+msgstr "Selecteer genre fanartpakket"
+
+msgctxt "#31150"
+msgid "Repository"
+msgstr "Repository"
+
+msgctxt "#31151"
+msgid "Unwatched music videos"
+msgstr "Niet bekeken muziekvideo`s"
+
+msgctxt "#31152"
+msgid "Random music videos"
+msgstr "Willekeurige muziekvideo`s"
+
+msgctxt "#31153"
+msgid "You do not have any add-ons of this type installed. Enter the add-on browser to download add-ons created by our community."
+msgstr "U heeft nog geen enkele add-on van dit type geïnstalleerd. Bezoek de add-onverkenner om add-ons te downloaden gecreëerd door onze community."
+
+msgctxt "#31154"
+msgid "Press OK to switch between locations"
+msgstr "Druk OK om de schakelen tussen locaties"
+
+msgctxt "#31155"
+msgid "No bookmarks created yet."
+msgstr "Nog geen bladwijzer gecreëerd "
+
+msgctxt "#31156"
+msgid "Choose background pattern"
+msgstr "Kies achtergrondpatroon"
+
+msgctxt "#31157"
+msgid "Edit categories"
+msgstr "Aanpassen categoriëen "
+
+msgctxt "#31158"
+msgid "Touch mode"
+msgstr "Aanraakmodus"
+
+msgctxt "#31159"
+msgid "Artwork"
+msgstr "Artwork"
+
+msgctxt "#31160"
+msgid "Show media flags"
+msgstr "Toon mediavlaggen"
+
+msgctxt "#31161"
+msgid "Numeric pad"
+msgstr "Numeriek pad"
