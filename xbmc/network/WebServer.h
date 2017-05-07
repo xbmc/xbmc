@@ -79,8 +79,8 @@ private:
 
   std::shared_ptr<IHTTPRequestHandler> FindRequestHandler(HTTPRequest request) const;
 
-  int AskForAuthentication(struct MHD_Connection *connection) const;
-  bool IsAuthenticated(struct MHD_Connection *connection) const;
+  int AskForAuthentication(HTTPRequest request) const;
+  bool IsAuthenticated(HTTPRequest request) const;
 
   bool IsRequestCacheable(HTTPRequest request) const;
   bool IsRequestRanged(HTTPRequest request, const CDateTime &lastModified) const;
@@ -101,6 +101,9 @@ private:
   int SendErrorResponse(HTTPRequest request, int errorType, HTTPMethod method) const;
 
   int AddHeader(struct MHD_Response *response, const std::string &name, const std::string &value) const;
+
+  void LogRequest(HTTPRequest request) const;
+  void LogResponse(HTTPRequest request, int responseStatus) const;
 
   static std::string CreateMimeTypeFromExtension(const char *ext);
 

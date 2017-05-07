@@ -113,7 +113,7 @@ static MHD_Response* create_response(size_t size, void* data, int free, int copy
 #endif
 }
 
-int CWebServer::AskForAuthentication(struct MHD_Connection *connection) const
+int CWebServer::AskForAuthentication(HTTPRequest request) const
 {
   struct MHD_Response *response = create_response(0, nullptr, MHD_NO, MHD_NO);
   if (!response)
@@ -130,24 +130,15 @@ int CWebServer::AskForAuthentication(struct MHD_Connection *connection) const
     return MHD_NO;
   }
 
-  if (g_advancedSettings.CanLogComponent(LOGWEBSERVER))
-  {
-    std::multimap<std::string, std::string> headerValues;
-    HTTPRequestHandlerUtils::GetRequestHeaderValues(connection, MHD_RESPONSE_HEADER_KIND, headerValues);
+  LogResponse(request, MHD_HTTP_UNAUTHORIZED);
 
-    CLog::Log(LOGDEBUG, "CWebServer[%hu] [OUT] HTTP %d", m_port, MHD_HTTP_UNAUTHORIZED);
-
-    for (std::multimap<std::string, std::string>::const_iterator header = headerValues.begin(); header != headerValues.end(); ++header)
-      CLog::Log(LOGDEBUG, "CWebServer[%hu] [OUT] %s: %s", m_port, header->first.c_str(), header->second.c_str());
-  }
-
-  ret = MHD_queue_basic_auth_fail_response(connection, "XBMC", response);
+  ret = MHD_queue_basic_auth_fail_response(request.connection, "XBMC", response);
   MHD_destroy_response(response);
 
   return ret;
 }
 
-bool CWebServer::IsAuthenticated(struct MHD_Connection *connection) const
+bool CWebServer::IsAuthenticated(HTTPRequest request) const
 {
   CSingleLock lock(m_critSection);
 
@@ -156,7 +147,7 @@ bool CWebServer::IsAuthenticated(struct MHD_Connection *connection) const
 
   // try to retrieve username and password for basic authentication
   char* password = nullptr;
-  char* username = MHD_basic_auth_get_username_password(connection, &password);
+  char* username = MHD_basic_auth_get_username_password(request.connection, &password);
 
   if (username == nullptr || password == nullptr)
     return false;
@@ -200,29 +191,8 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
   HTTPMethod methodType = GetHTTPMethod(method);
   HTTPRequest request = { webServer, connection, connectionHandler->fullUri, url, methodType, version };
 
-  if (connectionHandler->isNew && g_advancedSettings.CanLogComponent(LOGWEBSERVER))
-  {
-    std::multimap<std::string, std::string> headerValues;
-    HTTPRequestHandlerUtils::GetRequestHeaderValues(connection, MHD_HEADER_KIND, headerValues);
-    std::multimap<std::string, std::string> getValues;
-    HTTPRequestHandlerUtils::GetRequestHeaderValues(connection, MHD_GET_ARGUMENT_KIND, getValues);
-
-    CLog::Log(LOGDEBUG, "CWebServer[%hu]  [IN] %s %s %s", webServer->m_port, version, GetHTTPMethod(request.method).c_str(), request.pathUrlFull.c_str());
-    if (!getValues.empty())
-    {
-      std::string tmp;
-      for (std::multimap<std::string, std::string>::const_iterator get = getValues.begin(); get != getValues.end(); ++get)
-      {
-        if (get != getValues.begin())
-          tmp += "; ";
-        tmp += get->first + " = " + get->second;
-      }
-      CLog::Log(LOGDEBUG, "CWebServer[%hu]  [IN] Query arguments: %s", webServer->m_port, tmp.c_str());
-    }
-
-    for (std::multimap<std::string, std::string>::const_iterator header = headerValues.begin(); header != headerValues.end(); ++header)
-      CLog::Log(LOGDEBUG, "CWebServer[%hu]  [IN] %s: %s", webServer->m_port, header->first.c_str(), header->second.c_str());
-  }
+  if (connectionHandler->isNew)
+    webServer->LogRequest(request);
 
   return webServer->HandlePartialRequest(connection, connectionHandler, request, upload_data, upload_data_size, con_cls);
 }
@@ -239,8 +209,8 @@ int CWebServer::HandlePartialRequest(struct MHD_Connection *connection, Connecti
   // reset con_cls and set it if still necessary
   *con_cls = nullptr;
 
-  if (!IsAuthenticated(connection)) 
-    return AskForAuthentication(connection);
+  if (!IsAuthenticated(request)) 
+    return AskForAuthentication(request);
 
   // check if this is the first call to AnswerToConnection for this request
   if (isNewRequest)
@@ -958,16 +928,7 @@ int CWebServer::CreateMemoryDownloadResponse(struct MHD_Connection *connection, 
 
 int CWebServer::SendResponse(HTTPRequest request, int responseStatus, MHD_Response *response) const
 {
-  if (g_advancedSettings.CanLogComponent(LOGWEBSERVER))
-  {
-    std::multimap<std::string, std::string> headerValues;
-    HTTPRequestHandlerUtils::GetRequestHeaderValues(request.connection, MHD_RESPONSE_HEADER_KIND, headerValues);
-
-    CLog::Log(LOGDEBUG, "CWebServer[%hu] [OUT] %s %d %s", m_port, request.version.c_str(), responseStatus, request.pathUrlFull.c_str());
-
-    for (std::multimap<std::string, std::string>::const_iterator header = headerValues.begin(); header != headerValues.end(); ++header)
-      CLog::Log(LOGDEBUG, "CWebServer[%hu] [OUT] %s: %s", m_port, header->first.c_str(), header->second.c_str());
-  }
+  LogResponse(request, responseStatus);
 
   int ret = MHD_queue_response(request.connection, responseStatus, response);
   MHD_destroy_response(response);
@@ -1269,6 +1230,45 @@ void CWebServer::UnregisterRequestHandler(IHTTPRequestHandler *handler)
     return;
 
   m_requestHandlers.erase(std::remove(m_requestHandlers.begin(), m_requestHandlers.end(), handler), m_requestHandlers.end());
+}
+
+void CWebServer::LogRequest(HTTPRequest request) const
+{
+  if (!g_advancedSettings.CanLogComponent(LOGWEBSERVER))
+    return;
+
+  std::multimap<std::string, std::string> headerValues;
+  HTTPRequestHandlerUtils::GetRequestHeaderValues(request.connection, MHD_HEADER_KIND, headerValues);
+  std::multimap<std::string, std::string> getValues;
+  HTTPRequestHandlerUtils::GetRequestHeaderValues(request.connection, MHD_GET_ARGUMENT_KIND, getValues);
+
+  CLog::Log(LOGDEBUG, "CWebServer[%hu]  [IN] %s %s %s", m_port, request.version.c_str(), GetHTTPMethod(request.method).c_str(), request.pathUrlFull.c_str());
+
+  if (!getValues.empty())
+  {
+    std::vector<std::string> values;
+    for (const auto get : getValues)
+      values.push_back(get.first + " = " + get.second);
+
+    CLog::Log(LOGDEBUG, "CWebServer[%hu]  [IN] Query arguments: %s", m_port, StringUtils::Join(values, "; ").c_str());
+  }
+
+  for (const auto header : headerValues)
+    CLog::Log(LOGDEBUG, "CWebServer[%hu]  [IN] %s: %s", m_port, header.first.c_str(), header.second.c_str());
+}
+
+void CWebServer::LogResponse(HTTPRequest request, int responseStatus) const
+{
+  if (!g_advancedSettings.CanLogComponent(LOGWEBSERVER))
+    return;
+
+  std::multimap<std::string, std::string> headerValues;
+  HTTPRequestHandlerUtils::GetRequestHeaderValues(request.connection, MHD_RESPONSE_HEADER_KIND, headerValues);
+
+  CLog::Log(LOGDEBUG, "CWebServer[%hu] [OUT] %s %d %s", m_port, request.version.c_str(), responseStatus, request.pathUrlFull.c_str());
+
+  for (const auto header : headerValues)
+    CLog::Log(LOGDEBUG, "CWebServer[%hu] [OUT] %s: %s", m_port, header.first.c_str(), header.second.c_str());
 }
 
 std::string CWebServer::CreateMimeTypeFromExtension(const char *ext)
