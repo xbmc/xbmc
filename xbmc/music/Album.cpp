@@ -56,7 +56,7 @@ CAlbum::CAlbum(const CFileItem& item)
   strArtistDesc = tag.GetAlbumArtistString();
   strArtistSort = tag.GetAlbumArtistSort();
   //Split the artist sort string to try and get sort names for individual artists
-  std::vector<std::string> artistSort = StringUtils::Split(strArtistSort, g_advancedSettings.m_musicItemSeparator);
+  auto artistSort = StringUtils::Split(strArtistSort, g_advancedSettings.m_musicItemSeparator);
 
   if (!tag.GetMusicBrainzAlbumArtistID().empty())
   { // Have musicbrainz artist info, so use it

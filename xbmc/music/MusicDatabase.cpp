@@ -1230,7 +1230,7 @@ bool CMusicDatabase::UpdateArtist(const CArtist& artist)
 
 int CMusicDatabase::AddArtist(const std::string& strArtist, const std::string& strMusicBrainzArtistID, const std::string& strSortName)
 {
-  std::string strSQL, strArtistName, strArtistSort, strNewSort;
+  std::string strSQL;
   int idArtist = AddArtist(strArtist, strMusicBrainzArtistID);
   if (idArtist < 0 || strSortName.empty())
     return idArtist;
@@ -1252,6 +1252,7 @@ int CMusicDatabase::AddArtist(const std::string& strArtist, const std::string& s
       m_pDS->close();
       return -1;
     }
+    std::string strArtistName, strArtistSort;
     strArtistName = m_pDS->fv("strArtist").get_asString();
     strArtistSort = m_pDS->fv("strSortName").get_asString();
     m_pDS->close();
