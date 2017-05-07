@@ -77,6 +77,8 @@ protected:
 private:
   struct MHD_Daemon* StartMHD(unsigned int flags, int port);
 
+  std::shared_ptr<IHTTPRequestHandler> FindRequestHandler(HTTPRequest request) const;
+
   int AskForAuthentication(struct MHD_Connection *connection) const;
   bool IsAuthenticated(struct MHD_Connection *connection) const;
 

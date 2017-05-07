@@ -40,7 +40,7 @@ CHTTPWebinterfaceHandler::CHTTPWebinterfaceHandler(const HTTPRequest &request)
   SetFile(file, responseStatus);
 }
 
-bool CHTTPWebinterfaceHandler::CanHandleRequest(const HTTPRequest &request)
+bool CHTTPWebinterfaceHandler::CanHandleRequest(const HTTPRequest &request) const
 {
   return true;
 }

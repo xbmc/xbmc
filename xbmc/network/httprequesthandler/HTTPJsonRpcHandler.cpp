@@ -32,7 +32,7 @@
 
 #define MAX_HTTP_POST_SIZE 65536
 
-bool CHTTPJsonRpcHandler::CanHandleRequest(const HTTPRequest &request)
+bool CHTTPJsonRpcHandler::CanHandleRequest(const HTTPRequest &request) const
 {
   return (request.pathUrl.compare("/jsonrpc") == 0);
 }

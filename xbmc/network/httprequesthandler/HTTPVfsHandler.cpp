@@ -91,7 +91,7 @@ CHTTPVfsHandler::CHTTPVfsHandler(const HTTPRequest &request)
   SetFile(file, responseStatus);
 }
 
-bool CHTTPVfsHandler::CanHandleRequest(const HTTPRequest &request)
+bool CHTTPVfsHandler::CanHandleRequest(const HTTPRequest &request) const
 {
   return request.pathUrl.find("/vfs") == 0;
 }

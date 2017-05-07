@@ -246,132 +246,126 @@ int CWebServer::HandlePartialRequest(struct MHD_Connection *connection, Connecti
   if (isNewRequest)
   {
     // look for a IHTTPRequestHandler which can take care of the current request
-    for (std::vector<IHTTPRequestHandler *>::const_iterator it = m_requestHandlers.begin(); it != m_requestHandlers.end(); ++it)
+    auto handler = FindRequestHandler(request);
+    if (handler != nullptr)
     {
-      IHTTPRequestHandler *requestHandler = *it;
-      if (requestHandler->CanHandleRequest(request))
+      // if we got a GET request we need to check if it should be cached
+      if (request.method == GET)
       {
-        // we found a matching IHTTPRequestHandler so let's get a new instance for this request
-        std::shared_ptr<IHTTPRequestHandler> handler(requestHandler->Create(request));
-
-        // if we got a GET request we need to check if it should be cached
-        if (request.method == GET)
+        if (handler->CanBeCached())
         {
-          if (handler->CanBeCached())
+          bool cacheable = true;
+
+          // handle Cache-Control
+          std::string cacheControl = HTTPRequestHandlerUtils::GetRequestHeaderValue(connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_CACHE_CONTROL);
+          if (!cacheControl.empty())
           {
-            bool cacheable = true;
-
-            // handle Cache-Control
-            std::string cacheControl = HTTPRequestHandlerUtils::GetRequestHeaderValue(connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_CACHE_CONTROL);
-            if (!cacheControl.empty())
+            std::vector<std::string> cacheControls = StringUtils::Split(cacheControl, ",");
+            for (std::vector<std::string>::const_iterator it = cacheControls.begin(); it != cacheControls.end(); ++it)
             {
-              std::vector<std::string> cacheControls = StringUtils::Split(cacheControl, ",");
-              for (std::vector<std::string>::const_iterator it = cacheControls.begin(); it != cacheControls.end(); ++it)
-              {
-                std::string control = *it;
-                control = StringUtils::Trim(control);
+              std::string control = *it;
+              control = StringUtils::Trim(control);
 
-                // handle no-cache
-                if (control.compare(HEADER_VALUE_NO_CACHE) == 0)
-                  cacheable = false;
-              }
-            }
-
-            if (cacheable)
-            {
-              // handle Pragma (but only if "Cache-Control: no-cache" hasn't been set)
-              std::string pragma = HTTPRequestHandlerUtils::GetRequestHeaderValue(connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_PRAGMA);
-              if (pragma.compare(HEADER_VALUE_NO_CACHE) == 0)
+              // handle no-cache
+              if (control.compare(HEADER_VALUE_NO_CACHE) == 0)
                 cacheable = false;
             }
-
-            CDateTime lastModified;
-            if (handler->GetLastModifiedDate(lastModified) && lastModified.IsValid())
-            {
-              // handle If-Modified-Since or If-Unmodified-Since
-              std::string ifModifiedSince = HTTPRequestHandlerUtils::GetRequestHeaderValue(connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_IF_MODIFIED_SINCE);
-              std::string ifUnmodifiedSince = HTTPRequestHandlerUtils::GetRequestHeaderValue(connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_IF_UNMODIFIED_SINCE);
-
-              CDateTime ifModifiedSinceDate;
-              CDateTime ifUnmodifiedSinceDate;
-              // handle If-Modified-Since (but only if the response is cacheable)
-              if (cacheable &&
-                ifModifiedSinceDate.SetFromRFC1123DateTime(ifModifiedSince) &&
-                lastModified.GetAsUTCDateTime() <= ifModifiedSinceDate)
-              {
-                struct MHD_Response *response = create_response(0, nullptr, MHD_NO, MHD_NO);
-                if (response == nullptr)
-                {
-                  CLog::Log(LOGERROR, "CWebServer[%hu]: failed to create a HTTP 304 response", m_port);
-                  return MHD_NO;
-                }
-
-                return FinalizeRequest(handler, MHD_HTTP_NOT_MODIFIED, response);
-              }
-              // handle If-Unmodified-Since
-              else if (ifUnmodifiedSinceDate.SetFromRFC1123DateTime(ifUnmodifiedSince) &&
-                lastModified.GetAsUTCDateTime() > ifUnmodifiedSinceDate)
-                return SendErrorResponse(connection, MHD_HTTP_PRECONDITION_FAILED, request.method);
-            }
-
-            // parse the Range header and store it in the request object
-            CHttpRanges ranges;
-            bool ranged = ranges.Parse(HTTPRequestHandlerUtils::GetRequestHeaderValue(connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_RANGE));
-
-            // handle If-Range header but only if the Range header is present
-            if (ranged && lastModified.IsValid())
-            {
-              std::string ifRange = HTTPRequestHandlerUtils::GetRequestHeaderValue(connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_IF_RANGE);
-              if (!ifRange.empty() && lastModified.IsValid())
-              {
-                CDateTime ifRangeDate;
-                ifRangeDate.SetFromRFC1123DateTime(ifRange);
-
-                // check if the last modification is newer than the If-Range date
-                // if so we have to server the whole file instead
-                if (lastModified.GetAsUTCDateTime() > ifRangeDate)
-                  ranges.Clear();
-              }
-            }
-
-            // pass the requested ranges on to the request handler
-            handler->SetRequestRanged(!ranges.IsEmpty());
           }
-        }
-        // if we got a POST request we need to take care of the POST data
-        else if (request.method == POST)
-        {
-          conHandler->requestHandler = handler;
 
-          // get the content-type of the POST data
-          std::string contentType = HTTPRequestHandlerUtils::GetRequestHeaderValue(connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_CONTENT_TYPE);
-          if (!contentType.empty())
+          if (cacheable)
           {
-            // if the content-type is application/x-ww-form-urlencoded or multipart/form-data we can use MHD's POST processor
-            if (StringUtils::EqualsNoCase(contentType, MHD_HTTP_POST_ENCODING_FORM_URLENCODED) ||
-                StringUtils::EqualsNoCase(contentType, MHD_HTTP_POST_ENCODING_MULTIPART_FORMDATA))
-            {
-              // Get a new MHD_PostProcessor
-              conHandler->postprocessor = MHD_create_post_processor(connection, MAX_POST_BUFFER_SIZE, &CWebServer::HandlePostField, (void*)conHandler.get());
+            // handle Pragma (but only if "Cache-Control: no-cache" hasn't been set)
+            std::string pragma = HTTPRequestHandlerUtils::GetRequestHeaderValue(connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_PRAGMA);
+            if (pragma.compare(HEADER_VALUE_NO_CACHE) == 0)
+              cacheable = false;
+          }
 
-              // MHD doesn't seem to be able to handle this post request
-              if (conHandler->postprocessor == nullptr)
+          CDateTime lastModified;
+          if (handler->GetLastModifiedDate(lastModified) && lastModified.IsValid())
+          {
+            // handle If-Modified-Since or If-Unmodified-Since
+            std::string ifModifiedSince = HTTPRequestHandlerUtils::GetRequestHeaderValue(connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_IF_MODIFIED_SINCE);
+            std::string ifUnmodifiedSince = HTTPRequestHandlerUtils::GetRequestHeaderValue(connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_IF_UNMODIFIED_SINCE);
+
+            CDateTime ifModifiedSinceDate;
+            CDateTime ifUnmodifiedSinceDate;
+            // handle If-Modified-Since (but only if the response is cacheable)
+            if (cacheable &&
+              ifModifiedSinceDate.SetFromRFC1123DateTime(ifModifiedSince) &&
+              lastModified.GetAsUTCDateTime() <= ifModifiedSinceDate)
+            {
+              struct MHD_Response *response = create_response(0, nullptr, MHD_NO, MHD_NO);
+              if (response == nullptr)
               {
-                CLog::Log(LOGERROR, "CWebServer[%hu]: unable to create HTTP POST processor for %s", m_port, request.pathUrl.c_str());
-                conHandler->errorStatus = MHD_HTTP_INTERNAL_SERVER_ERROR;
+                CLog::Log(LOGERROR, "CWebServer[%hu]: failed to create a HTTP 304 response", m_port);
+                return MHD_NO;
               }
+
+              return FinalizeRequest(handler, MHD_HTTP_NOT_MODIFIED, response);
+            }
+            // handle If-Unmodified-Since
+            else if (ifUnmodifiedSinceDate.SetFromRFC1123DateTime(ifUnmodifiedSince) &&
+              lastModified.GetAsUTCDateTime() > ifUnmodifiedSinceDate)
+              return SendErrorResponse(connection, MHD_HTTP_PRECONDITION_FAILED, request.method);
+          }
+
+          // parse the Range header and store it in the request object
+          CHttpRanges ranges;
+          bool ranged = ranges.Parse(HTTPRequestHandlerUtils::GetRequestHeaderValue(connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_RANGE));
+
+          // handle If-Range header but only if the Range header is present
+          if (ranged && lastModified.IsValid())
+          {
+            std::string ifRange = HTTPRequestHandlerUtils::GetRequestHeaderValue(connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_IF_RANGE);
+            if (!ifRange.empty() && lastModified.IsValid())
+            {
+              CDateTime ifRangeDate;
+              ifRangeDate.SetFromRFC1123DateTime(ifRange);
+
+              // check if the last modification is newer than the If-Range date
+              // if so we have to server the whole file instead
+              if (lastModified.GetAsUTCDateTime() > ifRangeDate)
+                ranges.Clear();
             }
           }
 
-          // otherwise we need to handle the POST data ourselves which is done in the next call to AnswerToConnection
-          // as ownership of the connection handler is passed to libmicrohttpd we must not destroy it 
-          *con_cls = conHandler.release();
+          // pass the requested ranges on to the request handler
+          handler->SetRequestRanged(!ranges.IsEmpty());
+        }
+      }
+      // if we got a POST request we need to take care of the POST data
+      else if (request.method == POST)
+      {
+        conHandler->requestHandler = handler;
 
-          return MHD_YES;
+        // get the content-type of the POST data
+        std::string contentType = HTTPRequestHandlerUtils::GetRequestHeaderValue(connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_CONTENT_TYPE);
+        if (!contentType.empty())
+        {
+          // if the content-type is application/x-ww-form-urlencoded or multipart/form-data we can use MHD's POST processor
+          if (StringUtils::EqualsNoCase(contentType, MHD_HTTP_POST_ENCODING_FORM_URLENCODED) ||
+              StringUtils::EqualsNoCase(contentType, MHD_HTTP_POST_ENCODING_MULTIPART_FORMDATA))
+          {
+            // Get a new MHD_PostProcessor
+            conHandler->postprocessor = MHD_create_post_processor(connection, MAX_POST_BUFFER_SIZE, &CWebServer::HandlePostField, (void*)conHandler.get());
+
+            // MHD doesn't seem to be able to handle this post request
+            if (conHandler->postprocessor == nullptr)
+            {
+              CLog::Log(LOGERROR, "CWebServer[%hu]: unable to create HTTP POST processor for %s", m_port, request.pathUrl.c_str());
+              conHandler->errorStatus = MHD_HTTP_INTERNAL_SERVER_ERROR;
+            }
+          }
         }
 
-        return HandleRequest(handler);
+        // otherwise we need to handle the POST data ourselves which is done in the next call to AnswerToConnection
+        // as ownership of the connection handler is passed to libmicrohttpd we must not destroy it 
+        *con_cls = conHandler.release();
+
+        return MHD_YES;
       }
+
+      return HandleRequest(handler);
     }
   }
   // this is a subsequent call to AnswerToConnection for this request
@@ -433,12 +427,9 @@ int CWebServer::HandlePartialRequest(struct MHD_Connection *connection, Connecti
     // it's unusual to get more than one call to AnswerToConnection for none-POST requests, but let's handle it anyway
     else
     {
-      for (std::vector<IHTTPRequestHandler *>::const_iterator it = m_requestHandlers.begin(); it != m_requestHandlers.end(); ++it)
-      {
-        IHTTPRequestHandler *requestHandler = *it;
-        if (requestHandler->CanHandleRequest(request))
-          return HandleRequest(std::shared_ptr<IHTTPRequestHandler>(requestHandler->Create(request)));
-      }
+      auto requestHandler = FindRequestHandler(request);
+      if (requestHandler != nullptr)
+        return HandleRequest(requestHandler);
     }
   }
 
@@ -605,6 +596,22 @@ int CWebServer::FinalizeRequest(const std::shared_ptr<IHTTPRequestHandler>& hand
   MHD_destroy_response(response);
 
   return ret;
+}
+
+std::shared_ptr<IHTTPRequestHandler> CWebServer::FindRequestHandler(HTTPRequest request) const
+{
+  // look for a IHTTPRequestHandler which can take care of the current request
+  auto requestHandlerIt = std::find_if(m_requestHandlers.cbegin(), m_requestHandlers.cend(),
+    [&request](const IHTTPRequestHandler* requestHandler)
+    {
+      return requestHandler->CanHandleRequest(request);
+    });
+
+  // we found a matching IHTTPRequestHandler so let's get a new instance for this request
+  if (requestHandlerIt != m_requestHandlers.cend())
+    return std::shared_ptr<IHTTPRequestHandler>((*requestHandlerIt)->Create(request));
+
+  return nullptr;
 }
 
 int CWebServer::CreateMemoryDownloadResponse(const std::shared_ptr<IHTTPRequestHandler>& handler, struct MHD_Response *&response) const

@@ -54,7 +54,7 @@ CHTTPImageHandler::CHTTPImageHandler(const HTTPRequest &request)
   SetFile(file, responseStatus);
 }
 
-bool CHTTPImageHandler::CanHandleRequest(const HTTPRequest &request)
+bool CHTTPImageHandler::CanHandleRequest(const HTTPRequest &request) const
 {
   return request.pathUrl.find("/image/") == 0;
 }
