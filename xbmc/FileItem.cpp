@@ -2755,11 +2755,11 @@ void CFileItemList::StackFiles()
               break;
             }
           }
-          else // No match 2, next expression
+          else // No match 2, next item
           {
             offset = 0;
-            expr++;
-            break;
+            j++;
+            continue;
           }
           j++;
         }
