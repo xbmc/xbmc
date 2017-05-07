@@ -83,6 +83,7 @@ private:
   bool IsAuthenticated(struct MHD_Connection *connection) const;
 
   bool IsRequestCacheable(HTTPRequest request) const;
+  bool IsRequestRanged(HTTPRequest request, const CDateTime &lastModified) const;
 
   void SetupPostDataProcessing(HTTPRequest request, ConnectionHandler *connectionHandler, std::shared_ptr<IHTTPRequestHandler> handler, void **con_cls) const;
   bool ProcessPostData(HTTPRequest request, ConnectionHandler *connectionHandler, const char *upload_data, size_t *upload_data_size, void **con_cls) const;

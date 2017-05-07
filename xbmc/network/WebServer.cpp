@@ -285,28 +285,8 @@ int CWebServer::HandlePartialRequest(struct MHD_Connection *connection, Connecti
               return SendErrorResponse(connection, MHD_HTTP_PRECONDITION_FAILED, request.method);
           }
 
-          // parse the Range header and store it in the request object
-          CHttpRanges ranges;
-          bool ranged = ranges.Parse(HTTPRequestHandlerUtils::GetRequestHeaderValue(connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_RANGE));
-
-          // handle If-Range header but only if the Range header is present
-          if (ranged && lastModified.IsValid())
-          {
-            std::string ifRange = HTTPRequestHandlerUtils::GetRequestHeaderValue(connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_IF_RANGE);
-            if (!ifRange.empty() && lastModified.IsValid())
-            {
-              CDateTime ifRangeDate;
-              ifRangeDate.SetFromRFC1123DateTime(ifRange);
-
-              // check if the last modification is newer than the If-Range date
-              // if so we have to server the whole file instead
-              if (lastModified.GetAsUTCDateTime() > ifRangeDate)
-                ranges.Clear();
-            }
-          }
-
           // pass the requested ranges on to the request handler
-          handler->SetRequestRanged(!ranges.IsEmpty());
+          handler->SetRequestRanged(IsRequestRanged(request, lastModified));
         }
       }
       // if we got a POST request we need to take care of the POST data
@@ -560,6 +540,31 @@ bool CWebServer::IsRequestCacheable(HTTPRequest request) const
     return false;
 
   return true;
+}
+
+bool CWebServer::IsRequestRanged(HTTPRequest request, const CDateTime &lastModified) const
+{
+  // parse the Range header and store it in the request object
+  CHttpRanges ranges;
+  bool ranged = ranges.Parse(HTTPRequestHandlerUtils::GetRequestHeaderValue(request.connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_RANGE));
+
+  // handle If-Range header but only if the Range header is present
+  if (ranged && lastModified.IsValid())
+  {
+    std::string ifRange = HTTPRequestHandlerUtils::GetRequestHeaderValue(request.connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_IF_RANGE);
+    if (!ifRange.empty() && lastModified.IsValid())
+    {
+      CDateTime ifRangeDate;
+      ifRangeDate.SetFromRFC1123DateTime(ifRange);
+
+      // check if the last modification is newer than the If-Range date
+      // if so we have to server the whole file instead
+      if (lastModified.GetAsUTCDateTime() > ifRangeDate)
+        ranges.Clear();
+    }
+  }
+
+  return !ranges.IsEmpty();
 }
 
 void CWebServer::SetupPostDataProcessing(HTTPRequest request, ConnectionHandler *connectionHandler, std::shared_ptr<IHTTPRequestHandler> handler, void **con_cls) const
