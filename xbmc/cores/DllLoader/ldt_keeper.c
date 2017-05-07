@@ -19,7 +19,15 @@
  */
 
 //#ifndef __powerpc__
-#if !defined(__powerpc__) && !defined(__ppc__) && !defined(__arm__) && !defined(__aarch64__) && !defined(__mips__)
+#if !defined(__powerpc__) && \
+    !defined(__ppc__) && \
+    !defined(__arm__) && \
+    !defined(__aarch64__) && \
+    !defined(__mips__) && \
+    !defined(__SH4__) && \
+    !defined(__sparc__) && \
+    !defined(__arc__) && \
+    !defined(__xtensa__)
 
 #include "ldt_keeper.h"
 
