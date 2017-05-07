@@ -312,31 +312,11 @@ int CWebServer::HandlePartialRequest(struct MHD_Connection *connection, Connecti
       // if we got a POST request we need to take care of the POST data
       else if (request.method == POST)
       {
-        conHandler->requestHandler = handler;
+        // as ownership of the connection handler is passed to libmicrohttpd we must not destroy it
+        SetupPostDataProcessing(request, conHandler.get(), handler, con_cls);
 
-        // get the content-type of the POST data
-        std::string contentType = HTTPRequestHandlerUtils::GetRequestHeaderValue(connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_CONTENT_TYPE);
-        if (!contentType.empty())
-        {
-          // if the content-type is application/x-ww-form-urlencoded or multipart/form-data we can use MHD's POST processor
-          if (StringUtils::EqualsNoCase(contentType, MHD_HTTP_POST_ENCODING_FORM_URLENCODED) ||
-              StringUtils::EqualsNoCase(contentType, MHD_HTTP_POST_ENCODING_MULTIPART_FORMDATA))
-          {
-            // Get a new MHD_PostProcessor
-            conHandler->postprocessor = MHD_create_post_processor(connection, MAX_POST_BUFFER_SIZE, &CWebServer::HandlePostField, (void*)conHandler.get());
-
-            // MHD doesn't seem to be able to handle this post request
-            if (conHandler->postprocessor == nullptr)
-            {
-              CLog::Log(LOGERROR, "CWebServer[%hu]: unable to create HTTP POST processor for %s", m_port, request.pathUrl.c_str());
-              conHandler->errorStatus = MHD_HTTP_INTERNAL_SERVER_ERROR;
-            }
-          }
-        }
-
-        // otherwise we need to handle the POST data ourselves which is done in the next call to AnswerToConnection
-        // as ownership of the connection handler is passed to libmicrohttpd we must not destroy it 
-        *con_cls = conHandler.release();
+        // as ownership of the connection handler has been passed to libmicrohttpd we must not destroy it
+        conHandler.release();
 
         return MHD_YES;
       }
@@ -350,63 +330,30 @@ int CWebServer::HandlePartialRequest(struct MHD_Connection *connection, Connecti
     // again we need to take special care of the POST data
     if (request.method == POST)
     {
-      if (conHandler->requestHandler == nullptr)
+      // process additional / remaining POST data
+      if (ProcessPostData(request, conHandler.get(), upload_data, upload_data_size, con_cls))
       {
-        CLog::Log(LOGERROR, "CWebServer[%hu]: cannot handle partial HTTP POST for %s request because there is no valid request handler available", m_port, request.pathUrl.c_str());
-        conHandler->errorStatus = MHD_HTTP_INTERNAL_SERVER_ERROR;
-      }
-
-      // we only need to handle POST data if there actually is data left to handle
-      if (*upload_data_size > 0)
-      {
-        // if nothing has gone wrong so far, process the given POST data
-        if (conHandler->errorStatus == MHD_HTTP_OK)
-        {
-          bool postDataHandled = false;
-          // either use MHD's POST processor
-          if (conHandler->postprocessor != nullptr)
-            postDataHandled = MHD_post_process(conHandler->postprocessor, upload_data, *upload_data_size) == MHD_YES;
-          // or simply copy the data to the handler
-          else
-            postDataHandled = conHandler->requestHandler->AddPostData(upload_data, *upload_data_size);
-
-          // abort if the received POST data couldn't be handled
-          if (!postDataHandled)
-          {
-            CLog::Log(LOGERROR, "CWebServer[%hu]: failed to handle HTTP POST data for %s", m_port, request.pathUrl.c_str());
-            conHandler->errorStatus = MHD_HTTP_REQUEST_ENTITY_TOO_LARGE;
-          }
-        }
-
-        // signal that we have handled the data
-        *upload_data_size = 0;
-
-        // we may need to handle more POST data which is done in the next call to AnswerToConnection
-        // as ownership of the connection handler is passed to libmicrohttpd we must not destroy it 
-        *con_cls = conHandler.release();
+        // as ownership of the connection handler has been passed to libmicrohttpd we must not destroy it
+        conHandler.release();
 
         return MHD_YES;
       }
+
+      // finalize POST data processing
+      FinalizePostDataProcessing(conHandler.get());
+
+      // check if something went wrong while handling the POST data
+      if (conHandler->errorStatus != MHD_HTTP_OK)
+        return SendErrorResponse(connection, conHandler->errorStatus, request.method);
+
       // we have handled all POST data so it's time to invoke the IHTTPRequestHandler
-      else
-      {
-        if (conHandler->postprocessor != nullptr)
-          MHD_destroy_post_processor(conHandler->postprocessor);
-
-        // check if something went wrong while handling the POST data
-        if (conHandler->errorStatus != MHD_HTTP_OK)
-          return SendErrorResponse(connection, conHandler->errorStatus, request.method);
-
-        return HandleRequest(conHandler->requestHandler);
-      }
+      return HandleRequest(conHandler->requestHandler);
     }
+
     // it's unusual to get more than one call to AnswerToConnection for none-POST requests, but let's handle it anyway
-    else
-    {
-      auto requestHandler = FindRequestHandler(request);
-      if (requestHandler != nullptr)
-        return HandleRequest(requestHandler);
-    }
+    auto requestHandler = FindRequestHandler(request);
+    if (requestHandler != nullptr)
+      return HandleRequest(requestHandler);
   }
 
   CLog::Log(LOGERROR, "CWebServer[%hu]: couldn't find any request handler for %s", m_port, request.pathUrl.c_str());
@@ -613,6 +560,82 @@ bool CWebServer::IsRequestCacheable(HTTPRequest request) const
     return false;
 
   return true;
+}
+
+void CWebServer::SetupPostDataProcessing(HTTPRequest request, ConnectionHandler *connectionHandler, std::shared_ptr<IHTTPRequestHandler> handler, void **con_cls) const
+{
+  connectionHandler->requestHandler = handler;
+
+  // we might need to handle the POST data ourselves which is done in the next call to AnswerToConnection
+  *con_cls = connectionHandler;
+
+  // get the content-type of the POST data
+  const auto contentType = HTTPRequestHandlerUtils::GetRequestHeaderValue(request.connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_CONTENT_TYPE);
+  if (contentType.empty())
+    return;
+
+  // if the content-type is neither application/x-ww-form-urlencoded nor multipart/form-data we need to handle it ourselves
+  if (!StringUtils::EqualsNoCase(contentType, MHD_HTTP_POST_ENCODING_FORM_URLENCODED) &&
+      !StringUtils::EqualsNoCase(contentType, MHD_HTTP_POST_ENCODING_MULTIPART_FORMDATA))
+    return;
+
+  // otherwise we can use MHD's POST processor
+  connectionHandler->postprocessor = MHD_create_post_processor(request.connection, MAX_POST_BUFFER_SIZE, &CWebServer::HandlePostField, static_cast<void*>(connectionHandler));
+
+  // MHD doesn't seem to be able to handle this post request
+  if (connectionHandler->postprocessor == nullptr)
+  {
+    CLog::Log(LOGERROR, "CWebServer[%hu]: unable to create HTTP POST processor for %s", m_port, request.pathUrl.c_str());
+    connectionHandler->errorStatus = MHD_HTTP_INTERNAL_SERVER_ERROR;
+  }
+}
+
+bool CWebServer::ProcessPostData(HTTPRequest request, ConnectionHandler *connectionHandler, const char *upload_data, size_t *upload_data_size, void **con_cls) const
+{
+  if (connectionHandler->requestHandler == nullptr)
+  {
+    CLog::Log(LOGERROR, "CWebServer[%hu]: cannot handle partial HTTP POST for %s request because there is no valid request handler available", m_port, request.pathUrl.c_str());
+    connectionHandler->errorStatus = MHD_HTTP_INTERNAL_SERVER_ERROR;
+  }
+
+  // we only need to handle POST data if there actually is data left to handle
+  if (*upload_data_size == 0)
+    return false;
+
+  // we may need to handle more POST data which is done in the next call to AnswerToConnection
+  *con_cls = connectionHandler;
+
+  // if nothing has gone wrong so far, process the given POST data
+  if (connectionHandler->errorStatus == MHD_HTTP_OK)
+  {
+    bool postDataHandled = false;
+    // either use MHD's POST processor
+    if (connectionHandler->postprocessor != nullptr)
+      postDataHandled = MHD_post_process(connectionHandler->postprocessor, upload_data, *upload_data_size) == MHD_YES;
+    // or simply copy the data to the handler
+    else if (connectionHandler->requestHandler != nullptr)
+      postDataHandled = connectionHandler->requestHandler->AddPostData(upload_data, *upload_data_size);
+
+    // abort if the received POST data couldn't be handled
+    if (!postDataHandled)
+    {
+      CLog::Log(LOGERROR, "CWebServer[%hu]: failed to handle HTTP POST data for %s", m_port, request.pathUrl.c_str());
+      connectionHandler->errorStatus = MHD_HTTP_REQUEST_ENTITY_TOO_LARGE;
+    }
+  }
+
+  // signal that we have handled the data
+  *upload_data_size = 0;
+
+  return true;
+}
+
+void CWebServer::FinalizePostDataProcessing(ConnectionHandler *connectionHandler) const
+{
+  if (connectionHandler->postprocessor == nullptr)
+    return;
+
+  MHD_destroy_post_processor(connectionHandler->postprocessor);
 }
 
 int CWebServer::CreateMemoryDownloadResponse(const std::shared_ptr<IHTTPRequestHandler>& handler, struct MHD_Response *&response) const

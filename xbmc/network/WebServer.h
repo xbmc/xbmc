@@ -84,6 +84,10 @@ private:
 
   bool IsRequestCacheable(HTTPRequest request) const;
 
+  void SetupPostDataProcessing(HTTPRequest request, ConnectionHandler *connectionHandler, std::shared_ptr<IHTTPRequestHandler> handler, void **con_cls) const;
+  bool ProcessPostData(HTTPRequest request, ConnectionHandler *connectionHandler, const char *upload_data, size_t *upload_data_size, void **con_cls) const;
+  void FinalizePostDataProcessing(ConnectionHandler *connectionHandler) const;
+
   int CreateMemoryDownloadResponse(const std::shared_ptr<IHTTPRequestHandler>& handler, struct MHD_Response *&response) const;
   int CreateRangedMemoryDownloadResponse(const std::shared_ptr<IHTTPRequestHandler>& handler, struct MHD_Response *&response) const;
 
