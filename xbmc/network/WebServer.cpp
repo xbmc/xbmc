@@ -254,31 +254,7 @@ int CWebServer::HandlePartialRequest(struct MHD_Connection *connection, Connecti
       {
         if (handler->CanBeCached())
         {
-          bool cacheable = true;
-
-          // handle Cache-Control
-          std::string cacheControl = HTTPRequestHandlerUtils::GetRequestHeaderValue(connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_CACHE_CONTROL);
-          if (!cacheControl.empty())
-          {
-            std::vector<std::string> cacheControls = StringUtils::Split(cacheControl, ",");
-            for (std::vector<std::string>::const_iterator it = cacheControls.begin(); it != cacheControls.end(); ++it)
-            {
-              std::string control = *it;
-              control = StringUtils::Trim(control);
-
-              // handle no-cache
-              if (control.compare(HEADER_VALUE_NO_CACHE) == 0)
-                cacheable = false;
-            }
-          }
-
-          if (cacheable)
-          {
-            // handle Pragma (but only if "Cache-Control: no-cache" hasn't been set)
-            std::string pragma = HTTPRequestHandlerUtils::GetRequestHeaderValue(connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_PRAGMA);
-            if (pragma.compare(HEADER_VALUE_NO_CACHE) == 0)
-              cacheable = false;
-          }
+          bool cacheable = IsRequestCacheable(request);
 
           CDateTime lastModified;
           if (handler->GetLastModifiedDate(lastModified) && lastModified.IsValid())
@@ -612,6 +588,31 @@ std::shared_ptr<IHTTPRequestHandler> CWebServer::FindRequestHandler(HTTPRequest 
     return std::shared_ptr<IHTTPRequestHandler>((*requestHandlerIt)->Create(request));
 
   return nullptr;
+}
+
+bool CWebServer::IsRequestCacheable(HTTPRequest request) const
+{
+  // handle Cache-Control
+  std::string cacheControl = HTTPRequestHandlerUtils::GetRequestHeaderValue(request.connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_CACHE_CONTROL);
+  if (!cacheControl.empty())
+  {
+    std::vector<std::string> cacheControls = StringUtils::Split(cacheControl, ",");
+    for (auto control : cacheControls)
+    {
+      control = StringUtils::Trim(control);
+
+      // handle no-cache
+      if (control.compare(HEADER_VALUE_NO_CACHE) == 0)
+        return false;
+    }
+  }
+
+  // handle Pragma
+  std::string pragma = HTTPRequestHandlerUtils::GetRequestHeaderValue(request.connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_PRAGMA);
+  if (pragma.compare(HEADER_VALUE_NO_CACHE) == 0)
+    return false;
+
+  return true;
 }
 
 int CWebServer::CreateMemoryDownloadResponse(const std::shared_ptr<IHTTPRequestHandler>& handler, struct MHD_Response *&response) const

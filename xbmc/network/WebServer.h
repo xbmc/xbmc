@@ -82,6 +82,8 @@ private:
   int AskForAuthentication(struct MHD_Connection *connection) const;
   bool IsAuthenticated(struct MHD_Connection *connection) const;
 
+  bool IsRequestCacheable(HTTPRequest request) const;
+
   int CreateMemoryDownloadResponse(const std::shared_ptr<IHTTPRequestHandler>& handler, struct MHD_Response *&response) const;
   int CreateRangedMemoryDownloadResponse(const std::shared_ptr<IHTTPRequestHandler>& handler, struct MHD_Response *&response) const;
 
