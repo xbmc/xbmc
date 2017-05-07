@@ -297,7 +297,7 @@ function(copy_files_from_filelist_to_buildtree pattern)
 
         # If the full path to an existing file is specified then add that single file.
         # Don't recursively add all files with the given name.
-        if(EXISTS ${CMAKE_SOURCE_DIR}/${src} AND NOT IS_DIRECTORY ${CMAKE_SOURCE_DIR}/${src} OR opt)
+        if(EXISTS ${CMAKE_SOURCE_DIR}/${src} AND (NOT IS_DIRECTORY ${CMAKE_SOURCE_DIR}/${src} OR DIR_OPTION))
           set(files ${src})
         else()
           file(GLOB_RECURSE files RELATIVE ${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/${src})
