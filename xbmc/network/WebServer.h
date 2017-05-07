@@ -97,7 +97,8 @@ private:
   int CreateErrorResponse(struct MHD_Connection *connection, int responseType, HTTPMethod method, struct MHD_Response *&response) const;
   int CreateMemoryDownloadResponse(struct MHD_Connection *connection, const void *data, size_t size, bool free, bool copy, struct MHD_Response *&response) const;
 
-  int SendErrorResponse(struct MHD_Connection *connection, int errorType, HTTPMethod method) const;
+  int SendResponse(HTTPRequest request, int responseStatus, MHD_Response *response) const;
+  int SendErrorResponse(HTTPRequest request, int errorType, HTTPMethod method) const;
 
   int AddHeader(struct MHD_Response *response, const std::string &name, const std::string &value) const;
 
