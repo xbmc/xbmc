@@ -43,6 +43,9 @@ extern HWND g_hWnd;
 
 DEFINE_GUID( _KSDATAFORMAT_SUBTYPE_IEEE_FLOAT, WAVE_FORMAT_IEEE_FLOAT, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71 );
 DEFINE_GUID( _KSDATAFORMAT_SUBTYPE_DOLBY_AC3_SPDIF, WAVE_FORMAT_DOLBY_AC3_SPDIF, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71 );
+DEFINE_GUID( _KSDATAFORMAT_SUBTYPE_DOLBY_MLP, 0x0000000c, 0x0cea, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71);
+DEFINE_GUID( _KSDATAFORMAT_SUBTYPE_DTS_HD, 0x0000000b, 0x0cea, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71);
+DEFINE_GUID( _KSDATAFORMAT_SUBTYPE_DOLBY_DIGITAL_PLUS, 0x0000000a, 0x0cea, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71);
 
 #define EXIT_ON_FAILURE(hr, reason, ...) if(FAILED(hr)) {CLog::Log(LOGERROR, reason " - %s", __VA_ARGS__, WASAPIErrToStr(hr)); goto failed;}
 
@@ -214,11 +217,38 @@ bool CAESinkDirectSound::Initialize(AEAudioFormat &format, std::string &device)
   wfxex.Format.nSamplesPerSec  = format.m_sampleRate;
   if (format.m_dataFormat == AE_FMT_RAW)
   {
+    wfxex.Format.wFormatTag      = WAVE_FORMAT_EXTENSIBLE;
     wfxex.dwChannelMask          = SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT;
-    wfxex.Format.wFormatTag      = WAVE_FORMAT_DOLBY_AC3_SPDIF;
-    wfxex.SubFormat              = _KSDATAFORMAT_SUBTYPE_DOLBY_AC3_SPDIF;
     wfxex.Format.wBitsPerSample  = 16;
-    wfxex.Format.nChannels       = 2;
+
+    switch(format.m_dataFormat)
+    {
+    case AE_FMT_TRUEHD:
+      wfxex.SubFormat          = _KSDATAFORMAT_SUBTYPE_DOLBY_MLP;
+      wfxex.dwChannelMask     |= SPEAKER_FRONT_CENTER | SPEAKER_LOW_FREQUENCY |
+                                 SPEAKER_SIDE_LEFT | SPEAKER_SIDE_RIGHT |
+                                 SPEAKER_BACK_LEFT | SPEAKER_BACK_RIGHT;
+      break;
+
+    case AE_FMT_DTSHD:
+      wfxex.SubFormat          = _KSDATAFORMAT_SUBTYPE_DTS_HD;
+      wfxex.dwChannelMask     |= SPEAKER_FRONT_CENTER | SPEAKER_LOW_FREQUENCY |
+                                 SPEAKER_SIDE_LEFT | SPEAKER_SIDE_RIGHT |
+                                 SPEAKER_BACK_LEFT | SPEAKER_BACK_RIGHT;
+      break;
+
+    case AE_FMT_EAC3:
+      wfxex.SubFormat          = _KSDATAFORMAT_SUBTYPE_DOLBY_DIGITAL_PLUS;
+      break;
+
+    case AE_FMT_AC3:
+    case AE_FMT_DTS:
+    default:
+      wfxex.Format.wFormatTag  = WAVE_FORMAT_DOLBY_AC3_SPDIF;
+      wfxex.SubFormat          = _KSDATAFORMAT_SUBTYPE_DOLBY_AC3_SPDIF;
+      wfxex.Format.nChannels   = 2;
+      break;
+    }
   }
   else
   {
