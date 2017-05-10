@@ -241,7 +241,7 @@ bool CPVRChannel::Persist()
   const CPVRDatabasePtr database(CServiceBroker::GetPVRManager().GetTVDatabase());
   if (database)
   {
-    bool bReturn = database->Persist(*this) && database->CommitInsertQueries();
+    bool bReturn = database->Persist(*this);
     CSingleLock lock(m_critSection);
     m_bChanged = !bReturn;
     return bReturn;

@@ -27,6 +27,7 @@
  **********************************************************************/
 
 #include <iostream>
+#include <sstream>
 #include <string>
 
 #include "sqlitedataset.h"
@@ -192,10 +193,15 @@ int SqliteDatabase::setErr(int err_code, const char * qry){
     break;
   default : error = "Undefined SQLite error";
   }
-  error = "[" + db + "] " + error;
-  error += "\nQuery: ";
-  error += qry;
-  error += "\n";
+
+  // Append some more details to the error
+  std::stringstream ss;
+  ss << "[" << db << "[" << error;
+  ss << "\nQuery: ";
+  ss << qry;
+  ss << "\n";
+  error = ss.str();
+
   return err_code;
 }
 

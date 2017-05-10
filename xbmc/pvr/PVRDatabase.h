@@ -197,5 +197,13 @@ namespace PVR
     bool PersistChannels(CPVRChannelGroup &group);
 
     bool RemoveChannelsFromGroup(const CPVRChannelGroup &group);
+
+    /*!
+     * Returns the channel ID of the channel with the specified unique combination for a channel, or -1 if not found
+     * @param iClientId
+     * @param iUniqueId
+     * @return the ID of the existing channel, or -1 if not found
+     */
+    int GetChannelId(int iClientId, int iUniqueId);
   };
 }
