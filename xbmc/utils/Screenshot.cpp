@@ -43,6 +43,7 @@
 #include "filesystem/File.h"
 #include "guilib/GraphicContext.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/LocalizeStrings.h"
 
 #include "utils/JobManager.h"
 #include "utils/URIUtils.h"
@@ -251,7 +252,7 @@ void CScreenShot::TakeScreenshot()
     strDir = screenshotSetting->GetValue();
     if (strDir.empty())
     {
-      if (CGUIControlButtonSetting::GetPath(screenshotSetting))
+      if (CGUIControlButtonSetting::GetPath(screenshotSetting, &g_localizeStrings))
         strDir = screenshotSetting->GetValue();
     }
   }
@@ -285,7 +286,7 @@ void CScreenShot::TakeScreenshot()
           newDir = screenshotSetting->GetValue();
           if (newDir.empty())
           {
-            if (CGUIControlButtonSetting::GetPath(screenshotSetting))
+            if (CGUIControlButtonSetting::GetPath(screenshotSetting, &g_localizeStrings))
               newDir = screenshotSetting->GetValue();
           }
         }

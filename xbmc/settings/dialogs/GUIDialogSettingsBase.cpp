@@ -631,7 +631,7 @@ CGUIControl* CGUIDialogSettingsBase::AddSetting(CSetting *pSetting, float width,
       return NULL;
 
     ((CGUIRadioButtonControl *)pControl)->SetLabel(label);
-    pSettingControl.reset(new CGUIControlRadioButtonSetting((CGUIRadioButtonControl *)pControl, iControlID, pSetting));
+    pSettingControl.reset(new CGUIControlRadioButtonSetting((CGUIRadioButtonControl *)pControl, iControlID, pSetting, this));
   }
   else if (controlType == "spinner")
   {
@@ -641,7 +641,7 @@ CGUIControl* CGUIDialogSettingsBase::AddSetting(CSetting *pSetting, float width,
       return NULL;
 
     ((CGUISpinControlEx *)pControl)->SetText(label);
-    pSettingControl.reset(new CGUIControlSpinExSetting((CGUISpinControlEx *)pControl, iControlID, pSetting));
+    pSettingControl.reset(new CGUIControlSpinExSetting((CGUISpinControlEx *)pControl, iControlID, pSetting, this));
   }
   else if (controlType == "edit")
   {
@@ -651,7 +651,7 @@ CGUIControl* CGUIDialogSettingsBase::AddSetting(CSetting *pSetting, float width,
       return NULL;
       
     ((CGUIEditControl *)pControl)->SetLabel(label);
-    pSettingControl.reset(new CGUIControlEditSetting((CGUIEditControl *)pControl, iControlID, pSetting));
+    pSettingControl.reset(new CGUIControlEditSetting((CGUIEditControl *)pControl, iControlID, pSetting, this));
   }
   else if (controlType == "list")
   {
@@ -661,7 +661,7 @@ CGUIControl* CGUIDialogSettingsBase::AddSetting(CSetting *pSetting, float width,
       return NULL;
 
     ((CGUIButtonControl *)pControl)->SetLabel(label);
-    pSettingControl.reset(new CGUIControlListSetting((CGUIButtonControl *)pControl, iControlID, pSetting));
+    pSettingControl.reset(new CGUIControlListSetting((CGUIButtonControl *)pControl, iControlID, pSetting, this));
   }
   else if (controlType == "button" || controlType == "slider")
   {
@@ -674,7 +674,7 @@ CGUIControl* CGUIDialogSettingsBase::AddSetting(CSetting *pSetting, float width,
         return NULL;
       
       ((CGUIButtonControl *)pControl)->SetLabel(label);
-      pSettingControl.reset(new CGUIControlButtonSetting((CGUIButtonControl *)pControl, iControlID, pSetting));
+      pSettingControl.reset(new CGUIControlButtonSetting((CGUIButtonControl *)pControl, iControlID, pSetting, this));
     }
     else
     {
@@ -684,7 +684,7 @@ CGUIControl* CGUIDialogSettingsBase::AddSetting(CSetting *pSetting, float width,
         return NULL;
       
       ((CGUISettingsSliderControl *)pControl)->SetText(label);
-      pSettingControl.reset(new CGUIControlSliderSetting((CGUISettingsSliderControl *)pControl, iControlID, pSetting));
+      pSettingControl.reset(new CGUIControlSliderSetting((CGUISettingsSliderControl *)pControl, iControlID, pSetting, this));
     }
   }
   else if (controlType == "range")
@@ -695,7 +695,7 @@ CGUIControl* CGUIDialogSettingsBase::AddSetting(CSetting *pSetting, float width,
       return NULL;
 
     ((CGUISettingsSliderControl *)pControl)->SetText(label);
-    pSettingControl.reset(new CGUIControlRangeSetting((CGUISettingsSliderControl *)pControl, iControlID, pSetting));
+    pSettingControl.reset(new CGUIControlRangeSetting((CGUISettingsSliderControl *)pControl, iControlID, pSetting, this));
   }
   else
     return NULL;
@@ -715,7 +715,7 @@ CGUIControl* CGUIDialogSettingsBase::AddSeparator(float width, int &iControlID)
   if (pControl == NULL)
     return NULL;
 
-  return AddSettingControl(pControl, BaseSettingControlPtr(new CGUIControlSeparatorSetting((CGUIImage *)pControl, iControlID)), width, iControlID);
+  return AddSettingControl(pControl, BaseSettingControlPtr(new CGUIControlSeparatorSetting((CGUIImage *)pControl, iControlID, this)), width, iControlID);
 }
 
 CGUIControl* CGUIDialogSettingsBase::AddLabel(float width, int &iControlID, int label)
@@ -729,7 +729,7 @@ CGUIControl* CGUIDialogSettingsBase::AddLabel(float width, int &iControlID, int 
 
   ((CGUILabelControl *)pControl)->SetLabel(GetLocalizedString(label));
 
-  return AddSettingControl(pControl, BaseSettingControlPtr(new CGUIControlGroupTitleSetting((CGUILabelControl *)pControl, iControlID)), width, iControlID);
+  return AddSettingControl(pControl, BaseSettingControlPtr(new CGUIControlGroupTitleSetting((CGUILabelControl *)pControl, iControlID, this)), width, iControlID);
 }
 
 CGUIControl* CGUIDialogSettingsBase::AddSettingControl(CGUIControl *pControl, BaseSettingControlPtr pSettingControl, float width, int &iControlID)
