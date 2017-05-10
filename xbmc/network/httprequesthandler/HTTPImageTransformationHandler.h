@@ -31,19 +31,19 @@ public:
   CHTTPImageTransformationHandler();
   virtual ~CHTTPImageTransformationHandler();
 
-  virtual IHTTPRequestHandler* Create(const HTTPRequest &request) { return new CHTTPImageTransformationHandler(request); }
-  virtual bool CanHandleRequest(const HTTPRequest &request);
+  IHTTPRequestHandler* Create(const HTTPRequest &request) const override { return new CHTTPImageTransformationHandler(request); }
+  bool CanHandleRequest(const HTTPRequest &request)const  override;
 
-  virtual int HandleRequest();
+  int HandleRequest() override;
 
-  virtual bool CanHandleRanges() const { return true; }
-  virtual bool CanBeCached() const { return true; }
-  virtual bool GetLastModifiedDate(CDateTime &lastModified) const;
+  bool CanHandleRanges() const override { return true; }
+  bool CanBeCached() const override { return true; }
+  bool GetLastModifiedDate(CDateTime &lastModified) const override;
 
-  virtual HttpResponseRanges GetResponseData() const { return m_responseData; }
+  HttpResponseRanges GetResponseData() const override { return m_responseData; }
 
   // priority must be higher than the one of CHTTPImageHandler
-  virtual int GetPriority() const { return 6; }
+  int GetPriority() const override { return 6; }
 
 protected:
   explicit CHTTPImageTransformationHandler(const HTTPRequest &request);

@@ -77,8 +77,17 @@ protected:
 private:
   struct MHD_Daemon* StartMHD(unsigned int flags, int port);
 
-  int AskForAuthentication(struct MHD_Connection *connection) const;
-  bool IsAuthenticated(struct MHD_Connection *connection) const;
+  std::shared_ptr<IHTTPRequestHandler> FindRequestHandler(HTTPRequest request) const;
+
+  int AskForAuthentication(HTTPRequest request) const;
+  bool IsAuthenticated(HTTPRequest request) const;
+
+  bool IsRequestCacheable(HTTPRequest request) const;
+  bool IsRequestRanged(HTTPRequest request, const CDateTime &lastModified) const;
+
+  void SetupPostDataProcessing(HTTPRequest request, ConnectionHandler *connectionHandler, std::shared_ptr<IHTTPRequestHandler> handler, void **con_cls) const;
+  bool ProcessPostData(HTTPRequest request, ConnectionHandler *connectionHandler, const char *upload_data, size_t *upload_data_size, void **con_cls) const;
+  void FinalizePostDataProcessing(ConnectionHandler *connectionHandler) const;
 
   int CreateMemoryDownloadResponse(const std::shared_ptr<IHTTPRequestHandler>& handler, struct MHD_Response *&response) const;
   int CreateRangedMemoryDownloadResponse(const std::shared_ptr<IHTTPRequestHandler>& handler, struct MHD_Response *&response) const;
@@ -88,9 +97,13 @@ private:
   int CreateErrorResponse(struct MHD_Connection *connection, int responseType, HTTPMethod method, struct MHD_Response *&response) const;
   int CreateMemoryDownloadResponse(struct MHD_Connection *connection, const void *data, size_t size, bool free, bool copy, struct MHD_Response *&response) const;
 
-  int SendErrorResponse(struct MHD_Connection *connection, int errorType, HTTPMethod method) const;
+  int SendResponse(HTTPRequest request, int responseStatus, MHD_Response *response) const;
+  int SendErrorResponse(HTTPRequest request, int errorType, HTTPMethod method) const;
 
   int AddHeader(struct MHD_Response *response, const std::string &name, const std::string &value) const;
+
+  void LogRequest(HTTPRequest request) const;
+  void LogResponse(HTTPRequest request, int responseStatus) const;
 
   static std::string CreateMimeTypeFromExtension(const char *ext);
 
@@ -130,9 +143,10 @@ private:
   struct MHD_Daemon *m_daemon_ip6;
   struct MHD_Daemon *m_daemon_ip4;
   bool m_running;
-  bool m_needcredentials;
   size_t m_thread_stacksize;
-  std::string m_Credentials64Encoded;
+  bool m_authenticationRequired;
+  std::string m_authenticationUsername;
+  std::string m_authenticationPassword;
   CCriticalSection m_critSection;
   std::vector<IHTTPRequestHandler *> m_requestHandlers;
 };

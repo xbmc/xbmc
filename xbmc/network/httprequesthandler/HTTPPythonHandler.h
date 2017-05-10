@@ -30,27 +30,27 @@ public:
   CHTTPPythonHandler();
   virtual ~CHTTPPythonHandler() { }
   
-  virtual IHTTPRequestHandler* Create(const HTTPRequest &request) { return new CHTTPPythonHandler(request); }
-  virtual bool CanHandleRequest(const HTTPRequest &request);
-  virtual bool CanHandleRanges() const { return false; }
-  virtual bool CanBeCached() const { return false; }
-  virtual bool GetLastModifiedDate(CDateTime &lastModified) const;
+  IHTTPRequestHandler* Create(const HTTPRequest &request) const override { return new CHTTPPythonHandler(request); }
+  bool CanHandleRequest(const HTTPRequest &request) const override;
+  bool CanHandleRanges() const override { return false; }
+  bool CanBeCached() const override { return false; }
+  bool GetLastModifiedDate(CDateTime &lastModified) const override;
 
-  virtual int HandleRequest();
+  int HandleRequest() override;
 
-  virtual HttpResponseRanges GetResponseData() const { return m_responseRanges; }
+  HttpResponseRanges GetResponseData() const override { return m_responseRanges; }
 
-  virtual std::string GetRedirectUrl() const { return m_redirectUrl; }
+  std::string GetRedirectUrl() const override { return m_redirectUrl; }
 
-  virtual int GetPriority() const { return 3; }
+  int GetPriority() const override { return 3; }
 
 protected:
   explicit CHTTPPythonHandler(const HTTPRequest &request);
 
 #if (MHD_VERSION >= 0x00040001)
-  virtual bool appendPostData(const char *data, size_t size);
+  bool appendPostData(const char *data, size_t size) override;
 #else
-  virtual bool appendPostData(const char *data, unsigned int size);
+  bool appendPostData(const char *data, unsigned int size) override;
 #endif
 
 private:

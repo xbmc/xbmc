@@ -107,7 +107,7 @@ CHTTPPythonHandler::CHTTPPythonHandler(const HTTPRequest &request)
   m_lastModified = *time;
 }
 
-bool CHTTPPythonHandler::CanHandleRequest(const HTTPRequest &request)
+bool CHTTPPythonHandler::CanHandleRequest(const HTTPRequest &request) const
 {
   ADDON::AddonPtr addon;
   std::string path;

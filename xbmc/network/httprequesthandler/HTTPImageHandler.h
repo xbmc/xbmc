@@ -29,11 +29,11 @@ public:
   CHTTPImageHandler() { }
   virtual ~CHTTPImageHandler() { }
 
-  virtual IHTTPRequestHandler* Create(const HTTPRequest &request) { return new CHTTPImageHandler(request); }
-  virtual bool CanHandleRequest(const HTTPRequest &request);
+  IHTTPRequestHandler* Create(const HTTPRequest &request) const override { return new CHTTPImageHandler(request); }
+  bool CanHandleRequest(const HTTPRequest &request) const override;
 
-  virtual int GetPriority() const { return 5; }
-  virtual int GetMaximumAgeForCaching() const { return 60 * 60 * 24 * 7; }
+  int GetPriority() const override { return 5; }
+  int GetMaximumAgeForCaching() const override { return 60 * 60 * 24 * 7; }
 
 protected:
   explicit CHTTPImageHandler(const HTTPRequest &request);

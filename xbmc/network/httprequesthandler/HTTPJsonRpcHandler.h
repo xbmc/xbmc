@@ -32,14 +32,14 @@ public:
   virtual ~CHTTPJsonRpcHandler() { }
   
   // implementations of IHTTPRequestHandler
-  virtual IHTTPRequestHandler* Create(const HTTPRequest &request) { return new CHTTPJsonRpcHandler(request); }
-  virtual bool CanHandleRequest(const HTTPRequest &request);
+  IHTTPRequestHandler* Create(const HTTPRequest &request) const override { return new CHTTPJsonRpcHandler(request); }
+  bool CanHandleRequest(const HTTPRequest &request) const override;
 
-  virtual int HandleRequest();
+  int HandleRequest() override;
 
-  virtual HttpResponseRanges GetResponseData() const;
+  HttpResponseRanges GetResponseData() const override;
 
-  virtual int GetPriority() const { return 5; }
+  int GetPriority() const override { return 5; }
 
 protected:
   explicit CHTTPJsonRpcHandler(const HTTPRequest &request)
@@ -47,9 +47,9 @@ protected:
   { }
 
 #if (MHD_VERSION >= 0x00040001)
-  virtual bool appendPostData(const char *data, size_t size);
+  bool appendPostData(const char *data, size_t size) override;
 #else
-  virtual bool appendPostData(const char *data, unsigned int size);
+  bool appendPostData(const char *data, unsigned int size) override;
 #endif
 
 private:
