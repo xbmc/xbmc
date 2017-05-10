@@ -641,8 +641,6 @@ bool CGUIDialogAudioDSPManager::OnContextButton(int itemNumber, CONTEXT_BUTTON b
   }
   else if (button == CONTEXT_BUTTON_SETTINGS)
   {
-    int hookId = (int)pItem->GetProperty("SettingsDialog").asInteger();
-    
     CGUIDialogOK::ShowAndGetInput(19033, 0, 15040, 0);
   }
 

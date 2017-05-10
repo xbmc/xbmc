@@ -45,7 +45,6 @@ bool SoLoader::Load()
     return true;
 
   std::string strFileName= CSpecialProtocol::TranslatePath(GetFileName());
-  int flags = RTLD_LAZY;
   if (strFileName == "xbmc.so")
   {
     CLog::Log(LOGDEBUG, "Loading Internal Library\n");
@@ -58,6 +57,7 @@ bool SoLoader::Load()
     CAndroidDyload temp;
     m_soHandle = temp.Open(strFileName.c_str());
 #else
+    int flags = RTLD_LAZY;
     m_soHandle = dlopen(strFileName.c_str(), flags);
 #endif
     if (!m_soHandle)

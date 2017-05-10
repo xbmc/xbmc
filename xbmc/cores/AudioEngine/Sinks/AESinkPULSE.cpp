@@ -860,7 +860,6 @@ unsigned int CAESinkPULSE::AddPackets(uint8_t **data, unsigned int frames, unsig
   while ((length = pa_stream_writable_size(m_Stream)) < m_periodSize)
     pa_threaded_mainloop_wait(m_MainLoop);
 
-  unsigned int free = length;
   length =  std::min((unsigned int)length, available);
 
   int error = pa_stream_write(m_Stream, buffer, length, NULL, 0, PA_SEEK_RELATIVE);
