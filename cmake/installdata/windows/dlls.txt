@@ -1,2 +1,3 @@
 system/*.dll .
 project/Win32BuildSetup/dependencies/python27.dll .
+project/BuildDependencies/${ARCH}/bin/*.dll .

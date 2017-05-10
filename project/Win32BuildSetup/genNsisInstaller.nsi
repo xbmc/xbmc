@@ -9,6 +9,7 @@
   !include "nsDialogs.nsh"
   !include "LogicLib.nsh"
   !include "WinVer.nsh"
+  !include "x64.nsh"
   
 ;--------------------------------
 ;General
@@ -18,7 +19,11 @@
   OutFile "${APP_NAME}Setup-${app_revision}-${app_branch}.exe"
 
   ;Default installation folder
+!ifdef x64
+  InstallDir "$PROGRAMFILES64\${APP_NAME}"
+!else
   InstallDir "$PROGRAMFILES\${APP_NAME}"
+!endif
 
   ;Get installation folder from registry if available
   InstallDirRegKey HKCU "Software\${APP_NAME}" ""
@@ -331,6 +336,14 @@ SectionEnd
 SectionGroupEnd
 
 Function .onInit
+  !ifdef x64
+    SetRegView 64
+    ${IfNot} ${RunningX64}
+      MessageBox MB_OK|MB_ICONSTOP 'This is the 64-bit ${APP_NAME} installer.$\nPlease download the 32-bit version from ${WEBSITE}.$\n$\nClick Ok to quit Setup.'
+      Quit
+    ${Endif}
+  !endif
+
   ; Win7 SP1 is minimum requirement
   ${IfNot} ${AtLeastWin7}
   ${OrIf} ${IsWin7}

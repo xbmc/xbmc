@@ -244,7 +244,7 @@ void DIB_InitOSKeymap()
   }
 }
 
-static int XBMC_MapVirtualKey(int scancode, int vkey)
+static int XBMC_MapVirtualKey(int scancode, WPARAM vkey)
 {
   int mvke = MapVirtualKeyEx(scancode & 0xFF, 1, NULL);
 
@@ -417,7 +417,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
   if (uMsg == WM_CREATE)
   {
     g_hWnd = hWnd;
-    SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG)(((LPCREATESTRUCT)lParam)->lpCreateParams));
+    SetWindowLongPtr(hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(reinterpret_cast<LPCREATESTRUCT>(lParam)->lpCreateParams));
     DIB_InitOSKeymap();
     g_uQueryCancelAutoPlay = RegisterWindowMessage(TEXT("QueryCancelAutoPlay"));
     shcne.pidl = NULL;
