@@ -192,7 +192,6 @@ bool CRetroPlayerVideo::GetPicture(const uint8_t* data, unsigned int size, Video
     DemuxPacket packet(const_cast<uint8_t*>(data), size, DVD_NOPTS_VALUE, DVD_NOPTS_VALUE);
     if (m_pVideoCodec->AddData(packet))
     {
-      m_pVideoCodec->ClearPicture(&picture);
       CDVDVideoCodec::VCReturn ret = m_pVideoCodec->GetPicture(&picture);
       if (ret == CDVDVideoCodec::VC_PICTURE)
       {
