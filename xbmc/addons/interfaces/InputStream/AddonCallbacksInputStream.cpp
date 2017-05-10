@@ -27,8 +27,7 @@ namespace InputStream
 {
 
 CAddonCallbacksInputStream::CAddonCallbacksInputStream(ADDON::CAddon* addon)
-  : m_addon(addon),
-    m_callbacks(new CB_INPUTSTREAMLib)
+  : m_callbacks(new CB_INPUTSTREAMLib)
 {
   m_callbacks->FreeDemuxPacket = InputStreamFreeDemuxPacket;
   m_callbacks->AllocateDemuxPacket = InputStreamAllocateDemuxPacket;
