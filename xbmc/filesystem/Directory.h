@@ -78,7 +78,10 @@ public:
 
   /*! \brief Filter files that act like directories from the list, replacing them with their directory counterparts
    \param items The item list to filter
-   \param mask  The mask to apply when filtering files */
-  static void FilterFileDirectories(CFileItemList &items, const std::string &mask);
+   \param mask  The mask to apply when filtering files
+   \param expandImages True to include disc images in file directory expansion
+  */
+  static void FilterFileDirectories(CFileItemList &items, const std::string &mask,
+                                    bool expandImages=false);
 };
 }
