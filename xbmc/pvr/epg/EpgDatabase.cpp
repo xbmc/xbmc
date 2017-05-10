@@ -365,11 +365,11 @@ int CPVREpgDatabase::Persist(const CPVREpgInfoTag &tag, bool bSingleUpdate /* = 
         "sIconPath, iGenreType, iGenreSubType, sGenre, iFirstAired, iParentalRating, iStarRating, bNotify, iSeriesId, "
         "iEpisodeId, iEpisodePart, sEpisodeName, iFlags, iBroadcastUid) "
         "VALUES (%u, %u, %u, '%s', '%s', '%s', '%s', '%s', '%s', '%s', %i, '%s', '%s', %i, %i, '%s', %u, %i, %i, %i, %i, %i, %i, '%s', %i, %i);",
-        tag.EpgID(), iStartTime, iEndTime,
+        tag.EpgID(), static_cast<unsigned int>(iStartTime), static_cast<unsigned int>(iEndTime),
         tag.Title(true).c_str(), tag.PlotOutline(true).c_str(), tag.Plot(true).c_str(),
         tag.OriginalTitle(true).c_str(), tag.Cast().c_str(), tag.Director().c_str(), tag.Writer().c_str(), tag.Year(), tag.IMDBNumber().c_str(),
         tag.Icon().c_str(), tag.GenreType(), tag.GenreSubType(), strGenre.c_str(),
-        iFirstAired, tag.ParentalRating(), tag.StarRating(), tag.Notify(),
+        static_cast<unsigned int>(iFirstAired), tag.ParentalRating(), tag.StarRating(), tag.Notify(),
         tag.SeriesNumber(), tag.EpisodeNumber(), tag.EpisodePart(), tag.EpisodeName().c_str(), tag.Flags(),
         tag.UniqueBroadcastID());
   }
@@ -380,11 +380,11 @@ int CPVREpgDatabase::Persist(const CPVREpgInfoTag &tag, bool bSingleUpdate /* = 
         "sIconPath, iGenreType, iGenreSubType, sGenre, iFirstAired, iParentalRating, iStarRating, bNotify, iSeriesId, "
         "iEpisodeId, iEpisodePart, sEpisodeName, iFlags, iBroadcastUid, idBroadcast) "
         "VALUES (%u, %u, %u, '%s', '%s', '%s', '%s', '%s', '%s', '%s', %i, '%s', '%s', %i, %i, '%s', %u, %i, %i, %i, %i, %i, %i, '%s', %i, %i, %i);",
-        tag.EpgID(), iStartTime, iEndTime,
+        tag.EpgID(), static_cast<unsigned int>(iStartTime), static_cast<unsigned int>(iEndTime),
         tag.Title(true).c_str(), tag.PlotOutline(true).c_str(), tag.Plot(true).c_str(),
         tag.OriginalTitle(true).c_str(), tag.Cast().c_str(), tag.Director().c_str(), tag.Writer().c_str(), tag.Year(), tag.IMDBNumber().c_str(),
         tag.Icon().c_str(), tag.GenreType(), tag.GenreSubType(), strGenre.c_str(),
-        iFirstAired, tag.ParentalRating(), tag.StarRating(), tag.Notify(),
+        static_cast<unsigned int>(iFirstAired), tag.ParentalRating(), tag.StarRating(), tag.Notify(),
         tag.SeriesNumber(), tag.EpisodeNumber(), tag.EpisodePart(), tag.EpisodeName().c_str(), tag.Flags(),
         tag.UniqueBroadcastID(), iBroadcastId);
   }
