@@ -199,7 +199,8 @@ bool CZipManager::GetZipList(const CURL& url, std::vector<SZipEntry>& items)
     // Jump after central file header extra field and file comment
     mFile.Seek(ze.eclength + ze.clength,SEEK_CUR);
 
-    items.push_back(ze);
+    if (!std::regex_search(strName, PATH_TRAVERSAL))
+      items.push_back(ze);
   }
 
   /* go through list and figure out file header lengths */
