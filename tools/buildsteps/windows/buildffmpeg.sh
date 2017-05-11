@@ -121,13 +121,13 @@ cd $LOCALBUILDDIR
 
 if do_checkForOptions "--enable-gnutls"; then
 if do_pkgConfig "gnutls = $GNUTLS_VER"; then
-  if [[ ! -f "gnutls-${GNUTLS_VER}.tar.xz" ]]; then
+  if [[ ! -f "/downloads/gnutls-${GNUTLS_VER}.tar.xz" ]]; then
     do_wget "http://mirrors.xbmc.org/build-deps/sources/gnutls-${GNUTLS_VER}.tar.xz"
   fi
   if [ -d "gnutls-${GNUTLS_VER}" ]; then
     rm -r "gnutls-${GNUTLS_VER}"
   fi
-  tar -xaf "gnutls-${GNUTLS_VER}.tar.xz"
+  tar -xaf "/downloads/gnutls-${GNUTLS_VER}.tar.xz"
   cd "gnutls-${GNUTLS_VER}"
 
   do_print_status "gnutls-${GNUTLS_VER}" "$blue_color" "Configuring"

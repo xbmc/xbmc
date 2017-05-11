@@ -34,9 +34,9 @@ do_wget() {
   local archive="$2"
 
   if [[ -z $archive ]]; then
-    wget --tries=5 --retry-connrefused --waitretry=2 --no-check-certificate -c $URL
+    wget --tries=5 --retry-connrefused --waitretry=2 --no-check-certificate -c -P /downloads/ $URL
   else
-    wget --tries=5 --retry-connrefused --waitretry=2 --no-check-certificate -c $URL -O $archive
+    wget --tries=5 --retry-connrefused --waitretry=2 --no-check-certificate -c $URL -O /downloads/$archive
   fi
 }
 
@@ -116,14 +116,14 @@ do_clean() {
 
 do_download() {
   if [ ! -d $LIBNAME ]; then
-    if [ ! -f $ARCHIVE ]; then
+    if [ ! -f /downloads/$ARCHIVE ]; then
       do_print_status "$ARCHIVE" "$orange_color" "Downloading"
       do_wget $BASE_URL/$VERSION.tar.gz $ARCHIVE
     fi
 
     do_print_status "$ARCHIVE" "$blue_color" "Extracting"
     mkdir $LIBNAME && cd $LIBNAME
-    tar -xaf ../$ARCHIVE --strip 1
+    tar -xaf /downloads/$ARCHIVE --strip 1
   else
     cd $LIBNAME
   fi

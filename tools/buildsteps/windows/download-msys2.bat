@@ -249,6 +249,7 @@ if "%searchRes%"=="local64" GOTO installbase
     (
         echo.
         echo.%instdir%\build\           /build
+        echo.%instdir%\downloads\       /downloads
         echo.%instdir%\local32\         /local32
         echo.%instdir%\local64\         /local64
         echo.%instdir%\%msys2%\mingw32\ /mingw32
