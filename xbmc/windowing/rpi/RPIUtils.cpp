@@ -17,11 +17,12 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#include "RPIUtils.h"
+
 #include "system.h"
 
-#include <EGL/egl.h>
 #include <math.h>
-#include "EGLNativeTypeRaspberryPI.h"
 #include "ServiceBroker.h"
 #include "utils/log.h"
 #include "guilib/gui3d.h"
@@ -54,142 +55,41 @@
 #define GETFLAGS_GROUP(f)       ( (HDMI_RES_GROUP_T)( ((f) >> 16) & 0xff ))
 #define GETFLAGS_MODE(f)        ( ( (f) >>24 ) & 0xff )
 
-//#ifndef DEBUG_PRINT
-//#define DEBUG_PRINT 1
-//#endif
-
-#if defined(DEBUG_PRINT)
-# define DLOG(fmt, args...) printf(fmt, ##args)
-#else
-# define DLOG(fmt, args...)
-#endif
-
-#if defined(TARGET_RASPBERRY_PI)
 static void SetResolutionString(RESOLUTION_INFO &res);
 static SDTV_ASPECT_T get_sdtv_aspect_from_display_aspect(float display_aspect);
-#endif
 
-CEGLNativeTypeRaspberryPI::CEGLNativeTypeRaspberryPI()
+CRPIUtils::CRPIUtils()
 {
-#if defined(TARGET_RASPBERRY_PI)
-  m_DllBcmHost    = NULL;
-  m_nativeWindow  = NULL;
-#endif
-}
-
-CEGLNativeTypeRaspberryPI::~CEGLNativeTypeRaspberryPI()
-{
-#if defined(TARGET_RASPBERRY_PI)
-  delete m_DllBcmHost;
-  if(m_nativeWindow)
-    free(m_nativeWindow);
-#endif
-} 
-
-bool CEGLNativeTypeRaspberryPI::CheckCompatibility()
-{
-#if defined(TARGET_RASPBERRY_PI)
-  DLOG("CEGLNativeTypeRaspberryPI::CheckCompatibility\n");
-  return true;
-#else
-  return false;
-#endif
-}
-
-void CEGLNativeTypeRaspberryPI::Initialize()
-{
-#if defined(TARGET_RASPBERRY_PI)
-  m_DllBcmHost              = NULL;
-  m_dispman_element         = DISPMANX_NO_HANDLE;
-  m_dispman_display         = DISPMANX_NO_HANDLE;
-
-  m_width                   = 1280;
-  m_height                  = 720;
-  m_initDesktopRes          = true;
-
   m_DllBcmHost = new DllBcmHost;
   m_DllBcmHost->Load();
-#endif
+
+  m_dispman_element = DISPMANX_NO_HANDLE;
+  m_dispman_display = DISPMANX_NO_HANDLE;
+
+  m_height = 1280;
+  m_width = 720;
+  m_initDesktopRes = true;
 }
 
-void CEGLNativeTypeRaspberryPI::Destroy()
+CRPIUtils::~CRPIUtils()
 {
-#if defined(TARGET_RASPBERRY_PI)
   if(m_DllBcmHost && m_DllBcmHost->IsLoaded())
+  {
     m_DllBcmHost->Unload();
+  }
+
   delete m_DllBcmHost;
   m_DllBcmHost = NULL;
-#endif
 }
 
-bool CEGLNativeTypeRaspberryPI::CreateNativeDisplay()
+bool CRPIUtils::GetNativeResolution(RESOLUTION_INFO *res) const
 {
-  m_nativeDisplay = EGL_DEFAULT_DISPLAY;
-  return true;
-}
-
-bool CEGLNativeTypeRaspberryPI::CreateNativeWindow()
-{
-#if defined(TARGET_RASPBERRY_PI)
-  if(!m_nativeWindow)
-    m_nativeWindow = (EGLNativeWindowType) calloc(1,sizeof( EGL_DISPMANX_WINDOW_T));
-  DLOG("CEGLNativeTypeRaspberryPI::CEGLNativeTypeRaspberryPI\n");
-  return true;
-#else
-  return false;
-#endif
-}
-
-bool CEGLNativeTypeRaspberryPI::GetNativeDisplay(XBNativeDisplayType **nativeDisplay) const
-{
-  if (!nativeDisplay)
-    return false;
-  *nativeDisplay = (XBNativeDisplayType*) &m_nativeDisplay;
-  return true;
-}
-
-bool CEGLNativeTypeRaspberryPI::GetNativeWindow(XBNativeDisplayType **nativeWindow) const
-{
-  DLOG("CEGLNativeTypeRaspberryPI::GetNativeWindow\n");
-  if (!nativeWindow)
-    return false;
-  *nativeWindow = (XBNativeWindowType*) &m_nativeWindow;
-  return true;
-}  
-
-bool CEGLNativeTypeRaspberryPI::DestroyNativeDisplay()
-{
-  DLOG("CEGLNativeTypeRaspberryPI::DestroyNativeDisplay\n");
-  return true;
-}
-
-bool CEGLNativeTypeRaspberryPI::DestroyNativeWindow()
-{
-#if defined(TARGET_RASPBERRY_PI)
-  DestroyDispmanxWindow();
-  free(m_nativeWindow);
-  m_nativeWindow = NULL;
-  DLOG("CEGLNativeTypeRaspberryPI::DestroyNativeWindow\n");
-  return true;
-#else
-  return false;
-#endif  
-}
-
-bool CEGLNativeTypeRaspberryPI::GetNativeResolution(RESOLUTION_INFO *res) const
-{
-#if defined(TARGET_RASPBERRY_PI)
   *res = m_desktopRes;
 
-  DLOG("CEGLNativeTypeRaspberryPI::GetNativeResolution %s\n", res->strMode.c_str());
   return true;
-#else
-  return false;
-#endif
 }
 
-#if defined(TARGET_RASPBERRY_PI)
-int CEGLNativeTypeRaspberryPI::FindMatchingResolution(const RESOLUTION_INFO &res, const std::vector<RESOLUTION_INFO> &resolutions, bool desktop)
+int CRPIUtils::FindMatchingResolution(const RESOLUTION_INFO &res, const std::vector<RESOLUTION_INFO> &resolutions, bool desktop)
 {
   uint32_t mask = desktop ? D3DPRESENTFLAG_MODEMASK : D3DPRESENTFLAG_MODE3DSBS|D3DPRESENTFLAG_MODE3DTB;
   for (int i = 0; i < (int)resolutions.size(); i++)
@@ -202,10 +102,8 @@ int CEGLNativeTypeRaspberryPI::FindMatchingResolution(const RESOLUTION_INFO &res
   }
   return -1;
 }
-#endif
 
-#if defined(TARGET_RASPBERRY_PI)
-int CEGLNativeTypeRaspberryPI::AddUniqueResolution(RESOLUTION_INFO &res, std::vector<RESOLUTION_INFO> &resolutions, bool desktop /* = false */)
+int CRPIUtils::AddUniqueResolution(RESOLUTION_INFO &res, std::vector<RESOLUTION_INFO> &resolutions, bool desktop /* = false */)
 {
   SetResolutionString(res);
   int i = FindMatchingResolution(res, resolutions, desktop);
@@ -220,11 +118,9 @@ int CEGLNativeTypeRaspberryPI::AddUniqueResolution(RESOLUTION_INFO &res, std::ve
   }
   return i;
 }
-#endif
 
-bool CEGLNativeTypeRaspberryPI::SetNativeResolution(const RESOLUTION_INFO &res)
+bool CRPIUtils::SetNativeResolution(const RESOLUTION_INFO res, EGLSurface m_nativeWindow)
 {
-#if defined(TARGET_RASPBERRY_PI)
   if(!m_DllBcmHost || !m_nativeWindow)
     return false;
 
@@ -380,15 +276,9 @@ bool CEGLNativeTypeRaspberryPI::SetNativeResolution(const RESOLUTION_INFO &res)
   m_DllBcmHost->vc_dispmanx_display_set_background(dispman_update, m_dispman_display, 0x00, 0x00, 0x00);
   m_DllBcmHost->vc_dispmanx_update_submit_sync(dispman_update);
 
-  DLOG("CEGLNativeTypeRaspberryPI::SetNativeResolution\n");
-
   return true;
-#else
-  return false;
-#endif
 }
 
-#if defined(TARGET_RASPBERRY_PI)
 static float get_display_aspect_ratio(HDMI_ASPECT_T aspect)
 {
   float display_aspect;
@@ -476,11 +366,9 @@ static SDTV_ASPECT_T get_sdtv_aspect_from_display_aspect(float display_aspect)
   }
   return aspect;
 }
-#endif
 
-bool CEGLNativeTypeRaspberryPI::ProbeResolutions(std::vector<RESOLUTION_INFO> &resolutions)
+bool CRPIUtils::ProbeResolutions(std::vector<RESOLUTION_INFO> &resolutions)
 {
-#if defined(TARGET_RASPBERRY_PI)
   resolutions.clear();
 
   if(!m_DllBcmHost)
@@ -488,7 +376,7 @@ bool CEGLNativeTypeRaspberryPI::ProbeResolutions(std::vector<RESOLUTION_INFO> &r
 
   /* read initial desktop resolution before probe resolutions.
    * probing will replace the desktop resolution when it finds the same one.
-   * we replace it because probing will generate more detailed 
+   * we replace it because probing will generate more detailed
    * resolution flags we don't get with vc_tv_get_state.
    */
 
@@ -559,27 +447,10 @@ bool CEGLNativeTypeRaspberryPI::ProbeResolutions(std::vector<RESOLUTION_INFO> &r
     CLog::Log(LOGDEBUG, "EGL probe resolution %s:%x\n", m_desktopRes.strMode.c_str(), m_desktopRes.dwFlags);
   }
 
-  DLOG("CEGLNativeTypeRaspberryPI::ProbeResolutions\n");
   return true;
-#else
-  return false;
-#endif
 }
 
-bool CEGLNativeTypeRaspberryPI::GetPreferredResolution(RESOLUTION_INFO *res) const
-{
-  DLOG("CEGLNativeTypeRaspberryPI::GetPreferredResolution\n");
-  return false;
-}
-
-bool CEGLNativeTypeRaspberryPI::ShowWindow(bool show)
-{
-  DLOG("CEGLNativeTypeRaspberryPI::ShowWindow\n");
-  return false;
-}
-
-#if defined(TARGET_RASPBERRY_PI)
-void CEGLNativeTypeRaspberryPI::DestroyDispmanxWindow()
+void CRPIUtils::DestroyDispmanxWindow()
 {
   if(!m_DllBcmHost)
     return;
@@ -598,10 +469,9 @@ void CEGLNativeTypeRaspberryPI::DestroyDispmanxWindow()
     g_RBP.CloseDisplay(m_dispman_display);
     m_dispman_display = DISPMANX_NO_HANDLE;
   }
-  DLOG("CEGLNativeTypeRaspberryPI::DestroyDispmanxWindow\n");
 }
 
-void CEGLNativeTypeRaspberryPI::GetSupportedModes(HDMI_RES_GROUP_T group, std::vector<RESOLUTION_INFO> &resolutions)
+void CRPIUtils::GetSupportedModes(HDMI_RES_GROUP_T group, std::vector<RESOLUTION_INFO> &resolutions)
 {
   if(!m_DllBcmHost)
     return;
@@ -664,7 +534,7 @@ void CEGLNativeTypeRaspberryPI::GetSupportedModes(HDMI_RES_GROUP_T group, std::v
     delete [] supported_modes;
 }
 
-void CEGLNativeTypeRaspberryPI::TvServiceCallback(uint32_t reason, uint32_t param1, uint32_t param2)
+void CRPIUtils::TvServiceCallback(uint32_t reason, uint32_t param1, uint32_t param2)
 {
   CLog::Log(LOGDEBUG, "EGL tv_service_callback (%d,%d,%d)\n", reason, param1, param2);
   switch(reason)
@@ -685,11 +555,8 @@ void CEGLNativeTypeRaspberryPI::TvServiceCallback(uint32_t reason, uint32_t para
   }
 }
 
-void CEGLNativeTypeRaspberryPI::CallbackTvServiceCallback(void *userdata, uint32_t reason, uint32_t param1, uint32_t param2)
+void CRPIUtils::CallbackTvServiceCallback(void *userdata, uint32_t reason, uint32_t param1, uint32_t param2)
 {
-   CEGLNativeTypeRaspberryPI *callback = static_cast<CEGLNativeTypeRaspberryPI*>(userdata);
+   CRPIUtils *callback = static_cast<CRPIUtils*>(userdata);
    callback->TvServiceCallback(reason, param1, param2);
 }
-
-#endif
-

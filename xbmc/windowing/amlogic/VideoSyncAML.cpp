@@ -20,8 +20,6 @@
 
 #include "system.h"
 
-#if defined(HAS_LIBAMCODEC)
-
 #include "VideoSyncAML.h"
 #include "guilib/GraphicContext.h"
 #include "windowing/WindowingFactory.h"
@@ -106,5 +104,3 @@ void CVideoSyncAML::OnResetDisplay()
 {
   m_abort = true;
 }
-
-#endif

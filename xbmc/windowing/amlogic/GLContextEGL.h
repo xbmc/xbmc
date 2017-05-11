@@ -1,6 +1,5 @@
-#pragma once
 /*
- *      Copyright (C) 2017 Team XBMC
+ *      Copyright (C) 2005-2013 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,23 +18,31 @@
  *
  */
 
-#if defined(HAS_LIBAMCODEC)
+#pragma once
 
-#include "windowing/VideoSync.h"
-#include "guilib/DispResource.h"
+#include "EGL/egl.h"
 
-class CVideoSyncAML : public CVideoSync, IDispResource
+class CGLContextEGL
 {
 public:
-  CVideoSyncAML(void *clock);
-  virtual ~CVideoSyncAML();
-  virtual bool Setup(PUPDATECLOCK func)override;
-  virtual void Run(std::atomic<bool>& stop)override;
-  virtual void Cleanup()override;
-  virtual float GetFps()override;
-  virtual void OnResetDisplay()override;
-private:
-  volatile bool m_abort;
-};
+  CGLContextEGL();
+  virtual ~CGLContextEGL();
 
-#endif
+  bool CreateDisplay(EGLDisplay display,
+                     EGLint renderable_type,
+                     EGLint rendering_api);
+
+  bool CreateSurface(EGLNativeWindowType surface);
+  bool CreateContext();
+  bool BindContext();
+  bool SurfaceAttrib();
+  void Destroy();
+  void Detach();
+  bool SetVSync(bool enable);
+  void SwapBuffers();
+
+  EGLDisplay m_eglDisplay;
+  EGLSurface m_eglSurface;
+  EGLContext m_eglContext;
+  EGLConfig m_eglConfig;
+};

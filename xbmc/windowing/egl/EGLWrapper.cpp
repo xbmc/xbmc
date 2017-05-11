@@ -22,17 +22,8 @@
 #ifdef HAS_EGL
 #include "utils/log.h"
 #include <assert.h>
-#if defined(TARGET_ANDROID)
-  #include "EGLNativeTypeAndroid.h"
-#endif
-#if defined(TARGET_RASPBERRY_PI)
-  #include "EGLNativeTypeRaspberryPI.h"
-#endif
 #if defined(HAS_IMXVPU)
   #include "EGLNativeTypeIMX.h"
-#endif
-#if defined(TARGET_LINUX) && defined(HAS_LIBAMCODEC)
-#include "EGLNativeTypeAmlogic.h"
 #endif
 #include "EGLWrapper.h"
 
@@ -88,14 +79,8 @@ bool CEGLWrapper::Initialize(const std::string &implementation)
   // Try to create each backend in sequence and go with the first one
   // that we know will work
   if (
-#if defined(TARGET_ANDROID)
-      (nativeGuess = CreateEGLNativeType<CEGLNativeTypeAndroid>(implementation))
-#elif defined(TARGET_RASPBERRY_PI)
-      (nativeGuess = CreateEGLNativeType<CEGLNativeTypeRaspberryPI>(implementation))
-#elif defined(HAS_IMXVPU)
+#if defined(HAS_IMXVPU)
       (nativeGuess = CreateEGLNativeType<CEGLNativeTypeIMX>(implementation))
-#elif defined(TARGET_LINUX) && defined(HAS_LIBAMCODEC)
-      (nativeGuess = CreateEGLNativeType<CEGLNativeTypeAmlogic>(implementation))
 #endif
       )
   {

@@ -21,6 +21,9 @@
 
 #include "guilib/Resolution.h"
 
+#include <string>
+#include <vector>
+
 enum AML_DEVICE_TYPE
 {
   AML_DEVICE_TYPE_UNINIT   = -2,
@@ -60,3 +63,15 @@ AML_SUPPORT_H264_4K2K aml_support_h264_4k2k();
 void aml_set_audio_passthrough(bool passthrough);
 bool aml_IsHdmiConnected();
 bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res);
+bool aml_get_native_resolution(RESOLUTION_INFO *res);
+bool aml_set_native_resolution(const RESOLUTION_INFO &res, std::string framebuffer_name);
+bool aml_probe_resolutions(std::vector<RESOLUTION_INFO> &resolutions);
+bool aml_get_preferred_resolution(RESOLUTION_INFO *res);
+bool aml_set_display_resolution(const char *resolution, std::string framebuffer_name);
+void aml_setup_video_scaling(const char *mode);
+void aml_handle_scale(const RESOLUTION_INFO &res);
+void aml_enable_freeScale(const RESOLUTION_INFO &res);
+void aml_disable_freeScale();
+void aml_set_framebuffer_resolution(const RESOLUTION_INFO &res, std::string framebuffer_name);
+void aml_set_framebuffer_resolution(int width, int height, std::string framebuffer_name);
+
