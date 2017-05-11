@@ -13,8 +13,8 @@ IF EXIST %WORKSPACE%\project\Win32BuildSetup\BUILD_WIN32 rmdir %WORKSPACE%\proje
 rem we assume git in path as this is a requirement
 rem git clean the untracked files and directories
 rem but keep the downloaded dependencies
-ECHO running git clean -xfd -e "lib/libdvd" -e "lib/win32/ffmpeg" -e "project/BuildDependencies/downloads" -e "project/BuildDependencies/downloads2"
-git clean -xfd -e "lib/libdvd" -e "lib/win32/ffmpeg" -e "project/BuildDependencies/downloads" -e "project/BuildDependencies/downloads2"
+ECHO running git clean -xffd -e "lib/libdvd" -e "lib/win32/ffmpeg" -e "project/BuildDependencies/downloads" -e "project/BuildDependencies/downloads2" -e "project/Win32BuildSetup/dependencies/vcredist"
+git clean -xffd -e "lib/libdvd" -e "lib/win32/ffmpeg" -e "project/BuildDependencies/downloads" -e "project/BuildDependencies/downloads2" -e "project/Win32BuildSetup/dependencies/vcredist"
 
 rem cleaning additional directories
 ECHO delete build directories
