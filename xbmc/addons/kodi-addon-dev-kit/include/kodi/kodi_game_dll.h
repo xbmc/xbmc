@@ -46,7 +46,7 @@ const char* GetGameAPIVersion(void);
  *
  * \return Must be GAME_MIN_API_VERSION_STRING
  */
-const char* GetMininumGameAPIVersion(void);
+const char* GetMinimumGameAPIVersion(void);
 
 // --- Game operations ---------------------------------------------------------
 
@@ -259,7 +259,7 @@ void __declspec(dllexport) get_addon(void* ptr)
   KodiToAddonFuncTable_Game* pClient = static_cast<KodiToAddonFuncTable_Game*>(ptr);
 
   pClient->GetGameAPIVersion        = GetGameAPIVersion;
-  pClient->GetMininumGameAPIVersion = GetMininumGameAPIVersion;
+  pClient->GetMinimumGameAPIVersion = GetMinimumGameAPIVersion;
   pClient->LoadGame                 = LoadGame;
   pClient->LoadGameSpecial          = LoadGameSpecial;
   pClient->LoadStandalone           = LoadStandalone;

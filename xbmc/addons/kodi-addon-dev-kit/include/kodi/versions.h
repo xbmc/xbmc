@@ -45,7 +45,7 @@
 #define ADDON_INSTANCE_VERSION_ADSP                   "0.1.8"
 #define ADDON_INSTANCE_VERSION_AUDIODECODER           "1.0.0"
 #define ADDON_INSTANCE_VERSION_AUDIOENCODER           "1.0.0"
-#define ADDON_INSTANCE_VERSION_GAME                   "1.0.29"
+#define ADDON_INSTANCE_VERSION_GAME                   "1.0.30"
 #define ADDON_INSTANCE_VERSION_IMAGEDECODER           "1.0.0"
 #define ADDON_INSTANCE_VERSION_INPUTSTREAM            "1.0.6"
 #define ADDON_INSTANCE_VERSION_PERIPHERAL             "1.3.1"
