@@ -4008,13 +4008,19 @@ const infomap fanart_labels[] =  {{ "color1",           FANART_COLOR1 },
 ///                  _boolean_,
 ///     todo
 ///   }
+///   \table_row3{   <b>`Skin.Font`</b>,
+///                  \anchor Skin_Font
+///                  _string_,
+///     todo
+///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
 /// @}
-const infomap skin_labels[] =    {{ "currenttheme",     SKIN_THEME },
+const infomap skin_labels[] =    {{ "currenttheme",      SKIN_THEME },
                                   { "currentcolourtheme",SKIN_COLOUR_THEME },
-                                  {"aspectratio",       SKIN_ASPECT_RATIO}};
+                                  { "aspectratio",       SKIN_ASPECT_RATIO},
+                                  { "font",              SKIN_FONT}};
 
 /// \page modules__General__List_of_gui_access
 /// \section modules__General__List_of_gui_access_Window Window
@@ -6588,6 +6594,9 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case SKIN_ASPECT_RATIO:
     if (g_SkinInfo)
       strLabel = g_SkinInfo->GetCurrentAspect();
+    break;
+  case SKIN_FONT:
+    strLabel = CServiceBroker::GetSettings().GetString(CSettings::SETTING_LOOKANDFEEL_FONT);
     break;
   case NETWORK_IP_ADDRESS:
     {
