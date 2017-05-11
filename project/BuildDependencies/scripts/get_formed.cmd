@@ -59,7 +59,7 @@ IF EXIST %1 (
 ) ELSE (
   CALL :setSubStageName Downloading %1...
   SET DOWNLOAD_URL=%KODI_MIRROR%/build-deps/win32/%1
-  %WGET% "!DOWNLOAD_URL!" 2>&1 || ECHO %1^|Download of !DOWNLOAD_URL! failed >> %FORMED_FAILED_LIST% && EXIT /B 7
+  %WGET% --tries=5 --retry-connrefused --waitretry=2 "!DOWNLOAD_URL!" 2>&1 || ECHO %1^|Download of !DOWNLOAD_URL! failed >> %FORMED_FAILED_LIST% && EXIT /B 7
   TITLE Getting %1
 )
 

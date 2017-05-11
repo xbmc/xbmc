@@ -12,7 +12,7 @@ if not exist dependencies\vcredist\2015 mkdir dependencies\vcredist\2015
 
 if not exist dependencies\vcredist\2015\vcredist_%TARGET_ARCHITECTURE%.exe (
   echo Downloading vc140 redist...
-  ..\BuildDependencies\bin\wget -nv -O dependencies\vcredist\2015\vcredist_%TARGET_ARCHITECTURE%.exe %KODI_MIRROR%/build-deps/win32/vcredist/2015/vcredist_%TARGET_ARCHITECTURE%.exe
+  ..\BuildDependencies\bin\wget --tries=5 --retry-connrefused --waitretry=2 -nv -O dependencies\vcredist\2015\vcredist_%TARGET_ARCHITECTURE%.exe %KODI_MIRROR%/build-deps/win32/vcredist/2015/vcredist_%TARGET_ARCHITECTURE%.exe
 )
 :: Restore the previous current directory
 POPD
