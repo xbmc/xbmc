@@ -172,13 +172,9 @@ You can specify `Release` instead of `Debug` as a configuration.
 CMake is also able to generate a Makefile based project that can be used to
 compile with make:
 
-    mkdir $HOME/Kodi/build
-    cd $HOME/Kodi/build
-    /Users/Shared/xbmc-depends/buildtools-native/bin/cmake -DCMAKE_TOOLCHAIN_FILE=/Users/Shared/xbmc-depends/macosx10.12_x86_64-target/share/Toolchain.cmake ..
-    make
-
-The `-G` parameter defines the type of the generated project. Here it either
-has to be omitted, or specifically set to `-G "Unix Makefiles"`.
+    cd $HOME/Kodi
+    make -C tools/depends/target/cmakebuildsys
+    make -C build
 
 ## 5 Packaging
 
