@@ -290,7 +290,7 @@ AVFrame* CFFmpegImage::ExtractFrame()
     {
       m_frames++;
       //we need milliseconds
-      av_frame_set_pkt_duration(frame, av_rescale_q(frame->pkt_duration, m_fctx->streams[0]->time_base, AVRational{ 1, 1000 }));
+      av_frame_set_pkt_duration(frame, av_rescale_q(av_frame_get_pkt_duration(frame), m_fctx->streams[0]->time_base, AVRational{ 1, 1000 }));
       m_height = frame->height;
       m_width = frame->width;
       m_originalWidth = m_width;

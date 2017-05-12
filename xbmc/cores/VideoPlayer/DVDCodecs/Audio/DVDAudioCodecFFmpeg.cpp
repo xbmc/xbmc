@@ -219,11 +219,11 @@ int CDVDAudioCodecFFmpeg::GetData(uint8_t** dst)
 {
   if(m_gotFrame)
   {
-    int planes = av_sample_fmt_is_planar(m_pCodecContext->sample_fmt) ? m_pFrame1->channels : 1;
+    int planes = av_sample_fmt_is_planar(m_pCodecContext->sample_fmt) ? av_frame_get_channels(m_pFrame1) : 1;
     for (int i=0; i<planes; i++)
       dst[i] = m_pFrame1->extended_data[i];
     m_gotFrame = 0;
-    return m_pFrame1->nb_samples * m_pFrame1->channels * av_get_bytes_per_sample(m_pCodecContext->sample_fmt);
+    return m_pFrame1->nb_samples * av_frame_get_channels(m_pFrame1) * av_get_bytes_per_sample(m_pCodecContext->sample_fmt);
   }
 
   return 0;
