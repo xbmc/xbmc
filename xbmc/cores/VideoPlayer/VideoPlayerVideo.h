@@ -70,11 +70,10 @@ public:
   void CloseStream(bool bWaitForBuffers) override;
   void Flush(bool sync) override;
   bool AcceptsData() const override;
-  bool HasData() const override { return m_messageQueue.GetDataSize() > 0; }
-  int  GetLevel() const override { return m_messageQueue.GetLevel(); }
-  bool IsInited() const override { return m_messageQueue.IsInited(); }
-  void SendMessage(CDVDMsg* pMsg, int priority = 0) override{ m_messageQueue.Put(pMsg, priority); }
-  void FlushMessages() override { m_messageQueue.Flush(); }
+  bool HasData() const override;
+  bool IsInited() const override;
+  void SendMessage(CDVDMsg* pMsg, int priority = 0) override;
+  void FlushMessages() override;
 
   void EnableSubtitle(bool bEnable) override { m_bRenderSubs = bEnable; }
   bool IsSubtitleEnabled() override { return m_bRenderSubs; }
@@ -99,6 +98,8 @@ protected:
   virtual void OnExit() override;
   virtual void Process() override;
   bool ProcessDecoderOutput(double &frametime, double &pts);
+  void SendMessageBack(CDVDMsg* pMsg, int priority = 0);
+  MsgQueueReturnCode GetMessage(CDVDMsg** pMsg, unsigned int iTimeoutInMilliSeconds, int &priority);
 
   int OutputPicture(const VideoPicture* src, double pts);
   void ProcessOverlays(VideoPicture* pSource, double pts);
