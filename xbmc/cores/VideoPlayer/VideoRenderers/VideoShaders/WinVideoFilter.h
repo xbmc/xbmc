@@ -21,7 +21,6 @@
  */
 
 #ifdef HAS_DX
-#include <string>
 #include <vector>
 
 #include "../../guilib/Geometry.h"
@@ -75,23 +74,56 @@ private:
   ID3D11InputLayout*  m_inputLayout;
 };
 
+class COutputShader : public CWinShader
+{
+public:
+  virtual ~COutputShader();
+
+  void ApplyEffectParameters(CD3DEffect &effect, unsigned sourceWidth, unsigned sourceHeight);
+  void GetDefines(DefinesMap &map) const;
+  bool Create(int clutSize, ID3D11ShaderResourceView *pCLUTView, bool useDithering, int ditherDepth);
+  void Render(CD3DTexture &sourceTexture, unsigned sourceWidth, unsigned sourceHeight, CRect sourceRect, const CPoint points[4]
+            , unsigned range = 0, float contrast = 0.5f, float brightness = 0.5f);
+  void Render(CD3DTexture &sourceTexture, unsigned sourceWidth, unsigned sourceHeight, CRect sourceRect, CRect destRect
+            , unsigned range = 0, float contrast = 0.5f, float brightness = 0.5f);
+
+  static bool CreateCLUTView(int clutSize, uint16_t* clutData, ID3D11ShaderResourceView** ppCLUTView);
+
+private:
+  bool HasCLUT() const { return m_clutSize && m_pCLUTView; }
+  void PrepareParameters(unsigned sourceWidth, unsigned sourceHeight, CRect sourceRect, const CPoint points[4]);
+  void SetShaderParameters(CD3DTexture &sourceTexture, unsigned range, float contrast, float brightness);
+  void CreateDitherView();
+
+  unsigned m_sourceWidth{ 0 };
+  unsigned m_sourceHeight{ 0 };
+  CRect m_sourceRect{ 0.f, 0.f, 0.f, 0.f };
+  CPoint m_destPoints[4] = 
+  {
+    { 0.f, 0.f },
+    { 0.f, 0.f },
+    { 0.f, 0.f },
+    { 0.f, 0.f },
+  };
+  int m_clutSize{ 0 };
+  ID3D11ShaderResourceView *m_pCLUTView{ nullptr };
+  bool m_useDithering{ false };
+  int m_ditherDepth{ 0 };
+  ID3D11ShaderResourceView* m_pDitherView{ nullptr };
+
+  struct CUSTOMVERTEX {
+    FLOAT x, y, z;
+    FLOAT tu, tv;
+  };
+};
+
 class CYUV2RGBShader : public CWinShader
 {
 public:
-  virtual bool Create(unsigned int sourceWidth, unsigned int sourceHeight, ERenderFormat fmt);
-  virtual void Render(CRect sourceRect,
-                      CPoint dest[],
-                      float contrast,
-                      float brightness,
-                      unsigned int flags,
-                      YUVBuffer* YUVbuf);
-  CYUV2RGBShader() : 
-    m_sourceWidth (0),
-    m_sourceHeight(0),
-    m_format      (RENDER_FMT_NONE)
-    {
-      memset(&m_texSteps,0,sizeof(m_texSteps));
-    }
+  virtual bool Create(unsigned int sourceWidth, unsigned int sourceHeight, ERenderFormat fmt, COutputShader *pOutShader = nullptr);
+  virtual void Render(CRect sourceRect, CPoint dest[], float contrast, float brightness,
+                      unsigned int flags, YUVBuffer* YUVbuf);
+  CYUV2RGBShader();
   virtual ~CYUV2RGBShader();
 
 protected:
@@ -109,6 +141,7 @@ private:
   CPoint              m_dest[4];
   ERenderFormat       m_format;
   float               m_texSteps[2];
+  COutputShader *m_pOutShader;
 
   struct CUSTOMVERTEX {
       FLOAT x, y, z;
@@ -120,24 +153,24 @@ private:
 class CConvolutionShader : public CWinShader
 {
 public:
-  virtual bool Create(ESCALINGMETHOD method) = 0;
+  virtual bool Create(ESCALINGMETHOD method, COutputShader *pOutShader = nullptr) = 0;
   virtual void Render(CD3DTexture &sourceTexture,
-                               unsigned int sourceWidth, unsigned int sourceHeight,
-                               unsigned int destWidth, unsigned int destHeight,
-                               CRect sourceRect,
-                               CRect destRect,
-                               bool useLimitRange) = 0;
-  CConvolutionShader() : CWinShader() {}
+                      unsigned int sourceWidth, unsigned int sourceHeight,
+                      unsigned int destWidth, unsigned int destHeight,
+                      CRect sourceRect, CRect destRect, bool useLimitRange) = 0;
+  CConvolutionShader();
   virtual ~CConvolutionShader();
-
+  
 protected:
   virtual bool ChooseKernelD3DFormat();
   virtual bool CreateHQKernel(ESCALINGMETHOD method);
+  virtual void SetShaderParameters(CD3DTexture &sourceTexture, float* texSteps, int texStepsCount, bool useLimitRange) = 0;
 
-  CD3DTexture         m_HQKernelTexture;
-  DXGI_FORMAT         m_KernelFormat;
-  bool                m_floattex;
-  bool                m_rgba;
+  CD3DTexture m_HQKernelTexture;
+  DXGI_FORMAT m_KernelFormat;
+  bool m_floattex;
+  bool m_rgba;
+  COutputShader *m_pOutShader;
 
   struct CUSTOMVERTEX {
       FLOAT x, y, z;
@@ -148,20 +181,18 @@ protected:
 class CConvolutionShader1Pass : public CConvolutionShader
 {
 public:
-  virtual bool Create(ESCALINGMETHOD method);
-  virtual void Render(CD3DTexture &sourceTexture,
-                               unsigned int sourceWidth, unsigned int sourceHeight,
-                               unsigned int destWidth, unsigned int destHeight,
-                               CRect sourceRect,
-                               CRect destRect,
-                               bool useLimitRange);
+  bool Create(ESCALINGMETHOD method, COutputShader *pCLUT = nullptr) override;
+  void Render(CD3DTexture &sourceTexture,
+              unsigned int sourceWidth, unsigned int sourceHeight,
+              unsigned int destWidth, unsigned int destHeight,
+              CRect sourceRect, CRect destRect, bool useLimitRange) override;
   CConvolutionShader1Pass() : CConvolutionShader(), m_sourceWidth(0), m_sourceHeight(0) {}
 
 protected:
-  virtual void PrepareParameters(unsigned int sourceWidth, unsigned int sourceHeight,
-                               CRect sourceRect,
-                               CRect destRect);
-  virtual void SetShaderParameters(CD3DTexture &sourceTexture, float* texSteps, int texStepsCount, bool useLimitRange);
+  void PrepareParameters(unsigned int sourceWidth, unsigned int sourceHeight,
+                         CRect sourceRect, CRect destRect);
+  void SetShaderParameters(CD3DTexture &sourceTexture, float* texSteps, 
+                           int texStepsCount, bool useLimitRange) override;
 
 
 private:
@@ -173,32 +204,30 @@ class CConvolutionShaderSeparable : public CConvolutionShader
 {
 public:
   CConvolutionShaderSeparable();
-  virtual bool Create(ESCALINGMETHOD method);
-  virtual void Render(CD3DTexture &sourceTexture,
-                               unsigned int sourceWidth, unsigned int sourceHeight,
-                               unsigned int destWidth, unsigned int destHeight,
-                               CRect sourceRect,
-                               CRect destRect,
-                               bool useLimitRange);
+  bool Create(ESCALINGMETHOD method, COutputShader *pOutShader = nullptr) override;
+  void Render(CD3DTexture &sourceTexture,
+              unsigned int sourceWidth, unsigned int sourceHeight,
+              unsigned int destWidth, unsigned int destHeight,
+              CRect sourceRect, CRect destRect, bool useLimitRange) override;
   virtual ~CConvolutionShaderSeparable();
 
 protected:
-  virtual bool ChooseIntermediateD3DFormat();
-  virtual bool CreateIntermediateRenderTarget(unsigned int width, unsigned int height);
-  virtual bool ClearIntermediateRenderTarget();
-  virtual void PrepareParameters(unsigned int sourceWidth, unsigned int sourceHeight,
-                               unsigned int destWidth, unsigned int destHeight,
-                               CRect sourceRect,
-                               CRect destRect);
-  virtual void SetShaderParameters(CD3DTexture &sourceTexture, float* texSteps, int texStepsCount, bool useLimitRange);
-  virtual void SetStepParams(UINT stepIndex);
+  bool ChooseIntermediateD3DFormat();
+  bool CreateIntermediateRenderTarget(unsigned int width, unsigned int height);
+  bool ClearIntermediateRenderTarget();
+  void PrepareParameters(unsigned int sourceWidth, unsigned int sourceHeight,
+                         unsigned int destWidth, unsigned int destHeight,
+                         CRect sourceRect, CRect destRect);
+  void SetShaderParameters(CD3DTexture &sourceTexture, float* texSteps, 
+                           int texStepsCount, bool useLimitRange) override;
+  void SetStepParams(UINT stepIndex) override;
 
 private:
-  CD3DTexture   m_IntermediateTarget;
-  DXGI_FORMAT   m_IntermediateFormat;
-  unsigned int  m_sourceWidth, m_sourceHeight;
-  unsigned int  m_destWidth, m_destHeight;
-  CRect         m_sourceRect, m_destRect;
+  CD3DTexture m_IntermediateTarget;
+  DXGI_FORMAT m_IntermediateFormat;
+  unsigned int m_sourceWidth, m_sourceHeight;
+  unsigned int m_destWidth, m_destHeight;
+  CRect m_sourceRect, m_destRect;
   ID3D11RenderTargetView* m_oldRenderTarget = nullptr;
 };
 

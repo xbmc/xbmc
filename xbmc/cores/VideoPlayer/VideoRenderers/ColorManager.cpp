@@ -19,7 +19,6 @@
  */
 
 #include <math.h>
-#include <string>
 #include <vector>
 
 #include "system.h"
@@ -42,7 +41,7 @@ CColorManager::CColorManager()
   m_cur3dlutFile = "";
   m_curIccProfile = "";
 #if defined(HAVE_LCMS2)
-  m_hProfile = NULL;
+  m_hProfile = nullptr;
 #endif  //defined(HAVE_LCMS2)
 }
 
@@ -52,7 +51,7 @@ CColorManager::~CColorManager()
   if (m_hProfile)
   {
     cmsCloseProfile(m_hProfile);
-    m_hProfile = NULL;
+    m_hProfile = nullptr;
   }
 #endif  //defined(HAVE_LCMS2)
 }
@@ -82,7 +81,7 @@ CMS_PRIMARIES videoFlagsToPrimaries(int flags)
 bool CColorManager::GetVideo3dLut(int videoFlags, int *cmsToken, int *clutSize, uint16_t **clutData)
 {
   CMS_PRIMARIES videoPrimaries = videoFlagsToPrimaries(videoFlags);
-  CLog::Log(LOGDEBUG, "video primaries: %d\n", (int)videoPrimaries);
+  CLog::Log(LOGDEBUG, "ColorManager: video primaries: %d\n", (int)videoPrimaries);
   switch (CServiceBroker::GetSettings().GetInt("videoscreen.cmsmode"))
   {
   case CMS_MODE_3DLUT:
@@ -112,7 +111,7 @@ bool CColorManager::GetVideo3dLut(int videoFlags, int *cmsToken, int *clutSize, 
         // detect blackpoint
         if (cmsDetectBlackPoint(&m_blackPoint, m_hProfile, INTENT_PERCEPTUAL, 0))
         {
-          CLog::Log(LOGDEBUG, "black point: %f\n", m_blackPoint.Y);
+          CLog::Log(LOGDEBUG, "ColorManager: black point: %f\n", m_blackPoint.Y);
         }
         m_curIccProfile = CServiceBroker::GetSettings().GetString("videoscreen.displayprofile");
       }
@@ -126,9 +125,9 @@ bool CColorManager::GetVideo3dLut(int videoFlags, int *cmsToken, int *clutSize, 
       // create source profile
       m_curIccWhitePoint = (CMS_WHITEPOINT)CServiceBroker::GetSettings().GetInt("videoscreen.cmswhitepoint");
       m_curIccPrimaries = (CMS_PRIMARIES)CServiceBroker::GetSettings().GetInt("videoscreen.cmsprimaries");
-      CLog::Log(LOGDEBUG, "primaries setting: %d\n", (int)m_curIccPrimaries);
+      CLog::Log(LOGDEBUG, "ColorManager: primaries setting: %d\n", (int)m_curIccPrimaries);
       if (m_curIccPrimaries == CMS_PRIMARIES_AUTO) m_curIccPrimaries = videoPrimaries;
-      CLog::Log(LOGDEBUG, "source profile primaries: %d\n", (int)m_curIccPrimaries);
+      CLog::Log(LOGDEBUG, "ColorManager: source profile primaries: %d\n", (int)m_curIccPrimaries);
       cmsHPROFILE sourceProfile =
         CreateSourceProfile(m_curIccPrimaries, gammaCurve, m_curIccWhitePoint);
 
@@ -204,7 +203,7 @@ bool CColorManager::CheckConfiguration(int cmsToken, int flags)
 #endif  //defined(HAVE_LCMS2)
     break;
   default:
-    CLog::Log(LOGERROR, "%s: unexpected CMS mode: %d", __FUNCTION__, m_curCmsMode);
+    CLog::Log(LOGERROR, "ColorManager: unexpected CMS mode: %d", m_curCmsMode);
     return false;
   }
   return true;
@@ -481,10 +480,10 @@ void CColorManager::Create3dLut(cmsHTRANSFORM transform, uint16_t **clutData, in
 {
   const int lutResolution = *clutSize;
   int lutsamples = lutResolution * lutResolution * lutResolution * 3;
-  *clutData = (uint16_t*)malloc(lutsamples * sizeof(uint16_t));
+  *clutData = static_cast<uint16_t*>(malloc(lutsamples * sizeof(uint16_t)));
 
-  cmsFloat32Number input[3*lutResolution];
-  cmsFloat32Number output[3*lutResolution];
+  cmsFloat32Number *input = new cmsFloat32Number[3*lutResolution];
+  cmsFloat32Number *output = new cmsFloat32Number[3*lutResolution];
 
 #define clamp(x, l, h) ( ((x) < (l)) ? (l) : ( ((x) > (h)) ? (h) : (x) ) )
 #define videoToPC(x) ( clamp((((x)*255)-16)/219,0,1) )
@@ -515,6 +514,8 @@ void CColorManager::Create3dLut(cmsHTRANSFORM transform, uint16_t **clutData, in
         (int)round((*clutData)[index+1]),
         (int)round((*clutData)[index+2]));
   }
+  delete[] input;
+  delete[] output;
 }
 
 

@@ -20,15 +20,15 @@
  *
  */
 
-#if !defined(TARGET_POSIX) && !defined(HAS_GL)
 #include <vector>
-
 #include "BaseRenderer.h"
+#include "ColorManager.h"
 #include "HwDecRender/DXVAHD.h"
 #include "guilib/D3DResource.h"
 #include "RenderFormats.h"
 #include "RenderCapture.h"
 #include "settings/VideoSettings.h"
+#include "settings/Settings.h"
 
 #define ALIGN(value, alignment) (((value)+((alignment)-1))&~((alignment)-1))
 #define CLAMP(a, min, max) ((a) > (max) ? (max) : ( (a) < (min) ? (min) : a ))
@@ -45,6 +45,7 @@
 class CBaseTexture;
 class CYUV2RGBShader;
 class CConvolutionShader;
+class COutputShader;
 
 class DllAvUtil;
 class DllAvCodec;
@@ -156,35 +157,37 @@ public:
   CWinRenderer();
   ~CWinRenderer();
 
-  virtual void Update();
-
-  bool RenderCapture(CRenderCapture* capture);
+  void Update() override;
+  bool RenderCapture(CRenderCapture* capture) override;
 
   // Player functions
-  virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format, unsigned int orientation);
-  virtual int GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false);
-  virtual void ReleaseImage(int source, bool preserve = false);
-  virtual void AddVideoPictureHW(DVDVideoPicture &picture, int index) override;
-  virtual bool IsPictureHW(DVDVideoPicture &picture) override;
-  virtual void FlipPage(int source);
-  virtual void PreInit();
-  virtual void UnInit();
-  virtual void Reset(); /* resets renderer after seek for example */
-  virtual bool IsConfigured() { return m_bConfigured; }
-  virtual void Flush();
-  virtual CRenderInfo GetRenderInfo();
-  virtual void RenderUpdate(bool clear, unsigned int flags = 0, unsigned int alpha = 255);
-  virtual void SetBufferSize(int numBuffers) { m_neededBuffers = numBuffers; }
-  virtual void ReleaseBuffer(int idx);
-  virtual bool NeedBuffer(int idx);
-  virtual bool HandlesRenderFormat(ERenderFormat format) override;
+  bool Configure(unsigned int width, unsigned int height, 
+                 unsigned int d_width, unsigned int d_height, 
+                 float fps, unsigned flags, ERenderFormat format, 
+                 unsigned extended_format, unsigned int orientation) override;
+  int GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false) override;
+  void ReleaseImage(int source, bool preserve = false) override;
+  void AddVideoPictureHW(DVDVideoPicture &picture, int index) override;
+  bool IsPictureHW(DVDVideoPicture &picture) override;
+  void FlipPage(int source) override;
+  void PreInit() override;
+  void UnInit() override;
+  void Reset() override; /* resets renderer after seek for example */
+  bool IsConfigured() override { return m_bConfigured; }
+  void Flush() override;
+  CRenderInfo GetRenderInfo() override;
+  void RenderUpdate(bool clear, unsigned int flags = 0, unsigned int alpha = 255) override;
+  void SetBufferSize(int numBuffers) override { m_neededBuffers = numBuffers; }
+  void ReleaseBuffer(int idx) override;
+  bool NeedBuffer(int idx) override;
+  bool HandlesRenderFormat(ERenderFormat format) override;
 
   // Feature support
-  virtual bool SupportsMultiPassRendering() { return false; }
-  virtual bool Supports(ERENDERFEATURE feature);
-  virtual bool Supports(ESCALINGMETHOD method);
+  bool SupportsMultiPassRendering() override { return false; }
+  bool Supports(ERENDERFEATURE feature) override;
+  bool Supports(ESCALINGMETHOD method) override;
 
-  virtual bool WantsDoublePass() override;
+  bool WantsDoublePass() override;
 
 protected:
   virtual void Render(DWORD flags);
@@ -201,8 +204,10 @@ protected:
   void SelectSWVideoFilter();
   void SelectPSVideoFilter();
   void UpdatePSVideoFilter();
+  void ColorManagmentUpdate();
   bool CreateIntermediateRenderTarget(unsigned int width, unsigned int height, bool dynamic);
-  bool CopyDXVA2YUVBuffer(ID3D11VideoDecoderOutputView* pView, YUVBuffer *pBuf);
+
+  bool LoadCLUT();
 
   int  m_iYV12RenderBuffer;
   int  m_NumYV12Buffers;
@@ -215,18 +220,18 @@ protected:
 
   // software scale libraries (fallback if required pixel shaders version is not available)
   struct SwsContext   *m_sw_scale_ctx;
-  SHADER_SAMPLER       m_TextureFilter;
-  bool                 m_bUseHQScaler;
-  CD3DTexture          m_IntermediateTarget;
-  CYUV2RGBShader*      m_colorShader;
-  CConvolutionShader*  m_scalerShader;
+  bool m_bUseHQScaler;
+  CD3DTexture m_IntermediateTarget;
+  CYUV2RGBShader* m_colorShader;
+  CConvolutionShader* m_scalerShader;
+  COutputShader* m_outputShader;
 
-  ESCALINGMETHOD       m_scalingMethod;
-  ESCALINGMETHOD       m_scalingMethodGui;
+  ESCALINGMETHOD m_scalingMethod;
+  ESCALINGMETHOD m_scalingMethodGui;
 
-  bool                 m_bFilterInitialized;
-  int                  m_iRequestedMethod;
-  unsigned int         m_extended_format;
+  bool m_bFilterInitialized;
+  int m_iRequestedMethod;
+  DXGI_FORMAT m_dxva_format;
 
   // Width and height of the render target
   // the separable HQ scalers need this info, but could the m_destRect be used instead?
@@ -236,8 +241,12 @@ protected:
   int                  m_neededBuffers;
   unsigned int         m_frameIdx;
   CRenderCapture*      m_capture = nullptr;
-};
 
-#else
-#include "LinuxRenderer.h"
-#endif
+  int m_cmsToken{ -1 };
+  bool m_cmsOn{ false };
+  int m_CLUTSize{ 0 };
+  std::unique_ptr<CColorManager> m_colorManager;
+  ID3D11ShaderResourceView *m_pCLUTView{ nullptr };
+  bool m_useDithering;
+  int m_ditherDepth;
+};

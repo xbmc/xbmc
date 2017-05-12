@@ -38,20 +38,12 @@ typedef enum SHADER_METHOD {
   SHADER_METHOD_RENDER_FONT,
   SHADER_METHOD_RENDER_TEXTURE_BLEND,
   SHADER_METHOD_RENDER_MULTI_TEXTURE_BLEND,
-  SHADER_METHOD_RENDER_VIDEO,
-  SHADER_METHOD_RENDER_VIDEO_CONTROL,
   SHADER_METHOD_RENDER_STEREO_INTERLACED_LEFT,
   SHADER_METHOD_RENDER_STEREO_INTERLACED_RIGHT,
   SHADER_METHOD_RENDER_STEREO_CHECKERBOARD_LEFT,
   SHADER_METHOD_RENDER_STEREO_CHECKERBOARD_RIGHT,
   SHADER_METHOD_RENDER_COUNT
 } _SHADER_METHOD;
-
-typedef enum SHADER_SAMPLER {
-  SHADER_SAMPLER_LINEAR = 1,
-  SHADER_SAMPLER_POINT = 2
-} _SHADER_SAMPLER;
-
 
 class ID3DResource
 {
@@ -169,7 +161,7 @@ private:
 
 typedef std::map<std::string, std::string> DefinesMap;
 
-class CD3DEffect : public ID3DResource
+class CD3DEffect : public ID3DResource, public ID3DInclude
 {
 public:
   CD3DEffect();
@@ -192,6 +184,10 @@ public:
 
   void OnDestroyDevice(bool fatal) override;
   void OnCreateDevice() override;
+
+  // ID3DInclude interface
+  __declspec(nothrow) HRESULT __stdcall Open(D3D_INCLUDE_TYPE IncludeType, LPCSTR pFileName, LPCVOID pParentData, LPCVOID *ppData, UINT *pBytes) override;
+  __declspec(nothrow) HRESULT __stdcall Close(LPCVOID pData) override;
 
 private:
   bool         CreateEffect();

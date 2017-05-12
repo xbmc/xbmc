@@ -18,11 +18,8 @@
  *
  */
 
-texture2D g_Texture;
-texture2D g_KernelTexture;
-float4    g_StepXY;
-float2    g_viewPort;
-float2    g_colorRange;
+#include "convolution_d3d.fx"
+#include "output_d3d.fx"
 
 SamplerState RGBSampler : IMMUTABLE
 {
@@ -30,40 +27,6 @@ SamplerState RGBSampler : IMMUTABLE
   AddressV = CLAMP;
   Filter   = MIN_MAG_POINT_MIP_LINEAR;
 };
-
-SamplerState KernelSampler : IMMUTABLE
-{
-  AddressU = CLAMP;
-  AddressV = CLAMP;
-  Filter   = MIN_MAG_MIP_LINEAR;
-};
-
-struct VS_INPUT
-{
-  float4 Position   : POSITION;
-  float2 TextureUV  : TEXCOORD0;
-};
-
-struct VS_OUTPUT
-{
-  float2 TextureUV  : TEXCOORD0;
-  float4 Position   : SV_POSITION;
-};
-
-//
-// VS for rendering in screen space
-//
-VS_OUTPUT VS(VS_INPUT In)
-{
-  VS_OUTPUT output  = (VS_OUTPUT)0;
-  output.Position.x =  (In.Position.x / (g_viewPort.x  / 2.0)) - 1;
-  output.Position.y = -(In.Position.y / (g_viewPort.y / 2.0)) + 1;
-  output.Position.z = output.Position.z;
-  output.Position.w = 1.0;
-  output.TextureUV  = In.TextureUV;
-
-  return output;
-}
 
 inline half4 weight(float pos)
 {
@@ -127,19 +90,19 @@ float4 CONVOLUTION4x4Vert(in float2 TextureUV : TEXCOORD0) : SV_TARGET
   float xystart = (-1.0 - f.y) * g_StepXY.w + TextureUV.y;
 
   float4 ypos = xystart + g_StepXY.w * float4(0.0, 1.0, 2.0, 3.0);
-  return float4(g_colorRange.x + g_colorRange.y * saturate(getRow(TextureUV.x, ypos, columntaps)), 1.0);
+  return output(g_colorRange.x + g_colorRange.y * saturate(getRow(TextureUV.x, ypos, columntaps)), TextureUV);
 }
 
 technique11 SCALER_T
 {
   pass P0
   {
-    SetVertexShader( CompileShader( vs_4_0_level_9_1, VS() ) );
+    SetVertexShader( VS_SHADER );
     SetPixelShader( CompileShader( ps_4_0_level_9_3, CONVOLUTION4x4Horiz() ) );
   }
   pass P1
   {
-    SetVertexShader( CompileShader( vs_4_0_level_9_1, VS() ) );
+    SetVertexShader( VS_SHADER );
     SetPixelShader( CompileShader( ps_4_0_level_9_3, CONVOLUTION4x4Vert() ) );
   }
 

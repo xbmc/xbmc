@@ -20,7 +20,7 @@
 
 #include "system.h"
 
-#ifdef HAS_GL
+#if defined(HAS_GL) || defined(HAS_DX)
 
 #include "cores/VideoPlayer/VideoRenderers/ColorManager.h"
 #include "FileItem.h"
