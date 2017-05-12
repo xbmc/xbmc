@@ -1209,7 +1209,6 @@ void CRenderSystemDX::PresentRenderImpl(bool rendered)
   }
 
   FinishCommandList();
-  m_pImdContext->Flush();
 
   hr = m_pSwapChain->Present((m_bVSync ? 1 : 0), 0);
 
