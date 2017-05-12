@@ -378,3 +378,13 @@ bool CProcessInfo::IsSeeking()
 
   return m_stateSeeking;
 }
+
+void CProcessInfo::SetLevelVQ(int level)
+{
+  m_levelVQ = level;
+}
+
+int CProcessInfo::GetLevelVQ()
+{
+  return m_levelVQ;
+}
