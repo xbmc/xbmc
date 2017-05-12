@@ -97,7 +97,6 @@ public:
   virtual void Flush(bool sync) = 0;
   virtual bool AcceptsData() const = 0;
   virtual bool HasData() const = 0;
-  virtual int  GetLevel() const = 0;
   virtual bool IsInited() const = 0;
   virtual void SendMessage(CDVDMsg* pMsg, int priority = 0) = 0;
   virtual void EnableSubtitle(bool bEnable) = 0;
