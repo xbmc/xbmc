@@ -123,18 +123,24 @@ public:
 
   int  changes; // increment on change which player may need to know about
 
-  enum EFlags
-  { FLAG_NONE             = 0x0000 
-  , FLAG_DEFAULT          = 0x0001
-  , FLAG_DUB              = 0x0002
-  , FLAG_ORIGINAL         = 0x0004
-  , FLAG_COMMENT          = 0x0008
-  , FLAG_LYRICS           = 0x0010
-  , FLAG_KARAOKE          = 0x0020
-  , FLAG_FORCED           = 0x0040
-  , FLAG_HEARING_IMPAIRED = 0x0080
-  , FLAG_VISUAL_IMPAIRED  = 0x0100
-  } flags;
+  static const unsigned int FLAG_COMPARE_MASK = 0x0000FFFF;
+  static const unsigned int FLAG_NONE = 0x00000000;
+  static const unsigned int FLAG_DEFAULT = 0x00000001;
+  static const unsigned int FLAG_DUB = 0x00000002;
+  static const unsigned int FLAG_ORIGINAL = 0x00000004;
+  static const unsigned int FLAG_COMMENT = 0x00000008;
+  static const unsigned int FLAG_LYRICS = 0x00000010;
+  static const unsigned int FLAG_KARAOKE = 0x00000020;
+  static const unsigned int FLAG_FORCED = 0x00000040;
+  static const unsigned int FLAG_HEARING_IMPAIRED = 0x00000080;
+  static const unsigned int FLAG_VISUAL_IMPAIRED = 0x00000100;
+  static const unsigned int FLAG_DISP_ATTACHED_PIC = 0x00000200;
+  // Temporary flags wich are not compared against each other
+  static const unsigned int FLAG_STREAMCHANGE = 0x00010000;
+
+  unsigned int flags;
+
+  static unsigned int AvDispositionToDemuxFlags(unsigned int disposition);
 };
 
 class CDemuxStreamVideo : public CDemuxStream
@@ -336,7 +342,7 @@ public:
    * adaptive demuxers like DASH can use this to choose best fitting video stream
    */
   virtual void SetVideoResolution(int width, int height) {};
-  
+
   /*
   * return the id of the demuxer
   */

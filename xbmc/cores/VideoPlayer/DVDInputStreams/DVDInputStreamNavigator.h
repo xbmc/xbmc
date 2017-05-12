@@ -64,10 +64,10 @@ struct DVDNavAudioStreamInfo : DVDNavStreamInfo
 
 struct DVDNavSubtitleStreamInfo : DVDNavStreamInfo
 {
-  CDemuxStream::EFlags flags;
+  unsigned int flags;
 
   DVDNavSubtitleStreamInfo() : DVDNavStreamInfo(),
-    flags(CDemuxStream::EFlags::FLAG_NONE) {}
+    flags(CDemuxStream::FLAG_NONE) {}
 };
 
 struct DVDNavVideoStreamInfo : DVDNavStreamInfo

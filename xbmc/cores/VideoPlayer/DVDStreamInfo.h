@@ -48,7 +48,7 @@ public:
   StreamType type;
   int uniqueId;
   bool realtime;
-  int flags;
+  unsigned int flags; //DVDDemuxStream::flags
   bool software;  //force software decoding
   std::string filename;
   bool dvd;

@@ -126,7 +126,7 @@ bool CVideoPlayerVideo::OpenStream( CDVDStreamInfo &hint )
   info = m_renderManager.GetRenderInfo();
 
   m_pullupCorrection.ResetVFRDetection();
-  if(hint.flags & AV_DISPOSITION_ATTACHED_PIC)
+  if ((hint.flags & CDemuxStream::FLAG_DISP_ATTACHED_PIC) != 0)
     return false;
 
   CLog::Log(LOGNOTICE, "Creating video codec with codec id: %i", hint.codec);
@@ -192,6 +192,10 @@ void CVideoPlayerVideo::OpenStream(CDVDStreamInfo &hint, CDVDVideoCodec* codec)
     m_pVideoCodec->ClearPicture(&m_picture);
     delete m_pVideoCodec;
   }
+
+  if (!codec->IsOpen())
+    codec->Reopen();
+
   m_pVideoCodec = codec;
   m_hints   = hint;
   m_stalled = m_messageQueue.GetPacketCount(CDVDMsg::DEMUXER_PACKET) == 0;

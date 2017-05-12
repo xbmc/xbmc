@@ -83,7 +83,7 @@ bool CDVDStreamInfo::Equal(const CDVDStreamInfo& right, bool withextradata)
   ||  uniqueId  != right.uniqueId
   ||  realtime  != right.realtime
   ||  codec_tag != right.codec_tag
-  ||  flags     != right.flags)
+  ||  (flags & CDemuxStream::FLAG_COMPARE_MASK)  != (right.flags & CDemuxStream::FLAG_COMPARE_MASK))
     return false;
 
   if( withextradata )

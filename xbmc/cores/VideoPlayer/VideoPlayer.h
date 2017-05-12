@@ -234,7 +234,7 @@ typedef struct SelectionStream
   std::string  filename2;  // for vobsub subtitles, 2 files are necessary (idx/sub)
   std::string  language;
   std::string  name;
-  CDemuxStream::EFlags flags = CDemuxStream::FLAG_NONE;
+  unsigned int flags = CDemuxStream::FLAG_NONE;
   int          source = 0;
   int          id = 0;
   int64_t      demuxerId = -1;
@@ -269,7 +269,7 @@ public:
   int              Count   (StreamType type) const { return IndexOf(type, STREAM_SOURCE_NONE, -1, -1) + 1; }
   int              CountSource(StreamType type, StreamSource source) const;
   SelectionStream& Get     (StreamType type, int index);
-  bool             Get     (StreamType type, CDemuxStream::EFlags flag, SelectionStream& out);
+  bool             Get     (StreamType type, unsigned int flags, SelectionStream& out);
 
   SelectionStreams Get(StreamType type);
   template<typename Compare> SelectionStreams Get(StreamType type, Compare compare)

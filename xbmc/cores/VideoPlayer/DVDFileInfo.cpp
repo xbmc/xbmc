@@ -180,7 +180,7 @@ bool CDVDFileInfo::ExtractThumb(const std::string &strPath,
     if (pStream)
     {
       // ignore if it's a picture attachment (e.g. jpeg artwork)
-      if (pStream->type == STREAM_VIDEO && !(pStream->flags & AV_DISPOSITION_ATTACHED_PIC))
+      if (pStream->type == STREAM_VIDEO && !(pStream->flags & CDemuxStream::FLAG_DISP_ATTACHED_PIC))
       {
         nVideoStream = pStream->uniqueId;
         demuxerId = pStream->demuxerId;
@@ -382,7 +382,7 @@ bool CDVDFileInfo::DemuxerToStreamDetails(CDVDInputStream *pInputStream, CDVDDem
   const CURL pathToUrl(path);
   for (CDemuxStream* stream : pDemux->GetStreams())
   {
-    if (stream->type == STREAM_VIDEO && !(stream->flags & AV_DISPOSITION_ATTACHED_PIC))
+    if (stream->type == STREAM_VIDEO && !(stream->flags & CDemuxStream::FLAG_DISP_ATTACHED_PIC))
     {
       CStreamDetailVideo *p = new CStreamDetailVideo();
       p->m_iWidth = ((CDemuxStreamVideo *)stream)->iWidth;
