@@ -227,9 +227,9 @@ CGDirectDisplayID GetDisplayID(int screen_index)
   return(displayArray[screen_index]);
 }
 
-int DisplayBitsPerPixelForMode(CGDisplayModeRef mode)
+size_t DisplayBitsPerPixelForMode(CGDisplayModeRef mode)
 {
-  int bitsPerPixel = 0;
+  size_t bitsPerPixel = 0;
   
   CFStringRef pixEnc = CGDisplayModeCopyPixelEncoding(mode);
   if(CFStringCompare(pixEnc, CFSTR(IO32BitDirectPixels), kCFCompareCaseInsensitive) == kCFCompareEqualTo)
