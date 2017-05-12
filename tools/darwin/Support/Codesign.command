@@ -7,8 +7,8 @@ LIST_BINARY_EXTENSIONS="dylib so"
 
 export CODESIGN_ALLOCATE=`xcodebuild -find codesign_allocate`
 
-GEN_ENTITLEMENTS="$XBMC_DEPENDS_ROOT/buildtools-native/bin/gen_entitlements.py"
-LDID="$XBMC_DEPENDS_ROOT/buildtools-native/bin/ldid"
+GEN_ENTITLEMENTS="$NATIVEPREFIX/bin/gen_entitlements.py"
+LDID="$NATIVEPREFIX/bin/ldid"
 
 if [ ! -f ${GEN_ENTITLEMENTS} ]; then
   echo "error: $GEN_ENTITLEMENTS not found. Codesign won't work."

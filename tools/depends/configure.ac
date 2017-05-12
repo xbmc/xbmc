@@ -253,7 +253,6 @@ case $host in
     if test "x$prefix" = "xNONE"; then
       prefix=/Users/Shared/xbmc-depends
     fi
-    use_tarballs="${use_tarballs:-$prefix/tarballs}"
     use_xcodepath=`xcode-select -print-path`
     use_xcodebuild=$use_xcodepath/usr/bin/xcodebuild
     use_xcode=[`$use_xcodebuild -version | grep Xcode | awk '{ print $2}'`]
@@ -413,7 +412,6 @@ case $host in
     platform_cxxflags+=" -arch $use_cpu -m$platform_min_version -std=c++11 -stdlib=libc++"
     platform_includes="-isysroot $use_sdk_path"
     deps_dir="${sdk_name}_${use_cpu}-target-${build_type}"
-    tool_dir=buildtools-native;
     AC_CHECK_LIB([z], [main], has_zlib=1, AC_MSG_WARN("No zlib support in toolchain. Will build libz."); has_zlib=0)
   ;;
   *)
