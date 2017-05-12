@@ -488,6 +488,9 @@ void CVideoPlayerAudio::Process()
         // guess next pts
         m_audioClock += audioframe.duration;
 
+		if (consumed >= pPacket->iSize) // quick fix for some decoder like wmalossless that cannot accept empty package
+			break;
+			
         int ret = m_pAudioCodec->Decode(nullptr, 0, DVD_NOPTS_VALUE, DVD_NOPTS_VALUE);
         if (ret < 0)
         {
