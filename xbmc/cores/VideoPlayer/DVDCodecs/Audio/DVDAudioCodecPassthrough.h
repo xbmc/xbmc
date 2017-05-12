@@ -52,10 +52,10 @@ private:
   CAEStreamParser m_parser;
   uint8_t* m_buffer;
   unsigned int m_bufferSize;
-  unsigned int m_dataSize;
+  unsigned int m_dataSize = 0;
   AEAudioFormat m_format;
   uint8_t m_backlogBuffer[61440];
-  unsigned int m_backlogSize;
+  unsigned int m_backlogSize = 0;
   double m_currentPts;
   double m_nextPts;
 

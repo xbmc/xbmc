@@ -74,7 +74,7 @@ protected:
   double m_timeOfPts;
   double m_syncError;
   unsigned int m_syncErrorTime;
-  double m_resampleRatio;
+  double m_resampleRatio = 0.0;
   CCriticalSection m_critSection;
 
   unsigned int m_sampleRate;

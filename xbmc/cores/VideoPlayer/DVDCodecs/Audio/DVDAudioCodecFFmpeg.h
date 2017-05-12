@@ -26,6 +26,7 @@ extern "C" {
 #include "libavcodec/avcodec.h"
 #include "libavformat/avformat.h"
 #include "libavutil/avutil.h"
+#include "libavutil/channel_layout.h"
 #include "libswresample/swresample.h"
 }
 
@@ -61,7 +62,7 @@ protected:
   AVCodecContext* m_pCodecContext;
   enum AVSampleFormat m_iSampleFormat;
   CAEChannelInfo m_channelLayout;
-  enum AVMatrixEncoding m_matrixEncoding;
+  enum AVMatrixEncoding m_matrixEncoding = AV_MATRIX_ENCODING_NONE;
   AVFrame* m_pFrame;
   bool m_eof;
   int m_channels;

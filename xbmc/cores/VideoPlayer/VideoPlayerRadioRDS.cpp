@@ -518,6 +518,8 @@ CDVDRadioRDSData::CDVDRadioRDSData(CProcessInfo &processInfo)
   , m_speed(DVD_PLAYSPEED_NORMAL)
   , m_messageQueue("rds")
 {
+  ResetRDSCache();
+
   CLog::Log(LOGDEBUG, "Radio UECP (RDS) Processor - new %s", __FUNCTION__);
 
   m_messageQueue.SetMaxDataSize(40 * 256 * 1024);

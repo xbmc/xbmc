@@ -23,6 +23,7 @@
 #include "cores/VideoPlayer/DVDStreamInfo.h"
 #include "cores/IPlayer.h"
 #include "guilib/Geometry.h"
+#include "guilib/Resolution.h"
 #include "rendering/RenderSystem.h"
 
 #include <deque>
@@ -81,25 +82,25 @@ private:
   DllLibAmCodec   *m_dll;
   bool             m_opened;
   bool             m_ptsIs64us;
-  bool             m_drain;
+  bool             m_drain = false;
   am_private_t    *am_private;
   CDVDStreamInfo   m_hints;
   int              m_speed;
   int64_t          m_cur_pts;
-  int64_t          m_start_adj;
+  int64_t          m_start_adj = 0;
   int64_t          m_last_pts;
   uint32_t         m_bufferIndex;
 
   CRect            m_dst_rect;
   CRect            m_display_rect;
 
-  int              m_view_mode;
-  RENDER_STEREO_MODE m_stereo_mode;
-  RENDER_STEREO_VIEW m_stereo_view;
-  float            m_zoom;
-  int              m_contrast;
-  int              m_brightness;
-  RESOLUTION       m_video_res;
+  int              m_view_mode = -1;
+  RENDER_STEREO_MODE m_stereo_mode = RENDER_STEREO_MODE_OFF;
+  RENDER_STEREO_VIEW m_stereo_view = RENDER_STEREO_VIEW_OFF;
+  float            m_zoom = -1.0f;
+  int              m_contrast = -1;
+  int              m_brightness = -1;
+  RESOLUTION       m_video_res = RES_INVALID;
 
   static const unsigned int STATE_PREFILLED  = 1;
   static const unsigned int STATE_HASPTS     = 2;

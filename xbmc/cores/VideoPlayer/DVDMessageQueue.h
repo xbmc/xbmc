@@ -119,7 +119,7 @@ private:
 
   std::atomic<bool> m_bAbortRequest;
   bool m_bInitialized;
-  bool m_drain;
+  bool m_drain = false;
 
   int m_iDataSize;
   double m_TimeFront;

@@ -140,7 +140,7 @@ protected:
   uint32_t            m_angle;
   bool                m_menu;
   bool                m_navmode;
-  int m_dispTimeBeforeRead;
+  int m_dispTimeBeforeRead = 0;
 
   typedef std::shared_ptr<CDVDOverlayImage> SOverlay;
   typedef std::list<SOverlay>                 SOverlays;

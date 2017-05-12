@@ -79,11 +79,11 @@ protected:
 
   uint32_t m_width;
   uint32_t m_height;
-  uint32_t m_flags;
-  uint32_t m_renderFormat;
-  uint8_t  m_size;
-  uint8_t  m_max_back_refs;
-  uint8_t  m_max_fwd_refs;
+  uint32_t m_flags = 0;
+  uint32_t m_renderFormat = 0;
+  uint8_t  m_size = 0;
+  uint8_t  m_max_back_refs = 0;
+  uint8_t  m_max_fwd_refs = 0;
 
   struct ProcAmpInfo
   {
@@ -101,7 +101,7 @@ protected:
   CSurfaceContext *m_context;
   CCriticalSection m_section;
 
-  uint32_t m_procIndex;
+  uint32_t m_procIndex = 0;
   D3D11_VIDEO_PROCESSOR_RATE_CONVERSION_CAPS m_rateCaps;
   D3D11_TEXTURE2D_DESC m_texDesc;
   PROCESSOR_VIEW_TYPE m_eViewType;

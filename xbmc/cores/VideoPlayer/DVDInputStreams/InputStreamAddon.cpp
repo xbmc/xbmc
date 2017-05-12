@@ -26,7 +26,6 @@
 CInputStreamAddon::CInputStreamAddon(const CFileItem& fileitem, std::shared_ptr<ADDON::CInputStream> inputStream)
 : CDVDInputStream(DVDSTREAM_TYPE_ADDON, fileitem), m_addon(inputStream)
 {
-  m_hasDemux = false;
 }
 
 CInputStreamAddon::~CInputStreamAddon()

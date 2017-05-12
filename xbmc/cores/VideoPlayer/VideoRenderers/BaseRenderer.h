@@ -152,5 +152,5 @@ protected:
 
   // rendering flags
   unsigned m_iFlags;
-  ERenderFormat m_format;
+  ERenderFormat m_format = RENDER_FMT_NONE;
 };

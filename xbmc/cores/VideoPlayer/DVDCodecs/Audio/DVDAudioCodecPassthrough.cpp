@@ -37,6 +37,8 @@ CDVDAudioCodecPassthrough::CDVDAudioCodecPassthrough(CProcessInfo &processInfo, 
   CDVDAudioCodec(processInfo),
   m_buffer(NULL),
   m_bufferSize(0),
+  m_currentPts(DVD_NOPTS_VALUE),
+  m_nextPts(DVD_NOPTS_VALUE),
   m_trueHDoffset(0)
 {
   m_format.m_streamInfo.m_type = streamType;

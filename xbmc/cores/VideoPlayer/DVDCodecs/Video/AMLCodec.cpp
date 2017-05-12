@@ -1323,6 +1323,7 @@ int set_header_info(am_private_t *para)
 CAMLCodec::CAMLCodec()
   : m_opened(false)
   , m_ptsIs64us(false)
+  , m_speed(DVD_PLAYSPEED_NORMAL)
   , m_cur_pts(INT64_0)
   , m_last_pts(0)
   , m_bufferIndex(-1)
@@ -1370,7 +1371,7 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
   m_drain = false;
   m_cur_pts = INT64_0;
   m_dst_rect.SetRect(0, 0, 0, 0);
-  m_zoom = -1;
+  m_zoom = -1.0f;
   m_contrast = -1;
   m_brightness = -1;
   m_start_adj = 0;
