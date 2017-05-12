@@ -254,7 +254,7 @@ void CAlbum::MergeScrapedAlbum(const CAlbum& source, bool override /* = true */)
     {
       if (!song->strMusicBrainzTrackID.empty())
         for (VECSONGS::const_iterator sourceSong = source.infoSongs.begin(); sourceSong != source.infoSongs.end(); ++sourceSong)
-          if (sourceSong->strMusicBrainzTrackID == song->strMusicBrainzTrackID)
+          if ((sourceSong->strMusicBrainzTrackID == song->strMusicBrainzTrackID) && (sourceSong->iTrack == song->iTrack))
             song->MergeScrapedSong(*sourceSong, override);
     }
   }
