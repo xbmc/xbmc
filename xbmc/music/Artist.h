@@ -57,6 +57,7 @@ public:
   void Reset()
   {
     strArtist.clear();
+    strSortName.clear();
     genre.clear();
     strBiography.clear();
     styles.clear();
@@ -87,6 +88,7 @@ public:
   void SetDateAdded(const std::string& strDateAdded);
 
   std::string strArtist;
+  std::string strSortName;
   std::string strMusicBrainzArtistID;
   std::vector<std::string> genre;
   std::string strBiography;
@@ -111,10 +113,12 @@ class CArtistCredit
   friend class CMusicDatabase;
 
 public:
-  CArtistCredit() { }
+  CArtistCredit() : idArtist(-1) { }
   CArtistCredit(std::string strArtist) : m_strArtist(strArtist) { }
   CArtistCredit(std::string strArtist, std::string strMusicBrainzArtistID)
     : m_strArtist(strArtist), m_strMusicBrainzArtistID(strMusicBrainzArtistID) {  }
+  CArtistCredit(std::string strArtist, std::string strSortName, std::string strMusicBrainzArtistID)
+    : m_strArtist(strArtist), m_strSortName(strSortName), m_strMusicBrainzArtistID(strMusicBrainzArtistID) {  }
 
   bool operator<(const CArtistCredit& a) const
   {
@@ -131,15 +135,18 @@ public:
   }
 
   std::string GetArtist() const                { return m_strArtist; }
+  std::string GetSortName() const              { return m_strSortName; }
   std::string GetMusicBrainzArtistID() const   { return m_strMusicBrainzArtistID; }
   int         GetArtistId() const              { return idArtist; }
   void SetArtist(const std::string &strArtist) { m_strArtist = strArtist; }
+  void SetSortName(const std::string &strSortName) { m_strSortName = strSortName; }
   void SetMusicBrainzArtistID(const std::string &strMusicBrainzArtistID) { m_strMusicBrainzArtistID = strMusicBrainzArtistID; }
   void SetArtistId(int idArtist)               { this->idArtist = idArtist; }
 
 private:
   long idArtist;
   std::string m_strArtist;
+  std::string m_strSortName;
   std::string m_strMusicBrainzArtistID;
 };
 

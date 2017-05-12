@@ -101,6 +101,8 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
   SortAttribute sortAttribute = SortAttributeNone;
   if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING))
     sortAttribute = SortAttributeIgnoreArticle;
+  if (g_advancedSettings.m_musicUseArtistSortName)
+    sortAttribute = static_cast<SortAttribute>(sortAttribute | SortAttributeUseArtistSortName);
 
   switch (NodeType)
   {
@@ -333,7 +335,8 @@ CGUIViewStateMusicSmartPlaylist::CGUIViewStateMusicSmartPlaylist(const CFileItem
   SortAttribute sortAttribute = SortAttributeNone;
   if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING))
     sortAttribute = SortAttributeIgnoreArticle;
-
+  if (g_advancedSettings.m_musicUseArtistSortName)
+    sortAttribute = static_cast<SortAttribute>(sortAttribute | SortAttributeUseArtistSortName);
   const CViewState *viewState = CViewStateSettings::GetInstance().Get("musicnavsongs");
 
   if (items.GetContent() == "songs" || items.GetContent() == "mixed") 
@@ -414,7 +417,9 @@ CGUIViewStateMusicPlaylist::CGUIViewStateMusicPlaylist(const CFileItemList& item
   SortAttribute sortAttribute = SortAttributeNone;
   if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING))
     sortAttribute = SortAttributeIgnoreArticle;
- 
+  if (g_advancedSettings.m_musicUseArtistSortName)
+    sortAttribute = static_cast<SortAttribute>(sortAttribute | SortAttributeUseArtistSortName);
+
   std::string strTrack=CServiceBroker::GetSettings().GetString(CSettings::SETTING_MUSICFILES_TRACKFORMAT);
   AddSortMethod(SortByPlaylistOrder, 559, LABEL_MASKS(strTrack, "%D"));
   AddSortMethod(SortByTrackNumber, 554, LABEL_MASKS(strTrack, "%D"));  // Userdefined, Duration| empty, empty
@@ -445,6 +450,8 @@ CGUIViewStateWindowMusicNav::CGUIViewStateWindowMusicNav(const CFileItemList& it
   SortAttribute sortAttribute = SortAttributeNone;
   if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING))
     sortAttribute = SortAttributeIgnoreArticle;
+  if (g_advancedSettings.m_musicUseArtistSortName)
+    sortAttribute = static_cast<SortAttribute>(sortAttribute | SortAttributeUseArtistSortName);
 
   if (items.IsVirtualDirectoryRoot())
   {
