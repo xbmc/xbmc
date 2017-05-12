@@ -1448,8 +1448,8 @@ void CVideoPlayer::Process()
     }
 
     // always yield to players if they have data levels > 50 percent
-    if((m_VideoPlayerAudio->GetLevel() > 50 || m_CurrentAudio.id < 0)
-    && (m_VideoPlayerVideo->GetLevel() > 50 || m_CurrentVideo.id < 0))
+    if((m_VideoPlayerAudio->GetLevel() > 50 || m_CurrentAudio.id < 0) &&
+       (m_processInfo->GetLevelVQ() > 50 || m_CurrentVideo.id < 0))
       Sleep(0);
 
     DemuxPacket* pPacket = NULL;
@@ -1930,10 +1930,11 @@ void CVideoPlayer::HandlePlaySpeed()
         if (m_pInputStream->IsRealtime())
         {
           if ((m_CurrentAudio.id >= 0 && m_CurrentAudio.syncState == IDVDStreamPlayer::SYNC_INSYNC && m_VideoPlayerAudio->IsStalled()) ||
-              (m_CurrentVideo.id >= 0 && m_CurrentVideo.syncState == IDVDStreamPlayer::SYNC_INSYNC && m_VideoPlayerVideo->GetLevel() == 0))
+              (m_CurrentVideo.id >= 0 && m_CurrentVideo.syncState == IDVDStreamPlayer::SYNC_INSYNC &&
+               m_processInfo->GetLevelVQ() == 0))
           {
             CLog::Log(LOGDEBUG, "Stream stalled, start buffering. Audio: %d - Video: %d",
-                                 m_VideoPlayerAudio->GetLevel(),m_VideoPlayerVideo->GetLevel());
+                                 m_VideoPlayerAudio->GetLevel(), m_processInfo->GetLevelVQ());
             FlushBuffers(DVD_NOPTS_VALUE, true, true);
           }
         }
@@ -1941,7 +1942,7 @@ void CVideoPlayer::HandlePlaySpeed()
         {
           // start caching if audio and video have run dry
           if (m_VideoPlayerAudio->GetLevel() <= 50 &&
-              m_VideoPlayerVideo->GetLevel() <= 50)
+              m_processInfo->GetLevelVQ() <= 50)
           {
             SetCaching(CACHESTATE_FULL);
           }
@@ -4764,7 +4765,7 @@ int CVideoPlayer::GetCacheLevel() const
 double CVideoPlayer::GetQueueTime()
 {
   int a = m_VideoPlayerAudio->GetLevel();
-  int v = m_VideoPlayerVideo->GetLevel();
+  int v = m_processInfo->GetLevelVQ();
   return std::max(a, v) * 8000.0 / 100;
 }
 

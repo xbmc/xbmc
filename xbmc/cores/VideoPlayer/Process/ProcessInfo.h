@@ -22,6 +22,7 @@
 #include "cores/IPlayer.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFormats.h"
 #include "threads/CriticalSection.h"
+#include <atomic>
 #include <list>
 #include <string>
 
@@ -76,6 +77,9 @@ public:
   void SetStateSeeking(bool active);
   bool IsSeeking();
 
+  void SetLevelVQ(int level);
+  int GetLevelVQ();
+
 protected:
   CProcessInfo();
 
@@ -110,4 +114,5 @@ protected:
   // player states
   CCriticalSection m_stateSection;
   bool m_stateSeeking;
+  std::atomic_int m_levelVQ;
 };
