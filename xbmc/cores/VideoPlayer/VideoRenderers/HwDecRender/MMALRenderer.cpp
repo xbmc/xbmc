@@ -170,7 +170,7 @@ void CMMALPool::AlignedSize(AVCodecContext *avctx, uint32_t &width, uint32_t &he
   if (!avctx)
     return;
   int w = width, h = height;
-  AVFrame picture;
+  AVFrame *picture = av_frame_alloc();
   int unaligned;
   int stride_align[AV_NUM_DATA_POINTERS];
 
@@ -182,16 +182,17 @@ void CMMALPool::AlignedSize(AVCodecContext *avctx, uint32_t &width, uint32_t &he
   do {
     // NOTE: do not align linesizes individually, this breaks e.g. assumptions
     // that linesize[0] == 2*linesize[1] in the MPEG-encoder for 4:2:2
-    av_image_fill_linesizes(picture.linesize, avctx->pix_fmt, w);
+    av_image_fill_linesizes(picture->linesize, avctx->pix_fmt, w);
     // increase alignment of w for next try (rhs gives the lowest bit set in w)
     w += w & ~(w - 1);
 
     unaligned = 0;
     for (int i = 0; i < 4; i++)
-      unaligned |= picture.linesize[i] % stride_align[i];
+      unaligned |= picture->linesize[i] % stride_align[i];
   } while (unaligned);
   width = w;
   height = h;
+  av_frame_free(&picture);
 }
 
 CMMALBuffer *CMMALPool::GetBuffer(uint32_t timeout)

@@ -1929,16 +1929,11 @@ void CDVDDemuxFFmpeg::ParsePacket(AVPacket *pkt)
     st->codec->skip_loop_filter = AVDISCARD_ALL;
 
     // We are looking for an IDR frame
-    AVFrame picture;
-    memset(&picture, 0, sizeof(AVFrame));
-    picture.pts = picture.pkt_dts = picture.pkt_pts = picture.best_effort_timestamp = AV_NOPTS_VALUE;
-    picture.pkt_pos = -1;
-    picture.key_frame = 1;
-    picture.format = -1;
+    AVFrame *picture = av_frame_alloc();
 
     int got_picture = 0;
-    avcodec_decode_video2(st->codec, &picture, &got_picture, pkt);
-    av_frame_unref(&picture);
+    avcodec_decode_video2(st->codec, picture, &got_picture, pkt);
+    av_frame_free(&picture);
   }
 }
 
