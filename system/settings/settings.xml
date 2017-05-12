@@ -2676,6 +2676,13 @@
           </dependencies>
           <control type="button" format="action" />
         </setting>
+        <setting id="input.peripherallibraries" type="action" label="35047" help="35048">
+          <level>1</level>
+          <dependencies>
+            <dependency type="enable" on="property" name="HasPeripheralLibraries" />
+          </dependencies>
+          <control type="button" format="action" />
+        </setting>
       </group>
       <group id="2" label="14094">
         <setting id="input.enablemouse" type="boolean" label="21369" help="36377">

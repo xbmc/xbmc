@@ -16513,7 +16513,19 @@ msgctxt "#35020"
 msgid "Press all analog buttons now to detect them:[CR][CR]{0:s}"
 msgstr ""
 
-#empty strings from id 35021 to 35048
+#empty strings from id 35022 to 35046
+
+#. Name of setting to configure peripheral add-ons
+#: system/settings/settings.xml
+msgctxt "#35047"
+msgid "Driver settings"
+msgstr ""
+
+#. Description of setting with label #35047 "Driver settings"
+#: system/settings/settings.xml
+msgctxt "#35048"
+msgid "View and configure peripheral add-ons."
+msgstr ""
 
 #. Name of game add-ons category
 #: xbmc/addons/Addon.cpp

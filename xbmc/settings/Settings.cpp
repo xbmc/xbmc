@@ -373,6 +373,7 @@ const std::string CSettings::SETTING_AUDIOOUTPUT_TRUEHDPASSTHROUGH = "audiooutpu
 const std::string CSettings::SETTING_AUDIOOUTPUT_DTSHDPASSTHROUGH = "audiooutput.dtshdpassthrough";
 const std::string CSettings::SETTING_AUDIOOUTPUT_VOLUMESTEPS = "audiooutput.volumesteps";
 const std::string CSettings::SETTING_INPUT_PERIPHERALS = "input.peripherals";
+const std::string CSettings::SETTING_INPUT_PERIPHERALLIBRARIES = "input.peripherallibraries";
 const std::string CSettings::SETTING_INPUT_ENABLEMOUSE = "input.enablemouse";
 const std::string CSettings::SETTING_INPUT_ASKNEWCONTROLLERS = "input.asknewcontrollers";
 const std::string CSettings::SETTING_INPUT_CONTROLLERCONFIG = "input.controllerconfig";
@@ -1184,6 +1185,7 @@ void CSettings::InitializeISettingCallbacks()
 
   settingSet.clear();
   settingSet.insert(CSettings::SETTING_INPUT_PERIPHERALS);
+  settingSet.insert(CSettings::SETTING_INPUT_PERIPHERALLIBRARIES);
   settingSet.insert(CSettings::SETTING_INPUT_CONTROLLERCONFIG);
   settingSet.insert(CSettings::SETTING_INPUT_TESTRUMBLE);
   settingSet.insert(CSettings::SETTING_LOCALE_LANGUAGE);

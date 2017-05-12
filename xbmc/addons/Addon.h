@@ -187,6 +187,12 @@ public:
   void OnPreUnInstall() override {};
   void OnPostUnInstall() override {};
 
+  /*! \brief Utility function to get the default value of a given setting
+   \param setting The XML setting
+   \return The default value for the setting, or empty if no default / unknown
+   */
+  virtual std::string GetDefaultValue(const TiXmlElement *setting) const override;
+
 protected:
   /*! \brief Load the default settings and override these with any previously configured user settings
    \param bForce force the load of settings even if they are already loaded (reload)

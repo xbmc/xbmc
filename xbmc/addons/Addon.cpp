@@ -20,6 +20,7 @@
 
 #include "Addon.h"
 
+#include <algorithm>
 #include <string.h>
 #include <ostream>
 #include <utility>
@@ -29,6 +30,7 @@
 #include "addons/Service.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
+#include "guilib/LocalizeStrings.h"
 #include "RepositoryUpdater.h"
 #include "settings/Settings.h"
 #include "ServiceBroker.h"
@@ -39,6 +41,7 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
+#include "utils/XMLUtils.h"
 
 #ifdef HAS_PYTHON
 #include "interfaces/python/XBPython.h"
@@ -296,10 +299,10 @@ bool CAddon::SettingsFromXML(const CXBMCTinyXML &doc, bool loadDefaults /*=false
     while (setting)
     {
       const char *id = setting->Attribute("id");
-      const char *value = setting->Attribute(loadDefaults ? "default" : "value");
-      if (id && value)
+      std::string value = loadDefaults ? GetDefaultValue(setting) : XMLUtils::GetAttribute(setting, "value");
+      if (id && !value.empty())
       {
-        m_settings[id] = value;
+        m_settings[id] = std::move(value);
         foundSetting = true;
       }
       setting = setting->NextSiblingElement("setting");
@@ -307,6 +310,62 @@ bool CAddon::SettingsFromXML(const CXBMCTinyXML &doc, bool loadDefaults /*=false
     category = category->NextSiblingElement("category");
   }
   return foundSetting;
+}
+
+std::string CAddon::GetDefaultValue(const TiXmlElement *setting) const
+{
+  std::string strDefault = XMLUtils::GetAttribute(setting, "default");
+  if (strDefault.empty())
+  {
+    const std::string type = XMLUtils::GetAttribute(setting, "type");
+
+    if (type == "bool")
+      strDefault = "false";
+    else if (type == "slider" || type == "enum")
+      strDefault = "0";
+    else if (type == "labelenum")
+    {
+      std::string strValues = XMLUtils::GetAttribute(setting, "lvalues");
+      if (!strValues.empty())
+      {
+        // Tokenize
+        std::vector<std::string> vecValues;
+        StringUtils::Tokenize(strValues, vecValues, "|");
+
+        // Translate
+        std::transform(vecValues.begin(), vecValues.end(), vecValues.begin(),
+          [this](const std::string& strValue)
+          {
+            std::string translated = g_localizeStrings.GetAddonString(ID(), atoi(strValue.c_str()));
+            if (translated.empty())
+              translated = g_localizeStrings.Get(atoi(strValue.c_str()));
+            return translated;
+          });
+
+        // Sort
+        const bool bSort = XMLUtils::GetAttribute(setting, "sort") == "yes";
+        if (bSort)
+          std::sort(vecValues.begin(), vecValues.end(), sortstringbyname());
+
+        // Use first value
+        strDefault = vecValues[0];
+      }
+    }
+    else if (type == "select" && setting->Attribute("lvalues"))
+      strDefault = "0";
+    else if (type == "select")
+    {
+      std::string strValues = XMLUtils::GetAttribute(setting, "values");
+      if (!strValues.empty())
+      {
+        std::vector<std::string> vecValues;
+        StringUtils::Tokenize(strValues, vecValues, "|");
+        strDefault = vecValues[0];
+      }
+    }
+  }
+
+  return strDefault;
 }
 
 void CAddon::SettingsToXML(CXBMCTinyXML &doc) const

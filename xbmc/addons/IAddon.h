@@ -139,6 +139,7 @@ namespace ADDON
     virtual void OnPostInstall(bool update, bool modal) =0;
     virtual void OnPreUnInstall() =0;
     virtual void OnPostUnInstall() =0;
+    virtual std::string GetDefaultValue(const TiXmlElement *setting) const = 0;
   };
 };
 
