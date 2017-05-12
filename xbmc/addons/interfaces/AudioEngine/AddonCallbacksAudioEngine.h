@@ -202,7 +202,6 @@ public:
   static void AEStream_SetResampleRatio(void *AddonData, AEStreamHandle *StreamHandle, double Ratio);
 
 private:
-  ADDON::CAddon* m_addon; /*!< the addon */
   CB_AudioEngineLib   *m_callbacks; /*!< callback addresses */
 };
 

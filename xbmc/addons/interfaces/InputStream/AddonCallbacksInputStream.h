@@ -55,7 +55,6 @@ public:
   static void InputStreamFreeDemuxPacket(void* addonData, DemuxPacket* pPacket);
 
 private:
-  ADDON::CAddon* m_addon; /*!< the addon */
   CB_INPUTSTREAMLib* m_callbacks; /*!< callback addresses */
 };
 

@@ -84,7 +84,6 @@ private:
   CDVDStreamInfo   m_hints;
   int              m_speed;
   int64_t          m_cur_pts;
-  uint32_t         m_max_frame_size;
   int64_t          m_start_adj;
   int64_t          m_last_pts;
   uint32_t         m_bufferIndex;

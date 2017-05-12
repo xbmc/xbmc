@@ -44,13 +44,6 @@ namespace JOYSTICK
     virtual void OnAnalogKey(unsigned int keyId, float magnitude) override;
 
   private:
-    enum BUTTON_STATE
-    {
-      STATE_UNPRESSED,
-      STATE_BUTTON_PRESSED,
-      STATE_BUTTON_HELD,
-    };
-
     void ProcessButtonPress(unsigned int keyId, unsigned int holdTimeMs);
     void ProcessButtonRelease(unsigned int keyId);
     bool IsPressed(unsigned int keyId) const;

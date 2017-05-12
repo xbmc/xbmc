@@ -45,9 +45,9 @@ bool CAndroidMouse::onMouseEvent(AInputEvent* event)
   int32_t eventAction = AMotionEvent_getAction(event);
   int8_t mouseAction = eventAction & AMOTION_EVENT_ACTION_MASK;
   size_t mousePointerIdx = eventAction >> AMOTION_EVENT_ACTION_POINTER_INDEX_SHIFT;
-  int32_t mousePointerId = AMotionEvent_getPointerId(event, mousePointerIdx);
 
 #ifdef DEBUG_VERBOSE
+  int32_t mousePointerId = AMotionEvent_getPointerId(event, mousePointerIdx);
   CXBMCApp::android_printf("%s idx:%i, id:%i", __PRETTY_FUNCTION__, mousePointerIdx, mousePointerId);
 #endif
   float x = AMotionEvent_getX(event, mousePointerIdx);

@@ -35,8 +35,7 @@ namespace AudioEngine
 {
 
 CAddonCallbacksAudioEngine::CAddonCallbacksAudioEngine(CAddon* addon)
-  : m_addon(addon),
-    m_callbacks(new CB_AudioEngineLib)
+  : m_callbacks(new CB_AudioEngineLib)
 {
   // write KODI audio DSP specific add-on function addresses to callback table
   m_callbacks->MakeStream           = AudioEngine_MakeStream;
