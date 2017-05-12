@@ -152,7 +152,7 @@ bool CVideoPlayerVideo::OpenStream(CDVDStreamInfo hint)
     {
       CLog::Log(LOGINFO, "CVideoPlayerVideo::OpenStream - could not open video codec");
     }
-    m_messageQueue.Put(new CDVDMsgVideoCodecChange(hint, codec), 0);
+    SendMessage(new CDVDMsgVideoCodecChange(hint, codec), 0);
   }
   else
   {
@@ -167,6 +167,7 @@ bool CVideoPlayerVideo::OpenStream(CDVDStreamInfo hint)
     OpenStream(hint, codec);
     CLog::Log(LOGNOTICE, "Creating video thread");
     m_messageQueue.Init();
+    m_processInfo.SetLevelVQ(0);
     Create();
   }
   return true;
@@ -233,7 +234,7 @@ void CVideoPlayerVideo::OpenStream(CDVDStreamInfo &hint, CDVDVideoCodec* codec)
     }
   }
   m_pVideoCodec = codec;
-  m_hints   = hint;
+  m_hints = hint;
   m_stalled = m_messageQueue.GetPacketCount(CDVDMsg::DEMUXER_PACKET) == 0;
   m_rewindStalled = false;
   m_packets.clear();
@@ -245,7 +246,7 @@ void CVideoPlayerVideo::CloseStream(bool bWaitForBuffers)
   // wait until buffers are empty
   if (bWaitForBuffers && m_speed > 0)
   {
-    m_messageQueue.Put(new CDVDMsg(CDVDMsg::VIDEO_DRAIN), 0);
+    SendMessage(new CDVDMsg(CDVDMsg::VIDEO_DRAIN), 0);
     m_messageQueue.WaitUntilEmpty();
   }
 
@@ -277,6 +278,41 @@ bool CVideoPlayerVideo::AcceptsData() const
 {
   bool full = m_messageQueue.IsFull();
   return !full;
+}
+
+bool CVideoPlayerVideo::HasData() const
+{
+  return m_messageQueue.GetDataSize() > 0;
+}
+
+bool CVideoPlayerVideo::IsInited() const
+{
+  return m_messageQueue.IsInited();
+}
+
+inline void CVideoPlayerVideo::SendMessage(CDVDMsg* pMsg, int priority)
+{
+  m_messageQueue.Put(pMsg, priority);
+  m_processInfo.SetLevelVQ(m_messageQueue.GetLevel());
+}
+
+inline void CVideoPlayerVideo::SendMessageBack(CDVDMsg* pMsg, int priority)
+{
+  m_messageQueue.PutBack(pMsg, priority);
+  m_processInfo.SetLevelVQ(m_messageQueue.GetLevel());
+}
+
+inline void CVideoPlayerVideo::FlushMessages()
+{
+  m_messageQueue.Flush();
+  m_processInfo.SetLevelVQ(m_messageQueue.GetLevel());
+}
+
+inline MsgQueueReturnCode CVideoPlayerVideo::GetMessage(CDVDMsg** pMsg, unsigned int iTimeoutInMilliSeconds, int &priority)
+{
+  MsgQueueReturnCode ret = m_messageQueue.Get(pMsg, iTimeoutInMilliSeconds, priority);
+  m_processInfo.SetLevelVQ(m_messageQueue.GetLevel());
+  return ret;
 }
 
 void CVideoPlayerVideo::Process()
@@ -315,7 +351,7 @@ void CVideoPlayerVideo::Process()
     }
 
     CDVDMsg* pMsg;
-    MsgQueueReturnCode ret = m_messageQueue.Get(&pMsg, iQueueTimeOut, iPriority);
+    MsgQueueReturnCode ret = GetMessage(&pMsg, iQueueTimeOut, iPriority);
 
     onlyPrioMsgs = false;
 
@@ -369,7 +405,7 @@ void CVideoPlayerVideo::Process()
         CLog::Log(LOGDEBUG, "CVideoPlayerVideo - CDVDMsg::GENERAL_SYNCHRONIZE");
       }
       else
-        m_messageQueue.Put(pMsg->Acquire(), 1); /* push back as prio message, to process other prio messages */
+        SendMessage(pMsg->Acquire(), 1); /* push back as prio message, to process other prio messages */
       m_droppingStats.Reset();
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_RESYNC))
@@ -528,7 +564,7 @@ void CVideoPlayerVideo::Process()
       }
       else
       {
-        m_messageQueue.PutBack(pMsg->Acquire());
+        SendMessageBack(pMsg->Acquire());
         onlyPrioMsgs = true;
       }
     }
@@ -556,7 +592,7 @@ bool CVideoPlayerVideo::ProcessDecoderOutput(double &frametime, double &pts)
       CDVDMsgDemuxerPacket* msg = (CDVDMsgDemuxerPacket*)m_packets.front().message->Acquire();
       m_packets.pop_front();
 
-      m_messageQueue.Put(msg, 10);
+      SendMessage(msg, 10);
     }
 
     m_pVideoCodec->Reset();
@@ -572,7 +608,7 @@ bool CVideoPlayerVideo::ProcessDecoderOutput(double &frametime, double &pts)
     {
       CDVDMsgDemuxerPacket* msg = (CDVDMsgDemuxerPacket*)m_packets.front().message->Acquire();
       m_packets.pop_front();
-      m_messageQueue.Put(msg, 10);
+      SendMessage(msg, 10);
     }
 
     m_pVideoCodec->Reopen();
@@ -672,7 +708,7 @@ void CVideoPlayerVideo::OnExit()
 void CVideoPlayerVideo::SetSpeed(int speed)
 {
   if(m_messageQueue.IsInited())
-    m_messageQueue.Put( new CDVDMsgInt(CDVDMsg::PLAYER_SETSPEED, speed), 1 );
+    SendMessage(new CDVDMsgInt(CDVDMsg::PLAYER_SETSPEED, speed), 1);
   else
     m_speed = speed;
 }
@@ -682,8 +718,8 @@ void CVideoPlayerVideo::Flush(bool sync)
   /* flush using message as this get's called from VideoPlayer thread */
   /* and any demux packet that has been taken out of queue need to */
   /* be disposed of before we flush */
-  m_messageQueue.Flush();
-  m_messageQueue.Put(new CDVDMsgBool(CDVDMsg::GENERAL_FLUSH, sync), 1);
+  FlushMessages();
+  SendMessage(new CDVDMsgBool(CDVDMsg::GENERAL_FLUSH, sync), 1);
   m_bAbortOutput = true;
 }
 
@@ -917,7 +953,7 @@ int CVideoPlayerVideo::OutputPicture(const VideoPicture* src, double pts)
 std::string CVideoPlayerVideo::GetPlayerInfo()
 {
   std::ostringstream s;
-  s << "vq:"   << std::setw(2) << std::min(99,GetLevel()) << "%";
+  s << "vq:"   << std::setw(2) << std::min(99, m_processInfo.GetLevelVQ()) << "%";
   s << ", Mb/s:" << std::fixed << std::setprecision(2) << (double)GetVideoBitrate() / (1024.0*1024.0);
   s << ", fr:"     << std::fixed << std::setprecision(3) << m_fFrameRate;
   s << ", drop:" << m_iDroppedFrames;
