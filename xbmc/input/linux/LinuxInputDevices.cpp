@@ -293,6 +293,7 @@ typedef enum
   LI_CAPS_KEYS    = 1,
   LI_CAPS_BUTTONS = 2,
   LI_CAPS_AXES    = 4,
+  LI_CAPS_ABS     = 8
 } LinuxInputCapsType;
 
 static char remoteStatus = 0xFF; // paired, battery OK
@@ -491,6 +492,23 @@ bool CLinuxInputDevice::KeyEvent(const struct input_event& levt, XBMC_Event& dev
     /* ignore repeat events for buttons */
     if (levt.value == 2)
       return false;
+
+    /* touch devices tend to send the key event before the coordinates, so we
+       cannot rely on m_mouseX and m_mouseY already having the correct values */
+    if (m_deviceCaps & LI_CAPS_ABS)
+    {
+      struct input_absinfo absinfo;
+
+      if (ioctl(m_fd, EVIOCGABS(ABS_X), &absinfo) == 0)
+      {
+        m_mouseX = absinfo.value;
+      }
+
+      if (ioctl(m_fd, EVIOCGABS(ABS_Y), &absinfo) == 0)
+      {
+        m_mouseY = absinfo.value;
+      }
+    }
 
     devt.type = levt.value ? XBMC_MOUSEBUTTONDOWN : XBMC_MOUSEBUTTONUP;
     devt.button.state = levt.value ? XBMC_PRESSED : XBMC_RELEASED;
@@ -1049,6 +1067,12 @@ void CLinuxInputDevice::GetInfo(int fd)
   {
     m_deviceCaps |= LI_CAPS_AXES;
     m_deviceMaxAxis = std::max(num_rels, num_abs) - 1;
+  }
+
+  /* Absolute X,Y coordinates */
+  if (num_abs >= 2 && num_rels == 0)
+  {
+    m_deviceCaps |= LI_CAPS_ABS;
   }
 
   /* Decide which primary input device to be. */
