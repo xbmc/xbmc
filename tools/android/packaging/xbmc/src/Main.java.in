@@ -17,6 +17,7 @@ import android.view.View;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.os.Handler;
+import android.widget.RelativeLayout;
 
 import @APP_PACKAGE@.channels.util.TvUtil;
 
@@ -25,11 +26,13 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
   private static final String TAG = "@APP_NAME@";
 
   public static Main MainActivity = null;
+  public XBMCMainView mMainView = null;
 
   private XBMCSettingsContentObserver mSettingsContentObserver;
   private XBMCInputDeviceListener mInputDeviceListener;
   private XBMCJsonRPC mJsonRPC = null;
-  private View thisView = null;
+  private View mDecorView = null;
+  private RelativeLayout mVideoLayout = null;
   private Handler handler = new Handler();
   private Intent mNewIntent = null;
   private int mNewIntentDelay = 0;
@@ -75,8 +78,8 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
 
     try
     {
-      ret.right = thisView.getRootView().getWidth();
-      ret.bottom = thisView.getRootView().getHeight();
+      ret.right = mDecorView.getRootView().getWidth();
+      ret.bottom = mDecorView.getRootView().getHeight();
     }
     catch (Exception e)
     {
@@ -103,7 +106,6 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
     System.loadLibrary("@APP_NAME_LC@");
 
     super.onCreate(savedInstanceState);
-    getWindow().setFormat(PixelFormat.TRANSPARENT);
 
     setContentView(R.layout.activity_main);
     setVolumeControlStream(AudioManager.STREAM_MUSIC);
@@ -137,8 +139,18 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
     InputManager manager = (InputManager) getSystemService(INPUT_SERVICE);
     manager.registerInputDeviceListener(mInputDeviceListener, handler);
 
-    thisView = getWindow().getDecorView();
-    thisView.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener()
+    mDecorView = getWindow().getDecorView();
+    mDecorView.setBackground(null);
+    getWindow().takeSurface(null);
+    setContentView(R.layout.activity_main);
+    mVideoLayout = (RelativeLayout) findViewById(R.id.VideoLayout);
+
+    mMainView = new XBMCMainView(this);
+    RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+    mMainView.setElevation(1);  // Always on Top
+    mVideoLayout.addView(mMainView, layoutParams);
+
+    mDecorView.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener()
     {
       @Override
       public void onSystemUiVisibilityChange(int visibility)
@@ -156,7 +168,7 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
                 // Constants from API > 17
                 final int API_SYSTEM_UI_FLAG_IMMERSIVE_STICKY = 0x00001000;
 
-                thisView.setSystemUiVisibility(
+                mDecorView.setSystemUiVisibility(
                         View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                                 | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
@@ -184,7 +196,6 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
   public void onStart()
   {
     super.onStart();
-    getWindow().setFormat(PixelFormat.TRANSPARENT);
 
     Choreographer.getInstance().removeFrameCallback(this);
     Choreographer.getInstance().postFrameCallback(this);
@@ -202,7 +213,7 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
       // Constants from API > 17
       final int API_SYSTEM_UI_FLAG_IMMERSIVE_STICKY = 0x00001000;
 
-      thisView.setSystemUiVisibility(
+      mDecorView.setSystemUiVisibility(
               View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                       | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                       | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN

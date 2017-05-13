@@ -1,0 +1,77 @@
+package @APP_PACKAGE@;
+
+import android.content.Context;
+import android.graphics.PixelFormat;
+import android.util.AttributeSet;
+import android.util.Log;
+import android.view.SurfaceView;
+import android.view.SurfaceHolder;
+
+/**
+ * Created by cbro on 5/13/17.
+ */
+
+public class XBMCMainView extends SurfaceView implements SurfaceHolder.Callback
+{
+  native void _attach();
+  native void _surfaceChanged(SurfaceHolder holder, int format, int width, int height);
+  native void _surfaceCreated(SurfaceHolder holder);
+  native void _surfaceDestroyed(SurfaceHolder holder);
+
+  private static final String TAG = "XBMCMainView";
+
+  public boolean mIsCreated = false;
+
+  public XBMCMainView(Context context)
+  {
+    super(context);
+    setZOrderOnTop(true);
+    getHolder().addCallback(this);
+    getHolder().setFormat(PixelFormat.TRANSLUCENT);
+
+    Log.d(TAG, "Created");
+}
+
+  public XBMCMainView(Context context, AttributeSet attrs, int defStyle)
+  {
+    super(context, attrs, defStyle);
+    setZOrderOnTop(true);
+    getHolder().addCallback(this);
+    getHolder().setFormat(PixelFormat.TRANSLUCENT);
+
+    Log.d(TAG, "Created");
+  }
+
+  public XBMCMainView(Context context, AttributeSet attrs)
+  {
+    this(context, attrs, 0);
+  }
+
+  @Override
+  public void surfaceCreated(SurfaceHolder holder)
+  {
+    Log.d(TAG, "Surface Created");
+    mIsCreated = true;
+    _attach();
+    _surfaceCreated(holder);
+  }
+
+  @Override
+  public void surfaceChanged(SurfaceHolder holder, int format, int width,
+                             int height)
+  {
+    if (holder != getHolder())
+      return;
+
+    Log.d(TAG, "Surface Changed, format:" + format + ", width:" + width + ", height:" + height);
+    _surfaceChanged(holder, format, width, height);
+  }
+
+  @Override
+  public void surfaceDestroyed(SurfaceHolder holder)
+  {
+    Log.d(TAG, "Surface Destroyed");
+    mIsCreated = false;
+    _surfaceDestroyed(holder);
+  }
+}
