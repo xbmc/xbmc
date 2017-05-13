@@ -8,6 +8,7 @@
   </requires>
   <extension point="xbmc.metadata.scraper.library"
              library="tmdb.xml"/>
+  <extension point="xbmc.python.module" library="lib" />
   <extension point="xbmc.addon.metadata">
     <platform>all</platform>
     <summary lang="bg">Библиотека за сваляне на инф. от TMDb</summary>
