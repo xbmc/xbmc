@@ -2525,7 +2525,7 @@ void CVideoPlayer::HandleMessages()
       {
         double now = m_clock.GetAbsoluteClock();
         if (m_playSpeed == DVD_PLAYSPEED_NORMAL &&
-            DVD_TIME_TO_MSEC(now - m_State.lastSeek) < 2000 &&
+            (now - m_State.lastSeek)/1000 < 2000 &&
             !msg.GetAccurate())
         {
           m_processInfo->SetStateSeeking(false);
@@ -2544,7 +2544,7 @@ void CVideoPlayer::HandleMessages()
 
       double time = msg.GetTime();
       if (msg.GetRelative())
-        time = (m_clock.GetClock() + m_State.time_offset) / 1000 + time;
+        time = (m_clock.GetClock() + m_State.time_offset) / 1000l + time;
 
       time = msg.GetRestore() ? static_cast<double>(m_Edl.RestoreCutTime(static_cast<int>(time))) : time;
 
@@ -2555,7 +2555,7 @@ void CVideoPlayer::HandleMessages()
       //! of the desired segment. With the current approach calculated time may point
       //! to nirvana
       if (m_pInputStream->GetIPosTime() == nullptr)
-        time -= DVD_TIME_TO_MSEC(m_State.time_offset);
+        time -= m_State.time_offset/1000;
 
       CLog::Log(LOGDEBUG, "demuxer seek to: %f", time);
       if (m_pDemuxer && m_pDemuxer->SeekTime(time, msg.GetBackward(), &start))
