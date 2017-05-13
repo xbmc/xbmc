@@ -2133,6 +2133,14 @@
     "params": [ ],
     "returns":  "string"
   },
+  "PVR.SearchMissingChannelIcons": {
+    "type": "method",
+    "description": "Search for missing channel icons",
+    "transport": "Response",
+    "permission": "ControlPVR",
+    "params": [ ],
+    "returns":  "string"
+  },
   "Textures.GetTextures": {
     "type": "method",
     "description": "Retrieve all textures",

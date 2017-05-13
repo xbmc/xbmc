@@ -245,6 +245,17 @@ JSONRPC_STATUS CPVROperations::Scan(const std::string &method, ITransportLayer *
   return ACK;
 }
 
+JSONRPC_STATUS CPVROperations::SearchMissingChannelIcons(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  if (!g_PVRManager.IsStarted())
+    return FailedToExecute;
+
+  else
+    g_PVRManager.SearchMissingChannelIcons();
+
+  return ACK;
+}
+
 JSONRPC_STATUS CPVROperations::GetPropertyValue(const std::string &property, CVariant &result)
 {
   bool started = CServiceBroker::GetPVRManager().IsStarted();

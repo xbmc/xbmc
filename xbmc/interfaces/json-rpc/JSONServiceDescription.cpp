@@ -189,6 +189,7 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "PVR.ToggleTimer",                              CPVROperations::ToggleTimer },
   { "PVR.Record",                                   CPVROperations::Record },
   { "PVR.Scan",                                     CPVROperations::Scan },
+  { "PVR.SearchMissingChannelIcons",                CPVROperations::SearchMissingChannelIcons },
 
 // Profiles operations
   { "Profiles.GetProfiles",                         CProfilesOperations::GetProfiles},
