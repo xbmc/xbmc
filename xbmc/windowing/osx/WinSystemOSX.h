@@ -73,7 +73,6 @@ public:
   
   virtual int GetNumScreens();
   virtual int GetCurrentScreen();
-  virtual double GetCurrentRefreshrate() { return m_refreshRate; }
 
   virtual std::unique_ptr<CVideoSync> GetVideoSync(void *clock) override;
   
