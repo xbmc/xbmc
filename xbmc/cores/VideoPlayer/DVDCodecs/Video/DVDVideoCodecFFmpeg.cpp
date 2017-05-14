@@ -1162,11 +1162,7 @@ IHardwareDecoder* CDVDVideoCodecFFmpeg::GetHWAccel()
 }
 
 //------------------------------------------------------------------------------
-// The current way of handling build targets is way too complicated.
-// It's basically a long mess of combining options, which needs revisiting
-// This factory is temporary in its current state. That means certain
-// cmake options to remove certain decoders in certain combinations won't work
-// until the build system is revisited.
+// temporary
 //------------------------------------------------------------------------------
 
 #ifdef HAS_DX
@@ -1180,11 +1176,14 @@ IHardwareDecoder* CDVDVideoCodecFFmpeg::CreateVideoDecoderHW(AVPixelFormat pixfm
 }
 #endif
 
-// Linux X11 - Currently works only if both
-// VAAPI and VDPAU dependencies are available
-#if defined(HAVE_LIBVA) && defined(HAVE_LIBVDPAU)
+// Linux X11
+#if defined(HAVE_LIBVA) || defined(HAVE_LIBVDPAU)
+#if defined(HAVE_LIBVA)
 #include "VAAPI.h"
+#endif
+#if defined(HAVE_LIBVDPAU)
 #include "VDPAU.h"
+#endif
 
 #define VP_VIDEOCODEC_HW
 IHardwareDecoder* CDVDVideoCodecFFmpeg::CreateVideoDecoderHW(AVPixelFormat pixfmt, CProcessInfo &processInfo)
