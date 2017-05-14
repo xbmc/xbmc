@@ -34,50 +34,50 @@ public:
 
   CExternalPlayer(IPlayerCallback& callback);
   virtual ~CExternalPlayer();
-  virtual bool Initialize(TiXmlElement* pConfig);
-  virtual bool OpenFile(const CFileItem& file, const CPlayerOptions &options);
-  virtual bool CloseFile(bool reopen = false);
-  virtual bool IsPlaying() const;
+  virtual bool Initialize(TiXmlElement* pConfig) override;
+  virtual bool OpenFile(const CFileItem& file, const CPlayerOptions &options) override;
+  virtual bool CloseFile(bool reopen = false) override;
+  virtual bool IsPlaying() const override;
   virtual void Pause() override;
-  virtual bool HasVideo() const;
-  virtual bool HasAudio() const;
-  virtual bool CanSeek();
-  virtual void Seek(bool bPlus, bool bLargeStep, bool bChapterOverride);
-  virtual void SeekPercentage(float iPercent);
-  virtual float GetPercentage();
-  virtual void SetVolume(float volume) {}
-  virtual void SetDynamicRangeCompression(long drc) {}
-  virtual bool CanRecord() { return false; }
-  virtual bool IsRecording() { return false; }
-  virtual bool Record(bool bOnOff) { return false; }
-  virtual void SetAVDelay(float fValue = 0.0f);
-  virtual float GetAVDelay();
+  virtual bool HasVideo() const override;
+  virtual bool HasAudio() const override;
+  virtual bool CanSeek() override;
+  virtual void Seek(bool bPlus, bool bLargeStep, bool bChapterOverride) override;
+  virtual void SeekPercentage(float iPercent) override;
+  virtual float GetPercentage() override;
+  virtual void SetVolume(float volume) override {}
+  virtual void SetDynamicRangeCompression(long drc) override {}
+  virtual bool CanRecord() override { return false; }
+  virtual bool IsRecording() override { return false; }
+  virtual bool Record(bool bOnOff) override { return false; }
+  virtual void SetAVDelay(float fValue = 0.0f) override;
+  virtual float GetAVDelay() override;
 
-  virtual void SetSubTitleDelay(float fValue = 0.0f);
-  virtual float GetSubTitleDelay();
+  virtual void SetSubTitleDelay(float fValue = 0.0f) override;
+  virtual float GetSubTitleDelay() override;
 
-  virtual void SeekTime(int64_t iTime);
-  virtual int64_t GetTime();
-  virtual int64_t GetTotalTime();
+  virtual void SeekTime(int64_t iTime) override;
+  virtual int64_t GetTime() override;
+  virtual int64_t GetTotalTime() override;
   virtual void SetSpeed(float iSpeed) override;
   virtual float GetSpeed() override;
-  virtual void DoAudioWork() {};
+  virtual void DoAudioWork() override {}
   
-  virtual std::string GetPlayerState();
-  virtual bool SetPlayerState(const std::string& state);
+  virtual std::string GetPlayerState() override;
+  virtual bool SetPlayerState(const std::string& state) override;
   
 #if defined(TARGET_WINDOWS)
-  virtual BOOL ExecuteAppW32(const char* strPath, const char* strSwitches);
+  BOOL ExecuteAppW32(const char* strPath, const char* strSwitches);
   //static void CALLBACK AppFinished(void* closure, BOOLEAN TimerOrWaitFired);
 #elif defined(TARGET_ANDROID)
-  virtual BOOL ExecuteAppAndroid(const char* strSwitches,const char* strPath);
+  BOOL ExecuteAppAndroid(const char* strSwitches,const char* strPath);
 #elif defined(TARGET_POSIX)
-  virtual BOOL ExecuteAppLinux(const char* strSwitches);
+  BOOL ExecuteAppLinux(const char* strSwitches);
 #endif
 
 private:
   void GetCustomRegexpReplacers(TiXmlElement *pRootElement, std::vector<std::string>& settings);
-  virtual void Process();
+  virtual void Process() override;
 
   bool m_bAbortRequest;
   bool m_bIsPlaying;
