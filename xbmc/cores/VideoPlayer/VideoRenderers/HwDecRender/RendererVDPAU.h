@@ -42,18 +42,18 @@ public:
   bool NeedBuffer(int idx) override;
 
   // Feature support
-  virtual bool Supports(ERENDERFEATURE feature);
-  virtual bool Supports(ESCALINGMETHOD method);
+  virtual bool Supports(ERENDERFEATURE feature) override;
+  virtual bool Supports(ESCALINGMETHOD method) override;
 
 protected:
-  virtual bool LoadShadersHook();
-  virtual bool RenderHook(int idx);
+  virtual bool LoadShadersHook() override;
+  virtual bool RenderHook(int idx) override;
   virtual void AfterRenderHook(int idx) override;
 
   // textures
   virtual bool UploadTexture(int index) override;
-  virtual void DeleteTexture(int index);
-  virtual bool CreateTexture(int index);
+  virtual void DeleteTexture(int index) override;
+  virtual bool CreateTexture(int index) override;
 
   bool CreateVDPAUTexture(int index);
   void DeleteVDPAUTexture(int index);

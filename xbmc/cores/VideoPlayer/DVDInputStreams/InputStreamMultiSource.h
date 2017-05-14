@@ -37,9 +37,9 @@ public:
 
   virtual void Abort() override;
   virtual void Close() override;
-  virtual BitstreamStats GetBitstreamStats() const ;
-  virtual int GetBlockSize();
-  virtual bool GetCacheStatus(XFILE::SCacheStatus *status);
+  virtual BitstreamStats GetBitstreamStats() const override;
+  virtual int GetBlockSize() override;
+  virtual bool GetCacheStatus(XFILE::SCacheStatus *status) override;
   int64_t GetLength() override;
   virtual bool IsEOF() override;
   virtual CDVDInputStream::ENextStream NextStream() override;
