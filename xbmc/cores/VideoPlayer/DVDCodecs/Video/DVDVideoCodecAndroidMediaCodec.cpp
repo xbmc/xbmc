@@ -635,10 +635,14 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
 
     CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open Testing codex:%s", m_codecname.c_str());
 
-    if (needSecureDecoder && m_codecname.find(".secure")==std::string::npos)
-      m_codecname += ".secure";
-    else if (!needSecureDecoder && m_codecname.find(".secure") != std::string::npos)
-     continue;
+    bool codecIsSecure(m_codecname.find(".secure") != std::string::npos);
+    if (needSecureDecoder)
+    {
+      if (!codecIsSecure)
+        m_codecname += ".secure";
+    }
+    else if (codecIsSecure)
+      continue;
 
     CJNIMediaCodecInfoCodecCapabilities codec_caps = codec_info.getCapabilitiesForType(m_mime);
     if (xbmc_jnienv()->ExceptionCheck())
