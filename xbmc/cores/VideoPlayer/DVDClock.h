@@ -21,7 +21,6 @@
  */
 
 #include "threads/CriticalSection.h"
-#include "TimingConstants.h"
 
 #include <memory>
 #include <stdint.h>

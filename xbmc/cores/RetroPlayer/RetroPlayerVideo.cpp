@@ -29,6 +29,7 @@
 #include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "cores/VideoPlayer/DVDStreamInfo.h"
+#include "cores/VideoPlayer/TimingConstants.h"
 #include "utils/log.h"
 
 #include <atomic> //! @todo

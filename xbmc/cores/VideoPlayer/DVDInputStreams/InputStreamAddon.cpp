@@ -19,6 +19,7 @@
  */
 
 #include "InputStreamAddon.h"
+#include "TimingConstants.h"
 #include "addons/InputStream.h"
 #include "cores/VideoPlayer/DVDClock.h"
 

@@ -32,6 +32,7 @@
 #include "DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
 #include "DVDDemuxers/DVDDemux.h"
 #include "DVDDemuxers/DVDDemuxPacket.h"
+#include "TimingConstants.h"
 #include "guilib/GraphicContext.h"
 #include <sstream>
 #include <iomanip>

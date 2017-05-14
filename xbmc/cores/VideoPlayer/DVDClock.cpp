@@ -19,6 +19,7 @@
  */
 
 #include "DVDClock.h"
+#include "TimingConstants.h"
 #include "VideoReferenceClock.h"
 #include <math.h>
 #include "utils/MathUtils.h"
