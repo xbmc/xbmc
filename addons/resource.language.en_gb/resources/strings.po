@@ -5470,7 +5470,7 @@ msgstr ""
 #: xbmc/video/dialogs/GUIDialogAudioSubtitleSettings.cpp
 #: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#12377"
-msgid "This will reset any previously saved values. Are you sure?"
+msgid "This will save selected values as default for all media.[CR]Changing the 'View mode' or 'Pixel ratio' can have undesired effect on some files aspect ratio on playback.[CR]Would you like to proceed?"
 msgstr ""
 
 #: system/settings/settings.xml
