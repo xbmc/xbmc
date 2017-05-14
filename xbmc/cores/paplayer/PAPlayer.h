@@ -44,8 +44,6 @@ public:
   PAPlayer(IPlayerCallback& callback);
   virtual ~PAPlayer();
 
-  virtual void RegisterAudioCallback(IAudioCallback* pCallback);
-  virtual void UnRegisterAudioCallback();
   virtual bool OpenFile(const CFileItem& file, const CPlayerOptions &options);
   virtual bool QueueNextFile(const CFileItem &file);
   virtual void OnNothingToQueueNotify();
@@ -60,8 +58,6 @@ public:
   virtual float GetPercentage();
   virtual void SetVolume(float volume);
   virtual void SetDynamicRangeCompression(long drc);
-  virtual void GetAudioInfo( std::string& strAudioInfo) {}
-  virtual void GetVideoInfo( std::string& strVideoInfo) {}
   virtual void SetSpeed(float speed = 0) override;
   virtual float GetSpeed() override;
   virtual int GetCacheLevel() const;
