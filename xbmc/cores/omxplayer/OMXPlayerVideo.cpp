@@ -134,13 +134,14 @@ bool OMXPlayerVideo::OpenStream(CDVDStreamInfo hints)
   }
 
   if(m_messageQueue.IsInited())
-    m_messageQueue.Put(new COMXMsgVideoCodecChange(hints, NULL), 0);
+    SendMessage(new COMXMsgVideoCodecChange(hints, NULL), 0);
   else
   {
     if(!OpenStream(hints, NULL))
       return false;
     CLog::Log(LOGNOTICE, "Creating video thread");
     m_messageQueue.Init();
+    m_processInfo.SetLevelVQ(0);
     Create();
   }
 
@@ -317,6 +318,47 @@ void OMXPlayerVideo::Output(double pts, bool bDropPacket)
   m_renderManager.FlipPage(m_bAbortOutput, time/DVD_TIME_BASE, EINTERLACEMETHOD::VS_INTERLACEMETHOD_NONE, FS_NONE, false);
 }
 
+bool OMXPlayerVideo::AcceptsData() const
+{
+  bool full = m_messageQueue.IsFull();
+  return !full;
+}
+
+bool OMXPlayerVideo::HasData() const
+{
+  return m_messageQueue.GetDataSize() > 0;
+}
+
+bool OMXPlayerVideo::IsInited() const
+{
+  return m_messageQueue.IsInited();
+}
+
+inline void OMXPlayerVideo::SendMessage(CDVDMsg* pMsg, int priority)
+{
+  m_messageQueue.Put(pMsg, priority);
+  m_processInfo.SetLevelVQ(m_messageQueue.GetLevel());
+}
+
+inline void OMXPlayerVideo::SendMessageBack(CDVDMsg* pMsg, int priority)
+{
+  m_messageQueue.PutBack(pMsg, priority);
+  m_processInfo.SetLevelVQ(m_messageQueue.GetLevel());
+}
+
+inline void OMXPlayerVideo::FlushMessages()
+{
+  m_messageQueue.Flush();
+  m_processInfo.SetLevelVQ(m_messageQueue.GetLevel());
+}
+
+inline MsgQueueReturnCode OMXPlayerVideo::GetMessage(CDVDMsg** pMsg, unsigned int iTimeoutInMilliSeconds, int &priority)
+{
+  MsgQueueReturnCode ret = m_messageQueue.Get(pMsg, iTimeoutInMilliSeconds, priority);
+  m_processInfo.SetLevelVQ(m_messageQueue.GetLevel());
+  return ret;
+}
+
 void OMXPlayerVideo::Process()
 {
   double frametime = (double)DVD_TIME_BASE / m_fFrameRate;
@@ -334,7 +376,7 @@ void OMXPlayerVideo::Process()
       iPriority = 1;
 
     CDVDMsg* pMsg;
-    MsgQueueReturnCode ret = m_messageQueue.Get(&pMsg, iQueueTimeOut, iPriority);
+    MsgQueueReturnCode ret = GetMessage(&pMsg, iQueueTimeOut, iPriority);
 
     if (MSGQ_IS_ERROR(ret) || ret == MSGQ_ABORT)
     {
@@ -354,7 +396,7 @@ void OMXPlayerVideo::Process()
 
       }
       else
-        m_messageQueue.Put(pMsg->Acquire(), 1); /* push back as prio message, to process other prio messages */
+        SendMessage(pMsg->Acquire(), 1); /* push back as prio message, to process other prio messages */
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_RESYNC))
     {
@@ -502,9 +544,8 @@ bool OMXPlayerVideo::StepFrame()
 void OMXPlayerVideo::Flush(bool sync)
 {
   m_flush = true;
-  m_messageQueue.Flush();
-  m_messageQueue.Flush(CDVDMsg::GENERAL_EOF);
-  m_messageQueue.Put(new CDVDMsgBool(CDVDMsg::GENERAL_FLUSH, sync), 1);
+  FlushMessages();
+  SendMessage(new CDVDMsgBool(CDVDMsg::GENERAL_FLUSH, sync), 1);
   m_bAbortOutput = true;
 }
 
@@ -575,7 +616,7 @@ bool OMXPlayerVideo::IsEOS()
 void OMXPlayerVideo::SetSpeed(int speed)
 {
   if(m_messageQueue.IsInited())
-    m_messageQueue.Put( new CDVDMsgInt(CDVDMsg::PLAYER_SETSPEED, speed), 1 );
+        ( new CDVDMsgInt(CDVDMsg::PLAYER_SETSPEED, speed), 1 );
   else
     m_speed = speed;
 }
@@ -585,7 +626,7 @@ std::string OMXPlayerVideo::GetPlayerInfo()
   double match = 0.0f, phase = 0.0f, pll = 0.0f;
   std::ostringstream s;
   s << "fr:"     << std::fixed << std::setprecision(3) << m_fFrameRate;
-  s << ", vq:"   << std::setw(2) << std::min(99,GetLevel()) << "%";
+  s << ", vq:"   << std::setw(2) << std::min(99, m_processInfo.GetLevelVQ()) << "%";
   s << ", dc:"   << m_codecname;
   s << ", Mb/s:" << std::fixed << std::setprecision(2) << (double)GetVideoBitrate() / (1024.0*1024.0);
   if (m_omxVideo.GetPlayerInfo(match, phase, pll))
