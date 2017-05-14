@@ -131,10 +131,10 @@ used to configure CMake.
 
     mkdir $HOME/Kodi/build
     cd $HOME/Kodi/build
-    /Users/Shared/xbmc-depends/buildtools-native/bin/cmake -G Xcode -DCMAKE_TOOLCHAIN_FILE=/Users/Shared/xbmc-depends/macosx10.12_x86_64-target/share/Toolchain.cmake ..
+    /Users/Shared/xbmc-depends/x86_64-darwin15.6.0-native/bin/cmake -G Xcode -DCMAKE_TOOLCHAIN_FILE=/Users/Shared/xbmc-depends/macosx10.12_x86_64-target/share/Toolchain.cmake ..
 
 The toolchain file location differs depending on your macOS and SDK version and
-you have to replace `macosx10.12_x86_64` in the filename above with the correct
+you have to replace `x86_64-darwin15.6.0-native` and `macosx10.12_x86_64` in the filename above with the correct
 file on your system. Check the directory content to get the filename.
 
 #### 4.1.2 Compilation using Xcode
@@ -172,13 +172,9 @@ You can specify `Release` instead of `Debug` as a configuration.
 CMake is also able to generate a Makefile based project that can be used to
 compile with make:
 
-    mkdir $HOME/Kodi/build
-    cd $HOME/Kodi/build
-    /Users/Shared/xbmc-depends/buildtools-native/bin/cmake -DCMAKE_TOOLCHAIN_FILE=/Users/Shared/xbmc-depends/macosx10.12_x86_64-target/share/Toolchain.cmake ..
-    make
-
-The `-G` parameter defines the type of the generated project. Here it either
-has to be omitted, or specifically set to `-G "Unix Makefiles"`.
+    cd $HOME/Kodi
+    make -C tools/depends/target/cmakebuildsys
+    make -C build
 
 ## 5 Packaging
 
