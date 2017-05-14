@@ -221,8 +221,6 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, unsigned flags, EShaderF
     m_defines += "#define XBMC_UYVY\n";
   else if (m_format == SHADER_NV12_RRG)
     m_defines += "#define XBMC_NV12_RRG\n";
-  else if (m_format == SHADER_NV12_RRG)
-    m_defines += "#define XBMC_NV12_RRG\n";
   else if (m_format == SHADER_YV12)
     m_defines += "#define XBMC_YV12\n";
   else
