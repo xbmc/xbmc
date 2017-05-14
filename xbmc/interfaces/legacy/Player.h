@@ -718,7 +718,7 @@ namespace XBMCAddon
       SWIGHIDDENVIRTUAL void OnPlayBackResumed();
       SWIGHIDDENVIRTUAL void OnQueueNextItem();
       SWIGHIDDENVIRTUAL void    OnPlayBackSpeedChanged(int iSpeed);
-      SWIGHIDDENVIRTUAL void    OnPlayBackSeek(int iTime, int seekOffset);
+      SWIGHIDDENVIRTUAL void    OnPlayBackSeek(int64_t iTime, int64_t seekOffset);
       SWIGHIDDENVIRTUAL void    OnPlayBackSeekChapter(int iChapter);
 #endif
 

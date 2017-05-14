@@ -74,7 +74,7 @@ public:
   virtual void OnPlayBackResumed();
   virtual void OnPlayBackStopped();
   virtual void OnPlayBackSpeedChanged(int iSpeed);
-  virtual void OnPlayBackSeek(int iTime, int seekOffset);
+  virtual void OnPlayBackSeek(int64_t iTime, int64_t seekOffset);
   virtual void OnPlayBackSeekChapter(int iChapter);
   virtual void OnQueueNextItem();
 

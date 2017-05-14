@@ -226,10 +226,10 @@ namespace XBMCAddon
       invokeCallback(new CallbackFunction<Player,int>(this,&Player::onPlayBackSpeedChanged,speed));
     }
 
-    void Player::OnPlayBackSeek(int time, int seekOffset)
+    void Player::OnPlayBackSeek(int64_t time, int64_t seekOffset)
     { 
       XBMC_TRACE;
-      invokeCallback(new CallbackFunction<Player,int,int>(this,&Player::onPlayBackSeek,time,seekOffset));
+      invokeCallback(new CallbackFunction<Player,int,int>(this,&Player::onPlayBackSeek,static_cast<int>(time),static_cast<int>(seekOffset)));
     }
 
     void Player::OnPlayBackSeekChapter(int chapter)
