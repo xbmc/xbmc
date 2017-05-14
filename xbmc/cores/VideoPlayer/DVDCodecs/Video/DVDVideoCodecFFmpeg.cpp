@@ -1188,12 +1188,14 @@ IHardwareDecoder* CDVDVideoCodecFFmpeg::CreateVideoDecoderHW(AVPixelFormat pixfm
 #define VP_VIDEOCODEC_HW
 IHardwareDecoder* CDVDVideoCodecFFmpeg::CreateVideoDecoderHW(AVPixelFormat pixfmt, CProcessInfo &processInfo)
 {
+#if defined(HAVE_LIBVA)
   if (pixfmt == AV_PIX_FMT_VAAPI_VLD && CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVAAPI))
     return new VAAPI::CDecoder(m_processInfo);
-
+#endif
+#if defined(HAVE_LIBVDPAU)
   if(VDPAU::CDecoder::IsVDPAUFormat(pixfmt) && CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVDPAU))
     return new VDPAU::CDecoder(m_processInfo);
-
+#endif
   return nullptr;
 }
 #endif
