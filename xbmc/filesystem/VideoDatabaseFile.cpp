@@ -72,7 +72,7 @@ VIDEODB_CONTENT_TYPE CVideoDatabaseFile::GetType(const CURL& url)
   VIDEODB_CONTENT_TYPE type;
   if (itemType == "movies" || itemType == "recentlyaddedmovies")
     type = VIDEODB_CONTENT_MOVIES;
-  else if (itemType == "episodes" || itemType == "recentlyaddedepisodes" || itemType == "tvshows")
+  else if (itemType == "episodes" || itemType == "recentlyaddedepisodes" || itemType == "inprogresstvshows" || itemType == "tvshows")
     type = VIDEODB_CONTENT_EPISODES;
   else if (itemType == "musicvideos" || itemType == "recentlyaddedmusicvideos")
     type = VIDEODB_CONTENT_MUSICVIDEOS;
