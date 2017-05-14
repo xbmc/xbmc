@@ -51,8 +51,6 @@ public:
   virtual void SeekPercentage(float fPercent = 0);
   virtual float GetPercentage();
   virtual void SetVolume(float volume);
-  virtual void GetAudioInfo(std::string& strAudioInfo) {};
-  virtual void GetVideoInfo(std::string& strVideoInfo) {};
   virtual bool CanRecord() { return false;};
   virtual bool IsRecording() { return false;};
   virtual bool Record(bool bOnOff) { return false;};
