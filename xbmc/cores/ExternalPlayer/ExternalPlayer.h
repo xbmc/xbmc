@@ -41,20 +41,12 @@ public:
   virtual void Pause() override;
   virtual bool HasVideo() const;
   virtual bool HasAudio() const;
-  virtual void ToggleOSD() { }; // empty
-  virtual void SwitchToNextLanguage();
-  virtual void ToggleSubtitles();
   virtual bool CanSeek();
   virtual void Seek(bool bPlus, bool bLargeStep, bool bChapterOverride);
   virtual void SeekPercentage(float iPercent);
   virtual float GetPercentage();
   virtual void SetVolume(float volume) {}
   virtual void SetDynamicRangeCompression(long drc) {}
-  virtual void SetContrast(bool bPlus) {}
-  virtual void SetBrightness(bool bPlus) {}
-  virtual void SetHue(bool bPlus) {}
-  virtual void SetSaturation(bool bPlus) {}
-  virtual void SwitchToNextAudioLanguage();
   virtual bool CanRecord() { return false; }
   virtual bool IsRecording() { return false; }
   virtual bool Record(bool bOnOff) { return false; }
@@ -69,7 +61,6 @@ public:
   virtual int64_t GetTotalTime();
   virtual void SetSpeed(float iSpeed) override;
   virtual float GetSpeed() override;
-  virtual void ShowOSD(bool bOnoff);
   virtual void DoAudioWork() {};
   
   virtual std::string GetPlayerState();
