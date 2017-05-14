@@ -31,11 +31,13 @@
 #include "utils/auto_buffer.h"
 #include "utils/RegExp.h"
 
+#include <cstddef>
+
 // 3GPP/TX3G (aka MPEG-4 Timed Text) Subtitle support
 // 3GPP -> 3rd Generation Partnership Program
 // adapted from https://trac.handbrake.fr/browser/trunk/libhb/dectx3gsub.c;
 
-#define LEN_CHECK(x)    do { if((end - pos) < (x)) return OC_ERROR; } while(0)
+#define LEN_CHECK(x)    do { if((end - pos) < static_cast<std::ptrdiff_t>(x)) return OC_ERROR; } while(0)
 
 // NOTE: None of these macros check for buffer overflow
 #define READ_U8()       *pos;                                                     pos += 1;

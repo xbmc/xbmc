@@ -1,6 +1,8 @@
+#pragma once
+
 /*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2007-2017 Team Kodi
+ *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,24 +15,19 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
 
-#pragma once
-
-class IPlayerCallback
+enum EShaderFormat
 {
-public:
-  virtual ~IPlayerCallback() {}
-  virtual void OnPlayBackEnded() = 0;
-  virtual void OnPlayBackStarted() = 0;
-  virtual void OnPlayBackPaused() {};
-  virtual void OnPlayBackResumed() {};
-  virtual void OnPlayBackStopped() = 0;
-  virtual void OnQueueNextItem() = 0;
-  virtual void OnPlayBackSeek(int64_t iTime, int64_t seekOffset) {};
-  virtual void OnPlayBackSeekChapter(int iChapter) {};
-  virtual void OnPlayBackSpeedChanged(int iSpeed) {};
+  SHADER_NONE,
+  SHADER_YV12,
+  SHADER_YV12_10,
+  SHADER_YV12_16,
+  SHADER_NV12,
+  SHADER_YUY2,
+  SHADER_UYVY,
+  SHADER_NV12_RRG
 };

@@ -30,48 +30,48 @@
 #include "BitstreamWriter.h"
 
 enum {
-    AVC_NAL_SLICE=1,
-    AVC_NAL_DPA,
-    AVC_NAL_DPB,
-    AVC_NAL_DPC,
-    AVC_NAL_IDR_SLICE,
-    AVC_NAL_SEI,
-    AVC_NAL_SPS,
-    AVC_NAL_PPS,
-    AVC_NAL_AUD,
-    AVC_NAL_END_SEQUENCE,
-    AVC_NAL_END_STREAM,
-    AVC_NAL_FILLER_DATA,
-    AVC_NAL_SPS_EXT,
-    AVC_NAL_AUXILIARY_SLICE=19
+  AVC_NAL_SLICE=1,
+  AVC_NAL_DPA,
+  AVC_NAL_DPB,
+  AVC_NAL_DPC,
+  AVC_NAL_IDR_SLICE,
+  AVC_NAL_SEI,
+  AVC_NAL_SPS,
+  AVC_NAL_PPS,
+  AVC_NAL_AUD,
+  AVC_NAL_END_SEQUENCE,
+  AVC_NAL_END_STREAM,
+  AVC_NAL_FILLER_DATA,
+  AVC_NAL_SPS_EXT,
+  AVC_NAL_AUXILIARY_SLICE=19
 };
 
 enum {
-    HEVC_NAL_TRAIL_N    = 0,
-    HEVC_NAL_TRAIL_R    = 1,
-    HEVC_NAL_TSA_N      = 2,
-    HEVC_NAL_TSA_R      = 3,
-    HEVC_NAL_STSA_N     = 4,
-    HEVC_NAL_STSA_R     = 5,
-    HEVC_NAL_RADL_N     = 6,
-    HEVC_NAL_RADL_R     = 7,
-    HEVC_NAL_RASL_N     = 8,
-    HEVC_NAL_RASL_R     = 9,
-    HEVC_NAL_BLA_W_LP   = 16,
-    HEVC_NAL_BLA_W_RADL = 17,
-    HEVC_NAL_BLA_N_LP   = 18,
-    HEVC_NAL_IDR_W_RADL = 19,
-    HEVC_NAL_IDR_N_LP   = 20,
-    HEVC_NAL_CRA_NUT    = 21,
-    HEVC_NAL_VPS        = 32,
-    HEVC_NAL_SPS        = 33,
-    HEVC_NAL_PPS        = 34,
-    HEVC_NAL_AUD        = 35,
-    HEVC_NAL_EOS_NUT    = 36,
-    HEVC_NAL_EOB_NUT    = 37,
-    HEVC_NAL_FD_NUT     = 38,
-    HEVC_NAL_SEI_PREFIX = 39,
-    HEVC_NAL_SEI_SUFFIX = 40
+  HEVC_NAL_TRAIL_N    = 0,
+  HEVC_NAL_TRAIL_R    = 1,
+  HEVC_NAL_TSA_N      = 2,
+  HEVC_NAL_TSA_R      = 3,
+  HEVC_NAL_STSA_N     = 4,
+  HEVC_NAL_STSA_R     = 5,
+  HEVC_NAL_RADL_N     = 6,
+  HEVC_NAL_RADL_R     = 7,
+  HEVC_NAL_RASL_N     = 8,
+  HEVC_NAL_RASL_R     = 9,
+  HEVC_NAL_BLA_W_LP   = 16,
+  HEVC_NAL_BLA_W_RADL = 17,
+  HEVC_NAL_BLA_N_LP   = 18,
+  HEVC_NAL_IDR_W_RADL = 19,
+  HEVC_NAL_IDR_N_LP   = 20,
+  HEVC_NAL_CRA_NUT    = 21,
+  HEVC_NAL_VPS        = 32,
+  HEVC_NAL_SPS        = 33,
+  HEVC_NAL_PPS        = 34,
+  HEVC_NAL_AUD        = 35,
+  HEVC_NAL_EOS_NUT    = 36,
+  HEVC_NAL_EOB_NUT    = 37,
+  HEVC_NAL_FD_NUT     = 38,
+  HEVC_NAL_SEI_PREFIX = 39,
+  HEVC_NAL_SEI_SUFFIX = 40
 };
 
 enum {
@@ -100,7 +100,6 @@ enum {
   SEI_POST_FILTER_HINTS,
   SEI_TONE_MAPPING
 };
-
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////
@@ -258,7 +257,7 @@ static bool has_sei_recovery_point(const uint8_t *p, const uint8_t *end)
       return nal_bs_read_ue(&bs) >= 0;
     }
     offset += ps;
-  } while(p + offset < end && p[offset] != 0x80);
+  } while (p + offset < end && p[offset] != 0x80);
 
   return false;
 }
@@ -273,7 +272,11 @@ CBitstreamParser::~CBitstreamParser()
 {
 }
 
-bool CBitstreamParser::HasKeyframe(const uint8_t *buf, int buf_size)
+void CBitstreamParser::Close()
+{
+}
+
+bool CBitstreamParser::CanStartDecode(const uint8_t *buf, int buf_size)
 {
   if (!buf)
     return false;
@@ -282,7 +285,7 @@ bool CBitstreamParser::HasKeyframe(const uint8_t *buf, int buf_size)
   uint32_t state = -1;
   const uint8_t *buf_begin, *buf_end = buf + buf_size;
 
-  for(;rtn == false;)
+  for (; rtn == false;)
   {
     buf = find_start_code(buf, buf_end, &state);
     if (buf >= buf_end)
@@ -292,24 +295,24 @@ bool CBitstreamParser::HasKeyframe(const uint8_t *buf, int buf_size)
 
     switch (state & 0x1f)
     {
-      case AVC_NAL_SLICE:
-        break;
-      case AVC_NAL_IDR_SLICE:
+    case AVC_NAL_SLICE:
+      break;
+    case AVC_NAL_IDR_SLICE:
+      rtn = true;
+      break;
+    case AVC_NAL_SEI:
+      buf_begin = buf - 1;
+      buf = find_start_code(buf, buf_end, &state) - 4;
+      if (has_sei_recovery_point(buf_begin, buf))
         rtn = true;
-        break;
-      case AVC_NAL_SEI:
-        buf_begin = buf - 1;
-        buf = find_start_code(buf, buf_end, &state) - 4;
-        if (has_sei_recovery_point(buf_begin, buf))
-          rtn = true;
-        break;
-      case AVC_NAL_SPS:
-        rtn = true;
-        break;
-      case AVC_NAL_PPS:
-        break;
-      default:
-        break;
+      break;
+    case AVC_NAL_SPS:
+      rtn = true;
+      break;
+    case AVC_NAL_PPS:
+      break;
+    default:
+      break;
     }
   }
 
@@ -331,7 +334,7 @@ CBitstreamConverter::CBitstreamConverter()
   m_convert_3byteTo4byteNALSize = false;
   m_convert_bytestream = false;
   m_sps_pps_context.sps_pps_data = NULL;
-  m_has_keyframe = true;
+  m_start_decode = true;
 }
 
 CBitstreamConverter::~CBitstreamConverter()
@@ -418,7 +421,7 @@ bool CBitstreamConverter::Open(enum AVCodecID codec, uint8_t *in_extradata, int 
             return true;
           }
         }
-        // valid avcC atom 
+        // valid avcC atom
         m_extradata = (uint8_t*)av_malloc(in_extrasize);
         memcpy(m_extradata, in_extradata, in_extrasize);
         m_extrasize = in_extrasize;
@@ -660,14 +663,14 @@ int CBitstreamConverter::GetExtraSize() const
     return m_extrasize;
 }
 
-void CBitstreamConverter::ResetKeyframe(void)
+void CBitstreamConverter::ResetStartDecode(void)
 {
-  m_has_keyframe = false;
+  m_start_decode = false;
 }
 
-bool CBitstreamConverter::HasKeyframe() const
+bool CBitstreamConverter::CanStartDecode() const
 {
-  return m_has_keyframe;
+  return m_start_decode;
 }
 
 bool CBitstreamConverter::BitstreamConvertInitAVC(void *in_extradata, int in_extrasize)
@@ -930,8 +933,8 @@ bool CBitstreamConverter::BitstreamConvert(uint8_t* pData, int iSize, uint8_t **
     if (m_sps_pps_context.first_idr && (unit_type == nal_sps || unit_type == nal_pps))
       m_sps_pps_context.idr_sps_pps_seen = 1;
 
-    if (!m_has_keyframe && (unit_type == nal_sps || IsIDR(unit_type) || (unit_type == nal_sei && has_sei_recovery_point(buf, buf + nal_size))))
-      m_has_keyframe = true;
+    if (!m_start_decode && (unit_type == nal_sps || IsIDR(unit_type) || (unit_type == nal_sei && has_sei_recovery_point(buf, buf + nal_size))))
+      m_start_decode = true;
 
     // prepend only to the first access unit of an IDR picture, if no sps/pps already present
     if (m_sps_pps_context.first_idr && IsIDR(unit_type) && !m_sps_pps_context.idr_sps_pps_seen)
@@ -1171,49 +1174,53 @@ bool CBitstreamConverter::mpeg2_sequence_header(const uint8_t *data, const uint3
 
       // frame rate
       // nal_start + 32 bits == frame_rate_code
-      float rate = sequence->rate;
+      uint32_t fpsrate = sequence->fps_rate;
+      uint32_t fpsscale = sequence->fps_scale;
       uint32_t rate_info = nal_bs_read(&bs, 4);
+
       switch(rate_info)
       {
         default:
         case 0x01:
-          rate = static_cast<float>(24000.0 / 1001.0);
+          fpsrate = 24000;
+          fpsscale = 1001;
           break;
         case 0x02:
-          rate = 24.0f;
+          fpsrate = 24000;
+          fpsscale = 1000;
           break;
         case 0x03:
-          rate = 25.0f;
+          fpsrate = 25000;
+          fpsscale = 1000;
           break;
         case 0x04:
-          rate = static_cast<float>(30000.0 / 1001.0);
+          fpsrate = 30000;
+          fpsscale = 1001;
           break;
         case 0x05:
-          rate = 30.0f;
+          fpsrate = 30000;
+          fpsscale = 1000;
           break;
         case 0x06:
-          rate = 50.0f;
+          fpsrate = 50000;
+          fpsscale = 1000;
           break;
         case 0x07:
-          rate = static_cast<float>(60000.0 / 1001.0);
+          fpsrate = 60000;
+          fpsscale = 1001;
           break;
         case 0x08:
-          rate = 60.0f;
+          fpsrate = 60000;
+          fpsscale = 1000;
           break;
       }
-      if (rate_info != sequence->rate_info)
+
+      if (fpsscale != sequence->fps_scale || fpsrate != sequence->fps_rate)
       {
         changed = true;
-        sequence->rate = rate;
-        sequence->rate_info = rate_info;
+        sequence->fps_rate = fpsrate;
+        sequence->fps_scale = fpsscale;
       }
-      /*
-      if (changed)
-      {
-        CLog::Log(LOGDEBUG, "CBitstreamConverter::mpeg2_sequence_header: "
-          "width(%d), height(%d), ratio(%f), rate(%f)", width, height, ratio, rate);
-      }
-      */
     }
     nal_start = nal_end;
   }

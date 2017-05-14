@@ -18,7 +18,7 @@
  *
  */
 
-#include "DVDAudio.h"
+#include "AudioSinkAE.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "DVDClock.h"
@@ -31,7 +31,7 @@
 #include "linux/XTimeUtils.h"
 #endif
 
-CDVDAudio::CDVDAudio(CDVDClock *clock) : m_pClock(clock)
+CAudioSinkAE::CAudioSinkAE(CDVDClock *clock) : m_pClock(clock)
 {
   m_pAudioStream = NULL;
   m_bPassthrough = false;
@@ -44,14 +44,14 @@ CDVDAudio::CDVDAudio(CDVDClock *clock) : m_pClock(clock)
   m_syncErrorTime = 0;
 }
 
-CDVDAudio::~CDVDAudio()
+CAudioSinkAE::~CAudioSinkAE()
 {
   CSingleLock lock (m_critSection);
   if (m_pAudioStream)
     CServiceBroker::GetActiveAE().FreeStream(m_pAudioStream);
 }
 
-bool CDVDAudio::Create(const DVDAudioFrame &audioframe, AVCodecID codec, bool needresampler)
+bool CAudioSinkAE::Create(const DVDAudioFrame &audioframe, AVCodecID codec, bool needresampler)
 {
   CLog::Log(LOGNOTICE,
     "Creating audio stream (codec id: %i, channels: %i, sample rate: %i, %s)",
@@ -88,7 +88,7 @@ bool CDVDAudio::Create(const DVDAudioFrame &audioframe, AVCodecID codec, bool ne
   return true;
 }
 
-void CDVDAudio::Destroy()
+void CAudioSinkAE::Destroy()
 {
   CSingleLock lock (m_critSection);
 
@@ -103,7 +103,7 @@ void CDVDAudio::Destroy()
   m_playingPts = DVD_NOPTS_VALUE;
 }
 
-unsigned int CDVDAudio::AddPackets(const DVDAudioFrame &audioframe)
+unsigned int CAudioSinkAE::AddPackets(const DVDAudioFrame &audioframe)
 {
   m_bAbort = false;
 
@@ -135,9 +135,9 @@ unsigned int CDVDAudio::AddPackets(const DVDAudioFrame &audioframe)
   timeout += DVD_SEC_TO_TIME(1.0);
   timeout += m_pClock->GetAbsoluteClock();
 
-  unsigned int total = audioframe.nb_frames;
-  unsigned int frames = audioframe.nb_frames;
-  unsigned int offset = 0;
+  unsigned int total = audioframe.nb_frames - audioframe.framesOut;
+  unsigned int frames = total;
+  unsigned int offset = audioframe.framesOut;
   do
   {
     double pts = (offset == 0) ? audioframe.pts / DVD_TIME_BASE * 1000 : 0.0;
@@ -164,37 +164,28 @@ unsigned int CDVDAudio::AddPackets(const DVDAudioFrame &audioframe)
   return total - frames;
 }
 
-void CDVDAudio::Drain()
+void CAudioSinkAE::Drain()
 {
   CSingleLock lock (m_critSection);
   if (m_pAudioStream)
     m_pAudioStream->Drain(true);
 }
 
-void CDVDAudio::SetVolume(float volume)
+void CAudioSinkAE::SetVolume(float volume)
 {
   CSingleLock lock (m_critSection);
   if (m_pAudioStream)
     m_pAudioStream->SetVolume(volume);
 }
 
-void CDVDAudio::SetDynamicRangeCompression(long drc)
+void CAudioSinkAE::SetDynamicRangeCompression(long drc)
 {
   CSingleLock lock (m_critSection);
   if (m_pAudioStream)
     m_pAudioStream->SetAmplification(powf(10.0f, (float)drc / 2000.0f));
 }
 
-float CDVDAudio::GetCurrentAttenuation()
-{
-  CSingleLock lock (m_critSection);
-  if (m_pAudioStream)
-    return m_pAudioStream->GetVolume();
-  else
-    return 1.0f;
-}
-
-void CDVDAudio::Pause()
+void CAudioSinkAE::Pause()
 {
   CSingleLock lock (m_critSection);
   if (m_pAudioStream)
@@ -203,7 +194,7 @@ void CDVDAudio::Pause()
   m_playingPts = DVD_NOPTS_VALUE;
 }
 
-void CDVDAudio::Resume()
+void CAudioSinkAE::Resume()
 {
   CSingleLock lock(m_critSection);
   if (m_pAudioStream)
@@ -211,7 +202,7 @@ void CDVDAudio::Resume()
   CLog::Log(LOGDEBUG,"CDVDAudio::Resume - resume audio stream");
 }
 
-double CDVDAudio::GetDelay()
+double CAudioSinkAE::GetDelay()
 {
   CSingleLock lock (m_critSection);
 
@@ -222,7 +213,7 @@ double CDVDAudio::GetDelay()
   return delay * DVD_TIME_BASE;
 }
 
-void CDVDAudio::Flush()
+void CAudioSinkAE::Flush()
 {
   m_bAbort = true;
 
@@ -237,20 +228,20 @@ void CDVDAudio::Flush()
   m_syncErrorTime = 0;
 }
 
-void CDVDAudio::AbortAddPackets()
+void CAudioSinkAE::AbortAddPackets()
 {
   m_bAbort = true;
 }
 
-bool CDVDAudio::IsValidFormat(const DVDAudioFrame &audioframe)
+bool CAudioSinkAE::IsValidFormat(const DVDAudioFrame &audioframe)
 {
-  if(!m_pAudioStream)
+  if (!m_pAudioStream)
     return false;
 
-  if(audioframe.passthrough != m_bPassthrough)
+  if (audioframe.passthrough != m_bPassthrough)
     return false;
 
-  if(m_sampleRate != audioframe.format.m_sampleRate ||
+  if (m_sampleRate != audioframe.format.m_sampleRate ||
      m_iBitsPerSample != audioframe.bits_per_sample ||
      m_channelLayout != audioframe.format.m_channelLayout)
     return false;
@@ -258,7 +249,7 @@ bool CDVDAudio::IsValidFormat(const DVDAudioFrame &audioframe)
   return true;
 }
 
-double CDVDAudio::GetCacheTime()
+double CAudioSinkAE::GetCacheTime()
 {
   CSingleLock lock (m_critSection);
   if(!m_pAudioStream)
@@ -271,7 +262,7 @@ double CDVDAudio::GetCacheTime()
   return delay;
 }
 
-double CDVDAudio::GetCacheTotal()
+double CAudioSinkAE::GetCacheTotal()
 {
   CSingleLock lock (m_critSection);
   if(!m_pAudioStream)
@@ -279,7 +270,7 @@ double CDVDAudio::GetCacheTotal()
   return m_pAudioStream->GetCacheTotal();
 }
 
-double CDVDAudio::GetPlayingPts()
+double CAudioSinkAE::GetPlayingPts()
 {
   if (m_playingPts == DVD_NOPTS_VALUE)
     return 0.0;
@@ -299,22 +290,22 @@ double CDVDAudio::GetPlayingPts()
   return m_playingPts;
 }
 
-double CDVDAudio::GetSyncError()
+double CAudioSinkAE::GetSyncError()
 {
   return m_syncError;
 }
 
-void CDVDAudio::SetSyncErrorCorrection(double correction)
+void CAudioSinkAE::SetSyncErrorCorrection(double correction)
 {
   m_syncError += correction;
 }
 
-double CDVDAudio::GetResampleRatio()
+double CAudioSinkAE::GetResampleRatio()
 {
   return m_resampleRatio;
 }
 
-void CDVDAudio::SetResampleMode(int mode)
+void CAudioSinkAE::SetResampleMode(int mode)
 {
   CSingleLock lock (m_critSection);
   if(m_pAudioStream)
@@ -323,7 +314,7 @@ void CDVDAudio::SetResampleMode(int mode)
   }
 }
 
-double CDVDAudio::GetClock()
+double CAudioSinkAE::GetClock()
 {
   if (m_pClock)
     return (m_pClock->GetClock() + m_pClock->GetVsyncAdjust()) / DVD_TIME_BASE * 1000;
@@ -331,10 +322,56 @@ double CDVDAudio::GetClock()
     return 0.0;
 }
 
-double CDVDAudio::GetClockSpeed()
+double CAudioSinkAE::GetClockSpeed()
 {
   if (m_pClock)
     return m_pClock->GetClockSpeed();
   else
     return 1.0;
+}
+
+CAEStreamInfo::DataType CAudioSinkAE::GetPassthroughStreamType(AVCodecID codecId, int samplerate)
+{
+  AEAudioFormat format;
+  format.m_dataFormat = AE_FMT_RAW;
+  format.m_sampleRate = samplerate;
+  format.m_streamInfo.m_type = CAEStreamInfo::DataType::STREAM_TYPE_NULL;
+  switch (codecId)
+  {
+    case AV_CODEC_ID_AC3:
+      format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_AC3;
+      format.m_streamInfo.m_sampleRate = samplerate;
+      break;
+
+    case AV_CODEC_ID_EAC3:
+      format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_EAC3;
+      format.m_streamInfo.m_sampleRate = samplerate;
+      break;
+
+    case AV_CODEC_ID_DTS:
+      format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_DTSHD;
+      format.m_streamInfo.m_sampleRate = samplerate;
+      break;
+
+    case AV_CODEC_ID_TRUEHD:
+      format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_TRUEHD;
+      format.m_streamInfo.m_sampleRate = samplerate;
+      break;
+
+    default:
+      format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_NULL;
+  }
+
+  bool supports = CServiceBroker::GetActiveAE().SupportsRaw(format);
+
+  if (!supports && codecId == AV_CODEC_ID_DTS)
+  {
+    format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_DTSHD_CORE;
+    supports = CServiceBroker::GetActiveAE().SupportsRaw(format);
+  }
+
+  if (supports)
+    return format.m_streamInfo.m_type;
+  else
+    return CAEStreamInfo::DataType::STREAM_TYPE_NULL;
 }

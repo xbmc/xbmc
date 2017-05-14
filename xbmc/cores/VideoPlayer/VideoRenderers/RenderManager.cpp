@@ -100,10 +100,8 @@ static std::string GetRenderFormatName(ERenderFormat format)
     case RENDER_FMT_UYVY422:   return "UYVY";
     case RENDER_FMT_YUYV422:   return "YUY2";
     case RENDER_FMT_VDPAU:     return "VDPAU";
-    case RENDER_FMT_VDPAU_420: return "VDPAU_420";
     case RENDER_FMT_DXVA:      return "DXVA";
     case RENDER_FMT_VAAPI:     return "VAAPI";
-    case RENDER_FMT_VAAPINV12: return "VAAPI_NV12";
     case RENDER_FMT_OMXEGL:    return "OMXEGL";
     case RENDER_FMT_CVBREF:    return "BGRA";
     case RENDER_FMT_BYPASS:    return "BYPASS";
@@ -146,7 +144,6 @@ CRenderManager::CRenderManager(CDVDClock &clock, IRenderMsg *player) :
   m_dwidth(0),
   m_dheight(0),
   m_fps(0.0f),
-  m_extended_format(0),
   m_orientation(0),
   m_NumberBuffers(0),
   m_lateframes(-1),
@@ -182,7 +179,7 @@ float CRenderManager::GetAspectRatio()
     return 1.0f;
 }
 
-bool CRenderManager::Configure(DVDVideoPicture& picture, float fps, unsigned flags, unsigned int orientation, int buffers)
+bool CRenderManager::Configure(VideoPicture& picture, float fps, unsigned flags, unsigned int orientation, int buffers)
 {
 
   // check if something has changed
@@ -196,10 +193,10 @@ bool CRenderManager::Configure(DVDVideoPicture& picture, float fps, unsigned fla
         m_fps == fps &&
         (m_flags & ~CONF_FLAGS_FULLSCREEN) == (flags & ~CONF_FLAGS_FULLSCREEN) &&
         m_format == picture.format &&
-        m_extended_format == picture.extended_format &&
         m_orientation == orientation &&
         m_NumberBuffers == buffers &&
-        m_pRenderer != NULL)
+        m_pRenderer != nullptr &&
+        !m_pRenderer->ConfigChanged(picture.hwPic))
     {
       return true;
     }
@@ -235,7 +232,7 @@ bool CRenderManager::Configure(DVDVideoPicture& picture, float fps, unsigned fla
     m_fps = fps;
     m_flags = flags;
     m_format = picture.format;
-    m_extended_format = picture.extended_format;
+    m_hwPic = picture.hwPic;
     m_orientation = orientation;
     m_NumberBuffers  = buffers;
     m_renderState = STATE_CONFIGURING;
@@ -251,6 +248,8 @@ bool CRenderManager::Configure(DVDVideoPicture& picture, float fps, unsigned fla
   if (!m_stateEvent.WaitMSec(1000))
   {
     CLog::Log(LOGWARNING, "CRenderManager::Configure - timeout waiting for configure");
+    CSingleLock lock(m_statelock);
+    m_hwPic = nullptr;
     return false;
   }
 
@@ -258,9 +257,11 @@ bool CRenderManager::Configure(DVDVideoPicture& picture, float fps, unsigned fla
   if (m_renderState != STATE_CONFIGURED)
   {
     CLog::Log(LOGWARNING, "CRenderManager::Configure - failed to configure");
+    m_hwPic = nullptr;
     return false;
   }
 
+  m_hwPic = nullptr;
   return true;
 }
 
@@ -283,7 +284,7 @@ bool CRenderManager::Configure()
       return false;
   }
 
-  bool result = m_pRenderer->Configure(m_width, m_height, m_dwidth, m_dheight, m_fps, m_flags, m_format, m_extended_format, m_orientation);
+  bool result = m_pRenderer->Configure(m_width, m_height, m_dwidth, m_dheight, m_fps, m_flags, m_format, m_hwPic, m_orientation);
   if (result)
   {
     CRenderInfo info = m_pRenderer->GetRenderInfo();
@@ -317,7 +318,7 @@ bool CRenderManager::Configure()
     m_bTriggerUpdateResolution = true;
     m_presentstep = PRESENT_IDLE;
     m_presentpts = DVD_NOPTS_VALUE;
-    m_lateframes = -1.0;
+    m_lateframes = -1;
     m_presentevent.notifyAll();
     m_renderedOverlay = false;
     m_renderDebug = false;
@@ -422,10 +423,9 @@ void CRenderManager::FrameMove()
       }
       else
         ++it;
-
-      m_playerPort->UpdateRenderBuffers(m_queued.size(), m_discard.size(), m_free.size());
     }
-    
+
+    m_playerPort->UpdateRenderBuffers(m_queued.size(), m_discard.size(), m_free.size());
     m_bRenderGUI = true;
   }
 
@@ -526,13 +526,13 @@ void CRenderManager::CreateRenderer()
 {
   if (!m_pRenderer)
   {
-    if (m_format == RENDER_FMT_VAAPI || m_format == RENDER_FMT_VAAPINV12)
+    if (m_format == RENDER_FMT_VAAPI)
     {
 #if defined(HAVE_LIBVA)
       m_pRenderer = new CRendererVAAPI;
 #endif
     }
-    else if (m_format == RENDER_FMT_VDPAU || m_format == RENDER_FMT_VDPAU_420)
+    else if (m_format == RENDER_FMT_VDPAU)
     {
 #if defined(HAVE_LIBVDPAU)
       m_pRenderer = new CRendererVDPAU;
@@ -872,6 +872,7 @@ void CRenderManager::FlipPage(volatile std::atomic_bool& bStop, double pts,
         {
           CLog::Log(LOGWARNING, "CRenderManager::FlipPage - timeout waiting for render");
         }
+        break;
       }
     }
     m_forceNext = false;
@@ -887,7 +888,7 @@ RESOLUTION CRenderManager::GetResolution()
     return res;
 
   if (CServiceBroker::GetSettings().GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) != ADJUST_REFRESHRATE_OFF)
-    res = CResolutionUtils::ChooseBestResolution(m_fps, m_width, CONF_FLAGS_STEREO_MODE_MASK(m_flags));
+    res = CResolutionUtils::ChooseBestResolution(m_fps, m_width, CONF_FLAGS_STEREO_MODE_MASK(m_flags) != 0);
 
   return res;
 }
@@ -1083,7 +1084,7 @@ void CRenderManager::UpdateResolution()
     {
       if (CServiceBroker::GetSettings().GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) != ADJUST_REFRESHRATE_OFF && m_fps > 0.0f)
       {
-        RESOLUTION res = CResolutionUtils::ChooseBestResolution(m_fps, m_width, CONF_FLAGS_STEREO_MODE_MASK(m_flags));
+        RESOLUTION res = CResolutionUtils::ChooseBestResolution(m_fps, m_width, CONF_FLAGS_STEREO_MODE_MASK(m_flags) != 0);
         g_graphicsContext.SetVideoResolution(res);
         UpdateDisplayLatency();
       }
@@ -1123,7 +1124,7 @@ CRenderInfo CRenderManager::GetRenderInfo()
   return m_pRenderer->GetRenderInfo();
 }
 
-int CRenderManager::AddVideoPicture(DVDVideoPicture& pic)
+int CRenderManager::AddVideoPicture(VideoPicture& pic)
 {
   int index;
   {
@@ -1142,11 +1143,9 @@ int CRenderManager::AddVideoPicture(DVDVideoPicture& pic)
     return -1;
 
   if(pic.format == RENDER_FMT_VDPAU
-  || pic.format == RENDER_FMT_VDPAU_420
   || pic.format == RENDER_FMT_OMXEGL
   || pic.format == RENDER_FMT_CVBREF
   || pic.format == RENDER_FMT_VAAPI
-  || pic.format == RENDER_FMT_VAAPINV12
   || pic.format == RENDER_FMT_MEDIACODEC
   || pic.format == RENDER_FMT_MEDIACODECSURFACE
   || pic.format == RENDER_FMT_AML
@@ -1226,7 +1225,7 @@ int CRenderManager::WaitForBuffer(volatile std::atomic_bool&bStop, int timeout)
     else
       presenttime = clock + 0.02;
 
-    int sleeptime = (presenttime - clock) * 1000;
+    int sleeptime = static_cast<int>((presenttime - clock) * 1000);
     if (sleeptime < 0)
       sleeptime = 0;
     sleeptime = std::min(sleeptime, 20);
@@ -1333,7 +1332,7 @@ void CRenderManager::PrepareNextRender()
       m_QueueSkip++;
     }
 
-    int lateframes = (renderPts - m_Queue[idx].pts) * m_fps / DVD_TIME_BASE;
+    int lateframes = static_cast<int>((renderPts - m_Queue[idx].pts) * m_fps / DVD_TIME_BASE);
     if (lateframes)
       m_lateframes += lateframes;
     else
@@ -1379,7 +1378,7 @@ void CRenderManager::CheckEnableClockSync()
 
   if (m_fps != 0)
   {
-    float fps = m_fps;
+    double fps = m_fps;
     double refreshrate, clockspeed;
     int missedvblanks;
     if (m_dvdClock.GetClockInfo(missedvblanks, clockspeed, refreshrate))

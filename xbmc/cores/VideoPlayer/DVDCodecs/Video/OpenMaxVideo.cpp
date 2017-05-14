@@ -425,15 +425,6 @@ void COpenMaxVideo::Reset(void)
   ::Sleep(100);
 }
 
-bool COpenMaxVideo::ClearPicture(DVDVideoPicture* pDvdVideoPicture)
-{
-  if (pDvdVideoPicture->openMaxBufferHolder) {
-    pDvdVideoPicture->openMaxBufferHolder->Release();
-    pDvdVideoPicture->openMaxBufferHolder = 0;
-  }
-  return true;
-}
-
 void COpenMaxVideo::ReleaseBuffer(OpenMaxVideoBuffer* releaseBuffer)
 {
   if (!releaseBuffer)

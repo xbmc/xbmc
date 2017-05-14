@@ -22,9 +22,10 @@
 
 #include "system.h"
 
-#include <queue>
+#include <deque>
 #include <vector>
 #include <memory>
+#include <atomic>
 
 #include <androidjni/Surface.h>
 
@@ -45,6 +46,11 @@ class CJNIMediaFormat;
 class CDVDMediaCodecOnFrameAvailable;
 class CJNIByteBuffer;
 class CBitstreamConverter;
+
+struct AMediaCrypto;
+struct DemuxCryptoInfo;
+struct mpeg2_sequence;
+
 
 typedef struct amc_demux {
   uint8_t  *pData;
@@ -104,24 +110,23 @@ public:
   virtual ~CDVDVideoCodecAndroidMediaCodec();
 
   // required overrides
-  virtual bool    Open(CDVDStreamInfo &hints, CDVDCodecOptions &options);
-  virtual int     Decode(uint8_t *pData, int iSize, double dts, double pts);
-  virtual void    Reset();
-  virtual bool    GetPicture(DVDVideoPicture *pDvdVideoPicture);
-  virtual bool    ClearPicture(DVDVideoPicture* pDvdVideoPicture);
-  virtual void    SetDropState(bool bDrop);
-  virtual void    SetCodecControl(int flags);
-  virtual int     GetDataSize(void);
-  virtual double  GetTimeSize(void);
-  virtual const char* GetName(void) { return m_formatname.c_str(); }
-  virtual unsigned GetAllowedReferences();
+  virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options) override;
+  virtual bool AddData(const DemuxPacket &packet) override;
+  virtual void Reset() override;
+  virtual bool Reconfigure(CDVDStreamInfo &hints) override;
+  virtual VCReturn GetPicture(VideoPicture* pVideoPicture) override;
+  virtual const char* GetName() override { return m_formatname.c_str(); };
+  virtual void SetCodecControl(int flags) override;
+  virtual unsigned GetAllowedReferences() override;
 
 protected:
   void            Dispose();
+  void            ReleasePrevFrame();
   void            FlushInternal(void);
   bool            ConfigureMediaCodec(void);
   int             GetOutputPicture(void);
   void            ConfigureOutputFormat(AMediaFormat* mediaformat);
+  void            UpdateFpsDuration();
 
   // surface handling functions
   static void     CallbackInitSurfaceTexture(void*);
@@ -134,13 +139,13 @@ protected:
   int             m_colorFormat;
   std::string     m_formatname;
   bool            m_opened;
-  bool            m_drop;
   int             m_codecControlFlags;
   int             m_state;
   int             m_noPictureLoop;
 
   CJNISurface*    m_jnisurface;
   CJNISurface     m_jnivideosurface;
+  AMediaCrypto   *m_crypto;
   unsigned int    m_textureId;
   AMediaCodec*    m_codec;
   ANativeWindow*  m_surface;
@@ -150,12 +155,19 @@ protected:
   amc_demux m_demux_pkt;
   std::vector<CDVDMediaCodecInfo*> m_inflight;
 
-  CBitstreamConverter *m_bitstream;
-  DVDVideoPicture m_videobuffer;
+  uint32_t m_OutputDuration, m_fpsDuration;
+  int64_t m_lastPTS;
 
-  int             m_dec_retcode;
+  static std::atomic<bool> m_InstanceGuard;
+
+  CBitstreamConverter *m_bitstream;
+  VideoPicture m_videobuffer;
+
+  int             m_indexInputBuffer;
   bool            m_render_sw;
   bool            m_render_surface;
+  mpeg2_sequence  *m_mpeg2_sequence;
+  unsigned int    m_lastInflight;
   int             m_src_offset[4];
   int             m_src_stride[4];
 };

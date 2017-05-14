@@ -22,8 +22,6 @@
 
 #include "system.h"
 
-#ifdef HAVE_LIBVA
-
 #include "cores/VideoPlayer/VideoRenderers/LinuxRendererGL.h"
 
 class CRendererVAAPI : public CLinuxRendererGL
@@ -32,10 +30,14 @@ public:
   CRendererVAAPI();
   virtual ~CRendererVAAPI();
 
+  virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height,
+                         float fps, unsigned flags, ERenderFormat format, void *hwPic, unsigned int orientation) override;
+
   // Player functions
-  virtual void AddVideoPictureHW(DVDVideoPicture &picture, int index) override;
+  virtual void AddVideoPictureHW(VideoPicture &picture, int index) override;
   virtual void ReleaseBuffer(int idx) override;
   virtual CRenderInfo GetRenderInfo() override;
+  virtual bool ConfigChanged(void *hwPic) override;
 
   // Feature support
   virtual bool Supports(ERENDERFEATURE feature) override;
@@ -50,7 +52,9 @@ protected:
   virtual bool UploadTexture(int index) override;
   virtual void DeleteTexture(int index) override;
   virtual bool CreateTexture(int index) override;
-};
 
-#endif
+  virtual EShaderFormat GetShaderFormat(ERenderFormat renderFormat) override;
+
+  bool m_isVAAPIBuffer = true;
+};
 

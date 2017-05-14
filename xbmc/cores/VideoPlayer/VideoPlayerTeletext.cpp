@@ -19,7 +19,7 @@
  */
 
 #include "VideoPlayerTeletext.h"
-#include "DVDClock.h"
+#include "TimingConstants.h"
 #include "DVDStreamInfo.h"
 #include "DVDDemuxers/DVDDemuxPacket.h"
 #include "utils/log.h"
@@ -118,7 +118,7 @@ bool CDVDTeletextData::CheckStream(CDVDStreamInfo &hints)
   return false;
 }
 
-bool CDVDTeletextData::OpenStream(CDVDStreamInfo &hints)
+bool CDVDTeletextData::OpenStream(CDVDStreamInfo hints)
 {
   CloseStream(true);
 

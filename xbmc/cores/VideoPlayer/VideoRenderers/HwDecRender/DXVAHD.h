@@ -19,7 +19,6 @@
  */
 #pragma once
 
-#include <dxva2api.h>
 #include <vector>
 #include "DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
 #include "DVDCodecs/Video/DXVA.h"
@@ -54,12 +53,12 @@ public:
 
   bool PreInit();
   void UnInit();
-  bool Open(UINT width, UINT height, unsigned int flags, unsigned int format, unsigned int extended_format);
+  bool Open(UINT width, UINT height, unsigned int flags, unsigned int format, DXGI_FORMAT dxva_format);
   void Close();
-  CRenderPicture *Convert(DVDVideoPicture &picture);
+  CRenderPicture *Convert(VideoPicture &picture);
   bool Render(CRect src, CRect dst, ID3D11Resource* target, ID3D11View **views, DWORD flags, UINT frameIdx, UINT rotation);
-  uint8_t Size() { if (m_pVideoProcessor) return m_size; return 0; }
-  uint8_t PastRefs() { return m_max_back_refs; }
+  uint8_t Size() const { if (m_pVideoProcessor) return m_size; return 0; }
+  uint8_t PastRefs() const { return m_max_back_refs; }
   void ApplySupportedFormats(std::vector<ERenderFormat> * formats);
 
   // ID3DResource overrides
@@ -69,15 +68,14 @@ public:
   void OnResetDevice() override   { CSingleLock lock(m_section); Close();  }
 
 protected:
-  bool UpdateSize(const DXVA2_VideoDesc& dsc);
   bool ReInit();
   bool InitProcessor();
-  bool ConfigureProcessor(unsigned int format, unsigned int extended_format);
+  bool ConfigureProcessor(unsigned int format, DXGI_FORMAT dxva_format);
   bool OpenProcessor();
   bool CreateSurfaces();
-  bool ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER filter, int value, int min, int max, int def);
-  ID3D11VideoProcessorInputView* GetInputView(ID3D11View* view);
-  bool IsFormatSupported(DXGI_FORMAT format, D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT support);
+  bool ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER filter, int value, int min, int max, int def) const;
+  ID3D11VideoProcessorInputView* GetInputView(ID3D11View* view) const;
+  bool IsFormatSupported(DXGI_FORMAT format, D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT support) const;
 
   uint32_t m_width;
   uint32_t m_height;
@@ -94,7 +92,6 @@ protected:
   };
   ProcAmpInfo m_Filters[NUM_FILTERS];
 
-  // dx 11
   DXGI_FORMAT m_textureFormat;
   ID3D11VideoDevice *m_pVideoDevice;
   ID3D11VideoContext *m_pVideoContext;

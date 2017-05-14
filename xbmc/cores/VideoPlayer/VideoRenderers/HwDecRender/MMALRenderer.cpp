@@ -247,6 +247,8 @@ void CMMALPool::Prime()
   if (!m_mmal_pool || !m_component)
     return;
   MMAL_PORT_T *port = m_input ? m_component->input[0] : m_component->output[0];
+  if (!port->is_enabled)
+    return;
   while (omvb = GetBuffer(0), omvb)
   {
     if (VERBOSE && g_advancedSettings.CanLogComponent(LOGVIDEO))
@@ -525,7 +527,6 @@ void CMMALRenderer::Run()
   CLog::Log(LOGDEBUG, "%s::%s - starting", CLASSNAME, __func__);
   while (1)
   {
-    bool prime = false;
     MMAL_BUFFER_HEADER_T *buffer = mmal_queue_wait(m_queue_process);
     assert(buffer);
     if (buffer == &m_quitpacket)
@@ -656,10 +657,6 @@ void CMMALRenderer::Run()
           }
         }
       }
-      else
-      {
-        prime = true;
-      }
       break;
     }
     default: assert(0); break;
@@ -678,8 +675,6 @@ void CMMALRenderer::Run()
         mmal_buffer_header_release(buffer);
       }
     }
-    if (prime && m_deint_output_pool)
-     m_deint_output_pool->Prime();
   }
   CLog::Log(LOGDEBUG, "%s::%s - stopping", CLASSNAME, __func__);
 }
@@ -704,7 +699,7 @@ void CMMALRenderer::UpdateFramerateStats(double pts)
     CLog::Log(LOGDEBUG, "%s::%s pts:%.3f diff:%.3f m_frameInterval:%.6f m_frameIntervalDiff:%.6f", CLASSNAME, __func__, pts*1e-6, diff * 1e-6 , m_frameInterval * 1e-6, m_frameIntervalDiff *1e-6);
 }
 
-void CMMALRenderer::AddVideoPictureHW(DVDVideoPicture& pic, int index)
+void CMMALRenderer::AddVideoPictureHW(VideoPicture& pic, int index)
 {
   if (m_format != RENDER_FMT_MMAL)
   {
@@ -712,7 +707,7 @@ void CMMALRenderer::AddVideoPictureHW(DVDVideoPicture& pic, int index)
     return;
   }
 
-  CMMALBuffer *buffer = pic.MMALBuffer;
+  CMMALBuffer *buffer = static_cast<CMMALBuffer*>(pic.hwPic);
   assert(buffer);
   if (VERBOSE && g_advancedSettings.CanLogComponent(LOGVIDEO))
     CLog::Log(LOGDEBUG, "%s::%s MMAL - %p (%p) %i", CLASSNAME, __func__, buffer, buffer->mmal_buffer, index);
@@ -721,7 +716,7 @@ void CMMALRenderer::AddVideoPictureHW(DVDVideoPicture& pic, int index)
   UpdateFramerateStats(pic.pts);
 }
 
-bool CMMALRenderer::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format, unsigned int orientation)
+bool CMMALRenderer::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, void* hwPic, unsigned int orientation)
 {
   CSingleLock lock(m_sharedSection);
   ReleaseBuffers();
@@ -741,7 +736,7 @@ bool CMMALRenderer::Configure(unsigned int width, unsigned int height, unsigned 
   m_src_rect.SetRect(0, 0, 0, 0);
   m_dst_rect.SetRect(0, 0, 0, 0);
 
-  CLog::Log(LOGDEBUG, "%s::%s - %dx%d->%dx%d@%.2f flags:%x format:%d ext:%x orient:%d", CLASSNAME, __func__, width, height, d_width, d_height, fps, flags, format, extended_format, orientation);
+  CLog::Log(LOGDEBUG, "%s::%s - %dx%d->%dx%d@%.2f flags:%x format:%d hwpic:%p orient:%d", CLASSNAME, __func__, width, height, d_width, d_height, fps, flags, format, hwPic, orientation);
   if (format != RENDER_FMT_BYPASS && format != RENDER_FMT_MMAL)
   {
     CLog::Log(LOGERROR, "%s::%s - format:%d not supported", CLASSNAME, __func__, format);

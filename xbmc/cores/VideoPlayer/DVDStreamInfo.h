@@ -26,7 +26,11 @@ extern "C" {
 #include "libavcodec/avcodec.h"
 }
 
+#define CODEC_FORCE_SOFTWARE 0x01
+#define CODEC_ALLOW_FALLBACK 0x02
+
 class CDemuxStream;
+struct DemuxCryptoSession;
 
 class CDVDStreamInfo
 {
@@ -49,17 +53,16 @@ public:
   int uniqueId;
   bool realtime;
   int flags;
-  bool software;  //force software decoding
   std::string filename;
   bool dvd;
-
+  int codecOptions;
 
   // VIDEO
   int fpsscale; // scale of 1001 and a rate of 60000 will result in 59.94 fps
   int fpsrate;
   int height; // height of the stream reported by the demuxer
   int width; // width of the stream reported by the demuxer
-  float aspect; // display aspect as reported by demuxer
+  double aspect; // display aspect as reported by demuxer
   bool vfr; // variable framerate
   bool stills; // there may be odd still frames in video
   int level; // encoder level of the stream reported by the decoder. used to qualify hw decoders.
@@ -84,6 +87,10 @@ public:
   void*        extradata; // extra data for codec to use
   unsigned int extrasize; // size of extra data
   unsigned int codec_tag; // extra identifier hints for decoding
+
+  // Crypto initialization Data
+  std::shared_ptr<DemuxCryptoSession> cryptoSession;
+  std::shared_ptr<ADDON::IAddonProvider> externalInterfaces;
 
   bool operator==(const CDVDStreamInfo& right)      { return Equal(right, true);}
   bool operator!=(const CDVDStreamInfo& right)      { return !Equal(right, true);}

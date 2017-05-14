@@ -33,9 +33,9 @@ public:
   virtual ~CRendererAML();
 
   virtual bool RenderCapture(CRenderCapture* capture);
-  virtual void AddVideoPictureHW(DVDVideoPicture &picture, int index);
+  virtual void AddVideoPictureHW(VideoPicture &picture, int index);
   virtual void ReleaseBuffer(int idx);
-  virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_formatl, unsigned int orientation);
+  virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, void *hwPic, unsigned int orientation);
   virtual bool IsConfigured(){ return m_bConfigured; };
   virtual CRenderInfo GetRenderInfo();
   virtual int GetImage(YV12Image *image, int source = -1, bool readonly = false);
