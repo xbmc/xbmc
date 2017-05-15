@@ -149,7 +149,7 @@ public:
   void Stop(int exitCode);
   void RestartApp();
   void UnloadSkin(bool forReload = false);
-  bool LoadUserWindows();
+  bool LoadCustomWindows();
   void ReloadSkin(bool confirm = false);
   const std::string& CurrentFile();
   CFileItem& CurrentFileItem();

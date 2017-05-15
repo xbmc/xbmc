@@ -1665,8 +1665,8 @@ bool CApplication::LoadSkin(const std::string& skinID)
 
   CLog::Log(LOGINFO, "  load new skin...");
 
-  // Load the user windows
-  LoadUserWindows();
+  // Load custom windows
+  LoadCustomWindows();
 
   int64_t end, freq;
   end = CurrentHostCounter();
@@ -1755,28 +1755,31 @@ void CApplication::UnloadSkin(bool forReload /* = false */)
 // and as a result a race condition on exit can cause a crash.
 }
 
-bool CApplication::LoadUserWindows()
+bool CApplication::LoadCustomWindows()
 {
   // Start from wherever home.xml is
   std::vector<std::string> vecSkinPath;
   g_SkinInfo->GetSkinPaths(vecSkinPath);
-  for (unsigned int i = 0;i < vecSkinPath.size();++i)
+
+  for (const auto &skinPath : vecSkinPath)
   {
-    CLog::Log(LOGINFO, "Loading user windows, path %s", vecSkinPath[i].c_str());
+    CLog::Log(LOGINFO, "Loading custom window XMLs from skin path %s", skinPath.c_str());
+
     CFileItemList items;
-    if (CDirectory::GetDirectory(vecSkinPath[i], items, ".xml", DIR_FLAG_NO_FILE_DIRS))
+    if (CDirectory::GetDirectory(skinPath, items, ".xml", DIR_FLAG_NO_FILE_DIRS))
     {
-      for (int i = 0; i < items.Size(); ++i)
+      for (const auto &item : items.GetList())
       {
-        if (items[i]->m_bIsFolder)
+        if (item->m_bIsFolder)
           continue;
-        std::string skinFile = URIUtils::GetFileName(items[i]->GetPath());
+
+        std::string skinFile = URIUtils::GetFileName(item->GetPath());
         if (StringUtils::StartsWithNoCase(skinFile, "custom"))
         {
           CXBMCTinyXML xmlDoc;
-          if (!xmlDoc.LoadFile(items[i]->GetPath()))
+          if (!xmlDoc.LoadFile(item->GetPath()))
           {
-            CLog::Log(LOGERROR, "unable to load: %s, Line %d\n%s", items[i]->GetPath().c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+            CLog::Log(LOGERROR, "Unable to load custom window XML %s. Line %d\n%s", item->GetPath().c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
             continue;
           }
 
@@ -1785,13 +1788,14 @@ bool CApplication::LoadUserWindows()
           std::string strValue = pRootElement->Value();
           if (!StringUtils::EqualsNoCase(strValue, "window"))
           {
-            CLog::Log(LOGERROR, "file: %s doesnt contain <window>", skinFile.c_str());
+            CLog::Log(LOGERROR, "No <window> root element found for custom window in %s", skinFile.c_str());
             continue;
           }
 
-          // Read the <type> element to get the window type to create
+          int id = WINDOW_INVALID;
+
+          // Read the type attribute or element to get the window type to create
           // If no type is specified, create a CGUIWindow as default
-          CGUIWindow* pWindow = NULL;
           std::string strType;
           if (pRootElement->Attribute("type"))
             strType = pRootElement->Attribute("type");
@@ -1801,38 +1805,56 @@ bool CApplication::LoadUserWindows()
             if (pType && pType->FirstChild())
               strType = pType->FirstChild()->Value();
           }
-          int id = WINDOW_INVALID;
+
+          // Read the id attribute or element to get the window id
           if (!pRootElement->Attribute("id", &id))
           {
             const TiXmlNode *pType = pRootElement->FirstChild("id");
             if (pType && pType->FirstChild())
               id = atol(pType->FirstChild()->Value());
           }
-          std::string visibleCondition;
-          CGUIControlFactory::GetConditionalVisibility(pRootElement, visibleCondition);
 
-          if (StringUtils::EqualsNoCase(strType, "dialog"))
-            pWindow = new CGUIDialog(id + WINDOW_HOME, skinFile, visibleCondition.empty() ? DialogModalityType::MODAL : DialogModalityType::MODELESS);
-          else if (StringUtils::EqualsNoCase(strType, "submenu"))
-            pWindow = new CGUIDialogSubMenu(id + WINDOW_HOME, skinFile);
-          else if (StringUtils::EqualsNoCase(strType, "buttonmenu"))
-            pWindow = new CGUIDialogButtonMenu(id + WINDOW_HOME, skinFile);
-          else
-            pWindow = new CGUIWindow(id + WINDOW_HOME, skinFile);
-
-          // Check to make sure the pointer isn't still null
-          if (pWindow == NULL)
+          int windowId = id + WINDOW_HOME;
+          if (id == WINDOW_INVALID || g_windowManager.GetWindow(windowId))
           {
-            CLog::Log(LOGERROR, "Out of memory / Failed to create new object in LoadUserWindows");
-            return false;
-          }
-          if (id == WINDOW_INVALID || g_windowManager.GetWindow(WINDOW_HOME + id))
-          {
-            delete pWindow;
+            // No id specified or id already in use
+            CLog::Log(LOGERROR, "No id specified or id already in use for custom window in %s", skinFile.c_str());
             continue;
           }
-          pWindow->SetVisibleCondition(visibleCondition);
-          pWindow->SetLoadType(CGUIWindow::KEEP_IN_MEMORY);
+
+          CGUIWindow* pWindow = NULL;
+          bool hasVisibleCondition = false;
+
+          if (StringUtils::EqualsNoCase(strType, "dialog"))
+          {
+            hasVisibleCondition = pRootElement->FirstChildElement("visible");
+            pWindow = new CGUIDialog(windowId, skinFile);
+          }
+          else if (StringUtils::EqualsNoCase(strType, "submenu"))
+          {
+            pWindow = new CGUIDialogSubMenu(windowId, skinFile);
+          }
+          else if (StringUtils::EqualsNoCase(strType, "buttonmenu"))
+          {
+            pWindow = new CGUIDialogButtonMenu(windowId, skinFile);
+          }
+          else
+          {
+            pWindow = new CGUIWindow(windowId, skinFile);
+          }
+
+          if (!pWindow)
+          {
+            CLog::Log(LOGERROR, "Failed to create custom window from %s", skinFile.c_str());
+            continue;
+          }
+
+          pWindow->SetCustom(true);
+
+          // Determining whether our custom dialog is modeless (visible condition is present)
+          // will be done on load. Therefore we need to initialize the custom dialog on gui init.
+          pWindow->SetLoadType(hasVisibleCondition ? CGUIWindow::LOAD_ON_GUI_INIT : CGUIWindow::KEEP_IN_MEMORY);
+
           g_windowManager.AddCustomWindow(pWindow);
         }
       }

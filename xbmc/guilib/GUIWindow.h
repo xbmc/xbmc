@@ -168,6 +168,19 @@ public:
                                                    // the window manager's active list.
 
   virtual bool IsAnimating(ANIMATION_TYPE animType);
+
+  /*!
+   \brief Return if the window is a custom window
+   \return true if the window is an custom window otherwise false
+   */
+  bool IsCustom() const { return m_custom; };
+
+  /*!
+   \brief Mark this window as custom window
+   \param custom true if this window is a custom window, false if not
+   */
+  void SetCustom(bool custom) { m_custom = custom; };
+
   void DisableAnimations();
 
   virtual void ResetControlStates();
@@ -203,7 +216,14 @@ public:
 protected:
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
   virtual bool LoadXML(const std::string& strPath, const std::string &strLowerPath);  ///< Loads from the given file
-  bool Load(TiXmlElement *pRootElement);                 ///< Loads from the given XML root element
+
+  /*!
+   \brief Loads the window from the given XML element
+   \param pRootElement the XML element
+   \return true if the window is loaded from the given XML otherwise false.
+   */
+  virtual bool Load(TiXmlElement *pRootElement);
+
   /*! \brief Check if XML file needs (re)loading
    XML file has to be (re)loaded when window is not loaded or include conditions values were changed
    */
@@ -281,6 +301,7 @@ protected:
 
   int m_menuControlID;
   int m_menuLastFocusedControlID;
+  bool m_custom;
 
 private:
   std::map<std::string, CVariant, icompare> m_mapProperties;
