@@ -2006,7 +2006,7 @@ bool CVideoDatabase::GetTvShowInfo(const std::string& strPath, CVideoInfoTag& de
   return false;
 }
 
-bool CVideoDatabase::GetSeasonInfo(int idSeason, CVideoInfoTag& details)
+bool CVideoDatabase::GetSeasonInfo(int idSeason, CVideoInfoTag& details, bool allDetails /* = true */)
 {
   if (idSeason < 0)
     return false;
@@ -2016,32 +2016,62 @@ bool CVideoDatabase::GetSeasonInfo(int idSeason, CVideoInfoTag& details)
     if (!m_pDB.get() || !m_pDS.get())
       return false;
 
-    std::string sql = PrepareSQL("SELECT idShow FROM seasons WHERE idSeason=%i", idSeason);
+    std::string sql = PrepareSQL("SELECT idSeason, idShow, season, name, userrating FROM seasons WHERE idSeason=%i", idSeason);
     if (!m_pDS->query(sql))
       return false;
 
-    int idShow = -1;
-    if (m_pDS->num_rows() == 1)
-      idShow = m_pDS->fv(0).get_asInt();
-
-    m_pDS->close();
-
-    if (idShow < 0)
+    if (m_pDS->num_rows() != 1)
       return false;
 
-    CFileItemList seasons;
-    if (!GetSeasonsNav(StringUtils::Format("videodb://tvshows/titles/%i/", idShow), seasons, -1, -1, -1, -1, idShow, false) || seasons.Size() <= 0)
-      return false;
-
-    for (int index = 0; index < seasons.Size(); index++)
+    if (allDetails)
     {
-      const CFileItemPtr season = seasons.Get(index);
-      if (season->HasVideoInfoTag() && season->GetVideoInfoTag()->m_iDbId == idSeason && season->GetVideoInfoTag()->m_iIdShow == idShow)
+      int idShow = m_pDS->fv(1).get_asInt();
+
+      // close the current result because we are going to query the season view for all details
+      m_pDS->close();
+
+      if (idShow < 0)
+        return false;
+
+      CFileItemList seasons;
+      if (!GetSeasonsNav(StringUtils::Format("videodb://tvshows/titles/%i/", idShow), seasons, -1, -1, -1, -1, idShow, false) || seasons.Size() <= 0)
+        return false;
+
+      for (int index = 0; index < seasons.Size(); index++)
       {
-        details = *season->GetVideoInfoTag();
-        return true;
+        const CFileItemPtr season = seasons.Get(index);
+        if (season->HasVideoInfoTag() && season->GetVideoInfoTag()->m_iDbId == idSeason && season->GetVideoInfoTag()->m_iIdShow == idShow)
+        {
+          details = *season->GetVideoInfoTag();
+          return true;
+        }
       }
+
+      return false;
     }
+
+    const int season = m_pDS->fv(2).get_asInt();
+    std::string name = m_pDS->fv(3).get_asString();
+
+    if (name.empty())
+    {
+      if (season == 0)
+        name = g_localizeStrings.Get(20381);
+      else
+        name = StringUtils::Format(g_localizeStrings.Get(20358).c_str(), season);
+    }
+
+    details.m_strTitle = name;
+    if (!name.empty())
+      details.m_strSortTitle = name;
+    details.m_iSeason = season;
+    details.m_iDbId = m_pDS->fv(0).get_asInt();
+    details.m_iIdSeason = details.m_iDbId;
+    details.m_type = MediaTypeSeason;
+    details.m_iUserRating = m_pDS->fv(4).get_asInt();
+    details.m_iIdShow = m_pDS->fv(1).get_asInt();
+
+    return true;
   }
   catch (...)
   {
@@ -2582,11 +2612,11 @@ bool CVideoDatabase::UpdateDetailsForTvShow(int idTvShow, CVideoInfoTag &details
   for (const auto& namedSeason : details.m_namedSeasons)
   {
     // make sure the named season exists
-    int seasonId = AddSeason(idTvShow, namedSeason.first);
+    int seasonId = AddSeason(idTvShow, namedSeason.first, namedSeason.second);
 
     // get any existing details for the named season
     CVideoInfoTag season;
-    if (!GetSeasonInfo(seasonId, season) || season.m_strSortTitle == namedSeason.second)
+    if (!GetSeasonInfo(seasonId, season, false) || season.m_strSortTitle == namedSeason.second)
       continue;
 
     season.SetSortTitle(namedSeason.second);
@@ -2776,12 +2806,12 @@ int CVideoDatabase::GetSeasonId(int showID, int season)
   return strtol(id.c_str(), NULL, 10);
 }
 
-int CVideoDatabase::AddSeason(int showID, int season)
+int CVideoDatabase::AddSeason(int showID, int season, const std::string& name /* = "" */)
 {
   int seasonId = GetSeasonId(showID, season);
   if (seasonId < 0)
   {
-    if (ExecuteQuery(PrepareSQL("INSERT INTO seasons (idShow,season,name) VALUES(%i,%i,'')", showID, season)))
+    if (ExecuteQuery(PrepareSQL("INSERT INTO seasons (idShow, season, name) VALUES(%i, %i, '%s')", showID, season, name.c_str())))
       seasonId = (int)m_pDS->lastinsertid();
   }
   return seasonId;
