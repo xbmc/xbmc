@@ -51,7 +51,10 @@ set downloaddir=%instdir%\downloads2
 set unpack_exe=%instdir%\..\Win32BuildSetup\tools\7z\7za.exe
 
 for %%b in (%1, %2, %3) do (
-  if %%b==build64 (set build64=yes)
+  if %%b==build64 (
+    set build32=no
+    set build64=yes
+  )
   if %%b==sh (set opt=sh)
 )
 
@@ -539,7 +542,8 @@ for %%i in (%locals32%) do (
     )
     if errorlevel == 1 del "%downloaddir%\!pkgfile!"
     if exist "%downloaddir%\!pkgfile!" (
-      %unpack_exe% x %downloaddir%\!pkgfile! -so | %unpack_exe% x -aoa -si -ttar -o%instdir%
+      %unpack_exe% x %downloaddir%\!pkgfile!^
+        -so | %unpack_exe% x -aoa -si -ttar -o%instdir%
     )
     endlocal
   )
@@ -554,7 +558,8 @@ for %%i in (%locals64%) do (
     )
     if errorlevel == 1 del "%downloaddir%\!pkgfile!"
     if exist "%downloaddir%\!pkgfile!" (
-      %unpack_exe% x %downloaddir%\!pkgfile! -so | %unpack_exe% x -aoa -si -ttar -o%instdir%
+      %unpack_exe% x %downloaddir%\!pkgfile!^
+        -so | %unpack_exe% x -aoa -si -ttar -o%instdir%
     )
     endlocal
   )
