@@ -48,6 +48,8 @@ elseif(CORE_SYSTEM_NAME STREQUAL android)
 elseif(CORE_SYSTEM_NAME STREQUAL ios)
   if(NOT CPU MATCHES arm64)
     list(APPEND ffmpeg_conf --cpu=cortex-a8)
+  else()
+    list(APPEND ffmpeg_conf "--as=${NATIVEPREFIX}/bin/gas-preprocessor.pl -arch aarch64 -- ${CMAKE_C_COMPILER}")
   endif()
   list(APPEND ffmpeg_conf --disable-decoder=mpeg_xvmc --disable-vda --disable-crystalhd --enable-videotoolbox
                           --target-os=darwin)
