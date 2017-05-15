@@ -354,7 +354,8 @@ void GUIFontManager::LoadFonts(const std::string& fontSet)
     CLog::Log(LOGERROR, "file %s doesnt start with <fonts>", strPath.c_str());
     return;
   }
-
+  // Resolve includes in Font.xml
+  g_SkinInfo->ResolveIncludes(pRootElement);
   // take note of the first font available in case we can't load the one specified
   std::string firstFont;
 
