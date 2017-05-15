@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<node order="27" type="filter">
+	<label>0-9</label>
+	<content>artists</content>
+	<rule field="artist" operator="startswith">
+		<value>1</value>
+		<value>2</value>
+		<value>3</value>
+		<value>4</value>
+		<value>5</value>
+		<value>6</value>
+		<value>7</value>
+		<value>8</value>
+		<value>9</value>
+		<value>0</value>
+	</rule>
+</node>
