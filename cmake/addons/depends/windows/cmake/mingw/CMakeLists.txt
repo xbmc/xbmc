@@ -9,7 +9,11 @@ endfunction()
 get_filename_component(CORE_SOURCE_DIR ${PROJECT_SOURCE_DIR}/../../../../../.. REALPATH)
 
 set(MSYS_PATH "${CORE_SOURCE_DIR}/project/BuildDependencies/msys64")
-set(MINGW_PATH "${MSYS_PATH}/mingw32")
+if(CMAKE_SIZEOF_VOID_P EQUAL 4)
+  set(MINGW_PATH "${MSYS_PATH}/mingw32")
+elseif(CMAKE_SIZEOF_VOID_P EQUAL 8)
+  set(MINGW_PATH "${MSYS_PATH}/mingw64")
+endif()
 
 # configure the MinGW toolchain file
 configure_file(${PROJECT_SOURCE_DIR}/Toolchain_mingw32.cmake.in ${CMAKE_INSTALL_PREFIX}/Toolchain_mingw32.cmake @ONLY)
