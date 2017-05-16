@@ -125,7 +125,6 @@ void CRendererMediaCodecSurface::FlipPage(int source)
   {
     ManageRenderArea();
     mci->ReleaseOutputBuffer(true);
-    m_buffers[m_iRenderBuffer].hwPic = nullptr;
   }
 }
 
