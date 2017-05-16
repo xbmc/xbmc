@@ -1244,6 +1244,7 @@ void CGUIWindowManager::DeInitialize()
   for (int i = 0; i < int(m_vecCustomWindows.size()); i++)
   {
     CGUIWindow *pWindow = m_vecCustomWindows[i];
+    RemoveFromWindowHistory(pWindow->GetID());
     Remove(pWindow->GetID());
     delete pWindow;
   }
@@ -1545,6 +1546,26 @@ void CGUIWindowManager::AddToWindowHistory(int newWindowID)
     // didn't find window in history - add it to the stack
     // but do not add the splash window to history, as we never want to travel back to it
     m_windowHistory.push(newWindowID);
+  }
+}
+
+void CGUIWindowManager::RemoveFromWindowHistory(int windowID)
+{
+  std::stack<int> stack = m_windowHistory;
+
+  // pop windows from stack until we found the window
+  while (!stack.empty())
+  {
+    if (stack.top() == windowID)
+      break;
+    stack.pop();
+  }
+
+  // found window in history
+  if (!stack.empty())
+  {
+    stack.pop(); // remove window from stack
+    m_windowHistory = stack;
   }
 }
 

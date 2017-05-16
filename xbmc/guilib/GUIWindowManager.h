@@ -220,6 +220,15 @@ private:
   void LoadNotOnDemandWindows();
   void UnloadNotOnDemandWindows();
   void AddToWindowHistory(int newWindowID);
+
+  /*!
+   \brief Check if the given window id is in the window history, and if so, remove this
+    window and all overlying windows from the history so that we always have a predictable
+    "Back" behaviour for each window.
+
+   \param windowID the window id to remove from the window history
+   */
+  void RemoveFromWindowHistory(int windowID);
   void ClearWindowHistory();
   void CloseWindowSync(CGUIWindow *window, int nextWindowID = 0);
   CGUIWindow *GetTopMostDialog() const;
