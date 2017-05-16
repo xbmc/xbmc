@@ -157,7 +157,7 @@ ADDON_STATUS CPVRClient::Create(int iClientId)
   /* initialise the add-on */
   bool bReadyToUse(false);
   CLog::Log(LOGDEBUG, "PVR - %s - creating PVR add-on instance '%s'", __FUNCTION__, Name().c_str());
-  if ((status = CAddonDll::Create(&m_struct, &m_info)) == ADDON_STATUS_OK)
+  if ((status = CAddonDll::Create(ADDON_INSTANCE_PVR, &m_struct, &m_info)) == ADDON_STATUS_OK)
     bReadyToUse = GetAddonProperties();
 
   m_bReadyToUse = bReadyToUse;

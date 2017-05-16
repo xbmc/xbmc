@@ -120,7 +120,7 @@ ADDON_STATUS CActiveAEDSPAddon::Create(int iClientId)
   /* initialise the add-on */
   bool bReadyToUse(false);
   CLog::Log(LOGDEBUG, "ActiveAE DSP - %s - creating audio dsp add-on instance '%s'", __FUNCTION__, Name().c_str());
-  if ((status = CAddonDll::Create(&m_struct, &m_info)) == ADDON_STATUS_OK)
+  if ((status = CAddonDll::Create(ADDON_INSTANCE_ADSP, &m_struct, &m_info)) == ADDON_STATUS_OK)
     bReadyToUse = GetAddonProperties();
 
   m_bReadyToUse = bReadyToUse;

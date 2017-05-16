@@ -221,7 +221,7 @@ bool CGameClient::Initialize(void)
 
   m_libraryProps.InitializeProperties();
 
-  if (Create(&m_struct, m_info) == ADDON_STATUS_OK)
+  if (Create(ADDON_INSTANCE_GAME, &m_struct, m_info) == ADDON_STATUS_OK)
   {
     LogAddonProperties();
     return true;

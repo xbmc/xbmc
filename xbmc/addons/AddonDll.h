@@ -41,7 +41,7 @@ namespace ADDON
     virtual void SaveSettings();
     virtual std::string GetSetting(const std::string& key);
 
-    ADDON_STATUS Create(void* funcTable, void* info);
+    ADDON_STATUS Create(ADDON_TYPE type, void* funcTable, void* info);
     virtual void Stop();
     void Destroy();
 
