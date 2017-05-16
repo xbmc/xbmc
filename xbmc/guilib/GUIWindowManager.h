@@ -210,7 +210,7 @@ public:
    * \return true if the given window is a python window, otherwise false.
    */
   bool IsPythonWindow(int id) const { return (id >= WINDOW_PYTHON_START && id <= WINDOW_PYTHON_END); };
-  void GetActiveModelessWindows(std::vector<int> &ids);
+
 #ifdef _DEBUG
   void DumpTextureUse();
 #endif

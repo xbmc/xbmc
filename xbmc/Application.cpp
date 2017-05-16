@@ -1623,8 +1623,6 @@ bool CApplication::LoadSkin(const std::string& skinID)
   CGUIWindow* pWindow = g_windowManager.GetWindow(currentWindow);
   if (pWindow)
     iCtrlID = pWindow->GetFocusedControlID();
-  std::vector<int> currentModelessWindows;
-  g_windowManager.GetActiveModelessWindows(currentModelessWindows);
 
   UnloadSkin();
 
@@ -1697,12 +1695,6 @@ bool CApplication::LoadSkin(const std::string& skinID)
   if (currentWindow != WINDOW_INVALID)
   {
     g_windowManager.ActivateWindow(currentWindow);
-    for (unsigned int i = 0; i < currentModelessWindows.size(); i++)
-    {
-      CGUIDialog *dialog = g_windowManager.GetDialog(currentModelessWindows[i]);
-      if (dialog)
-        dialog->Open();
-    }
     if (iCtrlID != -1)
     {
       pWindow = g_windowManager.GetWindow(currentWindow);

@@ -1548,18 +1548,6 @@ void CGUIWindowManager::AddToWindowHistory(int newWindowID)
   }
 }
 
-void CGUIWindowManager::GetActiveModelessWindows(std::vector<int> &ids)
-{
-  // run through our modeless windows, and construct a vector of them
-  // useful for saving and restoring the modeless windows on skin change etc.
-  CSingleLock lock(g_graphicsContext);
-  for (const auto& window : m_activeDialogs)
-  {
-    if (!window->IsModalDialog())
-      ids.push_back(window->GetID());
-  }
-}
-
 CGUIWindow *CGUIWindowManager::GetTopMostDialog() const
 {
   CSingleLock lock(g_graphicsContext);
