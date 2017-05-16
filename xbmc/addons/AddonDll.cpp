@@ -195,9 +195,6 @@ ADDON_STATUS CAddonDll::Create(void* funcTable, void* info)
   /* Load add-on function table (written by add-on itself) */
   m_pDll->GetAddon(funcTable);
 
-  if (!CheckAPIVersion())
-    return ADDON_STATUS_PERMANENT_FAILURE;
-
   /* Allocate the helper function class to allow crosstalk over
      helper libraries */
   m_pHelpers = new CAddonInterfaces(this);

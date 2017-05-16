@@ -43,7 +43,6 @@ namespace ADDON
 
     ADDON_STATUS Create(void* funcTable, void* info);
     virtual void Stop();
-    virtual bool CheckAPIVersion(void) { return true; }
     void Destroy();
 
     bool DllLoaded(void) const;

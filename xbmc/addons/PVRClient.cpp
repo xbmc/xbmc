@@ -346,47 +346,6 @@ void CPVRClient::WriteClientChannelInfo(const CPVRChannelPtr &xbmcChannel, PVR_C
   strncpy(addonChannel.strStreamURL, xbmcChannel->StreamURL().c_str(), sizeof(addonChannel.strStreamURL) - 1);
 }
 
-bool CPVRClient::IsCompatibleAPIVersion(const ADDON::AddonVersion &minVersion, const ADDON::AddonVersion &version)
-{
-  AddonVersion myMinVersion = AddonVersion(XBMC_PVR_MIN_API_VERSION);
-  AddonVersion myVersion = AddonVersion(XBMC_PVR_API_VERSION);
-  return (version >= myMinVersion && minVersion <= myVersion);
-}
-
-bool CPVRClient::IsCompatibleGUIAPIVersion(const ADDON::AddonVersion &minVersion, const ADDON::AddonVersion &version)
-{
-  AddonVersion myMinVersion = AddonVersion(KODI_GUILIB_MIN_API_VERSION);
-  AddonVersion myVersion = AddonVersion(KODI_GUILIB_API_VERSION);
-  return (version >= myMinVersion && minVersion <= myVersion);
-}
-
-bool CPVRClient::CheckAPIVersion(void)
-{
-  /* check the API version */
-  AddonVersion minVersion = AddonVersion(XBMC_PVR_MIN_API_VERSION);
-  m_apiVersion = AddonVersion(m_struct.GetPVRAPIVersion());
-
-  if (!IsCompatibleAPIVersion(minVersion, m_apiVersion))
-  {
-    CLog::Log(LOGERROR, "PVR - Add-on '%s' is using an incompatible API version. XBMC minimum API version = '%s', add-on API version '%s'", Name().c_str(), minVersion.asString().c_str(), m_apiVersion.asString().c_str());
-    return false;
-  }
-
-  /* check the GUI API version */
-  AddonVersion guiVersion = AddonVersion("0.0.0");
-  minVersion = AddonVersion(KODI_GUILIB_MIN_API_VERSION);
-  guiVersion = AddonVersion(m_struct.GetGUIAPIVersion());
-
-  /* Only do the check, if add-on depends on GUI API. */
-  if (!guiVersion.empty() && !IsCompatibleGUIAPIVersion(minVersion, guiVersion))
-  {
-    CLog::Log(LOGERROR, "PVR - Add-on '%s' is using an incompatible GUI API version. XBMC minimum GUI API version = '%s', add-on GUI API version '%s'", Name().c_str(), minVersion.asString().c_str(), guiVersion.asString().c_str());
-    return false;
-  }
-
-  return true;
-}
-
 bool CPVRClient::GetAddonProperties(void)
 {
   std::string strBackendName, strConnectionString, strFriendlyName, strBackendVersion, strBackendHostname;

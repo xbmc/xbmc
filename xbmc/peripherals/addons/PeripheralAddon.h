@@ -107,14 +107,6 @@ namespace PERIPHERALS
     void UnregisterButtonMap(KODI::JOYSTICK::IButtonMap* buttonMap);
     void RefreshButtonMaps(const std::string& strDeviceName = "");
 
-  protected:
-    /*!
-     * @brief Request the API version from the add-on, and check if it's compatible
-     * @return True when compatible, false otherwise.
-     * @remark Implementation of CAddonDll
-     */
-    virtual bool CheckAPIVersion(void) override;
-
   private:
     void UnregisterButtonMap(CPeripheral* device);
 
@@ -135,14 +127,6 @@ namespace PERIPHERALS
      * @brief Retrieve add-on properties from the add-on
      */
     bool GetAddonProperties(void);
-
-    /*!
-     * @brief Checks whether the provided API version is compatible with XBMC
-     * @param minVersion The add-on's XBMC_PERIPHERAL_MIN_API_VERSION version
-     * @param version The add-on's XBMC_PERIPHERAL_API_VERSION version
-     * @return True when compatible, false otherwise
-     */
-    static bool IsCompatibleAPIVersion(const ADDON::AddonVersion &minVersion, const ADDON::AddonVersion &version);
 
     bool LogError(const PERIPHERAL_ERROR error, const char *strMethod) const;
 

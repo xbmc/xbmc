@@ -188,28 +188,6 @@ bool CPeripheralAddon::GetAddonProperties(void)
   return true;
 }
 
-bool CPeripheralAddon::CheckAPIVersion(void)
-{
-  // Check the API version
-  ADDON::AddonVersion minVersion = ADDON::AddonVersion(PERIPHERAL_MIN_API_VERSION);
-  m_apiVersion = ADDON::AddonVersion(m_struct.GetPeripheralAPIVersion());
-
-  if (!IsCompatibleAPIVersion(minVersion, m_apiVersion))
-  {
-    CLog::Log(LOGERROR, "PERIPHERAL - Add-on '%s' is using an incompatible API version. XBMC minimum API version = '%s', add-on API version '%s'", Name().c_str(), minVersion.asString().c_str(), m_apiVersion.asString().c_str());
-    return false;
-  }
-
-  return true;
-}
-
-bool CPeripheralAddon::IsCompatibleAPIVersion(const ADDON::AddonVersion &minVersion, const ADDON::AddonVersion &version)
-{
-  ADDON::AddonVersion myMinVersion = ADDON::AddonVersion(PERIPHERAL_MIN_API_VERSION);
-  ADDON::AddonVersion myVersion = ADDON::AddonVersion(PERIPHERAL_API_VERSION);
-  return (version >= myMinVersion && minVersion <= myVersion);
-}
-
 bool CPeripheralAddon::Register(unsigned int peripheralIndex, const PeripheralPtr& peripheral)
 {
   if (!peripheral)
