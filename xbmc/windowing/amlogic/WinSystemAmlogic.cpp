@@ -131,8 +131,8 @@ bool CWinSystemAmlogic::CreateNewWindow(const std::string& name,
   m_bFullScreen = fullScreen;
 
   fbdev_window *nativeWindow = new fbdev_window;
-  nativeWindow->width = res.iScreenWidth;
-  nativeWindow->height = res.iScreenHeight;
+  nativeWindow->width = res.iWidth;
+  nativeWindow->height = res.iHeight;
   m_nativeWindow = static_cast<EGLNativeWindowType>(nativeWindow);
 
   aml_set_native_resolution(res, m_framebuffer_name);
