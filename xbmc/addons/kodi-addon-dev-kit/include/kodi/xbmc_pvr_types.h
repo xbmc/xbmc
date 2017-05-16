@@ -77,12 +77,6 @@ struct DemuxPacket;
 /* using the default avformat's MAX_STREAMS value to be safe */
 #define PVR_STREAM_MAX_STREAMS 20
 
-/* current PVR API version */
-#define XBMC_PVR_API_VERSION ADDON_INSTANCE_VERSION_PVR
-
-/* min. PVR API version */
-#define XBMC_PVR_MIN_API_VERSION ADDON_INSTANCE_VERSION_PVR
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -551,10 +545,6 @@ extern "C" {
    */
   typedef struct KodiToAddonFuncTable_PVR
   {
-    const char*  (__cdecl* GetPVRAPIVersion)(void);
-    const char*  (__cdecl* GetMininumPVRAPIVersion)(void);
-    const char*  (__cdecl* GetGUIAPIVersion)(void);
-    const char*  (__cdecl* GetMininumGUIAPIVersion)(void);
     PVR_ERROR    (__cdecl* GetAddonCapabilities)(PVR_ADDON_CAPABILITIES*);
     PVR_ERROR    (__cdecl* GetStreamProperties)(PVR_STREAM_PROPERTIES*);
     const char*  (__cdecl* GetBackendName)(void);

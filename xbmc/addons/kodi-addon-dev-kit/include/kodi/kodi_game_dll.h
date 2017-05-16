@@ -26,28 +26,6 @@
 extern "C" {
 #endif
 
-// --- Game API operations -----------------------------------------------------
-
-/*!
- * \brief Return GAME_API_VERSION_STRING
- *
- * The add-on is backwards compatible with the frontend if this API version is
- * is at least the frontend's minimum API version.
- *
- * \return Must be GAME_API_VERSION_STRING
- */
-const char* GetGameAPIVersion(void);
-
-/*!
- * \brief Return GAME_MIN_API_VERSION_STRING
- *
- * The add-on is forwards compatible with the frontend if this minimum version
- * is no more than the frontend's API version.
- *
- * \return Must be GAME_MIN_API_VERSION_STRING
- */
-const char* GetMinimumGameAPIVersion(void);
-
 // --- Game operations ---------------------------------------------------------
 
 /*!
@@ -258,8 +236,6 @@ void __declspec(dllexport) get_addon(void* ptr)
 {
   KodiToAddonFuncTable_Game* pClient = static_cast<KodiToAddonFuncTable_Game*>(ptr);
 
-  pClient->GetGameAPIVersion        = GetGameAPIVersion;
-  pClient->GetMinimumGameAPIVersion = GetMinimumGameAPIVersion;
   pClient->LoadGame                 = LoadGame;
   pClient->LoadGameSpecial          = LoadGameSpecial;
   pClient->LoadStandalone           = LoadStandalone;

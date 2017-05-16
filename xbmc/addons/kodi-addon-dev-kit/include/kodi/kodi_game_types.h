@@ -22,12 +22,6 @@
 
 #include "versions.h"
 
-/* current game API version */
-#define GAME_API_VERSION                ADDON_INSTANCE_VERSION_GAME
-
-/* min. game API version */
-#define GAME_MIN_API_VERSION            ADDON_INSTANCE_VERSION_GAME
-
 #include <stddef.h>
 #include <stdint.h>
 
@@ -456,8 +450,6 @@ typedef struct game_client_properties
 /*! Structure to transfer the methods from kodi_game_dll.h to Kodi */
 typedef struct KodiToAddonFuncTable_Game
 {
-  const char* (__cdecl* GetGameAPIVersion)(void);
-  const char* (__cdecl* GetMinimumGameAPIVersion)(void);
   GAME_ERROR  (__cdecl* LoadGame)(const char*);
   GAME_ERROR  (__cdecl* LoadGameSpecial)(SPECIAL_GAME_TYPE, const char**, size_t);
   GAME_ERROR  (__cdecl* LoadStandalone)(void);

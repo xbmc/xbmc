@@ -34,9 +34,6 @@
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemuxPacket.h"
 #endif
 
-/* current input stream API version */
-#define KODI_INPUTSTREAM_API_VERSION ADDON_INSTANCE_VERSION_INPUTSTREAM
-
 namespace KodiAPI
 {
 namespace InputStream

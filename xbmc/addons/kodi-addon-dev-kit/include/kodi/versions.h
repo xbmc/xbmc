@@ -56,8 +56,8 @@
 #define ADDON_GLOBAL_VERSION_GUI_XML_ID               "kodi.binary.global.gui"
 #define ADDON_GLOBAL_VERSION_GUI_DEPENDS              "libKODI_guilib.h"
 
-#define ADDON_INSTANCE_VERSION_ADSP                   "0.1.8"
-#define ADDON_INSTANCE_VERSION_ADSP_MIN               "0.1.8"
+#define ADDON_INSTANCE_VERSION_ADSP                   "0.1.9"
+#define ADDON_INSTANCE_VERSION_ADSP_MIN               "0.1.9"
 #define ADDON_INSTANCE_VERSION_ADSP_XML_ID            "kodi.binary.instance.adsp"
 #define ADDON_INSTANCE_VERSION_ADSP_DEPENDS           "kodi_adsp_dll.h" \
                                                       "kodi_adsp_types.h" \
@@ -75,8 +75,8 @@
 #define ADDON_INSTANCE_VERSION_AUDIOENCODER_DEPENDS   "xbmc_audioenc_dll.h" \
                                                       "xbmc_audioenc_types.h"
 
-#define ADDON_INSTANCE_VERSION_GAME                   "1.0.30"
-#define ADDON_INSTANCE_VERSION_GAME_MIN               "1.0.30"
+#define ADDON_INSTANCE_VERSION_GAME                   "1.0.31"
+#define ADDON_INSTANCE_VERSION_GAME_MIN               "1.0.31"
 #define ADDON_INSTANCE_VERSION_GAME_XML_ID            "kodi.binary.instance.game"
 #define ADDON_INSTANCE_VERSION_GAME_DEPENDS           "kodi_game_dll.h" \
                                                       "kodi_game_types.h" \
@@ -88,23 +88,23 @@
 #define ADDON_INSTANCE_VERSION_IMAGEDECODER_DEPENDS   "kodi_imagedec_dll.h" \
                                                       "kodi_imagedec_types.h"
 
-#define ADDON_INSTANCE_VERSION_INPUTSTREAM            "1.0.6"
-#define ADDON_INSTANCE_VERSION_INPUTSTREAM_MIN        "1.0.6"
+#define ADDON_INSTANCE_VERSION_INPUTSTREAM            "1.0.7"
+#define ADDON_INSTANCE_VERSION_INPUTSTREAM_MIN        "1.0.7"
 #define ADDON_INSTANCE_VERSION_INPUTSTREAM_XML_ID     "kodi.binary.instance.inputstream"
 #define ADDON_INSTANCE_VERSION_INPUTSTREAM_DEPENDS    "libKODI_inputstream.h" \
                                                       "kodi_inputstream_dll.h" \
                                                       "kodi_inputstream_types.h"
 
-#define ADDON_INSTANCE_VERSION_PERIPHERAL             "1.3.1"
-#define ADDON_INSTANCE_VERSION_PERIPHERAL_MIN         "1.3.1"
+#define ADDON_INSTANCE_VERSION_PERIPHERAL             "1.3.2"
+#define ADDON_INSTANCE_VERSION_PERIPHERAL_MIN         "1.3.2"
 #define ADDON_INSTANCE_VERSION_PERIPHERAL_XML_ID      "kodi.binary.instance.peripheral"
 #define ADDON_INSTANCE_VERSION_PERIPHERAL_DEPENDS     "kodi_peripheral_dll.h" \
                                                       "kodi_peripheral_types.h" \
                                                       "kodi_peripheral_utils.hpp" \
                                                       "libKODI_peripheral.h"
 
-#define ADDON_INSTANCE_VERSION_PVR                    "5.2.2"
-#define ADDON_INSTANCE_VERSION_PVR_MIN                "5.2.2"
+#define ADDON_INSTANCE_VERSION_PVR                    "5.2.3"
+#define ADDON_INSTANCE_VERSION_PVR_MIN                "5.2.3"
 #define ADDON_INSTANCE_VERSION_PVR_XML_ID             "kodi.binary.instance.pvr"
 #define ADDON_INSTANCE_VERSION_PVR_DEPENDS            "xbmc_pvr_dll.h" \
                                                       "xbmc_pvr_types.h" \
