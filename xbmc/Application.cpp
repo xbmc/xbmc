@@ -1600,8 +1600,9 @@ bool CApplication::LoadSkin(const std::string& skinID)
     skin = std::static_pointer_cast<ADDON::CSkinInfo>(addon);
   }
 
-  bool bPreviousPlayingState=false;
-  bool bPreviousRenderingState=false;
+  // store player and rendering state
+  bool bPreviousPlayingState = false;
+  bool bPreviousRenderingState = false;
   if (m_pPlayer->IsPlayingVideo())
   {
     bPreviousPlayingState = !m_pPlayer->IsPausedPlayback();
@@ -1614,17 +1615,18 @@ bool CApplication::LoadSkin(const std::string& skinID)
       bPreviousRenderingState = true;
     }
   }
-  // close the music and video overlays (they're re-opened automatically later)
+
   CSingleLock lock(g_graphicsContext);
 
-  // save the current window details and focused control
-  int currentWindow = g_windowManager.GetActiveWindow();
-  int iCtrlID = -1;
-  CGUIWindow* pWindow = g_windowManager.GetWindow(currentWindow);
-  if (pWindow)
-    iCtrlID = pWindow->GetFocusedControlID();
-  std::vector<int> currentModelessWindows;
-  g_windowManager.GetActiveModelessWindows(currentModelessWindows);
+  // store current active window with its focused control
+  int currentWindowID = g_windowManager.GetActiveWindow();
+  int currentFocusedControlID = -1;
+  if (currentWindowID != WINDOW_INVALID)
+  {
+    CGUIWindow* pWindow = g_windowManager.GetWindow(currentWindowID);
+    if (pWindow)
+      currentFocusedControlID = pWindow->GetFocusedControlID();
+  }
 
   UnloadSkin();
 
@@ -1650,7 +1652,7 @@ bool CApplication::LoadSkin(const std::string& skinID)
   g_colorManager.Load(m_ServiceManager->GetSettings().GetString(CSettings::SETTING_LOOKANDFEEL_SKINCOLORS));
 
   g_SkinInfo->LoadIncludes();
-  
+
   g_fontManager.LoadFonts(m_ServiceManager->GetSettings().GetString(CSettings::SETTING_LOOKANDFEEL_FONT));
 
   // load in the skin strings
@@ -1693,27 +1695,22 @@ bool CApplication::LoadSkin(const std::string& skinID)
   // leave the graphics lock
   lock.Leave();
 
-  // restore windows
-  if (currentWindow != WINDOW_INVALID)
+  // restore active window
+  if (currentWindowID != WINDOW_INVALID)
   {
-    g_windowManager.ActivateWindow(currentWindow);
-    for (unsigned int i = 0; i < currentModelessWindows.size(); i++)
+    g_windowManager.ActivateWindow(currentWindowID);
+    if (currentFocusedControlID != -1)
     {
-      CGUIDialog *dialog = g_windowManager.GetDialog(currentModelessWindows[i]);
-      if (dialog)
-        dialog->Open();
-    }
-    if (iCtrlID != -1)
-    {
-      pWindow = g_windowManager.GetWindow(currentWindow);
+      CGUIWindow *pWindow = g_windowManager.GetWindow(currentWindowID);
       if (pWindow && pWindow->HasSaveLastControl())
       {
-        CGUIMessage msg(GUI_MSG_SETFOCUS, currentWindow, iCtrlID, 0);
+        CGUIMessage msg(GUI_MSG_SETFOCUS, currentWindowID, currentFocusedControlID, 0);
         pWindow->OnMessage(msg);
       }
     }
   }
 
+  // restore player and rendering state
   if (m_pPlayer->IsPlayingVideo())
   {
     if (bPreviousPlayingState)
@@ -1721,6 +1718,7 @@ bool CApplication::LoadSkin(const std::string& skinID)
     if (bPreviousRenderingState)
       g_windowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
   }
+  
   return true;
 }
 

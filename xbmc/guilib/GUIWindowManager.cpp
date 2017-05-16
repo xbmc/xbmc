@@ -1244,6 +1244,7 @@ void CGUIWindowManager::DeInitialize()
   for (int i = 0; i < int(m_vecCustomWindows.size()); i++)
   {
     CGUIWindow *pWindow = m_vecCustomWindows[i];
+    RemoveFromWindowHistory(pWindow->GetID());
     Remove(pWindow->GetID());
     delete pWindow;
   }
@@ -1548,15 +1549,23 @@ void CGUIWindowManager::AddToWindowHistory(int newWindowID)
   }
 }
 
-void CGUIWindowManager::GetActiveModelessWindows(std::vector<int> &ids)
+void CGUIWindowManager::RemoveFromWindowHistory(int windowID)
 {
-  // run through our modeless windows, and construct a vector of them
-  // useful for saving and restoring the modeless windows on skin change etc.
-  CSingleLock lock(g_graphicsContext);
-  for (const auto& window : m_activeDialogs)
+  std::stack<int> stack = m_windowHistory;
+
+  // pop windows from stack until we found the window
+  while (!stack.empty())
   {
-    if (!window->IsModalDialog())
-      ids.push_back(window->GetID());
+    if (stack.top() == windowID)
+      break;
+    stack.pop();
+  }
+
+  // found window in history
+  if (!stack.empty())
+  {
+    stack.pop(); // remove window from stack
+    m_windowHistory = stack;
   }
 }
 
