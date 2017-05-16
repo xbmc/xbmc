@@ -1907,15 +1907,30 @@
     <category id="smb" label="1200" help="36346">
       <requirement>HAS_FILESYSTEM_SMB</requirement>
       <group id="1" label="16000">
+        <setting id="smb.workgroup" type="string" label="1202" help="36348">
+          <level>2</level>
+          <default>WORKGROUP</default>
+          <control type="edit" format="string" />
+        </setting>
+      </group>
+      <group id="2" label="36627">
         <setting id="smb.winsserver" type="string" label="1207" help="36347">
           <level>2</level>
           <default>0.0.0.0</default>
           <control type="edit" format="ip" />
         </setting>
-        <setting id="smb.workgroup" type="string" label="1202" help="36348">
+        <setting id="smb.maxprotocol" type="integer" label="36621" help="36622">
           <level>2</level>
-          <default>WORKGROUP</default>
-          <control type="edit" format="string" />
+          <default>3</default>
+          <constraints>
+            <options>
+              <option label="36623">0</option>
+              <option label="36624">1</option>
+              <option label="36625">2</option>
+              <option label="36626">3</option>
+            </options>
+          </constraints>
+          <control type="list" format="integer" />
         </setting>
       </group>
     </category>

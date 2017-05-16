@@ -19740,7 +19740,49 @@ msgctxt "#36620"
 msgid "Enable high quality downscaling of pictures (uses more memory and has moderate performance impact)."
 msgstr ""
 
-#empty strings from id 36621 to 36899
+#. Label of a setting, allow the maximum smbclient protocol to be configured
+#: system/settings/settings.xml
+msgctxt "#36621"
+msgid "Maximum protocol version"
+msgstr ""
+
+#. Description of setting with label #36621 "Maximum protocol version"
+#: system/settings/settings.xml
+msgctxt "#36622"
+msgid "Set the maximum SMB protocol version to negotiate when making connections. Forcing SMBv2 or SMBv1 compatibility may be required with older NAS and Windows shares."
+msgstr ""
+
+#. Values for setting with label #36621 "Maximum protocol version" - none means "no protocol version is forced"
+#: system/settings/settings.xml
+msgctxt "#36623"
+msgid "None"
+msgstr ""
+
+#. Values for setting with label #36621 "Maximum protocol version"
+#: system/settings/settings.xml
+msgctxt "#36624"
+msgid "SMBv1"
+msgstr ""
+
+#. Values for setting with label #36621 "Maximum protocol version"
+#: system/settings/settings.xml
+msgctxt "#36625"
+msgid "SMBv2"
+msgstr ""
+
+#. Values for setting with label #36621 "Maximum protocol version"
+#: system/settings/settings.xml
+msgctxt "#36626"
+msgid "SMBv3"
+msgstr ""
+
+#. Label of a group, that allows configuration of the system SMB client
+#: system/settings/settings.xml
+msgctxt "#36627"
+msgid "Client"
+msgstr ""
+
+#empty strings from id 36628 to 36899
 
 #: xbmc/media/MediaType.cpp
 msgctxt "#36900"
