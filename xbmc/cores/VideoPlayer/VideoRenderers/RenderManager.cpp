@@ -37,13 +37,14 @@
 
 #if defined(HAS_GL)
 #include "LinuxRendererGL.h"
-#include "HwDecRender/RendererVAAPI.h"
+#include "HwDecRender/RendererVAAPIGL.h"
 #include "HwDecRender/RendererVDPAU.h"
 #if defined(TARGET_DARWIN_OSX)
 #include "HwDecRender/RendererVTBGL.h"
 #endif
 #elif HAS_GLES == 2
   #include "LinuxRendererGLES.h"
+  #include "HwDecRender/RendererVAAPIGLES.h"
 #if defined(HAS_MMAL)
 #include "HwDecRender/MMALRenderer.h"
 #endif
