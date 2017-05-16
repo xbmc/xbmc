@@ -57,13 +57,6 @@
 #define PRAGMA_PACK 1
 #endif
 
-/* current Audio DSP API version */
-#define KODI_AUDIOENGINE_API_VERSION                 "0.0.1"
-
-/* min. Audio DSP API version */
-#define KODI_AUDIOENGINE_MIN_API_VERSION             "0.0.1"
-
-
 #ifdef __cplusplus
 extern "C" {
 #endif

@@ -86,7 +86,7 @@ bool CImageDecoder::Create(const std::string& mimetype)
 {
   m_info.mimetype = mimetype.c_str();
 
-  return CAddonDll::Create(&m_struct, &m_info) == ADDON_STATUS_OK;
+  return CAddonDll::Create(ADDON_INSTANCE_IMAGEDECODER, &m_struct, &m_info) == ADDON_STATUS_OK;
 }
 
 } /*namespace ADDON*/

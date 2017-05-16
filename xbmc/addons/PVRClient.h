@@ -618,28 +618,6 @@ namespace PVR
 
   private:
     /*!
-     * @brief Checks whether the provided API version is compatible with XBMC
-     * @param minVersion The add-on's XBMC_PVR_MIN_API_VERSION version
-     * @param version The add-on's XBMC_PVR_API_VERSION version
-     * @return True when compatible, false otherwise
-     */
-    static bool IsCompatibleAPIVersion(const ADDON::AddonVersion &minVersion, const ADDON::AddonVersion &version);
-
-    /*!
-     * @brief Checks whether the provided GUI API version is compatible with XBMC
-     * @param minVersion The add-on's XBMC_GUI_MIN_API_VERSION version
-     * @param version The add-on's XBMC_GUI_API_VERSION version
-     * @return True when compatible, false otherwise
-     */
-    static bool IsCompatibleGUIAPIVersion(const ADDON::AddonVersion &minVersion, const ADDON::AddonVersion &version);
-
-    /*!
-     * @brief Request the API version from the add-on, and check if it's compatible
-     * @return True when compatible, false otherwise.
-     */
-    bool CheckAPIVersion(void) override;
-
-    /*!
      * @brief Resets all class members to their defaults. Called by the constructors.
      */
     void ResetProperties(int iClientId = PVR_INVALID_CLIENT_ID);

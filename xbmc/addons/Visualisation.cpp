@@ -87,7 +87,7 @@ bool CVisualisation::Create(int x, int y, int w, int h, void *device)
   m_info.profile = strdup(CSpecialProtocol::TranslatePath(Profile()).c_str());
   m_info.submodule = NULL;
 
-  if (CAddonDll::Create(&m_struct, &m_info) == ADDON_STATUS_OK)
+  if (CAddonDll::Create(ADDON_INSTANCE_VISUALIZATION, &m_struct, &m_info) == ADDON_STATUS_OK)
   {
     // Start the visualisation
     std::string strFile = URIUtils::GetFileName(g_application.CurrentFile());

@@ -63,9 +63,6 @@ typedef intptr_t      ssize_t;
 #undef LOG_ERROR
 #endif
 
-/* current addon API version */
-#define KODI_ADDON_API_VERSION ADDON_GLOBAL_VERSION_MAIN
-
 typedef void* (*KODIAddOnLib_RegisterMe)(void *addonData);
 typedef void (*KODIAddOnLib_UnRegisterMe)(void *addonData, void *cbTable);
 typedef void* (*KODIAudioEngineLib_RegisterMe)(void *addonData);

@@ -120,7 +120,7 @@ ADDON_STATUS CActiveAEDSPAddon::Create(int iClientId)
   /* initialise the add-on */
   bool bReadyToUse(false);
   CLog::Log(LOGDEBUG, "ActiveAE DSP - %s - creating audio dsp add-on instance '%s'", __FUNCTION__, Name().c_str());
-  if ((status = CAddonDll::Create(&m_struct, &m_info)) == ADDON_STATUS_OK)
+  if ((status = CAddonDll::Create(ADDON_INSTANCE_ADSP, &m_struct, &m_info)) == ADDON_STATUS_OK)
     bReadyToUse = GetAddonProperties();
 
   m_bReadyToUse = bReadyToUse;
@@ -171,45 +171,6 @@ int CActiveAEDSPAddon::GetID(void) const
 bool CActiveAEDSPAddon::IsInUse() const
 {
   return m_isInUse;
-};
-
-bool CActiveAEDSPAddon::IsCompatibleAPIVersion(const ADDON::AddonVersion &minVersion, const ADDON::AddonVersion &version)
-{
-  AddonVersion myMinVersion = AddonVersion(KODI_AE_DSP_MIN_API_VERSION);
-  AddonVersion myVersion = AddonVersion(KODI_AE_DSP_API_VERSION);
-  return (version >= myMinVersion && minVersion <= myVersion);
-}
-
-bool CActiveAEDSPAddon::IsCompatibleGUIAPIVersion(const ADDON::AddonVersion &minVersion, const ADDON::AddonVersion &version)
-{
-  AddonVersion myMinVersion = AddonVersion(KODI_GUILIB_MIN_API_VERSION);
-  AddonVersion myVersion = AddonVersion(KODI_GUILIB_API_VERSION);
-  return (version >= myMinVersion && minVersion <= myVersion);
-}
-
-bool CActiveAEDSPAddon::CheckAPIVersion(void)
-{
-  /* check the API version */
-  AddonVersion minVersion = AddonVersion(KODI_AE_DSP_MIN_API_VERSION);
-  m_apiVersion = AddonVersion(m_struct.GetAudioDSPAPIVersion());
-
-  if (!IsCompatibleAPIVersion(minVersion, m_apiVersion))
-  {
-    CLog::Log(LOGERROR, "ActiveAE DSP - Add-on '%s' is using an incompatible API version. KODI minimum API version = '%s', add-on API version '%s'", Name().c_str(), minVersion.asString().c_str(), m_apiVersion.asString().c_str());
-    return false;
-  }
-
-  /* check the GUI API version */
-  AddonVersion guiVersion = AddonVersion(m_struct.GetGUIAPIVersion());
-  minVersion = AddonVersion(KODI_GUILIB_MIN_API_VERSION);
-
-  if (!IsCompatibleGUIAPIVersion(minVersion, guiVersion))
-  {
-    CLog::Log(LOGERROR, "ActiveAE DSP - Add-on '%s' is using an incompatible GUI API version. KODI minimum GUI API version = '%s', add-on GUI API version '%s'", Name().c_str(), minVersion.asString().c_str(), guiVersion.asString().c_str());
-    return false;
-  }
-
-  return true;
 }
 
 bool CActiveAEDSPAddon::GetAddonProperties(void)

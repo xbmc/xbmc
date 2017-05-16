@@ -88,7 +88,7 @@ CVFSEntry::CVFSEntry(AddonProps props,
 
 bool CVFSEntry::Create()
 {
-  return CAddonDll::Create(&m_struct, &m_info) == ADDON_STATUS_OK;
+  return CAddonDll::Create(ADDON_INSTANCE_VFS, &m_struct, &m_info) == ADDON_STATUS_OK;
 }
 
 void* CVFSEntry::Open(const CURL& url)

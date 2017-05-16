@@ -214,12 +214,6 @@ extern "C"
   */
   bool IsRealTimeStream();
 
-  const char* GetApiVersion()
-  {
-    static const char *ApiVersion = INPUTSTREAM_API_VERSION;
-    return ApiVersion;
-  }
-
   /*!
   * Called by XBMC to assign the function pointers of this add-on to pClient.
   * @param pClient The struct to assign the function pointers to.
@@ -232,7 +226,6 @@ extern "C"
     pClient->Close = Close;
     pClient->GetPathList = GetPathList;
     pClient->GetCapabilities = GetCapabilities;
-    pClient->GetApiVersion = GetApiVersion;
 
     pClient->GetStreamIds = GetStreamIds;
     pClient->GetStream = GetStream;
