@@ -675,7 +675,7 @@ endmacro()
 # add-on xml's
 # find all folders containing addon.xml.in and used to define
 # ADDON_XML_OUTPUTS, ADDON_XML_DEPENDS and ADDON_INSTALL_DATA
-function(find_addon_xml_in_files)
+macro(find_addon_xml_in_files)
   file(GLOB ADDON_XML_IN_FILE ${CMAKE_SOURCE_DIR}/addons/*/addon.xml.in)
   foreach(loop_var ${ADDON_XML_IN_FILE})
     list(GET loop_var 0 xml_name)
@@ -701,4 +701,4 @@ function(find_addon_xml_in_files)
     endforeach()
     unset(xml_name)
   endforeach()
-endfunction()
+endmacro()
