@@ -9,4 +9,13 @@
       </group>
     </category>
   </section>
+  <section id="services">
+    <category id="smb">
+      <group id="2">
+        <setting id="smb.maxprotocol">
+          <visible>true</visible>
+        </setting>
+      </group>
+    </category>
+  </section>
 </settings>
