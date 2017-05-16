@@ -719,6 +719,7 @@ void DetailsFromFileItem<CAlbum>(const CFileItem& item, CAlbum& album)
 {
   album.strAlbum = item.GetLabel();
   album.strMusicBrainzAlbumID = FromString(item, "album.musicbrainzid");
+  album.strReleaseGroupMBID = FromString(item, "album.releasegroupid");
 
   int nArtists = item.GetProperty("album.artists").asInteger();
   album.artistCredits.reserve(nArtists);

@@ -194,15 +194,16 @@ CSong::CSong()
 
 void CSong::MergeScrapedSong(const CSong& source, bool override)
 {
+  // Merge when MusicBrainz Track ID match (checked in CAlbum::MergeScrapedAlbum)
   if ((override && !source.strTitle.empty()) || strTitle.empty())
     strTitle = source.strTitle;
   if ((override && source.iTrack != 0) || iTrack == 0)
     iTrack = source.iTrack;
-  // artist = source.artist; // artist is read-only from the database
   if (override)
-    artistCredits = source.artistCredits;
-  else if (source.artistCredits.size() > artistCredits.size())
-    artistCredits.insert(artistCredits.end(), source.artistCredits.begin()+artistCredits.size(), source.artistCredits.end());
+  {
+    artistCredits = source.artistCredits; // Replace artists and store mbid returned by scraper   
+    strArtistDesc.clear();  // @todo: set artist display string e.g. "artist1 feat. artist2" when scraped 
+  }
 }
 
 void CSong::Serialize(CVariant& value) const

@@ -73,6 +73,7 @@ public:
     idArtist = -1;
     strPath.clear();
     dateAdded.Reset();
+    bScrapedMBID = false;
   }
 
   /*! \brief Load artist information from an XML file.
@@ -105,6 +106,7 @@ public:
   CFanart fanart;
   std::vector<std::pair<std::string,std::string> > discography;
   CDateTime dateAdded;
+  bool bScrapedMBID;
 };
 
 class CArtistCredit
@@ -113,7 +115,7 @@ class CArtistCredit
   friend class CMusicDatabase;
 
 public:
-  CArtistCredit() : idArtist(-1) { }
+  CArtistCredit() : idArtist(-1), m_bScrapedMBID(false) { }
   CArtistCredit(std::string strArtist) : m_strArtist(strArtist) { }
   CArtistCredit(std::string strArtist, std::string strMusicBrainzArtistID)
     : m_strArtist(strArtist), m_strMusicBrainzArtistID(strMusicBrainzArtistID) {  }
@@ -138,16 +140,19 @@ public:
   std::string GetSortName() const              { return m_strSortName; }
   std::string GetMusicBrainzArtistID() const   { return m_strMusicBrainzArtistID; }
   int         GetArtistId() const              { return idArtist; }
+  bool HasScrapedMBID() const { return m_bScrapedMBID; }
   void SetArtist(const std::string &strArtist) { m_strArtist = strArtist; }
   void SetSortName(const std::string &strSortName) { m_strSortName = strSortName; }
   void SetMusicBrainzArtistID(const std::string &strMusicBrainzArtistID) { m_strMusicBrainzArtistID = strMusicBrainzArtistID; }
   void SetArtistId(int idArtist)               { this->idArtist = idArtist; }
+  void SetScrapedMBID(bool scrapedMBID) { this->m_bScrapedMBID = scrapedMBID; }
 
 private:
   long idArtist;
   std::string m_strArtist;
   std::string m_strSortName;
   std::string m_strMusicBrainzArtistID;
+  bool m_bScrapedMBID; // Flag that mbid is from album merge of scarper results not derived from tags
 };
 
 typedef std::vector<CArtist> VECARTISTS;

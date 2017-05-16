@@ -373,7 +373,7 @@ void CGUIWindowMusicBase::ShowArtistInfo(const CFileItem *pItem, bool bShowInfo 
   CArtist artist;
   if (!m_musicdatabase.GetArtist(params.GetArtistId(), artist))
       return;
-
+  artist.bScrapedMBID = m_musicdatabase.HasScrapedArtistMBID(artist.idArtist);
   m_musicdatabase.GetArtistPath(params.GetArtistId(), artist.strPath);
   bool refresh = false;
   while (1)
@@ -446,7 +446,7 @@ bool CGUIWindowMusicBase::ShowAlbumInfo(const CFileItem *pItem, bool bShowInfo /
   CAlbum album;
   if (!m_musicdatabase.GetAlbum(params.GetAlbumId(), album))
     return false;
-
+  album.bScrapedMBID = m_musicdatabase.HasScrapedAlbumMBID(album.idAlbum);
   m_musicdatabase.GetAlbumPath(params.GetAlbumId(), album.strPath);
   bool refresh = false;
   while (1)
