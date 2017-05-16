@@ -18,7 +18,7 @@
  *
  */
 
-#include "RendererVAAPI.h"
+#include "RendererVAAPIGL.h"
 
 #include "cores/VideoPlayer/DVDCodecs/Video/VAAPI.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDCodecUtils.h"
