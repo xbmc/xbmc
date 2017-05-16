@@ -21,6 +21,9 @@
 
 #include <string.h>
 
+#define STR_HELPER(x) #x
+#define STR(x) STR_HELPER(x)
+
 /*
  *------------------------------------------------------------------------------
  * This header is only be used for Kodi itself and internally (not for add-on
@@ -38,21 +41,94 @@
  * overview.
  */
 
+
 #define ADDON_GLOBAL_VERSION_MAIN                     "1.0.0"
+#define ADDON_GLOBAL_VERSION_MAIN_MIN                 "1.0.0"
+#define ADDON_GLOBAL_VERSION_MAIN_XML_ID              "kodi.binary.global.main"
+#define ADDON_GLOBAL_VERSION_MAIN_DEPENDS             "xbmc_addon_dll.h" \
+                                                      "xbmc_addon_types.h" \
+                                                      "kodi_audioengine_types.h" \
+                                                      "libKODI_audioengine.h" \
+                                                      "libXBMC_addon.h"
+
 #define ADDON_GLOBAL_VERSION_GUI                      "5.11.0"
 #define ADDON_GLOBAL_VERSION_GUI_MIN                  "5.10.0"
+#define ADDON_GLOBAL_VERSION_GUI_XML_ID               "kodi.binary.global.gui"
+#define ADDON_GLOBAL_VERSION_GUI_DEPENDS              "libKODI_guilib.h"
 
 #define ADDON_INSTANCE_VERSION_ADSP                   "0.1.8"
+#define ADDON_INSTANCE_VERSION_ADSP_MIN               "0.1.8"
+#define ADDON_INSTANCE_VERSION_ADSP_XML_ID            "kodi.binary.instance.adsp"
+#define ADDON_INSTANCE_VERSION_ADSP_DEPENDS           "kodi_adsp_dll.h" \
+                                                      "kodi_adsp_types.h" \
+                                                      "libKODI_adsp.h"
+
 #define ADDON_INSTANCE_VERSION_AUDIODECODER           "1.0.0"
+#define ADDON_INSTANCE_VERSION_AUDIODECODER_MIN       "1.0.0"
+#define ADDON_INSTANCE_VERSION_AUDIODECODER_XML_ID    "kodi.binary.instance.audiodecoder"
+#define ADDON_INSTANCE_VERSION_AUDIODECODER_DEPENDS   "kodi_audiodec_dll.h" \
+                                                      "kodi_audiodec_types.h"
+
 #define ADDON_INSTANCE_VERSION_AUDIOENCODER           "1.0.0"
+#define ADDON_INSTANCE_VERSION_AUDIOENCODER_MIN       "1.0.0"
+#define ADDON_INSTANCE_VERSION_AUDIOENCODER_XML_ID    "kodi.binary.instance.audioencoder"
+#define ADDON_INSTANCE_VERSION_AUDIOENCODER_DEPENDS   "xbmc_audioenc_dll.h" \
+                                                      "xbmc_audioenc_types.h"
+
 #define ADDON_INSTANCE_VERSION_GAME                   "1.0.30"
+#define ADDON_INSTANCE_VERSION_GAME_MIN               "1.0.30"
+#define ADDON_INSTANCE_VERSION_GAME_XML_ID            "kodi.binary.instance.game"
+#define ADDON_INSTANCE_VERSION_GAME_DEPENDS           "kodi_game_dll.h" \
+                                                      "kodi_game_types.h" \
+                                                      "libKODI_game.h"
+
 #define ADDON_INSTANCE_VERSION_IMAGEDECODER           "1.0.0"
+#define ADDON_INSTANCE_VERSION_IMAGEDECODER_MIN       "1.0.0"
+#define ADDON_INSTANCE_VERSION_IMAGEDECODER_XML_ID    "kodi.binary.instance.imagedecoder"
+#define ADDON_INSTANCE_VERSION_IMAGEDECODER_DEPENDS   "kodi_imagedec_dll.h" \
+                                                      "kodi_imagedec_types.h"
+
 #define ADDON_INSTANCE_VERSION_INPUTSTREAM            "1.0.6"
+#define ADDON_INSTANCE_VERSION_INPUTSTREAM_MIN        "1.0.6"
+#define ADDON_INSTANCE_VERSION_INPUTSTREAM_XML_ID     "kodi.binary.instance.inputstream"
+#define ADDON_INSTANCE_VERSION_INPUTSTREAM_DEPENDS    "libKODI_inputstream.h" \
+                                                      "kodi_inputstream_dll.h" \
+                                                      "kodi_inputstream_types.h"
+
 #define ADDON_INSTANCE_VERSION_PERIPHERAL             "1.3.1"
+#define ADDON_INSTANCE_VERSION_PERIPHERAL_MIN         "1.3.1"
+#define ADDON_INSTANCE_VERSION_PERIPHERAL_XML_ID      "kodi.binary.instance.peripheral"
+#define ADDON_INSTANCE_VERSION_PERIPHERAL_DEPENDS     "kodi_peripheral_dll.h" \
+                                                      "kodi_peripheral_types.h" \
+                                                      "kodi_peripheral_utils.hpp" \
+                                                      "libKODI_peripheral.h"
+
 #define ADDON_INSTANCE_VERSION_PVR                    "5.2.2"
+#define ADDON_INSTANCE_VERSION_PVR_MIN                "5.2.2"
+#define ADDON_INSTANCE_VERSION_PVR_XML_ID             "kodi.binary.instance.pvr"
+#define ADDON_INSTANCE_VERSION_PVR_DEPENDS            "xbmc_pvr_dll.h" \
+                                                      "xbmc_pvr_types.h" \
+                                                      "xbmc_epg_types.h" \
+                                                      "libXBMC_pvr.h"
+
 #define ADDON_INSTANCE_VERSION_SCREENSAVER            "1.0.0"
+#define ADDON_INSTANCE_VERSION_SCREENSAVER_MIN        "1.0.0"
+#define ADDON_INSTANCE_VERSION_SCREENSAVER_XML_ID     "kodi.binary.instance.screensaver"
+#define ADDON_INSTANCE_VERSION_SCREENSAVER_DEPENDS    "xbmc_scr_dll.h" \
+                                                      "xbmc_scr_types.h"
+
 #define ADDON_INSTANCE_VERSION_VFS                    "1.0.0"
+#define ADDON_INSTANCE_VERSION_VFS_MIN                "1.0.0"
+#define ADDON_INSTANCE_VERSION_VFS_XML_ID             "kodi.binary.instance.vfs"
+#define ADDON_INSTANCE_VERSION_VFS_DEPENDS            "kodi_vfs_dll.h" \
+                                                      "kodi_vfs_types.h" \
+                                                      "kodi_vfs_utils.hpp"
+
 #define ADDON_INSTANCE_VERSION_VISUALIZATION          "1.0.0"
+#define ADDON_INSTANCE_VERSION_VISUALIZATION_MIN      "1.0.0"
+#define ADDON_INSTANCE_VERSION_VISUALIZATION_XML_ID   "kodi.binary.instance.visualization"
+#define ADDON_INSTANCE_VERSION_VISUALIZATION_DEPENDS  "xbmc_vis_dll.h" \
+                                                      "xbmc_vis_types.h"
 
 ///
 /// The currently used types for Kodi add-ons
@@ -97,37 +173,109 @@ namespace addon {
 ///
 inline const char* GetTypeVersion(int type)
 {
+  /*
+   * #ifdef's below becomes set by cmake, no set by hand needed.
+   */
   switch (type)
   {
     /* addon global parts */
     case ADDON_GLOBAL_MAIN:
       return ADDON_GLOBAL_VERSION_MAIN;
+#if defined(BUILD_KODI_ADDON) && defined(ADDON_GLOBAL_VERSION_GUI_USED)
     case ADDON_GLOBAL_GUI:
       return ADDON_GLOBAL_VERSION_GUI;
+#endif
+
+    /* addon type instances */
+#if defined(BUILD_KODI_ADDON) && defined(ADDON_INSTANCE_VERSION_ADSP_USED)
+    case ADDON_INSTANCE_ADSP:
+      return ADDON_INSTANCE_VERSION_ADSP;
+#endif
+#if defined(BUILD_KODI_ADDON) && defined(ADDON_INSTANCE_VERSION_AUDIODECODER_USED)
+    case ADDON_INSTANCE_AUDIODECODER:
+      return ADDON_INSTANCE_VERSION_AUDIODECODER;
+#endif
+#if defined(BUILD_KODI_ADDON) && defined(ADDON_INSTANCE_VERSION_AUDIOENCODER_USED)
+    case ADDON_INSTANCE_AUDIOENCODER:
+      return ADDON_INSTANCE_VERSION_AUDIOENCODER;
+#endif
+#if defined(BUILD_KODI_ADDON) && defined(ADDON_INSTANCE_VERSION_GAME_USED)
+    case ADDON_INSTANCE_GAME:
+      return ADDON_INSTANCE_VERSION_GAME;
+#endif
+#if defined(BUILD_KODI_ADDON) && defined(ADDON_INSTANCE_VERSION_IMAGEDECODER_USED)
+    case ADDON_INSTANCE_IMAGEDECODER:
+      return ADDON_INSTANCE_VERSION_IMAGEDECODER;
+#endif
+#if defined(BUILD_KODI_ADDON) && defined(ADDON_INSTANCE_VERSION_INPUTSTREAM_USED)
+    case ADDON_INSTANCE_INPUTSTREAM:
+      return ADDON_INSTANCE_VERSION_INPUTSTREAM;
+#endif
+#if defined(BUILD_KODI_ADDON) && defined(ADDON_INSTANCE_VERSION_PERIPHERAL_USED)
+    case ADDON_INSTANCE_PERIPHERAL:
+      return ADDON_INSTANCE_VERSION_PERIPHERAL;
+#endif
+#if defined(BUILD_KODI_ADDON) && defined(ADDON_INSTANCE_VERSION_PVR_USED)
+    case ADDON_INSTANCE_PVR:
+      return ADDON_INSTANCE_VERSION_PVR;
+#endif
+#if defined(BUILD_KODI_ADDON) && defined(ADDON_INSTANCE_VERSION_SCREENSAVER_USED)
+    case ADDON_INSTANCE_SCREENSAVER:
+      return ADDON_INSTANCE_VERSION_SCREENSAVER;
+#endif
+#if defined(BUILD_KODI_ADDON) && defined(ADDON_INSTANCE_VERSION_VFS_USED)
+    case ADDON_INSTANCE_VFS:
+      return ADDON_INSTANCE_VERSION_VFS;
+#endif
+#if defined(BUILD_KODI_ADDON) && defined(ADDON_INSTANCE_VERSION_VISUALIZATION_USED)
+    case ADDON_INSTANCE_VISUALIZATION:
+      return ADDON_INSTANCE_VERSION_VISUALIZATION;
+#endif
+  }
+  return "0.0.0";
+}
+
+///
+/// This is used from Kodi to get the minimum supported version of add-on parts.
+/// It is compiled in add-on and also in Kodi itself, with this can be Kodi
+/// compare the version from him with them on add-on.
+///
+/// @param[in] type The with 'enum ADDON_TYPE' type to ask
+/// @return version The minimum version of asked type
+///
+inline const char* GetTypeMinVersion(int type)
+{
+  switch (type)
+  {
+    /* addon global parts */
+    case ADDON_GLOBAL_MAIN:
+      return ADDON_GLOBAL_VERSION_MAIN_MIN;
+    case ADDON_GLOBAL_GUI:
+      return ADDON_GLOBAL_VERSION_GUI_MIN;
 
     /* addon type instances */
     case ADDON_INSTANCE_ADSP:
-      return ADDON_INSTANCE_VERSION_ADSP;
+      return ADDON_INSTANCE_VERSION_ADSP_MIN;
     case ADDON_INSTANCE_AUDIODECODER:
-      return ADDON_INSTANCE_VERSION_AUDIODECODER;
+      return ADDON_INSTANCE_VERSION_AUDIODECODER_MIN;
     case ADDON_INSTANCE_AUDIOENCODER:
-      return ADDON_INSTANCE_VERSION_AUDIOENCODER;
+      return ADDON_INSTANCE_VERSION_AUDIOENCODER_MIN;
     case ADDON_INSTANCE_GAME:
-      return ADDON_INSTANCE_VERSION_GAME;
+      return ADDON_INSTANCE_VERSION_GAME_MIN;
     case ADDON_INSTANCE_IMAGEDECODER:
-      return ADDON_INSTANCE_VERSION_IMAGEDECODER;
+      return ADDON_INSTANCE_VERSION_IMAGEDECODER_MIN;
     case ADDON_INSTANCE_INPUTSTREAM:
-      return ADDON_INSTANCE_VERSION_INPUTSTREAM;
+      return ADDON_INSTANCE_VERSION_INPUTSTREAM_MIN;
     case ADDON_INSTANCE_PERIPHERAL:
-      return ADDON_INSTANCE_VERSION_PERIPHERAL;
+      return ADDON_INSTANCE_VERSION_PERIPHERAL_MIN;
     case ADDON_INSTANCE_PVR:
-      return ADDON_INSTANCE_VERSION_PVR;
+      return ADDON_INSTANCE_VERSION_PVR_MIN;
     case ADDON_INSTANCE_SCREENSAVER:
-      return ADDON_INSTANCE_VERSION_SCREENSAVER;
+      return ADDON_INSTANCE_VERSION_SCREENSAVER_MIN;
     case ADDON_INSTANCE_VFS:
-      return ADDON_INSTANCE_VERSION_VFS;
+      return ADDON_INSTANCE_VERSION_VFS_MIN;
     case ADDON_INSTANCE_VISUALIZATION:
-      return ADDON_INSTANCE_VERSION_VISUALIZATION;
+      return ADDON_INSTANCE_VERSION_VISUALIZATION_MIN;
   }
   return "0.0.0";
 }

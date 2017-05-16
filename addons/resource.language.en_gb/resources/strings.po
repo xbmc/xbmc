@@ -15093,7 +15093,14 @@ msgctxt "#24151"
 msgid "Add-on migration in progress - please wait"
 msgstr ""
 
-#empty strings from id 24152 to 24990
+#. Inform about not supported addon if tried to enable
+#: xbmc/addons/AddonManager.cpp
+#: xbmc/addons/AddonDll.cpp
+msgctxt "#24152"
+msgid "The add-on is not compatible with this version of Kodi."
+msgstr ""
+
+#empty strings from id 24153 to 24990
 
 #. Used as error message in add-on browser when add-on repository data could not be downloaded
 #: xbmc/filesystem/AddonsDirectory.cpp
@@ -15230,13 +15237,7 @@ msgctxt "#29802"
 msgid "Passthrough audio in use"
 msgstr ""
 
-#. The label in the add-ons dll class to report about outdated add-on api version
-#: xbmc/addons/AddonDll.cpp
-msgctxt "#29803"
-msgid "Incompatible API version for type '%s'. Kodi: '%s', add-on: '%s'."
-msgstr ""
-
-#empty strings from id 29804 to 29899
+#empty strings from id 29803 to 29899
 
 #. Header string on RDS Radiotext+ Info dialog
 msgctxt "#29900"
