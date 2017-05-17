@@ -16,10 +16,10 @@ PACKAGE_SECTION libdevel
 PACKAGE_PRIORITY optional
 PACKAGE_SHLIBDEPS
 PACKAGE_DEPENDS
-PACKAGE_RECOMMENDS @APP_NAME_LC@-audio-dev, @APP_NAME_LC@-inputstream-dev, @APP_NAME_LC@-pvr-dev, @APP_NAME_LC@-screensaver-dev, @APP_NAME_LC@-visualization-dev
+PACKAGE_RECOMMENDS
 PACKAGE_SUGGESTS
 PACKAGE_BREAKS
-PACKAGE_REPLACES
+PACKAGE_REPLACES @APP_NAME_LC@-audio-dev, @APP_NAME_LC@-inputstream-dev, @APP_NAME_LC@-pvr-dev, @APP_NAME_LC@-screensaver-dev, @APP_NAME_LC@-visualization-dev
 PACKAGE_PROVIDES xbmc-addon-dev
 PACKAGE_DESCRIPTION_HEADER @APP_NAME@ Media Center (general add-on dev package)
 PACKAGE_DESCRIPTION_FOOTER This is the development package for @APP_NAME@'s add-ons.
