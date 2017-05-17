@@ -16,7 +16,7 @@
 
   ;Name and file
   Name "${APP_NAME}"
-  OutFile "${APP_NAME}Setup-${app_revision}-${app_branch}.exe"
+  OutFile "${APP_NAME}Setup-${app_revision}-${app_branch}-${TARGET_ARCHITECTURE}.exe"
 
   ;Default installation folder
 !ifdef x64
