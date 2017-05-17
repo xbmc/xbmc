@@ -20,10 +20,6 @@
  *
  */
 
-#if defined(TARGET_WINDOWS)
-#include "system.h"
-#endif
-
 #include "OMXAudio.h"
 #include "Application.h"
 #include "ServiceBroker.h"

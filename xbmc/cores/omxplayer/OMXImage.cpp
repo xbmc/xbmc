@@ -18,10 +18,6 @@
  *
  */
 
-#if defined(TARGET_WINDOWS)
-#include "system.h"
-#endif
-
 #include "OMXImage.h"
 
 #include "ServiceBroker.h"
