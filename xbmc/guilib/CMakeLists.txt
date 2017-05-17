@@ -178,14 +178,17 @@ if(OPENGLES_FOUND)
                       GUIShader.cpp
                       GUITextureGLES.cpp
                       MatrixGLES.cpp
-                      TextureGL.cpp
-                      TexturePi.cpp)
+                      TextureGL.cpp)
   list(APPEND HEADERS GUIFontTTFGL.h
                       GUIShader.h
                       GUITextureGLES.h
                       MatrixGLES.h
-                      TextureGL.h
-                      TexturePi.h)
+                      TextureGL.h)
+endif()
+
+if(CORE_PLATFORM_NAME_LC STREQUAL rbpi)
+  list(APPEND SOURCES TexturePi.cpp)
+  list(APPEND HEADERS TexturePi.h)
 endif()
 
 if(CORE_SYSTEM_NAME STREQUAL windows)
