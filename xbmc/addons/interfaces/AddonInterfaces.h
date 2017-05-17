@@ -65,7 +65,6 @@ namespace ADDON
     \*/
     static void*        PVRLib_RegisterMe              (void* addonData);
     static void         PVRLib_UnRegisterMe            (void* addonData, void* cbTable);
-    void*               PVRLib_GetHelper()            { return m_helperPVR; }
     /*\_________________________________________________________________________
     \*/
     static void*        ADSPLib_RegisterMe             (void* addonData);
@@ -98,7 +97,6 @@ namespace ADDON
     void*     m_helperAddOn;
     void*     m_helperAudioEngine;
     void*     m_helperGUI;
-    void*     m_helperPVR;
     void*     m_helperADSP;
     void*     m_helperInputStream;
     void*     m_helperPeripheral;

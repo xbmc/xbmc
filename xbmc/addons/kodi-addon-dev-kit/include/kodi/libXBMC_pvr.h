@@ -32,40 +32,6 @@
 //! @todo original definition is in DVDClock.h
 #define DVD_NOPTS_VALUE 0xFFF0000000000000
 
-namespace KodiAPI
-{
-namespace PVR
-{
-
-typedef struct CB_PVRLib
-{
-  void (*TransferEpgEntry)(void *userData, const ADDON_HANDLE handle, const EPG_TAG *epgentry);
-  void (*TransferChannelEntry)(void *userData, const ADDON_HANDLE handle, const PVR_CHANNEL *chan);
-  void (*TransferTimerEntry)(void *userData, const ADDON_HANDLE handle, const PVR_TIMER *timer);
-  void (*TransferRecordingEntry)(void *userData, const ADDON_HANDLE handle, const PVR_RECORDING *recording);
-  void (*AddMenuHook)(void *addonData, PVR_MENUHOOK *hook);
-  void (*Recording)(void *addonData, const char *Name, const char *FileName, bool On);
-  void (*TriggerChannelUpdate)(void *addonData);
-  void (*TriggerTimerUpdate)(void *addonData);
-  void (*TriggerRecordingUpdate)(void *addonData);
-  void (*TriggerChannelGroupsUpdate)(void *addonData);
-  void (*TriggerEpgUpdate)(void *addonData, unsigned int iChannelUid);
-
-  void (*TransferChannelGroup)(void *addonData, const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP *group);
-  void (*TransferChannelGroupMember)(void *addonData, const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP_MEMBER *member);
-
-  void (*FreeDemuxPacket)(void *addonData, DemuxPacket* pPacket);
-  DemuxPacket* (*AllocateDemuxPacket)(void *addonData, int iDataSize);
-  
-  void (*ConnectionStateChange)(void* addonData, const char* strConnectionString, PVR_CONNECTION_STATE newState, const char *strMessage);
-  void (*EpgEventStateChange)(void* addonData, EPG_TAG* tag, unsigned int iUniqueChannelId, EPG_EVENT_STATE newState);
-
-  xbmc_codec_t (*GetCodecByName)(const void* addonData, const char* strCodecName);
-} CB_PVRLib;
-
-} /* namespace PVR */
-} /* namespace KodiAPI */
-
 class CHelper_libXBMC_pvr
 {
 public:
@@ -92,7 +58,7 @@ public:
   {
     m_Handle = static_cast<AddonCB*>(handle);
     if (m_Handle)
-      m_Callbacks = (KodiAPI::PVR::CB_PVRLib*)m_Handle->PVRLib_RegisterMe(m_Handle->addonData);
+      m_Callbacks = (AddonInstance_PVR*)m_Handle->PVRLib_RegisterMe(m_Handle->addonData);
     if (!m_Callbacks)
       fprintf(stderr, "libXBMC_pvr-ERROR: PVRLib_register_me can't get callback table from Kodi !!!\n");
   
@@ -106,7 +72,7 @@ public:
    */
   void TransferEpgEntry(const ADDON_HANDLE handle, const EPG_TAG* entry)
   {
-    return m_Callbacks->TransferEpgEntry(m_Handle->addonData, handle, entry);
+    return m_Callbacks->toKodi.TransferEpgEntry(m_Callbacks->toKodi.kodiInstance, handle, entry);
   }
 
   /*!
@@ -116,7 +82,7 @@ public:
    */
   void TransferChannelEntry(const ADDON_HANDLE handle, const PVR_CHANNEL* entry)
   {
-    return m_Callbacks->TransferChannelEntry(m_Handle->addonData, handle, entry);
+    return m_Callbacks->toKodi.TransferChannelEntry(m_Callbacks->toKodi.kodiInstance, handle, entry);
   }
 
   /*!
@@ -126,7 +92,7 @@ public:
    */
   void TransferTimerEntry(const ADDON_HANDLE handle, const PVR_TIMER* entry)
   {
-    return m_Callbacks->TransferTimerEntry(m_Handle->addonData, handle, entry);
+    return m_Callbacks->toKodi.TransferTimerEntry(m_Callbacks->toKodi.kodiInstance, handle, entry);
   }
 
   /*!
@@ -136,7 +102,7 @@ public:
    */
   void TransferRecordingEntry(const ADDON_HANDLE handle, const PVR_RECORDING* entry)
   {
-    return m_Callbacks->TransferRecordingEntry(m_Handle->addonData, handle, entry);
+    return m_Callbacks->toKodi.TransferRecordingEntry(m_Callbacks->toKodi.kodiInstance, handle, entry);
   }
 
   /*!
@@ -146,7 +112,7 @@ public:
    */
   void TransferChannelGroup(const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP* entry)
   {
-    return m_Callbacks->TransferChannelGroup(m_Handle->addonData, handle, entry);
+    return m_Callbacks->toKodi.TransferChannelGroup(m_Callbacks->toKodi.kodiInstance, handle, entry);
   }
 
   /*!
@@ -156,7 +122,7 @@ public:
    */
   void TransferChannelGroupMember(const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP_MEMBER* entry)
   {
-    return m_Callbacks->TransferChannelGroupMember(m_Handle->addonData, handle, entry);
+    return m_Callbacks->toKodi.TransferChannelGroupMember(m_Callbacks->toKodi.kodiInstance, handle, entry);
   }
 
   /*!
@@ -165,7 +131,7 @@ public:
    */
   void AddMenuHook(PVR_MENUHOOK* hook)
   {
-    return m_Callbacks->AddMenuHook(m_Handle->addonData, hook);
+    return m_Callbacks->toKodi.AddMenuHook(m_Callbacks->toKodi.kodiInstance, hook);
   }
 
   /*!
@@ -176,7 +142,7 @@ public:
    */
   void Recording(const char* strRecordingName, const char* strFileName, bool bOn)
   {
-    return m_Callbacks->Recording(m_Handle->addonData, strRecordingName, strFileName, bOn);
+    return m_Callbacks->toKodi.Recording(m_Callbacks->toKodi.kodiInstance, strRecordingName, strFileName, bOn);
   }
 
   /*!
@@ -184,7 +150,7 @@ public:
    */
   void TriggerTimerUpdate(void)
   {
-    return m_Callbacks->TriggerTimerUpdate(m_Handle->addonData);
+    return m_Callbacks->toKodi.TriggerTimerUpdate(m_Callbacks->toKodi.kodiInstance);
   }
 
   /*!
@@ -192,7 +158,7 @@ public:
    */
   void TriggerRecordingUpdate(void)
   {
-    return m_Callbacks->TriggerRecordingUpdate(m_Handle->addonData);
+    return m_Callbacks->toKodi.TriggerRecordingUpdate(m_Callbacks->toKodi.kodiInstance);
   }
 
   /*!
@@ -200,7 +166,7 @@ public:
    */
   void TriggerChannelUpdate(void)
   {
-    return m_Callbacks->TriggerChannelUpdate(m_Handle->addonData);
+    return m_Callbacks->toKodi.TriggerChannelUpdate(m_Callbacks->toKodi.kodiInstance);
   }
 
   /*!
@@ -209,7 +175,7 @@ public:
    */
   void TriggerEpgUpdate(unsigned int iChannelUid)
   {
-    return m_Callbacks->TriggerEpgUpdate(m_Handle->addonData, iChannelUid);
+    return m_Callbacks->toKodi.TriggerEpgUpdate(m_Callbacks->toKodi.kodiInstance, iChannelUid);
   }
 
   /*!
@@ -217,7 +183,7 @@ public:
    */
   void TriggerChannelGroupsUpdate(void)
   {
-    return m_Callbacks->TriggerChannelGroupsUpdate(m_Handle->addonData);
+    return m_Callbacks->toKodi.TriggerChannelGroupsUpdate(m_Callbacks->toKodi.kodiInstance);
   }
 
 #ifdef USE_DEMUX
@@ -227,7 +193,7 @@ public:
    */
   void FreeDemuxPacket(DemuxPacket* pPacket)
   {
-    return m_Callbacks->FreeDemuxPacket(m_Handle->addonData, pPacket);
+    return m_Callbacks->toKodi.FreeDemuxPacket(m_Callbacks->toKodi.kodiInstance, pPacket);
   }
 
   /*!
@@ -237,7 +203,7 @@ public:
    */
   DemuxPacket* AllocateDemuxPacket(int iDataSize)
   {
-    return m_Callbacks->AllocateDemuxPacket(m_Handle->addonData, iDataSize);
+    return m_Callbacks->toKodi.AllocateDemuxPacket(m_Callbacks->toKodi.kodiInstance, iDataSize);
   }
 #endif
 
@@ -250,7 +216,7 @@ public:
    */
   void ConnectionStateChange(const char *strConnectionString, PVR_CONNECTION_STATE newState, const char *strMessage)
   {
-    return m_Callbacks->ConnectionStateChange(m_Handle->addonData, strConnectionString, newState, strMessage);
+    return m_Callbacks->toKodi.ConnectionStateChange(m_Callbacks->toKodi.kodiInstance, strConnectionString, newState, strMessage);
   }
 
   /*!
@@ -262,7 +228,7 @@ public:
    */
   void EpgEventStateChange(EPG_TAG *tag, unsigned int iUniqueChannelId, EPG_EVENT_STATE newState)
   {
-    return m_Callbacks->EpgEventStateChange(m_Handle->addonData, tag, iUniqueChannelId, newState);
+    return m_Callbacks->toKodi.EpgEventStateChange(m_Callbacks->toKodi.kodiInstance, tag, iUniqueChannelId, newState);
   }
 
   /*!
@@ -272,10 +238,10 @@ public:
    */
   xbmc_codec_t GetCodecByName(const char* strCodecName)
   {
-    return m_Callbacks->GetCodecByName(m_Handle->addonData, strCodecName);
+    return m_Callbacks->toKodi.GetCodecByName(m_Callbacks->toKodi.kodiInstance, strCodecName);
   }
 
 private:
   AddonCB* m_Handle;
-  KodiAPI::PVR::CB_PVRLib *m_Callbacks;
+  AddonInstance_PVR *m_Callbacks;
 };
