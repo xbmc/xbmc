@@ -21,6 +21,7 @@
 #define __PERIPHERAL_TYPES_H__
 
 #include "versions.h"
+#include "xbmc_addon_types.h"
 
 #ifndef TARGET_WINDOWS
   #ifndef __cdecl
@@ -285,6 +286,17 @@ extern "C"
   /*!
    * @brief Structure to transfer the methods from kodi_peripheral_dll.h to the frontend
    */
+  
+  typedef PERIPHERAL_PROPERTIES AddonProps_Peripheral;
+
+  typedef struct AddonToKodiFuncTable_Peripheral
+  {
+    KODI_HANDLE kodiInstance;
+    void (*TriggerScan)(void* kodiInstance);
+    void (*RefreshButtonMaps)(void* kodiInstance, const char* deviceName, const char* controllerId);
+    unsigned int (*FeatureCount)(void* kodiInstance, const char* controllerId, JOYSTICK_FEATURE_TYPE type);
+  } AddonToKodiFuncTable_Peripheral;
+
   typedef struct KodiToAddonFuncTable_Peripheral
   {
     PERIPHERAL_ERROR (__cdecl* GetAddonCapabilities)(PERIPHERAL_CAPABILITIES*);
@@ -310,6 +322,13 @@ extern "C"
     void             (__cdecl* PowerOffJoystick)(unsigned int);
     ///}
   } KodiToAddonFuncTable_Peripheral;
+
+  typedef struct AddonInstance_Peripheral
+  {
+    AddonProps_Peripheral props;
+    AddonToKodiFuncTable_Peripheral toKodi;
+    KodiToAddonFuncTable_Peripheral toAddon;
+  } AddonInstance_Peripheral;
 
 #ifdef __cplusplus
 }
