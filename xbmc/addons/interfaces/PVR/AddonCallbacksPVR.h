@@ -64,7 +64,7 @@ public:
    * @param handle The handle parameter that XBMC used when requesting the channel groups list
    * @param entry The entry to transfer to XBMC
    */
-  static void PVRTransferChannelGroup(void* addonData, const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP* entry);
+  static void cb_transfer_channel_group(void* addonData, const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP* entry);
 
   /*!
    * @brief Transfer a channel group member entry from the add-on to XBMC. The channel will be added to the group if the group can be found.
@@ -72,7 +72,7 @@ public:
    * @param handle The handle parameter that XBMC used when requesting the channel group members list
    * @param entry The entry to transfer to XBMC
    */
-  static void PVRTransferChannelGroupMember(void* addonData, const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP_MEMBER* entry);
+  static void cb_transfer_channel_group_member(void* addonData, const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP_MEMBER* entry);
 
   /*!
    * @brief Transfer an EPG tag from the add-on to XBMC
@@ -80,7 +80,7 @@ public:
    * @param handle The handle parameter that XBMC used when requesting the EPG data
    * @param entry The entry to transfer to XBMC
    */
-  static void PVRTransferEpgEntry(void* addonData, const ADDON_HANDLE handle, const EPG_TAG* entry);
+  static void cb_transfer_epg_entry(void* addonData, const ADDON_HANDLE handle, const EPG_TAG* entry);
 
   /*!
    * @brief Transfer a channel entry from the add-on to XBMC
@@ -88,7 +88,7 @@ public:
    * @param handle The handle parameter that XBMC used when requesting the channel list
    * @param entry The entry to transfer to XBMC
    */
-  static void PVRTransferChannelEntry(void* addonData, const ADDON_HANDLE handle, const PVR_CHANNEL* entry);
+  static void cb_transfer_channel_entry(void* addonData, const ADDON_HANDLE handle, const PVR_CHANNEL* entry);
 
   /*!
    * @brief Transfer a timer entry from the add-on to XBMC
@@ -96,7 +96,7 @@ public:
    * @param handle The handle parameter that XBMC used when requesting the timers list
    * @param entry The entry to transfer to XBMC
    */
-  static void PVRTransferTimerEntry(void* addonData, const ADDON_HANDLE handle, const PVR_TIMER* entry);
+  static void cb_transfer_timer_entry(void* addonData, const ADDON_HANDLE handle, const PVR_TIMER* entry);
 
   /*!
    * @brief Transfer a recording entry from the add-on to XBMC
@@ -104,14 +104,14 @@ public:
    * @param handle The handle parameter that XBMC used when requesting the recordings list
    * @param entry The entry to transfer to XBMC
    */
-  static void PVRTransferRecordingEntry(void* addonData, const ADDON_HANDLE handle, const PVR_RECORDING* entry);
+  static void cb_transfer_recording_entry(void* addonData, const ADDON_HANDLE handle, const PVR_RECORDING* entry);
 
   /*!
    * @brief Add or replace a menu hook for the context menu for this add-on
    * @param addonData A pointer to the add-on.
    * @param hook The hook to add.
    */
-  static void PVRAddMenuHook(void* addonData, PVR_MENUHOOK* hook);
+  static void cb_add_menu_hook(void* addonData, PVR_MENUHOOK* hook);
 
   /*!
    * @brief Display a notification in XBMC that a recording started or stopped on the server
@@ -120,45 +120,45 @@ public:
    * @param strFileName The filename of the recording
    * @param bOnOff True when recording started, false when it stopped
    */
-  static void PVRRecording(void* addonData, const char* strName, const char* strFileName, bool bOnOff);
+  static void cb_recording(void* addonData, const char* strName, const char* strFileName, bool bOnOff);
 
   /*!
    * @brief Request XBMC to update it's list of channels
    * @param addonData A pointer to the add-on.
    */
-  static void PVRTriggerChannelUpdate(void* addonData);
+  static void cb_trigger_channel_update(void* addonData);
 
   /*!
    * @brief Request XBMC to update it's list of timers
    * @param addonData A pointer to the add-on.
    */
-  static void PVRTriggerTimerUpdate(void* addonData);
+  static void cb_trigger_timer_update(void* addonData);
 
   /*!
    * @brief Request XBMC to update it's list of recordings
    * @param addonData A pointer to the add-on.
    */
-  static void PVRTriggerRecordingUpdate(void* addonData);
+  static void cb_trigger_recording_update(void* addonData);
 
   /*!
    * @brief Request XBMC to update it's list of channel groups
    * @param addonData A pointer to the add-on.
    */
-  static void PVRTriggerChannelGroupsUpdate(void* addonData);
+  static void cb_trigger_channel_groups_update(void* addonData);
 
   /*!
    * @brief Schedule an EPG update for the given channel channel
    * @param addonData A pointer to the add-on
    * @param iChannelUid The unique id of the channel for this add-on
    */
-  static void PVRTriggerEpgUpdate(void* addonData, unsigned int iChannelUid);
+  static void cb_trigger_epg_update(void* addonData, unsigned int iChannelUid);
 
   /*!
    * @brief Free a packet that was allocated with AllocateDemuxPacket
    * @param addonData A pointer to the add-on.
    * @param pPacket The packet to free.
    */
-  static void PVRFreeDemuxPacket(void* addonData, DemuxPacket* pPacket);
+  static void cb_free_demux_packet(void* addonData, DemuxPacket* pPacket);
 
   /*!
    * @brief Allocate a demux packet. Free with FreeDemuxPacket
@@ -166,7 +166,7 @@ public:
    * @param iDataSize The size of the data that will go into the packet
    * @return The allocated packet.
    */
-  static DemuxPacket* PVRAllocateDemuxPacket(void* addonData, int iDataSize = 0);
+  static DemuxPacket* cb_allocate_demux_packet(void* addonData, int iDataSize = 0);
 
   /*!
    * @brief Notify a state change for a PVR backend connection
@@ -176,7 +176,7 @@ public:
    * @param strMessage A localized addon-defined string representing the new state, that can be displayed
    *        in the UI or NULL if the Kodi-defined default string for the new state shall be displayed.
    */
-  static void PVRConnectionStateChange(void* addonData, const char* strConnectionString, PVR_CONNECTION_STATE newState, const char *strMessage);
+  static void cb_connection_state_change(void* addonData, const char* strConnectionString, PVR_CONNECTION_STATE newState, const char *strMessage);
 
   /*!
    * @brief Notify a state change for an EPG event
@@ -187,12 +187,12 @@ public:
    * @param newState The new state. For EPG_EVENT_CREATED and EPG_EVENT_UPDATED, tag must be filled with all available
    *        event data, not just a delta. For EPG_EVENT_DELETED, it is sufficient to fill EPG_TAG.iUniqueBroadcastId
    */
-  static void PVREpgEventStateChange(void* addonData, EPG_TAG* tag, unsigned int iUniqueChannelId, EPG_EVENT_STATE newState);
+  static void cb_epg_event_state_change(void* addonData, EPG_TAG* tag, unsigned int iUniqueChannelId, EPG_EVENT_STATE newState);
 
   /*! @todo remove the use complete from them, or add as generl function?!
    * Returns the ffmpeg codec id from given ffmpeg codec string name
    */
-  static xbmc_codec_t GetCodecByName(const void* addonData, const char* strCodecName);
+  static xbmc_codec_t cb_get_codec_by_name(const void* addonData, const char* strCodecName);
 
 private:
   static ::PVR::CPVRClient* GetPVRClient(void* addonData);

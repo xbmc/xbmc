@@ -117,24 +117,24 @@ CAddonCallbacksPVR::CAddonCallbacksPVR(CAddon* addon)
     m_callbacks(new CB_PVRLib)
 {
   /* write XBMC PVR specific add-on function addresses to callback table */
-  m_callbacks->TransferEpgEntry           = PVRTransferEpgEntry;
-  m_callbacks->TransferChannelEntry       = PVRTransferChannelEntry;
-  m_callbacks->TransferTimerEntry         = PVRTransferTimerEntry;
-  m_callbacks->TransferRecordingEntry     = PVRTransferRecordingEntry;
-  m_callbacks->AddMenuHook                = PVRAddMenuHook;
-  m_callbacks->Recording                  = PVRRecording;
-  m_callbacks->TriggerChannelUpdate       = PVRTriggerChannelUpdate;
-  m_callbacks->TriggerChannelGroupsUpdate = PVRTriggerChannelGroupsUpdate;
-  m_callbacks->TriggerTimerUpdate         = PVRTriggerTimerUpdate;
-  m_callbacks->TriggerRecordingUpdate     = PVRTriggerRecordingUpdate;
-  m_callbacks->TriggerEpgUpdate           = PVRTriggerEpgUpdate;
-  m_callbacks->FreeDemuxPacket            = PVRFreeDemuxPacket;
-  m_callbacks->AllocateDemuxPacket        = PVRAllocateDemuxPacket;
-  m_callbacks->TransferChannelGroup       = PVRTransferChannelGroup;
-  m_callbacks->TransferChannelGroupMember = PVRTransferChannelGroupMember;
-  m_callbacks->ConnectionStateChange      = PVRConnectionStateChange;
-  m_callbacks->EpgEventStateChange        = PVREpgEventStateChange;
-  m_callbacks->GetCodecByName = GetCodecByName;
+  m_callbacks->TransferEpgEntry = cb_transfer_epg_entry;
+  m_callbacks->TransferChannelEntry = cb_transfer_channel_entry;
+  m_callbacks->TransferTimerEntry = cb_transfer_timer_entry;
+  m_callbacks->TransferRecordingEntry = cb_transfer_recording_entry;
+  m_callbacks->AddMenuHook = cb_add_menu_hook;
+  m_callbacks->Recording = cb_recording;
+  m_callbacks->TriggerChannelUpdate = cb_trigger_channel_update;
+  m_callbacks->TriggerChannelGroupsUpdate = cb_trigger_channel_groups_update;
+  m_callbacks->TriggerTimerUpdate = cb_trigger_timer_update;
+  m_callbacks->TriggerRecordingUpdate = cb_trigger_recording_update;
+  m_callbacks->TriggerEpgUpdate = cb_trigger_epg_update;
+  m_callbacks->FreeDemuxPacket = cb_free_demux_packet;
+  m_callbacks->AllocateDemuxPacket = cb_allocate_demux_packet;
+  m_callbacks->TransferChannelGroup = cb_transfer_channel_group;
+  m_callbacks->TransferChannelGroupMember = cb_transfer_channel_group_member;
+  m_callbacks->ConnectionStateChange = cb_connection_state_change;
+  m_callbacks->EpgEventStateChange = cb_epg_event_state_change;
+  m_callbacks->GetCodecByName = cb_get_codec_by_name;
 }
 
 CAddonCallbacksPVR::~CAddonCallbacksPVR()
@@ -155,7 +155,7 @@ CPVRClient *CAddonCallbacksPVR::GetPVRClient(void *addonData)
   return dynamic_cast<CPVRClient *>(static_cast<CAddonCallbacksPVR*>(addon->PVRLib_GetHelper())->m_addon);
 }
 
-void CAddonCallbacksPVR::PVRTransferChannelGroup(void *addonData, const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP *group)
+void CAddonCallbacksPVR::cb_transfer_channel_group(void *addonData, const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP *group)
 {
   if (!handle)
   {
@@ -181,7 +181,7 @@ void CAddonCallbacksPVR::PVRTransferChannelGroup(void *addonData, const ADDON_HA
   xbmcGroups->UpdateFromClient(transferGroup);
 }
 
-void CAddonCallbacksPVR::PVRTransferChannelGroupMember(void *addonData, const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP_MEMBER *member)
+void CAddonCallbacksPVR::cb_transfer_channel_group_member(void *addonData, const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP_MEMBER *member)
 {
   if (!handle)
   {
@@ -209,7 +209,7 @@ void CAddonCallbacksPVR::PVRTransferChannelGroupMember(void *addonData, const AD
   }
 }
 
-void CAddonCallbacksPVR::PVRTransferEpgEntry(void *addonData, const ADDON_HANDLE handle, const EPG_TAG *epgentry)
+void CAddonCallbacksPVR::cb_transfer_epg_entry(void *addonData, const ADDON_HANDLE handle, const EPG_TAG *epgentry)
 {
   if (!handle)
   {
@@ -228,7 +228,7 @@ void CAddonCallbacksPVR::PVRTransferEpgEntry(void *addonData, const ADDON_HANDLE
   xbmcEpg->UpdateEntry(epgentry, handle->dataIdentifier == 1 /* update db */);
 }
 
-void CAddonCallbacksPVR::PVRTransferChannelEntry(void *addonData, const ADDON_HANDLE handle, const PVR_CHANNEL *channel)
+void CAddonCallbacksPVR::cb_transfer_channel_entry(void *addonData, const ADDON_HANDLE handle, const PVR_CHANNEL *channel)
 {
   if (!handle)
   {
@@ -249,7 +249,7 @@ void CAddonCallbacksPVR::PVRTransferChannelEntry(void *addonData, const ADDON_HA
   xbmcChannels->UpdateFromClient(transferChannel);
 }
 
-void CAddonCallbacksPVR::PVRTransferRecordingEntry(void *addonData, const ADDON_HANDLE handle, const PVR_RECORDING *recording)
+void CAddonCallbacksPVR::cb_transfer_recording_entry(void *addonData, const ADDON_HANDLE handle, const PVR_RECORDING *recording)
 {
   if (!handle)
   {
@@ -270,7 +270,7 @@ void CAddonCallbacksPVR::PVRTransferRecordingEntry(void *addonData, const ADDON_
   xbmcRecordings->UpdateFromClient(transferRecording);
 }
 
-void CAddonCallbacksPVR::PVRTransferTimerEntry(void *addonData, const ADDON_HANDLE handle, const PVR_TIMER *timer)
+void CAddonCallbacksPVR::cb_transfer_timer_entry(void *addonData, const ADDON_HANDLE handle, const PVR_TIMER *timer)
 {
   if (!handle)
   {
@@ -294,7 +294,7 @@ void CAddonCallbacksPVR::PVRTransferTimerEntry(void *addonData, const ADDON_HAND
   xbmcTimers->UpdateFromClient(transferTimer);
 }
 
-void CAddonCallbacksPVR::PVRAddMenuHook(void *addonData, PVR_MENUHOOK *hook)
+void CAddonCallbacksPVR::cb_add_menu_hook(void *addonData, PVR_MENUHOOK *hook)
 {
   CPVRClient *client = GetPVRClient(addonData);
   if (!hook || !client)
@@ -316,7 +316,7 @@ void CAddonCallbacksPVR::PVRAddMenuHook(void *addonData, PVR_MENUHOOK *hook)
   }
 }
 
-void CAddonCallbacksPVR::PVRRecording(void *addonData, const char *strName, const char *strFileName, bool bOnOff)
+void CAddonCallbacksPVR::cb_recording(void *addonData, const char *strName, const char *strFileName, bool bOnOff)
 {
   CPVRClient *client = GetPVRClient(addonData);
   if (!client || !strFileName)
@@ -340,31 +340,31 @@ void CAddonCallbacksPVR::PVRRecording(void *addonData, const char *strName, cons
       __FUNCTION__, bOnOff ? "started" : "finished", client->Name().c_str(), strName, strFileName);
 }
 
-void CAddonCallbacksPVR::PVRTriggerChannelUpdate(void *addonData)
+void CAddonCallbacksPVR::cb_trigger_channel_update(void *addonData)
 {
   /* update the channels table in the next iteration of the pvrmanager's main loop */
   CServiceBroker::GetPVRManager().TriggerChannelsUpdate();
 }
 
-void CAddonCallbacksPVR::PVRTriggerTimerUpdate(void *addonData)
+void CAddonCallbacksPVR::cb_trigger_timer_update(void *addonData)
 {
   /* update the timers table in the next iteration of the pvrmanager's main loop */
   CServiceBroker::GetPVRManager().TriggerTimersUpdate();
 }
 
-void CAddonCallbacksPVR::PVRTriggerRecordingUpdate(void *addonData)
+void CAddonCallbacksPVR::cb_trigger_recording_update(void *addonData)
 {
   /* update the recordings table in the next iteration of the pvrmanager's main loop */
   CServiceBroker::GetPVRManager().TriggerRecordingsUpdate();
 }
 
-void CAddonCallbacksPVR::PVRTriggerChannelGroupsUpdate(void *addonData)
+void CAddonCallbacksPVR::cb_trigger_channel_groups_update(void *addonData)
 {
   /* update all channel groups in the next iteration of the pvrmanager's main loop */
   CServiceBroker::GetPVRManager().TriggerChannelGroupsUpdate();
 }
 
-void CAddonCallbacksPVR::PVRTriggerEpgUpdate(void *addonData, unsigned int iChannelUid)
+void CAddonCallbacksPVR::cb_trigger_epg_update(void *addonData, unsigned int iChannelUid)
 {
   // get the client
   CPVRClient *client = GetPVRClient(addonData);
@@ -377,17 +377,17 @@ void CAddonCallbacksPVR::PVRTriggerEpgUpdate(void *addonData, unsigned int iChan
   CServiceBroker::GetPVRManager().EpgContainer().UpdateRequest(client->GetID(), iChannelUid);
 }
 
-void CAddonCallbacksPVR::PVRFreeDemuxPacket(void *addonData, DemuxPacket* pPacket)
+void CAddonCallbacksPVR::cb_free_demux_packet(void *addonData, DemuxPacket* pPacket)
 {
   CDVDDemuxUtils::FreeDemuxPacket(pPacket);
 }
 
-DemuxPacket* CAddonCallbacksPVR::PVRAllocateDemuxPacket(void *addonData, int iDataSize)
+DemuxPacket* CAddonCallbacksPVR::cb_allocate_demux_packet(void *addonData, int iDataSize)
 {
   return CDVDDemuxUtils::AllocateDemuxPacket(iDataSize);
 }
 
-void CAddonCallbacksPVR::PVRConnectionStateChange(void* addonData, const char* strConnectionString, PVR_CONNECTION_STATE newState, const char *strMessage)
+void CAddonCallbacksPVR::cb_connection_state_change(void* addonData, const char* strConnectionString, PVR_CONNECTION_STATE newState, const char *strMessage)
 {
   CPVRClient *client = GetPVRClient(addonData);
   if (!client || !strConnectionString)
@@ -449,7 +449,7 @@ void CAddonCallbacksPVR::UpdateEpgEvent(const EpgEventStateChange &ch, bool bQue
               __FUNCTION__, ch.iUniqueChannelId, bQueued ? "queued " : "", ch.event->UniqueBroadcastID());
 }
 
-void CAddonCallbacksPVR::PVREpgEventStateChange(void* addonData, EPG_TAG* tag, unsigned int iUniqueChannelId, EPG_EVENT_STATE newState)
+void CAddonCallbacksPVR::cb_epg_event_state_change(void* addonData, EPG_TAG* tag, unsigned int iUniqueChannelId, EPG_EVENT_STATE newState)
 {
   CPVRClient *client = GetPVRClient(addonData);
   if (!client || !tag)
@@ -489,7 +489,7 @@ void CAddonCallbacksPVR::PVREpgEventStateChange(void* addonData, EPG_TAG* tag, u
   }
 }
 
-xbmc_codec_t CAddonCallbacksPVR::GetCodecByName(const void* addonData, const char* strCodecName)
+xbmc_codec_t CAddonCallbacksPVR::cb_get_codec_by_name(const void* addonData, const char* strCodecName)
 {
   (void)addonData;
   return CCodecIds::GetInstance().GetCodecByName(strCodecName);
