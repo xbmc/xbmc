@@ -21,8 +21,6 @@
 
 #include "system.h"
 
-#if defined(TARGET_RASPBERRY_PI)
-
 #include "cores/AudioEngine/Interfaces/AESink.h"
 #include "cores/AudioEngine/Utils/AEDeviceInfo.h"
 
@@ -66,5 +64,3 @@ private:
   COMXCoreTunnel       m_omx_tunnel_splitter_slave;
   enum { AESINKPI_UNKNOWN, AESINKPI_HDMI, AESINKPI_ANALOGUE, AESINKPI_BOTH } m_output;
 };
-
-#endif

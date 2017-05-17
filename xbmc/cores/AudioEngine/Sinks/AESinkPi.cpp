@@ -20,8 +20,6 @@
 
 #include "system.h"
 
-#if defined(TARGET_RASPBERRY_PI)
-
 #include <stdint.h>
 #include <limits.h>
 #include <cassert>
@@ -578,5 +576,3 @@ void CAESinkPi::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
   m_info.m_wantsIECPassthrough = true;
   list.push_back(m_info);
 }
-
-#endif

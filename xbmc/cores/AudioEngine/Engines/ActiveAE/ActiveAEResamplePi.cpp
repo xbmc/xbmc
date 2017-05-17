@@ -21,8 +21,6 @@
 #include "system.h"
 #include <cassert>
 
-#if defined(TARGET_RASPBERRY_PI)
-
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "ActiveAEResamplePi.h"
 #include "settings/Settings.h"
@@ -592,5 +590,3 @@ int CActiveAEResamplePi::GetDstBufferSize(int samples)
   #endif
   return ret;
 }
-
-#endif
