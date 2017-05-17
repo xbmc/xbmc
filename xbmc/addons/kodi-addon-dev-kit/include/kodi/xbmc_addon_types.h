@@ -48,6 +48,8 @@ struct ADDON_HANDLE_STRUCT
 };
 typedef ADDON_HANDLE_STRUCT *ADDON_HANDLE;
 
+typedef void* KODI_HANDLE;
+
 #ifdef __cplusplus
 };
 #endif

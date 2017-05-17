@@ -540,83 +540,120 @@ extern "C" {
     } data;
   } ATTRIBUTE_PACKED PVR_MENUHOOK_DATA;
 
+  typedef struct AddonToKodiFuncTable_PVR
+  {
+    KODI_HANDLE kodiInstance;
+
+    void (*TransferEpgEntry)(void* kodiInstance, const ADDON_HANDLE handle, const EPG_TAG *epgentry);
+    void (*TransferChannelEntry)(void* kodiInstance, const ADDON_HANDLE handle, const PVR_CHANNEL *chan);
+    void (*TransferTimerEntry)(void* kodiInstance, const ADDON_HANDLE handle, const PVR_TIMER *timer);
+    void (*TransferRecordingEntry)(void* kodiInstance, const ADDON_HANDLE handle, const PVR_RECORDING *recording);
+    void (*AddMenuHook)(void* kodiInstance, PVR_MENUHOOK *hook);
+    void (*Recording)(void* kodiInstance, const char *Name, const char *FileName, bool On);
+    void (*TriggerChannelUpdate)(void* kodiInstance);
+    void (*TriggerTimerUpdate)(void* kodiInstance);
+    void (*TriggerRecordingUpdate)(void* kodiInstance);
+    void (*TriggerChannelGroupsUpdate)(void* kodiInstance);
+    void (*TriggerEpgUpdate)(void* kodiInstance, unsigned int iChannelUid);
+
+    void (*TransferChannelGroup)(void* kodiInstance, const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP *group);
+    void (*TransferChannelGroupMember)(void* kodiInstance, const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP_MEMBER *member);
+
+    void (*FreeDemuxPacket)(void* kodiInstance, DemuxPacket* pPacket);
+    DemuxPacket* (*AllocateDemuxPacket)(void* kodiInstance, int iDataSize);
+    
+    void (*ConnectionStateChange)(void* kodiInstance, const char* strConnectionString, PVR_CONNECTION_STATE newState, const char *strMessage);
+    void (*EpgEventStateChange)(void* kodiInstance, EPG_TAG* tag, unsigned int iUniqueChannelId, EPG_EVENT_STATE newState);
+
+    xbmc_codec_t (*GetCodecByName)(const void* kodiInstance, const char* strCodecName);
+  } AddonToKodiFuncTable_PVR;
+
   /*!
    * @brief Structure to transfer the methods from xbmc_pvr_dll.h to XBMC
    */
   typedef struct KodiToAddonFuncTable_PVR
   {
-    PVR_ERROR    (__cdecl* GetAddonCapabilities)(PVR_ADDON_CAPABILITIES*);
-    PVR_ERROR    (__cdecl* GetStreamProperties)(PVR_STREAM_PROPERTIES*);
-    const char*  (__cdecl* GetBackendName)(void);
-    const char*  (__cdecl* GetBackendVersion)(void);
-    const char*  (__cdecl* GetConnectionString)(void);
-    PVR_ERROR    (__cdecl* GetDriveSpace)(long long*, long long*);
-    PVR_ERROR    (__cdecl* MenuHook)(const PVR_MENUHOOK&, const PVR_MENUHOOK_DATA&);
-    PVR_ERROR    (__cdecl* GetEpg)(ADDON_HANDLE, const PVR_CHANNEL&, time_t, time_t);
-    int          (__cdecl* GetChannelGroupsAmount)(void);
-    PVR_ERROR    (__cdecl* GetChannelGroups)(ADDON_HANDLE, bool);
-    PVR_ERROR    (__cdecl* GetChannelGroupMembers)(ADDON_HANDLE, const PVR_CHANNEL_GROUP&);
-    PVR_ERROR    (__cdecl* OpenDialogChannelScan)(void);
-    int          (__cdecl* GetChannelsAmount)(void);
-    PVR_ERROR    (__cdecl* GetChannels)(ADDON_HANDLE, bool);
-    PVR_ERROR    (__cdecl* DeleteChannel)(const PVR_CHANNEL&);
-    PVR_ERROR    (__cdecl* RenameChannel)(const PVR_CHANNEL&);
-    PVR_ERROR    (__cdecl* MoveChannel)(const PVR_CHANNEL&);
-    PVR_ERROR    (__cdecl* OpenDialogChannelSettings)(const PVR_CHANNEL&);
-    PVR_ERROR    (__cdecl* OpenDialogChannelAdd)(const PVR_CHANNEL&);
-    int          (__cdecl* GetRecordingsAmount)(bool);
-    PVR_ERROR    (__cdecl* GetRecordings)(ADDON_HANDLE, bool);
-    PVR_ERROR    (__cdecl* DeleteRecording)(const PVR_RECORDING&);
-    PVR_ERROR    (__cdecl* UndeleteRecording)(const PVR_RECORDING&);
-    PVR_ERROR    (__cdecl* DeleteAllRecordingsFromTrash)(void);
-    PVR_ERROR    (__cdecl* RenameRecording)(const PVR_RECORDING&);
-    PVR_ERROR    (__cdecl* SetRecordingPlayCount)(const PVR_RECORDING&, int);
-    PVR_ERROR    (__cdecl* SetRecordingLastPlayedPosition)(const PVR_RECORDING&, int);
-    int          (__cdecl* GetRecordingLastPlayedPosition)(const PVR_RECORDING&);
-    PVR_ERROR    (__cdecl* GetRecordingEdl)(const PVR_RECORDING&, PVR_EDL_ENTRY[], int*);
-    PVR_ERROR    (__cdecl* GetTimerTypes)(PVR_TIMER_TYPE[], int*);
-    int          (__cdecl* GetTimersAmount)(void);
-    PVR_ERROR    (__cdecl* GetTimers)(ADDON_HANDLE);
-    PVR_ERROR    (__cdecl* AddTimer)(const PVR_TIMER&);
-    PVR_ERROR    (__cdecl* DeleteTimer)(const PVR_TIMER&, bool);
-    PVR_ERROR    (__cdecl* UpdateTimer)(const PVR_TIMER&);
-    bool         (__cdecl* OpenLiveStream)(const PVR_CHANNEL&);
-    void         (__cdecl* CloseLiveStream)(void);
-    int          (__cdecl* ReadLiveStream)(unsigned char*, unsigned int);
-    long long    (__cdecl* SeekLiveStream)(long long, int);
-    long long    (__cdecl* PositionLiveStream)(void);
-    long long    (__cdecl* LengthLiveStream)(void);
-    bool         (__cdecl* SwitchChannel)(const PVR_CHANNEL&);
-    PVR_ERROR    (__cdecl* SignalStatus)(PVR_SIGNAL_STATUS&);
+    KODI_HANDLE addonInstance;
+
+    PVR_ERROR (__cdecl* GetAddonCapabilities)(PVR_ADDON_CAPABILITIES*);
+    PVR_ERROR (__cdecl* GetStreamProperties)(PVR_STREAM_PROPERTIES*);
+    const char* (__cdecl* GetBackendName)(void);
+    const char* (__cdecl* GetBackendVersion)(void);
+    const char* (__cdecl* GetConnectionString)(void);
+    PVR_ERROR (__cdecl* GetDriveSpace)(long long*, long long*);
+    PVR_ERROR (__cdecl* MenuHook)(const PVR_MENUHOOK&, const PVR_MENUHOOK_DATA&);
+    PVR_ERROR (__cdecl* GetEpg)(ADDON_HANDLE, const PVR_CHANNEL&, time_t, time_t);
+    int (__cdecl* GetChannelGroupsAmount)(void);
+    PVR_ERROR (__cdecl* GetChannelGroups)(ADDON_HANDLE, bool);
+    PVR_ERROR (__cdecl* GetChannelGroupMembers)(ADDON_HANDLE, const PVR_CHANNEL_GROUP&);
+    PVR_ERROR (__cdecl* OpenDialogChannelScan)(void);
+    int (__cdecl* GetChannelsAmount)(void);
+    PVR_ERROR (__cdecl* GetChannels)(ADDON_HANDLE, bool);
+    PVR_ERROR (__cdecl* DeleteChannel)(const PVR_CHANNEL&);
+    PVR_ERROR (__cdecl* RenameChannel)(const PVR_CHANNEL&);
+    PVR_ERROR (__cdecl* MoveChannel)(const PVR_CHANNEL&);
+    PVR_ERROR (__cdecl* OpenDialogChannelSettings)(const PVR_CHANNEL&);
+    PVR_ERROR (__cdecl* OpenDialogChannelAdd)(const PVR_CHANNEL&);
+    int (__cdecl* GetRecordingsAmount)(bool);
+    PVR_ERROR (__cdecl* GetRecordings)(ADDON_HANDLE, bool);
+    PVR_ERROR (__cdecl* DeleteRecording)(const PVR_RECORDING&);
+    PVR_ERROR (__cdecl* UndeleteRecording)(const PVR_RECORDING&);
+    PVR_ERROR (__cdecl* DeleteAllRecordingsFromTrash)(void);
+    PVR_ERROR (__cdecl* RenameRecording)(const PVR_RECORDING&);
+    PVR_ERROR (__cdecl* SetRecordingPlayCount)(const PVR_RECORDING&, int);
+    PVR_ERROR (__cdecl* SetRecordingLastPlayedPosition)(const PVR_RECORDING&, int);
+    int (__cdecl* GetRecordingLastPlayedPosition)(const PVR_RECORDING&);
+    PVR_ERROR (__cdecl* GetRecordingEdl)(const PVR_RECORDING&, PVR_EDL_ENTRY[], int*);
+    PVR_ERROR (__cdecl* GetTimerTypes)(PVR_TIMER_TYPE[], int*);
+    int (__cdecl* GetTimersAmount)(void);
+    PVR_ERROR (__cdecl* GetTimers)(ADDON_HANDLE);
+    PVR_ERROR (__cdecl* AddTimer)(const PVR_TIMER&);
+    PVR_ERROR (__cdecl* DeleteTimer)(const PVR_TIMER&, bool);
+    PVR_ERROR (__cdecl* UpdateTimer)(const PVR_TIMER&);
+    bool (__cdecl* OpenLiveStream)(const PVR_CHANNEL&);
+    void (__cdecl* CloseLiveStream)(void);
+    int (__cdecl* ReadLiveStream)(unsigned char*, unsigned int);
+    long long (__cdecl* SeekLiveStream)(long long, int);
+    long long (__cdecl* PositionLiveStream)(void);
+    long long (__cdecl* LengthLiveStream)(void);
+    bool (__cdecl* SwitchChannel)(const PVR_CHANNEL&);
+    PVR_ERROR (__cdecl* SignalStatus)(PVR_SIGNAL_STATUS&);
     const char*  (__cdecl* GetLiveStreamURL)(const PVR_CHANNEL&);
-    bool         (__cdecl* OpenRecordedStream)(const PVR_RECORDING&);
-    void         (__cdecl* CloseRecordedStream)(void);
-    int          (__cdecl* ReadRecordedStream)(unsigned char*, unsigned int);
-    long long    (__cdecl* SeekRecordedStream)(long long, int);
-    long long    (__cdecl* PositionRecordedStream)(void);
-    long long    (__cdecl* LengthRecordedStream)(void);
-    void         (__cdecl* DemuxReset)(void);
-    void         (__cdecl* DemuxAbort)(void);
-    void         (__cdecl* DemuxFlush)(void);
+    bool (__cdecl* OpenRecordedStream)(const PVR_RECORDING&);
+    void (__cdecl* CloseRecordedStream)(void);
+    int (__cdecl* ReadRecordedStream)(unsigned char*, unsigned int);
+    long long (__cdecl* SeekRecordedStream)(long long, int);
+    long long (__cdecl* PositionRecordedStream)(void);
+    long long (__cdecl* LengthRecordedStream)(void);
+    void (__cdecl* DemuxReset)(void);
+    void (__cdecl* DemuxAbort)(void);
+    void (__cdecl* DemuxFlush)(void);
     DemuxPacket* (__cdecl* DemuxRead)(void);
     unsigned int (__cdecl* GetChannelSwitchDelay)(void);
-    bool         (__cdecl* CanPauseStream)(void);
-    void         (__cdecl* PauseStream)(bool);
-    bool         (__cdecl* CanSeekStream)(void);
-    bool         (__cdecl* SeekTime)(double, bool, double*);
-    void         (__cdecl* SetSpeed)(int);
-    time_t       (__cdecl* GetPlayingTime)(void);
-    time_t       (__cdecl* GetBufferTimeStart)(void);
-    time_t       (__cdecl* GetBufferTimeEnd)(void);
-    const char*  (__cdecl* GetBackendHostname)(void);
-    bool         (__cdecl* IsTimeshifting)(void);
-    bool         (__cdecl* IsRealTimeStream)(void);
-    PVR_ERROR    (__cdecl* SetEPGTimeFrame)(int);
-    void         (__cdecl* OnSystemSleep)(void);
-    void         (__cdecl* OnSystemWake)(void);
-    void         (__cdecl* OnPowerSavingActivated)(void);
-    void         (__cdecl* OnPowerSavingDeactivated)(void);
+    bool (__cdecl* CanPauseStream)(void);
+    void (__cdecl* PauseStream)(bool);
+    bool (__cdecl* CanSeekStream)(void);
+    bool (__cdecl* SeekTime)(double, bool, double*);
+    void (__cdecl* SetSpeed)(int);
+    time_t (__cdecl* GetPlayingTime)(void);
+    time_t (__cdecl* GetBufferTimeStart)(void);
+    time_t (__cdecl* GetBufferTimeEnd)(void);
+    const char* (__cdecl* GetBackendHostname)(void);
+    bool (__cdecl* IsTimeshifting)(void);
+    bool (__cdecl* IsRealTimeStream)(void);
+    PVR_ERROR (__cdecl* SetEPGTimeFrame)(int);
+    void (__cdecl* OnSystemSleep)(void);
+    void (__cdecl* OnSystemWake)(void);
+    void (__cdecl* OnPowerSavingActivated)(void);
+    void (__cdecl* OnPowerSavingDeactivated)(void);
   } KodiToAddonFuncTable_PVR;
+
+  typedef struct AddonInstance_PVR
+  {
+    PVR_PROPERTIES props;
+    AddonToKodiFuncTable_PVR toKodi;
+    KodiToAddonFuncTable_PVR toAddon;
+  } AddonInstance_PVR;
 
 #ifdef __cplusplus
 }

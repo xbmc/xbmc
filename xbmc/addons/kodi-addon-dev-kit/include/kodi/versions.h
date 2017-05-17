@@ -103,8 +103,8 @@
                                                       "kodi_peripheral_utils.hpp" \
                                                       "libKODI_peripheral.h"
 
-#define ADDON_INSTANCE_VERSION_PVR                    "5.2.3"
-#define ADDON_INSTANCE_VERSION_PVR_MIN                "5.2.3"
+#define ADDON_INSTANCE_VERSION_PVR                    "5.2.4"
+#define ADDON_INSTANCE_VERSION_PVR_MIN                "5.2.4"
 #define ADDON_INSTANCE_VERSION_PVR_XML_ID             "kodi.binary.instance.pvr"
 #define ADDON_INSTANCE_VERSION_PVR_DEPENDS            "xbmc_pvr_dll.h" \
                                                       "xbmc_pvr_types.h" \
