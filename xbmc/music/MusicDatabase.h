@@ -130,6 +130,7 @@ public:
    \param rating [in] a rating for the song
    \param userrating [in] a userrating (my rating) for the song
    \param votes [in] a vote counter for the song rating
+   \param replayGain [in] album and track replaygain and peak values
    \return the id of the song
    */
   int AddSong(const int idAlbum,
@@ -143,7 +144,8 @@ public:
               const std::vector<std::string>& genres,
               int iTrack, int iDuration, int iYear,
               const int iTimesPlayed, int iStartOffset, int iEndOffset,
-              const CDateTime& dtLastPlayed, float rating, int userrating, int votes);
+              const CDateTime& dtLastPlayed, float rating, int userrating, int votes,
+              const ReplayGain& replayGain);
   bool GetSong(int idSong, CSong& song);
 
   /*! \brief Update a song in the database.
@@ -180,6 +182,7 @@ public:
    \param rating [in] a rating for the song
    \param userrating [in] a userrating (my rating) for the song
    \param votes [in] a vote counter for the song rating
+   \param replayGain [in] album and track replaygain and peak values
    \return the id of the song
    */
   int UpdateSong(int idSong,
@@ -190,7 +193,7 @@ public:
                  const std::vector<std::string>& genres,
                  int iTrack, int iDuration, int iYear,
                  int iTimesPlayed, int iStartOffset, int iEndOffset,
-                 const CDateTime& dtLastPlayed, float rating, int userrating, int votes);
+                 const CDateTime& dtLastPlayed, float rating, int userrating, int votes, const ReplayGain& replayGain);
 
   //// Misc Song
   bool GetSongByFileName(const std::string& strFileName, CSong& song, int startOffset = 0);
@@ -314,12 +317,6 @@ public:
   bool UpdateArtistSortNames(int idArtist = -1);
 
   /////////////////////////////////////////////////
-  // Cuesheets
-  /////////////////////////////////////////////////
-  void SaveCuesheet(const std::string& fullSongPath, const std::string& strCuesheet);
-  std::string LoadCuesheet(const std::string& fullSongPath);
-
-  /////////////////////////////////////////////////
   // Paths
   /////////////////////////////////////////////////
   int AddPath(const std::string& strPath);
@@ -415,7 +412,7 @@ public:
   bool GetSongsNav(const std::string& strBaseDir, CFileItemList& items, int idGenre, int idArtist,int idAlbum, const SortDescription &sortDescription = SortDescription());
   bool GetSongsByYear(const std::string& baseDir, CFileItemList& items, int year);
   bool GetSongsByWhere(const std::string &baseDir, const Filter &filter, CFileItemList& items, const SortDescription &sortDescription = SortDescription());
-  bool GetSongsFullByWhere(const std::string &baseDir, const Filter &filter, CFileItemList& items, const SortDescription &sortDescription = SortDescription(), bool artistData = false, bool cueSheetData = false);
+  bool GetSongsFullByWhere(const std::string &baseDir, const Filter &filter, CFileItemList& items, const SortDescription &sortDescription = SortDescription(), bool artistData = false);
   bool GetAlbumsByWhere(const std::string &baseDir, const Filter &filter, CFileItemList &items, const SortDescription &sortDescription = SortDescription(), bool countOnly = false);
   bool GetAlbumsByWhere(const std::string &baseDir, const Filter &filter, VECALBUMS& albums, int& total, const SortDescription &sortDescription = SortDescription(), bool countOnly = false);
   bool GetArtistsByWhere(const std::string& strBaseDir, const Filter &filter, CFileItemList& items, const SortDescription &sortDescription = SortDescription(), bool countOnly = false);
@@ -542,9 +539,7 @@ public:
 protected:
   std::map<std::string, int> m_genreCache;
   std::map<std::string, int> m_pathCache;
-  typedef std::map<std::string, std::string> CueCache;
-  CueCache m_cueCache;
-
+  
   virtual void CreateTables();
   virtual void CreateAnalytics();
   virtual int GetMinSchemaVersion() const { return 32; }
@@ -621,6 +616,7 @@ private:
     song_strAlbumReleaseType,
     song_mood,
     song_dateAdded,
+    song_strReplayGain,
     song_enumCount // end of the enum, do not add past here
   } SongFields;
 

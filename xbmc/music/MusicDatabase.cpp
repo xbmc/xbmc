@@ -28,7 +28,6 @@
 #include "Application.h"
 #include "ServiceBroker.h"
 #include "Artist.h"
-#include "CueInfoLoader.h"
 #include "dbwrappers/dataset.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogOK.h"
@@ -176,7 +175,7 @@ void CMusicDatabase::CreateTables()
               " lastplayed varchar(20) default NULL, "
               " rating FLOAT NOT NULL DEFAULT 0, votes INTEGER NOT NULL DEFAULT 0, "
               " userrating INTEGER NOT NULL DEFAULT 0, "
-              " comment text, mood text, dateAdded text)");
+              " comment text, mood text, strReplayGain text, dateAdded text)");
   CLog::Log(LOGINFO, "create song_artist table");
   m_pDS->exec("CREATE TABLE song_artist (idArtist integer, idSong integer, idRole integer, iOrder integer, strArtist text)");
   CLog::Log(LOGINFO, "create song_genre table");
@@ -196,9 +195,6 @@ void CMusicDatabase::CreateTables()
 
   CLog::Log(LOGINFO, "create art table");
   m_pDS->exec("CREATE TABLE art(art_id INTEGER PRIMARY KEY, media_id INTEGER, media_type TEXT, type TEXT, url TEXT)");
-
-  CLog::Log(LOGINFO, "create cue table");
-  m_pDS->exec("CREATE TABLE cue (idPath integer, strFileName text, strCuesheet text)");
 
   CLog::Log(LOGINFO, "create versiontagscan table");
   m_pDS->exec("CREATE TABLE versiontagscan (idVersion integer, iNeedsScan integer)");
@@ -249,8 +245,6 @@ void CMusicDatabase::CreateAnalytics()
 
   m_pDS->exec("CREATE INDEX ix_art ON art(media_id, media_type(20), type(20))");
 
-  m_pDS->exec("CREATE UNIQUE INDEX idxCue ON cue(idPath, strFileName(255))");
-
   CLog::Log(LOGINFO, "create triggers");
   m_pDS->exec("CREATE TRIGGER tgrDeleteAlbum AFTER delete ON album FOR EACH ROW BEGIN"
               "  DELETE FROM song WHERE song.idAlbum = old.idAlbum;"
@@ -270,10 +264,7 @@ void CMusicDatabase::CreateAnalytics()
               "  DELETE FROM song_genre WHERE song_genre.idSong = old.idSong;"
               "  DELETE FROM art WHERE media_id=old.idSong AND media_type='song';"
               " END");
-  m_pDS->exec("CREATE TRIGGER tgrDeletePath AFTER delete ON path FOR EACH ROW BEGIN"
-              "  DELETE FROM cue WHERE cue.idPath = old.idPath;"
-              " END");
-
+  
   // we create views last to ensure all indexes are rolled in
   CreateViews();
 }
@@ -305,7 +296,8 @@ void CMusicDatabase::CreateViews()
               "        album.strArtistSort AS strAlbumArtistSort,"
               "        album.strReleaseType AS strAlbumReleaseType,"
               "        song.mood as mood,"
-              "        song.dateAdded as dateAdded "
+              "        song.dateAdded as dateAdded, "
+              "        song.strReplayGain "
               "FROM song"
               "  JOIN album ON"
               "    song.idAlbum=album.idAlbum"
@@ -402,102 +394,6 @@ int CMusicDatabase::AddAlbumInfoSong(int idAlbum, const CSong& song)
   }
 }
 
-void CMusicDatabase::SaveCuesheet(const std::string& fullSongPath, const std::string& strCuesheet)
-{
-  std::string strPath, strFileName;
-  URIUtils::Split(fullSongPath, strPath, strFileName);
-  
-  int idPath = AddPath(strPath);
-
-  if (idPath == -1)
-    return;
-
-  std::string strSQL;
-  try
-  {
-    auto it = m_cueCache.find(fullSongPath);
-    if (it != m_cueCache.end() && it->second == strCuesheet)
-      return;
-
-    if (NULL == m_pDB.get())
-      return;
-
-    if (NULL == m_pDS.get())
-      return;
-
-    strSQL = PrepareSQL("SELECT * FROM cue WHERE idPath=%i AND strFileName='%s'", idPath, strFileName.c_str());
-    m_pDS->query(strSQL);
-    if (m_pDS->num_rows() == 0)
-    {
-      if (strCuesheet.empty())
-      {
-        m_pDS->close();
-        m_cueCache.insert(CueCache::value_type(fullSongPath, strCuesheet));
-        return;
-      }
-      strSQL = PrepareSQL("INSERT INTO cue (idPath, strFileName, strCuesheet) VALUES(%i, '%s', '%s')",
-        idPath, strFileName.c_str(), strCuesheet.c_str());
-    }
-    else
-    {
-      if (strCuesheet.empty())
-      {
-        strSQL = PrepareSQL("DELETE FROM cue SET WHERE idPath=%i AND strFileName='%s'", idPath, strFileName.c_str());
-      }
-      else
-      {
-        strSQL = PrepareSQL("UPDATE cue SET strCuesheet='%s') WHERE idPath=%i AND strFileName='%s'",
-          strCuesheet.c_str(), idPath, strFileName.c_str());
-      }
-    }
-    m_pDS->close();
-    m_pDS->exec(strSQL);
-    m_cueCache.insert(CueCache::value_type(fullSongPath, strCuesheet));
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "musicdatabase:unable to addcue (%s)", strSQL.c_str());
-  }
-}
-
-std::string CMusicDatabase::LoadCuesheet(const std::string& fullSongPath)
-{
-  auto it = m_cueCache.find(fullSongPath);
-  if (it != m_cueCache.end())
-    return it->second;
-
-  std::string strCuesheet;
-
-  std::string strPath, strFileName;
-  URIUtils::Split(fullSongPath, strPath, strFileName);
-
-  int idPath = AddPath(strPath);
-  if (idPath == -1)
-    return strCuesheet;
-
-  std::string strSQL;
-  try
-  {
-    if (NULL == m_pDB.get())
-      return strCuesheet;
-
-    if (NULL == m_pDS.get())
-      return strCuesheet;
-
-    strSQL = PrepareSQL("select strCuesheet from cue where idPath=%i AND strFileName='%s'", idPath, strFileName.c_str());
-    m_pDS->query(strSQL);
-
-    if (0 < m_pDS->num_rows())
-      strCuesheet = m_pDS->get_sql_record()->at(0).get_asString();
-    m_pDS->close();
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "musicdatabase:unable to loadcue (%s)", strSQL.c_str());
-  }
-  return strCuesheet;
-}
-
 bool CMusicDatabase::AddAlbum(CAlbum& album)
 {
   BeginTransaction();
@@ -540,7 +436,8 @@ bool CMusicDatabase::AddAlbum(CAlbum& album)
                            song->lastPlayed,
                            song->rating,
                            song->userrating,
-                           song->votes);
+                           song->votes,
+                           song->replayGain);
 
     if (song->artistCredits.empty())    
       AddSongArtist(BLANKARTIST_ID, song->idSong, ROLE_ARTIST, BLANKARTIST_NAME, 0); // Song must have at least one artist so set artist to [Missing]
@@ -559,8 +456,6 @@ bool CMusicDatabase::AddAlbum(CAlbum& album)
     // Having added artist credits (maybe with MBID) add the other contributing artists (no MBID)
     // and use COMPOSERSORT tag data to provide sort names for artists that are composers
     AddSongContributors(song->idSong, song->GetContributors(), song->GetComposerSort());
-
-    SaveCuesheet(song->strFileName, song->strCueSheet);
   }
 
   for (const auto &infoSong : album.infoSongs)
@@ -626,7 +521,8 @@ bool CMusicDatabase::UpdateAlbum(CAlbum& album, bool OverrideTagData /* = true*/
         song.lastPlayed,
         song.rating,
         song.userrating,
-        song.votes);
+        song.votes,
+        song.replayGain);
       //Replace song artists and contributors
       DeleteSongArtistsBySong(song.idSong);
       if (song.artistCredits.empty())
@@ -644,8 +540,6 @@ bool CMusicDatabase::UpdateAlbum(CAlbum& album, bool OverrideTagData /* = true*/
       // Having added artist credits (maybe with MBID) add the other contributing artists (MBID unknown)
       // and use COMPOSERSORT tag data to provide sort names for artists that are composers
       AddSongContributors(song.idSong, song.GetContributors(), song.GetComposerSort());
-
-      SaveCuesheet(song.strFileName, song.strCueSheet);
     }
   }
 
@@ -667,7 +561,8 @@ int CMusicDatabase::AddSong(const int idAlbum,
                             const std::vector<std::string>& genres,
                             int iTrack, int iDuration, int iYear,
                             const int iTimesPlayed, int iStartOffset, int iEndOffset,
-                            const CDateTime& dtLastPlayed, float rating, int userrating, int votes)
+                            const CDateTime& dtLastPlayed, float rating, int userrating, int votes,
+                            const ReplayGain& replayGain)
 {
   int idSong = -1;
   std::string strSQL;
@@ -707,7 +602,7 @@ int CMusicDatabase::AddSong(const int idAlbum,
                                           "strTitle,iTrack,iDuration,iYear,strFileName,"
                                           "strMusicBrainzTrackID, strArtistSort, "
                                           "iTimesPlayed,iStartOffset, "
-                                          "iEndOffset,lastplayed,rating,userrating,votes,comment,mood"
+                                          "iEndOffset,lastplayed,rating,userrating,votes,comment,mood,strReplayGain"
                         ") values (NULL, %i, %i, '%s', '%s', '%s', %i, %i, %i, '%s'",
                     idAlbum,
                     idPath,
@@ -727,11 +622,12 @@ int CMusicDatabase::AddSong(const int idAlbum,
         strSQL += PrepareSQL(",'%s'", artistSort.c_str());
 
       if (dtLastPlayed.IsValid())
-        strSQL += PrepareSQL(",%i,%i,%i,'%s', %.1f, %i, %i, '%s','%s')",
-                      iTimesPlayed, iStartOffset, iEndOffset, dtLastPlayed.GetAsDBDateTime().c_str(), rating, userrating, votes, strComment.c_str(), strMood.c_str());
+        strSQL += PrepareSQL(",%i,%i,%i,'%s', %.1f, %i, %i, '%s','%s', '%s')",
+                      iTimesPlayed, iStartOffset, iEndOffset, dtLastPlayed.GetAsDBDateTime().c_str(), rating, userrating, votes, 
+                      strComment.c_str(), strMood.c_str(), replayGain.Get().c_str());
       else
-        strSQL += PrepareSQL(",%i,%i,%i,NULL, %.1f, %i, %i,'%s', '%s')",
-                      iTimesPlayed, iStartOffset, iEndOffset, rating, userrating, votes, strComment.c_str(), strMood.c_str());
+        strSQL += PrepareSQL(",%i,%i,%i,NULL, %.1f, %i, %i,'%s', '%s', '%s')",
+                      iTimesPlayed, iStartOffset, iEndOffset, rating, userrating, votes, strComment.c_str(), strMood.c_str(), replayGain.Get().c_str());
       m_pDS->exec(strSQL);
       idSong = (int)m_pDS->lastinsertid();
     }
@@ -741,7 +637,7 @@ int CMusicDatabase::AddSong(const int idAlbum,
       m_pDS->close();
       UpdateSong( idSong, strTitle, strMusicBrainzTrackID, strPathAndFileName, strComment, strMood, strThumb, 
                   artistDisp, artistSort, genres, iTrack, iDuration, iYear, iTimesPlayed, iStartOffset, iEndOffset, 
-                  dtLastPlayed, rating, userrating, votes);
+                  dtLastPlayed, rating, userrating, votes, replayGain);
     }
 
     if (!strThumb.empty())
@@ -837,7 +733,8 @@ int CMusicDatabase::UpdateSong(int idSong, const CSong &song)
                     song.lastPlayed,
                     song.rating,
                     song.userrating,
-                    song.votes);
+                    song.votes,
+                    song.replayGain);
 }
 
 int CMusicDatabase::UpdateSong(int idSong,
@@ -848,7 +745,8 @@ int CMusicDatabase::UpdateSong(int idSong,
                                const std::vector<std::string>& genres,
                                int iTrack, int iDuration, int iYear,
                                int iTimesPlayed, int iStartOffset, int iEndOffset,
-                               const CDateTime& dtLastPlayed, float rating, int userrating, int votes)
+                               const CDateTime& dtLastPlayed, float rating, int userrating, int votes, 
+                               const ReplayGain& replayGain)
 {
   if (idSong < 0)
     return -1;
@@ -877,11 +775,11 @@ int CMusicDatabase::UpdateSong(int idSong,
   
 
   if (dtLastPlayed.IsValid())
-    strSQL += PrepareSQL(", iTimesPlayed = %i, iStartOffset = %i, iEndOffset = %i, lastplayed = '%s', rating = %.1f, userrating = %i, votes = %i, comment = '%s', mood = '%s'",
-                         iTimesPlayed, iStartOffset, iEndOffset, dtLastPlayed.GetAsDBDateTime().c_str(), rating, userrating, votes, strComment.c_str(), strMood.c_str());
+    strSQL += PrepareSQL(", iTimesPlayed = %i, iStartOffset = %i, iEndOffset = %i, lastplayed = '%s', rating = %.1f, userrating = %i, votes = %i, comment = '%s', mood = '%s', strReplayGain = '%s'",
+                         iTimesPlayed, iStartOffset, iEndOffset, dtLastPlayed.GetAsDBDateTime().c_str(), rating, userrating, votes, strComment.c_str(), strMood.c_str(), replayGain.Get().c_str());
   else
-    strSQL += PrepareSQL(", iTimesPlayed = %i, iStartOffset = %i, iEndOffset = %i, lastplayed = NULL, rating = %.1f, userrating = %i, votes = %i, comment = '%s', mood = '%s'",
-                         iTimesPlayed, iStartOffset, iEndOffset, rating, userrating, votes, strComment.c_str(), strMood.c_str());
+    strSQL += PrepareSQL(", iTimesPlayed = %i, iStartOffset = %i, iEndOffset = %i, lastplayed = NULL, rating = %.1f, userrating = %i, votes = %i, comment = '%s', mood = '%s', strReplayGain = '%s'",
+                         iTimesPlayed, iStartOffset, iEndOffset, rating, userrating, votes, strComment.c_str(), strMood.c_str(), replayGain.Get().c_str());
   strSQL += PrepareSQL(" WHERE idSong = %i", idSong);
 
   bool status = ExecuteQuery(strSQL);
@@ -2061,7 +1959,8 @@ CSong CMusicDatabase::GetSongFromDataset(const dbiplus::sql_record* const record
   song.strComment = record->at(offset + song_comment).get_asString();
   song.strMood = record->at(offset + song_mood).get_asString();
   song.bCompilation = record->at(offset + song_bCompilation).get_asInt() == 1;
-
+  // Replay gain data (needed for songs from cuesheets, both separate .cue files and embedded metadata)
+  song.replayGain.Set(record->at(offset + song_strReplayGain).get_asString());  
   // Get filename with full path
   song.strFileName = URIUtils::AddFileToFolder(record->at(offset + song_strPath).get_asString(), record->at(offset + song_strFileName).get_asString());
   return song;
@@ -2109,6 +2008,11 @@ void CMusicDatabase::GetFileItemFromDataset(const dbiplus::sql_record* const rec
   // get the album artist string from songview (not the album_artist and artist tables)
   item->GetMusicInfoTag()->SetAlbumArtist(record->at(song_strAlbumArtists).get_asString());
   item->GetMusicInfoTag()->SetAlbumReleaseType(CAlbum::ReleaseTypeFromString(record->at(song_strAlbumReleaseType).get_asString()));
+  // Replay gain data (needed for songs from cuesheets, both separate .cue files and embedded metadata)
+  ReplayGain replaygain;
+  replaygain.Set(record->at(song_strReplayGain).get_asString());
+  item->GetMusicInfoTag()->SetReplayGain(replaygain);
+
   item->GetMusicInfoTag()->SetLoaded(true);
   // Get filename with full path
   if (!baseUrl.IsValid())
@@ -2835,8 +2739,9 @@ bool CMusicDatabase::GetSongsByPath(const std::string& strPath1, MAPSONGS& songs
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    std::string strSQL=PrepareSQL("select * from songview where strPath='%s'", strPath.c_str() );
+    std::string strSQL=PrepareSQL("SELECT * FROM songview WHERE strPath='%s'", strPath.c_str()); 
     if (!m_pDS->query(strSQL)) return false;
+    CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
     int iRowsFound = m_pDS->num_rows();
     if (iRowsFound == 0)
     {
@@ -2846,10 +2751,10 @@ bool CMusicDatabase::GetSongsByPath(const std::string& strPath1, MAPSONGS& songs
     while (!m_pDS->eof())
     {
       CSong song = GetSongFromDataset();
+      // For songs from cue sheets strFileName is not unique, so only 1st song gets added to song map
       songs.insert(std::make_pair(song.strFileName, song));
       m_pDS->next();
     }
-
     m_pDS->close(); // cleanup recordset data
     return true;
   }
@@ -4339,7 +4244,7 @@ bool CMusicDatabase::GetAlbumsByWhere(const std::string &baseDir, const Filter &
   return false;
 }
 
-bool CMusicDatabase::GetSongsFullByWhere(const std::string &baseDir, const Filter &filter, CFileItemList &items, const SortDescription &sortDescription /* = SortDescription() */, bool artistData /* = false*/, bool cueSheetData /* = true*/)
+bool CMusicDatabase::GetSongsFullByWhere(const std::string &baseDir, const Filter &filter, CFileItemList &items, const SortDescription &sortDescription /* = SortDescription() */, bool artistData /* = false*/)
 {
   if (m_pDB.get() == NULL || m_pDS.get() == NULL)
     return false;
@@ -4485,13 +4390,7 @@ bool CMusicDatabase::GetSongsFullByWhere(const std::string &baseDir, const Filte
     // that is when have join with songartistview and sorting other than random with limit
     if (artistData && sortDescription.sortBy != SortByNone && !(limitedInSQL && sortDescription.sortBy == SortByRandom))
       items.Sort(sortDescription);
-
-    if (cueSheetData)
-    { // Load some info from embedded cuesheet if present (now only ReplayGain)
-      CueInfoLoader cueLoader;
-      for (int i = 0; i < items.Size(); ++i)
-        cueLoader.Load(LoadCuesheet(items[i]->GetMusicInfoTag()->GetURL()), items[i]);
-    }
+     
     CLog::Log(LOGDEBUG, "%s(%s) - took %d ms", __FUNCTION__, filter.where.c_str(), XbmcThreads::SystemClockMillis() - time);
     return true;
   }
@@ -4594,13 +4493,6 @@ bool CMusicDatabase::GetSongsByWhere(const std::string &baseDir, const Filter &f
 
     // cleanup
     m_pDS->close();
-
-    // Load some info from embedded cuesheet if present (now only ReplayGain)
-    CueInfoLoader cueLoader;
-    for (int i = 0; i < items.Size(); ++i)
-      cueLoader.Load(LoadCuesheet(items[i]->GetMusicInfoTag()->GetURL()), items[i]);
-
-    CLog::Log(LOGDEBUG, "%s(%s) - took %d ms", __FUNCTION__, filter.where.c_str(), XbmcThreads::SystemClockMillis() - time);
     return true;
   }
   catch (...)
@@ -5177,6 +5069,14 @@ void CMusicDatabase::UpdateTables(int version)
     m_pDS->exec("DROP TABLE song");
     m_pDS->exec("ALTER TABLE song_new RENAME TO song");
   }
+
+  if (version < 65)
+  {
+    // Remove cue table
+    m_pDS->exec("DROP TABLE cue");
+    // Add strReplayGain to song table
+    m_pDS->exec("ALTER TABLE song ADD strReplayGain TEXT\n");
+  }
   // Set the verion of tag scanning required. 
   // Not every schema change requires the tags to be rescanned, set to the highest schema version 
   // that needs this. Forced rescanning (of music files that have not changed since they were 
@@ -5198,7 +5098,7 @@ void CMusicDatabase::UpdateTables(int version)
 
 int CMusicDatabase::GetSchemaVersion() const
 {
-  return 64;
+  return 65;
 }
 
 int CMusicDatabase::GetMusicNeedsTagScan()
