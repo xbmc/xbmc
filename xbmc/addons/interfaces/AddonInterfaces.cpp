@@ -23,9 +23,9 @@
 
 #include "addons/Addon.h"
 #include "addons/PVRClient.h"
+#include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.h"
 
 #include "addons/interfaces/Addon/AddonCallbacksAddon.h"
-#include "addons/interfaces/AudioDSP/AddonCallbacksAudioDSP.h"
 #include "addons/interfaces/AudioEngine/AddonCallbacksAudioEngine.h"
 #include "addons/interfaces/Game/AddonCallbacksGame.h"
 #include "addons/interfaces/GUI/AddonCallbacksGUI.h"
@@ -47,7 +47,6 @@ CAddonInterfaces::CAddonInterfaces(CAddon* addon)
     m_helperAddOn(nullptr),
     m_helperAudioEngine(nullptr),
     m_helperGUI(nullptr),
-    m_helperADSP(nullptr),
     m_helperInputStream(nullptr),
     m_helperPeripheral(nullptr),
     m_helperGame(nullptr)
@@ -78,7 +77,6 @@ CAddonInterfaces::~CAddonInterfaces()
   delete static_cast<KodiAPI::AddOn::CAddonCallbacksAddon*>(m_helperAddOn);
   delete static_cast<KodiAPI::AudioEngine::CAddonCallbacksAudioEngine*>(m_helperAudioEngine);
   delete static_cast<KodiAPI::GUI::CAddonCallbacksGUI*>(m_helperGUI);
-  delete static_cast<KodiAPI::AudioDSP::CAddonCallbacksADSP*>(m_helperADSP);
   delete static_cast<KodiAPI::InputStream::CAddonCallbacksInputStream*>(m_helperInputStream);
   delete static_cast<KodiAPI::Peripheral::CAddonCallbacksPeripheral*>(m_helperPeripheral);
   delete static_cast<KodiAPI::Game::CAddonCallbacksGame*>(m_helperGame);
@@ -198,21 +196,11 @@ void* CAddonInterfaces::ADSPLib_RegisterMe(void *addonData)
     return nullptr;
   }
 
-  addon->m_helperADSP = new KodiAPI::AudioDSP::CAddonCallbacksADSP(addon->m_addon);
-  return static_cast<KodiAPI::AudioDSP::CAddonCallbacksADSP*>(addon->m_helperADSP)->GetCallbacks();
+  return dynamic_cast<ActiveAE::CActiveAEDSPAddon*>(addon->m_addon)->GetInstanceInterface();
 }
 
 void CAddonInterfaces::ADSPLib_UnRegisterMe(void *addonData, void *cbTable)
 {
-  CAddonInterfaces* addon = static_cast<CAddonInterfaces*>(addonData);
-  if (addon == nullptr)
-  {
-    CLog::Log(LOGERROR, "CAddonInterfaces - %s - called with a null pointer", __FUNCTION__);
-    return;
-  }
-
-  delete static_cast<KodiAPI::AudioDSP::CAddonCallbacksADSP*>(addon->m_helperADSP);
-  addon->m_helperADSP = nullptr;
 }
 /*\_____________________________________________________________________________
 \*/
