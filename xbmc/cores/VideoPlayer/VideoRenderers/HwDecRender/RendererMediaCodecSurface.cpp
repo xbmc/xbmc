@@ -23,6 +23,8 @@
 #include "RendererMediaCodecSurface.h"
 
 #include "../RenderCapture.h"
+#include "guilib/GraphicContext.h"
+#include "rendering/RenderSystem.h"
 #include "settings/MediaSettings.h"
 #include "platform/android/activity/XBMCApp.h"
 #include "DVDCodecs/Video/DVDVideoCodecAndroidMediaCodec.h"
@@ -32,6 +34,8 @@
 CRendererMediaCodecSurface::CRendererMediaCodecSurface()
   : m_bConfigured(false)
   , m_iRenderBuffer(0)
+  , m_prevTime(std::chrono::system_clock::now())
+  , m_updateCount(10)
 {
 }
 
@@ -56,7 +60,6 @@ bool CRendererMediaCodecSurface::Configure(unsigned int width, unsigned int heig
   // Calculate the input frame aspect ratio.
   CalculateFrameAspectRatio(d_width, d_height);
   SetViewMode(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode);
-  ManageRenderArea();
 
   m_bConfigured = true;
 
@@ -69,7 +72,7 @@ bool CRendererMediaCodecSurface::Configure(unsigned int width, unsigned int heig
 CRenderInfo CRendererMediaCodecSurface::GetRenderInfo()
 {
   CRenderInfo info;
-  info.formats.push_back(RENDER_FMT_BYPASS);
+  info.formats.push_back(RENDER_FMT_MEDIACODECSURFACE);
   info.max_buffer_size = m_numRenderBuffers;
   info.optimal_buffer_size = m_numRenderBuffers;
   return info;
@@ -123,7 +126,6 @@ void CRendererMediaCodecSurface::FlipPage(int source)
 
   if (mci)
   {
-    ManageRenderArea();
     mci->ReleaseOutputBuffer(true);
   }
 }
@@ -131,8 +133,6 @@ void CRendererMediaCodecSurface::FlipPage(int source)
 bool CRendererMediaCodecSurface::Supports(ERENDERFEATURE feature)
 {
   if (feature == RENDERFEATURE_ZOOM ||
-    feature == RENDERFEATURE_CONTRAST ||
-    feature == RENDERFEATURE_BRIGHTNESS ||
     feature == RENDERFEATURE_STRETCH ||
     feature == RENDERFEATURE_PIXEL_RATIO ||
     feature == RENDERFEATURE_ROTATION)
@@ -143,6 +143,7 @@ bool CRendererMediaCodecSurface::Supports(ERENDERFEATURE feature)
 
 void CRendererMediaCodecSurface::Reset()
 {
+  m_updateCount = 10;
 }
 
 void CRendererMediaCodecSurface::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
@@ -151,8 +152,65 @@ void CRendererMediaCodecSurface::RenderUpdate(bool clear, DWORD flags, DWORD alp
     std::chrono::milliseconds elapsed(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - m_prevTime).count());
     if (elapsed < std::chrono::milliseconds(10))
       std::this_thread::sleep_for(std::chrono::milliseconds(10) - elapsed);
+
+    m_updateCount += (elapsed.count() / 10) + 1;
+    if (m_updateCount > 10)
+    {
+      ManageRenderArea();
+      m_updateCount = 0;
+    }
     m_prevTime = std::chrono::system_clock::now();
   }
+}
+
+void CRendererMediaCodecSurface::ReorderDrawPoints()
+{
+  CBaseRenderer::ReorderDrawPoints();
+
+  // this hack is needed to get the 2D mode of a 3D movie going
+  RENDER_STEREO_MODE stereo_mode = g_graphicsContext.GetStereoMode();
+  if (stereo_mode)
+    g_graphicsContext.SetStereoView(RENDER_STEREO_VIEW_LEFT);
+
+  if (stereo_mode)
+    g_graphicsContext.SetStereoView(RENDER_STEREO_VIEW_OFF);
+
+  CRect dstRect(m_destRect);
+  CRect srcRect(m_sourceRect);
+  switch (stereo_mode)
+  {
+    case RENDER_STEREO_MODE_SPLIT_HORIZONTAL:
+      dstRect.y2 *= 2.0;
+      srcRect.y2 *= 2.0;
+      break;
+    case RENDER_STEREO_MODE_SPLIT_VERTICAL:
+      dstRect.x2 *= 2.0;
+      srcRect.x2 *= 2.0;
+      break;
+    default:
+      break;
+  }
+
+  // Handle orientation
+  switch (m_renderOrientation)
+  {
+    case 90:
+    case 270:
+    {
+        double scale = (double)dstRect.Height() / dstRect.Width();
+        int diff = (int) ((dstRect.Height()*scale - dstRect.Width()) / 2);
+        dstRect = CRect(dstRect.x1 - diff, dstRect.y1, dstRect.x2 + diff, dstRect.y2);
+    }
+    default:
+      break;
+  }
+
+  CRect adjRect = CXBMCApp::MapRenderToDroid(dstRect);
+  CXBMCApp::get()->setVideoViewSurfaceRect(adjRect.x1, adjRect.y1, adjRect.x2, adjRect.y2);
+
+  CLog::Log(LOGDEBUG, "CRendererMediaCodecSurface::ReorderDrawPoints: dst: %0.1f+%0.1f-%0.1fx%0.1f, adj: %0.1f+%0.1f-%0.1fx%0.1f",
+    dstRect.x1, dstRect.y1, dstRect.Width(), dstRect.Height(),
+    adjRect.x1, adjRect.y1, adjRect.Width(), adjRect.Height());
 }
 
 #endif

@@ -58,6 +58,8 @@ public:
   virtual bool Supports(ERENDERFEATURE feature);
 
   virtual EINTERLACEMETHOD AutoInterlaceMethod() { return VS_INTERLACEMETHOD_NONE; };
+protected:
+  virtual void ReorderDrawPoints() override;
 
 private:
 
@@ -72,6 +74,7 @@ private:
 
   std::chrono::time_point<std::chrono::system_clock> m_prevTime;
   bool m_bConfigured;
+  unsigned int m_updateCount;
 };
 
 #endif
