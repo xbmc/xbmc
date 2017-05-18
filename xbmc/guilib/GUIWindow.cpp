@@ -755,7 +755,7 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
   return SendControlMessage(message);
 }
 
-bool CGUIWindow::NeedXMLReload() const
+bool CGUIWindow::NeedLoad() const
 {
   return !m_windowLoaded || g_infoManager.ConditionsChangedValues(m_xmlIncludeConditions);
 }
@@ -768,8 +768,8 @@ void CGUIWindow::AllocResources(bool forceLoad /*= FALSE */)
   int64_t start;
   start = CurrentHostCounter();
 #endif
-  // use forceLoad to determine if xml file needs loading
-  forceLoad |= NeedXMLReload() || (m_loadType == LOAD_EVERY_TIME);
+  // use forceLoad to determine if window needs (re)loading
+  forceLoad |= NeedLoad() || (m_loadType == LOAD_EVERY_TIME);
 
   // if window is loaded and load is forced we have to free window resources first
   if (m_windowLoaded && forceLoad)
@@ -781,7 +781,7 @@ void CGUIWindow::AllocResources(bool forceLoad /*= FALSE */)
     if (xmlFile.size())
     {
       bool bHasPath = xmlFile.find("\\") != std::string::npos || xmlFile.find("/") != std::string::npos;
-      Load(xmlFile,bHasPath);
+      Load(xmlFile, bHasPath);
     }
   }
 
@@ -841,10 +841,10 @@ void CGUIWindow::ClearAll()
 bool CGUIWindow::Initialize()
 {
   if (!g_windowManager.Initialized())
-    return false;     // can't load if we have no skin yet
-  if(!NeedXMLReload())
+    return false;
+  if (!NeedLoad())
     return true;
-  if(g_application.IsCurrentThread())
+  if (g_application.IsCurrentThread())
     AllocResources();
   else
   {

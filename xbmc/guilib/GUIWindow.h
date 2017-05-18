@@ -237,10 +237,10 @@ protected:
    */
   virtual std::unique_ptr<TiXmlElement> Prepare(TiXmlElement *pRootElement);
 
-  /*! \brief Check if XML file needs (re)loading
-   XML file has to be (re)loaded when window is not loaded or include conditions values were changed
+  /*!
+   \brief Check if window needs a (re)load. The window need to be (re)loaded when window is not loaded or include conditions values were changed
    */
-  bool NeedXMLReload() const;
+  bool NeedLoad() const;
 
   virtual void SetDefaults();
   virtual void OnWindowUnload() {}
