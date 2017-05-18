@@ -32,9 +32,10 @@
 #include <thread>
 
 CRendererMediaCodecSurface::CRendererMediaCodecSurface()
-  : m_bConfigured(false)
-  , m_iRenderBuffer(0)
+  : m_iRenderBuffer(0)
   , m_prevTime(std::chrono::system_clock::now())
+  , m_bConfigured(false)
+  , m_renderingStarted(false)
   , m_updateCount(10)
 {
 }
@@ -124,10 +125,8 @@ void CRendererMediaCodecSurface::FlipPage(int source)
 
   CDVDMediaCodecInfo *mci = static_cast<CDVDMediaCodecInfo *>(m_buffers[m_iRenderBuffer].hwPic);
 
-  if (mci)
-  {
+  if (mci && m_renderingStarted)
     mci->ReleaseOutputBuffer(true);
-  }
 }
 
 bool CRendererMediaCodecSurface::Supports(ERENDERFEATURE feature)
@@ -144,6 +143,7 @@ bool CRendererMediaCodecSurface::Supports(ERENDERFEATURE feature)
 void CRendererMediaCodecSurface::Reset()
 {
   m_updateCount = 10;
+  m_renderingStarted = false;
 }
 
 void CRendererMediaCodecSurface::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
@@ -211,6 +211,14 @@ void CRendererMediaCodecSurface::ReorderDrawPoints()
   CLog::Log(LOGDEBUG, "CRendererMediaCodecSurface::ReorderDrawPoints: dst: %0.1f+%0.1f-%0.1fx%0.1f, adj: %0.1f+%0.1f-%0.1fx%0.1f",
     dstRect.x1, dstRect.y1, dstRect.Width(), dstRect.Height(),
     adjRect.x1, adjRect.y1, adjRect.Width(), adjRect.Height());
+
+  if (!m_renderingStarted)
+  {
+    m_renderingStarted = true;
+    FlipPage(m_iRenderBuffer);
+  }
+
+
 }
 
 #endif
