@@ -1,0 +1,32 @@
+From f65143c87c8d35e26b0876e9789c47b2dddaaf12 Mon Sep 17 00:00:00 2001
+From: Justin Maggard <jmaggard@netgear.com>
+Date: Wed, 17 May 2017 14:11:44 -0700
+Subject: [PATCH] platinum: Fix upnp:lastPlaybackPosition parsing
+
+According to the UPnP spec, upnp:lastPlaybackPosition should use the
+same format as duration (HH:MM:SS). So we should at least accept the
+proper format if it exists, and fall back to the raw integer value if
+it's not in the proper format.
+---
+ lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp
+index 5324dcb0e4..fac16902f7 100644
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp
+@@ -762,7 +762,10 @@ PLT_MediaObject::FromDidl(NPT_XmlElementNode* entry)
+     m_MiscInfo.original_track_number = value;
+ 
+     PLT_XmlHelper::GetChildText(entry, "lastPlaybackPosition", str, didl_namespace_upnp);
+-    if (NPT_FAILED(str.ToInteger(value))) value = 0;
++    if (NPT_FAILED(PLT_Didl::ParseTimeStamp(str, value))) {
++        // fall back to raw integer parsing
++        if (NPT_FAILED(str.ToInteger(value))) value = 0;
++    }
+     m_MiscInfo.last_position = value;
+ 
+     PLT_XmlHelper::GetChildText(entry, "lastPlaybackTime", m_MiscInfo.last_time, didl_namespace_upnp, 256);
+-- 
+2.13.0
+
