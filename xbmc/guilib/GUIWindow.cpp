@@ -91,6 +91,7 @@ bool CGUIWindow::Load(const std::string& strFileName, bool bContainsPath)
   int64_t start;
   start = CurrentHostCounter();
 #endif
+
   const char* strLoadType;
   switch (m_loadType)
   {
@@ -122,13 +123,19 @@ bool CGUIWindow::Load(const std::string& strFileName, bool bContainsPath)
   }
 
   bool ret = LoadXML(strPath, strLowerPath);
+  if (ret)
+  {
+    m_windowLoaded = true;
+    OnWindowLoaded();
 
 #ifdef _DEBUG
-  int64_t end, freq;
-  end = CurrentHostCounter();
-  freq = CurrentHostFrequency();
-  CLog::Log(LOGDEBUG,"Load %s: %.2fms", GetProperty("xmlfile").c_str(), 1000.f * (end - start) / freq);
+    int64_t end, freq;
+    end = CurrentHostCounter();
+    freq = CurrentHostFrequency();
+    CLog::Log(LOGDEBUG, "Skin file %s loaded in %.2fms", strPath.c_str(), 1000.f * (end - start) / freq);
 #endif
+  }
+
   return ret;
 }
 
@@ -142,39 +149,50 @@ bool CGUIWindow::LoadXML(const std::string &strPath, const std::string &strLower
     StringUtils::ToLower(strPathLower);
     if (!xmlDoc.LoadFile(strPath) && !xmlDoc.LoadFile(strPathLower) && !xmlDoc.LoadFile(strLowerPath))
     {
-      CLog::Log(LOGERROR, "unable to load:%s, Line %d\n%s", strPath.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+      CLog::Log(LOGERROR, "Unable to load window XML: %s. Line %d\n%s", strPath.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
       SetID(WINDOW_INVALID);
       return false;
     }
-    m_windowXMLRootElement = (TiXmlElement*)xmlDoc.RootElement()->Clone();
+
+    // xml need a <window> root element
+    if (!StringUtils::EqualsNoCase(xmlDoc.RootElement()->Value(), "window"))
+    {
+      CLog::Log(LOGERROR, "XML file %s does not contain a <window> root element", GetProperty("xmlfile").c_str());
+      return false;
+    }
+
+    // store XML for further processing if window's load type is LOAD_EVERY_TIME or a reload is needed
+    m_windowXMLRootElement = static_cast<TiXmlElement*>(xmlDoc.RootElement()->Clone());
   }
   else
     CLog::Log(LOGDEBUG, "Using already stored xml root node for %s", strPath.c_str());
 
-  return Load(m_windowXMLRootElement);
+  return Load(Prepare(m_windowXMLRootElement).get());
 }
 
-bool CGUIWindow::Load(TiXmlElement* pRootElement)
+std::unique_ptr<TiXmlElement> CGUIWindow::Prepare(TiXmlElement *pRootElement)
+{
+  if (!pRootElement)
+    return nullptr;
+
+  // clone the root element as we will manipulate it
+  auto preparedRoot = std::unique_ptr<TiXmlElement>(static_cast<TiXmlElement*>(pRootElement->Clone()));
+
+  // Resolve any includes, constants, expressions that may be present
+  // and save include's conditions to the given map
+  g_SkinInfo->ResolveIncludes(preparedRoot.get(), &m_xmlIncludeConditions);
+
+  return preparedRoot;
+}
+
+bool CGUIWindow::Load(TiXmlElement *pRootElement)
 {
   if (!pRootElement)
     return false;
-  
-  if (!StringUtils::EqualsNoCase(pRootElement->Value(), "window"))
-  {
-    CLog::Log(LOGERROR, "XML file %s does not contain a <window> root element", GetProperty("xmlfile").c_str());
-    return false;
-  }
-
-  // we must create copy of root element as we will manipulate it when resolving includes
-  // and we don't want original root element to change
-  pRootElement = (TiXmlElement*)pRootElement->Clone();
 
   // set the scaling resolution so that any control creation or initialisation can
   // be done with respect to the correct aspect ratio
   g_graphicsContext.SetScalingResolution(m_coordsRes, m_needsScaling);
-
-  // Resolve any includes that may be present and save conditions used to do it
-  g_SkinInfo->ResolveIncludes(pRootElement, &m_xmlIncludeConditions);
 
   // now load in the skin file
   SetDefaults();
@@ -266,11 +284,7 @@ bool CGUIWindow::Load(TiXmlElement* pRootElement)
 
     pChild = pChild->NextSiblingElement();
   }
-  LoadAdditionalTags(pRootElement);
 
-  m_windowLoaded = true;
-  OnWindowLoaded();
-  delete pRootElement;
   return true;
 }
 
@@ -741,7 +755,7 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
   return SendControlMessage(message);
 }
 
-bool CGUIWindow::NeedXMLReload() const
+bool CGUIWindow::NeedLoad() const
 {
   return !m_windowLoaded || g_infoManager.ConditionsChangedValues(m_xmlIncludeConditions);
 }
@@ -754,8 +768,8 @@ void CGUIWindow::AllocResources(bool forceLoad /*= FALSE */)
   int64_t start;
   start = CurrentHostCounter();
 #endif
-  // use forceLoad to determine if xml file needs loading
-  forceLoad |= NeedXMLReload() || (m_loadType == LOAD_EVERY_TIME);
+  // use forceLoad to determine if window needs (re)loading
+  forceLoad |= NeedLoad() || (m_loadType == LOAD_EVERY_TIME);
 
   // if window is loaded and load is forced we have to free window resources first
   if (m_windowLoaded && forceLoad)
@@ -767,7 +781,7 @@ void CGUIWindow::AllocResources(bool forceLoad /*= FALSE */)
     if (xmlFile.size())
     {
       bool bHasPath = xmlFile.find("\\") != std::string::npos || xmlFile.find("/") != std::string::npos;
-      Load(xmlFile,bHasPath);
+      Load(xmlFile, bHasPath);
     }
   }
 
@@ -827,10 +841,10 @@ void CGUIWindow::ClearAll()
 bool CGUIWindow::Initialize()
 {
   if (!g_windowManager.Initialized())
-    return false;     // can't load if we have no skin yet
-  if(!NeedXMLReload())
+    return false;
+  if (!NeedLoad())
     return true;
-  if(g_application.IsCurrentThread())
+  if (g_application.IsCurrentThread())
     AllocResources();
   else
   {

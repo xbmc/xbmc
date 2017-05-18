@@ -215,7 +215,13 @@ public:
   virtual void OnDeinitWindow(int nextWindowID);
 protected:
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
-  virtual bool LoadXML(const std::string& strPath, const std::string &strLowerPath);  ///< Loads from the given file
+
+  /*!
+   \brief Load the window XML from the given path
+   \param strPath the path to the window XML
+   \param strLowerPath a lowered path to the window XML
+   */
+  virtual bool LoadXML(const std::string& strPath, const std::string &strLowerPath);
 
   /*!
    \brief Loads the window from the given XML element
@@ -224,11 +230,17 @@ protected:
    */
   virtual bool Load(TiXmlElement *pRootElement);
 
-  /*! \brief Check if XML file needs (re)loading
-   XML file has to be (re)loaded when window is not loaded or include conditions values were changed
+  /*!
+   \brief Prepare the XML for load
+   \param pRootElement the original XML element
+   \return the prepared XML (resolved includes, constants and expression)
    */
-  bool NeedXMLReload() const;
-  virtual void LoadAdditionalTags(TiXmlElement *root) {}; ///< Load additional information from the XML document
+  virtual std::unique_ptr<TiXmlElement> Prepare(TiXmlElement *pRootElement);
+
+  /*!
+   \brief Check if window needs a (re)load. The window need to be (re)loaded when window is not loaded or include conditions values were changed
+   */
+  bool NeedLoad() const;
 
   virtual void SetDefaults();
   virtual void OnWindowUnload() {}

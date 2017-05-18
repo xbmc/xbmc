@@ -67,8 +67,7 @@ protected:
   // specializations of CGUIControlGroup
   CGUIControl *GetFirstFocusableControl(int id) override;
 
-  // specializations of CGUIWindow
-  void LoadAdditionalTags(TiXmlElement *root) override;
+  bool Load(TiXmlElement *pRootElement) override;
 
   // custom methods
   virtual void SetupShares();

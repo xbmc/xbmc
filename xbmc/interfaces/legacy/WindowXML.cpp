@@ -467,19 +467,7 @@ namespace XBMCAddon
     bool WindowXML::LoadXML(const String &strPath, const String &strLowerPath)
     {
       XBMC_TRACE;
-      // load our window
-      CXBMCTinyXML xmlDoc;
-
-      std::string strPathLower = strPath;
-      StringUtils::ToLower(strPathLower);
-      if (!xmlDoc.LoadFile(strPath) && !xmlDoc.LoadFile(strPathLower) && !xmlDoc.LoadFile(strLowerPath))
-      {
-        // fail - can't load the file
-        CLog::Log(LOGERROR, "%s: Unable to load skin file %s", __FUNCTION__, strPath.c_str());
-        return false;
-      }
-
-      return interceptor->Load(xmlDoc.RootElement());
+      return A(CGUIWindow::LoadXML(strPath, strLowerPath));
     }
 
     void WindowXML::SetupShares()
