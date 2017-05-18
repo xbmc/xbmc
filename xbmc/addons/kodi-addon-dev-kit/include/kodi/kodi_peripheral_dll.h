@@ -214,28 +214,28 @@ extern "C"
    */
   void __declspec(dllexport) get_addon(void* ptr)
   {
-    KodiToAddonFuncTable_Peripheral* pClient = static_cast<KodiToAddonFuncTable_Peripheral*>(ptr);
+    AddonInstance_Peripheral* pClient = static_cast<AddonInstance_Peripheral*>(ptr);
 
-    pClient->GetAddonCapabilities           = GetAddonCapabilities;
-    pClient->PerformDeviceScan              = PerformDeviceScan;
-    pClient->FreeScanResults                = FreeScanResults;
-    pClient->GetEvents                      = GetEvents;
-    pClient->FreeEvents                     = FreeEvents;
-    pClient->SendEvent                      = SendEvent;
+    pClient->toAddon.GetAddonCapabilities           = GetAddonCapabilities;
+    pClient->toAddon.PerformDeviceScan              = PerformDeviceScan;
+    pClient->toAddon.FreeScanResults                = FreeScanResults;
+    pClient->toAddon.GetEvents                      = GetEvents;
+    pClient->toAddon.FreeEvents                     = FreeEvents;
+    pClient->toAddon.SendEvent                      = SendEvent;
 
 #ifdef PERIPHERAL_ADDON_JOYSTICKS
-    pClient->GetJoystickInfo                = GetJoystickInfo;
-    pClient->FreeJoystickInfo               = FreeJoystickInfo;
-    pClient->GetFeatures                    = GetFeatures;
-    pClient->FreeFeatures                   = FreeFeatures;
-    pClient->MapFeatures                    = MapFeatures;
-    pClient->GetIgnoredPrimitives           = GetIgnoredPrimitives;
-    pClient->FreePrimitives                 = FreePrimitives;
-    pClient->SetIgnoredPrimitives           = SetIgnoredPrimitives;
-    pClient->SaveButtonMap                  = SaveButtonMap;
-    pClient->RevertButtonMap                = RevertButtonMap;
-    pClient->ResetButtonMap                 = ResetButtonMap;
-    pClient->PowerOffJoystick               = PowerOffJoystick;
+    pClient->toAddon.GetJoystickInfo                = GetJoystickInfo;
+    pClient->toAddon.FreeJoystickInfo               = FreeJoystickInfo;
+    pClient->toAddon.GetFeatures                    = GetFeatures;
+    pClient->toAddon.FreeFeatures                   = FreeFeatures;
+    pClient->toAddon.MapFeatures                    = MapFeatures;
+    pClient->toAddon.GetIgnoredPrimitives           = GetIgnoredPrimitives;
+    pClient->toAddon.FreePrimitives                 = FreePrimitives;
+    pClient->toAddon.SetIgnoredPrimitives           = SetIgnoredPrimitives;
+    pClient->toAddon.SaveButtonMap                  = SaveButtonMap;
+    pClient->toAddon.RevertButtonMap                = RevertButtonMap;
+    pClient->toAddon.ResetButtonMap                 = ResetButtonMap;
+    pClient->toAddon.PowerOffJoystick               = PowerOffJoystick;
 #endif
   }
 

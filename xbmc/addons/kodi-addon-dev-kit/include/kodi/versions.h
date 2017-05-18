@@ -95,8 +95,8 @@
                                                       "kodi_inputstream_dll.h" \
                                                       "kodi_inputstream_types.h"
 
-#define ADDON_INSTANCE_VERSION_PERIPHERAL             "1.3.2"
-#define ADDON_INSTANCE_VERSION_PERIPHERAL_MIN         "1.3.2"
+#define ADDON_INSTANCE_VERSION_PERIPHERAL             "1.3.3"
+#define ADDON_INSTANCE_VERSION_PERIPHERAL_MIN         "1.3.3"
 #define ADDON_INSTANCE_VERSION_PERIPHERAL_XML_ID      "kodi.binary.instance.peripheral"
 #define ADDON_INSTANCE_VERSION_PERIPHERAL_DEPENDS     "kodi_peripheral_dll.h" \
                                                       "kodi_peripheral_types.h" \

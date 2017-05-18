@@ -31,9 +31,9 @@
 #include "addons/interfaces/GUI/AddonCallbacksGUI.h"
 #include "addons/interfaces/GUI/AddonGUIWindow.h"
 #include "addons/interfaces/InputStream/AddonCallbacksInputStream.h"
-#include "addons/interfaces/Peripheral/AddonCallbacksPeripheral.h"
 #include "filesystem/SpecialProtocol.h"
 #include "messaging/ApplicationMessenger.h"
+#include "peripherals/addons/PeripheralAddon.h"
 #include "utils/log.h"
 
 using namespace KODI::MESSAGING;
@@ -48,7 +48,6 @@ CAddonInterfaces::CAddonInterfaces(CAddon* addon)
     m_helperAudioEngine(nullptr),
     m_helperGUI(nullptr),
     m_helperInputStream(nullptr),
-    m_helperPeripheral(nullptr),
     m_helperGame(nullptr)
 {
   m_callbacks->libBasePath                  = strdup(CSpecialProtocol::TranslatePath("special://xbmcbinaddons").c_str());
@@ -78,7 +77,6 @@ CAddonInterfaces::~CAddonInterfaces()
   delete static_cast<KodiAPI::AudioEngine::CAddonCallbacksAudioEngine*>(m_helperAudioEngine);
   delete static_cast<KodiAPI::GUI::CAddonCallbacksGUI*>(m_helperGUI);
   delete static_cast<KodiAPI::InputStream::CAddonCallbacksInputStream*>(m_helperInputStream);
-  delete static_cast<KodiAPI::Peripheral::CAddonCallbacksPeripheral*>(m_helperPeripheral);
   delete static_cast<KodiAPI::Game::CAddonCallbacksGame*>(m_helperGame);
 
   free((char*)m_callbacks->libBasePath);
@@ -267,21 +265,11 @@ void* CAddonInterfaces::PeripheralLib_RegisterMe(void *addonData)
     return nullptr;
   }
 
-  addon->m_helperPeripheral = new KodiAPI::Peripheral::CAddonCallbacksPeripheral(addon->m_addon);
-  return static_cast<KodiAPI::Peripheral::CAddonCallbacksPeripheral*>(addon->m_helperPeripheral)->GetCallbacks();
+  return dynamic_cast<PERIPHERALS::CPeripheralAddon*>(addon->m_addon)->GetInstanceInterface();
 }
 
 void CAddonInterfaces::PeripheralLib_UnRegisterMe(void *addonData, void* cbTable)
 {
-  CAddonInterfaces* addon = static_cast<CAddonInterfaces*>(addonData);
-  if (addon == nullptr)
-  {
-    CLog::Log(LOGERROR, "CAddonInterfaces - %s - called with a null pointer", __FUNCTION__);
-    return;
-  }
-
-  delete static_cast<KodiAPI::Peripheral::CAddonCallbacksPeripheral*>(addon->m_helperPeripheral);
-  addon->m_helperPeripheral = nullptr;
 }
 /*\_____________________________________________________________________________
 \*/
