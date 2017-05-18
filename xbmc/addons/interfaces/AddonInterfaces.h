@@ -69,7 +69,6 @@ namespace ADDON
     \*/
     static void*        ADSPLib_RegisterMe             (void* addonData);
     static void         ADSPLib_UnRegisterMe           (void* addonData, void* cbTable);
-    void*               GetHelperADSP()               { return m_helperADSP; }
     /*\_________________________________________________________________________
     \*/
     static void*        INPUTSTREAMLib_RegisterMe      (void *addonData);
@@ -97,7 +96,6 @@ namespace ADDON
     void*     m_helperAddOn;
     void*     m_helperAudioEngine;
     void*     m_helperGUI;
-    void*     m_helperADSP;
     void*     m_helperInputStream;
     void*     m_helperPeripheral;
     void*     m_helperGame;

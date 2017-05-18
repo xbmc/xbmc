@@ -56,8 +56,8 @@
 #define ADDON_GLOBAL_VERSION_GUI_XML_ID               "kodi.binary.global.gui"
 #define ADDON_GLOBAL_VERSION_GUI_DEPENDS              "libKODI_guilib.h"
 
-#define ADDON_INSTANCE_VERSION_ADSP                   "0.1.9"
-#define ADDON_INSTANCE_VERSION_ADSP_MIN               "0.1.9"
+#define ADDON_INSTANCE_VERSION_ADSP                   "0.1.10"
+#define ADDON_INSTANCE_VERSION_ADSP_MIN               "0.1.10"
 #define ADDON_INSTANCE_VERSION_ADSP_XML_ID            "kodi.binary.instance.adsp"
 #define ADDON_INSTANCE_VERSION_ADSP_DEPENDS           "kodi_adsp_dll.h" \
                                                       "kodi_adsp_types.h" \
