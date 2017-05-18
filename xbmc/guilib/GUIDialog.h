@@ -68,6 +68,7 @@ public:
   virtual bool IsSoundEnabled() const { return m_enableSound; };
 
 protected:
+  bool Load(TiXmlElement *pRootElement) override;
   virtual void SetDefaults();
   virtual void OnWindowLoaded();
   virtual void UpdateVisibility();

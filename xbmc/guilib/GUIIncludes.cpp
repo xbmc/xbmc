@@ -354,19 +354,22 @@ void CGUIIncludes::ResolveIncludesForNode(TiXmlElement *node, std::map<INFO::Inf
     }
   }
 
-  // run through this element's attributes, resolving any constants
+  // resolve constants and expressions $EXP[xyz] for configured attributes and nodes
   TiXmlAttribute *attribute = node->FirstAttribute();
   while (attribute)
-  { // check the attribute against our set
+  {
     if (m_constantAttributes.count(attribute->Name()))
       attribute->SetValue(ResolveConstant(attribute->ValueStr()));
+
     if (m_expressionAttributes.count(attribute->Name()))
       attribute->SetValue(ResolveExpressions(attribute->ValueStr()));
+
     attribute = attribute->Next();
   }
-  // also do the value
+
   if (node->FirstChild() && node->FirstChild()->Type() == TiXmlNode::TINYXML_TEXT && m_constantNodes.count(node->ValueStr()))
     node->FirstChild()->SetValue(ResolveConstant(node->FirstChild()->ValueStr()));
+
   if (node->FirstChild() && node->FirstChild()->Type() == TiXmlNode::TINYXML_TEXT && m_expressionNodes.count(node->ValueStr()))
     node->FirstChild()->SetValue(ResolveExpressions(node->FirstChild()->ValueStr()));
 }
