@@ -15,7 +15,7 @@
 
   ;Name and file
   Name "${APP_NAME}"
-  OutFile "${APP_NAME}Setup-${app_revision}-${app_branch}.exe"
+  OutFile "${APP_NAME}Setup-${app_revision}-${app_branch}-x86.exe"
 
   ;Default installation folder
   InstallDir "$PROGRAMFILES\${APP_NAME}"
