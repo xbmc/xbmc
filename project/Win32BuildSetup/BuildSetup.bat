@@ -217,8 +217,8 @@ set WORKSPACE=%CD%\..\..\kodi-build
   ECHO ------------------------------------------------------------
   call getdeploydependencies.bat
   CALL extract_git_rev.bat > NUL
-  SET APP_SETUPFILE=%APP_NAME%Setup-%GIT_REV%-%BRANCH%.exe
-  SET APP_PDBFILE=%APP_NAME%Setup-%GIT_REV%-%BRANCH%.pdb
+  SET APP_SETUPFILE=%APP_NAME%Setup-%GIT_REV%-%BRANCH%-x86.exe
+  SET APP_PDBFILE=%APP_NAME%Setup-%GIT_REV%-%BRANCH%-x86.pdb
   ECHO Creating installer %APP_SETUPFILE%...
   IF EXIST %APP_SETUPFILE% del %APP_SETUPFILE% > NUL
   rem get path to makensis.exe from registry, first try tab delim
