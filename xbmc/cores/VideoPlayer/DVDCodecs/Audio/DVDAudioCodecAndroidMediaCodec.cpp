@@ -225,7 +225,6 @@ void CDVDAudioCodecAndroidMediaCodec::Dispose()
 
 bool CDVDAudioCodecAndroidMediaCodec::AddData(const DemuxPacket &packet)
 {
-  int rtn = 0;
   if (g_advancedSettings.CanLogComponent(LOGAUDIO))
     CLog::Log(LOGDEBUG, "CDVDAudioCodecAndroidMediaCodec::AddData dts:%0.4lf pts:%0.4lf size(%d)", packet.dts, packet.pts, packet.iSize);
 

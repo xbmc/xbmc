@@ -197,11 +197,13 @@ std::string GetHomePath(const std::string& strTarget, std::string strPath)
 }
 #endif
 #if defined(TARGET_DARWIN)
+#if !defined(TARGET_DARWIN_IOS)
 bool IsDirectoryValidRoot(std::string path)
 {
   path += "/system/settings/settings.xml";
   return CFile::Exists(path);
 }
+#endif
 
 std::string GetHomePath(const std::string& strTarget, std::string strPath)
 {

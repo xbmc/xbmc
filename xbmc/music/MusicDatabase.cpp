@@ -1496,7 +1496,7 @@ int CMusicDatabase::AddSongContributor(int idSong, const std::string& strRole, c
 void CMusicDatabase::AddSongContributors(int idSong, const VECMUSICROLES& contributors, const std::string &strSort)
 {
   std::vector<std::string> composerSort;
-  int countComposer = 0;
+  size_t countComposer = 0;
   if (!strSort.empty())
   {
     composerSort = StringUtils::Split(strSort, g_advancedSettings.m_musicItemSeparator);

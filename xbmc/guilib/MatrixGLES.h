@@ -56,7 +56,9 @@ class CMatrixGLStack
 {
 public:
   CMatrixGLStack(GLenum type)
+#ifdef HAS_GL
   : m_type(type)
+#endif
   {}
 
   void Push()
@@ -85,7 +87,9 @@ public:
   CMatrixGL* operator->() { return &m_current; }
 
 private:
+#ifdef HAS_GL
   GLint                 m_type;
+#endif
   std::stack<CMatrixGL> m_stack;
   CMatrixGL             m_current;
 };
