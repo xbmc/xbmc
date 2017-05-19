@@ -93,7 +93,7 @@ macro (build_addon target prefix libs)
       if(loop_var MATCHES "#define ADDON_")
         string(REGEX REPLACE "\\\n" " " loop_var ${loop_var}) # remove header line breaks 
         string(REGEX REPLACE "#define " "" loop_var ${loop_var}) # remove the #define name from string
-        string(REGEX MATCHALL "[a-zA-Z0-9._]+" loop_var "${loop_var}") # separate the define values to a list
+        string(REGEX MATCHALL "[//a-zA-Z0-9._-]+" loop_var "${loop_var}") # separate the define values to a list
 
         # Get the definition name
         list(GET loop_var 0 include_name)
@@ -117,7 +117,7 @@ macro (build_addon target prefix libs)
                 if("${matchres}" EQUAL 0)
                   string(REPLACE " " ";" loop_var "${loop_var}")
                   list(GET loop_var 1 include_name)
-                  string(REGEX REPLACE "[<>\"]" "" include_name "${include_name}")
+                  string(REGEX REPLACE "[<>\"]|kodi/" "" include_name "${include_name}")
                   if(include_name STREQUAL ${depend_header})
                     set(ADDON_DEPENDS "${ADDON_DEPENDS}\n<import addon=\"${${xml_entry_name}}\" version=\"${${depends_name}}\"/>")
                     # Inform with them the addon header about used type
