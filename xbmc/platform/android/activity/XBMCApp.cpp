@@ -811,7 +811,7 @@ void CXBMCApp::onReceive(CJNIIntent intent)
     action == "android.bluetooth.a2dp.profile.action.CONNECTION_STATE_CHANGED" ||
     action == "android.intent.action.HDMI_AUDIO_PLUG")
   {
-    bool newstate;
+    bool newstate = m_headsetPlugged;
     if (action == "android.intent.action.HEADSET_PLUG" || action == "android.intent.action.HDMI_AUDIO_PLUG")
       newstate = (intent.getIntExtra("state", 0) != 0);
     else if (action == "android.bluetooth.a2dp.profile.action.CONNECTION_STATE_CHANGED")
