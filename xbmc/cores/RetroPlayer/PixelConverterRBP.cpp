@@ -20,16 +20,22 @@
 
 #include <interface/mmal/util/mmal_default_components.h>
 
+#include "settings/AdvancedSettings.h"
 #include "PixelConverterRBP.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/MMALFFmpeg.h"
 #include "linux/RBP.h"
 #include "utils/log.h"
+#include "cores/VideoPlayer/TimingConstants.h"
 
 extern "C"
 {
   #include "libavutil/imgutils.h"
   #include "libswscale/swscale.h"
 }
+
+#define CLASSNAME "CPixelConverterRBP"
+
+#define VERBOSE 0
 
 using namespace MMAL;
 
@@ -38,187 +44,6 @@ std::vector<CPixelConverterRBP::PixelFormatTargetTable> CPixelConverterRBP::pixf
   { AV_PIX_FMT_BGR0,      AV_PIX_FMT_BGR0 },
   { AV_PIX_FMT_RGB565LE,  AV_PIX_FMT_RGB565LE },
 };
-
-std::vector<CPixelConverterRBP::MMALEncodingTable> CPixelConverterRBP::mmal_encoding_table =
-{
-  { AV_PIX_FMT_YUV420P,  MMAL_ENCODING_I420 },
-  { AV_PIX_FMT_ARGB,     MMAL_ENCODING_ARGB },
-  { AV_PIX_FMT_RGBA,     MMAL_ENCODING_RGBA },
-  { AV_PIX_FMT_ABGR,     MMAL_ENCODING_ABGR },
-  { AV_PIX_FMT_BGRA,     MMAL_ENCODING_ABGR },
-  { AV_PIX_FMT_BGR0,     MMAL_ENCODING_BGRA },
-  { AV_PIX_FMT_RGB24,    MMAL_ENCODING_RGB24 },
-  { AV_PIX_FMT_BGR24,    MMAL_ENCODING_BGR24 },
-  { AV_PIX_FMT_RGB565,   MMAL_ENCODING_RGB16 },
-  { AV_PIX_FMT_RGB565LE, MMAL_ENCODING_RGB16 },
-  { AV_PIX_FMT_BGR565,   MMAL_ENCODING_BGR16 },
-};
-
-CPixelConverterRBP::CPixelConverterRBP() :
-  m_mmal_format(MMAL_ENCODING_UNKNOWN)
-{
-}
-
-bool CPixelConverterRBP::Open(AVPixelFormat pixfmt, AVPixelFormat targetfmt, unsigned int width, unsigned int height)
-{
-  if (width == 0 || height == 0)
-    return false;
-
-  targetfmt = TranslateTargetFormat(pixfmt);
-
-  CLog::Log(LOGDEBUG, "CPixelConverter::%s: pixfmt:%d(%s) targetfmt:%d(%s) %dx%d", __FUNCTION__, pixfmt, av_get_pix_fmt_name(pixfmt), targetfmt, av_get_pix_fmt_name(targetfmt), width, height);
-
-  if (targetfmt == AV_PIX_FMT_NONE)
-  {
-    CLog::Log(LOGERROR, "%s: Invalid target pixel format: %d", __FUNCTION__, targetfmt);
-    return false;
-  }
-
-  m_width = width;
-  m_height = height;
-  m_swsContext = sws_getContext(width, height, pixfmt,
-                                width, height, targetfmt,
-                                SWS_FAST_BILINEAR, NULL, NULL, NULL);
-  if (!m_swsContext)
-  {
-    CLog::Log(LOGERROR, "%s: Failed to create swscale context", __FUNCTION__);
-    return false;
-  }
-
-  m_mmal_format = TranslateFormat(targetfmt);
-
-  if (m_mmal_format == MMAL_ENCODING_UNKNOWN)
-    return false;
-
-  /* Create dummy component with attached pool */
-  m_pool = std::make_shared<CMMALPool>(MMAL_COMPONENT_DEFAULT_VIDEO_DECODER, false, MMAL_NUM_OUTPUT_BUFFERS, 0, MMAL_ENCODING_I420, MMALStateFFDec);
-
-  return true;
-}
-
-void CPixelConverterRBP::Dispose()
-{
-  m_pool->Close();
-  m_pool = nullptr;
-
-  CPixelConverter::Dispose();
-}
-
-bool CPixelConverterRBP::Decode(const uint8_t* pData, unsigned int size)
-{
-  if (pData == nullptr || size == 0 || m_swsContext == nullptr)
-    return false;
-
-  if (m_buf)
-    FreePicture(m_buf);
-
-  m_buf = AllocatePicture(m_width, m_height);
-  if (!m_buf)
-  {
-    CLog::Log(LOGERROR, "%s: Failed to allocate picture of dimensions %dx%d", __FUNCTION__, m_width, m_height);
-    return false;
-  }
-
-  uint8_t* dataMutable = const_cast<uint8_t*>(pData);
-
-  int bpp;
-  if (m_mmal_format == MMAL_ENCODING_ARGB ||
-      m_mmal_format == MMAL_ENCODING_RGBA ||
-      m_mmal_format == MMAL_ENCODING_ABGR ||
-      m_mmal_format == MMAL_ENCODING_BGRA)
-    bpp = 4;
-  else if (m_mmal_format == MMAL_ENCODING_RGB24 ||
-           m_mmal_format == MMAL_ENCODING_BGR24)
-    bpp = 4;
-  else if (m_mmal_format == MMAL_ENCODING_RGB16 ||
-           m_mmal_format == MMAL_ENCODING_BGR16)
-    bpp = 2;
-  else
-  {
-    CLog::Log(LOGERROR, "CPixelConverter::AllocatePicture, unknown format:%.4s", (char *)&m_mmal_format);
-    return false;
-  }
-
-  CMMALYUVBuffer *omvb = dynamic_cast<CMMALYUVBuffer*>(m_buf->videoBuffer);
-
-  const int stride = size / m_height;
-
-  uint8_t* src[] =       { dataMutable,                       0, 0, 0 };
-  int      srcStride[] = { stride,                            0, 0, 0 };
-  uint8_t* dst[] =       { (uint8_t *)omvb->gmem->m_arm,      0, 0, 0 };
-  int      dstStride[] = { (int)omvb->m_aligned_width * bpp,  0, 0, 0 };
-
-  sws_scale(m_swsContext, src, srcStride, 0, m_height, dst, dstStride);
-
-  return true;
-}
-
-void CPixelConverterRBP::GetPicture(VideoPicture& dvdVideoPicture)
-{
-  CPixelConverter::GetPicture(dvdVideoPicture);
-
-  dvdVideoPicture.videoBuffer = m_buf->videoBuffer;
-
-  CMMALYUVBuffer *omvb = dynamic_cast<CMMALYUVBuffer*>(m_buf->videoBuffer);
-
-  // need to flush ARM cache so GPU can see it
-  omvb->gmem->Flush();
-}
-
-VideoPicture* CPixelConverterRBP::AllocatePicture(int iWidth, int iHeight)
-{
-  CMMALYUVBuffer *omvb = nullptr;
-  VideoPicture* pPicture = new VideoPicture;
-
-  // gpu requirements
-  int w = (iWidth + 31) & ~31;
-  int h = (iHeight + 15) & ~15;
-  if (pPicture && m_pool)
-  {
-    m_pool->SetFormat(m_mmal_format, iWidth, iHeight, w, h, 0, nullptr);
-
-    omvb = dynamic_cast<CMMALYUVBuffer *>(m_pool->GetBuffer(500));
-    if (!omvb ||
-        !omvb->mmal_buffer ||
-        !omvb->gmem ||
-        !omvb->gmem->m_arm)
-    {
-      CLog::Log(LOGERROR, "CPixelConverterRBP::AllocatePicture, unable to allocate new video picture, out of memory.");
-      delete pPicture;
-      pPicture = nullptr;
-    }
-
-    CGPUMEM *gmem = omvb->gmem;
-    omvb->mmal_buffer->data = (uint8_t *)gmem->m_vc_handle;
-    omvb->mmal_buffer->alloc_size = omvb->mmal_buffer->length = gmem->m_numbytes;
-  }
-  else
-    CLog::Log(LOGERROR, "CPixelConverterRBP::AllocatePicture invalid picture:%p pool:%p", pPicture, m_pool.get());
-
-  if (pPicture)
-  {
-    pPicture->videoBuffer = dynamic_cast<CVideoBuffer*>(omvb);
-    pPicture->iWidth = iWidth;
-    pPicture->iHeight = iHeight;
-  }
-
-  return pPicture;
-}
-
-void CPixelConverterRBP::FreePicture(VideoPicture* pPicture)
-{
-  if (pPicture)
-  {
-    if (pPicture->videoBuffer)
-    {
-      CMMALYUVBuffer *omvb = dynamic_cast<CMMALYUVBuffer*>(m_buf->videoBuffer);
-      omvb->Release();
-    }
-    delete pPicture;
-  }
-  else
-    CLog::Log(LOGERROR, "CPixelConverterRBP::FreePicture invalid picture:%p", pPicture);
-}
 
 AVPixelFormat CPixelConverterRBP::TranslateTargetFormat(AVPixelFormat pixfmt)
 {
@@ -230,12 +55,114 @@ AVPixelFormat CPixelConverterRBP::TranslateTargetFormat(AVPixelFormat pixfmt)
   return AV_PIX_FMT_NONE;
 }
 
-uint32_t CPixelConverterRBP::TranslateFormat(AVPixelFormat pixfmt)
+
+//------------------------------------------------------------------------------
+// main class
+//------------------------------------------------------------------------------
+
+CPixelConverterRBP::CPixelConverterRBP() :
+  /* Create dummy component with attached pool */
+  m_pixelBufferPool(new CMMALPool(MMAL_COMPONENT_DEFAULT_VIDEO_DECODER, false, MMAL_NUM_OUTPUT_BUFFERS, 0, MMAL_ENCODING_I420, MMALStateFFDec))
 {
-  for (const auto& entry : mmal_encoding_table)
+}
+
+bool CPixelConverterRBP::Open(AVPixelFormat pixfmt, AVPixelFormat targetfmt, unsigned int width, unsigned int height)
+{
+  if (pixfmt == targetfmt || width == 0 || height == 0)
+    return false;
+
+  targetfmt = TranslateTargetFormat(pixfmt);
+
+  CLog::Log(LOGDEBUG, "%s::%s: pixfmt:%d(%s) targetfmt:%d(%s) %dx%d", CLASSNAME, __FUNCTION__, pixfmt, av_get_pix_fmt_name(pixfmt), targetfmt, av_get_pix_fmt_name(targetfmt), width, height);
+
+  if (targetfmt == AV_PIX_FMT_NONE)
   {
-    if (entry.pixfmt == pixfmt)
-      return entry.encoding;
+    CLog::Log(LOGERROR, "%s::%s: Invalid target pixel format: %d", CLASSNAME, __FUNCTION__, targetfmt);
+    return false;
   }
-  return MMAL_ENCODING_UNKNOWN;
+
+  m_targetFormat = targetfmt;
+  m_width = width;
+  m_height = height;
+
+  m_swsContext = sws_getContext(width, height, pixfmt,
+                                width, height, targetfmt,
+                                SWS_FAST_BILINEAR, NULL, NULL, NULL);
+  if (!m_swsContext)
+  {
+    CLog::Log(LOGERROR, "%s::%s: Failed to create swscale context", CLASSNAME, __FUNCTION__);
+    return false;
+  }
+
+  m_pixelBufferPool->Configure(m_targetFormat, width, height);
+
+  return true;
+}
+
+void CPixelConverterRBP::Dispose()
+{
+  if (m_swsContext)
+  {
+    sws_freeContext(m_swsContext);
+    m_swsContext = nullptr;
+  }
+}
+
+bool CPixelConverterRBP::Decode(const uint8_t* pData, unsigned int size)
+{
+  if (pData == nullptr || size == 0 || m_swsContext == nullptr)
+    return false;
+
+  m_renderBuffer = dynamic_cast<CMMALYUVBuffer*>(m_pixelBufferPool->Get());
+  if (!m_renderBuffer)
+  {
+    CLog::Log(LOGERROR, "%s::%s: Failed to get buffer from pool", CLASSNAME, __FUNCTION__);
+    return false;
+  }
+  CGPUMEM *gmem = m_renderBuffer->GetMem();
+  assert(m_renderBuffer && m_renderBuffer->mmal_buffer && gmem);
+  if (m_renderBuffer && m_renderBuffer->mmal_buffer && gmem)
+  {
+    m_renderBuffer->mmal_buffer->data = (uint8_t *)gmem->m_vc_handle;
+    m_renderBuffer->mmal_buffer->alloc_size = m_renderBuffer->mmal_buffer->length = gmem->m_numbytes;
+  }
+
+  uint8_t *dst[YuvImage::MAX_PLANES];
+  int dstStride[YuvImage::MAX_PLANES];
+  m_renderBuffer->GetPlanes(dst);
+  m_renderBuffer->GetStrides(dstStride);
+
+  uint8_t* dataMutable = const_cast<uint8_t*>(pData);
+
+  const int stride = size / m_height;
+  uint8_t* src[] =       { dataMutable,         0,                   0,                   0 };
+  int      srcStride[] = { stride,              0,                   0,                   0 };
+
+  sws_scale(m_swsContext, src, srcStride, 0, m_height, dst, dstStride);
+
+  return true;
+}
+
+void CPixelConverterRBP::GetPicture(VideoPicture& picture)
+{
+  if (picture.videoBuffer)
+    picture.videoBuffer->Release();
+
+  assert(m_renderBuffer);
+  assert(m_renderBuffer->Width() == static_cast<int>(m_width) && m_renderBuffer->Height() == static_cast<int>(m_height));
+  uint32_t encoding = m_renderBuffer->Encoding();
+  picture.videoBuffer = m_renderBuffer;
+  m_renderBuffer = nullptr;
+
+  picture.dts            = DVD_NOPTS_VALUE;
+  picture.pts            = DVD_NOPTS_VALUE;
+  picture.iFlags         = 0;
+  picture.color_matrix   = 4; // CONF_FLAGS_YUVCOEF_BT601
+  picture.color_range    = 0; // *not* CONF_FLAGS_YUV_FULLRANGE
+  picture.iWidth         = m_height;
+  picture.iHeight        = m_height;
+  picture.iDisplayWidth  = m_width; //! @todo: Update if aspect ratio changes
+  picture.iDisplayHeight = m_height;
+  if (VERBOSE && g_advancedSettings.CanLogComponent(LOGVIDEO))
+    CLog::Log(LOGDEBUG, "%s::%s: %dx%d enc:%.4s", CLASSNAME, __FUNCTION__, m_width, m_height, (char *)&encoding);
 }
