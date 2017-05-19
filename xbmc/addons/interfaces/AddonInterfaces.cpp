@@ -22,6 +22,7 @@
 #include "AddonInterfaces.h"
 
 #include "addons/Addon.h"
+#include "addons/InputStream.h"
 #include "addons/PVRClient.h"
 #include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.h"
 
@@ -30,7 +31,6 @@
 #include "addons/interfaces/Game/AddonCallbacksGame.h"
 #include "addons/interfaces/GUI/AddonCallbacksGUI.h"
 #include "addons/interfaces/GUI/AddonGUIWindow.h"
-#include "addons/interfaces/InputStream/AddonCallbacksInputStream.h"
 #include "filesystem/SpecialProtocol.h"
 #include "messaging/ApplicationMessenger.h"
 #include "peripherals/addons/PeripheralAddon.h"
@@ -47,7 +47,6 @@ CAddonInterfaces::CAddonInterfaces(CAddon* addon)
     m_helperAddOn(nullptr),
     m_helperAudioEngine(nullptr),
     m_helperGUI(nullptr),
-    m_helperInputStream(nullptr),
     m_helperGame(nullptr)
 {
   m_callbacks->libBasePath                  = strdup(CSpecialProtocol::TranslatePath("special://xbmcbinaddons").c_str());
@@ -76,7 +75,6 @@ CAddonInterfaces::~CAddonInterfaces()
   delete static_cast<KodiAPI::AddOn::CAddonCallbacksAddon*>(m_helperAddOn);
   delete static_cast<KodiAPI::AudioEngine::CAddonCallbacksAudioEngine*>(m_helperAudioEngine);
   delete static_cast<KodiAPI::GUI::CAddonCallbacksGUI*>(m_helperGUI);
-  delete static_cast<KodiAPI::InputStream::CAddonCallbacksInputStream*>(m_helperInputStream);
   delete static_cast<KodiAPI::Game::CAddonCallbacksGame*>(m_helperGame);
 
   free((char*)m_callbacks->libBasePath);
@@ -238,21 +236,11 @@ void* CAddonInterfaces::INPUTSTREAMLib_RegisterMe(void *addonData)
     return nullptr;
   }
 
-  addon->m_helperInputStream = new KodiAPI::InputStream::CAddonCallbacksInputStream(addon->m_addon);
-  return static_cast<KodiAPI::InputStream::CAddonCallbacksInputStream*>(addon->m_helperInputStream)->GetCallbacks();
+  return dynamic_cast<ADDON::CInputStream*>(addon->m_addon)->GetInstanceInterface();
 }
 
 void CAddonInterfaces::INPUTSTREAMLib_UnRegisterMe(void *addonData, void* cbTable)
 {
-  CAddonInterfaces* addon = static_cast<CAddonInterfaces*>(addonData);
-  if (addon == nullptr)
-  {
-    CLog::Log(LOGERROR, "CAddonInterfaces - %s - called with a null pointer", __FUNCTION__);
-    return;
-  }
-
-  delete static_cast<KodiAPI::InputStream::CAddonCallbacksInputStream*>(addon->m_helperInputStream);
-  addon->m_helperInputStream = nullptr;
 }
 /*\_____________________________________________________________________________
 \*/

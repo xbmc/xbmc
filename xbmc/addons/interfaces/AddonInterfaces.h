@@ -73,7 +73,6 @@ namespace ADDON
     \*/
     static void*        INPUTSTREAMLib_RegisterMe      (void *addonData);
     static void         INPUTSTREAMLib_UnRegisterMe    (void *addonData, void* cbTable);
-    void*               GetHelperInputStream()        { return m_helperInputStream; }
     /*\_________________________________________________________________________
     \*/
     static void*        PeripheralLib_RegisterMe       (void *addonData);
@@ -95,7 +94,6 @@ namespace ADDON
     void*     m_helperAddOn;
     void*     m_helperAudioEngine;
     void*     m_helperGUI;
-    void*     m_helperInputStream;
     void*     m_helperGame;
   };
 

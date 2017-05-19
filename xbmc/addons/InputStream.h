@@ -21,6 +21,7 @@
 #include "AddonDll.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/kodi_inputstream_types.h"
 #include "FileItem.h"
+#include "cores/VideoPlayer/DVDDemuxers/DVDDemuxUtils.h"
 #include "threads/CriticalSection.h"
 #include <vector>
 #include <map>
@@ -88,6 +89,13 @@ namespace ADDON
     void PauseStream(double time);
     bool IsRealTimeStream();
 
+    /*!
+     * @brief To get the interface table used between addon and kodi
+     * @todo This function becomes removed after old callback library system
+     * is removed.
+     */
+    AddonInstance_InputStream* GetInstanceInterface() { return &m_struct; }
+
   protected:
     void UpdateStreams();
     void DisposeStreams();
@@ -111,8 +119,27 @@ namespace ADDON
     static std::map<std::string, Config> m_configMap;
 
   private:
-    INPUTSTREAM_PROPS m_info;
-    KodiToAddonFuncTable_InputStream m_struct;
+    /*!
+     * @brief Callback functions from addon to kodi
+     */
+    //@{
+    /*!
+     * @brief Allocate a demux packet. Free with FreeDemuxPacket
+     * @param kodiInstance A pointer to the add-on.
+     * @param iDataSize The size of the data that will go into the packet
+     * @return The allocated packet.
+     */
+    static DemuxPacket* cb_allocate_demux_packet(void* kodiInstance, int iDataSize = 0);
+
+    /*!
+     * @brief Free a packet that was allocated with AllocateDemuxPacket
+     * @param kodiInstance A pointer to the add-on.
+     * @param pPacket The packet to free.
+     */
+    static void cb_free_demux_packet(void* kodiInstance, DemuxPacket* pPacket);
+    //@}
+
+    AddonInstance_InputStream m_struct;
   };
 
 } /*namespace ADDON*/

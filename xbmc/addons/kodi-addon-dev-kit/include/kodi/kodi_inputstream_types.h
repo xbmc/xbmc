@@ -29,6 +29,8 @@
 #endif
 #endif
 
+#include "xbmc_addon_types.h"
+
 #ifdef BUILD_KODI_ADDON
 #include "DVDDemuxPacket.h"
 #else
@@ -36,13 +38,6 @@
 #endif
 
 extern "C" {
-
-  // this are properties given to the addon on create
-  // at this time we have no parameters for the addon
-  typedef struct INPUTSTREAM_PROPS
-  {
-    int dummy;
-  } INPUTSTREAM_PROPS;
 
   /*!
    * @brief InputStream add-on capabilities. All capabilities are set to "false" as default.
@@ -125,6 +120,23 @@ extern "C" {
   /*!
    * @brief Structure to transfer the methods from xbmc_inputstream_dll.h to XBMC
    */
+
+  // this are properties given to the addon on create
+  // at this time we have no parameters for the addon
+  typedef struct AddonProps_InputStream
+  {
+    int dummy;
+  } AddonProps_InputStream;
+  
+  typedef AddonProps_InputStream INPUTSTREAM_PROPS;
+  
+  typedef struct AddonToKodiFuncTable_InputStream
+  {
+    KODI_HANDLE kodiInstance;
+    DemuxPacket* (*AllocateDemuxPacket)(void* kodiInstance, int iDataSize);
+    void (*FreeDemuxPacket)(void* kodiInstance, DemuxPacket* pPacket);
+  } AddonToKodiFuncTable_InputStream;
+
   typedef struct KodiToAddonFuncTable_InputStream
   {
     bool (__cdecl* Open)(INPUTSTREAM&);
@@ -162,6 +174,14 @@ extern "C" {
     void (__cdecl* PauseStream)(double);
     bool (__cdecl* IsRealTimeStream)(void);
   } KodiToAddonFuncTable_InputStream;
+
+  typedef struct AddonInstance_InputStream
+  {
+    AddonProps_InputStream props;
+    AddonToKodiFuncTable_InputStream toKodi;
+    KodiToAddonFuncTable_InputStream toAddon;
+  } AddonInstance_InputStream;
+
 }
 
 

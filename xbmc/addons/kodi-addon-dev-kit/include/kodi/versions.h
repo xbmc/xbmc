@@ -88,8 +88,8 @@
 #define ADDON_INSTANCE_VERSION_IMAGEDECODER_DEPENDS   "kodi_imagedec_dll.h" \
                                                       "kodi_imagedec_types.h"
 
-#define ADDON_INSTANCE_VERSION_INPUTSTREAM            "1.0.7"
-#define ADDON_INSTANCE_VERSION_INPUTSTREAM_MIN        "1.0.7"
+#define ADDON_INSTANCE_VERSION_INPUTSTREAM            "1.0.8"
+#define ADDON_INSTANCE_VERSION_INPUTSTREAM_MIN        "1.0.8"
 #define ADDON_INSTANCE_VERSION_INPUTSTREAM_XML_ID     "kodi.binary.instance.inputstream"
 #define ADDON_INSTANCE_VERSION_INPUTSTREAM_DEPENDS    "libKODI_inputstream.h" \
                                                       "kodi_inputstream_dll.h" \
