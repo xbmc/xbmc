@@ -25,7 +25,7 @@
 #include <string>
 #include <vector>
 
-struct game_client_properties;
+struct AddonProps_Game;
 
 namespace GAME
 {
@@ -39,7 +39,7 @@ class CGameClient;
 class CGameClientProperties
 {
 public:
-  CGameClientProperties(const CGameClient* parent, game_client_properties*& props);
+  CGameClientProperties(const CGameClient* parent, AddonProps_Game& props);
   ~CGameClientProperties(void) { ReleaseResources(); }
 
   void InitializeProperties(void);
@@ -77,7 +77,7 @@ private:
   bool HasProxyDll(const std::string& strLibPath) const;
 
   const CGameClient* const  m_parent;
-  game_client_properties    m_properties;
+  AddonProps_Game&          m_properties;
 
   // Buffers to hold the strings
   std::string        m_strLibraryPath;

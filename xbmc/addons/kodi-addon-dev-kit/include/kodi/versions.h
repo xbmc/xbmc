@@ -75,8 +75,8 @@
 #define ADDON_INSTANCE_VERSION_AUDIOENCODER_DEPENDS   "xbmc_audioenc_dll.h" \
                                                       "xbmc_audioenc_types.h"
 
-#define ADDON_INSTANCE_VERSION_GAME                   "1.0.31"
-#define ADDON_INSTANCE_VERSION_GAME_MIN               "1.0.31"
+#define ADDON_INSTANCE_VERSION_GAME                   "1.0.32"
+#define ADDON_INSTANCE_VERSION_GAME_MIN               "1.0.32"
 #define ADDON_INSTANCE_VERSION_GAME_XML_ID            "kodi.binary.instance.game"
 #define ADDON_INSTANCE_VERSION_GAME_DEPENDS           "kodi_game_dll.h" \
                                                       "kodi_game_types.h" \

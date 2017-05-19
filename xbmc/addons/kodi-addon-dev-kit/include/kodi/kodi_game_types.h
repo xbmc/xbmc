@@ -21,6 +21,7 @@
 #define KODI_GAME_TYPES_H_
 
 #include "versions.h"
+#include "xbmc_addon_types.h"
 
 #include <stddef.h>
 #include <stdint.h>
@@ -396,7 +397,7 @@ struct game_hw_info
 };
 
 /*! Properties passed to the ADDON_Create() method of a game client */
-typedef struct game_client_properties
+typedef struct AddonProps_Game
 {
   /*!
    * The path of the game client being loaded.
@@ -445,9 +446,33 @@ typedef struct game_client_properties
    * Number of extensions provided
    */
   unsigned int extension_count;
-} game_client_properties;
+} AddonProps_Game;
 
+typedef AddonProps_Game game_client_properties;
+  
 /*! Structure to transfer the methods from kodi_game_dll.h to Kodi */
+
+typedef struct AddonToKodiFuncTable_Game
+{
+  KODI_HANDLE kodiInstance;
+
+  void (*CloseGame)(void* kodiInstance);
+  int (*OpenPixelStream)(void* kodiInstance, GAME_PIXEL_FORMAT format, unsigned int width, unsigned int height, GAME_VIDEO_ROTATION rotation);
+  int (*OpenVideoStream)(void* kodiInstance, GAME_VIDEO_CODEC codec);
+  int (*OpenPCMStream)(void* kodiInstance, GAME_PCM_FORMAT format, const GAME_AUDIO_CHANNEL* channel_map);
+  int(*OpenAudioStream)(void* kodiInstance, GAME_AUDIO_CODEC codec, const GAME_AUDIO_CHANNEL* channel_map);
+  void (*AddStreamData)(void* kodiInstance, GAME_STREAM_TYPE stream, const uint8_t* data, unsigned int size);
+  void (*CloseStream)(void* kodiInstance, GAME_STREAM_TYPE stream);
+  void (*EnableHardwareRendering)(void* kodiInstance, const game_hw_info* hw_info);
+  uintptr_t (*HwGetCurrentFramebuffer)(void* kodiInstance);
+  game_proc_address_t (*HwGetProcAddress)(void* kodiInstance, const char* symbol);
+  void (*RenderFrame)(void* kodiInstance);
+  bool (*OpenPort)(void* kodiInstance, unsigned int port);
+  void (*ClosePort)(void* kodiInstance, unsigned int port);
+  bool (*InputEvent)(void* kodiInstance, const game_input_event* event);
+
+} AddonToKodiFuncTable_Game;
+
 typedef struct KodiToAddonFuncTable_Game
 {
   GAME_ERROR  (__cdecl* LoadGame)(const char*);
@@ -471,6 +496,13 @@ typedef struct KodiToAddonFuncTable_Game
   GAME_ERROR  (__cdecl* GetMemory)(GAME_MEMORY, uint8_t**, size_t*);
   GAME_ERROR  (__cdecl* SetCheat)(unsigned int, bool, const char*);
 } KodiToAddonFuncTable_Game;
+
+typedef struct AddonInstance_Game
+{
+  AddonProps_Game props;
+  AddonToKodiFuncTable_Game toKodi;
+  KodiToAddonFuncTable_Game toAddon;
+} AddonInstance_Game;
 
 #ifdef __cplusplus
 }

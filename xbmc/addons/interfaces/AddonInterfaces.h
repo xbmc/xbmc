@@ -81,7 +81,6 @@ namespace ADDON
     \*/
     static void*        GameLib_RegisterMe             (void *addonData);
     static void         GameLib_UnRegisterMe           (void *addonData, void* cbTable);
-    void*               GetHelperGame()               { return m_helperGame; }
     /*
      * API level independent functions for Kodi
      */
@@ -94,7 +93,6 @@ namespace ADDON
     void*     m_helperAddOn;
     void*     m_helperAudioEngine;
     void*     m_helperGUI;
-    void*     m_helperGame;
   };
 
 } /* namespace ADDON */

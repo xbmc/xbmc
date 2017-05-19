@@ -234,28 +234,28 @@ GAME_ERROR SetCheat(unsigned int index, bool enabled, const char* code);
  */
 void __declspec(dllexport) get_addon(void* ptr)
 {
-  KodiToAddonFuncTable_Game* pClient = static_cast<KodiToAddonFuncTable_Game*>(ptr);
+  AddonInstance_Game* pClient = static_cast<AddonInstance_Game*>(ptr);
 
-  pClient->LoadGame                 = LoadGame;
-  pClient->LoadGameSpecial          = LoadGameSpecial;
-  pClient->LoadStandalone           = LoadStandalone;
-  pClient->UnloadGame               = UnloadGame;
-  pClient->GetGameInfo              = GetGameInfo;
-  pClient->GetRegion                = GetRegion;
-  pClient->RequiresGameLoop         = RequiresGameLoop;
-  pClient->RunFrame                 = RunFrame;
-  pClient->Reset                    = Reset;
-  pClient->HwContextReset           = HwContextReset;
-  pClient->HwContextDestroy         = HwContextDestroy;
-  pClient->UpdatePort               = UpdatePort;
-  pClient->HasFeature               = HasFeature;
-  pClient->InputEvent               = InputEvent;
-  pClient->SerializeSize            = SerializeSize;
-  pClient->Serialize                = Serialize;
-  pClient->Deserialize              = Deserialize;
-  pClient->CheatReset               = CheatReset;
-  pClient->GetMemory                = GetMemory;
-  pClient->SetCheat                 = SetCheat;
+  pClient->toAddon.LoadGame                 = LoadGame;
+  pClient->toAddon.LoadGameSpecial          = LoadGameSpecial;
+  pClient->toAddon.LoadStandalone           = LoadStandalone;
+  pClient->toAddon.UnloadGame               = UnloadGame;
+  pClient->toAddon.GetGameInfo              = GetGameInfo;
+  pClient->toAddon.GetRegion                = GetRegion;
+  pClient->toAddon.RequiresGameLoop         = RequiresGameLoop;
+  pClient->toAddon.RunFrame                 = RunFrame;
+  pClient->toAddon.Reset                    = Reset;
+  pClient->toAddon.HwContextReset           = HwContextReset;
+  pClient->toAddon.HwContextDestroy         = HwContextDestroy;
+  pClient->toAddon.UpdatePort               = UpdatePort;
+  pClient->toAddon.HasFeature               = HasFeature;
+  pClient->toAddon.InputEvent               = InputEvent;
+  pClient->toAddon.SerializeSize            = SerializeSize;
+  pClient->toAddon.Serialize                = Serialize;
+  pClient->toAddon.Deserialize              = Deserialize;
+  pClient->toAddon.CheatReset               = CheatReset;
+  pClient->toAddon.GetMemory                = GetMemory;
+  pClient->toAddon.SetCheat                 = SetCheat;
 }
 
 #ifdef __cplusplus

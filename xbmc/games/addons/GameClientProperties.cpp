@@ -38,12 +38,10 @@ using namespace XFILE;
 
 #define GAME_CLIENT_RESOURCES_DIRECTORY  "resources"
 
-CGameClientProperties::CGameClientProperties(const CGameClient* parent, game_client_properties*& props)
+CGameClientProperties::CGameClientProperties(const CGameClient* parent, AddonProps_Game& props)
   : m_parent(parent),
-    m_properties()
+    m_properties(props)
 {
-  // Allow the caller to access the property structure directly
-  props = &m_properties;
 }
 
 void CGameClientProperties::ReleaseResources(void)

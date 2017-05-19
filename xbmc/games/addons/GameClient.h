@@ -109,6 +109,13 @@ public:
   // Input functions
   bool AcceptsInput(void) const;
 
+  /*!
+    * @brief To get the interface table used between addon and kodi
+    * @todo This function becomes removed after old callback library system
+    * is removed.
+    */
+  AddonInstance_Game* GetInstanceInterface() { return &m_struct; }
+
 private:
   // Private gameplay functions
   bool OpenStandalone(IGameAudioCallback* audio, IGameVideoCallback* video);
@@ -138,8 +145,27 @@ private:
   bool LogError(GAME_ERROR error, const char* strMethod) const;
   void LogException(const char* strFunctionName) const;
 
+  /*!
+   * @brief Callback functions from addon to kodi
+   */
+  //@{
+  static void cb_close_game(void* kodiInstance);
+  static int cb_open_pixel_stream(void* kodiInstance, GAME_PIXEL_FORMAT format, unsigned int width, unsigned int height, GAME_VIDEO_ROTATION rotation);
+  static int cb_open_video_stream(void* kodiInstance, GAME_VIDEO_CODEC codec);
+  static int cb_open_pcm_stream(void* kodiInstance, GAME_PCM_FORMAT format, const GAME_AUDIO_CHANNEL* channel_map);
+  static int cb_open_audio_stream(void* kodiInstance, GAME_AUDIO_CODEC codec, const GAME_AUDIO_CHANNEL* channel_map);
+  static void cb_add_stream_data(void* kodiInstance, GAME_STREAM_TYPE stream, const uint8_t* data, unsigned int size);
+  static void cb_close_stream(void* kodiInstance, GAME_STREAM_TYPE stream);
+  static void cb_enable_hardware_rendering(void* kodiInstance, const game_hw_info* hw_info);
+  static uintptr_t cb_hw_get_current_framebuffer(void* kodiInstance);
+  static game_proc_address_t cb_hw_get_proc_address(void* kodiInstance, const char* sym);
+  static void cb_render_frame(void* kodiInstance);
+  static bool cb_open_port(void* kodiInstance, unsigned int port);
+  static void cb_close_port(void* kodiInstance, unsigned int port);
+  static bool cb_input_event(void* kodiInstance, const game_input_event* event);
+  //@}
+
   // Add-on properties
-  ADDON::AddonVersion   m_apiVersion;
   CGameClientProperties m_libraryProps;        // Properties to pass to the DLL
 
   // Game API xml parameters
@@ -171,9 +197,9 @@ private:
   std::unique_ptr<CGameClientMouse> m_mouse;
 
   CCriticalSection m_critSection;
-  
+
   game_client_properties* m_info;
-  KodiToAddonFuncTable_Game m_struct;
+  AddonInstance_Game m_struct;
 };
 
 } // namespace GAME

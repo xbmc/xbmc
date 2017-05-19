@@ -25,10 +25,10 @@
 #include "addons/InputStream.h"
 #include "addons/PVRClient.h"
 #include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.h"
+#include "games/addons/GameClient.h"
 
 #include "addons/interfaces/Addon/AddonCallbacksAddon.h"
 #include "addons/interfaces/AudioEngine/AddonCallbacksAudioEngine.h"
-#include "addons/interfaces/Game/AddonCallbacksGame.h"
 #include "addons/interfaces/GUI/AddonCallbacksGUI.h"
 #include "addons/interfaces/GUI/AddonGUIWindow.h"
 #include "filesystem/SpecialProtocol.h"
@@ -46,8 +46,7 @@ CAddonInterfaces::CAddonInterfaces(CAddon* addon)
     m_addon(addon),
     m_helperAddOn(nullptr),
     m_helperAudioEngine(nullptr),
-    m_helperGUI(nullptr),
-    m_helperGame(nullptr)
+    m_helperGUI(nullptr)
 {
   m_callbacks->libBasePath                  = strdup(CSpecialProtocol::TranslatePath("special://xbmcbinaddons").c_str());
   m_callbacks->addonData                    = this;
@@ -75,7 +74,6 @@ CAddonInterfaces::~CAddonInterfaces()
   delete static_cast<KodiAPI::AddOn::CAddonCallbacksAddon*>(m_helperAddOn);
   delete static_cast<KodiAPI::AudioEngine::CAddonCallbacksAudioEngine*>(m_helperAudioEngine);
   delete static_cast<KodiAPI::GUI::CAddonCallbacksGUI*>(m_helperGUI);
-  delete static_cast<KodiAPI::Game::CAddonCallbacksGame*>(m_helperGame);
 
   free((char*)m_callbacks->libBasePath);
   delete m_callbacks;
@@ -209,21 +207,11 @@ void* CAddonInterfaces::GameLib_RegisterMe(void *addonData)
     return nullptr;
   }
 
-  addon->m_helperGame = new KodiAPI::Game::CAddonCallbacksGame(addon->m_addon);
-  return static_cast<KodiAPI::Game::CAddonCallbacksGame*>(addon->m_helperGame)->GetCallbacks();
+  return dynamic_cast<GAME::CGameClient*>(addon->m_addon)->GetInstanceInterface();
 }
 
 void CAddonInterfaces::GameLib_UnRegisterMe(void *addonData, void *cbTable)
 {
-  CAddonInterfaces* addon = static_cast<CAddonInterfaces*>(addonData);
-  if (addon == nullptr)
-  {
-    CLog::Log(LOGERROR, "CAddonInterfaces - %s - called with a null pointer", __FUNCTION__);
-    return;
-  }
-
-  delete static_cast<KodiAPI::Game::CAddonCallbacksGame*>(addon->m_helperGame);
-  addon->m_helperGame = nullptr;
 }
 /*\_____________________________________________________________________________
 \*/
