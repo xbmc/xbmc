@@ -6513,6 +6513,7 @@ msgid "Fan speed override"
 msgstr ""
 
 #: system/settings/settings.xml
+#: xbmc/addons/AddonInfo.cpp
 msgctxt "#13303"
 msgid "Fonts"
 msgstr ""
