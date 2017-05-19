@@ -18,7 +18,6 @@
  *
  */
 #include "system.h"
-#ifdef HAS_ALSA
 
 #include <poll.h>
 #include <sys/eventfd.h>
@@ -244,5 +243,3 @@ void CFDEventMonitor::InterruptPoll()
     CSingleLock pollLock(m_pollMutex);
   }
 }
-
-#endif

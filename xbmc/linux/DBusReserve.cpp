@@ -18,7 +18,6 @@
  *
  */
 #include "system.h"
-#ifdef HAS_DBUS
 #include "DBusReserve.h"
 
 #include <dbus/dbus.h>
@@ -179,5 +178,3 @@ bool CDBusReserve::ReleaseDevice(const std::string& device)
 
   return res == DBUS_RELEASE_NAME_REPLY_RELEASED;
 }
-
-#endif

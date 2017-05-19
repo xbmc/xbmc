@@ -20,8 +20,6 @@
 
 #include "system.h"
 
-#ifdef HAS_DVD_DRIVE
-
 #include "CDDADirectory.h"
 #include "music/MusicDatabase.h"
 #include "FileItem.h"
@@ -87,5 +85,3 @@ bool CCDDADirectory::GetDirectory(const CURL& url, CFileItemList &items)
   }
   return true;
 }
-
-#endif

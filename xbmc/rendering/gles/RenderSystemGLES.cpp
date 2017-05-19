@@ -21,8 +21,6 @@
 
 #include "system.h"
 
-#if HAS_GLES == 2
-
 #include "guilib/GraphicContext.h"
 #include "settings/AdvancedSettings.h"
 #include "RenderSystemGLES.h"
@@ -672,5 +670,3 @@ GLint CRenderSystemGLES::GUIShaderGetModel()
 
   return -1;
 }
-
-#endif

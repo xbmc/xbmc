@@ -20,8 +20,6 @@
 
 #include "system.h"
 
-#ifdef HAS_DVD_DRIVE
-
 #include "DetectDVDType.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
@@ -498,4 +496,3 @@ const std::string &CDetectDVDMedia::GetDVDPath()
 {
   return m_diskPath;
 }
-#endif
