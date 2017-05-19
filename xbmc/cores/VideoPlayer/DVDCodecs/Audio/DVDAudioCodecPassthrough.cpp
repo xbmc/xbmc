@@ -100,7 +100,6 @@ void CDVDAudioCodecPassthrough::Dispose()
 bool CDVDAudioCodecPassthrough::AddData(const DemuxPacket &packet)
 {
   int used = 0;
-  int skip = 0;
   if (m_backlogSize)
   {
     m_dataSize = m_bufferSize;
@@ -126,7 +125,6 @@ bool CDVDAudioCodecPassthrough::AddData(const DemuxPacket &packet)
     int didSplit = av_packet_split_side_data(&pkt);
     if (didSplit)
     {
-      skip = iSize - pkt.size;
       pData = pkt.data;
       iSize = pkt.size;
       av_packet_free_side_data(&pkt);
