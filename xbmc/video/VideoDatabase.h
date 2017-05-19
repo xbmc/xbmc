@@ -503,7 +503,7 @@ public:
   bool LoadVideoInfo(const std::string& strFilenameAndPath, CVideoInfoTag& details, int getDetails = VideoDbDetailsAll);
   bool GetMovieInfo(const std::string& strFilenameAndPath, CVideoInfoTag& details, int idMovie = -1, int getDetails = VideoDbDetailsAll);
   bool GetTvShowInfo(const std::string& strPath, CVideoInfoTag& details, int idTvShow = -1, CFileItem* item = NULL, int getDetails = VideoDbDetailsAll);
-  bool GetSeasonInfo(int idSeason, CVideoInfoTag& details);
+  bool GetSeasonInfo(int idSeason, CVideoInfoTag& details, bool allDetails = true);
   bool GetEpisodeInfo(const std::string& strFilenameAndPath, CVideoInfoTag& details, int idEpisode = -1, int getDetails = VideoDbDetailsAll);
   bool GetMusicVideoInfo(const std::string& strFilenameAndPath, CVideoInfoTag& details, int idMVideo = -1, int getDetails = VideoDbDetailsAll);
   bool GetSetInfo(int idSet, CVideoInfoTag& details);
@@ -846,7 +846,7 @@ public:
   \param season The season number we want to add.
   \return The dbId of the season.
   */
-  int AddSeason(int showID, int season);
+  int AddSeason(int showID, int season, const std::string& name = "");
   int AddSet(const std::string& strSet, const std::string& strOverview = "");
   void ClearMovieSet(int idMovie);
   void SetMovieSet(int idMovie, int idSet);
