@@ -71,6 +71,7 @@ static const TypeMapping types[] =
    {"kodi.resource.language",            ADDON_RESOURCE_LANGUAGE,   24026, "DefaultAddonLanguage.png" },
    {"kodi.resource.uisounds",            ADDON_RESOURCE_UISOUNDS,   24006, "DefaultAddonUISounds.png" },
    {"kodi.resource.games",               ADDON_RESOURCE_GAMES,      35209, "DefaultAddonGame.png" },
+   {"kodi.resource.font",                ADDON_RESOURCE_FONT,       13303, "DefaultAddonFont.png" },
    {"kodi.adsp",                         ADDON_ADSPDLL,             24135, "DefaultAddonAudioDSP.png" },
    {"kodi.inputstream",                  ADDON_INPUTSTREAM,         24048, "DefaultAddonInputstream.png" },
    {"kodi.vfs",                          ADDON_VFS,                 39013, "DefaultAddonVfs.png" },

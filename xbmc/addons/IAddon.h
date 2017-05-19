@@ -28,7 +28,6 @@ class TiXmlElement;
 
 namespace ADDON
 {
-
   class IAddon;
   typedef std::shared_ptr<IAddon> AddonPtr;
   class CInstanceVisualization;
