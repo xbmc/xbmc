@@ -23,8 +23,10 @@
 #include "cores/IPlayer.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "guilib/GUIWindowManager.h"
+#include "cores/DataCacheCore.h"
 #include "Application.h"
 #include "PlayListPlayer.h"
+#include "ServiceBroker.h"
 #include "settings/MediaSettings.h"
 
 CApplicationPlayer::CApplicationPlayer()
@@ -125,10 +127,10 @@ PlayBackRet CApplicationPlayer::OpenFile(const CFileItem& item, const CPlayerOpt
   return iResult;
 }
 
-bool CApplicationPlayer::HasPlayer() const 
-{ 
+bool CApplicationPlayer::HasPlayer() const
+{
   std::shared_ptr<IPlayer> player = GetInternal();
-  return player != NULL; 
+  return player != NULL;
 }
 
 int CApplicationPlayer::GetChapter()
@@ -136,7 +138,7 @@ int CApplicationPlayer::GetChapter()
   std::shared_ptr<IPlayer> player = GetInternal();
   if (player)
     return player->GetChapter();
-  else 
+  else
     return -1;
 }
 
@@ -145,7 +147,7 @@ int CApplicationPlayer::GetChapterCount()
   std::shared_ptr<IPlayer> player = GetInternal();
   if (player)
     return player->GetChapterCount();
-  else 
+  else
     return 0;
 }
 
@@ -810,7 +812,7 @@ bool CApplicationPlayer::IsRenderingGuiLayer()
 {
   std::shared_ptr<IPlayer> player = GetInternal();
   if (player)
-    return player->IsRenderingGuiLayer();
+    return CServiceBroker::GetDataCacheCore().GetGuiRender();
   else
     return false;
 }
@@ -819,7 +821,7 @@ bool CApplicationPlayer::IsRenderingVideoLayer()
 {
   std::shared_ptr<IPlayer> player = GetInternal();
   if (player)
-    return player->IsRenderingVideoLayer();
+    return CServiceBroker::GetDataCacheCore().GetVideoRender();
   else
     return false;
 }

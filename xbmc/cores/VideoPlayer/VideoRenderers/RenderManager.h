@@ -58,6 +58,8 @@ protected:
   virtual void UpdateClockSync(bool enabled) = 0;
   virtual void UpdateRenderInfo(CRenderInfo &info) = 0;
   virtual void UpdateRenderBuffers(int queued, int discard, int free) = 0;
+  virtual void UpdateGuiRender(bool gui) = 0;
+  virtual void UpdateVideoRender(bool video) = 0;
 };
 
 class CRenderManager
@@ -72,7 +74,6 @@ public:
   void FrameMove();
   void FrameWait(int ms);
   void Render(bool clear, DWORD flags = 0, DWORD alpha = 255, bool gui = true);
-  bool IsGuiLayer();
   bool IsVideoLayer();
   RESOLUTION GetResolution();
   void UpdateResolution();
@@ -162,6 +163,7 @@ protected:
 
   void PrepareNextRender();
   bool IsPresenting();
+  bool IsGuiLayer();
 
   bool Configure();
   void CreateRenderer();
