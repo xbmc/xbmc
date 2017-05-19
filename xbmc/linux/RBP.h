@@ -40,18 +40,30 @@
 #include "threads/CriticalSection.h"
 #include "threads/Event.h"
 
+
+typedef struct AVRpiZcFrameGeometry
+{
+  unsigned int stride_y;
+  unsigned int height_y;
+  unsigned int stride_c;
+  unsigned int height_c;
+  unsigned int planes_c;
+  unsigned int stripes;
+  unsigned int bytes_per_pixel;
+} AVRpiZcFrameGeometry;
+
 class CGPUMEM
 {
 public:
   CGPUMEM(unsigned int numbytes, bool cached = true);
   ~CGPUMEM();
   void Flush();
-  void *m_arm; // Pointer to memory mapped on ARM side
-  int m_vc_handle;   // Videocore handle of relocatable memory
-  int m_vcsm_handle; // Handle for use by VCSM
-  unsigned int m_vc;       // Address for use in GPU code
-  unsigned int m_numbytes; // Size of memory block
-  void *m_opaque;
+  void *m_arm = nullptr; // Pointer to memory mapped on ARM side
+  int m_vc_handle = 0;   // Videocore handle of relocatable memory
+  int m_vcsm_handle = 0; // Handle for use by VCSM
+  unsigned int m_vc = 0;       // Address for use in GPU code
+  unsigned int m_numbytes = 0; // Size of memory block
+  void *m_opaque = nullptr;
 };
 
 class CRBP
@@ -80,6 +92,7 @@ public:
   uint32_t WaitVsync(uint32_t target = ~0U);
   void VSyncCallback();
   int GetMBox() { return m_mb; }
+  AVRpiZcFrameGeometry GetFrameGeometry(uint32_t encoding, unsigned short video_width, unsigned short video_height);
 
 private:
   DllBcmHost *m_DllBcmHost;

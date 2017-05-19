@@ -32,10 +32,6 @@
 #include "cores/VideoPlayer/DVDStreamInfo.h"
 #include "guilib/Geometry.h"
 #include "threads/Thread.h"
-#include "cores/VideoPlayer/DVDResource.h"
-
-#define NOSOURCE   -2
-#define AUTOSOURCE -1
 
 // worst case number of buffers. 12 for decoder. 8 for multi-threading in ffmpeg. NUM_BUFFERS for renderer.
 // Note, generally these won't necessarily result in allocated pictures
@@ -46,27 +42,85 @@ class CProcessInfo;
 
 namespace MMAL {
 
-class CMMALPool;
+class CMMALBuffer;
 
 enum MMALState { MMALStateNone, MMALStateHWDec, MMALStateFFDec, MMALStateDeint, };
 
-// a generic mmal video frame. May be overridden as either software or hardware decoded buffer
-class CMMALBuffer : public IDVDResourceCounted<CMMALBuffer>
+class CMMALPool : public IVideoBufferPool
 {
 public:
-  CMMALBuffer(std::shared_ptr<CMMALPool> pool) : m_pool(pool) {}
-  virtual ~CMMALBuffer() {}
-  MMAL_BUFFER_HEADER_T *mmal_buffer;
-  unsigned int m_width;
-  unsigned int m_height;
-  unsigned int m_aligned_width;
-  unsigned int m_aligned_height;
-  uint32_t m_encoding;
-  float m_aspect_ratio;
+  CMMALPool(const char *component_name, bool input, uint32_t num_buffers, uint32_t buffer_size, uint32_t encoding, MMALState state);
+  ~CMMALPool();
+
+  virtual CVideoBuffer* Get() override;
+  virtual void Return(int id) override;
+  virtual void Configure(AVPixelFormat format, int width, int height) override;
+  virtual bool IsConfigured() override;
+  virtual bool IsCompatible(AVPixelFormat format, int width, int height) override;
+
+  MMAL_COMPONENT_T *GetComponent() { return m_component; }
+  CMMALBuffer *GetBuffer(uint32_t timeout);
+  void Prime();
+  void SetProcessInfo(CProcessInfo *processInfo) { m_processInfo = processInfo; }
+  void Configure(AVPixelFormat format, int width, int height, int aligned_width, int aligned_height, int size);
+  bool IsSoftware() { return m_software; }
+  void SetVideoDeintMethod(std::string method);
+  static uint32_t TranslateFormat(AVPixelFormat pixfmt);
+  virtual int Width() { return m_width; }
+  virtual int Height() { return m_height; }
+  virtual int AlignedWidth() { return m_geo.stride_y / m_geo.bytes_per_pixel; }
+  virtual int AlignedHeight() { return m_geo.height_y; }
+  virtual uint32_t &Encoding() { return m_mmal_format; }
+  virtual int Size() { return m_size; }
+  AVRpiZcFrameGeometry &GetGeometry() { return m_geo; }
+
+protected:
+  int m_width = 0;
+  int m_height = 0;
+  bool m_configured = false;
+  CCriticalSection m_critSection;
+
+  std::vector<CMMALBuffer*> m_all;
+  std::deque<int> m_used;
+  std::deque<int> m_free;
+
+  int m_size = 0;
+  uint32_t m_mmal_format = 0;
+  bool m_software = false;
+  CProcessInfo *m_processInfo = nullptr;
   MMALState m_state;
-  bool m_rendered;
-  bool m_stills;
-  std::shared_ptr<CMMALPool> m_pool;
+  bool m_input;
+  MMAL_POOL_T *m_mmal_pool;
+  MMAL_COMPONENT_T *m_component;
+  AVRpiZcFrameGeometry m_geo;
+  struct MMALEncodingTable
+  {
+    AVPixelFormat pixfmt;
+    uint32_t      encoding;
+  };
+  static std::vector<MMALEncodingTable> mmal_encoding_table;
+};
+
+// a generic mmal video frame. May be overridden as either software or hardware decoded buffer
+class CMMALBuffer : public CVideoBuffer
+{
+public:
+  CMMALBuffer(int id);
+  virtual ~CMMALBuffer();
+  MMAL_BUFFER_HEADER_T *mmal_buffer = nullptr;
+  uint32_t m_encoding = MMAL_ENCODING_UNKNOWN;
+  float m_aspect_ratio = 0.0f;
+  MMALState m_state = MMALStateNone;
+  bool m_rendered = false;
+  bool m_stills = false;
+
+  virtual void Unref();
+  virtual std::shared_ptr<CMMALPool> Pool() { return std::dynamic_pointer_cast<CMMALPool>(m_pool); };
+  virtual int Width() { return Pool()->Width(); }
+  virtual int Height() { return Pool()->Height(); }
+  virtual int AlignedWidth() { return Pool()->AlignedWidth(); }
+  virtual int AlignedHeight() { return Pool()->AlignedHeight(); }
+  virtual uint32_t &Encoding() { return Pool()->Encoding(); }
   void SetVideoDeintMethod(std::string method);
   const char *GetStateName() {
     static const char *names[] = { "MMALStateNone", "MMALStateHWDec", "MMALStateFFDec", "MMALStateDeint", };
@@ -75,38 +129,9 @@ public:
     else
       return "invalid";
   }
+protected:
 };
 
-class CMMALPool : public std::enable_shared_from_this<CMMALPool>
-{
-public:
-  CMMALPool(const char *component_name, bool input, uint32_t num_buffers, uint32_t buffer_size, uint32_t encoding, MMALState state);
-  ~CMMALPool();
-  MMAL_COMPONENT_T *GetComponent() { return m_component; }
-  static void AlignedSize(AVCodecContext *avctx, uint32_t &w, uint32_t &h);
-  CMMALBuffer *GetBuffer(uint32_t timeout);
-  CGPUMEM *AllocateBuffer(uint32_t numbytes);
-  void ReleaseBuffer(CGPUMEM *gmem);
-  void Close();
-  void Prime();
-  void SetProcessInfo(CProcessInfo *processInfo) { m_processInfo = processInfo; }
-  void SetFormat(uint32_t mmal_format, uint32_t width, uint32_t height, uint32_t aligned_width, uint32_t aligned_height, uint32_t size, AVCodecContext *avctx)
-    { m_mmal_format = mmal_format; m_width = width; m_height = height; m_aligned_width = aligned_width; m_aligned_height = aligned_height; m_size = size, m_avctx = avctx; m_software = true; }
-  bool IsSoftware() { return m_software; }
-  void SetVideoDeintMethod(std::string method);
-protected:
-  uint32_t m_mmal_format, m_width, m_height, m_aligned_width, m_aligned_height, m_size;
-  AVCodecContext *m_avctx;
-  MMALState m_state;
-  bool m_input;
-  MMAL_POOL_T *m_mmal_pool;
-  MMAL_COMPONENT_T *m_component;
-  CCriticalSection m_section;
-  std::deque<CGPUMEM *> m_freeBuffers;
-  bool m_closing;
-  bool m_software;
-  CProcessInfo *m_processInfo;
-};
 
 class CMMALRenderer : public CBaseRenderer, public CThread, public IRunnable
 {
