@@ -27,6 +27,7 @@
 #include "utils/log.h"
 
 #include "cores/omxplayer/OMXImage.h"
+#include <interface/mmal/mmal.h>
 
 #include <sys/ioctl.h>
 #include "rpi/rpi_user_vcsm.h"
@@ -38,6 +39,41 @@
 
 static int mbox_open();
 static void mbox_close(int file_desc);
+
+typedef struct vc_image_extra_uv_s {
+   void *u, *v;
+   int vpitch;
+} VC_IMAGE_EXTRA_UV_T;
+
+typedef union {
+   VC_IMAGE_EXTRA_UV_T uv;
+} VC_IMAGE_EXTRA_T;
+
+struct VC_IMAGE_T {
+   unsigned short                  type;           /* should restrict to 16 bits */
+   unsigned short                  info;           /* format-specific info; zero for VC02 behaviour */
+   unsigned short                  width;          /* width in pixels */
+   unsigned short                  height;         /* height in pixels */
+   int                             pitch;          /* pitch of image_data array in bytes */
+   int                             size;           /* number of bytes available in image_data array */
+   void                           *image_data;     /* pixel data */
+   VC_IMAGE_EXTRA_T                extra;          /* extra data like palette pointer */
+   void                           *metadata;       /* metadata header for the image */
+   void                           *pool_object;    /* nonNULL if image was allocated from a vc_pool */
+   uint32_t                        mem_handle;     /* the mem handle for relocatable memory storage */
+   int                             metadata_size;  /* size of metadata of each channel in bytes */
+   int                             channel_offset; /* offset of consecutive channels in bytes */
+   uint32_t                        video_timestamp;/* 90000 Hz RTP times domain - derived from audio timestamp */
+   uint8_t                         num_channels;   /* number of channels (2 for stereo) */
+   uint8_t                         current_channel;/* the channel this header is currently pointing to */
+   uint8_t                         linked_multichann_flag;/* Indicate the header has the linked-multichannel structure*/
+   uint8_t                         is_channel_linked;     /* Track if the above structure is been used to link the header
+                                                             into a linked-mulitchannel image */
+   uint8_t                         channel_index;         /* index of the channel this header represents while
+                                                             it is being linked. */
+   uint8_t                         _dummy[3];      /* pad struct to 64 bytes */
+};
+typedef int vc_image_t_size_check[(sizeof(VC_IMAGE_T) == 64) * 2 - 1];
 
 CRBP::CRBP()
 {
@@ -307,7 +343,7 @@ static unsigned mem_lock(int file_desc, unsigned handle)
    return p[5];
 }
 
-unsigned mem_unlock(int file_desc, unsigned handle)
+static unsigned mem_unlock(int file_desc, unsigned handle)
 {
    int i=0;
    unsigned p[32];
@@ -326,17 +362,42 @@ unsigned mem_unlock(int file_desc, unsigned handle)
    return p[5];
 }
 
+
+#define GET_VCIMAGE_PARAMS 0x30044
+static int get_image_params(int file_desc, VC_IMAGE_T * img)
+{
+    uint32_t buf[sizeof(*img) / sizeof(uint32_t) + 32];
+    uint32_t * p = buf;
+    void * rimg;
+    int rv;
+
+    *p++ = 0; // size
+    *p++ = 0; // process request
+    *p++ = GET_VCIMAGE_PARAMS;
+    *p++ = sizeof(*img);
+    *p++ = sizeof(*img);
+    rimg = p;
+    memcpy(p, img, sizeof(*img));
+    p += sizeof(*img) / sizeof(*p);
+    *p++ = 0;  // End tag
+    buf[0] = (p - buf) * sizeof(*p);
+
+    rv = mbox_property(file_desc, buf);
+    memcpy(img, rimg, sizeof(*img));
+
+    return rv;
+}
+
 CGPUMEM::CGPUMEM(unsigned int numbytes, bool cached)
 {
   m_numbytes = numbytes;
   m_vcsm_handle = vcsm_malloc_cache(numbytes, cached ? VCSM_CACHE_TYPE_HOST : VCSM_CACHE_TYPE_NONE, (char *)"CGPUMEM");
-  assert(m_vcsm_handle);
-  m_vc_handle = vcsm_vc_hdl_from_hdl(m_vcsm_handle);
-  assert(m_vc_handle);
-  m_arm = vcsm_lock(m_vcsm_handle);
-  assert(m_arm);
-  m_vc = mem_lock(g_RBP.GetMBox(), m_vc_handle);
-  assert(m_vc);
+  if (m_vcsm_handle)
+    m_vc_handle = vcsm_vc_hdl_from_hdl(m_vcsm_handle);
+  if (m_vc_handle)
+    m_arm = vcsm_lock(m_vcsm_handle);
+  if (m_arm)
+    m_vc = mem_lock(g_RBP.GetMBox(), m_vc_handle);
 }
 
 CGPUMEM::~CGPUMEM()
@@ -357,4 +418,59 @@ void CGPUMEM::Flush()
   vcsm_clean_invalid( &iocache );
 }
 
+AVRpiZcFrameGeometry CRBP::GetFrameGeometry(uint32_t encoding, unsigned short video_width, unsigned short video_height)
+{
+  AVRpiZcFrameGeometry geo = {};
+  geo.stripes = 1;
+  geo.bytes_per_pixel = 1;
+
+  switch (encoding)
+  {
+  case MMAL_ENCODING_RGBA: case MMAL_ENCODING_BGRA:
+    geo.bytes_per_pixel = 4;
+    geo.stride_y = video_width * geo.bytes_per_pixel;
+    geo.height_y = video_height;
+    break;
+  case MMAL_ENCODING_RGB24: case MMAL_ENCODING_BGR24:
+    geo.bytes_per_pixel = 3;
+    geo.stride_y = video_width * geo.bytes_per_pixel;
+    geo.height_y = video_height;
+    break;
+  case MMAL_ENCODING_RGB16: case MMAL_ENCODING_BGR16:
+    geo.bytes_per_pixel = 2;
+    geo.stride_y = video_width * geo.bytes_per_pixel;
+    geo.height_y = video_height;
+    break;
+  case MMAL_ENCODING_I420:
+    geo.stride_y = (video_width + 31) & ~31;
+    geo.stride_c = geo.stride_y >> 1;
+    geo.height_y = (video_height + 15) & ~15;
+    geo.height_c = geo.height_y >> 1;
+    geo.planes_c = 2;
+    break;
+  case MMAL_ENCODING_OPAQUE:
+    geo.stride_y = video_width;
+    geo.height_y = video_height;
+    break;
+  case MMAL_ENCODING_YUVUV128:
+  {
+    VC_IMAGE_T img = {};
+    img.type = VC_IMAGE_YUV_UV;
+    img.width = video_width;
+    img.height = video_height;
+    int rc = get_image_params(GetMBox(), &img);
+    assert(rc == 0);
+    const unsigned int stripe_w = 128;
+    geo.stride_y = stripe_w;
+    geo.stride_c = stripe_w;
+    geo.height_y = ((intptr_t)img.extra.uv.u - (intptr_t)img.image_data) / stripe_w;
+    geo.height_c = img.pitch / stripe_w - geo.height_y;
+    geo.planes_c = 1;
+    geo.stripes = (video_width + stripe_w - 1) / stripe_w;
+    break;
+  }
+  default: assert(0);
+  }
+  return geo;
+}
 #endif
