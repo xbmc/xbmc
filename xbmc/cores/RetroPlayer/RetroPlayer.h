@@ -125,8 +125,6 @@ namespace GAME
     virtual float GetRenderAspectRatio() override { return m_renderManager.GetAspectRatio(); }
     virtual void TriggerUpdateResolution() override { m_renderManager.TriggerUpdateResolution(0.0f, 0, 0); }
     virtual bool IsRenderingVideo() override { return m_renderManager.IsConfigured(); }
-    virtual bool IsRenderingGuiLayer() override { return m_renderManager.IsGuiLayer(); }
-    virtual bool IsRenderingVideoLayer() override { return m_renderManager.IsVideoLayer(); }
     virtual bool Supports(EINTERLACEMETHOD method) override;
     virtual EINTERLACEMETHOD GetDeinterlacingMethodDefault() override;
     virtual bool Supports(ESCALINGMETHOD method) override { return m_renderManager.Supports(method); }

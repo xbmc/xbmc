@@ -5215,16 +5215,6 @@ bool CVideoPlayer::IsRenderingVideo()
   return m_renderManager.IsConfigured();
 }
 
-bool CVideoPlayer::IsRenderingGuiLayer()
-{
-  return m_renderManager.IsGuiLayer();
-}
-
-bool CVideoPlayer::IsRenderingVideoLayer()
-{
-  return m_renderManager.IsVideoLayer();
-}
-
 bool CVideoPlayer::Supports(EINTERLACEMETHOD method)
 {
   if (!m_processInfo)
@@ -5294,6 +5284,16 @@ void CVideoPlayer::UpdateRenderInfo(CRenderInfo &info)
 void CVideoPlayer::UpdateRenderBuffers(int queued, int discard, int free)
 {
   m_processInfo->UpdateRenderBuffers(queued, discard, free);
+}
+
+void CVideoPlayer::UpdareGuiRender(bool gui)
+{
+  m_processInfo->SetGuiRender(gui);
+}
+
+void CVideoPlayer::UpdareVideoRender(bool video)
+{
+  m_processInfo->SetVideoRender(video);
 }
 
 // IDispResource interface
