@@ -18,7 +18,6 @@
  *
  */
 #include "DBusMessage.h"
-#ifdef HAS_DBUS
 #include "utils/log.h"
 #include "settings/AdvancedSettings.h"
 
@@ -153,4 +152,3 @@ void CDBusMessage::PrepareArgument()
 
   m_haveArgs = true;
 }
-#endif

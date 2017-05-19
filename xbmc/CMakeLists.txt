@@ -1,7 +1,6 @@
 set(SOURCES Application.cpp
             ApplicationPlayer.cpp
             AppParamParser.cpp
-            Autorun.cpp
             AutoSwitch.cpp
             BackgroundInfoLoader.cpp
             ContextMenuItem.cpp
@@ -41,7 +40,6 @@ set(HEADERS AppParamParser.h
             Application.h
             ApplicationPlayer.h
             AutoSwitch.h
-            Autorun.h
             BackgroundInfoLoader.h
             CompileInfo.h
             ContextMenuItem.h
@@ -83,6 +81,11 @@ set(HEADERS AppParamParser.h
             XBDateTime.h
             system.h
             system_gl.h)
+
+if(ENABLE_OPTICAL)
+  list(APPEND SOURCES Autorun.cpp)
+  list(APPEND HEADERS Autorun.h)
+endif()
 
 core_add_library(xbmc)
 if(CAP_FOUND)

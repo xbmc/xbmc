@@ -20,7 +20,6 @@
 
 #include "system.h"
 
-#ifdef HAS_DVD_DRIVE
 #include "Autorun.h"
 
 #include <stdlib.h>
@@ -525,5 +524,3 @@ void CAutorun::SettingOptionAudioCdActionsFiller(const CSetting *setting, std::v
   list.push_back(std::make_pair(g_localizeStrings.Get(14096), AUTOCD_RIP));
 #endif
 }
-
-#endif

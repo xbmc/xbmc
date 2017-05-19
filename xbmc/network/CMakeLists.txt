@@ -1,5 +1,4 @@
-set(SOURCES cddb.cpp
-            DNSNameCache.cpp
+set(SOURCES DNSNameCache.cpp
             EventClient.cpp
             EventPacket.cpp
             EventServer.cpp
@@ -15,8 +14,7 @@ set(SOURCES cddb.cpp
             ZeroconfBrowser.cpp
             Zeroconf.cpp)
 
-set(HEADERS cddb.h
-            DNSNameCache.h
+set(HEADERS DNSNameCache.h
             EventClient.h
             EventPacket.h
             EventServer.h
@@ -31,6 +29,11 @@ set(HEADERS cddb.h
             WebServer.h
             Zeroconf.h
             ZeroconfBrowser.h)
+
+if(ENABLE_OPTICAL)
+  list(APPEND SOURCES cddb.cpp)
+  list(APPEND HEADERS cddb.h)
+endif()
 
 if(PLIST_FOUND)
   list(APPEND SOURCES AirPlayServer.cpp)

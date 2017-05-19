@@ -20,8 +20,6 @@
 
 #include "system.h"
 
-#ifdef HAS_DVD_DRIVE
-
 #include "cdioSupport.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
@@ -947,6 +945,3 @@ uint32_t CCdIoSupport::CddbDiscId()
 
   return ((n % 0xff) << 24 | t << 8 | m_nNumTracks);
 }
-
-#endif
-
