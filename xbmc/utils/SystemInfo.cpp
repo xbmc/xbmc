@@ -111,7 +111,7 @@ static bool sysGetVersionExWByRef(OSVERSIONINFOEXW& osVerInfo)
 }
 #endif // TARGET_WINDOWS
 
-#ifdef TARGET_LINUX
+#if defined(TARGET_LINUX) && !defined(TARGET_ANDROID)
 static std::string getValueFromOs_release(std::string key)
 {
   FILE* os_rel = fopen("/etc/os-release", "r");
@@ -245,7 +245,7 @@ static std::string getValueFromLsb_release(enum lsb_rel_info_type infoType)
 
   return response.substr(key.length(), response.find('\n') - key.length());
 }
-#endif // TARGET_LINUX
+#endif // TARGET_LINUX && !TARGET_ANDROID
 
 CSysInfo g_sysinfo;
 
