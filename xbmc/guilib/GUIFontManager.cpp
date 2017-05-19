@@ -22,6 +22,8 @@
 #include "GraphicContext.h"
 #include "GUIWindowManager.h"
 #include "addons/Skin.h"
+#include "addons/AddonManager.h"
+#include "addons/FontResource.h"
 #include "GUIFontTTF.h"
 #include "GUIFont.h"
 #include "utils/XMLUtils.h"
@@ -34,10 +36,13 @@
 #include "utils/StringUtils.h"
 #include "FileItem.h"
 #include "URL.h"
+#include "ServiceBroker.h"
 
 #ifdef TARGET_POSIX
 #include "filesystem/SpecialProtocol.h"
 #endif
+
+using namespace ADDON;
 
 GUIFontManager::GUIFontManager(void)
 {
@@ -120,8 +125,18 @@ CGUIFont* GUIFontManager::LoadTTF(const std::string& strFontName, const std::str
 
   // Check if the file exists, otherwise try loading it from the global media dir
   std::string file = URIUtils::GetFileName(strFilename);
-  if (!CheckFont(strPath,"special://home/media/Fonts",file))
-    CheckFont(strPath,"special://xbmc/media/Fonts",file);
+  if (!CheckFont(strPath, "special://home/media/Fonts", file) &&
+      !CheckFont(strPath, "special://xbmc/media/Fonts", file))
+  {
+    VECADDONS addons;
+    CServiceBroker::GetAddonMgr().GetAddons(addons, ADDON_RESOURCE_FONT);
+    for (auto& it : addons)
+    {
+      std::shared_ptr<CFontResource> font(std::static_pointer_cast<CFontResource>(it));
+      if (font->GetFont(file, strPath))
+        break;
+    }
+  }
 
   // check if we already have this font file loaded (font object could differ only by color or style)
   std::string TTFfontName = StringUtils::Format("%s_%f_%f%s", strFilename.c_str(), newSize, aspect, border ? "_border" : "");

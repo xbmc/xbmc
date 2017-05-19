@@ -23,6 +23,7 @@
 #include "addons/ContextMenuAddon.h"
 #include "addons/GameResource.h"
 #include "addons/ImageDecoder.h"
+#include "addons/FontResource.h"
 #include "addons/ImageResource.h"
 #include "addons/LanguageResource.h"
 #include "addons/PluginSource.h"
@@ -136,6 +137,8 @@ std::shared_ptr<IAddon> CAddonBuilder::Build()
       return GAME::CGameClient::FromExtension(std::move(m_addonInfo), m_extPoint);
     case ADDON_SKIN:
       return CSkinInfo::FromExtension(std::move(m_addonInfo), m_extPoint);
+    case ADDON_RESOURCE_FONT:
+      return CFontResource::FromExtension(std::move(m_addonInfo), m_extPoint);
     case ADDON_RESOURCE_IMAGES:
       return CImageResource::FromExtension(std::move(m_addonInfo), m_extPoint);
     case ADDON_RESOURCE_GAMES:
@@ -198,6 +201,8 @@ AddonPtr CAddonBuilder::FromProps(CAddonInfo addonInfo)
       return AddonPtr(new CAddonDll(std::move(addonInfo)));
     case ADDON_PVRDLL:
       return AddonPtr(new PVR::CPVRClient(std::move(addonInfo)));
+    case ADDON_RESOURCE_FONT:
+      return AddonPtr(new CFontResource(std::move(addonInfo)));
     case ADDON_RESOURCE_IMAGES:
       return AddonPtr(new CImageResource(std::move(addonInfo)));
     case ADDON_RESOURCE_GAMES:
