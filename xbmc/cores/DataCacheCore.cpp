@@ -235,3 +235,31 @@ bool CDataCacheCore::CDataCacheCore::IsSeeking()
 
   return m_stateInfo.m_stateSeeking;
 }
+
+void CDataCacheCore::SetGuiRender(bool gui)
+{
+  CSingleLock lock(m_stateSection);
+
+  m_stateInfo.m_renderGuiLayer = gui;
+}
+
+bool CDataCacheCore::CDataCacheCore::GetGuiRender()
+{
+  CSingleLock lock(m_stateSection);
+
+  return m_stateInfo.m_renderGuiLayer;
+}
+
+void CDataCacheCore::SetVideoRender(bool video)
+{
+  CSingleLock lock(m_stateSection);
+
+  m_stateInfo.m_renderVideoLayer = video;
+}
+
+bool CDataCacheCore::CDataCacheCore::GetVideoRender()
+{
+  CSingleLock lock(m_stateSection);
+
+  return m_stateInfo.m_renderVideoLayer;
+}

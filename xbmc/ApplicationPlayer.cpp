@@ -21,8 +21,10 @@
 #include "ApplicationPlayer.h"
 #include "cores/IPlayer.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
+#include "cores/DataCacheCore.h"
 #include "Application.h"
 #include "PlayListPlayer.h"
+#include "ServiceBroker.h"
 #include "settings/MediaSettings.h"
 
 CApplicationPlayer::CApplicationPlayer()
@@ -802,7 +804,7 @@ bool CApplicationPlayer::IsRenderingGuiLayer()
 {
   std::shared_ptr<IPlayer> player = GetInternal();
   if (player)
-    return player->IsRenderingGuiLayer();
+    return CServiceBroker::GetDataCacheCore().GetGuiRender();
   else
     return false;
 }
@@ -811,7 +813,7 @@ bool CApplicationPlayer::IsRenderingVideoLayer()
 {
   std::shared_ptr<IPlayer> player = GetInternal();
   if (player)
-    return player->IsRenderingVideoLayer();
+    return CServiceBroker::GetDataCacheCore().GetVideoRender();
   else
     return false;
 }
