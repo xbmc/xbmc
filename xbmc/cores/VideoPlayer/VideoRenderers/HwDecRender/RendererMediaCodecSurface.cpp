@@ -64,6 +64,7 @@ bool CRendererMediaCodecSurface::Configure(unsigned int width, unsigned int heig
 
   m_bConfigured = true;
 
+  // Free the buffers RenderManager has not drained out.
   for (int i = 0; i < m_numRenderBuffers; ++i)
     m_buffers[i].hwPic = 0;
 
@@ -125,6 +126,9 @@ void CRendererMediaCodecSurface::FlipPage(int source)
 
   CDVDMediaCodecInfo *mci = static_cast<CDVDMediaCodecInfo *>(m_buffers[m_iRenderBuffer].hwPic);
 
+  // Android SurfaceFlinger has it's own clock, so we can release frames early.
+  // Benefit of this place is that it is called from render-thread and not
+  // affected by gui stalls when opening overlay dialogs
   if (mci && m_renderingStarted)
     mci->ReleaseOutputBuffer(true);
 }
@@ -153,6 +157,7 @@ void CRendererMediaCodecSurface::RenderUpdate(bool clear, DWORD flags, DWORD alp
     if (elapsed < std::chrono::milliseconds(10))
       std::this_thread::sleep_for(std::chrono::milliseconds(10) - elapsed);
 
+    // ManageRenderArea every 100ms.
     m_updateCount += (elapsed.count() / 10) + 1;
     if (m_updateCount > 10)
     {
@@ -212,13 +217,14 @@ void CRendererMediaCodecSurface::ReorderDrawPoints()
     dstRect.x1, dstRect.y1, dstRect.Width(), dstRect.Height(),
     adjRect.x1, adjRect.y1, adjRect.Width(), adjRect.Height());
 
+  // Assumption: SurfaceFlinger starts PTS processing on arrival of first frame.
+  // To have the best match between kodi / android clock we start on first RenderUpdate call.
+  // Beside this the first frame should not be rendered before the SurfaceView is resized.
   if (!m_renderingStarted)
   {
     m_renderingStarted = true;
     FlipPage(m_iRenderBuffer);
   }
-
-
 }
 
 #endif
