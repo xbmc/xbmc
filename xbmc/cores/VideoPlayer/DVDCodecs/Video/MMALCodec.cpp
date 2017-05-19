@@ -56,32 +56,12 @@ using namespace MMAL;
 
 #define VERBOSE 0
 
-CMMALVideoBuffer::CMMALVideoBuffer(std::shared_ptr<CMMALPool> pool)
-    : CMMALBuffer(pool)
+CMMALVideoBuffer::CMMALVideoBuffer(int id) : CMMALBuffer(id)
 {
-  if (VERBOSE && g_advancedSettings.CanLogComponent(LOGVIDEO))
-    CLog::Log(LOGDEBUG, "%s::%s %p", CLASSNAME, __func__, this);
-  mmal_buffer = NULL;
-  m_width = 0;
-  m_height = 0;
-  m_aligned_width = 0;
-  m_aligned_height = 0;
-  m_encoding = MMAL_ENCODING_UNKNOWN;
-  m_aspect_ratio = 0.0f;
-  m_rendered = false;
-  m_stills = false;
 }
 
 CMMALVideoBuffer::~CMMALVideoBuffer()
 {
-  if (mmal_buffer)
-  {
-    mmal_buffer_header_release(mmal_buffer);
-    if (m_pool)
-      m_pool->Prime();
-  }
-  if (VERBOSE && g_advancedSettings.CanLogComponent(LOGVIDEO))
-    CLog::Log(LOGDEBUG, "%s::%s %p", CLASSNAME, __func__, this);
 }
 
 #undef CLASSNAME
@@ -121,7 +101,6 @@ CMMALVideo::CMMALVideo(CProcessInfo &processInfo) : CDVDVideoCodec(processInfo)
   m_got_eos = false;
   m_packet_num = 0;
   m_packet_num_eos = ~0;
-  m_lastDvdVideoPicture = nullptr;
 }
 
 CMMALVideo::~CMMALVideo()
@@ -253,16 +232,16 @@ void CMMALVideo::dec_output_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buf
         wanted = false;
       m_num_decoded++;
       if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-        CLog::Log(LOGDEBUG, "%s::%s - %p (%p) buffer_size(%u) dts:%.3f pts:%.3f flags:%x:%x",
-          CLASSNAME, __func__, buffer, omvb, buffer->length, buffer->dts*1e-6, buffer->pts*1e-6, buffer->flags, buffer->type->video.flags);
+        CLog::Log(LOGDEBUG, "%s::%s - omvb:%p mmal:%p len:%u dts:%.3f pts:%.3f flags:%x:%x pool:%p %dx%d (%dx%d) %dx%d (%dx%d) enc:%.4s",
+          CLASSNAME, __func__, buffer, omvb, buffer->length, buffer->dts*1e-6, buffer->pts*1e-6, buffer->flags, buffer->type->video.flags,
+          omvb->Width(), omvb->Height(), omvb->AlignedWidth(), omvb->AlignedHeight(),
+          m_decoded_width, m_decoded_height, m_decoded_aligned_width, m_decoded_aligned_height, (char*)&omvb->Encoding());
       if (wanted)
       {
-        omvb->m_width = m_decoded_width;
-        omvb->m_height = m_decoded_height;
-        omvb->m_aligned_width = m_decoded_aligned_width;
-        omvb->m_aligned_height = m_decoded_aligned_height;
+        std::shared_ptr<CMMALPool> pool = std::dynamic_pointer_cast<CMMALPool>(m_pool);
+        if (pool)
+          pool->Configure(AV_PIX_FMT_NONE, m_decoded_width, m_decoded_height, m_decoded_aligned_width, m_decoded_aligned_height, 128);
         omvb->m_aspect_ratio = m_aspect_ratio;
-        omvb->m_encoding = m_dec_output->format->encoding;
         {
           CSingleLock output_lock(m_output_mutex);
           m_output_ready.push(omvb);
@@ -472,8 +451,9 @@ bool CMMALVideo::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     CLog::Log(LOGERROR, "%s::%s Failed to create pool for video output", CLASSNAME, __func__);
     return false;
   }
-  m_pool->SetProcessInfo(&m_processInfo);
-  m_dec = m_pool->GetComponent();
+  std::shared_ptr<CMMALPool> pool = std::dynamic_pointer_cast<CMMALPool>(m_pool);
+  pool->SetProcessInfo(&m_processInfo);
+  m_dec = pool->GetComponent();
 
   m_dec->control->userdata = (struct MMAL_PORT_USERDATA_T *)this;
   status = mmal_port_enable(m_dec->control, dec_control_port_cb_static);
@@ -583,8 +563,8 @@ bool CMMALVideo::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
   if (!SendCodecConfigData())
     return false;
 
-  if (m_pool)
-    m_pool->Prime();
+  if (pool)
+    pool->Prime();
   m_preroll = !m_hints.stills;
   m_speed = DVD_PLAYSPEED_NORMAL;
 
@@ -675,7 +655,6 @@ void CMMALVideo::Reset(void)
   if (g_advancedSettings.CanLogComponent(LOGVIDEO))
     CLog::Log(LOGDEBUG, "%s::%s", CLASSNAME, __func__);
 
-  ReleasePicture();
   if (m_dec_input && m_dec_input->is_enabled)
     mmal_port_disable(m_dec_input);
   if (m_dec_output && m_dec_output->is_enabled)
@@ -710,8 +689,9 @@ void CMMALVideo::Reset(void)
   if (!m_finished)
   {
     SendCodecConfigData();
-    if (m_pool)
-      m_pool->Prime();
+    std::shared_ptr<CMMALPool> pool = std::dynamic_pointer_cast<CMMALPool>(m_pool);
+    if (pool)
+      pool->Prime();
   }
   m_decoderPts = DVD_NOPTS_VALUE;
   m_demuxerPts = DVD_NOPTS_VALUE;
@@ -731,14 +711,17 @@ void CMMALVideo::SetSpeed(int iSpeed)
   m_speed = iSpeed;
 }
 
-CDVDVideoCodec::VCReturn CMMALVideo::GetPicture(VideoPicture* pDvdVideoPicture)
+CDVDVideoCodec::VCReturn CMMALVideo::GetPicture(VideoPicture* picture)
 {
   CSingleLock lock(m_sharedSection);
   MMAL_STATUS_T status;
   bool drain = (m_codecControlFlags & DVD_CODEC_CTRL_DRAIN) ? true : false;
   bool send_eos = drain && !m_got_eos && m_packet_num_eos != m_packet_num;
 
-  ReleasePicture();
+  if (picture->videoBuffer)
+    picture->videoBuffer->Release();
+  picture->videoBuffer = nullptr;
+
   // we don't get an EOS response if no packets have been sent
   if (m_packet_num == 0 && send_eos)
     m_got_eos = true;
@@ -812,43 +795,40 @@ CDVDVideoCodec::VCReturn CMMALVideo::GetPicture(VideoPicture* pDvdVideoPicture)
   if (ret == CDVDVideoCodec::VC_PICTURE)
   {
     assert(buffer && buffer->mmal_buffer);
-    memset(pDvdVideoPicture, 0, sizeof *pDvdVideoPicture);
-    assert(buffer);
-    pDvdVideoPicture->videoBuffer = dynamic_cast<CVideoBuffer*>(buffer);
-    assert(pDvdVideoPicture->videoBuffer);
-    pDvdVideoPicture->color_range  = 0;
-    pDvdVideoPicture->color_matrix = 4;
-    pDvdVideoPicture->iWidth  = buffer->m_width ? buffer->m_width : m_decoded_width;
-    pDvdVideoPicture->iHeight = buffer->m_height ? buffer->m_height : m_decoded_height;
-    pDvdVideoPicture->iDisplayWidth  = pDvdVideoPicture->iWidth;
-    pDvdVideoPicture->iDisplayHeight = pDvdVideoPicture->iHeight;
-    //CLog::Log(LOGDEBUG, "%s::%s -  %dx%d %dx%d %dx%d %dx%d %f,%f", CLASSNAME, __func__, pDvdVideoPicture->iWidth, pDvdVideoPicture->iHeight, pDvdVideoPicture->iDisplayWidth, pDvdVideoPicture->iDisplayHeight, m_decoded_width, m_decoded_height, buffer->m_width, buffer->m_height, buffer->m_aspect_ratio, m_hints.aspect);
+    picture->videoBuffer = dynamic_cast<CVideoBuffer*>(buffer);
+    assert(picture->videoBuffer);
+    picture->color_range  = 0;
+    picture->color_matrix = 4;
+    picture->iWidth = buffer->Width() ? buffer->Width() : m_decoded_width;
+    picture->iHeight = buffer->Height() ? buffer->Height() : m_decoded_height;
+    picture->iDisplayWidth  = picture->iWidth;
+    picture->iDisplayHeight = picture->iHeight;
+    //CLog::Log(LOGDEBUG, "%s::%s -  %dx%d %dx%d %dx%d %dx%d %f,%f", CLASSNAME, __func__, picture->iWidth, picture->iHeight, picture->iDisplayWidth, picture->iDisplayHeight, m_decoded_width, m_decoded_height, buffer->Width(), buffer->Height(), buffer->m_aspect_ratio, m_hints.aspect);
 
     if (buffer->m_aspect_ratio > 0.0)
     {
-      pDvdVideoPicture->iDisplayWidth  = ((int)lrint(pDvdVideoPicture->iHeight * buffer->m_aspect_ratio)) & -3;
-      if (pDvdVideoPicture->iDisplayWidth > pDvdVideoPicture->iWidth)
+      picture->iDisplayWidth  = ((int)lrint(picture->iHeight * buffer->m_aspect_ratio)) & -3;
+      if (picture->iDisplayWidth > picture->iWidth)
       {
-        pDvdVideoPicture->iDisplayWidth  = pDvdVideoPicture->iWidth;
-        pDvdVideoPicture->iDisplayHeight = ((int)lrint(pDvdVideoPicture->iWidth / buffer->m_aspect_ratio)) & -3;
+        picture->iDisplayWidth  = picture->iWidth;
+        picture->iDisplayHeight = ((int)lrint(picture->iWidth / buffer->m_aspect_ratio)) & -3;
       }
     }
 
     // timestamp is in microseconds
-    pDvdVideoPicture->dts = buffer->mmal_buffer->dts == MMAL_TIME_UNKNOWN ? DVD_NOPTS_VALUE : buffer->mmal_buffer->dts;
-    pDvdVideoPicture->pts = buffer->mmal_buffer->pts == MMAL_TIME_UNKNOWN ? DVD_NOPTS_VALUE : buffer->mmal_buffer->pts;
+    picture->dts = buffer->mmal_buffer->dts == MMAL_TIME_UNKNOWN ? DVD_NOPTS_VALUE : buffer->mmal_buffer->dts;
+    picture->pts = buffer->mmal_buffer->pts == MMAL_TIME_UNKNOWN ? DVD_NOPTS_VALUE : buffer->mmal_buffer->pts;
 
-    pDvdVideoPicture->iFlags  = 0;
+    picture->iFlags  = 0;
     if (buffer->mmal_buffer->flags & MMAL_BUFFER_HEADER_FLAG_USER3)
-      pDvdVideoPicture->iFlags |= DVP_FLAG_DROPPED;
+      picture->iFlags |= DVP_FLAG_DROPPED;
     if (g_advancedSettings.CanLogComponent(LOGVIDEO))
       CLog::Log(LOGINFO, "%s::%s dts:%.3f pts:%.3f flags:%x:%x MMALBuffer:%p mmal_buffer:%p", CLASSNAME, __func__,
-          pDvdVideoPicture->dts == DVD_NOPTS_VALUE ? 0.0 : pDvdVideoPicture->dts*1e-6, pDvdVideoPicture->pts == DVD_NOPTS_VALUE ? 0.0 : pDvdVideoPicture->pts*1e-6,
-          pDvdVideoPicture->iFlags, buffer->mmal_buffer->flags, buffer, buffer->mmal_buffer);
+          picture->dts == DVD_NOPTS_VALUE ? 0.0 : picture->dts*1e-6, picture->pts == DVD_NOPTS_VALUE ? 0.0 : picture->pts*1e-6,
+          picture->iFlags, buffer->mmal_buffer->flags, buffer, buffer->mmal_buffer);
     assert(!(buffer->mmal_buffer->flags & MMAL_BUFFER_HEADER_FLAG_DECODEONLY));
     buffer->mmal_buffer->flags &= ~MMAL_BUFFER_HEADER_FLAG_USER3;
     buffer->m_stills = m_hints.stills;
-    m_lastDvdVideoPicture = pDvdVideoPicture;
   }
 
   if (ret == CDVDVideoCodec::VC_NONE)
@@ -857,19 +837,6 @@ CDVDVideoCodec::VCReturn CMMALVideo::GetPicture(VideoPicture* pDvdVideoPicture)
     CLog::Log(LOGDEBUG, "%s::%s - ret(%x) pics(%d) inputs(%d) slept(%2d) queued(%.2f) (%.2f:%.2f) full(%d) flags(%x) preroll(%d) eos(%d %d/%d)", CLASSNAME, __func__, ret, m_output_ready.size(), mmal_queue_length(m_dec_input_pool->queue), 500-delay.MillisLeft(), queued*1e-6, m_demuxerPts*1e-6, m_decoderPts*1e-6, full, m_codecControlFlags,  m_preroll, m_got_eos, m_packet_num, m_packet_num_eos);
 
   return ret;
-}
-
-void CMMALVideo::ReleasePicture()
-{
-  CSingleLock lock(m_sharedSection);
-  if (m_lastDvdVideoPicture)
-  {
-    CMMALBuffer *omvb = dynamic_cast<CMMALBuffer *>(m_lastDvdVideoPicture->videoBuffer);
-    if (VERBOSE && g_advancedSettings.CanLogComponent(LOGVIDEO))
-      CLog::Log(LOGDEBUG, "%s::%s - %p (%p)", CLASSNAME, __func__, omvb, omvb->mmal_buffer);
-    SAFE_RELEASE(omvb);
-    m_lastDvdVideoPicture = nullptr;
-  }
 }
 
 void CMMALVideo::SetCodecControl(int flags)
