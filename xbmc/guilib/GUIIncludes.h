@@ -41,16 +41,36 @@ public:
   CGUIIncludes();
   ~CGUIIncludes();
 
-  void ClearIncludes();
-  bool LoadIncludes(const std::string &includeFile);
-  bool LoadIncludesFromXML(const TiXmlElement *root);
+  /*!
+   \brief Clear all include components (defaults, constants, variables, expressions and includes)
+  */
+  void Clear();
 
-  /*! \brief Resolve <include>name</include> tags recursively for the given XML element
-   Replaces any instances of <include file="foo">bar</include> with the value of the include
-   "bar" from the include file "foo".
-   \param node an XML Element - all child elements are traversed.
+  /*!
+   \brief Load all include components (defaults, constants, variables, expressions and includes)
+    from the given \code{file}.
+   
+   \param file the file to load
+   \return true if the file was loaded otherwise false
    */
-  void ResolveIncludes(TiXmlElement *node, std::map<INFO::InfoPtr, bool>* xmlIncludeConditions = NULL);
+  bool Load(const std::string &file);
+
+  /*!
+   \brief Resolve all include components (defaults, constants, variables, expressions and includes)
+   for the given \code{node}. Place the conditions specified for <include> elements in \code{includeConditions}.
+
+   \param node the node from where we start to resolve the include components
+   \param includeConditions a map that holds the conditions for resolved includes
+   */
+  void Resolve(TiXmlElement *node, std::map<INFO::InfoPtr, bool>* includeConditions = NULL);
+
+  /*!
+   \brief Create a skin variable for the given \code{name} within the given \code{context}.
+
+   \param name the name of the skin variable
+   \param context the context where the variable is created in
+   \return skin variable
+   */
   const INFO::CSkinVariableString* CreateSkinVariable(const std::string& name, int context);
 
 private:
@@ -61,21 +81,33 @@ private:
     SINGLE_UNDEFINED_PARAM_RESOLVED
   };
 
-  void ResolveIncludesForNode(TiXmlElement *node, std::map<INFO::InfoPtr, bool>* xmlIncludeConditions = NULL);
+  bool HasLoaded(const std::string &file) const;
+
+  void LoadDefaults(const TiXmlElement *node);
+  void LoadIncludes(const TiXmlElement *node);
+  void LoadVariables(const TiXmlElement *node);
+  void LoadConstants(const TiXmlElement *node);
+  void LoadExpressions(const TiXmlElement *node);
+
+  void SetDefaults(TiXmlElement *node);
+  void ResolveIncludes(TiXmlElement *node, std::map<INFO::InfoPtr, bool>* xmlIncludeConditions = NULL);
+  void ResolveConstants(TiXmlElement *node);
+  void ResolveExpressions(TiXmlElement *node);
+
   typedef std::map<std::string, std::string> Params;
   static bool GetParameters(const TiXmlElement *include, const char *valueAttribute, Params& params);
   static void ResolveParametersForNode(TiXmlElement *node, const Params& params);
   static ResolveParamsResult ResolveParameters(const std::string& strInput, std::string& strOutput, const Params& params);
+
   std::string ResolveConstant(const std::string &constant) const;
   std::string ResolveExpressions(const std::string &expression) const;
-  bool HasIncludeFile(const std::string &includeFile) const;
+
+  std::vector<std::string> m_files;
   std::map<std::string, std::pair<TiXmlElement, Params>> m_includes;
   std::map<std::string, TiXmlElement> m_defaults;
   std::map<std::string, TiXmlElement> m_skinvariables;
   std::map<std::string, std::string> m_constants;
   std::map<std::string, std::string> m_expressions;
-  std::vector<std::string> m_files;
-  typedef std::vector<std::string>::const_iterator iFiles;
 
   std::set<std::string> m_constantAttributes;
   std::set<std::string> m_constantNodes;

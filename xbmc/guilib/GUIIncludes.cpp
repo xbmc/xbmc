@@ -96,7 +96,7 @@ CGUIIncludes::~CGUIIncludes()
 {
 }
 
-void CGUIIncludes::ClearIncludes()
+void CGUIIncludes::Clear()
 {
   m_includes.clear();
   m_defaults.clear();
@@ -106,193 +106,272 @@ void CGUIIncludes::ClearIncludes()
   m_expressions.clear();
 }
 
-bool CGUIIncludes::LoadIncludes(const std::string &includeFile)
+bool CGUIIncludes::Load(const std::string &file)
 {
   // check to see if we already have this loaded
-  if (HasIncludeFile(includeFile))
+  if (HasLoaded(file))
     return true;
 
   CXBMCTinyXML doc;
-  if (!doc.LoadFile(includeFile))
+  if (!doc.LoadFile(file))
   {
-    CLog::Log(LOGINFO, "Error loading includes.xml file (%s): %s (row=%i, col=%i)", includeFile.c_str(), doc.ErrorDesc(), doc.ErrorRow(), doc.ErrorCol());
+    CLog::Log(LOGINFO, "Error loading include file %s: %s (row: %i, col: %i)", file.c_str(), doc.ErrorDesc(), doc.ErrorRow(), doc.ErrorCol());
     return false;
   }
-  // success, load the tags
-  if (LoadIncludesFromXML(doc.RootElement()))
-  {
-    m_files.push_back(includeFile);
-    return true;
-  }
-  return false;
-}
 
-bool CGUIIncludes::LoadIncludesFromXML(const TiXmlElement *root)
-{
-  if (!root || strcmpi(root->Value(), "includes"))
+  TiXmlElement *root = doc.RootElement();
+  if (!root || !StringUtils::EqualsNoCase(root->Value(), "includes"))
   {
-    CLog::Log(LOGERROR, "Skin includes must start with the <includes> tag");
+    CLog::Log(LOGERROR, "Error loading include file %s: Root element <includes> required.", file.c_str());
     return false;
   }
-  const TiXmlElement* node = root->FirstChildElement("include");
-  while (node)
-  {
-    if (node->Attribute("name") && node->FirstChild())
-    {
-      std::string tagName = node->Attribute("name");
-      // we'll parse and store parameter list with defaults when include definition is first encountered
-      // if there's a <definition> tag only use its body as the actually included part
-      const TiXmlElement *definitionTag = node->FirstChildElement("definition");
-      const TiXmlElement *includeBody = definitionTag ? definitionTag : node;
-      // if there's a <param> tag there also must be a <definition> tag
-      Params defaultParams;
-      bool haveParamTags = GetParameters(node, "default", defaultParams);
-      if (haveParamTags && !definitionTag)
-        CLog::Log(LOGWARNING, "Skin has invalid include definition: %s", tagName.c_str());
-      else
-        m_includes.insert({ tagName, { *includeBody, std::move(defaultParams) } });
-    }
-    else if (node->Attribute("file"))
-    { 
-      const char *condition = node->Attribute("condition");
-      if (condition)
-      { // check this condition
-        INFO::InfoPtr conditionID = g_infoManager.Register(condition);
-        bool value = conditionID->Get();
 
-        if (value)
-        {
-          // load this file in as well
-          LoadIncludes(g_SkinInfo->GetSkinPath(node->Attribute("file")));
-        }
-      }
-      else
-        LoadIncludes(g_SkinInfo->GetSkinPath(node->Attribute("file")));
-    }
-    node = node->NextSiblingElement("include");
-  }
-  // now defaults
-  node = root->FirstChildElement("default");
-  while (node)
-  {
-    if (node->Attribute("type") && node->FirstChild())
-    {
-      std::string tagName = node->Attribute("type");
-      m_defaults.insert(std::pair<std::string, TiXmlElement>(tagName, *node));
-    }
-    node = node->NextSiblingElement("default");
-  }
-  // and finally constants
-  node = root->FirstChildElement("constant");
-  while (node)
-  {
-    if (node->Attribute("name") && node->FirstChild())
-    {
-      std::string tagName = node->Attribute("name");
-      m_constants.insert(make_pair(tagName, node->FirstChild()->ValueStr()));
-    }
-    node = node->NextSiblingElement("constant");
-  }
+  // load components
+  LoadDefaults(root);
+  LoadConstants(root);
+  LoadExpressions(root);
+  LoadVariables(root);
+  LoadIncludes(root);
 
-  node = root->FirstChildElement("variable");
-  while (node)
-  {
-    if (node->Attribute("name") && node->FirstChild())
-    {
-      std::string tagName = node->Attribute("name");
-      m_skinvariables.insert(make_pair(tagName, *node));
-    }
-    node = node->NextSiblingElement("variable");
-  }
-
-  node = root->FirstChildElement("expression");
-  while (node)
-  {
-    if (node->Attribute("name") && node->FirstChild())
-    {
-      std::string tagName = node->Attribute("name");
-      m_expressions.insert(make_pair(tagName, "[" + node->FirstChild()->ValueStr() + "]"));
-    }
-    node = node->NextSiblingElement("expression");
-  }
+  m_files.push_back(file);
 
   return true;
 }
 
-bool CGUIIncludes::HasIncludeFile(const std::string &file) const
+void CGUIIncludes::LoadDefaults(const TiXmlElement *node)
 {
-  for (iFiles it = m_files.begin(); it != m_files.end(); ++it)
-    if (*it == file) return true;
+  if (!node)
+    return;
+  
+  const TiXmlElement* child = node->FirstChildElement("default");
+  while (child)
+  {
+    const char *type = child->Attribute("type");
+    if (type && child->FirstChild())
+      m_defaults.insert(std::make_pair(type, *child));
+
+    child = child->NextSiblingElement("default");
+  }
+}
+
+void CGUIIncludes::LoadExpressions(const TiXmlElement *node)
+{
+  if (!node)
+    return;
+
+  const TiXmlElement* child = node->FirstChildElement("expression");
+  while (child)
+  {
+    const char *tagName = child->Attribute("name");
+    if (tagName && child->FirstChild())
+      m_expressions.insert(std::make_pair(tagName, "[" + child->FirstChild()->ValueStr() + "]"));
+
+    child = child->NextSiblingElement("expression");
+  }
+}
+
+
+void CGUIIncludes::LoadConstants(const TiXmlElement *node)
+{
+  if (!node)
+    return;
+
+  const TiXmlElement* child = node->FirstChildElement("constant");
+  while (child)
+  {
+    const char *tagName = child->Attribute("name");
+    if (tagName && child->FirstChild())
+      m_constants.insert(std::make_pair(tagName, child->FirstChild()->ValueStr()));
+
+    child = child->NextSiblingElement("constant");
+  }
+}
+
+void CGUIIncludes::LoadVariables(const TiXmlElement *node)
+{
+  if (!node)
+    return;
+
+  const TiXmlElement* child = node->FirstChildElement("variable");
+  while (child)
+  {
+    const char *tagName = child->Attribute("name");
+    if (tagName && child->FirstChild())
+      m_skinvariables.insert(std::make_pair(tagName, *child));
+
+    child = child->NextSiblingElement("variable");
+  }
+}
+
+void CGUIIncludes::LoadIncludes(const TiXmlElement *node)
+{
+  if (!node)
+    return;
+
+  const TiXmlElement* child = node->FirstChildElement("include");
+  while (child)
+  {
+    const char *tagName = child->Attribute("name");
+    if (tagName && child->FirstChild())
+    {
+      // we'll parse and store parameter list with defaults when include definition is first encountered
+      // if there's a <definition> tag only use its body as the actually included part
+      const TiXmlElement *definitionTag = child->FirstChildElement("definition");
+      const TiXmlElement *includeBody = definitionTag ? definitionTag : child;
+
+      // if there's a <param> tag there also must be a <definition> tag
+      Params defaultParams;
+      bool haveParamTags = GetParameters(child, "default", defaultParams);
+      if (haveParamTags && !definitionTag)
+        CLog::Log(LOGWARNING, "Skin has invalid include definition: %s", tagName);
+      else
+        m_includes.insert({ tagName, { *includeBody, std::move(defaultParams) } });
+    }
+    else if (child->Attribute("file"))
+    {
+      std::string file = g_SkinInfo->GetSkinPath(child->Attribute("file"));
+      const char *condition = child->Attribute("condition");
+
+      if (condition)
+      { // load include file if condition evals to true
+        if (g_infoManager.Register(condition)->Get())
+          Load(file);
+      }
+      else
+        Load(file);
+    }
+    child = child->NextSiblingElement("include");
+  }
+}
+
+bool CGUIIncludes::HasLoaded(const std::string &file) const
+{
+  for (auto loadedFile : m_files)
+  {
+    if (loadedFile == file)
+      return true;
+  }
   return false;
+}
+
+void CGUIIncludes::Resolve(TiXmlElement *node, std::map<INFO::InfoPtr, bool>* xmlIncludeConditions /* = NULL */)
+{
+  if (!node)
+    return;
+
+  SetDefaults(node);
+  ResolveConstants(node);
+  ResolveExpressions(node);
+  ResolveIncludes(node, xmlIncludeConditions);
+
+  TiXmlElement *child = node->FirstChildElement();
+  while (child)
+  {
+    // recursive call
+    Resolve(child, xmlIncludeConditions);
+    child = child->NextSiblingElement();
+  }
+}
+
+void CGUIIncludes::SetDefaults(TiXmlElement *node)
+{
+  if (node->ValueStr() != "control")
+    return;
+
+  std::string type = XMLUtils::GetAttribute(node, "type");
+  const auto it = m_defaults.find(type);
+  if (it != m_defaults.end())
+  {
+    // we don't insert <left> et. al. if <posx> or <posy> is specified
+    bool hasPosX(node->FirstChild("posx"));
+    bool hasPosY(node->FirstChild("posy"));
+
+    const TiXmlElement &element = (*it).second;
+    const TiXmlElement *tag = element.FirstChildElement();
+    while (tag)
+    {
+      std::string value = tag->ValueStr();
+      bool skip(false);
+      if (hasPosX && (value == "left" || value == "right" || value == "centerleft" || value == "centerright"))
+        skip = true;
+      if (hasPosY && (value == "top" || value == "bottom" || value == "centertop" || value == "centerbottom"))
+        skip = true;
+      // we insert at the end of block
+      if (!skip)
+        node->InsertEndChild(*tag);
+      tag = tag->NextSiblingElement();
+    }
+  }
+}
+
+void CGUIIncludes::ResolveConstants(TiXmlElement *node)
+{
+  if (!node)
+    return;
+
+  TiXmlNode *child = node->FirstChild();
+  if (child && child->Type() == TiXmlNode::TINYXML_TEXT && m_constantNodes.count(node->ValueStr()))
+  {
+    child->SetValue(ResolveConstant(child->ValueStr()));
+  }
+  else
+  {
+    TiXmlAttribute *attribute = node->FirstAttribute();
+    while (attribute)
+    {
+      if (m_constantAttributes.count(attribute->Name()))
+        attribute->SetValue(ResolveConstant(attribute->ValueStr()));
+
+      attribute = attribute->Next();
+    }
+  }
+}
+
+void CGUIIncludes::ResolveExpressions(TiXmlElement *node)
+{
+  if (!node)
+    return;
+
+  TiXmlNode *child = node->FirstChild();
+  if (child && child->Type() == TiXmlNode::TINYXML_TEXT && m_expressionNodes.count(node->ValueStr()))
+  {
+    child->SetValue(ResolveExpressions(child->ValueStr()));
+  }
+  else
+  {
+    TiXmlAttribute *attribute = node->FirstAttribute();
+    while (attribute)
+    {
+      if (m_expressionAttributes.count(attribute->Name()))
+        attribute->SetValue(ResolveExpressions(attribute->ValueStr()));
+
+      attribute = attribute->Next();
+    }
+  }
 }
 
 void CGUIIncludes::ResolveIncludes(TiXmlElement *node, std::map<INFO::InfoPtr, bool>* xmlIncludeConditions /* = NULL */)
 {
   if (!node)
     return;
-  ResolveIncludesForNode(node, xmlIncludeConditions);
-
-  TiXmlElement *child = node->FirstChildElement();
-  while (child)
-  {
-    ResolveIncludes(child, xmlIncludeConditions);
-    child = child->NextSiblingElement();
-  }
-}
-
-void CGUIIncludes::ResolveIncludesForNode(TiXmlElement *node, std::map<INFO::InfoPtr, bool>* xmlIncludeConditions /* = NULL */)
-{
-  // we have a node, find any <include file="fileName">tagName</include> tags and replace
-  // recursively with their real includes
-  if (!node) return;
-
-  // First add the defaults if this is for a control
-  std::string type;
-  if (node->ValueStr() == "control")
-  {
-    type = XMLUtils::GetAttribute(node, "type");
-    std::map<std::string, TiXmlElement>::const_iterator it = m_defaults.find(type);
-    if (it != m_defaults.end())
-    {
-      // we don't insert <left> et. al. if <posx> or <posy> is specified
-      bool hasPosX(node->FirstChild("posx") != NULL);
-      bool hasPosY(node->FirstChild("posy") != NULL);
-
-      const TiXmlElement &element = (*it).second;
-      const TiXmlElement *tag = element.FirstChildElement();
-      while (tag)
-      {
-        std::string value = tag->ValueStr();
-        bool skip(false);
-        if (hasPosX && (value == "left" || value == "right" || value == "centerleft" || value == "centerright"))
-          skip = true;
-        if (hasPosY && (value == "top" || value == "bottom" || value == "centertop" || value == "centerbottom"))
-          skip = true;
-        // we insert at the end of block
-        if (!skip)
-          node->InsertEndChild(*tag);
-        tag = tag->NextSiblingElement();
-      }
-    }
-  }
 
   TiXmlElement *include = node->FirstChildElement("include");
   while (include)
   {
-    // have an include tag - grab it's tag name and replace it with the real tag contents
+    // file: load includes from specified XML file
     const char *file = include->Attribute("file");
     if (file)
-    { // we need to load this include from the alternative file
-      LoadIncludes(g_SkinInfo->GetSkinPath(file));
-    }
+      Load(g_SkinInfo->GetSkinPath(file));
+
+    // condition: process include if condition evals to true
     const char *condition = include->Attribute("condition");
     if (condition)
-    { // check this condition
+    {
       INFO::InfoPtr conditionID = g_infoManager.Register(condition);
       bool value = conditionID->Get();
 
       if (xmlIncludeConditions)
-        (*xmlIncludeConditions)[conditionID] = value;
+        xmlIncludeConditions->insert(std::make_pair(conditionID, value));
 
       if (!value)
       {
@@ -303,16 +382,17 @@ void CGUIIncludes::ResolveIncludesForNode(TiXmlElement *node, std::map<INFO::Inf
 
     Params params;
     std::string tagName;
-    // determine which form of include call we have
+    // normal or old-style include
     const char *name = include->Attribute("content");
     if (name)
     {
-      // 1. <include name="MyControl" />
-      // 2. <include name="MyControl">
-      //      <param name="posx" value="225" />
-      //      <param name="posy">150</param>
-      //      ...
-      //    </include>
+      // <include content="MyControl" />
+      // or
+      // <include content="MyControl">
+      //   <param name="posx" value="225" />
+      //   <param name="posy">150</param>
+      //   ...
+      // </include>
       tagName = name;
       GetParameters(include, "value", params);
     }
@@ -321,14 +401,16 @@ void CGUIIncludes::ResolveIncludesForNode(TiXmlElement *node, std::map<INFO::Inf
       const TiXmlNode *child = include->FirstChild();
       if (child && child->Type() == TiXmlNode::TINYXML_TEXT)
       {
-        // 3. <include>MyControl</include>          // old-style includes for backward compatibility
+        // <include>MyControl</include>
+        // old-style includes for backward compatibility
         tagName = child->ValueStr();
       }
     }
 
-    std::map<std::string, std::pair<TiXmlElement, Params>>::const_iterator it = m_includes.find(tagName);
+    // check, whether the include exists and therefore should be replaced by its definition
+    auto it = m_includes.find(tagName);
     if (it != m_includes.end())
-    { // found the tag(s) to include - let's replace it
+    {
       const TiXmlElement *includeBody = &it->second.first;
       const Params& defaultParams = it->second.second;
       const TiXmlElement *tag = includeBody->FirstChildElement();
@@ -353,25 +435,6 @@ void CGUIIncludes::ResolveIncludesForNode(TiXmlElement *node, std::map<INFO::Inf
       include = include->NextSiblingElement("include");
     }
   }
-
-  // resolve constants and expressions $EXP[xyz] for configured attributes and nodes
-  TiXmlAttribute *attribute = node->FirstAttribute();
-  while (attribute)
-  {
-    if (m_constantAttributes.count(attribute->Name()))
-      attribute->SetValue(ResolveConstant(attribute->ValueStr()));
-
-    if (m_expressionAttributes.count(attribute->Name()))
-      attribute->SetValue(ResolveExpressions(attribute->ValueStr()));
-
-    attribute = attribute->Next();
-  }
-
-  if (node->FirstChild() && node->FirstChild()->Type() == TiXmlNode::TINYXML_TEXT && m_constantNodes.count(node->ValueStr()))
-    node->FirstChild()->SetValue(ResolveConstant(node->FirstChild()->ValueStr()));
-
-  if (node->FirstChild() && node->FirstChild()->Type() == TiXmlNode::TINYXML_TEXT && m_expressionNodes.count(node->ValueStr()))
-    node->FirstChild()->SetValue(ResolveExpressions(node->FirstChild()->ValueStr()));
 }
 
 bool CGUIIncludes::GetParameters(const TiXmlElement *include, const char *valueAttribute, Params& params)
@@ -379,7 +442,7 @@ bool CGUIIncludes::GetParameters(const TiXmlElement *include, const char *valueA
   bool foundAny = false;
 
   // collect parameters from include tag
-  // <include name="MyControl">
+  // <include content="MyControl">
   //   <param name="posx" value="225" /> <!-- comments and other tags are ignored here -->
   //   <param name="posy">150</param>
   //   ...
