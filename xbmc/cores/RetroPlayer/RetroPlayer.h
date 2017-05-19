@@ -120,23 +120,21 @@ namespace RETRO
     //virtual bool SwitchChannel(const PVR::CPVRChannelPtr &channel) override { return false; }
     //virtual void GetAudioCapabilities(std::vector<int> &audioCaps) override { audioCaps.assign(1,IPC_AUD_ALL); }
     //virtual void GetSubtitleCapabilities(std::vector<int> &subCaps) override { subCaps.assign(1,IPC_SUBS_ALL); }
-    void FrameMove() override { m_renderManager.FrameMove(); }
-    void Render(bool clear, uint32_t alpha = 255, bool gui = true) override { m_renderManager.Render(clear, 0, alpha, gui); }
-    void FlushRenderer() override { m_renderManager.Flush(); }
-    void SetRenderViewMode(int mode) override { m_renderManager.SetViewMode(mode); }
-    float GetRenderAspectRatio() override { return m_renderManager.GetAspectRatio(); }
-    void TriggerUpdateResolution() override { m_renderManager.TriggerUpdateResolution(0.0f, 0, 0); }
-    bool IsRenderingVideo() override { return m_renderManager.IsConfigured(); }
-    bool IsRenderingGuiLayer() override { return m_renderManager.IsGuiLayer(); }
-    bool IsRenderingVideoLayer() override { return m_renderManager.IsVideoLayer(); }
-    bool Supports(EINTERLACEMETHOD method) override;
-    EINTERLACEMETHOD GetDeinterlacingMethodDefault() override;
-    bool Supports(ESCALINGMETHOD method) override { return m_renderManager.Supports(method); }
-    bool Supports(ERENDERFEATURE feature) override { return m_renderManager.Supports(feature); }
-    unsigned int RenderCaptureAlloc() override { return m_renderManager.AllocRenderCapture(); }
-    void RenderCaptureRelease(unsigned int captureId) override { m_renderManager.ReleaseRenderCapture(captureId); }
-    void RenderCapture(unsigned int captureId, unsigned int width, unsigned int height, int flags) override { m_renderManager.StartRenderCapture(captureId, width, height, flags); }
-    bool RenderCaptureGetPixels(unsigned int captureId, unsigned int millis, uint8_t *buffer, unsigned int size) override { return m_renderManager.RenderCaptureGetPixels(captureId, millis, buffer, size); }
+    virtual void FrameMove() override { m_renderManager.FrameMove(); }
+    virtual void Render(bool clear, uint32_t alpha = 255, bool gui = true) override { m_renderManager.Render(clear, 0, alpha, gui); }
+    virtual void FlushRenderer() override { m_renderManager.Flush(); }
+    virtual void SetRenderViewMode(int mode) override { m_renderManager.SetViewMode(mode); }
+    virtual float GetRenderAspectRatio() override { return m_renderManager.GetAspectRatio(); }
+    virtual void TriggerUpdateResolution() override { m_renderManager.TriggerUpdateResolution(0.0f, 0, 0); }
+    virtual bool IsRenderingVideo() override { return m_renderManager.IsConfigured(); }
+    virtual bool Supports(EINTERLACEMETHOD method) override;
+    virtual EINTERLACEMETHOD GetDeinterlacingMethodDefault() override;
+    virtual bool Supports(ESCALINGMETHOD method) override { return m_renderManager.Supports(method); }
+    virtual bool Supports(ERENDERFEATURE feature) override { return m_renderManager.Supports(feature); }
+    virtual unsigned int RenderCaptureAlloc() override { return m_renderManager.AllocRenderCapture(); }
+    virtual void RenderCaptureRelease(unsigned int captureId) override { m_renderManager.ReleaseRenderCapture(captureId); }
+    virtual void RenderCapture(unsigned int captureId, unsigned int width, unsigned int height, int flags) override { m_renderManager.StartRenderCapture(captureId, width, height, flags); }
+    virtual bool RenderCaptureGetPixels(unsigned int captureId, unsigned int millis, uint8_t *buffer, unsigned int size) override { return m_renderManager.RenderCaptureGetPixels(captureId, millis, buffer, size); }
 
     // implementation of IRenderMsg
     void VideoParamsChange() override { }
