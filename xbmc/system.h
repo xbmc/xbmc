@@ -204,12 +204,6 @@
 #define HAS_GLES 2
 #endif
 
-// GLES1.0 detected. Dont use GL!
-#ifdef HAVE_LIBGLES
-#undef HAS_GL
-#define HAS_GLES 1
-#endif
-
 #ifdef HAS_DVD_DRIVE
 #define HAS_CDDA_RIPPER
 #endif
