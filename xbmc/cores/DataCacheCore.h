@@ -67,6 +67,9 @@ public:
   void SetStateSeeking(bool active);
   bool IsSeeking();
   bool IsPlayerStateChanged();
+  void SetGuiRender(bool gui);
+  bool GetGuiRender();
+  void SetVideoRender(bool video);
 
 protected:
   std::atomic_bool m_hasAVInfoChanges;
@@ -104,5 +107,7 @@ protected:
   struct SStateInfo
   {
     bool m_stateSeeking;
+    bool m_renderGuiLayer;
+    bool m_renderVideoLayer;
   } m_stateInfo;
 };

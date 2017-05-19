@@ -371,15 +371,13 @@ public:
 
   virtual bool SwitchChannel(const PVR::CPVRChannelPtr &channel);
 
-  virtual void FrameMove();
-  virtual void Render(bool clear, uint32_t alpha = 255, bool gui = true);
-  virtual void FlushRenderer();
-  virtual void SetRenderViewMode(int mode);
-  float GetRenderAspectRatio();
-  virtual void TriggerUpdateResolution();
-  virtual bool IsRenderingVideo();
-  virtual bool IsRenderingGuiLayer();
-  virtual bool IsRenderingVideoLayer();
+  virtual void FrameMove() override;
+  virtual void Render(bool clear, uint32_t alpha = 255, bool gui = true) override;
+  virtual void FlushRenderer() override;
+  virtual void SetRenderViewMode(int mode) override;
+  virtual float GetRenderAspectRatio() override;
+  virtual void TriggerUpdateResolution() override;
+  virtual bool IsRenderingVideo() override;
   virtual bool Supports(EINTERLACEMETHOD method) override;
   virtual EINTERLACEMETHOD GetDeinterlacingMethodDefault() override;
   virtual bool Supports(ESCALINGMETHOD method) override;
@@ -403,14 +401,16 @@ public:
 protected:
   friend class CSelectionStreams;
 
-  virtual void OnStartup();
-  virtual void OnExit();
-  virtual void Process();
+  virtual void OnStartup() override;
+  virtual void OnExit() override;
+  virtual void Process() override;
   virtual void VideoParamsChange() override;
   virtual void GetDebugInfo(std::string &audio, std::string &video, std::string &general) override;
   virtual void UpdateClockSync(bool enabled) override;
   virtual void UpdateRenderInfo(CRenderInfo &info) override;
   virtual void UpdateRenderBuffers(int queued, int discard, int free) override;
+  virtual void UpdareGuiRender(bool gui) override;
+  virtual void UpdareVideoRender(bool video) override;
 
   void CreatePlayers();
   void DestroyPlayers();
