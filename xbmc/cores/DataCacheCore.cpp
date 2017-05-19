@@ -246,3 +246,33 @@ bool CDataCacheCore::IsPlayerStateChanged()
 
   return ret;
 }
+
+void CDataCacheCore::SetGuiRender(bool gui)
+{
+  CSingleLock lock(m_stateSection);
+
+  m_stateInfo.m_renderGuiLayer = gui;
+  m_playerStateChanged = true;
+}
+
+bool CDataCacheCore::CDataCacheCore::GetGuiRender()
+{
+  CSingleLock lock(m_stateSection);
+
+  return m_stateInfo.m_renderGuiLayer;
+}
+
+void CDataCacheCore::SetVideoRender(bool video)
+{
+  CSingleLock lock(m_stateSection);
+
+  m_stateInfo.m_renderVideoLayer = video;
+  m_playerStateChanged = true;
+}
+
+bool CDataCacheCore::CDataCacheCore::GetVideoRender()
+{
+  CSingleLock lock(m_stateSection);
+
+  return m_stateInfo.m_renderVideoLayer;
+}

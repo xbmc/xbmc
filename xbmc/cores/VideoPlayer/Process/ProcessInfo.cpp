@@ -38,9 +38,17 @@ CProcessInfo* CProcessInfo::CreateInstance()
 CProcessInfo::CProcessInfo()
 {
   ResetVideoCodecInfo();
+  m_renderGuiLayer = true;
+  m_renderVideoLayer = false;
+  CServiceBroker::GetDataCacheCore().SetGuiRender(m_renderGuiLayer);
+  CServiceBroker::GetDataCacheCore().SetVideoRender(m_renderVideoLayer);
 }
 
-CProcessInfo::~CProcessInfo() = default;
+CProcessInfo::~CProcessInfo()
+{
+  CServiceBroker::GetDataCacheCore().SetGuiRender(false);
+  CServiceBroker::GetDataCacheCore().SetVideoRender(false);
+}
 
 void CProcessInfo::ResetVideoCodecInfo()
 {
@@ -387,4 +395,38 @@ void CProcessInfo::SetLevelVQ(int level)
 int CProcessInfo::GetLevelVQ()
 {
   return m_levelVQ;
+}
+
+void CProcessInfo::SetGuiRender(bool gui)
+{
+  CSingleLock lock(m_stateSection);
+
+  bool change = (m_renderGuiLayer != gui);
+  m_renderGuiLayer = gui;
+  if (change)
+    CServiceBroker::GetDataCacheCore().SetGuiRender(gui);
+}
+
+bool CProcessInfo::GetGuiRender()
+{
+  CSingleLock lock(m_stateSection);
+
+  return m_renderGuiLayer;
+}
+
+void CProcessInfo::SetVideoRender(bool video)
+{
+  CSingleLock lock(m_stateSection);
+
+  bool change = (m_renderVideoLayer != video);
+  m_renderVideoLayer = video;
+  if (change)
+    CServiceBroker::GetDataCacheCore().SetVideoRender(video);
+}
+
+bool CProcessInfo::GetVideoRender()
+{
+  CSingleLock lock(m_stateSection);
+
+  return m_renderVideoLayer;
 }
