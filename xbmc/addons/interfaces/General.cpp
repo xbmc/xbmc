@@ -74,7 +74,7 @@ bool Interface_General::open_settings_dialog(void* kodiBase)
     return false;
   }
 
-  return CGUIDialogAddonSettings::ShowAndGetInput(addonInfo);
+  return CGUIDialogAddonSettings::ShowForAddon(addonInfo);
 }
 
 char* Interface_General::get_localized_string(void* kodiBase, long dwCode)

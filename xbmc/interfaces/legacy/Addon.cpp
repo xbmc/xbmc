@@ -79,7 +79,7 @@ namespace XBMCAddon
       if (g_windowManager.IsWindowActive(WINDOW_DIALOG_ADDON_SETTINGS))
       {
         CGUIDialogAddonSettings* dialog = g_windowManager.GetWindow<CGUIDialogAddonSettings>(WINDOW_DIALOG_ADDON_SETTINGS);
-        if (dialog->GetCurrentID() == addon->ID())
+        if (dialog->GetCurrentAddonID() == addon->ID())
         {
           CGUIMessage message(GUI_MSG_SETTING_UPDATED,0,0);
           std::vector<std::string> params;
@@ -102,7 +102,7 @@ namespace XBMCAddon
       DelayedCallGuard dcguard(languageHook);
       // show settings dialog
       ADDON::AddonPtr addon(pAddon);
-      CGUIDialogAddonSettings::ShowAndGetInput(addon);
+      CGUIDialogAddonSettings::ShowForAddon(addon);
     }
 
     String Addon::getAddonInfo(const char* id)

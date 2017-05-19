@@ -709,7 +709,12 @@ CSkinSettingPtr CSkinInfo::ParseSetting(const TiXmlElement* element)
   return setting;
 }
 
-bool CSkinInfo::HasSettingsToSave() const
+bool CSkinInfo::SettingsInitialized() const
+{
+  return true;
+}
+
+bool CSkinInfo::SettingsLoaded() const
 {
   return !m_strings.empty() || !m_bools.empty();
 }
@@ -741,7 +746,7 @@ bool CSkinInfo::SettingsFromXML(const CXBMCTinyXML &doc, bool loadDefaults /* = 
   return true;
 }
 
-void CSkinInfo::SettingsToXML(CXBMCTinyXML &doc) const
+bool CSkinInfo::SettingsToXML(CXBMCTinyXML &doc) const
 {
   // add the <skinsettings> tag
   TiXmlElement rootElement(XML_SETTINGS);
@@ -749,7 +754,7 @@ void CSkinInfo::SettingsToXML(CXBMCTinyXML &doc) const
   if (settingsNode == NULL)
   {
     CLog::Log(LOGWARNING, "CSkinInfo: could not create <settings> tag");
-    return;
+    return false;
   }
 
   TiXmlElement* settingsElement = settingsNode->ToElement();
@@ -764,6 +769,8 @@ void CSkinInfo::SettingsToXML(CXBMCTinyXML &doc) const
     if (!it.second->Serialize(settingsElement))
       CLog::Log(LOGWARNING, "CSkinInfo: failed to save bool setting \"%s\"", it.second->name.c_str());
   }
+
+  return true;
 }
 
 } /*namespace ADDON*/

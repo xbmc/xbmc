@@ -247,7 +247,7 @@ static int OpenDefaultSettings(const std::vector<std::string>& params)
   ADDON::TYPE type = TranslateType(params[0]);
   if (CAddonSystemSettings::GetInstance().GetActive(type, addon))
   {
-    bool changed = CGUIDialogAddonSettings::ShowAndGetInput(addon);
+    bool changed = CGUIDialogAddonSettings::ShowForAddon(addon);
     if (type == ADDON_VIZ && changed)
       g_windowManager.SendMessage(GUI_MSG_VISUALISATION_RELOAD, 0, 0);
   }
@@ -286,7 +286,7 @@ static int AddonSettings(const std::vector<std::string>& params)
 {
   AddonPtr addon;
   if (CAddonMgr::GetInstance().GetAddon(params[0], addon))
-    CGUIDialogAddonSettings::ShowAndGetInput(addon);
+    CGUIDialogAddonSettings::ShowForAddon(addon);
 
   return 0;
 }

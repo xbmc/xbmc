@@ -225,10 +225,10 @@ protected:
 
   static CSkinSettingPtr ParseSetting(const TiXmlElement* element);
 
-  virtual bool HasSettingsDefinition() const { return false; }
-  virtual bool HasSettingsToSave() const;
-  virtual bool SettingsFromXML(const CXBMCTinyXML &doc, bool loadDefaults = false);
-  virtual void SettingsToXML(CXBMCTinyXML &doc) const;
+  bool SettingsInitialized() const override;
+  bool SettingsLoaded() const override;
+  bool SettingsFromXML(const CXBMCTinyXML &doc, bool loadDefaults = false) override;
+  bool SettingsToXML(CXBMCTinyXML &doc) const override;
 
   RESOLUTION_INFO m_defaultRes;
   std::vector<RESOLUTION_INFO> m_resolutions;

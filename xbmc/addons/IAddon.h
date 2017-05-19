@@ -88,6 +88,7 @@ namespace ADDON
   typedef std::shared_ptr<CPluginSource> PluginPtr;
 
   class CAddonMgr;
+  class CAddonSettings;
   class AddonVersion;
   typedef std::map<std::string, std::pair<const AddonVersion, bool> > ADDONDEPS;
   typedef std::map<std::string, std::string> InfoMap;
@@ -127,7 +128,7 @@ namespace ADDON
     virtual void SaveSettings() =0;
     virtual void UpdateSetting(const std::string& key, const std::string& value) =0;
     virtual std::string GetSetting(const std::string& key) =0;
-    virtual TiXmlElement* GetSettingsXML() =0;
+    virtual CAddonSettings* GetSettings() const =0;
     virtual const ADDONDEPS &GetDeps() const =0;
     virtual AddonVersion GetDependencyVersion(const std::string &dependencyID) const =0;
     virtual bool MeetsVersion(const AddonVersion &version) const =0;
@@ -139,7 +140,6 @@ namespace ADDON
     virtual void OnPostInstall(bool update, bool modal) =0;
     virtual void OnPreUnInstall() =0;
     virtual void OnPostUnInstall() =0;
-    virtual std::string GetDefaultValue(const TiXmlElement *setting) const = 0;
   };
 };
 

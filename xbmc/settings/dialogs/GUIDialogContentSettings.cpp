@@ -268,7 +268,7 @@ void CGUIDialogContentSettings::OnSettingAction(std::shared_ptr<const CSetting> 
     }
   }
   else if (settingId == SETTING_SCRAPER_SETTINGS)
-    CGUIDialogAddonSettings::ShowAndGetInput(m_scraper, false);
+    CGUIDialogAddonSettings::ShowForAddon(m_scraper, false);
 }
 
 void CGUIDialogContentSettings::Save()
