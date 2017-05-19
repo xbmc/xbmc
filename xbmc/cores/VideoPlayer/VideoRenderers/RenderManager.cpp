@@ -275,7 +275,7 @@ bool CRenderManager::Configure()
     DeleteRenderer();
   }
 
-  if(!m_pRenderer)
+  if (!m_pRenderer)
   {
     CreateRenderer();
     if (!m_pRenderer)
@@ -303,6 +303,8 @@ bool CRenderManager::Configure()
     m_pRenderer->Update();
 
     m_playerPort->UpdateRenderInfo(info);
+    m_playerPort->UpdateGuiRender(true);
+    m_playerPort->UpdateVideoRender(!m_pRenderer->IsGuiLayer());
 
     m_queued.clear();
     m_discard.clear();
@@ -396,6 +398,10 @@ void CRenderManager::FrameMove()
     {
       m_presentstep = PRESENT_IDLE;
     }
+    else
+    {
+      m_presentTimer.Set(1000);
+    }
 
     if (m_presentstep == PRESENT_READY)
       PrepareNextRender();
@@ -405,7 +411,6 @@ void CRenderManager::FrameMove()
       m_pRenderer->FlipPage(m_presentsource);
       m_presentstep = PRESENT_FRAME;
       m_presentevent.notifyAll();
-      m_presentTimer.Set(1000);
     }
 
     // release all previous
@@ -426,6 +431,8 @@ void CRenderManager::FrameMove()
     m_playerPort->UpdateRenderBuffers(m_queued.size(), m_discard.size(), m_free.size());
     m_bRenderGUI = true;
   }
+
+  m_playerPort->UpdateGuiRender(IsGuiLayer());
 
   ManageCaptures();
 }
@@ -680,7 +687,7 @@ bool CRenderManager::RenderCaptureGetPixels(unsigned int captureId, unsigned int
   {
     if (!millis)
       millis = 1000;
-    
+
     CSingleExit exitlock(m_captCritSect);
     if (!it->second->GetEvent().WaitMSec(millis))
     {
@@ -972,6 +979,8 @@ void CRenderManager::Render(bool clear, DWORD flags, DWORD alpha, bool gui)
 
     m_presentevent.notifyAll();
   }
+
+  m_playerPort->UpdateGuiRender(IsGuiLayer());
 }
 
 bool CRenderManager::IsGuiLayer()
@@ -1328,7 +1337,7 @@ void CRenderManager::PrepareNextRender()
       m_lateframes += lateframes;
     else
       m_lateframes = 0;
-    
+
     m_presentstep = PRESENT_FLIP;
     m_discard.push_back(m_presentsource);
     m_presentsource = idx;
