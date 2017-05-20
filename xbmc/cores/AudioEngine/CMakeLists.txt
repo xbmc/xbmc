@@ -74,6 +74,11 @@ if(PULSEAUDIO_FOUND)
   list(APPEND HEADERS Sinks/AESinkPULSE.h)
 endif()
 
+if(SNDIO_FOUND)
+  list(APPEND SOURCES Sinks/AESinkSNDIO.cpp)
+  list(APPEND HEADERS Sinks/AESinkSNDIO.h)
+endif()
+
 if(FFMPEG_FOUND)
   list(APPEND SOURCES Engines/ActiveAE/ActiveAEResampleFFMPEG.cpp)
   list(APPEND HEADERS Engines/ActiveAE/ActiveAEResampleFFMPEG.h)

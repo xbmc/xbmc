@@ -137,6 +137,7 @@ set(optional_deps Alsa
                   PulseAudio
                   Python
                   SmbClient
+                  Sndio
                   SSH
                   UDEV
                   VAAPI
