@@ -305,7 +305,9 @@ Section "Uninstall"
   
   ;Un-install User Data if option is checked, otherwise skip
   ${If} $UnPageProfileCheckbox_State == ${BST_CHECKED}
+    SetShellVarContext current
     RMDir /r "$APPDATA\${APP_NAME}\"
+    SetShellVarContext all
     RMDir /r "$INSTDIR\portable_data\"
   ${EndIf}
   RMDir "$INSTDIR"
