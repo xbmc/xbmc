@@ -23,6 +23,7 @@
     <uses-feature android:name="android.hardware.wifi" android:required="false" />
 
     <application android:icon="@drawable/ic_launcher"
+				android:banner="@drawable/banner"
 				android:logo="@drawable/banner"
 				android:label="@string/app_name"
 				android:hasCode="true"
