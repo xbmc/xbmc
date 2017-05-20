@@ -328,9 +328,11 @@ public class XBMCJsonRPC
         SearchManager.SUGGEST_COLUMN_ICON_1,
         SearchManager.SUGGEST_COLUMN_RESULT_CARD_IMAGE,
         SearchManager.SUGGEST_COLUMN_INTENT_DATA,
-        SearchManager.SUGGEST_COLUMN_CONTENT_TYPE,
+        SearchManager.SUGGEST_COLUMN_VIDEO_WIDTH,
+        SearchManager.SUGGEST_COLUMN_VIDEO_HEIGHT,
         SearchManager.SUGGEST_COLUMN_PRODUCTION_YEAR,
-        SearchManager.SUGGEST_COLUMN_DURATION
+        SearchManager.SUGGEST_COLUMN_DURATION,
+        SearchManager.SUGGEST_COLUMN_SHORTCUT_ID
     };
     MatrixCursor mc = new MatrixCursor(menuCols);
 
@@ -423,9 +425,11 @@ public class XBMCJsonRPC
               XBMCImageContentProvider.GetImageUri(getBitmapUrl(movie.getString("thumbnail"))).toString(),
               XBMCImageContentProvider.GetImageUri(getBitmapUrl(movie.getString("thumbnail"))).toString(),
               Uri.parse("videodb://movies/titles/" + movie.getString("movieid") + "?showinfo=true"),
-              "video/x-matroska",
+              0,
+              0,
               rYear,
-              rDur
+              rDur,
+              -1
             });
             nb_movies++;
             totCount++;
@@ -468,9 +472,11 @@ public class XBMCJsonRPC
               XBMCImageContentProvider.GetImageUri(getBitmapUrl(tvshow.getString("thumbnail"))).toString(),
               XBMCImageContentProvider.GetImageUri(getBitmapUrl(tvshow.getString("thumbnail"))).toString(),
               Uri.parse("videodb://tvshows/titles/" + tvshow.getString("tvshowid") + "?showinfo=true"),
-              "video/x-matroska",
+              0,
+              0,
               rYear,
-              0
+              45*60*1000,  // HACK: we don't get show duration via JSON: hardcode one to have search working
+              -1
             });
             nb_shows++;
             totCount++;
@@ -502,9 +508,11 @@ public class XBMCJsonRPC
               XBMCImageContentProvider.GetImageUri(getBitmapUrl(album.getString("thumbnail"))).toString(),
               XBMCImageContentProvider.GetImageUri(getBitmapUrl(album.getString("thumbnail"))).toString(),
               Uri.parse("musicdb://albums/" + album.getString("albumid") + "/"),
-              "audio/mpeg",
               0,
-              0
+              0,
+              0,
+              0,
+              -1
             });
             totCount++;
           }
@@ -535,9 +543,11 @@ public class XBMCJsonRPC
               XBMCImageContentProvider.GetImageUri(getBitmapUrl(artist.getString("thumbnail"))).toString(),
               XBMCImageContentProvider.GetImageUri(getBitmapUrl(artist.getString("thumbnail"))).toString(),
               Uri.parse("musicdb://artists/" + artist.getString("artistid") + "/"),
-              "",
               0,
-              0
+              0,
+              0,
+              0,
+              -1
             });
             totCount++;
           }
