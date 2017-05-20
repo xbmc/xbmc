@@ -21,6 +21,13 @@
 %module(directors="1") xbmc
 
 %{
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
+#  if !defined(WIN32_LEAN_AND_MEAN)
+#    define WIN32_LEAN_AND_MEAN
+#  endif
+#  include <windows.h>
+#endif
+
 #include "interfaces/legacy/Player.h"
 #include "interfaces/legacy/RenderCapture.h"
 #include "interfaces/legacy/Keyboard.h"
