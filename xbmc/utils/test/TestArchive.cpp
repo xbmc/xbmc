@@ -18,6 +18,13 @@
  *
  */
 
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
+#  if !defined(WIN32_LEAN_AND_MEAN)
+#    define WIN32_LEAN_AND_MEAN
+#  endif
+#  include <windows.h>
+#endif
+
 #include "utils/Archive.h"
 #include "utils/Variant.h"
 #include "filesystem/File.h"

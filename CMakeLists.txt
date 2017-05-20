@@ -344,7 +344,7 @@ target_link_libraries(lib${APP_NAME_LC} PUBLIC ${core_DEPENDS} ${SYSTEM_LDFLAGS}
 set_target_properties(lib${APP_NAME_LC} PROPERTIES PROJECT_LABEL "xbmc")
 source_group_by_folder(lib${APP_NAME_LC} RELATIVE ${CMAKE_SOURCE_DIR}/xbmc)
 if(WIN32)
-  add_precompiled_header(lib${APP_NAME_LC} pch.h ${CMAKE_SOURCE_DIR}/xbmc/platform/win32/pch.cpp PCH_TARGET kodi)
+  add_precompiled_header(lib${APP_NAME_LC} pch.h ${CMAKE_SOURCE_DIR}/xbmc/platform/win32/pch.cpp)
   set_language_cxx(lib${APP_NAME_LC})
 endif()
 
@@ -381,9 +381,6 @@ whole_archive(_TEST_LIBRARIES ${core_DEPENDS} gtest)
 target_link_libraries(${APP_NAME_LC}-test PRIVATE ${SYSTEM_LDFLAGS} ${_TEST_LIBRARIES} lib${APP_NAME_LC} ${DEPLIBS} ${CMAKE_DL_LIBS})
 unset(_TEST_LIBRARIES)
 add_dependencies(${APP_NAME_LC}-test ${APP_NAME_LC}-libraries export-files)
-if(WIN32)
-  add_precompiled_header(${APP_NAME_LC}-test pch.h ${CMAKE_SOURCE_DIR}/xbmc/platform/win32/pch.cpp PCH_TARGET kodi)
-endif()
 
 # Enable unit-test related targets
 if(CORE_HOST_IS_TARGET)
