@@ -1132,6 +1132,9 @@ namespace XBMCAddon
 
 private:
       std::vector<std::string> getStringArray(const InfoLabelValue& alt, const std::string& tag, std::string value = "");
+
+      CVideoInfoTag* GetVideoInfoTag();
+      const CVideoInfoTag* GetVideoInfoTag() const;
     };
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
