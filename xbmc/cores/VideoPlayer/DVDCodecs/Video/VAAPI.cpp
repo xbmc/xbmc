@@ -503,8 +503,10 @@ bool CVideoSurfaces::HasRefs()
 // VAAPI
 //-----------------------------------------------------------------------------
 
-bool CDecoder::m_capGeneral = false;
-bool CDecoder::m_capHevc = false;
+// @TODO
+// temporarily disabled runtime check
+bool CDecoder::m_capGeneral = true;
+bool CDecoder::m_capHevc = true;
 
 CDecoder::CDecoder(CProcessInfo& processInfo) :
   m_vaapiOutput(&m_inMsgEvent),
