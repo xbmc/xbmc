@@ -49,3 +49,4 @@ config.site.native
 /tools/depends/target/Toolchain_binaddons.cmake
 /tools/depends/target/config-binaddons.site
 /target/libfmt/fmt-*.tar.gz
+/target/rapidjson/rapidjson-*.tar.gz
