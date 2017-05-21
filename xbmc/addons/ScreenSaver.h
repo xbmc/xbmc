@@ -36,6 +36,7 @@ public:
 
   bool CreateScreenSaver();
   void Start();
+  void Stop();
   void Render();
   void Destroy();
 

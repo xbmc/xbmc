@@ -95,6 +95,12 @@ void CScreenSaver::Start()
     m_struct.Start();
 }
 
+void CScreenSaver::Stop()
+{
+  if (m_struct.Stop)
+    m_struct.Stop();
+}
+
 void CScreenSaver::Render()
 {
   // ask screensaver to render itself

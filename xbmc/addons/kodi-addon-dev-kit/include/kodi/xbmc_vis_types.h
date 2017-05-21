@@ -96,6 +96,7 @@ extern "C"
   typedef struct KodiToAddonFuncTable_Visualisation
   {
     void (__cdecl* Start)(int iChannels, int iSamplesPerSec, int iBitsPerSample, const char* szSongName);
+    void (__cdecl* Stop)();
     void (__cdecl* AudioData)(const float* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength);
     void (__cdecl* Render) ();
     void (__cdecl* GetInfo)(VIS_INFO *info);

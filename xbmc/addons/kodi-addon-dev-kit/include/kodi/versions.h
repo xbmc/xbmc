@@ -42,8 +42,8 @@
  */
 
 
-#define ADDON_GLOBAL_VERSION_MAIN                     "1.0.0"
-#define ADDON_GLOBAL_VERSION_MAIN_MIN                 "1.0.0"
+#define ADDON_GLOBAL_VERSION_MAIN                     "1.0.1"
+#define ADDON_GLOBAL_VERSION_MAIN_MIN                 "1.0.1"
 #define ADDON_GLOBAL_VERSION_MAIN_XML_ID              "kodi.binary.global.main"
 #define ADDON_GLOBAL_VERSION_MAIN_DEPENDS             "xbmc_addon_dll.h" \
                                                       "xbmc_addon_types.h" \
@@ -111,8 +111,8 @@
                                                       "xbmc_epg_types.h" \
                                                       "libXBMC_pvr.h"
 
-#define ADDON_INSTANCE_VERSION_SCREENSAVER            "1.0.0"
-#define ADDON_INSTANCE_VERSION_SCREENSAVER_MIN        "1.0.0"
+#define ADDON_INSTANCE_VERSION_SCREENSAVER            "1.0.1"
+#define ADDON_INSTANCE_VERSION_SCREENSAVER_MIN        "1.0.1"
 #define ADDON_INSTANCE_VERSION_SCREENSAVER_XML_ID     "kodi.binary.instance.screensaver"
 #define ADDON_INSTANCE_VERSION_SCREENSAVER_DEPENDS    "xbmc_scr_dll.h" \
                                                       "xbmc_scr_types.h"
@@ -124,8 +124,8 @@
                                                       "kodi_vfs_types.h" \
                                                       "kodi_vfs_utils.hpp"
 
-#define ADDON_INSTANCE_VERSION_VISUALIZATION          "1.0.0"
-#define ADDON_INSTANCE_VERSION_VISUALIZATION_MIN      "1.0.0"
+#define ADDON_INSTANCE_VERSION_VISUALIZATION          "1.0.1"
+#define ADDON_INSTANCE_VERSION_VISUALIZATION_MIN      "1.0.1"
 #define ADDON_INSTANCE_VERSION_VISUALIZATION_XML_ID   "kodi.binary.instance.visualization"
 #define ADDON_INSTANCE_VERSION_VISUALIZATION_DEPENDS  "xbmc_vis_dll.h" \
                                                       "xbmc_vis_types.h"

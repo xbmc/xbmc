@@ -147,7 +147,7 @@ void CVisualisation::Stop()
   CServiceBroker::GetActiveAE().UnregisterAudioCallback(this);
   if (Initialized())
   {
-    CAddonDll::Stop();
+    m_struct.Stop();
   }
 }
 
