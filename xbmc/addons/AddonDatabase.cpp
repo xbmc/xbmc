@@ -47,8 +47,11 @@ static std::string SerializeMetadata(const IAddon& addon)
   variant["size"] = addon.PackageSize();
 
   variant["path"] = addon.Path();
-  variant["fanart"] = addon.FanArt();
   variant["icon"] = addon.Icon();
+
+  variant["art"] = CVariant(CVariant::VariantTypeObject);
+  for (const auto& item : addon.Art())
+    variant["art"][item.first] = item.second;
 
   variant["screenshots"] = CVariant(CVariant::VariantTypeArray);
   for (const auto& item : addon.Screenshots())
@@ -93,8 +96,12 @@ static void DeserializeMetadata(const std::string& document, CAddonBuilder& buil
   builder.SetPackageSize(variant["size"].asUnsignedInteger());
 
   builder.SetPath(variant["path"].asString());
-  builder.SetFanart(variant["fanart"].asString());
   builder.SetIcon(variant["icon"].asString());
+
+  std::map<std::string, std::string> art;
+  for (auto it = variant["art"].begin_map(); it != variant["art"].end_map(); ++it)
+    art.emplace(it->first, it->second.asString());
+  builder.SetArt(std::move(art));
 
   std::vector<std::string> screenshots;
   for (auto it = variant["screenshots"].begin_array(); it != variant["screenshots"].end_array(); ++it)
