@@ -16,7 +16,11 @@ endif()
 if(CORE_SYSTEM_NAME STREQUAL windows OR CORE_SYSTEM_NAME STREQUAL windowsstore)
   set(RapidJSON_VERSION 1.1.0)
 else()
-  set(RapidJSON_VERSION ${PC_RapidJSON_VERSION})
+  if(${PC_RapidJSON_VERSION})
+    set(RapidJSON_VERSION ${PC_RapidJSON_VERSION})
+  else()
+    find_package(RapidJSON 1.1.0 CONFIG REQUIRED QUIET)
+  endif()
 endif()
 
 find_path(RapidJSON_INCLUDE_DIR NAMES rapidjson/rapidjson.h
