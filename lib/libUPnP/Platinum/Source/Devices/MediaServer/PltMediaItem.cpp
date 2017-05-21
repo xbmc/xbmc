@@ -762,7 +762,10 @@ PLT_MediaObject::FromDidl(NPT_XmlElementNode* entry)
     m_MiscInfo.original_track_number = value;
 
     PLT_XmlHelper::GetChildText(entry, "lastPlaybackPosition", str, didl_namespace_upnp);
-    if (NPT_FAILED(str.ToInteger(value))) value = 0;
+    if (NPT_FAILED(PLT_Didl::ParseTimeStamp(str, value))) {
+        // fall back to raw integer parsing
+        if (NPT_FAILED(str.ToInteger(value))) value = 0;
+    }
     m_MiscInfo.last_position = value;
 
     PLT_XmlHelper::GetChildText(entry, "lastPlaybackTime", m_MiscInfo.last_time, didl_namespace_upnp, 256);
