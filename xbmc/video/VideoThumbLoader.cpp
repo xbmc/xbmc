@@ -277,6 +277,17 @@ bool CVideoThumbLoader::LoadItemCached(CFileItem* pItem)
   ||  pItem->IsParentFolder())
     return false;
 
+  // check if thumb should be hidden
+  if (pItem->HasVideoInfoTag() &&
+      pItem->GetVideoInfoTag()->m_iEpisode >= 0 &&
+      pItem->GetVideoInfoTag()->m_playCount == 0 &&
+      !CSettings::Get().GetBool("videolibrary.showunwatchedplots"))
+
+ {
+   pItem->SetArt("thumb","DefaultEpisodeHidden.png");
+   return true;
+ }
+
   m_videoDatabase->Open();
 
   if (!pItem->HasVideoInfoTag() || !pItem->GetVideoInfoTag()->HasStreamDetails()) // no stream details
