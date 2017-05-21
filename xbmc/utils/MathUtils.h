@@ -36,7 +36,11 @@
     defined(__powerpc__) || \
     defined(__mips__) || \
     defined(__arm__) || \
-    defined(__aarch64__)
+    defined(__aarch64__) || \
+    defined(__SH4__) || \
+    defined(__sparc__) || \
+    defined(__arc__) || \
+    defined(__xtensa__)
   #define DISABLE_MATHUTILS_ASM_ROUND_INT
 #endif
 
