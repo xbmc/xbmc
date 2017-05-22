@@ -48,7 +48,7 @@ CImageDecoder::CImageDecoder(AddonProps&& props, std::string mime, std::string e
 CImageDecoder::~CImageDecoder()
 {
   if (m_image && Initialized())
-    m_struct.Close(m_image);
+    m_struct.toAddon.Close(m_image);
 }
 
 bool CImageDecoder::LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize,
@@ -59,7 +59,7 @@ bool CImageDecoder::LoadImageFromMemory(unsigned char* buffer, unsigned int bufS
 
   m_width = width;
   m_height = height;
-  m_image = m_struct.LoadImage(buffer, bufSize, &m_width, &m_height);
+  m_image = m_struct.toAddon.LoadImage(buffer, bufSize, &m_width, &m_height);
 
   return m_image != nullptr;
 }
@@ -75,7 +75,7 @@ bool CImageDecoder::Decode(unsigned char* const pixels, unsigned int width,
   if (it == KodiToAddonFormat.end())
     return false;
 
-  bool result = m_struct.Decode(m_image, pixels, width, height, pitch, it->second);
+  bool result = m_struct.toAddon.Decode(m_image, pixels, width, height, pitch, it->second);
   m_width = width;
   m_height = height;
 
@@ -84,9 +84,9 @@ bool CImageDecoder::Decode(unsigned char* const pixels, unsigned int width,
 
 bool CImageDecoder::Create(const std::string& mimetype)
 {
-  m_info.mimetype = mimetype.c_str();
-
-  return CAddonDll::Create(ADDON_INSTANCE_IMAGEDECODER, &m_struct, &m_info) == ADDON_STATUS_OK;
+  m_struct.props.mimetype = mimetype.c_str();
+  m_struct.toKodi.kodiInstance = this;
+  return CAddonDll::Create(ADDON_INSTANCE_IMAGEDECODER, &m_struct, &m_struct.props) == ADDON_STATUS_OK;
 }
 
 } /*namespace ADDON*/

@@ -29,10 +29,15 @@
 
 extern "C"
 {
-  struct IMAGEDEC_PROPS
+  typedef struct AddonProps_ImageDecoder
   {
     const char* mimetype;
-  };
+  } AddonProps_ImageDecoder;
+
+  typedef struct AddonToKodiFuncTable_ImageDecoder
+  {
+    KODI_HANDLE kodiInstance;
+  } AddonToKodiFuncTable_ImageDecoder;
 
   typedef struct KodiToAddonFuncTable_ImageDecoder
   {
@@ -61,4 +66,11 @@ extern "C"
     //! \return True on success, false on failure
     void (__cdecl* Close)(void* image);
   } KodiToAddonFuncTable_ImageDecoder;
+
+  typedef struct AddonInstance_ImageDecoder
+  {
+    AddonProps_ImageDecoder props;
+    AddonToKodiFuncTable_ImageDecoder toKodi;
+    KodiToAddonFuncTable_ImageDecoder toAddon;
+  } AddonInstance_ImageDecoder;
 }

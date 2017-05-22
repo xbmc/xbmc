@@ -38,10 +38,9 @@ extern "C"
   // function to export the above structure to Kodi
   void __declspec(dllexport) get_addon(void* ptr)
   {
-    KodiToAddonFuncTable_ImageDecoder* img =
-        static_cast<KodiToAddonFuncTable_ImageDecoder*>(ptr);
-    img->LoadImage = LoadImage;
-    img->Decode = Decode;
-    img->Close = Close;
+    AddonInstance_ImageDecoder* img = static_cast<AddonInstance_ImageDecoder*>(ptr);
+    img->toAddon.LoadImage = LoadImage;
+    img->toAddon.Decode = Decode;
+    img->toAddon.Close = Close;
   }
 };
