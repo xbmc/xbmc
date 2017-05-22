@@ -364,7 +364,7 @@ bool CInputManager::OnEvent(XBMC_Event& newEvent)
   {
     m_Keyboard.ProcessKeyDown(newEvent.key.keysym);
     CKey key = m_Keyboard.TranslateKey(newEvent.key.keysym);
-    if (key.GetButtonCode() == m_LastKey.GetButtonCode() && m_LastKey.GetButtonCode() & CKey::MODIFIER_LONG)
+    if (key.GetButtonCode() == m_LastKey.GetButtonCode() && (m_LastKey.GetButtonCode() & CKey::MODIFIER_LONG))
     {
       // Do not repeat long presses
       break;
@@ -376,7 +376,7 @@ bool CInputManager::OnEvent(XBMC_Event& newEvent)
     }
     else
     {
-      if (key.GetButtonCode() != m_LastKey.GetButtonCode() && key.GetButtonCode() & CKey::MODIFIER_LONG)
+      if (key.GetButtonCode() != m_LastKey.GetButtonCode() && (key.GetButtonCode() & CKey::MODIFIER_LONG))
       {
         m_LastKey = key;  // OnKey is reentrant; need to do this before entering
         OnKey(key);
