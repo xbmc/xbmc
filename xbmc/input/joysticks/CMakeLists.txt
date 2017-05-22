@@ -1,4 +1,5 @@
 set(SOURCES DeadzoneFilter.cpp
+            DefaultController.cpp
             DefaultJoystick.cpp
             DriverPrimitive.cpp
             JoystickEasterEgg.cpp
@@ -8,6 +9,7 @@ set(SOURCES DeadzoneFilter.cpp
             RumbleGenerator.cpp)
 
 set(HEADERS DeadzoneFilter.h
+            DefaultController.h
             DefaultJoystick.h
             DriverPrimitive.h
             IActionMap.h

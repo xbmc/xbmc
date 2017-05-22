@@ -22,7 +22,6 @@
 #include "IActionMap.h"
 #include "IInputHandler.h"
 #include "JoystickTypes.h"
-#include "RumbleGenerator.h"
 
 #include <map>
 #include <memory>
@@ -63,14 +62,11 @@ namespace JOYSTICK
     // implementation of IActionMap
     virtual int GetActionID(const FeatureName& feature) override;
 
-    // Forward rumble commands to rumble generator
-    void NotifyUser(void) { m_rumbleGenerator.NotifyUser(InputReceiver()); }
-    bool TestRumble(void) { return m_rumbleGenerator.DoTest(InputReceiver()); }
-    void AbortRumble() { return m_rumbleGenerator.AbortRumble(); }
-
-  private:
-    bool ActivateDirection(const FeatureName& feature, float magnitude, ANALOG_STICK_DIRECTION dir, unsigned int motionTimeMs);
-    void DeactivateDirection(const FeatureName& feature, ANALOG_STICK_DIRECTION dir);
+  protected:
+    /*!
+     * \brief Get the controller ID of this implementation
+     */
+    virtual std::string GetControllerID() const = 0;
 
     /*!
      * \brief Get the keymap key, as defined in Key.h, for the specified
@@ -81,7 +77,18 @@ namespace JOYSTICK
      *
      * \return The key ID, or 0 if unknown
      */
-    static unsigned int GetKeyID(const FeatureName& feature, ANALOG_STICK_DIRECTION dir = ANALOG_STICK_DIRECTION::UNKNOWN);
+    virtual unsigned int GetKeyID(const FeatureName& feature, ANALOG_STICK_DIRECTION dir = ANALOG_STICK_DIRECTION::UNKNOWN) const = 0;
+
+    /*!
+     * \brief Keep track of cheat code presses
+     *
+     * Child classes should initialize this with the appropriate controller ID.
+     */
+    std::unique_ptr<IButtonSequence> m_easterEgg;
+
+  private:
+    bool ActivateDirection(const FeatureName& feature, float magnitude, ANALOG_STICK_DIRECTION dir, unsigned int motionTimeMs);
+    void DeactivateDirection(const FeatureName& feature, ANALOG_STICK_DIRECTION dir);
 
     /*!
      * \brief Return a vector of the four cardinal directions
@@ -94,11 +101,6 @@ namespace JOYSTICK
     // State variables used to process joystick input
     std::map<unsigned int, unsigned int> m_holdStartTimes; // Key ID -> hold start time (ms)
     std::map<FeatureName, ANALOG_STICK_DIRECTION> m_currentDirections; // Analog stick name -> direction
-
-    // Rumble functionality
-    CRumbleGenerator m_rumbleGenerator;
-
-    std::unique_ptr<IButtonSequence> m_easterEgg;
   };
 }
 }

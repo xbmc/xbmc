@@ -19,6 +19,7 @@
  */
 
 #include "JoystickEasterEgg.h"
+#include "JoystickIDs.h"
 #include "ServiceBroker.h"
 #include "guilib/GUIAudioManager.h"
 #include "guilib/WindowIDs.h"
@@ -27,20 +28,27 @@
 using namespace KODI;
 using namespace JOYSTICK;
 
-std::vector<FeatureName> CJoystickEasterEgg::m_sequence = {
-  "up",
-  "up",
-  "down",
-  "down",
-  "left",
-  "right",
-  "left",
-  "right",
-  "b",
-  "a",
+const std::map<std::string, std::vector<FeatureName>> CJoystickEasterEgg::m_sequence =
+{
+  {
+    DEFAULT_CONTROLLER_ID,
+    {
+      "up",
+      "up",
+      "down",
+      "down",
+      "left",
+      "right",
+      "left",
+      "right",
+      "b",
+      "a",
+    },
+  },
 };
 
-CJoystickEasterEgg::CJoystickEasterEgg(void) :
+CJoystickEasterEgg::CJoystickEasterEgg(const std::string& controllerId) :
+  m_controllerId(controllerId),
   m_state(0)
 {
 }
@@ -49,21 +57,27 @@ bool CJoystickEasterEgg::OnButtonPress(const FeatureName& feature)
 {
   bool bHandled = false;
 
-  // Update state
-  if (feature == m_sequence[m_state])
-    m_state++;
-  else
-    m_state = 0;
-
-  // Capture input when finished with arrows (2 x up/down/left/right)
-  if (m_state > 8)
+  auto it = m_sequence.find(m_controllerId);
+  if (it != m_sequence.end())
   {
-    bHandled = true;
+    const auto& sequence = it->second;
 
-    if (m_state >= m_sequence.size())
-    {
-      OnFinish();
+    // Update state
+    if (feature == sequence[m_state])
+      m_state++;
+    else
       m_state = 0;
+
+    // Capture input when finished with arrows (2 x up/down/left/right)
+    if (m_state > 8)
+    {
+      bHandled = true;
+
+      if (m_state >= sequence.size())
+      {
+        OnFinish();
+        m_state = 0;
+      }
     }
   }
 

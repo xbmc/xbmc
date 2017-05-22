@@ -36,9 +36,7 @@ using namespace KODI;
 using namespace JOYSTICK;
 
 CDefaultJoystick::CDefaultJoystick(void) :
-  m_handler(new CKeymapHandler),
-  m_rumbleGenerator(ControllerID()),
-  m_easterEgg(new CJoystickEasterEgg)
+  m_handler(new CKeymapHandler)
 {
 }
 
@@ -49,7 +47,7 @@ CDefaultJoystick::~CDefaultJoystick(void)
 
 std::string CDefaultJoystick::ControllerID(void) const
 {
-  return DEFAULT_CONTROLLER_ID;
+  return GetControllerID();
 }
 
 bool CDefaultJoystick::HasFeature(const FeatureName& feature) const
@@ -79,7 +77,7 @@ INPUT_TYPE CDefaultJoystick::GetInputType(const FeatureName& feature) const
 
 bool CDefaultJoystick::OnButtonPress(const FeatureName& feature, bool bPressed)
 {
-  if (bPressed && m_easterEgg->OnButtonPress(feature))
+  if (bPressed && m_easterEgg && m_easterEgg->OnButtonPress(feature))
     return true;
 
   const unsigned int keyId = GetKeyID(feature);
@@ -212,54 +210,6 @@ void CDefaultJoystick::DeactivateDirection(const FeatureName& feature, ANALOG_ST
     m_holdStartTimes.erase(keyId);
     m_currentDirections[feature] = ANALOG_STICK_DIRECTION::UNKNOWN;
   }
-}
-
-unsigned int CDefaultJoystick::GetKeyID(const FeatureName& feature, ANALOG_STICK_DIRECTION dir /* = ANALOG_STICK_DIRECTION::UNKNOWN */)
-{
-  if      (feature == "a")             return KEY_JOYSTICK_BUTTON_A;
-  else if (feature == "b")             return KEY_JOYSTICK_BUTTON_B;
-  else if (feature == "x")             return KEY_JOYSTICK_BUTTON_X;
-  else if (feature == "y")             return KEY_JOYSTICK_BUTTON_Y;
-  else if (feature == "start")         return KEY_JOYSTICK_BUTTON_START;
-  else if (feature == "back")          return KEY_JOYSTICK_BUTTON_BACK;
-  else if (feature == "guide")         return KEY_JOYSTICK_BUTTON_GUIDE;
-  else if (feature == "leftbumper")    return KEY_JOYSTICK_BUTTON_LEFT_SHOULDER;
-  else if (feature == "rightbumper")   return KEY_JOYSTICK_BUTTON_RIGHT_SHOULDER;
-  else if (feature == "leftthumb")     return KEY_JOYSTICK_BUTTON_LEFT_STICK_BUTTON;
-  else if (feature == "rightthumb")    return KEY_JOYSTICK_BUTTON_RIGHT_STICK_BUTTON;
-  else if (feature == "up")            return KEY_JOYSTICK_BUTTON_DPAD_UP;
-  else if (feature == "down")          return KEY_JOYSTICK_BUTTON_DPAD_DOWN;
-  else if (feature == "right")         return KEY_JOYSTICK_BUTTON_DPAD_RIGHT;
-  else if (feature == "left")          return KEY_JOYSTICK_BUTTON_DPAD_LEFT;
-  else if (feature == "lefttrigger")   return KEY_JOYSTICK_BUTTON_LEFT_TRIGGER;
-  else if (feature == "righttrigger")  return KEY_JOYSTICK_BUTTON_RIGHT_TRIGGER;
-  else if (feature == "leftstick")
-  {
-    switch (dir)
-    {
-      case ANALOG_STICK_DIRECTION::UP:     return KEY_JOYSTICK_BUTTON_LEFT_THUMB_STICK_UP;
-      case ANALOG_STICK_DIRECTION::DOWN:   return KEY_JOYSTICK_BUTTON_LEFT_THUMB_STICK_DOWN;
-      case ANALOG_STICK_DIRECTION::RIGHT:  return KEY_JOYSTICK_BUTTON_LEFT_THUMB_STICK_RIGHT;
-      case ANALOG_STICK_DIRECTION::LEFT:   return KEY_JOYSTICK_BUTTON_LEFT_THUMB_STICK_LEFT;
-      default:
-        break;
-    }
-  }
-  else if (feature == "rightstick")
-  {
-    switch (dir)
-    {
-      case ANALOG_STICK_DIRECTION::UP:     return KEY_JOYSTICK_BUTTON_RIGHT_THUMB_STICK_UP;
-      case ANALOG_STICK_DIRECTION::DOWN:   return KEY_JOYSTICK_BUTTON_RIGHT_THUMB_STICK_DOWN;
-      case ANALOG_STICK_DIRECTION::RIGHT:  return KEY_JOYSTICK_BUTTON_RIGHT_THUMB_STICK_RIGHT;
-      case ANALOG_STICK_DIRECTION::LEFT:   return KEY_JOYSTICK_BUTTON_RIGHT_THUMB_STICK_LEFT;
-      default:
-        break;
-    }
-  }
-  else if (feature == "accelerometer") return 0; //! @todo implement
-
-  return 0;
 }
 
 const std::vector<ANALOG_STICK_DIRECTION>& CDefaultJoystick::GetDirections(void)

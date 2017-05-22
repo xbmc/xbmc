@@ -21,6 +21,8 @@
 
 #include "IButtonSequence.h"
 
+#include <map>
+#include <string>
 #include <vector>
 
 namespace KODI
@@ -33,7 +35,7 @@ namespace JOYSTICK
   class CJoystickEasterEgg : public IButtonSequence
   {
   public:
-    CJoystickEasterEgg(void);
+    CJoystickEasterEgg(const std::string& controllerId);
     virtual ~CJoystickEasterEgg() = default;
 
     // implementation of IButtonSequence
@@ -42,7 +44,10 @@ namespace JOYSTICK
     static void OnFinish(void);
 
   private:
-    static std::vector<FeatureName> m_sequence;
+    // Construction parameters
+    const std::string m_controllerId;
+
+    static const std::map<std::string, std::vector<FeatureName>> m_sequence;
 
     unsigned int m_state;
   };
