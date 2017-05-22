@@ -27,6 +27,7 @@ extern "C"
 {
   // Functions that your visualisation must implement
   void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, const char* szSongName);
+  void Stop();
   void AudioData(const float* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength);
   void Render();
   bool OnAction(long action, const void *param);
@@ -39,17 +40,18 @@ extern "C"
   // function to export the above structure to XBMC
   void __declspec(dllexport) get_addon(void* ptr)
   {
-    KodiToAddonFuncTable_Visualisation* pVisz = static_cast<KodiToAddonFuncTable_Visualisation*>(ptr);
+    AddonInstance_Visualization* pVisz = static_cast<AddonInstance_Visualization*>(ptr);
 
-    pVisz->Start = Start;
-    pVisz->AudioData = AudioData;
-    pVisz->Render = Render;
-    pVisz->OnAction = OnAction;
-    pVisz->GetInfo = GetInfo;
-    pVisz->GetPresets = GetPresets;
-    pVisz->GetPreset = GetPreset;
-    pVisz->GetSubModules = GetSubModules;
-    pVisz->IsLocked = IsLocked;
+    pVisz->toAddon.Start = Start;
+    pVisz->toAddon.Stop = Stop;
+    pVisz->toAddon.AudioData = AudioData;
+    pVisz->toAddon.Render = Render;
+    pVisz->toAddon.OnAction = OnAction;
+    pVisz->toAddon.GetInfo = GetInfo;
+    pVisz->toAddon.GetPresets = GetPresets;
+    pVisz->toAddon.GetPreset = GetPreset;
+    pVisz->toAddon.GetSubModules = GetSubModules;
+    pVisz->toAddon.IsLocked = IsLocked;
   };
 };
 

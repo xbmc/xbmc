@@ -78,8 +78,7 @@ namespace ADDON
     bool m_tags;
     bool m_tracks;
     const AEChannel* m_channel;
-    AUDIODEC_PROPS m_info;
-    KodiToAddonFuncTable_AudioDecoder m_struct;
+    AddonInstance_AudioDecoder m_struct;
   };
 
 } /*namespace ADDON*/

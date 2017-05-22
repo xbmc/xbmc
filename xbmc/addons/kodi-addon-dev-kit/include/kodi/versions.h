@@ -42,8 +42,8 @@
  */
 
 
-#define ADDON_GLOBAL_VERSION_MAIN                     "1.0.0"
-#define ADDON_GLOBAL_VERSION_MAIN_MIN                 "1.0.0"
+#define ADDON_GLOBAL_VERSION_MAIN                     "1.0.1"
+#define ADDON_GLOBAL_VERSION_MAIN_MIN                 "1.0.1"
 #define ADDON_GLOBAL_VERSION_MAIN_XML_ID              "kodi.binary.global.main"
 #define ADDON_GLOBAL_VERSION_MAIN_DEPENDS             "xbmc_addon_dll.h" \
                                                       "xbmc_addon_types.h" \
@@ -63,14 +63,14 @@
                                                       "kodi_adsp_types.h" \
                                                       "libKODI_adsp.h"
 
-#define ADDON_INSTANCE_VERSION_AUDIODECODER           "1.0.0"
-#define ADDON_INSTANCE_VERSION_AUDIODECODER_MIN       "1.0.0"
+#define ADDON_INSTANCE_VERSION_AUDIODECODER           "1.0.1"
+#define ADDON_INSTANCE_VERSION_AUDIODECODER_MIN       "1.0.1"
 #define ADDON_INSTANCE_VERSION_AUDIODECODER_XML_ID    "kodi.binary.instance.audiodecoder"
 #define ADDON_INSTANCE_VERSION_AUDIODECODER_DEPENDS   "kodi_audiodec_dll.h" \
                                                       "kodi_audiodec_types.h"
 
-#define ADDON_INSTANCE_VERSION_AUDIOENCODER           "1.0.0"
-#define ADDON_INSTANCE_VERSION_AUDIOENCODER_MIN       "1.0.0"
+#define ADDON_INSTANCE_VERSION_AUDIOENCODER           "1.0.1"
+#define ADDON_INSTANCE_VERSION_AUDIOENCODER_MIN       "1.0.1"
 #define ADDON_INSTANCE_VERSION_AUDIOENCODER_XML_ID    "kodi.binary.instance.audioencoder"
 #define ADDON_INSTANCE_VERSION_AUDIOENCODER_DEPENDS   "xbmc_audioenc_dll.h" \
                                                       "xbmc_audioenc_types.h"
@@ -82,8 +82,8 @@
                                                       "kodi_game_types.h" \
                                                       "libKODI_game.h"
 
-#define ADDON_INSTANCE_VERSION_IMAGEDECODER           "1.0.0"
-#define ADDON_INSTANCE_VERSION_IMAGEDECODER_MIN       "1.0.0"
+#define ADDON_INSTANCE_VERSION_IMAGEDECODER           "1.0.1"
+#define ADDON_INSTANCE_VERSION_IMAGEDECODER_MIN       "1.0.1"
 #define ADDON_INSTANCE_VERSION_IMAGEDECODER_XML_ID    "kodi.binary.instance.imagedecoder"
 #define ADDON_INSTANCE_VERSION_IMAGEDECODER_DEPENDS   "kodi_imagedec_dll.h" \
                                                       "kodi_imagedec_types.h"
@@ -111,21 +111,21 @@
                                                       "xbmc_epg_types.h" \
                                                       "libXBMC_pvr.h"
 
-#define ADDON_INSTANCE_VERSION_SCREENSAVER            "1.0.0"
-#define ADDON_INSTANCE_VERSION_SCREENSAVER_MIN        "1.0.0"
+#define ADDON_INSTANCE_VERSION_SCREENSAVER            "1.0.1"
+#define ADDON_INSTANCE_VERSION_SCREENSAVER_MIN        "1.0.1"
 #define ADDON_INSTANCE_VERSION_SCREENSAVER_XML_ID     "kodi.binary.instance.screensaver"
 #define ADDON_INSTANCE_VERSION_SCREENSAVER_DEPENDS    "xbmc_scr_dll.h" \
                                                       "xbmc_scr_types.h"
 
-#define ADDON_INSTANCE_VERSION_VFS                    "1.0.0"
-#define ADDON_INSTANCE_VERSION_VFS_MIN                "1.0.0"
+#define ADDON_INSTANCE_VERSION_VFS                    "1.0.1"
+#define ADDON_INSTANCE_VERSION_VFS_MIN                "1.0.1"
 #define ADDON_INSTANCE_VERSION_VFS_XML_ID             "kodi.binary.instance.vfs"
 #define ADDON_INSTANCE_VERSION_VFS_DEPENDS            "kodi_vfs_dll.h" \
                                                       "kodi_vfs_types.h" \
                                                       "kodi_vfs_utils.hpp"
 
-#define ADDON_INSTANCE_VERSION_VISUALIZATION          "1.0.0"
-#define ADDON_INSTANCE_VERSION_VISUALIZATION_MIN      "1.0.0"
+#define ADDON_INSTANCE_VERSION_VISUALIZATION          "1.0.1"
+#define ADDON_INSTANCE_VERSION_VISUALIZATION_MIN      "1.0.1"
 #define ADDON_INSTANCE_VERSION_VISUALIZATION_XML_ID   "kodi.binary.instance.visualization"
 #define ADDON_INSTANCE_VERSION_VISUALIZATION_DEPENDS  "xbmc_vis_dll.h" \
                                                       "xbmc_vis_types.h"

@@ -236,39 +236,31 @@ ADDON_STATUS CAddonDll::Create(ADDON_TYPE type, void* funcTable, void* info)
   return status;
 }
 
-void CAddonDll::Stop()
-{
-  /* Inform dll to stop all activities */
-  if (m_needsavedsettings)  // If the addon supports it we save some settings to settings.xml before stop
-  {
-    char   str_id[64] = "";
-    char   str_value[1024];
-    CAddon::LoadUserSettings();
-    for (unsigned int i=0; (strcmp(str_id,"###End") != 0); i++)
-    {
-      strcpy(str_id, "###GetSavedSettings");
-      sprintf (str_value, "%i", i);
-      ADDON_STATUS status = m_pDll->SetSetting((const char*)&str_id, (void*)&str_value);
-
-      if (status == ADDON_STATUS_UNKNOWN)
-        break;
-
-      if (strcmp(str_id,"###End") != 0) UpdateSetting(str_id, str_value);
-    }
-    CAddon::SaveSettings();
-  }
-  if (m_pDll)
-  {
-    m_pDll->Stop();
-    CLog::Log(LOGINFO, "ADDON: Dll Stopped - %s", Name().c_str());
-  }
-}
-
 void CAddonDll::Destroy()
 {
   /* Unload library file */
   if (m_pDll)
   {
+    /* Inform dll to stop all activities */
+    if (m_needsavedsettings)  // If the addon supports it we save some settings to settings.xml before stop
+    {
+      char   str_id[64] = "";
+      char   str_value[1024];
+      CAddon::LoadUserSettings();
+      for (unsigned int i=0; (strcmp(str_id,"###End") != 0); i++)
+      {
+        strcpy(str_id, "###GetSavedSettings");
+        sprintf (str_value, "%i", i);
+        ADDON_STATUS status = m_pDll->SetSetting((const char*)&str_id, (void*)&str_value);
+
+        if (status == ADDON_STATUS_UNKNOWN)
+          break;
+
+        if (strcmp(str_id,"###End") != 0) UpdateSetting(str_id, str_value);
+      }
+      CAddon::SaveSettings();
+    }
+
     m_pDll->Destroy();
     m_pDll->Unload();
   }

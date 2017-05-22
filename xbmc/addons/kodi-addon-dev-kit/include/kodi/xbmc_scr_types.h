@@ -20,9 +20,11 @@
  *
  */
 
+#include "xbmc_addon_types.h"
+
 extern "C"
 {
-  struct SCR_PROPS
+  typedef struct AddonProps_Screensaver
   {
     void *device;
     int x;
@@ -33,12 +35,24 @@ extern "C"
     const char *name;
     const char *presets;
     const char *profile;
-  };
+  } AddonProps_Screensaver;
+
+  typedef struct AddonToKodiFuncTable_Screensaver /* internal */
+  {
+    KODI_HANDLE kodiInstance;
+  } AddonToKodiFuncTable_Screensaver;
 
   typedef struct KodiToAddonFuncTable_Screensaver
   {
     void (__cdecl* Start) ();
+    void (__cdecl* Stop) ();
     void (__cdecl* Render) ();
   } KodiToAddonFuncTable_Screensaver;
-}
 
+  typedef struct AddonInstance_Screensaver
+  {
+    AddonProps_Screensaver props;
+    AddonToKodiFuncTable_Screensaver toKodi;
+    KodiToAddonFuncTable_Screensaver toAddon;
+  } AddonInstance_Screensaver;
+}

@@ -30,11 +30,13 @@ std::unique_ptr<CAudioEncoder> CAudioEncoder::FromExtension(AddonProps props, co
 CAudioEncoder::CAudioEncoder(AddonProps props, std::string _extension)
     : CAddonDll(std::move(props)), extension(std::move(_extension)), m_context(nullptr)
 {
+  memset(&m_struct, 0, sizeof(m_struct));
 }
 
 bool CAudioEncoder::Create()
 {
-  return CAddonDll::Create(ADDON_INSTANCE_AUDIOENCODER, &m_struct, &m_info) == ADDON_STATUS_OK;
+  m_struct.toKodi.kodiInstance = this;
+  return CAddonDll::Create(ADDON_INSTANCE_AUDIOENCODER, &m_struct, &m_struct.props) == ADDON_STATUS_OK;
 }
 
 bool CAudioEncoder::Init(audioenc_callbacks &callbacks)
@@ -43,23 +45,23 @@ bool CAudioEncoder::Init(audioenc_callbacks &callbacks)
     return false;
 
   // create encoder instance
-  m_context = m_struct.Create(&callbacks);
+  m_context = m_struct.toAddon.Create(&callbacks);
   if (!m_context)
     return false;
 
-  return m_struct.Start(m_context,
-                          m_iInChannels,
-                          m_iInSampleRate,
-                          m_iInBitsPerSample,
-                          m_strTitle.c_str(),
-                          m_strArtist.c_str(),
-                          m_strAlbumArtist.c_str(),
-                          m_strAlbum.c_str(),
-                          m_strYear.c_str(),
-                          m_strTrack.c_str(),
-                          m_strGenre.c_str(),
-                          m_strComment.c_str(),
-                          m_iTrackLength);
+  return m_struct.toAddon.Start(m_context,
+                                m_iInChannels,
+                                m_iInSampleRate,
+                                m_iInBitsPerSample,
+                                m_strTitle.c_str(),
+                                m_strArtist.c_str(),
+                                m_strAlbumArtist.c_str(),
+                                m_strAlbum.c_str(),
+                                m_strYear.c_str(),
+                                m_strTrack.c_str(),
+                                m_strGenre.c_str(),
+                                m_strComment.c_str(),
+                                m_iTrackLength);
 }
 
 int CAudioEncoder::Encode(int nNumBytesRead, uint8_t* pbtStream)
@@ -67,7 +69,7 @@ int CAudioEncoder::Encode(int nNumBytesRead, uint8_t* pbtStream)
   if (!Initialized() || !m_context)
     return 0;
 
-  return m_struct.Encode(m_context, nNumBytesRead, pbtStream);
+  return m_struct.toAddon.Encode(m_context, nNumBytesRead, pbtStream);
 }
 
 bool CAudioEncoder::Close()
@@ -75,10 +77,10 @@ bool CAudioEncoder::Close()
   if (!Initialized() || !m_context)
     return false;
 
-  if (!m_struct.Finish(m_context))
+  if (!m_struct.toAddon.Finish(m_context))
     return false;
 
-  m_struct.Free(m_context);
+  m_struct.toAddon.Free(m_context);
   m_context = NULL;
 
   return true;

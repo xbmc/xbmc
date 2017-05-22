@@ -42,7 +42,6 @@ namespace ADDON
     virtual std::string GetSetting(const std::string& key);
 
     ADDON_STATUS Create(ADDON_TYPE type, void* funcTable, void* info);
-    virtual void Stop();
     void Destroy();
 
     bool DllLoaded(void) const;

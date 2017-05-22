@@ -29,14 +29,16 @@ extern "C"
   // Functions that your visualisation must implement
   void Start();
   void Render();
+  void Stop();
 
   // function to export the above structure to XBMC
   void __declspec(dllexport) get_addon(void* ptr)
   {
-    KodiToAddonFuncTable_Screensaver* pScr = static_cast<KodiToAddonFuncTable_Screensaver*>(ptr);
+    AddonInstance_Screensaver* pScr = static_cast<AddonInstance_Screensaver*>(ptr);
 
-    pScr->Start = Start;
-    pScr->Render = Render;
+    pScr->toAddon.Start = Start;
+    pScr->toAddon.Render = Render;
+    pScr->toAddon.Stop = Stop;
   };
 };
 

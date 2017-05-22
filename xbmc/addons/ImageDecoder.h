@@ -55,8 +55,7 @@ namespace ADDON
     void* m_image = nullptr;
     std::string m_mimetype;
     std::string m_extension;
-    IMAGEDEC_PROPS m_info;
-    KodiToAddonFuncTable_ImageDecoder m_struct = {};
+    AddonInstance_ImageDecoder m_struct = {};
   };
 
 } /*namespace ADDON*/

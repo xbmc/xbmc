@@ -86,8 +86,7 @@ namespace ADDON
     bool m_files;             //!< Vfs entry can read files.
     bool m_directories;       //!< VFS entry can list directories.
     bool m_filedirectories;   //!< VFS entry contains file directories.
-    KodiToAddonFuncTable_VFSEntry m_struct; //!< VFS callback table
-    VFS_PROPS m_info; //!< (Dummy) properties
+    AddonInstance_VFSEntry m_struct; //!< VFS callback table
   };
 
   typedef std::shared_ptr<CVFSEntry> VFSEntryPtr; //!< Convenience typedef.

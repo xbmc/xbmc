@@ -24,6 +24,7 @@
   Common data structures shared between Kodi and Kodi's visualisations
  */
 
+#include "xbmc_addon_types.h"
 #include <cstddef>
 
 extern "C"
@@ -32,20 +33,6 @@ extern "C"
   {
     int bWantsFreq;
     int iSyncDelay;
-  };
-
-  struct VIS_PROPS
-  {
-    void *device;
-    int x;
-    int y;
-    int width;
-    int height;
-    float pixelRatio;
-    const char *name;
-    const char *presets;
-    const char *profile;
-    const char *submodule;
   };
 
   enum VIS_ACTION
@@ -93,9 +80,29 @@ extern "C"
     int        reserved4;
   };
 
-  typedef struct KodiToAddonFuncTable_Visualisation
+  typedef struct AddonProps_Visualization /* internal */
+  {
+    void *device;
+    int x;
+    int y;
+    int width;
+    int height;
+    float pixelRatio;
+    const char *name;
+    const char *presets;
+    const char *profile;
+    const char *submodule;
+  } AddonProps_Visualization;
+
+  typedef struct AddonToKodiFuncTable_Visualization /* internal */
+  {
+    KODI_HANDLE kodiInstance;
+  } AddonToKodiFuncTable_Visualization;
+
+  typedef struct KodiToAddonFuncTable_Visualization /* internal */
   {
     void (__cdecl* Start)(int iChannels, int iSamplesPerSec, int iBitsPerSample, const char* szSongName);
+    void (__cdecl* Stop)();
     void (__cdecl* AudioData)(const float* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength);
     void (__cdecl* Render) ();
     void (__cdecl* GetInfo)(VIS_INFO *info);
@@ -105,6 +112,13 @@ extern "C"
     unsigned int (__cdecl *GetPreset)();
     unsigned int (__cdecl *GetSubModules)(char ***modules);
     bool (__cdecl* IsLocked)();
-  } KodiToAddonFuncTable_Visualisation;
+  } KodiToAddonFuncTable_Visualization;
+
+  typedef struct AddonInstance_Visualization /* internal */
+  {
+    AddonProps_Visualization props;
+    AddonToKodiFuncTable_Visualization toKodi;
+    KodiToAddonFuncTable_Visualization toAddon;
+  } AddonInstance_Visualization;
 }
 
