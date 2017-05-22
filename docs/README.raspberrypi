@@ -56,8 +56,8 @@ build for the first Raspberry Pi, the commands have to be adapted to use
        --disable-optical-drive --disable-dvdcss --disable-joystick \
        --disable-crystalhd --disable-vtbdecoder --disable-vaapi \
        --disable-vdpau --enable-alsa" \
-       make -C tools/depends/target/xbmc
-
+       make -C tools/depends/target/cmakebuildsys
+    $ cd build
     $ make
     $ sudo make install
 
