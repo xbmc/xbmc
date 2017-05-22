@@ -24,6 +24,7 @@ updatelogger
 logmsg
 islogged
 loadonlymaximal
+loadonlymaximalfrommemory
 loadminimal
 loadmaximal
 install

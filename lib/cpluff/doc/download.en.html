@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML Basic 1.0//EN" "http://www.w3.org/TR/xhtml-basic/xhtml-basic10.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+    <meta name="author" content="Johannes Lehtinen"/>
+    <meta name="copyright" content="Copyright 2007 Johannes Lehtinen"/>
+    <meta name="keywords" content="C-Pluff,download"/>
+    <meta name="identifier" content="http://www.c-pluff.org/download.en.html"/>
+    <title>Download C-Pluff</title>
+    <link rel="Stylesheet" type="text/css" href="cpluff_style.css"/>
+  </head>
+  <body>
+    <div id="content">
+
+    <h1>Download C-Pluff</h1>
+
+    <ul class="menu">
+      <li><a href="/">C-Pluff</a></li>
+      <li><a href="copyright.en.html">License</a></li>
+      <li><a href="reference/c-api/index.html">Documentation</a></li>
+      <li><a href="http://www.c-pluff.org/lists">Mailing lists</a></li>
+      <li>Download</li>
+      <li><a href="http://www.c-pluff.org/repository">Repository</a></li>
+    </ul>
+
+    <h2>Source code distribution</h2>
+    <p>
+      You can download the source code distribution here. It is currently
+      known to compile on Linux with GCC and MinGW (for Windows
+      cross-compilation).
+    </p>
+    <ul class="downloads">
+      <li><a href="downloads/cpluff-0.1.3.tar.gz">cpluff-0.1.3.tar.gz</a> (736 KiB, Apr 6 2007, <a href="downloads/cpluff-0.1.3.tar.gz.asc">PGP signature</a>)</li>
+      <li><a href="downloads/cpluff-0.1.2.tar.gz">cpluff-0.1.2.tar.gz</a> (720 KiB, Mar 28 2007, <a href="downloads/cpluff-0.1.2.tar.gz.asc">PGP signature</a>)</li>
+      <li><a href="downloads/cpluff-0.1.1.tar.gz">cpluff-0.1.1.tar.gz</a> (680 KiB, Mar 18 2007, <a href="downloads/cpluff-0.1.1.tar.gz.asc">PGP signature</a>)</li>
+      <li><a href="downloads/cpluff-0.1.0.tar.gz">cpluff-0.1.0.tar.gz</a> (600 KiB, Mar 8 2007, <a href="downloads/cpluff-0.1.0.tar.gz.asc">PGP signature</a>)</li>
+    </ul>
+    <p>
+      <a href="downloads/ChangeLog">The change log</a> and
+      <a href="downloads/Roadmap">the roadmap</a> are available separately.
+    </p>
+
+    <h2>Precompiled binaries</h2>
+    <p>
+      Here are the binary distributions currently available. If you would
+      like to have precompiled binaries for some other platform, you can ask
+      for it on the users mailing list and we will see if that can be arranged.
+    </p>
+    <ul>
+      <li><a href="#debian">Debian GNU/Linux (i386)</a></li>
+      <li><a href="#debian-mingw">MinGW cross-compilation on Debian GNU/Linux</a></li>
+      <li><a href="#windows">Microsoft Windows (i386)</a></li>
+    </ul>
+    
+    <h3 id="debian">Debian GNU/Linux</h3>
+    <p>
+      Precompiled binaries are currently available for the i386 architecture.
+      C-Pluff is divided into three separate binary packages and the
+      debianized source package:
+    </p>
+    <dl>
+
+      <dt>cpluff</dt>
+      <dd>the debianized source package</dd>
+    
+      <dt>libcpluff0</dt>
+      <dd>the runtime library and locale data</dd>
+      
+      <dt>cpluff-loader</dt>
+      <dd>C-Pluff Loader, a generic plug-in loader</dd>
+      
+      <dt>libcpluff0-dev</dt>
+      <dd>the development library, header files, documentation, example
+        source code and C-Pluff Console</dd>
+
+    </dl>
+    <p>
+      To be able to install the packages, add the following source
+      specification into /etc/apt/sources.list.
+    </p>
+    <pre class="example">
+deb http://www.c-pluff.org/downloads/debian stable cpluff
+deb-src http://www.c-pluff.org/downloads/debian stable cpluff</pre>
+    <p>
+      You can replace "stable" with "testing", "sarge" or "etch". Currently
+      there is only one set of binaries which can be used with any of the
+      listed Debian releases (not tested with unstable or experimental).
+      The second line is needed only if you want to download the debianized
+      source package.
+    </p>
+    <p>
+      Then run "aptitude update" as root and install selected packages using
+      "aptitude install &lt;package&gt;" (or the interactive user interface).
+      The source package is downloaded by running "apt-get source cpluff".
+    </p>
+    <p>
+      APT checks signatures since Debian GNU/Linux 4.0 (Etch).
+      The C-Pluff distribution has been signed with
+      <a href="http://www.jlehtinen.net/gpg_johannes_lehtinen.asc">my
+        PGP key</a>.
+      If you verify the key and choose to trust me as a software
+      provider (yeah, right ;), you can install the key as a
+      trusted APT key by downloading it and using the command
+      "apt-key add gpg_johannes_lehtinen.asc".
+    </p>
+
+    <h3 id="debian-mingw">MinGW cross-compilation on Debian GNU/Linux</h3>
+    <p>
+      Precompiled binaries are available also for MinGW cross-compilation
+      environment on Debian GNU/Linux. Binaries (and sources) for third
+      party dependencies are also provided. These can be used on Debian
+      GNU/Linux to cross-compile C-Pluff based applications for Windows.
+      The Windows binary distribution (see below) is based on these binaries.
+    </p>
+    <dl>
+
+      <dt>cpluff-mingw</dt>
+      <dd>C-Pluff runtime library, binaries and other material</dd>
+    
+      <dt>cpluff-examples-mingw</dt>
+      <dd>C-Pluff example application binaries</dd>
+      
+      <dt>expat-mingw</dt>
+      <dd>Expat XML parser library runtime library and headers</dd>
+      
+      <dt>libltdl-mingw</dt>
+      <dd>GNU Libtool libltdl runtime library and headers</dd>
+      
+      <dt>gettext-runtime-mingw</dt>
+      <dd>GNU Gettext runtime binaries and headers</dd>
+
+    </dl>
+    <p>
+      To be able to install the packages, add the following source
+      specification into /etc/apt/sources.list. Notice, although these packages
+      are placed in the i386 section, they are actually architecture
+      independent as they target the host platform, i586-mingw32msvc.
+    </p>
+    <pre class="example">
+deb http://www.c-pluff.org/downloads/debian stable cpluff 3rdparty
+deb-src http://www.c-pluff.org/downloads/debian stable cpluff 3rdparty</pre>
+
+    <h3 id="windows">Microsoft Windows</h3>
+    <p>
+      These precompiled binaries are for Microsoft Windows. Download one or
+      more zip files and extract them to the same location. The following
+      describes the ZIP file naming conventions.
+    </p>
+    <dl>
+    
+      <dt>cpluff-VERSION.zip</dt>
+      <dd>C-Pluff runtime library, binaries and other material together
+        with third party binary dependencies (this is a union of the following
+        two packages, so you only need this one or the next two packages)</dd>
+      
+      <dt>cpluff-VERSION-only.zip</dt>
+      <dd>C-Pluff runtime library, binaries and other material</dd>
+      
+      <dt>cpluff-VERSION-deps.zip</dt>
+      <dd>third party binary dependencies</dd>
+      
+      <dt>cpluff-VERSION-examples.zip</dt>
+      <dd>C-Pluff example application binaries</dd>
+    
+    </dl>
+    <p>
+      Download selected packages here.
+    </p>
+    <ul class="downloads">
+      <li>C-Pluff 0.1.3 (Apr 6 2007)
+        <ul>
+          <li><a href="downloads/windows/cpluff-0.1.3.zip">cpluff-0.1.3.zip</a> (1768 KiB, <a href="downloads/windows/cpluff-0.1.3.zip.asc">PGP signature</a>)</li>
+          <li><a href="downloads/windows/cpluff-0.1.3-only.zip">cpluff-0.1.3-only.zip</a> (700 KiB, <a href="downloads/windows/cpluff-0.1.3-only.zip.asc">PGP signature</a>)</li>
+          <li><a href="downloads/windows/cpluff-0.1.3-deps.zip">cpluff-0.1.3-deps.zip</a> (1076 KiB, <a href="downloads/windows/cpluff-0.1.3-deps.zip.asc">PGP signature</a>)</li>
+          <li><a href="downloads/windows/cpluff-0.1.3-examples.zip">cpluff-0.1.3-examples.zip</a> (336 KiB, <a href="downloads/windows/cpluff-0.1.3-examples.zip.asc">PGP signature</a>)</li>
+        </ul>
+      </li>
+    </ul>
+
+    <ul class="menu">
+      <li><a href="/">C-Pluff</a></li>
+      <li><a href="copyright.en.html">License</a></li>
+      <li><a href="reference/c-api/index.html">Documentation</a></li>
+      <li><a href="http://www.c-pluff.org/lists">Mailing lists</a></li>
+      <li>Download</li>
+      <li><a href="http://www.c-pluff.org/repository">Repository</a></li>
+    </ul>
+
+    <p class="footer">
+      Copyright 2007 <a href="http://www.jlehtinen.net/">Johannes Lehtinen</a><br/>
+      Validation:
+        <a href="http://validator.w3.org/check?uri=referer">XHTML Basic 1.0</a>,
+        <a href="http://jigsaw.w3.org/css-validator/check/referer">CSS 2</a>
+    </p>
+
+    </div>
+  </body>
+</html>

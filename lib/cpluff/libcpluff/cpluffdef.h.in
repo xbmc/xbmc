@@ -197,4 +197,8 @@
 
 /*@}*/
 
+#if @DEFINE_EMPTY_CONST@
+#define const
+#endif
+
 #endif /*CPLUFFDEF_H_*/

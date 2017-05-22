@@ -25,6 +25,10 @@
  * Dynamic plug-in symbols
  */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
@@ -241,7 +245,7 @@ CP_C_API void * cp_resolve_symbol(cp_context_t *context, const char *id, const c
 				status = CP_ERR_RESOURCE;
 				break;
 			}
-			cpi_debugf(context, "A dynamic dependency was created from plug-in %s to plug-in %s.", context->plugin->plugin->identifier, pp->plugin->identifier);
+			cpi_debugf(context, N_("A dynamic dependency was created from plug-in %s to plug-in %s."), context->plugin->plugin->identifier, pp->plugin->identifier);
 		}
 		
 		// Increase usage counts
@@ -251,7 +255,7 @@ CP_C_API void * cp_resolve_symbol(cp_context_t *context, const char *id, const c
 		if (cpi_is_logged(context, CP_LOG_DEBUG)) {
 			char owner[64];
 			/* TRANSLATORS: First %s is the context owner */
-			cpi_debugf(context, "%s resolved symbol %s defined by plug-in %s.", cpi_context_owner(context, owner, sizeof(owner)), name, id);
+			cpi_debugf(context, N_("%s resolved symbol %s defined by plug-in %s."), cpi_context_owner(context, owner, sizeof(owner)), name, id);
 		}
 	} while (0);
 
@@ -317,7 +321,7 @@ CP_C_API void cp_release_symbol(cp_context_t *context, const void *ptr) {
 			if (cpi_is_logged(context, CP_LOG_DEBUG)) {
 				char owner[64];
 				/* TRANSLATORS: First %s is the context owner */
-				cpi_debugf(context, _("%s released the symbol at address %p defined by plug-in %s."), cpi_context_owner(context, owner, sizeof(owner)), ptr, provider_info->plugin->plugin->identifier);
+				cpi_debugf(context, N_("%s released the symbol at address %p defined by plug-in %s."), cpi_context_owner(context, owner, sizeof(owner)), ptr, provider_info->plugin->plugin->identifier);
 			}
 		}
 	
@@ -329,7 +333,7 @@ CP_C_API void cp_release_symbol(cp_context_t *context, const void *ptr) {
 			if (!provider_info->imported) {
 				cpi_ptrset_remove(context->plugin->imported, provider_info->plugin);
 				cpi_ptrset_remove(provider_info->plugin->importing, context->plugin);
-				cpi_debugf(context, _("A dynamic dependency from plug-in %s to plug-in %s was removed."), context->plugin->plugin->identifier, provider_info->plugin->plugin->identifier);
+				cpi_debugf(context, N_("A dynamic dependency from plug-in %s to plug-in %s was removed."), context->plugin->plugin->identifier, provider_info->plugin->plugin->identifier);
 			}
 			free(provider_info);
 		}

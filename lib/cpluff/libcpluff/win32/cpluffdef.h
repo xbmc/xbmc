@@ -50,19 +50,19 @@
  * version of the C-Pluff distribution. Compile time software compatibility
  * checks should use #CP_VERSION_MAJOR and #CP_VERSION_MINOR instead.
  */
-#define CP_VERSION "0.1.3"
+#define CP_VERSION "@PACKAGE_VERSION@"
 
 /**
  * The major version number component of the release version. This is an
  * integer.
  */
-#define CP_VERSION_MAJOR 0
+#define CP_VERSION_MAJOR @CP_VERSION_MAJOR@
 
 /**
  * The minor version number component of the release version. This is an
  * integer.
  */
-#define CP_VERSION_MINOR 1
+#define CP_VERSION_MINOR @CP_VERSION_MINOR@
 
 /*@}*/
 

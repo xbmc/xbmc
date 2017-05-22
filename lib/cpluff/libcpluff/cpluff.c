@@ -25,6 +25,10 @@
  * Core framework functions
  */ 
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -135,7 +139,9 @@ CP_C_API cp_status_t cp_init(void) {
 }
 
 CP_C_API void cp_destroy(void) {
-	assert(initialized > 0);
+	if (initialized <= 0) {
+		cpi_fatalf(_("Attempt to destroy uninitialized framework."));
+	}
 	initialized--;
 	if (!initialized) {
 #ifdef CP_THREADS

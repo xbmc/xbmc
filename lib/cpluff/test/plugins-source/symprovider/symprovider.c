@@ -22,6 +22,7 @@
  *-----------------------------------------------------------------------*/
 
 #include <stdlib.h>
+#include <string.h>
 #include <cpluff.h>
 
 typedef struct plugin_data_t plugin_data_t;
