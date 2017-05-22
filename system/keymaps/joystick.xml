@@ -22,7 +22,7 @@
 <!-- More documentation on keymaps can be found on http://kodi.wiki/view/keymaps          -->
 <keymap>
   <global>
-    <joystick>
+    <joystick profile="game.controller.default">
       <a>Select</a>
       <b>Back</b>
       <x>ContextMenu</x>
@@ -51,19 +51,19 @@
     </joystick>
   </global>
   <FileManager>
-    <joystick>
+    <joystick profile="game.controller.default">
       <rightbumper>Highlight</rightbumper>
     </joystick>
   </FileManager>
   <MusicPlaylist>
-    <joystick>
+    <joystick profile="game.controller.default">
       <leftbumper>Delete</leftbumper>
     </joystick>
   </MusicPlaylist>
   <Music>
   </Music>
   <FullscreenVideo>
-    <joystick>
+    <joystick profile="game.controller.default">
       <a>Pause</a>
       <b>Stop</b>
       <x>OSD</x>
@@ -92,7 +92,7 @@
     </joystick>
   </FullscreenVideo>
   <FullscreenGame>
-    <joystick>
+    <joystick profile="game.controller.default">
       <a>noop</a>
       <b>noop</b>
       <x>noop</x>
@@ -121,7 +121,7 @@
     </joystick>
   </FullscreenGame>
   <FullscreenLiveTV>
-    <joystick>
+    <joystick profile="game.controller.default">
       <up>ChannelUp</up>
       <down>ChannelDown</down>
       <left>StepBack</left>
@@ -129,7 +129,7 @@
     </joystick>
   </FullscreenLiveTV>
   <FullscreenRadio>
-    <joystick>
+    <joystick profile="game.controller.default">
       <up>ChannelUp</up>
       <down>ChannelDown</down>
       <left>StepBack</left>
@@ -137,7 +137,7 @@
     </joystick>
   </FullscreenRadio>
   <FullscreenInfo>
-    <joystick>
+    <joystick profile="game.controller.default">
       <b>Close</b>
       <x>OSD</x>
       <start>Close</start>
@@ -148,14 +148,14 @@
     </joystick>
   </FullscreenInfo>
   <PlayerControls>
-    <joystick>
+    <joystick profile="game.controller.default">
       <x>Close</x>
       <leftthumb>Close</leftthumb>
       <rightthumb>Close</rightthumb>
     </joystick>
   </PlayerControls>
   <Visualisation>
-    <joystick>
+    <joystick profile="game.controller.default">
       <a>Pause</a>
       <b>Stop</b>
       <x>ActivateWindow(AddonSettings)</x>
@@ -175,18 +175,18 @@
     </joystick>
   </Visualisation>
   <MusicOSD>
-    <joystick>
+    <joystick profile="game.controller.default">
       <b>Close</b>
       <start>Info</start>
     </joystick>
   </MusicOSD>
   <VisualisationPresetList>
-    <joystick>
+    <joystick profile="game.controller.default">
       <b>Close</b>
     </joystick>
   </VisualisationPresetList>
   <SlideShow>
-    <joystick>
+    <joystick profile="game.controller.default">
       <a>Pause</a>
       <b>Stop</b>
       <y>ZoomNormal</y>
@@ -205,26 +205,26 @@
     </joystick>
   </SlideShow>
   <ScreenCalibration>
-    <joystick>
+    <joystick profile="game.controller.default">
       <x>ResetCalibration</x>
       <leftbumper>NextResolution</leftbumper>
       <rightbumper>NextCalibration</rightbumper>
     </joystick>
   </ScreenCalibration>
   <ScreenCalibration>
-    <joystick>
+    <joystick profile="game.controller.default">
       <x>ResetCalibration</x>
       <leftbumper>NextResolution</leftbumper>
       <rightbumper>NextCalibration</rightbumper>
     </joystick>
   </ScreenCalibration>
   <VideoOSD>
-    <joystick>
+    <joystick profile="game.controller.default">
       <b>Close</b>
     </joystick>
   </VideoOSD>
   <VideoMenu>
-    <joystick>
+    <joystick profile="game.controller.default">
       <b>Stop</b>
       <x>OSD</x>
       <leftbumper>AspectRatio</leftbumper>
@@ -232,31 +232,31 @@
     </joystick>
   </VideoMenu>
   <OSDVideoSettings>
-    <joystick>
+    <joystick profile="game.controller.default">
       <leftbumper>AspectRatio</leftbumper>
       <x>Close</x>
     </joystick>
   </OSDVideoSettings>
   <OSDAudioSettings>
-    <joystick>
+    <joystick profile="game.controller.default">
       <leftbumper>AspectRatio</leftbumper>
       <x>Close</x>
     </joystick>
   </OSDAudioSettings>
   <VideoBookmarks>
-    <joystick>
+    <joystick profile="game.controller.default">
       <leftbumper>Delete</leftbumper>
     </joystick>
   </VideoBookmarks>
   <Videos>
   </Videos>
   <VideoPlaylist>
-    <joystick>
+    <joystick profile="game.controller.default">
       <leftbumper>Delete</leftbumper>
     </joystick>
   </VideoPlaylist>
   <VirtualKeyboard>
-    <joystick>
+    <joystick profile="game.controller.default">
       <b>BackSpace</b>
       <y>Symbols</y>
       <leftbumper>Shift</leftbumper>
@@ -266,70 +266,70 @@
     </joystick>
   </VirtualKeyboard>
   <ContextMenu>
-    <joystick>
+    <joystick profile="game.controller.default">
       <b>Close</b>
     </joystick>
   </ContextMenu>
   <Settings>
-    <joystick>
+    <joystick profile="game.controller.default">
       <b>PreviousMenu</b>
     </joystick>
   </Settings>
   <AddonInformation>
-    <joystick>
+    <joystick profile="game.controller.default">
       <b>Close</b>
     </joystick>
   </AddonInformation>
   <AddonSettings>
-    <joystick>
+    <joystick profile="game.controller.default">
       <b>Close</b>
     </joystick>
   </AddonSettings>
   <TextViewer>
-    <joystick>
+    <joystick profile="game.controller.default">
       <b>Close</b>
     </joystick>
   </TextViewer>
   <shutdownmenu>
-    <joystick>
+    <joystick profile="game.controller.default">
       <b>PreviousMenu</b>
       <leftthumb>PreviousMenu</leftthumb>
     </joystick>
   </shutdownmenu>
   <submenu>
-    <joystick>
+    <joystick profile="game.controller.default">
       <b>PreviousMenu</b>
     </joystick>
   </submenu>
   <MusicInformation>
-    <joystick>
+    <joystick profile="game.controller.default">
       <b>Close</b>
     </joystick>
   </MusicInformation>
   <MovieInformation>
-    <joystick>
+    <joystick profile="game.controller.default">
       <b>Close</b>
     </joystick>
   </MovieInformation>
   <NumericInput>
-    <joystick>
+    <joystick profile="game.controller.default">
       <b>BackSpace</b>
       <leftthumb>Enter</leftthumb>
     </joystick>
   </NumericInput>
   <GamepadInput>
-    <joystick>
+    <joystick profile="game.controller.default">
       <leftthumb>Stop</leftthumb>
     </joystick>
   </GamepadInput>
   <LockSettings>
-    <joystick>
+    <joystick profile="game.controller.default">
       <b>PreviousMenu</b>
       <leftthumb>Close</leftthumb>
     </joystick>
   </LockSettings>
   <ProfileSettings>
-    <joystick>
+    <joystick profile="game.controller.default">
       <b>PreviousMenu</b>
       <leftthumb>Close</leftthumb>
     </joystick>
