@@ -38,10 +38,6 @@
 
 extern "C"
 {
-  struct VFS_PROPS
-  {
-    int dummy;
-  };
 
   struct VFSProperty
   {
@@ -97,6 +93,18 @@ extern "C"
     //! \brief The context to be passed to the callbacks
     void* ctx;
   };
+
+  typedef struct AddonProps_VFSEntry
+  {
+    int dummy;
+  } AddonProps_VFSEntry;
+
+  typedef AddonProps_VFSEntry VFS_PROPS;
+
+  typedef struct AddonToKodiFuncTable_VFSEntry
+  {
+    KODI_HANDLE kodiInstance;
+  } AddonToKodiFuncTable_VFSEntry;
 
   typedef struct KodiToAddonFuncTable_VFSEntry
   {
@@ -253,4 +261,12 @@ extern "C"
                                     int* num_entries,
                                     char* rootpath);
   } KodiToAddonFuncTable_VFSEntry;
+
+  typedef struct AddonInstance_VFSEntry
+  {
+    AddonProps_VFSEntry props;
+    AddonToKodiFuncTable_VFSEntry toKodi;
+    KodiToAddonFuncTable_VFSEntry toAddon;
+  } AddonInstance_VFSEntry;
+
 }

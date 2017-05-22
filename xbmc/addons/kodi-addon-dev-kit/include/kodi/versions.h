@@ -117,8 +117,8 @@
 #define ADDON_INSTANCE_VERSION_SCREENSAVER_DEPENDS    "xbmc_scr_dll.h" \
                                                       "xbmc_scr_types.h"
 
-#define ADDON_INSTANCE_VERSION_VFS                    "1.0.0"
-#define ADDON_INSTANCE_VERSION_VFS_MIN                "1.0.0"
+#define ADDON_INSTANCE_VERSION_VFS                    "1.0.1"
+#define ADDON_INSTANCE_VERSION_VFS_MIN                "1.0.1"
 #define ADDON_INSTANCE_VERSION_VFS_XML_ID             "kodi.binary.instance.vfs"
 #define ADDON_INSTANCE_VERSION_VFS_DEPENDS            "kodi_vfs_dll.h" \
                                                       "kodi_vfs_types.h" \
