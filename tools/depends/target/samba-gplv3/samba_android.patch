@@ -90,7 +90,7 @@ diff -ru nsswitch/libwbclient/wbc_sid.c nsswitch/libwbclient/wbc_sid.c
 diff -ru source3/configure source3/configure
 --- source3/configure	2013-01-29 10:21:59.000000000 +0100
 +++ source3/configure	2015-03-28 08:43:34.903227582 +0100
-@@ -22645,7 +22645,7 @@
+@@ -22424,7 +22424,7 @@
  LIBSMBCLIENT_SOVER=0
  LIBSMBCLIENT_FULLVER=$LIBSMBCLIENT_SOVER
  
@@ -99,7 +99,7 @@ diff -ru source3/configure source3/configure
  LIBSMBCLIENT_SHARED_TARGET_FULLVER=$LIBSMBCLIENT_SHARED_TARGET.$LIBSMBCLIENT_FULLVER
  
  
-@@ -37803,19 +37803,19 @@
+@@ -37580,19 +37580,19 @@
  if test "x$ac_cv_lib_pthread_pthread_attr_init" = xyes; then :
  
  	     PTHREAD_CFLAGS="-D_REENTRANT -D_POSIX_PTHREAD_SEMANTICS"
@@ -123,7 +123,7 @@ diff -ru source3/configure source3/configure
  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
  /* end confdefs.h.  */
  
-@@ -37848,7 +37848,7 @@
+@@ -37625,7 +37625,7 @@
  if test "x$ac_cv_lib_pthreads_pthread_attr_init" = xyes; then :
  
  	     PTHREAD_CFLAGS="-D_THREAD_SAFE"
@@ -167,7 +167,7 @@ diff -ru lib/addns/dnsquery.c lib/addns/dnsquery.c
 diff -ru source3/passdb/passdb.c source3/passdb/passdb.c
 --- source3/Makefile.in
 +++ source3/Makefile.in
-@@ -2410,8 +2410,6 @@
+@@ -2426,8 +2426,6 @@
  		@SONAMEFLAG@`basename $@`
  
  $(LIBSMBCLIENT_SHARED_TARGET): $(LIBSMBCLIENT_SHARED_TARGET_SONAME)
@@ -176,7 +176,7 @@ diff -ru source3/passdb/passdb.c source3/passdb/passdb.c
  
  $(LIBSMBCLIENT_STATIC_TARGET): $(BINARY_PREREQS) $(LIBSMBCLIENT_OBJ1)
  	@echo Linking non-shared library $@
-@@ -2428,11 +2426,6 @@
+@@ -2444,11 +2442,6 @@
  installlibsmbclient:: installdirs libsmbclient
  	@$(SHELL) $(srcdir)/script/installdirs.sh $(INSTALLPERMS_BIN) $(DESTDIR) $(LIBDIR)
  	-$(INSTALLLIBCMD_SH) $(LIBSMBCLIENT_SHARED_TARGET_SONAME) $(DESTDIR)$(LIBDIR)
@@ -216,7 +216,7 @@ diff -ru source3/passdb/passdb.c source3/passdb/passdb.c
 diff -ru source3/passdb/pdb_interface.c source3/passdb/pdb_interface.c
 --- source3/passdb/pdb_interface.c	2013-01-29 09:49:31.000000000 +0100
 +++ source3/passdb/pdb_interface.c	2015-03-28 08:30:54.547217284 +0100
-@@ -1563,6 +1563,7 @@
+@@ -1570,6 +1570,7 @@
  	}
  
  	/* Primary group members */
@@ -224,7 +224,7 @@ diff -ru source3/passdb/pdb_interface.c source3/passdb/pdb_interface.c
  	setpwent();
  	while ((pwd = getpwent()) != NULL) {
  		if (pwd->pw_gid == gid) {
-@@ -1573,6 +1574,7 @@
+@@ -1580,6 +1581,7 @@
  		}
  	}
  	endpwent();
