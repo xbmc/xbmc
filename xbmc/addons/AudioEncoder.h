@@ -45,8 +45,7 @@ namespace ADDON
 
   private:
     void *m_context; ///< audio encoder context
-    AUDIOENC_PROPS m_info;
-    KodiToAddonFuncTable_AudioEncoder m_struct;
+    AddonInstance_AudioEncoder m_struct;
   };
 
 } /*namespace ADDON*/

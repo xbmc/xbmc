@@ -63,8 +63,8 @@
                                                       "kodi_adsp_types.h" \
                                                       "libKODI_adsp.h"
 
-#define ADDON_INSTANCE_VERSION_AUDIODECODER           "1.0.0"
-#define ADDON_INSTANCE_VERSION_AUDIODECODER_MIN       "1.0.0"
+#define ADDON_INSTANCE_VERSION_AUDIODECODER           "1.0.1"
+#define ADDON_INSTANCE_VERSION_AUDIODECODER_MIN       "1.0.1"
 #define ADDON_INSTANCE_VERSION_AUDIODECODER_XML_ID    "kodi.binary.instance.audiodecoder"
 #define ADDON_INSTANCE_VERSION_AUDIODECODER_DEPENDS   "kodi_audiodec_dll.h" \
                                                       "kodi_audiodec_types.h"

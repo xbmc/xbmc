@@ -56,4 +56,3 @@ extern "C"
     KodiToAddonFuncTable_Screensaver toAddon;
   } AddonInstance_Screensaver;
 }
-
