@@ -45,8 +45,7 @@ private:
   std::string m_presets; /*!< To add-on sended preset path */
   std::string m_profile; /*!< To add-on sended profile path */
 
-  SCR_PROPS m_info;
-  KodiToAddonFuncTable_Screensaver m_struct;
+  AddonInstance_Screensaver m_struct;
 };
 
 } /* namespace ADDON */
