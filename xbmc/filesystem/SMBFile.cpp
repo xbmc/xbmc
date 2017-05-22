@@ -118,7 +118,6 @@ void CSMB::Init()
         fprintf(f, "\tclient lanman auth = yes\n");
         fprintf(f, "\tlanman auth = yes\n");
 
-        fprintf(f, "\tsocket options = TCP_NODELAY IPTOS_LOWDELAY SO_RCVBUF=65536 SO_SNDBUF=65536\n");      
         fprintf(f, "\tlock directory = %s/.smb/\n", getenv("HOME"));
 
         // set wins server if there's one. name resolve order defaults to 'lmhosts host wins bcast'.
@@ -503,15 +502,6 @@ ssize_t CSMBFile::Read(void *lpBuf, size_t uiBufSize)
 
   CSingleLock lock(smb); // Init not called since it has to be "inited" by now
   smb.SetActivityTime();
-  /* work around stupid bug in samba */
-  /* some samba servers has a bug in it where the */
-  /* 17th bit will be ignored in a request of data */
-  /* this can lead to a very small return of data */
-  /* also worse, a request of exactly 64k will return */
-  /* as if eof, client has a workaround for windows */
-  /* thou it seems other servers are affected too */
-  if( uiBufSize >= 64*1024-2 )
-    uiBufSize = 64*1024-2;
 
   ssize_t bytesRead = smbc_read(m_fd, lpBuf, (int)uiBufSize);
 
