@@ -34,9 +34,20 @@
 
 extern "C" FARPROC WINAPI dllWin32GetProcAddress(HMODULE hModule, LPCSTR function);
 
+//dllLoadLibraryA, dllFreeLibrary, dllGetProcAddress are from dllLoader,
+//they are wrapper functions of COFF/PE32 loader.
+extern "C" HMODULE WINAPI dllLoadLibraryA(LPCSTR libname);
+extern "C" HMODULE WINAPI dllLoadLibraryExA(LPCSTR lpLibFileName, HANDLE hFile, DWORD dwFlags);
+extern "C" BOOL WINAPI dllFreeLibrary(HINSTANCE hLibModule);
+extern "C" FARPROC WINAPI dllGetProcAddress(HMODULE hModule, LPCSTR function);
+extern "C" HMODULE WINAPI dllGetModuleHandleA(LPCSTR lpModuleName);
+extern "C" DWORD WINAPI dllGetModuleFileNameA(HMODULE hModule, LPSTR lpFilename, DWORD nSize);
+
 // our exports
 Export win32_exports[] =
 {
+  { "LoadLibraryA",                                 -1, (void*)dllLoadLibraryA,                              (void*)track_LoadLibraryA },
+  { "FreeLibrary",                                  -1, (void*)dllFreeLibrary,                               (void*)track_FreeLibrary },
 // msvcrt
   { "_close",                     -1, (void*)dll_close,                     (void*)track_close},
   { "_lseek",                     -1, (void*)dll_lseek,                     NULL },
@@ -245,7 +256,7 @@ void Win32DllLoader::OverrideImports(const std::string &dll)
       // this will do a loadlibrary on it, which should effectively make sure that it's hooked
       // Note that the library has obviously already been loaded by the OS (as it's implicitly linked)
       // so all this will do is insert our hook and make sure our DllLoaderContainer knows about it
-      auto hModule = LoadLibraryW(ToW(dllName).c_str());
+      auto hModule = dllLoadLibraryA(dllName);
       if (hModule)
         m_referencedDlls.push_back(hModule);
     }
@@ -318,7 +329,7 @@ void Win32DllLoader::RestoreImports()
 {
   // first unhook any referenced dll's
   for (auto& module : m_referencedDlls)
-    FreeLibrary(module);
+    dllFreeLibrary(module);
   m_referencedDlls.clear();
 
   for (auto& import : m_overriddenImports)
