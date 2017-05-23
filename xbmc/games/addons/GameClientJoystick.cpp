@@ -18,7 +18,7 @@
  *
  */
 
-#include "GameClientInput.h"
+#include "GameClientJoystick.h"
 #include "GameClient.h"
 #include "games/controllers/Controller.h"
 #include "input/joysticks/IInputReceiver.h"
@@ -30,7 +30,7 @@
 using namespace KODI;
 using namespace GAME;
 
-CGameClientInput::CGameClientInput(CGameClient* gameClient, int port, const ControllerPtr& controller, const KodiToAddonFuncTable_Game *dllStruct) :
+CGameClientJoystick::CGameClientJoystick(CGameClient* gameClient, int port, const ControllerPtr& controller, const KodiToAddonFuncTable_Game *dllStruct) :
   m_gameClient(gameClient),
   m_port(port),
   m_controller(controller),
@@ -40,12 +40,12 @@ CGameClientInput::CGameClientInput(CGameClient* gameClient, int port, const Cont
   assert(m_controller.get() != NULL);
 }
 
-std::string CGameClientInput::ControllerID(void) const
+std::string CGameClientJoystick::ControllerID(void) const
 {
   return m_controller->ID();
 }
 
-bool CGameClientInput::HasFeature(const std::string& feature) const
+bool CGameClientJoystick::HasFeature(const std::string& feature) const
 {
   try
   {
@@ -59,12 +59,12 @@ bool CGameClientInput::HasFeature(const std::string& feature) const
   return false;
 }
 
-bool CGameClientInput::AcceptsInput(void)
+bool CGameClientJoystick::AcceptsInput(void)
 {
   return m_gameClient->AcceptsInput();
 }
 
-JOYSTICK::INPUT_TYPE CGameClientInput::GetInputType(const std::string& feature) const
+JOYSTICK::INPUT_TYPE CGameClientJoystick::GetInputType(const std::string& feature) const
 {
   const std::vector<CControllerFeature>& features = m_controller->Layout().Features();
 
@@ -77,7 +77,7 @@ JOYSTICK::INPUT_TYPE CGameClientInput::GetInputType(const std::string& feature) 
   return JOYSTICK::INPUT_TYPE::UNKNOWN;
 }
 
-bool CGameClientInput::OnButtonPress(const std::string& feature, bool bPressed)
+bool CGameClientJoystick::OnButtonPress(const std::string& feature, bool bPressed)
 {
   bool bHandled = false;
 
@@ -103,7 +103,7 @@ bool CGameClientInput::OnButtonPress(const std::string& feature, bool bPressed)
   return bHandled;
 }
 
-bool CGameClientInput::OnButtonMotion(const std::string& feature, float magnitude)
+bool CGameClientJoystick::OnButtonMotion(const std::string& feature, float magnitude)
 {
   bool bHandled = false;
 
@@ -129,7 +129,7 @@ bool CGameClientInput::OnButtonMotion(const std::string& feature, float magnitud
   return bHandled;
 }
 
-bool CGameClientInput::OnAnalogStickMotion(const std::string& feature, float x, float y, unsigned int motionTimeMs /* = 0 */)
+bool CGameClientJoystick::OnAnalogStickMotion(const std::string& feature, float x, float y, unsigned int motionTimeMs /* = 0 */)
 {
   bool bHandled = false;
 
@@ -156,7 +156,7 @@ bool CGameClientInput::OnAnalogStickMotion(const std::string& feature, float x, 
   return bHandled;
 }
 
-bool CGameClientInput::OnAccelerometerMotion(const std::string& feature, float x, float y, float z)
+bool CGameClientJoystick::OnAccelerometerMotion(const std::string& feature, float x, float y, float z)
 {
   bool bHandled = false;
 
@@ -184,7 +184,7 @@ bool CGameClientInput::OnAccelerometerMotion(const std::string& feature, float x
   return bHandled;
 }
 
-bool CGameClientInput::SetRumble(const std::string& feature, float magnitude)
+bool CGameClientJoystick::SetRumble(const std::string& feature, float magnitude)
 {
   bool bHandled = false;
 

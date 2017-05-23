@@ -21,7 +21,7 @@
 #include "GameClient.h"
 #include "GameClientCallbacks.h"
 #include "GameClientInGameSaves.h"
-#include "GameClientInput.h"
+#include "GameClientJoystick.h"
 #include "GameClientKeyboard.h"
 #include "GameClientMouse.h"
 #include "GameClientTranslator.h"
@@ -749,7 +749,7 @@ bool CGameClient::OpenPort(unsigned int port)
     //! @todo Choose controller
     ControllerPtr& controller = controllers[0];
 
-    m_ports[port].reset(new CGameClientInput(this, port, controller, &m_struct.toAddon));
+    m_ports[port].reset(new CGameClientJoystick(this, port, controller, &m_struct.toAddon));
 
     // If keyboard input is being captured by this add-on, force the port type to PERIPHERAL_JOYSTICK
     PERIPHERALS::PeripheralType device = PERIPHERALS::PERIPHERAL_UNKNOWN;

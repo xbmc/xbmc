@@ -40,7 +40,7 @@ namespace GAME
 {
 
 class CGameClientInGameSaves;
-class CGameClientInput;
+class CGameClientJoystick;
 class CGameClientKeyboard;
 class CGameClientMouse;
 class IGameAudioCallback;
@@ -192,7 +192,7 @@ private:
   std::unique_ptr<CGameClientInGameSaves> m_inGameSaves;
 
   // Input
-  std::map<int, std::unique_ptr<CGameClientInput>> m_ports;
+  std::map<int, std::unique_ptr<CGameClientJoystick>> m_ports;
   std::unique_ptr<CGameClientKeyboard> m_keyboard;
   std::unique_ptr<CGameClientMouse> m_mouse;
 
