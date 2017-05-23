@@ -258,7 +258,7 @@ unsigned int CAEEncoderFFmpeg::GetFrames()
 
 int CAEEncoderFFmpeg::Encode(uint8_t *in, int in_size, uint8_t *out, int out_size)
 {
-  int got_output;
+  int got_output = 0;
   AVFrame *frame;
 
   if (!m_CodecCtx)
@@ -285,7 +285,13 @@ int CAEEncoderFFmpeg::Encode(uint8_t *in, int in_size, uint8_t *out, int out_siz
   m_Pkt.data = out;
 
   /* encode it */
-  int ret = avcodec_encode_audio2(m_CodecCtx, &m_Pkt, frame, &got_output);
+  int ret = avcodec_send_frame(m_CodecCtx, frame);
+
+  if (ret >= 0)
+    ret = avcodec_receive_packet(m_CodecCtx, &m_Pkt);
+
+  if (ret >= 0)
+    got_output = 1;
 
   /* free temporary data */
   av_frame_free(&frame);
