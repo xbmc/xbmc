@@ -1,14 +1,14 @@
 --- lib/util/become_daemon.c
 +++ lib/util/become_daemon.c
-@@ -76,7 +76,7 @@
- _PUBLIC_ void become_daemon(bool do_fork, bool no_process_group, bool log_stdout)
+@@ -80,7 +80,7 @@
  {
+ 	pid_t newpid;
  	if (do_fork) {
--		if (fork()) {
-+		if (-1) {
- 			_exit(0);
- 		}
- 	}
+-		newpid = fork();
++		newpid = -1;
+ 		if (newpid) {
+ #if HAVE_SYSTEMD
+ 			sd_notifyf(0, "READY=0\nSTATUS=Starting process...\nMAINPID=%lu", (unsigned long) newpid);
 --- lib/util/fault.c
 +++ lib/util/fault.c
 @@ -131,7 +131,7 @@
@@ -62,7 +62,7 @@
  				  "'%s': %s\n", command, strerror(errno)));
 --- source3/lib/util.c.orig	2015-12-12 18:01:38.000000000 +0100
 +++ source3/lib/util.c	2015-12-12 18:01:58.000000000 +0100
-@@ -820,7 +820,7 @@
+@@ -795,7 +795,7 @@
  	cmd = lp_panic_action(talloc_tos());
  	if (cmd && *cmd) {
  		DEBUG(0, ("smb_panic(): calling panic action [%s]\n", cmd));
@@ -93,7 +93,7 @@
  	return fd[0];
 --- source3/lib/smbrun.c.orig	2015-12-12 18:00:04.000000000 +0100
 +++ source3/lib/smbrun.c	2015-12-12 18:00:57.000000000 +0100
-@@ -93,7 +93,7 @@
+@@ -97,7 +97,7 @@
  
  	saved_handler = CatchChildLeaveStatus();
                                     	
@@ -102,7 +102,7 @@
  		DEBUG(0,("smbrun: fork failed with error %s\n", strerror(errno) ));
  		(void)CatchSignal(SIGCLD, saved_handler);
  		if (outfd) {
-@@ -193,8 +193,8 @@
+@@ -197,8 +197,8 @@
  				exit(82);
  		}
  
@@ -113,7 +113,7 @@
  
  		SAFE_FREE(newcmd);
  	}
-@@ -257,7 +257,7 @@
+@@ -261,7 +261,7 @@
  
  	saved_handler = CatchChildLeaveStatus();
                                     	
@@ -122,7 +122,7 @@
  		DEBUG(0, ("smbrunsecret: fork failed with error %s\n", strerror(errno)));
  		(void)CatchSignal(SIGCLD, saved_handler);
  		return errno;
-@@ -345,7 +345,7 @@
+@@ -349,7 +349,7 @@
  	}
  #endif
  
