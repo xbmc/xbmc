@@ -308,7 +308,11 @@ bool CFile::Open(const CURL& file, const unsigned int flags)
         return m_pFile->Open(url);
       }
     }
-    m_pFile = CFileFactory::CreateLoader(url);
+
+    if (m_pFile)
+      m_pFile->Close();
+    else
+      m_pFile = CFileFactory::CreateLoader(url);
 
     if (!m_pFile)
       return false;
