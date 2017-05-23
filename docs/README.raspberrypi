@@ -35,7 +35,7 @@ build for the first Raspberry Pi, the commands have to be adapted to use
     $ sudo mkdir -p /opt/kodi-bcm
     $ sudo chmod 777 /opt/kodi-bcm
 
-    $ git clone https://github.com/xbmc/xbmc
+    $ git clone https://github.com/xbmc/xbmc kodi
 
     $ cd xbmc/tools/depends
     $ ./bootstrap
