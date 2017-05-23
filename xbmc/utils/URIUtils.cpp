@@ -481,7 +481,9 @@ std::string URIUtils::ChangeBasePath(const std::string &fromPath, const std::str
 CURL URIUtils::SubstitutePath(const CURL& url, bool reverse /* = false */)
 {
   const std::string pathToUrl = url.Get();
-  return CURL(SubstitutePath(pathToUrl, reverse));
+  CURL url_tmp(CURL(SubstitutePath(pathToUrl, reverse)));
+  url_tmp.SetCustomRequest(url.GetCustomRequest());
+  return url_tmp;
 }
 
 std::string URIUtils::SubstitutePath(const std::string& strPath, bool reverse /* = false */)

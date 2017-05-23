@@ -243,6 +243,11 @@ bool CFile::CURLAddOption(XFILE::CURLOPTIONTYPE type, const char* name, const ch
     m_curl.SetOption(name, value);
     break;
   }
+  case XFILE::CURL_OPTION_REQUEST:
+  {
+    m_curl.SetCustomRequest(value);
+    break;
+  }
   default:
     return false;
   }

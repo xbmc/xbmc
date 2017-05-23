@@ -783,6 +783,7 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
     // get username and password
     m_username = url2.GetUserName();
     m_password = url2.GetPassWord();
+    m_customrequest = url2.GetCustomRequest();
 
     // handle any protocol options
     std::map<std::string, std::string> options;

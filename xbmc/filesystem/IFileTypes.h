@@ -77,10 +77,16 @@ typedef enum {
 
 enum CURLOPTIONTYPE
 {
-  CURL_OPTION_OPTION,     /**< Set a general option   */
-  CURL_OPTION_PROTOCOL,   /**< Set a protocol option  */
-  CURL_OPTION_CREDENTIALS,/**< Set User and password  */
-  CURL_OPTION_HEADER      /**< Add a Header           */
+  /**< Set a general option   */
+  CURL_OPTION_OPTION,
+  /**< Set a protocol option  */
+  CURL_OPTION_PROTOCOL,
+  /**< Set User and password  */
+  CURL_OPTION_CREDENTIALS,
+  /**< Add a Header           */
+  CURL_OPTION_HEADER,
+  /**< Set CustomRequest      */
+  CURL_OPTION_REQUEST
 };
 
 }
