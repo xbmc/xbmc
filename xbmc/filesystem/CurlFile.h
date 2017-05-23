@@ -24,11 +24,17 @@
 #include <map>
 #include <string>
 #include "utils/HttpHeader.h"
+#include <curl/curlver.h>
 
 namespace XCURL
 {
+#if LIBCURL_VERSION_NUM >= 0x073200
+  typedef struct Curl_easy CURL_HANDLE;
+  typedef struct Curl_multi CURLM;
+#else
   typedef void CURL_HANDLE;
   typedef void CURLM;
+#endif
   struct curl_slist;
 }
 
