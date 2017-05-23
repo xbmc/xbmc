@@ -75,7 +75,7 @@ bool CPeripheralJoystick::InitialiseFeature(const PeripheralFeature feature)
         InitializeDeadzoneFiltering();
 
         // Give joystick monitor priority over default controller
-        RegisterJoystickInputHandler(&m_defaultController);
+        RegisterJoystickInputHandler(&m_defaultController, false);
         RegisterJoystickDriverHandler(&m_joystickMonitor, false);
       }
     }

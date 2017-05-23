@@ -93,31 +93,9 @@
   </FullscreenVideo>
   <FullscreenGame>
     <joystick profile="game.controller.default">
-      <a>noop</a>
-      <b>noop</b>
-      <x>noop</x>
-      <y>noop</y>
-      <start>noop</start>
-      <back>noop</back>
-      <!--<guide>noop</guide>-->
-      <up>noop</up>
-      <down>noop</down>
-      <right>noop</right>
-      <left>noop</left>
-      <leftthumb>noop</leftthumb>
-      <rightthumb>noop</rightthumb>
-      <lefttrigger>noop</lefttrigger>
-      <righttrigger>noop</righttrigger>
-      <leftbumper>noop</leftbumper>
-      <rightbumper>noop</rightbumper>
-      <leftstickleft>noop</leftstickleft>
-      <leftstickright>noop</leftstickright>
-      <leftstickup>noop</leftstickup>
-      <leftstickdown>noop</leftstickdown>
-      <rightstickleft>noop</rightstickleft>
-      <rightstickright>noop</rightstickright>
-      <rightstickup>noop</rightstickup>
-      <rightstickdown>noop</rightstickdown>
+      <start holdtime="1000">OSD</start>
+      <back holdtime="1000">OSD</back>
+      <guide holdtime="1000">OSD</guide>
     </joystick>
   </FullscreenGame>
   <FullscreenLiveTV>

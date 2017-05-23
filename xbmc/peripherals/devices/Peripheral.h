@@ -199,7 +199,7 @@ namespace PERIPHERALS
     virtual void RegisterJoystickDriverHandler(KODI::JOYSTICK::IDriverHandler* handler, bool bPromiscuous) { }
     virtual void UnregisterJoystickDriverHandler(KODI::JOYSTICK::IDriverHandler* handler) { }
 
-    virtual void RegisterJoystickInputHandler(KODI::JOYSTICK::IInputHandler* handler);
+    virtual void RegisterJoystickInputHandler(KODI::JOYSTICK::IInputHandler* handler, bool bPromiscuous);
     virtual void UnregisterJoystickInputHandler(KODI::JOYSTICK::IInputHandler* handler);
 
     virtual void RegisterJoystickButtonMapper(KODI::JOYSTICK::IButtonMapper* mapper);

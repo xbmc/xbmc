@@ -42,6 +42,7 @@ namespace PERIPHERALS
 
 namespace GAME
 {
+  class CGameClient;
   class CPortMapper;
 
   /*!
@@ -61,10 +62,12 @@ namespace GAME
      *        specified handler.
      *
      * \param handler      The instance accepting all input delivered to the port
+     * \param gameClient   The game client opening the port
      * \param port         The port number belonging to the game client
      * \param requiredType Used to restrict port to devices of only a certain type
      */
     void OpenPort(KODI::JOYSTICK::IInputHandler* handler,
+                  CGameClient* gameClient,
                   unsigned int port,
                   PERIPHERALS::PeripheralType requiredType = PERIPHERALS::PERIPHERAL_UNKNOWN);
 
@@ -86,7 +89,10 @@ namespace GAME
      * attempt to honor that request.
      */
     void MapDevices(const PERIPHERALS::PeripheralVector& devices,
-                    std::map<PERIPHERALS::PeripheralPtr, KODI::JOYSTICK::IInputHandler*>& deviceToPortMap);
+                    std::map<PERIPHERALS::CPeripheral*, KODI::JOYSTICK::IInputHandler*>& deviceToPortMap);
+
+    //! @todo Return game client from MapDevices()
+    CGameClient* GameClient(KODI::JOYSTICK::IInputHandler* handler);
 
   private:
     KODI::JOYSTICK::IInputHandler* AssignToPort(const PERIPHERALS::PeripheralPtr& device, bool checkPortNumber = true);
@@ -99,6 +105,7 @@ namespace GAME
       unsigned int                port;    // Port number belonging to the game client
       PERIPHERALS::PeripheralType requiredType;
       void*                       device;
+      CGameClient*                gameClient;
     };
 
     std::vector<SPort> m_ports;
