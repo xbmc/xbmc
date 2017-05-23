@@ -655,8 +655,9 @@ bool CGUIMediaWindow::GetDirectory(const std::string &strDirectory, CFileItemLis
     CAddonMgr::GetInstance().UpdateLastUsed(pathToUrl.GetHostName());
 
   // see if we can load a previously cached folder
+  // skip in case of plugin content as this needs the latest content
   CFileItemList cachedItems(strDirectory);
-  if (!strDirectory.empty() && cachedItems.Load(GetID()))
+  if (!strDirectory.empty() && cachedItems.Load(GetID()) && !pathToUrl.IsProtocol("plugin"))
   {
     items.Assign(cachedItems);
   }
