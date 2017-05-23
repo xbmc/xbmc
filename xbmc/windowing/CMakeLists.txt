@@ -18,7 +18,7 @@ if (NOT MIR_FOUND)
     list(APPEND HEADERS WinEventsX11.h)
   endif()
 
-  if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
+  if(CMAKE_SYSTEM_NAME STREQUAL Linux AND NOT SDL_FOUND AND NOT X_FOUND)
     list(APPEND SOURCES WinEventsLinux.cpp)
     list(APPEND HEADERS WinEventsLinux.h)
   endif()
