@@ -7645,8 +7645,32 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
         break;
       case SYSTEM_HAS_ADDON:
       {
-        AddonPtr addon;
-        bReturn = CAddonMgr::GetInstance().GetAddon(m_stringParameters[info.GetData1()],addon) && addon;
+        std::string param = m_stringParameters[info.GetData1()];
+        // check if parameter is a specific addon or addon type
+        ADDON::TYPE type = ADDON::TranslateType(param);
+        switch (type)
+        {
+          // type is unknown, lookup if the specific addon is installed
+          case ADDON::ADDON_UNKNOWN:
+            AddonPtr addon;
+            bReturn = CAddonMgr::GetInstance().GetAddon(param, addon) && addon;
+            break;
+
+          // check if at least one addon of the given type is installed
+          case ADDON::ADDON_PVRDLL:
+          case ADDON::ADDON_ADSPDLL:
+          case ADDON::ADDON_PERIPHERALDLL:
+            // use binary addon cache for lookup
+            VECADDONS pvrAddons;
+            CBinaryAddonCache &addonCache = CServiceBroker::GetBinaryAddonCache();
+            addonCache.GetAddons(pvrAddons, type);
+            bReturn = (pvrAddons.size() > 0);
+            break;
+          default:
+            // ask the addon manager for every other type
+            bReturn = CAddonMgr::GetInstance().HasInstalledAddons(type);
+            break;
+        }
         break;
       }
       case CONTAINER_SCROLL_PREVIOUS:
