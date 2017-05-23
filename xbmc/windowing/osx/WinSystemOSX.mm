@@ -268,7 +268,7 @@ CGDisplayModeRef BestMatchForMode(CGDirectDisplayID display, size_t bitsPerPixel
     if(DisplayBitsPerPixelForMode(mode) != bitsPerPixel)
       continue;
     
-    if((CGDisplayModeGetWidth(mode) >= width) && (CGDisplayModeGetHeight(mode) >= height))
+    if((CGDisplayModeGetWidth(mode) == width) && (CGDisplayModeGetHeight(mode) == height))
     {
       CGDisplayModeRelease(displayMode); // release the copy we got before ...
       displayMode = mode;
@@ -286,7 +286,7 @@ CGDisplayModeRef BestMatchForMode(CGDirectDisplayID display, size_t bitsPerPixel
       if(DisplayBitsPerPixelForMode(mode) >= bitsPerPixel)
         continue;
       
-      if((CGDisplayModeGetWidth(mode) >= width) && (CGDisplayModeGetHeight(mode) >= height))
+      if((CGDisplayModeGetWidth(mode) == width) && (CGDisplayModeGetHeight(mode) == height))
       {
         displayMode = mode;
         match = true;
