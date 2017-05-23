@@ -4983,7 +4983,10 @@ bool CApplication::SwitchToFullScreen(bool force /* = false */)
 
 void CApplication::Minimize()
 {
-  g_Windowing.Minimize();
+#if !defined(TARGET_DARWIN_IOS)
+  if (!g_application.IsStandAlone())
+#endif
+    g_Windowing.Minimize();
 }
 
 std::string CApplication::GetCurrentPlayer()
