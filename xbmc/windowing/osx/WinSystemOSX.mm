@@ -1305,6 +1305,21 @@ bool CWinSystemOSX::SwitchToVideoMode(int width, int height, double refreshrate,
     if (!match)
       dispMode = BestMatchForMode(display_id, 16, width, height, match);
 
+    // still no match? fallback to current resolution of the display which HAS to work [tm]
+    if (!match)
+    {
+      int tmpWidth;
+      int tmpHeight;
+      double tmpRefresh;
+
+      GetScreenResolution(&tmpWidth, &tmpHeight, &tmpRefresh, screenIdx);
+      dispMode = GetMode(tmpWidth, tmpHeight, tmpRefresh, screenIdx);
+
+      // no way to get a resolution set
+      if (!dispMode)
+        return false;
+    }
+
     if (!match)
       return false;
   }
