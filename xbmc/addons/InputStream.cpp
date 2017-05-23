@@ -181,6 +181,21 @@ bool CInputStream::Supports(const CFileItem &fileitem)
       return true;
   }
 
+  // check extensions
+  for (auto ext : m_extensionsList)
+  {
+    if (ext.empty())
+      continue;
+
+    if (StringUtils::EndsWith(fileitem.GetPath(), ext)) {
+      return true;
+    }
+
+    if ((protocol == "http" || protocol == "https") && fileitem.GetPath().find(ext + "?") != std::string::npos) {
+      return true;
+    }
+  }
+
   // check paths
   CSingleLock lock(m_parentSection);
   auto it = m_configMap.find(ID());
