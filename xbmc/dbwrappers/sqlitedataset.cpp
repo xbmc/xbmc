@@ -232,10 +232,12 @@ int SqliteDatabase::connect(bool create) {
       {
         if (file.GetLength() == 0)
         {
+          file.Close();
           CLog::Log(LOGWARNING, "Found zero byte SQLite database, deleting %s", db_fullpath.c_str());
           CFile::Delete(db_fullpath.c_str());
         }
-        file.Close();
+        else
+          file.Close();
       }
     }
 
