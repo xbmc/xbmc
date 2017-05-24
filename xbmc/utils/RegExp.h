@@ -22,6 +22,8 @@
 #ifndef REGEXP_H
 #define REGEXP_H
 
+//! @todo - move to std::regex (after switching to gcc 4.9 or higher) and get rid of CRegExp
+
 #include <string>
 #include <vector>
 

@@ -21,7 +21,6 @@
 #include "ZipManager.h"
 
 #include <algorithm>
-#include <regex>
 #include <utility>
 
 #include "File.h"
@@ -31,6 +30,7 @@
 #include "utils/CharsetConverter.h"
 #include "utils/EndianSwap.h"
 #include "utils/log.h"
+#include "utils/RegExp.h"
 #include "utils/URIUtils.h"
 
 using namespace XFILE;
@@ -175,6 +175,9 @@ bool CZipManager::GetZipList(const CURL& url, std::vector<SZipEntry>& items)
   // Go to the start of central directory
   mFile.Seek(cdirOffset,SEEK_SET);
 
+  CRegExp pathTraversal;
+  pathTraversal.RegComp(PATH_TRAVERSAL);
+
   char temp[CHDR_SIZE];
   while (mFile.GetPosition() < cdirOffset + cdirSize)
   {
@@ -206,7 +209,7 @@ bool CZipManager::GetZipList(const CURL& url, std::vector<SZipEntry>& items)
     // Jump after central file header extra field and file comment
     mFile.Seek(ze.eclength + ze.clength,SEEK_CUR);
 
-    if (!std::regex_search(strName, PATH_TRAVERSAL))
+    if (pathTraversal.RegFind(strName) < 0)
       items.push_back(ze);
   }
 
