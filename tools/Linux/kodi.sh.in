@@ -26,7 +26,7 @@ exec_prefix="@exec_prefix@"
 datarootdir="@datarootdir@"
 LIBDIR="@libdir@"
 CRASHLOG_DIR=${CRASHLOG_DIR:-$HOME}
-USERDATA_DIR="${HOME}/.${bin_name}"
+USERDATA_DIR="${HOME}/.config/${bin_name}"
 
 
 # Workaround for high CPU load with nvidia GFX
@@ -60,6 +60,17 @@ migrate_home()
       mv ${HOME}/.xbmc $USERDATA_DIR
       touch ${USERDATA_DIR}/.kodi_data_was_migrated
   fi
+  # This is the standard on Mageia Linux 5.
+  if [ -d "${HOME}/.kodi" ] && [ ! -d "${USERDATA_DIR}" ] && [ ! -L ${HOME}/.kodi ]; then
+      if [ ! -d ${HOME}/.config ]; then
+        mkdir ${HOME}/.config
+      fi
+        echo "INFO: moving userdata folder. Moving ${HOME}/.kodi to $USERDATA_DIR"
+        mv ${HOME}/.kodi $USERDATA_DIR
+        # Make a symlink for backwards compatability to be on the safe side
+        ln -sf $USERDATA_DIR ${HOME}/.kodi
+        touch ${USERDATA_DIR}/.kodi_data_was_moved
+   fi
 }
 
 command_exists()
