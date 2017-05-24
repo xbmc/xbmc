@@ -32,14 +32,13 @@
 #define ECDREC_SIZE 22
 
 #include <memory.h>
-#include <regex>
 #include <string>
 #include <vector>
 #include <map>
 
 class CURL;
 
-static const std::regex PATH_TRAVERSAL(R"_((^|\/|\\)\.{2}($|\/|\\))_");
+static const std::string PATH_TRAVERSAL(R"_((^|\/|\\)\.{2}($|\/|\\))_");
 
 struct SZipEntry {
   unsigned int header;
