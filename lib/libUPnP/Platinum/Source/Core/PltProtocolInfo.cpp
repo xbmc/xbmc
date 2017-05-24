@@ -467,8 +467,12 @@ PLT_ProtocolInfo::Match(const PLT_ProtocolInfo& other) const
 
     if (m_ContentType != '*' &&
         other.GetContentType() != '*' &&
-        m_ContentType != other.GetContentType()) return false;
-
+        m_ContentType != other.GetContentType() 
+    // Hack: Samsung sends x-mkv instead of x-matroska
+       && (m_ContentType == "video/x-mkv" && other.GetContentType() != "video/x-matroska")
+       && (m_ContentType == "video/x-matroska" && other.GetContentType() != "video/x-mkv")
+        )
+        return false;
     // match DLNAPn of 4th item if not '*'
     if (m_Extra == '*' ||
         other.GetExtra() == '*' ||
