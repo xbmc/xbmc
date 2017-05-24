@@ -40,16 +40,23 @@ CFileCDDA::CFileCDDA(void)
   m_lsnEnd = CDIO_INVALID_LSN;
   m_cdio = CLibcdio::GetInstance();
   m_iSectorCount = 52;
+  m_TrackBuf = (uint8_t *) malloc(CDIO_CD_FRAMESIZE_RAW);
+  p_TrackBuf = 0;
+  f_TrackBuf = 0;
 }
 
 CFileCDDA::~CFileCDDA(void)
 {
+  free(m_TrackBuf);
   Close();
 }
 
 bool CFileCDDA::Open(const CURL& url)
 {
   std::string strURL = url.GetWithoutFilename();
+
+  // Flag TrackBuffer = FALSE, TrackBuffer is empty
+  f_TrackBuf = 0;
 
   if (!g_mediaManager.IsDiscInDrive(strURL) || !IsValidFile(url))
     return false;
@@ -115,50 +122,98 @@ int CFileCDDA::Stat(const CURL& url, struct __stat64* buffer)
 
 ssize_t CFileCDDA::Read(void* lpBuf, size_t uiBufSize)
 {
+
+  ssize_t returnValue;
+  int iSectorCount;
+  void *destBuf;
+
+
   if (!m_pCdIo || !g_mediaManager.IsDiscInDrive())
-    return -1;
-
-  if (uiBufSize > SSIZE_MAX)
-    uiBufSize = SSIZE_MAX;
-
-  // limit number of sectors that fits in buffer by m_iSectorCount
-  int iSectorCount = std::min((int)uiBufSize / CDIO_CD_FRAMESIZE_RAW, m_iSectorCount);
-
-  if (iSectorCount <= 0)
-    return -1;
-
-  // Are there enough sectors left to read
-  if (m_lsnCurrent + iSectorCount > m_lsnEnd)
-    iSectorCount = m_lsnEnd - m_lsnCurrent;
-
-  // The loop tries to solve read error problem by lowering number of sectors to read (iSectorCount).
-  // When problem is solved the proper number of sectors is stored in m_iSectorCount
-  int big_iSectorCount = iSectorCount;
-  while (iSectorCount > 0)
   {
-    int iret = m_cdio->cdio_read_audio_sectors(m_pCdIo, lpBuf, m_lsnCurrent, iSectorCount);
-
-    if (iret == DRIVER_OP_SUCCESS)
-    {
-      // If lower iSectorCount solved the problem limit it's value
-      if (iSectorCount < big_iSectorCount)
-      {
-        m_iSectorCount = iSectorCount;
-      }
-      break;
-    }
-
-    // iSectorCount is low so it cannot solve read problem
-    if (iSectorCount <= 10)
-    {
-      CLog::Log(LOGERROR, "file cdda: Reading %d sectors of audio data starting at lsn %d failed with error code %i", iSectorCount, m_lsnCurrent, iret);
-      return -1;
-    }
-
-    iSectorCount = 10;
+    CLog::Log(LOGERROR, "file cdda: Aborted because no disc in drive or no m_pCdIo");
+    return -1;
   }
+
+  uiBufSize = std::min( uiBufSize, (size_t)SSIZE_MAX );
+
+  // If we have data in the TrackBuffer, they must be used first
+  if (f_TrackBuf)
+  {
+    // Get at most the remaining data in m_TrackBuf
+    uiBufSize = std::min(uiBufSize, CDIO_CD_FRAMESIZE_RAW - p_TrackBuf);
+    memcpy(lpBuf, m_TrackBuf + p_TrackBuf, uiBufSize);
+    // Update the data offset
+    p_TrackBuf += uiBufSize;
+    // Is m_TrackBuf empty?
+    f_TrackBuf = (CDIO_CD_FRAMESIZE_RAW == p_TrackBuf);
+    // All done, return read bytes
+    return uiBufSize;
+  }
+
+  // No data left in buffer
+
+  // Is this a short read?
+  if (uiBufSize < CDIO_CD_FRAMESIZE_RAW)
+  {
+    // short request, buffer one full sector
+    iSectorCount = 1;
+    destBuf = m_TrackBuf;
+  }
+  else // normal request
+  {
+    // limit number of sectors that fits in buffer by m_iSectorCount
+    iSectorCount = std::min((int)uiBufSize / CDIO_CD_FRAMESIZE_RAW, m_iSectorCount);
+    destBuf = lpBuf;
+  }
+  
+  // Are there enough sectors left to read?
+  iSectorCount = std::min(iSectorCount, m_lsnEnd - m_lsnCurrent);
+
+  // Have we reached EOF?
+  if (iSectorCount == 0)
+  {
+    CLog::Log(LOGNOTICE, "file cdda: Read EoF");
+    return 0; // Success, but nothing read
+  } // Reached EoF
+
+  // At leat one sector to read
+  int retries;
+  int iret;
+  // Try reading a decresing number of sectors, then 3 times with 1 sector
+  for (retries = 3; retries > 0; iSectorCount>1 ? iSectorCount-- : retries--)
+  {
+    iret = m_cdio->cdio_read_audio_sectors(m_pCdIo, destBuf, m_lsnCurrent, iSectorCount);
+    if (iret == DRIVER_OP_SUCCESS)
+      break; // Get out from the loop
+    else
+    {
+      CLog::Log(LOGERROR, "file cdda: Read cdio error when reading track ");
+    } // Errors when reading file
+  }
+  // retries == 0 only if failed reading at least one sector
+  if (retries == 0)
+  {
+    CLog::Log(LOGERROR, "file cdda: Reading %d sectors of audio data starting at lsn %d failed with error code %i", iSectorCount, m_lsnCurrent, iret);
+    return -1;
+  }
+
+  // Update position in file
   m_lsnCurrent += iSectorCount;
 
+  // Was it a short request?
+  if (uiBufSize < CDIO_CD_FRAMESIZE_RAW)
+  {
+    // We copy the amount if requested data into the destination buffer
+    memcpy(lpBuf, m_TrackBuf, uiBufSize);
+    // and keep track of the first available data
+    p_TrackBuf = uiBufSize;
+    // Finally, we set the buffer flag as TRUE
+    f_TrackBuf = true;
+    // We will return uiBufSize
+    return uiBufSize;
+  }
+
+  // Otherwise, just return the size of read data
   return iSectorCount*CDIO_CD_FRAMESIZE_RAW;
 }
 
@@ -192,6 +247,9 @@ int64_t CFileCDDA::Seek(int64_t iFilePosition, int iWhence /*=SEEK_SET*/)
 
 void CFileCDDA::Close()
 {
+  // Flag TrackBuffer = FALSE, TrackBuffer is empty
+  f_TrackBuf = 0;
+
   if (m_pCdIo)
   {
     m_cdio->cdio_destroy(m_pCdIo);

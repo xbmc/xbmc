@@ -50,6 +50,9 @@ protected:
 
 protected:
   CdIo_t* m_pCdIo;
+  uint8_t *m_TrackBuf;
+  size_t   p_TrackBuf;
+  int      f_TrackBuf;
   lsn_t m_lsnStart;  // Start of m_iTrack in logical sector number
   lsn_t m_lsnCurrent; // Position inside the track in logical sector number
   lsn_t m_lsnEnd;   // End of m_iTrack in logical sector number
