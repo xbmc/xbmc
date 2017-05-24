@@ -910,6 +910,7 @@ void CPeripheralCecAdapter::PushCecKeypress(const cec_keypress &key)
     PushCecKeypress(xbmcKey);
     break;
   case CEC_USER_CONTROL_CODE_EXIT:
+  case CEC_USER_CONTROL_CODE_AN_RETURN:
     xbmcKey.iButton = XINPUT_IR_REMOTE_BACK;
     PushCecKeypress(xbmcKey);
     break;
@@ -1067,7 +1068,6 @@ void CPeripheralCecAdapter::PushCecKeypress(const cec_keypress &key)
     break;
   case CEC_USER_CONTROL_CODE_NEXT_FAVORITE:
   case CEC_USER_CONTROL_CODE_DOT:
-  case CEC_USER_CONTROL_CODE_AN_RETURN:
     xbmcKey.iButton = XINPUT_IR_REMOTE_TITLE; // context menu
     PushCecKeypress(xbmcKey);
     break;
