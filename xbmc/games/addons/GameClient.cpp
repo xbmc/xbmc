@@ -294,9 +294,6 @@ bool CGameClient::OpenFile(const CFileItem& file, IGameAudioCallback* audio, IGa
   if (!InitializeGameplay(file.GetPath(), audio, video))
     return false;
 
-  m_inGameSaves.reset(new CGameClientInGameSaves(this, &m_struct.toAddon));
-  m_inGameSaves->Load();
-
   return true;
 }
 
@@ -344,6 +341,9 @@ bool CGameClient::InitializeGameplay(const std::string& gamePath, IGameAudioCall
 
     if (m_bSupportsMouse)
       OpenMouse();
+
+    m_inGameSaves.reset(new CGameClientInGameSaves(this, &m_struct.toAddon));
+    m_inGameSaves->Load();
 
     // Start playback
     CreatePlayback();
