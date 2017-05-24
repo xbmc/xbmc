@@ -224,6 +224,18 @@ void CPeripheralCecAdapter::Announce(AnnouncementFlag flag, const char *sender, 
   }
   else if (flag == Player && !strcmp(sender, "xbmc") && !strcmp(message, "OnPlay"))
   {
+	// power on devices if the conditions for getting the active source are fulfilled, even if
+	// we are already the active source
+	bool bPowerOnDevices(false);
+	{
+	  CSingleLock lock(m_critSection);
+	  bPowerOnDevices = (m_configuration.bActivateSource &&
+		  !m_bOnPlayReceived &&
+		  (!m_preventActivateSourceOnPlay.IsValid() || CDateTime::GetCurrentDateTime() - m_preventActivateSourceOnPlay > CDateTimeSpan(0, 0, 0, CEC_SUPPRESS_ACTIVATE_SOURCE_AFTER_ON_STOP)));
+	}
+	if (bPowerOnDevices)
+	  PowerOnDevices();
+
     // activate the source when playback started, and the option is enabled
     bool bActivateSource(false);
     {
@@ -386,6 +398,9 @@ void CPeripheralCecAdapter::Process(void)
 
   while (!m_bStop)
   {
+    if (!m_bStop)
+      ProcessPowerOnDevices();
+
     if (!m_bStop)
       ProcessVolumeChange();
 
@@ -1743,7 +1758,9 @@ void CPeripheralCecAdapter::ProcessActivateSource(void)
   }
 
   if (bActivate)
+  {
     m_cecAdapter->SetActiveSource();
+  }
 }
 
 void CPeripheralCecAdapter::StandbyDevices(void)
@@ -1797,6 +1814,31 @@ bool CPeripheralCecAdapter::ToggleDeviceState(CecStateChange mode /*= STATE_SWIT
   }
 
   return false;
+}
+
+void CPeripheralCecAdapter::PowerOnDevices(void)
+{
+  CSingleLock lock(m_critSection);
+  m_bPowerOnDevicesPending = true;
+}
+
+void CPeripheralCecAdapter::ProcessPowerOnDevices(void)
+{
+  bool bPowerOnDevices(false);
+
+  {
+    CSingleLock lock(m_critSection);
+    bPowerOnDevices = m_bPowerOnDevicesPending;
+    m_bPowerOnDevicesPending = false;
+  }
+
+  if (bPowerOnDevices)
+  {
+    cec_logical_addresses tvOnly;
+    tvOnly.Clear(); tvOnly.Set(CECDEVICE_TV);
+    if (!m_configuration.wakeDevices.IsEmpty() && (m_configuration.wakeDevices != tvOnly || m_configuration.bActivateSource == 0))
+      m_cecAdapter->PowerOnDevices(CECDEVICE_BROADCAST);
+  }
 }
 
 #endif
