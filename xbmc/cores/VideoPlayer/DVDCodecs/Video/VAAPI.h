@@ -186,8 +186,8 @@ class CVaapiRenderPicture
   friend class COutput;
 public:
   CVaapiRenderPicture(CCriticalSection &section)
-    : texWidth(0), texHeight(0), texture(None), textureY(None), textureVU(None), valid(false), vaapi(NULL), avFrame(NULL),
-      usefence(false), refCount(0), renderPicSection(section) { fence = None; }
+    : texWidth(0), texHeight(0), texture(0), textureY(0), textureVU(0), valid(false), vaapi(NULL), avFrame(NULL),
+      usefence(false), refCount(0), renderPicSection(section) { fence = 0; }
   void Sync();
   VideoPicture DVDPic;
   int texWidth, texHeight;
@@ -331,7 +331,9 @@ protected:
   EGLDisplay m_eglDisplay;
   EGLSurface m_eglSurface;
   EGLContext m_eglContext;
+#ifdef HAVE_X11
   Display *m_Display;
+#endif
   CVaapiDecodedPicture m_currentPicture;
   GLenum m_textureTarget;
   CPostproc *m_pp;

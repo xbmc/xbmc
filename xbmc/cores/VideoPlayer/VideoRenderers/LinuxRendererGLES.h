@@ -170,7 +170,7 @@ protected:
   bool CreateYV12Texture(int index);
   virtual bool SkipUploadYV12(int index) { return false; }
 
-  void UploadNV12Texture(int index);
+  bool UploadNV12Texture(int index);
   void DeleteNV12Texture(int index);
   bool CreateNV12Texture(int index);
 

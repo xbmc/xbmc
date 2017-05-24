@@ -32,10 +32,17 @@ uniform mat4      m_yuvmat;
 void main()
 {
   vec4 yuv, rgb;
+#if defined(XBMC_NV12_RRG)
+  yuv.rgba = vec4( texture2D(m_sampY, m_cordY).r
+                 , texture2D(m_sampU, m_cordU).r
+                 , texture2D(m_sampV, m_cordV).g
+                 , 1.0);
+#else
   yuv.rgba = vec4( texture2D(m_sampY, m_cordY).r
                  , texture2D(m_sampU, m_cordU).g
                  , texture2D(m_sampV, m_cordV).a
                  , 1.0);
+#endif
 
   rgb   = m_yuvmat * yuv;
   rgb.a = m_alpha;

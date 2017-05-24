@@ -1377,14 +1377,14 @@ bool CLinuxRendererGLES::CreateYV12Texture(int index)
 //********************************************************************************************************
 // NV12 Texture loading, creation and deletion
 //********************************************************************************************************
-void CLinuxRendererGLES::UploadNV12Texture(int source)
+bool CLinuxRendererGLES::UploadNV12Texture(int source)
 {
   YUVBUFFER& buf    =  m_buffers[source];
   YV12Image* im     = &buf.image;
   YUVFIELDS& fields =  buf.fields;
 
   if (!(im->flags & IMAGE_FLAG_READY))
-    return;
+    return false;
   bool deinterlacing;
   if (m_currentField == FIELD_FULL)
     deinterlacing = false;
@@ -1437,7 +1437,7 @@ void CLinuxRendererGLES::UploadNV12Texture(int source)
   CalculateTextureSourceRects(source, 3);
 
   glDisable(m_textureTarget);
-  return;
+  return true;
 }
 
 bool CLinuxRendererGLES::CreateNV12Texture(int index)
