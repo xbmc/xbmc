@@ -151,9 +151,6 @@
 
 #if defined(HAVE_X11)
 #define HAS_EGL
-#if !defined(HAVE_LIBGLESV2)
-#define HAS_GLX
-#endif
 #endif
 
 /****************************************
