@@ -19,20 +19,24 @@
  */
 
 #include "filesystem/ZipManager.h"
+#include "utils/RegExp.h"
 
 #include "gtest/gtest.h"
 
 TEST(TestZipManager, PathTraversal)
 {
-  ASSERT_TRUE(std::regex_search("..", PATH_TRAVERSAL));
-  ASSERT_TRUE(std::regex_search("../test.txt", PATH_TRAVERSAL));
-  ASSERT_TRUE(std::regex_search("..\\test.txt", PATH_TRAVERSAL));
-  ASSERT_TRUE(std::regex_search("test/../test.txt", PATH_TRAVERSAL));
-  ASSERT_TRUE(std::regex_search("test\\../test.txt", PATH_TRAVERSAL));
-  ASSERT_TRUE(std::regex_search("test\\..\\test.txt", PATH_TRAVERSAL));
+  CRegExp pathTraversal;
+  pathTraversal.RegComp(PATH_TRAVERSAL);
+
+  ASSERT_TRUE(pathTraversal.RegFind("..") >= 0);
+  ASSERT_TRUE(pathTraversal.RegFind("../test.txt") >= 0);
+  ASSERT_TRUE(pathTraversal.RegFind("..\\test.txt") >= 0);
+  ASSERT_TRUE(pathTraversal.RegFind("test/../test.txt") >= 0);
+  ASSERT_TRUE(pathTraversal.RegFind("test\\../test.txt") >= 0);
+  ASSERT_TRUE(pathTraversal.RegFind("test\\..\\test.txt") >= 0);
   
-  ASSERT_FALSE(std::regex_search("...", PATH_TRAVERSAL));
-  ASSERT_FALSE(std::regex_search("..test.txt", PATH_TRAVERSAL));
-  ASSERT_FALSE(std::regex_search("test.txt..", PATH_TRAVERSAL));
-  ASSERT_FALSE(std::regex_search("test..test.txt", PATH_TRAVERSAL));
+  ASSERT_FALSE(pathTraversal.RegFind("...") >= 0);
+  ASSERT_FALSE(pathTraversal.RegFind("..test.txt") >= 0);
+  ASSERT_FALSE(pathTraversal.RegFind("test.txt..") >= 0);
+  ASSERT_FALSE(pathTraversal.RegFind("test..test.txt") >= 0);
 }
