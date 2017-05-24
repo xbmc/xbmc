@@ -21,6 +21,8 @@
 #include "AddonDll.h"
 
 #include "AddonStatusHandler.h"
+#include "GUIUserMessages.h"
+#include "addons/GUIDialogAddonSettings.h"
 #include "events/EventLog.h"
 #include "events/NotificationEvent.h"
 #include "guilib/GUIWindowManager.h"
@@ -546,6 +548,8 @@ bool CAddonDll::InitInterface(KODI_HANDLE firstKodiInstance)
   m_interface.toKodi.get_addon_path = get_addon_path;
   m_interface.toKodi.get_base_user_path = get_base_user_path;
   m_interface.toKodi.addon_log_msg = addon_log_msg;
+  m_interface.toKodi.get_setting = get_setting;
+  m_interface.toKodi.set_setting = set_setting;
   m_interface.toKodi.free_string = free_string;
 
   return true;
@@ -620,6 +624,118 @@ void CAddonDll::addon_log_msg(void* kodiBase, const int addonLogLevel, const cha
   }
 
   CLog::Log(logLevel, "AddOnLog: %s: %s", addon->Name().c_str(), strMessage);
+}
+
+bool CAddonDll::get_setting(void* kodiBase, const char* settingName, void* settingValue)
+{ 
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  if (addon == nullptr || settingName == nullptr || settingValue == nullptr)
+  {
+    CLog::Log(LOGERROR, "kodi::General::%s - invalid data (addon='%p', settingName='%p', settingValue='%p')",
+                                        __FUNCTION__, addon, settingName, settingValue);
+
+    return false;
+  }
+
+  CLog::Log(LOGDEBUG, "kodi::General::%s - add-on '%s' requests setting '%s'",
+                        __FUNCTION__, addon->Name().c_str(), settingName);
+
+  if (!addon->ReloadSettings())
+  {
+    CLog::Log(LOGERROR, "kodi::General::%s - could't get settings for add-on '%s'", __FUNCTION__, addon->Name().c_str());
+    return false;
+  }
+
+  const TiXmlElement *category = addon->GetSettingsXML()->FirstChildElement("category");
+  if (!category) // add a default one...
+    category = addon->GetSettingsXML();
+
+  while (category)
+  {
+    const TiXmlElement *setting = category->FirstChildElement("setting");
+    while (setting)
+    {
+      const std::string   id = XMLUtils::GetAttribute(setting, "id");
+      const std::string type = XMLUtils::GetAttribute(setting, "type");
+
+      if (id == settingName && !type.empty())
+      {
+        if (type == "text"     || type == "ipaddress" ||
+            type == "folder"   || type == "action"    ||
+            type == "music"    || type == "pictures"  ||
+            type == "programs" || type == "fileenum"  ||
+            type == "file"     || type == "labelenum")
+        {
+          *(char**) settingValue = strdup(addon->GetSetting(id).c_str());
+          return true;
+        }
+        else if (type == "number" || type == "enum")
+        {
+          *(int*) settingValue = (int) atoi(addon->GetSetting(id).c_str());
+          return true;
+        }
+        else if (type == "bool")
+        {
+          *(bool*) settingValue = (bool) (addon->GetSetting(id) == "true" ? true : false);
+          return true;
+        }
+        else if (type == "slider")
+        {
+          const char *option = setting->Attribute("option");
+          if (option && strcmpi(option, "int") == 0)
+          {
+            *(int*) settingValue = (int) atoi(addon->GetSetting(id).c_str());
+            return true;
+          }
+          else
+          {
+            *(float*) settingValue = (float) atof(addon->GetSetting(id).c_str());
+            return true;
+          }
+        }
+      }
+      setting = setting->NextSiblingElement("setting");
+    }
+    category = category->NextSiblingElement("category");
+  }
+  CLog::Log(LOGERROR, "kodi::General::%s - can't find setting '%s' in '%s'", __FUNCTION__, settingName, addon->Name().c_str());
+
+  return false;
+}
+  
+bool CAddonDll::set_setting(void* kodiBase, const char* settingName, const char* settingValue)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  if (addon == nullptr || settingName == nullptr || settingValue == nullptr)
+  {
+    CLog::Log(LOGERROR, "kodi::General::%s - invalid data (addon='%p', settingName='%p', settingValue='%p')",
+                                        __FUNCTION__, addon, settingName, settingValue);
+
+    return false;
+  }
+
+  bool save = true;
+  if (g_windowManager.IsWindowActive(WINDOW_DIALOG_ADDON_SETTINGS))
+  {
+    CGUIDialogAddonSettings* dialog = g_windowManager.GetWindow<CGUIDialogAddonSettings>(WINDOW_DIALOG_ADDON_SETTINGS);
+    if (dialog->GetCurrentID() == addon->ID())
+    {
+      CGUIMessage message(GUI_MSG_SETTING_UPDATED, 0, 0);
+      std::vector<std::string> params;
+      params.push_back(settingName);
+      params.push_back(settingValue);
+      message.SetStringParams(params);
+      g_windowManager.SendThreadMessage(message, WINDOW_DIALOG_ADDON_SETTINGS);
+      save=false;
+    }
+  }
+  if (save)
+  {
+    addon->UpdateSetting(settingName, settingValue);
+    addon->SaveSettings();
+  }
+  
+  return true;
 }
 
 void CAddonDll::free_string(void* kodiBase, char* str)

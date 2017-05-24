@@ -124,6 +124,8 @@ namespace ADDON
     static char* get_addon_path(void* kodiBase);
     static char* get_base_user_path(void* kodiBase);
     static void addon_log_msg(void* kodiBase, const int addonLogLevel, const char* strMessage);
+    static bool get_setting(void* kodiBase, const char* settingName, void* settingValue);
+    static bool set_setting(void* kodiBase, const char* settingName, const char* settingValue);
     static void free_string(void* kodiBase, char* str);
     //@}
   };
