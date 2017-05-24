@@ -19,8 +19,6 @@
  */
 #include "system.h"
 
-#if defined(HAVE_X11)
-
 #include "GLContext.h"
 
 bool CGLContext::IsExtSupported(const char* extension) const
@@ -33,5 +31,3 @@ bool CGLContext::IsExtSupported(const char* extension) const
 
   return m_extensions.find(name) != std::string::npos;
 }
-
-#endif

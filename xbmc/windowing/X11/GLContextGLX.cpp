@@ -20,8 +20,6 @@
 
 #include "system_gl.h"
 
-#if defined(HAVE_X11) && defined(HAS_GL)
-
 #include <GL/glx.h>
 #include "GLContextGLX.h"
 #include "utils/log.h"
@@ -295,5 +293,3 @@ void CGLContextGLX::QueryExtensions()
   else
     m_glXSwapIntervalEXT = NULL;
 }
-
-#endif

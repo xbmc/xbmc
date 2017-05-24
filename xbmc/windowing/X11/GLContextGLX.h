@@ -20,7 +20,6 @@
 
 #pragma once
 
-#if defined(HAVE_X11)
 #include "GLContext.h"
 #include "GL/glx.h"
 
@@ -47,5 +46,3 @@ protected:
   int m_iVSyncErrors;
   int m_vsyncMode;
 };
-
-#endif

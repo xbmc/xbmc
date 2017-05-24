@@ -19,8 +19,6 @@
  *
  */
 
-#if defined(HAS_GLX)
-
 #include "windowing/VideoSync.h"
 #include "system_gl.h"
 #include <X11/X.h>
@@ -52,5 +50,3 @@ private:
   volatile bool m_displayReset;
   CEvent m_lostEvent;
 };
-
-#endif
