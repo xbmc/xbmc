@@ -45,7 +45,8 @@
 #define ADDON_GLOBAL_VERSION_MAIN                     "1.0.1"
 #define ADDON_GLOBAL_VERSION_MAIN_MIN                 "1.0.1"
 #define ADDON_GLOBAL_VERSION_MAIN_XML_ID              "kodi.binary.global.main"
-#define ADDON_GLOBAL_VERSION_MAIN_DEPENDS             "xbmc_addon_dll.h" \
+#define ADDON_GLOBAL_VERSION_MAIN_DEPENDS             "AddonBase.h" \
+                                                      "xbmc_addon_dll.h" \
                                                       "xbmc_addon_types.h" \
                                                       "kodi_audioengine_types.h" \
                                                       "libKODI_audioengine.h" \
