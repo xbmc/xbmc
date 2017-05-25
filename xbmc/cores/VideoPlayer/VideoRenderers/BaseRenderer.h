@@ -64,7 +64,7 @@ public:
   virtual ~CBaseRenderer();
 
   // Player functions
-  virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, void* hwPic, unsigned int orientation) = 0;
+  virtual bool Configure(VideoPicture &picture, float fps, unsigned flags, unsigned int orientation) = 0;
   virtual bool IsConfigured() = 0;
   virtual void AddVideoPicture(VideoPicture &picture, int index) = 0;
   virtual bool IsPictureHW(VideoPicture &picture) { return false; };
@@ -82,8 +82,7 @@ public:
   virtual void Update() = 0;
   virtual void RenderUpdate(bool clear, unsigned int flags = 0, unsigned int alpha = 255) = 0;
   virtual bool RenderCapture(CRenderCapture* capture) = 0;
-  virtual bool HandlesRenderFormat(ERenderFormat format) { return format == m_format; };
-  virtual bool ConfigChanged(void *hwPic) { return false; };
+  virtual bool ConfigChanged(VideoPicture &picture) = 0;
 
   // Feature support
   virtual bool SupportsMultiPassRendering() = 0;
@@ -108,9 +107,9 @@ protected:
   void CalcNormalRenderRect(float offsetX, float offsetY, float width, float height,
                             float inputFrameRatio, float zoomAmount, float verticalShift);
   void CalculateFrameAspectRatio(unsigned int desired_width, unsigned int desired_height);
-  void ManageRenderArea();
+  virtual void ManageRenderArea();
   virtual void ReorderDrawPoints();//might be overwritten (by egl e.x.)
-  virtual EShaderFormat GetShaderFormat(ERenderFormat renderFormat);
+  virtual EShaderFormat GetShaderFormat();
   void saveRotatedCoords();//saves the current state of m_rotatedDestCoords
   void syncDestRectToRotatedPoints();//sync any changes of m_destRect to m_rotatedDestCoords
   void restoreRotatedCoords();//restore the current state of m_rotatedDestCoords from saveRotatedCoords
@@ -136,5 +135,5 @@ protected:
 
   // rendering flags
   unsigned m_iFlags;
-  ERenderFormat m_format;
+  AVPixelFormat m_format;
 };

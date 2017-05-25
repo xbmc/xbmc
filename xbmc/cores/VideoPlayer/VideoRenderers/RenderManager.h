@@ -229,8 +229,7 @@ protected:
   std::deque<int> m_queued;
   std::deque<int> m_discard;
 
-  ERenderFormat m_format;
-  void *m_hwPic;
+  std::unique_ptr<VideoPicture> m_pConfigPicture;
   unsigned int m_width, m_height, m_dwidth, m_dheight;
   unsigned int m_flags;
   float m_fps;

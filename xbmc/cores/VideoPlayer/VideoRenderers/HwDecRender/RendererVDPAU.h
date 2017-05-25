@@ -30,14 +30,13 @@ public:
   CRendererVDPAU();
   virtual ~CRendererVDPAU();
 
-  virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height,
-                         float fps, unsigned flags, ERenderFormat format, void *hwPic, unsigned int orientation) override;
+  virtual bool Configure(VideoPicture &picture, float fps, unsigned flags, unsigned int orientation) override;
 
   // Player functions
   virtual void AddVideoPictureHW(VideoPicture &picture, int index);
   virtual void ReleaseBuffer(int idx);
   virtual CRenderInfo GetRenderInfo();
-  virtual bool ConfigChanged(void *hwPic) override;
+  virtual bool ConfigChanged(VideoPicture &picture) override;
 
   // Feature support
   virtual bool Supports(ERENDERFEATURE feature);
@@ -60,7 +59,7 @@ protected:
   void DeleteVDPAUTexture420(int index);
   bool UploadVDPAUTexture420(int index);
 
-  virtual EShaderFormat GetShaderFormat(ERenderFormat renderFormat) override;
+  virtual EShaderFormat GetShaderFormat() override;
 
   bool m_isYuv = false;
 };

@@ -29,7 +29,7 @@ extern "C"
 }
 
 CPixelConverter::CPixelConverter() :
-  m_renderFormat(RENDER_FMT_NONE),
+  //m_renderFormat(RENDER_FMT_NONE),
   m_width(0),
   m_height(0),
   m_swsContext(nullptr),
@@ -42,8 +42,8 @@ bool CPixelConverter::Open(AVPixelFormat pixfmt, AVPixelFormat targetfmt, unsign
   if (pixfmt == targetfmt || width == 0 || height == 0)
     return false;
 
-  m_renderFormat = CDVDCodecUtils::EFormatFromPixfmt(targetfmt);
-  if (m_renderFormat == RENDER_FMT_NONE)
+  //m_renderFormat = CDVDCodecUtils::EFormatFromPixfmt(targetfmt);
+  //if (m_renderFormat == RENDER_FMT_NONE)
   {
     CLog::Log(LOGERROR, "%s: Invalid target pixel format: %d", __FUNCTION__, targetfmt);
     return false;
@@ -123,5 +123,5 @@ void CPixelConverter::GetPicture(VideoPicture& dvdVideoPicture)
   dvdVideoPicture.iHeight        = m_height;
   dvdVideoPicture.iDisplayWidth  = m_width; //! @todo: Update if aspect ratio changes
   dvdVideoPicture.iDisplayHeight = m_height;
-  dvdVideoPicture.format         = m_renderFormat;
+  //dvdVideoPicture.format         = m_renderFormat;
 }
