@@ -61,7 +61,6 @@ struct VideoPicture
   double pts; // timestamp in seconds, used in the CVideoPlayer class to keep track of pts
   double dts;
   unsigned int iFlags;
-
   double iRepeatPicture;
   double iDuration;
   unsigned int iFrameType         : 4;  //< see defines above // 1->I, 2->P, 3->B, 0->Undef
@@ -80,8 +79,6 @@ struct VideoPicture
   unsigned int iHeight;
   unsigned int iDisplayWidth;           //< width of the picture without black bars
   unsigned int iDisplayHeight;          //< height of the picture without black bars
-
-  ERenderFormat format;
 };
 
 #define DVP_FLAG_TOP_FIELD_FIRST    0x00000001

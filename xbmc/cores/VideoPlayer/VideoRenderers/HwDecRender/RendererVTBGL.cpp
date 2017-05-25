@@ -59,39 +59,39 @@ CRenderInfo CRendererVTB::GetRenderInfo()
 void CRendererVTB::AddVideoPicture(VideoPicture &picture, int index)
 {
   YUVBUFFER &buf = m_buffers[index];
-  CVTBData *vtbdata = (CVTBData*)buf.hwDec;
-  if (vtbdata->m_vtbbuf)
-  {
-    CVBufferRelease(vtbdata->m_vtbbuf);
-  }
-  CVPixelBufferRef cvref = static_cast<CVPixelBufferRef>(picture.hwPic);
-  vtbdata->m_vtbbuf = cvref;
-
-  // retain another reference, this way VideoPlayer and renderer can issue releases.
-  CVBufferRetain(cvref);
+  //CVTBData *vtbdata = (CVTBData*)buf.hwDec;
+//  if (vtbdata->m_vtbbuf)
+//  {
+//    CVBufferRelease(vtbdata->m_vtbbuf);
+//  }
+//  //CVPixelBufferRef cvref = static_cast<CVPixelBufferRef>(picture.hwPic);
+//  vtbdata->m_vtbbuf = cvref;
+//
+//  // retain another reference, this way VideoPlayer and renderer can issue releases.
+//  CVBufferRetain(cvref);
 }
 
 void CRendererVTB::ReleaseBuffer(int idx)
 {
   YUVBUFFER &buf = m_buffers[idx];
-  if (buf.hwDec)
+  //if (buf.hwDec)
   {
-    CVTBData *vtbdata = (CVTBData*)buf.hwDec;
-    if (vtbdata->m_vtbbuf)
-    {
-      CVBufferRelease(vtbdata->m_vtbbuf);
-      vtbdata->m_vtbbuf = nullptr;
-    }
-
-    if (vtbdata->m_fence && glIsFenceAPPLE(vtbdata->m_fence))
-    {
-      glDeleteFencesAPPLE(1, &vtbdata->m_fence);
-      vtbdata->m_fence = 0;
-    }
+    //CVTBData *vtbdata = (CVTBData*)buf.hwDec;
+//    if (vtbdata->m_vtbbuf)
+//    {
+//      CVBufferRelease(vtbdata->m_vtbbuf);
+//      vtbdata->m_vtbbuf = nullptr;
+//    }
+//
+//    if (vtbdata->m_fence && glIsFenceAPPLE(vtbdata->m_fence))
+//    {
+//      glDeleteFencesAPPLE(1, &vtbdata->m_fence);
+//      vtbdata->m_fence = 0;
+//    }
   }
 }
 
-EShaderFormat CRendererVTB::GetShaderFormat(ERenderFormat renderFormat)
+EShaderFormat CRendererVTB::GetShaderFormat()
 {
   return SHADER_YV12;
 }
@@ -142,7 +142,7 @@ bool CRendererVTB::CreateTexture(int index)
   CVTBData *data = new CVTBData();
   data->m_fence = 0;
   data->m_vtbbuf = nullptr;
-  m_buffers[index].hwDec = data;
+  //m_buffers[index].hwDec = data;
 
   return true;
 }
@@ -152,8 +152,8 @@ void CRendererVTB::DeleteTexture(int index)
   YUVPLANE (&planes)[YuvImage::MAX_PLANES] = m_buffers[index].fields[0];
 
   ReleaseBuffer(index);
-  delete (CVTBData*)m_buffers[index].hwDec;
-  m_buffers[index].hwDec = nullptr;
+  //delete (CVTBData*)m_buffers[index].hwDec;
+  //m_buffers[index].hwDec = nullptr;
 
   if (planes[0].id && glIsTexture(planes[0].id))
   {
@@ -172,9 +172,9 @@ bool CRendererVTB::UploadTexture(int index)
 {
   YUVBUFFER &buf = m_buffers[index];
   YUVPLANE (&planes)[YuvImage::MAX_PLANES] = m_buffers[index].fields[0];
-  CVTBData *vtbdata = (CVTBData*)m_buffers[index].hwDec;
+  //CVTBData *vtbdata = (CVTBData*)m_buffers[index].hwDec;
 
-  CVImageBufferRef cvBufferRef = vtbdata->m_vtbbuf;
+  CVImageBufferRef cvBufferRef;// = vtbdata->m_vtbbuf;
 
   glEnable(m_textureTarget);
 
@@ -230,26 +230,26 @@ bool CRendererVTB::UploadTexture(int index)
 
 void CRendererVTB::AfterRenderHook(int idx)
 {
-  CVTBData *vtbdata = (CVTBData*)m_buffers[idx].hwDec;
-  if (vtbdata->m_fence && glIsFenceAPPLE(vtbdata->m_fence))
-  {
-    glDeleteFencesAPPLE(1, &vtbdata->m_fence);
-  }
-  glGenFencesAPPLE(1, &vtbdata->m_fence);
-  glSetFenceAPPLE(vtbdata->m_fence);
+//  CVTBData *vtbdata = (CVTBData*)m_buffers[idx].hwDec;
+//  if (vtbdata->m_fence && glIsFenceAPPLE(vtbdata->m_fence))
+//  {
+//    glDeleteFencesAPPLE(1, &vtbdata->m_fence);
+//  }
+//  glGenFencesAPPLE(1, &vtbdata->m_fence);
+//  glSetFenceAPPLE(vtbdata->m_fence);
 }
 
 bool CRendererVTB::NeedBuffer(int idx)
 {
-  CVTBData *vtbdata = (CVTBData*)m_buffers[idx].hwDec;
-  if (!vtbdata)
-    return false;
-
-  if (vtbdata->m_fence && glIsFenceAPPLE(vtbdata->m_fence))
-  {
-    if (!glTestFenceAPPLE(vtbdata->m_fence))
-      return true;
-  }
+//  CVTBData *vtbdata = (CVTBData*)m_buffers[idx].hwDec;
+//  if (!vtbdata)
+//    return false;
+//
+//  if (vtbdata->m_fence && glIsFenceAPPLE(vtbdata->m_fence))
+//  {
+//    if (!glTestFenceAPPLE(vtbdata->m_fence))
+//      return true;
+//  }
 
   return false;
 }
