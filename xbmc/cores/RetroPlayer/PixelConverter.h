@@ -40,7 +40,7 @@ public:
   void GetPicture(VideoPicture& dvdVideoPicture) override;
 
 protected:
-  ERenderFormat m_renderFormat;
+  //ERenderFormat m_renderFormat;
   unsigned int m_width;
   unsigned int m_height;
   SwsContext* m_swsContext;

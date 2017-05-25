@@ -120,8 +120,8 @@ bool CDecoder::GetPicture(AVCodecContext* avctx, VideoPicture* picture)
 {
   ((ICallbackHWAccel*)avctx->opaque)->GetPictureCommon(picture);
 
-  picture->format = RENDER_FMT_CVBREF;
-  picture->hwPic = m_renderPicture;
+  // picture->pixFormat = AV_PIX_FMT_NONE;
+  //picture->hwPic = m_renderPicture;
   return true;
 }
 
