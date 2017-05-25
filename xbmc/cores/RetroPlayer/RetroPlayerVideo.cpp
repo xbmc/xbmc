@@ -148,18 +148,18 @@ bool CRetroPlayerVideo::Configure(VideoPicture& picture)
 
     m_bConfigured = m_renderManager.Configure(picture, static_cast<float>(m_framerate), flags, m_orientation, buffers);
 
-    if (m_bConfigured)
-    {
-      // Update process info
-      AVPixelFormat pixfmt = static_cast<AVPixelFormat>(CDVDCodecUtils::PixfmtFromEFormat(picture.format));
-      if (pixfmt != AV_PIX_FMT_NONE)
-      {
-        //! @todo
-        //m_processInfo.SetVideoPixelFormat(CDVDVideoCodecFFmpeg::GetPixelFormatName(pixfmt));
-      }
-      m_processInfo.SetVideoDimensions(picture.iWidth, picture.iHeight);
-      m_processInfo.SetVideoFps(static_cast<float>(m_framerate));
-    }
+//    if (m_bConfigured)
+//    {
+//      // Update process info
+//      AVPixelFormat pixfmt = static_cast<AVPixelFormat>(CDVDCodecUtils::PixfmtFromEFormat(picture.format));
+//      if (pixfmt != AV_PIX_FMT_NONE)
+//      {
+//        //! @todo
+//        //m_processInfo.SetVideoPixelFormat(CDVDVideoCodecFFmpeg::GetPixelFormatName(pixfmt));
+//      }
+//      m_processInfo.SetVideoDimensions(picture.iWidth, picture.iHeight);
+//      m_processInfo.SetVideoFps(static_cast<float>(m_framerate));
+//    }
   }
 
   return m_bConfigured;
