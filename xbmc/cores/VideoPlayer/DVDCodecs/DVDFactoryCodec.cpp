@@ -64,7 +64,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, CProces
   CDVDCodecOptions options;
 
   if (info.formats.empty())
-    options.m_formats.push_back(RENDER_FMT_YUV420P);
+    options.m_formats.push_back(AV_PIX_FMT_YUV420P);
   else
     options.m_formats = info.formats;
 

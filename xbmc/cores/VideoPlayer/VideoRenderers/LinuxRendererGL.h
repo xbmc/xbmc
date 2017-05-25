@@ -44,13 +44,6 @@ class CBaseTexture;
 namespace Shaders { class BaseYUV2RGBShader; }
 namespace Shaders { class BaseVideoFilterShader; }
 
-#undef ALIGN
-#define ALIGN(value, alignment) (((value)+((alignment)-1))&~((alignment)-1))
-#define CLAMP(a, min, max) ((a) > (max) ? (max) : ( (a) < (min) ? (min) : a ))
-
-#define NOSOURCE   -2
-#define AUTOSOURCE -1
-
 struct DRAWRECT
 {
   float left;
@@ -111,7 +104,7 @@ public:
   virtual ~CLinuxRendererGL();
 
   // Player functions
-  virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, void *hwPic, unsigned int orientation) override;
+  virtual bool Configure(VideoPicture &picture, float fps, unsigned flags, unsigned int orientation) override;
   virtual bool IsConfigured() override { return m_bConfigured; }
   virtual void AddVideoPicture(VideoPicture &picture, int index) override;
   virtual void FlipPage(int source) override;
@@ -125,6 +118,7 @@ public:
   virtual void Update() override;
   virtual bool RenderCapture(CRenderCapture* capture) override;
   virtual CRenderInfo GetRenderInfo() override;
+  virtual bool ConfigChanged(VideoPicture &picture) override;
 
   // Feature support
   virtual bool SupportsMultiPassRendering() override;
@@ -187,7 +181,7 @@ protected:
 
   bool m_bConfigured;
   bool m_bValidated;
-  std::vector<ERenderFormat> m_formats;
+  std::vector<AVPixelFormat> m_formats;
   GLenum m_textureTarget;
   int m_renderMethod;
   RenderQuality m_renderQuality;
@@ -225,7 +219,6 @@ protected:
 
     CVideoBuffer *videoBuffer;
     bool loaded;
-    void *hwDec;
   };
 
   // YV12 decoder textures
