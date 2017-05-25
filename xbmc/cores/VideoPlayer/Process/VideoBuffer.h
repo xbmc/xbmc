@@ -90,6 +90,7 @@ public:
   void Acquire(std::shared_ptr<IVideoBufferPool> pool);
   void Release();
 
+  virtual AVPixelFormat GetFormat();
   virtual void GetPlanes(uint8_t*(&planes)[YuvImage::MAX_PLANES]) {};
   virtual void GetStrides(int(&strides)[YuvImage::MAX_PLANES]) {};
 
@@ -99,6 +100,7 @@ public:
 
 protected:
   CVideoBuffer(int id);
+  AVPixelFormat m_pixFormat = AV_PIX_FMT_NONE;
   std::atomic_int m_refCount;
   int m_id;
   std::shared_ptr<IVideoBufferPool> m_pool;
@@ -116,7 +118,6 @@ public:
 protected:
   int m_width = 0;
   int m_height = 0;
-  AVPixelFormat m_pixFormat = AV_PIX_FMT_NONE;
   YuvImage m_image;
 };
 

@@ -78,39 +78,3 @@ double CDVDCodecUtils::NormalizeFrameduration(double frameduration, bool *match)
   }
 }
 
-struct EFormatMap {
-  AVPixelFormat   pix_fmt;
-  ERenderFormat format;
-};
-
-static const EFormatMap g_format_map[] = {
-   { AV_PIX_FMT_YUV420P,     RENDER_FMT_YUV420P    }
-,  { AV_PIX_FMT_YUVJ420P,    RENDER_FMT_YUV420P    }
-,  { AV_PIX_FMT_YUV420P10,   RENDER_FMT_YUV420P10  }
-,  { AV_PIX_FMT_YUV420P16,   RENDER_FMT_YUV420P16  }
-,  { AV_PIX_FMT_UYVY422,     RENDER_FMT_UYVY422    }
-,  { AV_PIX_FMT_YUYV422,     RENDER_FMT_YUYV422    }
-,  { AV_PIX_FMT_VAAPI_VLD,   RENDER_FMT_VAAPI      }
-,  { AV_PIX_FMT_D3D11VA_VLD, RENDER_FMT_DXVA       }
-,  { AV_PIX_FMT_NONE     ,   RENDER_FMT_NONE       }
-};
-
-ERenderFormat CDVDCodecUtils::EFormatFromPixfmt(int fmt)
-{
-  for(const EFormatMap *p = g_format_map; p->pix_fmt != AV_PIX_FMT_NONE; ++p)
-  {
-    if(p->pix_fmt == fmt)
-      return p->format;
-  }
-  return RENDER_FMT_NONE;
-}
-
-AVPixelFormat CDVDCodecUtils::PixfmtFromEFormat(ERenderFormat fmt)
-{
-  for(const EFormatMap *p = g_format_map; p->pix_fmt != AV_PIX_FMT_NONE; ++p)
-  {
-    if(p->format == fmt)
-      return p->pix_fmt;
-  }
-  return AV_PIX_FMT_NONE;
-}
