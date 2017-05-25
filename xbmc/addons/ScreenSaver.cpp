@@ -24,6 +24,7 @@
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "settings/Settings.h"
 #include "utils/AlarmClock.h"
+#include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "windowing/WindowingFactory.h"
 
@@ -38,13 +39,13 @@ namespace ADDON
 CScreenSaver::CScreenSaver(AddonProps props)
  : ADDON::CAddonDll(std::move(props))
 {
-  memset(&m_struct, 0, sizeof(m_struct));
+  m_struct = {0};
 }
 
 CScreenSaver::CScreenSaver(const char *addonID)
  : ADDON::CAddonDll(AddonProps(addonID, ADDON_UNKNOWN))
 {
-  memset(&m_struct, 0, sizeof(m_struct));
+  m_struct = {0};
 }
 
 bool CScreenSaver::IsInUse() const
@@ -84,30 +85,36 @@ bool CScreenSaver::CreateScreenSaver()
 
   m_struct.toKodi.kodiInstance = this;
 
-  if (CAddonDll::Create(ADDON_INSTANCE_SCREENSAVER, &m_struct, &m_struct.props) == ADDON_STATUS_OK)
-    return true;
+  /* Open the class "kodi::addon::CInstanceScreensaver" on add-on side */
+  ADDON_STATUS status = CAddonDll::CreateInstance(ADDON_INSTANCE_SCREENSAVER, ID(), &m_struct);
+  if (status != ADDON_STATUS_OK)
+  if (!CAddonDll::CreateInstance(ADDON_INSTANCE_SCREENSAVER, ID(), &m_struct))
+  {
+    CLog::Log(LOGFATAL, "Screensaver: failed to create instance for '%s' and not usable!", ID().c_str());
+    return false;
+  }
 
-  return false;
+  return true;
 }
 
 void CScreenSaver::Start()
 {
   // notify screen saver that they should start
   if (m_struct.toAddon.Start)
-    m_struct.toAddon.Start();
+    m_struct.toAddon.Start(&m_struct);
 }
 
 void CScreenSaver::Stop()
 {
   if (m_struct.toAddon.Stop)
-    m_struct.toAddon.Stop();
+    m_struct.toAddon.Stop(&m_struct);
 }
 
 void CScreenSaver::Render()
 {
   // ask screensaver to render itself
   if (m_struct.toAddon.Render)
-    m_struct.toAddon.Render();
+    m_struct.toAddon.Render(&m_struct);
 }
 
 void CScreenSaver::Destroy()
@@ -122,8 +129,8 @@ void CScreenSaver::Destroy()
     return;
   }
 
-  memset(&m_struct, 0, sizeof(m_struct));
-  CAddonDll::Destroy();
+  m_struct = {0};
+  CAddonDll::DestroyInstance(ID());
 }
 
 } /* namespace ADDON */

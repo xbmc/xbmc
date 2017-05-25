@@ -20,19 +20,10 @@
  *
  */
 
-#ifndef TARGET_WINDOWS
-#ifndef __cdecl
-#define __cdecl
-#endif
-#ifndef __declspec
-#define __declspec(X)
-#endif
-#endif
-
-#include "xbmc_addon_types.h"
+#include "AddonBase.h"
 
 #ifdef __cplusplus
-extern "C" { 
+extern "C" {
 #endif
 
   ADDON_STATUS __declspec(dllexport) ADDON_Create(void *callbacks, void* props);

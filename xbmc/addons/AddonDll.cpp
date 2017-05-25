@@ -21,6 +21,8 @@
 #include "AddonDll.h"
 
 #include "AddonStatusHandler.h"
+#include "GUIUserMessages.h"
+#include "addons/GUIDialogAddonSettings.h"
 #include "events/EventLog.h"
 #include "events/NotificationEvent.h"
 #include "guilib/GUIWindowManager.h"
@@ -46,6 +48,7 @@ CAddonDll::CAddonDll(AddonProps props)
   m_pHelpers    = NULL;
   m_needsavedsettings = false;
   m_parentLib.clear();
+  m_interface = {0};
 }
 
 CAddonDll::CAddonDll(const CAddonDll &rhs)
@@ -57,6 +60,7 @@ CAddonDll::CAddonDll(const CAddonDll &rhs)
   m_pHelpers          = rhs.m_pHelpers;
   m_needsavedsettings = rhs.m_needsavedsettings;
   m_parentLib = rhs.m_parentLib;
+  m_interface = rhs.m_interface;
 }
 
 CAddonDll::~CAddonDll()
@@ -212,6 +216,62 @@ ADDON_STATUS CAddonDll::Create(ADDON_TYPE type, void* funcTable, void* info)
   }
   else if ((status == ADDON_STATUS_NEED_SETTINGS) || (status == ADDON_STATUS_NEED_SAVEDSETTINGS))
   {
+    m_needsavedsettings = (status == ADDON_STATUS_NEED_SAVEDSETTINGS) ? true : false;
+    status = TransferSettings();
+    if (status == ADDON_STATUS_OK)
+      m_initialized = true;
+    else
+      new CAddonStatusHandler(ID(), status, "", false);
+  }
+  else
+  { // Addon failed initialization
+    CLog::Log(LOGERROR, "ADDON: Dll %s - Client returned bad status (%i) from Create and is not usable", Name().c_str(), status);
+    
+    CGUIDialogOK* pDialog = g_windowManager.GetWindow<CGUIDialogOK>(WINDOW_DIALOG_OK);
+    if (pDialog)
+    {
+      std::string heading = StringUtils::Format("%s: %s", TranslateType(Type(), true).c_str(), Name().c_str());
+      pDialog->SetHeading(CVariant{heading});
+      pDialog->SetLine(1, CVariant{24070});
+      pDialog->SetLine(2, CVariant{24071});
+      pDialog->Open();
+    }
+  }
+
+  return status;
+}
+
+ADDON_STATUS CAddonDll::Create(KODI_HANDLE firstKodiInstance)
+{
+  CLog::Log(LOGDEBUG, "ADDON: Dll Initializing - %s", Name().c_str());
+  m_initialized = false;
+
+  if (!LoadDll())
+  {
+    return ADDON_STATUS_PERMANENT_FAILURE;
+  }
+
+  /* Check versions about global parts on add-on (parts used on all types) */
+  for (unsigned int id = ADDON_GLOBAL_MAIN; id <= ADDON_GLOBAL_MAX; ++id)
+  {
+    if (!CheckAPIVersion(id))
+      return ADDON_STATUS_PERMANENT_FAILURE;
+  }
+
+  /* Allocate the helper function class to allow crosstalk over
+     helper add-on headers */
+  if (!InitInterface(firstKodiInstance))
+    return ADDON_STATUS_PERMANENT_FAILURE;
+
+  /* Call Create to make connections, initializing data or whatever is
+     needed to become the AddOn running */
+  ADDON_STATUS status = m_pDll->Create(&m_interface, nullptr);
+  if (status == ADDON_STATUS_OK)
+  {
+    m_initialized = true;
+  }
+  else if ((status == ADDON_STATUS_NEED_SETTINGS) || (status == ADDON_STATUS_NEED_SAVEDSETTINGS))
+  {
     m_needsavedsettings = (status == ADDON_STATUS_NEED_SAVEDSETTINGS);
     if ((status = TransferSettings()) == ADDON_STATUS_OK)
       m_initialized = true;
@@ -221,7 +281,8 @@ ADDON_STATUS CAddonDll::Create(ADDON_TYPE type, void* funcTable, void* info)
   else
   { // Addon failed initialization
     CLog::Log(LOGERROR, "ADDON: Dll %s - Client returned bad status (%i) from Create and is not usable", Name().c_str(), status);
-    
+
+    // @todo currently a copy and paste from other function and becomes improved.
     CGUIDialogOK* pDialog = g_windowManager.GetWindow<CGUIDialogOK>(WINDOW_DIALOG_OK);
     if (pDialog)
     {
@@ -265,6 +326,8 @@ void CAddonDll::Destroy()
     m_pDll->Unload();
   }
 
+  DeInitInterface();
+
   delete m_pHelpers;
   m_pHelpers = NULL;
   if (m_pDll)
@@ -276,6 +339,42 @@ void CAddonDll::Destroy()
     CLog::Log(LOGINFO, "ADDON: Dll Destroyed - %s", Name().c_str());
   }
   m_initialized = false;
+}
+
+ADDON_STATUS CAddonDll::CreateInstance(ADDON_TYPE instanceType, const std::string& instanceID, KODI_HANDLE instance, KODI_HANDLE parentInstance)
+{
+  ADDON_STATUS status = ADDON_STATUS_OK;
+
+  if (!m_initialized)
+    status = Create(instance);
+  if (status != ADDON_STATUS_OK)
+    return status;
+
+  /* Check version of requested instance type */
+  if (!CheckAPIVersion(instanceType))
+    return ADDON_STATUS_PERMANENT_FAILURE;
+
+  KODI_HANDLE addonInstance;
+  status = m_interface.toAddon.create_instance(instanceType, instanceID.c_str(), instance, &addonInstance, parentInstance);
+  if (status == ADDON_STATUS_OK)
+  {
+    m_usedInstances[instanceID] = std::make_pair(instanceType, addonInstance);
+  }
+
+  return status;
+}
+
+void CAddonDll::DestroyInstance(const std::string& instanceID)
+{
+  auto it = m_usedInstances.find(instanceID);
+  if (it != m_usedInstances.end())
+  {
+    m_interface.toAddon.destroy_instance(it->second.first, it->second.second);
+    m_usedInstances.erase(it);
+  }
+
+  if (m_usedInstances.empty())
+    Destroy();
 }
 
 bool CAddonDll::DllLoaded(void) const
@@ -424,6 +523,228 @@ bool CAddonDll::CheckAPIVersion(int type)
 
   return true;
 }
+
+/*!
+ * @brief Addon to Kodi basic callbacks below
+ *
+ * The amount of functions here are hold so minimal as possible. Only parts
+ * where needed on nearly every add-on (e.g. addon_log_msg) are to add there.
+ *
+ * More specific parts like e.g. to open files should be added to a separate
+ * part.
+ */
+//@{
+
+bool CAddonDll::InitInterface(KODI_HANDLE firstKodiInstance)
+{
+  m_interface = {0};
+
+  m_interface.libBasePath = strdup(CSpecialProtocol::TranslatePath("special://xbmcbinaddons").c_str());
+  m_interface.addonBase = nullptr;
+  m_interface.globalSingleInstance = nullptr;
+  m_interface.firstKodiInstance = firstKodiInstance;
+
+  m_interface.toKodi.kodiBase = this;
+  m_interface.toKodi.get_addon_path = get_addon_path;
+  m_interface.toKodi.get_base_user_path = get_base_user_path;
+  m_interface.toKodi.addon_log_msg = addon_log_msg;
+  m_interface.toKodi.get_setting = get_setting;
+  m_interface.toKodi.set_setting = set_setting;
+  m_interface.toKodi.free_string = free_string;
+
+  return true;
+}
+
+void CAddonDll::DeInitInterface()
+{
+  if (m_interface.libBasePath)
+    free((char*)m_interface.libBasePath);
+  m_interface.libBasePath = nullptr;
+}
+
+char* CAddonDll::get_addon_path(void* kodiBase)
+{ 
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  if (addon == nullptr)
+  {
+    CLog::Log(LOGERROR, "get_addon_path(...) called with empty kodi instance pointer");
+    return nullptr;
+  }
+
+  return strdup(CSpecialProtocol::TranslatePath(addon->Path()).c_str());
+}
+
+char* CAddonDll::get_base_user_path(void* kodiBase)
+{ 
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  if (addon == nullptr)
+  {
+    CLog::Log(LOGERROR, "get_base_user_path(...) called with empty kodi instance pointer");
+    return nullptr;
+  }
+
+  return strdup(CSpecialProtocol::TranslatePath(addon->Profile()).c_str());
+}
+
+void CAddonDll::addon_log_msg(void* kodiBase, const int addonLogLevel, const char* strMessage)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  if (addon == nullptr)
+  {
+    CLog::Log(LOGERROR, "addon_log_msg(...) called with empty kodi instance pointer");
+    return;
+  }
+
+  int logLevel = LOGNONE;
+  switch (addonLogLevel)
+  {
+    case ADDON_LOG_FATAL:
+      logLevel = LOGFATAL;
+      break;
+    case ADDON_LOG_SEVERE:
+      logLevel = LOGSEVERE;
+      break;
+    case ADDON_LOG_ERROR:
+      logLevel = LOGERROR;
+      break;
+    case ADDON_LOG_WARNING:
+      logLevel = LOGWARNING;
+      break;
+    case ADDON_LOG_NOTICE:
+      logLevel = LOGNOTICE;
+      break;
+    case ADDON_LOG_INFO:
+      logLevel = LOGINFO;
+      break;
+    case ADDON_LOG_DEBUG:
+      logLevel = LOGDEBUG;
+      break;
+    default:
+      break;
+  }
+
+  CLog::Log(logLevel, "AddOnLog: %s: %s", addon->Name().c_str(), strMessage);
+}
+
+bool CAddonDll::get_setting(void* kodiBase, const char* settingName, void* settingValue)
+{ 
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  if (addon == nullptr || settingName == nullptr || settingValue == nullptr)
+  {
+    CLog::Log(LOGERROR, "kodi::General::%s - invalid data (addon='%p', settingName='%p', settingValue='%p')",
+                                        __FUNCTION__, addon, settingName, settingValue);
+
+    return false;
+  }
+
+  CLog::Log(LOGDEBUG, "kodi::General::%s - add-on '%s' requests setting '%s'",
+                        __FUNCTION__, addon->Name().c_str(), settingName);
+
+  if (!addon->ReloadSettings())
+  {
+    CLog::Log(LOGERROR, "kodi::General::%s - could't get settings for add-on '%s'", __FUNCTION__, addon->Name().c_str());
+    return false;
+  }
+
+  const TiXmlElement *category = addon->GetSettingsXML()->FirstChildElement("category");
+  if (!category) // add a default one...
+    category = addon->GetSettingsXML();
+
+  while (category)
+  {
+    const TiXmlElement *setting = category->FirstChildElement("setting");
+    while (setting)
+    {
+      const std::string   id = XMLUtils::GetAttribute(setting, "id");
+      const std::string type = XMLUtils::GetAttribute(setting, "type");
+
+      if (id == settingName && !type.empty())
+      {
+        if (type == "text"     || type == "ipaddress" ||
+            type == "folder"   || type == "action"    ||
+            type == "music"    || type == "pictures"  ||
+            type == "programs" || type == "fileenum"  ||
+            type == "file"     || type == "labelenum")
+        {
+          *(char**) settingValue = strdup(addon->GetSetting(id).c_str());
+          return true;
+        }
+        else if (type == "number" || type == "enum")
+        {
+          *(int*) settingValue = (int) atoi(addon->GetSetting(id).c_str());
+          return true;
+        }
+        else if (type == "bool")
+        {
+          *(bool*) settingValue = (bool) (addon->GetSetting(id) == "true" ? true : false);
+          return true;
+        }
+        else if (type == "slider")
+        {
+          const char *option = setting->Attribute("option");
+          if (option && strcmpi(option, "int") == 0)
+          {
+            *(int*) settingValue = (int) atoi(addon->GetSetting(id).c_str());
+            return true;
+          }
+          else
+          {
+            *(float*) settingValue = (float) atof(addon->GetSetting(id).c_str());
+            return true;
+          }
+        }
+      }
+      setting = setting->NextSiblingElement("setting");
+    }
+    category = category->NextSiblingElement("category");
+  }
+  CLog::Log(LOGERROR, "kodi::General::%s - can't find setting '%s' in '%s'", __FUNCTION__, settingName, addon->Name().c_str());
+
+  return false;
+}
+  
+bool CAddonDll::set_setting(void* kodiBase, const char* settingName, const char* settingValue)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  if (addon == nullptr || settingName == nullptr || settingValue == nullptr)
+  {
+    CLog::Log(LOGERROR, "kodi::General::%s - invalid data (addon='%p', settingName='%p', settingValue='%p')",
+                                        __FUNCTION__, addon, settingName, settingValue);
+
+    return false;
+  }
+
+  bool save = true;
+  if (g_windowManager.IsWindowActive(WINDOW_DIALOG_ADDON_SETTINGS))
+  {
+    CGUIDialogAddonSettings* dialog = g_windowManager.GetWindow<CGUIDialogAddonSettings>(WINDOW_DIALOG_ADDON_SETTINGS);
+    if (dialog->GetCurrentID() == addon->ID())
+    {
+      CGUIMessage message(GUI_MSG_SETTING_UPDATED, 0, 0);
+      std::vector<std::string> params;
+      params.push_back(settingName);
+      params.push_back(settingValue);
+      message.SetStringParams(params);
+      g_windowManager.SendThreadMessage(message, WINDOW_DIALOG_ADDON_SETTINGS);
+      save=false;
+    }
+  }
+  if (save)
+  {
+    addon->UpdateSetting(settingName, settingValue);
+    addon->SaveSettings();
+  }
+  
+  return true;
+}
+
+void CAddonDll::free_string(void* kodiBase, char* str)
+{
+  if (str)
+    free(str);
+}
+
+//@}
 
 }; /* namespace ADDON */
 

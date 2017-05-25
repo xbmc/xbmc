@@ -45,12 +45,14 @@
 #define ADDON_GLOBAL_VERSION_MAIN                     "1.0.1"
 #define ADDON_GLOBAL_VERSION_MAIN_MIN                 "1.0.1"
 #define ADDON_GLOBAL_VERSION_MAIN_XML_ID              "kodi.binary.global.main"
-#define ADDON_GLOBAL_VERSION_MAIN_DEPENDS             "xbmc_addon_dll.h" \
+#define ADDON_GLOBAL_VERSION_MAIN_DEPENDS             "AddonBase.h" \
+                                                      "xbmc_addon_dll.h" \
                                                       "xbmc_addon_types.h" \
                                                       "kodi_audioengine_types.h" \
                                                       "libKODI_audioengine.h" \
-                                                      "libXBMC_addon.h"
-
+                                                      "libXBMC_addon.h" \
+                                                      "addon-instance/Screensaver.h"
+// @note "addon-instance/Screensaver.h" above must be improved to check only to included directory with "addon-instance"!
 #define ADDON_GLOBAL_VERSION_GUI                      "5.11.0"
 #define ADDON_GLOBAL_VERSION_GUI_MIN                  "5.10.0"
 #define ADDON_GLOBAL_VERSION_GUI_XML_ID               "kodi.binary.global.gui"
@@ -111,11 +113,10 @@
                                                       "xbmc_epg_types.h" \
                                                       "libXBMC_pvr.h"
 
-#define ADDON_INSTANCE_VERSION_SCREENSAVER            "1.0.1"
-#define ADDON_INSTANCE_VERSION_SCREENSAVER_MIN        "1.0.1"
+#define ADDON_INSTANCE_VERSION_SCREENSAVER            "2.0.0"
+#define ADDON_INSTANCE_VERSION_SCREENSAVER_MIN        "2.0.0"
 #define ADDON_INSTANCE_VERSION_SCREENSAVER_XML_ID     "kodi.binary.instance.screensaver"
-#define ADDON_INSTANCE_VERSION_SCREENSAVER_DEPENDS    "xbmc_scr_dll.h" \
-                                                      "xbmc_scr_types.h"
+#define ADDON_INSTANCE_VERSION_SCREENSAVER_DEPENDS    "addon-instance/Screensaver.h"
 
 #define ADDON_INSTANCE_VERSION_VFS                    "1.0.1"
 #define ADDON_INSTANCE_VERSION_VFS_MIN                "1.0.1"

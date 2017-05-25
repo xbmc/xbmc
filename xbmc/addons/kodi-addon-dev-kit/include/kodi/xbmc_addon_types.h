@@ -20,37 +20,4 @@
  *
  */
 
-#include "versions.h"
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-enum ADDON_STATUS
-{
-  ADDON_STATUS_OK,
-  ADDON_STATUS_LOST_CONNECTION,
-  ADDON_STATUS_NEED_RESTART,
-  ADDON_STATUS_NEED_SETTINGS,
-  ADDON_STATUS_UNKNOWN,
-  ADDON_STATUS_NEED_SAVEDSETTINGS,
-  ADDON_STATUS_PERMANENT_FAILURE   /**< permanent failure, like failing to resolve methods */
-};
-
-/*!
- * @brief Handle used to return data from the PVR add-on to CPVRClient
- */
-struct ADDON_HANDLE_STRUCT
-{
-  void *callerAddress;  /*!< address of the caller */
-  void *dataAddress;    /*!< address to store data in */
-  int   dataIdentifier; /*!< parameter to pass back when calling the callback */
-};
-typedef ADDON_HANDLE_STRUCT *ADDON_HANDLE;
-
-typedef void* KODI_HANDLE;
-
-#ifdef __cplusplus
-};
-#endif
-
+#include "AddonBase.h" // compatibility fallback
