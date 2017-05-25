@@ -30,14 +30,15 @@ public:
   CRendererVAAPI();
   virtual ~CRendererVAAPI();
 
-  virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height,
-                         float fps, unsigned flags, ERenderFormat format, void *hwPic, unsigned int orientation) override;
+  virtual bool Configure(VideoPicture &picture, float fps, unsigned flags, unsigned int orientation) override;
 
   // Player functions
   virtual void AddVideoPicture(VideoPicture &picture, int index) override;
   virtual void ReleaseBuffer(int idx) override;
   virtual CRenderInfo GetRenderInfo() override;
-  virtual bool ConfigChanged(void *hwPic) override;
+  virtual bool ConfigChanged(VideoPicture &picture) override;
+
+  static bool HandlesVideoBuffer(VideoPicture &picture);
 
   // Feature support
   virtual bool Supports(ERENDERFEATURE feature) override;
@@ -53,7 +54,7 @@ protected:
   virtual void DeleteTexture(int index) override;
   virtual bool CreateTexture(int index) override;
 
-  virtual EShaderFormat GetShaderFormat(ERenderFormat renderFormat) override;
+  virtual EShaderFormat GetShaderFormat() override;
 
   bool m_isVAAPIBuffer = true;
 };

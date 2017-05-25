@@ -104,7 +104,6 @@ CLinuxRendererGL::YUVBUFFER::YUVBUFFER()
   memset(&fields, 0, sizeof(fields));
   memset(&image , 0, sizeof(image));
   memset(&pbo   , 0, sizeof(pbo));
-  hwDec = nullptr;
   videoBuffer = nullptr;
   loaded = false;
 }
@@ -121,7 +120,7 @@ CLinuxRendererGL::CLinuxRendererGL()
   m_renderMethod = RENDER_GLSL;
   m_renderQuality = RQ_SINGLEPASS;
   m_iFlags = 0;
-  m_format = RENDER_FMT_NONE;
+  m_format = AV_PIX_FMT_NONE;
 
   m_iYV12RenderBuffer = 0;
   m_currentField = FIELD_FULL;
@@ -231,19 +230,19 @@ bool CLinuxRendererGL::ValidateRenderTarget()
   return false;
 }
 
-bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, void *hwPic, unsigned int orientation)
+bool CLinuxRendererGL::Configure(VideoPicture &picture, float fps, unsigned flags, unsigned int orientation)
 {
-  m_sourceWidth = width;
-  m_sourceHeight = height;
+  m_format = picture.videoBuffer->GetFormat();
+  m_sourceWidth = picture.iWidth;
+  m_sourceHeight = picture.iHeight;
   m_renderOrientation = orientation;
   m_fps = fps;
 
   // Save the flags.
   m_iFlags = flags;
-  m_format = format;
 
   // Calculate the input frame aspect ratio.
-  CalculateFrameAspectRatio(d_width, d_height);
+  CalculateFrameAspectRatio(picture.iDisplayWidth, picture.iDisplayHeight);
   SetViewMode(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode);
   ManageRenderArea();
 
@@ -292,6 +291,14 @@ bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsign
   }
 
   return true;
+}
+
+bool CLinuxRendererGL::ConfigChanged(VideoPicture &picture)
+{
+  if (picture.videoBuffer->GetFormat() != m_format)
+    return true;
+
+  return false;
 }
 
 int CLinuxRendererGL::NextYV12Texture()
@@ -623,21 +630,21 @@ void CLinuxRendererGL::PreInit()
   m_iYV12RenderBuffer = 0;
 
   m_formats.clear();
-  m_formats.push_back(RENDER_FMT_YUV420P);
+  m_formats.push_back(AV_PIX_FMT_YUV420P);
   GLint size;
   glTexImage2D(GL_PROXY_TEXTURE_2D, 0, GL_LUMINANCE16, NP2(1920), NP2(1080), 0, GL_LUMINANCE, GL_UNSIGNED_SHORT, NULL);
   glGetTexLevelParameteriv(GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_LUMINANCE_SIZE, &size);
 
   if(size >= 16)
   {
-    m_formats.push_back(RENDER_FMT_YUV420P10);
-    m_formats.push_back(RENDER_FMT_YUV420P16);
+    m_formats.push_back(AV_PIX_FMT_YUV420P10);
+    m_formats.push_back(AV_PIX_FMT_YUV420P16);
   }
 
   CLog::Log(LOGDEBUG, "CLinuxRendererGL::PreInit - precision of luminance 16 is %d", size);
-  m_formats.push_back(RENDER_FMT_NV12);
-  m_formats.push_back(RENDER_FMT_YUYV422);
-  m_formats.push_back(RENDER_FMT_UYVY422);
+  m_formats.push_back(AV_PIX_FMT_NV12);
+  m_formats.push_back(AV_PIX_FMT_YUYV422);
+  m_formats.push_back(AV_PIX_FMT_UYVY422);
 
   // setup the background colour
   m_clearColour = g_Windowing.UseLimitedColor() ? (16.0f / 0xff) : 0.0f;
@@ -857,7 +864,7 @@ void CLinuxRendererGL::LoadShaders(int field)
                                m_cmsOn ? m_tCLUTTex : 0,
                                m_CLUTsize);
         }
-        EShaderFormat shaderFormat = GetShaderFormat(m_format);
+        EShaderFormat shaderFormat = GetShaderFormat();
         m_pYUVShader = new YUV2RGBProgressiveShader(m_textureTarget==GL_TEXTURE_RECTANGLE_ARB, m_iFlags, shaderFormat,
                                                     m_nonLinStretch && m_renderQuality == RQ_SINGLEPASS,
                                                     out);
@@ -889,7 +896,7 @@ void CLinuxRendererGL::LoadShaders(int field)
         m_renderMethod = RENDER_ARB ;
 
         // create regular progressive scan shader
-        EShaderFormat shaderFormat = GetShaderFormat(m_format);
+        EShaderFormat shaderFormat = GetShaderFormat();
         m_pYUVShader = new YUV2RGBProgressiveShaderARB(m_textureTarget==GL_TEXTURE_RECTANGLE_ARB, m_iFlags, shaderFormat);
         m_pYUVShader->SetConvertFullColorRange(m_fullRange);
         CLog::Log(LOGNOTICE, "GL: Selecting Single Pass ARB YUV2RGB shader");
@@ -1521,10 +1528,10 @@ static GLint GetInternalFormat(GLint format, int bpp)
 
 bool CLinuxRendererGL::CreateTexture(int index)
 {
-  if (m_format == RENDER_FMT_NV12)
+  if (m_format == AV_PIX_FMT_NV12)
     return CreateNV12Texture(index);
-  else if (m_format == RENDER_FMT_YUYV422 ||
-           m_format == RENDER_FMT_UYVY422)
+  else if (m_format == AV_PIX_FMT_YUYV422 ||
+           m_format == AV_PIX_FMT_UYVY422)
     return CreateYUV422PackedTexture(index);
   else
     return CreateYV12Texture(index);
@@ -1534,10 +1541,10 @@ void CLinuxRendererGL::DeleteTexture(int index)
 {
   ReleaseBuffer(index);
 
-  if (m_format == RENDER_FMT_NV12)
+  if (m_format == AV_PIX_FMT_NV12)
     DeleteNV12Texture(index);
-  else if (m_format == RENDER_FMT_YUYV422 ||
-           m_format == RENDER_FMT_UYVY422)
+  else if (m_format == AV_PIX_FMT_YUYV422 ||
+           m_format == AV_PIX_FMT_UYVY422)
     DeleteYUV422PackedTexture(index);
   else
     DeleteYV12Texture(index);
@@ -1560,14 +1567,14 @@ bool CLinuxRendererGL::UploadTexture(int index)
 
   UnBindPbo(m_buffers[index]);
 
-  if (m_format == RENDER_FMT_NV12)
+  if (m_format == AV_PIX_FMT_NV12)
   {
     CVideoBuffer::CopyNV12Picture(&dst, &src);
     BindPbo(m_buffers[index]);
     ret = UploadNV12Texture(index);
   }
-  else if (m_format == RENDER_FMT_YUYV422 ||
-           m_format == RENDER_FMT_UYVY422)
+  else if (m_format == AV_PIX_FMT_YUYV422 ||
+           m_format == AV_PIX_FMT_UYVY422)
   {
     CVideoBuffer::CopyYUV422PackedPicture(&dst, &src);
     BindPbo(m_buffers[index]);
@@ -1605,8 +1612,8 @@ bool CLinuxRendererGL::CreateYV12Texture(int index)
   im.cshift_x = 1;
   im.cshift_y = 1;
 
-  if(m_format == RENDER_FMT_YUV420P16 ||
-     m_format == RENDER_FMT_YUV420P10)
+  if(m_format == AV_PIX_FMT_YUV420P16 ||
+     m_format == AV_PIX_FMT_YUV420P10)
     im.bpp = 2;
   else
     im.bpp = 1;
@@ -2398,8 +2405,8 @@ bool CLinuxRendererGL::Supports(ESCALINGMETHOD method)
 {
   //nearest neighbor doesn't work on YUY2 and UYVY
   if (method == VS_SCALINGMETHOD_NEAREST &&
-      m_format != RENDER_FMT_YUYV422 &&
-      m_format != RENDER_FMT_UYVY422)
+      m_format != AV_PIX_FMT_YUYV422 &&
+      m_format != AV_PIX_FMT_UYVY422)
     return true;
 
   if(method == VS_SCALINGMETHOD_LINEAR
