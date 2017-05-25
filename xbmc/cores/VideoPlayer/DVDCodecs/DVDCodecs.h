@@ -37,6 +37,6 @@ class CDVDCodecOptions
 {
 public:
   std::vector<CDVDCodecOption> m_keys;
-  std::vector<ERenderFormat> m_formats;
+  std::vector<AVPixelFormat> m_formats;
   const void *m_opaque_pointer;
 };
