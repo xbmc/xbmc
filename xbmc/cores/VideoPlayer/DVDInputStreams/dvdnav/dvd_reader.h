@@ -69,6 +69,14 @@ typedef struct dvd_reader_s dvd_reader_t;
  */
 typedef struct dvd_file_s dvd_file_t;
 
+struct dvd_reader_stream_cb
+{
+  int(*pf_seek)  (void *p_stream, uint64_t i_pos);
+  int(*pf_read)  (void *p_stream, void* buffer, int i_read);
+  int(*pf_readv) (void *p_stream, void *p_iovec, int i_blocks);
+};
+typedef struct dvd_reader_stream_cb dvd_reader_stream_cb;
+
 /**
  * Public type that is used to provide statistics on a handle.
  */
