@@ -43,7 +43,7 @@
 #include <sys/resource.h>
 #endif
 
-#if defined(TARGET_LINUX) && defined(__ARM_NEON__) && !defined(TARGET_ANDROID)
+#if defined(TARGET_LINUX) && defined(HAS_NEON) && !defined(TARGET_ANDROID)
 #include <fcntl.h>
 #include <unistd.h>
 #include <elf.h>
@@ -957,7 +957,10 @@ bool CCPUInfo::HasNeon()
 #elif defined(TARGET_DARWIN_IOS)
   has_neon = 1;
 
-#elif defined(TARGET_LINUX) && defined(__ARM_NEON__)
+#elif defined(TARGET_LINUX) && defined(HAS_NEON)
+#if defined(__LP64__)
+  has_neon = 1;
+#else
   if (has_neon == -1)
   {
     has_neon = 0;
@@ -978,6 +981,7 @@ bool CCPUInfo::HasNeon()
       close(fd);
     }
   }
+#endif
 
 #endif
 
