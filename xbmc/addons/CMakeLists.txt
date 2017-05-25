@@ -51,7 +51,6 @@ set(HEADERS Addon.h
             ContextMenuAddon.h
             ContextMenus.h
             DllAddon.h
-            DllLibCPluff.h
             FilesystemInstaller.h
             GameResource.h
             GUIDialogAddonInfo.h
