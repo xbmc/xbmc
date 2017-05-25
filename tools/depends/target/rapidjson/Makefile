@@ -1,4 +1,4 @@
-include ../../Makefile.include
+-include ../../Makefile.include
 DEPS = Makefile 0001-remove_custom_cxx_flags.patch
 
 # lib name, version
