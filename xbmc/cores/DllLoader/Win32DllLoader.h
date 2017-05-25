@@ -31,7 +31,7 @@ public:
   {
   public:
     void *table;
-    DWORD function;
+    uintptr_t function;
   };
 
   Win32DllLoader(const std::string& dll, bool isSystemDll);
