@@ -24,25 +24,9 @@
 #include <vector>
 #include "cores/IPlayer.h"
 
-enum ERenderFormat {
-  RENDER_FMT_NONE = 0,
-  RENDER_FMT_YUV420P,
-  RENDER_FMT_YUV420P10,
-  RENDER_FMT_YUV420P16,
-  RENDER_FMT_VDPAU,
-  RENDER_FMT_NV12,
-  RENDER_FMT_UYVY422,
-  RENDER_FMT_YUYV422,
-  RENDER_FMT_DXVA,
-  RENDER_FMT_VAAPI,
-  RENDER_FMT_CVBREF,
-  RENDER_FMT_BYPASS,
-  RENDER_FMT_MEDIACODEC,
-  RENDER_FMT_MEDIACODECSURFACE,
-  RENDER_FMT_IMXMAP,
-  RENDER_FMT_MMAL,
-  RENDER_FMT_AML,
-};
+extern "C" {
+#include "libavutil/pixfmt.h"
+}
 
 struct CRenderInfo
 {
@@ -61,9 +45,8 @@ struct CRenderInfo
   unsigned int optimal_buffer_size;
   unsigned int max_buffer_size;
   // Supported pixel formats, can be called before configure
-  std::vector<ERenderFormat> formats;
+  std::vector<AVPixelFormat> formats;
   std::vector<EINTERLACEMETHOD> m_deintMethods;
   // Can be used for initialising video codec with information from renderer (e.g. a shared image pool)
   void *opaque_pointer;
 };
-

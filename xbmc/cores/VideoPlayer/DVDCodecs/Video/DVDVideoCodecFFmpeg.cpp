@@ -119,6 +119,7 @@ void CVideoBufferFFmpeg::SetRef(AVFrame *frame)
 {
   av_frame_unref(m_pFrame);
   av_frame_move_ref(m_pFrame, frame);
+  m_pixFormat = (AVPixelFormat)m_pFrame->format;
 }
 
 void CVideoBufferFFmpeg::Unref()
@@ -360,13 +361,12 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   m_iOrientation = hints.orientation;
 
   m_formats.clear();
-  for(std::vector<ERenderFormat>::iterator it = options.m_formats.begin(); it != options.m_formats.end(); ++it)
+  for(std::vector<AVPixelFormat>::iterator it = options.m_formats.begin(); it != options.m_formats.end(); ++it)
   {
-    AVPixelFormat pixFormat = CDVDCodecUtils::PixfmtFromEFormat(*it);
-    if (pixFormat != AV_PIX_FMT_NONE)
-      m_formats.push_back(pixFormat);
+    if (*it != AV_PIX_FMT_NONE)
+      m_formats.push_back(*it);
 
-    if(*it == RENDER_FMT_YUV420P)
+    if(*it == AV_PIX_FMT_YUV420P)
       m_formats.push_back(AV_PIX_FMT_YUVJ420P);
   }
   m_formats.push_back(AV_PIX_FMT_NONE); /* always add none to get a terminated list in ffmpeg world */
@@ -881,11 +881,6 @@ bool CDVDVideoCodecFFmpeg::SetPictureParams(VideoPicture* pVideoPicture)
     return false;
 
   pVideoPicture->iFlags |= m_pFrame->data[0] ? 0 : DVP_FLAG_DROPPED;
-  pVideoPicture->hwPic = nullptr;
-
-  AVPixelFormat pix_fmt;
-  pix_fmt = (AVPixelFormat)m_pFrame->format;
-  pVideoPicture->format = CDVDCodecUtils::EFormatFromPixfmt(pix_fmt);
 
   if (pVideoPicture->videoBuffer)
     pVideoPicture->videoBuffer->Release();
