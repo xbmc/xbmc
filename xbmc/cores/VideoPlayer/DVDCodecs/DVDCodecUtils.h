@@ -27,10 +27,6 @@ class CDVDCodecUtils
 {
 public:
   static bool IsVP3CompatibleWidth(int width);
-
   static double NormalizeFrameduration(double frameduration, bool *match = NULL);
-
-  static ERenderFormat EFormatFromPixfmt(int fmt);
-  static AVPixelFormat PixfmtFromEFormat(ERenderFormat format);
 };
 
