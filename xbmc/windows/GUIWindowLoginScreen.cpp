@@ -48,7 +48,6 @@
 #include "profiles/ProfilesManager.h"
 #include "profiles/dialogs/GUIDialogProfileSettings.h"
 #include "pvr/PVRManager.h"
-#include "ServiceBroker.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"

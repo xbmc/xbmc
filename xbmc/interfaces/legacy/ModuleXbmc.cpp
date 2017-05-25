@@ -46,7 +46,6 @@
 #include "settings/Settings.h"
 #include "guilib/TextureManager.h"
 #include "Util.h"
-#include "ServiceBroker.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
 #include "storage/MediaManager.h"
 #include "utils/LangCodeExpander.h"

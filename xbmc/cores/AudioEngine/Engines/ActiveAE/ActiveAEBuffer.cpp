@@ -25,7 +25,6 @@
 #include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/AudioEngine/AEResampleFactory.h"
-#include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
 
 using namespace ActiveAE;
 

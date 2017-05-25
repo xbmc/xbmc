@@ -41,7 +41,6 @@
 
 // To check for installable controllers
 #include "addons/AddonDatabase.h"
-#include "addons/AddonManager.h"
 
 using namespace GAME;
 

@@ -20,7 +20,6 @@
 
 #include "PlayList.h"
 #include "PlayListFactory.h"
-#include <sstream>
 #include "video/VideoInfoTag.h"
 #include "music/tags/MusicInfoTag.h"
 #include "filesystem/File.h"

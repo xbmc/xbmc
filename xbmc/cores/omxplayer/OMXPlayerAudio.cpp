@@ -42,10 +42,8 @@
 #include "ServiceBroker.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
 #include "cores/DataCacheCore.h"
-#include "ServiceBroker.h"
 
 #include <algorithm>
-#include <iomanip>
 #include <iostream>
 #include <sstream>
 

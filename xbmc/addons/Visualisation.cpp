@@ -33,7 +33,6 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
-#include "ServiceBroker.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
 
 using namespace MUSIC_INFO;

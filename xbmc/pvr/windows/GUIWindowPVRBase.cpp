@@ -30,7 +30,6 @@
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
 #include "messaging/ApplicationMessenger.h"
-#include "ServiceBroker.h"
 #include "utils/log.h"
 #include "utils/Variant.h"
 

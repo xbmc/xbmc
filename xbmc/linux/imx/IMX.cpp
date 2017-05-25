@@ -34,7 +34,6 @@
 #include "guilib/GraphicContext.h"
 #include "windowing/WindowingFactory.h"
 #include "utils/log.h"
-#include "guilib/GraphicContext.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDCodecUtils.h"
 
 #define  DCIC_DEVICE    "/dev/mxc_dcic0"

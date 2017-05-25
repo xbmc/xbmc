@@ -31,7 +31,6 @@
 #include "addons/AddonManager.h"
 #include "addons/Skin.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
-#include "ServiceBroker.h"
 #include "utils/log.h"
 
 CGUIAudioManager g_audioManager;

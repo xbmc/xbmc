@@ -46,7 +46,6 @@
 #include "FileItem.h"
 #include "Application.h"
 #include "IoSupport.h"
-#include "cdioSupport.h"
 #include "storage/MediaManager.h"
 
 

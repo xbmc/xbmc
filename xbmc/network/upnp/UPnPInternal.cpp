@@ -39,7 +39,6 @@
 #include "music/tags/MusicInfoTag.h"
 #include "TextureDatabase.h"
 #include "ThumbLoader.h"
-#include "utils/URIUtils.h"
 #include "settings/Settings.h"
 #include "utils/LangCodeExpander.h"
 

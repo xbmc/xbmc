@@ -57,7 +57,6 @@
 #include "utils/StringUtils.h"
 #include "Util.h"
 #include "settings/Settings.h"
-#include "ServiceBroker.h"
 
 #ifdef HAS_PERFORMANCE_SAMPLE
 #include "utils/PerformanceSample.h"
