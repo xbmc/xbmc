@@ -95,8 +95,6 @@ std::string XBMC::XBMC_MD5::GetMD5(const std::string &text)
  * Still in the public domain.
  */
 
-#include "md5.h"
-
 #include <sys/types.h>		/* for stupid systems */
 #include <string.h>		/* for memcpy() */
 

@@ -48,7 +48,6 @@
 #if defined(TARGET_DARWIN_OSX)
 #include "platform/darwin/DarwinUtils.h"
 #endif// defined(TARGET_DARWIN_OSX)
-#include "ServiceBroker.h"
 
 bool AddonHasSettings(const std::string &condition, const std::string &value, const CSetting *setting, void *data)
 {

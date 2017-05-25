@@ -50,7 +50,6 @@
 #include "utils/StringUtils.h"
 #include "Util.h"
 #include "messaging/ApplicationMessenger.h"
-#include "ServiceBroker.h"
 
 #ifdef TARGET_WINDOWS
 

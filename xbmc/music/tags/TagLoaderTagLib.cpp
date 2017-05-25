@@ -23,10 +23,8 @@
 #include <vector>
 
 #include <taglib/id3v1tag.h>
-#include <taglib/id3v2tag.h>
 #include <taglib/apetag.h>
 #include <taglib/asftag.h>
-#include <taglib/xiphcomment.h>
 #include <taglib/id3v1genres.h>
 #include <taglib/aifffile.h>
 #include <taglib/apefile.h>

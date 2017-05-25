@@ -37,7 +37,6 @@
 #include "games/GameUtils.h"
 #include "guilib/TextureManager.h"
 #include "File.h"
-#include "ServiceBroker.h"
 #include "settings/Settings.h"
 #include "SpecialProtocol.h"
 #include "utils/URIUtils.h"

@@ -28,7 +28,6 @@
 #include "utils/log.h"
 #include "utils/JobManager.h"
 
-#include "ServiceBroker.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/AudioEngine/Interfaces/AEStream.h"

@@ -85,7 +85,6 @@
 #include "cores/omxplayer/OMXHelper.h"
 #endif
 #include "VideoPlayerAudio.h"
-#include "cores/DataCacheCore.h"
 #include "windowing/WindowingFactory.h"
 #include "DVDCodecs/DVDCodecUtils.h"
 

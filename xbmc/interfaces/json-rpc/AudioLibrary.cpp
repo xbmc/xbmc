@@ -31,7 +31,6 @@
 #include "music/Artist.h"
 #include "music/Album.h"
 #include "music/Song.h"
-#include "music/Artist.h"
 #include "messaging/ApplicationMessenger.h"
 #include "filesystem/Directory.h"
 #include "settings/Settings.h"

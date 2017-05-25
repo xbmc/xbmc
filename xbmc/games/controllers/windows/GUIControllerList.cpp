@@ -42,9 +42,6 @@
 #include "peripherals/Peripherals.h"
 #include "ServiceBroker.h"
 
-#include <algorithm>
-#include <iterator>
-
 using namespace ADDON;
 using namespace GAME;
 

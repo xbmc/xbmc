@@ -35,7 +35,6 @@
 #include "threads/SingleLock.h"
 #include "utils/TimeUtils.h"
 #include "utils/StringUtils.h"
-#include "settings/Settings.h"
 #include "windowing/WindowingFactory.h"
 #include "CompileInfo.h"
 #include "messaging/ApplicationMessenger.h"

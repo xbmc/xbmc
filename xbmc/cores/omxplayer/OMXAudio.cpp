@@ -38,7 +38,6 @@
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "guilib/LocalizeStrings.h"
-#include "ServiceBroker.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
 #include "Util.h"
 #include <algorithm>

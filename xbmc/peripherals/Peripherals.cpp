@@ -56,7 +56,6 @@
 #include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
 #include "GUIUserMessages.h"
-#include "input/joysticks/IButtonMapper.h"
 #include "input/Key.h"
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/ThreadMessage.h"

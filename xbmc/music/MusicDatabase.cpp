@@ -63,9 +63,6 @@
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
-#include "TextureCache.h"
-#include "interfaces/AnnouncementManager.h"
-#include "dbwrappers/dataset.h"
 #include "utils/XMLUtils.h"
 
 using namespace XFILE;
