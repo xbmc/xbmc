@@ -88,7 +88,6 @@ bool CScreenSaver::CreateScreenSaver()
   /* Open the class "kodi::addon::CInstanceScreensaver" on add-on side */
   ADDON_STATUS status = CAddonDll::CreateInstance(ADDON_INSTANCE_SCREENSAVER, ID(), &m_struct);
   if (status != ADDON_STATUS_OK)
-  if (!CAddonDll::CreateInstance(ADDON_INSTANCE_SCREENSAVER, ID(), &m_struct))
   {
     CLog::Log(LOGFATAL, "Screensaver: failed to create instance for '%s' and not usable!", ID().c_str());
     return false;
