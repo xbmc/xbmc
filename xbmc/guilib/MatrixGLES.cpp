@@ -27,7 +27,7 @@
 #include <cmath>
 #include "MatrixGLES.h"
 #include "utils/log.h"
-#if defined(__ARM_NEON__)
+#if defined(HAS_NEON)
 #include "utils/CPUInfo.h"
 #endif
 
@@ -139,7 +139,7 @@ void CMatrixGL::Rotatef(GLfloat angle, GLfloat x, GLfloat y, GLfloat z)
   MultMatrixf(matrix);
 }
 
-#if defined(__ARM_NEON__) && !defined(__LP64__)
+#if defined(HAS_NEON) && !defined(__LP64__)
   
 inline void Matrix4Mul(const float* src_mat_1, const float* src_mat_2, float* dst_mat)
 {
@@ -182,7 +182,7 @@ inline void Matrix4Mul(const float* src_mat_1, const float* src_mat_2, float* ds
 #endif
 void CMatrixGL::MultMatrixf(const GLfloat *matrix)
 {
-#if defined(__ARM_NEON__) && !defined(__LP64__)
+#if defined(HAS_NEON) && !defined(__LP64__)
     if ((g_cpuInfo.GetCPUFeatures() & CPU_FEATURE_NEON) == CPU_FEATURE_NEON)
     {
       GLfloat m[16];
