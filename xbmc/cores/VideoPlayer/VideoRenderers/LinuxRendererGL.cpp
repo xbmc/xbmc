@@ -227,7 +227,7 @@ bool CLinuxRendererGL::ValidateRenderTarget()
   return false;
 }
 
-bool CLinuxRendererGL::Configure(VideoPicture &picture, float fps, unsigned flags, unsigned int orientation)
+bool CLinuxRendererGL::Configure(const VideoPicture &picture, float fps, unsigned flags, unsigned int orientation)
 {
   m_format = picture.videoBuffer->GetFormat();
   m_sourceWidth = picture.iWidth;
@@ -290,7 +290,7 @@ bool CLinuxRendererGL::Configure(VideoPicture &picture, float fps, unsigned flag
   return true;
 }
 
-bool CLinuxRendererGL::ConfigChanged(VideoPicture &picture)
+bool CLinuxRendererGL::ConfigChanged(const VideoPicture &picture)
 {
   if (picture.videoBuffer->GetFormat() != m_format)
     return true;
@@ -303,7 +303,7 @@ int CLinuxRendererGL::NextYV12Texture()
   return (m_iYV12RenderBuffer + 1) % m_NumYV12Buffers;
 }
 
-void CLinuxRendererGL::AddVideoPicture(VideoPicture &picture, int index)
+void CLinuxRendererGL::AddVideoPicture(const VideoPicture &picture, int index)
 {
   YUVBUFFER &buf = m_buffers[index];
   buf.videoBuffer = picture.videoBuffer;
