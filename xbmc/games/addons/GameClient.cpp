@@ -258,7 +258,7 @@ bool CGameClient::OpenFile(const CFileItem& file, IGameAudioCallback* audio, IGa
 
   // Check if we should open in standalone mode
   if (file.GetPath().empty())
-    return OpenStandalone(audio, video);
+    return false;
 
   // Resolve special:// URLs
   CURL translatedUrl(CSpecialProtocol::TranslatePath(file.GetPath()));

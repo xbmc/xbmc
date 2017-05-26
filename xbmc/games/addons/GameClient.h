@@ -78,6 +78,7 @@ public:
   bool Initialize(void);
   void Unload();
   bool OpenFile(const CFileItem& file, IGameAudioCallback* audio, IGameVideoCallback* video);
+  bool OpenStandalone(IGameAudioCallback* audio, IGameVideoCallback* video);
   void Reset();
   void CloseFile();
   const std::string& GetGamePath() const { return m_gamePath; }
@@ -118,7 +119,6 @@ public:
 
 private:
   // Private gameplay functions
-  bool OpenStandalone(IGameAudioCallback* audio, IGameVideoCallback* video);
   bool InitializeGameplay(const std::string& gamePath, IGameAudioCallback* audio, IGameVideoCallback* video);
   bool LoadGameInfo();
   bool NormalizeAudio(IGameAudioCallback* audioCallback);
