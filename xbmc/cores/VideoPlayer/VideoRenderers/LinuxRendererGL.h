@@ -104,9 +104,9 @@ public:
   virtual ~CLinuxRendererGL();
 
   // Player functions
-  virtual bool Configure(VideoPicture &picture, float fps, unsigned flags, unsigned int orientation) override;
+  virtual bool Configure(const VideoPicture &picture, float fps, unsigned flags, unsigned int orientation) override;
   virtual bool IsConfigured() override { return m_bConfigured; }
-  virtual void AddVideoPicture(VideoPicture &picture, int index) override;
+  virtual void AddVideoPicture(const VideoPicture &picture, int index) override;
   virtual void FlipPage(int source) override;
   virtual void PreInit() override;
   virtual void UnInit() override;
@@ -118,7 +118,7 @@ public:
   virtual void Update() override;
   virtual bool RenderCapture(CRenderCapture* capture) override;
   virtual CRenderInfo GetRenderInfo() override;
-  virtual bool ConfigChanged(VideoPicture &picture) override;
+  virtual bool ConfigChanged(const VideoPicture &picture) override;
 
   // Feature support
   virtual bool SupportsMultiPassRendering() override;

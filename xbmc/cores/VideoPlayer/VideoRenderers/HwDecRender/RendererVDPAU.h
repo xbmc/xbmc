@@ -30,13 +30,13 @@ public:
   CRendererVDPAU();
   virtual ~CRendererVDPAU();
 
-  virtual bool Configure(VideoPicture &picture, float fps, unsigned flags, unsigned int orientation) override;
+  virtual bool Configure(const VideoPicture &picture, float fps, unsigned flags, unsigned int orientation) override;
 
   // Player functions
   virtual void AddVideoPictureHW(VideoPicture &picture, int index);
   virtual void ReleaseBuffer(int idx);
   virtual CRenderInfo GetRenderInfo();
-  virtual bool ConfigChanged(VideoPicture &picture) override;
+  virtual bool ConfigChanged(const VideoPicture &picture) override;
 
   // Feature support
   virtual bool Supports(ERENDERFEATURE feature);
