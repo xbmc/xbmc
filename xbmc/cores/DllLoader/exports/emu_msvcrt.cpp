@@ -660,7 +660,7 @@ extern "C"
       delete pFile;
       return 0;
     }
-    else if (!IS_STD_DESCRIPTOR(fd))
+    else if (!IS_STD_DESCRIPTOR(fd) && fd >= 0)
     {
       // it might be something else than a file, or the file is not emulated
       // let the operating system handle it

@@ -55,6 +55,7 @@ typedef struct dvdnav_s dvdnav_t;
 /* Status as reported by most of libdvdnav's functions */
 typedef int32_t dvdnav_status_t;
 
+typedef dvd_reader_stream_cb dvdnav_stream_cb;
 /*
  * Unless otherwise stated, all functions return DVDNAV_STATUS_OK if
  * they succeeded, otherwise DVDNAV_STATUS_ERR is returned and the error may
@@ -88,6 +89,7 @@ typedef int32_t dvdnav_status_t;
  * The resulting dvdnav_t handle will be written to *dest.
  */
 dvdnav_status_t dvdnav_open(dvdnav_t **dest, const char *path);
+dvdnav_status_t dvdnav_open_stream(dvdnav_t **dest, void *stream, dvdnav_stream_cb *stream_cb);
 
 /*
  * Closes a dvdnav_t previously opened with dvdnav_open(), freeing any 
