@@ -30,15 +30,15 @@ public:
   CRendererVAAPI();
   virtual ~CRendererVAAPI();
 
-  virtual bool Configure(VideoPicture &picture, float fps, unsigned flags, unsigned int orientation) override;
+  virtual bool Configure(const VideoPicture &picture, float fps, unsigned flags, unsigned int orientation) override;
 
   // Player functions
-  virtual void AddVideoPicture(VideoPicture &picture, int index, double currentClock) override;
+  virtual void AddVideoPicture(const VideoPicture &picture, int index, double currentClock) override;
   virtual void ReleaseBuffer(int idx) override;
   virtual CRenderInfo GetRenderInfo() override;
-  virtual bool ConfigChanged(VideoPicture &picture) override;
+  virtual bool ConfigChanged(const VideoPicture &picture) override;
 
-  static bool HandlesVideoBuffer(VideoPicture &picture);
+  static bool HandlesVideoBuffer(const VideoPicture &picture);
 
   // Feature support
   virtual bool Supports(ERENDERFEATURE feature) override;

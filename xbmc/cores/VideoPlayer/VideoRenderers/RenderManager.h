@@ -105,9 +105,9 @@ public:
    * @param orientation
    * @param numbers of kept buffer references
    */
-  bool Configure(VideoPicture& picture, float fps, unsigned flags, unsigned int orientation, int buffers = 0);
+  bool Configure(const VideoPicture& picture, float fps, unsigned flags, unsigned int orientation, int buffers = 0);
 
-  int AddVideoPicture(VideoPicture& picture);
+  int AddVideoPicture(const VideoPicture& picture);
 
   /**
    * Called by video player to flip render buffers
