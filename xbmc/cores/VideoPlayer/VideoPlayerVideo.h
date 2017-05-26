@@ -102,7 +102,7 @@ protected:
   MsgQueueReturnCode GetMessage(CDVDMsg** pMsg, unsigned int iTimeoutInMilliSeconds, int &priority);
 
   int OutputPicture(const VideoPicture* src, double pts);
-  void ProcessOverlays(VideoPicture* pSource, double pts);
+  void ProcessOverlays(const VideoPicture* pSource, double pts);
   void OpenStream(CDVDStreamInfo &hint, CDVDVideoCodec* codec);
 
   void ResetFrameRateCalc();
