@@ -75,6 +75,7 @@ private:
   std::chrono::time_point<std::chrono::system_clock> m_prevTime;
   bool m_bConfigured;
   unsigned int m_updateCount;
+  CRect m_surfDestRect;
 };
 
 #endif
