@@ -736,7 +736,7 @@ void CVideoPlayerVideo::Flush(bool sync)
 }
 
 #ifdef HAS_VIDEO_PLAYBACK
-void CVideoPlayerVideo::ProcessOverlays(VideoPicture* pSource, double pts)
+void CVideoPlayerVideo::ProcessOverlays(const VideoPicture* pSource, double pts)
 {
   // remove any overlays that are out of time
   if (m_syncState == IDVDStreamPlayer::SYNC_INSYNC)
@@ -799,18 +799,14 @@ std::string CVideoPlayerVideo::GetStereoMode()
   return stereo_mode;
 }
 
-int CVideoPlayerVideo::OutputPicture(const VideoPicture* src, double pts)
+int CVideoPlayerVideo::OutputPicture(const VideoPicture* pPicture, double pts)
 {
   m_bAbortOutput = false;
 
-  /* picture buffer is not allowed to be modified in this call */
-  VideoPicture picture(*src);
-  VideoPicture* pPicture = &picture;
-
   /* grab stereo mode from image if available */
-  if (src->stereo_mode[0] && m_hints.stereo_mode.compare(src->stereo_mode) != 0)
+  if (pPicture->stereo_mode[0] && m_hints.stereo_mode.compare(pPicture->stereo_mode) != 0)
   {
-    m_hints.stereo_mode = src->stereo_mode;
+    m_hints.stereo_mode = pPicture->stereo_mode;
     // signal about changes in video parameters
     m_messageParent.Put(new CDVDMsg(CDVDMsg::PLAYER_AVCHANGE));
   }
@@ -838,7 +834,7 @@ int CVideoPlayerVideo::OutputPicture(const VideoPicture* src, double pts)
 
   flags |= stereo_flags;
 
-  if(!m_renderManager.Configure(picture,
+  if (!m_renderManager.Configure(*pPicture,
                                 static_cast<float>(config_framerate),
                                 flags,
                                 m_hints.orientation,

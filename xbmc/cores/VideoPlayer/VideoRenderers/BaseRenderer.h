@@ -64,10 +64,10 @@ public:
   virtual ~CBaseRenderer();
 
   // Player functions
-  virtual bool Configure(VideoPicture &picture, float fps, unsigned flags, unsigned int orientation) = 0;
+  virtual bool Configure(const VideoPicture &picture, float fps, unsigned flags, unsigned int orientation) = 0;
   virtual bool IsConfigured() = 0;
-  virtual void AddVideoPicture(VideoPicture &picture, int index) = 0;
-  virtual bool IsPictureHW(VideoPicture &picture) { return false; };
+  virtual void AddVideoPicture(const VideoPicture &picture, int index) = 0;
+  virtual bool IsPictureHW(const VideoPicture &picture) { return false; };
   virtual void FlipPage(int source) = 0;
   virtual void PreInit() = 0;
   virtual void UnInit() = 0;
@@ -82,7 +82,7 @@ public:
   virtual void Update() = 0;
   virtual void RenderUpdate(bool clear, unsigned int flags = 0, unsigned int alpha = 255) = 0;
   virtual bool RenderCapture(CRenderCapture* capture) = 0;
-  virtual bool ConfigChanged(VideoPicture &picture) = 0;
+  virtual bool ConfigChanged(const VideoPicture &picture) = 0;
 
   // Feature support
   virtual bool SupportsMultiPassRendering() = 0;
