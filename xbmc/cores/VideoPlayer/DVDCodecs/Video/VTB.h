@@ -23,12 +23,30 @@
 
 #include "DVDVideoCodecFFmpeg.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
+#include "cores/VideoPlayer/Process/VideoBuffer.h"
 #include <CoreVideo/CVPixelBuffer.h>
 
 class CProcessInfo;
 
 namespace VTB
 {
+class CVideoBufferVTB;
+class CVideoBufferPoolVTB;
+
+class CVideoBufferVTB: public CVideoBuffer
+{
+public:
+  CVideoBufferVTB(IVideoBufferPool &pool, int id);
+  virtual ~CVideoBufferVTB();
+  void SetRef(AVFrame *frame);
+  void Unref();
+  CVPixelBufferRef GetPB();
+
+  GLuint m_fence = 0;
+protected:
+  CVPixelBufferRef m_pbRef = nullptr;
+  AVFrame *m_pFrame;
+};
 
 class CDecoder: public IHardwareDecoder
 {
@@ -49,7 +67,8 @@ protected:
   unsigned m_renderbuffers_count;
   AVCodecContext *m_avctx;
   CProcessInfo& m_processInfo;
-  CVPixelBufferRef m_renderPicture;
+  CVideoBufferVTB *m_renderBuffer = nullptr;
+  std::shared_ptr<CVideoBufferPoolVTB> m_videoBufferPool;
 };
 
 }
