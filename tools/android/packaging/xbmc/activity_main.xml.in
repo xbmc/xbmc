@@ -4,11 +4,5 @@
   android:layout_height="match_parent"
   android:background="@android:color/transparent" >
 
-  <@APP_PACKAGE@.XBMCVideoView
-    android:id="@+id/VideoView1"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:background="@android:color/transparent" />
-
 </RelativeLayout>
 

@@ -121,6 +121,7 @@ std::vector<CActivityResultEvent*> CXBMCApp::m_activityResultEvents;
 CXBMCApp::CXBMCApp(ANativeActivity* nativeActivity)
   : CJNIMainActivity(nativeActivity)
   , CJNIBroadcastReceiver(CJNIContext::getPackageName() + ".XBMCBroadcastReceiver")
+  , m_videosurfaceInUse(false)
 {
   m_xbmcappinstance = this;
   m_activity = nativeActivity;
@@ -200,13 +201,14 @@ void CXBMCApp::onResume()
 void CXBMCApp::onPause()
 {
   android_printf("%s: ", __PRETTY_FUNCTION__);
-  
+
   if (g_application.m_pPlayer->IsPlaying())
   {
-    if (g_application.m_pPlayer->IsPlayingVideo())
-      CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_STOP)));
-    else
-      registerMediaButtonEventReceiver();
+    if (g_application.m_pPlayer->HasVideo())
+    {
+      if (!g_application.m_pPlayer->IsPaused())
+        CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PAUSE)));
+    }
   }
 
   EnableWakeLock(false);
@@ -546,10 +548,13 @@ CRect CXBMCApp::MapRenderToDroid(const CRect& srcRect)
   float scaleX = 1.0;
   float scaleY = 1.0;
 
-  CJNIRect r = m_xbmcappinstance->getVideoViewSurfaceRect();
-  RESOLUTION_INFO renderRes = CDisplaySettings::GetInstance().GetResolutionInfo(g_graphicsContext.GetVideoResolution());
-  scaleX = (double)r.width() / renderRes.iWidth;
-  scaleY = (double)r.height() / renderRes.iHeight;
+  CJNIRect r = m_xbmcappinstance->getDisplayRect();
+  if (r.width() && r.height())
+  {
+    RESOLUTION_INFO renderRes = CDisplaySettings::GetInstance().GetResolutionInfo(g_graphicsContext.GetVideoResolution());
+    scaleX = (double)r.width() / renderRes.iWidth;
+    scaleY = (double)r.height() / renderRes.iHeight;
+  }
 
   return CRect(srcRect.x1 * scaleX, srcRect.y1 * scaleY, srcRect.x2 * scaleX, srcRect.y2 * scaleY);
 }

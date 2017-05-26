@@ -94,6 +94,7 @@ class CXBMCApp
 public:
   CXBMCApp(ANativeActivity *nativeActivity);
   virtual ~CXBMCApp();
+  static CXBMCApp* get() { return m_xbmcappinstance; }
 
   // IAnnouncer IF
   virtual void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data);
@@ -186,7 +187,8 @@ public:
 
   static bool WaitVSync(unsigned int milliSeconds);
 
-  static CXBMCApp* get() { return m_xbmcappinstance; }
+  bool getVideosurfaceInUse();
+  void setVideosurfaceInUse(bool videosurfaceInUse);
 
 protected:
   // limit who can access Volume
@@ -212,6 +214,7 @@ private:
   static bool m_headsetPlugged;
   static IInputDeviceCallbacks* m_inputDeviceCallbacks;
   static IInputDeviceEventHandler* m_inputDeviceEventHandler;
+  bool m_videosurfaceInUse;
   bool m_firstrun;
   bool m_exiting;
   pthread_t m_thread;

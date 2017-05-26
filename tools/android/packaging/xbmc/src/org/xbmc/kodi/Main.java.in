@@ -9,23 +9,21 @@ import android.media.AudioManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Choreographer;
+import android.view.Gravity;
 import android.view.View;
-import android.view.Surface;
-import android.widget.RelativeLayout;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.os.Handler;
-import @APP_PACKAGE@.XBMCVideoView;
 
 public class Main extends NativeActivity implements Choreographer.FrameCallback
 {
   private static final String TAG = "@APP_NAME_LC@";
 
+  public static Main MainActivity = null;
+
   private XBMCSettingsContentObserver mSettingsContentObserver;
   private XBMCInputDeviceListener mInputDeviceListener;
-  private XBMCVideoView mVideoView = null;
   private XBMCJsonRPC mJsonRPC = null;
-  private RelativeLayout mVideoLayout = null;
   private View thisView = null;
   private Handler handler = new Handler();
   private Intent mNewIntent = null;
@@ -54,51 +52,27 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
   public Main()
   {
     super();
+    MainActivity = this;
   }
 
-  public Surface getVideoViewSurface()
-  {
-    return mVideoView.getSurface();
-  }
-
-  public Rect getVideoViewSurfaceRect()
+  public Rect getDisplayRect()
   {
     Rect ret = new Rect();
     ret.top = 0;
     ret.left = 0;
-    ret.right = mVideoView.mWidth;
-    ret.bottom = mVideoView.mHeight;
+    ret.right = 0;
+    ret.bottom = 0;
+
+    try
+    {
+      ret.right = thisView.getRootView().getWidth();
+      ret.bottom = thisView.getRootView().getHeight();
+    }
+    catch (Exception e) {}
 
     return ret;
   }
 
-  public void setVideoViewSurfaceRect(final int left, final int top, final int right, final int bottom)
-  {
-    runOnUiThread(new Runnable()
-    {
-      @Override
-      public void run()
-      {
-        android.widget.RelativeLayout.LayoutParams mp = new android.widget.RelativeLayout.LayoutParams(mVideoView.getLayoutParams());
-        mp.setMargins(left, top, mVideoLayout.getWidth() - right, mVideoLayout.getHeight() - bottom);
-        mVideoView.setLayoutParams(mp);
-        mVideoView.requestLayout();
-      }
-    });
-  }
-
-  public void clearVideoView()
-  {
-    runOnUiThread(new Runnable()
-    {
-      @Override
-      public void run()
-      {
-        mVideoView.clearSurface();
-      }
-    });
-  }
-  
   public void registerMediaButtonEventReceiver()
   {
     AudioManager manager = (AudioManager) getSystemService(AUDIO_SERVICE);
@@ -128,10 +102,6 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
     getWindow().setFormat(PixelFormat.TRANSPARENT);
 
     setContentView(R.layout.activity_main);
-    mVideoView = (XBMCVideoView)findViewById(R.id.VideoView1);
-    mVideoView.getHolder().setFormat(PixelFormat.TRANSPARENT);
-    mVideoLayout = (RelativeLayout) findViewById(R.id.VideoLayout);
-
     setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
     mSettingsContentObserver = new XBMCSettingsContentObserver(this, handler);

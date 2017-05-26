@@ -129,7 +129,7 @@ void CRendererMediaCodecSurface::FlipPage(int source)
   // Benefit of this place is that it is called from render-thread and not
   // affected by gui stalls when opening overlay dialogs
   if (mci)
-    mci->ReleaseOutputBuffer(true);
+    mci->RenderUpdate(m_surfDestRect);
 }
 
 bool CRendererMediaCodecSurface::Supports(ERENDERFEATURE feature)
@@ -178,16 +178,16 @@ void CRendererMediaCodecSurface::ReorderDrawPoints()
   if (stereo_mode)
     g_graphicsContext.SetStereoView(RENDER_STEREO_VIEW_OFF);
 
-  CRect dstRect(m_destRect);
+  m_surfDestRect = m_destRect;
   CRect srcRect(m_sourceRect);
   switch (stereo_mode)
   {
     case RENDER_STEREO_MODE_SPLIT_HORIZONTAL:
-      dstRect.y2 *= 2.0;
+      m_surfDestRect.y2 *= 2.0;
       srcRect.y2 *= 2.0;
       break;
     case RENDER_STEREO_MODE_SPLIT_VERTICAL:
-      dstRect.x2 *= 2.0;
+      m_surfDestRect.x2 *= 2.0;
       srcRect.x2 *= 2.0;
       break;
     default:
@@ -200,20 +200,13 @@ void CRendererMediaCodecSurface::ReorderDrawPoints()
     case 90:
     case 270:
     {
-        double scale = (double)dstRect.Height() / dstRect.Width();
-        int diff = (int) ((dstRect.Height()*scale - dstRect.Width()) / 2);
-        dstRect = CRect(dstRect.x1 - diff, dstRect.y1, dstRect.x2 + diff, dstRect.y2);
+      double scale = (double)m_surfDestRect.Height() / m_surfDestRect.Width();
+      int diff = (int) ((m_surfDestRect.Height()*scale - m_surfDestRect.Width()) / 2);
+      m_surfDestRect = CRect(m_surfDestRect.x1 - diff, m_surfDestRect.y1, m_surfDestRect.x2 + diff, m_surfDestRect.y2);
     }
     default:
       break;
   }
-
-  CRect adjRect = CXBMCApp::MapRenderToDroid(dstRect);
-  CXBMCApp::get()->setVideoViewSurfaceRect(adjRect.x1, adjRect.y1, adjRect.x2, adjRect.y2);
-
-  CLog::Log(LOGDEBUG, "CRendererMediaCodecSurface::ReorderDrawPoints: dst: %0.1f+%0.1f-%0.1fx%0.1f, adj: %0.1f+%0.1f-%0.1fx%0.1f",
-    dstRect.x1, dstRect.y1, dstRect.Width(), dstRect.Height(),
-    adjRect.x1, adjRect.y1, adjRect.Width(), adjRect.Height());
 }
 
 #endif
