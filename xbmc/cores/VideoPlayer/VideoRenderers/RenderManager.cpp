@@ -154,7 +154,7 @@ float CRenderManager::GetAspectRatio()
     return 1.0f;
 }
 
-bool CRenderManager::Configure(VideoPicture& picture, float fps, unsigned flags, unsigned int orientation, int buffers)
+bool CRenderManager::Configure(const VideoPicture& picture, float fps, unsigned flags, unsigned int orientation, int buffers)
 {
 
   // check if something has changed
@@ -503,63 +503,72 @@ void CRenderManager::CreateRenderer()
 {
   if (!m_pRenderer)
   {
-    if (0)
+    if (m_pConfigPicture)
     {
-    }
+      if (0)
+      {
+      }
 #if defined(HAVE_LIBVA)
-    else if (CRendererVAAPI::HandlesVideoBuffer(*m_pPicture))
-    {
-      m_pRenderer = new CRendererVAAPI;
-    }
+      else if (CRendererVAAPI::HandlesVideoBuffer(*m_pPicture))
+      {
+        m_pRenderer = new CRendererVAAPI;
+      }
 #endif
 #if defined(HAVE_LIBVDPAU)
-    else if (0)
-    {
-      m_pRenderer = new CRendererVDPAU;
-    }
+      else if (0)
+      {
+        m_pRenderer = new CRendererVDPAU;
+      }
 #endif
 #if defined(TARGET_DARWIN)
-    else if (0) //CRendererVTB::HandlesVideoBuffer(*m_pPicture))
-    {
-      m_pRenderer = new CRendererVTB;
-    }
+      else if (CRendererVTB::HandlesVideoBuffer(m_pConfigPicture->videoBuffer))
+      {
+        m_pRenderer = new CRendererVTB;
+      }
 #endif
 #if defined(TARGET_ANDROID)
-    else if (0)
-    {
-      m_pRenderer = new CRendererMediaCodec;
-    }
+      else if (0)
+      {
+        m_pRenderer = new CRendererMediaCodec;
+      }
 #endif
 #if defined(TARGET_ANDROID)
-    else if (0)
-    {
-      m_pRenderer = new CRendererMediaCodecSurface;
-    }
+      else if (0)
+      {
+        m_pRenderer = new CRendererMediaCodecSurface;
+      }
 #endif
 #if defined(HAS_MMAL)
-    else if (0)
-    {
-      m_pRenderer = new CMMALRenderer;
-    }
+      else if (0)
+      {
+        m_pRenderer = new CMMALRenderer;
+      }
 #endif
-#if defined(HAS_IMXVPU)    
-    else if (0)
-    {
-      m_pRenderer = new CRendererIMX;
-    }
+#if defined(HAS_IMXVPU)
+      else if (0)
+      {
+        m_pRenderer = new CRendererIMX;
+      }
 #endif
 #if defined(HAS_DX)
-    else if (0)
-    {
-      m_pRenderer = new CWinRenderer();
-    }
+      else if (0)
+      {
+        m_pRenderer = new CWinRenderer();
+      }
 #endif
 #if defined(HAS_LIBAMCODEC)
-    else if (0)
-    {
-      m_pRenderer = new CRendererAML;
-    }
+      else if (0)
+      {
+        m_pRenderer = new CRendererAML;
+      }
 #endif
+#if defined(HAS_GL)
+      else
+      {
+        m_pRenderer = new CLinuxRendererGL;
+      }
+#endif
+    }
 
 #if defined(HAS_GL)
     else
@@ -1090,7 +1099,7 @@ CRenderInfo CRenderManager::GetRenderInfo()
   return m_pRenderer->GetRenderInfo();
 }
 
-int CRenderManager::AddVideoPicture(VideoPicture& pic)
+int CRenderManager::AddVideoPicture(const VideoPicture& pic)
 {
   int index;
   {
