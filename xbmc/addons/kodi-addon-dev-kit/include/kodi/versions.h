@@ -26,10 +26,10 @@
 
 /*
  *------------------------------------------------------------------------------
- * This header is only be used for Kodi itself and internally (not for add-on
- * development) to identify the several types.
+ * Some parts on headers are only be used for Kodi itself and internally (not
+ * for add-on development).
  *
- * With this reason is also no doxygen part with "///" here used.
+ * For this reason also no doxygen part with "///" defined there.
  * -----------------------------------------------------------------------------
  */
 
@@ -40,7 +40,6 @@
  * needed includes during compile. Also have it here a better
  * overview.
  */
-
 
 #define ADDON_GLOBAL_VERSION_MAIN                     "1.0.1"
 #define ADDON_GLOBAL_VERSION_MAIN_MIN                 "1.0.1"
@@ -132,10 +131,12 @@
                                                       "xbmc_vis_types.h"
 
 ///
-/// The currently used types for Kodi add-ons
+/// The currently available instance types for Kodi add-ons
 ///
+/// \internal
 /// @note For add of new types take a new number on end. To change
 /// existing numbers can be make problems on already compiled add-ons.
+/// \endinternal
 ///
 typedef enum ADDON_TYPE
 {
@@ -285,7 +286,7 @@ inline const char* GetTypeMinVersion(int type)
 /// Function used internally on add-on and in Kodi itself to get name
 /// about given type.
 ///
-/// @param[in] instanceType The with 'enum ADDON_TYPE' type to ask
+/// @param[in] type The with 'enum ADDON_TYPE' defined type to ask
 /// @return Name of the asked instance type
 ///
 inline const char* GetTypeName(int type)
@@ -327,7 +328,7 @@ inline const char* GetTypeName(int type)
 /// Function used internally on add-on and in Kodi itself to get id number
 /// about given type name.
 ///
-/// @param[in] instanceType The with name type to ask
+/// @param[in] name The type name string to ask
 /// @return Id number of the asked instance type
 ///
 /// @warning String must be lower case here!
