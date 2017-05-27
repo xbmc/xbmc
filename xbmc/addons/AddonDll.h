@@ -27,6 +27,9 @@
 
 namespace ADDON
 {
+  class CAddonDll;
+  typedef std::shared_ptr<CAddonDll> AddonDllPtr;
+
   class CAddonDll : public CAddon
   {
   public:
