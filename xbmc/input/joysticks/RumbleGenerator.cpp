@@ -20,7 +20,6 @@
 
 #include "RumbleGenerator.h"
 #include "games/controllers/Controller.h"
-#include "games/controllers/ControllerFeature.h"
 #include "games/GameServices.h"
 #include "input/joysticks/IInputReceiver.h"
 #include "ServiceBroker.h"
@@ -125,16 +124,9 @@ std::vector<std::string> CRumbleGenerator::GetMotors(const std::string& controll
 
   std::vector<std::string> motors;
 
-  CGameServices& gameServices = CServiceBroker::GetGameServices();
-  ControllerPtr controller = gameServices.GetController(controllerId);
+  ControllerPtr controller = CServiceBroker::GetGameServices().GetController(controllerId);
   if (controller)
-  {
-    for (const CControllerFeature& feature : controller->Layout().Features())
-    {
-      if (feature.Type() == FEATURE_TYPE::MOTOR)
-        motors.push_back(feature.Name());
-    }
-  }
-
+    controller->GetFeatures(motors, FEATURE_TYPE::MOTOR);
+ 
   return motors;
 }
