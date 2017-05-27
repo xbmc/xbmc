@@ -80,6 +80,16 @@ namespace JOYSTICK
     virtual unsigned int GetKeyID(const FeatureName& feature, ANALOG_STICK_DIRECTION dir = ANALOG_STICK_DIRECTION::UNKNOWN) const = 0;
 
     /*!
+     * \brief Get the window ID that should be used in the keymap lookup
+     *
+     * A subclass can override this to force a key entry from a particular
+     * window.
+     *
+     * \return A window ID from WindowIDs.h
+     */
+    virtual int GetWindowID() const;
+
+    /*!
      * \brief Keep track of cheat code presses
      *
      * Child classes should initialize this with the appropriate controller ID.

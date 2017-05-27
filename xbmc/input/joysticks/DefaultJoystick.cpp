@@ -23,6 +23,7 @@
 #include "JoystickEasterEgg.h"
 #include "JoystickIDs.h"
 #include "JoystickTranslator.h"
+#include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
 #include "Application.h"
 
@@ -72,7 +73,7 @@ bool CDefaultJoystick::AcceptsInput()
 
 INPUT_TYPE CDefaultJoystick::GetInputType(const FeatureName& feature) const
 {
-  return m_handler->GetInputType(GetKeyID(feature));
+  return m_handler->GetInputType(GetKeyID(feature), GetWindowID());
 }
 
 bool CDefaultJoystick::OnButtonPress(const FeatureName& feature, bool bPressed)
@@ -81,10 +82,11 @@ bool CDefaultJoystick::OnButtonPress(const FeatureName& feature, bool bPressed)
     return true;
 
   const unsigned int keyId = GetKeyID(feature);
+  const int windowId = GetWindowID();
 
-  if (m_handler->GetInputType(keyId) == INPUT_TYPE::DIGITAL)
+  if (m_handler->GetInputType(keyId, windowId) == INPUT_TYPE::DIGITAL)
   {
-    m_handler->OnDigitalKey(keyId, bPressed);
+    m_handler->OnDigitalKey(keyId, windowId, bPressed);
     return true;
   }
 
@@ -94,16 +96,19 @@ bool CDefaultJoystick::OnButtonPress(const FeatureName& feature, bool bPressed)
 void CDefaultJoystick::OnButtonHold(const FeatureName& feature, unsigned int holdTimeMs)
 {
   const unsigned int keyId = GetKeyID(feature);
-  m_handler->OnDigitalKey(keyId, true, holdTimeMs);
+  const int windowId = GetWindowID();
+
+  m_handler->OnDigitalKey(keyId, windowId, true, holdTimeMs);
 }
 
 bool CDefaultJoystick::OnButtonMotion(const FeatureName& feature, float magnitude)
 {
   const unsigned int keyId = GetKeyID(feature);
+  const int windowId = GetWindowID();
 
-  if (m_handler->GetInputType(keyId) == INPUT_TYPE::ANALOG)
+  if (m_handler->GetInputType(keyId, windowId) == INPUT_TYPE::ANALOG)
   {
-    m_handler->OnAnalogKey(keyId, magnitude);
+    m_handler->OnAnalogKey(keyId, windowId, magnitude);
     return true;
   }
 
@@ -142,11 +147,17 @@ bool CDefaultJoystick::OnAccelerometerMotion(const FeatureName& feature, float x
 int CDefaultJoystick::GetActionID(const FeatureName& feature)
 {
   const unsigned int keyId = GetKeyID(feature);
+  const int windowId = GetWindowID();
 
   if (keyId > 0)
-    return m_handler->GetActionID(keyId);
+    return m_handler->GetActionID(keyId, windowId);
 
   return ACTION_NONE;
+}
+
+int CDefaultJoystick::GetWindowID() const
+{
+  return g_windowManager.GetActiveWindowID();
 }
 
 bool CDefaultJoystick::ActivateDirection(const FeatureName& feature, float magnitude, ANALOG_STICK_DIRECTION dir, unsigned int motionTimeMs)
@@ -155,7 +166,8 @@ bool CDefaultJoystick::ActivateDirection(const FeatureName& feature, float magni
 
   // Calculate the button key ID and input type for the analog stick's direction
   const unsigned int  keyId     = GetKeyID(feature, dir);
-  const INPUT_TYPE    inputType = m_handler->GetInputType(keyId);
+  const int           windowId  = GetWindowID();
+  const INPUT_TYPE    inputType = m_handler->GetInputType(keyId, windowId);
 
   if (inputType == INPUT_TYPE::DIGITAL)
   {
@@ -175,12 +187,12 @@ bool CDefaultJoystick::ActivateDirection(const FeatureName& feature, float magni
       m_holdStartTimes.erase(keyId);
     }
 
-    m_handler->OnDigitalKey(keyId, bIsPressed, holdTimeMs);
+    m_handler->OnDigitalKey(keyId, windowId, bIsPressed, holdTimeMs);
     bHandled = true;
   }
   else if (inputType == INPUT_TYPE::ANALOG)
   {
-    m_handler->OnAnalogKey(keyId, magnitude);
+    m_handler->OnAnalogKey(keyId, windowId, magnitude);
     bHandled = true;
   }
 
@@ -196,15 +208,16 @@ void CDefaultJoystick::DeactivateDirection(const FeatureName& feature, ANALOG_ST
   {
     // Calculate the button key ID and input type for this direction
     const unsigned int  keyId     = GetKeyID(feature, dir);
-    const INPUT_TYPE    inputType = m_handler->GetInputType(keyId);
+    const int           windowId  = GetWindowID();
+    const INPUT_TYPE    inputType = m_handler->GetInputType(keyId, windowId);
 
     if (inputType == INPUT_TYPE::DIGITAL)
     {
-      m_handler->OnDigitalKey(keyId, false);
+      m_handler->OnDigitalKey(keyId, windowId, false);
     }
     else if (inputType == INPUT_TYPE::ANALOG)
     {
-      m_handler->OnAnalogKey(keyId, 0.0f);
+      m_handler->OnAnalogKey(keyId, windowId, 0.0f);
     }
 
     m_holdStartTimes.erase(keyId);

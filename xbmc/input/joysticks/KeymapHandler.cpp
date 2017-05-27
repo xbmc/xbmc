@@ -19,7 +19,7 @@
  */
 
 #include "KeymapHandler.h"
-#include "guilib/GUIWindowManager.h"
+#include "input/Action.h"
 #include "input/ButtonTranslator.h"
 #include "input/InputManager.h"
 #include "input/Key.h"
@@ -43,12 +43,12 @@ CKeymapHandler::~CKeymapHandler(void)
 {
 }
 
-INPUT_TYPE CKeymapHandler::GetInputType(unsigned int keyId) const
+INPUT_TYPE CKeymapHandler::GetInputType(unsigned int keyId, int windowId) const
 {
   CAction action(ACTION_NONE);
 
   if (keyId != 0)
-    action = CButtonTranslator::GetInstance().GetAction(g_windowManager.GetActiveWindowID(), CKey(keyId));
+    action = CButtonTranslator::GetInstance().GetAction(windowId, CKey(keyId));
 
   if (action.GetID() > ACTION_NONE)
   {
@@ -61,41 +61,52 @@ INPUT_TYPE CKeymapHandler::GetInputType(unsigned int keyId) const
   return INPUT_TYPE::UNKNOWN;
 }
 
-int CKeymapHandler::GetActionID(unsigned int keyId) const
+int CKeymapHandler::GetActionID(unsigned int keyId, int windowId) const
 {
   CAction action(ACTION_NONE);
 
   if (keyId != 0)
-    action = CButtonTranslator::GetInstance().GetAction(g_windowManager.GetActiveWindowID(), CKey(keyId));
+    action = CButtonTranslator::GetInstance().GetAction(windowId, CKey(keyId), true);
 
   return action.GetID();
 }
 
-void CKeymapHandler::OnDigitalKey(unsigned int keyId, bool bPressed, unsigned int holdTimeMs /* = 0 */)
+void CKeymapHandler::OnDigitalKey(unsigned int keyId, int windowId, bool bPressed, unsigned int holdTimeMs /* = 0 */)
 {
   if (keyId != 0)
   {
     if (bPressed)
-      ProcessButtonPress(keyId, holdTimeMs);
+    {
+      CAction action(CButtonTranslator::GetInstance().GetAction(windowId, CKey(keyId, holdTimeMs), true));
+      SendAction(action);
+    }
     else
+    {
       ProcessButtonRelease(keyId);
+    }
   }
 }
 
-void CKeymapHandler::OnAnalogKey(unsigned int keyId, float magnitude)
+void CKeymapHandler::OnAnalogKey(unsigned int keyId, int windowId, float magnitude)
 {
   if (keyId != 0)
-    SendAnalogAction(keyId, magnitude);
+  {
+    CAction action(CButtonTranslator::GetInstance().GetAction(windowId, CKey(keyId), true));
+    SendAnalogAction(action, magnitude);
+  }
 }
 
-void CKeymapHandler::ProcessButtonPress(unsigned int keyId, unsigned int holdTimeMs)
+void CKeymapHandler::SendAction(const CAction& action)
 {
+  const unsigned int keyId = action.GetButtonCode();
+  const unsigned int holdTimeMs = action.GetHoldTime();
+
   if (!IsPressed(keyId))
   {
     m_pressedButtons.push_back(keyId);
 
     // Only dispatch action if button was pressed this frame
-    if (holdTimeMs == 0 && SendDigitalAction(keyId))
+    if (holdTimeMs == 0 && SendDigitalAction(action))
     {
       m_lastButtonPress = keyId;
       m_lastDigitalActionMs = holdTimeMs;
@@ -105,7 +116,7 @@ void CKeymapHandler::ProcessButtonPress(unsigned int keyId, unsigned int holdTim
   {
     if (holdTimeMs > m_lastDigitalActionMs + REPEAT_TIMEOUT_MS)
     {
-      SendDigitalAction(keyId, holdTimeMs);
+      SendDigitalAction(action);
       m_lastDigitalActionMs = holdTimeMs;
     }
   }
@@ -132,9 +143,8 @@ bool CKeymapHandler::IsPressed(unsigned int keyId) const
   return std::find(m_pressedButtons.begin(), m_pressedButtons.end(), keyId) != m_pressedButtons.end();
 }
 
-bool CKeymapHandler::SendDigitalAction(unsigned int keyId, unsigned int holdTimeMs /* = 0 */)
+bool CKeymapHandler::SendDigitalAction(const CAction& action)
 {
-  CAction action(CButtonTranslator::GetInstance().GetAction(g_windowManager.GetActiveWindowID(), CKey(keyId, holdTimeMs)));
   if (action.GetID() > 0)
   {
     // If button was pressed this frame, send action
@@ -172,9 +182,8 @@ bool CKeymapHandler::SendDigitalAction(unsigned int keyId, unsigned int holdTime
   return false;
 }
 
-bool CKeymapHandler::SendAnalogAction(unsigned int keyId, float magnitude)
+bool CKeymapHandler::SendAnalogAction(const CAction& action, float magnitude)
 {
-  CAction action(CButtonTranslator::GetInstance().GetAction(g_windowManager.GetActiveWindowID(), CKey(keyId)));
   if (action.GetID() > 0)
   {
     CAction actionWithAmount(action.GetID(), magnitude, 0.0f, action.GetName());

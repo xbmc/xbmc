@@ -41,40 +41,44 @@ namespace JOYSTICK
      * \brief Get the type of action mapped to the specified key ID
      *
      * \param keyId  The key ID from Key.h
+     * \param windowId   The window ID from WindowIDs.h
      *
      * \return The type of action mapped to keyId, or INPUT_TYPE::UNKNOWN if
      *         no action is mapped to the specified key
      */
-    virtual INPUT_TYPE GetInputType(unsigned int keyId) const = 0;
+    virtual INPUT_TYPE GetInputType(unsigned int keyId, int windowId) const = 0;
 
     /*!
      * \brief Get the action ID mapped to the specified key ID
      *
      * \param keyId  The key ID from Key.h
+     * \param windowId   The window ID from WindowIDs.h
      *
      * \return The action ID, or ACTION_NONE if no action is mapped to the
      *         specified key
      */
-    virtual int GetActionID(unsigned int keyId) const = 0;
+    virtual int GetActionID(unsigned int keyId, int windowId) const = 0;
 
     /*!
      * \brief A key mapped to a digital action has been pressed or released
      *
      * \param keyId      The key ID from Key.h
+     * \param windowId   The window ID from WindowIDs.h
      * \param bPressed   true if the key's button/axis is activated, false if deactivated
      * \param holdTimeMs The held time in ms for pressed buttons, or 0 for released
      */
-    virtual void OnDigitalKey(unsigned int keyId, bool bPressed, unsigned int holdTimeMs = 0) = 0;
+    virtual void OnDigitalKey(unsigned int keyId, int windowId, bool bPressed, unsigned int holdTimeMs = 0) = 0;
 
     /*!
      * \brief Callback for keys mapped to analog actions
      *
      * \param keyId      The button key ID from Key.h
+     * \param windowId   The window ID from WindowIDs.h
      * \param magnitude  The amount of the analog action
      *
      * If keyId is not mapped to an analog action, no action need be taken
      */
-    virtual void OnAnalogKey(unsigned int buttonKeyId, float magnitude) = 0;
+    virtual void OnAnalogKey(unsigned int keyId, int windowId, float magnitude) = 0;
   };
 }
 }
