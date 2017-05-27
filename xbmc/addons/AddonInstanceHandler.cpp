@@ -42,9 +42,19 @@ IAddonInstanceHandler::~IAddonInstanceHandler()
 
 bool IAddonInstanceHandler::CreateInstance(KODI_HANDLE instance)
 {
-  if (m_addon && m_addon->CreateInstance(m_type, m_instanceId, instance, m_parentInstance) == ADDON_STATUS_OK)
-    return true;
-  return false;
+  if (!m_addon)
+  {
+    CLog::Log(LOGFATAL, "Addon: Tried to create instance with not present addon class");
+    return false;
+  }
+
+  ADDON_STATUS status = m_addon->CreateInstance(m_type, m_instanceId, instance, m_parentInstance);
+  if (status != ADDON_STATUS_OK)
+  {
+    CLog::Log(LOGERROR, "Addon: %s returned bad status \"%s\" during instance creation", m_addon->ID().c_str(), kodi::TranslateAddonStatus(status).c_str());
+    return false;
+  }
+  return true;
 }
 
 void IAddonInstanceHandler::DestroyInstance()

@@ -41,7 +41,7 @@
  * overview.
  */
 
-#define ADDON_GLOBAL_VERSION_MAIN                     "1.0.2"
+#define ADDON_GLOBAL_VERSION_MAIN                     "1.0.3"
 #define ADDON_GLOBAL_VERSION_MAIN_MIN                 "1.0.2"
 #define ADDON_GLOBAL_VERSION_MAIN_XML_ID              "kodi.binary.global.main"
 #define ADDON_GLOBAL_VERSION_MAIN_DEPENDS             "AddonBase.h" \
