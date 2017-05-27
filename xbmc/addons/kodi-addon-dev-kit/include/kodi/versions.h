@@ -51,8 +51,8 @@
                                                       "kodi_audioengine_types.h" \
                                                       "libKODI_audioengine.h" \
                                                       "libXBMC_addon.h" \
-                                                      "addon-instance/Screensaver.h"
-// @note "addon-instance/Screensaver.h" above must be improved to check only to included directory with "addon-instance"!
+                                                      "addon-instance/"
+
 #define ADDON_GLOBAL_VERSION_GUI                      "5.11.0"
 #define ADDON_GLOBAL_VERSION_GUI_MIN                  "5.10.0"
 #define ADDON_GLOBAL_VERSION_GUI_XML_ID               "kodi.binary.global.gui"
