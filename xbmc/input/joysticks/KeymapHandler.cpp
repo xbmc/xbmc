@@ -137,10 +137,16 @@ bool CKeymapHandler::SendDigitalAction(unsigned int keyId, unsigned int holdTime
   CAction action(CButtonTranslator::GetInstance().GetAction(g_windowManager.GetActiveWindowID(), CKey(keyId, holdTimeMs)));
   if (action.GetID() > 0)
   {
-    //! @todo Add "holdtime" parameter to joystick.xml. For now we MUST only
-    // send held actions for basic navigation commands!
-    if (holdTimeMs > 0)
+    // If button was pressed this frame, send action
+    if (action.GetHoldTime() == 0)
     {
+      CInputManager::GetInstance().QueueAction(action);
+    }
+    else
+    {
+      // Only send repeated actions for basic navigation commands
+      bool bIsNavigation = false;
+
       switch (action.GetID())
       {
       case ACTION_MOVE_LEFT:
@@ -149,14 +155,17 @@ bool CKeymapHandler::SendDigitalAction(unsigned int keyId, unsigned int holdTime
       case ACTION_MOVE_DOWN:
       case ACTION_PAGE_UP:
       case ACTION_PAGE_DOWN:
+        bIsNavigation = true;
         break;
 
       default:
-        return true;
+        break;
       }
+
+      if (bIsNavigation)
+        CInputManager::GetInstance().QueueAction(action);
     }
 
-    CInputManager::GetInstance().QueueAction(action);
     return true;
   }
 
