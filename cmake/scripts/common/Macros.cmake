@@ -701,4 +701,7 @@ macro(find_addon_xml_in_files)
     endforeach()
     unset(xml_name)
   endforeach()
+
+  # Append also versions.h to depends
+  list(APPEND ADDON_XML_DEPENDS "${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/versions.h")
 endmacro()

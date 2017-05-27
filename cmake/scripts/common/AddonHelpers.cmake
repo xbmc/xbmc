@@ -118,7 +118,7 @@ macro (build_addon target prefix libs)
                   string(REPLACE " " ";" loop_var "${loop_var}")
                   list(GET loop_var 1 include_name)
                   string(REGEX REPLACE "[<>\"]|kodi/" "" include_name "${include_name}")
-                  if(include_name STREQUAL ${depend_header})
+                  if(include_name MATCHES ${depend_header})
                     set(ADDON_DEPENDS "${ADDON_DEPENDS}\n<import addon=\"${${xml_entry_name}}\" version=\"${${depends_name}}\"/>")
                     # Inform with them the addon header about used type
                     add_definitions(-D${used_type_name})
