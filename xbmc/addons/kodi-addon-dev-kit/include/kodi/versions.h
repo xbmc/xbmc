@@ -41,14 +41,12 @@
  * overview.
  */
 
-#define ADDON_GLOBAL_VERSION_MAIN                     "1.0.3"
+#define ADDON_GLOBAL_VERSION_MAIN                     "1.0.4"
 #define ADDON_GLOBAL_VERSION_MAIN_MIN                 "1.0.2"
 #define ADDON_GLOBAL_VERSION_MAIN_XML_ID              "kodi.binary.global.main"
 #define ADDON_GLOBAL_VERSION_MAIN_DEPENDS             "AddonBase.h" \
                                                       "xbmc_addon_dll.h" \
                                                       "xbmc_addon_types.h" \
-                                                      "kodi_audioengine_types.h" \
-                                                      "libKODI_audioengine.h" \
                                                       "libXBMC_addon.h" \
                                                       "addon-instance/"
 
@@ -56,6 +54,11 @@
 #define ADDON_GLOBAL_VERSION_GUI_MIN                  "5.10.0"
 #define ADDON_GLOBAL_VERSION_GUI_XML_ID               "kodi.binary.global.gui"
 #define ADDON_GLOBAL_VERSION_GUI_DEPENDS              "libKODI_guilib.h"
+
+#define ADDON_GLOBAL_VERSION_AUDIOENGINE              "1.0.0"
+#define ADDON_GLOBAL_VERSION_AUDIOENGINE_MIN          "1.0.0"
+#define ADDON_GLOBAL_VERSION_AUDIOENGINE_XML_ID       "kodi.binary.global.audioengine"
+#define ADDON_GLOBAL_VERSION_AUDIOENGINE_DEPENDS      "AudioEngine.h"
 
 #define ADDON_INSTANCE_VERSION_ADSP                   "0.1.10"
 #define ADDON_INSTANCE_VERSION_ADSP_MIN               "0.1.10"
@@ -143,7 +146,8 @@ typedef enum ADDON_TYPE
   /* addon global parts */
   ADDON_GLOBAL_MAIN = 0,
   ADDON_GLOBAL_GUI = 1,
-  ADDON_GLOBAL_MAX = 1, // Last used global id, used in loops to check versions. Need to change if new global type becomes added.
+  ADDON_GLOBAL_AUDIOENGINE = 2,
+  ADDON_GLOBAL_MAX = 3, // Last used global id, used in loops to check versions. Need to change if new global type becomes added.
 
   /* addon type instances */
   ADDON_INSTANCE_ADSP = 101,
@@ -186,6 +190,10 @@ inline const char* GetTypeVersion(int type)
 #if !defined(BUILD_KODI_ADDON) || defined(ADDON_GLOBAL_VERSION_GUI_USED)
     case ADDON_GLOBAL_GUI:
       return ADDON_GLOBAL_VERSION_GUI;
+#endif
+#if !defined(BUILD_KODI_ADDON) || defined(ADDON_GLOBAL_VERSION_AUDIOENGINE_USED)
+    case ADDON_GLOBAL_AUDIOENGINE:
+      return ADDON_GLOBAL_VERSION_AUDIOENGINE;
 #endif
 
     /* addon type instances */
@@ -254,6 +262,8 @@ inline const char* GetTypeMinVersion(int type)
       return ADDON_GLOBAL_VERSION_MAIN_MIN;
     case ADDON_GLOBAL_GUI:
       return ADDON_GLOBAL_VERSION_GUI_MIN;
+    case ADDON_GLOBAL_AUDIOENGINE:
+      return ADDON_GLOBAL_VERSION_AUDIOENGINE_MIN;
 
     /* addon type instances */
     case ADDON_INSTANCE_ADSP:
@@ -298,6 +308,8 @@ inline const char* GetTypeName(int type)
       return "Addon";
     case ADDON_GLOBAL_GUI:
       return "GUI";
+    case ADDON_GLOBAL_AUDIOENGINE:
+      return "AudioEngine";
 
     /* addon type instances */
     case ADDON_INSTANCE_ADSP:
@@ -341,6 +353,8 @@ inline int GetTypeId(const char* name)
       return ADDON_GLOBAL_MAIN;
     else if (strcmp(name, "gui") == 0)
       return ADDON_GLOBAL_GUI;
+    else if (strcmp(name, "audioengine") == 0)
+      return ADDON_GLOBAL_AUDIOENGINE;
     else if (strcmp(name, "adsp") == 0)
       return ADDON_INSTANCE_ADSP;
     else if (strcmp(name, "audiodecoder") == 0)
