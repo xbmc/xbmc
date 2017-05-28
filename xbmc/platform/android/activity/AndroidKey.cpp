@@ -204,8 +204,10 @@ bool CAndroidKey::onKeyboardEvent(AInputEvent *event)
   int32_t keycode = AKeyEvent_getKeyCode(event);
 
   int32_t deviceId = AInputEvent_getDeviceId(event);
+  uint16_t unicode = 0;
   CJNIKeyCharacterMap map = CJNIKeyCharacterMap::load(deviceId);
-  uint16_t unicode = map.get(keycode, state);
+  if (map)
+    unicode = map.get(keycode, state);
 
   // Check if we got some special key
   uint16_t sym = XBMCK_UNKNOWN;
