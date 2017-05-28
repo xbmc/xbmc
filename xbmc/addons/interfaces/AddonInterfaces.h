@@ -53,11 +53,6 @@ namespace ADDON
     void*               AddOnLib_GetHelper()          { return m_helperAddOn; }
     /*\_________________________________________________________________________
     \*/
-    static void*        AudioEngineLib_RegisterMe      (void* addonData);
-    static void         AudioEngineLib_UnRegisterMe    (void* addonData, void* cbTable);
-    void*               AudioEngineLib_GetHelper()    { return m_helperAudioEngine; }
-    /*\__________________________________________________________________________________________
-    \*/
     static void*        GUILib_RegisterMe              (void* addonData);
     static void         GUILib_UnRegisterMe            (void* addonData, void* cbTable);
     void*               GUILib_GetHelper()            { return m_helperGUI; }
@@ -91,7 +86,6 @@ namespace ADDON
     CAddon*   m_addon;
 
     void*     m_helperAddOn;
-    void*     m_helperAudioEngine;
     void*     m_helperGUI;
   };
 

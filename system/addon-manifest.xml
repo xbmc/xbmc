@@ -2,6 +2,7 @@
   <addon>audioencoder.xbmc.builtin.aac</addon>
   <addon>audioencoder.xbmc.builtin.wma</addon>
   <addon>game.controller.default</addon>
+  <addon>kodi.binary.global.audioengine</addon>
   <addon>kodi.binary.global.main</addon>
   <addon>kodi.binary.global.gui</addon>
   <addon>kodi.binary.instance.adsp</addon>

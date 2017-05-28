@@ -156,6 +156,7 @@ typedef ADDON_HANDLE_STRUCT *ADDON_HANDLE;
  * Callback function tables from addon to Kodi
  * Set complete from Kodi!
  */
+struct AddonToKodiFuncTable_kodi_audioengine;
 typedef struct AddonToKodiFuncTable_Addon
 {
   // Pointer inside Kodi, used on callback functions to give related handle
@@ -170,6 +171,7 @@ typedef struct AddonToKodiFuncTable_Addon
   bool (*get_setting)(void* kodiBase, const char* settingName, void *settingValue);
   bool (*set_setting)(void* kodiBase, const char* settingName, const char* settingValue);
 
+  AddonToKodiFuncTable_kodi_audioengine* kodi_audioengine;
 } AddonToKodiFuncTable_Addon;
 
 /*
