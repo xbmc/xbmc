@@ -43,12 +43,12 @@ CKeymapHandler::~CKeymapHandler(void)
 {
 }
 
-INPUT_TYPE CKeymapHandler::GetInputType(unsigned int keyId, int windowId) const
+INPUT_TYPE CKeymapHandler::GetInputType(unsigned int keyId, int windowId, bool bFallthrough) const
 {
   CAction action(ACTION_NONE);
 
   if (keyId != 0)
-    action = CButtonTranslator::GetInstance().GetAction(windowId, CKey(keyId), true);
+    action = CButtonTranslator::GetInstance().GetAction(windowId, CKey(keyId), bFallthrough);
 
   if (action.GetID() > ACTION_NONE)
   {
@@ -61,28 +61,28 @@ INPUT_TYPE CKeymapHandler::GetInputType(unsigned int keyId, int windowId) const
   return INPUT_TYPE::UNKNOWN;
 }
 
-int CKeymapHandler::GetActionID(unsigned int keyId, int windowId) const
+int CKeymapHandler::GetActionID(unsigned int keyId, int windowId, bool bFallthrough) const
 {
   CAction action(ACTION_NONE);
 
   if (keyId != 0)
-    action = CButtonTranslator::GetInstance().GetAction(windowId, CKey(keyId), true);
+    action = CButtonTranslator::GetInstance().GetAction(windowId, CKey(keyId), bFallthrough);
 
   return action.GetID();
 }
 
-unsigned int CKeymapHandler::GetHoldTimeMs(unsigned int keyId, int windowId) const
+unsigned int CKeymapHandler::GetHoldTimeMs(unsigned int keyId, int windowId, bool bFallthrough) const
 {
-  return CButtonTranslator::GetInstance().GetHoldTimeMs(windowId, CKey(keyId), true);
+  return CButtonTranslator::GetInstance().GetHoldTimeMs(windowId, CKey(keyId), bFallthrough);
 }
 
-void CKeymapHandler::OnDigitalKey(unsigned int keyId, int windowId, bool bPressed, unsigned int holdTimeMs /* = 0 */)
+void CKeymapHandler::OnDigitalKey(unsigned int keyId, int windowId, bool bFallthrough, bool bPressed, unsigned int holdTimeMs /* = 0 */)
 {
   if (keyId != 0)
   {
     if (bPressed)
     {
-      CAction action(CButtonTranslator::GetInstance().GetAction(windowId, CKey(keyId, holdTimeMs), true));
+      CAction action(CButtonTranslator::GetInstance().GetAction(windowId, CKey(keyId, holdTimeMs), bFallthrough));
       SendAction(action);
     }
     else
@@ -92,11 +92,11 @@ void CKeymapHandler::OnDigitalKey(unsigned int keyId, int windowId, bool bPresse
   }
 }
 
-void CKeymapHandler::OnAnalogKey(unsigned int keyId, int windowId, float magnitude)
+void CKeymapHandler::OnAnalogKey(unsigned int keyId, int windowId, bool bFallthrough, float magnitude)
 {
   if (keyId != 0)
   {
-    CAction action(CButtonTranslator::GetInstance().GetAction(windowId, CKey(keyId), true));
+    CAction action(CButtonTranslator::GetInstance().GetAction(windowId, CKey(keyId), bFallthrough));
     SendAnalogAction(action, magnitude);
   }
 }

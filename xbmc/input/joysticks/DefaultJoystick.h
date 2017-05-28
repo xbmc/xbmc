@@ -91,6 +91,14 @@ namespace JOYSTICK
     virtual int GetWindowID() const;
 
     /*!
+     * \brief Check if we should use the fallthrough window when looking up keys
+     *
+     * \return True if we should use a key from a fallthrough window or the
+     *         global keymap
+     */
+    virtual bool GetFallthrough() const { return true; }
+
+    /*!
      * \brief Keep track of cheat code presses
      *
      * Child classes should initialize this with the appropriate controller ID.
