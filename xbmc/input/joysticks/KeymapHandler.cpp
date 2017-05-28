@@ -48,7 +48,7 @@ INPUT_TYPE CKeymapHandler::GetInputType(unsigned int keyId, int windowId) const
   CAction action(ACTION_NONE);
 
   if (keyId != 0)
-    action = CButtonTranslator::GetInstance().GetAction(windowId, CKey(keyId));
+    action = CButtonTranslator::GetInstance().GetAction(windowId, CKey(keyId), true);
 
   if (action.GetID() > ACTION_NONE)
   {
@@ -69,6 +69,11 @@ int CKeymapHandler::GetActionID(unsigned int keyId, int windowId) const
     action = CButtonTranslator::GetInstance().GetAction(windowId, CKey(keyId), true);
 
   return action.GetID();
+}
+
+unsigned int CKeymapHandler::GetHoldTimeMs(unsigned int keyId, int windowId) const
+{
+  return CButtonTranslator::GetInstance().GetHoldTimeMs(windowId, CKey(keyId), true);
 }
 
 void CKeymapHandler::OnDigitalKey(unsigned int keyId, int windowId, bool bPressed, unsigned int holdTimeMs /* = 0 */)

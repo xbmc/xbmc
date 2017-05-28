@@ -76,6 +76,11 @@ INPUT_TYPE CDefaultJoystick::GetInputType(const FeatureName& feature) const
   return m_handler->GetInputType(GetKeyID(feature), GetWindowID());
 }
 
+unsigned int CDefaultJoystick::GetDelayMs(const FeatureName& feature) const
+{
+  return m_handler->GetHoldTimeMs(GetKeyID(feature), GetWindowID());
+}
+
 bool CDefaultJoystick::OnButtonPress(const FeatureName& feature, bool bPressed)
 {
   if (bPressed && m_easterEgg && m_easterEgg->OnButtonPress(feature))

@@ -900,6 +900,7 @@ CAction CButtonTranslator::GetAction(int window, const CKey &key, bool fallback)
   // if it's invalid, try to get it from the global map
   if (actionID == 0 && fallback)
   {
+    //! @todo Refactor fallback logic
     int fallbackWindow = GetFallbackWindow(window);
     if (fallbackWindow > -1)
       actionID = GetActionCode(fallbackWindow, key, strAction);
@@ -956,6 +957,50 @@ bool CButtonTranslator::HasLongpressMapping(int window, const CKey &key)
   return false;
 }
 
+unsigned int CButtonTranslator::GetHoldTimeMs(int window, const CKey &key, bool fallback /* = true */)
+{
+  unsigned int holdtimeMs = 0;
+
+  std::map<int, buttonMap>::const_iterator it = m_translatorMap.find(window);
+  if (it != m_translatorMap.end())
+  {
+    uint32_t code = key.GetButtonCode();
+
+    buttonMap::const_iterator it2 = (*it).second.find(code);
+
+    if (it2 != (*it).second.end())
+    {
+      holdtimeMs = (*it2).second.holdtimeMs;
+    }
+    else if (fallback)
+    {
+      //! @todo Refactor fallback logic
+      int fallbackWindow = GetFallbackWindow(window);
+      if (fallbackWindow > -1)
+        holdtimeMs = GetHoldTimeMs(fallbackWindow, key, false);
+      else
+      {
+        // still no valid action? use global map
+        holdtimeMs = GetHoldTimeMs(-1, key, false);
+      }
+    }
+  }
+  else if (fallback)
+  {
+    //! @todo Refactor fallback logic
+    int fallbackWindow = GetFallbackWindow(window);
+    if (fallbackWindow > -1)
+      holdtimeMs = GetHoldTimeMs(fallbackWindow, key, false);
+    else
+    {
+      // still no valid action? use global map
+      holdtimeMs = GetHoldTimeMs(-1, key, false);
+    }
+  }
+
+  return holdtimeMs;
+}
+
 int CButtonTranslator::GetActionCode(int window, const CKey &key, std::string &strAction) const
 {
   uint32_t code = key.GetButtonCode();
@@ -992,7 +1037,7 @@ int CButtonTranslator::GetActionCode(int window, const CKey &key, std::string &s
   return action;
 }
 
-void CButtonTranslator::MapAction(uint32_t buttonCode, const char *szAction, buttonMap &map)
+void CButtonTranslator::MapAction(uint32_t buttonCode, const char *szAction, unsigned int holdtimeMs, buttonMap &map)
 {
   int action = ACTION_NONE;
   if (!TranslateActionString(szAction, action) || !buttonCode)
@@ -1010,6 +1055,7 @@ void CButtonTranslator::MapAction(uint32_t buttonCode, const char *szAction, but
     CButtonAction button;
     button.id = action;
     button.strID = szAction;
+    button.holdtimeMs = holdtimeMs;
     map.insert(std::pair<uint32_t, CButtonAction>(buttonCode, button));
   }
 }
@@ -1087,6 +1133,8 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, int windowID)
       while (pButton)
       {
         uint32_t buttonCode=0;
+        unsigned int holdtimeMs = 0;
+
         if (type == "gamepad")
             buttonCode = TranslateGamepadString(pButton->Value());
         else if (type == "remote")
@@ -1107,13 +1155,13 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, int windowID)
           if (deviceElem != nullptr)
             deviceElem->QueryValueAttribute("profile", &controllerId);
 
-          buttonCode = TranslateJoystickCommand(pButton, controllerId);
+          buttonCode = TranslateJoystickCommand(pButton, controllerId, holdtimeMs);
         }
 
         if (buttonCode)
         {
           if (pButton->FirstChild() && pButton->FirstChild()->Value()[0])
-            MapAction(buttonCode, pButton->FirstChild()->Value(), map);
+            MapAction(buttonCode, pButton->FirstChild()->Value(), holdtimeMs, map);
           else
           {
             buttonMap::iterator it = map.find(buttonCode);
@@ -1607,8 +1655,10 @@ int CButtonTranslator::GetTouchActionCode(int window, int action, std::string &a
   return touchIt->second.id;
 }
 
-uint32_t CButtonTranslator::TranslateJoystickCommand(const TiXmlElement *pButton, const std::string& controllerId)
+uint32_t CButtonTranslator::TranslateJoystickCommand(const TiXmlElement *pButton, const std::string& controllerId, unsigned int& holdtimeMs)
 {
+  holdtimeMs = 0;
+
   const char *szButton = pButton->Value();
   if (!szButton)
     return 0;
@@ -1657,7 +1707,19 @@ uint32_t CButtonTranslator::TranslateJoystickCommand(const TiXmlElement *pButton
   }
 
   if (buttonCode == 0)
+  {
     CLog::Log(LOGERROR, "Joystick Translator: Can't find button %s for controller %s", strButton.c_str(), controllerId.c_str());
+  }
+  else
+  {
+    // Process holdtime parameter
+    std::string strHoldTime;
+    if (pButton->QueryValueAttribute("holdtime", &strHoldTime) == TIXML_SUCCESS)
+    {
+      std::stringstream ss(strHoldTime);
+      ss >> holdtimeMs;
+    }
+  }
 
   return buttonCode;
 }

@@ -41,6 +41,7 @@ struct CButtonAction
 {
   int id;
   std::string strID; // needed for "ActivateWindow()" type actions
+  unsigned int holdtimeMs;
 };
 ///
 /// singleton class to map from buttons to actions
@@ -80,6 +81,13 @@ public:
    \return true if a longpress mapping exists
    */
   bool HasLongpressMapping(int window, const CKey &key);
+
+  /*! \brief Get the "holdtime" parameter if specified for this key
+   \param window id of the current window
+   \param key to search a mapping for
+   \return the holdtime in ms, or 0 if no holdtime was specified
+   */
+  unsigned int GetHoldTimeMs(int window, const CKey &key, bool fallback = true);
 
   /*! \brief Obtain the action configured for a given window and key
    \param window the window id
@@ -132,7 +140,7 @@ private:
   static uint32_t TranslateGamepadString(const char *szButton);
   static uint32_t TranslateRemoteString(const char *szButton);
   static uint32_t TranslateUniversalRemoteString(const char *szButton);
-  static uint32_t TranslateJoystickCommand(const TiXmlElement *pButton, const std::string& controllerId);
+  static uint32_t TranslateJoystickCommand(const TiXmlElement *pButton, const std::string& controllerId, unsigned int& holdtimeMs);
 
   static uint32_t TranslateKeyboardString(const char *szButton);
   static uint32_t TranslateKeyboardButton(TiXmlElement *pButton);
@@ -142,7 +150,7 @@ private:
   static uint32_t TranslateAppCommand(const char *szButton);
 
   void MapWindowActions(TiXmlNode *pWindow, int wWindowID);
-  void MapAction(uint32_t buttonCode, const char *szAction, buttonMap &map);
+  void MapAction(uint32_t buttonCode, const char *szAction, unsigned int holdtimeMs, buttonMap &map);
   void MapCustomControllerActions(int windowID, TiXmlNode *pCustomController);
 
   bool LoadKeymap(const std::string &keymapPath);

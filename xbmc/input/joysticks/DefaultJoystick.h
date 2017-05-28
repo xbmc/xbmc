@@ -53,6 +53,7 @@ namespace JOYSTICK
     virtual bool HasFeature(const FeatureName& feature) const override;
     virtual bool AcceptsInput(void) override;
     virtual INPUT_TYPE GetInputType(const FeatureName& feature) const override;
+    virtual unsigned int GetDelayMs(const FeatureName& feature) const override;
     virtual bool OnButtonPress(const FeatureName& feature, bool bPressed) override;
     virtual void OnButtonHold(const FeatureName& feature, unsigned int holdTimeMs) override;
     virtual bool OnButtonMotion(const FeatureName& feature, float magnitude) override;

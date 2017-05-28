@@ -70,6 +70,15 @@ namespace JOYSTICK
     virtual INPUT_TYPE GetInputType(const FeatureName& feature) const = 0;
 
     /*!
+     * \brief Get the delay before this feature should be processed
+     *
+     * \param feature The feature
+     *
+     * \return The duration this feature must be held before sending events
+     */
+    virtual unsigned int GetDelayMs(const FeatureName& feature) const = 0;
+
+    /*!
      * \brief A digital button has been pressed or released
      *
      * \param feature      The feature being pressed

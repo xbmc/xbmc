@@ -60,6 +60,16 @@ namespace JOYSTICK
     virtual int GetActionID(unsigned int keyId, int windowId) const = 0;
 
     /*!
+     * \brief Get the time required to hold the button before calling OnDigitalKey()
+     *
+     * \param keyId      The key ID from Key.h
+     * \param windowId   The window ID from WindowIDs.h
+     *
+     * \return The hold time, in ms
+     */
+    virtual unsigned int GetHoldTimeMs(unsigned int keyId, int windowId) const = 0;
+
+    /*!
      * \brief A key mapped to a digital action has been pressed or released
      *
      * \param keyId      The key ID from Key.h
