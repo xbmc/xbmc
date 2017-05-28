@@ -355,7 +355,7 @@ ADDON_STATUS CAddonDll::CreateInstance(ADDON_TYPE instanceType, const std::strin
     return ADDON_STATUS_PERMANENT_FAILURE;
 
   KODI_HANDLE addonInstance;
-  status = m_interface.toAddon.create_instance(instanceType, instanceID.c_str(), instance, &addonInstance, parentInstance);
+  status = m_interface.toAddon->create_instance(instanceType, instanceID.c_str(), instance, &addonInstance, parentInstance);
   if (status == ADDON_STATUS_OK)
   {
     m_usedInstances[instanceID] = std::make_pair(instanceType, addonInstance);
@@ -369,7 +369,7 @@ void CAddonDll::DestroyInstance(const std::string& instanceID)
   auto it = m_usedInstances.find(instanceID);
   if (it != m_usedInstances.end())
   {
-    m_interface.toAddon.destroy_instance(it->second.first, it->second.second);
+    m_interface.toAddon->destroy_instance(it->second.first, it->second.second);
     m_usedInstances.erase(it);
   }
 
@@ -544,14 +544,21 @@ bool CAddonDll::InitInterface(KODI_HANDLE firstKodiInstance)
   m_interface.globalSingleInstance = nullptr;
   m_interface.firstKodiInstance = firstKodiInstance;
 
-  m_interface.toKodi.kodiBase = this;
-  m_interface.toKodi.get_addon_path = get_addon_path;
-  m_interface.toKodi.get_base_user_path = get_base_user_path;
-  m_interface.toKodi.addon_log_msg = addon_log_msg;
-  m_interface.toKodi.get_setting = get_setting;
-  m_interface.toKodi.set_setting = set_setting;
-  m_interface.toKodi.free_string = free_string;
+  // Create function list from kodi to addon, generated with malloc to have
+  // compatible with other versions
+  m_interface.toKodi = (AddonToKodiFuncTable_Addon*) malloc(sizeof(AddonToKodiFuncTable_Addon));
+  m_interface.toKodi->kodiBase = this;
+  m_interface.toKodi->get_addon_path = get_addon_path;
+  m_interface.toKodi->get_base_user_path = get_base_user_path;
+  m_interface.toKodi->addon_log_msg = addon_log_msg;
+  m_interface.toKodi->get_setting = get_setting;
+  m_interface.toKodi->set_setting = set_setting;
+  m_interface.toKodi->free_string = free_string;
 
+  // Create function list from addon to kodi, generated with calloc to have
+  // compatible with other versions and everything with "0"
+  // Related parts becomes set from addon headers.
+  m_interface.toAddon = (KodiToAddonFuncTable_Addon*) calloc(1, sizeof(KodiToAddonFuncTable_Addon));
   return true;
 }
 
@@ -559,7 +566,11 @@ void CAddonDll::DeInitInterface()
 {
   if (m_interface.libBasePath)
     free((char*)m_interface.libBasePath);
-  m_interface.libBasePath = nullptr;
+  if (m_interface.toKodi)
+    free((char*)m_interface.toKodi);
+  if (m_interface.toAddon)
+    free((char*)m_interface.toAddon);
+  m_interface = {0};
 }
 
 char* CAddonDll::get_addon_path(void* kodiBase)
