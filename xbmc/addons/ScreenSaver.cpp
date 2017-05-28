@@ -17,58 +17,24 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 #include "ScreenSaver.h"
-#include "ServiceBroker.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/GraphicContext.h"
-#include "interfaces/generic/ScriptInvocationManager.h"
-#include "settings/Settings.h"
-#include "utils/AlarmClock.h"
-#include "utils/log.h"
-#include "utils/URIUtils.h"
 #include "windowing/WindowingFactory.h"
-
-// What sound does a python screensaver make?
-#define SCRIPT_ALARM "sssssscreensaver"
-
-#define SCRIPT_TIMEOUT 15 // seconds
+#include "utils/log.h"
 
 namespace ADDON
 {
 
-CScreenSaver::CScreenSaver(AddonProps props)
- : ADDON::CAddonDll(std::move(props))
+CScreenSaver::CScreenSaver(AddonDllPtr addonInfo)
+ : IAddonInstanceHandler(ADDON_INSTANCE_SCREENSAVER, addonInfo)
 {
-  m_struct = {0};
-}
-
-CScreenSaver::CScreenSaver(const char *addonID)
- : ADDON::CAddonDll(AddonProps(addonID, ADDON_UNKNOWN))
-{
-  m_struct = {0};
-}
-
-bool CScreenSaver::IsInUse() const
-{
-  return CServiceBroker::GetSettings().GetString(CSettings::SETTING_SCREENSAVER_MODE) == ID();
-}
-
-bool CScreenSaver::CreateScreenSaver()
-{
-  if (CScriptInvocationManager::GetInstance().HasLanguageInvoker(LibPath()))
-  {
-    // Don't allow a previously-scheduled alarm to kill our new screensaver
-    g_alarmClock.Stop(SCRIPT_ALARM, true);
-
-    if (!CScriptInvocationManager::GetInstance().Stop(LibPath()))
-      CScriptInvocationManager::GetInstance().ExecuteAsync(LibPath(), AddonPtr(new CScreenSaver(*this)));
-    return true;
-  }
-
   m_name = Name();
   m_presets = CSpecialProtocol::TranslatePath(Path());
   m_profile = CSpecialProtocol::TranslatePath(Profile());
 
+  m_struct = {0};
 #ifdef HAS_DX
   m_struct.props.device = g_Windowing.Get3D11Context();
 #else
@@ -86,21 +52,21 @@ bool CScreenSaver::CreateScreenSaver()
   m_struct.toKodi.kodiInstance = this;
 
   /* Open the class "kodi::addon::CInstanceScreensaver" on add-on side */
-  ADDON_STATUS status = CAddonDll::CreateInstance(ADDON_INSTANCE_SCREENSAVER, ID(), &m_struct);
-  if (status != ADDON_STATUS_OK)
-  {
+  if (CreateInstance(&m_struct))
     CLog::Log(LOGFATAL, "Screensaver: failed to create instance for '%s' and not usable!", ID().c_str());
-    return false;
-  }
-
-  return true;
 }
 
-void CScreenSaver::Start()
+CScreenSaver::~CScreenSaver()
 {
-  // notify screen saver that they should start
+  /* Destroy the class "kodi::addon::CInstanceScreensaver" on add-on side */
+  DestroyInstance();
+}
+
+bool CScreenSaver::Start()
+{
   if (m_struct.toAddon.Start)
-    m_struct.toAddon.Start(&m_struct);
+    return m_struct.toAddon.Start(&m_struct);
+  return false;
 }
 
 void CScreenSaver::Stop()
@@ -111,25 +77,8 @@ void CScreenSaver::Stop()
 
 void CScreenSaver::Render()
 {
-  // ask screensaver to render itself
   if (m_struct.toAddon.Render)
     m_struct.toAddon.Render(&m_struct);
-}
-
-void CScreenSaver::Destroy()
-{
-  if (URIUtils::HasExtension(LibPath(), ".py"))
-  {
-    /* FIXME: This is a hack but a proper fix is non-trivial. Basically this code
-     * makes sure the addon gets terminated after we've moved out of the screensaver window.
-     * If we don't do this, we may simply lockup.
-     */
-    g_alarmClock.Start(SCRIPT_ALARM, SCRIPT_TIMEOUT, "StopScript(" + LibPath() + ")", true, false);
-    return;
-  }
-
-  m_struct = {0};
-  CAddonDll::DestroyInstance(ID());
 }
 
 } /* namespace ADDON */

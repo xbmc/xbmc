@@ -21,24 +21,16 @@
  */
 
 #include "guilib/GUIWindow.h"
-#ifdef HAS_SCREENSAVER
-#include "addons/ScreenSaver.h"
-#endif
 
-#include "threads/CriticalSection.h"
-
-#define SCREENSAVER_FADE   1
-#define SCREENSAVER_BLACK  2
-#define SCREENSAVER_XBS    3
+namespace ADDON { class CScreenSaver; }
 
 class CGUIWindowScreensaver : public CGUIWindow
 {
 public:
   CGUIWindowScreensaver(void);
-  virtual ~CGUIWindowScreensaver(void);
 
   virtual bool OnMessage(CGUIMessage& message);
-  virtual bool OnAction(const CAction &action);
+  virtual bool OnAction(const CAction &action) { return false; } // We're just a screen saver, nothing to do here
   virtual void Render();
   virtual void Process(unsigned int currentTime, CDirtyRegionList &regions);
 
@@ -46,9 +38,6 @@ protected:
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
 
 private:
-  bool m_bInitialized;
-  CCriticalSection m_critSection;
-#ifdef HAS_SCREENSAVER
-  std::shared_ptr<ADDON::CScreenSaver> m_addon;
-#endif
+  ADDON::CScreenSaver* m_addon;
 };
+

@@ -258,7 +258,7 @@ CApplication::CApplication(void)
   , m_ignoreSkinSettingChanges(false)
   , m_saveSkinOnUnloading(true)
   , m_autoExecScriptExecuted(false)
-  , m_bScreenSave(false)
+  , m_screensaverActive(false)
   , m_bInhibitIdleShutdown(false)
   , m_dpmsIsActive(false)
   , m_dpmsIsManual(false)
@@ -1858,19 +1858,6 @@ bool CApplication::LoadCustomWindows()
     }
   }
   return true;
-}
-
-float CApplication::GetDimScreenSaverLevel() const
-{
-  if (!m_bScreenSave || !m_screenSaver ||
-      (m_screenSaver->ID() != "screensaver.xbmc.builtin.dim" &&
-       m_screenSaver->ID() != "screensaver.xbmc.builtin.black" &&
-       !m_screenSaver->ID().empty()))
-    return 0;
-
-  if (!m_screenSaver->GetSetting("level").empty())
-    return 100.0f - (float)atof(m_screenSaver->GetSetting("level").c_str());
-  return 100.0f;
 }
 
 void CApplication::Render()
@@ -3869,7 +3856,7 @@ void CApplication::ResetScreenSaver()
 
   // screen saver timer is reset only if we're not already in screensaver or
   // DPMS mode
-  if ((!m_bScreenSave && m_iScreenSaveLock == 0) && !m_dpmsIsActive)
+  if ((!m_screensaverActive && m_iScreenSaveLock == 0) && !m_dpmsIsActive)
     ResetScreenSaverTimer();
 }
 
@@ -3912,7 +3899,7 @@ bool CApplication::ToggleDPMS(bool manual)
 
 bool CApplication::WakeUpScreenSaverAndDPMS(bool bPowerOffKeyPressed /* = false */)
 {
-  bool result;
+  bool result = false;
 
   // First reset DPMS, if active
   if (m_dpmsIsActive)
@@ -3923,9 +3910,9 @@ bool CApplication::WakeUpScreenSaverAndDPMS(bool bPowerOffKeyPressed /* = false 
     //! (DPMS came first), activate screensaver now.
     ToggleDPMS(false);
     ResetScreenSaverTimer();
-    result = !m_bScreenSave || WakeUpScreenSaver(bPowerOffKeyPressed);
+    result = !m_screensaverActive || WakeUpScreenSaver(bPowerOffKeyPressed);
   }
-  else
+  else if (m_screensaverActive)
     result = WakeUpScreenSaver(bPowerOffKeyPressed);
 
   if(result)
@@ -3949,13 +3936,13 @@ bool CApplication::WakeUpScreenSaver(bool bPowerOffKeyPressed /* = false */)
     return false;
 
   // if Screen saver is active
-  if (m_bScreenSave && m_screenSaver)
+  if (m_screensaverActive && !m_screensaverIdInUse.empty())
   {
     if (m_iScreenSaveLock == 0)
       if (CProfilesManager::GetInstance().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE &&
           (CProfilesManager::GetInstance().UsingLoginScreen() || m_ServiceManager->GetSettings().GetBool(CSettings::SETTING_MASTERLOCK_STARTUPLOCK)) &&
           CProfilesManager::GetInstance().GetCurrentProfile().getLockMode() != LOCK_MODE_EVERYONE &&
-          m_screenSaver->ID() != "screensaver.xbmc.builtin.dim" && m_screenSaver->ID() != "screensaver.xbmc.builtin.black" && !m_screenSaver->ID().empty() && m_screenSaver->ID() != "visualization")
+          m_screensaverIdInUse != "screensaver.xbmc.builtin.dim" && m_screensaverIdInUse != "screensaver.xbmc.builtin.black" && m_screensaverIdInUse != "visualization")
       {
         m_iScreenSaveLock = 2;
         CGUIMessage msg(GUI_MSG_CHECK_LOCK,0,0);
@@ -3971,22 +3958,39 @@ bool CApplication::WakeUpScreenSaver(bool bPowerOffKeyPressed /* = false */)
     }
 
     // disable screensaver
-    m_bScreenSave = false;
+    m_screensaverActive = false;
     m_iScreenSaveLock = 0;
     ResetScreenSaverTimer();
 
-    if (m_screenSaver->ID() == "visualization")
+    if (m_screensaverIdInUse == "visualization")
     {
       // we can just continue as usual from vis mode
       return false;
     }
-    else if (m_screenSaver->ID() == "screensaver.xbmc.builtin.dim" || m_screenSaver->ID() == "screensaver.xbmc.builtin.black" || m_screenSaver->ID().empty())
+    else if (m_screensaverIdInUse == "screensaver.xbmc.builtin.dim" ||
+             m_screensaverIdInUse == "screensaver.xbmc.builtin.black" ||
+             m_screensaverIdInUse.empty())
+    {
       return true;
-    else if (!m_screenSaver->ID().empty())
+    }
+    else if (!m_screensaverIdInUse.empty())
     { // we're in screensaver window
+      if (m_pythonScreenSaver)
+      {
+        // What sound does a python screensaver make?
+        #define SCRIPT_ALARM "sssssscreensaver"
+        #define SCRIPT_TIMEOUT 15 // seconds
+
+        /* FIXME: This is a hack but a proper fix is non-trivial. Basically this code
+        * makes sure the addon gets terminated after we've moved out of the screensaver window.
+        * If we don't do this, we may simply lockup.
+        */
+        g_alarmClock.Start(SCRIPT_ALARM, SCRIPT_TIMEOUT, "StopScript(" + m_pythonScreenSaver->LibPath() + ")", true, false);
+        m_pythonScreenSaver.reset();
+      }
       if (g_windowManager.GetActiveWindow() == WINDOW_SCREENSAVER)
         g_windowManager.PreviousWindow();  // show the previous window
-      if (g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW)
+      else if (g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW)
         CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_SLIDESHOW, -1, static_cast<void*>(new CAction(ACTION_STOP)));
     }
     return true;
@@ -4001,7 +4005,7 @@ void CApplication::CheckScreenSaverAndDPMS()
     g_Windowing.ResetOSScreensaver();
 
   bool maybeScreensaver =
-      !m_dpmsIsActive && !m_bScreenSave
+      !m_dpmsIsActive && !m_screensaverActive
       && !m_ServiceManager->GetSettings().GetString(CSettings::SETTING_SCREENSAVER_MODE).empty();
   bool maybeDPMS =
       !m_dpmsIsActive && m_dpms->IsSupported()
@@ -4010,11 +4014,11 @@ void CApplication::CheckScreenSaverAndDPMS()
   // Has the screen saver window become active?
   if (maybeScreensaver && g_windowManager.IsWindowActive(WINDOW_SCREENSAVER))
   {
-    m_bScreenSave = true;
+    m_screensaverActive = true;
     maybeScreensaver = false;
   }
 
-  if (m_bScreenSave && m_pPlayer->IsPlayingVideo() && !m_pPlayer->IsPaused())
+  if (m_screensaverActive && m_pPlayer->IsPlayingVideo() && !m_pPlayer->IsPaused())
   {
     WakeUpScreenSaverAndDPMS();
     return;
@@ -4054,36 +4058,27 @@ void CApplication::CheckScreenSaverAndDPMS()
 // the type of screensaver displayed
 void CApplication::ActivateScreenSaver(bool forceType /*= false */)
 {
-  if (m_pPlayer->IsPlayingAudio() && m_ServiceManager->GetSettings().GetBool(CSettings::SETTING_SCREENSAVER_USEMUSICVISINSTEAD) && !m_ServiceManager->GetSettings().GetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION).empty())
+  if (m_pPlayer->IsPlayingAudio() && m_ServiceManager->GetSettings().GetBool(CSettings::SETTING_SCREENSAVER_USEMUSICVISINSTEAD) &&
+      !m_ServiceManager->GetSettings().GetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION).empty())
   { // just activate the visualisation if user toggled the usemusicvisinstead option
     g_windowManager.ActivateWindow(WINDOW_VISUALISATION);
     return;
   }
 
-  m_bScreenSave = true;
-
-  // Get Screensaver Mode
-  m_screenSaver.reset();
-  if (!CAddonMgr::GetInstance().GetAddon(m_ServiceManager->GetSettings().GetString(CSettings::SETTING_SCREENSAVER_MODE), m_screenSaver))
-    m_screenSaver.reset(new CScreenSaver(""));
-
-  CAnnouncementManager::GetInstance().Announce(GUI, "xbmc", "OnScreensaverActivated");
+  m_screensaverActive = true;
 
   // disable screensaver lock from the login screen
   m_iScreenSaveLock = g_windowManager.GetActiveWindow() == WINDOW_LOGIN_SCREEN ? 1 : 0;
-  if (!forceType)
-  {
-    // set to Dim in the case of a dialog on screen or playing video
-    if (g_windowManager.HasModalDialog() ||
-        (m_pPlayer->IsPlayingVideo() && m_ServiceManager->GetSettings().GetBool(CSettings::SETTING_SCREENSAVER_USEDIMONPAUSE)) ||
-        CServiceBroker::GetPVRManager().GUIActions()->IsRunningChannelScan())
-    {
-      if (!CAddonMgr::GetInstance().GetAddon("screensaver.xbmc.builtin.dim", m_screenSaver))
-        m_screenSaver.reset(new CScreenSaver(""));
-    }
-  }
-  if (m_screenSaver->ID() == "screensaver.xbmc.builtin.dim"
-      || m_screenSaver->ID() == "screensaver.xbmc.builtin.black")
+  // set to Dim in the case of a dialog on screen or playing video
+  if (!forceType && (g_windowManager.HasModalDialog() ||
+                     (m_pPlayer->IsPlayingVideo() && m_ServiceManager->GetSettings().GetBool(CSettings::SETTING_SCREENSAVER_USEDIMONPAUSE)) ||
+                     CServiceBroker::GetPVRManager().GUIActions()->IsRunningChannelScan()))
+    m_screensaverIdInUse = "screensaver.xbmc.builtin.dim";
+  else // Get Screensaver Mode
+    m_screensaverIdInUse = m_ServiceManager->GetSettings().GetString(CSettings::SETTING_SCREENSAVER_MODE);
+
+  if (m_screensaverIdInUse == "screensaver.xbmc.builtin.dim" ||
+      m_screensaverIdInUse == "screensaver.xbmc.builtin.black")
   {
 #ifdef TARGET_ANDROID
     // Default screensaver activated -> release wake lock
@@ -4091,10 +4086,26 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
 #endif
     return;
   }
-  else if (m_screenSaver->ID().empty())
+  else if (m_screensaverIdInUse.empty())
     return;
-  else
-    g_windowManager.ActivateWindow(WINDOW_SCREENSAVER);
+  else if (CAddonMgr::GetInstance().GetAddon(m_screensaverIdInUse, m_pythonScreenSaver, ADDON_SCREENSAVER))
+  {
+    std::string libPath = m_pythonScreenSaver->LibPath();
+    if (CScriptInvocationManager::GetInstance().HasLanguageInvoker(libPath))
+    {
+      CLog::Log(LOGDEBUG, "using python screensaver add-on %s", m_screensaverIdInUse.c_str());
+
+      // Don't allow a previously-scheduled alarm to kill our new screensaver
+      g_alarmClock.Stop(SCRIPT_ALARM, true);
+
+      if (!CScriptInvocationManager::GetInstance().Stop(libPath))
+        CScriptInvocationManager::GetInstance().ExecuteAsync(libPath, AddonPtr(new CAddon(dynamic_cast<ADDON::CAddon&>(*m_pythonScreenSaver))));
+      return;
+    }
+    m_pythonScreenSaver.reset();
+  }
+
+  g_windowManager.ActivateWindow(WINDOW_SCREENSAVER);
 }
 
 void CApplication::CheckShutdown()

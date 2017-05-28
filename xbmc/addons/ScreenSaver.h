@@ -19,26 +19,21 @@
  */
 #pragma once
 
-#include "AddonDll.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/addon-instance/Screensaver.h"
+#include "addons/AddonInstanceHandler.h"
 
 namespace ADDON
 {
 
-class CScreenSaver : public ADDON::CAddonDll
+class CScreenSaver : public IAddonInstanceHandler
 {
 public:
-  explicit CScreenSaver(AddonProps props);
-  explicit CScreenSaver(const char *addonID);
+  CScreenSaver(AddonDllPtr addonInfo);
+  virtual ~CScreenSaver();
 
-  virtual ~CScreenSaver() {}
-  virtual bool IsInUse() const;
-
-  bool CreateScreenSaver();
-  void Start();
+  bool Start();
   void Stop();
   void Render();
-  void Destroy();
 
 private:
   std::string m_name; /*!< To add-on sended name */

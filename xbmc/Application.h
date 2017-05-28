@@ -296,7 +296,9 @@ public:
   MEDIA_DETECT::CDetectDVDMedia m_DetectDVDType;
 #endif
 
-  inline bool IsInScreenSaver() { return m_bScreenSave; };
+  inline bool IsInScreenSaver() { return m_screensaverActive; };
+  inline std::string ScreensaverIdInUse() { return m_screensaverIdInUse; }
+
   inline bool IsDPMSActive() { return m_dpmsIsActive; };
   int m_iScreenSaveLock; // spiff: are we checking for a lock? if so, ignore the screensaver state, if -1 we have failed to input locks
 
@@ -357,8 +359,6 @@ public:
 
   void Minimize();
   bool ToggleDPMS(bool manual);
-
-  float GetDimScreenSaverLevel() const;
 
   bool SwitchToFullScreen(bool force = false);
 
@@ -427,8 +427,9 @@ protected:
   friend class CWinEventsAndroid;
 #endif
   // screensaver
-  bool m_bScreenSave;
-  ADDON::AddonPtr m_screenSaver;
+  bool m_screensaverActive;
+  std::string m_screensaverIdInUse;
+  ADDON::AddonPtr m_pythonScreenSaver; // @warning: Fallback for Python interface, for binaries not needed!
 
   // timer information
 #ifdef TARGET_WINDOWS
