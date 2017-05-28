@@ -548,6 +548,38 @@ inline void SetSettingFloat(const std::string& settingName, float settingValue)
 } /* namespace kodi */
 //----------------------------------------------------------------------------
 
+//============================================================================
+namespace kodi {
+///
+inline std::string TranslateAddonStatus(ADDON_STATUS status)
+{
+  switch (status)
+  {
+    case ADDON_STATUS_OK:
+      return "OK";
+    case ADDON_STATUS_LOST_CONNECTION:
+      return "Lost Connection";
+    case ADDON_STATUS_NEED_RESTART:
+      return "Need Restart";
+    case ADDON_STATUS_NEED_SETTINGS:
+      return "Need Settings";
+    case ADDON_STATUS_UNKNOWN:
+      return "Unknown error";
+    case ADDON_STATUS_NEED_SAVEDSETTINGS:
+      return "Need saved settings";
+    case ADDON_STATUS_PERMANENT_FAILURE:
+      return "Permanent failure";
+    case ADDON_STATUS_NOT_IMPLEMENTED:
+      return "Not implemented";
+    default:
+      break;
+  }
+  return "Unknown";
+}
+} /* namespace kodi */
+//----------------------------------------------------------------------------
+
+
 /*! addon creation macro
  * @todo cleanup this stupid big macro
  * This macro includes now all for add-on's needed functions. This becomes a bigger

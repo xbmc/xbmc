@@ -68,12 +68,10 @@ std::shared_ptr<IAddon> CAddonBuilder::Build()
   // Handle screensaver special cases
   if (type == ADDON_SCREENSAVER)
   {
-    // built in screensaver
-    if (StringUtils::StartsWithNoCase(m_extPoint->plugin->identifier, "screensaver.xbmc.builtin."))
+    // built in screensaver or python screensaver
+    if (StringUtils::StartsWithNoCase(m_extPoint->plugin->identifier, "screensaver.xbmc.builtin.") ||
+        URIUtils::HasExtension(CAddonMgr::GetInstance().GetExtValue(m_extPoint->configuration, "@library"), ".py"))
       return std::make_shared<CAddon>(std::move(m_props));
-    // python screensaver
-    if (URIUtils::HasExtension(CAddonMgr::GetInstance().GetExtValue(m_extPoint->configuration, "@library"), ".py"))
-      return std::make_shared<CScreenSaver>(std::move(m_props));
   }
 
   // Handle audio encoder special cases
@@ -129,7 +127,7 @@ std::shared_ptr<IAddon> CAddonBuilder::Build()
       return std::make_shared<CVisualisation>(std::move(m_props));
 #endif
     case ADDON_SCREENSAVER:
-      return std::make_shared<CScreenSaver>(std::move(m_props));
+      return std::make_shared<CAddonDll>(std::move(m_props));
 #ifdef HAS_PVRCLIENTS
     case ADDON_PVRDLL:
       return PVR::CPVRClient::FromExtension(std::move(m_props), m_extPoint);
@@ -207,7 +205,7 @@ AddonPtr CAddonBuilder::FromProps(AddonProps addonProps)
       return AddonPtr(new CVisualisation(std::move(addonProps)));
 #endif
     case ADDON_SCREENSAVER:
-      return AddonPtr(new CScreenSaver(std::move(addonProps)));
+      return AddonPtr(new CAddonDll(std::move(addonProps)));
     case ADDON_PVRDLL:
       return AddonPtr(new PVR::CPVRClient(std::move(addonProps)));
     case ADDON_ADSPDLL:
