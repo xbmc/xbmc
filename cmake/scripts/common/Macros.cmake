@@ -412,6 +412,7 @@ endfunction()
 #   dependency optionally added to ${SYSTEM_INCLUDES}, ${DEP_DEFINES}, ${dep}_SONAME is set up
 function(core_optional_dyload_dep)
   foreach(dep ${ARGN})
+    set(_required False)
     setup_enable_switch()
     if(${enable_switch} STREQUAL AUTO)
       find_package(${dep})
