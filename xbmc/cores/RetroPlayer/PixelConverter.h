@@ -20,7 +20,6 @@
 #pragma once
 
 #include "IPixelConverter.h"
-#include "cores/VideoPlayer/VideoRenderers/RenderFormats.h"
 
 #include <stdint.h>
 

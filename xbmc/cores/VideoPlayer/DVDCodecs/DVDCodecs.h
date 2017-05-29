@@ -22,7 +22,6 @@
 
 #include <string>
 #include <vector>
-#include "cores/VideoPlayer/VideoRenderers/RenderFormats.h"
 
 // special options that can be passed to a codec
 class CDVDCodecOption
@@ -37,6 +36,4 @@ class CDVDCodecOptions
 {
 public:
   std::vector<CDVDCodecOption> m_keys;
-  std::vector<AVPixelFormat> m_formats;
-  const void *m_opaque_pointer;
 };
