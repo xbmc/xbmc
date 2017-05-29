@@ -5877,6 +5877,8 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
     if (window)
     {
       CFileItemPtr item = window->GetCurrentListItem();
+      if (item && info >= LISTITEM_PICTURE_START && info <= LISTITEM_PICTURE_END && item->IsPicture() && !item->HasPictureInfoTag())
+        item->GetPictureInfoTag()->Load(item->GetPath());
       strLabel = GetItemLabel(item.get(), info, fallback);
     }
 
