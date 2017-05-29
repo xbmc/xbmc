@@ -770,6 +770,21 @@ bool CGUIMediaWindow::Update(const std::string &strDirectory, bool updateFilterP
   }
 
   if (m_vecItems->GetLabel().empty())
+  {
+    // Removable sources
+    VECSOURCES removables;
+    g_mediaManager.GetRemovableDrives(removables);
+    for (auto s : removables)
+    {
+      if (URIUtils::CompareWithoutSlashAtEnd(s.strPath, m_vecItems->GetPath()))
+      {
+        m_vecItems->SetLabel(s.strName);
+        break;
+      }
+    }
+  }
+
+  if (m_vecItems->GetLabel().empty())
     m_vecItems->SetLabel(CUtil::GetTitleFromPath(m_vecItems->GetPath(), true));
 
   // check the given path for filter data
