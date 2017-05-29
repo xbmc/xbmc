@@ -65,7 +65,6 @@ void CProcessInfo::ResetVideoCodecInfo()
   m_deintMethods.clear();
   m_deintMethods.push_back(EINTERLACEMETHOD::VS_INTERLACEMETHOD_NONE);
   m_deintMethodDefault = EINTERLACEMETHOD::VS_INTERLACEMETHOD_NONE;
-  m_renderInfo.Reset();
   m_stateSeeking = false;
 
   CServiceBroker::GetDataCacheCore().SetVideoDecoderName(m_videoDecoderName, m_videoIsHWDecoder);
@@ -373,6 +372,13 @@ void CProcessInfo::GetRenderBuffers(int &queued, int &discard, int &free)
   queued = m_renderBufQueued;
   discard = m_renderBufDiscard;
   free = m_renderBufFree;
+}
+
+std::vector<AVPixelFormat> CProcessInfo::GetRenderFormats()
+{
+  std::vector<AVPixelFormat> formats;
+  formats.push_back(AV_PIX_FMT_YUV420P);
+  return formats;
 }
 
 // player states
