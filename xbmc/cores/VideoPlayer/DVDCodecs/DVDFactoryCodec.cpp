@@ -56,22 +56,14 @@
 
 CCriticalSection videoCodecSection;
 
-CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, CProcessInfo &processInfo, const CRenderInfo &info)
+CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, CProcessInfo &processInfo)
 {
   CSingleLock lock(videoCodecSection);
 
   std::unique_ptr<CDVDVideoCodec> pCodec;
   CDVDCodecOptions options;
 
-  if (info.formats.empty())
-    options.m_formats.push_back(AV_PIX_FMT_YUV420P);
-  else
-    options.m_formats = info.formats;
-
-  options.m_opaque_pointer = info.opaque_pointer;
-
   // addon handler for this stream ?
-
   if (hint.externalInterfaces)
   {
     ADDON::BinaryAddonBasePtr addonInfo;
@@ -98,8 +90,6 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, CProces
       return nullptr;
   }
 
-  std::string value = StringUtils::Format("%d", info.max_buffer_size);
-  options.m_keys.push_back(CDVDCodecOption("surfaces", value));
   pCodec.reset(new CDVDVideoCodecFFmpeg(processInfo));
   if (pCodec->Open(hint, options))
   {
@@ -107,12 +97,6 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, CProces
   }
 
   return nullptr;
-}
-
-CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, CProcessInfo &processInfo)
-{
-  CRenderInfo renderInfo;
-  return CreateVideoCodec(hint, processInfo, renderInfo);
 }
 
 //------------------------------------------------------------------------------
