@@ -140,6 +140,7 @@ cmake_install.cmake
 /addons/visualization.*
 /addons/screensaver.*
 /addons/inputstream.*
+/addons/vfs.*
 
 # /lib/
 /lib/Makefile
