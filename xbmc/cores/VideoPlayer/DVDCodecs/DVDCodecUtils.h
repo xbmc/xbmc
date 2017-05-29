@@ -21,7 +21,6 @@
  */
 
 #include "Video/DVDVideoCodec.h"
-#include "cores/VideoPlayer/VideoRenderers/RenderFormats.h"
 
 class CDVDCodecUtils
 {

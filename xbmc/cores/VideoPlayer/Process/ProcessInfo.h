@@ -21,7 +21,7 @@
 
 #include "VideoBuffer.h"
 #include "cores/IPlayer.h"
-#include "cores/VideoPlayer/VideoRenderers/RenderFormats.h"
+#include "cores/VideoPlayer/VideoRenderers/RenderInfo.h"
 #include "threads/CriticalSection.h"
 #include <atomic>
 #include <list>
@@ -74,6 +74,7 @@ public:
   void UpdateRenderInfo(CRenderInfo &info);
   void UpdateRenderBuffers(int queued, int discard, int free);
   void GetRenderBuffers(int &queued, int &discard, int &free);
+  virtual std::vector<AVPixelFormat> GetRenderFormats();
 
   // player states
   void SetStateSeeking(bool active);

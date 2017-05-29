@@ -430,10 +430,10 @@ void CRetroPlayer::UpdateClockSync(bool enabled)
   m_processInfo->SetRenderClockSync(enabled);
 }
 
-void CRetroPlayer::UpdateRenderInfo(CRenderInfo &info)
-{
-  m_processInfo->UpdateRenderInfo(info);
-}
+//void CRetroPlayer::UpdateRenderInfo(CRenderInfo &info)
+//{
+//  m_processInfo->UpdateRenderInfo(info);
+//}
 
 void CRetroPlayer::CloseOSD()
 {
