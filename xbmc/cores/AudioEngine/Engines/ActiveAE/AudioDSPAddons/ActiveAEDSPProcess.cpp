@@ -173,7 +173,7 @@ bool CActiveAEDSPProcess::Create(const AEAudioFormat &inputFormat, const AEAudio
 
   if (iStreamType == AE_DSP_ASTREAM_AUTO)
     m_streamTypeUsed = m_streamTypeDetected;
-  else if (iStreamType >= AE_DSP_ASTREAM_BASIC || iStreamType < AE_DSP_ASTREAM_AUTO)
+  else if (iStreamType >= AE_DSP_ASTREAM_BASIC && iStreamType < AE_DSP_ASTREAM_AUTO)
     m_streamTypeUsed = iStreamType;
   else
   {
@@ -657,7 +657,7 @@ bool CActiveAEDSPProcess::MasterModeChange(int iModeID, AE_DSP_STREAMTYPE iStrea
     CLog::Log(LOGDEBUG, "  ----  Input stream  ----");
     if (iStreamType == AE_DSP_ASTREAM_AUTO)
       m_streamTypeUsed = m_streamTypeDetected;
-    else if (iStreamType >= AE_DSP_ASTREAM_BASIC || iStreamType < AE_DSP_ASTREAM_AUTO)
+    else if (iStreamType >= AE_DSP_ASTREAM_BASIC && iStreamType < AE_DSP_ASTREAM_AUTO)
       m_streamTypeUsed = iStreamType;
     else
     {
