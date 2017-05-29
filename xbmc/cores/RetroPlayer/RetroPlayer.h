@@ -140,7 +140,7 @@ namespace RETRO
     virtual void VideoParamsChange() override { }
     virtual void GetDebugInfo(std::string &audio, std::string &video, std::string &general) override { }
     virtual void UpdateClockSync(bool enabled) override;
-    virtual void UpdateRenderInfo(CRenderInfo &info) override;
+    //virtual void UpdateRenderInfo(CRenderInfo &info) override;
     virtual void UpdateRenderBuffers(int queued, int discard, int free) override {}
 
   private:
