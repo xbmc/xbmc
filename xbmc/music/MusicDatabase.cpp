@@ -4407,7 +4407,6 @@ bool CMusicDatabase::GetSongsByWhere(const std::string &baseDir, const Filter &f
 
   try
   {
-    unsigned int time = XbmcThreads::SystemClockMillis();
     int total = -1;
 
     std::string strSQL = "SELECT %s FROM songview ";

@@ -54,8 +54,6 @@
 using namespace UPNP;
 using namespace KODI::MESSAGING;
 
-NPT_SET_LOCAL_LOGGER("xbmc.upnp")
-
 #define UPNP_DEFAULT_MAX_RETURNED_ITEMS 200
 #define UPNP_DEFAULT_MIN_RETURNED_ITEMS 30
 
