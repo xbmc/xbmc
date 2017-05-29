@@ -96,8 +96,6 @@ protected:
   int m_iScreenHeight;
   int m_iOrientation;// orientation of the video in degrees counter clockwise
 
-  unsigned int m_uSurfacesCount;
-
   std::string m_name;
   int m_decoderState;
   IHardwareDecoder *m_pHardware;

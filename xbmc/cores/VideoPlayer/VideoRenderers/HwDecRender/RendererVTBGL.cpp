@@ -42,15 +42,6 @@ CRendererVTB::~CRendererVTB()
   }
 }
 
-CRenderInfo CRendererVTB::GetRenderInfo()
-{
-  CRenderInfo info;
-  info.formats = m_formats;
-  info.max_buffer_size = NUM_BUFFERS;
-  info.optimal_buffer_size = 5;
-  return info;
-}
-
 bool CRendererVTB::HandlesVideoBuffer(CVideoBuffer *buffer)
 {
   VTB::CVideoBufferVTB *vb = dynamic_cast<VTB::CVideoBufferVTB*>(buffer);
