@@ -33,47 +33,47 @@ using namespace kodi::audioengine; // addon-dev-kit namespace
 namespace ADDON
 {
 
-void Interface_AudioEngine::Init(AddonGlobalInterface* funcTable)
+void Interface_AudioEngine::Init(AddonGlobalInterface* addonInterface)
 {
-  funcTable->toKodi->kodi_audioengine = (AddonToKodiFuncTable_kodi_audioengine*)malloc(sizeof(AddonToKodiFuncTable_kodi_audioengine));
+  addonInterface->toKodi->kodi_audioengine = (AddonToKodiFuncTable_kodi_audioengine*)malloc(sizeof(AddonToKodiFuncTable_kodi_audioengine));
 
   // write KODI audio DSP specific add-on function addresses to callback table
-  funcTable->toKodi->kodi_audioengine->MakeStream = AudioEngine_MakeStream;
-  funcTable->toKodi->kodi_audioengine->FreeStream = AudioEngine_FreeStream;
-  funcTable->toKodi->kodi_audioengine->GetCurrentSinkFormat = AudioEngine_GetCurrentSinkFormat;
+  addonInterface->toKodi->kodi_audioengine->MakeStream = AudioEngine_MakeStream;
+  addonInterface->toKodi->kodi_audioengine->FreeStream = AudioEngine_FreeStream;
+  addonInterface->toKodi->kodi_audioengine->GetCurrentSinkFormat = AudioEngine_GetCurrentSinkFormat;
 
   // AEStream add-on function callback table
-  funcTable->toKodi->kodi_audioengine->AEStream_GetSpace = AEStream_GetSpace;
-  funcTable->toKodi->kodi_audioengine->AEStream_AddData = AEStream_AddData;
-  funcTable->toKodi->kodi_audioengine->AEStream_GetDelay = AEStream_GetDelay;
-  funcTable->toKodi->kodi_audioengine->AEStream_IsBuffering = AEStream_IsBuffering;
-  funcTable->toKodi->kodi_audioengine->AEStream_GetCacheTime = AEStream_GetCacheTime;
-  funcTable->toKodi->kodi_audioengine->AEStream_GetCacheTotal = AEStream_GetCacheTotal;
-  funcTable->toKodi->kodi_audioengine->AEStream_Pause = AEStream_Pause;
-  funcTable->toKodi->kodi_audioengine->AEStream_Resume = AEStream_Resume;
-  funcTable->toKodi->kodi_audioengine->AEStream_Drain = AEStream_Drain;
-  funcTable->toKodi->kodi_audioengine->AEStream_IsDraining = AEStream_IsDraining;
-  funcTable->toKodi->kodi_audioengine->AEStream_IsDrained = AEStream_IsDrained;
-  funcTable->toKodi->kodi_audioengine->AEStream_Flush = AEStream_Flush;
-  funcTable->toKodi->kodi_audioengine->AEStream_GetVolume = AEStream_GetVolume;
-  funcTable->toKodi->kodi_audioengine->AEStream_SetVolume = AEStream_SetVolume;
-  funcTable->toKodi->kodi_audioengine->AEStream_GetAmplification = AEStream_GetAmplification;
-  funcTable->toKodi->kodi_audioengine->AEStream_SetAmplification = AEStream_SetAmplification;
-  funcTable->toKodi->kodi_audioengine->AEStream_GetFrameSize = AEStream_GetFrameSize;
-  funcTable->toKodi->kodi_audioengine->AEStream_GetChannelCount = AEStream_GetChannelCount;
-  funcTable->toKodi->kodi_audioengine->AEStream_GetSampleRate = AEStream_GetSampleRate;
-  funcTable->toKodi->kodi_audioengine->AEStream_GetDataFormat = AEStream_GetDataFormat;
-  funcTable->toKodi->kodi_audioengine->AEStream_GetResampleRatio = AEStream_GetResampleRatio;
-  funcTable->toKodi->kodi_audioengine->AEStream_SetResampleRatio = AEStream_SetResampleRatio;
+  addonInterface->toKodi->kodi_audioengine->AEStream_GetSpace = AEStream_GetSpace;
+  addonInterface->toKodi->kodi_audioengine->AEStream_AddData = AEStream_AddData;
+  addonInterface->toKodi->kodi_audioengine->AEStream_GetDelay = AEStream_GetDelay;
+  addonInterface->toKodi->kodi_audioengine->AEStream_IsBuffering = AEStream_IsBuffering;
+  addonInterface->toKodi->kodi_audioengine->AEStream_GetCacheTime = AEStream_GetCacheTime;
+  addonInterface->toKodi->kodi_audioengine->AEStream_GetCacheTotal = AEStream_GetCacheTotal;
+  addonInterface->toKodi->kodi_audioengine->AEStream_Pause = AEStream_Pause;
+  addonInterface->toKodi->kodi_audioengine->AEStream_Resume = AEStream_Resume;
+  addonInterface->toKodi->kodi_audioengine->AEStream_Drain = AEStream_Drain;
+  addonInterface->toKodi->kodi_audioengine->AEStream_IsDraining = AEStream_IsDraining;
+  addonInterface->toKodi->kodi_audioengine->AEStream_IsDrained = AEStream_IsDrained;
+  addonInterface->toKodi->kodi_audioengine->AEStream_Flush = AEStream_Flush;
+  addonInterface->toKodi->kodi_audioengine->AEStream_GetVolume = AEStream_GetVolume;
+  addonInterface->toKodi->kodi_audioengine->AEStream_SetVolume = AEStream_SetVolume;
+  addonInterface->toKodi->kodi_audioengine->AEStream_GetAmplification = AEStream_GetAmplification;
+  addonInterface->toKodi->kodi_audioengine->AEStream_SetAmplification = AEStream_SetAmplification;
+  addonInterface->toKodi->kodi_audioengine->AEStream_GetFrameSize = AEStream_GetFrameSize;
+  addonInterface->toKodi->kodi_audioengine->AEStream_GetChannelCount = AEStream_GetChannelCount;
+  addonInterface->toKodi->kodi_audioengine->AEStream_GetSampleRate = AEStream_GetSampleRate;
+  addonInterface->toKodi->kodi_audioengine->AEStream_GetDataFormat = AEStream_GetDataFormat;
+  addonInterface->toKodi->kodi_audioengine->AEStream_GetResampleRatio = AEStream_GetResampleRatio;
+  addonInterface->toKodi->kodi_audioengine->AEStream_SetResampleRatio = AEStream_SetResampleRatio;
 }
 
-void Interface_AudioEngine::DeInit(AddonGlobalInterface* funcTable)
+void Interface_AudioEngine::DeInit(AddonGlobalInterface* addonInterface)
 {
-  if (funcTable->toKodi && /* <-- Safe check, needed so long old addon way is present */
-      funcTable->toKodi->kodi_audioengine)
+  if (addonInterface->toKodi && /* <-- Safe check, needed so long old addon way is present */
+      addonInterface->toKodi->kodi_audioengine)
   {
-    free(funcTable->toKodi->kodi_audioengine);
-    funcTable->toKodi->kodi_audioengine = nullptr;
+    free(addonInterface->toKodi->kodi_audioengine);
+    addonInterface->toKodi->kodi_audioengine = nullptr;
   }
 }
 
