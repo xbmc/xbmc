@@ -20,8 +20,6 @@
  *
  */
 
-#include "cores/VideoPlayer/VideoRenderers/RenderFormats.h"
-#include "cores/VideoPlayer/VideoRenderers/BaseRenderer.h"
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
 #include "cores/AudioEngine/Utils/AEStreamInfo.h"
 
@@ -40,10 +38,6 @@ class CDVDFactoryCodec
 friend class CDVDVideoCodecFFmpeg;
 
 public:
-  static CDVDVideoCodec* CreateVideoCodec(CDVDStreamInfo &hint,
-                                          CProcessInfo &processInfo,
-                                          const CRenderInfo &info);
-
   static CDVDVideoCodec* CreateVideoCodec(CDVDStreamInfo &hint,
                                           CProcessInfo &processInfo);
 

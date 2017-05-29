@@ -23,9 +23,9 @@
 #include <utility>
 #include <vector>
 
+#include "RenderInfo.h"
 #include "guilib/Resolution.h"
 #include "guilib/Geometry.h"
-#include "RenderFormats.h"
 #include "VideoShaders/ShaderFormats.h"
 #include "cores/IPlayer.h"
 #include "cores/VideoPlayer/Process/VideoBuffer.h"
@@ -69,7 +69,6 @@ public:
   virtual void AddVideoPicture(const VideoPicture &picture, int index) = 0;
   virtual bool IsPictureHW(const VideoPicture &picture) { return false; };
   virtual void FlipPage(int source) = 0;
-  virtual void PreInit() = 0;
   virtual void UnInit() = 0;
   virtual void Reset() = 0;
   virtual void Flush() {};
