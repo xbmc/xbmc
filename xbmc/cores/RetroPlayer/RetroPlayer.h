@@ -140,11 +140,11 @@ namespace RETRO
     bool RenderCaptureGetPixels(unsigned int captureId, unsigned int millis, uint8_t *buffer, unsigned int size) override { return m_renderManager.RenderCaptureGetPixels(captureId, millis, buffer, size); }
 
     // implementation of IRenderMsg
-    void VideoParamsChange() override { }
-    void GetDebugInfo(std::string &audio, std::string &video, std::string &general) override { }
-    void UpdateClockSync(bool enabled) override;
-    void UpdateRenderInfo(CRenderInfo &info) override;
-    void UpdateRenderBuffers(int queued, int discard, int free) override {}
+    virtual void VideoParamsChange() override { }
+    virtual void GetDebugInfo(std::string &audio, std::string &video, std::string &general) override { }
+    virtual void UpdateClockSync(bool enabled) override;
+    //virtual void UpdateRenderInfo(CRenderInfo &info) override;
+    virtual void UpdateRenderBuffers(int queued, int discard, int free) override {}
 
   private:
     /*!
