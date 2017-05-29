@@ -28,6 +28,8 @@ namespace GAME
   public:
     CGUIViewStateWindowGames(const CFileItemList& items);
 
+    virtual ~CGUIViewStateWindowGames() = default;
+
     // implementation of CGUIViewState
     virtual std::string GetLockType() override;
     virtual std::string GetExtensions() override;

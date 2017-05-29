@@ -35,7 +35,7 @@ namespace GAME
     CGameInfoTag() { Reset(); }
     CGameInfoTag(const CGameInfoTag& tag) { *this = tag; }
     CGameInfoTag& operator=(const CGameInfoTag& tag);
-    ~CGameInfoTag() { }
+    virtual ~CGameInfoTag() = default;
     void Reset();
 
     bool operator==(const CGameInfoTag& tag) const;

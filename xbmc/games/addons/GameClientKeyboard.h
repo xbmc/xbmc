@@ -46,7 +46,7 @@ namespace GAME
     /*!
      * \brief Destructor unregisters from keyboard events from CInputManager.
      */
-    ~CGameClientKeyboard();
+    virtual ~CGameClientKeyboard();
 
     // implementation of IKeyboardHandler
     virtual bool OnKeyPress(const CKey& key) override;

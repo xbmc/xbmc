@@ -40,7 +40,7 @@ namespace GAME
 {
 
 class CGameClientInGameSaves;
-class CGameClientInput;
+class CGameClientJoystick;
 class CGameClientKeyboard;
 class CGameClientMouse;
 class IGameAudioCallback;
@@ -78,6 +78,7 @@ public:
   bool Initialize(void);
   void Unload();
   bool OpenFile(const CFileItem& file, IGameAudioCallback* audio, IGameVideoCallback* video);
+  bool OpenStandalone(IGameAudioCallback* audio, IGameVideoCallback* video);
   void Reset();
   void CloseFile();
   const std::string& GetGamePath() const { return m_gamePath; }
@@ -118,7 +119,6 @@ public:
 
 private:
   // Private gameplay functions
-  bool OpenStandalone(IGameAudioCallback* audio, IGameVideoCallback* video);
   bool InitializeGameplay(const std::string& gamePath, IGameAudioCallback* audio, IGameVideoCallback* video);
   bool LoadGameInfo();
   bool NormalizeAudio(IGameAudioCallback* audioCallback);
@@ -192,7 +192,7 @@ private:
   std::unique_ptr<CGameClientInGameSaves> m_inGameSaves;
 
   // Input
-  std::map<int, std::unique_ptr<CGameClientInput>> m_ports;
+  std::map<int, std::unique_ptr<CGameClientJoystick>> m_ports;
   std::unique_ptr<CGameClientKeyboard> m_keyboard;
   std::unique_ptr<CGameClientMouse> m_mouse;
 

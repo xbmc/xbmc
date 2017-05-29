@@ -52,6 +52,8 @@ namespace GAME
   public:
     static CPortManager& GetInstance();
 
+    virtual ~CPortManager() = default;
+
     /*!
      * \brief Request a new port be opened with input on that port sent to the
      *        specified handler.

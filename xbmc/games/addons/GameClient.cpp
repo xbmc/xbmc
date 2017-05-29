@@ -21,7 +21,7 @@
 #include "GameClient.h"
 #include "GameClientCallbacks.h"
 #include "GameClientInGameSaves.h"
-#include "GameClientInput.h"
+#include "GameClientJoystick.h"
 #include "GameClientKeyboard.h"
 #include "GameClientMouse.h"
 #include "GameClientTranslator.h"
@@ -258,7 +258,7 @@ bool CGameClient::OpenFile(const CFileItem& file, IGameAudioCallback* audio, IGa
 
   // Check if we should open in standalone mode
   if (file.GetPath().empty())
-    return OpenStandalone(audio, video);
+    return false;
 
   // Resolve special:// URLs
   CURL translatedUrl(CSpecialProtocol::TranslatePath(file.GetPath()));
@@ -293,9 +293,6 @@ bool CGameClient::OpenFile(const CFileItem& file, IGameAudioCallback* audio, IGa
 
   if (!InitializeGameplay(file.GetPath(), audio, video))
     return false;
-
-  m_inGameSaves.reset(new CGameClientInGameSaves(this, &m_struct.toAddon));
-  m_inGameSaves->Load();
 
   return true;
 }
@@ -344,6 +341,9 @@ bool CGameClient::InitializeGameplay(const std::string& gamePath, IGameAudioCall
 
     if (m_bSupportsMouse)
       OpenMouse();
+
+    m_inGameSaves.reset(new CGameClientInGameSaves(this, &m_struct.toAddon));
+    m_inGameSaves->Load();
 
     // Start playback
     CreatePlayback();
@@ -749,7 +749,7 @@ bool CGameClient::OpenPort(unsigned int port)
     //! @todo Choose controller
     ControllerPtr& controller = controllers[0];
 
-    m_ports[port].reset(new CGameClientInput(this, port, controller, &m_struct.toAddon));
+    m_ports[port].reset(new CGameClientJoystick(this, port, controller, &m_struct.toAddon));
 
     // If keyboard input is being captured by this add-on, force the port type to PERIPHERAL_JOYSTICK
     PERIPHERALS::PeripheralType device = PERIPHERALS::PERIPHERAL_UNKNOWN;

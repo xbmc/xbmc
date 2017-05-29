@@ -46,7 +46,7 @@ namespace GAME
     /*!
      * \brief Destructor unregisters from mouse events from CInputManager.
      */
-    ~CGameClientMouse();
+    virtual ~CGameClientMouse();
 
     // implementation of IMouseInputHandler
     virtual std::string ControllerID(void) const override;

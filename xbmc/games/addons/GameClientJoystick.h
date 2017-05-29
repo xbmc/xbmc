@@ -34,7 +34,7 @@ namespace GAME
    *
    * Listens to game controller events and forwards them to the games (as game_input_event).
    */
-  class CGameClientInput : public KODI::JOYSTICK::IInputHandler
+  class CGameClientJoystick : public KODI::JOYSTICK::IInputHandler
   {
   public:
     /*!
@@ -44,7 +44,9 @@ namespace GAME
      * \param controller The game controller which is used (for controller mapping).
      * \param dllStruct The emulator or game to which the events are sent.
      */
-    CGameClientInput(CGameClient* addon, int port, const ControllerPtr& controller, const KodiToAddonFuncTable_Game* dllStruct);
+    CGameClientJoystick(CGameClient* addon, int port, const ControllerPtr& controller, const KodiToAddonFuncTable_Game* dllStruct);
+
+    virtual ~CGameClientJoystick() = default;
 
     // Implementation of IInputHandler
     virtual std::string ControllerID(void) const override;
