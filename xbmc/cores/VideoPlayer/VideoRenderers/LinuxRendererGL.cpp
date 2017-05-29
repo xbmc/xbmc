@@ -43,7 +43,6 @@
 #include "utils/GLUtils.h"
 #include "utils/StringUtils.h"
 #include "RenderCapture.h"
-#include "RenderFormats.h"
 #include "cores/IPlayer.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDCodecUtils.h"
 #include "cores/FFmpeg.h"
@@ -260,6 +259,9 @@ bool CLinuxRendererGL::Configure(const VideoPicture &picture, float fps, unsigne
   m_pixelRatio       = 1.0;
 
   m_pboSupported = g_Windowing.IsExtSupported("GL_ARB_pixel_buffer_object");
+
+  // setup the background colour
+  m_clearColour = g_Windowing.UseLimitedColor() ? (16.0f / 0xff) : 0.0f;
 
 #ifdef TARGET_DARWIN_OSX
   // on osx 10.9 mavericks we get a strange ripple
@@ -618,36 +620,6 @@ void CLinuxRendererGL::FlipPage(int source)
     m_iYV12RenderBuffer = NextYV12Texture();
 
   return;
-}
-
-void CLinuxRendererGL::PreInit()
-{
-  CSingleLock lock(g_graphicsContext);
-  m_bConfigured = false;
-  m_bValidated = false;
-  UnInit();
-
-  m_iYV12RenderBuffer = 0;
-
-  m_formats.clear();
-  m_formats.push_back(AV_PIX_FMT_YUV420P);
-  GLint size;
-  glTexImage2D(GL_PROXY_TEXTURE_2D, 0, GL_LUMINANCE16, NP2(1920), NP2(1080), 0, GL_LUMINANCE, GL_UNSIGNED_SHORT, NULL);
-  glGetTexLevelParameteriv(GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_LUMINANCE_SIZE, &size);
-
-  if(size >= 16)
-  {
-    m_formats.push_back(AV_PIX_FMT_YUV420P10);
-    m_formats.push_back(AV_PIX_FMT_YUV420P16);
-  }
-
-  CLog::Log(LOGDEBUG, "CLinuxRendererGL::PreInit - precision of luminance 16 is %d", size);
-  m_formats.push_back(AV_PIX_FMT_NV12);
-  m_formats.push_back(AV_PIX_FMT_YUYV422);
-  m_formats.push_back(AV_PIX_FMT_UYVY422);
-
-  // setup the background colour
-  m_clearColour = g_Windowing.UseLimitedColor() ? (16.0f / 0xff) : 0.0f;
 }
 
 void CLinuxRendererGL::UpdateVideoFilter()
@@ -2478,9 +2450,7 @@ void CLinuxRendererGL::UnBindPbo(YUVBUFFER& buff)
 CRenderInfo CLinuxRendererGL::GetRenderInfo()
 {
   CRenderInfo info;
-  info.formats = m_formats;
   info.max_buffer_size = NUM_BUFFERS;
-  info.optimal_buffer_size = 4;
   return info;
 }
 
