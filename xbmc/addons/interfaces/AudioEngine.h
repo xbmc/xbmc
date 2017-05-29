@@ -26,8 +26,8 @@ namespace ADDON
 
   struct Interface_AudioEngine
   {
-    static void Init(AddonGlobalInterface* funcTable);
-    static void DeInit(AddonGlobalInterface* funcTable);
+    static void Init(AddonGlobalInterface* addonInterface);
+    static void DeInit(AddonGlobalInterface* addonInterface);
 
     /**
     * Creates and returns a new handle to an IAEStream in the format specified, this function should never fail
