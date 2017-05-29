@@ -198,7 +198,6 @@ private:
 
   CCriticalSection m_critSection;
 
-  game_client_properties* m_info;
   AddonInstance_Game m_struct;
 };
 
