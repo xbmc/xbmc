@@ -126,9 +126,6 @@ public:
 
   void AddOverlay(CDVDOverlay* o, double pts);
 
-  // Get renderer info, can be called before configure
-  CRenderInfo GetRenderInfo();
-
   /**
    * If player uses buffering it has to wait for a buffer before it calls
    * AddVideoPicture and AddOverlay. It waits for max 50 ms before it returns -1

@@ -258,13 +258,11 @@ bool CRenderManager::Configure()
   if (result)
   {
     CRenderInfo info = m_pRenderer->GetRenderInfo();
-    int renderbuffers = info.optimal_buffer_size;
+    int renderbuffers = info.max_buffer_size;
     m_QueueSize = renderbuffers;
     if (m_NumberBuffers > 0)
       m_QueueSize = std::min(m_NumberBuffers, renderbuffers);
 
-    m_QueueSize = std::min(m_QueueSize, (int)info.max_buffer_size);
-    m_QueueSize = std::min(m_QueueSize, NUM_BUFFERS);
     if(m_QueueSize < 2)
     {
       m_QueueSize = 2;
@@ -569,11 +567,6 @@ void CRenderManager::CreateRenderer()
       m_pRenderer = new CLinuxRendererGL;
     }
 #endif
-
-    if (m_pRenderer)
-      m_pRenderer->PreInit();
-    else
-      CLog::Log(LOGERROR, "RenderManager::CreateRenderer: failed to create renderer");
   }
 }
 
@@ -1077,19 +1070,6 @@ void CRenderManager::ToggleDebug()
 {
   m_renderDebug = !m_renderDebug;
   m_debugTimer.SetExpired();
-}
-
-// Get renderer info, can be called before configure
-CRenderInfo CRenderManager::GetRenderInfo()
-{
-  CSingleLock lock(m_statelock);
-  CRenderInfo info;
-  if (!m_pRenderer)
-  {
-    info.max_buffer_size = NUM_BUFFERS;
-    return info;;
-  }
-  return m_pRenderer->GetRenderInfo();
 }
 
 int CRenderManager::AddVideoPicture(const VideoPicture& pic)

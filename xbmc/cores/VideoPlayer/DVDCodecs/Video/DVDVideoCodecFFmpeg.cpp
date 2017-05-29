@@ -33,7 +33,7 @@
 #include "settings/MediaSettings.h"
 #include "utils/log.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
-#include "cores/VideoPlayer/VideoRenderers/RenderFormats.h"
+#include "cores/VideoPlayer/VideoRenderers/RenderInfo.h"
 #include "utils/StringUtils.h"
 #include <memory>
 
@@ -293,7 +293,7 @@ enum AVPixelFormat CDVDVideoCodecFFmpeg::GetFormat(struct AVCodecContext * avctx
 
     if (pDecoder)
     {
-      if (pDecoder->Open(avctx, ctx->m_pCodecContext, *cur, ctx->m_uSurfacesCount))
+      if (pDecoder->Open(avctx, ctx->m_pCodecContext, *cur))
       {
         ctx->m_processInfo.SetVideoPixelFormat(pixFmtName ? pixFmtName : "");
         ctx->SetHardware(pDecoder);
@@ -325,9 +325,6 @@ CDVDVideoCodecFFmpeg::CDVDVideoCodecFFmpeg(CProcessInfo &processInfo)
 
   m_iPictureWidth = 0;
   m_iPictureHeight = 0;
-
-  m_uSurfacesCount = 0;
-
   m_iScreenWidth = 0;
   m_iScreenHeight = 0;
   m_iOrientation = 0;
@@ -361,14 +358,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   m_iOrientation = hints.orientation;
 
   m_formats.clear();
-  for(std::vector<AVPixelFormat>::iterator it = options.m_formats.begin(); it != options.m_formats.end(); ++it)
-  {
-    if (*it != AV_PIX_FMT_NONE)
-      m_formats.push_back(*it);
-
-    if(*it == AV_PIX_FMT_YUV420P)
-      m_formats.push_back(AV_PIX_FMT_YUVJ420P);
-  }
+  m_formats = m_processInfo.GetRenderFormats();
   m_formats.push_back(AV_PIX_FMT_NONE); /* always add none to get a terminated list in ffmpeg world */
 
   pCodec = avcodec_find_decoder(hints.codec);
@@ -444,10 +434,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   // set any special options
   for(std::vector<CDVDCodecOption>::iterator it = options.m_keys.begin(); it != options.m_keys.end(); ++it)
   {
-    if (it->m_name == "surfaces")
-      m_uSurfacesCount = atoi(it->m_value.c_str());
-    else
-      av_opt_set(m_pCodecContext, it->m_name.c_str(), it->m_value.c_str(), 0);
+    av_opt_set(m_pCodecContext, it->m_name.c_str(), it->m_value.c_str(), 0);
   }
 
   // If non-zero, the decoded audio and video frames returned from avcodec_decode_video2() are reference-counted and are valid indefinitely.

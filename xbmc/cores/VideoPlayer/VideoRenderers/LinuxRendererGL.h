@@ -31,7 +31,7 @@
 #include "guilib/Shader.h"
 #include "settings/VideoSettings.h"
 #include "RenderFlags.h"
-#include "RenderFormats.h"
+#include "RenderInfo.h"
 #include "guilib/GraphicContext.h"
 #include "BaseRenderer.h"
 #include "ColorManager.h"
@@ -108,7 +108,6 @@ public:
   virtual bool IsConfigured() override { return m_bConfigured; }
   virtual void AddVideoPicture(const VideoPicture &picture, int index) override;
   virtual void FlipPage(int source) override;
-  virtual void PreInit() override;
   virtual void UnInit() override;
   virtual void Reset() override;
   virtual void Flush() override;
@@ -181,7 +180,6 @@ protected:
 
   bool m_bConfigured;
   bool m_bValidated;
-  std::vector<AVPixelFormat> m_formats;
   GLenum m_textureTarget;
   int m_renderMethod;
   RenderQuality m_renderQuality;
