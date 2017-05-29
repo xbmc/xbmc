@@ -21,17 +21,29 @@
 #include "GameServices.h"
 #include "controllers/Controller.h"
 #include "controllers/ControllerManager.h"
+#include "games/ports/PortManager.h"
 
 using namespace GAME;
 
 CGameServices::CGameServices() :
-  m_controllerManager(new CControllerManager)
+  m_controllerManager(new CControllerManager),
+  m_portManager(new CPortManager)
 {
 }
 
 CGameServices::~CGameServices()
 {
   Deinit();
+}
+
+void CGameServices::Init(PERIPHERALS::CPeripherals& peripheralManager)
+{
+  m_portManager->Initialize(peripheralManager);
+}
+
+void CGameServices::Deinit()
+{
+  m_portManager->Deinitialize();
 }
 
 ControllerPtr CGameServices::GetController(const std::string& controllerId)
@@ -47,4 +59,9 @@ ControllerPtr CGameServices::GetDefaultController()
 ControllerVector CGameServices::GetControllers()
 {
   return m_controllerManager->GetControllers();
+}
+
+CPortManager& CGameServices::PortManager()
+{
+  return *m_portManager;
 }

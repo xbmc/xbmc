@@ -28,15 +28,39 @@ using namespace GAME;
 using namespace JOYSTICK;
 using namespace PERIPHERALS;
 
-CPortMapper::CPortMapper(PERIPHERALS::CPeripherals& peripheralManager) :
-  m_peripheralManager(peripheralManager)
+CPortMapper::CPortMapper() :
+  m_peripheralManager(nullptr),
+  m_portManager(nullptr)
 {
-  CPortManager::GetInstance().RegisterObserver(this);
 }
 
 CPortMapper::~CPortMapper()
 {
-  CPortManager::GetInstance().UnregisterObserver(this);
+  Deinitialize();
+}
+
+void CPortMapper::Initialize(PERIPHERALS::CPeripherals& peripheralManager, CPortManager& portManager)
+{
+  m_peripheralManager = &peripheralManager;
+  m_portManager = &portManager;
+
+  m_peripheralManager->RegisterObserver(this);
+  m_portManager->RegisterObserver(this);
+}
+
+void CPortMapper::Deinitialize()
+{
+  if (m_portManager)
+  {
+    m_portManager->UnregisterObserver(this);
+    m_portManager = nullptr;
+  }
+
+  if (m_peripheralManager)
+  {
+    m_peripheralManager->UnregisterObserver(this);
+    m_peripheralManager = nullptr;
+  }
 }
 
 void CPortMapper::Notify(const Observable &obs, const ObservableMessage msg)
@@ -54,13 +78,16 @@ void CPortMapper::Notify(const Observable &obs, const ObservableMessage msg)
 
 void CPortMapper::ProcessPeripherals()
 {
+  if (m_peripheralManager == nullptr || m_portManager == nullptr)
+    return;
+
   auto& oldPortMap = m_portMap;
 
   PeripheralVector devices;
-  m_peripheralManager.GetPeripheralsWithFeature(devices, FEATURE_JOYSTICK);
+  m_peripheralManager->GetPeripheralsWithFeature(devices, FEATURE_JOYSTICK);
 
   std::map<PeripheralPtr, IInputHandler*> newPortMap;
-  CPortManager::GetInstance().MapDevices(devices, newPortMap);
+  m_portManager->MapDevices(devices, newPortMap);
 
   for (auto& device : devices)
   {

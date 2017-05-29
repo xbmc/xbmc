@@ -19,9 +19,11 @@
  */
 
 #include "PortManager.h"
+#include "PortMapper.h"
 #include "peripherals/devices/Peripheral.h"
 #include "peripherals/devices/PeripheralJoystick.h"
 #include "peripherals/devices/PeripheralJoystickEmulation.h"
+#include "peripherals/Peripherals.h"
 #include "threads/SingleLock.h"
 
 #include <algorithm>
@@ -45,10 +47,24 @@ namespace GAME
 
 // --- CPortManager -----------------------------------------------------------
 
-CPortManager& CPortManager::GetInstance()
+CPortManager::CPortManager() :
+  m_portMapper(new CPortMapper)
 {
-  static CPortManager instance;
-  return instance;
+}
+
+CPortManager::~CPortManager()
+{
+  Deinitialize();
+}
+
+void CPortManager::Initialize(CPeripherals& peripheralManager)
+{
+  m_portMapper->Initialize(peripheralManager, *this);
+}
+
+void CPortManager::Deinitialize()
+{
+  m_portMapper->Deinitialize();
 }
 
 void CPortManager::OpenPort(IInputHandler* handler,
@@ -137,7 +153,7 @@ void CPortManager::MapDevices(const PeripheralVector& devices,
     IInputHandler* handler = AssignToPort(device);
     if (handler)
       deviceToPortMap[device] = handler;
-  } 
+  }
 }
 
 IInputHandler* CPortManager::AssignToPort(const PeripheralPtr& device, bool checkPortNumber /* = true */)

@@ -39,20 +39,26 @@ namespace PERIPHERALS
 
 namespace GAME
 {
+  class CPortManager;
+
   class CPortMapper : public Observer
   {
   public:
-    CPortMapper(PERIPHERALS::CPeripherals& peripheralManager);
+    CPortMapper();
 
     virtual ~CPortMapper();
+
+    void Initialize(PERIPHERALS::CPeripherals& peripheralManager, CPortManager& portManager);
+    void Deinitialize();
 
     virtual void Notify(const Observable& obs, const ObservableMessage msg) override;
 
   private:
     void ProcessPeripherals();
 
-    // Construction parameters
-    PERIPHERALS::CPeripherals& m_peripheralManager;
+    // Initialization parameters
+    PERIPHERALS::CPeripherals* m_peripheralManager;
+    CPortManager* m_portManager;
 
     // Port paremters
     std::map<PERIPHERALS::PeripheralPtr, KODI::JOYSTICK::IInputHandler*>  m_portMap;

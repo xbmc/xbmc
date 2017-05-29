@@ -79,16 +79,13 @@ using namespace PERIPHERALS;
 using namespace XFILE;
 
 CPeripherals::CPeripherals() :
-  m_eventScanner(this),
-  m_portMapper(*this)
+  m_eventScanner(this)
 {
-  RegisterObserver(&m_portMapper);
 }
 
 CPeripherals::~CPeripherals()
 {
   Clear();
-  UnregisterObserver(&m_portMapper);
 }
 
 void CPeripherals::Initialise()
