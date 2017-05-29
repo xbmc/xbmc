@@ -52,10 +52,6 @@ bool CJoystickFeature::AcceptsInput(bool bActivation)
   {
     if (m_handler->AcceptsInput())
       bAcceptsInput = true;
-
-    // Avoid sticking
-    if (!bActivation)
-      bAcceptsInput = true;
   }
 
   return bAcceptsInput;
