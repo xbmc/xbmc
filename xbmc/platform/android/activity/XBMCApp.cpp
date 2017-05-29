@@ -170,6 +170,11 @@ void CXBMCApp::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender,
     else if (strcmp(message, "OnStop") == 0)
       OnPlayBackStopped();
   }
+  else if (flag & Info)
+  {
+     if (strcmp(message, "OnChanged") == 0)
+      UpdateSessionMetadata();
+  }
 }
 
 void CXBMCApp::onStart()
@@ -600,9 +605,8 @@ CRect CXBMCApp::MapRenderToDroid(const CRect& srcRect)
   return CRect(srcRect.x1 * scaleX, srcRect.y1 * scaleY, srcRect.x2 * scaleX, srcRect.y2 * scaleY);
 }
 
-void CXBMCApp::OnPlayBackStarted()
+void CXBMCApp::UpdateSessionMetadata()
 {
-  m_mediaSession->activate(true);
   CJNIMediaMetadataBuilder builder;
   builder
       .putString(CJNIMediaMetadata::METADATA_KEY_DISPLAY_TITLE, g_infoManager.GetLabel(PLAYER_TITLE))
@@ -642,6 +646,13 @@ void CXBMCApp::OnPlayBackStarted()
       builder.putBitmap(CJNIMediaMetadata::METADATA_KEY_ART, bmp);
   }
   m_mediaSession->updateMetadata(builder.build());
+}
+
+void CXBMCApp::OnPlayBackStarted()
+{
+  CLog::Log(LOGDEBUG, "%s", __PRETTY_FUNCTION__);
+
+  m_mediaSession->activate(true);
 
   CJNIIntent intent(ACTION_XBMC_RESUME, CJNIURI::EMPTY, *this, get_class(CJNIContext::get_raw()));
   m_mediaSession->updateIntent(intent);
