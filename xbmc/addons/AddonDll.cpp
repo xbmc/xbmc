@@ -38,6 +38,7 @@
 
 // Global addon callback handle classes
 #include "addons/interfaces/AudioEngine.h"
+#include "addons/interfaces/General.h"
 
 namespace ADDON
 {
@@ -563,6 +564,7 @@ bool CAddonDll::InitInterface(KODI_HANDLE firstKodiInstance)
   // Related parts becomes set from addon headers.
   m_interface.toAddon = (KodiToAddonFuncTable_Addon*) calloc(1, sizeof(KodiToAddonFuncTable_Addon));
 
+  Interface_General::Init(&m_interface);
   Interface_AudioEngine::Init(&m_interface);
 
   return true;
@@ -571,6 +573,7 @@ bool CAddonDll::InitInterface(KODI_HANDLE firstKodiInstance)
 void CAddonDll::DeInitInterface()
 {
   Interface_AudioEngine::DeInit(&m_interface);
+  Interface_General::DeInit(&m_interface);
 
   if (m_interface.libBasePath)
     free((char*)m_interface.libBasePath);
