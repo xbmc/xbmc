@@ -4,6 +4,7 @@
   <addon>game.controller.default</addon>
   <addon>kodi.binary.global.audioengine</addon>
   <addon>kodi.binary.global.main</addon>
+  <addon>kodi.binary.global.general</addon>
   <addon>kodi.binary.global.gui</addon>
   <addon>kodi.binary.instance.adsp</addon>
   <addon>kodi.binary.instance.audiodecoder</addon>

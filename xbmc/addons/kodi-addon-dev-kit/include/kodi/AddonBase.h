@@ -143,6 +143,7 @@ typedef ADDON_HANDLE_STRUCT *ADDON_HANDLE;
  * Callback function tables from addon to Kodi
  * Set complete from Kodi!
  */
+struct AddonToKodiFuncTable_kodi;
 struct AddonToKodiFuncTable_kodi_audioengine;
 typedef struct AddonToKodiFuncTable_Addon
 {
@@ -158,6 +159,7 @@ typedef struct AddonToKodiFuncTable_Addon
   bool (*get_setting)(void* kodiBase, const char* settingName, void *settingValue);
   bool (*set_setting)(void* kodiBase, const char* settingName, const char* settingValue);
 
+  AddonToKodiFuncTable_kodi* kodi;
   AddonToKodiFuncTable_kodi_audioengine* kodi_audioengine;
 } AddonToKodiFuncTable_Addon;
 
@@ -349,11 +351,22 @@ public:
 //==============================================================================
 namespace kodi {
 ///
-inline std::string GetAddonPath()
+inline std::string GetAddonPath(const std::string& append = "")
 {
   char* str = ::kodi::addon::CAddonBase::m_interface->toKodi->get_addon_path(::kodi::addon::CAddonBase::m_interface->toKodi->kodiBase);
   std::string ret = str;
   ::kodi::addon::CAddonBase::m_interface->toKodi->free_string(::kodi::addon::CAddonBase::m_interface->toKodi->kodiBase, str);
+  if (!append.empty())
+  {
+    if (append.at(0) != '\\' &&
+        append.at(0) != '/')
+#ifdef TARGET_WINDOWS
+      ret.append("\\");
+#else
+      ret.append("/");
+#endif
+    ret.append(append);
+  }
   return ret;
 }
 } /* namespace kodi */
@@ -362,11 +375,22 @@ inline std::string GetAddonPath()
 //==============================================================================
 namespace kodi {
 ///
-inline std::string GetBaseUserPath()
+inline std::string GetBaseUserPath(const std::string& append = "")
 {
   char* str = ::kodi::addon::CAddonBase::m_interface->toKodi->get_base_user_path(::kodi::addon::CAddonBase::m_interface->toKodi->kodiBase);
   std::string ret = str;
   ::kodi::addon::CAddonBase::m_interface->toKodi->free_string(::kodi::addon::CAddonBase::m_interface->toKodi->kodiBase, str);
+  if (!append.empty())
+  {
+    if (append.at(0) != '\\' &&
+        append.at(0) != '/')
+#ifdef TARGET_WINDOWS
+      ret.append("\\");
+#else
+      ret.append("/");
+#endif
+    ret.append(append);
+  }
   return ret;
 }
 } /* namespace kodi */
