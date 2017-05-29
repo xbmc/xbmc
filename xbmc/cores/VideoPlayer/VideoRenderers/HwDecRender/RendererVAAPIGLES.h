@@ -35,7 +35,6 @@ public:
   // Player functions
   virtual void AddVideoPicture(const VideoPicture &picture, int index, double currentClock) override;
   virtual void ReleaseBuffer(int idx) override;
-  virtual CRenderInfo GetRenderInfo() override;
   virtual bool ConfigChanged(const VideoPicture &picture) override;
 
   static bool HandlesVideoBuffer(const VideoPicture &picture);
