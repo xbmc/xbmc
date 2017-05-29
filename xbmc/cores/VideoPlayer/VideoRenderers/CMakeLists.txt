@@ -15,7 +15,7 @@ set(HEADERS BaseRenderer.h
             OverlayRendererUtil.h
             RenderCapture.h
             RenderFlags.h
-            RenderFormats.h
+            RenderInfo.h
             RenderManager.h
             DebugRenderer.h)
 
