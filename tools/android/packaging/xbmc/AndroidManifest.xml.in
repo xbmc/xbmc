@@ -13,6 +13,7 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.GET_TASKS" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
 
     <uses-feature android:name="android.hardware.bluetooth" android:required="false" />
@@ -92,6 +93,7 @@
                 <action android:name="android.intent.action.DREAMING_STOPPED" />
                 <action android:name="android.bluetooth.a2dp.profile.action.CONNECTION_STATE_CHANGED" />
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
 
