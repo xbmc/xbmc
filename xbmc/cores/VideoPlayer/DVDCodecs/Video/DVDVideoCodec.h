@@ -21,7 +21,6 @@
  */
 
 #include "system.h"
-#include "cores/VideoPlayer/VideoRenderers/RenderFormats.h"
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
 #include "cores/VideoPlayer/Process/VideoBuffer.h"
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemuxPacket.h"
@@ -257,7 +256,7 @@ class IHardwareDecoder : public IDVDResourceCounted<IHardwareDecoder>
 public:
   IHardwareDecoder() = default;
   virtual ~IHardwareDecoder() = default;
-  virtual bool Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat, unsigned int surfaces) = 0;
+  virtual bool Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat) = 0;
   virtual CDVDVideoCodec::VCReturn Decode(AVCodecContext* avctx, AVFrame* frame) = 0;
   virtual bool GetPicture(AVCodecContext* avctx, VideoPicture* picture) = 0;
   virtual CDVDVideoCodec::VCReturn Check(AVCodecContext* avctx) = 0;

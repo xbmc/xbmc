@@ -119,9 +119,6 @@ double CVideoPlayerVideo::GetOutputDelay()
 
 bool CVideoPlayerVideo::OpenStream(CDVDStreamInfo hint)
 {
-  CRenderInfo info;
-  info = m_renderManager.GetRenderInfo();
-
   if (hint.flags & AV_DISPOSITION_ATTACHED_PIC)
     return false;
   if (hint.extrasize == 0)
@@ -146,7 +143,7 @@ bool CVideoPlayerVideo::OpenStream(CDVDStreamInfo hint)
     {
       hint.codecOptions |= CODEC_ALLOW_FALLBACK;
     }
-    CDVDVideoCodec* codec = CDVDFactoryCodec::CreateVideoCodec(hint, m_processInfo, info);
+    CDVDVideoCodec* codec = CDVDFactoryCodec::CreateVideoCodec(hint, m_processInfo);
     if (!codec)
     {
       CLog::Log(LOGINFO, "CVideoPlayerVideo::OpenStream - could not open video codec");
@@ -157,7 +154,7 @@ bool CVideoPlayerVideo::OpenStream(CDVDStreamInfo hint)
   {
     m_processInfo.ResetVideoCodecInfo();
     hint.codecOptions |= CODEC_ALLOW_FALLBACK;
-    CDVDVideoCodec* codec = CDVDFactoryCodec::CreateVideoCodec(hint, m_processInfo, info);
+    CDVDVideoCodec* codec = CDVDFactoryCodec::CreateVideoCodec(hint, m_processInfo);
     if (!codec)
     {
       CLog::Log(LOGERROR, "CVideoPlayerVideo::OpenStream - could not open video codec");
@@ -223,10 +220,8 @@ void CVideoPlayerVideo::OpenStream(CDVDStreamInfo &hint, CDVDVideoCodec* codec)
   if (!codec)
   {
     CLog::Log(LOGNOTICE, "Creating video codec with codec id: %i", hint.codec);
-    CRenderInfo info;
-    info = m_renderManager.GetRenderInfo();
     hint.codecOptions |= CODEC_ALLOW_FALLBACK;
-    codec = CDVDFactoryCodec::CreateVideoCodec(hint, m_processInfo, info);
+    codec = CDVDFactoryCodec::CreateVideoCodec(hint, m_processInfo);
     if (!codec)
     {
       CLog::Log(LOGERROR, "CVideoPlayerVideo::OpenStream - could not open video codec");

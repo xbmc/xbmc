@@ -34,7 +34,6 @@ public:
   // Player functions
   virtual void ReleaseBuffer(int idx) override;
   virtual bool NeedBuffer(int idx) override;
-  virtual CRenderInfo GetRenderInfo() override;
   static bool HandlesVideoBuffer(CVideoBuffer *buffer);
 
 protected:
