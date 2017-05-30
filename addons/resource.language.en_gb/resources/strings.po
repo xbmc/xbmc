@@ -6667,11 +6667,6 @@ msgid "Allow hardware acceleration - VTBDecoder"
 msgstr ""
 
 #: system/settings/settings.xml
-msgctxt "#13430"
-msgid "Allow hardware acceleration - OpenMax"
-msgstr ""
-
-#: system/settings/settings.xml
 #: xbmc/cores/VideoPlayer/VideoRenderers/BaseRenderer.cpp
 msgctxt "#13431"
 msgid "Pixel shaders"
@@ -17623,12 +17618,6 @@ msgstr ""
 #: system/settings/settings.xml
 msgctxt "#36160"
 msgid "Enable VTB hardware decoding of video files."
-msgstr ""
-
-#. Description of setting with label #13430 "Allow hardware acceleration (OpenMax)"
-#: system/settings/settings.xml
-msgctxt "#36161"
-msgid "Enable OpenMax hardware decoding of video files."
 msgstr ""
 
 #. Description of setting with label #13432 "Allow hardware acceleration (VideoToolbox)"

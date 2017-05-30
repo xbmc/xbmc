@@ -16,15 +16,6 @@ if(AML_FOUND)
                       DVDVideoCodecAmlogic.h)
 endif()
 
-if(OPENMAX_FOUND)
-  list(APPEND SOURCES DVDVideoCodecOpenMax.cpp
-                      OpenMax.cpp
-                      OpenMaxVideo.cpp)
-  list(APPEND HEADERS DVDVideoCodecOpenMax.h
-                      OpenMax.h
-                      OpenMaxVideo.h)
-endif()
-
 if(CORE_SYSTEM_NAME STREQUAL windows)
   list(APPEND SOURCES DXVA.cpp)
   list(APPEND HEADERS DXVA.h)
