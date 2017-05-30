@@ -581,7 +581,11 @@ bool CWebServer::ProcessPostData(HTTPRequest request, ConnectionHandler *connect
     if (!postDataHandled)
     {
       CLog::Log(LOGERROR, "CWebServer[%hu]: failed to handle HTTP POST data for %s", m_port, request.pathUrl.c_str());
+#if (MHD_VERSION >= 0x00095213)
+      connectionHandler->errorStatus = MHD_HTTP_PAYLOAD_TOO_LARGE;
+#else
       connectionHandler->errorStatus = MHD_HTTP_REQUEST_ENTITY_TOO_LARGE;
+#endif
     }
   }
 
@@ -1128,6 +1132,9 @@ struct MHD_Daemon* CWebServer::StartMHD(unsigned int flags, int port)
                           // otherwise on libmicrohttpd 0.4.4-1 it spins a busy loop
                           MHD_USE_THREAD_PER_CONNECTION
 #endif
+#if (MHD_VERSION >= 0x00095207)
+                          | MHD_USE_INTERNAL_POLLING_THREAD /* MHD_USE_THREAD_PER_CONNECTION must be used only with MHD_USE_INTERNAL_POLLING_THREAD since 0.9.54 */
+#endif
 #if (MHD_VERSION >= 0x00040001)
                           | MHD_USE_DEBUG /* Print MHD error messages to log */
 #endif 
@@ -1263,7 +1270,7 @@ void CWebServer::LogResponse(HTTPRequest request, int responseStatus) const
     return;
 
   std::multimap<std::string, std::string> headerValues;
-  HTTPRequestHandlerUtils::GetRequestHeaderValues(request.connection, MHD_RESPONSE_HEADER_KIND, headerValues);
+  HTTPRequestHandlerUtils::GetRequestHeaderValues(request.connection, MHD_HEADER_KIND, headerValues);
 
   CLog::Log(LOGDEBUG, "CWebServer[%hu] [OUT] %s %d %s", m_port, request.version.c_str(), responseStatus, request.pathUrlFull.c_str());
 
