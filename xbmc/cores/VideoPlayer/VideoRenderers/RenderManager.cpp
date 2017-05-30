@@ -100,7 +100,6 @@ static std::string GetRenderFormatName(ERenderFormat format)
     case RENDER_FMT_VDPAU:     return "VDPAU";
     case RENDER_FMT_DXVA:      return "DXVA";
     case RENDER_FMT_VAAPI:     return "VAAPI";
-    case RENDER_FMT_OMXEGL:    return "OMXEGL";
     case RENDER_FMT_CVBREF:    return "BGRA";
     case RENDER_FMT_BYPASS:    return "BYPASS";
     case RENDER_FMT_MEDIACODEC:return "MEDIACODEC";
@@ -1135,7 +1134,6 @@ int CRenderManager::AddVideoPicture(VideoPicture& pic)
     return -1;
 
   if(pic.format == RENDER_FMT_VDPAU
-  || pic.format == RENDER_FMT_OMXEGL
   || pic.format == RENDER_FMT_CVBREF
   || pic.format == RENDER_FMT_VAAPI
   || pic.format == RENDER_FMT_MEDIACODEC
