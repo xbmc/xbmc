@@ -20,7 +20,7 @@
 
 #include "system.h"
 
-#ifdef HAS_OMXPLAYER
+#ifdef TARGET_RASPBERRY_PI
 
 #include "VideoPlayer.h"
 #include "ServiceBroker.h"

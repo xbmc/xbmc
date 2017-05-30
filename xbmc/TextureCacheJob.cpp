@@ -32,7 +32,7 @@
 #include "FileItem.h"
 #include "music/MusicThumbLoader.h"
 #include "music/tags/MusicInfoTag.h"
-#if defined(HAS_OMXPLAYER)
+#if defined(TARGET_RASPBERRY_PI)
 #include "cores/omxplayer/OMXImage.h"
 #endif
 
@@ -88,7 +88,7 @@ bool CTextureCacheJob::CacheTexture(CBaseTexture **out_texture)
   else if (m_details.hash == m_oldHash)
     return true;
 
-#if defined(HAS_OMXPLAYER)
+#if defined(TARGET_RASPBERRY_PI)
   if (COMXImage::CreateThumb(image, width, height, additional_info, CTextureCache::GetCachedPath(m_cachePath + ".jpg")))
   {
     m_details.width = width;

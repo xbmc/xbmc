@@ -19,8 +19,6 @@
  *
  */
 
-#if defined(HAVE_OMXLIB)
-
 #include <string>
 #include <queue>
 #include <vector>
@@ -215,6 +213,3 @@ protected:
   bool              m_is_open;
   DllOMX            *m_DllOMX;
 };
-
-#endif
-

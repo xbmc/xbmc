@@ -137,7 +137,7 @@ protected:
   bool m_mipmapping;
 };
 
-#if defined(HAS_OMXPLAYER)
+#if defined(TARGET_RASPBERRY_PI)
 #include "TexturePi.h"
 #define CTexture CPiTexture
 #elif defined(HAS_GL) || defined(HAS_GLES)

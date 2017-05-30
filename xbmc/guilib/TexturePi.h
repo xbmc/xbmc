@@ -22,7 +22,7 @@
 
 #include "TextureGL.h"
 
-#if defined(HAS_OMXPLAYER)
+#if defined(TARGET_RASPBERRY_PI)
 
 #include "system_gl.h"
 

@@ -79,7 +79,7 @@
 #include "LangInfo.h"
 #include "URL.h"
 
-#ifdef HAS_OMXPLAYER
+#ifdef TARGET_RASPBERRY_PI
 #include "cores/omxplayer/OMXPlayerAudio.h"
 #include "cores/omxplayer/OMXPlayerVideo.h"
 #include "cores/omxplayer/OMXHelper.h"
@@ -574,7 +574,7 @@ int CSelectionStreams::CountSource(StreamType type, StreamSource source) const
 
 void CVideoPlayer::CreatePlayers()
 {
-#ifdef HAS_OMXPLAYER
+#ifdef TARGET_RASPBERRY_PI
   bool omx_suitable = !OMXPlayerUnsuitable(m_HasVideo, m_HasAudio, m_pDemuxer, m_pInputStream, m_SelectionStreams);
   if (m_omxplayer_mode != omx_suitable)
   {
@@ -587,7 +587,7 @@ void CVideoPlayer::CreatePlayers()
 
   if (m_omxplayer_mode)
   {
-#ifdef HAS_OMXPLAYER
+#ifdef TARGET_RASPBERRY_PI
     m_VideoPlayerVideo = new OMXPlayerVideo(&m_OmxPlayerState.av_clock, &m_overlayContainer, m_messenger, m_renderManager, *m_processInfo);
     m_VideoPlayerAudio = new OMXPlayerAudio(&m_OmxPlayerState.av_clock, m_messenger, *m_processInfo);
 #endif
@@ -659,7 +659,7 @@ CVideoPlayer::CVideoPlayer(IPlayerCallback& callback)
   m_OmxPlayerState.bOmxSentEOFs        = false;
   m_OmxPlayerState.threshold           = 0.2f;
   m_OmxPlayerState.interlace_method    = VS_INTERLACEMETHOD_MAX;
-#ifdef HAS_OMXPLAYER
+#ifdef TARGET_RASPBERRY_PI
   m_omxplayer_mode                     = CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_USEOMXPLAYER);
 #else
   m_omxplayer_mode                     = false;
@@ -1362,7 +1362,7 @@ void CVideoPlayer::Process()
 
   while (!m_bAbortRequest)
   {
-#ifdef HAS_OMXPLAYER
+#ifdef TARGET_RASPBERRY_PI
     if (m_omxplayer_mode && OMXDoProcessing(m_OmxPlayerState, m_playSpeed, m_VideoPlayerVideo, m_VideoPlayerAudio, m_CurrentAudio, m_CurrentVideo, m_HasVideo, m_HasAudio, m_renderManager))
     {
       CloseStream(m_CurrentVideo, false);
@@ -1558,7 +1558,7 @@ void CVideoPlayer::Process()
         Sleep(100);
         continue;
       }
-#ifdef HAS_OMXPLAYER
+#ifdef TARGET_RASPBERRY_PI
       if (m_omxplayer_mode && OMXStillPlaying(m_OmxPlayerState.bOmxWaitVideo, m_OmxPlayerState.bOmxWaitAudio, m_VideoPlayerVideo->IsEOS(), m_VideoPlayerAudio->IsEOS()))
       {
         Sleep(100);

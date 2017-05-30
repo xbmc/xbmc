@@ -43,7 +43,7 @@
 #include "utils/StreamDetails.h"
 #include "guilib/DispResource.h"
 
-#ifdef HAS_OMXPLAYER
+#ifdef TARGET_RASPBERRY_PI
 #include "OMXCore.h"
 #include "OMXClock.h"
 #include "linux/RBP.h"
@@ -569,7 +569,7 @@ protected:
 
   friend class CVideoPlayerVideo;
   friend class CVideoPlayerAudio;
-#ifdef HAS_OMXPLAYER
+#ifdef TARGET_RASPBERRY_PI
   friend class OMXPlayerVideo;
   friend class OMXPlayerAudio;
 #endif

@@ -19,7 +19,7 @@
  *
  */
 
-#if defined(HAVE_OMXLIB)
+#if defined(TARGET_RASPBERRY_PI)
 
 #include "OMXCore.h"
 #include "DVDStreamInfo.h"

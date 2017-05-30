@@ -26,7 +26,7 @@
 #include "guilib/TextureManager.h"
 #include "utils/URIUtils.h"
 
-#if defined(HAS_OMXPLAYER)
+#if defined(TARGET_RASPBERRY_PI)
 #include "cores/omxplayer/OMXImage.h"
 
 /************************************************************************/
