@@ -62,6 +62,7 @@ set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SAFESEH:NO")
 # TODO: It would certainly be better to handle these libraries via CMake modules.
 if(${ARCH} STREQUAL win32)
   link_directories(${CMAKE_SOURCE_DIR}/lib/win32/ffmpeg/bin
+                   ${CMAKE_SOURCE_DIR}/project/BuildDependencies/${ARCH}/lib
                    ${CMAKE_SOURCE_DIR}/project/BuildDependencies/lib)
 else()
   link_directories(${CMAKE_SOURCE_DIR}/lib/win32/ffmpeg/bin
