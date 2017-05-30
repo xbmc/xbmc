@@ -360,6 +360,9 @@ bool CRenderManager::IsPresenting()
   if (!IsConfigured())
     return false;
 
+  if (m_format == RENDER_FMT_BYPASS)
+    return true;
+
   CSingleLock lock(m_presentlock);
   if (!m_presentTimer.IsTimePast())
     return true;
