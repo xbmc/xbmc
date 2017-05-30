@@ -56,6 +56,7 @@ namespace ADDON
     static char* unknown_to_utf8(void* kodiBase, const char* source, bool* ret, bool failOnBadChar);
     static char* get_language(void* kodiBase, int format, bool region);
     static bool queue_notification(void* kodiBase, int type, const char* header, const char* message, const char* imageFile, unsigned int displayTime, bool withSound, unsigned int messageTime);
+    static void get_md5(void* kodiBase, const char* text, char* md5);
     //@}
   };
 

@@ -39,6 +39,7 @@ typedef struct AddonToKodiFuncTable_kodi
   char* (*get_localized_string)(void* kodiBase, long dwCode);
   char* (*get_language)(void* kodiBase, int format, bool region);
   bool (*queue_notification)(void* kodiBase, int type, const char* header, const char* message, const char* imageFile, unsigned int displayTime, bool withSound, unsigned int messageTime);
+  void (*get_md5)(void* kodiBase, const char* text, char* md5);
 } AddonToKodiFuncTable_kodi;
 
 //==============================================================================
@@ -374,3 +375,35 @@ inline void QueueNotification(QueueMsg type, const std::string& header,
 }
 } /* namespace kodi */
 //------------------------------------------------------------------------------
+
+//============================================================================
+namespace kodi {
+///
+/// \ingroup cpp_kodi
+/// @brief Get the MD5 digest of the given text
+///
+/// @param[in]  text  text to compute the MD5 for
+/// @return           Returned MD5 digest
+///
+///
+/// ------------------------------------------------------------------------
+///
+/// **Example:**
+/// ~~~~~~~~~~~~~{.cpp}
+/// #include <kodi/General.h>
+/// ...
+/// std::string md5 = kodi::GetMD5("Make me as md5");
+/// fprintf(stderr, "My md5 digest is: '%s'\n", md5.c_str());
+/// ...
+/// ~~~~~~~~~~~~~
+///
+inline std::string GetMD5(const std::string& text)
+{
+  char* md5ret = static_cast<char*>(malloc(40*sizeof(char))); // md5 size normally 32 bytes
+  ::kodi::addon::CAddonBase::m_interface->toKodi->kodi->get_md5(::kodi::addon::CAddonBase::m_interface->toKodi->kodiBase, text.c_str(), md5ret);
+  std::string md5 = md5ret;
+  free(md5ret);
+  return md5;
+}
+} /* namespace kodi */
+//----------------------------------------------------------------------------
