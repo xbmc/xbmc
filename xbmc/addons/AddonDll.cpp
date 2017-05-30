@@ -39,6 +39,7 @@
 // Global addon callback handle classes
 #include "addons/interfaces/AudioEngine.h"
 #include "addons/interfaces/General.h"
+#include "addons/interfaces/Network.h"
 
 namespace ADDON
 {
@@ -566,12 +567,14 @@ bool CAddonDll::InitInterface(KODI_HANDLE firstKodiInstance)
 
   Interface_General::Init(&m_interface);
   Interface_AudioEngine::Init(&m_interface);
+  Interface_Network::Init(&m_interface);
 
   return true;
 }
 
 void CAddonDll::DeInitInterface()
 {
+  Interface_Network::DeInit(&m_interface);
   Interface_AudioEngine::DeInit(&m_interface);
   Interface_General::DeInit(&m_interface);
 
