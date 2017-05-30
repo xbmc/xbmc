@@ -7,6 +7,7 @@
   <addon>kodi.binary.global.general</addon>
   <addon>kodi.binary.global.network</addon>
   <addon>kodi.binary.global.gui</addon>
+  <addon>kodi.binary.global.filesystem</addon>
   <addon>kodi.binary.instance.adsp</addon>
   <addon>kodi.binary.instance.audiodecoder</addon>
   <addon>kodi.binary.instance.audioencoder</addon>
