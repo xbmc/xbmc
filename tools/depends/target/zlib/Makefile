@@ -7,7 +7,7 @@ VERSION=1.2.7
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 # configuration settings
-CONFIGURE= CC="$(CC)" CFLAGS="$(CFLAGS)" ./configure --prefix=$(PREFIX) --static
+CONFIGURE= RANLIB="$(RANLIB)" LD="$(LD)" AR="$(AR)" CC="$(CC)" CFLAGS="$(CFLAGS)" ./configure --prefix=$(PREFIX) --static
 
 LIBDYLIB=$(PLATFORM)/$(LIBNAME).a
 
@@ -22,6 +22,7 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); patch -p0 < ../visibility.patch
+	cd $(PLATFORM); patch -p0 < ../remove_fixe_ar_osx.patch
 	cd $(PLATFORM); $(CONFIGURE)
 
 $(LIBDYLIB): $(PLATFORM)

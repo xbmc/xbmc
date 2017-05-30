@@ -1,0 +1,12 @@
+--- configure	2012-05-02 06:17:08.000000000 +0200
++++ configure.new	2017-04-26 18:42:06.000000000 +0200
+@@ -231,8 +231,7 @@
+              SHAREDLIBV=libz.$VER$shared_ext
+              SHAREDLIBM=libz.$VER1$shared_ext
+              LDSHARED=${LDSHARED-"$cc -dynamiclib -install_name $libdir/$SHAREDLIBM -compatibility_version $VER1 -current_version $VER3"}
+-             AR="/usr/bin/libtool"
+-             ARFLAGS="-o" ;;
++             ;;
+   *)             LDSHARED=${LDSHARED-"$cc -shared"} ;;
+   esac
+ else
