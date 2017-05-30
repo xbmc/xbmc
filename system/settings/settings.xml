@@ -311,12 +311,6 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
-        <setting id="videoplayer.useomx" type="boolean" label="13430" help="36161">
-          <requirement>HAVE_LIBOPENMAX</requirement>
-          <level>2</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
         <setting id="videoplayer.usevtb" type="boolean" label="13429" help="36160">
           <requirement>HasVTB</requirement>
           <level>2</level>

@@ -318,9 +318,6 @@ void CSettingConditions::Initialize()
 #ifdef HAS_ZEROCONF
   m_simpleConditions.insert("has_zeroconf");
 #endif
-#ifdef HAVE_LIBOPENMAX
-  m_simpleConditions.insert("have_libopenmax");
-#endif
 #ifdef HAS_OMXPLAYER
   m_simpleConditions.insert("has_omxplayer");
 #endif
