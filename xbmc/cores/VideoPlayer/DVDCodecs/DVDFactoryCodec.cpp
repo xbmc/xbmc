@@ -28,7 +28,6 @@
 #include "cores/VideoPlayer/DVDCodecs/DVDCodecs.h"
 
 #include "Video/DVDVideoCodecFFmpeg.h"
-#include "Video/DVDVideoCodecOpenMax.h"
 
 #include "Audio/DVDAudioCodecFFmpeg.h"
 #include "Audio/DVDAudioCodecPassthrough.h"
