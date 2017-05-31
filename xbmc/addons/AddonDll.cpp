@@ -41,6 +41,7 @@
 #include "addons/interfaces/Filesystem.h"
 #include "addons/interfaces/General.h"
 #include "addons/interfaces/Network.h"
+#include "addons/interfaces/GUI/General.h"
 
 namespace ADDON
 {
@@ -570,12 +571,14 @@ bool CAddonDll::InitInterface(KODI_HANDLE firstKodiInstance)
   Interface_AudioEngine::Init(&m_interface);
   Interface_Filesystem::Init(&m_interface);
   Interface_Network::Init(&m_interface);
+  Interface_GUIGeneral::Init(&m_interface);
 
   return true;
 }
 
 void CAddonDll::DeInitInterface()
 {
+  Interface_GUIGeneral::DeInit(&m_interface);
   Interface_Network::DeInit(&m_interface);
   Interface_Filesystem::DeInit(&m_interface);
   Interface_AudioEngine::DeInit(&m_interface);

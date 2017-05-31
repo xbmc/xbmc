@@ -8,4 +8,5 @@ xbmc/cores/AudioEngine/Utils/AEChannelData.h
 xbmc/cores/VideoPlayer/DVDDemuxers/DemuxCrypto.h
 xbmc/cores/VideoPlayer/DVDDemuxers/DVDDemuxPacket.h
 xbmc/filesystem/IFileTypes.h
+xbmc/input/ActionIDs.h
 xbmc/input/XBMC_vkeys.h
