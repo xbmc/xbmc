@@ -4467,6 +4467,11 @@ bool CVideoPlayer::OnAction(const CAction &action)
             return true;
           }
         }
+        if (!g_PVRManager.GetCurrentChannel())
+        {
+          // If this is a recording, then handle the actions in the next block
+          break;
+        }
         bool bPreview(action.GetID() == ACTION_MOVE_UP && // only up/down shows a preview, all others do switch
                       CSettings::GetInstance().GetBool(CSettings::SETTING_PVRPLAYBACK_CONFIRMCHANNELSWITCH));
 
@@ -4519,6 +4524,11 @@ bool CVideoPlayer::OnAction(const CAction &action)
             m_messenger.Put(new CDVDMsgPlayerSeek(mode));
             return true;
           }
+        }
+        if (!g_PVRManager.GetCurrentChannel())
+        {
+          // If this is a recording, then handle the actions in the next block
+          break;
         }
         bool bPreview(action.GetID() == ACTION_MOVE_DOWN && // only up/down shows a preview, all others do switch
                       CSettings::GetInstance().GetBool(CSettings::SETTING_PVRPLAYBACK_CONFIRMCHANNELSWITCH));
