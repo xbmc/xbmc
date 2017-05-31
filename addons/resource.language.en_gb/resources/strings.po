@@ -15233,7 +15233,19 @@ msgctxt "#29802"
 msgid "Passthrough audio in use"
 msgstr ""
 
-#empty strings from id 29803 to 29899
+#. Header text for the BD-J warning dialog
+#: xbmc/settings/DiscSettings.cpp
+msgctxt "#29803"
+msgid "BD-J menu error"
+msgstr ""
+
+#. Body text for the BD-J warning dialog
+#: xbmc/settings/DiscSettings.cpp
+msgctxt "#29804"
+msgid "There was an error encountered loading Java, so BD-J menus will not be functional at this time. BD-J menus require the Java Runtime Environment so make sure this is installed and functioning on your system."
+msgstr ""
+
+#empty strings from id 29805 to 29899
 
 #. Header string on RDS Radiotext+ Info dialog
 msgctxt "#29900"

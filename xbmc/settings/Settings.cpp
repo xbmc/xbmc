@@ -87,6 +87,7 @@
 #include "view/ViewStateSettings.h"
 #include "input/InputManager.h"
 #include "ServiceBroker.h"
+#include "DiscSettings.h"
 
 #define SETTINGS_XML_FOLDER "special://xbmc/system/settings/"
 
@@ -1066,6 +1067,12 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_GAMES_ENABLEREWIND);
   settingSet.insert(CSettings::SETTING_GAMES_REWINDTIME);
   GetSettingsManager()->RegisterCallback(&GAME::CGameSettings::GetInstance(), settingSet);
+
+#ifdef HAVE_LIBBLURAY
+  settingSet.clear();
+  settingSet.insert(CSettings::SETTING_DISC_PLAYBACK);
+  GetSettingsManager()->RegisterCallback(&CDiscSettings::GetInstance(), settingSet);
+#endif
 }
 
 void CSettings::UninitializeISettingCallbacks()
@@ -1096,6 +1103,9 @@ GetSettingsManager()->UnregisterCallback(&CServiceBroker::GetPeripherals());
   GetSettingsManager()->UnregisterCallback(&XBMCHelper::GetInstance());
 #endif
   GetSettingsManager()->UnregisterCallback(&CWakeOnAccess::GetInstance());
+#ifdef HAVE_LIBBLURAY
+  GetSettingsManager()->UnregisterCallback(&CDiscSettings::GetInstance());
+#endif
 }
 
 bool CSettings::Reset()
