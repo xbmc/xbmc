@@ -18,20 +18,11 @@
  *
  */
 
-#include "system.h"
-#include "AppParamParser.h"
-#include "settings/AdvancedSettings.h"
-#include "FileItem.h"
-#include "PlayListPlayer.h"
-#include "utils/log.h"
-#include "platform/xbmc.h"
-#ifdef TARGET_POSIX
 #include <sys/resource.h>
 #include <signal.h>
+
 #include <cstring>
-#include "messaging/ApplicationMessenger.h"
-#include "platform/MessagePrinter.h"
-#endif
+
 #if defined(TARGET_DARWIN_OSX)
   #include "Util.h"
   // SDL redefines main as SDL_main 
@@ -40,12 +31,23 @@
   #endif
 #include <locale.h>
 #endif
+
+#include "AppParamParser.h"
+#include "FileItem.h"
+#include "messaging/ApplicationMessenger.h"
+#include "PlayListPlayer.h"
+#include "platform/MessagePrinter.h"
+#include "platform/xbmc.h"
+#include "platform/XbmcContext.h"
+#include "settings/AdvancedSettings.h"
+#include "system.h"
+#include "utils/log.h"
+
 #ifdef HAS_LIRC
 #include "input/linux/LIRC.h"
 #endif
-#include "platform/XbmcContext.h"
-  
-#if defined(TARGET_POSIX)
+
+
 namespace
 {
 
@@ -79,11 +81,8 @@ void XBMC_POSIX_HandleSignal(int sig)
 }
 
 }
-#endif
 
-#ifdef __cplusplus
-extern "C"
-#endif
+
 int main(int argc, char* argv[])
 {
   // set up some xbmc specific relationships
@@ -101,7 +100,6 @@ int main(int argc, char* argv[])
 #endif
   CLog::SetLogLevel(g_advancedSettings.m_logLevel);
 
-#ifdef TARGET_POSIX
 #if defined(DEBUG)
   struct rlimit rlim;
   rlim.rlim_cur = rlim.rlim_max = RLIM_INFINITY;
@@ -116,7 +114,7 @@ int main(int argc, char* argv[])
   signalHandler.sa_flags = SA_RESTART;
   sigaction(SIGINT, &signalHandler, nullptr);
   sigaction(SIGTERM, &signalHandler, nullptr);
-#endif
+
   setlocale(LC_NUMERIC, "C");
   g_advancedSettings.Initialize();
 
