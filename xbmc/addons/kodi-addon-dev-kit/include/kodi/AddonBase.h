@@ -101,7 +101,7 @@ typedef enum AddonLog
 {
   ///
   ADDON_LOG_DEBUG = 0,
-  
+
   ///
   ADDON_LOG_INFO = 1,
 
@@ -110,7 +110,7 @@ typedef enum AddonLog
 
   ///
   ADDON_LOG_WARNING = 3,
-  
+
   ///
   ADDON_LOG_ERROR = 4,
 
@@ -147,6 +147,7 @@ struct AddonToKodiFuncTable_kodi;
 struct AddonToKodiFuncTable_kodi_audioengine;
 struct AddonToKodiFuncTable_kodi_filesystem;
 struct AddonToKodiFuncTable_kodi_network;
+struct AddonToKodiFuncTable_kodi_gui;
 typedef struct AddonToKodiFuncTable_Addon
 {
   // Pointer inside Kodi, used on callback functions to give related handle
@@ -164,6 +165,7 @@ typedef struct AddonToKodiFuncTable_Addon
   AddonToKodiFuncTable_kodi* kodi;
   AddonToKodiFuncTable_kodi_audioengine* kodi_audioengine;
   AddonToKodiFuncTable_kodi_filesystem* kodi_filesystem;
+  AddonToKodiFuncTable_kodi_gui* kodi_gui;
   AddonToKodiFuncTable_kodi_network *kodi_network;
 } AddonToKodiFuncTable_Addon;
 

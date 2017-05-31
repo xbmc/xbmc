@@ -154,6 +154,7 @@ install(FILES ${CMAKE_SOURCE_DIR}/xbmc/cores/VideoPlayer/DVDDemuxers/DVDDemuxPac
               ${CMAKE_SOURCE_DIR}/xbmc/cores/VideoPlayer/DVDDemuxers/DemuxCrypto.h
               ${CMAKE_SOURCE_DIR}/xbmc/cores/AudioEngine/Utils/AEChannelData.h
               ${CMAKE_SOURCE_DIR}/xbmc/filesystem/IFileTypes.h
+              ${CMAKE_SOURCE_DIR}/xbmc/input/ActionIDs.h
               ${CMAKE_SOURCE_DIR}/xbmc/input/XBMC_vkeys.h
         DESTINATION ${includedir}/${APP_NAME_LC}
         COMPONENT kodi-addon-dev)
