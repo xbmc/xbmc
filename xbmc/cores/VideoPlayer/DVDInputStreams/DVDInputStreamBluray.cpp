@@ -324,18 +324,27 @@ bool CDVDInputStreamBluray::Open()
   m_dll->bd_set_debug_handler(DllLibbluray::bluray_logger);
   m_dll->bd_set_debug_mask(DBG_CRIT | DBG_BLURAY | DBG_NAV);
 
-  CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::Open - opening %s", root.c_str());
-  m_bd = m_dll->bd_open(root.c_str(), NULL);
+  m_bd = m_dll->bd_init();
 
-  if(!m_bd)
+  if (!m_bd)
+  {
+    CLog::Log(LOGERROR, "CDVDInputStreamBluray::Open - failed to initialize libbluray");
+    return false;
+  }
+
+  SetupPlayerSettings();
+
+  CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::Open - opening %s", root.c_str());
+
+  if (!m_dll->bd_open_disc(m_bd, root.c_str(), NULL))
   {
     CLog::Log(LOGERROR, "CDVDInputStreamBluray::Open - failed to open %s", root.c_str());
     return false;
   }
 
-  const BLURAY_DISC_INFO *disc_info;
+  m_dll->bd_get_event(m_bd, NULL);
 
-  disc_info = m_dll->bd_get_disc_info(m_bd);
+  const BLURAY_DISC_INFO *disc_info = m_dll->bd_get_disc_info(m_bd);
 
   if (!disc_info)
   {
@@ -406,9 +415,6 @@ bool CDVDInputStreamBluray::Open()
     if(!m_navmode)
       m_title = GetTitleLongest();
   }
-
-  SetupPlayerSettings();
-  m_dll->bd_get_event(m_bd, NULL);
 
   if (m_navmode)
   {
