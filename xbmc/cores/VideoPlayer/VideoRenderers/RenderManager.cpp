@@ -499,7 +499,7 @@ void CRenderManager::CreateRenderer()
       {
       }
 #if defined(HAVE_LIBVA)
-      else if (CRendererVAAPI::HandlesVideoBuffer(*m_pPicture))
+      else if (CRendererVAAPI::HandlesVideoBuffer(m_pConfigPicture->videoBuffer))
       {
         m_pRenderer = new CRendererVAAPI;
       }
