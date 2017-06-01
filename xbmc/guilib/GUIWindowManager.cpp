@@ -1089,7 +1089,7 @@ void CGUIWindowManager::RenderEx() const
 bool CGUIWindowManager::Render()
 {
   assert(g_application.IsCurrentThread());
-  CSingleExit lock(g_graphicsContext);
+  CSingleLock lock(g_graphicsContext);
 
   CDirtyRegionList dirtyRegions = m_tracker.GetDirtyRegions();
 
