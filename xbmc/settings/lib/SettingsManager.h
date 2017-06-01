@@ -158,6 +158,12 @@ public:
   */
   bool IsLoaded() const { return m_loaded; }
 
+  /*!
+   \brief Adds the given section, its categories, groups and settings.
+
+   This is possible before and after the setting definitions have been
+   initialized.
+   */
   void AddSection(std::shared_ptr<CSettingSection> section);
 
   /*!

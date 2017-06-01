@@ -297,6 +297,7 @@ void CSettingsManager::AddSection(SettingSectionPtr section)
   m_sections[section->GetId()] = section;
 
   // get all settings and add them to the settings map
+  std::set<SettingPtr> newSettings;
   for (SettingCategoryList::const_iterator categoryIt = section->GetCategories().begin(); categoryIt != section->GetCategories().end(); ++categoryIt)
   {
     (*categoryIt)->CheckRequirements();
@@ -304,8 +305,25 @@ void CSettingsManager::AddSection(SettingSectionPtr section)
     {
       (*groupIt)->CheckRequirements();
       for (SettingList::const_iterator settingIt = (*groupIt)->GetSettings().begin(); settingIt != (*groupIt)->GetSettings().end(); ++settingIt)
+      {
         AddSetting(*settingIt);
+
+        newSettings.insert(*settingIt);
+      }
     }
+  }
+
+  if (m_initialized && !newSettings.empty())
+  {
+    // resolve any reference settings in the new section
+    ResolveReferenceSettings(section);
+
+    // cleanup any newly added incomplete settings
+    CleanupIncompleteSettings();
+
+    // resolve any dependencies for the newly added settings
+    for (auto setting : newSettings)
+      ResolveSettingDependencies(setting);
   }
 }
 
