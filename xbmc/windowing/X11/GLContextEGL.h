@@ -22,6 +22,7 @@
 
 #include "GLContext.h"
 #include "EGL/egl.h"
+#include "EGL/eglextchromium.h"
 #include <X11/Xutil.h>
 
 class CGLContextEGL : public CGLContext
@@ -42,4 +43,16 @@ public:
 protected:
   bool IsSuitableVisual(XVisualInfo *vInfo);
   EGLConfig GetEGLConfig(EGLDisplay eglDisplay, XVisualInfo *vInfo);
+  PFNEGLGETSYNCVALUESCHROMIUMPROC eglGetSyncValuesCHROMIUM = nullptr;
+
+  struct Sync
+  {
+    uint64_t cont = 0;
+    uint64_t ust1 = 0;
+    uint64_t ust2 = 0;
+    uint64_t msc1 = 0;
+    uint64_t msc2 = 0;
+    uint64_t sbc2 = 0;
+    uint64_t interval = 0;
+  } m_sync;
 };
