@@ -14,8 +14,10 @@ if(VAAPI_FOUND)
 endif()
 
 if(VDPAU_FOUND)
-  list(APPEND SOURCES RendererVDPAU.cpp)
-  list(APPEND HEADERS RendererVDPAU.h)
+  list(APPEND SOURCES RendererVDPAU.cpp
+                      VdpauGL.cpp)
+  list(APPEND HEADERS RendererVDPAU.h
+                      VdpauGL.h)
 endif()
 
 if(CORE_SYSTEM_NAME STREQUAL osx)

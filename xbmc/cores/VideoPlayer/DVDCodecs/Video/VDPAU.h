@@ -38,12 +38,8 @@
 
 #pragma once
 
-#include "system_gl.h"
-#define GLX_GLXEXT_PROTOTYPES
-#include <GL/glx.h>
-#include <GL/glext.h>
-
-#include "DVDVideoCodec.h"
+#include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
+#include "cores/VideoPlayer/Process/VideoBuffer.h"
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include "threads/CriticalSection.h"
@@ -63,9 +59,6 @@ extern "C" {
 #include "libavutil/avutil.h"
 #include "libavcodec/vdpau.h"
 }
-
-#define FULLHD_WIDTH                       1920
-#define MAX_PIC_Q_LENGTH                   20 //for non-interop_yuv this controls the max length of the decoded pic to render completion Q
 
 class CProcessInfo;
 
@@ -104,15 +97,14 @@ struct VDPAU_procs
 
   VdpGenerateCSCMatrix *                vdp_generate_csc_matrix;
 
-  VdpGetErrorString *                         vdp_get_error_string;
+  VdpGetErrorString* vdp_get_error_string;
 
-  VdpDecoderCreate *             vdp_decoder_create;
-  VdpDecoderDestroy *            vdp_decoder_destroy;
-  VdpDecoderRender *             vdp_decoder_render;
-  VdpDecoderQueryCapabilities *  vdp_decoder_query_caps;
+  VdpDecoderCreate* vdp_decoder_create;
+  VdpDecoderDestroy* vdp_decoder_destroy;
+  VdpDecoderRender* vdp_decoder_render;
+  VdpDecoderQueryCapabilities* vdp_decoder_query_caps;
 
-  VdpPreemptionCallbackRegister * vdp_preemption_callback_register;
-
+  VdpPreemptionCallbackRegister* vdp_preemption_callback_register;
 };
 
 //-----------------------------------------------------------------------------
@@ -201,42 +193,24 @@ struct CVdpauDecodedPicture
 struct CVdpauProcessedPicture
 {
   VideoPicture DVDPic;
-  VdpVideoSurface videoSurface;
-  VdpOutputSurface outputSurface;
+  VdpVideoSurface videoSurface = VDP_INVALID_HANDLE;
+  VdpOutputSurface outputSurface = VDP_INVALID_HANDLE;
   bool crop;
   bool isYuv;
+  int id = 0;
 };
 
-/**
- * Ready to render textures
- * Sent from COutput back to CDecoder
- * Objects are referenced by VideoPicture and are sent
- * to renderer
- */
-class CVdpauRenderPicture
+class CVdpauRenderPicture : public CVideoBuffer
 {
-  friend class CDecoder;
-  friend class COutput;
 public:
-  CVdpauRenderPicture(CCriticalSection &section)
-    : refCount(0), renderPicSection(section) { fence = None; }
-  void Sync();
+  CVdpauRenderPicture(int id) : CVideoBuffer(id) { }
   VideoPicture DVDPic;
-  int texWidth, texHeight;
+  CVdpauProcessedPicture procPic;
+  int width;
+  int height;
   CRect crop;
-  GLuint texture[4];
-  uint32_t sourceIdx;
-  bool valid;
-  bool isYuv;
-  CDecoder *vdpau;
-  CVdpauRenderPicture* Acquire();
-  long Release();
-private:
-  void ReturnUnused();
-  bool usefence;
-  GLsync fence;
-  int refCount;
-  CCriticalSection &renderPicSection;
+  void *device;
+  void *procFunc;
 };
 
 //-----------------------------------------------------------------------------
@@ -350,35 +324,6 @@ protected:
 // Output
 //-----------------------------------------------------------------------------
 
-/**
- * Buffer pool holds allocated vdpau and gl resources
- * Embedded in COutput
- */
-struct VdpauBufferPool
-{
-  VdpauBufferPool();
-  virtual ~VdpauBufferPool();
-  struct GLVideoSurface
-  {
-    GLuint texture[4];
-#ifdef GL_NV_vdpau_interop
-    GLvdpauSurfaceNV glVdpauSurface;
-#endif
-    VdpVideoSurface sourceVuv;
-    VdpOutputSurface sourceRgb;
-  };
-  std::vector<CVdpauRenderPicture*> allRenderPics;
-  unsigned short numOutputSurfaces;
-  std::vector<VdpOutputSurface> outputSurfaces;
-  std::map<VdpVideoSurface, GLVideoSurface> glVideoSurfaceMap;
-  std::map<VdpOutputSurface, GLVideoSurface> glOutputSurfaceMap;
-  std::queue<CVdpauProcessedPicture> processedPics;
-  std::deque<int> usedRenderPics;
-  std::deque<int> freeRenderPics;
-  std::deque<int> syncRenderPics;
-  CCriticalSection renderPicSec;
-};
-
 class COutputControlProtocol : public Actor::Protocol
 {
 public:
@@ -419,10 +364,12 @@ public:
  * COutput generated ready to render textures and passes them back to
  * CDecoder
  */
+class CVdpauBufferPool;
+
 class COutput : private CThread
 {
 public:
-  COutput(CEvent *inMsgEvent);
+  COutput(CDecoder &decoder, CEvent *inMsgEvent);
   virtual ~COutput();
   void Start();
   void Dispose();
@@ -437,51 +384,27 @@ protected:
   CVdpauRenderPicture *ProcessMixerPicture();
   void QueueReturnPicture(CVdpauRenderPicture *pic);
   void ProcessReturnPicture(CVdpauRenderPicture *pic);
-  bool ProcessSyncPicture();
+  void ProcessSyncPicture();
   bool Init();
   bool Uninit();
   void Flush();
-  bool CreateGlxContext();
-  bool DestroyGlxContext();
   bool EnsureBufferPool();
   void ReleaseBufferPool();
   void PreCleanup();
   void InitMixer();
-  bool GLInit();
-  void GLMapSurface(bool yuv, uint32_t source);
-  void GLUnmapSurfaces();
   bool CheckStatus(VdpStatus vdp_st, int line);
   CEvent m_outMsgEvent;
   CEvent *m_inMsgEvent;
   int m_state;
   bool m_bStateMachineSelfTrigger;
+  CDecoder &m_vdpau;
 
   // extended state variables for state machine
   int m_extTimeout;
   bool m_vdpError;
   CVdpauConfig m_config;
-  VdpauBufferPool m_bufferPool;
+  std::shared_ptr<CVdpauBufferPool> m_bufferPool;
   CMixer m_mixer;
-  Display *m_Display;
-  Window m_Window;
-  GLXContext m_glContext;
-  GLXWindow m_glWindow;
-  Pixmap    m_pixmap;
-  GLXPixmap m_glPixmap;
-
-  // gl functions
-#ifdef GL_NV_vdpau_interop
-  PFNGLVDPAUINITNVPROC glVDPAUInitNV;
-  PFNGLVDPAUFININVPROC glVDPAUFiniNV;
-  PFNGLVDPAUREGISTEROUTPUTSURFACENVPROC glVDPAURegisterOutputSurfaceNV;
-  PFNGLVDPAUREGISTERVIDEOSURFACENVPROC glVDPAURegisterVideoSurfaceNV;
-  PFNGLVDPAUISSURFACENVPROC glVDPAUIsSurfaceNV;
-  PFNGLVDPAUUNREGISTERSURFACENVPROC glVDPAUUnregisterSurfaceNV;
-  PFNGLVDPAUSURFACEACCESSNVPROC glVDPAUSurfaceAccessNV;
-  PFNGLVDPAUMAPSURFACESNVPROC glVDPAUMapSurfacesNV;
-  PFNGLVDPAUUNMAPSURFACESNVPROC glVDPAUUnmapSurfacesNV;
-  PFNGLVDPAUGETSURFACEIVNVPROC glVDPAUGetSurfaceivNV;
-#endif
 };
 
 //-----------------------------------------------------------------------------
@@ -547,7 +470,7 @@ class CDecoder
  : public IHardwareDecoder
  , public IDispResource
 {
-   friend class CVdpauRenderPicture;
+   friend class CVdpauBufferPool;
 
 public:
 
@@ -561,7 +484,7 @@ public:
   CDecoder(CProcessInfo& processInfo);
   virtual ~CDecoder();
 
-  virtual bool Open      (AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat, unsigned int surfaces = 0);
+  virtual bool Open      (AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat);
   virtual CDVDVideoCodec::VCReturn Decode    (AVCodecContext* avctx, AVFrame* frame);
   virtual bool GetPicture(AVCodecContext* avctx, VideoPicture* picture);
   virtual void Reset();
@@ -611,19 +534,19 @@ protected:
   , VDPAU_ERROR
   } m_DisplayState;
   CCriticalSection m_DecoderSection;
-  CEvent         m_DisplayEvent;
+  CEvent m_DisplayEvent;
   int m_ErrorCount;
 
   ThreadIdentifier m_decoderThread;
-  bool          m_vdpauConfigured;
-  CVdpauConfig  m_vdpauConfig;
+  bool m_vdpauConfigured;
+  CVdpauConfig m_vdpauConfig;
   CVideoSurfaces m_videoSurfaces;
   AVVDPAUContext m_hwContext;
 
-  COutput       m_vdpauOutput;
+  COutput m_vdpauOutput;
   CVdpauBufferStats m_bufferStats;
-  CEvent        m_inMsgEvent;
-  CVdpauRenderPicture *m_presentPicture;
+  CEvent m_inMsgEvent;
+  CVdpauRenderPicture *m_presentPicture = nullptr;
 
   int m_codecControl;
   CProcessInfo& m_processInfo;
