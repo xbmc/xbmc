@@ -234,7 +234,7 @@ protected:
   std::string m_userSettingsPath;
 
 private:
-  bool m_hasSettings;
+  bool m_loadSettingsFailed;
   bool m_hasUserSettings;
 
   std::string m_profilePath;

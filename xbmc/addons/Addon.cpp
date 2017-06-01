@@ -157,7 +157,7 @@ std::string GetIcon(ADDON::TYPE type)
 CAddon::CAddon(AddonProps props)
   : m_props(std::move(props))
   , m_userSettingsPath()
-  , m_hasSettings(true)
+  , m_loadSettingsFailed(false)
   , m_hasUserSettings(false)
   , m_profilePath(StringUtils::Format("special://profile/addon_data/%s/", m_props.id.c_str()))
   , m_settings(nullptr)
@@ -193,11 +193,11 @@ bool CAddon::LoadSettings(bool bForce /* = false */)
   if (SettingsInitialized() && !bForce)
     return true;
 
-  if (!m_hasSettings)
+  if (m_loadSettingsFailed)
     return false;
 
-  // reset states
-  m_hasSettings = false;
+  // assume loading settings fails
+  m_loadSettingsFailed = true;
 
   // reset the settings if we are forced to
   if (SettingsInitialized() && bForce)
@@ -223,7 +223,9 @@ bool CAddon::LoadSettings(bool bForce /* = false */)
     CLog::Log(LOGERROR, "CAddon[%s]: failed to initialize addon settings", ID().c_str());
     return false;
   }
-  m_hasSettings = true;
+
+  // loading settings didn't fail
+  m_loadSettingsFailed = false;
 
   // load user settings / values
   LoadUserSettings();
@@ -322,9 +324,21 @@ void CAddon::UpdateSetting(const std::string& key, const std::string& value)
   if (key.empty() || !LoadSettings())
     return;
 
+  // try to get the setting
   auto setting = m_settings->GetSetting(key);
-  if (setting != nullptr)
-    setting->FromString(value);
+
+  // if the setting doesn't exist, try to add it
+  if (setting == nullptr)
+  {
+    setting = m_settings->AddSetting(key, value);
+    if (setting == nullptr)
+    {
+      CLog::Log(LOGERROR, "CAddon[%s]: failed to add undefined setting \"%s\"", ID().c_str(), key.c_str());
+      return;
+    }
+  }
+
+  setting->FromString(value);
 }
 
 bool CAddon::SettingsFromXML(const CXBMCTinyXML &doc, bool loadDefaults /* = false */)
@@ -340,7 +354,6 @@ bool CAddon::SettingsFromXML(const CXBMCTinyXML &doc, bool loadDefaults /* = fal
       CLog::Log(LOGERROR, "CAddon[%s]: failed to initialize addon settings", ID().c_str());
       return false;
     }
-    m_hasSettings = true;
   }
 
   // reset all setting values to their default value

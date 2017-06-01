@@ -59,7 +59,11 @@ namespace ADDON
     bool Load(const CXBMCTinyXML& doc);
     bool Save(CXBMCTinyXML& doc) const;
 
+    bool HasSettings() const;
+
     std::string GetSettingLabel(int label) const;
+
+    std::shared_ptr<CSetting> AddSetting(const std::string& settingId, const std::string& value);
 
   protected:
     // specializations of CSettingsBase
@@ -71,6 +75,8 @@ namespace ADDON
     bool InitializeDefinitions() override { return false; }
 
   private:
+    bool InitializeInternal(const CXBMCTinyXML& doc, bool allowEmptyDefinition);
+
     bool InitializeDefinitions(const CXBMCTinyXML& doc);
 
     bool ParseSettingVersion(const CXBMCTinyXML& doc, uint32_t& version) const;
@@ -90,6 +96,9 @@ namespace ADDON
     std::shared_ptr<CSetting> InitializeFromOldSettingRangeOfNum(const std::string& settingId, const TiXmlElement *settingElement, const std::string& defaultValue);
     std::shared_ptr<CSetting> InitializeFromOldSettingSlider(const std::string& settingId, const TiXmlElement *settingElement, const std::string& defaultValue);
     std::shared_ptr<CSetting> InitializeFromOldSettingFileWithSource(const std::string& settingId, const TiXmlElement *settingElement, const std::string& defaultValue, std::string source);
+    std::shared_ptr<CSetting> InitializeFromOldSettingWithoutDefinition(const std::string& settingId, const std::string& defaultValue);
+
+    std::shared_ptr<CSetting> AddSettingWithoutDefinition(const std::string& settingId, const std::string& defaultValue);
 
     bool LoadOldSettingValues(const CXBMCTinyXML& doc, std::map<std::string, std::string>& settings) const;
 
