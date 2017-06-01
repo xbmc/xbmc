@@ -479,7 +479,7 @@ CDecoder::CDecoder(CProcessInfo& processInfo) : m_vdpauOutput(&m_inMsgEvent), m_
   m_vdpauConfig.processInfo = &m_processInfo;
 }
 
-bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat fmt, unsigned int surfaces)
+bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat fmt)
 {
   // check if user wants to decode this format with VDPAU
   std::string gpuvendor = g_Windowing.GetRenderVendor();
@@ -514,7 +514,7 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
     CLog::Log(LOGWARNING,"VDPAU::Open: no width/height available, can't init");
     return false;
   }
-  m_vdpauConfig.numRenderBuffers = surfaces;
+  m_vdpauConfig.numRenderBuffers = 5;
   m_decoderThread = CThread::GetCurrentThreadId();
 
   if (!CVDPAUContext::EnsureContext(&m_vdpauConfig.context))
@@ -1182,7 +1182,7 @@ bool CDecoder::GetPicture(AVCodecContext* avctx, VideoPicture* picture)
     return false;
 
   *picture = m_presentPicture->DVDPic;
-  picture->hwPic = m_presentPicture;
+  //picture->hwPic = m_presentPicture;
 
   return true;
 }
@@ -2412,7 +2412,7 @@ void CMixer::InitCycle()
     }
   }
   m_mixerstep = 0;
-  m_mixerInput[1].DVDPic.format = RENDER_FMT_VDPAU;
+  //m_mixerInput[1].DVDPic.format = RENDER_FMT_VDPAU;
 
   m_processPicture.crop = false;
   if (!m_mixerInput[1].isYuv)
