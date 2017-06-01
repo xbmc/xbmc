@@ -627,6 +627,8 @@ protected:
 
   int m_codecControl;
   CProcessInfo& m_processInfo;
+
+  static bool m_capGeneral;
 };
 
 }
