@@ -22,7 +22,6 @@
  */
 #include "system.h"
 
-#ifdef HAS_GL
 #include <locale.h>
 
 #include "LinuxRendererGL.h"
@@ -2501,4 +2500,3 @@ void CLinuxRendererGL::DeleteCLUT()
   }
 }
 
-#endif
