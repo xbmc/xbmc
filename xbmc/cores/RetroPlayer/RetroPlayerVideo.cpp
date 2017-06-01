@@ -106,7 +106,8 @@ bool CRetroPlayerVideo::OpenEncodedStream(AVCodecID codec)
   */
 
   CDVDStreamInfo hint(videoStream);
-  m_pVideoCodec.reset(CDVDFactoryCodec::CreateVideoCodec(hint, m_processInfo, m_renderManager.GetRenderInfo()));
+  // FIXME
+  //m_pVideoCodec.reset(CDVDFactoryCodec::CreateVideoCodec(hint, m_processInfo, m_renderManager.GetRenderInfo()));
 
   return m_pVideoCodec.get() != nullptr;
 }
