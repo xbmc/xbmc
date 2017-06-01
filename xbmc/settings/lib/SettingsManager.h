@@ -452,6 +452,11 @@ private:
   void UpdateSettingByDependency(const std::string &settingId, const CSettingDependency &dependency);
   void UpdateSettingByDependency(const std::string &settingId, SettingDependencyType dependencyType);
 
+  void AddSetting(std::shared_ptr<CSetting> setting);
+
+  void ResolveReferenceSettings(std::shared_ptr<CSettingSection> section);
+  void CleanupIncompleteSettings();
+
   typedef enum {
     SettingOptionsFillerTypeNone = 0,
     SettingOptionsFillerTypeInteger,
@@ -469,6 +474,9 @@ private:
   } Setting;
 
   typedef std::map<std::string, Setting> SettingMap;
+
+  void ResolveSettingDependencies(std::shared_ptr<CSetting> setting);
+  void ResolveSettingDependencies(SettingMap::iterator settingIterator);
 
   SettingMap::const_iterator FindSetting(std::string settingId) const;
   SettingMap::iterator FindSetting(std::string settingId);

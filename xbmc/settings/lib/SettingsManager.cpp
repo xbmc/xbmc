@@ -278,98 +278,14 @@ void CSettingsManager::SetInitialized()
 
   // resolve any reference settings
   for (SettingSectionMap::const_iterator section = m_sections.cbegin(); section != m_sections.cend(); ++section)
-  {
-    const SettingCategoryList& categories = section->second->GetCategories();
-    for (SettingCategoryList::const_iterator category = categories.cbegin(); category != categories.cend(); ++category)
-    {
-      SettingGroupList groups = (*category)->GetGroups();
-      for (SettingGroupList::iterator group = groups.begin(); group != groups.end(); ++group)
-      {
-        SettingList settings = (*group)->GetSettings();
-        SettingList referenceSettings;
-        for (SettingList::const_iterator setting = settings.cbegin(); setting != settings.cend(); ++setting)
-        {
-          if ((*setting)->GetType() == SettingTypeReference)
-            referenceSettings.push_back(*setting);
-        }
+    ResolveReferenceSettings(section->second);
 
-        for (SettingList::const_iterator referenceSetting = referenceSettings.begin(); referenceSetting != referenceSettings.end(); ++referenceSetting)
-        {
-          const std::string &referencedSettingId = std::static_pointer_cast<const CSettingReference>(*referenceSetting)->GetReferencedId();
-          SettingPtr referencedSetting = NULL;
-          SettingMap::iterator itReferencedSetting = FindSetting(referencedSettingId);
-          if (itReferencedSetting == m_settings.end())
-            CLog::Log(LOGWARNING, "CSettingsManager: missing referenced setting \"%s\"", referencedSettingId.c_str());
-          else
-          {
-            referencedSetting = itReferencedSetting->second.setting;
-            m_settings.erase(FindSetting((*referenceSetting)->GetId()));
-          }
-
-          (*group)->ReplaceSetting(*referenceSetting, referencedSetting);
-        }
-      }
-    }
-  }
-
-  // remove any empty and reference settings
-  for (SettingMap::iterator setting = m_settings.begin(); setting != m_settings.end(); )
-  {
-    SettingMap::iterator tmpIterator = setting++;
-    if (tmpIterator->second.setting == NULL)
-    {
-      CLog::Log(LOGWARNING, "CSettingsManager: removing empty setting \"%s\"", tmpIterator->first.c_str());
-      m_settings.erase(tmpIterator);
-    }
-    else if (tmpIterator->second.setting->GetType() == SettingTypeReference)
-    {
-      CLog::Log(LOGWARNING, "CSettingsManager: removing missing reference setting \"%s\"", tmpIterator->first.c_str());
-      m_settings.erase(tmpIterator);
-    }
-  }
+  // remove any incomplete settings
+  CleanupIncompleteSettings();
 
   // figure out all the dependencies between settings
   for (SettingMap::iterator itSettingDep = m_settings.begin(); itSettingDep != m_settings.end(); ++itSettingDep)
-  {
-    if (itSettingDep->second.setting == NULL)
-      continue;
-
-    // if the setting has a parent setting, add it to its children
-    std::string parentSettingId = itSettingDep->second.setting->GetParent();
-    if (!parentSettingId.empty())
-    {
-      SettingMap::iterator itParentSetting = FindSetting(parentSettingId);
-      if (itParentSetting != m_settings.end())
-        itParentSetting->second.children.insert(itSettingDep->first);
-    }
-
-    // handle all dependencies of the setting
-    const SettingDependencies& deps = itSettingDep->second.setting->GetDependencies();
-    for (SettingDependencies::const_iterator depIt = deps.begin(); depIt != deps.end(); ++depIt)
-    {
-      std::set<std::string> settingIds = depIt->GetSettings();
-      for (std::set<std::string>::const_iterator itSettingId = settingIds.begin(); itSettingId != settingIds.end(); ++itSettingId)
-      {
-        SettingMap::iterator setting = FindSetting(*itSettingId);
-        if (setting == m_settings.end())
-          continue;
-
-        bool newDep = true;
-        SettingDependencies &settingDeps = setting->second.dependencies[itSettingDep->first];
-        for (SettingDependencies::const_iterator itDeps = settingDeps.begin(); itDeps != settingDeps.end(); ++itDeps)
-        {
-          if (itDeps->GetType() == depIt->GetType())
-          {
-            newDep = false;
-            break;
-          }
-        }
-
-        if (newDep)
-          settingDeps.push_back(*depIt);
-      }
-    }
-  }
+    ResolveSettingDependencies(itSettingDep);
 }
 
 void CSettingsManager::AddSection(SettingSectionPtr section)
@@ -388,23 +304,7 @@ void CSettingsManager::AddSection(SettingSectionPtr section)
     {
       (*groupIt)->CheckRequirements();
       for (SettingList::const_iterator settingIt = (*groupIt)->GetSettings().begin(); settingIt != (*groupIt)->GetSettings().end(); ++settingIt)
-      {
-        (*settingIt)->CheckRequirements();
-
-        SettingMap::iterator setting = FindSetting((*settingIt)->GetId());
-        if (setting == m_settings.end())
-        {
-          Setting tmpSetting = { NULL };
-          std::pair<SettingMap::iterator, bool> tmpIt = InsertSetting((*settingIt)->GetId(), tmpSetting);
-          setting = tmpIt.first;
-        }
-
-        if (setting->second.setting == NULL)
-        {
-          setting->second.setting = *settingIt;
-          (*settingIt)->SetCallback(this);
-        }
-      }
+        AddSetting(*settingIt);
     }
   }
 }
@@ -1242,6 +1142,80 @@ void CSettingsManager::UpdateSettingByDependency(const std::string &settingId, S
   }
 }
 
+void CSettingsManager::AddSetting(std::shared_ptr<CSetting> setting)
+{
+  setting->CheckRequirements();
+
+  SettingMap::iterator addedSetting = FindSetting(setting->GetId());
+  if (addedSetting == m_settings.end())
+  {
+    Setting tmpSetting = { NULL };
+    std::pair<SettingMap::iterator, bool> tmpIt = InsertSetting(setting->GetId(), tmpSetting);
+    addedSetting = tmpIt.first;
+  }
+
+  if (addedSetting->second.setting == NULL)
+  {
+    addedSetting->second.setting = setting;
+    setting->SetCallback(this);
+  }
+}
+
+void CSettingsManager::ResolveReferenceSettings(std::shared_ptr<CSettingSection> section)
+{
+  // resolve any reference settings
+  const SettingCategoryList& categories = section->GetCategories();
+  for (SettingCategoryList::const_iterator category = categories.cbegin(); category != categories.cend(); ++category)
+  {
+    SettingGroupList groups = (*category)->GetGroups();
+    for (SettingGroupList::iterator group = groups.begin(); group != groups.end(); ++group)
+    {
+      SettingList settings = (*group)->GetSettings();
+      SettingList referenceSettings;
+      for (SettingList::const_iterator setting = settings.cbegin(); setting != settings.cend(); ++setting)
+      {
+        if ((*setting)->GetType() == SettingTypeReference)
+          referenceSettings.push_back(*setting);
+      }
+
+      for (SettingList::const_iterator referenceSetting = referenceSettings.begin(); referenceSetting != referenceSettings.end(); ++referenceSetting)
+      {
+        const std::string &referencedSettingId = std::static_pointer_cast<const CSettingReference>(*referenceSetting)->GetReferencedId();
+        SettingPtr referencedSetting = NULL;
+        SettingMap::iterator itReferencedSetting = FindSetting(referencedSettingId);
+        if (itReferencedSetting == m_settings.end())
+          CLog::Log(LOGWARNING, "CSettingsManager: missing referenced setting \"%s\"", referencedSettingId.c_str());
+        else
+        {
+          referencedSetting = itReferencedSetting->second.setting;
+          m_settings.erase(FindSetting((*referenceSetting)->GetId()));
+        }
+
+        (*group)->ReplaceSetting(*referenceSetting, referencedSetting);
+      }
+    }
+  }
+}
+
+void CSettingsManager::CleanupIncompleteSettings()
+{
+  // remove any empty and reference settings
+  for (SettingMap::iterator setting = m_settings.begin(); setting != m_settings.end(); )
+  {
+    SettingMap::iterator tmpIterator = setting++;
+    if (tmpIterator->second.setting == NULL)
+    {
+      CLog::Log(LOGWARNING, "CSettingsManager: removing empty setting \"%s\"", tmpIterator->first.c_str());
+      m_settings.erase(tmpIterator);
+    }
+    else if (tmpIterator->second.setting->GetType() == SettingTypeReference)
+    {
+      CLog::Log(LOGWARNING, "CSettingsManager: removing missing reference setting \"%s\"", tmpIterator->first.c_str());
+      m_settings.erase(tmpIterator);
+    }
+  }
+}
+
 void CSettingsManager::RegisterSettingOptionsFiller(const std::string &identifier, void *filler, SettingOptionsFillerType type)
 {
   CExclusiveLock lock(m_critical);
@@ -1251,6 +1225,56 @@ void CSettingsManager::RegisterSettingOptionsFiller(const std::string &identifie
 
   SettingOptionsFiller optionsFiller = { filler, type };
   m_optionsFillers.insert(make_pair(identifier, optionsFiller));
+}
+
+void CSettingsManager::ResolveSettingDependencies(std::shared_ptr<CSetting> setting)
+{
+  if (setting == NULL)
+    return;
+
+  ResolveSettingDependencies(FindSetting(setting->GetId()));
+}
+
+void CSettingsManager::ResolveSettingDependencies(SettingMap::iterator settingIterator)
+{
+  if (settingIterator == m_settings.end() || settingIterator->second.setting == NULL)
+    return;
+
+  // if the setting has a parent setting, add it to its children
+  std::string parentSettingId = settingIterator->second.setting->GetParent();
+  if (!parentSettingId.empty())
+  {
+    SettingMap::iterator itParentSetting = FindSetting(parentSettingId);
+    if (itParentSetting != m_settings.end())
+      itParentSetting->second.children.insert(settingIterator->first);
+  }
+
+  // handle all dependencies of the setting
+  const SettingDependencies& deps = settingIterator->second.setting->GetDependencies();
+  for (SettingDependencies::const_iterator depIt = deps.begin(); depIt != deps.end(); ++depIt)
+  {
+    std::set<std::string> settingIds = depIt->GetSettings();
+    for (std::set<std::string>::const_iterator itSettingId = settingIds.begin(); itSettingId != settingIds.end(); ++itSettingId)
+    {
+      SettingMap::iterator setting = FindSetting(*itSettingId);
+      if (setting == m_settings.end())
+        continue;
+
+      bool newDep = true;
+      SettingDependencies &settingDeps = setting->second.dependencies[settingIterator->first];
+      for (SettingDependencies::const_iterator itDeps = settingDeps.begin(); itDeps != settingDeps.end(); ++itDeps)
+      {
+        if (itDeps->GetType() == depIt->GetType())
+        {
+          newDep = false;
+          break;
+        }
+      }
+
+      if (newDep)
+        settingDeps.push_back(*depIt);
+    }
+  }
 }
 
 CSettingsManager::SettingMap::const_iterator CSettingsManager::FindSetting(std::string settingId) const
