@@ -44,7 +44,7 @@ private:
   void ToggleOSD();
   void TriggerOSD();
 
-  bool m_bShowViewModeInfo;
+  bool m_viewModeChanged;
   unsigned int m_dwShowViewModeTimeout;
 
   bool m_bShowCurrentTime;
