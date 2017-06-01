@@ -293,6 +293,9 @@ void CSettingsManager::AddSection(SettingSectionPtr section)
   if (section == NULL)
     return;
 
+  CExclusiveLock lock(m_critical);
+  CExclusiveLock settingsLock(m_settingsCritical);
+
   section->CheckRequirements();
   m_sections[section->GetId()] = section;
 
