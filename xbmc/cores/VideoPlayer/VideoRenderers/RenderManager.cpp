@@ -513,7 +513,7 @@ void CRenderManager::CreateRenderer()
       }
 #endif
 #if defined(HAVE_LIBVDPAU)
-      else if (0)
+      else if (CRendererVDPAU::HandlesVideoBuffer(m_pConfigPicture->videoBuffer))
       {
         m_pRenderer = new CRendererVDPAU;
       }
