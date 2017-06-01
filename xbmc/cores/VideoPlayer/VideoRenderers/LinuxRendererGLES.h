@@ -129,7 +129,7 @@ public:
   // Player functions
   virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, void* hwPic, unsigned int orientation) override;
   virtual bool IsConfigured() override { return m_bConfigured; }
-  virtual int GetImage(YuvImage *image, int source = AUTOSOURCE, bool readonly = false) override;
+  virtual int GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false) override;
   virtual void ReleaseImage(int source, bool preserve = false) override;
   virtual void FlipPage(int source) override;
   virtual void PreInit() override;
@@ -170,7 +170,7 @@ protected:
   bool CreateYV12Texture(int index);
   virtual bool SkipUploadYV12(int index) { return false; }
 
-  bool UploadNV12Texture(int index);
+  void UploadNV12Texture(int index);
   void DeleteNV12Texture(int index);
   bool CreateNV12Texture(int index);
 
@@ -189,7 +189,7 @@ protected:
   virtual bool RenderHook(int idx) { return false; }
   virtual void AfterRenderHook(int idx) {};
   virtual bool RenderUpdateVideoHook(bool clear, DWORD flags, DWORD alpha) { return false; }
-  virtual int  GetImageHook(YuvImage *image, int source = AUTOSOURCE, bool readonly = false) { return NOSOURCE; }
+  virtual int  GetImageHook(YV12Image *image, int source = AUTOSOURCE, bool readonly = false) { return NOSOURCE; }
   virtual bool RenderUpdateCheckForEmptyField() { return true; }
 
   CFrameBufferObject m_fbo;
@@ -240,7 +240,7 @@ protected:
    ~YUVBUFFER();
 
     YUVFIELDS fields;
-    YuvImage image;
+    YV12Image image;
     unsigned  flipindex; /* used to decide if this has been uploaded */
     void *hwDec;
   };
