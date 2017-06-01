@@ -467,6 +467,8 @@ int CVideoSurfaces::Size()
 // CVDPAU
 //-----------------------------------------------------------------------------
 
+bool CDecoder::m_capGeneral = false;
+
 CDecoder::CDecoder(CProcessInfo& processInfo) : m_vdpauOutput(&m_inMsgEvent), m_processInfo(processInfo)
 {
   m_vdpauConfig.videoSurfaces = &m_videoSurfaces;
@@ -1247,6 +1249,26 @@ bool CDecoder::CheckStatus(VdpStatus vdp_st, int line)
   }
   m_ErrorCount = 0;
   return false;
+}
+
+void CDecoder::CheckCaps()
+{
+#ifndef GL_NV_vdpau_interop
+  CLog::Log(LOGNOTICE, "VDPAU: compilation without required extension GL_NV_vdpau_interop");
+  return;
+#endif
+  if (!g_Windowing.IsExtSupported("GL_NV_vdpau_interop"))
+  {
+    return;
+  }
+
+  CVDPAUContext *context;
+  if (!CVDPAUContext::EnsureContext(&context))
+    return;
+
+  context->Release();
+
+  m_capGeneral = true;
 }
 
 //-----------------------------------------------------------------------------
