@@ -330,6 +330,60 @@ void CSettingsManager::AddSection(SettingSectionPtr section)
   }
 }
 
+bool CSettingsManager::AddSetting(std::shared_ptr<CSetting> setting, std::shared_ptr<CSettingSection> section,
+  std::shared_ptr<CSettingCategory> category, std::shared_ptr<CSettingGroup> group)
+{
+  if (setting == NULL || section == NULL || category == NULL || group == NULL)
+    return false;
+
+  CExclusiveLock lock(m_critical);
+  CExclusiveLock settingsLock(m_settingsCritical);
+
+  // check if a setting with the given ID already exists
+  if (FindSetting(setting->GetId()) != m_settings.end())
+    return false;
+
+  // if the given setting has not been added to the group yet, do it now
+  const SettingList& settings = group->GetSettings();
+  if (std::find(settings.begin(), settings.end(), setting) == settings.end())
+    group->AddSetting(setting);
+
+  // if the given group has not been added to the category yet, do it now
+  const SettingGroupList& groups = category->GetGroups();
+  if (std::find(groups.begin(), groups.end(), group) == groups.end())
+    category->AddGroup(group);
+
+  // if the given category has not been added to the section yet, do it now
+  const SettingCategoryList& categories = section->GetCategories();
+  if (std::find(categories.begin(), categories.end(), category) == categories.end())
+    section->AddCategory(category);
+
+  // check if the given section exists and matches
+  SettingSectionPtr sectionPtr = GetSection(section->GetId());
+  if (sectionPtr != NULL && sectionPtr != section)
+    return false;
+
+  // if the section doesn't exist yet, add it
+  if (sectionPtr == NULL)
+    AddSection(section);
+  else
+  {
+    // add the setting
+    AddSetting(setting);
+
+    if (m_initialized)
+    {
+      // cleanup any newly added incomplete setting
+      CleanupIncompleteSettings();
+
+      // resolve any dependencies for the newly added setting
+      ResolveSettingDependencies(setting);
+    }
+  }
+
+  return true;
+}
+
 void CSettingsManager::RegisterCallback(ISettingCallback *callback, const std::set<std::string> &settingList)
 {
   CExclusiveLock lock(m_settingsCritical);

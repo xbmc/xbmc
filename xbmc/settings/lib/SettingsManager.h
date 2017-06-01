@@ -34,6 +34,8 @@
 #include "SettingDependency.h"
 #include "threads/SharedSection.h"
 
+class CSettingCategory;
+class CSettingGroup;
 class CSettingSection;
 class CSettingUpdate;
 
@@ -165,6 +167,27 @@ public:
    initialized.
    */
   void AddSection(std::shared_ptr<CSettingSection> section);
+
+  /*!
+   \brief Adds the given setting to the given group in the given category in
+   the given section;
+
+   If the given section has not been added yet, it is added. If the given
+   category has not been added to the given section yet, it is added. If the
+   given group has not been added to the given category yet, it is added. If
+   the given setting has not been added to the given group yet, it is added.
+
+   This is possible before and after the setting definitions have been
+   initialized.
+
+   \param setting New setting to be added
+   \param section Section the new setting should be added to
+   \param category Category the new setting should be added to
+   \param group Group the new setting should be added to
+   \return True if the setting has been added, false otherwise
+   */
+  bool AddSetting(std::shared_ptr<CSetting> setting, std::shared_ptr<CSettingSection> section,
+    std::shared_ptr<CSettingCategory> category, std::shared_ptr<CSettingGroup> group);
 
   /*!
    \brief Registers the given ISettingCallback implementation to be triggered
