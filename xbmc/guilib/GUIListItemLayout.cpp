@@ -37,7 +37,7 @@ CGUIListItemLayout::CGUIListItemLayout()
   m_group.SetPushUpdates(true);
 }
 
-CGUIListItemLayout::CGUIListItemLayout(const CGUIListItemLayout &from)
+CGUIListItemLayout::CGUIListItemLayout(const CGUIListItemLayout &from, CGUIControl *control)
 : m_group(from.m_group), m_isPlaying(from.m_isPlaying)
 {
   m_width = from.m_width;
@@ -45,6 +45,7 @@ CGUIListItemLayout::CGUIListItemLayout(const CGUIListItemLayout &from)
   m_focused = from.m_focused;
   m_condition = from.m_condition;
   m_invalidated = true;
+  m_group.SetParentControl(control);
 }
 
 CGUIListItemLayout::~CGUIListItemLayout()
