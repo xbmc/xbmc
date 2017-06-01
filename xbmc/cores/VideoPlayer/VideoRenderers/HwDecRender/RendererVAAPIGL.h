@@ -33,11 +33,8 @@ public:
   virtual bool Configure(const VideoPicture &picture, float fps, unsigned flags, unsigned int orientation) override;
 
   // Player functions
-  virtual void AddVideoPicture(const VideoPicture &picture, int index) override;
-  virtual void ReleaseBuffer(int idx) override;
   virtual bool ConfigChanged(const VideoPicture &picture) override;
-
-  static bool HandlesVideoBuffer(const VideoPicture &picture);
+  static bool HandlesVideoBuffer(CVideoBuffer *buffer);
 
   // Feature support
   virtual bool Supports(ERENDERFEATURE feature) override;
