@@ -29,6 +29,8 @@
 #include "DialogSelect.h"
 #include "DialogTextViewer.h"
 #include "DialogYesNo.h"
+#include "ListItem.h"
+#include "Window.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/gui/General.h"
 
 #include "addons/AddonDll.h"
@@ -64,6 +66,8 @@ void Interface_GUIGeneral::Init(AddonGlobalInterface* addonInterface)
   Interface_GUIDialogSelect::Init(addonInterface);
   Interface_GUIDialogTextViewer::Init(addonInterface);
   Interface_GUIDialogYesNo::Init(addonInterface);
+  Interface_GUIListItem::Init(addonInterface);
+  Interface_GUIWindow::Init(addonInterface);
 
   addonInterface->toKodi->kodi_gui->general = static_cast<AddonToKodiFuncTable_kodi_gui_general*>(malloc(sizeof(AddonToKodiFuncTable_kodi_gui_general)));
 
@@ -91,6 +95,8 @@ void Interface_GUIGeneral::DeInit(AddonGlobalInterface* addonInterface)
     Interface_GUIDialogSelect::DeInit(addonInterface);
     Interface_GUIDialogTextViewer::DeInit(addonInterface);
     Interface_GUIDialogYesNo::DeInit(addonInterface);
+    Interface_GUIListItem::DeInit(addonInterface);
+    Interface_GUIWindow::DeInit(addonInterface);
 
     free(addonInterface->toKodi->kodi_gui->general);
     free(addonInterface->toKodi->kodi_gui);

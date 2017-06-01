@@ -9,6 +9,8 @@ set(SOURCES General.cpp
             DialogSelect.cpp
             DialogTextViewer.cpp
             DialogYesNo.cpp
+            ListItem.cpp
+            Window.cpp
             AddonCallbacksGUI.cpp
             AddonGUIRenderingControl.cpp
             AddonGUIWindow.cpp)
@@ -24,6 +26,8 @@ set(HEADERS General.h
             DialogSelect.h
             DialogTextViewer.h
             DialogYesNo.h
+            ListItem.h
+            Window.h
             AddonCallbacksGUI.h
             AddonGUIRenderingControl.h
             AddonGUIWindow.h)
