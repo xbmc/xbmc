@@ -586,6 +586,9 @@ public:
   virtual void OnLostDisplay();
   virtual void OnResetDisplay();
 
+  static void CheckCaps();
+  static bool IsCapGeneral() { return m_capGeneral; }
+
 protected:
   void SetWidthHeight(int width, int height);
   bool ConfigVDPAU(AVCodecContext *avctx, int ref_frames);
@@ -624,6 +627,8 @@ protected:
 
   int m_codecControl;
   CProcessInfo& m_processInfo;
+
+  static bool m_capGeneral;
 };
 
 }
