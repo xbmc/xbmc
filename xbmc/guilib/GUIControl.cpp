@@ -128,9 +128,11 @@ void CGUIControl::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyreg
 {
   CRect dirtyRegion = m_renderRegion;
 
-  bool changed = m_bInvalidated && IsVisible();
+  bool changed = m_controlIsDirty || (m_bInvalidated && IsVisible());
+  m_controlIsDirty = false;
 
-  changed |= Animate(currentTime);
+  if (Animate(currentTime))
+    MarkDirtyRegion();
 
   if (IsVisible())
   {
@@ -153,8 +155,6 @@ void CGUIControl::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyreg
   }
 
   changed |= m_controlIsDirty;
-
-  m_controlIsDirty = false;
 
   if (changed)
   {
@@ -476,7 +476,12 @@ float CGUIControl::GetHeight() const
 
 void CGUIControl::MarkDirtyRegion()
 {
+  if (m_controlIsDirty)
+    return;
+
   m_controlIsDirty = true;
+  if (m_parentControl)
+    m_parentControl->MarkDirtyRegion();
 }
 
 CRect CGUIControl::CalcRenderRegion() const
@@ -726,9 +731,11 @@ bool CGUIControl::CheckAnimation(ANIMATION_TYPE animType)
 
 void CGUIControl::QueueAnimation(ANIMATION_TYPE animType)
 {
-  MarkDirtyRegion();
   if (!CheckAnimation(animType))
     return;
+
+  MarkDirtyRegion();
+
   CAnimation *reverseAnim = GetAnimation((ANIMATION_TYPE)-animType, false);
   CAnimation *forwardAnim = GetAnimation(animType);
   // we first check whether the reverse animation is in progress (and reverse it)
@@ -849,20 +856,11 @@ bool CGUIControl::Animate(unsigned int currentTime)
     changed |= (anim.GetProcess() != ANIM_PROCESS_NONE);
     anim.RenderAnimation(m_transform, center);
 
-/*    // debug stuff
-    if (anim.currentProcess != ANIM_PROCESS_NONE)
-    {
-      if (anim.effect == EFFECT_TYPE_ZOOM)
-      {
-        if (IsVisible())
-          CLog::Log(LOGDEBUG, "Animating control %d with a %s zoom effect %s. Amount is %2.1f, visible=%s", m_controlID, anim.type == ANIM_TYPE_CONDITIONAL ? (anim.lastCondition ? "conditional_on" : "conditional_off") : (anim.type == ANIM_TYPE_VISIBLE ? "visible" : "hidden"), anim.currentProcess == ANIM_PROCESS_NORMAL ? "normal" : "reverse", anim.amount, IsVisible() ? "true" : "false");
-      }
-      else if (anim.effect == EFFECT_TYPE_FADE)
-      {
-        if (IsVisible())
-          CLog::Log(LOGDEBUG, "Animating control %d with a %s fade effect %s. Amount is %2.1f. Visible=%s", m_controlID, anim.type == ANIM_TYPE_CONDITIONAL ? (anim.lastCondition ? "conditional_on" : "conditional_off") : (anim.type == ANIM_TYPE_VISIBLE ? "visible" : "hidden"), anim.currentProcess == ANIM_PROCESS_NORMAL ? "normal" : "reverse", anim.amount, IsVisible() ? "true" : "false");
-      }
-    }*/
+    // debug stuff
+    //if (anim.GetProcess() != ANIM_PROCESS_NONE && IsVisible())
+    //{
+    //  CLog::Log(LOGDEBUG, "Animating control %d", m_controlID);
+    //}
   }
 
   return changed;

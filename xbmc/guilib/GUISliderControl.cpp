@@ -346,6 +346,8 @@ void CGUISliderControl::SetPercentage(float percent, RangeSelector selector /* =
 
   float percentLower = selector == RangeSelectorLower ? percent : m_percentValues[0];
   float percentUpper = selector == RangeSelectorUpper ? percent : m_percentValues[1];
+  float oldValues[2] = { m_percentValues[0],m_percentValues[1] };
+
 
   if (!m_rangeSelection || percentLower <= percentUpper)
   {
@@ -361,6 +363,8 @@ void CGUISliderControl::SetPercentage(float percent, RangeSelector selector /* =
     if (updateCurrent)
         m_currentSelector = (selector == RangeSelectorLower ? RangeSelectorUpper : RangeSelectorLower);
   }
+  if (oldValues[0] != m_percentValues[0] || oldValues[1] != m_percentValues[1])
+    MarkDirtyRegion();
 }
 
 float CGUISliderControl::GetPercentage(RangeSelector selector /* = RangeSelectorLower */) const

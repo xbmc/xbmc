@@ -261,6 +261,7 @@ private:
   int  m_iNested;
   bool m_initialized;
 
+  CDirtyRegionList m_dirtyregions;
   CDirtyRegionTracker m_tracker;
 };
 

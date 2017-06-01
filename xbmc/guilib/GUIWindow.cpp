@@ -36,6 +36,7 @@
 #include "GUIAudioManager.h"
 #include "Application.h"
 #include "messaging/ApplicationMessenger.h"
+#include "settings/AdvancedSettings.h"
 #include "utils/Variant.h"
 #include "utils/StringUtils.h"
 
@@ -341,6 +342,9 @@ void CGUIWindow::CenterWindow()
 
 void CGUIWindow::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
+  if (!m_controlIsDirty && g_advancedSettings.m_guiSmartRedraw)
+    return;
+
   g_graphicsContext.SetRenderingResolution(m_coordsRes, m_needsScaling);
   g_graphicsContext.AddGUITransform();
   CGUIControlGroup::DoProcess(currentTime, dirtyregions);
@@ -752,7 +756,7 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
     break;
   }
 
-  return SendControlMessage(message);
+  return CGUIControlGroup::OnMessage(message);
 }
 
 bool CGUIWindow::NeedLoad() const

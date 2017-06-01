@@ -151,6 +151,9 @@ bool CGUITextureBase::Process(unsigned int currentTime)
   if (m_invalid)
     changed |= CalculateSize();
 
+  if (m_isAllocated)
+    changed |= !ReadyToRender();
+
   return changed;
 }
 

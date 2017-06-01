@@ -707,7 +707,6 @@ CScroller::CScroller(unsigned int duration /* = 200 */, std::shared_ptr<Tweener>
   m_startTime = 0;
   m_startPosition = 0;
   m_hasResumePoint = false;
-  m_lastTime = 0;
   m_duration = duration > 0 ? duration : 1;
   m_pTweener = tweener;
 }
@@ -727,7 +726,6 @@ CScroller& CScroller::operator=(const CScroller &right)
   m_startTime = right.m_startTime;
   m_startPosition = right.m_startPosition;
   m_hasResumePoint = right.m_hasResumePoint;
-  m_lastTime = right.m_lastTime;
   m_duration = right.m_duration;
   m_pTweener = right.m_pTweener;
   return *this;
@@ -745,7 +743,7 @@ void CScroller::ScrollTo(float endPos)
 
   m_delta = delta;
   m_startPosition = m_scrollValue;
-  m_startTime = m_lastTime;
+  m_startTime = 0;
 }
 
 float CScroller::Tween(float progress)
@@ -777,7 +775,8 @@ float CScroller::Tween(float progress)
 
 bool CScroller::Update(unsigned int time)
 {
-  m_lastTime = time;
+  if (!m_startTime)
+    m_startTime = time;
   if (m_delta != 0)
   {
     if (time - m_startTime >= m_duration) // we are finished

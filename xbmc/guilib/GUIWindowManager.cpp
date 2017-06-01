@@ -1020,21 +1020,21 @@ void CGUIWindowManager::Process(unsigned int currentTime)
   assert(g_application.IsCurrentThread());
   CSingleLock lock(g_graphicsContext);
 
-  CDirtyRegionList dirtyregions;
+  m_dirtyregions.clear();
 
   CGUIWindow* pWindow = GetWindow(GetActiveWindow());
   if (pWindow)
-    pWindow->DoProcess(currentTime, dirtyregions);
+    pWindow->DoProcess(currentTime, m_dirtyregions);
 
   // process all dialogs - visibility may change etc.
   for (const auto& entry : m_mapWindows)
   {
     CGUIWindow *pWindow = entry.second;
     if (pWindow && pWindow->IsDialog())
-      pWindow->DoProcess(currentTime, dirtyregions);
+      pWindow->DoProcess(currentTime, m_dirtyregions);
   }
 
-  for (CDirtyRegionList::iterator itr = dirtyregions.begin(); itr != dirtyregions.end(); ++itr)
+  for (CDirtyRegionList::iterator itr = m_dirtyregions.begin(); itr != m_dirtyregions.end(); ++itr)
     m_tracker.MarkDirtyRegion(*itr);
 }
 
@@ -1148,7 +1148,12 @@ void CGUIWindowManager::AfterRender()
   for (const auto& window : activeDialogs)
   {
     if (window->IsDialogRunning())
+    {
       window->AfterRender();
+      // Dialog state can affect visibility states
+      if (pWindow && window->IsControlDirty())
+        pWindow->MarkDirtyRegion();
+    }
   }
 }
 

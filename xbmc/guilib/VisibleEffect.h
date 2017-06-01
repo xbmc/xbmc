@@ -257,7 +257,6 @@ private:
   float        m_startPosition;           //!< Brief starting position of scroll
   bool         m_hasResumePoint;          //!< Brief check if we should tween from middle of the tween
   unsigned int m_startTime;               //!< Brief starting time of scroll
-  unsigned int m_lastTime;                //!< Brief last remember time (updated each time Scroll() method is called)
 
   unsigned int m_duration;                //!< Brief duration of scroll
   std::shared_ptr<Tweener> m_pTweener;

@@ -363,6 +363,7 @@ void CGUIControlGroupList::ScrollTo(float offset)
   m_scroller.ScrollTo(offset);
   if (m_scroller.IsScrolling())
     SetInvalid();
+  MarkDirtyRegion();
 }
 
 EVENT_RESULT CGUIControlGroupList::SendMouseEvent(const CPoint &point, const CMouseEvent &event)
