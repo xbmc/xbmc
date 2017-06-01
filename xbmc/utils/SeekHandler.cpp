@@ -181,7 +181,7 @@ void CSeekHandler::Seek(bool forward, float amount, float duration /* = 0 */, bo
       Reset();
     }
   }
-
+  g_application.RefreshControls();
   m_timer.StartZero();
 }
 

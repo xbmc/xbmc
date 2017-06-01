@@ -161,6 +161,11 @@
  */
 #define GUI_MSG_UI_READY       49
 
+ /*!
+ \brief Called every 500ms to allow time dependent updates
+ */
+#define GUI_MSG_REFRESH_TIMER  50
+
 #define GUI_MSG_USER         1000
 
 /*!

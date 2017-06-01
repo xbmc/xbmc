@@ -4594,6 +4594,8 @@ void CApplication::ProcessSlow()
 
   m_ServiceManager->GetActiveAE().GarbageCollect();
 
+  RefreshControls();
+
   // if we don't render the gui there's no reason to start the screensaver.
   // that way the screensaver won't kick in if we maximize the XBMC window
   // after the screensaver start time.
@@ -5230,6 +5232,12 @@ void CApplication::CloseNetworkShares()
     VFSEntryPtr vfs = std::static_pointer_cast<CVFSEntry>(addon);
     vfs->DisconnectAll();
   }
+}
+
+void CApplication::RefreshControls()
+{
+  CGUIMessage msg(GUI_MSG_REFRESH_TIMER, 0, 0, 0);
+  g_windowManager.SendThreadMessage(msg);
 }
 
 void CApplication::RegisterActionListener(IActionListener *listener)

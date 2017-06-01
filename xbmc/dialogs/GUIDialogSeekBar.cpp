@@ -55,6 +55,19 @@ bool CGUIDialogSeekBar::OnMessage(CGUIMessage& message)
     if (message.GetSenderId() == GetID() && message.GetControlId() == POPUP_SEEK_PROGRESS)
       return CGUIDialog::OnMessage(message);
     break;
+  case GUI_MSG_REFRESH_TIMER:
+    // update controls
+    if (!CSeekHandler::GetInstance().InProgress() && g_infoManager.GetTotalPlayTime())
+    { // position the bar at our current time
+      CONTROL_SELECT_ITEM(POPUP_SEEK_PROGRESS, lrintf(g_application.GetPercentage()));
+      SET_CONTROL_LABEL(POPUP_SEEK_LABEL, g_infoManager.GetCurrentPlayTime());
+    }
+    else
+    {
+      CONTROL_SELECT_ITEM(POPUP_SEEK_PROGRESS, (unsigned int)g_infoManager.GetSeekPercent());
+      SET_CONTROL_LABEL(POPUP_SEEK_LABEL, g_infoManager.GetCurrentSeekTime());
+    }
+    return CGUIDialog::OnMessage(message);
   }
   return false; // don't process anything other than what we need!
 }
@@ -65,18 +78,6 @@ void CGUIDialogSeekBar::FrameMove()
   {
     Close(true);
     return;
-  }
-
-  // update controls
-  if (!CSeekHandler::GetInstance().InProgress() && g_infoManager.GetTotalPlayTime())
-  { // position the bar at our current time
-    CONTROL_SELECT_ITEM(POPUP_SEEK_PROGRESS, lrintf(g_application.GetPercentage()));
-    SET_CONTROL_LABEL(POPUP_SEEK_LABEL, g_infoManager.GetCurrentPlayTime());
-  }
-  else
-  {
-    CONTROL_SELECT_ITEM(POPUP_SEEK_PROGRESS, (unsigned int)g_infoManager.GetSeekPercent());
-    SET_CONTROL_LABEL(POPUP_SEEK_LABEL, g_infoManager.GetCurrentSeekTime());
   }
 
   CGUIDialog::FrameMove();

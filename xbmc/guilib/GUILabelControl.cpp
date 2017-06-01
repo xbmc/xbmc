@@ -202,7 +202,7 @@ void CGUILabelControl::SetWidth(float width)
 
 bool CGUILabelControl::OnMessage(CGUIMessage& message)
 {
-  if ( message.GetControlId() == GetID() )
+  if (message.GetControlId() == GetID())
   {
     if (message.GetMessage() == GUI_MSG_LABEL_SET)
     {
@@ -210,6 +210,8 @@ bool CGUILabelControl::OnMessage(CGUIMessage& message)
       return true;
     }
   }
+  if (message.GetMessage() == GUI_MSG_REFRESH_TIMER)
+    UpdateInfo();
 
   return CGUIControl::OnMessage(message);
 }
