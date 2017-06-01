@@ -155,6 +155,8 @@ void CURL::Parse(const std::string& strURL1)
     std::string lower(strURL);
     StringUtils::ToLower(lower);
     size_t isoPos = lower.find(".iso\\", iPos);
+    if (isoPos == std::string::npos)
+      isoPos = lower.find(".udf\\", iPos);
     if (isoPos != std::string::npos)
     {
       strURL = strURL.replace(isoPos + 4, 1, "/");
