@@ -40,6 +40,8 @@
 
 extern "C" {
 #include "libavutil/avutil.h"
+#include "libavutil/hwcontext.h"
+#include "libavutil/hwcontext_vaapi.h"
 #include "libavutil/opt.h"
 #include "libavfilter/buffersink.h"
 #include "libavfilter/buffersrc.h"
@@ -503,13 +505,11 @@ bool CVideoSurfaces::HasRefs()
 // VAAPI
 //-----------------------------------------------------------------------------
 
-// @TODO
-// temporarily disabled runtime check
 bool CDecoder::m_capGeneral = true;
 bool CDecoder::m_capHevc = true;
 
 CDecoder::CDecoder(CProcessInfo& processInfo) :
-  m_vaapiOutput(&m_inMsgEvent),
+  m_vaapiOutput(*this, &m_inMsgEvent),
   m_processInfo(processInfo)
 {
   m_vaapiConfig.videoSurfaces = &m_videoSurfaces;
@@ -517,7 +517,6 @@ CDecoder::CDecoder(CProcessInfo& processInfo) :
   m_vaapiConfigured = false;
   m_DisplayState = VAAPI_OPEN;
   m_vaapiConfig.context = 0;
-  m_vaapiConfig.contextId = VA_INVALID_ID;
   m_vaapiConfig.configId = VA_INVALID_ID;
   m_vaapiConfig.processInfo = &m_processInfo;
   m_avctx = NULL;
@@ -529,7 +528,7 @@ CDecoder::~CDecoder()
   Close();
 }
 
-bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat fmt, unsigned int surfaces)
+bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat fmt)
 {
   if (!m_capGeneral)
     return false;
@@ -568,7 +567,7 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
   m_decoderThread = CThread::GetCurrentThreadId();
   m_DisplayState = VAAPI_OPEN;
   m_vaapiConfigured = false;
-  m_presentPicture = 0;
+  m_presentPicture = nullptr;
   m_getBufferError = 0;
 
   VAProfile profile;
@@ -670,20 +669,35 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
 
   // add an extra surface for safety, some faulty material
   // make ffmpeg require more buffers
-  m_vaapiConfig.maxReferences += surfaces + 1;
+  m_vaapiConfig.maxReferences += 6;
 
   if (!ConfigVAAPI())
   {
     return false;
   }
 
-  avctx->hwaccel_context = &m_hwContext;
+  AVBufferRef *deviceRef =  av_hwdevice_ctx_alloc(AV_HWDEVICE_TYPE_VAAPI);
+  AVHWDeviceContext *deviceCtx = (AVHWDeviceContext*)deviceRef->data;
+  AVVAAPIDeviceContext *vaapiDeviceCtx = (AVVAAPIDeviceContext*)deviceCtx->hwctx;
+  AVBufferRef *framesRef = av_hwframe_ctx_alloc(deviceRef);
+  AVHWFramesContext *framesCtx = (AVHWFramesContext*)framesRef->data;
+  AVVAAPIFramesContext *vaapiFramesCtx = (AVVAAPIFramesContext*)framesCtx->hwctx;
+
+  vaapiDeviceCtx->display = m_vaapiConfig.dpy;
+  vaapiDeviceCtx->driver_quirks = AV_VAAPI_DRIVER_QUIRK_RENDER_PARAM_BUFFERS;
+  vaapiFramesCtx->nb_attributes = 0;
+  vaapiFramesCtx->nb_surfaces = m_videoSurfaces.Size();
+  VASurfaceID *surfaceIds = (VASurfaceID*)av_malloc(vaapiFramesCtx->nb_surfaces *  sizeof(VASurfaceID));
+  for (int i=0; i<vaapiFramesCtx->nb_surfaces; ++i)
+    surfaceIds[i] = m_videoSurfaces.GetAtIndex(i);
+  vaapiFramesCtx->surface_ids = surfaceIds;
+  framesCtx->format = AV_PIX_FMT_VAAPI;
+  framesCtx->width  = avctx->coded_width;
+  framesCtx->height = avctx->coded_height;
+
+  avctx->hw_frames_ctx = framesRef;
   avctx->get_buffer2 = CDecoder::FFGetBuffer;
   avctx->slice_flags = SLICE_FLAG_CODED_ORDER|SLICE_FLAG_ALLOW_FIELD;
-
-  mainctx->hwaccel_context = &m_hwContext;
-  mainctx->get_buffer2 = CDecoder::FFGetBuffer;
-  mainctx->slice_flags = SLICE_FLAG_CODED_ORDER|SLICE_FLAG_ALLOW_FIELD;
 
   m_avctx = mainctx;
   return true;
@@ -710,6 +724,11 @@ long CDecoder::Release()
     avcodec_flush_buffers(m_avctx);
   }
 
+  if (m_presentPicture)
+  {
+    m_presentPicture->Release();
+    m_presentPicture = nullptr;
+  }
   // check if we should do some pre-cleanup here
   // a second decoder might need resources
   if (m_vaapiConfigured == true)
@@ -887,12 +906,11 @@ CDVDVideoCodec::VCReturn CDecoder::Decode(AVCodecContext* avctx, AVFrame* pFrame
       {
         if (m_presentPicture)
         {
-          m_presentPicture->ReturnUnused();
-          m_presentPicture = 0;
+          m_presentPicture->Release();
+          m_presentPicture = nullptr;
         }
 
         m_presentPicture = *(CVaapiRenderPicture**)msg->data;
-        m_presentPicture->vaapi = this;
         m_bufferStats.DecRender();
         m_bufferStats.SetParams(0, m_codecControl);
         msg->Release();
@@ -988,13 +1006,17 @@ CDVDVideoCodec::VCReturn CDecoder::Check(AVCodecContext* avctx)
 
 bool CDecoder::GetPicture(AVCodecContext* avctx, VideoPicture* picture)
 {
+  if (picture->videoBuffer)
+    picture->videoBuffer->Release();
+
   CSingleLock lock(m_DecoderSection);
 
   if (m_DisplayState != VAAPI_OPEN)
     return false;
 
   *picture = m_presentPicture->DVDPic;
-  picture->hwPic = m_presentPicture;
+  picture->videoBuffer = m_presentPicture;
+  m_presentPicture = nullptr;
 
   return true;
 }
@@ -1002,6 +1024,12 @@ bool CDecoder::GetPicture(AVCodecContext* avctx, VideoPicture* picture)
 void CDecoder::Reset()
 {
   CSingleLock lock(m_DecoderSection);
+
+  if (m_presentPicture)
+  {
+    m_presentPicture->Release();
+    m_presentPicture = nullptr;
+  }
 
   if (!m_vaapiConfigured)
     return;
@@ -1056,8 +1084,6 @@ bool CDecoder::CheckSuccess(VAStatus status)
 
 bool CDecoder::ConfigVAAPI()
 {
-  memset(&m_hwContext, 0, sizeof(vaapi_context));
-
   m_vaapiConfig.dpy = m_vaapiConfig.context->GetDisplay();
   m_vaapiConfig.attrib = m_vaapiConfig.context->GetAttrib(m_vaapiConfig.profile);
   if ((m_vaapiConfig.attrib.value & (VA_RT_FORMAT_YUV420 | VA_RT_FORMAT_YUV420_10BPP)) == 0)
@@ -1072,6 +1098,13 @@ bool CDecoder::ConfigVAAPI()
     return false;
 
   // create surfaces
+  VASurfaceAttrib attribs[1], *attrib;
+  attrib = attribs;
+  attrib->flags = VA_SURFACE_ATTRIB_SETTABLE;
+  attrib->type = VASurfaceAttribPixelFormat;
+  attrib->value.type = VAGenericValueTypeInteger;
+  attrib->value.value.i = VA_FOURCC_NV12;
+
   VASurfaceID surfaces[32];
   unsigned int format = VA_RT_FORMAT_YUV420;
   if (m_vaapiConfig.profile == VAProfileHEVCMain10)
@@ -1083,7 +1116,7 @@ bool CDecoder::ConfigVAAPI()
                                      m_vaapiConfig.surfaceHeight,
                                      surfaces,
                                      nb_surfaces,
-                                     NULL, 0)))
+                                     attribs, 1)))
   {
     return false;
   }
@@ -1092,24 +1125,9 @@ bool CDecoder::ConfigVAAPI()
     m_videoSurfaces.AddSurface(surfaces[i]);
   }
 
-  // create vaapi decoder context
-  if (!CheckSuccess(vaCreateContext(m_vaapiConfig.dpy,
-                                    m_vaapiConfig.configId,
-                                    m_vaapiConfig.surfaceWidth,
-                                    m_vaapiConfig.surfaceHeight,
-                                    VA_PROGRESSIVE,
-                                    surfaces,
-                                    nb_surfaces,
-                                    &m_vaapiConfig.contextId)))
-  {
-    m_vaapiConfig.contextId = VA_INVALID_ID;
-    return false;
-  }
-
   // initialize output
   CSingleLock lock(g_graphicsContext);
   m_vaapiConfig.stats = &m_bufferStats;
-  m_vaapiConfig.vaapi = this;
   m_bufferStats.Reset();
   m_vaapiOutput.Start();
   Message *reply;
@@ -1136,10 +1154,6 @@ bool CDecoder::ConfigVAAPI()
     return false;
   }
 
-  m_hwContext.config_id = m_vaapiConfig.configId;
-  m_hwContext.context_id = m_vaapiConfig.contextId;
-  m_hwContext.display = m_vaapiConfig.dpy;
-
   m_inMsgEvent.Reset();
   m_vaapiConfigured = true;
   m_ErrorCount = 0;
@@ -1152,16 +1166,9 @@ void CDecoder::FiniVAAPIOutput()
   if (!m_vaapiConfigured)
     return;
 
-  memset(&m_hwContext, 0, sizeof(vaapi_context));
-
   // uninit output
   m_vaapiOutput.Dispose();
   m_vaapiConfigured = false;
-
-  // destroy decoder context
-  if (m_vaapiConfig.contextId != VA_INVALID_ID)
-    CheckSuccess(vaDestroyContext(m_vaapiConfig.dpy, m_vaapiConfig.contextId));
-  m_vaapiConfig.contextId = VA_INVALID_ID;
 
   // destroy surfaces
   if (g_advancedSettings.CanLogComponent(LOGVIDEO))
@@ -1182,11 +1189,6 @@ void CDecoder::FiniVAAPIOutput()
 void CDecoder::ReturnRenderPicture(CVaapiRenderPicture *renderPic)
 {
   m_vaapiOutput.m_dataPort.SendOutMessage(COutputDataProtocol::RETURNPIC, &renderPic, sizeof(renderPic));
-}
-
-void CDecoder::ReturnProcPicture(int id)
-{
-  m_vaapiOutput.m_dataPort.SendOutMessage(COutputDataProtocol::RETURNPROCPIC, &id, sizeof(int));
 }
 
 void CDecoder::CheckCaps(EGLDisplay eglDisplay)
@@ -1332,49 +1334,13 @@ void CDecoder::CheckCaps(EGLDisplay eglDisplay)
 // RenderPicture
 //-----------------------------------------------------------------------------
 
-CVaapiRenderPicture* CVaapiRenderPicture::Acquire()
-{
-  CSingleLock lock(renderPicSection);
-
-  if (refCount == 0)
-    vaapi->Acquire();
-
-  refCount++;
-  return this;
-}
-
-long CVaapiRenderPicture::Release()
-{
-  CSingleLock lock(renderPicSection);
-
-  refCount--;
-  if (refCount > 0)
-    return refCount;
-
-  lock.Leave();
-  vaapi->ReturnRenderPicture(this);
-  vaapi->ReleasePicReference();
-
-  return 0;
-}
-
-void CVaapiRenderPicture::ReturnUnused()
-{
-  { CSingleLock lock(renderPicSection);
-    if (refCount > 0)
-      return;
-  }
-  if (vaapi)
-    vaapi->ReturnRenderPicture(this);
-}
-
 void CVaapiRenderPicture::Sync()
 {
 #ifdef GL_ARB_sync
-  CSingleLock lock(renderPicSection);
+  CSingleLock lock(bufferPoolSection);
   if (usefence)
   {
-    if(glIsSync(fence))
+    if (glIsSync(fence))
     {
       glDeleteSync(fence);
       fence = None;
@@ -1389,9 +1355,9 @@ bool CVaapiRenderPicture::GLMapSurface()
   VAStatus status;
   glInterop.vaImage.image_id = VA_INVALID_ID;
 
-  vaSyncSurface(glInterop.vadsp, glInterop.procPic.videoSurface);
+  vaSyncSurface(glInterop.m_glInfo.vadsp, glInterop.procPic.videoSurface);
 
-  status = vaDeriveImage(glInterop.vadsp, glInterop.procPic.videoSurface,
+  status = vaDeriveImage(glInterop.m_glInfo.vadsp, glInterop.procPic.videoSurface,
                                                   &glInterop.vaImage);
   if (status != VA_STATUS_SUCCESS)
   {
@@ -1400,7 +1366,7 @@ bool CVaapiRenderPicture::GLMapSurface()
   }
   memset(&glInterop.vBufInfo, 0, sizeof(glInterop.vBufInfo));
   glInterop.vBufInfo.mem_type = VA_SURFACE_ATTRIB_MEM_TYPE_DRM_PRIME;
-  status = vaAcquireBufferHandle(glInterop.vadsp, glInterop.vaImage.buf,
+  status = vaAcquireBufferHandle(glInterop.m_glInfo.vadsp, glInterop.vaImage.buf,
                                  &glInterop.vBufInfo);
   if (status != VA_STATUS_SUCCESS)
   {
@@ -1431,7 +1397,7 @@ bool CVaapiRenderPicture::GLMapSurface()
       *attrib++ = EGL_DMA_BUF_PLANE0_PITCH_EXT;
       *attrib++ = glInterop.vaImage.pitches[0];
       *attrib++ = EGL_NONE;
-      glInterop.eglImageY = glInterop.eglCreateImageKHR(glInterop.eglDisplay,
+      glInterop.eglImageY = glInterop.m_glInfo.eglCreateImageKHR(glInterop.m_glInfo.eglDisplay,
                                           EGL_NO_CONTEXT, EGL_LINUX_DMA_BUF_EXT, (EGLClientBuffer)NULL,
                                           attribs);
       if (!glInterop.eglImageY)
@@ -1455,7 +1421,7 @@ bool CVaapiRenderPicture::GLMapSurface()
       *attrib++ = EGL_DMA_BUF_PLANE0_PITCH_EXT;
       *attrib++ = glInterop.vaImage.pitches[1];
       *attrib++ = EGL_NONE;
-      glInterop.eglImageVU = glInterop.eglCreateImageKHR(glInterop.eglDisplay,
+      glInterop.eglImageVU = glInterop.m_glInfo.eglCreateImageKHR(glInterop.m_glInfo.eglDisplay,
                                           EGL_NO_CONTEXT, EGL_LINUX_DMA_BUF_EXT, (EGLClientBuffer)NULL,
                                           attribs);
       if (!glInterop.eglImageVU)
@@ -1468,27 +1434,27 @@ bool CVaapiRenderPicture::GLMapSurface()
       GLint format;
 
       glGenTextures(1, &textureY);
-      glEnable(glInterop.textureTarget);
-      glBindTexture(glInterop.textureTarget, textureY);
-      glTexParameteri(glInterop.textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-      glTexParameteri(glInterop.textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-      glTexParameteri(glInterop.textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-      glTexParameteri(glInterop.textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-      glInterop.glEGLImageTargetTexture2DOES(glInterop.textureTarget, glInterop.eglImageY);
+      glEnable(glInterop.m_glInfo.textureTarget);
+      glBindTexture(glInterop.m_glInfo.textureTarget, textureY);
+      glTexParameteri(glInterop.m_glInfo.textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+      glTexParameteri(glInterop.m_glInfo.textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+      glTexParameteri(glInterop.m_glInfo.textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+      glTexParameteri(glInterop.m_glInfo.textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+      glInterop.m_glInfo.glEGLImageTargetTexture2DOES(glInterop.m_glInfo.textureTarget, glInterop.eglImageY);
       glGetIntegerv(GL_IMPLEMENTATION_COLOR_READ_FORMAT, &format);
 
       glGenTextures(1, &textureVU);
-      glEnable(glInterop.textureTarget);
-      glBindTexture(glInterop.textureTarget, textureVU);
-      glTexParameteri(glInterop.textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-      glTexParameteri(glInterop.textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-      glTexParameteri(glInterop.textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-      glTexParameteri(glInterop.textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-      glInterop.glEGLImageTargetTexture2DOES(glInterop.textureTarget, glInterop.eglImageVU);
+      glEnable(glInterop.m_glInfo.textureTarget);
+      glBindTexture(glInterop.m_glInfo.textureTarget, textureVU);
+      glTexParameteri(glInterop.m_glInfo.textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+      glTexParameteri(glInterop.m_glInfo.textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+      glTexParameteri(glInterop.m_glInfo.textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+      glTexParameteri(glInterop.m_glInfo.textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+      glInterop.m_glInfo.glEGLImageTargetTexture2DOES(glInterop.m_glInfo.textureTarget, glInterop.eglImageVU);
       glGetIntegerv(GL_IMPLEMENTATION_COLOR_READ_FORMAT, &format);
 
-      glBindTexture(glInterop.textureTarget, 0);
-      glDisable(glInterop.textureTarget);
+      glBindTexture(glInterop.m_glInfo.textureTarget, 0);
+      glDisable(glInterop.m_glInfo.textureTarget);
 
       break;
     }
@@ -1508,7 +1474,7 @@ bool CVaapiRenderPicture::GLMapSurface()
       *attrib++ = EGL_DMA_BUF_PLANE0_PITCH_EXT;
       *attrib++ = glInterop.vaImage.pitches[0];
       *attrib++ = EGL_NONE;
-      glInterop.eglImageY = glInterop.eglCreateImageKHR(glInterop.eglDisplay,
+      glInterop.eglImageY = glInterop.m_glInfo.eglCreateImageKHR(glInterop.m_glInfo.eglDisplay,
                                           EGL_NO_CONTEXT, EGL_LINUX_DMA_BUF_EXT, (EGLClientBuffer)NULL,
                                           attribs);
       if (!glInterop.eglImageY)
@@ -1532,7 +1498,7 @@ bool CVaapiRenderPicture::GLMapSurface()
       *attrib++ = EGL_DMA_BUF_PLANE0_PITCH_EXT;
       *attrib++ = glInterop.vaImage.pitches[1];
       *attrib++ = EGL_NONE;
-      glInterop.eglImageVU = glInterop.eglCreateImageKHR(glInterop.eglDisplay,
+      glInterop.eglImageVU = glInterop.m_glInfo.eglCreateImageKHR(glInterop.m_glInfo.eglDisplay,
                                           EGL_NO_CONTEXT, EGL_LINUX_DMA_BUF_EXT, (EGLClientBuffer)NULL,
                                           attribs);
       if (!glInterop.eglImageVU)
@@ -1545,27 +1511,27 @@ bool CVaapiRenderPicture::GLMapSurface()
       GLint format;
 
       glGenTextures(1, &textureY);
-      glEnable(glInterop.textureTarget);
-      glBindTexture(glInterop.textureTarget, textureY);
-      glTexParameteri(glInterop.textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-      glTexParameteri(glInterop.textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-      glTexParameteri(glInterop.textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-      glTexParameteri(glInterop.textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-      glInterop.glEGLImageTargetTexture2DOES(glInterop.textureTarget, glInterop.eglImageY);
+      glEnable(glInterop.m_glInfo.textureTarget);
+      glBindTexture(glInterop.m_glInfo.textureTarget, textureY);
+      glTexParameteri(glInterop.m_glInfo.textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+      glTexParameteri(glInterop.m_glInfo.textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+      glTexParameteri(glInterop.m_glInfo.textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+      glTexParameteri(glInterop.m_glInfo.textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+      glInterop.m_glInfo.glEGLImageTargetTexture2DOES(glInterop.m_glInfo.textureTarget, glInterop.eglImageY);
       glGetIntegerv(GL_IMPLEMENTATION_COLOR_READ_FORMAT, &format);
 
       glGenTextures(1, &textureVU);
-      glEnable(glInterop.textureTarget);
-      glBindTexture(glInterop.textureTarget, textureVU);
-      glTexParameteri(glInterop.textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-      glTexParameteri(glInterop.textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-      glTexParameteri(glInterop.textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-      glTexParameteri(glInterop.textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-      glInterop.glEGLImageTargetTexture2DOES(glInterop.textureTarget, glInterop.eglImageVU);
+      glEnable(glInterop.m_glInfo.textureTarget);
+      glBindTexture(glInterop.m_glInfo.textureTarget, textureVU);
+      glTexParameteri(glInterop.m_glInfo.textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+      glTexParameteri(glInterop.m_glInfo.textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+      glTexParameteri(glInterop.m_glInfo.textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+      glTexParameteri(glInterop.m_glInfo.textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+      glInterop.m_glInfo.glEGLImageTargetTexture2DOES(glInterop.m_glInfo.textureTarget, glInterop.eglImageVU);
       glGetIntegerv(GL_IMPLEMENTATION_COLOR_READ_FORMAT, &format);
 
-      glBindTexture(glInterop.textureTarget, 0);
-      glDisable(glInterop.textureTarget);
+      glBindTexture(glInterop.m_glInfo.textureTarget, 0);
+      glDisable(glInterop.m_glInfo.textureTarget);
 
       break;
     }
@@ -1581,7 +1547,7 @@ bool CVaapiRenderPicture::GLMapSurface()
       *attrib++ = EGL_DRM_BUFFER_STRIDE_MESA;
       *attrib++ = glInterop.vaImage.pitches[0] / 4;
       *attrib++ = EGL_NONE;
-      glInterop.eglImage = glInterop.eglCreateImageKHR(glInterop.eglDisplay, EGL_NO_CONTEXT,
+      glInterop.eglImage = glInterop.m_glInfo.eglCreateImageKHR(glInterop.m_glInfo.eglDisplay, EGL_NO_CONTEXT,
                                          EGL_DRM_BUFFER_MESA,
                                          (EGLClientBuffer)glInterop.vBufInfo.handle,
                                          attribs);
@@ -1593,17 +1559,17 @@ bool CVaapiRenderPicture::GLMapSurface()
       }
 
       glGenTextures(1, &texture);
-      glEnable(glInterop.textureTarget);
-      glBindTexture(glInterop.textureTarget, texture);
-      glTexParameteri(glInterop.textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-      glTexParameteri(glInterop.textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-      glTexParameteri(glInterop.textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-      glTexParameteri(glInterop.textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+      glEnable(glInterop.m_glInfo.textureTarget);
+      glBindTexture(glInterop.m_glInfo.textureTarget, texture);
+      glTexParameteri(glInterop.m_glInfo.textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+      glTexParameteri(glInterop.m_glInfo.textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+      glTexParameteri(glInterop.m_glInfo.textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+      glTexParameteri(glInterop.m_glInfo.textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-      glInterop.glEGLImageTargetTexture2DOES(glInterop.textureTarget, glInterop.eglImage);
+      glInterop.m_glInfo.glEGLImageTargetTexture2DOES(glInterop.m_glInfo.textureTarget, glInterop.eglImage);
 
-      glBindTexture(glInterop.textureTarget, 0);
-      glDisable(glInterop.textureTarget);
+      glBindTexture(glInterop.m_glInfo.textureTarget, 0);
+      glDisable(glInterop.m_glInfo.textureTarget);
 
       break;
     }
@@ -1619,17 +1585,17 @@ void CVaapiRenderPicture::GLUnMapSurface()
   if (glInterop.vaImage.image_id == VA_INVALID_ID)
     return;
 
-  glInterop.eglDestroyImageKHR(glInterop.eglDisplay, glInterop.eglImageY);
-  glInterop.eglDestroyImageKHR(glInterop.eglDisplay, glInterop.eglImageVU);
+  glInterop.m_glInfo.eglDestroyImageKHR(glInterop.m_glInfo.eglDisplay, glInterop.eglImageY);
+  glInterop.m_glInfo.eglDestroyImageKHR(glInterop.m_glInfo.eglDisplay, glInterop.eglImageVU);
 
   VAStatus status;
-  status = vaReleaseBufferHandle(glInterop.vadsp, glInterop.vaImage.buf);
+  status = vaReleaseBufferHandle(glInterop.m_glInfo.vadsp, glInterop.vaImage.buf);
   if (status != VA_STATUS_SUCCESS)
   {
     CLog::Log(LOGERROR, "VAAPI::%s - Error: %s(%d)", __FUNCTION__, vaErrorStr(status), status);
   }
 
-  status = vaDestroyImage(glInterop.vadsp, glInterop.vaImage.image_id);
+  status = vaDestroyImage(glInterop.m_glInfo.vadsp, glInterop.vaImage.image_id);
   if (status != VA_STATUS_SUCCESS)
   {
     CLog::Log(LOGERROR, "VAAPI::%s - Error: %s(%d)", __FUNCTION__, vaErrorStr(status), status);
@@ -1645,17 +1611,54 @@ void CVaapiRenderPicture::GLUnMapSurface()
 // Buffer Pool
 //-----------------------------------------------------------------------------
 
-VaapiBufferPool::VaapiBufferPool()
+/**
+ * Buffer pool holds allocated vaapi and gl resources
+ * Embedded in COutput
+ */
+class VAAPI::CVaapiBufferPool : public IVideoBufferPool
+{
+public:
+  CVaapiBufferPool(CDecoder &decoder);
+  virtual ~CVaapiBufferPool();
+  virtual CVideoBuffer* Get();
+  virtual void Return(int id);
+  CVaapiRenderPicture* GetVaapi();
+  bool HasFree();
+  void QueueReturnPicture(CVaapiRenderPicture *pic);
+  CVaapiRenderPicture* ProcessSyncPicture(bool &busy);
+  void UseFence(bool usefence);
+  void Init(CVaapiGLSurface::GlInfo &info);
+  void WaitForFences();
+  void DeleteTextures(bool precleanup);
+
+  std::deque<CVaapiProcessedPicture> processedPics;
+  std::deque<CVaapiProcessedPicture> processedPicsAway;
+  std::deque<CVaapiDecodedPicture> decodedPics;
+  CCriticalSection bufferPoolSection;
+  int procPicId;
+
+protected:
+  std::vector<CVaapiRenderPicture*> allRenderPics;
+  std::deque<int> usedRenderPics;
+  std::deque<int> freeRenderPics;
+  std::deque<int> syncRenderPics;
+
+  CDecoder &m_vaapi;
+};
+
+CVaapiBufferPool::CVaapiBufferPool(CDecoder &decoder)
+  : m_vaapi(decoder)
 {
   CVaapiRenderPicture *pic;
   for (unsigned int i = 0; i < NUM_RENDER_PICS; i++)
   {
-    pic = new CVaapiRenderPicture(renderPicSec);
+    pic = new CVaapiRenderPicture(i, bufferPoolSection);
     allRenderPics.push_back(pic);
+    freeRenderPics.push_back(i);
   }
 }
 
-VaapiBufferPool::~VaapiBufferPool()
+CVaapiBufferPool::~CVaapiBufferPool()
 {
   CVaapiRenderPicture *pic;
   for (unsigned int i = 0; i < NUM_RENDER_PICS; i++)
@@ -1666,20 +1669,210 @@ VaapiBufferPool::~VaapiBufferPool()
   allRenderPics.clear();
 }
 
+CVideoBuffer* CVaapiBufferPool::Get()
+{
+  if (freeRenderPics.empty())
+    return nullptr;
+
+  int idx = freeRenderPics.front();
+  freeRenderPics.pop_front();
+  usedRenderPics.push_back(idx);
+
+  CVideoBuffer *retPic = allRenderPics[idx];
+  retPic->Acquire(GetPtr());
+
+  m_vaapi.Acquire();
+
+  return retPic;
+}
+
+void CVaapiBufferPool::Return(int id)
+{
+  CVaapiRenderPicture *pic = allRenderPics[id];
+
+  m_vaapi.ReturnRenderPicture(pic);
+  m_vaapi.ReleasePicReference();
+}
+
+CVaapiRenderPicture* CVaapiBufferPool::GetVaapi()
+{
+  return dynamic_cast<CVaapiRenderPicture*>(Get());
+}
+
+bool CVaapiBufferPool::HasFree()
+{
+  return !freeRenderPics.empty();
+}
+
+void CVaapiBufferPool::QueueReturnPicture(CVaapiRenderPicture *pic)
+{
+  std::deque<int>::iterator it;
+  for (it = usedRenderPics.begin(); it != usedRenderPics.end(); ++it)
+  {
+    if (allRenderPics[*it] == pic)
+    {
+      break;
+    }
+  }
+
+  if (it == usedRenderPics.end())
+  {
+    CLog::Log(LOGWARNING, "CVaapiRenderPicture::QueueReturnPicture - pic not found");
+    return;
+  }
+
+  // check if already queued
+  auto it2 = find(syncRenderPics.begin(), syncRenderPics.end(), *it);
+  if (it2 == syncRenderPics.end())
+  {
+    syncRenderPics.push_back(*it);
+  }
+}
+
+CVaapiRenderPicture* CVaapiBufferPool::ProcessSyncPicture(bool &busy)
+{
+  CVaapiRenderPicture *retPic = nullptr;
+
+  for (auto it = syncRenderPics.begin(); it != syncRenderPics.end(); ++it)
+  {
+    retPic = allRenderPics[*it];
+
+    if (retPic->usefence)
+    {
+      if (retPic->fence)
+      {
+        GLint state;
+        GLsizei length;
+        glGetSynciv(retPic->fence, GL_SYNC_STATUS, 1, &length, &state);
+        if (state == GL_SIGNALED)
+        {
+          glDeleteSync(retPic->fence);
+          retPic->fence = None;
+        }
+        else
+        {
+          busy = true;
+          continue;
+        }
+      }
+    }
+
+    freeRenderPics.push_back(*it);
+
+    auto it2 = find(usedRenderPics.begin(), usedRenderPics.end(),*it);
+    if (it2 == usedRenderPics.end())
+    {
+      CLog::Log(LOGERROR, "CVaapiRenderPicture::ProcessSyncPicture - pic not found in queue");
+    }
+    else
+    {
+      usedRenderPics.erase(it2);
+    }
+    it = syncRenderPics.erase(it);
+
+    if (!retPic->valid)
+    {
+      if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+        CLog::Log(LOGDEBUG, "CVaapiRenderPicture::%s - return of invalid render pic", __FUNCTION__);
+      retPic = nullptr;
+    }
+    break;
+  }
+  return retPic;
+}
+
+void CVaapiBufferPool::UseFence(bool usefence)
+{
+  for (auto &pic : allRenderPics)
+  {
+    pic->usefence = usefence;
+  }
+}
+
+void CVaapiBufferPool::Init(CVaapiGLSurface::GlInfo &info)
+{
+  for (auto &pic : allRenderPics)
+  {
+    pic->glInterop.m_glInfo.vadsp = info.vadsp;
+    pic->glInterop.m_glInfo.eglDisplay = info.eglDisplay;
+    pic->glInterop.m_glInfo.textureTarget = info.textureTarget;
+    pic->glInterop.m_glInfo.eglCreateImageKHR = info.eglCreateImageKHR;
+    pic->glInterop.m_glInfo.eglDestroyImageKHR = info.eglDestroyImageKHR;
+    pic->glInterop.m_glInfo.glEGLImageTargetTexture2DOES = info.glEGLImageTargetTexture2DOES;
+
+    pic->glInterop.vaImage.image_id = VA_INVALID_ID;
+    pic->glInterop.mapped = false;
+
+    pic->avFrame = av_frame_alloc();
+    pic->valid = false;
+  }
+  procPicId = 0;
+}
+
+void CVaapiBufferPool::WaitForFences()
+{
+  CSingleLock lock(bufferPoolSection);
+
+  // wait for all fences
+  XbmcThreads::EndTime timeout(1000);
+  for (auto &pic : allRenderPics)
+  {
+    if (pic->usefence)
+    {
+#ifdef GL_ARB_sync
+      while (pic->fence)
+      {
+        GLint state;
+        GLsizei length;
+        glGetSynciv(pic->fence, GL_SYNC_STATUS, 1, &length, &state);
+        if(state == GL_SIGNALED || timeout.IsTimePast())
+        {
+          glDeleteSync(pic->fence);
+          pic->fence = None;
+        }
+        else
+        {
+          Sleep(5);
+        }
+      }
+      pic->fence = None;
+#endif
+    }
+  }
+  if (timeout.IsTimePast())
+  {
+    CLog::Log(LOGERROR, "CVaapiBufferPool::%s - timeout waiting for fence", __FUNCTION__);
+  }
+}
+
+void CVaapiBufferPool::DeleteTextures(bool precleanup)
+{
+  for (auto &pic : allRenderPics)
+  {
+    if (precleanup && pic->valid)
+      continue;
+
+    if (pic->texture)
+    {
+      glDeleteTextures(1, &pic->texture);
+      pic->texture = 0;
+    }
+    av_frame_free(&pic->avFrame);
+    pic->valid = false;
+  }
+}
+
 //-----------------------------------------------------------------------------
 // Output
 //-----------------------------------------------------------------------------
-COutput::COutput(CEvent *inMsgEvent) :
+COutput::COutput(CDecoder &decoder, CEvent *inMsgEvent) :
   CThread("Vaapi-Output"),
+  m_vaapi(decoder),
   m_controlPort("OutputControlPort", inMsgEvent, &m_outMsgEvent),
   m_dataPort("OutputDataPort", inMsgEvent, &m_outMsgEvent)
 {
   m_inMsgEvent = inMsgEvent;
-
-  for (unsigned int i = 0; i < m_bufferPool.allRenderPics.size(); ++i)
-  {
-    m_bufferPool.freeRenderPics.push_back(i);
-  }
+  m_bufferPool = std::make_shared<CVaapiBufferPool>(decoder);
 }
 
 void COutput::Start()
@@ -1690,9 +1883,6 @@ void COutput::Start()
 COutput::~COutput()
 {
   Dispose();
-
-  m_bufferPool.freeRenderPics.clear();
-  m_bufferPool.usedRenderPics.clear();
 }
 
 void COutput::Dispose()
@@ -1850,7 +2040,7 @@ void COutput::StateMachine(int signal, Protocol *port, Message *msg)
           frame = (CVaapiDecodedPicture*)msg->data;
           if (frame)
           {
-            m_bufferPool.decodedPics.push_back(*frame);
+            m_bufferPool->decodedPics.push_back(*frame);
             m_extTimeout = 0;
           }
           return;
@@ -1903,15 +2093,15 @@ void COutput::StateMachine(int signal, Protocol *port, Message *msg)
         case COutputControlProtocol::TIMEOUT:
           if (PreferPP())
           {
-            m_currentPicture = m_bufferPool.decodedPics.front();
-            m_bufferPool.decodedPics.pop_front();
+            m_currentPicture = m_bufferPool->decodedPics.front();
+            m_bufferPool->decodedPics.pop_front();
             InitCycle();
             m_state = O_TOP_CONFIGURED_STEP1;
             m_extTimeout = 0;
             return;
           }
-          else if (!m_bufferPool.freeRenderPics.empty() &&
-                   !m_bufferPool.processedPics.empty())
+          else if (m_bufferPool->HasFree() &&
+                   !m_bufferPool->processedPics.empty())
           {
             m_state = O_TOP_CONFIGURED_OUTPUT;
             m_extTimeout = 0;
@@ -1933,6 +2123,7 @@ void COutput::StateMachine(int signal, Protocol *port, Message *msg)
         switch (signal)
         {
         case COutputControlProtocol::TIMEOUT:
+        {
           if (!m_pp->AddPicture(m_currentPicture))
           {
             m_state = O_TOP_ERROR;
@@ -1942,7 +2133,7 @@ void COutput::StateMachine(int signal, Protocol *port, Message *msg)
           if (m_pp->Filter(outPic))
           {
             m_config.stats->IncProcessed();
-            m_bufferPool.processedPics.push_back(outPic);
+            m_bufferPool->processedPics.push_back(outPic);
             m_state = O_TOP_CONFIGURED_STEP2;
           }
           else
@@ -1953,6 +2144,7 @@ void COutput::StateMachine(int signal, Protocol *port, Message *msg)
           m_controlPort.SendInMessage(COutputControlProtocol::STATS);
           m_extTimeout = 0;
           return;
+        }
         default:
           break;
         }
@@ -1965,10 +2157,11 @@ void COutput::StateMachine(int signal, Protocol *port, Message *msg)
         switch (signal)
         {
         case COutputControlProtocol::TIMEOUT:
+        {
           CVaapiProcessedPicture outPic;
           if (m_pp->Filter(outPic))
           {
-            m_bufferPool.processedPics.push_back(outPic);
+            m_bufferPool->processedPics.push_back(outPic);
             m_config.stats->IncProcessed();
             m_extTimeout = 0;
             return;
@@ -1976,6 +2169,7 @@ void COutput::StateMachine(int signal, Protocol *port, Message *msg)
           m_state = O_TOP_CONFIGURED_IDLE;
           m_extTimeout = 0;
           return;
+        }
         default:
           break;
         }
@@ -1988,13 +2182,13 @@ void COutput::StateMachine(int signal, Protocol *port, Message *msg)
         switch (signal)
         {
         case COutputControlProtocol::TIMEOUT:
-          if (!m_bufferPool.processedPics.empty())
+          if (!m_bufferPool->processedPics.empty())
           {
             CVaapiRenderPicture *outPic;
             CVaapiProcessedPicture procPic;
-            procPic = m_bufferPool.processedPics.front();
+            procPic = m_bufferPool->processedPics.front();
             m_config.stats->DecProcessed();
-            m_bufferPool.processedPics.pop_front();
+            m_bufferPool->processedPics.pop_front();
             outPic = ProcessPicture(procPic);
             if (outPic)
             {
@@ -2165,22 +2359,22 @@ void COutput::Flush()
     {
       CVaapiRenderPicture *pic;
       pic = *((CVaapiRenderPicture**)msg->data);
-      QueueReturnPicture(pic);
+      pic->Release();
     }
     msg->Release();
   }
 
-  for (unsigned int i = 0; i < m_bufferPool.decodedPics.size(); i++)
+  for (unsigned int i = 0; i < m_bufferPool->decodedPics.size(); i++)
   {
-    m_config.videoSurfaces->ClearRender(m_bufferPool.decodedPics[i].videoSurface);
+    m_config.videoSurfaces->ClearRender(m_bufferPool->decodedPics[i].videoSurface);
   }
-  m_bufferPool.decodedPics.clear();
+  m_bufferPool->decodedPics.clear();
 
-  for (unsigned int i = 0; i < m_bufferPool.processedPics.size(); i++)
+  for (unsigned int i = 0; i < m_bufferPool->processedPics.size(); i++)
   {
-    ReleaseProcessedPicture(m_bufferPool.processedPics[i]);
+    ReleaseProcessedPicture(m_bufferPool->processedPics[i]);
   }
-  m_bufferPool.processedPics.clear();
+  m_bufferPool->processedPics.clear();
 
   if (m_pp)
     m_pp->Flush();
@@ -2189,14 +2383,14 @@ void COutput::Flush()
 bool COutput::HasWork()
 {
   // send a pic to renderer
-  if (!m_bufferPool.freeRenderPics.empty() && !m_bufferPool.processedPics.empty())
+  if (m_bufferPool->HasFree() && !m_bufferPool->processedPics.empty())
     return true;
 
   bool ppWantsPic = true;
   if (m_pp)
     ppWantsPic = m_pp->WantsPic();
 
-  if (!m_bufferPool.decodedPics.empty() && m_bufferPool.processedPics.size() < 4 && ppWantsPic)
+  if (!m_bufferPool->decodedPics.empty() && m_bufferPool->processedPics.size() < 4 && ppWantsPic)
     return true;
 
   return false;
@@ -2204,7 +2398,7 @@ bool COutput::HasWork()
 
 bool COutput::PreferPP()
 {
-  if (!m_bufferPool.decodedPics.empty())
+  if (!m_bufferPool->decodedPics.empty())
   {
     if (!m_pp)
       return true;
@@ -2212,10 +2406,10 @@ bool COutput::PreferPP()
     if (!m_pp->WantsPic())
       return false;
 
-    if (!m_pp->DoesSync() && m_bufferPool.processedPics.size() < 4)
+    if (!m_pp->DoesSync() && m_bufferPool->processedPics.size() < 4)
       return true;
 
-    if (m_bufferPool.freeRenderPics.empty() || m_bufferPool.processedPics.empty())
+    if (!m_bufferPool->HasFree() || m_bufferPool->processedPics.empty())
       return true;
   }
 
@@ -2327,16 +2521,14 @@ void COutput::InitCycle()
 CVaapiRenderPicture* COutput::ProcessPicture(CVaapiProcessedPicture &pic)
 {
   CVaapiRenderPicture *retPic;
-  int idx = m_bufferPool.freeRenderPics.front();
-  retPic = m_bufferPool.allRenderPics[idx];
+  retPic = m_bufferPool->GetVaapi();
   retPic->DVDPic = pic.DVDPic;
 
   if (pic.source == CVaapiProcessedPicture::SKIP_SRC ||
       pic.source == CVaapiProcessedPicture::VPP_SRC)
   {
-    pic.id = m_bufferPool.procPicId++;
-    m_bufferPool.processedPicsAway.push_back(pic);
-    retPic->DVDPic.format = RENDER_FMT_VAAPI;
+    pic.id = m_bufferPool->procPicId++;
+    m_bufferPool->processedPicsAway.push_back(pic);
     retPic->glInterop.procPic = pic;
     retPic->glInterop.mapped = false;
     retPic->GLMapSurface();
@@ -2345,14 +2537,13 @@ CVaapiRenderPicture* COutput::ProcessPicture(CVaapiProcessedPicture &pic)
   {
     av_frame_move_ref(retPic->avFrame, pic.frame);
     av_frame_free(&pic.frame);
-    retPic->DVDPic.format = RENDER_FMT_VAAPI;
     retPic->textureY = GL_NONE;
   }
   else
-    return NULL;
-
-  m_bufferPool.freeRenderPics.pop_front();
-  m_bufferPool.usedRenderPics.push_back(idx);
+  {
+    retPic->Release();
+    return nullptr;
+  }
 
   retPic->DVDPic.dts = DVD_NOPTS_VALUE;
   retPic->DVDPic.iWidth = m_config.vidWidth;
@@ -2389,24 +2580,24 @@ void COutput::ReleaseProcessedPicture(CVaapiProcessedPicture &pic)
 
 void COutput::DropVppProcessedPictures()
 {
-  auto it = m_bufferPool.processedPics.begin();
-  while (it != m_bufferPool.processedPics.end())
+  auto it = m_bufferPool->processedPics.begin();
+  while (it != m_bufferPool->processedPics.end())
   {
     if (it->source == CVaapiProcessedPicture::VPP_SRC)
     {
-      it = m_bufferPool.processedPics.erase(it);
+      it = m_bufferPool->processedPics.erase(it);
       m_config.stats->DecProcessed();
     }
     else
       ++it;
   }
 
-  it = m_bufferPool.processedPicsAway.begin();
-  while (it != m_bufferPool.processedPicsAway.end())
+  it = m_bufferPool->processedPicsAway.begin();
+  while (it != m_bufferPool->processedPicsAway.end())
   {
     if (it->source == CVaapiProcessedPicture::VPP_SRC)
     {
-      it = m_bufferPool.processedPicsAway.erase(it);
+      it = m_bufferPool->processedPicsAway.erase(it);
     }
     else
       ++it;
@@ -2417,30 +2608,7 @@ void COutput::DropVppProcessedPictures()
 
 void COutput::QueueReturnPicture(CVaapiRenderPicture *pic)
 {
-  std::deque<int>::iterator it;
-  for (it = m_bufferPool.usedRenderPics.begin(); it != m_bufferPool.usedRenderPics.end(); ++it)
-  {
-    if (m_bufferPool.allRenderPics[*it] == pic)
-    {
-      break;
-    }
-  }
-
-  if (it == m_bufferPool.usedRenderPics.end())
-  {
-    CLog::Log(LOGWARNING, "COutput::QueueReturnPicture - pic not found");
-    return;
-  }
-
-  // check if already queued
-  auto it2 = find(m_bufferPool.syncRenderPics.begin(),
-                  m_bufferPool.syncRenderPics.end(),
-                  *it);
-  if (it2 == m_bufferPool.syncRenderPics.end())
-  {
-    m_bufferPool.syncRenderPics.push_back(*it);
-  }
-
+  m_bufferPool->QueueReturnPicture(pic);
   ProcessSyncPicture();
 }
 
@@ -2449,57 +2617,11 @@ bool COutput::ProcessSyncPicture()
   CVaapiRenderPicture *pic;
   bool busy = false;
 
-  for (auto it = m_bufferPool.syncRenderPics.begin(); it != m_bufferPool.syncRenderPics.end(); )
+  pic = m_bufferPool->ProcessSyncPicture(busy);
+
+  if (pic)
   {
-    pic = m_bufferPool.allRenderPics[*it];
-
-#ifdef GL_ARB_sync
-    if (pic->usefence)
-    {
-      if (pic->fence)
-      {
-        GLint state;
-        GLsizei length;
-        glGetSynciv(pic->fence, GL_SYNC_STATUS, 1, &length, &state);
-        if(state == GL_SIGNALED)
-        {
-          glDeleteSync(pic->fence);
-          pic->fence = None;
-        }
-        else
-        {
-          busy = true;
-          ++it;
-          continue;
-        }
-      }
-    }
-#endif
-
-    m_bufferPool.freeRenderPics.push_back(*it);
-
-    auto it2 = find(m_bufferPool.usedRenderPics.begin(),
-                    m_bufferPool.usedRenderPics.end(),
-                    *it);
-    if (it2 == m_bufferPool.usedRenderPics.end())
-    {
-      CLog::Log(LOGERROR, "COutput::ProcessSyncPicture - pic not found in queue");
-    }
-    else
-    {
-      m_bufferPool.usedRenderPics.erase(it2);
-    }
-    it = m_bufferPool.syncRenderPics.erase(it);
-
-    if (pic->valid)
-    {
-      ProcessReturnPicture(pic);
-    }
-    else
-    {
-      if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-        CLog::Log(LOGDEBUG, "COutput::%s - return of invalid render pic", __FUNCTION__);
-    }
+    ProcessReturnPicture(pic);
   }
   return busy;
 }
@@ -2516,139 +2638,63 @@ void COutput::ProcessReturnPicture(CVaapiRenderPicture *pic)
 
 void COutput::ProcessReturnProcPicture(int id)
 {
-  for (auto it=m_bufferPool.processedPicsAway.begin(); it!=m_bufferPool.processedPicsAway.end(); ++it)
+  for (auto it=m_bufferPool->processedPicsAway.begin(); it!=m_bufferPool->processedPicsAway.end(); ++it)
   {
     if (it->id == id)
     {
       ReleaseProcessedPicture(*it);
-      m_bufferPool.processedPicsAway.erase(it);
+      m_bufferPool->processedPicsAway.erase(it);
       break;
     }
   }
 }
 
-bool COutput::EnsureBufferPool()
+void COutput::EnsureBufferPool()
 {
-  // create avFrames and init interop
-  CVaapiRenderPicture *pic;
-  for (unsigned int i = 0; i < m_bufferPool.allRenderPics.size(); i++)
-  {
-    pic = m_bufferPool.allRenderPics[i];
-    pic->glInterop.vadsp = m_config.dpy;
-
-    pic->glInterop.eglDisplay = m_eglDisplay;
-    pic->glInterop.textureTarget = m_textureTarget;
-    pic->glInterop.eglCreateImageKHR = eglCreateImageKHR;
-    pic->glInterop.eglDestroyImageKHR = eglDestroyImageKHR;
-    pic->glInterop.glEGLImageTargetTexture2DOES = glEGLImageTargetTexture2DOES;
-    pic->glInterop.vaImage.image_id = VA_INVALID_ID;
-    pic->glInterop.mapped = false;
-
-    pic->avFrame = av_frame_alloc();
-    pic->valid = false;
-  }
-
-  m_bufferPool.procPicId = 0;
-  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-    CLog::Log(LOGDEBUG, "VAAPI::COutput::InitBufferPool - Surfaces created");
-  return true;
+  CVaapiGLSurface::GlInfo info;
+  info.vadsp = m_config.dpy;
+  info.eglDisplay = m_eglDisplay;
+  info.textureTarget = m_textureTarget;
+  info.eglCreateImageKHR = eglCreateImageKHR;
+  info.eglDestroyImageKHR = eglDestroyImageKHR;
+  info.glEGLImageTargetTexture2DOES = glEGLImageTargetTexture2DOES;
+  m_bufferPool->Init(info);
 }
 
 void COutput::ReleaseBufferPool(bool precleanup)
 {
   CVaapiRenderPicture *pic;
 
-  CSingleLock lock(m_bufferPool.renderPicSec);
-
   if (!precleanup)
   {
     // wait for all fences
+    m_bufferPool->WaitForFences();
     XbmcThreads::EndTime timeout(1000);
-    for (unsigned int i = 0; i < m_bufferPool.allRenderPics.size(); i++)
-    {
-      pic = m_bufferPool.allRenderPics[i];
-      if (pic->usefence)
-      {
-#ifdef GL_ARB_sync
-        while (pic->fence)
-        {
-          GLint state;
-          GLsizei length;
-          glGetSynciv(pic->fence, GL_SYNC_STATUS, 1, &length, &state);
-          if(state == GL_SIGNALED || timeout.IsTimePast())
-          {
-            glDeleteSync(pic->fence);
-            pic->fence = None;
-          }
-          else
-          {
-            Sleep(5);
-          }
-        }
-        pic->fence = None;
-#endif
-      }
-    }
-    if (timeout.IsTimePast())
-    {
-      CLog::Log(LOGERROR, "COutput::%s - timeout waiting for fence", __FUNCTION__);
-    }
   }
 
   ProcessSyncPicture();
 
-  for (unsigned int i = 0; i < m_bufferPool.allRenderPics.size(); i++)
+  m_bufferPool->DeleteTextures(precleanup);
+
+  for (unsigned int i = 0; i < m_bufferPool->decodedPics.size(); i++)
   {
-    pic = m_bufferPool.allRenderPics[i];
-
-    if (precleanup && pic->valid)
-      continue;
-
-
-    if (pic->texture)
-    {
-      glDeleteTextures(1, &pic->texture);
-      pic->texture = 0;
-    }
-    av_frame_free(&pic->avFrame);
-    pic->valid = false;
+    m_config.videoSurfaces->ClearRender(m_bufferPool->decodedPics[i].videoSurface);
   }
+  m_bufferPool->decodedPics.clear();
 
-  for (unsigned int i = 0; i < m_bufferPool.decodedPics.size(); i++)
+  for (unsigned int i = 0; i < m_bufferPool->processedPics.size(); i++)
   {
-    m_config.videoSurfaces->ClearRender(m_bufferPool.decodedPics[i].videoSurface);
+    ReleaseProcessedPicture(m_bufferPool->processedPics[i]);
   }
-  m_bufferPool.decodedPics.clear();
-
-  for (unsigned int i = 0; i < m_bufferPool.processedPics.size(); i++)
-  {
-    ReleaseProcessedPicture(m_bufferPool.processedPics[i]);
-  }
-  m_bufferPool.processedPics.clear();
+  m_bufferPool->processedPics.clear();
 }
 
 bool COutput::GLInit()
 {
-#ifdef GL_ARB_sync
   bool hasfence = g_Windowing.IsExtSupported("GL_ARB_sync");
-  for (unsigned int i = 0; i < m_bufferPool.allRenderPics.size(); i++)
-  {
-    m_bufferPool.allRenderPics[i]->usefence = hasfence;
-  }
-#endif
+  m_bufferPool->UseFence(hasfence);
 
-// GL_TEXTURE_RECTANGLE_ARB is not available in GLES
-// ref: http://stackoverflow.com/questions/6883160/opengl-es-gl-texture-rectangle
-#ifdef HAS_GL
-  if (!g_Windowing.IsExtSupported("GL_ARB_texture_non_power_of_two") &&
-       g_Windowing.IsExtSupported("GL_ARB_texture_rectangle"))
-  {
-    m_textureTarget = GL_TEXTURE_RECTANGLE_ARB;
-  }
-  else
-#endif
-    m_textureTarget = GL_TEXTURE_2D;
-
+  m_textureTarget = GL_TEXTURE_2D;
   eglCreateImageKHR = (PFNEGLCREATEIMAGEKHRPROC)eglGetProcAddress("eglCreateImageKHR");
   eglDestroyImageKHR = (PFNEGLDESTROYIMAGEKHRPROC)eglGetProcAddress("eglDestroyImageKHR");
   glEGLImageTargetTexture2DOES = (PFNGLEGLIMAGETARGETTEXTURE2DOESPROC)eglGetProcAddress("glEGLImageTargetTexture2DOES");
@@ -3558,9 +3604,9 @@ bool CFFmpegPostproc::Filter(CVaapiProcessedPicture &outPic)
 
   outPic.source = CVaapiProcessedPicture::FFMPEG_SRC;
 
-  if(outPic.frame->pkt_pts != AV_NOPTS_VALUE)
+  if(outPic.frame->pts != AV_NOPTS_VALUE)
   {
-    outPic.DVDPic.pts = (double)outPic.frame->pkt_pts * DVD_TIME_BASE / AV_TIME_BASE;
+    outPic.DVDPic.pts = (double)outPic.frame->pts * DVD_TIME_BASE / AV_TIME_BASE;
   }
   else
     outPic.DVDPic.pts = DVD_NOPTS_VALUE;
@@ -3572,10 +3618,10 @@ bool CFFmpegPostproc::Filter(CVaapiProcessedPicture &outPic)
   }
   m_lastOutPts = pts;
 
-  for (int i = 0; i < 4; i++)
-    outPic.DVDPic.data[i] = outPic.frame->data[i];
-  for (int i = 0; i < 4; i++)
-    outPic.DVDPic.iLineSize[i] = outPic.frame->linesize[i];
+  //for (int i = 0; i < 4; i++)
+  //  outPic.DVDPic.data[i] = outPic.frame->data[i];
+  //for (int i = 0; i < 4; i++)
+  //  outPic.DVDPic.iLineSize[i] = outPic.frame->linesize[i];
 
   return true;
 }
