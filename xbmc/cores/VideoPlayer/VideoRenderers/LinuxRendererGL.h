@@ -22,7 +22,6 @@
 
 #include "system.h"
 
-#ifdef HAS_GL
 #include <vector>
 
 #include "system_gl.h"
@@ -70,9 +69,8 @@ enum RenderMethod
 {
   RENDER_GLSL=0x01,
   RENDER_ARB=0x02,
-  RENDER_VDPAU=0x08,
-  RENDER_POT=0x10,
-  RENDER_VAAPI=0x20,
+  RENDER_POT=0x04,
+  RENDER_CUSTOM=0x08
 };
 
 enum RenderQuality
@@ -298,4 +296,4 @@ inline int NP2( unsigned x ) {
     return ++x;
 #endif
 }
-#endif
+
