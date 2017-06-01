@@ -561,7 +561,7 @@ public:
   CDecoder(CProcessInfo& processInfo);
   virtual ~CDecoder();
 
-  virtual bool Open      (AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat, unsigned int surfaces = 0);
+  virtual bool Open      (AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat);
   virtual CDVDVideoCodec::VCReturn Decode    (AVCodecContext* avctx, AVFrame* frame);
   virtual bool GetPicture(AVCodecContext* avctx, VideoPicture* picture);
   virtual void Reset();

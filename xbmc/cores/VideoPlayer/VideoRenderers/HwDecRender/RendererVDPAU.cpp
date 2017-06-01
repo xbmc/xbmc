@@ -41,53 +41,32 @@ CRendererVDPAU::~CRendererVDPAU()
   }
 }
 
-bool CRendererVDPAU::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height,
-                               float fps, unsigned flags, ERenderFormat format, void *hwPic, unsigned int orientation)
+bool CRendererVDPAU::Configure(const VideoPicture &picture, float fps, unsigned flags, unsigned int orientation)
 {
-  VDPAU::CVdpauRenderPicture *vdpau = static_cast<VDPAU::CVdpauRenderPicture*>(hwPic);
-  if (vdpau->isYuv)
-    m_isYuv = true;
-  else
-    m_isYuv = false;
+//  VDPAU::CVdpauRenderPicture *vdpau = static_cast<VDPAU::CVdpauRenderPicture*>(hwPic);
+//  if (vdpau->isYuv)
+//    m_isYuv = true;
+//  else
+//    m_isYuv = false;
 
-  return CLinuxRendererGL::Configure(width, height, d_width, d_height,
-                                     fps, flags, format, hwPic, orientation);
+  return CLinuxRendererGL::Configure(picture, fps, flags, orientation);
 }
 
-bool CRendererVDPAU::ConfigChanged(void *hwPic)
+bool CRendererVDPAU::ConfigChanged(const VideoPicture &picture)
 {
-  VDPAU::CVdpauRenderPicture *vdpau = static_cast<VDPAU::CVdpauRenderPicture*>(hwPic);
-  if (vdpau->isYuv && !m_isYuv)
-    return true;
+//  VDPAU::CVdpauRenderPicture *vdpau = static_cast<VDPAU::CVdpauRenderPicture*>(hwPic);
+//  if (vdpau->isYuv && !m_isYuv)
+//    return true;
 
   return false;
-}
-
-void CRendererVDPAU::AddVideoPictureHW(VideoPicture &picture, int index)
-{
-  VDPAU::CVdpauRenderPicture *vdpau = static_cast<VDPAU::CVdpauRenderPicture*>(picture.hwPic);
-  YUVBUFFER &buf = m_buffers[index];
-  VDPAU::CVdpauRenderPicture *pic = vdpau->Acquire();
-  if (buf.hwDec)
-    ((VDPAU::CVdpauRenderPicture*)buf.hwDec)->Release();
-  buf.hwDec = pic;
 }
 
 void CRendererVDPAU::ReleaseBuffer(int idx)
 {
   YUVBUFFER &buf = m_buffers[idx];
-  if (buf.hwDec)
-    ((VDPAU::CVdpauRenderPicture*)buf.hwDec)->Release();
-  buf.hwDec = NULL;
-}
-
-CRenderInfo CRendererVDPAU::GetRenderInfo()
-{
-  CRenderInfo info;
-  info.formats = m_formats;
-  info.max_buffer_size = NUM_BUFFERS;
-  info.optimal_buffer_size = 5;
-  return info;
+//  if (buf.hwDec)
+//    ((VDPAU::CVdpauRenderPicture*)buf.hwDec)->Release();
+//  buf.hwDec = NULL;
 }
 
 bool CRendererVDPAU::Supports(ERENDERFEATURE feature)
@@ -104,7 +83,7 @@ bool CRendererVDPAU::Supports(ERENDERFEATURE feature)
   else if (feature == RENDERFEATURE_NOISE ||
            feature == RENDERFEATURE_SHARPNESS)
   {
-    if (m_format == RENDER_FMT_VDPAU)
+ //   if (m_format == RENDER_FMT_VDPAU)
       return true;
   }
   else if (feature == RENDERFEATURE_STRETCH         ||
@@ -125,10 +104,10 @@ bool CRendererVDPAU::Supports(ESCALINGMETHOD method)
     return CLinuxRendererGL::Supports(method);
 
   //nearest neighbor doesn't work on YUY2 and UYVY
-  if (method == VS_SCALINGMETHOD_NEAREST &&
-      m_format != RENDER_FMT_YUYV422 &&
-      m_format != RENDER_FMT_UYVY422)
-    return true;
+//  if (method == VS_SCALINGMETHOD_NEAREST &&
+//      m_format != RENDER_FMT_YUYV422 &&
+//      m_format != RENDER_FMT_UYVY422)
+//    return true;
 
   if(method == VS_SCALINGMETHOD_LINEAR
   || method == VS_SCALINGMETHOD_AUTO)
@@ -159,7 +138,7 @@ bool CRendererVDPAU::Supports(ESCALINGMETHOD method)
   return false;
 }
 
-EShaderFormat CRendererVDPAU::GetShaderFormat(ERenderFormat renderFormat)
+EShaderFormat CRendererVDPAU::GetShaderFormat()
 {
   EShaderFormat ret = SHADER_NONE;
 
@@ -216,10 +195,10 @@ bool CRendererVDPAU::RenderHook(int idx)
   }
 
   YUVBUFFER &buf = m_buffers[idx];
-  if (buf.hwDec)
-  {
-    ((VDPAU::CVdpauRenderPicture*)buf.hwDec)->Sync();
-  }
+//  if (buf.hwDec)
+//  {
+//    ((VDPAU::CVdpauRenderPicture*)buf.hwDec)->Sync();
+//  }
   return true;
 }
 
@@ -253,18 +232,18 @@ bool CRendererVDPAU::UploadTexture(int index)
 
 bool CRendererVDPAU::CreateVDPAUTexture(int index)
 {
-  YuvImage &im     = m_buffers[index].image;
-  YUVFIELDS &fields = m_buffers[index].fields;
-  YUVPLANE  &plane  = fields[FIELD_FULL][0];
+  YUVBUFFER &buf = m_buffers[index];
+  YuvImage &im = buf.image;
+  YUVPLANE &plane = buf.fields[FIELD_FULL][0];
 
   DeleteVDPAUTexture(index);
 
-  memset(&im    , 0, sizeof(im));
-  memset(&fields, 0, sizeof(fields));
+  memset(&im, 0, sizeof(im));
+  memset(&plane, 0, sizeof(YUVPLANE));
   im.height = m_sourceHeight;
-  im.width  = m_sourceWidth;
+  im.width = m_sourceWidth;
 
-  plane.texwidth  = im.width;
+  plane.texwidth = im.width;
   plane.texheight = im.height;
 
   plane.pixpertex_x = 1;
@@ -276,21 +255,22 @@ bool CRendererVDPAU::CreateVDPAUTexture(int index)
 
 void CRendererVDPAU::DeleteVDPAUTexture(int index)
 {
-  YUVPLANE &plane = m_buffers[index].fields[FIELD_FULL][0];
+  YUVBUFFER &buf = m_buffers[index];
+  YUVPLANE &plane = buf.fields[FIELD_FULL][0];
 
-  if (m_buffers[index].hwDec)
-    ((VDPAU::CVdpauRenderPicture*)m_buffers[index].hwDec)->Release();
-  m_buffers[index].hwDec = NULL;
+//  if (m_buffers[index].hwDec)
+//    ((VDPAU::CVdpauRenderPicture*)m_buffers[index].hwDec)->Release();
+//  m_buffers[index].hwDec = NULL;
 
   plane.id = 0;
 }
 
 bool CRendererVDPAU::UploadVDPAUTexture(int index)
 {
-  VDPAU::CVdpauRenderPicture *vdpau = (VDPAU::CVdpauRenderPicture*)m_buffers[index].hwDec;
+  YUVBUFFER &buf = m_buffers[index];
+  VDPAU::CVdpauRenderPicture *vdpau; // = (VDPAU::CVdpauRenderPicture*)m_buffers[index].hwDec;
 
-  YUVFIELDS &fields = m_buffers[index].fields;
-  YUVPLANE &plane = fields[FIELD_FULL][0];
+  YUVPLANE &plane = buf.fields[FIELD_FULL][0];
 
   if (!vdpau || !vdpau->valid)
   {
@@ -329,15 +309,15 @@ bool CRendererVDPAU::UploadVDPAUTexture(int index)
 
 bool CRendererVDPAU::CreateVDPAUTexture420(int index)
 {
-  YuvImage &im     = m_buffers[index].image;
-  YUVFIELDS &fields = m_buffers[index].fields;
-  YUVPLANE &plane = fields[0][0];
-  GLuint    *pbo    = m_buffers[index].pbo;
+  YUVBUFFER &buf = m_buffers[index];
+  YuvImage &im = buf.image;
+  YUVPLANE (&planes)[YuvImage::MAX_PLANES] = buf.fields[0];
+  GLuint *pbo = buf.pbo;
 
   DeleteVDPAUTexture420(index);
 
-  memset(&im    , 0, sizeof(im));
-  memset(&fields, 0, sizeof(fields));
+  memset(&im, 0, sizeof(im));
+  memset(&planes, 0, sizeof(YUVPLANE[YuvImage::MAX_PLANES]));
 
   im.cshift_x = 1;
   im.cshift_y = 1;
@@ -351,45 +331,45 @@ bool CRendererVDPAU::CreateVDPAUTexture420(int index)
     pbo[p] = None;
   }
 
-  plane.id = 1;
+  planes[0].id = 1;
 
   return true;
 }
 
 void CRendererVDPAU::DeleteVDPAUTexture420(int index)
 {
-  YUVFIELDS &fields = m_buffers[index].fields;
+  YUVBUFFER &buf = m_buffers[index];
 
-  if (m_buffers[index].hwDec)
-    ((VDPAU::CVdpauRenderPicture*)m_buffers[index].hwDec)->Release();
-  m_buffers[index].hwDec = NULL;
+//  if (m_buffers[index].hwDec)
+//    ((VDPAU::CVdpauRenderPicture*)m_buffers[index].hwDec)->Release();
+//
+//  m_buffers[index].hwDec = NULL;
 
-  fields[0][0].id = 0;
-  fields[1][0].id = 0;
-  fields[1][1].id = 0;
-  fields[2][0].id = 0;
-  fields[2][1].id = 0;
+  buf.fields[0][0].id = 0;
+  buf.fields[1][0].id = 0;
+  buf.fields[1][1].id = 0;
+  buf.fields[2][0].id = 0;
+  buf.fields[2][1].id = 0;
 }
 
 bool CRendererVDPAU::UploadVDPAUTexture420(int index)
 {
-  VDPAU::CVdpauRenderPicture *vdpau = (VDPAU::CVdpauRenderPicture*)m_buffers[index].hwDec;
-  YuvImage &im = m_buffers[index].image;
+  YUVBUFFER &buf = m_buffers[index];
+  VDPAU::CVdpauRenderPicture *vdpau; // = (VDPAU::CVdpauRenderPicture*)m_buffers[index].hwDec;
+  YuvImage &im = buf.image;
 
-  YUVFIELDS &fields = m_buffers[index].fields;
-
-  if (!vdpau || !vdpau->valid)
+   if (!vdpau || !vdpau->valid)
   {
     return false;
   }
 
   im.height = vdpau->texHeight;
-  im.width  = vdpau->texWidth;
+  im.width = vdpau->texWidth;
 
   // YUV
   for (int f = FIELD_TOP; f<=FIELD_BOT ; f++)
   {
-    YUVPLANES &planes = fields[f];
+    YUVPLANE (&planes)[YuvImage::MAX_PLANES] = buf.fields[f];
 
     planes[0].texwidth  = im.width;
     planes[0].texheight = im.height >> 1;
@@ -412,19 +392,19 @@ bool CRendererVDPAU::UploadVDPAUTexture420(int index)
 //  m_sourceRect.y2 -= vdpau->crop.y2;
 
   // set textures
-  fields[1][0].id = vdpau->texture[0];
-  fields[1][1].id = vdpau->texture[2];
-  fields[1][2].id = vdpau->texture[2];
-  fields[2][0].id = vdpau->texture[1];
-  fields[2][1].id = vdpau->texture[3];
-  fields[2][2].id = vdpau->texture[3];
+  buf.fields[1][0].id = vdpau->texture[0];
+  buf.fields[1][1].id = vdpau->texture[2];
+  buf.fields[1][2].id = vdpau->texture[2];
+  buf.fields[2][0].id = vdpau->texture[1];
+  buf.fields[2][1].id = vdpau->texture[3];
+  buf.fields[2][2].id = vdpau->texture[3];
 
   glEnable(m_textureTarget);
   for (int f = FIELD_TOP; f <= FIELD_BOT; f++)
   {
     for (int p=0; p<2; p++)
     {
-      glBindTexture(m_textureTarget,fields[f][p].id);
+      glBindTexture(m_textureTarget, buf.fields[f][p].id);
       glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
       glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
       glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
