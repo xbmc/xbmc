@@ -153,8 +153,6 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   virtual int GetID(void) const;
   virtual void SetID(int id) { m_controlID = id; };
-  virtual bool HasID(int id) const;
-  virtual bool HasVisibleID(int id) const;
   int GetParentID() const;
   virtual bool HasFocus() const;
   virtual void AllocResources();

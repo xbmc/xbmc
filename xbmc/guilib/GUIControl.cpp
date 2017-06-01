@@ -924,16 +924,6 @@ void CGUIControl::UnfocusFromPoint(const CPoint &point)
   }
 }
 
-bool CGUIControl::HasID(int id) const
-{
-  return GetID() == id;
-}
-
-bool CGUIControl::HasVisibleID(int id) const
-{
-  return GetID() == id && IsVisible();
-}
-
 void CGUIControl::SaveStates(std::vector<CControlState> &states)
 {
   // empty for now - do nothing with the majority of controls
