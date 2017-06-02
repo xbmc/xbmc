@@ -119,7 +119,7 @@ int main(int argc, char* argv[])
   g_advancedSettings.Initialize();
 
   CAppParamParser appParamParser;
-  appParamParser.Parse(const_cast<const char**>(argv), argc);
+  appParamParser.Parse(argv, argc);
   
   return XBMC_Run(renderGUI, appParamParser.m_playlist);
 }
