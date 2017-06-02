@@ -328,7 +328,9 @@ protected:
   int m_nextWindowID;
   int m_prevWindowID;
 
-  std::vector<INFO::InfoPtr> m_bools;
+  typedef std::set<INFO::InfoPtr, bool(*)(const INFO::InfoPtr&, const INFO::InfoPtr&)> INFOBOOLTYPE;
+  INFOBOOLTYPE m_bools;
+  unsigned int m_refreshCounter;
   std::vector<INFO::CSkinVariableString> m_skinVariableStrings;
 
   int m_libraryHasMusic;

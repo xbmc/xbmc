@@ -27,8 +27,8 @@
 
 using namespace INFO;
 
-InfoSingle::InfoSingle(const std::string &expression, int context)
-: InfoBool(expression, context)
+InfoSingle::InfoSingle(const std::string &expression, int context, unsigned int& refreshCounter)
+: InfoBool(expression, context, refreshCounter)
 {
   m_condition = g_infoManager.TranslateSingleString(expression, m_listItemDependent);
 }
@@ -38,8 +38,8 @@ void InfoSingle::Update(const CGUIListItem *item)
   m_value = g_infoManager.GetBool(m_condition, m_context, item);
 }
 
-InfoExpression::InfoExpression(const std::string &expression, int context)
-: InfoBool(expression, context)
+InfoExpression::InfoExpression(const std::string &expression, int context, unsigned int& refreshCounter)
+: InfoBool(expression, context, refreshCounter)
 {
   if (!Parse(expression))
   {
