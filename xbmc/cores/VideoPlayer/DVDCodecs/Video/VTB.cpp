@@ -74,7 +74,7 @@ CVPixelBufferRef CVideoBufferVTB::GetPB()
 class VTB::CVideoBufferPoolVTB : public IVideoBufferPool
 {
 public:
-  ~CVideoBufferPoolVTB();
+  virtual ~CVideoBufferPoolVTB();
   virtual void Return(int id) override;
   virtual CVideoBuffer* Get() override;
 
