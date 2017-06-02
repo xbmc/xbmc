@@ -446,7 +446,7 @@ void CGUIWindowVideoBase::OnQueueItem(int iItem)
   CFileItemList queuedItems;
   AddItemToPlayList(item, queuedItems);
   // if party mode, add items but DONT start playing
-  if (g_partyModeManager.IsEnabled(PARTYMODECONTEXT_VIDEO))
+  if (g_partyModeManager.IsEnabled())
   {
     g_partyModeManager.AddUserSongs(queuedItems, false);
     return;
@@ -1071,7 +1071,7 @@ bool CGUIWindowVideoBase::OnPlayMedia(int iItem, const std::string &player)
   CFileItemPtr pItem = m_vecItems->Get(iItem);
 
   // party mode
-  if (g_partyModeManager.IsEnabled(PARTYMODECONTEXT_VIDEO))
+  if (g_partyModeManager.IsEnabled())
   {
     CPlayList playlistTemp;
     playlistTemp.Add(pItem);
