@@ -5,6 +5,7 @@ set(SOURCES ILanguageInvoker.cpp
 set(HEADERS ILanguageInvocationHandler.h
             ILanguageInvoker.h
             LanguageInvokerThread.h
+            RunningScriptsHandler.h
             ScriptInvocationManager.h)
 
 core_add_library(generic_interface)

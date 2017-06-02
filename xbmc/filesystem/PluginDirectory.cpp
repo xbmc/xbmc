@@ -35,10 +35,6 @@ using namespace XFILE;
 using namespace ADDON;
 using namespace KODI::MESSAGING;
 
-std::map<int, CPluginDirectory *> CPluginDirectory::globalHandles;
-int CPluginDirectory::handleCounter = 0;
-CCriticalSection CPluginDirectory::m_handleLock;
-
 CPluginDirectory::CScriptObserver::CScriptObserver(int scriptId, CEvent &event) :
   CThread("scriptobs"), m_scriptId(scriptId), m_event(event)
 {
@@ -78,37 +74,6 @@ CPluginDirectory::~CPluginDirectory(void)
   delete m_fileResult;
 }
 
-int CPluginDirectory::getNewHandle(CPluginDirectory *cp)
-{
-  CSingleLock lock(m_handleLock);
-  int handle = ++handleCounter;
-  globalHandles[handle] = cp;
-  return handle;
-}
-
-void CPluginDirectory::reuseHandle(int handle, CPluginDirectory* cp)
-{
-  CSingleLock lock(m_handleLock);
-  globalHandles[handle] = cp;
-}
-
-void CPluginDirectory::removeHandle(int handle)
-{
-  CSingleLock lock(m_handleLock);
-  if (!globalHandles.erase(handle))
-    CLog::Log(LOGWARNING, "Attempt to erase invalid handle %i", handle);
-}
-
-CPluginDirectory *CPluginDirectory::dirFromHandle(int handle)
-{
-  CSingleLock lock(m_handleLock);
-  std::map<int, CPluginDirectory *>::iterator i = globalHandles.find(handle);
-  if (i != globalHandles.end())
-    return i->second;
-  CLog::Log(LOGWARNING, "Attempt to use invalid handle %i", handle);
-  return NULL;
-}
-
 bool CPluginDirectory::StartScript(const std::string& strPath, bool retrievingDir, bool resume)
 {
   CURL url(strPath);
@@ -136,9 +101,9 @@ bool CPluginDirectory::StartScript(const std::string& strPath, bool retrievingDi
   int handle = CScriptInvocationManager::GetInstance().GetReusablePluginHandle(m_addon->LibPath());
 
   if (handle < 0)
-    handle = getNewHandle(this);
+    handle = GetNewScriptHandle(this);
   else
-    reuseHandle(handle, this);
+    ReuseScriptHandle(handle, this);
 
   // clear out our status variables
   m_fileResult->Reset();
@@ -180,7 +145,7 @@ bool CPluginDirectory::StartScript(const std::string& strPath, bool retrievingDi
     CLog::Log(LOGERROR, "Unable to run plugin %s", m_addon->Name().c_str());
 
   // free our handle
-  removeHandle(handle);
+  RemoveScriptHandle(handle);
 
   return success;
 }
@@ -209,8 +174,8 @@ bool CPluginDirectory::GetPluginResult(const std::string& strPath, CFileItem &re
 
 bool CPluginDirectory::AddItem(int handle, const CFileItem *item, int totalItems)
 {
-  CSingleLock lock(m_handleLock);
-  CPluginDirectory *dir = dirFromHandle(handle);
+  CSingleLock lock(GetScriptsLock());
+  CPluginDirectory* dir = GetScriptFromHandle(handle);
   if (!dir)
     return false;
 
@@ -223,8 +188,8 @@ bool CPluginDirectory::AddItem(int handle, const CFileItem *item, int totalItems
 
 bool CPluginDirectory::AddItems(int handle, const CFileItemList *items, int totalItems)
 {
-  CSingleLock lock(m_handleLock);
-  CPluginDirectory *dir = dirFromHandle(handle);
+  CSingleLock lock(GetScriptsLock());
+  CPluginDirectory* dir = GetScriptFromHandle(handle);
   if (!dir)
     return false;
 
@@ -238,8 +203,8 @@ bool CPluginDirectory::AddItems(int handle, const CFileItemList *items, int tota
 
 void CPluginDirectory::EndOfDirectory(int handle, bool success, bool replaceListing, bool cacheToDisc)
 {
-  CSingleLock lock(m_handleLock);
-  CPluginDirectory *dir = dirFromHandle(handle);
+  CSingleLock lock(GetScriptsLock());
+  CPluginDirectory* dir = GetScriptFromHandle(handle);
   if (!dir)
     return;
 
@@ -258,8 +223,8 @@ void CPluginDirectory::EndOfDirectory(int handle, bool success, bool replaceList
 
 void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod, const std::string &labelMask, const std::string &label2Mask)
 {
-  CSingleLock lock(m_handleLock);
-  CPluginDirectory *dir = dirFromHandle(handle);
+  CSingleLock lock(GetScriptsLock());
+  CPluginDirectory* dir = GetScriptFromHandle(handle);
   if (!dir)
     return;
 
@@ -553,8 +518,8 @@ bool CPluginDirectory::WaitOnScriptResult(const std::string &scriptPath, int scr
 
 void CPluginDirectory::SetResolvedUrl(int handle, bool success, const CFileItem *resultItem)
 {
-  CSingleLock lock(m_handleLock);
-  CPluginDirectory *dir = dirFromHandle(handle);
+  CSingleLock lock(GetScriptsLock());
+  CPluginDirectory* dir = GetScriptFromHandle(handle);
   if (!dir)
     return;
 
@@ -567,8 +532,8 @@ void CPluginDirectory::SetResolvedUrl(int handle, bool success, const CFileItem 
 
 std::string CPluginDirectory::GetSetting(int handle, const std::string &strID)
 {
-  CSingleLock lock(m_handleLock);
-  CPluginDirectory *dir = dirFromHandle(handle);
+  CSingleLock lock(GetScriptsLock());
+  CPluginDirectory* dir = GetScriptFromHandle(handle);
   if(dir && dir->m_addon)
     return dir->m_addon->GetSetting(strID);
   else
@@ -577,24 +542,24 @@ std::string CPluginDirectory::GetSetting(int handle, const std::string &strID)
 
 void CPluginDirectory::SetSetting(int handle, const std::string &strID, const std::string &value)
 {
-  CSingleLock lock(m_handleLock);
-  CPluginDirectory *dir = dirFromHandle(handle);
+  CSingleLock lock(GetScriptsLock());
+  CPluginDirectory* dir = GetScriptFromHandle(handle);
   if(dir && dir->m_addon)
     dir->m_addon->UpdateSetting(strID, value);
 }
 
 void CPluginDirectory::SetContent(int handle, const std::string &strContent)
 {
-  CSingleLock lock(m_handleLock);
-  CPluginDirectory *dir = dirFromHandle(handle);
+  CSingleLock lock(GetScriptsLock());
+  CPluginDirectory* dir = GetScriptFromHandle(handle);
   if (dir)
     dir->m_listItems->SetContent(strContent);
 }
 
 void CPluginDirectory::SetProperty(int handle, const std::string &strProperty, const std::string &strValue)
 {
-  CSingleLock lock(m_handleLock);
-  CPluginDirectory *dir = dirFromHandle(handle);
+  CSingleLock lock(GetScriptsLock());
+  CPluginDirectory* dir = GetScriptFromHandle(handle);
   if (!dir)
     return;
   if (strProperty == "fanart_image")

@@ -11,12 +11,11 @@
 #include "IDirectory.h"
 #include "SortFileItem.h"
 #include "addons/IAddon.h"
-#include "threads/CriticalSection.h"
+#include "interfaces/generic/RunningScriptsHandler.h"
 #include "threads/Event.h"
 #include "threads/Thread.h"
 
 #include <atomic>
-#include <map>
 #include <string>
 
 #include "PlatformDefs.h"
@@ -28,7 +27,7 @@ class CFileItemList;
 namespace XFILE
 {
 
-class CPluginDirectory : public IDirectory
+class CPluginDirectory : public IDirectory, public CRunningScriptsHandler<CPluginDirectory>
 {
 public:
   CPluginDirectory();
@@ -72,15 +71,6 @@ private:
   ADDON::AddonPtr m_addon;
   bool StartScript(const std::string& strPath, bool retrievingDir, bool resume);
   bool WaitOnScriptResult(const std::string &scriptPath, int scriptId, const std::string &scriptName, bool retrievingDir);
-
-  static std::map<int,CPluginDirectory*> globalHandles;
-  static int getNewHandle(CPluginDirectory *cp);
-  static void reuseHandle(int handle, CPluginDirectory* cp);
-
-  static void removeHandle(int handle);
-  static CPluginDirectory *dirFromHandle(int handle);
-  static CCriticalSection m_handleLock;
-  static int handleCounter;
 
   CFileItemList* m_listItems;
   CFileItem*     m_fileResult;
