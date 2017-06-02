@@ -26,6 +26,7 @@
 #endif
 
 #include "AliasShortcutUtils.h"
+#include "utils/log.h"
 
 bool IsAliasShortcut(const std::string& path, bool isdirectory)
 {
@@ -57,7 +58,9 @@ void TranslateAliasShortcut(std::string& path)
   CDarwinUtils::TranslateAliasShortcut(path);
 #elif defined(TARGET_POSIX)
   // Linux does not use alias or shortcut methods
-
+#elif defined(TARGET_WINDOWS_STORE)
+  // Win10 does not use alias or shortcut methods
+  CLog::Log(LOGERROR, "%s is not implemented", __FUNCTION__);
 #elif defined(TARGET_WINDOWS)
 /* Needs testing under Windows platform so ignore shortcuts for now
   CComPtr<IShellLink> ipShellLink;

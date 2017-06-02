@@ -28,6 +28,10 @@
 #include <fcntl.h>
 #include <string.h>
 
+#ifdef TARGET_WINDOWS_STORE
+#include <io.h>
+#endif
+
 int SysfsUtils::SetString(const std::string& path, const std::string& valstr)
 {
   int fd = open(path.c_str(), O_RDWR, 0644);
