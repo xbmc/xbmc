@@ -63,6 +63,8 @@
 
 #define HEADER_NEWLINE        "\r\n"
 
+#define HEADER_CORS_ENABLED   true
+
 typedef struct {
   std::shared_ptr<XFILE::CFile> file;
   CHttpRanges ranges;
@@ -453,6 +455,11 @@ int CWebServer::FinalizeRequest(const std::shared_ptr<IHTTPRequestHandler>& hand
   // add all headers set by the request handler
   for (std::multimap<std::string, std::string>::const_iterator it = responseDetails.headers.begin(); it != responseDetails.headers.end(); ++it)
     AddHeader(response, it->first, it->second);
+
+  // add CORS headers
+  if (HEADER_CORS_ENABLED)
+    AddHeader(response, MHD_HTTP_HEADER_ACCESS_CONTROL_ALLOW_ORIGIN, "*");
+    AddHeader(response, "Access-Control-Allow-Credentials", "true");
 
   return SendResponse(request, responseStatus, response);
 }
