@@ -23,6 +23,7 @@
 
 #include <stdint.h>
 #include <vector>
+#include <memory>
 
 class CMMALPool;
 struct VideoPicture;
@@ -70,4 +71,5 @@ private:
 
   std::shared_ptr<CMMALPool> m_pool;
   uint32_t m_mmal_format;
+  VideoPicture* m_buf;
 };
