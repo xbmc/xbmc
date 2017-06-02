@@ -19,22 +19,25 @@
  *
  */
 
-#if   defined(TARGET_WINDOWS_DESKTOP)
-#define HAVE_PERIPHERAL_BUS_USB 1
-#include "win32/PeripheralBusUSB.h"
-#elif defined(TARGET_WINDOWS_STORE)
-#define HAVE_PERIPHERAL_BUS_USB 1
-#include "win10/PeripheralBusUSB.h"
-#elif defined(TARGET_LINUX) && defined(HAVE_LIBUDEV)
-#define HAVE_PERIPHERAL_BUS_USB 1
-#include "linux/PeripheralBusUSBLibUdev.h"
-#elif defined(TARGET_LINUX) && defined(HAVE_LIBUSB)
-#define HAVE_PERIPHERAL_BUS_USB 1
-#include "linux/PeripheralBusUSBLibUSB.h"
-#elif defined(TARGET_FREEBSD) && defined(HAVE_LIBUSB)
-#define HAVE_PERIPHERAL_BUS_USB 1
-#include "linux/PeripheralBusUSBLibUSB.h"
-#elif defined(TARGET_DARWIN)
-#define HAVE_PERIPHERAL_BUS_USB 1
-#include "osx/PeripheralBusUSB.h"
-#endif
+#include "peripherals/bus/PeripheralBus.h"
+#include <setupapi.h> //needed for GUID
+
+namespace PERIPHERALS
+{
+  class CPeripherals;
+
+  class CPeripheralBusUSB : public CPeripheralBus
+  {
+  public:
+    CPeripheralBusUSB(CPeripherals &manager);
+
+    /*!
+     * @see PeripheralBus::PerformDeviceScan()
+     */
+    bool PerformDeviceScan(PeripheralScanResults &results);
+
+  private:
+    bool PerformDeviceScan(const GUID *guid, const PeripheralType defaultType, PeripheralScanResults &results);
+    bool GetProductAndVendorId(const PeripheralType type, const std::string &strDeviceLocation, int *iVendorId, int *iProductId);
+  };
+}
