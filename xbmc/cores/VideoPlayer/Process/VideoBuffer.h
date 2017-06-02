@@ -57,6 +57,8 @@ class IVideoBufferPool;
 class IVideoBufferPool : public std::enable_shared_from_this<IVideoBufferPool>
 {
 public:
+  virtual ~IVideoBufferPool() = default;
+
   // get a free buffer from the pool, sets ref count to 1
   virtual CVideoBuffer* Get() = 0;
 
@@ -86,6 +88,7 @@ class CVideoBuffer
 {
 public:
   CVideoBuffer() = delete;
+  virtual ~CVideoBuffer() = default;
   void Acquire();
   void Acquire(std::shared_ptr<IVideoBufferPool> pool);
   void Release();
