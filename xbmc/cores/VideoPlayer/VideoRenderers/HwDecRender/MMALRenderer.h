@@ -24,7 +24,6 @@
 
 #include "guilib/GraphicContext.h"
 #include "../RenderFlags.h"
-#include "../RenderFormats.h"
 #include "../BaseRenderer.h"
 #include "../RenderCapture.h"
 #include "settings/VideoSettings.h"
@@ -94,44 +93,33 @@ public:
 
   bool RenderCapture(CRenderCapture* capture);
 
-<<<<<<< HEAD
-  virtual bool         Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, void* hwPic, unsigned int orientation);
-  virtual int          GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false);
-=======
   // Player functions
-  virtual bool         Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format, unsigned int orientation);
-  virtual int          GetImage(YuvImage *image, int source = AUTOSOURCE, bool readonly = false);
->>>>>>> 50fb06e... VideoPlayer: rename and move YuvImage
-  virtual void         ReleaseImage(int source, bool preserve = false);
-  virtual void         ReleaseBuffer(int idx);
-  virtual void         FlipPage(int source);
-  virtual void         PreInit();
+  virtual bool         Configure(const VideoPicture &picture, float fps, unsigned flags, unsigned int orientation) override;
+  virtual void         ReleaseBuffer(int idx) override;
+  virtual void         FlipPage(int source) override;
   virtual void         UnInit();
-  virtual void         Reset(); /* resets renderer after seek for example */
-  virtual void         Flush();
-  virtual bool         IsConfigured() { return m_bConfigured; }
-  virtual void         AddVideoPictureHW(VideoPicture& pic, int index);
-  virtual CRenderInfo GetRenderInfo();
+  virtual void         Reset() override; /* resets renderer after seek for example */
+  virtual void         Flush() override;
+  virtual bool         IsConfigured() override { return m_bConfigured; }
+  virtual void         AddVideoPicture(const VideoPicture& pic, int index) override;
+  virtual bool         IsPictureHW(const VideoPicture &picture) override { return false; };
+  virtual CRenderInfo GetRenderInfo() override;
 
-  virtual bool         SupportsMultiPassRendering() { return false; };
-  virtual bool         Supports(ERENDERFEATURE feature);
-  virtual bool         Supports(EINTERLACEMETHOD method);
-  virtual bool         Supports(ESCALINGMETHOD method);
+  virtual bool         SupportsMultiPassRendering() override { return false; };
+  virtual bool         Supports(ERENDERFEATURE feature) override;
+  virtual bool         Supports(ESCALINGMETHOD method) override;
 
-  void                 RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
+  virtual void         RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255) override;
 
-  virtual void         SetBufferSize(int numBuffers) { m_NumYV12Buffers = numBuffers; }
   virtual void SetVideoRect(const CRect& SrcRect, const CRect& DestRect);
-  virtual bool         IsGuiLayer() { return false; }
+  virtual bool         IsGuiLayer() override { return false; }
+  virtual bool         ConfigChanged(const VideoPicture &picture) override { return false; }
 
   void vout_input_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer);
   void deint_input_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer);
   void deint_output_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer);
 protected:
   int m_iYV12RenderBuffer;
-  int m_NumYV12Buffers;
-
-  std::vector<ERenderFormat> m_formats;
 
   CMMALBuffer         *m_buffers[NUM_BUFFERS];
   bool                 m_bConfigured;
