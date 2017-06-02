@@ -1589,7 +1589,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#346"
-msgid "Maintain original volume on downmix"
+msgid "Reduce loud sounds"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -19302,10 +19302,10 @@ msgctxt "#36532"
 msgid "Same as movie"
 msgstr ""
 
-#. Description of setting with label #346 "Normalize levels on downmix"
+#. Description of setting with label #346 "Reduce loud sounds"
 #: settings/DisplaySettings.cpp
 msgctxt "#36533"
-msgid "Select how audio is downmixed, e.g. from 5.1 to 2.0.[CR][Enabled] Maintains volume level of the original audio source however the dynamic range is compressed.[CR][Disabled] Maintains the dynamic range of the original audio source when downmixed however volume will be lower. Note: Dynamic range is the difference between the quietest and loudest sounds in an audio source. Enable this setting if movie dialogues are barely audible."
+msgid "Turn on Reduce loud sounds to enjoy films and music without disturbing others. Experience softer sound effects and music, but keep all the detail of the original sound level."
 msgstr ""
 
 #. Description of setting with label #668 "Component-specific logging..."
