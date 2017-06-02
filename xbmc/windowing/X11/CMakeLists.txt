@@ -4,7 +4,6 @@ set(SOURCES GLContextEGL.cpp
             WinEventsX11.cpp
             WinSystemX11.cpp
             WinSystemX11GLContext.cpp
-            WinSystemX11GLESContext.cpp
             XRandR.cpp
             VideoSyncGLX.cpp
             VideoSyncDRM.cpp)
@@ -15,7 +14,6 @@ set(HEADERS GLContext.h
             WinEventsX11.h
             WinSystemX11.h
             WinSystemX11GLContext.h
-            WinSystemX11GLESContext.h
             XRandR.h
             VideoSyncGLX.h
             VideoSyncDRM.h)

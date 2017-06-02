@@ -20,8 +20,6 @@
 
 #pragma once
 
-#if defined(HAVE_X11)
-
 #include "WinSystemX11.h"
 #include "GL/glx.h"
 #include "EGL/egl.h"
@@ -66,5 +64,3 @@ protected:
 
 XBMC_GLOBAL_REF(CWinSystemX11GLContext,g_Windowing);
 #define g_Windowing XBMC_GLOBAL_USE(CWinSystemX11GLContext)
-
-#endif //HAVE_X11

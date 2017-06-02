@@ -24,7 +24,6 @@
 #include "system.h"
 #undef BOOL
 
-#ifdef HAS_EGL
 #define BOOL XBMC_BOOL
 #include "VideoSyncIos.h"
 #include "WinSystemIOS.h"
@@ -490,6 +489,3 @@ std::unique_ptr<CVideoSync> CWinSystemIOS::GetVideoSync(void *clock)
   std::unique_ptr<CVideoSync> pVSync(new CVideoSyncIos(clock));
   return pVSync;
 }
-
-#endif
-

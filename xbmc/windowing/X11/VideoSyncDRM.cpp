@@ -20,8 +20,6 @@
 
 #include "system.h"
 
-#if defined(HAVE_X11)
-
 #include "VideoSyncDRM.h"
 #include "xf86drm.h"
 #include <sys/poll.h>
@@ -181,5 +179,3 @@ void CVideoSyncDRM::RefreshChanged()
   if (m_fps != g_graphicsContext.GetFPS())
     m_abort = true;
 }
-
-#endif

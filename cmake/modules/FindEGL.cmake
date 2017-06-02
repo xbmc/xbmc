@@ -34,14 +34,14 @@ find_package_handle_standard_args(EGL
 if(EGL_FOUND)
   set(EGL_LIBRARIES ${EGL_LIBRARY})
   set(EGL_INCLUDE_DIRS ${EGL_INCLUDE_DIR})
-  set(EGL_DEFINITIONS -DHAVE_LIBEGL=1)
+  set(EGL_DEFINITIONS -DHAS_EGL=1)
 
   if(NOT TARGET EGL::EGL)
     add_library(EGL::EGL UNKNOWN IMPORTED)
     set_target_properties(EGL::EGL PROPERTIES
                                    IMPORTED_LOCATION "${EGL_LIBRARY}"
                                    INTERFACE_INCLUDE_DIRECTORIES "${EGL_INCLUDE_DIR}"
-                                   INTERFACE_COMPILE_DEFINITIONS HAVE_LIBEGL=1)
+                                   INTERFACE_COMPILE_DEFINITIONS HAS_EGL=1)
   endif()
 endif()
 

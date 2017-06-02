@@ -19,8 +19,6 @@
  */
 #include "system.h"
 
-#if defined(HAS_GL)
-
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
@@ -235,5 +233,3 @@ std::unique_ptr<CVideoSync> CWinSystemX11GLContext::GetVideoSync(void *clock)
   }
   return pVSync;
 }
-
-#endif

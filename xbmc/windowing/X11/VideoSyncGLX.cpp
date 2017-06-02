@@ -20,8 +20,6 @@
 
 #include "system.h"
 
-#if defined(HAS_GLX)
-
 #include "VideoSyncGLX.h"
 #include <sstream>
 #include <X11/extensions/Xrandr.h>
@@ -288,5 +286,3 @@ float CVideoSyncGLX::GetFps()
   m_fps = g_graphicsContext.GetFPS();
   return m_fps;
 }
-
-#endif
