@@ -44,7 +44,7 @@ using namespace PERIPHERALS;
 using namespace ANNOUNCEMENT;
 using namespace CEC;
 
-#define CEC_LIB_SUPPORTED_VERSION LIBCEC_VERSION_TO_UINT(4, 0, 0)
+#define CEC_LIB_SUPPORTED_VERSION LIBCEC_VERSION_TO_UINT(4, 0, 1)
 
 /* time in seconds to ignore standby commands from devices after the screensaver has been activated */
 #define SCREENSAVER_TIMEOUT       20
@@ -57,6 +57,7 @@ using namespace CEC;
 #define LOCALISED_ID_STOP         36044
 #define LOCALISED_ID_PAUSE        36045
 #define LOCALISED_ID_POWEROFF     13005
+#define LOCALISED_ID_HIBERNATE    13010
 #define LOCALISED_ID_SUSPEND      13011
 #define LOCALISED_ID_QUIT         13009
 #define LOCALISED_ID_IGNORE       36028
@@ -636,6 +637,10 @@ void CPeripheralCecAdapter::OnTvStandby(void)
   case LOCALISED_ID_SUSPEND:
     m_bStarted = false;
     g_application.ExecuteXBMCAction("Suspend");
+    break;
+  case LOCALISED_ID_HIBERNATE:
+    m_bStarted = false;
+    g_application.ExecuteXBMCAction("Hibernate");
     break;
   case LOCALISED_ID_QUIT:
     m_bStarted = false;
@@ -1313,7 +1318,7 @@ void CPeripheralCecAdapter::SetConfigurationFromLibCEC(const CEC::libcec_configu
 void CPeripheralCecAdapter::SetConfigurationFromSettings(void)
 {
   // client version matches the version of libCEC that we originally used the API from
-  m_configuration.clientVersion = LIBCEC_VERSION_TO_UINT(4, 0, 0);
+  m_configuration.clientVersion = CEC_LIB_SUPPORTED_VERSION;
 
   // device name 'XBMC'
   snprintf(m_configuration.strDeviceName, 13, "%s", GetSettingString("device_name").c_str());
@@ -1389,7 +1394,12 @@ void CPeripheralCecAdapter::SetConfigurationFromSettings(void)
 
   // read the mutually exclusive boolean settings
   int iStandbyAction(GetSettingInt("standby_pc_on_tv_standby"));
-  m_configuration.bPowerOffOnStandby = iStandbyAction == LOCALISED_ID_SUSPEND ? 1 : 0;
+
+  if (iStandbyAction == LOCALISED_ID_SUSPEND || iStandbyAction == LOCALISED_ID_HIBERNATE)
+    m_configuration.bPowerOffOnStandby = 1;
+  else
+    m_configuration.bPowerOffOnStandby = 0;
+
   m_bShutdownOnStandby = iStandbyAction == LOCALISED_ID_POWEROFF;
 
 #if defined(CEC_DOUBLE_TAP_TIMEOUT_MS_OLD)
