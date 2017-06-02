@@ -104,7 +104,6 @@ CDecoder::CDecoder(CProcessInfo &processInfo, CDVDStreamInfo &hints) : m_process
 {
   if (g_advancedSettings.CanLogComponent(LOGVIDEO))
     CLog::Log(LOGDEBUG, "%s::%s - create %p", CLASSNAME, __FUNCTION__, this);
-  m_shared = 0;
   m_avctx = nullptr;
   m_pool = nullptr;
   m_gmem = nullptr;
@@ -221,14 +220,11 @@ int CDecoder::FFGetBuffer(AVCodecContext *avctx, AVFrame *frame, int flags)
 }
 
 
-bool CDecoder::Open(AVCodecContext *avctx, AVCodecContext* mainctx, enum AVPixelFormat fmt, unsigned int surfaces)
+bool CDecoder::Open(AVCodecContext *avctx, AVCodecContext* mainctx, enum AVPixelFormat fmt)
 {
   CSingleLock lock(m_section);
 
   CLog::Log(LOGNOTICE, "%s::%s - fmt:%d", CLASSNAME, __FUNCTION__, fmt);
-
-  if (surfaces > m_shared)
-    m_shared = surfaces;
 
   CLog::Log(LOGDEBUG, "%s::%s MMAL - source requires %d references", CLASSNAME, __FUNCTION__, avctx->refs);
 
@@ -293,9 +289,8 @@ bool CDecoder::GetPicture(AVCodecContext* avctx, VideoPicture* picture)
     return false;
 
   CMMALBuffer *buffer = static_cast<CMMALBuffer*>(m_gmem->m_opaque);
-  picture->hwPic = static_cast<void *>(buffer);
+  picture->videoBuffer = dynamic_cast<CVideoBuffer *>(buffer);
   assert(buffer);
-  picture->format = RENDER_FMT_MMAL;
   assert(buffer->mmal_buffer);
   buffer->mmal_buffer->data = (uint8_t *)m_gmem->m_vc_handle;
   buffer->mmal_buffer->alloc_size = buffer->mmal_buffer->length = m_gmem->m_numbytes;
@@ -317,7 +312,7 @@ CDVDVideoCodec::VCReturn CDecoder::Check(AVCodecContext* avctx)
 
 unsigned CDecoder::GetAllowedReferences()
 {
-  return m_shared;
+  return 6;
 }
 
 #endif

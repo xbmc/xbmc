@@ -366,7 +366,7 @@ bool CMMALVideo::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
   CSingleLock lock(m_sharedSection);
   if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-    CLog::Log(LOGDEBUG, "%s::%s usemmal:%d options:%x %dx%d renderer:%p", CLASSNAME, __func__, CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMMAL), hints.codecOptions, hints.width, hints.height, options.m_opaque_pointer);
+    CLog::Log(LOGDEBUG, "%s::%s usemmal:%d options:%x %dx%d", CLASSNAME, __func__, CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMMAL), hints.codecOptions, hints.width, hints.height);
 
   // we always qualify even if DVDFactoryCodec does this too.
   if (!CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMMAL) || (hints.codecOptions & CODEC_FORCE_SOFTWARE))
@@ -812,8 +812,9 @@ CDVDVideoCodec::VCReturn CMMALVideo::GetPicture(VideoPicture* pDvdVideoPicture)
   {
     assert(buffer && buffer->mmal_buffer);
     memset(pDvdVideoPicture, 0, sizeof *pDvdVideoPicture);
-    pDvdVideoPicture->format = RENDER_FMT_MMAL;
-    pDvdVideoPicture->hwPic = static_cast<void*>(buffer);
+    assert(buffer);
+    pDvdVideoPicture->videoBuffer = dynamic_cast<CVideoBuffer*>(buffer);
+    assert(pDvdVideoPicture->videoBuffer);
     pDvdVideoPicture->color_range  = 0;
     pDvdVideoPicture->color_matrix = 4;
     pDvdVideoPicture->iWidth  = buffer->m_width ? buffer->m_width : m_decoded_width;
@@ -836,7 +837,7 @@ CDVDVideoCodec::VCReturn CMMALVideo::GetPicture(VideoPicture* pDvdVideoPicture)
     pDvdVideoPicture->dts = buffer->mmal_buffer->dts == MMAL_TIME_UNKNOWN ? DVD_NOPTS_VALUE : buffer->mmal_buffer->dts;
     pDvdVideoPicture->pts = buffer->mmal_buffer->pts == MMAL_TIME_UNKNOWN ? DVD_NOPTS_VALUE : buffer->mmal_buffer->pts;
 
-    pDvdVideoPicture->iFlags  = DVP_FLAG_ALLOCATED;
+    pDvdVideoPicture->iFlags  = 0;
     if (buffer->mmal_buffer->flags & MMAL_BUFFER_HEADER_FLAG_USER3)
       pDvdVideoPicture->iFlags |= DVP_FLAG_DROPPED;
     if (g_advancedSettings.CanLogComponent(LOGVIDEO))
@@ -862,7 +863,7 @@ void CMMALVideo::ReleasePicture()
   CSingleLock lock(m_sharedSection);
   if (m_lastDvdVideoPicture)
   {
-    CMMALBuffer *omvb = static_cast<CMMALBuffer*>(m_lastDvdVideoPicture->hwPic);
+    CMMALBuffer *omvb = dynamic_cast<MMAL::CMMALYUVBuffer*>(m_lastDvdVideoPicture->videoBuffer);
     if (VERBOSE && g_advancedSettings.CanLogComponent(LOGVIDEO))
       CLog::Log(LOGDEBUG, "%s::%s - %p (%p)", CLASSNAME, __func__, omvb, omvb->mmal_buffer);
     SAFE_RELEASE(omvb);

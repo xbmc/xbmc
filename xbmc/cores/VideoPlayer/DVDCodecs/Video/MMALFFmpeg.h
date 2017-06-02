@@ -54,7 +54,7 @@ class CDecoder
 public:
   CDecoder(CProcessInfo& processInfo, CDVDStreamInfo &hints);
   virtual ~CDecoder();
-  virtual bool Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat, unsigned int surfaces) override;
+  virtual bool Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat) override;
   virtual CDVDVideoCodec::VCReturn Decode(AVCodecContext* avctx, AVFrame* frame) override;
   virtual bool GetPicture(AVCodecContext* avctx, VideoPicture* picture) override;
   virtual CDVDVideoCodec::VCReturn Check(AVCodecContext* avctx) override;
@@ -68,7 +68,6 @@ public:
 protected:
   AVCodecContext *m_avctx;
   CProcessInfo &m_processInfo;
-  unsigned int m_shared;
   CCriticalSection m_section;
   std::shared_ptr<CMMALPool> m_pool;
   enum AVPixelFormat m_fmt;
