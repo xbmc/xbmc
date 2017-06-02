@@ -24,7 +24,7 @@ class CAppParamParser
 {
   public:
     CAppParamParser();
-    void Parse(const char* argv[], int nArgs);
+    void Parse(const char* const* argv, int nArgs);
     CFileItemList m_playlist;
 
   private:
