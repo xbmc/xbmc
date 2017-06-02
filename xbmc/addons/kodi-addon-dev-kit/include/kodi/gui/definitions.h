@@ -137,6 +137,36 @@ typedef struct AddonToKodiFuncTable_kodi_gui_dialogYesNo
   bool (*show_and_get_input_line_button_text)(void* kodiBase, const char *heading, const char *line0, const char *line1, const char *line2, bool *canceled, const char *noLabel, const char *yesLabel);
 } AddonToKodiFuncTable_kodi_gui_dialogYesNo;
 
+typedef struct AddonToKodiFuncTable_kodi_gui_listItem
+{
+  void* (*create)(void* kodiBase, const char* label, const char* label2, const char* icon_image, const char* thumbnail_image, const char* path);
+  void (*destroy)(void* kodiBase, void* handle);
+} AddonToKodiFuncTable_kodi_gui_listItem;
+
+#define ADDON_MAX_CONTEXT_ENTRIES 20
+#define ADDON_MAX_CONTEXT_ENTRY_NAME_LENGTH 80
+typedef struct gui_context_menu_pair
+{
+  unsigned int id;
+  char name[ADDON_MAX_CONTEXT_ENTRY_NAME_LENGTH];
+} gui_context_menu_pair;
+    
+typedef struct AddonToKodiFuncTable_kodi_gui_window
+{
+  void* (*create)(void* kodiBase, const char* xml_filename, const char* default_skin, bool as_dialog, bool is_media);
+  void (*destroy)(void* kodiBase, void* handle);
+  void (*set_callbacks)(void* kodiBase, void* handle, void* clienthandle,
+       bool (*)(void* handle),
+       bool (*)(void* handle, int),
+       bool (*)(void* handle, int),
+       bool (*)(void* handle, int),
+       void (*)(void* handle, int, gui_context_menu_pair*, unsigned int*),
+       bool (*)(void* handle, int, unsigned int));
+  bool (*show)(void* kodiBase, void* handle);
+  bool (*close)(void* kodiBase, void* handle);
+  bool (*do_modal)(void* kodiBase, void* handle);
+} AddonToKodiFuncTable_kodi_gui_window;
+
 typedef struct AddonToKodiFuncTable_kodi_gui
 {
   AddonToKodiFuncTable_kodi_gui_general* general;
@@ -150,6 +180,8 @@ typedef struct AddonToKodiFuncTable_kodi_gui
   AddonToKodiFuncTable_kodi_gui_dialogSelect* dialogSelect;
   AddonToKodiFuncTable_kodi_gui_dialogTextViewer* dialogTextViewer;
   AddonToKodiFuncTable_kodi_gui_dialogYesNo* dialogYesNo;
+  AddonToKodiFuncTable_kodi_gui_listItem* listItem;
+  AddonToKodiFuncTable_kodi_gui_window* window;
 } AddonToKodiFuncTable_kodi_gui;
 
 } /* extern "C" */

@@ -29,6 +29,7 @@
 
 #include "addons/interfaces/Addon/AddonCallbacksAddon.h"
 #include "addons/interfaces/GUI/AddonCallbacksGUI.h"
+#include "addons/interfaces/GUI/Window.h"
 #include "addons/interfaces/GUI/AddonGUIWindow.h"
 #include "filesystem/SpecialProtocol.h"
 #include "messaging/ApplicationMessenger.h"
@@ -226,6 +227,9 @@ void CAddonInterfaces::OnApplicationMessage(ThreadMessage* pMsg)
     { //! @todo This is ugly - really these binary add-on dialogs should just be normal Kodi dialogs
       switch (pMsg->param1)
       {
+      case 0:
+        static_cast<ADDON::CGUIAddonWindowDialog*>(pMsg->lpVoid)->Show_Internal(pMsg->param2 > 0);
+        break;
       case 1:
         static_cast<KodiAPI::GUI::CGUIAddonWindowDialog*>(pMsg->lpVoid)->Show_Internal(pMsg->param2 > 0);
         break;
