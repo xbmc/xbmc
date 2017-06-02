@@ -13,6 +13,8 @@ endif()
 
 set(PLATFORM_DIR platform/win32)
 
+set(CORE_MAIN_SOURCE ${CMAKE_SOURCE_DIR}/xbmc/platform/win32/WinMain.cpp)
+
 # Precompiled headers fail with per target output directory. (needs CMake 3.1)
 set(PRECOMPILEDHEADER_DIR ${PROJECT_BINARY_DIR}/${CORE_BUILD_CONFIG}/objs)
 
