@@ -183,6 +183,8 @@ void CAdvancedSettings::Initialize()
 
   m_cddbAddress = "freedb.freedb.org";
 
+  m_partyMixLength = 10;
+
   m_handleMounting = g_application.IsStandAlone();
 
   m_fullScreenOnMovieStart = true;
@@ -850,6 +852,8 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
   }
 
   XMLUtils::GetString(pRootElement, "cddbaddress", m_cddbAddress);
+
+  XMLUtils::GetInt(pRootElement, "partymixlength", m_partyMixLength);
 
   //airtunes + airplay
   XMLUtils::GetInt(pRootElement,     "airtunesport", m_airTunesPort);

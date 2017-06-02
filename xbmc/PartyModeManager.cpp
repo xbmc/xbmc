@@ -40,10 +40,9 @@
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "video/VideoDatabase.h"
+#include "settings/AdvancedSettings.h"
 
 using namespace PLAYLIST;
-
-#define QUEUE_DEPTH       10
 
 CPartyModeManager::CPartyModeManager(void)
 {
@@ -312,7 +311,7 @@ bool CPartyModeManager::AddRandomSongs(int iSongs /* = 0 */)
     iPlaylist = PLAYLIST_VIDEO;
 
   CPlayList& playlist = g_playlistPlayer.GetPlaylist(iPlaylist);
-  int iMissingSongs = QUEUE_DEPTH - playlist.size();
+  int iMissingSongs = g_advancedSettings.m_partyMixLength - playlist.size();
   if (iSongs <= 0)
     iSongs = iMissingSongs;
   // distribute between types if mixed
@@ -601,7 +600,7 @@ bool CPartyModeManager::AddInitialSongs(std::vector< std::pair<int,int > > &song
   int iPlaylist = m_bIsVideo ? PLAYLIST_VIDEO : PLAYLIST_MUSIC;
 
   CPlayList& playlist = g_playlistPlayer.GetPlaylist(iPlaylist);
-  int iMissingSongs = QUEUE_DEPTH - playlist.size();
+  int iMissingSongs = g_advancedSettings.m_partyMixLength - playlist.size();
   if (iMissingSongs > 0)
   {
     // generate iMissingSongs random ids from songIDs
