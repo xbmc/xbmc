@@ -154,6 +154,27 @@ protected:
 typedef std::shared_ptr<CSetting> SettingPtr;
 typedef std::vector<SettingPtr> SettingList;
 
+template<typename TValue, SettingType TSettingType>
+class CTraitedSetting : public CSetting
+{
+public:
+  typedef TValue Value;
+
+  // implementation of CSetting
+  virtual int GetType() const override { return TSettingType; }
+
+  static SettingType Type() { return TSettingType; }
+
+protected:
+  CTraitedSetting(const std::string &id, CSettingsManager *settingsManager = NULL)
+    : CSetting(id, settingsManager)
+  { }
+  CTraitedSetting(const std::string &id, const CTraitedSetting &setting)
+    : CSetting(id, setting)
+  { }
+  virtual ~CTraitedSetting() { }
+};
+
 class CSettingReference : public CSetting
 {
 public:
@@ -240,7 +261,7 @@ protected:
  \brief Boolean setting implementation.
  \sa CSetting
  */
-class CSettingBool : public CSetting
+class CSettingBool : public CTraitedSetting<bool, SettingTypeBool>
 {
 public:
   CSettingBool(const std::string &id, CSettingsManager *settingsManager = NULL);
@@ -252,7 +273,6 @@ public:
 
   virtual bool Deserialize(const TiXmlNode *node, bool update = false) override;
 
-  virtual int GetType() const override { return SettingTypeBool; }
   virtual bool FromString(const std::string &value) override;
   virtual std::string ToString() const override;
   virtual bool Equals(const std::string &value) const override;
@@ -277,7 +297,7 @@ private:
  \brief Integer setting implementation
  \sa CSetting
  */
-class CSettingInt : public CSetting
+class CSettingInt : public CTraitedSetting<int, SettingTypeInteger>
 {
 public:
   CSettingInt(const std::string &id, CSettingsManager *settingsManager = NULL);
@@ -291,7 +311,6 @@ public:
 
   virtual bool Deserialize(const TiXmlNode *node, bool update = false) override;
 
-  virtual int GetType() const override { return SettingTypeInteger; }
   virtual bool FromString(const std::string &value) override;
   virtual std::string ToString() const override;
   virtual bool Equals(const std::string &value) const override;
@@ -351,7 +370,7 @@ private:
  \brief Real number setting implementation.
  \sa CSetting
  */
-class CSettingNumber : public CSetting
+class CSettingNumber : public CTraitedSetting<double, SettingTypeNumber>
 {
 public:
   CSettingNumber(const std::string &id, CSettingsManager *settingsManager = NULL);
@@ -364,7 +383,6 @@ public:
 
   virtual bool Deserialize(const TiXmlNode *node, bool update = false) override;
 
-  virtual int GetType() const override { return SettingTypeNumber; }
   virtual bool FromString(const std::string &value) override;
   virtual std::string ToString() const override;
   virtual bool Equals(const std::string &value) const override;
@@ -400,7 +418,7 @@ private:
  \brief String setting implementation.
  \sa CSetting
  */
-class CSettingString : public CSetting
+class CSettingString : public CTraitedSetting<std::string, SettingTypeString>
 {
 public:
   CSettingString(const std::string &id, CSettingsManager *settingsManager = NULL);
@@ -412,7 +430,6 @@ public:
 
   virtual bool Deserialize(const TiXmlNode *node, bool update = false) override;
 
-  virtual int GetType() const override { return SettingTypeString; }
   virtual bool FromString(const std::string &value) override { return SetValue(value); }
   virtual std::string ToString() const override { return m_value; }
   virtual bool Equals(const std::string &value) const override { return m_value == value; }

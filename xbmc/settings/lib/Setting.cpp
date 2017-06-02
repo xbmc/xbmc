@@ -601,18 +601,18 @@ std::string CSettingList::toString(const SettingList &values) const
 }
   
 CSettingBool::CSettingBool(const std::string &id, CSettingsManager *settingsManager /* = NULL */)
-  : CSetting(id, settingsManager),
+  : CTraitedSetting(id, settingsManager),
     m_value(false), m_default(false)
 { }
   
 CSettingBool::CSettingBool(const std::string &id, const CSettingBool &setting)
-  : CSetting(id, setting)
+  : CTraitedSetting(id, setting)
 {
   copy(setting);
 }
 
 CSettingBool::CSettingBool(const std::string &id, int label, bool value, CSettingsManager *settingsManager /* = NULL */)
-  : CSetting(id, settingsManager),
+  : CTraitedSetting(id, settingsManager),
     m_value(value), m_default(value)
 {
   m_label = label;
@@ -730,7 +730,7 @@ bool CSettingBool::fromString(const std::string &strValue, bool &value) const
 }
 
 CSettingInt::CSettingInt(const std::string &id, CSettingsManager *settingsManager /* = NULL */)
-  : CSetting(id, settingsManager),
+  : CTraitedSetting(id, settingsManager),
     m_value(0), m_default(0),
     m_min(0), m_step(1), m_max(0),
     m_optionsFiller(NULL),
@@ -738,7 +738,7 @@ CSettingInt::CSettingInt(const std::string &id, CSettingsManager *settingsManage
 { }
   
 CSettingInt::CSettingInt(const std::string &id, const CSettingInt &setting)
-  : CSetting(id, setting),
+  : CTraitedSetting(id, setting),
     m_optionsFiller(NULL),
     m_optionsFillerData(NULL)
 {
@@ -746,7 +746,7 @@ CSettingInt::CSettingInt(const std::string &id, const CSettingInt &setting)
 }
 
 CSettingInt::CSettingInt(const std::string &id, int label, int value, CSettingsManager *settingsManager /* = NULL */)
-  : CSetting(id, settingsManager),
+  : CTraitedSetting(id, settingsManager),
     m_value(value), m_default(value),
     m_min(0), m_step(1), m_max(0),
     m_optionsFiller(NULL),
@@ -756,7 +756,7 @@ CSettingInt::CSettingInt(const std::string &id, int label, int value, CSettingsM
 }
 
 CSettingInt::CSettingInt(const std::string &id, int label, int value, int minimum, int step, int maximum, CSettingsManager *settingsManager /* = NULL */)
-  : CSetting(id, settingsManager),
+  : CTraitedSetting(id, settingsManager),
     m_value(value), m_default(value),
     m_min(minimum), m_step(step), m_max(maximum),
     m_optionsFiller(NULL),
@@ -766,7 +766,7 @@ CSettingInt::CSettingInt(const std::string &id, int label, int value, int minimu
 }
 
 CSettingInt::CSettingInt(const std::string &id, int label, int value, const TranslatableIntegerSettingOptions &options, CSettingsManager *settingsManager /* = NULL */)
-  : CSetting(id, settingsManager),
+  : CTraitedSetting(id, settingsManager),
     m_value(value), m_default(value),
     m_min(0), m_step(1), m_max(0),
     m_translatableOptions(options),
@@ -1024,19 +1024,19 @@ bool CSettingInt::fromString(const std::string &strValue, int &value)
 }
 
 CSettingNumber::CSettingNumber(const std::string &id, CSettingsManager *settingsManager /* = NULL */)
-  : CSetting(id, settingsManager),
+  : CTraitedSetting(id, settingsManager),
     m_value(0.0), m_default(0.0),
     m_min(0.0), m_step(1.0), m_max(0.0)
 { }
   
 CSettingNumber::CSettingNumber(const std::string &id, const CSettingNumber &setting)
-  : CSetting(id, setting)
+  : CTraitedSetting(id, setting)
 {
   copy(setting);
 }
 
 CSettingNumber::CSettingNumber(const std::string &id, int label, float value, CSettingsManager *settingsManager /* = NULL */)
-  : CSetting(id, settingsManager),
+  : CTraitedSetting(id, settingsManager),
     m_value(value), m_default(value),
     m_min(0.0), m_step(1.0), m_max(0.0)
 {
@@ -1044,7 +1044,7 @@ CSettingNumber::CSettingNumber(const std::string &id, int label, float value, CS
 }
 
 CSettingNumber::CSettingNumber(const std::string &id, int label, float value, float minimum, float step, float maximum, CSettingsManager *settingsManager /* = NULL */)
-  : CSetting(id, settingsManager),
+  : CTraitedSetting(id, settingsManager),
     m_value(value), m_default(value),
     m_min(minimum), m_step(step), m_max(maximum)
 {
@@ -1195,14 +1195,14 @@ bool CSettingNumber::fromString(const std::string &strValue, double &value)
 }
 
 CSettingString::CSettingString(const std::string &id, CSettingsManager *settingsManager /* = NULL */)
-  : CSetting(id, settingsManager),
+  : CTraitedSetting(id, settingsManager),
     m_allowEmpty(false),
     m_optionsFiller(NULL),
     m_optionsFillerData(NULL)
 { }
   
 CSettingString::CSettingString(const std::string &id, const CSettingString &setting)
-  : CSetting(id, setting),
+  : CTraitedSetting(id, setting),
     m_optionsFiller(NULL),
     m_optionsFillerData(NULL)
 {
@@ -1210,7 +1210,7 @@ CSettingString::CSettingString(const std::string &id, const CSettingString &sett
 }
 
 CSettingString::CSettingString(const std::string &id, int label, const std::string &value, CSettingsManager *settingsManager /* = NULL */)
-  : CSetting(id, settingsManager),
+  : CTraitedSetting(id, settingsManager),
     m_value(value), m_default(value),
     m_allowEmpty(false),
     m_optionsFiller(NULL),
