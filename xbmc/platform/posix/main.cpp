@@ -88,8 +88,6 @@ int main(int argc, char* argv[])
   // set up some xbmc specific relationships
   XBMC::Context context;
 
-  bool renderGUI = true;
-#if defined(DEBUG)
   struct rlimit rlim;
   rlim.rlim_cur = rlim.rlim_max = RLIM_INFINITY;
   if (setrlimit(RLIMIT_CORE, &rlim) == -1)
@@ -110,5 +108,5 @@ int main(int argc, char* argv[])
   CAppParamParser appParamParser;
   appParamParser.Parse(argv, argc);
   
-  return XBMC_Run(renderGUI, appParamParser.m_playlist);
+  return XBMC_Run(true, appParamParser.m_playlist);
 }
