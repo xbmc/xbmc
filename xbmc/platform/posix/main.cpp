@@ -23,6 +23,9 @@
 
 #include <cstring>
 
+// For HAS_SDL
+#include "system.h"
+
 #if defined(TARGET_DARWIN_OSX)
   #include "Util.h"
   // SDL redefines main as SDL_main 
@@ -40,7 +43,6 @@
 #include "platform/xbmc.h"
 #include "platform/XbmcContext.h"
 #include "settings/AdvancedSettings.h"
-#include "system.h"
 #include "utils/log.h"
 
 #ifdef HAS_LIRC
