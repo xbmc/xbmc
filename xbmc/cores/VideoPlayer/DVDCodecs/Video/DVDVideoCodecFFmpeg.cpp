@@ -132,7 +132,7 @@ void CVideoBufferFFmpeg::Unref()
 class CVideoBufferPoolFFmpeg : public IVideoBufferPool
 {
 public:
-  ~CVideoBufferPoolFFmpeg();
+  virtual ~CVideoBufferPoolFFmpeg();
   virtual void Return(int id) override;
   virtual CVideoBuffer* Get() override;
 
