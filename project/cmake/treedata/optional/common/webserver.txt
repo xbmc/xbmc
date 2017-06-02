@@ -1,2 +1,3 @@
+xbmc/interfaces/legacy/wsgi interfaces/legacy/wsgi # MICROHTTPD
 xbmc/network/httprequesthandler network/httprequesthandler # MICROHTTPD
 xbmc/network/httprequesthandler/python network/httprequesthandler/python # MICROHTTPD
