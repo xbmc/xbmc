@@ -140,9 +140,27 @@ bool Win32DllLoader::Load()
     return true;
 
   std::string strFileName = GetFileName();
-
   auto strDllW = ToW(CSpecialProtocol::TranslatePath(strFileName));
+
+#ifdef TARGET_WINDOWS_STORE
+  // The path cannot be an absolute path or a relative path that contains ".." in the path. 
+  auto appPath = Windows::ApplicationModel::Package::Current->InstalledLocation->Path;
+  std::wstring strAppPathW(appPath->Data());
+  size_t len = appPath->Length();
+
+  if (!strAppPathW.empty() && wcsnicmp(strAppPathW.c_str(), strDllW.c_str(), len) == 0)
+  {
+    if (strDllW.at(len) == '\\' || strDllW.at(len) == '/')
+      len++;
+    std::wstring relative = strDllW.substr(len);
+    m_dllHandle = LoadPackagedLibrary(relative.c_str(), 0);
+  }
+  else
+    m_dllHandle = LoadPackagedLibrary(strDllW.c_str(), 0);
+#else
   m_dllHandle = LoadLibraryExW(strDllW.c_str(), NULL, LOAD_WITH_ALTERED_SEARCH_PATH);
+#endif
+
   if (!m_dllHandle)
   {
     DWORD dw = GetLastError();
@@ -223,6 +241,7 @@ bool Win32DllLoader::HasSymbols()
 
 void Win32DllLoader::OverrideImports(const std::string &dll)
 {
+#ifdef TARGET_WINDOWS_DESKTOP
   using KODI::PLATFORM::WINDOWS::ToW;
   auto strdllW = ToW(CSpecialProtocol::TranslatePath(dll));
   auto image_base = reinterpret_cast<BYTE*>(GetModuleHandleW(strdllW.c_str()));
@@ -304,6 +323,7 @@ void Win32DllLoader::OverrideImports(const std::string &dll)
       }
     }
   }
+#endif
 }
 
 bool Win32DllLoader::NeedsHooking(const char *dllName)
