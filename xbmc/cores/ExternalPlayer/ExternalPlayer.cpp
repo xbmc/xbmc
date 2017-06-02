@@ -58,7 +58,7 @@
 
 using namespace XFILE;
 
-#if defined(TARGET_WINDOWS)
+#if defined(TARGET_WINDOWS_DESKTOP)
 extern HWND g_hWnd;
 #endif
 
@@ -87,7 +87,7 @@ CExternalPlayer::CExternalPlayer(IPlayerCallback& callback)
   m_yPos = 0;
 
 
-#if defined(TARGET_WINDOWS)
+#if defined(TARGET_WINDOWS_DESKTOP)
   memset(&m_processInfo, 0, sizeof(m_processInfo));
 #endif
 }
@@ -125,7 +125,7 @@ bool CExternalPlayer::CloseFile(bool reopen)
 
   if (m_dialog && m_dialog->IsActive()) m_dialog->Close();
 
-#if defined(TARGET_WINDOWS)
+#if defined(TARGET_WINDOWS_DESKTOP)
   if (m_bIsPlaying && m_processInfo.hProcess)
   {
     TerminateProcess(m_processInfo.hProcess, 1);
@@ -228,7 +228,7 @@ void CExternalPlayer::Process()
   // make sure we surround the arguments with quotes where necessary
   std::string strFName;
   std::string strFArgs;
-#if defined(TARGET_WINDOWS)
+#if defined(TARGET_WINDOWS_DESKTOP)
   // W32 batch-file handline
   if (StringUtils::EndsWith(m_filename, ".bat") || StringUtils::EndsWith(m_filename, ".cmd"))
   {
@@ -259,7 +259,7 @@ void CExternalPlayer::Process()
     strFArgs.append("\"");
   }
 
-#if defined(TARGET_WINDOWS)
+#if defined(TARGET_WINDOWS_DESKTOP)
   if (m_warpcursor)
   {
     GetCursorPos(&m_ptCursorpos);
@@ -292,7 +292,7 @@ void CExternalPlayer::Process()
     CLog::Log(LOGNOTICE, "%s: Hiding %s window", __FUNCTION__, CCompileInfo::GetAppName());
     g_Windowing.Hide();
   }
-#if defined(TARGET_WINDOWS)
+#if defined(TARGET_WINDOWS_DESKTOP)
   else if (currentStyle & WS_EX_TOPMOST)
   {
     CLog::Log(LOGNOTICE, "%s: Lowering %s window", __FUNCTION__, CCompileInfo::GetAppName());
@@ -322,7 +322,7 @@ void CExternalPlayer::Process()
   m_callback.OnPlayBackStarted(m_file);
 
   bool ret = true;
-#if defined(TARGET_WINDOWS)
+#if defined(TARGET_WINDOWS_DESKTOP)
   ret = ExecuteAppW32(strFName.c_str(),strFArgs.c_str());
 #elif defined(TARGET_ANDROID)
   ret = ExecuteAppAndroid(m_filename.c_str(), mainFile.c_str());
@@ -355,7 +355,7 @@ void CExternalPlayer::Process()
   m_bIsPlaying = false;
   CLog::Log(LOGNOTICE, "%s: Stop", __FUNCTION__);
 
-#if defined(TARGET_WINDOWS)
+#if defined(TARGET_WINDOWS_DESKTOP)
   g_Windowing.Restore();
 
   if (currentStyle & WS_EX_TOPMOST)
@@ -371,7 +371,7 @@ void CExternalPlayer::Process()
     g_Windowing.Show();
   }
 
-#if defined(TARGET_WINDOWS)
+#if defined(TARGET_WINDOWS_DESKTOP)
   if (m_warpcursor)
   {
     m_xPos = 0;
@@ -402,7 +402,7 @@ void CExternalPlayer::Process()
     m_callback.OnPlayBackEnded();
 }
 
-#if defined(TARGET_WINDOWS)
+#if defined(TARGET_WINDOWS_DESKTOP)
 bool CExternalPlayer::ExecuteAppW32(const char* strPath, const char* strSwitches)
 {
   CLog::Log(LOGNOTICE, "%s: %s %s", __FUNCTION__, strPath, strSwitches);
@@ -596,7 +596,7 @@ bool CExternalPlayer::Initialize(TiXmlElement* pConfig)
   XMLUtils::GetBoolean(pConfig, "hidexbmc", m_hidexbmc);
   if (!XMLUtils::GetBoolean(pConfig, "hideconsole", m_hideconsole))
   {
-#ifdef TARGET_WINDOWS
+#ifdef TARGET_WINDOWS_DESKTOP
     // Default depends on whether player is a batch file
     m_hideconsole = StringUtils::EndsWith(m_filename, ".bat");
 #endif
@@ -629,7 +629,7 @@ bool CExternalPlayer::Initialize(TiXmlElement* pConfig)
           m_islauncher ? "true" : "false",
           warpCursor.c_str());
 
-#ifdef TARGET_WINDOWS
+#ifdef TARGET_WINDOWS_DESKTOP
   m_filenameReplacers.push_back("^smb:// , / , \\\\ , g");
   m_filenameReplacers.push_back("^smb:\\\\\\\\ , smb:(\\\\\\\\[^\\\\]*\\\\) , \\1 , ");
 #endif
