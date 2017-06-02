@@ -34,7 +34,7 @@ namespace DX
     if (FAILED(hr))
     {
       // Set a breakpoint on this line to catch Win32 API errors.
-#if _DEBUG
+#if _DEBUG && !defined(TARGET_WINDOWS_STORE)
       DebugBreak();
 #endif
       throw new XbmcCommons::UncheckedException(__FUNCTION__, "Unhandled error");
@@ -133,7 +133,7 @@ namespace DX
 #endif
 }
 
-#ifdef TARGET_WINDOWS
+#ifdef TARGET_WINDOWS_DESKTOP
 namespace Windows
 {
   namespace Foundation

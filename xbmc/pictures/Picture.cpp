@@ -282,6 +282,8 @@ bool CPicture::CreateTiledThumb(const std::vector<std::string> &files, const std
 
   // create a buffer for the resulting thumb
   uint32_t *buffer = (uint32_t *)calloc(g_advancedSettings.m_imageRes * g_advancedSettings.m_imageRes, 4);
+  if (!buffer)
+    return false;
   for (unsigned int i = 0; i < files.size(); ++i)
   {
     int x = i % num_across;

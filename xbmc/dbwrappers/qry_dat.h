@@ -53,6 +53,10 @@ enum fType {
 	ft_Object
     };
 
+#ifdef TARGET_WINDOWS_STORE
+#pragma pack(push)
+#pragma pack(8)
+#endif
 
 
 class field_value {
@@ -241,5 +245,8 @@ public:
   query_data records;
 };
 
+#ifdef TARGET_WINDOWS_STORE
+#pragma pack(pop)
+#endif
 } // namespace
 

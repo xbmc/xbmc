@@ -483,7 +483,7 @@ void CPVRManager::Process(void)
 
 bool CPVRManager::SetWakeupCommand(void)
 {
-#if !defined(TARGET_DARWIN_IOS)
+#if !defined(TARGET_DARWIN_IOS) && !defined(TARGET_WINDOWS_STORE)
   if (!m_settings.GetBoolValue(CSettings::SETTING_PVRPOWERMANAGEMENT_ENABLED))
     return false;
 
