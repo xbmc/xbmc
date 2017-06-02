@@ -538,7 +538,7 @@ void CRenderManager::CreateRenderer()
       }
 #endif
 #if defined(HAS_MMAL)
-      else if (0)
+      else if (1)
       {
         m_pRenderer = new CMMALRenderer;
       }
