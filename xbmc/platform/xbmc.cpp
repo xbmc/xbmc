@@ -35,7 +35,7 @@
 #endif
 
 #include "platform/MessagePrinter.h"
-
+#include "utils/log.h"
 
 extern "C" int XBMC_Run(bool renderGUI, CFileItemList &playlist)
 {
@@ -43,15 +43,17 @@ extern "C" int XBMC_Run(bool renderGUI, CFileItemList &playlist)
 
   if (!g_advancedSettings.Initialized())
   {
-#ifdef _DEBUG
-  g_advancedSettings.m_logLevel     = LOG_LEVEL_DEBUG;
-  g_advancedSettings.m_logLevelHint = LOG_LEVEL_DEBUG;
-#else
-  g_advancedSettings.m_logLevel     = LOG_LEVEL_NORMAL;
-  g_advancedSettings.m_logLevelHint = LOG_LEVEL_NORMAL;
-#endif
+    // Initialize sets default log level of NORMAL
     g_advancedSettings.Initialize();
   }
+  
+#ifdef _DEBUG
+  // Override requested debug level if this is a debug build
+  g_advancedSettings.m_logLevel     = LOG_LEVEL_DEBUG;
+  g_advancedSettings.m_logLevelHint = LOG_LEVEL_DEBUG;
+#endif
+  // Apply preliminary log level early for initialization code
+  CLog::SetLogLevel(g_advancedSettings.m_logLevel);
 
   if (!g_application.Create())
   {
