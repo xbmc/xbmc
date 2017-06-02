@@ -60,6 +60,11 @@
 #define NPT_CONFIG_HAVE_GETENV
 #define NPT_CONFIG_HAVE_SETENV
 #define NPT_CONFIG_HAVE_UNSETENV
+#if defined(TARGET_WINDOWS_STORE)
+#undef NPT_CONFIG_HAVE_GETENV
+#undef NPT_CONFIG_HAVE_SETENV
+#undef NPT_CONFIG_HAVE_UNSETENV
+#endif
 #define NPT_CONFIG_HAVE_READDIR_R
 #endif /* NPT_CONFIG_HAS_STD_C */
 
@@ -225,12 +230,20 @@ typedef long NPT_PointerLong;
 #define NPT_strncpy(d,s,c)       strncpy_s(d,c+1,s,c)
 #define NPT_strcpy(d,s)          strcpy_s(d,strlen(s)+1,s)
 #undef NPT_CONFIG_HAVE_GETENV
+#ifdef TARGET_WINDOWS_STORE
+#undef NPT_CONFIG_HAVE_GETENV
+#undef NPT_CONFIG_HAVE_DUPENV_S
+#undef NPT_CONFIG_HAVE_SETENV
+#undef NPT_CONFIG_HAVE_UNSETENV
+#undef NPT_CONFIG_HAVE_PUTENV_S
+#else
 #define NPT_CONFIG_HAVE_DUPENV_S
 #define dupenv_s _dupenv_s
 #undef NPT_CONFIG_HAVE_SETENV
 #undef NPT_CONFIG_HAVE_UNSETENV
 #define NPT_CONFIG_HAVE_PUTENV_S
 #define putenv_s _putenv_s
+#endif
 #else
 #undef NPT_CONFIG_HAVE_GMTIME_R
 #undef NPT_CONFIG_HAVE_LOCALTIME_R
