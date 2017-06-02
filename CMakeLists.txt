@@ -441,6 +441,13 @@ foreach(header ${bindings})
   get_filename_component(file ${header} NAME)
   configure_file(${CMAKE_SOURCE_DIR}/${header} ${CORE_BUILD_DIR}/include/${APP_NAME_LC}/${file} COPYONLY)
 endforeach()
+file(GLOB_RECURSE ADDON_HEADERS
+     RELATIVE ${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi
+    ${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/*.h)
+foreach(header ${ADDON_HEADERS})
+  configure_file(${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/${header}
+                 ${CORE_BUILD_DIR}/include/kodi/${header} COPYONLY)
+endforeach()
 
 set(APP_LIB_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/lib/${APP_NAME_LC})
 set(APP_INCLUDE_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/include/${APP_NAME_LC})
