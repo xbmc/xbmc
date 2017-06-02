@@ -20,7 +20,7 @@
 #include "dialogs/GUIDialogProgress.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "interfaces/generic/ScriptInvocationManager.h"
+#include "interfaces/generic/RunningScriptObserver.h"
 #include "messaging/ApplicationMessenger.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -34,31 +34,6 @@
 using namespace XFILE;
 using namespace ADDON;
 using namespace KODI::MESSAGING;
-
-CPluginDirectory::CScriptObserver::CScriptObserver(int scriptId, CEvent &event) :
-  CThread("scriptobs"), m_scriptId(scriptId), m_event(event)
-{
-  Create();
-}
-
-void CPluginDirectory::CScriptObserver::Process()
-{
-  while (!m_bStop)
-  {
-    if (!CScriptInvocationManager::GetInstance().IsRunning(m_scriptId))
-    {
-      m_event.Set();
-      break;
-    }
-    CThread::Sleep(20);
-  }
-}
-
-void CPluginDirectory::CScriptObserver::Abort()
-{
-  // will wait until thread exits
-  StopThread();
-}
 
 CPluginDirectory::CPluginDirectory()
   : m_fetchComplete(true)
@@ -472,7 +447,7 @@ bool CPluginDirectory::WaitOnScriptResult(const std::string &scriptPath, int scr
   {
     if (!m_fetchComplete.WaitMSec(20))
     {
-      CScriptObserver scriptObs(scriptId, m_fetchComplete);
+      CRunningScriptObserver scriptObs(scriptId, m_fetchComplete);
 
       CGUIDialogProgress* progress = nullptr;
       CGUIWindowManager& wm = CServiceBroker::GetGUI()->GetWindowManager();

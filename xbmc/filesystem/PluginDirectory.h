@@ -13,7 +13,6 @@
 #include "addons/IAddon.h"
 #include "interfaces/generic/RunningScriptsHandler.h"
 #include "threads/Event.h"
-#include "threads/Thread.h"
 
 #include <atomic>
 #include <string>
@@ -79,16 +78,5 @@ private:
   std::atomic<bool> m_cancelled;
   bool          m_success = false;      // set by script in EndOfDirectory
   int    m_totalItems = 0;   // set by script in AddDirectoryItem
-
-  class CScriptObserver : public CThread
-  {
-  public:
-    CScriptObserver(int scriptId, CEvent &event);
-    void Abort();
-  protected:
-    void Process() override;
-    int m_scriptId;
-    CEvent &m_event;
-  };
 };
 }
