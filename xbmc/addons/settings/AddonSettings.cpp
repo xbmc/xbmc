@@ -55,6 +55,85 @@ bool InfoBool(const std::string &condition, const std::string &value, SettingCon
   return g_infoManager.EvaluateBool(condition);
 }
 
+template<class TSetting>
+SettingPtr InitializeFromOldSettingWithoutDefinition(ADDON::CAddonSettings& settings, const std::string& settingId, typename TSetting::Value defaultValue)
+{
+  std::shared_ptr<TSetting> setting = std::make_shared<TSetting>(settingId, settings.GetSettingsManager());
+  setting->SetLevel(SettingLevelInternal);
+  setting->SetVisible(false);
+  setting->SetDefault(defaultValue);
+  // TODO: setting->SetAllowEmpty(true);
+
+  return setting;
+}
+
+template<>
+SettingPtr InitializeFromOldSettingWithoutDefinition<CSettingString>(ADDON::CAddonSettings& settings, const std::string& settingId, typename CSettingString::Value defaultValue)
+{
+  std::shared_ptr<CSettingString> setting = std::make_shared<CSettingString>(settingId, settings.GetSettingsManager());
+  setting->SetLevel(SettingLevelInternal);
+  setting->SetVisible(false);
+  setting->SetDefault(defaultValue);
+  setting->SetAllowEmpty(true);
+
+  return setting;
+}
+
+template<class TSetting>
+SettingPtr AddSettingWithoutDefinition(ADDON::CAddonSettings& settings, const std::string& settingId, typename TSetting::Value defaultValue)
+{
+  if (settingId.empty())
+    return nullptr;
+
+  // if necessary try to initialize the settings manager on-the-fly without any definitions
+  if (!settings.IsInitialized() && !settings.Initialize(CXBMCTinyXML(), true))
+  {
+    CLog::Log(LOGWARNING, "CAddonSettings[%s]: failed to initialize settings on-the-fly", settings.GetAddon()->ID().c_str());
+    return nullptr;
+  }
+
+  // check if we need to add a section on-the-fly
+  auto sections = settings.GetSettingsManager()->GetSections();
+  SettingSectionPtr section;
+  if (sections.empty())
+    section = std::make_shared<CSettingSection>(settings.GetAddon()->ID(), settings.GetSettingsManager());
+  else
+    section = sections.back();
+
+  // check if we need to add a category on-the-fly
+  auto categories = section->GetCategories();
+  SettingCategoryPtr category;
+  if (categories.empty())
+    category = std::make_shared<CSettingCategory>("category0", settings.GetSettingsManager());
+  else
+    category = categories.back();
+
+  // check if we need to add a group on-the-fly
+  auto groups = category->GetGroups();
+  SettingGroupPtr group;
+  if (groups.empty())
+    group = std::make_shared<CSettingGroup>("0", settings.GetSettingsManager());
+  else
+    group = groups.back();
+
+  // create a new setting on-the-fly
+  auto setting = InitializeFromOldSettingWithoutDefinition<TSetting>(settings, settingId, defaultValue);
+  if (setting == nullptr)
+  {
+    CLog::Log(LOGWARNING, "CAddonSettings[%s]: failed to create setting \"%s\" on-the-fly", settings.GetAddon()->ID().c_str(), settingId.c_str());
+    return nullptr;
+  }
+
+  // add the setting (and if necessary the section, category and/or group)
+  if (!settings.GetSettingsManager()->AddSetting(setting, section, category, group))
+  {
+    CLog::Log(LOGWARNING, "CAddonSettings[%s]: failed to add setting \"%s\" on-the-fly", settings.GetAddon()->ID().c_str(), settingId.c_str());
+    return nullptr;
+  }
+
+  return setting;
+}
+
 namespace ADDON
 {
 CAddonSettings::CAddonSettings(std::shared_ptr<const IAddon> addon)
@@ -98,9 +177,26 @@ void CAddonSettings::OnSettingAction(std::shared_ptr<const CSetting> setting)
   KODI::MESSAGING::CApplicationMessenger::GetInstance().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, actionData);
 }
 
-bool CAddonSettings::Initialize(const CXBMCTinyXML& doc)
+bool CAddonSettings::Initialize(const CXBMCTinyXML& doc, bool allowEmpty /* = false */)
 {
-  return InitializeInternal(doc, false);
+  CSingleLock lock(m_critical);
+  if (m_initialized)
+    return false;
+
+  // register custom setting types
+  InitializeSettingTypes();
+  // register custom setting controls
+  InitializeControls();
+
+  // load the settings definitions
+  if (!InitializeDefinitions(doc) && !allowEmpty)
+    return false;
+
+  GetSettingsManager()->SetInitialized();
+
+  m_initialized = true;
+
+  return true;
 }
 
 bool CAddonSettings::Load(const CXBMCTinyXML& doc)
@@ -189,7 +285,7 @@ bool CAddonSettings::Load(const CXBMCTinyXML& doc)
         m_addon.lock()->ID().c_str(), setting.first.c_str());
 
       // create a hidden/internal string setting on-the-fly
-      newSetting = AddSettingWithoutDefinition(setting.first, setting.second);
+      newSetting = AddSettingWithoutDefinition<CSettingString>(*this, setting.first, setting.second);
     }
 
     // try to load the old setting value
@@ -237,9 +333,24 @@ std::string CAddonSettings::GetSettingLabel(int label) const
   return labelIt->second;
 }
 
+std::shared_ptr<CSetting> CAddonSettings::AddSetting(const std::string& settingId, bool value)
+{
+  return AddSettingWithoutDefinition<CSettingBool>(*this, settingId, value);
+}
+
+std::shared_ptr<CSetting> CAddonSettings::AddSetting(const std::string& settingId, int value)
+{
+  return AddSettingWithoutDefinition<CSettingInt>(*this, settingId, value);
+}
+
+std::shared_ptr<CSetting> CAddonSettings::AddSetting(const std::string& settingId, double value)
+{
+  return AddSettingWithoutDefinition<CSettingNumber>(*this, settingId, value);
+}
+
 std::shared_ptr<CSetting> CAddonSettings::AddSetting(const std::string& settingId, const std::string& value)
 {
-  return AddSettingWithoutDefinition(settingId, value);
+  return AddSettingWithoutDefinition<CSettingString>(*this, settingId, value);
 }
 
 void CAddonSettings::InitializeSettingTypes()
@@ -266,28 +377,6 @@ void CAddonSettings::InitializeControls()
 void CAddonSettings::InitializeConditions()
 {
   GetSettingsManager()->AddCondition("InfoBool", InfoBool);
-}
-
-bool CAddonSettings::InitializeInternal(const CXBMCTinyXML& doc, bool allowEmptyDefinition)
-{
-  CSingleLock lock(m_critical);
-  if (m_initialized)
-    return false;
-
-  // register custom setting types
-  InitializeSettingTypes();
-  // register custom setting controls
-  InitializeControls();
-
-  // load the settings definitions
-  if (!InitializeDefinitions(doc) && !allowEmptyDefinition)
-    return false;
-
-  GetSettingsManager()->SetInitialized();
-
-  m_initialized = true;
-
-  return true;
 }
 
 bool CAddonSettings::InitializeDefinitions(const CXBMCTinyXML& doc)
@@ -1144,76 +1233,6 @@ SettingPtr CAddonSettings::InitializeFromOldSettingFileWithSource(const std::str
   setting->SetHideExtension(StringUtils::EqualsNoCase(option, "hideext"));
 
   setting->SetOptionsFiller(FileEnumSettingOptionsFiller);
-
-  return setting;
-}
-
-SettingPtr CAddonSettings::InitializeFromOldSettingWithoutDefinition(const std::string& settingId, const std::string& defaultValue)
-{
-  std::shared_ptr<CSettingString> setting = std::make_shared<CSettingString>(settingId, GetSettingsManager());
-  setting->SetLevel(SettingLevelInternal);
-  setting->SetVisible(false);
-  setting->SetDefault(defaultValue);
-  setting->SetAllowEmpty(true);
-
-  auto control = std::make_shared<CSettingControlEdit>();
-  control->SetFormat("string");
-
-  setting->SetControl(control);
-
-  return setting;
-}
-
-SettingPtr CAddonSettings::AddSettingWithoutDefinition(const std::string& settingId, const std::string& defaultValue)
-{
-  if (settingId.empty())
-    return nullptr;
-
-  // if necessary try to initialize the settings manager on-the-fly without any definitions
-  if (!IsInitialized() && !InitializeInternal(CXBMCTinyXML(), true))
-  {
-    CLog::Log(LOGWARNING, "CAddonSettings[%s]: failed to initialize settings on-the-fly", m_addon.lock()->ID().c_str());
-    return nullptr;
-  }
-
-  // check if we need to add a section on-the-fly
-  auto sections = GetSettingsManager()->GetSections();
-  SettingSectionPtr section;
-  if (sections.empty())
-    section = std::make_shared<CSettingSection>(m_addon.lock()->ID(), GetSettingsManager());
-  else
-    section = sections.back();
-
-  // check if we need to add a category on-the-fly
-  auto categories = section->GetCategories();
-  SettingCategoryPtr category;
-  if (categories.empty())
-    category = std::make_shared<CSettingCategory>("category0", GetSettingsManager());
-  else
-    category = categories.back();
-
-  // check if we need to add a group on-the-fly
-  auto groups = category->GetGroups();
-  SettingGroupPtr group;
-  if (groups.empty())
-    group = std::make_shared<CSettingGroup>("0", GetSettingsManager());
-  else
-    group = groups.back();
-
-  // create a new setting on-the-fly
-  auto setting = InitializeFromOldSettingWithoutDefinition(settingId, defaultValue);
-  if (setting == nullptr)
-  {
-    CLog::Log(LOGWARNING, "CAddonSettings[%s]: failed to create setting \"%s\" on-the-fly", m_addon.lock()->ID().c_str(), settingId.c_str());
-    return nullptr;
-  }
-
-  // add the setting (and if necessary the section, category and/or group)
-  if (!GetSettingsManager()->AddSetting(setting, section, category, group))
-  {
-    CLog::Log(LOGWARNING, "CAddonSettings[%s]: failed to add setting \"%s\" on-the-fly", m_addon.lock()->ID().c_str(), settingId.c_str());
-    return nullptr;
-  }
 
   return setting;
 }

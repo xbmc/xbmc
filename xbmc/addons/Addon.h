@@ -148,6 +148,34 @@ public:
    */
   void UpdateSetting(const std::string& key, const std::string& value) override;
 
+  /*! \brief Update a user-configured setting with a new boolean value
+  \param key the id of the setting to update
+  \param value the value that the setting should take
+  \sa LoadSettings, LoadUserSettings, SaveSettings, HasSettings, HasUserSettings, GetSetting
+  */
+  bool UpdateSettingBool(const std::string& key, bool value) override;
+
+  /*! \brief Update a user-configured setting with a new integer value
+  \param key the id of the setting to update
+  \param value the value that the setting should take
+  \sa LoadSettings, LoadUserSettings, SaveSettings, HasSettings, HasUserSettings, GetSetting
+  */
+  bool UpdateSettingInt(const std::string& key, int value) override;
+
+  /*! \brief Update a user-configured setting with a new number value
+  \param key the id of the setting to update
+  \param value the value that the setting should take
+  \sa LoadSettings, LoadUserSettings, SaveSettings, HasSettings, HasUserSettings, GetSetting
+  */
+  bool UpdateSettingNumber(const std::string& key, double value) override;
+
+  /*! \brief Update a user-configured setting with a new string value
+  \param key the id of the setting to update
+  \param value the value that the setting should take
+  \sa LoadSettings, LoadUserSettings, SaveSettings, HasSettings, HasUserSettings, GetSetting
+  */
+  bool UpdateSettingString(const std::string& key, const std::string& value) override;
+
   /*! \brief Retrieve a particular settings value
    If a previously configured user setting is available, we return it's value, else we return the default (if available)
    \param key the id of the setting to retrieve
@@ -155,6 +183,42 @@ public:
    \sa LoadSettings, LoadUserSettings, SaveSettings, HasSettings, HasUserSettings, UpdateSetting
    */
   std::string GetSetting(const std::string& key) override;
+
+  /*! \brief Retrieve a particular settings value as boolean
+  If a previously configured user setting is available, we return it's value, else we return the default (if available)
+  \param key the id of the setting to retrieve
+  \param value the current value of the setting, or the default if the setting has yet to be configured
+  \return true if the setting's value was retrieved, false otherwise.
+  \sa LoadSettings, LoadUserSettings, SaveSettings, HasSettings, HasUserSettings, UpdateSetting
+  */
+  bool GetSettingBool(const std::string& key, bool& value) override;
+
+  /*! \brief Retrieve a particular settings value as integer
+  If a previously configured user setting is available, we return it's value, else we return the default (if available)
+  \param key the id of the setting to retrieve
+  \param value the current value of the setting, or the default if the setting has yet to be configured
+  \return true if the setting's value was retrieved, false otherwise.
+  \sa LoadSettings, LoadUserSettings, SaveSettings, HasSettings, HasUserSettings, UpdateSetting
+  */
+  bool GetSettingInt(const std::string& key, int& value) override;
+
+  /*! \brief Retrieve a particular settings value as number
+  If a previously configured user setting is available, we return it's value, else we return the default (if available)
+  \param key the id of the setting to retrieve
+  \param value the current value of the setting, or the default if the setting has yet to be configured
+  \return true if the setting's value was retrieved, false otherwise.
+  \sa LoadSettings, LoadUserSettings, SaveSettings, HasSettings, HasUserSettings, UpdateSetting
+  */
+  bool GetSettingNumber(const std::string& key, double& value) override;
+
+  /*! \brief Retrieve a particular settings value as string
+  If a previously configured user setting is available, we return it's value, else we return the default (if available)
+  \param key the id of the setting to retrieve
+  \param value the current value of the setting, or the default if the setting has yet to be configured
+  \return true if the setting's value was retrieved, false otherwise.
+  \sa LoadSettings, LoadUserSettings, SaveSettings, HasSettings, HasUserSettings, UpdateSetting
+  */
+  bool GetSettingString(const std::string& key, std::string& value) override;
 
   CAddonSettings* GetSettings() const override;
 

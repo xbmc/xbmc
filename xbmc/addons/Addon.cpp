@@ -319,6 +319,40 @@ std::string CAddon::GetSetting(const std::string& key)
   return "";
 }
 
+template<class TSetting>
+bool GetSettingValue(CAddon& addon, const std::string& key, typename TSetting::Value& value)
+{
+  if (key.empty() || !addon.HasSettings())
+    return false;
+
+  auto setting = addon.GetSettings()->GetSetting(key);
+  if (setting == nullptr || setting->GetType() != TSetting::Type())
+    return false;
+
+  value = std::static_pointer_cast<TSetting>(setting)->GetValue();
+  return true;
+}
+
+bool CAddon::GetSettingBool(const std::string& key, bool& value)
+{
+  return GetSettingValue<CSettingBool>(*this, key, value);
+}
+
+bool CAddon::GetSettingInt(const std::string& key, int& value)
+{
+  return GetSettingValue<CSettingInt>(*this, key, value);
+}
+
+bool CAddon::GetSettingNumber(const std::string& key, double& value)
+{
+  return GetSettingValue<CSettingNumber>(*this, key, value);
+}
+
+bool CAddon::GetSettingString(const std::string& key, std::string& value)
+{
+  return GetSettingValue<CSettingString>(*this, key, value);
+}
+
 void CAddon::UpdateSetting(const std::string& key, const std::string& value)
 {
   if (key.empty() || !LoadSettings())
@@ -339,6 +373,52 @@ void CAddon::UpdateSetting(const std::string& key, const std::string& value)
   }
 
   setting->FromString(value);
+}
+
+template<class TSetting>
+bool UpdateSettingValue(CAddon& addon, const std::string& key, typename TSetting::Value value)
+{
+  if (key.empty() || !addon.HasSettings())
+    return false;
+
+  // try to get the setting
+  auto setting = addon.GetSettings()->GetSetting(key);
+
+  // if the setting doesn't exist, try to add it
+  if (setting == nullptr)
+  {
+    setting = addon.GetSettings()->AddSetting(key, value);
+    if (setting == nullptr)
+    {
+      CLog::Log(LOGERROR, "CAddon[%s]: failed to add undefined setting \"%s\"", addon.ID().c_str(), key.c_str());
+      return false;
+    }
+  }
+
+  if (setting->GetType() != TSetting::Type())
+    return false;
+
+  return std::static_pointer_cast<TSetting>(setting)->SetValue(value);
+}
+
+bool CAddon::UpdateSettingBool(const std::string& key, bool value)
+{
+  return UpdateSettingValue<CSettingBool>(*this, key, value);
+}
+
+bool CAddon::UpdateSettingInt(const std::string& key, int value)
+{
+  return UpdateSettingValue<CSettingInt>(*this, key, value);
+}
+
+bool CAddon::UpdateSettingNumber(const std::string& key, double value)
+{
+  return UpdateSettingValue<CSettingNumber>(*this, key, value);
+}
+
+bool CAddon::UpdateSettingString(const std::string& key, const std::string& value)
+{
+  return UpdateSettingValue<CSettingString>(*this, key, value);
 }
 
 bool CAddon::SettingsFromXML(const CXBMCTinyXML &doc, bool loadDefaults /* = false */)

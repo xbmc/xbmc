@@ -127,7 +127,15 @@ namespace ADDON
     virtual bool HasSettings() =0;
     virtual void SaveSettings() =0;
     virtual void UpdateSetting(const std::string& key, const std::string& value) =0;
+    virtual bool UpdateSettingBool(const std::string& key, bool value) = 0;
+    virtual bool UpdateSettingInt(const std::string& key, int value) = 0;
+    virtual bool UpdateSettingNumber(const std::string& key, double value) = 0;
+    virtual bool UpdateSettingString(const std::string& key, const std::string& value) = 0;
     virtual std::string GetSetting(const std::string& key) =0;
+    virtual bool GetSettingBool(const std::string& key, bool& value) = 0;
+    virtual bool GetSettingInt(const std::string& key, int& value) = 0;
+    virtual bool GetSettingNumber(const std::string& key, double& value) = 0;
+    virtual bool GetSettingString(const std::string& key, std::string& value) = 0;
     virtual CAddonSettings* GetSettings() const =0;
     virtual const ADDONDEPS &GetDeps() const =0;
     virtual AddonVersion GetDependencyVersion(const std::string &dependencyID) const =0;
