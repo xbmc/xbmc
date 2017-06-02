@@ -70,7 +70,6 @@ bool CPixelConverterRBP::Open(AVPixelFormat pixfmt, AVPixelFormat targetfmt, uns
     return false;
   }
 
-  m_renderFormat = RENDER_FMT_MMAL;
   m_width = width;
   m_height = height;
   m_swsContext = sws_getContext(width, height, pixfmt,
@@ -136,7 +135,7 @@ bool CPixelConverterRBP::Decode(const uint8_t* pData, unsigned int size)
     return false;
   }
 
-  MMAL::CMMALYUVBuffer *omvb = static_cast<MMAL::CMMALYUVBuffer*>(m_buf->hwPic);
+  MMAL::CMMALYUVBuffer *omvb = dynamic_cast<MMAL::CMMALYUVBuffer*>(m_buf->videoBuffer);
 
   const int stride = size / m_height;
 
@@ -154,9 +153,9 @@ void CPixelConverterRBP::GetPicture(VideoPicture& dvdVideoPicture)
 {
   CPixelConverter::GetPicture(dvdVideoPicture);
 
-  dvdVideoPicture.hwPic = m_buf->hwPic;
+  dvdVideoPicture.videoBuffer = m_buf->videoBuffer;
 
-  MMAL::CMMALYUVBuffer *omvb = static_cast<MMAL::CMMALYUVBuffer*>(m_buf->hwPic);
+  MMAL::CMMALYUVBuffer *omvb = dynamic_cast<MMAL::CMMALYUVBuffer*>(m_buf->videoBuffer);
 
   // need to flush ARM cache so GPU can see it
   omvb->gmem->Flush();
@@ -194,7 +193,7 @@ VideoPicture* CPixelConverterRBP::AllocatePicture(int iWidth, int iHeight)
 
   if (pPicture)
   {
-    pPicture->hwPic = static_cast<void*>(omvb);
+    pPicture->videoBuffer = dynamic_cast<CVideoBuffer*>(omvb);
     pPicture->iWidth = iWidth;
     pPicture->iHeight = iHeight;
   }
@@ -206,9 +205,9 @@ void CPixelConverterRBP::FreePicture(VideoPicture* pPicture)
 {
   if (pPicture)
   {
-    if (pPicture->hwPic)
+    if (pPicture->videoBuffer)
     {
-      MMAL::CMMALYUVBuffer *omvb = static_cast<MMAL::CMMALYUVBuffer*>(m_buf->hwPic);
+      MMAL::CMMALYUVBuffer *omvb = dynamic_cast<MMAL::CMMALYUVBuffer*>(m_buf->videoBuffer);
       omvb->Release();
     }
     delete pPicture;
