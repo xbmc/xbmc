@@ -28,6 +28,9 @@
 #ifdef TARGET_POSIX
 #include <sys/resource.h>
 #include <signal.h>
+#include <cstring>
+#include "messaging/ApplicationMessenger.h"
+#include "platform/MessagePrinter.h"
 #endif
 #if defined(TARGET_DARWIN_OSX)
   #include "Util.h"
@@ -41,6 +44,42 @@
 #include "input/linux/LIRC.h"
 #endif
 #include "platform/XbmcContext.h"
+  
+#if defined(TARGET_POSIX)
+namespace
+{
+
+class CPOSIXSignalHandleThread : public CThread
+{
+public:
+  CPOSIXSignalHandleThread()
+  : CThread("POSIX signal handler")
+  {}
+protected:
+  void Process() override
+  {
+    CMessagePrinter::DisplayMessage("Exiting application");
+    KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_QUIT);
+  }
+};
+
+extern "C"
+{
+
+void XBMC_POSIX_HandleSignal(int sig)
+{
+  // Spawn handling thread: the current thread that this signal was catched on
+  // might have been interrupted in a call to PostMsg() while holding a lock
+  // there, which would lead to a deadlock if PostMsg() was called directly here
+  // as PostMsg() is not supposed to be reentrant
+  auto thread = new CPOSIXSignalHandleThread;
+  thread->Create(true);
+}
+
+}
+
+}
+#endif
 
 #ifdef __cplusplus
 extern "C"
@@ -69,6 +108,14 @@ int main(int argc, char* argv[])
   if (setrlimit(RLIMIT_CORE, &rlim) == -1)
     CLog::Log(LOGDEBUG, "Failed to set core size limit (%s)", strerror(errno));
 #endif
+  
+  // Set up global SIGINT/SIGTERM handler
+  struct sigaction signalHandler;
+  std::memset(&signalHandler, 0, sizeof(signalHandler));
+  signalHandler.sa_handler = &XBMC_POSIX_HandleSignal;
+  signalHandler.sa_flags = SA_RESTART;
+  sigaction(SIGINT, &signalHandler, nullptr);
+  sigaction(SIGTERM, &signalHandler, nullptr);
 #endif
   setlocale(LC_NUMERIC, "C");
   g_advancedSettings.Initialize();
