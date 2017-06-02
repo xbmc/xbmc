@@ -62,9 +62,9 @@ def _versionchecklinux(packages):
         handler = False
         result = False
         try:
-            # try aptdeamon first
-            from lib.aptdeamonhandler import AptdeamonHandler
-            handler = AptdeamonHandler()
+            # try aptdaemon first
+            from lib.aptdaemonhandler import AptdaemonHandler
+            handler = AptdaemonHandler()
         except:
             # fallback to shell
             # since we need the user password, ask to check for new version first
