@@ -211,7 +211,8 @@ bool CRenderManager::Configure(const VideoPicture& picture, float fps, unsigned 
     m_clockSync.Reset();
     m_dvdClock.SetVsyncAdjust(0);
     m_pConfigPicture.reset(new VideoPicture(picture));
-    m_pConfigPicture->videoBuffer->Acquire();
+    if (m_pConfigPicture->videoBuffer)
+      m_pConfigPicture->videoBuffer->Acquire();
 
     CSingleLock lock2(m_presentlock);
     m_presentstep = PRESENT_READY;
