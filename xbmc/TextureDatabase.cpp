@@ -282,6 +282,31 @@ bool CTextureDatabase::GetCachedTexture(const std::string &url, CTextureDetails 
   return false;
 }
 
+std::vector<std::string> CTextureDatabase::GetCachedTextureUrls()
+{
+  std::vector<std::string>  urls;
+
+  try
+  {
+    if (NULL == m_pDB.get()) return urls;
+    if (NULL == m_pDS.get()) return urls;
+
+    std::string sql = PrepareSQL("SELECT cachedurl FROM texture ORDER BY cachedurl");
+    m_pDS->query(sql);
+    while (!m_pDS->eof())
+    {
+      urls.push_back(m_pDS->fv(0).get_asString());
+      m_pDS->next();
+    }
+    m_pDS->close();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s, failed", __FUNCTION__);
+  }
+  return urls;
+}
+
 bool CTextureDatabase::GetTextures(CVariant &items, const Filter &filter)
 {
   try

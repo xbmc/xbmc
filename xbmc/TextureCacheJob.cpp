@@ -25,6 +25,7 @@
 #include "settings/Settings.h"
 #include "utils/log.h"
 #include "filesystem/File.h"
+#include "filesystem/SpecialProtocolDirectory.h"
 #include "pictures/Picture.h"
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
@@ -276,6 +277,72 @@ bool CTextureUseCountJob::DoWork()
     for (std::vector<CTextureDetails>::const_iterator i = m_textures.begin(); i != m_textures.end(); ++i)
       db.IncrementUseCount(*i);
     db.CommitTransaction();
+  }
+  return true;
+}
+
+CTextureCleanupJob::CTextureCleanupJob()
+{
+}
+
+bool CTextureCleanupJob::operator==(const CJob* job) const
+{
+  if (strcmp(job->GetType(),GetType()) == 0)
+  {
+    const CTextureCleanupJob* useJob = dynamic_cast<const CTextureCleanupJob*>(job);
+    if (useJob)
+      return true;
+  }
+  return false;
+}
+
+bool CTextureCleanupJob::DoWork()
+{
+  CTextureDatabase db;
+  if (db.Open())
+  {
+    std::string path;
+    std::string fn;
+    std::string prevPath = "";
+    std::vector<std::string> pathContent;
+
+    XFILE::CSpecialProtocolDirectory thumbDir;
+    CFileItemList files;
+    int fileIdx = 0;
+    int totdel = 0;
+
+    auto deleteFile = [&]()
+    {
+      std::string todel = files.Get(fileIdx)->GetPath();
+      CLog::Log(LOGDEBUG, "CTextureCleanupJob: deleting %s", todel.c_str());
+      XFILE::CFile::Delete(todel);
+      totdel++;
+      fileIdx++;
+    };
+
+    std::vector<std::string> urls = db.GetCachedTextureUrls();
+    for (const auto &url : urls)
+    {
+      URIUtils::Split(url, path, fn);
+      std::string cmpurl = "special://thumbnails/" + url;
+      if (path != prevPath)
+      {
+        while (fileIdx < files.Size())
+          deleteFile();
+        files.Clear();
+        thumbDir.GetDirectory(CURL("special://thumbnails/" + path), files);
+        files.Sort(SortByPath, SortOrderAscending);
+        prevPath = path;
+        fileIdx = 0;
+      }
+      while (fileIdx < files.Size() && files.Get(fileIdx)->GetPath() < cmpurl)
+        deleteFile();
+      if (fileIdx < files.Size() && files.Get(fileIdx)->GetPath() == cmpurl)
+        fileIdx++;
+    }
+    while (fileIdx < files.Size())
+      deleteFile();
+    CLog::Log(LOGDEBUG, "CTextureCleanupJob: %d thumbnails deleted", totdel);
   }
   return true;
 }

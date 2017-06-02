@@ -4621,7 +4621,12 @@ msgctxt "#1450"
 msgid "Put display to sleep when idle"
 msgstr ""
 
-#empty strings from id 1451 to 2049
+#: system/settings/settings.xml
+msgctxt "#1451"
+msgid "Clean thumbnails"
+msgstr ""
+
+#empty strings from id 1452 to 2049
 #strings through to 1470 reserved for power-saving
 
 msgctxt "#2050"
@@ -20059,7 +20064,12 @@ msgctxt "#37045"
 msgid "Extract chapter thumbnails for presentation in the chapters / bookmarks dialogue. This might increase CPU load."
 msgstr ""
 
-#empty strings from id 37046 to 38009
+#: system/settings/settings.xml
+msgctxt "#37046"
+msgid "Remove dangling thumbnails."
+msgstr ""
+
+#empty strings from id 37047 to 38009
 
 #: system/settings/rbp.xml
 msgctxt "#38010"

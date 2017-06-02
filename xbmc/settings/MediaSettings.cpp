@@ -352,6 +352,11 @@ void CMediaSettings::OnSettingAction(const CSetting *setting)
       videodatabase.Close();
     }
   }
+  else if (settingId == CSettings::SETTING_THUMBNAILS_CLEANUP)
+  {
+    if (HELPERS::ShowYesNoDialogText(CVariant{313}, CVariant{333}) == DialogResponse::YES)
+      g_application.StartThumbnailsCleanup(true);
+  }
 }
 
 int CMediaSettings::GetWatchedMode(const std::string &content) const

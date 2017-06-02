@@ -437,6 +437,7 @@ const std::string CSettings::SETTING_GAMES_KEYBOARD_PLAYERCONFIG_8 = "gameskeybo
 const std::string CSettings::SETTING_GAMES_ENABLE = "gamesgeneral.enable";
 const std::string CSettings::SETTING_GAMES_ENABLEREWIND = "gamesgeneral.enablerewind";
 const std::string CSettings::SETTING_GAMES_REWINDTIME = "gamesgeneral.rewindtime";
+const std::string CSettings::SETTING_THUMBNAILS_CLEANUP = "thumbnails.cleanup";
 
 CSettings::CSettings()
   : m_initialized(false)
@@ -1039,6 +1040,7 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_VIDEOLIBRARY_CLEANUP);
   settingSet.insert(CSettings::SETTING_VIDEOLIBRARY_IMPORT);
   settingSet.insert(CSettings::SETTING_VIDEOLIBRARY_EXPORT);
+  settingSet.insert(CSettings::SETTING_THUMBNAILS_CLEANUP);
   m_settingsManager->RegisterCallback(&CMediaSettings::GetInstance(), settingSet);
 
   settingSet.clear();

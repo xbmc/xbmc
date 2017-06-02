@@ -258,6 +258,12 @@ public:
   void StartVideoScan(const std::string &path, bool userInitiated = true, bool scanAll = false);
 
   /*!
+   \brief Starts a thumbnail cleanup.
+   \param userInitiated Whether the action was initiated by the user (either via GUI or any other method) or not.  It is meant to hide or show dialogs.
+   */
+  void StartThumbnailsCleanup(bool userInitiated = true);
+
+  /*!
   \brief Starts a music library cleanup.
   \param userInitiated Whether the action was initiated by the user (either via GUI or any other method) or not.  It is meant to hide or show dialogs.
   */
