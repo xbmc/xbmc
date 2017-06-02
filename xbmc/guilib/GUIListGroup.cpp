@@ -185,7 +185,7 @@ unsigned int CGUIListGroup::GetFocusedItem() const
     if ((*it)->GetControlType() == CGUIControl::GUICONTROL_LISTGROUP && ((CGUIListGroup *)(*it))->GetFocusedItem())
       return ((CGUIListGroup *)(*it))->GetFocusedItem();
   }
-  return 0;
+  return m_bHasFocus ? 1 : 0;
 }
 
 bool CGUIListGroup::MoveLeft()
@@ -216,7 +216,6 @@ void CGUIListGroup::SetState(bool selected, bool focused)
     {
       CGUIListLabel *label = (CGUIListLabel *)(*it);
       label->SetSelected(selected);
-      label->SetScrolling(focused);
     }
     else if ((*it)->GetControlType() == CGUIControl::GUICONTROL_LISTGROUP)
       ((CGUIListGroup *)(*it))->SetState(selected, focused);
