@@ -86,7 +86,10 @@ if(FFMPEG_FOUND)
   list(APPEND HEADERS Engines/ActiveAE/ActiveAEResampleFFMPEG.h)
 endif()
 
-if(CORE_SYSTEM_NAME STREQUAL windows)
+if(CORE_SYSTEM_NAME STREQUAL windowsstore)
+  list(APPEND SOURCES Sinks/AESinkWASAPIWin10.cpp)
+  list(APPEND HEADERS Sinks/AESinkWASAPIWin10.h)
+elseif(CORE_SYSTEM_NAME STREQUAL windows)
   list(APPEND SOURCES Sinks/AESinkDirectSound.cpp
                       Sinks/AESinkWASAPI.cpp)
   list(APPEND HEADERS Sinks/AESinkDirectSound.h
@@ -136,7 +139,7 @@ endif()
 
 core_add_library(audioengine)
 target_include_directories(${CORE_LIBRARY} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
-if(NOT CORE_SYSTEM_NAME STREQUAL windows)
+if(NOT CORE_SYSTEM_NAME STREQUAL windows AND NOT CORE_SYSTEM_NAME STREQUAL windowsstore)
   if(HAVE_SSE)
     target_compile_options(${CORE_LIBRARY} PRIVATE -msse)
   endif()
