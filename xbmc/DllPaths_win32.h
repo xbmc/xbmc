@@ -27,7 +27,7 @@
 #define DLL_PATH_LIBNFS        "special://xbmcbin/libnfs.dll"
 #define DLL_PATH_LIBPLIST      "special://xbmcbin/libplist.dll"
 #define DLL_PATH_LIBSHAIRPLAY  "special://xbmcbin/shairplay.dll"
-#define DLL_PATH_LIBCEC        "special://xbmcbin/cec.dll"
+#define DLL_PATH_LIBCEC        "special://xbmcbin/libcec.dll"
 
 /* VideoPlayer */
 #define DLL_PATH_LIBASS        "special://xbmcbin/libass.dll"
