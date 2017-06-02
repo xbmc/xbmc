@@ -88,6 +88,7 @@ int main(int argc, char* argv[])
   // set up some xbmc specific relationships
   XBMC::Context context;
 
+#if defined(_DEBUG)
   struct rlimit rlim;
   rlim.rlim_cur = rlim.rlim_max = RLIM_INFINITY;
   if (setrlimit(RLIMIT_CORE, &rlim) == -1)
@@ -103,8 +104,9 @@ int main(int argc, char* argv[])
   sigaction(SIGTERM, &signalHandler, nullptr);
 
   setlocale(LC_NUMERIC, "C");
+ 
+  // Initialize before CAppParamParser so it can set the log level
   g_advancedSettings.Initialize();
-
   CAppParamParser appParamParser;
   appParamParser.Parse(argv, argc);
   
