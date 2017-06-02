@@ -56,8 +56,8 @@ protected:
   virtual void UpdateClockSync(bool enabled) = 0;
   virtual void UpdateRenderInfo(CRenderInfo &info) = 0;
   virtual void UpdateRenderBuffers(int queued, int discard, int free) = 0;
-  virtual void UpdareGuiRender(bool gui) = 0;
-  virtual void UpdareVideoRender(bool video) = 0;
+  virtual void UpdateGuiRender(bool gui) = 0;
+  virtual void UpdateVideoRender(bool video) = 0;
 };
 
 class CRenderManager

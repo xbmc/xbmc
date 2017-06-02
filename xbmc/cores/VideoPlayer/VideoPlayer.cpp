@@ -5286,12 +5286,12 @@ void CVideoPlayer::UpdateRenderBuffers(int queued, int discard, int free)
   m_processInfo->UpdateRenderBuffers(queued, discard, free);
 }
 
-void CVideoPlayer::UpdareGuiRender(bool gui)
+void CVideoPlayer::UpdateGuiRender(bool gui)
 {
   m_processInfo->SetGuiRender(gui);
 }
 
-void CVideoPlayer::UpdareVideoRender(bool video)
+void CVideoPlayer::UpdateVideoRender(bool video)
 {
   m_processInfo->SetVideoRender(video);
 }
