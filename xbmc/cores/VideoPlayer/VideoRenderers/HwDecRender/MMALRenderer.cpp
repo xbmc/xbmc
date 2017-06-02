@@ -273,7 +273,7 @@ CRenderInfo CMMALRenderer::GetRenderInfo()
   info.max_buffer_size = NUM_BUFFERS;
   info.optimal_buffer_size = NUM_BUFFERS;
   info.opaque_pointer = (void *)this;
-  info.formats = m_formats;
+
   return info;
 }
 
@@ -402,7 +402,6 @@ CMMALRenderer::CMMALRenderer() : CThread("MMALRenderer"), m_processThread(this, 
   m_vout_input = NULL;
   memset(m_buffers, 0, sizeof m_buffers);
   m_iFlags = 0;
-  m_format = RENDER_FMT_NONE;
   m_bConfigured = false;
   m_iYV12RenderBuffer = 0;
   m_queue_render = nullptr;
@@ -699,30 +698,28 @@ void CMMALRenderer::UpdateFramerateStats(double pts)
     CLog::Log(LOGDEBUG, "%s::%s pts:%.3f diff:%.3f m_frameInterval:%.6f m_frameIntervalDiff:%.6f", CLASSNAME, __func__, pts*1e-6, diff * 1e-6 , m_frameInterval * 1e-6, m_frameIntervalDiff *1e-6);
 }
 
-void CMMALRenderer::AddVideoPictureHW(VideoPicture& pic, int index)
+void CMMALRenderer::AddVideoPicture(const VideoPicture& pic, int index)
 {
-  if (m_format != RENDER_FMT_MMAL)
-  {
-    assert(0);
-    return;
-  }
-
-  CMMALBuffer *buffer = static_cast<CMMALBuffer*>(pic.hwPic);
+  CMMALBuffer *buffer = dynamic_cast<MMAL::CMMALYUVBuffer*>(pic.videoBuffer);
   assert(buffer);
   if (VERBOSE && g_advancedSettings.CanLogComponent(LOGVIDEO))
     CLog::Log(LOGDEBUG, "%s::%s MMAL - %p (%p) %i", CLASSNAME, __func__, buffer, buffer->mmal_buffer, index);
 
-  m_buffers[index] = buffer->Acquire();
+  assert(!m_buffers[index]);
+  buffer->Acquire();
+  m_buffers[index] = buffer;
   UpdateFramerateStats(pic.pts);
 }
 
-bool CMMALRenderer::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, void* hwPic, unsigned int orientation)
+bool CMMALRenderer::Configure(const VideoPicture &picture, float fps, unsigned flags, unsigned int orientation)
 {
   CSingleLock lock(m_sharedSection);
   ReleaseBuffers();
 
-  m_sourceWidth  = width;
-  m_sourceHeight = height;
+  if (picture.videoBuffer)
+     m_format = picture.videoBuffer->GetFormat();
+  m_sourceWidth = picture.iWidth;
+  m_sourceHeight = picture.iHeight;
   m_renderOrientation = orientation;
 
   m_fps = fps;
@@ -736,55 +733,26 @@ bool CMMALRenderer::Configure(unsigned int width, unsigned int height, unsigned 
   m_src_rect.SetRect(0, 0, 0, 0);
   m_dst_rect.SetRect(0, 0, 0, 0);
 
-  CLog::Log(LOGDEBUG, "%s::%s - %dx%d->%dx%d@%.2f flags:%x format:%d hwpic:%p orient:%d", CLASSNAME, __func__, width, height, d_width, d_height, fps, flags, format, hwPic, orientation);
-  if (format != RENDER_FMT_BYPASS && format != RENDER_FMT_MMAL)
-  {
-    CLog::Log(LOGERROR, "%s::%s - format:%d not supported", CLASSNAME, __func__, format);
-    return false;
-  }
+  CLog::Log(LOGDEBUG, "%s::%s - %dx%d->%dx%d@%.2f flags:%x format:%d orient:%d", CLASSNAME, __func__, picture.iWidth, picture.iHeight, picture.iDisplayWidth, picture.iDisplayHeight, fps, flags, m_format, orientation);
 
   // calculate the input frame aspect ratio
-  CalculateFrameAspectRatio(d_width, d_height);
+  CalculateFrameAspectRatio(picture.iDisplayWidth, picture.iDisplayHeight);
   SetViewMode(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode);
   ManageRenderArea();
 
-  m_format = format;
   m_bConfigured = true;
   return true;
-}
-
-int CMMALRenderer::GetImage(YuvImage *image, int source, bool readonly)
-{
-  if (!image || source < 0 || m_format != RENDER_FMT_MMAL)
-  {
-    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-      CLog::Log(LOGDEBUG, "%s::%s - invalid: format:%d image:%p source:%d ro:%d", CLASSNAME, __func__, m_format, image, source, readonly);
-    return -1;
-  }
-  if (VERBOSE && g_advancedSettings.CanLogComponent(LOGVIDEO))
-    CLog::Log(LOGDEBUG, "%s::%s - MMAL: image:%p source:%d ro:%d", CLASSNAME, __func__, image, source, readonly);
-  return source;
 }
 
 void CMMALRenderer::ReleaseBuffer(int idx)
 {
   CSingleLock lock(m_sharedSection);
-  if (m_format != RENDER_FMT_MMAL)
-  {
-    if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-      CLog::Log(LOGDEBUG, "%s::%s - not configured: source:%d", CLASSNAME, __func__, idx);
-    return;
-  }
-
   CMMALBuffer *omvb = m_buffers[idx];
   if (VERBOSE && g_advancedSettings.CanLogComponent(LOGVIDEO))
     CLog::Log(LOGDEBUG, "%s::%s - MMAL: source:%d omvb:%p mmal:%p", CLASSNAME, __func__, idx, omvb, omvb ? omvb->mmal_buffer:NULL);
-  if (omvb)
-    SAFE_RELEASE(m_buffers[idx]);
-}
-
-void CMMALRenderer::ReleaseImage(int source, bool preserve)
-{
+  if (m_buffers[idx])
+    m_buffers[idx]->Release();
+  m_buffers[idx] = nullptr;
 }
 
 void CMMALRenderer::Reset()
@@ -823,8 +791,7 @@ void CMMALRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
     goto exit;
   }
 
-  if (m_format == RENDER_FMT_MMAL)
-    omvb = m_buffers[source];
+  omvb = m_buffers[source];
 
   if (g_graphicsContext.GetStereoView() != RENDER_STEREO_VIEW_RIGHT)
   {
@@ -882,10 +849,10 @@ exit:
 void CMMALRenderer::FlipPage(int source)
 {
   CSingleLock lock(m_sharedSection);
-  if (!m_bConfigured || m_format != RENDER_FMT_MMAL)
+  if (!m_bConfigured)
   {
     if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-      CLog::Log(LOGDEBUG, "%s::%s - not configured: source:%d format:%d", CLASSNAME, __func__, source, m_format);
+      CLog::Log(LOGDEBUG, "%s::%s - not configured: source:%d", CLASSNAME, __func__, source);
     return;
   }
 
@@ -893,25 +860,6 @@ void CMMALRenderer::FlipPage(int source)
     CLog::Log(LOGDEBUG, "%s::%s - source:%d", CLASSNAME, __func__, source);
 
   m_iYV12RenderBuffer = source;
-}
-
-void CMMALRenderer::PreInit()
-{
-  CSingleLock lock(m_sharedSection);
-  m_bConfigured = false;
-  UnInit();
-
-  m_iFlags = 0;
-
-  CLog::Log(LOGDEBUG, "%s::%s", CLASSNAME, __func__);
-
-  m_formats.clear();
-  m_formats.push_back(RENDER_FMT_MMAL);
-  m_formats.push_back(RENDER_FMT_BYPASS);
-
-  memset(m_buffers, 0, sizeof m_buffers);
-  m_iYV12RenderBuffer = 0;
-  m_NumYV12Buffers = NUM_BUFFERS;
 }
 
 void CMMALRenderer::ReleaseBuffers()
@@ -976,7 +924,6 @@ void CMMALRenderer::UnInit()
   m_bConfigured = false;
   DestroyDeinterlace();
   UnInitMMAL();
-  m_format = RENDER_FMT_NONE;
 }
 
 bool CMMALRenderer::RenderCapture(CRenderCapture* capture)
@@ -995,22 +942,6 @@ bool CMMALRenderer::RenderCapture(CRenderCapture* capture)
 //********************************************************************************************************
 // YV12 Texture creation, deletion, copying + clearing
 //********************************************************************************************************
-
-bool CMMALRenderer::Supports(EINTERLACEMETHOD method)
-{
-  if (method == VS_INTERLACEMETHOD_AUTO)
-    return true;
-  if (method == VS_INTERLACEMETHOD_MMAL_ADVANCED)
-    return true;
-  if (method == VS_INTERLACEMETHOD_MMAL_ADVANCED_HALF)
-    return true;
-  if (method == VS_INTERLACEMETHOD_MMAL_BOB)
-    return true;
-  if (method == VS_INTERLACEMETHOD_MMAL_BOB_HALF)
-    return true;
-
-  return false;
-}
 
 bool CMMALRenderer::Supports(ERENDERFEATURE feature)
 {
