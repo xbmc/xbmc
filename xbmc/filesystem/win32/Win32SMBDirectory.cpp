@@ -18,7 +18,7 @@
 *
 */
 
-#ifdef TARGET_WINDOWS
+#ifdef TARGET_WINDOWS_DESKTOP
 
 #include "Win32SMBDirectory.h"
 #include "FileItem.h"
