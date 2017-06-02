@@ -158,8 +158,10 @@ public:
 #include "android/NetworkAndroid.h"
 #elif defined(HAS_LINUX_NETWORK)
 #include "linux/NetworkLinux.h"
-#else
+#elif defined(HAS_WIN32_NETWORK)
 #include "windows/NetworkWin32.h"
+#elif defined(HAS_WIN10_NETWORK)
+#include "win10/NetworkWin10.h"
 #endif
 
 //creates, binds and listens a tcp socket on the desired port. Set bindLocal to

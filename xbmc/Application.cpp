@@ -398,6 +398,8 @@ bool CApplication::SetupNetwork()
   m_network = new CNetworkLinux();
 #elif defined(HAS_WIN32_NETWORK)
   m_network = new CNetworkWin32();
+#elif defined(HAS_WIN10_NETWORK)
+  m_network = new CNetworkWin10();
 #else
   m_network = new CNetwork();
 #endif
