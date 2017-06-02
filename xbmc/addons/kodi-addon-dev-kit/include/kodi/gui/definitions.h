@@ -141,6 +141,16 @@ typedef struct AddonToKodiFuncTable_kodi_gui_listItem
 {
   void* (*create)(void* kodiBase, const char* label, const char* label2, const char* icon_image, const char* thumbnail_image, const char* path);
   void (*destroy)(void* kodiBase, void* handle);
+  char* (*get_label)(void* kodiBase, void* handle);
+  void (*set_label)(void* kodiBase, void* handle, const char* label);
+  char* (*get_label2)(void* kodiBase, void* handle);
+  void (*set_label2)(void* kodiBase, void* handle, const char* label);
+  char* (*get_icon_image)(void* kodiBase, void* handle);
+  void (*set_icon_image)(void* kodiBase, void* handle, const char* image);
+  char* (*get_art)(void* kodiBase, void* handle, const char* type);
+  void (*set_art)(void* kodiBase, void* handle, const char* type, const char* image);
+  char* (*get_path)(void* kodiBase, void* handle);
+  void (*set_path)(void* kodiBase, void* handle, const char* path);
 } AddonToKodiFuncTable_kodi_gui_listItem;
 
 #define ADDON_MAX_CONTEXT_ENTRIES 20
@@ -165,6 +175,9 @@ typedef struct AddonToKodiFuncTable_kodi_gui_window
   bool (*show)(void* kodiBase, void* handle);
   bool (*close)(void* kodiBase, void* handle);
   bool (*do_modal)(void* kodiBase, void* handle);
+  void (*clear_item_list)(void* kodiBase, void* handle);
+  void (*add_list_item)(void* kodiBase, void* handle, void* item, int item_position);
+  void* (*get_list_item)(void* kodiBase, void* handle, int listPos);
 } AddonToKodiFuncTable_kodi_gui_window;
 
 typedef struct AddonToKodiFuncTable_kodi_gui
