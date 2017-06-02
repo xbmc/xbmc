@@ -52,7 +52,7 @@ class CDecoder: public IHardwareDecoder
 {
 public:
   CDecoder(CProcessInfo& processInfo);
- ~CDecoder();
+  virtual ~CDecoder();
   virtual bool Open(AVCodecContext* avctx, AVCodecContext* mainctx,
                     const enum AVPixelFormat) override;
   virtual CDVDVideoCodec::VCReturn Decode(AVCodecContext* avctx, AVFrame* frame) override;
