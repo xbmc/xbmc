@@ -48,7 +48,6 @@ namespace ADDON
   private:
     ADDON_TYPE m_type;
     std::string m_instanceId;
-    KODI_HANDLE m_addonInstance;
     KODI_HANDLE m_parentInstance;
     AddonDllPtr m_addon;
   };
