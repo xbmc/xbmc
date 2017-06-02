@@ -1909,13 +1909,13 @@ void CApplication::Render()
 
   g_Windowing.EndRender();
 
-  // reset our info cache - we do this at the end of Render so that it is
-  // fresh for the next process(), or after a windowclose animation (where process()
-  // isn't called)
-  g_infoManager.ResetCache();
-
   if (hasRendered)
   {
+    // reset our info cache - we do this at the end of Render so that it is
+    // fresh for the next process(), or after a windowclose animation (where process()
+    // isn't called)
+    g_infoManager.ResetCache();
+
     g_infoManager.UpdateFPS();
   }
 
