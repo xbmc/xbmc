@@ -229,13 +229,15 @@ void CAlbum::MergeScrapedAlbum(const CAlbum& source, bool override /* = true */)
     if (override || art.find(i->first) == art.end())
       art[i->first] = i->second;
   }
-  strLabel = source.strLabel;
+  if((override && !source.strLabel.empty()) || strLabel.empty())
+    strLabel = source.strLabel;
   thumbURL = source.thumbURL;
   moods = source.moods;
   styles = source.styles;
   themes = source.themes;
   strReview = source.strReview;
-  strType = source.strType;
+  if ((override && !source.strType.empty()) || strType.empty())
+    strType = source.strType;
 //  strPath = source.strPath; // don't merge the path
   m_strDateOfRelease = source.m_strDateOfRelease;
   fRating = source.fRating;
