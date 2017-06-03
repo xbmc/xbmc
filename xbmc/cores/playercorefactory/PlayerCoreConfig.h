@@ -94,10 +94,10 @@ public:
     {
       pPlayer = new PAPlayer(callback);
     }
-//    else if (m_type.compare("game") == 0)
-//    {
-//      pPlayer = new GAME::CRetroPlayer(callback);
-//    }
+    else if (m_type.compare("game") == 0)
+    {
+      pPlayer = new GAME::CRetroPlayer(callback);
+    }
     else if (m_type.compare("external") == 0)
     {
       pPlayer = new CExternalPlayer(callback);
