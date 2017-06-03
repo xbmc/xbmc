@@ -184,11 +184,13 @@ bool Interface_General::queue_notification(void* kodiBase, int type, const char*
     usedHeader = header;
   else
     usedHeader = addon->Name();
-  
-  if (type != QUEUE_OWN_STYLE)
+
+  QueueMsg qtype = static_cast<QueueMsg>(type);
+
+  if (qtype != QUEUE_OWN_STYLE)
   {
     CGUIDialogKaiToast::eMessageType usedType;
-    switch (type)
+    switch (qtype)
     {
     case QUEUE_WARNING:
       usedType = CGUIDialogKaiToast::Warning;
