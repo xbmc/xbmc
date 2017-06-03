@@ -168,6 +168,11 @@
 						<font>font12</font>
 						<visible>Control.IsEnabled(13)</visible>
 					</control>
+					<include content="InfoDialogButton">
+						<param name="id" value="10" />
+						<param name="icon" value="icons/infodialogs/info.png" />
+						<param name="label" value="$LOCALIZE[39024]" />
+					</include>
 					<include content="InfoDialogToggleButton">
 						<param name="id" value="7" />
 						<param name="icon_on" value="icons/infodialogs/disable.png" />
