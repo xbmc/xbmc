@@ -29,4 +29,6 @@ public:
   virtual ~CGUIDialogSeekBar(void);
   virtual bool OnMessage(CGUIMessage& message);
   virtual void FrameMove();
+private:
+  unsigned int m_lastPercent;
 };

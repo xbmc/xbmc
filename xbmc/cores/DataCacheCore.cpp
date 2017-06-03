@@ -23,11 +23,12 @@
 #include "ServiceBroker.h"
 
 CDataCacheCore::CDataCacheCore()
+  :m_playStateChanged(false)
 {
   m_hasAVInfoChanges = false;
 }
 
-CDataCacheCore& GetInstance()
+CDataCacheCore& CDataCacheCore::GetInstance()
 {
   return CServiceBroker::GetDataCacheCore();
 }
@@ -227,6 +228,7 @@ void CDataCacheCore::SetStateSeeking(bool active)
   CSingleLock lock(m_stateSection);
 
   m_stateInfo.m_stateSeeking = active;
+  m_playStateChanged = true;
 }
 
 bool CDataCacheCore::CDataCacheCore::IsSeeking()
@@ -234,4 +236,14 @@ bool CDataCacheCore::CDataCacheCore::IsSeeking()
   CSingleLock lock(m_stateSection);
 
   return m_stateInfo.m_stateSeeking;
+}
+
+bool CDataCacheCore::PlayStateChanged()
+{
+  CSingleLock lock(m_stateSection);
+
+  bool ret(m_playStateChanged);
+  m_playStateChanged = false;
+
+  return ret;
 }

@@ -99,6 +99,7 @@ protected:
   } m_renderInfo;
 
   CCriticalSection m_stateSection;
+  bool m_playStateChanged;
   struct SStateInfo
   {
     bool m_stateSeeking;

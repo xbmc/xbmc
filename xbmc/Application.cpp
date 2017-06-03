@@ -1909,13 +1909,13 @@ void CApplication::Render()
 
   g_Windowing.EndRender();
 
+  // reset our info cache - we do this at the end of Render so that it is
+  // fresh for the next process(), or after a windowclose animation (where process()
+  // isn't called)
+  g_infoManager.ResetCache();
+
   if (hasRendered)
   {
-    // reset our info cache - we do this at the end of Render so that it is
-    // fresh for the next process(), or after a windowclose animation (where process()
-    // isn't called)
-    g_infoManager.ResetCache();
-
     g_infoManager.UpdateFPS();
   }
 
@@ -4594,7 +4594,7 @@ void CApplication::ProcessSlow()
 
   m_ServiceManager->GetActiveAE().GarbageCollect();
 
-  RefreshControls();
+  SendGUIMessage(GUI_MSG_REFRESH_TIMER);
 
   // if we don't render the gui there's no reason to start the screensaver.
   // that way the screensaver won't kick in if we maximize the XBMC window
@@ -5234,9 +5234,9 @@ void CApplication::CloseNetworkShares()
   }
 }
 
-void CApplication::RefreshControls()
+void CApplication::SendGUIMessage(int dwMsg, int senderID/* = 0*/, int controlID/* = 0*/, int param1/* = 0*/, int param2/* = 0*/)
 {
-  CGUIMessage msg(GUI_MSG_REFRESH_TIMER, 0, 0, 0);
+  CGUIMessage msg(dwMsg, senderID, controlID, param1, param2);
   g_windowManager.SendThreadMessage(msg);
 }
 
