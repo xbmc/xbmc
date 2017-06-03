@@ -70,6 +70,9 @@ namespace ADDON
     static bool show(void* kodiBase, void* handle);
     static bool close(void* kodiBase, void* handle);
     static bool do_modal(void* kodiBase, void* handle);
+    static void clear_item_list(void* kodiBase, void* handle);
+    static void add_list_item(void* kodiBase, void* handle, void* item, int item_position);
+    static void* get_list_item(void* kodiBase, void* handle, int listPos);
     //@}
 
   private:

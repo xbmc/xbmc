@@ -40,6 +40,16 @@ void Interface_GUIListItem::Init(AddonGlobalInterface* addonInterface)
 
   addonInterface->toKodi->kodi_gui->listItem->create = create;
   addonInterface->toKodi->kodi_gui->listItem->destroy = destroy;
+  addonInterface->toKodi->kodi_gui->listItem->get_label = get_label;
+  addonInterface->toKodi->kodi_gui->listItem->set_label = set_label;
+  addonInterface->toKodi->kodi_gui->listItem->get_label2 = get_label2;
+  addonInterface->toKodi->kodi_gui->listItem->set_label2 = set_label2;
+  addonInterface->toKodi->kodi_gui->listItem->get_icon_image = get_icon_image;
+  addonInterface->toKodi->kodi_gui->listItem->set_icon_image = set_icon_image;
+  addonInterface->toKodi->kodi_gui->listItem->get_art = get_art;
+  addonInterface->toKodi->kodi_gui->listItem->set_art = set_art;
+  addonInterface->toKodi->kodi_gui->listItem->get_path = get_path;
+  addonInterface->toKodi->kodi_gui->listItem->set_path = set_path;
 }
 
 void Interface_GUIListItem::DeInit(AddonGlobalInterface* addonInterface)
@@ -47,7 +57,7 @@ void Interface_GUIListItem::DeInit(AddonGlobalInterface* addonInterface)
   free(addonInterface->toKodi->kodi_gui->listItem);
 }
 
-void* Interface_GUIListItem::create(void* kodiBase, const char* label, const char* label2, const char* iconImage, const char* thumbnailImage, const char* path)
+void* Interface_GUIListItem::create(void* kodiBase, const char* label, const char* label2, const char* icon_image, const char* thumbnail_image, const char* path)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (!addon)
@@ -56,17 +66,15 @@ void* Interface_GUIListItem::create(void* kodiBase, const char* label, const cha
     return nullptr;
   }
 
-  // create CFileItem
   CFileItemPtr* item = new CFileItemPtr(new CFileItem());
-  //CFileItem* item = new CFileItem();
   if (label)
     item->get()->SetLabel(label);
   if (label2)
     item->get()->SetLabel2(label2);
-  if (iconImage)
-    item->get()->SetIconImage(iconImage);
-  if (thumbnailImage)
-    item->get()->SetArt("thumb", thumbnailImage);
+  if (icon_image)
+    item->get()->SetIconImage(icon_image);
+  if (thumbnail_image)
+    item->get()->SetArt("thumb", thumbnail_image);
   if (path)
     item->get()->SetPath(path);
 
@@ -85,6 +93,237 @@ void Interface_GUIListItem::destroy(void* kodiBase, void* handle)
   CFileItemPtr* item = static_cast<CFileItemPtr*>(handle);
   if (item)
     delete item;
+}
+
+char* Interface_GUIListItem::get_label(void* kodiBase, void* handle)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  CFileItemPtr* item = static_cast<CFileItemPtr*>(handle);
+  if (!addon || !item)
+  {
+    CLog::Log(LOGERROR, "Interface_GUIListItem::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
+                          __FUNCTION__, addon, item, addon ? addon->ID().c_str() : "unknown");
+    return nullptr;
+  }
+
+  if (item->get() == nullptr)
+  {
+    CLog::Log(LOGERROR, "Interface_GUIListItem::%s - empty list item called on addon '%s'", __FUNCTION__, addon->ID().c_str());
+    return nullptr;
+  }
+
+  char* ret;
+  Interface_GUIGeneral::lock();
+  ret = strdup(item->get()->GetLabel().c_str());
+  Interface_GUIGeneral::unlock();
+  return ret;
+}
+
+void Interface_GUIListItem::set_label(void* kodiBase, void* handle, const char *label)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  CFileItemPtr* item = static_cast<CFileItemPtr*>(handle);
+  if (!addon || !item || !label)
+  {
+    CLog::Log(LOGERROR, "Interface_GUIListItem::%s - invalid handler data (kodiBase='%p', handle='%p', label='%p') on addon '%s'",
+                          __FUNCTION__, addon, item, label, addon ? addon->ID().c_str() : "unknown");
+    return;
+  }
+
+  if (item->get() == nullptr)
+  {
+    CLog::Log(LOGERROR, "Interface_GUIListItem::%s - empty list item called on addon '%s'", __FUNCTION__, addon->ID().c_str());
+    return;
+  }
+
+  Interface_GUIGeneral::lock();
+  item->get()->SetLabel(label);
+  Interface_GUIGeneral::unlock();
+}
+
+char* Interface_GUIListItem::get_label2(void* kodiBase, void* handle)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  CFileItemPtr* item = static_cast<CFileItemPtr*>(handle);
+  if (!addon || !item)
+  {
+    CLog::Log(LOGERROR, "Interface_GUIListItem::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
+                          __FUNCTION__, addon, item, addon ? addon->ID().c_str() : "unknown");
+    return nullptr;
+  }
+
+  if (item->get() == nullptr)
+  {
+    CLog::Log(LOGERROR, "Interface_GUIListItem::%s - empty list item called on addon '%s'", __FUNCTION__, addon->ID().c_str());
+    return nullptr;
+  }
+
+  char* ret;
+  Interface_GUIGeneral::lock();
+  ret = strdup(item->get()->GetLabel2().c_str());
+  Interface_GUIGeneral::unlock();
+  return ret;
+}
+
+void Interface_GUIListItem::set_label2(void* kodiBase, void* handle, const char *label)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  CFileItemPtr* item = static_cast<CFileItemPtr*>(handle);
+  if (!addon || !item || !label)
+  {
+    CLog::Log(LOGERROR, "Interface_GUIListItem::%s - invalid handler data (kodiBase='%p', handle='%p', label='%p') on addon '%s'",
+                          __FUNCTION__, addon, item, label, addon ? addon->ID().c_str() : "unknown");
+    return;
+  }
+
+  if (item->get() == nullptr)
+  {
+    CLog::Log(LOGERROR, "Interface_GUIListItem::%s - empty list item called on addon '%s'", __FUNCTION__, addon->ID().c_str());
+    return;
+  }
+
+  Interface_GUIGeneral::lock();
+  item->get()->SetLabel2(label);
+  Interface_GUIGeneral::unlock();
+}
+
+char* Interface_GUIListItem::get_icon_image(void* kodiBase, void* handle)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  CFileItemPtr* item = static_cast<CFileItemPtr*>(handle);
+  if (!addon || !item)
+  {
+    CLog::Log(LOGERROR, "Interface_GUIListItem::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
+                          __FUNCTION__, addon, item, addon ? addon->ID().c_str() : "unknown");
+    return nullptr;
+  }
+
+  if (item->get() == nullptr)
+  {
+    CLog::Log(LOGERROR, "Interface_GUIListItem::%s - empty list item called on addon '%s'", __FUNCTION__, addon->ID().c_str());
+    return nullptr;
+  }
+
+  char* ret;
+  Interface_GUIGeneral::lock();
+  ret = strdup(item->get()->GetIconImage().c_str());
+  Interface_GUIGeneral::unlock();
+  return ret;
+}
+
+void Interface_GUIListItem::set_icon_image(void* kodiBase, void* handle, const char *image)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  CFileItemPtr* item = static_cast<CFileItemPtr*>(handle);
+  if (!addon || !item || !image)
+  {
+    CLog::Log(LOGERROR, "Interface_GUIListItem::%s - invalid handler data (kodiBase='%p', handle='%p', image='%p') on addon '%s'",
+                          __FUNCTION__, addon, item, image, addon ? addon->ID().c_str() : "unknown");
+    return;
+  }
+
+  if (item->get() == nullptr)
+  {
+    CLog::Log(LOGERROR, "Interface_GUIListItem::%s - empty list item called on addon '%s'", __FUNCTION__, addon->ID().c_str());
+    return;
+  }
+
+  Interface_GUIGeneral::lock();
+  item->get()->SetIconImage(image);
+  Interface_GUIGeneral::unlock();
+}
+
+char* Interface_GUIListItem::get_art(void* kodiBase, void* handle, const char* type)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  CFileItemPtr* item = static_cast<CFileItemPtr*>(handle);
+  if (!addon || !item || !type)
+  {
+    CLog::Log(LOGERROR, "Interface_GUIListItem::%s - invalid handler data (kodiBase='%p', type='%p', handle='%p') on addon '%s'",
+                          __FUNCTION__, addon, item, type, addon ? addon->ID().c_str() : "unknown");
+    return nullptr;
+  }
+
+  if (item->get() == nullptr)
+  {
+    CLog::Log(LOGERROR, "Interface_GUIListItem::%s - empty list item called on addon '%s'", __FUNCTION__, addon->ID().c_str());
+    return nullptr;
+  }
+
+  char* ret;
+  Interface_GUIGeneral::lock();
+  ret = strdup(item->get()->GetArt(type).c_str());
+  Interface_GUIGeneral::unlock();
+  return ret;
+}
+
+void Interface_GUIListItem::set_art(void* kodiBase, void* handle, const char* type, const char* label)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  CFileItemPtr* item = static_cast<CFileItemPtr*>(handle);
+  if (!addon || !item || !type | !label)
+  {
+    CLog::Log(LOGERROR, "Interface_GUIListItem::%s - invalid handler data (kodiBase='%p', handle='%p', type= '%p', label='%p') on addon '%s'",
+                          __FUNCTION__, addon, item, type, label, addon ? addon->ID().c_str() : "unknown");
+    return;
+  }
+
+  if (item->get() == nullptr)
+  {
+    CLog::Log(LOGERROR, "Interface_GUIListItem::%s - empty list item called on addon '%s'", __FUNCTION__, addon->ID().c_str());
+    return;
+  }
+
+  Interface_GUIGeneral::lock();
+  item->get()->SetArt(type, label);
+  Interface_GUIGeneral::unlock();
+}
+
+char* Interface_GUIListItem::get_path(void* kodiBase, void* handle)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  CFileItemPtr* item = static_cast<CFileItemPtr*>(handle);
+  if (!addon || !item)
+  {
+    CLog::Log(LOGERROR, "Interface_GUIListItem::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
+                          __FUNCTION__, addon, item, addon ? addon->ID().c_str() : "unknown");
+    return nullptr;
+  }
+
+  if (item->get() == nullptr)
+  {
+    CLog::Log(LOGERROR, "Interface_GUIListItem::%s - empty list item called on addon '%s'", __FUNCTION__, addon->ID().c_str());
+    return nullptr;
+  }
+
+  char* ret;
+  Interface_GUIGeneral::lock();
+  ret = strdup(item->get()->GetPath().c_str());
+  Interface_GUIGeneral::unlock();
+  return ret;
+}
+
+
+void Interface_GUIListItem::set_path(void* kodiBase, void* handle, const char* path)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  CFileItemPtr* item = static_cast<CFileItemPtr*>(handle);
+  if (!addon || !item || !path)
+  {
+    CLog::Log(LOGERROR, "Interface_GUIListItem::%s - invalid handler data (kodiBase='%p', path='%p', handle='%p') on addon '%s'",
+                          __FUNCTION__, addon, item, path, addon ? addon->ID().c_str() : "unknown");
+    return;
+  }
+
+  if (item->get() == nullptr)
+  {
+    CLog::Log(LOGERROR, "Interface_GUIListItem::%s - empty list item called on addon '%s'", __FUNCTION__, addon->ID().c_str());
+    return;
+  }
+
+  Interface_GUIGeneral::lock();
+  item->get()->SetPath(path);
+  Interface_GUIGeneral::unlock();
 }
 
 } /* namespace ADDON */

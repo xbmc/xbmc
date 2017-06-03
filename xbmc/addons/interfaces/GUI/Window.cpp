@@ -58,6 +58,9 @@ void Interface_GUIWindow::Init(AddonGlobalInterface* addonInterface)
   addonInterface->toKodi->kodi_gui->window->show = show;
   addonInterface->toKodi->kodi_gui->window->close = close;
   addonInterface->toKodi->kodi_gui->window->do_modal = do_modal;
+  addonInterface->toKodi->kodi_gui->window->clear_item_list = clear_item_list;
+  addonInterface->toKodi->kodi_gui->window->add_list_item = add_list_item;
+  addonInterface->toKodi->kodi_gui->window->get_list_item = get_list_item;
 }
 
 void Interface_GUIWindow::DeInit(AddonGlobalInterface* addonInterface)
@@ -267,8 +270,8 @@ bool Interface_GUIWindow::do_modal(void* kodiBase, void* handle)
   CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   if (!addon || !pAddonWindow)
   {
-    CLog::Log(LOGERROR, "Interface_GUIWindow::%s - invalid handler data (handle='%p') on addon '%s'",
-                          __FUNCTION__, handle, addon ? addon->ID().c_str() : "unknown");
+    CLog::Log(LOGERROR, "Interface_GUIWindow::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
+                          __FUNCTION__, addon, handle, addon ? addon->ID().c_str() : "unknown");
     return false;
   }
 
@@ -276,6 +279,69 @@ bool Interface_GUIWindow::do_modal(void* kodiBase, void* handle)
     show(kodiBase, handle);
 
   return true;
+}
+
+void Interface_GUIWindow::clear_item_list(void* kodiBase, void* handle)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
+  if (!addon || !pAddonWindow)
+  {
+    CLog::Log(LOGERROR, "Interface_GUIWindow::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
+                          __FUNCTION__, addon, handle, addon ? addon->ID().c_str() : "unknown");
+    return;
+  }
+
+  Interface_GUIGeneral::lock();
+  pAddonWindow->ClearList();
+  Interface_GUIGeneral::unlock();
+}
+
+void Interface_GUIWindow::add_list_item(void* kodiBase, void* handle, void* item, int item_position)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
+  if (!addon || !pAddonWindow || !item)
+  {
+    CLog::Log(LOGERROR, "Interface_GUIWindow::%s - invalid handler data (kodiBase='%p', handle='%p', item='%p') on addon '%s'",
+                          __FUNCTION__, addon, pAddonWindow, item, addon ? addon->ID().c_str() : "unknown");
+    return;
+  }
+  
+  CFileItemPtr* pItem(static_cast<CFileItemPtr*>(item));
+  if (pItem->get() == nullptr)
+  {
+    CLog::Log(LOGERROR, "Interface_GUIWindow::%s - empty list item called on addon '%s'", __FUNCTION__, addon->ID().c_str());
+    return;
+  }
+
+  Interface_GUIGeneral::lock();
+  pAddonWindow->AddItem(pItem, item_position);
+  Interface_GUIGeneral::unlock();
+}
+
+void* Interface_GUIWindow::get_list_item(void* kodiBase, void* handle, int listPos)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
+  if (!addon || !pAddonWindow)
+  {
+    CLog::Log(LOGERROR, "Interface_GUIWindow::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
+                          __FUNCTION__, addon, handle, addon ? addon->ID().c_str() : "unknown");
+    return nullptr;
+  }
+    
+  Interface_GUIGeneral::lock();
+  CFileItemPtr* pItem(pAddonWindow->GetListItem(listPos));
+  if (pItem == nullptr || pItem->get() == nullptr)
+  {
+    Interface_GUIGeneral::unlock();
+    CLog::Log(LOGERROR, "ADDON::Interface_GUIWindow - %s: %s - Index out of range", __FUNCTION__, addon->Name().c_str());
+    return nullptr;
+  }
+  Interface_GUIGeneral::unlock();
+
+  return pItem;
 }
 
 int Interface_GUIWindow::GetNextAvailableWindowId()

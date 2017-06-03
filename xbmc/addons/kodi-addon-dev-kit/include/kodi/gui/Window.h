@@ -164,6 +164,69 @@ namespace gui
     //--------------------------------------------------------------------------
 
     //==========================================================================
+    ///
+    /// \ingroup cpp_kodi_gui_CWindow
+    /// @brief Function delete all entries in integrated list.
+    ///
+    ///
+    ///
+    void ClearList()
+    {
+      m_interface->kodi_gui->window->clear_item_list(m_interface->kodiBase, m_controlHandle);
+    }
+    //--------------------------------------------------------------------------
+
+    //==========================================================================
+    ///
+    /// \ingroup cpp_kodi_gui_CWindow
+    /// @brief To add a list item in the on window integrated list.
+    ///
+    /// @param[in] item                 List item to add
+    /// @param[in] itemPosition         [opt] The position for item, default is on end
+    ///
+    ///
+    void AddListItem(ListItemPtr item, int itemPosition = -1)
+    {
+      m_interface->kodi_gui->window->add_list_item(m_interface->kodiBase, m_controlHandle, item->m_controlHandle, itemPosition);
+    }
+    //--------------------------------------------------------------------------
+
+    //==========================================================================
+    ///
+    /// \ingroup cpp_kodi_gui_CWindow
+    /// @brief To add a list item based upon string in the on window integrated list.
+    ///
+    /// @param[in] item                 List item to add
+    /// @param[in] itemPosition         [opt] The position for item, default is on end
+    ///
+    ///
+    void AddListItem(const std::string item, int itemPosition = -1)
+    {
+      m_interface->kodi_gui->window->add_list_item(m_interface->kodiBase, m_controlHandle, std::make_shared<kodi::gui::CListItem>(item)->m_controlHandle, itemPosition);
+    }
+    //--------------------------------------------------------------------------
+
+    //==========================================================================
+    ///
+    /// \ingroup cpp_kodi_gui_CWindow
+    /// @brief To get list item control class on wanted position.
+    ///
+    /// @param[in] listPos              Position from where control is needed
+    /// @return                         The list item control class or null if not found
+    ///
+    /// @warning Function returns a new generated **CListItem** class!
+    ///
+    ListItemPtr GetListItem(int listPos)
+    {
+      GUIHANDLE handle = m_interface->kodi_gui->window->get_list_item(m_interface->kodiBase, m_controlHandle, listPos);
+      if (!handle)
+        return ListItemPtr();
+
+      return std::make_shared<kodi::gui::CListItem>(handle);
+    }
+    //--------------------------------------------------------------------------
+
+    //==========================================================================
     //
     /// @defgroup cpp_kodi_gui_CWindow_callbacks Callback functions from Kodi to add-on
     /// \ingroup cpp_kodi_gui_CWindow
