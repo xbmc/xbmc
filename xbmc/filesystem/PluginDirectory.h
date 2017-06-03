@@ -68,8 +68,10 @@ public:
 
 private:
   ADDON::AddonPtr m_addon;
-  bool StartScript(const std::string& strPath, bool retrievingDir, bool resume);
-  bool WaitOnScriptResult(const std::string &scriptPath, int scriptId, const std::string &scriptName, bool retrievingDir);
+  bool StartScript(const std::string& strPath, bool resume);
+  bool WaitOnScriptResult(const std::string& scriptPath,
+                          int scriptId,
+                          const std::string& scriptName);
 
   CFileItemList* m_listItems;
   CFileItem*     m_fileResult;

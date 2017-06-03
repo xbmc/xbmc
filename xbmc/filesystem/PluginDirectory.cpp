@@ -49,7 +49,7 @@ CPluginDirectory::~CPluginDirectory(void)
   delete m_fileResult;
 }
 
-bool CPluginDirectory::StartScript(const std::string& strPath, bool retrievingDir, bool resume)
+bool CPluginDirectory::StartScript(const std::string& strPath, bool resume)
 {
   CURL url(strPath);
 
@@ -114,7 +114,7 @@ bool CPluginDirectory::StartScript(const std::string& strPath, bool retrievingDi
   if (id >= 0)
   { // wait for our script to finish
     std::string scriptName = m_addon->Name();
-    success = WaitOnScriptResult(file, id, scriptName, retrievingDir);
+    success = WaitOnScriptResult(file, id, scriptName);
   }
   else
     CLog::Log(LOGERROR, "Unable to run plugin %s", m_addon->Name().c_str());
@@ -130,7 +130,7 @@ bool CPluginDirectory::GetPluginResult(const std::string& strPath, CFileItem &re
   CURL url(strPath);
   CPluginDirectory newDir;
 
-  bool success = newDir.StartScript(strPath, false, resume);
+  bool success = newDir.StartScript(strPath, resume);
 
   if (success)
   { // update the play path and metadata, saving the old one as needed
@@ -385,7 +385,7 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod, const s
 bool CPluginDirectory::GetDirectory(const CURL& url, CFileItemList& items)
 {
   const std::string pathToUrl(url.Get());
-  bool success = StartScript(pathToUrl, true, false);
+  bool success = StartScript(pathToUrl, false);
 
   // append the items to the list
   items.Assign(*m_listItems, true); // true to keep the current items
@@ -438,7 +438,9 @@ bool CPluginDirectory::RunScriptWithParams(const std::string& strPath, bool resu
   return false;
 }
 
-bool CPluginDirectory::WaitOnScriptResult(const std::string &scriptPath, int scriptId, const std::string &scriptName, bool retrievingDir)
+bool CPluginDirectory::WaitOnScriptResult(const std::string& scriptPath,
+                                          int scriptId,
+                                          const std::string& scriptName)
 {
   // CPluginDirectory::GetDirectory can be called from the main and other threads.
   // If called form the main thread, we need to bring up the BusyDialog in order to
