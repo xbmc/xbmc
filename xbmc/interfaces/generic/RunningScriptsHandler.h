@@ -8,20 +8,49 @@
 
 #pragma once
 
+#include "interfaces/generic/ScriptInvocationManager.h"
+#include "interfaces/generic/ScriptRunner.h"
 #include "threads/CriticalSection.h"
+#include "threads/Event.h"
 #include "threads/SingleLock.h"
 
 #include <cstdint>
 #include <map>
 
 template<class TScript>
-class CRunningScriptsHandler
+class CRunningScriptsHandler : protected CScriptRunner
 {
 protected:
   using HandleType = int;
 
   CRunningScriptsHandler() = default;
   virtual ~CRunningScriptsHandler() = default;
+
+  using CScriptRunner::ExecuteScript;
+  using CScriptRunner::GetAddon;
+  using CScriptRunner::SetDone;
+  using CScriptRunner::StartScript;
+
+  bool RunScript(TScript* script, ADDON::AddonPtr addon, const std::string& path, bool resume)
+  {
+    if (script == nullptr || addon == nullptr || path.empty())
+      return false;
+
+    // reuse an existing script handle or get a new one if necessary
+    int handle = CScriptInvocationManager::GetInstance().GetReusablePluginHandle(addon->LibPath());
+    if (handle < 0)
+      handle = GetNewScriptHandle(script);
+    else
+      ReuseScriptHandle(handle, script);
+
+    // run the script
+    auto result = CScriptRunner::RunScript(addon, path, handle, resume);
+
+    // remove the script handle if necessary
+    RemoveScriptHandle(handle);
+
+    return result;
+  }
 
   static HandleType GetNewScriptHandle(TScript* script)
   {

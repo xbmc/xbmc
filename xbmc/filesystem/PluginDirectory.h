@@ -10,14 +10,11 @@
 
 #include "IDirectory.h"
 #include "SortFileItem.h"
-#include "addons/IAddon.h"
 #include "interfaces/generic/RunningScriptsHandler.h"
 #include "threads/Event.h"
 
 #include <atomic>
 #include <string>
-
-#include "PlatformDefs.h"
 
 class CURL;
 class CFileItem;
@@ -66,19 +63,19 @@ public:
   static void SetResolvedUrl(int handle, bool success, const CFileItem* resultItem);
   static void SetLabel2(int handle, const std::string& ident);
 
+protected:
+  // implementations of CRunningScriptsHandler / CScriptRunner
+  bool IsSuccessful() const override { return m_success; }
+  bool IsCancelled() const override { return m_cancelled; }
+
 private:
-  ADDON::AddonPtr m_addon;
   bool StartScript(const std::string& strPath, bool resume);
-  bool WaitOnScriptResult(const std::string& scriptPath,
-                          int scriptId,
-                          const std::string& scriptName);
 
   CFileItemList* m_listItems;
-  CFileItem*     m_fileResult;
-  CEvent         m_fetchComplete;
+  CFileItem* m_fileResult;
 
   std::atomic<bool> m_cancelled;
-  bool          m_success = false;      // set by script in EndOfDirectory
-  int    m_totalItems = 0;   // set by script in AddDirectoryItem
+  bool m_success = false; // set by script in EndOfDirectory
+  int m_totalItems = 0; // set by script in AddDirectoryItem
 };
 }

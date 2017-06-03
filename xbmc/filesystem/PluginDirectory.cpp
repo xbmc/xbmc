@@ -8,7 +8,6 @@
 
 #include "PluginDirectory.h"
 
-#include "Application.h"
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "URL.h"
@@ -16,17 +15,11 @@
 #include "addons/AddonManager.h"
 #include "addons/IAddon.h"
 #include "addons/PluginSource.h"
-#include "dialogs/GUIDialogBusy.h"
-#include "dialogs/GUIDialogProgress.h"
-#include "guilib/GUIComponent.h"
-#include "guilib/GUIWindowManager.h"
 #include "interfaces/generic/RunningScriptObserver.h"
 #include "messaging/ApplicationMessenger.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
-#include "threads/SystemClock.h"
-#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "video/VideoInfoTag.h"
@@ -35,9 +28,7 @@ using namespace XFILE;
 using namespace ADDON;
 using namespace KODI::MESSAGING;
 
-CPluginDirectory::CPluginDirectory()
-  : m_fetchComplete(true)
-  , m_cancelled(false)
+CPluginDirectory::CPluginDirectory() : m_cancelled(false)
 {
   m_listItems = new CFileItemList;
   m_fileResult = new CFileItem;
@@ -53,76 +44,30 @@ bool CPluginDirectory::StartScript(const std::string& strPath, bool resume)
 {
   CURL url(strPath);
 
+  ADDON::AddonPtr addon;
   // try the plugin type first, and if not found, try an unknown type
-  if (!CServiceBroker::GetAddonMgr().GetAddon(url.GetHostName(), m_addon, ADDON_PLUGIN,
+  if (!CServiceBroker::GetAddonMgr().GetAddon(url.GetHostName(), addon, ADDON_PLUGIN,
                                               OnlyEnabled::YES) &&
-      !CServiceBroker::GetAddonMgr().GetAddon(url.GetHostName(), m_addon, ADDON_UNKNOWN,
+      !CServiceBroker::GetAddonMgr().GetAddon(url.GetHostName(), addon, ADDON_UNKNOWN,
                                               OnlyEnabled::YES) &&
-      !CAddonInstaller::GetInstance().InstallModal(url.GetHostName(), m_addon,
+      !CAddonInstaller::GetInstance().InstallModal(url.GetHostName(), addon,
                                                    InstallModalPrompt::PROMPT))
   {
     CLog::Log(LOGERROR, "Unable to find plugin %s", url.GetHostName().c_str());
     return false;
   }
 
-  // get options
-  std::string options = url.GetOptions();
-  url.SetOptions(""); // do this because we can then use the url to generate the basepath
-                      // which is passed to the plugin (and represents the share)
-
-  std::string basePath(url.Get());
-  // reset our wait event, and grab a new handle
-  m_fetchComplete.Reset();
-  int handle = CScriptInvocationManager::GetInstance().GetReusablePluginHandle(m_addon->LibPath());
-
-  if (handle < 0)
-    handle = GetNewScriptHandle(this);
-  else
-    ReuseScriptHandle(handle, this);
-
   // clear out our status variables
   m_fileResult->Reset();
   m_listItems->Clear();
   m_listItems->SetPath(strPath);
-  m_listItems->SetLabel(m_addon->Name());
+  m_listItems->SetLabel(addon->Name());
   m_cancelled = false;
   m_success = false;
   m_totalItems = 0;
 
-  // setup our parameters to send the script
-  std::string strHandle = StringUtils::Format("%i", handle);
-  std::vector<std::string> argv;
-  argv.push_back(basePath);
-  argv.push_back(strHandle);
-  argv.push_back(options);
-
-  std::string strResume = "resume:false";
-  if (resume)
-    strResume = "resume:true";
-  argv.push_back(strResume);
-
   // run the script
-  CLog::Log(LOGDEBUG, "%s - calling plugin %s('%s','%s','%s','%s')", __FUNCTION__, m_addon->Name().c_str(), argv[0].c_str(), argv[1].c_str(), argv[2].c_str(), argv[3].c_str());
-  bool success = false;
-  std::string file = m_addon->LibPath();
-  bool reuseLanguageInvoker = false;
-  if (m_addon->ExtraInfo().find("reuselanguageinvoker") != m_addon->ExtraInfo().end())
-    reuseLanguageInvoker = m_addon->ExtraInfo().at("reuselanguageinvoker") == "true";
-
-  int id = CScriptInvocationManager::GetInstance().ExecuteAsync(file, m_addon, argv,
-                                                                reuseLanguageInvoker, handle);
-  if (id >= 0)
-  { // wait for our script to finish
-    std::string scriptName = m_addon->Name();
-    success = WaitOnScriptResult(file, id, scriptName);
-  }
-  else
-    CLog::Log(LOGERROR, "Unable to run plugin %s", m_addon->Name().c_str());
-
-  // free our handle
-  RemoveScriptHandle(handle);
-
-  return success;
+  return RunScript(this, addon, strPath, resume);
 }
 
 bool CPluginDirectory::GetPluginResult(const std::string& strPath, CFileItem &resultItem, bool resume)
@@ -193,7 +138,7 @@ void CPluginDirectory::EndOfDirectory(int handle, bool success, bool replaceList
     dir->m_listItems->AddSortMethod(SortByNone, 552, LABEL_MASKS("%L", "%D"));
 
   // set the event to mark that we're done
-  dir->m_fetchComplete.Set();
+  dir->SetDone();
 }
 
 void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod, const std::string &labelMask, const std::string &label2Mask)
@@ -409,88 +354,7 @@ bool CPluginDirectory::RunScriptWithParams(const std::string& strPath, bool resu
     return false;
   }
 
-  // options
-  std::string options = url.GetOptions();
-  url.SetOptions(""); // do this because we can then use the url to generate the basepath
-                      // which is passed to the plugin (and represents the share)
-
-  std::string basePath(url.Get());
-
-  // setup our parameters to send the script
-  std::string strHandle = StringUtils::Format("%i", -1);
-  std::vector<std::string> argv;
-  argv.push_back(basePath);
-  argv.push_back(strHandle);
-  argv.push_back(options);
-
-  std::string strResume = "resume:false";
-  if (resume)
-    strResume = "resume:true";
-  argv.push_back(strResume);
-
-  // run the script
-  CLog::Log(LOGDEBUG, "%s - calling plugin %s('%s','%s','%s','%s')", __FUNCTION__, addon->Name().c_str(), argv[0].c_str(), argv[1].c_str(), argv[2].c_str(), argv[3].c_str());
-  if (CScriptInvocationManager::GetInstance().ExecuteAsync(addon->LibPath(), addon, argv) >= 0)
-    return true;
-  else
-    CLog::Log(LOGERROR, "Unable to run plugin %s", addon->Name().c_str());
-
-  return false;
-}
-
-bool CPluginDirectory::WaitOnScriptResult(const std::string& scriptPath,
-                                          int scriptId,
-                                          const std::string& scriptName)
-{
-  // CPluginDirectory::GetDirectory can be called from the main and other threads.
-  // If called form the main thread, we need to bring up the BusyDialog in order to
-  // keep the render loop alive
-  if (g_application.IsCurrentThread())
-  {
-    if (!m_fetchComplete.WaitMSec(20))
-    {
-      CRunningScriptObserver scriptObs(scriptId, m_fetchComplete);
-
-      CGUIDialogProgress* progress = nullptr;
-      CGUIWindowManager& wm = CServiceBroker::GetGUI()->GetWindowManager();
-      if (wm.IsModalDialogTopmost(WINDOW_DIALOG_PROGRESS))
-        progress = wm.GetWindow<CGUIDialogProgress>(WINDOW_DIALOG_PROGRESS);
-
-      if (progress != nullptr)
-      {
-        if (!progress->WaitOnEvent(m_fetchComplete))
-          m_cancelled = true;
-      }
-      else if (!CGUIDialogBusy::WaitOnEvent(m_fetchComplete, 200))
-        m_cancelled = true;
-
-      scriptObs.Abort();
-    }
-  }
-  else
-  {
-    // Wait for directory fetch to complete, end, or be cancelled
-    while (!m_cancelled
-        && CScriptInvocationManager::GetInstance().IsRunning(scriptId)
-        && !m_fetchComplete.WaitMSec(20));
-
-    // Give the script 30 seconds to exit before we attempt to stop it
-    XbmcThreads::EndTime timer(30000);
-    while (!timer.IsTimePast()
-          && CScriptInvocationManager::GetInstance().IsRunning(scriptId)
-          && !m_fetchComplete.WaitMSec(20));
-  }
-
-  if (m_cancelled)
-  { // cancel our script
-    if (scriptId != -1 && CScriptInvocationManager::GetInstance().IsRunning(scriptId))
-    {
-      CLog::Log(LOGDEBUG, "%s- cancelling plugin %s (id=%d)", __FUNCTION__, scriptName.c_str(), scriptId);
-      CScriptInvocationManager::GetInstance().Stop(scriptId);
-    }
-  }
-
-  return !m_cancelled && m_success;
+  return ExecuteScript(addon, strPath, resume) >= 0;
 }
 
 void CPluginDirectory::SetResolvedUrl(int handle, bool success, const CFileItem *resultItem)
@@ -504,15 +368,15 @@ void CPluginDirectory::SetResolvedUrl(int handle, bool success, const CFileItem 
   *dir->m_fileResult = *resultItem;
 
   // set the event to mark that we're done
-  dir->m_fetchComplete.Set();
+  dir->SetDone();
 }
 
 std::string CPluginDirectory::GetSetting(int handle, const std::string &strID)
 {
   CSingleLock lock(GetScriptsLock());
   CPluginDirectory* dir = GetScriptFromHandle(handle);
-  if(dir && dir->m_addon)
-    return dir->m_addon->GetSetting(strID);
+  if (dir && dir->GetAddon())
+    return dir->GetAddon()->GetSetting(strID);
   else
     return "";
 }
@@ -521,8 +385,8 @@ void CPluginDirectory::SetSetting(int handle, const std::string &strID, const st
 {
   CSingleLock lock(GetScriptsLock());
   CPluginDirectory* dir = GetScriptFromHandle(handle);
-  if(dir && dir->m_addon)
-    dir->m_addon->UpdateSetting(strID, value);
+  if (dir && dir->GetAddon())
+    dir->GetAddon()->UpdateSetting(strID, value);
 }
 
 void CPluginDirectory::SetContent(int handle, const std::string &strContent)
@@ -548,7 +412,6 @@ void CPluginDirectory::SetProperty(int handle, const std::string &strProperty, c
 void CPluginDirectory::CancelDirectory()
 {
   m_cancelled = true;
-  m_fetchComplete.Set();
 }
 
 float CPluginDirectory::GetProgress() const
