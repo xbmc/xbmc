@@ -1299,7 +1299,7 @@ std::string CWebServer::CreateMimeTypeFromExtension(const char *ext)
 
 void CWebServer::EnableCors(struct MHD_Response *response) const
 {
-  if (response == nullptr || name.empty())
+  if (response == nullptr)
     return;
 
   if (g_advancedSettings.CanLogComponent(LOGWEBSERVER))
