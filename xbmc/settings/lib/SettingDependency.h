@@ -36,6 +36,8 @@ typedef enum {
 typedef enum {
   SettingDependencyOperatorNone     = 0,
   SettingDependencyOperatorEquals,
+  SettingDependencyOperatorLessThan,
+  SettingDependencyOperatorGreaterThan,
   SettingDependencyOperatorContains
 } SettingDependencyOperator;
 

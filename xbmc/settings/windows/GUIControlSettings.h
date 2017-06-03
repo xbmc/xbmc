@@ -21,6 +21,7 @@
 
 #include <stdlib.h>
 #include <functional>
+#include <memory>
 #include <string>
 
 #include "guilib/ISliderCallback.h"
@@ -46,11 +47,11 @@ class CVariant;
 class CGUIControlBaseSetting : protected ILocalizer
 {
 public:
-  CGUIControlBaseSetting(int id, CSetting *pSetting, ILocalizer* localizer);
+  CGUIControlBaseSetting(int id, std::shared_ptr<CSetting> pSetting, ILocalizer* localizer);
   virtual ~CGUIControlBaseSetting() {}
   
   int GetID() const { return m_id; }
-  CSetting* GetSetting() { return m_pSetting; }
+  std::shared_ptr<CSetting> GetSetting() { return m_pSetting; }
 
   /*!
    \brief Specifies that this setting should update after a delay
@@ -95,7 +96,7 @@ protected:
   std::string Localize(std::uint32_t code) const override;
 
   int m_id;
-  CSetting* m_pSetting;
+  std::shared_ptr<CSetting> m_pSetting;
   ILocalizer* m_localizer;
   bool m_delayed;
   bool m_valid;
@@ -104,7 +105,7 @@ protected:
 class CGUIControlRadioButtonSetting : public CGUIControlBaseSetting
 {
 public:
-  CGUIControlRadioButtonSetting(CGUIRadioButtonControl* pRadioButton, int id, CSetting *pSetting, ILocalizer* localizer);
+  CGUIControlRadioButtonSetting(CGUIRadioButtonControl* pRadioButton, int id, std::shared_ptr<CSetting> pSetting, ILocalizer* localizer);
   virtual ~CGUIControlRadioButtonSetting();
 
   void Select(bool bSelect);
@@ -120,7 +121,7 @@ private:
 class CGUIControlSpinExSetting : public CGUIControlBaseSetting
 {
 public:
-  CGUIControlSpinExSetting(CGUISpinControlEx* pSpin, int id, CSetting *pSetting, ILocalizer* localizer);
+  CGUIControlSpinExSetting(CGUISpinControlEx* pSpin, int id, std::shared_ptr<CSetting> pSetting, ILocalizer* localizer);
   virtual ~CGUIControlSpinExSetting();
 
   virtual CGUIControl* GetControl() { return (CGUIControl*)m_pSpin; }
@@ -136,7 +137,7 @@ private:
 class CGUIControlListSetting : public CGUIControlBaseSetting
 {
 public:
-  CGUIControlListSetting(CGUIButtonControl* pButton, int id, CSetting *pSetting, ILocalizer* localizer);
+  CGUIControlListSetting(CGUIButtonControl* pButton, int id, std::shared_ptr<CSetting> pSetting, ILocalizer* localizer);
   virtual ~CGUIControlListSetting();
 
   virtual CGUIControl* GetControl() { return (CGUIControl*)m_pButton; }
@@ -144,10 +145,10 @@ public:
   virtual void Update(bool updateDisplayOnly = false);
   virtual void Clear() { m_pButton = NULL; }
 private:
-  bool GetItems(const CSetting *setting, CFileItemList &items) const;
-  bool GetIntegerItems(const CSetting *setting, CFileItemList &items) const;
+  bool GetItems(std::shared_ptr<const CSetting> setting, CFileItemList &items) const;
+  bool GetIntegerItems(std::shared_ptr<const CSetting> setting, CFileItemList &items) const;
 
-  static bool GetStringItems(const CSetting *setting, CFileItemList &items);
+  static bool GetStringItems(std::shared_ptr<const CSetting> setting, CFileItemList &items);
 
   CGUIButtonControl *m_pButton;
 };
@@ -155,7 +156,7 @@ private:
 class CGUIControlButtonSetting : public CGUIControlBaseSetting, protected ISliderCallback
 {
 public:
-  CGUIControlButtonSetting(CGUIButtonControl* pButton, int id, CSetting *pSetting, ILocalizer* localizer);
+  CGUIControlButtonSetting(CGUIButtonControl* pButton, int id, std::shared_ptr<CSetting> pSetting, ILocalizer* localizer);
   virtual ~CGUIControlButtonSetting();
 
   virtual CGUIControl* GetControl() { return (CGUIControl*)m_pButton; }
@@ -163,7 +164,7 @@ public:
   virtual void Update(bool updateDisplayOnly = false);
   virtual void Clear() { m_pButton = NULL; }
 
-  static bool GetPath(CSettingPath *pathSetting, ILocalizer* localizer);
+  static bool GetPath(std::shared_ptr<CSettingPath> pathSetting, ILocalizer* localizer);
 protected:
   // implementations of ISliderCallback
   virtual void OnSliderChange(void *data, CGUISliderControl *slider);
@@ -175,7 +176,7 @@ private:
 class CGUIControlEditSetting : public CGUIControlBaseSetting
 {
 public:
-  CGUIControlEditSetting(CGUIEditControl* pButton, int id, CSetting *pSetting, ILocalizer* localizer);
+  CGUIControlEditSetting(CGUIEditControl* pButton, int id, std::shared_ptr<CSetting> pSetting, ILocalizer* localizer);
   virtual ~CGUIControlEditSetting();
 
   virtual CGUIControl* GetControl() { return (CGUIControl*)m_pEdit; }
@@ -191,7 +192,7 @@ private:
 class CGUIControlSliderSetting : public CGUIControlBaseSetting
 {
 public:
-  CGUIControlSliderSetting(CGUISettingsSliderControl* pSlider, int id, CSetting *pSetting, ILocalizer* localizer);
+  CGUIControlSliderSetting(CGUISettingsSliderControl* pSlider, int id, std::shared_ptr<CSetting> pSetting, ILocalizer* localizer);
   virtual ~CGUIControlSliderSetting();
 
   virtual CGUIControl* GetControl() { return (CGUIControl*)m_pSlider; }
@@ -199,7 +200,7 @@ public:
   virtual void Update(bool updateDisplayOnly = false);
   virtual void Clear() { m_pSlider = NULL; }
 
-  static std::string GetText(const CSettingControlSlider *control, const CVariant &value, const CVariant &minimum, const CVariant &step, const CVariant &maximum, ILocalizer* localizer);
+  static std::string GetText(std::shared_ptr<const CSettingControlSlider> control, const CVariant &value, const CVariant &minimum, const CVariant &step, const CVariant &maximum, ILocalizer* localizer);
 
 private:
   CGUISettingsSliderControl *m_pSlider;
@@ -208,7 +209,7 @@ private:
 class CGUIControlRangeSetting : public CGUIControlBaseSetting
 {
 public:
-  CGUIControlRangeSetting(CGUISettingsSliderControl* pSlider, int id, CSetting *pSetting, ILocalizer* localizer);
+  CGUIControlRangeSetting(CGUISettingsSliderControl* pSlider, int id, std::shared_ptr<CSetting> pSetting, ILocalizer* localizer);
   virtual ~CGUIControlRangeSetting();
   
   virtual CGUIControl* GetControl() { return (CGUIControl*)m_pSlider; }

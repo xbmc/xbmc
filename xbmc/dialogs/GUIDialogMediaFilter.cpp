@@ -209,7 +209,7 @@ void CGUIDialogMediaFilter::OnInitWindow()
   UpdateControls();
 }
 
-void CGUIDialogMediaFilter::OnSettingChanged(const CSetting *setting)
+void CGUIDialogMediaFilter::OnSettingChanged(std::shared_ptr<const CSetting> setting)
 {
   CGUIDialogSettingsManualBase::OnSettingChanged(setting);
 
@@ -235,7 +235,7 @@ void CGUIDialogMediaFilter::OnSettingChanged(const CSetting *setting)
   }
   else if (filter.controlType == "toggle")
   {
-    int choice = static_cast<const CSettingInt*>(setting)->GetValue();
+    int choice = std::static_pointer_cast<const CSettingInt>(setting)->GetValue();
     if (choice > CHECK_ALL)
     {
       CDatabaseQueryRule::SEARCH_OPERATOR ruleOperator = choice == CHECK_YES ? CDatabaseQueryRule::OPERATOR_TRUE : CDatabaseQueryRule::OPERATOR_FALSE;
@@ -249,7 +249,7 @@ void CGUIDialogMediaFilter::OnSettingChanged(const CSetting *setting)
   }
   else if (filter.controlType == "list")
   {
-    std::vector<CVariant> values = CSettingUtils::GetList(static_cast<const CSettingList*>(setting));
+    std::vector<CVariant> values = CSettingUtils::GetList(std::static_pointer_cast<const CSettingList>(setting));
     if (!values.empty())
     {
       if (filter.rule == NULL)
@@ -264,17 +264,17 @@ void CGUIDialogMediaFilter::OnSettingChanged(const CSetting *setting)
   }
   else if (filter.controlType == "range")
   {
-    const CSettingList *settingList = static_cast<const CSettingList*>(setting);
+    const std::shared_ptr<const CSettingList> settingList = std::static_pointer_cast<const CSettingList>(setting);
     std::vector<CVariant> values = CSettingUtils::GetList(settingList);
     if (values.size() != 2)
       return;
 
     std::string strValueLower, strValueUpper;
 
-    const CSetting *definition = settingList->GetDefinition();
+    SettingConstPtr definition = settingList->GetDefinition();
     if (definition->GetType() == SettingTypeInteger)
     {
-      const CSettingInt *definitionInt = static_cast<const CSettingInt*>(definition);
+      const std::shared_ptr<const CSettingInt> definitionInt = std::static_pointer_cast<const CSettingInt>(definition);
       int valueLower = static_cast<int>(values.at(0).asInteger());
       int valueUpper = static_cast<int>(values.at(1).asInteger());
 
@@ -295,7 +295,7 @@ void CGUIDialogMediaFilter::OnSettingChanged(const CSetting *setting)
     }
     else if (definition->GetType() == SettingTypeNumber)
     {
-      const CSettingNumber *definitionNumber = static_cast<const CSettingNumber*>(definition);
+      const std::shared_ptr<const CSettingNumber> definitionNumber = std::static_pointer_cast<const CSettingNumber>(definition);
       float valueLower = values.at(0).asFloat();
       float valueUpper = values.at(1).asFloat();
 
@@ -375,14 +375,14 @@ void CGUIDialogMediaFilter::InitializeSettings()
 
   int handledRules = 0;
 
-  CSettingCategory *category = AddCategory("filter", -1);
+  const std::shared_ptr<CSettingCategory> category = AddCategory("filter", -1);
   if (category == NULL)
   {
     CLog::Log(LOGERROR, "CGUIDialogMediaFilter: unable to setup filters");
     return;
   }
 
-  CSettingGroup *group = AddGroup(category);
+  const std::shared_ptr<CSettingGroup> group = AddGroup(category);
   if (group == NULL)
   {
     CLog::Log(LOGERROR, "CGUIDialogMediaFilter: unable to setup filters");
@@ -427,7 +427,7 @@ void CGUIDialogMediaFilter::InitializeSettings()
       if (filter.rule != NULL)
         value = filter.rule->m_operator == CDatabaseQueryRule::OPERATOR_TRUE ? CHECK_YES : CHECK_NO;
 
-      StaticIntegerSettingOptions entries;
+      TranslatableIntegerSettingOptions entries;
       entries.push_back(std::pair<int, int>(CHECK_LABEL_ALL, CHECK_ALL));
       entries.push_back(std::pair<int, int>(CHECK_LABEL_NO,  CHECK_NO));
       entries.push_back(std::pair<int, int>(CHECK_LABEL_YES, CHECK_YES));
@@ -729,7 +729,7 @@ void CGUIDialogMediaFilter::DeleteRule(Field field)
   }
 }
 
-void CGUIDialogMediaFilter::GetStringListOptions(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
+void CGUIDialogMediaFilter::GetStringListOptions(SettingConstPtr setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
 {
   if (setting == NULL || data == NULL)
     return;

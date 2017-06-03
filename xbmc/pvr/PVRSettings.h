@@ -35,7 +35,7 @@ namespace PVR
     virtual ~CPVRSettings();
 
     // ISettingCallback implementation
-    void OnSettingChanged(const CSetting *setting) override;
+    void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
 
     bool GetBoolValue(const std::string &settingName) const;
     int GetIntValue(const std::string &settingName) const;
@@ -43,7 +43,7 @@ namespace PVR
 
     // settings value filler for start/end recording margin time for PVR timers.
     static void MarginTimeFiller(
-      const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
+      std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
 
   private:
     CPVRSettings(const CPVRSettings&) = delete;
@@ -52,6 +52,6 @@ namespace PVR
     void Init(const std::set<std::string> &settingNames);
 
     CCriticalSection m_critSection;
-    std::map<std::string, SettingPtr> m_settings;
+    std::map<std::string, std::shared_ptr<CSetting>> m_settings;
   };
 }

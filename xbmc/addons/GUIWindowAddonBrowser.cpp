@@ -23,7 +23,7 @@
 #include "AddonSystemSettings.h"
 #include "addons/RepositoryUpdater.h"
 #include "GUIDialogAddonInfo.h"
-#include "GUIDialogAddonSettings.h"
+#include "addons/settings/GUIDialogAddonSettings.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "dialogs/GUIDialogSelect.h"

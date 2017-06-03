@@ -393,12 +393,12 @@ void CSkinInfo::OnPostInstall(bool update, bool modal)
   }
 }
 
-void CSkinInfo::SettingOptionsSkinColorsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
+void CSkinInfo::SettingOptionsSkinColorsFiller(SettingConstPtr setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
 {
   if (!g_SkinInfo)
     return;
 
-  std::string settingValue = ((const CSettingString*)setting)->GetValue();
+  std::string settingValue = std::static_pointer_cast<const CSettingString>(setting)->GetValue();
   // Remove the .xml extension from the Themes
   if (URIUtils::HasExtension(settingValue, ".xml"))
     URIUtils::RemoveExtension(settingValue);
@@ -437,12 +437,12 @@ void CSkinInfo::SettingOptionsSkinColorsFiller(const CSetting *setting, std::vec
   }
 }
 
-void CSkinInfo::SettingOptionsSkinFontsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
+void CSkinInfo::SettingOptionsSkinFontsFiller(SettingConstPtr setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
 {
   if (!g_SkinInfo)
     return;
 
-  std::string settingValue = ((const CSettingString*)setting)->GetValue();
+  std::string settingValue = std::static_pointer_cast<const CSettingString>(setting)->GetValue();
   bool currentValueSet = false;
   std::string strPath = g_SkinInfo->GetSkinPath("Font.xml");
 
@@ -489,10 +489,10 @@ void CSkinInfo::SettingOptionsSkinFontsFiller(const CSetting *setting, std::vect
     current = list[0].second;
 }
 
-void CSkinInfo::SettingOptionsSkinThemesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
+void CSkinInfo::SettingOptionsSkinThemesFiller(SettingConstPtr setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
 {
   // get the chosen theme and remove the extension from the current theme (backward compat)
-  std::string settingValue = ((const CSettingString*)setting)->GetValue();
+  std::string settingValue = std::static_pointer_cast<const CSettingString>(setting)->GetValue();
   URIUtils::RemoveExtension(settingValue);
   current = "SKINDEFAULT";
 
@@ -518,12 +518,12 @@ void CSkinInfo::SettingOptionsSkinThemesFiller(const CSetting *setting, std::vec
   }
 }
 
-void CSkinInfo::SettingOptionsStartupWindowsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
+void CSkinInfo::SettingOptionsStartupWindowsFiller(SettingConstPtr setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
 {
   if (!g_SkinInfo)
     return;
 
-  int settingValue = ((const CSettingInt *)setting)->GetValue();
+  int settingValue = std::static_pointer_cast<const CSettingInt>(setting)->GetValue();
   current = -1;
 
   const std::vector<CStartupWindow> &startupWindows = g_SkinInfo->GetStartupWindows();
@@ -709,7 +709,12 @@ CSkinSettingPtr CSkinInfo::ParseSetting(const TiXmlElement* element)
   return setting;
 }
 
-bool CSkinInfo::HasSettingsToSave() const
+bool CSkinInfo::SettingsInitialized() const
+{
+  return true;
+}
+
+bool CSkinInfo::SettingsLoaded() const
 {
   return !m_strings.empty() || !m_bools.empty();
 }
@@ -741,7 +746,7 @@ bool CSkinInfo::SettingsFromXML(const CXBMCTinyXML &doc, bool loadDefaults /* = 
   return true;
 }
 
-void CSkinInfo::SettingsToXML(CXBMCTinyXML &doc) const
+bool CSkinInfo::SettingsToXML(CXBMCTinyXML &doc) const
 {
   // add the <skinsettings> tag
   TiXmlElement rootElement(XML_SETTINGS);
@@ -749,7 +754,7 @@ void CSkinInfo::SettingsToXML(CXBMCTinyXML &doc) const
   if (settingsNode == NULL)
   {
     CLog::Log(LOGWARNING, "CSkinInfo: could not create <settings> tag");
-    return;
+    return false;
   }
 
   TiXmlElement* settingsElement = settingsNode->ToElement();
@@ -764,6 +769,8 @@ void CSkinInfo::SettingsToXML(CXBMCTinyXML &doc) const
     if (!it.second->Serialize(settingsElement))
       CLog::Log(LOGWARNING, "CSkinInfo: failed to save bool setting \"%s\"", it.second->name.c_str());
   }
+
+  return true;
 }
 
 } /*namespace ADDON*/

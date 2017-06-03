@@ -19,12 +19,15 @@
  *
  */
 
+#include <memory>
+#include <vector>
+
 #include "IAddon.h"
+#include "addons/settings/AddonSettings.h"
 #include "addons/AddonVersion.h"
 #include "utils/XBMCTinyXML.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/ISerializable.h"
-#include <vector>
 
 class TiXmlElement;
 class CAddonCallbacksAddon;
@@ -153,7 +156,7 @@ public:
    */
   std::string GetSetting(const std::string& key) override;
 
-  TiXmlElement* GetSettingsXML() override;
+  CAddonSettings* GetSettings() const override;
 
   /*! \brief get the required version of a dependency.
    \param dependencyID the addon ID of the dependency.
@@ -187,13 +190,13 @@ public:
   void OnPreUnInstall() override {};
   void OnPostUnInstall() override {};
 
-  /*! \brief Utility function to get the default value of a given setting
-   \param setting The XML setting
-   \return The default value for the setting, or empty if no default / unknown
-   */
-  virtual std::string GetDefaultValue(const TiXmlElement *setting) const override;
-
 protected:
+  /*! \brief Whether or not the settings have been initialized. */
+  virtual bool SettingsInitialized() const;
+
+  /*! \brief Whether or not the settings have been loaded. */
+  virtual bool SettingsLoaded() const;
+
   /*! \brief Load the default settings and override these with any previously configured user settings
    \param bForce force the load of settings even if they are already loaded (reload)
    \return true if settings exist, false otherwise
@@ -222,21 +225,20 @@ protected:
 
   /*! \brief Write settings into an XML document
    \param doc XML document to receive the settings
+   \return true if settings are saved, false otherwise
    \sa SettingsFromXML
    */
-  virtual void SettingsToXML(CXBMCTinyXML &doc) const;
+  virtual bool SettingsToXML(CXBMCTinyXML &doc) const;
 
   const AddonProps m_props;
-  CXBMCTinyXML      m_addonXmlDoc;
-  bool              m_settingsLoaded;
-  bool              m_userSettingsLoaded;
+  std::string m_userSettingsPath;
 
 private:
-  bool m_hasSettings;
+  bool m_loadSettingsFailed;
+  bool m_hasUserSettings;
 
   std::string m_profilePath;
-  std::string m_userSettingsPath;
-  std::map<std::string, std::string> m_settings;
+  mutable std::shared_ptr<CAddonSettings> m_settings;
 };
 
 }; /* namespace ADDON */

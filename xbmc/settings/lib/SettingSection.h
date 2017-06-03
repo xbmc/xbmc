@@ -65,19 +65,22 @@ public:
    */
   SettingList GetSettings(SettingLevel level) const;
 
-  void AddSetting(CSetting *setting);
+  void AddSetting(std::shared_ptr<CSetting> setting);
   void AddSettings(const SettingList &settings);
 
-  const ISettingControl *GetControl() const { return m_control; }
-  ISettingControl *GetControl() { return m_control; }
-  void SetControl(ISettingControl *control) { m_control = control; }
+  bool ReplaceSetting(std::shared_ptr<const CSetting> currentSetting, std::shared_ptr<CSetting> newSetting);
+
+  std::shared_ptr<const ISettingControl> GetControl() const { return m_control; }
+  std::shared_ptr<ISettingControl> GetControl() { return m_control; }
+  void SetControl(std::shared_ptr<ISettingControl> control) { m_control = control; }
 
 private:
   SettingList m_settings;
-  ISettingControl *m_control;
+  std::shared_ptr<ISettingControl> m_control;
 };
 
-typedef std::vector<CSettingGroup *> SettingGroupList;
+typedef std::shared_ptr<CSettingGroup> SettingGroupPtr;
+typedef std::vector<SettingGroupPtr> SettingGroupList;
 
 /*!
  \ingroup settings
@@ -124,7 +127,7 @@ public:
    */
   bool CanAccess() const;
 
-  void AddGroup(CSettingGroup *group);
+  void AddGroup(SettingGroupPtr group);
   void AddGroups(const SettingGroupList &groups);
 
 private:
@@ -132,7 +135,8 @@ private:
   CSettingCategoryAccess m_accessCondition;
 };
 
-typedef std::vector<CSettingCategory *> SettingCategoryList;
+typedef std::shared_ptr<CSettingCategory> SettingCategoryPtr;
+typedef std::vector<SettingCategoryPtr> SettingCategoryList;
 
 /*!
  \ingroup settings
@@ -172,9 +176,12 @@ public:
    */
   SettingCategoryList GetCategories(SettingLevel level) const;
 
-  void AddCategory(CSettingCategory *category);
+  void AddCategory(SettingCategoryPtr category);
   void AddCategories(const SettingCategoryList &categories);
 
 private:
   SettingCategoryList m_categories;
 };
+
+typedef std::shared_ptr<CSettingSection> SettingSectionPtr;
+typedef std::vector<SettingSectionPtr> SettingSectionList;

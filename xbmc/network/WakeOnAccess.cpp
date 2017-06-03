@@ -631,7 +631,7 @@ void CWakeOnAccess::OnJobComplete(unsigned int jobID, bool success, CJob *job)
   }
 }
 
-void CWakeOnAccess::OnSettingChanged(const CSetting *setting)
+void CWakeOnAccess::OnSettingChanged(std::shared_ptr<const CSetting> setting)
 {
   if (setting == nullptr)
     return;
@@ -639,7 +639,7 @@ void CWakeOnAccess::OnSettingChanged(const CSetting *setting)
   const std::string& settingId = setting->GetId();
   if (settingId == CSettings::SETTING_POWERMANAGEMENT_WAKEONACCESS)
   {
-    bool enabled = static_cast<const CSettingBool*>(setting)->GetValue();
+    bool enabled = std::static_pointer_cast<const CSettingBool>(setting)->GetValue();
 
     SetEnabled(enabled);
 

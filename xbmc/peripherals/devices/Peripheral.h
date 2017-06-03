@@ -150,7 +150,7 @@ namespace PERIPHERALS
      * @param strKey The key of the setting.
      * @param setting The setting.
      */
-    virtual void AddSetting(const std::string &strKey, const CSetting *setting, int order);
+    virtual void AddSetting(const std::string &strKey, std::shared_ptr<const CSetting> setting, int order);
 
     /*!
      * @brief Check whether a setting is known with the given key.
@@ -192,7 +192,7 @@ namespace PERIPHERALS
     virtual void LoadPersistedSettings(void);
     virtual void ResetDefaultSettings(void);
 
-    virtual std::vector<CSetting *> GetSettings(void) const;
+    virtual std::vector<std::shared_ptr<CSetting>> GetSettings(void) const;
 
     virtual bool ErrorOccured(void) const { return m_bError; }
 

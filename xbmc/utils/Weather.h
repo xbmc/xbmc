@@ -161,8 +161,8 @@ protected:
   virtual std::string BusyInfo(int info) const override;
   virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job) override;
 
-  virtual void OnSettingChanged(const CSetting *setting) override;
-  virtual void OnSettingAction(const CSetting *setting) override;
+  virtual void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
+  virtual void OnSettingAction(std::shared_ptr<const CSetting> setting) override;
 
 private:
 

@@ -44,9 +44,9 @@ class CNetworkServices : public ISettingCallback
 public:
   static CNetworkServices& GetInstance();
   
-  virtual bool OnSettingChanging(const CSetting *setting) override;
-  virtual void OnSettingChanged(const CSetting *setting) override;
-  virtual bool OnSettingUpdate(CSetting* &setting, const char *oldSettingId, const TiXmlNode *oldSettingNode) override;
+  virtual bool OnSettingChanging(std::shared_ptr<const CSetting> setting) override;
+  virtual void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
+  virtual bool OnSettingUpdate(std::shared_ptr<CSetting> setting, const char *oldSettingId, const TiXmlNode *oldSettingNode) override;
 
   void Start();
   void Stop(bool bWait);

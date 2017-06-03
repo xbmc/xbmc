@@ -22,7 +22,7 @@
 
 #include "AddonStatusHandler.h"
 #include "GUIUserMessages.h"
-#include "addons/GUIDialogAddonSettings.h"
+#include "addons/settings/GUIDialogAddonSettings.h"
 #include "events/EventLog.h"
 #include "events/NotificationEvent.h"
 #include "guilib/GUIWindowManager.h"
@@ -31,6 +31,7 @@
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
 #include "filesystem/Directory.h"
+#include "settings/lib/SettingSection.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
@@ -416,79 +417,61 @@ ADDON_STATUS CAddonDll::TransferSettings()
 
   LoadSettings();
 
-  const TiXmlElement *category = m_addonXmlDoc.RootElement() ? m_addonXmlDoc.RootElement()->FirstChildElement("category") : NULL;
-  if (!category)
-    category = m_addonXmlDoc.RootElement(); // no categories
-
-  while (category)
+  auto settings = GetSettings();
+  if (settings != nullptr)
   {
-    const TiXmlElement *setting = category->FirstChildElement("setting");
-    while (setting)
+    for (auto section : settings->GetSections())
     {
-      ADDON_STATUS status = ADDON_STATUS_OK;
-      const char *id = setting->Attribute("id");
-      const std::string type = XMLUtils::GetAttribute(setting, "type");
-      const char *option = setting->Attribute("option");
-
-      if (id && !type.empty())
+      for (auto category : section->GetCategories())
       {
-        if (type == "sep" || type == "lsep")
+        for (auto group : category->GetGroups())
         {
-          /* Don't propagate separators */
-        }
-        else if (type == "text"       || type == "ipaddress" ||
-                 type == "video"      || type == "audio"     ||
-                 type == "image"      || type == "folder"    ||
-                 type == "executable" || type == "file"      ||
-                 type == "action"     || type == "date"      ||
-                 type == "time"       || type == "select"    ||
-                 type == "addon"      || type == "labelenum" ||
-                 type == "fileenum" )
-        {
-          status = m_pDll->SetSetting(id, (const char*) GetSetting(id).c_str());
-        }
-        else if (type == "enum"      || type =="integer" ||
-                 type == "labelenum" || type == "rangeofnum")
-        {
-          int tmp = atoi(GetSetting(id).c_str());
-          status = m_pDll->SetSetting(id, (int*) &tmp);
-        }
-        else if (type == "bool")
-        {
-          bool tmp = (GetSetting(id) == "true") ? true : false;
-          status = m_pDll->SetSetting(id, (bool*) &tmp);
-        }
-        else if (type == "rangeofnum" || type == "slider" ||
-                 type == "number")
-        {
-          float tmpf = (float)atof(GetSetting(id).c_str());
-          int   tmpi;
-
-          if (option && strcmpi(option,"int") == 0)
+          for (auto setting : group->GetSettings())
           {
-            tmpi = (int)floor(tmpf);
-            status = m_pDll->SetSetting(id, (int*) &tmpi);
-          }
-          else
-          {
-            status = m_pDll->SetSetting(id, (float*) &tmpf);
-          }
-        }
-        else
-        {
-          /* Log unknowns as an error, but go ahead and transfer the string */
-          CLog::Log(LOGERROR, "Unknown setting type '%s' for %s", type.c_str(), Name().c_str());
-          status = m_pDll->SetSetting(id, (const char*) GetSetting(id).c_str());
-        }
+            ADDON_STATUS status = ADDON_STATUS_OK;
+            const char* id = setting->GetId().c_str();
+            switch (setting->GetType())
+            {
+              case SettingTypeBool:
+              {
+                bool tmp = std::static_pointer_cast<CSettingBool>(setting)->GetValue();
+                status = m_pDll->SetSetting(id, &tmp);
+                break;
+              }
 
-        if (status == ADDON_STATUS_NEED_RESTART)
-          restart = true;
-        else if (status != ADDON_STATUS_OK)
-          reportStatus = status;
+              case SettingTypeInteger:
+              {
+                int tmp = std::static_pointer_cast<CSettingInt>(setting)->GetValue();
+                status = m_pDll->SetSetting(id, &tmp);
+                break;
+              }
+
+              case SettingTypeNumber:
+              {
+                float tmpf = static_cast<float>(std::static_pointer_cast<CSettingNumber>(setting)->GetValue());
+                status = m_pDll->SetSetting(id, &tmpf);
+                break;
+              }
+
+              case SettingTypeString:
+                status = m_pDll->SetSetting(id, std::static_pointer_cast<CSettingString>(setting)->GetValue().c_str());
+                break;
+
+              default:
+                // log unknowns as an error, but go ahead and transfer the string
+                CLog::Log(LOGERROR, "Unknown setting type of '%s' for %s", id, Name().c_str());
+                status = m_pDll->SetSetting(id, setting->ToString().c_str());
+                break;
+            }
+
+            if (status == ADDON_STATUS_NEED_RESTART)
+              restart = true;
+            else if (status != ADDON_STATUS_OK)
+              reportStatus = status;
+          }
+        }
       }
-      setting = setting->NextSiblingElement("setting");
     }
-    category = category->NextSiblingElement("category");
   }
 
   if (restart || reportStatus != ADDON_STATUS_OK)
@@ -677,59 +660,35 @@ bool CAddonDll::get_setting(void* kodiBase, const char* settingName, void* setti
     return false;
   }
 
-  const TiXmlElement *category = addon->GetSettingsXML()->FirstChildElement("category");
-  if (!category) // add a default one...
-    category = addon->GetSettingsXML();
-
-  while (category)
+  auto setting = addon->GetSettings()->GetSetting(settingName);
+  if (setting == nullptr)
   {
-    const TiXmlElement *setting = category->FirstChildElement("setting");
-    while (setting)
-    {
-      const std::string   id = XMLUtils::GetAttribute(setting, "id");
-      const std::string type = XMLUtils::GetAttribute(setting, "type");
-
-      if (id == settingName && !type.empty())
-      {
-        if (type == "text"     || type == "ipaddress" ||
-            type == "folder"   || type == "action"    ||
-            type == "music"    || type == "pictures"  ||
-            type == "programs" || type == "fileenum"  ||
-            type == "file"     || type == "labelenum")
-        {
-          *(char**) settingValue = strdup(addon->GetSetting(id).c_str());
-          return true;
-        }
-        else if (type == "number" || type == "enum")
-        {
-          *(int*) settingValue = (int) atoi(addon->GetSetting(id).c_str());
-          return true;
-        }
-        else if (type == "bool")
-        {
-          *(bool*) settingValue = (bool) (addon->GetSetting(id) == "true" ? true : false);
-          return true;
-        }
-        else if (type == "slider")
-        {
-          const char *option = setting->Attribute("option");
-          if (option && strcmpi(option, "int") == 0)
-          {
-            *(int*) settingValue = (int) atoi(addon->GetSetting(id).c_str());
-            return true;
-          }
-          else
-          {
-            *(float*) settingValue = (float) atof(addon->GetSetting(id).c_str());
-            return true;
-          }
-        }
-      }
-      setting = setting->NextSiblingElement("setting");
-    }
-    category = category->NextSiblingElement("category");
+    CLog::Log(LOGERROR, "kodi::General::%s - can't find setting '%s' in '%s'", __FUNCTION__, settingName, addon->Name().c_str());
+    return false;
   }
-  CLog::Log(LOGERROR, "kodi::General::%s - can't find setting '%s' in '%s'", __FUNCTION__, settingName, addon->Name().c_str());
+
+  switch (setting->GetType())
+  {
+    case SettingTypeBool:
+      *static_cast<bool*>(settingValue) = std::static_pointer_cast<CSettingBool>(setting)->GetValue();
+      return true;
+
+    case SettingTypeInteger:
+      *static_cast<int*>(settingValue) = std::static_pointer_cast<CSettingInt>(setting)->GetValue();
+      return true;
+
+    case SettingTypeNumber:
+      *static_cast<float*>(settingValue) = static_cast<float>(std::static_pointer_cast<CSettingNumber>(setting)->GetValue());
+      return true;
+
+    case SettingTypeString:
+      *static_cast<char**>(settingValue) = strdup(std::static_pointer_cast<CSettingString>(setting)->GetValue().c_str());
+      break;
+
+    default:
+      CLog::Log(LOGERROR, "kodi::General::%s - setting '%s' in '%s' has unknown type", __FUNCTION__, settingName, addon->Name().c_str());
+      break;
+  }
 
   return false;
 }
@@ -749,7 +708,7 @@ bool CAddonDll::set_setting(void* kodiBase, const char* settingName, const char*
   if (g_windowManager.IsWindowActive(WINDOW_DIALOG_ADDON_SETTINGS))
   {
     CGUIDialogAddonSettings* dialog = g_windowManager.GetWindow<CGUIDialogAddonSettings>(WINDOW_DIALOG_ADDON_SETTINGS);
-    if (dialog->GetCurrentID() == addon->ID())
+    if (dialog->GetCurrentAddonID() == addon->ID())
     {
       CGUIMessage message(GUI_MSG_SETTING_UPDATED, 0, 0);
       std::vector<std::string> params;

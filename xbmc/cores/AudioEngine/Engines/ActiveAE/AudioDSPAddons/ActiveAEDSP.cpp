@@ -30,7 +30,7 @@ extern "C" {
 #include "ActiveAEDSPProcess.h"
 #include "addons/AddonInstaller.h"
 #include "addons/AddonSystemSettings.h"
-#include "addons/GUIDialogAddonSettings.h"
+#include "addons/settings/GUIDialogAddonSettings.h"
 #include "Application.h"
 #include "cores/AudioEngine/Engines/ActiveAE/ActiveAEBuffer.h"
 #include "cores/AudioEngine/Interfaces/AEResample.h"
@@ -238,7 +238,7 @@ void CActiveAEDSP::ResetDatabase(void)
 
 /*! @name Settings and action callback methods (OnAction currently unused */
 //@{
-void CActiveAEDSP::OnSettingAction(const CSetting *setting)
+void CActiveAEDSP::OnSettingAction(std::shared_ptr<const CSetting> setting)
 {
   if (setting == NULL)
     return;

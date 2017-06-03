@@ -329,7 +329,7 @@ void CGUIDialogSubtitles::Search(const std::string &search/*=""*/)
   else
     url.SetOption("action", "search");
 
-  const CSetting *setting = CServiceBroker::GetSettings().GetSetting(CSettings::SETTING_SUBTITLES_LANGUAGES);
+  SettingConstPtr setting = CServiceBroker::GetSettings().GetSetting(CSettings::SETTING_SUBTITLES_LANGUAGES);
   if (setting)
     url.SetOption("languages", setting->ToString());
 

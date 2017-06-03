@@ -44,8 +44,11 @@ protected:
 
   // implementation of CGUIDialogSettingsBase
   virtual int GetSettingLevel() const;
-  virtual CSettingSection* GetSection();
+  virtual std::shared_ptr<CSettingSection> GetSection();
   virtual void Save();
+
+  // implementation of CGUIDialogSettingsManagerBase
+  virtual CSettingsManager* GetSettingsManager() const override;
 
   /*!
    * Set focus to a category or setting in this window. The setting/category must be active in the

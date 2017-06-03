@@ -39,7 +39,7 @@ CGameSettings& CGameSettings::GetInstance()
   return gameSettingsInstance;
 }
 
-void CGameSettings::OnSettingChanged(const CSetting *setting)
+void CGameSettings::OnSettingChanged(std::shared_ptr<const CSetting> setting)
 {
   if (setting == NULL)
     return;
@@ -57,7 +57,7 @@ void CGameSettings::OnSettingChanged(const CSetting *setting)
   }
 }
 
-void CGameSettings::OnSettingAction(const CSetting *setting)
+void CGameSettings::OnSettingAction(std::shared_ptr<const CSetting> setting)
 {
   if (setting == NULL)
     return;

@@ -44,7 +44,7 @@ CGUIAudioManager::~CGUIAudioManager()
 {
 }
 
-void CGUIAudioManager::OnSettingChanged(const CSetting *setting)
+void CGUIAudioManager::OnSettingChanged(std::shared_ptr<const CSetting> setting)
 {
   if (setting == NULL)
     return;
@@ -57,7 +57,7 @@ void CGUIAudioManager::OnSettingChanged(const CSetting *setting)
   }
 }
 
-bool CGUIAudioManager::OnSettingUpdate(CSetting* &setting, const char *oldSettingId, const TiXmlNode *oldSettingNode)
+bool CGUIAudioManager::OnSettingUpdate(std::shared_ptr<CSetting> setting, const char *oldSettingId, const TiXmlNode *oldSettingNode)
 {
   if (setting == NULL)
     return false;
@@ -65,10 +65,10 @@ bool CGUIAudioManager::OnSettingUpdate(CSetting* &setting, const char *oldSettin
   if (setting->GetId() == CSettings::SETTING_LOOKANDFEEL_SOUNDSKIN)
   {
     //Migrate the old settings
-    if (((CSettingString*)setting)->GetValue() == "SKINDEFAULT")
-      ((CSettingString*)setting)->Reset();
-    else if (((CSettingString*)setting)->GetValue() == "OFF")
-      ((CSettingString*)setting)->SetValue("");
+    if (std::static_pointer_cast<CSettingString>(setting)->GetValue() == "SKINDEFAULT")
+      std::static_pointer_cast<CSettingString>(setting)->Reset();
+    else if (std::static_pointer_cast<CSettingString>(setting)->GetValue() == "OFF")
+      std::static_pointer_cast<CSettingString>(setting)->SetValue("");
   }
   return true;
 }
@@ -222,7 +222,7 @@ void CGUIAudioManager::UnLoad()
 
 std::string GetSoundSkinPath()
 {
-  auto setting = static_cast<CSettingString*>(CServiceBroker::GetSettings().GetSetting(CSettings::SETTING_LOOKANDFEEL_SOUNDSKIN));
+  auto setting = std::static_pointer_cast<CSettingString>(CServiceBroker::GetSettings().GetSetting(CSettings::SETTING_LOOKANDFEEL_SOUNDSKIN));
   auto value = setting->GetValue();
   if (value.empty())
     return "";

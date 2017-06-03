@@ -41,9 +41,9 @@ CSettingAddon::CSettingAddon(const std::string &id, const CSettingAddon &setting
   copyaddontype(setting);
 }
 
-CSetting* CSettingAddon::Clone(const std::string &id) const
+SettingPtr CSettingAddon::Clone(const std::string &id) const
 {
-  return new CSettingAddon(id, *this);
+  return std::make_shared<CSettingAddon>(id, *this);
 }
 
 bool CSettingAddon::Deserialize(const TiXmlNode *node, bool update /* = false */)

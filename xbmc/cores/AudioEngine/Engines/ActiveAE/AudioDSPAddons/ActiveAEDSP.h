@@ -108,7 +108,7 @@ namespace ActiveAE
 
   /*! @name Settings and action callback methods */
   //@{
-    virtual void OnSettingAction(const CSetting *setting) override;
+    virtual void OnSettingAction(std::shared_ptr<const CSetting> setting) override;
   //@}
 
   /*! @name Backend methods */

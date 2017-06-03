@@ -24,7 +24,7 @@
 
 #include "Application.h"
 #include "addons/AddonDll.h"
-#include "addons/GUIDialogAddonSettings.h"
+#include "addons/settings/GUIDialogAddonSettings.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "utils/CharsetConverter.h"
 #include "utils/log.h"
@@ -74,7 +74,7 @@ bool Interface_General::open_settings_dialog(void* kodiBase)
     return false;
   }
 
-  return CGUIDialogAddonSettings::ShowAndGetInput(addonInfo);
+  return CGUIDialogAddonSettings::ShowForAddon(addonInfo);
 }
 
 char* Interface_General::get_localized_string(void* kodiBase, long dwCode)

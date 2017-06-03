@@ -170,7 +170,7 @@ CNetworkServices& CNetworkServices::GetInstance()
   return sNetworkServices;
 }
 
-bool CNetworkServices::OnSettingChanging(const CSetting *setting)
+bool CNetworkServices::OnSettingChanging(std::shared_ptr<const CSetting> setting)
 {
   if (setting == NULL)
     return false;
@@ -194,14 +194,14 @@ bool CNetworkServices::OnSettingChanging(const CSetting *setting)
   }
   else if (settingId == CSettings::SETTING_SERVICES_ESPORT ||
            settingId == CSettings::SETTING_SERVICES_WEBSERVERPORT)
-    return ValidatePort(((CSettingInt*)setting)->GetValue());
+    return ValidatePort(std::static_pointer_cast<const CSettingInt>(setting)->GetValue());
   else
 #endif // HAS_WEB_SERVER
 
 #ifdef HAS_ZEROCONF
   if (settingId == CSettings::SETTING_SERVICES_ZEROCONF)
   {
-    if (((CSettingBool*)setting)->GetValue())
+    if (std::static_pointer_cast<const CSettingBool>(setting)->GetValue())
       return StartZeroconf();
 #ifdef HAS_AIRPLAY
     else
@@ -223,7 +223,7 @@ bool CNetworkServices::OnSettingChanging(const CSetting *setting)
 #ifdef HAS_AIRPLAY
   if (settingId == CSettings::SETTING_SERVICES_AIRPLAY)
   {
-    if (((CSettingBool*)setting)->GetValue())
+    if (std::static_pointer_cast<const CSettingBool>(setting)->GetValue())
     {
 #ifdef HAS_ZEROCONF
       // AirPlay needs zeroconf
@@ -266,7 +266,7 @@ bool CNetworkServices::OnSettingChanging(const CSetting *setting)
   }
   else if (settingId == CSettings::SETTING_SERVICES_AIRPLAYVIDEOSUPPORT)
   {
-    if (((CSettingBool*)setting)->GetValue())
+    if (std::static_pointer_cast<const CSettingBool>(setting)->GetValue())
     {
       if (!StartAirPlayServer())
       {
@@ -296,7 +296,7 @@ bool CNetworkServices::OnSettingChanging(const CSetting *setting)
 #ifdef HAS_UPNP
   if (settingId == CSettings::SETTING_SERVICES_UPNPSERVER)
   {
-    if (((CSettingBool*)setting)->GetValue())
+    if (std::static_pointer_cast<const CSettingBool>(setting)->GetValue())
     {
       if (!StartUPnPServer())
         return false;
@@ -312,7 +312,7 @@ bool CNetworkServices::OnSettingChanging(const CSetting *setting)
   }
   else if (settingId == CSettings::SETTING_SERVICES_UPNPRENDERER)
   {
-    if (((CSettingBool*)setting)->GetValue())
+    if (std::static_pointer_cast<const CSettingBool>(setting)->GetValue())
       return StartUPnPRenderer();
     else
       return StopUPnPRenderer();
@@ -321,7 +321,7 @@ bool CNetworkServices::OnSettingChanging(const CSetting *setting)
   {
     // always stop and restart
     StopUPnPController();
-    if (((CSettingBool*)setting)->GetValue())
+    if (std::static_pointer_cast<const CSettingBool>(setting)->GetValue())
       return StartUPnPController();
   }
   else
@@ -329,7 +329,7 @@ bool CNetworkServices::OnSettingChanging(const CSetting *setting)
 
   if (settingId == CSettings::SETTING_SERVICES_ESENABLED)
   {
-    if (((CSettingBool*)setting)->GetValue())
+    if (std::static_pointer_cast<const CSettingBool>(setting)->GetValue())
     {
       bool result = true;
 #ifdef HAS_EVENT_SERVER
@@ -423,7 +423,7 @@ bool CNetworkServices::OnSettingChanging(const CSetting *setting)
   return true;
 }
 
-void CNetworkServices::OnSettingChanged(const CSetting *setting)
+void CNetworkServices::OnSettingChanged(std::shared_ptr<const CSetting> setting)
 {
   if (setting == NULL)
     return;
@@ -451,7 +451,7 @@ void CNetworkServices::OnSettingChanged(const CSetting *setting)
   }
 }
 
-bool CNetworkServices::OnSettingUpdate(CSetting* &setting, const char *oldSettingId, const TiXmlNode *oldSettingNode)
+bool CNetworkServices::OnSettingUpdate(std::shared_ptr<CSetting> setting, const char *oldSettingId, const TiXmlNode *oldSettingNode)
 {
   if (setting == NULL)
     return false;

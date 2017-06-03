@@ -283,9 +283,9 @@ GUIHANDLE CAddonCallbacksGUI::Window_New(void *addonData, const char *xmlFilenam
       "skins",
       defaultSkin);
 
-    CSkinInfo skinInfo(props);
-    skinInfo.Start();
-    strSkinPath = skinInfo.GetSkinPath(xmlFilename, &res, props.path);
+    std::shared_ptr<CSkinInfo> skinInfo = std::make_shared<ADDON::CSkinInfo>(props);
+    skinInfo->Start();
+    strSkinPath = skinInfo->GetSkinPath(xmlFilename, &res, props.path);
 
     if (!XFILE::CFile::Exists(strSkinPath))
     {

@@ -1639,7 +1639,7 @@
     "type": "string",
     "enum": [
       "boolean", "integer", "number", "string", "action", "list",
-      "path", "addon"
+      "path", "addon", "date", "time"
     ]
   },
   "Setting.Level": {
@@ -1819,6 +1819,9 @@
   },
   "Setting.Details.SettingAction": {
     "extends": "Setting.Details.SettingBase",
+    "properties": {
+      "data": { "type": "string", "required": true }
+    },
     "additionalProperties": false
   },
   "Setting.Details.SettingList": {
@@ -1849,6 +1852,14 @@
     },
     "additionalProperties": false
   },
+  "Setting.Details.SettingDate": {
+    "extends": "Setting.Details.SettingString",
+    "additionalProperties": false
+  },
+  "Setting.Details.SettingTime": {
+    "extends": "Setting.Details.SettingString",
+    "additionalProperties": false
+  },
   "Setting.Details.Setting": {
     "type": [
       { "$ref": "Setting.Details.SettingBool", "required": true },
@@ -1858,7 +1869,9 @@
       { "$ref": "Setting.Details.SettingAction", "required": true },
       { "$ref": "Setting.Details.SettingList", "required": true },
       { "$ref": "Setting.Details.SettingPath", "required": true },
-      { "$ref": "Setting.Details.SettingAddon", "required": true }
+      { "$ref": "Setting.Details.SettingAddon", "required": true },
+      { "$ref": "Setting.Details.SettingDate", "required": true },
+      { "$ref": "Setting.Details.SettingTime", "required": true }
     ]
   },
   "Setting.Details.Group": {

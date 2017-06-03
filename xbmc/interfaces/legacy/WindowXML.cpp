@@ -122,19 +122,19 @@ namespace XBMCAddon
         if (XFILE::CFile::Exists(basePath))
         {
           props.path = basePath;
-          ADDON::CSkinInfo skinInfo(props, res);
-          skinInfo.Start();
-          strSkinPath = skinInfo.GetSkinPath(xmlFilename, &res);
+          std::shared_ptr<ADDON::CSkinInfo> skinInfo = std::make_shared<ADDON::CSkinInfo>(props, res);
+          skinInfo->Start();
+          strSkinPath = skinInfo->GetSkinPath(xmlFilename, &res);
         }
 
         if (!XFILE::CFile::Exists(strSkinPath))
         {
           // Finally fallback to the DefaultSkin as it didn't exist in either the XBMC Skin folder or the fallback skin folder
           props.path = URIUtils::AddFileToFolder(fallbackPath, defaultSkin);
-          ADDON::CSkinInfo skinInfo(props, res);
+          std::shared_ptr<ADDON::CSkinInfo> skinInfo = std::make_shared<ADDON::CSkinInfo>(props, res);
 
-          skinInfo.Start();
-          strSkinPath = skinInfo.GetSkinPath(xmlFilename, &res);
+          skinInfo->Start();
+          strSkinPath = skinInfo->GetSkinPath(xmlFilename, &res);
           if (!XFILE::CFile::Exists(strSkinPath))
             throw WindowException("XML File for Window is missing");
         }

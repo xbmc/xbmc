@@ -249,7 +249,7 @@ void CEventLog::ShowFullEventLog(EventLevel level /* = EventLevel::Basic */, boo
   g_windowManager.ActivateWindow(WINDOW_EVENT_LOG, params);
 }
 
-void CEventLog::OnSettingAction(const CSetting *setting)
+void CEventLog::OnSettingAction(std::shared_ptr<const CSetting> setting)
 {
   if (setting == nullptr)
     return;

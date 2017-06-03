@@ -196,9 +196,7 @@ bool CScraper::SetPathSettings(CONTENT_TYPE content, const std::string& xml)
 
   CXBMCTinyXML doc;
   doc.Parse(xml);
-  m_userSettingsLoaded = SettingsFromXML(doc);
-
-  return m_userSettingsLoaded;
+  return SettingsFromXML(doc);
 }
 
 std::string CScraper::GetPathSettings()

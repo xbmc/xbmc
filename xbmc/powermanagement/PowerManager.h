@@ -20,6 +20,7 @@
  *
  */
 
+#include <memory>
 #include <string>
 #include <utility>
 #include <vector>
@@ -85,7 +86,7 @@ public:
 
   void ProcessEvents();
 
-  static void SettingOptionsShutdownStatesFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
+  static void SettingOptionsShutdownStatesFiller(std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
 
 private:
   void OnSleep();

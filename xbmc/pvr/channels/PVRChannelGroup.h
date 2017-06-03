@@ -265,7 +265,7 @@ namespace PVR
 
     //@}
 
-    void OnSettingChanged(const CSetting *setting) override;
+    void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
 
     /*!
      * @brief Get a channel given it's EPG ID.

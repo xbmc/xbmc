@@ -18,11 +18,11 @@
  *
  */
 #include "AddonStatusHandler.h"
-#include "AddonManager.h"
+#include "addons/AddonManager.h"
+#include "addons/settings/GUIDialogAddonSettings.h"
 #include "threads/SingleLock.h"
 #include "messaging/ApplicationMessenger.h"
 #include "guilib/GUIWindowManager.h"
-#include "GUIDialogAddonSettings.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogKaiToast.h"
@@ -119,7 +119,7 @@ void CAddonStatusHandler::Process()
     if (!m_addon->HasSettings())
       return;
 
-    if (CGUIDialogAddonSettings::ShowAndGetInput(m_addon))
+    if (CGUIDialogAddonSettings::ShowForAddon(m_addon))
     {
       //! @todo Doesn't dialogaddonsettings save these automatically? It should do this.
       m_addon->SaveSettings();

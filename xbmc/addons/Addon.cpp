@@ -156,12 +156,13 @@ std::string GetIcon(ADDON::TYPE type)
 
 CAddon::CAddon(AddonProps props)
   : m_props(std::move(props))
+  , m_userSettingsPath()
+  , m_loadSettingsFailed(false)
+  , m_hasUserSettings(false)
+  , m_profilePath(StringUtils::Format("special://profile/addon_data/%s/", m_props.id.c_str()))
+  , m_settings(nullptr)
 {
-  m_profilePath = StringUtils::Format("special://profile/addon_data/%s/", ID().c_str());
   m_userSettingsPath = URIUtils::AddFileToFolder(m_profilePath, "settings.xml");
-  m_hasSettings = true;
-  m_settingsLoaded = false;
-  m_userSettingsLoaded = false;
 }
 
 bool CAddon::MeetsVersion(const AddonVersion &version) const
@@ -177,32 +178,58 @@ bool CAddon::HasSettings()
   return LoadSettings();
 }
 
-bool CAddon::LoadSettings(bool bForce /* = false*/)
+bool CAddon::SettingsInitialized() const
 {
-  if (m_settingsLoaded && !bForce)
+  return m_settings != nullptr && m_settings->IsInitialized();
+}
+
+bool CAddon::SettingsLoaded() const
+{
+  return m_settings != nullptr && m_settings->IsLoaded();
+}
+
+bool CAddon::LoadSettings(bool bForce /* = false */)
+{
+  if (SettingsInitialized() && !bForce)
     return true;
-  if (!m_hasSettings)
-    return false;
-  std::string addonFileName = URIUtils::AddFileToFolder(m_props.path, "resources", "settings.xml");
 
-  if (!m_addonXmlDoc.LoadFile(addonFileName))
+  if (m_loadSettingsFailed)
+    return false;
+
+  // assume loading settings fails
+  m_loadSettingsFailed = true;
+
+  // reset the settings if we are forced to
+  if (SettingsInitialized() && bForce)
+    GetSettings()->Uninitialize();
+
+  // load the settings definition XML file
+  auto addonSettingsDefinitionFile = URIUtils::AddFileToFolder(m_props.path, "resources", "settings.xml");
+  CXBMCTinyXML addonSettingsDefinitionDoc;
+  if (!addonSettingsDefinitionDoc.LoadFile(addonSettingsDefinitionFile))
   {
-    if (CFile::Exists(addonFileName))
-      CLog::Log(LOGERROR, "Unable to load: %s, Line %d\n%s", addonFileName.c_str(), m_addonXmlDoc.ErrorRow(), m_addonXmlDoc.ErrorDesc());
-    m_hasSettings = false;
+    if (CFile::Exists(addonSettingsDefinitionFile))
+    {
+      CLog::Log(LOGERROR, "CAddon[%s]: unable to load: %s, Line %d\n%s",
+        ID().c_str(), addonSettingsDefinitionFile.c_str(), addonSettingsDefinitionDoc.ErrorRow(), addonSettingsDefinitionDoc.ErrorDesc());
+    }
+
     return false;
   }
 
-  // Make sure that the addon XML has the settings element
-  TiXmlElement *setting = m_addonXmlDoc.RootElement();
-  if (!setting || strcmpi(setting->Value(), "settings") != 0)
+  // initialize the settings definition
+  if (!GetSettings()->Initialize(addonSettingsDefinitionDoc))
   {
-    CLog::Log(LOGERROR, "Error loading Settings %s: cannot find root element 'settings'", addonFileName.c_str());
+    CLog::Log(LOGERROR, "CAddon[%s]: failed to initialize addon settings", ID().c_str());
     return false;
   }
-  SettingsFromXML(m_addonXmlDoc, true);
+
+  // loading settings didn't fail
+  m_loadSettingsFailed = false;
+
+  // load user settings / values
   LoadUserSettings();
-  m_settingsLoaded = true;
+
   return true;
 }
 
@@ -211,7 +238,7 @@ bool CAddon::HasUserSettings()
   if (!LoadSettings())
     return false;
 
-  return m_userSettingsLoaded;
+  return SettingsLoaded() && m_hasUserSettings;
 }
 
 bool CAddon::ReloadSettings()
@@ -221,16 +248,32 @@ bool CAddon::ReloadSettings()
 
 bool CAddon::LoadUserSettings()
 {
-  m_userSettingsLoaded = false;
+  if (!SettingsInitialized())
+    return false;
+
+  m_hasUserSettings = false;
+
+  // there are no user settings
+  if (!CFile::Exists(m_userSettingsPath))
+  {
+    // mark the settings as loaded
+    GetSettings()->SetLoaded();
+    return true;
+  }
+
   CXBMCTinyXML doc;
-  if (doc.LoadFile(m_userSettingsPath))
-    m_userSettingsLoaded = SettingsFromXML(doc);
-  return m_userSettingsLoaded;
+  if (!doc.LoadFile(m_userSettingsPath))
+  {
+    CLog::Log(LOGERROR, "CAddon[%s]: failed to load addon settings from %s", ID().c_str(), m_userSettingsPath.c_str());
+    return false;
+  }
+
+  return SettingsFromXML(doc);
 }
 
 bool CAddon::HasSettingsToSave() const
 {
-  return !m_settings.empty();
+  return SettingsLoaded();
 }
 
 void CAddon::SaveSettings(void)
@@ -252,11 +295,13 @@ void CAddon::SaveSettings(void)
 
   // create the XML file
   CXBMCTinyXML doc;
-  SettingsToXML(doc);
-  doc.SaveFile(m_userSettingsPath);
-  m_userSettingsLoaded = true;
+  if (SettingsToXML(doc))
+    doc.SaveFile(m_userSettingsPath);
+
+  m_hasUserSettings = true;
   
-  CAddonMgr::GetInstance().ReloadSettings(ID());//push the settings changes to the running addon instance
+  //push the settings changes to the running addon instance
+  CAddonMgr::GetInstance().ReloadSettings(ID());
 #ifdef HAS_PYTHON
   g_pythonParser.OnSettingsChanged(ID());
 #endif
@@ -264,127 +309,90 @@ void CAddon::SaveSettings(void)
 
 std::string CAddon::GetSetting(const std::string& key)
 {
-  if (!LoadSettings())
+  if (key.empty() || !LoadSettings())
     return ""; // no settings available
 
-  std::map<std::string, std::string>::const_iterator i = m_settings.find(key);
-  if (i != m_settings.end())
-    return i->second;
+  auto setting = m_settings->GetSetting(key);
+  if (setting != nullptr)
+    return setting->ToString();
+
   return "";
 }
 
 void CAddon::UpdateSetting(const std::string& key, const std::string& value)
 {
-  LoadSettings();
-  if (key.empty()) return;
-  m_settings[key] = value;
+  if (key.empty() || !LoadSettings())
+    return;
+
+  // try to get the setting
+  auto setting = m_settings->GetSetting(key);
+
+  // if the setting doesn't exist, try to add it
+  if (setting == nullptr)
+  {
+    setting = m_settings->AddSetting(key, value);
+    if (setting == nullptr)
+    {
+      CLog::Log(LOGERROR, "CAddon[%s]: failed to add undefined setting \"%s\"", ID().c_str(), key.c_str());
+      return;
+    }
+  }
+
+  setting->FromString(value);
 }
 
-bool CAddon::SettingsFromXML(const CXBMCTinyXML &doc, bool loadDefaults /*=false */)
+bool CAddon::SettingsFromXML(const CXBMCTinyXML &doc, bool loadDefaults /* = false */)
 {
-  if (!doc.RootElement())
+  if (doc.RootElement() == nullptr)
     return false;
 
+  // if the settings haven't been initialized yet, try it from the given XML
+  if (!SettingsInitialized())
+  {
+    if (!GetSettings()->Initialize(doc))
+    {
+      CLog::Log(LOGERROR, "CAddon[%s]: failed to initialize addon settings", ID().c_str());
+      return false;
+    }
+  }
+
+  // reset all setting values to their default value
   if (loadDefaults)
-    m_settings.clear();
+    GetSettings()->SetDefaults();
 
-  const TiXmlElement* category = doc.RootElement()->FirstChildElement("category");
-  if (!category)
-    category = doc.RootElement();
-
-  bool foundSetting = false;
-  while (category)
+  // try to load the setting's values from the given XML
+  if (!GetSettings()->Load(doc))
   {
-    const TiXmlElement *setting = category->FirstChildElement("setting");
-    while (setting)
-    {
-      const char *id = setting->Attribute("id");
-      std::string value = loadDefaults ? GetDefaultValue(setting) : XMLUtils::GetAttribute(setting, "value");
-      if (id && !value.empty())
-      {
-        m_settings[id] = std::move(value);
-        foundSetting = true;
-      }
-      setting = setting->NextSiblingElement("setting");
-    }
-    category = category->NextSiblingElement("category");
-  }
-  return foundSetting;
-}
-
-std::string CAddon::GetDefaultValue(const TiXmlElement *setting) const
-{
-  std::string strDefault = XMLUtils::GetAttribute(setting, "default");
-  if (strDefault.empty())
-  {
-    const std::string type = XMLUtils::GetAttribute(setting, "type");
-
-    if (type == "bool")
-      strDefault = "false";
-    else if (type == "slider" || type == "enum")
-      strDefault = "0";
-    else if (type == "labelenum")
-    {
-      std::string strValues = XMLUtils::GetAttribute(setting, "lvalues");
-      if (!strValues.empty())
-      {
-        // Tokenize
-        std::vector<std::string> vecValues;
-        StringUtils::Tokenize(strValues, vecValues, "|");
-
-        // Translate
-        std::transform(vecValues.begin(), vecValues.end(), vecValues.begin(),
-          [this](const std::string& strValue)
-          {
-            std::string translated = g_localizeStrings.GetAddonString(ID(), atoi(strValue.c_str()));
-            if (translated.empty())
-              translated = g_localizeStrings.Get(atoi(strValue.c_str()));
-            return translated;
-          });
-
-        // Sort
-        const bool bSort = XMLUtils::GetAttribute(setting, "sort") == "yes";
-        if (bSort)
-          std::sort(vecValues.begin(), vecValues.end(), sortstringbyname());
-
-        // Use first value
-        strDefault = vecValues[0];
-      }
-    }
-    else if (type == "select" && setting->Attribute("lvalues"))
-      strDefault = "0";
-    else if (type == "select")
-    {
-      std::string strValues = XMLUtils::GetAttribute(setting, "values");
-      if (!strValues.empty())
-      {
-        std::vector<std::string> vecValues;
-        StringUtils::Tokenize(strValues, vecValues, "|");
-        strDefault = vecValues[0];
-      }
-    }
+    CLog::Log(LOGERROR, "CAddon[%s]: failed to load user settings", ID().c_str());
+    return false;
   }
 
-  return strDefault;
+  m_hasUserSettings = true;
+
+  return true;
 }
 
-void CAddon::SettingsToXML(CXBMCTinyXML &doc) const
+bool CAddon::SettingsToXML(CXBMCTinyXML &doc) const
 {
-  TiXmlElement node("settings");
-  doc.InsertEndChild(node);
-  for (std::map<std::string, std::string>::const_iterator i = m_settings.begin(); i != m_settings.end(); ++i)
+  if (!SettingsInitialized())
+    return false;
+
+  if (!m_settings->Save(doc))
   {
-    TiXmlElement nodeSetting("setting");
-    nodeSetting.SetAttribute("id", i->first.c_str());
-    nodeSetting.SetAttribute("value", i->second.c_str());
-    doc.RootElement()->InsertEndChild(nodeSetting);
+    CLog::Log(LOGERROR, "CAddon[%s]: failed to save addon settings", ID().c_str());
+    return false;
   }
-  doc.SaveFile(m_userSettingsPath);
+
+  return true;
 }
 
-TiXmlElement* CAddon::GetSettingsXML()
+CAddonSettings* CAddon::GetSettings() const
 {
-  return m_addonXmlDoc.RootElement();
+  // initialize addon settings if necessary
+  if (m_settings == nullptr)
+    m_settings = std::make_shared<CAddonSettings>(enable_shared_from_this::shared_from_this());
+
+  return m_settings.get();
 }
 
 std::string CAddon::LibPath() const

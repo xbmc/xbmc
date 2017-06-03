@@ -210,20 +210,20 @@ bool CPeripheral::IsMultiFunctional(void) const
   return m_subDevices.size() > 0;
 }
 
-std::vector<CSetting *> CPeripheral::GetSettings(void) const
+std::vector<std::shared_ptr<CSetting>> CPeripheral::GetSettings(void) const
 {
   std::vector<PeripheralDeviceSetting> tmpSettings;
   for (std::map<std::string, PeripheralDeviceSetting>::const_iterator it = m_settings.begin(); it != m_settings.end(); ++it)
     tmpSettings.push_back(it->second);
   sort(tmpSettings.begin(), tmpSettings.end(), SortBySettingsOrder());
 
-  std::vector<CSetting *> settings;
+  std::vector<std::shared_ptr<CSetting>> settings;
   for (std::vector<PeripheralDeviceSetting>::const_iterator it = tmpSettings.begin(); it != tmpSettings.end(); ++it)
     settings.push_back(it->m_setting);
   return settings;
 }
 
-void CPeripheral::AddSetting(const std::string &strKey, const CSetting *setting, int order)
+void CPeripheral::AddSetting(const std::string &strKey, SettingConstPtr setting, int order)
 {
   if (!setting)
   {
@@ -238,8 +238,8 @@ void CPeripheral::AddSetting(const std::string &strKey, const CSetting *setting,
     {
     case SettingTypeBool:
       {
-        const CSettingBool *mappedSetting = (const CSettingBool *) setting;
-        CSettingBool *boolSetting = new CSettingBool(strKey, *mappedSetting);
+        std::shared_ptr<const CSettingBool> mappedSetting = std::static_pointer_cast<const CSettingBool>(setting);
+        std::shared_ptr<CSettingBool> boolSetting = std::make_shared<CSettingBool>(strKey, *mappedSetting);
         if (boolSetting)
         {
           boolSetting->SetVisible(mappedSetting->IsVisible());
@@ -249,8 +249,8 @@ void CPeripheral::AddSetting(const std::string &strKey, const CSetting *setting,
       break;
     case SettingTypeInteger:
       {
-        const CSettingInt *mappedSetting = (const CSettingInt *) setting;
-        CSettingInt *intSetting = new CSettingInt(strKey, *mappedSetting);
+        std::shared_ptr<const CSettingInt> mappedSetting = std::static_pointer_cast<const CSettingInt>(setting);
+        std::shared_ptr<CSettingInt> intSetting = std::make_shared<CSettingInt>(strKey, *mappedSetting);
         if (intSetting)
         {
           intSetting->SetVisible(mappedSetting->IsVisible());
@@ -260,8 +260,8 @@ void CPeripheral::AddSetting(const std::string &strKey, const CSetting *setting,
       break;
     case SettingTypeNumber:
       {
-        const CSettingNumber *mappedSetting = (const CSettingNumber *) setting;
-        CSettingNumber *floatSetting = new CSettingNumber(strKey, *mappedSetting);
+        std::shared_ptr<const CSettingNumber> mappedSetting = std::static_pointer_cast<const CSettingNumber>(setting);
+        std::shared_ptr<CSettingNumber> floatSetting = std::make_shared<CSettingNumber>(strKey, *mappedSetting);
         if (floatSetting)
         {
           floatSetting->SetVisible(mappedSetting->IsVisible());
@@ -271,8 +271,8 @@ void CPeripheral::AddSetting(const std::string &strKey, const CSetting *setting,
       break;
     case SettingTypeString:
       {
-        const CSettingString *mappedSetting = (const CSettingString *) setting;
-        CSettingString *stringSetting = new CSettingString(strKey, *mappedSetting);
+        std::shared_ptr<const CSettingString> mappedSetting = std::static_pointer_cast<const CSettingString>(setting);
+        std::shared_ptr<CSettingString> stringSetting = std::make_shared<CSettingString>(strKey, *mappedSetting);
         if (stringSetting)
         {
           stringSetting->SetVisible(mappedSetting->IsVisible());
@@ -324,7 +324,7 @@ bool CPeripheral::GetSettingBool(const std::string &strKey) const
   std::map<std::string, PeripheralDeviceSetting>::const_iterator it = m_settings.find(strKey);
   if (it != m_settings.end() && (*it).second.m_setting->GetType() == SettingTypeBool)
   {
-    CSettingBool *boolSetting = (CSettingBool *) (*it).second.m_setting;
+    std::shared_ptr<CSettingBool> boolSetting = std::static_pointer_cast<CSettingBool>((*it).second.m_setting);
     if (boolSetting)
       return boolSetting->GetValue();
   }
@@ -337,7 +337,7 @@ int CPeripheral::GetSettingInt(const std::string &strKey) const
   std::map<std::string, PeripheralDeviceSetting>::const_iterator it = m_settings.find(strKey);
   if (it != m_settings.end() && (*it).second.m_setting->GetType() == SettingTypeInteger)
   {
-    CSettingInt *intSetting = (CSettingInt *) (*it).second.m_setting;
+    std::shared_ptr<CSettingInt> intSetting = std::static_pointer_cast<CSettingInt>((*it).second.m_setting);
     if (intSetting)
       return intSetting->GetValue();
   }
@@ -350,7 +350,7 @@ float CPeripheral::GetSettingFloat(const std::string &strKey) const
   std::map<std::string, PeripheralDeviceSetting>::const_iterator it = m_settings.find(strKey);
   if (it != m_settings.end() && (*it).second.m_setting->GetType() == SettingTypeNumber)
   {
-    CSettingNumber *floatSetting = (CSettingNumber *) (*it).second.m_setting;
+    std::shared_ptr<CSettingNumber> floatSetting = std::static_pointer_cast<CSettingNumber>((*it).second.m_setting);
     if (floatSetting)
       return (float)floatSetting->GetValue();
   }
@@ -363,7 +363,7 @@ const std::string CPeripheral::GetSettingString(const std::string &strKey) const
   std::map<std::string, PeripheralDeviceSetting>::const_iterator it = m_settings.find(strKey);
   if (it != m_settings.end() && (*it).second.m_setting->GetType() == SettingTypeString)
   {
-    CSettingString *stringSetting = (CSettingString *) (*it).second.m_setting;
+    std::shared_ptr<CSettingString> stringSetting = std::static_pointer_cast<CSettingString>((*it).second.m_setting);
     if (stringSetting)
       return stringSetting->GetValue();
   }
@@ -377,7 +377,7 @@ bool CPeripheral::SetSetting(const std::string &strKey, bool bValue)
   std::map<std::string, PeripheralDeviceSetting>::iterator it = m_settings.find(strKey);
   if (it != m_settings.end() && (*it).second.m_setting->GetType() == SettingTypeBool)
   {
-    CSettingBool *boolSetting = (CSettingBool *) (*it).second.m_setting;
+    std::shared_ptr<CSettingBool> boolSetting = std::static_pointer_cast<CSettingBool>((*it).second.m_setting);
     if (boolSetting)
     {
       bChanged = boolSetting->GetValue() != bValue;
@@ -395,7 +395,7 @@ bool CPeripheral::SetSetting(const std::string &strKey, int iValue)
   std::map<std::string, PeripheralDeviceSetting>::iterator it = m_settings.find(strKey);
   if (it != m_settings.end() && (*it).second.m_setting->GetType() == SettingTypeInteger)
   {
-    CSettingInt *intSetting = (CSettingInt *) (*it).second.m_setting;
+    std::shared_ptr<CSettingInt> intSetting = std::static_pointer_cast<CSettingInt>((*it).second.m_setting);
     if (intSetting)
     {
       bChanged = intSetting->GetValue() != iValue;
@@ -413,7 +413,7 @@ bool CPeripheral::SetSetting(const std::string &strKey, float fValue)
   std::map<std::string, PeripheralDeviceSetting>::iterator it = m_settings.find(strKey);
   if (it != m_settings.end() && (*it).second.m_setting->GetType() == SettingTypeNumber)
   {
-    CSettingNumber *floatSetting = (CSettingNumber *) (*it).second.m_setting;
+    std::shared_ptr<CSettingNumber> floatSetting = std::static_pointer_cast<CSettingNumber>((*it).second.m_setting);
     if (floatSetting)
     {
       bChanged = floatSetting->GetValue() != fValue;
@@ -448,7 +448,7 @@ bool CPeripheral::SetSetting(const std::string &strKey, const std::string &strVa
   {
     if ((*it).second.m_setting->GetType() == SettingTypeString)
     {
-      CSettingString *stringSetting = (CSettingString *) (*it).second.m_setting;
+      std::shared_ptr<CSettingString> stringSetting = std::static_pointer_cast<CSettingString>((*it).second.m_setting);
       if (stringSetting)
       {
         bChanged = !StringUtils::EqualsNoCase(stringSetting->GetValue(), strValue);
@@ -481,28 +481,28 @@ void CPeripheral::PersistSettings(bool bExiting /* = false */)
     {
     case SettingTypeString:
       {
-        CSettingString *stringSetting = (CSettingString *) (*itr).second.m_setting;
+        std::shared_ptr<CSettingString> stringSetting = std::static_pointer_cast<CSettingString>((*itr).second.m_setting);
         if (stringSetting)
           strValue = stringSetting->GetValue();
       }
       break;
     case SettingTypeInteger:
       {
-        CSettingInt *intSetting = (CSettingInt *) (*itr).second.m_setting;
+        std::shared_ptr<CSettingInt> intSetting = std::static_pointer_cast<CSettingInt>((*itr).second.m_setting);
         if (intSetting)
           strValue = StringUtils::Format("%d", intSetting->GetValue());
       }
       break;
     case SettingTypeNumber:
       {
-        CSettingNumber *floatSetting = (CSettingNumber *) (*itr).second.m_setting;
+        std::shared_ptr<CSettingNumber> floatSetting = std::static_pointer_cast<CSettingNumber>((*itr).second.m_setting);
         if (floatSetting)
           strValue = StringUtils::Format("%.2f", floatSetting->GetValue());
       }
       break;
     case SettingTypeBool:
       {
-        CSettingBool *boolSetting = (CSettingBool *) (*itr).second.m_setting;
+        std::shared_ptr<CSettingBool> boolSetting = std::static_pointer_cast<CSettingBool>((*itr).second.m_setting);
         if (boolSetting)
           strValue = StringUtils::Format("%d", boolSetting->GetValue() ? 1:0);
       }
@@ -558,12 +558,6 @@ void CPeripheral::ResetDefaultSettings(void)
 
 void CPeripheral::ClearSettings(void)
 {
-  std::map<std::string, PeripheralDeviceSetting>::iterator it = m_settings.begin();
-  while (it != m_settings.end())
-  {
-    delete (*it).second.m_setting;
-    ++it;
-  }
   m_settings.clear();
 }
 

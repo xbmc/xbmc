@@ -300,7 +300,7 @@ bool CMediaSettings::Save(TiXmlNode *settings) const
   return true;
 }
 
-void CMediaSettings::OnSettingAction(const CSetting *setting)
+void CMediaSettings::OnSettingAction(std::shared_ptr<const CSetting> setting)
 {
   if (setting == NULL)
     return;

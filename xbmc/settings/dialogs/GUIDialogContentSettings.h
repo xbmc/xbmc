@@ -62,8 +62,8 @@ protected:
   void OnInitWindow() override;
 
   // implementations of ISettingCallback
-  void OnSettingChanged(const CSetting *setting) override;
-  void OnSettingAction(const CSetting *setting) override;
+  void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
+  void OnSettingAction(std::shared_ptr<const CSetting> setting) override;
 
   // specialization of CGUIDialogSettingsBase
   bool AllowResettingSettings() const override { return false; }

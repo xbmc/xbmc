@@ -1,82 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
-	<defaultcontrol always="true">9</defaultcontrol>
+	<defaultcontrol>5</defaultcontrol>
 	<include>Animation_DialogPopupOpenClose</include>
 	<controls>
 		<control type="group">
-			<centertop>50%</centertop>
-			<height>800</height>
+			<top>105</top>
 			<centerleft>50%</centerleft>
 			<width>1820</width>
+			<include>Animation_DialogPopupVisible</include>
 			<include content="DialogBackgroundCommons">
 				<param name="width" value="1820" />
-				<param name="height" value="800" />
+				<param name="height" value="870" />
 				<param name="header_label" value="" />
-				<param name="header_id" value="20" />
+				<param name="header_id" value="2" />
 			</include>
-			<control type="grouplist" id="9">
-				<description>button area</description>
-				<left>20</left>
-				<top>70</top>
+			<control type="grouplist" id="3">
+				<description>Categories Area</description>
+				<left>29</left>
+				<top>80</top>
 				<width>400</width>
-				<height>700</height>
+				<height>750</height>
 				<itemgap>-25</itemgap>
 				<orientation>vertical</orientation>
-				<onleft>9001</onleft>
-				<onright>2</onright>
-				<onup>9</onup>
-				<ondown>9</ondown>
+				<onleft>9000</onleft>
+				<onright>5</onright>
+				<onup>3</onup>
+				<ondown>3</ondown>
 			</control>
-			<include content="UpDownArrows">
-				<param name="container_id" value="2" />
-				<param name="posx" value="830" />
-				<param name="up_posy" value="-42" />
-				<param name="down_posy" value="814" />
-			</include>
-			<control type="image">
-				<left>400</left>
-				<top>70</top>
-				<width>1100</width>
-				<height>722</height>
-				<texture border="40">buttons/dialogbutton-nofo.png</texture>
-			</control>
-			<control type="grouplist" id="2">
-				<description>control area</description>
-				<left>420</left>
-				<top>90</top>
-				<width>1060</width>
-				<height>680</height>
-				<onup>2</onup>
-				<ondown>2</ondown>
-				<onleft>9</onleft>
-				<onright>9001</onright>
-			</control>
-			<control type="grouplist" id="9001">
-				<right>20</right>
-				<top>70</top>
-				<width>300</width>
-				<height>700</height>
-				<itemgap>dialogbuttons_itemgap</itemgap>
-				<align>left</align>
-				<orientation>vertical</orientation>
-				<onup>9001</onup>
-				<ondown>9001</ondown>
-				<onleft>2</onleft>
-				<onright>9</onright>
-				<include content="DefaultDialogButton">
-					<param name="id" value="10" />
-					<param name="label" value="$LOCALIZE[186]" />
-				</include>
-				<include content="DefaultDialogButton">
-					<param name="id" value="11" />
-					<param name="label" value="$LOCALIZE[222]" />
-				</include>
-				<include content="DefaultDialogButton">
-					<param name="id" value="12" />
-					<param name="label" value="$LOCALIZE[409]" />
-				</include>
-			</control>
-			<control type="button" id="13">
+			<control type="button" id="10">
 				<description>Default Category Button</description>
 				<height>120</height>
 				<width>390</width>
@@ -86,34 +37,73 @@
 				<font>font25_title</font>
 				<texturenofocus border="40">buttons/dialogbutton-nofo.png</texturenofocus>
 			</control>
-			<control type="button" id="3">
+			<control type="image">
+				<left>410</left>
+				<top>80</top>
+				<width>1100</width>
+				<height>790</height>
+				<texture border="40">buttons/dialogbutton-nofo.png</texture>
+			</control>
+			<control type="grouplist" id="5">
+				<description>control area</description>
+				<left>429</left>
+				<top>100</top>
+				<width>1060</width>
+				<height>750</height>
+				<onleft>3</onleft>
+				<onright>9000</onright>
+				<onup>5</onup>
+				<ondown>5</ondown>
+			</control>
+			<control type="button" id="7">
+				<description>Default Button</description>
 				<include>DefaultSettingButton</include>
 			</control>
-			<control type="radiobutton" id="4">
+			<control type="radiobutton" id="8">
+				<description>Default RadioButton</description>
 				<include>DefaultSettingButton</include>
-				<textwidth>900</textwidth>
 			</control>
-			<control type="spincontrolex" id="5">
+			<control type="spincontrolex" id="9">
+				<description>Default SpinControlex</description>
 				<include>DefaultSettingButton</include>
-				<textwidth>900</textwidth>
 			</control>
-			<control type="label" id="7">
-				<height>60</height>
-				<font>font12</font>
-				<label></label>
-				<textoffsetx>40</textoffsetx>
-				<textoffsety>20</textoffsety>
-				<textcolor>button_focus</textcolor>
-				<shadowcolor>black</shadowcolor>
-				<aligny>bottom</aligny>
-			</control>
-			<control type="image" id="6">
+			<control type="image" id="11">
 				<description>separator image</description>
 				<height>3</height>
 				<texture colordiffuse="AAAAAAAA" border="3">dialogs/separator-grey.png</texture>
 			</control>
-			<control type="sliderex" id="8">
+			<control type="edit" id="12">
 				<include>DefaultSettingButton</include>
+			</control>
+			<control type="sliderex" id="13">
+				<description>Default Slider</description>
+				<include>DefaultSettingButton</include>
+			</control>
+			<control type="label" id="14">
+				<description>Default Label</description>
+				<include>DefaultSettingLabel</include>
+			</control>
+			<control type="grouplist" id="9000">
+				<left>1510</left>
+				<top>92</top>
+				<orientation>vertical</orientation>
+				<width>300</width>
+				<height>300</height>
+				<itemgap>-10</itemgap>
+				<onleft>5</onleft>
+				<onright>3</onright>
+				<include content="DefaultDialogButton">
+					<param name="id" value="28" />
+					<param name="label" value="" />
+				</include>
+				<include content="DefaultDialogButton">
+					<param name="id" value="29" />
+					<param name="label" value="" />
+				</include>
+				<include content="DefaultDialogButton">
+					<param name="id" value="30" />
+					<param name="label" value="" />
+				</include>
 			</control>
 		</control>
 	</controls>

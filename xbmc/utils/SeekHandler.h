@@ -40,9 +40,9 @@ class CSeekHandler : public ISettingCallback, public IActionListener
 public:
   static CSeekHandler& GetInstance();
 
-  static void SettingOptionsSeekStepsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
+  static void SettingOptionsSeekStepsFiller(std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
   
-  virtual void OnSettingChanged(const CSetting *setting) override;
+  virtual void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
   virtual bool OnAction(const CAction &action) override;
 
   void Seek(bool forward, float amount, float duration = 0, bool analogSeek = false, SeekType type = SEEK_TYPE_VIDEO);

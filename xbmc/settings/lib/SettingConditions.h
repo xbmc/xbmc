@@ -30,7 +30,7 @@
 class CSettingsManager;
 class CSetting;
 
-typedef bool (*SettingConditionCheck)(const std::string &condition, const std::string &value, const CSetting *setting, void *data);
+typedef bool (*SettingConditionCheck)(const std::string &condition, const std::string &value, std::shared_ptr<const CSetting> setting, void *data);
 
 class ISettingCondition
 {
@@ -96,7 +96,7 @@ public:
   void AddCondition(const std::string &condition);
   void AddCondition(const std::string &identifier, SettingConditionCheck condition, void *data = NULL);
 
-  bool Check(const std::string &condition, const std::string &value = "", const CSetting *setting = NULL) const;
+  bool Check(const std::string &condition, const std::string &value = "", std::shared_ptr<const CSetting> setting = std::shared_ptr<const CSetting>()) const;
 
 private:
   CSettingConditionsManager(const CSettingConditionsManager&);

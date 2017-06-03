@@ -401,9 +401,9 @@ protected:
   virtual bool Load(const TiXmlNode *settings) override;
   virtual bool Save(TiXmlNode *settings) const override;
 
-  virtual void OnSettingChanged(const CSetting *setting) override;
-  virtual void OnSettingAction(const CSetting *setting) override;
-  virtual bool OnSettingUpdate(CSetting* &setting, const char *oldSettingId, const TiXmlNode *oldSettingNode) override;
+  virtual void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
+  virtual void OnSettingAction(std::shared_ptr<const CSetting> setting) override;
+  virtual bool OnSettingUpdate(std::shared_ptr<CSetting> setting, const char *oldSettingId, const TiXmlNode *oldSettingNode) override;
 
   bool LoadSkin(const std::string& skinID);
 

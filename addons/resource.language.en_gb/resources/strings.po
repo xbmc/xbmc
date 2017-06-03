@@ -514,6 +514,7 @@ msgctxt "#127"
 msgid "Objects"
 msgstr ""
 
+#: xbmc/addons/addonsettings.cpp
 #: xbmc/addons/guidialogaddonsettings.cpp
 #: system/settings/settings.xml
 #: addons/skin.estuary/xml/SkinSettings.xml

@@ -54,8 +54,8 @@ public:
   CGUIAudioManager();
   ~CGUIAudioManager();
 
-  virtual void OnSettingChanged(const CSetting *setting) override;
-  virtual bool OnSettingUpdate(CSetting* &setting, const char *oldSettingId, const TiXmlNode *oldSettingNode) override;
+  virtual void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
+  virtual bool OnSettingUpdate(std::shared_ptr<CSetting> setting, const char *oldSettingId, const TiXmlNode *oldSettingNode) override;
 
   void Initialize();
   void DeInitialize();

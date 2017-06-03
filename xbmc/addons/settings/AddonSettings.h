@@ -1,0 +1,124 @@
+#pragma once
+/*
+ *      Copyright (C) 2017 Team XBMC
+ *      http://xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
+ *
+ */
+
+#include <map>
+#include <memory>
+#include <string>
+
+#include "addons/IAddon.h"
+#include "settings/SettingControl.h"
+#include "settings/SettingCreator.h"
+#include "settings/SettingsBase.h"
+#include "settings/lib/ISettingCallback.h"
+#include "settings/lib/SettingDependency.h"
+
+class CXBMCTinyXML;
+
+namespace ADDON
+{
+  class IAddon;
+
+  class CAddonSettings : public CSettingsBase, public CSettingCreator, public CSettingControlCreator, public ISettingCallback
+  {
+  public:
+    CAddonSettings(std::shared_ptr<const IAddon> addon);
+    virtual ~CAddonSettings() = default;
+
+    // specialization of CSettingsBase
+    bool Initialize() override { return false; }
+
+    // implementations of CSettingsBase
+    bool Load() override { return false; }
+    bool Save() override { return false; }
+
+    // specialization of CSettingCreator
+    std::shared_ptr<CSetting> CreateSetting(const std::string &settingType, const std::string &settingId, CSettingsManager *settingsManager = NULL) const override;
+
+    // implementation of ISettingCallback
+    void OnSettingAction(std::shared_ptr<const CSetting> setting) override;
+
+    bool Initialize(const CXBMCTinyXML& doc);
+    bool Load(const CXBMCTinyXML& doc);
+    bool Save(CXBMCTinyXML& doc) const;
+
+    bool HasSettings() const;
+
+    std::string GetSettingLabel(int label) const;
+
+    std::shared_ptr<CSetting> AddSetting(const std::string& settingId, const std::string& value);
+
+  protected:
+    // specializations of CSettingsBase
+    void InitializeSettingTypes() override;
+    void InitializeControls() override;
+    void InitializeConditions() override;
+
+    // implementation of CSettingsBase
+    bool InitializeDefinitions() override { return false; }
+
+  private:
+    bool InitializeInternal(const CXBMCTinyXML& doc, bool allowEmptyDefinition);
+
+    bool InitializeDefinitions(const CXBMCTinyXML& doc);
+
+    bool ParseSettingVersion(const CXBMCTinyXML& doc, uint32_t& version) const;
+
+    bool InitializeFromOldSettingDefinitions(const CXBMCTinyXML& doc);
+    std::shared_ptr<CSetting> InitializeFromOldSettingAction(std::string settingId, const TiXmlElement *settingElement, const std::string& defaultValue);
+    std::shared_ptr<CSetting> InitializeFromOldSettingBool(const std::string& settingId, const TiXmlElement *settingElement, const std::string& defaultValue);
+    std::shared_ptr<CSetting> InitializeFromOldSettingTextIpAddress(const std::string& settingId, const std::string& settingType, const TiXmlElement *settingElement, const std::string& defaultValue, const int settingLabel);
+    std::shared_ptr<CSetting> InitializeFromOldSettingNumber(const std::string& settingId, const TiXmlElement *settingElement, const std::string& defaultValue, const int settingLabel);
+    std::shared_ptr<CSetting> InitializeFromOldSettingPath(const std::string& settingId, const std::string& settingType, const TiXmlElement *settingElement, const std::string& defaultValue, const int settingLabel);
+    std::shared_ptr<CSetting> InitializeFromOldSettingDate(const std::string& settingId, const TiXmlElement *settingElement, const std::string& defaultValue, const int settingLabel);
+    std::shared_ptr<CSetting> InitializeFromOldSettingTime(const std::string& settingId, const TiXmlElement *settingElement, const std::string& defaultValue, const int settingLabel);
+    std::shared_ptr<CSetting> InitializeFromOldSettingSelect(const std::string& settingId, const TiXmlElement *settingElement, const std::string& defaultValue, const int settingLabel, const std::string& settingValues, const std::vector<std::string>& settingLValues);
+    std::shared_ptr<CSetting> InitializeFromOldSettingAddon(const std::string& settingId, const TiXmlElement *settingElement, const std::string& defaultValue, const int settingLabel);
+    std::shared_ptr<CSetting> InitializeFromOldSettingEnums(const std::string& settingId, const std::string& settingType, const TiXmlElement *settingElement, const std::string& defaultValue, const std::string& settingValues, const std::vector<std::string>& settingLValues);
+    std::shared_ptr<CSetting> InitializeFromOldSettingFileEnum(const std::string& settingId, const TiXmlElement *settingElement, const std::string& defaultValue, const std::string& settingValues);
+    std::shared_ptr<CSetting> InitializeFromOldSettingRangeOfNum(const std::string& settingId, const TiXmlElement *settingElement, const std::string& defaultValue);
+    std::shared_ptr<CSetting> InitializeFromOldSettingSlider(const std::string& settingId, const TiXmlElement *settingElement, const std::string& defaultValue);
+    std::shared_ptr<CSetting> InitializeFromOldSettingFileWithSource(const std::string& settingId, const TiXmlElement *settingElement, const std::string& defaultValue, std::string source);
+    std::shared_ptr<CSetting> InitializeFromOldSettingWithoutDefinition(const std::string& settingId, const std::string& defaultValue);
+
+    std::shared_ptr<CSetting> AddSettingWithoutDefinition(const std::string& settingId, const std::string& defaultValue);
+
+    bool LoadOldSettingValues(const CXBMCTinyXML& doc, std::map<std::string, std::string>& settings) const;
+
+    struct ConditionExpression
+    {
+      SettingDependencyOperator m_operator;
+      bool m_negated;
+      int32_t m_relativeSettingIndex;
+      std::string m_value;
+    };
+
+    bool ParseOldCondition(std::shared_ptr<const CSetting> setting, const std::vector<std::shared_ptr<const CSetting>> settings, const std::string& condition, CSettingDependency& dependeny) const;
+    static bool ParseOldConditionExpression(std::string str, ConditionExpression& expression);
+
+    static void FileEnumSettingOptionsFiller(std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
+
+    std::weak_ptr<const IAddon> m_addon;
+
+    uint32_t m_unidentifiedSettingActionId;
+    int m_unknownSettingLabelId;
+    std::map<int, std::string> m_unknownSettingLabels;
+  };
+}

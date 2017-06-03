@@ -19,11 +19,13 @@
  *
  */
 
+#include <memory>
 #include <string>
 #include <utility>
 #include <vector>
 
 #define SETTING_XML_ROOT              "settings"
+#define SETTING_XML_ROOT_VERSION      "version"
 
 #define SETTING_XML_ELM_SECTION       "section"
 #define SETTING_XML_ELM_CATEGORY      "category"
@@ -51,6 +53,7 @@
 #define SETTING_XML_ELM_DELIMITER     "delimiter"
 #define SETTING_XML_ELM_MINIMUM_ITEMS "minimumitems"
 #define SETTING_XML_ELM_MAXIMUM_ITEMS "maximumitems"
+#define SETTING_XML_ELM_DATA          "data"
 
 #define SETTING_XML_ATTR_ID           "id"
 #define SETTING_XML_ATTR_LABEL        "label"
@@ -66,13 +69,15 @@
 #define SETTING_XML_ATTR_BEFORE       "before"
 #define SETTING_XML_ATTR_AFTER        "after"
 
-typedef std::pair<int, int> StaticIntegerSettingOption;
-typedef std::vector<StaticIntegerSettingOption> StaticIntegerSettingOptions;
-typedef std::pair<std::string, int> DynamicIntegerSettingOption;
-typedef std::vector<DynamicIntegerSettingOption> DynamicIntegerSettingOptions;
-typedef std::pair<std::string, std::string> DynamicStringSettingOption;
-typedef std::vector<DynamicStringSettingOption> DynamicStringSettingOptions;
+typedef std::pair<int, int> TranslatableIntegerSettingOption;
+typedef std::vector<TranslatableIntegerSettingOption> TranslatableIntegerSettingOptions;
+typedef std::pair<std::string, int> IntegerSettingOption;
+typedef std::vector<IntegerSettingOption> IntegerSettingOptions;
+typedef std::pair<int, std::string> TranslatableStringSettingOption;
+typedef std::vector<TranslatableStringSettingOption> TranslatableStringSettingOptions;
+typedef std::pair<std::string, std::string> StringSettingOption;
+typedef std::vector<StringSettingOption> StringSettingOptions;
 
 class CSetting;
-typedef void (*IntegerSettingOptionsFiller)(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
-typedef void (*StringSettingOptionsFiller)(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
+typedef void (*IntegerSettingOptionsFiller)(std::shared_ptr<const CSetting> setting, IntegerSettingOptions &list, int &current, void *data);
+typedef void (*StringSettingOptionsFiller)(std::shared_ptr<const CSetting> setting, StringSettingOptions &list, std::string &current, void *data);

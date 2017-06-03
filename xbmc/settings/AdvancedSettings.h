@@ -121,7 +121,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     virtual void OnSettingsLoaded() override;
     virtual void OnSettingsUnloaded() override;
 
-    virtual void OnSettingChanged(const CSetting *setting) override;
+    virtual void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
 
     void Initialize();
     bool Initialized() { return m_initialized; };
@@ -134,7 +134,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     static void GetCustomExtensions(TiXmlElement *pRootElement, std::string& extensions);
 
     bool CanLogComponent(int component) const;
-    static void SettingOptionsLoggingComponentsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
+    static void SettingOptionsLoggingComponentsFiller(std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
 
     int m_audioHeadRoom;
     float m_ac3Gain;
