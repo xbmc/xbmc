@@ -134,6 +134,9 @@ int CWebServer::AskForAuthentication(HTTPRequest request) const
 
   LogResponse(request, MHD_HTTP_UNAUTHORIZED);
 
+  if (HEADER_CORS_ENABLED)
+    EnableCors(response);
+
   ret = MHD_queue_basic_auth_fail_response(request.connection, "XBMC", response);
   MHD_destroy_response(response);
 
@@ -452,14 +455,13 @@ int CWebServer::FinalizeRequest(const std::shared_ptr<IHTTPRequestHandler>& hand
   if (responseDetails.totalLength > 0)
     handler->AddResponseHeader(MHD_HTTP_HEADER_CONTENT_LENGTH, StringUtils::Format("%" PRIu64, responseDetails.totalLength));
 
+  // add CORS headers
+  if (HEADER_CORS_ENABLED)
+    EnableCors(response);
+
   // add all headers set by the request handler
   for (std::multimap<std::string, std::string>::const_iterator it = responseDetails.headers.begin(); it != responseDetails.headers.end(); ++it)
     AddHeader(response, it->first, it->second);
-
-  // add CORS headers
-  if (HEADER_CORS_ENABLED)
-    AddHeader(response, MHD_HTTP_HEADER_ACCESS_CONTROL_ALLOW_ORIGIN, "*");
-    AddHeader(response, "Access-Control-Allow-Credentials", "true");
 
   return SendResponse(request, responseStatus, response);
 }
@@ -1293,6 +1295,22 @@ std::string CWebServer::CreateMimeTypeFromExtension(const char *ext)
     return "image/jpeg";
 
   return CMime::GetMimeType(ext);
+}
+
+void CWebServer::EnableCors(struct MHD_Response *response) const
+{
+  if (response == nullptr || name.empty())
+    return;
+
+  if (g_advancedSettings.CanLogComponent(LOGWEBSERVER))
+    CLog::Log(LOGDEBUG, "CWebServer[%hu] [CORS] enabled", m_port);
+
+  int retCorsOrigin = AddHeader(response, MHD_HTTP_HEADER_ACCESS_CONTROL_ALLOW_ORIGIN, "*");
+  int retCorsCredentials = AddHeader(response, "Access-Control-Allow-Credentials", "true");
+  if (!retCorsOrigin || !retCorsCredentials)
+  {
+    CLog::Log(LOGWARNING, "CWebServer[%hu]: unable to add HTTP CORS headers", m_port);
+  }
 }
 
 int CWebServer::AddHeader(struct MHD_Response *response, const std::string &name, const std::string &value) const
