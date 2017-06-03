@@ -52,7 +52,7 @@ CScreenSaver::CScreenSaver(AddonDllPtr addonInfo)
   m_struct.toKodi.kodiInstance = this;
 
   /* Open the class "kodi::addon::CInstanceScreensaver" on add-on side */
-  if (CreateInstance(&m_struct))
+  if (!CreateInstance(&m_struct))
     CLog::Log(LOGFATAL, "Screensaver: failed to create instance for '%s' and not usable!", ID().c_str());
 }
 
