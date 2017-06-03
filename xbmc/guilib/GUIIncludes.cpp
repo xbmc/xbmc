@@ -106,7 +106,15 @@ void CGUIIncludes::Clear()
   m_expressions.clear();
 }
 
-bool CGUIIncludes::Load(const std::string &file)
+void CGUIIncludes::Load(const std::string &file)
+{
+  if (!Load_Internal(file))
+    return;
+  FlattenExpressions();
+  FlattenSkinVariableConditions();
+}
+
+bool CGUIIncludes::Load_Internal(const std::string &file)
 {
   // check to see if we already have this loaded
   if (HasLoaded(file))
@@ -235,12 +243,59 @@ void CGUIIncludes::LoadIncludes(const TiXmlElement *node)
       if (condition)
       { // load include file if condition evals to true
         if (g_infoManager.Register(condition)->Get())
-          Load(file);
+          Load_Internal(file);
       }
       else
-        Load(file);
+        Load_Internal(file);
     }
     child = child->NextSiblingElement("include");
+  }
+}
+
+void CGUIIncludes::FlattenExpressions()
+{
+  for (auto& expression : m_expressions)
+  {
+    std::vector<std::string> resolved = std::vector<std::string>();
+    resolved.push_back(expression.first);
+    FlattenExpression(expression.second, resolved);
+  }
+}
+
+void CGUIIncludes::FlattenExpression(std::string &expression, const std::vector<std::string> &resolved)
+{
+  std::string original(expression);
+  CGUIInfoLabel::ReplaceSpecialKeywordReferences(expression, "EXP", [&](const std::string &expressionName) -> std::string {
+    if (std::find(resolved.begin(), resolved.end(), expressionName) != resolved.end())
+    {
+      CLog::Log(LOGERROR, "Skin has a circular expression \"%s\": %s", resolved.back().c_str(), original.c_str());
+      return std::string();
+    }
+    auto it = m_expressions.find(expressionName);
+    if (it == m_expressions.end())
+      return std::string();
+
+    std::vector<std::string> rescopy = resolved;
+    rescopy.push_back(expressionName);
+    FlattenExpression(it->second, rescopy);
+
+    return it->second;
+  });
+}
+
+void CGUIIncludes::FlattenSkinVariableConditions()
+{
+  for (auto& variable : m_skinvariables)
+  {
+    TiXmlElement* valueNode = variable.second.FirstChildElement("value");
+    while (valueNode)
+    {
+      const char *condition = valueNode->Attribute("condition");
+      if (condition)
+        valueNode->SetAttribute("condition", ResolveExpressions(condition));
+
+      valueNode = valueNode->NextSiblingElement("value");
+    }
   }
 }
 
@@ -367,7 +422,7 @@ void CGUIIncludes::ResolveIncludes(TiXmlElement *node, std::map<INFO::InfoPtr, b
     const char *condition = include->Attribute("condition");
     if (condition)
     {
-      INFO::InfoPtr conditionID = g_infoManager.Register(condition);
+      INFO::InfoPtr conditionID = g_infoManager.Register(ResolveExpressions(condition));
       bool value = conditionID->Get();
 
       if (xmlIncludeConditions)

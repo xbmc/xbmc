@@ -47,13 +47,13 @@ public:
   void Clear();
 
   /*!
-   \brief Load all include components (defaults, constants, variables, expressions and includes)
-    from the given \code{file}.
-   
+   \brief Load all include components(defaults, constants, variables, expressions and includes)
+   from the main entrypoint \code{file}. Flattens nested expressions and expressions in variable
+   conditions after loading all other included files.
+
    \param file the file to load
-   \return true if the file was loaded otherwise false
-   */
-  bool Load(const std::string &file);
+  */
+  void Load(const std::string &file);
 
   /*!
    \brief Resolve all include components (defaults, constants, variables, expressions and includes)
@@ -81,6 +81,15 @@ private:
     SINGLE_UNDEFINED_PARAM_RESOLVED
   };
 
+  /*!
+   \brief Load all include components (defaults, constants, variables, expressions and includes)
+   from the given \code{file}.
+
+   \param file the file to load
+   \return true if the file was loaded otherwise false
+  */
+  bool Load_Internal(const std::string &file);
+
   bool HasLoaded(const std::string &file) const;
 
   void LoadDefaults(const TiXmlElement *node);
@@ -88,6 +97,24 @@ private:
   void LoadVariables(const TiXmlElement *node);
   void LoadConstants(const TiXmlElement *node);
   void LoadExpressions(const TiXmlElement *node);
+
+  /*!
+   \brief Resolve all expressions containing other expressions to a single evaluatable expression.
+  */
+  void FlattenExpressions();
+
+  /*!
+   \brief Expand any expressions nested in this expression.
+
+   \param expression the expression to flatten
+   \param resolved list of already evaluated expression names, to avoid expanding circular references
+  */
+  void FlattenExpression(std::string &expression, const std::vector<std::string> &resolved);
+
+  /*!
+   \brief Resolve all variable conditions containing expressions to a single evaluatable condition.
+  */
+  void FlattenSkinVariableConditions();
 
   void SetDefaults(TiXmlElement *node);
   void ResolveIncludes(TiXmlElement *node, std::map<INFO::InfoPtr, bool>* xmlIncludeConditions = NULL);
