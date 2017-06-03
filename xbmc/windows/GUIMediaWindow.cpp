@@ -293,6 +293,15 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
           OnPopupMenu(iItem);
           return true;
         }
+        else if (iAction == ACTION_SWITCH_PLAYER)
+        {
+          VECPLAYERCORES cores;
+          CPlayerCoreFactory::Get().GetPlayers(*GetCurrentListItem(), cores);
+          g_application.m_eForcedNextPlayer = CPlayerCoreFactory::Get().SelectPlayerDialog(cores);
+          if( g_application.m_eForcedNextPlayer != EPC_NONE )
+            OnPlayMedia(iItem);
+          return true;
+        }
       }
     }
     break;
