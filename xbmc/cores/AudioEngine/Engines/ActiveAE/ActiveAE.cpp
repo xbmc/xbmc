@@ -1578,6 +1578,47 @@ void CActiveAE::ChangeResamplers()
   }
 }
 
+static CAEChannelInfo GetInternalChannelLayout(AEStdChLayout stdLayout)
+{
+  uint64_t channelLayoutOut;
+  switch (stdLayout)
+  {
+    default:
+    case AE_CH_LAYOUT_2_0:
+      channelLayoutOut = AV_CH_LAYOUT_STEREO;
+      break;
+    case AE_CH_LAYOUT_2_1:
+      channelLayoutOut = AV_CH_LAYOUT_2POINT1;
+      break;
+    case AE_CH_LAYOUT_3_0:
+      channelLayoutOut = AV_CH_LAYOUT_SURROUND;
+      break;
+    case AE_CH_LAYOUT_3_1:
+      channelLayoutOut = AV_CH_LAYOUT_3POINT1;
+      break;
+    case AE_CH_LAYOUT_4_0:
+      channelLayoutOut = AV_CH_LAYOUT_2_2;
+      break;
+    case AE_CH_LAYOUT_4_1:
+      channelLayoutOut = AV_CH_LAYOUT_2_2|AV_CH_LOW_FREQUENCY;
+      break;
+    case AE_CH_LAYOUT_5_0:
+      channelLayoutOut = AV_CH_LAYOUT_5POINT0;
+      break;
+    case AE_CH_LAYOUT_5_1:
+      channelLayoutOut = AV_CH_LAYOUT_5POINT1;
+      break;
+    case AE_CH_LAYOUT_7_0:
+      channelLayoutOut = AV_CH_LAYOUT_7POINT0;
+      break;
+    case AE_CH_LAYOUT_7_1:
+      channelLayoutOut = AV_CH_LAYOUT_7POINT1;
+      break;
+  }
+  return CAEUtil::GetAEChannelLayout(channelLayoutOut);
+}
+
+
 void CActiveAE::ApplySettingsToFormat(AEAudioFormat &format, AudioSettings &settings, int *mode)
 {
   int oldMode = m_mode;
@@ -1638,7 +1679,10 @@ void CActiveAE::ApplySettingsToFormat(AEAudioFormat &format, AudioSettings &sett
       }
 
       CAEChannelInfo stdLayout(stdChannelLayout);
-      if (m_extKeepConfig && (settings.config == AE_CONFIG_AUTO) && (oldMode != MODE_RAW))
+
+      if (m_settings.config == AE_CONFIG_FIXED || settings.dspaddonsenabled || (settings.stereoupmix && format.m_channelLayout.Count() <= 2))
+        format.m_channelLayout = GetInternalChannelLayout(stdChannelLayout);
+      else if (m_extKeepConfig && (settings.config == AE_CONFIG_AUTO) && (oldMode != MODE_RAW))
         format.m_channelLayout = m_internalFormat.m_channelLayout;
       else
       {
