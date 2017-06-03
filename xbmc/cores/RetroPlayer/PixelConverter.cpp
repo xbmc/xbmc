@@ -19,22 +19,156 @@
  */
 
 #include "PixelConverter.h"
-#include "cores/VideoPlayer/DVDClock.h"
-#include "cores/VideoPlayer/DVDCodecs/DVDCodecUtils.h"
+#include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
+#include "cores/VideoPlayer/Process/VideoBuffer.h"
 #include "cores/VideoPlayer/TimingConstants.h"
+#include "threads/CriticalSection.h"
+#include "threads/SingleLock.h"
 #include "utils/log.h"
 
 extern "C"
 {
-  #include "libswscale/swscale.h"
+#include "libavcodec/avcodec.h"
+#include "libswscale/swscale.h"
+#include "libavutil/frame.h"
 }
 
+//------------------------------------------------------------------------------
+// Video Buffers
+//------------------------------------------------------------------------------
+
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//! @todo Remove dependence on VideoPlayer
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+class CPixelBufferFFmpeg : public CVideoBuffer
+{
+public:
+  CPixelBufferFFmpeg(IVideoBufferPool &pool, int id);
+  virtual ~CPixelBufferFFmpeg();
+  virtual void GetPlanes(uint8_t*(&planes)[YuvImage::MAX_PLANES]) override;
+  virtual void GetStrides(int(&strides)[YuvImage::MAX_PLANES]) override;
+
+  void SetRef(AVFrame *frame);
+  void Unref();
+
+protected:
+  AVFrame* m_pFrame;
+};
+
+CPixelBufferFFmpeg::CPixelBufferFFmpeg(IVideoBufferPool &pool, int id)
+: CVideoBuffer(id)
+{
+  m_pFrame = av_frame_alloc();
+}
+
+CPixelBufferFFmpeg::~CPixelBufferFFmpeg()
+{
+  av_frame_free(&m_pFrame);
+}
+
+void CPixelBufferFFmpeg::GetPlanes(uint8_t*(&planes)[YuvImage::MAX_PLANES])
+{
+  planes[0] = m_pFrame->data[0];
+  planes[1] = m_pFrame->data[1];
+  planes[2] = m_pFrame->data[2];
+}
+
+void CPixelBufferFFmpeg::GetStrides(int(&strides)[YuvImage::MAX_PLANES])
+{
+  strides[0] = m_pFrame->linesize[0];
+  strides[1] = m_pFrame->linesize[1];
+  strides[2] = m_pFrame->linesize[2];
+}
+
+void CPixelBufferFFmpeg::SetRef(AVFrame *frame)
+{
+  av_frame_unref(m_pFrame);
+  av_frame_move_ref(m_pFrame, frame);
+  m_pixFormat = static_cast<AVPixelFormat>(m_pFrame->format);
+}
+
+void CPixelBufferFFmpeg::Unref()
+{
+  av_frame_unref(m_pFrame);
+}
+
+//------------------------------------------------------------------------------
+
+class CPixelBufferPoolFFmpeg : public IVideoBufferPool
+{
+public:
+  virtual ~CPixelBufferPoolFFmpeg();
+  virtual void Return(int id) override;
+  virtual CVideoBuffer* Get() override;
+
+protected:
+  CCriticalSection m_critSection;
+  std::vector<CPixelBufferFFmpeg*> m_all;
+  std::deque<int> m_used;
+  std::deque<int> m_free;
+};
+
+CPixelBufferPoolFFmpeg::~CPixelBufferPoolFFmpeg()
+{
+  for (auto buf : m_all)
+    delete buf;
+}
+
+CVideoBuffer* CPixelBufferPoolFFmpeg::Get()
+{
+  CSingleLock lock(m_critSection);
+
+  CPixelBufferFFmpeg *buf = nullptr;
+  if (!m_free.empty())
+  {
+    int idx = m_free.front();
+    m_free.pop_front();
+    m_used.push_back(idx);
+    buf = m_all[idx];
+  }
+  else
+  {
+    int id = m_all.size();
+    buf = new CPixelBufferFFmpeg(*this, id);
+    m_all.push_back(buf);
+    m_used.push_back(id);
+  }
+
+  buf->Acquire(GetPtr());
+  return buf;
+}
+
+void CPixelBufferPoolFFmpeg::Return(int id)
+{
+  CSingleLock lock(m_critSection);
+
+  m_all[id]->Unref();
+  auto it = m_used.begin();
+  while (it != m_used.end())
+  {
+    if (*it == id)
+    {
+      m_used.erase(it);
+      break;
+    }
+    else
+      ++it;
+  }
+  m_free.push_back(id);
+}
+
+//------------------------------------------------------------------------------
+// main class
+//------------------------------------------------------------------------------
+
 CPixelConverter::CPixelConverter() :
-  //m_renderFormat(RENDER_FMT_NONE),
+  m_targetFormat(AV_PIX_FMT_NONE),
   m_width(0),
   m_height(0),
   m_swsContext(nullptr),
-  m_buf(nullptr)
+  m_pFrame(nullptr),
+  m_pixelBufferPool(new CPixelBufferPoolFFmpeg)
 {
 }
 
@@ -43,13 +177,7 @@ bool CPixelConverter::Open(AVPixelFormat pixfmt, AVPixelFormat targetfmt, unsign
   if (pixfmt == targetfmt || width == 0 || height == 0)
     return false;
 
-  //m_renderFormat = CDVDCodecUtils::EFormatFromPixfmt(targetfmt);
-  //if (m_renderFormat == RENDER_FMT_NONE)
-  {
-    CLog::Log(LOGERROR, "%s: Invalid target pixel format: %d", __FUNCTION__, targetfmt);
-    return false;
-  }
-
+  m_targetFormat = targetfmt;
   m_width = width;
   m_height = height;
 
@@ -62,10 +190,11 @@ bool CPixelConverter::Open(AVPixelFormat pixfmt, AVPixelFormat targetfmt, unsign
     return false;
   }
 
-  //m_buf = CDVDCodecUtils::AllocatePicture(width, height);
-  if (!m_buf)
+  m_pFrame = av_frame_alloc();
+  if (m_pFrame == nullptr)
   {
-    CLog::Log(LOGERROR, "%s: Failed to allocate picture of dimensions %dx%d", __FUNCTION__, width, height);
+    CLog::Log(LOGERROR, "%s: Failed to allocate frame", __FUNCTION__);
+    Dispose();
     return false;
   }
 
@@ -74,16 +203,13 @@ bool CPixelConverter::Open(AVPixelFormat pixfmt, AVPixelFormat targetfmt, unsign
 
 void CPixelConverter::Dispose()
 {
+  if (m_pFrame)
+    av_frame_free(&m_pFrame);
+
   if (m_swsContext)
   {
     sws_freeContext(m_swsContext);
     m_swsContext = nullptr;
-  }
-
-  if (m_buf)
-  {
-    //CDVDCodecUtils::FreePicture(m_buf);
-    m_buf = nullptr;
   }
 }
 
@@ -92,37 +218,52 @@ bool CPixelConverter::Decode(const uint8_t* pData, unsigned int size)
   if (pData == nullptr || size == 0 || m_swsContext == nullptr)
     return false;
 
+  if (!AllocateBuffers(m_pFrame))
+    return false;
+
   uint8_t* dataMutable = const_cast<uint8_t*>(pData);
 
   const int stride = size / m_height;
 
   uint8_t* src[] =       { dataMutable,         0,                   0,                   0 };
   int      srcStride[] = { stride,              0,                   0,                   0 };
-//  uint8_t* dst[] =       { m_buf->data[0],      m_buf->data[1],      m_buf->data[2],      0 };
-//  int      dstStride[] = { m_buf->iLineSize[0], m_buf->iLineSize[1], m_buf->iLineSize[2], 0 };
+  uint8_t* dst[] =       { m_pFrame->data[0],     m_pFrame->data[1],     m_pFrame->data[2],     0 };
+  int      dstStride[] = { m_pFrame->linesize[0], m_pFrame->linesize[1], m_pFrame->linesize[2], 0 };
 
-//  sws_scale(m_swsContext, src, srcStride, 0, m_height, dst, dstStride);
+  sws_scale(m_swsContext, src, srcStride, 0, m_height, dst, dstStride);
 
   return true;
 }
 
 void CPixelConverter::GetPicture(VideoPicture& dvdVideoPicture)
 {
+  CPixelBufferFFmpeg *buffer = dynamic_cast<CPixelBufferFFmpeg*>(m_pixelBufferPool->Get());
+  buffer->SetRef(m_pFrame);
+  dvdVideoPicture.videoBuffer = buffer;
+
   dvdVideoPicture.dts            = DVD_NOPTS_VALUE;
   dvdVideoPicture.pts            = DVD_NOPTS_VALUE;
-
-  for (int i = 0; i < 4; i++)
-  {
-//    VideoPicture.data[i]      = m_buf->data[i];
-//    VideoPicture.iLineSize[i] = m_buf->iLineSize[i];
-  }
-
-  dvdVideoPicture.iFlags         = 0; // *not* DVP_FLAG_ALLOCATED
+  dvdVideoPicture.iFlags         = 0;
   dvdVideoPicture.color_matrix   = 4; // CONF_FLAGS_YUVCOEF_BT601
   dvdVideoPicture.color_range    = 0; // *not* CONF_FLAGS_YUV_FULLRANGE
   dvdVideoPicture.iWidth         = m_width;
   dvdVideoPicture.iHeight        = m_height;
   dvdVideoPicture.iDisplayWidth  = m_width; //! @todo: Update if aspect ratio changes
   dvdVideoPicture.iDisplayHeight = m_height;
-  //dvdVideoPicture.format         = m_renderFormat;
+}
+
+bool CPixelConverter::AllocateBuffers(AVFrame *pFrame) const
+{
+  pFrame->format = m_targetFormat;
+  pFrame->width = m_width;
+  pFrame->height = m_height;
+  const unsigned int align = 64; // From VAAPI
+  int res = av_frame_get_buffer(pFrame, align);
+  if (res < 0)
+  {
+    CLog::Log(LOGERROR, "%s: Failed to allocate buffers: %s", __FUNCTION__, res);
+    return false;
+  }
+
+  return true;
 }
