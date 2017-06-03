@@ -279,7 +279,7 @@ bool CPVRRecording::IncrementPlayCount()
 {
   PVR_ERROR error;
   if (CServiceBroker::GetPVRManager().Clients()->SupportsRecordingPlayCount(m_iClientId) &&
-      !CServiceBroker::GetPVRManager().Clients()->SetRecordingPlayCount(*this, CVideoInfoTag::GetPlayCount(), &error))
+      !CServiceBroker::GetPVRManager().Clients()->SetRecordingPlayCount(*this, CVideoInfoTag::GetPlayCount() + 1, &error))
     return false;
 
   return CVideoInfoTag::IncrementPlayCount();
