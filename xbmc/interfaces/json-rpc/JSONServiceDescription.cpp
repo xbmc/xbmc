@@ -40,6 +40,7 @@
 #include "FavouritesOperations.h"
 #include "TextureOperations.h"
 #include "SettingsOperations.h"
+#include <mutex>
 
 using namespace JSONRPC;
 
@@ -1155,11 +1156,13 @@ void JSONSchemaTypeDefinition::Print(bool isParameter, bool isGlobal, bool print
   }
 }
 
+std::mutex m;
+
 void JSONSchemaTypeDefinition::Set(const JSONSchemaTypeDefinitionPtr typeDefinition)
 {
   if (typeDefinition.get() == NULL)
     return;
-
+  m.lock();
   std::string origName = name;
   std::string origDescription = description;
   bool origOptional = optional;
@@ -1186,6 +1189,7 @@ void JSONSchemaTypeDefinition::Set(const JSONSchemaTypeDefinitionPtr typeDefinit
     referencedType = referencedTypeDef;
 
   referencedTypeSet = true;
+  m.unlock();
 }
 
 JSONSchemaTypeDefinition::CJsonSchemaPropertiesMap::CJsonSchemaPropertiesMap() :
