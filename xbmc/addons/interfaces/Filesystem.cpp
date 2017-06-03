@@ -565,11 +565,7 @@ bool Interface_Filesystem::curl_open(void* kodiBase, void* file, unsigned int fl
     return false;
   }
 
-  CFile* cfile = static_cast<CFile*>(file);
-  if (cfile)
-    return cfile->CURLOpen(flags);
-
-  return false;
+  return static_cast<CFile*>(file)->CURLOpen(flags);
 }
 
 } /* namespace ADDON */
