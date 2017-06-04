@@ -870,6 +870,8 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
     m_url = url2.GetWithoutUserDetails();
   else
     m_url = url2.Get();
+
+  StringUtils::Trim(m_url);
 }
 
 bool CCurlFile::Post(const std::string& strURL, const std::string& strPostData, std::string& strHTML)
