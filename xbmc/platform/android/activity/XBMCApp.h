@@ -242,4 +242,6 @@ private:
   void XBMC_Stop();
   bool XBMC_DestroyDisplay();
   bool XBMC_SetupDisplay();
+
+  static uint32_t m_playback_state;
 };
