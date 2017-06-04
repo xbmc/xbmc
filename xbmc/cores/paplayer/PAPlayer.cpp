@@ -76,6 +76,7 @@ PAPlayer::PAPlayer(IPlayerCallback& callback) :
 {
   memset(&m_playerGUIData, 0, sizeof(m_playerGUIData));
   m_processInfo.reset(CProcessInfo::CreateInstance());
+  m_processInfo->SetDataCache(&CServiceBroker::GetDataCacheCore());
 }
 
 PAPlayer::~PAPlayer()
