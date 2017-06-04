@@ -19,7 +19,6 @@
  *
  */
 #include <string>
-#include <vector>
 
 #include "SettingRequirement.h"
 
@@ -39,8 +38,8 @@ public:
    \param id Identifier of the setting object
    \param settingsManager Reference to the settings manager
    */
-  ISetting(const std::string &id, CSettingsManager *settingsManager = NULL);
-  virtual ~ISetting() { }
+  ISetting(const std::string &id, CSettingsManager *settingsManager = nullptr);
+  virtual ~ISetting() = default;
 
   /*!
    \brief Deserializes the given XML node into the properties of the setting
@@ -129,9 +128,9 @@ protected:
   CSettingsManager *m_settingsManager;
 
 private:
-  bool m_visible;
-  int m_label;
-  int m_help;
-  bool m_meetsRequirements;
+  bool m_visible = true;
+  int m_label = -1;
+  int m_help = -1;
+  bool m_meetsRequirements = true;
   CSettingRequirement m_requirementCondition;
 };

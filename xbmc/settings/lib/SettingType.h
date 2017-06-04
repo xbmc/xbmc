@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2013 Team XBMC
+ *      Copyright (C) 2017 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,25 +19,17 @@
  *
  */
 
-#include <memory>
-#include <string>
-
-class ISettingControl;
-
 /*!
  \ingroup settings
- \brief Interface for creating a new setting control of a custom setting control type.
+ \brief Basic setting types available in the settings system.
  */
-class ISettingControlCreator
-{
-public:
-  virtual ~ISettingControlCreator() = default;
-
-  /*!
-   \brief Creates a new setting control of the given custom setting control type.
-
-   \param controlType string representation of the setting control type
-   \return A new setting control object of the given (custom) setting control type or nullptr if the setting control type is unknown
-   */
-  virtual std::shared_ptr<ISettingControl> CreateControl(const std::string &controlType) const = 0;
+enum class SettingType {
+  Unknown = 0,
+  Boolean,
+  Integer,
+  Number,
+  String,
+  Action,
+  List,
+  Reference
 };
