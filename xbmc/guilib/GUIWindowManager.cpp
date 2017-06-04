@@ -36,7 +36,6 @@
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/SeekHandler.h"
-#include "cores/DataCacheCore.h"
 
 #include "windows/GUIWindowHome.h"
 #include "events/windows/GUIWindowEventLog.h"
@@ -1174,9 +1173,6 @@ void CGUIWindowManager::FrameMove()
     }
     m_deleteWindows.clear();
   }
-
-  if (CDataCacheCore::GetInstance().PlayStateChanged())
-    SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_STATE_CHANGED);
 
   CGUIWindow* pWindow = GetWindow(GetActiveWindow());
   if (pWindow)

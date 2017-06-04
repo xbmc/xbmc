@@ -66,6 +66,7 @@ public:
   // player states
   void SetStateSeeking(bool active);
   bool IsSeeking();
+  bool IsPlayerStateChanged();
 
 protected:
   std::atomic_bool m_hasAVInfoChanges;
@@ -99,7 +100,7 @@ protected:
   } m_renderInfo;
 
   CCriticalSection m_stateSection;
-  bool m_playStateChanged;
+  bool m_playerStateChanged = false;
   struct SStateInfo
   {
     bool m_stateSeeking;

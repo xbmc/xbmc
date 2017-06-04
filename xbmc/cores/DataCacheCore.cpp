@@ -23,7 +23,6 @@
 #include "ServiceBroker.h"
 
 CDataCacheCore::CDataCacheCore()
-  :m_playStateChanged(false)
 {
   m_hasAVInfoChanges = false;
 }
@@ -238,12 +237,12 @@ bool CDataCacheCore::CDataCacheCore::IsSeeking()
   return m_stateInfo.m_stateSeeking;
 }
 
-bool CDataCacheCore::PlayStateChanged()
+bool CDataCacheCore::IsPlayerStateChanged()
 {
   CSingleLock lock(m_stateSection);
 
-  bool ret(m_playStateChanged);
-  m_playStateChanged = false;
+  bool ret(m_playerStateChanged);
+  m_playerStateChanged = false;
 
   return ret;
 }
