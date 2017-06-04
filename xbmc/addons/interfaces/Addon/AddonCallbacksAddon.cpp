@@ -220,19 +220,19 @@ bool CAddonCallbacksAddon::GetAddonSetting(void *addonData, const char *strSetti
 
     switch (setting->GetType())
     {
-      case SettingTypeBool:
+      case SettingType::Boolean:
         *static_cast<bool*>(settingValue) = std::static_pointer_cast<CSettingBool>(setting)->GetValue();
         return true;
 
-      case SettingTypeInteger:
+      case SettingType::Integer:
         *static_cast<int*>(settingValue) = std::static_pointer_cast<CSettingInt>(setting)->GetValue();
         return true;
 
-      case SettingTypeNumber:
+      case SettingType::Number:
         *static_cast<float*>(settingValue) = static_cast<float>(std::static_pointer_cast<CSettingNumber>(setting)->GetValue());
         return true;
 
-      case SettingTypeString:
+      case SettingType::String:
         strcpy((char*)settingValue, std::static_pointer_cast<CSettingString>(setting)->GetValue().c_str());
         return true;
 

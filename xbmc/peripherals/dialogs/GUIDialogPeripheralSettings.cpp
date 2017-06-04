@@ -182,7 +182,7 @@ void CGUIDialogPeripheralSettings::InitializeSettings()
     SettingPtr settingCopy;
     switch(setting->GetType())
     {
-      case SettingTypeBool:
+      case SettingType::Boolean:
       {
         std::shared_ptr<CSettingBool> settingBool = std::make_shared<CSettingBool>(setting->GetId(), *std::static_pointer_cast<CSettingBool>(setting));
         settingBool->SetControl(GetCheckmarkControl());
@@ -191,7 +191,7 @@ void CGUIDialogPeripheralSettings::InitializeSettings()
         break;
       }
 
-      case SettingTypeInteger:
+      case SettingType::Integer:
       {
         std::shared_ptr<CSettingInt> settingInt = std::make_shared<CSettingInt>(setting->GetId(), *std::static_pointer_cast<CSettingInt>(setting));
         if (settingInt->GetTranslatableOptions().empty())
@@ -203,7 +203,7 @@ void CGUIDialogPeripheralSettings::InitializeSettings()
         break;
       }
 
-      case SettingTypeNumber:
+      case SettingType::Number:
       {
         std::shared_ptr<CSettingNumber> settingNumber = std::make_shared<CSettingNumber>(setting->GetId(), *std::static_pointer_cast<CSettingNumber>(setting));
         settingNumber->SetControl(GetSliderControl("number", false, -1, usePopup, -1, "%2.2f"));
@@ -212,7 +212,7 @@ void CGUIDialogPeripheralSettings::InitializeSettings()
         break;
       }
 
-      case SettingTypeString:
+      case SettingType::String:
       {
         std::shared_ptr<CSettingString> settingString = std::make_shared<CSettingString>(setting->GetId(), *std::static_pointer_cast<CSettingString>(setting));
         settingString->SetControl(GetEditControl("string"));
@@ -229,7 +229,7 @@ void CGUIDialogPeripheralSettings::InitializeSettings()
 
     if (settingCopy != NULL && settingCopy->GetControl() != NULL)
     {
-      settingCopy->SetLevel(SettingLevelBasic);
+      settingCopy->SetLevel(SettingLevel::Basic);
       group->AddSetting(settingCopy);
       m_settingsMap.insert(std::make_pair(setting->GetId(), setting));
     }

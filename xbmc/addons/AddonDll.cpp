@@ -432,28 +432,28 @@ ADDON_STATUS CAddonDll::TransferSettings()
             const char* id = setting->GetId().c_str();
             switch (setting->GetType())
             {
-              case SettingTypeBool:
+              case SettingType::Boolean:
               {
                 bool tmp = std::static_pointer_cast<CSettingBool>(setting)->GetValue();
                 status = m_pDll->SetSetting(id, &tmp);
                 break;
               }
 
-              case SettingTypeInteger:
+              case SettingType::Integer:
               {
                 int tmp = std::static_pointer_cast<CSettingInt>(setting)->GetValue();
                 status = m_pDll->SetSetting(id, &tmp);
                 break;
               }
 
-              case SettingTypeNumber:
+              case SettingType::Number:
               {
                 float tmpf = static_cast<float>(std::static_pointer_cast<CSettingNumber>(setting)->GetValue());
                 status = m_pDll->SetSetting(id, &tmpf);
                 break;
               }
 
-              case SettingTypeString:
+              case SettingType::String:
                 status = m_pDll->SetSetting(id, std::static_pointer_cast<CSettingString>(setting)->GetValue().c_str());
                 break;
 
@@ -669,19 +669,19 @@ bool CAddonDll::get_setting(void* kodiBase, const char* settingName, void* setti
 
   switch (setting->GetType())
   {
-    case SettingTypeBool:
+    case SettingType::Boolean:
       *static_cast<bool*>(settingValue) = std::static_pointer_cast<CSettingBool>(setting)->GetValue();
       return true;
 
-    case SettingTypeInteger:
+    case SettingType::Integer:
       *static_cast<int*>(settingValue) = std::static_pointer_cast<CSettingInt>(setting)->GetValue();
       return true;
 
-    case SettingTypeNumber:
+    case SettingType::Number:
       *static_cast<float*>(settingValue) = static_cast<float>(std::static_pointer_cast<CSettingNumber>(setting)->GetValue());
       return true;
 
-    case SettingTypeString:
+    case SettingType::String:
       *static_cast<char**>(settingValue) = strdup(std::static_pointer_cast<CSettingString>(setting)->GetValue().c_str());
       break;
 

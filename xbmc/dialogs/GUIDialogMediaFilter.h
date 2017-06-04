@@ -27,6 +27,7 @@
 #include "dbwrappers/Database.h"
 #include "dbwrappers/DatabaseQuery.h"
 #include "settings/dialogs/GUIDialogSettingsManualBase.h"
+#include "settings/lib/SettingType.h"
 #include "utils/DatabaseUtils.h"
 
 class CDbUrl;
@@ -49,7 +50,7 @@ public:
     std::string mediaType;
     Field field;
     uint32_t label;
-    int settingType;
+    SettingType settingType;
     std::string controlType;
     std::string controlFormat;
     CDatabaseQueryRule::SEARCH_OPERATOR ruleOperator;

@@ -59,10 +59,9 @@ template<class TSetting>
 SettingPtr InitializeFromOldSettingWithoutDefinition(ADDON::CAddonSettings& settings, const std::string& settingId, typename TSetting::Value defaultValue)
 {
   std::shared_ptr<TSetting> setting = std::make_shared<TSetting>(settingId, settings.GetSettingsManager());
-  setting->SetLevel(SettingLevelInternal);
+  setting->SetLevel(SettingLevel::Internal);
   setting->SetVisible(false);
   setting->SetDefault(defaultValue);
-  // TODO: setting->SetAllowEmpty(true);
 
   return setting;
 }
@@ -71,7 +70,7 @@ template<>
 SettingPtr InitializeFromOldSettingWithoutDefinition<CSettingString>(ADDON::CAddonSettings& settings, const std::string& settingId, typename CSettingString::Value defaultValue)
 {
   std::shared_ptr<CSettingString> setting = std::make_shared<CSettingString>(settingId, settings.GetSettingsManager());
-  setting->SetLevel(SettingLevelInternal);
+  setting->SetLevel(SettingLevel::Internal);
   setting->SetVisible(false);
   setting->SetDefault(defaultValue);
   setting->SetAllowEmpty(true);
@@ -156,7 +155,7 @@ void CAddonSettings::OnSettingAction(std::shared_ptr<const CSetting> setting)
   std::string actionData;
 
   // check if it's an action setting
-  if (setting->GetType() == SettingTypeAction)
+  if (setting->GetType() == SettingType::Action)
   {
     auto settingAction = std::dynamic_pointer_cast<const CSettingAction>(setting);
     if (settingAction != nullptr && settingAction->HasData())
@@ -533,7 +532,7 @@ bool CAddonSettings::InitializeFromOldSettingDefinitions(const CXBMCTinyXML& doc
       {
         // setting definitions without a type are considered as "text" / strings but are hidden
         setting = InitializeFromOldSettingTextIpAddress(settingId, "text", settingElement, defaultValue, settingLabel);
-        setting->SetLevel(SettingLevelInternal);
+        setting->SetLevel(SettingLevel::Internal);
       }
       else
       {
@@ -570,7 +569,7 @@ bool CAddonSettings::InitializeFromOldSettingDefinitions(const CXBMCTinyXML& doc
 
           if (parentSetting != groupSettings.crend())
           {
-            if ((*parentSetting)->GetType() == SettingTypeReference)
+            if ((*parentSetting)->GetType() == SettingType::Reference)
               setting->SetParent(std::static_pointer_cast<const CSettingReference>(*parentSetting)->GetReferencedId());
             else
               setting->SetParent((*parentSetting)->GetId());
@@ -632,7 +631,7 @@ bool CAddonSettings::InitializeFromOldSettingDefinitions(const CXBMCTinyXML& doc
     for (auto setting : settingsWithConditions) {
       if (!setting.enableCondition.empty())
       {
-        CSettingDependency dependencyEnable(SettingDependencyTypeEnable, GetSettingsManager());
+        CSettingDependency dependencyEnable(SettingDependencyType::Enable, GetSettingsManager());
         if (ParseOldCondition(setting.setting, categorySettings, setting.enableCondition, dependencyEnable))
           setting.deps.push_back(dependencyEnable);
         else
@@ -644,7 +643,7 @@ bool CAddonSettings::InitializeFromOldSettingDefinitions(const CXBMCTinyXML& doc
 
       if (!setting.visibleCondition.empty())
       {
-        CSettingDependency dependencyVisible(SettingDependencyTypeVisible, GetSettingsManager());
+        CSettingDependency dependencyVisible(SettingDependencyType::Visible, GetSettingsManager());
         if (ParseOldCondition(setting.setting, categorySettings, setting.visibleCondition, dependencyVisible))
           setting.deps.push_back(dependencyVisible);
         else
@@ -1279,10 +1278,10 @@ bool CAddonSettings::ParseOldCondition(std::shared_ptr<const CSetting> setting, 
       return false;
 
     std::string id = setting->GetId();
-    if (setting->GetType() == SettingTypeReference)
+    if (setting->GetType() == SettingType::Reference)
       id = std::static_pointer_cast<const CSettingReference>(setting)->GetReferencedId();
     std::string otherId = otherSetting->GetId();
-    if (otherSetting->GetType() == SettingTypeReference)
+    if (otherSetting->GetType() == SettingType::Reference)
       otherId = std::static_pointer_cast<const CSettingReference>(otherSetting)->GetReferencedId();
 
     return id == otherId;
@@ -1340,7 +1339,7 @@ bool CAddonSettings::ParseOldCondition(std::shared_ptr<const CSetting> setting, 
     }
 
     // try to handle some odd cases where the setting is of type string but the comparison value references the index of the value in the list of options
-    if (referencedSetting->GetType() == SettingTypeString && StringUtils::IsNaturalNumber(expression.m_value))
+    if (referencedSetting->GetType() == SettingType::String && StringUtils::IsNaturalNumber(expression.m_value))
     {
       // try to parse the comparison value
       int valueIndex = static_cast<int>(strtol(expression.m_value.c_str(), nullptr, 10));
@@ -1348,7 +1347,7 @@ bool CAddonSettings::ParseOldCondition(std::shared_ptr<const CSetting> setting, 
       const auto referencedSettingString = std::static_pointer_cast<const CSettingString>(referencedSetting);
       switch (referencedSettingString->GetOptionsType())
       {
-        case SettingOptionsTypeStatic:
+        case SettingOptionsType::Static:
         {
           const auto& options = referencedSettingString->GetOptions();
           if (options.size() > valueIndex)
@@ -1356,7 +1355,7 @@ bool CAddonSettings::ParseOldCondition(std::shared_ptr<const CSetting> setting, 
           break;
         }
 
-        case SettingOptionsTypeStaticTranslatable:
+        case SettingOptionsType::StaticTranslatable:
         {
           const auto& options = referencedSettingString->GetTranslatableOptions();
           if (options.size() > valueIndex)
@@ -1403,11 +1402,11 @@ bool CAddonSettings::ParseOldConditionExpression(std::string str, ConditionExpre
 
   // parse the operator
   if (StringUtils::EqualsNoCase(op, "eq"))
-    expression.m_operator = SettingDependencyOperatorEquals;
+    expression.m_operator = SettingDependencyOperator::Equals;
   else if (StringUtils::EqualsNoCase(op, "gt"))
-    expression.m_operator = SettingDependencyOperatorGreaterThan;
+    expression.m_operator = SettingDependencyOperator::GreaterThan;
   else if (StringUtils::EqualsNoCase(op, "lt"))
-    expression.m_operator = SettingDependencyOperatorLessThan;
+    expression.m_operator = SettingDependencyOperator::LessThan;
   else
     return false;
 

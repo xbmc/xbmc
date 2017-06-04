@@ -26,10 +26,10 @@
 class CSettingPath : public CSettingString
 {
 public:
-  CSettingPath(const std::string &id, CSettingsManager *settingsManager = NULL);
-  CSettingPath(const std::string &id, int label, const std::string &value, CSettingsManager *settingsManager = NULL);
+  CSettingPath(const std::string &id, CSettingsManager *settingsManager = nullptr);
+  CSettingPath(const std::string &id, int label, const std::string &value, CSettingsManager *settingsManager = nullptr);
   CSettingPath(const std::string &id, const CSettingPath &setting);
-  virtual ~CSettingPath() { }
+  virtual ~CSettingPath() = default;
 
   virtual SettingPtr Clone(const std::string &id) const override;
 
@@ -48,8 +48,8 @@ public:
 private:
   void copy(const CSettingPath &setting);
 
-  bool m_writable;
+  bool m_writable = true;
   std::vector<std::string> m_sources;
-  bool m_hideExtension;
+  bool m_hideExtension = false;
   std::string m_masking;
 };

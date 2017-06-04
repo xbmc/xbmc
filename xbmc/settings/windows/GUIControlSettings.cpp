@@ -77,15 +77,15 @@ static CFileItemPtr GetFileItem(const std::string& label, const TValueType& valu
 static bool GetIntegerOptions(SettingConstPtr setting, IntegerSettingOptions& options, std::set<int>& selectedOptions, ILocalizer* localizer)
 {
   std::shared_ptr<const CSettingInt> pSettingInt = NULL;
-  if (setting->GetType() == SettingTypeInteger)
+  if (setting->GetType() == SettingType::Integer)
   {
     pSettingInt = std::static_pointer_cast<const CSettingInt>(setting);
     selectedOptions.insert(pSettingInt->GetValue());
   }
-  else if (setting->GetType() == SettingTypeList)
+  else if (setting->GetType() == SettingType::List)
   {
     std::shared_ptr<const CSettingList> settingList = std::static_pointer_cast<const CSettingList>(setting);
-    if (settingList->GetElementType() != SettingTypeInteger)
+    if (settingList->GetElementType() != SettingType::Integer)
       return false;
 
     pSettingInt = std::static_pointer_cast<const CSettingInt>(settingList->GetDefinition());
@@ -102,7 +102,7 @@ static bool GetIntegerOptions(SettingConstPtr setting, IntegerSettingOptions& op
 
   switch (pSettingInt->GetOptionsType())
   {
-    case SettingOptionsTypeStaticTranslatable:
+    case SettingOptionsType::StaticTranslatable:
     {
       const TranslatableIntegerSettingOptions& settingOptions = pSettingInt->GetTranslatableOptions();
       for (const auto& option : settingOptions)
@@ -110,21 +110,21 @@ static bool GetIntegerOptions(SettingConstPtr setting, IntegerSettingOptions& op
       break;
     }
 
-    case SettingOptionsTypeStatic:
+    case SettingOptionsType::Static:
     {
       const IntegerSettingOptions& settingOptions = pSettingInt->GetOptions();
       options.insert(options.end(), settingOptions.begin(), settingOptions.end());
       break;
     }
 
-    case SettingOptionsTypeDynamic:
+    case SettingOptionsType::Dynamic:
     {
       IntegerSettingOptions settingOptions = std::const_pointer_cast<CSettingInt>(pSettingInt)->UpdateDynamicOptions();
       options.insert(options.end(), settingOptions.begin(), settingOptions.end());
       break;
     }
 
-    case SettingOptionsTypeNone:
+    case SettingOptionsType::Unknown:
     default:
     {
       std::shared_ptr<const CSettingControlFormattedRange> control = std::static_pointer_cast<const CSettingControlFormattedRange>(pSettingInt->GetControl());
@@ -151,15 +151,15 @@ static bool GetIntegerOptions(SettingConstPtr setting, IntegerSettingOptions& op
 static bool GetStringOptions(SettingConstPtr setting, StringSettingOptions& options, std::set<std::string>& selectedOptions)
 {
   std::shared_ptr<const CSettingString> pSettingString = NULL;
-  if (setting->GetType() == SettingTypeString)
+  if (setting->GetType() == SettingType::String)
   {
     pSettingString = std::static_pointer_cast<const CSettingString>(setting);
     selectedOptions.insert(pSettingString->GetValue());
   }
-  else if (setting->GetType() == SettingTypeList)
+  else if (setting->GetType() == SettingType::List)
   {
     std::shared_ptr<const CSettingList>settingList = std::static_pointer_cast<const CSettingList>(setting);
-    if (settingList->GetElementType() != SettingTypeString)
+    if (settingList->GetElementType() != SettingType::String)
       return false;
 
     pSettingString = std::static_pointer_cast<const CSettingString>(settingList->GetDefinition());
@@ -176,7 +176,7 @@ static bool GetStringOptions(SettingConstPtr setting, StringSettingOptions& opti
 
   switch (pSettingString->GetOptionsType())
   {
-    case SettingOptionsTypeStaticTranslatable:
+    case SettingOptionsType::StaticTranslatable:
     {
       const TranslatableStringSettingOptions& settingOptions = pSettingString->GetTranslatableOptions();
       for (const auto& option : settingOptions)
@@ -184,21 +184,21 @@ static bool GetStringOptions(SettingConstPtr setting, StringSettingOptions& opti
       break;
     }
 
-    case SettingOptionsTypeStatic:
+    case SettingOptionsType::Static:
     {
       const StringSettingOptions& settingOptions = pSettingString->GetOptions();
       options.insert(options.end(), settingOptions.begin(), settingOptions.end());
       break;
     }
 
-    case SettingOptionsTypeDynamic:
+    case SettingOptionsType::Dynamic:
     {
       StringSettingOptions settingOptions = std::const_pointer_cast<CSettingString>(pSettingString)->UpdateDynamicOptions();
       options.insert(options.end(), settingOptions.begin(), settingOptions.end());
       break;
     }
 
-    case SettingOptionsTypeNone:
+    case SettingOptionsType::Unknown:
     default:
       return false;
   }
@@ -291,15 +291,15 @@ bool CGUIControlSpinExSetting::OnClick()
 
   switch (m_pSetting->GetType())
   {
-    case SettingTypeInteger:
+    case SettingType::Integer:
       SetValid(std::static_pointer_cast<CSettingInt>(m_pSetting)->SetValue(m_pSpin->GetValue()));
       break;
 
-    case SettingTypeNumber:
+    case SettingType::Number:
       SetValid(std::static_pointer_cast<CSettingNumber>(m_pSetting)->SetValue(m_pSpin->GetFloatValue()));
       break;
     
-    case SettingTypeString:
+    case SettingType::String:
       SetValid(std::static_pointer_cast<CSettingString>(m_pSetting)->SetValue(m_pSpin->GetStringValue()));
       break;
     
@@ -350,9 +350,9 @@ void CGUIControlSpinExSetting::FillControl()
   {
     m_pSpin->SetType(SPIN_CONTROL_TYPE_TEXT);
 
-    if (m_pSetting->GetType() == SettingTypeInteger)
+    if (m_pSetting->GetType() == SettingType::Integer)
       FillIntegerSettingControl();
-    else if (m_pSetting->GetType() == SettingTypeString)
+    else if (m_pSetting->GetType() == SettingType::String)
     {
       StringSettingOptions options;
       std::set<std::string> selectedValues;
@@ -438,19 +438,19 @@ bool CGUIControlListSetting::OnClick()
   bool ret = false;
   switch (m_pSetting->GetType())
   {
-    case SettingTypeInteger:
+    case SettingType::Integer:
       if (values.size() > 1)
         return false;
       ret = std::static_pointer_cast<CSettingInt>(m_pSetting)->SetValue((int)values.at(0).asInteger());
       break;
 
-    case SettingTypeString:
+    case SettingType::String:
       if (values.size() > 1)
         return false;
       ret = std::static_pointer_cast<CSettingString>(m_pSetting)->SetValue(values.at(0).asString());
       break;
 
-    case SettingTypeList:
+    case SettingType::List:
       ret = CSettingUtils::SetList(std::static_pointer_cast<CSettingList>(m_pSetting), values);
       break;
     
@@ -517,11 +517,11 @@ bool CGUIControlListSetting::GetItems(SettingConstPtr setting, CFileItemList &it
     return GetIntegerItems(setting, items);
   else if (controlFormat == "string")
   {
-    if (setting->GetType() == SettingTypeInteger ||
-       (setting->GetType() == SettingTypeList && std::static_pointer_cast<const CSettingList>(setting)->GetElementType() == SettingTypeInteger))
+    if (setting->GetType() == SettingType::Integer ||
+       (setting->GetType() == SettingType::List && std::static_pointer_cast<const CSettingList>(setting)->GetElementType() == SettingType::Integer))
       return GetIntegerItems(setting, items);
-    else if (setting->GetType() == SettingTypeString ||
-            (setting->GetType() == SettingTypeList && std::static_pointer_cast<const CSettingList>(setting)->GetElementType() == SettingTypeString))
+    else if (setting->GetType() == SettingType::String ||
+            (setting->GetType() == SettingType::List && std::static_pointer_cast<const CSettingList>(setting)->GetElementType() == SettingType::String))
       return GetStringItems(setting, items);
   }
   else
@@ -636,7 +636,7 @@ bool CGUIControlButtonSetting::OnClick()
   else if (controlType == "slider")
   {
     float value, min, step, max;
-    if (m_pSetting->GetType() == SettingTypeInteger)
+    if (m_pSetting->GetType() == SettingType::Integer)
     {
       std::shared_ptr<CSettingInt> settingInt = std::static_pointer_cast<CSettingInt>(m_pSetting);
       value = (float)settingInt->GetValue();
@@ -644,7 +644,7 @@ bool CGUIControlButtonSetting::OnClick()
       step = (float)settingInt->GetStep();
       max = (float)settingInt->GetMaximum();
     }
-    else if (m_pSetting->GetType() == SettingTypeNumber)
+    else if (m_pSetting->GetType() == SettingType::Number)
     {
       std::shared_ptr<CSettingNumber> settingNumber = std::static_pointer_cast<CSettingNumber>(m_pSetting);
       value = (float)settingNumber->GetValue();
@@ -684,7 +684,7 @@ void CGUIControlButtonSetting::Update(bool updateDisplayOnly /* = false */)
     {
       switch (m_pSetting->GetType())
       {
-      case SettingTypeString:
+      case SettingType::String:
       {
         std::string strValue = std::static_pointer_cast<CSettingString>(m_pSetting)->GetValue();
         if (controlFormat == "addon")
@@ -713,7 +713,7 @@ void CGUIControlButtonSetting::Update(bool updateDisplayOnly /* = false */)
         break;
       }
 
-      case SettingTypeAction:
+      case SettingType::Action:
       {
         // CSettingAction. 
         // Note: This can be removed once all settings use a proper control & format combination.
@@ -732,7 +732,7 @@ void CGUIControlButtonSetting::Update(bool updateDisplayOnly /* = false */)
   {
     switch (m_pSetting->GetType())
     {
-      case SettingTypeInteger:
+      case SettingType::Integer:
       {
         std::shared_ptr<const CSettingInt> settingInt = std::static_pointer_cast<CSettingInt>(m_pSetting);
         strText = CGUIControlSliderSetting::GetText(std::static_pointer_cast<const CSettingControlSlider>(m_pSetting->GetControl()),
@@ -740,7 +740,7 @@ void CGUIControlButtonSetting::Update(bool updateDisplayOnly /* = false */)
         break;
       }
 
-      case SettingTypeNumber:
+      case SettingType::Number:
       {
         std::shared_ptr<const CSettingNumber> settingNumber = std::static_pointer_cast<CSettingNumber>(m_pSetting);
         strText = CGUIControlSliderSetting::GetText(std::static_pointer_cast<const CSettingControlSlider>(m_pSetting->GetControl()),
@@ -806,7 +806,7 @@ void CGUIControlButtonSetting::OnSliderChange(void *data, CGUISliderControl *sli
   std::string strText;
   switch (m_pSetting->GetType())
   {
-    case SettingTypeInteger:
+    case SettingType::Integer:
     {
       std::shared_ptr<CSettingInt> settingInt = std::static_pointer_cast<CSettingInt>(m_pSetting);
       if (settingInt->SetValue(slider->GetIntValue()))
@@ -815,7 +815,7 @@ void CGUIControlButtonSetting::OnSliderChange(void *data, CGUISliderControl *sli
       break;
     }
 
-    case SettingTypeNumber:
+    case SettingType::Number:
     {
       std::shared_ptr<CSettingNumber> settingNumber = std::static_pointer_cast<CSettingNumber>(m_pSetting);
       if (settingNumber->SetValue(static_cast<double>(slider->GetFloatValue())))
@@ -939,7 +939,7 @@ CGUIControlSliderSetting::CGUIControlSliderSetting(CGUISettingsSliderControl *pS
   
   switch (m_pSetting->GetType())
   {
-    case SettingTypeInteger:
+    case SettingType::Integer:
     {
       std::shared_ptr<CSettingInt> settingInt = std::static_pointer_cast<CSettingInt>(m_pSetting);
       if (m_pSetting->GetControl()->GetFormat() == "percentage")
@@ -953,7 +953,7 @@ CGUIControlSliderSetting::CGUIControlSliderSetting(CGUISettingsSliderControl *pS
       break;
     }
 
-    case SettingTypeNumber:
+    case SettingType::Number:
     {
       std::shared_ptr<CSettingNumber> settingNumber = std::static_pointer_cast<CSettingNumber>(m_pSetting);
       m_pSlider->SetType(SLIDER_CONTROL_TYPE_FLOAT);
@@ -979,11 +979,11 @@ bool CGUIControlSliderSetting::OnClick()
 
   switch (m_pSetting->GetType())
   {
-    case SettingTypeInteger:
+    case SettingType::Integer:
       SetValid(std::static_pointer_cast<CSettingInt>(m_pSetting)->SetValue(m_pSlider->GetIntValue()));
       break;
 
-    case SettingTypeNumber:
+    case SettingType::Number:
       SetValid(std::static_pointer_cast<CSettingNumber>(m_pSetting)->SetValue(m_pSlider->GetFloatValue()));
       break;
     
@@ -1004,7 +1004,7 @@ void CGUIControlSliderSetting::Update(bool updateDisplayOnly /* = false */)
   std::string strText;
   switch (m_pSetting->GetType())
   {
-    case SettingTypeInteger:
+    case SettingType::Integer:
     {
       std::shared_ptr<const CSettingInt> settingInt = std::static_pointer_cast<CSettingInt>(m_pSetting);
       int value;
@@ -1021,7 +1021,7 @@ void CGUIControlSliderSetting::Update(bool updateDisplayOnly /* = false */)
       break;
     }
 
-    case SettingTypeNumber:
+    case SettingType::Number:
     {
       std::shared_ptr<const CSettingNumber> settingNumber = std::static_pointer_cast<CSettingNumber>(m_pSetting);
       double value;
@@ -1076,13 +1076,13 @@ CGUIControlRangeSetting::CGUIControlRangeSetting(CGUISettingsSliderControl *pSli
   m_pSlider->SetID(id);
   m_pSlider->SetRangeSelection(true);
   
-  if (m_pSetting->GetType() == SettingTypeList)
+  if (m_pSetting->GetType() == SettingType::List)
   {
     std::shared_ptr<CSettingList> settingList = std::static_pointer_cast<CSettingList>(m_pSetting);
     SettingConstPtr listDefintion = settingList->GetDefinition();
     switch (listDefintion->GetType())
     {
-      case SettingTypeInteger:
+      case SettingType::Integer:
       {
         std::shared_ptr<const CSettingInt> listDefintionInt = std::static_pointer_cast<const CSettingInt>(listDefintion);
         if (m_pSetting->GetControl()->GetFormat() == "percentage")
@@ -1096,7 +1096,7 @@ CGUIControlRangeSetting::CGUIControlRangeSetting(CGUISettingsSliderControl *pSli
         break;
       }
 
-      case SettingTypeNumber:
+      case SettingType::Number:
       {
         std::shared_ptr<const CSettingNumber> listDefinitionNumber = std::static_pointer_cast<const CSettingNumber>(listDefintion);
         m_pSlider->SetType(SLIDER_CONTROL_TYPE_FLOAT);
@@ -1119,7 +1119,7 @@ CGUIControlRangeSetting::~CGUIControlRangeSetting()
 bool CGUIControlRangeSetting::OnClick()
 {
   if (m_pSlider == NULL ||
-      m_pSetting->GetType() != SettingTypeList)
+      m_pSetting->GetType() != SettingType::List)
     return false;
 
   std::shared_ptr<CSettingList> settingList = std::static_pointer_cast<CSettingList>(m_pSetting);
@@ -1131,12 +1131,12 @@ bool CGUIControlRangeSetting::OnClick()
   SettingConstPtr listDefintion = settingList->GetDefinition();
   switch (listDefintion->GetType())
   {
-    case SettingTypeInteger:
+    case SettingType::Integer:
       values.push_back(m_pSlider->GetIntValue(CGUISliderControl::RangeSelectorLower));
       values.push_back(m_pSlider->GetIntValue(CGUISliderControl::RangeSelectorUpper));
       break;
 
-    case SettingTypeNumber:
+    case SettingType::Number:
       values.push_back(m_pSlider->GetFloatValue(CGUISliderControl::RangeSelectorLower));
       values.push_back(m_pSlider->GetFloatValue(CGUISliderControl::RangeSelectorUpper));
       break;
@@ -1155,7 +1155,7 @@ bool CGUIControlRangeSetting::OnClick()
 void CGUIControlRangeSetting::Update(bool updateDisplayOnly /* = false */)
 {
   if (m_pSlider == NULL ||
-      m_pSetting->GetType() != SettingTypeList)
+      m_pSetting->GetType() != SettingType::List)
     return;
 
   CGUIControlBaseSetting::Update();
@@ -1178,7 +1178,7 @@ void CGUIControlRangeSetting::Update(bool updateDisplayOnly /* = false */)
 
   switch (listDefintion->GetType())
   {
-    case SettingTypeInteger:
+    case SettingType::Integer:
     {
       int valueLower, valueUpper;
       if (updateDisplayOnly)
@@ -1234,7 +1234,7 @@ void CGUIControlRangeSetting::Update(bool updateDisplayOnly /* = false */)
       break;
     }
 
-    case SettingTypeNumber:
+    case SettingType::Number:
     {
       double valueLower, valueUpper;
       if (updateDisplayOnly)

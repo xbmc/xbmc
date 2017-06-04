@@ -94,39 +94,39 @@ void CGUIDialogCMSSettings::InitializeSettings()
   TranslatableIntegerSettingOptions entries;
 
   // create "depsCmsEnabled" for settings depending on CMS being enabled
-  CSettingDependency dependencyCmsEnabled(SettingDependencyTypeEnable, GetSettingsManager());
+  CSettingDependency dependencyCmsEnabled(SettingDependencyType::Enable, GetSettingsManager());
   dependencyCmsEnabled.Or()
-    ->Add(CSettingDependencyConditionPtr(new CSettingDependencyCondition(SETTING_VIDEO_CMSENABLE, "true", SettingDependencyOperatorEquals, false, GetSettingsManager())));
+    ->Add(CSettingDependencyConditionPtr(new CSettingDependencyCondition(SETTING_VIDEO_CMSENABLE, "true", SettingDependencyOperator::Equals, false, GetSettingsManager())));
   SettingDependencies depsCmsEnabled;
   depsCmsEnabled.push_back(dependencyCmsEnabled);
 
   // create "depsCms3dlut" for 3dlut settings
-  CSettingDependency dependencyCms3dlut(SettingDependencyTypeVisible, GetSettingsManager());
+  CSettingDependency dependencyCms3dlut(SettingDependencyType::Visible, GetSettingsManager());
   dependencyCms3dlut.And()
-    ->Add(CSettingDependencyConditionPtr(new CSettingDependencyCondition(SETTING_VIDEO_CMSMODE, std::to_string(CMS_MODE_3DLUT), SettingDependencyOperatorEquals, false, GetSettingsManager())));
+    ->Add(CSettingDependencyConditionPtr(new CSettingDependencyCondition(SETTING_VIDEO_CMSMODE, std::to_string(CMS_MODE_3DLUT), SettingDependencyOperator::Equals, false, GetSettingsManager())));
   SettingDependencies depsCms3dlut;
   depsCms3dlut.push_back(dependencyCmsEnabled);
   depsCms3dlut.push_back(dependencyCms3dlut);
 
   // create "depsCmsIcc" for display settings with icc profile
-  CSettingDependency dependencyCmsIcc(SettingDependencyTypeVisible, GetSettingsManager());
+  CSettingDependency dependencyCmsIcc(SettingDependencyType::Visible, GetSettingsManager());
   dependencyCmsIcc.And()
-    ->Add(CSettingDependencyConditionPtr(new CSettingDependencyCondition(SETTING_VIDEO_CMSMODE, std::to_string(CMS_MODE_PROFILE), SettingDependencyOperatorEquals, false, GetSettingsManager())));
+    ->Add(CSettingDependencyConditionPtr(new CSettingDependencyCondition(SETTING_VIDEO_CMSMODE, std::to_string(CMS_MODE_PROFILE), SettingDependencyOperator::Equals, false, GetSettingsManager())));
   SettingDependencies depsCmsIcc;
   depsCmsIcc.push_back(dependencyCmsEnabled);
   depsCmsIcc.push_back(dependencyCmsIcc);
 
   // create "depsCmsGamma" for effective gamma adjustment (not available with bt.1886)
-  CSettingDependency dependencyCmsGamma(SettingDependencyTypeVisible, GetSettingsManager());
+  CSettingDependency dependencyCmsGamma(SettingDependencyType::Visible, GetSettingsManager());
   dependencyCmsGamma.And()
-    ->Add(CSettingDependencyConditionPtr(new CSettingDependencyCondition(SETTING_VIDEO_CMSGAMMAMODE, std::to_string(CMS_TRC_BT1886), SettingDependencyOperatorEquals, true, GetSettingsManager())));
+    ->Add(CSettingDependencyConditionPtr(new CSettingDependencyCondition(SETTING_VIDEO_CMSGAMMAMODE, std::to_string(CMS_TRC_BT1886), SettingDependencyOperator::Equals, true, GetSettingsManager())));
   SettingDependencies depsCmsGamma;
   depsCmsGamma.push_back(dependencyCmsEnabled);
   depsCmsGamma.push_back(dependencyCmsIcc);
   depsCmsGamma.push_back(dependencyCmsGamma);
 
   // color management settings
-  AddToggle(groupColorManagement, SETTING_VIDEO_CMSENABLE, 36560, 0, CServiceBroker::GetSettings().GetBool(SETTING_VIDEO_CMSENABLE));
+  AddToggle(groupColorManagement, SETTING_VIDEO_CMSENABLE, 36560, SettingLevel::Basic, CServiceBroker::GetSettings().GetBool(SETTING_VIDEO_CMSENABLE));
 
   int currentMode = CServiceBroker::GetSettings().GetInt(SETTING_VIDEO_CMSMODE);
   entries.clear();
@@ -135,11 +135,11 @@ void CGUIDialogCMSSettings::InitializeSettings()
 #ifdef HAVE_LCMS2
   entries.push_back(std::make_pair(36581, CMS_MODE_PROFILE));
 #endif
-  std::shared_ptr<CSettingInt> settingCmsMode = AddSpinner(groupColorManagement, SETTING_VIDEO_CMSMODE, 36562, 0, currentMode, entries);
+  std::shared_ptr<CSettingInt> settingCmsMode = AddSpinner(groupColorManagement, SETTING_VIDEO_CMSMODE, 36562, SettingLevel::Basic, currentMode, entries);
   settingCmsMode->SetDependencies(depsCmsEnabled);
 
   std::string current3dLUT = CServiceBroker::GetSettings().GetString(SETTING_VIDEO_CMS3DLUT);
-  std::shared_ptr<CSettingString> settingCms3dlut = AddList(groupColorManagement, SETTING_VIDEO_CMS3DLUT, 36564, 0, current3dLUT, Cms3dLutsFiller, 36564);
+  std::shared_ptr<CSettingString> settingCms3dlut = AddList(groupColorManagement, SETTING_VIDEO_CMS3DLUT, 36564, SettingLevel::Basic, current3dLUT, Cms3dLutsFiller, 36564);
   settingCms3dlut->SetDependencies(depsCms3dlut);
 
   // display settings
@@ -147,7 +147,7 @@ void CGUIDialogCMSSettings::InitializeSettings()
   entries.clear();
   entries.push_back(std::make_pair(36586, CMS_WHITEPOINT_D65));
   entries.push_back(std::make_pair(36587, CMS_WHITEPOINT_D93));
-  std::shared_ptr<CSettingInt> settingCmsWhitepoint = AddSpinner(groupColorManagement, SETTING_VIDEO_CMSWHITEPOINT, 36568, 0, currentWhitepoint, entries);
+  std::shared_ptr<CSettingInt> settingCmsWhitepoint = AddSpinner(groupColorManagement, SETTING_VIDEO_CMSWHITEPOINT, 36568, SettingLevel::Basic, currentWhitepoint, entries);
   settingCmsWhitepoint->SetDependencies(depsCmsIcc);
 
   int currentPrimaries = CServiceBroker::GetSettings().GetInt(SETTING_VIDEO_CMSPRIMARIES);
@@ -158,7 +158,7 @@ void CGUIDialogCMSSettings::InitializeSettings()
   entries.push_back(std::make_pair(36591, CMS_PRIMARIES_BT470M));
   entries.push_back(std::make_pair(36592, CMS_PRIMARIES_BT470BG));
   entries.push_back(std::make_pair(36593, CMS_PRIMARIES_240M));
-  std::shared_ptr<CSettingInt> settingCmsPrimaries = AddSpinner(groupColorManagement, SETTING_VIDEO_CMSPRIMARIES, 36570, 0, currentPrimaries, entries);
+  std::shared_ptr<CSettingInt> settingCmsPrimaries = AddSpinner(groupColorManagement, SETTING_VIDEO_CMSPRIMARIES, 36570, SettingLevel::Basic, currentPrimaries, entries);
   settingCmsPrimaries->SetDependencies(depsCmsIcc);
 
   int currentGammaMode = CServiceBroker::GetSettings().GetInt(SETTING_VIDEO_CMSGAMMAMODE);
@@ -167,12 +167,12 @@ void CGUIDialogCMSSettings::InitializeSettings()
   entries.push_back(std::make_pair(36583, CMS_TRC_INPUT_OFFSET));
   entries.push_back(std::make_pair(36584, CMS_TRC_OUTPUT_OFFSET));
   entries.push_back(std::make_pair(36585, CMS_TRC_ABSOLUTE));
-  std::shared_ptr<CSettingInt> settingCmsGammaMode = AddSpinner(groupColorManagement, SETTING_VIDEO_CMSGAMMAMODE, 36572, 0, currentGammaMode, entries);
+  std::shared_ptr<CSettingInt> settingCmsGammaMode = AddSpinner(groupColorManagement, SETTING_VIDEO_CMSGAMMAMODE, 36572, SettingLevel::Basic, currentGammaMode, entries);
   settingCmsGammaMode->SetDependencies(depsCmsIcc);
 
   float currentGamma = CServiceBroker::GetSettings().GetInt(SETTING_VIDEO_CMSGAMMA)/100.0f;
   if (currentGamma == 0.0) currentGamma = 2.20;
-  std::shared_ptr<CSettingNumber> settingCmsGamma = AddSlider(groupColorManagement, SETTING_VIDEO_CMSGAMMA, 36574, 0, currentGamma, 36597, 1.6, 0.05, 2.8, 36574, usePopup);
+  std::shared_ptr<CSettingNumber> settingCmsGamma = AddSlider(groupColorManagement, SETTING_VIDEO_CMSGAMMA, 36574, SettingLevel::Basic, currentGamma, 36597, 1.6, 0.05, 2.8, 36574, usePopup);
   settingCmsGamma->SetDependencies(depsCmsGamma);
 
   int currentLutSize = CServiceBroker::GetSettings().GetInt(SETTING_VIDEO_CMSLUTSIZE);
@@ -180,7 +180,7 @@ void CGUIDialogCMSSettings::InitializeSettings()
   entries.push_back(std::make_pair(36594, 4));
   entries.push_back(std::make_pair(36595, 6));
   entries.push_back(std::make_pair(36596, 8));
-  std::shared_ptr<CSettingInt> settingCmsLutSize = AddSpinner(groupColorManagement, SETTING_VIDEO_CMSLUTSIZE, 36576, 0, currentLutSize, entries);
+  std::shared_ptr<CSettingInt> settingCmsLutSize = AddSpinner(groupColorManagement, SETTING_VIDEO_CMSLUTSIZE, 36576, SettingLevel::Basic, currentLutSize, entries);
   settingCmsLutSize->SetDependencies(depsCmsIcc);
 }
 

@@ -485,8 +485,8 @@ void CGUIDialogSettingsBase::OnTimeout()
 
 void CGUIDialogSettingsBase::OnSettingChanged(std::shared_ptr<const CSetting> setting)
 {
-  if (setting == NULL || setting->GetType() == SettingTypeNone ||
-      setting->GetType() == SettingTypeAction)
+  if (setting == NULL || setting->GetType() == SettingType::Unknown ||
+      setting->GetType() == SettingType::Action)
     return;
 
   UpdateSettingControl(setting->GetId());

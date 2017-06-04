@@ -69,7 +69,7 @@ bool CPVRSettings::GetBoolValue(const std::string &settingName) const
 {
   CSingleLock lock(m_critSection);
   auto settingIt = m_settings.find(settingName);
-  if (settingIt != m_settings.end() && (*settingIt).second->GetType() == SettingTypeBool)
+  if (settingIt != m_settings.end() && (*settingIt).second->GetType() == SettingType::Boolean)
   {
     std::shared_ptr<const CSettingBool> setting = std::dynamic_pointer_cast<const CSettingBool>((*settingIt).second);
     if (setting)
@@ -84,7 +84,7 @@ int CPVRSettings::GetIntValue(const std::string &settingName) const
 {
   CSingleLock lock(m_critSection);
   auto settingIt = m_settings.find(settingName);
-  if (settingIt != m_settings.end() && (*settingIt).second->GetType() == SettingTypeInteger)
+  if (settingIt != m_settings.end() && (*settingIt).second->GetType() == SettingType::Integer)
   {
     std::shared_ptr<const CSettingInt> setting = std::dynamic_pointer_cast<const CSettingInt>((*settingIt).second);
     if (setting)
@@ -99,7 +99,7 @@ std::string CPVRSettings::GetStringValue(const std::string &settingName) const
 {
   CSingleLock lock(m_critSection);
   auto settingIt = m_settings.find(settingName);
-  if (settingIt != m_settings.end() && (*settingIt).second->GetType() == SettingTypeString)
+  if (settingIt != m_settings.end() && (*settingIt).second->GetType() == SettingType::String)
   {
     std::shared_ptr<const CSettingString> setting = std::dynamic_pointer_cast<const CSettingString>((*settingIt).second);
     if (setting)
