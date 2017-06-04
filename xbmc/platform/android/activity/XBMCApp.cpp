@@ -408,7 +408,7 @@ void CXBMCApp::run()
     argv[0] = exe_name.c_str();
     argv[1] = filenameToPlay.c_str();
 
-    appParamParser.Parse((const char **)argv, argc);
+    appParamParser.Parse(argv, argc);
 
     free(argv);
   }

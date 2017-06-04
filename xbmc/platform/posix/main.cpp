@@ -18,20 +18,14 @@
  *
  */
 
-#include "system.h"
-#include "AppParamParser.h"
-#include "settings/AdvancedSettings.h"
-#include "FileItem.h"
-#include "PlayListPlayer.h"
-#include "utils/log.h"
-#include "platform/xbmc.h"
-#ifdef TARGET_POSIX
 #include <sys/resource.h>
 #include <signal.h>
+
 #include <cstring>
-#include "messaging/ApplicationMessenger.h"
-#include "platform/MessagePrinter.h"
-#endif
+
+// For HAS_SDL
+#include "system.h"
+
 #if defined(TARGET_DARWIN_OSX)
   #include "Util.h"
   // SDL redefines main as SDL_main 
@@ -40,12 +34,22 @@
   #endif
 #include <locale.h>
 #endif
+
+#include "AppParamParser.h"
+#include "FileItem.h"
+#include "messaging/ApplicationMessenger.h"
+#include "PlayListPlayer.h"
+#include "platform/MessagePrinter.h"
+#include "platform/xbmc.h"
+#include "platform/XbmcContext.h"
+#include "settings/AdvancedSettings.h"
+#include "utils/log.h"
+
 #ifdef HAS_LIRC
 #include "input/linux/LIRC.h"
 #endif
-#include "platform/XbmcContext.h"
-  
-#if defined(TARGET_POSIX)
+
+
 namespace
 {
 
@@ -79,30 +83,14 @@ void XBMC_POSIX_HandleSignal(int sig)
 }
 
 }
-#endif
 
-#ifdef __cplusplus
-extern "C"
-#endif
+
 int main(int argc, char* argv[])
 {
   // set up some xbmc specific relationships
   XBMC::Context context;
 
-  bool renderGUI = true;
-  //this can't be set from CAdvancedSettings::Initialize() because it will overwrite
-  //the loglevel set with the --debug flag
-#ifdef _DEBUG
-  g_advancedSettings.m_logLevel     = LOG_LEVEL_DEBUG;
-  g_advancedSettings.m_logLevelHint = LOG_LEVEL_DEBUG;
-#else
-  g_advancedSettings.m_logLevel     = LOG_LEVEL_NORMAL;
-  g_advancedSettings.m_logLevelHint = LOG_LEVEL_NORMAL;
-#endif
-  CLog::SetLogLevel(g_advancedSettings.m_logLevel);
-
-#ifdef TARGET_POSIX
-#if defined(DEBUG)
+#if defined(_DEBUG)
   struct rlimit rlim;
   rlim.rlim_cur = rlim.rlim_max = RLIM_INFINITY;
   if (setrlimit(RLIMIT_CORE, &rlim) == -1)
@@ -116,12 +104,13 @@ int main(int argc, char* argv[])
   signalHandler.sa_flags = SA_RESTART;
   sigaction(SIGINT, &signalHandler, nullptr);
   sigaction(SIGTERM, &signalHandler, nullptr);
-#endif
-  setlocale(LC_NUMERIC, "C");
-  g_advancedSettings.Initialize();
 
+  setlocale(LC_NUMERIC, "C");
+ 
+  // Initialize before CAppParamParser so it can set the log level
+  g_advancedSettings.Initialize();
   CAppParamParser appParamParser;
-  appParamParser.Parse(const_cast<const char**>(argv), argc);
+  appParamParser.Parse(argv, argc);
   
-  return XBMC_Run(renderGUI, appParamParser.m_playlist);
+  return XBMC_Run(true, appParamParser.m_playlist);
 }

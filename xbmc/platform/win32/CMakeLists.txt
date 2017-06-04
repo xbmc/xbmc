@@ -1,6 +1,5 @@
 set(SOURCES CharsetConverter.cpp
             MessagePrinter.cpp
-            WinMain.cpp
             crts_caller.cpp
             dxerr.cpp
             Filesystem.cpp
