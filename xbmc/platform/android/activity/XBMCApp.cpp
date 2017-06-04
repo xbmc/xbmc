@@ -248,6 +248,9 @@ void CXBMCApp::onPause()
     m_mediaSession->activate(true);
   }
 
+  if (m_playback_state != PLAYBACK_STATE_STOPPED)
+    m_mediaSession->activate(true);
+
   EnableWakeLock(false);
   m_hasReqVisible = false;
 }
@@ -266,8 +269,7 @@ void CXBMCApp::onDestroy()
 
   unregisterReceiver(*this);
 
-  if (m_mediaSession)
-    m_mediaSession.release();
+  m_mediaSession.release();
 
   // If android is forcing us to stop, ask XBMC to exit then wait until it's
   // been destroyed.
@@ -634,10 +636,8 @@ void CXBMCApp::UpdateSessionMetadata()
         .putString(CJNIMediaMetadata::METADATA_KEY_ARTIST, g_infoManager.GetLabel(VIDEOPLAYER_DIRECTOR))
         ;
     thumb = g_infoManager.GetImage(VIDEOPLAYER_COVER, -1);
-
-    RequestVisibleBehind(true);
   }
-  else
+  else if (m_playback_state & PLAYBACK_STATE_AUDIO)
   {
     builder
         .putString(CJNIMediaMetadata::METADATA_KEY_DISPLAY_SUBTITLE, g_infoManager.GetLabel(MUSICPLAYER_ARTIST))
@@ -657,6 +657,30 @@ void CXBMCApp::UpdateSessionMetadata()
   m_mediaSession->updateMetadata(builder.build());
 }
 
+void CXBMCApp::UpdateSessionState()
+{
+  CJNIPlaybackStateBuilder builder;
+  int state = CJNIPlaybackState::STATE_NONE;
+  int64_t pos = 0;
+  float speed = 0.0;
+  if (m_playback_state != PLAYBACK_STATE_STOPPED)
+  {
+    pos = g_application.m_pPlayer->GetTime();
+    speed = g_application.m_pPlayer->GetPlaySpeed();
+    if (m_playback_state & PLAYBACK_STATE_PLAYING)
+      state = CJNIPlaybackState::STATE_PLAYING;
+    else
+      state = CJNIPlaybackState::STATE_PAUSED;
+  }
+  else
+    state = CJNIPlaybackState::STATE_STOPPED;
+  builder
+      .setState(state, pos, speed, CJNISystemClock::elapsedRealtime())
+      .setActions(0xffffffffffffffff)
+      ;
+  m_mediaSession->updatePlaybackState(builder.build());
+}
+
 void CXBMCApp::OnPlayBackStarted()
 {
   CLog::Log(LOGDEBUG, "%s", __PRETTY_FUNCTION__);
@@ -674,6 +698,8 @@ void CXBMCApp::OnPlayBackStarted()
 
   m_xbmcappinstance->AcquireAudioFocus();
   CAndroidKey::SetHandleMediaKeys(true);
+
+  RequestVisibleBehind(true);
 }
 
 void CXBMCApp::OnPlayBackPaused()
@@ -691,10 +717,11 @@ void CXBMCApp::OnPlayBackStopped()
   CLog::Log(LOGDEBUG, "%s", __PRETTY_FUNCTION__);
 
   m_playback_state = PLAYBACK_STATE_STOPPED;
+  UpdateSessionState();
+  m_mediaSession->activate(false);
 
   RequestVisibleBehind(false);
   CAndroidKey::SetHandleMediaKeys(false);
-  m_mediaSession->activate(false);
   m_xbmcappinstance->ReleaseAudioFocus();
 }
 
@@ -712,29 +739,8 @@ std::vector<int> CXBMCApp::GetInputDeviceIds()
 
 void CXBMCApp::ProcessSlow()
 {
-  if (m_mediaSession && m_mediaSession->isActive())
-  {
-    CJNIPlaybackStateBuilder builder;
-    int state = CJNIPlaybackState::STATE_NONE;
-    int64_t pos = 0;
-    float speed = 0.0;
-    if (m_playback_state != PLAYBACK_STATE_STOPPED)
-    {
-      pos = g_application.m_pPlayer->GetTime();
-      speed = g_application.m_pPlayer->GetPlaySpeed();
-      if (m_playback_state & PLAYBACK_STATE_PLAYING)
-        state = CJNIPlaybackState::STATE_PLAYING;
-      else
-        state = CJNIPlaybackState::STATE_PAUSED;
-    }
-    else
-      state = CJNIPlaybackState::STATE_STOPPED;
-    builder
-        .setState(state, pos, speed, CJNISystemClock::elapsedRealtime())
-        .setActions(0xffffffffffffffff)
-        ;
-    m_mediaSession->updatePlaybackState(builder.build());
-  }
+  if (m_mediaSession->isActive())
+    UpdateSessionState();
 }
 
 std::vector<androidPackage> CXBMCApp::GetApplications()
@@ -1112,8 +1118,6 @@ void CXBMCApp::onAudioFocusChange(int focusChange)
   CXBMCApp::android_printf("Audio Focus changed: %d", focusChange);
   if (focusChange == CJNIAudioManager::AUDIOFOCUS_LOSS)
   {
-    m_mediaSession->activate(false);
-
     if (m_playback_state & PLAYBACK_STATE_PLAYING)
       CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PAUSE)));
   }
