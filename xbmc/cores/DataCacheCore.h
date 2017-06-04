@@ -70,6 +70,7 @@ public:
   void SetGuiRender(bool gui);
   bool GetGuiRender();
   void SetVideoRender(bool video);
+  bool GetVideoRender();
 
 protected:
   std::atomic_bool m_hasAVInfoChanges;
