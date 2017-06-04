@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Nexus Player has no menu key so map the play_pause button to context menu. Play/Pause button
+     still acts normally while it's playing a video, but when browsing through videos it pulls up the
+     contextual menu. -->
+
+<keymap>
+    <videos>
+        <keyboard>
+            <play_pause>contextmenu</play_pause>
+        </keyboard>
+    </videos>
+</keymap>
