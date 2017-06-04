@@ -19,7 +19,6 @@
  */
 
 #include "ProcessInfo.h"
-#include "ServiceBroker.h"
 #include "cores/DataCacheCore.h"
 #include "threads/SingleLock.h"
 
@@ -37,17 +36,21 @@ CProcessInfo* CProcessInfo::CreateInstance()
 // base class definitions
 CProcessInfo::CProcessInfo()
 {
-  ResetVideoCodecInfo();
-  m_renderGuiLayer = true;
-  m_renderVideoLayer = false;
-  CServiceBroker::GetDataCacheCore().SetGuiRender(m_renderGuiLayer);
-  CServiceBroker::GetDataCacheCore().SetVideoRender(m_renderVideoLayer);
 }
 
 CProcessInfo::~CProcessInfo()
 {
-  CServiceBroker::GetDataCacheCore().SetGuiRender(false);
-  CServiceBroker::GetDataCacheCore().SetVideoRender(false);
+}
+
+void CProcessInfo::SetDataCache(CDataCacheCore *cache)
+{
+  m_dataCache = cache;;
+
+  ResetVideoCodecInfo();
+  m_renderGuiLayer = true;
+  m_renderVideoLayer = false;
+  m_dataCache->SetGuiRender(m_renderGuiLayer);
+  m_dataCache->SetVideoRender(m_renderVideoLayer);
 }
 
 void CProcessInfo::ResetVideoCodecInfo()
@@ -67,13 +70,16 @@ void CProcessInfo::ResetVideoCodecInfo()
   m_deintMethodDefault = EINTERLACEMETHOD::VS_INTERLACEMETHOD_NONE;
   m_stateSeeking = false;
 
-  CServiceBroker::GetDataCacheCore().SetVideoDecoderName(m_videoDecoderName, m_videoIsHWDecoder);
-  CServiceBroker::GetDataCacheCore().SetVideoDeintMethod(m_videoDeintMethod);
-  CServiceBroker::GetDataCacheCore().SetVideoPixelFormat(m_videoPixelFormat);
-  CServiceBroker::GetDataCacheCore().SetVideoDimensions(m_videoWidth, m_videoHeight);
-  CServiceBroker::GetDataCacheCore().SetVideoFps(m_videoFPS);
-  CServiceBroker::GetDataCacheCore().SetVideoDAR(m_videoDAR);
-  CServiceBroker::GetDataCacheCore().SetStateSeeking(m_stateSeeking);
+  if (m_dataCache)
+  {
+    m_dataCache->SetVideoDecoderName(m_videoDecoderName, m_videoIsHWDecoder);
+    m_dataCache->SetVideoDeintMethod(m_videoDeintMethod);
+    m_dataCache->SetVideoPixelFormat(m_videoPixelFormat);
+    m_dataCache->SetVideoDimensions(m_videoWidth, m_videoHeight);
+    m_dataCache->SetVideoFps(m_videoFPS);
+    m_dataCache->SetVideoDAR(m_videoDAR);
+    m_dataCache->SetStateSeeking(m_stateSeeking);
+  }
 }
 
 void CProcessInfo::SetVideoDecoderName(const std::string &name, bool isHw)
@@ -83,7 +89,8 @@ void CProcessInfo::SetVideoDecoderName(const std::string &name, bool isHw)
   m_videoIsHWDecoder = isHw;
   m_videoDecoderName = name;
 
-  CServiceBroker::GetDataCacheCore().SetVideoDecoderName(m_videoDecoderName, m_videoIsHWDecoder);
+  if (m_dataCache)
+    m_dataCache->SetVideoDecoderName(m_videoDecoderName, m_videoIsHWDecoder);
 }
 
 std::string CProcessInfo::GetVideoDecoderName()
@@ -106,7 +113,8 @@ void CProcessInfo::SetVideoDeintMethod(const std::string &method)
 
   m_videoDeintMethod = method;
 
-  CServiceBroker::GetDataCacheCore().SetVideoDeintMethod(m_videoDeintMethod);
+  if (m_dataCache)
+    m_dataCache->SetVideoDeintMethod(m_videoDeintMethod);
 }
 
 std::string CProcessInfo::GetVideoDeintMethod()
@@ -122,7 +130,8 @@ void CProcessInfo::SetVideoPixelFormat(const std::string &pixFormat)
 
   m_videoPixelFormat = pixFormat;
 
-  CServiceBroker::GetDataCacheCore().SetVideoPixelFormat(m_videoPixelFormat);
+  if (m_dataCache)
+    m_dataCache->SetVideoPixelFormat(m_videoPixelFormat);
 }
 
 std::string CProcessInfo::GetVideoPixelFormat()
@@ -139,7 +148,8 @@ void CProcessInfo::SetVideoDimensions(int width, int height)
   m_videoWidth = width;
   m_videoHeight = height;
 
-  CServiceBroker::GetDataCacheCore().SetVideoDimensions(m_videoWidth, m_videoHeight);
+  if (m_dataCache)
+    m_dataCache->SetVideoDimensions(m_videoWidth, m_videoHeight);
 }
 
 void CProcessInfo::GetVideoDimensions(int &width, int &height)
@@ -156,7 +166,8 @@ void CProcessInfo::SetVideoFps(float fps)
 
   m_videoFPS = fps;
 
-  CServiceBroker::GetDataCacheCore().SetVideoFps(m_videoFPS);
+  if (m_dataCache)
+    m_dataCache->SetVideoFps(m_videoFPS);
 }
 
 float CProcessInfo::GetVideoFps()
@@ -172,7 +183,8 @@ void CProcessInfo::SetVideoDAR(float dar)
 
   m_videoDAR = dar;
 
-  CServiceBroker::GetDataCacheCore().SetVideoDAR(m_videoDAR);
+  if (m_dataCache)
+    m_dataCache->SetVideoDAR(m_videoDAR);
 }
 
 float CProcessInfo::GetVideoDAR()
@@ -254,10 +266,13 @@ void CProcessInfo::ResetAudioCodecInfo()
   m_audioSampleRate = 0;;
   m_audioBitsPerSample = 0;
 
-  CServiceBroker::GetDataCacheCore().SetAudioDecoderName(m_audioDecoderName);
-  CServiceBroker::GetDataCacheCore().SetAudioChannels(m_audioChannels);
-  CServiceBroker::GetDataCacheCore().SetAudioSampleRate(m_audioSampleRate);
-  CServiceBroker::GetDataCacheCore().SetAudioBitsPerSample(m_audioBitsPerSample);
+  if (m_dataCache)
+  {
+    m_dataCache->SetAudioDecoderName(m_audioDecoderName);
+    m_dataCache->SetAudioChannels(m_audioChannels);
+    m_dataCache->SetAudioSampleRate(m_audioSampleRate);
+    m_dataCache->SetAudioBitsPerSample(m_audioBitsPerSample);
+  }
 }
 
 void CProcessInfo::SetAudioDecoderName(const std::string &name)
@@ -266,7 +281,8 @@ void CProcessInfo::SetAudioDecoderName(const std::string &name)
 
   m_audioDecoderName = name;
 
-  CServiceBroker::GetDataCacheCore().SetAudioDecoderName(m_audioDecoderName);
+  if (m_dataCache)
+    m_dataCache->SetAudioDecoderName(m_audioDecoderName);
 }
 
 std::string CProcessInfo::GetAudioDecoderName()
@@ -282,7 +298,8 @@ void CProcessInfo::SetAudioChannels(const std::string &channels)
 
   m_audioChannels = channels;
 
-  CServiceBroker::GetDataCacheCore().SetAudioChannels(m_audioChannels);
+  if (m_dataCache)
+    m_dataCache->SetAudioChannels(m_audioChannels);
 }
 
 std::string CProcessInfo::GetAudioChannels()
@@ -298,7 +315,8 @@ void CProcessInfo::SetAudioSampleRate(int sampleRate)
 
   m_audioSampleRate = sampleRate;
 
-  CServiceBroker::GetDataCacheCore().SetAudioSampleRate(m_audioSampleRate);
+  if (m_dataCache)
+    m_dataCache->SetAudioSampleRate(m_audioSampleRate);
 }
 
 int CProcessInfo::GetAudioSampleRate()
@@ -314,7 +332,8 @@ void CProcessInfo::SetAudioBitsPerSample(int bitsPerSample)
 
   m_audioBitsPerSample = bitsPerSample;
 
-  CServiceBroker::GetDataCacheCore().SetAudioBitsPerSample(m_audioBitsPerSample);
+  if (m_dataCache)
+    m_dataCache->SetAudioBitsPerSample(m_audioBitsPerSample);
 }
 
 int CProcessInfo::GetAudioBitsPerSample()
@@ -335,7 +354,8 @@ void CProcessInfo::SetRenderClockSync(bool enabled)
 
   m_isClockSync = enabled;
 
-  CServiceBroker::GetDataCacheCore().SetRenderClockSync(enabled);
+  if (m_dataCache)
+    m_dataCache->SetRenderClockSync(enabled);
 }
 
 bool CProcessInfo::IsRenderClockSync()
@@ -388,7 +408,8 @@ void CProcessInfo::SetStateSeeking(bool active)
 
   m_stateSeeking = active;
 
-  CServiceBroker::GetDataCacheCore().SetStateSeeking(active);
+  if (m_dataCache)
+    m_dataCache->SetStateSeeking(active);
 }
 
 bool CProcessInfo::IsSeeking()
@@ -415,7 +436,10 @@ void CProcessInfo::SetGuiRender(bool gui)
   bool change = (m_renderGuiLayer != gui);
   m_renderGuiLayer = gui;
   if (change)
-    CServiceBroker::GetDataCacheCore().SetGuiRender(gui);
+  {
+    if (m_dataCache)
+        m_dataCache->SetGuiRender(gui);
+  }
 }
 
 bool CProcessInfo::GetGuiRender()
@@ -432,7 +456,10 @@ void CProcessInfo::SetVideoRender(bool video)
   bool change = (m_renderVideoLayer != video);
   m_renderVideoLayer = video;
   if (change)
-    CServiceBroker::GetDataCacheCore().SetVideoRender(video);
+  {
+    if (m_dataCache)
+      m_dataCache->SetVideoRender(video);
+  }
 }
 
 bool CProcessInfo::GetVideoRender()
