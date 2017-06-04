@@ -56,6 +56,7 @@ namespace ADDON
      * class.
      */
     //@{
+    /* Window creation functions */
     static void* create(void* kodiBase, const char* xml_filename, const char* default_skin, bool as_dialog, bool is_media);
     static void destroy(void* kodiBase, void* handle);
     static void set_callbacks(void* kodiBase,
@@ -70,9 +71,39 @@ namespace ADDON
     static bool show(void* kodiBase, void* handle);
     static bool close(void* kodiBase, void* handle);
     static bool do_modal(void* kodiBase, void* handle);
+
+    /* Window control functions */
+    static bool set_focus_id(void* kodiBase, void* handle, int control_id);
+    static int get_focus_id(void* kodiBase, void* handle);
+    static void set_control_label(void* kodiBase, void* handle, int control_id, const char* label);
+
+    /* Window property functions */
+    static void set_property(void* kodiBase, void* handle, const char* key, const char* value);
+    static void set_property_int(void* kodiBase, void* handle, const char* key, int value);
+    static void set_property_bool(void* kodiBase, void* handle, const char* key, bool value);
+    static void set_property_double(void* kodiBase, void* handle, const char* key, double value);
+    static char* get_property(void* kodiBase, void* handle, const char* key);
+    static int get_property_int(void* kodiBase, void* handle, const char* key);
+    static bool get_property_bool(void* kodiBase, void* handle, const char* key);
+    static double get_property_double(void* kodiBase, void* handle, const char* key);
+    static void clear_properties(void* kodiBase, void* handle);
+    static void clear_property(void* kodiBase, void* handle, const char* key);
+
+    /* List item functions */
     static void clear_item_list(void* kodiBase, void* handle);
-    static void add_list_item(void* kodiBase, void* handle, void* item, int item_position);
-    static void* get_list_item(void* kodiBase, void* handle, int listPos);
+    static void add_list_item(void* kodiBase, void* handle, void* item, int list_position);
+    static void remove_list_item_from_position(void* kodiBase, void* handle, int list_position);
+    static void remove_list_item(void* kodiBase, void* handle, void* item);
+    static void* get_list_item(void* kodiBase, void* handle, int list_position);
+    static void set_current_list_position(void* kodiBase, void* handle, int list_position);
+    static int get_current_list_position(void* kodiBase, void* handle);
+    static int get_list_size(void* kodiBase, void* handle);
+    static void set_container_property(void* kodiBase, void* handle, const char* key, const char* value);
+    static void set_container_content(void* kodiBase, void* handle, const char* value);
+    static int get_current_container_id(void* kodiBase, void* handle);
+
+    /* Various functions */
+    static void mark_dirty_region(void* kodiBase, void* handle);
     //@}
 
   private:
@@ -103,6 +134,9 @@ namespace ADDON
     int GetListSize();
     int GetCurrentListPosition();
     void SetCurrentListPosition(int item);
+    void SetContainerProperty(const std::string& key, const std::string& value);
+    void SetContainerContent(const std::string& value);
+    int GetCurrentContainerControlId();
     CGUIControl* GetAddonControl(int controlId, CGUIControl::GUICONTROLTYPES type, std::string typeName);
 
   protected:

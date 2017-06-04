@@ -166,6 +166,232 @@ namespace gui
     //==========================================================================
     ///
     /// \ingroup cpp_kodi_gui_CWindow
+    /// @brief Gives the control with the supplied focus.
+    ///
+    /// @param[in] iControlId           On skin defined id of control
+    /// @return                         Return true if call and focus is successed,
+    ///                                 if false was something failed to get needed
+    ///                                 skin parts.
+    ///
+    ///
+    bool SetFocusId(int iControlId)
+    {
+      return m_interface->kodi_gui->window->set_focus_id(m_interface->kodiBase, m_controlHandle, iControlId);
+    }
+    //--------------------------------------------------------------------------
+
+    //==========================================================================
+    ///
+    /// \ingroup cpp_kodi_gui_CWindow
+    /// @brief Returns the id of the control which is focused.
+    ///
+    /// @return                         Focused control id
+    ///
+    ///
+    int GetFocusId()
+    {
+      return m_interface->kodi_gui->window->get_focus_id(m_interface->kodiBase, m_controlHandle);
+    }
+    //--------------------------------------------------------------------------
+
+    //==========================================================================
+    ///
+    /// \ingroup cpp_kodi_gui_CWindow
+    /// @brief To set the used label on given control id
+    ///
+    /// @param[in] controlId            Control id where label need to set
+    /// @param[in] label                Label to use
+    ///
+    ///
+    void SetControlLabel(int controlId, const std::string& label)
+    {
+      m_interface->kodi_gui->window->set_control_label(m_interface->kodiBase, m_controlHandle, controlId, label.c_str());
+    }
+    //--------------------------------------------------------------------------
+
+    //==========================================================================
+    ///
+    /// \ingroup cpp_kodi_gui_CWindow
+    /// @brief Sets a window property, similar to an infolabel.
+    ///
+    /// @param[in] key                  string - property name.
+    /// @param[in] value                string or unicode - value of property.
+    ///
+    /// @note  Key is NOT case sensitive. Setting value to an empty string is
+    ///        equivalent to clearProperty(key).\n
+    ///        You can use the above as keywords for arguments and skip certain
+    ///        optional arguments.\n
+    ///        Once you use a keyword, all following arguments require the keyword.
+    ///
+    void SetProperty(const std::string& key, const std::string& value)
+    {
+      m_interface->kodi_gui->window->set_property(m_interface->kodiBase, m_controlHandle, key.c_str(), value.c_str());
+    }
+    //--------------------------------------------------------------------------
+
+    //==========================================================================
+    ///
+    /// \ingroup cpp_kodi_gui_CWindow
+    /// @brief Returns a window property as a string, similar to an infolabel.
+    ///
+    /// @param[in] key                  string - property name.
+    /// @return                         The property as strin (if present)
+    ///
+    /// @note  Key is NOT case sensitive. Setting value to an empty string is
+    ///        equivalent to clearProperty(key).\n
+    ///        You can use the above as keywords for arguments and skip certain
+    ///        optional arguments.\n
+    ///        Once you use a keyword, all following arguments require the keyword.
+    ///
+    ///
+    std::string GetProperty(const std::string& key) const
+    {
+      std::string label;
+      char* ret = m_interface->kodi_gui->window->get_property(m_interface->kodiBase, m_controlHandle, key.c_str());
+      if (ret != nullptr)
+      {
+        if (std::strlen(ret))
+          label = ret;
+        m_interface->free_string(m_interface->kodiBase, ret);
+      }
+      return label;
+    }
+    //--------------------------------------------------------------------------
+
+    //==========================================================================
+    ///
+    /// \ingroup cpp_kodi_gui_CWindow
+    /// @brief Sets a window property with integer value
+    ///
+    /// @param[in] key                  string - property name.
+    /// @param[in] value                integer value to set
+    ///
+    ///
+    void SetPropertyInt(const std::string& key, int value)
+    {
+      m_interface->kodi_gui->window->set_property_int(m_interface->kodiBase, m_controlHandle, key.c_str(), value);
+    }
+    //--------------------------------------------------------------------------
+
+    //==========================================================================
+    ///
+    /// \ingroup cpp_kodi_gui_CWindow
+    /// @brief Returns a window property with integer value
+    ///
+    /// @param[in] key                  string - property name.
+    /// @return                         integer value of property
+    ///
+    int GetPropertyInt(const std::string& key) const
+    {
+      return m_interface->kodi_gui->window->get_property_int(m_interface->kodiBase, m_controlHandle, key.c_str());
+    }
+    //--------------------------------------------------------------------------
+
+    //==========================================================================
+    ///
+    /// \ingroup cpp_kodi_gui_CWindow
+    /// @brief Sets a window property with boolean value
+    ///
+    /// @param[in] key                  string - property name.
+    /// @param[in] value                boolean value to set
+    ///
+    ///
+    void SetPropertyBool(const std::string& key, bool value)
+    {
+      m_interface->kodi_gui->window->set_property_bool(m_interface->kodiBase, m_controlHandle, key.c_str(), value);
+    }
+    //--------------------------------------------------------------------------
+
+    //==========================================================================
+    ///
+    /// \ingroup cpp_kodi_gui_CWindow
+    /// @brief Returns a window property with boolean value
+    ///
+    /// @param[in] key                  string - property name.
+    /// @return                         boolean value of property
+    ///
+    bool GetPropertyBool(const std::string& key) const
+    {
+      return m_interface->kodi_gui->window->get_property_bool(m_interface->kodiBase, m_controlHandle, key.c_str());
+    }
+    //--------------------------------------------------------------------------
+
+    //==========================================================================
+    ///
+    /// \ingroup cpp_kodi_gui_CWindow
+    /// @brief Sets a window property with double value
+    ///
+    /// @param[in] key                  string - property name.
+    /// @param[in] value                double value to set
+    ///
+    ///
+    void SetPropertyDouble(const std::string& key, double value)
+    {
+      m_interface->kodi_gui->window->set_property_double(m_interface->kodiBase, m_controlHandle, key.c_str(), value);
+    }
+    //--------------------------------------------------------------------------
+
+    //==========================================================================
+    ///
+    /// \ingroup cpp_kodi_gui_CWindow
+    /// @brief Returns a window property with double value
+    ///
+    /// @param[in] key                  string - property name.
+    /// @return                         double value of property
+    ///
+    ///
+    double GetPropertyDouble(const std::string& key) const
+    {
+      return m_interface->kodi_gui->window->get_property_double(m_interface->kodiBase, m_controlHandle, key.c_str());
+    }
+    //--------------------------------------------------------------------------
+
+    //==========================================================================
+    ///
+    /// \ingroup cpp_kodi_gui_CWindow
+    /// @brief Remove all present properties from window
+    ///
+    ///
+    ///
+    void ClearProperties()
+    {
+      m_interface->kodi_gui->window->clear_properties(m_interface->kodiBase, m_controlHandle);
+    }
+    //--------------------------------------------------------------------------
+
+    //==========================================================================
+    ///
+    /// \ingroup cpp_kodi_gui_CWindow
+    /// @brief Clears the specific window property.
+    ///
+    /// @param[in] key                string - property name.
+    ///
+    /// @note Key is NOT case sensitive. Equivalent to SetProperty(key, "")
+    ///       You can use the above as keywords for arguments and skip certain
+    ///       optional arguments.
+    ///       Once you use a keyword, all following arguments require the
+    ///       keyword.
+    ///
+    ///
+    ///-----------------------------------------------------------------------
+    ///
+    /// **Example:**
+    /// ~~~~~~~~~~~~~{.cpp}
+    /// ..
+    /// ClearProperty('Category')
+    /// ..
+    /// ~~~~~~~~~~~~~
+    ///
+    void ClearProperty(const std::string& key)
+    {
+      m_interface->kodi_gui->window->clear_property(m_interface->kodiBase, m_controlHandle, key.c_str());
+    }
+    //--------------------------------------------------------------------------
+
+    //@{
+    //==========================================================================
+    ///
+    /// \ingroup cpp_kodi_gui_CWindow
     /// @brief Function delete all entries in integrated list.
     ///
     ///
@@ -209,6 +435,34 @@ namespace gui
     //==========================================================================
     ///
     /// \ingroup cpp_kodi_gui_CWindow
+    /// @brief Remove list item on position.
+    ///
+    /// @param[in] itemPosition         List position to remove
+    ///
+    ///
+    void RemoveListItem(int itemPosition)
+    {
+      m_interface->kodi_gui->window->remove_list_item_from_position(m_interface->kodiBase, m_controlHandle, itemPosition);
+    }
+    //--------------------------------------------------------------------------
+
+    //==========================================================================
+    ///
+    /// \ingroup cpp_kodi_gui_CWindow
+    /// @brief Remove item with given control class from list.
+    ///
+    /// @param[in] item                 List item control class to remove
+    ///
+    ///
+    void RemoveListItem(ListItemPtr item)
+    {
+      m_interface->kodi_gui->window->remove_list_item(m_interface->kodiBase, m_controlHandle, item->m_controlHandle);
+    }
+    //--------------------------------------------------------------------------
+
+    //==========================================================================
+    ///
+    /// \ingroup cpp_kodi_gui_CWindow
     /// @brief To get list item control class on wanted position.
     ///
     /// @param[in] listPos              Position from where control is needed
@@ -223,6 +477,135 @@ namespace gui
         return ListItemPtr();
 
       return std::make_shared<kodi::gui::CListItem>(handle);
+    }
+    //--------------------------------------------------------------------------
+
+    //==========================================================================
+    ///
+    /// \ingroup cpp_kodi_gui_CWindow
+    /// @brief To set position of selected part in list.
+    ///
+    /// @param[in] listPos              Position to use
+    ///
+    ///
+    void SetCurrentListPosition(int listPos)
+    {
+      m_interface->kodi_gui->window->set_current_list_position(m_interface->kodiBase, m_controlHandle, listPos);
+    }
+    //--------------------------------------------------------------------------
+
+    //==========================================================================
+    ///
+    /// \ingroup cpp_kodi_gui_CWindow
+    /// @brief To get current selected position in list
+    ///
+    /// @return                         Current list position
+    ///
+    ///
+    int GetCurrentListPosition()
+    {
+      return m_interface->kodi_gui->window->get_current_list_position(m_interface->kodiBase, m_controlHandle);
+    }
+    //--------------------------------------------------------------------------
+
+    //==========================================================================
+    ///
+    /// \ingroup cpp_kodi_gui_CWindow
+    /// @brief To get the amount of entries in the list.
+    ///
+    /// @return                         Size of in window integrated control class
+    ///
+    ///
+    int GetListSize()
+    {
+      return m_interface->kodi_gui->window->get_list_size(m_interface->kodiBase, m_controlHandle);
+    }
+    //--------------------------------------------------------------------------
+
+    //==========================================================================
+    ///
+    /// \ingroup cpp_kodi_gui_CWindow
+    /// @brief Sets a container property, similar to an infolabel.
+    ///
+    /// @param[in] key        string - property name.
+    /// @param[in] value      string or unicode - value of property.
+    ///
+    /// @note Key is NOT case sensitive.\n
+    /// You can use the above as keywords for arguments and skip certain
+    /// optional arguments.\n
+    /// Once you use a keyword, all following arguments require the keyword.
+    ///
+    ///
+    void SetContainerProperty(const std::string& key, const std::string& value)
+    {
+      m_interface->kodi_gui->window->set_container_property(m_interface->kodiBase, m_controlHandle, key.c_str(), value.c_str());
+    }
+    //--------------------------------------------------------------------------
+
+    //==========================================================================
+    ///
+    /// \ingroup cpp_kodi_gui_CWindow
+    /// @brief Sets the content type of the container.
+    ///
+    /// @param[in] value      string or unicode - content value.
+    ///
+    /// __Available content types__
+    /// | Name        | Media                                    |
+    /// |:-----------:|:-----------------------------------------|
+    /// | actors      | Videos
+    /// | addons      | Addons, Music, Pictures, Programs, Videos
+    /// | albums      | Music, Videos
+    /// | artists     | Music, Videos
+    /// | countries   | Music, Videos
+    /// | directors   | Videos
+    /// | files       | Music, Videos
+    /// | games       | Games
+    /// | genres      | Music, Videos
+    /// | images      | Pictures
+    /// | mixed       | Music, Videos
+    /// | movies      | Videos
+    /// | Musicvideos | Music, Videos
+    /// | playlists   | Music, Videos
+    /// | seasons     | Videos
+    /// | sets        | Videos
+    /// | songs       | Music
+    /// | studios     | Music, Videos
+    /// | tags        | Music, Videos
+    /// | tvshows     | Videos
+    /// | videos      | Videos
+    /// | years       | Music, Videos
+    ///
+    ///
+    void SetContainerContent(const std::string& value)
+    {
+      m_interface->kodi_gui->window->set_container_content(m_interface->kodiBase, m_controlHandle, value.c_str());
+    }
+    //--------------------------------------------------------------------------
+
+    //==========================================================================
+    ///
+    /// \ingroup cpp_kodi_gui_CWindow
+    /// @brief Get the id of the currently visible container.
+    ///
+    /// @return               currently visible container id
+    ///
+    ///
+    int GetCurrentContainerId()
+    {
+      return m_interface->kodi_gui->window->get_current_container_id(m_interface->kodiBase, m_controlHandle);
+    }
+    //--------------------------------------------------------------------------
+    //@}
+
+    //==========================================================================
+    ///
+    /// \ingroup cpp_kodi_gui_CWindow
+    /// @brief To inform Kodi that it need to render region new.
+    ///
+    ///
+    void MarkDirtyRegion()
+    {
+      return m_interface->kodi_gui->window->mark_dirty_region(m_interface->kodiBase, m_controlHandle);
     }
     //--------------------------------------------------------------------------
 

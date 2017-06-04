@@ -160,9 +160,10 @@ typedef struct gui_context_menu_pair
   unsigned int id;
   char name[ADDON_MAX_CONTEXT_ENTRY_NAME_LENGTH];
 } gui_context_menu_pair;
-    
+
 typedef struct AddonToKodiFuncTable_kodi_gui_window
 {
+  /* Window creation functions */
   void* (*create)(void* kodiBase, const char* xml_filename, const char* default_skin, bool as_dialog, bool is_media);
   void (*destroy)(void* kodiBase, void* handle);
   void (*set_callbacks)(void* kodiBase, void* handle, void* clienthandle,
@@ -175,9 +176,39 @@ typedef struct AddonToKodiFuncTable_kodi_gui_window
   bool (*show)(void* kodiBase, void* handle);
   bool (*close)(void* kodiBase, void* handle);
   bool (*do_modal)(void* kodiBase, void* handle);
+
+  /* Window control functions */
+  bool (*set_focus_id)(void* kodiBase, void* handle, int control_id);
+  int (*get_focus_id)(void* kodiBase, void* handle);
+  void (*set_control_label)(void* kodiBase, void* handle, int control_id, const char* label);
+
+  /* Window property functions */
+  void (*set_property)(void* kodiBase, void* handle, const char* key, const char* value);
+  void (*set_property_int)(void* kodiBase, void* handle, const char* key, int value);
+  void (*set_property_bool)(void* kodiBase, void* handle, const char* key, bool value);
+  void (*set_property_double)(void* kodiBase, void* handle, const char* key, double value);
+  char* (*get_property)(void* kodiBase, void* handle, const char* key);
+  int (*get_property_int)(void* kodiBase, void* handle, const char* key);
+  bool (*get_property_bool)(void* kodiBase, void* handle, const char* key);
+  double (*get_property_double)(void* kodiBase, void* handle, const char* key);
+  void (*clear_properties)(void* kodiBase, void* handle);
+  void (*clear_property)(void* kodiBase, void* handle, const char* key);
+
+  /* List item functions */
   void (*clear_item_list)(void* kodiBase, void* handle);
-  void (*add_list_item)(void* kodiBase, void* handle, void* item, int item_position);
-  void* (*get_list_item)(void* kodiBase, void* handle, int listPos);
+  void (*add_list_item)(void* kodiBase, void* handle, void* item, int list_position);
+  void (*remove_list_item_from_position)(void* kodiBase, void* handle, int list_position);
+  void (*remove_list_item)(void* kodiBase, void* handle, void* item);
+  void* (*get_list_item)(void* kodiBase, void* handle, int list_position);
+  void (*set_current_list_position)(void* kodiBase, void* handle, int list_position);
+  int (*get_current_list_position)(void* kodiBase, void* handle);
+  int (*get_list_size)(void* kodiBase, void* handle);
+  void (*set_container_property)(void* kodiBase, void* handle, const char* key, const char* value);
+  void (*set_container_content)(void* kodiBase, void* handle, const char* value);
+  int (*get_current_container_id)(void* kodiBase, void* handle);
+
+  /* Various functions */
+  void (*mark_dirty_region)(void* kodiBase, void* handle);
 } AddonToKodiFuncTable_kodi_gui_window;
 
 typedef struct AddonToKodiFuncTable_kodi_gui
