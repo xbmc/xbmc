@@ -113,6 +113,9 @@ endif()
 if(CORE_SYSTEM_NAME STREQUAL android)
   list(APPEND required_deps Zip)
 endif()
+if(NOT WIN32 AND NOT CORE_SYSTEM_NAME STREQUAL rbpi)
+  list(APPEND required_deps Iconv)
+endif()
 
 # Optional dependencies
 set(optional_deps LCMS2 MicroHttpd MySqlClient SSH XSLT
