@@ -690,7 +690,7 @@ bool CSettingsOperations::SerializeSettingAddon(std::shared_ptr<const CSettingAd
     return false;
 
   obj["type"] = "addon";
-  obj["addontype"] = ADDON::TranslateType(setting->GetAddonType());
+  obj["addontype"] = ADDON::CAddonInfo::TranslateType(setting->GetAddonType());
 
   return true;
 }

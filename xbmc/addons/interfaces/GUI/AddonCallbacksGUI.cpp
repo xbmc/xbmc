@@ -289,7 +289,7 @@ GUIHANDLE CAddonCallbacksGUI::Window_New(void *addonData, const char *xmlFilenam
 
     if (!XFILE::CFile::Exists(strSkinPath))
     {
-      CLog::Log(LOGERROR, "Window_New: %s/%s - XML File '%s' for Window is missing, contact Developer '%s' of this AddOn", TranslateType(guiHelper->m_addon->Type()).c_str(), guiHelper->m_addon->Name().c_str(), strSkinPath.c_str(), guiHelper->m_addon->Author().c_str());
+      CLog::Log(LOGERROR, "Window_New: %s/%s - XML File '%s' for Window is missing, contact Developer '%s' of this AddOn", CAddonInfo::TranslateType(guiHelper->m_addon->Type()).c_str(), guiHelper->m_addon->Name().c_str(), strSkinPath.c_str(), guiHelper->m_addon->Author().c_str());
       return NULL;
     }
   }
@@ -302,7 +302,7 @@ GUIHANDLE CAddonCallbacksGUI::Window_New(void *addonData, const char *xmlFilenam
   if (g_windowManager.GetWindow(WINDOW_ADDON_END))
   {
     Unlock();
-    CLog::Log(LOGERROR, "Window_New: %s/%s - maximum number of windows reached", TranslateType(guiHelper->m_addon->Type()).c_str(), guiHelper->m_addon->Name().c_str());
+    CLog::Log(LOGERROR, "Window_New: %s/%s - maximum number of windows reached", CAddonInfo::TranslateType(guiHelper->m_addon->Type()).c_str(), guiHelper->m_addon->Name().c_str());
     return NULL;
   }
   while(id < WINDOW_ADDON_END && g_windowManager.GetWindow(id) != NULL) id++;
@@ -333,7 +333,7 @@ void CAddonCallbacksGUI::Window_Delete(void *addonData, GUIHANDLE handle)
 
   if (!handle)
   {
-    CLog::Log(LOGERROR, "Window_Show: %s/%s - No Window", TranslateType(guiHelper->m_addon->Type()).c_str(), guiHelper->m_addon->Name().c_str());
+    CLog::Log(LOGERROR, "Window_Show: %s/%s - No Window", CAddonInfo::TranslateType(guiHelper->m_addon->Type()).c_str(), guiHelper->m_addon->Name().c_str());
     return;
   }
 
@@ -388,7 +388,7 @@ bool CAddonCallbacksGUI::Window_Show(void *addonData, GUIHANDLE handle)
 
   if (!handle)
   {
-    CLog::Log(LOGERROR, "Window_Show: %s/%s - No Window", TranslateType(guiHelper->m_addon->Type()).c_str(), guiHelper->m_addon->Name().c_str());
+    CLog::Log(LOGERROR, "Window_Show: %s/%s - No Window", CAddonInfo::TranslateType(guiHelper->m_addon->Type()).c_str(), guiHelper->m_addon->Name().c_str());
     return false;
   }
 
@@ -420,7 +420,7 @@ bool CAddonCallbacksGUI::Window_Close(void *addonData, GUIHANDLE handle)
 
   if (!handle)
   {
-    CLog::Log(LOGERROR, "Window_Close: %s/%s - No Window", TranslateType(guiHelper->m_addon->Type()).c_str(), guiHelper->m_addon->Name().c_str());
+    CLog::Log(LOGERROR, "Window_Close: %s/%s - No Window", CAddonInfo::TranslateType(guiHelper->m_addon->Type()).c_str(), guiHelper->m_addon->Name().c_str());
     return false;
   }
 
@@ -458,7 +458,7 @@ bool CAddonCallbacksGUI::Window_DoModal(void *addonData, GUIHANDLE handle)
 
   if (!handle)
   {
-    CLog::Log(LOGERROR, "Window_DoModal: %s/%s - No Window", TranslateType(guiHelper->m_addon->Type()).c_str(), guiHelper->m_addon->Name().c_str());
+    CLog::Log(LOGERROR, "Window_DoModal: %s/%s - No Window", CAddonInfo::TranslateType(guiHelper->m_addon->Type()).c_str(), guiHelper->m_addon->Name().c_str());
     return false;
   }
 
@@ -485,7 +485,7 @@ bool CAddonCallbacksGUI::Window_SetFocusId(void *addonData, GUIHANDLE handle, in
 
   if (!handle)
   {
-    CLog::Log(LOGERROR, "Window_SetFocusId: %s/%s - No Window", TranslateType(guiHelper->m_addon->Type()).c_str(), guiHelper->m_addon->Name().c_str());
+    CLog::Log(LOGERROR, "Window_SetFocusId: %s/%s - No Window", CAddonInfo::TranslateType(guiHelper->m_addon->Type()).c_str(), guiHelper->m_addon->Name().c_str());
     return false;
   }
 
@@ -496,7 +496,7 @@ bool CAddonCallbacksGUI::Window_SetFocusId(void *addonData, GUIHANDLE handle, in
 
   if(!pWindow->GetControl(iControlId))
   {
-    CLog::Log(LOGERROR, "Window_SetFocusId: %s/%s - Control does not exist in window", TranslateType(guiHelper->m_addon->Type()).c_str(), guiHelper->m_addon->Name().c_str());
+    CLog::Log(LOGERROR, "Window_SetFocusId: %s/%s - Control does not exist in window", CAddonInfo::TranslateType(guiHelper->m_addon->Type()).c_str(), guiHelper->m_addon->Name().c_str());
     return false;
   }
 
@@ -520,7 +520,7 @@ int CAddonCallbacksGUI::Window_GetFocusId(void *addonData, GUIHANDLE handle)
 
   if (!handle)
   {
-    CLog::Log(LOGERROR, "Window_GetFocusId: %s/%s - No Window", TranslateType(guiHelper->m_addon->Type()).c_str(), guiHelper->m_addon->Name().c_str());
+    CLog::Log(LOGERROR, "Window_GetFocusId: %s/%s - No Window", CAddonInfo::TranslateType(guiHelper->m_addon->Type()).c_str(), guiHelper->m_addon->Name().c_str());
     return iControlId;
   }
 
@@ -535,7 +535,7 @@ int CAddonCallbacksGUI::Window_GetFocusId(void *addonData, GUIHANDLE handle)
 
   if (iControlId == -1)
   {
-    CLog::Log(LOGERROR, "Window_GetFocusId: %s/%s - No control in this window has focus", TranslateType(guiHelper->m_addon->Type()).c_str(), guiHelper->m_addon->Name().c_str());
+    CLog::Log(LOGERROR, "Window_GetFocusId: %s/%s - No control in this window has focus", CAddonInfo::TranslateType(guiHelper->m_addon->Type()).c_str(), guiHelper->m_addon->Name().c_str());
     return iControlId;
   }
 
@@ -552,13 +552,13 @@ bool CAddonCallbacksGUI::Window_SetCoordinateResolution(void *addonData, GUIHAND
 
   if (!handle)
   {
-    CLog::Log(LOGERROR, "SetCoordinateResolution: %s/%s - No Window", TranslateType(guiHelper->m_addon->Type()).c_str(), guiHelper->m_addon->Name().c_str());
+    CLog::Log(LOGERROR, "SetCoordinateResolution: %s/%s - No Window", CAddonInfo::TranslateType(guiHelper->m_addon->Type()).c_str(), guiHelper->m_addon->Name().c_str());
     return false;
   }
 
   if (res < RES_HDTV_1080i || res > RES_AUTORES)
   {
-    CLog::Log(LOGERROR, "SetCoordinateResolution: %s/%s - Invalid resolution", TranslateType(guiHelper->m_addon->Type()).c_str(), guiHelper->m_addon->Name().c_str());
+    CLog::Log(LOGERROR, "SetCoordinateResolution: %s/%s - Invalid resolution", CAddonInfo::TranslateType(guiHelper->m_addon->Type()).c_str(), guiHelper->m_addon->Name().c_str());
     return false;
   }
 
@@ -582,7 +582,7 @@ void CAddonCallbacksGUI::Window_SetProperty(void *addonData, GUIHANDLE handle, c
 
   if (!handle || !key || !value)
   {
-    CLog::Log(LOGERROR, "Window_SetProperty: %s/%s - No Window or NULL key or value", TranslateType(guiHelper->m_addon->Type()).c_str(), guiHelper->m_addon->Name().c_str());
+    CLog::Log(LOGERROR, "Window_SetProperty: %s/%s - No Window or NULL key or value", CAddonInfo::TranslateType(guiHelper->m_addon->Type()).c_str(), guiHelper->m_addon->Name().c_str());
     return;
   }
 
@@ -609,7 +609,7 @@ void CAddonCallbacksGUI::Window_SetPropertyInt(void *addonData, GUIHANDLE handle
 
   if (!handle || !key)
   {
-    CLog::Log(LOGERROR, "Window_SetPropertyInt: %s/%s - No Window or NULL key", TranslateType(guiHelper->m_addon->Type()).c_str(), guiHelper->m_addon->Name().c_str());
+    CLog::Log(LOGERROR, "Window_SetPropertyInt: %s/%s - No Window or NULL key", CAddonInfo::TranslateType(guiHelper->m_addon->Type()).c_str(), guiHelper->m_addon->Name().c_str());
     return;
   }
 
@@ -636,7 +636,7 @@ void CAddonCallbacksGUI::Window_SetPropertyBool(void *addonData, GUIHANDLE handl
 
   if (!handle || !key)
   {
-    CLog::Log(LOGERROR, "Window_SetPropertyBool: %s/%s - No Window or NULL key", TranslateType(guiHelper->m_addon->Type()).c_str(), guiHelper->m_addon->Name().c_str());
+    CLog::Log(LOGERROR, "Window_SetPropertyBool: %s/%s - No Window or NULL key", CAddonInfo::TranslateType(guiHelper->m_addon->Type()).c_str(), guiHelper->m_addon->Name().c_str());
     return;
   }
 
@@ -663,7 +663,7 @@ void CAddonCallbacksGUI::Window_SetPropertyDouble(void *addonData, GUIHANDLE han
 
   if (!handle || !key)
   {
-    CLog::Log(LOGERROR, "Window_SetPropertyDouble: %s/%s - No Window or NULL key", TranslateType(guiHelper->m_addon->Type()).c_str(), guiHelper->m_addon->Name().c_str());
+    CLog::Log(LOGERROR, "Window_SetPropertyDouble: %s/%s - No Window or NULL key", CAddonInfo::TranslateType(guiHelper->m_addon->Type()).c_str(), guiHelper->m_addon->Name().c_str());
     return;
   }
 
@@ -690,7 +690,7 @@ const char* CAddonCallbacksGUI::Window_GetProperty(void *addonData, GUIHANDLE ha
 
   if (!handle || !key)
   {
-    CLog::Log(LOGERROR, "Window_GetProperty: %s/%s - No Window or NULL key", TranslateType(guiHelper->m_addon->Type()).c_str(), guiHelper->m_addon->Name().c_str());
+    CLog::Log(LOGERROR, "Window_GetProperty: %s/%s - No Window or NULL key", CAddonInfo::TranslateType(guiHelper->m_addon->Type()).c_str(), guiHelper->m_addon->Name().c_str());
     return NULL;
   }
 
@@ -719,7 +719,7 @@ int CAddonCallbacksGUI::Window_GetPropertyInt(void *addonData, GUIHANDLE handle,
 
   if (!handle || !key)
   {
-    CLog::Log(LOGERROR, "Window_GetPropertyInt: %s/%s - No Window or NULL key", TranslateType(guiHelper->m_addon->Type()).c_str(), guiHelper->m_addon->Name().c_str());
+    CLog::Log(LOGERROR, "Window_GetPropertyInt: %s/%s - No Window or NULL key", CAddonInfo::TranslateType(guiHelper->m_addon->Type()).c_str(), guiHelper->m_addon->Name().c_str());
     return -1;
   }
 
@@ -748,7 +748,7 @@ bool CAddonCallbacksGUI::Window_GetPropertyBool(void *addonData, GUIHANDLE handl
 
   if (!handle || !key)
   {
-    CLog::Log(LOGERROR, "Window_GetPropertyBool: %s/%s - No Window or NULL key", TranslateType(guiHelper->m_addon->Type()).c_str(), guiHelper->m_addon->Name().c_str());
+    CLog::Log(LOGERROR, "Window_GetPropertyBool: %s/%s - No Window or NULL key", CAddonInfo::TranslateType(guiHelper->m_addon->Type()).c_str(), guiHelper->m_addon->Name().c_str());
     return false;
   }
 
@@ -777,7 +777,7 @@ double CAddonCallbacksGUI::Window_GetPropertyDouble(void *addonData, GUIHANDLE h
 
   if (!handle || !key)
   {
-    CLog::Log(LOGERROR, "Window_GetPropertyDouble: %s/%s - No Window or NULL key", TranslateType(guiHelper->m_addon->Type()).c_str(), guiHelper->m_addon->Name().c_str());
+    CLog::Log(LOGERROR, "Window_GetPropertyDouble: %s/%s - No Window or NULL key", CAddonInfo::TranslateType(guiHelper->m_addon->Type()).c_str(), guiHelper->m_addon->Name().c_str());
     return 0.0;
   }
 
@@ -806,7 +806,7 @@ void CAddonCallbacksGUI::Window_ClearProperties(void *addonData, GUIHANDLE handl
 
   if (!handle)
   {
-    CLog::Log(LOGERROR, "Window_ClearProperties: %s/%s - No Window", TranslateType(guiHelper->m_addon->Type()).c_str(), guiHelper->m_addon->Name().c_str());
+    CLog::Log(LOGERROR, "Window_ClearProperties: %s/%s - No Window", CAddonInfo::TranslateType(guiHelper->m_addon->Type()).c_str(), guiHelper->m_addon->Name().c_str());
     return;
   }
 
@@ -909,7 +909,7 @@ GUIHANDLE CAddonCallbacksGUI::Window_GetListItem(void *addonData, GUIHANDLE hand
   if (fi == NULL)
   {
     Unlock();
-    CLog::Log(LOGERROR, "Window_GetListItem: %s/%s - Index out of range", TranslateType(guiHelper->m_addon->Type()).c_str(), guiHelper->m_addon->Name().c_str());
+    CLog::Log(LOGERROR, "Window_GetListItem: %s/%s - Index out of range", CAddonInfo::TranslateType(guiHelper->m_addon->Type()).c_str(), guiHelper->m_addon->Name().c_str());
     return NULL;
   }
   Unlock();
