@@ -1,9 +1,12 @@
 xbmc                                            xbmc
 xbmc/addons                                     addons
-xbmc/addons/interfaces                          addonsBinaryInterfaces
-xbmc/addons/interfaces/Addon                    addonCallbacks_Addon
-xbmc/addons/interfaces/GUI                      addonCallbacks_GUI
-xbmc/addons/settings                            addonsSettings
+xbmc/addons/interfaces                          addons_interfaces
+xbmc/addons/interfaces/Addon                    addons_interfaces_Addon
+xbmc/addons/interfaces/GUI                      addons_interfaces_GUI
+xbmc/addons/kodi-addon-dev-kit/include/kodi     addons_kodi-addon-dev-kit_include_kodi
+xbmc/addons/kodi-addon-dev-kit/include/kodi/addon-instance addons_kodi-addon-dev-kit_include_kodi_addon-instance
+xbmc/addons/kodi-addon-dev-kit/include/kodi/gui addons_kodi-addon-dev-kit_include_kodi_gui
+xbmc/addons/settings                            addons_settings
 xbmc/commons                                    commons
 xbmc/dbwrappers                                 dbwrappers
 xbmc/dialogs                                    dialogs
