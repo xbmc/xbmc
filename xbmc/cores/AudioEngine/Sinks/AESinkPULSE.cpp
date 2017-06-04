@@ -740,6 +740,17 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
     m_periodSize = a->minreq;
 
     format.m_frames = packetSize / frameSize;
+    if (format.m_frames < 256)
+    {
+      // This is a pulseaudio server bug - whenever PULSE_LATENCY_MSEC set
+      // values are computed wrongly as it's computed on server side
+      // without known sample format
+      // Fallback to 200 ms buffer and 50 ms periodSize
+      m_BufferSize = m_BytesPerSecond / 5;
+      unsigned int period_size = m_BufferSize / 4;
+      format.m_frames = period_size / frameSize;
+      CLog::Log(LOGNOTICE, "Pulseaudio: buffer attribute got insane value (PULSE_LATENCY_MSEC bug?) - Upgrade your PA server: frames %d", format.m_frames);
+    }
   }
 
   {
