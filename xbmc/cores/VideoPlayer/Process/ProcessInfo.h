@@ -27,11 +27,14 @@
 #include <list>
 #include <string>
 
+class CDataCacheCore;
+
 class CProcessInfo
 {
 public:
   static CProcessInfo* CreateInstance();
   virtual ~CProcessInfo();
+  void SetDataCache(CDataCacheCore *cache);
 
   // player video
   void ResetVideoCodecInfo();
@@ -89,6 +92,7 @@ public:
 
 protected:
   CProcessInfo();
+  CDataCacheCore *m_dataCache = nullptr;
 
   // player video info
   bool m_videoIsHWDecoder;
