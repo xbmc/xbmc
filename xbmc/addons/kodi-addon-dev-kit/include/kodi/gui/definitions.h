@@ -139,7 +139,7 @@ typedef struct AddonToKodiFuncTable_kodi_gui_dialogYesNo
 
 typedef struct AddonToKodiFuncTable_kodi_gui_listItem
 {
-  void* (*create)(void* kodiBase, const char* label, const char* label2, const char* icon_image, const char* thumbnail_image, const char* path);
+  void* (*create)(void* kodiBase, const char* label, const char* label2, const char* icon_image, const char* path);
   void (*destroy)(void* kodiBase, void* handle);
   char* (*get_label)(void* kodiBase, void* handle);
   void (*set_label)(void* kodiBase, void* handle, const char* label);
@@ -151,6 +151,10 @@ typedef struct AddonToKodiFuncTable_kodi_gui_listItem
   void (*set_art)(void* kodiBase, void* handle, const char* type, const char* image);
   char* (*get_path)(void* kodiBase, void* handle);
   void (*set_path)(void* kodiBase, void* handle, const char* path);
+  char* (*get_property)(void* kodiBase, void* handle, const char* key);
+  void (*set_property)(void* kodiBase, void* handle, const char* key, const char* value);
+  void (*select)(void* kodiBase, void* handle, bool select);
+  bool (*is_selected)(void* kodiBase, void* handle);
 } AddonToKodiFuncTable_kodi_gui_listItem;
 
 #define ADDON_MAX_CONTEXT_ENTRIES 20

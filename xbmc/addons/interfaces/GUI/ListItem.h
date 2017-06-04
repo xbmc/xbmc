@@ -51,7 +51,7 @@ namespace ADDON
      * class.
      */
     //@{
-    static void* create(void* kodiBase, const char* label, const char* label2, const char* icon_image, const char* thumbnail_image, const char* path);
+    static void* create(void* kodiBase, const char* label, const char* label2, const char* icon_image, const char* path);
     static void destroy(void* kodiBase, void* handle);
     static char* get_label(void* kodiBase, void* handle);
     static void set_label(void* kodiBase, void* handle, const char* label);
@@ -63,6 +63,10 @@ namespace ADDON
     static void set_art(void* kodiBase, void* handle, const char* type, const char* image);
     static char* get_path(void* kodiBase, void* handle);
     static void set_path(void* kodiBase, void* handle, const char* path);
+    static char* get_property(void* kodiBase, void* handle, const char* key);
+    static void set_property(void* kodiBase, void* handle, const char* key, const char* value);
+    static void select(void* kodiBase, void* handle, bool select);
+    static bool is_selected(void* kodiBase, void* handle);
     //@}
   };
 
