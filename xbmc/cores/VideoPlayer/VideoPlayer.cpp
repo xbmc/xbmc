@@ -2351,7 +2351,8 @@ void CVideoPlayer::CheckAutoSceneSkip()
     return;
 
   const int64_t clock = GetTime();
-  int lastPos = m_Edl.GetLastQueryTime();
+  int lastPos = m_Edl.GetLastCheckASSTime();
+  m_Edl.SetLastCheckASSTime(clock);
 
   CEdl::Cut cut;
   if (!m_Edl.InCut(clock, &cut))
