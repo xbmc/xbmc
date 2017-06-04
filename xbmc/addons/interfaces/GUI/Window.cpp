@@ -335,9 +335,13 @@ void* Interface_GUIWindow::get_list_item(void* kodiBase, void* handle, int listP
   CFileItemPtr* pItem(pAddonWindow->GetListItem(listPos));
   if (pItem == nullptr || pItem->get() == nullptr)
   {
-    Interface_GUIGeneral::unlock();
     CLog::Log(LOGERROR, "ADDON::Interface_GUIWindow - %s: %s - Index out of range", __FUNCTION__, addon->Name().c_str());
-    return nullptr;
+
+    if (pItem)
+    {
+      delete pItem;
+      pItem = nullptr;
+    }
   }
   Interface_GUIGeneral::unlock();
 

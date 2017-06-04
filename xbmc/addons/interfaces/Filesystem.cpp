@@ -549,11 +549,7 @@ bool Interface_Filesystem::curl_add_option(void* kodiBase, void* file, int type,
     return false;
   };
 
-  CFile* cfile = static_cast<CFile*>(file);
-  if (cfile)
-    return cfile->CURLAddOption(internalType, name, value);
-
-  return false;
+  return static_cast<CFile*>(file)->CURLAddOption(internalType, name, value);
 }
 
 bool Interface_Filesystem::curl_open(void* kodiBase, void* file, unsigned int flags)
@@ -565,11 +561,7 @@ bool Interface_Filesystem::curl_open(void* kodiBase, void* file, unsigned int fl
     return false;
   }
 
-  CFile* cfile = static_cast<CFile*>(file);
-  if (cfile)
-    return cfile->CURLOpen(flags);
-
-  return false;
+  return static_cast<CFile*>(file)->CURLOpen(flags);
 }
 
 } /* namespace ADDON */
