@@ -48,6 +48,7 @@ void CEdl::Clear()
   m_vecSceneMarkers.clear();
   m_iTotalCutTime = 0;
   m_lastQueryTime = 0;
+  m_lastCheckASSTime = 0;
 }
 
 bool CEdl::ReadEditDecisionLists(const std::string& strMovie, const float fFrameRate, const int iHeight)
