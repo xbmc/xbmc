@@ -669,6 +669,9 @@ CVideoPlayer::CVideoPlayer(IPlayerCallback& callback)
   m_SkipCommercials = true;
 
   m_processInfo.reset(CProcessInfo::CreateInstance());
+  // if we have a gui, register the cache
+  m_processInfo->SetDataCache(&CServiceBroker::GetDataCacheCore());
+
   CreatePlayers();
 
   m_displayLost = false;
