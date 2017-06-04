@@ -20,6 +20,8 @@
 #include "limits.h"
 #include "TagLibVFSStream.h"
 #include "filesystem/File.h"
+#include "filesystem/FileCache.h"
+#include "filesystem/ShoutcastFile.h"
 #include <taglib/tiostream.h>
 
 using namespace XFILE;
@@ -37,6 +39,17 @@ TagLibVFSStream::TagLibVFSStream(const std::string& strFileName, bool readOnly)
   {
     if (!m_file.Open(strFileName))
       m_bIsOpen = false;
+    else
+    { // Check if this stream is a Shoutcast, and skip scanning tags if it is.
+      // Shoutcast has its own metadata format that TagLib does not read
+      CFileCache* fileCacheItem = dynamic_cast<CFileCache*>(m_file.GetImplementation());
+      if (fileCacheItem)
+      {
+        CShoutcastFile* item = dynamic_cast<CShoutcastFile*>(fileCacheItem->GetFileImp());
+        if (item)
+          m_bIsOpen = false;
+      }
+    }
   }
   else
   {
