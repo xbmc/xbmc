@@ -83,8 +83,8 @@ CUPowerSyscall::CUPowerSyscall()
     m_connection = NULL;
   }
 
-  m_CanPowerdown = false;
-  m_CanReboot    = false;
+  m_CanPowerdown = true;
+  m_CanReboot    = true;
 
   UpdateCapabilities();
 
