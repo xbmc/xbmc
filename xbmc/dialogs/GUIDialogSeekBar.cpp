@@ -55,6 +55,8 @@ bool CGUIDialogSeekBar::OnMessage(CGUIMessage& message)
     if (message.GetSenderId() == GetID() && message.GetControlId() == POPUP_SEEK_PROGRESS)
       return CGUIDialog::OnMessage(message);
     break;
+  case GUI_MSG_REFRESH_TIMER:
+    return CGUIDialog::OnMessage(message);
   }
   return false; // don't process anything other than what we need!
 }
