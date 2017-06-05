@@ -19,20 +19,22 @@
  *
  */
 
-#include "definitions.h"
-#include "../AddonBase.h"
+#include "../definitions.h"
+#include "../../AddonBase.h"
 
 namespace kodi
 {
 namespace gui
 {
+namespace dialogs
+{
 
   //============================================================================
   ///
-  /// \defgroup cpp_kodi_gui_DialogYesNo Dialog Yes/No
+  /// \defgroup cpp_kodi_gui_dialogs_YesNo Dialog Yes/No
   /// \ingroup cpp_kodi_gui
   /// @{
-  /// @brief \cpp_namespace{ kodi::gui::DialogYesNo }
+  /// @brief \cpp_namespace{ kodi::gui::dialogs::YesNo }
   /// **Yes / No dialog**
   ///
   /// The Yes / No dialog can be used to inform the user about questions and get
@@ -42,15 +44,15 @@ namespace gui
   /// in the <em>"./resources/language/resource.language.??_??/strings.po"</em>
   /// to call with <b>std::string kodi::general::GetLocalizedString(...);</b>.
   ///
-  /// It has the header \ref DialogYesNo.h "#include <kodi/gui/DialogYesNo.h>"
+  /// It has the header \ref YesNo.h "#include <kodi/gui/dialogs/YesNo.h>"
   /// be included to enjoy it.
   ///
   ///
-  namespace DialogYesNo
+  namespace YesNo
   {
     //==========================================================================
     ///
-    /// \ingroup cpp_kodi_gui_DialogYesNo
+    /// \ingroup cpp_kodi_gui_dialogs_YesNo
     /// @brief Use dialog to get numeric new password with one text string shown
     /// everywhere and cancel return field
     ///
@@ -68,10 +70,10 @@ namespace gui
     ///
     /// **Example:**
     /// ~~~~~~~~~~~~~{.cpp}
-    /// #include <kodi/gui/DialogYesNo.h>
+    /// #include <kodi/gui/dialogs/YesNo.h>
     ///
     /// bool canceled;
-    /// bool ret = kodi::gui::DialogYesNo::ShowAndGetInput(
+    /// bool ret = kodi::gui::dialogs::YesNo::ShowAndGetInput(
     ///    "Yes / No test call",   /* The Header */
     ///    "You has opened Yes / No dialog for test\n\nIs this OK for you?",
     ///    canceled,               /* return value about cancel button */
@@ -95,7 +97,7 @@ namespace gui
 
     //==========================================================================
     ///
-    /// \ingroup cpp_kodi_gui_DialogYesNo
+    /// \ingroup cpp_kodi_gui_dialogs_YesNo
     /// @brief Use dialog to get numeric new password with separated line strings
     ///
     /// @param[in] heading      Dialog heading
@@ -111,9 +113,9 @@ namespace gui
     ///
     /// **Example:**
     /// ~~~~~~~~~~~~~{.cpp}
-    /// #include <kodi/gui/DialogYesNo.h>
+    /// #include <kodi/gui/dialogs/YesNo.h>
     ///
-    /// bool ret = kodi::gui::DialogYesNo::ShowAndGetInput(
+    /// bool ret = kodi::gui::dialogs::YesNo::ShowAndGetInput(
     ///    "Yes / No test call",   // The Header
     ///    "You has opened Yes / No dialog for test",
     ///    "",
@@ -137,7 +139,7 @@ namespace gui
 
     //==========================================================================
     ///
-    /// \ingroup cpp_kodi_gui_DialogYesNo
+    /// \ingroup cpp_kodi_gui_dialogs_YesNo
     /// @brief Use dialog to get numeric new password with separated line strings and cancel return field
     ///
     /// @param[in] heading      Dialog heading
@@ -154,10 +156,10 @@ namespace gui
     ///
     /// **Example:**
     /// ~~~~~~~~~~~~~{.cpp}
-    /// #include <kodi/gui/DialogYesNo.h>
+    /// #include <kodi/gui/dialogs/YesNo.h>
     ///
     /// bool canceled;
-    /// bool ret = kodi::gui::DialogYesNo::ShowAndGetInput(
+    /// bool ret = kodi::gui::dialogs::YesNo::ShowAndGetInput(
     ///    "Yes / No test call",   // The Header
     ///    "You has opened Yes / No dialog for test",
     ///    "",
@@ -183,5 +185,6 @@ namespace gui
   };
   /// @}
 
+} /* namespace dialogs */
 } /* namespace gui */
 } /* namespace kodi */

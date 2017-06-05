@@ -18,8 +18,8 @@
  *
  */
 
-#include "DialogTextViewer.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/gui/DialogTextViewer.h"
+#include "TextViewer.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/gui/dialogs/TextViewer.h"
 
 #include "addons/AddonDll.h"
 #include "dialogs/GUIDialogTextViewer.h"

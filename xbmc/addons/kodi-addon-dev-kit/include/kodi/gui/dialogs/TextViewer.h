@@ -19,20 +19,22 @@
  *
  */
 
-#include "definitions.h"
-#include "../AddonBase.h"
+#include "../definitions.h"
+#include "../../AddonBase.h"
 
 namespace kodi
 {
 namespace gui
 {
+namespace dialogs
+{
 
   //============================================================================
   ///
-  /// \defgroup cpp_kodi_gui_DialogTextViewer Dialog Text Viewer
+  /// \defgroup cpp_kodi_gui_dialogs_TextViewer Dialog Text Viewer
   /// \ingroup cpp_kodi_gui
   /// @{
-  /// @brief \cpp_namespace{ kodi::gui::DialogTextViewer }
+  /// @brief \cpp_namespace{ kodi::gui::dialogs::TextViewer }
   /// **Text viewer dialog**
   ///
   /// The text viewer dialog can be used to display descriptions, help texts or
@@ -42,14 +44,14 @@ namespace gui
   /// in the <em>"./resources/language/resource.language.??_??/strings.po"</em>
   /// to call with <b>std::string kodi::general::GetLocalizedString(...);</b>.
   ///
-  /// It has the header \ref DialogTextViewer.h "#include <kodi/gui/DialogTextViewer.h>"
+  /// It has the header \ref TextViewer.h "#include <kodi/gui/dialogs/TextViewer.h>"
   /// be included to enjoy it.
   ///
-  namespace DialogTextViewer
+  namespace TextViewer
   {
     //==========================================================================
     ///
-    /// \ingroup cpp_kodi_gui_DialogTextViewer
+    /// \ingroup cpp_kodi_gui_dialogs_TextViewer
     /// @brief Show info text dialog
     ///
     /// @param[in] heading  Small heading text
@@ -60,9 +62,9 @@ namespace gui
     ///
     /// **Example:**
     /// ~~~~~~~~~~~~~{.cpp}
-    /// #include <kodi/gui/DialogTextViewer.h>
+    /// #include <kodi/gui/dialogs/TextViewer.h>
     ///
-    /// kodi::gui::DialogTextViewer::Show("The Wizard of Oz (1939 film)",
+    /// kodi::gui::dialogs::TextViewer::Show("The Wizard of Oz (1939 film)",
     ///  "The Wizard of Oz is a 1939 American musical comedy-drama fantasy film "
     ///  "produced by Metro-Goldwyn-Mayer, and the most well-known and commercially "
     ///  "successful adaptation based on the 1900 novel The Wonderful Wizard of Oz "
@@ -111,5 +113,6 @@ namespace gui
   };
   /// @}
 
+} /* namespace dialogs */
 } /* namespace gui */
 } /* namespace kodi */

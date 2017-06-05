@@ -18,8 +18,8 @@
  *
  */
 
-#include "DialogNumeric.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/gui/DialogNumeric.h"
+#include "Numeric.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/gui/dialogs/Numeric.h"
 
 #include "XBDateTime.h"
 #include "addons/AddonDll.h"

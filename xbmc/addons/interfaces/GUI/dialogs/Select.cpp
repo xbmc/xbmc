@@ -18,8 +18,8 @@
  *
  */
 
-#include "DialogSelect.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/gui/DialogSelect.h"
+#include "Select.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/gui/dialogs/Select.h"
 
 #include "addons/AddonDll.h"
 #include "dialogs/GUIDialogSelect.h"

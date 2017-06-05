@@ -18,8 +18,8 @@
  *
  */
 
-#include "DialogContextMenu.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/gui/DialogContextMenu.h"
+#include "ContextMenu.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/gui/dialogs/ContextMenu.h"
 
 #include "addons/AddonDll.h"
 #include "dialogs/GUIDialogContextMenu.h"

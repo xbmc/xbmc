@@ -19,19 +19,21 @@
  *
  */
 
-#include "definitions.h"
-#include "../AddonBase.h"
+#include "../definitions.h"
+#include "../../AddonBase.h"
 
 namespace kodi
 {
 namespace gui
 {
+namespace dialogs
+{
 
   //============================================================================
   ///
-  /// \defgroup cpp_kodi_gui_DialogKeyboard Dialog Keyboard
+  /// \defgroup cpp_kodi_gui_dialogs_Keyboard Dialog Keyboard
   /// \ingroup cpp_kodi_gui
-  /// @brief \cpp_namespace{ kodi::gui::DialogKeyboard }
+  /// @brief \cpp_namespace{ kodi::gui::dialogs::Keyboard }
   /// **Keyboard dialogs**
   ///
   /// The functions listed below have to be permitted by the user for the
@@ -40,14 +42,14 @@ namespace gui
   /// The class supports several kinds, from an easy text choice up to the
   /// passport Word production and their confirmation for add-on.
   ///
-  /// It has the header \ref DialogKeyboard.h "#include <kodi/gui/DialogKeyboard.h>"
+  /// It has the header \ref Keyboard.h "#include <kodi/gui/dialogs/Keyboard.h>"
   /// be included to enjoy it.
   ///
-  namespace DialogKeyboard
+  namespace Keyboard
   {
     //==========================================================================
     ///
-    /// \ingroup cpp_kodi_gui_DialogKeyboard
+    /// \ingroup cpp_kodi_gui_dialogs_Keyboard
     /// @brief Show keyboard with initial value `text` and replace with  result
     /// string.
     ///
@@ -67,7 +69,7 @@ namespace gui
     ///
     /// **Example:**
     /// ~~~~~~~~~~~~~{.cpp}
-    /// #include <kodi/gui/DialogKeyboard.h>
+    /// #include <kodi/gui/dialogs/Keyboard.h>
     ///
     /// /*
     ///  * The example shows the display of keyboard call dialog at Kodi from the add-on.
@@ -76,7 +78,7 @@ namespace gui
     ///  */
     /// std::string text = "Please change me to them want you want"; /*< It can be leaved empty or a
     ///                                                                  entry text added */
-    /// bool bRet = ::kodi::gui::DialogKeyboard::ShowAndGetInput(text,
+    /// bool bRet = ::kodi::gui::dialogs::Keyboard::ShowAndGetInput(text,
     ///                                                      "Demonstration text entry",
     ///                                                      true,
     ///                                                      false,
@@ -104,7 +106,7 @@ namespace gui
 
     //==========================================================================
     ///
-    /// \ingroup cpp_kodi_gui_DialogKeyboard
+    /// \ingroup cpp_kodi_gui_dialogs_Keyboard
     /// @brief The example shows the display of keyboard  call dialog  at  Kodi
     /// from the add-on.
     ///
@@ -137,7 +139,7 @@ namespace gui
 
     //==========================================================================
     ///
-    /// \ingroup cpp_kodi_gui_DialogKeyboard
+    /// \ingroup cpp_kodi_gui_dialogs_Keyboard
     /// @brief Shows  keyboard  and  prompts  for  a  password.   Differs  from
     /// `ShowAndVerifyNewPassword()` in that no second verification
     ///
@@ -170,7 +172,7 @@ namespace gui
 
     //==========================================================================
     ///
-    /// \ingroup cpp_kodi_gui_DialogKeyboard
+    /// \ingroup cpp_kodi_gui_dialogs_Keyboard
     /// @brief Shows keyboard and prompts for a password. Differs from
     /// `ShowAndVerifyNewPassword()` in that no second verification
     ///
@@ -200,7 +202,7 @@ namespace gui
 
     //==========================================================================
     ///
-    /// \ingroup cpp_kodi_gui_DialogKeyboard
+    /// \ingroup cpp_kodi_gui_dialogs_Keyboard
     /// @brief Show keyboard twice to  get and confirm a  user-entered  password
     /// string.
     ///
@@ -220,7 +222,7 @@ namespace gui
     /// **Example:**
     /// ~~~~~~~~~~~~~{.cpp}
     /// #include <kodi/General.h>
-    /// #include <kodi/gui/DialogKeyboard.h>
+    /// #include <kodi/gui/dialogs/Keyboard.h>
     ///
     /// /*
     ///  * The example below shows the complete use of keyboard dialog for password
@@ -246,7 +248,7 @@ namespace gui
     ///   /*
     ///    * Ask the user about the password.
     ///    */
-    ///   ret = ::kodi::gui::DialogKeyboard::ShowAndVerifyPassword(password, "Demo password call for PW 'kodi'", i, 0);
+    ///   ret = ::kodi::gui::dialogs::Keyboard::ShowAndVerifyPassword(password, "Demo password call for PW 'kodi'", i, 0);
     ///   if (ret == 0)
     ///   {
     ///     fprintf(stderr, "Password successfull confirmed after '%i' tries\n", i+1);
@@ -283,7 +285,7 @@ namespace gui
 
     //==========================================================================
     ///
-    /// \ingroup cpp_kodi_gui_DialogKeyboard
+    /// \ingroup cpp_kodi_gui_dialogs_Keyboard
     /// @brief Show keyboard twice to get and confirm  a user-entered  password
     /// string.
     ///
@@ -313,7 +315,7 @@ namespace gui
 
     //==========================================================================
     ///
-    /// \ingroup cpp_kodi_gui_DialogKeyboard
+    /// \ingroup cpp_kodi_gui_dialogs_Keyboard
     /// @brief Show keyboard and verify user input against `password`.
     ///
     /// @param[in,out] password    Value to compare against user input.
@@ -347,7 +349,7 @@ namespace gui
 
     //==========================================================================
     ///
-    /// \ingroup cpp_kodi_gui_DialogKeyboard
+    /// \ingroup cpp_kodi_gui_dialogs_Keyboard
     /// @brief Shows a filter related keyboard
     ///
     /// @param[in,out] text        Overwritten with user input if  return=true.
@@ -381,7 +383,7 @@ namespace gui
 
     //==========================================================================
     ///
-    /// \ingroup cpp_kodi_gui_DialogKeyboard
+    /// \ingroup cpp_kodi_gui_dialogs_Keyboard
     /// @brief Send a text to a visible keyboard
     ///
     /// @param[in] text            Overwritten with user input if  return=true.
@@ -399,7 +401,7 @@ namespace gui
 
     //==========================================================================
     ///
-    /// \ingroup cpp_kodi_gui_DialogKeyboard
+    /// \ingroup cpp_kodi_gui_dialogs_Keyboard
     /// @brief Check for visible keyboard on GUI
     ///
     /// @return  true if keyboard present, false if not present
@@ -412,5 +414,6 @@ namespace gui
     //--------------------------------------------------------------------------
   };
 
+} /* namespace dialogs */
 } /* namespace gui */
 } /* namespace kodi */

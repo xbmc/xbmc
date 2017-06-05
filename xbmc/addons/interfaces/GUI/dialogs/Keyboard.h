@@ -33,9 +33,9 @@ namespace ADDON
    * To hold functions not related to a instance type and usable for
    * every add-on type.
    *
-   * Related add-on header is "./xbmc/addons/kodi-addon-dev-kit/include/kodi/gui/DialogContextMenu.h"
+   * Related add-on header is "./xbmc/addons/kodi-addon-dev-kit/include/kodi/gui/dialogs/Keyboard.h"
    */
-  struct Interface_GUIDialogContextMenu
+  struct Interface_GUIDialogKeyboard
   {
     static void Init(AddonGlobalInterface* addonInterface);
     static void DeInit(AddonGlobalInterface* addonInterface);
@@ -51,7 +51,16 @@ namespace ADDON
      * class.
      */
     //@{
-    static int open(void* kodiBase, const char *heading, const char *entries[], unsigned int size);
+    static bool show_and_get_input_with_head(void* kodiBase, const char* text_in, char** text_out, const char* heading, bool allow_empty_result, bool hidden_input, unsigned int auto_close_ms);
+    static bool show_and_get_input(void* kodiBase, const char* text_in, char** text_out, bool allow_empty_result, unsigned int auto_close_ms);
+    static bool show_and_get_new_password_with_head(void* kodiBase, const char* password_in, char** password_out, const char* heading, bool allow_empty_result, unsigned int auto_close_ms);
+    static bool show_and_get_new_password(void* kodiBase, const char* password_in, char** password_out, unsigned int auto_close_ms);
+    static bool show_and_verify_new_password_with_head(void* kodiBase, char** password_out, const char* heading, bool allowEmpty, unsigned int auto_close_ms);
+    static bool show_and_verify_new_password(void* kodiBase, char** password_out, unsigned int auto_close_ms);
+    static int show_and_verify_password(void* kodiBase, const char* password_in, char** password_out, const char* heading, int retries, unsigned int auto_close_ms);
+    static bool show_and_get_filter(void* kodiBase, const char* text_in, char** text_out, bool searching, unsigned int auto_close_ms);
+    static bool send_text_to_active_keyboard(void* kodiBase, const char* text, bool close_keyboard);
+    static bool is_keyboard_activated(void* kodiBase);
     //@}
   };
 

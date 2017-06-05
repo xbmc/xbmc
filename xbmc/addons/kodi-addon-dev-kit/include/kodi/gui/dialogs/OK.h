@@ -19,33 +19,35 @@
  *
  */
 
-#include "../AddonBase.h"
-#include "definitions.h"
+#include "../../AddonBase.h"
+#include "../definitions.h"
 
 namespace kodi
 {
 namespace gui
 {
+namespace dialogs
+{
 
   //============================================================================
   ///
-  /// \defgroup cpp_kodi_gui_DialogOK Dialog OK
+  /// \defgroup cpp_kodi_gui_dialogs_OK Dialog OK
   /// \ingroup cpp_kodi_gui
   /// @{
-  /// @brief \cpp_namespace{ kodi::gui::DialogOK }
+  /// @brief \cpp_namespace{ kodi::gui::dialogs::OK }
   /// **OK dialog**
   ///
   /// The functions listed below permit the call of a dialogue of information, a
   /// confirmation of the user by press from OK required.
   ///
-  /// It has the header \ref DialogOK.h "#include <kodi/gui/DialogOK.h>"
+  /// It has the header \ref OK.h "#include <kodi/gui/dialogs/OK.h>"
   /// be included to enjoy it.
   ///
-  namespace DialogOK
+  namespace OK
   {
     //==========================================================================
     ///
-    /// \ingroup cpp_kodi_gui_DialogOK
+    /// \ingroup cpp_kodi_gui_dialogs_OK
     /// @brief Use dialog to inform user with text and confirmation with OK with continued string.
     ///
     /// @param[in] heading Dialog heading.
@@ -56,9 +58,9 @@ namespace gui
     ///
     /// **Example:**
     /// ~~~~~~~~~~~~~{.cpp}
-    /// #include <kodi/gui/DialogOK.h>
+    /// #include <kodi/gui/dialogs/OK.h>
     /// ...
-    /// kodi::gui::DialogOK::ShowAndGetInput("Test dialog", "Hello World!\nI'm a call from add-on\n :) :D");
+    /// kodi::gui::dialogs::OK::ShowAndGetInput("Test dialog", "Hello World!\nI'm a call from add-on\n :) :D");
     /// ~~~~~~~~~~~~~
     ///
     inline void ShowAndGetInput(const std::string& heading, const std::string& text)
@@ -71,7 +73,7 @@ namespace gui
 
     //==========================================================================
     ///
-    /// \ingroup cpp_kodi_gui_DialogOK
+    /// \ingroup cpp_kodi_gui_dialogs_OK
     /// @brief Use dialog to inform user with text and confirmation with OK with strings separated to the lines.
     ///
     /// @param[in] heading Dialog heading.
@@ -84,9 +86,9 @@ namespace gui
     ///
     /// **Example:**
     /// ~~~~~~~~~~~~~{.cpp}
-    /// #include <kodi/gui/DialogOK.h>
+    /// #include <kodi/gui/dialogs/OK.h>
     /// ...
-    /// kodi::gui::DialogOK::ShowAndGetInput("Test dialog", "Hello World!", "I'm a call from add-on", " :) :D");
+    /// kodi::gui::dialogs::OK::ShowAndGetInput("Test dialog", "Hello World!", "I'm a call from add-on", " :) :D");
     /// ~~~~~~~~~~~~~
     ///
     inline void ShowAndGetInput(const std::string& heading, const std::string& line0, const std::string& line1, const std::string& line2)
@@ -100,5 +102,6 @@ namespace gui
   }
   /// @}
 
+} /* namespace dialogs */
 } /* namespace gui */
 } /* namespace kodi */

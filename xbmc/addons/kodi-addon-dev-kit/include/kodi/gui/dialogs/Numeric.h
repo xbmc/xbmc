@@ -19,20 +19,22 @@
  *
  */
 
-#include "definitions.h"
-#include "../AddonBase.h"
+#include "../definitions.h"
+#include "../../AddonBase.h"
 
 namespace kodi
 {
 namespace gui
 {
+namespace dialogs
+{
 
   //============================================================================
   ///
-  /// \defgroup cpp_kodi_gui_DialogNumeric Dialog Numeric
+  /// \defgroup cpp_kodi_gui_dialogs_Numeric Dialog Numeric
   /// \ingroup cpp_kodi_gui
   /// @{
-  /// @brief \cpp_namespace{ kodi::gui::DialogNumeric }
+  /// @brief \cpp_namespace{ kodi::gui::dialogs::Numeric }
   /// **Numeric dialogs**
   ///
   /// The functions listed below have to be permitted by the user for the
@@ -41,14 +43,14 @@ namespace gui
   /// The class supports several kinds, from an easy number choice up to the
   /// passport Word production and their confirmation for add-on.
   ///
-  /// It has the header \ref DialogNumeric.h "#include <kodi/gui/DialogNumeric.h>"
+  /// It has the header \ref Numeric.h "#include <kodi/gui/dialogs/Numeric.h>"
   /// be included to enjoy it.
   ///
-  namespace DialogNumeric
+  namespace Numeric
   {
     //==========================================================================
     ///
-    /// \ingroup cpp_kodi_gui_DialogNumeric
+    /// \ingroup cpp_kodi_gui_dialogs_Numeric
     /// @brief Use dialog to get numeric new password
     ///
     /// @param[out] newPassword        String to preload into the keyboard
@@ -76,7 +78,7 @@ namespace gui
 
     //==========================================================================
     ///
-    /// \ingroup cpp_kodi_gui_DialogNumeric
+    /// \ingroup cpp_kodi_gui_dialogs_Numeric
     /// @brief Use dialog to verify numeric password.
     ///
     /// @param[in] password             Password to compare with user input, need
@@ -97,7 +99,7 @@ namespace gui
     /// ~~~~~~~~~~~~~{.cpp}
     /// #include <stdio.h>      /* fprintf */
     /// #include <kodi/General.h>
-    /// #include <kodi/gui/DialogNumeric.h>
+    /// #include <kodi/gui/dialogs/Numeric.h>
     ///
     /// /*
     ///  * The example below shows the complete use of keyboard dialog for password
@@ -123,7 +125,7 @@ namespace gui
     ///   /*
     ///    * Ask the user about the password.
     ///    */
-    ///   ret = kodi::gui::DialogNumeric::ShowAndVerifyPassword(password, "Demo numeric password call for PW '1234'", i);
+    ///   ret = kodi::gui::dialogs::Numeric::ShowAndVerifyPassword(password, "Demo numeric password call for PW '1234'", i);
     ///   if (ret == 0)
     ///   {
     ///     fprintf(stderr, "Numeric password successfull confirmed after '%i' tries\n", i+1);
@@ -151,7 +153,7 @@ namespace gui
 
     //==========================================================================
     ///
-    /// \ingroup cpp_kodi_gui_DialogNumeric
+    /// \ingroup cpp_kodi_gui_dialogs_Numeric
     /// @brief Use dialog to verify numeric password
     ///
     /// @param[in,out] toVerify         Value to compare against user input.
@@ -180,7 +182,7 @@ namespace gui
 
     //==========================================================================
     ///
-    /// \ingroup cpp_kodi_gui_DialogNumeric
+    /// \ingroup cpp_kodi_gui_dialogs_Numeric
     /// @brief Use dialog to get time value.
     ///
     /// @param[out] time                Overwritten with user input if
@@ -197,7 +199,7 @@ namespace gui
     /// ~~~~~~~~~~~~~{.cpp}
     /// #include <stdio.h>      /* printf */
     /// #include <time.h>       /* time_t, struct tm, time, localtime, strftime */
-    /// #include <kodi/gui/DialogNumeric.h>
+    /// #include <kodi/gui/dialogs/Numeric.h>
     ///
     /// time_t rawtime;
     /// struct tm * timeinfo;
@@ -205,7 +207,7 @@ namespace gui
     ///
     /// time (&rawtime);
     /// timeinfo = localtime(&rawtime);
-    /// bool bRet = kodi::gui::DialogNumeric::ShowAndGetTime(*timeinfo, "Selected time test call");
+    /// bool bRet = kodi::gui::dialogs::Numeric::ShowAndGetTime(*timeinfo, "Selected time test call");
     /// strftime(buffer, sizeof(buffer), "%H:%M.", timeinfo);
     /// printf("Selected time it's %s and was on Dialog %s\n", buffer, bRet ? "OK" : "Canceled");
     /// ~~~~~~~~~~~~~
@@ -219,7 +221,7 @@ namespace gui
 
     //==========================================================================
     ///
-    /// \ingroup cpp_kodi_gui_DialogNumeric
+    /// \ingroup cpp_kodi_gui_dialogs_Numeric
     /// @brief Use dialog to get date value.
     ///
     /// @param[in,out] date             Overwritten with user input if
@@ -236,7 +238,7 @@ namespace gui
     /// ~~~~~~~~~~~~~{.cpp}
     /// #include <stdio.h>      /* printf */
     /// #include <time.h>       /* time_t, struct tm, time, localtime, strftime */
-    /// #include <kodi/gui/DialogNumeric.h>
+    /// #include <kodi/gui/dialogs/Numeric.h>
     ///
     /// time_t rawtime;
     /// struct tm * timeinfo;
@@ -244,7 +246,7 @@ namespace gui
     ///
     /// time (&rawtime);
     /// timeinfo = localtime(&rawtime);
-    /// bool bRet = kodi::gui::DialogNumeric::ShowAndGetDate(*timeinfo, "Selected date test call");
+    /// bool bRet = kodi::gui::dialogs::Numeric::ShowAndGetDate(*timeinfo, "Selected date test call");
     /// strftime(buffer, sizeof(buffer), "%Y-%m-%d", timeinfo);
     /// printf("Selected date it's %s and was on Dialog %s\n", buffer, bRet ? "OK" : "Canceled");
     /// ~~~~~~~~~~~~~
@@ -258,7 +260,7 @@ namespace gui
 
     //==========================================================================
     ///
-    /// \ingroup cpp_kodi_gui_DialogNumeric
+    /// \ingroup cpp_kodi_gui_dialogs_Numeric
     /// @brief Use dialog to get a IP
     ///
     /// @param[in,out] ipAddress        Overwritten with user input if
@@ -287,7 +289,7 @@ namespace gui
 
     //==========================================================================
     ///
-    /// \ingroup cpp_kodi_gui_DialogNumeric
+    /// \ingroup cpp_kodi_gui_dialogs_Numeric
     /// @brief Use dialog to get normal number.
     ///
     /// @param[in,out] input            Overwritten with user input if
@@ -308,10 +310,10 @@ namespace gui
     /// ~~~~~~~~~~~~~{.cpp}
     ///   #include <stdio.h>      /* printf */
     ///   #include <stdlib.h>     /* strtoull (C++11) */
-    ///   #include <kodi/gui/DialogNumeric.h>
+    ///   #include <kodi/gui/dialogs/Numeric.h>
     ///
     ///   std::string number;
-    ///   bool bRet = kodi::gui::DialogNumeric::ShowAndGetNumber(number, "Number test call");
+    ///   bool bRet = kodi::gui::dialogs::Numeric::ShowAndGetNumber(number, "Number test call");
     ///   printf("Written number input is : %llu and was %s\n",
     ///                  strtoull(number.c_str(), nullptr, 0), bRet ? "OK" : "Canceled");
     /// ~~~~~~~~~~~~~
@@ -334,7 +336,7 @@ namespace gui
 
     //==========================================================================
     ///
-    /// \ingroup cpp_kodi_gui_DialogNumeric
+    /// \ingroup cpp_kodi_gui_dialogs_Numeric
     /// @brief Show numeric keypad to get seconds.
     ///
     /// @param[in,out] time     Overwritten with user input if return=true and
@@ -362,5 +364,6 @@ namespace gui
   };
   /// @}
 
+} /* namespace dialogs */
 } /* namespace gui */
 } /* namespace kodi */

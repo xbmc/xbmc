@@ -19,34 +19,36 @@
  *
  */
 
-#include "definitions.h"
-#include "../AddonBase.h"
+#include "../definitions.h"
+#include "../../AddonBase.h"
 
 namespace kodi
 {
 namespace gui
 {
+namespace dialogs
+{
 
   //============================================================================
   ///
-  /// \defgroup cpp_kodi_gui_DialogSelect Dialog Select
+  /// \defgroup cpp_kodi_gui_dialogs_Select Dialog Select
   /// \ingroup cpp_kodi_gui
   /// @{
-  /// @brief \cpp_namespace{ kodi::gui::DialogSelect }
+  /// @brief \cpp_namespace{ kodi::gui::dialogs::Select }
   /// **Selection dialog**
   ///
   /// The function listed below permits the call of a dialogue to select of an
   /// entry as a key
   ///
-  /// It has the header \ref DialogSelect.h "#include <kodi/gui/DialogSelect.h>"
+  /// It has the header \ref Select.h "#include <kodi/gui/dialogs/Select.h>"
   /// be included to enjoy it.
   ///
   ///
-  namespace DialogSelect
+  namespace Select
   {
     //==========================================================================
     ///
-    /// \ingroup cpp_kodi_gui_DialogSelect
+    /// \ingroup cpp_kodi_gui_dialogs_Select
     /// @brief Show a selection dialog about given parts.
     ///
     /// @param[in] heading      Dialog heading name
@@ -62,7 +64,7 @@ namespace gui
     ///
     /// **Example:**
     /// ~~~~~~~~~~~~~{.cpp}
-    /// #include <kodi/gui/DialogSelect.h>
+    /// #include <kodi/gui/dialogs/Select.h>
     ///
     /// const std::vector<std::string> entries
     /// {
@@ -73,7 +75,7 @@ namespace gui
     ///   "Test 5"
     /// };
     ///
-    /// int selected = kodi::gui::DialogSelect::Show("Test selection", entries, -1);
+    /// int selected = kodi::gui::dialogs::Select::Show("Test selection", entries, -1);
     /// if (selected < 0)
     ///   fprintf(stderr, "Item selection canceled\n");
     /// else
@@ -97,5 +99,6 @@ namespace gui
   };
   /// @}
 
+} /* namespace dialogs */
 } /* namespace gui */
 } /* namespace kodi */

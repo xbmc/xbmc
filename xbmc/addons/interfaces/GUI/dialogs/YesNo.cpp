@@ -18,8 +18,8 @@
  *
  */
 
-#include "DialogYesNo.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/gui/DialogYesNo.h"
+#include "YesNo.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/gui/dialogs/YesNo.h"
 
 #include "addons/AddonDll.h"
 #include "dialogs/GUIDialogYesNo.h"

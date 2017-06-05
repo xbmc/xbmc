@@ -19,35 +19,37 @@
  *
  */
 
-#include "definitions.h"
-#include "../AddonBase.h"
+#include "../definitions.h"
+#include "../../AddonBase.h"
 
 namespace kodi
 {
 namespace gui
 {
+namespace dialogs
+{
 
   //============================================================================
   ///
-  /// \defgroup cpp_kodi_gui_DialogFileBrowser Dialog File Browser
+  /// \defgroup cpp_kodi_gui_dialogs_FileBrowser Dialog File Browser
   /// \ingroup cpp_kodi_gui
-  /// @brief \cpp_namespace{ kodi::gui::DialogFileBrowser }
+  /// @brief \cpp_namespace{ kodi::gui::dialogs::FileBrowser }
   /// **File browser dialog**
   ///
-  /// The functions listed below of the class "DialogFileBrowser" offer
+  /// The functions listed below of the class "FileBrowser" offer
   /// the possibility to select to a file by the user of the add-on.
   ///
   /// It allows all the options that are possible in Kodi itself and offers all
   /// support file types.
   ///
-  /// It has the header \ref DialogFileBrowser.h "#include <kodi/gui/DialogFileBrowser.h>"
+  /// It has the header \ref FileBrowser.h "#include <kodi/gui/dialogs/FileBrowser.h>"
   /// be included to enjoy it.
   ///
-  namespace DialogFileBrowser
+  namespace FileBrowser
   {
     //==========================================================================
     ///
-    /// \ingroup cpp_kodi_gui_DialogFileBrowser
+    /// \ingroup cpp_kodi_gui_dialogs_FileBrowser
     /// @brief Directory selection dialog
     ///
     /// @param[in] shares       With Shares becomes the available start folders
@@ -60,7 +62,7 @@ namespace gui
     ///
     /// **Example:**
     /// ~~~~~~~~~~~~~{.cpp}
-    /// #include <kodi/gui/DialogFileBrowser.h>
+    /// #include <kodi/gui/dialogs/FileBrowser.h>
     ///
     /// /*
     ///  * Example show directory selection dialog with on 'share' (first value)
@@ -73,7 +75,7 @@ namespace gui
     ///  * to a start place.
     ///  */
     /// std::string directory;
-    /// bool ret = kodi::gui::DialogFileBrowser::ShowAndGetDirectory("local|network|removable",
+    /// bool ret = kodi::gui::dialogs::FileBrowser::ShowAndGetDirectory("local|network|removable",
     ///                                                    "Test directory selection",
     ///                                                    directory,
     ///                                                    false);
@@ -98,7 +100,7 @@ namespace gui
 
     //==========================================================================
     ///
-    /// \ingroup cpp_kodi_gui_DialogFileBrowser
+    /// \ingroup cpp_kodi_gui_dialogs_FileBrowser
     /// @brief File selection dialog
     ///
     /// @param[in] shares               With Shares becomes the available  start
@@ -133,7 +135,7 @@ namespace gui
 
     //==========================================================================
     ///
-    /// \ingroup cpp_kodi_gui_DialogFileBrowser
+    /// \ingroup cpp_kodi_gui_dialogs_FileBrowser
     /// @brief File selection from a directory
     ///
     /// @param[in] directory            The  directory  name  where  the  dialog
@@ -171,7 +173,7 @@ namespace gui
 
     //==========================================================================
     ///
-    /// \ingroup cpp_kodi_gui_DialogFileBrowser
+    /// \ingroup cpp_kodi_gui_dialogs_FileBrowser
     /// @brief File selection dialog to get several in to a list
     ///
     /// @param[in] shares             With Shares becomes  the  available  start
@@ -206,7 +208,7 @@ namespace gui
 
     //==========================================================================
     ///
-    /// \ingroup cpp_kodi_gui_DialogFileBrowser
+    /// \ingroup cpp_kodi_gui_dialogs_FileBrowser
     /// @brief Source selection dialog
     ///
     /// @param[in,out] path           As in the path to start and Return value
@@ -235,7 +237,7 @@ namespace gui
 
     //==========================================================================
     ///
-    /// \ingroup cpp_kodi_gui_DialogFileBrowser
+    /// \ingroup cpp_kodi_gui_dialogs_FileBrowser
     /// @brief Image selection dialog
     ///
     /// @param[in] shares     With Shares becomes the available start folders be
@@ -262,7 +264,7 @@ namespace gui
 
     //==========================================================================
     ///
-    /// \ingroup cpp_kodi_gui_DialogFileBrowser
+    /// \ingroup cpp_kodi_gui_dialogs_FileBrowser
     /// @brief Image selection dialog to get several in to a list
     ///
     /// @param[in] shares       With Shares becomes the available  start folders
@@ -289,5 +291,6 @@ namespace gui
     //--------------------------------------------------------------------------
   };
 
+} /* namespace dialogs */
 } /* namespace gui */
 } /* namespace kodi */

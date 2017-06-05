@@ -18,8 +18,8 @@
  *
  */
 
-#include "DialogKeyboard.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/gui/DialogKeyboard.h"
+#include "Keyboard.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/gui/dialogs/Keyboard.h"
 
 #include "addons/AddonDll.h"
 #include "guilib/GUIKeyboardFactory.h"

@@ -18,8 +18,8 @@
  *
  */
 
-#include "DialogExtendedProgressBar.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/gui/DialogExtendedProgress.h"
+#include "ExtendedProgressBar.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/gui/dialogs/ExtendedProgress.h"
 
 #include "addons/AddonDll.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"

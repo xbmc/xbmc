@@ -18,8 +18,8 @@
  *
  */
 
-#include "DialogOK.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/gui/DialogOK.h"
+#include "OK.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/gui/dialogs/OK.h"
 
 #include "addons/AddonDll.h"
 #include "dialogs/GUIDialogOK.h"

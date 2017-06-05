@@ -33,7 +33,7 @@ namespace ADDON
    * To hold functions not related to a instance type and usable for
    * every add-on type.
    *
-   * Related add-on header is "./xbmc/addons/kodi-addon-dev-kit/include/kodi/gui/DialogTextViewer.h"
+   * Related add-on header is "./xbmc/addons/kodi-addon-dev-kit/include/kodi/gui/dialogs/TextViewer.h"
    */
   struct Interface_GUIDialogTextViewer
   {

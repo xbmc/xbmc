@@ -33,9 +33,9 @@ namespace ADDON
    * To hold functions not related to a instance type and usable for
    * every add-on type.
    *
-   * Related add-on header is "./xbmc/addons/kodi-addon-dev-kit/include/kodi/gui/DialogProgress.h"
+   * Related add-on header is "./xbmc/addons/kodi-addon-dev-kit/include/kodi/gui/dialogs/Select.h"
    */
-  struct Interface_GUIDialogProgress
+  struct Interface_GUIDialogSelect
   {
     static void Init(AddonGlobalInterface* addonInterface);
     static void DeInit(AddonGlobalInterface* addonInterface);
@@ -51,19 +51,7 @@ namespace ADDON
      * class.
      */
     //@{
-    static void* new_dialog(void* kodiBase);
-    static void delete_dialog(void* kodiBase, void* handle);
-    static void open(void* kodiBase, void* handle);
-    static void set_heading(void* kodiBase, void* handle, const char* heading);
-    static void set_line(void* kodiBase, void* handle, unsigned int line, const char* text);
-    static void set_can_cancel(void* kodiBase, void* handle, bool canCancel);
-    static bool is_canceled(void* kodiBase, void* handle);
-    static void set_percentage(void* kodiBase, void* handle, int percentage);
-    static int get_percentage(void* kodiBase, void* handle);
-    static void show_progress_bar(void* kodiBase, void* handle, bool bOnOff);
-    static void set_progress_max(void* kodiBase, void* handle, int max);
-    static void set_progress_advance(void* kodiBase, void* handle, int nSteps);
-    static bool abort(void* kodiBase, void* handle);
+    static int open(void* kodiBase, const char *heading, const char *entries[], unsigned int size, int selected, bool autoclose);
     //@}
   };
 

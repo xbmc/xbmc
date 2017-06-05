@@ -33,9 +33,9 @@ namespace ADDON
    * To hold functions not related to a instance type and usable for
    * every add-on type.
    *
-   * Related add-on header is "./xbmc/addons/kodi-addon-dev-kit/include/kodi/gui/DialogSelect.h"
+   * Related add-on header is "./xbmc/addons/kodi-addon-dev-kit/include/kodi/gui/dialogs/ContextMenu.h"
    */
-  struct Interface_GUIDialogSelect
+  struct Interface_GUIDialogContextMenu
   {
     static void Init(AddonGlobalInterface* addonInterface);
     static void DeInit(AddonGlobalInterface* addonInterface);
@@ -51,7 +51,7 @@ namespace ADDON
      * class.
      */
     //@{
-    static int open(void* kodiBase, const char *heading, const char *entries[], unsigned int size, int selected, bool autoclose);
+    static int open(void* kodiBase, const char *heading, const char *entries[], unsigned int size);
     //@}
   };
 

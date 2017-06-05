@@ -19,30 +19,32 @@
  *
  */
 
-#include "definitions.h"
-#include "../AddonBase.h"
+#include "../definitions.h"
+#include "../../AddonBase.h"
 
 namespace kodi
 {
 namespace gui
 {
+namespace dialogs
+{
 
   //============================================================================
   ///
-  /// \defgroup cpp_kodi_gui_CDialogProgress Dialog Progress
+  /// \defgroup cpp_kodi_gui_dialogs_CProgress Dialog Progress
   /// \ingroup cpp_kodi_gui
-  /// @brief \cpp_class{ kodi::gui::CDialogProgress }
+  /// @brief \cpp_class{ kodi::gui::dialogs::CProgress }
   /// **Progress dialog shown in center**
   ///
-  /// The with \ref DialogProgress.h "#include <kodi/gui/DialogProgress.h>"
+  /// The with \ref DialogProgress.h "#include <kodi/gui/dialogs/Progress.h>"
   /// given class are basically used to create Kodi's progress dialog with named
   /// text fields.
   ///
   /// **Example:**
   /// ~~~~~~~~~~~~~{.cpp}
-  /// #include <kodi/gui/DialogProgress.h>
+  /// #include <kodi/gui/dialogs/Progress.h>
   ///
-  /// kodi::gui::CDialogProgress *progress = new kodi::gui::CDialogProgress;
+  /// kodi::gui::dialogs::CProgress *progress = new kodi::gui::dialogs::CProgress;
   /// progress->SetHeading("Test progress");
   /// progress->SetLine(1, "line 1");
   /// progress->SetLine(2, "line 2");
@@ -58,29 +60,29 @@ namespace gui
   /// delete progress;
   /// ~~~~~~~~~~~~~
   ///
-  class CDialogProgress
+  class CProgress
   {
   public:
     //==========================================================================
     ///
-    /// \ingroup cpp_kodi_gui_CDialogProgress
+    /// \ingroup cpp_kodi_gui_dialogs_CProgress
     /// @brief Construct a new dialog
     ///
-    CDialogProgress()
+    CProgress()
     {
       using namespace ::kodi::addon;
       m_DialogHandle = CAddonBase::m_interface->toKodi->kodi_gui->dialogProgress->new_dialog(CAddonBase::m_interface->toKodi->kodiBase);
       if (!m_DialogHandle)
-        kodi::Log(ADDON_LOG_FATAL, "kodi::gui::CDialogProgress can't create window class from Kodi !!!");
+        kodi::Log(ADDON_LOG_FATAL, "kodi::gui::dialogs::CProgress can't create window class from Kodi !!!");
     }
     //--------------------------------------------------------------------------
 
     //==========================================================================
     ///
-    /// \ingroup cpp_kodi_gui_CDialogProgress
+    /// \ingroup cpp_kodi_gui_dialogs_CProgress
     /// @brief Destructor
     ///
-    ~CDialogProgress()
+    ~CProgress()
     {
       using namespace ::kodi::addon;
       if (m_DialogHandle)
@@ -90,7 +92,7 @@ namespace gui
 
     //==========================================================================
     ///
-    /// \ingroup cpp_kodi_gui_CDialogProgress
+    /// \ingroup cpp_kodi_gui_dialogs_CProgress
     /// @brief To open the dialog
     ///
     void Open()
@@ -102,7 +104,7 @@ namespace gui
 
     //==========================================================================
     ///
-    /// \ingroup cpp_kodi_gui_CDialogProgress
+    /// \ingroup cpp_kodi_gui_dialogs_CProgress
     /// @brief Set the heading title of dialog
     ///
     /// @param[in] heading Title string to use
@@ -116,7 +118,7 @@ namespace gui
 
     //==========================================================================
     ///
-    /// \ingroup cpp_kodi_gui_CDialogProgress
+    /// \ingroup cpp_kodi_gui_dialogs_CProgress
     /// @brief To set the line text field on dialog from 0 - 2
     ///
     /// @param[in] iLine Line number
@@ -131,7 +133,7 @@ namespace gui
 
     //==========================================================================
     ///
-    /// \ingroup cpp_kodi_gui_CDialogProgress
+    /// \ingroup cpp_kodi_gui_dialogs_CProgress
     /// @brief To enable and show cancel button on dialog
     ///
     /// @param[in] canCancel if true becomes it shown
@@ -145,7 +147,7 @@ namespace gui
 
     //==========================================================================
     ///
-    /// \ingroup cpp_kodi_gui_CDialogProgress
+    /// \ingroup cpp_kodi_gui_dialogs_CProgress
     /// @brief To check dialog for clicked cancel button
     ///
     /// @return True if canceled
@@ -159,7 +161,7 @@ namespace gui
 
     //==========================================================================
     ///
-    /// \ingroup cpp_kodi_gui_CDialogProgress
+    /// \ingroup cpp_kodi_gui_dialogs_CProgress
     /// @brief Get the current progress position as percent
     ///
     /// @param[in] percentage Position to use from 0 to 100
@@ -173,7 +175,7 @@ namespace gui
 
     //==========================================================================
     ///
-    /// \ingroup cpp_kodi_gui_CDialogProgress
+    /// \ingroup cpp_kodi_gui_dialogs_CProgress
     /// @brief To set the current progress position as percent
     ///
     /// @return Current Position used from 0 to 100
@@ -187,7 +189,7 @@ namespace gui
 
     //==========================================================================
     ///
-    /// \ingroup cpp_kodi_gui_CDialogProgress
+    /// \ingroup cpp_kodi_gui_dialogs_CProgress
     /// @brief To show or hide progress bar dialog
     ///
     /// @param[in] onOff If true becomes it shown
@@ -201,7 +203,7 @@ namespace gui
 
     //==========================================================================
     ///
-    /// \ingroup cpp_kodi_gui_CDialogProgress
+    /// \ingroup cpp_kodi_gui_dialogs_CProgress
     /// @brief Set the maximum position of progress, needed if `SetProgressAdvance(...)` is used
     ///
     /// @param[in] max Biggest usable position to use
@@ -215,7 +217,7 @@ namespace gui
 
     //==========================================================================
     ///
-    /// \ingroup cpp_kodi_gui_CDialogProgress
+    /// \ingroup cpp_kodi_gui_dialogs_CProgress
     /// @brief To increase progress bar by defined step size until reach of maximum position
     ///
     /// @param[in] steps Step size to increase, default is 1
@@ -229,7 +231,7 @@ namespace gui
 
     //==========================================================================
     ///
-    /// \ingroup cpp_kodi_gui_CDialogProgress
+    /// \ingroup cpp_kodi_gui_dialogs_CProgress
     /// @brief To check progress was canceled on work
     ///
     /// @return True if aborted
@@ -245,5 +247,6 @@ namespace gui
     void* m_DialogHandle;
   };
 
+} /* namespace dialogs */
 } /* namespace gui */
 } /* namespace kodi */

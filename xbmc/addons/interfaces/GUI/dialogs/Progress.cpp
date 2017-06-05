@@ -18,8 +18,8 @@
  *
  */
 
-#include "DialogProgress.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/gui/DialogProgress.h"
+#include "Progress.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/gui/dialogs/Progress.h"
 
 #include "addons/AddonDll.h"
 #include "dialogs/GUIDialogProgress.h"

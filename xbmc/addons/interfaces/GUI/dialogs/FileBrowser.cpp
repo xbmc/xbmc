@@ -18,8 +18,8 @@
  *
  */
 
-#include "DialogFileBrowser.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/gui/DialogFileBrowser.h"
+#include "FileBrowser.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/gui/dialogs/FileBrowser.h"
 
 #include "URL.h"
 #include "addons/AddonDll.h"
