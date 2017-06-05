@@ -328,7 +328,7 @@ bool CAddonSettings::ParseSettingVersion(const CXBMCTinyXML& doc, uint32_t& vers
 
 bool CAddonSettings::InitializeFromOldSettingDefinitions(const CXBMCTinyXML& doc)
 {
-  CLog::Log(LOGWARNING, "CAddonSettings[%s]: trying to load setting definitions from old format...", m_addon.lock()->ID().c_str());
+  CLog::Log(LOGDEBUG, "CAddonSettings[%s]: trying to load setting definitions from old format...", m_addon.lock()->ID().c_str());
 
   const TiXmlElement* root = doc.RootElement();
   if (root == nullptr)
