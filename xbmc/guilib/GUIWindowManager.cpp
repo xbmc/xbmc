@@ -1611,10 +1611,10 @@ bool CGUIWindowManager::HasVisibleControls()
   if (m_activeDialogs.empty())
   {
     CGUIWindow *window(GetWindow(GetActiveWindow()));
-    return window && window->HasVisibleControls();
+    return !window || window->HasVisibleControls();
   }
   else
-    return false;
+    return true;
 }
 
 void CGUIWindowManager::ClearWindowHistory()
