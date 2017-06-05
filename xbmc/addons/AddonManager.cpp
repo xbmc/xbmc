@@ -119,6 +119,11 @@ bool CAddonMgr::Factory(const cp_plugin_info_t* plugin, TYPE type, CAddonBuilder
     builder.SetType(CAddonInfo::TranslateType(ext->ext_point_id));
     builder.SetExtPoint(ext);
 
+    auto apilevel = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@apilevel");
+    if (apilevel.empty())
+      apilevel = "-1";
+    builder.SetAPILevel(atoi(apilevel.c_str()));
+
     auto libname = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@library");
     if (libname.empty())
       libname = CAddonMgr::GetInstance().GetPlatformLibraryName(ext->configuration);

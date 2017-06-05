@@ -54,11 +54,12 @@ void OnPostUnInstall(const AddonPtr& addon);
 class AddonProps
 {
 public:
-  AddonProps() : type(ADDON_UNKNOWN), packageSize(0) {};
-  AddonProps(std::string id, TYPE type) : id(std::move(id)), type(type), packageSize(0) {}
+  AddonProps() : type(ADDON_UNKNOWN), apiLevel(-1), packageSize(0) {};
+  AddonProps(std::string id, TYPE type) : id(std::move(id)), type(type), apiLevel(-1), packageSize(0) {}
 
   std::string id;
   TYPE type;
+  int apiLevel;
   AddonVersion version{"0.0.0"};
   AddonVersion minversion{"0.0.0"};
   std::string name;
@@ -97,6 +98,7 @@ public:
   std::string ID() const override{ return m_props.id; }
   std::string Name() const override { return m_props.name; }
   bool IsInUse() const override{ return false; };
+  int APILevel() const override { return m_props.apiLevel; }
   AddonVersion Version() const override { return m_props.version; }
   AddonVersion MinVersion() const override { return m_props.minversion; }
   std::string Summary() const override { return m_props.summary; }
