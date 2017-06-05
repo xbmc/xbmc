@@ -19,7 +19,6 @@
  */
 
 #include "PixelConverterRBP.h"
-#include "cores/VideoPlayer/DVDClock.h"
 #include "cores/VideoPlayer/VideoRenderers/HwDecRender/MMALRenderer.h"
 #include "linux/RBP.h"
 #include "utils/log.h"
