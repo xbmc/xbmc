@@ -547,7 +547,8 @@ void CGUITextureManager::Cleanup()
     delete pMap;
     i = m_vecTextures.erase(i);
   }
-
+  m_TexBundle[0].Close();
+  m_TexBundle[1].Close();
   m_TexBundle[0] = CTextureBundle(true);
   m_TexBundle[1] = CTextureBundle();
   FreeUnusedTextures();

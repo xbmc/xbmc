@@ -58,6 +58,11 @@ CTextureBundleXBT::CTextureBundleXBT(bool themeBundle)
 
 CTextureBundleXBT::~CTextureBundleXBT(void)
 {
+  CloseBundle();
+}
+
+void CTextureBundleXBT::CloseBundle()
+{
   if (m_XBTFReader != nullptr && m_XBTFReader->IsOpen())
   {
     XFILE::CXbtManager::GetInstance().Release(CURL(m_path));
