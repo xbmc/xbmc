@@ -27,6 +27,7 @@
 #include "cores/DataCacheCore.h"
 #include "FileItem.h"
 #include "guilib/GraphicContext.h"
+#include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
@@ -181,7 +182,7 @@ void CSeekHandler::Seek(bool forward, float amount, float duration /* = 0 */, bo
       Reset();
     }
   }
-  g_application.SendGUIMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_STATE_CHANGED);
+  m_seekChanged = true;
   m_timer.StartZero();
 }
 
@@ -219,12 +220,20 @@ void CSeekHandler::FrameMove()
     // perform relative seek
     g_application.m_pPlayer->SeekTimeRelative(static_cast<int64_t>(m_seekSize * 1000));
 
+    m_seekChanged = true;
+
     Reset();
   }
 
   if (m_timeCodePosition > 0 && m_timerTimeCode.GetElapsedMilliseconds() >= 2500)
   {
     m_timeCodePosition = 0;
+  }
+
+  if (m_seekChanged)
+  {
+    m_seekChanged = false;
+    g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_STATE_CHANGED);
   }
 }
 

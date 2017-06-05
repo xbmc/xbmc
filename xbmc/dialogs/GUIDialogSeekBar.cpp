@@ -30,7 +30,6 @@
 
 CGUIDialogSeekBar::CGUIDialogSeekBar(void)
   : CGUIDialog(WINDOW_DIALOG_SEEK_BAR, "DialogSeekBar.xml", DialogModalityType::MODELESS)
-  , m_lastPercent(~0)
 {
   m_loadType = LOAD_ON_GUI_INIT;    // the application class handles our resources
 }

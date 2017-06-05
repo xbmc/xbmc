@@ -30,5 +30,5 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   virtual void FrameMove();
 private:
-  unsigned int m_lastPercent;
+  unsigned int m_lastPercent = ~0U;
 };
