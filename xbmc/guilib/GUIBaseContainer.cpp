@@ -477,6 +477,12 @@ bool CGUIBaseContainer::OnMessage(CGUIMessage& message)
       }
       return true;
     }
+    else if (message.GetMessage() == GUI_MSG_REFRESH_CONTAINER)
+    {
+      Reset();
+      m_listProvider->Reset(true);
+      UpdateListProvider(true);
+    }
   }
   return CGUIControl::OnMessage(message);
 }

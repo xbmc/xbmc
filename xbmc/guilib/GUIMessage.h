@@ -161,6 +161,11 @@
  */
 #define GUI_MSG_UI_READY       49
 
+/*!
+ \brief A request to refresh a container's list content
+ */
+#define GUI_MSG_REFRESH_CONTAINER 50
+
 #define GUI_MSG_USER         1000
 
 /*!
