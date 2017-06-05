@@ -210,7 +210,7 @@ void CAddonMgr::FillCpluffMetadata(const cp_plugin_info_t* plugin, CAddonBuilder
         builder.SetIcon(icon);
 
         std::map<std::string, std::string> art;
-        std::array<std::string, 1> artTypes{"fanart"};
+        std::array<std::string, 3> artTypes{"fanart", "banner", "clearlogo"};
         for (auto type : artTypes)
         {
           auto value = CAddonMgr::GetInstance().GetExtValue(assets, type.c_str());
