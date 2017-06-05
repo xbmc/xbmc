@@ -117,7 +117,7 @@ void* Interface_GUIWindow::create(void* kodiBase, const char* xml_filename,
   if (as_dialog && is_media)
   {
     CLog::Log(LOGWARNING, "Interface_GUIWindow::%s: %s/%s - addon tries to create dialog as media window who not allowed, contact Developer '%s' of this addon",
-                __FUNCTION__, TranslateType(addon->Type()).c_str(), addon->Name().c_str(), addon->Author().c_str());
+                __FUNCTION__, CAddonInfo::TranslateType(addon->Type()).c_str(), addon->Name().c_str(), addon->Author().c_str());
   }
 
   RESOLUTION_INFO res;
@@ -154,7 +154,7 @@ void* Interface_GUIWindow::create(void* kodiBase, const char* xml_filename,
       if (!XFILE::CFile::Exists(strSkinPath))
       {
         CLog::Log(LOGERROR, "Interface_GUIWindow::%s: %s/%s - XML File '%s' for Window is missing, contact Developer '%s' of this addon",
-                    __FUNCTION__, TranslateType(addon->Type()).c_str(), addon->Name().c_str(), strSkinPath.c_str(), addon->Author().c_str());
+                    __FUNCTION__, CAddonInfo::TranslateType(addon->Type()).c_str(), addon->Name().c_str(), strSkinPath.c_str(), addon->Author().c_str());
         return nullptr;
       }
     }

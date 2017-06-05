@@ -55,7 +55,7 @@ static std::string SerializeMetadata(const IAddon& addon)
     variant["screenshots"].push_back(item);
 
   variant["extensions"] = CVariant(CVariant::VariantTypeArray);
-  variant["extensions"].push_back(ADDON::TranslateType(addon.Type(), false));
+  variant["extensions"].push_back(ADDON::CAddonInfo::TranslateType(addon.Type(), false));
 
   variant["dependencies"] = CVariant(CVariant::VariantTypeArray);
   for (const auto& kv : addon.GetDeps())
@@ -101,7 +101,7 @@ static void DeserializeMetadata(const std::string& document, CAddonBuilder& buil
     screenshots.push_back(it->asString());
   builder.SetScreenshots(std::move(screenshots));
 
-  builder.SetType(TranslateType(variant["extensions"][0].asString()));
+  builder.SetType(CAddonInfo::TranslateType(variant["extensions"][0].asString()));
 
   ADDONDEPS deps;
   for (auto it = variant["dependencies"].begin_array(); it != variant["dependencies"].end_array(); ++it)

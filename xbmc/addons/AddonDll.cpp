@@ -169,7 +169,7 @@ bool CAddonDll::LoadDll()
     CGUIDialogOK* pDialog = g_windowManager.GetWindow<CGUIDialogOK>(WINDOW_DIALOG_OK);
     if (pDialog)
     {
-      std::string heading = StringUtils::Format("%s: %s", TranslateType(Type(), true).c_str(), Name().c_str());
+      std::string heading = StringUtils::Format("%s: %s", CAddonInfo::TranslateType(Type(), true).c_str(), Name().c_str());
       pDialog->SetHeading(CVariant{heading});
       pDialog->SetLine(1, CVariant{24070});
       pDialog->SetLine(2, CVariant{24071});
@@ -238,7 +238,7 @@ ADDON_STATUS CAddonDll::Create(ADDON_TYPE type, void* funcTable, void* info)
     CGUIDialogOK* pDialog = g_windowManager.GetWindow<CGUIDialogOK>(WINDOW_DIALOG_OK);
     if (pDialog)
     {
-      std::string heading = StringUtils::Format("%s: %s", TranslateType(Type(), true).c_str(), Name().c_str());
+      std::string heading = StringUtils::Format("%s: %s", CAddonInfo::TranslateType(Type(), true).c_str(), Name().c_str());
       pDialog->SetHeading(CVariant{heading});
       pDialog->SetLine(1, CVariant{24070});
       pDialog->SetLine(2, CVariant{24071});
@@ -294,7 +294,7 @@ ADDON_STATUS CAddonDll::Create(KODI_HANDLE firstKodiInstance)
     CGUIDialogOK* pDialog = g_windowManager.GetWindow<CGUIDialogOK>(WINDOW_DIALOG_OK);
     if (pDialog)
     {
-      std::string heading = StringUtils::Format("%s: %s", TranslateType(Type(), true).c_str(), Name().c_str());
+      std::string heading = StringUtils::Format("%s: %s", CAddonInfo::TranslateType(Type(), true).c_str(), Name().c_str());
       pDialog->SetHeading(CVariant{heading});
       pDialog->SetLine(1, CVariant{24070});
       pDialog->SetLine(2, CVariant{24071});

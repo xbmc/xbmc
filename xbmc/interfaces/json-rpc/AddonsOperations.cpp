@@ -37,7 +37,7 @@ using namespace KODI::MESSAGING;
 JSONRPC_STATUS CAddonsOperations::GetAddons(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   std::vector<TYPE> addonTypes;
-  TYPE addonType = TranslateType(parameterObject["type"].asString());
+  TYPE addonType = CAddonInfo::TranslateType(parameterObject["type"].asString());
   CPluginSource::Content content = CPluginSource::Translate(parameterObject["content"].asString());
   CVariant enabled = parameterObject["enabled"];
   CVariant installed = parameterObject["installed"];
@@ -224,7 +224,7 @@ static CVariant Serialize(const AddonPtr& addon)
 {
   CVariant variant;
   variant["addonid"] = addon->ID();
-  variant["type"] = ADDON::TranslateType(addon->Type(), false);
+  variant["type"] = CAddonInfo::TranslateType(addon->Type(), false);
   variant["name"] = addon->Name();
   variant["version"] = addon->Version().asString();
   variant["summary"] = addon->Summary();

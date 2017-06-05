@@ -43,11 +43,6 @@ namespace ADDON
 
   const char* const ORIGIN_SYSTEM = "b6a50484-93a0-4afb-a01c-8d17e059feda";
 
-// utils
-std::string TranslateType(TYPE type, bool pretty=false);
-std::string GetIcon(TYPE type);
-TYPE TranslateType(const std::string &string);
-
 void OnEnabled(const std::string& id);
 void OnDisabled(const std::string& id);
 void OnPreInstall(const AddonPtr& addon);
