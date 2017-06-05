@@ -1320,6 +1320,36 @@ bool CAddonSettings::ParseOldCondition(std::shared_ptr<const CSetting> setting, 
       continue;
     }
 
+    // try to handle some odd cases where the setting is of type string but the comparison value references the index of the value in the list of options
+    if (referencedSetting->GetType() == SettingTypeString && StringUtils::IsNaturalNumber(expression.m_value))
+    {
+      // try to parse the comparison value
+      int valueIndex = static_cast<int>(strtol(expression.m_value.c_str(), nullptr, 10));
+
+      const auto referencedSettingString = std::static_pointer_cast<const CSettingString>(referencedSetting);
+      switch (referencedSettingString->GetOptionsType())
+      {
+        case SettingOptionsTypeStatic:
+        {
+          const auto& options = referencedSettingString->GetOptions();
+          if (options.size() > valueIndex)
+            expression.m_value = options.at(valueIndex).second;
+          break;
+        }
+
+        case SettingOptionsTypeStaticTranslatable:
+        {
+          const auto& options = referencedSettingString->GetTranslatableOptions();
+          if (options.size() > valueIndex)
+            expression.m_value = options.at(valueIndex).second;
+          break;
+        }
+
+        default:
+          break;
+      }
+    }
+
     // add the condition to the value of the referenced setting
     dependencyCombination->Add(std::make_shared<CSettingDependencyCondition>(referencedSetting->GetId(), expression.m_value, expression.m_operator, expression.m_negated, GetSettingsManager()));
   }
