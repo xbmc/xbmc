@@ -342,12 +342,12 @@ void CRetroPlayer::UpdateRenderInfo(CRenderInfo &info)
   m_processInfo->UpdateRenderInfo(info);
 }
 
-void CRetroPlayer::UpdareGuiRender(bool gui)
+void CRetroPlayer::UpdateGuiRender(bool gui)
 {
   m_processInfo->SetGuiRender(gui);
 }
 
-void CRetroPlayer::UpdareVideoRender(bool video)
+void CRetroPlayer::UpdateVideoRender(bool video)
 {
   m_processInfo->SetVideoRender(video);
 }
