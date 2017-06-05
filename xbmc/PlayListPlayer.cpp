@@ -264,7 +264,10 @@ bool CPlayListPlayer::Play(const CFileItemPtr &pItem, std::string player)
   else if (pItem->IsVideo())
     playlist = PLAYLIST_VIDEO;
   else
+  {
+    CLog::Log(LOGWARNING,"Playlist Player: ListItem type must be audio or video, use ListItem::setInfo to specify!");
     return false;
+  }
 
   ClearPlaylist(playlist);
   Reset();
