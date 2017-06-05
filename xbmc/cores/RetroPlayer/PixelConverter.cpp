@@ -162,6 +162,11 @@ void CPixelBufferPoolFFmpeg::Return(int id)
 // main class
 //------------------------------------------------------------------------------
 
+void CPixelConverter::delete_buffer_pool::operator()(CPixelBufferPoolFFmpeg *p) const
+{
+  delete p;
+}
+
 CPixelConverter::CPixelConverter() :
   m_targetFormat(AV_PIX_FMT_NONE),
   m_width(0),
@@ -237,9 +242,12 @@ bool CPixelConverter::Decode(const uint8_t* pData, unsigned int size)
 
 void CPixelConverter::GetPicture(VideoPicture& dvdVideoPicture)
 {
-  CPixelBufferFFmpeg *buffer = dynamic_cast<CPixelBufferFFmpeg*>(m_pixelBufferPool->Get());
-  buffer->SetRef(m_pFrame);
-  dvdVideoPicture.videoBuffer = buffer;
+  if (m_pFrame != nullptr)
+  {
+    CPixelBufferFFmpeg *buffer = dynamic_cast<CPixelBufferFFmpeg*>(m_pixelBufferPool->Get());
+    buffer->SetRef(m_pFrame);
+    dvdVideoPicture.videoBuffer = buffer;
+  }
 
   dvdVideoPicture.dts            = DVD_NOPTS_VALUE;
   dvdVideoPicture.pts            = DVD_NOPTS_VALUE;
