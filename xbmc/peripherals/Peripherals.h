@@ -24,7 +24,6 @@
 #include "EventScanner.h"
 #include "bus/PeripheralBus.h"
 #include "devices/Peripheral.h"
-#include "games/ports/PortMapper.h" //! @todo Find me a better place
 #include "interfaces/IAnnouncer.h"
 #include "messaging/IMessageTarget.h"
 #include "settings/lib/ISettingCallback.h"
@@ -323,7 +322,6 @@ namespace PERIPHERALS
     std::vector<PeripheralBusPtr>        m_busses;
     std::vector<PeripheralDeviceMapping> m_mappings;
     CEventScanner                        m_eventScanner;
-	GAME::CPortMapper                    m_portMapper; //! @todo Find me a better place
     CCriticalSection                     m_critSectionBusses;
     CCriticalSection                     m_critSectionMappings;
   };

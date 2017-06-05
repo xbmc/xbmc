@@ -756,7 +756,7 @@ bool CGameClient::OpenPort(unsigned int port)
     if (m_bSupportsKeyboard)
       device = PERIPHERALS::PERIPHERAL_JOYSTICK;
 
-    CPortManager::GetInstance().OpenPort(m_ports[port].get(), port, device);
+    CServiceBroker::GetGameServices().PortManager().OpenPort(m_ports[port].get(), port, device);
 
     UpdatePort(port, controller);
 
@@ -772,7 +772,7 @@ void CGameClient::ClosePort(unsigned int port)
   if (m_ports.find(port) == m_ports.end())
     return;
 
-  CPortManager::GetInstance().ClosePort(m_ports[port].get());
+  CServiceBroker::GetGameServices().PortManager().ClosePort(m_ports[port].get());
 
   m_ports.erase(port);
 

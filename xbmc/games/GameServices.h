@@ -24,9 +24,15 @@
 #include <memory>
 #include <string>
 
+namespace PERIPHERALS
+{
+  class CPeripherals;
+}
+
 namespace GAME
 {
   class CControllerManager;
+  class CPortManager;
 
   class CGameServices
   {
@@ -34,14 +40,17 @@ namespace GAME
     CGameServices();
     ~CGameServices();
 
-    void Init() { }
-    void Deinit() { }
+    void Init(PERIPHERALS::CPeripherals& peripheralManager);
+    void Deinit();
 
     ControllerPtr GetController(const std::string& controllerId);
     ControllerPtr GetDefaultController();
     ControllerVector GetControllers();
 
+    CPortManager& PortManager();
+
   private:
     std::unique_ptr<CControllerManager> m_controllerManager;
+    std::unique_ptr<CPortManager> m_portManager;
   };
 }

@@ -37,22 +37,24 @@ namespace JOYSTICK
 namespace PERIPHERALS
 {
   class CPeripheral;
+  class CPeripherals;
 }
 
 namespace GAME
 {
+  class CPortMapper;
+
   /*!
    * \brief Class to manage ports opened by game clients
    */
   class CPortManager : public Observable
   {
-  private:
-    CPortManager(void) = default;
-
   public:
-    static CPortManager& GetInstance();
+    CPortManager();
+    virtual ~CPortManager();
 
-    virtual ~CPortManager() = default;
+    void Initialize(PERIPHERALS::CPeripherals& peripheralManager);
+    void Deinitialize();
 
     /*!
      * \brief Request a new port be opened with input on that port sent to the
@@ -88,6 +90,8 @@ namespace GAME
 
   private:
     KODI::JOYSTICK::IInputHandler* AssignToPort(const PERIPHERALS::PeripheralPtr& device, bool checkPortNumber = true);
+
+    std::unique_ptr<CPortMapper> m_portMapper;
 
     struct SPort
     {
