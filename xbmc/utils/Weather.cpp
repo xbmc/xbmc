@@ -408,7 +408,8 @@ void CWeather::OnSettingChanged(std::shared_ptr<const CSetting> setting)
   {
     // clear "WeatherProviderLogo" property that some weather addons set
     CGUIWindow* window = g_windowManager.GetWindow(WINDOW_WEATHER);
-    window->SetProperty("WeatherProviderLogo", "");
+    if (window != nullptr)
+      window->SetProperty("WeatherProviderLogo", "");
     Refresh();
   }
 }
