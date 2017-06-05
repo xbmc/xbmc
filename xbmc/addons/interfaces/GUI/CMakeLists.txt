@@ -12,4 +12,4 @@ set(HEADERS General.h
             AddonGUIRenderingControl.h
             AddonGUIWindow.h)
 
-core_add_library(addonInterface_GUI)
+core_add_library(addons_interfaces_gui)

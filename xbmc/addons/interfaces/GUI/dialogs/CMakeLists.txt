@@ -20,4 +20,4 @@ set(HEADERS ContextMenu.h
             TextViewer.h
             YesNo.h)
 
-core_add_library(addons_interface_gui_dialogs)
+core_add_library(addons_interfaces_gui_dialogs)
