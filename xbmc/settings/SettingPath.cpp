@@ -30,12 +30,14 @@
 
 CSettingPath::CSettingPath(const std::string &id, CSettingsManager *settingsManager /* = NULL */)
   : CSettingString(id, settingsManager),
-    m_writable(true)
+    m_writable(true),
+    m_hideExtension(false)
 { }
 
 CSettingPath::CSettingPath(const std::string &id, int label, const std::string &value, CSettingsManager *settingsManager /* = NULL */)
   : CSettingString(id, label, value, settingsManager),
-    m_writable(true)
+    m_writable(true),
+    m_hideExtension(false)
 { }
   
 CSettingPath::CSettingPath(const std::string &id, const CSettingPath &setting)
@@ -106,4 +108,6 @@ void CSettingPath::copy(const CSettingPath &setting)
   CExclusiveLock lock(m_critical);
   m_writable = setting.m_writable;
   m_sources = setting.m_sources;
+  m_hideExtension = setting.m_hideExtension;
+  m_masking = setting.m_masking;
 }
