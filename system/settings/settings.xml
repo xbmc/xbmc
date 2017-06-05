@@ -3212,7 +3212,7 @@
             <addontype>kodi.resource.language</addontype>
           </constraints>
           <control type="button" format="addon">
-            <show more="false" details="false">all</show>
+            <show more="true" details="true">installed</show>
           </control>
         </setting>
         <setting id="locale.charset" type="string" label="14091" help="36116">
