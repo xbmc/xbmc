@@ -77,8 +77,16 @@ static bool LoadFromFile(const std::string& strPath, CFileItemList& items)
   return true;
 }
 
-CFavouritesService::CFavouritesService(std::string userDataFolder) : m_userDataFolder(std::move(userDataFolder))
+CFavouritesService::CFavouritesService(std::string userDataFolder)
 {
+  ReInit(std::move(userDataFolder));
+}
+
+void CFavouritesService::ReInit(std::string userDataFolder)
+{
+  m_userDataFolder = std::move(userDataFolder);
+  m_favourites.Clear();
+
   CFileItemList items;
   std::string favourites = "special://xbmc/system/favourites.xml";
   if(XFILE::CFile::Exists(favourites))

@@ -32,6 +32,9 @@ public:
   explicit CFavouritesService(std::string userDataFolder);
   virtual ~CFavouritesService() = default;
 
+  /** For profiles*/
+  void ReInit(std::string userDataFolder);
+
   bool IsFavourited(const CFileItem& item, int contextWindow) const;
   void GetAll(CFileItemList& items) const;
   std::string GetExecutePath(const CFileItem &item, int contextWindow) const;
@@ -54,7 +57,7 @@ private:
   bool Persist();
   std::string GetFavouritesUrl(const CFileItem &item, int contextWindow) const;
 
-  const std::string m_userDataFolder;
+  std::string m_userDataFolder;
   CFileItemList m_favourites;
   CEventSource<FavouritesUpdated> m_events;
   CCriticalSection m_criticalSection;
