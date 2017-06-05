@@ -104,6 +104,9 @@ namespace ADDON
 
     /* Various functions */
     static void mark_dirty_region(void* kodiBase, void* handle);
+
+    /* GUI control access functions */
+    static void* get_control_button(void* kodiBase, void* handle, int control_id);
     //@}
 
   private:

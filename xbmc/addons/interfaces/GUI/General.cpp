@@ -19,6 +19,7 @@
  */
 
 #include "General.h"
+#include "controls/Button.h"
 #include "DialogContextMenu.h"
 #include "DialogExtendedProgressBar.h"
 #include "DialogFileBrowser.h"
@@ -56,6 +57,7 @@ void Interface_GUIGeneral::Init(AddonGlobalInterface* addonInterface)
 {
   addonInterface->toKodi->kodi_gui = static_cast<AddonToKodiFuncTable_kodi_gui*>(malloc(sizeof(AddonToKodiFuncTable_kodi_gui)));
 
+  Interface_GUIControlButton::Init(addonInterface);
   Interface_GUIDialogContextMenu::Init(addonInterface);
   Interface_GUIDialogExtendedProgress::Init(addonInterface);
   Interface_GUIDialogFileBrowser::Init(addonInterface);
@@ -85,6 +87,7 @@ void Interface_GUIGeneral::DeInit(AddonGlobalInterface* addonInterface)
   if (addonInterface->toKodi && /* <-- needed as long as the old addon way is used */
       addonInterface->toKodi->kodi_gui)
   {
+    Interface_GUIControlButton::DeInit(addonInterface);
     Interface_GUIDialogContextMenu::DeInit(addonInterface);
     Interface_GUIDialogExtendedProgress::DeInit(addonInterface);
     Interface_GUIDialogFileBrowser::DeInit(addonInterface);
