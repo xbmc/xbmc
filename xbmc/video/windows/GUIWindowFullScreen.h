@@ -35,6 +35,7 @@ public:
   virtual void Render();
   virtual void RenderEx();
   virtual void OnWindowLoaded();
+  virtual bool HasVisibleControls();
 
 protected:
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);

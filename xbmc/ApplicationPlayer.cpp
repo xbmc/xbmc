@@ -19,6 +19,7 @@
  */
 
 #include "ApplicationPlayer.h"
+#include "cores/DataCacheCore.h"
 #include "cores/IPlayer.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "Application.h"
@@ -749,7 +750,12 @@ void CApplicationPlayer::FrameMove()
 {
   std::shared_ptr<IPlayer> player = GetInternal();
   if (player)
+  {
     player->FrameMove();
+
+    if (CDataCacheCore::GetInstance().IsPlayerStateChanged())
+      g_application.SendGUIMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_STATE_CHANGED);
+  }
 }
 
 void CApplicationPlayer::Render(bool clear, uint32_t alpha, bool gui)

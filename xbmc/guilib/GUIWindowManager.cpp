@@ -1604,6 +1604,19 @@ bool CGUIWindowManager::IsWindowTopMost(const std::string &xmlFile) const
   return false;
 }
 
+bool CGUIWindowManager::HasVisibleControls()
+{
+  CSingleExit lock(g_graphicsContext);
+
+  if (m_activeDialogs.empty())
+  {
+    CGUIWindow *window(GetWindow(GetActiveWindow()));
+    return window && window->HasVisibleControls();
+  }
+  else
+    return false;
+}
+
 void CGUIWindowManager::ClearWindowHistory()
 {
   while (!m_windowHistory.empty())

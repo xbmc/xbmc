@@ -2719,9 +2719,6 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
     }
     if (m_ProcessedExternalDecay && --m_ProcessedExternalDecay == 0)
       m_ProcessedExternalCalls = 0;
-
-    if (CDataCacheCore::GetInstance().IsPlayerStateChanged())
-      SendGUIMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_STATE_CHANGED);
   }
 
   if (processGUI && m_renderGUI)

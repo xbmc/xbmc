@@ -54,6 +54,17 @@ public:
   int m_data;
 };
 
+struct GUICONTROLSTATS
+{
+  unsigned int nCountTotal;
+  unsigned int nCountVisible;
+
+  void Reset()
+  {
+    nCountTotal = nCountVisible = 0;
+  };
+};
+
 /*!
  \brief Results of OnMouseEvent()
  Any value not equal to EVENT_RESULT_UNHANDLED indicates that the event was handled.
@@ -246,6 +257,9 @@ public:
   CGUIControl *GetParentControl(void) const { return m_parentControl; };
   virtual void SaveStates(std::vector<CControlState> &states);
 
+  void SetControlStats(GUICONTROLSTATS *controlStats) { m_controlStats = controlStats; };
+  virtual void UpdateControlStats();
+
   enum GUICONTROLTYPES {
     GUICONTROL_UNKNOWN,
     GUICONTROL_BUTTON,
@@ -334,6 +348,7 @@ protected:
   bool m_bAllocated;
   bool m_pulseOnSelect;
   GUICONTROLTYPES ControlType;
+  GUICONTROLSTATS *m_controlStats;
 
   CGUIControl *m_parentControl;   // our parent control if we're part of a group
 

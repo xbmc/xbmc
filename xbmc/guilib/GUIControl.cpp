@@ -54,6 +54,7 @@ CGUIControl::CGUIControl() :
   m_pulseOnSelect = false;
   m_controlIsDirty = true;
   m_stereo = 0.0f;
+  m_controlStats = nullptr;
 }
 
 CGUIControl::CGUIControl(int parentID, int controlID, float posX, float posY, float width, float height)
@@ -82,6 +83,7 @@ CGUIControl::CGUIControl(int parentID, int controlID, float posX, float posY, fl
   m_pulseOnSelect = false;
   m_controlIsDirty = false;
   m_stereo = 0.0f;
+  m_controlStats = nullptr;
 }
 
 
@@ -153,6 +155,8 @@ void CGUIControl::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyreg
       g_graphicsContext.RestoreCameraPosition();
     g_graphicsContext.RemoveTransform();
   }
+
+  UpdateControlStats();
 
   changed |= m_controlIsDirty;
 
@@ -925,6 +929,16 @@ void CGUIControl::UnfocusFromPoint(const CPoint &point)
 void CGUIControl::SaveStates(std::vector<CControlState> &states)
 {
   // empty for now - do nothing with the majority of controls
+}
+
+void CGUIControl::UpdateControlStats()
+{
+  if (m_controlStats)
+  {
+    ++m_controlStats->nCountTotal;
+    if (IsVisible() && IsVisibleFromSkin())
+      ++m_controlStats->nCountVisible;
+  }
 }
 
 void CGUIControl::SetHitRect(const CRect &rect, const color_t &color)

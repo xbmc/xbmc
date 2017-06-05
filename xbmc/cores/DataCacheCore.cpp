@@ -227,7 +227,7 @@ void CDataCacheCore::SetStateSeeking(bool active)
   CSingleLock lock(m_stateSection);
 
   m_stateInfo.m_stateSeeking = active;
-  m_playStateChanged = true;
+  m_playerStateChanged = true;
 }
 
 bool CDataCacheCore::CDataCacheCore::IsSeeking()

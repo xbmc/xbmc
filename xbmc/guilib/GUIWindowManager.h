@@ -211,6 +211,8 @@ public:
    */
   bool IsPythonWindow(int id) const { return (id >= WINDOW_PYTHON_START && id <= WINDOW_PYTHON_END); };
 
+  bool HasVisibleControls();
+
 #ifdef _DEBUG
   void DumpTextureUse();
 #endif

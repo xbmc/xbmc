@@ -508,6 +508,7 @@ void CGUIControlGroup::AddControl(CGUIControl *control, int position /* = -1*/)
     position = (int)m_children.size();
   m_children.insert(m_children.begin() + position, control);
   control->SetParentControl(this);
+  control->SetControlStats(m_controlStats);
   control->SetPushUpdates(m_pushedUpdates);
   AddLookup(control);
   SetInvalid();

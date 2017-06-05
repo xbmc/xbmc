@@ -99,10 +99,13 @@ CGUIWindowFullScreen::CGUIWindowFullScreen(void)
   //  - delay
   //  - language
 
+  m_controlStats = new GUICONTROLSTATS;
 }
 
 CGUIWindowFullScreen::~CGUIWindowFullScreen(void)
-{}
+{
+  delete m_controlStats;
+}
 
 bool CGUIWindowFullScreen::OnAction(const CAction &action)
 {
@@ -411,6 +414,8 @@ void CGUIWindowFullScreen::Process(unsigned int currentTime, CDirtyRegionList &d
   if (g_application.m_pPlayer->IsRenderingGuiLayer())
     MarkDirtyRegion();
 
+  m_controlStats->Reset();
+
   CGUIWindow::Process(currentTime, dirtyregion);
 
   //! @todo This isn't quite optimal - ideally we'd only be dirtying up the actual video render rect
@@ -464,4 +469,9 @@ void CGUIWindowFullScreen::TriggerOSD()
     pOSD->SetAutoClose(3000);
     pOSD->Open();
   }
+}
+
+bool CGUIWindowFullScreen::HasVisibleControls()
+{
+  return m_controlStats->nCountVisible > 0;
 }
