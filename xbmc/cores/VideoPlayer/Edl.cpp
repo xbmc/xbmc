@@ -48,6 +48,7 @@ void CEdl::Clear()
   m_vecSceneMarkers.clear();
   m_iTotalCutTime = 0;
   m_lastQueryTime = 0;
+  m_lastCheckASSTime = 0;
 }
 
 bool CEdl::ReadEditDecisionLists(const std::string& strMovie, const float fFrameRate, const int iHeight)
@@ -98,8 +99,8 @@ bool CEdl::ReadEditDecisionLists(const std::string& strMovie, const float fFrame
    * Only check for edit decision lists if the movie is on the local hard drive, or accessed over a
    * network share.
    */
-  if ((URIUtils::IsHD(strMovie)  || 
-       URIUtils::IsSmb(strMovie) || 
+  if ((URIUtils::IsHD(strMovie)  ||
+       URIUtils::IsSmb(strMovie) ||
        URIUtils::IsNfs(strMovie))         &&
       !URIUtils::IsPVRRecording(strMovie) &&
       !URIUtils::IsInternetStream(strMovie))
@@ -826,8 +827,6 @@ std::string CEdl::GetInfo() const
 
 bool CEdl::InCut(const int iSeek, Cut *pCut)
 {
-  m_lastQueryTime = iSeek;
-
   for (int i = 0; i < (int)m_vecCuts.size(); i++)
   {
     if (iSeek < m_vecCuts[i].start) // Early exit if not even up to the cut start time.
@@ -844,14 +843,19 @@ bool CEdl::InCut(const int iSeek, Cut *pCut)
   return false;
 }
 
-int CEdl::GetLastQueryTime() const
+int CEdl::GetLastCheckASSTime() const
 {
-  return m_lastQueryTime;
+  return m_lastCheckASSTime;
+}
+
+void CEdl::SetLastCheckASSTime(const int iCheckASSTime)
+{
+  m_lastCheckASSTime = iCheckASSTime;
 }
 
 bool CEdl::GetNearestCut(bool bPlus, const int iSeek, Cut *pCut) const
 {
-  if (bPlus) 
+  if (bPlus)
   {
     // Searching forwards
     for (auto &cut : m_vecCuts)
@@ -870,13 +874,13 @@ bool CEdl::GetNearestCut(bool bPlus, const int iSeek, Cut *pCut) const
       }
     }
     return false;
-  } 
+  }
   else
   {
     // Searching backwards
     for (int i = (int)m_vecCuts.size() - 1; i >= 0; i--)
     {
-      if (iSeek - 20000 >= m_vecCuts[i].start && iSeek <= m_vecCuts[i].end) 
+      if (iSeek - 20000 >= m_vecCuts[i].start && iSeek <= m_vecCuts[i].end)
         // Inside cut. We ignore if we're closer to 20 seconds inside
       {
         if (pCut)
