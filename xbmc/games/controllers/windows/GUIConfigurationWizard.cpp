@@ -29,6 +29,7 @@
 #include "peripherals/Peripherals.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
+#include "ServiceBroker.h"
 
 using namespace GAME;
 
@@ -323,32 +324,27 @@ bool CGUIConfigurationWizard::OnKeyPress(const CKey& key)
 
 void CGUIConfigurationWizard::InstallHooks(void)
 {
-  using namespace PERIPHERALS;
+  CServiceBroker::GetPeripherals().RegisterJoystickButtonMapper(this);
+  CServiceBroker::GetPeripherals().RegisterObserver(this);
 
-  g_peripherals.RegisterJoystickButtonMapper(this);
-  g_peripherals.RegisterObserver(this);
-  CInputManager::GetInstance().RegisterKeyboardHandler(this);
-}
+  CInputManager::GetInstance().RegisterKeyboardHandler(this);}
 
 void CGUIConfigurationWizard::RemoveHooks(void)
 {
-  using namespace PERIPHERALS;
-
   CInputManager::GetInstance().UnregisterKeyboardHandler(this);
-  g_peripherals.UnregisterObserver(this);
-  g_peripherals.UnregisterJoystickButtonMapper(this);
+
+  CServiceBroker::GetPeripherals().UnregisterObserver(this);
+  CServiceBroker::GetPeripherals().UnregisterJoystickButtonMapper(this);
 }
 
 void CGUIConfigurationWizard::Notify(const Observable& obs, const ObservableMessage msg)
 {
-  using namespace PERIPHERALS;
-
   switch (msg)
   {
     case ObservableMessagePeripheralsChanged:
     {
-      g_peripherals.UnregisterJoystickButtonMapper(this);
-      g_peripherals.RegisterJoystickButtonMapper(this);
+      CServiceBroker::GetPeripherals().UnregisterJoystickButtonMapper(this);
+      CServiceBroker::GetPeripherals().RegisterJoystickButtonMapper(this);
       break;
     }
     default:

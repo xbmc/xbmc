@@ -31,6 +31,7 @@
 #include "guilib/GUIControl.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/WindowIDs.h"
+#include "ServiceBroker.h"
 
 // To check for button mapping support
 #include "dialogs/GUIDialogOK.h"
@@ -204,8 +205,6 @@ void CGUIControllerWindow::OnEvent(const ADDON::CRepositoryUpdater::RepositoryUp
 
 void CGUIControllerWindow::OnInitWindow(void)
 {
-  using namespace PERIPHERALS;
-
   CGUIDialog::OnInitWindow();
 
   if (!m_featureList)
@@ -233,7 +232,7 @@ void CGUIControllerWindow::OnInitWindow(void)
   OnMessage(msgFocus);
 
   // Enable button mapping support
-  if (!g_peripherals.GetInstance().EnableButtonMapping())
+  if (!CServiceBroker::GetPeripherals().EnableButtonMapping())
     CLog::Log(LOGDEBUG, "Joystick support not found");
 
   // FIXME: not thread safe

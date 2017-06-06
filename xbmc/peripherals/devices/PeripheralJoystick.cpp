@@ -33,8 +33,8 @@
 using namespace JOYSTICK;
 using namespace PERIPHERALS;
 
-CPeripheralJoystick::CPeripheralJoystick(const PeripheralScanResult& scanResult, CPeripheralBus* bus) :
-  CPeripheral(scanResult, bus),
+CPeripheralJoystick::CPeripheralJoystick(CPeripherals& manager, const PeripheralScanResult& scanResult, CPeripheralBus* bus) :
+  CPeripheral(manager, scanResult, bus),
   m_requestedPort(JOYSTICK_PORT_UNKNOWN),
   m_buttonCount(0),
   m_hatCount(0),
@@ -93,7 +93,7 @@ bool CPeripheralJoystick::InitialiseFeature(const PeripheralFeature feature)
 void CPeripheralJoystick::InitializeDeadzoneFiltering()
 {
   // Get a button map for deadzone filtering
-  PeripheralAddonPtr addon = g_peripherals.GetAddonWithButtonMap(this);
+  PeripheralAddonPtr addon = m_manager.GetAddonWithButtonMap(this);
   if (addon)
   {
     m_buttonMap.reset(new CAddonButtonMap(this, addon, DEFAULT_CONTROLLER_ID));
@@ -127,11 +127,23 @@ bool CPeripheralJoystick::TestFeature(PeripheralFeature feature)
   case FEATURE_RUMBLE:
     bSuccess = m_defaultInputHandler.TestRumble();
     break;
+  case FEATURE_POWER_OFF:
+    if (m_supportsPowerOff)
+    {
+      PowerOff();
+      bSuccess = true;
+    }
+    break;
   default:
     break;
   }
 
   return bSuccess;
+}
+
+void CPeripheralJoystick::PowerOff()
+{
+  m_bus->PowerOff(m_strLocation);
 }
 
 void CPeripheralJoystick::RegisterJoystickDriverHandler(IDriverHandler* handler, bool bPromiscuous)

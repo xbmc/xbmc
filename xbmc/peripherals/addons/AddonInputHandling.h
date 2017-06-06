@@ -34,12 +34,16 @@ namespace JOYSTICK
 namespace PERIPHERALS
 {
   class CPeripheral;
+  class CPeripherals;
 
   class CAddonInputHandling : public JOYSTICK::IDriverHandler,
                               public JOYSTICK::IInputReceiver
   {
   public:
-    CAddonInputHandling(CPeripheral* peripheral, JOYSTICK::IInputHandler* handler, JOYSTICK::IDriverReceiver* receiver);
+    CAddonInputHandling(CPeripherals& manager,
+                        CPeripheral* peripheral,
+                        JOYSTICK::IInputHandler* handler,
+                        JOYSTICK::IDriverReceiver* receiver);
 
     virtual ~CAddonInputHandling(void);
 

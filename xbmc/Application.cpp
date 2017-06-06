@@ -1108,10 +1108,6 @@ bool CApplication::Initialize()
     StringUtils::Format(g_localizeStrings.Get(178).c_str(), g_sysinfo.GetAppName().c_str()),
     "special://xbmc/media/icon256x256.png", EventLevel::Basic)));
 
-#if !defined(TARGET_DARWIN_IOS)
-  g_peripherals.Initialise();
-#endif
-
   // Load curl so curl_global_init gets called before any service threads
   // are started. Unloading will have no effect as curl is never fully unloaded.
   // To quote man curl_global_init:
@@ -1353,8 +1349,6 @@ void CApplication::StopServices()
   CLog::Log(LOGNOTICE, "stop dvd detect media");
   m_DetectDVDType.StopThread();
 #endif
-
-  g_peripherals.Clear();
 }
 
 void CApplication::OnSettingChanged(const CSetting *setting)
@@ -2328,7 +2322,7 @@ bool CApplication::OnAction(const CAction &action)
     }
   }
 
-  if (g_peripherals.OnAction(action))
+  if (CServiceBroker::GetPeripherals().OnAction(action))
     return true;
 
   if (action.GetID() == ACTION_MUTE)
@@ -4697,7 +4691,7 @@ void CApplication::ShowVolumeBar(const CAction *action)
 
 bool CApplication::IsMuted() const
 {
-  if (g_peripherals.IsMuted())
+  if (CServiceBroker::GetPeripherals().IsMuted())
     return true;
   return CAEFactory::IsMuted();
 }
@@ -4721,7 +4715,7 @@ void CApplication::SetMute(bool mute)
 
 void CApplication::Mute()
 {
-  if (g_peripherals.Mute())
+  if (CServiceBroker::GetPeripherals().Mute())
     return;
 
   CAEFactory::SetMute(true);
@@ -4731,7 +4725,7 @@ void CApplication::Mute()
 
 void CApplication::UnMute()
 {
-  if (g_peripherals.UnMute())
+  if (CServiceBroker::GetPeripherals().UnMute())
     return;
 
   CAEFactory::SetMute(false);

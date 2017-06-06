@@ -33,7 +33,7 @@ using namespace PERIPHERALS;
 // Only to avoid endless loops while scanning for devices
 #define MAX_BUS_DEVICES 2000
 
-CPeripheralBusUSB::CPeripheralBusUSB(CPeripherals *manager) :
+CPeripheralBusUSB::CPeripheralBusUSB(CPeripherals& manager) :
     CPeripheralBus("PeripBusUSB", manager, PERIPHERAL_BUS_USB)
 {
   /* device removals aren't always triggering OnDeviceRemoved events, so poll for changes every 5 seconds to be sure we don't miss anything */

@@ -33,7 +33,7 @@
 
 using namespace PERIPHERALS;
 
-CPeripheralBusAddon::CPeripheralBusAddon(CPeripherals *manager) :
+CPeripheralBusAddon::CPeripheralBusAddon(CPeripherals& manager) :
     CPeripheralBus("PeripBusAddon", manager, PERIPHERAL_BUS_ADDON)
 {
   using namespace ADDON;
@@ -56,7 +56,7 @@ CPeripheralBusAddon::~CPeripheralBusAddon()
 
   // destroy any (loaded) addons
   for (const auto& addon : m_addons)
-    addon->Destroy();
+    addon->DestroyAddon();
 
   m_failedAddons.clear();
   m_addons.clear();
@@ -224,6 +224,14 @@ bool CPeripheralBusAddon::EnableButtonMapping()
   return bEnabled;
 }
 
+void CPeripheralBusAddon::PowerOff(const std::string& strLocation)
+{
+  PeripheralAddonPtr addon;
+  unsigned int peripheralIndex;
+  if (SplitLocation(strLocation, addon, peripheralIndex))
+    addon->PowerOffJoystick(peripheralIndex);
+}
+
 void CPeripheralBusAddon::UnregisterRemovedDevices(const PeripheralScanResults &results)
 {
   CSingleLock lock(m_critSection);
@@ -234,7 +242,7 @@ void CPeripheralBusAddon::UnregisterRemovedDevices(const PeripheralScanResults &
     addon->UnregisterRemovedDevices(results, removedPeripherals);
 
   for (const auto& peripheral : removedPeripherals)
-    m_manager->OnDeviceDeleted(*this, *peripheral);
+    m_manager.OnDeviceDeleted(*this, *peripheral);
 }
 
 void CPeripheralBusAddon::Register(const PeripheralPtr& peripheral)
@@ -250,7 +258,7 @@ void CPeripheralBusAddon::Register(const PeripheralPtr& peripheral)
   if (SplitLocation(peripheral->Location(), addon, peripheralIndex))
   {
     if (addon->Register(peripheralIndex, peripheral))
-      m_manager->OnDeviceAdded(*this, *peripheral);
+      m_manager.OnDeviceAdded(*this, *peripheral);
   }
 }
 
@@ -500,7 +508,7 @@ void CPeripheralBusAddon::UpdateAddons(void)
     if (erased)
     {
       CSingleExit exit(m_critSection);
-      erased->Destroy();
+      erased->DestroyAddon();
     }
   }
 }

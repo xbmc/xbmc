@@ -53,6 +53,11 @@ namespace GAME
   class CGameServices;
 }
 
+namespace PERIPHERALS
+{
+  class CPeripherals;
+}
+
 class CServiceBroker
 {
 public:
@@ -66,4 +71,5 @@ public:
   static CDataCacheCore& GetDataCacheCore();
   static PLAYLIST::CPlayListPlayer& GetPlaylistPlayer();
   static GAME::CGameServices& GetGameServices();
+  static PERIPHERALS::CPeripherals& GetPeripherals();
 };

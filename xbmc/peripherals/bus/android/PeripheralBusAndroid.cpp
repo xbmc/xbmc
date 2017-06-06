@@ -35,7 +35,7 @@ using namespace PERIPHERALS;
 
 static const std::string DeviceLocationPrefix = "android/inputdevice/";
 
-CPeripheralBusAndroid::CPeripheralBusAndroid(CPeripherals *manager) :
+CPeripheralBusAndroid::CPeripheralBusAndroid(CPeripherals& manager) :
     CPeripheralBus("PeripBusAndroid", manager, PERIPHERAL_BUS_ANDROID)
 {
   // we don't need polling as we get notified through the IInputDeviceCallbacks interface

@@ -26,7 +26,7 @@ namespace PERIPHERALS
   class CPeripheralDisk : public CPeripheral
   {
   public:
-    CPeripheralDisk(const PeripheralScanResult& scanResult, CPeripheralBus* bus);
+    CPeripheralDisk(CPeripherals& manager, const PeripheralScanResult& scanResult, CPeripheralBus* bus);
     virtual ~CPeripheralDisk(void) {};
   };
 }

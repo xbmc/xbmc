@@ -32,7 +32,7 @@ namespace PERIPHERALS
   class CPeripheralBusUSB : public CPeripheralBus
   {
   public:
-    CPeripheralBusUSB(CPeripherals *manager);
+    CPeripheralBusUSB(CPeripherals& manager);
     virtual ~CPeripheralBusUSB(void);
 
     virtual void Clear(void);

@@ -24,6 +24,7 @@
 #include "EventScanner.h"
 #include "bus/PeripheralBus.h"
 #include "devices/Peripheral.h"
+#include "interfaces/IAnnouncer.h"
 #include "messaging/IMessageTarget.h"
 #include "settings/lib/ISettingCallback.h"
 #include "system.h"
@@ -45,15 +46,15 @@ namespace JOYSTICK
 
 namespace PERIPHERALS
 {
-  #define g_peripherals CPeripherals::GetInstance()
-
   class CPeripherals :  public ISettingCallback,
                         public Observable,
                         public KODI::MESSAGING::IMessageTarget,
-                        public IEventScannerCallback
+                        public IEventScannerCallback,
+                        public ANNOUNCEMENT::IAnnouncer
   {
   public:
-    static CPeripherals &GetInstance();
+    CPeripherals();
+
     virtual ~CPeripherals();
 
     /*!
@@ -233,6 +234,11 @@ namespace PERIPHERALS
      */
     bool TestFeature(PeripheralFeature feature);
 
+    /*!
+     * \brief Request all devices with power-off support to power down
+     */
+    void PowerOffDevices();
+
     bool SupportsCEC() const
     {
 #if defined(HAVE_LIBCEC)
@@ -291,14 +297,18 @@ namespace PERIPHERALS
      */
     void UnregisterJoystickButtonMapper(JOYSTICK::IButtonMapper* mapper);
 
+    // implementation of ISettingCallback
     virtual void OnSettingChanged(const CSetting *setting) override;
     virtual void OnSettingAction(const CSetting *setting) override;
 
+    // implementation of IMessageTarget
     virtual void OnApplicationMessage(KODI::MESSAGING::ThreadMessage* pMsg) override;
     virtual int GetMessageMask() override;
 
+    // implementation of IAnnouncer
+    virtual void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data) override;
+
   private:
-    CPeripherals();
     bool LoadMappings();
     bool GetMappingForDevice(const CPeripheralBus &bus, PeripheralScanResult& result) const;
     static void GetSettingsFromMappingsFile(TiXmlElement *xmlNode, std::map<std::string, PeripheralDeviceSetting> &m_settings);
@@ -308,7 +318,7 @@ namespace PERIPHERALS
     bool                                 m_bInitialised;
     bool                                 m_bIsStarted;
 #if !defined(HAVE_LIBCEC)
-    bool                                 m_bMissingLibCecWarningDisplayed;
+    bool                                 m_bMissingLibCecWarningDisplayed = false;
 #endif
     std::vector<PeripheralBusPtr>        m_busses;
     std::vector<PeripheralDeviceMapping> m_mappings;

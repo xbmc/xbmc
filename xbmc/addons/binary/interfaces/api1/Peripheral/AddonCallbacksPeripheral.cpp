@@ -69,7 +69,7 @@ CPeripheralAddon* CAddonCallbacksPeripheral::GetPeripheralAddon(void* addonData,
 
 void CAddonCallbacksPeripheral::TriggerScan(void* addonData)
 {
-  g_peripherals.TriggerDeviceScan(PERIPHERAL_BUS_ADDON);
+  CServiceBroker::GetPeripherals().TriggerDeviceScan(PERIPHERAL_BUS_ADDON);
 }
 
 void CAddonCallbacksPeripheral::RefreshButtonMaps(void* addonData, const char* deviceName, const char* controllerId)
