@@ -1125,7 +1125,12 @@ void CVideoLibrary::UpdateVideoTag(const CVariant &parameterObject, CVideoInfoTa
       {
         const auto& rating = rIt->second;
         if (ParameterNotNull(rating, "votes"))
-          details.SetRating(rating["rating"].asFloat(), rating["votes"].asFloat(), rIt->first, (ParameterNotNull(rating, "default") && rating["default"].asBoolean()));
+        {
+          details.SetRating(rating["rating"].asFloat(),
+                            static_cast<int>(rating["votes"].asInteger()),
+                            rIt->first,
+                            (ParameterNotNull(rating, "default") && rating["default"].asBoolean()));
+        }
         else
           details.SetRating(rating["rating"].asFloat(), rIt->first, (ParameterNotNull(rating, "default") && rating["default"].asBoolean()));
 
@@ -1139,7 +1144,7 @@ void CVideoLibrary::UpdateVideoTag(const CVariant &parameterObject, CVideoInfoTa
     }
   }
   if (ParameterNotNull(parameterObject, "userrating"))
-    details.m_iUserRating = parameterObject["userrating"].asInteger();
+    details.m_iUserRating = static_cast<int>(parameterObject["userrating"].asInteger());
   if (ParameterNotNull(parameterObject, "mpaa"))
     details.SetMPAARating(parameterObject["mpaa"].asString());
   if (ParameterNotNull(parameterObject, "imdbnumber"))

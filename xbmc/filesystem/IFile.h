@@ -123,8 +123,6 @@ public:
   virtual int  GetChunkSize() {return 0;}
   virtual double GetDownloadSpeed(){ return 0.0f; };
 
-  virtual bool SkipNext(){return false;}
-
   virtual bool Delete(const CURL& url) { return false; }
   virtual bool Rename(const CURL& url, const CURL& urlnew) { return false; }
   virtual bool SetHidden(const CURL& url, bool hidden) { return false; }

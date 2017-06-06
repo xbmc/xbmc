@@ -277,8 +277,10 @@ void CGUITextureBase::Render(float left, float top, float right, float bottom, f
   y[3] = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y2));
   z[3] = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y2));
 
-  if (y[2] == y[0]) y[2] += 1.0f; if (x[2] == x[0]) x[2] += 1.0f;
-  if (y[3] == y[1]) y[3] += 1.0f; if (x[3] == x[1]) x[3] += 1.0f;
+  if (y[2] == y[0]) y[2] += 1.0f;
+  if (x[2] == x[0]) x[2] += 1.0f;
+  if (y[3] == y[1]) y[3] += 1.0f;
+  if (x[3] == x[1]) x[3] += 1.0f;
 
   Draw(x, y, z, texture, diffuse, orientation);
 }
