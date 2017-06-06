@@ -80,7 +80,7 @@ namespace XBMCAddon
     // we're going to assume we're not in control of the interpreter. This (apparently)
     // can be the case. E.g. Libspotify manages to call into a script using a ctypes
     // extension but under the control of an Interpreter we know nothing about. In
-    // cases like this we're going to use a global interpreter 
+    // cases like this we're going to use a global interpreter
     AddonClass::Ref<PythonLanguageHook> PythonLanguageHook::GetIfExists(PyInterpreterState* interp)
     {
       XBMC_TRACE;
@@ -120,7 +120,7 @@ namespace XBMCAddon
      * See PythonCallbackHandler::PythonCallbackHandler for more details
      */
     XBMCAddon::CallbackHandler* PythonLanguageHook::GetCallbackHandler()
-    { 
+    {
       XBMC_TRACE;
       return new PythonCallbackHandler();
     }
@@ -137,7 +137,7 @@ namespace XBMCAddon
       // from the global dictionary
       PyObject* pyid = PyDict_GetItemString(global_dict, "__xbmcaddonid__");
       if (pyid)
-        return PyString_AsString(pyid);
+        return PyUnicode_AsUTF8(pyid);
       return "";
     }
 
@@ -152,7 +152,7 @@ namespace XBMCAddon
       // from the global dictionary
       PyObject* pyversion = PyDict_GetItemString(global_dict, "__xbmcapiversion__");
       if (pyversion)
-        return PyString_AsString(pyversion);
+        return PyUnicode_AsUTF8(pyversion);
       return "";
     }
 
@@ -179,7 +179,7 @@ namespace XBMCAddon
     void PythonLanguageHook::UnregisterMonitorCallback(XBMCAddon::xbmc::Monitor* monitor) { XBMC_TRACE; g_pythonParser.UnregisterPythonMonitorCallBack(monitor); }
 
     bool PythonLanguageHook::WaitForEvent(CEvent& hEvent, unsigned int milliseconds)
-    { 
+    {
       XBMC_TRACE;
       return g_pythonParser.WaitForEvent(hEvent,milliseconds);
     }

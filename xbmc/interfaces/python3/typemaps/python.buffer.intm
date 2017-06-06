@@ -21,7 +21,7 @@
 %>
     if (PyString_Check(${slarg}))
     {
-      const char* str = PyString_AsString(${slarg});
+      const char* str = PyUnicode_AsUTF8(${slarg});
       size_t size = (size_t)PyString_Size(${slarg});
       ${api}.allocate(size);
       ${api}.put(str,size);

@@ -111,7 +111,7 @@ static std::vector<std::vector<char>> storeArgumentsCCompatible(std::vector<std:
 static std::vector<char *> getCPointersToArguments(std::vector<std::vector<char>> & input)
 {
   std::vector<char *> output;
-  std::transform(input.begin(), input.end(), std::back_inserter(output), 
+  std::transform(input.begin(), input.end(), std::back_inserter(output),
                 [](std::vector<char> & i) { return &i[0]; });
   return output;
 }
@@ -228,7 +228,7 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
     {
       PyObject *e = PyList_GetItem(pathObj, i); // borrowed ref, no need to delete
       if (e != NULL && PyString_Check(e))
-        addNativePath(PyString_AsString(e)); // returns internal data, don't delete or modify
+        addNativePath(PyUnicode_AsUTF8(e)); // returns internal data, don't delete or modify
     }
   }
   else

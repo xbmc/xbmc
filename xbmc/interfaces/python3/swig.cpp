@@ -67,14 +67,14 @@ namespace PythonBindings
 
       if (utf8_pyString)
       {
-        buf = PyString_AsString(utf8_pyString);
+        buf = PyUnicode_AsUTF8(utf8_pyString);
         Py_DECREF(utf8_pyString);
         return;
       }
     }
-    if (PyString_Check(pObject))
+    else    // If pobject is of type Bytes
     {
-      buf = PyString_AsString(pObject);
+      buf = PyUnicode_AsUTF8(PyUnicode_Decode(pObject));
       return;
     }
 
@@ -182,14 +182,14 @@ namespace PythonBindings
 
     if (exc_type != NULL && (pystring = PyObject_Str(exc_type)) != NULL && PyString_Check(pystring))
     {
-      char *str = PyString_AsString(pystring);
+      char *str = PyUnicode_AsUTF8(pystring);
       if (str != NULL)
         exceptionType = str;
 
       pystring = PyObject_Str(exc_value);
       if (pystring != NULL)
       {
-        str = PyString_AsString(pystring);
+        str = PyUnicode_AsUTF8(pystring);
         exceptionValue = str;
       }
 
@@ -210,7 +210,7 @@ namespace PythonBindings
 
           if (strRetval)
           {
-            str = PyString_AsString(strRetval);
+            str = PyUnicode_AsUTF8(strRetval);
             if (str != NULL)
               exceptionTraceback = str;
             Py_DECREF(strRetval);
@@ -252,8 +252,8 @@ namespace PythonBindings
 
     UncheckedException::SetMessage("%s", msg.c_str());
   }
-  
-  XBMCAddon::AddonClass* doretrieveApiInstance(const PyHolder* pythonObj, const TypeInfo* typeInfo, const char* expectedType, 
+
+  XBMCAddon::AddonClass* doretrieveApiInstance(const PyHolder* pythonObj, const TypeInfo* typeInfo, const char* expectedType,
                               const char* methodNamespacePrefix, const char* methodNameForErrorString)
   {
     if (pythonObj->magicNumber != XBMC_PYTHON_TYPE_MAGIC_NUMBER)
@@ -263,7 +263,7 @@ namespace PythonBindings
     {
       // maybe it's a child class
       if (typeInfo->parentType)
-        return doretrieveApiInstance(pythonObj, typeInfo->parentType,expectedType, 
+        return doretrieveApiInstance(pythonObj, typeInfo->parentType,expectedType,
                                      methodNamespacePrefix, methodNameForErrorString);
       else
         throw XBMCAddon::WrongTypeException("Incorrect type passed to \"%s\", was expecting a \"%s\" but received a \"%s\"",
@@ -279,8 +279,8 @@ namespace PythonBindings
   void prepareForReturn(XBMCAddon::AddonClass* c)
   {
     XBMC_TRACE;
-    if(c) { 
-      c->Acquire(); 
+    if(c) {
+      c->Acquire();
       PyThreadState* state = PyThreadState_Get();
       XBMCAddon::Python::PythonLanguageHook::GetIfExists(state->interp)->RegisterAddonClassInstance(c);
     }
@@ -290,7 +290,7 @@ namespace PythonBindings
   {
     XBMC_TRACE;
     if(c){
-      XBMCAddon::AddonClass::Ref<XBMCAddon::Python::PythonLanguageHook> lh = 
+      XBMCAddon::AddonClass::Ref<XBMCAddon::Python::PythonLanguageHook> lh =
         XBMCAddon::AddonClass::Ref<XBMCAddon::AddonClass>(c->GetLanguageHook());
 
       if (lh.isNotNull())
@@ -313,8 +313,8 @@ namespace PythonBindings
    * This method is a helper for the generated API. It's called prior to any API
    * class destructor being dealloc-ed from the generated code from Python
    */
-  void cleanForDealloc(XBMCAddon::AddonClass* c) 
-  { 
+  void cleanForDealloc(XBMCAddon::AddonClass* c)
+  {
     XBMC_TRACE;
     if (handleInterpRegistrationForClean(c))
       c->Release();
@@ -328,14 +328,14 @@ namespace PythonBindings
    * called on destruction but cannot be called from the destructor.
    * This overrides the default cleanForDealloc to resolve that.
    */
-  void cleanForDealloc(XBMCAddon::xbmcgui::Window* c) 
+  void cleanForDealloc(XBMCAddon::xbmcgui::Window* c)
   {
     XBMC_TRACE;
     if (handleInterpRegistrationForClean(c))
-    { 
+    {
       c->dispose();
-      c->Release(); 
-    } 
+      c->Release();
+    }
   }
 
   /**
@@ -344,10 +344,10 @@ namespace PythonBindings
    * When this form of the call is used (and pytype isn't NULL) then the
    * passed type is used in the instance. This is for classes that extend API
    * classes in python. The type passed may not be the same type that's stored
-   * in the class metadata of the AddonClass of which 'api' is an instance, 
+   * in the class metadata of the AddonClass of which 'api' is an instance,
    * it can be a subclass in python.
    *
-   * if pytype is NULL then the type is inferred using the class metadata 
+   * if pytype is NULL then the type is inferred using the class metadata
    * stored in the AddonClass instance 'api'.
    */
   PyObject* makePythonInstance(XBMCAddon::AddonClass* api, PyTypeObject* pytype, bool incrementRefCount)
@@ -387,4 +387,3 @@ namespace PythonBindings
   }
 
 }
-
