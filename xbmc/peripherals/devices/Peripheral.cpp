@@ -561,13 +561,13 @@ void CPeripheral::ClearSettings(void)
   m_settings.clear();
 }
 
-void CPeripheral::RegisterJoystickInputHandler(IInputHandler* handler)
+void CPeripheral::RegisterJoystickInputHandler(IInputHandler* handler, bool bPromiscuous)
 {
   auto it = m_inputHandlers.find(handler);
   if (it == m_inputHandlers.end())
   {
     CAddonInputHandling* addonInput = new CAddonInputHandling(m_manager, this, handler, GetDriverReceiver());
-    RegisterJoystickDriverHandler(addonInput, false);
+    RegisterJoystickDriverHandler(addonInput, bPromiscuous);
     m_inputHandlers[handler].reset(addonInput);
   }
 }

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2015-2017 Team Kodi
+ *      Copyright (C) 2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,41 +19,37 @@
  */
 #pragma once
 
-#include "PortTypes.h"
-#include "peripherals/PeripheralTypes.h"
-#include "utils/Observer.h"
+#include <memory>
 
-#include <map>
+namespace KODI
+{
+namespace JOYSTICK
+{
+  class IInputHandler;
+}
+}
 
 namespace PERIPHERALS
 {
-  class CPeripherals;
+  class CPeripheral;
 }
 
 namespace GAME
 {
-  class CPortManager;
+  class CGameClient;
 
-  class CPortMapper : public Observer
+  class CPort
   {
   public:
-    CPortMapper();
+    CPort(KODI::JOYSTICK::IInputHandler* inputHandler, CGameClient& gameClient);
+    ~CPort();
 
-    virtual ~CPortMapper();
-
-    void Initialize(PERIPHERALS::CPeripherals& peripheralManager, CPortManager& portManager);
-    void Deinitialize();
-
-    virtual void Notify(const Observable& obs, const ObservableMessage msg) override;
+    void RegisterDevice(PERIPHERALS::CPeripheral *device);
+    void UnregisterDevice(PERIPHERALS::CPeripheral *device);
 
   private:
-    void ProcessPeripherals();
-
-    // Initialization parameters
-    PERIPHERALS::CPeripherals* m_peripheralManager;
-    CPortManager* m_portManager;
-
-    // Port paremters
-    std::map<PERIPHERALS::PeripheralPtr, PortPtr> m_portMap;
+    KODI::JOYSTICK::IInputHandler* const m_inputHandler;
+    std::unique_ptr<KODI::JOYSTICK::IInputHandler> m_controller;
+    std::unique_ptr<KODI::JOYSTICK::IInputHandler> m_inputSink;
   };
 }

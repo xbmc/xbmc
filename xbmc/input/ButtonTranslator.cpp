@@ -27,6 +27,7 @@
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "guilib/WindowIDs.h"
+#include "input/joysticks/JoystickIDs.h"
 #include "input/Key.h"
 #include "input/MouseStat.h"
 #include "input/XBMC_keytable.h"
@@ -899,6 +900,7 @@ CAction CButtonTranslator::GetAction(int window, const CKey &key, bool fallback)
   // if it's invalid, try to get it from the global map
   if (actionID == 0 && fallback)
   {
+    //! @todo Refactor fallback logic
     int fallbackWindow = GetFallbackWindow(window);
     if (fallbackWindow > -1)
       actionID = GetActionCode(fallbackWindow, key, strAction);
@@ -955,6 +957,50 @@ bool CButtonTranslator::HasLongpressMapping(int window, const CKey &key)
   return false;
 }
 
+unsigned int CButtonTranslator::GetHoldTimeMs(int window, const CKey &key, bool fallback /* = true */)
+{
+  unsigned int holdtimeMs = 0;
+
+  std::map<int, buttonMap>::const_iterator it = m_translatorMap.find(window);
+  if (it != m_translatorMap.end())
+  {
+    uint32_t code = key.GetButtonCode();
+
+    buttonMap::const_iterator it2 = (*it).second.find(code);
+
+    if (it2 != (*it).second.end())
+    {
+      holdtimeMs = (*it2).second.holdtimeMs;
+    }
+    else if (fallback)
+    {
+      //! @todo Refactor fallback logic
+      int fallbackWindow = GetFallbackWindow(window);
+      if (fallbackWindow > -1)
+        holdtimeMs = GetHoldTimeMs(fallbackWindow, key, false);
+      else
+      {
+        // still no valid action? use global map
+        holdtimeMs = GetHoldTimeMs(-1, key, false);
+      }
+    }
+  }
+  else if (fallback)
+  {
+    //! @todo Refactor fallback logic
+    int fallbackWindow = GetFallbackWindow(window);
+    if (fallbackWindow > -1)
+      holdtimeMs = GetHoldTimeMs(fallbackWindow, key, false);
+    else
+    {
+      // still no valid action? use global map
+      holdtimeMs = GetHoldTimeMs(-1, key, false);
+    }
+  }
+
+  return holdtimeMs;
+}
+
 int CButtonTranslator::GetActionCode(int window, const CKey &key, std::string &strAction) const
 {
   uint32_t code = key.GetButtonCode();
@@ -991,7 +1037,7 @@ int CButtonTranslator::GetActionCode(int window, const CKey &key, std::string &s
   return action;
 }
 
-void CButtonTranslator::MapAction(uint32_t buttonCode, const char *szAction, buttonMap &map)
+void CButtonTranslator::MapAction(uint32_t buttonCode, const char *szAction, unsigned int holdtimeMs, buttonMap &map)
 {
   int action = ACTION_NONE;
   if (!TranslateActionString(szAction, action) || !buttonCode)
@@ -1009,6 +1055,7 @@ void CButtonTranslator::MapAction(uint32_t buttonCode, const char *szAction, but
     CButtonAction button;
     button.id = action;
     button.strID = szAction;
+    button.holdtimeMs = holdtimeMs;
     map.insert(std::pair<uint32_t, CButtonAction>(buttonCode, button));
   }
 }
@@ -1057,11 +1104,6 @@ void CButtonTranslator::MapCustomControllerActions(int windowID, TiXmlNode *pCus
     m_customControllersMap[controllerName][windowID][button.first] = button.second;
 }
 
-bool CButtonTranslator::HasDeviceType(TiXmlNode *pWindow, std::string type)
-{
-  return pWindow->FirstChild(type) != NULL;
-}
-
 void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, int windowID)
 {
   if (!pWindow || windowID == WINDOW_INVALID) 
@@ -1073,7 +1115,10 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, int windowID)
   for (int i = 0; types[i]; ++i)
   {
     std::string type(types[i]);
-    if (HasDeviceType(pWindow, type))
+
+    for (pDevice = pWindow->FirstChild(type);
+         pDevice != nullptr;
+         pDevice = pDevice->NextSiblingElement(type))
     {
       buttonMap map;
       std::map<int, buttonMap>::iterator it = m_translatorMap.find(windowID);
@@ -1083,13 +1128,13 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, int windowID)
         m_translatorMap.erase(it);
       }
 
-      pDevice = pWindow->FirstChild(type);
-
       TiXmlElement *pButton = pDevice->FirstChildElement();
 
       while (pButton)
       {
         uint32_t buttonCode=0;
+        unsigned int holdtimeMs = 0;
+
         if (type == "gamepad")
             buttonCode = TranslateGamepadString(pButton->Value());
         else if (type == "remote")
@@ -1103,12 +1148,20 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, int windowID)
         else if (type == "appcommand")
             buttonCode = TranslateAppCommand(pButton->Value());
         else if (type == "joystick")
-            buttonCode = TranslateJoystickString(pButton->Value());
+        {
+          std::string controllerId = DEFAULT_CONTROLLER_ID;
+
+          TiXmlElement* deviceElem = pDevice->ToElement();
+          if (deviceElem != nullptr)
+            deviceElem->QueryValueAttribute("profile", &controllerId);
+
+          buttonCode = TranslateJoystickCommand(pButton, controllerId, holdtimeMs);
+        }
 
         if (buttonCode)
         {
           if (pButton->FirstChild() && pButton->FirstChild()->Value()[0])
-            MapAction(buttonCode, pButton->FirstChild()->Value(), map);
+            MapAction(buttonCode, pButton->FirstChild()->Value(), holdtimeMs, map);
           else
           {
             buttonMap::iterator it = map.find(buttonCode);
@@ -1602,40 +1655,71 @@ int CButtonTranslator::GetTouchActionCode(int window, int action, std::string &a
   return touchIt->second.id;
 }
 
-uint32_t CButtonTranslator::TranslateJoystickString(const char *szButton)
+uint32_t CButtonTranslator::TranslateJoystickCommand(const TiXmlElement *pButton, const std::string& controllerId, unsigned int& holdtimeMs)
 {
+  holdtimeMs = 0;
+
+  const char *szButton = pButton->Value();
   if (!szButton)
     return 0;
+
   uint32_t buttonCode = 0;
   std::string strButton = szButton;
   StringUtils::ToLower(strButton);
 
-  if (strButton == "a") buttonCode = KEY_JOYSTICK_BUTTON_A;
-  else if (strButton == "b") buttonCode = KEY_JOYSTICK_BUTTON_B;
-  else if (strButton == "x") buttonCode = KEY_JOYSTICK_BUTTON_X;
-  else if (strButton == "y") buttonCode = KEY_JOYSTICK_BUTTON_Y;
-  else if (strButton == "start") buttonCode = KEY_JOYSTICK_BUTTON_START;
-  else if (strButton == "back") buttonCode = KEY_JOYSTICK_BUTTON_BACK;
-  else if (strButton == "left") buttonCode = KEY_JOYSTICK_BUTTON_DPAD_LEFT;
-  else if (strButton == "right") buttonCode = KEY_JOYSTICK_BUTTON_DPAD_RIGHT;
-  else if (strButton == "up") buttonCode = KEY_JOYSTICK_BUTTON_DPAD_UP;
-  else if (strButton == "down") buttonCode = KEY_JOYSTICK_BUTTON_DPAD_DOWN;
-  else if (strButton == "leftthumb") buttonCode = KEY_JOYSTICK_BUTTON_LEFT_STICK_BUTTON;
-  else if (strButton == "rightthumb") buttonCode = KEY_JOYSTICK_BUTTON_RIGHT_STICK_BUTTON;
-  else if (strButton == "leftstickup") buttonCode = KEY_JOYSTICK_BUTTON_LEFT_THUMB_STICK_UP;
-  else if (strButton == "leftstickdown") buttonCode = KEY_JOYSTICK_BUTTON_LEFT_THUMB_STICK_DOWN;
-  else if (strButton == "leftstickleft") buttonCode = KEY_JOYSTICK_BUTTON_LEFT_THUMB_STICK_LEFT;
-  else if (strButton == "leftstickright") buttonCode = KEY_JOYSTICK_BUTTON_LEFT_THUMB_STICK_RIGHT;
-  else if (strButton == "rightstickup") buttonCode = KEY_JOYSTICK_BUTTON_RIGHT_THUMB_STICK_UP;
-  else if (strButton == "rightstickdown") buttonCode = KEY_JOYSTICK_BUTTON_RIGHT_THUMB_STICK_DOWN;
-  else if (strButton == "rightstickleft") buttonCode = KEY_JOYSTICK_BUTTON_RIGHT_THUMB_STICK_LEFT;
-  else if (strButton == "rightstickright") buttonCode = KEY_JOYSTICK_BUTTON_RIGHT_THUMB_STICK_RIGHT;
-  else if (strButton == "lefttrigger") buttonCode = KEY_JOYSTICK_BUTTON_LEFT_TRIGGER;
-  else if (strButton == "righttrigger") buttonCode = KEY_JOYSTICK_BUTTON_RIGHT_TRIGGER;
-  else if (strButton == "leftbumper") buttonCode = KEY_JOYSTICK_BUTTON_LEFT_SHOULDER;
-  else if (strButton == "rightbumper") buttonCode = KEY_JOYSTICK_BUTTON_RIGHT_SHOULDER;
-  else if (strButton == "guide") buttonCode = KEY_JOYSTICK_BUTTON_GUIDE;
-  else CLog::Log(LOGERROR, "Joystick Translator: Can't find button %s", strButton.c_str());
+  if (controllerId == DEFAULT_CONTROLLER_ID)
+  {
+    if (strButton == "a") buttonCode = KEY_JOYSTICK_BUTTON_A;
+    else if (strButton == "b") buttonCode = KEY_JOYSTICK_BUTTON_B;
+    else if (strButton == "x") buttonCode = KEY_JOYSTICK_BUTTON_X;
+    else if (strButton == "y") buttonCode = KEY_JOYSTICK_BUTTON_Y;
+    else if (strButton == "start") buttonCode = KEY_JOYSTICK_BUTTON_START;
+    else if (strButton == "back") buttonCode = KEY_JOYSTICK_BUTTON_BACK;
+    else if (strButton == "left") buttonCode = KEY_JOYSTICK_BUTTON_DPAD_LEFT;
+    else if (strButton == "right") buttonCode = KEY_JOYSTICK_BUTTON_DPAD_RIGHT;
+    else if (strButton == "up") buttonCode = KEY_JOYSTICK_BUTTON_DPAD_UP;
+    else if (strButton == "down") buttonCode = KEY_JOYSTICK_BUTTON_DPAD_DOWN;
+    else if (strButton == "leftthumb") buttonCode = KEY_JOYSTICK_BUTTON_LEFT_STICK_BUTTON;
+    else if (strButton == "rightthumb") buttonCode = KEY_JOYSTICK_BUTTON_RIGHT_STICK_BUTTON;
+    else if (strButton == "leftstickup") buttonCode = KEY_JOYSTICK_BUTTON_LEFT_THUMB_STICK_UP;
+    else if (strButton == "leftstickdown") buttonCode = KEY_JOYSTICK_BUTTON_LEFT_THUMB_STICK_DOWN;
+    else if (strButton == "leftstickleft") buttonCode = KEY_JOYSTICK_BUTTON_LEFT_THUMB_STICK_LEFT;
+    else if (strButton == "leftstickright") buttonCode = KEY_JOYSTICK_BUTTON_LEFT_THUMB_STICK_RIGHT;
+    else if (strButton == "rightstickup") buttonCode = KEY_JOYSTICK_BUTTON_RIGHT_THUMB_STICK_UP;
+    else if (strButton == "rightstickdown") buttonCode = KEY_JOYSTICK_BUTTON_RIGHT_THUMB_STICK_DOWN;
+    else if (strButton == "rightstickleft") buttonCode = KEY_JOYSTICK_BUTTON_RIGHT_THUMB_STICK_LEFT;
+    else if (strButton == "rightstickright") buttonCode = KEY_JOYSTICK_BUTTON_RIGHT_THUMB_STICK_RIGHT;
+    else if (strButton == "lefttrigger") buttonCode = KEY_JOYSTICK_BUTTON_LEFT_TRIGGER;
+    else if (strButton == "righttrigger") buttonCode = KEY_JOYSTICK_BUTTON_RIGHT_TRIGGER;
+    else if (strButton == "leftbumper") buttonCode = KEY_JOYSTICK_BUTTON_LEFT_SHOULDER;
+    else if (strButton == "rightbumper") buttonCode = KEY_JOYSTICK_BUTTON_RIGHT_SHOULDER;
+    else if (strButton == "guide") buttonCode = KEY_JOYSTICK_BUTTON_GUIDE;
+  }
+  else if (controllerId == DEFAULT_REMOTE_ID)
+  {
+    if (strButton == "ok") buttonCode = KEY_REMOTE_BUTTON_OK;
+    else if (strButton == "back") buttonCode = KEY_REMOTE_BUTTON_BACK;
+    else if (strButton == "up") buttonCode = KEY_REMOTE_BUTTON_UP;
+    else if (strButton == "down") buttonCode = KEY_REMOTE_BUTTON_DOWN;
+    else if (strButton == "left") buttonCode = KEY_REMOTE_BUTTON_LEFT;
+    else if (strButton == "right") buttonCode = KEY_REMOTE_BUTTON_RIGHT;
+    else if (strButton == "home") buttonCode = KEY_REMOTE_BUTTON_HOME;
+  }
+
+  if (buttonCode == 0)
+  {
+    CLog::Log(LOGERROR, "Joystick Translator: Can't find button %s for controller %s", strButton.c_str(), controllerId.c_str());
+  }
+  else
+  {
+    // Process holdtime parameter
+    std::string strHoldTime;
+    if (pButton->QueryValueAttribute("holdtime", &strHoldTime) == TIXML_SUCCESS)
+    {
+      std::stringstream ss(strHoldTime);
+      ss >> holdtimeMs;
+    }
+  }
 
   return buttonCode;
 }

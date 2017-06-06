@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2016-2017 Team Kodi
+ *      Copyright (C) 2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -17,39 +17,33 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#pragma once
 
-#include "IButtonSequence.h"
+#include "InputSink.h"
+#include "games/addons/GameClient.h"
+#include "input/joysticks/JoystickIDs.h"
 
-#include <map>
-#include <string>
-#include <vector>
+using namespace KODI;
+using namespace GAME;
 
-namespace KODI
+CInputSink::CInputSink(CGameClient &gameClient) :
+  m_gameClient(gameClient)
 {
-namespace JOYSTICK
-{
-  /*!
-   * \brief Hush!!!
-   */
-  class CJoystickEasterEgg : public IButtonSequence
-  {
-  public:
-    CJoystickEasterEgg(const std::string& controllerId);
-    virtual ~CJoystickEasterEgg() = default;
-
-    // implementation of IButtonSequence
-    virtual bool OnButtonPress(const FeatureName& feature) override;
-
-    static void OnFinish(void);
-
-  private:
-    // Construction parameters
-    const std::string m_controllerId;
-
-    static const std::map<std::string, std::vector<FeatureName>> m_sequence;
-
-    unsigned int m_state;
-  };
 }
+
+std::string CInputSink::ControllerID(void) const
+{
+  return DEFAULT_CONTROLLER_ID;
+}
+
+bool CInputSink::AcceptsInput(void)
+{
+  return m_gameClient.AcceptsInput();
+}
+
+JOYSTICK::INPUT_TYPE CInputSink::GetInputType(const std::string& feature) const
+{
+  // Convert all input to analog. This is done to simplify this function
+  // and avoid any extra dependencies. Analog is chosen to avoid any
+  // thresholding effects.
+  return JOYSTICK::INPUT_TYPE::ANALOG;
 }

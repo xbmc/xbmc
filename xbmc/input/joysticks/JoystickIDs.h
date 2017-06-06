@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2016-2017 Team Kodi
+ *      Copyright (C) 2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,37 +19,9 @@
  */
 #pragma once
 
-#include "IButtonSequence.h"
+#define DEFAULT_CONTROLLER_ID    "game.controller.default"
+#define DEFAULT_REMOTE_ID        "game.controller.remote"
 
-#include <map>
-#include <string>
-#include <vector>
-
-namespace KODI
-{
-namespace JOYSTICK
-{
-  /*!
-   * \brief Hush!!!
-   */
-  class CJoystickEasterEgg : public IButtonSequence
-  {
-  public:
-    CJoystickEasterEgg(const std::string& controllerId);
-    virtual ~CJoystickEasterEgg() = default;
-
-    // implementation of IButtonSequence
-    virtual bool OnButtonPress(const FeatureName& feature) override;
-
-    static void OnFinish(void);
-
-  private:
-    // Construction parameters
-    const std::string m_controllerId;
-
-    static const std::map<std::string, std::vector<FeatureName>> m_sequence;
-
-    unsigned int m_state;
-  };
-}
-}
+ // Analog sticks on the default controller
+#define DEFAULT_LEFT_STICK_NAME   "leftstick"
+#define DEFAULT_RIGHT_STICK_NAME  "rightstick"

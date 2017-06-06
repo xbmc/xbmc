@@ -23,6 +23,8 @@
 
 #include <vector>
 
+class CAction;
+
 namespace KODI
 {
 namespace JOYSTICK
@@ -38,18 +40,19 @@ namespace JOYSTICK
     virtual ~CKeymapHandler(void);
 
     // implementation of IKeymapHandler
-    virtual INPUT_TYPE GetInputType(unsigned int keyId) const override;
-    virtual int GetActionID(unsigned int keyId) const override;
-    virtual void OnDigitalKey(unsigned int keyId, bool bPressed, unsigned int holdTimeMs = 0) override;
-    virtual void OnAnalogKey(unsigned int keyId, float magnitude) override;
+    virtual INPUT_TYPE GetInputType(unsigned int keyId, int windowId, bool bFallthrough) const override;
+    virtual int GetActionID(unsigned int keyId, int windowId, bool bFallthrough) const override;
+    virtual unsigned int GetHoldTimeMs(unsigned int keyId, int windowId, bool bFallthrough) const override;
+    virtual void OnDigitalKey(unsigned int keyId, int windowId, bool bFallthrough, bool bPressed, unsigned int holdTimeMs = 0) override;
+    virtual void OnAnalogKey(unsigned int keyId, int windowId, bool bFallthrough, float magnitude) override;
 
   private:
-    void ProcessButtonPress(unsigned int keyId, unsigned int holdTimeMs);
+    void SendAction(const CAction& action);
     void ProcessButtonRelease(unsigned int keyId);
     bool IsPressed(unsigned int keyId) const;
 
-    static bool SendDigitalAction(unsigned int keyId, unsigned int holdTimeMs = 0);
-    static bool SendAnalogAction(unsigned int keyId, float magnitude);
+    static bool SendDigitalAction(const CAction& action);
+    static bool SendAnalogAction(const CAction& action, float magnitude);
 
     unsigned int              m_lastButtonPress;
     unsigned int              m_lastDigitalActionMs;

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2016-2017 Team Kodi
+ *      Copyright (C) 2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,37 +19,12 @@
  */
 #pragma once
 
-#include "IButtonSequence.h"
+#include <memory>
 
-#include <map>
-#include <string>
-#include <vector>
-
-namespace KODI
+namespace GAME
 {
-namespace JOYSTICK
-{
-  /*!
-   * \brief Hush!!!
-   */
-  class CJoystickEasterEgg : public IButtonSequence
-  {
-  public:
-    CJoystickEasterEgg(const std::string& controllerId);
-    virtual ~CJoystickEasterEgg() = default;
 
-    // implementation of IButtonSequence
-    virtual bool OnButtonPress(const FeatureName& feature) override;
+class CPort;
+typedef std::shared_ptr<CPort> PortPtr;
 
-    static void OnFinish(void);
-
-  private:
-    // Construction parameters
-    const std::string m_controllerId;
-
-    static const std::map<std::string, std::vector<FeatureName>> m_sequence;
-
-    unsigned int m_state;
-  };
-}
 }

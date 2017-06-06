@@ -171,6 +171,7 @@ CGameClient::CGameClient(ADDON::AddonProps props) :
 
 CGameClient::~CGameClient(void)
 {
+  CloseFile();
 }
 
 std::string CGameClient::LibPath() const
@@ -756,7 +757,7 @@ bool CGameClient::OpenPort(unsigned int port)
     if (m_bSupportsKeyboard)
       device = PERIPHERALS::PERIPHERAL_JOYSTICK;
 
-    CServiceBroker::GetGameServices().PortManager().OpenPort(m_ports[port].get(), port, device);
+    CServiceBroker::GetGameServices().PortManager().OpenPort(m_ports[port].get(), this, port, device);
 
     UpdatePort(port, controller);
 
@@ -783,29 +784,34 @@ void CGameClient::UpdatePort(unsigned int port, const ControllerPtr& controller)
 {
   using namespace JOYSTICK;
 
-  if (controller != CController::EmptyPtr)
+  CSingleLock lock(m_critSection);
+
+  if (Initialized())
   {
-    std::string strId = controller->ID();
+    if (controller != CController::EmptyPtr)
+    {
+      std::string strId = controller->ID();
 
-    game_controller controllerStruct;
+      game_controller controllerStruct;
 
-    controllerStruct.controller_id        = strId.c_str();
-    controllerStruct.digital_button_count = controller->Layout().FeatureCount(FEATURE_TYPE::SCALAR, INPUT_TYPE::DIGITAL);
-    controllerStruct.analog_button_count  = controller->Layout().FeatureCount(FEATURE_TYPE::SCALAR, INPUT_TYPE::ANALOG);
-    controllerStruct.analog_stick_count   = controller->Layout().FeatureCount(FEATURE_TYPE::ANALOG_STICK);
-    controllerStruct.accelerometer_count  = controller->Layout().FeatureCount(FEATURE_TYPE::ACCELEROMETER);
-    controllerStruct.key_count            = 0; //! @todo
-    controllerStruct.rel_pointer_count    = controller->Layout().FeatureCount(FEATURE_TYPE::RELPOINTER);
-    controllerStruct.abs_pointer_count    = 0; //! @todo
-    controllerStruct.motor_count          = controller->Layout().FeatureCount(FEATURE_TYPE::MOTOR);
+      controllerStruct.controller_id        = strId.c_str();
+      controllerStruct.digital_button_count = controller->Layout().FeatureCount(FEATURE_TYPE::SCALAR, INPUT_TYPE::DIGITAL);
+      controllerStruct.analog_button_count  = controller->Layout().FeatureCount(FEATURE_TYPE::SCALAR, INPUT_TYPE::ANALOG);
+      controllerStruct.analog_stick_count   = controller->Layout().FeatureCount(FEATURE_TYPE::ANALOG_STICK);
+      controllerStruct.accelerometer_count  = controller->Layout().FeatureCount(FEATURE_TYPE::ACCELEROMETER);
+      controllerStruct.key_count            = 0; //! @todo
+      controllerStruct.rel_pointer_count    = controller->Layout().FeatureCount(FEATURE_TYPE::RELPOINTER);
+      controllerStruct.abs_pointer_count    = 0; //! @todo
+      controllerStruct.motor_count          = controller->Layout().FeatureCount(FEATURE_TYPE::MOTOR);
 
-    try { m_struct.toAddon.UpdatePort(port, true, &controllerStruct); }
-    catch (...) { LogException("UpdatePort()"); }
-  }
-  else
-  {
-    try { m_struct.toAddon.UpdatePort(port, false, nullptr); }
-    catch (...) { LogException("UpdatePort()"); }
+      try { m_struct.toAddon.UpdatePort(port, true, &controllerStruct); }
+      catch (...) { LogException("UpdatePort()"); }
+    }
+    else
+    {
+      try { m_struct.toAddon.UpdatePort(port, false, nullptr); }
+      catch (...) { LogException("UpdatePort()"); }
+    }
   }
 }
 
@@ -889,18 +895,30 @@ void CGameClient::OpenMouse(void)
 {
   m_mouse.reset(new CGameClientMouse(this, &m_struct.toAddon));
 
-  std::string strId = m_mouse->ControllerID();
+  CSingleLock lock(m_critSection);
 
-  game_controller controllerStruct = { strId.c_str() };
+  if (Initialized())
+  {
+    std::string strId = m_mouse->ControllerID();
 
-  try { m_struct.toAddon.UpdatePort(GAME_INPUT_PORT_MOUSE, true, &controllerStruct); }
-  catch (...) { LogException("UpdatePort()"); }
+    game_controller controllerStruct = { strId.c_str() };
+
+    try { m_struct.toAddon.UpdatePort(GAME_INPUT_PORT_MOUSE, true, &controllerStruct); }
+    catch (...) { LogException("UpdatePort()"); }
+  }
 }
 
 void CGameClient::CloseMouse(void)
 {
-  try { m_struct.toAddon.UpdatePort(GAME_INPUT_PORT_MOUSE, false, nullptr); }
-  catch (...) { LogException("UpdatePort()"); }
+  {
+    CSingleLock lock(m_critSection);
+
+    if (Initialized())
+    {
+      try { m_struct.toAddon.UpdatePort(GAME_INPUT_PORT_MOUSE, false, nullptr); }
+      catch (...) { LogException("UpdatePort()"); }
+    }
+  }
 
   m_mouse.reset();
 }

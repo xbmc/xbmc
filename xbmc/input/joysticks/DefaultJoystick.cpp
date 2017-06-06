@@ -21,7 +21,9 @@
 #include "DefaultJoystick.h"
 #include "KeymapHandler.h"
 #include "JoystickEasterEgg.h"
+#include "JoystickIDs.h"
 #include "JoystickTranslator.h"
+#include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
 #include "Application.h"
 
@@ -35,9 +37,7 @@ using namespace KODI;
 using namespace JOYSTICK;
 
 CDefaultJoystick::CDefaultJoystick(void) :
-  m_handler(new CKeymapHandler),
-  m_rumbleGenerator(ControllerID()),
-  m_easterEgg(new CJoystickEasterEgg)
+  m_handler(new CKeymapHandler)
 {
 }
 
@@ -48,7 +48,7 @@ CDefaultJoystick::~CDefaultJoystick(void)
 
 std::string CDefaultJoystick::ControllerID(void) const
 {
-  return DEFAULT_CONTROLLER_ID;
+  return GetControllerID();
 }
 
 bool CDefaultJoystick::HasFeature(const FeatureName& feature) const
@@ -73,19 +73,26 @@ bool CDefaultJoystick::AcceptsInput()
 
 INPUT_TYPE CDefaultJoystick::GetInputType(const FeatureName& feature) const
 {
-  return m_handler->GetInputType(GetKeyID(feature));
+  return m_handler->GetInputType(GetKeyID(feature), GetWindowID(), GetFallthrough());
+}
+
+unsigned int CDefaultJoystick::GetDelayMs(const FeatureName& feature) const
+{
+  return m_handler->GetHoldTimeMs(GetKeyID(feature), GetWindowID(), GetFallthrough());
 }
 
 bool CDefaultJoystick::OnButtonPress(const FeatureName& feature, bool bPressed)
 {
-  if (bPressed && m_easterEgg->OnButtonPress(feature))
+  if (bPressed && m_easterEgg && m_easterEgg->OnButtonPress(feature))
     return true;
 
   const unsigned int keyId = GetKeyID(feature);
+  const int windowId = GetWindowID();
+  const bool bFallthrough = GetFallthrough();
 
-  if (m_handler->GetInputType(keyId) == INPUT_TYPE::DIGITAL)
+  if (m_handler->GetInputType(keyId, windowId, bFallthrough) == INPUT_TYPE::DIGITAL)
   {
-    m_handler->OnDigitalKey(keyId, bPressed);
+    m_handler->OnDigitalKey(keyId, windowId, bFallthrough, bPressed);
     return true;
   }
 
@@ -95,16 +102,21 @@ bool CDefaultJoystick::OnButtonPress(const FeatureName& feature, bool bPressed)
 void CDefaultJoystick::OnButtonHold(const FeatureName& feature, unsigned int holdTimeMs)
 {
   const unsigned int keyId = GetKeyID(feature);
-  m_handler->OnDigitalKey(keyId, true, holdTimeMs);
+  const int windowId = GetWindowID();
+  const bool bFallthrough = GetFallthrough();
+
+  m_handler->OnDigitalKey(keyId, windowId, bFallthrough, true, holdTimeMs);
 }
 
 bool CDefaultJoystick::OnButtonMotion(const FeatureName& feature, float magnitude)
 {
   const unsigned int keyId = GetKeyID(feature);
+  const int windowId = GetWindowID();
+  const bool bFallthrough = GetFallthrough();
 
-  if (m_handler->GetInputType(keyId) == INPUT_TYPE::ANALOG)
+  if (m_handler->GetInputType(keyId, windowId, bFallthrough) == INPUT_TYPE::ANALOG)
   {
-    m_handler->OnAnalogKey(keyId, magnitude);
+    m_handler->OnAnalogKey(keyId, windowId, bFallthrough, magnitude);
     return true;
   }
 
@@ -143,11 +155,18 @@ bool CDefaultJoystick::OnAccelerometerMotion(const FeatureName& feature, float x
 int CDefaultJoystick::GetActionID(const FeatureName& feature)
 {
   const unsigned int keyId = GetKeyID(feature);
+  const int windowId = GetWindowID();
+  const bool bFallthrough = GetFallthrough();
 
   if (keyId > 0)
-    return m_handler->GetActionID(keyId);
+    return m_handler->GetActionID(keyId, windowId, bFallthrough);
 
   return ACTION_NONE;
+}
+
+int CDefaultJoystick::GetWindowID() const
+{
+  return g_windowManager.GetActiveWindowID();
 }
 
 bool CDefaultJoystick::ActivateDirection(const FeatureName& feature, float magnitude, ANALOG_STICK_DIRECTION dir, unsigned int motionTimeMs)
@@ -156,7 +175,9 @@ bool CDefaultJoystick::ActivateDirection(const FeatureName& feature, float magni
 
   // Calculate the button key ID and input type for the analog stick's direction
   const unsigned int  keyId     = GetKeyID(feature, dir);
-  const INPUT_TYPE    inputType = m_handler->GetInputType(keyId);
+  const int           windowId  = GetWindowID();
+  const bool          bFallthrough = GetFallthrough();
+  const INPUT_TYPE    inputType = m_handler->GetInputType(keyId, windowId, bFallthrough);
 
   if (inputType == INPUT_TYPE::DIGITAL)
   {
@@ -176,12 +197,12 @@ bool CDefaultJoystick::ActivateDirection(const FeatureName& feature, float magni
       m_holdStartTimes.erase(keyId);
     }
 
-    m_handler->OnDigitalKey(keyId, bIsPressed, holdTimeMs);
+    m_handler->OnDigitalKey(keyId, windowId, bFallthrough, bIsPressed, holdTimeMs);
     bHandled = true;
   }
   else if (inputType == INPUT_TYPE::ANALOG)
   {
-    m_handler->OnAnalogKey(keyId, magnitude);
+    m_handler->OnAnalogKey(keyId, windowId, bFallthrough, magnitude);
     bHandled = true;
   }
 
@@ -197,68 +218,22 @@ void CDefaultJoystick::DeactivateDirection(const FeatureName& feature, ANALOG_ST
   {
     // Calculate the button key ID and input type for this direction
     const unsigned int  keyId     = GetKeyID(feature, dir);
-    const INPUT_TYPE    inputType = m_handler->GetInputType(keyId);
+    const int           windowId  = GetWindowID();
+    const bool          bFallthrough = GetFallthrough();
+    const INPUT_TYPE    inputType = m_handler->GetInputType(keyId, windowId, bFallthrough);
 
     if (inputType == INPUT_TYPE::DIGITAL)
     {
-      m_handler->OnDigitalKey(keyId, false);
+      m_handler->OnDigitalKey(keyId, windowId, bFallthrough, false);
     }
     else if (inputType == INPUT_TYPE::ANALOG)
     {
-      m_handler->OnAnalogKey(keyId, 0.0f);
+      m_handler->OnAnalogKey(keyId, windowId, bFallthrough, 0.0f);
     }
 
     m_holdStartTimes.erase(keyId);
     m_currentDirections[feature] = ANALOG_STICK_DIRECTION::UNKNOWN;
   }
-}
-
-unsigned int CDefaultJoystick::GetKeyID(const FeatureName& feature, ANALOG_STICK_DIRECTION dir /* = ANALOG_STICK_DIRECTION::UNKNOWN */)
-{
-  if      (feature == "a")             return KEY_JOYSTICK_BUTTON_A;
-  else if (feature == "b")             return KEY_JOYSTICK_BUTTON_B;
-  else if (feature == "x")             return KEY_JOYSTICK_BUTTON_X;
-  else if (feature == "y")             return KEY_JOYSTICK_BUTTON_Y;
-  else if (feature == "start")         return KEY_JOYSTICK_BUTTON_START;
-  else if (feature == "back")          return KEY_JOYSTICK_BUTTON_BACK;
-  else if (feature == "guide")         return KEY_JOYSTICK_BUTTON_GUIDE;
-  else if (feature == "leftbumper")    return KEY_JOYSTICK_BUTTON_LEFT_SHOULDER;
-  else if (feature == "rightbumper")   return KEY_JOYSTICK_BUTTON_RIGHT_SHOULDER;
-  else if (feature == "leftthumb")     return KEY_JOYSTICK_BUTTON_LEFT_STICK_BUTTON;
-  else if (feature == "rightthumb")    return KEY_JOYSTICK_BUTTON_RIGHT_STICK_BUTTON;
-  else if (feature == "up")            return KEY_JOYSTICK_BUTTON_DPAD_UP;
-  else if (feature == "down")          return KEY_JOYSTICK_BUTTON_DPAD_DOWN;
-  else if (feature == "right")         return KEY_JOYSTICK_BUTTON_DPAD_RIGHT;
-  else if (feature == "left")          return KEY_JOYSTICK_BUTTON_DPAD_LEFT;
-  else if (feature == "lefttrigger")   return KEY_JOYSTICK_BUTTON_LEFT_TRIGGER;
-  else if (feature == "righttrigger")  return KEY_JOYSTICK_BUTTON_RIGHT_TRIGGER;
-  else if (feature == "leftstick")
-  {
-    switch (dir)
-    {
-      case ANALOG_STICK_DIRECTION::UP:     return KEY_JOYSTICK_BUTTON_LEFT_THUMB_STICK_UP;
-      case ANALOG_STICK_DIRECTION::DOWN:   return KEY_JOYSTICK_BUTTON_LEFT_THUMB_STICK_DOWN;
-      case ANALOG_STICK_DIRECTION::RIGHT:  return KEY_JOYSTICK_BUTTON_LEFT_THUMB_STICK_RIGHT;
-      case ANALOG_STICK_DIRECTION::LEFT:   return KEY_JOYSTICK_BUTTON_LEFT_THUMB_STICK_LEFT;
-      default:
-        break;
-    }
-  }
-  else if (feature == "rightstick")
-  {
-    switch (dir)
-    {
-      case ANALOG_STICK_DIRECTION::UP:     return KEY_JOYSTICK_BUTTON_RIGHT_THUMB_STICK_UP;
-      case ANALOG_STICK_DIRECTION::DOWN:   return KEY_JOYSTICK_BUTTON_RIGHT_THUMB_STICK_DOWN;
-      case ANALOG_STICK_DIRECTION::RIGHT:  return KEY_JOYSTICK_BUTTON_RIGHT_THUMB_STICK_RIGHT;
-      case ANALOG_STICK_DIRECTION::LEFT:   return KEY_JOYSTICK_BUTTON_RIGHT_THUMB_STICK_LEFT;
-      default:
-        break;
-    }
-  }
-  else if (feature == "accelerometer") return 0; //! @todo implement
-
-  return 0;
 }
 
 const std::vector<ANALOG_STICK_DIRECTION>& CDefaultJoystick::GetDirections(void)

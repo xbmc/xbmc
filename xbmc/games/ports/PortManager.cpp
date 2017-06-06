@@ -68,6 +68,7 @@ void CPortManager::Deinitialize()
 }
 
 void CPortManager::OpenPort(IInputHandler* handler,
+                            CGameClient* gameClient,
                             unsigned int port,
                             PERIPHERALS::PeripheralType requiredType /* = PERIPHERALS::PERIPHERAL_UNKNOWN) */)
 {
@@ -77,6 +78,7 @@ void CPortManager::OpenPort(IInputHandler* handler,
   newPort.handler = handler;
   newPort.port = port;
   newPort.requiredType = requiredType;
+  newPort.gameClient = gameClient;
   m_ports.push_back(newPort);
 
   SetChanged();
@@ -98,7 +100,7 @@ void CPortManager::ClosePort(IInputHandler* handler)
 }
 
 void CPortManager::MapDevices(const PeripheralVector& devices,
-                              std::map<PeripheralPtr, IInputHandler*>& deviceToPortMap)
+                              std::map<CPeripheral*, IInputHandler*>& deviceToPortMap)
 {
   CSingleLock lock(m_mutex);
 
@@ -152,8 +154,19 @@ void CPortManager::MapDevices(const PeripheralVector& devices,
   {
     IInputHandler* handler = AssignToPort(device);
     if (handler)
-      deviceToPortMap[device] = handler;
+      deviceToPortMap[device.get()] = handler;
   }
+}
+
+CGameClient* CPortManager::GameClient(KODI::JOYSTICK::IInputHandler* handler)
+{
+  for (const SPort& port : m_ports)
+  {
+    if (port.handler == handler)
+      return port.gameClient;
+  }
+
+  return nullptr;
 }
 
 IInputHandler* CPortManager::AssignToPort(const PeripheralPtr& device, bool checkPortNumber /* = true */)

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2016-2017 Team Kodi
+ *      Copyright (C) 2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -17,39 +17,24 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#pragma once
 
-#include "IButtonSequence.h"
+#include "PortInput.h"
+#include "games/addons/GameClient.h"
+#include "guilib/WindowIDs.h"
 
-#include <map>
-#include <string>
-#include <vector>
+using namespace GAME;
 
-namespace KODI
+CPortInput::CPortInput(CGameClient &gameClient) :
+  m_gameClient(gameClient)
 {
-namespace JOYSTICK
-{
-  /*!
-   * \brief Hush!!!
-   */
-  class CJoystickEasterEgg : public IButtonSequence
-  {
-  public:
-    CJoystickEasterEgg(const std::string& controllerId);
-    virtual ~CJoystickEasterEgg() = default;
-
-    // implementation of IButtonSequence
-    virtual bool OnButtonPress(const FeatureName& feature) override;
-
-    static void OnFinish(void);
-
-  private:
-    // Construction parameters
-    const std::string m_controllerId;
-
-    static const std::map<std::string, std::vector<FeatureName>> m_sequence;
-
-    unsigned int m_state;
-  };
 }
+
+bool CPortInput::AcceptsInput(void)
+{
+  return m_gameClient.AcceptsInput();
+}
+
+int CPortInput::GetWindowID() const
+{
+  return WINDOW_FULLSCREEN_GAME;
 }
