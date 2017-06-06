@@ -46,11 +46,6 @@ namespace ADDON
 
   class CAddonMgr;
   class CAddonSettings;
-  class AddonVersion;
-  typedef std::map<std::string, std::pair<const AddonVersion, bool> > ADDONDEPS;
-  typedef std::map<std::string, std::string> InfoMap;
-  typedef std::map<std::string, std::string> ArtMap;
-  class AddonProps;
 
   class IAddon : public std::enable_shared_from_this<IAddon>
   {

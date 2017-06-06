@@ -44,10 +44,10 @@ namespace ADDON
 
     typedef std::vector<DirInfo> DirList;
 
-    static std::unique_ptr<CRepository> FromExtension(AddonProps props, const cp_extension_t* ext);
+    static std::unique_ptr<CRepository> FromExtension(CAddonInfo addonInfo, const cp_extension_t* ext);
 
-    explicit CRepository(AddonProps props) : CAddon(std::move(props)) {};
-    CRepository(AddonProps props, DirList dirs);
+    explicit CRepository(CAddonInfo addonInfo) : CAddon(std::move(addonInfo)) {};
+    CRepository(CAddonInfo addonInfo, DirList dirs);
 
     /*! \brief Get the md5 hash for an addon.
      \param the addon in question.

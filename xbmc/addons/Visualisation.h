@@ -56,7 +56,7 @@ namespace ADDON
                        , public IRenderingCallback
   {
   public:
-    explicit CVisualisation(AddonProps props);
+    explicit CVisualisation(CAddonInfo addonInfo);
 
     virtual void OnInitialize(int iChannels, int iSamplesPerSec, int iBitsPerSample);
     virtual void OnAudioData(const float* pAudioData, int iAudioDataLength);

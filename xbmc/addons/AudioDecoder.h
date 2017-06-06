@@ -39,17 +39,17 @@ namespace ADDON
   {
   public:
 
-    static std::unique_ptr<CAudioDecoder> FromExtension(AddonProps props, const cp_extension_t* ext);
+    static std::unique_ptr<CAudioDecoder> FromExtension(CAddonInfo addonInfo, const cp_extension_t* ext);
 
-    explicit CAudioDecoder(AddonProps props)
-      : CAddonDll(std::move(props))
+    explicit CAudioDecoder(CAddonInfo addonInfo)
+      : CAddonDll(std::move(addonInfo))
       , m_context{nullptr}
       , m_tags{false}
       , m_tracks{false}
       , m_channel{nullptr}
     {}
 
-    CAudioDecoder(AddonProps props, std::string extension, std::string mimetype, bool tags,
+    CAudioDecoder(CAddonInfo addonInfo, std::string extension, std::string mimetype, bool tags,
         bool tracks, std::string codecName, std::string strExt);
 
     virtual ~CAudioDecoder();

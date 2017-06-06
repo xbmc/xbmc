@@ -47,8 +47,8 @@
 namespace ADDON
 {
 
-CAddonDll::CAddonDll(AddonProps props)
-  : CAddon(std::move(props)),
+CAddonDll::CAddonDll(CAddonInfo addonInfo)
+  : CAddon(std::move(addonInfo)),
     m_bIsChild(false)
 {
   m_initialized = false;
@@ -99,7 +99,7 @@ bool CAddonDll::LoadDll()
       libPath = tempbin + libPath;
       if (!XFILE::CFile::Exists(libPath))
       {
-        CLog::Log(LOGERROR, "ADDON: Could not locate %s", m_props.libname.c_str());
+        CLog::Log(LOGERROR, "ADDON: Could not locate %s", m_addonInfo.libname.c_str());
         return false;
       }
     }
@@ -122,7 +122,7 @@ bool CAddonDll::LoadDll()
   if (!XFILE::CFile::Exists(strFileName))
   {
     std::string tempbin = getenv("XBMC_ANDROID_LIBS");
-    strFileName = tempbin + "/" + m_props.libname;
+    strFileName = tempbin + "/" + m_addonInfo.libname;
   }
 #endif
   if (!XFILE::CFile::Exists(strFileName))
@@ -130,7 +130,7 @@ bool CAddonDll::LoadDll()
     std::string altbin = CSpecialProtocol::TranslatePath("special://xbmcaltbinaddons/");
     if (!altbin.empty())
     {
-      strAltFileName = altbin + m_props.libname;
+      strAltFileName = altbin + m_addonInfo.libname;
       if (!XFILE::CFile::Exists(strAltFileName))
       {
         std::string temp = CSpecialProtocol::TranslatePath("special://xbmc/addons/");
@@ -151,7 +151,7 @@ bool CAddonDll::LoadDll()
       strFileName = tempbin + strFileName;
       if (!XFILE::CFile::Exists(strFileName))
       {
-        CLog::Log(LOGERROR, "ADDON: Could not locate %s", m_props.libname.c_str());
+        CLog::Log(LOGERROR, "ADDON: Could not locate %s", m_addonInfo.libname.c_str());
         return false;
       }
     }

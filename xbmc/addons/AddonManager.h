@@ -131,7 +131,7 @@ namespace ADDON
     bool HasAvailableUpdates();
 
     std::string GetTranslatedString(const cp_cfg_element_t *root, const char *tag);
-    static AddonPtr AddonFromProps(AddonProps& props);
+    static AddonPtr AddonFromProps(CAddonInfo& addonInfo);
 
     /*! \brief Checks for new / updated add-ons
      \return True if everything went ok, false otherwise

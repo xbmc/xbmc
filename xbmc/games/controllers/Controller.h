@@ -34,9 +34,9 @@ using KODI::JOYSTICK::FEATURE_TYPE;
 class CController : public ADDON::CAddon
 {
 public:
-  static std::unique_ptr<CController> FromExtension(ADDON::AddonProps props, const cp_extension_t* ext);
+  static std::unique_ptr<CController> FromExtension(ADDON::CAddonInfo addonInfo, const cp_extension_t* ext);
 
-  CController(ADDON::AddonProps addonprops);
+  CController(ADDON::CAddonInfo addonInfo);
 
   virtual ~CController(void) { }
 
