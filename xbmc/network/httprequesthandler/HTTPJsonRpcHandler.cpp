@@ -34,7 +34,7 @@
 
 bool CHTTPJsonRpcHandler::CanHandleRequest(const HTTPRequest &request) const
 {
-  return (request.pathUrl.compare("/jsonrpc") == 0);
+  return (request.method == POST && request.pathUrl.compare("/jsonrpc") == 0);
 }
 
 int CHTTPJsonRpcHandler::HandleRequest()
@@ -61,15 +61,6 @@ int CHTTPJsonRpcHandler::HandleRequest()
     }
 
     isRequest = true;
-  }
-  else if (m_request.method == GET)
-  {
-    std::map<std::string, std::string>::const_iterator argument = arguments.find("request");
-    if (argument != arguments.end() && !argument->second.empty())
-    {
-      m_requestData = argument->second;
-      isRequest = true;
-    }
   }
 
   std::map<std::string, std::string>::const_iterator argument = arguments.find("jsonp");

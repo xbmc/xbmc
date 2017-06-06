@@ -360,41 +360,14 @@ TEST_F(TestWebServer, IsStarted)
 
 TEST_F(TestWebServer, CanGetJsonRpcApiDescription)
 {
-  std::string result;
-  CCurlFile curl;
-  ASSERT_TRUE(curl.Get(GetUrl(TEST_URL_JSONRPC), result));
-  ASSERT_FALSE(result.empty());
-
-  // get the HTTP header details
-  const CHttpHeader& httpHeader = curl.GetHttpHeader();
-
-  // Content-Type must be "application/json"
-  EXPECT_STREQ("application/json", httpHeader.GetMimeType().c_str());
-  // Accept-Ranges must be "none"
-  EXPECT_STREQ("none", httpHeader.GetValue(MHD_HTTP_HEADER_ACCEPT_RANGES).c_str());
-
-  // Cache-Control must contain "mag-age=0" and "no-cache"
-  std::string cacheControl = httpHeader.GetValue(MHD_HTTP_HEADER_CACHE_CONTROL);
-  EXPECT_TRUE(cacheControl.find("max-age=0") != std::string::npos);
-  EXPECT_TRUE(cacheControl.find("no-cache") != std::string::npos);
-}
-
-TEST_F(TestWebServer, CanGetJsonRpcResponse)
-{
   // initialized JSON-RPC
   JSONRPC::CJSONRPC::Initialize();
 
   std::string result;
   CCurlFile curl;
   curl.SetMimeType("application/json");
-  ASSERT_TRUE(curl.Post(GetUrl(TEST_URL_JSONRPC), "{ \"jsonrpc\": \"2.0\", \"method\": \"JSONRPC.Version\", \"id\": 1 }", result));
+  ASSERT_TRUE(curl.Post(GetUrl(TEST_URL_JSONRPC), "{ \"jsonrpc\": \"2.0\", \"method\": \"JSONRPC.Introspect\", \"id\": 1 }", result));
   ASSERT_FALSE(result.empty());
-
-  // parse the JSON-RPC response
-  CVariant resultObj;
-  ASSERT_TRUE(CJSONVariantParser::Parse(result, resultObj));
-  // make sure it's an object
-  ASSERT_TRUE(resultObj.isObject());
 
   // get the HTTP header details
   const CHttpHeader& httpHeader = curl.GetHttpHeader();
@@ -410,6 +383,18 @@ TEST_F(TestWebServer, CanGetJsonRpcResponse)
   EXPECT_TRUE(cacheControl.find("no-cache") != std::string::npos);
 
   // uninitialize JSON-RPC
+  JSONRPC::CJSONRPC::Cleanup();
+}
+
+TEST_F(TestWebServer, JsonRpcApiShouldNoAcceptGetRequests)
+{
+  JSONRPC::CJSONRPC::Initialize();
+
+  std::string result;
+  CCurlFile curl;
+  curl.SetMimeType("application/json");
+  ASSERT_FALSE(curl.Get(GetUrl(TEST_URL_JSONRPC), result));
+
   JSONRPC::CJSONRPC::Cleanup();
 }
 
