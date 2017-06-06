@@ -80,7 +80,6 @@ CMMALPool::CMMALPool(const char *component_name, bool input, uint32_t num_buffer
   m_aligned_width = 0;
   m_aligned_height = 0;
   m_avctx = nullptr;
-  m_dec = nullptr;
   m_state = state;
   if (!m_mmal_pool)
     CLog::Log(LOGERROR, "%s::%s Failed to create pool for port %s", CLASSNAME, __func__, port->name);
@@ -212,12 +211,12 @@ CMMALBuffer *CMMALPool::GetBuffer(uint32_t timeout)
     AlignedSize(m_avctx, aligned_width, aligned_height);
     if (!IsSoftware())
     {
-      CMMALVideoBuffer *vid = new CMMALVideoBuffer(static_cast<CMMALVideo *>(m_dec), shared_from_this());
+      CMMALVideoBuffer *vid = new CMMALVideoBuffer(shared_from_this());
       omvb = vid;
     }
     else
     {
-      MMAL::CMMALYUVBuffer *yuv = new MMAL::CMMALYUVBuffer(static_cast<MMAL::CDecoder *>(m_dec), shared_from_this(), m_mmal_format, m_width, m_height, aligned_width, aligned_height, m_size);
+      MMAL::CMMALYUVBuffer *yuv = new MMAL::CMMALYUVBuffer(shared_from_this(), m_mmal_format, m_width, m_height, aligned_width, aligned_height, m_size);
       if (yuv)
       {
         CGPUMEM *gmem = yuv->gmem;
