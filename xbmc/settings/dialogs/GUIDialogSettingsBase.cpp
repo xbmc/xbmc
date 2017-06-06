@@ -331,7 +331,6 @@ void CGUIDialogSettingsBase::DoProcess(unsigned int currentTime, CDirtyRegionLis
   CGUIDialog::DoProcess(currentTime, dirtyregions);
   if (control && bAlphaFaded)
   {
-    control->SetFocus(false);
     if (control->GetControlType() == CGUIControl::GUICONTROL_BUTTON)
       ((CGUIButtonControl *)control)->SetAlpha(0xFF);
     else

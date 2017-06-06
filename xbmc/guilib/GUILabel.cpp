@@ -43,11 +43,17 @@ bool CGUILabel::SetScrolling(bool scrolling)
   bool changed = m_scrolling != scrolling;
 
   m_scrolling = scrolling;
-  if (!m_scrolling)
+  if (changed)
     m_scrollInfo.Reset();
 
   return changed;
 }
+
+unsigned int CGUILabel::GetScrollLoopCount() const
+{
+  return m_scrollInfo.m_loopCount;
+}
+
 
 bool CGUILabel::SetOverflow(OVER_FLOW overflow)
 {

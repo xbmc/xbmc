@@ -19,8 +19,10 @@
  */
 
 #include "ApplicationPlayer.h"
+#include "cores/DataCacheCore.h"
 #include "cores/IPlayer.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
+#include "guilib/GUIWindowManager.h"
 #include "Application.h"
 #include "PlayListPlayer.h"
 #include "settings/MediaSettings.h"
@@ -749,7 +751,13 @@ void CApplicationPlayer::FrameMove()
 {
   std::shared_ptr<IPlayer> player = GetInternal();
   if (player)
+  {
     player->FrameMove();
+
+    if (CDataCacheCore::GetInstance().IsPlayerStateChanged())
+      // CApplicationMessenger would be overhead because we are already in gui thread
+      g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_STATE_CHANGED);
+  }
 }
 
 void CApplicationPlayer::Render(bool clear, uint32_t alpha, bool gui)

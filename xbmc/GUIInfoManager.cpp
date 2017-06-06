@@ -136,8 +136,15 @@ public:
   }
 };
 
+bool InfoBoolComparator(const InfoPtr &right, const InfoPtr &left)
+{
+  return *right < *left;
+}
+
+
 CGUIInfoManager::CGUIInfoManager(void) :
-    Observable()
+    Observable(),
+    m_bools(&InfoBoolComparator)
 {
   m_lastSysHeatInfoTime = -SYSHEATUPDATEINTERVAL;  // make sure we grab CPU temp on the first pass
   m_fanSpeed = 0;
@@ -153,6 +160,7 @@ CGUIInfoManager::CGUIInfoManager(void) :
   m_playerShowTime = false;
   m_playerShowInfo = false;
   m_fps = 0.0f;
+  m_refreshCounter = 0;
   ResetLibraryBools();
 }
 
@@ -6830,14 +6838,6 @@ bool CGUIInfoManager::GetInt(int &value, int info, int contextWindow, const CGUI
   return false;
 }
 
-// functor for comparison InfoPtr's
-struct InfoBoolFinder
-{
-  InfoBoolFinder(const std::string &expression, int context) : m_bool(expression, context) {};
-  bool operator() (const InfoPtr &right) const { return m_bool == *right; };
-  InfoBool m_bool;
-};
-
 INFO::InfoPtr CGUIInfoManager::Register(const std::string &expression, int context)
 {
   std::string condition(CGUIInfoLabel::ReplaceLocalize(expression));
@@ -6847,17 +6847,14 @@ INFO::InfoPtr CGUIInfoManager::Register(const std::string &expression, int conte
     return INFO::InfoPtr();
 
   CSingleLock lock(m_critInfo);
-  // do we have the boolean expression already registered?
-  std::vector<InfoPtr>::const_iterator i = std::find_if(m_bools.begin(), m_bools.end(), InfoBoolFinder(condition, context));
-  if (i != m_bools.end())
-    return *i;
+  std::pair<INFOBOOLTYPE::const_iterator, bool> res;
 
   if (condition.find_first_of("|+[]!") != condition.npos)
-    m_bools.push_back(std::make_shared<InfoExpression>(condition, context));
+    res = m_bools.insert(std::make_shared<InfoExpression>(condition, context, m_refreshCounter));
   else
-    m_bools.push_back(std::make_shared<InfoSingle>(condition, context));
+    res = m_bools.insert(std::make_shared<InfoSingle>(condition, context, m_refreshCounter));
 
-  return m_bools.back();
+  return *(res.first);
 }
 
 bool CGUIInfoManager::EvaluateBool(const std::string &expression, int contextWindow /* = 0 */, const CGUIListItemPtr &item /* = NULL */)
@@ -9394,14 +9391,18 @@ void CGUIInfoManager::Clear()
     will remove those bools that are no longer dependencies of other bools
     in the vector.
    */
-  std::vector<InfoPtr>::iterator i = std::remove_if(m_bools.begin(), m_bools.end(), std::mem_fun_ref(&InfoPtr::unique));
-  while (i != m_bools.end())
+  INFOBOOLTYPE swapList(&InfoBoolComparator);
+  do
   {
-    m_bools.erase(i, m_bools.end());
-    i = std::remove_if(m_bools.begin(), m_bools.end(), std::mem_fun_ref(&InfoPtr::unique));
-  }
+    swapList.clear();
+    for (auto &item : m_bools)
+      if (!item.unique())
+        swapList.insert(item);
+    m_bools.swap(swapList);
+  } while (swapList.size() != m_bools.size());
+
   // log which ones are used - they should all be gone by now
-  for (std::vector<InfoPtr>::const_iterator i = m_bools.begin(); i != m_bools.end(); ++i)
+  for (INFOBOOLTYPE::const_iterator i = m_bools.begin(); i != m_bools.end(); ++i)
     CLog::Log(LOGDEBUG, "Infobool '%s' still used by %u instances", (*i)->GetExpression().c_str(), (unsigned int) i->use_count());
 }
 
@@ -10767,8 +10768,7 @@ void CGUIInfoManager::ResetCache()
   m_containerMoves.clear();
   // mark our infobools as dirty
   CSingleLock lock(m_critInfo);
-  for (std::vector<InfoPtr>::iterator i = m_bools.begin(); i != m_bools.end(); ++i)
-    (*i)->SetDirty();
+  ++m_refreshCounter;
 }
 
 std::string CGUIInfoManager::GetPictureLabel(int info)

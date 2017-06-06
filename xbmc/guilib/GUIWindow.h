@@ -166,6 +166,7 @@ public:
   virtual bool IsVisible() const { return true; }; // windows are always considered visible as they implement their own
                                                    // versions of UpdateVisibility, and are deemed visible if they're in
                                                    // the window manager's active list.
+  virtual bool HasVisibleControls() { return true; }; //Assume that window always has visible controls
 
   virtual bool IsAnimating(ANIMATION_TYPE animType);
 
@@ -184,6 +185,7 @@ public:
   void DisableAnimations();
 
   virtual void ResetControlStates();
+  virtual void UpdateControlStats() {}; // Do not count window itself
 
   void       SetRunActionsManually();
   void       RunLoadActions() const;
@@ -318,6 +320,7 @@ protected:
 private:
   std::map<std::string, CVariant, icompare> m_mapProperties;
   std::map<INFO::InfoPtr, bool> m_xmlIncludeConditions; ///< \brief used to store conditions used to resolve includes for this window
+  bool m_forceProcess;
 };
 
 #endif

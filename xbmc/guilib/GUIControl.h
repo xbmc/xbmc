@@ -54,6 +54,17 @@ public:
   int m_data;
 };
 
+struct GUICONTROLSTATS
+{
+  unsigned int nCountTotal;
+  unsigned int nCountVisible;
+
+  void Reset()
+  {
+    nCountTotal = nCountVisible = 0;
+  };
+};
+
 /*!
  \brief Results of OnMouseEvent()
  Any value not equal to EVENT_RESULT_UNHANDLED indicates that the event was handled.
@@ -153,8 +164,6 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   virtual int GetID(void) const;
   virtual void SetID(int id) { m_controlID = id; };
-  virtual bool HasID(int id) const;
-  virtual bool HasVisibleID(int id) const;
   int GetParentID() const;
   virtual bool HasFocus() const;
   virtual void AllocResources();
@@ -177,6 +186,7 @@ public:
   virtual float GetHeight() const;
 
   void MarkDirtyRegion();
+  bool IsControlDirty() const { return m_controlIsDirty; };
 
   /*! \brief return the render region in screen coordinates of this control
    */
@@ -246,6 +256,9 @@ public:
   void SetParentControl(CGUIControl *control) { m_parentControl = control; };
   CGUIControl *GetParentControl(void) const { return m_parentControl; };
   virtual void SaveStates(std::vector<CControlState> &states);
+
+  void SetControlStats(GUICONTROLSTATS *controlStats) { m_controlStats = controlStats; };
+  virtual void UpdateControlStats();
 
   enum GUICONTROLTYPES {
     GUICONTROL_UNKNOWN,
@@ -335,6 +348,7 @@ protected:
   bool m_bAllocated;
   bool m_pulseOnSelect;
   GUICONTROLTYPES ControlType;
+  GUICONTROLSTATS *m_controlStats;
 
   CGUIControl *m_parentControl;   // our parent control if we're part of a group
 

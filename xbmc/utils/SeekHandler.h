@@ -72,6 +72,7 @@ private:
   int m_seekDelay;
   std::map<SeekType, int > m_seekDelays;
   bool m_requireSeek;
+  bool m_seekChanged = false;
   bool m_analogSeek;
   double m_seekSize;
   int m_seekStep;

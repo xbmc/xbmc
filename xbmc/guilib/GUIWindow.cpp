@@ -36,6 +36,7 @@
 #include "GUIAudioManager.h"
 #include "Application.h"
 #include "messaging/ApplicationMessenger.h"
+#include "settings/AdvancedSettings.h"
 #include "utils/Variant.h"
 #include "utils/StringUtils.h"
 
@@ -71,6 +72,7 @@ CGUIWindow::CGUIWindow(int id, const std::string &xmlFile)
   m_menuControlID = 0;
   m_menuLastFocusedControlID = 0;
   m_custom = false;
+  m_forceProcess = true;
 }
 
 CGUIWindow::~CGUIWindow()
@@ -341,6 +343,11 @@ void CGUIWindow::CenterWindow()
 
 void CGUIWindow::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
+  if (!m_controlIsDirty && !m_forceProcess && g_advancedSettings.m_guiSmartRedraw)
+    return;
+
+  m_forceProcess = false;
+
   g_graphicsContext.SetRenderingResolution(m_coordsRes, m_needsScaling);
   g_graphicsContext.AddGUITransform();
   CGUIControlGroup::DoProcess(currentTime, dirtyregions);
@@ -747,12 +754,14 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
             control->OnMessage(msg);
           }
         }
+        else if (message.GetParam1() == GUI_MSG_STATE_CHANGED)
+          m_forceProcess = true;
       }
     }
     break;
   }
 
-  return SendControlMessage(message);
+  return CGUIControlGroup::OnMessage(message);
 }
 
 bool CGUIWindow::NeedLoad() const

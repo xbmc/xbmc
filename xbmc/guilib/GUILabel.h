@@ -155,6 +155,10 @@ public:
    */
   bool SetScrolling(bool scrolling);
 
+  /*! \brief returns how often Text has already passed
+  */
+  unsigned int GetScrollLoopCount()const;
+
   /*! \brief Set how this label should handle overflowing text.
    \param overflow the overflow type
    \sa OVER_FLOW

@@ -222,7 +222,7 @@ bool CGUIControlGroup::OnMessage(CGUIMessage& message)
       // set all subcontrols unfocused
       for (auto *control : m_children)
         control->SetFocus(false);
-      if (!HasID(message.GetParam1()))
+      if (!GetControl(message.GetParam1()))
       { // we don't have the new id, so unfocus
         SetFocus(false);
         if (m_parentControl)
@@ -264,25 +264,17 @@ bool CGUIControlGroup::OnMessage(CGUIMessage& message)
 
 bool CGUIControlGroup::SendControlMessage(CGUIMessage &message)
 {
+  CGUIControl *ctrl = GetControl(message.GetControlId(), &m_idCollector);
   // see if a child matches, and send to the child control if so
-  for (auto *control : m_children)
-  {
-    if (control->HasVisibleID(message.GetControlId()))
-    {
-      if (control->OnMessage(message))
-        return true;
-    }
-  }
+  if (ctrl && ctrl->OnMessage(message))
+    return true;
+
   // Unhandled - send to all matching invisible controls as well
   bool handled(false);
-  for (auto *control : m_children)
-  {
-    if (control->HasID(message.GetControlId()))
-    {
-      if (control->OnMessage(message))
-        handled = true;
-    }
-  }
+  for (auto *control : m_idCollector)
+    if (control->OnMessage(message))
+      handled = true;
+
   return handled;
 }
 
@@ -406,34 +398,13 @@ void CGUIControlGroup::UnfocusFromPoint(const CPoint &point)
   CGUIControl::UnfocusFromPoint(point);
 }
 
-bool CGUIControlGroup::HasID(int id) const
+CGUIControl *CGUIControlGroup::GetControl(int iControl, std::vector<CGUIControl*> *idCollector)
 {
-  if (CGUIControl::HasID(id)) return true;
-  for (auto *child : m_children)
-  {
-    if (child->HasID(id))
-      return true;
-  }
-  return false;
-}
+  if (idCollector)
+    idCollector->clear();
 
-bool CGUIControlGroup::HasVisibleID(int id) const
-{
-  // call base class first as the group may be the requested control
-  if (CGUIControl::HasVisibleID(id)) return true;
-  // if the group isn't visible, then none of it's children can be
-  if (!IsVisible()) return false;
-  for (auto *child : m_children)
-  {
-    if (child->HasVisibleID(id))
-      return true;
-  }
-  return false;
-}
+  CGUIControl* pPotential(nullptr);
 
-CGUIControl *CGUIControlGroup::GetControl(int iControl)
-{
-  CGUIControl *pPotential = NULL;
   LookupMap::iterator first = m_lookup.find(iControl);
   if (first != m_lookup.end())
   {
@@ -443,6 +414,8 @@ CGUIControl *CGUIControlGroup::GetControl(int iControl)
       CGUIControl *control = i->second;
       if (control->IsVisible())
         return control;
+      else if (idCollector)
+        idCollector->push_back(control);
       else if (!pPotential)
         pPotential = control;
     }
@@ -535,6 +508,7 @@ void CGUIControlGroup::AddControl(CGUIControl *control, int position /* = -1*/)
     position = (int)m_children.size();
   m_children.insert(m_children.begin() + position, control);
   control->SetParentControl(this);
+  control->SetControlStats(m_controlStats);
   control->SetPushUpdates(m_pushedUpdates);
   AddLookup(control);
   SetInvalid();

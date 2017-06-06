@@ -39,10 +39,7 @@ CGUIListLabel::~CGUIListLabel(void)
 
 void CGUIListLabel::SetScrolling(bool scrolling)
 {
-  if (m_scroll == CGUIControl::FOCUS)
-    m_label.SetScrolling(scrolling);
-  else
-    m_label.SetScrolling((m_scroll == CGUIControl::ALWAYS) ? true : false);
+  m_label.SetScrolling(scrolling);
 }
 
 void CGUIListLabel::SetSelected(bool selected)
@@ -54,8 +51,7 @@ void CGUIListLabel::SetSelected(bool selected)
 void CGUIListLabel::SetFocus(bool focus)
 {
   CGUIControl::SetFocus(focus);
-  if (!focus)
-    SetScrolling(false);
+  SetScrolling(focus);
 }
 
 CRect CGUIListLabel::CalcRenderRegion() const
@@ -75,6 +71,9 @@ void CGUIListLabel::Process(unsigned int currentTime, CDirtyRegionList &dirtyreg
 {
   if (m_label.Process(currentTime))
     MarkDirtyRegion();
+
+  if (m_label.GetScrollLoopCount() >= 3)
+    SetScrolling(false);
 
   CGUIControl::Process(currentTime, dirtyregions);
 }

@@ -35,6 +35,7 @@ CGUIControlGroupList::CGUIControlGroupList(int parentID, int controlID, float po
   m_totalSize = 0;
   m_orientation = orientation;
   m_alignment = alignment;
+  m_lastScrollerValue = 0;
   m_useControlPositions = useControlPositions;
   ControlType = GUICONTROL_GROUPLIST;
   m_minSize = 0;
@@ -60,12 +61,13 @@ void CGUIControlGroupList::Process(unsigned int currentTime, CDirtyRegionList &d
   }
 
   ValidateOffset();
-  if (m_pageControl)
+  if (m_pageControl && m_lastScrollerValue != m_scroller.GetValue())
   {
     CGUIMessage message(GUI_MSG_LABEL_RESET, GetParentID(), m_pageControl, (int)Size(), (int)m_totalSize);
     SendWindowMessage(message);
     CGUIMessage message2(GUI_MSG_ITEM_SELECT, GetParentID(), m_pageControl, (int)m_scroller.GetValue());
     SendWindowMessage(message2);
+    m_lastScrollerValue = m_scroller.GetValue();
   }
   // we run through the controls, rendering as we go
   int index = 0;
@@ -152,7 +154,7 @@ bool CGUIControlGroupList::OnMessage(CGUIMessage& message)
         CGUIControl *control = *it;
         if (!control->IsVisible())
           continue;
-        if (control->HasID(message.GetControlId()))
+        if (control->GetID() == message.GetControlId())
         {
           // find out whether this is the first or last control
           if (IsFirstFocusableControl(control))
@@ -181,7 +183,7 @@ bool CGUIControlGroupList::OnMessage(CGUIMessage& message)
         CGUIControl *control = *it;
         if (!control->IsVisible())
           continue;
-        if (control->HasID(m_focusedControl))
+        if (control->GetID() == m_focusedControl)
         {
           if (IsControlOnScreen(offset, control))
             return CGUIControlGroup::OnMessage(message);
@@ -361,6 +363,7 @@ void CGUIControlGroupList::ScrollTo(float offset)
   m_scroller.ScrollTo(offset);
   if (m_scroller.IsScrolling())
     SetInvalid();
+  MarkDirtyRegion();
 }
 
 EVENT_RESULT CGUIControlGroupList::SendMouseEvent(const CPoint &point, const CMouseEvent &event)

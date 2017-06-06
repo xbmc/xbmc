@@ -1092,6 +1092,7 @@ void CGUIEPGGridContainer::SetChannel(int channel)
     if (m_item)
     {
       m_channelCursor = channel;
+      MarkDirtyRegion();
       SetBlock(GetBlock(m_item->item, channel), false);
     }
   }
@@ -1112,6 +1113,7 @@ void CGUIEPGGridContainer::SetBlock(int block, bool bUpdateBlockTravelAxis /* = 
     m_blockTravelAxis = m_blockOffset + m_blockCursor;
 
   m_item = GetItem(m_channelCursor);
+  MarkDirtyRegion();
 }
 
 CGUIListItemLayout *CGUIEPGGridContainer::GetFocusedLayout() const
@@ -1491,6 +1493,7 @@ void CGUIEPGGridContainer::ScrollToChannelOffset(int offset)
 
   m_channelScrollSpeed = (offset * size - m_channelScrollOffset) / m_scrollTime;
   m_channelOffset = offset;
+  MarkDirtyRegion();
 }
 
 void CGUIEPGGridContainer::ScrollToBlockOffset(int offset)
@@ -1520,6 +1523,7 @@ void CGUIEPGGridContainer::ScrollToBlockOffset(int offset)
 
   m_programmeScrollSpeed = (offset * size - m_programmeScrollOffset) / m_scrollTime;
   m_blockOffset = offset;
+  MarkDirtyRegion();
 }
 
 void CGUIEPGGridContainer::ValidateOffset()
@@ -1831,6 +1835,9 @@ void CGUIEPGGridContainer::UpdateScrollOffset(unsigned int currentTime)
   }
 
   m_programmeScrollLastTime = currentTime;
+
+  if (m_channelScrollSpeed || m_programmeScrollSpeed)
+    MarkDirtyRegion();
 }
 
 void CGUIEPGGridContainer::GetCurrentLayouts()

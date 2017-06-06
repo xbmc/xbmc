@@ -211,6 +211,8 @@ public:
    */
   bool IsPythonWindow(int id) const { return (id >= WINDOW_PYTHON_START && id <= WINDOW_PYTHON_END); };
 
+  bool HasVisibleControls();
+
 #ifdef _DEBUG
   void DumpTextureUse();
 #endif
@@ -261,6 +263,7 @@ private:
   int  m_iNested;
   bool m_initialized;
 
+  CDirtyRegionList m_dirtyregions;
   CDirtyRegionTracker m_tracker;
 };
 

@@ -54,6 +54,7 @@ CGUIControl::CGUIControl() :
   m_pulseOnSelect = false;
   m_controlIsDirty = true;
   m_stereo = 0.0f;
+  m_controlStats = nullptr;
 }
 
 CGUIControl::CGUIControl(int parentID, int controlID, float posX, float posY, float width, float height)
@@ -82,6 +83,7 @@ CGUIControl::CGUIControl(int parentID, int controlID, float posX, float posY, fl
   m_pulseOnSelect = false;
   m_controlIsDirty = false;
   m_stereo = 0.0f;
+  m_controlStats = nullptr;
 }
 
 
@@ -128,9 +130,11 @@ void CGUIControl::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyreg
 {
   CRect dirtyRegion = m_renderRegion;
 
-  bool changed = m_bInvalidated && IsVisible();
+  bool changed = m_controlIsDirty || (m_bInvalidated && IsVisible());
+  m_controlIsDirty = false;
 
-  changed |= Animate(currentTime);
+  if (Animate(currentTime))
+    MarkDirtyRegion();
 
   if (IsVisible())
   {
@@ -152,9 +156,9 @@ void CGUIControl::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyreg
     g_graphicsContext.RemoveTransform();
   }
 
-  changed |= m_controlIsDirty;
+  UpdateControlStats();
 
-  m_controlIsDirty = false;
+  changed |= m_controlIsDirty;
 
   if (changed)
   {
@@ -476,7 +480,12 @@ float CGUIControl::GetHeight() const
 
 void CGUIControl::MarkDirtyRegion()
 {
+  if (m_controlIsDirty)
+    return;
+
   m_controlIsDirty = true;
+  if (m_parentControl)
+    m_parentControl->MarkDirtyRegion();
 }
 
 CRect CGUIControl::CalcRenderRegion() const
@@ -726,9 +735,11 @@ bool CGUIControl::CheckAnimation(ANIMATION_TYPE animType)
 
 void CGUIControl::QueueAnimation(ANIMATION_TYPE animType)
 {
-  MarkDirtyRegion();
   if (!CheckAnimation(animType))
     return;
+
+  MarkDirtyRegion();
+
   CAnimation *reverseAnim = GetAnimation((ANIMATION_TYPE)-animType, false);
   CAnimation *forwardAnim = GetAnimation(animType);
   // we first check whether the reverse animation is in progress (and reverse it)
@@ -849,20 +860,11 @@ bool CGUIControl::Animate(unsigned int currentTime)
     changed |= (anim.GetProcess() != ANIM_PROCESS_NONE);
     anim.RenderAnimation(m_transform, center);
 
-/*    // debug stuff
-    if (anim.currentProcess != ANIM_PROCESS_NONE)
-    {
-      if (anim.effect == EFFECT_TYPE_ZOOM)
-      {
-        if (IsVisible())
-          CLog::Log(LOGDEBUG, "Animating control %d with a %s zoom effect %s. Amount is %2.1f, visible=%s", m_controlID, anim.type == ANIM_TYPE_CONDITIONAL ? (anim.lastCondition ? "conditional_on" : "conditional_off") : (anim.type == ANIM_TYPE_VISIBLE ? "visible" : "hidden"), anim.currentProcess == ANIM_PROCESS_NORMAL ? "normal" : "reverse", anim.amount, IsVisible() ? "true" : "false");
-      }
-      else if (anim.effect == EFFECT_TYPE_FADE)
-      {
-        if (IsVisible())
-          CLog::Log(LOGDEBUG, "Animating control %d with a %s fade effect %s. Amount is %2.1f. Visible=%s", m_controlID, anim.type == ANIM_TYPE_CONDITIONAL ? (anim.lastCondition ? "conditional_on" : "conditional_off") : (anim.type == ANIM_TYPE_VISIBLE ? "visible" : "hidden"), anim.currentProcess == ANIM_PROCESS_NORMAL ? "normal" : "reverse", anim.amount, IsVisible() ? "true" : "false");
-      }
-    }*/
+    // debug stuff
+    //if (anim.GetProcess() != ANIM_PROCESS_NONE && IsVisible())
+    //{
+    //  CLog::Log(LOGDEBUG, "Animating control %d", m_controlID);
+    //}
   }
 
   return changed;
@@ -924,19 +926,19 @@ void CGUIControl::UnfocusFromPoint(const CPoint &point)
   }
 }
 
-bool CGUIControl::HasID(int id) const
-{
-  return GetID() == id;
-}
-
-bool CGUIControl::HasVisibleID(int id) const
-{
-  return GetID() == id && IsVisible();
-}
-
 void CGUIControl::SaveStates(std::vector<CControlState> &states)
 {
   // empty for now - do nothing with the majority of controls
+}
+
+void CGUIControl::UpdateControlStats()
+{
+  if (m_controlStats)
+  {
+    ++m_controlStats->nCountTotal;
+    if (IsVisible() && IsVisibleFromSkin())
+      ++m_controlStats->nCountVisible;
+  }
 }
 
 void CGUIControl::SetHitRect(const CRect &rect, const color_t &color)

@@ -32,7 +32,7 @@ class CGUIListItemLayout
 {
 public:
   CGUIListItemLayout();
-  CGUIListItemLayout(const CGUIListItemLayout &from);
+  CGUIListItemLayout(const CGUIListItemLayout &from, CGUIControl *control);
   virtual ~CGUIListItemLayout();
   void LoadLayout(TiXmlElement *layout, int context, bool focused, float maxWidth, float maxHeight);
   void Process(CGUIListItem *item, int parentID, unsigned int currentTime, CDirtyRegionList &dirtyregions);
@@ -44,6 +44,7 @@ public:
   void ResetAnimation(ANIMATION_TYPE animType);
   void SetInvalid() { m_invalidated = true; };
   void FreeResources(bool immediately = false);
+  void SetParentControl(CGUIControl *control) { m_group.SetParentControl(control); };
 
 //#ifdef GUILIB_PYTHON_COMPATIBILITY
   void CreateListControlLayouts(float width, float height, bool focused, const CLabelInfo &labelInfo, const CLabelInfo &labelInfo2, const CTextureInfo &texture, const CTextureInfo &textureFocus, float texHeight, float iconWidth, float iconHeight, const std::string &nofocusCondition, const std::string &focusCondition);
