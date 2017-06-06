@@ -8,4 +8,4 @@
  */
 %>${result} = <%
   if(method.@feature_python_coerceToUnicode) { %>PyUnicode_DecodeUTF8(${api}.c_str(),${api}.size(),"replace");<% }
-  else { %>PyString_FromStringAndSize(${api}.c_str(), ${api}.length());<% } %>
+  else { %>PyUnicode_FromStringAndSize(${api}.c_str(), ${api}.length());<% } %>
