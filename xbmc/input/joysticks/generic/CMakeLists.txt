@@ -8,4 +8,4 @@ set(HEADERS ButtonMapping.h
             FeatureHandling.h
             InputHandling.h)
 
-core_add_library(input_joystick_generic)
+core_add_library(input_joysticks_generic)

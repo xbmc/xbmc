@@ -2,4 +2,4 @@ set(SOURCES AddonCallbacksAddon.cpp)
 
 set(HEADERS AddonCallbacksAddon.h)
 
-core_add_library(addonInterface_Addon)
+core_add_library(addons_interfaces_Addon)

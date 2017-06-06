@@ -10,4 +10,4 @@ set(HEADERS AddonInterfaces.h
             Filesystem.h
             Network.h)
 
-core_add_library(addonsBinaryInterfaces)
+core_add_library(addons_interfaces)

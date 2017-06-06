@@ -28,4 +28,4 @@ set(HEADERS DeadzoneFilter.h
             KeymapHandler.h
             RumbleGenerator.h)
 
-core_add_library(input_joystick)
+core_add_library(input_joysticks)
