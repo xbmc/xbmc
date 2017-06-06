@@ -257,3 +257,8 @@ void CGUIDialogPVRGuideInfo::OnInitWindow()
   if (bHideAddTimer)
     SET_CONTROL_HIDDEN(CONTROL_BTN_ADD_TIMER);
 }
+
+void CGUIDialogPVRGuideInfo::ShowFor(const CFileItemPtr& item)
+{
+  CServiceBroker::GetPVRManager().GUIActions()->ShowEPGInfo(item);
+}
