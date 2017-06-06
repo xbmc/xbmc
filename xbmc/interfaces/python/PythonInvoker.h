@@ -12,6 +12,8 @@
 #include "threads/CriticalSection.h"
 #include "threads/Event.h"
 
+typedef struct _object PyObject;
+
 class CPythonInvoker : public ILanguageInvoker
 {
 public:
@@ -22,7 +24,7 @@ public:
 
   bool IsStopping() const override { return m_stop || ILanguageInvoker::IsStopping(); }
 
-  typedef void (*PythonModuleInitialization)();
+  typedef PyObject* (*PythonModuleInitialization)();
 
 protected:
   // implementation of ILanguageInvoker
@@ -52,6 +54,8 @@ private:
   void addPath(const std::string& path); // add path in UTF-8 encoding
   void addNativePath(const std::string& path); // add path in system/Python encoding
   void getAddonModuleDeps(const ADDON::AddonPtr& addon, std::set<std::string>& paths);
+  bool execute(const std::string &script, const std::vector<std::wstring> &arguments);
+  FILE* PyFile_AsFileWithMode(PyObject *py_file, const char *mode);
 
   std::string m_pythonPath;
   void *m_threadState;
