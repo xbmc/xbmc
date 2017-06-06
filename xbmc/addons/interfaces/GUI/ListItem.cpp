@@ -334,7 +334,7 @@ void Interface_GUIListItem::set_property(void* kodiBase, void* handle, const cha
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CFileItemPtr* item = static_cast<CFileItemPtr*>(handle);
-  if (!addon || !item || !key || value)
+  if (!addon || !item || !key || !value)
   {
     CLog::Log(LOGERROR, "Interface_GUIListItem::%s - invalid handler data (kodiBase='%p', handle='%p', key='%p', value='%p') on addon '%s'",
                           __FUNCTION__, addon, item, key, value, addon ? addon->ID().c_str() : "unknown");

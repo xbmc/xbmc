@@ -39,6 +39,16 @@ typedef struct AddonToKodiFuncTable_kodi_gui_general
   int (*get_current_window_id)(void* kodiBase);
 } AddonToKodiFuncTable_kodi_gui_general;
 
+typedef struct AddonToKodiFuncTable_kodi_gui_control_button
+{
+  void (*set_visible)(void* kodiBase, void* handle, bool visible);
+  void (*set_enabled)(void* kodiBase, void* handle, bool enabled);
+  void (*set_label)(void* kodiBase, void* handle, const char* label);
+  char* (*get_label)(void* kodiBase, void* handle);
+  void (*set_label2)(void* kodiBase, void* handle, const char *label);
+  char* (*get_label2)(void* kodiBase, void* handle);
+} AddonToKodiFuncTable_kodi_gui_control_button;
+
 typedef struct AddonToKodiFuncTable_kodi_gui_dialogContextMenu
 {
   int (*open)(void* kodiBase, const char *heading, const char *entries[], unsigned int size);
@@ -213,11 +223,15 @@ typedef struct AddonToKodiFuncTable_kodi_gui_window
 
   /* Various functions */
   void (*mark_dirty_region)(void* kodiBase, void* handle);
+
+  /* GUI control access functions */
+  void* (*get_control_button)(void* kodiBase, void* handle, int control_id);
 } AddonToKodiFuncTable_kodi_gui_window;
 
 typedef struct AddonToKodiFuncTable_kodi_gui
 {
   AddonToKodiFuncTable_kodi_gui_general* general;
+  AddonToKodiFuncTable_kodi_gui_control_button* control_button;
   AddonToKodiFuncTable_kodi_gui_dialogContextMenu* dialogContextMenu;
   AddonToKodiFuncTable_kodi_gui_dialogExtendedProgress* dialogExtendedProgress;
   AddonToKodiFuncTable_kodi_gui_dialogFileBrowser* dialogFileBrowser;

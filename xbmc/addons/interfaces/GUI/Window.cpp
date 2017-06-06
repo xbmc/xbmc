@@ -92,6 +92,9 @@ void Interface_GUIWindow::Init(AddonGlobalInterface* addonInterface)
 
   /* Various functions */
   addonInterface->toKodi->kodi_gui->window->mark_dirty_region = mark_dirty_region;
+
+  /* GUI control access functions */
+  addonInterface->toKodi->kodi_gui->window->get_control_button = get_control_button;
 }
 
 void Interface_GUIWindow::DeInit(AddonGlobalInterface* addonInterface)
@@ -817,6 +820,25 @@ void Interface_GUIWindow::mark_dirty_region(void* kodiBase, void* handle)
   Interface_GUIGeneral::lock();
   pAddonWindow->MarkDirtyRegion();
   Interface_GUIGeneral::unlock();
+}
+//@}
+
+/*!
+ * GUI control access functions
+ */
+//@{
+void* Interface_GUIWindow::get_control_button(void* kodiBase, void* handle, int control_id)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
+  if (!addon || !pAddonWindow)
+  {
+    CLog::Log(LOGERROR, "Interface_GUIWindow::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
+                          __FUNCTION__, addon, handle, addon ? addon->ID().c_str() : "unknown");
+    return nullptr;
+  }
+
+  return pAddonWindow->GetAddonControl(control_id, CGUIControl::GUICONTROL_BUTTON, "button");
 }
 //@}
 

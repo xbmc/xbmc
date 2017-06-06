@@ -2,7 +2,9 @@ xbmc                                            xbmc
 xbmc/addons                                     addons
 xbmc/addons/interfaces                          addonsBinaryInterfaces
 xbmc/addons/interfaces/Addon                    addonCallbacks_Addon
-xbmc/addons/interfaces/GUI                      addonCallbacks_GUI
+xbmc/addons/interfaces/GUI                      addons_interfaces_gui
+xbmc/addons/interfaces/GUI/controls             addons_interfaces_gui_controls
+xbmc/addons/interfaces/GUI/dialogs              addons_interfaces_gui_dialogs
 xbmc/addons/settings                            addonsSettings
 xbmc/commons                                    commons
 xbmc/dbwrappers                                 dbwrappers
