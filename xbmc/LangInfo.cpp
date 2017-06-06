@@ -429,16 +429,16 @@ bool CLangInfo::Load(const std::string& strLanguage)
   // Windows need 3 chars isolang code
   if (m_defaultRegion.m_strLangLocaleName.length() == 2)
   {
-    if (!g_LangCodeExpander.ConvertISO6391ToISO6392T(m_defaultRegion.m_strLangLocaleName, m_defaultRegion.m_strLangLocaleName, true))
+    if (!g_LangCodeExpander.ConvertISO6391ToISO6392B(m_defaultRegion.m_strLangLocaleName, m_defaultRegion.m_strLangLocaleName, true))
       m_defaultRegion.m_strLangLocaleName = "";
   }
 
-  if (!g_LangCodeExpander.ConvertWindowsLanguageCodeToISO6392T(m_defaultRegion.m_strLangLocaleName, m_languageCodeGeneral))
+  if (!g_LangCodeExpander.ConvertWindowsLanguageCodeToISO6392B(m_defaultRegion.m_strLangLocaleName, m_languageCodeGeneral))
     m_languageCodeGeneral = "";
 #else
   if (m_defaultRegion.m_strLangLocaleName.length() != 3)
   {
-    if (!g_LangCodeExpander.ConvertToISO6392T(m_defaultRegion.m_strLangLocaleName, m_languageCodeGeneral))
+    if (!g_LangCodeExpander.ConvertToISO6392B(m_defaultRegion.m_strLangLocaleName, m_languageCodeGeneral))
       m_languageCodeGeneral = "";
   }
   else
@@ -799,7 +799,7 @@ void CLangInfo::SetAudioLanguage(const std::string& language)
   if (language.empty()
     || StringUtils::EqualsNoCase(language, "default")
     || StringUtils::EqualsNoCase(language, "original")
-    || !g_LangCodeExpander.ConvertToISO6392T(language, m_audioLanguage))
+    || !g_LangCodeExpander.ConvertToISO6392B(language, m_audioLanguage))
     m_audioLanguage.clear();
 }
 
@@ -817,7 +817,7 @@ void CLangInfo::SetSubtitleLanguage(const std::string& language)
   if (language.empty()
     || StringUtils::EqualsNoCase(language, "default")
     || StringUtils::EqualsNoCase(language, "original")
-    || !g_LangCodeExpander.ConvertToISO6392T(language, m_subtitleLanguage))
+    || !g_LangCodeExpander.ConvertToISO6392B(language, m_subtitleLanguage))
     m_subtitleLanguage.clear();
 }
 

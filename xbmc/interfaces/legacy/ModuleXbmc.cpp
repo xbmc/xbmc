@@ -208,12 +208,12 @@ namespace XBMCAddon
       case CLangCodeExpander::ISO_639_2:
         {
           std::string langCode;
-          g_LangCodeExpander.ConvertToISO6392T(lang, langCode);
+          g_LangCodeExpander.ConvertToISO6392B(lang, langCode);
           if (region)
           {
             std::string region = g_langInfo.GetRegionLocale();
             std::string region3Code;
-            g_LangCodeExpander.ConvertToISO6392T(region, region3Code);
+            g_LangCodeExpander.ConvertToISO6392B(region, region3Code);
             region3Code = "-" + region3Code;
             return (langCode += region3Code);
           }
@@ -505,7 +505,7 @@ namespace XBMCAddon
           // maybe it's a check whether the language exists or not
           if (convertedLanguage.empty())
           {
-            g_LangCodeExpander.ConvertToISO6392T(language, convertedLanguage);
+            g_LangCodeExpander.ConvertToISO6392B(language, convertedLanguage);
             g_LangCodeExpander.Lookup(convertedLanguage, convertedLanguage);
           }
           break;
@@ -514,7 +514,7 @@ namespace XBMCAddon
         g_LangCodeExpander.ConvertToISO6391(language, convertedLanguage);
         break;
       case CLangCodeExpander::ISO_639_2:
-        g_LangCodeExpander.ConvertToISO6392T(language, convertedLanguage);
+        g_LangCodeExpander.ConvertToISO6392B(language, convertedLanguage);
         break;
       default:
         return "";

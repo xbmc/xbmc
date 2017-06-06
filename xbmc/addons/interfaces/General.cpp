@@ -143,12 +143,12 @@ char* Interface_General::get_language(void* kodiBase, int format, bool region)
     case LANG_FMT_ISO_639_2:
     {
       std::string langCode;
-      g_LangCodeExpander.ConvertToISO6392T(string, langCode);
+      g_LangCodeExpander.ConvertToISO6392B(string, langCode);
       string = langCode;
       if (region)
       {
         std::string region3Code;
-        g_LangCodeExpander.ConvertToISO6392T(g_langInfo.GetRegionLocale(), region3Code);
+        g_LangCodeExpander.ConvertToISO6392B(g_langInfo.GetRegionLocale(), region3Code);
         if (!region3Code.empty())
           string += "-" + region3Code;
       }
