@@ -9,23 +9,29 @@
 # VAAPI_INCLUDE_DIRS - the VAAPI include directory
 # VAAPI_LIBRARIES - the VAAPI libraries
 # VAAPI_DEFINITIONS - the VAAPI definitions
-#
-# and the following imported targets::
-#
-#   VAAPI::VAAPI   - The VAAPI library
 
 if(PKG_CONFIG_FOUND)
-  pkg_check_modules(PC_VAAPI libva libva-x11 QUIET)
+  pkg_check_modules(PC_VAAPI libva libva-drm libva-x11 QUIET)
 endif()
 
-find_path(VAAPI_INCLUDE_DIR va/va.h
+set(REQUIRED_VARS "VAAPI_libva_LIBRARY" "VAAPI_libva-drm_LIBRARY" "VAAPI_libva_INCLUDE_DIR" "VAAPI_libva-drm_INCLUDE_DIR")
+
+find_path(VAAPI_libva_INCLUDE_DIR va/va.h
                             PATHS ${PC_VAAPI_libva_INCLUDEDIR})
 find_library(VAAPI_libva_LIBRARY NAMES va
                                  PATHS ${PC_VAAPI_libva_LIBDIR})
-find_library(VAAPI_libva-x11_LIBRARY NAMES va-x11
-                                     PATHS ${PC_VAAPI_libva_LIBDIR})
+find_path(VAAPI_libva-drm_INCLUDE_DIR va/va_drm.h
+                                PATHS ${PC_VAAPI_libva-drm_INCLUDEDIR})
 find_library(VAAPI_libva-drm_LIBRARY NAMES va-drm
-                                     PATHS ${PC_VAAPI_libva_LIBDIR})
+                                     PATHS ${PC_VAAPI_libva-drm_LIBDIR})
+
+if(CORE_PLATFORM_NAME STREQUAL "x11")
+  find_path(VAAPI_libva-x11_INCLUDE_DIR va/va_x11.h
+                                  PATHS ${PC_VAAPI_libva-x11_INCLUDEDIR})
+  find_library(VAAPI_libva-x11_LIBRARY NAMES va-x11
+                                       PATHS ${PC_VAAPI_libva-x11_LIBDIR})
+  list(APPEND REQUIRED_VARS "VAAPI_libva-x11_INCLUDE_DIR" "VAAPI_libva-x11_LIBRARY")
+endif()
 
 if(PC_VAAPI_libva_VERSION)
   set(VAAPI_VERSION_STRING ${PC_VAAPI_libva_VERSION})
@@ -41,32 +47,14 @@ endif()
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(VAAPI
-                                  REQUIRED_VARS VAAPI_libva_LIBRARY VAAPI_libva-x11_LIBRARY VAAPI_libva-drm_LIBRARY VAAPI_INCLUDE_DIR
+                                  REQUIRED_VARS ${REQUIRED_VARS}
                                   VERSION_VAR VAAPI_VERSION_STRING)
 
 if(VAAPI_FOUND)
-  set(VAAPI_INCLUDE_DIRS ${VAAPI_INCLUDE_DIR})
-  set(VAAPI_LIBRARIES ${VAAPI_libva_LIBRARY} ${VAAPI_libva-x11_LIBRARY} ${VAAPI_libva-drm_LIBRARY})
+  set(VAAPI_INCLUDE_DIRS ${VAAPI_INCLUDE_DIR} ${VAAPI_DRM_INCLUDE_DIR} ${VAAPI_X11_INCLUDE_DIR})
+  set(VAAPI_LIBRARIES ${VAAPI_libva_LIBRARY} ${VAAPI_libva-drm_LIBRARY} ${VAAPI_libva-x11_LIBRARY})
   set(VAAPI_DEFINITIONS -DHAVE_LIBVA=1)
-
-  if(NOT TARGET VAAPI::VAAPI_X11)
-    add_library(VAAPI::VAAPI_X11 UNKNOWN IMPORTED)
-    set_target_properties(VAAPI::VAAPI_X11 PROPERTIES
-                                           IMPORTED_LOCATION "${VAAPI_libva-x11_LIBRARY}")
-  endif()
-  if (NOT TARGET VAAPI::VAAPI_DRM)
-    add_library(VAAPI::VAAPI_DRM UNKNOWN IMPORTED)
-    set_target_properties(VAAPI::VAAPI_DRM PROPERTIES
-                                           IMPORTED_LOCATION "${VAAPI_libva-drm_LIBRARY}")
-  endif()
-  if(NOT TARGET VAAPI::VAAPI)
-    add_library(VAAPI::VAAPI UNKNOWN IMPORTED)
-    set_target_properties(VAAPI::VAAPI PROPERTIES
-                                       IMPORTED_LOCATION "${VAAPI_libva_LIBRARY}"
-                                       INTERFACE_INCLUDE_DIRECTORIES "${VAAPI_INCLUDE_DIR}"
-                                       INTERFACE_COMPILE_DEFINITIONS HAVE_LIBVA=1
-                                       INTERFACE_LINK_LIBRARIES "VAAPI::VAAPI_X11 VAAPI::VAAPI_DRM")
-  endif()
 endif()
 
-mark_as_advanced(VAAPI_INCLUDE_DIR VAAPI_libva_LIBRARY VAAPI_libva-x11_LIBRARY VAAPI_libva-drm_LIBRARY)
+mark_as_advanced(VAAPI_libva_INCLUDE_DIR VAAPI_libva-drm_INCLUDE_DIR VAAPI_libva-x11_INCLUDE_DIR
+                 VAAPI_libva_LIBRARY VAAPI_libva-drm_LIBRARY VAAPI_libva-x11_LIBRARY)
