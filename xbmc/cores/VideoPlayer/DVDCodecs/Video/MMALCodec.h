@@ -80,9 +80,8 @@ public:
 class CMMALVideoBuffer : public CMMALBuffer
 {
 public:
-  CMMALVideoBuffer(CMMALVideo *dec, std::shared_ptr<CMMALPool> pool);
+  CMMALVideoBuffer(std::shared_ptr<CMMALPool> pool);
   virtual ~CMMALVideoBuffer();
-  CMMALVideo *m_omv;
 protected:
 };
 
