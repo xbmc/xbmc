@@ -31,7 +31,7 @@ case $XBMC_PLATFORM_DIR in
 
   android)
     DEFAULT_SDK_VERSION="21"
-    DEFAULT_NDK_VERSION="12b"
+    DEFAULT_NDK_VERSION="14b"
     DEFAULT_XBMC_DEPENDS_ROOT=$WORKSPACE/tools/depends/xbmc-depends
     DEFAULT_CONFIGURATION="Debug"
     ;;

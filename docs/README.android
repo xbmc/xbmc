@@ -77,7 +77,7 @@ f. Once you have your hdd image with case sensitive hfs+ file system do all step
     $ ./configure --with-tarballs=/Users/Shared/xbmc-depends/tarballs --host=arm-linux-androideabi \
                   --with-sdk-path=/Volumes/android-dev/android/android-sdk-macosx \
                   --with-sdk=android-21 \
-                  --with-ndk=/Volumes/android-dev/android/android-ndk-r12b \
+                  --with-ndk=/Volumes/android-dev/android/android-ndk-r14b \
                   --with-toolchain=/Volumes/android-dev/android/android-toolchain-arm/android-21 \
                   --prefix=/Volumes/android-dev/android/xbmc-depends
 
@@ -98,7 +98,7 @@ archives to your harddisk. For our example we are extracting in the following
 directories (this matches the example from tools/depends/README as well):
 
 NDK (referenced as <android-ndk> from now on):
-/opt/android-ndk-r12b
+/opt/android-ndk-r14b
 
 TOOLCHAIN (arm) (referenced as <android-toolchain-arm> from now on):
 /opt/arm-linux-androideabi-4.9-vanilla/android-21
