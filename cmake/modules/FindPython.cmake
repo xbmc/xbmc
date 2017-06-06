@@ -6,12 +6,12 @@
 # PYTHON_LIBRARIES - The python libraries
 
 if(PKG_CONFIG_FOUND)
-  pkg_check_modules(PC_PYTHON python>=2.7 QUIET)
+  pkg_check_modules(PC_PYTHON python3>=3.5 QUIET)
 endif()
 
-find_program(PYTHON_EXECUTABLE python ONLY_CMAKE_FIND_ROOT_PATH)
-find_library(PYTHON_LIBRARY NAMES python2.7 PATHS ${PC_PYTHON_LIBDIR})
-find_path(PYTHON_INCLUDE_DIR NAMES Python.h PATHS ${PC_PYTHON_INCLUDE_DIRS} ${DEPENDS_PATH}/include/python2.7)
+find_program(PYTHON_EXECUTABLE python3 ONLY_CMAKE_FIND_ROOT_PATH)
+find_library(PYTHON_LIBRARY NAMES python3.7 python3.6 python3.5 PATHS ${PC_PYTHON_LIBDIR})
+find_path(PYTHON_INCLUDE_DIR NAMES Python.h PATHS ${PC_PYTHON_INCLUDE_DIRS})
 
 if(KODI_DEPENDSBUILD)
   find_library(FFI_LIBRARY ffi REQUIRED)
@@ -25,7 +25,7 @@ if(KODI_DEPENDSBUILD)
 
   set(PYTHON_LIBRARIES ${PYTHON_LIBRARY} ${FFI_LIBRARY} ${EXPAT_LIBRARY} ${INTL_LIBRARY} ${GMP_LIBRARY} ${PYTHON_DEP_LIBRARIES})
 else()
-  find_package(PythonLibs 2.7 REQUIRED)
+  find_package(PythonLibs 3.5 REQUIRED)
   list(APPEND PYTHON_LIBRARIES ${PC_PYTHON_STATIC_LIBRARIES})
 endif()
 

@@ -35,6 +35,8 @@
 #include "interfaces/python/PythonInvoker.h"
 #include "ServiceBroker.h"
 
+PyThreadState* savestate;
+
 XBPython::XBPython()
 {
   m_bInitialized      = false;
@@ -481,8 +483,7 @@ void XBPython::Finalize()
     m_mainThreadState = NULL; // clear the main thread state before releasing the lock
     {
       CSingleExit exit(m_critSection);
-      PyEval_AcquireLock();
-      PyThreadState_Swap(curTs);
+      PyEval_AcquireThread(curTs);
 
       Py_Finalize();
       PyEval_ReleaseLock();
@@ -498,7 +499,7 @@ void XBPython::Finalize()
 #endif
 #if defined(TARGET_POSIX) && !defined(TARGET_DARWIN) && !defined(TARGET_FREEBSD)
     // we can't release it on windows, as this is done in UnloadPythonDlls() for win32 (see above).
-    // The implementation for linux needs looking at - UnloadPythonDlls() currently only searches for "python26.dll"
+    // The implementation for linux needs looking at - UnloadPythonDlls() currently only searches for "python36.dll"
     // The implementation for osx can never unload the python dylib.
     DllLoaderContainer::ReleaseModule(m_pDll);
 #endif
@@ -567,7 +568,7 @@ bool XBPython::OnScriptInitialized(ILanguageInvoker *invoker)
 #ifndef TARGET_POSIX
     if (!FileExist("special://xbmc/system/python/DLLs/_socket.pyd") ||
       !FileExist("special://xbmc/system/python/DLLs/_ssl.pyd") ||
-      !FileExist("special://xbmc/system/python/DLLs/bz2.pyd") ||
+      !FileExist("special://xbmc/system/python/DLLs/_bz2.pyd") ||
       !FileExist("special://xbmc/system/python/DLLs/pyexpat.pyd") ||
       !FileExist("special://xbmc/system/python/DLLs/select.pyd") ||
       !FileExist("special://xbmc/system/python/DLLs/unicodedata.pyd"))
@@ -594,8 +595,8 @@ bool XBPython::OnScriptInitialized(ILanguageInvoker *invoker)
     // check if we are running as real xbmc.app or just binary
     if (!CUtil::GetFrameworksPath(true).empty())
     {
-      // using external python, it's build looking for xxx/lib/python2.6
-      // so point it to frameworks which is where python2.6 is located
+      // using external python, it's build looking for xxx/lib/python3.7
+      // so point it to frameworks which is where python3.7 is located
       setenv("PYTHONHOME", CSpecialProtocol::TranslatePath("special://frameworks").c_str(), 1);
       setenv("PYTHONPATH", CSpecialProtocol::TranslatePath("special://frameworks").c_str(), 1);
       CLog::Log(LOGDEBUG, "PYTHONHOME -> %s", CSpecialProtocol::TranslatePath("special://frameworks").c_str());
@@ -619,25 +620,22 @@ bool XBPython::OnScriptInitialized(ILanguageInvoker *invoker)
 #endif
 #endif
 
-    if (PyEval_ThreadsInitialized())
-      PyEval_AcquireLock();
-    else
-      PyEval_InitThreads();
-
     Py_Initialize();
-    PyEval_ReleaseLock();
 
     // If this is not the first time we initialize Python, the interpreter
     // lock already exists and we need to lock it as PyEval_InitThreads
     // would not do that in that case.
-    PyEval_AcquireLock();
-    const char* python_argv[1] = { "" };
+    if (PyEval_ThreadsInitialized() && !PyGILState_Check())
+      PyEval_RestoreThread((PyThreadState*)m_mainThreadState);
+    else
+      PyEval_InitThreads();
+    const wchar_t* python_argv[1] = {L""};
     //! @bug libpython isn't const correct
-    PySys_SetArgv(1, const_cast<char**>(python_argv));
+    PySys_SetArgv(1, const_cast<wchar_t**>(python_argv));
 
     if (!(m_mainThreadState = PyThreadState_Get()))
       CLog::Log(LOGERROR, "Python threadstate is NULL.");
-    PyEval_ReleaseLock();
+    savestate = PyEval_SaveThread();
 
     m_bInitialized = true;
   }

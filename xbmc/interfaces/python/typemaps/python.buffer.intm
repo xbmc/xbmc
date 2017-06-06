@@ -7,10 +7,10 @@
  *  See LICENSES/README.md for more information.
  */
 %>
-    if (PyString_Check(${slarg}))
+    if (PyUnicode_Check(${slarg}))
     {
-      const char* str = PyString_AsString(${slarg});
-      size_t size = (size_t)PyString_Size(${slarg});
+      const char* str = PyUnicode_AsUTF8(${slarg});
+      size_t size = (size_t)PyUnicode_GetLength(${slarg});
       ${api}.allocate(size);
       ${api}.put(str,size);
       ${api}.flip(); // prepare the buffer for reading from

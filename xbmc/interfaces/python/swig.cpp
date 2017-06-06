@@ -18,7 +18,7 @@ namespace PythonBindings
 {
   TypeInfo::TypeInfo(const std::type_info& ti) : swigType(NULL), parentType(NULL), typeIndex(ti)
   {
-    static PyTypeObject py_type_object_header = { PyObject_HEAD_INIT(NULL) 0};
+    static PyTypeObject py_type_object_header = {PyVarObject_HEAD_INIT(NULL, 0)};
     static int size = (long*)&(py_type_object_header.tp_name) - (long*)&py_type_object_header;
     memcpy(&(this->pythonType), &py_type_object_header, size);
   }
@@ -52,18 +52,14 @@ namespace PythonBindings
       // Python unicode objects are UCS2 or UCS4 depending on compilation
       // options, wchar_t is 16-bit or 32-bit depending on platform.
       // Avoid the complexity by just letting python convert the string.
-      PyObject *utf8_pyString = PyUnicode_AsUTF8String(pObject);
 
-      if (utf8_pyString)
-      {
-        buf = PyString_AsString(utf8_pyString);
-        Py_DECREF(utf8_pyString);
-        return;
-      }
+      buf = PyUnicode_AsUTF8(pObject);
+      return;
     }
-    if (PyString_Check(pObject))
+
+    if (PyBytes_Check(pObject)) // If pobject is of type Bytes
     {
-      buf = PyString_AsString(pObject);
+      buf = PyBytes_AsString(pObject);
       return;
     }
 
@@ -167,26 +163,24 @@ namespace PythonBindings
 
     // See https://docs.python.org/3/c-api/exceptions.html#c.PyErr_NormalizeException
     PyErr_NormalizeException(&exc_type, &exc_value, &exc_traceback);
-#if PY_MAJOR_VERSION > 2
     if (exc_traceback != NULL) {
       PyException_SetTraceback(exc_value, exc_traceback);
     }
-#endif
 
     exceptionType.clear();
     exceptionValue.clear();
     exceptionTraceback.clear();
 
-    if (exc_type != NULL && (pystring = PyObject_Str(exc_type)) != NULL && PyString_Check(pystring))
+    if (exc_type != NULL && (pystring = PyObject_Str(exc_type)) != NULL && PyUnicode_Check(pystring))
     {
-      char *str = PyString_AsString(pystring);
+      const char* str = PyUnicode_AsUTF8(pystring);
       if (str != NULL)
         exceptionType = str;
 
       pystring = PyObject_Str(exc_value);
       if (pystring != NULL)
       {
-        str = PyString_AsString(pystring);
+        str = PyUnicode_AsUTF8(pystring);
         exceptionValue = str;
       }
 
@@ -199,7 +193,7 @@ namespace PythonBindings
 
         if (tbList)
         {
-          PyObject *emptyString = PyString_FromString("");
+          PyObject* emptyString = PyUnicode_FromString("");
           char method[] = "join";
           char format[] = "O";
           PyObject *strRetval = PyObject_CallMethod(emptyString, method, format, tbList);
@@ -207,7 +201,7 @@ namespace PythonBindings
 
           if (strRetval)
           {
-            str = PyString_AsString(strRetval);
+            str = PyUnicode_AsUTF8(strRetval);
             if (str != NULL)
               exceptionTraceback = str;
             Py_DECREF(strRetval);
