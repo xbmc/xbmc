@@ -1,0 +1,47 @@
+<%
+/*
+ *      Copyright (C) 2005-2013 Team XBMC
+ *      http://xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
+ *
+ */
+    List types = swigTypeParser.SwigType_templateparmlist(ltype)
+    boolean ispointer = swigTypeParser.SwigType_ispointer(type)
+    String accessor = ispointer ? '->' : '.'
+    int seq = sequence.increment()
+    tupleAccess = [ 'first', 'second', 'third', 'fourth' ]
+%>
+    if(${slarg})
+    {
+      bool isTuple = PyObject_TypeCheck(${slarg},&PyTuple_Type);
+      if (!isTuple && !PyObject_TypeCheck(${slarg},&PyList_Type))
+        throw WrongTypeException("The parameter \"${api}\" must be either a Tuple or a List.");
+      int vecSize = (isTuple ? PyTuple_Size(${slarg}) : PyList_Size(${slarg}));
+<%
+      types.eachWithIndex { curType, entryIndex ->
+%>
+      if (vecSize > ${entryIndex})
+      {
+        PyObject *pyentry${entryIndex}_${seq} = NULL;
+        pyentry${entryIndex}_${seq} = (isTuple ? PyTuple_GetItem(${slarg}, ${entryIndex}) : PyList_GetItem(${slarg}, ${entryIndex}));
+        ${swigTypeParser.SwigType_str(swigTypeParser.SwigType_ltype(curType))} entry${entryIndex}_${seq};
+        ${helper.getInConversion(curType, 'entry' + entryIndex + '_' + seq, 'pyentry' + entryIndex + '_' + seq, method,[ 'sequence' : sequence ])}
+        ${api}${accessor}${tupleAccess[entryIndex]}() = entry${entryIndex}_${seq};
+      }
+<%
+      }
+%>
+    }
