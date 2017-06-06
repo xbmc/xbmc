@@ -180,7 +180,7 @@ namespace PythonBindings
     exceptionValue.clear();
     exceptionTraceback.clear();
 
-    if (exc_type != NULL && (pystring = PyObject_Str(exc_type)) != NULL && PyString_Check(pystring))
+    if (exc_type != NULL && (pystring = PyObject_Str(exc_type)) != NULL && PyUnicode_Check(pystring))
     {
       char *str = PyUnicode_AsUTF8(pystring);
       if (str != NULL)
@@ -202,7 +202,7 @@ namespace PythonBindings
 
         if (tbList)
         {
-          PyObject *emptyString = PyString_FromString("");
+          PyObject *emptyString = PyUnicode_FromString("");
           char method[] = "join";
           char format[] = "O";
           PyObject *strRetval = PyObject_CallMethod(emptyString, method, format, tbList);
