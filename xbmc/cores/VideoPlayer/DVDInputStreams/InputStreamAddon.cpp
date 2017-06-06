@@ -19,13 +19,13 @@
  */
 
 #include "InputStreamAddon.h"
+#include "TimingConstants.h"
 #include "addons/InputStream.h"
 #include "cores/VideoPlayer/DVDClock.h"
 
 CInputStreamAddon::CInputStreamAddon(const CFileItem& fileitem, std::shared_ptr<ADDON::CInputStream> inputStream)
 : CDVDInputStream(DVDSTREAM_TYPE_ADDON, fileitem), m_addon(inputStream)
 {
-  m_hasDemux = false;
 }
 
 CInputStreamAddon::~CInputStreamAddon()

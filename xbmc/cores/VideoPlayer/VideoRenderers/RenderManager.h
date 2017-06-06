@@ -228,9 +228,9 @@ protected:
   std::deque<int> m_discard;
 
   ERenderFormat m_format;
-  void *m_hwPic;
+  void *m_hwPic = nullptr;
   unsigned int m_width, m_height, m_dwidth, m_dheight;
-  unsigned int m_flags;
+  unsigned int m_flags = 0;
   float m_fps;
   unsigned int m_orientation;
   int m_NumberBuffers;

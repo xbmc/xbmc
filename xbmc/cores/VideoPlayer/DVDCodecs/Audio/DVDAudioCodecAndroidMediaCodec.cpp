@@ -61,6 +61,7 @@ CDVDAudioCodecAndroidMediaCodec::CDVDAudioCodecAndroidMediaCodec(CProcessInfo &p
   m_buffer(NULL),
   m_bufferSize(0),
   m_bufferUsed(0),
+  m_currentPts(DVD_NOPTS_VALUE),
   m_crypto(0)
 {
 }

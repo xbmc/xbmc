@@ -27,6 +27,7 @@
 #include "DVDMessageQueue.h"
 #include "DVDStreamInfo.h"
 #include "IVideoPlayer.h"
+#include "TimingConstants.h"
 #include "threads/Thread.h"
 #include "utils/BitstreamStats.h"
 

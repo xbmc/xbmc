@@ -21,6 +21,7 @@
 #include "system.h"
 #include "RenderManager.h"
 #include "RenderFlags.h"
+#include "cores/VideoPlayer/TimingConstants.h"
 #include "guilib/GraphicContext.h"
 #include "utils/MathUtils.h"
 #include "threads/SingleLock.h"

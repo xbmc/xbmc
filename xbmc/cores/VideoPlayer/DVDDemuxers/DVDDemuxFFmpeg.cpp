@@ -184,6 +184,7 @@ CDVDDemuxFFmpeg::CDVDDemuxFFmpeg() : CDVDDemux()
   memset(&m_pkt.pkt, 0, sizeof(AVPacket));
   m_streaminfo = true; /* set to true if we want to look for streams before playback */
   m_checkvideo = false;
+  m_dtsAtDisplayTime = DVD_NOPTS_VALUE;
 }
 
 CDVDDemuxFFmpeg::~CDVDDemuxFFmpeg()

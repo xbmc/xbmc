@@ -19,6 +19,7 @@
  */
 
 #include "DVDClock.h"
+#include "TimingConstants.h"
 #include "VideoReferenceClock.h"
 #include <math.h>
 #include "utils/MathUtils.h"
@@ -35,6 +36,7 @@ CDVDClock::CDVDClock()
   m_pauseClock = 0;
   m_bReset = true;
   m_paused = false;
+  m_speedAfterPause = DVD_PLAYSPEED_PAUSE;
   m_iDisc = 0;
   m_maxspeedadjust = 0.0;
   m_systemAdjust = 0;

@@ -30,6 +30,7 @@
 #include "IVideoPlayer.h"
 #include "DVDMessageQueue.h"
 #include "DVDClock.h"
+#include "TimingConstants.h"
 #include "VideoPlayerVideo.h"
 #include "VideoPlayerSubtitle.h"
 #include "VideoPlayerTeletext.h"
