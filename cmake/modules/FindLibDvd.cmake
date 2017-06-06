@@ -1,5 +1,5 @@
 if(NOT WIN32)
-  if(KODI_DEPENDSBUILD)
+  if(NOT KODI_DEPENDSBUILD)
     set(_dvdlibs dvdread dvdnav)
     set(_handlevars LIBDVD_INCLUDE_DIRS DVDREAD_LIBRARY DVDNAV_LIBRARY)
     if(ENABLE_DVDCSS)
