@@ -197,6 +197,13 @@ void CSetting::SetEnabled(bool enabled)
   OnSettingPropertyChanged(shared_from_this(), "enabled");
 }
 
+void CSetting::SetChanged(bool changed, bool notify /* = false*/)
+{
+  m_changed = changed;
+  if (notify)
+    OnSettingChanged(this);
+}
+
 bool CSetting::IsVisible() const
 {
   if (!ISetting::IsVisible())

@@ -69,6 +69,8 @@ bool CSettingUpdate::setType(const std::string &type)
     m_type = SettingUpdateTypeChange;
   else if (StringUtils::EqualsNoCase(type, "rename"))
     m_type = SettingUpdateTypeRename;
+  else if (StringUtils::EqualsNoCase(type, "keep"))
+    m_type = SettingUpdateTypeKeep;
   else
     return false;
 

@@ -103,6 +103,7 @@ public:
   void SetHelp(int help) { m_help = help; }
   bool IsEnabled() const;
   void SetEnabled(bool enabled);
+  void SetChanged(bool changed, bool notify = false);
   bool IsDefault() const { return !m_changed; }
   const std::string& GetParent() const { return m_parentSetting; }
   void SetParent(const std::string& parentSetting) { m_parentSetting = parentSetting; }
