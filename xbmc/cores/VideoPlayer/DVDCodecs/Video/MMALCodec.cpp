@@ -54,8 +54,8 @@ using namespace KODI::MESSAGING;
 
 void CMMALBuffer::SetVideoDeintMethod(std::string method) { if (m_pool) m_pool->SetVideoDeintMethod(method); }
 
-CMMALVideoBuffer::CMMALVideoBuffer(CMMALVideo *omv, std::shared_ptr<CMMALPool> pool)
-    : CMMALBuffer(pool), m_omv(omv)
+CMMALVideoBuffer::CMMALVideoBuffer(std::shared_ptr<CMMALPool> pool)
+    : CMMALBuffer(pool)
 {
   if (VERBOSE && g_advancedSettings.CanLogComponent(LOGVIDEO))
     CLog::Log(LOGDEBUG, "%s::%s %p", CLASSNAME, __func__, this);
@@ -470,7 +470,6 @@ bool CMMALVideo::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     CLog::Log(LOGERROR, "%s::%s Failed to create pool for video output", CLASSNAME, __func__);
     return false;
   }
-  m_pool->SetDecoder(this);
   m_pool->SetProcessInfo(&m_processInfo);
   m_dec = m_pool->GetComponent();
 
