@@ -1,0 +1,48 @@
+<%
+/*
+ *      Copyright (C) 2005-2013 Team XBMC
+ *      http://xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
+ *
+ */
+    List templateArgs = swigTypeParser.SwigType_templateparmlist(type)
+    vectype = templateArgs[0]
+    boolean ispointer = swigTypeParser.SwigType_ispointer(type)
+    String accessor = ispointer ? '->' : '.'
+    seq = sequence.increment()
+
+    if (ispointer)
+    {
+%>
+    if (${api} != NULL)
+    { 
+<%  }  %>
+      ${result} = PyList_New(0);
+
+      for (std::vector<${swigTypeParser.SwigType_str(vectype)}>::iterator iter = ${api}${accessor}begin(); iter != ${api}${accessor}end(); ++iter)
+      {
+        ${swigTypeParser.SwigType_str(swigTypeParser.SwigType_ltype(vectype))}& entry${seq} = *iter;
+        PyObject* pyentry${seq};
+        ${helper.getOutConversion(vectype,'result',method,[ 'result' : 'pyentry' + seq, 'api' : 'entry' + seq, 'sequence' : sequence ])}
+        PyList_Append(${result}, pyentry${seq});
+        Py_DECREF(pyentry${seq});
+      }
+<%
+    if (ispointer)
+    {
+%>
+    }
+<%  }  %>
