@@ -89,7 +89,7 @@ endforeach()
 # DELAYLOAD option
 set(_delayloadlibs zlib.dll libmysql.dll libxslt.dll dnssd.dll dwmapi.dll sqlite3.dll
                    avcodec-58.dll avfilter-7.dll avformat-58.dll avutil-56.dll
-                   postproc-55.dll swresample-3.dll swscale-5.dll d3dcompiler_47.dll)
+                   postproc-55.dll swresample-3.dll swscale-5.dll d3dcompiler_47.dll WinSparkle.dll)
 foreach(_lib ${_delayloadlibs})
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /DELAYLOAD:\"${_lib}\"")
 endforeach()
