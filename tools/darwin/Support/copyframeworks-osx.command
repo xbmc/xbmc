@@ -75,10 +75,48 @@ cp -f "$SRCROOT/xbmc/platform/darwin/osx/Info.plist" "$TARGET_CONTENTS/"
 # Copy all of XBMC's dylib dependencies and rename their locations to inside the Framework
 echo "Checking $TARGET_BINARY dylib dependencies"
 for a in $(otool -LX "$TARGET_BINARY"  | grep "$EXTERNAL_LIBS" | awk ' { print $1 } ') ; do
-	echo "    Packaging $a"
-	cp -f "$a" "$TARGET_FRAMEWORKS/"
-	chmod u+w "$TARGET_FRAMEWORKS/$(basename $a)"
-	install_name_tool -change "$a" "$DYLIB_NAMEPATH/$(basename $a)" "$TARGET_BINARY"
+  #frameworks need special packaging
+  if [[ $a != *".framework"* ]]
+  then
+	  echo "    Packaging $a"
+    cp -f "$a" "$TARGET_FRAMEWORKS/"
+    chmod u+w "$TARGET_FRAMEWORKS/$(basename $a)"
+    install_name_tool -change "$a" "$DYLIB_NAMEPATH/$(basename $a)" "$TARGET_BINARY"
+  fi
+done
+
+# Copy all of XBMC's Frameworks dependencies and rename their locations to inside the Framework
+echo "Checking $TARGET_BINARY framework dependencies"
+for a in $(otool -L "$TARGET_BINARY"  | grep "$EXTERNAL_LIBS" | grep "Frameworks" | awk ' { print $1 } ') ; do
+  #frameworks need special packaging
+  if [[ $a == *".framework"* ]]
+  then
+    #parse the name of the framework by going
+    #back in the string slash by slash
+    #until the basename contains .framework
+    frameworkName=$a
+    binaryName=$(basename $a)
+    while [ "$frameworkName" != "" ]
+    do
+      frameworkName=$(dirname $frameworkName)
+      if [[ $(basename $frameworkName) == *".framework"* ]]
+      then
+        frameworkName=$(basename $frameworkName)
+        break
+      fi
+    done
+
+    if [ -n $frameworkPath]
+    then
+      echo "    Packaging framework $frameworkName"
+      if [ -d "$TARGET_FRAMEWORKS/$frameworkName" ]
+      then
+        rm -r "$TARGET_FRAMEWORKS/$frameworkName"
+      fi
+      cp -af "$EXTERNAL_LIBS/Frameworks/$frameworkName" "$TARGET_FRAMEWORKS/$frameworkName"
+      install_name_tool -change "$a" "$DYLIB_NAMEPATH/$frameworkName/$binaryName" "$TARGET_BINARY"
+    fi
+  fi
 done
 
 echo "Package $EXTERNAL_LIBS/lib/python2.7"
@@ -127,3 +165,5 @@ do
 	done
 done
 
+#copy dsa public key for sparkle updater
+cp -f "$SRCROOT/xbmc/platform/darwin/osx/sparkle_public_key_kodi.pem" "$TARGET_CONTENTS/Resources/"

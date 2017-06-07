@@ -10,6 +10,8 @@ add_custom_target(bundle
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${APP_NAME_LC}> ${PACKAGE_OUTPUT_DIR}/${APP_NAME}
     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/DllPaths_generated.h
                                      ${CMAKE_BINARY_DIR}/xbmc/DllPaths_generated.h
+    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/xbmc/platform/darwin/osx/sparkle_public_key_kodi.pem
+                                     ${CMAKE_BINARY_DIR}/xbmc/platform/darwin/osx/sparkle_public_key_kodi.pem
     COMMAND "ACTION=build"
             "TARGET_BUILD_DIR=${PACKAGE_OUTPUT_DIR}"
             "TARGET_NAME=${APP_NAME}.app"

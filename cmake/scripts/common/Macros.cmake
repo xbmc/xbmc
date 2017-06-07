@@ -698,6 +698,7 @@ endfunction()
 #   APP_VERSION_TAG_LC - lowercased app version tag
 #   APP_VERSION - the app version (${APP_VERSION_MAJOR}.${APP_VERSION_MINOR}-${APP_VERSION_TAG})
 #   APP_ADDON_API - the addon API version in the form of 16.9.702
+#   APP_SPARKLE_UPDATE_SCHEME_URL - the url to the sparkle update information xml file used by the sparkle updater
 #   FILE_VERSION - file version in the form of 16,9,702,0 - Windows only
 #   JSONRPC_VERSION - the json api version in the form of 8.3.0
 #
@@ -725,6 +726,7 @@ macro(core_find_versions)
     PACKAGE_DESCRIPTION
     PACKAGE_IDENTITY
     PACKAGE_PUBLISHER
+    SPARKLE_UPDATE_SCHEME_URL
     VERSION_MAJOR
     VERSION_MINOR
     VERSION_TAG
