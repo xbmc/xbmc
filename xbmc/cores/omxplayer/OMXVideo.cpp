@@ -34,6 +34,7 @@
 #include "xbmc/guilib/GraphicContext.h"
 #include "settings/Settings.h"
 #include "utils/BitstreamConverter.h"
+#include "TimingConstants.h"
 
 #include "linux/RBP.h"
 

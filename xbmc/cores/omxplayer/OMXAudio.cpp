@@ -39,6 +39,7 @@
 #include "settings/Settings.h"
 #include "guilib/LocalizeStrings.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
+#include "TimingConstants.h"
 #include "Util.h"
 #include <algorithm>
 #include <cassert>
