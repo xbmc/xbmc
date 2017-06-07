@@ -99,8 +99,11 @@ static void DeserializeMetadata(const std::string& document, CAddonBuilder& buil
   builder.SetIcon(variant["icon"].asString());
 
   std::map<std::string, std::string> art;
-  for (auto it = variant["art"].begin_map(); it != variant["art"].end_map(); ++it)
-    art.emplace(it->first, it->second.asString());
+  if (!variant["art"].empty())
+  {
+    for (auto it = variant["art"].begin_map(); it != variant["art"].end_map(); ++it)
+      art.emplace(it->first, it->second.asString());
+  }
   builder.SetArt(std::move(art));
 
   std::vector<std::string> screenshots;
