@@ -45,22 +45,24 @@ class CDemuxMultiSource : public CDVDDemux
 public:
   CDemuxMultiSource();
   ~CDemuxMultiSource() override;
-  
+
+  bool Open(CDVDInputStream* pInput);
+
+  // implementation of CDVDDemux
   void Abort() override;
   void EnableStream(int64_t demuxerId, int id, bool enable) override;
   void Flush() override;
-  std::string GetFileName() override { return ""; };
   int GetNrOfStreams() const override;
-  CDemuxStream* GetStream(int iStreamId)const override { return nullptr; } ;
   CDemuxStream* GetStream(int64_t demuxerId, int iStreamId) const override;
   std::vector<CDemuxStream*> GetStreams() const override;
   std::string GetStreamCodecName(int64_t demuxerId, int iStreamId) override;
   int GetStreamLength() override;
-  bool Open(CDVDInputStream* pInput);
   DemuxPacket* Read() override;
   void Reset() override;
   bool SeekTime(double time, bool backwards = false, double* startpts = NULL) override;
-  void SetSpeed(int iSpeed) override {};
+
+protected:
+  CDemuxStream* GetStream(int iStreamId) const override { return nullptr; }
 
 private:
   void Dispose();

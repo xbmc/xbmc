@@ -32,16 +32,12 @@ public:
   ~CDVDDemuxCC() override;
 
   void Reset() override {};
-  void Abort() override {};
   void Flush() override {};
   DemuxPacket* Read() override { return NULL; };
   bool SeekTime(double time, bool backwards = false, double* startpts = NULL) override {return true;};
-  void SetSpeed(int iSpeed) override {};
-  int GetStreamLength() override {return 0;};
   CDemuxStream* GetStream(int iStreamId) const override;
   std::vector<CDemuxStream*> GetStreams() const override;
   int GetNrOfStreams() const override;
-  std::string GetFileName() override {return "";};
 
   DemuxPacket* Read(DemuxPacket *packet);
   static void Handler(int service, void *userdata);
