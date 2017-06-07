@@ -559,17 +559,11 @@ ssize_t CFile::Read(void *lpBuf, size_t uiBufSize)
   if (uiBufSize > SSIZE_MAX)
     uiBufSize = SSIZE_MAX;
 
-  if (uiBufSize == 0)
-  {
-    // "test" read with zero size
-    // some VFSs don't handle correctly null buffer pointer
-    // provide valid buffer pointer for them
-    char dummy;
-    return m_pFile->Read(&dummy, 0);
-  }
-
   if(m_pBuffer)
   {
+    if (uiBufSize == 0)
+      return 0; // "test" read with zero size is not supported with internal buffer, assume read is OK
+
     if(m_flags & READ_TRUNCATED)
     {
       const ssize_t nBytes = m_pBuffer->sgetn(
@@ -590,6 +584,17 @@ ssize_t CFile::Read(void *lpBuf, size_t uiBufSize)
 
   try
   {
+    if (uiBufSize == 0)
+    {
+      // "test" read with zero size
+      // some VFSs don't handle correctly null buffer pointer
+      // provide valid buffer pointer for them
+      const int chunkSize = m_pFile->GetChunkSize();
+      auto_buffer dummyBuf(chunkSize > 1 ? (size_t)chunkSize : 1024);
+
+      return m_pFile->Read(dummyBuf.get(), 0);
+    }
+
     if(m_flags & READ_TRUNCATED)
     {
       const ssize_t nBytes = m_pFile->Read(lpBuf, uiBufSize);
