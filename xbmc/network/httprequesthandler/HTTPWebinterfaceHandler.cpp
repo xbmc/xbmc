@@ -24,6 +24,7 @@
 #include "addons/Webinterface.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
+#include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
@@ -73,6 +74,10 @@ int CHTTPWebinterfaceHandler::ResolveUrl(const std::string &url, std::string &pa
   }
 
   if (!XFILE::CFile::Exists(path))
+    return MHD_HTTP_NOT_FOUND;
+
+  // white/black list access check
+  if (!CFileUtils::ZebraListAccessCheck(path))
     return MHD_HTTP_NOT_FOUND;
 
   return MHD_HTTP_OK;
