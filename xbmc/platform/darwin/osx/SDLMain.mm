@@ -19,6 +19,7 @@
 #import "PlatformDefs.h"
 #import "messaging/ApplicationMessenger.h"
 #import "platform/darwin/osx/storage/DarwinStorageProvider.h"
+#import "utils/UpdateHandler.h"
 
 #import "platform/darwin/osx/HotKeyController.h"
 
@@ -65,7 +66,12 @@ static NSString *getApplicationName(void)
 
   return appName;
 }
-static void setupApplicationMenu(void)
+
+@interface XBMCApplication : NSApplication
+- (IBAction)checkForUpdates:(id)sender;
+@end
+
+static void setupApplicationMenu()
 {
   // warning: this code is very odd
   NSMenu *appleMenu;
@@ -91,6 +97,13 @@ static void setupApplicationMenu(void)
   [appleMenu addItemWithTitle:@"Show All" action:@selector(unhideAllApplications:) keyEquivalent:@""];
 
   [appleMenu addItem:[NSMenuItem separatorItem]];
+  
+  if (CDarwinUtils::IsOsxAppBundle())
+  {
+    menuItem = (NSMenuItem *)[appleMenu addItemWithTitle:@"Check for updates" action:@selector(checkForUpdates:) keyEquivalent:@""];
+    [menuItem setTarget:[XBMCApplication sharedApplication]];
+    [appleMenu addItem:[NSMenuItem separatorItem]];
+  }
 
   title = [@"Quit " stringByAppendingString:appName];
   [appleMenu addItemWithTitle:title action:@selector(terminate:) keyEquivalent:@"q"];
@@ -152,15 +165,17 @@ static void setupWindowMenu(void)
   [windowMenuItem release];
 }
 
-@interface XBMCApplication : NSApplication
-@end
-
 @implementation XBMCApplication
 
 // Called before the internal event loop has started running.
 - (void) finishLaunching
 {
   [super finishLaunching];
+}
+
+- (IBAction)checkForUpdates:(id)sender
+{
+  CUpdateHandler::GetInstance().CheckForUpdate();
 }
 
 // Invoked from the Quit menu item
@@ -496,7 +511,7 @@ int main(int argc, char *argv[])
 {
   NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
   XBMCDelegate *xbmc_delegate;
-
+  
   // Block SIGPIPE
   // SIGPIPE repeatably kills us, turn it off
   {
