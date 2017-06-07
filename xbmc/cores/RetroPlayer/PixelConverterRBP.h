@@ -25,7 +25,10 @@
 #include <vector>
 #include <memory>
 
-class CMMALPool;
+namespace MMAL {
+  class CMMALPool;
+};
+
 struct VideoPicture;
 
 class CPixelConverterRBP : public CPixelConverter
@@ -69,7 +72,7 @@ private:
   static AVPixelFormat TranslateTargetFormat(AVPixelFormat pixfmt);
   static uint32_t TranslateFormat(AVPixelFormat pixfmt);
 
-  std::shared_ptr<CMMALPool> m_pool;
+  std::shared_ptr<MMAL::CMMALPool> m_pool;
   uint32_t m_mmal_format;
   VideoPicture* m_buf;
 };

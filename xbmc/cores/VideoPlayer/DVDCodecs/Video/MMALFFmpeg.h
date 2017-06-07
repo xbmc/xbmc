@@ -24,17 +24,14 @@
 #include <queue>
 #include "DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
 #include "libavcodec/avcodec.h"
-#include "MMALCodec.h"
+#include "cores/VideoPlayer/VideoRenderers/HwDecRender/MMALRenderer.h"
 
-class CMMALRenderer;
-class CMMALPool;
 struct MMAL_BUFFER_HEADER_T;
 class CGPUMEM;
 
 namespace MMAL {
 
 class CDecoder;
-class CGPUPool;
 
 // a mmal video frame
 class CMMALYUVBuffer : public CMMALBuffer
