@@ -214,7 +214,7 @@ void CMusicDatabase::CreateAnalytics()
   m_pDS->exec("CREATE INDEX idxGenre ON genre(strGenre(255))");
 
   m_pDS->exec("CREATE INDEX idxArtist ON artist(strArtist(255))");
-  m_pDS->exec("CREATE UNIQUE INDEX idxArtist1 ON artist(strMusicBrainzArtistID(36))");
+  m_pDS->exec("CREATE UNIQUE INDEX idxArtist1 ON artist(strMusicBrainzArtistID(255))");
 
   m_pDS->exec("CREATE INDEX idxPath ON path(strPath(255))");
 
