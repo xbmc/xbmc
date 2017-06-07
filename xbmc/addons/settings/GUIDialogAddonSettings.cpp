@@ -157,7 +157,7 @@ std::string CGUIDialogAddonSettings::GetSettingsLabel(std::shared_ptr<CSetting> 
 
 int CGUIDialogAddonSettings::GetSettingLevel() const
 {
-  return static_cast<int>(SettingLevelStandard);
+  return static_cast<int>(SettingLevel::Standard);
 }
 
 std::shared_ptr<CSettingSection> CGUIDialogAddonSettings::GetSection()

@@ -209,16 +209,16 @@ void CGUIDialogNetworkSetup::InitializeSettings()
   labels.push_back(std::make_pair(20260, NET_PROTOCOL_SFTP));
 #endif
 
-  AddSpinner(group, SETTING_PROTOCOL, 1008, 0, m_protocol, labels);
-  AddEdit(group, SETTING_SERVER_ADDRESS, 1010, 0, m_server, true);
-  std::shared_ptr<CSettingAction> subsetting = AddButton(group, SETTING_SERVER_BROWSE, 1024, 0, "", false);
+  AddSpinner(group, SETTING_PROTOCOL, 1008, SettingLevel::Basic, m_protocol, labels);
+  AddEdit(group, SETTING_SERVER_ADDRESS, 1010, SettingLevel::Basic, m_server, true);
+  std::shared_ptr<CSettingAction> subsetting = AddButton(group, SETTING_SERVER_BROWSE, 1024, SettingLevel::Basic, "", false);
   if (subsetting != NULL)
     subsetting->SetParent(SETTING_SERVER_ADDRESS);
 
-  AddEdit(group, SETTING_REMOTE_PATH, 1012, 0, m_path, true);
-  AddEdit(group, SETTING_PORT_NUMBER, 1013, 0, m_port, true);
-  AddEdit(group, SETTING_USERNAME, 1014, 0, m_username, true);
-  AddEdit(group, SETTING_PASSWORD, 15052, 0, m_password, true, true);
+  AddEdit(group, SETTING_REMOTE_PATH, 1012, SettingLevel::Basic, m_path, true);
+  AddEdit(group, SETTING_PORT_NUMBER, 1013, SettingLevel::Basic, m_port, true);
+  AddEdit(group, SETTING_USERNAME, 1014, SettingLevel::Basic, m_username, true);
+  AddEdit(group, SETTING_PASSWORD, 15052, SettingLevel::Basic, m_password, true, true);
 }
 
 void CGUIDialogNetworkSetup::OnServerBrowse()

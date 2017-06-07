@@ -48,21 +48,21 @@ class TiXmlNode;
  all settings.
  */
 class CSettingsManager : public ISettingCreator, public ISettingControlCreator,
-                         private ISettingCallback,
-                         private ISettingsHandler, private ISubSettings
+                         private ISettingCallback, private ISettingsHandler,
+                         private ISubSettings
 {
 public:
   /*!
    \brief Creates a new (uninitialized) settings manager.
    */
-  CSettingsManager();
+  CSettingsManager() = default;
   virtual ~CSettingsManager();
 
   static const uint32_t Version = 1;
   static const uint32_t MinimumSupportedVersion = 0;
 
   // implementation of ISettingCreator
-  virtual std::shared_ptr<CSetting> CreateSetting(const std::string &settingType, const std::string &settingId, CSettingsManager *settingsManager = NULL) const override;
+  virtual std::shared_ptr<CSetting> CreateSetting(const std::string &settingType, const std::string &settingId, CSettingsManager *settingsManager = nullptr) const override;
 
   // implementation of ISettingControlCreator
   virtual std::shared_ptr<ISettingControl> CreateControl(const std::string &controlType) const override;
@@ -92,7 +92,7 @@ public:
    \param loadedSettings A list to fill with all the successfully loaded settings
    \return True if the setting values were successfully loaded, false otherwise
    */
-  bool Load(const TiXmlElement *root, bool &updated, bool triggerEvents = true, std::map<std::string, std::shared_ptr<CSetting>> *loadedSettings = NULL);
+  bool Load(const TiXmlElement *root, bool &updated, bool triggerEvents = true, std::map<std::string, std::shared_ptr<CSetting>> *loadedSettings = nullptr);
   /*!
    \brief Saves the setting values to the given XML node.
 
@@ -289,7 +289,7 @@ public:
    \brief Gets the setting with the given identifier.
 
    \param id Setting identifier
-   \return Setting object with the given identifier or NULL if the identifier is unknown
+   \return Setting object with the given identifier or nullptr if the identifier is unknown
    */
   std::shared_ptr<CSetting> GetSetting(const std::string &id) const;
   /*!
@@ -302,9 +302,9 @@ public:
    \brief Gets the setting section with the given identifier.
 
    \param section Setting section identifier
-   \return Setting section with the given identifier or NULL if the identifier is unknown
+   \return Setting section with the given identifier or nullptr if the identifier is unknown
    */
-  std::shared_ptr<CSettingSection> GetSection(const std::string &section) const;
+  std::shared_ptr<CSettingSection> GetSection(std::string section) const;
   /*!
    \brief Gets a map of settings (and their dependencies) which depend on
    the setting with the given identifier.
@@ -452,7 +452,7 @@ public:
    \param condition Implementation of the dynamic condition
    \param data Opaque data pointer, will be passed back to SettingConditionCheck function
    */
-  void AddCondition(const std::string &identifier, SettingConditionCheck condition, void *data = NULL);
+  void AddCondition(const std::string &identifier, SettingConditionCheck condition, void *data = nullptr);
 
 private:
   // implementation of ISettingCallback
@@ -474,7 +474,7 @@ private:
   virtual bool Load(const TiXmlNode *settings) override;
 
   bool Serialize(TiXmlNode *parent) const;
-  bool Deserialize(const TiXmlNode *node, bool &updated, std::map<std::string, std::shared_ptr<CSetting>> *loadedSettings = NULL);
+  bool Deserialize(const TiXmlNode *node, bool &updated, std::map<std::string, std::shared_ptr<CSetting>> *loadedSettings = nullptr);
 
   bool LoadSetting(const TiXmlNode *node, std::shared_ptr<CSetting> setting, bool &updated);
   bool UpdateSetting(const TiXmlNode *node, std::shared_ptr<CSetting> setting, const CSettingUpdate& update);
@@ -486,55 +486,55 @@ private:
   void ResolveReferenceSettings(std::shared_ptr<CSettingSection> section);
   void CleanupIncompleteSettings();
 
-  typedef enum {
-    SettingOptionsFillerTypeNone = 0,
-    SettingOptionsFillerTypeInteger,
-    SettingOptionsFillerTypeString
-  } SettingOptionsFillerType;
+  enum class SettingOptionsFillerType {
+    Unknown = 0,
+    Integer,
+    String
+  };
 
   void RegisterSettingOptionsFiller(const std::string &identifier, void *filler, SettingOptionsFillerType type);
 
-  typedef std::set<ISettingCallback *> CallbackSet;
-  typedef struct {
+  using CallbackSet = std::set<ISettingCallback *>;
+  struct Setting {
     std::shared_ptr<CSetting> setting;
     SettingDependencyMap dependencies;
     std::set<std::string> children;
     CallbackSet callbacks;
-  } Setting;
+  };
 
-  typedef std::map<std::string, Setting> SettingMap;
+  using SettingMap = std::map<std::string, Setting>;
 
   void ResolveSettingDependencies(std::shared_ptr<CSetting> setting);
-  void ResolveSettingDependencies(SettingMap::iterator settingIterator);
+  void ResolveSettingDependencies(const Setting& setting);
 
   SettingMap::const_iterator FindSetting(std::string settingId) const;
   SettingMap::iterator FindSetting(std::string settingId);
   std::pair<SettingMap::iterator, bool> InsertSetting(std::string settingId, const Setting& setting);
 
-  bool m_initialized;
-  bool m_loaded;
+  bool m_initialized = false;
+  bool m_loaded = false;
 
   SettingMap m_settings;
-  typedef std::map<std::string, std::shared_ptr<CSettingSection>> SettingSectionMap;
+  using SettingSectionMap = std::map<std::string, std::shared_ptr<CSettingSection>>;
   SettingSectionMap m_sections;
 
-  typedef std::map<std::string, ISettingCreator*> SettingCreatorMap;
+  using SettingCreatorMap = std::map<std::string, ISettingCreator*>;
   SettingCreatorMap m_settingCreators;
 
-  typedef std::map<std::string, ISettingControlCreator*> SettingControlCreatorMap;
+  using SettingControlCreatorMap = std::map<std::string, ISettingControlCreator*>;
   SettingControlCreatorMap m_settingControlCreators;
 
   std::set<ISubSettings*> m_subSettings;
-  typedef std::vector<ISettingsHandler*> SettingsHandlers;
+  using SettingsHandlers = std::vector<ISettingsHandler*>;
   SettingsHandlers m_settingsHandlers;
 
   CSettingConditionsManager m_conditions;
 
-  typedef struct {
+  struct SettingOptionsFiller {
     void *filler;
     SettingOptionsFillerType type;
-  } SettingOptionsFiller;
-  typedef std::map<std::string, SettingOptionsFiller> SettingOptionsFillerMap;
+  };
+  using SettingOptionsFillerMap = std::map<std::string, SettingOptionsFiller>;
   SettingOptionsFillerMap m_optionsFillers;
 
   CSharedSection m_critical;

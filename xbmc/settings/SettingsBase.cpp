@@ -257,7 +257,7 @@ std::vector<CVariant> CSettingsBase::GetList(const std::string& id) const
 {
   CSingleLock lock(m_critical);
   std::shared_ptr<CSetting> setting = m_settingsManager->GetSetting(id);
-  if (setting == nullptr || setting->GetType() != SettingTypeList)
+  if (setting == nullptr || setting->GetType() != SettingType::List)
     return std::vector<CVariant>();
 
   return CSettingUtils::GetList(std::static_pointer_cast<CSettingList>(setting));
@@ -267,7 +267,7 @@ bool CSettingsBase::SetList(const std::string& id, const std::vector<CVariant>& 
 {
   CSingleLock lock(m_critical);
   std::shared_ptr<CSetting> setting = m_settingsManager->GetSetting(id);
-  if (setting == nullptr || setting->GetType() != SettingTypeList)
+  if (setting == nullptr || setting->GetType() != SettingType::List)
     return false;
 
   return CSettingUtils::SetList(std::static_pointer_cast<CSettingList>(setting), value);

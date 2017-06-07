@@ -27,7 +27,7 @@
 class ISettingsHandler
 {
 public:
-  virtual ~ISettingsHandler() { }
+  virtual ~ISettingsHandler() = default;
 
   /*!
    \brief Settings loading has been initiated.

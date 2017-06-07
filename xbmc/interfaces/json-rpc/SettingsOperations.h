@@ -22,6 +22,7 @@
 #include <vector>
 
 #include "JSONRPC.h"
+#include "settings/lib/SettingLevel.h"
 
 class CVariant;
 class ISetting;
@@ -55,7 +56,7 @@ namespace JSONRPC
     static JSONRPC_STATUS ResetSettingValue(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
 
   private:
-    static int ParseSettingLevel(const std::string &strLevel);
+    static SettingLevel ParseSettingLevel(const std::string &strLevel);
 
     static bool SerializeISetting(std::shared_ptr<const ISetting> setting, CVariant &obj);
     static bool SerializeSettingSection(std::shared_ptr<const CSettingSection> setting, CVariant &obj);

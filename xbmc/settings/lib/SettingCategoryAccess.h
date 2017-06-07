@@ -27,10 +27,10 @@
 class CSettingCategoryAccessCondition : public CSettingConditionItem
 {
 public:
-  CSettingCategoryAccessCondition(CSettingsManager *settingsManager = NULL)
+  CSettingCategoryAccessCondition(CSettingsManager *settingsManager = nullptr)
     : CSettingConditionItem(settingsManager)
   { }
-  virtual ~CSettingCategoryAccessCondition() { }
+  virtual ~CSettingCategoryAccessCondition() = default;
 
   virtual bool Check() const;
 };
@@ -38,10 +38,10 @@ public:
 class CSettingCategoryAccessConditionCombination : public CSettingConditionCombination
 {
 public:
-  CSettingCategoryAccessConditionCombination(CSettingsManager *settingsManager = NULL)
+  CSettingCategoryAccessConditionCombination(CSettingsManager *settingsManager = nullptr)
     : CSettingConditionCombination(settingsManager)
   { }
-  virtual ~CSettingCategoryAccessConditionCombination() { }
+  virtual ~CSettingCategoryAccessConditionCombination() = default;
 
   virtual bool Check() const;
 
@@ -53,6 +53,6 @@ private:
 class CSettingCategoryAccess : public CSettingCondition
 {
 public:
-  CSettingCategoryAccess(CSettingsManager *settingsManager = NULL);
-  virtual ~CSettingCategoryAccess() { }
+  CSettingCategoryAccess(CSettingsManager *settingsManager = nullptr);
+  virtual ~CSettingCategoryAccess() = default;
 };

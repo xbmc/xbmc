@@ -27,7 +27,7 @@ class TiXmlNode;
 class ISettingCallback
 {
 public:
-  virtual ~ISettingCallback() { }
+  virtual ~ISettingCallback() = default;
 
   /*!
    \brief The value of the given setting is being changed.

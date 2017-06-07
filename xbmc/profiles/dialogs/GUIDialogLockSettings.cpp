@@ -254,15 +254,15 @@ void CGUIDialogLockSettings::InitializeSettings()
 
   if (m_getUser)
   {
-    AddEdit(group, SETTING_USERNAME, 20142, 0, m_user);
-    AddEdit(group, SETTING_PASSWORD, 12326, 0, m_locks.code, false, true);
+    AddEdit(group, SETTING_USERNAME, 20142, SettingLevel::Basic, m_user);
+    AddEdit(group, SETTING_PASSWORD, 12326, SettingLevel::Basic, m_locks.code, false, true);
     if (m_saveUserDetails != NULL)
-      AddToggle(group, SETTING_PASSWORD_REMEMBER, 13423, 0, *m_saveUserDetails);
+      AddToggle(group, SETTING_PASSWORD_REMEMBER, 13423, SettingLevel::Basic, *m_saveUserDetails);
 
     return;
   }
 
-  AddButton(group, SETTING_LOCKCODE, m_buttonLabel, 0);
+  AddButton(group, SETTING_LOCKCODE, m_buttonLabel, SettingLevel::Basic);
 
   if (m_details)
   {
@@ -273,11 +273,11 @@ void CGUIDialogLockSettings::InitializeSettings()
       return;
     }
 
-    AddToggle(groupDetails, SETTING_LOCK_MUSIC, 20038, 0, m_locks.music);
-    AddToggle(groupDetails, SETTING_LOCK_VIDEOS, 20039, 0, m_locks.video);
-    AddToggle(groupDetails, SETTING_LOCK_PICTURES, 20040, 0, m_locks.pictures);
-    AddToggle(groupDetails, SETTING_LOCK_PROGRAMS, 20041, 0, m_locks.programs);
-    AddToggle(groupDetails, SETTING_LOCK_FILEMANAGER, 20042, 0, m_locks.files);
+    AddToggle(groupDetails, SETTING_LOCK_MUSIC, 20038, SettingLevel::Basic, m_locks.music);
+    AddToggle(groupDetails, SETTING_LOCK_VIDEOS, 20039, SettingLevel::Basic, m_locks.video);
+    AddToggle(groupDetails, SETTING_LOCK_PICTURES, 20040, SettingLevel::Basic, m_locks.pictures);
+    AddToggle(groupDetails, SETTING_LOCK_PROGRAMS, 20041, SettingLevel::Basic, m_locks.programs);
+    AddToggle(groupDetails, SETTING_LOCK_FILEMANAGER, 20042, SettingLevel::Basic, m_locks.files);
 
     TranslatableIntegerSettingOptions settingsLevelOptions;
     settingsLevelOptions.push_back(std::make_pair(106,    LOCK_LEVEL::NONE));
@@ -285,9 +285,9 @@ void CGUIDialogLockSettings::InitializeSettings()
     settingsLevelOptions.push_back(std::make_pair(10037,  LOCK_LEVEL::STANDARD));
     settingsLevelOptions.push_back(std::make_pair(10038,  LOCK_LEVEL::ADVANCED));
     settingsLevelOptions.push_back(std::make_pair(10039,  LOCK_LEVEL::EXPERT));
-    AddSpinner(groupDetails, SETTING_LOCK_SETTINGS, 20043, 0, static_cast<int>(m_locks.settings), settingsLevelOptions);
+    AddSpinner(groupDetails, SETTING_LOCK_SETTINGS, 20043, SettingLevel::Basic, static_cast<int>(m_locks.settings), settingsLevelOptions);
     
-    AddToggle(groupDetails, SETTING_LOCK_ADDONMANAGER, 24090, 0, m_locks.addonManager);
+    AddToggle(groupDetails, SETTING_LOCK_ADDONMANAGER, 24090, SettingLevel::Basic, m_locks.addonManager);
   }
 
   m_changed = false;

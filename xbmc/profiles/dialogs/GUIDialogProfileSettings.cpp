@@ -331,15 +331,15 @@ void CGUIDialogProfileSettings::InitializeSettings()
     return;
   }
 
-  AddEdit(group, SETTING_PROFILE_NAME, 20093, 0, m_name);
-  AddButton(group, SETTING_PROFILE_IMAGE, 20065, 0);
+  AddEdit(group, SETTING_PROFILE_NAME, 20093, SettingLevel::Basic, m_name);
+  AddButton(group, SETTING_PROFILE_IMAGE, 20065, SettingLevel::Basic);
 
   if (!m_isDefault && m_showDetails)
-    AddButton(group, SETTING_PROFILE_DIRECTORY, 20070, 0);
+    AddButton(group, SETTING_PROFILE_DIRECTORY, 20070, SettingLevel::Basic);
 
   if (m_showDetails ||
      (m_locks.mode == LOCK_MODE_EVERYONE && CProfilesManager::GetInstance().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE))
-    AddButton(group, SETTING_PROFILE_LOCKS, 20066, 0);
+    AddButton(group, SETTING_PROFILE_LOCKS, 20066, SettingLevel::Basic);
 
   if (!m_isDefault && m_showDetails)
   {
@@ -357,8 +357,8 @@ void CGUIDialogProfileSettings::InitializeSettings()
     if (CProfilesManager::GetInstance().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE)
       entries.push_back(std::make_pair(20107, 3));
 
-    AddSpinner(groupMedia, SETTING_PROFILE_MEDIA, 20060, 0, m_dbMode, entries);
-    AddSpinner(groupMedia, SETTING_PROFILE_MEDIA_SOURCES, 20094, 0, m_sourcesMode, entries);
+    AddSpinner(groupMedia, SETTING_PROFILE_MEDIA, 20060, SettingLevel::Basic, m_dbMode, entries);
+    AddSpinner(groupMedia, SETTING_PROFILE_MEDIA_SOURCES, 20094, SettingLevel::Basic, m_sourcesMode, entries);
   }
 }
 

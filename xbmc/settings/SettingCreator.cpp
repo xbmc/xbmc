@@ -24,7 +24,7 @@
 #include "settings/SettingPath.h"
 #include "utils/StringUtils.h"
 
-std::shared_ptr<CSetting> CSettingCreator::CreateSetting(const std::string &settingType, const std::string &settingId, CSettingsManager *settingsManager /* = NULL */) const
+std::shared_ptr<CSetting> CSettingCreator::CreateSetting(const std::string &settingType, const std::string &settingId, CSettingsManager *settingsManager /* = nullptr */) const
 {
   if (StringUtils::EqualsNoCase(settingType, "addon"))
     return std::make_shared<CSettingAddon>(settingId, settingsManager);
@@ -35,5 +35,5 @@ std::shared_ptr<CSetting> CSettingCreator::CreateSetting(const std::string &sett
   else if (StringUtils::EqualsNoCase(settingType, "time"))
     return std::make_shared<CSettingTime>(settingId, settingsManager);
 
-  return NULL;
+  return nullptr;
 }
