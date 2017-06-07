@@ -358,7 +358,7 @@ bool CFile::Open(const CURL& file, const unsigned int flags)
       return false;
     }
 
-    if (m_pFile->GetChunkSize() && !(m_flags & READ_CHUNKED))
+    if (m_pFile->GetChunkSize() > 1 && !(m_flags & READ_CHUNKED))
     {
       m_pBuffer = new CFileStreamBuffer(0);
       m_pBuffer->Attach(m_pFile);
