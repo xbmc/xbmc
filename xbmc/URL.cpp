@@ -61,8 +61,12 @@ void CURL::Reset()
 void CURL::Parse(const std::string& strURL1)
 {
   Reset();
+  std::string strURL(strURL1);
+  if (strURL.compare(0, 7, "file://", 7) == 0)
+    strURL.erase(0, 7); // remove "file://" prefix, all local files are processed without protocol prefix
+
   // start by validating the path
-  std::string strURL = CUtil::ValidatePath(strURL1);
+  strURL = CUtil::ValidatePath(strURL);
 
   // strURL can be one of the following:
   // format 1: protocol://[username:password]@hostname[:port]/directoryandfile
