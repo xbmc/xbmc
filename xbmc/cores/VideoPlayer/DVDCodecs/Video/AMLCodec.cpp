@@ -1703,11 +1703,6 @@ void CAMLCodec::Reset()
 
   SetPollDevice(-1);
 
-  // set the system blackout_policy to leave the last frame showing
-  int blackout_policy;
-  SysfsUtils::GetInt("/sys/class/video/blackout_policy", blackout_policy);
-  SysfsUtils::SetInt("/sys/class/video/blackout_policy", 0);
-
   // restore the speed (some amcodec versions require this)
   if (m_speed != DVD_PLAYSPEED_NORMAL)
   {
@@ -1727,9 +1722,6 @@ void CAMLCodec::Reset()
   am_packet_init(&am_private->am_pkt);
   am_private->am_pkt.codec = &am_private->vcodec;
   pre_header_feeding(am_private, &am_private->am_pkt);
-
-  // restore the saved system blackout_policy value
-  SysfsUtils::SetInt("/sys/class/video/blackout_policy", blackout_policy);
 
   // reset some interal vars
   m_cur_pts = INT64_0;
