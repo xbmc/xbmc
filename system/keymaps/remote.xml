@@ -188,7 +188,7 @@
       <right>StepForward</right>
       <up>ChapterOrBigStepForward</up>
       <down>ChapterOrBigStepBack</down>
-      <back>Back</back>
+      <back>Fullscreen</back>
       <menu>OSD</menu>
       <contentsmenu>OSD</contentsmenu>
       <rootmenu>OSD</rootmenu>
@@ -251,7 +251,7 @@
       <down>SkipPrevious</down>
       <pageplus>IncreaseRating</pageplus>
       <pageminus>DecreaseRating</pageminus>
-      <back>Back</back>
+      <back>Fullscreen</back>
       <title>PlayerProcessInfo</title>
       <select>OSD</select>
       <menu>OSD</menu>

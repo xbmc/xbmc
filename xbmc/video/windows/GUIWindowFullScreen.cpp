@@ -132,8 +132,16 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
 
   case ACTION_SHOW_GUI:
     {
-      // switch back to the menu
-      g_windowManager.PreviousWindow();
+      if (g_infoManager.GetShowInfo())
+      {
+        // if player info is shown, hide it
+        g_infoManager.SetShowInfo(false);
+      }
+      else
+      {
+        // switch back to the menu
+        g_windowManager.PreviousWindow();
+      }
       return true;
     }
     break;
