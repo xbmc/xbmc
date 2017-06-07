@@ -83,6 +83,109 @@ namespace VIDEO
   {
   }
 
+  bool CVideoInfoScanner::DoCount(const std::string& pathCurrent)
+  {
+    CFileItemList items;
+    bool foundDirectly = false;
+    bool bSkip = false;
+
+    SScanSettings settings;
+    ScraperPtr info = m_database.GetScraperForPath(pathCurrent, settings, foundDirectly);
+    CONTENT_TYPE content = info ? info->Content() : CONTENT_NONE;
+
+    // exclude folders that match our exclude regexps
+    const std::vector<std::string> &regexps = content == CONTENT_TVSHOWS ? g_advancedSettings.m_tvshowExcludeFromScanRegExps
+      : g_advancedSettings.m_moviesExcludeFromScanRegExps;
+
+    if (CUtil::ExcludeFileOrFolder(pathCurrent, regexps))
+      return true;
+
+    if (IsExcluded(pathCurrent, regexps))
+    {
+      return true;
+    }
+
+    bool ignoreFolder = !m_scanAll && settings.noupdate;
+    if (content == CONTENT_NONE || ignoreFolder)
+      return true;
+
+    std::string hash, dbHash;
+    if (content == CONTENT_MOVIES ||content == CONTENT_MUSICVIDEOS)
+    {
+      std::string fastHash;
+      if (g_advancedSettings.m_bVideoLibraryUseFastHash)
+        fastHash = GetFastHash(pathCurrent, regexps);
+
+      if (m_database.GetPathHash(pathCurrent, dbHash) && !fastHash.empty() && fastHash == dbHash)
+      { // fast hashes match - no need to process anything
+        hash = fastHash;
+      }
+      else
+      { // need to fetch the folder
+        CDirectory::GetDirectory(pathCurrent, items, g_advancedSettings.m_videoExtensions);
+        items.Stack();
+
+        // check whether to re-use previously computed fast hash
+        if (!CanFastHash(items, regexps) || fastHash.empty())
+          GetPathHash(items, hash);
+        else
+          hash = fastHash;
+      }
+
+      if (hash == dbHash)
+      { // hash matches - skipping
+        bSkip = true;
+      }
+      else if (hash.empty())
+      { // directory empty or non-existent - add to clean list and skip
+        bSkip = true;
+      }
+    }
+    else if (content == CONTENT_TVSHOWS)
+    {
+      if (foundDirectly && !settings.parent_name_root)
+      {
+        CDirectory::GetDirectory(pathCurrent, items, g_advancedSettings.m_videoExtensions);
+        items.SetPath(pathCurrent);
+        GetPathHash(items, hash);
+        bSkip = true;
+        if (!m_database.GetPathHash(pathCurrent, dbHash) || dbHash != hash)
+          bSkip = false;
+        else
+          items.Clear();
+      }
+      else
+      {
+        CFileItemPtr item(new CFileItem(URIUtils::GetFileName(pathCurrent)));
+        item->SetPath(pathCurrent);
+        item->m_bIsFolder = true;
+        items.Add(item);
+        items.SetPath(URIUtils::GetParentPath(item->GetPath()));
+      }
+    }
+
+    if (!bSkip)
+      m_itemCount += items.Size();
+
+    /* Recursive file count */
+    for (int i = 0; i < items.Size(); ++i)
+    {
+      CFileItemPtr pItem = items[i];
+
+      if (m_bStop)
+        break;
+
+      if (pItem->m_bIsFolder && !pItem->IsParentFolder() && !pItem->IsPlayList() && settings.recurse > 0 && content != CONTENT_TVSHOWS)
+      {
+        if (!DoCount(pItem->GetPath()))
+        {
+          m_bStop = true;
+        }
+      }
+    }
+    return !m_bStop;
+  }
+
   void CVideoInfoScanner::Process()
   {
     m_bStop = false;
@@ -123,12 +226,18 @@ namespace VIDEO
 
       // Reset progress vars
       m_currentItem = 0;
-      m_itemCount = -1;
+      m_itemCount   = 0;
 
       // Database operations should not be canceled
       // using Interrupt() while scanning as it could
       // result in unexpected behaviour.
       m_bCanInterrupt = false;
+
+      /* Video file counter */
+      for (std::set<std::string>::iterator it = m_pathsToScan.begin(); it != m_pathsToScan.end(); ++it)
+      {
+        DoCount(*it);
+      }
 
       bool bCancelled = false;
       while (!bCancelled && !m_pathsToScan.empty())
@@ -424,6 +533,8 @@ namespace VIDEO
       m_nfoReader.Close();
       CFileItemPtr pItem = items[i];
 
+      m_currentItem++;
+
       // we do this since we may have a override per dir
       ScraperPtr info2 = m_database.GetScraperForPath(pItem->m_bIsFolder ? pItem->GetPath() : items.GetPath());
       if (!info2) // skip
@@ -437,7 +548,7 @@ namespace VIDEO
       if (info2->Content() == CONTENT_MOVIES || info2->Content() == CONTENT_MUSICVIDEOS)
       {
         if (m_handle)
-          m_handle->SetPercentage(i*100.f/items.Size());
+          m_handle->SetPercentage(m_currentItem*100.f/m_itemCount);
       }
 
       // clear our scraper cache
@@ -1471,7 +1582,7 @@ namespace VIDEO
         pDlgProgress->Progress();
       }
       if (m_handle)
-        m_handle->SetPercentage(100.f*iCurr++/iMax);
+        m_handle->SetPercentage(m_currentItem*100.f/m_itemCount);
 
       if ((pDlgProgress && pDlgProgress->IsCanceled()) || m_bStop)
         return INFO_CANCELLED;
