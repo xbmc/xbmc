@@ -21,8 +21,9 @@
 #include "system.h"
 #ifdef HAS_MMAL
 
+#include <interface/mmal/util/mmal_default_components.h>
+
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
-#include "cores/VideoPlayer/VideoRenderers/HwDecRender/MMALRenderer.h"
 #include "../DVDCodecUtils.h"
 #include "MMALFFmpeg.h"
 #include "utils/log.h"
