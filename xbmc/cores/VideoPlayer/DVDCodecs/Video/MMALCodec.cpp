@@ -22,6 +22,10 @@
 #include "system.h"
 #endif
 
+#include <interface/mmal/util/mmal_util.h>
+#include <interface/mmal/util/mmal_default_components.h>
+#include <interface/mmal/util/mmal_util_params.h>
+
 #include "MMALCodec.h"
 
 #include "ServiceBroker.h"
@@ -40,19 +44,17 @@
 #include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
 #include "settings/DisplaySettings.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
-#include "cores/VideoPlayer/VideoRenderers/HwDecRender/MMALRenderer.h"
 #include "settings/AdvancedSettings.h"
 #include "TimingConstants.h"
 
 #include "linux/RBP.h"
 
 using namespace KODI::MESSAGING;
+using namespace MMAL;
 
 #define CLASSNAME "CMMALVideoBuffer"
 
 #define VERBOSE 0
-
-void CMMALBuffer::SetVideoDeintMethod(std::string method) { if (m_pool) m_pool->SetVideoDeintMethod(method); }
 
 CMMALVideoBuffer::CMMALVideoBuffer(std::shared_ptr<CMMALPool> pool)
     : CMMALBuffer(pool)
@@ -862,7 +864,7 @@ void CMMALVideo::ReleasePicture()
   CSingleLock lock(m_sharedSection);
   if (m_lastDvdVideoPicture)
   {
-    CMMALBuffer *omvb = dynamic_cast<MMAL::CMMALYUVBuffer*>(m_lastDvdVideoPicture->videoBuffer);
+    CMMALBuffer *omvb = dynamic_cast<CMMALBuffer *>(m_lastDvdVideoPicture->videoBuffer);
     if (VERBOSE && g_advancedSettings.CanLogComponent(LOGVIDEO))
       CLog::Log(LOGDEBUG, "%s::%s - %p (%p)", CLASSNAME, __func__, omvb, omvb->mmal_buffer);
     SAFE_RELEASE(omvb);

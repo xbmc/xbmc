@@ -18,6 +18,10 @@
  *
  */
 
+#include <interface/mmal/util/mmal_util.h>
+#include <interface/mmal/util/mmal_default_components.h>
+#include <interface/mmal/util/mmal_util_params.h>
+
 #include "Util.h"
 #include "MMALRenderer.h"
 #include "ServiceBroker.h"
@@ -32,6 +36,7 @@
 #include "utils/MathUtils.h"
 #include "windowing/WindowingFactory.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/MMALCodec.h"
+#include "cores/VideoPlayer/DVDCodecs/Video/MMALFFmpeg.h"
 #include "xbmc/Application.h"
 #include "linux/RBP.h"
 #include "TimingConstants.h"
@@ -41,6 +46,18 @@ extern "C" {
 }
 
 #define VERBOSE 0
+
+using namespace MMAL;
+
+#define CLASSNAME "CMMALBuffer"
+
+void CMMALBuffer::SetVideoDeintMethod(std::string method)
+{
+  std::shared_ptr<CMMALPool> pool = std::dynamic_pointer_cast<CMMALPool>(m_pool);
+  if (pool)
+    pool->SetVideoDeintMethod(method);
+}
+
 
 #undef CLASSNAME
 #define CLASSNAME "CMMALPool"
@@ -216,7 +233,7 @@ CMMALBuffer *CMMALPool::GetBuffer(uint32_t timeout)
     }
     else
     {
-      MMAL::CMMALYUVBuffer *yuv = new MMAL::CMMALYUVBuffer(shared_from_this(), m_mmal_format, m_width, m_height, aligned_width, aligned_height, m_size);
+      CMMALYUVBuffer *yuv = new CMMALYUVBuffer(shared_from_this(), m_mmal_format, m_width, m_height, aligned_width, aligned_height, m_size);
       if (yuv)
       {
         CGPUMEM *gmem = yuv->gmem;
@@ -256,6 +273,12 @@ void CMMALPool::Prime()
     if (status != MMAL_SUCCESS)
       CLog::Log(LOGERROR, "%s::%s - Failed to send buffer %p from pool %p to %s (status=0%x %s)", CLASSNAME, __func__, omvb->mmal_buffer, m_mmal_pool, port->name, status, mmal_status_to_string(status));
   }
+}
+
+void CMMALPool::SetVideoDeintMethod(std::string method)
+{
+  if (m_processInfo)
+    m_processInfo->SetVideoDeintMethod(method);
 }
 
 #undef CLASSNAME
