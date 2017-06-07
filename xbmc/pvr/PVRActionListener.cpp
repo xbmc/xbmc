@@ -110,8 +110,8 @@ bool CPVRActionListener::OnAction(const CAction &action)
     case REMOTE_9:
     {
       if (g_application.CurrentFileItem().IsLiveTV() &&
-          (g_windowManager.IsWindowActive(WINDOW_FULLSCREEN_VIDEO) ||
-           g_windowManager.IsWindowActive(WINDOW_VISUALISATION)))
+          (g_windowManager.IsWindowActive(WINDOW_DIALOG_PVR_OSD_CHANNELS) ||
+           g_windowManager.IsWindowActive(WINDOW_DIALOG_PVR_OSD_GUIDE)))
       {
         // do not consume action if a python modal is the top most dialog
         // as a python modal can't return that it consumed the action.
