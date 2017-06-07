@@ -1,0 +1,142 @@
+diff --git a/Sparkle/SUAppcastItem.h b/Sparkle/SUAppcastItem.h
+index 9ed52c9..071514c 100644
+--- a/Sparkle/SUAppcastItem.h
++++ b/Sparkle/SUAppcastItem.h
+@@ -27,6 +27,7 @@ SU_EXPORT @interface SUAppcastItem : NSObject
+ @property (strong, readonly) NSURL *fileURL;
+ @property (nonatomic, readonly) uint64_t contentLength;
+ @property (copy, readonly) NSString *versionString;
++@property (copy, readonly) NSString *osString;
+ @property (copy, readonly) NSString *displayVersionString;
+ @property (copy, readonly) NSDictionary *deltaUpdates;
+ @property (strong, readonly) NSURL *infoURL;
+@@ -37,6 +38,7 @@ SU_EXPORT @interface SUAppcastItem : NSObject
+ 
+ @property (getter=isDeltaUpdate, readonly) BOOL deltaUpdate;
+ @property (getter=isCriticalUpdate, readonly) BOOL criticalUpdate;
++@property (getter=isOsxUpdate, readonly) BOOL osxUpdate;
+ @property (getter=isInformationOnlyUpdate, readonly) BOOL informationOnlyUpdate;
+ 
+ // Returns the dictionary provided in initWithDictionary; this might be useful later for extensions.
+diff --git a/Sparkle/SUAppcastItem.m b/Sparkle/SUAppcastItem.m
+index 26cba3e..f70c058 100644
+--- a/Sparkle/SUAppcastItem.m
++++ b/Sparkle/SUAppcastItem.m
+@@ -23,6 +23,7 @@ @interface SUAppcastItem ()
+ @property (copy, readwrite) NSString *maximumSystemVersion;
+ @property (strong, readwrite) NSURL *fileURL;
+ @property (copy, readwrite) NSString *versionString;
++@property (copy, readwrite) NSString *osString;
+ @property (copy, readwrite) NSString *displayVersionString;
+ @property (copy, readwrite) NSDictionary *deltaUpdates;
+ @property (strong, readwrite) NSURL *infoURL;
+@@ -43,6 +44,7 @@ @implementation SUAppcastItem
+ @synthesize releaseNotesURL;
+ @synthesize title;
+ @synthesize versionString;
++@synthesize osString;
+ @synthesize propertiesDictionary;
+ 
+ - (BOOL)isDeltaUpdate
+@@ -56,6 +58,17 @@ - (BOOL)isCriticalUpdate
+     return [[self.propertiesDictionary objectForKey:SUAppcastElementTags] containsObject:SUAppcastElementCriticalUpdate];
+ }
+ 
++- (BOOL)isOsxUpdate
++{
++    BOOL result = true;
++  
++    if (self.osString != nil && [self.osString caseInsensitiveCompare:SUAppcastAttributeValueOsx] != NSOrderedSame)
++    {
++        result = false;
++    }
++    return result;
++}
++
+ - (BOOL)isInformationOnlyUpdate
+ {
+     return self.infoURL && !self.fileURL;
+@@ -150,8 +163,9 @@ - (instancetype)initWithDictionary:(NSDictionary *)dict failureReason:(NSString
+         }
+         if (enclosure) {
+             self.DSASignature = [enclosure objectForKey:SUAppcastAttributeDSASignature];
++            self.osString = [enclosure objectForKey:SUAppcastAttributeOsType];
+         }
+-
++  
+         self.versionString = newVersion;
+         self.minimumSystemVersion = [dict objectForKey:SUAppcastElementMinimumSystemVersion];
+         self.maximumSystemVersion = [dict objectForKey:SUAppcastElementMaximumSystemVersion];
+diff --git a/Sparkle/SUBasicUpdateDriver.m b/Sparkle/SUBasicUpdateDriver.m
+index 6769690..94041dd 100644
+--- a/Sparkle/SUBasicUpdateDriver.m
++++ b/Sparkle/SUBasicUpdateDriver.m
+@@ -115,12 +115,13 @@ + (SUAppcastItem *)bestItemFromAppcastItems:(NSArray *)appcastItems getDeltaItem
+ 
+ + (BOOL)hostSupportsItem:(SUAppcastItem *)ui
+ {
++  BOOL osxSupported = [ui isOsxUpdate];
+ 	if (([ui minimumSystemVersion] == nil || [[ui minimumSystemVersion] isEqualToString:@""]) &&
+-        ([ui maximumSystemVersion] == nil || [[ui maximumSystemVersion] isEqualToString:@""])) { return YES; }
++        ([ui maximumSystemVersion] == nil || [[ui maximumSystemVersion] isEqualToString:@""])) { return osxSupported; }
+ 
+     BOOL minimumVersionOK = TRUE;
+     BOOL maximumVersionOK = TRUE;
+-    
++  
+     id<SUVersionComparison> versionComparator = [[SUStandardVersionComparator alloc] init];
+ 
+     // Check minimum and maximum System Version
+@@ -131,7 +132,7 @@ + (BOOL)hostSupportsItem:(SUAppcastItem *)ui
+         maximumVersionOK = [versionComparator compareVersion:[ui maximumSystemVersion] toVersion:[SUOperatingSystem systemVersionString]] != NSOrderedAscending;
+     }
+ 
+-    return minimumVersionOK && maximumVersionOK;
++    return minimumVersionOK && maximumVersionOK && osxSupported;
+ }
+ 
+ - (BOOL)isItemNewer:(SUAppcastItem *)ui
+diff --git a/Sparkle/SUConstants.h b/Sparkle/SUConstants.h
+index 33abaab..84d6e36 100644
+--- a/Sparkle/SUConstants.h
++++ b/Sparkle/SUConstants.h
+@@ -21,6 +21,8 @@ extern const NSTimeInterval SUDefaultUpdateCheckInterval;
+ 
+ extern NSString *const SUBundleIdentifier;
+ 
++extern NSString *const SUAppcastAttributeValueOsx;
++
+ // -----------------------------------------------------------------------------
+ //	Notifications:
+ // -----------------------------------------------------------------------------
+@@ -64,6 +66,9 @@ extern NSString *const SUAppcastAttributeDeltaFrom;
+ extern NSString *const SUAppcastAttributeDSASignature;
+ extern NSString *const SUAppcastAttributeShortVersionString;
+ extern NSString *const SUAppcastAttributeVersion;
++extern NSString *const SUAppcastAttributeOsType;
++
++
+ 
+ extern NSString *const SUAppcastElementCriticalUpdate;
+ extern NSString *const SUAppcastElementDeltas;
+diff --git a/Sparkle/SUConstants.m b/Sparkle/SUConstants.m
+index 5e883f6..8edff12 100644
+--- a/Sparkle/SUConstants.m
++++ b/Sparkle/SUConstants.m
+@@ -21,6 +21,8 @@
+ 
+ NSString *const SUBundleIdentifier = @SPARKLE_BUNDLE_IDENTIFIER;
+ 
++NSString *const SUAppcastAttributeValueOsx = @"osx";
++
+ NSString *const SUTechnicalErrorInformationKey = @"SUTechnicalErrorInformation";
+ 
+ NSString *const SUHasLaunchedBeforeKey = @"SUHasLaunchedBefore";
+@@ -54,6 +56,7 @@
+ NSString *const SUAppcastAttributeDSASignature = @"sparkle:dsaSignature";
+ NSString *const SUAppcastAttributeShortVersionString = @"sparkle:shortVersionString";
+ NSString *const SUAppcastAttributeVersion = @"sparkle:version";
++NSString *const SUAppcastAttributeOsType = @"sparkle:os";
+ 
+ NSString *const SUAppcastElementCriticalUpdate = @"sparkle:criticalUpdate";
+ NSString *const SUAppcastElementDeltas = @"sparkle:deltas";
