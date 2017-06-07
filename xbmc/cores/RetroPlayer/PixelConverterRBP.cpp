@@ -18,8 +18,10 @@
  *
  */
 
+#include <interface/mmal/util/mmal_default_components.h>
+
 #include "PixelConverterRBP.h"
-#include "cores/VideoPlayer/VideoRenderers/HwDecRender/MMALRenderer.h"
+#include "cores/VideoPlayer/DVDCodecs/Video/MMALFFmpeg.h"
 #include "linux/RBP.h"
 #include "utils/log.h"
 
@@ -28,6 +30,8 @@ extern "C"
   #include "libavutil/imgutils.h"
   #include "libswscale/swscale.h"
 }
+
+using namespace MMAL;
 
 std::vector<CPixelConverterRBP::PixelFormatTargetTable> CPixelConverterRBP::pixfmt_target_table =
 {
@@ -135,7 +139,7 @@ bool CPixelConverterRBP::Decode(const uint8_t* pData, unsigned int size)
     return false;
   }
 
-  MMAL::CMMALYUVBuffer *omvb = dynamic_cast<MMAL::CMMALYUVBuffer*>(m_buf->videoBuffer);
+  CMMALYUVBuffer *omvb = dynamic_cast<CMMALYUVBuffer*>(m_buf->videoBuffer);
 
   const int stride = size / m_height;
 
@@ -155,7 +159,7 @@ void CPixelConverterRBP::GetPicture(VideoPicture& dvdVideoPicture)
 
   dvdVideoPicture.videoBuffer = m_buf->videoBuffer;
 
-  MMAL::CMMALYUVBuffer *omvb = dynamic_cast<MMAL::CMMALYUVBuffer*>(m_buf->videoBuffer);
+  CMMALYUVBuffer *omvb = dynamic_cast<CMMALYUVBuffer*>(m_buf->videoBuffer);
 
   // need to flush ARM cache so GPU can see it
   omvb->gmem->Flush();
@@ -163,7 +167,7 @@ void CPixelConverterRBP::GetPicture(VideoPicture& dvdVideoPicture)
 
 VideoPicture* CPixelConverterRBP::AllocatePicture(int iWidth, int iHeight)
 {
-  MMAL::CMMALYUVBuffer *omvb = nullptr;
+  CMMALYUVBuffer *omvb = nullptr;
   VideoPicture* pPicture = new VideoPicture;
 
   // gpu requirements
@@ -173,7 +177,7 @@ VideoPicture* CPixelConverterRBP::AllocatePicture(int iWidth, int iHeight)
   {
     m_pool->SetFormat(m_mmal_format, iWidth, iHeight, w, h, 0, nullptr);
 
-    omvb = dynamic_cast<MMAL::CMMALYUVBuffer *>(m_pool->GetBuffer(500));
+    omvb = dynamic_cast<CMMALYUVBuffer *>(m_pool->GetBuffer(500));
     if (!omvb ||
         !omvb->mmal_buffer ||
         !omvb->gmem ||
@@ -207,7 +211,7 @@ void CPixelConverterRBP::FreePicture(VideoPicture* pPicture)
   {
     if (pPicture->videoBuffer)
     {
-      MMAL::CMMALYUVBuffer *omvb = dynamic_cast<MMAL::CMMALYUVBuffer*>(m_buf->videoBuffer);
+      CMMALYUVBuffer *omvb = dynamic_cast<CMMALYUVBuffer*>(m_buf->videoBuffer);
       omvb->Release();
     }
     delete pPicture;
