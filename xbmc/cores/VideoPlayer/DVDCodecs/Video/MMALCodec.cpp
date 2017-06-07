@@ -42,6 +42,7 @@
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "cores/VideoPlayer/VideoRenderers/HwDecRender/MMALRenderer.h"
 #include "settings/AdvancedSettings.h"
+#include "TimingConstants.h"
 
 #include "linux/RBP.h"
 

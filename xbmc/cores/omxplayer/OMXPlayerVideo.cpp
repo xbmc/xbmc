@@ -45,6 +45,7 @@
 #include "cores/VideoPlayer/VideoRenderers/RenderFormats.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
 #include "guilib/GraphicContext.h"
+#include "TimingConstants.h"
 
 #include "linux/RBP.h"
 

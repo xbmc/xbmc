@@ -37,6 +37,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "utils/TimeUtils.h"
+#include "TimingConstants.h"
 
 #include "linux/RBP.h"
 #include "ServiceBroker.h"
