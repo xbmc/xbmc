@@ -184,19 +184,22 @@ bool VideoPlayerCodec::Init(const CFileItem &file, unsigned int filecache)
     return false;
   }
 
-  //  Extract ReplayGain info
-  // tagLoaderTagLib.Load will try to determine tag type by file extension, so set fallback by contentType
-  std::string strFallbackFileExtension = "";
-  if (m_strContentType == "audio/aacp" ||
-      m_strContentType == "audio/aac")
-    strFallbackFileExtension = "m4a";
-  else if (m_strContentType == "audio/x-ms-wma")
-    strFallbackFileExtension = "wma";
-  else if (m_strContentType == "audio/x-ape" ||
-           m_strContentType == "audio/ape")
-    strFallbackFileExtension = "ape";
-  CTagLoaderTagLib tagLoaderTagLib;
-  tagLoaderTagLib.Load(strFile, m_tag, strFallbackFileExtension);
+  if (!m_pInputStream->HasProperty("isshoutcast"))
+  {
+    //  Extract ReplayGain info
+    // tagLoaderTagLib.Load will try to determine tag type by file extension, so set fallback by contentType
+    std::string strFallbackFileExtension = "";
+    if (m_strContentType == "audio/aacp" ||
+        m_strContentType == "audio/aac")
+      strFallbackFileExtension = "m4a";
+    else if (m_strContentType == "audio/x-ms-wma")
+      strFallbackFileExtension = "wma";
+    else if (m_strContentType == "audio/x-ape" ||
+             m_strContentType == "audio/ape")
+      strFallbackFileExtension = "ape";
+    CTagLoaderTagLib tagLoaderTagLib;
+    tagLoaderTagLib.Load(strFile, m_tag, strFallbackFileExtension);
+  }
 
   // we have to decode initial data in order to get channels/samplerate
   // for sanity - we read no more than 10 packets
