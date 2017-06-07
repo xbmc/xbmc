@@ -683,6 +683,9 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
     process_time = latency / 4;
   }
 
+  // align process time mod 128 which will result in mod 32 m_frames for AE_FMT_FLOAT
+  process_time = ((process_time + 0x7F) >> 7) << 7;
+
   pa_buffer_attr buffer_attr;
   buffer_attr.fragsize = latency;
   buffer_attr.maxlength = (uint32_t) -1;
