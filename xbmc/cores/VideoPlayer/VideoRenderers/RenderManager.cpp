@@ -540,7 +540,7 @@ void CRenderManager::CreateRenderer()
 #if defined(HAS_MMAL)
       else if (1)
       {
-        m_pRenderer = new CMMALRenderer;
+        m_pRenderer = new MMAL::CMMALRenderer;
       }
 #endif
 #if defined(HAS_IMXVPU)
