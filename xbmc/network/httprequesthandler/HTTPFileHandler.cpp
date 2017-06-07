@@ -61,6 +61,18 @@ void CHTTPFileHandler::SetFile(const std::string& file, int responseStatus)
   if (m_url.empty())
     return;
 
+  if (file.find("image://") == 0)
+  {
+    const CURL pathToUrl(file);
+    if (pathToUrl.GetHostName().find("../") != std::string::npos ||
+        pathToUrl.GetHostName().find("..\\") != std::string::npos)
+    {
+        m_response.type = HTTPError;
+        m_response.status = MHD_HTTP_NOT_FOUND;
+        return;
+    }
+  }
+
   // translate the response status into the response type
   if (m_response.status == MHD_HTTP_OK)
     m_response.type = HTTPFileDownload;
