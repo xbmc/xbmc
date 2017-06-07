@@ -22,20 +22,17 @@
 
 #include <vector>
 
+#include <interface/mmal/mmal.h>
+
 #include "guilib/GraphicContext.h"
 #include "../RenderFlags.h"
 #include "../BaseRenderer.h"
 #include "../RenderCapture.h"
 #include "settings/VideoSettings.h"
 #include "cores/VideoPlayer/DVDStreamInfo.h"
-#include "cores/VideoPlayer/DVDCodecs/Video/MMALFFmpeg.h"
 #include "guilib/Geometry.h"
 #include "threads/Thread.h"
-
-#include <interface/mmal/mmal.h>
-#include <interface/mmal/util/mmal_util.h>
-#include <interface/mmal/util/mmal_default_components.h>
-#include <interface/mmal/util/mmal_util_params.h>
+#include "cores/VideoPlayer/DVDResource.h"
 
 #define NOSOURCE   -2
 #define AUTOSOURCE -1
@@ -44,10 +41,41 @@
 // Note, generally these won't necessarily result in allocated pictures
 #define MMAL_NUM_OUTPUT_BUFFERS (12 + 8 + NUM_BUFFERS)
 
-class CBaseTexture;
-class CMMALBuffer;
-
 struct VideoPicture;
+class CProcessInfo;
+
+namespace MMAL {
+
+class CMMALPool;
+
+enum MMALState { MMALStateNone, MMALStateHWDec, MMALStateFFDec, MMALStateDeint, };
+
+// a generic mmal video frame. May be overridden as either software or hardware decoded buffer
+class CMMALBuffer : public IDVDResourceCounted<CMMALBuffer>
+{
+public:
+  CMMALBuffer(std::shared_ptr<CMMALPool> pool) : m_pool(pool) {}
+  virtual ~CMMALBuffer() {}
+  MMAL_BUFFER_HEADER_T *mmal_buffer;
+  unsigned int m_width;
+  unsigned int m_height;
+  unsigned int m_aligned_width;
+  unsigned int m_aligned_height;
+  uint32_t m_encoding;
+  float m_aspect_ratio;
+  MMALState m_state;
+  bool m_rendered;
+  bool m_stills;
+  std::shared_ptr<CMMALPool> m_pool;
+  void SetVideoDeintMethod(std::string method);
+  const char *GetStateName() {
+    static const char *names[] = { "MMALStateNone", "MMALStateHWDec", "MMALStateFFDec", "MMALStateDeint", };
+    if ((size_t)m_state < vcos_countof(names))
+      return names[(size_t)m_state];
+    else
+      return "invalid";
+  }
+};
 
 class CMMALPool : public std::enable_shared_from_this<CMMALPool>
 {
@@ -65,7 +93,7 @@ public:
   void SetFormat(uint32_t mmal_format, uint32_t width, uint32_t height, uint32_t aligned_width, uint32_t aligned_height, uint32_t size, AVCodecContext *avctx)
     { m_mmal_format = mmal_format; m_width = width; m_height = height; m_aligned_width = aligned_width; m_aligned_height = aligned_height; m_size = size, m_avctx = avctx; m_software = true; }
   bool IsSoftware() { return m_software; }
-  void SetVideoDeintMethod(std::string method) { if (m_processInfo) m_processInfo->SetVideoDeintMethod(method); }
+  void SetVideoDeintMethod(std::string method);
 protected:
   uint32_t m_mmal_format, m_width, m_height, m_aligned_width, m_aligned_height, m_size;
   AVCodecContext *m_avctx;
@@ -162,4 +190,6 @@ protected:
   void UnInitMMAL();
   void UpdateFramerateStats(double pts);
   virtual void Run() override;
+};
+
 };
