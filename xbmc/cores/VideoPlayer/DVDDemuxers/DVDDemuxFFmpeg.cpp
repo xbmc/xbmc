@@ -681,9 +681,16 @@ AVDictionary *CDVDDemuxFFmpeg::GetFFMpegOptionsFromInput()
         CLog::Log(LOGDEBUG, "CDVDDemuxFFmpeg::GetFFMpegOptionsFromInput() adding ffmpeg option 'user-agent: %s'", value.c_str());
         hasUserAgent = true;
       }
+      else if (name == "cookies")
+      {
+        // in the plural option expect multiple Set-Cookie values. They are passed \n delimited to FFMPEG
+        av_dict_set(&options, "cookies", value.c_str(), 0);
+        CLog::Log(LOGDEBUG, "CDVDDemuxFFmpeg::GetFFMpegOptionsFromInput() adding ffmpeg option 'cookies: %s'", value.c_str());
+        hasCookies = true;
+      }
       else if (name == "cookie")
       {
-        CLog::Log(LOGDEBUG, "CDVDDemuxFFmpeg::GetFFMpegOptionsFromInput() adding ffmpeg option 'cookies: %s'", value.c_str());
+        CLog::Log(LOGDEBUG, "CDVDDemuxFFmpeg::GetFFMpegOptionsFromInput() adding ffmpeg header value 'cookie: %s'", value.c_str());
         headers.append(it->first).append(": ").append(value).append("\r\n");
         hasCookies = true;
       }
