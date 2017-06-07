@@ -58,13 +58,13 @@ namespace PVR
 
 #define DEFAULT_INFO_STRING_VALUE "unknown"
 
-std::unique_ptr<CPVRClient> CPVRClient::FromExtension(AddonProps props, const cp_extension_t* ext)
+std::unique_ptr<CPVRClient> CPVRClient::FromExtension(CAddonInfo addonInfo, const cp_extension_t* ext)
 {
-  return std::unique_ptr<CPVRClient>(new CPVRClient(std::move(props)));
+  return std::unique_ptr<CPVRClient>(new CPVRClient(std::move(addonInfo)));
 }
 
-CPVRClient::CPVRClient(AddonProps props)
-  : CAddonDll(std::move(props))
+CPVRClient::CPVRClient(CAddonInfo addonInfo)
+  : CAddonDll(std::move(addonInfo))
 {
   ResetProperties();
 }

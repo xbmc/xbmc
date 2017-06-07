@@ -26,7 +26,7 @@
 
 using namespace ADDON;
 
-std::unique_ptr<CWebinterface> CWebinterface::FromExtension(AddonProps props, const cp_extension_t* ext)
+std::unique_ptr<CWebinterface> CWebinterface::FromExtension(CAddonInfo addonInfo, const cp_extension_t* ext)
 {
   // determine the type of the webinterface
   WebinterfaceType type(WebinterfaceTypeStatic);
@@ -34,7 +34,7 @@ std::unique_ptr<CWebinterface> CWebinterface::FromExtension(AddonProps props, co
   if (StringUtils::EqualsNoCase(webinterfaceType.c_str(), "wsgi"))
     type = WebinterfaceTypeWsgi;
   else if (!webinterfaceType.empty() && !StringUtils::EqualsNoCase(webinterfaceType.c_str(), "static") && !StringUtils::EqualsNoCase(webinterfaceType.c_str(), "html"))
-    CLog::Log(LOGWARNING, "Webinterface addon \"%s\" has specified an unsupported type \"%s\"", props.id.c_str(), webinterfaceType.c_str());
+    CLog::Log(LOGWARNING, "Webinterface addon \"%s\" has specified an unsupported type \"%s\"", addonInfo.id.c_str(), webinterfaceType.c_str());
 
   // determine the entry point of the webinterface
   std::string entryPoint(WEBINTERFACE_DEFAULT_ENTRY_POINT);
@@ -42,11 +42,11 @@ std::unique_ptr<CWebinterface> CWebinterface::FromExtension(AddonProps props, co
   if (!entry.empty())
     entryPoint = entry;
 
-  return std::unique_ptr<CWebinterface>(new CWebinterface(std::move(props), type, entryPoint));
+  return std::unique_ptr<CWebinterface>(new CWebinterface(std::move(addonInfo), type, entryPoint));
 }
 
-CWebinterface::CWebinterface(ADDON::AddonProps props, WebinterfaceType type,
-    const std::string &entryPoint) : CAddon(std::move(props)), m_type(type), m_entryPoint(entryPoint)
+CWebinterface::CWebinterface(ADDON::CAddonInfo addonInfo, WebinterfaceType type,
+    const std::string &entryPoint) : CAddon(std::move(addonInfo)), m_type(type), m_entryPoint(entryPoint)
 { }
 
 std::string CWebinterface::GetEntryPoint(const std::string &path) const

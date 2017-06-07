@@ -62,8 +62,8 @@ void CAudioBuffer::Set(const float* psBuffer, int iSize)
   for (int i = iSize; i < m_iLen; ++i) m_pBuffer[i] = 0;
 }
 
-CVisualisation::CVisualisation(AddonProps props)
-  : CAddonDll(std::move(props))
+CVisualisation::CVisualisation(CAddonInfo addonInfo)
+  : CAddonDll(std::move(addonInfo))
 {
   memset(&m_struct, 0, sizeof(m_struct));
 }

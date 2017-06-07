@@ -19,7 +19,12 @@
  *
  */
 
+#include "XBDateTime.h"
+#include "addons/AddonVersion.h"
+
+#include <map>
 #include <string>
+#include <vector>
 
 namespace ADDON
 {
@@ -76,9 +81,16 @@ namespace ADDON
     ADDON_MAX
   } TYPE;
 
+  typedef std::map<std::string, std::pair<const AddonVersion, bool> > ADDONDEPS;
+  typedef std::map<std::string, std::string> InfoMap;
+  typedef std::map<std::string, std::string> ArtMap;
+
   class CAddonInfo
   {
   public:
+    CAddonInfo();
+    CAddonInfo(std::string id, TYPE type);
+
     /*!
      * @brief Utilities to translate add-on parts to his requested part.
      */
@@ -88,6 +100,32 @@ namespace ADDON
     static TYPE TranslateType(const std::string &string);
     static TYPE TranslateSubContent(const std::string &content);
     //@}
+
+    std::string id;
+    TYPE type;
+    AddonVersion version{"0.0.0"};
+    AddonVersion minversion{"0.0.0"};
+    std::string name;
+    std::string license;
+    std::string summary;
+    std::string description;
+    std::string libname;
+    std::string author;
+    std::string source;
+    std::string path;
+    std::string changelog;
+    std::string icon;
+    std::map<std::string, std::string> art;
+    std::vector<std::string> screenshots;
+    std::string disclaimer;
+    ADDONDEPS dependencies;
+    std::string broken;
+    InfoMap extrainfo;
+    CDateTime installDate;
+    CDateTime lastUpdated;
+    CDateTime lastUsed;
+    std::string origin;
+    uint64_t packageSize;
   };
 
 } /* namespace ADDON */

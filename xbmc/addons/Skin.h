@@ -106,17 +106,17 @@ public:
     std::string m_name;
   };
 
-  static std::unique_ptr<CSkinInfo> FromExtension(AddonProps props, const cp_extension_t* ext);
+  static std::unique_ptr<CSkinInfo> FromExtension(CAddonInfo addonInfo, const cp_extension_t* ext);
 
   //FIXME: CAddonCallbacksGUI/WindowXML hack
-  explicit CSkinInfo(AddonProps props, const RESOLUTION_INFO& resolution = RESOLUTION_INFO())
-      : CAddon(std::move(props)),
+  explicit CSkinInfo(CAddonInfo addonInfo, const RESOLUTION_INFO& resolution = RESOLUTION_INFO())
+      : CAddon(std::move(addonInfo)),
         m_defaultRes(resolution),
         m_effectsSlowDown(1.f),
         m_debugging(false) {}
 
   CSkinInfo(
-      AddonProps props,
+      CAddonInfo addonInfo,
       const RESOLUTION_INFO& resolution,
       const std::vector<RESOLUTION_INFO>& resolutions,
       float effectsSlowDown,
@@ -214,7 +214,7 @@ protected:
   std::string GetDirFromRes(RESOLUTION res) const;
 
   /*! \brief grab a resolution tag from a skin's configuration data
-   \param props passed addoninfo structure to check for resolution
+   \param ext passed addoninfo structure to check for resolution
    \param tag name of the tag to look for
    \param res resolution to return
    \return true if we find a valid resolution, false otherwise

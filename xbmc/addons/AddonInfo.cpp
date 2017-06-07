@@ -137,4 +137,19 @@ TYPE CAddonInfo::TranslateSubContent(const std::string& content)
     return ADDON_UNKNOWN;
 }
 
+CAddonInfo::CAddonInfo()
+  : type(ADDON_UNKNOWN),
+    packageSize(0)
+{
+
+}
+
+CAddonInfo::CAddonInfo(std::string id, TYPE type)
+  : id(std::move(id)),
+    type(type),
+    packageSize(0)
+{
+
+}
+
 } /* namespace ADDON */

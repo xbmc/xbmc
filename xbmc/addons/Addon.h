@@ -50,79 +50,44 @@ void OnPostInstall(const AddonPtr& addon, bool update, bool modal);
 void OnPreUnInstall(const AddonPtr& addon);
 void OnPostUnInstall(const AddonPtr& addon);
 
-
-class AddonProps
-{
-public:
-  AddonProps() : type(ADDON_UNKNOWN), packageSize(0) {};
-  AddonProps(std::string id, TYPE type) : id(std::move(id)), type(type), packageSize(0) {}
-
-  std::string id;
-  TYPE type;
-  AddonVersion version{"0.0.0"};
-  AddonVersion minversion{"0.0.0"};
-  std::string name;
-  std::string license;
-  std::string summary;
-  std::string description;
-  std::string libname;
-  std::string author;
-  std::string source;
-  std::string path;
-  std::string changelog;
-  std::string icon;
-  std::map<std::string, std::string> art;
-  std::vector<std::string> screenshots;
-  std::string disclaimer;
-  ADDONDEPS dependencies;
-  std::string broken;
-  InfoMap extrainfo;
-  CDateTime installDate;
-  CDateTime lastUpdated;
-  CDateTime lastUsed;
-  std::string origin;
-  uint64_t packageSize;
-};
-
-
 class CAddon : public IAddon
 {
 public:
-  explicit CAddon(AddonProps props);
+  explicit CAddon(CAddonInfo addonInfo);
   virtual ~CAddon() {}
 
-  TYPE Type() const override { return m_props.type; }
+  TYPE Type() const override { return m_addonInfo.type; }
   TYPE FullType() const override { return Type(); }
-  bool IsType(TYPE type) const override { return type == m_props.type; }
-  std::string ID() const override{ return m_props.id; }
-  std::string Name() const override { return m_props.name; }
+  bool IsType(TYPE type) const override { return type == m_addonInfo.type; }
+  std::string ID() const override{ return m_addonInfo.id; }
+  std::string Name() const override { return m_addonInfo.name; }
   bool IsInUse() const override{ return false; };
-  AddonVersion Version() const override { return m_props.version; }
-  AddonVersion MinVersion() const override { return m_props.minversion; }
-  std::string Summary() const override { return m_props.summary; }
-  std::string Description() const override { return m_props.description; }
-  std::string Path() const override { return m_props.path; }
+  AddonVersion Version() const override { return m_addonInfo.version; }
+  AddonVersion MinVersion() const override { return m_addonInfo.minversion; }
+  std::string Summary() const override { return m_addonInfo.summary; }
+  std::string Description() const override { return m_addonInfo.description; }
+  std::string Path() const override { return m_addonInfo.path; }
   std::string Profile() const override { return m_profilePath; }
   std::string LibPath() const override;
-  std::string Author() const override { return m_props.author; }
-  std::string ChangeLog() const override { return m_props.changelog; }
-  std::string Icon() const override { return m_props.icon; };
-  ArtMap Art() const override { return m_props.art; };
-  std::vector<std::string> Screenshots() const override { return m_props.screenshots; };
-  std::string Disclaimer() const override { return m_props.disclaimer; }
-  std::string Broken() const override { return m_props.broken; }
-  CDateTime InstallDate() const override { return m_props.installDate; }
-  CDateTime LastUpdated() const override { return m_props.lastUpdated; }
-  CDateTime LastUsed() const override { return m_props.lastUsed; }
-  std::string Origin() const override { return m_props.origin; }
-  uint64_t PackageSize() const override { return m_props.packageSize; }
-  const InfoMap& ExtraInfo() const override { return m_props.extrainfo; }
-  const ADDONDEPS& GetDeps() const override { return m_props.dependencies; }
+  std::string Author() const override { return m_addonInfo.author; }
+  std::string ChangeLog() const override { return m_addonInfo.changelog; }
+  std::string Icon() const override { return m_addonInfo.icon; };
+  ArtMap Art() const override { return m_addonInfo.art; }
+  std::vector<std::string> Screenshots() const override { return m_addonInfo.screenshots; };
+  std::string Disclaimer() const override { return m_addonInfo.disclaimer; }
+  std::string Broken() const override { return m_addonInfo.broken; }
+  CDateTime InstallDate() const override { return m_addonInfo.installDate; }
+  CDateTime LastUpdated() const override { return m_addonInfo.lastUpdated; }
+  CDateTime LastUsed() const override { return m_addonInfo.lastUsed; }
+  std::string Origin() const override { return m_addonInfo.origin; }
+  uint64_t PackageSize() const override { return m_addonInfo.packageSize; }
+  const InfoMap& ExtraInfo() const override { return m_addonInfo.extrainfo; }
+  const ADDONDEPS& GetDeps() const override { return m_addonInfo.dependencies; }
 
   std::string FanArt() const override
   {
-    auto it = m_props.art.find("fanart");
-    return it != m_props.art.end() ? it->second : "";
+    auto it = m_addonInfo.art.find("fanart");
+    return it != m_addonInfo.art.end() ? it->second : "";
   }
 
   /*! \brief Check whether the this addon can be configured or not
@@ -295,7 +260,7 @@ protected:
    */
   virtual bool SettingsToXML(CXBMCTinyXML &doc) const;
 
-  const AddonProps m_props;
+  const CAddonInfo m_addonInfo;
   std::string m_userSettingsPath;
 
 private:

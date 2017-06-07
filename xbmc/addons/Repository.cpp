@@ -54,7 +54,7 @@ using namespace KODI::MESSAGING;
 
 using KODI::MESSAGING::HELPERS::DialogResponse;
 
-std::unique_ptr<CRepository> CRepository::FromExtension(AddonProps props, const cp_extension_t* ext)
+std::unique_ptr<CRepository> CRepository::FromExtension(CAddonInfo addonInfo, const cp_extension_t* ext)
 {
   DirList dirs;
   AddonVersion version("0.0.0");
@@ -88,11 +88,11 @@ std::unique_ptr<CRepository> CRepository::FromExtension(AddonProps props, const 
     info.hashes = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "hashes") == "true";
     dirs.push_back(std::move(info));
   }
-  return std::unique_ptr<CRepository>(new CRepository(std::move(props), std::move(dirs)));
+  return std::unique_ptr<CRepository>(new CRepository(std::move(addonInfo), std::move(dirs)));
 }
 
-CRepository::CRepository(AddonProps props, DirList dirs)
-    : CAddon(std::move(props)), m_dirs(std::move(dirs))
+CRepository::CRepository(CAddonInfo addonInfo, DirList dirs)
+    : CAddon(std::move(addonInfo)), m_dirs(std::move(dirs))
 {
 }
 

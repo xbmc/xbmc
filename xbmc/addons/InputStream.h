@@ -35,12 +35,12 @@ namespace ADDON
   {
   public:
 
-    static std::unique_ptr<CInputStream> FromExtension(AddonProps props, const cp_extension_t* ext);
+    static std::unique_ptr<CInputStream> FromExtension(CAddonInfo addonInfo, const cp_extension_t* ext);
 
-    explicit CInputStream(AddonProps props)
-      : CAddonDll(std::move(props))
+    explicit CInputStream(CAddonInfo addonInfo)
+      : CAddonDll(std::move(addonInfo))
     {};
-    CInputStream(const AddonProps& props,
+    CInputStream(const CAddonInfo& addonInfo,
                  const std::string& name,
                  const std::string& listitemprops,
                  const std::string& extensions,

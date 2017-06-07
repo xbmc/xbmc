@@ -30,42 +30,42 @@ public:
   CAddonBuilder() : m_built(false), m_extPoint(nullptr) {}
 
   std::shared_ptr<IAddon> Build();
-  void SetId(std::string id) { m_props.id = std::move(id); }
-  void SetName(std::string name) { m_props.name = std::move(name); }
-  void SetLicense(std::string license) { m_props.license = std::move(license); }
-  void SetSummary(std::string summary) { m_props.summary = std::move(summary); }
-  void SetDescription(std::string description) { m_props.description = std::move(description); }
-  void SetDisclaimer(std::string disclaimer) { m_props.disclaimer = std::move(disclaimer); }
-  void SetAuthor(std::string author) { m_props.author = std::move(author); }
-  void SetSource(std::string source) { m_props.source = std::move(source); }
-  void SetIcon(std::string icon) { m_props.icon = std::move(icon); }
-  void SetArt(std::string type, std::string value) { m_props.art[type] = value; }
-  void SetArt(std::map<std::string, std::string> art) { m_props.art = std::move(art); }
-  void SetScreenshots(std::vector<std::string> screenshots) { m_props.screenshots = std::move(screenshots); }
-  void SetChangelog(std::string changelog) { m_props.changelog = std::move(changelog); }
-  void SetBroken(std::string broken) { m_props.broken = std::move(broken); }
-  void SetPath(std::string path) { m_props.path = std::move(path); }
-  void SetLibName(std::string libname) { m_props.libname = std::move(libname); }
-  void SetVersion(AddonVersion version) { m_props.version = std::move(version); }
-  void SetMinVersion(AddonVersion minversion) { m_props.minversion = std::move(minversion); }
-  void SetDependencies(ADDONDEPS dependencies) { m_props.dependencies = std::move(dependencies); }
-  void SetExtrainfo(InfoMap extrainfo) { m_props.extrainfo = std::move(extrainfo); }
-  void SetType(TYPE type) { m_props.type = type; }
+  void SetId(std::string id) { m_addonInfo.id = std::move(id); }
+  void SetName(std::string name) { m_addonInfo.name = std::move(name); }
+  void SetLicense(std::string license) { m_addonInfo.license = std::move(license); }
+  void SetSummary(std::string summary) { m_addonInfo.summary = std::move(summary); }
+  void SetDescription(std::string description) { m_addonInfo.description = std::move(description); }
+  void SetDisclaimer(std::string disclaimer) { m_addonInfo.disclaimer = std::move(disclaimer); }
+  void SetAuthor(std::string author) { m_addonInfo.author = std::move(author); }
+  void SetSource(std::string source) { m_addonInfo.source = std::move(source); }
+  void SetIcon(std::string icon) { m_addonInfo.icon = std::move(icon); }
+  void SetArt(std::string type, std::string value) { m_addonInfo.art[type] = value; }
+  void SetArt(std::map<std::string, std::string> art) { m_addonInfo.art = std::move(art); }
+  void SetScreenshots(std::vector<std::string> screenshots) { m_addonInfo.screenshots = std::move(screenshots); }
+  void SetChangelog(std::string changelog) { m_addonInfo.changelog = std::move(changelog); }
+  void SetBroken(std::string broken) { m_addonInfo.broken = std::move(broken); }
+  void SetPath(std::string path) { m_addonInfo.path = std::move(path); }
+  void SetLibName(std::string libname) { m_addonInfo.libname = std::move(libname); }
+  void SetVersion(AddonVersion version) { m_addonInfo.version = std::move(version); }
+  void SetMinVersion(AddonVersion minversion) { m_addonInfo.minversion = std::move(minversion); }
+  void SetDependencies(ADDONDEPS dependencies) { m_addonInfo.dependencies = std::move(dependencies); }
+  void SetExtrainfo(InfoMap extrainfo) { m_addonInfo.extrainfo = std::move(extrainfo); }
+  void SetType(TYPE type) { m_addonInfo.type = type; }
   void SetExtPoint(cp_extension_t* ext) { m_extPoint = ext; }
-  void SetInstallDate(CDateTime installDate) { m_props.installDate = installDate; }
-  void SetLastUpdated(CDateTime lastUpdated) { m_props.lastUpdated = lastUpdated; }
-  void SetLastUsed(CDateTime lastUsed) { m_props.lastUsed = lastUsed; }
-  void SetOrigin(std::string origin) { m_props.origin = std::move(origin); }
-  void SetPackageSize(uint64_t size) { m_props.packageSize = size; }
+  void SetInstallDate(CDateTime installDate) { m_addonInfo.installDate = installDate; }
+  void SetLastUpdated(CDateTime lastUpdated) { m_addonInfo.lastUpdated = lastUpdated; }
+  void SetLastUsed(CDateTime lastUsed) { m_addonInfo.lastUsed = lastUsed; }
+  void SetOrigin(std::string origin) { m_addonInfo.origin = std::move(origin); }
+  void SetPackageSize(uint64_t size) { m_addonInfo.packageSize = size; }
 
-  const std::string& GetId() const { return m_props.id; }
-  const AddonVersion& GetVersion() const { return m_props.version; }
+  const std::string& GetId() const { return m_addonInfo.id; }
+  const AddonVersion& GetVersion() const { return m_addonInfo.version; }
 
 private:
-  static std::shared_ptr<IAddon> FromProps(AddonProps addonProps);
+  static std::shared_ptr<IAddon> FromProps(CAddonInfo addonInfo);
 
   bool m_built;
-  AddonProps m_props;
+  CAddonInfo m_addonInfo;
   cp_extension_t* m_extPoint;
 };
 
