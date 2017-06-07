@@ -185,8 +185,8 @@ public:
   virtual float GetWidth() const;
   virtual float GetHeight() const;
 
-  void MarkDirtyRegion();
-  bool IsControlDirty() const { return m_controlIsDirty; };
+  void MarkDirtyRegion(const unsigned int dirtyState = DIRTY_STATE_CONTROL);
+  bool IsControlDirty() const { return m_controlDirtyState != 0; };
 
   /*! \brief return the render region in screen coordinates of this control
    */
@@ -373,7 +373,10 @@ protected:
   TransformMatrix m_transform;
   TransformMatrix m_cachedTransform; // Contains the absolute transform the control
 
-  bool  m_controlIsDirty;
+  static const unsigned int DIRTY_STATE_CONTROL = 1; //This control is dirty
+  static const unsigned int DIRTY_STATE_CHILD = 2; //One / more children are dirty
+
+  unsigned int  m_controlDirtyState;
   CRect m_renderRegion;         // In screen coordinates
 };
 

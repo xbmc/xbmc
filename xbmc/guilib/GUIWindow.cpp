@@ -72,7 +72,6 @@ CGUIWindow::CGUIWindow(int id, const std::string &xmlFile)
   m_menuControlID = 0;
   m_menuLastFocusedControlID = 0;
   m_custom = false;
-  m_forceProcess = true;
 }
 
 CGUIWindow::~CGUIWindow()
@@ -343,10 +342,8 @@ void CGUIWindow::CenterWindow()
 
 void CGUIWindow::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
-  if (!m_controlIsDirty && !m_forceProcess && g_advancedSettings.m_guiSmartRedraw)
+  if (!IsControlDirty() && g_advancedSettings.m_guiSmartRedraw)
     return;
-
-  m_forceProcess = false;
 
   g_graphicsContext.SetRenderingResolution(m_coordsRes, m_needsScaling);
   g_graphicsContext.AddGUITransform();
@@ -743,9 +740,9 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
       if (HasID(message.GetSenderId()) || !message.GetSenderId())
       {
         if (message.GetParam1() == GUI_MSG_PAGE_CHANGE ||
-            message.GetParam1() == GUI_MSG_REFRESH_THUMBS ||
-            message.GetParam1() == GUI_MSG_REFRESH_LIST ||
-            message.GetParam1() == GUI_MSG_WINDOW_RESIZE)
+          message.GetParam1() == GUI_MSG_REFRESH_THUMBS ||
+          message.GetParam1() == GUI_MSG_REFRESH_LIST ||
+          message.GetParam1() == GUI_MSG_WINDOW_RESIZE)
         { // alter the message accordingly, and send to all controls
           for (iControls it = m_children.begin(); it != m_children.end(); ++it)
           {
@@ -755,7 +752,7 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
           }
         }
         else if (message.GetParam1() == GUI_MSG_STATE_CHANGED)
-          m_forceProcess = true;
+          MarkDirtyRegion(DIRTY_STATE_CHILD); //Don't force an dirtyRect, we don't know if / what has changed.
       }
     }
     break;

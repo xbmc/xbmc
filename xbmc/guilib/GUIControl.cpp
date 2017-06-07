@@ -52,7 +52,7 @@ CGUIControl::CGUIControl() :
   m_hasCamera = false;
   m_pushedUpdates = false;
   m_pulseOnSelect = false;
-  m_controlIsDirty = true;
+  m_controlDirtyState = DIRTY_STATE_CONTROL;
   m_stereo = 0.0f;
   m_controlStats = nullptr;
 }
@@ -81,7 +81,7 @@ CGUIControl::CGUIControl(int parentID, int controlID, float posX, float posY, fl
   m_hasCamera = false;
   m_pushedUpdates = false;
   m_pulseOnSelect = false;
-  m_controlIsDirty = false;
+  m_controlDirtyState = DIRTY_STATE_CONTROL;
   m_stereo = 0.0f;
   m_controlStats = nullptr;
 }
@@ -130,8 +130,8 @@ void CGUIControl::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyreg
 {
   CRect dirtyRegion = m_renderRegion;
 
-  bool changed = m_controlIsDirty || (m_bInvalidated && IsVisible());
-  m_controlIsDirty = false;
+  bool changed = (m_controlDirtyState & DIRTY_STATE_CONTROL) != 0 || (m_bInvalidated && IsVisible());
+  m_controlDirtyState = 0;
 
   if (Animate(currentTime))
     MarkDirtyRegion();
@@ -158,7 +158,7 @@ void CGUIControl::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyreg
 
   UpdateControlStats();
 
-  changed |= m_controlIsDirty;
+  changed |= (m_controlDirtyState & DIRTY_STATE_CONTROL) != 0;
 
   if (changed)
   {
@@ -478,14 +478,12 @@ float CGUIControl::GetHeight() const
   return m_height;
 }
 
-void CGUIControl::MarkDirtyRegion()
+void CGUIControl::MarkDirtyRegion(const unsigned int dirtyState)
 {
-  if (m_controlIsDirty)
-    return;
+  if (!m_controlDirtyState && m_parentControl)
+    m_parentControl->MarkDirtyRegion(DIRTY_STATE_CHILD);
 
-  m_controlIsDirty = true;
-  if (m_parentControl)
-    m_parentControl->MarkDirtyRegion();
+  m_controlDirtyState |= dirtyState;
 }
 
 CRect CGUIControl::CalcRenderRegion() const
