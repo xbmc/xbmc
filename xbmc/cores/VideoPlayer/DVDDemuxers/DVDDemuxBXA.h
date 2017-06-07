@@ -62,8 +62,6 @@ public:
   virtual void Abort() override;
   virtual void Flush() override;
   virtual DemuxPacket* Read() override;
-  bool SeekTime(double time, bool backwards = false, double* startpts = NULL) override { return false; }
-  virtual void SetSpeed(int iSpeed) override {}
   virtual int GetStreamLength() override { return (int)m_header.durationMs; }
   CDemuxStream* GetStream(int iStreamId) const override;
   std::vector<CDemuxStream*> GetStreams() const override;

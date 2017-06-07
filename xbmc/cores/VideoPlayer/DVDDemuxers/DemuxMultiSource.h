@@ -51,9 +51,7 @@ public:
   virtual void Abort() override;
   virtual void EnableStream(int64_t demuxerId, int id, bool enable) override;
   virtual void Flush() override;
-  virtual std::string GetFileName() override { return ""; }
   int GetNrOfStreams() const override;
-  virtual CDemuxStream* GetStream(int iStreamId)const override { return nullptr; } ;
   virtual CDemuxStream* GetStream(int64_t demuxerId, int iStreamId) const override;
   virtual std::vector<CDemuxStream*> GetStreams() const override;
   std::string GetStreamCodecName(int64_t demuxerId, int iStreamId) override;
@@ -61,7 +59,6 @@ public:
   virtual DemuxPacket* Read() override;
   virtual void Reset() override;
   bool SeekTime(double time, bool backwards = false, double* startpts = NULL) override;
-  virtual void SetSpeed(int iSpeed) override {}
 
 private:
   void Dispose();

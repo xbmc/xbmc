@@ -39,15 +39,12 @@ public:
 
   // implementation of CDVDDemux
   virtual void          Reset() override;
-  virtual void          Abort() override {}
   virtual void          Flush() override;
   virtual DemuxPacket*  Read() override;
   virtual bool SeekTime(double time, bool backwards, double* startpts = NULL) override;
-  virtual void          SetSpeed(int speed) override {}
   virtual CDemuxStream* GetStream(int index) const override { return m_Streams[index]; }
   virtual std::vector<CDemuxStream*> GetStreams() const override;
   virtual int           GetNrOfStreams() const override { return m_Streams.size(); }
-  virtual int           GetStreamLength() override { return 0; }
   virtual std::string   GetFileName() override { return m_Filename; }
   virtual void EnableStream(int id, bool enable) override;
 
