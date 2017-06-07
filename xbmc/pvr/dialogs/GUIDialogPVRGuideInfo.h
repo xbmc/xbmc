@@ -37,6 +37,8 @@ namespace PVR
 
     void SetProgInfo(const CPVREpgInfoTagPtr &tag);
 
+    static void ShowFor(const CFileItemPtr& item);
+
   protected:
     void OnInitWindow() override;
 

@@ -35,6 +35,7 @@
 #include "music/MusicThumbLoader.h"
 #include "pictures/PictureThumbLoader.h"
 #include "pvr/PVRManager.h"
+#include "pvr/dialogs/GUIDialogPVRGuideInfo.h"
 #include "pvr/dialogs/GUIDialogPVRRecordingInfo.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
@@ -394,6 +395,11 @@ bool CDirectoryProvider::OnInfo(const CGUIListItemPtr& item)
   else if (fileItem->HasPVRRecordingInfoTag())
   {
     CGUIDialogPVRRecordingInfo::ShowFor(fileItem);
+    return true;
+  }
+  else if (fileItem->HasPVRChannelInfoTag())
+  {
+    CGUIDialogPVRGuideInfo::ShowFor(fileItem);
     return true;
   }
   else if (fileItem->HasVideoInfoTag())
