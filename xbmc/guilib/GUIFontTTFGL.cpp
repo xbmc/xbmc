@@ -294,7 +294,7 @@ void CGUIFontTTFGL::DestroyVertexBuffer(CVertexBuffer &buffer) const
   if (buffer.bufferHandle != 0)
   {
     // Release the buffer name for reuse
-    glDeleteBuffers(1, (GLuint *) &buffer.bufferHandle);
+    glDeleteBuffers(1, &buffer.bufferHandle);
     buffer.bufferHandle = 0;
   }
 }

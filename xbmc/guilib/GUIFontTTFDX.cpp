@@ -206,7 +206,7 @@ void CGUIFontTTFDX::DestroyVertexBuffer(CVertexBuffer &buffer) const
     CD3DBuffer* vbuffer = reinterpret_cast<CD3DBuffer*>(buffer.bufferHandle);
     ClearReference((CGUIFontTTFDX*)this, vbuffer);
     SAFE_DELETE(vbuffer);
-    buffer.bufferHandle = 0;
+    buffer.bufferHandle = nullptr;
   }
 }
 

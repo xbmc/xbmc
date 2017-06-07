@@ -37,7 +37,7 @@
 #include <cassert>
 
 #include "TransformMatrix.h"
-#include "system.h"
+#include "system_gl.h"
 
 #define FONT_CACHE_TIME_LIMIT (1000)
 #define FONT_CACHE_DIST_LIMIT (0.01f)
@@ -206,13 +206,13 @@ struct CGUIFontCacheDynamicPosition
 struct CVertexBuffer
 {
 #if defined(HAS_GL) || defined(HAS_GLES)
-  typedef unsigned int BufferHandleType;
+  typedef GLuint BufferHandleType;
 #define  BUFFER_HANDLE_INIT 0
 #elif defined(HAS_DX)
   typedef void* BufferHandleType;
 #define BUFFER_HANDLE_INIT nullptr
 #endif
-  BufferHandleType bufferHandle; // this is really a GLuint
+  BufferHandleType bufferHandle;
   size_t size;
   CVertexBuffer() : bufferHandle(BUFFER_HANDLE_INIT), size(0), m_font(NULL) {}
   CVertexBuffer(BufferHandleType bufferHandle, size_t size, const CGUIFontTTFBase *font) : bufferHandle(bufferHandle), size(size), m_font(font) {}
@@ -221,14 +221,14 @@ struct CVertexBuffer
     /* In practice, the copy constructor is only called before a vertex buffer
      * has been attached. If this should ever change, we'll need another support
      * function in GUIFontTTFGL/DX to duplicate a buffer, given its handle. */
-    assert(other.bufferHandle == 0);
+    assert(other.bufferHandle == BUFFER_HANDLE_INIT);
   }
   CVertexBuffer &operator=(CVertexBuffer &other)
   {
     /* This is used with move-assignment semantics for initialising the object in the font cache */
-    assert(bufferHandle == 0);
+    assert(bufferHandle == BUFFER_HANDLE_INIT);
     bufferHandle = other.bufferHandle;
-    other.bufferHandle = 0;
+    other.bufferHandle = BUFFER_HANDLE_INIT;
     size = other.size;
     m_font = other.m_font;
     return *this;
