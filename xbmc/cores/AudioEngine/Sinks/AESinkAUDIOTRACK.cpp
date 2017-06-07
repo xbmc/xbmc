@@ -455,7 +455,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
         m_sink_frameSize = 2 * CAEUtil::DataFormatToBits(AE_FMT_S16LE) / 8; // sending via 2 channels 2 * 16 / 8 = 4
       else
         m_sink_frameSize = m_format.m_frameSize;
-      m_format.m_frames = (int)(m_min_buffer_size / m_format.m_frameSize) / 2;
+      m_format.m_frames = (int)(m_min_buffer_size / m_format.m_frameSize) / 4;
     }
 
     if (m_passthrough && !m_info.m_wantsIECPassthrough)
