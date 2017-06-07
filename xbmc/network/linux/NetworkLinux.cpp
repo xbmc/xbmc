@@ -115,6 +115,12 @@ bool CNetworkInterfaceLinux::IsEnabled()
 
 bool CNetworkInterfaceLinux::IsConnected()
 {
+#ifdef TARGET_ANDROID
+   // ignore wifi direct interfaces
+  if (StringUtils::StartsWithNoCase(m_interfaceName, "p2p"))
+    return false;
+#endif
+
    struct ifreq ifr;
    int zero = 0;
    memset(&ifr,0,sizeof(struct ifreq));
