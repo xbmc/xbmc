@@ -1701,8 +1701,11 @@ bool CWinSystemOSX::IsSystemScreenSaverEnabled()
 
 void CWinSystemOSX::ResetOSScreensaver()
 {
-  // allow os screensaver only if we are fullscreen
-  EnableSystemScreenSaver(!m_bFullScreen);
+  // allow os screensaver only if we are not fullscreen or the screensaver is disabled in Kodi settings
+  if (m_bFullScreen || CServiceBroker::GetSettings().GetBool(CSettings::SETTING_POWERMANAGEMENT_SCREENSAVEROFF))
+    EnableSystemScreenSaver(false);
+  else
+    EnableSystemScreenSaver(true);
 }
 
 void CWinSystemOSX::EnableTextInput(bool bEnable)
