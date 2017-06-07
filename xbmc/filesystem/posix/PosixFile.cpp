@@ -128,18 +128,28 @@ ssize_t CPosixFile::Read(void* lpBuf, size_t uiBufSize)
   {
     m_filePos += res; // if m_filePos was known - update it
 #if defined(HAVE_POSIX_FADVISE)
-    // Drop the cache between then last drop and 16 MB behind where we
-    // are now, to make sure the file doesn't displace everything else.
-    // However, never throw out the first 16 MB of the file, as it might
-    // be the header etc., and never ask the OS to drop in chunks of
-    // less than 1 MB.
-    const int64_t end_drop = m_filePos - 16 * 1024 * 1024;
-    if (end_drop >= 17 * 1024 * 1024)
+    if (m_filePos < m_lastDropPos && m_filePos >= 16 * 1024 * 1024)
     {
-      const int64_t start_drop = std::max<int64_t>(m_lastDropPos, 16 * 1024 * 1024);
-      if (end_drop - start_drop >= 1 * 1024 * 1024 &&
-          posix_fadvise(m_fd, start_drop, end_drop - start_drop, POSIX_FADV_DONTNEED) == 0)
-        m_lastDropPos = end_drop;
+      // file was rewinded, change caching between current position and
+      // last cache drop to normal caching
+      if (posix_fadvise(m_fd, m_filePos, m_lastDropPos - m_filePos, POSIX_FADV_NORMAL) == 0)
+        m_lastDropPos = m_filePos;
+    }
+    else
+    {
+      // Drop the cache between then last drop and 16 MB behind where we
+      // are now, to make sure the file doesn't displace everything else.
+      // However, never throw out the first 16 MB of the file, as it might
+      // be the header etc., and never ask the OS to drop in chunks of
+      // less than 1 MB.
+      const int64_t end_drop = m_filePos - 16 * 1024 * 1024;
+      if (end_drop >= 17 * 1024 * 1024)
+      {
+        const int64_t start_drop = std::max<int64_t>(m_lastDropPos, 16 * 1024 * 1024);
+        if (end_drop - start_drop >= 1 * 1024 * 1024 &&
+            posix_fadvise(m_fd, start_drop, end_drop - start_drop, POSIX_FADV_DONTNEED) == 0)
+            m_lastDropPos = end_drop;
+      }
     }
 #endif
   }
