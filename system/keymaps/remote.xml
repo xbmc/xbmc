@@ -381,6 +381,8 @@
     <remote>
       <zero>Queue</zero>
       <clear>Delete</clear>
+      <skipminus>PrevLetter</skipminus>
+      <skipplus>NextLetter</skipplus>
     </remote>
   </Videos>
   <VideoPlaylist>
