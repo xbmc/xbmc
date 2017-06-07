@@ -12059,7 +12059,12 @@ msgctxt "#20126"
 msgid "Log off"
 msgstr ""
 
-#empty strings from id 20127 to 20128
+#: system/settings/settings.xml
+msgctxt "#20127"
+msgid "Updates"
+msgstr ""
+
+#empty string with id 20128
 
 #: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#20129"
@@ -12420,7 +12425,12 @@ msgctxt "#20225"
 msgid "Where no local album cover exists, online art will be used. Where neither is available, cover images embedded in music files will be used"
 msgstr ""
 
-#empty strings from id 20226 to 20239
+#: system/settings/settings.xml
+msgctxt "#20226"
+msgid "Check now"
+msgstr ""
+
+#empty strings from id 20227 to 20239
 
 #: xbmc/dialogs/GUIDialogMediaSource.cpp
 msgctxt "#20240"
@@ -12510,7 +12520,10 @@ msgctxt "#20260"
 msgid "Secure Shell (SSH / SFTP)"
 msgstr ""
 
-#empty string with id 20261
+#: system/settings/settings.xml
+msgctxt "#20261"
+msgid "Automatically check for updates"
+msgstr ""
 
 #: xbmc/storage/MediaManager.cpp
 msgctxt "#20262"
@@ -19596,7 +19609,11 @@ msgctxt "#36422"
 msgid "Enable hardware video decode using Amlogic decoder."
 msgstr ""
 
-#empty string with id 36423
+#. Description of settings category "System -> Updates -> Enable autoupdate" with label #20261
+#: system/settings/settings.xml
+msgctxt "#36423"
+msgid "If this is enabled you will be automatically informed about new Kodi versions and can decide if an update should be done."
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36424"
@@ -19673,7 +19690,13 @@ msgctxt "#36442"
 msgid "Set the number of volume control steps."
 msgstr ""
 
-#empty strings from id 36443 to 36459
+#. Description of settings category "System -> Updates" with label #20127
+#: system/settings/settings.xml
+msgctxt "#36443"
+msgid "Settings for auto updating Kodi."
+msgstr ""
+
+#empty strings from id 36444 to 36459
 
 #. Description of settings with label #14112 "Enable event logging"
 #: system/settings/settings.xml
@@ -19687,7 +19710,13 @@ msgctxt "#36461"
 msgid "Notification event describe regular processes and actions performed by the system or the user."
 msgstr ""
 
-#empty strings from id 36462 to 36499
+#. Description of settings category "System -> Updates -> Check now" with label #20223
+#: system/settings/settings.xml
+msgctxt "#36462"
+msgid "Normally its sufficient to let Kodi check for updates automatically. If you feel the need to check for an update now you can press this button."
+msgstr ""
+
+#empty strings from id 36463 to 36499
 #end reservation
 
 #. label of a setting for the stereoscopic 3D mode of the GUI that is/should be applied

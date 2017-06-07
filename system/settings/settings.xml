@@ -2965,6 +2965,24 @@
         </setting>
       </group>
     </category>
+   <category id="updates" label="20127" help="36443">
+      <group id="1">
+        <setting id="updates.enableautoupdate" type="boolean" label="20261" help="36423">
+          <level>1</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="updates.checkforupdates" type="action" label="20226" help="36462">
+          <level>2</level>
+          <control type="button" format="action">
+            <hidevalue>true</hidevalue>
+          </control>
+          <dependencies>
+            <dependency type="visible" setting="updates.enableautoupdate">false</dependency>
+          </dependencies>
+        </setting>
+      </group>
+    </category>
     <category id="cache" label="439" help="36399">
       <visible>false</visible>
       <group id="1">
