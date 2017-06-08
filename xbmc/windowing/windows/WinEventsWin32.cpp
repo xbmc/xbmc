@@ -629,7 +629,6 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       newEvent.type = XBMC_MOUSEMOTION;
       newEvent.motion.x = GET_X_LPARAM(lParam);
       newEvent.motion.y = GET_Y_LPARAM(lParam);
-      newEvent.motion.state = 0;
       m_pEventFunc(newEvent);
       return(0);
     case WM_LBUTTONDOWN:
