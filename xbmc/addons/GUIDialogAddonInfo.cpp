@@ -60,6 +60,7 @@
 #define CONTROL_BTN_AUTOUPDATE      13
 #define CONTROL_LIST_SCREENSHOTS    50
 
+using namespace KODI;
 using namespace ADDON;
 using namespace XFILE;
 

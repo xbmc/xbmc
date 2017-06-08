@@ -42,6 +42,7 @@
 
 #include <algorithm>
 
+using namespace KODI;
 using namespace GAME;
 
 #define CONTROL_BTNVIEWASICONS      2

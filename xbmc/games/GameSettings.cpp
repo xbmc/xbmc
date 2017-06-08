@@ -29,6 +29,7 @@
 
 #include <cstring>
 
+using namespace KODI;
 using namespace GAME;
 
 #define SETTING_GAMES_KEYBOARD_PLAYERCONFIG_PREFIX  "gameskeyboard.keyboardplayerconfig" //! @todo

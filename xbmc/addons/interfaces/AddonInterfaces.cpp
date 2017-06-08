@@ -36,7 +36,8 @@
 #include "peripherals/addons/PeripheralAddon.h"
 #include "utils/log.h"
 
-using namespace KODI::MESSAGING;
+using namespace KODI;
+using namespace MESSAGING;
 
 namespace ADDON
 {

@@ -957,7 +957,7 @@ void CGameClient::LogException(const char* strFunctionName) const
 
 void CGameClient::cb_close_game(void* kodiInstance)
 {
-  using namespace KODI::MESSAGING;
+  using namespace MESSAGING;
 
   CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_STOP)));
 }

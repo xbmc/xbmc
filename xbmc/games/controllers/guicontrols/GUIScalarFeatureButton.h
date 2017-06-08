@@ -21,6 +21,8 @@
 
 #include "GUIFeatureButton.h"
 
+namespace KODI
+{
 namespace GAME
 {
   class CGUIScalarFeatureButton : public CGUIFeatureButton
@@ -47,4 +49,5 @@ namespace GAME
 
     STATE m_state;
   };
+}
 }

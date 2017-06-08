@@ -29,6 +29,8 @@ namespace PERIPHERALS
   class CPeripherals;
 }
 
+namespace KODI
+{
 namespace GAME
 {
   class CControllerManager;
@@ -53,4 +55,5 @@ namespace GAME
     std::unique_ptr<CControllerManager> m_controllerManager;
     std::unique_ptr<CPortManager> m_portManager;
   };
+}
 }

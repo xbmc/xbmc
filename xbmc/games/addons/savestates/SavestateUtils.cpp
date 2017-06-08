@@ -36,6 +36,7 @@
 #define SAVESTATE_SLOT_PREFIX    "slot%d_"
 #define SAVESTATE_MANUAL_PREFIX  "save_"
 
+using namespace KODI;
 using namespace GAME;
 
 namespace

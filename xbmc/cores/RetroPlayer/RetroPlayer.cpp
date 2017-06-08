@@ -33,7 +33,9 @@
 #include "FileItem.h"
 #include "URL.h"
 
+using namespace KODI;
 using namespace GAME;
+using namespace RETRO;
 
 CRetroPlayer::CRetroPlayer(IPlayerCallback& callback) :
   IPlayer(callback),

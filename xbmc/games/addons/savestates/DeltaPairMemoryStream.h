@@ -24,6 +24,8 @@
 #include <deque>
 #include <vector>
 
+namespace KODI
+{
 namespace GAME
 {
   /*!
@@ -72,4 +74,5 @@ namespace GAME
 
     std::deque<MemoryFrame> m_rewindBuffer;
   };
+}
 }

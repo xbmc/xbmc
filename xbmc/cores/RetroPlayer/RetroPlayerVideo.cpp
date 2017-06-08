@@ -34,7 +34,8 @@
 
 #include <atomic> //! @todo
 
-using namespace GAME;
+using namespace KODI;
+using namespace RETRO;
 
 CRetroPlayerVideo::CRetroPlayerVideo(CRenderManager& renderManager, CProcessInfo& processInfo) :
   //CThread("RetroPlayerVideo"),

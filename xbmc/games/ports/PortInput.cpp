@@ -22,6 +22,7 @@
 #include "games/addons/GameClient.h"
 #include "guilib/WindowIDs.h"
 
+using namespace KODI;
 using namespace GAME;
 
 CPortInput::CPortInput(CGameClient &gameClient) :

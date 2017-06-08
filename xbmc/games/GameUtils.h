@@ -29,6 +29,8 @@
 class CFileItem;
 class CURL;
 
+namespace KODI
+{
 namespace GAME
 {
   /*!
@@ -71,3 +73,4 @@ namespace GAME
     static void GetGameClients(const ADDON::VECADDONS& addons, const CURL& translatedUrl, GameClientVector& candidates, bool& bHasVfsGameClient);
   };
 } // namespace GAME
+}

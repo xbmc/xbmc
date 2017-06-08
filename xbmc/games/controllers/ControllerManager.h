@@ -26,6 +26,8 @@
 #include <set>
 #include <string>
 
+namespace KODI
+{
 namespace GAME
 {
   class CControllerManager
@@ -67,4 +69,5 @@ namespace GAME
     std::map<std::string, ControllerPtr> m_cache;
     std::set<std::string> m_failedControllers; // Controllers that failed to load
   };
+}
 }

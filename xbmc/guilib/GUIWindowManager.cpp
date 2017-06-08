@@ -149,9 +149,10 @@
 #include "games/controllers/windows/GUIControllerWindow.h"
 #include "games/windows/GUIWindowGames.h"
 
+using namespace KODI;
 using namespace PVR;
 using namespace PERIPHERALS;
-using namespace KODI::MESSAGING;
+using namespace MESSAGING;
 
 CGUIWindowManager::CGUIWindowManager()
 {

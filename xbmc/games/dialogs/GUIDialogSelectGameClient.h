@@ -21,6 +21,8 @@
 
 #include "games/GameTypes.h"
 
+namespace KODI
+{
 namespace GAME
 {
   class CGUIDialogSelectGameClient
@@ -41,4 +43,5 @@ namespace GAME
      */
     static void ActivateAddonBrowser();
   };
+}
 }

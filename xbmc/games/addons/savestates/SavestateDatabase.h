@@ -27,6 +27,8 @@ class CFileItem;
 class CFileItemList;
 class CVariant;
 
+namespace KODI
+{
 namespace GAME
 {
   class CSavestate;
@@ -52,4 +54,5 @@ namespace GAME
   private:
     CFileItem* CreateFileItem(const CVariant& object) const;
   };
+}
 }

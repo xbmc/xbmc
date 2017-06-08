@@ -23,6 +23,8 @@
 
 struct KodiToAddonFuncTable_Game;
 
+namespace KODI
+{
 namespace GAME
 {
   class CGameClient;
@@ -33,7 +35,7 @@ namespace GAME
    *
    * Listens to keyboard events and forwards them to the games (as game_input_event).
    */
-  class CGameClientKeyboard : public KODI::KEYBOARD::IKeyboardHandler
+  class CGameClientKeyboard : public KEYBOARD::IKeyboardHandler
   {
   public:
     /*!
@@ -57,4 +59,5 @@ namespace GAME
     const CGameClient* const m_gameClient;
     const KodiToAddonFuncTable_Game* const m_dllStruct;
   };
+}
 }

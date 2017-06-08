@@ -27,6 +27,7 @@
 
 #include <tinyxml.h>
 
+using namespace KODI;
 using namespace GAME;
 
 void CSavestate::Reset()

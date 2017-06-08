@@ -42,6 +42,7 @@
 // To check for installable controllers
 #include "addons/AddonDatabase.h"
 
+using namespace KODI;
 using namespace GAME;
 
 CGUIControllerWindow::CGUIControllerWindow(void) :

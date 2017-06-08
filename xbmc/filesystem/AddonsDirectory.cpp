@@ -43,6 +43,7 @@
 #include "utils/StringUtils.h"
 #include "URL.h"
 
+using namespace KODI;
 using namespace ADDON;
 
 namespace XFILE

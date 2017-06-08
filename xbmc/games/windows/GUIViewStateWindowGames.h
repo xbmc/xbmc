@@ -21,6 +21,8 @@
 
 #include "view/GUIViewState.h"
 
+namespace KODI
+{
 namespace GAME
 {
   class CGUIViewStateWindowGames : public CGUIViewState
@@ -39,4 +41,5 @@ namespace GAME
     // implementation of CGUIViewState
     virtual void SaveViewState() override;
   };
+}
 }

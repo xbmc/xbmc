@@ -25,6 +25,8 @@
 
 #include <string>
 
+namespace KODI
+{
 namespace GAME
 {
   class CGameInfoTag : public IArchivable,
@@ -121,4 +123,5 @@ namespace GAME
     std::string m_strSavestate;
     std::string m_strGameClient;
   };
+}
 }

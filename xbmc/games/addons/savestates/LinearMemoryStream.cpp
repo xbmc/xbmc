@@ -20,6 +20,7 @@
 
 #include "LinearMemoryStream.h"
 
+using namespace KODI;
 using namespace GAME;
 
 // Pad forward to nearest boundary of bytes

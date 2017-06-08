@@ -44,6 +44,8 @@
 #include "addons/PVRClient.h"
 #include "utils/StringUtils.h"
 
+using namespace KODI;
+
 namespace ADDON
 {
 

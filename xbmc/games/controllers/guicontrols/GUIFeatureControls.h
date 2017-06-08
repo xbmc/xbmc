@@ -24,6 +24,8 @@
 
 #include <string>
 
+namespace KODI
+{
 namespace GAME
 {
   class CGUIFeatureGroupTitle : public CGUILabelControl
@@ -41,4 +43,5 @@ namespace GAME
 
     virtual ~CGUIFeatureSeparator(void) { }
   };
+}
 }

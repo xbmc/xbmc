@@ -21,10 +21,13 @@
 
 #include <memory>
 
+namespace KODI
+{
 namespace GAME
 {
 
 class CPort;
 typedef std::shared_ptr<CPort> PortPtr;
 
+}
 }

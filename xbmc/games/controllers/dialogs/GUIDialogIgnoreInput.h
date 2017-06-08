@@ -25,6 +25,8 @@
 #include <string>
 #include <vector>
 
+namespace KODI
+{
 namespace GAME
 {
   class CGUIDialogIgnoreInput : public CGUIDialogButtonCapture
@@ -38,15 +40,16 @@ namespace GAME
     // implementation of CGUIDialogButtonCapture
     virtual std::string GetDialogText() override;
     virtual std::string GetDialogHeader() override;
-    virtual bool MapPrimitiveInternal(KODI::JOYSTICK::IButtonMap* buttonMap,
-                                      KODI::JOYSTICK::IActionMap* actionMap,
-                                      const KODI::JOYSTICK::CDriverPrimitive& primitive) override;
+    virtual bool MapPrimitiveInternal(JOYSTICK::IButtonMap* buttonMap,
+                                      JOYSTICK::IActionMap* actionMap,
+                                      const JOYSTICK::CDriverPrimitive& primitive) override;
     void OnClose(bool bAccepted) override;
 
   private:
-    bool AddPrimitive(const KODI::JOYSTICK::CDriverPrimitive& primitive);
+    bool AddPrimitive(const JOYSTICK::CDriverPrimitive& primitive);
 
     std::string m_deviceName;
-    std::vector<KODI::JOYSTICK::CDriverPrimitive> m_capturedPrimitives;
+    std::vector<JOYSTICK::CDriverPrimitive> m_capturedPrimitives;
   };
+}
 }

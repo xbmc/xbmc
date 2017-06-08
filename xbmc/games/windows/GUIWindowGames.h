@@ -24,6 +24,8 @@
 
 class CGUIDialogProgress;
 
+namespace KODI
+{
 namespace GAME
 {
   class CGUIWindowGames : public CGUIMediaWindow
@@ -51,4 +53,5 @@ namespace GAME
 
     CGUIDialogProgress *m_dlgProgress;
   };
+}
 }
