@@ -25,6 +25,7 @@
 
 #include "ActionTranslator.h"
 #include "IRTranslator.h"
+#include "TouchTranslator.h"
 #include "FileItem.h"
 #include "filesystem/Directory.h"
 #include "guilib/WindowIDs.h"
@@ -190,19 +191,6 @@ static const ActionMapping mousekeys[] =
     { "mouserdragend"            , KEY_MOUSE_RDRAG_END }
 };
 
-static const ActionMapping touchcommands[] =
-{
-    { "tap"                      , ACTION_TOUCH_TAP },
-    { "longpress"                , ACTION_TOUCH_LONGPRESS },
-    { "pan"                      , ACTION_GESTURE_PAN },
-    { "zoom"                     , ACTION_GESTURE_ZOOM },
-    { "rotate"                   , ACTION_GESTURE_ROTATE },
-    { "swipeleft"                , ACTION_GESTURE_SWIPE_LEFT },
-    { "swiperight"               , ACTION_GESTURE_SWIPE_RIGHT },
-    { "swipeup"                  , ACTION_GESTURE_SWIPE_UP },
-    { "swipedown"                , ACTION_GESTURE_SWIPE_DOWN }
-};
-
 static const WindowMapping fallbackWindows[] =
 {
     { WINDOW_FULLSCREEN_LIVETV   , WINDOW_FULLSCREEN_VIDEO },
@@ -247,7 +235,8 @@ CButtonTranslator& CButtonTranslator::GetInstance()
 }
 
 CButtonTranslator::CButtonTranslator() :
-  m_irTranslator(new CIRTranslator)
+  m_irTranslator(new CIRTranslator),
+  m_touchTranslator(new CTouchTranslator)
 {
   m_deviceList.clear();
   m_Loaded = false;
@@ -454,24 +443,23 @@ bool CButtonTranslator::TranslateCustomControllerString(int windowId, const std:
 
 bool CButtonTranslator::TranslateTouchAction(int window, int touchAction, int touchPointers, int &action, std::string &actionString)
 {
-  action = 0;
-  if (touchPointers <= 0)
-    touchPointers = 1;
+  if (touchAction < 0)
+    return false;
 
-  touchAction += touchPointers - 1;
-  touchAction |= KEY_TOUCH;
+  unsigned int actionId = ACTION_NONE;
 
-  action = GetTouchActionCode(window, touchAction, actionString);
-  if (action <= 0)
+  if (!m_touchTranslator->TranslateTouchAction(window, touchAction, touchPointers, actionId, actionString))
   {
     int fallbackWindow = GetFallbackWindow(window);
     if (fallbackWindow > -1)
-      action = GetTouchActionCode(fallbackWindow, touchAction, actionString);
-    if (action <= 0)
-      action = GetTouchActionCode(-1, touchAction, actionString);
+      m_touchTranslator->TranslateTouchAction(fallbackWindow, touchAction, touchPointers, actionId, actionString);
+
+    if (actionId == ACTION_NONE)
+      m_touchTranslator->TranslateTouchAction(-1, touchAction, touchPointers, actionId, actionString);
   }
 
-  return action > 0;
+  action = actionId;
+  return actionId != ACTION_NONE;
 }
 
 int CButtonTranslator::GetActionCode(int window, int action)
@@ -804,11 +792,11 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, int windowID)
     // map touch actions
     while (pDevice)
     {
-      MapTouchActions(windowID, pDevice);
+      m_touchTranslator->MapTouchActions(windowID, pDevice);
       pDevice = pDevice->NextSibling("touch");
     }
   }
-  
+
   if ((pDevice = pWindow->FirstChild("customcontroller")) != NULL)
   {
     // map custom controller actions
@@ -1044,115 +1032,9 @@ void CButtonTranslator::Clear()
 
   m_irTranslator->Clear();
   m_customControllersMap.clear();
+  m_touchTranslator->Clear();
 
   m_Loaded = false;
-}
-
-uint32_t CButtonTranslator::TranslateTouchCommand(TiXmlElement *pButton, CButtonAction &action)
-{
-  const char *szButton = pButton->Value();
-  if (szButton == NULL || pButton->FirstChild() == NULL)
-    return ACTION_NONE;
-
-  const char *szAction = pButton->FirstChild()->Value();
-  if (szAction == NULL)
-    return ACTION_NONE;
-
-  std::string strTouchCommand = szButton;
-  StringUtils::ToLower(strTouchCommand);
-
-  const char *attrVal = pButton->Attribute("direction");
-  if (attrVal != NULL)
-    strTouchCommand += attrVal;
-
-  uint32_t actionId = ACTION_NONE;
-  for (unsigned int i = 0; i < ARRAY_SIZE(touchcommands); i++)
-  {
-    if (strTouchCommand == touchcommands[i].name)
-    {
-      actionId = touchcommands[i].action;
-      break;
-    }
-  }
-
-  if (actionId <= ACTION_NONE)
-  {
-    CLog::Log(LOGERROR, "%s: Can't find touch command %s", __FUNCTION__, szButton);
-    return ACTION_NONE;
-  }
-
-  attrVal = pButton->Attribute("pointers");
-  if (attrVal != NULL)
-  {
-    int pointers = (int)strtol(attrVal, NULL, 0);
-    if (pointers >= 1)
-      actionId += pointers - 1;
-  }
-
-  action.strID = szAction;
-  if (!CActionTranslator::TranslateActionString(szAction, action.id) || action.id <= ACTION_NONE)
-    return ACTION_NONE;
-
-  return actionId | KEY_TOUCH;
-}
-
-void CButtonTranslator::MapTouchActions(int windowID, TiXmlNode *pTouch)
-{
-  if (pTouch == NULL)
-    return;
-
-  buttonMap map;
-  // check if there already is a touch map for the window ID
-  std::map<int, buttonMap>::iterator it = m_touchMap.find(windowID);
-  if (it != m_touchMap.end())
-  {
-    // get the existing touch map and remove it from the window mapping
-    // as it will be inserted later on
-    map = it->second;
-    m_touchMap.erase(it);
-  }
-
-  uint32_t actionId = 0;
-  TiXmlElement *pTouchElem = pTouch->ToElement();
-  if (pTouchElem == NULL)
-    return;
-
-  TiXmlElement *pButton = pTouchElem->FirstChildElement();
-  while (pButton != NULL)
-  {
-    CButtonAction action;
-    actionId = TranslateTouchCommand(pButton, action);
-    if (actionId > 0)
-    {
-      // check if there already is a mapping for the parsed action
-      // and remove it if necessary
-      buttonMap::iterator actionIt = map.find(actionId);
-      if (actionIt != map.end())
-        map.erase(actionIt);
-
-      map.insert(std::make_pair(actionId, action));
-    }
-
-    pButton = pButton->NextSiblingElement();
-  }
-
-  // add the modified touch map with the window ID
-  if (!map.empty())
-    m_touchMap.insert(std::pair<int, buttonMap>(windowID, map));
-}
-
-int CButtonTranslator::GetTouchActionCode(int window, int action, std::string &actionString)
-{
-  std::map<int, buttonMap>::const_iterator windowIt = m_touchMap.find(window);
-  if (windowIt == m_touchMap.end())
-    return ACTION_NONE;
-
-  buttonMap::const_iterator touchIt = windowIt->second.find(action);
-  if (touchIt == windowIt->second.end())
-    return ACTION_NONE;
-
-  actionString = touchIt->second.strID;
-  return touchIt->second.id;
 }
 
 uint32_t CButtonTranslator::TranslateJoystickCommand(const TiXmlElement *pButton, const std::string& controllerId, unsigned int& holdtimeMs)

@@ -145,9 +145,6 @@
 // 0xD000 -> 0xD0FF is reserved for WM_APPCOMMAND messages
 #define KEY_APPCOMMAND      0xD000
 
-// 0xF000 -> 0xF0FF is reserved for mouse actions
-#define KEY_TOUCH           0xF000
-
 #define KEY_INVALID         0xFFFF
 
 #define ICON_TYPE_NONE          101

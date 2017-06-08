@@ -13,6 +13,7 @@ set(SOURCES Action.cpp
             KeyboardLayoutManager.cpp
             KeyboardStat.cpp
             MouseStat.cpp
+            TouchTranslator.cpp
             XBMC_keytable.cpp)
 
 set(HEADERS Action.h
@@ -32,6 +33,7 @@ set(HEADERS Action.h
             KeyboardLayoutManager.h
             KeyboardStat.h
             MouseStat.h
+            TouchTranslator.h
             XBIRRemote.h
             XBMC_keyboard.h
             XBMC_keysym.h

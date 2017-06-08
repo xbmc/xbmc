@@ -37,6 +37,7 @@ class CAction;
 class TiXmlNode;
 class CRegExp;
 class CIRTranslator;
+class CTouchTranslator;
 
 struct CButtonAction
 {
@@ -157,15 +158,10 @@ private:
   std::map<std::string, CustomControllerWindowMap> m_customControllersMap;
   int GetCustomControllerActionCode(int windowId, int buttonId, const CustomControllerWindowMap *windowMap, std::string& strAction) const;
 
-  void MapTouchActions(int windowID, TiXmlNode *pTouch);
-  static uint32_t TranslateTouchCommand(TiXmlElement *pButton, CButtonAction &action);
-  int GetTouchActionCode(int window, int action, std::string &actionString);
-
-  std::map<int, buttonMap> m_touchMap;
-
   bool m_Loaded;
 
   std::unique_ptr<CIRTranslator> m_irTranslator;
+  std::unique_ptr<CTouchTranslator> m_touchTranslator;
 };
 
 #endif
