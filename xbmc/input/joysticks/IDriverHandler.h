@@ -32,7 +32,7 @@ namespace JOYSTICK
   class IDriverHandler
   {
   public:
-    virtual ~IDriverHandler(void) { }
+    virtual ~IDriverHandler() = default;
 
     /*!
      * \brief Handle button motion

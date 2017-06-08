@@ -38,7 +38,7 @@ namespace JOYSTICK
   public:
     IInputHandler(void) : m_receiver(nullptr) { }
 
-    virtual ~IInputHandler(void) { }
+    virtual ~IInputHandler() = default;
 
     /*!
      * \brief The add-on ID of the game controller associated with this input handler

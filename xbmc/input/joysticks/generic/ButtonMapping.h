@@ -215,7 +215,7 @@ namespace JOYSTICK
      */
     CButtonMapping(IButtonMapper* buttonMapper, IButtonMap* buttonMap, IActionMap* actionMap);
 
-    virtual ~CButtonMapping(void) { }
+    virtual ~CButtonMapping() = default;
 
     // implementation of IDriverHandler
     virtual bool OnButtonMotion(unsigned int buttonIndex, bool bPressed) override;

@@ -30,7 +30,7 @@ namespace JOYSTICK
   class IDriverReceiver
   {
   public:
-    virtual ~IDriverReceiver(void) { }
+    virtual ~IDriverReceiver() = default;
 
     /*!
      * \brief Set the value of a rumble motor

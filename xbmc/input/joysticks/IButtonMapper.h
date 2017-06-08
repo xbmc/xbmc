@@ -43,7 +43,7 @@ namespace JOYSTICK
   public:
     IButtonMapper() = default;
 
-    virtual ~IButtonMapper(void) { }
+    virtual ~IButtonMapper() = default;
 
     /*!
      * \brief The add-on ID of the game controller associated with this button mapper

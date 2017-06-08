@@ -44,7 +44,7 @@ namespace JOYSTICK
   public:
     CDriverReceiving(IDriverReceiver* receiver, IButtonMap* buttonMap);
 
-    virtual ~CDriverReceiving(void) { }
+    virtual ~CDriverReceiving() = default;
 
     // implementation of IInputReceiver
     virtual bool SetRumbleState(const FeatureName& feature, float magnitude) override;
