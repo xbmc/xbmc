@@ -1314,11 +1314,7 @@ bool CAddonSettings::ParseOldCondition(std::shared_ptr<const CSetting> setting, 
   {
     ConditionExpression expression;
     if (!ParseOldConditionExpression(cond, expression))
-    {
-      CLog::Log(LOGWARNING, "CAddonSettings[%s]: failed to parse old setting condition \"%s\" for \"%s\"",
-        m_addon.lock()->ID().c_str(), cond.c_str(), setting->GetId().c_str());
       continue;
-    }
 
     // determine the absolute setting index
     int32_t absoluteSettingIndex = currentSettingIndex + expression.m_relativeSettingIndex;
