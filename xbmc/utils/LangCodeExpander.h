@@ -114,7 +114,7 @@ public:
   std::string ConvertToISO6392T(const std::string& lang);
 
 #ifdef TARGET_WINDOWS
-  static bool ConvertISO36111Alpha2ToISO36111Alpha3(const std::string& strISO36111Alpha2, std::string& strISO36111Alpha3);
+  static bool ConvertISO31661Alpha2ToISO31661Alpha3(const std::string& strISO31661Alpha2, std::string& strISO31661Alpha3);
   static bool ConvertWindowsLanguageCodeToISO6392B(const std::string& strWindowsLanguageCode, std::string& strISO6392B);
 #endif
 

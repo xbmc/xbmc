@@ -253,19 +253,19 @@ bool CLangCodeExpander::LookupUserCode(const std::string& desc, std::string &use
 }
 
 #ifdef TARGET_WINDOWS
-bool CLangCodeExpander::ConvertISO36111Alpha2ToISO36111Alpha3(const std::string& strISO36111Alpha2, std::string& strISO36111Alpha3)
+bool CLangCodeExpander::ConvertISO31661Alpha2ToISO31661Alpha3(const std::string& strISO31661Alpha2, std::string& strISO31661Alpha3)
 {
-  if (strISO36111Alpha2.length() != 2)
+  if (strISO31661Alpha2.length() != 2)
     return false;
 
-  std::string strLower(strISO36111Alpha2);
+  std::string strLower(strISO31661Alpha2);
   StringUtils::ToLower(strLower);
   StringUtils::Trim(strLower);
   for (const auto& codes : RegionCodes)
   {
     if (strLower == codes.alpha2)
     {
-      strISO36111Alpha3 = codes.alpha3;
+      strISO31661Alpha3 = codes.alpha3;
       return true;
     }
   }

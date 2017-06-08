@@ -467,7 +467,7 @@ bool CLangInfo::Load(const std::string& strLanguage)
       // Windows need 3 chars regions code
       if (region.m_strRegionLocaleName.length() == 2)
       {
-        if (!g_LangCodeExpander.ConvertISO36111Alpha2ToISO36111Alpha3(region.m_strRegionLocaleName, region.m_strRegionLocaleName))
+        if (!g_LangCodeExpander.ConvertISO31661Alpha2ToISO31661Alpha3(region.m_strRegionLocaleName, region.m_strRegionLocaleName))
           region.m_strRegionLocaleName = "";
       }
 #endif
