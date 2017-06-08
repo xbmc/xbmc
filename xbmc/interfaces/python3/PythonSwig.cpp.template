@@ -671,15 +671,17 @@ void doClassMethodInfo(Node clazz, List initTypeCalls)
     pythonType.tp_richcompare=(richcmpfunc)${module.@name}_${classNameAsVariable}_rcmp;<%
   } %>
 
-<%
-  if (clazz.@feature_iterator) { %>
-    pythonType.tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_ITER;
-<%
-  }
-  else { %>
+// Python 2 code, remove if works without it
+// <%
+//   if (clazz.@feature_iterator) { %>
+//     pythonType.tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_ITER;
+// <%
+//   }
+//   else { %>
     pythonType.tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE;
-<%
-  } %>
+// <%
+//   } %>
+
     pythonType.tp_doc = ${Helper.hasDoc(clazz) ? (classNameAsVariable + '__doc__') : 'NULL' };
     pythonType.tp_methods = ${classNameAsVariable}_methods; <%
   if (properties.size() > 0) { %>
