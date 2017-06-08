@@ -375,11 +375,7 @@ void CAdvancedSettings::Initialize()
 
   m_enableMultimediaKeys = false;
 
-#if defined(TARGET_DARWIN_IOS)
-  m_canWindowed = false;
-#else
   m_canWindowed = true;
-#endif
   m_guiVisualizeDirtyRegions = false;
   m_guiAlgorithmDirtyRegions = 3;
   m_guiSmartRedraw = false;

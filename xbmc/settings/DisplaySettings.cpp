@@ -720,7 +720,11 @@ void CDisplaySettings::SettingOptionsResolutionsFiller(SettingConstPtr setting, 
 
 void CDisplaySettings::SettingOptionsScreensFiller(SettingConstPtr setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
 {
-  if (g_advancedSettings.m_canWindowed)
+  // The user should only be able to disable windowed modes with the canwindowed
+  // setting. When the user sets canwindowed to true but the windowing system
+  // does not support windowed modes, we would just shoot ourselves in the foot
+  // by offering the option.
+  if (g_advancedSettings.m_canWindowed && g_Windowing.CanDoWindowed())
     list.push_back(std::make_pair(g_localizeStrings.Get(242), DM_WINDOWED));
 
 #if defined(HAS_GLX)
