@@ -17528,7 +17528,7 @@ msgstr ""
 #. Description of setting with label #20458 "Group movies in sets"
 #: system/settings/settings.xml
 msgctxt "#36145"
-msgid "When enabled, movies belonging to a \"Movie set\" are grouped together under one entry for the set in the movie library, this entry can then be opened to display the individual movies. When disabled, each movie will have it's own entry in the movie library even if it belongs to a set."
+msgid "When enabled, movies belonging to a \"Movie set\" are grouped together under one entry for the set in the movie library, this entry can then be opened to display the individual movies. When disabled, each movie will have its own entry in the movie library even if it belongs to a set."
 msgstr ""
 
 #. Description of setting with label #22000 "Update library on startup"
