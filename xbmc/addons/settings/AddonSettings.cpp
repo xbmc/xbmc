@@ -439,14 +439,13 @@ bool CAddonSettings::InitializeFromOldSettingDefinitions(const CXBMCTinyXML& doc
   uint32_t categoryId = 0;
   while (categoryElement != nullptr)
   {
-    // try to get the category's label
-    int categoryLabel = 0;
-    if (categoryElement->QueryIntAttribute("label", &categoryLabel) != TIXML_SUCCESS)
-      categoryLabel = 128;
-      
     // create the category
     category = std::make_shared<CSettingCategory>(StringUtils::Format("category%u", categoryId), GetSettingsManager());
     categoryId += 1;
+
+    // try to get the category's label and fall back to "General"
+    int categoryLabel = 128;
+    ParseOldLabel(categoryElement, g_localizeStrings.Get(categoryLabel), categoryLabel);
     category->SetLabel(categoryLabel);
 
     // build a vector of settings from the same category
@@ -476,7 +475,7 @@ bool CAddonSettings::InitializeFromOldSettingDefinitions(const CXBMCTinyXML& doc
       const auto settingValues = XMLUtils::GetAttribute(settingElement, "values");
       const auto settingLValues = StringUtils::Split(XMLUtils::GetAttribute(settingElement, "lvalues"), OldSettingValuesSeparator);
       int settingLabel = -1;
-      settingElement->QueryIntAttribute("label", &settingLabel);
+      bool settingLabelParsed = ParseOldLabel(settingElement, settingId, settingLabel);
 
       SettingPtr setting;
       if (settingType == "sep" || settingType == "lsep")
@@ -492,7 +491,7 @@ bool CAddonSettings::InitializeFromOldSettingDefinitions(const CXBMCTinyXML& doc
           groupId += 1;
         }
 
-        if (settingType == "lsep" && settingLabel >= 0)
+        if (settingType == "lsep" && settingLabelParsed)
           group->SetLabel(settingLabel);
       }
       else if (settingId.empty() || settingType == "action")
@@ -1265,6 +1264,35 @@ bool CAddonSettings::LoadOldSettingValues(const CXBMCTinyXML& doc, std::map<std:
   }
 
   return !settings.empty();
+}
+
+bool CAddonSettings::ParseOldLabel(const TiXmlElement* element, const std::string settingId, int& labelId)
+{
+  labelId = -1;
+  if (element == nullptr)
+    return false;
+
+  // try to parse the label as a translation number
+  if (element->QueryIntAttribute("label", &labelId) == TIXML_SUCCESS && labelId >= 0)
+    return true;
+
+  std::string labelString;
+
+  // try to parse the label as a string
+  const auto labelStringPtr = element->Attribute("label");
+  if (labelStringPtr != nullptr)
+    labelString = labelStringPtr;
+
+  bool parsed = !labelString.empty();
+  // as a last resort use the setting's identifier as a label
+  if (!parsed)
+    labelString = settingId;
+
+  labelId = m_unknownSettingLabelId;
+  m_unknownSettingLabelId += 1;
+  m_unknownSettingLabels.emplace(labelId, labelString);
+
+  return parsed;
 }
 
 bool CAddonSettings::ParseOldCondition(std::shared_ptr<const CSetting> setting, const std::vector<std::shared_ptr<const CSetting>> settings, const std::string& condition, CSettingDependency& dependeny) const

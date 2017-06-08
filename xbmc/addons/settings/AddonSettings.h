@@ -110,6 +110,7 @@ namespace ADDON
       std::string m_value;
     };
 
+    bool ParseOldLabel(const TiXmlElement* element, const std::string settingId, int& labelId);
     bool ParseOldCondition(std::shared_ptr<const CSetting> setting, const std::vector<std::shared_ptr<const CSetting>> settings, const std::string& condition, CSettingDependency& dependeny) const;
     static bool ParseOldConditionExpression(std::string str, ConditionExpression& expression);
 
