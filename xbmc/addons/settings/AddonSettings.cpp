@@ -1341,7 +1341,7 @@ bool CAddonSettings::ParseOldCondition(std::shared_ptr<const CSetting> setting, 
     if (referencedSetting->GetType() == SettingType::String && StringUtils::IsNaturalNumber(expression.m_value))
     {
       // try to parse the comparison value
-      int valueIndex = static_cast<int>(strtol(expression.m_value.c_str(), nullptr, 10));
+      size_t valueIndex = static_cast<size_t>(strtoul(expression.m_value.c_str(), nullptr, 10));
 
       const auto referencedSettingString = std::static_pointer_cast<const CSettingString>(referencedSetting);
       switch (referencedSettingString->GetOptionsType())
