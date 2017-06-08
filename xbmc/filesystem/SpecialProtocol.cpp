@@ -104,18 +104,20 @@ bool CSpecialProtocol::ComparePath(const std::string &path1, const std::string &
 std::string CSpecialProtocol::TranslatePath(const std::string &path)
 {
   CURL url(path);
-  // check for special-protocol, if not, return
-  if (!url.IsProtocol("special"))
+  // check for special-protocol and library-protocol, if not, return
+  if (url.IsProtocol("special") 
+     || url.IsProtocol("library"))
   {
-    return path;
+    return TranslatePath(url);
   }
-  return TranslatePath(url);
+  return path;
 }
 
 std::string CSpecialProtocol::TranslatePath(const CURL &url)
 {
-  // check for special-protocol, if not, return
-  if (!url.IsProtocol("special"))
+  // check for special-protocol and library-protocol, if not, return
+  if (!(url.IsProtocol("special") 
+     || url.IsProtocol("library")))
   {
 #if defined(TARGET_POSIX) && defined(_DEBUG)
     std::string path(url.Get());
@@ -130,6 +132,30 @@ std::string CSpecialProtocol::TranslatePath(const CURL &url)
   }
 
   std::string FullFileName = url.GetFileName();
+
+  // Check if it's library-protocol and parse it
+  if (url.IsProtocol("library"))
+  {
+    std::string libDir = URIUtils::AddFileToFolder(CProfilesManager::Get().GetLibraryFolder(), url.GetHostName() + "/");
+    if (!CDirectory::Exists(libDir))
+      libDir = URIUtils::AddFileToFolder("special://xbmc/system/library/", url.GetHostName() + "/");
+
+    libDir = URIUtils::AddFileToFolder(libDir, url.GetFileName());
+
+    // is this a virtual node (aka actual folder on disk?)
+    if (!CDirectory::Exists(libDir))
+    {
+      // maybe it's an XML node?
+      URIUtils::RemoveSlashAtEnd(libDir);
+    }
+
+    // Check if it's special-protocol
+    CURL urllib(libDir);
+    if (url.IsProtocol("special"))
+      FullFileName = libDir;
+    else
+      return libDir;
+  }
 
   std::string translatedPath;
   std::string FileName;
