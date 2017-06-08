@@ -36,6 +36,7 @@ class CKey;
 class CAction;
 class TiXmlNode;
 class CRegExp;
+class CCustomControllerTranslator;
 class CIRTranslator;
 class CTouchTranslator;
 
@@ -146,20 +147,12 @@ private:
 
   void MapWindowActions(TiXmlNode *pWindow, int wWindowID);
   void MapAction(uint32_t buttonCode, const char *szAction, unsigned int holdtimeMs, buttonMap &map);
-  void MapCustomControllerActions(int windowID, TiXmlNode *pCustomController);
 
   bool LoadKeymap(const std::string &keymapPath);
 
-  // maps button id to action
-  typedef std::map<int, std::string> CustomControllerButtonMap;
-  // maps window id to controller button map
-  typedef std::map<int, CustomControllerButtonMap> CustomControllerWindowMap;
-  // maps custom controller name to controller Window map
-  std::map<std::string, CustomControllerWindowMap> m_customControllersMap;
-  int GetCustomControllerActionCode(int windowId, int buttonId, const CustomControllerWindowMap *windowMap, std::string& strAction) const;
-
   bool m_Loaded;
 
+  std::unique_ptr<CCustomControllerTranslator> m_customControllerTranslator;
   std::unique_ptr<CIRTranslator> m_irTranslator;
   std::unique_ptr<CTouchTranslator> m_touchTranslator;
 };

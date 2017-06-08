@@ -1,6 +1,7 @@
 set(SOURCES Action.cpp
             ActionTranslator.cpp
             ButtonTranslator.cpp
+            CustomControllerTranslator.cpp
             InertialScrollingHandler.cpp
             InputCodingTableBaiduPY.cpp
             InputCodingTableBasePY.cpp
@@ -20,6 +21,7 @@ set(HEADERS Action.h
             ActionIDs.h
             ActionTranslator.h
             ButtonTranslator.h
+            CustomControllerTranslator.h
             InertialScrollingHandler.h
             InputCodingTable.h
             InputCodingTableBaiduPY.h

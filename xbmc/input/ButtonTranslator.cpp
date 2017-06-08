@@ -24,6 +24,7 @@
 #include <utility>
 
 #include "ActionTranslator.h"
+#include "CustomControllerTranslator.h"
 #include "IRTranslator.h"
 #include "TouchTranslator.h"
 #include "FileItem.h"
@@ -235,6 +236,7 @@ CButtonTranslator& CButtonTranslator::GetInstance()
 }
 
 CButtonTranslator::CButtonTranslator() :
+  m_customControllerTranslator(new CCustomControllerTranslator),
   m_irTranslator(new CIRTranslator),
   m_touchTranslator(new CTouchTranslator)
 {
@@ -283,6 +285,7 @@ void CButtonTranslator::RemoveDevice(std::string& strDevice)
 bool CButtonTranslator::Load(bool AlwaysLoad)
 {
   m_translatorMap.clear();
+  m_customControllerTranslator->Clear();
 
   // Directories to search for keymaps. They're applied in this order,
   // so keymaps in profile/keymaps/ override e.g. system/keymaps
@@ -393,53 +396,31 @@ int CButtonTranslator::TranslateLircRemoteString(const char* szDevice, const cha
   return m_irTranslator->TranslateIRRemoteString(szDevice, szButton);
 }
 
-int CButtonTranslator::GetCustomControllerActionCode(int windowId, int buttonId, const CustomControllerWindowMap *windowMap, std::string& strAction) const
-{
-  unsigned int action = ACTION_NONE;
-  
-  auto it = windowMap->find(windowId);
-  if (it != windowMap->end())
-  {
-    const CustomControllerButtonMap &buttonMap = it->second;
-    auto it2 = buttonMap.find(buttonId);
-    if (it2 != buttonMap.end())
-    {
-      strAction = it2->second;
-      CActionTranslator::TranslateActionString(strAction.c_str(), action);
-    }
-  }
-  
-  return action;
-}
-
 bool CButtonTranslator::TranslateCustomControllerString(int windowId, const std::string& controllerName, int buttonId, int& action, std::string& strAction)
 {
-  // resolve the correct custom controller
-  auto it = m_customControllersMap.find(controllerName);
-  if (it == m_customControllersMap.end())
+  unsigned int actionId = ACTION_NONE;
+
+  // Try to get the action from the current window
+  if (!m_customControllerTranslator->TranslateCustomControllerString(windowId, controllerName, buttonId, actionId, strAction))
   {
-    return false;
-  }
-  
-  const CustomControllerWindowMap *wmap = &it->second;
-  
-  // try to get the action from the current window
-  action = GetCustomControllerActionCode(windowId, buttonId, wmap, strAction);
-  
-  // if it's invalid, try to get it from a fallback window or the global map
-  if (action == 0)
-  {
+    // If it's invalid, try to get it from a fallback window or the global map
     int fallbackWindow = GetFallbackWindow(windowId);
     if (fallbackWindow > -1)
-      action = GetCustomControllerActionCode(fallbackWindow, buttonId, wmap, strAction);
-    // still no valid action? use global map
-    if (action == 0)
-      action = GetCustomControllerActionCode(-1, buttonId, wmap, strAction);
-  }
-  
-  return (action > 0);
-}
+      m_customControllerTranslator->TranslateCustomControllerString(fallbackWindow, controllerName, buttonId, actionId, strAction);
 
+    // Still no valid action? Use global map
+    if (action == ACTION_NONE)
+      m_customControllerTranslator->TranslateCustomControllerString(-1, controllerName, buttonId, actionId, strAction);
+  }
+
+  if (actionId != ACTION_NONE)
+  {
+    action = actionId;
+    return true;
+  }
+
+  return false;
+}
 
 bool CButtonTranslator::TranslateTouchAction(int window, int touchAction, int touchPointers, int &action, std::string &actionString)
 {
@@ -666,50 +647,6 @@ void CButtonTranslator::MapAction(uint32_t buttonCode, const char *szAction, uns
   }
 }
 
-void CButtonTranslator::MapCustomControllerActions(int windowID, TiXmlNode *pCustomController)
-{
-  CustomControllerButtonMap buttonMap;
-  std::string controllerName;
-  
-  TiXmlElement *pController = pCustomController->ToElement();
-  if (pController)
-  {
-    // transform loose name to new family, including altnames
-    if(pController->Attribute("name"))
-    {
-      controllerName = pController->Attribute("name");
-    }
-    else
-    {
-      CLog::Log(LOGERROR, "Missing attribute \"name\" for tag \"customcontroller\"");
-      return;
-    }
-  }
-  
-  // parse map
-  TiXmlElement *pButton = pCustomController->FirstChildElement();
-  int id = 0;
-  while (pButton)
-  {
-    std::string action;
-    if (!pButton->NoChildren())
-      action = pButton->FirstChild()->ValueStr();
-    
-    if ((pButton->QueryIntAttribute("id", &id) == TIXML_SUCCESS) && id >= 0)
-    {
-      buttonMap[id] = action;
-    }
-    else
-      CLog::Log(LOGERROR, "Error reading customController map element, Invalid id: %d", id);
-    
-    pButton = pButton->NextSiblingElement();
-  }
-  
-  // add/overwrite button with mapped actions
-  for (auto button : buttonMap)
-    m_customControllersMap[controllerName][windowID][button.first] = button.second;
-}
-
 void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, int windowID)
 {
   if (!pWindow || windowID == WINDOW_INVALID) 
@@ -802,7 +739,7 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, int windowID)
     // map custom controller actions
     while (pDevice)
     {
-      MapCustomControllerActions(windowID, pDevice);
+      m_customControllerTranslator->MapCustomControllerActions(windowID, pDevice);
       pDevice = pDevice->NextSibling("customcontroller");
     }
   }
@@ -1031,7 +968,7 @@ void CButtonTranslator::Clear()
   m_translatorMap.clear();
 
   m_irTranslator->Clear();
-  m_customControllersMap.clear();
+  m_customControllerTranslator->Clear();
   m_touchTranslator->Clear();
 
   m_Loaded = false;
