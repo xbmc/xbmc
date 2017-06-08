@@ -279,8 +279,6 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput, bool streaminfo, bool filein
     unsigned char* buffer = (unsigned char*)av_malloc(FFMPEG_FILE_BUFFER_SIZE);
     m_ioContext = avio_alloc_context(buffer, FFMPEG_FILE_BUFFER_SIZE, 0, this, dvd_file_read, NULL, dvd_file_seek);
     m_ioContext->max_packet_size = m_pInput->GetBlockSize();
-    if(m_ioContext->max_packet_size)
-      m_ioContext->max_packet_size *= FFMPEG_FILE_BUFFER_SIZE / m_ioContext->max_packet_size;
 
     if(m_pInput->Seek(0, SEEK_POSSIBLE) == 0)
       m_ioContext->seekable = 0;
