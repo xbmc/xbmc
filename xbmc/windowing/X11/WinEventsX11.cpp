@@ -422,7 +422,6 @@ bool CWinEventsX11Imp::MessagePump()
           XLookupString(&xevent.xkey, NULL, 0, &xkeysym, NULL);
           newEvent.key.keysym.sym = LookupXbmcKeySym(xkeysym);
           newEvent.key.keysym.scancode = xevent.xkey.keycode;
-          newEvent.key.state = xevent.xkey.state;
           newEvent.key.type = xevent.xkey.type;
           if (XLookupString(&xevent.xkey, keybuf, sizeof(keybuf), NULL, &state))
           {
@@ -465,7 +464,6 @@ bool CWinEventsX11Imp::MessagePump()
             {
               newEvent.key.keysym.sym = XBMCK_UNKNOWN;
               newEvent.key.keysym.unicode = keys[i];
-              newEvent.key.state = xevent.xkey.state;
               newEvent.key.type = xevent.xkey.type;
               ret |= ProcessKey(newEvent);
             }
@@ -475,7 +473,6 @@ bool CWinEventsX11Imp::MessagePump()
               XLookupString(&xevent.xkey, NULL, 0, &xkeysym, NULL);
               newEvent.key.keysym.sym = LookupXbmcKeySym(xkeysym);
               newEvent.key.keysym.unicode = keys[keys.length() - 1];
-              newEvent.key.state = xevent.xkey.state;
               newEvent.key.type = xevent.xkey.type;
 
               ret |= ProcessKey(newEvent);
@@ -487,7 +484,6 @@ bool CWinEventsX11Imp::MessagePump()
           {
             newEvent.key.keysym.scancode = xevent.xkey.keycode;
             newEvent.key.keysym.sym = LookupXbmcKeySym(xkeysym);
-            newEvent.key.state = xevent.xkey.state;
             newEvent.key.type = xevent.xkey.type;
             ret |= ProcessKey(newEvent);
             break;
@@ -518,7 +514,6 @@ bool CWinEventsX11Imp::MessagePump()
         xkeysym = XLookupKeysym(&xevent.xkey, 0);
         newEvent.key.keysym.scancode = xevent.xkey.keycode;
         newEvent.key.keysym.sym = LookupXbmcKeySym(xkeysym);
-        newEvent.key.state = xevent.xkey.state;
         newEvent.key.type = xevent.xkey.type;
         ret |= ProcessKey(newEvent);
         break;

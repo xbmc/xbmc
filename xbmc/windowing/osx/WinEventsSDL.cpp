@@ -258,7 +258,6 @@ bool CWinEventsSDL::MessagePump()
         newEvent.key.keysym.scancode = event.key.keysym.scancode;
         newEvent.key.keysym.sym = (XBMCKey) event.key.keysym.sym;
         newEvent.key.keysym.unicode = event.key.keysym.unicode;
-        newEvent.key.state = event.key.state;
         newEvent.key.type = event.key.type;
         newEvent.key.which = event.key.which;
 
@@ -289,7 +288,6 @@ bool CWinEventsSDL::MessagePump()
         newEvent.key.keysym.sym = (XBMCKey) event.key.keysym.sym;
         newEvent.key.keysym.mod =(XBMCMod) event.key.keysym.mod;
         newEvent.key.keysym.unicode = event.key.keysym.unicode;
-        newEvent.key.state = event.key.state;
         newEvent.key.type = event.key.type;
         newEvent.key.which = event.key.which;
 

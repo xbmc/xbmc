@@ -67,7 +67,6 @@ typedef struct XBMC_ActiveEvent {
 typedef struct XBMC_KeyboardEvent {
 	unsigned char type;	/* XBMC_KEYDOWN or XBMC_KEYUP */
 	unsigned char which;	/* The keyboard device index */
-	unsigned char state;	/* XBMC_PRESSED or XBMC_RELEASED */
 	XBMC_keysym keysym;
 } XBMC_KeyboardEvent;
 
