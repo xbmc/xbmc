@@ -100,6 +100,7 @@ private:
   int SendResponse(HTTPRequest request, int responseStatus, MHD_Response *response) const;
   int SendErrorResponse(HTTPRequest request, int errorType, HTTPMethod method) const;
 
+  void EnableCors(struct MHD_Response *response) const;
   int AddHeader(struct MHD_Response *response, const std::string &name, const std::string &value) const;
 
   void LogRequest(HTTPRequest request) const;
