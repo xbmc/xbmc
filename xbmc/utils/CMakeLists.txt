@@ -171,6 +171,10 @@ if(XSLT_FOUND)
   list(APPEND SOURCES XSLTUtils.cpp)
   list(APPEND HEADERS XSLTUtils.h)
 endif()
+if(EGL_FOUND)
+  list(APPEND SOURCES EGLUtils.cpp)
+  list(APPEND HEADERS EGLUtils.h)
+endif()
 
 # The large map trips the clang optimizer
 if(CMAKE_CXX_COMPILER_ID STREQUAL Clang)
