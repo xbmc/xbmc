@@ -31,7 +31,7 @@ namespace GAME
     CGUIGameController(int parentID, int controlID, float posX, float posY, float width, float height);
     CGUIGameController(const CGUIGameController &from);
 
-    virtual ~CGUIGameController(void) { }
+    virtual ~CGUIGameController() = default;
 
     // implementation of CGUIControl via CGUIImage
     virtual CGUIGameController* Clone(void) const override;

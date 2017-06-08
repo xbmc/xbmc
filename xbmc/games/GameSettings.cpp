@@ -41,7 +41,7 @@ CGameSettings& CGameSettings::GetInstance()
 
 void CGameSettings::OnSettingChanged(std::shared_ptr<const CSetting> setting)
 {
-  if (setting == NULL)
+  if (setting == nullptr)
     return;
 
   const std::string& settingId = setting->GetId();
@@ -59,7 +59,7 @@ void CGameSettings::OnSettingChanged(std::shared_ptr<const CSetting> setting)
 
 void CGameSettings::OnSettingAction(std::shared_ptr<const CSetting> setting)
 {
-  if (setting == NULL)
+  if (setting == nullptr)
     return;
 
   const std::string& settingId = setting->GetId();

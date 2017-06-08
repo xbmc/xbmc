@@ -38,7 +38,7 @@ public:
 
   CController(ADDON::CAddonInfo addonInfo);
 
-  virtual ~CController(void) { }
+  virtual ~CController() = default;
 
   static const ControllerPtr EmptyPtr;
 

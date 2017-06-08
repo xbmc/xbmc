@@ -37,7 +37,7 @@ namespace GAME
                       const CControllerFeature& feature,
                       unsigned int index);
 
-    virtual ~CGUIFeatureButton(void) { }
+    virtual ~CGUIFeatureButton() = default;
 
     // implementation of CGUIControl via CGUIButtonControl
     virtual void OnUnFocus(void) override;

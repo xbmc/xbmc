@@ -32,14 +32,14 @@ class CGameSettings : public ISettingCallback,
 {
 public:
   static CGameSettings& GetInstance();
-  virtual ~CGameSettings() { }
+  virtual ~CGameSettings() = default;
 
   // Inherited from ISettingCallback
   virtual void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
   virtual void OnSettingAction(std::shared_ptr<const CSetting> setting) override;
 
 private:
-  CGameSettings() { }
+  CGameSettings() = default;
 };
 
 } // namespace GAME

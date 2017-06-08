@@ -31,7 +31,7 @@ namespace GAME
                           const CControllerFeature& feature,
                           unsigned int index);
 
-    virtual ~CGUIAnalogStickButton(void) { }
+    virtual ~CGUIAnalogStickButton() = default;
 
     // implementation of IFeatureButton
     virtual bool PromptForInput(CEvent& waitEvent) override;

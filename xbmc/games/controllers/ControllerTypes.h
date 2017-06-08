@@ -25,6 +25,6 @@
 namespace GAME
 {
   class CController;
-  typedef std::shared_ptr<CController> ControllerPtr;
-  typedef std::vector<ControllerPtr>   ControllerVector;
+  using ControllerPtr = std::shared_ptr<CController>;
+  using ControllerVector = std::vector<ControllerPtr>;
 }

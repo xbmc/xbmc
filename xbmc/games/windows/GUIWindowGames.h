@@ -30,7 +30,7 @@ namespace GAME
   {
   public:
     CGUIWindowGames();
-    virtual ~CGUIWindowGames() { }
+    virtual ~CGUIWindowGames() = default;
 
     // implementation of CGUIControl via CGUIMediaWindow
     virtual bool OnMessage(CGUIMessage& message) override;

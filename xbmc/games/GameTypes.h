@@ -26,7 +26,7 @@ namespace GAME
 {
 
   class CGameClient;
-  typedef std::shared_ptr<CGameClient> GameClientPtr;
-  typedef std::vector<GameClientPtr>   GameClientVector;
+  using GameClientPtr = std::shared_ptr<CGameClient>;
+  using GameClientVector = std::vector<GameClientPtr>;
 
 }
