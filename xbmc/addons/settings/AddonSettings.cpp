@@ -52,7 +52,7 @@ static const int UnknownSettingLabelIdStart = 100000;
 
 bool InfoBool(const std::string &condition, const std::string &value, SettingConstPtr setting, void *data)
 {
-  return g_infoManager.EvaluateBool(condition);
+  return g_infoManager.EvaluateBool(value);
 }
 
 template<class TSetting>
