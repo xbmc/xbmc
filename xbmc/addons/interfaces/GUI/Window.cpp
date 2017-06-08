@@ -22,12 +22,14 @@
 
 #include "Window.h"
 #include "General.h"
+#include "controls/Rendering.h"
 
 #include "Application.h"
 #include "FileItem.h"
 #include "addons/AddonDll.h"
 #include "addons/Skin.h"
 #include "filesystem/File.h"
+#include "guilib/GUIRenderingControl.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/TextureManager.h"
 #include "input/Key.h"
@@ -95,6 +97,17 @@ void Interface_GUIWindow::Init(AddonGlobalInterface* addonInterface)
 
   /* GUI control access functions */
   addonInterface->toKodi->kodi_gui->window->get_control_button = get_control_button;
+  addonInterface->toKodi->kodi_gui->window->get_control_edit = get_control_edit;
+  addonInterface->toKodi->kodi_gui->window->get_control_fade_label = get_control_fade_label;
+  addonInterface->toKodi->kodi_gui->window->get_control_image = get_control_image;
+  addonInterface->toKodi->kodi_gui->window->get_control_label = get_control_label;
+  addonInterface->toKodi->kodi_gui->window->get_control_progress = get_control_progress;
+  addonInterface->toKodi->kodi_gui->window->get_control_radio_button = get_control_radio_button;
+  addonInterface->toKodi->kodi_gui->window->get_control_render_addon = get_control_render_addon;
+  addonInterface->toKodi->kodi_gui->window->get_control_settings_slider = get_control_settings_slider;
+  addonInterface->toKodi->kodi_gui->window->get_control_slider = get_control_slider;
+  addonInterface->toKodi->kodi_gui->window->get_control_spin = get_control_spin;
+  addonInterface->toKodi->kodi_gui->window->get_control_text_box = get_control_text_box;
 }
 
 void Interface_GUIWindow::DeInit(AddonGlobalInterface* addonInterface)
@@ -829,18 +842,82 @@ void Interface_GUIWindow::mark_dirty_region(void* kodiBase, void* handle)
 //@{
 void* Interface_GUIWindow::get_control_button(void* kodiBase, void* handle, int control_id)
 {
+  return GetControl(kodiBase, handle, control_id, __FUNCTION__, CGUIControl::GUICONTROL_BUTTON, "button");
+}
+
+void* Interface_GUIWindow::get_control_edit(void* kodiBase, void* handle, int control_id)
+{
+  return GetControl(kodiBase, handle, control_id, __FUNCTION__, CGUIControl::GUICONTROL_EDIT, "edit");
+}
+
+void* Interface_GUIWindow::get_control_fade_label(void* kodiBase, void* handle, int control_id)
+{
+  return GetControl(kodiBase, handle, control_id, __FUNCTION__, CGUIControl::GUICONTROL_FADELABEL, "fade label");
+}
+
+void* Interface_GUIWindow::get_control_image(void* kodiBase, void* handle, int control_id)
+{
+  return GetControl(kodiBase, handle, control_id, __FUNCTION__, CGUIControl::GUICONTROL_IMAGE, "image");
+}
+
+void* Interface_GUIWindow::get_control_label(void* kodiBase, void* handle, int control_id)
+{
+  return GetControl(kodiBase, handle, control_id, __FUNCTION__, CGUIControl::GUICONTROL_LABEL, "label");
+}
+void* Interface_GUIWindow::get_control_progress(void* kodiBase, void* handle, int control_id)
+{
+  return GetControl(kodiBase, handle, control_id, __FUNCTION__, CGUIControl::GUICONTROL_PROGRESS, "progress");
+}
+
+void* Interface_GUIWindow::get_control_radio_button(void* kodiBase, void* handle, int control_id)
+{
+  return GetControl(kodiBase, handle, control_id, __FUNCTION__, CGUIControl::GUICONTROL_RADIO, "radio button");
+}
+
+void* Interface_GUIWindow::get_control_render_addon(void* kodiBase, void* handle, int control_id)
+{
+  CGUIControl* pGUIControl = static_cast<CGUIControl*>(GetControl(kodiBase, handle, control_id, __FUNCTION__, CGUIControl::GUICONTROL_RENDERADDON, "renderaddon"));
+  if (!pGUIControl)
+    return nullptr;
+
+  CGUIAddonRenderingControl *pRenderControl = new CGUIAddonRenderingControl(dynamic_cast<CGUIRenderingControl*>(pGUIControl));
+  return pRenderControl;
+}
+
+void* Interface_GUIWindow::get_control_settings_slider(void* kodiBase, void* handle, int control_id)
+{
+  return GetControl(kodiBase, handle, control_id, __FUNCTION__, CGUIControl::GUICONTROL_SETTINGS_SLIDER, "settings slider");
+}
+
+void* Interface_GUIWindow::get_control_slider(void* kodiBase, void* handle, int control_id)
+{
+  return GetControl(kodiBase, handle, control_id, __FUNCTION__, CGUIControl::GUICONTROL_SLIDER, "slider");
+}
+
+void* Interface_GUIWindow::get_control_spin(void* kodiBase, void* handle, int control_id)
+{
+  return GetControl(kodiBase, handle, control_id, __FUNCTION__, CGUIControl::GUICONTROL_SPINEX, "spin");
+}
+
+void* Interface_GUIWindow::get_control_text_box(void* kodiBase, void* handle, int control_id)
+{
+  return GetControl(kodiBase, handle, control_id, __FUNCTION__, CGUIControl::GUICONTROL_TEXTBOX, "textbox");
+}
+//@}
+
+void* Interface_GUIWindow::GetControl(void* kodiBase, void* handle, int control_id, const char* function, CGUIControl::GUICONTROLTYPES type, const std::string& typeName)
+{
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   CGUIAddonWindow* pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
   if (!addon || !pAddonWindow)
   {
     CLog::Log(LOGERROR, "Interface_GUIWindow::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, addon, handle, addon ? addon->ID().c_str() : "unknown");
+                          function, addon, handle, addon ? addon->ID().c_str() : "unknown");
     return nullptr;
   }
 
-  return pAddonWindow->GetAddonControl(control_id, CGUIControl::GUICONTROL_BUTTON, "button");
+  return pAddonWindow->GetAddonControl(control_id, type, typeName);
 }
-//@}
 
 int Interface_GUIWindow::GetNextAvailableWindowId()
 {
@@ -882,7 +959,7 @@ CGUIAddonWindow::CGUIAddonWindow(int id, const std::string& strXML, CAddonDll* a
   m_loadType = LOAD_ON_GUI_INIT;
 }
 
-CGUIControl* CGUIAddonWindow::GetAddonControl(int controlId, CGUIControl::GUICONTROLTYPES type, std::string typeName)
+CGUIControl* CGUIAddonWindow::GetAddonControl(int controlId, CGUIControl::GUICONTROLTYPES type, const std::string& typeName)
 {
   CGUIControl* pGUIControl = dynamic_cast<CGUIControl*>(GetControl(controlId));
   if (!pGUIControl)

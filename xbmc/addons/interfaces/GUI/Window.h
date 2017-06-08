@@ -107,9 +107,21 @@ namespace ADDON
 
     /* GUI control access functions */
     static void* get_control_button(void* kodiBase, void* handle, int control_id);
+    static void* get_control_edit(void* kodiBase, void* handle, int control_id);
+    static void* get_control_fade_label(void* kodiBase, void* handle, int control_id);
+    static void* get_control_image(void* kodiBase, void* handle, int control_id);
+    static void* get_control_label(void* kodiBase, void* handle, int control_id);
+    static void* get_control_radio_button(void* kodiBase, void* handle, int control_id);
+    static void* get_control_progress(void* kodiBase, void* handle, int control_id);
+    static void* get_control_render_addon(void* kodiBase, void* handle, int control_id);
+    static void* get_control_settings_slider(void* kodiBase, void* handle, int control_id);
+    static void* get_control_slider(void* kodiBase, void* handle, int control_id);
+    static void* get_control_spin(void* kodiBase, void* handle, int control_id);
+    static void* get_control_text_box(void* kodiBase, void* handle, int control_id);
     //@}
 
   private:
+    static void* GetControl(void* kodiBase, void* handle, int control_id, const char* function, CGUIControl::GUICONTROLTYPES type, const std::string& typeName);
     static int GetNextAvailableWindowId();
   };
 
@@ -140,7 +152,7 @@ namespace ADDON
     void SetContainerProperty(const std::string& key, const std::string& value);
     void SetContainerContent(const std::string& value);
     int GetCurrentContainerControlId();
-    CGUIControl* GetAddonControl(int controlId, CGUIControl::GUICONTROLTYPES type, std::string typeName);
+    CGUIControl* GetAddonControl(int controlId, CGUIControl::GUICONTROLTYPES type, const std::string& typeName);
 
   protected:
     void GetContextButtons(int itemNumber, CContextButtons &buttons) override;
