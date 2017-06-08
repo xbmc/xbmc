@@ -40,7 +40,6 @@ typedef enum {
        XBMC_QUIT,               /* User-requested quit */
        XBMC_VIDEORESIZE,        /* User resized video mode */
        XBMC_VIDEOMOVE,          /* User moved the window */
-       XBMC_VIDEOEXPOSE,        /* Screen needs to be redrawn */
        XBMC_APPCOMMAND,         /* Media commands, such as WM_APPCOMMAND on Windows for media keys. */
        XBMC_TOUCH,
        XBMC_SETFOCUS,
@@ -84,11 +83,6 @@ typedef struct XBMC_MoveEvent {
 	int y;		/* New y position */
 } XBMC_MoveEvent;
 
-/* The "screen redraw" event */
-typedef struct XBMC_ExposeEvent {
-	unsigned char type;	/* XBMC_VIDEOEXPOSE */
-} XBMC_ExposeEvent;
-
 /* The "quit requested" event */
 typedef struct XBMC_QuitEvent {
 	unsigned char type;	/* XBMC_QUIT */
@@ -131,7 +125,6 @@ typedef union XBMC_Event {
   XBMC_MouseButtonEvent button;
   XBMC_ResizeEvent resize;
   XBMC_MoveEvent move;
-  XBMC_ExposeEvent expose;
   XBMC_QuitEvent quit;
   XBMC_UserEvent user;
   XBMC_AppCommandEvent appcommand;
