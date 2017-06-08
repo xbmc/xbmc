@@ -1,0 +1,10 @@
+--- mDNSShared/dnssd_clientshim_orig.c	2016-12-31 13:31:09.687948146 +0100
++++ mDNSShared/dnssd_clientshim.c	2016-12-31 13:05:12.159906389 +0100
+@@ -271,6 +271,7 @@
+     x->autorename = mDNSfalse;
+     x->name = n;
+     x->host = h;
++    x->s.AnonData = 0;
+ 
+     // Do the operation
+     err = mDNS_RegisterService(&mDNSStorage, &x->s,
