@@ -56,38 +56,38 @@ public:
   explicit CAddon(CAddonInfo addonInfo);
   virtual ~CAddon() {}
 
-  TYPE Type() const override { return m_addonInfo.type; }
+  TYPE Type() const override { return m_addonInfo.MainType(); }
   TYPE FullType() const override { return Type(); }
-  bool IsType(TYPE type) const override { return type == m_addonInfo.type; }
-  std::string ID() const override{ return m_addonInfo.id; }
-  std::string Name() const override { return m_addonInfo.name; }
+  bool IsType(TYPE type) const override { return type == m_addonInfo.MainType(); }
+  std::string ID() const override{ return m_addonInfo.ID(); }
+  std::string Name() const override { return m_addonInfo.Name(); }
   bool IsInUse() const override{ return false; };
-  AddonVersion Version() const override { return m_addonInfo.version; }
-  AddonVersion MinVersion() const override { return m_addonInfo.minversion; }
-  std::string Summary() const override { return m_addonInfo.summary; }
-  std::string Description() const override { return m_addonInfo.description; }
-  std::string Path() const override { return m_addonInfo.path; }
+  AddonVersion Version() const override { return m_addonInfo.Version(); }
+  AddonVersion MinVersion() const override { return m_addonInfo.MinVersion(); }
+  std::string Summary() const override { return m_addonInfo.Summary(); }
+  std::string Description() const override { return m_addonInfo.Description(); }
+  std::string Path() const override { return m_addonInfo.Path(); }
   std::string Profile() const override { return m_profilePath; }
   std::string LibPath() const override;
-  std::string Author() const override { return m_addonInfo.author; }
-  std::string ChangeLog() const override { return m_addonInfo.changelog; }
-  std::string Icon() const override { return m_addonInfo.icon; };
-  ArtMap Art() const override { return m_addonInfo.art; }
-  std::vector<std::string> Screenshots() const override { return m_addonInfo.screenshots; };
-  std::string Disclaimer() const override { return m_addonInfo.disclaimer; }
-  std::string Broken() const override { return m_addonInfo.broken; }
-  CDateTime InstallDate() const override { return m_addonInfo.installDate; }
-  CDateTime LastUpdated() const override { return m_addonInfo.lastUpdated; }
-  CDateTime LastUsed() const override { return m_addonInfo.lastUsed; }
-  std::string Origin() const override { return m_addonInfo.origin; }
-  uint64_t PackageSize() const override { return m_addonInfo.packageSize; }
+  std::string Author() const override { return m_addonInfo.Author(); }
+  std::string ChangeLog() const override { return m_addonInfo.ChangeLog(); }
+  std::string Icon() const override { return m_addonInfo.Icon(); };
+  ArtMap Art() const override { return m_addonInfo.Art(); }
+  std::vector<std::string> Screenshots() const override { return m_addonInfo.Screenshots(); };
+  std::string Disclaimer() const override { return m_addonInfo.Disclaimer(); }
+  std::string Broken() const override { return m_addonInfo.Broken(); }
+  CDateTime InstallDate() const override { return m_addonInfo.InstallDate(); }
+  CDateTime LastUpdated() const override { return m_addonInfo.LastUpdated(); }
+  CDateTime LastUsed() const override { return m_addonInfo.LastUsed(); }
+  std::string Origin() const override { return m_addonInfo.Origin(); }
+  uint64_t PackageSize() const override { return m_addonInfo.PackageSize(); }
   const InfoMap& ExtraInfo() const override { return m_addonInfo.extrainfo; }
-  const ADDONDEPS& GetDeps() const override { return m_addonInfo.dependencies; }
+  const ADDONDEPS& GetDeps() const override { return m_addonInfo.GetDeps(); }
 
   std::string FanArt() const override
   {
-    auto it = m_addonInfo.art.find("fanart");
-    return it != m_addonInfo.art.end() ? it->second : "";
+    auto it = m_addonInfo.Art().find("fanart");
+    return it != m_addonInfo.Art().end() ? it->second : "";
   }
 
   /*! \brief Check whether the this addon can be configured or not
@@ -198,7 +198,7 @@ public:
    \param version the version to meet.
    \return true if  min_version <= version <= current_version, false otherwise.
    */
-  bool MeetsVersion(const AddonVersion &version) const override;
+  bool MeetsVersion(const AddonVersion &version) const override { return m_addonInfo.MeetsVersion(version); }
   bool ReloadSettings() override;
 
   /*! \brief callback for when this add-on is disabled.

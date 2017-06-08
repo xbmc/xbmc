@@ -85,11 +85,53 @@ namespace ADDON
   typedef std::map<std::string, std::string> InfoMap;
   typedef std::map<std::string, std::string> ArtMap;
 
+  class CAddonBuilder;
+
   class CAddonInfo
   {
   public:
     CAddonInfo();
     CAddonInfo(std::string id, TYPE type);
+
+    bool IsUsable() const { return m_usable; }
+
+    /*!
+     * @brief Parts used from ADDON::CAddonDatabase
+     */
+    //@{
+    void SetInstallDate(CDateTime installDate) { m_installDate = installDate; }
+    void SetLastUpdated(CDateTime lastUpdated) { m_lastUpdated = lastUpdated; }
+    void SetLastUsed(CDateTime lastUsed) { m_lastUsed = lastUsed; }
+    void SetOrigin(std::string origin) { m_origin = std::move(origin); }
+    //@}
+
+    const std::string& ID() const { return m_id; }
+    TYPE MainType() const { return m_mainType; }
+    const AddonVersion& Version() const { return m_version; }
+    const AddonVersion& MinVersion() const { return m_minversion; }
+    const std::string& Name() const { return m_name; }
+    const std::string& License() const { return m_license; }
+    const std::string& Summary() const { return m_summary; }
+    const std::string& Description() const { return m_description; }
+    const std::string& LibName() const { return m_libname; }
+    const std::string& Author() const { return m_author; }
+    const std::string& Source() const { return m_source; }
+    const std::string& Path() const { return m_path; }
+    void SetPath(const std::string& path) { m_path = path; }
+    const std::string& ChangeLog() const { return m_changelog; }
+    const std::string& Icon() const { return m_icon; }
+    const ArtMap& Art() const { return m_art; }
+    const std::vector<std::string>& Screenshots() const { return m_screenshots; }
+    const std::string& Disclaimer() const { return m_disclaimer; }
+    const ADDONDEPS& GetDeps() const { return m_dependencies; }
+    const std::string& Broken() const { return m_broken; }
+    const CDateTime& InstallDate() const { return m_installDate; }
+    const CDateTime& LastUpdated() const { return m_lastUpdated; }
+    const CDateTime& LastUsed() const { return m_lastUsed; }
+    const std::string& Origin() const { return m_origin; }
+    uint64_t PackageSize() const { return m_packageSize; }
+    const std::string& Language() const { return m_language; }
+    bool MeetsVersion(const AddonVersion &version) const;
 
     /*!
      * @brief Utilities to translate add-on parts to his requested part.
@@ -101,31 +143,40 @@ namespace ADDON
     static TYPE TranslateSubContent(const std::string &content);
     //@}
 
-    std::string id;
-    TYPE type;
-    AddonVersion version{"0.0.0"};
-    AddonVersion minversion{"0.0.0"};
-    std::string name;
-    std::string license;
-    std::string summary;
-    std::string description;
-    std::string libname;
-    std::string author;
-    std::string source;
-    std::string path;
-    std::string changelog;
-    std::string icon;
-    std::map<std::string, std::string> art;
-    std::vector<std::string> screenshots;
-    std::string disclaimer;
-    ADDONDEPS dependencies;
-    std::string broken;
-    InfoMap extrainfo;
-    CDateTime installDate;
-    CDateTime lastUpdated;
-    CDateTime lastUsed;
-    std::string origin;
-    uint64_t packageSize;
+    InfoMap extrainfo; // defined here, but removed in future with cpluff
+
+  private:
+    friend class ADDON::CAddonBuilder;
+
+    bool m_usable;
+
+    std::string m_id;
+    TYPE m_mainType;
+
+    AddonVersion m_version{"0.0.0"};
+    AddonVersion m_minversion{"0.0.0"};
+    std::string m_name;
+    std::string m_license;
+    std::string m_summary;
+    std::string m_description;
+    std::string m_author;
+    std::string m_source;
+    std::string m_path;
+    std::string m_changelog;
+    std::string m_icon;
+    ArtMap m_art;
+    std::vector<std::string> m_screenshots;
+    std::string m_disclaimer;
+    ADDONDEPS m_dependencies;
+    std::string m_broken;
+    CDateTime m_installDate;
+    CDateTime m_lastUpdated;
+    CDateTime m_lastUsed;
+    std::string m_origin;
+    uint64_t m_packageSize;
+    std::string m_language;
+
+    std::string m_libname;
   };
 
 } /* namespace ADDON */
