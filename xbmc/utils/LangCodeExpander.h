@@ -71,19 +71,29 @@ public:
 
   /** \brief Converts a language given as 2-Char (ISO 639-1),
   *          3-Char (ISO 639-2/T or ISO 639-2/B),
-  *          or full english name string to a 3-Char ISO 639-2/T code.
+  *          or full english name string to a 3-Char ISO 639-2/B code.
   *   \param[in] lang The language that should be converted.
-  *   \return The 3-Char ISO 639-2/T code of lang if that code exists, lang otherwise.
+  *   \return The 3-Char ISO 639-2/B code of lang if that code exists, lang otherwise.
   */
-  std::string ConvertToISO6392T(const std::string& lang);
+  std::string ConvertToISO6392B(const std::string& lang);
 
   /** \brief Converts a language given as 2-Char (ISO 639-1) to a 3-Char (ISO 639-2/T) code.
   *   \param[in] strISO6391 The language that should be converted.
-  *   \param[out] strISO6392T The 3-Char (ISO 639-2/T) language code of the given language strISO6391.
+  *   \param[out] strISO6392B The 3-Char (ISO 639-2/B) language code of the given language strISO6391.
   *   \param[in] checkWin32Locales Whether to also check WIN32 specific language codes.
   *   \return true if the conversion succeeded, false otherwise.
   */
-  static bool ConvertISO6391ToISO6392T(const std::string& strISO6391, std::string& strISO6392T, bool checkWin32Locales = false);
+  static bool ConvertISO6391ToISO6392B(const std::string& strISO6391, std::string& strISO6392B, bool checkWin32Locales = false);
+
+  /** \brief Converts a language given as 2-Char (ISO 639-1),
+  *          3-Char (ISO 639-2/T or ISO 639-2/B),
+  *          or full english name string to a 3-Char ISO 639-2/T code.
+  *   \param[in] strCharCode The language that should be converted.
+  *   \param[out] strISO6392B The 3-Char (ISO 639-2/B) language code of the given language strISO6391.
+  *   \param[in] checkWin32Locales Whether to also check WIN32 specific language codes.
+  *   \return true if the conversion succeeded, false otherwise.
+  */
+  bool ConvertToISO6392B(const std::string& strCharCode, std::string& strISO6392B, bool checkWin32Locales = false);
 
   /** \brief Converts a language given as 2-Char (ISO 639-1),
   *          3-Char (ISO 639-2/T or ISO 639-2/B),
@@ -95,9 +105,17 @@ public:
   */
   bool ConvertToISO6392T(const std::string& strCharCode, std::string& strISO6392T, bool checkWin32Locales = false);
 
+  /** \brief Converts a language given as 2-Char (ISO 639-1),
+  *          3-Char (ISO 639-2/T or ISO 639-2/B),
+  *          or full english name string to a 3-Char ISO 639-2/T code.
+  *   \param[in] lang The language that should be converted.
+  *   \return The 3-Char ISO 639-2/T code of lang if that code exists, lang otherwise.
+  */
+  std::string ConvertToISO6392T(const std::string& lang);
+
 #ifdef TARGET_WINDOWS
-  static bool ConvertISO36111Alpha2ToISO36111Alpha3(const std::string& strISO36111Alpha2, std::string& strISO36111Alpha3);
-  static bool ConvertWindowsLanguageCodeToISO6392T(const std::string& strWindowsLanguageCode, std::string& strISO6392T);
+  static bool ConvertISO31661Alpha2ToISO31661Alpha3(const std::string& strISO31661Alpha2, std::string& strISO31661Alpha3);
+  static bool ConvertWindowsLanguageCodeToISO6392B(const std::string& strWindowsLanguageCode, std::string& strISO6392B);
 #endif
 
   std::vector<std::string> GetLanguageNames(LANGFORMATS format = ISO_639_1, bool customNames = false);

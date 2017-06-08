@@ -459,7 +459,7 @@ void CSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer, std::
 
       DVDNavAudioStreamInfo info = nav->GetAudioStreamInfo(i);
       s.name     = info.name;
-      s.language = g_LangCodeExpander.ConvertToISO6392T(info.language);
+      s.language = g_LangCodeExpander.ConvertToISO6392B(info.language);
       s.channels = info.channels;
       Update(s);
     }
@@ -477,7 +477,7 @@ void CSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer, std::
       DVDNavSubtitleStreamInfo info = nav->GetSubtitleStreamInfo(i);
       s.name     = info.name;
       s.flags = info.flags;
-      s.language = g_LangCodeExpander.ConvertToISO6392T(info.language);
+      s.language = g_LangCodeExpander.ConvertToISO6392B(info.language);
       Update(s);
     }
 
@@ -523,7 +523,7 @@ void CSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer, std::
       s.type     = stream->type;
       s.id       = stream->uniqueId;
       s.demuxerId = stream->demuxerId;
-      s.language = g_LangCodeExpander.ConvertToISO6392T(stream->language);
+      s.language = g_LangCodeExpander.ConvertToISO6392B(stream->language);
       s.flags    = stream->flags;
       s.filename = demuxer->GetFileName();
       s.filename2 = filename2;

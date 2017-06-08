@@ -22,20 +22,20 @@
 
 #include "gtest/gtest.h"
 
-TEST(TestLangCodeExpander, ConvertISO6391ToISO6392T)
+TEST(TestLangCodeExpander, ConvertISO6391ToISO6392B)
 {
   std::string refstr, varstr;
 
   refstr = "eng";
-  g_LangCodeExpander.ConvertISO6391ToISO6392T("en", varstr);
+  g_LangCodeExpander.ConvertISO6391ToISO6392B("en", varstr);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 }
 
-TEST(TestLangCodeExpander, ConvertToISO6392T)
+TEST(TestLangCodeExpander, ConvertToISO6392B)
 {
   std::string refstr, varstr;
 
   refstr = "eng";
-  g_LangCodeExpander.ConvertToISO6392T("en", varstr);
+  g_LangCodeExpander.ConvertToISO6392B("en", varstr);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 }
