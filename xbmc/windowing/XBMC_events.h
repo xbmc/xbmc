@@ -29,11 +29,6 @@
 
 #include "input/XBMC_keyboard.h"
 
-
-/* General keyboard/mouse state definitions */
-#define XBMC_RELEASED	0
-#define XBMC_PRESSED	1
-
 /* Event enumerations */
 typedef enum {
        XBMC_NOEVENT = 0,        /* Unused (do not remove) */
