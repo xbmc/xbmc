@@ -337,7 +337,6 @@ bool CWinEventsSDL::MessagePump()
         newEvent.type = XBMC_MOUSEMOTION;
         newEvent.motion.state = event.motion.state;
         newEvent.motion.type = event.motion.type;
-        newEvent.motion.which = event.motion.which;
         newEvent.motion.x = event.motion.x;
         newEvent.motion.y = event.motion.y;
 

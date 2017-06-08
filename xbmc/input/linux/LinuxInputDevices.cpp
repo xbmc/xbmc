@@ -617,7 +617,6 @@ bool CLinuxInputDevice::RelEvent(const struct input_event& levt, XBMC_Event& dev
     devt.motion.x = m_mouseX;
     devt.motion.y = m_mouseY;
     devt.motion.state = 0;
-    devt.motion.which = m_deviceIndex;
   }
   else if (wheel)
   {
@@ -670,7 +669,6 @@ bool CLinuxInputDevice::AbsEvent(const struct input_event& levt, XBMC_Event& dev
   devt.motion.x = m_mouseX;
   devt.motion.y = m_mouseY;
   devt.motion.state = 0;
-  devt.motion.which = m_deviceIndex;
 
   return true;
 }

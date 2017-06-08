@@ -80,7 +80,6 @@ void CAndroidMouse::MouseMove(float x, float y)
 
   newEvent.type = XBMC_MOUSEMOTION;
   newEvent.motion.type = XBMC_MOUSEMOTION;
-  newEvent.motion.which = 0;
   newEvent.motion.state = 0;
   newEvent.motion.x = x;
   newEvent.motion.y = y;
