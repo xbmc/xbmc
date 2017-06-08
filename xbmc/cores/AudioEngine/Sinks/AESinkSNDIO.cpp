@@ -76,7 +76,8 @@ static struct sndio_formats formats[] =
   { AE_FMT_U8, 8, 1, 0, 1, 1 },
 };
 
-static AEDataFormat lookupDataFormat(int bits, int bps, int sig, int le, int msb)
+static AEDataFormat lookupDataFormat(unsigned int bits, unsigned int bps,
+                                     unsigned int sig, unsigned int le, unsigned int msb)
 {
   for (size_t i = 0; i < nitems(formats); i++)
   {
