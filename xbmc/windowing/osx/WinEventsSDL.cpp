@@ -299,7 +299,6 @@ bool CWinEventsSDL::MessagePump()
         newEvent.type = XBMC_MOUSEBUTTONDOWN;
         newEvent.button.button = event.button.button;
         newEvent.button.type = event.button.type;
-        newEvent.button.which = event.button.which;
         newEvent.button.x = event.button.x;
         newEvent.button.y = event.button.y;
 
@@ -313,7 +312,6 @@ bool CWinEventsSDL::MessagePump()
         newEvent.type = XBMC_MOUSEBUTTONUP;
         newEvent.button.button = event.button.button;
         newEvent.button.type = event.button.type;
-        newEvent.button.which = event.button.which;
         newEvent.button.x = event.button.x;
         newEvent.button.y = event.button.y;
 
