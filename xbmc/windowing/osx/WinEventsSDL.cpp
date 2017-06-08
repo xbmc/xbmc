@@ -259,7 +259,6 @@ bool CWinEventsSDL::MessagePump()
         newEvent.key.keysym.sym = (XBMCKey) event.key.keysym.sym;
         newEvent.key.keysym.unicode = event.key.keysym.unicode;
         newEvent.key.type = event.key.type;
-        newEvent.key.which = event.key.which;
 
         // Check if the Windows keys are down because SDL doesn't flag this.
         uint16_t mod = event.key.keysym.mod;
@@ -289,7 +288,6 @@ bool CWinEventsSDL::MessagePump()
         newEvent.key.keysym.mod =(XBMCMod) event.key.keysym.mod;
         newEvent.key.keysym.unicode = event.key.keysym.unicode;
         newEvent.key.type = event.key.type;
-        newEvent.key.which = event.key.which;
 
         ret |= g_application.OnEvent(newEvent);
         break;
