@@ -36,6 +36,7 @@ class CKey;
 class CAction;
 class TiXmlNode;
 class CRegExp;
+class CIRTranslator;
 
 struct CButtonAction
 {
@@ -67,7 +68,7 @@ public:
   void AddDevice(std::string& strDevice);
   void RemoveDevice(std::string& strDevice);
 
-  /// loads Lircmap.xml/IRSSmap.xml (if enabled) and Keymap.xml
+  /// loads Keymap.xml
   bool Load(bool AlwaysLoad = false);
   /// clears the maps
   void Clear();
@@ -120,7 +121,7 @@ public:
   static bool TranslateActionString(const char *szAction, int &action);
 
   int TranslateLircRemoteString(const char* szDevice, const char *szButton);
-  
+
   bool TranslateCustomControllerString(int windowId, const std::string& controllerName, int buttonId, int& action, std::string& strAction);
 
   bool TranslateTouchAction(int window, int touchAction, int touchPointers, int &action, std::string &actionString);
@@ -138,8 +139,6 @@ private:
   int GetFallbackWindow(int windowID);
 
   static uint32_t TranslateGamepadString(const char *szButton);
-  static uint32_t TranslateRemoteString(const char *szButton);
-  static uint32_t TranslateUniversalRemoteString(const char *szButton);
   static uint32_t TranslateJoystickCommand(const TiXmlElement *pButton, const std::string& controllerId, unsigned int& holdtimeMs);
 
   static uint32_t TranslateKeyboardString(const char *szButton);
@@ -154,13 +153,6 @@ private:
   void MapCustomControllerActions(int windowID, TiXmlNode *pCustomController);
 
   bool LoadKeymap(const std::string &keymapPath);
-  bool LoadLircMap(const std::string &lircmapPath);
-  void ClearLircButtonMapEntries();
-
-  void MapRemote(TiXmlNode *pRemote, const char* szDevice);
-
-  typedef std::map<std::string, std::string> lircButtonMap;
-  std::map<std::string, lircButtonMap*> lircRemotesMap;
 
   // maps button id to action
   typedef std::map<int, std::string> CustomControllerButtonMap;
@@ -170,7 +162,6 @@ private:
   std::map<std::string, CustomControllerWindowMap> m_customControllersMap;
   int GetCustomControllerActionCode(int windowId, int buttonId, const CustomControllerWindowMap *windowMap, std::string& strAction) const;
 
-  
   void MapTouchActions(int windowID, TiXmlNode *pTouch);
   static uint32_t TranslateTouchCommand(TiXmlElement *pButton, CButtonAction &action);
   int GetTouchActionCode(int window, int action, std::string &actionString);
@@ -178,6 +169,8 @@ private:
   std::map<int, buttonMap> m_touchMap;
 
   bool m_Loaded;
+
+  std::unique_ptr<CIRTranslator> m_irTranslator;
 };
 
 #endif

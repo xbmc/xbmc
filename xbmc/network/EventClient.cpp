@@ -27,6 +27,7 @@
 #include "EventPacket.h"
 #include "threads/SingleLock.h"
 #include "input/ButtonTranslator.h"
+#include "input/IRTranslator.h"
 #include <map>
 #include <queue>
 #include "filesystem/File.h"
@@ -80,11 +81,11 @@ void CEventButtonState::Load()
       }
       else if  ( m_mapName.compare("R1") == 0 ) // xbox remote map
       {
-        m_iKeyCode = CButtonTranslator::TranslateRemoteString( m_buttonName.c_str() );
+        m_iKeyCode = CIRTranslator::TranslateRemoteString( m_buttonName.c_str() );
       }
       else if  ( m_mapName.compare("R2") == 0 ) // xbox universal remote map
       {
-        m_iKeyCode = CButtonTranslator::TranslateUniversalRemoteString( m_buttonName.c_str() );
+        m_iKeyCode = CIRTranslator::TranslateUniversalRemoteString( m_buttonName.c_str() );
       }
       else if ( (m_mapName.length() > 3) &&
                 (StringUtils::StartsWith(m_mapName, "LI:")) ) // starts with LI: ?

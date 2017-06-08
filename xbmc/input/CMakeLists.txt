@@ -6,6 +6,7 @@ set(SOURCES Action.cpp
             InputCodingTableFactory.cpp
             InputCodingTableKorean.cpp
             InputManager.cpp
+            IRTranslator.cpp
             Key.cpp
             KeyboardLayout.cpp
             KeyboardLayoutManager.cpp
@@ -23,6 +24,7 @@ set(HEADERS Action.h
             InputCodingTableFactory.h
             InputCodingTableKorean.h
             InputManager.h
+            IRTranslator.h
             Key.h
             KeyboardLayout.h
             KeyboardLayoutManager.h

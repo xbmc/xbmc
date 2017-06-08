@@ -23,24 +23,20 @@
 #include <algorithm>
 #include <utility>
 
+#include "IRTranslator.h"
 #include "FileItem.h"
 #include "filesystem/Directory.h"
-#include "filesystem/File.h"
 #include "guilib/WindowIDs.h"
 #include "input/joysticks/JoystickIDs.h"
 #include "input/Key.h"
 #include "input/MouseStat.h"
 #include "input/XBMC_keytable.h"
 #include "interfaces/builtins/Builtins.h"
-#include "profiles/ProfilesManager.h"
-#include "system.h"
 #include "Util.h"
 #include "utils/log.h"
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
-#include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML.h"
-#include "XBIRRemote.h"
 
 using namespace XFILE;
 
@@ -492,31 +488,15 @@ CButtonTranslator& CButtonTranslator::GetInstance()
   return sl_instance;
 }
 
-CButtonTranslator::CButtonTranslator()
+CButtonTranslator::CButtonTranslator() :
+  m_irTranslator(new CIRTranslator)
 {
   m_deviceList.clear();
   m_Loaded = false;
 }
 
-#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
-void CButtonTranslator::ClearLircButtonMapEntries()
-{
-  std::vector<lircButtonMap*> maps;
-  for (std::map<std::string,lircButtonMap*>::iterator it  = lircRemotesMap.begin();
-                                                 it != lircRemotesMap.end();++it)
-    maps.push_back(it->second);
-  sort(maps.begin(),maps.end());
-  std::vector<lircButtonMap*>::iterator itend = unique(maps.begin(),maps.end());
-  for (std::vector<lircButtonMap*>::iterator it = maps.begin(); it != itend;++it)
-    delete *it;
-}
-#endif
-
 CButtonTranslator::~CButtonTranslator()
 {
-#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
-  ClearLircButtonMapEntries();
-#endif
 }
 
 // Add the supplied device name to the list of connected devices
@@ -609,29 +589,7 @@ bool CButtonTranslator::Load(bool AlwaysLoad)
     return false;
   }
 
-#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
-#ifdef TARGET_POSIX
-#define REMOTEMAP "Lircmap.xml"
-#else
-#define REMOTEMAP "IRSSmap.xml"
-#endif
-  std::string lircmapPath = URIUtils::AddFileToFolder("special://xbmc/system/", REMOTEMAP);
-  lircRemotesMap.clear();
-  if(CFile::Exists(lircmapPath))
-    success |= LoadLircMap(lircmapPath);
-  else
-    CLog::Log(LOGDEBUG, "CButtonTranslator::Load - no system %s found, skipping", REMOTEMAP);
-
-  lircmapPath = CProfilesManager::GetInstance().GetUserDataItem(REMOTEMAP);
-  if(CFile::Exists(lircmapPath))
-    success |= LoadLircMap(lircmapPath);
-  else
-    CLog::Log(LOGDEBUG, "CButtonTranslator::Load - no userdata %s found, skipping", REMOTEMAP);
-
-  if (!success)
-    CLog::Log(LOGERROR, "CButtonTranslator::Load - unable to load remote map %s", REMOTEMAP);
-  // don't return false - it is to only indicate a fatal error (which this is not)
-#endif
+  m_irTranslator->Load();
 
   // Done!
   m_Loaded = true;
@@ -683,98 +641,9 @@ bool CButtonTranslator::LoadKeymap(const std::string &keymapPath)
   return true;
 }
 
-bool CButtonTranslator::LoadLircMap(const std::string &lircmapPath)
-{
-#ifdef TARGET_POSIX
-#define REMOTEMAPTAG "lircmap"
-#else
-#define REMOTEMAPTAG "irssmap"
-#endif
-  // load our xml file, and fill up our mapping tables
-  CXBMCTinyXML xmlDoc;
-
-  // Load the config file
-  CLog::Log(LOGINFO, "Loading %s", lircmapPath.c_str());
-  if (!xmlDoc.LoadFile(lircmapPath))
-  {
-    CLog::Log(LOGERROR, "%s, Line %d\n%s", lircmapPath.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
-    return false; // This is so people who don't have the file won't fail, just warn
-  }
-
-  TiXmlElement* pRoot = xmlDoc.RootElement();
-  std::string strValue = pRoot->Value();
-  if (strValue != REMOTEMAPTAG)
-  {
-    CLog::Log(LOGERROR, "%sl Doesn't contain <%s>", lircmapPath.c_str(), REMOTEMAPTAG);
-    return false;
-  }
-
-  // run through our window groups
-  TiXmlNode* pRemote = pRoot->FirstChild();
-  while (pRemote)
-  {
-    if (pRemote->Type() == TiXmlNode::TINYXML_ELEMENT)
-    {
-      const char *szRemote = pRemote->Value();
-      if (szRemote)
-      {
-        TiXmlAttribute* pAttr = pRemote->ToElement()->FirstAttribute();
-        if (pAttr)
-          MapRemote(pRemote, pAttr->Value());
-      }
-    }
-    pRemote = pRemote->NextSibling();
-  }
-
-  return true;
-}
-
-void CButtonTranslator::MapRemote(TiXmlNode *pRemote, const char* szDevice)
-{
-  CLog::Log(LOGINFO, "* Adding remote mapping for device '%s'", szDevice);
-  std::vector<std::string> RemoteNames;
-  std::map<std::string, lircButtonMap*>::iterator it = lircRemotesMap.find(szDevice);
-  if (it == lircRemotesMap.end())
-    lircRemotesMap[szDevice] = new lircButtonMap;
-  lircButtonMap& buttons = *lircRemotesMap[szDevice];
-
-  TiXmlElement *pButton = pRemote->FirstChildElement();
-  while (pButton)
-  {
-    if (!pButton->NoChildren())
-    {
-      if (pButton->ValueStr() == "altname")
-        RemoteNames.push_back(pButton->FirstChild()->ValueStr());
-      else
-        buttons[pButton->FirstChild()->ValueStr()] = pButton->ValueStr();
-    }
-    pButton = pButton->NextSiblingElement();
-  }
-  for (std::vector<std::string>::iterator it  = RemoteNames.begin();
-                                it != RemoteNames.end();++it)
-  {
-    CLog::Log(LOGINFO, "* Linking remote mapping for '%s' to '%s'", szDevice, it->c_str());
-    lircRemotesMap[*it] = &buttons;
-  }
-}
-
 int CButtonTranslator::TranslateLircRemoteString(const char* szDevice, const char *szButton)
 {
-  // Find the device
-  std::map<std::string, lircButtonMap*>::iterator it = lircRemotesMap.find(szDevice);
-  if (it == lircRemotesMap.end())
-    return 0;
-
-  // Find the button
-  lircButtonMap::iterator it2 = (*it).second->find(szButton);
-  if (it2 == (*it).second->end())
-    return 0;
-
-  // Convert the button to code
-  if (strnicmp((*it2).second.c_str(), "obc", 3) == 0)
-    return TranslateUniversalRemoteString((*it2).second.c_str());
-
-  return TranslateRemoteString((*it2).second.c_str());
+  return m_irTranslator->TranslateIRRemoteString(szDevice, szButton);
 }
 
 int CButtonTranslator::GetCustomControllerActionCode(int windowId, int buttonId, const CustomControllerWindowMap *windowMap, std::string& strAction) const
@@ -1138,9 +1007,9 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, int windowID)
         if (type == "gamepad")
             buttonCode = TranslateGamepadString(pButton->Value());
         else if (type == "remote")
-            buttonCode = TranslateRemoteString(pButton->Value());
+            buttonCode = CIRTranslator::TranslateRemoteString(pButton->Value());
         else if (type == "universalremote")
-            buttonCode = TranslateUniversalRemoteString(pButton->Value());
+            buttonCode = CIRTranslator::TranslateUniversalRemoteString(pButton->Value());
         else if (type == "keyboard")
             buttonCode = TranslateKeyboardButton(pButton);
         else if (type == "mouse")
@@ -1313,95 +1182,6 @@ uint32_t CButtonTranslator::TranslateGamepadString(const char *szButton)
   return buttonCode;
 }
 
-uint32_t CButtonTranslator::TranslateRemoteString(const char *szButton)
-{
-  if (!szButton) 
-    return 0;
-  uint32_t buttonCode = 0;
-  std::string strButton = szButton;
-  StringUtils::ToLower(strButton);
-  if (strButton == "left") buttonCode = XINPUT_IR_REMOTE_LEFT;
-  else if (strButton == "right") buttonCode = XINPUT_IR_REMOTE_RIGHT;
-  else if (strButton == "up") buttonCode = XINPUT_IR_REMOTE_UP;
-  else if (strButton == "down") buttonCode = XINPUT_IR_REMOTE_DOWN;
-  else if (strButton == "select") buttonCode = XINPUT_IR_REMOTE_SELECT;
-  else if (strButton == "back") buttonCode = XINPUT_IR_REMOTE_BACK;
-  else if (strButton == "menu") buttonCode = XINPUT_IR_REMOTE_MENU;
-  else if (strButton == "info") buttonCode = XINPUT_IR_REMOTE_INFO;
-  else if (strButton == "display") buttonCode = XINPUT_IR_REMOTE_DISPLAY;
-  else if (strButton == "title") buttonCode = XINPUT_IR_REMOTE_TITLE;
-  else if (strButton == "play") buttonCode = XINPUT_IR_REMOTE_PLAY;
-  else if (strButton == "pause") buttonCode = XINPUT_IR_REMOTE_PAUSE;
-  else if (strButton == "reverse") buttonCode = XINPUT_IR_REMOTE_REVERSE;
-  else if (strButton == "forward") buttonCode = XINPUT_IR_REMOTE_FORWARD;
-  else if (strButton == "skipplus") buttonCode = XINPUT_IR_REMOTE_SKIP_PLUS;
-  else if (strButton == "skipminus") buttonCode = XINPUT_IR_REMOTE_SKIP_MINUS;
-  else if (strButton == "stop") buttonCode = XINPUT_IR_REMOTE_STOP;
-  else if (strButton == "zero") buttonCode = XINPUT_IR_REMOTE_0;
-  else if (strButton == "one") buttonCode = XINPUT_IR_REMOTE_1;
-  else if (strButton == "two") buttonCode = XINPUT_IR_REMOTE_2;
-  else if (strButton == "three") buttonCode = XINPUT_IR_REMOTE_3;
-  else if (strButton == "four") buttonCode = XINPUT_IR_REMOTE_4;
-  else if (strButton == "five") buttonCode = XINPUT_IR_REMOTE_5;
-  else if (strButton == "six") buttonCode = XINPUT_IR_REMOTE_6;
-  else if (strButton == "seven") buttonCode = XINPUT_IR_REMOTE_7;
-  else if (strButton == "eight") buttonCode = XINPUT_IR_REMOTE_8;
-  else if (strButton == "nine") buttonCode = XINPUT_IR_REMOTE_9;
-  // additional keys from the media center extender for xbox remote
-  else if (strButton == "power") buttonCode = XINPUT_IR_REMOTE_POWER;
-  else if (strButton == "mytv") buttonCode = XINPUT_IR_REMOTE_MY_TV;
-  else if (strButton == "mymusic") buttonCode = XINPUT_IR_REMOTE_MY_MUSIC;
-  else if (strButton == "mypictures") buttonCode = XINPUT_IR_REMOTE_MY_PICTURES;
-  else if (strButton == "myvideo") buttonCode = XINPUT_IR_REMOTE_MY_VIDEOS;
-  else if (strButton == "record") buttonCode = XINPUT_IR_REMOTE_RECORD;
-  else if (strButton == "start") buttonCode = XINPUT_IR_REMOTE_START;
-  else if (strButton == "volumeplus") buttonCode = XINPUT_IR_REMOTE_VOLUME_PLUS;
-  else if (strButton == "volumeminus") buttonCode = XINPUT_IR_REMOTE_VOLUME_MINUS;
-  else if (strButton == "channelplus") buttonCode = XINPUT_IR_REMOTE_CHANNEL_PLUS;
-  else if (strButton == "channelminus") buttonCode = XINPUT_IR_REMOTE_CHANNEL_MINUS;
-  else if (strButton == "pageplus") buttonCode = XINPUT_IR_REMOTE_CHANNEL_PLUS;
-  else if (strButton == "pageminus") buttonCode = XINPUT_IR_REMOTE_CHANNEL_MINUS;
-  else if (strButton == "mute") buttonCode = XINPUT_IR_REMOTE_MUTE;
-  else if (strButton == "recordedtv") buttonCode = XINPUT_IR_REMOTE_RECORDED_TV;
-  else if (strButton == "guide") buttonCode = XINPUT_IR_REMOTE_GUIDE;
-  else if (strButton == "livetv") buttonCode = XINPUT_IR_REMOTE_LIVE_TV;
-  else if (strButton == "liveradio") buttonCode = XINPUT_IR_REMOTE_LIVE_RADIO;
-  else if (strButton == "epgsearch") buttonCode = XINPUT_IR_REMOTE_EPG_SEARCH;
-  else if (strButton == "star") buttonCode = XINPUT_IR_REMOTE_STAR;
-  else if (strButton == "hash") buttonCode = XINPUT_IR_REMOTE_HASH;
-  else if (strButton == "clear") buttonCode = XINPUT_IR_REMOTE_CLEAR;
-  else if (strButton == "enter") buttonCode = XINPUT_IR_REMOTE_ENTER;
-  else if (strButton == "xbox") buttonCode = XINPUT_IR_REMOTE_DISPLAY; // same as display
-  else if (strButton == "playlist") buttonCode = XINPUT_IR_REMOTE_PLAYLIST;
-  else if (strButton == "teletext") buttonCode = XINPUT_IR_REMOTE_TELETEXT;
-  else if (strButton == "red") buttonCode = XINPUT_IR_REMOTE_RED;
-  else if (strButton == "green") buttonCode = XINPUT_IR_REMOTE_GREEN;
-  else if (strButton == "yellow") buttonCode = XINPUT_IR_REMOTE_YELLOW;
-  else if (strButton == "blue") buttonCode = XINPUT_IR_REMOTE_BLUE;
-  else if (strButton == "subtitle") buttonCode = XINPUT_IR_REMOTE_SUBTITLE;
-  else if (strButton == "language") buttonCode = XINPUT_IR_REMOTE_LANGUAGE;
-  else if (strButton == "eject") buttonCode = XINPUT_IR_REMOTE_EJECT;
-  else if (strButton == "contentsmenu") buttonCode = XINPUT_IR_REMOTE_CONTENTS_MENU;
-  else if (strButton == "rootmenu") buttonCode = XINPUT_IR_REMOTE_ROOT_MENU;
-  else if (strButton == "topmenu") buttonCode = XINPUT_IR_REMOTE_TOP_MENU;
-  else if (strButton == "dvdmenu") buttonCode = XINPUT_IR_REMOTE_DVD_MENU;
-  else if (strButton == "print") buttonCode = XINPUT_IR_REMOTE_PRINT;
-  else CLog::Log(LOGERROR, "Remote Translator: Can't find button %s", strButton.c_str());
-  return buttonCode;
-}
-
-uint32_t CButtonTranslator::TranslateUniversalRemoteString(const char *szButton)
-{
-  if (!szButton || strlen(szButton) < 4 || strnicmp(szButton, "obc", 3)) 
-    return 0;
-  const char *szCode = szButton + 3;
-  // Button Code is 255 - OBC (Original Button Code) of the button
-  uint32_t buttonCode = 255 - atol(szCode);
-  if (buttonCode > 255) 
-    buttonCode = 0;
-  return buttonCode;
-}
-
 uint32_t CButtonTranslator::TranslateKeyboardString(const char *szButton)
 {
   uint32_t buttonCode = 0;
@@ -1538,11 +1318,8 @@ uint32_t CButtonTranslator::TranslateMouseCommand(TiXmlElement *pButton)
 void CButtonTranslator::Clear()
 {
   m_translatorMap.clear();
-#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
-  ClearLircButtonMapEntries();
-  lircRemotesMap.clear();
-#endif
-  
+
+  m_irTranslator->Clear();
   m_customControllersMap.clear();
 
   m_Loaded = false;
