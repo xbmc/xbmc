@@ -138,18 +138,25 @@ TYPE CAddonInfo::TranslateSubContent(const std::string& content)
 }
 
 CAddonInfo::CAddonInfo()
-  : type(ADDON_UNKNOWN),
-    packageSize(0)
+  : m_usable(true),
+    m_mainType(ADDON_UNKNOWN),
+    m_packageSize(0)
 {
 
 }
 
 CAddonInfo::CAddonInfo(std::string id, TYPE type)
-  : id(std::move(id)),
-    type(type),
-    packageSize(0)
+  : m_usable(true),
+    m_id(std::move(id)),
+    m_mainType(type),
+    m_packageSize(0)
 {
 
+}
+
+bool CAddonInfo::MeetsVersion(const AddonVersion &version) const
+{
+  return m_minversion <= version && version <= m_version;
 }
 
 } /* namespace ADDON */

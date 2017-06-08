@@ -137,7 +137,7 @@ std::unique_ptr<CScraper> CScraper::FromExtension(CAddonInfo addonInfo, const cp
     persistence.SetFromTimeString(tmp);
 
   CONTENT_TYPE pathContent(CONTENT_NONE);
-  switch (addonInfo.type)
+  switch (addonInfo.MainType())
   {
     case ADDON_SCRAPER_ALBUMS:
       pathContent = CONTENT_ALBUMS;
