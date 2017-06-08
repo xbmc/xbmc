@@ -1,0 +1,66 @@
+# German translation of xbmc/goom2.
+# This file is distributed under the same license as the xbmc package.
+# Copyright © of this file Chris Leick <c.leick@vollbio.de>, 2013.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: xbmc 12.0\n"
+"Report-Msgid-Bugs-To: xbmc@packages.debian.org\n"
+"POT-Creation-Date: 2003-04-27 17:01+0200\n"
+"PO-Revision-Date: 2013-02-08 18:26+0200\n"
+"Last-Translator: Chris Leick <c.leick@vollbio.de>\n"
+"Language-Team: German <debian-l10n-german@lists.debian.org>\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: gtk-gui/interface.c:56
+msgid "Goom Control Window"
+msgstr "Goom-Steuerbildschirm"
+
+#: gtk-gui/interface.c:74
+msgid "_File"
+msgstr "_Datei"
+
+#: gtk-gui/interface.c:107
+msgid "Window Y-Size:"
+msgstr "Y-Größe des Fensters:"
+
+#: gtk-gui/interface.c:154
+msgid "Window X-Size:"
+msgstr "X-Größe des Fensters:"
+
+#: gtk-gui/interface.c:174
+msgid "Double Pixel:"
+msgstr "Doppelte Bildpunkte:"
+
+#: gtk-gui/interface.c:185
+msgid "Frame Rate Limiter:"
+msgstr "Bildfrequenzbegrenzung:"
+
+#: gtk-gui/interface.c:206
+msgid "Display"
+msgstr "Anzeige"
+
+#: gtk-gui/interface.c:213 gtk-gui/interface.c:227
+msgid "TODO"
+msgstr "ZU ERLEDIGEN"
+
+#: gtk-gui/interface.c:220
+msgid "Inspect"
+msgstr "Prüfen"
+
+#: gtk-gui/interface.c:234
+msgid "Customize"
+msgstr "Anpassen"
+
+#: gtk-gui/support.c:121
+#, c-format
+msgid "Couldn't find pixmap file: %s"
+msgstr "Pixmap-Datei konnte nicht gefunden werden: %s"
+
+#: gtk-gui/support.c:130
+#, c-format
+msgid "Error loading pixmap file: %s"
+msgstr "Fehler beim Laden der Pixmap-Datei: %s"
