@@ -32,7 +32,6 @@
 /* Event enumerations */
 typedef enum {
        XBMC_NOEVENT = 0,        /* Unused (do not remove) */
-       XBMC_ACTIVEEVENT,        /* Application loses/gains visibility */
        XBMC_KEYDOWN,            /* Keys pressed */
        XBMC_KEYUP,              /* Keys released */
        XBMC_MOUSEMOTION,        /* Mouse moved */
@@ -50,13 +49,6 @@ typedef enum {
 
        XBMC_MAXEVENT = 256      /* XBMC_EventType is represented as uchar */
 } XBMC_EventType;
-
-/* Application visibility event structure */
-typedef struct XBMC_ActiveEvent {
-	unsigned char type;	/* XBMC_ACTIVEEVENT */
-	unsigned char gain;	/* Whether given states were gained or lost (1/0) */
-	unsigned char state;	/* A mask of the focus states */
-} XBMC_ActiveEvent;
 
 /* Keyboard event structure */
 typedef struct XBMC_KeyboardEvent {
@@ -143,7 +135,6 @@ typedef struct XBMC_SetFocusEvent {
 /* General event structure */
 typedef union XBMC_Event {
   unsigned char type;
-  XBMC_ActiveEvent active;
   XBMC_KeyboardEvent key;
   XBMC_MouseMotionEvent motion;
   XBMC_MouseButtonEvent button;
