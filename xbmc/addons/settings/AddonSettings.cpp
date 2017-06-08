@@ -187,6 +187,9 @@ bool CAddonSettings::Initialize(const CXBMCTinyXML& doc, bool allowEmpty /* = fa
   // register custom setting controls
   InitializeControls();
 
+  // conditions need to be initialized before the setting definitions
+  InitializeConditions();
+
   // load the settings definitions
   if (!InitializeDefinitions(doc) && !allowEmpty)
     return false;
