@@ -32,7 +32,6 @@ set(HEADERS Action.h
             XBMC_keyboard.h
             XBMC_keysym.h
             XBMC_keytable.h
-            XBMC_mouse.h
             XBMC_vkeys.h)
 
 core_add_library(input)
