@@ -84,10 +84,3 @@ bool CWinEvents::MessagePump()
   return g_imp.MessagePump();
 }
 
-size_t CWinEvents::GetQueueSize()
-{
-  if (!g_init)
-    Init();
-  return g_imp.GetQueueSize();
-}
-

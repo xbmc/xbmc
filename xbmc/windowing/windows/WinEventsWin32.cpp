@@ -389,12 +389,6 @@ bool CWinEventsWin32::MessagePump()
   return true;
 }
 
-size_t CWinEventsWin32::GetQueueSize()
-{
-  MSG  msg;
-  return PeekMessage( &msg, NULL, 0U, 0U, PM_NOREMOVE );
-}
-
 LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
   XBMC_Event newEvent;

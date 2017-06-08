@@ -33,7 +33,6 @@ class CWinEventsSDL : public IWinEvents
 {
 public:
   virtual bool MessagePump();
-  virtual size_t GetQueueSize();
 
 private:
 #ifdef TARGET_DARWIN

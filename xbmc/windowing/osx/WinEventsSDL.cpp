@@ -377,17 +377,6 @@ bool CWinEventsSDL::MessagePump()
   return ret;
 }
 
-size_t CWinEventsSDL::GetQueueSize()
-{
-  int ret;
-  SDL_Event event;
-
-  if (-1 == (ret = SDL_PeepEvents(&event, 0, SDL_PEEKEVENT, ~0)))
-    ret = 0;
-
-  return ret;
-}
-
 #ifdef TARGET_DARWIN_OSX
 bool CWinEventsSDL::ProcessOSXShortcuts(SDL_Event& event)
 {

@@ -42,9 +42,10 @@ public:
   void            MessagePush(XBMC_Event *newEvent);
   void            MessagePushRepeat(XBMC_Event *repeatEvent);
   bool            MessagePump();
-  virtual size_t  GetQueueSize();
 
 private:
+  size_t          GetQueueSize();
+
   // for CThread
   virtual void    Process();
 

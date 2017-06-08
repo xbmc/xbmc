@@ -75,11 +75,6 @@ bool CWinEventsLinux::MessagePump()
   return ret;
 }
 
-size_t CWinEventsLinux::GetQueueSize()
-{
-  return m_devices.Size();
-}
-
 void CWinEventsLinux::MessagePush(XBMC_Event *ev)
 {
   g_application.OnEvent(*ev);

@@ -33,7 +33,6 @@ class CWinEventsWin32 : public IWinEvents
 public:
   void MessagePush(XBMC_Event *newEvent);
   bool MessagePump();
-  virtual size_t GetQueueSize();
   static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 private:

@@ -158,11 +158,6 @@ bool CWinEventsX11::MessagePump()
   return CWinEventsX11Imp::MessagePump();
 }
 
-size_t CWinEventsX11::GetQueueSize()
-{
-  return CWinEventsX11Imp::GetQueueSize();
-}
-
 CWinEventsX11Imp::CWinEventsX11Imp()
 {
   m_display = 0;
@@ -581,16 +576,6 @@ bool CWinEventsX11Imp::MessagePump()
     g_Windowing.NotifyXRREvent();
     WinEvents->m_xrrEventPending = false;
   }
-
-  return ret;
-}
-
-size_t CWinEventsX11Imp::GetQueueSize()
-{
-  int ret = 0;
-
-  if (WinEvents)
-    ret = XPending(WinEvents->m_display);
 
   return ret;
 }
