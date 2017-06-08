@@ -557,7 +557,6 @@ bool CWinEventsX11Imp::MessagePump()
         memset(&newEvent, 0, sizeof(newEvent));
         newEvent.type = XBMC_MOUSEBUTTONDOWN;
         newEvent.button.button = (unsigned char)xevent.xbutton.button;
-        newEvent.button.state = XBMC_PRESSED;
         newEvent.button.x = (int16_t)xevent.xbutton.x;
         newEvent.button.y = (int16_t)xevent.xbutton.y;
         ret |= g_application.OnEvent(newEvent);
@@ -570,7 +569,6 @@ bool CWinEventsX11Imp::MessagePump()
         memset(&newEvent, 0, sizeof(newEvent));
         newEvent.type = XBMC_MOUSEBUTTONUP;
         newEvent.button.button = (unsigned char)xevent.xbutton.button;
-        newEvent.button.state = XBMC_RELEASED;
         newEvent.button.x = (int16_t)xevent.xbutton.x;
         newEvent.button.y = (int16_t)xevent.xbutton.y;
         ret |= g_application.OnEvent(newEvent);

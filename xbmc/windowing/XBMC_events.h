@@ -86,7 +86,6 @@ typedef struct XBMC_MouseButtonEvent {
 	unsigned char type;	/* XBMC_MOUSEBUTTONDOWN or XBMC_MOUSEBUTTONUP */
 	unsigned char which;	/* The mouse device index */
 	unsigned char button;	/* The mouse button index */
-	unsigned char state;	/* XBMC_PRESSED or XBMC_RELEASED */
 	uint16_t x, y;	/* The X/Y coordinates of the mouse at press time */
 } XBMC_MouseButtonEvent;
 
