@@ -49,6 +49,135 @@ typedef struct AddonToKodiFuncTable_kodi_gui_control_button
   char* (*get_label2)(void* kodiBase, void* handle);
 } AddonToKodiFuncTable_kodi_gui_control_button;
 
+typedef struct AddonToKodiFuncTable_kodi_gui_control_edit
+{
+  void (*set_visible)(void* kodiBase, void* handle, bool visible);
+  void (*set_enabled)(void* kodiBase, void* handle, bool enabled);
+  void (*set_label)(void* kodiBase, void* handle, const char* label);
+  char* (*get_label)(void* kodiBase, void* handle);
+  void (*set_text)(void* kodiBase, void* handle, const char* text);
+  char* (*get_text)(void* kodiBase, void* handle);
+  void (*set_cursor_position)(void* kodiBase, void* handle, unsigned int position);
+  unsigned int (*get_cursor_position)(void* kodiBase, void* handle);
+  void (*set_input_type)(void* kodiBase, void* handle, int type, const char* heading);
+} AddonToKodiFuncTable_kodi_gui_control_edit;
+
+typedef struct AddonToKodiFuncTable_kodi_gui_control_fade_label
+{
+  void (*set_visible)(void* kodiBase, void* handle, bool visible);
+  void (*add_label)(void* kodiBase, void* handle, const char* text);
+  char* (*get_label)(void* kodiBase, void* handle);
+  void (*set_scrolling)(void* kodiBase, void* handle, bool scroll);
+  void (*reset)(void* kodiBase, void* handle);
+} AddonToKodiFuncTable_kodi_gui_control_fade_label;
+
+typedef struct AddonToKodiFuncTable_kodi_gui_control_image
+{
+  void (*set_visible)(void* kodiBase, void* handle, bool visible);
+  void (*set_filename)(void* kodiBase, void* handle, const char* filename, bool use_cache);
+  void (*set_color_diffuse)(void* kodiBase, void* handle, uint32_t color_diffuse);
+} AddonToKodiFuncTable_kodi_gui_control_image;
+
+typedef struct AddonToKodiFuncTable_kodi_gui_control_label
+{
+  void (*set_visible)(void* kodiBase, void* handle, bool visible);
+  void (*set_label)(void* kodiBase, void* handle, const char* text);
+  char* (*get_label)(void* kodiBase, void* handle);
+} AddonToKodiFuncTable_kodi_gui_control_label;
+
+typedef struct AddonToKodiFuncTable_kodi_gui_control_progress
+{
+  void (*set_visible)(void* kodiBase, void* handle, bool visible);
+  void (*set_percentage)(void* kodiBase, void* handle, float percent);
+  float (*get_percentage)(void* kodiBase, void* handle);
+} AddonToKodiFuncTable_kodi_gui_control_progress;
+
+typedef struct AddonToKodiFuncTable_kodi_gui_control_radio_button
+{
+  void (*set_visible)(void* kodiBase, void* handle, bool visible);
+  void (*set_enabled)(void* kodiBase, void* handle, bool enabled);
+  void (*set_label)(void* kodiBase, void* handle, const char* text);
+  char* (*get_label)(void* kodiBase, void* handle);
+  void (*set_selected)(void* kodiBase, void* handle, bool selected);
+  bool (*is_selected)(void* kodiBase, void* handle);
+} AddonToKodiFuncTable_kodi_gui_control_radio_button;
+
+typedef struct AddonToKodiFuncTable_kodi_gui_control_rendering
+{
+  void (*set_callbacks)(void* kodiBase, void* handle, void* clienthandle,
+      bool    (*createCB)(void*,int,int,int,int,void*),
+      void    (*renderCB)(void*),
+      void    (*stopCB)(void*),
+      bool    (*dirtyCB)(void*));
+  void (*destroy)(void *kodiBase, void* handle);
+} AddonToKodiFuncTable_kodi_gui_control_rendering;
+
+typedef struct AddonToKodiFuncTable_kodi_gui_control_settings_slider
+{
+  void (*set_visible)(void* kodiBase, void* handle, bool visible);
+  void (*set_enabled)(void* kodiBase, void* handle, bool enabled);
+  void (*set_text)(void* kodiBase, void* handle, const char* label);
+  void (*reset)(void* kodiBase, void* handle);
+  void (*set_int_range)(void* kodiBase, void* handle, int start, int end);
+  void (*set_int_value)(void* kodiBase, void* handle, int value);
+  int (*get_int_value)(void* kodiBase, void* handle);
+  void (*set_int_interval)(void* kodiBase, void* handle, int interval);
+  void (*set_percentage)(void* kodiBase, void* handle, float percent);
+  float (*get_percentage)(void* kodiBase, void* handle);
+  void (*set_float_range)(void* kodiBase, void* handle, float start, float end);
+  void (*set_float_value)(void* kodiBase, void* handle, float value);
+  float (*get_float_value)(void* kodiBase, void* handle);
+  void (*set_float_interval)(void* kodiBase, void* handle, float interval);
+} AddonToKodiFuncTable_kodi_gui_control_settings_slider;
+
+typedef struct AddonToKodiFuncTable_kodi_gui_control_slider
+{
+  void (*set_visible)(void* kodiBase, void* handle, bool visible);
+  void (*set_enabled)(void* kodiBase, void* handle, bool enabled);
+  void (*reset)(void* kodiBase, void* handle);
+  char* (*get_description)(void* kodiBase, void* handle);
+  void (*set_int_range)(void* kodiBase, void* handle, int start, int end);
+  void (*set_int_value)(void* kodiBase, void* handle, int value);
+  int (*get_int_value)(void* kodiBase, void* handle);
+  void (*set_int_interval)(void* kodiBase, void* handle, int interval);
+  void (*set_percentage)(void* kodiBase, void* handle, float percent);
+  float (*get_percentage)(void* kodiBase, void* handle);
+  void (*set_float_range)(void* kodiBase, void* handle, float start, float end);
+  void (*set_float_value)(void* kodiBase, void* handle, float value);
+  float (*get_float_value)(void* kodiBase, void* handle);
+  void (*set_float_interval)(void* kodiBase, void* handle, float interval);
+} AddonToKodiFuncTable_kodi_gui_control_slider;
+
+typedef struct AddonToKodiFuncTable_kodi_gui_control_spin
+{
+  void (*set_visible)(void* kodiBase, void* handle, bool visible);
+  void (*set_enabled)(void* kodiBase, void* handle, bool enabled);
+  void (*set_text)(void* kodiBase, void* handle, const char* text);
+  void (*reset)(void* kodiBase, void* handle);
+  void (*set_type)(void* kodiBase, void* handle, int type);
+  void (*add_string_label)(void* kodiBase, void* handle, const char* label, const char* value);
+  void (*set_string_value)(void* kodiBase, void* handle, const char* value);
+  char* (*get_string_value)(void* kodiBase, void* handle);
+  void (*add_int_label)(void* kodiBase, void* handle, const char* label, int value);
+  void (*set_int_range)(void* kodiBase, void* handle, int start, int end);
+  void (*set_int_value)(void* kodiBase, void* handle, int value);
+  int (*get_int_value)(void* kodiBase, void* handle);
+  void (*set_float_range)(void* kodiBase, void* handle, float start, float end);
+  void (*set_float_value)(void* kodiBase, void* handle, float value);
+  float (*get_float_value)(void* kodiBase, void* handle);
+  void (*set_float_interval)(void* kodiBase, void* handle, float interval);
+} AddonToKodiFuncTable_kodi_gui_control_spin;
+
+typedef struct AddonToKodiFuncTable_kodi_gui_control_text_box
+{
+  void (*set_visible)(void* kodiBase, void* handle, bool visible);
+  void (*reset)(void* kodiBase, void* handle);
+  void (*set_text)(void* kodiBase, void* handle, const char* text);
+  char* (*get_text)(void* kodiBase, void* handle);
+  void (*scroll)(void* kodiBase, void* handle, unsigned int scroll);
+  void (*set_auto_scrolling)(void* kodiBase, void* handle, int delay, int time, int repeat);
+} AddonToKodiFuncTable_kodi_gui_control_text_box;
+
 typedef struct AddonToKodiFuncTable_kodi_gui_dialogContextMenu
 {
   int (*open)(void* kodiBase, const char *heading, const char *entries[], unsigned int size);
@@ -226,12 +355,54 @@ typedef struct AddonToKodiFuncTable_kodi_gui_window
 
   /* GUI control access functions */
   void* (*get_control_button)(void* kodiBase, void* handle, int control_id);
+  void* (*get_control_edit)(void* kodiBase, void* handle, int control_id);
+  void* (*get_control_fade_label)(void* kodiBase, void* handle, int control_id);
+  void* (*get_control_image)(void* kodiBase, void* handle, int control_id);
+  void* (*get_control_label)(void* kodiBase, void* handle, int control_id);
+  void* (*get_control_progress)(void* kodiBase, void* handle, int control_id);
+  void* (*get_control_radio_button)(void* kodiBase, void* handle, int control_id);
+  void* (*get_control_render_addon)(void* kodiBase, void* handle, int control_id);
+  void* (*get_control_settings_slider)(void* kodiBase, void* handle, int control_id);
+  void* (*get_control_slider)(void* kodiBase, void* handle, int control_id);
+  void* (*get_control_spin)(void* kodiBase, void* handle, int control_id);
+  void* (*get_control_text_box)(void* kodiBase, void* handle, int control_id);
+  void* (*get_control_dummy1)(void* kodiBase, void* handle, int control_id);
+  void* (*get_control_dummy2)(void* kodiBase, void* handle, int control_id);
+  void* (*get_control_dummy3)(void* kodiBase, void* handle, int control_id);
+  void* (*get_control_dummy4)(void* kodiBase, void* handle, int control_id);
+  void* (*get_control_dummy5)(void* kodiBase, void* handle, int control_id);
+  void* (*get_control_dummy6)(void* kodiBase, void* handle, int control_id);
+  void* (*get_control_dummy7)(void* kodiBase, void* handle, int control_id);
+  void* (*get_control_dummy8)(void* kodiBase, void* handle, int control_id);
+  void* (*get_control_dummy9)(void* kodiBase, void* handle, int control_id);
+  void* (*get_control_dummy10)(void* kodiBase, void* handle, int control_id); /* This and above used to add new get_control_* functions */
 } AddonToKodiFuncTable_kodi_gui_window;
 
 typedef struct AddonToKodiFuncTable_kodi_gui
 {
   AddonToKodiFuncTable_kodi_gui_general* general;
   AddonToKodiFuncTable_kodi_gui_control_button* control_button;
+  AddonToKodiFuncTable_kodi_gui_control_edit* control_edit;
+  AddonToKodiFuncTable_kodi_gui_control_fade_label* control_fade_label;
+  AddonToKodiFuncTable_kodi_gui_control_label* control_label;
+  AddonToKodiFuncTable_kodi_gui_control_image* control_image;
+  AddonToKodiFuncTable_kodi_gui_control_progress* control_progress;
+  AddonToKodiFuncTable_kodi_gui_control_radio_button* control_radio_button;
+  AddonToKodiFuncTable_kodi_gui_control_rendering* control_rendering;
+  AddonToKodiFuncTable_kodi_gui_control_settings_slider* control_settings_slider;
+  AddonToKodiFuncTable_kodi_gui_control_slider* control_slider;
+  AddonToKodiFuncTable_kodi_gui_control_spin* control_spin;
+  AddonToKodiFuncTable_kodi_gui_control_text_box* control_text_box;
+  void* control_dummy1;
+  void* control_dummy2;
+  void* control_dummy3;
+  void* control_dummy4;
+  void* control_dummy5;
+  void* control_dummy6;
+  void* control_dummy7;
+  void* control_dummy8;
+  void* control_dummy9;
+  void* control_dummy10; /* This and above used to add new controls */
   AddonToKodiFuncTable_kodi_gui_dialogContextMenu* dialogContextMenu;
   AddonToKodiFuncTable_kodi_gui_dialogExtendedProgress* dialogExtendedProgress;
   AddonToKodiFuncTable_kodi_gui_dialogFileBrowser* dialogFileBrowser;
@@ -242,6 +413,16 @@ typedef struct AddonToKodiFuncTable_kodi_gui
   AddonToKodiFuncTable_kodi_gui_dialogSelect* dialogSelect;
   AddonToKodiFuncTable_kodi_gui_dialogTextViewer* dialogTextViewer;
   AddonToKodiFuncTable_kodi_gui_dialogYesNo* dialogYesNo;
+  void* dialog_dummy1;
+  void* dialog_dummy2;
+  void* dialog_dummy3;
+  void* dialog_dummy4;
+  void* dialog_dummy5;
+  void* dialog_dummy6;
+  void* dialog_dummy7;
+  void* dialog_dummy8;
+  void* dialog_dummy9;
+  void* dialog_dummy10; /* This and above used to add new dialogs */
   AddonToKodiFuncTable_kodi_gui_listItem* listItem;
   AddonToKodiFuncTable_kodi_gui_window* window;
 } AddonToKodiFuncTable_kodi_gui;
