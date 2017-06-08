@@ -205,7 +205,7 @@ TEST_F(TestCharsetConverter, utf8To_UTF16LE)
 //{
 //  refstra1 = "ｔｅｓｔ＿ｕｔｆ８Ｔｏ：＿ｃｈａｒｓｅｔ＿ＵＴＦ－３２ＬＥ，＿"
 //#ifdef TARGET_DARWIN
-///* OSX has it's own 'special' utf-8 charset which we use (see UTF8_SOURCE in CharsetConverter.cpp)
+///* OSX has its own 'special' utf-8 charset which we use (see UTF8_SOURCE in CharsetConverter.cpp)
 //   which is basically NFD (decomposed) utf-8.  The trouble is, it fails on the COW FACE and MOUSE FACE
 //   characters for some reason (possibly anything over 0x100000, or maybe there's a decomposed form of these
 //   that I couldn't find???)  If UTF8_SOURCE is switched to UTF-8 then this test would pass as-is, but then

@@ -125,7 +125,7 @@ void CRendererMediaCodecSurface::FlipPage(int source)
 
   CDVDMediaCodecInfo *mci = static_cast<CDVDMediaCodecInfo *>(m_buffers[m_iRenderBuffer].hwPic);
 
-  // Android SurfaceFlinger has it's own clock, so we can release frames early.
+  // Android SurfaceFlinger has its own clock, so we can release frames early.
   // Benefit of this place is that it is called from render-thread and not
   // affected by gui stalls when opening overlay dialogs
   if (mci)

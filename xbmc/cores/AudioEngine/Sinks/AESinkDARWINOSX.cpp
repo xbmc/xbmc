@@ -150,7 +150,7 @@ CAESinkDARWINOSX::CAESinkDARWINOSX()
 {
   // By default, kAudioHardwarePropertyRunLoop points at the process's main thread on SnowLeopard,
   // If your process lacks such a run loop, you can set kAudioHardwarePropertyRunLoop to NULL which
-  // tells the HAL to run it's own thread for notifications (which was the default prior to SnowLeopard).
+  // tells the HAL to run its own thread for notifications (which was the default prior to SnowLeopard).
   // So tell the HAL to use its own thread for similar behavior under all supported versions of OSX.
   CFRunLoopRef theRunLoop = NULL;
   AudioObjectPropertyAddress theAddress = {

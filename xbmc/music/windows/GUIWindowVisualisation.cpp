@@ -113,7 +113,7 @@ bool CGUIWindowVisualisation::OnAction(const CAction &action)
       g_infoManager.SetShowInfo(true);
     }
     break;
-    //! @todo These should be mapped to it's own function - at the moment it's overriding
+    //! @todo These should be mapped to its own function - at the moment it's overriding
     //! the global action of fastforward/rewind and OSD.
 /*  case KEY_BUTTON_Y:
     g_application.m_CdgParser.Pause();

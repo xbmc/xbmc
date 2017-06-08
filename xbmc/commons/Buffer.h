@@ -140,7 +140,7 @@ namespace XbmcCommons
      * shares the underlying data buffer with the Buffer it is a copy
      * of. Changes made to the data through this buffer will be seen
      * in the source buffer and vice/vrs. However, each buffer maintains
-     * it's own indexing.
+     * its own indexing.
      */
     inline Buffer(const Buffer& buf) : bufferRef(buf.bufferRef), buffer(buf.buffer), 
       mposition(buf.mposition), mcapacity(buf.mcapacity), mlimit(buf.mlimit) { }
@@ -152,7 +152,7 @@ namespace XbmcCommons
      * shares the underlying data buffer with the Buffer it is a copy
      * of. Changes made to the data through this buffer will be seen
      * in the source buffer and vice/vrs. However, each buffer maintains
-     * it's own indexing.
+     * its own indexing.
      */
     inline Buffer& operator=(const Buffer& buf)
     {
