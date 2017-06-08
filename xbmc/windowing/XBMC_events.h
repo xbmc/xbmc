@@ -38,7 +38,6 @@ typedef enum {
        XBMC_MOUSEBUTTONDOWN,    /* Mouse button pressed */
        XBMC_MOUSEBUTTONUP,      /* Mouse button released */
        XBMC_QUIT,               /* User-requested quit */
-       XBMC_SYSWMEVENT,         /* System specific event */
        XBMC_VIDEORESIZE,        /* User resized video mode */
        XBMC_VIDEOMOVE,          /* User moved the window */
        XBMC_VIDEOEXPOSE,        /* Screen needs to be redrawn */
@@ -103,14 +102,6 @@ typedef struct XBMC_UserEvent {
 	void *data2;	/* User defined data pointer */
 } XBMC_UserEvent;
 
-/* If you want to use this event, you should include XBMC_syswm.h */
-struct XBMC_SysWMmsg;
-typedef struct XBMC_SysWMmsg XBMC_SysWMmsg;
-typedef struct XBMC_SysWMEvent {
-	unsigned char type;
-	XBMC_SysWMmsg *msg;
-} XBMC_SysWMEvent;
-
 /* Multimedia keys on keyboards / remotes are mapped to APPCOMMAND events */
 typedef struct XBMC_AppCommandEvent {
   unsigned char type; /* XBMC_APPCOMMAND */
@@ -143,7 +134,6 @@ typedef union XBMC_Event {
   XBMC_ExposeEvent expose;
   XBMC_QuitEvent quit;
   XBMC_UserEvent user;
-  XBMC_SysWMEvent syswm;
   XBMC_AppCommandEvent appcommand;
   XBMC_TouchEvent touch;
   XBMC_SetFocusEvent focus;
