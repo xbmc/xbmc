@@ -40,7 +40,7 @@ class CIRTranslator;
 
 struct CButtonAction
 {
-  int id;
+  unsigned int id;
   std::string strID; // needed for "ActivateWindow()" type actions
   unsigned int holdtimeMs;
 };
@@ -73,7 +73,6 @@ public:
   /// clears the maps
   void Clear();
 
-  static void GetActions(std::vector<std::string> &actionList);
   static void GetWindows(std::vector<std::string> &windowList);
 
   /*! \brief Finds out if a longpress mapping exists for this key
@@ -104,8 +103,6 @@ public:
    */
   CAction GetGlobalAction(const CKey &key);
 
-  static bool IsAnalog(int actionID);
-
   /*! \brief Translate between a window name and it's id
    \param window name of the window
    \return id of the window, or WINDOW_INVALID if not found
@@ -117,8 +114,6 @@ public:
    \return name of the window, or an empty string if not found
    */
   static std::string TranslateWindow(int window);
-
-  static bool TranslateActionString(const char *szAction, int &action);
 
   int TranslateLircRemoteString(const char* szDevice, const char *szButton);
 

@@ -21,8 +21,10 @@
 #include "system.h"
 #include "GUIAudioManager.h"
 #include "ServiceBroker.h"
-#include "input/Key.h"
+#include "input/ActionIDs.h"
+#include "input/ActionTranslator.h"
 #include "input/ButtonTranslator.h"
+#include "input/Key.h"
 #include "settings/lib/Setting.h"
 #include "threads/SingleLock.h"
 #include "utils/URIUtils.h"
@@ -279,10 +281,10 @@ bool CGUIAudioManager::Load()
     while (pAction)
     {
       TiXmlNode* pIdNode = pAction->FirstChild("name");
-      int id = 0;    // action identity
+      unsigned int id = ACTION_NONE;    // action identity
       if (pIdNode && pIdNode->FirstChild())
       {
-        CButtonTranslator::TranslateActionString(pIdNode->FirstChild()->Value(), id);
+        CActionTranslator::TranslateActionString(pIdNode->FirstChild()->Value(), id);
       }
 
       TiXmlNode* pFileNode = pAction->FirstChild("file");
@@ -290,7 +292,7 @@ bool CGUIAudioManager::Load()
       if (pFileNode && pFileNode->FirstChild())
         strFile += pFileNode->FirstChild()->Value();
 
-      if (id > 0 && !strFile.empty())
+      if (id != ACTION_NONE && !strFile.empty())
       {
         std::string filename = URIUtils::AddFileToFolder(m_strMediaDir, strFile);
         IAESound *sound = LoadSound(filename);

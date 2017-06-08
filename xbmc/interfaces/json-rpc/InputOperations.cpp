@@ -25,7 +25,7 @@
 #include "guilib/GUIWindow.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/GUIKeyboardFactory.h"
-#include "input/ButtonTranslator.h"
+#include "input/ActionTranslator.h"
 #include "input/Key.h"
 #include "utils/Variant.h"
 #include "input/XBMC_keyboard.h"
@@ -88,8 +88,8 @@ JSONRPC_STATUS CInputOperations::SendText(const std::string &method, ITransportL
 
 JSONRPC_STATUS CInputOperations::ExecuteAction(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  int action;
-  if (!CButtonTranslator::TranslateActionString(parameterObject["action"].asString().c_str(), action))
+  unsigned int action;
+  if (!CActionTranslator::TranslateActionString(parameterObject["action"].asString().c_str(), action))
     return InvalidParams;
 
   return SendAction(action);

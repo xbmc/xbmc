@@ -19,37 +19,13 @@
  */
 #pragma once
 
-#include <map>
-#include <memory>
 #include <string>
+#include <vector>
 
-class TiXmlNode;
-
-class CIRTranslator
+class CActionTranslator
 {
 public:
-  CIRTranslator() = default;
-
-  /*!
-   * \brief Loads Lircmap.xml/IRSSmap.xml
-   */
-  void Load();
-
-  /*!
-   * \brief Clears the map
-   */
-  void Clear();
-
-  unsigned int TranslateIRRemoteString(const char* szDevice, const char *szButton);
-
-  static uint32_t TranslateRemoteString(const char *szButton);
-  static uint32_t TranslateUniversalRemoteString(const char *szButton);
-
-private:
-  bool LoadIRMap(const std::string &irMapPath);
-  void MapRemote(TiXmlNode *pRemote, const char* szDevice);
-
-  using IRButtonMap = std::map<std::string, std::string>;
-
-  std::map<std::string, std::shared_ptr<IRButtonMap>> m_irRemotesMap;
+  static void GetActions(std::vector<std::string> &actionList);
+  static bool IsAnalog(unsigned int actionId);
+  static bool TranslateActionString(const char *szAction, unsigned int &actionId);
 };

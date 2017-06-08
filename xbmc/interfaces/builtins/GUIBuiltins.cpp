@@ -25,6 +25,8 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogNumeric.h"
 #include "filesystem/Directory.h"
+#include "input/ActionTranslator.h"
+#include "input/ButtonTranslator.h"
 #include "input/Key.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
@@ -51,8 +53,8 @@ using namespace KODI::MESSAGING;
 static int Action(const std::vector<std::string>& params)
 {
   // try translating the action from our ButtonTranslator
-  int actionID;
-  if (CButtonTranslator::TranslateActionString(params[0].c_str(), actionID))
+  unsigned int actionID;
+  if (CActionTranslator::TranslateActionString(params[0].c_str(), actionID))
   {
     int windowID = params.size() == 2 ? CButtonTranslator::TranslateWindow(params[1]) : WINDOW_INVALID;
     CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, windowID, -1, static_cast<void*>(new CAction(actionID)));

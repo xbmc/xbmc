@@ -30,7 +30,7 @@
 #include "Application.h"
 #include "ServiceBroker.h"
 #include "interfaces/builtins/Builtins.h"
-#include "input/ButtonTranslator.h"
+#include "input/ActionTranslator.h"
 #include "threads/SingleLock.h"
 #include "Zeroconf.h"
 #include "guilib/GUIAudioManager.h"
@@ -348,8 +348,8 @@ bool CEventServer::ExecuteNextAction()
 
       case AT_BUTTON:
         {
-          int actionID;
-          CButtonTranslator::TranslateActionString(actionEvent.actionName.c_str(), actionID);
+          unsigned int actionID;
+          CActionTranslator::TranslateActionString(actionEvent.actionName.c_str(), actionID);
           CAction action(actionID, 1.0f, 0.0f, actionEvent.actionName);
           g_audioManager.PlayActionSound(action);
           g_application.OnAction(action);

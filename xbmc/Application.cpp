@@ -58,6 +58,7 @@
 #ifdef HAS_PYTHON
 #include "interfaces/python/XBPython.h"
 #endif
+#include "input/ActionTranslator.h"
 #include "input/ButtonTranslator.h"
 #include "guilib/GUIAudioManager.h"
 #include "GUIPassword.h"
@@ -4396,8 +4397,8 @@ bool CApplication::ExecuteXBMCAction(std::string actionStr, const CGUIListItemPt
   else
   {
     // try translating the action from our ButtonTranslator
-    int actionID;
-    if (CButtonTranslator::TranslateActionString(actionStr.c_str(), actionID))
+    unsigned int actionID;
+    if (CActionTranslator::TranslateActionString(actionStr.c_str(), actionID))
     {
       OnAction(CAction(actionID));
       return true;
