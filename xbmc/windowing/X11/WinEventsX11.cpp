@@ -538,8 +538,6 @@ bool CWinEventsX11Imp::MessagePump()
         XBMC_Event newEvent;
         memset(&newEvent, 0, sizeof(newEvent));
         newEvent.type = XBMC_MOUSEMOTION;
-        newEvent.motion.xrel = (int16_t)xevent.xmotion.x_root;
-        newEvent.motion.yrel = (int16_t)xevent.xmotion.y_root;
         newEvent.motion.x = (int16_t)xevent.xmotion.x;
         newEvent.motion.y = (int16_t)xevent.xmotion.y;
         ret |= g_application.OnEvent(newEvent);

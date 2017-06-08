@@ -207,14 +207,10 @@ void MirHandlePointerEvent(MirPointerEvent const* pev)
 
       auto x  = mir_pointer_event_axis_value(pev, mir_pointer_axis_x);
       auto y  = mir_pointer_event_axis_value(pev, mir_pointer_axis_y);
-      auto dx = mir_pointer_event_axis_value(pev, mir_pointer_axis_relative_x);
-      auto dy = mir_pointer_event_axis_value(pev, mir_pointer_axis_relative_y);
 
       new_event.type = XBMC_MOUSEMOTION;
       new_event.motion.x = x;
       new_event.motion.y = y;
-      new_event.motion.xrel = dx;
-      new_event.motion.yrel = dy;
 
       CWinEvents::MessagePush(&new_event);
       break;

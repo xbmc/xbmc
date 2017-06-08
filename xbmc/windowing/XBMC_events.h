@@ -76,8 +76,6 @@ typedef struct XBMC_MouseMotionEvent {
 	unsigned char which;	/* The mouse device index */
 	unsigned char state;	/* The current button state */
 	uint16_t x, y;	/* The X/Y coordinates of the mouse */
-	int16_t xrel;	/* The relative motion in the X direction */
-	int16_t yrel;	/* The relative motion in the Y direction */
 } XBMC_MouseMotionEvent;
 
 /* Mouse button event structure */

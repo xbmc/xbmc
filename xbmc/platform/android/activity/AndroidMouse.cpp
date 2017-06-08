@@ -84,8 +84,6 @@ void CAndroidMouse::MouseMove(float x, float y)
   newEvent.motion.state = 0;
   newEvent.motion.x = x;
   newEvent.motion.y = y;
-  newEvent.motion.xrel = 0;
-  newEvent.motion.yrel = 0;
   CWinEvents::MessagePush(&newEvent);
 }
 

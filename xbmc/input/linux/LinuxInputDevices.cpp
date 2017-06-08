@@ -586,14 +586,10 @@ bool CLinuxInputDevice::RelEvent(const struct input_event& levt, XBMC_Event& dev
   {
   case REL_X:
     m_mouseX += levt.value;
-    devt.motion.xrel = levt.value;
-    devt.motion.yrel = 0;
     motion = true;
     break;
   case REL_Y:
     m_mouseY += levt.value;
-    devt.motion.xrel = 0;
-    devt.motion.yrel = levt.value;
     motion = true;
     break;
   case REL_WHEEL:
@@ -674,8 +670,6 @@ bool CLinuxInputDevice::AbsEvent(const struct input_event& levt, XBMC_Event& dev
   devt.motion.x = m_mouseX;
   devt.motion.y = m_mouseY;
   devt.motion.state = 0;
-  devt.motion.xrel = 0;
-  devt.motion.yrel = 0;
   devt.motion.which = m_deviceIndex;
 
   return true;
