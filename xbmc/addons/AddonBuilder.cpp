@@ -35,7 +35,7 @@
 #include "addons/Skin.h"
 #include "addons/UISoundsResource.h"
 #include "addons/VFSEntry.h"
-#include "addons/Visualisation.h"
+#include "addons/Visualization.h"
 #include "addons/Webinterface.h"
 #include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.h"
 #include "games/addons/GameClient.h"
@@ -124,10 +124,7 @@ std::shared_ptr<IAddon> CAddonBuilder::Build()
     case ADDON_SCRAPER_TVSHOWS:
     case ADDON_SCRAPER_LIBRARY:
       return CScraper::FromExtension(std::move(m_addonInfo), m_extPoint);
-#if defined(HAS_VISUALISATION)
     case ADDON_VIZ:
-      return std::make_shared<CVisualisation>(std::move(m_addonInfo));
-#endif
     case ADDON_SCREENSAVER:
       return std::make_shared<CAddonDll>(std::move(m_addonInfo));
 #ifdef HAS_PVRCLIENTS
@@ -202,10 +199,7 @@ AddonPtr CAddonBuilder::FromProps(CAddonInfo addonInfo)
       return AddonPtr(new CScraper(std::move(addonInfo)));
     case ADDON_SKIN:
       return AddonPtr(new CSkinInfo(std::move(addonInfo)));
-#if defined(HAS_VISUALISATION)
     case ADDON_VIZ:
-      return AddonPtr(new CVisualisation(std::move(addonInfo)));
-#endif
     case ADDON_SCREENSAVER:
       return AddonPtr(new CAddonDll(std::move(addonInfo)));
     case ADDON_PVRDLL:

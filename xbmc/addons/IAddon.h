@@ -37,8 +37,8 @@ namespace ADDON
 
   class IAddon;
   typedef std::shared_ptr<IAddon> AddonPtr;
-  class CVisualisation;
-  typedef std::shared_ptr<CVisualisation> VizPtr;
+  class CInstanceVisualization;
+  typedef std::shared_ptr<CInstanceVisualization> VizPtr;
   class CSkinInfo;
   typedef std::shared_ptr<CSkinInfo> SkinPtr;
   class CPluginSource;
