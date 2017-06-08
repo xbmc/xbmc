@@ -39,7 +39,7 @@ protected:
   // implementation of CGUIDialogSettingsBase
   void SetupView() override;
   std::string GetLocalizedString(uint32_t labelId) const override;
-  std::string GetSettingsLabel(std::shared_ptr<CSetting> setting) override;
+  std::string GetSettingsLabel(std::shared_ptr<ISetting> setting) override;
   int GetSettingLevel() const override;
   std::shared_ptr<CSettingSection> GetSection() override;
 
