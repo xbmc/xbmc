@@ -103,7 +103,10 @@ void CPictureInfoTag::Archive(CArchive& ar)
     ar << m_exifInfo.ThumbnailSizeOffset;
     ar << m_exifInfo.Whitebalance;
     ar << m_exifInfo.Width;
-    ar << m_dateTimeTaken;
+
+    // m_dateTimeTaken is private and we can't pass a ref to a private object
+    CDateTime tmp(m_dateTimeTaken);
+    ar << tmp;
 
     ar << std::string(m_iptcInfo.Author);
     ar << std::string(m_iptcInfo.Byline);
