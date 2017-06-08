@@ -1,0 +1,38 @@
+<%
+/*
+ *      Copyright (C) 2005-2013 Team XBMC
+ *      http://xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
+ *
+ */
+%>
+    if (PyUnicode_Check(${slarg}))
+    {
+      const char* str = PyUnicode_AsUTF8(${slarg});
+      size_t size = (size_t)PyUnicode_AsUTF8AndSize(${slarg});
+      ${api}.allocate(size);
+      ${api}.put(str,size);
+      ${api}.flip(); // prepare the buffer for reading from
+    }
+    else if (PyByteArray_Check(${slarg}))
+    {
+      size_t size = PyByteArray_Size(${slarg});
+      ${api}.allocate(size);
+      ${api}.put(PyByteArray_AsString(${slarg}),size);
+      ${api}.flip(); // prepare the buffer for reading from
+    }
+    else
+      throw XBMCAddon::WrongTypeException("argument \"%s\" for \"%s\" must be a string or a bytearray", "${api}", "${method.@name}");
