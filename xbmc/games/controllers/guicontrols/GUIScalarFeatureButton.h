@@ -33,7 +33,7 @@ namespace GAME
                             const CControllerFeature& feature,
                             unsigned int index);
 
-    virtual ~CGUIScalarFeatureButton(void) { }
+    virtual ~CGUIScalarFeatureButton() = default;
 
     // implementation of IFeatureButton
     virtual bool PromptForInput(CEvent& waitEvent) override;

@@ -64,7 +64,7 @@ namespace GAME
       uint32_t delta;
     };
 
-    typedef std::vector<DeltaPair> DeltaPairVector;
+    using DeltaPairVector = std::vector<DeltaPair>;
 
     struct MemoryFrame
     {

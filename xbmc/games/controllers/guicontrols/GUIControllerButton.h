@@ -32,7 +32,7 @@ namespace GAME
   public:
     CGUIControllerButton(const CGUIButtonControl& buttonControl, const std::string& label, unsigned int index);
 
-    virtual ~CGUIControllerButton(void) { }
+    virtual ~CGUIControllerButton() = default;
   };
 }
 }
