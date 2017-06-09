@@ -23,16 +23,14 @@
 
 #pragma once
 
-#include "utils/Observer.h"
 #include "XBMC_events.h"
 
-class IWinEvents : public Observer
+class IWinEvents
 {
   public:
     virtual       ~IWinEvents() {};
     virtual bool  MessagePump()   = 0;
     virtual void  MessagePush(XBMC_Event* ev) {};
-    virtual void  Notify(const Observable &obs, const ObservableMessage msg) {};
 };
 class CWinEvents
 {

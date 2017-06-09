@@ -29,6 +29,9 @@
 #include "input/MouseStat.h"
 #include "utils/log.h"
 #include "powermanagement/PowerManager.h"
+#include "peripherals/Peripherals.h"
+#include "ServiceBroker.h"
+
 
 bool CWinEventsLinux::m_initialized = false;
 CLinuxInputDevices CWinEventsLinux::m_devices;
@@ -45,13 +48,13 @@ void CWinEventsLinux::RefreshDevices()
 bool CWinEventsLinux::IsRemoteLowBattery()
 {
   return m_devices.IsRemoteLowBattery();
-  return false;
 }
 
 bool CWinEventsLinux::MessagePump()
 {
   if (!m_initialized)
   {
+    CServiceBroker::GetPeripherals().RegisterObserver(this);
     m_devices.InitAvailable();
     m_checkHotplug = std::unique_ptr<CLinuxInputDevicesCheckHotplugged>(new CLinuxInputDevicesCheckHotplugged(m_devices));
     m_initialized = true;

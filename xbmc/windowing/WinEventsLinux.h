@@ -23,10 +23,11 @@
 
 #pragma once
 #include <memory>
+#include "utils/Observer.h"
 #include "windowing/WinEvents.h"
 #include "input/linux/LinuxInputDevices.h"
 
-class CWinEventsLinux : public IWinEvents
+class CWinEventsLinux : public IWinEvents, public Observer
 {
 public:
   CWinEventsLinux();
