@@ -75,7 +75,7 @@ CAddon::CAddon(CAddonInfo addonInfo)
  */
 bool CAddon::HasSettings()
 {
-  return LoadSettings();
+  return LoadSettings(false);
 }
 
 bool CAddon::SettingsInitialized() const
@@ -135,7 +135,7 @@ bool CAddon::LoadSettings(bool bForce /* = false */)
 
 bool CAddon::HasUserSettings()
 {
-  if (!LoadSettings())
+  if (!LoadSettings(false))
     return false;
 
   return SettingsLoaded() && m_hasUserSettings;
@@ -209,7 +209,7 @@ void CAddon::SaveSettings(void)
 
 std::string CAddon::GetSetting(const std::string& key)
 {
-  if (key.empty() || !LoadSettings())
+  if (key.empty() || !LoadSettings(false))
     return ""; // no settings available
 
   auto setting = m_settings->GetSetting(key);
@@ -255,7 +255,7 @@ bool CAddon::GetSettingString(const std::string& key, std::string& value)
 
 void CAddon::UpdateSetting(const std::string& key, const std::string& value)
 {
-  if (key.empty() || !LoadSettings())
+  if (key.empty() || !LoadSettings(false))
     return;
 
   // try to get the setting

@@ -100,7 +100,7 @@ void CGUIControlGroup::Process(unsigned int currentTime, CDirtyRegionList &dirty
   CRect rect;
   for (auto *control : m_children)
   {
-    control->UpdateVisibility();
+    control->UpdateVisibility(nullptr);
     unsigned int oldDirty = dirtyregions.size();
     control->DoProcess(currentTime, dirtyregions);
     if (control->IsVisible() || (oldDirty != dirtyregions.size())) // visible or dirty (was visible?)

@@ -42,7 +42,7 @@ public:
   virtual bool Save(TiXmlNode *settings) const override;
   virtual void Clear() override;
 
-  virtual void OnSettingAction(std::shared_ptr<const CSetting> setting);
+  virtual void OnSettingAction(std::shared_ptr<const CSetting> setting) override;
   virtual bool OnSettingChanging(std::shared_ptr<const CSetting> setting) override;
   virtual bool OnSettingUpdate(std::shared_ptr<CSetting> setting, const char *oldSettingId, const TiXmlNode *oldSettingNode) override;
 

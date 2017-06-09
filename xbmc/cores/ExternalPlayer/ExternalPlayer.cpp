@@ -509,24 +509,12 @@ bool CExternalPlayer::HasAudio() const
   return false;
 }
 
-void CExternalPlayer::SwitchToNextLanguage()
-{
-}
-
-void CExternalPlayer::ToggleSubtitles()
-{
-}
-
 bool CExternalPlayer::CanSeek()
 {
   return false;
 }
 
 void CExternalPlayer::Seek(bool bPlus, bool bLargeStep, bool bChapterOverride)
-{
-}
-
-void CExternalPlayer::SwitchToNextAudioLanguage()
 {
 }
 
@@ -593,10 +581,6 @@ void CExternalPlayer::SetSpeed(float iSpeed)
 float CExternalPlayer::GetSpeed()
 {
   return m_speed;
-}
-
-void CExternalPlayer::ShowOSD(bool bOnoff)
-{
 }
 
 std::string CExternalPlayer::GetPlayerState()

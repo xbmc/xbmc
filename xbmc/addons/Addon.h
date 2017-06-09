@@ -232,7 +232,7 @@ protected:
    \return true if settings exist, false otherwise
    \sa LoadUserSettings, SaveSettings, HasSettings, HasUserSettings, GetSetting, UpdateSetting
    */
-  virtual bool LoadSettings(bool bForce = false);
+  bool LoadSettings(bool bForce);
 
   /*! \brief Load the user settings
    \return true if user settings exist, false otherwise

@@ -127,11 +127,6 @@ bool CXBMCTinyXML::SaveFile(const std::string& filename) const
   return false;
 }
 
-bool CXBMCTinyXML::Parse(const char *_data, TiXmlEncoding encoding)
-{
-  return Parse(std::string(_data), encoding);
-}
-
 bool CXBMCTinyXML::Parse(const std::string& data, const std::string& dataCharset)
 {
   m_SuggestedCharset = dataCharset;
@@ -262,7 +257,7 @@ bool CXBMCTinyXML::Test()
                   "http://api.themoviedb.org/3/movie/12244"
                   "?api_key=57983e31fb435df4df77afb854740ea9"
                   "&language=en&#x3f;&#x003F;&#0063;</url></details>");
-  doc.Parse(data.c_str());
+  doc.Parse(data, TIXML_DEFAULT_ENCODING);
   TiXmlNode *root = doc.RootElement();
   if (root && root->ValueStr() == "details")
   {

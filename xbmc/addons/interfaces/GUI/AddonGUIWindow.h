@@ -59,6 +59,7 @@ public:
   bool OnClick(int iItem, const std::string &player = "") override;
 
 protected:
+  using CGUIMediaWindow::Update;
   void Update();
   void GetContextButtons(int itemNumber, CContextButtons &buttons) override;
   void SetupShares() override;

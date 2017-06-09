@@ -415,7 +415,7 @@ ADDON_STATUS CAddonDll::TransferSettings()
 
   CLog::Log(LOGDEBUG, "Calling TransferSettings for: %s", Name().c_str());
 
-  LoadSettings();
+  LoadSettings(false);
 
   auto settings = GetSettings();
   if (settings != nullptr)
