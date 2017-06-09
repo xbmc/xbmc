@@ -441,6 +441,9 @@ public:
    */
   bool LoadSetting(const TiXmlNode *node, const std::string &settingId);
 
+  // overwrite (not override) from CSettingsBase
+  bool GetBool(const std::string& id) const;
+
 protected:
   // specializations of CSettingsBase
   void InitializeSettingTypes() override;

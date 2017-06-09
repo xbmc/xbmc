@@ -513,6 +513,15 @@ bool CSettings::LoadSetting(const TiXmlNode *node, const std::string &settingId)
   return GetSettingsManager()->LoadSetting(node, settingId);
 }
 
+bool CSettings::GetBool(const std::string& id) const
+{
+  // Backward compatibility (skins use this setting)
+  if (StringUtils::EqualsNoCase(id, "lookandfeel.enablemouse"))
+    return CSettingsBase::GetBool(CSettings::SETTING_INPUT_ENABLEMOUSE);
+
+  return CSettingsBase::GetBool(id);
+}
+
 bool CSettings::Initialize(const std::string &file)
 {
   CXBMCTinyXML xmlDoc;
