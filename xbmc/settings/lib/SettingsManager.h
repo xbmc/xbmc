@@ -58,7 +58,7 @@ public:
   CSettingsManager() = default;
   virtual ~CSettingsManager();
 
-  static const uint32_t Version = 1;
+  static const uint32_t Version = 2;
   static const uint32_t MinimumSupportedVersion = 0;
 
   // implementation of ISettingCreator
