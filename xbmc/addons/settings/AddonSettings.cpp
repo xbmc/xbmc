@@ -25,6 +25,7 @@
 #include "FileItem.h"
 #include "GUIInfoManager.h"
 #include "addons/Addon.h"
+#include "addons/settings/GUIDialogAddonSettings.h"
 #include "addons/settings/SettingUrlEncodedString.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
@@ -153,6 +154,7 @@ std::shared_ptr<CSetting> CAddonSettings::CreateSetting(const std::string &setti
 void CAddonSettings::OnSettingAction(std::shared_ptr<const CSetting> setting)
 {
   std::string actionData;
+  bool closeDialog = false;
 
   // check if it's an action setting
   if (setting->GetType() == SettingType::Action)
@@ -163,15 +165,23 @@ void CAddonSettings::OnSettingAction(std::shared_ptr<const CSetting> setting)
   }
 
   // check if the setting control's is a button and its format is action
-  if (actionData.empty() && setting->GetControl()->GetType() == "button" && setting->GetControl()->GetFormat() == "action")
+  if (setting->GetControl()->GetType() == "button" && setting->GetControl()->GetFormat() == "action")
   {
     auto controlButton = std::dynamic_pointer_cast<const CSettingControlButton>(setting->GetControl());
-    if (controlButton != nullptr && controlButton->HasActionData())
-      actionData = controlButton->GetActionData();
+    if (controlButton != nullptr)
+    {
+      if (actionData.empty() && controlButton->HasActionData())
+        actionData = controlButton->GetActionData();
+
+      closeDialog = controlButton->CloseDialog();
+    }
   }
 
   if (actionData.empty())
     return;
+
+  if (closeDialog)
+    CGUIDialogAddonSettings::SaveAndClose();
 
   KODI::MESSAGING::CApplicationMessenger::GetInstance().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, actionData);
 }
@@ -715,7 +725,12 @@ SettingPtr CAddonSettings::InitializeFromOldSettingAction(std::string settingId,
     setting = settingString;
   }
 
-  // TODO: option == "close"
+  // get any options
+  std::string option = XMLUtils::GetAttribute(settingElement, "option");
+  // handle the "close" option
+  if (StringUtils::EqualsNoCase(option, "close"))
+    control->SetCloseDialog(true);
+
   setting->SetControl(control);
 
   return setting;

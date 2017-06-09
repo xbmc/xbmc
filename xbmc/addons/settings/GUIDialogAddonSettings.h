@@ -32,6 +32,7 @@ public:
   virtual bool OnMessage(CGUIMessage &message);
 
   static bool ShowForAddon(const ADDON::AddonPtr &addon, bool saveToDisk = true);
+  static void SaveAndClose();
 
   std::string GetCurrentAddonID() const;
 
@@ -50,4 +51,5 @@ protected:
 
 private:
   ADDON::AddonPtr m_addon;
+  bool m_saveToDisk = false;
 };
