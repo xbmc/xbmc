@@ -1165,8 +1165,8 @@ SettingPtr CAddonSettings::InitializeFromOldSettingRangeOfNum(const std::string&
   // parse elements
   uint32_t elements = 2;
   settingElement->QueryUnsignedAttribute("elements", &elements);
-  if (elements > 0)
-    setting->SetStep((rangeEnd - rangeStart) / elements);
+  if (elements > 1)
+    setting->SetStep((rangeEnd - rangeStart) / (elements - 1));
 
   // parse valueformat
   int valueFormat = -1;
