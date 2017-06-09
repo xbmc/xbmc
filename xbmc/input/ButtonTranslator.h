@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2015 Team XBMC
+ *      Copyright (C) 2005-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -17,35 +17,25 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-
-#ifndef BUTTON_TRANSLATOR_H
-#define BUTTON_TRANSLATOR_H
-
 #pragma once
 
 #include <map>
+#include <set>
 #include <string>
+
 #include "system.h" // for HAS_EVENT_SERVER
+#include "Action.h"
 
 #ifdef HAS_EVENT_SERVER
 #include "network/EventClient.h"
 #endif
 
 class CKey;
-class CAction;
 class TiXmlNode;
-class CRegExp;
 class CCustomControllerTranslator;
 class CIRTranslator;
 class CTouchTranslator;
 
-struct CButtonAction
-{
-  unsigned int id;
-  std::string strID; // needed for "ActivateWindow()" type actions
-  unsigned int holdtimeMs;
-};
-///
 /// singleton class to map from buttons to actions
 /// Warning: _not_ threadsafe!
 class CButtonTranslator
@@ -57,9 +47,9 @@ class CButtonTranslator
 private:
   //private construction, and no assignments; use the provided singleton methods
   CButtonTranslator();
-  CButtonTranslator(const CButtonTranslator&);
-  CButtonTranslator const& operator=(CButtonTranslator const&);
-  virtual ~CButtonTranslator();
+  CButtonTranslator(const CButtonTranslator&) = delete;
+  CButtonTranslator const& operator=(CButtonTranslator const&) = delete;
+  virtual ~CButtonTranslator() = default;
 
 public:
   ///access to singleton
@@ -71,6 +61,7 @@ public:
 
   /// loads Keymap.xml
   bool Load(bool AlwaysLoad = false);
+
   /// clears the maps
   void Clear();
 
@@ -109,27 +100,29 @@ public:
   bool TranslateTouchAction(int window, int touchAction, int touchPointers, int &action, std::string &actionString);
 
 private:
+  struct CButtonAction
+  {
+    unsigned int id;
+    std::string strID; // needed for "ActivateWindow()" type actions
+    unsigned int holdtimeMs;
+  };
+
   typedef std::multimap<uint32_t, CButtonAction> buttonMap; // our button map to fill in
 
   // m_translatorMap contains all mappings i.e. m_BaseMap + HID device mappings
   std::map<int, buttonMap> m_translatorMap;
+
   // m_deviceList contains the list of connected HID devices
-  std::list<std::string> m_deviceList;
+  std::set<std::string> m_deviceList;
 
-  int GetActionCode(int window, int action);
-  int GetActionCode(int window, const CKey &key, std::string &strAction) const;
+  unsigned int GetActionCode(int window, const CKey &key, std::string &strAction) const;
 
-  void MapWindowActions(TiXmlNode *pWindow, int wWindowID);
+  void MapWindowActions(const TiXmlNode *pWindow, int wWindowID);
   void MapAction(uint32_t buttonCode, const char *szAction, unsigned int holdtimeMs, buttonMap &map);
 
   bool LoadKeymap(const std::string &keymapPath);
-
-  bool m_Loaded;
 
   std::unique_ptr<CCustomControllerTranslator> m_customControllerTranslator;
   std::unique_ptr<CIRTranslator> m_irTranslator;
   std::unique_ptr<CTouchTranslator> m_touchTranslator;
 };
-
-#endif
-
