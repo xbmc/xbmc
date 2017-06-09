@@ -248,3 +248,16 @@ public:
 private:
   CGUILabelControl *m_pLabel;
 };
+
+class CGUIControlLabelSetting : public CGUIControlBaseSetting
+{
+public:
+  CGUIControlLabelSetting(CGUIButtonControl* pButton, int id, std::shared_ptr<CSetting> pSetting, ILocalizer* localizer);
+  virtual ~CGUIControlLabelSetting() = default;
+
+  CGUIControl* GetControl() override { return (CGUIControl*)m_pButton; }
+  void Clear() override { m_pButton = NULL; }
+
+private:
+  CGUIButtonControl *m_pButton;
+};

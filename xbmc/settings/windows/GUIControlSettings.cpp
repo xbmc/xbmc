@@ -1295,3 +1295,14 @@ CGUIControlGroupTitleSetting::CGUIControlGroupTitleSetting(CGUILabelControl *pLa
 
 CGUIControlGroupTitleSetting::~CGUIControlGroupTitleSetting()
 { }
+
+CGUIControlLabelSetting::CGUIControlLabelSetting(CGUIButtonControl *pButton, int id, std::shared_ptr<CSetting> pSetting, ILocalizer* localizer)
+  : CGUIControlBaseSetting(id, pSetting, localizer)
+{
+  m_pButton = pButton;
+  if (m_pButton == NULL)
+    return;
+
+  m_pButton->SetID(id);
+  Update();
+}

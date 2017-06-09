@@ -283,3 +283,13 @@ protected:
   bool m_separatorHidden = false;
   bool m_separatorBelowLabel = true;
 };
+
+class CSettingControlLabel : public ISettingControl
+{
+public:
+  CSettingControlLabel();
+  virtual ~CSettingControlLabel() = default;
+
+  // implementation of ISettingControl
+  virtual std::string GetType() const override { return "label"; }
+};

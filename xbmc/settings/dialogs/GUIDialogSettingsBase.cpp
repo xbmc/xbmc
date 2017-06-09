@@ -712,6 +712,16 @@ CGUIControl* CGUIDialogSettingsBase::AddSetting(std::shared_ptr<CSetting> pSetti
     ((CGUISettingsSliderControl *)pControl)->SetText(label);
     pSettingControl.reset(new CGUIControlRangeSetting((CGUISettingsSliderControl *)pControl, iControlID, pSetting, this));
   }
+  else if (controlType == "label")
+  {
+    if (m_pOriginalButton != NULL)
+      pControl = new CGUIButtonControl(*m_pOriginalButton);
+    if (pControl == NULL)
+      return NULL;
+
+    ((CGUIButtonControl *)pControl)->SetLabel(label);
+    pSettingControl.reset(new CGUIControlLabelSetting((CGUIButtonControl *)pControl, iControlID, pSetting, this));
+  }
   else
     return NULL;
 
