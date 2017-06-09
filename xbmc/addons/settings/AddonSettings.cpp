@@ -499,7 +499,7 @@ bool CAddonSettings::InitializeFromOldSettingDefinitions(const CXBMCTinyXML& doc
         if (settingType == "action")
         {
           setting = InitializeFromOldSettingAction(settingId, settingElement, defaultValue);
-          actionSettings.insert(settingId);
+          actionSettings.insert(setting->GetId());
         }
         else
           setting = InitializeFromOldSettingLabel();
