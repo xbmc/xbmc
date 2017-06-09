@@ -26,6 +26,7 @@
 #include "ActionTranslator.h"
 #include "CustomControllerTranslator.h"
 #include "IRTranslator.h"
+#include "MouseTranslator.h"
 #include "TouchTranslator.h"
 #include "WindowTranslator.h"
 #include "FileItem.h"
@@ -33,7 +34,6 @@
 #include "guilib/WindowIDs.h"
 #include "input/joysticks/JoystickIDs.h"
 #include "input/Key.h"
-#include "input/MouseStat.h"
 #include "input/XBMC_keytable.h"
 #include "Util.h"
 #include "utils/log.h"
@@ -48,25 +48,6 @@ typedef struct
   const char* name;
   int action;
 } ActionMapping;
-
-static const ActionMapping mousekeys[] =
-{
-    { "click"                    , KEY_MOUSE_CLICK },
-    { "leftclick"                , KEY_MOUSE_CLICK },
-    { "rightclick"               , KEY_MOUSE_RIGHTCLICK },
-    { "middleclick"              , KEY_MOUSE_MIDDLECLICK },
-    { "doubleclick"              , KEY_MOUSE_DOUBLE_CLICK },
-    { "longclick"                , KEY_MOUSE_LONG_CLICK },
-    { "wheelup"                  , KEY_MOUSE_WHEEL_UP },
-    { "wheeldown"                , KEY_MOUSE_WHEEL_DOWN },
-    { "mousemove"                , KEY_MOUSE_MOVE },
-    { "mousedrag"                , KEY_MOUSE_DRAG },
-    { "mousedragstart"           , KEY_MOUSE_DRAG_START },
-    { "mousedragend"             , KEY_MOUSE_DRAG_END },
-    { "mouserdrag"               , KEY_MOUSE_RDRAG },
-    { "mouserdragstart"          , KEY_MOUSE_RDRAG_START },
-    { "mouserdragend"            , KEY_MOUSE_RDRAG_END }
-};
 
 #ifdef TARGET_WINDOWS
 static const ActionMapping appcommands[] =
@@ -533,7 +514,7 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, int windowID)
         else if (type == "keyboard")
             buttonCode = TranslateKeyboardButton(pButton);
         else if (type == "mouse")
-            buttonCode = TranslateMouseCommand(pButton);
+            buttonCode = CMouseTranslator::TranslateMouseCommand(pButton);
         else if (type == "appcommand")
             buttonCode = TranslateAppCommand(pButton->Value());
         else if (type == "joystick")
@@ -726,42 +707,6 @@ uint32_t CButtonTranslator::TranslateAppCommand(const char *szButton)
 #endif
 
   return 0;
-}
-
-uint32_t CButtonTranslator::TranslateMouseCommand(TiXmlElement *pButton)
-{
-  uint32_t buttonId = 0;
-
-  if (pButton)
-  {
-    std::string szKey = pButton->ValueStr();
-    if (!szKey.empty())
-    {
-      StringUtils::ToLower(szKey);
-      for (unsigned int i = 0; i < ARRAY_SIZE(mousekeys); i++)
-      {
-        if (szKey == mousekeys[i].name)
-        {
-          buttonId = mousekeys[i].action;
-          break;
-        }
-      }
-      if (!buttonId)
-      {
-        CLog::Log(LOGERROR, "Unknown mouse action (%s), skipping", pButton->Value());
-      }
-      else
-      {
-        int id = 0;
-        if ((pButton->QueryIntAttribute("id", &id) == TIXML_SUCCESS) && id>=0 && id<MOUSE_MAX_BUTTON)
-        {
-          buttonId += id;
-        }
-      }
-    }
-  }
-
-  return buttonId;
 }
 
 void CButtonTranslator::Clear()
