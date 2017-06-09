@@ -26,6 +26,7 @@
 #include "ActionTranslator.h"
 #include "AppTranslator.h"
 #include "CustomControllerTranslator.h"
+#include "GamepadTranslator.h"
 #include "IRTranslator.h"
 #include "MouseTranslator.h"
 #include "TouchTranslator.h"
@@ -471,7 +472,7 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, int windowID)
         unsigned int holdtimeMs = 0;
 
         if (type == "gamepad")
-            buttonCode = TranslateGamepadString(pButton->Value());
+            buttonCode = CGamepadTranslator::TranslateGamepadString(pButton->Value());
         else if (type == "remote")
             buttonCode = CIRTranslator::TranslateRemoteString(pButton->Value());
         else if (type == "universalremote")
@@ -536,45 +537,6 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, int windowID)
     }
   }
 
-}
-
-uint32_t CButtonTranslator::TranslateGamepadString(const char *szButton)
-{
-  if (!szButton) 
-    return 0;
-  uint32_t buttonCode = 0;
-  std::string strButton = szButton;
-  StringUtils::ToLower(strButton);
-  if (strButton == "a") buttonCode = KEY_BUTTON_A;
-  else if (strButton == "b") buttonCode = KEY_BUTTON_B;
-  else if (strButton == "x") buttonCode = KEY_BUTTON_X;
-  else if (strButton == "y") buttonCode = KEY_BUTTON_Y;
-  else if (strButton == "white") buttonCode = KEY_BUTTON_WHITE;
-  else if (strButton == "black") buttonCode = KEY_BUTTON_BLACK;
-  else if (strButton == "start") buttonCode = KEY_BUTTON_START;
-  else if (strButton == "back") buttonCode = KEY_BUTTON_BACK;
-  else if (strButton == "leftthumbbutton") buttonCode = KEY_BUTTON_LEFT_THUMB_BUTTON;
-  else if (strButton == "rightthumbbutton") buttonCode = KEY_BUTTON_RIGHT_THUMB_BUTTON;
-  else if (strButton == "leftthumbstick") buttonCode = KEY_BUTTON_LEFT_THUMB_STICK;
-  else if (strButton == "leftthumbstickup") buttonCode = KEY_BUTTON_LEFT_THUMB_STICK_UP;
-  else if (strButton == "leftthumbstickdown") buttonCode = KEY_BUTTON_LEFT_THUMB_STICK_DOWN;
-  else if (strButton == "leftthumbstickleft") buttonCode = KEY_BUTTON_LEFT_THUMB_STICK_LEFT;
-  else if (strButton == "leftthumbstickright") buttonCode = KEY_BUTTON_LEFT_THUMB_STICK_RIGHT;
-  else if (strButton == "rightthumbstick") buttonCode = KEY_BUTTON_RIGHT_THUMB_STICK;
-  else if (strButton == "rightthumbstickup") buttonCode = KEY_BUTTON_RIGHT_THUMB_STICK_UP;
-  else if (strButton == "rightthumbstickdown") buttonCode = KEY_BUTTON_RIGHT_THUMB_STICK_DOWN;
-  else if (strButton == "rightthumbstickleft") buttonCode = KEY_BUTTON_RIGHT_THUMB_STICK_LEFT;
-  else if (strButton == "rightthumbstickright") buttonCode = KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT;
-  else if (strButton == "lefttrigger") buttonCode = KEY_BUTTON_LEFT_TRIGGER;
-  else if (strButton == "righttrigger") buttonCode = KEY_BUTTON_RIGHT_TRIGGER;
-  else if (strButton == "leftanalogtrigger") buttonCode = KEY_BUTTON_LEFT_ANALOG_TRIGGER;
-  else if (strButton == "rightanalogtrigger") buttonCode = KEY_BUTTON_RIGHT_ANALOG_TRIGGER;
-  else if (strButton == "dpadleft") buttonCode = KEY_BUTTON_DPAD_LEFT;
-  else if (strButton == "dpadright") buttonCode = KEY_BUTTON_DPAD_RIGHT;
-  else if (strButton == "dpadup") buttonCode = KEY_BUTTON_DPAD_UP;
-  else if (strButton == "dpaddown") buttonCode = KEY_BUTTON_DPAD_DOWN;
-  else CLog::Log(LOGERROR, "Gamepad Translator: Can't find button %s", strButton.c_str());
-  return buttonCode;
 }
 
 uint32_t CButtonTranslator::TranslateKeyboardString(const char *szButton)

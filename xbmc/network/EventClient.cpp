@@ -27,6 +27,7 @@
 #include "EventPacket.h"
 #include "threads/SingleLock.h"
 #include "input/ButtonTranslator.h"
+#include "input/GamepadTranslator.h"
 #include "input/IRTranslator.h"
 #include <map>
 #include <queue>
@@ -77,7 +78,7 @@ void CEventButtonState::Load()
       }
       else if  ( m_mapName.compare("XG") == 0 ) // xbox gamepad map
       {
-        m_iKeyCode = CButtonTranslator::TranslateGamepadString( m_buttonName.c_str() );
+        m_iKeyCode = CGamepadTranslator::TranslateGamepadString( m_buttonName.c_str() );
       }
       else if  ( m_mapName.compare("R1") == 0 ) // xbox remote map
       {
