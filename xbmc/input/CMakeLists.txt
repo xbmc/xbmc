@@ -1,5 +1,6 @@
 set(SOURCES Action.cpp
             ActionTranslator.cpp
+            AppTranslator.cpp
             ButtonTranslator.cpp
             CustomControllerTranslator.cpp
             InertialScrollingHandler.cpp
@@ -22,6 +23,7 @@ set(SOURCES Action.cpp
 set(HEADERS Action.h
             ActionIDs.h
             ActionTranslator.h
+            AppTranslator.h
             ButtonTranslator.h
             CustomControllerTranslator.h
             InertialScrollingHandler.h
