@@ -296,8 +296,16 @@ bool CGUIControlSpinExSetting::OnClick()
       break;
 
     case SettingType::Number:
-      SetValid(std::static_pointer_cast<CSettingNumber>(m_pSetting)->SetValue(m_pSpin->GetFloatValue()));
+    {
+      auto pSettingNumber = std::static_pointer_cast<CSettingNumber>(m_pSetting);
+      const auto& controlFormat = m_pSetting->GetControl()->GetFormat();
+      if (controlFormat == "number")
+        SetValid(pSettingNumber->SetValue(m_pSpin->GetFloatValue()));
+      else
+        SetValid(pSettingNumber->SetValue(pSettingNumber->GetMinimum() + pSettingNumber->GetStep() * m_pSpin->GetValue()));
+
       break;
+    }
     
     case SettingType::String:
       SetValid(std::static_pointer_cast<CSettingString>(m_pSetting)->SetValue(m_pSpin->GetStringValue()));
@@ -352,6 +360,30 @@ void CGUIControlSpinExSetting::FillControl()
 
     if (m_pSetting->GetType() == SettingType::Integer)
       FillIntegerSettingControl();
+    else if (m_pSetting->GetType() == SettingType::Number)
+    {
+      std::shared_ptr<CSettingNumber> pSettingNumber = std::static_pointer_cast<CSettingNumber>(m_pSetting);
+      std::shared_ptr<const CSettingControlFormattedRange> control = std::static_pointer_cast<const CSettingControlFormattedRange>(m_pSetting->GetControl());
+      int index = 0;
+      int currentIndex = 0;
+      for (double value = pSettingNumber->GetMinimum(); value <= pSettingNumber->GetMaximum(); value += pSettingNumber->GetStep(), index++)
+      {
+        if (value == pSettingNumber->GetValue())
+          currentIndex = index;
+
+        std::string strLabel;
+        if (value == pSettingNumber->GetMinimum() && control->GetMinimumLabel() > -1)
+          strLabel = Localize(control->GetMinimumLabel());
+        else if (control->GetFormatLabel() > -1)
+          strLabel = StringUtils::Format(Localize(control->GetFormatLabel()).c_str(), value);
+        else
+          strLabel = StringUtils::Format(control->GetFormatString().c_str(), value);
+
+        m_pSpin->AddLabel(strLabel, index);
+      }
+
+      m_pSpin->SetValue(currentIndex);
+    }
     else if (m_pSetting->GetType() == SettingType::String)
     {
       StringSettingOptions options;
