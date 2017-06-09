@@ -26,7 +26,7 @@
 #include "addons/IAddon.h"
 #include "dbwrappers/DatabaseQuery.h"
 #include "input/ActionTranslator.h"
-#include "input/ButtonTranslator.h"
+#include "input/WindowTranslator.h"
 #include "interfaces/AnnouncementManager.h"
 #include "playlists/SmartPlayList.h"
 #include "settings/AdvancedSettings.h"
@@ -56,7 +56,7 @@ void CJSONRPC::Initialize()
   CJSONServiceDescription::AddEnum("Input.Action", enumList);
 
   enumList.clear();
-  CButtonTranslator::GetWindows(enumList);
+  CWindowTranslator::GetWindows(enumList);
   CJSONServiceDescription::AddEnum("GUI.Window", enumList);
 
   // filter-related enums

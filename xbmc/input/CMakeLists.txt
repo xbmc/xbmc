@@ -15,6 +15,7 @@ set(SOURCES Action.cpp
             KeyboardStat.cpp
             MouseStat.cpp
             TouchTranslator.cpp
+            WindowTranslator.cpp
             XBMC_keytable.cpp)
 
 set(HEADERS Action.h
@@ -36,6 +37,7 @@ set(HEADERS Action.h
             KeyboardStat.h
             MouseStat.h
             TouchTranslator.h
+            WindowTranslator.h
             XBIRRemote.h
             XBMC_keyboard.h
             XBMC_keysym.h

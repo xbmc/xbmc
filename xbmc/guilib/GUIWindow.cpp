@@ -31,7 +31,7 @@
 #include "utils/log.h"
 #include "threads/SingleLock.h"
 #include "utils/TimeUtils.h"
-#include "input/ButtonTranslator.h"
+#include "input/WindowTranslator.h"
 #include "utils/XMLUtils.h"
 #include "GUIAudioManager.h"
 #include "Application.h"
@@ -210,7 +210,7 @@ bool CGUIWindow::Load(TiXmlElement *pRootElement)
     std::string strValue = pChild->Value();
     if (strValue == "previouswindow" && pChild->FirstChild())
     {
-      m_previousWindow = CButtonTranslator::TranslateWindow(pChild->FirstChild()->Value());
+      m_previousWindow = CWindowTranslator::TranslateWindow(pChild->FirstChild()->Value());
     }
     else if (strValue == "defaultcontrol" && pChild->FirstChild())
     {

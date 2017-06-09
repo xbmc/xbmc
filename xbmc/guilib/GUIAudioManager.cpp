@@ -23,9 +23,10 @@
 #include "ServiceBroker.h"
 #include "input/ActionIDs.h"
 #include "input/ActionTranslator.h"
-#include "input/ButtonTranslator.h"
 #include "input/Key.h"
+#include "input/WindowTranslator.h"
 #include "settings/lib/Setting.h"
+#include "settings/Settings.h"
 #include "threads/SingleLock.h"
 #include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML.h"
@@ -318,7 +319,7 @@ bool CGUIAudioManager::Load()
       if (pIdNode)
       {
         if (pIdNode->FirstChild())
-          id = CButtonTranslator::TranslateWindow(pIdNode->FirstChild()->Value());
+          id = CWindowTranslator::TranslateWindow(pIdNode->FirstChild()->Value());
       }
 
       CWindowSounds sounds;

@@ -25,7 +25,6 @@
 
 #include <map>
 #include <string>
-#include <vector>
 #include "system.h" // for HAS_EVENT_SERVER
 
 #ifdef HAS_EVENT_SERVER
@@ -75,8 +74,6 @@ public:
   /// clears the maps
   void Clear();
 
-  static void GetWindows(std::vector<std::string> &windowList);
-
   /*! \brief Finds out if a longpress mapping exists for this key
    \param window id of the current window
    \param key to search a mapping for
@@ -105,18 +102,6 @@ public:
    */
   CAction GetGlobalAction(const CKey &key);
 
-  /*! \brief Translate between a window name and it's id
-   \param window name of the window
-   \return id of the window, or WINDOW_INVALID if not found
-   */
-  static int TranslateWindow(const std::string &window);
-
-  /*! \brief Translate between a window id and it's name
-   \param window id of the window
-   \return name of the window, or an empty string if not found
-   */
-  static std::string TranslateWindow(int window);
-
   int TranslateLircRemoteString(const char* szDevice, const char *szButton);
 
   bool TranslateCustomControllerString(int windowId, const std::string& controllerName, int buttonId, int& action, std::string& strAction);
@@ -133,7 +118,6 @@ private:
 
   int GetActionCode(int window, int action);
   int GetActionCode(int window, const CKey &key, std::string &strAction) const;
-  int GetFallbackWindow(int windowID);
 
   static uint32_t TranslateGamepadString(const char *szButton);
   static uint32_t TranslateJoystickCommand(const TiXmlElement *pButton, const std::string& controllerId, unsigned int& holdtimeMs);
