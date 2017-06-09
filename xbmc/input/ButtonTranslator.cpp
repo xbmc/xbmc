@@ -28,6 +28,7 @@
 #include "CustomControllerTranslator.h"
 #include "GamepadTranslator.h"
 #include "IRTranslator.h"
+#include "KeyboardTranslator.h"
 #include "MouseTranslator.h"
 #include "TouchTranslator.h"
 #include "WindowTranslator.h"
@@ -36,7 +37,6 @@
 #include "guilib/WindowIDs.h"
 #include "input/joysticks/JoystickIDs.h"
 #include "input/Key.h"
-#include "input/XBMC_keytable.h"
 #include "Util.h"
 #include "utils/log.h"
 #include "utils/RegExp.h"
@@ -478,7 +478,7 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, int windowID)
         else if (type == "universalremote")
             buttonCode = CIRTranslator::TranslateUniversalRemoteString(pButton->Value());
         else if (type == "keyboard")
-            buttonCode = TranslateKeyboardButton(pButton);
+            buttonCode = CKeyboardTranslator::TranslateKeyboardButton(pButton);
         else if (type == "mouse")
             buttonCode = CMouseTranslator::TranslateMouseCommand(pButton);
         else if (type == "appcommand")
@@ -537,87 +537,6 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, int windowID)
     }
   }
 
-}
-
-uint32_t CButtonTranslator::TranslateKeyboardString(const char *szButton)
-{
-  uint32_t buttonCode = 0;
-  XBMCKEYTABLE keytable;
-
-  // Look up the key name
-  if (KeyTableLookupName(szButton, &keytable))
-  {
-    buttonCode = keytable.vkey;
-  }
-
-  // The lookup failed i.e. the key name wasn't found
-  else
-  {
-    CLog::Log(LOGERROR, "Keyboard Translator: Can't find button %s", szButton);
-  }
-
-  buttonCode |= KEY_VKEY;
-
-  return buttonCode;
-}
-
-uint32_t CButtonTranslator::TranslateKeyboardButton(TiXmlElement *pButton)
-{
-  uint32_t button_id = 0;
-  const char *szButton = pButton->Value();
-
-  if (!szButton) 
-    return 0;
-  const std::string strKey = szButton;
-  if (strKey == "key")
-  {
-    std::string strID;
-    if (pButton->QueryValueAttribute("id", &strID) == TIXML_SUCCESS)
-    {
-      const char *str = strID.c_str();
-      char *endptr;
-      long int id = strtol(str, &endptr, 0);
-      if (endptr - str != (int)strlen(str) || id <= 0 || id > 0x00FFFFFF)
-        CLog::Log(LOGDEBUG, "%s - invalid key id %s", __FUNCTION__, strID.c_str());
-      else
-        button_id = (uint32_t) id;
-    }
-    else
-      CLog::Log(LOGERROR, "Keyboard Translator: `key' button has no id");
-  }
-  else
-    button_id = TranslateKeyboardString(szButton);
-
-  // Process the ctrl/shift/alt modifiers
-  std::string strMod;
-  if (pButton->QueryValueAttribute("mod", &strMod) == TIXML_SUCCESS)
-  {
-    StringUtils::ToLower(strMod);
-
-    std::vector<std::string> modArray = StringUtils::Split(strMod, ",");
-    for (std::vector<std::string>::const_iterator i = modArray.begin(); i != modArray.end(); ++i)
-    {
-      std::string substr = *i;
-      StringUtils::Trim(substr);
-
-      if (substr == "ctrl" || substr == "control")
-        button_id |= CKey::MODIFIER_CTRL;
-      else if (substr == "shift")
-        button_id |= CKey::MODIFIER_SHIFT;
-      else if (substr == "alt")
-        button_id |= CKey::MODIFIER_ALT;
-      else if (substr == "super" || substr == "win")
-        button_id |= CKey::MODIFIER_SUPER;
-      else if (substr == "meta" || substr == "cmd")
-        button_id |= CKey::MODIFIER_META;
-      else if (substr == "longpress")
-        button_id |= CKey::MODIFIER_LONG;
-      else
-        CLog::Log(LOGERROR, "Keyboard Translator: Unknown key modifier %s in %s", substr.c_str(), strMod.c_str());
-     }
-  }
-
-  return button_id;
 }
 
 void CButtonTranslator::Clear()

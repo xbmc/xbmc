@@ -121,9 +121,6 @@ private:
 
   static uint32_t TranslateJoystickCommand(const TiXmlElement *pButton, const std::string& controllerId, unsigned int& holdtimeMs);
 
-  static uint32_t TranslateKeyboardString(const char *szButton);
-  static uint32_t TranslateKeyboardButton(TiXmlElement *pButton);
-
   void MapWindowActions(TiXmlNode *pWindow, int wWindowID);
   void MapAction(uint32_t buttonCode, const char *szAction, unsigned int holdtimeMs, buttonMap &map);
 

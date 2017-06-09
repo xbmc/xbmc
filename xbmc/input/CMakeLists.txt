@@ -15,6 +15,7 @@ set(SOURCES Action.cpp
             KeyboardLayout.cpp
             KeyboardLayoutManager.cpp
             KeyboardStat.cpp
+            KeyboardTranslator.cpp
             MouseStat.cpp
             MouseTranslator.cpp
             TouchTranslator.cpp
@@ -40,6 +41,7 @@ set(HEADERS Action.h
             KeyboardLayout.h
             KeyboardLayoutManager.h
             KeyboardStat.h
+            KeyboardTranslator.h
             MouseStat.h
             MouseTranslator.h
             TouchTranslator.h

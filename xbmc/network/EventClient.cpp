@@ -29,6 +29,7 @@
 #include "input/ButtonTranslator.h"
 #include "input/GamepadTranslator.h"
 #include "input/IRTranslator.h"
+#include "input/KeyboardTranslator.h"
 #include <map>
 #include <queue>
 #include "filesystem/File.h"
@@ -74,7 +75,7 @@ void CEventButtonState::Load()
     {
       if ( m_mapName.compare("KB") == 0 ) // standard keyboard map
       {
-        m_iKeyCode = CButtonTranslator::TranslateKeyboardString( m_buttonName.c_str() );
+        m_iKeyCode = CKeyboardTranslator::TranslateKeyboardString( m_buttonName.c_str() );
       }
       else if  ( m_mapName.compare("XG") == 0 ) // xbox gamepad map
       {
