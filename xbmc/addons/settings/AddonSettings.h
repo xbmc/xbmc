@@ -118,6 +118,10 @@ namespace ADDON
     static void FileEnumSettingOptionsFiller(std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
 
     std::weak_ptr<const IAddon> m_addon;
+    // store these values so that we don't always have to access the weak pointer
+    const std::string m_addonId;
+    const std::string m_addonPath;
+    const std::string m_addonProfile;
 
     uint32_t m_unidentifiedSettingId;
     int m_unknownSettingLabelId;

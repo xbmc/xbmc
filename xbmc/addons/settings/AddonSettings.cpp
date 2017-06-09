@@ -139,6 +139,9 @@ namespace ADDON
 CAddonSettings::CAddonSettings(std::shared_ptr<const IAddon> addon)
   : CSettingsBase()
   , m_addon(addon)
+  , m_addonId(addon->ID())
+  , m_addonPath(addon->Path())
+  , m_addonProfile(addon->Profile())
   , m_unidentifiedSettingId(0)
   , m_unknownSettingLabelId(UnknownSettingLabelIdStart)
 { }
@@ -218,14 +221,14 @@ bool CAddonSettings::Load(const CXBMCTinyXML& doc)
     return false;
 
   CLog::Log(LOGDEBUG, "CAddonSettings[%s]: loading setting values",
-    m_addon.lock()->ID().c_str());
+    m_addonId.c_str());
 
   // figure out the version of the setting definitions
   uint32_t version = 0;
   if (!ParseSettingVersion(doc, version))
   {
     CLog::Log(LOGERROR, "CAddonSettings[%s]: failed to determine setting values version",
-      m_addon.lock()->ID().c_str());
+      m_addonId.c_str());
     return false;
   }
 
@@ -282,7 +285,7 @@ bool CAddonSettings::Load(const CXBMCTinyXML& doc)
   else if (!LoadOldSettingValues(doc, settingValues))
   {
     CLog::Log(LOGERROR, "CAddonSettings[%s]: failed to determine setting values from old format",
-      m_addon.lock()->ID().c_str());
+      m_addonId.c_str());
     return false;
   }
 
@@ -294,7 +297,7 @@ bool CAddonSettings::Load(const CXBMCTinyXML& doc)
     if (newSetting == nullptr)
     {
       CLog::Log(LOGDEBUG, "CAddonSettings[%s]: failed to find definition for setting %s. Creating a setting on-the-fly...",
-        m_addon.lock()->ID().c_str(), setting.first.c_str());
+        m_addonId.c_str(), setting.first.c_str());
 
       // create a hidden/internal string setting on-the-fly
       newSetting = AddSettingWithoutDefinition<CSettingString>(*this, setting.first, setting.second);
@@ -304,7 +307,7 @@ bool CAddonSettings::Load(const CXBMCTinyXML& doc)
     if (!newSetting->FromString(setting.second))
     {
       CLog::Log(LOGWARNING, "CAddonSettings[%s]: failed to load value \"%s\" for setting %s",
-        m_addon.lock()->ID().c_str(), setting.second.c_str(), setting.first.c_str());
+        m_addonId.c_str(), setting.second.c_str(), setting.first.c_str());
     }
   }
 
@@ -321,7 +324,7 @@ bool CAddonSettings::Save(CXBMCTinyXML& doc) const
 
   if (!SaveValuesToXml(doc))
   {
-    CLog::Log(LOGERROR, "CAddonSettings[%s]: failed to save settings", m_addon.lock()->ID().c_str());
+    CLog::Log(LOGERROR, "CAddonSettings[%s]: failed to save settings", m_addonId.c_str());
     return false;
   }
 
@@ -393,13 +396,13 @@ void CAddonSettings::InitializeConditions()
 
 bool CAddonSettings::InitializeDefinitions(const CXBMCTinyXML& doc)
 {
-  CLog::Log(LOGDEBUG, "CAddonSettings[%s]: loading setting definitions", m_addon.lock()->ID().c_str());
+  CLog::Log(LOGDEBUG, "CAddonSettings[%s]: loading setting definitions", m_addonId.c_str());
 
   // figure out the version of the setting definitions
   uint32_t version = 0;
   if (!ParseSettingVersion(doc, version))
   {
-    CLog::Log(LOGERROR, "CAddonSettings[%s]: failed to determine setting definitions version", m_addon.lock()->ID().c_str());
+    CLog::Log(LOGERROR, "CAddonSettings[%s]: failed to determine setting definitions version", m_addonId.c_str());
     return false;
   }
 
@@ -419,7 +422,7 @@ bool CAddonSettings::ParseSettingVersion(const CXBMCTinyXML& doc, uint32_t& vers
 
   if (!StringUtils::EqualsNoCase(root->ValueStr(), SETTING_XML_ROOT))
   {
-    CLog::Log(LOGERROR, "CAddonSettings[%s]: error reading setting definitions: no <settings> tag", m_addon.lock()->ID().c_str());
+    CLog::Log(LOGERROR, "CAddonSettings[%s]: error reading setting definitions: no <settings> tag", m_addonId.c_str());
     return false;
   }
 
@@ -429,13 +432,13 @@ bool CAddonSettings::ParseSettingVersion(const CXBMCTinyXML& doc, uint32_t& vers
 
 bool CAddonSettings::InitializeFromOldSettingDefinitions(const CXBMCTinyXML& doc)
 {
-  CLog::Log(LOGDEBUG, "CAddonSettings[%s]: trying to load setting definitions from old format...", m_addon.lock()->ID().c_str());
+  CLog::Log(LOGDEBUG, "CAddonSettings[%s]: trying to load setting definitions from old format...", m_addonId.c_str());
 
   const TiXmlElement* root = doc.RootElement();
   if (root == nullptr)
     return false;
 
-  std::shared_ptr<CSettingSection> section = std::make_shared<CSettingSection>(m_addon.lock()->ID(), GetSettingsManager());
+  std::shared_ptr<CSettingSection> section = std::make_shared<CSettingSection>(m_addonId, GetSettingsManager());
 
   std::shared_ptr<CSettingCategory> category;
   const TiXmlElement *categoryElement = root->FirstChildElement("category");
@@ -549,7 +552,7 @@ bool CAddonSettings::InitializeFromOldSettingDefinitions(const CXBMCTinyXML& doc
       else
       {
         CLog::Log(LOGWARNING, "CAddonSettings[%s]: failed to parse old setting definition for \"%s\" of type \"%s\"",
-          m_addon.lock()->ID().c_str(), settingId.c_str(), settingType.c_str());
+          m_addonId.c_str(), settingId.c_str(), settingType.c_str());
       }
 
       // process general properties
@@ -649,7 +652,7 @@ bool CAddonSettings::InitializeFromOldSettingDefinitions(const CXBMCTinyXML& doc
         else
         {
           CLog::Log(LOGWARNING, "CAddonSettings[%s]: failed to parse enable condition \"%s\" of old setting definition for \"%s\"",
-            m_addon.lock()->ID().c_str(), setting.enableCondition.c_str(), setting.setting->GetId().c_str());
+            m_addonId.c_str(), setting.enableCondition.c_str(), setting.setting->GetId().c_str());
         }
       }
 
@@ -661,7 +664,7 @@ bool CAddonSettings::InitializeFromOldSettingDefinitions(const CXBMCTinyXML& doc
         else
         {
           CLog::Log(LOGWARNING, "CAddonSettings[%s]: failed to parse visible condition \"%s\" of old setting definition for \"%s\"",
-            m_addon.lock()->ID().c_str(), setting.visibleCondition.c_str(), setting.setting->GetId().c_str());
+            m_addonId.c_str(), setting.visibleCondition.c_str(), setting.setting->GetId().c_str());
         }
       }
 
@@ -693,9 +696,9 @@ SettingPtr CAddonSettings::InitializeFromOldSettingAction(std::string settingId,
   // parse the action attribute
   std::string action = XMLUtils::GetAttribute(settingElement, "action");
   // replace $CWD with the url of the add-on
-  StringUtils::Replace(action, "$CWD", m_addon.lock()->Path());
+  StringUtils::Replace(action, "$CWD", m_addonPath);
   // replace $ID with the id of the add-on
-  StringUtils::Replace(action, "$ID", m_addon.lock()->ID());
+  StringUtils::Replace(action, "$ID", m_addonId);
 
   // prepare the setting's control
   auto control = std::make_shared<CSettingControlButton>();
@@ -949,7 +952,7 @@ SettingPtr CAddonSettings::InitializeFromOldSettingSelect(const std::string& set
       setting = InitializeFromOldSettingFileWithSource(settingId, settingElement, defaultValue, settingValues);
     else
       CLog::Log(LOGWARNING, "CAddonSettings[%s]: failed to parse old setting definition for \"%s\" of type \"select\"",
-        m_addon.lock()->ID().c_str(), settingId.c_str());
+        m_addonId.c_str(), settingId.c_str());
   }
 
   if (setting != nullptr)
@@ -978,14 +981,14 @@ SettingPtr CAddonSettings::InitializeFromOldSettingAddon(const std::string& sett
 
   if (addonTypes.empty())
   {
-    CLog::Log(LOGERROR, "CAddonSettings[%s]: missing addon type for addon setting \"%s\"", m_addon.lock()->ID().c_str(), settingId.c_str());
+    CLog::Log(LOGERROR, "CAddonSettings[%s]: missing addon type for addon setting \"%s\"", m_addonId.c_str(), settingId.c_str());
     return nullptr;
   }
 
   // TODO: support multiple addon types
   if (addonTypes.size() > 1)
   {
-    CLog::Log(LOGERROR, "CAddonSettings[%s]: multiple addon types are not supported (addon setting \"%s\")", m_addon.lock()->ID().c_str(), settingId.c_str());
+    CLog::Log(LOGERROR, "CAddonSettings[%s]: multiple addon types are not supported (addon setting \"%s\")", m_addonId.c_str(), settingId.c_str());
     return nullptr;
   }
 
@@ -999,7 +1002,7 @@ SettingPtr CAddonSettings::InitializeFromOldSettingAddon(const std::string& sett
   // sanity check
   if (addonIds.size() > 1 && !multiselect)
   {
-    CLog::Log(LOGWARNING, "CAddonSettings[%s]: multiple default addon ids on non-multiselect addon setting \"%s\"", m_addon.lock()->ID().c_str(), settingId.c_str());
+    CLog::Log(LOGWARNING, "CAddonSettings[%s]: multiple default addon ids on non-multiselect addon setting \"%s\"", m_addonId.c_str(), settingId.c_str());
     addonIds.erase(++addonIds.begin(), addonIds.end());
   }
 
@@ -1115,7 +1118,7 @@ SettingPtr CAddonSettings::InitializeFromOldSettingEnums(const std::string& sett
       for (uint32_t i = 0; i < values.size(); ++i)
       {
         int label = static_cast<int>(strtol(values[i].c_str(), nullptr, 0));
-        std::string value = g_localizeStrings.GetAddonString(m_addon.lock()->ID(), label);
+        std::string value = g_localizeStrings.GetAddonString(m_addonId, label);
         if (settingEntries.size() > i)
           value = settingEntries[i];
 
@@ -1238,7 +1241,7 @@ SettingPtr CAddonSettings::InitializeFromOldSettingSlider(const std::string& set
   }
 
   CLog::Log(LOGWARNING, "CAddonSettings[%s]: ignoring old setting definition for \"%s\" of type \"slider\" because of unknown option \"%s\"",
-    m_addon.lock()->ID().c_str(), settingId.c_str(), option.c_str());
+    m_addonId.c_str(), settingId.c_str(), option.c_str());
 
   return nullptr;
 }
@@ -1249,9 +1252,9 @@ SettingPtr CAddonSettings::InitializeFromOldSettingFileWithSource(const std::str
   setting->SetDefault(defaultValue);
 
   if (source.find("$PROFILE") != std::string::npos)
-    StringUtils::Replace(source, "$PROFILE", m_addon.lock()->Profile());
+    StringUtils::Replace(source, "$PROFILE", m_addonProfile);
   else
-    source = URIUtils::AddFileToFolder(m_addon.lock()->Path(), source);
+    source = URIUtils::AddFileToFolder(m_addonPath, source);
 
   setting->SetSources({ source });
 
@@ -1348,7 +1351,7 @@ bool CAddonSettings::ParseOldCondition(std::shared_ptr<const CSetting> setting, 
   });
   if (settingIt == settings.cend()) {
     CLog::Log(LOGWARNING, "CAddonSettings[%s]: failed to parse old setting conditions \"%s\" for \"%s\"",
-      m_addon.lock()->ID().c_str(), condition.c_str(), setting->GetId().c_str());
+      m_addonId.c_str(), condition.c_str(), setting->GetId().c_str());
     return false;
   }
   int32_t currentSettingIndex = std::distance(settings.cbegin(), settingIt);
@@ -1380,7 +1383,7 @@ bool CAddonSettings::ParseOldCondition(std::shared_ptr<const CSetting> setting, 
     if (absoluteSettingIndex < 0 || static_cast<size_t>(absoluteSettingIndex) >= settings.size())
     {
       CLog::Log(LOGWARNING, "CAddonSettings[%s]: cannot reference setting (relative index: %d; absolute index: %d) in another category in old setting condition \"%s\" for \"%s\"",
-        m_addon.lock()->ID().c_str(), expression.m_relativeSettingIndex, absoluteSettingIndex, cond.c_str(), setting->GetId().c_str());
+        m_addonId.c_str(), expression.m_relativeSettingIndex, absoluteSettingIndex, cond.c_str(), setting->GetId().c_str());
       error = true;
       continue;
     }
@@ -1389,7 +1392,7 @@ bool CAddonSettings::ParseOldCondition(std::shared_ptr<const CSetting> setting, 
     if (referencedSetting == nullptr)
     {
       CLog::Log(LOGWARNING, "CAddonSettings[%s]: cannot reference separator setting in old setting condition \"%s\" for \"%s\"",
-        m_addon.lock()->ID().c_str(), cond.c_str(), setting->GetId().c_str());
+        m_addonId.c_str(), cond.c_str(), setting->GetId().c_str());
       error = true;
       continue;
     }
