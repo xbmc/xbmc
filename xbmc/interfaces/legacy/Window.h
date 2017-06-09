@@ -640,9 +640,12 @@ namespace XBMCAddon
       /// \ingroup python_xbmcgui_window
       /// @brief \python_func{ getHeight() }
       ///-----------------------------------------------------------------------
-      /// Returns the height of this screen.
+      /// Returns the height of this Window instance.
       ///
-      /// @return                       Screen height
+      /// @return                       Window height in pixels
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v18 Function changed
       ///
       getHeight();
 #else
@@ -654,9 +657,12 @@ namespace XBMCAddon
       /// \ingroup python_xbmcgui_window
       /// @brief \python_func{ getWidth() }
       ///-----------------------------------------------------------------------
-      /// Returns the width of this screen.
+      /// Returns the width of this Window instance.
       ///
-      /// @return                       Screen width
+      /// @return                       Window width in pixels
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v18 Function changed
       ///
       getWidth();
 #else
