@@ -138,7 +138,7 @@ namespace ADDON
 CAddonSettings::CAddonSettings(std::shared_ptr<const IAddon> addon)
   : CSettingsBase()
   , m_addon(addon)
-  , m_unidentifiedSettingActionId(0)
+  , m_unidentifiedSettingId(0)
   , m_unknownSettingLabelId(UnknownSettingLabelIdStart)
 { }
 
@@ -502,7 +502,7 @@ bool CAddonSettings::InitializeFromOldSettingDefinitions(const CXBMCTinyXML& doc
           actionSettings.insert(settingId);
         }
         else
-          CLog::Log(LOGWARNING, "CAddonSettings[%s]: ignoring old setting definition of type \"%s\" without id", m_addon.lock()->ID().c_str(), settingType.c_str());
+          setting = InitializeFromOldSettingLabel();
       }
       else if (settingType == "bool")
         setting = InitializeFromOldSettingBool(settingId, settingElement, defaultValue);
@@ -695,8 +695,8 @@ SettingPtr CAddonSettings::InitializeFromOldSettingAction(std::string settingId,
   // action settings don't require a setting id
   if (settingId.empty())
   {
-    auto actionSettingId = StringUtils::Format("action%u", m_unidentifiedSettingActionId);
-    m_unidentifiedSettingActionId += 1;
+    auto actionSettingId = StringUtils::Format("action%u", m_unidentifiedSettingId);
+    m_unidentifiedSettingId += 1;
 
     auto settingAction = std::make_shared<CSettingAction>(actionSettingId, GetSettingsManager());
     settingAction->SetData(action);
@@ -719,6 +719,20 @@ SettingPtr CAddonSettings::InitializeFromOldSettingAction(std::string settingId,
   setting->SetControl(control);
 
   return setting;
+}
+
+std::shared_ptr<CSetting> CAddonSettings::InitializeFromOldSettingLabel()
+{
+  // label settings don't require a setting id
+  auto labelSettingId = StringUtils::Format("label%u", m_unidentifiedSettingId);
+  m_unidentifiedSettingId += 1;
+
+  auto settingLabel = std::make_shared<CSettingString>(labelSettingId, GetSettingsManager());
+
+  // create the setting's control
+  settingLabel->SetControl(std::make_shared<CSettingControlLabel>());
+
+  return settingLabel;
 }
 
 SettingPtr CAddonSettings::InitializeFromOldSettingBool(const std::string& settingId, const TiXmlElement *settingElement, const std::string& defaultValue)

@@ -86,6 +86,7 @@ namespace ADDON
 
     bool InitializeFromOldSettingDefinitions(const CXBMCTinyXML& doc);
     std::shared_ptr<CSetting> InitializeFromOldSettingAction(std::string settingId, const TiXmlElement *settingElement, const std::string& defaultValue);
+    std::shared_ptr<CSetting> InitializeFromOldSettingLabel();
     std::shared_ptr<CSetting> InitializeFromOldSettingBool(const std::string& settingId, const TiXmlElement *settingElement, const std::string& defaultValue);
     std::shared_ptr<CSetting> InitializeFromOldSettingTextIpAddress(const std::string& settingId, const std::string& settingType, const TiXmlElement *settingElement, const std::string& defaultValue, const int settingLabel);
     std::shared_ptr<CSetting> InitializeFromOldSettingNumber(const std::string& settingId, const TiXmlElement *settingElement, const std::string& defaultValue, const int settingLabel);
@@ -118,7 +119,7 @@ namespace ADDON
 
     std::weak_ptr<const IAddon> m_addon;
 
-    uint32_t m_unidentifiedSettingActionId;
+    uint32_t m_unidentifiedSettingId;
     int m_unknownSettingLabelId;
     std::map<int, std::string> m_unknownSettingLabels;
   };
