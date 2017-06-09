@@ -39,7 +39,7 @@ namespace JOYSTICK
   class IButtonMap
   {
   public:
-    virtual ~IButtonMap(void) { }
+    virtual ~IButtonMap() = default;
 
     /*!
      * \brief The add-on ID of the game controller associated with this button map

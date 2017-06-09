@@ -32,7 +32,7 @@ namespace JOYSTICK
   class IInputReceiver
   {
   public:
-    virtual ~IInputReceiver(void) { }
+    virtual ~IInputReceiver() = default;
 
     /*!
      * \brief Set the value of a rumble motor
