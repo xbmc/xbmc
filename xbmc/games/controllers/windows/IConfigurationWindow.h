@@ -45,6 +45,9 @@ class CEvent;
  *   3) When the wizard's active feature loses focus, the wizard is cancelled
  *      and the prompt for input ends.
  */
+
+namespace KODI
+{
 namespace GAME
 {
   class CControllerFeature;
@@ -173,7 +176,7 @@ namespace GAME
      * \return The next direction to be prompted, or UNKNOWN if this isn't an
      *         analog stick or the prompt is finished
      */
-    virtual KODI::JOYSTICK::ANALOG_STICK_DIRECTION GetDirection(void) const = 0;
+    virtual JOYSTICK::ANALOG_STICK_DIRECTION GetDirection(void) const = 0;
 
     /*!
      * \brief Reset button after prompting for input has finished
@@ -208,4 +211,5 @@ namespace GAME
      */
     virtual bool Abort(bool bWait = true) = 0;
   };
+}
 }

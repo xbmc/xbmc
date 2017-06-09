@@ -21,6 +21,8 @@
 
 #include "IGameClientPlayback.h"
 
+namespace KODI
+{
 namespace GAME
 {
   class CGameClientRealtimePlayback : public IGameClientPlayback
@@ -41,4 +43,5 @@ namespace GAME
     virtual std::string CreateManualSavestate() override { return ""; }
     virtual bool LoadSavestate(const std::string& path) override { return false; }
   };
+}
 }

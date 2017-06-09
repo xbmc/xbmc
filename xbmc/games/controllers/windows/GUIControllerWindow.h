@@ -23,6 +23,8 @@
 #include "guilib/GUIDialog.h"
 #include "utils/Observer.h"
 
+namespace KODI
+{
 namespace GAME
 {
   class IControllerList;
@@ -61,4 +63,5 @@ namespace GAME
     IFeatureList*    m_featureList;
     std::string      m_param; // First auxiliary parameter in call to ActivateWindow()
   };
+}
 }

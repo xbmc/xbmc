@@ -47,9 +47,13 @@ namespace MUSIC_INFO
 }
 class CVideoInfoTag;
 class CPictureInfoTag;
+
+namespace KODI
+{
 namespace GAME
 {
   class CGameInfoTag;
+}
 }
 
 class CAlbum;
@@ -376,9 +380,9 @@ public:
     return m_gameInfoTag != NULL;
   }
 
-  GAME::CGameInfoTag* GetGameInfoTag();
+  KODI::GAME::CGameInfoTag* GetGameInfoTag();
 
-  inline const GAME::CGameInfoTag* GetGameInfoTag() const
+  inline const KODI::GAME::CGameInfoTag* GetGameInfoTag() const
   {
     return m_gameInfoTag;
   }
@@ -580,7 +584,7 @@ private:
   PVR::CPVRRadioRDSInfoTagPtr m_pvrRadioRDSInfoTag;
   CPictureInfoTag* m_pictureInfoTag;
   std::shared_ptr<const ADDON::IAddon> m_addonInfo;
-  GAME::CGameInfoTag* m_gameInfoTag;
+  KODI::GAME::CGameInfoTag* m_gameInfoTag;
   EventPtr m_eventLogEntry;
   bool m_bIsAlbum;
 

@@ -23,6 +23,8 @@
 
 #include <string>
 
+namespace KODI
+{
 namespace GAME
 {
   class CGUIControllerButton : public CGUIButtonControl
@@ -32,4 +34,5 @@ namespace GAME
 
     virtual ~CGUIControllerButton(void) { }
   };
+}
 }

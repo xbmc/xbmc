@@ -69,6 +69,7 @@
 #include <assert.h>
 #include <algorithm>
 
+using namespace KODI;
 using namespace XFILE;
 using namespace PLAYLIST;
 using namespace MUSIC_INFO;

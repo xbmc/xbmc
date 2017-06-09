@@ -23,6 +23,7 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 
+using namespace KODI;
 using namespace GAME;
 
 CGUIGameController::CGUIGameController(int parentID, int controlID, float posX, float posY, float width, float height)

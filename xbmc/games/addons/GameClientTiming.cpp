@@ -24,6 +24,7 @@
 
 #include <cmath>
 
+using namespace KODI;
 using namespace GAME;
 
 void CGameClientTiming::Reset()

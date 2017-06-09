@@ -90,6 +90,7 @@
 
 #define SETTINGS_XML_FOLDER "special://xbmc/system/settings/"
 
+using namespace KODI;
 using namespace XFILE;
 
 const std::string CSettings::SETTING_LOOKANDFEEL_SKIN = "lookandfeel.skin";

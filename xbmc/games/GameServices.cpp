@@ -23,6 +23,7 @@
 #include "controllers/ControllerManager.h"
 #include "games/ports/PortManager.h"
 
+using namespace KODI;
 using namespace GAME;
 
 CGameServices::CGameServices() :

@@ -23,6 +23,8 @@
 
 #include <string>
 
+namespace KODI
+{
 namespace GAME
 {
   class CGameClient;
@@ -46,7 +48,7 @@ namespace GAME
    * all input but doesn't block any handled input from reaching the game
    * client.
    */
-  class CPortInput : public KODI::JOYSTICK::CDefaultController
+  class CPortInput : public JOYSTICK::CDefaultController
   {
   public:
     CPortInput(CGameClient &gameClient);
@@ -63,4 +65,5 @@ namespace GAME
   private:
     const CGameClient &m_gameClient;
   };
+}
 }

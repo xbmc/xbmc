@@ -34,6 +34,7 @@
 
 #include "utils/log.h"
 
+using namespace KODI;
 using namespace GAME;
 
 #define SAVESTATE_OBJECT  "savestate"

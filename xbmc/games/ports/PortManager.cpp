@@ -35,7 +35,7 @@ using namespace PERIPHERALS;
 
 // --- GetRequestedPort() -----------------------------------------------------
 
-namespace GAME
+namespace
 {
   int GetRequestedPort(const PERIPHERALS::PeripheralPtr& device)
   {
@@ -158,7 +158,7 @@ void CPortManager::MapDevices(const PeripheralVector& devices,
   }
 }
 
-CGameClient* CPortManager::GameClient(KODI::JOYSTICK::IInputHandler* handler)
+CGameClient* CPortManager::GameClient(JOYSTICK::IInputHandler* handler)
 {
   for (const SPort& port : m_ports)
   {

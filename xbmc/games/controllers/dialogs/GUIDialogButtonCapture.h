@@ -27,9 +27,11 @@
 #include <string>
 #include <vector>
 
+namespace KODI
+{
 namespace GAME
 {
-  class CGUIDialogButtonCapture : public KODI::JOYSTICK::IButtonMapper,
+  class CGUIDialogButtonCapture : public JOYSTICK::IButtonMapper,
                                   public Observer,
                                   protected CThread
   {
@@ -43,11 +45,11 @@ namespace GAME
     virtual bool NeedsCooldown(void) const override { return false; }
     virtual bool Emulation(void) const override { return false; }
     virtual unsigned int ControllerNumber(void) const override { return 0; }
-    virtual bool MapPrimitive(KODI::JOYSTICK::IButtonMap* buttonMap,
-                              KODI::JOYSTICK::IActionMap* actionMap,
-                              const KODI::JOYSTICK::CDriverPrimitive& primitive) override;
-    virtual void OnEventFrame(const KODI::JOYSTICK::IButtonMap* buttonMap, bool bMotion) override { }
-    virtual void OnLateAxis(const KODI::JOYSTICK::IButtonMap* buttonMap, unsigned int axisIndex) override { }
+    virtual bool MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
+                              JOYSTICK::IActionMap* actionMap,
+                              const JOYSTICK::CDriverPrimitive& primitive) override;
+    virtual void OnEventFrame(const JOYSTICK::IButtonMap* buttonMap, bool bMotion) override { }
+    virtual void OnLateAxis(const JOYSTICK::IButtonMap* buttonMap, unsigned int axisIndex) override { }
 
     // implementation of Observer
     virtual void Notify(const Observable &obs, const ObservableMessage msg) override;
@@ -63,9 +65,9 @@ namespace GAME
 
     virtual std::string GetDialogText() = 0;
     virtual std::string GetDialogHeader() = 0;
-    virtual bool MapPrimitiveInternal(KODI::JOYSTICK::IButtonMap* buttonMap,
-                                      KODI::JOYSTICK::IActionMap* actionMap,
-                                      const KODI::JOYSTICK::CDriverPrimitive& primitive) = 0;
+    virtual bool MapPrimitiveInternal(JOYSTICK::IButtonMap* buttonMap,
+                                      JOYSTICK::IActionMap* actionMap,
+                                      const JOYSTICK::CDriverPrimitive& primitive) = 0;
     virtual void OnClose(bool bAccepted) = 0;
 
     CEvent m_captureEvent;
@@ -74,4 +76,5 @@ namespace GAME
     void InstallHooks();
     void RemoveHooks();
   };
+}
 }

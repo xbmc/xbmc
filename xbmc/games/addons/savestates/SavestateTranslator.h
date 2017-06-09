@@ -23,6 +23,8 @@
 
 #include <string>
 
+namespace KODI
+{
 namespace GAME
 {
   class CSavestateTranslator
@@ -31,4 +33,5 @@ namespace GAME
     static SAVETYPE TranslateType(const std::string& type);
     static std::string TranslateType(const SAVETYPE& type);
   };
+}
 }

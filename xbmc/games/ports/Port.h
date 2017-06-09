@@ -21,17 +21,16 @@
 
 #include <memory>
 
+namespace PERIPHERALS
+{
+  class CPeripheral;
+}
+
 namespace KODI
 {
 namespace JOYSTICK
 {
   class IInputHandler;
-}
-}
-
-namespace PERIPHERALS
-{
-  class CPeripheral;
 }
 
 namespace GAME
@@ -41,15 +40,16 @@ namespace GAME
   class CPort
   {
   public:
-    CPort(KODI::JOYSTICK::IInputHandler* inputHandler, CGameClient& gameClient);
+    CPort(JOYSTICK::IInputHandler* inputHandler, CGameClient& gameClient);
     ~CPort();
 
     void RegisterDevice(PERIPHERALS::CPeripheral *device);
     void UnregisterDevice(PERIPHERALS::CPeripheral *device);
 
   private:
-    KODI::JOYSTICK::IInputHandler* const m_inputHandler;
-    std::unique_ptr<KODI::JOYSTICK::IInputHandler> m_controller;
-    std::unique_ptr<KODI::JOYSTICK::IInputHandler> m_inputSink;
+    JOYSTICK::IInputHandler* const m_inputHandler;
+    std::unique_ptr<JOYSTICK::IInputHandler> m_controller;
+    std::unique_ptr<JOYSTICK::IInputHandler> m_inputSink;
   };
+}
 }

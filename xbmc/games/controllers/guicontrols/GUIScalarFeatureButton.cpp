@@ -24,6 +24,7 @@
 
 #include <string>
 
+using namespace KODI;
 using namespace GAME;
 
 CGUIScalarFeatureButton::CGUIScalarFeatureButton(const CGUIButtonControl& buttonTemplate,

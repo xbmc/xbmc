@@ -35,6 +35,8 @@
 #include "pvr/PVRManager.h"
 #include "settings/Settings.h"
 
+using namespace KODI;
+
 CServiceManager::CServiceManager() :
   m_gameServices(new GAME::CGameServices),
   m_peripherals(new PERIPHERALS::CPeripherals)

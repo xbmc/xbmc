@@ -20,6 +20,7 @@
 
 #include "BasicMemoryStream.h"
 
+using namespace KODI;
 using namespace GAME;
 
 CBasicMemoryStream::CBasicMemoryStream()

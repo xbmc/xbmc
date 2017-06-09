@@ -26,6 +26,8 @@
 #include "libavcodec/avcodec.h"
 #include "libavutil/pixfmt.h"
 
+namespace KODI
+{
 namespace GAME
 {
   /*!
@@ -102,4 +104,5 @@ namespace GAME
      */
     static const char* TranslateRegion(GAME_REGION region);
   };
+}
 }

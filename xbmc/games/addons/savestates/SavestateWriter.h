@@ -25,6 +25,8 @@
 #include <stdint.h>
 #include <string>
 
+namespace KODI
+{
 namespace GAME
 {
   class CGameClient;
@@ -48,4 +50,5 @@ namespace GAME
     double             m_fps; //! @todo
     CSavestateDatabase m_db;
   };
+}
 }

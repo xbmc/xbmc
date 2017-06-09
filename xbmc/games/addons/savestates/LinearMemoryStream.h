@@ -23,6 +23,8 @@
 
 #include <memory>
 
+namespace KODI
+{
 namespace GAME
 {
   class CLinearMemoryStream : public IMemoryStream
@@ -73,4 +75,5 @@ namespace GAME
   private:
     size_t m_frameSize;
   };
+}
 }

@@ -23,6 +23,7 @@
 #include "addons/AddonManager.h"
 #include "input/joysticks/JoystickIDs.h"
 
+using namespace KODI;
 using namespace GAME;
 
 ControllerPtr CControllerManager::GetController(const std::string& controllerId)

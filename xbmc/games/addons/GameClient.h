@@ -36,6 +36,8 @@
 
 class CFileItem;
 
+namespace KODI
+{
 namespace GAME
 {
 
@@ -202,3 +204,4 @@ private:
 };
 
 } // namespace GAME
+} // namespace KODI

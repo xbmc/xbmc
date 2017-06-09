@@ -20,6 +20,7 @@
 
 #include "GameClientTranslator.h"
 
+using namespace KODI;
 using namespace GAME;
 
 const char* CGameClientTranslator::ToString(GAME_ERROR error)

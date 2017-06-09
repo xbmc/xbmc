@@ -24,6 +24,8 @@
 
 class CSetting;
 
+namespace KODI
+{
 namespace GAME
 {
 
@@ -43,3 +45,4 @@ private:
 };
 
 } // namespace GAME
+}

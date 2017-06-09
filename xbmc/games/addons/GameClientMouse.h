@@ -23,6 +23,8 @@
 
 struct KodiToAddonFuncTable_Game;
 
+namespace KODI
+{
 namespace GAME
 {
   class CGameClient;
@@ -33,7 +35,7 @@ namespace GAME
    *
    * Listens to mouse events and forwards them to the games (as game_input_event).
    */
-  class CGameClientMouse : public KODI::MOUSE::IMouseInputHandler
+  class CGameClientMouse : public MOUSE::IMouseInputHandler
   {
   public:
     /*!
@@ -60,4 +62,5 @@ namespace GAME
     const KodiToAddonFuncTable_Game* const m_dllStruct;
     const std::string m_controllerId;
   };
+}
 }

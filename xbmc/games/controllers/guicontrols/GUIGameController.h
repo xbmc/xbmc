@@ -23,6 +23,8 @@
 #include "guilib/GUIImage.h"
 #include "threads/CriticalSection.h"
 
+namespace KODI
+{
 namespace GAME
 {
   class CGUIGameController : public CGUIImage
@@ -43,4 +45,5 @@ namespace GAME
     ControllerPtr       m_currentController;
     CCriticalSection    m_mutex;
   };
+}
 }

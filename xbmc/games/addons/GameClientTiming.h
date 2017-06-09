@@ -19,6 +19,8 @@
  */
 #pragma once
 
+namespace KODI
+{
 namespace GAME
 {
   class IGameAudioCallback;
@@ -76,4 +78,5 @@ namespace GAME
     double m_samplerate; // Audio sample rate (Hz)
     double m_audioCorrectionFactor; // Factor that audio is normalized by to avoid resampling
   };
+}
 }

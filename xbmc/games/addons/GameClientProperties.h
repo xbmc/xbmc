@@ -27,6 +27,8 @@
 
 struct AddonProps_Game;
 
+namespace KODI
+{
 namespace GAME
 {
 
@@ -88,3 +90,4 @@ private:
 };
 
 } // namespace GAME
+} // namespace KODI

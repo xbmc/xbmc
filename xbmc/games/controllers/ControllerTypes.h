@@ -22,9 +22,12 @@
 #include <memory>
 #include <vector>
 
+namespace KODI
+{
 namespace GAME
 {
   class CController;
   typedef std::shared_ptr<CController> ControllerPtr;
   typedef std::vector<ControllerPtr>   ControllerVector;
+}
 }

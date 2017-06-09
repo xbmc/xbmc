@@ -24,6 +24,7 @@
 #include "utils/log.h"
 #include "IMemoryStream.h"
 
+using namespace KODI;
 using namespace GAME;
 
 CSavestateReader::CSavestateReader() :

@@ -51,9 +51,12 @@ class CSettings;
 class IAE;
 class CFavouritesService;
 
+namespace KODI
+{
 namespace GAME
 {
   class CGameServices;
+}
 }
 
 namespace PERIPHERALS
@@ -74,7 +77,7 @@ public:
   static CDataCacheCore& GetDataCacheCore();
   static PLAYLIST::CPlayListPlayer& GetPlaylistPlayer();
   static CSettings& GetSettings();
-  static GAME::CGameServices& GetGameServices();
+  static KODI::GAME::CGameServices& GetGameServices();
   static PERIPHERALS::CPeripherals& GetPeripherals();
   static CFavouritesService& GetFavouritesService();
   static bool IsBinaryAddonCacheUp();

@@ -21,6 +21,8 @@
 #include "ServiceBroker.h"
 #include "Application.h"
 
+using namespace KODI;
+
 ADDON::CAddonMgr &CServiceBroker::GetAddonMgr()
 {
   return g_application.m_ServiceManager->GetAddonMgr();

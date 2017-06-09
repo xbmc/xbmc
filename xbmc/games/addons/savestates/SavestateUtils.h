@@ -21,6 +21,8 @@
 
 #include <string>
 
+namespace KODI
+{
 namespace GAME
 {
   class CSavestate;
@@ -52,4 +54,5 @@ namespace GAME
      */
     static std::string MakeThumbPath(const std::string& savePath);
   };
+}
 }

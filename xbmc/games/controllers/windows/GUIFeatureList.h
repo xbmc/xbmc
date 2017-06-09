@@ -29,6 +29,8 @@ class CGUIImage;
 class CGUILabelControl;
 class CGUIWindow;
 
+namespace KODI
+{
 namespace GAME
 {
   class CGUIFeatureList : public IFeatureList
@@ -69,4 +71,5 @@ namespace GAME
     ControllerPtr           m_controller;
     IConfigurationWizard*   m_wizard;
   };
+}
 }

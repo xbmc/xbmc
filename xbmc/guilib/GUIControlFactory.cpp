@@ -64,6 +64,7 @@
 #include "games/controllers/guicontrols/GUIGameController.h"
 #include "Util.h"
 
+using namespace KODI;
 using namespace PVR;
 
 typedef struct

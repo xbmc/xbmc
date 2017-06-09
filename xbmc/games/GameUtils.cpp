@@ -35,6 +35,7 @@
 
 #include <algorithm>
 
+using namespace KODI;
 using namespace GAME;
 
 GameClientPtr CGameUtils::OpenGameClient(const CFileItem& file)

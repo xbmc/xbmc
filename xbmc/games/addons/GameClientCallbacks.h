@@ -28,6 +28,8 @@
 
 class CAEChannelInfo;
 
+namespace KODI
+{
 namespace GAME
 {
   class IGameAudioCallback
@@ -52,4 +54,5 @@ namespace GAME
     virtual void AddData(const uint8_t* data, unsigned int size) = 0;
     virtual void CloseStream() = 0;
   };
+}
 }

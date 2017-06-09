@@ -22,6 +22,8 @@
 #include <stddef.h>
 #include <stdint.h>
 
+namespace KODI
+{
 namespace GAME
 {
   /*!
@@ -149,4 +151,5 @@ namespace GAME
      */
     virtual void SetFrameCounter(uint64_t frameCount) = 0;
   };
+}
 }

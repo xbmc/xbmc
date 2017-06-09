@@ -21,6 +21,7 @@
 #include "DeltaPairMemoryStream.h"
 #include "utils/log.h"
 
+using namespace KODI;
 using namespace GAME;
 
 void CDeltaPairMemoryStream::Reset()
