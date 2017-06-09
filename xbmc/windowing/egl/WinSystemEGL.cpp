@@ -266,7 +266,7 @@ bool CWinSystemEGL::DestroyWindowSystem()
   return true;
 }
 
-bool CWinSystemEGL::CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction)
+bool CWinSystemEGL::CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res)
 {
   RESOLUTION_INFO current_resolution;
   current_resolution.iWidth = current_resolution.iHeight = 0;
@@ -355,7 +355,7 @@ bool CWinSystemEGL::ResizeWindow(int newWidth, int newHeight, int newLeft, int n
 
 bool CWinSystemEGL::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
 {
-  CreateNewWindow("", fullScreen, res, NULL);
+  CreateNewWindow("", fullScreen, res);
   CRenderSystemGLES::ResetRenderSystem(res.iWidth, res.iHeight, fullScreen, res.fRefreshRate);
   return true;
 }

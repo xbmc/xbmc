@@ -41,6 +41,7 @@ private:
   static void OnGestureNotify(HWND hWnd, LPARAM lParam);
   static void OnGesture(HWND hWnd, LPARAM lParam);
 
+  typedef bool (* PHANDLE_EVENT_FUNC)(XBMC_Event& newEvent);
   static PHANDLE_EVENT_FUNC m_pEventFunc;
   static int m_originalZoomDistance;
   static Pointer m_touchPointer;

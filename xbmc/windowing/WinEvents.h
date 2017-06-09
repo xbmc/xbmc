@@ -26,8 +26,6 @@
 #include "utils/Observer.h"
 #include "XBMC_events.h"
 
-typedef bool (* PHANDLE_EVENT_FUNC)(XBMC_Event& newEvent);
-
 class IWinEvents : public Observer
 {
   public:

@@ -40,8 +40,7 @@ public:
 
   bool CreateNewWindow(const std::string& name,
                        bool fullScreen,
-                       RESOLUTION_INFO& res,
-                       PHANDLE_EVENT_FUNC userFunction) override;
+                       RESOLUTION_INFO& res) override;
 
   bool DestroyWindow() override;
   void UpdateResolutions() override;

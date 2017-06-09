@@ -94,7 +94,7 @@ bool CWinSystemIOS::DestroyWindowSystem()
   return true;
 }
 
-bool CWinSystemIOS::CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction)
+bool CWinSystemIOS::CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res)
 {
   //NSLog(@"%s", __PRETTY_FUNCTION__);
 	
