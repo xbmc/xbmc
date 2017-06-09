@@ -148,7 +148,7 @@ bool CSetting::IsEnabled() const
       return false;
   }
 
-  bool enabled = true;
+  bool enabled = m_enabled;
   for (auto dep : m_dependencies)
   {
     if (dep.GetType() != SettingDependencyType::Enable)
