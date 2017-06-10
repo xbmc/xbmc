@@ -64,7 +64,7 @@ bool CVideoBuffer::CopyPicture(YuvImage* pDst, YuvImage *pSrc)
   uint8_t *d = pDst->plane[0];
   int w = pDst->width * pDst->bpp;
   int h = pDst->height;
-  if ((w == pSrc->stride[0]) && ((unsigned int) pSrc->stride[0] == pDst->stride[0]))
+  if ((w == pSrc->stride[0]) && (pSrc->stride[0] == pDst->stride[0]))
   {
     memcpy(d, s, w*h);
   }
@@ -81,7 +81,7 @@ bool CVideoBuffer::CopyPicture(YuvImage* pDst, YuvImage *pSrc)
   d = pDst->plane[1];
   w =(pDst->width  >> pDst->cshift_x) * pDst->bpp;
   h =(pDst->height >> pDst->cshift_y);
-  if ((w==pSrc->stride[1]) && ((unsigned int) pSrc->stride[1]==pDst->stride[1]))
+  if ((w == pSrc->stride[1]) && (pSrc->stride[1] == pDst->stride[1]))
   {
     memcpy(d, s, w*h);
   }
@@ -96,7 +96,7 @@ bool CVideoBuffer::CopyPicture(YuvImage* pDst, YuvImage *pSrc)
   }
   s = pSrc->plane[2];
   d = pDst->plane[2];
-  if ((w==pSrc->stride[2]) && ((unsigned int) pSrc->stride[2]==pDst->stride[2]))
+  if ((w == pSrc->stride[2]) && (pSrc->stride[2] == pDst->stride[2]))
   {
     memcpy(d, s, w*h);
   }
@@ -120,7 +120,7 @@ bool CVideoBuffer::CopyNV12Picture(YuvImage* pDst, YuvImage *pSrc)
   int w = pDst->width;
   int h = pDst->height;
   // Copy Y
-  if ((w == pSrc->stride[0]) && ((unsigned int) pSrc->stride[0] == pDst->stride[0]))
+  if ((w == pSrc->stride[0]) && (pSrc->stride[0] == pDst->stride[0]))
   {
     memcpy(d, s, w*h);
   }
@@ -139,7 +139,7 @@ bool CVideoBuffer::CopyNV12Picture(YuvImage* pDst, YuvImage *pSrc)
   w = pDst->width;
   h = pDst->height >> 1;
   // Copy packed UV (width is same as for Y as it's both U and V components)
-  if ((w==pSrc->stride[1]) && ((unsigned int) pSrc->stride[1]==pDst->stride[1]))
+  if ((w == pSrc->stride[1]) && (pSrc->stride[1] == pDst->stride[1]))
   {
     memcpy(d, s, w*h);
   }
