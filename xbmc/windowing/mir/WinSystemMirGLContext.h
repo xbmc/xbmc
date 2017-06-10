@@ -34,8 +34,7 @@ public:
 
   bool CreateNewWindow(const std::string& name,
                        bool fullScreen,
-                       RESOLUTION_INFO& res,
-                       PHANDLE_EVENT_FUNC userFunction) override;
+                       RESOLUTION_INFO& res) override;
 
   bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays) override;
   bool IsExtSupported(const char* extension) override;

@@ -47,7 +47,7 @@ public:
   // CWinSystemBase
   virtual bool InitWindowSystem() override;
   virtual bool DestroyWindowSystem() override;
-  virtual bool CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction) override;
+  virtual bool CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res) override;
   virtual bool DestroyWindow() override;
   virtual bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop) override;
   bool         ResizeWindowInternal(int newWidth, int newHeight, int newLeft, int newTop, void *additional);

@@ -782,7 +782,7 @@ bool CApplication::InitWindow(RESOLUTION res)
     res = CDisplaySettings::GetInstance().GetCurrentResolution();
 
   bool bFullScreen = res != RES_WINDOW;
-  if (!g_Windowing.CreateNewWindow(CSysInfo::GetAppName(), bFullScreen, CDisplaySettings::GetInstance().GetResolutionInfo(res), OnEvent))
+  if (!g_Windowing.CreateNewWindow(CSysInfo::GetAppName(), bFullScreen, CDisplaySettings::GetInstance().GetResolutionInfo(res)))
   {
     CLog::Log(LOGFATAL, "CApplication::Create: Unable to create window");
     return false;

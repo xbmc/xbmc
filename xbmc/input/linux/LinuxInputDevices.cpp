@@ -493,7 +493,6 @@ bool CLinuxInputDevice::KeyEvent(const struct input_event& levt, XBMC_Event& dev
       return false;
 
     devt.type = levt.value ? XBMC_MOUSEBUTTONDOWN : XBMC_MOUSEBUTTONUP;
-    devt.button.state = levt.value ? XBMC_PRESSED : XBMC_RELEASED;
     devt.button.type = devt.type;
     devt.button.x = m_mouseX;
     devt.button.y = m_mouseY;
@@ -587,14 +586,10 @@ bool CLinuxInputDevice::RelEvent(const struct input_event& levt, XBMC_Event& dev
   {
   case REL_X:
     m_mouseX += levt.value;
-    devt.motion.xrel = levt.value;
-    devt.motion.yrel = 0;
     motion = true;
     break;
   case REL_Y:
     m_mouseY += levt.value;
-    devt.motion.xrel = 0;
-    devt.motion.yrel = levt.value;
     motion = true;
     break;
   case REL_WHEEL:
@@ -621,13 +616,10 @@ bool CLinuxInputDevice::RelEvent(const struct input_event& levt, XBMC_Event& dev
     devt.motion.type = XBMC_MOUSEMOTION;
     devt.motion.x = m_mouseX;
     devt.motion.y = m_mouseY;
-    devt.motion.state = 0;
-    devt.motion.which = m_deviceIndex;
   }
   else if (wheel)
   {
      devt.type = XBMC_MOUSEBUTTONUP;
-     devt.button.state = XBMC_RELEASED;
      devt.button.type = devt.type;
      devt.button.x = m_mouseX;
      devt.button.y = m_mouseY;
@@ -637,7 +629,6 @@ bool CLinuxInputDevice::RelEvent(const struct input_event& levt, XBMC_Event& dev
      m_equeue.push_back(devt);
 
      /* prepare and return WHEEL down event */
-     devt.button.state = XBMC_PRESSED;
      devt.type = XBMC_MOUSEBUTTONDOWN;
   }
   else
@@ -676,10 +667,6 @@ bool CLinuxInputDevice::AbsEvent(const struct input_event& levt, XBMC_Event& dev
   devt.motion.type = XBMC_MOUSEMOTION;
   devt.motion.x = m_mouseX;
   devt.motion.y = m_mouseY;
-  devt.motion.state = 0;
-  devt.motion.xrel = 0;
-  devt.motion.yrel = 0;
-  devt.motion.which = m_deviceIndex;
 
   return true;
 }

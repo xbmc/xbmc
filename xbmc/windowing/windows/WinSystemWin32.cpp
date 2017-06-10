@@ -21,6 +21,7 @@
 #include "WinSystemWin32.h"
 #include "WinEventsWin32.h"
 #include "resource.h"
+#include "Application.h"
 #include "ServiceBroker.h"
 #include "guilib/gui3d.h"
 #include "messaging/ApplicationMessenger.h"
@@ -82,7 +83,7 @@ bool CWinSystemWin32::DestroyWindowSystem()
   return true;
 }
 
-bool CWinSystemWin32::CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction)
+bool CWinSystemWin32::CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res)
 {
   using KODI::PLATFORM::WINDOWS::ToW;
 
@@ -133,7 +134,7 @@ bool CWinSystemWin32::CreateNewWindow(const std::string& name, bool fullScreen, 
 
   HWND hWnd = CreateWindow( nameW.c_str(), nameW.c_str(), fullScreen ? WS_POPUP : WS_OVERLAPPEDWINDOW,
     0, 0, m_nWidth, m_nHeight, 0,
-    NULL, m_hInstance, userFunction );
+    NULL, m_hInstance, g_application.OnEvent );
   if( hWnd == NULL )
   {
     CLog::Log(LOGERROR, "%s : CreateWindow failed with %d", __FUNCTION__, GetLastError());

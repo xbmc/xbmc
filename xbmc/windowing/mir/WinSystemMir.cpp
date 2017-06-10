@@ -59,8 +59,7 @@ bool CWinSystemMir::DestroyWindowSystem()
 
 bool CWinSystemMir::CreateNewWindow(const std::string& name,
                                     bool fullScreen,
-                                    RESOLUTION_INFO& res,
-                                    PHANDLE_EVENT_FUNC userFunction)
+                                    RESOLUTION_INFO& res)
 {
   if (m_pixel_format == mir_pixel_format_invalid)
   {

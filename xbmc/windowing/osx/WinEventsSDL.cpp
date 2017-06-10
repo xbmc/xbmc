@@ -258,9 +258,7 @@ bool CWinEventsSDL::MessagePump()
         newEvent.key.keysym.scancode = event.key.keysym.scancode;
         newEvent.key.keysym.sym = (XBMCKey) event.key.keysym.sym;
         newEvent.key.keysym.unicode = event.key.keysym.unicode;
-        newEvent.key.state = event.key.state;
         newEvent.key.type = event.key.type;
-        newEvent.key.which = event.key.which;
 
         // Check if the Windows keys are down because SDL doesn't flag this.
         uint16_t mod = event.key.keysym.mod;
@@ -289,9 +287,7 @@ bool CWinEventsSDL::MessagePump()
         newEvent.key.keysym.sym = (XBMCKey) event.key.keysym.sym;
         newEvent.key.keysym.mod =(XBMCMod) event.key.keysym.mod;
         newEvent.key.keysym.unicode = event.key.keysym.unicode;
-        newEvent.key.state = event.key.state;
         newEvent.key.type = event.key.type;
-        newEvent.key.which = event.key.which;
 
         ret |= g_application.OnEvent(newEvent);
         break;
@@ -302,9 +298,7 @@ bool CWinEventsSDL::MessagePump()
         XBMC_Event newEvent;
         newEvent.type = XBMC_MOUSEBUTTONDOWN;
         newEvent.button.button = event.button.button;
-        newEvent.button.state = event.button.state;
         newEvent.button.type = event.button.type;
-        newEvent.button.which = event.button.which;
         newEvent.button.x = event.button.x;
         newEvent.button.y = event.button.y;
 
@@ -317,9 +311,7 @@ bool CWinEventsSDL::MessagePump()
         XBMC_Event newEvent;
         newEvent.type = XBMC_MOUSEBUTTONUP;
         newEvent.button.button = event.button.button;
-        newEvent.button.state = event.button.state;
         newEvent.button.type = event.button.type;
-        newEvent.button.which = event.button.which;
         newEvent.button.x = event.button.x;
         newEvent.button.y = event.button.y;
 
@@ -341,11 +333,7 @@ bool CWinEventsSDL::MessagePump()
         }
         XBMC_Event newEvent;
         newEvent.type = XBMC_MOUSEMOTION;
-        newEvent.motion.xrel = event.motion.xrel;
-        newEvent.motion.yrel = event.motion.yrel;
-        newEvent.motion.state = event.motion.state;
         newEvent.motion.type = event.motion.type;
-        newEvent.motion.which = event.motion.which;
         newEvent.motion.x = event.motion.x;
         newEvent.motion.y = event.motion.y;
 
@@ -385,17 +373,6 @@ bool CWinEventsSDL::MessagePump()
     }
     memset(&event, 0, sizeof(SDL_Event));
   }
-
-  return ret;
-}
-
-size_t CWinEventsSDL::GetQueueSize()
-{
-  int ret;
-  SDL_Event event;
-
-  if (-1 == (ret = SDL_PeepEvents(&event, 0, SDL_PEEKEVENT, ~0)))
-    ret = 0;
 
   return ret;
 }

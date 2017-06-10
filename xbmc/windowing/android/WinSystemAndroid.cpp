@@ -79,8 +79,7 @@ bool CWinSystemAndroid::DestroyWindowSystem()
 
 bool CWinSystemAndroid::CreateNewWindow(const std::string& name,
                                     bool fullScreen,
-                                    RESOLUTION_INFO& res,
-                                    PHANDLE_EVENT_FUNC userFunction)
+                                    RESOLUTION_INFO& res)
 {
   RESOLUTION_INFO current_resolution;
   current_resolution.iWidth = current_resolution.iHeight = 0;

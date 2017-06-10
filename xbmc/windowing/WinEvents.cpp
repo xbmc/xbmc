@@ -19,9 +19,8 @@
  */
 
 #include "WinEvents.h"
-#include "peripherals/Peripherals.h"
-#include "threads/SingleLock.h"
-#include "ServiceBroker.h"
+
+#include "system.h"
 
 #if   defined(TARGET_WINDOWS)
 #include "windows/WinEventsWin32.h"
@@ -57,37 +56,14 @@
 #endif
 
 static WinEventsType    g_imp;
-static CCriticalSection g_lock;
-static bool             g_init  = false;
-
-void Init()
-{
-  CSingleLock lock(g_lock);
-  if (!g_init)
-  {
-    CServiceBroker::GetPeripherals().RegisterObserver(&g_imp);
-    g_init = true;
-  }
-}
 
 void CWinEvents::MessagePush(XBMC_Event* ev)
 {
-  if (!g_init)
-    Init();
   g_imp.MessagePush(ev);
 }
 
 bool CWinEvents::MessagePump()
 {
-  if (!g_init)
-    Init();
   return g_imp.MessagePump();
-}
-
-size_t CWinEvents::GetQueueSize()
-{
-  if (!g_init)
-    Init();
-  return g_imp.GetQueueSize();
 }
 

@@ -144,7 +144,7 @@ std::unordered_map<uint32_t, uint32_t> sym_mapping_xkb =
 , {XKB_KEY_XF86AudioForward,    XBMCK_FASTFORWARD}
 };
 
-void MirHandlePointerButton(MirPointerEvent const* pev, unsigned char state, unsigned char type)
+void MirHandlePointerButton(MirPointerEvent const* pev, unsigned char type)
 {
   auto x = mir_pointer_event_axis_value(pev, mir_pointer_axis_x);
   auto y = mir_pointer_event_axis_value(pev, mir_pointer_axis_y);
@@ -183,7 +183,6 @@ void MirHandlePointerButton(MirPointerEvent const* pev, unsigned char state, uns
   memset(&new_event, 0, sizeof(new_event));
 
   new_event.button.button = xbmc_button;
-  new_event.button.state  = state;
   new_event.button.type   = type;
   new_event.button.x = x;
   new_event.button.y = y;
@@ -196,10 +195,10 @@ void MirHandlePointerEvent(MirPointerEvent const* pev)
   switch (mir_pointer_event_action(pev))
   {
     case mir_pointer_action_button_down:
-      MirHandlePointerButton(pev, XBMC_PRESSED, XBMC_MOUSEBUTTONDOWN);
+      MirHandlePointerButton(pev, XBMC_MOUSEBUTTONDOWN);
       break;
     case mir_pointer_action_button_up:
-      MirHandlePointerButton(pev, XBMC_RELEASED, XBMC_MOUSEBUTTONUP);
+      MirHandlePointerButton(pev, XBMC_MOUSEBUTTONUP);
       break;
     case mir_pointer_action_motion:
     {
@@ -208,14 +207,10 @@ void MirHandlePointerEvent(MirPointerEvent const* pev)
 
       auto x  = mir_pointer_event_axis_value(pev, mir_pointer_axis_x);
       auto y  = mir_pointer_event_axis_value(pev, mir_pointer_axis_y);
-      auto dx = mir_pointer_event_axis_value(pev, mir_pointer_axis_relative_x);
-      auto dy = mir_pointer_event_axis_value(pev, mir_pointer_axis_relative_y);
 
       new_event.type = XBMC_MOUSEMOTION;
       new_event.motion.x = x;
       new_event.motion.y = y;
-      new_event.motion.xrel = dx;
-      new_event.motion.yrel = dy;
 
       CWinEvents::MessagePush(&new_event);
       break;

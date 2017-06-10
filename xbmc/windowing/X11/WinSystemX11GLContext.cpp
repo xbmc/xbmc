@@ -128,9 +128,9 @@ bool CWinSystemX11GLContext::SetWindow(int width, int height, bool fullscreen, c
   return true;
 }
 
-bool CWinSystemX11GLContext::CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction)
+bool CWinSystemX11GLContext::CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res)
 {
-  if(!CWinSystemX11::CreateNewWindow(name, fullScreen, res, userFunction))
+  if(!CWinSystemX11::CreateNewWindow(name, fullScreen, res))
     return false;
 
   m_pGLContext->QueryExtensions();
