@@ -61,15 +61,6 @@ bool CSetting::Deserialize(const TiXmlNode *node, bool update /* = false */)
   if (element == nullptr)
     return false;
 
-  // get the attributes label and help
-  int tmp = -1;
-  if (element->QueryIntAttribute(SETTING_XML_ATTR_LABEL, &tmp) == TIXML_SUCCESS && tmp > 0)
-    m_label = tmp;
-  
-  tmp = -1;
-  if (element->QueryIntAttribute(SETTING_XML_ATTR_HELP, &tmp) == TIXML_SUCCESS && tmp > 0)
-    m_help = tmp;
-
   auto parentSetting = element->Attribute(SETTING_XML_ATTR_PARENT);
   if (parentSetting != nullptr)
     m_parentSetting = parentSetting;
@@ -157,7 +148,7 @@ bool CSetting::IsEnabled() const
       return false;
   }
 
-  bool enabled = true;
+  bool enabled = m_enabled;
   for (auto dep : m_dependencies)
   {
     if (dep.GetType() != SettingDependencyType::Enable)
@@ -248,8 +239,6 @@ void CSetting::Copy(const CSetting &setting)
   SetVisible(setting.IsVisible());
   SetRequirementsMet(setting.MeetsRequirements());
   m_callback = setting.m_callback;
-  m_label = setting.m_label;
-  m_help = setting.m_help;
   m_level = setting.m_level;
  
   if (setting.m_control != nullptr)
@@ -289,7 +278,7 @@ CSettingList::CSettingList(const std::string &id, std::shared_ptr<CSetting> sett
   : CSetting(id, settingsManager)
   , m_definition(settingDefinition)
 {
-  m_label = label;
+  SetLabel(label);
 }
 
 CSettingList::CSettingList(const std::string &id, const CSettingList &setting)
@@ -585,7 +574,7 @@ CSettingBool::CSettingBool(const std::string &id, int label, bool value, CSettin
   , m_value(value)
   , m_default(value)
 {
-  m_label = label;
+  SetLabel(label);
 }
 
 SettingPtr CSettingBool::Clone(const std::string &id) const
@@ -714,7 +703,7 @@ CSettingInt::CSettingInt(const std::string &id, int label, int value, CSettingsM
   , m_value(value)
   , m_default(value)
 {
-  m_label = label;
+  SetLabel(label);
 }
 
 CSettingInt::CSettingInt(const std::string &id, int label, int value, int minimum, int step, int maximum, CSettingsManager *settingsManager /* = nullptr */)
@@ -725,7 +714,7 @@ CSettingInt::CSettingInt(const std::string &id, int label, int value, int minimu
   , m_step(step)
   , m_max(maximum)
 {
-  m_label = label;
+  SetLabel(label);
 }
 
 CSettingInt::CSettingInt(const std::string &id, int label, int value, const TranslatableIntegerSettingOptions &options, CSettingsManager *settingsManager /* = nullptr */)
@@ -734,7 +723,7 @@ CSettingInt::CSettingInt(const std::string &id, int label, int value, const Tran
   , m_default(value)
   , m_translatableOptions(options)
 {
-  m_label = label;
+  SetLabel(label);
 }
 
 SettingPtr CSettingInt::Clone(const std::string &id) const
@@ -999,7 +988,7 @@ CSettingNumber::CSettingNumber(const std::string &id, int label, float value, CS
   , m_value(value)
   , m_default(value)
 {
-  m_label = label;
+  SetLabel(label);
 }
 
 CSettingNumber::CSettingNumber(const std::string &id, int label, float value, float minimum, float step, float maximum, CSettingsManager *settingsManager /* = nullptr */)
@@ -1010,7 +999,7 @@ CSettingNumber::CSettingNumber(const std::string &id, int label, float value, fl
   , m_step(step)
   , m_max(maximum)
 {
-  m_label = label;
+  SetLabel(label);
 }
 
 SettingPtr CSettingNumber::Clone(const std::string &id) const
@@ -1171,7 +1160,7 @@ CSettingString::CSettingString(const std::string &id, int label, const std::stri
   , m_value(value)
   , m_default(value)
 {
-  m_label = label;
+  SetLabel(label);
 }
 
 SettingPtr CSettingString::Clone(const std::string &id) const
@@ -1379,7 +1368,7 @@ CSettingAction::CSettingAction(const std::string &id, CSettingsManager *settings
 CSettingAction::CSettingAction(const std::string &id, int label, CSettingsManager *settingsManager /* = nullptr */)
   : CSetting(id, settingsManager)
 {
-  m_label = label;
+  SetLabel(label);
 }
   
 CSettingAction::CSettingAction(const std::string &id, const CSettingAction &setting)

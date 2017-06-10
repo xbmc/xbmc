@@ -49,6 +49,8 @@ std::shared_ptr<ISettingControl> CSettingControlCreator::CreateControl(const std
     return std::make_shared<CSettingControlRange>();
   else if (StringUtils::EqualsNoCase(controlType, "title"))
     return std::make_shared<CSettingControlTitle>();
+  else if (StringUtils::EqualsNoCase(controlType, "label"))
+    return std::make_shared<CSettingControlLabel>();
 
   return nullptr;
 }
@@ -343,4 +345,9 @@ bool CSettingControlTitle::Deserialize(const TiXmlNode *node, bool update /* = f
   XMLUtils::GetBoolean(node, SETTING_XML_ATTR_HIDE_SEPARATOR, m_separatorHidden);
 
   return true;
+}
+
+CSettingControlLabel::CSettingControlLabel()
+{
+  m_format = "string";
 }

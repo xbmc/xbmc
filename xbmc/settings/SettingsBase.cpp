@@ -121,7 +121,6 @@ void CSettingsBase::SetLoaded()
 
 bool CSettingsBase::IsLoaded() const
 {
-  CSingleLock lock(m_critical);
   return m_settingsManager->IsLoaded();
 }
 
@@ -137,7 +136,6 @@ bool CSettingsBase::SaveValuesToXml(CXBMCTinyXML& xml) const
 
 void CSettingsBase::Unload()
 {
-  CSingleLock lock(m_critical);
   m_settingsManager->Unload();
 }
 
@@ -165,19 +163,16 @@ void CSettingsBase::Uninitialize()
 
 void CSettingsBase::RegisterCallback(ISettingCallback* callback, const std::set<std::string>& settingList)
 {
-  CSingleLock lock(m_critical);
   m_settingsManager->RegisterCallback(callback, settingList);
 }
 
 void CSettingsBase::UnregisterCallback(ISettingCallback* callback)
 {
-  CSingleLock lock(m_critical);
   m_settingsManager->UnregisterCallback(callback);
 }
 
 SettingPtr CSettingsBase::GetSetting(const std::string& id) const
 {
-  CSingleLock lock(m_critical);
   if (id.empty())
     return nullptr;
 
@@ -186,13 +181,11 @@ SettingPtr CSettingsBase::GetSetting(const std::string& id) const
 
 std::vector<std::shared_ptr<CSettingSection>> CSettingsBase::GetSections() const
 {
-  CSingleLock lock(m_critical);
   return m_settingsManager->GetSections();
 }
 
 std::shared_ptr<CSettingSection> CSettingsBase::GetSection(const std::string& section) const
 {
-  CSingleLock lock(m_critical);
   if (section.empty())
     return nullptr;
 
@@ -201,61 +194,51 @@ std::shared_ptr<CSettingSection> CSettingsBase::GetSection(const std::string& se
 
 bool CSettingsBase::GetBool(const std::string& id) const
 {
-  CSingleLock lock(m_critical);
   return m_settingsManager->GetBool(id);
 }
 
 bool CSettingsBase::SetBool(const std::string& id, bool value)
 {
-  CSingleLock lock(m_critical);
   return m_settingsManager->SetBool(id, value);
 }
 
 bool CSettingsBase::ToggleBool(const std::string& id)
 {
-  CSingleLock lock(m_critical);
   return m_settingsManager->ToggleBool(id);
 }
 
 int CSettingsBase::GetInt(const std::string& id) const
 {
-  CSingleLock lock(m_critical);
   return m_settingsManager->GetInt(id);
 }
 
 bool CSettingsBase::SetInt(const std::string& id, int value)
 {
-  CSingleLock lock(m_critical);
   return m_settingsManager->SetInt(id, value);
 }
 
 double CSettingsBase::GetNumber(const std::string& id) const
 {
-  CSingleLock lock(m_critical);
   return m_settingsManager->GetNumber(id);
 }
 
 bool CSettingsBase::SetNumber(const std::string& id, double value)
 {
-  CSingleLock lock(m_critical);
   return m_settingsManager->SetNumber(id, value);
 }
 
 std::string CSettingsBase::GetString(const std::string& id) const
 {
-  CSingleLock lock(m_critical);
   return m_settingsManager->GetString(id);
 }
 
 bool CSettingsBase::SetString(const std::string& id, const std::string& value)
 {
-  CSingleLock lock(m_critical);
   return m_settingsManager->SetString(id, value);
 }
 
 std::vector<CVariant> CSettingsBase::GetList(const std::string& id) const
 {
-  CSingleLock lock(m_critical);
   std::shared_ptr<CSetting> setting = m_settingsManager->GetSetting(id);
   if (setting == nullptr || setting->GetType() != SettingType::List)
     return std::vector<CVariant>();
@@ -265,7 +248,6 @@ std::vector<CVariant> CSettingsBase::GetList(const std::string& id) const
 
 bool CSettingsBase::SetList(const std::string& id, const std::vector<CVariant>& value)
 {
-  CSingleLock lock(m_critical);
   std::shared_ptr<CSetting> setting = m_settingsManager->GetSetting(id);
   if (setting == nullptr || setting->GetType() != SettingType::List)
     return false;
@@ -275,13 +257,11 @@ bool CSettingsBase::SetList(const std::string& id, const std::vector<CVariant>& 
 
 bool CSettingsBase::SetDefault(const std::string &id)
 {
-  CSingleLock lock(m_critical);
   return m_settingsManager->SetDefault(id);
 }
 
 void CSettingsBase::SetDefaults()
 {
-  CSingleLock lock(m_critical);
   m_settingsManager->SetDefaults();
 }
 

@@ -158,6 +158,9 @@ public:
   const std::string& GetActionData() const { return m_actionData; }
   void SetActionData(const std::string& actionData) { m_actionData = actionData; }
 
+  bool CloseDialog() const { return m_closeDialog; }
+  void SetCloseDialog(bool closeDialog) { m_closeDialog = closeDialog; }
+
 protected:
   int m_heading = -1;
   bool m_hideValue = false;
@@ -171,6 +174,7 @@ protected:
   bool m_useFileDirectories = false;
 
   std::string m_actionData;
+  bool m_closeDialog = false;
 };
 
 class CSetting;
@@ -282,4 +286,14 @@ public:
 protected:
   bool m_separatorHidden = false;
   bool m_separatorBelowLabel = true;
+};
+
+class CSettingControlLabel : public ISettingControl
+{
+public:
+  CSettingControlLabel();
+  virtual ~CSettingControlLabel() = default;
+
+  // implementation of ISettingControl
+  virtual std::string GetType() const override { return "label"; }
 };

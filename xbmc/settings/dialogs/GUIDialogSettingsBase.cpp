@@ -415,7 +415,7 @@ void CGUIDialogSettingsBase::SetupControls(bool createSettings /* = true */)
         pButton = new CGUIToggleButtonControl(*(CGUIToggleButtonControl *)m_pOriginalCategoryButton);
       else
         pButton = new CGUIButtonControl(*m_pOriginalCategoryButton);
-      pButton->SetLabel(GetLocalizedString((*category)->GetLabel()));
+      pButton->SetLabel(GetSettingsLabel(*category));
       pButton->SetID(CONTROL_SETTINGS_START_BUTTONS + buttonIdOffset);
       pButton->SetVisible(true);
       pButton->AllocResources();
@@ -561,7 +561,7 @@ std::set<std::string> CGUIDialogSettingsBase::CreateSettings()
       AddSeparator(group->GetWidth(), iControlID);
 
     if (groupLabel > 0)
-      AddLabel(group->GetWidth(), iControlID, groupLabel);
+      AddGroupLabel(*groupIt, group->GetWidth(), iControlID);
 
     if (separatorBelowGroupLabel && !hideSeparator)
       AddSeparator(group->GetWidth(), iControlID);
@@ -587,7 +587,7 @@ std::set<std::string> CGUIDialogSettingsBase::CreateSettings()
   return settingMap;
 }
 
-std::string CGUIDialogSettingsBase::GetSettingsLabel(std::shared_ptr<CSetting> pSetting)
+std::string CGUIDialogSettingsBase::GetSettingsLabel(std::shared_ptr<ISetting> pSetting)
 {
   return GetLocalizedString(pSetting->GetLabel());
 }
@@ -712,6 +712,16 @@ CGUIControl* CGUIDialogSettingsBase::AddSetting(std::shared_ptr<CSetting> pSetti
     ((CGUISettingsSliderControl *)pControl)->SetText(label);
     pSettingControl.reset(new CGUIControlRangeSetting((CGUISettingsSliderControl *)pControl, iControlID, pSetting, this));
   }
+  else if (controlType == "label")
+  {
+    if (m_pOriginalButton != NULL)
+      pControl = new CGUIButtonControl(*m_pOriginalButton);
+    if (pControl == NULL)
+      return NULL;
+
+    ((CGUIButtonControl *)pControl)->SetLabel(label);
+    pSettingControl.reset(new CGUIControlLabelSetting((CGUIButtonControl *)pControl, iControlID, pSetting, this));
+  }
   else
     return NULL;
 
@@ -733,7 +743,7 @@ CGUIControl* CGUIDialogSettingsBase::AddSeparator(float width, int &iControlID)
   return AddSettingControl(pControl, BaseSettingControlPtr(new CGUIControlSeparatorSetting((CGUIImage *)pControl, iControlID, this)), width, iControlID);
 }
 
-CGUIControl* CGUIDialogSettingsBase::AddLabel(float width, int &iControlID, int label)
+CGUIControl* CGUIDialogSettingsBase::AddGroupLabel(std::shared_ptr<CSettingGroup> group, float width, int &iControlID)
 {
   if (m_pOriginalGroupTitle == NULL)
     return NULL;
@@ -742,7 +752,7 @@ CGUIControl* CGUIDialogSettingsBase::AddLabel(float width, int &iControlID, int 
   if (pControl == NULL)
     return NULL;
 
-  ((CGUILabelControl *)pControl)->SetLabel(GetLocalizedString(label));
+  ((CGUILabelControl *)pControl)->SetLabel(GetSettingsLabel(group));
 
   return AddSettingControl(pControl, BaseSettingControlPtr(new CGUIControlGroupTitleSetting((CGUILabelControl *)pControl, iControlID, this)), width, iControlID);
 }

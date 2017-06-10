@@ -56,9 +56,12 @@ class CGUILabelControl;
 class CSetting;
 class CSettingAction;
 class CSettingCategory;
+class CSettingGroup;
 class CSettingSection;
 
 class CVariant;
+
+class ISetting;
 
 typedef std::shared_ptr<CGUIControlBaseSetting> BaseSettingControlPtr;
 
@@ -120,7 +123,7 @@ protected:
     \param pSetting Base settings class which need the name
     \return Name used on settings dialog
    */
-  virtual std::string GetSettingsLabel(std::shared_ptr<CSetting> pSetting);
+  virtual std::string GetSettingsLabel(std::shared_ptr<ISetting> pSetting);
 
   virtual CGUIControl* AddSetting(std::shared_ptr<CSetting> pSetting, float width, int &iControlID);
   virtual CGUIControl* AddSettingControl(CGUIControl *pControl, BaseSettingControlPtr pSettingControl, float width, int &iControlID);
@@ -156,7 +159,7 @@ protected:
   BaseSettingControlPtr GetSettingControl(int controlId);
   
   CGUIControl* AddSeparator(float width, int &iControlID);
-  CGUIControl* AddLabel(float width, int &iControlID, int label);
+  CGUIControl* AddGroupLabel(std::shared_ptr<CSettingGroup> group, float width, int &iControlID);
 
   std::vector<std::shared_ptr<CSettingCategory>> m_categories;
   std::vector<BaseSettingControlPtr> m_settingControls;
