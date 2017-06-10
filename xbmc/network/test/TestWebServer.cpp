@@ -358,7 +358,7 @@ TEST_F(TestWebServer, IsStarted)
   ASSERT_TRUE(webserver.IsStarted());
 }
 
-TEST_F(TestWebServer, CanGetJsonRpcApiDescription)
+TEST_F(TestWebServer, CanGetJsonRpcApiDescriptionWithHttpGet)
 {
   std::string result;
   CCurlFile curl;
@@ -379,7 +379,77 @@ TEST_F(TestWebServer, CanGetJsonRpcApiDescription)
   EXPECT_TRUE(cacheControl.find("no-cache") != std::string::npos);
 }
 
-TEST_F(TestWebServer, CanGetJsonRpcResponse)
+TEST_F(TestWebServer, CanReadDataOverJsonRpcWithHttpGet)
+{
+  // initialized JSON-RPC
+  JSONRPC::CJSONRPC::Initialize();
+
+  std::string result;
+  CCurlFile curl;
+  ASSERT_TRUE(curl.Get(GetUrl(TEST_URL_JSONRPC "?request=" + CURL::Encode("{ \"jsonrpc\": \"2.0\", \"method\": \"JSONRPC.Version\", \"id\": 1 }")), result));
+  ASSERT_FALSE(result.empty());
+
+  // parse the JSON-RPC response
+  CVariant resultObj;
+  ASSERT_TRUE(CJSONVariantParser::Parse(result, resultObj));
+  // make sure it's an object
+  ASSERT_TRUE(resultObj.isObject());
+
+  // get the HTTP header details
+  const CHttpHeader& httpHeader = curl.GetHttpHeader();
+
+  // Content-Type must be "application/json"
+  EXPECT_STREQ("application/json", httpHeader.GetMimeType().c_str());
+  // Accept-Ranges must be "none"
+  EXPECT_STREQ("none", httpHeader.GetValue(MHD_HTTP_HEADER_ACCEPT_RANGES).c_str());
+
+  // Cache-Control must contain "mag-age=0" and "no-cache"
+  std::string cacheControl = httpHeader.GetValue(MHD_HTTP_HEADER_CACHE_CONTROL);
+  EXPECT_TRUE(cacheControl.find("max-age=0") != std::string::npos);
+  EXPECT_TRUE(cacheControl.find("no-cache") != std::string::npos);
+
+  // uninitialize JSON-RPC
+  JSONRPC::CJSONRPC::Cleanup();
+}
+
+TEST_F(TestWebServer, CannotModifyOverJsonRpcWithHttpGet)
+{
+  // initialized JSON-RPC
+  JSONRPC::CJSONRPC::Initialize();
+
+  std::string result;
+  CCurlFile curl;
+  ASSERT_TRUE(curl.Get(GetUrl(TEST_URL_JSONRPC "?request=" + CURL::Encode("{ \"jsonrpc\": \"2.0\", \"method\": \"Input.Left\", \"id\": 1 }")), result));
+  ASSERT_FALSE(result.empty());
+
+  // parse the JSON-RPC response
+  CVariant resultObj;
+  ASSERT_TRUE(CJSONVariantParser::Parse(result, resultObj));
+  // make sure it's an object
+  ASSERT_TRUE(resultObj.isObject());
+  // it must contain the "error" property with the "Bad client permission" error code
+  ASSERT_TRUE(resultObj.isMember("error") && resultObj["error"].isObject());
+  ASSERT_TRUE(resultObj["error"].isMember("code") && resultObj["error"]["code"].isInteger());
+  ASSERT_EQ(JSONRPC::BadPermission, resultObj["error"]["code"].asInteger());
+
+  // get the HTTP header details
+  const CHttpHeader& httpHeader = curl.GetHttpHeader();
+
+  // Content-Type must be "application/json"
+  EXPECT_STREQ("application/json", httpHeader.GetMimeType().c_str());
+  // Accept-Ranges must be "none"
+  EXPECT_STREQ("none", httpHeader.GetValue(MHD_HTTP_HEADER_ACCEPT_RANGES).c_str());
+
+  // Cache-Control must contain "mag-age=0" and "no-cache"
+  std::string cacheControl = httpHeader.GetValue(MHD_HTTP_HEADER_CACHE_CONTROL);
+  EXPECT_TRUE(cacheControl.find("max-age=0") != std::string::npos);
+  EXPECT_TRUE(cacheControl.find("no-cache") != std::string::npos);
+
+  // uninitialize JSON-RPC
+  JSONRPC::CJSONRPC::Cleanup();
+}
+
+TEST_F(TestWebServer, CanReadDataOverJsonRpcWithHttpPost)
 {
   // initialized JSON-RPC
   JSONRPC::CJSONRPC::Initialize();
@@ -395,6 +465,43 @@ TEST_F(TestWebServer, CanGetJsonRpcResponse)
   ASSERT_TRUE(CJSONVariantParser::Parse(result, resultObj));
   // make sure it's an object
   ASSERT_TRUE(resultObj.isObject());
+
+  // get the HTTP header details
+  const CHttpHeader& httpHeader = curl.GetHttpHeader();
+
+  // Content-Type must be "application/json"
+  EXPECT_STREQ("application/json", httpHeader.GetMimeType().c_str());
+  // Accept-Ranges must be "none"
+  EXPECT_STREQ("none", httpHeader.GetValue(MHD_HTTP_HEADER_ACCEPT_RANGES).c_str());
+
+  // Cache-Control must contain "mag-age=0" and "no-cache"
+  std::string cacheControl = httpHeader.GetValue(MHD_HTTP_HEADER_CACHE_CONTROL);
+  EXPECT_TRUE(cacheControl.find("max-age=0") != std::string::npos);
+  EXPECT_TRUE(cacheControl.find("no-cache") != std::string::npos);
+
+  // uninitialize JSON-RPC
+  JSONRPC::CJSONRPC::Cleanup();
+}
+
+TEST_F(TestWebServer, CanModifyOverJsonRpcWithHttpPost)
+{
+  // initialized JSON-RPC
+  JSONRPC::CJSONRPC::Initialize();
+
+  std::string result;
+  CCurlFile curl;
+  curl.SetMimeType("application/json");
+  ASSERT_TRUE(curl.Post(GetUrl(TEST_URL_JSONRPC), "{ \"jsonrpc\": \"2.0\", \"method\": \"Input.Left\", \"id\": 1 }", result));
+  ASSERT_FALSE(result.empty());
+
+  // parse the JSON-RPC response
+  CVariant resultObj;
+  ASSERT_TRUE(CJSONVariantParser::Parse(result, resultObj));
+  // make sure it's an object
+  ASSERT_TRUE(resultObj.isObject());
+  // it must contain the "result" property with the "OK" value
+  ASSERT_TRUE(resultObj.isMember("result") && resultObj["result"].isString());
+  EXPECT_STREQ("OK", resultObj["result"].asString().c_str());
 
   // get the HTTP header details
   const CHttpHeader& httpHeader = curl.GetHttpHeader();

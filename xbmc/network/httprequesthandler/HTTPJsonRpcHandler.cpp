@@ -39,7 +39,7 @@ bool CHTTPJsonRpcHandler::CanHandleRequest(const HTTPRequest &request) const
 
 int CHTTPJsonRpcHandler::HandleRequest()
 {
-  CHTTPClient client;
+  CHTTPClient client(m_request.method);
   bool isRequest = false;
   std::string jsonpCallback;
 
@@ -176,9 +176,12 @@ int CHTTPJsonRpcHandler::CHTTPTransportLayer::GetCapabilities()
   return JSONRPC::Response | JSONRPC::FileDownloadRedirect;
 }
 
-int CHTTPJsonRpcHandler::CHTTPClient::GetPermissionFlags()
+CHTTPJsonRpcHandler::CHTTPClient::CHTTPClient(HTTPMethod method)
+  : m_permissionFlags(JSONRPC::ReadData)
 {
-  return JSONRPC::OPERATION_PERMISSION_ALL;
+  // with a HTTP POST request everything is allowed
+  if (method == POST)
+    m_permissionFlags = JSONRPC::OPERATION_PERMISSION_ALL;
 }
 
 int CHTTPJsonRpcHandler::CHTTPClient::GetAnnouncementFlags()
