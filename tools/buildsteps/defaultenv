@@ -88,7 +88,7 @@ function getBuildHash ()
   checkPath="$1"
   local hashStr
   hashStr="$(git rev-list HEAD --max-count=1  -- $checkPath)"
-  hashStr="$hashStr $SDK_PATH $NDK_PATH $NDK_VERSION $SDK_VERSION $TOOLCHAIN $XBMC_DEPENDS_ROOT"
+  hashStr="$hashStr $SDK_PATH $NDK_PATH $NDK_VERSION $SDK_VERSION $TOOLCHAIN $XBMC_DEPENDS_ROOT $DARWIN_ARM_CPU"
   echo $hashStr
 }
 
