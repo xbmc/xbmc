@@ -594,7 +594,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
     case WM_APPCOMMAND: // MULTIMEDIA keys are mapped to APPCOMMANDS
     {
       CLog::Log(LOGDEBUG, "WinEventsWin32.cpp: APPCOMMAND %d", GET_APPCOMMAND_LPARAM(lParam));
-      newEvent.appcommand.type = XBMC_APPCOMMAND;
+      newEvent.type = XBMC_APPCOMMAND;
       newEvent.appcommand.action = GET_APPCOMMAND_LPARAM(lParam);
       if (m_pEventFunc(newEvent))
         return TRUE;

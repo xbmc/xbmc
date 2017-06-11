@@ -183,7 +183,6 @@ void MirHandlePointerButton(MirPointerEvent const* pev, unsigned char type)
   memset(&new_event, 0, sizeof(new_event));
 
   new_event.button.button = xbmc_button;
-  new_event.button.type   = type;
   new_event.button.x = x;
   new_event.button.y = y;
 

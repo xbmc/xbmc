@@ -443,7 +443,7 @@ XBMCMod CLinuxInputDevice::UpdateModifiers(XBMC_Event& devt)
     default: break;
   }
 
-  if (devt.key.type == XBMC_KEYDOWN)
+  if (devt.type == XBMC_KEYDOWN)
   {
     m_keyMods |= modifier;
   }
@@ -452,7 +452,7 @@ XBMCMod CLinuxInputDevice::UpdateModifiers(XBMC_Event& devt)
     m_keyMods &= ~modifier;
   }
 
-  if (devt.key.type == XBMC_KEYDOWN)
+  if (devt.type == XBMC_KEYDOWN)
   {
     modifier = XBMCKMOD_NONE;
     switch (devt.key.keysym.sym)
@@ -493,7 +493,6 @@ bool CLinuxInputDevice::KeyEvent(const struct input_event& levt, XBMC_Event& dev
       return false;
 
     devt.type = levt.value ? XBMC_MOUSEBUTTONDOWN : XBMC_MOUSEBUTTONUP;
-    devt.button.type = devt.type;
     devt.button.x = m_mouseX;
     devt.button.y = m_mouseY;
 
@@ -543,7 +542,6 @@ bool CLinuxInputDevice::KeyEvent(const struct input_event& levt, XBMC_Event& dev
     }
 
     devt.type = levt.value ? XBMC_KEYDOWN : XBMC_KEYUP;
-    devt.key.type = devt.type;
     // warning, key.keysym.scancode is unsigned char so 0 - 255 only
     devt.key.keysym.scancode = code;
     devt.key.keysym.sym = key;
@@ -613,14 +611,12 @@ bool CLinuxInputDevice::RelEvent(const struct input_event& levt, XBMC_Event& dev
   if (motion)
   {
     devt.type = XBMC_MOUSEMOTION;
-    devt.motion.type = XBMC_MOUSEMOTION;
     devt.motion.x = m_mouseX;
     devt.motion.y = m_mouseY;
   }
   else if (wheel)
   {
      devt.type = XBMC_MOUSEBUTTONUP;
-     devt.button.type = devt.type;
      devt.button.x = m_mouseX;
      devt.button.y = m_mouseY;
      devt.button.button = (levt.value<0) ? XBMC_BUTTON_WHEELDOWN:XBMC_BUTTON_WHEELUP;
@@ -664,7 +660,6 @@ bool CLinuxInputDevice::AbsEvent(const struct input_event& levt, XBMC_Event& dev
   }
 
   devt.type = XBMC_MOUSEMOTION;
-  devt.motion.type = XBMC_MOUSEMOTION;
   devt.motion.x = m_mouseX;
   devt.motion.y = m_mouseY;
 
