@@ -50,19 +50,16 @@ typedef enum {
 
 /* Keyboard event structure */
 typedef struct XBMC_KeyboardEvent {
-	unsigned char type;	/* XBMC_KEYDOWN or XBMC_KEYUP */
 	XBMC_keysym keysym;
 } XBMC_KeyboardEvent;
 
 /* Mouse motion event structure */
 typedef struct XBMC_MouseMotionEvent {
-	unsigned char type;	/* XBMC_MOUSEMOTION */
 	uint16_t x, y;	/* The X/Y coordinates of the mouse */
 } XBMC_MouseMotionEvent;
 
 /* Mouse button event structure */
 typedef struct XBMC_MouseButtonEvent {
-	unsigned char type;	/* XBMC_MOUSEBUTTONDOWN or XBMC_MOUSEBUTTONUP */
 	unsigned char button;	/* The mouse button index */
 	uint16_t x, y;	/* The X/Y coordinates of the mouse at press time */
 } XBMC_MouseButtonEvent;
@@ -72,25 +69,21 @@ typedef struct XBMC_MouseButtonEvent {
    mode with the new width and height.
  */
 typedef struct XBMC_ResizeEvent {
-	unsigned char type;	/* XBMC_VIDEORESIZE */
 	int w;		/* New width */
 	int h;		/* New height */
 } XBMC_ResizeEvent;
 
 typedef struct XBMC_MoveEvent {
-	unsigned char type;	/* XBMC_VIDEOMOVE */
 	int x;		/* New x position */
 	int y;		/* New y position */
 } XBMC_MoveEvent;
 
 /* The "quit requested" event */
 typedef struct XBMC_QuitEvent {
-	unsigned char type;	/* XBMC_QUIT */
 } XBMC_QuitEvent;
 
 /* A user-defined event type */
 typedef struct XBMC_UserEvent {
-	unsigned char type;	/* XBMC_USEREVENT */
 	int code;	/* User defined event code */
 	void *data1;	/* User defined data pointer */
 	void *data2;	/* User defined data pointer */
@@ -98,13 +91,11 @@ typedef struct XBMC_UserEvent {
 
 /* Multimedia keys on keyboards / remotes are mapped to APPCOMMAND events */
 typedef struct XBMC_AppCommandEvent {
-  unsigned char type; /* XBMC_APPCOMMAND */
-  unsigned int action; /* One of ACTION_... */  
+  unsigned int action; /* One of ACTION_... */
 } XBMC_AppCommandEvent;
 
 /* Mouse motion event structure */
 typedef struct XBMC_TouchEvent {
-  unsigned char type;   /* XBMC_TOUCH */
   int action;           /* action ID */
   float x, y;           /* The X/Y coordinates of the mouse */
   float x2, y2;         /* Additional X/Y coordinates */
@@ -112,23 +103,25 @@ typedef struct XBMC_TouchEvent {
 } XBMC_TouchEvent;
 
 typedef struct XBMC_SetFocusEvent {
-	unsigned char type;	/* XBMC_SETFOCUS */
 	int x;		/* x position */
 	int y;		/* y position */
 } XBMC_SetFocusEvent;
 
 /* General event structure */
-typedef union XBMC_Event {
-  unsigned char type;
-  XBMC_KeyboardEvent key;
-  XBMC_MouseMotionEvent motion;
-  XBMC_MouseButtonEvent button;
-  XBMC_ResizeEvent resize;
-  XBMC_MoveEvent move;
-  XBMC_QuitEvent quit;
-  XBMC_UserEvent user;
-  XBMC_AppCommandEvent appcommand;
-  XBMC_TouchEvent touch;
-  XBMC_SetFocusEvent focus;
+typedef struct XBMC_Event {
+  uint8_t type;
+  union
+  {
+    XBMC_KeyboardEvent key;
+    XBMC_MouseMotionEvent motion;
+    XBMC_MouseButtonEvent button;
+    XBMC_ResizeEvent resize;
+    XBMC_MoveEvent move;
+    XBMC_QuitEvent quit;
+    XBMC_UserEvent user;
+    XBMC_AppCommandEvent appcommand;
+    XBMC_TouchEvent touch;
+    XBMC_SetFocusEvent focus;
+  };
 } XBMC_Event;
 

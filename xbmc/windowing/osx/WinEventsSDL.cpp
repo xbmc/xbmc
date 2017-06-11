@@ -76,7 +76,6 @@ bool CWinEventsSDL::MessagePump()
         newEvent.key.keysym.scancode = event.key.keysym.scancode;
         newEvent.key.keysym.sym = (XBMCKey) event.key.keysym.sym;
         newEvent.key.keysym.unicode = event.key.keysym.unicode;
-        newEvent.key.type = XBMC_KEYDOWN;
 
         // Check if the Windows keys are down because SDL doesn't flag this.
         uint16_t mod = event.key.keysym.mod;
@@ -99,7 +98,6 @@ bool CWinEventsSDL::MessagePump()
         newEvent.key.keysym.sym = (XBMCKey) event.key.keysym.sym;
         newEvent.key.keysym.mod =(XBMCMod) event.key.keysym.mod;
         newEvent.key.keysym.unicode = event.key.keysym.unicode;
-        newEvent.key.type = XBMC_KEYUP;
 
         ret |= g_application.OnEvent(newEvent);
         break;
@@ -141,7 +139,6 @@ bool CWinEventsSDL::MessagePump()
         }
         XBMC_Event newEvent;
         newEvent.type = XBMC_MOUSEMOTION;
-        newEvent.motion.type = XBMC_MOUSEMOTION;
         newEvent.motion.x = event.motion.x;
         newEvent.motion.y = event.motion.y;
 

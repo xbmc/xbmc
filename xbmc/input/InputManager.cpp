@@ -407,12 +407,12 @@ bool CInputManager::OnEvent(XBMC_Event& newEvent)
       }
       else
       {
-        if (newEvent.button.type == XBMC_MOUSEBUTTONDOWN)
+        if (newEvent.type == XBMC_MOUSEBUTTONDOWN)
         {
           if (it->driverHandler->OnButtonPress(newEvent.button.button))
             handled = true;
         }
-        else if (newEvent.button.type == XBMC_MOUSEBUTTONUP)
+        else if (newEvent.type == XBMC_MOUSEBUTTONUP)
         {
           it->driverHandler->OnButtonRelease(newEvent.button.button);
         }
