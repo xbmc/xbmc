@@ -329,7 +329,6 @@ void CAndroidKey::XBMC_Key(uint8_t code, uint16_t key, uint16_t modifiers, uint1
 
   unsigned char type = up ? XBMC_KEYUP : XBMC_KEYDOWN;
   newEvent.type = type;
-  newEvent.key.type = type;
   newEvent.key.keysym.scancode = code;
   newEvent.key.keysym.sym = (XBMCKey)key;
   newEvent.key.keysym.unicode = unicode;
