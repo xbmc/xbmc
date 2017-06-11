@@ -88,14 +88,6 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
   @Override
   public void onCreate(Bundle savedInstanceState)
   {
-    // The dynamic linker on droid is a mess.
-    // Depending on version, it might not be able to properly resolve
-    try
-    {
-      // Surround with try-catch to allow static version (3.0)
-      System.loadLibrary("smbclient");
-    }
-    catch (UnsatisfiedLinkError e) {}
     System.loadLibrary("@APP_NAME_LC@");
 
     super.onCreate(savedInstanceState);
