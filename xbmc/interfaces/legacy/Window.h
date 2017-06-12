@@ -691,6 +691,9 @@ namespace XBMCAddon
       ///  |   8   | PAL60 4:3  (720x480)
       ///  |   9   | PAL60 16:9 (720x480)
       ///
+      ///-----------------------------------------------------------------------
+      /// @python_v18 Deprecated.
+      ///
       getResolution();
 #else
       SWIGHIDDENVIRTUAL long getResolution();
@@ -733,6 +736,9 @@ namespace XBMCAddon
       /// win.setCoordinateResolution(0)
       /// ..
       /// ~~~~~~~~~~~~~
+      ///-----------------------------------------------------------------------
+      /// @python_v18 Deprecated.
+      ///
       setCoordinateResolution(...);
 #else
       SWIGHIDDENVIRTUAL void setCoordinateResolution(long res);
