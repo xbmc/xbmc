@@ -109,6 +109,7 @@ namespace ADDON
     static bool AddOnGetSetting(void *userData, const char *settingName, void *settingValue);
     static void AddOnOpenSettings(const char *url, bool bReload);
     static void AddOnOpenOwnSettings(void *userData, bool bReload);
+    bool UpdateSettingInActiveDialog(const char* id, const std::string& value);
 
     /// addon to kodi basic callbacks below
     //@{
@@ -127,8 +128,14 @@ namespace ADDON
     static char* get_addon_path(void* kodiBase);
     static char* get_base_user_path(void* kodiBase);
     static void addon_log_msg(void* kodiBase, const int addonLogLevel, const char* strMessage);
-    static bool get_setting(void* kodiBase, const char* settingName, void* settingValue);
-    static bool set_setting(void* kodiBase, const char* settingName, const char* settingValue);
+    static bool get_setting_bool(void* kodiBase, const char* id, bool* value);
+    static bool get_setting_int(void* kodiBase, const char* id, int* value);
+    static bool get_setting_float(void* kodiBase, const char* id, float* value);
+    static bool get_setting_string(void* kodiBase, const char* id, char** value);
+    static bool set_setting_bool(void* kodiBase, const char* id, bool value);
+    static bool set_setting_int(void* kodiBase, const char* id, int value);
+    static bool set_setting_float(void* kodiBase, const char* id, float value);
+    static bool set_setting_string(void* kodiBase, const char* id, const char* value);
     static void free_string(void* kodiBase, char* str);
     //@}
   };

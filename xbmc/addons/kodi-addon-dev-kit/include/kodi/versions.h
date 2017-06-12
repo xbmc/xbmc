@@ -41,7 +41,7 @@
  * overview.
  */
 
-#define ADDON_GLOBAL_VERSION_MAIN                     "1.0.8"
+#define ADDON_GLOBAL_VERSION_MAIN                     "1.0.9"
 #define ADDON_GLOBAL_VERSION_MAIN_MIN                 "1.0.2"
 #define ADDON_GLOBAL_VERSION_MAIN_XML_ID              "kodi.binary.global.main"
 #define ADDON_GLOBAL_VERSION_MAIN_DEPENDS             "AddonBase.h" \
@@ -142,11 +142,10 @@
                                                       "kodi_vfs_types.h" \
                                                       "kodi_vfs_utils.hpp"
 
-#define ADDON_INSTANCE_VERSION_VISUALIZATION          "1.0.1"
-#define ADDON_INSTANCE_VERSION_VISUALIZATION_MIN      "1.0.1"
+#define ADDON_INSTANCE_VERSION_VISUALIZATION          "2.0.0"
+#define ADDON_INSTANCE_VERSION_VISUALIZATION_MIN      "2.0.0"
 #define ADDON_INSTANCE_VERSION_VISUALIZATION_XML_ID   "kodi.binary.instance.visualization"
-#define ADDON_INSTANCE_VERSION_VISUALIZATION_DEPENDS  "xbmc_vis_dll.h" \
-                                                      "xbmc_vis_types.h"
+#define ADDON_INSTANCE_VERSION_VISUALIZATION_DEPENDS  "addon-instance/Visualization.h"
 
 ///
 /// The currently available instance types for Kodi add-ons
