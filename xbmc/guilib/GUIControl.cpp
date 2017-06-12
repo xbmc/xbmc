@@ -929,6 +929,12 @@ void CGUIControl::SaveStates(std::vector<CControlState> &states)
   // empty for now - do nothing with the majority of controls
 }
 
+CGUIControl *CGUIControl::GetControl(int iControl, std::vector<CGUIControl*> *idCollector)
+{
+  return (iControl == m_controlID) ? this : nullptr;
+}
+
+
 void CGUIControl::UpdateControlStats()
 {
   if (m_controlStats)
