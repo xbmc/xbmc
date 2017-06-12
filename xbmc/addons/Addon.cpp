@@ -61,13 +61,12 @@ namespace ADDON
 
 CAddon::CAddon(CAddonInfo addonInfo)
   : m_addonInfo(std::move(addonInfo))
-  , m_userSettingsPath()
   , m_loadSettingsFailed(false)
   , m_hasUserSettings(false)
   , m_profilePath(StringUtils::Format("special://profile/addon_data/%s/", m_addonInfo.ID().c_str()))
+  , m_userSettingsPath(URIUtils::AddFileToFolder(m_profilePath, "settings.xml"))
   , m_settings(nullptr)
 {
-  m_userSettingsPath = URIUtils::AddFileToFolder(m_profilePath, "settings.xml");
 }
 
 /**
@@ -377,9 +376,9 @@ CAddonSettings* CAddon::GetSettings() const
 
 std::string CAddon::LibPath() const
 {
-  if (m_addonInfo.LibName().empty())
+  if (m_addonInfo.MainLibName().empty())
     return "";
-  return URIUtils::AddFileToFolder(m_addonInfo.Path(), m_addonInfo.LibName());
+  return URIUtils::AddFileToFolder(m_addonInfo.Path(), m_addonInfo.MainLibName());
 }
 
 AddonVersion CAddon::GetDependencyVersion(const std::string &dependencyID) const

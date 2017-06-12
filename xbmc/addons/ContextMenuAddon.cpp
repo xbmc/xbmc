@@ -108,7 +108,7 @@ std::unique_ptr<CContextMenuAddon> CContextMenuAddon::FromExtension(CAddonInfo a
         label = g_localizeStrings.GetAddonString(addonInfo.ID(), atoi(label.c_str()));
 
       CContextMenuItem menuItem = CContextMenuItem::CreateItem(label, parent,
-          URIUtils::AddFileToFolder(addonInfo.Path(), addonInfo.LibName()), visCondition, addonInfo.ID());
+          URIUtils::AddFileToFolder(addonInfo.Path(), addonInfo.MainLibName()), visCondition, addonInfo.ID());
 
       items.push_back(menuItem);
     }
