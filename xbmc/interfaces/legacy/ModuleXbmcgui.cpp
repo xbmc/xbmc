@@ -45,6 +45,18 @@ namespace XBMCAddon
       return g_windowManager.GetTopMostModalDialogID();
     }
 
+    long getScreenHeight()
+    {
+      XBMC_TRACE;
+      return g_graphicsContext.GetHeight();
+    }
+
+    long getScreenWidth()
+    {
+      XBMC_TRACE;
+      return g_graphicsContext.GetWidth();
+    }
+
     const char* getNOTIFICATION_INFO()    { return NOTIFICATION_INFO; }
     const char* getNOTIFICATION_WARNING() { return NOTIFICATION_WARNING; }
     const char* getNOTIFICATION_ERROR()   { return NOTIFICATION_ERROR; }
