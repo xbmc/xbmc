@@ -867,6 +867,8 @@ SettingPtr CAddonSettings::InitializeFromOldSettingPath(const std::string& setti
     control->SetFormat("image");
   else
   {
+    control->SetFormat("file");
+
     // parse the options
     const auto options = StringUtils::Split(option, OldSettingValuesSeparator);
     control->SetUseImageThumbs(std::find(options.cbegin(), options.cend(), "usethumbs") != options.cend());
