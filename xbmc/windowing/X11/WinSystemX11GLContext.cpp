@@ -189,6 +189,7 @@ XVisualInfo* CWinSystemX11GLContext::GetVisual()
 }
 
 #if defined (HAVE_LIBVA)
+#include <va/va_x11.h>
 #include "cores/VideoPlayer/DVDCodecs/Video/VAAPI.h"
 #endif
 #if defined (HAVE_LIBVDPAU)
@@ -250,4 +251,12 @@ std::unique_ptr<CVideoSync> CWinSystemX11GLContext::GetVideoSync(void *clock)
     pVSync.reset(new CVideoSyncGLX(clock));
   }
   return pVSync;
+}
+
+void* CWinSystemX11GLContext::GetVaDisplay()
+{
+#if defined(HAVE_LIBVA)
+  return vaGetDisplay(m_dpy);
+#endif
+  return nullptr;
 }
