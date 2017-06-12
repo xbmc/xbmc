@@ -22,7 +22,6 @@
 #include "Application.h"
 #include "ActiveAEDSPAddon.h"
 #include "ActiveAEDSP.h"
-#include "cores/AudioEngine/Interfaces/AESound.h"
 #include "filesystem/SpecialProtocol.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
@@ -68,16 +67,6 @@ void CActiveAEDSPAddon::ResetProperties(int iClientId /* = AE_DSP_INVALID_ADDON_
   m_struct.toKodi.remove_menu_hook = cb_remove_menu_hook;
   m_struct.toKodi.register_mode = cb_register_mode;
   m_struct.toKodi.unregister_mode = cb_unregister_mode;
-
-  m_struct.toKodi.SoundPlay_GetHandle = cb_sound_play_get_handle;
-  m_struct.toKodi.SoundPlay_ReleaseHandle = cb_sound_play_release_handle;
-  m_struct.toKodi.SoundPlay_Play = cb_sound_play_play;
-  m_struct.toKodi.SoundPlay_Stop = cb_sound_play_stop;
-  m_struct.toKodi.SoundPlay_IsPlaying = cb_sound_play_is_playing;
-  m_struct.toKodi.SoundPlay_SetChannel = cb_sound_play_set_channel;
-  m_struct.toKodi.SoundPlay_GetChannel = cb_sound_play_get_channel;
-  m_struct.toKodi.SoundPlay_SetVolume = cb_sound_play_set_volume;
-  m_struct.toKodi.SoundPlay_GetVolume = cb_sound_play_get_volume;
 }
 
 bool CActiveAEDSPAddon::Create(int iClientId)
@@ -497,11 +486,11 @@ void CActiveAEDSPAddon::cb_register_mode(void* kodiInstance, AE_DSP_MODES::AE_DS
 
   if (idMode > AE_DSP_INVALID_ADDON_ID)
   {
-          CLog::Log(LOGDEBUG, "Audio DSP - %s - successfully registered mode %s of %s adsp-addon", __FUNCTION__, mode->strModeName, addon->Name().c_str());
+    CLog::Log(LOGDEBUG, "Audio DSP - %s - successfully registered mode %s of %s adsp-addon", __FUNCTION__, mode->strModeName, addon->Name().c_str());
   }
   else
   {
-          CLog::Log(LOGERROR, "Audio DSP - %s - failed to register mode %s of %s adsp-addon", __FUNCTION__, mode->strModeName, addon->Name().c_str());
+    CLog::Log(LOGERROR, "Audio DSP - %s - failed to register mode %s of %s adsp-addon", __FUNCTION__, mode->strModeName, addon->Name().c_str());
   }
 }
 
@@ -516,116 +505,4 @@ void CActiveAEDSPAddon::cb_unregister_mode(void* kodiInstance, AE_DSP_MODES::AE_
 
   CActiveAEDSPMode transferMode(*mode, addon->GetID());
   transferMode.Delete();
-}
-
-ADSPHANDLE CActiveAEDSPAddon::cb_sound_play_get_handle(void *kodiInstance, const char *filename)
-{
-  CActiveAEDSPAddon *addon = static_cast<CActiveAEDSPAddon*>(kodiInstance);
-  if (!filename || !addon)
-  {
-    CLog::Log(LOGERROR, "Audio DSP - %s - invalid sound play data", __FUNCTION__);
-    return NULL;
-  }
-
-  IAESound *sound = CServiceBroker::GetActiveAE().MakeSound(filename);
-  if (!sound)
-  {
-    CLog::Log(LOGERROR, "Audio DSP - %s - failed to make sound play data", __FUNCTION__);
-    return NULL;
-  }
-
-  return sound;
-}
-
-void CActiveAEDSPAddon::cb_sound_play_release_handle(void *kodiInstance, ADSPHANDLE handle)
-{
-  CActiveAEDSPAddon *addon = static_cast<CActiveAEDSPAddon*>(kodiInstance);
-  if (!handle || !addon)
-  {
-    CLog::Log(LOGERROR, "Audio DSP - %s - invalid sound play data", __FUNCTION__);
-    return;
-  }
-
-  CServiceBroker::GetActiveAE().FreeSound(reinterpret_cast<IAESound*>(handle));
-}
-
-void CActiveAEDSPAddon::cb_sound_play_play(void *kodiInstance, ADSPHANDLE handle)
-{
-  CActiveAEDSPAddon *addon = static_cast<CActiveAEDSPAddon*>(kodiInstance);
-  if (!handle || !addon)
-  {
-    CLog::Log(LOGERROR, "Audio DSP - %s - invalid sound play data", __FUNCTION__);
-    return;
-  }
-  ((IAESound*)handle)->Play();
-}
-
-void CActiveAEDSPAddon::cb_sound_play_stop(void *kodiInstance, ADSPHANDLE handle)
-{
-  CActiveAEDSPAddon *addon = static_cast<CActiveAEDSPAddon*>(kodiInstance);
-  if (!handle || !addon)
-  {
-    CLog::Log(LOGERROR, "Audio DSP - %s - invalid sound play data", __FUNCTION__);
-    return;
-  }
-  ((IAESound*)handle)->Stop();
-}
-
-bool CActiveAEDSPAddon::cb_sound_play_is_playing(void *kodiInstance, ADSPHANDLE handle)
-{
-  CActiveAEDSPAddon *addon = static_cast<CActiveAEDSPAddon*>(kodiInstance);
-  if (!handle || !addon)
-  {
-    CLog::Log(LOGERROR, "Audio DSP - %s - invalid sound play data", __FUNCTION__);
-    return false;
-  }
-  return ((IAESound*)handle)->IsPlaying();
-}
-
-void CActiveAEDSPAddon::cb_sound_play_set_channel(void *kodiInstance, ADSPHANDLE handle, AE_DSP_CHANNEL channel)
-{
-  CActiveAEDSPAddon *addon = static_cast<CActiveAEDSPAddon*>(kodiInstance);
-  if (!handle || !addon)
-  {
-    CLog::Log(LOGERROR, "Audio DSP - %s - invalid sound play data", __FUNCTION__);
-    return;
-  }
-
-  ((IAESound*)handle)->SetChannel(CActiveAEDSP::GetKODIChannel(channel));
-}
-
-AE_DSP_CHANNEL CActiveAEDSPAddon::cb_sound_play_get_channel(void *kodiInstance, ADSPHANDLE handle)
-{
-  CActiveAEDSPAddon *addon = static_cast<CActiveAEDSPAddon*>(kodiInstance);
-  if (!handle || !addon)
-  {
-    CLog::Log(LOGERROR, "Audio DSP - %s - invalid sound play data", __FUNCTION__);
-    return AE_DSP_CH_INVALID;
-  }
-
-  return CActiveAEDSP::GetDSPChannel(((IAESound*)handle)->GetChannel());
-}
-
-void CActiveAEDSPAddon::cb_sound_play_set_volume(void *kodiInstance, ADSPHANDLE handle, float volume)
-{
-  CActiveAEDSPAddon *addon = static_cast<CActiveAEDSPAddon*>(kodiInstance);
-  if (!handle || !addon)
-  {
-    CLog::Log(LOGERROR, "Audio DSP - %s - invalid sound play data", __FUNCTION__);
-    return;
-  }
-
-  ((IAESound*)handle)->SetVolume(volume);
-}
-
-float CActiveAEDSPAddon::cb_sound_play_get_volume(void *kodiInstance, ADSPHANDLE handle)
-{
-  CActiveAEDSPAddon *addon = static_cast<CActiveAEDSPAddon*>(kodiInstance);
-  if (!handle || !addon)
-  {
-    CLog::Log(LOGERROR, "Audio DSP - %s - invalid sound play data", __FUNCTION__);
-    return 0.0f;
-  }
-
-  return ((IAESound*)handle)->GetVolume();
 }

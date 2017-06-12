@@ -500,16 +500,6 @@ extern "C" {
     void (*remove_menu_hook)(void* kodiInstance, AE_DSP_MENUHOOK *hook);
     void (*register_mode)(void* kodiInstance, AE_DSP_MODES::AE_DSP_MODE *mode);
     void (*unregister_mode)(void* kodiInstance, AE_DSP_MODES::AE_DSP_MODE *mode);
-
-    ADSPHANDLE (*SoundPlay_GetHandle)(void* kodiInstance, const char *filename);
-    void (*SoundPlay_ReleaseHandle)(void* kodiInstance, ADSPHANDLE handle);
-    void (*SoundPlay_Play)(void* kodiInstance, ADSPHANDLE handle);
-    void (*SoundPlay_Stop)(void* kodiInstance, ADSPHANDLE handle);
-    bool (*SoundPlay_IsPlaying)(void* kodiInstance, ADSPHANDLE handle);
-    void (*SoundPlay_SetChannel)(void* kodiInstance, ADSPHANDLE handle, AE_DSP_CHANNEL channel);
-    AE_DSP_CHANNEL (*SoundPlay_GetChannel)(void* kodiInstance, ADSPHANDLE handle);
-    void (*SoundPlay_SetVolume)(void* kodiInstance, ADSPHANDLE handle, float volume);
-    float (*SoundPlay_GetVolume)(void* kodiInstance, ADSPHANDLE handle);
   } AddonToKodiFuncTable_AudioDSP;
 
   struct AddonInstance_AudioDSP;
