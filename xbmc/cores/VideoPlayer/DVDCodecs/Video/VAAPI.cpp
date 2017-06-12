@@ -47,11 +47,6 @@ extern "C" {
 #include "libavfilter/buffersrc.h"
 }
 
-#ifdef HAVE_X11
-#include <X11/Xlib.h>
-#include <va/va_x11.h>
-#endif
-
 #include <va/va_vpp.h>
 #include <xf86drm.h>
 
@@ -172,20 +167,10 @@ void CVAAPIContext::SetValidDRMVaDisplayFromRenderNode()
 
 void CVAAPIContext::SetVaDisplayForSystem()
 {
-  auto win_system = g_Windowing.GetWinSystem();
-  if (win_system == WINDOW_SYSTEM_X11)
-  {
-#if HAVE_X11
-    static Display *X11dpy = nullptr;
-    { CSingleLock lock(g_graphicsContext);
-      if (X11dpy == nullptr)
-        X11dpy = XOpenDisplay(nullptr);
-    }
+  m_display = g_Windowing.GetVaDisplay();
 
-    m_display = vaGetDisplay(X11dpy);
-#endif
-  }
-  else
+  // Fallback to DRM
+  if (!m_display)
   {
     // Render nodes depends on kernel >= 3.15
     SetValidDRMVaDisplayFromRenderNode();
