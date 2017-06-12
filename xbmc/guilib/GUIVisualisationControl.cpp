@@ -41,17 +41,14 @@ using namespace ADDON;
 #define LABEL_ROW2 11
 #define LABEL_ROW3 12
 
-static int cnt123=0;
 CAudioBuffer::CAudioBuffer(int iSize)
 {
-  cnt123++;
   m_iLen = iSize;
   m_pBuffer = new float[iSize];
 }
 
 CAudioBuffer::~CAudioBuffer()
 {
-  cnt123--;
   delete [] m_pBuffer;
 }
 
