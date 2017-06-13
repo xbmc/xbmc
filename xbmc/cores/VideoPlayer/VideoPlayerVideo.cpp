@@ -687,7 +687,6 @@ void CVideoPlayerVideo::Flush(bool sync)
   m_bAbortOutput = true;
 }
 
-#ifdef HAS_VIDEO_PLAYBACK
 void CVideoPlayerVideo::ProcessOverlays(VideoPicture* pSource, double pts)
 {
   // remove any overlays that are out of time
@@ -733,7 +732,6 @@ void CVideoPlayerVideo::ProcessOverlays(VideoPicture* pSource, double pts)
 
 
 }
-#endif
 
 std::string CVideoPlayerVideo::GetStereoMode()
 {

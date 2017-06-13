@@ -101,9 +101,7 @@ struct SDirData
 #define MAX_OPEN_DIRS 10
 static SDirData vecDirsOpen[MAX_OPEN_DIRS];
 bool bVecDirsInited = false;
-#ifdef HAS_VIDEO_PLAYBACK
 extern void update_cache_dialog(const char* tmp);
-#endif
 
 #define EMU_MAX_ENVIRONMENT_ITEMS 100
 static char *dll__environ_imp[EMU_MAX_ENVIRONMENT_ITEMS + 1];
