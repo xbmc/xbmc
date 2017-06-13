@@ -256,6 +256,8 @@ public:
   void SetParentControl(CGUIControl *control) { m_parentControl = control; };
   CGUIControl *GetParentControl(void) const { return m_parentControl; };
   virtual void SaveStates(std::vector<CControlState> &states);
+  virtual CGUIControl *GetControl(int id, std::vector<CGUIControl*> *idCollector = nullptr);
+
 
   void SetControlStats(GUICONTROLSTATS *controlStats) { m_controlStats = controlStats; };
   virtual void UpdateControlStats();

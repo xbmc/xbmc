@@ -264,7 +264,7 @@ bool CGUIControlGroup::OnMessage(CGUIMessage& message)
 
 bool CGUIControlGroup::SendControlMessage(CGUIMessage &message)
 {
-  CGUIControl *ctrl = GetControl(message.GetControlId(), &m_idCollector);
+  CGUIControl *ctrl(GetControl(message.GetControlId(), &m_idCollector));
   // see if a child matches, and send to the child control if so
   if (ctrl && ctrl->OnMessage(message))
     return true;
@@ -405,36 +405,17 @@ CGUIControl *CGUIControlGroup::GetControl(int iControl, std::vector<CGUIControl*
 
   CGUIControl* pPotential(nullptr);
 
-  LookupMap::iterator first = m_lookup.find(iControl);
-  if (first != m_lookup.end())
-  {
-    LookupMap::iterator last = m_lookup.upper_bound(iControl);
-    for (LookupMap::iterator i = first; i != last; ++i)
-    {
-      CGUIControl *control = i->second;
-      if (control->IsVisible())
-        return control;
-      else if (idCollector)
-        idCollector->push_back(control);
-      else if (!pPotential)
-        pPotential = control;
-    }
-  }
-  return pPotential;
-}
-
-const CGUIControl* CGUIControlGroup::GetControl(int iControl) const
-{
-  const CGUIControl *pPotential = NULL;
   LookupMap::const_iterator first = m_lookup.find(iControl);
   if (first != m_lookup.end())
   {
     LookupMap::const_iterator last = m_lookup.upper_bound(iControl);
     for (LookupMap::const_iterator i = first; i != last; ++i)
     {
-      const CGUIControl *control = i->second;
+      CGUIControl *control = i->second;
       if (control->IsVisible())
         return control;
+      else if (idCollector)
+        idCollector->push_back(control);
       else if (!pPotential)
         pPotential = control;
     }
