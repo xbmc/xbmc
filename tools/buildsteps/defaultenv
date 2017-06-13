@@ -18,11 +18,11 @@ DEPLOYED_BINARY_ADDONS="-e /addons"
 #$XBMC_PLATFORM_DIR matches the platform subdirs!
 case $XBMC_PLATFORM_DIR in
   ios)
-    DEFAULT_SDK_VERSION=8.1
+    DEFAULT_SDK_VERSION=9.2
     DEFAULT_XBMC_DEPENDS_ROOT=$WORKSPACE/tools/depends/xbmc-depends
     DEFAULT_CONFIGURATION="Debug"
     DEFAULT_DARWIN_ARM_CPU="armv7"
-    DEFAULT_XCODE_APP="Xcode6.1.1.app"
+    DEFAULT_XCODE_APP="Xcode.app"
     ;;
 
   osx64)
