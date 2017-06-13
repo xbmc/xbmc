@@ -22,9 +22,11 @@
 #include <ppltasks.h>
 
 #include "utils/log.h"
+#if defined(HAVE_SSE2)
 #include "utils/win32/gpu_memcpy_sse4.h"
-#include "utils/CPUInfo.h"
+#endif
 #include "utils/win32/memcpy_sse2.h"
+#include "utils/CPUInfo.h"
 #include "windowing/WindowingFactory.h"
 #include "WinRenderer.h"
 #include "WinRenderBuffer.h"
@@ -545,7 +547,10 @@ void CRenderBuffer::CopyFromStaging() const
   if (SUCCEEDED(pContext->Map(m_staging, 0, D3D11_MAP_READ, 0, &rectangle)))
   {
     void* (*copy_func)(void* d, const void* s, size_t size) =
-      ((g_cpuInfo.GetCPUFeatures() & CPU_FEATURE_SSE4) != 0) ? gpu_memcpy : memcpy;
+#if defined(HAVE_SSE2)
+      ((g_cpuInfo.GetCPUFeatures() & CPU_FEATURE_SSE4) != 0) ? gpu_memcpy :
+#endif
+      memcpy;
 
     uint8_t* s_y = static_cast<uint8_t*>(rectangle.pData);
     uint8_t* s_uv = static_cast<uint8_t*>(rectangle.pData) + m_sDesc.Height * rectangle.RowPitch;

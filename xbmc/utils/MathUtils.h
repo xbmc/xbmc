@@ -40,6 +40,7 @@
     defined(__SH4__) || \
     defined(__sparc__) || \
     defined(__arc__) || \
+    defined(_ARM_) || \
     defined(__xtensa__)
   #define DISABLE_MATHUTILS_ASM_ROUND_INT
 #endif
@@ -120,7 +121,7 @@ namespace MathUtils
      *    The representation once the offset is applied has equal or greater
      *    precision than the input, so the addition does not cause rounding.
      */
-    return ((unsigned int) (x + 0x80000000.8p0)) - 0x80000000;
+    return ((unsigned int) (x + 2147483648.5)) - 0x80000000;
 
 #else
     const float round_to_nearest = 0.5f;

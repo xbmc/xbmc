@@ -35,7 +35,6 @@
 #include "ServiceBroker.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
-#include "utils/win32/gpu_memcpy_sse4.h"
 #include "VideoShaders/WinVideoFilter.h"
 #include "windowing/WindowingFactory.h"
 

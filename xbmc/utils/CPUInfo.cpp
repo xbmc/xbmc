@@ -880,7 +880,7 @@ std::string CCPUInfo::GetCoresUsageString() const
 void CCPUInfo::ReadCPUFeatures()
 {
 #ifdef TARGET_WINDOWS
-
+#ifndef _M_ARM
   int CPUInfo[4]; // receives EAX, EBX, ECD and EDX in that order
 
   __cpuid(CPUInfo, 0);
@@ -921,7 +921,7 @@ void CCPUInfo::ReadCPUFeatures()
     if (CPUInfo[CPUINFO_EDX] & CPUID_80000001_EDX_3DNOWEXT)
       m_cpuFeatures |= CPU_FEATURE_3DNOWEXT;
   }
-
+#endif // ! _M_ARM
 #elif defined(TARGET_DARWIN)
   #if defined(__ppc__)
     m_cpuFeatures |= CPU_FEATURE_ALTIVEC;
