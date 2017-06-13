@@ -24,7 +24,7 @@
 namespace ADDON
 {
 
-std::unique_ptr<CAudioDecoder> CAudioDecoder::FromExtension(CAddonInfo addonInfo, const cp_extension_t* ext)
+std::unique_ptr<CAudioDecoder> CAudioDecoder::FromExtension(const AddonInfoPtr& addonInfo, const cp_extension_t* ext)
 {
   std::string extension = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@extension");
   std::string mimetype = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@mimetype");
@@ -33,13 +33,13 @@ std::unique_ptr<CAudioDecoder> CAudioDecoder::FromExtension(CAddonInfo addonInfo
   std::string codecName = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@name");
   std::string strExt = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@name") + "stream";
 
-  return std::unique_ptr<CAudioDecoder>(new CAudioDecoder(std::move(addonInfo), std::move(extension),
+  return std::unique_ptr<CAudioDecoder>(new CAudioDecoder(addonInfo, std::move(extension),
       std::move(mimetype), tags, tracks, std::move(codecName), std::move(strExt)));
 }
 
-CAudioDecoder::CAudioDecoder(CAddonInfo addonInfo, std::string extension, std::string mimetype,
+CAudioDecoder::CAudioDecoder(const AddonInfoPtr& addonInfo, std::string extension, std::string mimetype,
     bool tags, bool tracks, std::string codecName, std::string strExt)
-    : CAddonDll(std::move(addonInfo)), m_extension(extension), m_mimetype(mimetype),
+    : CAddonDll(addonInfo), m_extension(extension), m_mimetype(mimetype),
       m_context(nullptr), m_tags(tags), m_tracks(tracks), m_channel(nullptr)
 {
   m_CodecName = std::move(codecName);

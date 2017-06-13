@@ -30,7 +30,7 @@ namespace ADDON
   class CVFSEntry : public CAddonDll
   {
   public:
-    static std::unique_ptr<CVFSEntry> FromExtension(CAddonInfo addonInfo,
+    static std::unique_ptr<CVFSEntry> FromExtension(const AddonInfoPtr& addonInfo,
                                                     const cp_extension_t* ext);
 
     //! \brief Construct from add-on properties.
@@ -40,7 +40,7 @@ namespace ADDON
     //! \param files If true, add-on provides files
     //! \param directories If true, add-on provides directory listings
     //! \param filedirectories If true, add-on provides filedirectories
-    explicit CVFSEntry(CAddonInfo addonInfo,
+    explicit CVFSEntry(const AddonInfoPtr& addonInfo,
                       const std::string& protocols,
                       const std::string& extensions,
                       bool files, bool directories, bool filedirectories);

@@ -28,10 +28,10 @@ namespace ADDON
   class CAudioEncoder : public CAddonDll, public IEncoder
   {
   public:
-    static std::unique_ptr<CAudioEncoder> FromExtension(CAddonInfo, const cp_extension_t* ext);
+    static std::unique_ptr<CAudioEncoder> FromExtension(const AddonInfoPtr&, const cp_extension_t* ext);
 
-    explicit CAudioEncoder(CAddonInfo addonInfo) : CAddonDll(std::move(addonInfo)), m_context{nullptr} {};
-    CAudioEncoder(CAddonInfo addonInfo, std::string extension);
+    explicit CAudioEncoder(const AddonInfoPtr& addonInfo) : CAddonDll(addonInfo), m_context{nullptr} {};
+    CAudioEncoder(const AddonInfoPtr& addonInfo, std::string extension);
     virtual ~CAudioEncoder() {}
 
     // Things that MUST be supplied by the child classes

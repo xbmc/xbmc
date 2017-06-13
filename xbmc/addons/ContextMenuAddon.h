@@ -35,15 +35,15 @@ namespace ADDON
   class CContextMenuAddon : public CAddon
   {
   public:
-    static std::unique_ptr<CContextMenuAddon> FromExtension(CAddonInfo addonInfo, const cp_extension_t* ext);
+    static std::unique_ptr<CContextMenuAddon> FromExtension(const AddonInfoPtr& addonInfo, const cp_extension_t* ext);
 
-    explicit CContextMenuAddon(CAddonInfo addonInfo) : CAddon(std::move(addonInfo)) {}
-    CContextMenuAddon(CAddonInfo addonInfo, std::vector<CContextMenuItem> items);
+    explicit CContextMenuAddon(const AddonInfoPtr& addonInfo) : CAddon(addonInfo) {}
+    CContextMenuAddon(const AddonInfoPtr& addonInfo, std::vector<CContextMenuItem> items);
 
     const std::vector<CContextMenuItem>& GetItems() const { return m_items; };
 
   private:
-    static void ParseMenu(const CAddonInfo& addonInfo, cp_cfg_element_t* elem, const std::string& parent,
+    static void ParseMenu(const AddonInfoPtr& addonInfo, cp_cfg_element_t* elem, const std::string& parent,
         int& anonGroupCount, std::vector<CContextMenuItem>& items);
 
     std::vector<CContextMenuItem> m_items;

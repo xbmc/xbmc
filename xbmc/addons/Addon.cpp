@@ -59,12 +59,11 @@ using XFILE::CFile;
 namespace ADDON
 {
 
-CAddon::CAddon(CAddonInfo addonInfo)
-  : m_addonInfo(std::move(addonInfo))
-  , m_userSettingsPath()
+CAddon::CAddon(const AddonInfoPtr& addonInfo)
+  : m_addonInfo(addonInfo)
   , m_loadSettingsFailed(false)
   , m_hasUserSettings(false)
-  , m_profilePath(StringUtils::Format("special://profile/addon_data/%s/", m_addonInfo.ID().c_str()))
+  , m_profilePath(StringUtils::Format("special://profile/addon_data/%s/", m_addonInfo->ID().c_str()))
   , m_settings(nullptr)
 {
   m_userSettingsPath = URIUtils::AddFileToFolder(m_profilePath, "settings.xml");
@@ -104,7 +103,7 @@ bool CAddon::LoadSettings(bool bForce /* = false */)
     GetSettings()->Uninitialize();
 
   // load the settings definition XML file
-  auto addonSettingsDefinitionFile = URIUtils::AddFileToFolder(m_addonInfo.Path(), "resources", "settings.xml");
+  auto addonSettingsDefinitionFile = URIUtils::AddFileToFolder(m_addonInfo->Path(), "resources", "settings.xml");
   CXBMCTinyXML addonSettingsDefinitionDoc;
   if (!addonSettingsDefinitionDoc.LoadFile(addonSettingsDefinitionFile))
   {
@@ -377,9 +376,9 @@ CAddonSettings* CAddon::GetSettings() const
 
 std::string CAddon::LibPath() const
 {
-  if (m_addonInfo.LibName().empty())
+  if (m_addonInfo->LibName().empty())
     return "";
-  return URIUtils::AddFileToFolder(m_addonInfo.Path(), m_addonInfo.LibName());
+  return URIUtils::AddFileToFolder(m_addonInfo->Path(), m_addonInfo->LibName());
 }
 
 AddonVersion CAddon::GetDependencyVersion(const std::string &dependencyID) const

@@ -96,7 +96,7 @@ namespace
 
 // --- CGameClient -------------------------------------------------------------
 
-std::unique_ptr<CGameClient> CGameClient::FromExtension(ADDON::CAddonInfo addonInfo, const cp_extension_t* ext)
+std::unique_ptr<CGameClient> CGameClient::FromExtension(const ADDON::AddonInfoPtr& addonInfo, const cp_extension_t* ext)
 {
   using namespace ADDON;
 
@@ -112,14 +112,14 @@ std::unique_ptr<CGameClient> CGameClient::FromExtension(ADDON::CAddonInfo addonI
   {
     std::string strProperty = CAddonMgr::GetInstance().GetExtValue(ext->configuration, property.c_str());
     if (!strProperty.empty())
-      addonInfo.extrainfo[property] = strProperty;
+      addonInfo->extrainfo[property] = strProperty;
   }
 
-  return std::unique_ptr<CGameClient>(new CGameClient(std::move(addonInfo)));
+  return std::unique_ptr<CGameClient>(new CGameClient(addonInfo));
 }
 
-CGameClient::CGameClient(ADDON::CAddonInfo addonInfo) :
-  CAddonDll(std::move(addonInfo)),
+CGameClient::CGameClient(const ADDON::AddonInfoPtr& addonInfo) :
+  CAddonDll(addonInfo),
   m_libraryProps(this, m_struct.props),
   m_bSupportsVFS(false),
   m_bSupportsStandalone(false),
@@ -132,7 +132,7 @@ CGameClient::CGameClient(ADDON::CAddonInfo addonInfo) :
   m_video(nullptr),
   m_region(GAME_REGION_UNKNOWN)
 {
-  const ADDON::InfoMap& extraInfo = m_addonInfo.extrainfo;
+  const ADDON::InfoMap& extraInfo = AddonInfo()->extrainfo;
   ADDON::InfoMap::const_iterator it;
 
   it = extraInfo.find(GAME_PROPERTY_EXTENSIONS);

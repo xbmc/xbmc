@@ -58,9 +58,9 @@ class IGameVideoCallback;
 class CGameClient : public ADDON::CAddonDll
 {
 public:
-  static std::unique_ptr<CGameClient> FromExtension(ADDON::CAddonInfo addonInfo, const cp_extension_t* ext);
+  static std::unique_ptr<CGameClient> FromExtension(const ADDON::AddonInfoPtr& addonInfo, const cp_extension_t* ext);
 
-  CGameClient(ADDON::CAddonInfo addonInfo);
+  CGameClient(const ADDON::AddonInfoPtr& addonInfo);
 
   virtual ~CGameClient(void);
 

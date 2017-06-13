@@ -44,7 +44,7 @@ namespace ActiveAE
   class CActiveAEDSPAddon : public ADDON::CAddonDll
   {
   public:
-    explicit CActiveAEDSPAddon(ADDON::CAddonInfo addonInfo);
+    explicit CActiveAEDSPAddon(const ADDON::AddonInfoPtr& addonInfo);
     ~CActiveAEDSPAddon(void);
 
     virtual void OnDisabled();

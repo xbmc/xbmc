@@ -23,6 +23,7 @@
 #include "addons/AddonVersion.h"
 
 #include <map>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -80,6 +81,9 @@ namespace ADDON
 
     ADDON_MAX
   } TYPE;
+
+  class CAddonInfo;
+  typedef std::shared_ptr<CAddonInfo> AddonInfoPtr;
 
   typedef std::map<std::string, std::pair<const AddonVersion, bool> > ADDONDEPS;
   typedef std::map<std::string, std::string> InfoMap;
