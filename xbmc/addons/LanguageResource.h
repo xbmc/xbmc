@@ -29,11 +29,11 @@ namespace ADDON
 class CLanguageResource : public CResource
 {
 public:
-  static std::unique_ptr<CLanguageResource> FromExtension(CAddonInfo addonInfo, const cp_extension_t* ext);
+  static std::unique_ptr<CLanguageResource> FromExtension(const AddonInfoPtr& addonInfo, const cp_extension_t* ext);
 
-  explicit CLanguageResource(CAddonInfo addonInfo) : CResource(std::move(addonInfo)), m_forceUnicodeFont(false) {};
+  explicit CLanguageResource(const AddonInfoPtr& addonInfo) : CResource(addonInfo), m_forceUnicodeFont(false) {};
 
-  CLanguageResource(CAddonInfo addonInfo,
+  CLanguageResource(const AddonInfoPtr& addonInfo,
       const CLocale& locale,
       const std::string& charsetGui,
       bool forceUnicodeFont,

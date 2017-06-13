@@ -27,7 +27,7 @@ namespace ADDON
 class CUISoundsResource : public CResource
 {
 public:
-  CUISoundsResource(CAddonInfo addonInfo) : CResource(std::move(addonInfo)) {};
+  CUISoundsResource(const AddonInfoPtr& addonInfo) : CResource(addonInfo) {};
   virtual bool IsAllowed(const std::string &file) const;
   virtual bool IsInUse() const;
   virtual void OnPostInstall(bool update, bool modal);

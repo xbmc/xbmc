@@ -38,7 +38,7 @@ using KODI::MESSAGING::HELPERS::DialogResponse;
 namespace ADDON
 {
 
-std::unique_ptr<CLanguageResource> CLanguageResource::FromExtension(CAddonInfo addonInfo, const cp_extension_t* ext)
+std::unique_ptr<CLanguageResource> CLanguageResource::FromExtension(const AddonInfoPtr& addonInfo, const cp_extension_t* ext)
 {
   // parse <extension> attributes
   CLocale locale = CLocale::FromString(CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@locale"));
@@ -96,7 +96,7 @@ std::unique_ptr<CLanguageResource> CLanguageResource::FromExtension(CAddonInfo a
     }
   }
   return std::unique_ptr<CLanguageResource>(new CLanguageResource(
-      std::move(addonInfo),
+      addonInfo,
       locale,
       charsetGui,
       forceUnicodeFont,
@@ -108,7 +108,7 @@ std::unique_ptr<CLanguageResource> CLanguageResource::FromExtension(CAddonInfo a
 }
 
 CLanguageResource::CLanguageResource(
-    CAddonInfo addonInfo,
+    const AddonInfoPtr& addonInfo,
     const CLocale& locale,
     const std::string& charsetGui,
     bool forceUnicodeFont,
@@ -117,7 +117,7 @@ CLanguageResource::CLanguageResource(
     const std::string& dvdLanguageAudio,
     const std::string& dvdLanguageSubtitle,
     const std::set<std::string>& sortTokens)
-  : CResource(std::move(addonInfo)),
+  : CResource(addonInfo),
     m_locale(locale),
     m_charsetGui(charsetGui),
     m_forceUnicodeFont(forceUnicodeFont),

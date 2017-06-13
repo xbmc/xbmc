@@ -55,9 +55,9 @@ namespace PVR
   class CPVRClient : public ADDON::CAddonDll
   {
   public:
-    static std::unique_ptr<CPVRClient> FromExtension(ADDON::CAddonInfo addonInfo, const cp_extension_t* ext);
+    static std::unique_ptr<CPVRClient> FromExtension(const ADDON::AddonInfoPtr& addonInfo, const cp_extension_t* ext);
 
-    explicit CPVRClient(ADDON::CAddonInfo addonInfo);
+    explicit CPVRClient(const ADDON::AddonInfoPtr& addonInfo);
     ~CPVRClient(void);
 
     void OnDisabled() override;

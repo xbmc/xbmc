@@ -24,12 +24,12 @@
 
 using namespace ADDON;
 
-CGameResource::CGameResource(CAddonInfo addonInfo) :
-  CResource(std::move(addonInfo))
+CGameResource::CGameResource(const AddonInfoPtr& addonInfo) :
+  CResource(addonInfo)
 {
 }
 
-std::unique_ptr<CGameResource> CGameResource::FromExtension(CAddonInfo addonInfo, const cp_extension_t* ext)
+std::unique_ptr<CGameResource> CGameResource::FromExtension(const AddonInfoPtr& addonInfo, const cp_extension_t* ext)
 {
-  return std::unique_ptr<CGameResource>(new CGameResource(std::move(addonInfo)));
+  return std::unique_ptr<CGameResource>(new CGameResource(addonInfo));
 }

@@ -28,13 +28,13 @@ namespace ADDON
                         public IImage
   {
   public:
-    static std::unique_ptr<CImageDecoder> FromExtension(CAddonInfo&&,
+    static std::unique_ptr<CImageDecoder> FromExtension(const AddonInfoPtr& addonInfo,
                                                         const cp_extension_t* ext);
-    explicit CImageDecoder(CAddonInfo addonInfo) :
-      CAddonDll(std::move(addonInfo))
+    explicit CImageDecoder(const AddonInfoPtr& addonInfo) :
+      CAddonDll(addonInfo)
     {}
 
-    CImageDecoder(CAddonInfo&& addonInfo, std::string mimetypes, std::string extensions);
+    CImageDecoder(const AddonInfoPtr& addonInfo, std::string mimetypes, std::string extensions);
     virtual ~CImageDecoder();
 
     bool Create(const std::string& mimetype);

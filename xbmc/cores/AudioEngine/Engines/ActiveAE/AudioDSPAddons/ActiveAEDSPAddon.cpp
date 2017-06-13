@@ -35,8 +35,8 @@ using namespace ActiveAE;
 
 #define DEFAULT_INFO_STRING_VALUE "unknown"
 
-CActiveAEDSPAddon::CActiveAEDSPAddon(CAddonInfo addonInfo) :
-    CAddonDll(std::move(addonInfo))
+CActiveAEDSPAddon::CActiveAEDSPAddon(const AddonInfoPtr& addonInfo) :
+    CAddonDll(addonInfo)
 {
   ResetProperties();
 }
