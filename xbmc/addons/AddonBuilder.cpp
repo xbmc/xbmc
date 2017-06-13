@@ -129,7 +129,7 @@ std::shared_ptr<IAddon> CAddonBuilder::Build()
       return std::make_shared<CAddonDll>(std::move(m_addonInfo));
 #ifdef HAS_PVRCLIENTS
     case ADDON_PVRDLL:
-      return PVR::CPVRClient::FromExtension(std::move(m_addonInfo), m_extPoint);
+      return std::make_shared<PVR::CPVRClient>(std::move(m_addonInfo));
 #endif
     case ADDON_ADSPDLL:
       return std::make_shared<ActiveAE::CActiveAEDSPAddon>(std::move(m_addonInfo));
