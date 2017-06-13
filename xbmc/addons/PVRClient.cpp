@@ -58,11 +58,6 @@ namespace PVR
 
 #define DEFAULT_INFO_STRING_VALUE "unknown"
 
-std::unique_ptr<CPVRClient> CPVRClient::FromExtension(CAddonInfo addonInfo, const cp_extension_t* ext)
-{
-  return std::unique_ptr<CPVRClient>(new CPVRClient(std::move(addonInfo)));
-}
-
 CPVRClient::CPVRClient(CAddonInfo addonInfo)
   : CAddonDll(std::move(addonInfo))
 {
@@ -148,9 +143,9 @@ void CPVRClient::ResetProperties(int iClientId /* = PVR_INVALID_CLIENT_ID */)
   m_strBackendHostname.clear();
   m_menuhooks.clear();
   m_timertypes.clear();
-  memset(&m_addonCapabilities, 0, sizeof(m_addonCapabilities));
+  m_addonCapabilities = {0};
 
-  memset(&m_struct, 0, sizeof(m_struct));
+  m_struct = {0};
   m_struct.props.strUserPath = m_strUserPath.c_str();
   m_struct.props.strClientPath = m_strClientPath.c_str();
   m_struct.props.iEpgMaxDays = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_EPG_DAYSTODISPLAY);
@@ -274,8 +269,7 @@ int CPVRClient::GetID(void) const
  */
 void CPVRClient::WriteClientGroupInfo(const CPVRChannelGroup &xbmcGroup, PVR_CHANNEL_GROUP &addonGroup)
 {
-  memset(&addonGroup, 0, sizeof(addonGroup));
-
+  addonGroup = {0};
   addonGroup.bIsRadio = xbmcGroup.IsRadio();
   strncpy(addonGroup.strGroupName, xbmcGroup.GroupName().c_str(), sizeof(addonGroup.strGroupName) - 1);
 }
@@ -290,8 +284,7 @@ void CPVRClient::WriteClientRecordingInfo(const CPVRRecording &xbmcRecording, PV
   time_t recTime;
   xbmcRecording.RecordingTimeAsUTC().GetAsTime(recTime);
 
-  memset(&addonRecording, 0, sizeof(addonRecording));
-
+  addonRecording = {0};
   addonRecording.recordingTime       = recTime - g_advancedSettings.m_iPVRTimeCorrection;
   strncpy(addonRecording.strRecordingId, xbmcRecording.m_strRecordingId.c_str(), sizeof(addonRecording.strRecordingId) - 1);
   strncpy(addonRecording.strTitle, xbmcRecording.m_strTitle.c_str(), sizeof(addonRecording.strTitle) - 1);
@@ -324,8 +317,7 @@ void CPVRClient::WriteClientTimerInfo(const CPVRTimerInfoTag &xbmcTimer, PVR_TIM
   xbmcTimer.FirstDayAsUTC().GetAsTime(firstDay);
   CPVREpgInfoTagPtr epgTag = xbmcTimer.GetEpgInfoTag();
 
-  memset(&addonTimer, 0, sizeof(addonTimer));
-
+  addonTimer = {0};
   addonTimer.iClientIndex              = xbmcTimer.m_iClientIndex;
   addonTimer.iParentClientIndex        = xbmcTimer.m_iParentClientIndex;
   addonTimer.state                     = xbmcTimer.m_state;
@@ -363,8 +355,7 @@ void CPVRClient::WriteClientChannelInfo(const CPVRChannelPtr &xbmcChannel, PVR_C
 {
   assert(xbmcChannel.get());
 
-  memset(&addonChannel, 0, sizeof(addonChannel));
-
+  addonChannel = {0};
   addonChannel.iUniqueId         = xbmcChannel->UniqueID();
   addonChannel.iChannelNumber    = xbmcChannel->ClientChannelNumber();
   addonChannel.iSubChannelNumber = xbmcChannel->ClientSubChannelNumber();
@@ -380,11 +371,10 @@ void CPVRClient::WriteClientChannelInfo(const CPVRChannelPtr &xbmcChannel, PVR_C
 bool CPVRClient::GetAddonProperties(void)
 {
   std::string strBackendName, strConnectionString, strFriendlyName, strBackendVersion, strBackendHostname;
-  PVR_ADDON_CAPABILITIES addonCapabilities;
+  PVR_ADDON_CAPABILITIES addonCapabilities = {0};
   CPVRTimerTypes timerTypes;
 
   /* get the capabilities */
-  memset(&addonCapabilities, 0, sizeof(addonCapabilities));
   PVR_ERROR retVal = m_struct.toAddon.GetAddonCapabilities(&addonCapabilities);
   if (retVal != PVR_ERROR_NO_ERROR)
   {
@@ -429,7 +419,7 @@ bool CPVRClient::GetAddonProperties(void)
 
       size = 0;
       // manual one time
-      memset(&types_array[size], 0, sizeof(types_array[size]));
+      types_array[size] = {0};
       types_array[size].iId         = size + 1;
       types_array[size].iAttributes = PVR_TIMER_TYPE_IS_MANUAL               |
                                       PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE |
@@ -442,7 +432,7 @@ bool CPVRClient::GetAddonProperties(void)
       ++size;
 
       // manual timer rule
-      memset(&types_array[size], 0, sizeof(types_array[size]));
+      types_array[size] = {0};
       types_array[size].iId         = size + 1;
       types_array[size].iAttributes = PVR_TIMER_TYPE_IS_MANUAL               |
                                       PVR_TIMER_TYPE_IS_REPEATING            |
@@ -460,7 +450,7 @@ bool CPVRClient::GetAddonProperties(void)
       if (addonCapabilities.bSupportsEPG)
       {
         // One-shot epg-based
-        memset(&types_array[size], 0, sizeof(types_array[size]));
+        types_array[size] = {0};
         types_array[size].iId         = size + 1;
         types_array[size].iAttributes = PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE    |
                                         PVR_TIMER_TYPE_REQUIRES_EPG_TAG_ON_CREATE |
