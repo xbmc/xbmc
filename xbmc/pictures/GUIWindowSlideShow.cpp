@@ -485,8 +485,8 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
       int maxWidth, maxHeight;
 
       GetCheckedSize((float)res.iWidth * m_fZoom,
-                     (float)res.iHeight * m_fZoom,
-                     maxWidth, maxHeight);
+        (float)res.iHeight * m_fZoom,
+        maxWidth, maxHeight);
       m_pBackgroundLoader->LoadPic(m_iCurrentPic, m_iCurrentSlide, picturePath, maxWidth, maxHeight);
       m_iLastFailedNextSlide = -1;
       m_bLoadNextPic = false;
@@ -1143,6 +1143,7 @@ void CGUIWindowSlideShow::OnLoadPic(int iPic, int iSlideNumber, const std::strin
     // release the texture, and try and reload this pic from scratch
     m_bErrorMessage = true;
   }
+  MarkDirtyRegion();
 }
 
 void CGUIWindowSlideShow::Shuffle()
