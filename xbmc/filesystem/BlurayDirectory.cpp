@@ -159,6 +159,21 @@ bool CBlurayDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   if (!InitializeBluray(root))
     return false;
 
+  uint8_t* pic = GetThumbnail();
+
+  m_dll->bd_set_debug_handler(DllLibbluray::bluray_logger);
+  m_dll->bd_set_debug_mask(DBG_CRIT | DBG_BLURAY | DBG_NAV);
+
+  m_bd = m_dll->bd_init();
+  std::unique_ptr<std::string> rootPath(new std::string(root));
+  m_dll->bd_open_files(m_bd, rootPath.get(), DllLibbluray::dir_open, DllLibbluray::file_open);
+
+  if(!m_bd)
+  {
+    CLog::Log(LOGERROR, "CBlurayDirectory::GetDirectory - failed to open %s", root.c_str());
+    return false;
+  }
+
   if(file == "root")
     GetRoot(items);
   else if(file == "root/titles")
@@ -218,6 +233,17 @@ bool CBlurayDirectory::InitializeBluray(std::string &root)
   m_blurayInitialized = true;
 
   return true;
+}
+
+uint8_t* CBlurayDirectory::GetThumbnail()
+{
+  if (!m_blurayInitialized)
+    return nullptr;
+
+  const struct meta_dl* meta = m_dll->bd_get_meta(m_bd);
+  uint8_t* picture = nullptr;
+  int64_t size = 0;
+  int suc = m_dll->bd_get_meta_file(m_bd, meta->thumbnails->path, &picture, &size);
 }
 
 std::string CBlurayDirectory::GetBlurayTitle()
