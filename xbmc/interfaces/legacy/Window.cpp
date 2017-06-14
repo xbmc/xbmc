@@ -319,7 +319,7 @@ namespace XBMCAddon
         break;
       case CGUIControl::GUICONTROL_SLIDER:
         pControl = new ControlSlider();
-        break;			
+        break;
       case CGUIControl::GUICONTAINER_LIST:
       case CGUIControl::GUICONTAINER_WRAPLIST:
       case CGUIControl::GUICONTAINER_FIXEDLIST:
@@ -594,13 +594,17 @@ namespace XBMCAddon
     long Window::getHeight()
     {
       XBMC_TRACE;
-      return g_graphicsContext.GetHeight();
+      SingleLockWithDelayGuard gslock(g_graphicsContext, languageHook);
+      RESOLUTION_INFO resInfo = ref(window)->GetCoordsRes();
+      return resInfo.iHeight;
     }
 
     long Window::getWidth()
     {
       XBMC_TRACE;
-      return g_graphicsContext.GetWidth();
+      SingleLockWithDelayGuard gslock(g_graphicsContext, languageHook);
+      RESOLUTION_INFO resInfo = ref(window)->GetCoordsRes();
+      return resInfo.iWidth;
     }
 
     long Window::getResolution()
