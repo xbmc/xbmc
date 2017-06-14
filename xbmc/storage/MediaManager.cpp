@@ -529,7 +529,7 @@ std::string CMediaManager::GetDiskUniqueId(const std::string& devicePath)
 #ifdef TARGET_WINDOWS
   if (mediaPath.empty() || mediaPath == "iso9660://")
   {
-    mediaPath = g_mediaManager.TranslateDevicePath("");
+    mediaPath = g_mediaManager.TranslateDevicePath(devicePath);
     URIUtils::AddSlashAtEnd(mediaPath);
   }
 #endif
