@@ -231,7 +231,8 @@ bool CLangCodeExpander::ConvertToISO6392T(const std::string& strCharCode, std::s
       if (strISO6392T == codes.iso639_2b ||
         (checkWin32Locales && codes.win_id != NULL && strISO6392T == codes.win_id))
       {
-        strISO6392T = codes.iso639_2t;
+        if (codes.iso639_2t != nullptr)
+          strISO6392T = codes.iso639_2t;
         return true;
       }
     }
