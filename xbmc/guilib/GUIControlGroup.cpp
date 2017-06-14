@@ -244,6 +244,10 @@ bool CGUIControlGroup::OnMessage(CGUIMessage& message)
       return true;
     }
     break;
+  case GUI_MSG_REFRESH_TIMER:
+    if (!IsVisible() || !IsVisibleFromSkin())
+      return true;
+    break;
   }
   bool handled(false);
   //not intented for any specific control, send to all childs and our base handler.

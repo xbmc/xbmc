@@ -49,12 +49,6 @@ bool CGUILabel::SetScrolling(bool scrolling)
   return changed;
 }
 
-unsigned int CGUILabel::GetScrollLoopCount() const
-{
-  return m_scrollInfo.m_loopCount;
-}
-
-
 bool CGUILabel::SetOverflow(OVER_FLOW overflow)
 {
   bool changed = m_overflowType != overflow;
@@ -99,7 +93,12 @@ bool CGUILabel::Process(unsigned int currentTime)
   bool renderSolid = (m_color == COLOR_DISABLED);
 
   if (overFlows && m_scrolling && !renderSolid)
-    return m_textLayout.UpdateScrollinfo(m_scrollInfo);
+  {
+    if (m_maxScrollLoops < m_scrollInfo.m_loopCount)
+      SetScrolling(false);
+    else
+      return m_textLayout.UpdateScrollinfo(m_scrollInfo);
+  }
 
   return false;
 }
