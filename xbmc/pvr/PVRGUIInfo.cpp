@@ -88,6 +88,7 @@ void CPVRGUIInfo::ResetProperties(void)
 
   ResetPlayingTag();
   ClearQualityInfo(m_qualityInfo);
+  ClearDescrambleInfo(m_descrambleInfo);
 
   m_updateBackendCacheRequested = false;
 }
@@ -97,6 +98,11 @@ void CPVRGUIInfo::ClearQualityInfo(PVR_SIGNAL_STATUS &qualityInfo)
   memset(&qualityInfo, 0, sizeof(qualityInfo));
   strncpy(qualityInfo.strAdapterName, g_localizeStrings.Get(13106).c_str(), PVR_ADDON_NAME_STRING_LENGTH - 1);
   strncpy(qualityInfo.strAdapterStatus, g_localizeStrings.Get(13106).c_str(), PVR_ADDON_NAME_STRING_LENGTH - 1);
+}
+
+void CPVRGUIInfo::ClearDescrambleInfo(PVR_DESCRAMBLE_INFO &descrambleInfo)
+{
+  descrambleInfo = {0};
 }
 
 void CPVRGUIInfo::Start(void)
@@ -178,6 +184,10 @@ void CPVRGUIInfo::Process(void)
     Sleep(0);
 
     if (!m_bStop)
+      UpdateDescrambleData();
+    Sleep(0);
+
+    if (!m_bStop)
       UpdateMisc();
     Sleep(0);
 
@@ -225,6 +235,17 @@ void CPVRGUIInfo::UpdateQualityData(void)
   }
 
   memcpy(&m_qualityInfo, &qualityInfo, sizeof(m_qualityInfo));
+}
+
+void CPVRGUIInfo::UpdateDescrambleData(void)
+{
+  PVR_DESCRAMBLE_INFO descrambleInfo;
+  ClearDescrambleInfo(descrambleInfo);
+
+  PVR_CLIENT client;
+  if (CServiceBroker::GetPVRManager().Clients()->GetPlayingClient(client) &&
+      client->GetDescrambleInfo(descrambleInfo))
+    memcpy(&m_descrambleInfo, &descrambleInfo, sizeof(m_descrambleInfo));
 }
 
 void CPVRGUIInfo::UpdateMisc(void)
@@ -686,11 +707,23 @@ void CPVRGUIInfo::CharInfoPlayingClientName(std::string &strValue) const
 
 void CPVRGUIInfo::CharInfoEncryption(std::string &strValue) const
 {
-  CPVRChannelPtr channel(CServiceBroker::GetPVRManager().Clients()->GetPlayingChannel());
-  if (channel)
-    strValue = channel->EncryptionName();
+  if (m_descrambleInfo.iCaid != PVR_DESCRAMBLE_INFO_NOT_AVAILABLE)
+  {
+    // prefer dynamically updated info, if available
+    strValue = CPVRChannel::GetEncryptionName(m_descrambleInfo.iCaid);
+    return;
+  }
   else
-    strValue.clear();
+  {
+    const CPVRChannelPtr channel(CServiceBroker::GetPVRManager().Clients()->GetPlayingChannel());
+    if (channel)
+    {
+      strValue = channel->EncryptionName();
+      return;
+    }
+  }
+
+  strValue.clear();
 }
 
 void CPVRGUIInfo::CharInfoService(std::string &strValue) const

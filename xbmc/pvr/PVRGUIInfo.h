@@ -177,12 +177,15 @@ namespace PVR
 
     void ResetProperties(void);
     void ClearQualityInfo(PVR_SIGNAL_STATUS &qualityInfo);
+    void ClearDescrambleInfo(PVR_DESCRAMBLE_INFO &descrambleInfo);
+
     void Process(void) override;
 
     void UpdatePlayingTag(void);
     void UpdateTimersCache(void);
     void UpdateBackendCache(void);
     void UpdateQualityData(void);
+    void UpdateDescrambleData(void);
     void UpdateMisc(void);
     void UpdateNextTimer(void);
     void UpdateTimeshift(void);
@@ -247,8 +250,9 @@ namespace PVR
     //@}
 
     PVR_SIGNAL_STATUS               m_qualityInfo;       /*!< stream quality information */
+    PVR_DESCRAMBLE_INFO             m_descrambleInfo;    /*!< stream descramble information */
     XbmcThreads::EndTime            m_ToggleShowInfo;
-    CPVREpgInfoTagPtr                  m_playingEpgTag;
+    CPVREpgInfoTagPtr               m_playingEpgTag;
     std::vector<SBackend>           m_backendProperties;
 
     bool                            m_bIsTimeshifting;

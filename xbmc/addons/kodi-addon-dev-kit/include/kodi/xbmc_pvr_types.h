@@ -70,6 +70,7 @@ struct DemuxPacket;
 #define PVR_ADDON_TIMERTYPE_VALUES_ARRAY_SIZE 512
 #define PVR_ADDON_TIMERTYPE_VALUES_ARRAY_SIZE_SMALL 128
 #define PVR_ADDON_TIMERTYPE_STRING_LENGTH     64
+#define PVR_ADDON_DESCRAMBLE_INFO_STRING_LENGTH 64
 
 #define XBMC_INVALID_CODEC_ID   0
 #define XBMC_INVALID_CODEC      { XBMC_CODEC_TYPE_UNKNOWN, XBMC_INVALID_CODEC_ID }
@@ -182,6 +183,11 @@ extern "C" {
   const int PVR_CHANNEL_INVALID_UID = -1; /*!< @brief denotes that no channel uid is available. */
 
   /*!
+   * @brief special PVR_DESCRAMBLE_INFO value to indicate that a struct member's value is not available.
+   */
+  const int PVR_DESCRAMBLE_INFO_NOT_AVAILABLE = -1;
+
+  /*!
    * @brief PVR add-on error codes
    */
   typedef enum
@@ -285,6 +291,7 @@ extern "C" {
     bool bSupportsRecordingPlayCount;   /*!< @brief true if the backend supports play count for recordings. */
     bool bSupportsLastPlayedPosition;   /*!< @brief true if the backend supports store/retrieve of last played position for recordings. */
     bool bSupportsRecordingEdl;         /*!< @brief true if the backend supports retrieving an edit decision list for recordings. */
+    bool bSupportsDescrambleInfo;       /*!< @brief true if the backend supports descramble information for playing channels. */
   } ATTRIBUTE_PACKED PVR_ADDON_CAPABILITIES;
 
   /*!
@@ -328,6 +335,22 @@ extern "C" {
     long   iBER;                                           /*!< @brief (optional) bit error rate */
     long   iUNC;                                           /*!< @brief (optional) uncorrected blocks */
   } ATTRIBUTE_PACKED PVR_SIGNAL_STATUS;
+
+  /*!
+   * @brief descramble information
+   */
+  typedef struct PVR_DESCRAMBLE_INFO
+  {
+    int iPid;     /*!< @brief (optional) pid; PVR_DESCRAMBLE_INFO_NOT_AVAILABLE if not available */
+    int iCaid;    /*!< @brief (optional) caid; PVR_DESCRAMBLE_INFO_NOT_AVAILABLE if not available */
+    int iProvid;  /*!< @brief (optional) provid; PVR_DESCRAMBLE_INFO_NOT_AVAILABLE if not available */
+    int iEcmTime; /*!< @brief (optional) ecm time; PVR_DESCRAMBLE_INFO_NOT_AVAILABLE if not available */
+    int iHops;    /*!< @brief (optional) hops; PVR_DESCRAMBLE_INFO_NOT_AVAILABLE if not available */
+    char strCardSystem[PVR_ADDON_DESCRAMBLE_INFO_STRING_LENGTH];  /*!< @brief (optional); empty string if not available */
+    char strReader[PVR_ADDON_DESCRAMBLE_INFO_STRING_LENGTH];      /*!< @brief (optional); empty string if not available */
+    char strFrom[PVR_ADDON_DESCRAMBLE_INFO_STRING_LENGTH];        /*!< @brief (optional); empty string if not available */
+    char strProtocol[PVR_ADDON_DESCRAMBLE_INFO_STRING_LENGTH];    /*!< @brief (optional); empty string if not available */
+  } ATTRIBUTE_PACKED PVR_DESCRAMBLE_INFO;
 
   /*!
    * @brief Menu hooks that are available in the context menus while playing a stream via this add-on.
@@ -618,6 +641,7 @@ extern "C" {
     long long (__cdecl* LengthLiveStream)(void);
     bool (__cdecl* SwitchChannel)(const PVR_CHANNEL&);
     PVR_ERROR (__cdecl* SignalStatus)(PVR_SIGNAL_STATUS&);
+    PVR_ERROR (__cdecl* GetDescrambleInfo)(PVR_DESCRAMBLE_INFO*);
     const char*  (__cdecl* GetLiveStreamURL)(const PVR_CHANNEL&);
     bool (__cdecl* OpenRecordedStream)(const PVR_RECORDING&);
     void (__cdecl* CloseRecordedStream)(void);

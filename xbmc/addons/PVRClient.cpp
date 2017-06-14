@@ -146,7 +146,7 @@ void CPVRClient::ResetProperties(int iClientId /* = PVR_INVALID_CLIENT_ID */)
   m_timertypes.clear();
   m_addonCapabilities = {0};
 
-  m_struct = {0};
+  m_struct = {{0}};
   m_struct.props.strUserPath = m_strUserPath.c_str();
   m_struct.props.strClientPath = m_strClientPath.c_str();
   m_struct.props.iEpgMaxDays = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_EPG_DAYSTODISPLAY);
@@ -270,7 +270,7 @@ int CPVRClient::GetID(void) const
  */
 void CPVRClient::WriteClientGroupInfo(const CPVRChannelGroup &xbmcGroup, PVR_CHANNEL_GROUP &addonGroup)
 {
-  addonGroup = {0};
+  addonGroup = {{0}};
   addonGroup.bIsRadio = xbmcGroup.IsRadio();
   strncpy(addonGroup.strGroupName, xbmcGroup.GroupName().c_str(), sizeof(addonGroup.strGroupName) - 1);
 }
@@ -285,7 +285,7 @@ void CPVRClient::WriteClientRecordingInfo(const CPVRRecording &xbmcRecording, PV
   time_t recTime;
   xbmcRecording.RecordingTimeAsUTC().GetAsTime(recTime);
 
-  addonRecording = {0};
+  addonRecording = {{0}};
   addonRecording.recordingTime       = recTime - g_advancedSettings.m_iPVRTimeCorrection;
   strncpy(addonRecording.strRecordingId, xbmcRecording.m_strRecordingId.c_str(), sizeof(addonRecording.strRecordingId) - 1);
   strncpy(addonRecording.strTitle, xbmcRecording.m_strTitle.c_str(), sizeof(addonRecording.strTitle) - 1);
@@ -1149,6 +1149,15 @@ bool CPVRClient::SignalQuality(PVR_SIGNAL_STATUS &qualityinfo)
   if (IsPlayingLiveStream())
   {
     return m_struct.toAddon.SignalStatus(qualityinfo) == PVR_ERROR_NO_ERROR;
+  }
+  return false;
+}
+
+bool CPVRClient::GetDescrambleInfo(PVR_DESCRAMBLE_INFO &descrambleinfo) const
+{
+  if (m_bReadyToUse && m_addonCapabilities.bSupportsDescrambleInfo && IsPlayingLiveStream())
+  {
+    return m_struct.toAddon.GetDescrambleInfo(&descrambleinfo) == PVR_ERROR_NO_ERROR;
   }
   return false;
 }

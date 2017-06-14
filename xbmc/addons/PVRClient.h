@@ -480,6 +480,13 @@ namespace PVR
     bool SignalQuality(PVR_SIGNAL_STATUS &qualityinfo);
 
     /*!
+     * @brief Get the descramble information of the stream that's currently open.
+     * @param qualityinfo The descramble information.
+     * @return True if the descramble information has been read successfully, false otherwise.
+     */
+    bool GetDescrambleInfo(PVR_DESCRAMBLE_INFO &descrambleinfo) const;
+
+    /*!
      * @brief Get the stream URL for a channel from the server. Used by the MediaPortal add-on.
      * @param channel The channel to get the stream URL for.
      * @return The requested URL.

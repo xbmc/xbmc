@@ -413,9 +413,17 @@ extern "C"
    * Get the signal status of the stream that's currently open.
    * @param signalStatus The signal status.
    * @return True if the signal status has been read successfully, false otherwise.
-   * @remarks Optional, and only used if bHandlesInputStream or bHandlesDemuxing is set to true. Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
+   * @remarks Optional, and only used if PVR_ADDON_CAPABILITIES::bHandlesInputStream or PVR_ADDON_CAPABILITIES::bHandlesDemuxing is set to true. Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
    */
   PVR_ERROR SignalStatus(PVR_SIGNAL_STATUS& signalStatus);
+
+  /*!
+   * Get the descramble information of the stream that's currently open.
+   * @param[out] descrambleInfo The descramble information.
+   * @return True if the decramble information has been read successfully, false otherwise.
+   * @remarks Optional, and only used if PVR_ADDON_CAPABILITIES::bSupportsDescrambleInfo is set to true. Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
+   */
+  PVR_ERROR GetDescrambleInfo(PVR_DESCRAMBLE_INFO* descrambleInfo);
 
   /*!
    * Get the stream URL for a channel from the backend. Used by the MediaPortal add-on.
@@ -680,6 +688,7 @@ extern "C"
     pClient->toAddon.LengthLiveStream               = LengthLiveStream;
     pClient->toAddon.SwitchChannel                  = SwitchChannel;
     pClient->toAddon.SignalStatus                   = SignalStatus;
+    pClient->toAddon.GetDescrambleInfo              = GetDescrambleInfo;
     pClient->toAddon.GetLiveStreamURL               = GetLiveStreamURL;
     pClient->toAddon.GetChannelSwitchDelay          = GetChannelSwitchDelay;
     pClient->toAddon.CanPauseStream                 = CanPauseStream;
