@@ -97,11 +97,9 @@ bool CColorManager::GetVideo3dLut(int videoFlags, int *cmsToken, int *clutSize, 
     CLog::Log(LOGDEBUG, "ColorManager: CMS_MODE_PROFILE\n");
 #if defined(HAVE_LCMS2)
     {
-      bool changed = false;
       // check if display profile is not loaded, or has changed
       if (m_curIccProfile != CServiceBroker::GetSettings().GetString("videoscreen.displayprofile"))
       {
-        changed = true;
         // free old profile if there is one
         if (m_hProfile)
           cmsCloseProfile(m_hProfile);
