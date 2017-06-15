@@ -22,7 +22,8 @@
 #include "Application.h"
 #include "GUIUserMessages.h"
 #include "guilib/GUIWindowManager.h"
-#include "input/Key.h"
+#include "guilib/WindowIDs.h"
+#include "input/ActionIDs.h"
 #include "input/InputManager.h"
 #include "ServiceBroker.h"
 
