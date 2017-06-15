@@ -88,6 +88,7 @@ xbmc/assets:
 shared:
 	mkdir -p assets
 	cp -rfp $(PREFIX)/share/@APP_NAME_LC@/* ./assets
+	cp -rfp $(DEPENDS_PATH)/share/kodi/* ./assets || true
 	find `pwd`/assets/ -depth -name ".git" -exec rm -rf {} \;
 	find `pwd`/assets/ -name "*.so" -exec rm {} \;
 	find `pwd`/assets/addons/skin.*/media/* -depth -not -iname "Textures.xbt" -exec rm -rf {} \;
@@ -134,8 +135,8 @@ libs: $(PREFIX)/lib/@APP_NAME_LC@/lib@APP_NAME_LC@.so
 	mkdir -p xbmc/lib/$(CPU) xbmc/assets/python2.7/lib/ xbmc/obj/local/$(CPU)
 	cp -fpL $(SRCLIBS) xbmc/obj/local/$(CPU)/
 	cp -fp $(PREFIX)/lib/@APP_NAME_LC@/lib@APP_NAME_LC@.so xbmc/obj/local/$(CPU)/
-	find $(PREFIX)/share/@APP_NAME_LC@/addons -name "*.so" -exec cp -fp {} xbmc/obj/local/$(CPU)/ \;
-	find $(PREFIX)/lib/@APP_NAME_LC@/addons -name "*.so" -exec cp -fp {} xbmc/obj/local/$(CPU)/ \; || true
+	find $(DEPENDS_PATH)/share/kodi/addons -name "*.so" -exec cp -fp {} xbmc/obj/local/$(CPU)/ \; || true
+	find $(DEPENDS_PATH)/lib/kodi/addons -name "*.so" -exec cp -fp {} xbmc/obj/local/$(CPU)/ \; || true
 	find $(PREFIX)/lib/@APP_NAME_LC@/system -name "*.so" -exec cp -fp {} xbmc/obj/local/$(CPU)/ \;
 	DIR=${CURDIR}; cd $(PREFIX)/lib/python2.7/site-packages; for i in `find Cryptodome -name \*.so` ; do FN=`echo $$i | cut -c1- | tr "/" "_"` ; mv $$i $$DIR/xbmc/obj/local/$(CPU)/$$FN ; done
 	cd xbmc/obj/local/$(CPU)/; find . -name "*.so" -not -name "lib*.so" | sed "s/\.\///" | xargs -I@ mv @ lib@
