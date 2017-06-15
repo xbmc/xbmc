@@ -111,7 +111,7 @@ BD_FILE_H * DllLibbluray::file_open(const char* filename, const char *mode)
       return file;
     }
 
-    CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - Error opening file! (%p)", file);
+    CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - Error opening file! (%s)", CURL::GetRedacted(filename).c_str());
     
     delete fp;
     delete file;
@@ -286,7 +286,7 @@ bool CDVDInputStreamBluray::Open()
     root     = url.GetHostName();
     filename = URIUtils::GetFileName(url.GetFileName());
   }
-  else if(URIUtils::HasExtension(strPath, ".iso|.img"))
+  else if(URIUtils::HasExtension(strPath, ".iso|.img|.udf"))
   {
     CURL url("udf://");
     url.SetHostName(strPath);
@@ -324,18 +324,27 @@ bool CDVDInputStreamBluray::Open()
   m_dll->bd_set_debug_handler(DllLibbluray::bluray_logger);
   m_dll->bd_set_debug_mask(DBG_CRIT | DBG_BLURAY | DBG_NAV);
 
-  CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::Open - opening %s", root.c_str());
-  m_bd = m_dll->bd_open(root.c_str(), NULL);
+  m_bd = m_dll->bd_init();
 
-  if(!m_bd)
+  if (!m_bd)
+  {
+    CLog::Log(LOGERROR, "CDVDInputStreamBluray::Open - failed to initialize libbluray");
+    return false;
+  }
+
+  SetupPlayerSettings();
+
+  CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::Open - opening %s", root.c_str());
+
+  if (!m_dll->bd_open_disc(m_bd, root.c_str(), NULL))
   {
     CLog::Log(LOGERROR, "CDVDInputStreamBluray::Open - failed to open %s", root.c_str());
     return false;
   }
 
-  const BLURAY_DISC_INFO *disc_info;
+  m_dll->bd_get_event(m_bd, NULL);
 
-  disc_info = m_dll->bd_get_disc_info(m_bd);
+  const BLURAY_DISC_INFO *disc_info = m_dll->bd_get_disc_info(m_bd);
 
   if (!disc_info)
   {
@@ -345,10 +354,14 @@ bool CDVDInputStreamBluray::Open()
 
   if (disc_info->bluray_detected)
   {
+#if (BLURAY_VERSION > BLURAY_VERSION_CODE(1,0,0))
+    CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::Open - Disc name           : %s", disc_info->disc_name ? disc_info->disc_name : "");
+#endif
     CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::Open - First Play supported: %d", disc_info->first_play_supported);
     CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::Open - Top menu supported  : %d", disc_info->top_menu_supported);
     CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::Open - HDMV titles         : %d", disc_info->num_hdmv_titles);
     CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::Open - BD-J titles         : %d", disc_info->num_bdj_titles);
+    CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::Open - BD-J handled        : %d", disc_info->bdj_handled);
     CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::Open - UNSUPPORTED titles  : %d", disc_info->num_unsupported_titles);
     CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::Open - AACS detected       : %d", disc_info->aacs_detected);
     CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::Open - libaacs detected    : %d", disc_info->libaacs_detected);
@@ -356,6 +369,9 @@ bool CDVDInputStreamBluray::Open()
     CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::Open - BD+ detected        : %d", disc_info->bdplus_detected);
     CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::Open - libbdplus detected  : %d", disc_info->libbdplus_detected);
     CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::Open - BD+ handled         : %d", disc_info->bdplus_handled);
+#if (BLURAY_VERSION >= BLURAY_VERSION_CODE(1,0,0))
+    CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::Open - no menus (libmmbd)  : %d", disc_info->no_menu_support);
+#endif
   }
   else
     CLog::Log(LOGERROR, "CDVDInputStreamBluray::Open - BluRay not detected");
@@ -399,9 +415,6 @@ bool CDVDInputStreamBluray::Open()
     if(!m_navmode)
       m_title = GetTitleLongest();
   }
-
-  SetupPlayerSettings();
-  m_dll->bd_get_event(m_bd, NULL);
 
   if (m_navmode)
   {
@@ -1205,13 +1218,13 @@ void CDVDInputStreamBluray::SetupPlayerSettings()
   m_dll->bd_set_player_setting(m_bd, BLURAY_PLAYER_SETTING_PLAYER_PROFILE, BLURAY_PLAYER_PROFILE_2_v2_0);
 
   std::string langCode;
-  g_LangCodeExpander.ConvertToISO6392B(g_langInfo.GetDVDAudioLanguage(), langCode);
+  g_LangCodeExpander.ConvertToISO6392T(g_langInfo.GetDVDAudioLanguage(), langCode);
   m_dll->bd_set_player_setting_str(m_bd, BLURAY_PLAYER_SETTING_AUDIO_LANG, langCode.c_str());
 
-  g_LangCodeExpander.ConvertToISO6392B(g_langInfo.GetDVDSubtitleLanguage(), langCode);
+  g_LangCodeExpander.ConvertToISO6392T(g_langInfo.GetDVDSubtitleLanguage(), langCode);
   m_dll->bd_set_player_setting_str(m_bd, BLURAY_PLAYER_SETTING_PG_LANG, langCode.c_str());
 
-  g_LangCodeExpander.ConvertToISO6392B(g_langInfo.GetDVDMenuLanguage(), langCode);
+  g_LangCodeExpander.ConvertToISO6392T(g_langInfo.GetDVDMenuLanguage(), langCode);
   m_dll->bd_set_player_setting_str(m_bd, BLURAY_PLAYER_SETTING_MENU_LANG, langCode.c_str());
 
   g_LangCodeExpander.ConvertToISO6391(g_langInfo.GetRegionLocale(), langCode);
@@ -1220,8 +1233,8 @@ void CDVDInputStreamBluray::SetupPlayerSettings()
 #ifdef HAVE_LIBBLURAY_BDJ
   std::string cacheDir = CSpecialProtocol::TranslatePath("special://userdata/cache/bluray/cache");
   std::string persistentDir = CSpecialProtocol::TranslatePath("special://userdata/cache/bluray/persistent");
-  m_dll->bd_set_player_setting_str(m_bd, 400, persistentDir.c_str());
-  m_dll->bd_set_player_setting_str(m_bd, 401, cacheDir.c_str());
+  m_dll->bd_set_player_setting_str(m_bd, BLURAY_PLAYER_PERSISTENT_ROOT, persistentDir.c_str());
+  m_dll->bd_set_player_setting_str(m_bd, BLURAY_PLAYER_CACHE_ROOT, cacheDir.c_str());
 #endif
 }
 

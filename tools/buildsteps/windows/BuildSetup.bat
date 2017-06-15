@@ -147,6 +147,7 @@ set WORKSPACE=%base_dir%\kodi-build
 
   xcopy %WORKSPACE%\addons BUILD_WIN32\application\addons /E /Q /I /Y /EXCLUDE:exclude.txt > NUL
   xcopy %WORKSPACE%\*.dll BUILD_WIN32\application /Q /I /Y > NUL
+  xcopy %WORKSPACE%\libbluray-*.jar BUILD_WIN32\application /Q /I /Y > NUL
   xcopy %WORKSPACE%\system BUILD_WIN32\application\system /E /Q /I /Y /EXCLUDE:exclude.txt+exclude_dll.txt  > NUL
   xcopy %WORKSPACE%\media BUILD_WIN32\application\media /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
 

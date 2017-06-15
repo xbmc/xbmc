@@ -1,5 +1,6 @@
 set(SOURCES AdvancedSettings.cpp
             AudioDSPSettings.cpp
+            DiscSettings.cpp
             DisplaySettings.cpp
             MediaSettings.cpp
             MediaSourceSettings.cpp
