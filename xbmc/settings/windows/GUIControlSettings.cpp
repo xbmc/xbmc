@@ -148,7 +148,7 @@ static bool GetIntegerOptions(SettingConstPtr setting, IntegerSettingOptions& op
   return true;
 }
 
-static bool GetStringOptions(SettingConstPtr setting, StringSettingOptions& options, std::set<std::string>& selectedOptions)
+static bool GetStringOptions(SettingConstPtr setting, StringSettingOptions& options, std::set<std::string>& selectedOptions, ILocalizer* localizer)
 {
   std::shared_ptr<const CSettingString> pSettingString = NULL;
   if (setting->GetType() == SettingType::String)
@@ -180,7 +180,7 @@ static bool GetStringOptions(SettingConstPtr setting, StringSettingOptions& opti
     {
       const TranslatableStringSettingOptions& settingOptions = pSettingString->GetTranslatableOptions();
       for (const auto& option : settingOptions)
-        options.push_back(std::make_pair(g_localizeStrings.Get(option.first), option.second));
+        options.push_back(std::make_pair(Localize(option.first, localizer), option.second));
       break;
     }
 
@@ -389,7 +389,7 @@ void CGUIControlSpinExSetting::FillControl()
       StringSettingOptions options;
       std::set<std::string> selectedValues;
       // get the string options
-      if (!GetStringOptions(m_pSetting, options, selectedValues) || selectedValues.size() != 1)
+      if (!GetStringOptions(m_pSetting, options, selectedValues, m_localizer) || selectedValues.size() != 1)
         return;
 
       // add them to the spinner
@@ -577,12 +577,12 @@ bool CGUIControlListSetting::GetIntegerItems(SettingConstPtr setting, CFileItemL
   return true;
 }
 
-bool CGUIControlListSetting::GetStringItems(SettingConstPtr setting, CFileItemList &items)
+bool CGUIControlListSetting::GetStringItems(SettingConstPtr setting, CFileItemList &items) const
 {
   StringSettingOptions options;
   std::set<std::string> selectedValues;
   // get the string options
-  if (!GetStringOptions(setting, options, selectedValues))
+  if (!GetStringOptions(setting, options, selectedValues, m_localizer))
     return false;
 
   // turn them into CFileItems and add them to the item list
