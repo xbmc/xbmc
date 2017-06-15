@@ -4062,6 +4062,7 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
   }
 
   m_screensaverActive = true;
+  CAnnouncementManager::GetInstance().Announce(GUI, "xbmc", "OnScreensaverActivated");
 
   // disable screensaver lock from the login screen
   m_iScreenSaveLock = g_windowManager.GetActiveWindow() == WINDOW_LOGIN_SCREEN ? 1 : 0;
