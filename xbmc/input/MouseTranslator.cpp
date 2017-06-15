@@ -52,7 +52,7 @@ static const std::map<ActionName, KeyID> MouseKeys =
 
 } // anonymous namespace
 
-uint32_t CMouseTranslator::TranslateMouseCommand(const TiXmlElement *pButton)
+uint32_t CMouseTranslator::TranslateCommand(const TiXmlElement *pButton)
 {
   uint32_t buttonId = 0;
 

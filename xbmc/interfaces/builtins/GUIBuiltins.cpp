@@ -54,7 +54,7 @@ static int Action(const std::vector<std::string>& params)
 {
   // try translating the action from our ButtonTranslator
   unsigned int actionID;
-  if (CActionTranslator::TranslateActionString(params[0].c_str(), actionID))
+  if (CActionTranslator::TranslateString(params[0].c_str(), actionID))
   {
     int windowID = params.size() == 2 ? CWindowTranslator::TranslateWindow(params[1]) : WINDOW_INVALID;
     CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, windowID, -1, static_cast<void*>(new CAction(actionID)));

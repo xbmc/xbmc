@@ -27,7 +27,7 @@
 
 #include <sstream>
 
-uint32_t CJoystickTranslator::TranslateJoystickCommand(const TiXmlNode* pDevice, const TiXmlElement *pButton, unsigned int& holdtimeMs)
+uint32_t CJoystickTranslator::TranslateButton(const TiXmlNode* pDevice, const TiXmlElement *pButton, unsigned int& holdtimeMs)
 {
   std::string controllerId = DEFAULT_CONTROLLER_ID;
 

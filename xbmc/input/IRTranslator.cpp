@@ -147,7 +147,7 @@ void CIRTranslator::Clear()
   m_irRemotesMap.clear();
 }
 
-unsigned int CIRTranslator::TranslateIRRemoteString(const char* szDevice, const char *szButton)
+unsigned int CIRTranslator::TranslateButton(const char* szDevice, const char *szButton)
 {
   // Find the device
   auto it = m_irRemotesMap.find(szDevice);
@@ -163,10 +163,10 @@ unsigned int CIRTranslator::TranslateIRRemoteString(const char* szDevice, const 
   if (strnicmp((*it2).second.c_str(), "obc", 3) == 0)
     return TranslateUniversalRemoteString((*it2).second.c_str());
 
-  return TranslateRemoteString((*it2).second.c_str());
+  return TranslateString((*it2).second.c_str());
 }
 
-uint32_t CIRTranslator::TranslateRemoteString(const char *szButton)
+uint32_t CIRTranslator::TranslateString(const char *szButton)
 {
   if (!szButton) 
     return 0;

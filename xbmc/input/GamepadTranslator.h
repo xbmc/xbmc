@@ -24,5 +24,5 @@
 class CGamepadTranslator
 {
 public:
-  static uint32_t TranslateGamepadString(const char *szButton);
+  static uint32_t TranslateString(const char *szButton);
 };

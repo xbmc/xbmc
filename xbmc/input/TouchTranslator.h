@@ -30,11 +30,11 @@ class CTouchTranslator
 public:
   CTouchTranslator() = default;
 
-  void MapTouchActions(int windowID, const TiXmlNode *pTouch);
+  void MapActions(int windowID, const TiXmlNode *pTouch);
 
   void Clear();
 
-  bool TranslateTouchAction(int window, unsigned int touchCommand, int touchPointers, unsigned int &actionId, std::string &actionString);
+  bool TranslateAction(int window, unsigned int touchCommand, int touchPointers, unsigned int &actionId, std::string &actionString);
 
 private:
   struct CTouchAction

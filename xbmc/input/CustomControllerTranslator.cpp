@@ -24,7 +24,7 @@
 #include "utils/log.h"
 #include "utils/XBMCTinyXML.h"
 
-void CCustomControllerTranslator::MapCustomControllerActions(int windowID, const TiXmlNode *pCustomController)
+void CCustomControllerTranslator::MapActions(int windowID, const TiXmlNode *pCustomController)
 {
   CustomControllerButtonMap buttonMap;
   std::string controllerName;
@@ -73,7 +73,7 @@ void CCustomControllerTranslator::Clear()
   m_customControllersMap.clear();
 }
 
-bool CCustomControllerTranslator::TranslateCustomControllerString(int windowId, const std::string& controllerName, int buttonId, unsigned int& actionId, std::string& strAction)
+bool CCustomControllerTranslator::TranslateString(int windowId, const std::string& controllerName, int buttonId, unsigned int& actionId, std::string& strAction)
 {
   // Resolve the correct custom controller
   auto it = m_customControllersMap.find(controllerName);
@@ -89,7 +89,7 @@ bool CCustomControllerTranslator::TranslateCustomControllerString(int windowId, 
     if (it3 != buttonMap.end())
     {
       strAction = it3->second;
-      CActionTranslator::TranslateActionString(strAction.c_str(), actionId);
+      CActionTranslator::TranslateString(strAction.c_str(), actionId);
     }
   }
 

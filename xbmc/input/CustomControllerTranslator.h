@@ -29,11 +29,11 @@ class CCustomControllerTranslator
 public:
   CCustomControllerTranslator() = default;
 
-  void MapCustomControllerActions(int windowID, const TiXmlNode *pCustomController);
+  void MapActions(int windowID, const TiXmlNode *pCustomController);
 
   void Clear();
 
-  bool TranslateCustomControllerString(int windowId, const std::string& controllerName, int buttonId, unsigned int& actionId, std::string& strAction);
+  bool TranslateString(int windowId, const std::string& controllerName, int buttonId, unsigned int& actionId, std::string& strAction);
 
 private:
   // Maps button id to action

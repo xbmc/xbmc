@@ -28,7 +28,7 @@
 #include <string>
 #include <vector>
 
-uint32_t CKeyboardTranslator::TranslateKeyboardButton(const TiXmlElement *pButton)
+uint32_t CKeyboardTranslator::TranslateButton(const TiXmlElement *pButton)
 {
   uint32_t button_id = 0;
   const char *szButton = pButton->Value();
@@ -54,7 +54,7 @@ uint32_t CKeyboardTranslator::TranslateKeyboardButton(const TiXmlElement *pButto
       CLog::Log(LOGERROR, "Keyboard Translator: `key' button has no id");
   }
   else
-    button_id = TranslateKeyboardString(szButton);
+    button_id = TranslateString(szButton);
 
   // Process the ctrl/shift/alt modifiers
   std::string strMod;
@@ -87,7 +87,7 @@ uint32_t CKeyboardTranslator::TranslateKeyboardButton(const TiXmlElement *pButto
   return button_id;
 }
 
-uint32_t CKeyboardTranslator::TranslateKeyboardString(const char *szButton)
+uint32_t CKeyboardTranslator::TranslateString(const char *szButton)
 {
   uint32_t buttonCode = 0;
   XBMCKEYTABLE keytable;

@@ -75,15 +75,15 @@ void CEventButtonState::Load()
     {
       if ( m_mapName.compare("KB") == 0 ) // standard keyboard map
       {
-        m_iKeyCode = CKeyboardTranslator::TranslateKeyboardString( m_buttonName.c_str() );
+        m_iKeyCode = CKeyboardTranslator::TranslateString( m_buttonName.c_str() );
       }
       else if  ( m_mapName.compare("XG") == 0 ) // xbox gamepad map
       {
-        m_iKeyCode = CGamepadTranslator::TranslateGamepadString( m_buttonName.c_str() );
+        m_iKeyCode = CGamepadTranslator::TranslateString( m_buttonName.c_str() );
       }
       else if  ( m_mapName.compare("R1") == 0 ) // xbox remote map
       {
-        m_iKeyCode = CIRTranslator::TranslateRemoteString( m_buttonName.c_str() );
+        m_iKeyCode = CIRTranslator::TranslateString( m_buttonName.c_str() );
       }
       else if  ( m_mapName.compare("R2") == 0 ) // xbox universal remote map
       {

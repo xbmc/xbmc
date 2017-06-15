@@ -40,9 +40,9 @@ public:
    */
   void Clear();
 
-  unsigned int TranslateIRRemoteString(const char* szDevice, const char *szButton);
+  unsigned int TranslateButton(const char* szDevice, const char *szButton);
 
-  static uint32_t TranslateRemoteString(const char *szButton);
+  static uint32_t TranslateString(const char *szButton);
   static uint32_t TranslateUniversalRemoteString(const char *szButton);
 
 private:

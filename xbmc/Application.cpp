@@ -4398,7 +4398,7 @@ bool CApplication::ExecuteXBMCAction(std::string actionStr, const CGUIListItemPt
   {
     // try translating the action from our ButtonTranslator
     unsigned int actionID;
-    if (CActionTranslator::TranslateActionString(actionStr.c_str(), actionID))
+    if (CActionTranslator::TranslateString(actionStr.c_str(), actionID))
     {
       OnAction(CAction(actionID));
       return true;

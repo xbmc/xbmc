@@ -45,7 +45,7 @@ static const std::map<ActionName, TouchCommandID> TouchCommands =
     { "swipedown"                , ACTION_GESTURE_SWIPE_DOWN }
 };
 
-void CTouchTranslator::MapTouchActions(int windowID, const TiXmlNode *pTouch)
+void CTouchTranslator::MapActions(int windowID, const TiXmlNode *pTouch)
 {
   if (pTouch == nullptr)
     return;
@@ -95,7 +95,7 @@ void CTouchTranslator::Clear()
   m_touchMap.clear();
 }
 
-bool CTouchTranslator::TranslateTouchAction(int window, unsigned int touchCommand, int touchPointers, unsigned int &actionId, std::string &actionString)
+bool CTouchTranslator::TranslateAction(int window, unsigned int touchCommand, int touchPointers, unsigned int &actionId, std::string &actionString)
 {
   unsigned int touchActionKey = GetTouchActionKey(touchCommand, touchPointers);
 
@@ -157,7 +157,7 @@ unsigned int CTouchTranslator::TranslateTouchCommand(const TiXmlElement *pButton
   unsigned int touchActionKey = GetTouchActionKey(touchCommandId, pointers);
 
   action.strAction = szAction;
-  if (!CActionTranslator::TranslateActionString(szAction, action.actionId) || action.actionId == ACTION_NONE)
+  if (!CActionTranslator::TranslateString(szAction, action.actionId) || action.actionId == ACTION_NONE)
     return ACTION_NONE;
 
   return touchActionKey;

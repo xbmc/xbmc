@@ -285,7 +285,7 @@ bool CGUIAudioManager::Load()
       unsigned int id = ACTION_NONE;    // action identity
       if (pIdNode && pIdNode->FirstChild())
       {
-        CActionTranslator::TranslateActionString(pIdNode->FirstChild()->Value(), id);
+        CActionTranslator::TranslateString(pIdNode->FirstChild()->Value(), id);
       }
 
       TiXmlNode* pFileNode = pAction->FirstChild("file");

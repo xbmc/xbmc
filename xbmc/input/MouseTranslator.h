@@ -26,5 +26,5 @@ class TiXmlElement;
 class CMouseTranslator
 {
 public:
-  static uint32_t TranslateMouseCommand(const TiXmlElement *pButton);
+  static uint32_t TranslateCommand(const TiXmlElement *pButton);
 };

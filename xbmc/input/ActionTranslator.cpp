@@ -281,7 +281,7 @@ bool CActionTranslator::IsAnalog(unsigned int actionID)
   }
 }
 
-bool CActionTranslator::TranslateActionString(const char *szAction, unsigned int &actionId)
+bool CActionTranslator::TranslateString(const char *szAction, unsigned int &actionId)
 {
   actionId = ACTION_NONE;
 

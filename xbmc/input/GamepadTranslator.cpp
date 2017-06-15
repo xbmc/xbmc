@@ -25,7 +25,7 @@
 
 #include <string>
 
-uint32_t CGamepadTranslator::TranslateGamepadString(const char *szButton)
+uint32_t CGamepadTranslator::TranslateString(const char *szButton)
 {
   if (szButton == nullptr)
     return 0;

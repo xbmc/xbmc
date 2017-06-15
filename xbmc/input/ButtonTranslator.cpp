@@ -198,7 +198,7 @@ bool CButtonTranslator::LoadKeymap(const std::string &keymapPath)
 
 int CButtonTranslator::TranslateLircRemoteString(const char* szDevice, const char *szButton)
 {
-  return m_irTranslator->TranslateIRRemoteString(szDevice, szButton);
+  return m_irTranslator->TranslateButton(szDevice, szButton);
 }
 
 bool CButtonTranslator::TranslateCustomControllerString(int windowId, const std::string& controllerName, int buttonId, int& action, std::string& strAction)
@@ -206,16 +206,16 @@ bool CButtonTranslator::TranslateCustomControllerString(int windowId, const std:
   unsigned int actionId = ACTION_NONE;
 
   // Try to get the action from the current window
-  if (!m_customControllerTranslator->TranslateCustomControllerString(windowId, controllerName, buttonId, actionId, strAction))
+  if (!m_customControllerTranslator->TranslateString(windowId, controllerName, buttonId, actionId, strAction))
   {
     // If it's invalid, try to get it from a fallback window or the global map
     int fallbackWindow = CWindowTranslator::GetFallbackWindow(windowId);
     if (fallbackWindow > -1)
-      m_customControllerTranslator->TranslateCustomControllerString(fallbackWindow, controllerName, buttonId, actionId, strAction);
+      m_customControllerTranslator->TranslateString(fallbackWindow, controllerName, buttonId, actionId, strAction);
 
     // Still no valid action? Use global map
     if (action == ACTION_NONE)
-      m_customControllerTranslator->TranslateCustomControllerString(-1, controllerName, buttonId, actionId, strAction);
+      m_customControllerTranslator->TranslateString(-1, controllerName, buttonId, actionId, strAction);
   }
 
   if (actionId != ACTION_NONE)
@@ -234,14 +234,14 @@ bool CButtonTranslator::TranslateTouchAction(int window, int touchAction, int to
 
   unsigned int actionId = ACTION_NONE;
 
-  if (!m_touchTranslator->TranslateTouchAction(window, touchAction, touchPointers, actionId, actionString))
+  if (!m_touchTranslator->TranslateAction(window, touchAction, touchPointers, actionId, actionString))
   {
     int fallbackWindow = CWindowTranslator::GetFallbackWindow(window);
     if (fallbackWindow > -1)
-      m_touchTranslator->TranslateTouchAction(fallbackWindow, touchAction, touchPointers, actionId, actionString);
+      m_touchTranslator->TranslateAction(fallbackWindow, touchAction, touchPointers, actionId, actionString);
 
     if (actionId == ACTION_NONE)
-      m_touchTranslator->TranslateTouchAction(-1, touchAction, touchPointers, actionId, actionString);
+      m_touchTranslator->TranslateAction(-1, touchAction, touchPointers, actionId, actionString);
   }
 
   action = actionId;
@@ -404,7 +404,7 @@ unsigned int CButtonTranslator::GetActionCode(int window, const CKey &key, std::
 void CButtonTranslator::MapAction(uint32_t buttonCode, const char *szAction, unsigned int holdtimeMs, buttonMap &map)
 {
   unsigned int action = ACTION_NONE;
-  if (!CActionTranslator::TranslateActionString(szAction, action) || buttonCode == 0)
+  if (!CActionTranslator::TranslateString(szAction, action) || buttonCode == 0)
     return;   // no valid action, or an invalid buttoncode
 
   // have a valid action, and a valid button - map it.
@@ -455,19 +455,19 @@ void CButtonTranslator::MapWindowActions(const TiXmlNode *pWindow, int windowID)
         unsigned int holdtimeMs = 0;
 
         if (type == "gamepad")
-            buttonCode = CGamepadTranslator::TranslateGamepadString(pButton->Value());
+            buttonCode = CGamepadTranslator::TranslateString(pButton->Value());
         else if (type == "remote")
-            buttonCode = CIRTranslator::TranslateRemoteString(pButton->Value());
+            buttonCode = CIRTranslator::TranslateString(pButton->Value());
         else if (type == "universalremote")
             buttonCode = CIRTranslator::TranslateUniversalRemoteString(pButton->Value());
         else if (type == "keyboard")
-            buttonCode = CKeyboardTranslator::TranslateKeyboardButton(pButton);
+            buttonCode = CKeyboardTranslator::TranslateButton(pButton);
         else if (type == "mouse")
-            buttonCode = CMouseTranslator::TranslateMouseCommand(pButton);
+            buttonCode = CMouseTranslator::TranslateCommand(pButton);
         else if (type == "appcommand")
             buttonCode = CAppTranslator::TranslateAppCommand(pButton->Value());
         else if (type == "joystick")
-          buttonCode = CJoystickTranslator::TranslateJoystickCommand(pDevice, pButton, holdtimeMs);
+          buttonCode = CJoystickTranslator::TranslateButton(pDevice, pButton, holdtimeMs);
 
         if (buttonCode != 0)
         {
@@ -496,7 +496,7 @@ void CButtonTranslator::MapWindowActions(const TiXmlNode *pWindow, int windowID)
   pDevice = pWindow->FirstChild("touch");
   while (pDevice != nullptr)
   {
-    m_touchTranslator->MapTouchActions(windowID, pDevice);
+    m_touchTranslator->MapActions(windowID, pDevice);
     pDevice = pDevice->NextSibling("touch");
   }
 
@@ -504,7 +504,7 @@ void CButtonTranslator::MapWindowActions(const TiXmlNode *pWindow, int windowID)
   pDevice = pWindow->FirstChild("customcontroller");
   while (pDevice != nullptr)
   {
-    m_customControllerTranslator->MapCustomControllerActions(windowID, pDevice);
+    m_customControllerTranslator->MapActions(windowID, pDevice);
     pDevice = pDevice->NextSibling("customcontroller");
   }
 }
