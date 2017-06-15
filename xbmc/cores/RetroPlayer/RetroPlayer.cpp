@@ -33,6 +33,7 @@
 #include "guilib/WindowIDs.h"
 #include "input/Action.h"
 #include "input/ActionIDs.h"
+#include "settings/MediaSettings.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/MathUtils.h"
@@ -61,6 +62,14 @@ bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options
 {
   std::string redactedPath = CURL::GetRedacted(file.GetPath());
   CLog::Log(LOGINFO, "RetroPlayer: Opening: %s", redactedPath.c_str());
+
+  // Reset game settings
+  CMediaSettings::GetInstance().GetCurrentGameSettings() = CMediaSettings::GetInstance().GetDefaultGameSettings();
+
+  //! @todo - Remove this when RetroPlayer has a renderer
+  CVideoSettings &videoSettings = CMediaSettings::GetInstance().GetCurrentVideoSettings();
+  videoSettings.m_ScalingMethod = CMediaSettings::GetInstance().GetCurrentGameSettings().ScalingMethod();
+  videoSettings.m_ViewMode = CMediaSettings::GetInstance().GetCurrentGameSettings().ViewMode();
 
   CSingleLock lock(m_mutex);
 
@@ -428,7 +437,7 @@ void CRetroPlayer::UpdateRenderInfo(CRenderInfo &info)
 
 void CRetroPlayer::CloseOSD()
 {
-  CGUIDialog *pDialog = g_windowManager.GetDialog(WINDOW_DIALOG_VIDEO_OSD);
+  CGUIDialog *pDialog = g_windowManager.GetDialog(WINDOW_DIALOG_GAME_OSD);
   if (pDialog)
     pDialog->Close(true, WINDOW_FULLSCREEN_GAME);
 }

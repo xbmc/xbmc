@@ -1,6 +1,7 @@
 set(SOURCES AdvancedSettings.cpp
             AudioDSPSettings.cpp
             DisplaySettings.cpp
+            GameSettings.cpp
             MediaSettings.cpp
             MediaSourceSettings.cpp
             SettingAddon.cpp
@@ -19,6 +20,7 @@ set(HEADERS AdvancedSettings.h
             AudioDSPSettings.h
             DiscSettings.h
             DisplaySettings.h
+            GameSettings.h
             MediaSettings.h
             MediaSourceSettings.h
             SettingAddon.h

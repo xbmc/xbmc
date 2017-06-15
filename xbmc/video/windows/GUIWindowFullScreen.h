@@ -22,6 +22,8 @@
 
 #include "guilib/GUIWindow.h"
 
+class CGUIDialog;
+
 class CGUIWindowFullScreen : public CGUIWindow
 {
 public:
@@ -44,6 +46,7 @@ private:
   void SeekChapter(int iChapter);
   void ToggleOSD();
   void TriggerOSD();
+  CGUIDialog *GetOSD();
 
   bool m_viewModeChanged;
   unsigned int m_dwShowViewModeTimeout;
