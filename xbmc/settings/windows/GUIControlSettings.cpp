@@ -941,8 +941,6 @@ void CGUIControlEditSetting::Update(bool updateDisplayOnly /* = false */)
     std::shared_ptr<CSettingUrlEncodedString> urlEncodedSetting = std::static_pointer_cast<CSettingUrlEncodedString>(m_pSetting);
     m_pEdit->SetLabel2(urlEncodedSetting->GetDecodedValue());
   }
-  else if (control->IsHidden() || control->GetFormat() == "md5")
-    m_pEdit->SetLabel2(std::string(m_pSetting->ToString().size(), '*'));
   else
     m_pEdit->SetLabel2(m_pSetting->ToString());
 }
