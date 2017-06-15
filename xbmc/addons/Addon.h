@@ -54,7 +54,7 @@ class CAddon : public IAddon
 {
 public:
   explicit CAddon(CAddonInfo addonInfo);
-  virtual ~CAddon() {}
+  virtual ~CAddon() = default;
 
   TYPE Type() const override { return m_addonInfo.MainType(); }
   TYPE FullType() const override { return Type(); }
@@ -261,13 +261,13 @@ protected:
   virtual bool SettingsToXML(CXBMCTinyXML &doc) const;
 
   const CAddonInfo m_addonInfo;
-  std::string m_userSettingsPath;
 
 private:
   bool m_loadSettingsFailed;
   bool m_hasUserSettings;
 
   std::string m_profilePath;
+  std::string m_userSettingsPath;
   mutable std::shared_ptr<CAddonSettings> m_settings;
 };
 
