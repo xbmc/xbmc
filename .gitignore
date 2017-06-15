@@ -250,6 +250,7 @@ lib/cpluff/stamp-h1
 /project/BuildDependencies/bin/doxygen
 /project/BuildDependencies/bin/json-rpc
 /project/BuildDependencies/x64
+/project/BuildDependencies/win32
 
 # /system
 /system/cpluff.dll
