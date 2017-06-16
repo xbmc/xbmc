@@ -47,6 +47,7 @@ public:
 
   bool Hide() override;
   bool Show(bool raise = true) override;
+  void SetVisible(bool visible);
   virtual void Register(IDispResource *resource);
   virtual void Unregister(IDispResource *resource);
 protected:

@@ -226,6 +226,11 @@ bool CWinSystemRpi::Show(bool raise)
   return true;
 }
 
+void CWinSystemRpi::SetVisible(bool visible)
+{
+  m_rpi->SetVisible(visible);
+}
+
 void CWinSystemRpi::Register(IDispResource *resource)
 {
   CSingleLock lock(m_resourceSection);
