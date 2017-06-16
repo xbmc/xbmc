@@ -8822,7 +8822,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
     if (NULL == pDS2.get()) return;
 
     // if we're exporting to a single folder, we export thumbs as well
-    std::string exportRoot = URIUtils::AddFileToFolder(path, "xbmc_videodb_" + CDateTime::GetCurrentDateTime().GetAsDBDate());
+    std::string exportRoot = URIUtils::AddFileToFolder(path, "kodi_videodb_" + CDateTime::GetCurrentDateTime().GetAsDBDate());
     std::string xmlFile = URIUtils::AddFileToFolder(exportRoot, "videodb.xml");
     std::string actorsDir = URIUtils::AddFileToFolder(exportRoot, "actors");
     std::string moviesDir = URIUtils::AddFileToFolder(exportRoot, "movies");
