@@ -138,16 +138,14 @@ TYPE CAddonInfo::TranslateSubContent(const std::string& content)
 }
 
 CAddonInfo::CAddonInfo()
-  : m_usable(true),
-    m_mainType(ADDON_UNKNOWN),
+  : m_mainType(ADDON_UNKNOWN),
     m_packageSize(0)
 {
 
 }
 
 CAddonInfo::CAddonInfo(std::string id, TYPE type)
-  : m_usable(true),
-    m_id(std::move(id)),
+  : m_id(std::move(id)),
     m_mainType(type),
     m_packageSize(0)
 {
