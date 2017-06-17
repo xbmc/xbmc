@@ -95,13 +95,13 @@ void CPortMapper::ProcessPeripherals()
     auto itConnectedPort = newPortMap.find(joystick.get());
     auto itDisconnectedPort = m_portMap.find(joystick);
 
-    bool bIsConnected = itConnectedPort != newPortMap.end();
-    bool bWasConnected = itDisconnectedPort != m_portMap.end();
+    IInputHandler* newHandler = itConnectedPort != newPortMap.end() ? itConnectedPort->second : nullptr;
+    IInputHandler* oldHandler = itDisconnectedPort != m_portMap.end() ? itDisconnectedPort->second->InputHandler() : nullptr;
 
-    if (bIsConnected != bWasConnected)
+    if (oldHandler != newHandler)
     {
       // Unregister old handler
-      if (bWasConnected)
+      if (oldHandler != nullptr)
       {
         PortPtr& oldPort = itDisconnectedPort->second;
 
@@ -111,14 +111,12 @@ void CPortMapper::ProcessPeripherals()
       }
 
       // Register new handler
-      if (bIsConnected)
+      if (newHandler != nullptr)
       {
-        IInputHandler *inputHandler = itConnectedPort->second;
-
-        CGameClient *gameClient = m_portManager->GameClient(inputHandler);
+        CGameClient *gameClient = m_portManager->GameClient(newHandler);
         if (gameClient)
         {
-          PortPtr newPort(new CPort(inputHandler, *gameClient));
+          PortPtr newPort(new CPort(newHandler, *gameClient));
 
           newPort->RegisterDevice(joystick.get());
 
