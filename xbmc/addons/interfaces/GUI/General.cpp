@@ -45,7 +45,7 @@
 #include "Window.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/gui/General.h"
 
-#include "addons/AddonDll.h"
+#include "addons/binary-addons/AddonDll.h"
 #include "input/Key.h"
 #include "guilib/GUIWindowManager.h"
 #include "utils/log.h"

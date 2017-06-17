@@ -20,6 +20,10 @@
  */
 
 #include "AddonDll.h"
+#include "addons/AddonVersion.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/AddonBase.h"
+
+#include <memory>
 
 namespace ADDON
 {
@@ -27,19 +31,19 @@ namespace ADDON
   class IAddonInstanceHandler
   {
   public:
-    IAddonInstanceHandler(ADDON_TYPE type, const AddonDllPtr& addonInfo, KODI_HANDLE parentInstance = nullptr, const std::string& instanceID = "");
+    IAddonInstanceHandler(ADDON_TYPE type, const BinaryAddonBasePtr& addonBase, KODI_HANDLE parentInstance = nullptr, const std::string& instanceID = "");
     virtual ~IAddonInstanceHandler();
 
     const ADDON_TYPE UsedType() const { return m_type; }
     const std::string& InstanceID() { return m_instanceId; }
 
-    std::string ID() const { return m_addon ? m_addon->ID() : ""; }
-    std::string Name() const { return m_addon ? m_addon->Name() : ""; }
-    std::string Author() const { return m_addon ? m_addon->Author() : ""; }
-    std::string Icon() const { return m_addon ? m_addon->Icon() : ""; }
-    std::string Path() const { return m_addon ? m_addon->Path() : ""; }
-    std::string Profile() const { return m_addon ? m_addon->Profile() : ""; }
-    AddonVersion Version() const { return m_addon ? m_addon->Version() : AddonVersion("0.0.0"); }
+    std::string ID() const;
+    std::string Name() const;
+    std::string Author() const;
+    std::string Icon() const;
+    std::string Path() const;
+    std::string Profile() const;
+    AddonVersion Version() const;
 
     bool CreateInstance(KODI_HANDLE instance);
     void DestroyInstance();
@@ -49,6 +53,7 @@ namespace ADDON
     ADDON_TYPE m_type;
     std::string m_instanceId;
     KODI_HANDLE m_parentInstance;
+    BinaryAddonBasePtr m_addonBase;
     AddonDllPtr m_addon;
   };
 

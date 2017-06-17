@@ -21,7 +21,7 @@
 #include "GUIWindowScreensaverDim.h"
 
 #include "Application.h"
-#include "addons/AddonDll.h"
+#include "addons/binary-addons/AddonDll.h"
 #include "guilib/GraphicContext.h"
 #include "guilib/GUITexture.h"
 

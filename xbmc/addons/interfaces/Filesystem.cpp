@@ -22,7 +22,7 @@
 #include "addons/kodi-addon-dev-kit/include/kodi/Filesystem.h"
 
 #include "Util.h"
-#include "addons/AddonDll.h"
+#include "addons/binary-addons/AddonDll.h"
 #include "filesystem/File.h"
 #include "filesystem/Directory.h"
 #include "filesystem/SpecialProtocol.h"

@@ -102,7 +102,7 @@ AddonPtr CAddonMgr::Factory(const cp_plugin_info_t* plugin, TYPE type)
   return nullptr;
 }
 
-bool CAddonMgr::Factory(const cp_plugin_info_t* plugin, TYPE type, CAddonBuilder& builder)
+bool CAddonMgr::Factory(const cp_plugin_info_t* plugin, TYPE type, CAddonBuilder& builder, bool ignoreExtensions/* = false*/)
 {
   if (!plugin || !plugin->identifier)
     return false;
@@ -110,20 +110,23 @@ bool CAddonMgr::Factory(const cp_plugin_info_t* plugin, TYPE type, CAddonBuilder
   if (!PlatformSupportsAddon(plugin))
     return false;
 
-  cp_extension_t* ext = GetFirstExtPoint(plugin, type);
-
-  if (ext == nullptr && type != ADDON_UNKNOWN)
-    return false; // no extension point satisfies the type requirement
-
-  if (ext)
+  if (!ignoreExtensions)
   {
-    builder.SetType(CAddonInfo::TranslateType(ext->ext_point_id));
-    builder.SetExtPoint(ext);
+    cp_extension_t* ext = GetFirstExtPoint(plugin, type);
 
-    auto libname = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@library");
-    if (libname.empty())
-      libname = CAddonMgr::GetInstance().GetPlatformLibraryName(ext->configuration);
-    builder.SetLibName(libname);
+    if (ext == nullptr && type != ADDON_UNKNOWN)
+      return false; // no extension point satisfies the type requirement
+
+    if (ext)
+    {
+      builder.SetType(CAddonInfo::TranslateType(ext->ext_point_id));
+      builder.SetExtPoint(ext);
+
+      auto libname = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@library");
+      if (libname.empty())
+        libname = CAddonMgr::GetInstance().GetPlatformLibraryName(ext->configuration);
+      builder.SetLibName(libname);
+    }
   }
 
   FillCpluffMetadata(plugin, builder);
@@ -562,6 +565,40 @@ bool CAddonMgr::FindInstallableById(const std::string& addonId, AddonPtr& result
   result = *std::max_element(versions.begin(), versions.end(),
       [](const AddonPtr& a, const AddonPtr& b) { return a->Version() < b->Version(); });
   return true;
+}
+
+bool CAddonMgr::GetInstalledBinaryAddons(BINARY_ADDON_LIST& binaryAddonList)
+{
+  CSingleLock lock(m_critSection);
+  if (!m_cp_context)
+    return false;
+
+  std::vector<CAddonBuilder> builders;
+  m_database.GetInstalled(builders);
+
+  for (auto builder : builders)
+  {
+    cp_status_t status;
+    cp_plugin_info_t* cp_addon = m_cpluff->get_plugin_info(m_cp_context, builder.GetId().c_str(), &status);
+    if (status == CP_OK && cp_addon)
+    {
+      cp_extension_t* props = GetFirstExtPoint(cp_addon, ADDON_UNKNOWN);
+      if (props != nullptr)
+      {
+        std::string value = GetPlatformLibraryName(props->plugin->extensions->configuration);
+        if (!value.empty() &&
+            props->plugin->plugin_path &&
+            strcmp(props->plugin->plugin_path, "") != 0 &&
+            Factory(cp_addon, ADDON_UNKNOWN, builder, true))
+        {
+          binaryAddonList.push_back(BINARY_ADDON_LIST_ENTRY(!IsAddonDisabled(cp_addon->identifier), std::move(builder.GetAddonInfo())));
+        }
+      }
+      m_cpluff->release_info(m_cp_context, cp_addon);
+    }
+  }
+
+  return !binaryAddonList.empty();
 }
 
 bool CAddonMgr::GetAddonsInternal(const TYPE &type, VECADDONS &addons, bool enabledOnly)

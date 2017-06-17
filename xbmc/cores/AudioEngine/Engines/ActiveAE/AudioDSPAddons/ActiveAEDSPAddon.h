@@ -24,7 +24,7 @@
 #include <vector>
 
 #include "addons/Addon.h"
-#include "addons/AddonDll.h"
+#include "addons/binary-addons/AddonDll.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/kodi_adsp_types.h"
 
 namespace ActiveAE

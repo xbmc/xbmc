@@ -22,7 +22,7 @@
 #include "addons/kodi-addon-dev-kit/include/kodi/gui/dialogs/FileBrowser.h"
 
 #include "URL.h"
-#include "addons/AddonDll.h"
+#include "addons/binary-addons/AddonDll.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "settings/MediaSourceSettings.h"
 #include "storage/MediaManager.h"

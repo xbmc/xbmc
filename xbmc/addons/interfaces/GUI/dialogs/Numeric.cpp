@@ -22,7 +22,7 @@
 #include "addons/kodi-addon-dev-kit/include/kodi/gui/dialogs/Numeric.h"
 
 #include "XBDateTime.h"
-#include "addons/AddonDll.h"
+#include "addons/binary-addons/AddonDll.h"
 #include "dialogs/GUIDialogNumeric.h"
 #include "utils/log.h"
 
