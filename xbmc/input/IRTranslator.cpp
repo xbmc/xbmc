@@ -66,7 +66,7 @@ bool CIRTranslator::LoadIRMap(const std::string &irMapPath)
 {
   std::string remoteMapTag;
 #ifdef TARGET_POSIX
-  remoteMapTag = "irmap";
+  remoteMapTag = "lircmap";
 #else
   remoteMapTag = "irssmap";
 #endif
