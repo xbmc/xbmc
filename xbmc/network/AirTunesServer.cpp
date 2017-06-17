@@ -630,7 +630,7 @@ bool CAirTunesServer::IsRAOPRunningInternal()
 {
   if (m_pLibShairplay != nullptr && m_pRaop != nullptr)
   {
-    return m_pLibShairplay->raop_is_running(m_pRaop);
+    return m_pLibShairplay->raop_is_running(m_pRaop) != 0;
   }
   return false;
 }
