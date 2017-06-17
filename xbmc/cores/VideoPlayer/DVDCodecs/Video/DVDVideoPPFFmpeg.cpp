@@ -128,8 +128,8 @@ bool CDVDVideoPPFFmpeg::Process(VideoPicture* pPicture)
   int pict_type = (m_pSource->qscale_type != DVP_QSCALE_MPEG1) ?
                    PP_PICT_TYPE_QP2 : 0;
 
-  uint8_t* srcPlanes[3], *dstPlanes[3];
-  int srcStrides[3], dstStrides[3];
+  uint8_t* srcPlanes[YuvImage::MAX_PLANES], *dstPlanes[YuvImage::MAX_PLANES];
+  int srcStrides[YuvImage::MAX_PLANES], dstStrides[YuvImage::MAX_PLANES];
   m_pSource->videoBuffer->GetPlanes(srcPlanes);
   m_pSource->videoBuffer->GetStrides(srcStrides);
   m_pTarget.videoBuffer->GetPlanes(dstPlanes);
