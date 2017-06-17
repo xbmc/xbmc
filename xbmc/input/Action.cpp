@@ -20,7 +20,7 @@
 
 #include "Action.h"
 #include "ActionIDs.h"
-#include "ButtonTranslator.h"
+#include "ActionTranslator.h"
 #include "Key.h"
 
 CAction::CAction(int actionID, float amount1 /* = 1.0f */, float amount2 /* = 0.0f */, const std::string &name /* = "" */, unsigned int holdTime /*= 0*/)
@@ -149,5 +149,5 @@ bool CAction::IsGesture() const
 
 bool CAction::IsAnalog() const
 {
-  return CButtonTranslator::IsAnalog(m_id);
+  return CActionTranslator::IsAnalog(m_id);
 }

@@ -1,21 +1,35 @@
 set(SOURCES Action.cpp
+            ActionTranslator.cpp
+            AppTranslator.cpp
             ButtonTranslator.cpp
+            CustomControllerTranslator.cpp
+            GamepadTranslator.cpp
             InertialScrollingHandler.cpp
             InputCodingTableBaiduPY.cpp
             InputCodingTableBasePY.cpp
             InputCodingTableFactory.cpp
             InputCodingTableKorean.cpp
             InputManager.cpp
+            IRTranslator.cpp
+            JoystickTranslator.cpp
             Key.cpp
             KeyboardLayout.cpp
             KeyboardLayoutManager.cpp
             KeyboardStat.cpp
+            KeyboardTranslator.cpp
             MouseStat.cpp
+            MouseTranslator.cpp
+            TouchTranslator.cpp
+            WindowTranslator.cpp
             XBMC_keytable.cpp)
 
 set(HEADERS Action.h
             ActionIDs.h
+            ActionTranslator.h
+            AppTranslator.h
             ButtonTranslator.h
+            CustomControllerTranslator.h
+            GamepadTranslator.h
             InertialScrollingHandler.h
             InputCodingTable.h
             InputCodingTableBaiduPY.h
@@ -23,11 +37,17 @@ set(HEADERS Action.h
             InputCodingTableFactory.h
             InputCodingTableKorean.h
             InputManager.h
+            IRTranslator.h
+            JoystickTranslator.h
             Key.h
             KeyboardLayout.h
             KeyboardLayoutManager.h
             KeyboardStat.h
+            KeyboardTranslator.h
             MouseStat.h
+            MouseTranslator.h
+            TouchTranslator.h
+            WindowTranslator.h
             XBIRRemote.h
             XBMC_keyboard.h
             XBMC_keysym.h
