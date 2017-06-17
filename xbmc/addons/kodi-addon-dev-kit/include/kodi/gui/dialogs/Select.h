@@ -55,7 +55,8 @@ namespace dialogs
     /// @param[in] entries      String list about entries
     /// @param[in] selected     [opt] Predefined selection (default is
     ///                         <tt>-1</tt> for the first)
-    /// @param[in] autoclose    [opt] To close dialog automatic after a time
+    /// @param[in] autoclose    [opt] To close dialog automatic after the given
+    ///                         time in ms. As '0' it stays open.
     /// @return                 The selected entry, if return <tt>-1</tt> was
     ///                         nothing selected or canceled
     ///
@@ -82,7 +83,7 @@ namespace dialogs
     ///   fprintf(stderr, "Selected item is: %i\n", selected);
     /// ~~~~~~~~~~~~~
     ///
-    inline int Show(const std::string& heading, const std::vector<std::string>& entries, int selected = -1, bool autoclose = false)
+    inline int Show(const std::string& heading, const std::vector<std::string>& entries, int selected = -1, unsigned int autoclose = 0)
     {
       using namespace ::kodi::addon;
       unsigned int size = entries.size();
