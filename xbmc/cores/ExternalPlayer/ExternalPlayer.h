@@ -59,7 +59,7 @@ public:
   void SeekTime(int64_t iTime) override;
   int64_t GetTime() override;
   int64_t GetTotalTime() override;
-  void SetSpeed(float iSpeed) override;
+  void SetSpeed(float speed) override;
   float GetSpeed() override;
   void DoAudioWork() override {}
 
@@ -83,7 +83,7 @@ private:
   bool m_bIsPlaying;
   bool m_paused;
   int64_t m_playbackStartTime;
-  int m_speed;
+  float m_speed;
   int m_totalTime;
   int m_time;
   std::string m_launchFilename;

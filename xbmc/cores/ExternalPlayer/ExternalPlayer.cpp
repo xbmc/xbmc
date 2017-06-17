@@ -572,9 +572,9 @@ int64_t CExternalPlayer::GetTotalTime() // in milliseconds
   return (int64_t)m_totalTime * 1000;
 }
 
-void CExternalPlayer::SetSpeed(float iSpeed)
+void CExternalPlayer::SetSpeed(float speed)
 {
-  m_speed = static_cast<int>(iSpeed);
+  m_speed = speed;
 }
 
 float CExternalPlayer::GetSpeed()
