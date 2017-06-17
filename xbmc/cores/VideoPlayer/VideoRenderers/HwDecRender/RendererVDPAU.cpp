@@ -21,7 +21,7 @@
 #include "RendererVDPAU.h"
 
 #include "ServiceBroker.h"
-#include "cores/VideoPlayer/DVDCodecs/Video/VDPAU.h"
+#include "cores/VideoPlayer/DVDCodecs/Video/linux/VDPAU.h"
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"

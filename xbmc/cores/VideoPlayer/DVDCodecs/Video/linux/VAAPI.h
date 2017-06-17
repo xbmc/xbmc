@@ -23,7 +23,7 @@
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
 
-#include "DVDVideoCodec.h"
+#include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
 #include "settings/VideoSettings.h"
 #include "threads/CriticalSection.h"
 #include "threads/SharedSection.h"

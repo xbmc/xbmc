@@ -21,16 +21,6 @@ if(CORE_SYSTEM_NAME STREQUAL windows)
   list(APPEND HEADERS DXVA.h)
 endif()
 
-if(VDPAU_FOUND)
-  list(APPEND SOURCES VDPAU.cpp)
-  list(APPEND HEADERS VDPAU.h)
-endif()
-
-if(VAAPI_FOUND)
-  list(APPEND SOURCES VAAPI.cpp)
-  list(APPEND HEADERS VAAPI.h)
-endif()
-
 if(MMAL_FOUND)
   list(APPEND SOURCES MMALCodec.cpp)
   list(APPEND HEADERS MMALCodec.h)
@@ -49,4 +39,4 @@ if(CORE_SYSTEM_NAME STREQUAL android)
 endif()
 
 core_add_library(dvdvideocodecs)
-add_platform_override(${CORE_LIBRARY} HWAccel.h PLATFORMS osx)
+add_platform_override(${CORE_LIBRARY} HWAccel.h PLATFORMS osx X11)

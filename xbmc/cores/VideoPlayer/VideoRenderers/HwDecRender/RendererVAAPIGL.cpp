@@ -20,7 +20,7 @@
 
 #include "RendererVAAPIGL.h"
 
-#include "cores/VideoPlayer/DVDCodecs/Video/VAAPI.h"
+#include "cores/VideoPlayer/DVDCodecs/Video/linux/VAAPI.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDCodecUtils.h"
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"

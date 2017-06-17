@@ -1,1 +1,2 @@
 xbmc/windowing/X11 windowing/X11 # X
+xbmc/cores/VideoPlayer/DVDCodecs/Video/X11 cores/VideoPlayer/codecs/video/X11 # X

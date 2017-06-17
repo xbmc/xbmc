@@ -43,7 +43,7 @@
 #include <GL/glx.h>
 #include <GL/glext.h>
 
-#include "DVDVideoCodec.h"
+#include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include "threads/CriticalSection.h"
