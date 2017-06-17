@@ -31,12 +31,6 @@ if(VAAPI_FOUND)
   list(APPEND HEADERS VAAPI.h)
 endif()
 
-if(APPLE)
-  list(APPEND SOURCES VTB.cpp)
-  list(APPEND HEADERS DllVideoToolBox.h
-                      VTB.h)
-endif()
-
 if(MMAL_FOUND)
   list(APPEND SOURCES MMALCodec.cpp)
   list(APPEND HEADERS MMALCodec.h)

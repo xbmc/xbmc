@@ -10,3 +10,4 @@ xbmc/platform/darwin/osx     platform_osx
 xbmc/filesystem/posix        filesystem/posix
 xbmc/utils/posix             utils_posix
 xbmc/windowing/osx           windowing/osx
+xbmc/cores/VideoPlayer/DVDCodecs/Video/osx             cores/VideoPlayer/codecs/video/osx

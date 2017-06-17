@@ -21,7 +21,7 @@
 #include "platform/darwin/osx/CocoaInterface.h"
 #include "platform/darwin/DarwinUtils.h"
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
-#include "DVDVideoCodec.h"
+#include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
 #include "DVDCodecs/DVDCodecUtils.h"
 #include "utils/log.h"
 #include "VTB.h"
