@@ -86,7 +86,7 @@ bool CIRTranslator::LoadIRMap(const std::string &irMapPath)
   std::string strValue = pRoot->Value();
   if (strValue != remoteMapTag)
   {
-    CLog::Log(LOGERROR, "%sl Doesn't contain <%s>", irMapPath.c_str(), remoteMapTag.c_str());
+    CLog::Log(LOGERROR, "%s Doesn't contain <%s>", irMapPath.c_str(), remoteMapTag.c_str());
     return false;
   }
 
