@@ -19,41 +19,74 @@
  *
  */
 #include "Addon.h"
+#include "AddonEvents.h"
+
 
 namespace ADDON
 {
 
+  enum class START_OPTION
+  {
+    STARTUP,
+    LOGIN
+  };
+
   class CService: public CAddon
   {
   public:
-
-    enum TYPE
-    {
-      UNKNOWN,
-      PYTHON
-    };
-
-    enum START_OPTION
-    {
-      STARTUP,
-      LOGIN
-    };
-
     static std::unique_ptr<CService> FromExtension(CAddonInfo addonInfo, const cp_extension_t* ext);
 
-    explicit CService(CAddonInfo addonInfo) : CAddon(std::move(addonInfo)), m_type(UNKNOWN), m_startOption(LOGIN) {}
-    CService(CAddonInfo addonInfo, TYPE type, START_OPTION startOption);
+    explicit CService(CAddonInfo addonInfo) : CAddon(std::move(addonInfo)),
+        m_startOption(START_OPTION::LOGIN) {}
 
-    bool Start();
-    bool Stop();
-    TYPE GetServiceType() { return m_type; }
+    CService(CAddonInfo addonInfo, START_OPTION startOption);
+
     START_OPTION GetStartOption() { return m_startOption; }
 
-  protected:
-    void BuildServiceType();
+  private:
+    START_OPTION m_startOption;
+  };
+
+  class CServiceAddonManager
+  {
+  public:
+    CServiceAddonManager(CAddonMgr& addonMgr);
+    ~CServiceAddonManager();
+
+    /**
+     * Start all services.
+     */
+    void Start();
+
+    /**
+     * Start services that have start option 'startup'.
+     */
+    void StartBeforeLogin();
+
+    /**
+     * Start service by add-on id.
+     */
+    void Start(const AddonPtr& addon);
+    void Start(const std::string& addonId);
+
+    /**
+     * Stop all services.
+     */
+    void Stop();
+
+    /**
+     * Stop service by add-on id.
+     */
+    void Stop(const std::string& addonId);
 
   private:
-    TYPE m_type;
-    START_OPTION m_startOption;
+    void OnEvent(const AddonEvent& event);
+
+    void Stop(std::map<std::string, int>::value_type service);
+
+    CAddonMgr& m_addonMgr;
+    CCriticalSection m_criticalSection;
+    /** add-on id -> script id */
+    std::map<std::string, int> m_services;
   };
 }

@@ -271,14 +271,6 @@ namespace ADDON
      */
     bool AddonsFromRepoXML(const CRepository::DirInfo& repo, const std::string& xml, VECADDONS& addons);
 
-    /*! \brief Start all services addons.
-        \return True is all addons are started, false otherwise
-    */
-    bool StartServices(const bool beforelogin);
-    /*! \brief Stop all services addons.
-    */
-    void StopServices(const bool onlylogin);
-
     bool ServicesHasStarted() const;
 
     bool IsCompatible(const IAddon& addon);
@@ -311,7 +303,6 @@ namespace ADDON
     CEventSource<AddonEvent> m_events;
     std::set<std::string> m_systemAddons;
     std::set<std::string> m_optionalAddons;
-    bool m_serviceSystemStarted;
   };
 
 }; /* namespace ADDON */

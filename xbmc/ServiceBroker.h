@@ -25,6 +25,7 @@ class CAddonMgr;
 class CBinaryAddonManager;
 class CBinaryAddonCache;
 class CVFSAddonCache;
+class CServiceAddonManager;
 }
 
 namespace ActiveAE {
@@ -84,5 +85,6 @@ public:
   static KODI::GAME::CGameServices& GetGameServices();
   static PERIPHERALS::CPeripherals& GetPeripherals();
   static CFavouritesService& GetFavouritesService();
+  static ADDON::CServiceAddonManager& GetServiceAddons();
   static bool IsBinaryAddonCacheUp();
 };

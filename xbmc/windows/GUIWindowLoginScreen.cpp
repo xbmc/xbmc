@@ -276,8 +276,7 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
 {
   CServiceBroker::GetContextMenuManager().Deinit();
 
-  // stop service addons and give it some time before we start it again
-  ADDON::CAddonMgr::GetInstance().StopServices(true);
+  CServiceBroker::GetServiceAddons().Stop();
 
   // stop PVR related services
   CServiceBroker::GetPVRManager().Unload();
@@ -331,8 +330,7 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
 
   CServiceBroker::GetFavouritesService().ReInit(CProfilesManager::GetInstance().GetProfileUserDataFolder());
 
-  // start services which should run on login
-  ADDON::CAddonMgr::GetInstance().StartServices(false);
+  CServiceBroker::GetServiceAddons().Start();
 
   int firstWindow = g_SkinInfo->GetFirstWindow();
   // the startup window is considered part of the initialization as it most likely switches to the final window

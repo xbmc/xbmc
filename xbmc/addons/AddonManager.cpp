@@ -273,8 +273,7 @@ static bool LoadManifest(std::set<std::string>& system, std::set<std::string>& o
 
 CAddonMgr::CAddonMgr()
   : m_cp_context(nullptr),
-  m_cpluff(nullptr),
-  m_serviceSystemStarted(false)
+  m_cpluff(nullptr)
 { }
 
 CAddonMgr::~CAddonMgr()
@@ -1216,58 +1215,6 @@ bool CAddonMgr::AddonsFromRepoXML(const CRepository::DirInfo& repo, const std::s
   }
   m_cpluff->destroy_context(context);
   return true;
-}
-
-bool CAddonMgr::ServicesHasStarted() const
-{
-  CSingleLock lock(m_critSection);
-  return m_serviceSystemStarted;
-}
-
-bool CAddonMgr::StartServices(const bool beforelogin)
-{
-  CLog::Log(LOGDEBUG, "ADDON: Starting service addons.");
-
-  VECADDONS services;
-  if (!GetAddons(services, ADDON_SERVICE))
-    return false;
-
-  bool ret = true;
-  for (IVECADDONS it = services.begin(); it != services.end(); ++it)
-  {
-    std::shared_ptr<CService> service = std::dynamic_pointer_cast<CService>(*it);
-    if (service)
-    {
-      if ( (beforelogin && service->GetStartOption() == CService::STARTUP)
-        || (!beforelogin && service->GetStartOption() == CService::LOGIN) )
-        ret &= service->Start();
-    }
-  }
-
-  CSingleLock lock(m_critSection);
-  m_serviceSystemStarted = true;
-
-  return ret;
-}
-
-void CAddonMgr::StopServices(const bool onlylogin)
-{
-  CLog::Log(LOGDEBUG, "ADDON: Stopping service addons.");
-
-  VECADDONS services;
-  if (!GetAddons(services, ADDON_SERVICE))
-    return;
-
-  for (IVECADDONS it = services.begin(); it != services.end(); ++it)
-  {
-    std::shared_ptr<CService> service = std::dynamic_pointer_cast<CService>(*it);
-    if (service)
-    {
-      if ( (onlylogin && service->GetStartOption() == CService::LOGIN)
-        || (!onlylogin) )
-        service->Stop();
-    }
-  }
 }
 
 bool CAddonMgr::IsCompatible(const IAddon& addon)
