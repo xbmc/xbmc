@@ -1,13 +1,10 @@
 set(SOURCES DVDVideoCodec.cpp
-            DVDVideoCodecFFmpeg.cpp)
+            DVDVideoCodecFFmpeg.cpp
+            DVDVideoPPFFmpeg.cpp)
 
 set(HEADERS DVDVideoCodec.h
-            DVDVideoCodecFFmpeg.h)
-
-if(NOT ENABLE_EXTERNAL_LIBAV)
-  list(APPEND SOURCES DVDVideoPPFFmpeg.cpp)
-  list(APPEND HEADERS DVDVideoPPFFmpeg.h)
-endif()
+            DVDVideoCodecFFmpeg.h
+            DVDVideoPPFFmpeg.h)
 
 if(AML_FOUND)
   list(APPEND SOURCES AMLCodec.cpp
