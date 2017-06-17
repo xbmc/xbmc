@@ -23,7 +23,7 @@
 
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "cores/VideoPlayer/VideoRenderers/HwDecRender/MMALRenderer.h"
-#include "../DVDCodecUtils.h"
+#include "cores/VideoPlayer/DVDCodecs/DVDCodecUtils.h"
 #include "MMALFFmpeg.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"

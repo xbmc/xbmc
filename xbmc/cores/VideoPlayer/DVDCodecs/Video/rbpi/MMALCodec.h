@@ -29,7 +29,7 @@
 #include <interface/mmal/mmal_parameters.h>
 
 #include "cores/VideoPlayer/DVDStreamInfo.h"
-#include "DVDVideoCodec.h"
+#include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
 #include "threads/Event.h"
 #include "xbmc/settings/VideoSettings.h"
 

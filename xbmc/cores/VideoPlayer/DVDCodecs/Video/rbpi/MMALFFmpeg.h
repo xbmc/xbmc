@@ -22,7 +22,7 @@
 
 #include <memory>
 #include <queue>
-#include "DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
+#include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
 #include "libavcodec/avcodec.h"
 #include "MMALCodec.h"
 
