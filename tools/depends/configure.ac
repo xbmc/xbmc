@@ -80,7 +80,7 @@ AC_ARG_WITH([sdk-path],
 
 AC_ARG_WITH([sdk],
   [AS_HELP_STRING([--with-sdk],
-  [specify sdk platform version (optional for android). default is android-21])],
+  [specify sdk platform version (optional for android). default is android-24])],
   [use_sdk=$withval])
 
 AC_ARG_WITH([ndk-api],
@@ -165,7 +165,7 @@ case $host in
     if test "x$use_cpu" = "xauto"; then
       use_cpu="armeabi-v7a"
     fi
-    use_sdk="${use_sdk:-android-21}"
+    use_sdk="${use_sdk:-android-24}"
     use_ndk_api="${use_ndk_api:-21}"
     deps_dir="$use_host-$use_ndk_api-$build_type"
     platform_cflags="-DANDROID -fexceptions -fPIC -DPIC -D_GLIBCXX_USE_C99_MATH_TR1"
@@ -184,7 +184,7 @@ case $host in
     if test "x$use_cpu" = "xauto"; then
       use_cpu="arm64-v8a"
     fi
-    use_sdk="${use_sdk:-android-21}"
+    use_sdk="${use_sdk:-android-24}"
     use_ndk_api="${use_ndk_api:-21}"
     deps_dir="$use_host-$use_ndk_api-$build_type"
     platform_cflags="-DANDROID -fexceptions -fPIC -DPIC -D_GLIBCXX_USE_C99_MATH_TR1"
@@ -203,7 +203,7 @@ case $host in
     if test "x$use_cpu" = "xauto"; then
       use_cpu=$host_cpu
     fi
-    use_sdk="${use_sdk:-android-21}"
+    use_sdk="${use_sdk:-android-24}"
     use_ndk_api="${use_ndk_api:-21}"
     deps_dir="$use_host-$use_ndk_api-$build_type"
     platform_cflags="-DANDROID -fexceptions -fPIC -DPIC -D_GLIBCXX_USE_C99_MATH_TR1"
