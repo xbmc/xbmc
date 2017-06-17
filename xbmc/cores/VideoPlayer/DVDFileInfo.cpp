@@ -269,8 +269,8 @@ bool CDVDFileInfo::ExtractThumb(const std::string &strPath,
 
             if (context)
             {
-              uint8_t *planes[3];
-              int stride[3];
+              uint8_t *planes[YuvImage::MAX_PLANES];
+              int stride[YuvImage::MAX_PLANES];
               picture.videoBuffer->GetPlanes(planes);
               picture.videoBuffer->GetStrides(stride);
               uint8_t *src[4]= { planes[0], planes[1], planes[2], 0 };
