@@ -23,7 +23,7 @@
 #include "addons/kodi-addon-dev-kit/include/kodi/General.h"
 
 #include "Application.h"
-#include "addons/AddonDll.h"
+#include "addons/binary-addons/AddonDll.h"
 #include "addons/settings/GUIDialogAddonSettings.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "utils/CharsetConverter.h"

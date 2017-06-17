@@ -20,8 +20,9 @@
 
 #include "AddonDll.h"
 
-#include "AddonStatusHandler.h"
+#include "addons/AddonStatusHandler.h"
 #include "GUIUserMessages.h"
+#include "ServiceBroker.h"
 #include "addons/settings/GUIDialogAddonSettings.h"
 #include "events/EventLog.h"
 #include "events/NotificationEvent.h"
@@ -47,16 +48,28 @@
 namespace ADDON
 {
 
+CAddonDll::CAddonDll(CAddonInfo addonInfo, BinaryAddonBasePtr addonBase)
+  : CAddon(std::move(addonInfo)),
+    m_pHelpers(nullptr),
+    m_bIsChild(false),
+    m_binaryAddonBase(addonBase),
+    m_pDll(nullptr),
+    m_initialized(false),
+    m_needsavedsettings(false),
+    m_interface{0}
+{
+}
+
 CAddonDll::CAddonDll(CAddonInfo addonInfo)
   : CAddon(std::move(addonInfo)),
-    m_bIsChild(false)
+    m_pHelpers(nullptr),
+    m_bIsChild(false),
+    m_binaryAddonBase(nullptr),
+    m_pDll(nullptr),
+    m_initialized(false),
+    m_needsavedsettings(false),
+    m_interface{0}
 {
-  m_initialized = false;
-  m_pDll        = NULL;
-  m_pHelpers    = NULL;
-  m_needsavedsettings = false;
-  m_parentLib.clear();
-  m_interface = {0};
 }
 
 CAddonDll::CAddonDll(const CAddonDll &rhs)
@@ -383,6 +396,11 @@ void CAddonDll::DestroyInstance(const std::string& instanceID)
 
   if (m_usedInstances.empty())
     Destroy();
+}
+
+AddonPtr CAddonDll::GetRunningInstance() const
+{
+  return CServiceBroker::GetBinaryAddonManager().GetRunningAddon(ID());
 }
 
 bool CAddonDll::DllLoaded(void) const

@@ -25,7 +25,7 @@
 #include "Application.h"
 #include "PasswordManager.h"
 #include "URL.h"
-#include "addons/AddonDll.h"
+#include "addons/binary-addons/AddonDll.h"
 #include "network/DNSNameCache.h"
 #include "network/Network.h"
 #include "utils/log.h"

@@ -20,7 +20,7 @@
  */
 
 #include "addons/kodi-addon-dev-kit/include/kodi/addon-instance/Visualization.h"
-#include "addons/AddonInstanceHandler.h"
+#include "addons/binary-addons/AddonInstanceHandler.h"
 
 namespace ADDON
 {
@@ -28,7 +28,7 @@ namespace ADDON
 class CVisualization : public IAddonInstanceHandler
 {
 public:
-  CVisualization(ADDON::AddonDllPtr addonInfo, float x, float y, float w, float h);
+  CVisualization(ADDON::BinaryAddonBasePtr addonBase, float x, float y, float w, float h);
   virtual ~CVisualization();
 
   bool Start(int channels, int samplesPerSec, int bitsPerSample, const std::string& songName);

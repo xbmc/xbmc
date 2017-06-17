@@ -61,7 +61,7 @@ public:
   const std::string& GetId() const { return m_addonInfo.m_id; }
   const AddonVersion& GetVersion() const { return m_addonInfo.m_version; }
 
-  const CAddonInfo& GetAddonInfo() { return m_addonInfo; }
+  const CAddonInfo& GetAddonInfo() const { return m_addonInfo; }
 
 private:
   static std::shared_ptr<IAddon> FromProps(CAddonInfo addonInfo);

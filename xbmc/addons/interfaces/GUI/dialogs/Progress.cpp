@@ -21,7 +21,7 @@
 #include "Progress.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/gui/dialogs/Progress.h"
 
-#include "addons/AddonDll.h"
+#include "addons/binary-addons/AddonDll.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "guilib/GUIWindowManager.h"
 #include "utils/log.h"

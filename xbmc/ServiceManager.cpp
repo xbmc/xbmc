@@ -20,6 +20,7 @@
 
 #include "ServiceManager.h"
 #include "addons/BinaryAddonCache.h"
+#include "addons/binary-addons/BinaryAddonManager.h"
 #include "ContextMenuManager.h"
 #include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
 #include "cores/DataCacheCore.h"
@@ -71,10 +72,17 @@ bool CServiceManager::Init2()
 {
   m_Platform->Init();
 
+  m_binaryAddonManager.reset(new ADDON::CBinaryAddonManager()); /* Need to constructed before, GetRunningInstance() of binary CAddonDll need to call them */
   m_addonMgr.reset(new ADDON::CAddonMgr());
   if (!m_addonMgr->Init())
   {
-    CLog::Log(LOGFATAL, "CServiceManager::Init: Unable to start CAddonMgr");
+    CLog::Log(LOGFATAL, "CServiceManager::%s: Unable to start CAddonMgr", __FUNCTION__);
+    return false;
+  }
+
+  if (!m_binaryAddonManager->Init())
+  {
+    CLog::Log(LOGFATAL, "CServiceManager::%s: Unable to initialize CBinaryAddonManager", __FUNCTION__);
     return false;
   }
 
@@ -113,7 +121,7 @@ bool CServiceManager::StartAudioEngine()
 {
   if (!m_ActiveAE)
   {
-    CLog::Log(LOGFATAL, "CServiceManager::StartAudioEngine: Unable to start ActiveAE");
+    CLog::Log(LOGFATAL, "CServiceManager::%s: Unable to start ActiveAE", __FUNCTION__);
     return false;
   }
 
@@ -141,6 +149,7 @@ void CServiceManager::Deinit()
   if (m_PVRManager)
     m_PVRManager->Deinit();
   m_PVRManager.reset();
+  m_binaryAddonManager.reset();
   m_addonMgr.reset();
 #ifdef HAS_PYTHON
   CScriptInvocationManager::GetInstance().UnregisterLanguageInvocationHandler(m_XBPython.get());
@@ -158,6 +167,11 @@ ADDON::CAddonMgr &CServiceManager::GetAddonMgr()
 ADDON::CBinaryAddonCache &CServiceManager::GetBinaryAddonCache()
 {
   return *m_binaryAddonCache.get();
+}
+
+ADDON::CBinaryAddonManager &CServiceManager::GetBinaryAddonManager()
+{
+  return *m_binaryAddonManager.get();
 }
 
 ANNOUNCEMENT::CAnnouncementManager& CServiceManager::GetAnnouncementManager()

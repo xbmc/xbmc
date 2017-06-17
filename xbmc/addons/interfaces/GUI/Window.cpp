@@ -26,7 +26,7 @@
 
 #include "Application.h"
 #include "FileItem.h"
-#include "addons/AddonDll.h"
+#include "addons/binary-addons/AddonDll.h"
 #include "addons/Skin.h"
 #include "filesystem/File.h"
 #include "guilib/GUIRenderingControl.h"

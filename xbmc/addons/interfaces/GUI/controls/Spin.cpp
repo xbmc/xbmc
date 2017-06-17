@@ -21,7 +21,7 @@
 #include "Spin.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/gui/controls/Spin.h"
 
-#include "addons/AddonDll.h"
+#include "addons/binary-addons/AddonDll.h"
 #include "guilib/GUISpinControlEx.h"
 #include "guilib/GUIWindowManager.h"
 #include "utils/log.h"

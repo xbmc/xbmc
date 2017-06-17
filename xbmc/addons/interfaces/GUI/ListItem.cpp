@@ -22,7 +22,7 @@
 #include "General.h"
 
 #include "FileItem.h"
-#include "addons/AddonDll.h"
+#include "addons/binary-addons/AddonDll.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/gui/ListItem.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"

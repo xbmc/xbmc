@@ -19,20 +19,19 @@
  *
  */
 
-#include "Addon.h"
+#include "BinaryAddonManager.h"
 #include "DllAddon.h"
-#include "AddonManager.h"
+#include "addons/Addon.h"
 #include "addons/interfaces/AddonInterfaces.h"
 #include "utils/XMLUtils.h"
 
 namespace ADDON
 {
-  class CAddonDll;
-  typedef std::shared_ptr<CAddonDll> AddonDllPtr;
 
   class CAddonDll : public CAddon
   {
   public:
+    CAddonDll(CAddonInfo addonInfo, BinaryAddonBasePtr addonBase);
     CAddonDll(CAddonInfo addonInfo);
 
     //FIXME: does shallow pointer copy. no copy assignment op
@@ -71,6 +70,8 @@ namespace ADDON
      */
     void DestroyInstance(const std::string& instanceID);
 
+    AddonPtr GetRunningInstance() const override;
+
   protected:
     bool Initialized() { return m_initialized; }
     static uint32_t GetChildCount() { static uint32_t childCounter = 0; return childCounter++; }
@@ -97,6 +98,7 @@ namespace ADDON
 
     bool CheckAPIVersion(int type);
 
+    BinaryAddonBasePtr m_binaryAddonBase;
     DllAddon* m_pDll;
     bool m_initialized;
     bool LoadDll();

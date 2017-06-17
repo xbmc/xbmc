@@ -372,9 +372,8 @@ bool CGUIVisualisationControl::GetPresetList(std::vector<std::string> &vecpreset
 
 bool CGUIVisualisationControl::InitVisualization()
 {
-  ADDON::AddonPtr addonInfo;
-  ADDON::CAddonMgr::GetInstance().GetAddon(CServiceBroker::GetSettings().GetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION), addonInfo, ADDON::ADDON_VIZ, true);
-  if (!addonInfo)
+  const ADDON::BinaryAddonBasePtr addonBase = CServiceBroker::GetBinaryAddonManager().GetInstalledAddonInfo(CServiceBroker::GetSettings().GetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION), ADDON::ADDON_VIZ);
+  if (!addonBase)
     return false;
 
   CServiceBroker::GetActiveAE().RegisterAudioCallback(this);
@@ -394,7 +393,7 @@ bool CGUIVisualisationControl::InitVisualization()
   if (y + h > g_graphicsContext.GetHeight())
     h = g_graphicsContext.GetHeight() - y;
 
-  m_instance = new ADDON::CVisualization(std::static_pointer_cast<ADDON::CAddonDll>(addonInfo), x, y, w, h);
+  m_instance = new ADDON::CVisualization(addonBase, x, y, w, h);
   CreateBuffers();
 
   m_alreadyStarted = false;

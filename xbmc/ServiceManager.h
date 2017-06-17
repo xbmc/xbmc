@@ -25,6 +25,7 @@
 
 namespace ADDON {
 class CAddonMgr;
+class CBinaryAddonManager;
 class CBinaryAddonCache;
 }
 
@@ -83,6 +84,7 @@ public:
   bool Init3();
   void Deinit();
   ADDON::CAddonMgr& GetAddonMgr();
+  ADDON::CBinaryAddonManager& GetBinaryAddonManager();
   ADDON::CBinaryAddonCache& GetBinaryAddonCache();
   ANNOUNCEMENT::CAnnouncementManager& GetAnnouncementManager();
 #ifdef HAS_PYTHON
@@ -126,6 +128,7 @@ protected:
   };
 
   std::unique_ptr<ADDON::CAddonMgr> m_addonMgr;
+  std::unique_ptr<ADDON::CBinaryAddonManager> m_binaryAddonManager;
   std::unique_ptr<ADDON::CBinaryAddonCache> m_binaryAddonCache;
   std::unique_ptr<ANNOUNCEMENT::CAnnouncementManager> m_announcementManager;
 #ifdef HAS_PYTHON

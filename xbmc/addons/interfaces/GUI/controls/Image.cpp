@@ -21,7 +21,7 @@
 #include "Image.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/gui/controls/Image.h"
 
-#include "addons/AddonDll.h"
+#include "addons/binary-addons/AddonDll.h"
 #include "guilib/GUIImage.h"
 #include "utils/log.h"
 

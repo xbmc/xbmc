@@ -567,6 +567,40 @@ bool CAddonMgr::FindInstallableById(const std::string& addonId, AddonPtr& result
   return true;
 }
 
+bool CAddonMgr::GetInstalledBinaryAddons(BINARY_ADDON_LIST& binaryAddonList)
+{
+  CSingleLock lock(m_critSection);
+  if (!m_cp_context)
+    return false;
+
+  std::vector<CAddonBuilder> builders;
+  m_database.GetInstalled(builders);
+
+  for (auto builder : builders)
+  {
+    cp_status_t status;
+    cp_plugin_info_t* cp_addon = m_cpluff->get_plugin_info(m_cp_context, builder.GetId().c_str(), &status);
+    if (status == CP_OK && cp_addon)
+    {
+      cp_extension_t* props = GetFirstExtPoint(cp_addon, ADDON_UNKNOWN);
+      if (props != nullptr)
+      {
+        std::string value = GetPlatformLibraryName(props->plugin->extensions->configuration);
+        if (!value.empty() &&
+            props->plugin->plugin_path &&
+            strcmp(props->plugin->plugin_path, "") != 0 &&
+            Factory(cp_addon, ADDON_UNKNOWN, builder, true))
+        {
+          binaryAddonList.push_back(BINARY_ADDON_LIST_ENTRY(!IsAddonDisabled(cp_addon->identifier), std::move(builder.GetAddonInfo())));
+        }
+      }
+      m_cpluff->release_info(m_cp_context, cp_addon);
+    }
+  }
+
+  return !binaryAddonList.empty();
+}
+
 bool CAddonMgr::GetAddonsInternal(const TYPE &type, VECADDONS &addons, bool enabledOnly)
 {
   CSingleLock lock(m_critSection);

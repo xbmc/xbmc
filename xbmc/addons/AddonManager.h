@@ -29,7 +29,6 @@
 #include <map>
 #include <deque>
 
-
 class DllLibCPluff;
 extern "C"
 {
@@ -41,6 +40,16 @@ namespace ADDON
   typedef std::map<TYPE, VECADDONS> MAPADDONS;
   typedef std::map<TYPE, VECADDONS>::iterator IMAPADDONS;
   typedef std::vector<cp_cfg_element_t*> ELEMENTS;
+
+  /*!
+   * @brief The value binaryAddonList use a tuple in following construct:
+   * | Number | Type        | Description
+   * |:------:|------------:|:------------------------------------------------
+   * | first  | boolean     | If true addon is enabled, otherwise disabled
+   * | second | CAddonInfo  | Information data of addon
+   */
+  typedef std::pair<bool, CAddonInfo> BINARY_ADDON_LIST_ENTRY;
+  typedef std::vector<BINARY_ADDON_LIST_ENTRY> BINARY_ADDON_LIST;
 
   const std::string ADDON_PYTHON_EXT           = "*.py";
 
@@ -116,6 +125,18 @@ namespace ADDON
     bool GetInstallableAddons(VECADDONS& addons);
 
     bool GetInstallableAddons(VECADDONS& addons, const TYPE &type);
+
+    /*!
+     * @brief To get all installed binary addon on Kodi
+     *
+     * This function becomes used from ADDON::CBinaryAddonManager to get his
+     * related addons (whether enabled or disabled).
+     *
+     * @param[out] binaryAddonList The list where from here the binary addons
+     *                             becomes stored.
+     * @return                     If list is not empty becomes true returned
+     */
+    bool GetInstalledBinaryAddons(BINARY_ADDON_LIST& binaryAddonList);
 
     /*! Get the installable addon with the highest version. */
     bool FindInstallableById(const std::string& addonId, AddonPtr& addon);

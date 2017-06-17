@@ -21,7 +21,7 @@
 #include "TextViewer.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/gui/dialogs/TextViewer.h"
 
-#include "addons/AddonDll.h"
+#include "addons/binary-addons/AddonDll.h"
 #include "dialogs/GUIDialogTextViewer.h"
 #include "guilib/GUIWindowManager.h"
 #include "utils/log.h"

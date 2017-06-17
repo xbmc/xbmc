@@ -21,7 +21,7 @@
 #include "OK.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/gui/dialogs/OK.h"
 
-#include "addons/AddonDll.h"
+#include "addons/binary-addons/AddonDll.h"
 #include "dialogs/GUIDialogOK.h"
 #include "utils/log.h"
 #include "utils/Variant.h"
