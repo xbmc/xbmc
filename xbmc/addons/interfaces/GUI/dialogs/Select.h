@@ -51,7 +51,7 @@ namespace ADDON
      * class.
      */
     //@{
-    static int open(void* kodiBase, const char *heading, const char *entries[], unsigned int size, int selected, bool autoclose);
+    static int open(void* kodiBase, const char *heading, const char *entries[], unsigned int size, int selected, unsigned int autoclose);
     //@}
   };
 
