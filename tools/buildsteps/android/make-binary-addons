@@ -16,9 +16,7 @@ then
     echo "building $addon"
     git clean -xffd $WORKSPACE/$BINARY_ADDONS_ROOT/$addon
 
-    # Must match prefix in android/PathSetup.cmake
-    INSTALL_PREFIX="../../../../../build/install"
-    cd $WORKSPACE/$BINARY_ADDONS_ROOT/$addon;make -j $BUILDTHREADS V=99 VERBOSE=1 INSTALL_PREFIX="$INSTALL_PREFIX"  || ALL_BINARY_ADDONS_BUILT="0"
+    cd $WORKSPACE/$BINARY_ADDONS_ROOT/$addon;make -j $BUILDTHREADS V=99 VERBOSE=1 || ALL_BINARY_ADDONS_BUILT="0"
   done
 fi
 

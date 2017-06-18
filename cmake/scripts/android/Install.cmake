@@ -121,6 +121,7 @@ foreach(target apk obb apk-unsigned apk-obb apk-obb-unsigned apk-noobb apk-clean
               CPU=${CPU}
               ARCH=${ARCH}
               PREFIX=${prefix}
+              DEPENDS_PATH=${DEPENDS_PATH}
               NDKROOT=${NDKROOT}
               SDKROOT=${SDKROOT}
               SDK_PLATFORM=${SDK_PLATFORM}
