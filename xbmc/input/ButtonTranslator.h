@@ -93,7 +93,7 @@ public:
    */
   CAction GetGlobalAction(const CKey &key);
 
-  int TranslateLircRemoteString(const char* szDevice, const char *szButton);
+  int TranslateLircRemoteString(const std::string &szDevice, const std::string &szButton);
 
   bool TranslateCustomControllerString(int windowId, const std::string& controllerName, int buttonId, int& action, std::string& strAction);
 
@@ -118,7 +118,7 @@ private:
   unsigned int GetActionCode(int window, const CKey &key, std::string &strAction) const;
 
   void MapWindowActions(const TiXmlNode *pWindow, int wWindowID);
-  void MapAction(uint32_t buttonCode, const char *szAction, unsigned int holdtimeMs, buttonMap &map);
+  void MapAction(uint32_t buttonCode, const std::string &szAction, unsigned int holdtimeMs, buttonMap &map);
 
   bool LoadKeymap(const std::string &keymapPath);
 

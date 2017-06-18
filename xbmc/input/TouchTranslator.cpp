@@ -157,7 +157,7 @@ unsigned int CTouchTranslator::TranslateTouchCommand(const TiXmlElement *pButton
   unsigned int touchActionKey = GetTouchActionKey(touchCommandId, pointers);
 
   action.strAction = szAction;
-  if (!CActionTranslator::TranslateString(szAction, action.actionId) || action.actionId == ACTION_NONE)
+  if (!CActionTranslator::TranslateString(action.strAction, action.actionId) || action.actionId == ACTION_NONE)
     return ACTION_NONE;
 
   return touchActionKey;

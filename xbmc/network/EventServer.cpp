@@ -349,7 +349,7 @@ bool CEventServer::ExecuteNextAction()
       case AT_BUTTON:
         {
           unsigned int actionID;
-          CActionTranslator::TranslateString(actionEvent.actionName.c_str(), actionID);
+          CActionTranslator::TranslateString(actionEvent.actionName, actionID);
           CAction action(actionID, 1.0f, 0.0f, actionEvent.actionName);
           g_audioManager.PlayActionSound(action);
           g_application.OnAction(action);

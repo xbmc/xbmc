@@ -20,9 +20,10 @@
 #pragma once
 
 #include <stdint.h>
+#include <string>
 
 class CGamepadTranslator
 {
 public:
-  static uint32_t TranslateString(const char *szButton);
+  static uint32_t TranslateString(std::string strButton);
 };

@@ -89,7 +89,7 @@ bool CCustomControllerTranslator::TranslateString(int windowId, const std::strin
     if (it3 != buttonMap.end())
     {
       strAction = it3->second;
-      CActionTranslator::TranslateString(strAction.c_str(), actionId);
+      CActionTranslator::TranslateString(strAction, actionId);
     }
   }
 

@@ -40,14 +40,14 @@ public:
    */
   void Clear();
 
-  unsigned int TranslateButton(const char* szDevice, const char *szButton);
+  unsigned int TranslateButton(const std::string &szDevice, const std::string &szButton);
 
-  static uint32_t TranslateString(const char *szButton);
-  static uint32_t TranslateUniversalRemoteString(const char *szButton);
+  static uint32_t TranslateString(std::string strButton);
+  static uint32_t TranslateUniversalRemoteString(const std::string &szButton);
 
 private:
   bool LoadIRMap(const std::string &irMapPath);
-  void MapRemote(TiXmlNode *pRemote, const char* szDevice);
+  void MapRemote(TiXmlNode *pRemote, const std::string &szDevice);
 
   using IRButtonMap = std::map<std::string, std::string>;
 

@@ -20,9 +20,10 @@
 #pragma once
 
 #include <stdint.h>
+#include <string>
 
 class CAppTranslator
 {
 public:
-  static uint32_t TranslateAppCommand(const char *szButton);
+  static uint32_t TranslateAppCommand(const std::string &szButton);
 };
