@@ -53,7 +53,7 @@ CPeripheralJoystick::~CPeripheralJoystick(void)
   m_deadzoneFilter.reset();
   m_buttonMap.reset();
   m_defaultController.AbortRumble();
-  UnregisterJoystickInputHandler(&m_defaultController);
+  UnregisterInputHandler(&m_defaultController);
   UnregisterJoystickDriverHandler(&m_joystickMonitor);
 }
 
@@ -75,7 +75,7 @@ bool CPeripheralJoystick::InitialiseFeature(const PeripheralFeature feature)
         InitializeDeadzoneFiltering();
 
         // Give joystick monitor priority over default controller
-        RegisterJoystickInputHandler(&m_defaultController, false);
+        RegisterInputHandler(&m_defaultController, false);
         RegisterJoystickDriverHandler(&m_joystickMonitor, false);
       }
     }

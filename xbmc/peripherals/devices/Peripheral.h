@@ -23,6 +23,8 @@
 #include <set>
 #include <string>
 #include <vector>
+
+#include "input/joysticks/IInputProvider.h"
 #include "peripherals/PeripheralTypes.h"
 
 class TiXmlDocument;
@@ -53,7 +55,7 @@ namespace PERIPHERALS
     STATE_STANDBY
   } CecStateChange;
 
-  class CPeripheral
+  class CPeripheral : public KODI::JOYSTICK::IInputProvider
   {
     friend class CGUIDialogPeripheralSettings;
 
@@ -199,8 +201,9 @@ namespace PERIPHERALS
     virtual void RegisterJoystickDriverHandler(KODI::JOYSTICK::IDriverHandler* handler, bool bPromiscuous) { }
     virtual void UnregisterJoystickDriverHandler(KODI::JOYSTICK::IDriverHandler* handler) { }
 
-    virtual void RegisterJoystickInputHandler(KODI::JOYSTICK::IInputHandler* handler, bool bPromiscuous);
-    virtual void UnregisterJoystickInputHandler(KODI::JOYSTICK::IInputHandler* handler);
+    // implementation of IInputProvider
+    virtual void RegisterInputHandler(KODI::JOYSTICK::IInputHandler* handler, bool bPromiscuous);
+    virtual void UnregisterInputHandler(KODI::JOYSTICK::IInputHandler* handler);
 
     virtual void RegisterJoystickButtonMapper(KODI::JOYSTICK::IButtonMapper* mapper);
     virtual void UnregisterJoystickButtonMapper(KODI::JOYSTICK::IButtonMapper* mapper);

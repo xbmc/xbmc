@@ -37,23 +37,23 @@ CPort::~CPort()
 {
 }
 
-void CPort::RegisterDevice(PERIPHERALS::CPeripheral *device)
+void CPort::RegisterInput(JOYSTICK::IInputProvider *provider)
 {
   // Register GUI input  as promiscuous to not block any input from the game
-  device->RegisterJoystickInputHandler(m_appInput.get(), true);
+  provider->RegisterInputHandler(m_appInput.get(), true);
 
   // Give input sink the lowest priority by registering it before the other
   // non-promiscuous input handlers
-  device->RegisterJoystickInputHandler(m_inputSink.get(), false);
+  provider->RegisterInputHandler(m_inputSink.get(), false);
 
   // Register input handler
-  device->RegisterJoystickInputHandler(m_gameInput, false);
+  provider->RegisterInputHandler(m_gameInput, false);
 }
 
-void CPort::UnregisterDevice(PERIPHERALS::CPeripheral *device)
+void CPort::UnregisterInput(JOYSTICK::IInputProvider *provider)
 {
   // Unregister in reverse order
-  device->UnregisterJoystickInputHandler(m_gameInput);
-  device->UnregisterJoystickInputHandler(m_inputSink.get());
-  device->UnregisterJoystickInputHandler(m_appInput.get());
+  provider->UnregisterInputHandler(m_gameInput);
+  provider->UnregisterInputHandler(m_inputSink.get());
+  provider->UnregisterInputHandler(m_appInput.get());
 }
