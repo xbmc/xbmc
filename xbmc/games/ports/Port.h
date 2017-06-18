@@ -46,6 +46,8 @@ namespace GAME
     void RegisterDevice(PERIPHERALS::CPeripheral *device);
     void UnregisterDevice(PERIPHERALS::CPeripheral *device);
 
+    JOYSTICK::IInputHandler *InputHandler() { return m_inputHandler; }
+
   private:
     JOYSTICK::IInputHandler* const m_inputHandler;
     std::unique_ptr<JOYSTICK::IInputHandler> m_controller;
