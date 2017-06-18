@@ -59,7 +59,7 @@ namespace JOYSTICK
      * \return The action ID, or ACTION_NONE if no action is mapped to the
      *         specified key
      */
-    virtual int GetActionID(unsigned int keyId, int windowId, bool bFallthrough) const = 0;
+    virtual unsigned int GetActionID(unsigned int keyId, int windowId, bool bFallthrough) const = 0;
 
     /*!
      * \brief Get the time required to hold the button before calling OnDigitalKey()

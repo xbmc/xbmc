@@ -152,7 +152,7 @@ bool CDefaultJoystick::OnAccelerometerMotion(const FeatureName& feature, float x
   return false; //! @todo implement
 }
 
-int CDefaultJoystick::GetActionID(const FeatureName& feature)
+unsigned int CDefaultJoystick::GetActionID(const FeatureName& feature)
 {
   const unsigned int keyId = GetKeyID(feature);
   const int windowId = GetWindowID();

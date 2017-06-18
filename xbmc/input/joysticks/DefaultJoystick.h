@@ -61,7 +61,7 @@ namespace JOYSTICK
     virtual bool OnAccelerometerMotion(const FeatureName& feature, float x, float y, float z) override;
 
     // implementation of IActionMap
-    virtual int GetActionID(const FeatureName& feature) override;
+    virtual unsigned int GetActionID(const FeatureName& feature) override;
 
   protected:
     /*!

@@ -61,14 +61,18 @@ INPUT_TYPE CKeymapHandler::GetInputType(unsigned int keyId, int windowId, bool b
   return INPUT_TYPE::UNKNOWN;
 }
 
-int CKeymapHandler::GetActionID(unsigned int keyId, int windowId, bool bFallthrough) const
+unsigned int CKeymapHandler::GetActionID(unsigned int keyId, int windowId, bool bFallthrough) const
 {
   CAction action(ACTION_NONE);
 
   if (keyId != 0)
     action = CButtonTranslator::GetInstance().GetAction(windowId, CKey(keyId), bFallthrough);
 
-  return action.GetID();
+  //! @todo make CAction::GetID() return unsigned
+  if (action.GetID() >= 0)
+    return action.GetID();
+  else
+    return ACTION_NONE;
 }
 
 unsigned int CKeymapHandler::GetHoldTimeMs(unsigned int keyId, int windowId, bool bFallthrough) const
