@@ -905,7 +905,9 @@ bool CVideoDatabase::GetSourcePath(const std::string &path, std::string &sourceP
 
 //********************************************************************************************************************************
 int CVideoDatabase::AddFile(const std::string& strFileNameAndPath,
-                            const std::string& parentPath /* = "" */)
+                            const std::string& parentPath /* = "" */,
+                            int playcount /* = 0 */,
+                            const CDateTime& lastPlayed /* = CDateTime() */)
 {
   std::string strSQL = "";
   try
@@ -934,7 +936,16 @@ int CVideoDatabase::AddFile(const std::string& strFileNameAndPath,
     }
     m_pDS->close();
 
-    strSQL=PrepareSQL("insert into files (idFile, idPath, strFileName) values(NULL, %i, '%s')", idPath, strFileName.c_str());
+    std::string strPlaycount = "NULL";
+    if (playcount > 0)
+      strPlaycount = StringUtils::Format("%i", playcount);
+    std::string strLastPlayed = "NULL";
+    if (lastPlayed.IsValid())
+      strLastPlayed = "'" + lastPlayed.GetAsDBDateTime() + "'";
+
+    strSQL = PrepareSQL("INSERT INTO files (idFile, idPath, strFileName, playCount, lastPlayed) "
+                        "VALUES(NULL, %i, '%s', " + strPlaycount + ", " + strLastPlayed + ")",
+                        idPath, strFileName.c_str());
     m_pDS->exec(strSQL);
     idFile = (int)m_pDS->lastinsertid();
     return idFile;

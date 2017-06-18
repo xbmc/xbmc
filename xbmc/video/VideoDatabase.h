@@ -759,9 +759,14 @@ public:
    If the file is already in the database, we simply return its id.
    \param url - full path of the file to add.
    \param parentPath the parent path of the path to add. If empty, URIUtils::GetParentPath() will determine the path.
+   \param playcount the playcount of the file to add.
+   \param lastPlayed the date and time when the file to add was last played.
    \return id of the file, -1 if it could not be added.
    */
-  int AddFile(const std::string& url, const std::string& parentPath = "");
+  int AddFile(const std::string& url,
+              const std::string& parentPath = "",
+              int playcount = 0,
+              const CDateTime& lastPlayed = CDateTime());
 
   /*! \brief Add a file to the database, if necessary
    Works for both videodb:// items and normal fileitems
