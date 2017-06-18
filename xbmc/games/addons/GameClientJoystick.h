@@ -58,7 +58,7 @@ namespace GAME
     virtual unsigned int GetDelayMs(const std::string& feature) const override { return 0; }
     virtual bool OnButtonPress(const std::string& feature, bool bPressed) override;
     virtual void OnButtonHold(const std::string& feature, unsigned int holdTimeMs) override { }
-    virtual bool OnButtonMotion(const std::string& feature, float magnitude) override;
+    virtual bool OnButtonMotion(const std::string& feature, float magnitude, unsigned int motionTimeMs) override;
     virtual bool OnAnalogStickMotion(const std::string& feature, float x, float y, unsigned int motionTimeMs = 0) override;
     virtual bool OnAccelerometerMotion(const std::string& feature, float x, float y, float z) override;
 

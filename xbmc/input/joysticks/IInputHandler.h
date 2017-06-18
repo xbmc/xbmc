@@ -105,10 +105,11 @@ namespace JOYSTICK
      * \param feature      The feature changing state
      * \param magnitude    The button pressure or trigger travel distance in the
      *                     closed interval [0, 1]
+     * \param motionTimeMs The time elapsed since the magnitude was 0
      *
      * \return True if the event was handled otherwise false
      */
-    virtual bool OnButtonMotion(const FeatureName& feature, float magnitude) = 0;
+    virtual bool OnButtonMotion(const FeatureName& feature, float magnitude, unsigned int motionTimeMs) = 0;
 
     /*!
      * \brief An analog stick has moved

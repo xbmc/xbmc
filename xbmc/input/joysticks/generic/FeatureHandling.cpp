@@ -108,10 +108,12 @@ void CScalarFeature::ProcessMotions(void)
   {
     float magnitude = m_analogState;
 
+    // Calculate time elapsed since motion began
+    const unsigned int elapsed = XbmcThreads::SystemClockMillis() - m_motionStartTimeMs;
+
     // If analog value is discrete, ramp up magnitude
     if (m_bDiscrete)
     {
-      const unsigned int elapsed = XbmcThreads::SystemClockMillis() - m_motionStartTimeMs;
       if (elapsed < DISCRETE_ANALOG_RAMPUP_TIME_MS)
       {
         magnitude *= static_cast<float>(elapsed) / DISCRETE_ANALOG_RAMPUP_TIME_MS;
@@ -120,7 +122,7 @@ void CScalarFeature::ProcessMotions(void)
       }
     }
 
-    m_handler->OnButtonMotion(m_name, magnitude);
+    m_handler->OnButtonMotion(m_name, magnitude, elapsed);
 
     // Disable sending events after feature is reset
     if (m_analogState == 0.0f)

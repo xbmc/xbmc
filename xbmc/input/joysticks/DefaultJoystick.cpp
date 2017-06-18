@@ -109,7 +109,7 @@ void CDefaultJoystick::OnButtonHold(const FeatureName& feature, unsigned int hol
   m_handler->OnDigitalKey(keyId, windowId, bFallthrough, true, holdTimeMs);
 }
 
-bool CDefaultJoystick::OnButtonMotion(const FeatureName& feature, float magnitude)
+bool CDefaultJoystick::OnButtonMotion(const FeatureName& feature, float magnitude, unsigned int motionTimeMs)
 {
   const unsigned int keyId = GetKeyID(feature);
   const int windowId = GetWindowID();

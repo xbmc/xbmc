@@ -95,7 +95,7 @@ bool CGameClientJoystick::OnButtonPress(const std::string& feature, bool bPresse
   return bHandled;
 }
 
-bool CGameClientJoystick::OnButtonMotion(const std::string& feature, float magnitude)
+bool CGameClientJoystick::OnButtonMotion(const std::string& feature, float magnitude, unsigned int motionTimeMs)
 {
   bool bHandled = false;
 
