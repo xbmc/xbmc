@@ -7,7 +7,7 @@
   <extension
     point="xbmc.audioencoder"
     extension=".wma"
-    library_linux="dummy.so"/>
+    library_@CORE_SYSTEM_NAME@="dummy.so"/>
   <extension point="xbmc.addon.metadata">
     <summary lang="en">WMA Audio Encoder</summary>
     <description lang="en">WMA Audio Encoder</description>
