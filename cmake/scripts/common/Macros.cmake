@@ -706,13 +706,13 @@ macro(find_addon_xml_in_files)
     foreach(loop_var ${ADDON_FILES})
       if(loop_var MATCHES "addon.xml.in")
         string(REPLACE "addon.xml.in" "addon.xml" loop_var ${loop_var})
+
+        list(GET loop_var 0 file_name)
+        string(REPLACE "${CORE_SOURCE_DIR}/" "" file_name ${file_name})
+        list(APPEND ADDON_INSTALL_DATA "${file_name}")
+
+        unset(file_name)
       endif()
-
-      list(GET loop_var 0 file_name)
-      string(REPLACE "${CORE_SOURCE_DIR}/" "" file_name ${file_name})
-      list(APPEND ADDON_INSTALL_DATA "${file_name}")
-
-      unset(file_name)
     endforeach()
     unset(xml_name)
   endforeach()
