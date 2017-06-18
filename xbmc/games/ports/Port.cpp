@@ -26,9 +26,9 @@
 using namespace KODI;
 using namespace GAME;
 
-CPort::CPort(JOYSTICK::IInputHandler *inputHandler, CGameClient &gameClient) :
-  m_inputHandler(inputHandler),
-  m_controller(new CPortInput(gameClient)),
+CPort::CPort(JOYSTICK::IInputHandler *gameInput, CGameClient &gameClient) :
+  m_gameInput(gameInput),
+  m_appInput(new CPortInput(gameClient)),
   m_inputSink(new CInputSink(gameClient))
 {
 }
@@ -39,21 +39,21 @@ CPort::~CPort()
 
 void CPort::RegisterDevice(PERIPHERALS::CPeripheral *device)
 {
-  // Register controller as promiscuous to not block any input from the game
-  device->RegisterJoystickInputHandler(m_controller.get(), true);
+  // Register GUI input  as promiscuous to not block any input from the game
+  device->RegisterJoystickInputHandler(m_appInput.get(), true);
 
   // Give input sink the lowest priority by registering it before the other
   // non-promiscuous input handlers
   device->RegisterJoystickInputHandler(m_inputSink.get(), false);
 
   // Register input handler
-  device->RegisterJoystickInputHandler(m_inputHandler, false);
+  device->RegisterJoystickInputHandler(m_gameInput, false);
 }
 
 void CPort::UnregisterDevice(PERIPHERALS::CPeripheral *device)
 {
   // Unregister in reverse order
-  device->UnregisterJoystickInputHandler(m_inputHandler);
+  device->UnregisterJoystickInputHandler(m_gameInput);
   device->UnregisterJoystickInputHandler(m_inputSink.get());
-  device->UnregisterJoystickInputHandler(m_controller.get());
+  device->UnregisterJoystickInputHandler(m_appInput.get());
 }
