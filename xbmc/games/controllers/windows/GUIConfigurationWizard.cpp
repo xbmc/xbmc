@@ -25,8 +25,10 @@
 #include "games/controllers/ControllerFeature.h"
 #include "input/joysticks/IButtonMap.h"
 #include "input/joysticks/IButtonMapCallback.h"
+#include "input/joysticks/JoystickUtils.h"
 #include "input/keyboard/KeymapActionMap.h"
 #include "input/InputManager.h"
+#include "input/IKeymap.h"
 #include "peripherals/Peripherals.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
@@ -188,6 +190,7 @@ void CGUIConfigurationWizard::Process(void)
 }
 
 bool CGUIConfigurationWizard::MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
+                                           IKeymap* keymap,
                                            const JOYSTICK::CDriverPrimitive& primitive)
 {
   using namespace JOYSTICK;
@@ -198,6 +201,47 @@ bool CGUIConfigurationWizard::MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
   if (primitive.Type() == PRIMITIVE_TYPE::BUTTON &&
       primitive.Index() == ESC_KEY_CODE)
   {
+    bool bIsCancelAction = false;
+
+    //! @todo This only succeeds for game.controller.default; no actions are
+    //        currently defined for other controllers
+    if (keymap)
+    {
+      std::string feature;
+      if (buttonMap->GetFeature(primitive, feature))
+      {
+        const auto &actions = keymap->GetActions(CJoystickUtils::MakeKeyName(feature));
+        if (!actions.empty())
+        {
+          //! @todo Handle multiple actions mapped to the same key
+          switch (actions.begin()->actionId)
+          {
+          case ACTION_NAV_BACK:
+          case ACTION_PREVIOUS_MENU:
+            bIsCancelAction = true;
+            break;
+          default:
+            break;
+          }
+        }
+      }
+    }
+
+    if (bIsCancelAction)
+    {
+      CLog::Log(LOGDEBUG, "%s: device \"%s\" is cancelling prompt", buttonMap->ControllerID().c_str(), buttonMap->DeviceName().c_str());
+      Abort(false);
+    }
+    else
+      CLog::Log(LOGDEBUG, "%s: ignoring input for device \"%s\"", buttonMap->ControllerID().c_str(), buttonMap->DeviceName().c_str());
+
+    // Discard input
+    bHandled = true;
+  }
+  else if (primitive.Type() == PRIMITIVE_TYPE::BUTTON &&
+           primitive.Index() == ESC_KEY_CODE)
+  {
+    // Handle esc key
     bHandled = Abort(false);
   }
   else if (m_history.find(primitive) != m_history.end())

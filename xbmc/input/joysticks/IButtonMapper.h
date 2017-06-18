@@ -22,6 +22,8 @@
 #include <map>
 #include <string>
 
+class IKeymap;
+
 namespace KODI
 {
 namespace JOYSTICK
@@ -80,14 +82,14 @@ namespace JOYSTICK
      * \brief Handle button/hat press or axis threshold
      *
      * \param buttonMap  The button map being manipulated
-     * \param actionMap  An interface capable of translating driver primitives to Kodi actions
+     * \param keymap     An interface capable of translating features to Kodi actions
      * \param primitive  The driver primitive
      *
      * Called in the same thread as \ref IButtonMapper::OnFrame.
      *
      * \return True if driver primitive was mapped to a feature
      */
-    virtual bool MapPrimitive(IButtonMap* buttonMap, const CDriverPrimitive& primitive) = 0;
+    virtual bool MapPrimitive(IButtonMap* buttonMap, IKeymap* keyMap, const CDriverPrimitive& primitive) = 0;
 
     /*!
      * \brief Called once per event frame to notify the implementation of motion status

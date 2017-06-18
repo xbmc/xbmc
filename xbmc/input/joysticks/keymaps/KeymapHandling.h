@@ -19,37 +19,48 @@
  */
 #pragma once
 
-#include "GUIDialogButtonCapture.h"
-#include "input/joysticks/DriverPrimitive.h"
-
+#include <memory>
 #include <string>
 #include <vector>
 
+class IKeymap;
+class IKeymapEnvironment;
+
 namespace KODI
 {
-namespace GAME
+namespace JOYSTICK
 {
-  class CGUIDialogIgnoreInput : public CGUIDialogButtonCapture
+  class IInputHandler;
+  class IInputProvider;
+  class IInputReceiver;
+
+  /*!
+   * \ingroup joystick
+   * \brief
+   */
+  class CKeymapHandling
   {
   public:
-    CGUIDialogIgnoreInput() = default;
+    CKeymapHandling(IInputProvider *inputProvider, bool pPromiscuous, const IKeymapEnvironment *environment);
 
-    virtual ~CGUIDialogIgnoreInput() = default;
+    virtual ~CKeymapHandling();
 
-  protected:
-    // implementation of CGUIDialogButtonCapture
-    virtual std::string GetDialogText() override;
-    virtual std::string GetDialogHeader() override;
-    virtual bool MapPrimitiveInternal(JOYSTICK::IButtonMap* buttonMap,
-                                      IKeymap* keymap,
-                                      const JOYSTICK::CDriverPrimitive& primitive) override;
-    void OnClose(bool bAccepted) override;
+    /*!
+     * \brief
+     */
+    IInputReceiver *GetInputReceiver(const std::string &controllerId) const;
+    
+    /*!
+     * \brief
+     */
+    IKeymap *GetKeymap(const std::string &controllerId) const;
 
   private:
-    bool AddPrimitive(const JOYSTICK::CDriverPrimitive& primitive);
+    // Construction parameter
+    IInputProvider *const m_inputProvider;
 
-    std::string m_deviceName;
-    std::vector<JOYSTICK::CDriverPrimitive> m_capturedPrimitives;
+    std::vector<std::unique_ptr<IKeymap>> m_keymaps;
+    std::vector<std::unique_ptr<IInputHandler>> m_inputHandlers;
   };
 }
 }

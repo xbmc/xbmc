@@ -65,6 +65,16 @@ void CController::GetFeatures(std::vector<std::string>& features,
   }
 }
 
+JOYSTICK::FEATURE_TYPE CController::GetFeatureType(const std::string &feature) const
+{
+  for (auto it = m_layout.Features().begin(); it != m_layout.Features().end(); ++it)
+  {
+    if (feature == it->Name())
+      return it->Type();
+  }
+  return JOYSTICK::FEATURE_TYPE::UNKNOWN;
+}
+
 JOYSTICK::INPUT_TYPE CController::GetInputType(const std::string& feature) const
 {
   for (auto it = m_layout.Features().begin(); it != m_layout.Features().end(); ++it)

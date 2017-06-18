@@ -16,6 +16,7 @@ xbmc/input                                      input
 xbmc/input/joysticks                            input/joysticks
 xbmc/input/joysticks/dialogs                    input/joysticks/dialogs
 xbmc/input/joysticks/generic                    input/joysticks/generic
+xbmc/input/joysticks/keymaps                    input/joysticks/keymaps
 xbmc/input/keyboard                             input/keyboard
 xbmc/input/keyboard/generic                     input/keyboard/generic
 xbmc/input/mouse                                input/mouse

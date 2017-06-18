@@ -24,6 +24,7 @@
  \ingroup joystick
  */
 
+#include <set>
 #include <string>
 
 namespace KODI
@@ -138,5 +139,28 @@ namespace JOYSTICK
     SEMIAXIS,    // the positive or negative half of an axis
     MOTOR,       // a rumble motor
   };
+  
+  /*!
+   * \ingroup joystick
+   * \brief Action entry in joystick.xml
+   */
+  struct KeymapAction
+  {
+    unsigned int actionId;
+    std::string actionString;
+    unsigned int holdTimeMs;
+    std::set<std::string> hotkeys;
+
+    bool operator<(const KeymapAction &rhs) const
+    {
+      return holdTimeMs < rhs.holdTimeMs;
+    }
+  };
+
+  /*!
+   * \ingroup joystick
+   * \brief Container that sorts action entries by their holdtime
+   */
+  using KeymapActions = std::set<KeymapAction>;
 }
 }

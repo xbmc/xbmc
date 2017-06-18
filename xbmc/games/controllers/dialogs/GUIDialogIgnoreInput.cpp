@@ -56,6 +56,7 @@ std::string CGUIDialogIgnoreInput::GetDialogHeader()
 }
 
 bool CGUIDialogIgnoreInput::MapPrimitiveInternal(JOYSTICK::IButtonMap* buttonMap,
+                                                 IKeymap* keymap,
                                                  const JOYSTICK::CDriverPrimitive& primitive)
 {
   // Check if we have already started capturing primitives for a device

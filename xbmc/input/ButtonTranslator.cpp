@@ -31,15 +31,86 @@
 #include "IRTranslator.h"
 #include "Key.h"
 #include "KeyboardTranslator.h"
+#include "KeymapEnvironment.h"
 #include "MouseTranslator.h"
 #include "TouchTranslator.h"
+#include "WindowKeymap.h"
 #include "WindowTranslator.h"
 #include "FileItem.h"
 #include "filesystem/Directory.h"
 #include "guilib/WindowIDs.h"
+#include "input/joysticks/JoystickIDs.h"
+#include "input/joysticks/JoystickTranslator.h"
+#include "input/joysticks/JoystickUtils.h"
 #include "Util.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
+
+using namespace KODI;
+
+// --- Joystick XML deserialization --------------------------------------------
+
+namespace
+{
+  void DeserializeJoystickNode(const TiXmlNode* pDevice, std::string &controllerId)
+  {
+    controllerId = DEFAULT_CONTROLLER_ID;
+
+    const TiXmlElement* deviceElem = pDevice->ToElement();
+    if (deviceElem != nullptr)
+      deviceElem->QueryValueAttribute("profile", &controllerId);
+  }
+
+  bool DeserializeButton(const TiXmlElement *pButton, std::string &feature, JOYSTICK::ANALOG_STICK_DIRECTION &dir, unsigned int& holdtimeMs, std::set<std::string>& hotkeys, std::string &actionStr)
+  {
+    const char *szButton = pButton->Value();
+    if (szButton != nullptr)
+    {
+      const char *szAction = pButton->FirstChild()->Value();
+      if (szAction != nullptr)
+      {
+        feature = szButton;
+        StringUtils::ToLower(feature);
+        actionStr = szAction;
+      }
+    }
+
+    if (!feature.empty() && !actionStr.empty())
+    {
+      // Handle direction
+      dir = JOYSTICK::ANALOG_STICK_DIRECTION::UNKNOWN;
+      const char *szDirection = pButton->Attribute("direction");
+      if (szDirection != nullptr)
+        dir = JOYSTICK::CJoystickTranslator::TranslateDirection(szDirection);
+
+      // Process holdtime parameter
+      holdtimeMs = 0;
+      std::string strHoldTime;
+      if (pButton->QueryValueAttribute("holdtime", &strHoldTime) == TIXML_SUCCESS)
+      {
+        std::stringstream ss(std::move(strHoldTime));
+        ss >> holdtimeMs;
+      }
+
+      // Process hotkeys
+      hotkeys.clear();
+      std::string strHotkeys;
+      if (pButton->QueryValueAttribute("hotkey", &strHotkeys) == TIXML_SUCCESS)
+      {
+        std::vector<std::string> vecHotkeys = StringUtils::Split(strHotkeys, ",");
+        for (auto& hotkey : vecHotkeys)
+          hotkeys.insert(std::move(hotkey));
+      }
+      
+      return true;
+    }
+
+    return false;
+  }
+}
+
+// --- CButtonTranslator -------------------------------------------------------
 
 CButtonTranslator& CButtonTranslator::GetInstance()
 {
@@ -48,6 +119,7 @@ CButtonTranslator& CButtonTranslator::GetInstance()
 }
 
 CButtonTranslator::CButtonTranslator() :
+  m_keymapEnvironment(new CKeymapEnvironment),
   m_customControllerTranslator(new CCustomControllerTranslator),
   m_irTranslator(new CIRTranslator),
   m_touchTranslator(new CTouchTranslator)
@@ -458,6 +530,51 @@ void CButtonTranslator::MapWindowActions(const TiXmlNode *pWindow, int windowID)
     m_customControllerTranslator->MapActions(windowID, pDevice);
     pDevice = pDevice->NextSibling("customcontroller");
   }
+
+  // Map joystick actions
+  pDevice = pWindow->FirstChild("joystick");
+  while (pDevice != nullptr)
+  {
+    std::string controllerId;
+    DeserializeJoystickNode(pDevice, controllerId);
+
+    const TiXmlElement *pButton = pDevice->FirstChildElement();
+    while (pButton != nullptr)
+    {
+      std::string feature;
+      JOYSTICK::ANALOG_STICK_DIRECTION dir;
+      unsigned int holdtimeMs;
+      std::set<std::string> hotkeys;
+      std::string actionString;
+      if (DeserializeButton(pButton, feature, dir, holdtimeMs, hotkeys, actionString))
+      {
+        // Update Controller IDs
+        if (std::find(m_controllerIds.begin(), m_controllerIds.end(), controllerId) == m_controllerIds.end())
+          m_controllerIds.emplace_back(controllerId);
+
+        // Find/create keymap
+        auto &keymap = m_joystickKeymaps[controllerId];
+        if (!keymap)
+          keymap.reset(new CWindowKeymap(controllerId));
+
+        // Update keymap
+        unsigned int actionId = ACTION_NONE;
+        if (CActionTranslator::TranslateString(actionString, actionId))
+        {
+          JOYSTICK::KeymapAction action = {
+            actionId,
+            std::move(actionString),
+            holdtimeMs,
+            std::move(hotkeys),
+          };
+          keymap->MapAction(windowID, JOYSTICK::CJoystickUtils::MakeKeyName(feature, dir), std::move(action));
+        }
+      }
+      pButton = pButton->NextSiblingElement();
+    }
+
+    pDevice = pDevice->NextSibling("joystick");
+  }
 }
 
 void CButtonTranslator::Clear()
@@ -467,4 +584,17 @@ void CButtonTranslator::Clear()
   m_irTranslator->Clear();
   m_customControllerTranslator->Clear();
   m_touchTranslator->Clear();
+  m_joystickKeymaps.clear();
+  m_controllerIds.clear();
+}
+
+const IWindowKeymap *CButtonTranslator::JoystickKeymap(const std::string &controllerId) const
+{
+  IWindowKeymap *keymap = nullptr;
+
+  auto it = m_joystickKeymaps.find(controllerId);
+  if (it != m_joystickKeymaps.end())
+    keymap = it->second.get();
+
+  return keymap;
 }

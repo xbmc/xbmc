@@ -46,6 +46,7 @@ namespace GAME
     virtual bool Emulation(void) const override { return false; }
     virtual unsigned int ControllerNumber(void) const override { return 0; }
     virtual bool MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
+                              IKeymap* keymap,
                               const JOYSTICK::CDriverPrimitive& primitive) override;
     virtual void OnEventFrame(const JOYSTICK::IButtonMap* buttonMap, bool bMotion) override { }
     virtual void OnLateAxis(const JOYSTICK::IButtonMap* buttonMap, unsigned int axisIndex) override { }
@@ -65,6 +66,7 @@ namespace GAME
     virtual std::string GetDialogText() = 0;
     virtual std::string GetDialogHeader() = 0;
     virtual bool MapPrimitiveInternal(JOYSTICK::IButtonMap* buttonMap,
+                                      IKeymap* keymap,
                                       const JOYSTICK::CDriverPrimitive& primitive) = 0;
     virtual void OnClose(bool bAccepted) = 0;
 

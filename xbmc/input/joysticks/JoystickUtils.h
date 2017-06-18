@@ -21,6 +21,9 @@
 
 #include "JoystickTypes.h"
 
+#include <string>
+#include <vector>
+
 /// \ingroup joystick
 /// \{
 
@@ -53,6 +56,27 @@ inline float operator*(float lhs, SEMIAXIS_DIRECTION rhs)
 {
   return lhs * static_cast<int>(rhs);
 }
+
+class CJoystickUtils
+{
+public:
+  /*!
+   * \brief Create a key name used to index an action in the keymap
+   *
+   * \param feature  The feature name
+   * \param dir      The direction for analog sticks, or ignored otherwise
+   *
+   * \return A valid name for a key in the joystick keymap
+   *
+   * \sa ParseKeyName()
+   */
+  static std::string MakeKeyName(const FeatureName &feature, ANALOG_STICK_DIRECTION dir = ANALOG_STICK_DIRECTION::UNKNOWN);
+
+  /*!
+    * \brief Return a vector of the four cardinal directions
+    */
+  static const std::vector<ANALOG_STICK_DIRECTION> &GetDirections();
+};
 
 }
 }

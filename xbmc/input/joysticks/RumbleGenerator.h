@@ -22,6 +22,7 @@
 #include "threads/Thread.h"
 
 #include <string>
+#include <vector>
 
 namespace KODI
 {

@@ -36,6 +36,7 @@ namespace KODI
 namespace JOYSTICK
 {
   class CDeadzoneFilter;
+  class CKeymapHandling;
   class CRumbleGenerator;
   class IButtonMap;
   class IDriverHandler;
@@ -61,6 +62,7 @@ namespace PERIPHERALS
     void RegisterJoystickDriverHandler(KODI::JOYSTICK::IDriverHandler* handler, bool bPromiscuous) override;
     void UnregisterJoystickDriverHandler(KODI::JOYSTICK::IDriverHandler* handler) override;
     KODI::JOYSTICK::IDriverReceiver* GetDriverReceiver() override { return this; }
+    IKeymap *GetKeymap(const std::string &controllerId) override;
 
     bool OnButtonMotion(unsigned int buttonIndex, bool bPressed);
     bool OnHatMotion(unsigned int hatIndex, KODI::JOYSTICK::HAT_STATE state);
@@ -124,6 +126,7 @@ namespace PERIPHERALS
     unsigned int                        m_axisCount;
     unsigned int                        m_motorCount;
     bool                                m_supportsPowerOff;
+    std::unique_ptr<KODI::JOYSTICK::CKeymapHandling> m_appInput;
     std::unique_ptr<KODI::JOYSTICK::CRumbleGenerator> m_rumbleGenerator;
     KODI::JOYSTICK::CJoystickMonitor          m_joystickMonitor;
     std::unique_ptr<KODI::JOYSTICK::IButtonMap>      m_buttonMap;

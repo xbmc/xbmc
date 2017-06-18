@@ -35,6 +35,8 @@ class TiXmlNode;
 class CCustomControllerTranslator;
 class CIRTranslator;
 class CTouchTranslator;
+class IKeymapEnvironment;
+class IWindowKeymap;
 
 /// singleton class to map from buttons to actions
 /// Warning: _not_ threadsafe!
@@ -92,6 +94,12 @@ public:
 
   bool TranslateTouchAction(int window, int touchAction, int touchPointers, int &action, std::string &actionString);
 
+  const IKeymapEnvironment *KeymapEnvironment() const { return m_keymapEnvironment.get(); }
+
+  const IWindowKeymap *JoystickKeymap(const std::string &controllerId) const;
+
+  const std::vector<std::string> &GetControllers() const { return m_controllerIds; }
+
 private:
   struct CButtonAction
   {
@@ -114,7 +122,10 @@ private:
 
   bool LoadKeymap(const std::string &keymapPath);
 
+  std::unique_ptr<IKeymapEnvironment> m_keymapEnvironment;
   std::unique_ptr<CCustomControllerTranslator> m_customControllerTranslator;
   std::unique_ptr<CIRTranslator> m_irTranslator;
   std::unique_ptr<CTouchTranslator> m_touchTranslator;
+  std::map<std::string, std::unique_ptr<IWindowKeymap>> m_joystickKeymaps; // Controller ID -> keymap
+  std::vector<std::string> m_controllerIds;
 };

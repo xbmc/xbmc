@@ -26,11 +26,15 @@
 #include <map>
 #include <stdint.h>
 
+class IKeymap;
+
 namespace KODI
 {
 namespace JOYSTICK
 {
   class CButtonMapping;
+  class IButtonMap;
+  class IButtonMapper;
 
   class CButtonDetector
   {
@@ -188,9 +192,6 @@ namespace JOYSTICK
     unsigned int m_activationTimeMs; // only used to delay anomalous trigger mapping to detect full range
   };
 
-  class IButtonMap;
-  class IButtonMapper;
-
   /*!
    * \ingroup joystick
    * \brief Generic implementation of a class that provides button mapping by
@@ -212,7 +213,7 @@ namespace JOYSTICK
      * \param buttonMapper Carries out button-mapping commands using <buttonMap>
      * \param buttonMap The button map given to <buttonMapper> on each command
      */
-    CButtonMapping(IButtonMapper* buttonMapper, IButtonMap* buttonMap);
+    CButtonMapping(IButtonMapper* buttonMapper, IButtonMap* buttonMap, IKeymap* keymap);
 
     virtual ~CButtonMapping() = default;
 
@@ -252,6 +253,7 @@ namespace JOYSTICK
     // Construction parameters
     IButtonMapper* const m_buttonMapper;
     IButtonMap* const    m_buttonMap;
+    IKeymap* const       m_keymap;
 
     std::map<unsigned int, CButtonDetector> m_buttons;
     std::map<unsigned int, CHatDetector> m_hats;

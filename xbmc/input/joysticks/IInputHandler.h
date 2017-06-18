@@ -57,7 +57,8 @@ namespace JOYSTICK
     virtual bool HasFeature(const FeatureName& feature) const = 0;
 
     /*!
-     * \brief Return true if the input handler is currently accepting input
+     * \brief Return true if the input handler is currently accepting input for the
+     *        given feature
      *
      * \param feature A feature belonging to the controller specified by ControllerID()
      *

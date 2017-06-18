@@ -3,9 +3,12 @@ set(SOURCES DeadzoneFilter.cpp
             JoystickEasterEgg.cpp
             JoystickMonitor.cpp
             JoystickTranslator.cpp
+            JoystickUtils.cpp
             RumbleGenerator.cpp)
 
-set(HEADERS DeadzoneFilter.h
+set(HEADERS interfaces/IKeyHandler.h
+            interfaces/IKeymapHandler.h
+            DeadzoneFilter.h
             DriverPrimitive.h
             IButtonMap.h
             IButtonMapCallback.h

@@ -26,6 +26,7 @@
 #include "input/joysticks/IButtonMap.h"
 #include "input/joysticks/IButtonMapCallback.h"
 #include "input/joysticks/JoystickUtils.h"
+#include "input/IKeymap.h"
 #include "input/ActionIDs.h"
 #include "peripherals/Peripherals.h"
 #include "utils/Variant.h"
@@ -84,12 +85,35 @@ void CGUIDialogButtonCapture::Process()
 }
 
 bool CGUIDialogButtonCapture::MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
+                                           IKeymap* keymap,
                                            const JOYSTICK::CDriverPrimitive& primitive)
 {
   if (m_bStop)
     return false;
 
-  return MapPrimitiveInternal(buttonMap, primitive);
+  // First check to see if driver primitive closes the dialog
+  if (keymap && keymap->ControllerID() == buttonMap->ControllerID())
+  {
+    std::string feature;
+    if (buttonMap->GetFeature(primitive, feature))
+    {
+      const auto &actions = keymap->GetActions(JOYSTICK::CJoystickUtils::MakeKeyName(feature));
+      if (!actions.empty())
+      {
+        switch (actions.begin()->actionId)
+        {
+        case ACTION_SELECT_ITEM:
+        case ACTION_NAV_BACK:
+        case ACTION_PREVIOUS_MENU:
+          return false;
+        default:
+          break;
+        }
+      }
+    }
+  }
+
+  return MapPrimitiveInternal(buttonMap, keymap, primitive);
 }
 
 void CGUIDialogButtonCapture::InstallHooks(void)
