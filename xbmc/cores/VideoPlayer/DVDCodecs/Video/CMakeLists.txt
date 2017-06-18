@@ -24,4 +24,4 @@ if(CORE_SYSTEM_NAME STREQUAL android)
 endif()
 
 core_add_library(dvdvideocodecs)
-add_platform_override(${CORE_LIBRARY} HWAccel.h PLATFORMS osx X11 windows rbpi)
+add_platform_override(${CORE_LIBRARY} HWAccel.h PLATFORMS osx X11 windows rbpi ios)
