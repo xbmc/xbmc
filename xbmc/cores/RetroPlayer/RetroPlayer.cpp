@@ -24,16 +24,21 @@
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
 #include "games/addons/playback/IGameClientPlayback.h"
 #include "games/addons/GameClient.h"
+#include "games/ports/PortManager.h"
 #include "games/tags/GameInfoTag.h"
+#include "games/GameServices.h"
 #include "games/GameUtils.h"
 #include "guilib/GUIDialog.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/WindowIDs.h"
+#include "input/Action.h"
+#include "input/ActionIDs.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/MathUtils.h"
 #include "utils/StringUtils.h"
 #include "FileItem.h"
+#include "ServiceBroker.h"
 #include "URL.h"
 
 using namespace KODI;
@@ -318,6 +323,33 @@ float CRetroPlayer::GetSpeed()
   if (m_gameClient)
     return static_cast<float>(m_gameClient->GetPlayback()->GetSpeed());
   return 0;
+}
+
+bool CRetroPlayer::OnAction(const CAction &action)
+{
+  switch (action.GetID())
+  {
+  case ACTION_PLAYER_RESET:
+  {
+    if (m_gameClient)
+    {
+      double previousPlaySpeed = m_gameClient->GetPlayback()->GetSpeed();
+      m_gameClient->GetPlayback()->SetSpeed(0.0);
+      CServiceBroker::GetGameServices().PortManager().HardwareReset();
+      if (previousPlaySpeed > 0.0)
+        m_gameClient->GetPlayback()->SetSpeed(previousPlaySpeed);
+      else
+        m_gameClient->GetPlayback()->SetSpeed(1.0f);
+
+      CloseOSD();
+    }
+    return true;
+  }
+  default:
+    break;
+  }
+
+  return false;
 }
 
 std::string CRetroPlayer::GetPlayerState()

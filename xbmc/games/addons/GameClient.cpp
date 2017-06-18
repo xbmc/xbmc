@@ -20,6 +20,7 @@
 
 #include "GameClient.h"
 #include "GameClientCallbacks.h"
+#include "GameClientHardware.h"
 #include "GameClientInGameSaves.h"
 #include "GameClientJoystick.h"
 #include "GameClientKeyboard.h"
@@ -484,7 +485,7 @@ void CGameClient::ResetPlayback()
   m_playback.reset(new CGameClientRealtimePlayback);
 }
 
-void CGameClient::Reset()
+void CGameClient::Reset(unsigned int port)
 {
   ResetPlayback();
 
@@ -515,6 +516,8 @@ void CGameClient::CloseFile()
   }
 
   ClearPorts();
+
+  m_hardware.reset();
 
   if (m_bSupportsKeyboard)
     CloseKeyboard();
@@ -743,6 +746,10 @@ bool CGameClient::OpenPort(unsigned int port)
   if (m_ports.find(port) != m_ports.end())
     return false;
 
+  // Ensure hardware is open to receive events from the port
+  if (!m_hardware)
+    m_hardware.reset(new CGameClientHardware(this));
+
   ControllerVector controllers = GetControllers();
   if (!controllers.empty())
   {
@@ -756,7 +763,7 @@ bool CGameClient::OpenPort(unsigned int port)
     if (m_bSupportsKeyboard)
       device = PERIPHERALS::PERIPHERAL_JOYSTICK;
 
-    CServiceBroker::GetGameServices().PortManager().OpenPort(m_ports[port].get(), this, port, device);
+    CServiceBroker::GetGameServices().PortManager().OpenPort(m_ports[port].get(), m_hardware.get(), this, port, device);
 
     UpdatePort(port, controller);
 

@@ -41,6 +41,7 @@ namespace KODI
 namespace GAME
 {
 
+class CGameClientHardware;
 class CGameClientInGameSaves;
 class CGameClientJoystick;
 class CGameClientKeyboard;
@@ -81,7 +82,7 @@ public:
   void Unload();
   bool OpenFile(const CFileItem& file, IGameAudioCallback* audio, IGameVideoCallback* video);
   bool OpenStandalone(IGameAudioCallback* audio, IGameVideoCallback* video);
-  void Reset();
+  void Reset(unsigned int port);
   void CloseFile();
   const std::string& GetGamePath() const { return m_gamePath; }
 
@@ -197,6 +198,7 @@ private:
   std::map<int, std::unique_ptr<CGameClientJoystick>> m_ports;
   std::unique_ptr<CGameClientKeyboard> m_keyboard;
   std::unique_ptr<CGameClientMouse> m_mouse;
+  std::unique_ptr<CGameClientHardware> m_hardware;
 
   CCriticalSection m_critSection;
 
