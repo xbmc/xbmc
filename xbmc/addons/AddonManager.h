@@ -159,13 +159,24 @@ namespace ADDON
      */
     bool FindAddons();
 
-    /*! Unload addon from the system. Returns true if it was unloaded, otherwise false. */
+    /*!
+     * @note: should only be called by AddonInstaller
+     *
+     * Unload addon from the system. Returns true if it was unloaded, otherwise false.
+     */
     bool UnloadAddon(const AddonPtr& addon);
 
-    /*! Returns true if the addon was successfully loaded and enabled; otherwise false. */
+    /*!
+     * @note: should only be called by AddonInstaller
+     *
+     * Returns true if the addon was successfully loaded and enabled; otherwise false.
+     */
     bool ReloadAddon(AddonPtr& addon);
 
-    /*! Hook for clearing internal state after uninstall. */
+    /*! @note: should only be called by AddonInstaller
+     *
+     * Hook for clearing internal state after uninstall.
+     */
     void OnPostUnInstall(const std::string& id);
 
     /*! \brief Disable an addon. Returns true on success, false on failure. */

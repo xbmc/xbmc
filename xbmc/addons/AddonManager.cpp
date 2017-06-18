@@ -722,6 +722,7 @@ bool CAddonMgr::UnloadAddon(const AddonPtr& addon)
     if (m_cpluff->uninstall_plugin(m_cp_context, addon->ID().c_str()) == CP_OK)
     {
       m_events.Publish(AddonEvents::InstalledChanged());
+      m_events.Publish(AddonEvents::UnInstalled(addon->ID()));
       return true;
     }
   }
@@ -734,10 +735,34 @@ bool CAddonMgr::ReloadAddon(AddonPtr& addon)
   if (!addon ||!m_cpluff || !m_cp_context)
     return false;
 
-  m_cpluff->uninstall_plugin(m_cp_context, addon->ID().c_str());
-  return FindAddons()
-      && GetAddon(addon->ID(), addon, ADDON_UNKNOWN, false)
-      && EnableAddon(addon->ID());
+  AddonPtr tmp;
+  bool isReinstall = GetAddon(addon->ID(), tmp, ADDON_UNKNOWN, false);
+  if (isReinstall)
+  {
+    m_cpluff->uninstall_plugin(m_cp_context, addon->ID().c_str());
+  }
+
+  if (!FindAddons())
+  {
+    CLog::Log(LOGERROR, "CAddonMgr: could not reload add-on %s. FindAddons failed.", addon->ID().c_str());
+    return false;
+  }
+
+  if (!GetAddon(addon->ID(), addon, ADDON_UNKNOWN, false))
+  {
+    CLog::Log(LOGERROR, "CAddonMgr: could not reload add-on %s. No add-on with that ID is installed.", addon->ID().c_str());
+    return false;
+  }
+
+  if (isReinstall)
+    m_events.Publish(AddonEvents::ReInstalled(addon->ID()));
+
+  if (!EnableAddon(addon->ID()))
+  {
+    CLog::Log(LOGERROR, "CAddonMgr: '%s' was installed but could not be enabled", addon->ID().c_str());
+    return false;
+  }
+  return true;
 }
 
 void CAddonMgr::OnPostUnInstall(const std::string& id)

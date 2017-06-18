@@ -48,6 +48,28 @@ namespace ADDON
       MetadataChanged(std::string id) : id(std::move(id)) {}
     };
 
+    /**
+     * Emitted when a different version of the add-on has been installed
+     * to the file system and should be reloaded.
+     */
+    struct ReInstalled: AddonEvent
+    {
+      std::string id;
+      ReInstalled(std::string id) : id(std::move(id)) {}
+    };
+
+    /**
+     * Emitted after the add-on has been uninstalled.
+     */
+    struct UnInstalled : AddonEvent
+    {
+      std::string id;
+      UnInstalled(std::string id) : id(std::move(id)) {}
+    };
+
+    /**
+     * @deprecated Use Enabled, ReInstalled and UnInstalled instead.
+     */
     struct InstalledChanged : AddonEvent {};
   };
 };
