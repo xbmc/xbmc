@@ -139,6 +139,9 @@ void CGUIDialogAddonSettings::SetupView()
 
   CGUIDialogSettingsManagerBase::SetupView();
 
+  // set addon id as window property
+  SetProperty("Addon.ID", m_addon->ID());
+
   // set heading
   SetHeading(StringUtils::Format("$LOCALIZE[10004] - %s", m_addon->Name().c_str())); // "Settings - AddonName"
 

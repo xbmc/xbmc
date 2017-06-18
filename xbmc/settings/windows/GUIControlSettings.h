@@ -147,8 +147,7 @@ public:
 private:
   bool GetItems(std::shared_ptr<const CSetting> setting, CFileItemList &items) const;
   bool GetIntegerItems(std::shared_ptr<const CSetting> setting, CFileItemList &items) const;
-
-  static bool GetStringItems(std::shared_ptr<const CSetting> setting, CFileItemList &items);
+  bool GetStringItems(std::shared_ptr<const CSetting> setting, CFileItemList &items) const;
 
   CGUIButtonControl *m_pButton;
 };
