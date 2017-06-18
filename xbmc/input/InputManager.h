@@ -34,6 +34,7 @@
 #include "windowing/XBMC_events.h"
 #include "input/KeyboardStat.h"
 #include "input/MouseStat.h"
+#include "interfaces/IActionListener.h"
 #include "settings/lib/ISettingCallback.h"
 #include "threads/CriticalSection.h"
 
@@ -67,7 +68,8 @@ namespace MOUSE
  * \copydoc keyboard
  * \copydoc mouse
  */
-class CInputManager : public ISettingCallback
+class CInputManager : public ISettingCallback,
+                      public IActionListener
 {
 private:
   CInputManager();
@@ -108,14 +110,6 @@ public:
   \return true if event is handled, false otherwise
   */
   bool ProcessPeripherals(float frameTime);
-
-  /*! \brief Dispatch actions queued since the last call to Process()
-   */
-  void ProcessQueuedActions();
-
-  /*! \brief Queue an action to be processed on the next call to Process()
-   */
-  void QueueAction(const CAction& action);
 
   /*! \brief Process all inputs
    *
@@ -241,7 +235,11 @@ public:
    */
   int ExecuteBuiltin(const std::string& execute, const std::vector<std::string>& params);
 
+  // implementation of ISettingCallback
   virtual void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
+
+  // implementation of IActionListener
+  virtual bool OnAction(const CAction& action) override;
 
   /*! \brief Registers a handler to be called on keyboard input (e.g a game client).
    *
@@ -303,6 +301,14 @@ private:
   * \sa CAction
   */
   bool ExecuteInputAction(const CAction &action);
+
+  /*! \brief Dispatch actions queued since the last call to Process()
+   */
+  void ProcessQueuedActions();
+
+  /*! \brief Queue an action to be processed on the next call to Process()
+   */
+  void QueueAction(const CAction& action);
 
   CKeyboardStat m_Keyboard;
   CMouseStat m_Mouse;

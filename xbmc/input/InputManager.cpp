@@ -822,6 +822,52 @@ void CInputManager::OnSettingChanged(std::shared_ptr<const CSetting> setting)
     m_Mouse.SetEnabled(std::dynamic_pointer_cast<const CSettingBool>(setting)->GetValue());
 }
 
+bool CInputManager::OnAction(const CAction& action)
+{
+  if (action.GetID() != ACTION_NONE)
+  {
+    if (action.IsAnalog())
+    {
+      QueueAction(action);
+    }
+    else
+    {
+      // If button was pressed this frame, send action
+      if (action.GetHoldTime() == 0)
+      {
+        QueueAction(action);
+      }
+      else
+      {
+        // Only send repeated actions for basic navigation commands
+        bool bIsNavigation = false;
+
+        switch (action.GetID())
+        {
+        case ACTION_MOVE_LEFT:
+        case ACTION_MOVE_RIGHT:
+        case ACTION_MOVE_UP:
+        case ACTION_MOVE_DOWN:
+        case ACTION_PAGE_UP:
+        case ACTION_PAGE_DOWN:
+          bIsNavigation = true;
+          break;
+
+        default:
+          break;
+        }
+
+        if (bIsNavigation)
+          QueueAction(action);
+      }
+    }
+
+    return true;
+  }
+
+  return false;
+}
+
 void CInputManager::RegisterKeyboardHandler(KEYBOARD::IKeyboardHandler* handler)
 {
   if (std::find(m_keyboardHandlers.begin(), m_keyboardHandlers.end(), handler) == m_keyboardHandlers.end())

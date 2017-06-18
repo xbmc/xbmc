@@ -24,6 +24,7 @@
 #include "JoystickIDs.h"
 #include "JoystickTranslator.h"
 #include "guilib/GUIWindowManager.h"
+#include "input/InputManager.h"
 #include "input/Key.h"
 #include "Application.h"
 
@@ -37,7 +38,7 @@ using namespace KODI;
 using namespace JOYSTICK;
 
 CDefaultJoystick::CDefaultJoystick(void) :
-  m_handler(new CKeymapHandler)
+  m_handler(new CKeymapHandler(&CInputManager::GetInstance()))
 {
 }
 
