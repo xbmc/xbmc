@@ -57,8 +57,7 @@ namespace ActiveAE
   /*!
    * Static dsp handling class
    */
-  class CActiveAEDSP : public ADDON::IAddonMgrCallback,
-                       public ISettingCallback
+  class CActiveAEDSP : public ISettingCallback
   {
   /*! @name Master audio dsp control class */
   //@{
@@ -127,21 +126,6 @@ namespace ActiveAE
   /*! @name addon installation callback methods */
   //@{
     /*!
-     * @brief Restart a single audio dsp add-on.
-     * @param addon The add-on to restart.
-     * @param bDataChanged True if the addon's data changed, false otherwise (unused).
-     * @return True if the audio dsp addon was found and restarted, false otherwise.
-     */
-    virtual bool RequestRestart(ADDON::AddonPtr addon, bool bDataChanged) override;
-
-    /*!
-     * @brief Remove a single audio dsp add-on.
-     * @param addon The add-on to remove.
-     * @return True if it was found and removed, false otherwise.
-     */
-    virtual bool RequestRemoval(ADDON::AddonPtr addon) override;
-
-    /*!
      * @brief Checks whether an add-on is loaded
      * @param strAddonId The add-on id to check
      * @return True when in use, false otherwise
@@ -193,10 +177,10 @@ namespace ActiveAE
 
     /*!
      * @brief Check whether a audio dsp addon pointer points to a valid and ready add-on.
-     * @param addon The addon addon pointer.
+     * @param addon The addon base information pointer.
      * @return True when the addon pointer is valid and ready, false otherwise.
      */
-    bool IsReadyAudioDSPAddon(const ADDON::AddonPtr& addon);
+    bool IsReadyAudioDSPAddon(const ADDON::BinaryAddonBasePtr& addon);
 
     /*!
      * @brief Get the instance of the audio dsp addon.
@@ -204,7 +188,7 @@ namespace ActiveAE
      * @param addon The audio dsp addon.
      * @return True if the addon was found, false otherwise.
      */
-    bool GetAudioDSPAddon(const std::string &strId, ADDON::AddonPtr &addon) const;
+    bool GetAudioDSPAddon(const std::string &strId, AE_DSP_ADDON &addon) const;
 
     /*!
      * @brief Get the instance of the audio dsp addon.
@@ -333,7 +317,7 @@ namespace ActiveAE
      * @return True if the dsp addon has any menu hooks, false otherwise.
      * @note The main usage for this method is to have bigger modifiable addon setting dialogs which make the usage of
      * standard addon settings dialog as option to it
-     * see kodi_adsp_types.h for available types
+     * see <kodi/addon-instance/AudioDSP.h> for available types
      */
     bool HaveMenuHooks(AE_DSP_MENUHOOK_CAT cat, int iAddonId = -1);
 
@@ -345,7 +329,7 @@ namespace ActiveAE
      * @return True if the hooks were added successfully (if any), false otherwise.
      * @note The main usage for this method is to have bigger modifiable addon setting dialogs, the basic addon settings dialog
      * can't be opened with it (is only in the menu list from ProcessMenuHooks)
-     * see kodi_adsp_types.h for available types
+     * see <kodi/addon-instance/AudioDSP.h> for available types
      */
     bool GetMenuHooks(int iDSPAddonID, AE_DSP_MENUHOOK_CAT cat, AE_DSP_MENUHOOKS &hooks);
   //@}
@@ -371,10 +355,10 @@ namespace ActiveAE
   protected:
     /*!
      * @brief Check whether a dsp addon is registered.
-     * @param addon The dsp addon to check.
+     * @param addonId The addon ID name.
      * @return True if this addon is registered, false otherwise.
      */
-    bool IsKnownAudioDSPAddon(const ADDON::AddonPtr& addon) const;
+    bool IsKnownAudioDSPAddon(const std::string& addonId) const;
 
     /*!
      * @brief Get the instance of the dsp addon, if it's ready.
@@ -386,10 +370,10 @@ namespace ActiveAE
 
     /*!
      * @brief Get the dsp related Id for selected addon
-     * @param addon The addon class pointer.
+     * @param addonId The addon ID name.
      * @return the id of the asked addon, -1 if not available
      */
-    int GetAudioDSPAddonId(const ADDON::AddonPtr& addon) const;
+    int GetAudioDSPAddonId(const std::string& addonId) const;
 
 
     static const int        m_StreamTypeNameTable[];                    /*!< Table for stream type strings related to type id */

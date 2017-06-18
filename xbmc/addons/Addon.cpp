@@ -395,8 +395,7 @@ void OnEnabled(const std::string& id)
 {
   // If the addon is a special, call enabled handler
   AddonPtr addon;
-  if (CAddonMgr::GetInstance().GetAddon(id, addon, ADDON_PVRDLL) ||
-      CAddonMgr::GetInstance().GetAddon(id, addon, ADDON_ADSPDLL))
+  if (CAddonMgr::GetInstance().GetAddon(id, addon, ADDON_PVRDLL))
     return addon->OnEnabled();
 
   if (CAddonMgr::GetInstance().ServicesHasStarted())
@@ -413,8 +412,7 @@ void OnDisabled(const std::string& id)
 {
 
   AddonPtr addon;
-  if (CAddonMgr::GetInstance().GetAddon(id, addon, ADDON_PVRDLL, false) ||
-      CAddonMgr::GetInstance().GetAddon(id, addon, ADDON_ADSPDLL, false))
+  if (CAddonMgr::GetInstance().GetAddon(id, addon, ADDON_PVRDLL, false))
     return addon->OnDisabled();
 
   if (CAddonMgr::GetInstance().ServicesHasStarted())

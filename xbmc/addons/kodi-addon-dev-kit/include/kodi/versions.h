@@ -75,12 +75,10 @@
 #define ADDON_GLOBAL_VERSION_NETWORK_XML_ID           "kodi.binary.global.network"
 #define ADDON_GLOBAL_VERSION_NETWORK_DEPENDS          "Network.h"
 
-#define ADDON_INSTANCE_VERSION_ADSP                   "0.1.10"
-#define ADDON_INSTANCE_VERSION_ADSP_MIN               "0.1.10"
+#define ADDON_INSTANCE_VERSION_ADSP                   "0.2.0"
+#define ADDON_INSTANCE_VERSION_ADSP_MIN               "0.2.0"
 #define ADDON_INSTANCE_VERSION_ADSP_XML_ID            "kodi.binary.instance.adsp"
-#define ADDON_INSTANCE_VERSION_ADSP_DEPENDS           "kodi_adsp_dll.h" \
-                                                      "kodi_adsp_types.h" \
-                                                      "libKODI_adsp.h"
+#define ADDON_INSTANCE_VERSION_ADSP_DEPENDS           "addon-instance/AudioDSP.h"
 
 #define ADDON_INSTANCE_VERSION_AUDIODECODER           "1.0.1"
 #define ADDON_INSTANCE_VERSION_AUDIODECODER_MIN       "1.0.1"
