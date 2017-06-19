@@ -37,6 +37,7 @@
 #include "VideoShaders/WinVideoFilter.h"
 #include "platform/win32/WIN32Util.h"
 #include "windowing/WindowingFactory.h"
+#include <ppltasks.h>
 
 typedef struct {
   RenderMethod  method;
@@ -85,53 +86,16 @@ CWinRenderer::CWinRenderer()
   m_destWidth = 0;
   m_destHeight = 0;
   m_bConfigured = false;
-  m_format = RENDER_FMT_NONE;
+  m_format = AV_PIX_FMT_NONE;
   m_processor = nullptr;
   m_neededBuffers = 0;
+
+  PreInit();
 }
 
 CWinRenderer::~CWinRenderer()
 {
-  UnInit();
-}
-
-static enum AVPixelFormat PixelFormatFromFormat(ERenderFormat format)
-{
-  if (format == RENDER_FMT_DXVA)      return AV_PIX_FMT_NV12;
-  if (format == RENDER_FMT_YUV420P)   return AV_PIX_FMT_YUV420P;
-  if (format == RENDER_FMT_YUV420P10) return AV_PIX_FMT_YUV420P10;
-  if (format == RENDER_FMT_YUV420P16) return AV_PIX_FMT_YUV420P16;
-  if (format == RENDER_FMT_NV12)      return AV_PIX_FMT_NV12;
-  if (format == RENDER_FMT_UYVY422)   return AV_PIX_FMT_UYVY422;
-  if (format == RENDER_FMT_YUYV422)   return AV_PIX_FMT_YUYV422;
-  return AV_PIX_FMT_NONE;
-}
-
-bool CWinRenderer::HandlesRenderFormat(ERenderFormat format)
-{
-  if(format == RENDER_FMT_DXVA
-  || format == RENDER_FMT_YUV420P
-  || format == RENDER_FMT_YUV420P10
-  || format == RENDER_FMT_YUV420P16
-  || format == RENDER_FMT_NV12
-  || format == RENDER_FMT_UYVY422
-  || format == RENDER_FMT_YUYV422)
-  {
-    return true;
-  }
-  return false;
-}
-
-bool CWinRenderer::ConfigChanged(void *hwPic)
-{
-  if (m_format == RENDER_FMT_DXVA)
-  {
-    DXVA::CRenderPicture *dxvaPic = static_cast<DXVA::CRenderPicture*>(hwPic);
-    if (dxvaPic->format != m_dxva_format)
-      return true;
-  }
-
-  return false;
+  CWinRenderer::UnInit();
 }
 
 void CWinRenderer::ManageTextures()
@@ -158,7 +122,7 @@ void CWinRenderer::SelectRenderMethod()
   // Set rendering to dxva before trying it, in order to open the correct processor immediately, when deinterlacing method is auto.
 
   // Force dxva renderer after dxva decoding: PS and SW renderers have performance issues after dxva decode.
-  if (g_advancedSettings.m_DXVAForceProcessorRenderer && m_format == RENDER_FMT_DXVA)
+  if (g_advancedSettings.m_DXVAForceProcessorRenderer && m_format == AV_PIX_FMT_D3D11VA_VLD)
   {
     CLog::Log(LOGNOTICE, "D3D: rendering method forced to DXVA processor");
     m_renderMethod = RENDER_DXVA;
@@ -196,8 +160,8 @@ void CWinRenderer::SelectRenderMethod()
           if (shader.Create())
           {
             m_renderMethod = RENDER_PS;
-            if (m_format == RENDER_FMT_DXVA)
-              m_format = RENDER_FMT_NV12;
+            if (m_format == AV_PIX_FMT_D3D11VA_VLD)
+              m_format = AV_PIX_FMT_NV12;
             break;
           }
           else
@@ -221,10 +185,10 @@ void CWinRenderer::SelectRenderMethod()
   m_frameIdx = 0;
 }
 
-bool CWinRenderer::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, void *hwPic, unsigned int orientation)
+bool CWinRenderer::Configure(const VideoPicture &picture, float fps, unsigned flags, unsigned int orientation)
 {
-  m_sourceWidth       = width;
-  m_sourceHeight      = height;
+  m_sourceWidth       = picture.iWidth;
+  m_sourceHeight      = picture.iHeight;
   m_renderOrientation = orientation;
   // need to recreate textures
   m_NumYV12Buffers    = 0;
@@ -232,16 +196,17 @@ bool CWinRenderer::Configure(unsigned int width, unsigned int height, unsigned i
   // reinitialize the filters/shaders
   m_bFilterInitialized = false;
 
-  DXVA::CRenderPicture *dxvaPic = static_cast<DXVA::CRenderPicture*>(hwPic);
-
   m_fps = fps;
   m_iFlags = flags;
-  m_format = format;
-  if (format == RENDER_FMT_DXVA)
-    m_dxva_format = dxvaPic->format;
+  m_format = picture.videoBuffer->GetFormat();
+  if (m_format == AV_PIX_FMT_D3D11VA_VLD)
+  {
+    DXVA::CDXVAVideoBuffer *dxvaPic = dynamic_cast<DXVA::CDXVAVideoBuffer*>(picture.videoBuffer);
+    m_dxva_format = dxvaPic->picture->format;
+  }
 
   // calculate the input frame aspect ratio
-  CalculateFrameAspectRatio(d_width, d_height);
+  CalculateFrameAspectRatio(picture.iDisplayWidth, picture.iDisplayHeight);
   SetViewMode(CMediaSettings::GetInstance().GetCurrentVideoSettings().m_ViewMode);
   ManageRenderArea();
 
@@ -259,17 +224,7 @@ int CWinRenderer::NextYV12Texture()
     return -1;
 }
 
-bool CWinRenderer::IsPictureHW(VideoPicture &picture)
-{
-  if (m_renderMethod == RENDER_DXVA
-    || picture.format == RENDER_FMT_DXVA)
-  {
-    return true;
-  }
-  return false;
-}
-
-void CWinRenderer::AddVideoPictureHW(VideoPicture &picture, int index)
+void CWinRenderer::AddVideoPicture(const VideoPicture &picture, int index)
 {
   if (m_renderMethod == RENDER_DXVA)
   {
@@ -280,56 +235,16 @@ void CWinRenderer::AddVideoPictureHW(VideoPicture &picture, int index)
     buf->pictureFlags = picture.iFlags;
     m_frameIdx += 2;
   }
-  else if (picture.format == RENDER_FMT_DXVA)
+  else
   {
     YUVBuffer *buf = reinterpret_cast<YUVBuffer*>(m_VideoBuffers[index]);
     if (buf->IsReadyToRender())
       return;
+
     buf->CopyFromPicture(picture);
   }
-}
-
-int CWinRenderer::GetImage(YuvImage *image, int source, bool readonly)
-{
-  if (!image) return -1;
-  if (!m_NumYV12Buffers) return -1;
-
-  /* take next available buffer */
-  if( source == AUTOSOURCE )
-    source = NextYV12Texture();
-
-  if (source < 0 || NextYV12Texture() < 0)
-    return -1;
-
-  if (m_renderMethod == RENDER_DXVA)
-    return source;
-
-  YUVBuffer *buf = reinterpret_cast<YUVBuffer*>(m_VideoBuffers[source]);
-  if (!buf)
-    return -1;
-
-  image->cshift_x = 1;
-  image->cshift_y = 1;
-  image->height = m_sourceHeight;
-  image->width = m_sourceWidth;
-  image->flags = 0;
-  if(m_format == RENDER_FMT_YUV420P10
-  || m_format == RENDER_FMT_YUV420P16)
-    image->bpp = 2;
-  else
-    image->bpp = 1;
-
-  for(int i=0;i<3;i++)
-  {
-    image->stride[i] = buf->planes[i].rect.RowPitch;
-    image->plane[i]  = (BYTE*)buf->planes[i].rect.pData;
-  }
-
-  return source;
-}
-
-void CWinRenderer::ReleaseImage(int source, bool preserve)
-{
+  m_VideoBuffers[index]->videoBuffer = picture.videoBuffer;
+  m_VideoBuffers[index]->videoBuffer->Acquire();
 }
 
 void CWinRenderer::Reset()
@@ -380,9 +295,6 @@ void CWinRenderer::PreInit()
   m_bConfigured = false;
   UnInit();
 
-  m_formats.clear();
-  m_formats.push_back(RENDER_FMT_YUV420P);
-
   m_iRequestedMethod = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_VIDEOPLAYER_RENDERMETHOD);
 
   if (g_advancedSettings.m_DXVAForceProcessorRenderer
@@ -394,22 +306,6 @@ void CWinRenderer::PreInit()
       CLog::Log(LOGNOTICE, "CWinRenderer::Preinit - could not init DXVA processor - skipping");
       SAFE_DELETE(m_processor);
     }
-    else
-      m_processor->ApplySupportedFormats(&m_formats);
-  }
-
-  // allow other color spaces besides YV12 in case DXVA rendering is not used or not available
-  if (!m_processor || (m_iRequestedMethod != RENDER_METHOD_DXVA))
-  {
-    if ( g_Windowing.IsFormatSupport(DXGI_FORMAT_R16_UNORM, D3D11_FORMAT_SUPPORT_SHADER_SAMPLE)
-      || g_Windowing.IsFormatSupport(DXGI_FORMAT_R16_UNORM, D3D11_FORMAT_SUPPORT_SHADER_LOAD))
-    {
-      m_formats.push_back(RENDER_FMT_YUV420P10);
-      m_formats.push_back(RENDER_FMT_YUV420P16);
-    }
-    m_formats.push_back(RENDER_FMT_NV12);
-    m_formats.push_back(RENDER_FMT_YUYV422);
-    m_formats.push_back(RENDER_FMT_UYVY422);
   }
 }
 
@@ -617,7 +513,7 @@ void CWinRenderer::UpdatePSVideoFilter()
   }
 
   m_colorShader = new CYUV2RGBShader();
-  EShaderFormat shaderFormat = GetShaderFormat(m_format);
+  EShaderFormat shaderFormat = GetShaderFormat();
   if (!m_colorShader->Create(m_sourceWidth, m_sourceHeight, shaderFormat))
   {
     if (m_bUseHQScaler)
@@ -701,19 +597,17 @@ void CWinRenderer::Render(DWORD flags)
 
 void CWinRenderer::RenderSW()
 {
-  enum AVPixelFormat format = PixelFormatFromFormat(m_format);
-
   // 1. convert yuv to rgb
   m_sw_scale_ctx = sws_getCachedContext(m_sw_scale_ctx,
-                                        m_sourceWidth, m_sourceHeight, format,
+                                        m_sourceWidth, m_sourceHeight, m_format,
                                         m_sourceWidth, m_sourceHeight, AV_PIX_FMT_BGRA,
                                         SWS_FAST_BILINEAR, NULL, NULL, NULL);
 
   YUVBuffer* buf = reinterpret_cast<YUVBuffer*>(m_VideoBuffers[m_iYV12RenderBuffer]);
 
-  D3D11_MAPPED_SUBRESOURCE srclr[MAX_PLANES];
-  uint8_t*                 src[MAX_PLANES];
-  int                      srcStride[MAX_PLANES];
+  D3D11_MAPPED_SUBRESOURCE srclr[3];
+  uint8_t* src[3];
+  int srcStride[3];
 
   for (unsigned int idx = 0; idx < buf->GetActivePlanes(); idx++)
   {
@@ -1108,15 +1002,41 @@ bool CWinRenderer::WantsDoublePass()
   return false;
 }
 
+bool CWinRenderer::ConfigChanged(const VideoPicture& picture)
+{
+  if (picture.videoBuffer->GetFormat() != m_format)
+    return true;
+
+  return false;
+}
+
+bool CWinRenderer::HandlesVideoBuffer(CVideoBuffer* buffer)
+{
+  AVPixelFormat format = buffer->GetFormat();
+  if ( format == AV_PIX_FMT_D3D11VA_VLD
+    || format == AV_PIX_FMT_YUV420P
+    || format == AV_PIX_FMT_YUV420P10
+    || format == AV_PIX_FMT_YUV420P16)
+    return true;
+
+  return false;
+}
+
 CRenderInfo CWinRenderer::GetRenderInfo()
 {
   CRenderInfo info;
-  info.formats = m_formats;
+  info.formats = 
+  { 
+    AV_PIX_FMT_D3D11VA_VLD, 
+    AV_PIX_FMT_YUV420P, 
+    AV_PIX_FMT_YUV420P10, 
+    AV_PIX_FMT_YUV420P16 
+  };
   info.max_buffer_size = NUM_BUFFERS;
   if (m_renderMethod == RENDER_DXVA && m_processor)
   {
     info.optimal_buffer_size = m_processor->Size();
-    if (m_format != RENDER_FMT_DXVA)
+    if (m_format != AV_PIX_FMT_D3D11VA_VLD)
       info.m_deintMethods.push_back(VS_INTERLACEMETHOD_DXVA_AUTO);
   }
   else
@@ -1128,6 +1048,8 @@ void CWinRenderer::ReleaseBuffer(int idx)
 {
   if (m_renderMethod == RENDER_DXVA && m_VideoBuffers[idx])
     SAFE_RELEASE(reinterpret_cast<DXVABuffer*>(m_VideoBuffers[idx])->pic);
+
+  SAFE_RELEASE(m_VideoBuffers[idx]->videoBuffer);
 }
 
 bool CWinRenderer::NeedBuffer(int idx)
@@ -1155,7 +1077,7 @@ YUVBuffer::~YUVBuffer()
   Release();
 }
 
-bool YUVBuffer::Create(ERenderFormat format, unsigned int width, unsigned int height, bool dynamic)
+bool YUVBuffer::Create(AVPixelFormat format, unsigned int width, unsigned int height, bool dynamic)
 {
   m_format = format;
   m_width = width;
@@ -1167,8 +1089,8 @@ bool YUVBuffer::Create(ERenderFormat format, unsigned int width, unsigned int he
 
   switch(m_format)
   {
-  case RENDER_FMT_YUV420P10:
-  case RENDER_FMT_YUV420P16:
+  case AV_PIX_FMT_YUV420P10:
+  case AV_PIX_FMT_YUV420P16:
     {
       if ( !planes[PLANE_Y].texture.Create(m_width,      m_height,      1, usage, DXGI_FORMAT_R16_UNORM)
         || !planes[PLANE_U].texture.Create(m_width >> 1, m_height >> 1, 1, usage, DXGI_FORMAT_R16_UNORM)
@@ -1177,7 +1099,7 @@ bool YUVBuffer::Create(ERenderFormat format, unsigned int width, unsigned int he
       m_activeplanes = 3;
       break;
     }
-  case RENDER_FMT_YUV420P:
+  case AV_PIX_FMT_YUV420P:
     {
       if ( !planes[PLANE_Y].texture.Create(m_width,      m_height,      1, usage, DXGI_FORMAT_R8_UNORM)
         || !planes[PLANE_U].texture.Create(m_width >> 1, m_height >> 1, 1, usage, DXGI_FORMAT_R8_UNORM)
@@ -1186,8 +1108,8 @@ bool YUVBuffer::Create(ERenderFormat format, unsigned int width, unsigned int he
       m_activeplanes = 3;
       break;
     }
-  case RENDER_FMT_DXVA:
-  case RENDER_FMT_NV12:
+  case AV_PIX_FMT_D3D11VA_VLD:
+  case AV_PIX_FMT_NV12:
     {
       DXGI_FORMAT uvFormat = DXGI_FORMAT_R8G8_UNORM;
       // FL 9.x doesn't support DXGI_FORMAT_R8G8_UNORM, so we have to use SNORM and correct values in shader
@@ -1199,14 +1121,14 @@ bool YUVBuffer::Create(ERenderFormat format, unsigned int width, unsigned int he
       m_activeplanes = 2;
       break;
     }
-  case RENDER_FMT_YUYV422:
+  case AV_PIX_FMT_YUYV422:
     {
       if ( !planes[PLANE_Y].texture.Create(m_width >> 1, m_height, 1, usage, DXGI_FORMAT_B8G8R8A8_UNORM))
         return false;
       m_activeplanes = 1;
       break;
     }
-  case RENDER_FMT_UYVY422:
+  case AV_PIX_FMT_UYVY422:
     {
       if ( !planes[PLANE_Y].texture.Create(m_width >> 1, m_height, 1, usage, DXGI_FORMAT_B8G8R8A8_UNORM))
         return false;
@@ -1283,41 +1205,41 @@ void YUVBuffer::Clear()
 
   switch(m_format)
   {
-  case RENDER_FMT_YUV420P16:
+  case AV_PIX_FMT_YUV420P16:
     {
       wmemset((wchar_t*)planes[PLANE_Y].rect.pData, 0,     planes[PLANE_Y].rect.RowPitch *  m_height    / 2);
       wmemset((wchar_t*)planes[PLANE_U].rect.pData, 32768, planes[PLANE_U].rect.RowPitch * (m_height / 2) / 2);
       wmemset((wchar_t*)planes[PLANE_V].rect.pData, 32768, planes[PLANE_V].rect.RowPitch * (m_height / 2) / 2);
       break;
     }
-  case RENDER_FMT_YUV420P10:
+  case AV_PIX_FMT_YUV420P10:
     {
       wmemset((wchar_t*)planes[PLANE_Y].rect.pData, 0, planes[PLANE_Y].rect.RowPitch *  m_height / 2);
       wmemset((wchar_t*)planes[PLANE_U].rect.pData, 512, planes[PLANE_U].rect.RowPitch * (m_height / 2) / 2);
       wmemset((wchar_t*)planes[PLANE_V].rect.pData, 512, planes[PLANE_V].rect.RowPitch * (m_height / 2) / 2);
       break;
     }
-  case RENDER_FMT_YUV420P:
+  case AV_PIX_FMT_YUV420P:
     {
       memset(planes[PLANE_Y].rect.pData, 0, planes[PLANE_Y].rect.RowPitch *  m_height);
       memset(planes[PLANE_U].rect.pData, 128, planes[PLANE_U].rect.RowPitch * (m_height / 2));
       memset(planes[PLANE_V].rect.pData, 128, planes[PLANE_V].rect.RowPitch * (m_height / 2));
       break;
     }
-  case RENDER_FMT_DXVA:
-  case RENDER_FMT_NV12:
+  case AV_PIX_FMT_D3D11VA_VLD:
+  case AV_PIX_FMT_NV12:
     {
       memset(planes[PLANE_Y].rect.pData,    0, planes[PLANE_Y].rect.RowPitch *  m_height);
       memset(planes[PLANE_UV].rect.pData, 128, planes[PLANE_U].rect.RowPitch * (m_height / 2));
       break;
     }
   // YUY2, UYVY: wmemset to set a 16bit pattern, byte-swapped because x86 is LE
-  case RENDER_FMT_YUYV422:
+  case AV_PIX_FMT_YUYV422:
     {
       wmemset((wchar_t*)planes[PLANE_Y].rect.pData, 0x8000, planes[PLANE_Y].rect.RowPitch / 2 * m_height);
       break;
     }
-  case RENDER_FMT_UYVY422:
+  case AV_PIX_FMT_UYVY422:
     {
       wmemset((wchar_t*)planes[PLANE_Y].rect.pData, 0x0080, planes[PLANE_Y].rect.RowPitch / 2 * m_height);
       break;
@@ -1331,12 +1253,57 @@ bool YUVBuffer::IsReadyToRender()
   return !m_locked;
 }
 
-bool YUVBuffer::CopyFromPicture(VideoPicture &picture)
+bool YUVBuffer::CopyFromPicture(const VideoPicture &picture)
 {
-  if (picture.format == RENDER_FMT_DXVA)
+  AVPixelFormat format = picture.videoBuffer->GetFormat();
+  if (format == AV_PIX_FMT_D3D11VA_VLD)
   {
-    DXVA::CRenderPicture *hwpic = static_cast<DXVA::CRenderPicture*>(picture.hwPic);
-    return CopyFromDXVA(reinterpret_cast<ID3D11VideoDecoderOutputView*>(hwpic->view));
+    DXVA::CDXVAVideoBuffer *hwpic = static_cast<DXVA::CDXVAVideoBuffer*>(picture.videoBuffer);
+    return CopyFromDXVA(reinterpret_cast<ID3D11VideoDecoderOutputView*>(hwpic->picture->view));
+  }
+
+  if ( format == AV_PIX_FMT_YUV420P 
+    || format == AV_PIX_FMT_YUV420P10
+    || format == AV_PIX_FMT_YUV420P16
+    || format == AV_PIX_FMT_NV12)
+  {
+    uint8_t* bufData[3];
+    int srcLines[3];
+    picture.videoBuffer->GetPlanes(bufData);
+    picture.videoBuffer->GetStrides(srcLines);
+    std::vector<Concurrency::task<void>> tasks;
+
+    for(unsigned plane = 0; plane < m_activeplanes; ++plane)
+    {
+      uint8_t* dst = static_cast<uint8_t*>(planes[plane].rect.pData);
+      uint8_t* src = bufData[plane];
+      int srcLine = srcLines[plane];
+      int dstLine = planes[plane].rect.RowPitch;
+      int height = plane == 0 ? picture.iHeight : picture.iHeight >> 1;
+
+      auto task = Concurrency::create_task([src, dst, srcLine, dstLine, height]()
+      {
+        if (srcLine == dstLine)
+        {
+          memcpy(dst, src, srcLine * height);
+        }
+        else
+        {
+          uint8_t* s = src;
+          uint8_t* d = dst;
+          for(unsigned i = 0; i < height; ++i)
+          {
+            memcpy(d, s, std::min(srcLine, dstLine));
+            d += dstLine;
+            s += srcLine;
+          }
+        }
+      });
+      tasks.push_back(task);
+    }
+
+    when_all(tasks.begin(), tasks.end()).wait();//.then([this]() { StartRender(); });
+    return true;
   }
   return false;
 }
