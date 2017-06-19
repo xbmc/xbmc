@@ -316,7 +316,7 @@ void CAdvancedSettings::Initialize()
   m_screenAlign_xStretchFactor = 1.0;
   m_screenAlign_yStretchFactor = 1.0;
 
-  m_curlconnecttimeout = 10;
+  m_curlconnecttimeout = 30;
   m_curllowspeedtime = 20;
   m_curlretries = 2;
   m_curlDisableIPV6 = false;      //Certain hardware/OS combinations have trouble
