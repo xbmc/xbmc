@@ -549,9 +549,9 @@ void CRenderManager::CreateRenderer()
       }
 #endif
 #if defined(HAS_DX)
-      else if (0)
+      else if(CWinRenderer::HandlesVideoBuffer(m_pConfigPicture->videoBuffer))
       {
-        m_pRenderer = new CWinRenderer();
+        m_pRenderer = new CWinRenderer;
       }
 #endif
 #if defined(HAS_LIBAMCODEC)
