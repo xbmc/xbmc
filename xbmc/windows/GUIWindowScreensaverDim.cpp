@@ -19,32 +19,50 @@
  */
 
 #include "GUIWindowScreensaverDim.h"
+
+#include "Application.h"
+#include "addons/binary-addons/AddonDll.h"
 #include "guilib/GraphicContext.h"
 #include "guilib/GUITexture.h"
-#include "Application.h"
 
 CGUIWindowScreensaverDim::CGUIWindowScreensaverDim(void)
-  : CGUIDialog(WINDOW_SCREENSAVER_DIM, "", DialogModalityType::MODELESS)
+  : CGUIDialog(WINDOW_SCREENSAVER_DIM, "", DialogModalityType::MODELESS),
+    m_dimLevel(100.0f),
+    m_newDimLevel(100.0f),
+    m_visible(false)
 {
   m_needsScaling = false;
-  m_dimLevel = 100.0f;
-  m_newDimLevel = 100.0f;
   m_animations.push_back(CAnimation::CreateFader(0, 100, 0, 1000, ANIM_TYPE_WINDOW_OPEN));
   m_animations.push_back(CAnimation::CreateFader(100, 0, 0, 1000, ANIM_TYPE_WINDOW_CLOSE));
   m_renderOrder = RENDER_ORDER_WINDOW_SCREENSAVER;
 }
 
-CGUIWindowScreensaverDim::~CGUIWindowScreensaverDim(void)
-{
-}
-
 void CGUIWindowScreensaverDim::UpdateVisibility()
 {
-  m_newDimLevel = g_application.GetDimScreenSaverLevel();
-  if (m_newDimLevel)
-    Open();
-  else
+  if (g_application.IsInScreenSaver())
+  {
+    if (m_visible)
+      return;
+
+    std::string usedId = g_application.ScreensaverIdInUse();
+    if  (usedId == "screensaver.xbmc.builtin.dim" ||
+         usedId == "screensaver.xbmc.builtin.black")
+    {
+      m_visible = true;
+      ADDON::AddonPtr info;
+      ADDON::CAddonMgr::GetInstance().GetAddon(usedId, info, ADDON::ADDON_SCREENSAVER);
+      if (info && !info->GetSetting("level").empty())
+        m_newDimLevel = 100.0f - (float)atof(info->GetSetting("level").c_str());
+      else
+        m_newDimLevel = 100.0f;
+      Open();
+    }
+  }
+  else if (m_visible)
+  {
+    m_visible = false;
     Close();
+  }
 }
 
 void CGUIWindowScreensaverDim::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)

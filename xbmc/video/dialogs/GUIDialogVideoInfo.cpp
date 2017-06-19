@@ -85,17 +85,17 @@ bool compFileItemsByDbId(const CFileItemPtr& lhs, const CFileItemPtr& rhs)
 }
 
 CGUIDialogVideoInfo::CGUIDialogVideoInfo(void)
-    : CGUIDialog(WINDOW_DIALOG_VIDEO_INFO, "DialogVideoInfo.xml")
-    , m_movieItem(new CFileItem)
+  : CGUIDialog(WINDOW_DIALOG_VIDEO_INFO, "DialogVideoInfo.xml"),
+  m_movieItem(new CFileItem),
+  m_castList(new CFileItemList),
+  m_bViewReview(false),
+  m_bRefresh(false),
+  m_bRefreshAll(true),
+  m_hasUpdatedThumb(false),
+  m_hasUpdatedUserrating(false),
+  m_startUserrating(-1)
 {
-  m_bRefreshAll = true;
-  m_bRefresh = false;
-  m_hasUpdatedThumb = false;
-  m_hasUpdatedUserrating = false;
-  m_bViewReview = false;
-  m_castList = new CFileItemList;
   m_loadType = KEEP_IN_MEMORY;
-  m_startUserrating = -1;
 }
 
 CGUIDialogVideoInfo::~CGUIDialogVideoInfo(void)
@@ -190,17 +190,20 @@ bool CGUIDialogVideoInfo::OnMessage(CGUIMessage& message)
           OnSearch(directors[0]);
         else
         {
-          auto pDlgSelect = static_cast<CGUIDialogSelect*>(g_windowManager.GetWindow(WINDOW_DIALOG_SELECT));
-          pDlgSelect->Reset();
-          pDlgSelect->SetHeading(CVariant{22080});
-          for (const auto &director: directors)
-            pDlgSelect->Add(director);
-          pDlgSelect->Open();
+          auto pDlgSelect = g_windowManager.GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
+          if (pDlgSelect)
+          {
+            pDlgSelect->Reset();
+            pDlgSelect->SetHeading(CVariant{22080});
+            for (const auto &director: directors)
+              pDlgSelect->Add(director);
+            pDlgSelect->Open();
 
-          int iItem = pDlgSelect->GetSelectedItem();
-          if (iItem < 0)
-            return true;
-          OnSearch(directors[iItem]);
+            int iItem = pDlgSelect->GetSelectedItem();
+            if (iItem < 0)
+              return true;
+            OnSearch(directors[iItem]);
+          }
         }
       }
       else if (iControl == CONTROL_LIST)
@@ -358,7 +361,7 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
       {
         m_movieItem->GetVideoInfoTag()->m_strTrailer = localTrailer;
         CVideoDatabase database;
-        if(database.Open())
+        if (database.Open())
         {
           database.SetSingleValue(VIDEODB_CONTENT_MOVIES, VIDEODB_ID_TRAILER,
                                   m_movieItem->GetVideoInfoTag()->m_iDbId,
@@ -452,7 +455,7 @@ bool CGUIDialogVideoInfo::RefreshAll() const
 
 void CGUIDialogVideoInfo::OnSearch(std::string& strSearch)
 {
-  CGUIDialogProgress *progress = static_cast<CGUIDialogProgress *>(g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS));
+  CGUIDialogProgress *progress = g_windowManager.GetWindow<CGUIDialogProgress>(WINDOW_DIALOG_PROGRESS);
   if (progress)
   {
     progress->SetHeading(CVariant{194});
@@ -470,33 +473,32 @@ void CGUIDialogVideoInfo::OnSearch(std::string& strSearch)
 
   if (items.Size())
   {
-    CGUIDialogSelect* pDlgSelect = static_cast<CGUIDialogSelect*>(g_windowManager.GetWindow(WINDOW_DIALOG_SELECT));
-    pDlgSelect->Reset();
-    pDlgSelect->SetHeading(CVariant{283});
-
-    CVideoThumbLoader loader;
-    for (int i = 0; i < items.Size(); i++)
+    CGUIDialogSelect* pDlgSelect = g_windowManager.GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
+    if (pDlgSelect)
     {
-      if (items[i]->HasVideoInfoTag() &&
+      pDlgSelect->Reset();
+      pDlgSelect->SetHeading(CVariant{283});
+
+      CVideoThumbLoader loader;
+      for (int i = 0; i < items.Size(); i++)
+      {
+        if (items[i]->HasVideoInfoTag() &&
           items[i]->GetVideoInfoTag()->GetPlayCount() > 0)
-        items[i]->SetLabel2(g_localizeStrings.Get(16102));
+          items[i]->SetLabel2(g_localizeStrings.Get(16102));
 
-      loader.LoadItem(items[i].get());
-      pDlgSelect->Add(*items[i]);
+        loader.LoadItem(items[i].get());
+        pDlgSelect->Add(*items[i]);
+      }
+
+      pDlgSelect->SetUseDetails(true);
+      pDlgSelect->Open();
+
+      int iItem = pDlgSelect->GetSelectedItem();
+      if (iItem < 0)
+        return;
+
+      OnSearchItemFound(items[iItem].get());
     }
-
-    pDlgSelect->SetUseDetails(true);
-    pDlgSelect->Open();
-
-    int iItem = pDlgSelect->GetSelectedItem();
-    if (iItem < 0)
-      return;
-
-    CFileItem* pSelItem = new CFileItem(*items[iItem]);
-
-    OnSearchItemFound(pSelItem);
-
-    delete pSelItem;
   }
   else
   {
@@ -598,7 +600,7 @@ void CGUIDialogVideoInfo::Play(bool resume)
   CFileItem movie(*m_movieItem->GetVideoInfoTag());
   if (m_movieItem->GetVideoInfoTag()->m_strFileNameAndPath.empty())
     movie.SetPath(m_movieItem->GetPath());
-  CGUIWindowVideoNav* pWindow = static_cast<CGUIWindowVideoNav*>(g_windowManager.GetWindow(WINDOW_VIDEO_NAV));
+  CGUIWindowVideoNav* pWindow = g_windowManager.GetWindow<CGUIWindowVideoNav>(WINDOW_VIDEO_NAV);
   if (pWindow)
   {
     // close our dialog
@@ -618,7 +620,7 @@ void CGUIDialogVideoInfo::Play(bool resume)
 std::string CGUIDialogVideoInfo::ChooseArtType(const CFileItem &videoItem, std::map<std::string, std::string> &currentArt)
 {
   // prompt for choice
-  CGUIDialogSelect *dialog = static_cast<CGUIDialogSelect*>(g_windowManager.GetWindow(WINDOW_DIALOG_SELECT));
+  CGUIDialogSelect *dialog = g_windowManager.GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
   if (!dialog || !videoItem.HasVideoInfoTag())
     return "";
 
@@ -903,7 +905,7 @@ void CGUIDialogVideoInfo::OnGetFanart()
 
 void CGUIDialogVideoInfo::OnSetUserrating() const
 {
-  CGUIDialogSelect *dialog = static_cast<CGUIDialogSelect *>(g_windowManager.GetWindow(WINDOW_DIALOG_SELECT));
+  CGUIDialogSelect *dialog = g_windowManager.GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
   if (dialog)
   {
     dialog->SetHeading(CVariant{ 38023 });
@@ -1236,7 +1238,7 @@ bool CGUIDialogVideoInfo::DeleteVideoItemFromDatabase(const CFileItemPtr &item, 
     return false;
   }
 
-  CGUIDialogYesNo* pDialog = static_cast<CGUIDialogYesNo*>(g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO));
+  CGUIDialogYesNo* pDialog = g_windowManager.GetWindow<CGUIDialogYesNo>(WINDOW_DIALOG_YES_NO);
   if (pDialog == nullptr)
     return false;
   
@@ -1416,7 +1418,7 @@ bool CGUIDialogVideoInfo::GetMoviesForSet(const CFileItem *setItem, CFileItemLis
   if (!videodb.GetSortedVideos(MediaTypeMovie, "videodb://movies", SortDescription(), listItems) || listItems.Size() <= 0)
     return false;
 
-  CGUIDialogSelect *dialog = static_cast<CGUIDialogSelect *>(g_windowManager.GetWindow(WINDOW_DIALOG_SELECT));
+  CGUIDialogSelect *dialog = g_windowManager.GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
   if (dialog == nullptr)
     return false;
 
@@ -1490,7 +1492,7 @@ bool CGUIDialogVideoInfo::GetSetForMovie(const CFileItem *movieItem, CFileItemPt
     listItems.AddFront(keepItem, 1);
   }
 
-  CGUIDialogSelect *dialog = static_cast<CGUIDialogSelect *>(g_windowManager.GetWindow(WINDOW_DIALOG_SELECT));
+  CGUIDialogSelect *dialog = g_windowManager.GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
   if (dialog == nullptr)
     return false;
 
@@ -1597,7 +1599,7 @@ bool CGUIDialogVideoInfo::GetItemsForTag(const std::string &strHeading, const st
   if (!videodb.GetSortedVideos(mediaType, videoUrl.ToString(), SortDescription(), listItems, filter) || listItems.Size() <= 0)
     return false;
 
-  CGUIDialogSelect *dialog = static_cast<CGUIDialogSelect *>(g_windowManager.GetWindow(WINDOW_DIALOG_SELECT));
+  CGUIDialogSelect *dialog = g_windowManager.GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
   if (dialog == nullptr)
     return false;
 
@@ -1953,12 +1955,15 @@ bool CGUIDialogVideoInfo::LinkMovieToTvShow(const CFileItemPtr &item, bool bRemo
   if (list.Size() > 1 || (!bRemove && !list.IsEmpty()))
   {
     list.Sort(SortByLabel, SortOrderAscending, CServiceBroker::GetSettings().GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING) ? SortAttributeIgnoreArticle : SortAttributeNone);
-    CGUIDialogSelect* pDialog = static_cast<CGUIDialogSelect*>(g_windowManager.GetWindow(WINDOW_DIALOG_SELECT));
-    pDialog->Reset();
-    pDialog->SetItems(list);
-    pDialog->SetHeading(CVariant{20356});
-    pDialog->Open();
-    iSelectedLabel = pDialog->GetSelectedItem();
+    CGUIDialogSelect* pDialog = g_windowManager.GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
+    if (pDialog)
+    {
+      pDialog->Reset();
+      pDialog->SetItems(list);
+      pDialog->SetHeading(CVariant{20356});
+      pDialog->Open();
+      iSelectedLabel = pDialog->GetSelectedItem();
+    }
   }
 
   if (iSelectedLabel > -1 && iSelectedLabel < list.Size())
@@ -2057,7 +2062,7 @@ bool CGUIDialogVideoInfo::OnGetFanart(const CFileItemPtr &videoItem)
 
 void CGUIDialogVideoInfo::ShowFor(const CFileItem& item)
 {
-  auto window = static_cast<CGUIWindowVideoNav*>(g_windowManager.GetWindow(WINDOW_VIDEO_NAV));
+  auto window = g_windowManager.GetWindow<CGUIWindowVideoNav>(WINDOW_VIDEO_NAV);
   if (window)
   {
     ADDON::ScraperPtr info;

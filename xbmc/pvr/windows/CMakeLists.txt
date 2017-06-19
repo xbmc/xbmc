@@ -6,7 +6,9 @@ set(SOURCES GUIViewStatePVR.cpp
             GUIWindowPVRSearch.cpp
             GUIWindowPVRTimers.cpp
             GUIWindowPVRTimersBase.cpp
-            GUIWindowPVRTimerRules.cpp)
+            GUIWindowPVRTimerRules.cpp
+            GUIEPGGridContainer.cpp
+            GUIEPGGridContainerModel.cpp)
 
 set(HEADERS GUIViewStatePVR.h
             GUIWindowPVRBase.h
@@ -16,6 +18,8 @@ set(HEADERS GUIViewStatePVR.h
             GUIWindowPVRSearch.h
             GUIWindowPVRTimerRules.h
             GUIWindowPVRTimers.h
-            GUIWindowPVRTimersBase.h)
+            GUIWindowPVRTimersBase.h
+            GUIEPGGridContainer.h
+            GUIEPGGridContainerModel.h)
 
 core_add_library(pvr_windows)

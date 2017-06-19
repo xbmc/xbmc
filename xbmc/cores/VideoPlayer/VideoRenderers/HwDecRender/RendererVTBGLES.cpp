@@ -63,14 +63,14 @@ CRendererVTB::~CRendererVTB()
   }
 }
 
-void CRendererVTB::AddVideoPictureHW(DVDVideoPicture &picture, int index)
+void CRendererVTB::AddVideoPictureHW(VideoPicture &picture, int index)
 {
   CRenderBuffer &buf = m_vtbBuffers[index];
   if (buf.m_videoBuffer)
     CVBufferRelease(buf.m_videoBuffer);
-  buf.m_videoBuffer = picture.cvBufferRef;
+  buf.m_videoBuffer = static_cast<__CVBuffer *>(picture.hwPic);
   // retain another reference, this way VideoPlayer and renderer can issue releases.
-  CVBufferRetain(picture.cvBufferRef);
+  CVBufferRetain(static_cast<__CVBuffer *>(picture.hwPic));
 }
 
 void CRendererVTB::ReleaseBuffer(int idx)

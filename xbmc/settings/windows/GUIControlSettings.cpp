@@ -25,7 +25,9 @@
 
 #include "addons/AddonManager.h"
 #include "addons/GUIWindowAddonBrowser.h"
+#include "addons/settings/SettingUrlEncodedString.h"
 #include "dialogs/GUIDialogFileBrowser.h"
+#include "dialogs/GUIDialogNumeric.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogSlider.h"
@@ -42,6 +44,7 @@
 #include "settings/MediaSourceSettings.h"
 #include "settings/SettingAddon.h"
 #include "settings/SettingControl.h"
+#include "settings/SettingDateTime.h"
 #include "settings/SettingPath.h"
 #include "settings/SettingUtils.h"
 #include "storage/MediaManager.h"
@@ -50,6 +53,14 @@
 #include "utils/Variant.h"
 
 using namespace ADDON;
+
+static std::string Localize(std::uint32_t code, ILocalizer* localizer)
+{
+  if (localizer == nullptr)
+    return "";
+
+  return localizer->Localize(code);
+}
 
 template<typename TValueType>
 static CFileItemPtr GetFileItem(const std::string& label, const TValueType& value, const std::set<TValueType>& selectedValues)
@@ -63,21 +74,21 @@ static CFileItemPtr GetFileItem(const std::string& label, const TValueType& valu
   return item;
 }
 
-static bool GetIntegerOptions(const CSetting* setting, DynamicIntegerSettingOptions& options, std::set<int>& selectedOptions)
+static bool GetIntegerOptions(SettingConstPtr setting, IntegerSettingOptions& options, std::set<int>& selectedOptions, ILocalizer* localizer)
 {
-  const CSettingInt *pSettingInt = NULL;
-  if (setting->GetType() == SettingTypeInteger)
+  std::shared_ptr<const CSettingInt> pSettingInt = NULL;
+  if (setting->GetType() == SettingType::Integer)
   {
-    pSettingInt = static_cast<const CSettingInt*>(setting);
+    pSettingInt = std::static_pointer_cast<const CSettingInt>(setting);
     selectedOptions.insert(pSettingInt->GetValue());
   }
-  else if (setting->GetType() == SettingTypeList)
+  else if (setting->GetType() == SettingType::List)
   {
-    const CSettingList *settingList = static_cast<const CSettingList*>(setting);
-    if (settingList->GetElementType() != SettingTypeInteger)
+    std::shared_ptr<const CSettingList> settingList = std::static_pointer_cast<const CSettingList>(setting);
+    if (settingList->GetElementType() != SettingType::Integer)
       return false;
 
-    pSettingInt = static_cast<const CSettingInt*>(settingList->GetDefinition());
+    pSettingInt = std::static_pointer_cast<const CSettingInt>(settingList->GetDefinition());
     std::vector<CVariant> list = CSettingUtils::GetList(settingList);
     for (const auto& itValue : list)
     {
@@ -91,33 +102,39 @@ static bool GetIntegerOptions(const CSetting* setting, DynamicIntegerSettingOpti
 
   switch (pSettingInt->GetOptionsType())
   {
-    case SettingOptionsTypeStatic:
+    case SettingOptionsType::StaticTranslatable:
     {
-      const StaticIntegerSettingOptions& settingOptions = pSettingInt->GetOptions();
+      const TranslatableIntegerSettingOptions& settingOptions = pSettingInt->GetTranslatableOptions();
       for (const auto& option : settingOptions)
-        options.push_back(std::make_pair(g_localizeStrings.Get(option.first), option.second));
+        options.push_back(std::make_pair(Localize(option.first, localizer), option.second));
       break;
     }
 
-    case SettingOptionsTypeDynamic:
+    case SettingOptionsType::Static:
     {
-      DynamicIntegerSettingOptions settingOptions = const_cast<CSettingInt*>(pSettingInt)->UpdateDynamicOptions();
-      for (const auto& option : settingOptions)
-        options.push_back(std::make_pair(option.first, option.second));
+      const IntegerSettingOptions& settingOptions = pSettingInt->GetOptions();
+      options.insert(options.end(), settingOptions.begin(), settingOptions.end());
       break;
     }
 
-    case SettingOptionsTypeNone:
+    case SettingOptionsType::Dynamic:
+    {
+      IntegerSettingOptions settingOptions = std::const_pointer_cast<CSettingInt>(pSettingInt)->UpdateDynamicOptions();
+      options.insert(options.end(), settingOptions.begin(), settingOptions.end());
+      break;
+    }
+
+    case SettingOptionsType::Unknown:
     default:
     {
-      const CSettingControlFormattedRange *control = static_cast<const CSettingControlFormattedRange*>(pSettingInt->GetControl());
+      std::shared_ptr<const CSettingControlFormattedRange> control = std::static_pointer_cast<const CSettingControlFormattedRange>(pSettingInt->GetControl());
       for (int i = pSettingInt->GetMinimum(); i <= pSettingInt->GetMaximum(); i += pSettingInt->GetStep())
       {
         std::string strLabel;
         if (i == pSettingInt->GetMinimum() && control->GetMinimumLabel() > -1)
-          strLabel = g_localizeStrings.Get(control->GetMinimumLabel());
+          strLabel = Localize(control->GetMinimumLabel(), localizer);
         else if (control->GetFormatLabel() > -1)
-          strLabel = StringUtils::Format(g_localizeStrings.Get(control->GetFormatLabel()).c_str(), i);
+          strLabel = StringUtils::Format(Localize(control->GetFormatLabel(), localizer).c_str(), i);
         else
           strLabel = StringUtils::Format(control->GetFormatString().c_str(), i);
 
@@ -131,21 +148,21 @@ static bool GetIntegerOptions(const CSetting* setting, DynamicIntegerSettingOpti
   return true;
 }
 
-static bool GetStringOptions(const CSetting* setting, DynamicStringSettingOptions& options, std::set<std::string>& selectedOptions)
+static bool GetStringOptions(SettingConstPtr setting, StringSettingOptions& options, std::set<std::string>& selectedOptions, ILocalizer* localizer)
 {
-  const CSettingString *pSettingString = NULL;
-  if (setting->GetType() == SettingTypeString)
+  std::shared_ptr<const CSettingString> pSettingString = NULL;
+  if (setting->GetType() == SettingType::String)
   {
-    pSettingString = static_cast<const CSettingString*>(setting);
+    pSettingString = std::static_pointer_cast<const CSettingString>(setting);
     selectedOptions.insert(pSettingString->GetValue());
   }
-  else if (setting->GetType() == SettingTypeList)
+  else if (setting->GetType() == SettingType::List)
   {
-    const CSettingList *settingList = static_cast<const CSettingList*>(setting);
-    if (settingList->GetElementType() != SettingTypeString)
+    std::shared_ptr<const CSettingList>settingList = std::static_pointer_cast<const CSettingList>(setting);
+    if (settingList->GetElementType() != SettingType::String)
       return false;
 
-    pSettingString = static_cast<const CSettingString*>(settingList->GetDefinition());
+    pSettingString = std::static_pointer_cast<const CSettingString>(settingList->GetDefinition());
     std::vector<CVariant> list = CSettingUtils::GetList(settingList);
     for (const auto& itValue : list)
     {
@@ -157,20 +174,42 @@ static bool GetStringOptions(const CSetting* setting, DynamicStringSettingOption
   else
     return false;
 
-  if (pSettingString->GetOptionsType() == SettingOptionsTypeDynamic)
+  switch (pSettingString->GetOptionsType())
   {
-    DynamicStringSettingOptions settingOptions = const_cast<CSettingString*>(pSettingString)->UpdateDynamicOptions();
-    options.insert(options.end(), settingOptions.begin(), settingOptions.end());
+    case SettingOptionsType::StaticTranslatable:
+    {
+      const TranslatableStringSettingOptions& settingOptions = pSettingString->GetTranslatableOptions();
+      for (const auto& option : settingOptions)
+        options.push_back(std::make_pair(Localize(option.first, localizer), option.second));
+      break;
+    }
+
+    case SettingOptionsType::Static:
+    {
+      const StringSettingOptions& settingOptions = pSettingString->GetOptions();
+      options.insert(options.end(), settingOptions.begin(), settingOptions.end());
+      break;
+    }
+
+    case SettingOptionsType::Dynamic:
+    {
+      StringSettingOptions settingOptions = std::const_pointer_cast<CSettingString>(pSettingString)->UpdateDynamicOptions();
+      options.insert(options.end(), settingOptions.begin(), settingOptions.end());
+      break;
+    }
+
+    case SettingOptionsType::Unknown:
+    default:
+      return false;
   }
-  else
-    return false;
 
   return true;
 }
 
-CGUIControlBaseSetting::CGUIControlBaseSetting(int id, CSetting *pSetting)
+CGUIControlBaseSetting::CGUIControlBaseSetting(int id, std::shared_ptr<CSetting> pSetting, ILocalizer* localizer)
   : m_id(id),
     m_pSetting(pSetting),
+    m_localizer(localizer),
     m_delayed(false),
     m_valid(true)
 { }
@@ -195,8 +234,13 @@ void CGUIControlBaseSetting::Update(bool updateDisplayOnly /* = false */)
   SetValid(true);
 }
 
-CGUIControlRadioButtonSetting::CGUIControlRadioButtonSetting(CGUIRadioButtonControl *pRadioButton, int id, CSetting *pSetting)
-  : CGUIControlBaseSetting(id, pSetting)
+std::string CGUIControlBaseSetting::Localize(std::uint32_t code) const
+{
+  return ::Localize(code, m_localizer);
+}
+
+CGUIControlRadioButtonSetting::CGUIControlRadioButtonSetting(CGUIRadioButtonControl *pRadioButton, int id, std::shared_ptr<CSetting> pSetting, ILocalizer* localizer)
+  : CGUIControlBaseSetting(id, pSetting, localizer)
 {
   m_pRadioButton = pRadioButton;
   if (m_pRadioButton == NULL)
@@ -211,7 +255,7 @@ CGUIControlRadioButtonSetting::~CGUIControlRadioButtonSetting()
 
 bool CGUIControlRadioButtonSetting::OnClick()
 {
-  SetValid(((CSettingBool *)m_pSetting)->SetValue(!((CSettingBool *)m_pSetting)->GetValue()));
+  SetValid(std::static_pointer_cast<CSettingBool>(m_pSetting)->SetValue(!std::static_pointer_cast<CSettingBool>(m_pSetting)->GetValue()));
   return IsValid();
 }
 
@@ -222,11 +266,11 @@ void CGUIControlRadioButtonSetting::Update(bool updateDisplayOnly /* = false */)
 
   CGUIControlBaseSetting::Update();
 
-  m_pRadioButton->SetSelected(((CSettingBool *)m_pSetting)->GetValue());
+  m_pRadioButton->SetSelected(std::static_pointer_cast<CSettingBool>(m_pSetting)->GetValue());
 }
 
-CGUIControlSpinExSetting::CGUIControlSpinExSetting(CGUISpinControlEx *pSpin, int id, CSetting *pSetting)
-  : CGUIControlBaseSetting(id, pSetting)
+CGUIControlSpinExSetting::CGUIControlSpinExSetting(CGUISpinControlEx *pSpin, int id, std::shared_ptr<CSetting> pSetting, ILocalizer* localizer)
+  : CGUIControlBaseSetting(id, pSetting, localizer)
 {
   m_pSpin = pSpin;
   if (m_pSpin == NULL)
@@ -247,16 +291,24 @@ bool CGUIControlSpinExSetting::OnClick()
 
   switch (m_pSetting->GetType())
   {
-    case SettingTypeInteger:
-      SetValid(((CSettingInt *)m_pSetting)->SetValue(m_pSpin->GetValue()));
+    case SettingType::Integer:
+      SetValid(std::static_pointer_cast<CSettingInt>(m_pSetting)->SetValue(m_pSpin->GetValue()));
       break;
 
-    case SettingTypeNumber:
-      SetValid(((CSettingNumber *)m_pSetting)->SetValue(m_pSpin->GetFloatValue()));
+    case SettingType::Number:
+    {
+      auto pSettingNumber = std::static_pointer_cast<CSettingNumber>(m_pSetting);
+      const auto& controlFormat = m_pSetting->GetControl()->GetFormat();
+      if (controlFormat == "number")
+        SetValid(pSettingNumber->SetValue(m_pSpin->GetFloatValue()));
+      else
+        SetValid(pSettingNumber->SetValue(pSettingNumber->GetMinimum() + pSettingNumber->GetStep() * m_pSpin->GetValue()));
+
       break;
+    }
     
-    case SettingTypeString:
-      SetValid(((CSettingString *)m_pSetting)->SetValue(m_pSpin->GetStringValue()));
+    case SettingType::String:
+      SetValid(std::static_pointer_cast<CSettingString>(m_pSetting)->SetValue(m_pSpin->GetStringValue()));
       break;
     
     default:
@@ -290,7 +342,7 @@ void CGUIControlSpinExSetting::FillControl()
   const std::string &controlFormat = m_pSetting->GetControl()->GetFormat();
   if (controlFormat == "number")
   {
-    CSettingNumber *pSettingNumber = (CSettingNumber *)m_pSetting;
+    std::shared_ptr<CSettingNumber> pSettingNumber = std::static_pointer_cast<CSettingNumber>(m_pSetting);
     m_pSpin->SetType(SPIN_CONTROL_TYPE_FLOAT);
     m_pSpin->SetFloatRange((float)pSettingNumber->GetMinimum(), (float)pSettingNumber->GetMaximum());
     m_pSpin->SetFloatInterval((float)pSettingNumber->GetStep());
@@ -306,14 +358,38 @@ void CGUIControlSpinExSetting::FillControl()
   {
     m_pSpin->SetType(SPIN_CONTROL_TYPE_TEXT);
 
-    if (m_pSetting->GetType() == SettingTypeInteger)
+    if (m_pSetting->GetType() == SettingType::Integer)
       FillIntegerSettingControl();
-    else if (m_pSetting->GetType() == SettingTypeString)
+    else if (m_pSetting->GetType() == SettingType::Number)
     {
-      DynamicStringSettingOptions options;
+      std::shared_ptr<CSettingNumber> pSettingNumber = std::static_pointer_cast<CSettingNumber>(m_pSetting);
+      std::shared_ptr<const CSettingControlFormattedRange> control = std::static_pointer_cast<const CSettingControlFormattedRange>(m_pSetting->GetControl());
+      int index = 0;
+      int currentIndex = 0;
+      for (double value = pSettingNumber->GetMinimum(); value <= pSettingNumber->GetMaximum(); value += pSettingNumber->GetStep(), index++)
+      {
+        if (value == pSettingNumber->GetValue())
+          currentIndex = index;
+
+        std::string strLabel;
+        if (value == pSettingNumber->GetMinimum() && control->GetMinimumLabel() > -1)
+          strLabel = Localize(control->GetMinimumLabel());
+        else if (control->GetFormatLabel() > -1)
+          strLabel = StringUtils::Format(Localize(control->GetFormatLabel()).c_str(), value);
+        else
+          strLabel = StringUtils::Format(control->GetFormatString().c_str(), value);
+
+        m_pSpin->AddLabel(strLabel, index);
+      }
+
+      m_pSpin->SetValue(currentIndex);
+    }
+    else if (m_pSetting->GetType() == SettingType::String)
+    {
+      StringSettingOptions options;
       std::set<std::string> selectedValues;
       // get the string options
-      if (!GetStringOptions(m_pSetting, options, selectedValues) || selectedValues.size() != 1)
+      if (!GetStringOptions(m_pSetting, options, selectedValues, m_localizer) || selectedValues.size() != 1)
         return;
 
       // add them to the spinner
@@ -328,10 +404,10 @@ void CGUIControlSpinExSetting::FillControl()
 
 void CGUIControlSpinExSetting::FillIntegerSettingControl()
 {
-  DynamicIntegerSettingOptions options;
+  IntegerSettingOptions options;
   std::set<int> selectedValues;
   // get the integer options
-  if (!GetIntegerOptions(m_pSetting, options, selectedValues) || selectedValues.size() != 1)
+  if (!GetIntegerOptions(m_pSetting, options, selectedValues, m_localizer) || selectedValues.size() != 1)
     return;
 
   // add them to the spinner
@@ -342,8 +418,8 @@ void CGUIControlSpinExSetting::FillIntegerSettingControl()
   m_pSpin->SetValue(*selectedValues.begin());
 }
 
-CGUIControlListSetting::CGUIControlListSetting(CGUIButtonControl *pButton, int id, CSetting *pSetting)
-  : CGUIControlBaseSetting(id, pSetting)
+CGUIControlListSetting::CGUIControlListSetting(CGUIButtonControl *pButton, int id, std::shared_ptr<CSetting> pSetting, ILocalizer* localizer)
+  : CGUIControlBaseSetting(id, pSetting, localizer)
 {
   m_pButton = pButton;
   if (m_pButton == NULL)
@@ -361,18 +437,19 @@ bool CGUIControlListSetting::OnClick()
   if (m_pButton == NULL)
     return false;
 
-  CGUIDialogSelect *dialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+  CGUIDialogSelect *dialog = g_windowManager.GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
   if (dialog == NULL)
     return false;
 
   CFileItemList options;
-  if (!GetItems(m_pSetting, options) || options.Size() <= 1)
+  std::shared_ptr<const CSettingControlList> control = std::static_pointer_cast<const CSettingControlList>(m_pSetting->GetControl());
+  if (!GetItems(m_pSetting, options) ||
+      options.Size() <= 0 ||
+     (!control->CanMultiSelect() && options.Size() <= 1))
     return false;
-
-  const CSettingControlList *control = static_cast<const CSettingControlList*>(m_pSetting->GetControl());
   
   dialog->Reset();
-  dialog->SetHeading(CVariant{g_localizeStrings.Get(m_pSetting->GetLabel())});
+  dialog->SetHeading(CVariant{Localize(m_pSetting->GetLabel())});
   dialog->SetItems(options);
   dialog->SetMultiSelection(control->CanMultiSelect());
   dialog->Open();
@@ -393,20 +470,20 @@ bool CGUIControlListSetting::OnClick()
   bool ret = false;
   switch (m_pSetting->GetType())
   {
-    case SettingTypeInteger:
+    case SettingType::Integer:
       if (values.size() > 1)
         return false;
-      ret = ((CSettingInt *)m_pSetting)->SetValue((int)values.at(0).asInteger());
+      ret = std::static_pointer_cast<CSettingInt>(m_pSetting)->SetValue((int)values.at(0).asInteger());
       break;
 
-    case SettingTypeString:
+    case SettingType::String:
       if (values.size() > 1)
         return false;
-      ret = ((CSettingString *)m_pSetting)->SetValue(values.at(0).asString());
+      ret = std::static_pointer_cast<CSettingString>(m_pSetting)->SetValue(values.at(0).asString());
       break;
 
-    case SettingTypeList:
-      ret = CSettingUtils::SetList(static_cast<CSettingList*>(m_pSetting), values);
+    case SettingType::List:
+      ret = CSettingUtils::SetList(std::static_pointer_cast<CSettingList>(m_pSetting), values);
       break;
     
     default:
@@ -429,7 +506,7 @@ void CGUIControlListSetting::Update(bool updateDisplayOnly /* = false */)
   CGUIControlBaseSetting::Update();
   
   CFileItemList options;
-  const CSettingControlList *control = static_cast<const CSettingControlList*>(m_pSetting->GetControl());
+  std::shared_ptr<const CSettingControlList> control = std::static_pointer_cast<const CSettingControlList>(m_pSetting->GetControl());
   bool optionsValid = GetItems(m_pSetting, options);
   std::string label2;
   if (optionsValid && !control->HideValue())
@@ -454,25 +531,29 @@ void CGUIControlListSetting::Update(bool updateDisplayOnly /* = false */)
 
   m_pButton->SetLabel2(label2);
 
-  // disable the control if it has less than two items
-  if (!m_pButton->IsDisabled() && options.Size() <= 1)
+  // disable the control if
+  // * there are no items to be chosen
+  // * only one value can be chosen and there are less than two items available
+  if (!m_pButton->IsDisabled() &&
+     (options.Size() <= 0 ||
+     (!control->CanMultiSelect() && options.Size() <= 1)))
     m_pButton->SetEnabled(false);
 }
 
-bool CGUIControlListSetting::GetItems(const CSetting *setting, CFileItemList &items)
+bool CGUIControlListSetting::GetItems(SettingConstPtr setting, CFileItemList &items) const
 {
-  const CSettingControlList *control = static_cast<const CSettingControlList*>(setting->GetControl());
+  std::shared_ptr<const CSettingControlList> control = std::static_pointer_cast<const CSettingControlList>(setting->GetControl());
   const std::string &controlFormat = control->GetFormat();
 
   if (controlFormat == "integer")
     return GetIntegerItems(setting, items);
   else if (controlFormat == "string")
   {
-    if (setting->GetType() == SettingTypeInteger ||
-       (setting->GetType() == SettingTypeList && ((CSettingList *)setting)->GetElementType() == SettingTypeInteger))
+    if (setting->GetType() == SettingType::Integer ||
+       (setting->GetType() == SettingType::List && std::static_pointer_cast<const CSettingList>(setting)->GetElementType() == SettingType::Integer))
       return GetIntegerItems(setting, items);
-    else if (setting->GetType() == SettingTypeString ||
-            (setting->GetType() == SettingTypeList && ((CSettingList *)setting)->GetElementType() == SettingTypeString))
+    else if (setting->GetType() == SettingType::String ||
+            (setting->GetType() == SettingType::List && std::static_pointer_cast<const CSettingList>(setting)->GetElementType() == SettingType::String))
       return GetStringItems(setting, items);
   }
   else
@@ -481,12 +562,12 @@ bool CGUIControlListSetting::GetItems(const CSetting *setting, CFileItemList &it
   return true;
 }
 
-bool CGUIControlListSetting::GetIntegerItems(const CSetting *setting, CFileItemList &items)
+bool CGUIControlListSetting::GetIntegerItems(SettingConstPtr setting, CFileItemList &items) const
 {
-  DynamicIntegerSettingOptions options;
+  IntegerSettingOptions options;
   std::set<int> selectedValues;
   // get the integer options
-  if (!GetIntegerOptions(setting, options, selectedValues))
+  if (!GetIntegerOptions(setting, options, selectedValues, m_localizer))
     return false;
 
   // turn them into CFileItems and add them to the item list
@@ -496,12 +577,12 @@ bool CGUIControlListSetting::GetIntegerItems(const CSetting *setting, CFileItemL
   return true;
 }
 
-bool CGUIControlListSetting::GetStringItems(const CSetting *setting, CFileItemList &items)
+bool CGUIControlListSetting::GetStringItems(SettingConstPtr setting, CFileItemList &items) const
 {
-  DynamicStringSettingOptions options;
+  StringSettingOptions options;
   std::set<std::string> selectedValues;
   // get the string options
-  if (!GetStringOptions(setting, options, selectedValues))
+  if (!GetStringOptions(setting, options, selectedValues, m_localizer))
     return false;
 
   // turn them into CFileItems and add them to the item list
@@ -511,8 +592,8 @@ bool CGUIControlListSetting::GetStringItems(const CSetting *setting, CFileItemLi
   return true;
 }
 
-CGUIControlButtonSetting::CGUIControlButtonSetting(CGUIButtonControl *pButton, int id, CSetting *pSetting)
-  : CGUIControlBaseSetting(id, pSetting)
+CGUIControlButtonSetting::CGUIControlButtonSetting(CGUIButtonControl *pButton, int id, std::shared_ptr<CSetting> pSetting, ILocalizer* localizer)
+  : CGUIControlBaseSetting(id, pSetting, localizer)
 {
   m_pButton = pButton;
   if (m_pButton == NULL)
@@ -530,16 +611,16 @@ bool CGUIControlButtonSetting::OnClick()
   if (m_pButton == NULL)
     return false;
   
-  const ISettingControl *control = m_pSetting->GetControl();
+  std::shared_ptr<const ISettingControl> control = m_pSetting->GetControl();
   const std::string &controlType = control->GetType();
   const std::string &controlFormat = control->GetFormat();
   if (controlType == "button")
   {
-    const CSettingControlButton *buttonControl = static_cast<const CSettingControlButton*>(control);
+    std::shared_ptr<const CSettingControlButton> buttonControl = std::static_pointer_cast<const CSettingControlButton>(control);
     if (controlFormat == "addon")
     {
       // prompt for the addon
-      CSettingAddon *setting = (CSettingAddon *)m_pSetting;
+      std::shared_ptr<CSettingAddon> setting = std::static_pointer_cast<CSettingAddon>(m_pSetting);
       std::string addonID = setting->GetValue();
       if (CGUIWindowAddonBrowser::SelectAddonID(setting->GetAddonType(), addonID, setting->AllowEmpty(),
                                                 buttonControl->ShowAddonDetails(), buttonControl->ShowInstalledAddons(),
@@ -548,31 +629,56 @@ bool CGUIControlButtonSetting::OnClick()
 
       SetValid(setting->SetValue(addonID));
     }
-    else if (controlFormat == "path")
-      SetValid(GetPath((CSettingPath *)m_pSetting));
+    else if (controlFormat == "path" || controlFormat == "file" || controlFormat == "image")
+      SetValid(GetPath(std::static_pointer_cast<CSettingPath>(m_pSetting), m_localizer));
+    else if (controlFormat == "date")
+    {
+      std::shared_ptr<CSettingDate> settingDate = std::static_pointer_cast<CSettingDate>(m_pSetting);
+
+      SYSTEMTIME systemdate;
+      settingDate->GetDate().GetAsSystemTime(systemdate);
+      if (CGUIDialogNumeric::ShowAndGetDate(systemdate, Localize(buttonControl->GetHeading())))
+        SetValid(settingDate->SetDate(systemdate));
+    }
+    else if (controlFormat == "time")
+    {
+      std::shared_ptr<CSettingTime> settingTime = std::static_pointer_cast<CSettingTime>(m_pSetting);
+
+      SYSTEMTIME systemtime;
+      settingTime->GetTime().GetAsSystemTime(systemtime);
+      /* TODO
+      if (value.size() >= 5)
+      {
+        // assumes HH:MM
+        systemtime.wHour = atoi(value.substr(0, 2).c_str());
+        systemtime.wMinute = atoi(value.substr(3, 2).c_str());
+      }
+      */
+      if (CGUIDialogNumeric::ShowAndGetTime(systemtime, Localize(buttonControl->GetHeading())))
+        SetValid(settingTime->SetTime(systemtime));
+    }
     else if (controlFormat == "action")
     {
       // simply call the OnSettingAction callback and whoever knows what to
-      // do can do so (based on the setting's identification
-      CSettingAction *pSettingAction = (CSettingAction *)m_pSetting;
-      pSettingAction->OnSettingAction(pSettingAction);
+      // do can do so (based on the setting's identification)
+      m_pSetting->OnSettingAction(m_pSetting);
       SetValid(true);
     }
   }
   else if (controlType == "slider")
   {
     float value, min, step, max;
-    if (m_pSetting->GetType() == SettingTypeInteger)
+    if (m_pSetting->GetType() == SettingType::Integer)
     {
-      CSettingInt *settingInt = static_cast<CSettingInt*>(m_pSetting);
+      std::shared_ptr<CSettingInt> settingInt = std::static_pointer_cast<CSettingInt>(m_pSetting);
       value = (float)settingInt->GetValue();
       min = (float)settingInt->GetMinimum();
       step = (float)settingInt->GetStep();
       max = (float)settingInt->GetMaximum();
     }
-    else if (m_pSetting->GetType() == SettingTypeNumber)
+    else if (m_pSetting->GetType() == SettingType::Number)
     {
-      CSettingNumber *settingNumber = static_cast<CSettingNumber*>(m_pSetting);
+      std::shared_ptr<CSettingNumber> settingNumber = std::static_pointer_cast<CSettingNumber>(m_pSetting);
       value = (float)settingNumber->GetValue();
       min = (float)settingNumber->GetMinimum();
       step = (float)settingNumber->GetStep();
@@ -581,10 +687,13 @@ bool CGUIControlButtonSetting::OnClick()
     else
       return false;
 
-    const CSettingControlSlider *sliderControl = static_cast<const CSettingControlSlider*>(control);
-    CGUIDialogSlider::ShowAndGetInput(g_localizeStrings.Get(sliderControl->GetHeading()), value, min, step, max, this, NULL);
+    std::shared_ptr<const CSettingControlSlider> sliderControl = std::static_pointer_cast<const CSettingControlSlider>(control);
+    CGUIDialogSlider::ShowAndGetInput(Localize(sliderControl->GetHeading()), value, min, step, max, this, NULL);
     SetValid(true);
   }
+
+  // update the displayed value
+  Update();
 
   return IsValid();
 }
@@ -597,63 +706,77 @@ void CGUIControlButtonSetting::Update(bool updateDisplayOnly /* = false */)
   CGUIControlBaseSetting::Update();
   
   std::string strText;
-  const ISettingControl *control = m_pSetting->GetControl();
+  std::shared_ptr<const ISettingControl> control = m_pSetting->GetControl();
   const std::string &controlType = control->GetType();
   const std::string &controlFormat = control->GetFormat();
 
   if (controlType == "button")
   {
-    if (m_pSetting->GetType() == SettingTypeString &&
-        !static_cast<const CSettingControlButton*>(control)->HideValue())
+    if (!std::static_pointer_cast<const CSettingControlButton>(control)->HideValue())
     {
-      std::string strValue = ((CSettingString *)m_pSetting)->GetValue();
-      if (controlFormat == "addon")
+      switch (m_pSetting->GetType())
       {
-        ADDON::AddonPtr addon;
-        if (ADDON::CAddonMgr::GetInstance().GetAddon(strValue, addon))
-          strText = addon->Name();
-        if (strText.empty())
-          strText = g_localizeStrings.Get(231); // None
-      }
-      else if (controlFormat == "path")
+      case SettingType::String:
       {
-        std::string shortPath;
-        if (CUtil::MakeShortenPath(strValue, shortPath, 30))
-          strText = shortPath;
+        std::string strValue = std::static_pointer_cast<CSettingString>(m_pSetting)->GetValue();
+        if (controlFormat == "addon")
+        {
+          ADDON::AddonPtr addon;
+          if (ADDON::CAddonMgr::GetInstance().GetAddon(strValue, addon))
+            strText = addon->Name();
+          if (strText.empty())
+            strText = g_localizeStrings.Get(231); // None
+        }
+        else if (controlFormat == "path" || controlFormat == "file" || controlFormat == "image")
+        {
+          std::string shortPath;
+          if (CUtil::MakeShortenPath(strValue, shortPath, 30))
+            strText = shortPath;
+        }
+        else if (controlFormat == "infolabel")
+        {
+          strText = strValue;
+          if (strText.empty())
+            strText = g_localizeStrings.Get(231); // None
+        }
+        else
+          strText = strValue;
+
+        break;
       }
-      else if (controlFormat == "infolabel")
+
+      case SettingType::Action:
       {
-        strText = strValue;
-        if (strText.empty())
-          strText = g_localizeStrings.Get(231); // None
+        // CSettingAction. 
+        // Note: This can be removed once all settings use a proper control & format combination.
+        // CSettingAction is strictly speaking not designed to have a label2, it does not even have a value.
+        strText = m_pButton->GetLabel2();
+
+        break;
       }
-    }
-    else if (m_pSetting->GetType() == SettingTypeAction &&
-             !static_cast<const CSettingControlButton*>(control)->HideValue())
-    {
-      // CSettingAction. 
-      // Note: This can be removed once all settings use a proper control & format combination.
-      // CSettingAction is strictly speaking not designed to have a label2, it does not even have a value.
-      strText = m_pButton->GetLabel2();
+
+      default:
+        break;
+      }
     }
   }
   else if (controlType == "slider")
   {
     switch (m_pSetting->GetType())
     {
-      case SettingTypeInteger:
+      case SettingType::Integer:
       {
-        const CSettingInt *settingInt = static_cast<CSettingInt*>(m_pSetting);
-        strText = CGUIControlSliderSetting::GetText(static_cast<const CSettingControlSlider*>(m_pSetting->GetControl()),
-          settingInt->GetValue(), settingInt->GetMinimum(), settingInt->GetStep(), settingInt->GetMaximum());
+        std::shared_ptr<const CSettingInt> settingInt = std::static_pointer_cast<CSettingInt>(m_pSetting);
+        strText = CGUIControlSliderSetting::GetText(std::static_pointer_cast<const CSettingControlSlider>(m_pSetting->GetControl()),
+          settingInt->GetValue(), settingInt->GetMinimum(), settingInt->GetStep(), settingInt->GetMaximum(), m_localizer);
         break;
       }
 
-      case SettingTypeNumber:
+      case SettingType::Number:
       {
-        const CSettingNumber *settingNumber = static_cast<CSettingNumber*>(m_pSetting);
-        strText = CGUIControlSliderSetting::GetText(static_cast<const CSettingControlSlider*>(m_pSetting->GetControl()),
-          settingNumber->GetValue(), settingNumber->GetMinimum(), settingNumber->GetStep(), settingNumber->GetMaximum());
+        std::shared_ptr<const CSettingNumber> settingNumber = std::static_pointer_cast<CSettingNumber>(m_pSetting);
+        strText = CGUIControlSliderSetting::GetText(std::static_pointer_cast<const CSettingControlSlider>(m_pSetting->GetControl()),
+          settingNumber->GetValue(), settingNumber->GetMinimum(), settingNumber->GetStep(), settingNumber->GetMaximum(), m_localizer);
         break;
       }
     
@@ -665,7 +788,7 @@ void CGUIControlButtonSetting::Update(bool updateDisplayOnly /* = false */)
   m_pButton->SetLabel2(strText);
 }
 
-bool CGUIControlButtonSetting::GetPath(CSettingPath *pathSetting)
+bool CGUIControlButtonSetting::GetPath(std::shared_ptr<CSettingPath> pathSetting, ILocalizer* localizer)
 {
   if (pathSetting == NULL)
     return false;
@@ -673,18 +796,35 @@ bool CGUIControlButtonSetting::GetPath(CSettingPath *pathSetting)
   std::string path = pathSetting->GetValue();
 
   VECSOURCES shares;
+  bool localSharesOnly = false;
   const std::vector<std::string>& sources = pathSetting->GetSources();
   for (const auto& source : sources)
   {
-    VECSOURCES *sources = CMediaSourceSettings::GetInstance().GetSources(source);
-    if (sources != NULL)
-      shares.insert(shares.end(), sources->begin(), sources->end());
+    if (StringUtils::EqualsNoCase(source, "local"))
+      localSharesOnly = true;
+    else
+    {
+      VECSOURCES *sources = CMediaSourceSettings::GetInstance().GetSources(source);
+      if (sources != NULL)
+        shares.insert(shares.end(), sources->begin(), sources->end());
+    }
   }
 
-  g_mediaManager.GetNetworkLocations(shares);
   g_mediaManager.GetLocalDrives(shares);
+  if (!localSharesOnly)
+    g_mediaManager.GetNetworkLocations(shares);
 
-  if (!CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(static_cast<const CSettingControlButton*>(pathSetting->GetControl())->GetHeading()), path, pathSetting->Writable()))
+  bool result = false;
+  std::shared_ptr<const CSettingControlButton> control = std::static_pointer_cast<const CSettingControlButton>(pathSetting->GetControl());
+  const auto heading = ::Localize(control->GetHeading(), localizer);
+  if (control->GetFormat() == "file")
+    result = CGUIDialogFileBrowser::ShowAndGetFile(shares, pathSetting->GetMasking(), heading, path, control->UseImageThumbs(), control->UseFileDirectories());
+  else if (control->GetFormat() == "image")
+    result = CGUIDialogFileBrowser::ShowAndGetImage(shares, heading, path);
+  else
+    result = CGUIDialogFileBrowser::ShowAndGetDirectory(shares, heading, path, pathSetting->Writable());
+
+  if (!result)
     return false;
 
   return pathSetting->SetValue(path);
@@ -698,21 +838,21 @@ void CGUIControlButtonSetting::OnSliderChange(void *data, CGUISliderControl *sli
   std::string strText;
   switch (m_pSetting->GetType())
   {
-    case SettingTypeInteger:
+    case SettingType::Integer:
     {
-      CSettingInt *settingInt = static_cast<CSettingInt*>(m_pSetting);
+      std::shared_ptr<CSettingInt> settingInt = std::static_pointer_cast<CSettingInt>(m_pSetting);
       if (settingInt->SetValue(slider->GetIntValue()))
-        strText = CGUIControlSliderSetting::GetText(static_cast<const CSettingControlSlider*>(m_pSetting->GetControl()),
-          settingInt->GetValue(), settingInt->GetMinimum(), settingInt->GetStep(), settingInt->GetMaximum());
+        strText = CGUIControlSliderSetting::GetText(std::static_pointer_cast<const CSettingControlSlider>(m_pSetting->GetControl()),
+          settingInt->GetValue(), settingInt->GetMinimum(), settingInt->GetStep(), settingInt->GetMaximum(), m_localizer);
       break;
     }
 
-    case SettingTypeNumber:
+    case SettingType::Number:
     {
-      CSettingNumber *settingNumber = static_cast<CSettingNumber*>(m_pSetting);
+      std::shared_ptr<CSettingNumber> settingNumber = std::static_pointer_cast<CSettingNumber>(m_pSetting);
       if (settingNumber->SetValue(static_cast<double>(slider->GetFloatValue())))
-        strText = CGUIControlSliderSetting::GetText(static_cast<const CSettingControlSlider*>(m_pSetting->GetControl()),
-          settingNumber->GetValue(), settingNumber->GetMinimum(), settingNumber->GetStep(), settingNumber->GetMaximum());
+        strText = CGUIControlSliderSetting::GetText(std::static_pointer_cast<const CSettingControlSlider>(m_pSetting->GetControl()),
+          settingNumber->GetValue(), settingNumber->GetMinimum(), settingNumber->GetStep(), settingNumber->GetMaximum(), m_localizer);
       break;
     }
     
@@ -724,10 +864,10 @@ void CGUIControlButtonSetting::OnSliderChange(void *data, CGUISliderControl *sli
     slider->SetTextValue(strText);
 }
 
-CGUIControlEditSetting::CGUIControlEditSetting(CGUIEditControl *pEdit, int id, CSetting *pSetting)
-  : CGUIControlBaseSetting(id, pSetting)
+CGUIControlEditSetting::CGUIControlEditSetting(CGUIEditControl *pEdit, int id, std::shared_ptr<CSetting> pSetting, ILocalizer* localizer)
+  : CGUIControlBaseSetting(id, pSetting, localizer)
 {
-  const CSettingControlEdit* control = static_cast<const CSettingControlEdit*>(pSetting->GetControl());
+  std::shared_ptr<const CSettingControlEdit> control = std::static_pointer_cast<const CSettingControlEdit>(pSetting->GetControl());
   m_pEdit = pEdit;
   if (m_pEdit == NULL)
     return;
@@ -776,7 +916,14 @@ bool CGUIControlEditSetting::OnClick()
     return false;
 
   // update our string
-  SetValid(m_pSetting->FromString(m_pEdit->GetLabel2()));
+  if (m_pSetting->GetControl()->GetFormat() == "urlencoded")
+  {
+    std::shared_ptr<CSettingUrlEncodedString> urlEncodedSetting = std::static_pointer_cast<CSettingUrlEncodedString>(m_pSetting);
+    SetValid(urlEncodedSetting->SetDecodedValue(m_pEdit->GetLabel2()));
+  }
+  else
+    SetValid(m_pSetting->FromString(m_pEdit->GetLabel2()));
+
   return IsValid();
 }
 
@@ -787,7 +934,15 @@ void CGUIControlEditSetting::Update(bool updateDisplayOnly /* = false */)
 
   CGUIControlBaseSetting::Update();
 
-  m_pEdit->SetLabel2(m_pSetting->ToString());
+  std::shared_ptr<const CSettingControlEdit> control = std::static_pointer_cast<const CSettingControlEdit>(m_pSetting->GetControl());
+
+  if (control->GetFormat() == "urlencoded")
+  {
+    std::shared_ptr<CSettingUrlEncodedString> urlEncodedSetting = std::static_pointer_cast<CSettingUrlEncodedString>(m_pSetting);
+    m_pEdit->SetLabel2(urlEncodedSetting->GetDecodedValue());
+  }
+  else
+    m_pEdit->SetLabel2(m_pSetting->ToString());
 }
 
 bool CGUIControlEditSetting::InputValidation(const std::string &input, void *data)
@@ -803,8 +958,8 @@ bool CGUIControlEditSetting::InputValidation(const std::string &input, void *dat
   return editControl->IsValid();
 }
 
-CGUIControlSliderSetting::CGUIControlSliderSetting(CGUISettingsSliderControl *pSlider, int id, CSetting *pSetting)
-  : CGUIControlBaseSetting(id, pSetting)
+CGUIControlSliderSetting::CGUIControlSliderSetting(CGUISettingsSliderControl *pSlider, int id, std::shared_ptr<CSetting> pSetting, ILocalizer* localizer)
+  : CGUIControlBaseSetting(id, pSetting, localizer)
 {
   m_pSlider = pSlider;
   if (m_pSlider == NULL)
@@ -814,9 +969,9 @@ CGUIControlSliderSetting::CGUIControlSliderSetting(CGUISettingsSliderControl *pS
   
   switch (m_pSetting->GetType())
   {
-    case SettingTypeInteger:
+    case SettingType::Integer:
     {
-      CSettingInt *settingInt = static_cast<CSettingInt*>(m_pSetting);
+      std::shared_ptr<CSettingInt> settingInt = std::static_pointer_cast<CSettingInt>(m_pSetting);
       if (m_pSetting->GetControl()->GetFormat() == "percentage")
         m_pSlider->SetType(SLIDER_CONTROL_TYPE_PERCENTAGE);
       else
@@ -828,9 +983,9 @@ CGUIControlSliderSetting::CGUIControlSliderSetting(CGUISettingsSliderControl *pS
       break;
     }
 
-    case SettingTypeNumber:
+    case SettingType::Number:
     {
-      CSettingNumber *settingNumber = static_cast<CSettingNumber*>(m_pSetting);
+      std::shared_ptr<CSettingNumber> settingNumber = std::static_pointer_cast<CSettingNumber>(m_pSetting);
       m_pSlider->SetType(SLIDER_CONTROL_TYPE_FLOAT);
       m_pSlider->SetFloatRange((float)settingNumber->GetMinimum(), (float)settingNumber->GetMaximum());
       m_pSlider->SetFloatInterval((float)settingNumber->GetStep());
@@ -854,12 +1009,12 @@ bool CGUIControlSliderSetting::OnClick()
 
   switch (m_pSetting->GetType())
   {
-    case SettingTypeInteger:
-      SetValid(static_cast<CSettingInt*>(m_pSetting)->SetValue(m_pSlider->GetIntValue()));
+    case SettingType::Integer:
+      SetValid(std::static_pointer_cast<CSettingInt>(m_pSetting)->SetValue(m_pSlider->GetIntValue()));
       break;
 
-    case SettingTypeNumber:
-      SetValid(static_cast<CSettingNumber*>(m_pSetting)->SetValue(m_pSlider->GetFloatValue()));
+    case SettingType::Number:
+      SetValid(std::static_pointer_cast<CSettingNumber>(m_pSetting)->SetValue(m_pSlider->GetFloatValue()));
       break;
     
     default:
@@ -879,37 +1034,37 @@ void CGUIControlSliderSetting::Update(bool updateDisplayOnly /* = false */)
   std::string strText;
   switch (m_pSetting->GetType())
   {
-    case SettingTypeInteger:
+    case SettingType::Integer:
     {
-      const CSettingInt *settingInt = static_cast<CSettingInt*>(m_pSetting);
+      std::shared_ptr<const CSettingInt> settingInt = std::static_pointer_cast<CSettingInt>(m_pSetting);
       int value;
       if (updateDisplayOnly)
         value = m_pSlider->GetIntValue();
       else
       {
-        value = static_cast<CSettingInt*>(m_pSetting)->GetValue();
+        value = std::static_pointer_cast<CSettingInt>(m_pSetting)->GetValue();
         m_pSlider->SetIntValue(value);
       }
 
-      strText = CGUIControlSliderSetting::GetText(static_cast<const CSettingControlSlider*>(m_pSetting->GetControl()),
-        value, settingInt->GetMinimum(), settingInt->GetStep(), settingInt->GetMaximum());
+      strText = CGUIControlSliderSetting::GetText(std::static_pointer_cast<const CSettingControlSlider>(m_pSetting->GetControl()),
+        value, settingInt->GetMinimum(), settingInt->GetStep(), settingInt->GetMaximum(), m_localizer);
       break;
     }
 
-    case SettingTypeNumber:
+    case SettingType::Number:
     {
-      const CSettingNumber *settingNumber = static_cast<CSettingNumber*>(m_pSetting);
+      std::shared_ptr<const CSettingNumber> settingNumber = std::static_pointer_cast<CSettingNumber>(m_pSetting);
       double value;
       if (updateDisplayOnly)
         value = (float)m_pSlider->GetFloatValue();
       else
       {
-        value = static_cast<CSettingNumber*>(m_pSetting)->GetValue();
+        value = std::static_pointer_cast<CSettingNumber>(m_pSetting)->GetValue();
         m_pSlider->SetFloatValue((float)value);
       }
 
-      strText = CGUIControlSliderSetting::GetText(static_cast<const CSettingControlSlider*>(m_pSetting->GetControl()),
-        value, settingNumber->GetMinimum(), settingNumber->GetStep(), settingNumber->GetMaximum());
+      strText = CGUIControlSliderSetting::GetText(std::static_pointer_cast<const CSettingControlSlider>(m_pSetting->GetControl()),
+        value, settingNumber->GetMinimum(), settingNumber->GetStep(), settingNumber->GetMaximum(), m_localizer);
       break;
     }
     
@@ -921,7 +1076,7 @@ void CGUIControlSliderSetting::Update(bool updateDisplayOnly /* = false */)
     m_pSlider->SetTextValue(strText);
 }
 
-std::string CGUIControlSliderSetting::GetText(const CSettingControlSlider *control, const CVariant &value, const CVariant &minimum, const CVariant &step, const CVariant &maximum)
+std::string CGUIControlSliderSetting::GetText(std::shared_ptr<const CSettingControlSlider> control, const CVariant &value, const CVariant &minimum, const CVariant &step, const CVariant &maximum, ILocalizer* localizer)
 {
   if (control == NULL ||
       !(value.isInteger() || value.isDouble()))
@@ -933,7 +1088,7 @@ std::string CGUIControlSliderSetting::GetText(const CSettingControlSlider *contr
 
   std::string formatString = control->GetFormatString();
   if (control->GetFormatLabel() > -1)
-    formatString = g_localizeStrings.Get(control->GetFormatLabel());
+    formatString = ::Localize(control->GetFormatLabel(), localizer);
 
   if (value.isDouble())
     return StringUtils::Format(formatString.c_str(), value.asDouble());
@@ -941,8 +1096,8 @@ std::string CGUIControlSliderSetting::GetText(const CSettingControlSlider *contr
   return StringUtils::Format(formatString.c_str(), static_cast<int>(value.asInteger()));
 }
 
-CGUIControlRangeSetting::CGUIControlRangeSetting(CGUISettingsSliderControl *pSlider, int id, CSetting *pSetting)
-  : CGUIControlBaseSetting(id, pSetting)
+CGUIControlRangeSetting::CGUIControlRangeSetting(CGUISettingsSliderControl *pSlider, int id, std::shared_ptr<CSetting> pSetting, ILocalizer* localizer)
+  : CGUIControlBaseSetting(id, pSetting, localizer)
 {
   m_pSlider = pSlider;
   if (m_pSlider == NULL)
@@ -951,15 +1106,15 @@ CGUIControlRangeSetting::CGUIControlRangeSetting(CGUISettingsSliderControl *pSli
   m_pSlider->SetID(id);
   m_pSlider->SetRangeSelection(true);
   
-  if (m_pSetting->GetType() == SettingTypeList)
+  if (m_pSetting->GetType() == SettingType::List)
   {
-    CSettingList *settingList = static_cast<CSettingList*>(m_pSetting);
-    const CSetting *listDefintion = settingList->GetDefinition();
+    std::shared_ptr<CSettingList> settingList = std::static_pointer_cast<CSettingList>(m_pSetting);
+    SettingConstPtr listDefintion = settingList->GetDefinition();
     switch (listDefintion->GetType())
     {
-      case SettingTypeInteger:
+      case SettingType::Integer:
       {
-        const CSettingInt *listDefintionInt = static_cast<const CSettingInt*>(listDefintion);
+        std::shared_ptr<const CSettingInt> listDefintionInt = std::static_pointer_cast<const CSettingInt>(listDefintion);
         if (m_pSetting->GetControl()->GetFormat() == "percentage")
           m_pSlider->SetType(SLIDER_CONTROL_TYPE_PERCENTAGE);
         else
@@ -971,9 +1126,9 @@ CGUIControlRangeSetting::CGUIControlRangeSetting(CGUISettingsSliderControl *pSli
         break;
       }
 
-      case SettingTypeNumber:
+      case SettingType::Number:
       {
-        const CSettingNumber *listDefinitionNumber = static_cast<const CSettingNumber*>(listDefintion);
+        std::shared_ptr<const CSettingNumber> listDefinitionNumber = std::static_pointer_cast<const CSettingNumber>(listDefintion);
         m_pSlider->SetType(SLIDER_CONTROL_TYPE_FLOAT);
         m_pSlider->SetFloatRange((float)listDefinitionNumber->GetMinimum(), (float)listDefinitionNumber->GetMaximum());
         m_pSlider->SetFloatInterval((float)listDefinitionNumber->GetStep());
@@ -994,24 +1149,24 @@ CGUIControlRangeSetting::~CGUIControlRangeSetting()
 bool CGUIControlRangeSetting::OnClick()
 {
   if (m_pSlider == NULL ||
-      m_pSetting->GetType() != SettingTypeList)
+      m_pSetting->GetType() != SettingType::List)
     return false;
 
-  CSettingList *settingList = static_cast<CSettingList*>(m_pSetting);
-  const SettingPtrList &settingListValues = settingList->GetValue();
+  std::shared_ptr<CSettingList> settingList = std::static_pointer_cast<CSettingList>(m_pSetting);
+  const SettingList &settingListValues = settingList->GetValue();
   if (settingListValues.size() != 2)
     return false;
 
   std::vector<CVariant> values;
-  const CSetting *listDefintion = settingList->GetDefinition();
+  SettingConstPtr listDefintion = settingList->GetDefinition();
   switch (listDefintion->GetType())
   {
-    case SettingTypeInteger:
+    case SettingType::Integer:
       values.push_back(m_pSlider->GetIntValue(CGUISliderControl::RangeSelectorLower));
       values.push_back(m_pSlider->GetIntValue(CGUISliderControl::RangeSelectorUpper));
       break;
 
-    case SettingTypeNumber:
+    case SettingType::Number:
       values.push_back(m_pSlider->GetFloatValue(CGUISliderControl::RangeSelectorLower));
       values.push_back(m_pSlider->GetFloatValue(CGUISliderControl::RangeSelectorUpper));
       break;
@@ -1030,30 +1185,30 @@ bool CGUIControlRangeSetting::OnClick()
 void CGUIControlRangeSetting::Update(bool updateDisplayOnly /* = false */)
 {
   if (m_pSlider == NULL ||
-      m_pSetting->GetType() != SettingTypeList)
+      m_pSetting->GetType() != SettingType::List)
     return;
 
   CGUIControlBaseSetting::Update();
 
-  CSettingList *settingList = static_cast<CSettingList*>(m_pSetting);
-  const SettingPtrList &settingListValues = settingList->GetValue();
+  std::shared_ptr<CSettingList> settingList = std::static_pointer_cast<CSettingList>(m_pSetting);
+  const SettingList &settingListValues = settingList->GetValue();
   if (settingListValues.size() != 2)
     return;
 
-  const CSetting *listDefintion = settingList->GetDefinition();
-  const CSettingControlRange *controlRange = static_cast<const CSettingControlRange*>(m_pSetting->GetControl());
+  SettingConstPtr listDefintion = settingList->GetDefinition();
+  std::shared_ptr<const CSettingControlRange> controlRange = std::static_pointer_cast<const CSettingControlRange>(m_pSetting->GetControl());
   const std::string &controlFormat = controlRange->GetFormat();
 
   std::string strText;
   std::string strTextLower, strTextUpper;
-  std::string formatString = g_localizeStrings.Get(controlRange->GetFormatLabel() > -1 ? controlRange->GetFormatLabel() : 21469);
+  std::string formatString = Localize(controlRange->GetFormatLabel() > -1 ? controlRange->GetFormatLabel() : 21469);
   std::string valueFormat = controlRange->GetValueFormat();
   if (controlRange->GetValueFormatLabel() > -1)
-    valueFormat = g_localizeStrings.Get(controlRange->GetValueFormatLabel());
+    valueFormat = Localize(controlRange->GetValueFormatLabel());
 
   switch (listDefintion->GetType())
   {
-    case SettingTypeInteger:
+    case SettingType::Integer:
     {
       int valueLower, valueUpper;
       if (updateDisplayOnly)
@@ -1063,8 +1218,8 @@ void CGUIControlRangeSetting::Update(bool updateDisplayOnly /* = false */)
       }
       else
       {
-        valueLower = static_cast<CSettingInt*>(settingListValues[0].get())->GetValue();
-        valueUpper = static_cast<CSettingInt*>(settingListValues[1].get())->GetValue();
+        valueLower = std::static_pointer_cast<CSettingInt>(settingListValues[0])->GetValue();
+        valueUpper = std::static_pointer_cast<CSettingInt>(settingListValues[1])->GetValue();
         m_pSlider->SetIntValue(valueLower, CGUISliderControl::RangeSelectorLower);
         m_pSlider->SetIntValue(valueUpper, CGUISliderControl::RangeSelectorUpper);
       }
@@ -1109,7 +1264,7 @@ void CGUIControlRangeSetting::Update(bool updateDisplayOnly /* = false */)
       break;
     }
 
-    case SettingTypeNumber:
+    case SettingType::Number:
     {
       double valueLower, valueUpper;
       if (updateDisplayOnly)
@@ -1119,8 +1274,8 @@ void CGUIControlRangeSetting::Update(bool updateDisplayOnly /* = false */)
       }
       else
       {
-        valueLower = static_cast<CSettingNumber*>(settingListValues[0].get())->GetValue();
-        valueUpper = static_cast<CSettingNumber*>(settingListValues[1].get())->GetValue();
+        valueLower = std::static_pointer_cast<CSettingNumber>(settingListValues[0])->GetValue();
+        valueUpper = std::static_pointer_cast<CSettingNumber>(settingListValues[1])->GetValue();
         m_pSlider->SetFloatValue((float)valueLower, CGUISliderControl::RangeSelectorLower);
         m_pSlider->SetFloatValue((float)valueUpper, CGUISliderControl::RangeSelectorUpper);
       }
@@ -1145,8 +1300,8 @@ void CGUIControlRangeSetting::Update(bool updateDisplayOnly /* = false */)
     m_pSlider->SetTextValue(strText);
 }
 
-CGUIControlSeparatorSetting::CGUIControlSeparatorSetting(CGUIImage *pImage, int id)
-    : CGUIControlBaseSetting(id, NULL)
+CGUIControlSeparatorSetting::CGUIControlSeparatorSetting(CGUIImage *pImage, int id, ILocalizer* localizer)
+    : CGUIControlBaseSetting(id, NULL, localizer)
 {
   m_pImage = pImage;
   if (m_pImage == NULL)
@@ -1158,8 +1313,8 @@ CGUIControlSeparatorSetting::CGUIControlSeparatorSetting(CGUIImage *pImage, int 
 CGUIControlSeparatorSetting::~CGUIControlSeparatorSetting()
 { }
 
-CGUIControlGroupTitleSetting::CGUIControlGroupTitleSetting(CGUILabelControl *pLabel, int id)
-  : CGUIControlBaseSetting(id, NULL)
+CGUIControlGroupTitleSetting::CGUIControlGroupTitleSetting(CGUILabelControl *pLabel, int id, ILocalizer* localizer)
+  : CGUIControlBaseSetting(id, NULL, localizer)
 {
   m_pLabel = pLabel;
   if (m_pLabel == NULL)
@@ -1170,3 +1325,14 @@ CGUIControlGroupTitleSetting::CGUIControlGroupTitleSetting(CGUILabelControl *pLa
 
 CGUIControlGroupTitleSetting::~CGUIControlGroupTitleSetting()
 { }
+
+CGUIControlLabelSetting::CGUIControlLabelSetting(CGUIButtonControl *pButton, int id, std::shared_ptr<CSetting> pSetting, ILocalizer* localizer)
+  : CGUIControlBaseSetting(id, pSetting, localizer)
+{
+  m_pButton = pButton;
+  if (m_pButton == NULL)
+    return;
+
+  m_pButton->SetID(id);
+  Update();
+}

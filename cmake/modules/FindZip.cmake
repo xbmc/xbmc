@@ -25,7 +25,7 @@ find_library(ZIP_LIBRARY NAMES zip
 set(ZIP_VERSION ${PC_ZIP_VERSION})
 
 include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(ZIP
+find_package_handle_standard_args(Zip
                                   REQUIRED_VARS ZIP_LIBRARY ZIP_INCLUDE_DIR
                                   VERSION_VAR ZIP_VERSION)
 

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2015-2016 Team Kodi
+ *      Copyright (C) 2015-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -29,7 +29,7 @@ namespace PERIPHERALS
                                        public KODI::KEYBOARD::IKeyboardHandler
   {
   public:
-    CPeripheralJoystickEmulation(const PeripheralScanResult& scanResult, CPeripheralBus* bus);
+    CPeripheralJoystickEmulation(CPeripherals& manager, const PeripheralScanResult& scanResult, CPeripheralBus* bus);
 
     virtual ~CPeripheralJoystickEmulation(void);
 

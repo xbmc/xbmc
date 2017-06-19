@@ -20,7 +20,7 @@
  */
 
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
-#include "epg/EpgTypes.h"
+#include "pvr/PVRTypes.h"
 #include "pvr/addons/PVRClients.h"
 #include "threads/CriticalSection.h"
 #include "threads/SystemClock.h"
@@ -33,9 +33,6 @@
 
 namespace PVR
 {
-  class CPVRTimerInfoTag;
-  class CPVRRecording;
-
   class CPVRGUIInfo : private CThread,
                       private Observer
   {
@@ -80,7 +77,7 @@ namespace PVR
      * @brief Get the currently playing EPG tag.
      * @return The currently playing EPG tag or NULL if no EPG tag is playing.
      */
-    EPG::CEpgInfoTagPtr GetPlayingTag() const;
+    CPVREpgInfoTagPtr GetPlayingTag() const;
 
     /*!
      * @brief Get playing TV group.
@@ -93,7 +90,7 @@ namespace PVR
     {
     public:
       TimerInfo();
-      virtual ~TimerInfo() {}
+      virtual ~TimerInfo() = default;
 
       void ResetProperties();
 
@@ -145,7 +142,7 @@ namespace PVR
     class AnyTimerInfo : public TimerInfo
     {
     public:
-      AnyTimerInfo() {};
+      AnyTimerInfo() = default;
 
     private:
       int AmountActiveTimers() override;
@@ -157,7 +154,7 @@ namespace PVR
     class TVTimerInfo : public TimerInfo
     {
     public:
-      TVTimerInfo() {};
+      TVTimerInfo() = default;
 
     private:
       int AmountActiveTimers() override;
@@ -169,7 +166,7 @@ namespace PVR
     class RadioTimerInfo : public TimerInfo
     {
     public:
-      RadioTimerInfo() {};
+      RadioTimerInfo() = default;
 
     private:
       int AmountActiveTimers() override;
@@ -251,7 +248,7 @@ namespace PVR
 
     PVR_SIGNAL_STATUS               m_qualityInfo;       /*!< stream quality information */
     XbmcThreads::EndTime            m_ToggleShowInfo;
-    EPG::CEpgInfoTagPtr             m_playingEpgTag;
+    CPVREpgInfoTagPtr                  m_playingEpgTag;
     std::vector<SBackend>           m_backendProperties;
 
     bool                            m_bIsTimeshifting;

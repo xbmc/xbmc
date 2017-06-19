@@ -77,6 +77,17 @@
 #define KEY_BUTTON_LEFT_THUMB_STICK_RIGHT   283
 
 /*
+ * joystick.xml keys for remote control emulation
+ */
+#define KEY_REMOTE_BUTTON_OK                         310
+#define KEY_REMOTE_BUTTON_BACK                       311
+#define KEY_REMOTE_BUTTON_UP                         312
+#define KEY_REMOTE_BUTTON_DOWN                       313
+#define KEY_REMOTE_BUTTON_RIGHT                      314
+#define KEY_REMOTE_BUTTON_LEFT                       315
+#define KEY_REMOTE_BUTTON_HOME                       316
+
+/*
  * joystick.xml keys based on Xbox 360 controller
  */
 #define KEY_JOYSTICK_BUTTON_A                        284
@@ -133,9 +144,6 @@
 
 // 0xD000 -> 0xD0FF is reserved for WM_APPCOMMAND messages
 #define KEY_APPCOMMAND      0xD000
-
-// 0xF000 -> 0xF0FF is reserved for mouse actions
-#define KEY_TOUCH           0xF000
 
 #define KEY_INVALID         0xFFFF
 

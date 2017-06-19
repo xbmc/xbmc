@@ -30,11 +30,12 @@
 
 #include <guid.h>
 
+#if defined(TARGET_ANDROID)
+#include <androidjni/JNIThreading.h>
+#endif
+
 #include "StringUtils.h"
 #include "CharsetConverter.h"
-#if defined(TARGET_ANDROID)
-#include "platform/android/jni/JNIThreading.h"
-#endif
 #include "utils/fstrcmp.h"
 #include "Util.h"
 #include <functional>
@@ -915,7 +916,7 @@ long StringUtils::TimeStringToSeconds(const std::string &timeString)
 std::string StringUtils::SecondsToTimeString(long lSeconds, TIME_FORMAT format)
 {
   bool isNegative = lSeconds < 0;
-  lSeconds = abs(lSeconds);
+  lSeconds = std::abs(lSeconds);
   int hh = lSeconds / 3600;
   lSeconds = lSeconds % 3600;
   int mm = lSeconds / 60;
@@ -1292,14 +1293,14 @@ std::string StringUtils::FormatFileSize(uint64_t bytes)
   if (bytes < 1000)
     return Format("%" PRIu64 "B", bytes);
 
-  int i = 0;
+  size_t i = 0;
   double value = static_cast<double>(bytes);
-  while (i < static_cast<int>(units.size()) - 1 && value >= 999.5)
+  while (i + 1 < units.size() && value >= 999.5)
   {
     ++i;
     value /= 1024.0;
   }
-  int decimals = value < 9.995 ? 2 : (value < 99.95 ? 1 : 0);
-  auto frmt = "%.0" + Format("%d", decimals) + "f%s";
+  unsigned int decimals = value < 9.995 ? 2 : (value < 99.95 ? 1 : 0);
+  auto frmt = "%.0" + Format("%u", decimals) + "f%s";
   return Format(frmt.c_str(), value, units[i].c_str());
 }

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2016 Team Kodi
+ *      Copyright (C) 2016-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -22,6 +22,8 @@
 #include <stddef.h>
 #include <stdint.h>
 
+namespace KODI
+{
 namespace GAME
 {
   /*!
@@ -149,4 +151,5 @@ namespace GAME
      */
     virtual void SetFrameCounter(uint64_t frameCount) = 0;
   };
+}
 }

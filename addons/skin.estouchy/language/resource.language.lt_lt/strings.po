@@ -60,6 +60,26 @@ msgctxt "#31016"
 msgid "Albums"
 msgstr "Albumai"
 
+msgctxt "#31017"
+msgid "PVR info"
+msgstr "PVR informacija"
+
+msgctxt "#31018"
+msgid "Player process info"
+msgstr "Grotuvo apdorojimo informacija"
+
+msgctxt "#31019"
+msgid "Video decoder"
+msgstr "Vaizdo dekoderis"
+
+msgctxt "#31020"
+msgid "Pixel format"
+msgstr "Pikselio formatas"
+
+msgctxt "#31021"
+msgid "System memory usage"
+msgstr "Sistemos atminties naudojimas"
+
 msgctxt "#31024"
 msgid "Page"
 msgstr "Puslapis"

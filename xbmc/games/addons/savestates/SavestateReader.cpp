@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2016 Team Kodi
+ *      Copyright (C) 2016-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -24,6 +24,7 @@
 #include "utils/log.h"
 #include "IMemoryStream.h"
 
+using namespace KODI;
 using namespace GAME;
 
 CSavestateReader::CSavestateReader() :

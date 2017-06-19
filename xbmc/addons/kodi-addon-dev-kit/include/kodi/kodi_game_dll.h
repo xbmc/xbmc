@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2014-2016 Team Kodi
+ *      Copyright (C) 2014-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -25,28 +25,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-// --- Game API operations -----------------------------------------------------
-
-/*!
- * \brief Return GAME_API_VERSION_STRING
- *
- * The add-on is backwards compatible with the frontend if this API version is
- * is at least the frontend's minimum API version.
- *
- * \return Must be GAME_API_VERSION_STRING
- */
-const char* GetGameAPIVersion(void);
-
-/*!
- * \brief Return GAME_MIN_API_VERSION_STRING
- *
- * The add-on is forwards compatible with the frontend if this minimum version
- * is no more than the frontend's API version.
- *
- * \return Must be GAME_MIN_API_VERSION_STRING
- */
-const char* GetMininumGameAPIVersion(void);
 
 // --- Game operations ---------------------------------------------------------
 
@@ -256,30 +234,28 @@ GAME_ERROR SetCheat(unsigned int index, bool enabled, const char* code);
  */
 void __declspec(dllexport) get_addon(void* ptr)
 {
-  KodiToAddonFuncTable_Game* pClient = static_cast<KodiToAddonFuncTable_Game*>(ptr);
+  AddonInstance_Game* pClient = static_cast<AddonInstance_Game*>(ptr);
 
-  pClient->GetGameAPIVersion        = GetGameAPIVersion;
-  pClient->GetMininumGameAPIVersion = GetMininumGameAPIVersion;
-  pClient->LoadGame                 = LoadGame;
-  pClient->LoadGameSpecial          = LoadGameSpecial;
-  pClient->LoadStandalone           = LoadStandalone;
-  pClient->UnloadGame               = UnloadGame;
-  pClient->GetGameInfo              = GetGameInfo;
-  pClient->GetRegion                = GetRegion;
-  pClient->RequiresGameLoop         = RequiresGameLoop;
-  pClient->RunFrame                 = RunFrame;
-  pClient->Reset                    = Reset;
-  pClient->HwContextReset           = HwContextReset;
-  pClient->HwContextDestroy         = HwContextDestroy;
-  pClient->UpdatePort               = UpdatePort;
-  pClient->HasFeature               = HasFeature;
-  pClient->InputEvent               = InputEvent;
-  pClient->SerializeSize            = SerializeSize;
-  pClient->Serialize                = Serialize;
-  pClient->Deserialize              = Deserialize;
-  pClient->CheatReset               = CheatReset;
-  pClient->GetMemory                = GetMemory;
-  pClient->SetCheat                 = SetCheat;
+  pClient->toAddon.LoadGame                 = LoadGame;
+  pClient->toAddon.LoadGameSpecial          = LoadGameSpecial;
+  pClient->toAddon.LoadStandalone           = LoadStandalone;
+  pClient->toAddon.UnloadGame               = UnloadGame;
+  pClient->toAddon.GetGameInfo              = GetGameInfo;
+  pClient->toAddon.GetRegion                = GetRegion;
+  pClient->toAddon.RequiresGameLoop         = RequiresGameLoop;
+  pClient->toAddon.RunFrame                 = RunFrame;
+  pClient->toAddon.Reset                    = Reset;
+  pClient->toAddon.HwContextReset           = HwContextReset;
+  pClient->toAddon.HwContextDestroy         = HwContextDestroy;
+  pClient->toAddon.UpdatePort               = UpdatePort;
+  pClient->toAddon.HasFeature               = HasFeature;
+  pClient->toAddon.InputEvent               = InputEvent;
+  pClient->toAddon.SerializeSize            = SerializeSize;
+  pClient->toAddon.Serialize                = Serialize;
+  pClient->toAddon.Deserialize              = Deserialize;
+  pClient->toAddon.CheatReset               = CheatReset;
+  pClient->toAddon.GetMemory                = GetMemory;
+  pClient->toAddon.SetCheat                 = SetCheat;
 }
 
 #ifdef __cplusplus

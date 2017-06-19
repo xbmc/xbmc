@@ -42,6 +42,8 @@ public:
   virtual BLURAY_TITLE_INFO* bd_get_playlist_info(BLURAY *bd, uint32_t playlist, unsigned angle)=0;
   virtual void bd_free_title_info(BLURAY_TITLE_INFO *title_info)=0;
   virtual BLURAY *bd_open(const char* device_path, const char* keyfile_path)=0;
+  virtual int bd_open_disc(BLURAY *bd, const char *device_path, const char *keyfile_path)=0;
+  virtual BLURAY *bd_init(void)= 0;
   virtual void bd_close(BLURAY *bd)=0;
   virtual int64_t bd_seek(BLURAY *bd, uint64_t pos)=0;
   virtual int64_t bd_seek_time(BLURAY *bd, uint64_t tick)=0;
@@ -80,6 +82,7 @@ public:
 #endif
   virtual int      bd_menu_call                 (BLURAY *bd, int64_t pts)=0;
   virtual int      bd_mouse_select              (BLURAY *bd, int64_t pts, uint16_t x, uint16_t y)=0;
+  virtual int      bd_get_sound_effect          (BLURAY *bd, unsigned sound_id, struct bd_sound_effect *effect)=0;
 };
 
 class DllLibbluray : public DllDynamic, DllLibblurayInterface
@@ -90,6 +93,8 @@ class DllLibbluray : public DllDynamic, DllLibblurayInterface
   DEFINE_METHOD3(BLURAY_TITLE_INFO*,  bd_get_playlist_info,   (BLURAY *p1, uint32_t p2, unsigned p3))
   DEFINE_METHOD1(void,                bd_free_title_info,     (BLURAY_TITLE_INFO *p1))
   DEFINE_METHOD2(BLURAY*,             bd_open,                (const char* p1, const char* p2))
+  DEFINE_METHOD3(int,                 bd_open_disc,           (BLURAY *p1, const char *p2, const char *p3))
+  DEFINE_METHOD0(BLURAY*,             bd_init)
   DEFINE_METHOD1(void,                bd_close,               (BLURAY *p1))
   DEFINE_METHOD2(int64_t,             bd_seek,                (BLURAY *p1, uint64_t p2))
   DEFINE_METHOD2(int64_t,             bd_seek_time,           (BLURAY *p1, uint64_t p2))
@@ -128,6 +133,7 @@ class DllLibbluray : public DllDynamic, DllLibblurayInterface
 #endif
   DEFINE_METHOD2(int,                 bd_menu_call,              (BLURAY *p1, int64_t p2))
   DEFINE_METHOD4(int,                 bd_mouse_select,           (BLURAY *p1, int64_t p2, uint16_t p3, uint16_t p4))
+  DEFINE_METHOD3(int,                 bd_get_sound_effect,       (BLURAY *p1, unsigned p2, struct bd_sound_effect* p3))
 
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD(bd_get_titles)
@@ -135,6 +141,8 @@ class DllLibbluray : public DllDynamic, DllLibblurayInterface
     RESOLVE_METHOD(bd_get_playlist_info)
     RESOLVE_METHOD_RENAME(bd_free_title_info,   bd_free_title_info)
     RESOLVE_METHOD_RENAME(bd_open,              bd_open)
+    RESOLVE_METHOD(bd_open_disc)
+    RESOLVE_METHOD(bd_init)
     RESOLVE_METHOD_RENAME(bd_close,             bd_close)
     RESOLVE_METHOD_RENAME(bd_seek,              bd_seek)
     RESOLVE_METHOD_RENAME(bd_seek_time,         bd_seek_time)
@@ -172,6 +180,7 @@ class DllLibbluray : public DllDynamic, DllLibblurayInterface
 #endif
     RESOLVE_METHOD(bd_menu_call)
     RESOLVE_METHOD(bd_mouse_select)
+    RESOLVE_METHOD(bd_get_sound_effect)
   END_METHOD_RESOLVE()
 
 public:

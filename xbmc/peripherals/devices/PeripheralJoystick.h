@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2014-2016 Team Kodi
+ *      Copyright (C) 2014-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 #pragma once
 
 #include "Peripheral.h"
-#include "input/joysticks/DefaultJoystick.h"
+#include "input/joysticks/DefaultController.h"
 #include "input/joysticks/IDriverReceiver.h"
 #include "input/joysticks/JoystickMonitor.h"
 #include "input/joysticks/JoystickTypes.h"
@@ -44,11 +44,13 @@ namespace JOYSTICK
 
 namespace PERIPHERALS
 {
+  class CPeripherals;
+
   class CPeripheralJoystick : public CPeripheral, //! @todo extend CPeripheralHID
                               public KODI::JOYSTICK::IDriverReceiver
   {
   public:
-    CPeripheralJoystick(const PeripheralScanResult& scanResult, CPeripheralBus* bus);
+    CPeripheralJoystick(CPeripherals& manager, const PeripheralScanResult& scanResult, CPeripheralBus* bus);
 
     virtual ~CPeripheralJoystick(void);
 
@@ -59,7 +61,7 @@ namespace PERIPHERALS
     virtual void RegisterJoystickDriverHandler(KODI::JOYSTICK::IDriverHandler* handler, bool bPromiscuous) override;
     virtual void UnregisterJoystickDriverHandler(KODI::JOYSTICK::IDriverHandler* handler) override;
     virtual KODI::JOYSTICK::IDriverReceiver* GetDriverReceiver() override { return this; }
-    virtual KODI::JOYSTICK::IActionMap* GetActionMap() override { return &m_defaultInputHandler; }
+    virtual KODI::JOYSTICK::IActionMap* GetActionMap() override { return &m_defaultController; }
 
     bool OnButtonMotion(unsigned int buttonIndex, bool bPressed);
     bool OnHatMotion(unsigned int hatIndex, KODI::JOYSTICK::HAT_STATE state);
@@ -108,6 +110,8 @@ namespace PERIPHERALS
   protected:
     void InitializeDeadzoneFiltering();
 
+    void PowerOff();
+
     struct DriverHandler
     {
       KODI::JOYSTICK::IDriverHandler* handler;
@@ -121,7 +125,7 @@ namespace PERIPHERALS
     unsigned int                        m_axisCount;
     unsigned int                        m_motorCount;
     bool                                m_supportsPowerOff;
-    KODI::JOYSTICK::CDefaultJoystick          m_defaultInputHandler;
+    KODI::JOYSTICK::CDefaultController        m_defaultController;
     KODI::JOYSTICK::CJoystickMonitor          m_joystickMonitor;
     std::unique_ptr<KODI::JOYSTICK::IButtonMap>      m_buttonMap;
     std::unique_ptr<KODI::JOYSTICK::CDeadzoneFilter> m_deadzoneFilter;

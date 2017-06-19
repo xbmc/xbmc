@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2014-2016 Team Kodi
+ *      Copyright (C) 2014-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -37,12 +37,16 @@ namespace JOYSTICK
 namespace PERIPHERALS
 {
   class CPeripheral;
+  class CPeripherals;
 
   class CAddonInputHandling : public KODI::JOYSTICK::IDriverHandler,
                               public KODI::JOYSTICK::IInputReceiver
   {
   public:
-    CAddonInputHandling(CPeripheral* peripheral, KODI::JOYSTICK::IInputHandler* handler, KODI::JOYSTICK::IDriverReceiver* receiver);
+    CAddonInputHandling(CPeripherals& manager,
+                        CPeripheral* peripheral,
+                        KODI::JOYSTICK::IInputHandler* handler,
+                        KODI::JOYSTICK::IDriverReceiver* receiver);
 
     virtual ~CAddonInputHandling(void);
 

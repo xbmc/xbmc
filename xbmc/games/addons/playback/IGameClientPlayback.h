@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2016 Team Kodi
+ *      Copyright (C) 2016-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -22,6 +22,8 @@
 #include <stdint.h>
 #include <string>
 
+namespace KODI
+{
 namespace GAME
 {
   class IGameClientPlayback
@@ -46,4 +48,5 @@ namespace GAME
     virtual std::string CreateManualSavestate() = 0; // Returns the path of savestate on success
     virtual bool LoadSavestate(const std::string& path) = 0;
   };
+}
 }

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2012-2016 Team Kodi
+ *      Copyright (C) 2012-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -33,7 +33,9 @@
 #include "FileItem.h"
 #include "URL.h"
 
+using namespace KODI;
 using namespace GAME;
+using namespace RETRO;
 
 CRetroPlayer::CRetroPlayer(IPlayerCallback& callback) :
   IPlayer(callback),
@@ -68,11 +70,14 @@ bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options
     {
       m_audio.reset(new CRetroPlayerAudio(*m_processInfo));
       m_video.reset(new CRetroPlayerVideo(m_renderManager, *m_processInfo));
-      if (m_gameClient->OpenFile(file, m_audio.get(), m_video.get()))
-      {
+
+      if (!file.GetPath().empty())
+        bSuccess = m_gameClient->OpenFile(file, m_audio.get(), m_video.get());
+      else
+        bSuccess = m_gameClient->OpenStandalone(m_audio.get(), m_video.get());
+
+      if (bSuccess)
         CLog::Log(LOGDEBUG, "RetroPlayer: Using game client %s", m_gameClient->ID().c_str());
-        bSuccess = true;
-      }
       else
         CLog::Log(LOGERROR, "RetroPlayer: Failed to open file using %s", m_gameClient->ID().c_str());
     }

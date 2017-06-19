@@ -22,14 +22,17 @@
 
 #include <stdlib.h>
 #include <errno.h>
-#include <android_native_app_glue.h>
-#include "EventLoop.h"
-#include "XBMCApp.h"
-#include "platform/android/jni/SurfaceTexture.h"
-#include "utils/StringUtils.h"
-#include "CompileInfo.h"
 
+#include <android_native_app_glue.h>
+
+#include <androidjni/SurfaceTexture.h>
+
+#include "CompileInfo.h"
+#include "EventLoop.h"
 #include "platform/android/activity/JNIMainActivity.h"
+#include "platform/android/activity/JNIXBMCVideoView.h"
+#include "utils/StringUtils.h"
+#include "XBMCApp.h"
 
 
 // redirect stdout / stderr to logcat
@@ -132,14 +135,15 @@ extern "C" JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved)
   if (vm->GetEnv(reinterpret_cast<void**>(&env), version) != JNI_OK)
     return -1;
 
-  std::string appName = CCompileInfo::GetAppName();
-  StringUtils::ToLower(appName);
-  std::string mainClass = "org/xbmc/" + appName + "/Main";
-  std::string bcReceiver = "org/xbmc/" + appName + "/XBMCBroadcastReceiver";
-  std::string frameListener = "org/xbmc/" + appName + "/XBMCOnFrameAvailableListener";
-  std::string settingsObserver = "org/xbmc/" + appName + "/XBMCSettingsContentObserver";
-  std::string audioFocusChangeListener = "org/xbmc/" + appName + "/XBMCOnAudioFocusChangeListener";
-  std::string inputDeviceListener = "org/xbmc/" + appName + "/XBMCInputDeviceListener";
+  std::string pkgRoot = CCompileInfo::GetPackage();
+  StringUtils::Replace(pkgRoot, '.', '/');
+  std::string mainClass = pkgRoot + "/Main";
+  std::string bcReceiver = pkgRoot + "/XBMCBroadcastReceiver";
+  std::string frameListener = pkgRoot + "/XBMCOnFrameAvailableListener";
+  std::string settingsObserver = pkgRoot + "/XBMCSettingsContentObserver";
+  std::string audioFocusChangeListener = pkgRoot + "/XBMCOnAudioFocusChangeListener";
+  std::string inputDeviceListener = pkgRoot + "/XBMCInputDeviceListener";
+  std::string videoView = pkgRoot + "/XBMCVideoView";
 
   jclass cMain = env->FindClass(mainClass.c_str());
   if(cMain)
@@ -157,6 +161,13 @@ extern "C" JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved)
       (void*)&CJNIMainActivity::_doFrame
     };
     env->RegisterNatives(cMain, &mDoFrame, 1);
+    
+    JNINativeMethod mOnActivityResult = {
+      "_onActivityResult",
+      "(IILandroid/content/Intent;)V",
+      (void*)&CJNIMainActivity::_onActivityResult
+    };
+    env->RegisterNatives(cMain, &mOnActivityResult, 1);
 
     JNINativeMethod mCallNative = {
       "_callNative",
@@ -219,6 +230,31 @@ extern "C" JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved)
       { "_onInputDeviceRemoved", "(I)V", (void*)&CJNIMainActivity::_onInputDeviceRemoved }
     };
     env->RegisterNatives(cInputDeviceListener, mInputDeviceCallbacks, 3);
+  }
+
+  jclass cVideoView = env->FindClass(videoView.c_str());
+  if(cVideoView)
+  {
+    JNINativeMethod mOnSurfaceChanged = {
+      "_OnSurfaceChanged",
+      "(Landroid/view/SurfaceHolder;III)V",
+      (void*)&CJNIXBMCVideoView::_OnSurfaceChanged
+    };
+    env->RegisterNatives(cVideoView, &mOnSurfaceChanged, 1);
+
+    JNINativeMethod mOnSurfaceCreated = {
+      "_OnSurfaceCreated",
+      "(Landroid/view/SurfaceHolder;)V",
+      (void*)&CJNIXBMCVideoView::_OnSurfaceCreated
+    };
+    env->RegisterNatives(cVideoView, &mOnSurfaceCreated, 1);
+
+    JNINativeMethod mOnSurfaceDestroyed = {
+      "_OnSurfaceDestroyed",
+      "(Landroid/view/SurfaceHolder;)V",
+      (void*)&CJNIXBMCVideoView::_OnSurfaceDestroyed
+    };
+    env->RegisterNatives(cVideoView, &mOnSurfaceDestroyed, 1);
   }
 
   return version;

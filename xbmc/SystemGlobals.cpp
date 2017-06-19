@@ -33,13 +33,10 @@
 #include "interfaces/python/XBPython.h"
 #endif
 
-// Guarantee that CSpecialProtocol is initialized before and uninitialized after RarManager
+// Guarantee that CSpecialProtocol is initialized before and uninitialized after ZipManager
 #include "filesystem/SpecialProtocol.h"
 std::map<std::string, std::string> CSpecialProtocol::m_pathMap;
 
-#if defined(HAS_FILESYSTEM_RAR)
-#include "filesystem/RarManager.h"
-#endif
 #include "filesystem/ZipManager.h"
 
 #ifdef TARGET_RASPBERRY_PI

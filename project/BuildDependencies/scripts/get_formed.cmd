@@ -6,10 +6,10 @@ REM So that we can expand variables inside of IF and FOR
 SETLOCAL enableDelayedExpansion
 
 REM Check presence of required file
-dir 0_package.list >NUL 2>NUL || (
-ECHO 0_package.list not found!
-ECHO Aborting...
-EXIT /B 20
+dir 0_package.native-%NATIVEPLATFORM%.list >NUL 2>NUL && dir 0_package.target-%TARGETPLATFORM%.list >NUL 2>NUL || (
+  ECHO 0_package.native-%NATIVEPLATFORM%.list or 0_package.target-%TARGETPLATFORM%.list not found!
+  ECHO Aborting...
+  EXIT /B 20
 )
 
 REM Clear succeed flag
@@ -31,7 +31,7 @@ echo Downloading from mirror %KODI_MIRROR%
 CALL :setStageName Starting downloads of formed packages...
 SET SCRIPT_PATH=%CD%
 CD %DL_PATH% || EXIT /B 10
-FOR /F "eol=; tokens=1" %%f IN (%SCRIPT_PATH%\0_package.list) DO (
+FOR /F "eol=; tokens=1" %%f IN (%SCRIPT_PATH%\0_package.native-%NATIVEPLATFORM%.list %SCRIPT_PATH%\0_package.target-%TARGETPLATFORM%.list) DO (
   CALL :processFile %%f
 )
 
@@ -59,7 +59,7 @@ IF EXIST %1 (
 ) ELSE (
   CALL :setSubStageName Downloading %1...
   SET DOWNLOAD_URL=%KODI_MIRROR%/build-deps/win32/%1
-  %WGET% "!DOWNLOAD_URL!" 2>&1 || ECHO %1^|Download of !DOWNLOAD_URL! failed >> %FORMED_FAILED_LIST% && EXIT /B 7
+  %WGET% --tries=5 --retry-connrefused --waitretry=2 "!DOWNLOAD_URL!" 2>&1 || ECHO %1^|Download of !DOWNLOAD_URL! failed >> %FORMED_FAILED_LIST% && EXIT /B 7
   TITLE Getting %1
 )
 

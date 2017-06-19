@@ -161,4 +161,5 @@ private:
   float m_backgroundImageSize;
   int m_clickedButton;
   CContextButtons m_buttons;
+  const CGUIControl *m_backgroundImage = nullptr;
 };

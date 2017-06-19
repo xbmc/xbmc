@@ -24,7 +24,6 @@
 #include "system.h"
 #undef BOOL
 
-#ifdef HAS_EGL
 #define BOOL XBMC_BOOL
 #include "VideoSyncIos.h"
 #include "WinSystemIOS.h"
@@ -95,7 +94,7 @@ bool CWinSystemIOS::DestroyWindowSystem()
   return true;
 }
 
-bool CWinSystemIOS::CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction)
+bool CWinSystemIOS::CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res)
 {
   //NSLog(@"%s", __PRETTY_FUNCTION__);
 	
@@ -490,6 +489,3 @@ std::unique_ptr<CVideoSync> CWinSystemIOS::GetVideoSync(void *clock)
   std::unique_ptr<CVideoSync> pVSync(new CVideoSyncIos(clock));
   return pVSync;
 }
-
-#endif
-

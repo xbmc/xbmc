@@ -125,9 +125,11 @@ TEST(TestSortUtils, GetFieldsForSorting)
   EXPECT_EQ(FieldAlbum, *it);
   it = fields.find(FieldArtist);
   EXPECT_EQ(FieldArtist, *it);
+  it = fields.find(FieldArtistSort);
+  EXPECT_EQ(FieldArtistSort, *it);
   it = fields.find(FieldYear);
   EXPECT_EQ(FieldYear, *it);
   it = fields.find(FieldTrackNumber);
   EXPECT_EQ(FieldTrackNumber, *it);
-  EXPECT_EQ((unsigned int)4, fields.size());
+  EXPECT_EQ((unsigned int)5, fields.size());
 }

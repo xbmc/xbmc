@@ -47,9 +47,6 @@
 #endif
 #include "XbtFile.h"
 #include "ZipFile.h"
-#ifdef HAS_FILESYSTEM_RAR
-#include "RarFile.h"
-#endif
 #ifdef HAS_FILESYSTEM_SFTP
 #include "SFTPFile.h"
 #endif
@@ -67,6 +64,7 @@
 #endif
 #include "PipeFile.h"
 #include "MusicDatabaseFile.h"
+#include "VideoDatabaseFile.h"
 #include "SpecialProtocolFile.h"
 #include "MultiPathFile.h"
 #include "UDFFile.h"
@@ -123,17 +121,9 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
   if (url.IsProtocol("apk")) return new CAPKFile();
 #endif
   if (url.IsProtocol("zip")) return new CZipFile();
-  else if (url.IsProtocol("rar"))
-  {
-#ifdef HAS_FILESYSTEM_RAR
-    return new CRarFile();
-#else
-    CLog::Log(LOGWARNING, "%s - Compiled without non-free, rar support is disabled", __FUNCTION__);
-#endif
-  }
   else if (url.IsProtocol("xbt")) return new CXbtFile();
   else if (url.IsProtocol("musicdb")) return new CMusicDatabaseFile();
-  else if (url.IsProtocol("videodb")) return nullptr;
+  else if (url.IsProtocol("videodb")) return new CVideoDatabaseFile();
   else if (url.IsProtocol("library")) return nullptr;
   else if (url.IsProtocol("special")) return new CSpecialProtocolFile();
   else if (url.IsProtocol("multipath")) return new CMultiPathFile();

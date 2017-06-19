@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 # Addon Name: Estuary
 # Addon id: skin.estuary
-# Addon Provider: phil65, Piers
+# Addon Provider: phil65, Ichabod Fletchman
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
@@ -43,6 +43,10 @@ msgstr "Dejanja"
 msgctxt "#31021"
 msgid "Misc options"
 msgstr "Razne možnosti"
+
+msgctxt "#31026"
+msgid "Timeshift"
+msgstr "Časovni zamik"
 
 msgctxt "#31029"
 msgid "Last logged in"
@@ -107,3 +111,7 @@ msgstr "Izberite svoj Kodi uporabniški profil[CR]za prijavo in nadaljevanje"
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Shift"
+
+msgctxt "#31106"
+msgid "Teletext"
+msgstr "Teletekst"

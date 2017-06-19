@@ -19,22 +19,23 @@
  */
 
 #include "FavouritesOperations.h"
-#include "filesystem/FavouritesDirectory.h"
-#include "input/ButtonTranslator.h"
+#include "favourites/FavouritesService.h"
+#include "input/WindowTranslator.h"
 #include "utils/StringUtils.h"
 #include "Util.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "guilib/WindowIDs.h"
+#include "ServiceBroker.h"
+
 #include <vector>
 
 using namespace JSONRPC;
-using namespace XFILE;
 
 JSONRPC_STATUS CFavouritesOperations::GetFavourites(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   CFileItemList favourites;
-  CFavouritesDirectory::Load(favourites);
+  CServiceBroker::GetFavouritesService().GetAll(favourites);
   
   std::string type = !parameterObject["type"].isNull() ? parameterObject["type"].asString() : "";
 
@@ -66,7 +67,7 @@ JSONRPC_STATUS CFavouritesOperations::GetFavourites(const std::string &method, I
       if (fields.find("window") != fields.end())
       {
         if (StringUtils::IsNaturalNumber(parameters[0]))
-          object["window"] = CButtonTranslator::TranslateWindow(strtol(parameters[0].c_str(), NULL, 10));
+          object["window"] = CWindowTranslator::TranslateWindow(strtol(parameters[0].c_str(), NULL, 10));
         else
           object["window"] = parameters[0];
       }
@@ -136,7 +137,7 @@ JSONRPC_STATUS CFavouritesOperations::AddFavourite(const std::string &method, IT
   if (type.compare("window") == 0)
   {
     item = CFileItem(parameterObject["windowparameter"].asString(), true);
-    contextWindow = CButtonTranslator::TranslateWindow(parameterObject["window"].asString());
+    contextWindow = CWindowTranslator::TranslateWindow(parameterObject["window"].asString());
     if (contextWindow == WINDOW_INVALID)
       return InvalidParams;
   } 
@@ -157,7 +158,7 @@ JSONRPC_STATUS CFavouritesOperations::AddFavourite(const std::string &method, IT
   if (ParameterNotNull(parameterObject,"thumbnail"))
     item.SetArt("thumb", parameterObject["thumbnail"].asString());
 
-  if (CFavouritesDirectory::AddOrRemove(&item, contextWindow))
+  if (CServiceBroker::GetFavouritesService().AddOrRemove(item, contextWindow))
     return ACK;
   else
     return FailedToExecute;

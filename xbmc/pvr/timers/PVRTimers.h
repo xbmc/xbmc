@@ -24,6 +24,8 @@
 #include <vector>
 
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
+#include "pvr/PVRSettings.h"
+#include "pvr/PVRTypes.h"
 #include "PVRTimerInfoTag.h"
 #include "utils/Observer.h"
 #include "XBDateTime.h"
@@ -32,17 +34,49 @@ class CFileItem;
 class CFileItemList;
 typedef std::shared_ptr<CFileItem> CFileItemPtr;
 
-namespace EPG
-{
-  class CEpgInfoTag;
-}
-
 namespace PVR
 {
   class CPVRRecording;
   class CPVRTimersPath;
 
-  class CPVRTimers : public Observer
+  class CPVRTimersContainer
+  {
+  public:
+    CPVRTimersContainer() : m_iLastId(0) {}
+
+    /*!
+     * @brief Add a timer tag to this container or update the tag if already present in this container.
+     * @param The timer tag
+     * @return True, if the update was successful. False, otherwise.
+     */
+    bool UpdateFromClient(const CPVRTimerInfoTagPtr &timer);
+
+    /*!
+     * @brief Get the timer tag denoted by given client id and timer id.
+     * @param iClientId The client id.
+     * @param iClientTimerId The timer id.
+     * @return the timer tag if found, null otherwise.
+     */
+    CPVRTimerInfoTagPtr GetByClient(int iClientId, unsigned int iClientTimerId) const;
+
+    typedef std::vector<CPVRTimerInfoTagPtr> VecTimerInfoTag;
+    typedef std::map<CDateTime, VecTimerInfoTag> MapTags;
+
+    /*!
+     * @brief Get the timertags map.
+     * @return The map.
+     */
+    const MapTags& GetTags() const { return m_tags; }
+
+  protected:
+    void InsertTimer(const CPVRTimerInfoTagPtr &newTimer);
+
+    CCriticalSection m_critSection;
+    unsigned int m_iLastId;
+    MapTags m_tags;
+  };
+
+  class CPVRTimers : public CPVRTimersContainer, public Observer
   {
   public:
     CPVRTimers(void);
@@ -58,11 +92,6 @@ namespace PVR
      * @brief refresh the channel list from the clients.
      */
     bool Update(void);
-
-    /**
-     * Add a timer entry to this container, called by the client callback.
-     */
-    bool UpdateFromClient(const CPVRTimerInfoTagPtr &timer);
 
     /*!
      * @return The tv or radio timer that will be active next (state scheduled), or an empty fileitemptr if none.
@@ -211,7 +240,7 @@ namespace PVR
      * @param epgTag The epg tag.
      * @return The requested timer tag, or an empty fileitemptr if none was found.
      */
-    CPVRTimerInfoTagPtr GetTimerForEpgTag(const EPG::CEpgInfoTagPtr &epgTag) const;
+    CPVRTimerInfoTagPtr GetTimerForEpgTag(const CPVREpgInfoTagPtr &epgTag) const;
 
     /*!
      * @brief Check whether there is a timer currently recording the given recording.
@@ -249,12 +278,8 @@ namespace PVR
     CPVRTimerInfoTagPtr GetById(unsigned int iTimerId) const;
 
   private:
-    typedef std::map<CDateTime, std::vector<CPVRTimerInfoTagPtr>* > MapTags;
-    typedef std::vector<CPVRTimerInfoTagPtr> VecTimerInfoTag;
-
     void Unload(void);
-    bool UpdateEntries(const CPVRTimers &timers, const std::vector<int> &failedClients);
-    CPVRTimerInfoTagPtr GetByClient(int iClientId, unsigned int iClientTimerId) const;
+    bool UpdateEntries(const CPVRTimersContainer &timers, const std::vector<int> &failedClients);
     bool GetRootDirectory(const CPVRTimersPath &path, CFileItemList &items) const;
     bool GetSubDirectory(const CPVRTimersPath &path, CFileItemList &items) const;
     bool SetEpgTagTimer(const CPVRTimerInfoTagPtr &timer);
@@ -274,10 +299,8 @@ namespace PVR
     std::vector<CFileItemPtr> GetActiveRecordings(const TimerKind &eKind) const;
     int AmountActiveRecordings(const TimerKind &eKind) const;
 
-    CCriticalSection  m_critSection;
-    bool              m_bIsUpdating;
-    MapTags           m_tags;
-    unsigned int      m_iLastId;
+    bool m_bIsUpdating;
+    CPVRSettings m_settings;
   };
 
   class CPVRTimersPath

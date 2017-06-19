@@ -57,17 +57,17 @@ namespace PVR
   {
   public:
     virtual ~CGUIWindowPVRBase(void);
-    virtual void OnInitWindow(void) override;
-    virtual void OnDeinitWindow(int nextWindowID) override;
-    virtual bool OnMessage(CGUIMessage& message) override;
-    virtual bool Update(const std::string &strDirectory, bool updateFilterPath = true) override;
-    virtual void UpdateButtons(void) override;
-    virtual bool OnAction(const CAction &action) override;
-    virtual bool OnBack(int actionID) override;
-    virtual bool OpenChannelGroupSelectionDialog(void);
-    virtual void Notify(const Observable &obs, const ObservableMessage msg) override;
-    virtual void SetInvalid() override;
-    virtual bool CanBeActivated() const override;
+
+    void OnInitWindow(void) override;
+    void OnDeinitWindow(int nextWindowID) override;
+    bool OnMessage(CGUIMessage& message) override;
+    bool Update(const std::string &strDirectory, bool updateFilterPath = true) override;
+    void UpdateButtons(void) override;
+    bool OnAction(const CAction &action) override;
+    bool OnBack(int actionID) override;
+    void Notify(const Observable &obs, const ObservableMessage msg) override;
+    void SetInvalid() override;
+    bool CanBeActivated() const override;
 
     static std::string GetSelectedItemPath(bool bRadio);
     static void SetSelectedItemPath(bool bRadio, const std::string &path);
@@ -116,6 +116,8 @@ namespace PVR
     bool m_bRadio;
 
   private:
+    bool OpenChannelGroupSelectionDialog(void);
+
     /*!
      * @brief Show or update the progress dialog.
      * @param strText The current status.

@@ -9,7 +9,7 @@
 find_program(CCACHE_PROGRAM ccache)
 
 include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(CCACHE REQUIRED_VARS CCACHE_PROGRAM)
+find_package_handle_standard_args(CCache REQUIRED_VARS CCACHE_PROGRAM)
 
 if(CCACHE_FOUND)
   # Supports Unix Makefiles and Ninja

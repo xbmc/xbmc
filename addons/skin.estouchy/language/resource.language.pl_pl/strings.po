@@ -46,7 +46,7 @@ msgstr "Uruchamianie"
 
 msgctxt "#31011"
 msgid "Recent"
-msgstr "Najnowsze"
+msgstr "Ostatnio dodane"
 
 msgctxt "#31013"
 msgid "Movies"
@@ -59,6 +59,26 @@ msgstr "Odcinki"
 msgctxt "#31016"
 msgid "Albums"
 msgstr "Albumy"
+
+msgctxt "#31017"
+msgid "PVR info"
+msgstr "O telewizji"
+
+msgctxt "#31018"
+msgid "Player process info"
+msgstr "Właściwości odtwarzania"
+
+msgctxt "#31019"
+msgid "Video decoder"
+msgstr "Dekoder wideo"
+
+msgctxt "#31020"
+msgid "Pixel format"
+msgstr "Format piksela"
+
+msgctxt "#31021"
+msgid "System memory usage"
+msgstr "Użycie pamięci"
 
 msgctxt "#31024"
 msgid "Page"
@@ -102,15 +122,15 @@ msgstr "Porządek: Malejąco"
 
 msgctxt "#31055"
 msgid "Open playlist"
-msgstr "Otwórz listę odtwarzania"
+msgstr "Otwórz listę"
 
 msgctxt "#31056"
 msgid "Save playlist"
-msgstr "Zapisz listę odtwarzania"
+msgstr "Zapisz listę"
 
 msgctxt "#31057"
 msgid "Close playlist"
-msgstr "Zamknij listę odtwarzania"
+msgstr "Zamknij listę"
 
 msgctxt "#31058"
 msgid "System music files"
@@ -118,7 +138,7 @@ msgstr "Systemowe pliki muzyczne"
 
 msgctxt "#31059"
 msgid "Current playlist"
-msgstr "Aktualna lista odtwarzania"
+msgstr "Aktualna lista"
 
 msgctxt "#31200"
 msgid "Back"
@@ -146,7 +166,7 @@ msgstr "Dostawca danych"
 
 msgctxt "#31309"
 msgid "System Memory Used:"
-msgstr "Użycie pamięci systemowej:"
+msgstr "Użycie pamięci:"
 
 msgctxt "#31320"
 msgid "Last Logged In"
@@ -154,7 +174,7 @@ msgstr "Ostatnio zalogowany"
 
 msgctxt "#31322"
 msgid "Aired"
-msgstr "Data emisji"
+msgstr "Premiera"
 
 msgctxt "#31355"
 msgid "Video Menu"
@@ -215,6 +235,14 @@ msgstr "Informacje o systemie · Statystyki sprzętu · Dostępna przestrzeń dy
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Wybierz profil użytkownika[CR]do zalogowania, aby kontynuować"
+
+msgctxt "#31548"
+msgid "Home menu"
+msgstr "Menu startowe"
+
+msgctxt "#31549"
+msgid "Home Add-ons"
+msgstr "Dodatki"
 
 msgctxt "#31550"
 msgid "Backgrounds"
@@ -286,11 +314,11 @@ msgstr "Pierwsze uruchomienie"
 
 msgctxt "#31901"
 msgid "There are two things to know about navigating Estouchy"
-msgstr "Musisz wiedzieć dwie rzeczy o nawigacji w przypadku Estouchy"
+msgstr "Musisz wiedzieć dwie rzeczy o nawigacji w Estouchy"
 
 msgctxt "#31902"
 msgid "The Kodi logo functions as a 'HOME' button. Whenever you touch it, you will be taken back to the home screen."
-msgstr "Logo Kodi funkcjonuje jako przycisk 'Start'. Kiedykolwiek go naciśniesz zostaniesz przeniesiony do ekranu startowego."
+msgstr "Logo Kodi funkcjonuje jako przycisk 'Start'. Kiedykolwiek go naciśniesz, zostaniesz przeniesiony do ekranu startowego."
 
 msgctxt "#31903"
 msgid "When you are playing audio or video, the item title will appear at the top of the screen. Touching it will take you to the fullscreen visualization or video window."

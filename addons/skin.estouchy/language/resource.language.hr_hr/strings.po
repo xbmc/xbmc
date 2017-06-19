@@ -38,11 +38,15 @@ msgstr "Predlošci vizualizacije"
 
 msgctxt "#31007"
 msgid "Context Menu"
-msgstr "Dodatni izbornik"
+msgstr "Izbornik sadržaja"
 
 msgctxt "#31009"
 msgid "Working..."
 msgstr "Obrađivanje..."
+
+msgctxt "#31011"
+msgid "Recent"
+msgstr "Nedavno"
 
 msgctxt "#31013"
 msgid "Movies"
@@ -56,6 +60,26 @@ msgctxt "#31016"
 msgid "Albums"
 msgstr "Albumi"
 
+msgctxt "#31017"
+msgid "PVR info"
+msgstr "PVR informacije"
+
+msgctxt "#31018"
+msgid "Player process info"
+msgstr "Informacije reproduktora"
+
+msgctxt "#31019"
+msgid "Video decoder"
+msgstr "Video dekôder"
+
+msgctxt "#31020"
+msgid "Pixel format"
+msgstr "Format piksela"
+
+msgctxt "#31021"
+msgid "System memory usage"
+msgstr "Korištenje memorije"
+
 msgctxt "#31024"
 msgid "Page"
 msgstr "Stranica"
@@ -68,6 +92,10 @@ msgctxt "#31038"
 msgid "Login"
 msgstr "Prijava"
 
+msgctxt "#31039"
+msgid "Updated:"
+msgstr "Nadopunjeno:"
+
 msgctxt "#31044"
 msgid "FAST FORWARD"
 msgstr "PREMOTAVANJE UNAPRIJED"
@@ -75,6 +103,10 @@ msgstr "PREMOTAVANJE UNAPRIJED"
 msgctxt "#31045"
 msgid "REWIND"
 msgstr "PREMOTAVANJE UNAZAD"
+
+msgctxt "#31046"
+msgid "Play speed"
+msgstr "Brzina reprodukcije"
 
 msgctxt "#31049"
 msgid "End Time"
@@ -102,7 +134,7 @@ msgstr "Zatvori popis izvođenja"
 
 msgctxt "#31058"
 msgid "System music files"
-msgstr "Glazbene datoteke sustava"
+msgstr "Zvučne datoteke sustava"
 
 msgctxt "#31059"
 msgid "Current playlist"
@@ -126,11 +158,15 @@ msgstr "Trenutna temp."
 
 msgctxt "#31301"
 msgid "Last Updated"
-msgstr "Posljednje ažuriranje"
+msgstr "Posljednja nadopuna"
 
 msgctxt "#31303"
 msgid "Data provider"
 msgstr "Pružatelj podataka"
+
+msgctxt "#31309"
+msgid "System Memory Used:"
+msgstr "Korištenje memorije:"
 
 msgctxt "#31320"
 msgid "Last Logged In"
@@ -148,6 +184,10 @@ msgctxt "#31356"
 msgid "Download Subtitles"
 msgstr "Preuzmi podnaslove"
 
+msgctxt "#31358"
+msgid "Teletext"
+msgstr "Teletekst"
+
 msgctxt "#31390"
 msgid "Skin default"
 msgstr "Zadana presvlaka"
@@ -160,9 +200,49 @@ msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 msgstr "Promijenite presvlaku · Postavite jezik i regiju · Izmijenite mogućnosti popisa datoteka   · Postavite čuvara zaslona"
 
+msgctxt "#31405"
+msgid "Configure & manage media sharing services · Configure & manage the weather service"
+msgstr "Prilagodite i upravljajte uslugama dijeljenja medija · Prilagodite i upravljajte uslugama vremenske prognoze"
+
+msgctxt "#31406"
+msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
+msgstr "Prilagodite zaslon · Prilagodite zvuk · Prilagodite pristup internetu · Prilagodite štednju energije · Prilagodite zapisivanje"
+
+msgctxt "#31407"
+msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
+msgstr "Prilagodite vaše instalirane dodatke · Pregledavajte i instalirajte dodatke s kodi.tv · Prilagodite postavke dodatka"
+
+msgctxt "#31408"
+msgid "Configure actions that can be used during playback · Configure how media content is played"
+msgstr "Prilagodite radnje koje se koriste tijekom reprodukcije · Prilagodite način reprodukcije medijskog sadržaja"
+
+msgctxt "#31409"
+msgid "Configure library sources · Show the media lists display content · Configure how library lists are navigated"
+msgstr "Prilagodite izvore zbirke · Prilagodite kako zbirka prikazuje medijski sadržaj · Prilagodite kako se upravlja prikazom zbirke"
+
+msgctxt "#31410"
+msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
+msgstr "Prilagodite presvlaku · Prilagodite lokalizaciju · Prilagodite upravljanje · Prilagodite čuvar zaslona · Prilagodite glavno zaključavanje"
+
+msgctxt "#31411"
+msgid "Configure your profiles · Set locking options · Enable login screen"
+msgstr "Prilagodite svoje profile · Postavite mogućnosti zaključavanja · Omogućite zaslon prijave"
+
+msgctxt "#31412"
+msgid "Display system information · Hardware statistics · Check storage availability · View network configuration"
+msgstr "Prikaz informacija sustava · Statistika hardvera · Provjera uređaja pohrane · Prikaz postavka mreže"
+
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Odaberite svoj Kodi korisnički profil[CR]za prijavu i nastavite"
+
+msgctxt "#31548"
+msgid "Home menu"
+msgstr "Početni izbornik"
+
+msgctxt "#31549"
+msgid "Home Add-ons"
+msgstr "Početni dodaci"
 
 msgctxt "#31550"
 msgid "Backgrounds"
@@ -172,13 +252,41 @@ msgctxt "#31551"
 msgid "Add-on Shortcut"
 msgstr "Prečac dodataka"
 
+msgctxt "#31552"
+msgid "SYNC"
+msgstr "USKLADI"
+
+msgctxt "#31553"
+msgid "Use Custom Background"
+msgstr "Koristi prilagođenu pozadinu"
+
+msgctxt "#31554"
+msgid "Background:"
+msgstr "Pozadina:"
+
+msgctxt "#31555"
+msgid "Configure TV settings · Change full screen info · Manage EPG data settings"
+msgstr "Prilagodite postavke televizije · Prilagodite cijelozaslonske informacije · Upravljajte postavkama EPG vodiča"
+
 msgctxt "#31556"
 msgid "Live TV"
-msgstr "TV uživo"
+msgstr "Televizija"
 
 msgctxt "#31557"
 msgid "Hide video background"
 msgstr "Sakrij video pozadinu"
+
+msgctxt "#31558"
+msgid "Hide visualization background"
+msgstr "Sakrij vizualizacije pozadine"
+
+msgctxt "#31559"
+msgid "Channel settings"
+msgstr "Postavke programa"
+
+msgctxt "#31560"
+msgid "Available groups"
+msgstr "Dostupne grupe"
 
 msgctxt "#31561"
 msgid "Add Group"
@@ -191,3 +299,27 @@ msgstr "Preimenuj grupu"
 msgctxt "#31563"
 msgid "Delete Group"
 msgstr "Obriši grupu"
+
+msgctxt "#31564"
+msgid "Show hidden"
+msgstr "Prikaži skriveno"
+
+msgctxt "#31565"
+msgid "Show deleted"
+msgstr "Prikaži obrisano"
+
+msgctxt "#31901"
+msgid "There are two things to know about navigating Estouchy"
+msgstr "Postoje dvije stvari koje morate znati o upravljanju s Estouchyem"
+
+msgctxt "#31902"
+msgid "The Kodi logo functions as a 'HOME' button. Whenever you touch it, you will be taken back to the home screen."
+msgstr "Funkcija Kodi logotipa je poput 'HOME' tipke. Kada ju dodirnete, vratit ćete se natrag na početni zaslon."
+
+msgctxt "#31903"
+msgid "When you are playing audio or video, the item title will appear at the top of the screen. Touching it will take you to the fullscreen visualization or video window."
+msgstr "Kada reproducirate glazbu ili video snimku, naslov stavke će se pojaviti na vrhu zaslona. Dodir naslova će vas odvesti u prozor vizualizacije glazbe ili cijelozaslonski prikaz video snimke."
+
+msgctxt "#31904"
+msgid "Now Playing Title..."
+msgstr "Trenutno reproducirana stavka..."

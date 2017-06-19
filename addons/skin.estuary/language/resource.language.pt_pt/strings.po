@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 # Addon Name: Estuary
 # Addon id: skin.estuary
-# Addon Provider: phil65, Piers
+# Addon Provider: phil65, Ichabod Fletchman
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
@@ -112,6 +112,10 @@ msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
 msgstr "Não há favoritos. Pode adicionar qualquer item a esta lista, usando o menu de contexto."
 
+msgctxt "#31026"
+msgid "Timeshift"
+msgstr "Ver Mais Tarde"
+
 msgctxt "#31028"
 msgid "Show fanart"
 msgstr "Mostrar fanart"
@@ -119,6 +123,10 @@ msgstr "Mostrar fanart"
 msgctxt "#31029"
 msgid "Last logged in"
 msgstr "Última vez ligado"
+
+msgctxt "#31030"
+msgid "System memory usage"
+msgstr "Utilização da memória do sistema"
 
 msgctxt "#31031"
 msgid "Version info"
@@ -304,6 +312,10 @@ msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "Selecione o seu perfil de utilizador do Kodi[CR]para iniciar sessão e continuar"
 
+msgctxt "#31099"
+msgid "IconWall"
+msgstr "MuroIcon"
+
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Shift"
@@ -420,10 +432,6 @@ msgctxt "#31130"
 msgid "Main menu-related settings: Configure the home screen to your likings."
 msgstr "Definições do menu principal: Configure o ecrã inicial ao seu gosto."
 
-msgctxt "#31132"
-msgid "min"
-msgstr "min"
-
 msgctxt "#31134"
 msgid "Remaining"
 msgstr "Falta"
@@ -436,9 +444,17 @@ msgctxt "#31137"
 msgid "PVR info"
 msgstr "Info PVR"
 
+msgctxt "#31138"
+msgid "Player process info"
+msgstr "Informação do processo do reprodutor"
+
 msgctxt "#31139"
 msgid "Video decoder"
 msgstr "Descodificador de vídeo"
+
+msgctxt "#31140"
+msgid "Pixel format"
+msgstr "Formato de píxel"
 
 msgctxt "#31141"
 msgid "Changes for version"
@@ -455,3 +471,39 @@ msgstr "Entrar no navegador de add-ons"
 msgctxt "#31145"
 msgid "Search add-ons"
 msgstr "Pesquisar add-ons"
+
+msgctxt "#31148"
+msgid "Categories"
+msgstr "Categorias"
+
+msgctxt "#31150"
+msgid "Repository"
+msgstr "Repositório"
+
+msgctxt "#31151"
+msgid "Unwatched music videos"
+msgstr "Vídeos de música não vistos"
+
+msgctxt "#31152"
+msgid "Random music videos"
+msgstr "Vídeos de música aleatórios"
+
+msgctxt "#31154"
+msgid "Press OK to switch between locations"
+msgstr "Pressione OK para mudar entre as localizações"
+
+msgctxt "#31155"
+msgid "No bookmarks created yet."
+msgstr "Ainda não foram criados marcadores."
+
+msgctxt "#31156"
+msgid "Choose background pattern"
+msgstr "Escolha o modelo de fundo"
+
+msgctxt "#31157"
+msgid "Edit categories"
+msgstr "Editar categorias"
+
+msgctxt "#31158"
+msgid "Touch mode"
+msgstr "Modo de toque"

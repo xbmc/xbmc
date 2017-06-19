@@ -26,7 +26,10 @@ ifeq ($(CROSS_COMPILING), yes)
 endif
 ifeq ($(OS), linux)
   ffmpg_config += --target-os=$(OS) --cpu=$(CPU)
-  ffmpg_config += --enable-vdpau --enable-vaapi --enable-pic
+  ifneq ($(TARGET_PLATFORM),raspberry-pi)
+    ffmpg_config += --enable-vdpau --enable-vaapi
+  endif
+  ffmpg_config += --enable-pic
 endif
 ifeq ($(OS), android)
   ifeq ($(findstring arm64, $(CPU)), arm64)
@@ -43,6 +46,8 @@ endif
 ifeq ($(OS), ios)
   ifneq ($(CPU), arm64)
     ffmpg_config += --cpu=cortex-a8
+  else
+    ffmpg_config += --as="$(NATIVEPREFIX)/bin/gas-preprocessor.pl -arch aarch64 -- $(CC)"
   endif
   ffmpg_config += --yasmexe=$(NATIVEPREFIX)/bin/yasm
   ffmpg_config += --disable-decoder=mpeg_xvmc --disable-vda --disable-crystalhd --enable-videotoolbox

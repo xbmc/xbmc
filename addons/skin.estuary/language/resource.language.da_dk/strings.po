@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 # Addon Name: Estuary
 # Addon id: skin.estuary
-# Addon Provider: phil65, Piers
+# Addon Provider: phil65, Ichabod Fletchman
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
@@ -24,6 +24,14 @@ msgctxt "#31001"
 msgid "Search..."
 msgstr "Søg..."
 
+msgctxt "#31002"
+msgid "Show media fanart as background"
+msgstr "Vis mediefanart som baggrund"
+
+msgctxt "#31003"
+msgid "Cinema mode"
+msgstr "Biograftilstand"
+
 msgctxt "#31004"
 msgid "Change mode"
 msgstr "Skift tilstand"
@@ -31,6 +39,54 @@ msgstr "Skift tilstand"
 msgctxt "#31005"
 msgid "Watch as 2D"
 msgstr "Se i 2D"
+
+msgctxt "#31006"
+msgid "Random movies"
+msgstr "Tilfældige film"
+
+msgctxt "#31007"
+msgid "Unwatched movies"
+msgstr "Usete film"
+
+msgctxt "#31009"
+msgid "Download icons"
+msgstr "Hent ikoner"
+
+msgctxt "#31010"
+msgid "In progress movies"
+msgstr "Igangværende film"
+
+msgctxt "#31011"
+msgid "Most played albums"
+msgstr "Mest afspillede albums"
+
+msgctxt "#31012"
+msgid "Random albums"
+msgstr "Tilfældige albums"
+
+msgctxt "#31013"
+msgid "Random artists"
+msgstr "Tilfældige kunstnere"
+
+msgctxt "#31014"
+msgid "Unplayed albums"
+msgstr "Uafspillede album"
+
+msgctxt "#31015"
+msgid "Recent recordings"
+msgstr "Nyelig optagelser"
+
+msgctxt "#31016"
+msgid "Recently played channels"
+msgstr "Nyelig sete kanaler"
+
+msgctxt "#31017"
+msgid "Rated"
+msgstr "Vurderet"
+
+msgctxt "#31018"
+msgid "Recently played channels"
+msgstr "Nyelig sete kanaler"
 
 msgctxt "#31019"
 msgid "Forecast"
@@ -44,9 +100,37 @@ msgctxt "#31021"
 msgid "Misc options"
 msgstr "Andre indstillinger"
 
+msgctxt "#31022"
+msgid "Sort by"
+msgstr "Sorter efter"
+
+msgctxt "#31026"
+msgid "Timeshift"
+msgstr "Tidsforskydning"
+
+msgctxt "#31028"
+msgid "Show fanart"
+msgstr "Vis fankunst"
+
 msgctxt "#31029"
 msgid "Last logged in"
 msgstr "Sidst logget ind"
+
+msgctxt "#31030"
+msgid "System memory usage"
+msgstr "Hukommelsesforbrug"
+
+msgctxt "#31031"
+msgid "Version info"
+msgstr "Version"
+
+msgctxt "#31032"
+msgid "Order"
+msgstr "Rækkefølge"
+
+msgctxt "#31033"
+msgid "Your rating"
+msgstr "Din vurdering"
 
 msgctxt "#31038"
 msgid "Rewind"
@@ -58,7 +142,7 @@ msgstr "Spol Frem"
 
 msgctxt "#31042"
 msgid "Playlist options"
-msgstr "Indstillinger for Afspilningsliste"
+msgstr "Playlisteindstillinger"
 
 msgctxt "#31044"
 msgid "Add group"
@@ -72,13 +156,45 @@ msgctxt "#31046"
 msgid "Delete group"
 msgstr "Slet Gruppe"
 
+msgctxt "#31048"
+msgid "Available"
+msgstr "Tilgængelig"
+
+msgctxt "#31052"
+msgid "filtered"
+msgstr "filtreret"
+
 msgctxt "#31053"
 msgid "Arial based"
 msgstr "Baseret på Arial"
 
+msgctxt "#31056"
+msgid "Go to playlist"
+msgstr "Gå til playliste"
+
+msgctxt "#31058"
+msgid "Automatic Login on startup"
+msgstr "Automatisk login ved opstart"
+
+msgctxt "#31063"
+msgid "Sections"
+msgstr "Sektioner"
+
+msgctxt "#31065"
+msgid "Video playlist"
+msgstr "Videoplayliste"
+
+msgctxt "#31066"
+msgid "Music playlist"
+msgstr "Musikplayliste"
+
 msgctxt "#31069"
 msgid "Last Updated"
 msgstr "Sidst Opdateret"
+
+msgctxt "#31071"
+msgid "by"
+msgstr "af"
 
 msgctxt "#31072"
 msgid "Power Options"
@@ -87,6 +203,22 @@ msgstr "Strømstyring"
 msgctxt "#31082"
 msgid "Lyrics add-on"
 msgstr "Add-on til Sangtekster"
+
+msgctxt "#31089"
+msgid "Available groups"
+msgstr "Tilgængelig grupper"
+
+msgctxt "#31090"
+msgid "Search trailer"
+msgstr "Søg efter trailer"
+
+msgctxt "#31092"
+msgid "Video menu"
+msgstr "Videomenu"
+
+msgctxt "#31093"
+msgid "Show weather info in top bar"
+msgstr "Vis vejrinformationer i topbaren"
 
 msgctxt "#31096"
 msgid "Local subtitle available"
@@ -100,10 +232,138 @@ msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "Vælg din Kodi brugerprofil[CR]for at logge ind og fortsætte"
 
+msgctxt "#31099"
+msgid "IconWall"
+msgstr "Ikonvæg"
+
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Shift"
 
+msgctxt "#31101"
+msgid "InfoWall"
+msgstr "Infovæg"
+
+msgctxt "#31102"
+msgid "Wall"
+msgstr "Væg"
+
+msgctxt "#31103"
+msgid "Enter text here..."
+msgstr "Indtast tekst her..."
+
 msgctxt "#31106"
 msgid "Teletext"
 msgstr "Tekst-tv"
+
+msgctxt "#31113"
+msgid "Search local library"
+msgstr "Søg i lokalt bibliotek"
+
+msgctxt "#31114"
+msgid "Search YouTube"
+msgstr "Søg på YouTube"
+
+msgctxt "#31115"
+msgid "Search TheMovieDB"
+msgstr "Søg på TheMovieDB"
+
+msgctxt "#31116"
+msgid "Remove this main menu item"
+msgstr "Fjern dette menupunkt"
+
+msgctxt "#31121"
+msgid "Set weather provider"
+msgstr "Vælg vejrleverandør"
+
+msgctxt "#31122"
+msgid "Unwatched TV Shows"
+msgstr "Usete TV-shows"
+
+msgctxt "#31123"
+msgid "Same director"
+msgstr "Samme instruktør"
+
+msgctxt "#31125"
+msgid "Press up for actor info"
+msgstr "Tryk op for skuespillerinformationer"
+
+msgctxt "#31126"
+msgid "Press OK to read plot"
+msgstr "Tryk OK for at læse resumé"
+
+msgctxt "#31127"
+msgid "Show icons"
+msgstr "Vis ikoner"
+
+msgctxt "#31128"
+msgid "Contributors"
+msgstr "Bidragsydere"
+
+msgctxt "#31134"
+msgid "Remaining"
+msgstr "Tilbage"
+
+msgctxt "#31137"
+msgid "PVR info"
+msgstr "PVR-information"
+
+msgctxt "#31140"
+msgid "Pixel format"
+msgstr "Pixelformat"
+
+msgctxt "#31141"
+msgid "Changes for version"
+msgstr "Versionsændringer"
+
+msgctxt "#31142"
+msgid "Play speed"
+msgstr "Afspilningshastighed"
+
+msgctxt "#31145"
+msgid "Search add-ons"
+msgstr "Søg efter Add-ons"
+
+msgctxt "#31148"
+msgid "Categories"
+msgstr "Kategorier"
+
+msgctxt "#31149"
+msgid "Select genre fanart pack"
+msgstr "Vælg fankunst genrepakke"
+
+msgctxt "#31151"
+msgid "Unwatched music videos"
+msgstr "Usete musikvideoer"
+
+msgctxt "#31152"
+msgid "Random music videos"
+msgstr "Tilfældig musikvideo"
+
+msgctxt "#31154"
+msgid "Press OK to switch between locations"
+msgstr "Tryk OK for at skifte mellem lokationer"
+
+msgctxt "#31155"
+msgid "No bookmarks created yet."
+msgstr "Ingen bogmærker oprettet endnu"
+
+msgctxt "#31156"
+msgid "Choose background pattern"
+msgstr "Vælg baggrunds mønster"
+
+msgctxt "#31157"
+msgid "Edit categories"
+msgstr "Rediger kategorier"
+
+msgctxt "#31158"
+msgid "Touch mode"
+msgstr "Touchtilstand"
+
+msgctxt "#31160"
+msgid "Show media flags"
+msgstr "Vis medieflag"
+
+msgctxt "#31161"
+msgid "Numeric pad"
+msgstr "Numerisk tastetur"

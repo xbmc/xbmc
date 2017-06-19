@@ -1,0 +1,42 @@
+--- lib/ccan/libccan.m4
++++ lib/ccan/libccan.m4
+@@ -121,16 +121,9 @@
+ 	     [whether we can compile with __attribute__((used))])
+ fi
+ 
+-# FIXME: We could use endian.h or sys/endian.h here, and __BYTE_ORDER for
+-# cross-compiling.
+-AC_CACHE_CHECK([whether we are big endian],samba_cv_big_endian,[
+-AC_TRY_RUN([int main(void) {
+-union { int i; char c[sizeof(int)]; } u;
+-	  u.i = 0x01020304;
+-	  return u.c[0] == 0x01 && u.c[1] == 0x02 && u.c[2] == 0x03 && u.c[3] == 0x04 ? 0 : 1;
+-}],
+-samba_cv_big_endian=yes,
+-samba_cv_big_endian=no)])
++AC_C_BIGENDIAN(
++	samba_cv_big_endian=yes,
++	samba_cv_big_endian=no)
+ if test x"$samba_cv_big_endian" = xyes ; then
+    AC_DEFINE(HAVE_BIG_ENDIAN, 1,
+ 	     [whether we are big endian])
+@@ -300,16 +293,9 @@
+ 	     [whether we have isblank])
+ fi
+ 
+-# FIXME: We could use endian.h or sys/endian.h here, and __BYTE_ORDER for
+-# cross-compiling.
+-AC_CACHE_CHECK([whether we are little endian],samba_cv_little_endian,[
+-AC_TRY_RUN([int main(void) {
+-union { int i; char c[sizeof(int)]; } u;
+-	  u.i = 0x01020304;
+-	  return u.c[0] == 0x04 && u.c[1] == 0x03 && u.c[2] == 0x02 && u.c[3] == 0x01 ? 0 : 1;
+-}],
+-samba_cv_little_endian=yes,
+-samba_cv_little_endian=no)])
++AC_C_BIGENDIAN(
++	samba_cv_little_endian=no,
++	samba_cv_little_endian=yes)
+ if test x"$samba_cv_little_endian" = xyes ; then
+    AC_DEFINE(HAVE_LITTLE_ENDIAN, 1,
+ 	     [whether we are little endian])

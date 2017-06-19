@@ -31,14 +31,9 @@
 #include <deque>
 #include <vector>
 
-namespace EPG
-{
-  class CEpg;
-}
-
 namespace PVR
 {
-  class CPVRGUIInfo;
+  class CPVREpg;
 
   typedef std::shared_ptr<CPVRClient> PVR_CLIENT;
   typedef std::map< int, PVR_CLIENT >                 PVR_CLIENTMAP;
@@ -64,7 +59,6 @@ namespace PVR
 
   class CPVRClients : public ADDON::IAddonMgrCallback
   {
-  friend class CPVRClient;
   public:
     CPVRClients(void);
     virtual ~CPVRClients(void);
@@ -74,6 +68,10 @@ namespace PVR
      */
     void Start(void);
 
+    /*!
+     * @brief Update add-ons from the AddonManager
+     */
+    void UpdateAddons(void);
 
     /*! @name Backend methods */
     //@{
@@ -113,14 +111,14 @@ namespace PVR
      * @param bDataChanged True if the client's data changed, false otherwise (unused).
      * @return True if the client was found and restarted, false otherwise.
      */
-    virtual bool RequestRestart(ADDON::AddonPtr addon, bool bDataChanged) override;
+    bool RequestRestart(ADDON::AddonPtr addon, bool bDataChanged) override;
 
     /*!
      * @brief Remove a single client add-on.
      * @param addon The add-on to remove.
      * @return True if the client was found and removed, false otherwise.
      */
-    virtual bool RequestRemoval(ADDON::AddonPtr addon) override;
+    bool RequestRemoval(ADDON::AddonPtr addon) override;
 
     /*!
      * @brief Unload all loaded add-ons and reset all class properties.
@@ -353,7 +351,7 @@ namespace PVR
      * @param failedClients in case of errors will contain the ids of the clients for which the timers could not be obtained.
      * @return true on success for all clients, false in case of error for at least one client.
      */
-    bool GetTimers(CPVRTimers *timers, std::vector<int> &failedClients);
+    bool GetTimers(CPVRTimersContainer *timers, std::vector<int> &failedClients);
 
     /*!
      * @brief Add a new timer to a backend.
@@ -526,7 +524,7 @@ namespace PVR
      * @param error An error if it occured.
      * @return True if the EPG was transfered successfully, false otherwise.
      */
-    PVR_ERROR GetEPGForChannel(const CPVRChannelPtr &channel, EPG::CEpg *epg, time_t start, time_t end);
+    PVR_ERROR GetEPGForChannel(const CPVRChannelPtr &channel, CPVREpg *epg, time_t start, time_t end);
 
     /*!
      * Tell the client the time frame to use when notifying epg events back to Kodi. The client might push epg events asynchronously
@@ -674,11 +672,6 @@ namespace PVR
     void OnPowerSavingDeactivated();
 
   private:
-    /*!
-     * @brief Update add-ons from the AddonManager
-     */
-    void UpdateAddons(void);
-
     /*!
      * @brief Get the instance of the client.
      * @param iClientId The id of the client to get.

@@ -65,17 +65,12 @@
 #ifdef HAS_UPNP
 #include "UPnPDirectory.h"
 #endif
-#ifdef HAS_PVRCLIENTS
 #include "PVRDirectory.h"
-#endif
 #if defined(TARGET_ANDROID)
 #include "APKDirectory.h"
 #endif
 #include "XbtDirectory.h"
 #include "ZipDirectory.h"
-#ifdef HAS_FILESYSTEM_RAR
-#include "RarDirectory.h"
-#endif
 #include "FileItem.h"
 #include "URL.h"
 #include "RSSDirectory.h"
@@ -141,14 +136,6 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
   if (url.IsProtocol("apk")) return new CAPKDirectory();
 #endif
   if (url.IsProtocol("zip")) return new CZipDirectory();
-  if (url.IsProtocol("rar"))
-  {
-#ifdef HAS_FILESYSTEM_RAR
-    return new CRarDirectory();
-#else
-    CLog::Log(LOGWARNING, "%s - Compiled without non-free, rar support is disabled", __FUNCTION__);
-#endif
-  }
   if (url.IsProtocol("xbt")) return new CXbtDirectory();
   if (url.IsProtocol("multipath")) return new CMultiPathDirectory();
   if (url.IsProtocol("stack")) return new CStackDirectory();
@@ -190,9 +177,7 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
     if (url.IsProtocol("upnp")) return new CUPnPDirectory();
 #endif
     if (url.IsProtocol("rss")) return new CRSSDirectory();
-#ifdef HAS_PVRCLIENTS
     if (url.IsProtocol("pvr")) return new CPVRDirectory();
-#endif
 #ifdef HAS_ZEROCONF
     if (url.IsProtocol("zeroconf")) return new CZeroconfDirectory();
 #endif

@@ -36,6 +36,7 @@
 #include "GUIPassword.h"
 #include "PartyModeManager.h"
 #include "GUIInfoManager.h"
+#include "filesystem/Directory.h"
 #include "filesystem/MusicDatabaseDirectory.h"
 #include "music/dialogs/GUIDialogSongInfo.h"
 #include "addons/GUIDialogAddonInfo.h"
@@ -63,7 +64,6 @@
 #include "URL.h"
 #include "music/infoscanner/MusicInfoScanner.h"
 #include "guiinfo/GUIInfoLabels.h"
-#include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.h"
 #include "cores/IPlayer.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "CueDocument.h"
@@ -145,7 +145,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_WINDOW_INIT:
     {
-      m_dlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+      m_dlgProgress = g_windowManager.GetWindow<CGUIDialogProgress>(WINDOW_DIALOG_PROGRESS);
 
       m_musicdatabase.Open();
 
@@ -413,7 +413,7 @@ void CGUIWindowMusicBase::ShowArtistInfo(const CFileItem *pItem, bool bShowInfo 
     if (m_dlgProgress)
       m_dlgProgress->Close();
 
-    CGUIDialogMusicInfo *pDlgArtistInfo = (CGUIDialogMusicInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_INFO);
+    CGUIDialogMusicInfo *pDlgArtistInfo = g_windowManager.GetWindow<CGUIDialogMusicInfo>(WINDOW_DIALOG_MUSIC_INFO);
     if (pDlgArtistInfo)
     {
       pDlgArtistInfo->SetArtist(artist, artist.strPath);
@@ -495,7 +495,7 @@ bool CGUIWindowMusicBase::ShowAlbumInfo(const CFileItem *pItem, bool bShowInfo /
     if (m_dlgProgress)
       m_dlgProgress->Close();
 
-    CGUIDialogMusicInfo *pDlgAlbumInfo = (CGUIDialogMusicInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_INFO);
+    CGUIDialogMusicInfo *pDlgAlbumInfo = g_windowManager.GetWindow<CGUIDialogMusicInfo>(WINDOW_DIALOG_MUSIC_INFO);
     if (pDlgAlbumInfo)
     {
       pDlgAlbumInfo->SetAlbum(album, album.strPath);
@@ -522,7 +522,7 @@ bool CGUIWindowMusicBase::ShowAlbumInfo(const CFileItem *pItem, bool bShowInfo /
 
 void CGUIWindowMusicBase::ShowSongInfo(CFileItem* pItem)
 {
-  CGUIDialogSongInfo *dialog = (CGUIDialogSongInfo *)g_windowManager.GetWindow(WINDOW_DIALOG_SONG_INFO);
+  CGUIDialogSongInfo *dialog = g_windowManager.GetWindow<CGUIDialogSongInfo>(WINDOW_DIALOG_SONG_INFO);
   if (dialog)
   {
     if (!pItem->IsMusicDb())
@@ -852,8 +852,6 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
 
 void CGUIWindowMusicBase::GetNonContextButtons(CContextButtons &buttons)
 {
-  if (CServiceBroker::GetADSP().IsProcessing())
-    buttons.Add(CONTEXT_BUTTON_ACTIVE_ADSP_SETTINGS, 15047);
 }
 
 bool CGUIWindowMusicBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
@@ -914,10 +912,6 @@ bool CGUIWindowMusicBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
   case CONTEXT_BUTTON_PLAY_PARTYMODE:
     g_partyModeManager.Enable(PARTYMODECONTEXT_MUSIC, item->GetPath());
-    return true;
-
-  case CONTEXT_BUTTON_ACTIVE_ADSP_SETTINGS:
-    g_windowManager.ActivateWindow(WINDOW_DIALOG_AUDIO_DSP_OSD_SETTINGS);
     return true;
 
   case CONTEXT_BUTTON_RIP_CD:
@@ -1117,11 +1111,7 @@ bool CGUIWindowMusicBase::OnPlayMedia(int iItem, const std::string &player)
       OnQueueItem(iItem);
       return true;
     }
-    g_playlistPlayer.Reset();
-    g_playlistPlayer.ClearPlaylist(PLAYLIST_MUSIC);
-    g_playlistPlayer.Add(PLAYLIST_MUSIC, pItem);
-    g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
-    g_playlistPlayer.Play();
+    g_playlistPlayer.Play(pItem, player);
     return true;
   }
   return CGUIMediaWindow::OnPlayMedia(iItem, player);
@@ -1244,6 +1234,9 @@ bool CGUIWindowMusicBase::GetDirectory(const std::string &strDirectory, CFileIte
   bool bResult = CGUIMediaWindow::GetDirectory(strDirectory, items);
   if (bResult)
   {
+    // We always want to expand disc images in music windows.
+    CDirectory::FilterFileDirectories(items, ".iso", true);
+
     CMusicThumbLoader loader;
     loader.FillThumb(items);
 

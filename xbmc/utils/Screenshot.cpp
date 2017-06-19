@@ -43,6 +43,7 @@
 #include "filesystem/File.h"
 #include "guilib/GraphicContext.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/LocalizeStrings.h"
 
 #include "utils/JobManager.h"
 #include "utils/URIUtils.h"
@@ -245,13 +246,13 @@ void CScreenShot::TakeScreenshot()
   std::string strDir;
 
   // check to see if we have a screenshot folder yet
-  CSettingPath *screenshotSetting = (CSettingPath*)CServiceBroker::GetSettings().GetSetting(CSettings::SETTING_DEBUG_SCREENSHOTPATH);
+  std::shared_ptr<CSettingPath> screenshotSetting = std::static_pointer_cast<CSettingPath>(CServiceBroker::GetSettings().GetSetting(CSettings::SETTING_DEBUG_SCREENSHOTPATH));
   if (screenshotSetting != NULL)
   {
     strDir = screenshotSetting->GetValue();
     if (strDir.empty())
     {
-      if (CGUIControlButtonSetting::GetPath(screenshotSetting))
+      if (CGUIControlButtonSetting::GetPath(screenshotSetting, &g_localizeStrings))
         strDir = screenshotSetting->GetValue();
     }
   }
@@ -285,7 +286,7 @@ void CScreenShot::TakeScreenshot()
           newDir = screenshotSetting->GetValue();
           if (newDir.empty())
           {
-            if (CGUIControlButtonSetting::GetPath(screenshotSetting))
+            if (CGUIControlButtonSetting::GetPath(screenshotSetting, &g_localizeStrings))
               newDir = screenshotSetting->GetValue();
           }
         }

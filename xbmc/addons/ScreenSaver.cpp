@@ -17,105 +17,68 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 #include "ScreenSaver.h"
-#include "ServiceBroker.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/GraphicContext.h"
-#include "interfaces/generic/ScriptInvocationManager.h"
-#include "settings/Settings.h"
-#include "utils/AlarmClock.h"
-#include "utils/URIUtils.h"
 #include "windowing/WindowingFactory.h"
-
-// What sound does a python screensaver make?
-#define SCRIPT_ALARM "sssssscreensaver"
-
-#define SCRIPT_TIMEOUT 15 // seconds
+#include "utils/log.h"
 
 namespace ADDON
 {
 
-CScreenSaver::CScreenSaver(AddonProps props)
- : ADDON::CAddonDll(std::move(props))
+CScreenSaver::CScreenSaver(BinaryAddonBasePtr addonBase)
+ : IAddonInstanceHandler(ADDON_INSTANCE_SCREENSAVER, addonBase)
 {
-  memset(&m_struct, 0, sizeof(m_struct));
-}
-
-CScreenSaver::CScreenSaver(const char *addonID)
- : ADDON::CAddonDll(AddonProps(addonID, ADDON_UNKNOWN))
-{
-  memset(&m_struct, 0, sizeof(m_struct));
-}
-
-bool CScreenSaver::IsInUse() const
-{
-  return CServiceBroker::GetSettings().GetString(CSettings::SETTING_SCREENSAVER_MODE) == ID();
-}
-
-bool CScreenSaver::CreateScreenSaver()
-{
-  if (CScriptInvocationManager::GetInstance().HasLanguageInvoker(LibPath()))
-  {
-    // Don't allow a previously-scheduled alarm to kill our new screensaver
-    g_alarmClock.Stop(SCRIPT_ALARM, true);
-
-    if (!CScriptInvocationManager::GetInstance().Stop(LibPath()))
-      CScriptInvocationManager::GetInstance().ExecuteAsync(LibPath(), AddonPtr(new CScreenSaver(*this)));
-    return true;
-  }
-
   m_name = Name();
   m_presets = CSpecialProtocol::TranslatePath(Path());
   m_profile = CSpecialProtocol::TranslatePath(Profile());
 
+  m_struct = {0};
 #ifdef HAS_DX
-  m_info.device = g_Windowing.Get3D11Context();
+  m_struct.props.device = g_Windowing.Get3D11Context();
 #else
-  m_info.device = nullptr;
+  m_struct.props.device = nullptr;
 #endif
-  m_info.x = 0;
-  m_info.y = 0;
-  m_info.width = g_graphicsContext.GetWidth();
-  m_info.height = g_graphicsContext.GetHeight();
-  m_info.pixelRatio = g_graphicsContext.GetResInfo().fPixelRatio;
-  m_info.name = m_name.c_str();
-  m_info.presets = m_presets.c_str();
-  m_info.profile = m_profile.c_str();
+  m_struct.props.x = 0;
+  m_struct.props.y = 0;
+  m_struct.props.width = g_graphicsContext.GetWidth();
+  m_struct.props.height = g_graphicsContext.GetHeight();
+  m_struct.props.pixelRatio = g_graphicsContext.GetResInfo().fPixelRatio;
+  m_struct.props.name = m_name.c_str();
+  m_struct.props.presets = m_presets.c_str();
+  m_struct.props.profile = m_profile.c_str();
 
-  if (CAddonDll::Create(&m_struct, &m_info) == ADDON_STATUS_OK)
-    return true;
+  m_struct.toKodi.kodiInstance = this;
 
+  /* Open the class "kodi::addon::CInstanceScreensaver" on add-on side */
+  if (!CreateInstance(&m_struct))
+    CLog::Log(LOGFATAL, "Screensaver: failed to create instance for '%s' and not usable!", ID().c_str());
+}
+
+CScreenSaver::~CScreenSaver()
+{
+  /* Destroy the class "kodi::addon::CInstanceScreensaver" on add-on side */
+  DestroyInstance();
+}
+
+bool CScreenSaver::Start()
+{
+  if (m_struct.toAddon.Start)
+    return m_struct.toAddon.Start(&m_struct);
   return false;
 }
 
-void CScreenSaver::Start()
+void CScreenSaver::Stop()
 {
-  // notify screen saver that they should start
-  if (m_struct.Start)
-    m_struct.Start();
+  if (m_struct.toAddon.Stop)
+    m_struct.toAddon.Stop(&m_struct);
 }
 
 void CScreenSaver::Render()
 {
-  // ask screensaver to render itself
-  if (m_struct.Render)
-    m_struct.Render();
-}
-
-void CScreenSaver::Destroy()
-{
-  if (URIUtils::HasExtension(LibPath(), ".py"))
-  {
-    /* FIXME: This is a hack but a proper fix is non-trivial. Basically this code
-     * makes sure the addon gets terminated after we've moved out of the screensaver window.
-     * If we don't do this, we may simply lockup.
-     */
-    g_alarmClock.Start(SCRIPT_ALARM, SCRIPT_TIMEOUT, "StopScript(" + LibPath() + ")", true, false);
-    return;
-  }
-
-  memset(&m_struct, 0, sizeof(m_struct));
-  CAddonDll::Destroy();
+  if (m_struct.toAddon.Render)
+    m_struct.toAddon.Render(&m_struct);
 }
 
 } /* namespace ADDON */

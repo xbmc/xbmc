@@ -121,7 +121,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     virtual void OnSettingsLoaded() override;
     virtual void OnSettingsUnloaded() override;
 
-    virtual void OnSettingChanged(const CSetting *setting) override;
+    virtual void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
 
     void Initialize();
     bool Initialized() { return m_initialized; };
@@ -134,7 +134,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     static void GetCustomExtensions(TiXmlElement *pRootElement, std::string& extensions);
 
     bool CanLogComponent(int component) const;
-    static void SettingOptionsLoggingComponentsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
+    static void SettingOptionsLoggingComponentsFiller(std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
 
     int m_audioHeadRoom;
     float m_ac3Gain;
@@ -257,12 +257,14 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     bool m_bMusicLibraryAllItemsOnBottom;
     bool m_bMusicLibraryCleanOnUpdate;
     bool m_bMusicLibraryPromptFullTagScan;
+    bool m_bMusicLibraryArtistSortOnUpdate;
     std::string m_strMusicLibraryAlbumFormat;
     bool m_prioritiseAPEv2tags;
     std::string m_musicItemSeparator;
     std::vector<std::string> m_musicArtistSeparators;
     std::string m_videoItemSeparator;
     std::vector<std::string> m_musicTagsFromFileFilters;
+    bool m_musicUseArtistSortName;
 
     bool m_bVideoLibraryAllItemsOnBottom;
     int m_iVideoLibraryRecentlyAddedItems;
@@ -341,6 +343,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
 
     bool m_guiVisualizeDirtyRegions;
     int  m_guiAlgorithmDirtyRegions;
+    bool m_guiSmartRedraw;
     unsigned int m_addonPackageFolderSize;
 
     unsigned int m_cacheMemSize;

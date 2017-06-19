@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2015-2016 Team Kodi
+ *      Copyright (C) 2015-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -32,7 +32,7 @@ namespace PERIPHERALS
   class CPeripheralBusApplication : public CPeripheralBus
   {
   public:
-    CPeripheralBusApplication(CPeripherals* manager);
+    CPeripheralBusApplication(CPeripherals& manager);
     virtual ~CPeripheralBusApplication(void) { }
 
     // implementation of CPeripheralBus

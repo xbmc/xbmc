@@ -84,7 +84,7 @@ bool CGUIDialogNetworkSetup::OnMessage(CGUIMessage& message)
   return CGUIDialogSettingsManualBase::OnMessage(message);
 }
 
-void CGUIDialogNetworkSetup::OnSettingChanged(const CSetting *setting)
+void CGUIDialogNetworkSetup::OnSettingChanged(std::shared_ptr<const CSetting> setting)
 {
   if (setting == NULL)
     return;
@@ -102,18 +102,18 @@ void CGUIDialogNetworkSetup::OnSettingChanged(const CSetting *setting)
     OnProtocolChange();
   }
   else if (settingId == SETTING_SERVER_ADDRESS)
-    m_server = static_cast<const CSettingString*>(setting)->GetValue();
+    m_server = std::static_pointer_cast<const CSettingString>(setting)->GetValue();
   else if (settingId == SETTING_REMOTE_PATH)
-    m_path = static_cast<const CSettingString*>(setting)->GetValue();
+    m_path = std::static_pointer_cast<const CSettingString>(setting)->GetValue();
   else if (settingId == SETTING_PORT_NUMBER)
-    m_port = static_cast<const CSettingString*>(setting)->GetValue();
+    m_port = std::static_pointer_cast<const CSettingString>(setting)->GetValue();
   else if (settingId == SETTING_USERNAME)
-    m_username = static_cast<const CSettingString*>(setting)->GetValue();
+    m_username = std::static_pointer_cast<const CSettingString>(setting)->GetValue();
   else if (settingId == SETTING_PASSWORD)
-    m_password = static_cast<const CSettingString*>(setting)->GetValue();
+    m_password = std::static_pointer_cast<const CSettingString>(setting)->GetValue();
 }
 
-void CGUIDialogNetworkSetup::OnSettingAction(const CSetting *setting)
+void CGUIDialogNetworkSetup::OnSettingAction(std::shared_ptr<const CSetting> setting)
 {
   if (setting == NULL)
     return;
@@ -130,7 +130,7 @@ void CGUIDialogNetworkSetup::OnSettingAction(const CSetting *setting)
 // \return True if the network address is valid, false otherwise.
 bool CGUIDialogNetworkSetup::ShowAndGetNetworkAddress(std::string &path)
 {
-  CGUIDialogNetworkSetup *dialog = (CGUIDialogNetworkSetup *)g_windowManager.GetWindow(WINDOW_DIALOG_NETWORK_SETUP);
+  CGUIDialogNetworkSetup *dialog = g_windowManager.GetWindow<CGUIDialogNetworkSetup>(WINDOW_DIALOG_NETWORK_SETUP);
   if (!dialog) return false;
   dialog->Initialize();
   dialog->SetPath(path);
@@ -176,14 +176,14 @@ void CGUIDialogNetworkSetup::InitializeSettings()
 {
   CGUIDialogSettingsManualBase::InitializeSettings();
 
-  CSettingCategory *category = AddCategory("networksetupsettings", -1);
+  const std::shared_ptr<CSettingCategory> category = AddCategory("networksetupsettings", -1);
   if (category == NULL)
   {
     CLog::Log(LOGERROR, "CGUIDialogNetworkSetup: unable to setup settings");
     return;
   }
 
-  CSettingGroup *group = AddGroup(category);
+  const std::shared_ptr<CSettingGroup> group = AddGroup(category);
   if (group == NULL)
   {
     CLog::Log(LOGERROR, "CGUIDialogNetworkSetup: unable to setup settings");
@@ -191,7 +191,7 @@ void CGUIDialogNetworkSetup::InitializeSettings()
   }
 
   // Add our protocols
-  StaticIntegerSettingOptions labels;
+  TranslatableIntegerSettingOptions labels;
 #ifdef HAS_FILESYSTEM_SMB
   labels.push_back(std::make_pair(20171, NET_PROTOCOL_SMB));
 #endif
@@ -209,16 +209,16 @@ void CGUIDialogNetworkSetup::InitializeSettings()
   labels.push_back(std::make_pair(20260, NET_PROTOCOL_SFTP));
 #endif
 
-  AddSpinner(group, SETTING_PROTOCOL, 1008, 0, m_protocol, labels);
-  AddEdit(group, SETTING_SERVER_ADDRESS, 1010, 0, m_server, true);
-  CSettingAction *subsetting = AddButton(group, SETTING_SERVER_BROWSE, 1024, 0, false);
+  AddSpinner(group, SETTING_PROTOCOL, 1008, SettingLevel::Basic, m_protocol, labels);
+  AddEdit(group, SETTING_SERVER_ADDRESS, 1010, SettingLevel::Basic, m_server, true);
+  std::shared_ptr<CSettingAction> subsetting = AddButton(group, SETTING_SERVER_BROWSE, 1024, SettingLevel::Basic, "", false);
   if (subsetting != NULL)
     subsetting->SetParent(SETTING_SERVER_ADDRESS);
 
-  AddEdit(group, SETTING_REMOTE_PATH, 1012, 0, m_path, true);
-  AddEdit(group, SETTING_PORT_NUMBER, 1013, 0, m_port, true);
-  AddEdit(group, SETTING_USERNAME, 1014, 0, m_username, true);
-  AddEdit(group, SETTING_PASSWORD, 15052, 0, m_password, true, true);
+  AddEdit(group, SETTING_REMOTE_PATH, 1012, SettingLevel::Basic, m_path, true);
+  AddEdit(group, SETTING_PORT_NUMBER, 1013, SettingLevel::Basic, m_port, true);
+  AddEdit(group, SETTING_USERNAME, 1014, SettingLevel::Basic, m_username, true);
+  AddEdit(group, SETTING_PASSWORD, 15052, SettingLevel::Basic, m_password, true, true);
 }
 
 void CGUIDialogNetworkSetup::OnServerBrowse()

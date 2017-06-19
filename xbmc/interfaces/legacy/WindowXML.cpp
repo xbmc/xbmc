@@ -97,17 +97,19 @@ namespace XBMCAddon
     WindowXML::WindowXML(const String& xmlFilename,
                          const String& scriptPath,
                          const String& defaultSkin,
-                         const String& defaultRes) :
+                         const String& defaultRes,
+                         bool isMedia) :
       Window(true)
     {
       XBMC_TRACE;
       RESOLUTION_INFO res;
       std::string strSkinPath = g_SkinInfo->GetSkinPath(xmlFilename, &res);
+      m_isMedia = isMedia;
 
       if (!XFILE::CFile::Exists(strSkinPath))
       {
         std::string str("none");
-        ADDON::AddonProps props(str, ADDON::ADDON_SKIN);
+        ADDON::CAddonInfo addonInfo(str, ADDON::ADDON_SKIN);
         ADDON::CSkinInfo::TranslateResolution(defaultRes, res);
 
         // Check for the matching folder for the skin in the fallback skins folder
@@ -119,20 +121,20 @@ namespace XBMCAddon
         // Check for the matching folder for the skin in the fallback skins folder (if it exists)
         if (XFILE::CFile::Exists(basePath))
         {
-          props.path = basePath;
-          ADDON::CSkinInfo skinInfo(props, res);
-          skinInfo.Start();
-          strSkinPath = skinInfo.GetSkinPath(xmlFilename, &res);
+          addonInfo.SetPath(basePath);
+          std::shared_ptr<ADDON::CSkinInfo> skinInfo = std::make_shared<ADDON::CSkinInfo>(addonInfo, res);
+          skinInfo->Start();
+          strSkinPath = skinInfo->GetSkinPath(xmlFilename, &res);
         }
 
         if (!XFILE::CFile::Exists(strSkinPath))
         {
           // Finally fallback to the DefaultSkin as it didn't exist in either the XBMC Skin folder or the fallback skin folder
-          props.path = URIUtils::AddFileToFolder(fallbackPath, defaultSkin);
-          ADDON::CSkinInfo skinInfo(props, res);
+          addonInfo.SetPath(URIUtils::AddFileToFolder(fallbackPath, defaultSkin));
+          std::shared_ptr<ADDON::CSkinInfo> skinInfo = std::make_shared<ADDON::CSkinInfo>(addonInfo, res);
 
-          skinInfo.Start();
-          strSkinPath = skinInfo.GetSkinPath(xmlFilename, &res);
+          skinInfo->Start();
+          strSkinPath = skinInfo->GetSkinPath(xmlFilename, &res);
           if (!XFILE::CFile::Exists(strSkinPath))
             throw WindowException("XML File for Window is missing");
         }
@@ -283,14 +285,6 @@ namespace XBMCAddon
       XBMC_TRACE;
       LOCKGUI;
       return A(m_viewControl.GetCurrentControl());
-    }
-
-    bool WindowXML::IsMediaWindow()
-    {
-      XBMC_TRACE;
-      if (A(m_viewControl.GetViewModeCount()) == 0)
-        return false;
-      return true;
     }
 
     bool WindowXML::OnAction(const CAction &action)
@@ -473,19 +467,7 @@ namespace XBMCAddon
     bool WindowXML::LoadXML(const String &strPath, const String &strLowerPath)
     {
       XBMC_TRACE;
-      // load our window
-      CXBMCTinyXML xmlDoc;
-
-      std::string strPathLower = strPath;
-      StringUtils::ToLower(strPathLower);
-      if (!xmlDoc.LoadFile(strPath) && !xmlDoc.LoadFile(strPathLower) && !xmlDoc.LoadFile(strLowerPath))
-      {
-        // fail - can't load the file
-        CLog::Log(LOGERROR, "%s: Unable to load skin file %s", __FUNCTION__, strPath.c_str());
-        return false;
-      }
-
-      return interceptor->Load(xmlDoc.RootElement());
+      return A(CGUIWindow::LoadXML(strPath, strLowerPath));
     }
 
     void WindowXML::SetupShares()

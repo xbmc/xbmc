@@ -43,7 +43,7 @@ namespace PERIPHERALS
   class CPeripheralBus : protected CThread
   {
   public:
-    CPeripheralBus(const std::string &threadname, CPeripherals *manager, PeripheralBusType type);
+    CPeripheralBus(const std::string &threadname, CPeripherals& manager, PeripheralBusType type);
     virtual ~CPeripheralBus(void) { Clear(); }
 
     /*!
@@ -161,8 +161,6 @@ namespace PERIPHERALS
 
     virtual bool FindComPort(std::string &strLocation) { return false; }
 
-    virtual bool IsInitialised(void) const { CSingleLock lock(m_critSection); return m_bInitialised; }
-
     /*!
      * \brief Poll for events
      */
@@ -172,7 +170,13 @@ namespace PERIPHERALS
     * \brief Initialize button mapping
     * \return True if button mapping is enabled for this bus
     */
-    virtual bool EnableButtonMapping() { return false; }
+    virtual void EnableButtonMapping() { }
+
+    /*!
+     * \brief Power off the specified device
+     * \param strLocation The device's location
+     */
+    virtual void PowerOff(const std::string& strLocation) { }
 
   protected:
     virtual void Process(void);
@@ -189,10 +193,8 @@ namespace PERIPHERALS
 
     PeripheralVector           m_peripherals;
     int                        m_iRescanTime;
-    bool                       m_bInitialised;
-    bool                       m_bIsStarted;
     bool                       m_bNeedsPolling; /*!< true when this bus needs to be polled for new devices, false when it uses callbacks to notify this bus of changed */
-    CPeripherals *const        m_manager;
+    CPeripherals&              m_manager;
     const PeripheralBusType    m_type;
     CCriticalSection           m_critSection;
     CEvent                     m_triggerEvent;

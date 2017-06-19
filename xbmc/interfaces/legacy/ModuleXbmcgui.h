@@ -83,6 +83,40 @@ namespace XBMCAddon
 #else
     long getCurrentWindowDialogId();
 #endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+    ///
+    /// \ingroup python_xbmcgui_window
+    /// @brief \python_func{ getScreenHeight() }
+    ///-------------------------------------------------------------------------
+    /// Returns the height of this screen.
+    ///
+    /// @return                       Screen height
+    ///
+    ///-------------------------------------------------------------------------
+    /// @python_v18 New function added.
+    ///
+    getScreenHeight();
+#else
+    long getScreenHeight();
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+    ///
+    /// \ingroup python_xbmcgui_window
+    /// @brief \python_func{ getScreenWidth() }
+    ///-------------------------------------------------------------------------
+    /// Returns the width of this screen.
+    ///
+    /// @return                       Screen width
+    ///
+    ///-------------------------------------------------------------------------
+    /// @python_v18 New function added.
+    ///
+    getScreenWidth();
+#else
+    long getScreenWidth();
+#endif
     ///@}
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS

@@ -113,7 +113,7 @@ bool CRepositoryUpdater::CheckForUpdates(bool showProgress)
 
 static void SetProgressIndicator(CRepositoryUpdateJob* job)
 {
-  auto* dialog = static_cast<CGUIDialogExtendedProgressBar*>(g_windowManager.GetWindow(WINDOW_DIALOG_EXT_PROGRESS));
+  auto dialog = g_windowManager.GetWindow<CGUIDialogExtendedProgressBar>(WINDOW_DIALOG_EXT_PROGRESS);
   if (dialog)
     job->SetProgressIndicators(dialog->GetHandle(g_localizeStrings.Get(24092)), nullptr);
 }
@@ -160,7 +160,7 @@ void CRepositoryUpdater::OnTimeout()
   CheckForUpdates();
 }
 
-void CRepositoryUpdater::OnSettingChanged(const CSetting* setting)
+void CRepositoryUpdater::OnSettingChanged(std::shared_ptr<const CSetting> setting)
 {
   if (setting->GetId() == CSettings::SETTING_ADDONS_AUTOUPDATES)
     ScheduleUpdate();

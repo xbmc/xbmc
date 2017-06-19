@@ -37,7 +37,8 @@ typedef enum {
 typedef enum {
   SortAttributeNone           = 0x0,
   SortAttributeIgnoreArticle  = 0x1,
-  SortAttributeIgnoreFolders  = 0x2
+  SortAttributeIgnoreFolders  = 0x2,
+  SortAttributeUseArtistSortName = 0x4
 } SortAttribute;
 
 typedef enum {

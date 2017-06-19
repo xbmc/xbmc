@@ -166,7 +166,7 @@ public:
   ProgressDialogHelper (const std::string& heading) : m_dialog(0)
   {
     if (g_application.IsCurrentThread())
-      m_dialog = (CGUIDialogProgress*) g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+      m_dialog = g_windowManager.GetWindow<CGUIDialogProgress>(WINDOW_DIALOG_PROGRESS);
 
     if (m_dialog)
     {
@@ -631,7 +631,7 @@ void CWakeOnAccess::OnJobComplete(unsigned int jobID, bool success, CJob *job)
   }
 }
 
-void CWakeOnAccess::OnSettingChanged(const CSetting *setting)
+void CWakeOnAccess::OnSettingChanged(std::shared_ptr<const CSetting> setting)
 {
   if (setting == nullptr)
     return;
@@ -639,7 +639,7 @@ void CWakeOnAccess::OnSettingChanged(const CSetting *setting)
   const std::string& settingId = setting->GetId();
   if (settingId == CSettings::SETTING_POWERMANAGEMENT_WAKEONACCESS)
   {
-    bool enabled = static_cast<const CSettingBool*>(setting)->GetValue();
+    bool enabled = std::static_pointer_cast<const CSettingBool>(setting)->GetValue();
 
     SetEnabled(enabled);
 

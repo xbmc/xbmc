@@ -21,9 +21,11 @@
 
 #include <vector>
 
-#include "utils/JobManager.h"
-
+#include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
+#include "addons/PVRClient.h"
+#include "FileItem.h"
 #include "pvr/PVRTypes.h"
+#include "utils/JobManager.h"
 
 namespace PVR
 {
@@ -76,6 +78,92 @@ namespace PVR
     };
 
     std::vector<Event> m_events;
+  };
+
+  class CPVRStartupJob : public CJob
+  {
+  public:
+    CPVRStartupJob(void) = default;
+    virtual ~CPVRStartupJob() = default;
+    const char *GetType() const override { return "pvr-startup"; }
+
+    bool DoWork() override;
+  };
+
+  class CPVREpgsCreateJob : public CJob
+  {
+  public:
+    CPVREpgsCreateJob(void) = default;
+    virtual ~CPVREpgsCreateJob() = default;
+    const char *GetType() const override { return "pvr-create-epgs"; }
+
+    bool DoWork() override;
+  };
+
+  class CPVRRecordingsUpdateJob : public CJob
+  {
+  public:
+    CPVRRecordingsUpdateJob(void) = default;
+    virtual ~CPVRRecordingsUpdateJob() = default;
+    const char *GetType() const override { return "pvr-update-recordings"; }
+
+    bool DoWork() override;
+  };
+
+  class CPVRTimersUpdateJob : public CJob
+  {
+  public:
+    CPVRTimersUpdateJob(void) = default;
+    virtual ~CPVRTimersUpdateJob() = default;
+    const char *GetType() const override { return "pvr-update-timers"; }
+
+    bool DoWork() override;
+  };
+
+  class CPVRChannelsUpdateJob : public CJob
+  {
+  public:
+    CPVRChannelsUpdateJob(void) = default;
+    virtual ~CPVRChannelsUpdateJob() = default;
+    const char *GetType() const override { return "pvr-update-channels"; }
+
+    bool DoWork() override;
+  };
+
+  class CPVRChannelGroupsUpdateJob : public CJob
+  {
+  public:
+    CPVRChannelGroupsUpdateJob(void) = default;
+    virtual ~CPVRChannelGroupsUpdateJob() = default;
+    const char *GetType() const override { return "pvr-update-channelgroups"; }
+
+    bool DoWork() override;
+  };
+
+  class CPVRSearchMissingChannelIconsJob : public CJob
+  {
+  public:
+    CPVRSearchMissingChannelIconsJob(void) = default;
+    virtual ~CPVRSearchMissingChannelIconsJob() = default;
+    const char *GetType() const override { return "pvr-search-missing-channel-icons"; }
+
+    bool DoWork() override;
+  };
+
+  class CPVRClientConnectionJob : public CJob
+  {
+  public:
+    CPVRClientConnectionJob(CPVRClient *client, std::string connectString, PVR_CONNECTION_STATE state, std::string message)
+    : m_client(client), m_connectString(connectString), m_state(state), m_message(message) {}
+    virtual ~CPVRClientConnectionJob() = default;
+    const char *GetType() const override { return "pvr-client-connection"; }
+
+    bool DoWork() override;
+  private:
+    CPVRClient *m_client;
+    std::string m_connectString;
+    PVR_CONNECTION_STATE m_state;
+    std::string m_message;
   };
 
 } // namespace PVR

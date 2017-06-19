@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 # Addon Name: Estuary
 # Addon id: skin.estuary
-# Addon Provider: phil65, Piers
+# Addon Provider: phil65, Ichabod Fletchman
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
@@ -112,6 +112,10 @@ msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
 msgstr "Tiada kegemaran ditemui. Anda boleh tambah apa-apa item dari paparan media ke senarai ini menggunakan menu konteks."
 
+msgctxt "#31026"
+msgid "Timeshift"
+msgstr "Anjak Masa"
+
 msgctxt "#31028"
 msgid "Show fanart"
 msgstr "Tunjuk seni peminat"
@@ -119,6 +123,10 @@ msgstr "Tunjuk seni peminat"
 msgctxt "#31029"
 msgid "Last logged in"
 msgstr "Daftar masuk terakhir"
+
+msgctxt "#31030"
+msgid "System memory usage"
+msgstr "Penggunaan ingatan sistem"
 
 msgctxt "#31031"
 msgid "Version info"
@@ -308,6 +316,10 @@ msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "Pilih Profil pengguna Kodi anda[CR]untuk daftar masuk dan teruskan"
 
+msgctxt "#31099"
+msgid "IconWall"
+msgstr "DindingIkon"
+
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Shift"
@@ -428,10 +440,6 @@ msgctxt "#31131"
 msgid "Choose skin fanart pack"
 msgstr "Pilih pek kulit seni peminat"
 
-msgctxt "#31132"
-msgid "min"
-msgstr "min"
-
 msgctxt "#31134"
 msgid "Remaining"
 msgstr "Berbaki"
@@ -475,3 +483,59 @@ msgstr "Masukkan pelayar tambahan"
 msgctxt "#31145"
 msgid "Search add-ons"
 msgstr "Gelintar tambahan"
+
+msgctxt "#31148"
+msgid "Categories"
+msgstr "Kategori"
+
+msgctxt "#31149"
+msgid "Select genre fanart pack"
+msgstr "Pilih pek seni peminat genre"
+
+msgctxt "#31150"
+msgid "Repository"
+msgstr "Repositori"
+
+msgctxt "#31151"
+msgid "Unwatched music videos"
+msgstr "Video muzik belum ditonton"
+
+msgctxt "#31152"
+msgid "Random music videos"
+msgstr "Video muzik rawak"
+
+msgctxt "#31153"
+msgid "You do not have any add-ons of this type installed. Enter the add-on browser to download add-ons created by our community."
+msgstr "Anda belum lagi mempunyai apa-apa tambahan jenis ini yang terpasang. Pergi ke pelayar tambahan untuk memuat turun tambahan yang dihasilkan oleh komuniti kami."
+
+msgctxt "#31154"
+msgid "Press OK to switch between locations"
+msgstr "Tekan OK untuk tukar diantara lokasi"
+
+msgctxt "#31155"
+msgid "No bookmarks created yet."
+msgstr "Tiada tanda buku dicipta lagi"
+
+msgctxt "#31156"
+msgid "Choose background pattern"
+msgstr "Pilih pola latar belakang"
+
+msgctxt "#31157"
+msgid "Edit categories"
+msgstr "Sunting kategori"
+
+msgctxt "#31158"
+msgid "Touch mode"
+msgstr "Mod sentuh"
+
+msgctxt "#31159"
+msgid "Artwork"
+msgstr "Kerja seni"
+
+msgctxt "#31160"
+msgid "Show media flags"
+msgstr "Tunjuk bendera media"
+
+msgctxt "#31161"
+msgid "Numeric pad"
+msgstr "Pad numerik"

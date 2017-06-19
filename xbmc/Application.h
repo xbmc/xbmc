@@ -108,6 +108,7 @@ struct ReplayGainSettings
   int iPreAmp;
   int iNoGainPreAmp;
   int iType;
+  bool bAvoidClipping;
 };
 
 class CApplication : public CXBApplicationEx, public IPlayerCallback, public IMsgTargetCallback,
@@ -148,7 +149,7 @@ public:
   void Stop(int exitCode);
   void RestartApp();
   void UnloadSkin(bool forReload = false);
-  bool LoadUserWindows();
+  bool LoadCustomWindows();
   void ReloadSkin(bool confirm = false);
   const std::string& CurrentFile();
   CFileItem& CurrentFileItem();
@@ -163,7 +164,7 @@ public:
   virtual void OnPlayBackResumed() override;
   virtual void OnPlayBackStopped() override;
   virtual void OnQueueNextItem() override;
-  virtual void OnPlayBackSeek(int iTime, int seekOffset) override;
+  virtual void OnPlayBackSeek(int64_t iTime, int64_t seekOffset) override;
   virtual void OnPlayBackSeekChapter(int iChapter) override;
   virtual void OnPlayBackSpeedChanged(int iSpeed) override;
 
@@ -295,7 +296,9 @@ public:
   MEDIA_DETECT::CDetectDVDMedia m_DetectDVDType;
 #endif
 
-  inline bool IsInScreenSaver() { return m_bScreenSave; };
+  inline bool IsInScreenSaver() { return m_screensaverActive; };
+  inline std::string ScreensaverIdInUse() { return m_screensaverIdInUse; }
+
   inline bool IsDPMSActive() { return m_dpmsIsActive; };
   int m_iScreenSaveLock; // spiff: are we checking for a lock? if so, ignore the screensaver state, if -1 we have failed to input locks
 
@@ -357,8 +360,6 @@ public:
   void Minimize();
   bool ToggleDPMS(bool manual);
 
-  float GetDimScreenSaverLevel() const;
-
   bool SwitchToFullScreen(bool force = false);
 
   void SetRenderGUI(bool renderGUI) override;
@@ -400,9 +401,9 @@ protected:
   virtual bool Load(const TiXmlNode *settings) override;
   virtual bool Save(TiXmlNode *settings) const override;
 
-  virtual void OnSettingChanged(const CSetting *setting) override;
-  virtual void OnSettingAction(const CSetting *setting) override;
-  virtual bool OnSettingUpdate(CSetting* &setting, const char *oldSettingId, const TiXmlNode *oldSettingNode) override;
+  virtual void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
+  virtual void OnSettingAction(std::shared_ptr<const CSetting> setting) override;
+  virtual bool OnSettingUpdate(std::shared_ptr<CSetting> setting, const char *oldSettingId, const TiXmlNode *oldSettingNode) override;
 
   bool LoadSkin(const std::string& skinID);
 
@@ -426,8 +427,9 @@ protected:
   friend class CWinEventsAndroid;
 #endif
   // screensaver
-  bool m_bScreenSave;
-  ADDON::AddonPtr m_screenSaver;
+  bool m_screensaverActive;
+  std::string m_screensaverIdInUse;
+  ADDON::AddonPtr m_pythonScreenSaver; // @warning: Fallback for Python interface, for binaries not needed!
 
   // timer information
 #ifdef TARGET_WINDOWS

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2015-2016 Team Kodi
+ *      Copyright (C) 2015-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -26,41 +26,47 @@
 #include <map>
 #include <vector>
 
+namespace PERIPHERALS
+{
+  class CPeripheral;
+  class CPeripherals;
+}
+
 namespace KODI
 {
 namespace JOYSTICK
 {
   class IInputHandler;
 }
-}
-
-namespace PERIPHERALS
-{
-  class CPeripheral;
-}
 
 namespace GAME
 {
+  class CGameClient;
+  class CPortMapper;
+
   /*!
    * \brief Class to manage ports opened by game clients
    */
   class CPortManager : public Observable
   {
-  private:
-    CPortManager(void) = default;
-
   public:
-    static CPortManager& GetInstance();
+    CPortManager();
+    virtual ~CPortManager();
+
+    void Initialize(PERIPHERALS::CPeripherals& peripheralManager);
+    void Deinitialize();
 
     /*!
      * \brief Request a new port be opened with input on that port sent to the
      *        specified handler.
      *
      * \param handler      The instance accepting all input delivered to the port
+     * \param gameClient   The game client opening the port
      * \param port         The port number belonging to the game client
      * \param requiredType Used to restrict port to devices of only a certain type
      */
-    void OpenPort(KODI::JOYSTICK::IInputHandler* handler,
+    void OpenPort(JOYSTICK::IInputHandler* handler,
+                  CGameClient* gameClient,
                   unsigned int port,
                   PERIPHERALS::PeripheralType requiredType = PERIPHERALS::PERIPHERAL_UNKNOWN);
 
@@ -69,7 +75,7 @@ namespace GAME
      *
      * \param handler  The handler used to open the port
      */
-    void ClosePort(KODI::JOYSTICK::IInputHandler* handler);
+    void ClosePort(JOYSTICK::IInputHandler* handler);
 
     /*!
      * \brief Map a list of devices to the available ports
@@ -82,20 +88,27 @@ namespace GAME
      * attempt to honor that request.
      */
     void MapDevices(const PERIPHERALS::PeripheralVector& devices,
-                    std::map<PERIPHERALS::PeripheralPtr, KODI::JOYSTICK::IInputHandler*>& deviceToPortMap);
+                    std::map<PERIPHERALS::CPeripheral*, JOYSTICK::IInputHandler*>& deviceToPortMap);
+
+    //! @todo Return game client from MapDevices()
+    CGameClient* GameClient(JOYSTICK::IInputHandler* handler);
 
   private:
-    KODI::JOYSTICK::IInputHandler* AssignToPort(const PERIPHERALS::PeripheralPtr& device, bool checkPortNumber = true);
+    JOYSTICK::IInputHandler* AssignToPort(const PERIPHERALS::PeripheralPtr& device, bool checkPortNumber = true);
+
+    std::unique_ptr<CPortMapper> m_portMapper;
 
     struct SPort
     {
-      KODI::JOYSTICK::IInputHandler*    handler; // Input handler for this port
+      JOYSTICK::IInputHandler*    handler; // Input handler for this port
       unsigned int                port;    // Port number belonging to the game client
       PERIPHERALS::PeripheralType requiredType;
       void*                       device;
+      CGameClient*                gameClient;
     };
 
     std::vector<SPort> m_ports;
     CCriticalSection   m_mutex;
   };
+}
 }

@@ -126,7 +126,9 @@ public:
   // and does not need to be passed further down the line (to our global action handlers)
   virtual bool OnAction(const CAction &action);
   
+  using CGUIControlGroup::OnBack;
   virtual bool OnBack(int actionID);
+  using CGUIControlGroup::OnInfo;
   virtual bool OnInfo(int actionID) { return false; };
 
   /*! \brief Clear the background (if necessary) prior to rendering the window
@@ -143,6 +145,7 @@ public:
   int GetPreviousWindow() { return m_previousWindow; };
   CRect GetScaledBounds() const;
   virtual void ClearAll();
+  using CGUIControlGroup::AllocResources;
   virtual void AllocResources(bool forceLoad = false);
   virtual void FreeResources(bool forceUnLoad = false);
   virtual void DynamicResourceAlloc(bool bOnOff);
@@ -166,15 +169,30 @@ public:
   virtual bool IsVisible() const { return true; }; // windows are always considered visible as they implement their own
                                                    // versions of UpdateVisibility, and are deemed visible if they're in
                                                    // the window manager's active list.
+  virtual bool HasVisibleControls() { return true; }; //Assume that window always has visible controls
 
   virtual bool IsAnimating(ANIMATION_TYPE animType);
+
+  /*!
+   \brief Return if the window is a custom window
+   \return true if the window is an custom window otherwise false
+   */
+  bool IsCustom() const { return m_custom; };
+
+  /*!
+   \brief Mark this window as custom window
+   \param custom true if this window is a custom window, false if not
+   */
+  void SetCustom(bool custom) { m_custom = custom; };
+
   void DisableAnimations();
 
   virtual void ResetControlStates();
+  virtual void UpdateControlStats() {}; // Do not count window itself
 
   void       SetRunActionsManually();
-  void       RunLoadActions();
-  void       RunUnloadActions();
+  void       RunLoadActions() const;
+  void       RunUnloadActions() const;
 
   /*! \brief Set a property
    Sets the value of a property referenced by a key.
@@ -202,13 +220,32 @@ public:
   virtual void OnDeinitWindow(int nextWindowID);
 protected:
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
-  virtual bool LoadXML(const std::string& strPath, const std::string &strLowerPath);  ///< Loads from the given file
-  bool Load(TiXmlElement *pRootElement);                 ///< Loads from the given XML root element
-  /*! \brief Check if XML file needs (re)loading
-   XML file has to be (re)loaded when window is not loaded or include conditions values were changed
+
+  /*!
+   \brief Load the window XML from the given path
+   \param strPath the path to the window XML
+   \param strLowerPath a lowered path to the window XML
    */
-  bool NeedXMLReload();
-  virtual void LoadAdditionalTags(TiXmlElement *root) {}; ///< Load additional information from the XML document
+  virtual bool LoadXML(const std::string& strPath, const std::string &strLowerPath);
+
+  /*!
+   \brief Loads the window from the given XML element
+   \param pRootElement the XML element
+   \return true if the window is loaded from the given XML otherwise false.
+   */
+  virtual bool Load(TiXmlElement *pRootElement);
+
+  /*!
+   \brief Prepare the XML for load
+   \param pRootElement the original XML element
+   \return the prepared XML (resolved includes, constants and expression)
+   */
+  virtual std::unique_ptr<TiXmlElement> Prepare(TiXmlElement *pRootElement);
+
+  /*!
+   \brief Check if window needs a (re)load. The window need to be (re)loaded when window is not loaded or include conditions values were changed
+   */
+  bool NeedLoad() const;
 
   virtual void SetDefaults();
   virtual void OnWindowUnload() {}
@@ -281,6 +318,7 @@ protected:
 
   int m_menuControlID;
   int m_menuLastFocusedControlID;
+  bool m_custom;
 
 private:
   std::map<std::string, CVariant, icompare> m_mapProperties;

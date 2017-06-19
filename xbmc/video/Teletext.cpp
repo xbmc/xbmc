@@ -32,11 +32,6 @@
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/GraphicContext.h"
 
-#if HAVE_SDL_VERSION == 1
-#include <SDL/SDL_stdinc.h>
-#elif HAVE_SDL_VERSION == 2
-#include <SDL2/SDL_stdinc.h>
-#else
 #define SDL_memset4(dst, val, len)		\
 do {						\
 	uint32_t _count = (len);		\
@@ -53,7 +48,6 @@ do {						\
 	}					\
 } while(0)
 #define SDL_memcpy4(dst, src, len) memcpy(dst, src, (len) << 2)
-#endif
 
 static const char *TeletextFont = "special://xbmc/media/Fonts/teletext.ttf";
 

@@ -41,7 +41,7 @@ CAppParamParser::CAppParamParser()
   m_testmode = false;
 }
 
-void CAppParamParser::Parse(const char* argv[], int nArgs)
+void CAppParamParser::Parse(const char* const* argv, int nArgs)
 {
   if (nArgs > 1)
   {
@@ -141,8 +141,10 @@ void CAppParamParser::ParseArg(const std::string &arg)
   {
     if (m_testmode)
       g_application.SetEnableTestMode(true);
+
     CFileItemPtr pItem(new CFileItem(arg));
     pItem->SetPath(arg);
+
     m_playlist.Add(pItem);
   }
 }

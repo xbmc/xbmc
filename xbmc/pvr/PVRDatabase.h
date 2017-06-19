@@ -30,10 +30,8 @@ namespace PVR
 {
   class CPVRChannelGroup;
   class CPVRChannelGroupInternal;
-  class CPVRChannelsContainer;
   class CPVRChannel;
   class CPVRChannelGroups;
-  class CPVRClient;
 
   /** The PVR database */
 
@@ -43,26 +41,26 @@ namespace PVR
     /*!
      * @brief Create a new instance of the PVR database.
      */
-    CPVRDatabase(void) {};
-    virtual ~CPVRDatabase(void) {};
+    CPVRDatabase(void) = default;
+    virtual ~CPVRDatabase(void) = default;
 
     /*!
      * @brief Open the database.
      * @return True if it was opened successfully, false otherwise.
      */
-    virtual bool Open();
+    bool Open() override;
 
     /*!
      * @brief Get the minimal database version that is required to operate correctly.
      * @return The minimal database version.
      */
-    virtual int GetSchemaVersion() const { return 30; };
+    int GetSchemaVersion() const override { return 30; }
 
     /*!
      * @brief Get the default sqlite database filename.
      * @return The default filename.
      */
-    const char *GetBaseDBName() const { return "TV"; };
+    const char *GetBaseDBName() const override { return "TV"; }
 
     /*! @name Channel methods */
     //@{
@@ -180,20 +178,19 @@ namespace PVR
     /*!
      * @brief Create the PVR database tables.
      */
-    void CreateTables();
-    void CreateAnalytics();
+    void CreateTables() override;
+    void CreateAnalytics() override;
+    /*!
+     * @brief Update an old version of the database.
+     * @param version The version to update the database from.
+     */
+    void UpdateTables(int version) override;
+    int GetMinSchemaVersion() const override { return 11; }
 
     bool DeleteChannelsFromGroup(const CPVRChannelGroup &group, const std::vector<int> &channelsToDelete);
 
     bool GetCurrentGroupMembers(const CPVRChannelGroup &group, std::vector<int> &members);
     bool RemoveStaleChannelsFromGroup(const CPVRChannelGroup &group);
-
-    /*!
-     * @brief Update an old version of the database.
-     * @param version The version to update the database from.
-     */
-    void UpdateTables(int version);
-    virtual int GetMinSchemaVersion() const { return 11; }
 
     bool PersistGroupMembers(const CPVRChannelGroup &group);
 

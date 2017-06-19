@@ -25,6 +25,7 @@
 #include "cores/VideoPlayer/DVDCodecs/Video/AMLCodec.h"
 #include "utils/log.h"
 #include "utils/SysfsUtils.h"
+#include "utils/ScreenshotAML.h"
 #include "settings/MediaSettings.h"
 #include "windowing/WindowingFactory.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderCapture.h"
@@ -41,7 +42,7 @@ CRendererAML::~CRendererAML()
 {
 }
 
-bool CRendererAML::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_formatl, unsigned int orientation)
+bool CRendererAML::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, void *hwPic, unsigned int orientation)
 {
   m_sourceWidth = width;
   m_sourceHeight = height;
@@ -77,6 +78,7 @@ bool CRendererAML::RenderCapture(CRenderCapture* capture)
 {
   capture->BeginRender();
   capture->EndRender();
+  CScreenshotAML::CaptureVideoFrame((unsigned char *)capture->GetRenderBuffer(), capture->GetWidth(), capture->GetHeight());
   return true;
 }
 
@@ -92,11 +94,11 @@ int CRendererAML::GetImage(YV12Image *image, int source, bool readonly)
   return source;
 }
 
-void CRendererAML::AddVideoPictureHW(DVDVideoPicture &picture, int index)
+void CRendererAML::AddVideoPictureHW(VideoPicture &picture, int index)
 {
   BUFFER &buf = m_buffers[index];
-  if (picture.amlcodec)
-    buf.hwDec = picture.amlcodec->Retain();
+  if (picture.hwPic)
+    buf.hwDec = static_cast<CDVDAmlogicInfo*>(picture.hwPic)->Retain();
 }
 
 void CRendererAML::ReleaseBuffer(int idx)

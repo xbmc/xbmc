@@ -24,9 +24,7 @@
  * Common data structures shared between KODI and KODI's audio DSP add-ons
  */
 
-#ifdef TARGET_WINDOWS
-#include <windows.h>
-#else
+#ifndef TARGET_WINDOWS
 #ifndef __cdecl
 #define __cdecl
 #endif
@@ -38,7 +36,6 @@
 #include <cstddef>
 
 #include "xbmc_addon_types.h"
-#include "xbmc_codec_types.h"
 
 #undef ATTRIBUTE_PACKED
 #undef PRAGMA_PACK_BEGIN
@@ -61,16 +58,11 @@
 #define AE_DSP_STREAM_MAX_STREAMS               8
 #define AE_DSP_STREAM_MAX_MODES                 32
 
-/* current Audio DSP API version */
-#define KODI_AE_DSP_API_VERSION                 "0.1.8"
-
-/* min. Audio DSP API version */
-#define KODI_AE_DSP_MIN_API_VERSION             "0.1.8"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+  typedef void* ADSPHANDLE;
   typedef unsigned int AE_DSP_STREAM_ID;
 
   /*!
@@ -259,15 +251,6 @@ extern "C" {
     unsigned int        iRelevantModeId;        /*!< @brief (required) except category AE_DSP_MENUHOOK_SETTING and AE_DSP_MENUHOOK_ALL must be the related mode id present here */
     bool                bNeedPlayback;          /*!< @brief (required) set to true if menu hook need playback and active processing */
   } ATTRIBUTE_PACKED AE_DSP_MENUHOOK;
-
-  /*!
-   * @brief Properties passed to the Create() method of an add-on.
-   */
-  typedef struct AE_DSP_PROPERTIES
-  {
-    const char* strUserPath;                    /*!< @brief path to the user profile */
-    const char* strAddonPath;                   /*!< @brief path to this add-on */
-  } AE_DSP_PROPERTIES;
 
   /*!
    * @brief Audio DSP add-on capabilities. All capabilities are set to "false" as default.
@@ -474,6 +457,35 @@ extern "C" {
   /*!
    * @brief Structure to transfer the methods from kodi_audiodsp_dll.h to KODI
    */
+
+  typedef struct AddonProps_AudioDSP
+  {
+    const char* strUserPath;                    /*!< @brief path to the user profile */
+    const char* strAddonPath;                   /*!< @brief path to this add-on */
+  } AddonProps_AudioDSP;
+
+  typedef AddonProps_AudioDSP AE_DSP_PROPERTIES;
+
+  typedef struct AddonToKodiFuncTable_AudioDSP
+  {
+    KODI_HANDLE kodiInstance;
+
+    void (*AddMenuHook)(void* kodiInstance, AE_DSP_MENUHOOK *hook);
+    void (*RemoveMenuHook)(void* kodiInstance, AE_DSP_MENUHOOK *hook);
+    void (*RegisterMode)(void* kodiInstance, AE_DSP_MODES::AE_DSP_MODE *mode);
+    void (*UnregisterMode)(void* kodiInstance, AE_DSP_MODES::AE_DSP_MODE *mode);
+
+    ADSPHANDLE (*SoundPlay_GetHandle)(void* kodiInstance, const char *filename);
+    void (*SoundPlay_ReleaseHandle)(void* kodiInstance, ADSPHANDLE handle);
+    void (*SoundPlay_Play)(void* kodiInstance, ADSPHANDLE handle);
+    void (*SoundPlay_Stop)(void* kodiInstance, ADSPHANDLE handle);
+    bool (*SoundPlay_IsPlaying)(void* kodiInstance, ADSPHANDLE handle);
+    void (*SoundPlay_SetChannel)(void* kodiInstance, ADSPHANDLE handle, AE_DSP_CHANNEL channel);
+    AE_DSP_CHANNEL (*SoundPlay_GetChannel)(void* kodiInstance, ADSPHANDLE handle);
+    void (*SoundPlay_SetVolume)(void* kodiInstance, ADSPHANDLE handle, float volume);
+    float (*SoundPlay_GetVolume)(void* kodiInstance, ADSPHANDLE handle);
+  } AddonToKodiFuncTable_AudioDSP;
+
   typedef struct KodiToAddonFuncTable_AudioDSP
   {
     const char*  (__cdecl* GetAudioDSPAPIVersion)                (void);
@@ -517,6 +529,13 @@ extern "C" {
     float        (__cdecl* OutputResampleGetDelay)               (const ADDON_HANDLE);
     int          (__cdecl* OutputResampleSampleRate)             (const ADDON_HANDLE);
   } KodiToAddonFuncTable_AudioDSP;
+
+  typedef struct AddonInstance_AudioDSP
+  {
+    AddonProps_AudioDSP props;
+    AddonToKodiFuncTable_AudioDSP toKodi;
+    KodiToAddonFuncTable_AudioDSP toAddon;
+  } AddonInstance_AudioDSP;
 
 #ifdef __cplusplus
 }

@@ -50,7 +50,7 @@ extern "C" {
 #include "libswscale/swscale.h"
 }
 
-#if defined(__ARM_NEON__) && !defined(__LP64__)
+#if defined(HAS_NEON) && !defined(__LP64__)
 #include "yuv2rgb.neon.h"
 #include "utils/CPUInfo.h"
 #endif
@@ -145,6 +145,7 @@ bool CLinuxRendererGLES::ValidateRenderTarget()
       DeleteTexture(i);
 
      // create the yuv textures
+    UpdateVideoFilter();
     LoadShaders();
     if (m_renderMethod < 0)
       return false;
@@ -158,7 +159,7 @@ bool CLinuxRendererGLES::ValidateRenderTarget()
   return false;
 }
 
-bool CLinuxRendererGLES::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format, unsigned int orientation)
+bool CLinuxRendererGLES::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, void* hwPic, unsigned int orientation)
 {
   m_sourceWidth = width;
   m_sourceHeight = height;
@@ -589,6 +590,8 @@ void CLinuxRendererGLES::UpdateVideoFilter()
 
 void CLinuxRendererGLES::LoadShaders(int field)
 {
+  m_reloadShaders = 0;
+
   if (!LoadShadersHook())
   {
     int requestedMethod = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_VIDEOPLAYER_RENDERMETHOD);
@@ -613,8 +616,9 @@ void CLinuxRendererGLES::LoadShaders(int field)
           // create regular scan shader
           CLog::Log(LOGNOTICE, "GL: Selecting Single Pass YUV 2 RGB shader");
 
-          m_pYUVProgShader = new YUV2RGBProgressiveShader(false, m_iFlags, m_format);
-          m_pYUVBobShader = new YUV2RGBBobShader(false, m_iFlags, m_format);
+          EShaderFormat shaderFormat = GetShaderFormat(m_format);
+          m_pYUVProgShader = new YUV2RGBProgressiveShader(false, m_iFlags, shaderFormat);
+          m_pYUVBobShader = new YUV2RGBBobShader(false, m_iFlags, shaderFormat);
           if ((m_pYUVProgShader && m_pYUVProgShader->CompileAndLink())
               && (m_pYUVBobShader && m_pYUVBobShader->CompileAndLink()))
           {
@@ -822,7 +826,6 @@ void CLinuxRendererGLES::RenderSinglePass(int index, int field)
 
   if (m_reloadShaders)
   {
-    m_reloadShaders = 0;
     LoadShaders(field);
   }
 
@@ -1374,14 +1377,14 @@ bool CLinuxRendererGLES::CreateYV12Texture(int index)
 //********************************************************************************************************
 // NV12 Texture loading, creation and deletion
 //********************************************************************************************************
-void CLinuxRendererGLES::UploadNV12Texture(int source)
+bool CLinuxRendererGLES::UploadNV12Texture(int source)
 {
   YUVBUFFER& buf    =  m_buffers[source];
   YV12Image* im     = &buf.image;
   YUVFIELDS& fields =  buf.fields;
 
   if (!(im->flags & IMAGE_FLAG_READY))
-    return;
+    return false;
   bool deinterlacing;
   if (m_currentField == FIELD_FULL)
     deinterlacing = false;
@@ -1434,7 +1437,7 @@ void CLinuxRendererGLES::UploadNV12Texture(int source)
   CalculateTextureSourceRects(source, 3);
 
   glDisable(m_textureTarget);
-  return;
+  return true;
 }
 
 bool CLinuxRendererGLES::CreateNV12Texture(int index)

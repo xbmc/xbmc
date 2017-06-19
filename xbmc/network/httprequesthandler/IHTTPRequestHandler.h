@@ -102,7 +102,7 @@ public:
    *
    * \param request HTTP request to be handled
    */
-  virtual IHTTPRequestHandler* Create(const HTTPRequest &request) = 0;
+  virtual IHTTPRequestHandler* Create(const HTTPRequest &request) const = 0;
 
   /*!
    * \brief Returns the priority of the HTTP request handler.
@@ -118,7 +118,7 @@ public:
   * \param request HTTP request to be handled
   * \return True if the given HTTP request can be handled otherwise false.
   */
-  virtual bool CanHandleRequest(const HTTPRequest &request) = 0;
+  virtual bool CanHandleRequest(const HTTPRequest &request) const = 0;
 
   /*!
    * \brief Handles the HTTP request.

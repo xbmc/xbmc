@@ -1,8 +1,6 @@
 set(SOURCES AddonsDirectory.cpp
             AudioBookFileDirectory.cpp
             CacheStrategy.cpp
-            CDDADirectory.cpp
-            CDDAFile.cpp
             CircularCache.cpp
             CurlFile.cpp
             DAVCommon.cpp
@@ -45,9 +43,6 @@ set(SOURCES AddonsDirectory.cpp
             PlaylistFileDirectory.cpp
             PluginDirectory.cpp
             PVRDirectory.cpp
-            RarDirectory.cpp
-            RarFile.cpp
-            RarManager.cpp
             ResourceDirectory.cpp
             ResourceFile.cpp
             RSSDirectory.cpp
@@ -64,6 +59,7 @@ set(SOURCES AddonsDirectory.cpp
             UDFDirectory.cpp
             UDFFile.cpp
             VideoDatabaseDirectory.cpp
+            VideoDatabaseFile.cpp
             VirtualDirectory.cpp
             XbtDirectory.cpp
             XbtFile.cpp
@@ -74,8 +70,6 @@ set(SOURCES AddonsDirectory.cpp
             ZipManager.cpp)
 
 set(HEADERS AddonsDirectory.h
-            CDDADirectory.h
-            CDDAFile.h
             CacheStrategy.h
             CircularCache.h
             CurlFile.h
@@ -124,9 +118,6 @@ set(HEADERS AddonsDirectory.h
             PlaylistFileDirectory.h
             PluginDirectory.h
             RSSDirectory.h
-            RarDirectory.h
-            RarFile.h
-            RarManager.h
             ResourceDirectory.h
             ResourceFile.h
             SFTPDirectory.h
@@ -174,6 +165,13 @@ if(BLURAY_FOUND)
                       BlurayFile.cpp)
   list(APPEND HEADERS BlurayDirectory.h
                       BlurayFile.h)
+endif()
+
+if(ENABLE_OPTICAL)
+  list(APPEND SOURCES CDDADirectory.cpp
+                      CDDAFile.cpp)
+  list(APPEND HEADERS CDDADirectory.h
+                      CDDAFile.h)
 endif()
 
 if(ENABLE_UPNP)

@@ -82,7 +82,7 @@ bool CFileOperationJob::DoWork()
   if (m_displayProgress && GetProgressDialog() == NULL)
   {
     CGUIDialogExtendedProgressBar* dialog =
-      (CGUIDialogExtendedProgressBar*)g_windowManager.GetWindow(WINDOW_DIALOG_EXT_PROGRESS);
+      g_windowManager.GetWindow<CGUIDialogExtendedProgressBar>(WINDOW_DIALOG_EXT_PROGRESS);
     SetProgressBar(dialog->GetHandle(GetActionString(m_action)));
   }
 

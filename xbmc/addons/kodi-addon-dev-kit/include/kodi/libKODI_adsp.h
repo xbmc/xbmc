@@ -27,38 +27,10 @@
 #include "kodi_adsp_types.h"
 #include "libXBMC_addon.h"
 
-typedef void* ADSPHANDLE;
-
-namespace KodiAPI
-{
-namespace AudioDSP
-{
-
-typedef struct CB_ADSPLib
-{
-  void (*AddMenuHook)(void *addonData, AE_DSP_MENUHOOK *hook);
-  void (*RemoveMenuHook)(void *addonData, AE_DSP_MENUHOOK *hook);
-  void (*RegisterMode)(void *addonData, AE_DSP_MODES::AE_DSP_MODE *mode);
-  void (*UnregisterMode)(void *addonData, AE_DSP_MODES::AE_DSP_MODE *mode);
-
-  ADSPHANDLE (*SoundPlay_GetHandle)(void *addonData, const char *filename);
-  void (*SoundPlay_ReleaseHandle)(void *addonData, ADSPHANDLE handle);
-  void (*SoundPlay_Play)(void *addonData, ADSPHANDLE handle);
-  void (*SoundPlay_Stop)(void *addonData, ADSPHANDLE handle);
-  bool (*SoundPlay_IsPlaying)(void *addonData, ADSPHANDLE handle);
-  void (*SoundPlay_SetChannel)(void *addonData, ADSPHANDLE handle, AE_DSP_CHANNEL channel);
-  AE_DSP_CHANNEL (*SoundPlay_GetChannel)(void *addonData, ADSPHANDLE handle);
-  void (*SoundPlay_SetVolume)(void *addonData, ADSPHANDLE handle, float volume);
-  float (*SoundPlay_GetVolume)(void *addonData, ADSPHANDLE handle);
-} CB_ADSPLib;
-
-} /* namespace AudioDSP */
-} /* namespace KodiAPI */
-
 class CAddonSoundPlay
 {
 public:
-  CAddonSoundPlay(AddonCB* hdl, KodiAPI::AudioDSP::CB_ADSPLib* cb, const char* filename)
+  CAddonSoundPlay(AddonCB* hdl, AddonInstance_AudioDSP* cb, const char* filename)
     : m_Filename(filename),
       m_Handle(hdl),
       m_cb(cb)
@@ -68,7 +40,7 @@ public:
       fprintf(stderr, "libKODI_adsp-ERROR: ADSP_get_sound_play is called with NULL handle !!!\n");
     else
     {
-      m_PlayHandle = m_cb->SoundPlay_GetHandle(m_Handle->addonData, m_Filename.c_str());
+      m_PlayHandle = m_cb->toKodi.SoundPlay_GetHandle(m_cb->toKodi.kodiInstance, m_Filename.c_str());
       if (!m_PlayHandle)
         fprintf(stderr, "libKODI_adsp-ERROR: ADSP_get_sound_play can't get callback table from KODI !!!\n");
     }
@@ -77,14 +49,14 @@ public:
   ~CAddonSoundPlay()
   {
     if (m_PlayHandle)
-      m_cb->SoundPlay_ReleaseHandle(m_Handle->addonData, m_PlayHandle);
+      m_cb->toKodi.SoundPlay_ReleaseHandle(m_cb->toKodi.kodiInstance, m_PlayHandle);
   }
 
   /*! play the sound this object represents */
   void Play()
   {
     if (m_PlayHandle)
-      m_cb->SoundPlay_Play(m_Handle->addonData, m_PlayHandle);
+      m_cb->toKodi.SoundPlay_Play(m_cb->toKodi.kodiInstance, m_PlayHandle);
   }
 
 
@@ -92,7 +64,7 @@ public:
   void Stop()
   {
     if (m_PlayHandle)
-      m_cb->SoundPlay_Stop(m_Handle->addonData, m_PlayHandle);
+      m_cb->toKodi.SoundPlay_Stop(m_cb->toKodi.kodiInstance, m_PlayHandle);
   }
 
   /*! return true if the sound is currently playing */
@@ -101,14 +73,14 @@ public:
     if (!m_PlayHandle)
       return false;
 
-    return m_cb->SoundPlay_IsPlaying(m_Handle->addonData, m_PlayHandle);
+    return m_cb->toKodi.SoundPlay_IsPlaying(m_cb->toKodi.kodiInstance, m_PlayHandle);
   }
 
   /*! set the playback channel position of this sound, AE_DSP_CH_INVALID for all */
   void SetChannel(AE_DSP_CHANNEL channel)
   {
     if (m_PlayHandle)
-      m_cb->SoundPlay_SetChannel(m_Handle->addonData, m_PlayHandle, channel);
+      m_cb->toKodi.SoundPlay_SetChannel(m_cb->toKodi.kodiInstance, m_PlayHandle, channel);
   }
 
   /*! get the current playback volume of this sound, AE_DSP_CH_INVALID for all */
@@ -116,14 +88,14 @@ public:
   {
     if (!m_PlayHandle)
       return AE_DSP_CH_INVALID;
-    return m_cb->SoundPlay_GetChannel(m_Handle->addonData, m_PlayHandle);
+    return m_cb->toKodi.SoundPlay_GetChannel(m_cb->toKodi.kodiInstance, m_PlayHandle);
   }
 
   /*! set the playback volume of this sound */
   void SetVolume(float volume)
   {
     if (m_PlayHandle)
-      m_cb->SoundPlay_SetVolume(m_Handle->addonData, m_PlayHandle, volume);
+      m_cb->toKodi.SoundPlay_SetVolume(m_cb->toKodi.kodiInstance, m_PlayHandle, volume);
   }
 
   /*! get the current playback volume of this sound */
@@ -132,13 +104,13 @@ public:
     if (!m_PlayHandle)
       return 0.0f;
 
-    return m_cb->SoundPlay_GetVolume(m_Handle->addonData, m_PlayHandle);
+    return m_cb->toKodi.SoundPlay_GetVolume(m_cb->toKodi.kodiInstance, m_PlayHandle);
   }
 
 private:
   std::string m_Filename;
   AddonCB* m_Handle;
-  KodiAPI::AudioDSP::CB_ADSPLib *m_cb;
+  AddonInstance_AudioDSP *m_cb;
   ADSPHANDLE  m_PlayHandle;
 };
 
@@ -153,10 +125,6 @@ public:
 
   ~CHelper_libKODI_adsp(void)
   {
-    if (m_Handle && m_Callbacks)
-    {
-      m_Handle->ADSPLib_UnRegisterMe(m_Handle->addonData, m_Callbacks);
-    }
   }
 
   /*!
@@ -168,7 +136,7 @@ public:
   {
     m_Handle = static_cast<AddonCB*>(handle);
     if (m_Handle)
-      m_Callbacks = (KodiAPI::AudioDSP::CB_ADSPLib*)m_Handle->ADSPLib_RegisterMe(m_Handle->addonData);
+      m_Callbacks = (AddonInstance_AudioDSP*)m_Handle->ADSPLib_RegisterMe(m_Handle->addonData);
     if (!m_Callbacks)
       fprintf(stderr, "libKODI_adsp-ERROR: ADSLib_RegisterMe can't get callback table from Kodi !!!\n");
 
@@ -181,7 +149,7 @@ public:
    */
   void AddMenuHook(AE_DSP_MENUHOOK* hook)
   {
-    return m_Callbacks->AddMenuHook(m_Handle->addonData, hook);
+    return m_Callbacks->toKodi.AddMenuHook(m_Callbacks->toKodi.kodiInstance, hook);
   }
 
   /*!
@@ -190,7 +158,7 @@ public:
    */
   void RemoveMenuHook(AE_DSP_MENUHOOK* hook)
   {
-    return m_Callbacks->RemoveMenuHook(m_Handle->addonData, hook);
+    return m_Callbacks->toKodi.RemoveMenuHook(m_Callbacks->toKodi.kodiInstance, hook);
   }
 
   /*!
@@ -200,7 +168,7 @@ public:
    */
   void RegisterMode(AE_DSP_MODES::AE_DSP_MODE* mode)
   {
-    return m_Callbacks->RegisterMode(m_Handle->addonData, mode);
+    return m_Callbacks->toKodi.RegisterMode(m_Callbacks->toKodi.kodiInstance, mode);
   }
 
   /*!
@@ -209,7 +177,7 @@ public:
    */
   void UnregisterMode(AE_DSP_MODES::AE_DSP_MODE* mode)
   {
-    return m_Callbacks->UnregisterMode(m_Handle->addonData, mode);
+    return m_Callbacks->toKodi.UnregisterMode(m_Callbacks->toKodi.kodiInstance, mode);
   }
 
   /*!
@@ -232,5 +200,5 @@ public:
 
 private:
   AddonCB* m_Handle;
-  KodiAPI::AudioDSP::CB_ADSPLib *m_Callbacks;
+  AddonInstance_AudioDSP *m_Callbacks;
 };

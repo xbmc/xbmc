@@ -44,6 +44,10 @@ msgctxt "#31009"
 msgid "Working..."
 msgstr "ทำงานอยู่..."
 
+msgctxt "#31011"
+msgid "Recent"
+msgstr "ล่าสุด"
+
 msgctxt "#31013"
 msgid "Movies"
 msgstr "ภาพยนตร์"
@@ -55,6 +59,26 @@ msgstr "ตอน"
 msgctxt "#31016"
 msgid "Albums"
 msgstr "อัลบั้ม"
+
+msgctxt "#31017"
+msgid "PVR info"
+msgstr "ข้อมูล PVR"
+
+msgctxt "#31018"
+msgid "Player process info"
+msgstr "ข้อมูลการดำเนินการของตัวเล่น"
+
+msgctxt "#31019"
+msgid "Video decoder"
+msgstr "ตัวถอดรหัสวิดีโอ"
+
+msgctxt "#31020"
+msgid "Pixel format"
+msgstr "รูปแบบพิกเซล"
+
+msgctxt "#31021"
+msgid "System memory usage"
+msgstr "หน่วยความจำของระบบที่ใช้"
 
 msgctxt "#31024"
 msgid "Page"
@@ -68,6 +92,10 @@ msgctxt "#31038"
 msgid "Login"
 msgstr "ลงชื่อเข้าใช้"
 
+msgctxt "#31039"
+msgid "Updated:"
+msgstr "อัพเดต:"
+
 msgctxt "#31044"
 msgid "FAST FORWARD"
 msgstr "ไปหน้าแบบเร็ว"
@@ -75,6 +103,10 @@ msgstr "ไปหน้าแบบเร็ว"
 msgctxt "#31045"
 msgid "REWIND"
 msgstr "เล่นกลับเร็ว"
+
+msgctxt "#31046"
+msgid "Play speed"
+msgstr "ความเร็วการเล่น"
 
 msgctxt "#31049"
 msgid "End Time"
@@ -132,6 +164,10 @@ msgctxt "#31303"
 msgid "Data provider"
 msgstr "ผู้ให้บริการ ข้อมูล"
 
+msgctxt "#31309"
+msgid "System Memory Used:"
+msgstr "หน่วยความจำของระบบที่ใช้:"
+
 msgctxt "#31320"
 msgid "Last Logged In"
 msgstr "เข้าสู่ระบบ ล่าสุด"
@@ -164,9 +200,49 @@ msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 msgstr "เปลี่ยนหน้าตา · กำหนดภาษาและภูมิภาค · เปลี่ยนตัวเลือกการแสดงรายการแฟ้ม · ตั้งค่าการพักหน้าจอ"
 
+msgctxt "#31405"
+msgid "Configure & manage media sharing services · Configure & manage the weather service"
+msgstr "การกำหนดค่า & จัดการบริการแบ่งปันสื่อ · การกำหนดค่า & จัดการบริการสภาพอากาศ"
+
+msgctxt "#31406"
+msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
+msgstr "การกำหนดค่าการแสดงผล · การกำหนดค่าเสียง · กำหนดค่าการเข้าถึงอินเทอร์เน็ต · กำหนดค่าการประหยัดพลังงาน · กำหนดค่าการเข้าสู่ระบบ"
+
+msgctxt "#31407"
+msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
+msgstr "จัดการส่วนเสริมที่ติดตั้งของคุณ · เรียกดูและติดตั้งส่วนเสริม จาก kodi.tv · ปรับเปลี่ยนการตั้งค่าส่วนเสริม"
+
+msgctxt "#31408"
+msgid "Configure actions that can be used during playback · Configure how media content is played"
+msgstr "กำหนดค่าการทำงาน ที่นำมาใช้ได้ในระหว่างการเล่น · กำหนดค่าวิธีที่เนื้อหาของสื่อจะถูกเล่น"
+
+msgctxt "#31409"
+msgid "Configure library sources · Show the media lists display content · Configure how library lists are navigated"
+msgstr "กำหนดค่าแหล่งคลังข้อมูล · แสดงรายการสื่อเสนอเนื้อหา · กำหนดค่าวิธีเรียกดูรายการของคลังข้อมูล"
+
+msgctxt "#31410"
+msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
+msgstr "กำหนดค่าหน้าตา · กำหนดค่าภูมิภาค · กำหนดค่าการควบคุม - กำหนดค่าพักหน้าจอ · กำหนดค่าล็อคมาสเตอร์"
+
+msgctxt "#31411"
+msgid "Configure your profiles · Set locking options · Enable login screen"
+msgstr "กำหนดค่าโปรไฟล์ของคุณ · ตั้งค่าตัวเลือกการล็อค · เปิดใช้งานหน้าจอเข้าระบบ"
+
+msgctxt "#31412"
+msgid "Display system information · Hardware statistics · Check storage availability · View network configuration"
+msgstr "แสดงผลข้อมูลระบบ · สถิติของฮาร์ดแวร์ · ตรวจสอบพื้นที่เก็บข้อมูลที่มี · ดูการกำหนดค่าเครือข่าย"
+
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "เลือกโปรไฟล์ผู้ใช้ Kodi ของคุณ[CR]เพื่อเข้าระบบและดำเนินการต่อไป"
+
+msgctxt "#31548"
+msgid "Home menu"
+msgstr "เมนูหลัก"
+
+msgctxt "#31549"
+msgid "Home Add-ons"
+msgstr "ส่วนเสริมหลัก"
 
 msgctxt "#31550"
 msgid "Backgrounds"
@@ -176,6 +252,10 @@ msgctxt "#31551"
 msgid "Add-on Shortcut"
 msgstr "ทางลัด ส่วนเสริม"
 
+msgctxt "#31552"
+msgid "SYNC"
+msgstr "ประสาน"
+
 msgctxt "#31553"
 msgid "Use Custom Background"
 msgstr "ใช้พื้นหลังที่กำหนดเอง"
@@ -183,6 +263,10 @@ msgstr "ใช้พื้นหลังที่กำหนดเอง"
 msgctxt "#31554"
 msgid "Background:"
 msgstr "พื้นหลัง:"
+
+msgctxt "#31555"
+msgid "Configure TV settings · Change full screen info · Manage EPG data settings"
+msgstr "กำหนดการตั้งค่าทีวี · เปลี่ยนการแสดงข้อมูลเต็มหน้าจอ · จัดการตั้งค่าข้อมูล EPG"
 
 msgctxt "#31556"
 msgid "Live TV"
@@ -196,6 +280,14 @@ msgctxt "#31558"
 msgid "Hide visualization background"
 msgstr "ซ่อน พื้นหลังการแสดงแสงสี"
 
+msgctxt "#31559"
+msgid "Channel settings"
+msgstr "การตั้งค่าช่องรายการ"
+
+msgctxt "#31560"
+msgid "Available groups"
+msgstr "กลุ่มที่มีอยู่"
+
 msgctxt "#31561"
 msgid "Add Group"
 msgstr "เพิ่มกลุ่ม"
@@ -207,3 +299,31 @@ msgstr "เปลี่ยนชื่อกลุ่ม"
 msgctxt "#31563"
 msgid "Delete Group"
 msgstr "ลบกลุ่ม"
+
+msgctxt "#31564"
+msgid "Show hidden"
+msgstr "แสดงที่ช่อนไว้"
+
+msgctxt "#31565"
+msgid "Show deleted"
+msgstr "แสดงที่ลบไป"
+
+msgctxt "#31900"
+msgid "First Run"
+msgstr "เล่นครั้งแรก"
+
+msgctxt "#31901"
+msgid "There are two things to know about navigating Estouchy"
+msgstr "มีสองสิ่งที่ต้องรู้เกี่ยวกับการใช้งาน Estouchy"
+
+msgctxt "#31902"
+msgid "The Kodi logo functions as a 'HOME' button. Whenever you touch it, you will be taken back to the home screen."
+msgstr "โลโก้ Kodi มีฟังก์ชั่นเป็นปุ่ม 'Home' เมื่อใดก็ตามที่คุณแตะคุณจะกลับไปยังหน้าจอหลัก"
+
+msgctxt "#31903"
+msgid "When you are playing audio or video, the item title will appear at the top of the screen. Touching it will take you to the fullscreen visualization or video window."
+msgstr "เมื่อคุณทำการเล่นเสียงหรือวิดีโอ ชื่อรายการจะปรากฏที่ด้านบนของจอ การแตะมันจะนำคุณไปยังการแสดงแสงสีเต็มจอหรือหน้าต่างวิดีโอ"
+
+msgctxt "#31904"
+msgid "Now Playing Title..."
+msgstr "ชื่อเรื่องที่กำลังเล่น..."

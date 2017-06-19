@@ -54,7 +54,7 @@ public:
 
 protected:
   void RequestStreams();
-  void ParsePacket(DemuxPacket* pPacket);
+  bool ParsePacket(DemuxPacket* pPacket);
   void DisposeStream(int iStreamId);
   void DisposeStreams();
   std::shared_ptr<CDemuxStream> GetStreamInternal(int iStreamId);
@@ -64,5 +64,6 @@ protected:
   std::map<int, std::shared_ptr<CDemuxStream>> m_streams;
   int m_displayTime;
   double m_dtsAtDisplayTime;
+  std::unique_ptr<DemuxPacket> m_packet;
 };
 

@@ -75,6 +75,7 @@ public:
 
   
   bool isInteger() const;
+  bool isSignedInteger() const;
   bool isUnsignedInteger() const;
   bool isBoolean() const;
   bool isString() const;
@@ -160,4 +161,7 @@ private:
 
   VariantType m_type;
   VariantUnion m_data;
+
+  static VariantArray EMPTY_ARRAY;
+  static VariantMap EMPTY_MAP;
 };

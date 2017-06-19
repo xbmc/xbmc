@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2016 Team Kodi
+ *      Copyright (C) 2016-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -137,7 +137,7 @@ bool CPixelConverterRBP::Decode(const uint8_t* pData, unsigned int size)
     return false;
   }
 
-  MMAL::CMMALYUVBuffer *omvb = (MMAL::CMMALYUVBuffer *)m_buf->MMALBuffer;
+  MMAL::CMMALYUVBuffer *omvb = static_cast<MMAL::CMMALYUVBuffer*>(m_buf->hwPic);
 
   const int stride = size / m_height;
 
@@ -151,22 +151,22 @@ bool CPixelConverterRBP::Decode(const uint8_t* pData, unsigned int size)
   return true;
 }
 
-void CPixelConverterRBP::GetPicture(DVDVideoPicture& dvdVideoPicture)
+void CPixelConverterRBP::GetPicture(VideoPicture& dvdVideoPicture)
 {
   CPixelConverter::GetPicture(dvdVideoPicture);
 
-  dvdVideoPicture.MMALBuffer = m_buf->MMALBuffer;
+  dvdVideoPicture.hwPic = m_buf->hwPic;
 
-  MMAL::CMMALYUVBuffer *omvb = (MMAL::CMMALYUVBuffer *)m_buf->MMALBuffer;
+  MMAL::CMMALYUVBuffer *omvb = static_cast<MMAL::CMMALYUVBuffer*>(m_buf->hwPic);
 
   // need to flush ARM cache so GPU can see it
   omvb->gmem->Flush();
 }
 
-DVDVideoPicture* CPixelConverterRBP::AllocatePicture(int iWidth, int iHeight)
+VideoPicture* CPixelConverterRBP::AllocatePicture(int iWidth, int iHeight)
 {
   MMAL::CMMALYUVBuffer *omvb = nullptr;
-  DVDVideoPicture* pPicture = new DVDVideoPicture;
+  VideoPicture* pPicture = new VideoPicture;
 
   // gpu requirements
   int w = (iWidth + 31) & ~31;
@@ -195,7 +195,7 @@ DVDVideoPicture* CPixelConverterRBP::AllocatePicture(int iWidth, int iHeight)
 
   if (pPicture)
   {
-    pPicture->MMALBuffer = omvb;
+    pPicture->hwPic = static_cast<void*>(omvb);
     pPicture->iWidth = iWidth;
     pPicture->iHeight = iHeight;
   }
@@ -203,13 +203,15 @@ DVDVideoPicture* CPixelConverterRBP::AllocatePicture(int iWidth, int iHeight)
   return pPicture;
 }
 
-void CPixelConverterRBP::FreePicture(DVDVideoPicture* pPicture)
+void CPixelConverterRBP::FreePicture(VideoPicture* pPicture)
 {
   if (pPicture)
   {
-    if (pPicture->MMALBuffer)
-      pPicture->MMALBuffer->Release();
-
+    if (pPicture->hwPic)
+    {
+      MMAL::CMMALYUVBuffer *omvb = static_cast<MMAL::CMMALYUVBuffer*>(m_buf->hwPic);
+      omvb->Release();
+    }
     delete pPicture;
   }
   else

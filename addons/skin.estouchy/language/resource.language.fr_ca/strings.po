@@ -60,6 +60,26 @@ msgctxt "#31016"
 msgid "Albums"
 msgstr "Albums"
 
+msgctxt "#31017"
+msgid "PVR info"
+msgstr "Infos des numériscopes"
+
+msgctxt "#31018"
+msgid "Player process info"
+msgstr "Infos du processus Lecteur"
+
+msgctxt "#31019"
+msgid "Video decoder"
+msgstr "Décodeur vidéo"
+
+msgctxt "#31020"
+msgid "Pixel format"
+msgstr "Format de pixel"
+
+msgctxt "#31021"
+msgid "System memory usage"
+msgstr "Utilisation de la mémoire système"
+
 msgctxt "#31024"
 msgid "Page"
 msgstr "Page"
@@ -194,7 +214,7 @@ msgstr "Gérer les addiciels installés · Parcourir et installer des addiciels 
 
 msgctxt "#31408"
 msgid "Configure actions that can be used during playback · Configure how media content is played"
-msgstr "Configurer les actions pouvant être utilisée pendant la lecture · Configurer la lecture du contenu des médias"
+msgstr "Configurer les actions pouvant être utilisées pendant la lecture · Configurer la lecture du contenu multimédia"
 
 msgctxt "#31409"
 msgid "Configure library sources · Show the media lists display content · Configure how library lists are navigated"
@@ -214,7 +234,15 @@ msgstr "Afficher les informations du système · Statistiques matérielles · V�
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
-msgstr "Choisissez votre profil d'utilisateur Kodi[CR]pour vous connecter et continuer"
+msgstr "Choisissez votre profil d'utilisateur Kodi[CR]pour vous connecter et poursuivre"
+
+msgctxt "#31548"
+msgid "Home menu"
+msgstr "Menu de l'accueil"
+
+msgctxt "#31549"
+msgid "Home Add-ons"
+msgstr "Addiciels de l'accueil"
 
 msgctxt "#31550"
 msgid "Backgrounds"

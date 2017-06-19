@@ -110,21 +110,21 @@ inline void CBaseRenderer::ReorderDrawPoints()
   }
 
 
-  int diffX = 0;
-  int diffY = 0;
-  int centerX = 0;
-  int centerY = 0;
+  float diffX = 0.0f;
+  float diffY = 0.0f;
+  float centerX = 0.0f;
+  float centerY = 0.0f;
   
   if (changeAspect)// we are either rotating by 90 or 270 degrees which inverts aspect ratio
   {
-    int newWidth = m_destRect.Height(); // new width is old height
-    int newHeight = m_destRect.Width(); // new height is old width
-    int diffWidth = newWidth - m_destRect.Width(); // difference between old and new width
-    int diffHeight = newHeight - m_destRect.Height(); // difference between old and new height
+    float newWidth = m_destRect.Height(); // new width is old height
+    float newHeight = m_destRect.Width(); // new height is old width
+    float diffWidth = newWidth - m_destRect.Width(); // difference between old and new width
+    float diffHeight = newHeight - m_destRect.Height(); // difference between old and new height
 
     // if the new width is bigger then the old or
     // the new height is bigger then the old - we need to scale down
-    if (diffWidth > 0 || diffHeight > 0 )
+    if (diffWidth > 0.0f || diffHeight > 0.0f)
     {
       float aspectRatio = GetAspectRatio();
       // scale to fit screen width because
@@ -143,8 +143,8 @@ inline void CBaseRenderer::ReorderDrawPoints()
     }
     
     // calculate the center point of the view
-    centerX = m_viewRect.x1 + m_viewRect.Width() / 2;
-    centerY = m_viewRect.y1 + m_viewRect.Height() / 2;
+    centerX = m_viewRect.x1 + m_viewRect.Width() / 2.0f;
+    centerY = m_viewRect.y1 + m_viewRect.Height() / 2.0f;
 
     // calculate the number of pixels we need to go in each
     // x direction from the center point
@@ -427,6 +427,28 @@ void CBaseRenderer::ManageRenderArea()
   CalcNormalRenderRect(m_viewRect.x1, m_viewRect.y1, m_viewRect.Width(), m_viewRect.Height(), GetAspectRatio() * CDisplaySettings::GetInstance().GetPixelRatio(), CDisplaySettings::GetInstance().GetZoomAmount(), CDisplaySettings::GetInstance().GetVerticalShift());
 }
 
+EShaderFormat CBaseRenderer::GetShaderFormat(ERenderFormat renderFormat)
+{
+  EShaderFormat ret = SHADER_NONE;
+
+  if (m_format == RENDER_FMT_YUV420P)
+    ret = SHADER_YV12;
+  else if (m_format == RENDER_FMT_YUV420P10)
+    ret = SHADER_YV12_10;
+  else if (m_format == RENDER_FMT_YUV420P16)
+    ret = SHADER_YV12_16;
+  else if (m_format == RENDER_FMT_NV12)
+    ret = SHADER_NV12;
+  else if (m_format == RENDER_FMT_YUYV422)
+    ret = SHADER_YUY2;
+  else if (m_format == RENDER_FMT_UYVY422)
+    ret = SHADER_UYVY;
+  else
+    CLog::Log(LOGERROR, "CBaseRenderer::GetShaderFormat - unsupported format %d", renderFormat);
+
+  return ret;
+}
+
 void CBaseRenderer::SetViewMode(int viewMode)
 {
   if (viewMode < ViewModeNormal || viewMode > ViewModeZoom110Width)
@@ -567,7 +589,7 @@ void CBaseRenderer::MarkDirty()
   g_windowManager.MarkDirty(m_destRect);
 }
 
-void CBaseRenderer::SettingOptionsRenderMethodsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
+void CBaseRenderer::SettingOptionsRenderMethodsFiller(std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
 {
   list.push_back(make_pair(g_localizeStrings.Get(13416), RENDER_METHOD_AUTO));
 

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2012-2016 Team Kodi
+ *      Copyright (C) 2012-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -27,9 +27,11 @@ class CDVDAudioCodec;
 class CProcessInfo;
 class IAEStream;
 
-namespace GAME
+namespace KODI
 {
-  class CRetroPlayerAudio : public IGameAudioCallback
+namespace RETRO
+{
+  class CRetroPlayerAudio : public GAME::IGameAudioCallback
   {
   public:
     CRetroPlayerAudio(CProcessInfo& processInfo);
@@ -50,4 +52,5 @@ namespace GAME
     std::unique_ptr<CDVDAudioCodec> m_pAudioCodec;
     bool       m_bAudioEnabled;
   };
+}
 }

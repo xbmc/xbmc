@@ -18,7 +18,7 @@
  */
 #pragma once
 
-#include "AddonDll.h"
+#include "addons/binary-addons/AddonDll.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_audioenc_types.h"
 #include "cdrip/IEncoder.h"
 
@@ -28,10 +28,10 @@ namespace ADDON
   class CAudioEncoder : public CAddonDll, public IEncoder
   {
   public:
-    static std::unique_ptr<CAudioEncoder> FromExtension(AddonProps, const cp_extension_t* ext);
+    static std::unique_ptr<CAudioEncoder> FromExtension(CAddonInfo, const cp_extension_t* ext);
 
-    explicit CAudioEncoder(AddonProps props) : CAddonDll(std::move(props)), m_context{nullptr} {};
-    CAudioEncoder(AddonProps props, std::string extension);
+    explicit CAudioEncoder(CAddonInfo addonInfo) : CAddonDll(std::move(addonInfo)), m_context{nullptr} {};
+    CAudioEncoder(CAddonInfo addonInfo, std::string extension);
     virtual ~CAudioEncoder() {}
 
     // Things that MUST be supplied by the child classes
@@ -45,8 +45,7 @@ namespace ADDON
 
   private:
     void *m_context; ///< audio encoder context
-    AUDIOENC_PROPS m_info;
-    KodiToAddonFuncTable_AudioEncoder m_struct;
+    AddonInstance_AudioEncoder m_struct;
   };
 
 } /*namespace ADDON*/

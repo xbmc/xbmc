@@ -72,7 +72,6 @@ using EVENTSERVER::CEventServer;
 
 using namespace KODI;
 using namespace MESSAGING;
-using PERIPHERALS::CPeripherals;
 
 CInputManager::CInputManager() :
   m_mouseButtonMap(new MOUSE::CMouseWindowingButtonMap),
@@ -125,7 +124,7 @@ bool CInputManager::ProcessRemote(int windowId)
 bool CInputManager::ProcessPeripherals(float frameTime)
 {
   CKey key;
-  if (g_peripherals.GetNextKeypress(frameTime, key))
+  if (CServiceBroker::GetPeripherals().GetNextKeypress(frameTime, key))
     return OnKey(key);
   return false;
 }
@@ -297,10 +296,6 @@ bool CInputManager::ProcessEventServer(int windowId, float frameTime)
     {
       XBMC_Event newEvent;
       newEvent.type = XBMC_MOUSEMOTION;
-      newEvent.motion.xrel = 0;
-      newEvent.motion.yrel = 0;
-      newEvent.motion.state = 0;
-      newEvent.motion.which = 0x10;  // just a different value to distinguish between mouse and event client device.
       newEvent.motion.x = (uint16_t)pos.x;
       newEvent.motion.y = (uint16_t)pos.y;
       g_application.OnEvent(newEvent);  // had to call this to update g_Mouse position
@@ -364,7 +359,7 @@ bool CInputManager::OnEvent(XBMC_Event& newEvent)
   {
     m_Keyboard.ProcessKeyDown(newEvent.key.keysym);
     CKey key = m_Keyboard.TranslateKey(newEvent.key.keysym);
-    if (key.GetButtonCode() == m_LastKey.GetButtonCode() && m_LastKey.GetButtonCode() & CKey::MODIFIER_LONG)
+    if (key.GetButtonCode() == m_LastKey.GetButtonCode() && (m_LastKey.GetButtonCode() & CKey::MODIFIER_LONG))
     {
       // Do not repeat long presses
       break;
@@ -376,7 +371,7 @@ bool CInputManager::OnEvent(XBMC_Event& newEvent)
     }
     else
     {
-      if (key.GetButtonCode() != m_LastKey.GetButtonCode() && key.GetButtonCode() & CKey::MODIFIER_LONG)
+      if (key.GetButtonCode() != m_LastKey.GetButtonCode() && (key.GetButtonCode() & CKey::MODIFIER_LONG))
       {
         m_LastKey = key;  // OnKey is reentrant; need to do this before entering
         OnKey(key);
@@ -412,12 +407,12 @@ bool CInputManager::OnEvent(XBMC_Event& newEvent)
       }
       else
       {
-        if (newEvent.button.type == XBMC_MOUSEBUTTONDOWN)
+        if (newEvent.type == XBMC_MOUSEBUTTONDOWN)
         {
           if (it->driverHandler->OnButtonPress(newEvent.button.button))
             handled = true;
         }
-        else if (newEvent.button.type == XBMC_MOUSEBUTTONUP)
+        else if (newEvent.type == XBMC_MOUSEBUTTONUP)
         {
           it->driverHandler->OnButtonRelease(newEvent.button.button);
         }
@@ -572,7 +567,8 @@ bool CInputManager::OnKey(const CKey& key)
         action.GetID() == ACTION_SELECT_ITEM ||
         action.GetID() == ACTION_ENTER ||
         action.GetID() == ACTION_PREVIOUS_MENU ||
-        action.GetID() == ACTION_NAV_BACK))
+        action.GetID() == ACTION_NAV_BACK ||
+        action.GetID() == ACTION_VOICE_RECOGNIZE))
       {
         // the action isn't plain navigation - check for a keyboard-specific keymap
         action = CButtonTranslator::GetInstance().GetAction(WINDOW_DIALOG_KEYBOARD, key, false);
@@ -816,14 +812,14 @@ void CInputManager::SetRemoteControlName(const std::string& name)
 #endif
 }
 
-void CInputManager::OnSettingChanged(const CSetting *setting)
+void CInputManager::OnSettingChanged(std::shared_ptr<const CSetting> setting)
 {
   if (setting == nullptr)
     return;
 
   const std::string &settingId = setting->GetId();
   if (settingId == CSettings::SETTING_INPUT_ENABLEMOUSE)
-    m_Mouse.SetEnabled(dynamic_cast<const CSettingBool*>(setting)->GetValue());
+    m_Mouse.SetEnabled(std::dynamic_pointer_cast<const CSettingBool>(setting)->GetValue());
 }
 
 void CInputManager::RegisterKeyboardHandler(KEYBOARD::IKeyboardHandler* handler)

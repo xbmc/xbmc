@@ -44,6 +44,3 @@ add_library(python_binding STATIC ${SOURCES})
 set_target_properties(python_binding PROPERTIES POSITION_INDEPENDENT_CODE TRUE
                                                 FOLDER "Build Utilities")
 set(core_DEPENDS python_binding ${core_DEPENDS} CACHE STRING "" FORCE)
-if(WIN32)
-  add_precompiled_header(python_binding pch.h ${CMAKE_SOURCE_DIR}/xbmc/platform/win32/pch.cpp PCH_TARGET kodi)
-endif()

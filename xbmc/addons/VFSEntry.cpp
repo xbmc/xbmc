@@ -56,7 +56,7 @@ class CVFSURLWrapper
     std::vector<std::string> m_strings;
 };
 
-std::unique_ptr<CVFSEntry> CVFSEntry::FromExtension(AddonProps props,
+std::unique_ptr<CVFSEntry> CVFSEntry::FromExtension(CAddonInfo addonInfo,
                                                     const cp_extension_t* ext)
 {
   std::string protocols = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@protocols");
@@ -65,7 +65,7 @@ std::unique_ptr<CVFSEntry> CVFSEntry::FromExtension(AddonProps props,
   bool directories = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@directories") == "true";
   bool filedirectories = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@filedirectories") == "true";
 
-  return std::unique_ptr<CVFSEntry>(new CVFSEntry(std::move(props),
+  return std::unique_ptr<CVFSEntry>(new CVFSEntry(std::move(addonInfo),
                                                   protocols,
                                                   extensions,
                                                   files, directories,
@@ -73,22 +73,24 @@ std::unique_ptr<CVFSEntry> CVFSEntry::FromExtension(AddonProps props,
 }
 
 
-CVFSEntry::CVFSEntry(AddonProps props,
+CVFSEntry::CVFSEntry(CAddonInfo addonInfo,
                      const std::string& protocols,
                      const std::string& extensions,
                      bool files, bool directories, bool filedirectories)
- : CAddonDll(std::move(props)),
+ : CAddonDll(std::move(addonInfo)),
    m_protocols(protocols),
    m_extensions(extensions),
    m_files(files),
    m_directories(directories),
    m_filedirectories(filedirectories)
 {
+  memset(&m_struct, 0, sizeof(m_struct));
+  m_struct.toKodi.kodiInstance = this;
 }
 
 bool CVFSEntry::Create()
 {
-  return CAddonDll::Create(&m_struct, &m_info) == ADDON_STATUS_OK;
+  return CAddonDll::Create(ADDON_INSTANCE_VFS, &m_struct, &m_struct.props) == ADDON_STATUS_OK;
 }
 
 void* CVFSEntry::Open(const CURL& url)
@@ -97,7 +99,7 @@ void* CVFSEntry::Open(const CURL& url)
     return NULL;
 
   CVFSURLWrapper url2(url);
-  return m_struct.Open(&url2.url);
+  return m_struct.toAddon.Open(&url2.url);
 }
 
 void* CVFSEntry::OpenForWrite(const CURL& url, bool bOverWrite)
@@ -106,7 +108,7 @@ void* CVFSEntry::OpenForWrite(const CURL& url, bool bOverWrite)
     return NULL;
 
   CVFSURLWrapper url2(url);
-  return m_struct.OpenForWrite(&url2.url, bOverWrite);
+  return m_struct.toAddon.OpenForWrite(&url2.url, bOverWrite);
 }
 
 bool CVFSEntry::Exists(const CURL& url)
@@ -115,7 +117,7 @@ bool CVFSEntry::Exists(const CURL& url)
     return false;
 
   CVFSURLWrapper url2(url);
-  return m_struct.Exists(&url2.url);
+  return m_struct.toAddon.Exists(&url2.url);
 }
 
 int CVFSEntry::Stat(const CURL& url, struct __stat64* buffer)
@@ -124,7 +126,7 @@ int CVFSEntry::Stat(const CURL& url, struct __stat64* buffer)
     return -1;
 
   CVFSURLWrapper url2(url);
-  return m_struct.Stat(&url2.url, buffer);
+  return m_struct.toAddon.Stat(&url2.url, buffer);
 }
 
 ssize_t CVFSEntry::Read(void* ctx, void* lpBuf, size_t uiBufSize)
@@ -132,7 +134,7 @@ ssize_t CVFSEntry::Read(void* ctx, void* lpBuf, size_t uiBufSize)
   if (!Initialized())
     return 0;
 
-  return m_struct.Read(ctx, lpBuf, uiBufSize);
+  return m_struct.toAddon.Read(ctx, lpBuf, uiBufSize);
 }
 
 ssize_t CVFSEntry::Write(void* ctx, void* lpBuf, size_t uiBufSize)
@@ -140,7 +142,7 @@ ssize_t CVFSEntry::Write(void* ctx, void* lpBuf, size_t uiBufSize)
   if (!Initialized())
     return 0;
 
-  return m_struct.Write(ctx, lpBuf, uiBufSize);
+  return m_struct.toAddon.Write(ctx, lpBuf, uiBufSize);
 }
 
 int64_t CVFSEntry::Seek(void* ctx, int64_t position, int whence)
@@ -148,7 +150,7 @@ int64_t CVFSEntry::Seek(void* ctx, int64_t position, int whence)
   if (!Initialized())
     return 0;
 
-  return m_struct.Seek(ctx, position, whence);
+  return m_struct.toAddon.Seek(ctx, position, whence);
 }
 
 int CVFSEntry::Truncate(void* ctx, int64_t size)
@@ -156,7 +158,7 @@ int CVFSEntry::Truncate(void* ctx, int64_t size)
   if (!Initialized())
     return 0;
 
-  return m_struct.Truncate(ctx, size);
+  return m_struct.toAddon.Truncate(ctx, size);
 }
 
 void CVFSEntry::Close(void* ctx)
@@ -164,7 +166,7 @@ void CVFSEntry::Close(void* ctx)
   if (!Initialized())
     return;
 
-  m_struct.Close(ctx);
+  m_struct.toAddon.Close(ctx);
 }
 
 int64_t CVFSEntry::GetPosition(void* ctx)
@@ -172,7 +174,7 @@ int64_t CVFSEntry::GetPosition(void* ctx)
   if (!Initialized())
     return 0;
 
-  return m_struct.GetPosition(ctx);
+  return m_struct.toAddon.GetPosition(ctx);
 }
 
 int CVFSEntry::GetChunkSize(void* ctx)
@@ -180,7 +182,7 @@ int CVFSEntry::GetChunkSize(void* ctx)
   if (!Initialized())
     return 0;
 
-  return m_struct.GetChunkSize(ctx);
+  return m_struct.toAddon.GetChunkSize(ctx);
 }
 
 int64_t CVFSEntry::GetLength(void* ctx)
@@ -188,7 +190,7 @@ int64_t CVFSEntry::GetLength(void* ctx)
   if (!Initialized())
     return 0;
 
-  return m_struct.GetLength(ctx);
+  return m_struct.toAddon.GetLength(ctx);
 }
 
 int CVFSEntry::IoControl(void* ctx, XFILE::EIoControl request, void* param)
@@ -196,7 +198,7 @@ int CVFSEntry::IoControl(void* ctx, XFILE::EIoControl request, void* param)
   if (!Initialized())
     return -1;
 
-  return m_struct.IoControl(ctx, request, param);
+  return m_struct.toAddon.IoControl(ctx, request, param);
 }
 
 bool CVFSEntry::Delete(const CURL& url)
@@ -205,7 +207,7 @@ bool CVFSEntry::Delete(const CURL& url)
     return false;
 
   CVFSURLWrapper url2(url);
-  return m_struct.Delete(&url2.url);
+  return m_struct.toAddon.Delete(&url2.url);
 }
 
 bool CVFSEntry::Rename(const CURL& url, const CURL& url2)
@@ -215,7 +217,7 @@ bool CVFSEntry::Rename(const CURL& url, const CURL& url2)
 
   CVFSURLWrapper url3(url);
   CVFSURLWrapper url4(url2);
-  return m_struct.Rename(&url3.url, &url4.url);
+  return m_struct.toAddon.Rename(&url3.url, &url4.url);
 }
 
 void CVFSEntry::ClearOutIdle()
@@ -223,7 +225,7 @@ void CVFSEntry::ClearOutIdle()
   if (!Initialized())
     return;
 
-  m_struct.ClearOutIdle();
+  m_struct.toAddon.ClearOutIdle();
 }
 
 void CVFSEntry::DisconnectAll()
@@ -231,7 +233,7 @@ void CVFSEntry::DisconnectAll()
   if (!Initialized())
     return;
 
-  m_struct.DisconnectAll();
+  m_struct.toAddon.DisconnectAll();
 }
 
 bool CVFSEntry::DirectoryExists(const CURL& url)
@@ -240,7 +242,7 @@ bool CVFSEntry::DirectoryExists(const CURL& url)
     return false;
 
   CVFSURLWrapper url2(url);
-  return m_struct.DirectoryExists(&url2.url);
+  return m_struct.toAddon.DirectoryExists(&url2.url);
 }
 
 bool CVFSEntry::RemoveDirectory(const CURL& url)
@@ -249,7 +251,7 @@ bool CVFSEntry::RemoveDirectory(const CURL& url)
     return false;
 
   CVFSURLWrapper url2(url);
-  return m_struct.RemoveDirectory(&url2.url);
+  return m_struct.toAddon.RemoveDirectory(&url2.url);
 }
 
 bool CVFSEntry::CreateDirectory(const CURL& url)
@@ -258,7 +260,7 @@ bool CVFSEntry::CreateDirectory(const CURL& url)
     return false;
 
   CVFSURLWrapper url2(url);
-  return m_struct.CreateDirectory(&url2.url);
+  return m_struct.toAddon.CreateDirectory(&url2.url);
 }
 
 static void VFSDirEntriesToCFileItemList(int num_entries,
@@ -306,11 +308,11 @@ bool CVFSEntry::GetDirectory(const CURL& url, CFileItemList& items,
   VFSDirEntry* entries;
   int num_entries;
   CVFSURLWrapper url2(url);
-  void* ctx2 = m_struct.GetDirectory(&url2.url, &entries, &num_entries, &callbacks);
+  void* ctx2 = m_struct.toAddon.GetDirectory(&url2.url, &entries, &num_entries, &callbacks);
   if (ctx2)
   {
     VFSDirEntriesToCFileItemList(num_entries, entries, items);
-    m_struct.FreeDirectory(ctx2);
+    m_struct.toAddon.FreeDirectory(ctx2);
 
     return true;
   }
@@ -329,12 +331,12 @@ bool CVFSEntry::ContainsFiles(const CURL& url, CFileItemList& items)
   CVFSURLWrapper url2(url);
   char rootpath[1024];
   rootpath[0] = 0;
-  void* ctx = m_struct.ContainsFiles(&url2.url, &entries, &num_entries, rootpath);
+  void* ctx = m_struct.toAddon.ContainsFiles(&url2.url, &entries, &num_entries, rootpath);
   if (!ctx)
     return false;
 
   VFSDirEntriesToCFileItemList(num_entries, entries, items);
-  m_struct.FreeDirectory(ctx);
+  m_struct.toAddon.FreeDirectory(ctx);
   if (strlen(rootpath))
     items.SetPath(rootpath);
 

@@ -39,8 +39,7 @@ public:
 
   bool CreateNewWindow(const std::string& name,
                        bool fullScreen,
-                       RESOLUTION_INFO& res,
-                       PHANDLE_EVENT_FUNC userFunction) override;
+                       RESOLUTION_INFO& res) override;
 
   bool DestroyWindow() override;
 
@@ -56,6 +55,6 @@ public:
 
 protected:
   MirConnection* m_connection;
-  MirSurface* m_surface;
+  MirWindow* m_window;
   MirPixelFormat m_pixel_format;
 };

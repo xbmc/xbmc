@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2016 Team Kodi
+ *      Copyright (C) 2016-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -23,7 +23,7 @@
 
 #include <stdint.h>
 
-struct DVDVideoPicture;
+struct VideoPicture;
 
 class IPixelConverter
 {
@@ -57,5 +57,5 @@ public:
    * \brief Get the results of processing the pixels
    * \param dvdVideoPicture a container for the resulting pixel data
    */
-  virtual void GetPicture(DVDVideoPicture& dvdVideoPicture) = 0;
+  virtual void GetPicture(VideoPicture& dvdVideoPicture) = 0;
 };

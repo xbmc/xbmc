@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2016 Team Kodi
+ *      Copyright (C) 2016-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -23,6 +23,8 @@
 
 #include <memory>
 
+namespace KODI
+{
 namespace GAME
 {
   class CBasicMemoryStream : public IMemoryStream
@@ -53,4 +55,5 @@ namespace GAME
     std::unique_ptr<uint8_t[]> m_frameBuffer;
     bool                       m_bHasFrame;
   };
+}
 }

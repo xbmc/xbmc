@@ -23,7 +23,7 @@
 #include "AddonSystemSettings.h"
 #include "addons/RepositoryUpdater.h"
 #include "GUIDialogAddonInfo.h"
-#include "GUIDialogAddonSettings.h"
+#include "addons/settings/GUIDialogAddonSettings.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "dialogs/GUIDialogSelect.h"
@@ -378,7 +378,7 @@ int CGUIWindowAddonBrowser::SelectAddonID(const std::vector<ADDON::TYPE> &types,
   if (showInstallable)
     showMore = false;
 
-  CGUIDialogSelect *dialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+  CGUIDialogSelect *dialog = g_windowManager.GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
   if (!dialog)
     return -1;
 
@@ -474,7 +474,7 @@ int CGUIWindowAddonBrowser::SelectAddonID(const std::vector<ADDON::TYPE> &types,
   {
     if (!heading.empty())
       heading += ", ";
-    heading += TranslateType(*type, true);
+    heading += CAddonInfo::TranslateType(*type, true);
   }
 
   dialog->SetHeading(CVariant{std::move(heading)});

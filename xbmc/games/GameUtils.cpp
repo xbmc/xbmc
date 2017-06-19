@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2012-2016 Team Kodi
+ *      Copyright (C) 2012-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -35,6 +35,7 @@
 
 #include <algorithm>
 
+using namespace KODI;
 using namespace GAME;
 
 GameClientPtr CGameUtils::OpenGameClient(const CFileItem& file)

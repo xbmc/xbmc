@@ -62,7 +62,7 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool first
   if (firstLogin && iProfile > CProfilesManager::GetInstance().GetNumberOfProfiles())
     return false;
 
-  CGUIDialogProfileSettings *dialog = (CGUIDialogProfileSettings *)g_windowManager.GetWindow(WINDOW_DIALOG_PROFILE_SETTINGS);
+  CGUIDialogProfileSettings *dialog = g_windowManager.GetWindow<CGUIDialogProfileSettings>(WINDOW_DIALOG_PROFILE_SETTINGS);
   if (dialog == NULL)
     return false;
 
@@ -202,7 +202,7 @@ void CGUIDialogProfileSettings::OnWindowLoaded()
   CGUIDialogSettingsManualBase::OnWindowLoaded();
 }
 
-void CGUIDialogProfileSettings::OnSettingChanged(const CSetting *setting)
+void CGUIDialogProfileSettings::OnSettingChanged(std::shared_ptr<const CSetting> setting)
 {
   if (setting == NULL)
     return;
@@ -212,17 +212,17 @@ void CGUIDialogProfileSettings::OnSettingChanged(const CSetting *setting)
   const std::string &settingId = setting->GetId();
   if (settingId == SETTING_PROFILE_NAME)
   {
-    m_name = static_cast<const CSettingString*>(setting)->GetValue();
+    m_name = std::static_pointer_cast<const CSettingString>(setting)->GetValue();
   }
   else if (settingId == SETTING_PROFILE_MEDIA)
-    m_dbMode = static_cast<const CSettingInt*>(setting)->GetValue();
+    m_dbMode = std::static_pointer_cast<const CSettingInt>(setting)->GetValue();
   else if (settingId == SETTING_PROFILE_MEDIA_SOURCES)
-    m_sourcesMode = static_cast<const CSettingInt*>(setting)->GetValue();
+    m_sourcesMode = std::static_pointer_cast<const CSettingInt>(setting)->GetValue();
 
   m_needsSaving = true;
 }
 
-void CGUIDialogProfileSettings::OnSettingAction(const CSetting *setting)
+void CGUIDialogProfileSettings::OnSettingAction(std::shared_ptr<const CSetting> setting)
 {
   if (setting == NULL)
     return;
@@ -317,48 +317,48 @@ void CGUIDialogProfileSettings::InitializeSettings()
 {
   CGUIDialogSettingsManualBase::InitializeSettings();
 
-  CSettingCategory *category = AddCategory("profilesettings", -1);
+  const std::shared_ptr<CSettingCategory> category = AddCategory("profilesettings", -1);
   if (category == NULL)
   {
     CLog::Log(LOGERROR, "CGUIDialogProfileSettings: unable to setup settings");
     return;
   }
 
-  CSettingGroup *group = AddGroup(category);
+  const std::shared_ptr<CSettingGroup> group = AddGroup(category);
   if (group == NULL)
   {
     CLog::Log(LOGERROR, "CGUIDialogProfileSettings: unable to setup settings");
     return;
   }
 
-  AddEdit(group, SETTING_PROFILE_NAME, 20093, 0, m_name);
-  AddButton(group, SETTING_PROFILE_IMAGE, 20065, 0);
+  AddEdit(group, SETTING_PROFILE_NAME, 20093, SettingLevel::Basic, m_name);
+  AddButton(group, SETTING_PROFILE_IMAGE, 20065, SettingLevel::Basic);
 
   if (!m_isDefault && m_showDetails)
-    AddButton(group, SETTING_PROFILE_DIRECTORY, 20070, 0);
+    AddButton(group, SETTING_PROFILE_DIRECTORY, 20070, SettingLevel::Basic);
 
   if (m_showDetails ||
      (m_locks.mode == LOCK_MODE_EVERYONE && CProfilesManager::GetInstance().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE))
-    AddButton(group, SETTING_PROFILE_LOCKS, 20066, 0);
+    AddButton(group, SETTING_PROFILE_LOCKS, 20066, SettingLevel::Basic);
 
   if (!m_isDefault && m_showDetails)
   {
-    CSettingGroup *groupMedia = AddGroup(category);
+    const std::shared_ptr<CSettingGroup> groupMedia = AddGroup(category);
     if (groupMedia == NULL)
     {
       CLog::Log(LOGERROR, "CGUIDialogProfileSettings: unable to setup settings");
       return;
     }
 
-    StaticIntegerSettingOptions entries;
+    TranslatableIntegerSettingOptions entries;
     entries.push_back(std::make_pair(20062, 0));
     entries.push_back(std::make_pair(20063, 1));
     entries.push_back(std::make_pair(20061, 2));
     if (CProfilesManager::GetInstance().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE)
       entries.push_back(std::make_pair(20107, 3));
 
-    AddSpinner(groupMedia, SETTING_PROFILE_MEDIA, 20060, 0, m_dbMode, entries);
-    AddSpinner(groupMedia, SETTING_PROFILE_MEDIA_SOURCES, 20094, 0, m_sourcesMode, entries);
+    AddSpinner(groupMedia, SETTING_PROFILE_MEDIA, 20060, SettingLevel::Basic, m_dbMode, entries);
+    AddSpinner(groupMedia, SETTING_PROFILE_MEDIA_SOURCES, 20094, SettingLevel::Basic, m_sourcesMode, entries);
   }
 }
 

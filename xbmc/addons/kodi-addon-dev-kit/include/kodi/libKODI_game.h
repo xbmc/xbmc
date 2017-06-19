@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2014-2016 Team Kodi
+ *      Copyright (C) 2014-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -29,25 +29,6 @@
   #include <sys/stat.h>
 #endif
 
-typedef struct CB_GameLib
-{
-  void (*CloseGame)(void* addonData);
-  int (*OpenPixelStream)(void* addonData, GAME_PIXEL_FORMAT format, unsigned int width, unsigned int height, GAME_VIDEO_ROTATION rotation);
-  int (*OpenVideoStream)(void* addonData, GAME_VIDEO_CODEC codec);
-  int (*OpenPCMStream)(void* addonData, GAME_PCM_FORMAT format, const GAME_AUDIO_CHANNEL* channel_map);
-  int(*OpenAudioStream)(void* addonData, GAME_AUDIO_CODEC codec, const GAME_AUDIO_CHANNEL* channel_map);
-  void (*AddStreamData)(void* addonData, GAME_STREAM_TYPE stream, const uint8_t* data, unsigned int size);
-  void (*CloseStream)(void* addonData, GAME_STREAM_TYPE stream);
-  void (*EnableHardwareRendering)(void* addonData, const game_hw_info* hw_info);
-  uintptr_t (*HwGetCurrentFramebuffer)(void* addonData);
-  game_proc_address_t (*HwGetProcAddress)(void* addonData, const char* symbol);
-  void (*RenderFrame)(void* addonData);
-  bool (*OpenPort)(void* addonData, unsigned int port);
-  void (*ClosePort)(void* addonData, unsigned int port);
-  bool (*InputEvent)(void* addonData, const game_input_event* event);
-
-} CB_GameLib;
-
 class CHelper_libKODI_game
 {
 public:
@@ -59,10 +40,6 @@ public:
 
   ~CHelper_libKODI_game(void)
   {
-    if (m_handle && m_callbacks)
-    {
-      m_handle->GameLib_UnRegisterMe(m_handle->addonData, m_callbacks);
-    }
   }
 
   /*!
@@ -74,7 +51,7 @@ public:
   {
     m_handle = static_cast<AddonCB*>(handle);
     if (m_handle)
-      m_callbacks = (CB_GameLib*)m_handle->GameLib_RegisterMe(m_handle->addonData);
+      m_callbacks = (AddonInstance_Game*)m_handle->GameLib_RegisterMe(m_handle->addonData);
     if (!m_callbacks)
       fprintf(stderr, "libKODI_game-ERROR: GameLib_RegisterMe can't get callback table from Kodi !!!\n");
 
@@ -88,7 +65,7 @@ public:
    */
   void CloseGame(void)
   {
-    return m_callbacks->CloseGame(m_handle->addonData);
+    return m_callbacks->toKodi.CloseGame(m_callbacks->toKodi.kodiInstance);
   }
 
   /*!
@@ -103,7 +80,7 @@ public:
    */
   bool OpenPixelStream(GAME_PIXEL_FORMAT format, unsigned int width, unsigned int height, GAME_VIDEO_ROTATION rotation)
   {
-    return m_callbacks->OpenPixelStream(m_handle->addonData, format, width, height, rotation) == 0;
+    return m_callbacks->toKodi.OpenPixelStream(m_callbacks->toKodi.kodiInstance, format, width, height, rotation) == 0;
   }
 
   /*!
@@ -115,7 +92,7 @@ public:
    */
   bool OpenVideoStream(GAME_VIDEO_CODEC codec)
   {
-    return m_callbacks->OpenVideoStream(m_handle->addonData, codec) == 0;
+    return m_callbacks->toKodi.OpenVideoStream(m_callbacks->toKodi.kodiInstance, codec) == 0;
   }
 
   /*!
@@ -128,7 +105,7 @@ public:
    */
   bool OpenPCMStream(GAME_PCM_FORMAT format, const GAME_AUDIO_CHANNEL* channel_map)
   {
-    return m_callbacks->OpenPCMStream(m_handle->addonData, format, channel_map) == 0;
+    return m_callbacks->toKodi.OpenPCMStream(m_callbacks->toKodi.kodiInstance, format, channel_map) == 0;
   }
 
   /*!
@@ -141,7 +118,7 @@ public:
   */
   bool OpenAudioStream(GAME_AUDIO_CODEC codec, const GAME_AUDIO_CHANNEL* channel_map)
   {
-    return m_callbacks->OpenAudioStream(m_handle->addonData, codec, channel_map) == 0;
+    return m_callbacks->toKodi.OpenAudioStream(m_callbacks->toKodi.kodiInstance, codec, channel_map) == 0;
   }
 
   /*!
@@ -153,7 +130,7 @@ public:
    */
   void AddStreamData(GAME_STREAM_TYPE stream, const uint8_t* data, unsigned int size)
   {
-    m_callbacks->AddStreamData(m_handle->addonData, stream, data, size);
+    m_callbacks->toKodi.AddStreamData(m_callbacks->toKodi.kodiInstance, stream, data, size);
   }
 
   /*!
@@ -163,7 +140,7 @@ public:
    */
   void CloseStream(GAME_STREAM_TYPE stream)
   {
-    m_callbacks->CloseStream(m_handle->addonData, stream);
+    m_callbacks->toKodi.CloseStream(m_callbacks->toKodi.kodiInstance, stream);
   }
 
   // -- Hardware rendering callbacks -------------------------------------------
@@ -175,7 +152,7 @@ public:
    */
   void EnableHardwareRendering(const struct game_hw_info* hw_info)
   {
-    return m_callbacks->EnableHardwareRendering(m_handle->addonData, hw_info);
+    return m_callbacks->toKodi.EnableHardwareRendering(m_callbacks->toKodi.kodiInstance, hw_info);
   }
 
   /*!
@@ -185,7 +162,7 @@ public:
    */
   uintptr_t HwGetCurrentFramebuffer(void)
   {
-    return m_callbacks->HwGetCurrentFramebuffer(m_handle->addonData);
+    return m_callbacks->toKodi.HwGetCurrentFramebuffer(m_callbacks->toKodi.kodiInstance);
   }
 
   /*!
@@ -197,7 +174,7 @@ public:
    */
   game_proc_address_t HwGetProcAddress(const char* sym)
   {
-    return m_callbacks->HwGetProcAddress(m_handle->addonData, sym);
+    return m_callbacks->toKodi.HwGetProcAddress(m_callbacks->toKodi.kodiInstance, sym);
   }
 
   /*!
@@ -205,7 +182,7 @@ public:
    */
   void RenderFrame()
   {
-    return m_callbacks->RenderFrame(m_handle->addonData);
+    return m_callbacks->toKodi.RenderFrame(m_callbacks->toKodi.kodiInstance);
   }
 
   // --- Input callbacks -------------------------------------------------------
@@ -219,7 +196,7 @@ public:
    */
   bool OpenPort(unsigned int port)
   {
-    return m_callbacks->OpenPort(m_handle->addonData, port);
+    return m_callbacks->toKodi.OpenPort(m_callbacks->toKodi.kodiInstance, port);
   }
 
   /*!
@@ -229,7 +206,7 @@ public:
    */
   void ClosePort(unsigned int port)
   {
-    return m_callbacks->ClosePort(m_handle->addonData, port);
+    return m_callbacks->toKodi.ClosePort(m_callbacks->toKodi.kodiInstance, port);
   }
 
   /*!
@@ -244,10 +221,10 @@ public:
   */
   bool InputEvent(const game_input_event& event)
   {
-    return m_callbacks->InputEvent(m_handle->addonData, &event);
+    return m_callbacks->toKodi.InputEvent(m_callbacks->toKodi.kodiInstance, &event);
   }
 
 private:
   AddonCB* m_handle;
-  CB_GameLib* m_callbacks;
+  AddonInstance_Game* m_callbacks;
 };

@@ -28,25 +28,25 @@
 namespace ADDON
 {
 
-std::unique_ptr<CPluginSource> CPluginSource::FromExtension(AddonProps props, const cp_extension_t* ext)
+std::unique_ptr<CPluginSource> CPluginSource::FromExtension(CAddonInfo addonInfo, const cp_extension_t* ext)
 {
   std::string provides = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "provides");
   if (!provides.empty())
-    props.extrainfo.insert(make_pair("provides", provides));
-  return std::unique_ptr<CPluginSource>(new CPluginSource(std::move(props), provides));
+    addonInfo.AddExtraInfo("provides", provides);
+  return std::unique_ptr<CPluginSource>(new CPluginSource(std::move(addonInfo), provides));
 }
 
-CPluginSource::CPluginSource(AddonProps props) : CAddon(std::move(props))
+CPluginSource::CPluginSource(CAddonInfo addonInfo) : CAddon(std::move(addonInfo))
 {
   std::string provides;
-  InfoMap::const_iterator i = m_props.extrainfo.find("provides");
-  if (i != m_props.extrainfo.end())
+  InfoMap::const_iterator i = m_addonInfo.ExtraInfo().find("provides");
+  if (i != m_addonInfo.ExtraInfo().end())
     provides = i->second;
   SetProvides(provides);
 }
 
-CPluginSource::CPluginSource(AddonProps props, const std::string& provides)
-  : CAddon(std::move(props))
+CPluginSource::CPluginSource(CAddonInfo addonInfo, const std::string& provides)
+  : CAddon(std::move(addonInfo))
 {
   SetProvides(provides);
 }

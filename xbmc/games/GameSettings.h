@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2012-2016 Team Kodi
+ *      Copyright (C) 2012-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -24,6 +24,8 @@
 
 class CSetting;
 
+namespace KODI
+{
 namespace GAME
 {
 
@@ -32,14 +34,15 @@ class CGameSettings : public ISettingCallback,
 {
 public:
   static CGameSettings& GetInstance();
-  virtual ~CGameSettings() { }
+  virtual ~CGameSettings() = default;
 
   // Inherited from ISettingCallback
-  virtual void OnSettingChanged(const CSetting *setting) override;
-  virtual void OnSettingAction(const CSetting *setting) override;
+  virtual void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
+  virtual void OnSettingAction(std::shared_ptr<const CSetting> setting) override;
 
 private:
-  CGameSettings() { }
+  CGameSettings() = default;
 };
 
 } // namespace GAME
+}

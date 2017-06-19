@@ -127,7 +127,7 @@ public:
   virtual bool RenderCapture(CRenderCapture* capture);
 
   // Player functions
-  virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_formatunsigned, unsigned int orientation) override;
+  virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, void* hwPic, unsigned int orientation) override;
   virtual bool IsConfigured() override { return m_bConfigured; }
   virtual int GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false) override;
   virtual void ReleaseImage(int source, bool preserve = false) override;
@@ -170,7 +170,7 @@ protected:
   bool CreateYV12Texture(int index);
   virtual bool SkipUploadYV12(int index) { return false; }
 
-  void UploadNV12Texture(int index);
+  bool UploadNV12Texture(int index);
   void DeleteNV12Texture(int index);
   bool CreateNV12Texture(int index);
 

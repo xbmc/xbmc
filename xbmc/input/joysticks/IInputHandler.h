@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2014-2016 Team Kodi
+ *      Copyright (C) 2014-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -38,7 +38,7 @@ namespace JOYSTICK
   public:
     IInputHandler(void) : m_receiver(nullptr) { }
 
-    virtual ~IInputHandler(void) { }
+    virtual ~IInputHandler() = default;
 
     /*!
      * \brief The add-on ID of the game controller associated with this input handler
@@ -68,6 +68,15 @@ namespace JOYSTICK
      *         buttons, or INPUT::UNKNOWN otherwise
      */
     virtual INPUT_TYPE GetInputType(const FeatureName& feature) const = 0;
+
+    /*!
+     * \brief Get the delay before this feature should be processed
+     *
+     * \param feature The feature
+     *
+     * \return The duration this feature must be held before sending events
+     */
+    virtual unsigned int GetDelayMs(const FeatureName& feature) const = 0;
 
     /*!
      * \brief A digital button has been pressed or released

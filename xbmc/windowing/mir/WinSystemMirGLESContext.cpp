@@ -25,8 +25,7 @@
 
 bool CWinSystemMirGLESContext::CreateNewWindow(const std::string& name,
                                                bool fullScreen,
-                                               RESOLUTION_INFO& res,
-                                               PHANDLE_EVENT_FUNC userFunction)
+                                               RESOLUTION_INFO& res)
 {
   if (!m_pGLContext.CreateDisplay(m_connection,
                                   EGL_OPENGL_ES2_BIT,
@@ -39,7 +38,7 @@ bool CWinSystemMirGLESContext::CreateNewWindow(const std::string& name,
                                                        m_pGLContext.m_eglDisplay,
                                                        m_pGLContext.m_eglConfig);
 
-  CWinSystemMir::CreateNewWindow(name, fullScreen, res, userFunction);
+  CWinSystemMir::CreateNewWindow(name, fullScreen, res);
 
   if (!m_pGLContext.CreateSurface(m_surface))
   {

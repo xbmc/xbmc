@@ -30,7 +30,6 @@
 #include "DXVAHD.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
-#include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
 #include "utils/Log.h"
 #include "utils/win32/memcpy_sse2.h"
@@ -84,11 +83,6 @@ void CProcessorHD::Close()
   SAFE_RELEASE(m_context);
   SAFE_RELEASE(m_pVideoContext);
   m_eViewType = PROCESSOR_VIEW_TYPE_UNKNOWN;
-}
-
-bool CProcessorHD::UpdateSize(const DXVA2_VideoDesc& dsc)
-{
-  return true;
 }
 
 bool CProcessorHD::PreInit()
@@ -240,7 +234,7 @@ bool CProcessorHD::InitProcessor()
   return true;
 }
 
-bool DXVA::CProcessorHD::IsFormatSupported(DXGI_FORMAT format, D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT support)
+bool DXVA::CProcessorHD::IsFormatSupported(DXGI_FORMAT format, D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT support) const
 {
   UINT uiFlags;
   if (S_OK == m_pEnumerator->CheckVideoProcessorFormat(format, &uiFlags))
@@ -253,7 +247,7 @@ bool DXVA::CProcessorHD::IsFormatSupported(DXGI_FORMAT format, D3D11_VIDEO_PROCE
   return false;
 }
 
-bool CProcessorHD::ConfigureProcessor(unsigned int format, unsigned int extended_format)
+bool CProcessorHD::ConfigureProcessor(unsigned int format, DXGI_FORMAT dxva_format)
 {
   // check default output format DXGI_FORMAT_B8G8R8A8_UNORM (as render target)
   if (!IsFormatSupported(DXGI_FORMAT_B8G8R8A8_UNORM, D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_OUTPUT))
@@ -261,7 +255,7 @@ bool CProcessorHD::ConfigureProcessor(unsigned int format, unsigned int extended
 
   if (format == RENDER_FMT_DXVA)
   {
-    m_textureFormat = (DXGI_FORMAT)extended_format;
+    m_textureFormat = dxva_format;
     m_eViewType = PROCESSOR_VIEW_TYPE_DECODER;
   }
   else
@@ -286,7 +280,7 @@ bool CProcessorHD::ConfigureProcessor(unsigned int format, unsigned int extended
   return true;
 }
 
-bool CProcessorHD::Open(UINT width, UINT height, unsigned int flags, unsigned int format, unsigned int extended_format)
+bool CProcessorHD::Open(UINT width, UINT height, unsigned int flags, unsigned int format, DXGI_FORMAT dxva_format)
 {
   Close();
 
@@ -300,7 +294,7 @@ bool CProcessorHD::Open(UINT width, UINT height, unsigned int flags, unsigned in
   if (!InitProcessor())
     return false;
 
-  if (!ConfigureProcessor(m_renderFormat, extended_format))
+  if (!ConfigureProcessor(m_renderFormat, dxva_format))
     return false;
 
   return OpenProcessor();
@@ -335,7 +329,6 @@ bool CProcessorHD::OpenProcessor()
   CLog::Log(LOGDEBUG, "%s: Creating processor with input format: (%d).", __FUNCTION__, m_textureFormat);
 
   // create processor
-  // There is a MSFT bug when creating processor it might throw first-chance exception
   HRESULT hr = m_pVideoDevice->CreateVideoProcessor(m_pEnumerator, m_procIndex, &m_pVideoProcessor);
   if (FAILED(hr))
   {
@@ -356,7 +349,7 @@ bool CProcessorHD::OpenProcessor()
   m_pVideoContext->VideoProcessorSetStreamColorSpace(m_pVideoProcessor, DEFAULT_STREAM_INDEX, &cs);
 
   // Output background color (black)
-  D3D11_VIDEO_COLOR color = {};
+  D3D11_VIDEO_COLOR color;
   color.YCbCr = { 0.0625f, 0.5f, 0.5f, 1.0f }; // black color
   m_pVideoContext->VideoProcessorSetOutputBackgroundColor(m_pVideoProcessor, TRUE, &color);
 
@@ -375,7 +368,7 @@ bool CProcessorHD::CreateSurfaces()
   pivd.Texture2D.ArraySlice = 0;
   pivd.Texture2D.MipSlice = 0;
 
-  ID3D11VideoProcessorInputView* views[32] = { 0 };
+  ID3D11VideoProcessorInputView* views[32] = { nullptr };
   CLog::Log(LOGDEBUG, "%s - Creating %d processor surfaces with format %d.", __FUNCTION__, m_size, m_textureFormat);
 
   for (idx = 0; idx < m_size; idx++)
@@ -395,7 +388,7 @@ bool CProcessorHD::CreateSurfaces()
   {
     // something goes wrong
     CLog::Log(LOGERROR, "%s: Failed to create processor surfaces.", __FUNCTION__);
-    for (unsigned idx = 0; idx < m_size; idx++)
+    for (idx = 0; idx < m_size; idx++)
     {
       SAFE_RELEASE(views[idx]);
     }
@@ -412,7 +405,7 @@ bool CProcessorHD::CreateSurfaces()
   return true;
 }
 
-CRenderPicture *CProcessorHD::Convert(DVDVideoPicture &picture)
+CRenderPicture *CProcessorHD::Convert(VideoPicture &picture)
 {
   if ( picture.format != RENDER_FMT_YUV420P
     && picture.format != RENDER_FMT_YUV420P10
@@ -424,7 +417,10 @@ CRenderPicture *CProcessorHD::Convert(DVDVideoPicture &picture)
   }
 
   if (picture.format == RENDER_FMT_DXVA)
-    return picture.dxva->Acquire();
+  {
+    DXVA::CRenderPicture *hwpic = static_cast<DXVA::CRenderPicture*>(picture.hwPic);
+    return hwpic->Acquire();
+  }
 
   ID3D11View *pView = m_context->GetFree(nullptr);
   if (!pView)
@@ -471,7 +467,7 @@ CRenderPicture *CProcessorHD::Convert(DVDVideoPicture &picture)
   return pic;
 }
 
-bool CProcessorHD::ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER filter, int value, int min, int max, int def)
+bool CProcessorHD::ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER filter, int value, int min, int max, int def) const
 {
   if (filter >= NUM_FILTERS)
     return false;
@@ -494,7 +490,7 @@ bool CProcessorHD::ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER filter, int value, i
   return true;
 }
 
-ID3D11VideoProcessorInputView* CProcessorHD::GetInputView(ID3D11View* view) 
+ID3D11VideoProcessorInputView* CProcessorHD::GetInputView(ID3D11View* view) const
 {
   ID3D11VideoProcessorInputView* inputView = nullptr;
   if (m_eViewType == PROCESSOR_VIEW_TYPE_PROCESSOR)
@@ -517,7 +513,7 @@ ID3D11VideoProcessorInputView* CProcessorHD::GetInputView(ID3D11View* view)
     decoderView->GetDesc(&vdovd);
     decoderView->GetResource(&resource);
 
-    D3D11_VIDEO_PROCESSOR_INPUT_VIEW_DESC vpivd = { { 0 } };
+    D3D11_VIDEO_PROCESSOR_INPUT_VIEW_DESC vpivd;
     vpivd.FourCC = 0;
     vpivd.ViewDimension = D3D11_VPIV_DIMENSION_TEXTURE2D;
     vpivd.Texture2D.ArraySlice = vdovd.Texture2D.ArraySlice;

@@ -640,9 +640,12 @@ namespace XBMCAddon
       /// \ingroup python_xbmcgui_window
       /// @brief \python_func{ getHeight() }
       ///-----------------------------------------------------------------------
-      /// Returns the height of this screen.
+      /// Returns the height of this Window instance.
       ///
-      /// @return                       Screen height
+      /// @return                       Window height in pixels
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v18 Function changed
       ///
       getHeight();
 #else
@@ -654,9 +657,12 @@ namespace XBMCAddon
       /// \ingroup python_xbmcgui_window
       /// @brief \python_func{ getWidth() }
       ///-----------------------------------------------------------------------
-      /// Returns the width of this screen.
+      /// Returns the width of this Window instance.
       ///
-      /// @return                       Screen width
+      /// @return                       Window width in pixels
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v18 Function changed
       ///
       getWidth();
 #else
@@ -684,6 +690,9 @@ namespace XBMCAddon
       ///  |   7   | PAL 16:9   (720x576)
       ///  |   8   | PAL60 4:3  (720x480)
       ///  |   9   | PAL60 16:9 (720x480)
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v18 Deprecated.
       ///
       getResolution();
 #else
@@ -727,6 +736,9 @@ namespace XBMCAddon
       /// win.setCoordinateResolution(0)
       /// ..
       /// ~~~~~~~~~~~~~
+      ///-----------------------------------------------------------------------
+      /// @python_v18 Deprecated.
+      ///
       setCoordinateResolution(...);
 #else
       SWIGHIDDENVIRTUAL void setCoordinateResolution(long res);

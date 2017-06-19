@@ -12,8 +12,18 @@
 #
 #   Fmt::Fmt   - The Fmt library
 
+if(CORE_SYSTEM_NAME STREQUAL windows OR CORE_SYSTEM_NAME STREQUAL windowsstore)
+  # TODO: fix windows fmt package to include fmt-config.cmake and fmt-config-version.cmake
+  set(FMT_VERSION 3.0.1)
+else()
+  find_package(FMT 3.0.1 CONFIG REQUIRED QUIET)
+endif()
+
 if(PKG_CONFIG_FOUND)
   pkg_check_modules(PC_FMT libfmt QUIET)
+  if(PC_FMT_VERSION AND NOT FMT_VERSION)
+    set(FMT_VERSION ${PC_FMT_VERSION})
+  endif()
 endif()
 
 find_path(FMT_INCLUDE_DIR NAMES fmt/format.h
@@ -29,7 +39,8 @@ select_library_configurations(FMT)
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(Fmt
-                                  REQUIRED_VARS FMT_LIBRARY FMT_INCLUDE_DIR)
+                                  REQUIRED_VARS FMT_LIBRARY FMT_INCLUDE_DIR FMT_VERSION
+                                  VERSION_VAR FMT_VERSION)
 
 if(FMT_FOUND)
   set(FMT_LIBRARIES ${FMT_LIBRARY})

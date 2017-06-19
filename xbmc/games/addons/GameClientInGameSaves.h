@@ -25,6 +25,8 @@
 
 struct GameClient;
 
+namespace KODI
+{
 namespace GAME
 {
   class CGameClient;
@@ -70,4 +72,5 @@ namespace GAME
     const CGameClient* const m_gameClient;
     const KodiToAddonFuncTable_Game* const m_dllStruct;
   };
+}
 }

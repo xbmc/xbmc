@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2012-2016 Team Kodi
+ *      Copyright (C) 2012-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -25,6 +25,8 @@
 
 #include <string>
 
+namespace KODI
+{
 namespace GAME
 {
   class CGameInfoTag : public IArchivable,
@@ -35,7 +37,7 @@ namespace GAME
     CGameInfoTag() { Reset(); }
     CGameInfoTag(const CGameInfoTag& tag) { *this = tag; }
     CGameInfoTag& operator=(const CGameInfoTag& tag);
-    ~CGameInfoTag() { }
+    virtual ~CGameInfoTag() = default;
     void Reset();
 
     bool operator==(const CGameInfoTag& tag) const;
@@ -121,4 +123,5 @@ namespace GAME
     std::string m_strSavestate;
     std::string m_strGameClient;
   };
+}
 }

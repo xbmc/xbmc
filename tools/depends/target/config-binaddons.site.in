@@ -5,9 +5,9 @@ host_alias=@use_host@
 fi
 
 LD="@LD@"
-CC="@CC@"
-CXX="@CXX@"
-CPP="@CPP@"
+CC="@CCACHE@ @CC@"
+CXX="@CCACHE@ @CXX@"
+CPP="@CCACHE@ @CPP@"
 AR="@AR@"
 AS="@AS@"
 NM="@NM@"

@@ -44,6 +44,7 @@ namespace PERIPHERALS
 {
   class CGUIDialogPeripheralSettings;
   class CPeripheralBus;
+  class CPeripherals;
 
   typedef enum
   {
@@ -57,7 +58,7 @@ namespace PERIPHERALS
     friend class CGUIDialogPeripheralSettings;
 
   public:
-    CPeripheral(const PeripheralScanResult& scanResult, CPeripheralBus* bus);
+    CPeripheral(CPeripherals& manager, const PeripheralScanResult& scanResult, CPeripheralBus* bus);
     virtual ~CPeripheral(void);
 
     bool operator ==(const CPeripheral &right) const;
@@ -149,7 +150,7 @@ namespace PERIPHERALS
      * @param strKey The key of the setting.
      * @param setting The setting.
      */
-    virtual void AddSetting(const std::string &strKey, const CSetting *setting, int order);
+    virtual void AddSetting(const std::string &strKey, std::shared_ptr<const CSetting> setting, int order);
 
     /*!
      * @brief Check whether a setting is known with the given key.
@@ -191,14 +192,14 @@ namespace PERIPHERALS
     virtual void LoadPersistedSettings(void);
     virtual void ResetDefaultSettings(void);
 
-    virtual std::vector<CSetting *> GetSettings(void) const;
+    virtual std::vector<std::shared_ptr<CSetting>> GetSettings(void) const;
 
     virtual bool ErrorOccured(void) const { return m_bError; }
 
     virtual void RegisterJoystickDriverHandler(KODI::JOYSTICK::IDriverHandler* handler, bool bPromiscuous) { }
     virtual void UnregisterJoystickDriverHandler(KODI::JOYSTICK::IDriverHandler* handler) { }
 
-    virtual void RegisterJoystickInputHandler(KODI::JOYSTICK::IInputHandler* handler);
+    virtual void RegisterJoystickInputHandler(KODI::JOYSTICK::IInputHandler* handler, bool bPromiscuous);
     virtual void UnregisterJoystickInputHandler(KODI::JOYSTICK::IInputHandler* handler);
 
     virtual void RegisterJoystickButtonMapper(KODI::JOYSTICK::IButtonMapper* mapper);
@@ -211,6 +212,7 @@ namespace PERIPHERALS
   protected:
     virtual void ClearSettings(void);
 
+    CPeripherals&                    m_manager;
     PeripheralType                   m_type;
     PeripheralBusType                m_busType;
     PeripheralBusType                m_mappedBusType;

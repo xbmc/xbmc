@@ -20,8 +20,6 @@
 
 #include "RendererVTBGL.h"
 
-#if defined(TARGET_DARWIN_OSX)
-
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
@@ -58,7 +56,7 @@ CRenderInfo CRendererVTB::GetRenderInfo()
   return info;
 }
 
-void CRendererVTB::AddVideoPictureHW(DVDVideoPicture &picture, int index)
+void CRendererVTB::AddVideoPictureHW(VideoPicture &picture, int index)
 {
   YUVBUFFER &buf = m_buffers[index];
   CVTBData *vtbdata = (CVTBData*)buf.hwDec;
@@ -66,10 +64,11 @@ void CRendererVTB::AddVideoPictureHW(DVDVideoPicture &picture, int index)
   {
     CVBufferRelease(vtbdata->m_vtbbuf);
   }
-  vtbdata->m_vtbbuf = picture.cvBufferRef;
+  CVPixelBufferRef cvref = static_cast<CVPixelBufferRef>(picture.hwPic);
+  vtbdata->m_vtbbuf = cvref;
 
   // retain another reference, this way VideoPlayer and renderer can issue releases.
-  CVBufferRetain(picture.cvBufferRef);
+  CVBufferRetain(cvref);
 }
 
 void CRendererVTB::ReleaseBuffer(int idx)
@@ -90,6 +89,11 @@ void CRendererVTB::ReleaseBuffer(int idx)
       vtbdata->m_fence = 0;
     }
   }
+}
+
+EShaderFormat CRendererVTB::GetShaderFormat(ERenderFormat renderFormat)
+{
+  return SHADER_YV12;
 }
 
 bool CRendererVTB::LoadShadersHook()
@@ -252,4 +256,3 @@ bool CRendererVTB::NeedBuffer(int idx)
 
   return false;
 }
-#endif

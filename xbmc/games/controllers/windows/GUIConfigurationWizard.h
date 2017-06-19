@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2014-2016 Team Kodi
+ *      Copyright (C) 2014-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -40,14 +40,13 @@ namespace KEYBOARD
 {
   class IActionMap;
 }
-}
 
 namespace GAME
 {
   class CGUIConfigurationWizard : public IConfigurationWizard,
-                                  public KODI::JOYSTICK::IButtonMapper,
-                                  public KODI::KEYBOARD::IKeyboardHandler,
-                                  public KODI::MOUSE::IMouseInputHandler,
+                                  public JOYSTICK::IButtonMapper,
+                                  public KEYBOARD::IKeyboardHandler,
+                                  public MOUSE::IMouseInputHandler,
                                   public Observer,
                                   protected CThread
   {
@@ -66,11 +65,11 @@ namespace GAME
     virtual bool NeedsCooldown(void) const override { return true; }
     virtual bool Emulation(void) const override { return m_bEmulation; }
     virtual unsigned int ControllerNumber(void) const override { return m_controllerNumber; }
-    virtual bool MapPrimitive(KODI::JOYSTICK::IButtonMap* buttonMap,
-                              KODI::JOYSTICK::IActionMap* actionMap,
-                              const KODI::JOYSTICK::CDriverPrimitive& primitive) override;
-    virtual void OnEventFrame(const KODI::JOYSTICK::IButtonMap* buttonMap, bool bMotion) override;
-    virtual void OnLateAxis(const KODI::JOYSTICK::IButtonMap* buttonMap, unsigned int axisIndex) override;
+    virtual bool MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
+                              JOYSTICK::IActionMap* actionMap,
+                              const JOYSTICK::CDriverPrimitive& primitive) override;
+    virtual void OnEventFrame(const JOYSTICK::IButtonMap* buttonMap, bool bMotion) override;
+    virtual void OnLateAxis(const JOYSTICK::IButtonMap* buttonMap, unsigned int axisIndex) override;
 
     // implementation of IKeyboardHandler
     virtual bool OnKeyPress(const CKey& key) override;
@@ -94,8 +93,8 @@ namespace GAME
     void InstallHooks(void);
     void RemoveHooks(void);
 
-    void OnMotion(const KODI::JOYSTICK::IButtonMap* buttonMap);
-    void OnMotionless(const KODI::JOYSTICK::IButtonMap* buttonMap);
+    void OnMotion(const JOYSTICK::IButtonMap* buttonMap);
+    void OnMotionless(const JOYSTICK::IButtonMap* buttonMap);
 
     // Construction parameters
     const bool                           m_bEmulation;
@@ -107,8 +106,8 @@ namespace GAME
 
     // State variables and mutex
     IFeatureButton*                      m_currentButton;
-    KODI::JOYSTICK::ANALOG_STICK_DIRECTION     m_currentDirection;
-    std::set<KODI::JOYSTICK::CDriverPrimitive> m_history; // History to avoid repeated features
+    JOYSTICK::ANALOG_STICK_DIRECTION     m_currentDirection;
+    std::set<JOYSTICK::CDriverPrimitive> m_history; // History to avoid repeated features
     bool                                 m_lateAxisDetected; // Set to true if an axis is detected during button mapping
     CCriticalSection                     m_stateMutex;
 
@@ -116,9 +115,10 @@ namespace GAME
     CEvent                               m_inputEvent;
     CEvent                               m_motionlessEvent;
     CCriticalSection                     m_motionMutex;
-    std::set<const KODI::JOYSTICK::IButtonMap*> m_bInMotion;
+    std::set<const JOYSTICK::IButtonMap*> m_bInMotion;
 
     // Keyboard handling
-    std::unique_ptr<KODI::KEYBOARD::IActionMap> m_actionMap;
+    std::unique_ptr<KEYBOARD::IActionMap> m_actionMap;
   };
+}
 }

@@ -18,7 +18,7 @@
  */
 #pragma once
 
-#include "AddonDll.h"
+#include "addons/binary-addons/AddonDll.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/kodi_audiodec_types.h"
 #include "cores/paplayer/ICodec.h"
 #include "music/tags/ImusicInfoTagLoader.h"
@@ -39,17 +39,17 @@ namespace ADDON
   {
   public:
 
-    static std::unique_ptr<CAudioDecoder> FromExtension(AddonProps props, const cp_extension_t* ext);
+    static std::unique_ptr<CAudioDecoder> FromExtension(CAddonInfo addonInfo, const cp_extension_t* ext);
 
-    explicit CAudioDecoder(AddonProps props)
-      : CAddonDll(std::move(props))
+    explicit CAudioDecoder(CAddonInfo addonInfo)
+      : CAddonDll(std::move(addonInfo))
       , m_context{nullptr}
       , m_tags{false}
       , m_tracks{false}
       , m_channel{nullptr}
     {}
 
-    CAudioDecoder(AddonProps props, std::string extension, std::string mimetype, bool tags,
+    CAudioDecoder(CAddonInfo addonInfo, std::string extension, std::string mimetype, bool tags,
         bool tracks, std::string codecName, std::string strExt);
 
     virtual ~CAudioDecoder();
@@ -78,8 +78,7 @@ namespace ADDON
     bool m_tags;
     bool m_tracks;
     const AEChannel* m_channel;
-    AUDIODEC_PROPS m_info;
-    KodiToAddonFuncTable_AudioDecoder m_struct;
+    AddonInstance_AudioDecoder m_struct;
   };
 
 } /*namespace ADDON*/

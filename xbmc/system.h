@@ -33,7 +33,6 @@
 #define HAS_SCREENSAVER
 #define HAS_VIDEO_PLAYBACK
 #define HAS_VISUALISATION
-#define HAS_PVRCLIENTS
 #define HAS_ADSPADDONS
 
 #ifdef HAVE_LIBMICROHTTPD
@@ -78,14 +77,6 @@
   #endif
 #endif
 
-/**********************
- * Non-free Components
- **********************/
-
-#if defined(HAVE_XBMC_NONFREE)
-  #define HAS_FILESYSTEM_RAR
-#endif
-
 /*****************
  * Win32 Specific
  *****************/
@@ -94,6 +85,10 @@
 #define HAS_WIN32_NETWORK
 #define HAS_IRSERVERSUITE
 #define HAS_FILESYSTEM_SMB
+
+#ifdef HAVE_LIBBLURAY
+  #define HAVE_LIBBLURAY_BDJ
+#endif
 
 #define DECLARE_UNUSED(a,b) a b;
 #endif
@@ -145,6 +140,9 @@
 #ifdef HAVE_LIBPULSE
 #define HAS_PULSEAUDIO
 #endif
+#ifdef HAVE_SNDIO
+#define HAS_SNDIO
+#endif
 #ifdef HAVE_ALSA
 #define HAS_ALSA
 #endif
@@ -152,13 +150,6 @@
 
 #ifdef HAVE_LIBSSH
 #define HAS_FILESYSTEM_SFTP
-#endif
-
-#if defined(HAVE_X11)
-#define HAS_EGL
-#if !defined(HAVE_LIBGLESV2)
-#define HAS_GLX
-#endif
 #endif
 
 /****************************************
@@ -202,20 +193,10 @@
 #undef HAS_LIRC
 #endif
 
-#ifdef HAVE_LIBEGL
-#define HAS_EGL
-#endif
-
 // GLES2.0 detected. Dont use GL!
 #ifdef HAVE_LIBGLESV2
 #undef HAS_GL
 #define HAS_GLES 2
-#endif
-
-// GLES1.0 detected. Dont use GL!
-#ifdef HAVE_LIBGLES
-#undef HAS_GL
-#define HAS_GLES 1
 #endif
 
 #ifdef HAS_DVD_DRIVE

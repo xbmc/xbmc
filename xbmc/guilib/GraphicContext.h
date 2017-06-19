@@ -75,7 +75,7 @@ public:
   CGraphicContext(void);
   virtual ~CGraphicContext(void);
 
-  virtual void OnSettingChanged(const CSetting *setting) override;
+  virtual void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
 
   int GetWidth() const { return m_iScreenWidth; }
   int GetHeight() const { return m_iScreenHeight; }

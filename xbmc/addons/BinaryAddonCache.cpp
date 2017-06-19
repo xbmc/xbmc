@@ -34,11 +34,11 @@ void CBinaryAddonCache::Init()
 {
   m_addonsToCache = {
     ADDON_AUDIODECODER,
-    ADDON_IMAGEDECODER,
     ADDON_INPUTSTREAM,
     ADDON_PVRDLL,
     ADDON_GAMEDLL,
-    ADDON_VFS
+    ADDON_VFS,
+    ADDON_PERIPHERALDLL,
   };
   CAddonMgr::GetInstance().Events().Subscribe(this, &CBinaryAddonCache::OnEvent);
   Update();
@@ -52,18 +52,33 @@ void CBinaryAddonCache::Deinit()
 void CBinaryAddonCache::GetAddons(VECADDONS& addons, const TYPE& type)
 {
   VECADDONS myAddons;
-  {
-    CSingleLock lock(m_critSection);
-    auto it = m_addons.find(type);
-    if (it != m_addons.end())
-      myAddons = it->second;
-  }
+  GetInstalledAddons(myAddons, type);
 
   for (auto &addon : myAddons)
   {
     if (!CAddonMgr::GetInstance().IsAddonDisabled(addon->ID()))
       addons.emplace_back(std::move(addon));
   }
+}
+
+void CBinaryAddonCache::GetDisabledAddons(VECADDONS& addons, const TYPE& type)
+{
+  VECADDONS myAddons;
+  GetInstalledAddons(myAddons, type);
+
+  for (auto &addon : myAddons)
+  {
+    if (CAddonMgr::GetInstance().IsAddonDisabled(addon->ID()))
+      addons.emplace_back(std::move(addon));
+  }
+}
+
+void CBinaryAddonCache::GetInstalledAddons(VECADDONS& addons, const TYPE& type)
+{
+  CSingleLock lock(m_critSection);
+  auto it = m_addons.find(type);
+  if (it != m_addons.end())
+    addons = it->second;
 }
 
 AddonPtr CBinaryAddonCache::GetAddonInstance(const std::string& strId, TYPE type)

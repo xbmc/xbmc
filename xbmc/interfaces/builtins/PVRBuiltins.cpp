@@ -22,6 +22,7 @@
 
 #include "Application.h"
 #include "pvr/PVRManager.h"
+#include "ServiceBroker.h"
 
 
 /*! \brief Search for missing channel icons
@@ -29,7 +30,7 @@
  */
 static int SearchMissingIcons(const std::vector<std::string>& params)
 {
-  PVR::CPVRManager::GetInstance().TriggerSearchMissingChannelIcons();
+  CServiceBroker::GetPVRManager().TriggerSearchMissingChannelIcons();
 
   return 0;
 }

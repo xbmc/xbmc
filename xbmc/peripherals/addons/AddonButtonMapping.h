@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2014-2016 Team Kodi
+ *      Copyright (C) 2014-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -37,12 +37,13 @@ namespace JOYSTICK
 namespace PERIPHERALS
 {
   class CPeripheral;
+  class CPeripherals;
 
   class CAddonButtonMapping : public KODI::JOYSTICK::IDriverHandler,
                               public KODI::JOYSTICK::IButtonMapCallback
   {
   public:
-    CAddonButtonMapping(CPeripheral* peripheral, KODI::JOYSTICK::IButtonMapper* mapper);
+    CAddonButtonMapping(CPeripherals& manager, CPeripheral* peripheral, KODI::JOYSTICK::IButtonMapper* mapper);
 
     virtual ~CAddonButtonMapping(void);
 

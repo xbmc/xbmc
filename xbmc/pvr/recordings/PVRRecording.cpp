@@ -18,9 +18,10 @@
  *
  */
 
+#include "PVRRecording.h"
+
 #include "dialogs/GUIDialogOK.h"
-#include "epg/Epg.h"
-#include "epg/EpgContainer.h"
+#include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
@@ -30,13 +31,12 @@
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/epg/Epg.h"
+#include "pvr/epg/EpgContainer.h"
 #include "pvr/recordings/PVRRecordingsPath.h"
 #include "pvr/timers/PVRTimers.h"
 
-#include "PVRRecording.h"
-
 using namespace PVR;
-using namespace EPG;
 
 CPVRRecordingUid::CPVRRecordingUid(int iClientId, const std::string& strRecordingId) :
   m_iClientId(iClientId),
@@ -95,7 +95,7 @@ CPVRRecording::CPVRRecording(const PVR_RECORDING &recording, unsigned int iClien
   m_strPlotOutline                 = recording.strPlotOutline;
   m_strStreamURL                   = recording.strStreamURL;
   m_strChannelName                 = recording.strChannelName;
-  m_genre                          = StringUtils::Split(CEpg::ConvertGenreIdToString(recording.iGenreType, recording.iGenreSubType), g_advancedSettings.m_videoItemSeparator);
+  m_genre                          = StringUtils::Split(CPVREpg::ConvertGenreIdToString(recording.iGenreType, recording.iGenreSubType), g_advancedSettings.m_videoItemSeparator);
   m_strIconPath                    = recording.strIconPath;
   m_strThumbnailPath               = recording.strThumbnailPath;
   m_strFanartPath                  = recording.strFanartPath;
@@ -122,8 +122,8 @@ CPVRRecording::CPVRRecording(const PVR_RECORDING &recording, unsigned int iClien
     }
     else
     {
-      bool bSupportsRadio(g_PVRClients->SupportsRadio(m_iClientId));
-      if (bSupportsRadio && g_PVRClients->SupportsTV(m_iClientId))
+      bool bSupportsRadio(CServiceBroker::GetPVRManager().Clients()->SupportsRadio(m_iClientId));
+      if (bSupportsRadio && CServiceBroker::GetPVRManager().Clients()->SupportsTV(m_iClientId))
       {
         CLog::Log(LOGWARNING,"CPVRRecording::CPVRRecording - unable to determine channel type. Defaulting to TV.");
         m_bRadio = false; // Assume TV.
@@ -224,7 +224,7 @@ void CPVRRecording::Reset(void)
 
 bool CPVRRecording::Delete(void)
 {
-  PVR_ERROR error = g_PVRClients->DeleteRecording(*this);
+  PVR_ERROR error = CServiceBroker::GetPVRManager().Clients()->DeleteRecording(*this);
   if (error != PVR_ERROR_NO_ERROR)
     return false;
 
@@ -239,7 +239,7 @@ void CPVRRecording::OnDelete(void)
     const CPVRChannelPtr channel(Channel());
     if (channel)
     {
-      const EPG::CEpgInfoTagPtr epgTag(EPG::CEpgContainer::GetInstance().GetTagById(channel, m_iEpgEventId));
+      const CPVREpgInfoTagPtr epgTag(CServiceBroker::GetPVRManager().EpgContainer().GetTagById(channel, m_iEpgEventId));
       if (epgTag)
         epgTag->ClearRecording();
     }
@@ -248,7 +248,7 @@ void CPVRRecording::OnDelete(void)
 
 bool CPVRRecording::Undelete(void)
 {
-  PVR_ERROR error = g_PVRClients->UndeleteRecording(*this);
+  PVR_ERROR error = CServiceBroker::GetPVRManager().Clients()->UndeleteRecording(*this);
   if (error != PVR_ERROR_NO_ERROR)
     return false;
 
@@ -258,7 +258,7 @@ bool CPVRRecording::Undelete(void)
 bool CPVRRecording::Rename(const std::string &strNewName)
 {
   m_strTitle = StringUtils::Format("%s", strNewName.c_str());
-  PVR_ERROR error = g_PVRClients->RenameRecording(*this);
+  PVR_ERROR error = CServiceBroker::GetPVRManager().Clients()->RenameRecording(*this);
   if (error != PVR_ERROR_NO_ERROR)
     return false;
 
@@ -268,8 +268,8 @@ bool CPVRRecording::Rename(const std::string &strNewName)
 bool CPVRRecording::SetPlayCount(int count)
 {
   PVR_ERROR error;
-  if (g_PVRClients->SupportsRecordingPlayCount(m_iClientId) &&
-      !g_PVRClients->SetRecordingPlayCount(*this, count, &error))
+  if (CServiceBroker::GetPVRManager().Clients()->SupportsRecordingPlayCount(m_iClientId) &&
+      !CServiceBroker::GetPVRManager().Clients()->SetRecordingPlayCount(*this, count, &error))
     return false;
 
   return CVideoInfoTag::SetPlayCount(count);
@@ -278,8 +278,8 @@ bool CPVRRecording::SetPlayCount(int count)
 bool CPVRRecording::IncrementPlayCount()
 {
   PVR_ERROR error;
-  if (g_PVRClients->SupportsRecordingPlayCount(m_iClientId) &&
-      !g_PVRClients->SetRecordingPlayCount(*this, CVideoInfoTag::GetPlayCount(), &error))
+  if (CServiceBroker::GetPVRManager().Clients()->SupportsRecordingPlayCount(m_iClientId) &&
+      !CServiceBroker::GetPVRManager().Clients()->SetRecordingPlayCount(*this, CVideoInfoTag::GetPlayCount() + 1, &error))
     return false;
 
   return CVideoInfoTag::IncrementPlayCount();
@@ -288,8 +288,8 @@ bool CPVRRecording::IncrementPlayCount()
 bool CPVRRecording::SetResumePoint(const CBookmark &resumePoint)
 {
   PVR_ERROR error;
-  if (g_PVRClients->SupportsLastPlayedPosition(m_iClientId) &&
-      !g_PVRClients->SetRecordingLastPlayedPosition(*this, lrint(resumePoint.timeInSeconds), &error))
+  if (CServiceBroker::GetPVRManager().Clients()->SupportsLastPlayedPosition(m_iClientId) &&
+      !CServiceBroker::GetPVRManager().Clients()->SetRecordingLastPlayedPosition(*this, lrint(resumePoint.timeInSeconds), &error))
     return false;
 
   return CVideoInfoTag::SetResumePoint(resumePoint);
@@ -298,8 +298,8 @@ bool CPVRRecording::SetResumePoint(const CBookmark &resumePoint)
 bool CPVRRecording::SetResumePoint(double timeInSeconds, double totalTimeInSeconds, const std::string &playerState /* = "" */)
 {
   PVR_ERROR error;
-  if (g_PVRClients->SupportsLastPlayedPosition(m_iClientId) &&
-      !g_PVRClients->SetRecordingLastPlayedPosition(*this, lrint(timeInSeconds), &error))
+  if (CServiceBroker::GetPVRManager().Clients()->SupportsLastPlayedPosition(m_iClientId) &&
+      !CServiceBroker::GetPVRManager().Clients()->SetRecordingLastPlayedPosition(*this, lrint(timeInSeconds), &error))
     return false;
 
   return CVideoInfoTag::SetResumePoint(timeInSeconds, totalTimeInSeconds, playerState);
@@ -307,9 +307,9 @@ bool CPVRRecording::SetResumePoint(double timeInSeconds, double totalTimeInSecon
 
 CBookmark CPVRRecording::GetResumePoint() const
 {
-  if (g_PVRClients->SupportsLastPlayedPosition(m_iClientId))
+  if (CServiceBroker::GetPVRManager().Clients()->SupportsLastPlayedPosition(m_iClientId))
   {
-    int pos = g_PVRClients->GetRecordingLastPlayedPosition(*this);
+    int pos = CServiceBroker::GetPVRManager().Clients()->GetRecordingLastPlayedPosition(*this);
     if (pos >= 0)
     {
       CBookmark resumePoint(CVideoInfoTag::GetResumePoint());
@@ -326,12 +326,12 @@ void CPVRRecording::UpdateMetadata(CVideoDatabase &db)
   if (m_bGotMetaData)
     return;
 
-  if (!g_PVRClients->SupportsRecordingPlayCount(m_iClientId))
+  if (!CServiceBroker::GetPVRManager().Clients()->SupportsRecordingPlayCount(m_iClientId))
   {
     CVideoInfoTag::SetPlayCount(db.GetPlayCount(m_strFileNameAndPath));
   }
 
-  if (!g_PVRClients->SupportsLastPlayedPosition(m_iClientId))
+  if (!CServiceBroker::GetPVRManager().Clients()->SupportsLastPlayedPosition(m_iClientId))
   {
     CBookmark resumePoint;
     if (db.GetResumeBookMark(m_strFileNameAndPath, resumePoint))
@@ -343,9 +343,9 @@ void CPVRRecording::UpdateMetadata(CVideoDatabase &db)
 
 std::vector<PVR_EDL_ENTRY> CPVRRecording::GetEdl() const
 {
-  if (g_PVRClients->SupportsRecordingEdl(m_iClientId))
+  if (CServiceBroker::GetPVRManager().Clients()->SupportsRecordingEdl(m_iClientId))
   {
-    return g_PVRClients->GetRecordingEdl(*this);
+    return CServiceBroker::GetPVRManager().Clients()->GetRecordingEdl(*this);
   }
   return std::vector<PVR_EDL_ENTRY>();
 }
@@ -445,7 +445,7 @@ std::string CPVRRecording::GetTitleFromURL(const std::string &url)
 CPVRChannelPtr CPVRRecording::Channel(void) const
 {
   if (m_iChannelUid != PVR_CHANNEL_INVALID_UID)
-    return g_PVRChannelGroups->GetByUniqueID(m_iChannelUid, m_iClientId);
+    return CServiceBroker::GetPVRManager().ChannelGroups()->GetByUniqueID(m_iChannelUid, m_iClientId);
 
   return CPVRChannelPtr();
 }
@@ -466,5 +466,5 @@ bool CPVRRecording::IsInProgress() const
   //       Only the state of the related timer is a safe indicator that the backend
   //       actually is recording this.
 
-  return g_PVRTimers->HasRecordingTimerForRecording(*this);
+  return CServiceBroker::GetPVRManager().Timers()->HasRecordingTimerForRecording(*this);
 }

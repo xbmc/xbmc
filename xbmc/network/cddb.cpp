@@ -20,8 +20,6 @@
 
 #include "system.h"
 
-#ifdef HAS_DVD_DRIVE
-
 #include <taglib/id3v1genres.h>
 #include "cddb.h"
 #include "CompileInfo.h"
@@ -1076,6 +1074,3 @@ std::string Xcddb::TrimToUTF8(const std::string &untrimmedText)
   g_charsetConverter.unknownToUTF8(text);
   return text;
 }
-
-#endif
-

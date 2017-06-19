@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 # Addon Name: Estuary
 # Addon id: skin.estuary
-# Addon Provider: phil65, Piers
+# Addon Provider: phil65, Ichabod Fletchman
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
@@ -111,6 +111,10 @@ msgstr "Rodinio tipas"
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
 msgstr "Nerasta mėgstamiausiųjų. Jūs galite pridėti bet kurį elementą iš media rodinių į šį sąrašą naudodami kontekstinį meniu."
+
+msgctxt "#31026"
+msgid "Timeshift"
+msgstr "Laiko poslinkis"
 
 msgctxt "#31028"
 msgid "Show fanart"
@@ -435,10 +439,6 @@ msgstr "Su pagrindiniu meniu susiję nustatymai: susikonfigūruokite pradinį ek
 msgctxt "#31131"
 msgid "Choose skin fanart pack"
 msgstr "Pasirinkti teminės išvaizdos Fanart paketą"
-
-msgctxt "#31132"
-msgid "min"
-msgstr "min"
 
 msgctxt "#31134"
 msgid "Remaining"

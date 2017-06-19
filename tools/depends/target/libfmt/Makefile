@@ -4,11 +4,8 @@ DEPS = Makefile
 # lib name, version
 LIBNAME=fmt
 VERSION=3.0.1
-BASE_URL=https://github.com/fmtlib/fmt/archive
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
-
-RETRIEVE_TOOL_FLAGS=-Ls --create-dirs -f
 
 CMAKE_OPTIONS=-DFMT_DOC=OFF -DFMT_INSTALL=ON -DFMT_TEST=OFF -DFMT_USE_CPP11=ON
 
@@ -21,9 +18,13 @@ else
   ifeq ($(PLATFORM),)
     PLATFORM = native
     TARBALLS_LOCATION = $(ROOT_DIR)
+    BASE_URL := http://mirrors.kodi.tv/build-deps/sources
     RETRIEVE_TOOL := curl
-    ARCHIVE_TOOL := tar --strip-components=1 -xf
+    RETRIEVE_TOOL_FLAGS := -Ls --create-dirs -f -O
+    ARCHIVE_TOOL := tar
+    ARCHIVE_TOOL_FLAGS := --strip-components=1 -xf
     CMAKE := cmake
+    CMAKE_OPTIONS := -DCMAKE_INSTALL_PREFIX=$(PREFIX) $(CMAKE_OPTIONS)
   endif
 endif
 
@@ -36,7 +37,7 @@ $(PREFIX)/lib/lib$(LIBNAME).a:
 	@make .installed-$(PLATFORM)
 
 $(TARBALLS_LOCATION)/$(ARCHIVE):
-	cd $(TARBALLS_LOCATION); $(RETRIEVE_TOOL) $(RETRIEVE_TOOL_FLAGS) -o $(ARCHIVE) $(BASE_URL)/$(VERSION).tar.gz
+	cd $(TARBALLS_LOCATION); $(RETRIEVE_TOOL) $(RETRIEVE_TOOL_FLAGS) $(BASE_URL)/$(ARCHIVE)
 
 $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 ifeq ($(PREFIX),)

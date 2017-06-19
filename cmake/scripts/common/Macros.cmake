@@ -197,15 +197,24 @@ endfunction()
 #   NO_INSTALL: exclude file from installation target (only mirror)
 #   DIRECTORY:  directory where the file should be mirrored to
 #               (default: preserve tree structure relative to CMAKE_SOURCE_DIR)
+#   KEEP_DIR_STRUCTURE: preserve tree structure even when DIRECTORY is set
 # On return:
 #   Files is mirrored to the build tree and added to ${install_data}
 #   (if NO_INSTALL is not given).
 function(copy_file_to_buildtree file)
-  cmake_parse_arguments(arg "NO_INSTALL" "DIRECTORY" "" ${ARGN})
+  cmake_parse_arguments(arg "NO_INSTALL" "DIRECTORY;KEEP_DIR_STRUCTURE" "" ${ARGN})
   if(arg_DIRECTORY)
     set(outdir ${arg_DIRECTORY})
-    get_filename_component(outfile ${file} NAME)
-    set(outfile ${outdir}/${outfile})
+    if(arg_KEEP_DIR_STRUCTURE)
+      get_filename_component(srcdir ${arg_KEEP_DIR_STRUCTURE} DIRECTORY)
+      string(REPLACE "${CMAKE_SOURCE_DIR}/${srcdir}/" "" outfile ${file})
+      if(NOT IS_DIRECTORY ${file})
+        set(outdir ${outdir}/${outfile})
+      endif()
+    else()
+      get_filename_component(outfile ${file} NAME)
+      set(outfile ${outdir}/${outfile})
+    endif()
   else()
     string(REPLACE "${CMAKE_SOURCE_DIR}/" "" outfile ${file})
     get_filename_component(outdir ${outfile} DIRECTORY)
@@ -267,18 +276,28 @@ function(copy_files_from_filelist_to_buildtree pattern)
       string(STRIP ${filename} filename)
       core_file_read_filtered(fstrings ${filename})
       foreach(dir ${fstrings})
+        string(CONFIGURE ${dir} dir)
         string(REPLACE " " ";" dir ${dir})
         list(GET dir 0 src)
         list(LENGTH dir len)
         if(len EQUAL 1)
           set(dest)
+        elseif(len EQUAL 3)
+          list(GET dir 1 opt)
+          if(opt STREQUAL "KEEP_DIR_STRUCTURE")
+            set(DIR_OPTION ${opt} ${src})
+            if(VERBOSE)
+              message(STATUS "copy_files_from_filelist_to_buildtree - DIR_OPTION: ${DIR_OPTION}")
+            endif()
+          endif()
+          list(GET dir -1 dest)
         else()
           list(GET dir -1 dest)
         endif()
 
         # If the full path to an existing file is specified then add that single file.
         # Don't recursively add all files with the given name.
-        if(EXISTS ${CMAKE_SOURCE_DIR}/${src} AND NOT IS_DIRECTORY ${CMAKE_SOURCE_DIR}/${src})
+        if(EXISTS ${CMAKE_SOURCE_DIR}/${src} AND (NOT IS_DIRECTORY ${CMAKE_SOURCE_DIR}/${src} OR DIR_OPTION))
           set(files ${src})
         else()
           file(GLOB_RECURSE files RELATIVE ${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/${src})
@@ -286,9 +305,9 @@ function(copy_files_from_filelist_to_buildtree pattern)
 
         foreach(file ${files})
           if(arg_NO_INSTALL)
-            copy_file_to_buildtree(${CMAKE_SOURCE_DIR}/${file} DIRECTORY ${dest} NO_INSTALL)
+            copy_file_to_buildtree(${CMAKE_SOURCE_DIR}/${file} DIRECTORY ${dest} NO_INSTALL ${DIR_OPTION})
           else()
-            copy_file_to_buildtree(${CMAKE_SOURCE_DIR}/${file} DIRECTORY ${dest})
+            copy_file_to_buildtree(${CMAKE_SOURCE_DIR}/${file} DIRECTORY ${dest} ${DIR_OPTION})
           endif()
         endforeach()
       endforeach()
@@ -308,37 +327,43 @@ endmacro()
 
 # add a required dependency of main application
 # Arguments:
-#   dep name of find rule for dependency, used uppercased for variable prefix
+#   dep_list name of find rule for dependency, used uppercased for variable prefix
+#            also accepts a list of multiple dependencies
 # On return:
 #   dependency added to ${SYSTEM_INCLUDES}, ${DEPLIBS} and ${DEP_DEFINES}
-function(core_require_dep dep)
-  find_package(${dep} REQUIRED)
-  string(TOUPPER ${dep} depup)
-  list(APPEND SYSTEM_INCLUDES ${${depup}_INCLUDE_DIRS})
-  list(APPEND DEPLIBS ${${depup}_LIBRARIES})
-  list(APPEND DEP_DEFINES ${${depup}_DEFINITIONS})
-  export_dep()
+function(core_require_dep)
+  foreach(dep ${ARGN})
+    find_package(${dep} REQUIRED)
+    string(TOUPPER ${dep} depup)
+    list(APPEND SYSTEM_INCLUDES ${${depup}_INCLUDE_DIRS})
+    list(APPEND DEPLIBS ${${depup}_LIBRARIES})
+    list(APPEND DEP_DEFINES ${${depup}_DEFINITIONS})
+    export_dep()
+  endforeach()
 endfunction()
 
 # add a required dyloaded dependency of main application
 # Arguments:
-#   dep name of find rule for dependency, used uppercased for variable prefix
+#   dep_list name of find rule for dependency, used uppercased for variable prefix
+#            also accepts a list of multiple dependencies
 # On return:
 #   dependency added to ${SYSTEM_INCLUDES}, ${dep}_SONAME is set up
-function(core_require_dyload_dep dep)
-  find_package(${dep} REQUIRED)
-  string(TOUPPER ${dep} depup)
-  list(APPEND SYSTEM_INCLUDES ${${depup}_INCLUDE_DIRS})
-  list(APPEND DEP_DEFINES ${${depup}_DEFINITIONS})
-  find_soname(${depup} REQUIRED)
-  export_dep()
-  set(${depup}_SONAME ${${depup}_SONAME} PARENT_SCOPE)
+function(core_require_dyload_dep)
+  foreach(dep ${ARGN})
+    find_package(${dep} REQUIRED)
+    string(TOUPPER ${dep} depup)
+    list(APPEND SYSTEM_INCLUDES ${${depup}_INCLUDE_DIRS})
+    list(APPEND DEP_DEFINES ${${depup}_DEFINITIONS})
+    find_soname(${depup} REQUIRED)
+    export_dep()
+    set(${depup}_SONAME ${${depup}_SONAME} PARENT_SCOPE)
+  endforeach()
 endfunction()
 
 # helper macro for optional deps
 macro(setup_enable_switch)
   string(TOUPPER ${dep} depup)
-  if(ARGV1)
+  if(${ARGV1})
     set(enable_switch ${ARGV1})
   else()
     set(enable_switch ENABLE_${depup})
@@ -349,57 +374,66 @@ endmacro()
 
 # add an optional dependency of main application
 # Arguments:
-#   dep name of find rule for dependency, used uppercased for variable prefix
+#   dep_list name of find rule for dependency, used uppercased for variable prefix
+#            also accepts a list of multiple dependencies
 # On return:
 #   dependency optionally added to ${SYSTEM_INCLUDES}, ${DEPLIBS} and ${DEP_DEFINES}
-function(core_optional_dep dep)
-  setup_enable_switch()
-  if(${enable_switch} STREQUAL AUTO)
-    find_package(${dep})
-  elseif(${${enable_switch}})
-    find_package(${dep} REQUIRED)
-    set(_required True)
-  endif()
+function(core_optional_dep)
+  foreach(dep ${ARGN})
+    set(_required False)
+    setup_enable_switch()
+    if(${enable_switch} STREQUAL AUTO)
+      find_package(${dep})
+    elseif(${${enable_switch}})
+      find_package(${dep} REQUIRED)
+      set(_required True)
+    endif()
 
-  if(${depup}_FOUND)
-    list(APPEND SYSTEM_INCLUDES ${${depup}_INCLUDE_DIRS})
-    list(APPEND DEPLIBS ${${depup}_LIBRARIES})
-    list(APPEND DEP_DEFINES ${${depup}_DEFINITIONS})
-    set(final_message ${final_message} "${depup} enabled: Yes" PARENT_SCOPE)
-    export_dep()
-  elseif(_required)
-    message(FATAL_ERROR "${depup} enabled but not found")
-  else()
-    set(final_message ${final_message} "${depup} enabled: No" PARENT_SCOPE)
-  endif()
+    if(${depup}_FOUND)
+      list(APPEND SYSTEM_INCLUDES ${${depup}_INCLUDE_DIRS})
+      list(APPEND DEPLIBS ${${depup}_LIBRARIES})
+      list(APPEND DEP_DEFINES ${${depup}_DEFINITIONS})
+      set(final_message ${final_message} "${depup} enabled: Yes")
+      export_dep()
+    elseif(_required)
+      message(FATAL_ERROR "${depup} enabled but not found")
+    else()
+      set(final_message ${final_message} "${depup} enabled: No")
+    endif()
+  endforeach()
+  set(final_message ${final_message} PARENT_SCOPE)
 endfunction()
 
 # add an optional dyloaded dependency of main application
 # Arguments:
-#   dep name of find rule for dependency, used uppercased for variable prefix
+#   dep_list name of find rule for dependency, used uppercased for variable prefix
+#            also accepts a list of multiple dependencies
 # On return:
 #   dependency optionally added to ${SYSTEM_INCLUDES}, ${DEP_DEFINES}, ${dep}_SONAME is set up
-function(core_optional_dyload_dep dep)
-  setup_enable_switch()
-  if(${enable_switch} STREQUAL AUTO)
-    find_package(${dep})
-  elseif(${${enable_switch}})
-    find_package(${dep} REQUIRED)
-    set(_required True)
-  endif()
+function(core_optional_dyload_dep)
+  foreach(dep ${ARGN})
+    set(_required False)
+    setup_enable_switch()
+    if(${enable_switch} STREQUAL AUTO)
+      find_package(${dep})
+    elseif(${${enable_switch}})
+      find_package(${dep} REQUIRED)
+      set(_required True)
+    endif()
 
-  if(${depup}_FOUND)
-    list(APPEND SYSTEM_INCLUDES ${${depup}_INCLUDE_DIRS})
-    find_soname(${depup} REQUIRED)
-    list(APPEND DEP_DEFINES ${${depup}_DEFINITIONS})
-    set(final_message ${final_message} "${depup} enabled: Yes" PARENT_SCOPE)
-    export_dep()
-    set(${depup}_SONAME ${${depup}_SONAME} PARENT_SCOPE)
-  elseif(_required)
-    message(FATAL_ERROR "${depup} enabled but not found")
-  else()
-    set(final_message ${final_message} "${depup} enabled: No" PARENT_SCOPE)
-  endif()
+    if(${depup}_FOUND)
+      list(APPEND SYSTEM_INCLUDES ${${depup}_INCLUDE_DIRS})
+      find_soname(${depup} REQUIRED)
+      list(APPEND DEP_DEFINES ${${depup}_DEFINITIONS})
+      set(final_message ${final_message} "${depup} enabled: Yes" PARENT_SCOPE)
+      export_dep()
+      set(${depup}_SONAME ${${depup}_SONAME} PARENT_SCOPE)
+    elseif(_required)
+      message(FATAL_ERROR "${depup} enabled but not found")
+    else()
+      set(final_message ${final_message} "${depup} enabled: No" PARENT_SCOPE)
+    endif()
+  endforeach()
 endfunction()
 
 function(core_file_read_filtered result filepattern)
@@ -583,13 +617,14 @@ function(core_find_git_rev stamp)
   endif()
 endfunction()
 
-# Parses version.txt and libKODI_guilib.h and sets variables
+# Parses version.txt and versions.h and sets variables
 # used to construct dirs structure, file naming, API version, etc.
 #
 # The following variables are set from version.txt:
 #   APP_NAME - app name
 #   APP_NAME_LC - lowercased app name
 #   APP_NAME_UC - uppercased app name
+#   APP_PACKAGE - Android full package name
 #   COMPANY_NAME - company name
 #   APP_VERSION_MAJOR - the app version major
 #   APP_VERSION_MINOR - the app version minor
@@ -599,9 +634,7 @@ endfunction()
 #   APP_ADDON_API - the addon API version in the form of 16.9.702
 #   FILE_VERSION - file version in the form of 16,9,702,0 - Windows only
 #
-# The following variables are set from libKODI_guilib.h:
-#   guilib_version - current ADDONGUI API version
-#   guilib_version_min - minimal ADDONGUI API version
+# Set various variables defined in "versions.h"
 macro(core_find_versions)
   # kodi-addons project also calls this macro and uses CORE_SOURCE_DIR
   # to point to core base dir
@@ -615,34 +648,75 @@ macro(core_find_versions)
   include(CMakeParseArguments)
   core_file_read_filtered(version_list ${CORE_SOURCE_DIR}/version.txt)
   string(REPLACE " " ";" version_list "${version_list}")
-  cmake_parse_arguments(APP "" "APP_NAME;COMPANY_NAME;WEBSITE;VERSION_MAJOR;VERSION_MINOR;VERSION_TAG;VERSION_CODE;ADDON_API" "" ${version_list})
+  cmake_parse_arguments(APP "" "APP_NAME;COMPANY_NAME;WEBSITE;VERSION_MAJOR;VERSION_MINOR;VERSION_TAG;VERSION_CODE;ADDON_API;APP_PACKAGE" "" ${version_list})
 
   set(APP_NAME ${APP_APP_NAME}) # inconsistency but APP_APP_NAME looks weird
   string(TOLOWER ${APP_APP_NAME} APP_NAME_LC)
   string(TOUPPER ${APP_APP_NAME} APP_NAME_UC)
   set(COMPANY_NAME ${APP_COMPANY_NAME})
   set(APP_VERSION ${APP_VERSION_MAJOR}.${APP_VERSION_MINOR})
+  set(APP_PACKAGE ${APP_APP_PACKAGE})
   if(APP_VERSION_TAG)
     set(APP_VERSION ${APP_VERSION}-${APP_VERSION_TAG})
     string(TOLOWER ${APP_VERSION_TAG} APP_VERSION_TAG_LC)
   endif()
   string(REPLACE "." "," FILE_VERSION ${APP_ADDON_API}.0)
-  file(STRINGS ${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/libKODI_guilib.h guilib_version REGEX "^.*GUILIB_API_VERSION (.*)$")
-  string(REGEX REPLACE ".*\"(.*)\"" "\\1" guilib_version ${guilib_version})
-  file(STRINGS ${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/libKODI_guilib.h guilib_version_min REGEX "^.*GUILIB_MIN_API_VERSION (.*)$")
-  string(REGEX REPLACE ".*\"(.*)\"" "\\1" guilib_version_min ${guilib_version_min})
+
+  # Set defines used in addon.xml.in and read from versions.h to set add-on
+  # version parts automatically
+  # This part is nearly identical to "AddonHelpers.cmake", except location of versions.h
+  file(STRINGS ${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/versions.h BIN_ADDON_PARTS)
+  foreach(loop_var ${BIN_ADDON_PARTS})
+    string(FIND "${loop_var}" "#define ADDON_" matchres)
+    if("${matchres}" EQUAL 0)
+      string(REGEX MATCHALL "[A-Z0-9._]+|[A-Z0-9._]+$" loop_var "${loop_var}")
+      list(GET loop_var 0 include_name)
+      list(GET loop_var 1 include_version)
+      string(REGEX REPLACE ".*\"(.*)\"" "\\1" ${include_name} ${include_version})
+    endif()
+  endforeach(loop_var)
+
   # unset variables not used anywhere else
   unset(version_list)
   unset(APP_APP_NAME)
+  unset(BIN_ADDON_PARTS)
 
   # bail if we can't parse version.txt
   if(NOT DEFINED APP_VERSION_MAJOR OR NOT DEFINED APP_VERSION_MINOR)
     message(FATAL_ERROR "Could not determine app version! Make sure that ${CORE_SOURCE_DIR}/version.txt exists")
   endif()
-
-  # bail if we can't parse libKODI_guilib.h
-  if(NOT DEFINED guilib_version OR NOT DEFINED guilib_version_min)
-    message(FATAL_ERROR "Could not determine add-on API version! Make sure that ${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/libKODI_guilib.h exists")
-  endif()
 endmacro()
 
+# add-on xml's
+# find all folders containing addon.xml.in and used to define
+# ADDON_XML_OUTPUTS, ADDON_XML_DEPENDS and ADDON_INSTALL_DATA
+macro(find_addon_xml_in_files)
+  file(GLOB ADDON_XML_IN_FILE ${CMAKE_SOURCE_DIR}/addons/*/addon.xml.in)
+  foreach(loop_var ${ADDON_XML_IN_FILE})
+    list(GET loop_var 0 xml_name)
+
+    string(REPLACE "/addon.xml.in" "" xml_name ${xml_name})
+    string(REPLACE "${CORE_SOURCE_DIR}/" "" xml_name ${xml_name})
+
+    list(APPEND ADDON_XML_DEPENDS "${CORE_SOURCE_DIR}/${xml_name}/addon.xml.in")
+    list(APPEND ADDON_XML_OUTPUTS "${CMAKE_BINARY_DIR}/${xml_name}/addon.xml")
+
+    # Read content of add-on folder to have on install
+    file(GLOB ADDON_FILES "${CORE_SOURCE_DIR}/${xml_name}/*")
+    foreach(loop_var ${ADDON_FILES})
+      if(loop_var MATCHES "addon.xml.in")
+        string(REPLACE "addon.xml.in" "addon.xml" loop_var ${loop_var})
+      endif()
+
+      list(GET loop_var 0 file_name)
+      string(REPLACE "${CORE_SOURCE_DIR}/" "" file_name ${file_name})
+      list(APPEND ADDON_INSTALL_DATA "${file_name}")
+
+      unset(file_name)
+    endforeach()
+    unset(xml_name)
+  endforeach()
+
+  # Append also versions.h to depends
+  list(APPEND ADDON_XML_DEPENDS "${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/versions.h")
+endmacro()

@@ -20,8 +20,6 @@
 
 #include "XRandR.h"
 
-#ifdef HAVE_X11
-
 #include <string.h>
 #include <sys/wait.h>
 #include "system.h"
@@ -509,8 +507,6 @@ int CXRandR::GetCrtc(int x, int y, float &hz)
 }
 
 CXRandR g_xrandr;
-
-#endif // HAVE_X11
 
 /*
   int main()

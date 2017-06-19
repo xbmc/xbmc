@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2016 Team Kodi
+ *      Copyright (C) 2016-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -24,12 +24,12 @@
 
 using namespace ADDON;
 
-CGameResource::CGameResource(AddonProps props) :
-  CResource(std::move(props))
+CGameResource::CGameResource(CAddonInfo addonInfo) :
+  CResource(std::move(addonInfo))
 {
 }
 
-std::unique_ptr<CGameResource> CGameResource::FromExtension(AddonProps props, const cp_extension_t* ext)
+std::unique_ptr<CGameResource> CGameResource::FromExtension(CAddonInfo addonInfo, const cp_extension_t* ext)
 {
-  return std::unique_ptr<CGameResource>(new CGameResource(std::move(props)));
+  return std::unique_ptr<CGameResource>(new CGameResource(std::move(addonInfo)));
 }

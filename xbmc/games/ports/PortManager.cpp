@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2015-2016 Team Kodi
+ *      Copyright (C) 2015-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,9 +19,11 @@
  */
 
 #include "PortManager.h"
+#include "PortMapper.h"
 #include "peripherals/devices/Peripheral.h"
 #include "peripherals/devices/PeripheralJoystick.h"
 #include "peripherals/devices/PeripheralJoystickEmulation.h"
+#include "peripherals/Peripherals.h"
 #include "threads/SingleLock.h"
 
 #include <algorithm>
@@ -33,7 +35,7 @@ using namespace PERIPHERALS;
 
 // --- GetRequestedPort() -----------------------------------------------------
 
-namespace GAME
+namespace
 {
   int GetRequestedPort(const PERIPHERALS::PeripheralPtr& device)
   {
@@ -45,13 +47,28 @@ namespace GAME
 
 // --- CPortManager -----------------------------------------------------------
 
-CPortManager& CPortManager::GetInstance()
+CPortManager::CPortManager() :
+  m_portMapper(new CPortMapper)
 {
-  static CPortManager instance;
-  return instance;
+}
+
+CPortManager::~CPortManager()
+{
+  Deinitialize();
+}
+
+void CPortManager::Initialize(CPeripherals& peripheralManager)
+{
+  m_portMapper->Initialize(peripheralManager, *this);
+}
+
+void CPortManager::Deinitialize()
+{
+  m_portMapper->Deinitialize();
 }
 
 void CPortManager::OpenPort(IInputHandler* handler,
+                            CGameClient* gameClient,
                             unsigned int port,
                             PERIPHERALS::PeripheralType requiredType /* = PERIPHERALS::PERIPHERAL_UNKNOWN) */)
 {
@@ -61,6 +78,7 @@ void CPortManager::OpenPort(IInputHandler* handler,
   newPort.handler = handler;
   newPort.port = port;
   newPort.requiredType = requiredType;
+  newPort.gameClient = gameClient;
   m_ports.push_back(newPort);
 
   SetChanged();
@@ -82,7 +100,7 @@ void CPortManager::ClosePort(IInputHandler* handler)
 }
 
 void CPortManager::MapDevices(const PeripheralVector& devices,
-                              std::map<PeripheralPtr, IInputHandler*>& deviceToPortMap)
+                              std::map<CPeripheral*, IInputHandler*>& deviceToPortMap)
 {
   CSingleLock lock(m_mutex);
 
@@ -136,8 +154,19 @@ void CPortManager::MapDevices(const PeripheralVector& devices,
   {
     IInputHandler* handler = AssignToPort(device);
     if (handler)
-      deviceToPortMap[device] = handler;
-  } 
+      deviceToPortMap[device.get()] = handler;
+  }
+}
+
+CGameClient* CPortManager::GameClient(JOYSTICK::IInputHandler* handler)
+{
+  for (const SPort& port : m_ports)
+  {
+    if (port.handler == handler)
+      return port.gameClient;
+  }
+
+  return nullptr;
 }
 
 IInputHandler* CPortManager::AssignToPort(const PeripheralPtr& device, bool checkPortNumber /* = true */)

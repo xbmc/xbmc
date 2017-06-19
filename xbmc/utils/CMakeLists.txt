@@ -108,6 +108,7 @@ set(HEADERS ActorProtocol.h
             HttpRangeUtils.h
             HttpResponse.h
             IArchivable.h
+            ILocalizer.h
             InfoLoader.h
             IRssObserver.h
             ISerializable.h

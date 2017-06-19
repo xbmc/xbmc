@@ -189,18 +189,16 @@ void CGUIDialogContextMenu::SetPosition(float posX, float posY)
 
 float CGUIDialogContextMenu::GetHeight() const
 {
-  const CGUIControl *backMain = GetControl(BACKGROUND_IMAGE);
-  if (backMain)
-    return backMain->GetHeight();
+  if (m_backgroundImage)
+    return m_backgroundImage->GetHeight();
   else
     return CGUIDialog::GetHeight();
 }
 
 float CGUIDialogContextMenu::GetWidth() const
 {
-  const CGUIControl *pControl = GetControl(BACKGROUND_IMAGE);
-  if (pControl)
-    return pControl->GetWidth();
+  if (m_backgroundImage)
+    return m_backgroundImage->GetWidth();
   else
     return CGUIDialog::GetWidth();
 }
@@ -504,7 +502,8 @@ bool CGUIDialogContextMenu::OnContextButton(const std::string &type, const CFile
 CMediaSource *CGUIDialogContextMenu::GetShare(const std::string &type, const CFileItem *item)
 {
   VECSOURCES *shares = CMediaSourceSettings::GetInstance().GetSources(type);
-  if (!shares || !item) return NULL;
+  if (!shares || !item) 
+    return nullptr;
   for (unsigned int i = 0; i < shares->size(); i++)
   {
     CMediaSource &testShare = shares->at(i);
@@ -525,7 +524,7 @@ CMediaSource *CGUIDialogContextMenu::GetShare(const std::string &type, const CFi
       return &testShare;
     }
   }
-  return NULL;
+  return nullptr;
 }
 
 void CGUIDialogContextMenu::OnWindowLoaded()
@@ -534,13 +533,13 @@ void CGUIDialogContextMenu::OnWindowLoaded()
   m_coordY = m_posY;
   
   const CGUIControlGroupList* pGroupList = dynamic_cast<const CGUIControlGroupList *>(GetControl(GROUP_LIST));
-  const CGUIControl *pControl = GetControl(BACKGROUND_IMAGE);
-  if (pControl && pGroupList)
+  m_backgroundImage = GetControl(BACKGROUND_IMAGE);
+  if (m_backgroundImage && pGroupList)
   {
     if (pGroupList->GetOrientation() == VERTICAL)
-      m_backgroundImageSize = pControl->GetHeight();
+      m_backgroundImageSize = m_backgroundImage->GetHeight();
     else
-      m_backgroundImageSize = pControl->GetWidth();
+      m_backgroundImageSize = m_backgroundImage->GetWidth();
   }
 
   CGUIDialog::OnWindowLoaded();
@@ -610,7 +609,7 @@ void CGUIDialogContextMenu::SwitchMedia(const std::string& strType, const std::s
 
 int CGUIDialogContextMenu::Show(const CContextButtons& choices)
 {
-  auto dialog = static_cast<CGUIDialogContextMenu*>(g_windowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU));
+  auto dialog = g_windowManager.GetWindow<CGUIDialogContextMenu>(WINDOW_DIALOG_CONTEXT_MENU);
   if (!dialog)
     return -1;
 
@@ -628,7 +627,7 @@ int CGUIDialogContextMenu::ShowAndGetChoice(const CContextButtons &choices)
   if (choices.empty())
     return -1;
 
-  CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)g_windowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
+  CGUIDialogContextMenu *pMenu = g_windowManager.GetWindow<CGUIDialogContextMenu>(WINDOW_DIALOG_CONTEXT_MENU);
   if (pMenu)
   {
     pMenu->m_buttons = choices;

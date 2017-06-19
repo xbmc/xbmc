@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2014-2016 Team Kodi
+ *      Copyright (C) 2014-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -29,24 +29,6 @@
   #include <sys/stat.h>
 #endif
 
-extern "C"
-{
-namespace KodiAPI
-{
-namespace Peripheral
-{
-
-typedef struct CB_PeripheralLib
-{
-  void (*TriggerScan)(void* addonData);
-  void (*RefreshButtonMaps)(void* addonData, const char* deviceName, const char* controllerId);
-  unsigned int (*FeatureCount)(void* addonData, const char* controllerId, JOYSTICK_FEATURE_TYPE type);
-} CB_PeripheralLib;
-
-} /* namespace Peripheral */
-} /* namespace KodiAPI */
-} /* extern "C" */
-
 namespace ADDON
 {
 
@@ -61,10 +43,6 @@ public:
 
   ~CHelper_libKODI_peripheral(void)
   {
-    if (m_Handle && m_Callbacks)
-    {
-      m_Handle->PeripheralLib_UnRegisterMe(m_Handle->addonData, m_Callbacks);
-    }
   }
 
   /*!
@@ -76,9 +54,9 @@ public:
   {
     m_Handle = static_cast<AddonCB*>(handle);
     if (m_Handle)
-      m_Callbacks = (KodiAPI::Peripheral::CB_PeripheralLib*)m_Handle->PeripheralLib_RegisterMe(m_Handle->addonData);
+      m_Callbacks = (AddonInstance_Peripheral*)m_Handle->PeripheralLib_RegisterMe(m_Handle->addonData);
     if (!m_Callbacks)
-      fprintf(stderr, "libXBMC_peripheral-ERROR: PeripheralLib_register_me can't get callback table from Kodi !!!\n");
+      fprintf(stderr, "libKODI_peripheral-ERROR: PeripheralLib_register_me can't get callback table from Kodi !!!\n");
 
     return m_Callbacks != nullptr;
   }
@@ -90,7 +68,7 @@ public:
    */
   void TriggerScan(void)
   {
-    return m_Callbacks->TriggerScan(m_Handle->addonData);
+    return m_Callbacks->toKodi.TriggerScan(m_Callbacks->toKodi.kodiInstance);
   }
 
   /*!
@@ -101,7 +79,7 @@ public:
    */
   void RefreshButtonMaps(const std::string& strDeviceName = "", const std::string& strControllerId = "")
   {
-    return m_Callbacks->RefreshButtonMaps(m_Handle->addonData, strDeviceName.c_str(), strControllerId.c_str());
+    return m_Callbacks->toKodi.RefreshButtonMaps(m_Callbacks->toKodi.kodiInstance, strDeviceName.c_str(), strControllerId.c_str());
   }
 
   /*!
@@ -114,12 +92,12 @@ public:
    */
   unsigned int FeatureCount(const std::string& strControllerId, JOYSTICK_FEATURE_TYPE type = JOYSTICK_FEATURE_TYPE_UNKNOWN)
   {
-    return m_Callbacks->FeatureCount(m_Handle->addonData, strControllerId.c_str(), type);
+    return m_Callbacks->toKodi.FeatureCount(m_Callbacks->toKodi.kodiInstance, strControllerId.c_str(), type);
   }
 
 private:
   AddonCB* m_Handle;
-  KodiAPI::Peripheral::CB_PeripheralLib* m_Callbacks;
+  AddonInstance_Peripheral* m_Callbacks;
 };
 
 } /* namespace ADDON */

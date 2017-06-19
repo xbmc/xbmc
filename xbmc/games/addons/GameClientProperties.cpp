@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2012-2016 Team Kodi
+ *      Copyright (C) 2012-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -32,18 +32,17 @@
 
 #include <cstring>
 
+using namespace KODI;
 using namespace ADDON;
 using namespace GAME;
 using namespace XFILE;
 
 #define GAME_CLIENT_RESOURCES_DIRECTORY  "resources"
 
-CGameClientProperties::CGameClientProperties(const CGameClient* parent, game_client_properties*& props)
+CGameClientProperties::CGameClientProperties(const CGameClient* parent, AddonProps_Game& props)
   : m_parent(parent),
-    m_properties()
+    m_properties(props)
 {
-  // Allow the caller to access the property structure directly
-  props = &m_properties;
 }
 
 void CGameClientProperties::ReleaseResources(void)

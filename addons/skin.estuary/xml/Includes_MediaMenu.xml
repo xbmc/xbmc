@@ -56,7 +56,6 @@
 				<onright>50</onright>
 				<ondown>14100</ondown>
 				<onback>50</onback>
-				<defaultcontrol>6054</defaultcontrol>
 				<control type="group" id="60520">
 					<height>50</height>
 					<control type="label">
@@ -85,7 +84,7 @@
 						<onleft>6056</onleft>
 						<onright>50</onright>
 						<onup>14100</onup>
-						<ondown>6054</ondown>
+						<ondown>6051</ondown>
 						<width>1000</width>
 						<include content="PVRQuickNavItemsCommon">
 							<param name="control_id" value="100" />
@@ -123,6 +122,13 @@
 					<include>MediaMenuLabelCommon</include>
 					<label>$LOCALIZE[14018]</label>
 				</control>
+				<control type="button" id="6051">
+					<include>MediaMenuItemsCommon</include>
+					<label>$LOCALIZE[31023]</label>
+					<label2>[B]$INFO[Container.Viewmode][/B]</label2>
+					<onclick>Container.NextViewMode</onclick>
+					<visible>Window.IsActive(MyPVRGuide.xml)</visible>
+				</control>
 				<control type="button" id="6054">
 					<include>MediaMenuItemsCommon</include>
 					<label>$LOCALIZE[19141]</label>
@@ -155,7 +161,7 @@
 					<description>Watched Toggle</description>
 					<include>MediaMenuItemsCommon</include>
 					<label>$LOCALIZE[20367]</label>
-					<label2>[B]$INFO[Container.NonFolderItems][/B]</label2>
+					<label2>[B]$INFO[Container.NumNonFolderItems][/B]</label2>
 					<visible>Window.IsActive(MyPVRRecordings.xml)</visible>
 				</control>
 				<control type="label" id="300">

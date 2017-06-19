@@ -24,8 +24,8 @@
 #include "utils/log.h"
 
 #include <algorithm>
-
-#include "cores/AudioEngine/AEFactory.h"
+#include "ServiceBroker.h"
+#include "cores/AudioEngine/Interfaces/AE.h"
 
 extern "C" {
 #include "libavcodec/avcodec.h"
@@ -33,12 +33,15 @@ extern "C" {
 
 #define TRUEHD_BUF_SIZE 61440
 
-CDVDAudioCodecPassthrough::CDVDAudioCodecPassthrough(CProcessInfo &processInfo) :
+CDVDAudioCodecPassthrough::CDVDAudioCodecPassthrough(CProcessInfo &processInfo, CAEStreamInfo::DataType streamType) :
   CDVDAudioCodec(processInfo),
   m_buffer(NULL),
   m_bufferSize(0),
+  m_currentPts(DVD_NOPTS_VALUE),
+  m_nextPts(DVD_NOPTS_VALUE),
   m_trueHDoffset(0)
 {
+  m_format.m_streamInfo.m_type = streamType;
 }
 
 CDVDAudioCodecPassthrough::~CDVDAudioCodecPassthrough(void)
@@ -48,52 +51,33 @@ CDVDAudioCodecPassthrough::~CDVDAudioCodecPassthrough(void)
 
 bool CDVDAudioCodecPassthrough::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
-  AEAudioFormat format;
-  format.m_dataFormat = AE_FMT_RAW;
-  format.m_sampleRate = hints.samplerate;
-  switch (hints.codec)
+  m_parser.SetCoreOnly(false);
+  switch (m_format.m_streamInfo.m_type)
   {
-    case AV_CODEC_ID_AC3:
-      format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_AC3;
-      format.m_streamInfo.m_sampleRate = hints.samplerate;
+    case CAEStreamInfo::STREAM_TYPE_AC3:
       m_processInfo.SetAudioDecoderName("PT_AC3");
       break;
 
-    case AV_CODEC_ID_EAC3:
-      format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_EAC3;
-      format.m_streamInfo.m_sampleRate = hints.samplerate;
+    case CAEStreamInfo::STREAM_TYPE_EAC3:
       m_processInfo.SetAudioDecoderName("PT_EAC3");
       break;
 
-    case AV_CODEC_ID_DTS:
-      format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_DTSHD;
-      format.m_streamInfo.m_sampleRate = hints.samplerate;
+    case CAEStreamInfo::STREAM_TYPE_DTSHD:
       m_processInfo.SetAudioDecoderName("PT_DTSHD");
       break;
 
-    case AV_CODEC_ID_TRUEHD:
-      format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_TRUEHD;
-      format.m_streamInfo.m_sampleRate = hints.samplerate;
+    case CAEStreamInfo::STREAM_TYPE_DTSHD_CORE:
+      m_processInfo.SetAudioDecoderName("PT_DTS");
+      m_parser.SetCoreOnly(true);
+      break;
+
+    case CAEStreamInfo::STREAM_TYPE_TRUEHD:
       m_trueHDBuffer.reset(new uint8_t[TRUEHD_BUF_SIZE]);
       m_processInfo.SetAudioDecoderName("PT_TRUEHD");
       break;
 
     default:
-      format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_NULL;
-  }
-
-  bool ret = CAEFactory::SupportsRaw(format);
-
-  m_parser.SetCoreOnly(false);
-  if (!ret && hints.codec == AV_CODEC_ID_DTS)
-  {
-    format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_DTSHD_CORE;
-    ret = CAEFactory::SupportsRaw(format);
-
-    // only get the dts core from the parser if we don't support dtsHD
-    m_parser.SetCoreOnly(true);
-
-    m_processInfo.SetAudioDecoderName("PT_DTS");
+      return false;
   }
 
   m_dataSize = 0;
@@ -101,7 +85,7 @@ bool CDVDAudioCodecPassthrough::Open(CDVDStreamInfo &hints, CDVDCodecOptions &op
   m_backlogSize = 0;
   m_currentPts = DVD_NOPTS_VALUE;
   m_nextPts = DVD_NOPTS_VALUE;
-  return ret;
+  return true;
 }
 
 void CDVDAudioCodecPassthrough::Dispose()
@@ -115,10 +99,9 @@ void CDVDAudioCodecPassthrough::Dispose()
   m_bufferSize = 0;
 }
 
-int CDVDAudioCodecPassthrough::Decode(uint8_t* pData, int iSize, double dts, double pts)
+bool CDVDAudioCodecPassthrough::AddData(const DemuxPacket &packet)
 {
   int used = 0;
-  int skip = 0;
   if (m_backlogSize)
   {
     m_dataSize = m_bufferSize;
@@ -131,6 +114,9 @@ int CDVDAudioCodecPassthrough::Decode(uint8_t* pData, int iSize, double dts, dou
     m_backlogSize -= consumed;
   }
 
+  unsigned char *pData(const_cast<uint8_t*>(packet.pData));
+  int iSize(packet.iSize);
+
   // get rid of potential side data
   if (pData)
   {
@@ -141,7 +127,6 @@ int CDVDAudioCodecPassthrough::Decode(uint8_t* pData, int iSize, double dts, dou
     int didSplit = av_packet_split_side_data(&pkt);
     if (didSplit)
     {
-      skip = iSize - pkt.size;
       pData = pkt.data;
       iSize = pkt.size;
       av_packet_free_side_data(&pkt);
@@ -157,19 +142,19 @@ int CDVDAudioCodecPassthrough::Decode(uint8_t* pData, int iSize, double dts, dou
         m_currentPts = m_nextPts;
         m_nextPts = DVD_NOPTS_VALUE;
       }
-      else if (pts != DVD_NOPTS_VALUE)
+      else if (packet.pts != DVD_NOPTS_VALUE)
       {
-        m_currentPts = pts;
+        m_currentPts = packet.pts;
       }
     }
 
-    m_nextPts = pts;
+    m_nextPts = packet.pts;
   }
 
   if (pData && !m_backlogSize)
   {
     if (iSize <= 0)
-      return used + skip;
+      return true;
 
     m_dataSize = m_bufferSize;
     used = m_parser.AddData(pData, iSize, &m_buffer, &m_dataSize);
@@ -190,7 +175,7 @@ int CDVDAudioCodecPassthrough::Decode(uint8_t* pData, int iSize, double dts, dou
   }
 
   if (!m_dataSize)
-    return used + skip;
+    return true;
 
   if (m_dataSize)
   {
@@ -227,12 +212,13 @@ int CDVDAudioCodecPassthrough::Decode(uint8_t* pData, int iSize, double dts, dou
       m_dataSize = 0;
   }
 
-  return used + skip;
+  return true;
 }
 
 void CDVDAudioCodecPassthrough::GetData(DVDAudioFrame &frame)
 {
   frame.nb_frames = GetData(frame.data);
+  frame.framesOut = 0;
 
   if (frame.nb_frames == 0)
     return;
@@ -244,16 +230,21 @@ void CDVDAudioCodecPassthrough::GetData(DVDAudioFrame &frame)
   frame.duration = DVD_MSEC_TO_TIME(frame.format.m_streamInfo.GetDuration());
   frame.pts = m_currentPts;
   m_currentPts = DVD_NOPTS_VALUE;
-  m_dataSize = 0;
 }
 
 int CDVDAudioCodecPassthrough::GetData(uint8_t** dst)
 {
+  if (!m_dataSize)
+    AddData(DemuxPacket(nullptr, 0, DVD_NOPTS_VALUE, DVD_NOPTS_VALUE));
+
   if (m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD)
     *dst = m_trueHDBuffer.get();
   else
     *dst = m_buffer;
-  return m_dataSize;
+
+  int bytes = m_dataSize;
+  m_dataSize = 0;
+  return bytes;
 }
 
 void CDVDAudioCodecPassthrough::Reset()

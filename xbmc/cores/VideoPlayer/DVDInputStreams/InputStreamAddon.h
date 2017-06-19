@@ -88,9 +88,9 @@ public:
 
 protected:
   std::shared_ptr<ADDON::CInputStream> m_addon;
-  bool m_hasDemux;
-  bool m_hasDisplayTime;
-  bool m_hasPosTime;
-  bool m_canPause;
-  bool m_canSeek;
+  bool m_hasDemux = false;
+  bool m_hasDisplayTime = false;
+  bool m_hasPosTime = false;
+  bool m_canPause = false;
+  bool m_canSeek = false;
 };

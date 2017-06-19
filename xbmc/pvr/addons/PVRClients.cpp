@@ -38,7 +38,6 @@
 
 using namespace ADDON;
 using namespace PVR;
-using namespace EPG;
 using namespace KODI::MESSAGING;
 
 /** number of iterations when scanning for add-ons. don't use a timer because the user may block in the dialog */
@@ -461,7 +460,7 @@ bool CPVRClients::HasTimerSupport(int iClientId)
   return false;
 }
 
-bool CPVRClients::GetTimers(CPVRTimers *timers, std::vector<int> &failedClients)
+bool CPVRClients::GetTimers(CPVRTimersContainer *timers, std::vector<int> &failedClients)
 {
   bool bSuccess(true);
   PVR_CLIENTMAP clients;
@@ -748,7 +747,7 @@ bool CPVRClients::CanSeekStream(void) const
   return false;
 }
 
-PVR_ERROR CPVRClients::GetEPGForChannel(const CPVRChannelPtr &channel, CEpg *epg, time_t start, time_t end)
+PVR_ERROR CPVRClients::GetEPGForChannel(const CPVRChannelPtr &channel, CPVREpg *epg, time_t start, time_t end)
 {
   assert(channel.get());
 
@@ -1002,7 +1001,7 @@ void CPVRClients::UpdateAddons(void)
     }
   }
 
-  g_PVRManager.Start();
+  CServiceBroker::GetPVRManager().Start();
 }
 
 bool CPVRClients::GetClient(const std::string &strId, AddonPtr &addon) const
@@ -1398,7 +1397,7 @@ void CPVRClients::ConnectionStateChange(CPVRClient *client, std::string &strConn
     {
       CLog::Log(LOGERROR, "PVR - %s - error reading properties", __FUNCTION__);
     }
-    g_PVRManager.Start();
+    CServiceBroker::GetPVRManager().Start();
   }
 }
 

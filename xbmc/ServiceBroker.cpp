@@ -21,9 +21,16 @@
 #include "ServiceBroker.h"
 #include "Application.h"
 
+using namespace KODI;
+
 ADDON::CAddonMgr &CServiceBroker::GetAddonMgr()
 {
   return g_application.m_ServiceManager->GetAddonMgr();
+}
+
+ADDON::CBinaryAddonManager &CServiceBroker::GetBinaryAddonManager()
+{
+  return g_application.m_ServiceManager->GetBinaryAddonManager();
 }
 
 ADDON::CBinaryAddonCache &CServiceBroker::GetBinaryAddonCache()
@@ -48,9 +55,9 @@ PVR::CPVRManager &CServiceBroker::GetPVRManager()
   return g_application.m_ServiceManager->GetPVRManager();
 }
 
-ActiveAE::CActiveAEDSP &CServiceBroker::GetADSP()
+IAE& CServiceBroker::GetActiveAE()
 {
-  return g_application.m_ServiceManager->GetADSPManager();
+  return g_application.m_ServiceManager->GetActiveAE();
 }
 
 CContextMenuManager& CServiceBroker::GetContextMenuManager()
@@ -76,6 +83,16 @@ CSettings& CServiceBroker::GetSettings()
 GAME::CGameServices& CServiceBroker::GetGameServices()
 {
   return g_application.m_ServiceManager->GetGameServices();
+}
+
+PERIPHERALS::CPeripherals& CServiceBroker::GetPeripherals()
+{
+  return g_application.m_ServiceManager->GetPeripherals();
+}
+
+CFavouritesService& CServiceBroker::GetFavouritesService()
+{
+  return g_application.m_ServiceManager->GetFavouritesService();
 }
 
 bool CServiceBroker::IsBinaryAddonCacheUp()

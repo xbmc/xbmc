@@ -77,10 +77,6 @@ public:
   // eg. check if a dll needed for the codec exists
   virtual bool CanInit()=0;
 
-  // SkipNext()
-  // Skip to next track/item inside the current media (if supported).
-  virtual bool SkipNext(){return false;}
-
   // set the total time - useful when info comes from a preset tag
   virtual void SetTotalTime(int64_t totaltime) {}
 

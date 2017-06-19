@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2015-2016 Team Kodi
+ *      Copyright (C) 2015-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,21 +19,23 @@
  */
 #pragma once
 
+#include "PortTypes.h"
 #include "peripherals/PeripheralTypes.h"
 #include "utils/Observer.h"
 
 #include <map>
 
-namespace KODI
+namespace PERIPHERALS
 {
-namespace JOYSTICK
-{
-  class IInputHandler; 
-}
+  class CPeripherals;
 }
 
+namespace KODI
+{
 namespace GAME
 {
+  class CPortManager;
+
   class CPortMapper : public Observer
   {
   public:
@@ -41,11 +43,20 @@ namespace GAME
 
     virtual ~CPortMapper();
 
+    void Initialize(PERIPHERALS::CPeripherals& peripheralManager, CPortManager& portManager);
+    void Deinitialize();
+
     virtual void Notify(const Observable& obs, const ObservableMessage msg) override;
 
   private:
     void ProcessPeripherals();
 
-    std::map<PERIPHERALS::PeripheralPtr, KODI::JOYSTICK::IInputHandler*>  m_portMap;
+    // Initialization parameters
+    PERIPHERALS::CPeripherals* m_peripheralManager;
+    CPortManager* m_portManager;
+
+    // Port paremters
+    std::map<PERIPHERALS::PeripheralPtr, PortPtr> m_portMap;
   };
+}
 }

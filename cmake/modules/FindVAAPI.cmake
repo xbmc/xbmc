@@ -36,7 +36,7 @@ elseif(VAAPI_INCLUDE_DIR AND EXISTS "${VAAPI_INCLUDE_DIR}/va/va_version.h")
 endif()
 
 if(NOT VAAPI_FIND_VERSION)
-  set(VAAPI_FIND_VERSION 0.38.0)
+  set(VAAPI_FIND_VERSION 0.39.0)
 endif()
 
 include(FindPackageHandleStandardArgs)

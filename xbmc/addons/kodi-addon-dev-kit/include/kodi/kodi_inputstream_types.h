@@ -20,9 +20,7 @@
  *
  */
 
-#ifdef TARGET_WINDOWS
-#include <windows.h>
-#else
+#ifndef TARGET_WINDOWS
 #ifndef __cdecl
 #define __cdecl
 #endif
@@ -31,23 +29,15 @@
 #endif
 #endif
 
+#include "xbmc_addon_types.h"
+
 #ifdef BUILD_KODI_ADDON
 #include "DVDDemuxPacket.h"
 #else
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemuxPacket.h"
 #endif
 
-/* current API version */
-#define INPUTSTREAM_API_VERSION "1.0.6"
-
 extern "C" {
-
-  // this are properties given to the addon on create
-  // at this time we have no parameters for the addon
-  typedef struct INPUTSTREAM_PROPS
-  {
-    int dummy;
-  } INPUTSTREAM_PROPS;
 
   /*!
    * @brief InputStream add-on capabilities. All capabilities are set to "false" as default.
@@ -108,7 +98,6 @@ extern "C" {
     char m_codecName[32];                /*!< @brief (required) name of codec according to ffmpeg */
     char m_codecInternalName[32];        /*!< @brief (optional) internal name of codec (selectionstream info) */
     unsigned int m_pID;                  /*!< @brief (required) physical index */
-    unsigned int m_Bandwidth;            /*!< @brief (optional) bandwidth of the stream (selectionstream info) */
 
     const uint8_t *m_ExtraData;
     unsigned int m_ExtraSize;
@@ -131,13 +120,29 @@ extern "C" {
   /*!
    * @brief Structure to transfer the methods from xbmc_inputstream_dll.h to XBMC
    */
+
+  // this are properties given to the addon on create
+  // at this time we have no parameters for the addon
+  typedef struct AddonProps_InputStream
+  {
+    int dummy;
+  } AddonProps_InputStream;
+  
+  typedef AddonProps_InputStream INPUTSTREAM_PROPS;
+  
+  typedef struct AddonToKodiFuncTable_InputStream
+  {
+    KODI_HANDLE kodiInstance;
+    DemuxPacket* (*AllocateDemuxPacket)(void* kodiInstance, int iDataSize);
+    void (*FreeDemuxPacket)(void* kodiInstance, DemuxPacket* pPacket);
+  } AddonToKodiFuncTable_InputStream;
+
   typedef struct KodiToAddonFuncTable_InputStream
   {
     bool (__cdecl* Open)(INPUTSTREAM&);
     void (__cdecl* Close)(void);
     const char* (__cdecl* GetPathList)(void);
     struct INPUTSTREAM_CAPABILITIES (__cdecl* GetCapabilities)(void);
-    const char* (__cdecl* GetApiVersion)(void);
 
     // IDemux
     struct INPUTSTREAM_IDS (__cdecl* GetStreamIds)();
@@ -169,6 +174,14 @@ extern "C" {
     void (__cdecl* PauseStream)(double);
     bool (__cdecl* IsRealTimeStream)(void);
   } KodiToAddonFuncTable_InputStream;
+
+  typedef struct AddonInstance_InputStream
+  {
+    AddonProps_InputStream props;
+    AddonToKodiFuncTable_InputStream toKodi;
+    KodiToAddonFuncTable_InputStream toAddon;
+  } AddonInstance_InputStream;
+
 }
 
 

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2014-2016 Team Kodi
+ *      Copyright (C) 2014-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -20,6 +20,8 @@
 
 #include "PeripheralJoystick.h"
 #include "input/joysticks/DeadzoneFilter.h"
+#include "input/joysticks/JoystickIDs.h"
+#include "input/joysticks/JoystickTranslator.h"
 #include "peripherals/Peripherals.h"
 #include "peripherals/addons/AddonButtonMap.h"
 #include "peripherals/bus/android/PeripheralBusAndroid.h"
@@ -33,8 +35,8 @@ using namespace KODI;
 using namespace JOYSTICK;
 using namespace PERIPHERALS;
 
-CPeripheralJoystick::CPeripheralJoystick(const PeripheralScanResult& scanResult, CPeripheralBus* bus) :
-  CPeripheral(scanResult, bus),
+CPeripheralJoystick::CPeripheralJoystick(CPeripherals& manager, const PeripheralScanResult& scanResult, CPeripheralBus* bus) :
+  CPeripheral(manager, scanResult, bus),
   m_requestedPort(JOYSTICK_PORT_UNKNOWN),
   m_buttonCount(0),
   m_hatCount(0),
@@ -50,8 +52,8 @@ CPeripheralJoystick::~CPeripheralJoystick(void)
 {
   m_deadzoneFilter.reset();
   m_buttonMap.reset();
-  m_defaultInputHandler.AbortRumble();
-  UnregisterJoystickInputHandler(&m_defaultInputHandler);
+  m_defaultController.AbortRumble();
+  UnregisterJoystickInputHandler(&m_defaultController);
   UnregisterJoystickDriverHandler(&m_joystickMonitor);
 }
 
@@ -73,7 +75,7 @@ bool CPeripheralJoystick::InitialiseFeature(const PeripheralFeature feature)
         InitializeDeadzoneFiltering();
 
         // Give joystick monitor priority over default controller
-        RegisterJoystickInputHandler(&m_defaultInputHandler);
+        RegisterJoystickInputHandler(&m_defaultController, false);
         RegisterJoystickDriverHandler(&m_joystickMonitor, false);
       }
     }
@@ -93,7 +95,7 @@ bool CPeripheralJoystick::InitialiseFeature(const PeripheralFeature feature)
 void CPeripheralJoystick::InitializeDeadzoneFiltering()
 {
   // Get a button map for deadzone filtering
-  PeripheralAddonPtr addon = g_peripherals.GetAddonWithButtonMap(this);
+  PeripheralAddonPtr addon = m_manager.GetAddonWithButtonMap(this);
   if (addon)
   {
     m_buttonMap.reset(new CAddonButtonMap(this, addon, DEFAULT_CONTROLLER_ID));
@@ -115,7 +117,7 @@ void CPeripheralJoystick::InitializeDeadzoneFiltering()
 
 void CPeripheralJoystick::OnUserNotification()
 {
-  m_defaultInputHandler.NotifyUser();
+  m_defaultController.NotifyUser();
 }
 
 bool CPeripheralJoystick::TestFeature(PeripheralFeature feature)
@@ -125,13 +127,25 @@ bool CPeripheralJoystick::TestFeature(PeripheralFeature feature)
   switch (feature)
   {
   case FEATURE_RUMBLE:
-    bSuccess = m_defaultInputHandler.TestRumble();
+    bSuccess = m_defaultController.TestRumble();
+    break;
+  case FEATURE_POWER_OFF:
+    if (m_supportsPowerOff)
+    {
+      PowerOff();
+      bSuccess = true;
+    }
     break;
   default:
     break;
   }
 
   return bSuccess;
+}
+
+void CPeripheralJoystick::PowerOff()
+{
+  m_bus->PowerOff(m_strLocation);
 }
 
 void CPeripheralJoystick::RegisterJoystickDriverHandler(IDriverHandler* handler, bool bPromiscuous)
@@ -155,6 +169,9 @@ void CPeripheralJoystick::UnregisterJoystickDriverHandler(IDriverHandler* handle
 
 bool CPeripheralJoystick::OnButtonMotion(unsigned int buttonIndex, bool bPressed)
 {
+  CLog::Log(LOGDEBUG, "BUTTON [ %u ] on \"%s\" %s", buttonIndex,
+            DeviceName().c_str(), bPressed ? "pressed" : "released");
+
   CSingleLock lock(m_handlerMutex);
 
   // Process promiscuous handlers
@@ -189,6 +206,9 @@ bool CPeripheralJoystick::OnButtonMotion(unsigned int buttonIndex, bool bPressed
 
 bool CPeripheralJoystick::OnHatMotion(unsigned int hatIndex, HAT_STATE state)
 {
+  CLog::Log(LOGDEBUG, "HAT [ %u ] on \"%s\" %s", hatIndex,
+            DeviceName().c_str(), CJoystickTranslator::HatStateToString(state));
+
   CSingleLock lock(m_handlerMutex);
 
   // Process promiscuous handlers
@@ -305,5 +325,5 @@ void CPeripheralJoystick::SetSupportsPowerOff(bool bSupportsPowerOff)
   if (!m_supportsPowerOff)
     m_features.erase(std::remove(m_features.begin(), m_features.end(), FEATURE_POWER_OFF), m_features.end());
   else if (std::find(m_features.begin(), m_features.end(), FEATURE_POWER_OFF) == m_features.end())
-    m_features.push_back(FEATURE_RUMBLE);
+    m_features.push_back(FEATURE_POWER_OFF);
 }

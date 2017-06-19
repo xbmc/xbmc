@@ -30,7 +30,7 @@ msgstr "Caps[CR]Lock"
 
 msgctxt "#31005"
 msgid "Visualization Options"
-msgstr "אפשרויות חיזוי"
+msgstr "אפשרויות ויזואליזציה"
 
 msgctxt "#31006"
 msgid "Visualization Presets"
@@ -60,6 +60,26 @@ msgctxt "#31016"
 msgid "Albums"
 msgstr "אלבומים"
 
+msgctxt "#31017"
+msgid "PVR info"
+msgstr "מידע מקליט וידאו אישי"
+
+msgctxt "#31018"
+msgid "Player process info"
+msgstr "נגן עיבוד מידע"
+
+msgctxt "#31019"
+msgid "Video decoder"
+msgstr "מפענח וידאו"
+
+msgctxt "#31020"
+msgid "Pixel format"
+msgstr "פורמט פיקסל"
+
+msgctxt "#31021"
+msgid "System memory usage"
+msgstr "זיכרון בשימוש ע\"י המערכת"
+
 msgctxt "#31024"
 msgid "Page"
 msgstr "עמוד"
@@ -83,6 +103,10 @@ msgstr "הרצה קדימה"
 msgctxt "#31045"
 msgid "REWIND"
 msgstr "הרצה אחורה"
+
+msgctxt "#31046"
+msgid "Play speed"
+msgstr "מהירות ניגון"
 
 msgctxt "#31049"
 msgid "End Time"
@@ -140,6 +164,10 @@ msgctxt "#31303"
 msgid "Data provider"
 msgstr "ספק מידע"
 
+msgctxt "#31309"
+msgid "System Memory Used:"
+msgstr "זיכרון בשימוש ע\"י המערכת:"
+
 msgctxt "#31320"
 msgid "Last Logged In"
 msgstr "חובר לאחרונה"
@@ -172,13 +200,49 @@ msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 msgstr "החלפת מעטפת · בחירת שפה ואזור זמן · שינוי אפשרויות תצוגת קבצים · הגדרת שומר מסך"
 
+msgctxt "#31405"
+msgid "Configure & manage media sharing services · Configure & manage the weather service"
+msgstr "הגדר ונהל את שרות שיתוף המדיה · הגדר ונהל את שרות מזג האוויר"
+
+msgctxt "#31406"
+msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
+msgstr "הגדר תצוגה · הגדר שמע · הגדרת גישה לאינטרנט · הגדר חסכון בחשמל · הגדר יומן"
+
 msgctxt "#31407"
 msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
 msgstr "נהל את התוספים שלך · חפש והתקן תוספים מ kodi.tv · שנה הגדרות תוספים"
 
+msgctxt "#31408"
+msgid "Configure actions that can be used during playback · Configure how media content is played"
+msgstr "הגדר פעולות שניתנות לשימוש במהלך ההקרנה · הגדר איך תוכן המדיה מנוגן"
+
+msgctxt "#31409"
+msgid "Configure library sources · Show the media lists display content · Configure how library lists are navigated"
+msgstr "הגדרת מקורות הספריה  · הצגת תוכן רשימה המדיה · הגדרת ניווט ברשימות הספריה"
+
+msgctxt "#31410"
+msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
+msgstr "הגדרת מעטפת · הגדרת אזור · הגדרת שליטה · הגדרת שומר מסך · הגדרת נעילה מרכזית"
+
+msgctxt "#31411"
+msgid "Configure your profiles · Set locking options · Enable login screen"
+msgstr "הגדרת פרופילים · קבע אפשרויות נעילה · אפשר מסך התחברות"
+
+msgctxt "#31412"
+msgid "Display system information · Hardware statistics · Check storage availability · View network configuration"
+msgstr "הצג מידע מערכת · סטטיסטיקות חומרה · בדוק אחסון זמין · הצג הגדרות רשת"
+
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "יש לבחור חשבון משתמש Kodi[CR]להתחברות והמשך"
+
+msgctxt "#31548"
+msgid "Home menu"
+msgstr "מסך הבית"
+
+msgctxt "#31549"
+msgid "Home Add-ons"
+msgstr "הרחבות ביתיות"
 
 msgctxt "#31550"
 msgid "Backgrounds"
@@ -262,4 +326,4 @@ msgstr "בזמן ניגון שמע או וידאו, כותרת הפריט מופ
 
 msgctxt "#31904"
 msgid "Now Playing Title..."
-msgstr "...מנגן כעת"
+msgstr "מנגן כעת..."

@@ -48,7 +48,7 @@ public:
   virtual bool Load(const TiXmlNode *settings) override;
   virtual bool Save(TiXmlNode *settings) const override;
 
-  virtual void OnSettingAction(const CSetting *setting) override;
+  virtual void OnSettingAction(std::shared_ptr<const CSetting> setting) override;
   virtual void OnSettingsLoaded() override;
 
   const CVideoSettings& GetDefaultVideoSettings() const { return m_defaultVideoSettings; }

@@ -74,10 +74,8 @@ private:
   unsigned int    m_disposal;
   unsigned int    m_height;
   unsigned int    m_width;
-  unsigned int    m_pitch;
   unsigned int    m_imageSize;
   std::vector<GifColor>   m_palette;
-  int m_transparent;
 };
 
 
@@ -110,19 +108,12 @@ private:
 
   std::string     m_filename;
   GifFileType*    m_gif;
-  bool            m_hasBackground;
-  GifColor*       m_backColor;
   std::vector<GifColor> m_globalPalette;
   unsigned char*  m_pTemplate;
-  int             m_isAnimated;
   CFile*          m_gifFile;
 
   unsigned int m_width;
   unsigned int m_height;
-  unsigned int m_originalWidth;   ///< original image width before scaling or cropping
-  unsigned int m_originalHeight;  ///< original image height before scaling or cropping
-  unsigned int m_orientation;
-  bool m_hasAlpha;
 
   bool Open(GifFileType *& gif, void * dataPtr, InputFunc readFunc);
   void Close(GifFileType * gif);

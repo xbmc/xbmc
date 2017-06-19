@@ -136,7 +136,7 @@ public:
   // CWinSystemBase
   virtual bool InitWindowSystem();
   virtual bool DestroyWindowSystem();
-  virtual bool CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction);
+  virtual bool CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res);
   virtual bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop);
   virtual bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays);
   virtual bool SetFullScreenEx(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays, bool forceResChange);

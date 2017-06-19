@@ -1,5 +1,5 @@
 # xrandr
-if(ENABLE_X11 AND X_FOUND AND XRANDR_FOUND)
+if(X_FOUND AND XRANDR_FOUND)
   find_package(X QUIET)
   find_package(XRandR QUIET)
   add_executable(${APP_NAME_LC}-xrandr ${CMAKE_SOURCE_DIR}/xbmc-xrandr.c)

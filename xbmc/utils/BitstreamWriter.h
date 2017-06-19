@@ -33,8 +33,7 @@ private:
   int       writer_le;
   uint32_t  bit_buf;
   int       bit_left;
-  uint8_t   *buf, *buf_ptr, *buf_end;
-  int       size_in_bits;
+  uint8_t   *buf, *buf_ptr;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////

@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 # Addon Name: Estuary
 # Addon id: skin.estuary
-# Addon Provider: phil65, Piers
+# Addon Provider: phil65, Ichabod Fletchman
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
@@ -112,6 +112,10 @@ msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
 msgstr "未找到收藏。你可以从媒体浏览使用上下文菜单添加收藏项目。"
 
+msgctxt "#31026"
+msgid "Timeshift"
+msgstr "时光平移"
+
 msgctxt "#31028"
 msgid "Show fanart"
 msgstr "显示同人画"
@@ -119,6 +123,10 @@ msgstr "显示同人画"
 msgctxt "#31029"
 msgid "Last logged in"
 msgstr "最近登录"
+
+msgctxt "#31030"
+msgid "System memory usage"
+msgstr "系统内存使用"
 
 msgctxt "#31031"
 msgid "Version info"
@@ -308,6 +316,10 @@ msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "选择 Kodi 用户配置文件[CR]登录并继续"
 
+msgctxt "#31099"
+msgid "IconWall"
+msgstr "图标墙"
+
 msgctxt "#31100"
 msgid "Shift"
 msgstr "平移"
@@ -428,10 +440,6 @@ msgctxt "#31131"
 msgid "Choose skin fanart pack"
 msgstr "选择皮肤同人画包"
 
-msgctxt "#31132"
-msgid "min"
-msgstr "分"
-
 msgctxt "#31134"
 msgid "Remaining"
 msgstr "剩余"
@@ -475,3 +483,59 @@ msgstr "进入插件浏览"
 msgctxt "#31145"
 msgid "Search add-ons"
 msgstr "搜索插件"
+
+msgctxt "#31148"
+msgid "Categories"
+msgstr "类别"
+
+msgctxt "#31149"
+msgid "Select genre fanart pack"
+msgstr "选择类型同人画包"
+
+msgctxt "#31150"
+msgid "Repository"
+msgstr "库"
+
+msgctxt "#31151"
+msgid "Unwatched music videos"
+msgstr "未观看音乐电视"
+
+msgctxt "#31152"
+msgid "Random music videos"
+msgstr "随机音乐电视"
+
+msgctxt "#31153"
+msgid "You do not have any add-ons of this type installed. Enter the add-on browser to download add-ons created by our community."
+msgstr "尚未安装此类插件。请到插件浏览器下载我们社区创建的插件。"
+
+msgctxt "#31154"
+msgid "Press OK to switch between locations"
+msgstr "按确认键切换位置"
+
+msgctxt "#31155"
+msgid "No bookmarks created yet."
+msgstr "尚未创建书签。"
+
+msgctxt "#31156"
+msgid "Choose background pattern"
+msgstr "选择背景图案"
+
+msgctxt "#31157"
+msgid "Edit categories"
+msgstr "编辑类别"
+
+msgctxt "#31158"
+msgid "Touch mode"
+msgstr "触摸模式"
+
+msgctxt "#31159"
+msgid "Artwork"
+msgstr "艺术图片"
+
+msgctxt "#31160"
+msgid "Show media flags"
+msgstr "显示媒体标识"
+
+msgctxt "#31161"
+msgid "Numeric pad"
+msgstr "数字键盘"

@@ -78,7 +78,7 @@ void CGUIWindowPictures::OnInitWindow()
   CGUIMediaWindow::OnInitWindow();
   if (m_slideShowStarted)
   {
-    CGUIWindowSlideShow* wndw = (CGUIWindowSlideShow*)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
+    CGUIWindowSlideShow* wndw = g_windowManager.GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW);
     std::string path;
     if (wndw && wndw->GetCurrentSlide())
       path = URIUtils::GetDirectory(wndw->GetCurrentSlide()->GetPath());
@@ -114,7 +114,7 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
       if (m_vecItems->GetPath() == "?" && message.GetStringParam().empty())
         message.SetStringParam(CMediaSourceSettings::GetInstance().GetDefaultSource("pictures"));
 
-      m_dlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+      m_dlgProgress = g_windowManager.GetWindow<CGUIDialogProgress>(WINDOW_DIALOG_PROGRESS);
     }
     break;
 
@@ -325,7 +325,7 @@ bool CGUIWindowPictures::ShowPicture(int iItem, bool startSlideShow)
   if (pItem->m_bIsShareOrDrive)
     return false;
 
-  CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
+  CGUIWindowSlideShow *pSlideShow = g_windowManager.GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW);
   if (!pSlideShow)
     return false;
   if (g_application.m_pPlayer->IsPlayingVideo())
@@ -367,7 +367,7 @@ bool CGUIWindowPictures::ShowPicture(int iItem, bool startSlideShow)
 
 void CGUIWindowPictures::OnShowPictureRecursive(const std::string& strPath)
 {
-  CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
+  CGUIWindowSlideShow *pSlideShow = g_windowManager.GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW);
   if (pSlideShow)
   {
     // stop any video
@@ -387,7 +387,7 @@ void CGUIWindowPictures::OnShowPictureRecursive(const std::string& strPath)
 
 void CGUIWindowPictures::OnSlideShowRecursive(const std::string &strPicture)
 {
-  CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
+  CGUIWindowSlideShow *pSlideShow = g_windowManager.GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW);
   if (pSlideShow)
   {   
     std::string strExtensions;
@@ -422,7 +422,7 @@ void CGUIWindowPictures::OnSlideShow()
 
 void CGUIWindowPictures::OnSlideShow(const std::string &strPicture)
 {
-  CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
+  CGUIWindowSlideShow *pSlideShow = g_windowManager.GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW);
   if (pSlideShow)
   {    
     std::string strExtensions;
@@ -559,7 +559,7 @@ void CGUIWindowPictures::LoadPlayList(const std::string& strPlayList)
   if (playlist.size() > 0)
   {
     // set up slideshow
-    CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
+    CGUIWindowSlideShow *pSlideShow = g_windowManager.GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW);
     if (!pSlideShow)
       return;
     if (g_application.m_pPlayer->IsPlayingVideo())
@@ -594,7 +594,7 @@ void CGUIWindowPictures::OnItemInfo(int itemNumber)
   }
   if (item->m_bIsFolder || item->IsZIP() || item->IsRAR() || item->IsCBZ() || item->IsCBR() || !item->IsPicture())
     return;
-  CGUIDialogPictureInfo *pictureInfo = (CGUIDialogPictureInfo *)g_windowManager.GetWindow(WINDOW_DIALOG_PICTURE_INFO);
+  CGUIDialogPictureInfo *pictureInfo = g_windowManager.GetWindow<CGUIDialogPictureInfo>(WINDOW_DIALOG_PICTURE_INFO);
   if (pictureInfo)
   {
     pictureInfo->SetPicture(item.get());

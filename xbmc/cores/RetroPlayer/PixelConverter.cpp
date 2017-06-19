@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2016 Team Kodi
+ *      Copyright (C) 2016-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -21,6 +21,7 @@
 #include "PixelConverter.h"
 #include "cores/VideoPlayer/DVDClock.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDCodecUtils.h"
+#include "cores/VideoPlayer/TimingConstants.h"
 #include "utils/log.h"
 
 extern "C"
@@ -105,7 +106,7 @@ bool CPixelConverter::Decode(const uint8_t* pData, unsigned int size)
   return true;
 }
 
-void CPixelConverter::GetPicture(DVDVideoPicture& dvdVideoPicture)
+void CPixelConverter::GetPicture(VideoPicture& dvdVideoPicture)
 {
   dvdVideoPicture.dts            = DVD_NOPTS_VALUE;
   dvdVideoPicture.pts            = DVD_NOPTS_VALUE;

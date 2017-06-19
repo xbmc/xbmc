@@ -25,24 +25,21 @@
 
 namespace PVR
 {
-  class CGUIWindowPVRChannels : public CGUIWindowPVRBase, public CPVRChannelNumberInputHandler
+  class CGUIWindowPVRChannelsBase : public CGUIWindowPVRBase, public CPVRChannelNumberInputHandler
   {
   public:
-    CGUIWindowPVRChannels(bool bRadio);
-    virtual ~CGUIWindowPVRChannels(void);
+    CGUIWindowPVRChannelsBase(bool bRadio, int id, const std::string &xmlFile);
+    virtual ~CGUIWindowPVRChannelsBase();
 
-    virtual bool OnMessage(CGUIMessage& message) override;
-    virtual void GetContextButtons(int itemNumber, CContextButtons &buttons) override;
-    virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
-    virtual bool Update(const std::string &strDirectory, bool updateFilterPath = true) override;
-    virtual void UpdateButtons(void) override;
-    virtual bool OnAction(const CAction &action) override;
+    bool OnMessage(CGUIMessage& message) override;
+    void GetContextButtons(int itemNumber, CContextButtons &buttons) override;
+    bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
+    bool Update(const std::string &strDirectory, bool updateFilterPath = true) override;
+    void UpdateButtons(void) override;
+    bool OnAction(const CAction &action) override;
 
     // CPVRChannelNumberInputHandler implementation
     void OnInputDone() override;
-
-  protected:
-    virtual std::string GetDirectoryPath(void) override;
 
   private:
     bool OnContextButtonManage(const CFileItemPtr &item, CONTEXT_BUTTON button);
@@ -51,6 +48,25 @@ namespace PVR
     void ShowGroupManager();
     void UpdateEpg(const CFileItemPtr &item);
 
+  protected:
     bool m_bShowHiddenChannels;
+  };
+
+  class CGUIWindowPVRTVChannels : public CGUIWindowPVRChannelsBase
+  {
+  public:
+    CGUIWindowPVRTVChannels();
+
+  protected:
+    std::string GetDirectoryPath() override;
+  };
+
+  class CGUIWindowPVRRadioChannels : public CGUIWindowPVRChannelsBase
+  {
+  public:
+    CGUIWindowPVRRadioChannels();
+
+  protected:
+    std::string GetDirectoryPath() override;
   };
 }

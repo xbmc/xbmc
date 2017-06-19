@@ -51,6 +51,7 @@
 #define PROPERTY_SORT_ORDER         "sort.order"
 #define PROPERTY_SORT_ASCENDING     "sort.ascending"
 
+using namespace KODI;
 using namespace ADDON;
 using namespace PVR;
 
@@ -347,7 +348,7 @@ void CGUIViewState::SetSortMethod(SortDescription sortDescription)
 bool CGUIViewState::ChooseSortMethod()
 {
   
-  CGUIDialogSelect *dialog = static_cast<CGUIDialogSelect *>(g_windowManager.GetWindow(WINDOW_DIALOG_SELECT));
+  CGUIDialogSelect *dialog = g_windowManager.GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
   if (!dialog)
     return false;
   dialog->Reset();

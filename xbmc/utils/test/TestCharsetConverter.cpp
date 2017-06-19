@@ -26,6 +26,7 @@
 
 #include "gtest/gtest.h"
 
+#if 0
 static const uint16_t refutf16LE1[] = { 0xff54, 0xff45, 0xff53, 0xff54,
                                         0xff3f, 0xff55, 0xff54, 0xff46,
                                         0xff11, 0xff16, 0xff2c, 0xff25,
@@ -42,12 +43,14 @@ static const uint16_t refutf16LE2[] = { 0xff54, 0xff45, 0xff53, 0xff54,
                                         0xff33, 0xff54, 0xff44, 0xff33,
                                         0xff54, 0xff52, 0xff49, 0xff4e,
                                         0xff47, 0xff11, 0xff16, 0x0 };
+#endif
 
 static const char refutf16LE3[] = "T\377E\377S\377T\377?\377S\377T\377"
                                   "R\377I\377N\377G\377#\377H\377A\377"
                                   "R\377S\377E\377T\377\064\377O\377\065"
                                   "\377T\377F\377\030\377";
 
+#if 0
 static const uint16_t refutf16LE4[] = { 0xff54, 0xff45, 0xff53, 0xff54,
                                         0xff3f, 0xff55, 0xff54, 0xff46,
                                         0xff11, 0xff16, 0xff2c, 0xff25,
@@ -81,6 +84,7 @@ static const uint16_t refucs2[] = { 0xff54, 0xff45, 0xff53, 0xff54,
                                     0xff3f, 0xff55, 0xff43, 0xff53,
                                     0xff12, 0xff54, 0xff4f, 0xff35,
                                     0xff34, 0xff26, 0xff18, 0x0 };
+#endif
 
 class TestCharsetConverter : public testing::Test
 {
@@ -201,7 +205,7 @@ TEST_F(TestCharsetConverter, utf8To_UTF16LE)
 //{
 //  refstra1 = "ｔｅｓｔ＿ｕｔｆ８Ｔｏ：＿ｃｈａｒｓｅｔ＿ＵＴＦ－３２ＬＥ，＿"
 //#ifdef TARGET_DARWIN
-///* OSX has it's own 'special' utf-8 charset which we use (see UTF8_SOURCE in CharsetConverter.cpp)
+///* OSX has its own 'special' utf-8 charset which we use (see UTF8_SOURCE in CharsetConverter.cpp)
 //   which is basically NFD (decomposed) utf-8.  The trouble is, it fails on the COW FACE and MOUSE FACE
 //   characters for some reason (possibly anything over 0x100000, or maybe there's a decomposed form of these
 //   that I couldn't find???)  If UTF8_SOURCE is switched to UTF-8 then this test would pass as-is, but then

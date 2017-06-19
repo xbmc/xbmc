@@ -41,7 +41,6 @@ set(CMAKE_ASM_FLAGS "${CMAKE_C_FLAGS} -x assembler-with-cpp")
 option(VERBOSE            "Enable verbose output?" OFF)
 option(ENABLE_DVDCSS      "Enable libdvdcss support?" ON)
 option(ENABLE_UPNP        "Enable UPnP support?" ON)
-option(ENABLE_NONFREE     "Enable non-free components?" ON)
 option(ENABLE_AIRTUNES    "Enable AirTunes support?" ON)
 option(ENABLE_OPTICAL     "Enable optical support?" ON)
 option(ENABLE_PYTHON      "Enable python support?" ON)
@@ -51,13 +50,6 @@ if(UNIX)
   option(FFMPEG_PATH        "Path to external ffmpeg?" "")
   option(ENABLE_INTERNAL_CROSSGUID "Enable internal crossguid?" ON)
   option(ENABLE_OPENSSL     "Enable OpenSSL?" ON)
-  option(ENABLE_SDL         "Enable SDL?" OFF)
-  option(ENABLE_MIR         "Enable MIR?" OFF)
-  if(CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd)
-    option(ENABLE_X11         "Enable X11 support?" ON)
-    option(ENABLE_AML         "Enable AML?" OFF)
-    option(ENABLE_IMX         "Enable IMX?" OFF)
-  endif()
 endif()
 # System options
 if(NOT WIN32)
@@ -101,10 +93,52 @@ endif()
 find_package(Threads REQUIRED QUIET)
 list(APPEND DEPLIBS ${CMAKE_THREAD_LIBS_INIT})
 
-# Required dependencies
-set(required_deps Sqlite3 FreeType PCRE Cpluff LibDvd
-                  TinyXML Yajl Cdio Fmt
-                  Lzo2 Fribidi TagLib FFMPEG CrossGUID)
+# Platform
+if(CORE_SYSTEM_NAME STREQUAL linux)
+  # Set default CORE_PLATFORM_NAME to X11
+  # This is overridden by user setting -DCORE_PLATFORM_NAME=<platform>
+  set(_DEFAULT_PLATFORM X11)
+else()
+  string(TOLOWER ${CORE_SYSTEM_NAME} _DEFAULT_PLATFORM)
+endif()
+
+set(CORE_PLATFORM_NAME ${_DEFAULT_PLATFORM} CACHE STRING "Platform port to build")
+unset(_DEFAULT_PLATFORM)
+string(TOLOWER ${CORE_PLATFORM_NAME} CORE_PLATFORM_NAME_LC)
+
+list(APPEND final_message "Platform: ${CORE_PLATFORM_NAME}")
+if(EXISTS ${CMAKE_SOURCE_DIR}/cmake/platform/${CORE_SYSTEM_NAME}/${CORE_PLATFORM_NAME_LC}.cmake)
+  include(${CMAKE_SOURCE_DIR}/cmake/platform/${CORE_SYSTEM_NAME}/${CORE_PLATFORM_NAME_LC}.cmake)
+else()
+  file(GLOB _platformnames RELATIVE ${CMAKE_SOURCE_DIR}/cmake/platform/${CORE_SYSTEM_NAME}/
+                                    ${CMAKE_SOURCE_DIR}/cmake/platform/${CORE_SYSTEM_NAME}/*.cmake)
+  string(REPLACE ".cmake" " " _platformnames ${_platformnames})
+  message(FATAL_ERROR "invalid CORE_PLATFORM_NAME: ${CORE_PLATFORM_NAME_LC}\nValid platforms: ${_platformnames}")
+endif()
+
+foreach(dep ${PLATFORM_REQUIRED_DEPS})
+  # We need to specify ENABLE_${PLATFORM_REQUIRED_DEPS} in order for the
+  # optional subdirectory for the specified platform to get built.
+  string(TOUPPER ${dep} depup)
+  set(ENABLE_${depup} "ON" CACHE BOOL "Force enabling required ${depup} support" FORCE)
+endforeach()
+
+# Required dependencies. Keep in alphabetical order please
+set(required_deps Cdio
+                  Cpluff
+                  CrossGUID
+                  FFMPEG
+                  Fmt
+                  FreeType
+                  FriBidi
+                  LibDvd
+                  Lzo2
+                  PCRE
+                  RapidJSON
+                  Sqlite3
+                  TagLib
+                  TinyXML
+                  ${PLATFORM_REQUIRED_DEPS})
 if(NOT WIN32)
   list(APPEND required_deps ZLIB)
 else()
@@ -114,47 +148,48 @@ if(CORE_SYSTEM_NAME STREQUAL android)
   list(APPEND required_deps Zip)
 endif()
 
-# Optional dependencies
-set(optional_deps MicroHttpd MySqlClient SSH XSLT
-                  Alsa UDEV DBus Avahi MDNS SmbClient CCache
-                  PulseAudio VDPAU VAAPI Bluetooth CAP Python)
+# Optional dependencies. Keep in alphabetical order please
+set(optional_deps Alsa
+                  Avahi
+                  Bluetooth
+                  CAP
+                  CCache
+                  DBus
+                  LCMS2
+                  MDNS
+                  MicroHttpd
+                  MySqlClient
+                  PulseAudio
+                  Python
+                  SmbClient
+                  Sndio
+                  SSH
+                  UDEV
+                  XSLT
+                  ${PLATFORM_OPTIONAL_DEPS})
 
-# Required, dyloaded deps
-set(required_dyload Curl ASS)
+# Required, dyloaded deps. Keep in alphabetical order please
+set(required_dyload ASS
+                    Curl)
 
-# Optional, dyloaded deps
-set(dyload_optional CEC Bluray Plist NFS)
-
-# Required by shared objects we link
-set(required_dep_libs EXPAT)
+# Optional, dyloaded deps. Keep in alphabetical order please
+set(dyload_optional Bluray
+                    CEC
+                    NFS
+                    Plist)
 
 # Required tools
 find_package(TexturePacker REQUIRED)
 find_package(JsonSchemaBuilder REQUIRED)
 
-foreach(dep ${required_dep_libs})
-  find_package(${dep} REQUIRED)
-endforeach()
-
-foreach(dep ${required_deps})
-  core_require_dep(${dep})
-endforeach()
-
-foreach(dep ${optional_deps})
-  core_optional_dep(${dep})
-endforeach()
+core_require_dep(${required_deps})
+core_optional_dep(${optional_deps})
+core_require_dyload_dep(${required_dyload})
+core_optional_dyload_dep(${dyload_optional})
 
 if(NOT UDEV_FOUND)
   core_optional_dep(LibUSB)
 endif()
-
-foreach(dep ${required_dyload})
-  core_require_dyload_dep(${dep})
-endforeach()
-
-foreach(dep ${dyload_optional})
-  core_optional_dyload_dep(${dep})
-endforeach()
 
 if(ENABLE_OPENSSL)
   core_require_dep(OpenSSL)
@@ -163,10 +198,6 @@ endif()
 
 if(ENABLE_UPNP)
   list(APPEND DEP_DEFINES "-DUSE_UPNP=1")
-endif()
-
-if(ENABLE_NONFREE)
-  list(APPEND DEP_DEFINES "-DHAVE_XBMC_NONFREE=1")
 endif()
 
 if(ENABLE_OPTICAL)
@@ -187,50 +218,16 @@ endif()
 
 if(CORE_SYSTEM_NAME STREQUAL osx)
   core_require_dep(Sdl)
-else()
-  core_optional_dep(Sdl)
 endif()
 
-if(NOT WIN32)
-  core_optional_dep(OpenGl)
-  if(OPENGL_FOUND AND NOT APPLE)
-    if(ENABLE_MIR)
-      core_require_dep(Mir ENABLE_MIR)
-      core_optional_dep(LibDRM ENABLE_MIR)
-    else()
-      core_optional_dep(X ENABLE_X11)
-      core_optional_dep(XRandR ENABLE_X11)
-      core_optional_dep(LibDRM ENABLE_X11)
-    endif()
-  else()
-    core_optional_dep(OpenGLES)
-    if(OPENGLES_FOUND)
-      if(ENABLE_MIR)
-        core_require_dep(Mir ENABLE_MIR)
-        core_optional_dep(LibDRM ENABLE_MIR)
-      else()
-        core_optional_dep(X ENABLE_X11)
-        core_optional_dep(XRandR ENABLE_X11)
-        core_optional_dep(LibDRM ENABLE_X11)
-      endif()
-    endif()
-  endif()
-  if(NOT APPLE)
-    core_require_dep(EGL)
-  endif()
-endif()
-
-if(CORE_SYSTEM_NAME STREQUAL android OR CORE_SYSTEM_NAME STREQUAL linux)
-  core_optional_dep(AML)
-  core_optional_dep(IMX)
-elseif(CORE_SYSTEM_NAME STREQUAL rbpi)
-  core_require_dep(MMAL)
-endif()
+# find all folders containing addon.xml.in
+# used to define ADDON_XML_OUTPUTS, ADDON_XML_DEPENDS and ADDON_INSTALL_DATA
+# Function defined in ./cmake/scripts/common/Macros.cmake
+find_addon_xml_in_files()
 
 # Compile Info
 add_custom_command(OUTPUT ${CORE_BUILD_DIR}/xbmc/CompileInfo.cpp
-                          ${CMAKE_BINARY_DIR}/addons/xbmc.addon/addon.xml
-                          ${CMAKE_BINARY_DIR}/addons/kodi.guilib/addon.xml
+                          ${ADDON_XML_OUTPUTS}
                    COMMAND ${CMAKE_COMMAND} -DCORE_SOURCE_DIR=${CMAKE_SOURCE_DIR}
                                             -DCORE_SYSTEM_NAME=${CORE_SYSTEM_NAME}
                                             -DCORE_BUILD_DIR=${CORE_BUILD_DIR}
@@ -240,12 +237,9 @@ add_custom_command(OUTPUT ${CORE_BUILD_DIR}/xbmc/CompileInfo.cpp
                                             -Dprefix=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
                                             -P ${CMAKE_SOURCE_DIR}/cmake/scripts/common/GenerateVersionedFiles.cmake
                    DEPENDS ${CMAKE_SOURCE_DIR}/version.txt
-                           ${CMAKE_SOURCE_DIR}/addons/xbmc.addon/addon.xml.in
-                           ${CMAKE_SOURCE_DIR}/addons/kodi.guilib/addon.xml.in
+                           ${ADDON_XML_DEPENDS}
                            ${CMAKE_SOURCE_DIR}/xbmc/CompileInfo.cpp.in)
-list(APPEND install_data addons/xbmc.addon/addon.xml)
-list(APPEND install_data addons/xbmc.json/addon.xml)
-list(APPEND install_data addons/kodi.guilib/addon.xml)
+list(APPEND install_data ${ADDON_INSTALL_DATA})
 add_library(compileinfo OBJECT ${CORE_BUILD_DIR}/xbmc/CompileInfo.cpp)
 set_target_properties(compileinfo PROPERTIES FOLDER "Build Utilities")
 target_compile_options(compileinfo PRIVATE "${SYSTEM_DEFINES}")
@@ -320,13 +314,14 @@ target_link_libraries(lib${APP_NAME_LC} PUBLIC ${core_DEPENDS} ${SYSTEM_LDFLAGS}
 set_target_properties(lib${APP_NAME_LC} PROPERTIES PROJECT_LABEL "xbmc")
 source_group_by_folder(lib${APP_NAME_LC} RELATIVE ${CMAKE_SOURCE_DIR}/xbmc)
 if(WIN32)
-  add_precompiled_header(lib${APP_NAME_LC} pch.h ${CMAKE_SOURCE_DIR}/xbmc/platform/win32/pch.cpp PCH_TARGET kodi)
+  add_precompiled_header(lib${APP_NAME_LC} pch.h ${CMAKE_SOURCE_DIR}/xbmc/platform/win32/pch.cpp)
   set_language_cxx(lib${APP_NAME_LC})
 endif()
 
 # main binary
 if(NOT CORE_SYSTEM_NAME STREQUAL android)
   add_executable(${APP_NAME_LC} ${CORE_MAIN_SOURCE} "${RESOURCES}" ${OTHER_FILES})
+  set_target_properties(${APP_NAME_LC} PROPERTIES ENABLE_EXPORTS ON)
 else()
   set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--no-undefined")
   add_library(${APP_NAME_LC} SHARED ${CORE_MAIN_SOURCE} "${RESOURCES}" ${OTHER_FILES})
@@ -356,9 +351,6 @@ whole_archive(_TEST_LIBRARIES ${core_DEPENDS} gtest)
 target_link_libraries(${APP_NAME_LC}-test PRIVATE ${SYSTEM_LDFLAGS} ${_TEST_LIBRARIES} lib${APP_NAME_LC} ${DEPLIBS} ${CMAKE_DL_LIBS})
 unset(_TEST_LIBRARIES)
 add_dependencies(${APP_NAME_LC}-test ${APP_NAME_LC}-libraries export-files)
-if(WIN32)
-  add_precompiled_header(${APP_NAME_LC}-test pch.h ${CMAKE_SOURCE_DIR}/xbmc/platform/win32/pch.cpp PCH_TARGET kodi)
-endif()
 
 # Enable unit-test related targets
 if(CORE_HOST_IS_TARGET)
@@ -445,12 +437,16 @@ endif()
 
 # Prepare add-on build env
 core_file_read_filtered(bindings ${CMAKE_SOURCE_DIR}/xbmc/addons/addon-bindings.mk)
-foreach(binding ${bindings})
-  string(REPLACE " =" ";" binding "${binding}")
-  string(REPLACE "+=" ";" binding "${binding}")
-  list(GET binding 1 header)
+foreach(header ${bindings})
   get_filename_component(file ${header} NAME)
   configure_file(${CMAKE_SOURCE_DIR}/${header} ${CORE_BUILD_DIR}/include/${APP_NAME_LC}/${file} COPYONLY)
+endforeach()
+file(GLOB_RECURSE ADDON_HEADERS
+     RELATIVE ${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi
+    ${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/*.h)
+foreach(header ${ADDON_HEADERS})
+  configure_file(${CORE_SOURCE_DIR}/xbmc/addons/kodi-addon-dev-kit/include/kodi/${header}
+                 ${CORE_BUILD_DIR}/include/kodi/${header} COPYONLY)
 endforeach()
 
 set(APP_LIB_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/lib/${APP_NAME_LC})

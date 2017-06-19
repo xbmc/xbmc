@@ -52,18 +52,17 @@ namespace PVR
     void RestoreControlStates() override;
     void SaveControlStates() override;
     void SetInvalid() override;
+    CGUIControl *GetFirstFocusableControl(int id) override;
 
+  private:
     void GotoChannel(int iItem);
     void ShowInfo(int item);
     void Clear();
     void Update();
     CPVRChannelGroupPtr GetPlayingGroup();
-    CGUIControl *GetFirstFocusableControl(int id) override;
 
-    CFileItemList    *m_vecItems;
-    CGUIViewControl   m_viewControl;
-
-  private:
+    CFileItemList *m_vecItems;
+    CGUIViewControl m_viewControl;
     CPVRChannelGroupPtr m_group;
     std::map<int, std::string> m_groupSelectedItemPaths;
     void SaveSelectedItemPath(int iGroupID);

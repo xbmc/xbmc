@@ -30,6 +30,7 @@
 #include "pvr/PVRManager.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "profiles/ProfilesManager.h"
+#include "ServiceBroker.h"
 #include "utils/URIUtils.h"
 #include "video/VideoDatabase.h"
 
@@ -76,7 +77,7 @@ bool CVideoLibraryMarkWatchedJob::Work(CVideoDatabase &db)
       continue;
 #endif
 
-    if (item->HasPVRRecordingInfoTag() && PVR::g_PVRRecordings->MarkWatched(item, m_mark))
+    if (item->HasPVRRecordingInfoTag() && CServiceBroker::GetPVRManager().Recordings()->MarkWatched(item, m_mark))
       continue;
 
     markItems.push_back(item);

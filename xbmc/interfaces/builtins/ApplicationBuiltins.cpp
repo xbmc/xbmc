@@ -22,9 +22,6 @@
 
 #include "Application.h"
 #include "ServiceBroker.h"
-#ifdef HAS_FILESYSTEM_RAR
-#include "filesystem/RarManager.h"
-#endif
 #include "filesystem/ZipManager.h"
 #include "messaging/ApplicationMessenger.h"
 #include "input/Key.h"
@@ -61,10 +58,6 @@ static int Extract(const std::vector<std::string>& params)
 
     if (URIUtils::IsZIP(params[0]))
       g_ZipManager.ExtractArchive(params[0],strDestDirect);
-#ifdef HAS_FILESYSTEM_RAR
-    else if (URIUtils::IsRAR(params[0]))
-      g_RarManager.ExtractArchive(params[0],strDestDirect);
-#endif
     else
       CLog::Log(LOGERROR, "Extract, No archive given");
 
@@ -91,7 +84,13 @@ static int NotifyAll(const std::vector<std::string>& params)
 {
   CVariant data;
   if (params.size() > 2)
-    data = CJSONVariantParser::Parse((const unsigned char *)params[2].c_str(), params[2].size());
+  {
+    if (!CJSONVariantParser::Parse(params[2], data))
+    {
+      CLog::Log(LOGERROR, "NotifyAll failed to parse data: %s", params[2].c_str());
+      return -3;
+    }
+  }
 
   ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::Other, params[0].c_str(), params[1].c_str(), data);
 

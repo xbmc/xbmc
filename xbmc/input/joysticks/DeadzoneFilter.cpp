@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2016 Team Kodi
+ *      Copyright (C) 2016-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,7 +19,7 @@
  */
 
 #include "DeadzoneFilter.h"
-#include "DefaultJoystick.h"
+#include "JoystickIDs.h"
 #include "IButtonMap.h"
 #include "peripherals/devices/Peripheral.h"
 #include "utils/log.h"

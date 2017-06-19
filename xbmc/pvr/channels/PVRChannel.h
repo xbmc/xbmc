@@ -20,7 +20,6 @@
  */
 
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
-#include "epg/EpgTypes.h"
 #include "threads/CriticalSection.h"
 #include "utils/ISerializable.h"
 #include "utils/ISortable.h"
@@ -28,6 +27,7 @@
 
 #include "pvr/PVRTypes.h"
 
+#include <memory>
 #include <string>
 #include <utility>
 
@@ -36,7 +36,6 @@ class CFileItemList;
 
 namespace PVR
 {
-  class CPVRDatabase;
   class CPVRChannelGroupInternal;
 
   typedef struct
@@ -46,10 +45,12 @@ namespace PVR
   } pvr_channel_num;
 
   /** PVR Channel class */
-  class CPVRChannel : public Observable, public ISerializable, public ISortable
+  class CPVRChannel : public Observable,
+                      public ISerializable,
+                      public ISortable,
+                      public std::enable_shared_from_this<CPVRChannel>
   {
     friend class CPVRDatabase;
-    friend class CPVRChannelGroupInternal;
 
   public:
     /*! @brief Create a new channel */
@@ -57,14 +58,14 @@ namespace PVR
     CPVRChannel(const PVR_CHANNEL &channel, unsigned int iClientId);
 
   private:
-    CPVRChannel(const CPVRChannel &tag); // intentionally not implemented.
-    CPVRChannel &operator=(const CPVRChannel &channel); // intentionally not implemented.
+    CPVRChannel(const CPVRChannel &tag) = delete;
+    CPVRChannel &operator=(const CPVRChannel &channel) = delete;
 
   public:
     bool operator ==(const CPVRChannel &right) const;
     bool operator !=(const CPVRChannel &right) const;
 
-    virtual void Serialize(CVariant& value) const;
+    void Serialize(CVariant& value) const override;
 
     /*! @name XBMC related channel methods
      */
@@ -338,7 +339,7 @@ namespace PVR
      */
     std::string Path(void) const;
 
-    virtual void ToSortable(SortItem& sortable, Field field) const;
+    void ToSortable(SortItem& sortable, Field field) const override;
 
     /*!
      * @brief Update the path this channel got added to the internal group
@@ -393,10 +394,17 @@ namespace PVR
     void SetEpgID(int iEpgId);
 
     /*!
+     * @brief Create the EPG for this channel, if it does not yet exist
+     * @param bForce to create a new EPG, even if it already exists.
+     * @return true if a new epg was created, false otherwise.
+     */
+    bool CreateEPG(bool bForce);
+
+    /*!
      * @brief Get the EPG table for this channel.
      * @return The EPG for this channel.
      */
-    EPG::CEpgPtr GetEPG(void) const;
+    CPVREpgPtr GetEPG(void) const;
 
     /*!
      * @brief Get the EPG table for this channel.
@@ -419,7 +427,7 @@ namespace PVR
      *
      * @return The EPG tag that is active on this channel now.
      */
-    EPG::CEpgInfoTagPtr GetEPGNow() const;
+    CPVREpgInfoTagPtr GetEPGNow() const;
 
     /*!
      * @brief Get the EPG tag that is active on this channel next.
@@ -429,7 +437,7 @@ namespace PVR
      *
      * @return The EPG tag that is active on this channel next.
      */
-    EPG::CEpgInfoTagPtr GetEPGNext() const;
+    CPVREpgInfoTagPtr GetEPGNext() const;
 
     /*!
      * @return Don't use an EPG for this channel if set to false.

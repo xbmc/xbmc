@@ -1,0 +1,98 @@
+This are the steps to be done for configuring a mac for being a build slave to the Kodi jenkins CI system
+--------------------------------------------------------------------------------------------------------
+
+1. setup user jenkins as follows:
+
+# create jenkins group
+NEXT_GID=$((`dscl /Local/Default list /Groups gid | awk '{ print $2 }' | sort -n | grep -v ^[5-9] | tail -n1` + 1))
+sudo dscl /Local/Default create /Groups/jenkins
+sudo dscl /Local/Default create /Groups/jenkins PrimaryGroupID $NEXT_GID
+sudo dscl /Local/Default create /Groups/jenkins Password \*
+sudo dscl /Local/Default create /Groups/jenkins RealName 'Jenkins Node Service'
+# create jenkins user
+NEXT_UID=$((`dscl /Local/Default list /Users uid | awk '{ print $2 }' | sort -n | grep -v ^[5-9] | tail -n1` + 1))
+sudo dscl /Local/Default create /Users/jenkins
+sudo dscl /Local/Default create /Users/jenkins UniqueID $NEXT_UID
+sudo dscl /Local/Default create /Users/jenkins PrimaryGroupID $NEXT_GID
+sudo dscl /Local/Default create /Users/jenkins UserShell /usr/bin/false
+sudo dscl /Local/Default create /Users/jenkins NFSHomeDirectory /var/lib/jenkins
+sudo dscl /Local/Default create /Users/jenkins Password \*
+sudo dseditgroup -o edit -a jenkins -t user jenkins
+# create the jenkins home dir
+sudo mkdir /var/lib/jenkins
+sudo chown -R jenkins:wheel /var/lib/jenkins
+# create a logging space
+sudo mkdir /var/log/jenkins
+sudo chown jenkins:wheel /var/log/jenkins
+
+3. mkdir /Users/Shared/jenkins
+
+4. sudo chown jenkins:wheel /Users/Shared/jenkins
+
+5. mkdir -p /Users/Shared/xbmc-depends/dSyms
+
+6. sudo chown -R jenkins:wheel /Users/Shared/xbmc-depends/
+
+7. Change to user jenknis via sudo -u jenkins bash
+
+8. mkdir /Users/Shared/jenkins/slave
+
+9. nano /Users/Shared/jenkins/slave/startslave.sh and add the following
+
+#!/bin/sh
+
+rm error.log
+rm stdout.log
+java -Djava.awt.headless=true -jar slave.jar -jar-cache /Users/Shared/jenkins/cache -jnlpUrl http://jenkins.kodi.tv/computer/<node name from jenkins node page>/slave-agent.jnlp -secret <secret from jenkins node page>
+
+10. chmod +x /Users/Shared/jenkins/slave/startslave.sh
+
+11. edit startslave.sh and add nodename and the secret at the end of the command line from the node page
+
+12. nano /Users/Shared/jenkins/slave/org.jenkins-ci.slave.jnlp.plist and add the following
+
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.example.ci</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Users/Shared/jenkins/slave/startslave.sh</string>
+    </array>
+    <key>KeepAlive</key>
+    <true/>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>UserName</key>
+    <string>jenkins</string>
+    <key>WorkingDirectory</key>
+    <string>/Users/Shared/jenkins</string>
+    <key>StandardOutPath</key>
+    <string>/Users/Shared/jenkins/slave/stdout.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/Shared/jenkins/slave/error.log</string>
+</dict>
+</plist>
+
+13. sudo cp /Users/Shared/jenkins/slave/org.jenkins-ci.slave.jnlp.plist /Library/LaunchDaemons/org.jenkins-ci.slave.jnlp.plist
+ 
+14. sudo nano /etc/profile and add PATH=$PATH:/usr/local/bin
+
+15. curl http://jenkins.kodi.tv/jnlpJars/slave.jar -o /Users/Shared/jenkins/slave.jar
+
+16. install java JDK
+
+17. Install xcode 6.1.1 to /Applications/Xcode6.1.1.app (get it from developer.apple.com -> Downloads) and start it once (accept license)
+
+18. Install xcode 7.2 to /Applications/Xcode.app (get it from developer.apple.com -> Downloads) and start it once (accept license)
+
+19. install brew
+
+20. install ccache via brew (brew install ccache)
+
+21. edit /var/lib/jenkins/.ccache/ccache.conf and set max_size to 15.0G (this file might just appear after the first build done on the node)
+
+22. load service:
+sudo launchctl load /Library/LaunchDaemons/org.jenkins-ci.slave.jnlp.plist

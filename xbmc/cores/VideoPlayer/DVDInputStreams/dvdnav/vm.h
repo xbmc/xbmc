@@ -127,7 +127,7 @@ dvd_reader_t *vm_get_dvd_reader(vm_t *vm);
 /* Basic Handling */
 int  vm_start(vm_t *vm);
 void vm_stop(vm_t *vm);
-int  vm_reset(vm_t *vm, const char *dvdroot);
+int  vm_reset(vm_t *vm, const char *dvdroot, void *stream, dvdnav_stream_cb *stream_cb);
 
 /* copying and merging  - useful for try-running an operation */
 vm_t *vm_new_copy(vm_t *vm);

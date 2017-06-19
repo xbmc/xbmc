@@ -321,8 +321,8 @@
 #define CONTAINER_VIEWCOUNT         381
 #define CONTAINER_SHOWTITLE         382
 #define CONTAINER_PLUGINCATEGORY    383
-#define CONTAINER_ACTUAL_ITEMS      384
-#define CONTAINER_NONFOLDER_ITEMS   385
+#define CONTAINER_NUM_ALL_ITEMS     384
+#define CONTAINER_NUM_NONFOLDER_ITEMS 385
 
 #define MUSICPM_ENABLED             390
 #define MUSICPM_SONGSPLAYED         391
@@ -364,6 +364,7 @@
 #define SKIN_COLOUR_THEME           605
 #define SKIN_HAS_THEME              606
 #define SKIN_ASPECT_RATIO           607
+#define SKIN_FONT                   608
 
 #define SYSTEM_PRIVACY_POLICY       643
 #define SYSTEM_TOTAL_MEMORY         644

@@ -1,1 +1,1 @@
-p8-platform https://github.com/xbmc/platform.git 81c38cd885f822983dbf27b198239729bae13786
+p8-platform https://github.com/xbmc/platform.git 32190045c7eb6883c0662db2f91b4ceeab904fc2

@@ -19,6 +19,7 @@
  *
  */
 
+#include "pvr/PVRSettings.h"
 #include "pvr/PVRTypes.h"
 #include "pvr/PVRChannelNumberInputHandler.h"
 
@@ -61,11 +62,8 @@ namespace PVR
   class CPVRGUIActions
   {
   public:
-    /*!
-     * @brief Request an instance of class CPVRGUIActions.
-     * @return the instance.
-     */
-    static CPVRGUIActions& GetInstance();
+    CPVRGUIActions();
+    virtual ~CPVRGUIActions() = default;
 
     /*!
      * @brief Open a dialog with epg information for a given item.
@@ -73,6 +71,13 @@ namespace PVR
      * @return true on success, false otherwise.
      */
     bool ShowEPGInfo(const CFileItemPtr &item) const;
+
+    /*!
+     * @brief Open a dialog with the epg list for a given item.
+     * @param item containing channel info. item must be an epg tag, a channel or a timer.
+     * @return true on success, false otherwise.
+     */
+    bool ShowChannelEPG(const CFileItemPtr &item) const;
 
     /*!
      * @brief Open a window containing a list of epg tags 'similar' to a given item.
@@ -312,10 +317,8 @@ namespace PVR
     CPVRChannelNumberInputHandler &GetChannelNumberInputHandler();
 
   private:
-    CPVRGUIActions();
     CPVRGUIActions(const CPVRGUIActions&) = delete;
     CPVRGUIActions const& operator=(CPVRGUIActions const&) = delete;
-    virtual ~CPVRGUIActions() {}
 
     /*!
      * @brief Open the timer settings dialog.
@@ -413,6 +416,7 @@ namespace PVR
   private:
     CPVRChannelSwitchingInputHandler m_channelNumberInputHandler;
     bool m_bChannelScanRunning;
+    CPVRSettings m_settings;
 
   };
 

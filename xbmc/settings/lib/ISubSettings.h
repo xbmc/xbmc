@@ -29,7 +29,7 @@ class TiXmlNode;
 class ISubSettings
 {
 public:
-  virtual ~ISubSettings() { }
+  virtual ~ISubSettings() = default;
 
   /*!
    \brief Load settings from the given XML node.

@@ -26,13 +26,13 @@ else()
 endif()
 
 set(SOURCES src/md5.cpp
-            src/XBTFWriter.cpp
-            src/TexturePacker.cpp
             src/DecoderManager.cpp
+            src/TexturePacker.cpp
+            src/XBTFWriter.cpp
+            src/decoder/GIFDecoder.cpp
+            src/decoder/GifHelper.cpp
             src/decoder/JPGDecoder.cpp
             src/decoder/PNGDecoder.cpp
-            src/decoder/GifHelper.cpp
-            src/decoder/GIFDecoder.cpp
             ${CMAKE_SOURCE_DIR}/xbmc/guilib/XBTF.cpp)
 
 set(CMAKE_POSITITION_INDEPENDENT_CODE 1)

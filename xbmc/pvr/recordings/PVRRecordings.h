@@ -19,10 +19,10 @@
  *
  */
 
-#include "epg/EpgTypes.h"
 #include "FileItem.h"
 #include "video/VideoDatabase.h"
 
+#include "pvr/PVRTypes.h"
 #include "pvr/recordings/PVRRecording.h"
 
 #include <map>
@@ -33,47 +33,6 @@ namespace PVR
 
   class CPVRRecordings
   {
-  private:
-    typedef std::map<CPVRRecordingUid, CPVRRecordingPtr> PVR_RECORDINGMAP;
-    typedef PVR_RECORDINGMAP::iterator             PVR_RECORDINGMAP_ITR;
-    typedef PVR_RECORDINGMAP::const_iterator             PVR_RECORDINGMAP_CITR;
-
-    CCriticalSection             m_critSection;
-    bool                         m_bIsUpdating;
-    PVR_RECORDINGMAP             m_recordings;
-    unsigned int                 m_iLastId;
-    CVideoDatabase               m_database;
-    bool                         m_bDeletedTVRecordings;
-    bool                         m_bDeletedRadioRecordings;
-    unsigned int                 m_iTVRecordings;
-    unsigned int                 m_iRadioRecordings;
-
-    virtual void UpdateFromClients(void);
-    virtual std::string TrimSlashes(const std::string &strOrig) const;
-    virtual bool IsDirectoryMember(const std::string &strDirectory, const std::string &strEntryDirectory, bool bGrouped) const;
-    virtual void GetSubDirectories(const CPVRRecordingsPath &recParentPath, CFileItemList *results);
-
-    /**
-     * @brief recursively deletes all recordings in the specified directory
-     * @param item the directory
-     * @return true if all recordings were deleted
-     */
-    bool DeleteDirectory(const CFileItem &item);
-    bool DeleteRecording(const CFileItem &item);
-
-    /**
-     * @brief special value for parameter count of method ChangeRecordingsPlayCount
-     */
-    static const int INCREMENT_PLAY_COUNT = -1;
-
-    /**
-     * @brief change the playcount of the given recording or recursively of all children of the given recordings folder
-     * @param item the recording or directory containing recordings
-     * @param count the new playcount or INCREMENT_PLAY_COUNT to denote that the current playcount(s) are to be incremented by one
-     * @return true if all playcounts were changed
-     */
-    bool ChangeRecordingsPlayCount(const CFileItemPtr &item, int count);
-
   public:
     CPVRRecordings(void);
     virtual ~CPVRRecordings(void);
@@ -116,6 +75,47 @@ namespace PVR
      * @param epgTag The epg tag.
      * @return The requested recording, or an empty recordingptr if none was found.
      */
-    CPVRRecordingPtr GetRecordingForEpgTag(const EPG::CEpgInfoTagPtr &epgTag) const;
+    CPVRRecordingPtr GetRecordingForEpgTag(const CPVREpgInfoTagPtr &epgTag) const;
+
+  private:
+    typedef std::map<CPVRRecordingUid, CPVRRecordingPtr> PVR_RECORDINGMAP;
+    typedef PVR_RECORDINGMAP::iterator PVR_RECORDINGMAP_ITR;
+    typedef PVR_RECORDINGMAP::const_iterator PVR_RECORDINGMAP_CITR;
+
+    CCriticalSection m_critSection;
+    bool m_bIsUpdating;
+    PVR_RECORDINGMAP m_recordings;
+    unsigned int m_iLastId;
+    CVideoDatabase m_database;
+    bool m_bDeletedTVRecordings;
+    bool m_bDeletedRadioRecordings;
+    unsigned int m_iTVRecordings;
+    unsigned int m_iRadioRecordings;
+
+    void UpdateFromClients(void);
+    std::string TrimSlashes(const std::string &strOrig) const;
+    bool IsDirectoryMember(const std::string &strDirectory, const std::string &strEntryDirectory, bool bGrouped) const;
+    void GetSubDirectories(const CPVRRecordingsPath &recParentPath, CFileItemList *results);
+
+    /**
+     * @brief recursively deletes all recordings in the specified directory
+     * @param item the directory
+     * @return true if all recordings were deleted
+     */
+    bool DeleteDirectory(const CFileItem &item);
+    bool DeleteRecording(const CFileItem &item);
+
+    /**
+     * @brief special value for parameter count of method ChangeRecordingsPlayCount
+     */
+    static const int INCREMENT_PLAY_COUNT = -1;
+
+    /**
+     * @brief change the playcount of the given recording or recursively of all children of the given recordings folder
+     * @param item the recording or directory containing recordings
+     * @param count the new playcount or INCREMENT_PLAY_COUNT to denote that the current playcount(s) are to be incremented by one
+     * @return true if all playcounts were changed
+     */
+    bool ChangeRecordingsPlayCount(const CFileItemPtr &item, int count);    
   };
 }

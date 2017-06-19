@@ -32,6 +32,7 @@
 #include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "dialogs/GUIDialogOK.h"
+#include "favourites/FavouritesService.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
@@ -151,7 +152,7 @@ bool CGUIWindowLoginScreen::OnAction(const CAction &action)
     std::string actionName = action.GetName();
     StringUtils::ToLower(actionName);
     if ((actionName.find("shutdown") != std::string::npos) &&
-        PVR::g_PVRManager.CanSystemPowerdown())
+        CServiceBroker::GetPVRManager().CanSystemPowerdown())
       CBuiltins::GetInstance().Execute(action.GetName());
     return true;
   }
@@ -281,9 +282,6 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
   // stop PVR related services
   CServiceBroker::GetPVRManager().Unload();
 
-  // stop audio DSP services with a blocking message
-  CServiceBroker::GetADSP().Deactivate();
-
   if (profile != 0 || !CProfilesManager::GetInstance().IsMasterProfile())
   {
     g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_DOWN,1);
@@ -330,6 +328,8 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
 
   // restart PVR services
   CServiceBroker::GetPVRManager().Reinit();
+
+  CServiceBroker::GetFavouritesService().ReInit(CProfilesManager::GetInstance().GetProfileUserDataFolder());
 
   // start services which should run on login
   ADDON::CAddonMgr::GetInstance().StartServices(false);

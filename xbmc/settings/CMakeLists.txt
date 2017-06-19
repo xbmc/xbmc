@@ -1,5 +1,6 @@
 set(SOURCES AdvancedSettings.cpp
             AudioDSPSettings.cpp
+            DiscSettings.cpp
             DisplaySettings.cpp
             MediaSettings.cpp
             MediaSourceSettings.cpp
@@ -7,8 +8,10 @@ set(SOURCES AdvancedSettings.cpp
             SettingConditions.cpp
             SettingControl.cpp
             SettingCreator.cpp
+            SettingDateTime.cpp
             SettingPath.cpp
             Settings.cpp
+            SettingsBase.cpp
             SettingUtils.cpp
             SkinSettings.cpp
             VideoSettings.cpp)
@@ -23,8 +26,10 @@ set(HEADERS AdvancedSettings.h
             SettingConditions.h
             SettingControl.h
             SettingCreator.h
+            SettingDateTime.h
             SettingPath.h
             Settings.h
+            SettingsBase.h
             SettingUtils.h
             SkinSettings.h
             VideoSettings.h)

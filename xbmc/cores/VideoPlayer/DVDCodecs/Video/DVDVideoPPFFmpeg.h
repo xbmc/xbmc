@@ -32,9 +32,9 @@ public:
 
 
   void SetType(const std::string& mType, bool deinterlace);
-  void SetTarget(DVDVideoPicture *pPicture){ m_pTarget = pPicture; };
-  bool Process   (DVDVideoPicture *pPicture);
-  bool GetPicture(DVDVideoPicture *pPicture);
+  void SetTarget(VideoPicture *pPicture){ m_pTarget = pPicture; };
+  bool Process   (VideoPicture *pPicture);
+  bool GetPicture(VideoPicture *pPicture);
 
 protected:
   std::string m_sType;
@@ -43,15 +43,15 @@ protected:
   void *m_pMode;
   bool m_deinterlace;
 
-  DVDVideoPicture m_FrameBuffer;
-  DVDVideoPicture *m_pSource;
-  DVDVideoPicture *m_pTarget;
+  VideoPicture m_FrameBuffer;
+  VideoPicture *m_pSource;
+  VideoPicture *m_pTarget;
 
   void Dispose();
 
   int m_iInitWidth, m_iInitHeight;
   bool CheckInit(int iWidth, int iHeight);
-  bool CheckFrameBuffer(const DVDVideoPicture* pSource);
+  bool CheckFrameBuffer(const VideoPicture* pSource);
 };
 
 

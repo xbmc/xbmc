@@ -53,11 +53,6 @@ namespace ADDON
     void*               AddOnLib_GetHelper()          { return m_helperAddOn; }
     /*\_________________________________________________________________________
     \*/
-    static void*        AudioEngineLib_RegisterMe      (void* addonData);
-    static void         AudioEngineLib_UnRegisterMe    (void* addonData, void* cbTable);
-    void*               AudioEngineLib_GetHelper()    { return m_helperAudioEngine; }
-    /*\__________________________________________________________________________________________
-    \*/
     static void*        GUILib_RegisterMe              (void* addonData);
     static void         GUILib_UnRegisterMe            (void* addonData, void* cbTable);
     void*               GUILib_GetHelper()            { return m_helperGUI; }
@@ -65,32 +60,22 @@ namespace ADDON
     \*/
     static void*        PVRLib_RegisterMe              (void* addonData);
     static void         PVRLib_UnRegisterMe            (void* addonData, void* cbTable);
-    void*               PVRLib_GetHelper()            { return m_helperPVR; }
-    /*\_________________________________________________________________________
-    \*/
-    static void*        CodecLib_RegisterMe            (void* addonData);
-    static void         CodecLib_UnRegisterMe          (void* addonData, void* cbTable);
-    void*               GetHelperCODEC()              { return m_helperCODEC; }
     /*\_________________________________________________________________________
     \*/
     static void*        ADSPLib_RegisterMe             (void* addonData);
     static void         ADSPLib_UnRegisterMe           (void* addonData, void* cbTable);
-    void*               GetHelperADSP()               { return m_helperADSP; }
     /*\_________________________________________________________________________
     \*/
     static void*        INPUTSTREAMLib_RegisterMe      (void *addonData);
     static void         INPUTSTREAMLib_UnRegisterMe    (void *addonData, void* cbTable);
-    void*               GetHelperInputStream()        { return m_helperInputStream; }
     /*\_________________________________________________________________________
     \*/
     static void*        PeripheralLib_RegisterMe       (void *addonData);
     static void         PeripheralLib_UnRegisterMe     (void *addonData, void* cbTable);
-    void*               GetHelperPeripheral()         { return m_helperPeripheral; }
     /*\_________________________________________________________________________
     \*/
     static void*        GameLib_RegisterMe             (void *addonData);
     static void         GameLib_UnRegisterMe           (void *addonData, void* cbTable);
-    void*               GetHelperGame()               { return m_helperGame; }
     /*
      * API level independent functions for Kodi
      */
@@ -101,14 +86,7 @@ namespace ADDON
     CAddon*   m_addon;
 
     void*     m_helperAddOn;
-    void*     m_helperAudioEngine;
     void*     m_helperGUI;
-    void*     m_helperPVR;
-    void*     m_helperADSP;
-    void*     m_helperCODEC;
-    void*     m_helperInputStream;
-    void*     m_helperPeripheral;
-    void*     m_helperGame;
   };
 
 } /* namespace ADDON */

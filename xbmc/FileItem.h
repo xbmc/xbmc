@@ -31,7 +31,6 @@
 #include <vector>
 
 #include "addons/IAddon.h"
-#include "epg/EpgTypes.h"
 #include "guilib/GUIListItem.h"
 #include "GUIPassword.h"
 #include "pvr/PVRTypes.h"
@@ -48,9 +47,13 @@ namespace MUSIC_INFO
 }
 class CVideoInfoTag;
 class CPictureInfoTag;
+
+namespace KODI
+{
 namespace GAME
 {
   class CGameInfoTag;
+}
 }
 
 class CAlbum;
@@ -111,7 +114,7 @@ public:
   CFileItem(const CGenre& genre);
   CFileItem(const MUSIC_INFO::CMusicInfoTag& music);
   CFileItem(const CVideoInfoTag& movie);
-  CFileItem(const EPG::CEpgInfoTagPtr& tag);
+  CFileItem(const PVR::CPVREpgInfoTagPtr& tag);
   CFileItem(const PVR::CPVRChannelPtr& channel);
   CFileItem(const PVR::CPVRRecordingPtr& record);
   CFileItem(const PVR::CPVRTimerInfoTagPtr& timer);
@@ -278,12 +281,12 @@ public:
     return m_epgInfoTag.get() != NULL;
   }
 
-  inline const EPG::CEpgInfoTagPtr GetEPGInfoTag() const
+  inline const PVR::CPVREpgInfoTagPtr GetEPGInfoTag() const
   {
     return m_epgInfoTag;
   }
 
-  inline void SetEPGInfoTag(const EPG::CEpgInfoTagPtr& tag)
+  inline void SetEPGInfoTag(const PVR::CPVREpgInfoTagPtr& tag)
   {
     m_epgInfoTag = tag;
   }
@@ -377,9 +380,9 @@ public:
     return m_gameInfoTag != NULL;
   }
 
-  GAME::CGameInfoTag* GetGameInfoTag();
+  KODI::GAME::CGameInfoTag* GetGameInfoTag();
 
-  inline const GAME::CGameInfoTag* GetGameInfoTag() const
+  inline const KODI::GAME::CGameInfoTag* GetGameInfoTag() const
   {
     return m_gameInfoTag;
   }
@@ -574,14 +577,14 @@ private:
   bool m_doContentLookup;
   MUSIC_INFO::CMusicInfoTag* m_musicInfoTag;
   CVideoInfoTag* m_videoInfoTag;
-  EPG::CEpgInfoTagPtr m_epgInfoTag;
+  PVR::CPVREpgInfoTagPtr m_epgInfoTag;
   PVR::CPVRChannelPtr m_pvrChannelInfoTag;
   PVR::CPVRRecordingPtr m_pvrRecordingInfoTag;
   PVR::CPVRTimerInfoTagPtr m_pvrTimerInfoTag;
   PVR::CPVRRadioRDSInfoTagPtr m_pvrRadioRDSInfoTag;
   CPictureInfoTag* m_pictureInfoTag;
   std::shared_ptr<const ADDON::IAddon> m_addonInfo;
-  GAME::CGameInfoTag* m_gameInfoTag;
+  KODI::GAME::CGameInfoTag* m_gameInfoTag;
   EventPtr m_eventLogEntry;
   bool m_bIsAlbum;
 

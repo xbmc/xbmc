@@ -38,7 +38,6 @@
 #include "interfaces/info/SkinVariable.h"
 #include "cores/IPlayer.h"
 #include "FileItem.h"
-#include "epg/EpgTypes.h"
 #include "pvr/PVRTypes.h"
 
 #include <atomic>
@@ -290,7 +289,7 @@ protected:
    * @brief Get the EPG tag that is currently active
    * @return the currently active tag or NULL if no active tag was found
    */
-  EPG::CEpgInfoTagPtr GetEpgInfoTag() const;
+  PVR::CPVREpgInfoTagPtr GetEpgInfoTag() const;
 
   void SetCurrentItemJob(const CFileItemPtr item);
 
@@ -329,7 +328,9 @@ protected:
   int m_nextWindowID;
   int m_prevWindowID;
 
-  std::vector<INFO::InfoPtr> m_bools;
+  typedef std::set<INFO::InfoPtr, bool(*)(const INFO::InfoPtr&, const INFO::InfoPtr&)> INFOBOOLTYPE;
+  INFOBOOLTYPE m_bools;
+  unsigned int m_refreshCounter;
   std::vector<INFO::CSkinVariableString> m_skinVariableStrings;
 
   int m_libraryHasMusic;

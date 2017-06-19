@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2014-2016 Team Kodi
+ *      Copyright (C) 2014-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -32,9 +32,9 @@ using namespace KODI;
 using namespace JOYSTICK;
 using namespace PERIPHERALS;
 
-CAddonInputHandling::CAddonInputHandling(CPeripheral* peripheral, IInputHandler* handler, IDriverReceiver* receiver)
+CAddonInputHandling::CAddonInputHandling(CPeripherals& manager, CPeripheral* peripheral, IInputHandler* handler, IDriverReceiver* receiver)
 {
-  PeripheralAddonPtr addon = g_peripherals.GetAddonWithButtonMap(peripheral);
+  PeripheralAddonPtr addon = manager.GetAddonWithButtonMap(peripheral);
 
   if (!addon)
   {

@@ -60,6 +60,26 @@ msgctxt "#31016"
 msgid "Albums"
 msgstr "Albums "
 
+msgctxt "#31017"
+msgid "PVR info"
+msgstr "Infos enregistreur vidéo"
+
+msgctxt "#31018"
+msgid "Player process info"
+msgstr "Infos processus de lecture"
+
+msgctxt "#31019"
+msgid "Video decoder"
+msgstr "Décodeur vidéo"
+
+msgctxt "#31020"
+msgid "Pixel format"
+msgstr "Format de pixel"
+
+msgctxt "#31021"
+msgid "System memory usage"
+msgstr "Mémoire système utilisée"
+
 msgctxt "#31024"
 msgid "Page"
 msgstr "Page"
@@ -198,7 +218,7 @@ msgstr "Configuration des actions pouvant être effectuées pendant la lecture �
 
 msgctxt "#31409"
 msgid "Configure library sources · Show the media lists display content · Configure how library lists are navigated"
-msgstr "Configuration des sources de la bibliothèque · Configuration de la manière dont les listes de média affichent le contenu · Configuration de la navigation des listes de la bibliothèque"
+msgstr "Configuration des sources de la médiathèque · Configuration de la manière dont les listes de médias affichent le contenu · Configuration de la navigation des listes de la médiathèque"
 
 msgctxt "#31410"
 msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
@@ -215,6 +235,14 @@ msgstr "Affichage des profils · Statistiques sur le matériel · Vérification 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Sélectionner le profil utilisateur Kodi[CR]pour s'identifier et poursuivre"
+
+msgctxt "#31548"
+msgid "Home menu"
+msgstr "Menu d'accueil"
+
+msgctxt "#31549"
+msgid "Home Add-ons"
+msgstr "Extensions de l'accueil"
 
 msgctxt "#31550"
 msgid "Backgrounds"

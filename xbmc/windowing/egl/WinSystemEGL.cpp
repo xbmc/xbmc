@@ -33,14 +33,6 @@
 #include "guilib/DispResource.h"
 #include "threads/SingleLock.h"
 
-#if defined(TARGET_RASPBERRY_PI)
-#include "VideoSyncPi.h"
-#elif defined(TARGET_ANDROID)
-#include "VideoSyncAndroid.h"
-#elif defined(HAS_LIBAMCODEC)
-#include "VideoSyncAML.h"
-#endif
-
 #ifdef HAS_IMXVPU
 // This has to go into another header file
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodecIMX.h"
@@ -274,7 +266,7 @@ bool CWinSystemEGL::DestroyWindowSystem()
   return true;
 }
 
-bool CWinSystemEGL::CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction)
+bool CWinSystemEGL::CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res)
 {
   RESOLUTION_INFO current_resolution;
   current_resolution.iWidth = current_resolution.iHeight = 0;
@@ -363,7 +355,7 @@ bool CWinSystemEGL::ResizeWindow(int newWidth, int newHeight, int newLeft, int n
 
 bool CWinSystemEGL::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
 {
-  CreateNewWindow("", fullScreen, res, NULL);
+  CreateNewWindow("", fullScreen, res);
   CRenderSystemGLES::ResetRenderSystem(res.iWidth, res.iHeight, fullScreen, res.fRefreshRate);
   return true;
 }
@@ -567,18 +559,7 @@ bool CWinSystemEGL::ClampToGUIDisplayLimits(int &width, int &height)
 
 std::unique_ptr<CVideoSync> CWinSystemEGL::GetVideoSync(void *clock)
 {
-#if defined(TARGET_RASPBERRY_PI)
-  std::unique_ptr<CVideoSync> pVSync(new CVideoSyncPi(clock));
-  return pVSync;
-#elif defined(TARGET_ANDROID)
-  std::unique_ptr<CVideoSync> pVSync(new CVideoSyncAndroid(clock));
-  return pVSync;
-#elif defined(HAS_LIBAMCODEC)
-  std::unique_ptr<CVideoSync> pVSync(new CVideoSyncAML(clock));
-  return pVSync;
-#else
   return nullptr;
-#endif
 }
 
 

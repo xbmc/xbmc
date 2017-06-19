@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2014-2016 Team Kodi
+ *      Copyright (C) 2014-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -31,6 +31,8 @@ class CGUIButtonControl;
 class CGUIControlGroupList;
 class CGUIWindow;
 
+namespace KODI
+{
 namespace GAME
 {
   class CGUIControllerWindow;
@@ -69,4 +71,5 @@ namespace GAME
     ControllerVector      m_controllers;
     int                   m_focusedController;
   };
+}
 }

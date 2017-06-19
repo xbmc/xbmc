@@ -24,7 +24,7 @@
 #include <vector>
 
 #include "addons/Addon.h"
-#include "addons/AddonDll.h"
+#include "addons/binary-addons/AddonDll.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/kodi_adsp_types.h"
 
 namespace ActiveAE
@@ -44,7 +44,7 @@ namespace ActiveAE
   class CActiveAEDSPAddon : public ADDON::CAddonDll
   {
   public:
-    explicit CActiveAEDSPAddon(ADDON::AddonProps props);
+    explicit CActiveAEDSPAddon(ADDON::CAddonInfo addonInfo);
     ~CActiveAEDSPAddon(void);
 
     virtual void OnDisabled();
@@ -373,29 +373,14 @@ namespace ActiveAE
 
     static const char *ToString(const AE_DSP_ERROR error);
 
+    /*!
+     * @brief To get the interface table used between addon and kodi
+     * @todo This function becomes removed after old callback library system
+     * is removed.
+     */
+    AddonInstance_AudioDSP* GetInstanceInterface() { return &m_struct; }
+
   private:
-    /*!
-     * @brief Checks whether the provided API version is compatible with KODI
-     * @param minVersion The add-on's KODI_AE_DSP_MIN_API_VERSION version
-     * @param version The add-on's KODI_AE_DSP_API_VERSION version
-     * @return True when compatible, false otherwise
-     */
-    static bool IsCompatibleAPIVersion(const ADDON::AddonVersion &minVersion, const ADDON::AddonVersion &version);
-
-    /*!
-     * @brief Checks whether the provided GUI API version is compatible with KODI
-     * @param minVersion The add-on's KODI_GUILIB_MIN_API_VERSION version
-     * @param version The add-on's KODI_GUILIB_API_VERSION version
-     * @return True when compatible, false otherwise
-     */
-    static bool IsCompatibleGUIAPIVersion(const ADDON::AddonVersion &minVersion, const ADDON::AddonVersion &version);
-
-    /*!
-     * @brief Request the API version from the add-on, and check if it's compatible
-     * @return True when compatible, false otherwise.
-     */
-    bool CheckAPIVersion(void);
-
     /*!
      * @brief Resets all class members to their defaults. Called by the constructors.
      */
@@ -404,6 +389,110 @@ namespace ActiveAE
     bool GetAddonProperties(void);
 
     bool LogError(const AE_DSP_ERROR error, const char *strMethod) const;
+
+    /*!
+     * @brief Callback functions from addon to kodi
+     */
+    //@{
+    /*!
+     * @brief Add or replace a menu hook for the menu for this add-on
+     * @param kodiInstance A pointer to the add-on.
+     * @param hook The hook to add.
+     */
+    static void cb_add_menu_hook(void* kodiInstance, AE_DSP_MENUHOOK* hook);
+
+    /*!
+    * @brief Remove a menu hook for the menu for this add-on
+    * @param kodiInstance A pointer to the add-on.
+    * @param hook The hook to remove.
+    */
+    static void cb_remove_menu_hook(void* kodiInstance, AE_DSP_MENUHOOK* hook);
+
+    /*!
+    * @brief Add or replace master mode information inside audio dsp database.
+    * Becomes identifier written inside mode to iModeID if it was 0 (undefined)
+    * @param mode The master mode to add or update inside database
+    */
+    static void cb_register_mode(void* kodiInstance, AE_DSP_MODES::AE_DSP_MODE* mode);
+
+    /*!
+    * @brief Remove a master mode from audio dsp database
+    * @param mode The Mode to remove
+    */
+    static void cb_unregister_mode(void* kodiInstance, AE_DSP_MODES::AE_DSP_MODE* mode);
+
+    /*! @name KODI background sound play handling */
+    //@{
+    /*!
+    * @brief Get a handle to open a gui sound wave playback
+    * @param kodiInstance A pointer to the add-on.
+    * @param filename the related wave file to open
+    * @return pointer to sound play handle
+    */
+    static ADSPHANDLE cb_sound_play_get_handle(void *kodiInstance, const char *filename);
+
+    /*!
+    * @brief Release the selected handle on KODI
+    * @param kodiInstance A pointer to the add-on.
+    * @param handle pointer to sound play handle
+    */
+    static void cb_sound_play_release_handle(void *kodiInstance, ADSPHANDLE handle);
+
+    /*!
+    * @brief Start the wave file playback
+    * @param kodiInstance A pointer to the add-on.
+    * @param handle pointer to sound play handle
+    */
+    static void cb_sound_play_play(void *kodiInstance, ADSPHANDLE handle);
+
+    /*!
+    * @brief Stop the wave file playback
+    * @param kodiInstance A pointer to the add-on.
+    * @param handle pointer to sound play handle
+    */
+    static void cb_sound_play_stop(void *kodiInstance, ADSPHANDLE handle);
+
+    /*!
+    * @brief Ask that the playback of wave is in progress
+    * @param kodiInstance A pointer to the add-on.
+    * @param handle pointer to sound play handle
+    * @return true if playing
+    */
+    static bool cb_sound_play_is_playing(void *kodiInstance, ADSPHANDLE handle);
+
+    /*!
+    * @brief Set the optional playback channel position, if not used it is on all channels
+    * @param kodiInstance A pointer to the add-on.
+    * @param handle pointer to sound play handle
+    * @param used channel pointer for the playback, AE_DSP_CH_INVALID for on all
+    */
+    static void cb_sound_play_set_channel(void *kodiInstance, ADSPHANDLE handle, AE_DSP_CHANNEL channel);
+
+    /*!
+    * @brief Get the selected playback channel position
+    * @param kodiInstance A pointer to the add-on.
+    * @param handle pointer to sound play handle
+    * @return the used channel pointer for the playback, AE_DSP_CH_INVALID for on all
+    */
+    static AE_DSP_CHANNEL cb_sound_play_get_channel(void *kodiInstance, ADSPHANDLE handle);
+
+    /*!
+    * @brief Set the volume for the wave file playback
+    * @param kodiInstance A pointer to the add-on.
+    * @param handle pointer to sound play handle
+    * @param volume for the file playback
+    */
+    static void cb_sound_play_set_volume(void *kodiInstance, ADSPHANDLE handle, float volume);
+
+    /*!
+    * @brief Get the volume which is set for the playback
+    * @param kodiInstance A pointer to the add-on.
+    * @param handle pointer to sound play handle
+    * @return current volume for the file playback
+    */
+    static float cb_sound_play_get_volume(void *kodiInstance, ADSPHANDLE handle);
+    //@}
+    //@}
 
     bool                      m_bReadyToUse;            /*!< true if this add-on is connected to the audio DSP, false otherwise */
     bool                      m_isInUse;                /*!< true if this add-on currently processing data */
@@ -422,8 +511,6 @@ namespace ActiveAE
 
     CCriticalSection          m_critSection;
 
-    ADDON::AddonVersion       m_apiVersion;
-    AE_DSP_PROPERTIES         m_info;
-    KodiToAddonFuncTable_AudioDSP m_struct;
+    AddonInstance_AudioDSP m_struct;
   };
 }

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2014-2016 Team Kodi
+ *      Copyright (C) 2014-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,12 +19,13 @@
  */
 #pragma once
 
-#include "addons/AddonDll.h"
+#include "addons/binary-addons/AddonDll.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/kodi_peripheral_types.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/kodi_peripheral_utils.hpp"
 #include "input/joysticks/JoystickTypes.h"
 #include "peripherals/PeripheralTypes.h"
 #include "threads/CriticalSection.h"
+#include "threads/SharedSection.h"
 
 #include <map>
 #include <memory>
@@ -50,9 +51,9 @@ namespace PERIPHERALS
   class CPeripheralAddon : public ADDON::CAddonDll
   {
   public:
-    static std::unique_ptr<CPeripheralAddon> FromExtension(ADDON::AddonProps props, const cp_extension_t* ext);
+    static std::unique_ptr<CPeripheralAddon> FromExtension(ADDON::CAddonInfo addonInfo, const cp_extension_t* ext);
 
-    CPeripheralAddon(ADDON::AddonProps props, bool bProvidesJoysticks, bool bProvidesButtonMaps);
+    CPeripheralAddon(ADDON::CAddonInfo addonInfo, bool bProvidesJoysticks, bool bProvidesButtonMaps);
 
     virtual ~CPeripheralAddon(void);
 
@@ -63,6 +64,11 @@ namespace PERIPHERALS
      * @brief Initialise the instance of this add-on
      */
     ADDON_STATUS CreateAddon(void);
+
+    /*!
+     * \brief Deinitialize the instance of this add-on
+     */
+    void DestroyAddon();
 
     bool         Register(unsigned int peripheralIndex, const PeripheralPtr& peripheral);
     void         UnregisterRemovedDevices(const PeripheralScanResults &results, PeripheralVector& removedPeripherals);
@@ -101,13 +107,12 @@ namespace PERIPHERALS
     void UnregisterButtonMap(KODI::JOYSTICK::IButtonMap* buttonMap);
     void RefreshButtonMaps(const std::string& strDeviceName = "");
 
-  protected:
     /*!
-     * @brief Request the API version from the add-on, and check if it's compatible
-     * @return True when compatible, false otherwise.
-     * @remark Implementation of CAddonDll
+     * @brief To get the interface table used between addon and kodi
+     * @todo This function becomes removed after old callback library system
+     * is removed.
      */
-    virtual bool CheckAPIVersion(void) override;
+    AddonInstance_Peripheral* GetInstanceInterface() { return &m_struct; }
 
   private:
     void UnregisterButtonMap(CPeripheral* device);
@@ -130,14 +135,6 @@ namespace PERIPHERALS
      */
     bool GetAddonProperties(void);
 
-    /*!
-     * @brief Checks whether the provided API version is compatible with XBMC
-     * @param minVersion The add-on's XBMC_PERIPHERAL_MIN_API_VERSION version
-     * @param version The add-on's XBMC_PERIPHERAL_API_VERSION version
-     * @return True when compatible, false otherwise
-     */
-    static bool IsCompatibleAPIVersion(const ADDON::AddonVersion &minVersion, const ADDON::AddonVersion &version);
-
     bool LogError(const PERIPHERAL_ERROR error, const char *strMethod) const;
 
     static std::string GetDeviceName(PeripheralType type);
@@ -147,8 +144,16 @@ namespace PERIPHERALS
     std::string         m_strUserPath;    /*!< @brief translated path to the user profile */
     std::string         m_strClientPath;  /*!< @brief translated path to this add-on */
 
+    /*!
+     * @brief Callback functions from addon to kodi
+     */
+    //@{
+    static void cb_trigger_scan(void* kodiInstance);
+    static void cb_refresh_button_maps(void* kodiInstance, const char* deviceName, const char* controllerId);
+    static unsigned int cb_feature_count(void* kodiInstance, const char* controllerId, JOYSTICK_FEATURE_TYPE type);
+    //@}
+
     /* @brief Add-on properties */
-    ADDON::AddonVersion m_apiVersion;
     bool                m_bProvidesJoysticks;
     bool                m_bSupportsJoystickRumble;
     bool                m_bSupportsJoystickPowerOff;
@@ -164,7 +169,8 @@ namespace PERIPHERALS
     /* @brief Thread synchronization */
     CCriticalSection    m_critSection;
     
-    PERIPHERAL_PROPERTIES m_info;
-    KodiToAddonFuncTable_Peripheral m_struct;
+    AddonInstance_Peripheral m_struct;
+
+    CSharedSection      m_dllSection;
   };
 }

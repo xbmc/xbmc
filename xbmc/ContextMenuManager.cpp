@@ -24,6 +24,7 @@
 #include "addons/ContextMenuAddon.h"
 #include "addons/ContextMenus.h"
 #include "addons/IAddon.h"
+#include "favourites/ContextMenus.h"
 #include "music/ContextMenus.h"
 #include "pvr/PVRContextMenus.h"
 #include "video/ContextMenus.h"
@@ -83,6 +84,9 @@ void CContextMenuManager::Init()
       std::make_shared<CONTEXTMENU::CMarkUnWatched>(),
       std::make_shared<CONTEXTMENU::CEjectDisk>(),
       std::make_shared<CONTEXTMENU::CEjectDrive>(),
+      std::make_shared<CONTEXTMENU::CRemoveFavourite>(),
+      std::make_shared<CONTEXTMENU::CRenameFavourite>(),
+      std::make_shared<CONTEXTMENU::CChooseThumbnailForFavourite>(),
   };
 
   ReloadAddonItems();
@@ -115,25 +119,6 @@ void CContextMenuManager::ReloadAddonItems()
   CLog::Log(LOGDEBUG, "ContextMenuManager: addon menus reloaded.");
 }
 
-bool CContextMenuManager::Unload(const CContextMenuAddon& addon)
-{
-  CSingleLock lock(m_criticalSection);
-
-  const auto menuItems = addon.GetItems();
-
-  auto it = std::remove_if(m_addonItems.begin(), m_addonItems.end(),
-    [&](const CContextMenuItem& item)
-    {
-      if (item.IsGroup())
-        return false; //keep in case other items use them
-      return std::find(menuItems.begin(), menuItems.end(), item) != menuItems.end();
-    }
-  );
-  m_addonItems.erase(it, m_addonItems.end());
-  CLog::Log(LOGDEBUG, "ContextMenuManager: %s unloaded.", addon.ID().c_str());
-  return true;
-}
-
 void CContextMenuManager::OnEvent(const ADDON::AddonEvent& event)
 {
   if (typeid(event) == typeid(AddonEvents::InstalledChanged))
@@ -154,6 +139,14 @@ void CContextMenuManager::OnEvent(const ADDON::AddonEvent& event)
           m_addonItems.push_back(item);
       }
       CLog::Log(LOGDEBUG, "ContextMenuManager: loaded %s.", enableEvent->id.c_str());
+    }
+  }
+  else if (auto disableEvent = dynamic_cast<const AddonEvents::Disabled*>(&event))
+  {
+    AddonPtr addon;
+    if (m_addonMgr.GetAddon(disableEvent->id, addon, ADDON_CONTEXT_ITEM, false))
+    {
+      ReloadAddonItems();
     }
   }
 }

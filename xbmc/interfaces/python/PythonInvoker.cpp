@@ -20,6 +20,7 @@
 
 // python.h should always be included first before any other includes
 #include <Python.h>
+#include <iterator>
 #include <osdefs.h>
 
 #include "system.h"
@@ -95,9 +96,28 @@ static const std::string getListOfAddonClassesAsString(XBMCAddon::AddonClass::Re
   return message;
 }
 
+static std::vector<std::vector<char>> storeArgumentsCCompatible(std::vector<std::string> const & input)
+{
+  std::vector<std::vector<char>> output;
+  std::transform(input.begin(), input.end(), std::back_inserter(output),
+                [](std::string const & i) { return std::vector<char>(i.c_str(), i.c_str() + i.length() + 1); });
+
+  if (output.empty())
+    output.push_back(std::vector<char>(1u, '\0'));
+
+  return output;
+}
+
+static std::vector<char *> getCPointersToArguments(std::vector<std::vector<char>> & input)
+{
+  std::vector<char *> output;
+  std::transform(input.begin(), input.end(), std::back_inserter(output), 
+                [](std::vector<char> & i) { return &i[0]; });
+  return output;
+}
+
 CPythonInvoker::CPythonInvoker(ILanguageInvocationHandler *invocationHandler)
   : ILanguageInvoker(invocationHandler),
-    m_argc(0), m_argv(NULL),
     m_threadState(NULL), m_stop(false)
 { }
 
@@ -114,12 +134,6 @@ CPythonInvoker::~CPythonInvoker()
   Stop(true);
   pulseGlobalEvent();
 
-  if (m_argv != NULL)
-  {
-    for (unsigned int i = 0; i < m_argc; i++)
-      delete [] m_argv[i];
-    delete [] m_argv;
-  }
   onExecutionFinalized();
 }
 
@@ -146,13 +160,9 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
   m_sourceFile = script;
 
   // copy the arguments into a local buffer
-  m_argc = arguments.size();
-  m_argv = new char*[m_argc];
-  for (unsigned int i = 0; i < m_argc; i++)
-  {
-    m_argv[i] = new char[arguments.at(i).length() + 1];
-    strcpy(m_argv[i], arguments.at(i).c_str());
-  }
+  unsigned int argc = arguments.size();
+  std::vector<std::vector<char>> argvStorage = storeArgumentsCCompatible(arguments);
+  std::vector<char *> argv = getCPointersToArguments(argvStorage);
 
   CLog::Log(LOGDEBUG, "CPythonInvoker(%d, %s): start processing", GetId(), m_sourceFile.c_str());
 
@@ -227,8 +237,7 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
   Py_DECREF(sysMod); // release ref to sysMod
 
   // set current directory and python's path.
-  if (m_argv != NULL)
-    PySys_SetArgv(m_argc, m_argv);
+  PySys_SetArgv(argc, &argv[0]);
 
 #ifdef TARGET_WINDOWS
   std::string pyPathUtf8;
@@ -569,6 +578,9 @@ void CPythonInvoker::onPythonModuleInitialization(void* moduleDict)
   PyObject *pyxbmcapiversion = PyString_FromString(version.asString().c_str());
   PyDict_SetItemString(moduleDictionary, "__xbmcapiversion__", pyxbmcapiversion);
 
+  PyObject *pyinvokerid = PyLong_FromLong(GetId());
+  PyDict_SetItemString(moduleDictionary, "__xbmcinvokerid__", pyinvokerid);
+
   CLog::Log(LOGDEBUG, "CPythonInvoker(%d, %s): instantiating addon using automatically obtained id of \"%s\" dependent on version %s of the xbmc.python api",
             GetId(), m_sourceFile.c_str(), m_addon->ID().c_str(), version.asString().c_str());
 }
@@ -583,7 +595,7 @@ void CPythonInvoker::onError(const std::string &exceptionType /* = "" */, const 
   CPyThreadState releaseGil;
   CSingleLock gc(g_graphicsContext);
 
-  CGUIDialogKaiToast *pDlgToast = (CGUIDialogKaiToast*)g_windowManager.GetWindow(WINDOW_DIALOG_KAI_TOAST);
+  CGUIDialogKaiToast *pDlgToast = g_windowManager.GetWindow<CGUIDialogKaiToast>(WINDOW_DIALOG_KAI_TOAST);
   if (pDlgToast != NULL)
   {
     std::string message;

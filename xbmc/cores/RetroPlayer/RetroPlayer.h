@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2012-2016 Team Kodi
+ *      Copyright (C) 2012-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -30,7 +30,9 @@
 
 class CProcessInfo;
 
-namespace GAME
+namespace KODI
+{
+namespace RETRO
 {
   class CRetroPlayerAudio;
   class CRetroPlayerVideo;
@@ -106,7 +108,6 @@ namespace GAME
     virtual bool GetStreamDetails(CStreamDetails &details) override;
     virtual void SetSpeed(float speed) override;
     virtual float GetSpeed() override;
-    //virtual bool SkipNext() override { return false; }
     //virtual bool IsCaching() const override { return false; }
     //virtual int GetCacheLevel() const override { return -1; }
     //virtual bool IsInMenu() const override { return false; }
@@ -155,7 +156,8 @@ namespace GAME
     std::unique_ptr<CProcessInfo>      m_processInfo;
     std::unique_ptr<CRetroPlayerAudio> m_audio;
     std::unique_ptr<CRetroPlayerVideo> m_video;
-    GameClientPtr                      m_gameClient;
+    GAME::GameClientPtr                m_gameClient;
     CCriticalSection                   m_mutex;
   };
+}
 }

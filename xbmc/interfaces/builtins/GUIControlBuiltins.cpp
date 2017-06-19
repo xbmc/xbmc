@@ -21,7 +21,7 @@
 #include "GUIControlBuiltins.h"
 
 #include "guilib/GUIWindowManager.h"
-#include "input/ButtonTranslator.h"
+#include "input/WindowTranslator.h"
 #include "utils/StringUtils.h"
 
 /*! \brief Send a move event to a GUI control.
@@ -48,7 +48,7 @@ static int SendClick(const std::vector<std::string>& params)
   if (params.size() == 2)
   {
     // have a window - convert it
-    int windowID = CButtonTranslator::TranslateWindow(params[0]);
+    int windowID = CWindowTranslator::TranslateWindow(params[0]);
     CGUIMessage message(GUI_MSG_CLICKED, atoi(params[1].c_str()), windowID);
     g_windowManager.SendMessage(message);
   }
@@ -70,7 +70,7 @@ static int SendClick(const std::vector<std::string>& params)
 static int SendMessage(const std::vector<std::string>& params)
 {
   int controlID = atoi(params[0].c_str());
-  int windowID = (params.size() == 3) ? CButtonTranslator::TranslateWindow(params[2]) : g_windowManager.GetActiveWindow();
+  int windowID = (params.size() == 3) ? CWindowTranslator::TranslateWindow(params[2]) : g_windowManager.GetActiveWindow();
   if (params[1] == "moveup")
     g_windowManager.SendMessage(GUI_MSG_MOVE_OFFSET, windowID, controlID, 1);
   else if (params[1] == "movedown")

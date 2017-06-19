@@ -23,20 +23,28 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "events/EventLog.h"
 #include "events/NotificationEvent.h"
+#include "interfaces/AnnouncementManager.h"
 
+#include "PlayListPlayer.h"
 #include "pvr/PVRGUIActions.h"
+#include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClients.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/recordings/PVRRecordings.h"
+#include "pvr/timers/PVRTimers.h"
+#include "ServiceBroker.h"
 
 namespace PVR
 {
 
 bool CPVRSetRecordingOnChannelJob::DoWork()
 {
-  return CPVRGUIActions::GetInstance().SetRecordingOnChannel(m_channel, m_bOnOff);
+  return CServiceBroker::GetPVRManager().GUIActions()->SetRecordingOnChannel(m_channel, m_bOnOff);
 }
 
 bool CPVRContinueLastChannelJob::DoWork()
 {
-  return CPVRGUIActions::GetInstance().ContinueLastPlayedChannel();
+  return CServiceBroker::GetPVRManager().GUIActions()->ContinueLastPlayedChannel();
 }
 
 CPVREventlogJob::CPVREventlogJob(bool bNotifyUser, bool bError, const std::string &label, const std::string &msg, const std::string &icon)
@@ -62,6 +70,50 @@ bool CPVREventlogJob::DoWork()
       EventPtr(new CNotificationEvent(event.m_label, event.m_msg, event.m_icon, event.m_bError ? EventLevel::Error : EventLevel::Information)));
   }
   return true;
+}
+
+bool CPVRSearchMissingChannelIconsJob::DoWork(void)
+{
+  CServiceBroker::GetPVRManager().SearchMissingChannelIcons();
+  return true;
+}
+
+bool CPVRClientConnectionJob::DoWork(void)
+{
+  CServiceBroker::GetPVRManager().Clients()->ConnectionStateChange(m_client, m_connectString, m_state, m_message);
+  return true;
+}
+
+bool CPVRStartupJob::DoWork(void)
+{
+  CServiceBroker::GetPVRManager().Clients()->Start();
+  return true;
+}
+
+bool CPVREpgsCreateJob::DoWork(void)
+{
+  return CServiceBroker::GetPVRManager().CreateChannelEpgs();
+}
+
+bool CPVRRecordingsUpdateJob::DoWork(void)
+{
+  CServiceBroker::GetPVRManager().Recordings()->Update();
+  return true;
+}
+
+bool CPVRTimersUpdateJob::DoWork(void)
+{
+  return CServiceBroker::GetPVRManager().Timers()->Update();
+}
+
+bool CPVRChannelsUpdateJob::DoWork(void)
+{
+  return CServiceBroker::GetPVRManager().ChannelGroups()->Update(true);
+}
+
+bool CPVRChannelGroupsUpdateJob::DoWork(void)
+{
+  return CServiceBroker::GetPVRManager().ChannelGroups()->Update(false);
 }
 
 } // namespace PVR

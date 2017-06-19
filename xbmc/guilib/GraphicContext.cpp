@@ -38,7 +38,7 @@ using namespace KODI::MESSAGING;
 extern bool g_fullScreen;
 
 /* quick access to a skin setting, fine unless we starts clearing video settings */
-static CSettingInt* g_guiSkinzoom = NULL;
+static std::shared_ptr<CSettingInt> g_guiSkinzoom;
 
 CGraphicContext::CGraphicContext(void) :
   m_iScreenHeight(576),
@@ -67,7 +67,7 @@ CGraphicContext::~CGraphicContext(void)
 {
 }
 
-void CGraphicContext::OnSettingChanged(const CSetting *setting)
+void CGraphicContext::OnSettingChanged(std::shared_ptr<const CSetting> setting)
 {
   if (setting == NULL)
     return;
@@ -736,7 +736,7 @@ void CGraphicContext::GetGUIScaling(const RESOLUTION_INFO &res, float &scaleX, f
     float fToHeight   = (float)info.Overscan.bottom - fToPosY;
 
     if(!g_guiSkinzoom) // lookup gui setting if we didn't have it already
-      g_guiSkinzoom = (CSettingInt*)CServiceBroker::GetSettings().GetSetting(CSettings::SETTING_LOOKANDFEEL_SKINZOOM);
+      g_guiSkinzoom = std::static_pointer_cast<CSettingInt>(CServiceBroker::GetSettings().GetSetting(CSettings::SETTING_LOOKANDFEEL_SKINZOOM));
 
     float fZoom = 1.0f;
     if(g_guiSkinzoom)

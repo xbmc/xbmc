@@ -19,6 +19,7 @@
 */
 
 #include "ReplayGain.h"
+#include "utils/StringUtils.h"
 #include <stdlib.h>
 
 static bool TypeIsValid(ReplayGain::Type aType)
@@ -72,6 +73,35 @@ void ReplayGain::SetPeak(Type aType, float aPeak)
 {
   if (TypeIsValid(aType))
     m_data[index(aType)].SetPeak(aPeak);
+}
+
+std::string ReplayGain::Get() const
+{
+  if (!Get(ALBUM).Valid() && !Get(TRACK).Valid())
+    return std::string();
+
+  std::string rg;
+  if (Get(ALBUM).Valid())
+    rg = StringUtils::Format("{:.3f},{:.3f},", Get(ALBUM).Gain(), Get(ALBUM).Peak());
+  else
+    rg = "-1000, -1,";
+  if (Get(TRACK).Valid())
+    rg += StringUtils::Format("{:.3f},{:.3f}", Get(TRACK).Gain(), Get(TRACK).Peak());
+  else
+    rg += "-1000, -1";
+  return rg;
+}
+
+void ReplayGain::Set(const std::string& strReplayGain)
+{
+  std::vector<std::string> values = StringUtils::Split(strReplayGain, ",");
+  if (values.size() == 4)
+  {
+    ParseGain(ALBUM, values[0]);
+    ParsePeak(ALBUM, values[1]);
+    ParseGain(TRACK, values[2]);
+    ParsePeak(TRACK, values[3]);
+  }
 }
 
 ///////////////////////////////////////////////////////////////

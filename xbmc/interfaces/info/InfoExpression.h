@@ -34,7 +34,7 @@ namespace INFO
 class InfoSingle : public InfoBool
 {
 public:
-  InfoSingle(const std::string &condition, int context);
+  InfoSingle(const std::string &condition, int context, unsigned int& refreshCounter);
   virtual ~InfoSingle() {};
 
   virtual void Update(const CGUIListItem *item);
@@ -47,7 +47,7 @@ private:
 class InfoExpression : public InfoBool
 {
 public:
-  InfoExpression(const std::string &expression, int context);
+  InfoExpression(const std::string &expression, int context, unsigned int& refreshCounter);
   virtual ~InfoExpression() {};
 
   virtual void Update(const CGUIListItem *item);

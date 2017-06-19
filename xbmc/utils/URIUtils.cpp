@@ -215,6 +215,17 @@ void URIUtils::Split(const std::string& strFileNameAndPath,
   strPath = strFileNameAndPath.substr(0, i+1);
   // everything to the right of the directory separator
   strFileName = strFileNameAndPath.substr(i+1);
+
+  // ignore options
+  i = strFileName.size() - 1;
+  while (i > 0)
+  {
+    char ch = strFileName[i];
+    if (ch == '?') break;
+    else i--;
+  }
+  if (i > 0)
+    strFileName = strFileName.substr(0, i);
 }
 
 std::vector<std::string> URIUtils::SplitPath(const std::string& strPath)
@@ -1250,7 +1261,7 @@ CURL URIUtils::CreateArchivePath(const std::string& type,
 
   /* NOTE: on posix systems, the replacement of \ with / is incorrect.
      Ideally this would not be done. We need to check that the ZipManager
-     and RarManager code (and elsewhere) doesn't pass in non-posix paths.
+     code (and elsewhere) doesn't pass in non-posix paths.
    */
   std::string strBuffer(pathInArchive);
   StringUtils::Replace(strBuffer, '\\', '/');

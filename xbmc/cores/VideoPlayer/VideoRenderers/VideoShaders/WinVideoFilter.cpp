@@ -45,10 +45,10 @@ CYUV2RGBMatrix::CYUV2RGBMatrix()
   m_contrast = 0.0f;
   m_flags = 0;
   m_limitedRange = false;
-  m_format = RENDER_FMT_NONE;
+  m_format = SHADER_NONE;
 }
 
-void CYUV2RGBMatrix::SetParameters(float contrast, float blacklevel, unsigned int flags, ERenderFormat format)
+void CYUV2RGBMatrix::SetParameters(float contrast, float blacklevel, unsigned int flags, EShaderFormat format)
 {
   if (m_contrast != contrast)
   {
@@ -247,7 +247,7 @@ bool CWinShader::Execute(std::vector<ID3D11RenderTargetView*> *vecRT, unsigned i
 
 //==================================================================================
 
-bool CYUV2RGBShader::Create(unsigned int sourceWidth, unsigned int sourceHeight, ERenderFormat fmt)
+bool CYUV2RGBShader::Create(unsigned int sourceWidth, unsigned int sourceHeight, EShaderFormat fmt)
 {
   CWinShader::CreateVertexBuffer(4, sizeof(CUSTOMVERTEX));
 
@@ -261,24 +261,24 @@ bool CYUV2RGBShader::Create(unsigned int sourceWidth, unsigned int sourceHeight,
 
   switch (fmt)
   {
-  case RENDER_FMT_YUV420P:
-  case RENDER_FMT_YUV420P10:
-  case RENDER_FMT_YUV420P16:
+  case SHADER_YV12:
+  case SHADER_YV12_10:
+  case SHADER_YV12_16:
     defines["XBMC_YV12"] = "";
     texWidth = sourceWidth;
     break;
-  case RENDER_FMT_NV12:
+  case SHADER_NV12:
     defines["XBMC_NV12"] = "";
     texWidth = sourceWidth;
     // FL 9.x doesn't support DXGI_FORMAT_R8G8_UNORM, so we have to use SNORM and correct values in shader
     if (!g_Windowing.IsFormatSupport(DXGI_FORMAT_R8G8_UNORM, D3D11_FORMAT_SUPPORT_TEXTURE2D))
       defines["NV12_SNORM_UV"] = "";
     break;
-  case RENDER_FMT_UYVY422:
+  case SHADER_UYVY:
     defines["XBMC_UYVY"] = "";
     texWidth = sourceWidth >> 1;
     break;
-  case RENDER_FMT_YUYV422:
+  case SHADER_YUY2:
     defines["XBMC_YUY2"] = "";
     texWidth = sourceWidth >> 1;
     break;

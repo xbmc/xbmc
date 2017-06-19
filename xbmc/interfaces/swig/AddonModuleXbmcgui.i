@@ -21,6 +21,13 @@
 %module(directors="1") xbmcgui
 
 %{
+#if defined(TARGET_WINDOWS) || defined(TARGET_WIN10)
+#  if !defined(WIN32_LEAN_AND_MEAN)
+#    define WIN32_LEAN_AND_MEAN
+#  endif
+#  include <windows.h>
+#endif
+
 #include "interfaces/legacy/Dialog.h"
 #include "interfaces/legacy/ModuleXbmcgui.h"
 #include "interfaces/legacy/Control.h"
@@ -28,6 +35,7 @@
 #include "interfaces/legacy/WindowDialog.h"
 #include "interfaces/legacy/Dialog.h"
 #include "interfaces/legacy/WindowXML.h"
+#include "input/ActionIDs.h"
 #include "input/Key.h"
 
 using namespace XBMCAddon;
@@ -116,4 +124,5 @@ using namespace xbmcgui;
 
 %include "interfaces/legacy/WindowXML.h"
 
+%include "input/ActionIDs.h"
 %include "input/Key.h"

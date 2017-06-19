@@ -20,7 +20,6 @@
 
 #pragma once
 
-#if defined(HAVE_X11)
 #include "X11/Xlib.h"
 #include <string>
 
@@ -46,5 +45,3 @@ public:
 
   Display *m_dpy;
 };
-
-#endif

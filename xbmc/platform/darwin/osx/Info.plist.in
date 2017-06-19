@@ -22,6 +22,8 @@
 	<string>@APP_VERSION_MAJOR@.@APP_VERSION_MINOR@.@APP_VERSION_TAG_LC@</string>
 	<key>CFBundleVersion</key>
 	<string>r####</string>
+	<key>LSMinimumSystemVersion</key>
+	<string>@CMAKE_OSX_DEPLOYMENT_TARGET@</string>
 	<key>CFBundleSignature</key>
 	<string>@APP_NAME@</string>
 	<key>CFBundleDocumentTypes</key>

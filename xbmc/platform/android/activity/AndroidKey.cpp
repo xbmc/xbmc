@@ -19,11 +19,13 @@
  */
 
 #include "AndroidKey.h"
+
+#include <androidjni/KeyCharacterMap.h>
+
 #include "AndroidExtra.h"
 #include "XBMCApp.h"
 #include "input/Key.h"
 #include "windowing/WinEvents.h"
-#include "platform/android/jni/KeyCharacterMap.h"
 
 
 typedef struct {
@@ -116,10 +118,11 @@ static KeyMap keyMap[] = {
   { AKEYCODE_PLUS            , XBMCK_PLUS },
   { AKEYCODE_MENU            , XBMCK_MENU },
   { AKEYCODE_NOTIFICATION    , XBMCK_LAST },
-  { AKEYCODE_SEARCH          , XBMCK_LAST },
   { AKEYCODE_MUTE            , XBMCK_LAST },
   { AKEYCODE_PAGE_UP         , XBMCK_PAGEUP },
   { AKEYCODE_PAGE_DOWN       , XBMCK_PAGEDOWN },
+  { AKEYCODE_MOVE_HOME       , XBMCK_HOME },
+  { AKEYCODE_MOVE_END        , XBMCK_END },
   { AKEYCODE_PICTSYMBOLS     , XBMCK_LAST },
   { AKEYCODE_SWITCH_CHARSET  , XBMCK_LAST },
   { AKEYCODE_BUTTON_A        , XBMCK_LAST },
@@ -180,7 +183,12 @@ static KeyMap MediakeyMap[] = {
   { AKEYCODE_MEDIA_EJECT     , XBMCK_EJECT },
 };
 
+static KeyMap SearchkeyMap[] = {
+  { AKEYCODE_SEARCH          , XBMCK_BROWSER_SEARCH },
+};
+
 bool CAndroidKey::m_handleMediaKeys = false;
+bool CAndroidKey::m_handleSearchKeys = false;
 
 bool CAndroidKey::onKeyboardEvent(AInputEvent *event)
 {
@@ -196,8 +204,10 @@ bool CAndroidKey::onKeyboardEvent(AInputEvent *event)
   int32_t keycode = AKeyEvent_getKeyCode(event);
 
   int32_t deviceId = AInputEvent_getDeviceId(event);
+  uint16_t unicode = 0;
   CJNIKeyCharacterMap map = CJNIKeyCharacterMap::load(deviceId);
-  uint16_t unicode = map.get(keycode, state);
+  if (map)
+    unicode = map.get(keycode, state);
 
   // Check if we got some special key
   uint16_t sym = XBMCK_UNKNOWN;
@@ -222,6 +232,18 @@ bool CAndroidKey::onKeyboardEvent(AInputEvent *event)
     if (sym != XBMCK_UNKNOWN)
     {
       ret = m_handleMediaKeys;
+    }
+  }
+
+  if (sym == XBMCK_UNKNOWN && m_handleSearchKeys)
+  {
+    for (unsigned int index = 0; index < sizeof(SearchkeyMap) / sizeof(KeyMap); index++)
+    {
+      if (keycode == SearchkeyMap[index].nativeKey)
+      {
+        sym = SearchkeyMap[index].xbmcKey;
+        break;
+      }
     }
   }
 
@@ -307,7 +329,6 @@ void CAndroidKey::XBMC_Key(uint8_t code, uint16_t key, uint16_t modifiers, uint1
 
   unsigned char type = up ? XBMC_KEYUP : XBMC_KEYDOWN;
   newEvent.type = type;
-  newEvent.key.type = type;
   newEvent.key.keysym.scancode = code;
   newEvent.key.keysym.sym = (XBMCKey)key;
   newEvent.key.keysym.unicode = unicode;

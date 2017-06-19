@@ -25,6 +25,8 @@
 #include <vector>
 #include <utility>
 
+namespace KODI
+{
 namespace GAME
 {
   class CGUIDialogAxisDetection : public CGUIDialogButtonCapture
@@ -35,15 +37,15 @@ namespace GAME
     virtual ~CGUIDialogAxisDetection() = default;
 
     // specialization of IButtonMapper via CGUIDialogButtonCapture
-    void OnLateAxis(const KODI::JOYSTICK::IButtonMap* buttonMap, unsigned int axisIndex) override;
+    void OnLateAxis(const JOYSTICK::IButtonMap* buttonMap, unsigned int axisIndex) override;
 
   protected:
     // implementation of CGUIDialogButtonCapture
     virtual std::string GetDialogText() override;
     virtual std::string GetDialogHeader() override;
-    virtual bool MapPrimitiveInternal(KODI::JOYSTICK::IButtonMap* buttonMap,
-                                      KODI::JOYSTICK::IActionMap* actionMap,
-                                      const KODI::JOYSTICK::CDriverPrimitive& primitive) override;
+    virtual bool MapPrimitiveInternal(JOYSTICK::IButtonMap* buttonMap,
+                                      JOYSTICK::IActionMap* actionMap,
+                                      const JOYSTICK::CDriverPrimitive& primitive) override;
     virtual void OnClose(bool bAccepted) override { }
 
   private:
@@ -58,4 +60,5 @@ namespace GAME
     // Axis detection
     AxisVector m_detectedAxes;
   };
+}
 }

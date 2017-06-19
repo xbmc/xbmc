@@ -264,7 +264,7 @@
 		<value condition="Window.IsActive(visualisation) + Integer.IsGreater(Playlist.Length,1)">$LOCALIZE[554] $INFO[Playlist.Position] / $INFO[Playlist.Length]</value>
 		<value condition="VideoPlayer.Content(musicvideos)">$INFO[VideoPlayer.Artist]$INFO[VideoPlayer.Album, - ]</value>
 		<value condition="VideoPlayer.Content(episodes)">$INFO[VideoPlayer.Season,[COLOR button_focus]S,[/COLOR]]$INFO[VideoPlayer.Episode,[COLOR button_focus]E,: [/COLOR]]$INFO[VideoPlayer.TVShowTitle]</value>
-		<value condition="VideoPlayer.Content(LiveTV) | PVR.IsPlayingRecording">$INFO[VideoPlayer.ChannelNumberLabel,([COLOR=blue],[/COLOR]) ]$INFO[VideoPlayer.ChannelName]</value>
+		<value condition="VideoPlayer.Content(LiveTV) | PVR.IsPlayingRecording">$INFO[VideoPlayer.ChannelNumberLabel,([COLOR=blue],[/COLOR]) ]$INFO[VideoPlayer.ChannelName] $INFO[VideoPlayer.EpisodeName, - ]</value>
 		<value>$INFO[VideoPlayer.Genre]</value>
 	</variable>
 	<variable name="AddonsFanartVar">
@@ -353,6 +353,10 @@
 	<variable name="PVRChannelMgrHeader">
 		<value condition="!String.IsEmpty(Window.Property(IsRadio))">$LOCALIZE[19199] - $LOCALIZE[19024]</value>
 		<value>$LOCALIZE[19199] - $LOCALIZE[19023]</value>
+	</variable>
+	<variable name="PVRGroupMgrHeader">
+		<value condition="!String.IsEmpty(Window.Property(IsRadio))">$LOCALIZE[19048] - $LOCALIZE[19174]</value>
+		<value>$LOCALIZE[19048] - $LOCALIZE[19173]</value>
 	</variable>
 	<variable name="PVRAreaVar">
 		<value condition="Control.HasFocus(100)">$LOCALIZE[19019]</value>

@@ -29,50 +29,33 @@
  * a EPG entry by giving the EPG information tag or as instant timer
  * on currently tuned channel, or give a blank tag to modify later.
  *
- * With exception of the blank one, the tag can easily and unmodified added
- * by the PVRManager function "bool AddTimer(const CFileItem &item)" to
- * the backend server.
- *
  * The filename inside the tag is for reference only and gives the index
  * number of the tag reported by the PVR backend and can not be played!
  */
 
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
-#include "epg/EpgTypes.h"
 #include "pvr/PVRTypes.h"
 #include "pvr/timers/PVRTimerType.h"
 #include "threads/CriticalSection.h"
 #include "utils/ISerializable.h"
 #include "XBDateTime.h"
 
-class CFileItem;
 class CVariant;
 
 namespace PVR
 {
-  class CGUIDialogPVRTimerSettings;
-  class CPVRTimers;
-  class CPVRChannelGroupInternal;
-
   class CPVRTimerInfoTag : public ISerializable
   {
-    friend class CPVRTimers;
-
   public:
     CPVRTimerInfoTag(bool bRadio = false);
     CPVRTimerInfoTag(const PVR_TIMER &timer, const CPVRChannelPtr &channel, unsigned int iClientId);
 
-  private:
-    CPVRTimerInfoTag(const CPVRTimerInfoTag &tag); // intentionally not implemented.
-    CPVRTimerInfoTag &operator=(const CPVRTimerInfoTag &orig); // intentionally not implemented.
-
-  public:
     virtual ~CPVRTimerInfoTag(void);
 
     bool operator ==(const CPVRTimerInfoTag& right) const;
     bool operator !=(const CPVRTimerInfoTag& right) const;
 
-    virtual void Serialize(CVariant &value) const;
+    void Serialize(CVariant &value) const override;
 
     void UpdateSummary(void);
 
@@ -97,14 +80,14 @@ namespace PVR
      * @param bCreateRule if true, create a timer rule, create a one shot timer otherwise
      * @return the timer or null if timer could not be created
      */
-    static CPVRTimerInfoTagPtr CreateFromEpg(const EPG::CEpgInfoTagPtr &tag, bool bCreateRule = false);
+    static CPVRTimerInfoTagPtr CreateFromEpg(const CPVREpgInfoTagPtr &tag, bool bCreateRule = false);
 
     /*!
      * @brief get the epg info tag associated with this timer, if any
      * @param bCreate if true, try to find the epg tag if not yet set (lazy evaluation)
      * @return the epg info tag associated with this timer or null if there is no tag
      */
-    EPG::CEpgInfoTagPtr GetEpgInfoTag(bool bCreate = true) const;
+    CPVREpgInfoTagPtr GetEpgInfoTag(bool bCreate = true) const;
 
     int ChannelNumber(void) const;
     std::string ChannelName(void) const;
@@ -214,6 +197,12 @@ namespace PVR
     const std::string& Summary(void) const;
     const std::string& Path(void) const;
 
+    /*!
+     * @brief Get the UID of the epg event associated with this timer tag, if any.
+     * @return the UID or EPG_TAG_INVALID_UID.
+     */
+    unsigned int UniqueBroadcastID() const { return m_iEpgUid; }
+
     /* Client control functions */
     bool AddToClient() const;
     bool DeleteFromClient(bool bForce = false) const;
@@ -224,7 +213,7 @@ namespace PVR
      * @brief Associate the given epg tag with this timer; before, clear old timer at associated epg tag, if any.
      * @param tag The epg tag to assign.
      */
-    void SetEpgTag(const EPG::CEpgInfoTagPtr &tag);
+    void SetEpgTag(const CPVREpgInfoTagPtr &tag);
 
     /*!
      * @brief Clear the epg tag associated with this timer; before, clear this timer at associated epg tag, if any.
@@ -280,6 +269,9 @@ namespace PVR
     unsigned int          m_iMarginEnd;          /*!< @brief (optional) if set, the backend ends the recording iMarginEnd minutes after endTime. */
 
   private:
+    CPVRTimerInfoTag(const CPVRTimerInfoTag &tag) = delete;
+    CPVRTimerInfoTag &operator=(const CPVRTimerInfoTag &orig) = delete;
+
     std::string GetWeekdaysString() const;
     void UpdateEpgInfoTag(void);
 
@@ -295,6 +287,6 @@ namespace PVR
     bool                  m_bHasChildErrors;      /*!< @brief Has at least one child timer with status PVR_TIMER_STATE_ERROR */
 
     mutable unsigned int  m_iEpgUid;   /*!< id of epg event associated with this timer, EPG_TAG_INVALID_UID if none. */
-    mutable EPG::CEpgInfoTagPtr m_epgTag; /*!< epg info tag matching m_iEpgUid. */
+    mutable CPVREpgInfoTagPtr m_epgTag; /*!< epg info tag matching m_iEpgUid. */
   };
 }

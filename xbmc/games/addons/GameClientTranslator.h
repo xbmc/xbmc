@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2016 Team Kodi
+ *      Copyright (C) 2016-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -26,6 +26,8 @@
 #include "libavcodec/avcodec.h"
 #include "libavutil/pixfmt.h"
 
+namespace KODI
+{
 namespace GAME
 {
   /*!
@@ -102,4 +104,5 @@ namespace GAME
      */
     static const char* TranslateRegion(GAME_REGION region);
   };
+}
 }

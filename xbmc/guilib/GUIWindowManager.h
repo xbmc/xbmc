@@ -30,6 +30,7 @@
 
 #include <list>
 #include <utility>
+#include <unordered_map>
 #include <vector>
 
 #include "DirtyRegionTracker.h"
@@ -64,8 +65,8 @@ class CGUIWindowManager : public KODI::MESSAGING::IMessageTarget
   friend CGUIDialog;
   friend CGUIMediaWindow;
 public:
-  CGUIWindowManager(void);
-  virtual ~CGUIWindowManager(void);
+  CGUIWindowManager();
+  virtual ~CGUIWindowManager();
   bool SendMessage(CGUIMessage& message);
   bool SendMessage(int message, int senderID, int destID, int param1 = 0, int param2 = 0);
   bool SendMessage(CGUIMessage& message, int window);
@@ -104,10 +105,6 @@ public:
    */
   void MarkDirty(const CRect& rect);
 
-  /*! \brief Get the current dirty region
-   */
-  CDirtyRegionList GetDirty() { return m_tracker.GetDirtyRegions(); }
-
   /*! \brief Rendering of the current window and any dialogs
    Render is called every frame to draw the current window and any dialogs.
    It should only be called from the application thread.
@@ -144,7 +141,36 @@ public:
   */
   bool DestroyWindows();
 
+  /*! \brief Destroy and remove the window or dialog with the given id
+   *
+   *\param id the window id
+   */
+  void DestroyWindow(int id);
+
+  /*! \brief Return the window of type \code{T} with the given id or
+   * null if no window exists with the given id.
+   *
+   * \tparam T the window class type
+   * \param id the window id
+   * \return the window with for the given type \code{T} or null
+   */
+  template<typename T, typename std::enable_if<std::is_base_of<CGUIWindow,T>::value>::type* = nullptr>
+  T* GetWindow(int id) const { return dynamic_cast<T *>(GetWindow(id)); };
+
+  /*! \brief Return the window with the given id or null.
+   *
+   * \param id the window id
+   * \return the window with the given id or null
+   */
   CGUIWindow* GetWindow(int id) const;
+
+  /*! \brief Return the dialog window with the given id or null.
+   *
+   * \param id the dialog window id
+   * \return the dialog window with the given id or null
+   */
+  CGUIDialog* GetDialog(int id) const;
+
   void SetCallback(IWindowManagerCallback& callback);
   void DeInitialize();
 
@@ -163,7 +189,7 @@ public:
   int RemoveThreadMessageByMessageIds(int *pMessageIDList);
   void AddMsgTarget( IMsgTargetCallback* pMsgTarget );
   int GetActiveWindow() const;
-  int GetActiveWindowID();
+  int GetActiveWindowID() const;
   int GetFocusedWindow() const;
   bool HasModalDialog(const std::vector<DialogModalityType>& types = std::vector<DialogModalityType>(), bool ignoreClosing = true) const;
   bool HasVisibleModalDialog(const std::vector<DialogModalityType>& types = std::vector<DialogModalityType>()) const;
@@ -184,7 +210,9 @@ public:
    * \return true if the given window is a python window, otherwise false.
    */
   bool IsPythonWindow(int id) const { return (id >= WINDOW_PYTHON_START && id <= WINDOW_PYTHON_END); };
-  void GetActiveModelessWindows(std::vector<int> &ids);
+
+  bool HasVisibleControls();
+
 #ifdef _DEBUG
   void DumpTextureUse();
 #endif
@@ -194,6 +222,15 @@ private:
   void LoadNotOnDemandWindows();
   void UnloadNotOnDemandWindows();
   void AddToWindowHistory(int newWindowID);
+
+  /*!
+   \brief Check if the given window id is in the window history, and if so, remove this
+    window and all overlying windows from the history so that we always have a predictable
+    "Back" behaviour for each window.
+
+   \param windowID the window id to remove from the window history
+   */
+  void RemoveFromWindowHistory(int windowID);
   void ClearWindowHistory();
   void CloseWindowSync(CGUIWindow *window, int nextWindowID = 0);
   CGUIWindow *GetTopMostDialog() const;
@@ -211,53 +248,23 @@ private:
 
   void ProcessRenderLoop(bool renderOnly = false);
 
-  typedef std::map<int, CGUIWindow *> WindowMap;
-  WindowMap m_mapWindows;
-  std::vector <CGUIWindow*> m_vecCustomWindows;
-  std::vector <CGUIWindow*> m_activeDialogs;
-  std::vector <CGUIWindow*> m_deleteWindows;
-  typedef std::vector<CGUIWindow*>::iterator iDialog;
-  typedef std::vector<CGUIWindow*>::const_iterator ciDialog;
-  typedef std::vector<CGUIWindow*>::reverse_iterator rDialog;
-  typedef std::vector<CGUIWindow*>::const_reverse_iterator crDialog;
+  std::unordered_map<int, CGUIWindow*> m_mapWindows;
+  std::vector<CGUIWindow*> m_vecCustomWindows;
+  std::vector<CGUIWindow*> m_activeDialogs;
+  std::vector<CGUIWindow*> m_deleteWindows;
 
   std::stack<int> m_windowHistory;
 
   IWindowManagerCallback* m_pCallback;
-  std::list < std::pair<CGUIMessage*,int> > m_vecThreadMessages;
+  std::list< std::pair<CGUIMessage*,int> > m_vecThreadMessages;
   CCriticalSection m_critSection;
-  std::vector <IMsgTargetCallback*> m_vecMsgTargets;
+  std::vector<IMsgTargetCallback*> m_vecMsgTargets;
 
   int  m_iNested;
   bool m_initialized;
 
+  CDirtyRegionList m_dirtyregions;
   CDirtyRegionTracker m_tracker;
-
-private:
-  class CGUIWindowManagerIdCache
-  {
-  public:
-    CGUIWindowManagerIdCache(void) : m_id(WINDOW_INVALID), m_window(nullptr) {}
-    CGUIWindow *Get(int id)
-    {
-      if (id == m_id)
-        return m_window;
-      return NULL;
-    }
-    void Set(int id, CGUIWindow *window)
-    {
-      m_id = id;
-      m_window = window;
-    }
-    void Invalidate(void)
-    {
-      m_id = WINDOW_INVALID;
-    }
-  private:
-    int m_id;
-    CGUIWindow *m_window;
-  };
-  mutable CGUIWindowManagerIdCache m_idCache;
 };
 
 /*!

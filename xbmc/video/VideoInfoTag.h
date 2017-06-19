@@ -189,6 +189,17 @@ public:
   virtual bool IncrementPlayCount();
 
   /*!
+  * @brief Reset playcount
+  */
+  virtual void ResetPlayCount();
+
+  /*!
+  * @brief Check if the playcount is set
+  * @return True if play count value is set
+  */
+  virtual bool IsPlayCountSet() const;
+
+  /*!
    * @brief Get this videos's resume point.
    * @return the resume point.
    */
@@ -291,6 +302,7 @@ private:
 
   int m_playCount;
   CBookmark m_resumePoint;
+  static const int PLAYCOUNT_NOT_SET = -1;
 };
 
 typedef std::vector<CVideoInfoTag> VECMOVIES;

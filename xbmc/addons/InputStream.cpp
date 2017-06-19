@@ -33,25 +33,25 @@ namespace ADDON
 std::map<std::string, CInputStream::Config> CInputStream::m_configMap;
 CCriticalSection CInputStream::m_parentSection;
 
-std::unique_ptr<CInputStream> CInputStream::FromExtension(AddonProps props, const cp_extension_t* ext)
+std::unique_ptr<CInputStream> CInputStream::FromExtension(CAddonInfo addonInfo, const cp_extension_t* ext)
 {
   std::string listitemprops = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@listitemprops");
   std::string extensions = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@extension");
   std::string protocols = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@protocols");
   std::string name(ext->plugin->identifier);
-  std::unique_ptr<CInputStream> istr(new CInputStream(props, name, listitemprops,
+  std::unique_ptr<CInputStream> istr(new CInputStream(addonInfo, name, listitemprops,
                                                       extensions, protocols));
-  if (!CAddonMgr::GetInstance().IsAddonDisabled(props.id))
+  if (!CAddonMgr::GetInstance().IsAddonDisabled(addonInfo.ID()))
     istr->CheckConfig();
   return istr;
 }
 
-CInputStream::CInputStream(const AddonProps& props,
+CInputStream::CInputStream(const CAddonInfo& addonInfo,
                            const std::string& name,
                            const std::string& listitemprops,
                            const std::string& extensions,
                            const std::string& protocols)
-: CAddonDll(std::move(props))
+: CAddonDll(std::move(addonInfo))
 {
   m_fileItemProps = StringUtils::Tokenize(listitemprops, "|");
   for (auto &key : m_fileItemProps)
@@ -71,23 +71,16 @@ CInputStream::CInputStream(const AddonProps& props,
   {
     StringUtils::Trim(ext);
   }
+
+  memset(&m_struct, 0, sizeof(m_struct));
+  m_struct.toKodi.kodiInstance = this;
+  m_struct.toKodi.AllocateDemuxPacket = cb_allocate_demux_packet;
+  m_struct.toKodi.FreeDemuxPacket = cb_free_demux_packet;
 }
 
 bool CInputStream::Create()
 {
-  return CAddonDll::Create(&m_struct, &m_info) == ADDON_STATUS_OK;
-}
-
-bool CInputStream::CheckAPIVersion()
-{
-  std::string dllVersion = m_struct.GetApiVersion();
-  if (dllVersion.compare(INPUTSTREAM_API_VERSION) != 0)
-  {
-    CLog::Log(LOGERROR, "CInputStream::CheckAPIVersion - API version does not match");
-    return false;
-  }
-
-  return true;
+  return CAddonDll::Create(ADDON_INSTANCE_INPUTSTREAM, &m_struct, &m_struct.props) == ADDON_STATUS_OK;
 }
 
 void CInputStream::SaveSettings()
@@ -114,11 +107,11 @@ void CInputStream::CheckConfig()
 void CInputStream::UpdateConfig()
 {
   std::string pathList;
-  ADDON_STATUS status = CAddonDll::Create(&m_struct, &m_info);
+  ADDON_STATUS status = CAddonDll::Create(ADDON_INSTANCE_INPUTSTREAM, &m_struct, &m_struct.props);
 
   if (status != ADDON_STATUS_PERMANENT_FAILURE)
   {
-    pathList = m_struct.GetPathList();
+    pathList = m_struct.toAddon.GetPathList();
     Destroy();
   }
 
@@ -236,9 +229,9 @@ bool CInputStream::Open(CFileItem &fileitem)
   props.m_libFolder = libFolder.c_str();
   props.m_profileFolder = profileFolder.c_str();
 
-  bool ret = m_struct.Open(props);
+  bool ret = m_struct.toAddon.Open(props);
   if (ret)
-    m_caps = m_struct.GetCapabilities();
+    m_caps = m_struct.toAddon.GetCapabilities();
 
   UpdateStreams();
   return ret;
@@ -246,7 +239,7 @@ bool CInputStream::Open(CFileItem &fileitem)
 
 void CInputStream::Close()
 {
-  m_struct.Close();
+  m_struct.toAddon.Close();
 
   if (!m_bIsChild)
   {
@@ -260,18 +253,18 @@ void CInputStream::Close()
 // IDisplayTime
 int CInputStream::GetTotalTime()
 {
-  return m_struct.GetTotalTime();
+  return m_struct.toAddon.GetTotalTime();
 }
 
 int CInputStream::GetTime()
 {
-  return m_struct.GetTime();
+  return m_struct.toAddon.GetTime();
 }
 
 // IPosTime
 bool CInputStream::PosTime(int ms)
 {
-  return m_struct.PosTime(ms);
+  return m_struct.toAddon.PosTime(ms);
 }
 
 // IDemux
@@ -279,7 +272,7 @@ void CInputStream::UpdateStreams()
 {
   DisposeStreams();
 
-  INPUTSTREAM_IDS streamIDs = m_struct.GetStreamIds();
+  INPUTSTREAM_IDS streamIDs = m_struct.toAddon.GetStreamIds();
   if (streamIDs.m_streamCount > INPUTSTREAM_IDS::MAX_STREAM_COUNT)
   {
     DisposeStreams();
@@ -288,7 +281,7 @@ void CInputStream::UpdateStreams()
 
   for (unsigned int i=0; i<streamIDs.m_streamCount; i++)
   {
-    INPUTSTREAM_INFO stream = m_struct.GetStream(streamIDs.m_streamIds[i]);
+    INPUTSTREAM_INFO stream = m_struct.toAddon.GetStream(streamIDs.m_streamIds[i]);
     if (stream.m_streamType == INPUTSTREAM_INFO::TYPE_NONE)
       continue;
 
@@ -333,7 +326,6 @@ void CInputStream::UpdateStreams()
       continue;
 
     demuxStream->codec = codec->id;
-    demuxStream->bandwidth = stream.m_Bandwidth;
     demuxStream->codecName = stream.m_codecInternalName;
     demuxStream->uniqueId = streamIDs.m_streamIds[i];
     demuxStream->language[0] = stream.m_language[0];
@@ -392,12 +384,12 @@ void CInputStream::EnableStream(int iStreamId, bool enable)
   if (it == m_streams.end())
     return;
 
-  m_struct.EnableStream(it->second->uniqueId, enable);
+  m_struct.toAddon.EnableStream(it->second->uniqueId, enable);
 }
 
 DemuxPacket* CInputStream::ReadDemux()
 {
-  DemuxPacket* pPacket = m_struct.DemuxRead();
+  DemuxPacket* pPacket = m_struct.toAddon.DemuxRead();
 
   if (!pPacket)
   {
@@ -417,58 +409,73 @@ DemuxPacket* CInputStream::ReadDemux()
 
 bool CInputStream::SeekTime(double time, bool backward, double* startpts)
 {
-  return m_struct.DemuxSeekTime(time, backward, startpts);
+  return m_struct.toAddon.DemuxSeekTime(time, backward, startpts);
 }
 
 void CInputStream::AbortDemux()
 {
-  m_struct.DemuxAbort();
+  m_struct.toAddon.DemuxAbort();
 }
 
 void CInputStream::FlushDemux()
 {
-  m_struct.DemuxFlush();
+  m_struct.toAddon.DemuxFlush();
 }
 
 void CInputStream::SetSpeed(int iSpeed)
 {
-  m_struct.DemuxSetSpeed(iSpeed);
+  m_struct.toAddon.DemuxSetSpeed(iSpeed);
 }
 
 int CInputStream::ReadStream(uint8_t* buf, unsigned int size)
 {
-  return m_struct.ReadStream(buf, size);
+  return m_struct.toAddon.ReadStream(buf, size);
 }
 
 int64_t CInputStream::SeekStream(int64_t offset, int whence)
 {
-  return m_struct.SeekStream(offset, whence);
+  return m_struct.toAddon.SeekStream(offset, whence);
 }
 
 int64_t CInputStream::PositionStream()
 {
-  return m_struct.PositionStream();
+  return m_struct.toAddon.PositionStream();
 }
 
 int64_t CInputStream::LengthStream()
 {
-  return m_struct.LengthStream();
+  return m_struct.toAddon.LengthStream();
 }
 
 void CInputStream::PauseStream(double time)
 {
-  m_struct.PauseStream(time);
+  m_struct.toAddon.PauseStream(time);
 }
 
 bool CInputStream::IsRealTimeStream()
 {
-  return m_struct.IsRealTimeStream();
+  return m_struct.toAddon.IsRealTimeStream();
 }
 
 void CInputStream::SetVideoResolution(int width, int height)
 {
-  m_struct.SetVideoResolution(width, height);
+  m_struct.toAddon.SetVideoResolution(width, height);
 }
+
+/*!
+ * Callbacks from add-on to kodi
+ */
+//@{
+DemuxPacket* CInputStream::cb_allocate_demux_packet(void* kodiInstance, int iDataSize)
+{
+  return CDVDDemuxUtils::AllocateDemuxPacket(iDataSize);
+}
+
+void CInputStream::cb_free_demux_packet(void* kodiInstance, DemuxPacket* pPacket)
+{
+  CDVDDemuxUtils::FreeDemuxPacket(pPacket);
+}
+//@}
 
 } /*namespace ADDON*/
 

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2016 Team Kodi
+ *      Copyright (C) 2016-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -22,7 +22,7 @@
 #include "dialogs/GUIDialogOK.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/WindowIDs.h"
-#include "input/joysticks/DefaultJoystick.h"
+#include "input/joysticks/JoystickIDs.h"
 #include "input/joysticks/IActionMap.h"
 #include "input/joysticks/IButtonMap.h"
 #include "input/joysticks/IButtonMapCallback.h"
@@ -30,6 +30,7 @@
 #include "input/ActionIDs.h"
 #include "peripherals/Peripherals.h"
 #include "utils/Variant.h"
+#include "ServiceBroker.h"
 
 #include <algorithm>
 #include <iterator>
@@ -49,8 +50,6 @@ std::string CGUIDialogButtonCapture::ControllerID(void) const
 
 void CGUIDialogButtonCapture::Show()
 {
-  using namespace KODI::MESSAGING;
-
   if (!IsRunning())
   {
     InstallHooks();
@@ -79,7 +78,7 @@ void CGUIDialogButtonCapture::Process()
       break;
 
     //! @todo Move to rendering thread when there is a rendering thread
-    auto dialog = dynamic_cast<CGUIDialogOK*>(g_windowManager.GetWindow(WINDOW_DIALOG_OK));
+    auto dialog = g_windowManager.GetWindow<CGUIDialogOK>(WINDOW_DIALOG_OK);
     if (dialog)
       dialog->SetText(GetDialogText());
   }
@@ -115,30 +114,24 @@ bool CGUIDialogButtonCapture::MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
 
 void CGUIDialogButtonCapture::InstallHooks(void)
 {
-  using namespace PERIPHERALS;
-
-  g_peripherals.RegisterJoystickButtonMapper(this);
-  g_peripherals.RegisterObserver(this);
+  CServiceBroker::GetPeripherals().RegisterJoystickButtonMapper(this);
+  CServiceBroker::GetPeripherals().RegisterObserver(this);
 }
 
 void CGUIDialogButtonCapture::RemoveHooks(void)
 {
-  using namespace PERIPHERALS;
-
-  g_peripherals.UnregisterObserver(this);
-  g_peripherals.UnregisterJoystickButtonMapper(this);
+  CServiceBroker::GetPeripherals().UnregisterObserver(this);
+  CServiceBroker::GetPeripherals().UnregisterJoystickButtonMapper(this);
 }
 
 void CGUIDialogButtonCapture::Notify(const Observable& obs, const ObservableMessage msg)
 {
-  using namespace PERIPHERALS;
-
   switch (msg)
   {
   case ObservableMessagePeripheralsChanged:
   {
-    g_peripherals.UnregisterJoystickButtonMapper(this);
-    g_peripherals.RegisterJoystickButtonMapper(this);
+    CServiceBroker::GetPeripherals().UnregisterJoystickButtonMapper(this);
+    CServiceBroker::GetPeripherals().RegisterJoystickButtonMapper(this);
     break;
   }
   default:

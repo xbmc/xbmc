@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2012-2016 Team Kodi
+ *      Copyright (C) 2012-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -29,6 +29,8 @@
 class CFileItem;
 class CURL;
 
+namespace KODI
+{
 namespace GAME
 {
   /*!
@@ -71,3 +73,4 @@ namespace GAME
     static void GetGameClients(const ADDON::VECADDONS& addons, const CURL& translatedUrl, GameClientVector& candidates, bool& bHasVfsGameClient);
   };
 } // namespace GAME
+}

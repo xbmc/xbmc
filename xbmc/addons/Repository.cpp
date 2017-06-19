@@ -54,7 +54,7 @@ using namespace KODI::MESSAGING;
 
 using KODI::MESSAGING::HELPERS::DialogResponse;
 
-std::unique_ptr<CRepository> CRepository::FromExtension(AddonProps props, const cp_extension_t* ext)
+std::unique_ptr<CRepository> CRepository::FromExtension(CAddonInfo addonInfo, const cp_extension_t* ext)
 {
   DirList dirs;
   AddonVersion version("0.0.0");
@@ -88,11 +88,11 @@ std::unique_ptr<CRepository> CRepository::FromExtension(AddonProps props, const 
     info.hashes = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "hashes") == "true";
     dirs.push_back(std::move(info));
   }
-  return std::unique_ptr<CRepository>(new CRepository(std::move(props), std::move(dirs)));
+  return std::unique_ptr<CRepository>(new CRepository(std::move(addonInfo), std::move(dirs)));
 }
 
-CRepository::CRepository(AddonProps props, DirList dirs)
-    : CAddon(std::move(props)), m_dirs(std::move(dirs))
+CRepository::CRepository(CAddonInfo addonInfo, DirList dirs)
+    : CAddon(std::move(addonInfo)), m_dirs(std::move(dirs))
 {
 }
 
@@ -243,14 +243,17 @@ bool CRepositoryUpdateJob::DoWork()
       AddonPtr oldAddon;
       if (database.GetAddon(addon->ID(), oldAddon) && addon->Version() > oldAddon->Version())
       {
-        if (!oldAddon->Icon().empty() || !oldAddon->FanArt().empty() || !oldAddon->Screenshots().empty())
+        if (!oldAddon->Icon().empty() || !oldAddon->Art().empty() || !oldAddon->Screenshots().empty())
           CLog::Log(LOGDEBUG, "CRepository: invalidating cached art for '%s'", addon->ID().c_str());
+
         if (!oldAddon->Icon().empty())
           textureDB.InvalidateCachedTexture(oldAddon->Icon());
-        if (!oldAddon->FanArt().empty())
-          textureDB.InvalidateCachedTexture(oldAddon->Icon());
+
         for (const auto& path : oldAddon->Screenshots())
           textureDB.InvalidateCachedTexture(path);
+
+        for (const auto& art : oldAddon->Art())
+          textureDB.InvalidateCachedTexture(art.second);
       }
     }
     textureDB.CommitMultipleExecute();

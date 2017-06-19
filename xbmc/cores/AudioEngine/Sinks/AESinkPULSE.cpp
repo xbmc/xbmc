@@ -22,9 +22,10 @@
 #include "AESinkPULSE.h"
 #include "utils/log.h"
 #include "Util.h"
-#include "utils/TimeUtils.h"
 #include "guilib/LocalizeStrings.h"
 #include "Application.h"
+#include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
+#include "ServiceBroker.h"
 
 static const char *ContextStateToString(pa_context_state s)
 {
@@ -222,10 +223,10 @@ static void SinkInputInfoChangedCallback(pa_context *c, pa_subscription_event_ty
   CAESinkPULSE* p = (CAESinkPULSE*) userdata;
   if (!p || !p->IsInitialized())
     return;
-  
+
    if (idx != pa_stream_get_index(p->GetInternalStream()))
      return;
-   
+
    pa_operation* op = pa_context_get_sink_input_info(c, idx, SinkInputInfoCallback, p);
    if (op == NULL)
      CLog::Log(LOGERROR, "PulseAudio: Failed to sync volume");
@@ -245,18 +246,17 @@ static void SinkChangedCallback(pa_context *c, pa_subscription_event_type_t t, u
     if ((t & PA_SUBSCRIPTION_EVENT_TYPE_MASK) == PA_SUBSCRIPTION_EVENT_NEW)
     {
        CLog::Log(LOGDEBUG, "Sink appeared");
-       CAEFactory::DeviceChange();
+       CServiceBroker::GetActiveAE().DeviceChange();
     }
     else if ((t & PA_SUBSCRIPTION_EVENT_TYPE_MASK) == PA_SUBSCRIPTION_EVENT_REMOVE)
     {
       CLog::Log(LOGDEBUG, "Sink removed");
-      CAEFactory::DeviceChange();
+      CServiceBroker::GetActiveAE().DeviceChange();
     }
     else if ((t & PA_SUBSCRIPTION_EVENT_TYPE_MASK) == PA_SUBSCRIPTION_EVENT_CHANGE)
     {
       CLog::Log(LOGDEBUG, "Sink changed");
-      //CAEFactory::DeviceChange();
-    }    
+    }
   }
 }
 
@@ -485,8 +485,6 @@ CAESinkPULSE::CAESinkPULSE()
   m_MainLoop = NULL;
   m_BytesPerSecond = 0;
   m_BufferSize = 0;
-  m_filled_bytes = 0;
-  m_lastPackageStamp = 0;
   m_Channels = 0;
   m_Stream = NULL;
   m_Context = NULL;
@@ -510,8 +508,6 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
   m_passthrough = false;
   m_BytesPerSecond = 0;
   m_BufferSize = 0;
-  m_filled_bytes = 0;
-  m_lastPackageStamp = 0;
   m_Channels = 0;
   m_Stream = NULL;
   m_Context = NULL;
@@ -764,7 +760,7 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
   }
 
   pa_threaded_mainloop_unlock(m_MainLoop);
-  
+
   format.m_frameSize = frameSize;
   m_format = format;
   format.m_dataFormat = m_passthrough ? AE_FMT_S16NE : format.m_dataFormat;
@@ -789,8 +785,6 @@ void CAESinkPULSE::Deinitialize()
   m_IsAllocated = false;
   m_passthrough = false;
   m_periodSize = 0;
-  m_filled_bytes = 0;
-  m_lastPackageStamp = 0;
 
   if (m_Stream)
     Drain();
@@ -832,22 +826,14 @@ void CAESinkPULSE::GetDelay(AEDelayStatus& status)
   }
 
   pa_threaded_mainloop_lock(m_MainLoop);
-  const pa_timing_info* pti = pa_stream_get_timing_info(m_Stream);
-  // only incorporate local sink delay + internal PA transport delay
-  double sink_delay = (pti->configured_sink_usec / 1000000.0);
-  double transport_delay = pti->transport_usec / 1000000.0;
+  pa_usec_t r_usec;
+  int negative;
 
-  uint64_t diff = CurrentHostCounter() - m_lastPackageStamp;
-  unsigned int bytes_played = (unsigned int) ((double) diff * (double) m_BytesPerSecond  / (double) CurrentHostFrequency() + 0.5);
-
-  int buffer_delay = m_filled_bytes - bytes_played;
-  if (buffer_delay < 0)
-    buffer_delay = 0;
+  if (pa_stream_get_latency(m_Stream, &r_usec, &negative) < 0)
+    r_usec = 0;
 
   pa_threaded_mainloop_unlock(m_MainLoop);
-
-  double delay = buffer_delay / (double) m_BytesPerSecond + sink_delay + transport_delay;
-  status.SetDelay(delay);
+  status.SetDelay(r_usec / 1000000.0);
 }
 
 double CAESinkPULSE::GetCacheTotal()
@@ -874,7 +860,6 @@ unsigned int CAESinkPULSE::AddPackets(uint8_t **data, unsigned int frames, unsig
   while ((length = pa_stream_writable_size(m_Stream)) < m_periodSize)
     pa_threaded_mainloop_wait(m_MainLoop);
 
-  unsigned int free = length;
   length =  std::min((unsigned int)length, available);
 
   int error = pa_stream_write(m_Stream, buffer, length, NULL, 0, PA_SEEK_RELATIVE);
@@ -885,8 +870,6 @@ unsigned int CAESinkPULSE::AddPackets(uint8_t **data, unsigned int frames, unsig
     CLog::Log(LOGERROR, "CPulseAudioDirectSound::AddPackets - pa_stream_write failed\n");
     return 0;
   }
-  m_lastPackageStamp = CurrentHostCounter();
-  m_filled_bytes = m_BufferSize - (free - length);
   unsigned int res = (unsigned int)(length / m_format.m_frameSize);
 
   return res;
@@ -931,27 +914,27 @@ void CAESinkPULSE::SetVolume(float volume)
     pa_threaded_mainloop_lock(m_MainLoop);
     // clamp possibly too large / low values
     float per_cent_volume = std::max(0.0f, std::min(volume, 1.0f));
-    
+
     if (m_volume_needs_update)
     {
        m_volume_needs_update = false;
-       pa_volume_t n_vol = pa_cvolume_avg(&m_Volume); 
+       pa_volume_t n_vol = pa_cvolume_avg(&m_Volume);
        n_vol = std::min(n_vol, PA_VOLUME_NORM);
-       per_cent_volume = (float) n_vol / PA_VOLUME_NORM; 
+       per_cent_volume = (float) n_vol / PA_VOLUME_NORM;
        // only update internal volume
        pa_threaded_mainloop_unlock(m_MainLoop);
        g_application.SetVolume(per_cent_volume, false);
        return;
     }
-    
+
     pa_volume_t pavolume = per_cent_volume * PA_VOLUME_NORM;
     unsigned int sink_input_idx = pa_stream_get_index(m_Stream);
-    
+
     if ( pavolume <= 0 )
       pa_cvolume_mute(&m_Volume, m_Channels);
     else
       pa_cvolume_set(&m_Volume, m_Channels, pavolume);
-        
+
       pa_operation *op = pa_context_set_sink_input_volume(m_Context, sink_input_idx, &m_Volume, NULL, NULL);
       if (op == NULL)
         CLog::Log(LOGERROR, "PulseAudio: Failed to set volume");
@@ -1002,7 +985,7 @@ void CAESinkPULSE::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
 bool CAESinkPULSE::IsInitialized()
 {
  CSingleLock lock(m_sec);
- return m_IsAllocated; 
+ return m_IsAllocated;
 }
 
 void CAESinkPULSE::Pause(bool pause)

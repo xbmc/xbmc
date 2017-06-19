@@ -329,9 +329,6 @@ public:
   virtual float GetSpeed() = 0;
   virtual bool SupportsTempo() { return false; }
 
-  // Skip to next track/item inside the current media (if supported).
-  virtual bool SkipNext(){return false;}
-
   //Returns true if not playback (paused or stopped being filled)
   virtual bool IsCaching() const {return false;};
   //Cache filled in Percent

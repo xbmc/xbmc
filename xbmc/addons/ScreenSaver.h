@@ -19,33 +19,28 @@
  */
 #pragma once
 
-#include "AddonDll.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/xbmc_scr_types.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/addon-instance/Screensaver.h"
+#include "addons/binary-addons/AddonInstanceHandler.h"
 
 namespace ADDON
 {
 
-class CScreenSaver : public ADDON::CAddonDll
+class CScreenSaver : public IAddonInstanceHandler
 {
 public:
-  explicit CScreenSaver(AddonProps props);
-  explicit CScreenSaver(const char *addonID);
+  CScreenSaver(BinaryAddonBasePtr addonBase);
+  virtual ~CScreenSaver();
 
-  virtual ~CScreenSaver() {}
-  virtual bool IsInUse() const;
-
-  bool CreateScreenSaver();
-  void Start();
+  bool Start();
+  void Stop();
   void Render();
-  void Destroy();
 
 private:
   std::string m_name; /*!< To add-on sended name */
   std::string m_presets; /*!< To add-on sended preset path */
   std::string m_profile; /*!< To add-on sended profile path */
 
-  SCR_PROPS m_info;
-  KodiToAddonFuncTable_Screensaver m_struct;
+  AddonInstance_Screensaver m_struct;
 };
 
 } /* namespace ADDON */

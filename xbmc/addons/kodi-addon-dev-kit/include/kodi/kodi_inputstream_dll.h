@@ -214,50 +214,43 @@ extern "C"
   */
   bool IsRealTimeStream();
 
-  const char* GetApiVersion()
-  {
-    static const char *ApiVersion = INPUTSTREAM_API_VERSION;
-    return ApiVersion;
-  }
-
   /*!
   * Called by XBMC to assign the function pointers of this add-on to pClient.
   * @param pClient The struct to assign the function pointers to.
   */
   void __declspec(dllexport) get_addon(void* ptr)
   {
-    KodiToAddonFuncTable_InputStream* pClient = static_cast<KodiToAddonFuncTable_InputStream*>(ptr);
+    AddonInstance_InputStream* pClient = static_cast<AddonInstance_InputStream*>(ptr);
 
-    pClient->Open = Open;
-    pClient->Close = Close;
-    pClient->GetPathList = GetPathList;
-    pClient->GetCapabilities = GetCapabilities;
-    pClient->GetApiVersion = GetApiVersion;
+    pClient->toAddon.Open = Open;
+    pClient->toAddon.Close = Close;
+    pClient->toAddon.GetPathList = GetPathList;
+    pClient->toAddon.GetCapabilities = GetCapabilities;
 
-    pClient->GetStreamIds = GetStreamIds;
-    pClient->GetStream = GetStream;
-    pClient->EnableStream = EnableStream;
-    pClient->DemuxReset = DemuxReset;
-    pClient->DemuxAbort = DemuxAbort;
-    pClient->DemuxFlush = DemuxFlush;
-    pClient->DemuxRead = DemuxRead;
-    pClient->DemuxSeekTime = DemuxSeekTime;
-    pClient->DemuxSetSpeed = DemuxSetSpeed;
-    pClient->SetVideoResolution = SetVideoResolution;
+    pClient->toAddon.GetStreamIds = GetStreamIds;
+    pClient->toAddon.GetStream = GetStream;
+    pClient->toAddon.EnableStream = EnableStream;
+    pClient->toAddon.DemuxReset = DemuxReset;
+    pClient->toAddon.DemuxAbort = DemuxAbort;
+    pClient->toAddon.DemuxFlush = DemuxFlush;
+    pClient->toAddon.DemuxRead = DemuxRead;
+    pClient->toAddon.DemuxSeekTime = DemuxSeekTime;
+    pClient->toAddon.DemuxSetSpeed = DemuxSetSpeed;
+    pClient->toAddon.SetVideoResolution = SetVideoResolution;
 
-    pClient->GetTotalTime = GetTotalTime;
-    pClient->GetTime = GetTime;
+    pClient->toAddon.GetTotalTime = GetTotalTime;
+    pClient->toAddon.GetTime = GetTime;
 
-    pClient->PosTime = PosTime;
+    pClient->toAddon.PosTime = PosTime;
 
-    pClient->CanPauseStream = CanPauseStream;
-    pClient->CanSeekStream = CanSeekStream;
+    pClient->toAddon.CanPauseStream = CanPauseStream;
+    pClient->toAddon.CanSeekStream = CanSeekStream;
 
-    pClient->ReadStream = ReadStream;
-    pClient->SeekStream = SeekStream;
-    pClient->PositionStream = PositionStream;
-    pClient->LengthStream = LengthStream;
-    pClient->PauseStream = PauseStream;
-    pClient->IsRealTimeStream = IsRealTimeStream;
+    pClient->toAddon.ReadStream = ReadStream;
+    pClient->toAddon.SeekStream = SeekStream;
+    pClient->toAddon.PositionStream = PositionStream;
+    pClient->toAddon.LengthStream = LengthStream;
+    pClient->toAddon.PauseStream = PauseStream;
+    pClient->toAddon.IsRealTimeStream = IsRealTimeStream;
   };
 };

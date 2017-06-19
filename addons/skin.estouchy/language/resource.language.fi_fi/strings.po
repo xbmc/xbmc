@@ -60,6 +60,26 @@ msgctxt "#31016"
 msgid "Albums"
 msgstr "Albumit"
 
+msgctxt "#31017"
+msgid "PVR info"
+msgstr "PVR-tiedot"
+
+msgctxt "#31018"
+msgid "Player process info"
+msgstr "Soittimen tiedot"
+
+msgctxt "#31019"
+msgid "Video decoder"
+msgstr "Videon purkutapa"
+
+msgctxt "#31020"
+msgid "Pixel format"
+msgstr "Pikselimuoto"
+
+msgctxt "#31021"
+msgid "System memory usage"
+msgstr "Järjestelmän muistinkäyttö"
+
 msgctxt "#31024"
 msgid "Page"
 msgstr "Sivu"

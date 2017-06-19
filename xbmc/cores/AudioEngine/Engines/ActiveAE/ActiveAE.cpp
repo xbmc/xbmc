@@ -1397,7 +1397,7 @@ CActiveAEStream* CActiveAE::CreateStream(MsgStreamNew *streamMsg)
 
   // create the stream
   CActiveAEStream *stream;
-  stream = new CActiveAEStream(&streamMsg->format, m_streamIdGen++);
+  stream = new CActiveAEStream(&streamMsg->format, m_streamIdGen++, this);
   stream->m_streamPort = new CActiveAEDataProtocol("stream",
                              &stream->m_inMsgEvent, &m_outMsgEvent);
 
@@ -1613,34 +1613,30 @@ void CActiveAE::ApplySettingsToFormat(AEAudioFormat &format, AudioSettings &sett
     // consider user channel layout for those cases
     // 1. input stream is multichannel
     // 2. stereo upmix is selected
-    // 3. audio dsp is used
-    // 4. fixed mode
+    // 3. fixed mode
     if ((format.m_channelLayout.Count() > 2) ||
          settings.stereoupmix ||
-         settings.dspaddonsenabled ||
          (settings.config == AE_CONFIG_FIXED))
     {
-      AEStdChLayout stdChannelLayout;
+      CAEChannelInfo stdLayout;
       switch (settings.channels)
       {
         default:
-        case  0: stdChannelLayout = AE_CH_LAYOUT_2_0; break;
-        case  1: stdChannelLayout = AE_CH_LAYOUT_2_0; break;
-        case  2: stdChannelLayout = AE_CH_LAYOUT_2_1; break;
-        case  3: stdChannelLayout = AE_CH_LAYOUT_3_0; break;
-        case  4: stdChannelLayout = AE_CH_LAYOUT_3_1; break;
-        case  5: stdChannelLayout = AE_CH_LAYOUT_4_0; break;
-        case  6: stdChannelLayout = AE_CH_LAYOUT_4_1; break;
-        case  7: stdChannelLayout = AE_CH_LAYOUT_5_0; break;
-        case  8: stdChannelLayout = AE_CH_LAYOUT_5_1; break;
-        case  9: stdChannelLayout = AE_CH_LAYOUT_7_0; break;
-        case 10: stdChannelLayout = AE_CH_LAYOUT_7_1; break;
+        case  0: stdLayout = AE_CH_LAYOUT_2_0; break;
+        case  1: stdLayout = AE_CH_LAYOUT_2_0; break;
+        case  2: stdLayout = AE_CH_LAYOUT_2_1; break;
+        case  3: stdLayout = AE_CH_LAYOUT_3_0; break;
+        case  4: stdLayout = AE_CH_LAYOUT_3_1; break;
+        case  5: stdLayout = AE_CH_LAYOUT_4_0; break;
+        case  6: stdLayout = AE_CH_LAYOUT_4_1; break;
+        case  7: stdLayout = AE_CH_LAYOUT_5_0; break;
+        case  8: stdLayout = AE_CH_LAYOUT_5_1; break;
+        case  9: stdLayout = AE_CH_LAYOUT_7_0; break;
+        case 10: stdLayout = AE_CH_LAYOUT_7_1; break;
       }
 
-      CAEChannelInfo stdLayout(stdChannelLayout);
-
-      if (m_settings.config == AE_CONFIG_FIXED || settings.dspaddonsenabled || (settings.stereoupmix && format.m_channelLayout.Count() <= 2))
-        format.m_channelLayout = CServiceBroker::GetADSP().GetInternalChannelLayout(stdChannelLayout);
+      if (m_settings.config == AE_CONFIG_FIXED || (settings.stereoupmix && format.m_channelLayout.Count() <= 2))
+        format.m_channelLayout = stdLayout;
       else if (m_extKeepConfig && (settings.config == AE_CONFIG_AUTO) && (oldMode != MODE_RAW))
         format.m_channelLayout = m_internalFormat.m_channelLayout;
       else
@@ -2182,7 +2178,7 @@ bool CActiveAE::RunStages()
                 break;
               else
               {
-                int samples = buf->pkt->nb_samples;
+                unsigned int samples = static_cast<unsigned int>(buf->pkt->nb_samples);
                 for (auto& it : m_audioCallback)
                   it->OnAudioData((float*)(buf->pkt->data[0]), samples);
                 buf->Return();
@@ -2312,7 +2308,7 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
     }
   }
 
-  int timeout = (stream->m_syncState != CAESyncInfo::AESyncState::SYNC_INSYNC) ? 100 : (int)stream->m_errorInterval;
+  int timeout = (stream->m_syncState != CAESyncInfo::AESyncState::SYNC_INSYNC) ? 100 : (int)stream->GetErrorInterval();
   bool newerror = stream->m_syncError.Get(error, timeout);
 
   if (newerror && fabs(error) > threshold && stream->m_syncState == CAESyncInfo::AESyncState::SYNC_INSYNC)
@@ -2464,6 +2460,8 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
   {
     stream->m_processingBuffers->SetRR(1.0, m_settings.atempoThreshold);
   }
+  stream->m_syncError.Flush(stream->GetErrorInterval());
+
   return ret;
 }
 
@@ -2641,6 +2639,32 @@ void CActiveAE::OnSettingsChange(const std::string& setting)
 
 bool CActiveAE::SupportsRaw(AEAudioFormat &format)
 {
+  // check if passthrough is enabled
+  if (!CServiceBroker::GetSettings().GetBool(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH))
+    return false;
+
+  // fixed config disabled passthrough
+  if (CServiceBroker::GetSettings().GetInt(CSettings::SETTING_AUDIOOUTPUT_CONFIG) == AE_CONFIG_FIXED)
+    return false;
+
+  // check if the format is enabled in settings
+  if (format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_AC3 && !m_settings.ac3passthrough)
+    return false;
+  if (format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_DTS_512 && !m_settings.dtspassthrough)
+    return false;
+  if (format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_DTS_1024 && !m_settings.dtspassthrough)
+    return false;
+  if (format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_DTS_2048 && !m_settings.dtspassthrough)
+    return false;
+  if (format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_DTSHD_CORE && !m_settings.dtspassthrough)
+    return false;
+  if (format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_EAC3 && !m_settings.eac3passthrough)
+    return false;
+  if (format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD && !m_settings.truehdpassthrough)
+    return false;
+  if (format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_DTSHD && !m_settings.dtshdpassthrough)
+    return false;
+
   if (!m_sink.SupportsFormat(CServiceBroker::GetSettings().GetString(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHDEVICE), format))
     return false;
 
@@ -2857,9 +2881,10 @@ bool CActiveAE::HasDSP()
   return m_stats.HasDSP();
 };
 
-AEAudioFormat CActiveAE::GetCurrentSinkFormat()
+bool CActiveAE::GetCurrentSinkFormat(AEAudioFormat &SinkFormat)
 {
-  return m_stats.GetCurrentSinkFormat();
+  SinkFormat = m_stats.GetCurrentSinkFormat();
+  return true;
 }
 
 void CActiveAE::OnLostDisplay()
@@ -2947,7 +2972,7 @@ IAESound *CActiveAE::MakeSound(const std::string& file)
   CActiveAESound *sound = NULL;
   SampleConfig config;
 
-  sound = new CActiveAESound(file);
+  sound = new CActiveAESound(file, this);
   if (!sound->Prepare())
   {
     delete sound;

@@ -34,11 +34,11 @@ public:
 
 protected:
   // implementations of ISettingCallback
-  virtual void OnSettingChanged(const CSetting *setting);
-  virtual void OnSettingAction(const CSetting *setting);
+  virtual void OnSettingChanged(std::shared_ptr<const CSetting> setting);
+  virtual void OnSettingAction(std::shared_ptr<const CSetting> setting);
 
-  void AddVideoStreams(CSettingGroup *group, const std::string & settingId);
-  static void VideoStreamsOptionFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
+  void AddVideoStreams(std::shared_ptr<CSettingGroup> group, const std::string & settingId);
+  static void VideoStreamsOptionFiller(std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
 
   // specialization of CGUIDialogSettingsBase
   virtual bool AllowResettingSettings() const { return false; }

@@ -18,7 +18,7 @@
  *
  */
 
-#include "cores/AudioEngine/AEFactory.h"
+#include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
 #include "cores/AudioEngine/Sinks/AESinkDARWINOSX.h"
 #include "cores/AudioEngine/Utils/AERingBuffer.h"
 #include "cores/AudioEngine/Sinks/osx/CoreAudioHelpers.h"
@@ -28,6 +28,8 @@
 #include "utils/StringUtils.h"
 #include "utils/TimeUtils.h"
 #include "linux/XMemUtils.h"
+#include "ServiceBroker.h"
+
 
 static void EnumerateDevices(CADeviceList &list)
 {
@@ -127,7 +129,7 @@ OSStatus deviceChangedCB(AudioObjectID                       inObjectID,
   if  (deviceChanged)
   {
     CLog::Log(LOGDEBUG, "CoreAudio: audiodevicelist changed - reenumerating");
-    CAEFactory::DeviceChange();
+    CServiceBroker::GetActiveAE().DeviceChange();
     CLog::Log(LOGDEBUG, "CoreAudio: audiodevicelist changed - done");
   }
   return noErr;
@@ -148,7 +150,7 @@ CAESinkDARWINOSX::CAESinkDARWINOSX()
 {
   // By default, kAudioHardwarePropertyRunLoop points at the process's main thread on SnowLeopard,
   // If your process lacks such a run loop, you can set kAudioHardwarePropertyRunLoop to NULL which
-  // tells the HAL to run it's own thread for notifications (which was the default prior to SnowLeopard).
+  // tells the HAL to run its own thread for notifications (which was the default prior to SnowLeopard).
   // So tell the HAL to use its own thread for similar behavior under all supported versions of OSX.
   CFRunLoopRef theRunLoop = NULL;
   AudioObjectPropertyAddress theAddress = {

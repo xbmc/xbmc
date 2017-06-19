@@ -32,7 +32,7 @@ namespace ActiveAE
 {
   class CSampleBuffer;
   class IAEResample;
-  class CActiveAEResample;
+  class CActiveAEBufferPoolADSP;
 
   //@{
   /*!
@@ -54,7 +54,7 @@ namespace ActiveAE
        * @param streamType The input stream type to find allowed master process dsp addons for it, e.g. AE_DSP_ASTREAM_MUSIC
        * @return True if the dsp processing becomes available
        */
-      bool Create(const AEAudioFormat &inputFormat, const AEAudioFormat &outputFormat, bool upmix, AEQuality quality, AE_DSP_STREAMTYPE streamType,
+      bool Create(const AEAudioFormat &inputFormat, const AEAudioFormat &outputFormat, bool upmix, bool bypassDSP, AEQuality quality, AE_DSP_STREAMTYPE streamType,
                   enum AVMatrixEncoding matrix_encoding, enum AVAudioServiceType audio_service_type, int profile);
 
       /*!>
@@ -73,25 +73,16 @@ namespace ActiveAE
       AE_DSP_STREAM_ID GetStreamId() const;
 
       /*!>
+      * Get the currently used input stream format
+      * @note used to have a fallback to normal operation without dsp
+      */
+      AEAudioFormat GetOutputFormat();
+
+      /*!>
        * Get the currently used input stream format
        * @note used to have a fallback to normal operation without dsp
        */
       AEAudioFormat GetInputFormat();
-
-      /*!>
-       * Get the incoming channels amount for this class
-       */
-      unsigned int GetInputChannels();
-
-      /*!>
-       * Get the incoming sample rate for this class
-       */
-      unsigned int GetInputSamplerate();
-
-      /*!>
-       * Get the incoming channel names as string
-       */
-      std::string GetInputChannelNames();
 
       /*!>
        * Get the inside addons used samplerate for this class
@@ -99,42 +90,10 @@ namespace ActiveAE
       unsigned int GetProcessSamplerate();
 
       /*!>
-       * Get the outgoing channels amount for this class
-       */
-      unsigned int GetOutputChannels();
-
-      /*!>
-       * Get the outgoing channel names
-       */
-      std::string GetOutputChannelNames();
-
-      /*!>
-       * Get the used output samplerate for this class
-       */
-      unsigned int GetOutputSamplerate();
-
-      /*!>
-       * Get the used output frames for this class
-       */
-      unsigned int GetOutputFrames();
-
-      /*!>
        * Get the amount of percent what the cpu need to process complete dsp stream
        * @return The current cpu usage
        */
       float GetCPUUsage(void) const;
-
-      /*!>
-       * Get the channel layout which is passed out from it
-       * @return Channel information class
-       */
-      CAEChannelInfo GetChannelLayout();
-
-      /*!>
-       * Get the currently used output data format
-       * @note Is normally float
-       */
-      AEDataFormat GetDataFormat();
 
       /*!>
        * It returns the on input source detected stream type, not always the active one.
@@ -185,7 +144,7 @@ namespace ActiveAE
 
       /*!>
        * Returns the information class from the currently used dsp addon
-       * @return pointer to the info class, or uninitialized class if no master processing present
+       * @return pointer to the info class, or unitialized class if no master processing present
        */
       CActiveAEDSPModePtr GetActiveMasterMode() const;
 
@@ -210,7 +169,7 @@ namespace ActiveAE
       bool GetMasterModeStreamInfoString(std::string &strInfo);
 
       /*!>
-       * Get all dsp addon relevant information to detect processing mode type and base values.
+       * Get all dsp addon relavant information to detect processing mode type and base values.
        * @retval streamTypeUsed The current stream type processed by addon
        * @retval baseType The current base type type processed by addon
        * @retval iModeID The database identification code of the mode
@@ -228,7 +187,7 @@ namespace ActiveAE
       bool IsMenuHookModeActive(AE_DSP_MENUHOOK_CAT category, int iAddonId, unsigned int iModeNumber);
 
     protected:
-      friend class CActiveAEBufferPoolResample;
+      friend class CActiveAEBufferPoolADSP;
 
       /*!>
        * Master processing
@@ -244,6 +203,11 @@ namespace ActiveAE
        * @return seconds
        */
       float GetDelay();
+
+      /*!>
+       * Update the state all AudioDSP modes.
+       */
+      void UpdateActiveModes();
     //@}
     private:
     //@{
@@ -261,7 +225,7 @@ namespace ActiveAE
       bool RecheckProcessArray(unsigned int inputFrames);
       bool ReallocProcessArray(unsigned int requestSize);
       void CalculateCPUUsage(uint64_t iTime);
-      void SetFFMpegDSPProcessorArray(float *array_ffmpeg[2][AE_DSP_CH_MAX], float **array_in, float **array_out);
+      void SetFFMpegDSPProcessorArray(float *array_ffmpeg[AE_DSP_CH_MAX], float *array_dsp[AE_DSP_CH_MAX], int idx[AE_CH_MAX], unsigned long ChannelFlags);
     //@}
     //@{
       /*!
@@ -273,11 +237,9 @@ namespace ActiveAE
       bool                              m_forceInit;                /*!< if set to true the process function perform a reinitialization of addons and data */
       AE_DSP_ADDONMAP                   m_usedMap;                  /*!< a map of all currently used audio dsp add-on's */
       AEAudioFormat                     m_inputFormat;              /*!< the used input stream format */
-      AEAudioFormat                     m_outputFormat;             /*!< the from XBMX requested output format */
-      unsigned int                      m_outputSamplerate;         /*!< the currently active output samplerate can be become changed from addon resamplers */
-      unsigned int                      m_outputFrames;             /*!< the maximum present output frames */
+      AEAudioFormat                     m_outputFormat;             /*!< the from Kodi requested output format */
       AEQuality                         m_streamQuality;            /*!< from KODI requested stream quality, based also to addons */
-      enum AEDataFormat                 m_dataFormat;               /*!< The inside addon system used data format, currently fixed to float */
+      bool                              m_bypassDSP;                /*!< if true, all AudioDSP modes are skipped */
       AE_DSP_SETTINGS                   m_addonSettings;            /*!< the current stream's settings passed to dsp add-ons */
       AE_DSP_STREAM_PROPERTIES          m_addonStreamProperties;    /*!< the current stream's properties (eg. stream type) passed to dsp add-ons */
       int                               m_NewMasterMode;            /*!< if master mode is changed it set here and handled by process function */
@@ -334,8 +296,6 @@ namespace ActiveAE
       /*!>
        * Internal ffmpeg process data
        */
-      #define FFMPEG_PROC_ARRAY_IN  0
-      #define FFMPEG_PROC_ARRAY_OUT 1
       IAEResample                      *m_resamplerDSPProcessor;       /*!< ffmpeg resampler usage for down mix of input stream to required output channel alignment or internal processing*/
       float                            *m_ffMpegConvertArray[2][AE_DSP_CH_MAX]; /*!< the process array memory pointers for ffmpeg used for format convert. No own memory only addresses taken from m_processArray in correct ffmpeg channel alignment */
       float                            *m_ffMpegProcessArray[2][AE_DSP_CH_MAX]; /*!< the process array memory pointers for ffmpeg. No own memory only addresses taken from m_processArray in correct ffmpeg channel alignment */

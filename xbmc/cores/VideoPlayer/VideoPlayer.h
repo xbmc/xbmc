@@ -30,6 +30,7 @@
 #include "IVideoPlayer.h"
 #include "DVDMessageQueue.h"
 #include "DVDClock.h"
+#include "TimingConstants.h"
 #include "VideoPlayerVideo.h"
 #include "VideoPlayerSubtitle.h"
 #include "VideoPlayerTeletext.h"
@@ -396,7 +397,7 @@ public:
   virtual bool IsCaching() const override;
   virtual int GetCacheLevel() const override;
 
-  virtual int OnDVDNavResult(void* pData, int iMessage) override;
+  virtual int OnDiscNavResult(void* pData, int iMessage) override;
   void GetVideoResolution(unsigned int &width, unsigned int &height) override;
 
 protected:
@@ -423,9 +424,8 @@ protected:
 
   /** \brief Switches forced subtitles to forced subtitles matching the language of the current audio track.
   *          If these are not available, subtitles are disabled.
-  *   \return true if the subtitles were changed, false otherwise.
   */
-  bool AdaptForcedSubtitles();
+  void AdaptForcedSubtitles();
   bool CloseStream(CCurrentStream& current, bool bWaitForBuffers);
 
   bool CheckIsCurrent(CCurrentStream& current, CDemuxStream* stream, DemuxPacket* pkg);
@@ -445,7 +445,6 @@ protected:
    * one of the DVD_PLAYSPEED defines
    */
   void SetPlaySpeed(int iSpeed);
-  int GetPlaySpeed() { return m_playSpeed; }
 
   enum ECacheState
   {
@@ -521,7 +520,7 @@ protected:
   {
     double  lastpts;  // holds last display pts during ff/rw operations
     int64_t lasttime;
-    int lastseekpts;
+    double lastseekpts;
     double  lastabstime;
   } m_SpeedState;
   std::atomic_bool m_canTempo;

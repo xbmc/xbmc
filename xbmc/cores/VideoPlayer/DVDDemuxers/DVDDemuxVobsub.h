@@ -76,7 +76,7 @@ private:
   std::vector<STimestamp>            m_Timestamps;
   std::vector<STimestamp>::iterator  m_Timestamp;
   std::vector<CStream*> m_Streams;
-  int m_source;
+  int m_source = -1;
 
   typedef struct SState
   {

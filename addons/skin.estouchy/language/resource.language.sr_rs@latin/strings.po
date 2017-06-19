@@ -60,6 +60,26 @@ msgctxt "#31016"
 msgid "Albums"
 msgstr "Albumi"
 
+msgctxt "#31017"
+msgid "PVR info"
+msgstr "PVR informacije"
+
+msgctxt "#31018"
+msgid "Player process info"
+msgstr "Informacije procesa uređaja za reprodukciju"
+
+msgctxt "#31019"
+msgid "Video decoder"
+msgstr "Video dekoder"
+
+msgctxt "#31020"
+msgid "Pixel format"
+msgstr "Oblik prikaza piksela"
+
+msgctxt "#31021"
+msgid "System memory usage"
+msgstr "Korišćenje memorije sistema"
+
 msgctxt "#31024"
 msgid "Page"
 msgstr "Strana"
@@ -83,6 +103,10 @@ msgstr "PREMOTAVANjE UNAPRED"
 msgctxt "#31045"
 msgid "REWIND"
 msgstr "PREMOTAVANjE UNAZAD"
+
+msgctxt "#31046"
+msgid "Play speed"
+msgstr "Brzina reprodukcije"
 
 msgctxt "#31049"
 msgid "End Time"
@@ -140,6 +164,10 @@ msgctxt "#31303"
 msgid "Data provider"
 msgstr "Provajder podataka"
 
+msgctxt "#31309"
+msgid "System Memory Used:"
+msgstr "Iskorišćenost memorije sistema:"
+
 msgctxt "#31320"
 msgid "Last Logged In"
 msgstr "Poslednja prijava"
@@ -172,13 +200,49 @@ msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 msgstr "Promenite masku · Postavite jezik i regiju - Promenite opcije izlistavanja datoteka - Postavite čuvara ekrana"
 
+msgctxt "#31405"
+msgid "Configure & manage media sharing services · Configure & manage the weather service"
+msgstr "Podesite & upravljajte servisima deljenja medija · Podesite & upravljajte servisom vremenske prognoze"
+
+msgctxt "#31406"
+msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
+msgstr "Podesite prikaz ·  Podesite audio · Podesite pristup internetu · Podesite uštedu energije · Podesite evidentiranje"
+
 msgctxt "#31407"
 msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
-msgstr "Upravljajte vašim instaliranim dodatnim programima · Potražite i instalirajte dodatne programe sa kodi.tv - Podesite podešavanja dodatnih programa"
+msgstr "Upravljajte vašim instaliranim dodatnim programima · Potražite i instalirajte dodatne programe sa kodi.tv - Promenite podešavanja dodatnih programa"
+
+msgctxt "#31408"
+msgid "Configure actions that can be used during playback · Configure how media content is played"
+msgstr "Podesite akcije koje se mogu koristiti tokom reprodukcije · Podesite kako se medijski sadržaji reprodukuju"
+
+msgctxt "#31409"
+msgid "Configure library sources · Show the media lists display content · Configure how library lists are navigated"
+msgstr "Podesite izvore biblioteke · Prikaži sadržaj prikazivanja medijskih listi · Podesite kako se vrši navigacija lista biblioteke"
+
+msgctxt "#31410"
+msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
+msgstr "Podesite masku · Podesite region · Podesite kontrolu · Podesite čuvara ekrana · Podesite glavno zaključavanje"
+
+msgctxt "#31411"
+msgid "Configure your profiles · Set locking options · Enable login screen"
+msgstr "Podesite vaše profile · Postavite opcije zaključavanja · Aktivirajte ekran za prijavu"
+
+msgctxt "#31412"
+msgid "Display system information · Hardware statistics · Check storage availability · View network configuration"
+msgstr "Prikaži sistemske informacije · Hardverska statistika · Proveri dostupnost skladišta · Pogledaj konfiguraciju mreže"
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
-msgstr "Izaberite vaš Kodi korisnički Profil[CR]za prijavu, a potom nastavite dalje"
+msgstr "Odaberite vaš Kodi korisnički Profil[CR]za prijavu, a potom nastavite dalje"
+
+msgctxt "#31548"
+msgid "Home menu"
+msgstr "Glavni meni"
+
+msgctxt "#31549"
+msgid "Home Add-ons"
+msgstr "Dodatni programi glavnog ekrana"
 
 msgctxt "#31550"
 msgid "Backgrounds"

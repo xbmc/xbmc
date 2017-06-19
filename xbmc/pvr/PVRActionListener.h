@@ -29,22 +29,17 @@ namespace PVR
 class CPVRActionListener : public IActionListener, public ISettingCallback
 {
 public:
-
-  void Init();
-  void Deinit();
-
-  static CPVRActionListener &GetInstance();
+  CPVRActionListener();
+  virtual ~CPVRActionListener();
 
   // IActionListener implementation
   bool OnAction(const CAction &action) override;
 
   // ISettingCallback implementation
-  void OnSettingChanged(const CSetting *setting) override;
-  void OnSettingAction(const CSetting *setting) override;
+  void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
+  void OnSettingAction(std::shared_ptr<const CSetting> setting) override;
 
 private:
-  CPVRActionListener() = default;
-  ~CPVRActionListener() = default;
   CPVRActionListener(const CPVRActionListener&) = delete;
   CPVRActionListener& operator=(const CPVRActionListener&) = delete;
 };

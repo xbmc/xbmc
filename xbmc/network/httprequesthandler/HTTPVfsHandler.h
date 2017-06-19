@@ -29,10 +29,10 @@ public:
   CHTTPVfsHandler() { }
   virtual ~CHTTPVfsHandler() { }
   
-  virtual IHTTPRequestHandler* Create(const HTTPRequest &request) { return new CHTTPVfsHandler(request); }
-  virtual bool CanHandleRequest(const HTTPRequest &request);
+  IHTTPRequestHandler* Create(const HTTPRequest &request) const override { return new CHTTPVfsHandler(request); }
+  bool CanHandleRequest(const HTTPRequest &request) const override;
 
-  virtual int GetPriority() const { return 5; }
+  int GetPriority() const override { return 5; }
 
 protected:
   explicit CHTTPVfsHandler(const HTTPRequest &request);

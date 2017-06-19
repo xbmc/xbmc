@@ -30,7 +30,6 @@
 #include "XBDateTime.h"
 #include "windowing/WindowingFactory.h"
 #include "utils/md5.h"
-#include "utils/Variant.h"
 #include "GUIUserMessages.h"
 
 #if defined(TARGET_DARWIN)

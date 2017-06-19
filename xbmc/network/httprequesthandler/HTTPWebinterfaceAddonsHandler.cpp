@@ -24,7 +24,7 @@
 
 #define ADDON_HEADER      "<html><head><title>Add-on List</title></head><body>\n<h1>Available web interfaces:</h1>\n<ul>\n"
 
-bool CHTTPWebinterfaceAddonsHandler::CanHandleRequest(const HTTPRequest &request)
+bool CHTTPWebinterfaceAddonsHandler::CanHandleRequest(const HTTPRequest &request) const
 {
   return (request.pathUrl.compare("/addons") == 0 || request.pathUrl.compare("/addons/") == 0);
 }

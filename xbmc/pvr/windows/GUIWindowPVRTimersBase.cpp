@@ -136,7 +136,7 @@ bool CGUIWindowPVRTimersBase::OnMessage(CGUIMessage &message)
               OnPopupMenu(iItem);
               break;
             case ACTION_DELETE_ITEM:
-              CPVRGUIActions::GetInstance().DeleteTimer(m_vecItems->Get(iItem));
+              CServiceBroker::GetPVRManager().GUIActions()->DeleteTimer(m_vecItems->Get(iItem));
               break;
             default:
               bReturn = false;
@@ -177,7 +177,7 @@ bool CGUIWindowPVRTimersBase::OnMessage(CGUIMessage &message)
 
 bool CGUIWindowPVRTimersBase::ActionShowTimer(const CFileItemPtr &item)
 {
-  if (!g_PVRClients->SupportsTimers())
+  if (!CServiceBroker::GetPVRManager().Clients()->SupportsTimers())
   {
     CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19215}); // "Information", "The PVR backend does not support timers."
     return false;
@@ -189,9 +189,9 @@ bool CGUIWindowPVRTimersBase::ActionShowTimer(const CFileItemPtr &item)
      create a new timer and open settings dialog, otherwise
      open settings for selected timer entry */
   if (URIUtils::PathEquals(item->GetPath(), CPVRTimersPath::PATH_ADDTIMER))
-    bReturn = CPVRGUIActions::GetInstance().AddTimer(m_bRadio);
+    bReturn = CServiceBroker::GetPVRManager().GUIActions()->AddTimer(m_bRadio);
   else
-    bReturn = CPVRGUIActions::GetInstance().EditTimer(item);
+    bReturn = CServiceBroker::GetPVRManager().GUIActions()->EditTimer(item);
 
   return bReturn;
 }

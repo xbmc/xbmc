@@ -1,4 +1,4 @@
-package org.xbmc.@APP_NAME_LC@;
+package @APP_PACKAGE@;
 
 import android.media.AudioManager.OnAudioFocusChangeListener;
 import android.util.Log;

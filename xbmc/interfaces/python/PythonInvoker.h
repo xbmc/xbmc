@@ -59,8 +59,6 @@ protected:
   virtual void onError(const std::string &exceptionType = "", const std::string &exceptionValue = "", const std::string &exceptionTraceback = "");
 
   std::string m_sourceFile;
-  unsigned int  m_argc;
-  char **m_argv;
   CCriticalSection m_critical;
 
 private:

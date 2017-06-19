@@ -23,14 +23,8 @@
 #include <utility>
 
 #include "ServiceBroker.h"
-#include "epg/EpgContainer.h"
-#include "epg/EpgInfoTag.h"
 #include "FileItem.h"
 #include "filesystem/Directory.h"
-#include "pvr/addons/PVRClients.h"
-#include "pvr/recordings/PVRRecordingsPath.h"
-#include "pvr/PVRManager.h"
-#include "pvr/PVREvent.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
 #include "URL.h"
@@ -38,6 +32,13 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "video/VideoDatabase.h"
+
+#include "pvr/PVRManager.h"
+#include "pvr/PVREvent.h"
+#include "pvr/addons/PVRClients.h"
+#include "pvr/epg/EpgContainer.h"
+#include "pvr/epg/EpgInfoTag.h"
+#include "pvr/recordings/PVRRecordingsPath.h"
 
 using namespace PVR;
 
@@ -63,8 +64,8 @@ void CPVRRecordings::UpdateFromClients(void)
 {
   CSingleLock lock(m_critSection);
   Clear();
-  g_PVRClients->GetRecordings(this, false);
-  g_PVRClients->GetRecordings(this, true);
+  CServiceBroker::GetPVRManager().Clients()->GetRecordings(this, false);
+  CServiceBroker::GetPVRManager().Clients()->GetRecordings(this, true);
 }
 
 std::string CPVRRecordings::TrimSlashes(const std::string &strOrig) const
@@ -168,9 +169,9 @@ void CPVRRecordings::Update(void)
   m_bIsUpdating = false;
   lock.Leave();
 
-  g_PVRManager.SetChanged();
-  g_PVRManager.NotifyObservers(ObservableMessageRecordings);
-  g_PVRManager.PublishEvent(RecordingsInvalidated);
+  CServiceBroker::GetPVRManager().SetChanged();
+  CServiceBroker::GetPVRManager().NotifyObservers(ObservableMessageRecordings);
+  CServiceBroker::GetPVRManager().PublishEvent(RecordingsInvalidated);
 }
 
 int CPVRRecordings::GetNumTVRecordings() const
@@ -256,7 +257,7 @@ bool CPVRRecordings::RenameRecording(CFileItem &item, std::string &strNewName)
 
 bool CPVRRecordings::DeleteAllRecordingsFromTrash()
 {
-  return g_PVRClients->DeleteAllRecordingsFromTrash() == PVR_ERROR_NO_ERROR;
+  return CServiceBroker::GetPVRManager().Clients()->DeleteAllRecordingsFromTrash() == PVR_ERROR_NO_ERROR;
 }
 
 bool CPVRRecordings::SetRecordingsPlayCount(const CFileItemPtr &item, int count)
@@ -454,7 +455,7 @@ void CPVRRecordings::UpdateFromClient(const CPVRRecordingPtr &tag)
       const CPVRChannelPtr channel(newTag->Channel());
       if (channel)
       {
-        const EPG::CEpgInfoTagPtr epgTag = EPG::CEpgContainer::GetInstance().GetTagById(channel, newTag->BroadcastUid());
+        const CPVREpgInfoTagPtr epgTag = CServiceBroker::GetPVRManager().EpgContainer().GetTagById(channel, newTag->BroadcastUid());
         if (epgTag)
           epgTag->SetRecording(newTag);
       }
@@ -468,7 +469,7 @@ void CPVRRecordings::UpdateFromClient(const CPVRRecordingPtr &tag)
   }
 }
 
-CPVRRecordingPtr CPVRRecordings::GetRecordingForEpgTag(const EPG::CEpgInfoTagPtr &epgTag) const
+CPVRRecordingPtr CPVRRecordings::GetRecordingForEpgTag(const CPVREpgInfoTagPtr &epgTag) const
 {
   CSingleLock lock(m_critSection);
 
@@ -562,7 +563,7 @@ bool CPVRRecordings::ChangeRecordingsPlayCount(const CFileItemPtr &item, int cou
       }
     }
 
-    g_PVRManager.PublishEvent(RecordingsInvalidated);
+    CServiceBroker::GetPVRManager().PublishEvent(RecordingsInvalidated);
   }
 
   return bResult;

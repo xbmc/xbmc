@@ -52,11 +52,11 @@ Build-Depends: autoconf, automake, autopoint, autotools-dev, cmake, curl,
   libfribidi-dev, libgif-dev (>= 4.1.6), libgl1-mesa-dev | libgl-dev, libglu1-mesa-dev | libglu-dev,
   libiso9660-dev, libjpeg-dev, libltdl-dev, liblzo2-dev, libmicrohttpd-dev,
   libmpcdec-dev, libmysqlclient-dev, libnfs-dev,
-  libpcre3-dev, libplist-dev, libpng12-dev | libpng-dev, libpulse-dev, libsdl2-dev,
+  libpcre3-dev, libplist-dev, libpng12-dev | libpng-dev, libpulse-dev,
   libshairplay-dev, libsmbclient-dev, libsqlite3-dev, libssh-dev, libssl-dev, libswscale-dev,
   libtag1-dev (>= 1.8), libtinyxml-dev (>= 2.6.2), libtool, libudev-dev,
   libusb-dev, libva-dev, libvdpau-dev, libxml2-dev,
-  libxmu-dev, libxrandr-dev, libxslt1-dev, libxt-dev, libyajl-dev (>=2.0), lsb-release,
+  libxmu-dev, libxrandr-dev, libxslt1-dev, libxt-dev, lsb-release, rapidjson-dev,
   nasm [!amd64], python-dev, python-imaging, python-support, swig, unzip, uuid-dev, yasm,
   zip, zlib1g-dev
 
@@ -180,15 +180,13 @@ This framework is provided directly in Kodi's source tree.
 It has very little requirements, in order to build and run.
 See the README file for the framework at 'lib/gtest/README' for specific requirements.
 
-To compile and run Kodi's test suite:
-The configure option '--enable-gtest' is enabled by default during the configure stage.
-Once configured, to build the testsuite, type the following:
+To compile and run Kodi's test suite, type the following:
 
     $ make check
 
 To compile the test suite without running it, type the following.
 
-    $ make testsuite
+    $ make kodi-test
 
 The test suite program can be run manually as well.
 The name of the test suite program is 'kodi-test' and will build in the Kodi source tree.
@@ -206,10 +204,6 @@ The most useful options are,
       Run only the tests whose name matches one of the positive patterns but
       none of the negative patterns. '?' matches any single character; '*'
       matches any substring; ':' separates two patterns.
-
-Note: If the '--enable-gtest' option is not set during the configure stage,
-the make targets 'check,' 'testsuite,' and 'testframework' will simply show a message saying
-the framework has not been configured, and then silently succeed (i.e. it will not return an error).
 
 -----------------------------------------------------------------------------
 5. How to run

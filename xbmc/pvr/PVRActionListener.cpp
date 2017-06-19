@@ -35,30 +35,26 @@
 namespace PVR
 {
 
-CPVRActionListener &CPVRActionListener::GetInstance()
+CPVRActionListener::CPVRActionListener()
 {
-  static CPVRActionListener instance;
-  return instance;
+  g_application.RegisterActionListener(this);
+  CServiceBroker::GetSettings().RegisterCallback(this, {
+    CSettings::SETTING_PVRPARENTAL_ENABLED,
+    CSettings::SETTING_PVRMANAGER_RESETDB,
+    CSettings::SETTING_EPG_RESETEPG,
+    CSettings::SETTING_PVRMANAGER_CHANNELMANAGER,
+    CSettings::SETTING_PVRMANAGER_GROUPMANAGER,
+    CSettings::SETTING_PVRMANAGER_CHANNELSCAN,
+    CSettings::SETTING_PVRMENU_SEARCHICONS,
+    CSettings::SETTING_PVRCLIENT_MENUHOOK,
+    CSettings::SETTING_EPG_DAYSTODISPLAY
+  });
 }
 
-void CPVRActionListener::Init()
-{
-  std::set<std::string> settingSet;
-  settingSet.insert(CSettings::SETTING_PVRPARENTAL_ENABLED);
-  settingSet.insert(CSettings::SETTING_PVRMANAGER_RESETDB);
-  settingSet.insert(CSettings::SETTING_EPG_RESETEPG);
-  settingSet.insert(CSettings::SETTING_PVRMANAGER_CHANNELMANAGER);
-  settingSet.insert(CSettings::SETTING_PVRMANAGER_GROUPMANAGER);
-  settingSet.insert(CSettings::SETTING_PVRMANAGER_CHANNELSCAN);
-  settingSet.insert(CSettings::SETTING_PVRMENU_SEARCHICONS);
-  settingSet.insert(CSettings::SETTING_PVRCLIENT_MENUHOOK);
-  settingSet.insert(CSettings::SETTING_EPG_DAYSTODISPLAY);
-  CServiceBroker::GetSettings().RegisterCallback(this, settingSet);
-}
-
-void CPVRActionListener::Deinit()
+CPVRActionListener::~CPVRActionListener()
 {
   CServiceBroker::GetSettings().UnregisterCallback(this);
+  g_application.UnregisterActionListener(this);
 }
 
 bool CPVRActionListener::OnAction(const CAction &action)
@@ -73,20 +69,20 @@ bool CPVRActionListener::OnAction(const CAction &action)
     {
       // see if we're already playing a PVR stream and if not or the stream type
       // doesn't match the demanded type, start playback of according type
-      bool isPlayingPvr(g_PVRManager.IsPlaying() && g_application.CurrentFileItem().HasPVRChannelInfoTag());
+      bool isPlayingPvr(CServiceBroker::GetPVRManager().IsPlaying() && g_application.CurrentFileItem().HasPVRChannelInfoTag());
       switch (action.GetID())
       {
         case ACTION_PVR_PLAY:
           if (!isPlayingPvr)
-            CPVRGUIActions::GetInstance().SwitchToChannel(PlaybackTypeAny);
+            CServiceBroker::GetPVRManager().GUIActions()->SwitchToChannel(PlaybackTypeAny);
           break;
         case ACTION_PVR_PLAY_TV:
           if (!isPlayingPvr || g_application.CurrentFileItem().GetPVRChannelInfoTag()->IsRadio())
-            CPVRGUIActions::GetInstance().SwitchToChannel(PlaybackTypeTV);
+            CServiceBroker::GetPVRManager().GUIActions()->SwitchToChannel(PlaybackTypeTV);
           break;
         case ACTION_PVR_PLAY_RADIO:
           if (!isPlayingPvr || !g_application.CurrentFileItem().GetPVRChannelInfoTag()->IsRadio())
-            CPVRGUIActions::GetInstance().SwitchToChannel(PlaybackTypeRadio);
+            CServiceBroker::GetPVRManager().GUIActions()->SwitchToChannel(PlaybackTypeRadio);
           break;
       }
       return true;
@@ -123,16 +119,16 @@ bool CPVRActionListener::OnAction(const CAction &action)
           return false;
 
         int iRemote = bIsJumpSMS ? action.GetID() - (ACTION_JUMP_SMS2 - REMOTE_2) : action.GetID();
-        CPVRGUIActions::GetInstance().GetChannelNumberInputHandler().AppendChannelNumberDigit(iRemote - REMOTE_0);
+        CServiceBroker::GetPVRManager().GUIActions()->GetChannelNumberInputHandler().AppendChannelNumberDigit(iRemote - REMOTE_0);
+        return true;
       }
-      return true;
     }
     break;
   }
   return false;
 }
 
-void CPVRActionListener::OnSettingChanged(const CSetting *setting)
+void CPVRActionListener::OnSettingChanged(std::shared_ptr<const CSetting> setting)
 {
   if (setting == nullptr)
     return;
@@ -140,7 +136,7 @@ void CPVRActionListener::OnSettingChanged(const CSetting *setting)
   const std::string &settingId = setting->GetId();
   if (settingId == CSettings::SETTING_PVRPARENTAL_ENABLED)
   {
-    if (dynamic_cast<const CSettingBool*>(setting)->GetValue() && CServiceBroker::GetSettings().GetString(CSettings::SETTING_PVRPARENTAL_PIN).empty())
+    if (std::static_pointer_cast<const CSettingBool>(setting)->GetValue() && CServiceBroker::GetSettings().GetString(CSettings::SETTING_PVRPARENTAL_PIN).empty())
     {
       std::string newPassword = "";
       // password set... save it
@@ -148,12 +144,16 @@ void CPVRActionListener::OnSettingChanged(const CSetting *setting)
         CServiceBroker::GetSettings().SetString(CSettings::SETTING_PVRPARENTAL_PIN, newPassword);
       // password not set... disable parental
       else
-        dynamic_cast<CSettingBool*>(const_cast<CSetting*>(setting))->SetValue(false);
+        std::static_pointer_cast<CSettingBool>(std::const_pointer_cast<CSetting>(setting))->SetValue(false);
     }
+  }
+  else if (settingId == CSettings::SETTING_EPG_DAYSTODISPLAY)
+  {
+    CServiceBroker::GetPVRManager().Clients()->SetEPGTimeFrame(std::static_pointer_cast<const CSettingInt>(setting)->GetValue());
   }
 }
 
-void CPVRActionListener::OnSettingAction(const CSetting *setting)
+void CPVRActionListener::OnSettingAction(std::shared_ptr<const CSetting> setting)
 {
   if (setting == nullptr)
     return;
@@ -161,45 +161,41 @@ void CPVRActionListener::OnSettingAction(const CSetting *setting)
   const std::string &settingId = setting->GetId();
   if (settingId == CSettings::SETTING_PVRMANAGER_RESETDB)
   {
-    CPVRGUIActions::GetInstance().ResetPVRDatabase(false);
+    CServiceBroker::GetPVRManager().GUIActions()->ResetPVRDatabase(false);
   }
   else if (settingId == CSettings::SETTING_EPG_RESETEPG)
   {
-    CPVRGUIActions::GetInstance().ResetPVRDatabase(true);
+    CServiceBroker::GetPVRManager().GUIActions()->ResetPVRDatabase(true);
   }
   else if (settingId == CSettings::SETTING_PVRMANAGER_CHANNELMANAGER)
   {
-    if (g_PVRManager.IsStarted())
+    if (CServiceBroker::GetPVRManager().IsStarted())
     {
-      CGUIDialog *dialog = dynamic_cast<CGUIDialog *>(g_windowManager.GetWindow(WINDOW_DIALOG_PVR_CHANNEL_MANAGER));
+      CGUIDialog *dialog = g_windowManager.GetDialog(WINDOW_DIALOG_PVR_CHANNEL_MANAGER);
       if (dialog)
         dialog->Open();
     }
   }
   else if (settingId == CSettings::SETTING_PVRMANAGER_GROUPMANAGER)
   {
-    if (g_PVRManager.IsStarted())
+    if (CServiceBroker::GetPVRManager().IsStarted())
     {
-      CGUIDialog *dialog = dynamic_cast<CGUIDialog *>(g_windowManager.GetWindow(WINDOW_DIALOG_PVR_GROUP_MANAGER));
+      CGUIDialog *dialog = g_windowManager.GetDialog(WINDOW_DIALOG_PVR_GROUP_MANAGER);
       if (dialog)
         dialog->Open();
     }
   }
   else if (settingId == CSettings::SETTING_PVRMANAGER_CHANNELSCAN)
   {
-    CPVRGUIActions::GetInstance().StartChannelScan();
+    CServiceBroker::GetPVRManager().GUIActions()->StartChannelScan();
   }
   else if (settingId == CSettings::SETTING_PVRMENU_SEARCHICONS)
   {
-    g_PVRManager.TriggerSearchMissingChannelIcons();
+    CServiceBroker::GetPVRManager().TriggerSearchMissingChannelIcons();
   }
   else if (settingId == CSettings::SETTING_PVRCLIENT_MENUHOOK)
   {
-    CPVRGUIActions::GetInstance().ProcessMenuHooks(CFileItemPtr());
-  }
-  else if (settingId == CSettings::SETTING_EPG_DAYSTODISPLAY)
-  {
-    g_PVRClients->SetEPGTimeFrame(static_cast<const CSettingInt*>(setting)->GetValue());
+    CServiceBroker::GetPVRManager().GUIActions()->ProcessMenuHooks(CFileItemPtr());
   }
 }
 

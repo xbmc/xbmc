@@ -26,8 +26,6 @@ CBitstreamWriter::CBitstreamWriter(uint8_t *buffer, unsigned int buffer_size, in
   , bit_left(32)
   , buf(buffer)
   , buf_ptr(buf)
-  , buf_end(buf + buffer_size)
-  , size_in_bits(8 * buffer_size)
 {
 }
 

@@ -152,7 +152,7 @@ CLinuxTimezone::CLinuxTimezone() : m_IsDST(0)
    free(line);
 }
 
-void CLinuxTimezone::OnSettingChanged(const CSetting *setting)
+void CLinuxTimezone::OnSettingChanged(std::shared_ptr<const CSetting> setting)
 {
   if (setting == NULL)
     return;
@@ -160,7 +160,7 @@ void CLinuxTimezone::OnSettingChanged(const CSetting *setting)
   const std::string &settingId = setting->GetId();
   if (settingId == CSettings::SETTING_LOCALE_TIMEZONE)
   {
-    SetTimezone(((CSettingString*)setting)->GetValue());
+    SetTimezone(std::static_pointer_cast<const CSettingString>(setting)->GetValue());
 
     CDateTime::ResetTimezoneBias();
   }
@@ -251,16 +251,16 @@ std::string CLinuxTimezone::GetOSConfiguredTimezone()
    return timezoneName;
 }
 
-void CLinuxTimezone::SettingOptionsTimezoneCountriesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
+void CLinuxTimezone::SettingOptionsTimezoneCountriesFiller(std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
 {
   std::vector<std::string> countries = g_timezone.GetCounties();
   for (unsigned int i = 0; i < countries.size(); i++)
     list.push_back(std::make_pair(countries[i], countries[i]));
 }
 
-void CLinuxTimezone::SettingOptionsTimezonesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
+void CLinuxTimezone::SettingOptionsTimezonesFiller(std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
 {
-  current = ((const CSettingString*)setting)->GetValue();
+  current = std::static_pointer_cast<const CSettingString>(setting)->GetValue();
   bool found = false;
   std::vector<std::string> timezones = g_timezone.GetTimezonesByCountry(CServiceBroker::GetSettings().GetString(CSettings::SETTING_LOCALE_TIMEZONECOUNTRY));
   for (unsigned int i = 0; i < timezones.size(); i++)

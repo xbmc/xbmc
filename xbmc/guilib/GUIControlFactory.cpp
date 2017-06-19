@@ -36,6 +36,7 @@
 #include "GUIProgressControl.h"
 #include "GUISliderControl.h"
 #include "GUIMoverControl.h"
+#include "GUIRenderingControl.h"
 #include "GUIResizeControl.h"
 #include "GUISpinControlEx.h"
 #include "GUIVisualisationControl.h"
@@ -47,7 +48,7 @@
 #include "GUIListContainer.h"
 #include "GUIFixedListContainer.h"
 #include "GUIWrappingListContainer.h"
-#include "epg/GUIEPGGridContainer.h"
+#include "pvr/windows/GUIEPGGridContainer.h"
 #include "GUIPanelContainer.h"
 #include "GUIListLabel.h"
 #include "GUIListGroup.h"
@@ -64,7 +65,8 @@
 #include "games/controllers/guicontrols/GUIGameController.h"
 #include "Util.h"
 
-using namespace EPG;
+using namespace KODI;
+using namespace PVR;
 
 typedef struct
 {

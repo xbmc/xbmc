@@ -26,9 +26,6 @@
 #include "UDFDirectory.h"
 #include "RSSDirectory.h"
 #endif
-#ifdef HAS_FILESYSTEM_RAR
-#include "RarDirectory.h"
-#endif
 #if defined(TARGET_ANDROID)
 #include "APKDirectory.h"
 #endif
@@ -166,59 +163,6 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
     { // compressed or more than one file -> create a zip dir
       pItem->SetURL(zipURL);
       return new CZipDirectory;
-    }
-    return NULL;
-  }
-  if (url.IsFileType("rar") || url.IsFileType("001"))
-  {
-    std::vector<std::string> tokens;
-    const std::string strPath = url.Get();
-    StringUtils::Tokenize(strPath,tokens,".");
-    if (tokens.size() > 2)
-    {
-      if (url.IsFileType("001"))
-      {
-        if (StringUtils::EqualsNoCase(tokens[tokens.size()-2], "ts")) // .ts.001 - treat as a movie file to scratch some users itch
-          return NULL;
-      }
-      std::string token = tokens[tokens.size()-2];
-      if (StringUtils::StartsWith(token, "part")) // only list '.part01.rar'
-      {
-        // need this crap to avoid making mistakes - yeyh for the new rar naming scheme :/
-        struct __stat64 stat;
-        int digits = token.size()-4;
-        std::string strFormat = StringUtils::Format("part%%0%ii", digits);
-        std::string strNumber = StringUtils::Format(strFormat.c_str(), 1);
-        std::string strPath2 = strPath;
-        StringUtils::Replace(strPath2,token,strNumber);
-        if (atoi(token.substr(4).c_str()) > 1 && CFile::Stat(strPath2,&stat) == 0)
-        {
-          pItem->m_bIsFolder = true;
-          return NULL;
-        }
-      }
-    }
-
-    CURL rarURL = URIUtils::CreateArchivePath("rar", url);
-
-    CFileItemList items;
-    CDirectory::GetDirectory(rarURL, items, strMask);
-    if (items.Size() == 0) // no files - hide this
-      pItem->m_bIsFolder = true;
-    else if (items.Size() == 1 && items[0]->m_idepth == 0x30 && !items[0]->m_bIsFolder)
-    {
-      // one STORED file - collapse it down
-      *pItem = *items[0];
-    }
-    else
-    {
-#ifdef HAS_FILESYSTEM_RAR
-      // compressed or more than one file -> create a rar dir
-      pItem->SetURL(rarURL);
-      return new CRarDirectory;
-#else
-      return NULL;
-#endif
     }
     return NULL;
   }

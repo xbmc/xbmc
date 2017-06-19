@@ -68,7 +68,7 @@ void CRssManager::OnSettingsUnloaded()
   Clear();
 }
 
-void CRssManager::OnSettingAction(const CSetting *setting)
+void CRssManager::OnSettingAction(std::shared_ptr<const CSetting> setting)
 {
   if (setting == NULL)
     return;

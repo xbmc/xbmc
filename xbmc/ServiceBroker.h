@@ -22,6 +22,7 @@
 
 namespace ADDON {
 class CAddonMgr;
+class CBinaryAddonManager;
 class CBinaryAddonCache;
 }
 
@@ -48,25 +49,38 @@ class CContextMenuManager;
 class XBPython;
 class CDataCacheCore;
 class CSettings;
+class IAE;
+class CFavouritesService;
 
+namespace KODI
+{
 namespace GAME
 {
   class CGameServices;
+}
+}
+
+namespace PERIPHERALS
+{
+  class CPeripherals;
 }
 
 class CServiceBroker
 {
 public:
   static ADDON::CAddonMgr &GetAddonMgr();
+  static ADDON::CBinaryAddonManager &GetBinaryAddonManager();
   static ADDON::CBinaryAddonCache &GetBinaryAddonCache();
   static ANNOUNCEMENT::CAnnouncementManager &GetAnnouncementManager();
   static XBPython &GetXBPython();
   static PVR::CPVRManager &GetPVRManager();
-  static ActiveAE::CActiveAEDSP& GetADSP();
+  static IAE& GetActiveAE();
   static CContextMenuManager& GetContextMenuManager();
   static CDataCacheCore& GetDataCacheCore();
   static PLAYLIST::CPlayListPlayer& GetPlaylistPlayer();
   static CSettings& GetSettings();
-  static GAME::CGameServices& GetGameServices();
+  static KODI::GAME::CGameServices& GetGameServices();
+  static PERIPHERALS::CPeripherals& GetPeripherals();
+  static CFavouritesService& GetFavouritesService();
   static bool IsBinaryAddonCacheUp();
 };

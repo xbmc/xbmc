@@ -205,66 +205,41 @@ bool CAddonCallbacksAddon::GetAddonSetting(void *addonData, const char *strSetti
       return true;
     }
 
-    if (!addonHelper->m_addon->ReloadSettings())
+    if (!addonHelper->m_addon->ReloadSettings() || addonHelper->m_addon->GetSettings() == nullptr)
     {
       CLog::Log(LOGERROR, "CAddonCallbacksAddon - %s - couldn't get settings for add-on '%s'", __FUNCTION__, addonHelper->m_addon->Name().c_str());
       return false;
     }
 
-    const TiXmlElement *category = addonHelper->m_addon->GetSettingsXML()->FirstChildElement("category");
-    if (!category) // add a default one...
-      category = addonHelper->m_addon->GetSettingsXML();
-
-    while (category)
+    auto setting = addonHelper->m_addon->GetSettings()->GetSetting(strSettingName);
+    if (setting == nullptr)
     {
-      const TiXmlElement *setting = category->FirstChildElement("setting");
-      while (setting)
-      {
-        const std::string   id = XMLUtils::GetAttribute(setting, "id");
-        const std::string type = XMLUtils::GetAttribute(setting, "type");
-
-        if (id == strSettingName && !type.empty())
-        {
-          if (type == "text"     || type == "ipaddress" ||
-              type == "folder"   || type == "action"    ||
-              type == "music"    || type == "pictures"  ||
-              type == "programs" || type == "fileenum"  ||
-              type == "file"     || type == "labelenum" ||
-              type == "select")
-          {
-            strcpy((char*) settingValue, addonHelper->m_addon->GetSetting(id).c_str());
-            return true;
-          }
-          else if (type == "number" || type == "enum")
-          {
-            *(int*) settingValue = (int) atoi(addonHelper->m_addon->GetSetting(id).c_str());
-            return true;
-          }
-          else if (type == "bool")
-          {
-            *(bool*) settingValue = (bool) (addonHelper->m_addon->GetSetting(id) == "true" ? true : false);
-            return true;
-          }
-          else if (type == "slider")
-          {
-            const char *option = setting->Attribute("option");
-            if (option && strcmpi(option, "int") == 0)
-            {
-              *(int*) settingValue = (int) atoi(addonHelper->m_addon->GetSetting(id).c_str());
-              return true;
-            }
-            else
-            {
-              *(float*) settingValue = (float) atof(addonHelper->m_addon->GetSetting(id).c_str());
-              return true;
-            }
-          }
-        }
-        setting = setting->NextSiblingElement("setting");
-      }
-      category = category->NextSiblingElement("category");
+      CLog::Log(LOGERROR, "CAddonCallbacksAddon - %s - can't find setting '%s' in '%s'", __FUNCTION__, strSettingName, addonHelper->m_addon->Name().c_str());
+      return false;
     }
-    CLog::Log(LOGERROR, "CAddonCallbacksAddon - %s - can't find setting '%s' in '%s'", __FUNCTION__, strSettingName, addonHelper->m_addon->Name().c_str());
+
+    switch (setting->GetType())
+    {
+      case SettingType::Boolean:
+        *static_cast<bool*>(settingValue) = std::static_pointer_cast<CSettingBool>(setting)->GetValue();
+        return true;
+
+      case SettingType::Integer:
+        *static_cast<int*>(settingValue) = std::static_pointer_cast<CSettingInt>(setting)->GetValue();
+        return true;
+
+      case SettingType::Number:
+        *static_cast<float*>(settingValue) = static_cast<float>(std::static_pointer_cast<CSettingNumber>(setting)->GetValue());
+        return true;
+
+      case SettingType::String:
+        strcpy((char*)settingValue, std::static_pointer_cast<CSettingString>(setting)->GetValue().c_str());
+        return true;
+
+      default:
+        CLog::Log(LOGERROR, "CAddonCallbacksAddon - %s - setting '%s' in '%s' has unsupported type", __FUNCTION__, strSettingName, addonHelper->m_addon->Name().c_str());
+        return false;
+    }
   }
   catch (std::exception &e)
   {

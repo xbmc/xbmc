@@ -1,0 +1,41 @@
+; package.list should contain all file names of packages which are already in the "new" package format (the package contains the paths to the libraries
+; and headers relative to the XBMC root directory, stored in a zip container)
+; example sqlite-3.7.12.1-win32.7z:
+; -> (package name)\(relative path to file)
+; -> sqlite-3.7.12.1-win32\project\BuildDependencies\lib\sqlite3.lib
+; -> sqlite-3.7.12.1-win32\system\sqlite3.dll
+; -> ...
+;PLEASE KEEP THIS LIST IN ALPHABETICAL ORDER!
+cpluff-0.1.3-x64-vc140.7z
+crossguid-fef89a4-x64-vc140.7z
+curl-7.52.1-x64-vc140.7z
+dnssd-765.50.9-x64-vc140.7z
+easyhook-2.7.6035.0-x64-vc140.7z
+expat-2.2.0-x64-vc140.7z
+fmt-3.0.1-x64-vc140.7z
+freetype-db5a224-x64-vc140.7z
+libass-d18a5f1-x64-vc140.7z
+libbluray-1.0.1-x64-vc140.7z
+libcdio-0.94-x64-vc140.7z
+libcec-4.0.2-x64-vc140.7z
+libfribidi-0.19.7-x64-vc140.7z
+libiconv-1.15-x64-vc140.7z
+libmicrohttpd-0.9.55-x64-vc140.7z
+libnfs-1.11.0-x64-vc140-v2.7z
+libplist-1.12-x64-vc140.7z
+libssh-0.7.4-x64-vc140.7z
+libxml2-2.9.4-x64-vc140.7z
+libxslt-1.1.29-x64-vc140.7z
+lzo-2.09-x64-vc140.7z
+mini_wdk-10.0.14393.0-x64.7z
+mysql-connector-c-6.1.9-x64-vc140.7z
+openssl-1.0.2k-x64-vc140.7z
+pcre-8.40-x64-vc140.7z
+python-2.7.13-x64-vc140.7z
+rapidjson-1.1.0-win32.7z
+shairplay-ce80e00-x64-vc140.7z
+sqlite-3.17.0-x64-vc140.7z
+swig-3.0.10-win32.7z
+taglib-1.11.1-x64-vc140.7z
+tinyxmlstl-2.6.2-x64-vc140.7z
+zlib-1.2.11-x64-vc140.7z

@@ -32,7 +32,7 @@ using namespace PVR;
 const std::vector<CPVRTimerTypePtr> CPVRTimerType::GetAllTypes()
 {
   std::vector<CPVRTimerTypePtr> allTypes;
-  g_PVRClients->GetTimerTypes(allTypes);
+  CServiceBroker::GetPVRManager().Clients()->GetTimerTypes(allTypes);
   return allTypes;
 }
 
@@ -45,7 +45,7 @@ const CPVRTimerTypePtr CPVRTimerType::GetFirstAvailableType()
 CPVRTimerTypePtr CPVRTimerType::CreateFromIds(unsigned int iTypeId, int iClientId)
 {
   std::vector<CPVRTimerTypePtr> types;
-  PVR_ERROR error = g_PVRClients->GetTimerTypes(types, iClientId);
+  PVR_ERROR error = CServiceBroker::GetPVRManager().Clients()->GetTimerTypes(types, iClientId);
   if (error == PVR_ERROR_NO_ERROR)
   {
     for (const auto &type : types)
@@ -63,7 +63,7 @@ CPVRTimerTypePtr CPVRTimerType::CreateFromAttributes(
   unsigned int iMustHaveAttr, unsigned int iMustNotHaveAttr, int iClientId)
 {
   std::vector<CPVRTimerTypePtr> types;
-  PVR_ERROR error = g_PVRClients->GetTimerTypes(types, iClientId);
+  PVR_ERROR error = CServiceBroker::GetPVRManager().Clients()->GetTimerTypes(types, iClientId);
   if (error == PVR_ERROR_NO_ERROR)
   {
     for (const auto &type : types)

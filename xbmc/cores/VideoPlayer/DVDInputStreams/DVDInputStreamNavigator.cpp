@@ -39,8 +39,12 @@
 #define HOLDMODE_SKIP 2 /* set by inputstream user, when they wish to skip the held mode */
 #define HOLDMODE_DATA 3 /* set after hold mode has been exited, and action that inited it has been executed */
 
+static int dvd_inputstreamnavigator_cb_seek(void * p_stream, uint64_t i_pos);
+static int dvd_inputstreamnavigator_cb_read(void * p_stream, void * buffer, int i_read);
+static int dvd_inputstreamnavigator_cb_readv(void * p_stream, void * p_iovec, int i_blocks);
+
 CDVDInputStreamNavigator::CDVDInputStreamNavigator(IVideoPlayer* player, const CFileItem& fileitem)
-  : CDVDInputStream(DVDSTREAM_TYPE_DVD, fileitem)
+  : CDVDInputStream(DVDSTREAM_TYPE_DVD, fileitem), m_pstream(nullptr)
 {
   m_dvdnav = 0;
   m_pVideoPlayer = player;
@@ -56,6 +60,9 @@ CDVDInputStreamNavigator::CDVDInputStreamNavigator(IVideoPlayer* player, const C
   m_iTime = m_iTotalTime = 0;
   m_bEOF = false;
   m_lastevent = DVDNAV_NOP;
+  m_dvdnav_stream_cb.pf_read = dvd_inputstreamnavigator_cb_read;
+  m_dvdnav_stream_cb.pf_readv = dvd_inputstreamnavigator_cb_readv;
+  m_dvdnav_stream_cb.pf_seek = dvd_inputstreamnavigator_cb_seek;
 
   memset(m_lastblock, 0, sizeof(m_lastblock));
 }
@@ -98,6 +105,18 @@ bool CDVDInputStreamNavigator::Open()
 #endif
 
   // open up the DVD device
+  if (m_item.IsDiscImage())
+  {
+    // if dvd image file (ISO or alike) open using libdvdnav stream callback functions
+    m_pstream.reset(new CDVDInputStreamFile(m_item));
+    if (!m_pstream->Open() || m_dll.dvdnav_open_stream(&m_dvdnav, m_pstream.get(), &m_dvdnav_stream_cb) != DVDNAV_STATUS_OK)
+    {
+      CLog::Log(LOGERROR, "Error opening image file or Error on dvdnav_open_stream\n");
+      Close();
+      return false;
+    }
+  }
+  else
   if (m_dll.dvdnav_open(&m_dvdnav, path.c_str()) != DVDNAV_STATUS_OK)
   {
     CLog::Log(LOGERROR,"Error on dvdnav_open\n");
@@ -229,6 +248,12 @@ void CDVDInputStreamNavigator::Close()
   CDVDInputStream::Close();
   m_dvdnav = NULL;
   m_bEOF = true;
+
+  if (m_pstream != nullptr)
+  {
+    m_pstream->Close();
+    m_pstream.reset();
+  }
 }
 
 int CDVDInputStreamNavigator::Read(uint8_t* buf, int buf_size)
@@ -260,7 +285,7 @@ int CDVDInputStreamNavigator::Read(uint8_t* buf, int buf_size)
       {
         m_bEOF = true;
         CLog::Log(LOGERROR,"CDVDInputStreamNavigator: Stopping playback due to infinite loop, caused by badly authored DVD navigation structure. Try enabling 'Attempt to skip introduction before DVD menu'.");
-        m_pVideoPlayer->OnDVDNavResult(NULL, DVDNAV_STOP);
+        m_pVideoPlayer->OnDiscNavResult(NULL, DVDNAV_STOP);
         return -1; // fail and stop playback.
       }
     }
@@ -334,7 +359,7 @@ int CDVDInputStreamNavigator::ProcessBlock(uint8_t* dest_buffer, int* read)
         // A length of 0xff means an indefinite still which has to be skipped
         // indirectly by some user interaction.
         m_holdmode = HOLDMODE_NONE;
-        iNavresult = m_pVideoPlayer->OnDVDNavResult(buf, DVDNAV_STILL_FRAME);
+        iNavresult = m_pVideoPlayer->OnDiscNavResult(buf, DVDNAV_STILL_FRAME);
       }
       break;
 
@@ -353,7 +378,7 @@ int CDVDInputStreamNavigator::ProcessBlock(uint8_t* dest_buffer, int* read)
           iNavresult = NAVRESULT_HOLD;
         }
         else
-          iNavresult = m_pVideoPlayer->OnDVDNavResult(buf, DVDNAV_WAIT);
+          iNavresult = m_pVideoPlayer->OnDiscNavResult(buf, DVDNAV_WAIT);
 
         /* if user didn't care for action, just skip it */
         if(iNavresult == NAVRESULT_NOP)
@@ -365,7 +390,7 @@ int CDVDInputStreamNavigator::ProcessBlock(uint8_t* dest_buffer, int* read)
       // Player applications should pass the new colour lookup table to their
       // SPU decoder. The CLUT is given as 16 uint32_t's in the buffer.
       {
-        iNavresult = m_pVideoPlayer->OnDVDNavResult(buf, DVDNAV_SPU_CLUT_CHANGE);
+        iNavresult = m_pVideoPlayer->OnDiscNavResult(buf, DVDNAV_SPU_CLUT_CHANGE);
       }
       break;
 
@@ -392,7 +417,7 @@ int CDVDInputStreamNavigator::ProcessBlock(uint8_t* dest_buffer, int* read)
           SetActiveSubtitleStream(0);
         }
         m_bCheckButtons = true;
-        iNavresult = m_pVideoPlayer->OnDVDNavResult(buf, DVDNAV_SPU_STREAM_CHANGE);
+        iNavresult = m_pVideoPlayer->OnDiscNavResult(buf, DVDNAV_SPU_STREAM_CHANGE);
       }
       break;
 
@@ -418,14 +443,14 @@ int CDVDInputStreamNavigator::ProcessBlock(uint8_t* dest_buffer, int* read)
           SetActiveAudioStream(0);
         }
 
-        iNavresult = m_pVideoPlayer->OnDVDNavResult(buf, DVDNAV_AUDIO_STREAM_CHANGE);
+        iNavresult = m_pVideoPlayer->OnDiscNavResult(buf, DVDNAV_AUDIO_STREAM_CHANGE);
       }
 
       break;
 
     case DVDNAV_HIGHLIGHT:
       {
-        iNavresult = m_pVideoPlayer->OnDVDNavResult(buf, DVDNAV_HIGHLIGHT);
+        iNavresult = m_pVideoPlayer->OnDiscNavResult(buf, DVDNAV_HIGHLIGHT);
       }
       break;
 
@@ -448,7 +473,7 @@ int CDVDInputStreamNavigator::ProcessBlock(uint8_t* dest_buffer, int* read)
           {
             m_bInMenu = menu;
           }
-          iNavresult = m_pVideoPlayer->OnDVDNavResult(buf, DVDNAV_VTS_CHANGE);
+          iNavresult = m_pVideoPlayer->OnDiscNavResult(buf, DVDNAV_VTS_CHANGE);
         }
       }
       break;
@@ -501,7 +526,7 @@ int CDVDInputStreamNavigator::ProcessBlock(uint8_t* dest_buffer, int* read)
         m_iTime      = (int) (m_iCellStart / 90);
         m_iTotalTime = (int) (cell_change_event->pgc_length / 90);
 
-        iNavresult = m_pVideoPlayer->OnDVDNavResult(buf, DVDNAV_CELL_CHANGE);
+        iNavresult = m_pVideoPlayer->OnDiscNavResult(buf, DVDNAV_CELL_CHANGE);
       }
       break;
 
@@ -561,7 +586,7 @@ int CDVDInputStreamNavigator::ProcessBlock(uint8_t* dest_buffer, int* read)
 
         m_iTime = (int) ( m_dll.dvdnav_get_current_time(m_dvdnav)  / 90 );
 
-        iNavresult = m_pVideoPlayer->OnDVDNavResult((void*)pci, DVDNAV_NAV_PACKET);
+        iNavresult = m_pVideoPlayer->OnDiscNavResult((void*)pci, DVDNAV_NAV_PACKET);
       }
       break;
 
@@ -569,7 +594,7 @@ int CDVDInputStreamNavigator::ProcessBlock(uint8_t* dest_buffer, int* read)
       // This event is issued whenever a non-seamless operation has been executed.
       // Applications with fifos should drop the fifos content to speed up responsiveness.
       {
-        iNavresult = m_pVideoPlayer->OnDVDNavResult(NULL, DVDNAV_HOP_CHANNEL);
+        iNavresult = m_pVideoPlayer->OnDiscNavResult(NULL, DVDNAV_HOP_CHANNEL);
       }
       break;
 
@@ -581,7 +606,7 @@ int CDVDInputStreamNavigator::ProcessBlock(uint8_t* dest_buffer, int* read)
         // the disc. reading further results in a crash
         m_bEOF = true;
 
-        m_pVideoPlayer->OnDVDNavResult(NULL, DVDNAV_STOP);
+        m_pVideoPlayer->OnDiscNavResult(NULL, DVDNAV_STOP);
         iNavresult = NAVRESULT_ERROR;
       }
       break;
@@ -883,7 +908,7 @@ DVDNavSubtitleStreamInfo CDVDInputStreamNavigator::GetSubtitleStreamInfo(const i
     lang[1] = (subp_attributes.lang_code & 255);
     lang[0] = (subp_attributes.lang_code >> 8) & 255;
 
-    info.language = g_LangCodeExpander.ConvertToISO6392T(lang);
+    info.language = g_LangCodeExpander.ConvertToISO6392B(lang);
   }
 
   return info;
@@ -1067,7 +1092,7 @@ DVDNavAudioStreamInfo CDVDInputStreamNavigator::GetAudioStreamInfo(const int iId
     lang[1] = (audio_attributes.lang_code & 255);
     lang[0] = (audio_attributes.lang_code >> 8) & 255;
 
-    info.language = g_LangCodeExpander.ConvertToISO6392T(lang);
+    info.language = g_LangCodeExpander.ConvertToISO6392B(lang);
     info.channels = audio_attributes.channels + 1;
   }
 
@@ -1559,4 +1584,59 @@ DVDNavVideoStreamInfo CDVDInputStreamNavigator::GetVideoStreamInfo()
   info.codec = "h262";
 
   return info;
+}
+
+int dvd_inputstreamnavigator_cb_seek(void * p_stream, uint64_t i_pos)
+{
+  CDVDInputStreamFile *lpstream = reinterpret_cast<CDVDInputStreamFile*>(p_stream);
+  if (lpstream->Seek(i_pos, 0) >= 0)
+    return 0;
+  else
+    return -1;
+}
+
+int dvd_inputstreamnavigator_cb_read(void * p_stream, void * buffer, int i_read)
+{
+  CDVDInputStreamFile *lpstream = reinterpret_cast<CDVDInputStreamFile*>(p_stream);
+  return lpstream->Read(reinterpret_cast<uint8_t *>(buffer), i_read);
+}
+
+int dvd_inputstreamnavigator_cb_readv(void * p_stream, void * p_iovec, int i_blocks)
+{
+  // NOTE/TODO: this vectored read callback somehow doesn't seem to be called by libdvdnav.
+  // Therefore, the code below isn't really tested, but inspired from the libc_readv code for Win32 in libdvdcss (device.c:713). 
+  CDVDInputStreamFile *lpstream = reinterpret_cast<CDVDInputStreamFile*>(p_stream);
+  const struct iovec* lpiovec = reinterpret_cast<const struct iovec*>(p_iovec);
+
+  int i_index, i_len, i_total = 0;
+  unsigned char *p_base;
+  int i_bytes;
+
+  for (i_index = i_blocks; i_index; i_index--, lpiovec++)
+  {
+    i_len = lpiovec->iov_len;
+    p_base = reinterpret_cast<unsigned char*>(lpiovec->iov_base);
+
+    if (i_len <= 0)
+      continue;
+
+    i_bytes = lpstream->Read(p_base, i_len);
+    if (i_bytes < 0)
+      return -1;
+    else
+      i_total += i_bytes;
+
+    if (i_bytes != i_len)
+    {
+      /* We reached the end of the file or a signal interrupted
+      * the read. Return a partial read. */
+      int i_seek = lpstream->Seek(i_total,0);
+      if (i_seek < 0)
+        return i_seek;
+
+      /* We have to return now so that i_pos isn't clobbered */
+      return i_total;
+    }
+  }
+  return i_total;
 }

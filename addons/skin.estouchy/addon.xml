@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="skin.estouchy" version="2.0.1" name="Estouchy" provider-name="Team Kodi">
+<addon id="skin.estouchy" version="2.0.2" name="Estouchy" provider-name="Team Kodi">
 	<requires>
 		<import addon="xbmc.gui" version="5.13.0"/>
 	</requires>
@@ -8,27 +8,31 @@
 		<res width="1706" height="960" aspect="16:9" default="true" folder="xml"/>
 	</extension>
 	<extension point="xbmc.addon.metadata">
+		<summary lang="af_ZA">Oortreksel vir raakskerm toestelle</summary>
+		<summary lang="am_ET">ለ ተችስክሪን አካሎች ቆዳ</summary>
 		<summary lang="bg_BG">Облик за устройства с екран чувствителен на допир</summary>
 		<summary lang="ca_ES">Aparença per als dispositius amb pantalla tàctil</summary>
-		<summary lang="cs_CZ">Skin pro dotyková zařízení</summary>
+		<summary lang="cs_CZ">Vzhled pro zařízení s dotykovou obrazovkou</summary>
 		<summary lang="de_DE">Skin für Touchscreen-Geräte</summary>
 		<summary lang="el_GR">Κέλυφος για συσκευές με οθόνη αφής</summary>
 		<summary lang="en_GB">Skin for touchscreen devices</summary>
 		<summary lang="en_NZ">Skin for touchscreen devices</summary>
 		<summary lang="en_US">Skin for touchscreen devices</summary>
-		<summary lang="es_ES">Plantilla para dispositivos táctiles</summary>
+		<summary lang="es_ES">Skin para dispositivos táctiles</summary>
 		<summary lang="es_MX">Máscara para dispositivos con pantalla táctil</summary>
 		<summary lang="fi_FI">Ulkoasu kosketusnäyttölaitteille</summary>
 		<summary lang="fr_CA">Habillage pour appareils à écran tactile</summary>
 		<summary lang="fr_FR">Habillage pour les appareils à écran tactile</summary>
 		<summary lang="gl_ES">Pel para dispositivos táctiles</summary>
 		<summary lang="he_IL">מעטפת עבור התקני מסך מגע</summary>
+		<summary lang="hr_HR">Presvlaka za uređaje s dodirom na zaslon</summary>
 		<summary lang="hu_HU">Felület érintőképernyős eszközöknek</summary>
 		<summary lang="it_IT">Skin per dispositivi touchscreen</summary>
 		<summary lang="ko_KR">터치 스크린 기기를 위한 스킨</summary>
 		<summary lang="lt_LT">Teminė išvaizda liečiamiesiems įrenginiams</summary>
+		<summary lang="lv_LV">Apvalks skārienekrāna ierīcēm</summary>
 		<summary lang="ms_MY">Kulit untuk peranti skrin sentuh</summary>
-		<summary lang="nb_NO">Skinn for enheter med berøringsskjerm</summary>
+		<summary lang="nb_NO">Drakt for enheter med berøringsskjerm</summary>
 		<summary lang="nl_NL">Skin voor aanraakschermapparaten</summary>
 		<summary lang="pl_PL">Skóra dedykowana urządzeniom z ekranem dotykowym</summary>
 		<summary lang="pt_BR">Skin para dispositivos com telas de toque</summary>
@@ -38,32 +42,35 @@
 		<summary lang="sk_SK">Grafický vzhľad pre zariadenia s dotykovým displejom</summary>
 		<summary lang="sr_RS">Маска за уређаје са екраном осетљивим на додир</summary>
 		<summary lang="sr_RS@latin">Maska za uređaje sa ekranom osetljivim na dodir</summary>
-		<summary lang="sv_SE">Skin för enheter med touchskärm</summary>
+		<summary lang="sv_SE">Skal för enheter med pekskärm</summary>
 		<summary lang="szl">Skōra dlŏ maszin z tykowym ekranym</summary>
+		<summary lang="th_TH">หน้าตาสำหรับอุปกรณ์สัมผัส</summary>
 		<summary lang="tr_TR">Dokunmatik ekranlı aygıtlar için dış görünüm</summary>
 		<summary lang="zh_CN">针对触屏设备的皮肤</summary>
 		<summary lang="zh_TW">為具有觸控螢幕的裝置所製作的佈景主題</summary>
+		<description lang="af_ZA">Oortreksel ontwerp om op raakskerm toestelle soos tablette en slimfone te gebruik</description>
 		<description lang="bg_BG">Обликът е разработен за ползване на устройства, с екран чувствителен на допир като таблет или телефон.</description>
 		<description lang="ca_ES">Aparença dissenyada perquè s'utilitzi en dispositius amb pantalla tàctil com taules i telèfons intel·ligents</description>
-		<description lang="cs_CZ">Skin navržený pro zařízení s dotykovou obrazovkou, jako jsou tablety a smartphony.</description>
+		<description lang="cs_CZ">Vzhled navržený pro použití na zařízeních s dotykovou obrazovkou, jako jsou tablety a chytré telefony</description>
 		<description lang="de_DE">Dieses Skin wurde für die Benutzung mit Touchscreen-Geräten wie Tablets und Handys entworfen</description>
 		<description lang="el_GR">Κέλυφος σχεδιασμένο για να χρησιμοποιηθεί σε συσκευές με οθόνη αφής όπως ταμπλέτες και έξυπνα κινητά.</description>
 		<description lang="en_GB">Skin designed to be used on touchscreen devices like tablets and smartphones</description>
 		<description lang="en_NZ">Skin designed to be used on touchscreen devices like tablets and smartphones</description>
 		<description lang="en_US">Skin designed to be used on touchscreen devices like tablets and smartphones</description>
-		<description lang="es_ES">Esta plantilla está diseñada para usarla en dispositivos táctiles como tabletas y smartphones</description>
+		<description lang="es_ES">Esta skin está diseñada para usarla en dispositivos táctiles como tabletas y smartphones</description>
 		<description lang="es_MX">Máscara diseñada para ser usada en dispositivos de pantalla táctil como tabletas y teléfonos inteligentes</description>
 		<description lang="fi_FI">Ulkoasu on suunniteltu käytettäväksi kosketusnäyttölaitteissa, esimerkiksi tableteissa ja älypuhelimissa</description>
 		<description lang="fr_CA">Habillage conçu pour être utilisé sur les appareils à écran tactile comme les tablettes et les téléphones intelligents</description>
 		<description lang="fr_FR">Habillage conçu pour les appareils à écran tactile comme les tablettes et les téléphones</description>
 		<description lang="gl_ES">Pel deseñada para se empregar en dispositivos táctiles como tabletas e móbiles</description>
 		<description lang="he_IL">מעטפת מיועדת לשימוש בהתקני מסך מגע כגון טאבלט וסמארטפון</description>
+		<description lang="hr_HR">Presvlaka dizajnirana za korištenje na uređajima s dodirom na zaslon poput tableta i pametnih telefona</description>
 		<description lang="hu_HU">Egy érintőképernyős eszközökre, például táblagépekre és okostelefonokra tervezett felület</description>
 		<description lang="it_IT">Skin progettata per essere usata su dispositivi touchscreen come tablet e smartphone</description>
 		<description lang="ko_KR">태블릿이나 스마트폰과 같은 터치 스크린 기기에서 사용할 수 있게 디자인한 스킨</description>
 		<description lang="lt_LT">Teminė išvaizda pritaikyta naudojimui įrenginiuose su liečiamaisiais ekranais, tokiuose kaip planšetiniai kompiuteriai ar išmanieji telefonai</description>
 		<description lang="ms_MY">Kulit direka untuk digunakan pada peranti berskrin sentuh seperti tablet dan telefon pintar</description>
-		<description lang="nb_NO">Skin designet for å bli brukt på enheter med berørningsskjerm som smarttelefoner og lesebrett</description>
+		<description lang="nb_NO">Drakt designet for å bli brukt på enheter med berørningsskjerm, som smarttelefoner og lesebrett</description>
 		<description lang="nl_NL">Skin ontworpen voor gebruik bij aanraakschermapparaten zoals tablets en smartphones</description>
 		<description lang="pl_PL">Skóra dedykowana urządzeniom z ekranem dotykowym takim jak tablety i smartfony.</description>
 		<description lang="pt_BR">Skin concebida para ser usada em dispositivos com telas de toque como tablets e smartphones</description>
@@ -75,6 +82,7 @@
 		<description lang="sr_RS@latin">Maska dizajnirana da bi bila korišćena na uređajima sa ekranima osetljivim na dodir kao što su tableti i pametni telefoni</description>
 		<description lang="sv_SE">Skal avsedd att användas på enheter med pekskärm som surfplattor och smarttelefoner</description>
 		<description lang="szl">Skōra dlŏ maszin ze tykowym ekranym, jak tablety i smartfōny.</description>
+		<description lang="th_TH">หน้าตาที่ออกแบบมาเพื่อใช้งานบนอุปกรณ์หน้าจอสัมผัส เช่น แท็บเล็ตและสมาร์ทโฟน</description>
 		<description lang="tr_TR">Bu dış görünüm tabletler ve akıllı telefonlar gibi dokunmatik ekranlı aygıtlarda kullanılmak üzere tasarlandı</description>
 		<description lang="zh_CN">为触屏设备如平板电脑和智能手机而设计的皮肤</description>
 		<description lang="zh_TW">本佈景主題專為平板及手機等具有觸控螢幕的裝置而設計</description>

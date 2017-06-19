@@ -91,7 +91,7 @@ namespace PERIPHERALS
     friend class CPeripheralCecAdapterReopenJob;
 
   public:
-    CPeripheralCecAdapter(const PeripheralScanResult& scanResult, CPeripheralBus* bus);
+    CPeripheralCecAdapter(CPeripherals& manager, const PeripheralScanResult& scanResult, CPeripheralBus* bus);
     virtual ~CPeripheralCecAdapter(void);
 
     void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data);

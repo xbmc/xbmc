@@ -21,6 +21,7 @@ testMain
 config.cache
 config.status
 config.log
+.last_success_revision
 *.d
 *.depend
 *.pc
@@ -116,6 +117,7 @@ cmake_install.cmake
 /libtool
 /*.patch
 /kodi-build/
+/gtestresults.xml
 
 # /addons/
 /addons/packages
@@ -138,6 +140,7 @@ cmake_install.cmake
 /addons/visualization.*
 /addons/screensaver.*
 /addons/inputstream.*
+/addons/vfs.*
 
 # /lib/
 /lib/Makefile
@@ -247,6 +250,7 @@ lib/cpluff/stamp-h1
 /project/BuildDependencies/bin/doxygen
 /project/BuildDependencies/bin/json-rpc
 /project/BuildDependencies/x64
+/project/BuildDependencies/win32
 
 # /system
 /system/cpluff.dll
@@ -254,7 +258,6 @@ lib/cpluff/stamp-h1
 /system/EasyHook64.dll
 /system/libcurl.dll
 /system/libeay32.dll
-/system/libexif.dll
 /system/ssh.dll
 /system/sqlite3.dll
 /system/libnfs.dll
@@ -362,10 +365,6 @@ lib/cpluff/stamp-h1
 /tools/TexturePacker/TexturePacker*
 /tools/TexturePacker/Makefile
 /tools/TexturePacker/*.dll
-
-# /tools/buildsteps/win32
-/tools/buildsteps/win32/1
-/tools/buildsteps/win32/4
 
 # /userdata/
 /userdata/Database
@@ -507,12 +506,6 @@ lib/cpluff/stamp-h1
 
 #/lib/win32/ffmpeg
 /lib/win32/ffmpeg/
-
-# /lib/libexif
-/lib/libexif/Makefile
-/lib/libexif/Debug (DLL)
-/lib/libexif/Release (DLL)
-/lib/libexif/libexif.lib
 
 /lib/libUPnP/Makefile
 

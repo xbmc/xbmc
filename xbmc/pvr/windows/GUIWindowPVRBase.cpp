@@ -25,27 +25,25 @@
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogSelect.h"
-#include "epg/Epg.h"
 #include "GUIUserMessages.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
 #include "messaging/ApplicationMessenger.h"
+#include "utils/log.h"
+#include "utils/Variant.h"
+
+#include "pvr/PVRGUIActions.h"
+#include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannelGroup.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
-#include "pvr/dialogs/GUIDialogPVRRecordingInfo.h"
-#include "pvr/PVRGUIActions.h"
-#include "pvr/PVRManager.h"
+#include "pvr/epg/Epg.h"
 #include "pvr/timers/PVRTimers.h"
-#include "ServiceBroker.h"
-#include "utils/log.h"
-#include "utils/Variant.h"
 
 #define MAX_INVALIDATION_FREQUENCY 2000 // limit to one invalidation per X milliseconds
 
 using namespace PVR;
-using namespace EPG;
 using namespace KODI::MESSAGING;
 
 CCriticalSection CGUIWindowPVRBase::m_selectedItemPathsLock;
@@ -90,7 +88,7 @@ void CGUIWindowPVRBase::UpdateSelectedItemPath()
 
 void CGUIWindowPVRBase::RegisterObservers(void)
 {
-  g_PVRManager.RegisterObserver(this);
+  CServiceBroker::GetPVRManager().RegisterObserver(this);
 
   CSingleLock lock(m_critSection);
   if (m_channelGroup)
@@ -104,7 +102,7 @@ void CGUIWindowPVRBase::UnregisterObservers(void)
     if (m_channelGroup)
       m_channelGroup->UnregisterObserver(this);
   }
-  g_PVRManager.UnregisterObserver(this);
+  CServiceBroker::GetPVRManager().UnregisterObserver(this);
 };
 
 void CGUIWindowPVRBase::Notify(const Observable &obs, const ObservableMessage msg)
@@ -265,12 +263,12 @@ bool CGUIWindowPVRBase::CanBeActivated() const
 
 bool CGUIWindowPVRBase::OpenChannelGroupSelectionDialog(void)
 {
-  CGUIDialogSelect *dialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+  CGUIDialogSelect *dialog = g_windowManager.GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
   if (!dialog)
     return false;
 
   CFileItemList options;
-  g_PVRChannelGroups->Get(m_bRadio)->GetGroupList(&options, true);
+  CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_bRadio)->GetGroupList(&options, true);
 
   dialog->Reset();
   dialog->SetHeading(CVariant{g_localizeStrings.Get(19146)});
@@ -286,14 +284,14 @@ bool CGUIWindowPVRBase::OpenChannelGroupSelectionDialog(void)
   if (!item)
     return false;
 
-  SetChannelGroup(g_PVRChannelGroups->Get(m_bRadio)->GetByName(item->m_strTitle));
+  SetChannelGroup(CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_bRadio)->GetByName(item->m_strTitle));
 
   return true;
 }
 
 bool CGUIWindowPVRBase::InitChannelGroup()
 {
-  const CPVRChannelGroupPtr group(g_PVRManager.GetPlayingGroup(m_bRadio));
+  const CPVRChannelGroupPtr group(CServiceBroker::GetPVRManager().GetPlayingGroup(m_bRadio));
   if (group)
   {
     CSingleLock lock(m_critSection);
@@ -336,7 +334,7 @@ void CGUIWindowPVRBase::SetChannelGroup(const CPVRChannelGroupPtr &group, bool b
 
   if (bUpdate && channelGroup)
   {
-    g_PVRManager.SetPlayingGroup(channelGroup);
+    CServiceBroker::GetPVRManager().SetPlayingGroup(channelGroup);
     Update(GetDirectoryPath());
   }
 }
@@ -383,7 +381,7 @@ void CGUIWindowPVRBase::ShowProgressDialog(const std::string &strText, int iProg
 {
   if (!m_progressHandle)
   {
-    CGUIDialogExtendedProgressBar *loadingProgressDialog = dynamic_cast<CGUIDialogExtendedProgressBar *>(g_windowManager.GetWindow(WINDOW_DIALOG_EXT_PROGRESS));
+    CGUIDialogExtendedProgressBar *loadingProgressDialog = g_windowManager.GetWindow<CGUIDialogExtendedProgressBar>(WINDOW_DIALOG_EXT_PROGRESS);
     if (!loadingProgressDialog)
     {
       CLog::Log(LOGERROR, "CGUIWindowPVRBase - %s - unable to get WINDOW_DIALOG_EXT_PROGRESS!", __FUNCTION__);

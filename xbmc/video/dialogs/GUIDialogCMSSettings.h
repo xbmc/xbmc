@@ -30,7 +30,7 @@ public:
 
 protected:
   // implementations of ISettingCallback
-  virtual void OnSettingChanged(const CSetting *setting) override;
+  virtual void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
 
   // specialization of CGUIDialogSettingsBase
   virtual bool AllowResettingSettings() const override { return false; }
@@ -43,7 +43,7 @@ protected:
 
 private:
   static void Cms3dLutsFiller(
-    const CSetting *setting,
+    std::shared_ptr<const CSetting> setting,
     std::vector< std::pair<std::string, std::string> > &list,
     std::string &current,
     void *data);

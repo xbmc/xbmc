@@ -35,6 +35,7 @@ public:
   virtual void Render();
   virtual void RenderEx();
   virtual void OnWindowLoaded();
+  virtual bool HasVisibleControls();
 
 protected:
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
@@ -44,7 +45,7 @@ private:
   void ToggleOSD();
   void TriggerOSD();
 
-  bool m_bShowViewModeInfo;
+  bool m_viewModeChanged;
   unsigned int m_dwShowViewModeTimeout;
 
   bool m_bShowCurrentTime;

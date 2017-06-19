@@ -60,6 +60,26 @@ msgctxt "#31016"
 msgid "Albums"
 msgstr "专辑"
 
+msgctxt "#31017"
+msgid "PVR info"
+msgstr "PVR 信息"
+
+msgctxt "#31018"
+msgid "Player process info"
+msgstr "播放器处理信息"
+
+msgctxt "#31019"
+msgid "Video decoder"
+msgstr "视频解码器"
+
+msgctxt "#31020"
+msgid "Pixel format"
+msgstr "像素格式"
+
+msgctxt "#31021"
+msgid "System memory usage"
+msgstr "系统内存使用"
+
 msgctxt "#31024"
 msgid "Page"
 msgstr "页"
@@ -215,6 +235,14 @@ msgstr "显示系统信息 · 硬件统计 · 检查可用存储 · 浏览网络
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "选择您的用户配置文件[CR]登录并继续"
+
+msgctxt "#31548"
+msgid "Home menu"
+msgstr "主菜单"
+
+msgctxt "#31549"
+msgid "Home Add-ons"
+msgstr "主页插件"
 
 msgctxt "#31550"
 msgid "Backgrounds"

@@ -31,7 +31,6 @@
 #include "music/Artist.h"
 #include "music/Album.h"
 #include "music/Song.h"
-#include "music/Artist.h"
 #include "messaging/ApplicationMessenger.h"
 #include "filesystem/Directory.h"
 #include "settings/Settings.h"
@@ -348,7 +347,7 @@ JSONRPC_STATUS CAudioLibrary::GetSongs(const std::string &method, ITransportLaye
   bool artistData = CheckForAdditionalProperties(parameterObject["properties"], checkProperties, additionalProperties);
  
   CFileItemList items;
-  if (!musicdatabase.GetSongsFullByWhere(musicUrl.ToString(), CDatabase::Filter(), items, sorting, artistData, false))
+  if (!musicdatabase.GetSongsFullByWhere(musicUrl.ToString(), CDatabase::Filter(), items, sorting, artistData))
     return InternalError; 
 
   JSONRPC_STATUS ret = GetAdditionalSongDetails(parameterObject, items, musicdatabase);

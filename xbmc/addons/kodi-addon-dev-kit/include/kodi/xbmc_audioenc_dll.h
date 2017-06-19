@@ -48,13 +48,13 @@ extern "C"
   // function to export the above structure to XBMC
   void __declspec(dllexport) get_addon(void* enc)
   {
-    KodiToAddonFuncTable_AudioEncoder* pScr = static_cast<KodiToAddonFuncTable_AudioEncoder*>(enc);
+    AddonInstance_AudioEncoder* pScr = static_cast<AddonInstance_AudioEncoder*>(enc);
 
-    pScr->Create = Create;
-    pScr->Start  = Start;
-    pScr->Encode = Encode;
-    pScr->Finish = Finish;
-    pScr->Free   = Free;
+    pScr->toAddon.Create = Create;
+    pScr->toAddon.Start  = Start;
+    pScr->toAddon.Encode = Encode;
+    pScr->toAddon.Finish = Finish;
+    pScr->toAddon.Free   = Free;
   };
 };
 

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2016 Team Kodi
+ *      Copyright (C) 2016-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -33,6 +33,7 @@
 
 #include <algorithm>
 
+using namespace KODI;
 using namespace GAME;
 
 #define REWIND_FACTOR  0.25  // Rewind at 25% of gameplay speed

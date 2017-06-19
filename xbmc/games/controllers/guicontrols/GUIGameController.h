@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2014-2016 Team Kodi
+ *      Copyright (C) 2014-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -23,6 +23,8 @@
 #include "guilib/GUIImage.h"
 #include "threads/CriticalSection.h"
 
+namespace KODI
+{
 namespace GAME
 {
   class CGUIGameController : public CGUIImage
@@ -31,7 +33,7 @@ namespace GAME
     CGUIGameController(int parentID, int controlID, float posX, float posY, float width, float height);
     CGUIGameController(const CGUIGameController &from);
 
-    virtual ~CGUIGameController(void) { }
+    virtual ~CGUIGameController() = default;
 
     // implementation of CGUIControl via CGUIImage
     virtual CGUIGameController* Clone(void) const override;
@@ -43,4 +45,5 @@ namespace GAME
     ControllerPtr       m_currentController;
     CCriticalSection    m_mutex;
   };
+}
 }

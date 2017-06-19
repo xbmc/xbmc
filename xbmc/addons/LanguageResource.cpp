@@ -27,6 +27,7 @@
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "messaging/helpers/DialogHelper.h"
+#include "Skin.h"
 
 using namespace KODI::MESSAGING;
 
@@ -37,7 +38,7 @@ using KODI::MESSAGING::HELPERS::DialogResponse;
 namespace ADDON
 {
 
-std::unique_ptr<CLanguageResource> CLanguageResource::FromExtension(AddonProps props, const cp_extension_t* ext)
+std::unique_ptr<CLanguageResource> CLanguageResource::FromExtension(CAddonInfo addonInfo, const cp_extension_t* ext)
 {
   // parse <extension> attributes
   CLocale locale = CLocale::FromString(CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@locale"));
@@ -95,7 +96,7 @@ std::unique_ptr<CLanguageResource> CLanguageResource::FromExtension(AddonProps p
     }
   }
   return std::unique_ptr<CLanguageResource>(new CLanguageResource(
-      std::move(props),
+      std::move(addonInfo),
       locale,
       charsetGui,
       forceUnicodeFont,
@@ -107,7 +108,7 @@ std::unique_ptr<CLanguageResource> CLanguageResource::FromExtension(AddonProps p
 }
 
 CLanguageResource::CLanguageResource(
-    AddonProps props,
+    CAddonInfo addonInfo,
     const CLocale& locale,
     const std::string& charsetGui,
     bool forceUnicodeFont,
@@ -116,7 +117,7 @@ CLanguageResource::CLanguageResource(
     const std::string& dvdLanguageAudio,
     const std::string& dvdLanguageSubtitle,
     const std::set<std::string>& sortTokens)
-  : CResource(std::move(props)),
+  : CResource(std::move(addonInfo)),
     m_locale(locale),
     m_charsetGui(charsetGui),
     m_forceUnicodeFont(forceUnicodeFont),
@@ -134,17 +135,13 @@ bool CLanguageResource::IsInUse() const
 
 void CLanguageResource::OnPostInstall(bool update, bool modal)
 {
+  if (!g_SkinInfo)
+    return;
+
   if (IsInUse() ||
      (!update && !modal && 
        (HELPERS::ShowYesNoDialogText(CVariant{Name()}, CVariant{24132}) == DialogResponse::YES)))
   {
-    CGUIDialogKaiToast *toast = (CGUIDialogKaiToast *)g_windowManager.GetWindow(WINDOW_DIALOG_KAI_TOAST);
-    if (toast)
-    {
-      toast->ResetTimer();
-      toast->Close(true);
-    }
-
     if (IsInUse())
       g_langInfo.SetLanguage(ID());
     else

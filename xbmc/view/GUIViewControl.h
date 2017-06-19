@@ -61,7 +61,7 @@ public:
 
 protected:
   int GetSelectedItem(const CGUIControl *control) const;
-  void UpdateContents(const CGUIControl *control, int currentItem);
+  void UpdateContents(const CGUIControl *control, int currentItem) const;
   void UpdateView();
   void UpdateViewAsControl(const std::string &viewLabel);
   void UpdateViewVisibility();

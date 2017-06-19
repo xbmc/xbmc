@@ -65,13 +65,9 @@ public:
   virtual void ResetAnimation(ANIMATION_TYPE anim);
   virtual void ResetAnimations();
 
-  virtual bool HasID(int id) const;
-  virtual bool HasVisibleID(int id) const;
-
   int GetFocusedControlID() const;
   CGUIControl *GetFocusedControl() const;
-  const CGUIControl *GetControl(int id) const;
-  CGUIControl *GetControl(int id);
+  virtual CGUIControl *GetControl(int id, std::vector<CGUIControl*> *idCollector = nullptr);
   virtual CGUIControl *GetFirstFocusableControl(int id);
 
   virtual void AddControl(CGUIControl *control, int position = -1);
@@ -99,7 +95,7 @@ protected:
   bool IsValidControl(const CGUIControl *control) const;
 
   // sub controls
-  std::vector<CGUIControl *> m_children;
+  std::vector<CGUIControl *> m_children, m_idCollector;
   typedef std::vector<CGUIControl *>::iterator iControls;
   typedef std::vector<CGUIControl *>::const_iterator ciControls;
   typedef std::vector<CGUIControl *>::reverse_iterator rControls;

@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 # Addon Name: Estuary
 # Addon id: skin.estuary
-# Addon Provider: phil65, Piers
+# Addon Provider: phil65, Ichabod Fletchman
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
@@ -111,6 +111,10 @@ msgstr "Widzik"
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
 msgstr "Niy ma wertownych. Możesz przidŏć leda jakõ pozycyjõ do tego wykŏzu z poziōmu widzikōw mydiōw, bez myni kōntekstowe."
+
+msgctxt "#31026"
+msgid "Timeshift"
+msgstr "Timeshift"
 
 msgctxt "#31028"
 msgid "Show fanart"
@@ -419,10 +423,6 @@ msgstr "Ôgōlne sztelōnki dlŏ wszyjskich przestrzyństw skōry."
 msgctxt "#31130"
 msgid "Main menu-related settings: Configure the home screen to your likings."
 msgstr "Sztelōnki przodnigo myni: Kōnfiguruj przodnie myni do swojich ôbmiyłowań."
-
-msgctxt "#31132"
-msgid "min"
-msgstr "min"
 
 msgctxt "#31134"
 msgid "Remaining"

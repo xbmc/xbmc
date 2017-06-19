@@ -18,9 +18,8 @@
  *
  */
 
-#include "ContextMenus.h"
-#include "FileItem.h"
 #include "storage/MediaManager.h"
+#include "ContextMenus.h"
 
 
 namespace CONTEXTMENU
@@ -54,4 +53,4 @@ namespace CONTEXTMENU
     return g_mediaManager.Eject(item->GetPath());
   }
 
-}
+} // namespace CONTEXTMENU

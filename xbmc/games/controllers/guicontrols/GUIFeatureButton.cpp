@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2016 Team Kodi
+ *      Copyright (C) 2016-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -26,6 +26,7 @@
 #include "threads/Event.h"
 #include "utils/StringUtils.h"
 
+using namespace KODI;
 using namespace GAME;
 
 CGUIFeatureButton::CGUIFeatureButton(const CGUIButtonControl& buttonTemplate,
@@ -51,7 +52,7 @@ void CGUIFeatureButton::OnUnFocus(void)
 
 bool CGUIFeatureButton::DoPrompt(const std::string& strPrompt, const std::string& strWarn, const std::string& strFeature, CEvent& waitEvent)
 {
-  using namespace KODI::MESSAGING;
+  using namespace MESSAGING;
 
   bool bInterrupted = false;
 

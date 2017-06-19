@@ -21,6 +21,7 @@
 #include "AddonManager.h"
 
 #include <algorithm>
+#include <array>
 #include <iterator>
 #include <memory>
 #include <utility>
@@ -38,6 +39,7 @@
 #include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.h"
 #include "DllLibCPluff.h"
 #include "events/AddonManagementEvent.h"
+#include "events/NotificationEvent.h"
 #include "events/EventLog.h"
 #include "filesystem/SpecialProtocol.h"
 #include "VFSEntry.h"
@@ -86,7 +88,7 @@ static cp_extension_t* GetFirstExtPoint(const cp_plugin_info_t* addon, TYPE type
     if (type == ADDON_UNKNOWN)
       return ext;
 
-    if (type == TranslateType(ext->ext_point_id))
+    if (type == CAddonInfo::TranslateType(ext->ext_point_id))
       return ext;
   }
   return nullptr;
@@ -100,7 +102,7 @@ AddonPtr CAddonMgr::Factory(const cp_plugin_info_t* plugin, TYPE type)
   return nullptr;
 }
 
-bool CAddonMgr::Factory(const cp_plugin_info_t* plugin, TYPE type, CAddonBuilder& builder)
+bool CAddonMgr::Factory(const cp_plugin_info_t* plugin, TYPE type, CAddonBuilder& builder, bool ignoreExtensions/* = false*/)
 {
   if (!plugin || !plugin->identifier)
     return false;
@@ -108,20 +110,23 @@ bool CAddonMgr::Factory(const cp_plugin_info_t* plugin, TYPE type, CAddonBuilder
   if (!PlatformSupportsAddon(plugin))
     return false;
 
-  cp_extension_t* ext = GetFirstExtPoint(plugin, type);
-
-  if (ext == nullptr && type != ADDON_UNKNOWN)
-    return false; // no extension point satisfies the type requirement
-
-  if (ext)
+  if (!ignoreExtensions)
   {
-    builder.SetType(TranslateType(ext->ext_point_id));
-    builder.SetExtPoint(ext);
+    cp_extension_t* ext = GetFirstExtPoint(plugin, type);
 
-    auto libname = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@library");
-    if (libname.empty())
-      libname = CAddonMgr::GetInstance().GetPlatformLibraryName(ext->configuration);
-    builder.SetLibName(libname);
+    if (ext == nullptr && type != ADDON_UNKNOWN)
+      return false; // no extension point satisfies the type requirement
+
+    if (ext)
+    {
+      builder.SetType(CAddonInfo::TranslateType(ext->ext_point_id));
+      builder.SetExtPoint(ext);
+
+      auto libname = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@library");
+      if (libname.empty())
+        libname = CAddonMgr::GetInstance().GetPlatformLibraryName(ext->configuration);
+      builder.SetLibName(libname);
+    }
   }
 
   FillCpluffMetadata(plugin, builder);
@@ -173,7 +178,7 @@ void CAddonMgr::FillCpluffMetadata(const cp_plugin_info_t* plugin, CAddonBuilder
     if (!icon.empty())
       builder.SetIcon(URIUtils::AddFileToFolder(plugin->plugin_path, icon));
     if (!fanart.empty())
-      builder.SetFanart(URIUtils::AddFileToFolder(plugin->plugin_path, fanart));
+      builder.SetArt("fanart", URIUtils::AddFileToFolder(plugin->plugin_path, fanart));
   }
 
   if (metadata)
@@ -201,14 +206,23 @@ void CAddonMgr::FillCpluffMetadata(const cp_plugin_info_t* plugin, CAddonBuilder
       if (assets)
       {
         builder.SetIcon("");
-        builder.SetFanart("");
+        builder.SetArt("fanart", "");
         std::string icon = CAddonMgr::GetInstance().GetExtValue(assets, "icon");
-        std::string fanart = CAddonMgr::GetInstance().GetExtValue(assets, "fanart");
-
         if (!icon.empty())
-          builder.SetIcon(URIUtils::AddFileToFolder(plugin->plugin_path, icon));
-        if (!fanart.empty())
-          builder.SetFanart(URIUtils::AddFileToFolder(plugin->plugin_path, fanart));
+          icon = URIUtils::AddFileToFolder(plugin->plugin_path, icon);
+        builder.SetIcon(icon);
+
+        std::map<std::string, std::string> art;
+        std::array<std::string, 3> artTypes{"fanart", "banner", "clearlogo"};
+        for (auto type : artTypes)
+        {
+          auto value = CAddonMgr::GetInstance().GetExtValue(assets, type.c_str());
+          if (!value.empty())
+          {
+            value = URIUtils::AddFileToFolder(plugin->plugin_path, value);
+            builder.SetArt(type, value);
+          }
+        }
 
         std::vector<std::string> screenshots;
         ELEMENTS elements;
@@ -553,6 +567,40 @@ bool CAddonMgr::FindInstallableById(const std::string& addonId, AddonPtr& result
   return true;
 }
 
+bool CAddonMgr::GetInstalledBinaryAddons(BINARY_ADDON_LIST& binaryAddonList)
+{
+  CSingleLock lock(m_critSection);
+  if (!m_cp_context)
+    return false;
+
+  std::vector<CAddonBuilder> builders;
+  m_database.GetInstalled(builders);
+
+  for (auto builder : builders)
+  {
+    cp_status_t status;
+    cp_plugin_info_t* cp_addon = m_cpluff->get_plugin_info(m_cp_context, builder.GetId().c_str(), &status);
+    if (status == CP_OK && cp_addon)
+    {
+      cp_extension_t* props = GetFirstExtPoint(cp_addon, ADDON_UNKNOWN);
+      if (props != nullptr)
+      {
+        std::string value = GetPlatformLibraryName(props->plugin->extensions->configuration);
+        if (!value.empty() &&
+            props->plugin->plugin_path &&
+            strcmp(props->plugin->plugin_path, "") != 0 &&
+            Factory(cp_addon, ADDON_UNKNOWN, builder, true))
+        {
+          binaryAddonList.push_back(BINARY_ADDON_LIST_ENTRY(!IsAddonDisabled(cp_addon->identifier), std::move(builder.GetAddonInfo())));
+        }
+      }
+      m_cpluff->release_info(m_cp_context, cp_addon);
+    }
+  }
+
+  return !binaryAddonList.empty();
+}
+
 bool CAddonMgr::GetAddonsInternal(const TYPE &type, VECADDONS &addons, bool enabledOnly)
 {
   CSingleLock lock(m_critSection);
@@ -776,16 +824,27 @@ bool CAddonMgr::DisableAddon(const std::string& id)
 bool CAddonMgr::EnableSingle(const std::string& id)
 {
   CSingleLock lock(m_critSection);
+
   if (m_disabled.find(id) == m_disabled.end())
     return true; //already enabled
+
+  AddonPtr addon;
+  if (!GetAddon(id, addon, ADDON_UNKNOWN, false) || addon == nullptr)
+    return false;
+
+  if (!IsCompatible(*addon))
+  {
+    CLog::Log(LOGERROR, "Add-on '%s' is not compatible with Kodi", addon->ID().c_str());
+    CEventLog::GetInstance().AddWithNotification(EventPtr(new CNotificationEvent(addon->Name(), 24152, EventLevel::Error)));
+    return false;
+  }
+
   if (!m_database.DisableAddon(id, false))
     return false;
   m_disabled.erase(id);
   ADDON::OnEnabled(id);
 
-  AddonPtr addon;
-  if (GetAddon(id, addon, ADDON_UNKNOWN, false) && addon != NULL)
-    CEventLog::GetInstance().Add(EventPtr(new CAddonManagementEvent(addon, 24064)));
+  CEventLog::GetInstance().Add(EventPtr(new CAddonManagementEvent(addon, 24064)));
 
   CLog::Log(LOGDEBUG, "CAddonMgr: enabled %s", addon->ID().c_str());
   m_events.Publish(AddonEvents::Enabled(id));

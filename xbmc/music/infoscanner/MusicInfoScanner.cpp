@@ -95,7 +95,7 @@ void CMusicInfoScanner::Process()
     if (m_showDialog && !CServiceBroker::GetSettings().GetBool(CSettings::SETTING_MUSICLIBRARY_BACKGROUNDUPDATE))
     {
       CGUIDialogExtendedProgressBar* dialog =
-        (CGUIDialogExtendedProgressBar*)g_windowManager.GetWindow(WINDOW_DIALOG_EXT_PROGRESS);
+        g_windowManager.GetWindow<CGUIDialogExtendedProgressBar>(WINDOW_DIALOG_EXT_PROGRESS);
       if (dialog)
         m_handle = dialog->GetHandle(g_localizeStrings.Get(314));
     }
@@ -246,7 +246,9 @@ void CMusicInfoScanner::Process()
           break;
       }
     }
-
+    //propagate artist sort names to albums and songs
+    if (g_advancedSettings.m_bMusicLibraryArtistSortOnUpdate)
+      m_musicDatabase.UpdateArtistSortNames();
   }
   catch (...)
   {
@@ -761,6 +763,7 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
           (*k)->SetAlbumArtist(common);
         //! @todo in future we may wish to union up the genres, for now we assume they're the same
         album.genre = (*k)->genre;
+        album.strArtistSort = (*k)->GetAlbumArtistSort();
         //       in addition, we may want to use year as discriminating for albums
         album.iYear = (*k)->iYear;
         album.strLabel = (*k)->strRecordLabel;
@@ -1174,7 +1177,7 @@ INFO_RET CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album, const ADDON::
         //show dialog with all albums found
         if (pDialog)
         {
-          pDlg = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+          pDlg = g_windowManager.GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
           pDlg->SetHeading(CVariant{g_localizeStrings.Get(181)});
           pDlg->Reset();
           pDlg->EnableButton(true, 413); // manual
@@ -1383,7 +1386,7 @@ INFO_RET CMusicInfoScanner::DownloadArtistInfo(const CArtist& artist, const ADDO
       if (pDialog && scraper.GetArtistCount() > 1)
       {
         // if we found more then 1 album, let user choose one
-        CGUIDialogSelect *pDlg = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+        CGUIDialogSelect *pDlg = g_windowManager.GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
         if (pDlg)
         {
           pDlg->SetHeading(CVariant{g_localizeStrings.Get(21890)});

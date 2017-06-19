@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2016 Team Kodi
+ *      Copyright (C) 2016-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -23,6 +23,8 @@
 
 #include <memory>
 
+namespace KODI
+{
 namespace GAME
 {
   class CLinearMemoryStream : public IMemoryStream
@@ -73,4 +75,5 @@ namespace GAME
   private:
     size_t m_frameSize;
   };
+}
 }

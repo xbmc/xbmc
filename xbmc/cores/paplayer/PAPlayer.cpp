@@ -28,7 +28,7 @@
 #include "utils/log.h"
 #include "utils/JobManager.h"
 
-#include "cores/AudioEngine/AEFactory.h"
+#include "cores/AudioEngine/Interfaces/AE.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/AudioEngine/Interfaces/AEStream.h"
 #include "cores/DataCacheCore.h"
@@ -167,7 +167,7 @@ void PAPlayer::SoftStop(bool wait/* = false */, bool close/* = true */)
     lock.Enter();
 
     /* be sure they have faded out */
-    while(wait && !CAEFactory::IsSuspended() && !timer.IsTimePast())
+    while(wait && !CServiceBroker::GetActiveAE().IsSuspended() && !timer.IsTimePast())
     {
       wait = false;
       for(StreamList::iterator itt = m_streams.begin(); itt != m_streams.end(); ++itt)
@@ -208,7 +208,7 @@ void PAPlayer::CloseAllStreams(bool fade/* = true */)
       
       if (si->m_stream)
       {
-        CAEFactory::FreeStream(si->m_stream);
+        CServiceBroker::GetActiveAE().FreeStream(si->m_stream);
         si->m_stream = NULL;
       }
 
@@ -223,7 +223,7 @@ void PAPlayer::CloseAllStreams(bool fade/* = true */)
 
       if (si->m_stream)
       {
-        CAEFactory::FreeStream(si->m_stream);
+        CServiceBroker::GetActiveAE().FreeStream(si->m_stream);
         si->m_stream = NULL;
       }
 
@@ -254,7 +254,7 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
   // if audio engine is suspended i.e. by a DisplayLost event (HDMI), MakeStream
   // waits until the engine is resumed. if we block the main thread here, it can't
   // resume the engine after a DisplayReset event
-  if (CAEFactory::IsSuspended())
+  if (CServiceBroker::GetActiveAE().IsSuspended())
   {
     if (!QueueNextFile(file))
       return false;
@@ -481,7 +481,7 @@ inline bool PAPlayer::PrepareStream(StreamInfo *si)
 
   /* get a paused stream */
   AEAudioFormat format = si->m_audioFormat;
-  si->m_stream = CAEFactory::MakeStream(
+  si->m_stream = CServiceBroker::GetActiveAE().MakeStream(
     format,
     AESTREAM_PAUSED
   );
@@ -495,9 +495,14 @@ inline bool PAPlayer::PrepareStream(StreamInfo *si)
   si->m_stream->SetVolume    (si->m_volume);
   float peak = 1.0;
   float gain = si->m_decoder.GetReplayGain(peak);
-  if (peak == 1.0)
+  if (peak * gain <= 1.0)
+    // No clipping protection needed
     si->m_stream->SetReplayGain(gain);
+  else if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_MUSICPLAYER_REPLAYGAINAVOIDCLIPPING))
+    // Normalise volume reducing replaygain to avoid needing clipping protection, plays file at lower level
+    si->m_stream->SetReplayGain(1.0f / fabs(peak));
   else
+    // Clipping protection (when enabled in AE) by audio limiting, applied just where needed
     si->m_stream->SetAmplification(gain);
 
   /* if its not the first stream and crossfade is not enabled */
@@ -535,7 +540,7 @@ inline bool PAPlayer::PrepareStream(StreamInfo *si)
 bool PAPlayer::CloseFile(bool reopen)
 {
   if (reopen)
-    CAEFactory::KeepConfiguration(3000);
+    CServiceBroker::GetActiveAE().KeepConfiguration(3000);
 
   if (!m_isPaused)
     SoftStop(true, true);
@@ -623,7 +628,7 @@ inline void PAPlayer::ProcessStreams(double &freeBufferTime)
     if (si->m_stream->IsDrained())
     {      
       itt = m_finishing.erase(itt);
-      CAEFactory::FreeStream(si->m_stream);
+      CServiceBroker::GetActiveAE().FreeStream(si->m_stream);
       delete si;
       CLog::Log(LOGDEBUG, "PAPlayer::ProcessStreams - Stream Freed");
     }
@@ -901,24 +906,6 @@ void PAPlayer::OnExit()
 
 }
 
-void PAPlayer::RegisterAudioCallback(IAudioCallback* pCallback)
-{
-  CSingleLock lock(m_streamsLock);
-  m_audioCallback = pCallback;
-  if (m_currentStream && m_currentStream->m_stream)
-    m_currentStream->m_stream->RegisterAudioCallback(pCallback);
-}
-
-void PAPlayer::UnRegisterAudioCallback()
-{
-  CSingleLock lock(m_streamsLock);
-  /* only one stream should have the callback, but we do it to all just incase */
-  for(StreamList::iterator itt = m_streams.begin(); itt != m_streams.end(); ++itt)
-    if ((*itt)->m_stream)
-      (*itt)->m_stream->UnRegisterAudioCallback();
-  m_audioCallback = NULL;
-}
-
 void PAPlayer::OnNothingToQueueNotify()
 {
   m_isFinished = true;
@@ -1106,13 +1093,13 @@ void PAPlayer::SeekTime(int64_t iTime /*=0*/)
   if (!m_currentStream)
     return;
 
-  int seekOffset = (int)(iTime - GetTimeInternal());
+  int64_t seekOffset = iTime - GetTimeInternal();
 
   if (m_playbackSpeed != 1)
     SetSpeed(1);
 
   m_currentStream->m_seekFrame = (int)((float)m_currentStream->m_audioFormat.m_sampleRate * ((float)iTime + (float)m_currentStream->m_startOffset) / 1000.0f);
-  m_callback.OnPlayBackSeek((int)iTime, seekOffset);
+  m_callback.OnPlayBackSeek(iTime, seekOffset);
 }
 
 void PAPlayer::SeekPercentage(float fPercent /*=0*/)
@@ -1128,11 +1115,6 @@ float PAPlayer::GetPercentage()
     return m_playerGUIData.m_time * 100.0f / m_playerGUIData.m_totalTime;
 
   return 0.0f;
-}
-
-bool PAPlayer::SkipNext()
-{
-  return false;
 }
 
 void PAPlayer::UpdateGUIData(StreamInfo *si)

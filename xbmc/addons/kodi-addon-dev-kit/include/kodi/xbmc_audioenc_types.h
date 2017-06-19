@@ -20,9 +20,7 @@
  *
  */
 
-#ifdef TARGET_WINDOWS
-#include <windows.h>
-#else
+#ifndef TARGET_WINDOWS
 #ifndef __cdecl
 #define __cdecl
 #endif
@@ -31,16 +29,12 @@
 #endif
 #endif
 
+#include "xbmc_addon_types.h"
 #include <stdint.h>
 
 extern "C"
 {
   struct AUDIOENC_INFO
-  {
-    int dummy;
-  };
-
-  struct AUDIOENC_PROPS
   {
     int dummy;
   };
@@ -54,6 +48,16 @@ extern "C"
     audioenc_write_callback write;
     audioenc_seek_callback  seek;
   } audioenc_callbacks;
+
+  typedef struct AddonProps_AudioEncoder
+  {
+    int dummy;
+  } AddonProps_AudioEncoder;
+
+  typedef struct AddonToKodiFuncTable_AudioEncoder
+  {
+    KODI_HANDLE kodiInstance;
+  } AddonToKodiFuncTable_AudioEncoder;
 
   typedef struct KodiToAddonFuncTable_AudioEncoder
   {
@@ -106,5 +110,12 @@ extern "C"
      */
     void (__cdecl* Free)(void* context);
   } KodiToAddonFuncTable_AudioEncoder;
+
+  typedef struct AddonInstance_AudioEncoder
+  {
+    AddonProps_AudioEncoder props;
+    AddonToKodiFuncTable_AudioEncoder toKodi;
+    KodiToAddonFuncTable_AudioEncoder toAddon;
+  } AddonInstance_AudioEncoder;
 }
 

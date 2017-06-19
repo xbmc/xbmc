@@ -68,8 +68,10 @@ public:
   virtual bool IsSoundEnabled() const { return m_enableSound; };
 
 protected:
+  bool Load(TiXmlElement *pRootElement) override;
   virtual void SetDefaults();
   virtual void OnWindowLoaded();
+  using CGUIWindow::UpdateVisibility;
   virtual void UpdateVisibility();
 
   virtual void Open_Internal(const std::string &param = "");

@@ -35,14 +35,13 @@
 #include "threads/SingleLock.h"
 #include "utils/TimeUtils.h"
 #include "utils/StringUtils.h"
-#include "settings/Settings.h"
 #include "windowing/WindowingFactory.h"
 #include "CompileInfo.h"
 #include "messaging/ApplicationMessenger.h"
 #include <X11/Xatom.h>
 #include <X11/extensions/Xrandr.h>
 
-#include "../WinEventsX11.h"
+#include "WinEventsX11.h"
 #include "input/InputManager.h"
 
 using namespace KODI::MESSAGING;
@@ -100,7 +99,7 @@ bool CWinSystemX11::DestroyWindowSystem()
   return true;
 }
 
-bool CWinSystemX11::CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction)
+bool CWinSystemX11::CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res)
 {
   if(!SetFullScreen(fullScreen, res, false))
     return false;

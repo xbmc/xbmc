@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2012-2016 Team Kodi
+ *      Copyright (C) 2012-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -27,6 +27,7 @@
 
 #include <tinyxml.h>
 
+using namespace KODI;
 using namespace GAME;
 
 void CSavestate::Reset()
@@ -95,7 +96,7 @@ bool CSavestate::Serialize(const std::string& path) const
 
   TiXmlElement rootElement(SAVESTATE_XML_ROOT);
   TiXmlNode* root = xmlFile.InsertEndChild(rootElement);
-  if (root == NULL)
+  if (root == nullptr)
     return false;
 
   TiXmlElement* pElement = root->ToElement();

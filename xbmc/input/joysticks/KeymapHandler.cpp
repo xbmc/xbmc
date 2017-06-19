@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2015-2016 Team Kodi
+ *      Copyright (C) 2015-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,7 +19,7 @@
  */
 
 #include "KeymapHandler.h"
-#include "guilib/GUIWindowManager.h"
+#include "input/Action.h"
 #include "input/ButtonTranslator.h"
 #include "input/InputManager.h"
 #include "input/Key.h"
@@ -43,12 +43,12 @@ CKeymapHandler::~CKeymapHandler(void)
 {
 }
 
-INPUT_TYPE CKeymapHandler::GetInputType(unsigned int keyId) const
+INPUT_TYPE CKeymapHandler::GetInputType(unsigned int keyId, int windowId, bool bFallthrough) const
 {
   CAction action(ACTION_NONE);
 
   if (keyId != 0)
-    action = CButtonTranslator::GetInstance().GetAction(g_windowManager.GetActiveWindowID(), CKey(keyId));
+    action = CButtonTranslator::GetInstance().GetAction(windowId, CKey(keyId), bFallthrough);
 
   if (action.GetID() > ACTION_NONE)
   {
@@ -61,41 +61,57 @@ INPUT_TYPE CKeymapHandler::GetInputType(unsigned int keyId) const
   return INPUT_TYPE::UNKNOWN;
 }
 
-int CKeymapHandler::GetActionID(unsigned int keyId) const
+int CKeymapHandler::GetActionID(unsigned int keyId, int windowId, bool bFallthrough) const
 {
   CAction action(ACTION_NONE);
 
   if (keyId != 0)
-    action = CButtonTranslator::GetInstance().GetAction(g_windowManager.GetActiveWindowID(), CKey(keyId));
+    action = CButtonTranslator::GetInstance().GetAction(windowId, CKey(keyId), bFallthrough);
 
   return action.GetID();
 }
 
-void CKeymapHandler::OnDigitalKey(unsigned int keyId, bool bPressed, unsigned int holdTimeMs /* = 0 */)
+unsigned int CKeymapHandler::GetHoldTimeMs(unsigned int keyId, int windowId, bool bFallthrough) const
+{
+  return CButtonTranslator::GetInstance().GetHoldTimeMs(windowId, CKey(keyId), bFallthrough);
+}
+
+void CKeymapHandler::OnDigitalKey(unsigned int keyId, int windowId, bool bFallthrough, bool bPressed, unsigned int holdTimeMs /* = 0 */)
 {
   if (keyId != 0)
   {
     if (bPressed)
-      ProcessButtonPress(keyId, holdTimeMs);
+    {
+      CAction action(CButtonTranslator::GetInstance().GetAction(windowId, CKey(keyId, holdTimeMs), bFallthrough));
+      SendAction(action);
+    }
     else
+    {
       ProcessButtonRelease(keyId);
+    }
   }
 }
 
-void CKeymapHandler::OnAnalogKey(unsigned int keyId, float magnitude)
+void CKeymapHandler::OnAnalogKey(unsigned int keyId, int windowId, bool bFallthrough, float magnitude)
 {
   if (keyId != 0)
-    SendAnalogAction(keyId, magnitude);
+  {
+    CAction action(CButtonTranslator::GetInstance().GetAction(windowId, CKey(keyId), bFallthrough));
+    SendAnalogAction(action, magnitude);
+  }
 }
 
-void CKeymapHandler::ProcessButtonPress(unsigned int keyId, unsigned int holdTimeMs)
+void CKeymapHandler::SendAction(const CAction& action)
 {
+  const unsigned int keyId = action.GetButtonCode();
+  const unsigned int holdTimeMs = action.GetHoldTime();
+
   if (!IsPressed(keyId))
   {
     m_pressedButtons.push_back(keyId);
 
     // Only dispatch action if button was pressed this frame
-    if (holdTimeMs == 0 && SendDigitalAction(keyId))
+    if (holdTimeMs == 0 && SendDigitalAction(action))
     {
       m_lastButtonPress = keyId;
       m_lastDigitalActionMs = holdTimeMs;
@@ -105,7 +121,7 @@ void CKeymapHandler::ProcessButtonPress(unsigned int keyId, unsigned int holdTim
   {
     if (holdTimeMs > m_lastDigitalActionMs + REPEAT_TIMEOUT_MS)
     {
-      SendDigitalAction(keyId, holdTimeMs);
+      SendDigitalAction(action);
       m_lastDigitalActionMs = holdTimeMs;
     }
   }
@@ -132,15 +148,20 @@ bool CKeymapHandler::IsPressed(unsigned int keyId) const
   return std::find(m_pressedButtons.begin(), m_pressedButtons.end(), keyId) != m_pressedButtons.end();
 }
 
-bool CKeymapHandler::SendDigitalAction(unsigned int keyId, unsigned int holdTimeMs /* = 0 */)
+bool CKeymapHandler::SendDigitalAction(const CAction& action)
 {
-  CAction action(CButtonTranslator::GetInstance().GetAction(g_windowManager.GetActiveWindowID(), CKey(keyId, holdTimeMs)));
   if (action.GetID() > 0)
   {
-    //! @todo Add "holdtime" parameter to joystick.xml. For now we MUST only
-    // send held actions for basic navigation commands!
-    if (holdTimeMs > 0)
+    // If button was pressed this frame, send action
+    if (action.GetHoldTime() == 0)
     {
+      CInputManager::GetInstance().QueueAction(action);
+    }
+    else
+    {
+      // Only send repeated actions for basic navigation commands
+      bool bIsNavigation = false;
+
       switch (action.GetID())
       {
       case ACTION_MOVE_LEFT:
@@ -149,23 +170,25 @@ bool CKeymapHandler::SendDigitalAction(unsigned int keyId, unsigned int holdTime
       case ACTION_MOVE_DOWN:
       case ACTION_PAGE_UP:
       case ACTION_PAGE_DOWN:
+        bIsNavigation = true;
         break;
 
       default:
-        return true;
+        break;
       }
+
+      if (bIsNavigation)
+        CInputManager::GetInstance().QueueAction(action);
     }
 
-    CInputManager::GetInstance().QueueAction(action);
     return true;
   }
 
   return false;
 }
 
-bool CKeymapHandler::SendAnalogAction(unsigned int keyId, float magnitude)
+bool CKeymapHandler::SendAnalogAction(const CAction& action, float magnitude)
 {
-  CAction action(CButtonTranslator::GetInstance().GetAction(g_windowManager.GetActiveWindowID(), CKey(keyId)));
   if (action.GetID() > 0)
   {
     CAction actionWithAmount(action.GetID(), magnitude, 0.0f, action.GetName());

@@ -97,7 +97,7 @@ XBMCHelper::XBMCHelper()
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool XBMCHelper::OnSettingChanging(const CSetting *setting)
+bool XBMCHelper::OnSettingChanging(std::shared_ptr<const CSetting> setting)
 {
   if (setting == NULL)
     return false;
@@ -105,7 +105,7 @@ bool XBMCHelper::OnSettingChanging(const CSetting *setting)
   const std::string &settingId = setting->GetId();
   if (settingId == CSettings::SETTING_INPUT_APPLEREMOTEMODE)
   {
-    int remoteMode = ((CSettingInt*)setting)->GetValue();
+    int remoteMode = std::static_pointer_cast<const CSettingInt>(setting)->GetValue();
 
     // if it's not disabled, start the event server or else apple remote won't work
     if (remoteMode != APPLE_REMOTE_DISABLED)

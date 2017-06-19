@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2014-2016 Team Kodi
+ *      Copyright (C) 2014-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -32,7 +32,7 @@ namespace JOYSTICK
   class IButtonMap;
 
   class CJoystickFeature;
-  typedef std::shared_ptr<CJoystickFeature> FeaturePtr;
+  using FeaturePtr = std::shared_ptr<CJoystickFeature>;
 
   /*!
    * \ingroup joystick
@@ -44,7 +44,7 @@ namespace JOYSTICK
   {
   public:
     CJoystickFeature(const FeatureName& name, IInputHandler* handler, IButtonMap* buttonMap);
-    virtual ~CJoystickFeature(void) { }
+    virtual ~CJoystickFeature() = default;
 
     /*!
      * \brief A digital motion has occured
@@ -100,7 +100,7 @@ namespace JOYSTICK
   {
   public:
     CScalarFeature(const FeatureName& name, IInputHandler* handler, IButtonMap* buttonMap);
-    virtual ~CScalarFeature(void) { }
+    virtual ~CScalarFeature() = default;
 
     // implementation of CJoystickFeature
     virtual bool OnDigitalMotion(const CDriverPrimitive& source, bool bPressed) override;
@@ -114,6 +114,7 @@ namespace JOYSTICK
     const INPUT_TYPE m_inputType;
     bool             m_bDigitalState;
     bool             m_bDigitalHandled;
+    bool             m_bDigitalPressSent;
     unsigned int     m_motionStartTimeMs;
     float            m_analogState;
     bool             m_analogEvent;
@@ -189,7 +190,7 @@ namespace JOYSTICK
   {
   public:
     CAnalogStick(const FeatureName& name, IInputHandler* handler, IButtonMap* buttonMap);
-    virtual ~CAnalogStick(void) { }
+    virtual ~CAnalogStick() = default;
 
     // implementation of CJoystickFeature
     virtual bool OnDigitalMotion(const CDriverPrimitive& source, bool bPressed) override;
@@ -210,7 +211,7 @@ namespace JOYSTICK
   {
   public:
     CAccelerometer(const FeatureName& name, IInputHandler* handler, IButtonMap* buttonMap);
-    virtual ~CAccelerometer(void) { }
+    virtual ~CAccelerometer() = default;
 
     // implementation of CJoystickFeature
     virtual bool OnDigitalMotion(const CDriverPrimitive& source, bool bPressed) override;

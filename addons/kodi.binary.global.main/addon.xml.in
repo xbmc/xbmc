@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon id="kodi.binary.global.main" version="@ADDON_GLOBAL_VERSION_MAIN@" provider-name="Team Kodi">
+  <backwards-compatibility abi="@ADDON_GLOBAL_VERSION_MAIN_MIN@"/>
+  <requires>
+    <import addon="xbmc.core" version="0.1.0"/>
+  </requires>
+</addon>

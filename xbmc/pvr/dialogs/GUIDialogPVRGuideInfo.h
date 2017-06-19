@@ -19,7 +19,8 @@
  *
  */
 
-#include "epg/EpgTypes.h"
+#include "pvr/PVRTypes.h"
+
 #include "guilib/GUIDialog.h"
 
 namespace PVR
@@ -29,22 +30,26 @@ namespace PVR
   public:
     CGUIDialogPVRGuideInfo(void);
     virtual ~CGUIDialogPVRGuideInfo(void);
-    virtual bool OnMessage(CGUIMessage& message) override;
-    virtual bool OnInfo(int actionID) override;
-    virtual bool HasListItems() const override { return true; };
-    virtual CFileItemPtr GetCurrentListItem(int offset = 0) override;
+    bool OnMessage(CGUIMessage& message) override;
+    bool OnInfo(int actionID) override;
+    bool HasListItems() const override { return true; }
+    CFileItemPtr GetCurrentListItem(int offset = 0) override;
 
-    void SetProgInfo(const EPG::CEpgInfoTagPtr &tag);
+    void SetProgInfo(const CPVREpgInfoTagPtr &tag);
+
+    static void ShowFor(const CFileItemPtr& item);
 
   protected:
-    virtual void OnInitWindow() override;
+    void OnInitWindow() override;
 
+  private:
     bool OnClickButtonOK(CGUIMessage &message);
     bool OnClickButtonRecord(CGUIMessage &message);
     bool OnClickButtonPlay(CGUIMessage &message);
     bool OnClickButtonFind(CGUIMessage &message);
     bool OnClickButtonAddTimer(CGUIMessage &message);
+    bool OnClickButtonChannelGuide(CGUIMessage &message);
 
-    EPG::CEpgInfoTagPtr m_progItem;
+    CPVREpgInfoTagPtr m_progItem;
   };
 }

@@ -22,29 +22,27 @@
 #include "XBDateTime.h"
 #include "guilib/GUIDialog.h"
 
-namespace EPG
-{
-  class CEpgSearchFilter;
-}
-
 namespace PVR
 {
+  class CPVREpgSearchFilter;
+
   class CGUIDialogPVRGuideSearch : public CGUIDialog
   {
   public:
     CGUIDialogPVRGuideSearch(void);
-    virtual ~CGUIDialogPVRGuideSearch(void) {}
-    virtual bool OnMessage(CGUIMessage& message);
-    virtual void OnWindowLoaded();
+    virtual ~CGUIDialogPVRGuideSearch(void) = default;
+    bool OnMessage(CGUIMessage& message) override;
+    void OnWindowLoaded() override;
 
-    void SetFilterData(EPG::CEpgSearchFilter *searchFilter) { m_searchFilter = searchFilter; }
+    void SetFilterData(CPVREpgSearchFilter *searchFilter) { m_searchFilter = searchFilter; }
     bool IsConfirmed() const { return m_bConfirmed; }
     bool IsCanceled() const { return m_bCanceled; }
-    void OnSearch();
 
   protected:
-    virtual void OnInitWindow();
+    void OnInitWindow() override;
 
+  private:
+    void OnSearch();
     void UpdateChannelSpin(void);
     void UpdateGroupsSpin(void);
     void UpdateGenreSpin(void);
@@ -58,6 +56,6 @@ namespace PVR
 
     bool m_bConfirmed;
     bool m_bCanceled;
-    EPG::CEpgSearchFilter *m_searchFilter;
+    CPVREpgSearchFilter *m_searchFilter;
   };
 }

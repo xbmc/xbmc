@@ -22,10 +22,17 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 #include "system.h"
 
 struct DemuxPacket;
+struct DemuxCryptoSession;
+
 class CDVDInputStream;
+
+namespace ADDON {
+  class IAddonProvider;
+}
 
 #ifndef __GNUC__
 #pragma warning(push)
@@ -89,7 +96,6 @@ public:
     changes = 0;
     flags = FLAG_NONE;
     realtime = false;
-    bandwidth = 0;
   }
 
   virtual ~CDemuxStream()
@@ -109,7 +115,6 @@ public:
   StreamType type;
   int source;
   bool realtime;
-  unsigned int bandwidth;
 
   int iDuration; // in mseconds
   void* pPrivate; // private pointer for the demuxer
@@ -135,6 +140,9 @@ public:
   , FLAG_HEARING_IMPAIRED = 0x0080
   , FLAG_VISUAL_IMPAIRED  = 0x0100
   } flags;
+
+  std::shared_ptr<DemuxCryptoSession> cryptoSession;
+  std::shared_ptr<ADDON::IAddonProvider> externalInterfaces;
 };
 
 class CDemuxStreamVideo : public CDemuxStream
@@ -161,7 +169,7 @@ public:
   int iFpsRate;
   int iHeight; // height of the stream reported by the demuxer
   int iWidth; // width of the stream reported by the demuxer
-  float fAspect; // display aspect of stream
+  double fAspect; // display aspect of stream
   bool bVFR;  // variable framerate
   bool bPTSInvalid; // pts cannot be trusted (avi's).
   bool bForcedAspect; // aspect is forced from container

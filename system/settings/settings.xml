@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<settings>
+<settings version="1">
   <section id="player" label="14200" help="38100">
     <category id="videoplayer" label="14215" help="38103">
       <group id="1" label="14230">
@@ -311,12 +311,6 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
-        <setting id="videoplayer.useomx" type="boolean" label="13430" help="36161">
-          <requirement>HAVE_LIBOPENMAX</requirement>
-          <level>2</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
         <setting id="videoplayer.usevtb" type="boolean" label="13429" help="36160">
           <requirement>HasVTB</requirement>
           <level>2</level>
@@ -467,6 +461,14 @@
           <control type="spinner" format="string">
             <formatlabel>14050</formatlabel>
           </control>
+          <dependencies>
+            <dependency type="enable" setting="musicplayer.replaygaintype" operator="!is">0</dependency>
+          </dependencies>
+        </setting>
+        <setting id="musicplayer.replaygainavoidclipping" type="boolean" parent="musicplayer.replaygaintype" label="643" help="36270">
+          <level>3</level>
+          <default>false</default>
+          <control type="toggle" />
           <dependencies>
             <dependency type="enable" setting="musicplayer.replaygaintype" operator="!is">0</dependency>
           </dependencies>
@@ -969,8 +971,8 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
-        <setting id="myvideos.extractthumb" type="boolean" label="20433" help="36180">
-          <level>4</level>
+        <setting id="myvideos.extractthumb" type="boolean" label="38190" help="36180">
+          <level>1</level>
           <default>true</default>
           <control type="toggle" />
         </setting>
@@ -1045,7 +1047,7 @@
               <option label="20422">2</option> <!-- Always -->
             </options>
           </constraints>
-          <control type="spinner" format="string" />
+          <control type="list" format="string" />
         </setting>
         <setting id="videolibrary.tvshowsincludeallseasonsandspecials" type="integer" parent="videolibrary.tvshowsselectfirstunwatcheditem" label="21472" help="21473">
           <level>2</level>
@@ -1061,7 +1063,7 @@
           <dependencies>
             <dependency type="enable" setting="videolibrary.tvshowsselectfirstunwatcheditem" operator="!is">0</dependency> <!-- Never -->
           </dependencies>
-          <control type="spinner" format="string" />
+          <control type="list" format="string" />
         </setting>
         <setting id="videolibrary.actorthumbs" type="boolean" label="20402" help="36143">
           <level>2</level>
@@ -1325,7 +1327,7 @@
         </setting>
         <setting id="epg.selectaction" type="integer" label="22079" help="36424">
           <level>1</level>
-          <default>5</default> <!-- EPG_SELECT_ACTION_SMART_SELECT -->
+          <default>2</default> <!-- EPG_SELECT_ACTION_INFO -->
           <constraints>
             <options>
               <option label="36425">0</option> <!-- EPG_SELECT_ACTION_CONTEXT_MENU -->
@@ -2658,43 +2660,6 @@
           <control type="toggle" />
         </setting>
       </group>
-      <group id="4" label="14251">
-        <setting id="audiooutput.dspaddonsenabled" type="boolean" label="36441" help="36438">
-          <level>3</level>
-          <default>false</default>
-          <dependencies>
-            <dependency type="visible">
-              <or>
-                <condition on="property" name="aesettingvisible" setting="audiooutput.passthrough">audiooutput.dspaddonsenabled</condition>
-                <condition on="property" name="aesettingvisible" setting="audiooutput.ac3passthrough">audiooutput.dspaddonsenabled</condition>
-              </or>
-            </dependency>
-          </dependencies>
-          <control type="toggle" />
-        </setting>
-        <setting id="audiooutput.dspsettings" type="action" label="36436" help="36437">
-          <level>3</level>
-          <control type="button" format="action" />
-          <dependencies>
-            <dependency type="visible">
-              <or>
-                <condition on="property" name="aesettingvisible" setting="audiooutput.dspaddonsenabled">audiooutput.dspsettings</condition>
-              </or>
-            </dependency>
-          </dependencies>
-        </setting>
-        <setting id="audiooutput.dspresetdb" type="action" label="14082" help="36439">
-          <level>3</level>
-          <control type="button" format="action" />
-          <dependencies>
-            <dependency type="visible">
-              <or>
-                <condition on="property" name="aesettingvisible" setting="audiooutput.dspaddonsenabled">audiooutput.dspresetdb</condition>
-              </or>
-            </dependency>
-          </dependencies>
-        </setting>
-      </group>
     </category>
     <category id="input" label="14125" help="36374">
       <group id="1" label="35000">
@@ -2702,6 +2667,13 @@
           <level>1</level>
           <dependencies>
             <dependency type="enable" on="property" name="HasPeripherals" />
+          </dependencies>
+          <control type="button" format="action" />
+        </setting>
+        <setting id="input.peripherallibraries" type="action" label="35047" help="35048">
+          <level>1</level>
+          <dependencies>
+            <dependency type="enable" on="property" name="HasPeripheralLibraries" />
           </dependencies>
           <control type="button" format="action" />
         </setting>

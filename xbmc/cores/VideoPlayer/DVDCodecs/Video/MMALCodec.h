@@ -93,17 +93,14 @@ public:
   virtual ~CMMALVideo();
 
   // Required overrides
-  virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options);
-  virtual int  Decode(uint8_t *pData, int iSize, double dts, double pts);
-  virtual void Reset(void);
-  virtual bool GetPicture(DVDVideoPicture *pDvdVideoPicture);
-  virtual bool ClearPicture(DVDVideoPicture* pDvdVideoPicture);
-  virtual unsigned GetAllowedReferences() { return 4; }
-  virtual void SetDropState(bool bDrop);
-  virtual const char* GetName(void) { return m_pFormatName ? m_pFormatName:"mmal-xxx"; }
-  virtual bool GetCodecStats(double &pts, int &droppedPics);
-  virtual void SetCodecControl(int flags);
-  virtual void SetSpeed(int iSpeed);
+  virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options) override;
+  virtual bool AddData(const DemuxPacket &packet) override;
+  virtual void Reset(void) override;
+  virtual CDVDVideoCodec::VCReturn GetPicture(VideoPicture *pDvdVideoPicture) override;
+  virtual unsigned GetAllowedReferences() override { return 4; }
+  virtual const char* GetName(void) override { return m_pFormatName ? m_pFormatName:"mmal-xxx"; }
+  virtual void SetCodecControl(int flags) override;
+  virtual void SetSpeed(int iSpeed) override;
 
   // MMAL decoder callback routines.
   void dec_output_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer);
@@ -133,6 +130,7 @@ protected:
   bool Initialize( const std::string &decoder_name);
   void PortSettingsChanged(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer);
   bool SendCodecConfigData();
+  void ReleasePicture();
 
   CDVDStreamInfo    m_hints;
   float             m_fps;
@@ -143,7 +141,6 @@ protected:
   double            m_decoderPts;
   int               m_speed;
   int               m_codecControlFlags;
-  bool              m_dropState;
   bool              m_preroll;
   bool              m_got_eos;
   uint32_t          m_packet_num;
@@ -159,6 +156,8 @@ protected:
   MMAL_ES_FORMAT_T *m_es_format;
 
   MMAL_FOURCC_T m_codingType;
+  VideoPicture* m_lastDvdVideoPicture;
+
   bool change_dec_output_format();
 };
 

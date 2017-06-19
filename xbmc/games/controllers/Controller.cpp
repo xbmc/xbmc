@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2015-2016 Team Kodi
+ *      Copyright (C) 2015-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -25,17 +25,18 @@
 #include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML.h"
 
+using namespace KODI;
 using namespace GAME;
 
 const ControllerPtr CController::EmptyPtr;
 
-std::unique_ptr<CController> CController::FromExtension(ADDON::AddonProps props, const cp_extension_t* ext)
+std::unique_ptr<CController> CController::FromExtension(ADDON::CAddonInfo addonInfo, const cp_extension_t* ext)
 {
-  return std::unique_ptr<CController>(new CController(std::move(props)));
+  return std::unique_ptr<CController>(new CController(std::move(addonInfo)));
 }
 
-CController::CController(ADDON::AddonProps addonprops) :
-  CAddon(std::move(addonprops)),
+CController::CController(ADDON::CAddonInfo addonInfo) :
+  CAddon(std::move(addonInfo)),
   m_bLoaded(false)
 {
 }
@@ -52,6 +53,26 @@ std::string CController::ImagePath(void) const
   if (!m_layout.Image().empty())
     return URIUtils::AddFileToFolder(URIUtils::GetDirectory(LibPath()), m_layout.Image());
   return "";
+}
+
+void CController::GetFeatures(std::vector<std::string>& features,
+                              FEATURE_TYPE type /* = FEATURE_TYPE::UNKNOWN */) const
+{
+  for (const CControllerFeature& feature : m_layout.Features())
+  {
+    if (type == FEATURE_TYPE::UNKNOWN || type == feature.Type())
+      features.push_back(feature.Name());
+  }
+}
+
+JOYSTICK::INPUT_TYPE CController::GetInputType(const std::string& feature) const
+{
+  for (auto it = m_layout.Features().begin(); it != m_layout.Features().end(); ++it)
+  {
+    if (feature == it->Name())
+      return it->InputType();
+  }
+  return JOYSTICK::INPUT_TYPE::UNKNOWN;
 }
 
 bool CController::LoadLayout(void)

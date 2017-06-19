@@ -1,6 +1,6 @@
 set(ARCH_DEFINES -D_LINUX -DTARGET_POSIX -DTARGET_LINUX)
-set(SYSTEM_DEFINES -D__STDC_CONSTANT_MACROS -D_FILE_DEFINED
-                   -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64)
+set(SYSTEM_DEFINES -D__STDC_CONSTANT_MACROS -D_LARGEFILE64_SOURCE
+                   -D_FILE_OFFSET_BITS=64)
 set(PLATFORM_DIR linux)
 set(CMAKE_SYSTEM_NAME Linux)
 if(WITH_ARCH)
@@ -19,7 +19,7 @@ else()
     set(NEON_FLAGS "-mfpu=neon -mvectorize-with-neon-quad")
   elseif(CPU MATCHES aarch64 OR CPU MATCHES arm64)
     set(ARCH aarch64)
-    set(NEON False)
+    set(NEON True)
   else()
     message(SEND_ERROR "Unknown CPU: ${CPU}")
   endif()

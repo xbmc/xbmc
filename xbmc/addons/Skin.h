@@ -106,17 +106,17 @@ public:
     std::string m_name;
   };
 
-  static std::unique_ptr<CSkinInfo> FromExtension(AddonProps props, const cp_extension_t* ext);
+  static std::unique_ptr<CSkinInfo> FromExtension(CAddonInfo addonInfo, const cp_extension_t* ext);
 
   //FIXME: CAddonCallbacksGUI/WindowXML hack
-  explicit CSkinInfo(AddonProps props, const RESOLUTION_INFO& resolution = RESOLUTION_INFO())
-      : CAddon(std::move(props)),
+  explicit CSkinInfo(CAddonInfo addonInfo, const RESOLUTION_INFO& resolution = RESOLUTION_INFO())
+      : CAddon(std::move(addonInfo)),
         m_defaultRes(resolution),
         m_effectsSlowDown(1.f),
         m_debugging(false) {}
 
   CSkinInfo(
-      AddonProps props,
+      CAddonInfo addonInfo,
       const RESOLUTION_INFO& resolution,
       const std::vector<RESOLUTION_INFO>& resolutions,
       float effectsSlowDown,
@@ -181,10 +181,10 @@ public:
   void ToggleDebug();
   const INFO::CSkinVariableString* CreateSkinVariable(const std::string& name, int context);
 
-  static void SettingOptionsSkinColorsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
-  static void SettingOptionsSkinFontsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
-  static void SettingOptionsSkinThemesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
-  static void SettingOptionsStartupWindowsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
+  static void SettingOptionsSkinColorsFiller(std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
+  static void SettingOptionsSkinFontsFiller(std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
+  static void SettingOptionsSkinThemesFiller(std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
+  static void SettingOptionsStartupWindowsFiller(std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
 
   /*! \brief Don't handle skin settings like normal addon settings
    */
@@ -214,7 +214,7 @@ protected:
   std::string GetDirFromRes(RESOLUTION res) const;
 
   /*! \brief grab a resolution tag from a skin's configuration data
-   \param props passed addoninfo structure to check for resolution
+   \param ext passed addoninfo structure to check for resolution
    \param tag name of the tag to look for
    \param res resolution to return
    \return true if we find a valid resolution, false otherwise
@@ -225,10 +225,10 @@ protected:
 
   static CSkinSettingPtr ParseSetting(const TiXmlElement* element);
 
-  virtual bool HasSettingsDefinition() const { return false; }
-  virtual bool HasSettingsToSave() const;
-  virtual bool SettingsFromXML(const CXBMCTinyXML &doc, bool loadDefaults = false);
-  virtual void SettingsToXML(CXBMCTinyXML &doc) const;
+  bool SettingsInitialized() const override;
+  bool SettingsLoaded() const override;
+  bool SettingsFromXML(const CXBMCTinyXML &doc, bool loadDefaults = false) override;
+  bool SettingsToXML(CXBMCTinyXML &doc) const override;
 
   RESOLUTION_INFO m_defaultRes;
   std::vector<RESOLUTION_INFO> m_resolutions;

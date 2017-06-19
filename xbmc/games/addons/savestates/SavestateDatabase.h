@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2012-2016 Team Kodi
+ *      Copyright (C) 2012-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -27,6 +27,8 @@ class CFileItem;
 class CFileItemList;
 class CVariant;
 
+namespace KODI
+{
 namespace GAME
 {
   class CSavestate;
@@ -52,4 +54,5 @@ namespace GAME
   private:
     CFileItem* CreateFileItem(const CVariant& object) const;
   };
+}
 }

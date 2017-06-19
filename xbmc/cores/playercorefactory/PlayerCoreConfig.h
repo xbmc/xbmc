@@ -96,7 +96,7 @@ public:
     }
     else if (m_type.compare("game") == 0)
     {
-      pPlayer = new GAME::CRetroPlayer(callback);
+      pPlayer = new KODI::RETRO::CRetroPlayer(callback);
     }
     else if (m_type.compare("external") == 0)
     {

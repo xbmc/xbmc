@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2016 Team Kodi
+ *      Copyright (C) 2016-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -21,6 +21,8 @@
 
 #include "GUIFeatureButton.h"
 
+namespace KODI
+{
 namespace GAME
 {
   class CGUIAnalogStickButton : public CGUIFeatureButton
@@ -31,12 +33,12 @@ namespace GAME
                           const CControllerFeature& feature,
                           unsigned int index);
 
-    virtual ~CGUIAnalogStickButton(void) { }
+    virtual ~CGUIAnalogStickButton() = default;
 
     // implementation of IFeatureButton
     virtual bool PromptForInput(CEvent& waitEvent) override;
     virtual bool IsFinished(void) const override;
-    virtual KODI::JOYSTICK::ANALOG_STICK_DIRECTION GetDirection(void) const override;
+    virtual JOYSTICK::ANALOG_STICK_DIRECTION GetDirection(void) const override;
     virtual void Reset(void) override;
 
   private:
@@ -51,4 +53,5 @@ namespace GAME
 
     STATE m_state;
   };
+}
 }

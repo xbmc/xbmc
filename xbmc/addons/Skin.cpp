@@ -134,7 +134,7 @@ bool CSkinSettingBool::SerializeSetting(TiXmlElement* element) const
   return true;
 }
 
-std::unique_ptr<CSkinInfo> CSkinInfo::FromExtension(AddonProps props, const cp_extension_t* ext)
+std::unique_ptr<CSkinInfo> CSkinInfo::FromExtension(CAddonInfo addonInfo, const cp_extension_t* ext)
 {
   RESOLUTION_INFO defaultRes = RESOLUTION_INFO();
   std::vector<RESOLUTION_INFO> resolutions;
@@ -178,17 +178,17 @@ std::unique_ptr<CSkinInfo> CSkinInfo::FromExtension(AddonProps props, const cp_e
 
   bool debugging = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@debugging") == "true";
 
-  return std::unique_ptr<CSkinInfo>(new CSkinInfo(std::move(props), defaultRes, resolutions,
+  return std::unique_ptr<CSkinInfo>(new CSkinInfo(std::move(addonInfo), defaultRes, resolutions,
       effectsSlowDown, debugging));
 }
 
 CSkinInfo::CSkinInfo(
-    AddonProps props,
+    CAddonInfo addonInfo,
     const RESOLUTION_INFO& resolution,
     const std::vector<RESOLUTION_INFO>& resolutions,
     float effectsSlowDown,
     bool debugging)
-    : CAddon(std::move(props)),
+    : CAddon(std::move(addonInfo)),
       m_defaultRes(resolution),
       m_resolutions(resolutions),
       m_effectsSlowDown(effectsSlowDown),
@@ -276,8 +276,8 @@ void CSkinInfo::LoadIncludes()
 {
   std::string includesPath = CSpecialProtocol::TranslatePathConvertCase(GetSkinPath("includes.xml"));
   CLog::Log(LOGINFO, "Loading skin includes from %s", includesPath.c_str());
-  m_includes.ClearIncludes();
-  m_includes.LoadIncludes(includesPath);
+  m_includes.Clear();
+  m_includes.Load(includesPath);
 }
 
 void CSkinInfo::ResolveIncludes(TiXmlElement *node, std::map<INFO::InfoPtr, bool>* xmlIncludeConditions /* = NULL */)
@@ -285,7 +285,7 @@ void CSkinInfo::ResolveIncludes(TiXmlElement *node, std::map<INFO::InfoPtr, bool
   if(xmlIncludeConditions)
     xmlIncludeConditions->clear();
 
-  m_includes.ResolveIncludes(node, xmlIncludeConditions);
+  m_includes.Resolve(node, xmlIncludeConditions);
 }
 
 int CSkinInfo::GetStartWindow() const
@@ -380,7 +380,7 @@ void CSkinInfo::OnPostInstall(bool update, bool modal)
   if (IsInUse() || (!update && !modal && 
     HELPERS::ShowYesNoDialogText(CVariant{Name()}, CVariant{24099}) == DialogResponse::YES))
   {
-    CGUIDialogKaiToast *toast = (CGUIDialogKaiToast *)g_windowManager.GetWindow(WINDOW_DIALOG_KAI_TOAST);
+    CGUIDialogKaiToast *toast = g_windowManager.GetWindow<CGUIDialogKaiToast>(WINDOW_DIALOG_KAI_TOAST);
     if (toast)
     {
       toast->ResetTimer();
@@ -393,12 +393,12 @@ void CSkinInfo::OnPostInstall(bool update, bool modal)
   }
 }
 
-void CSkinInfo::SettingOptionsSkinColorsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
+void CSkinInfo::SettingOptionsSkinColorsFiller(SettingConstPtr setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
 {
   if (!g_SkinInfo)
     return;
 
-  std::string settingValue = ((const CSettingString*)setting)->GetValue();
+  std::string settingValue = std::static_pointer_cast<const CSettingString>(setting)->GetValue();
   // Remove the .xml extension from the Themes
   if (URIUtils::HasExtension(settingValue, ".xml"))
     URIUtils::RemoveExtension(settingValue);
@@ -437,12 +437,12 @@ void CSkinInfo::SettingOptionsSkinColorsFiller(const CSetting *setting, std::vec
   }
 }
 
-void CSkinInfo::SettingOptionsSkinFontsFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
+void CSkinInfo::SettingOptionsSkinFontsFiller(SettingConstPtr setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
 {
   if (!g_SkinInfo)
     return;
 
-  std::string settingValue = ((const CSettingString*)setting)->GetValue();
+  std::string settingValue = std::static_pointer_cast<const CSettingString>(setting)->GetValue();
   bool currentValueSet = false;
   std::string strPath = g_SkinInfo->GetSkinPath("Font.xml");
 
@@ -489,10 +489,10 @@ void CSkinInfo::SettingOptionsSkinFontsFiller(const CSetting *setting, std::vect
     current = list[0].second;
 }
 
-void CSkinInfo::SettingOptionsSkinThemesFiller(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
+void CSkinInfo::SettingOptionsSkinThemesFiller(SettingConstPtr setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
 {
   // get the chosen theme and remove the extension from the current theme (backward compat)
-  std::string settingValue = ((const CSettingString*)setting)->GetValue();
+  std::string settingValue = std::static_pointer_cast<const CSettingString>(setting)->GetValue();
   URIUtils::RemoveExtension(settingValue);
   current = "SKINDEFAULT";
 
@@ -518,12 +518,12 @@ void CSkinInfo::SettingOptionsSkinThemesFiller(const CSetting *setting, std::vec
   }
 }
 
-void CSkinInfo::SettingOptionsStartupWindowsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
+void CSkinInfo::SettingOptionsStartupWindowsFiller(SettingConstPtr setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
 {
   if (!g_SkinInfo)
     return;
 
-  int settingValue = ((const CSettingInt *)setting)->GetValue();
+  int settingValue = std::static_pointer_cast<const CSettingInt>(setting)->GetValue();
   current = -1;
 
   const std::vector<CStartupWindow> &startupWindows = g_SkinInfo->GetStartupWindows();
@@ -709,7 +709,12 @@ CSkinSettingPtr CSkinInfo::ParseSetting(const TiXmlElement* element)
   return setting;
 }
 
-bool CSkinInfo::HasSettingsToSave() const
+bool CSkinInfo::SettingsInitialized() const
+{
+  return true;
+}
+
+bool CSkinInfo::SettingsLoaded() const
 {
   return !m_strings.empty() || !m_bools.empty();
 }
@@ -741,7 +746,7 @@ bool CSkinInfo::SettingsFromXML(const CXBMCTinyXML &doc, bool loadDefaults /* = 
   return true;
 }
 
-void CSkinInfo::SettingsToXML(CXBMCTinyXML &doc) const
+bool CSkinInfo::SettingsToXML(CXBMCTinyXML &doc) const
 {
   // add the <skinsettings> tag
   TiXmlElement rootElement(XML_SETTINGS);
@@ -749,7 +754,7 @@ void CSkinInfo::SettingsToXML(CXBMCTinyXML &doc) const
   if (settingsNode == NULL)
   {
     CLog::Log(LOGWARNING, "CSkinInfo: could not create <settings> tag");
-    return;
+    return false;
   }
 
   TiXmlElement* settingsElement = settingsNode->ToElement();
@@ -764,6 +769,8 @@ void CSkinInfo::SettingsToXML(CXBMCTinyXML &doc) const
     if (!it.second->Serialize(settingsElement))
       CLog::Log(LOGWARNING, "CSkinInfo: failed to save bool setting \"%s\"", it.second->name.c_str());
   }
+
+  return true;
 }
 
 } /*namespace ADDON*/

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2016 Team Kodi
+ *      Copyright (C) 2016-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -29,10 +29,10 @@ namespace ADDON
 class CGameResource : public CResource
 {
 public:
-  CGameResource(AddonProps props);
+  CGameResource(CAddonInfo addonInfo);
   virtual ~CGameResource() = default;
 
-  static std::unique_ptr<CGameResource> FromExtension(AddonProps props, const cp_extension_t* ext);
+  static std::unique_ptr<CGameResource> FromExtension(CAddonInfo addonInfo, const cp_extension_t* ext);
 
   // implementation of CResource
   virtual bool IsAllowed(const std::string& file) const override { return true; }

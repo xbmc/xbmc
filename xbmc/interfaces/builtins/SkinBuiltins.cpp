@@ -89,7 +89,7 @@ static int SetAddon(const std::vector<std::string>& params)
   std::vector<ADDON::TYPE> types;
   for (unsigned int i = 1 ; i < params.size() ; i++)
   {
-    ADDON::TYPE type = TranslateType(params[i]);
+    ADDON::TYPE type = CAddonInfo::TranslateType(params[i]);
     if (type != ADDON_UNKNOWN)
       types.push_back(type);
   }
@@ -111,7 +111,7 @@ static int SelectBool(const std::vector<std::string>& params)
 {
   std::vector<std::pair<std::string, std::string>> settings;
 
-  CGUIDialogSelect* pDlgSelect = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+  CGUIDialogSelect* pDlgSelect = g_windowManager.GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
   pDlgSelect->Reset();
   pDlgSelect->SetHeading(CVariant{g_localizeStrings.Get(atoi(params[0].c_str()))});
 
@@ -237,7 +237,7 @@ static int SetFile(const std::vector<std::string>& params)
   std::string strMask = (params.size() > 1) ? params[1] : "";
   StringUtils::ToLower(strMask);
   ADDON::TYPE type;
-  if ((type = TranslateType(strMask)) != ADDON_UNKNOWN)
+  if ((type = CAddonInfo::TranslateType(strMask)) != ADDON_UNKNOWN)
   {
     CURL url;
     url.SetProtocol("addons");
@@ -251,7 +251,7 @@ static int SetFile(const std::vector<std::string>& params)
     if (type == ADDON_SCRIPT)
       strMask = ".py";
     std::string replace;
-    if (CGUIDialogFileBrowser::ShowAndGetFile(url.Get(), strMask, TranslateType(type, true), replace, true, true, true))
+    if (CGUIDialogFileBrowser::ShowAndGetFile(url.Get(), strMask, CAddonInfo::TranslateType(type, true), replace, true, true, true))
     {
       if (StringUtils::StartsWithNoCase(replace, "addons://"))
         CSkinSettings::GetInstance().SetString(string, URIUtils::GetFileName(replace));

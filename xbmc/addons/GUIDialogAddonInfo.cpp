@@ -27,7 +27,7 @@
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "filesystem/Directory.h"
-#include "GUIDialogAddonSettings.h"
+#include "addons/settings/GUIDialogAddonSettings.h"
 #include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "dialogs/GUIDialogTextViewer.h"
@@ -60,6 +60,7 @@
 #define CONTROL_BTN_AUTOUPDATE      13
 #define CONTROL_LIST_SCREENSHOTS    50
 
+using namespace KODI;
 using namespace ADDON;
 using namespace XFILE;
 
@@ -89,15 +90,6 @@ bool CGUIDialogAddonInfo::OnMessage(CGUIMessage& message)
       }
       if (iControl == CONTROL_BTN_INSTALL)
       {
-        if (m_localAddon)
-        {
-          if (m_localAddon->Type() == ADDON_ADSPDLL && CServiceBroker::GetADSP().IsProcessing())
-          {
-            CGUIDialogOK::ShowAndGetInput(24137, 0, 24138, 0);
-            return true;
-          }
-        }
-
         if (!m_localAddon)
         {
           OnInstall();
@@ -116,16 +108,6 @@ bool CGUIDialogAddonInfo::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_BTN_ENABLE)
       {
-        //FIXME: should be moved to somewhere appropriate (e.g CAddonMgs::CanAddonBeDisabled or IsInUse) and button should be disabled
-        if (m_localAddon)
-        {
-          if (m_localAddon->Type() == ADDON_ADSPDLL && CServiceBroker::GetADSP().IsProcessing())
-          {
-            CGUIDialogOK::ShowAndGetInput(24137, 0, 24138, 0);
-            return true;
-          }
-        }
-
         OnEnableDisable();
         return true;
       }
@@ -230,7 +212,7 @@ static const std::string LOCAL_CACHE = "\\0_local_cache"; // \0 to give it the l
 
 int CGUIDialogAddonInfo::AskForVersion(std::vector<std::pair<AddonVersion, std::string>>& versions)
 {
-  auto dialog = static_cast<CGUIDialogSelect*>(g_windowManager.GetWindow(WINDOW_DIALOG_SELECT));
+  auto dialog = g_windowManager.GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
   dialog->Reset();
   dialog->SetHeading(CVariant{21338});
   dialog->SetUseDetails(true);
@@ -476,7 +458,7 @@ void CGUIDialogAddonInfo::OnEnableDisable()
 
 void CGUIDialogAddonInfo::OnSettings()
 {
-  CGUIDialogAddonSettings::ShowAndGetInput(m_localAddon);
+  CGUIDialogAddonSettings::ShowForAddon(m_localAddon);
 }
 
 bool CGUIDialogAddonInfo::ShowForItem(const CFileItemPtr& item)
@@ -484,7 +466,7 @@ bool CGUIDialogAddonInfo::ShowForItem(const CFileItemPtr& item)
   if (!item)
     return false;
 
-  CGUIDialogAddonInfo* dialog = (CGUIDialogAddonInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_ADDON_INFO);
+  CGUIDialogAddonInfo* dialog = g_windowManager.GetWindow<CGUIDialogAddonInfo>(WINDOW_DIALOG_ADDON_INFO);
   if (!dialog)
     return false;
   if (!dialog->SetItem(item))

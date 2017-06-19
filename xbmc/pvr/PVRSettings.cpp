@@ -20,13 +20,98 @@
 
 #include "PVRSettings.h"
 
+#include "ServiceBroker.h"
 #include "guilib/LocalizeStrings.h"
+#include "settings/lib/SettingsManager.h"
+#include "settings/Settings.h"
+#include "utils/log.h"
 #include "utils/StringUtils.h"
 
 using namespace PVR;
 
+CPVRSettings::CPVRSettings(const std::set<std::string> &settingNames)
+{
+  Init(settingNames);
+  CServiceBroker::GetSettings().RegisterCallback(this, settingNames);
+}
+
+CPVRSettings::~CPVRSettings()
+{
+  CServiceBroker::GetSettings().UnregisterCallback(this);
+}
+
+void CPVRSettings::Init(const std::set<std::string> &settingNames)
+{
+  for (auto settingName : settingNames)
+  {
+    SettingPtr setting = CServiceBroker::GetSettings().GetSetting(settingName);
+    if (!setting)
+    {
+      CLog::Log(LOGERROR, "CPVRSettings - %s - Unknown setting '%s'", __FUNCTION__, settingName.c_str());
+      continue;
+    }
+
+    CSingleLock lock(m_critSection);
+    m_settings.insert(std::make_pair(settingName, setting->Clone(settingName)));
+  }
+}
+
+void CPVRSettings::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+{
+  if (setting == nullptr)
+    return;
+
+  CSingleLock lock(m_critSection);
+  m_settings[setting->GetId()] = SettingPtr(setting->Clone(setting->GetId()));
+}
+
+bool CPVRSettings::GetBoolValue(const std::string &settingName) const
+{
+  CSingleLock lock(m_critSection);
+  auto settingIt = m_settings.find(settingName);
+  if (settingIt != m_settings.end() && (*settingIt).second->GetType() == SettingType::Boolean)
+  {
+    std::shared_ptr<const CSettingBool> setting = std::dynamic_pointer_cast<const CSettingBool>((*settingIt).second);
+    if (setting)
+      return setting->GetValue();
+  }
+
+  CLog::Log(LOGERROR, "CPVRSettings - %s - setting '%s' not found or wrong type given", __FUNCTION__, settingName.c_str());
+  return false;
+}
+
+int CPVRSettings::GetIntValue(const std::string &settingName) const
+{
+  CSingleLock lock(m_critSection);
+  auto settingIt = m_settings.find(settingName);
+  if (settingIt != m_settings.end() && (*settingIt).second->GetType() == SettingType::Integer)
+  {
+    std::shared_ptr<const CSettingInt> setting = std::dynamic_pointer_cast<const CSettingInt>((*settingIt).second);
+    if (setting)
+      return setting->GetValue();
+  }
+
+  CLog::Log(LOGERROR, "CPVRSettings - %s - setting '%s' not found or wrong type given", __FUNCTION__, settingName.c_str());
+  return -1;
+}
+
+std::string CPVRSettings::GetStringValue(const std::string &settingName) const
+{
+  CSingleLock lock(m_critSection);
+  auto settingIt = m_settings.find(settingName);
+  if (settingIt != m_settings.end() && (*settingIt).second->GetType() == SettingType::String)
+  {
+    std::shared_ptr<const CSettingString> setting = std::dynamic_pointer_cast<const CSettingString>((*settingIt).second);
+    if (setting)
+      return setting->GetValue();
+  }
+
+  CLog::Log(LOGERROR, "CPVRSettings - %s - setting '%s' not found or wrong type given", __FUNCTION__, settingName.c_str());
+  return "";
+}
+
 void CPVRSettings::MarginTimeFiller(
-  const CSetting * /*setting*/, std::vector< std::pair<std::string, int> > &list, int &current, void * /*data*/)
+  SettingConstPtr  /*setting*/, std::vector< std::pair<std::string, int> > &list, int &current, void * /*data*/)
 {
   list.clear();
 

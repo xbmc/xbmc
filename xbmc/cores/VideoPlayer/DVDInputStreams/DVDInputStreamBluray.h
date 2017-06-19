@@ -34,6 +34,9 @@ extern "C"
 }
 
 #define MAX_PLAYLIST_ID 99999
+#define BD_EVENT_MENU_OVERLAY -1
+#define BD_EVENT_MENU_ERROR   -2
+#define BD_EVENT_ENC_ERROR    -3
 
 class CDVDOverlayImage;
 class DllLibbluray;
@@ -137,7 +140,7 @@ protected:
   uint32_t            m_angle;
   bool                m_menu;
   bool                m_navmode;
-  int m_dispTimeBeforeRead;
+  int m_dispTimeBeforeRead = 0;
 
   typedef std::shared_ptr<CDVDOverlayImage> SOverlay;
   typedef std::list<SOverlay>                 SOverlays;

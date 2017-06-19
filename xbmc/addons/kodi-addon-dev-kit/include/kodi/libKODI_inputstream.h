@@ -25,30 +25,15 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "libXBMC_addon.h"
+
+#include "kodi_inputstream_types.h"
+#include "versions.h"
 
 #ifdef BUILD_KODI_ADDON
 #include "DVDDemuxPacket.h"
 #else
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemuxPacket.h"
 #endif
-
-/* current input stream API version */
-#define KODI_INPUTSTREAM_API_VERSION "1.0.0"
-
-namespace KodiAPI
-{
-namespace InputStream
-{
-
-typedef struct CB_INPUTSTREAMLib
-{
-  void (*FreeDemuxPacket)(void *addonData, DemuxPacket* pPacket);
-  DemuxPacket* (*AllocateDemuxPacket)(void *addonData, int iDataSize);
-} CB_INPUTSTREAMLib;
-
-} /* namespace InputStream */
-} /* namespace KodiAPI */
 
 class CHelper_libKODI_inputstream
 {
@@ -61,10 +46,6 @@ public:
 
   ~CHelper_libKODI_inputstream(void)
   {
-    if (m_Handle && m_Callbacks)
-    {
-      m_Handle->INPUTSTREAMLib_UnRegisterMe(m_Handle->addonData, m_Callbacks);
-    }
   }
 
   /*!
@@ -76,7 +57,7 @@ public:
   {
     m_Handle = static_cast<AddonCB*>(handle);
     if (m_Handle)
-      m_Callbacks = (KodiAPI::InputStream::CB_INPUTSTREAMLib*)m_Handle->INPUTSTREAMLib_RegisterMe(m_Handle->addonData);
+      m_Callbacks = (AddonInstance_InputStream*)m_Handle->INPUTSTREAMLib_RegisterMe(m_Handle->addonData);
     if (!m_Callbacks)
       fprintf(stderr, "libKODI_inputstream-ERROR: InputStream_RegisterMe can't get callback table from Kodi !!!\n");
 
@@ -90,7 +71,7 @@ public:
    */
   DemuxPacket* AllocateDemuxPacket(int iDataSize)
   {
-    return m_Callbacks->AllocateDemuxPacket(m_Handle->addonData, iDataSize);
+    return m_Callbacks->toKodi.AllocateDemuxPacket(m_Callbacks->toKodi.kodiInstance, iDataSize);
   }
 
   /*!
@@ -99,10 +80,10 @@ public:
    */
   void FreeDemuxPacket(DemuxPacket* pPacket)
   {
-    return m_Callbacks->FreeDemuxPacket(m_Handle->addonData, pPacket);
+    return m_Callbacks->toKodi.FreeDemuxPacket(m_Callbacks->toKodi.kodiInstance, pPacket);
   }
 
 private:
   AddonCB* m_Handle;
-  KodiAPI::InputStream::CB_INPUTSTREAMLib* m_Callbacks;
+  AddonInstance_InputStream* m_Callbacks;
 };

@@ -36,6 +36,8 @@ typedef enum _WindowSystemType
   WINDOW_SYSTEM_MIR,
   WINDOW_SYSTEM_SDL,
   WINDOW_SYSTEM_EGL,
+  WINDOW_SYSTEM_RPI,
+  WINDOW_SYSTEM_AML,
   WINDOW_SYSTEM_ANDROID
 } WindowSystemType;
 
@@ -63,7 +65,7 @@ public:
   // windowing interfaces
   virtual bool InitWindowSystem();
   virtual bool DestroyWindowSystem();
-  virtual bool CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction) = 0;
+  virtual bool CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res) = 0;
   virtual bool DestroyWindow(){ return false; }
   virtual bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop) = 0;
   virtual bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays) = 0;

@@ -35,7 +35,117 @@ endmacro()
 # Build, link and optionally package an add-on
 macro (build_addon target prefix libs)
   addon_version(${target} ${prefix})
+
+  # Below comes the generation of a list with used sources where the includes to
+  # kodi's headers becomes checked.
+  # This goes the following steps to identify them:
+  # 1. Check headers are at own depended on addon
+  #    - If so, it is checked whether the whole folder is already inserted, if
+  #      not, it is added.
+  # 2. If headers are not defined independently and there is more as one source
+  #    file.
+  #    - If yes, it is checked whether the headers with the sources together
+  #    - In case no headers are inserted and more than one source file exists,
+  #      the whole addon folder is searched for headers.
+  # 3. As a last step, the actual source files are checked.
   if(${prefix}_SOURCES)
+    # Read used headers from addon, needed to identitfy used kodi addon interface headers
+    if(${prefix}_HEADERS)
+      # Add the used header files defined with CMakeLists.txt from addon itself
+      if(${prefix}_HEADERS MATCHES ${PROJECT_SOURCE_DIR})
+        # include path name already complete
+        list(APPEND USED_SOURCES ${${prefix}_HEADERS})
+      else()
+        # add the complete include path to begin 
+        foreach(hdr_file ${${prefix}_HEADERS})
+          list(APPEND USED_SOURCES ${PROJECT_SOURCE_DIR}/${hdr_file})
+        endforeach()
+      endif()
+    else()
+      list(LENGTH ${prefix}_SOURCES _length)
+      if(${_length} GREATER 1)
+        string(REGEX MATCHALL "[.](h)" _length ${${prefix}_SOURCES}})
+        if(NOT _length)
+          file(GLOB_RECURSE USED_SOURCES ${PROJECT_SOURCE_DIR}/*.h*)
+          if(USED_SOURCES)
+            message(AUTHOR_WARNING "Header files not defined in your CMakeLists.txt. Please consider defining ${prefix}_HEADERS as list of all headers used by this addon. Falling back to recursive scan for *.h.")
+          endif()
+        endif()
+      endif()
+    endif()
+
+    # Add the used source files defined with CMakeLists.txt from addon itself
+    if(${prefix}_SOURCES MATCHES ${PROJECT_SOURCE_DIR})
+      # include path name already complete
+      list(APPEND USED_SOURCES ${${prefix}_SOURCES})
+    else()
+      # add the complete include path to begin 
+      foreach(src_file ${${prefix}_SOURCES})
+        list(APPEND USED_SOURCES ${PROJECT_SOURCE_DIR}/${src_file})
+      endforeach()
+    endif()
+    
+    # Set defines used in addon.xml.in and read from versions.h to set add-on
+    # version parts automatically
+    file(STRINGS ${KODI_INCLUDE_DIR}/versions.h BIN_ADDON_PARTS)
+    foreach(loop_var ${BIN_ADDON_PARTS})
+      # Only pass strings with "#define ADDON_" from versions.h
+      if(loop_var MATCHES "#define ADDON_")
+        string(REGEX REPLACE "\\\n" " " loop_var ${loop_var}) # remove header line breaks 
+        string(REGEX REPLACE "#define " "" loop_var ${loop_var}) # remove the #define name from string
+        string(REGEX MATCHALL "[//a-zA-Z0-9._-]+" loop_var "${loop_var}") # separate the define values to a list
+
+        # Get the definition name
+        list(GET loop_var 0 include_name)
+        # Check definition are depends who is a bigger list
+        if("${include_name}" MATCHES "_DEPENDS")
+          # Use start definition name as base for other value type
+          list(GET loop_var 0 list_name)
+          string(REPLACE "_DEPENDS" "" depends_name ${list_name})
+          string(REPLACE "_DEPENDS" "_XML_ID" xml_entry_name ${list_name})
+          string(REPLACE "_DEPENDS" "_USED" used_type_name ${list_name})
+
+          # remove the first value, not needed and wrong on "for" loop
+          list(REMOVE_AT loop_var 0)
+
+          foreach(depend_header ${loop_var})
+            string(STRIP ${depend_header} depend_header)
+            foreach(src_file ${USED_SOURCES})
+              file(STRINGS ${src_file} BIN_ADDON_SRC_PARTS)
+              foreach(loop_var ${BIN_ADDON_SRC_PARTS})
+                string(FIND "${loop_var}" "#include" matchres)
+                if("${matchres}" EQUAL 0)
+                  string(REPLACE " " ";" loop_var "${loop_var}")
+                  list(GET loop_var 1 include_name)
+                  string(REGEX REPLACE "[<>\"]|kodi/" "" include_name "${include_name}")
+                  if(include_name MATCHES ${depend_header})
+                    set(ADDON_DEPENDS "${ADDON_DEPENDS}\n<import addon=\"${${xml_entry_name}}\" version=\"${${depends_name}}\"/>")
+                    # Inform with them the addon header about used type
+                    add_definitions(-D${used_type_name})
+                    message(STATUS "Added usage definition: ${used_type_name}")
+                    set(FOUND_HEADER_USAGE 1)
+                  endif()
+                endif()
+              endforeach()
+              if(FOUND_HEADER_USAGE EQUAL 1) # break this loop if found but not unset, needed in parts where includes muddled up on addon
+                break()
+              endif()
+            endforeach()
+            # type is found and round becomes broken for next round with other type
+            if(FOUND_HEADER_USAGE EQUAL 1)
+              unset(FOUND_HEADER_USAGE)
+              break()
+            endif()
+          endforeach()
+        else()
+          # read the definition values and make it by the on version.h defined names public
+          list(GET loop_var 1 include_variable)
+          string(REGEX REPLACE ".*\"(.*)\"" "\\1" ${include_name} ${include_variable})
+          set(${include_name} ${${include_name}})
+        endif()
+      endif()
+    endforeach()
+
     add_library(${target} ${${prefix}_SOURCES})
     target_link_libraries(${target} ${${libs}})
     set_target_properties(${target} PROPERTIES VERSION ${${prefix}_VERSION}
@@ -72,6 +182,15 @@ macro (build_addon target prefix libs)
     set(PLATFORM ${CORE_SYSTEM_NAME})
 
     file(READ ${PROJECT_SOURCE_DIR}/${target}/addon.xml.in addon_file)
+
+    # If sources are present must be the depends set
+    if(${prefix}_SOURCES)
+      string(FIND "${addon_file}" "\@ADDON_DEPENDS\@" matchres)
+      if("${matchres}" EQUAL -1)
+        message(FATAL_ERROR "\"\@ADDON_DEPENDS\@\" not found in addon.xml.in.")
+      endif()
+    endif()
+
     string(CONFIGURE "${addon_file}" addon_file_conf @ONLY)
     file(GENERATE OUTPUT ${PROJECT_SOURCE_DIR}/${target}/addon.xml CONTENT "${addon_file_conf}")
     if(${APP_NAME_UC}_BUILD_DIR)

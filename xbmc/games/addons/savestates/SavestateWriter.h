@@ -1,5 +1,5 @@
 /*
-*      Copyright (C) 2016 Team Kodi
+*      Copyright (C) 2016-2017 Team Kodi
 *      http://kodi.tv
 *
 *  This Program is free software; you can redistribute it and/or modify
@@ -25,6 +25,8 @@
 #include <stdint.h>
 #include <string>
 
+namespace KODI
+{
 namespace GAME
 {
   class CGameClient;
@@ -48,4 +50,5 @@ namespace GAME
     double             m_fps; //! @todo
     CSavestateDatabase m_db;
   };
+}
 }

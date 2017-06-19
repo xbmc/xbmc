@@ -350,7 +350,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
   // sort the items
   items.Sort(SortByLabel, SortOrderAscending, CServiceBroker::GetSettings().GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING) ? SortAttributeIgnoreArticle : SortAttributeNone);
 
-  CGUIDialogSelect* pDialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+  CGUIDialogSelect* pDialog = g_windowManager.GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
   pDialog->Reset();
   pDialog->SetItems(items);
   std::string strHeading = StringUtils::Format(g_localizeStrings.Get(13401).c_str(), g_localizeStrings.Get(iLabel).c_str());
@@ -439,7 +439,7 @@ void CGUIDialogSmartPlaylistRule::OnCancel()
 void CGUIDialogSmartPlaylistRule::OnField()
 {
   const auto fields = CSmartPlaylistRule::GetFields(m_type);
-  CGUIDialogSelect* dialog = static_cast<CGUIDialogSelect*>(g_windowManager.GetWindow(WINDOW_DIALOG_SELECT));
+  CGUIDialogSelect* dialog = g_windowManager.GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
   dialog->Reset();
   dialog->SetHeading(CVariant{20427});
   int selected = -1;
@@ -474,7 +474,7 @@ void CGUIDialogSmartPlaylistRule::OnField()
 void CGUIDialogSmartPlaylistRule::OnOperator()
 {
   const auto labels = GetValidOperators(m_rule);
-  CGUIDialogSelect* dialog = static_cast<CGUIDialogSelect*>(g_windowManager.GetWindow(WINDOW_DIALOG_SELECT));
+  CGUIDialogSelect* dialog = g_windowManager.GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
   dialog->Reset();
   dialog->SetHeading(CVariant{ 16023 });
   for (auto label : labels)
@@ -556,7 +556,7 @@ void CGUIDialogSmartPlaylistRule::OnDeinitWindow(int nextWindowID)
 
 bool CGUIDialogSmartPlaylistRule::EditRule(CSmartPlaylistRule &rule, const std::string& type)
 {
-  CGUIDialogSmartPlaylistRule *editor = (CGUIDialogSmartPlaylistRule *)g_windowManager.GetWindow(WINDOW_DIALOG_SMART_PLAYLIST_RULE);
+  CGUIDialogSmartPlaylistRule *editor = g_windowManager.GetWindow<CGUIDialogSmartPlaylistRule>(WINDOW_DIALOG_SMART_PLAYLIST_RULE);
   if (!editor) return false;
 
   editor->m_rule = rule;

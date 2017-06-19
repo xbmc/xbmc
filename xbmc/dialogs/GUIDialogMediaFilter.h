@@ -27,6 +27,7 @@
 #include "dbwrappers/Database.h"
 #include "dbwrappers/DatabaseQuery.h"
 #include "settings/dialogs/GUIDialogSettingsManualBase.h"
+#include "settings/lib/SettingType.h"
 #include "utils/DatabaseUtils.h"
 
 class CDbUrl;
@@ -49,11 +50,11 @@ public:
     std::string mediaType;
     Field field;
     uint32_t label;
-    int settingType;
+    SettingType settingType;
     std::string controlType;
     std::string controlFormat;
     CDatabaseQueryRule::SEARCH_OPERATOR ruleOperator;
-    CSetting *setting;
+    std::shared_ptr<CSetting> setting;
     CSmartPlaylistRule *rule;
     void *data;
   } Filter;
@@ -64,7 +65,7 @@ protected:
   virtual void OnInitWindow();
 
   // implementations of ISettingCallback
-  virtual void OnSettingChanged(const CSetting *setting);
+  virtual void OnSettingChanged(std::shared_ptr<const CSetting> setting);
 
   // specialization of CGUIDialogSettingsBase
   virtual bool AllowResettingSettings() const { return false; }
@@ -88,7 +89,7 @@ protected:
   CSmartPlaylistRule* AddRule(Field field, CDatabaseQueryRule::SEARCH_OPERATOR ruleOperator = CDatabaseQueryRule::OPERATOR_CONTAINS);
   void DeleteRule(Field field);
 
-  static void GetStringListOptions(const CSetting *setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
+  static void GetStringListOptions(std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
 
   CDbUrl* m_dbUrl;
   std::string m_mediaType;

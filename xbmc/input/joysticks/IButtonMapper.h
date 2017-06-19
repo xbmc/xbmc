@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2014-2016 Team Kodi
+ *      Copyright (C) 2014-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -43,7 +43,7 @@ namespace JOYSTICK
   public:
     IButtonMapper() = default;
 
-    virtual ~IButtonMapper(void) { }
+    virtual ~IButtonMapper() = default;
 
     /*!
      * \brief The add-on ID of the game controller associated with this button mapper

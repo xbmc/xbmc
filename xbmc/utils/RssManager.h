@@ -47,7 +47,7 @@ public:
   virtual void OnSettingsLoaded() override;
   virtual void OnSettingsUnloaded() override;
 
-  virtual void OnSettingAction(const CSetting *setting) override;
+  virtual void OnSettingAction(std::shared_ptr<const CSetting> setting) override;
 
   void Start();
   void Stop();

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2014-2016 Team Kodi
+ *      Copyright (C) 2014-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -52,10 +52,6 @@ bool CJoystickFeature::AcceptsInput(bool bActivation)
   {
     if (m_handler->AcceptsInput())
       bAcceptsInput = true;
-
-    // Avoid sticking
-    if (!bActivation)
-      bAcceptsInput = true;
   }
 
   return bAcceptsInput;
@@ -68,6 +64,7 @@ CScalarFeature::CScalarFeature(const FeatureName& name, IInputHandler* handler, 
   m_inputType(handler->GetInputType(name)),
   m_bDigitalState(false),
   m_bDigitalHandled(false),
+  m_bDigitalPressSent(false),
   m_motionStartTimeMs(0),
   m_analogState(0.0f),
   m_analogEvent(false),
@@ -107,21 +104,7 @@ bool CScalarFeature::OnAnalogMotion(const CDriverPrimitive& source, float magnit
 
 void CScalarFeature::ProcessMotions(void)
 {
-  if (m_bDigitalState && m_bDigitalHandled)
-  {
-    if (m_motionStartTimeMs == 0)
-    {
-      // Button was just pressed, record start time and exit
-      m_motionStartTimeMs = XbmcThreads::SystemClockMillis();
-    }
-    else
-    {
-      // Button has been pressed more than one event frame
-      const unsigned int elapsed = XbmcThreads::SystemClockMillis() - m_motionStartTimeMs;
-      m_handler->OnButtonHold(m_name, elapsed);
-    }
-  }
-  else if (m_analogEvent)
+  if (m_analogEvent)
   {
     float magnitude = m_analogState;
 
@@ -138,10 +121,43 @@ void CScalarFeature::ProcessMotions(void)
     }
 
     m_handler->OnButtonMotion(m_name, magnitude);
+
+    // Disable sending events after feature is reset
     if (m_analogState == 0.0f)
     {
       m_analogEvent = false;
       m_motionStartTimeMs = 0;
+    }
+  }
+  else if (m_bDigitalState)
+  {
+    if (m_motionStartTimeMs == 0)
+    {
+      // Button was just pressed, record start time and exit (button press
+      // event was already sent this frame)
+      m_motionStartTimeMs = XbmcThreads::SystemClockMillis();
+    }
+    else
+    {
+      // Calculate time elapsed
+      const unsigned int elapsed = XbmcThreads::SystemClockMillis() - m_motionStartTimeMs;
+
+      // Calculate holdtime, if any
+      const unsigned int holdtimeMs = m_handler->GetDelayMs(m_name);
+
+      // Only process button events if holdtime has elapsed
+      if (elapsed >= holdtimeMs)
+      {
+        if (m_bDigitalHandled)
+        {
+          m_handler->OnButtonHold(m_name, elapsed - holdtimeMs);
+        }
+        else if (!m_bDigitalPressSent)
+        {
+          m_bDigitalHandled = m_handler->OnButtonPress(m_name, true);
+          m_bDigitalPressSent = true;
+        }
+      }
     }
   }
 }
@@ -153,10 +169,34 @@ void CScalarFeature::OnDigitalMotion(bool bPressed)
     m_bDigitalState = bPressed;
     m_motionStartTimeMs = 0; // This is set in ProcessMotions()
 
-    CLog::Log(LOGDEBUG, "Feature [ %s ] on %s %s", m_name.c_str(), m_handler->ControllerID().c_str(),
+    CLog::Log(LOGDEBUG, "FEATURE [ %s ] on %s %s", m_name.c_str(), m_handler->ControllerID().c_str(),
               bPressed ? "pressed" : "released");
 
-    m_bDigitalHandled = m_handler->OnButtonPress(m_name, bPressed);
+    if (bPressed)
+    {
+      // Don't send event if a holdtime was specified
+      bool bHasHoldtime = false;
+
+      if (m_handler->GetDelayMs(m_name) != 0)
+        bHasHoldtime = true;
+
+      if (bHasHoldtime)
+      {
+        m_bDigitalHandled = false;
+        m_bDigitalPressSent = false;
+      }
+      else
+      {
+        m_bDigitalHandled = m_handler->OnButtonPress(m_name, true);
+        m_bDigitalPressSent = true;
+      }
+    }
+    else
+    {
+      m_handler->OnButtonPress(m_name, false);
+      m_bDigitalHandled = false;
+      m_bDigitalPressSent = false;
+    }
   }
 }
 
@@ -175,7 +215,7 @@ void CScalarFeature::OnAnalogMotion(float magnitude)
     if (m_bDigitalState != bActivated)
     {
       m_bDigitalState = bActivated;
-      CLog::Log(LOGDEBUG, "Feature [ %s ] on %s %s", m_name.c_str(), m_handler->ControllerID().c_str(),
+      CLog::Log(LOGDEBUG, "FEATURE [ %s ] on %s %s", m_name.c_str(), m_handler->ControllerID().c_str(),
                 bActivated ? "activated" : "deactivated");
     }
   }

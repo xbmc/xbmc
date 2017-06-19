@@ -9,6 +9,7 @@ PLATFORM_OBJS =
 EXCLUDED_ADDONS = 
 
 CMAKE_SOURCE_DIR = $(shell cd $(CURDIR)/../../..; pwd)
+APP_PACKAGE_DIR = $(subst .,/,@APP_PACKAGE@)
 COPYDIRS = system addons media
 GCC_VERSION=$(shell $(CC) -dumpversion)
 ZIP=zip
@@ -87,6 +88,7 @@ xbmc/assets:
 shared:
 	mkdir -p assets
 	cp -rfp $(PREFIX)/share/@APP_NAME_LC@/* ./assets
+	cp -rfp $(DEPENDS_PATH)/share/kodi/* ./assets || true
 	find `pwd`/assets/ -depth -name ".git" -exec rm -rf {} \;
 	find `pwd`/assets/ -name "*.so" -exec rm {} \;
 	find `pwd`/assets/addons/skin.*/media/* -depth -not -iname "Textures.xbt" -exec rm -rf {} \;
@@ -109,7 +111,7 @@ python: | xbmc/assets
 	cd xbmc/assets/python2.7/lib/python2.7/; rm -rf test config lib-dynload
 
 res:
-	mkdir -p xbmc/res xbmc/res/raw xbmc/res/values images
+	mkdir -p xbmc/gen/$(APP_PACKAGE_DIR) xbmc/res xbmc/res/raw xbmc/res/values images
 	@echo "native_arch=$(CPU)" > xbmc/res/raw/xbmc.properties
 	cp -fp $(CMAKE_SOURCE_DIR)/media/Splash.png xbmc/res/drawable/splash.png
 	cp -fp media/drawable-hdpi/ic_launcher.png xbmc/res/drawable-hdpi/ic_launcher.png
@@ -121,34 +123,35 @@ res:
 	cp -fp media/drawable-xxxhdpi/ic_launcher.png xbmc/res/drawable-xxxhdpi/ic_launcher.png
 	cp -fp media/drawable-xhdpi/banner.png xbmc/res/drawable-xhdpi/banner.png
 	cp xbmc/strings.xml xbmc/res/values/
+	cp xbmc/colors.xml xbmc/res/values/
 	cp xbmc/activity_main.xml xbmc/res/layout/
+	cp xbmc/searchable.xml xbmc/res/xml/
 	mkdir -p tmp/res; $(AAPT) c -S xbmc/res -C tmp/res; cp -r -n xbmc/res tmp/ || true
-	$(AAPT) p -f -I $(SDKROOT)/platforms/$(SDK_PLATFORM)/android.jar -S tmp/res/ -M xbmc/AndroidManifest.xml -F images/@APP_NAME_LC@app-debug-skeleton.apk -J xbmc/src
+	$(AAPT) p -f -I $(SDKROOT)/platforms/$(SDK_PLATFORM)/android.jar -S tmp/res/ -M xbmc/AndroidManifest.xml -F images/@APP_NAME_LC@app-debug-skeleton.apk -J xbmc/gen/$(APP_PACKAGE_DIR)
 	@rm -rf tmp/
 
 libs: $(PREFIX)/lib/@APP_NAME_LC@/lib@APP_NAME_LC@.so
-	rm -rf xbmc/lib/$(CPU) xbmc/libs/$(CPU) xbmc/obj/local/$(CPU)
-	mkdir -p xbmc/lib/$(CPU) xbmc/assets/python2.7/lib/ xbmc/libs/$(CPU) xbmc/obj/local/$(CPU)
+	rm -rf xbmc/lib/$(CPU) xbmc/obj/local/$(CPU)
+	mkdir -p xbmc/lib/$(CPU) xbmc/assets/python2.7/lib/ xbmc/obj/local/$(CPU)
 	cp -fpL $(SRCLIBS) xbmc/obj/local/$(CPU)/
 	cp -fp $(PREFIX)/lib/@APP_NAME_LC@/lib@APP_NAME_LC@.so xbmc/obj/local/$(CPU)/
-	find $(PREFIX)/share/@APP_NAME_LC@/addons -name "*.so" -exec cp -fp {} xbmc/obj/local/$(CPU)/ \;
-	find $(PREFIX)/lib/@APP_NAME_LC@/addons -name "*.so" -exec cp -fp {} xbmc/obj/local/$(CPU)/ \; || true
+	find $(DEPENDS_PATH)/share/kodi/addons -name "*.so" -exec cp -fp {} xbmc/obj/local/$(CPU)/ \; || true
+	find $(DEPENDS_PATH)/lib/kodi/addons -name "*.so" -exec cp -fp {} xbmc/obj/local/$(CPU)/ \; || true
 	find $(PREFIX)/lib/@APP_NAME_LC@/system -name "*.so" -exec cp -fp {} xbmc/obj/local/$(CPU)/ \;
 	DIR=${CURDIR}; cd $(PREFIX)/lib/python2.7/site-packages; for i in `find Cryptodome -name \*.so` ; do FN=`echo $$i | cut -c1- | tr "/" "_"` ; mv $$i $$DIR/xbmc/obj/local/$(CPU)/$$FN ; done
 	cd xbmc/obj/local/$(CPU)/; find . -name "*.so" -not -name "lib*.so" | sed "s/\.\///" | xargs -I@ mv @ lib@
 	cp -fp xbmc/obj/local/$(CPU)/*.so xbmc/lib/$(CPU)/
 	$(STRIP) --strip-unneeded xbmc/lib/$(CPU)/*.so
-	install -p $(GDBPATH) ./xbmc/libs/$(CPU)/gdbserver
-	echo "set solib-search-path ./obj/local/$(CPU)" > ./xbmc/libs/$(CPU)/gdb.setup
+	install -p $(GDBPATH) ./xbmc/lib/$(CPU)/gdbserver
+	echo "set solib-search-path ./obj/local/$(CPU)" > ./xbmc/lib/$(CPU)/gdb.setup
 	echo "directory $(TOOLCHAIN)/sysroot/usr/include $(NDKROOT)/sources/android/native_app_glue" \
-	     "$(NDKROOT)/sources/cxx-stl/gnu-libstdc++/$(GCC_VERSION)/include $(CMAKE_SOURCE_DIR)  $(PREFIX)/include jni" >> ./xbmc/libs/$(CPU)/gdb.setup
-	cp -fp xbmc/libs/$(CPU)/* xbmc/lib/$(CPU)
+             "$(NDKROOT)/sources/cxx-stl/gnu-libstdc++/$(GCC_VERSION)/include $(CORE_SOURCE_DIR)  $(PREFIX)/include jni" >> ./xbmc/lib/$(CPU)/gdb.setup
 
 xbmc/classes.dex: res
-	mkdir -p xbmc/obj
-	@javac -classpath $(SDKROOT)/platforms/$(SDK_PLATFORM)/android.jar:xbmc/obj -d xbmc/obj -sourcepath xbmc/src xbmc/src/*.java $(JAVAC_EXTRA_ARGS)
-	@javac -classpath $(SDKROOT)/platforms/$(SDK_PLATFORM)/android.jar:xbmc/obj -d xbmc/obj -sourcepath xbmc/src xbmc/src/org/xbmc/kodi/*.java $(JAVAC_EXTRA_ARGS)
-	@$(DX) --dex --output=xbmc/classes.dex xbmc/obj
+	mkdir -p xbmc/java/$(APP_PACKAGE_DIR) xbmc/java/$(APP_PACKAGE_DIR)/interfaces xbmc/obj
+	@cp xbmc/src/org/xbmc/kodi/*.java xbmc/java/$(APP_PACKAGE_DIR)/
+	@javac -classpath $(SDKROOT)/platforms/$(SDK_PLATFORM)/android.jar:xbmc/obj -d xbmc/obj -sourcepath xbmc/src xbmc/gen/$(APP_PACKAGE_DIR)/*.java xbmc/java/$(APP_PACKAGE_DIR)/*.java $(JAVAC_EXTRA_ARGS)
+	@$(DX) --dex --output=xbmc/classes.dex xbmc/obj xbmc/lib
 
 package: libs python xbmc/classes.dex
 	@echo "Creating package..."
@@ -169,15 +172,15 @@ $(SRCLIBS):
 
 apk-clean:
 	rm -rf images
+	rm -rf xbmc/java
+	rm -rf xbmc/gen
 	rm -rf xbmc/lib
-	rm -rf xbmc/libs
 	rm -rf xbmc/assets
 	rm -rf xbmc/obj
 	rm -rf xbmc/res/raw
 	rm -rf xbmc/res/values
 	rm -rf tmp
 	rm -f xbmc/res/drawable/splash.png
-	rm -f xbmc/src/R.java
 	rm -f xbmc/classes.dex
 	rm -rf assets
 

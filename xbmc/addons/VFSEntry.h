@@ -18,7 +18,7 @@
  */
 #pragma once
 
-#include "AddonDll.h"
+#include "addons/binary-addons/AddonDll.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/kodi_vfs_types.h"
 #include "filesystem/IFile.h"
 #include "filesystem/IDirectory.h"
@@ -30,17 +30,17 @@ namespace ADDON
   class CVFSEntry : public CAddonDll
   {
   public:
-    static std::unique_ptr<CVFSEntry> FromExtension(AddonProps props,
+    static std::unique_ptr<CVFSEntry> FromExtension(CAddonInfo addonInfo,
                                                     const cp_extension_t* ext);
 
     //! \brief Construct from add-on properties.
-    //! \param props General addon properties
+    //! \param addonInfo General addon properties
     //! \param protocols Protocols associated with add-on
     //! \param extensions File extensions associated with add-on (filedirectories)
     //! \param files If true, add-on provides files
     //! \param directories If true, add-on provides directory listings
     //! \param filedirectories If true, add-on provides filedirectories
-    explicit CVFSEntry(AddonProps props,
+    explicit CVFSEntry(CAddonInfo addonInfo,
                       const std::string& protocols,
                       const std::string& extensions,
                       bool files, bool directories, bool filedirectories);
@@ -86,8 +86,7 @@ namespace ADDON
     bool m_files;             //!< Vfs entry can read files.
     bool m_directories;       //!< VFS entry can list directories.
     bool m_filedirectories;   //!< VFS entry contains file directories.
-    KodiToAddonFuncTable_VFSEntry m_struct; //!< VFS callback table
-    VFS_PROPS m_info; //!< (Dummy) properties
+    AddonInstance_VFSEntry m_struct; //!< VFS callback table
   };
 
   typedef std::shared_ptr<CVFSEntry> VFSEntryPtr; //!< Convenience typedef.

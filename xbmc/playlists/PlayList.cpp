@@ -20,7 +20,6 @@
 
 #include "PlayList.h"
 #include "PlayListFactory.h"
-#include <sstream>
 #include "video/VideoInfoTag.h"
 #include "music/tags/MusicInfoTag.h"
 #include "filesystem/File.h"
@@ -94,10 +93,6 @@ void CPlayList::Add(const CFileItemPtr &item, int iPosition, int iOrder)
     item->m_iprogramCount = iOldSize;
   else
     item->m_iprogramCount = iOrder;
-
-  // videodb files are not supported by the filesystem as yet
-  if (item->IsVideoDb())
-    item->SetPath(item->GetVideoInfoTag()->m_strFileNameAndPath);
 
   // increment the playable counter
   item->ClearProperty("unplayable");

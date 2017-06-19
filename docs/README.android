@@ -29,7 +29,7 @@ These are the minimum packages necessary for building Kodi.
 Non-Ubuntu users will need to get the equivalents.
 
     $ sudo apt-get install build-essential default-jdk git curl autoconf \
-      unzip zip zlib1g-dev gawk gperf cmake
+      unzip zip zlib1g-dev gawk gperf cmake libcurl4-openssl-dev
 
 If you run a 64bit operating system you will also need to get ia32-libs
 
@@ -56,8 +56,8 @@ To develop Kodi for Android the Android SDK and NDK are required.
 3.1. Prerequisites when compiling on Mac OSX
 --------------------------------------------------------------------
 
-a. When building on Mac OSX you should download the java version from here: http://support.apple.com/kb/DL1572
-Or ensure otherwise that you are using java 1.6 (java -version tells you the version).
+a. When building on Mac OSX you need to download the java JDK (development kit) from http://www.oracle.com
+   Or ensure otherwise that you are using java 1.8 (java -version tells you the version).
 b. The compilation for android needs a case sensitive filesystem. The
    filesystem used on normal OSX installations is case insensitive. So you
    need to generate a writeable hdd image and format it with hfs+ (case sensitive).
@@ -76,7 +76,8 @@ f. Once you have your hdd image with case sensitive hfs+ file system do all step
    example the hdd image is mounted on /Volumes/android-dev.
     $ ./configure --with-tarballs=/Users/Shared/xbmc-depends/tarballs --host=arm-linux-androideabi \
                   --with-sdk-path=/Volumes/android-dev/android/android-sdk-macosx \
-                  --with-ndk=/Volumes/android-dev/android/android-ndk-r12b \
+                  --with-sdk=android-21 \
+                  --with-ndk=/Volumes/android-dev/android/android-ndk-r14b \
                   --with-toolchain=/Volumes/android-dev/android/android-toolchain-arm/android-21 \
                   --prefix=/Volumes/android-dev/android/xbmc-depends
 
@@ -97,7 +98,7 @@ archives to your harddisk. For our example we are extracting in the following
 directories (this matches the example from tools/depends/README as well):
 
 NDK (referenced as <android-ndk> from now on):
-/opt/android-ndk-r12b
+/opt/android-ndk-r14b
 
 TOOLCHAIN (arm) (referenced as <android-toolchain-arm> from now on):
 /opt/arm-linux-androideabi-4.9-vanilla/android-21
@@ -124,6 +125,13 @@ install some android packages using the Android SDK Manager:
     $ cd <android-sdk>/tools
     $ ./android update sdk -u -t platform,platform-tool
     $ ./android update sdk --all -u -t build-tools-20.0.0
+
+As of newest SDKs the android tool is deprecated. Use sdkmanager instead:
+    $ cd <android-sdk>/tools/bin
+    $ ./sdkmanager  platform-tools
+    $ ./sdkmanager "platforms;android-21"
+    $ ./sdkmanager "build-tools;20.0.0"
+
 --------------------------------------------------------------------
 3.4. Setup the Android toolchain
 --------------------------------------------------------------------
@@ -235,12 +243,15 @@ Rinse and repeat until you are really done and all libs are built.
 --------------------------------------------------------------------
 
     $ cd $HOME/kodi-android
-    $ make -C tools/depends/target/xbmc
+    $ make -C tools/depends/target/cmakebuildsys
+    $ cd build
     $ make
     $ make apk
 
 After the first build (assuming bootstrap and configure are successful),
 subsequent builds can be run with a simple 'make' and 'make apk'.
+
+The built APK will be present in $HOME/kodi-android
 
 -----------------------------------------------------------------------------
 6. Installing Kodi in an Android system
@@ -248,7 +259,7 @@ subsequent builds can be run with a simple 'make' and 'make apk'.
 
 To install Kodi through the previously built APK in an Android system you can
 either install it on a real device (smartphone/tablet/...) running Android
- >= 2.3.x.
+ >= 5.x
 
 --------------------------------------------------------------------
 6.1. Installing Kodi on the Android device
@@ -261,9 +272,9 @@ device's Android settings:
   - Applications
     [X] Unknown sources
 
-    $ cd $HOME/kodi-android/tools/android/packaging
+    $ cd $HOME/kodi-android
     $ adb devices
-    $ adb -s <device-id> install -r images/xbmcapp-debug.apk
+    $ adb -s <device-id> install -r xbmcapp-debug.apk
 
 The <device-id> can be retrieved from the list returned by the
 "adb devices" command and is the first value in the row representing

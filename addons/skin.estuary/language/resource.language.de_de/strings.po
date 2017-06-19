@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 # Addon Name: Estuary
 # Addon id: skin.estuary
-# Addon Provider: phil65, Piers
+# Addon Provider: phil65, Ichabod Fletchman
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
@@ -112,6 +112,10 @@ msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
 msgstr "Keine Favoriten gespeichert. Es kann jedes beliebige Element aus den Medienansichten via Rechtsklick zu den Favoriten hinzugefügt werden."
 
+msgctxt "#31026"
+msgid "Timeshift"
+msgstr "Timeshift"
+
 msgctxt "#31028"
 msgid "Show fanart"
 msgstr "Fanart zeigen"
@@ -119,6 +123,10 @@ msgstr "Fanart zeigen"
 msgctxt "#31029"
 msgid "Last logged in"
 msgstr "Zuletzt angemeldet"
+
+msgctxt "#31030"
+msgid "System memory usage"
+msgstr "System Speicher-Auslastung"
 
 msgctxt "#31031"
 msgid "Version info"
@@ -250,7 +258,7 @@ msgstr "von"
 
 msgctxt "#31072"
 msgid "Power Options"
-msgstr "Ausschalt-Einstellungen"
+msgstr "Ausschalten"
 
 msgctxt "#31075"
 msgid "Movie sets"
@@ -306,7 +314,11 @@ msgstr "Kanal-Einstellungen"
 
 msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
-msgstr "Bitte Kodi-Benutzerprofil auswählen[CR]um fortzufahren"
+msgstr "Bitte Kodi-Benutzerprofil zum[CR]Anmelden und Fortfahren auswählen"
+
+msgctxt "#31099"
+msgid "IconWall"
+msgstr "IconWall"
 
 msgctxt "#31100"
 msgid "Shift"
@@ -314,7 +326,7 @@ msgstr "Shift"
 
 msgctxt "#31101"
 msgid "InfoWall"
-msgstr "Info Wall"
+msgstr "InfoWall"
 
 msgctxt "#31102"
 msgid "Wall"
@@ -428,10 +440,6 @@ msgctxt "#31131"
 msgid "Choose skin fanart pack"
 msgstr "Fanart-Sammlung für Skin wählen"
 
-msgctxt "#31132"
-msgid "min"
-msgstr "min"
-
 msgctxt "#31134"
 msgid "Remaining"
 msgstr "Verbleibend"
@@ -475,3 +483,59 @@ msgstr "Zum Addon-Browser..."
 msgctxt "#31145"
 msgid "Search add-ons"
 msgstr "Addons durchsuchen"
+
+msgctxt "#31148"
+msgid "Categories"
+msgstr "Kategorien"
+
+msgctxt "#31149"
+msgid "Select genre fanart pack"
+msgstr "Genre Fanart Pack auswählen"
+
+msgctxt "#31150"
+msgid "Repository"
+msgstr "Repository"
+
+msgctxt "#31151"
+msgid "Unwatched music videos"
+msgstr "Ungesehene Musikvideos"
+
+msgctxt "#31152"
+msgid "Random music videos"
+msgstr "Zufällige Musikvideos"
+
+msgctxt "#31153"
+msgid "You do not have any add-ons of this type installed. Enter the add-on browser to download add-ons created by our community."
+msgstr "Es sind keine passenden Addons installiert. Bitte im Addon-Browser ein von der Community bereitgestelltes Addon herunterladen und installieren."
+
+msgctxt "#31154"
+msgid "Press OK to switch between locations"
+msgstr "[B]OK[/B] zum Wechseln des Ortes drücken"
+
+msgctxt "#31155"
+msgid "No bookmarks created yet."
+msgstr "Es wurden noch keine Lesezeichen angelegt."
+
+msgctxt "#31156"
+msgid "Choose background pattern"
+msgstr "Hintergrund-Muster auswählen"
+
+msgctxt "#31157"
+msgid "Edit categories"
+msgstr "Kategorien editieren"
+
+msgctxt "#31158"
+msgid "Touch mode"
+msgstr "Touch-Modus"
+
+msgctxt "#31159"
+msgid "Artwork"
+msgstr "Artwork"
+
+msgctxt "#31160"
+msgid "Show media flags"
+msgstr "Medien-Flags anzeigen"
+
+msgctxt "#31161"
+msgid "Numeric pad"
+msgstr "Ziffern-Eingabe"

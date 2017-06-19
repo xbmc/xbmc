@@ -27,6 +27,7 @@
 #include "cores/DataCacheCore.h"
 #include "FileItem.h"
 #include "guilib/GraphicContext.h"
+#include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
@@ -181,7 +182,7 @@ void CSeekHandler::Seek(bool forward, float amount, float duration /* = 0 */, bo
       Reset();
     }
   }
-
+  m_seekChanged = true;
   m_timer.StartZero();
 }
 
@@ -219,6 +220,8 @@ void CSeekHandler::FrameMove()
     // perform relative seek
     g_application.m_pPlayer->SeekTimeRelative(static_cast<int64_t>(m_seekSize * 1000));
 
+    m_seekChanged = true;
+
     Reset();
   }
 
@@ -226,9 +229,15 @@ void CSeekHandler::FrameMove()
   {
     m_timeCodePosition = 0;
   }
+
+  if (m_seekChanged)
+  {
+    m_seekChanged = false;
+    g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_STATE_CHANGED);
+  }
 }
 
-void CSeekHandler::SettingOptionsSeekStepsFiller(const CSetting *setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
+void CSeekHandler::SettingOptionsSeekStepsFiller(SettingConstPtr setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
 {
   std::string label;
   for (std::vector<int>::iterator it = g_advancedSettings.m_seekSteps.begin(); it != g_advancedSettings.m_seekSteps.end(); ++it) {
@@ -243,7 +252,7 @@ void CSeekHandler::SettingOptionsSeekStepsFiller(const CSetting *setting, std::v
   }
 }
 
-void CSeekHandler::OnSettingChanged(const CSetting *setting)
+void CSeekHandler::OnSettingChanged(std::shared_ptr<const CSetting> setting)
 {
   if (setting == NULL)
     return;

@@ -7,6 +7,7 @@
 # and link Kodi against the cpluff libraries.
 
 if(NOT WIN32)
+  find_package(EXPAT REQUIRED)
   string(REPLACE ";" " " defines "${CMAKE_C_FLAGS} ${SYSTEM_DEFINES} -I${EXPAT_INCLUDE_DIR}")
   get_filename_component(expat_dir ${EXPAT_LIBRARY} DIRECTORY)
   set(ldflags "-L${expat_dir}")
@@ -20,7 +21,7 @@ if(NOT WIN32)
   ExternalProject_Add(libcpluff SOURCE_DIR ${CMAKE_SOURCE_DIR}/lib/cpluff
                       BUILD_IN_SOURCE 1
                       PREFIX ${CORE_BUILD_DIR}/cpluff
-                      CONFIGURE_COMMAND CC=${CMAKE_C_COMPILER} ${CMAKE_SOURCE_DIR}/lib/cpluff/configure
+                      CONFIGURE_COMMAND AR=${CMAKE_AR} RANLIB=${CMAKE_RANLIB} CC=${CMAKE_C_COMPILER} ${CMAKE_SOURCE_DIR}/lib/cpluff/configure
                                         --disable-nls
                                         --enable-static
                                         --disable-shared
@@ -48,7 +49,7 @@ else()
   find_path(CPLUFF_INCLUDE_DIR cpluff.h)
 
   include(FindPackageHandleStandardArgs)
-  find_package_handle_standard_args(CPLUFF
+  find_package_handle_standard_args(Cpluff
                                     REQUIRED_VARS CPLUFF_INCLUDE_DIR)
 
   if(CPLUFF_FOUND)

@@ -18,6 +18,9 @@
  *
  */
 
+#include <algorithm>
+#include <array>
+
 #include "LangCodeExpander.h"
 #include "Util.h"
 #include "utils/StringUtils.h"
@@ -32,13 +35,14 @@ typedef struct LCENTRY
   const char *name;
 } LCENTRY;
 
-extern const struct LCENTRY g_iso639_1[185];
-extern const struct LCENTRY g_iso639_2[538];
+extern const std::array<struct LCENTRY, 185> g_iso639_1;
+extern const std::array<struct LCENTRY, 538> g_iso639_2;
 
 struct ISO639
 {
   const char* iso639_1;
-  const char* iso639_2;
+  const char* iso639_2b;
+  const char* iso639_2t;
   const char* win_id;
 };
 
@@ -49,8 +53,8 @@ struct ISO3166_1
 };
 
 // declared as extern to allow forward declaration
-extern const ISO639 LanguageCodes[189];
-extern const ISO3166_1 RegionCodes[245];
+extern const std::array<ISO639, 189> LanguageCodes;
+extern const std::array<ISO3166_1, 245> RegionCodes;
 
 CLangCodeExpander::CLangCodeExpander()
 { }
@@ -142,7 +146,7 @@ bool CLangCodeExpander::Lookup(const int code, std::string& desc)
   return Lookup(lang, desc);
 }
 
-bool CLangCodeExpander::ConvertISO6391ToISO6392T(const std::string& strISO6391, std::string& strISO6392T, bool checkWin32Locales /* = false */)
+bool CLangCodeExpander::ConvertISO6391ToISO6392B(const std::string& strISO6391, std::string& strISO6392B, bool checkWin32Locales /*= false*/)
 {
   // not a 2 char code
   if (strISO6391.length() != 2)
@@ -152,17 +156,17 @@ bool CLangCodeExpander::ConvertISO6391ToISO6392T(const std::string& strISO6391, 
   StringUtils::ToLower(strISO6391Lower);
   StringUtils::Trim(strISO6391Lower);
 
-  for (unsigned int index = 0; index < ARRAY_SIZE(LanguageCodes); ++index)
+  for (const auto& codes : LanguageCodes)
   {
-    if (strISO6391Lower == LanguageCodes[index].iso639_1)
+    if (strISO6391Lower == codes.iso639_1)
     {
-      if (checkWin32Locales && LanguageCodes[index].win_id)
+      if (checkWin32Locales && codes.win_id)
       {
-        strISO6392T = LanguageCodes[index].win_id;
+        strISO6392B = codes.win_id;
         return true;
       }
 
-      strISO6392T = LanguageCodes[index].iso639_2;
+      strISO6392B = codes.iso639_2b;
       return true;
     }
   }
@@ -170,51 +174,71 @@ bool CLangCodeExpander::ConvertISO6391ToISO6392T(const std::string& strISO6391, 
   return false;
 }
 
-bool CLangCodeExpander::ConvertToISO6392T(const std::string& strCharCode, std::string& strISO6392T, bool checkWin32Locales /* = false */)
+bool CLangCodeExpander::ConvertToISO6392B(const std::string& strCharCode, std::string& strISO6392B, bool checkWin32Locales /* = false */)
 {
 
   //first search in the user defined map
-  if (LookupUserCode(strCharCode, strISO6392T))
+  if (LookupUserCode(strCharCode, strISO6392B))
     return true;
 
   if (strCharCode.size() == 2)
-    return g_LangCodeExpander.ConvertISO6391ToISO6392T(strCharCode, strISO6392T, checkWin32Locales);
+    return g_LangCodeExpander.ConvertISO6391ToISO6392B(strCharCode, strISO6392B, checkWin32Locales);
 
   if (strCharCode.size() == 3)
   {
     std::string charCode(strCharCode); StringUtils::ToLower(charCode);
-    for (unsigned int index = 0; index < ARRAY_SIZE(LanguageCodes); ++index)
+    for (const auto& codes : LanguageCodes)
     {
-      if (charCode == LanguageCodes[index].iso639_2 ||
-         (checkWin32Locales && LanguageCodes[index].win_id != NULL && charCode == LanguageCodes[index].win_id))
+      if (charCode == codes.iso639_2b ||
+         (checkWin32Locales && codes.win_id != NULL && charCode == codes.win_id))
       {
-        strISO6392T = charCode;
+        strISO6392B = charCode;
         return true;
       }
     }
 
-    for (unsigned int index = 0; index < ARRAY_SIZE(RegionCodes); ++index)
+    for (const auto& codes : RegionCodes)
     {
-      if (charCode == RegionCodes[index].alpha3)
+      if (charCode == codes.alpha3)
       {
-        strISO6392T = charCode;
+        strISO6392B = charCode;
         return true;
       }
     }
   }
   else if (strCharCode.size() > 3)
   {
-    for (unsigned int i = 0; i < sizeof(g_iso639_2) / sizeof(LCENTRY); i++)
+    for (const auto& codes : g_iso639_2)
     {
-      if (StringUtils::EqualsNoCase(strCharCode, g_iso639_2[i].name))
+      if (StringUtils::EqualsNoCase(strCharCode, codes.name))
       {
-        CodeToString(g_iso639_2[i].code, strISO6392T);
+        CodeToString(codes.code, strISO6392B);
         return true;
       }
     }
   }
   return false;
 }
+
+bool CLangCodeExpander::ConvertToISO6392T(const std::string& strCharCode, std::string& strISO6392T, bool checkWin32Locales /* = false */)
+{
+
+  if (!ConvertToISO6392B(strCharCode, strISO6392T, checkWin32Locales))
+    return false;
+
+    for (const auto& codes : LanguageCodes)
+    {
+      if (strISO6392T == codes.iso639_2b ||
+        (checkWin32Locales && codes.win_id != NULL && strISO6392T == codes.win_id))
+      {
+        if (codes.iso639_2t != nullptr)
+          strISO6392T = codes.iso639_2t;
+        return true;
+      }
+    }
+  return false;
+}
+
 
 bool CLangCodeExpander::LookupUserCode(const std::string& desc, std::string &userCode)
 {
@@ -230,19 +254,19 @@ bool CLangCodeExpander::LookupUserCode(const std::string& desc, std::string &use
 }
 
 #ifdef TARGET_WINDOWS
-bool CLangCodeExpander::ConvertISO36111Alpha2ToISO36111Alpha3(const std::string& strISO36111Alpha2, std::string& strISO36111Alpha3)
+bool CLangCodeExpander::ConvertISO31661Alpha2ToISO31661Alpha3(const std::string& strISO31661Alpha2, std::string& strISO31661Alpha3)
 {
-  if (strISO36111Alpha2.length() != 2)
+  if (strISO31661Alpha2.length() != 2)
     return false;
 
-  std::string strLower(strISO36111Alpha2);
+  std::string strLower(strISO31661Alpha2);
   StringUtils::ToLower(strLower);
   StringUtils::Trim(strLower);
-  for (unsigned int index = 0; index < ARRAY_SIZE(RegionCodes); ++index)
+  for (const auto& codes : RegionCodes)
   {
-    if (strLower == RegionCodes[index].alpha2)
+    if (strLower == codes.alpha2)
     {
-      strISO36111Alpha3 = RegionCodes[index].alpha3;
+      strISO31661Alpha3 = codes.alpha3;
       return true;
     }
   }
@@ -250,19 +274,19 @@ bool CLangCodeExpander::ConvertISO36111Alpha2ToISO36111Alpha3(const std::string&
   return true;
 }
 
-bool CLangCodeExpander::ConvertWindowsLanguageCodeToISO6392T(const std::string& strWindowsLanguageCode, std::string& strISO6392T)
+bool CLangCodeExpander::ConvertWindowsLanguageCodeToISO6392B(const std::string& strWindowsLanguageCode, std::string& strISO6392B)
 {
   if (strWindowsLanguageCode.length() != 3)
     return false;
 
   std::string strLower(strWindowsLanguageCode);
   StringUtils::ToLower(strLower);
-  for (unsigned int index = 0; index < ARRAY_SIZE(LanguageCodes); ++index)
+  for (const auto& codes : LanguageCodes)
   {
-    if ((LanguageCodes[index].win_id && strLower == LanguageCodes[index].win_id) ||
-         strLower == LanguageCodes[index].iso639_2)
+    if ((codes.win_id && strLower == codes.win_id) ||
+         strLower == codes.iso639_2b)
     {
-      strISO6392T = LanguageCodes[index].iso639_2;
+      strISO6392B = codes.iso639_2b;
       return true;
     }
   }
@@ -292,20 +316,20 @@ bool CLangCodeExpander::ConvertToISO6391(const std::string& lang, std::string& c
   else if (lang.length() == 3)
   {
     std::string lower(lang); StringUtils::ToLower(lower);
-    for (unsigned int index = 0; index < ARRAY_SIZE(LanguageCodes); ++index)
+    for (const auto& codes : LanguageCodes)
     {
-      if (lower == LanguageCodes[index].iso639_2 || (LanguageCodes[index].win_id && lower == LanguageCodes[index].win_id))
+      if (lower == codes.iso639_2b || (codes.win_id && lower == codes.win_id))
       {
-        code = LanguageCodes[index].iso639_1;
+        code = codes.iso639_1;
         return true;
       }
     }
 
-    for (unsigned int index = 0; index < ARRAY_SIZE(RegionCodes); ++index)
+    for (const auto& codes : RegionCodes)
     {
-      if (lower == RegionCodes[index].alpha3)
+      if (lower == codes.alpha3)
       {
-        code = RegionCodes[index].alpha2;
+        code = codes.alpha2;
         return true;
       }
     }
@@ -344,20 +368,20 @@ bool CLangCodeExpander::ReverseLookup(const std::string& desc, std::string& code
     }
   }
 
-  for (unsigned int i = 0; i < sizeof(g_iso639_1) / sizeof(LCENTRY); i++)
+  for (const auto& codes : g_iso639_1)
   {
-    if (StringUtils::EqualsNoCase(descTmp, g_iso639_1[i].name))
+    if (StringUtils::EqualsNoCase(descTmp, codes.name))
     {
-      CodeToString(g_iso639_1[i].code, code);
+      CodeToString(codes.code, code);
       return true;
     }
   }
 
-  for (unsigned int i = 0; i < sizeof(g_iso639_2) / sizeof(LCENTRY); i++)
+  for (const auto& codes : g_iso639_2)
   {
-    if (StringUtils::EqualsNoCase(descTmp, g_iso639_2[i].name))
+    if (StringUtils::EqualsNoCase(descTmp, codes.name))
     {
-      CodeToString(g_iso639_2[i].code, code);
+      CodeToString(codes.code, code);
       return true;
     }
   }
@@ -398,11 +422,11 @@ bool CLangCodeExpander::LookupInISO639Tables(const std::string& code, std::strin
   if (sCode.length() == 2)
   {
     longcode = MAKECODE('\0', '\0', sCode[0], sCode[1]);
-    for (unsigned int i = 0; i < sizeof(g_iso639_1) / sizeof(LCENTRY); i++)
+    for (const auto& codes : g_iso639_1)
     {
-      if (g_iso639_1[i].code == longcode)
+      if (codes.code == longcode)
       {
-        desc = g_iso639_1[i].name;
+        desc = codes.name;
         return true;
       }
     }
@@ -410,11 +434,11 @@ bool CLangCodeExpander::LookupInISO639Tables(const std::string& code, std::strin
   else if (sCode.length() == 3)
   {
     longcode = MAKECODE('\0', sCode[0], sCode[1], sCode[2]);
-    for (unsigned int i = 0; i < sizeof(g_iso639_2) / sizeof(LCENTRY); i++)
+    for (const auto& codes : g_iso639_2)
     {
-      if (g_iso639_2[i].code == longcode)
+      if (codes.code == longcode)
       {
-        desc = g_iso639_2[i].name;
+        desc = codes.name;
         return true;
       }
     }
@@ -460,26 +484,17 @@ bool CLangCodeExpander::CompareFullLanguageNames(const std::string& lang1, const
 std::vector<std::string> CLangCodeExpander::GetLanguageNames(LANGFORMATS format /* = CLangCodeExpander::ISO_639_1 */, bool customNames /* = false */)
 {
   std::vector<std::string> languages;
-  const LCENTRY *lang = g_iso639_1;
-  size_t length = sizeof(g_iso639_1);
-  if (format == CLangCodeExpander::ISO_639_2)
-  {
-    lang = g_iso639_2;
-    length = sizeof(g_iso639_2);
-  }
-  length /= sizeof(LCENTRY);
 
-  for (size_t i = 0; i < length; i++)
-  {
-    languages.push_back(lang->name);
-    ++lang;
-  }
+  if (format == CLangCodeExpander::ISO_639_2)
+    std::transform(g_iso639_2.begin(), g_iso639_2.end(),
+      std::back_inserter(languages), [](const LCENTRY& e) {return e.name; });
+  else
+    std::transform(g_iso639_1.begin(), g_iso639_1.end(),
+      std::back_inserter(languages), [](const LCENTRY& e) {return e.name; });
 
   if (customNames)
-  {
-    for (STRINGLOOKUPTABLE::const_iterator it = m_mapUser.begin(); it != m_mapUser.end(); ++it)
-      languages.push_back(it->second);
-  }
+    std::transform(m_mapUser.begin(), m_mapUser.end(),
+      std::back_inserter(languages), [](const STRINGLOOKUPTABLE::value_type& e) {return e.second; });
 
   return languages;
 }
@@ -500,6 +515,21 @@ bool CLangCodeExpander::CompareISO639Codes(const std::string& code1, const std::
   return StringUtils::EqualsNoCase(expandedLang1, expandedLang2);
 }
 
+std::string CLangCodeExpander::ConvertToISO6392B(const std::string& lang)
+{
+  if (lang.empty())
+    return lang;
+
+  std::string two, three;
+  if (ConvertToISO6391(lang, two))
+  {
+    if (ConvertToISO6392B(two, three))
+      return three;
+  }
+
+  return lang;
+}
+
 std::string CLangCodeExpander::ConvertToISO6392T(const std::string& lang)
 {
   if (lang.empty())
@@ -515,8 +545,8 @@ std::string CLangCodeExpander::ConvertToISO6392T(const std::string& lang)
   return lang;
 }
 
-extern const LCENTRY g_iso639_1[185] =
-{
+const std::array<struct LCENTRY, 185> g_iso639_1 =
+{ {
   { MAKECODE('\0','\0','a','a'), "Afar" },
   { MAKECODE('\0','\0','a','b'), "Abkhazian" },
   { MAKECODE('\0','\0','a','e'), "Avestan" },
@@ -702,10 +732,10 @@ extern const LCENTRY g_iso639_1[185] =
   { MAKECODE('\0','\0','z','a'), "Zhuang" },
   { MAKECODE('\0','\0','z','h'), "Chinese" },
   { MAKECODE('\0','\0','z','u'), "Zulu" },
-};
+} };
 
-extern const LCENTRY g_iso639_2[538] =
-{
+const std::array<struct LCENTRY, 538> g_iso639_2 =
+{ {
   { MAKECODE('\0','a','b','k'), "Abkhaz" },
   { MAKECODE('\0','a','b','k'), "Abkhazian" },
   { MAKECODE('\0','a','c','e'), "Achinese" },
@@ -1245,204 +1275,205 @@ extern const LCENTRY g_iso639_2[538] =
   { MAKECODE('\0','z','h','a'), "Zhuang" },
   { MAKECODE('\0','z','u','l'), "Zulu" },
   { MAKECODE('\0','z','u','n'), "Zuni" },
-};
+} };
 
-const ISO639 LanguageCodes[189] =
-{
-  { "aa", "aar", NULL },
-  { "ab", "abk", NULL },
-  { "af", "afr", NULL },
-  { "ak", "aka", NULL },
-  { "am", "amh", NULL },
-  { "ar", "ara", NULL },
-  { "an", "arg", NULL },
-  { "as", "asm", NULL },
-  { "av", "ava", NULL },
-  { "ae", "ave", NULL },
-  { "ay", "aym", NULL },
-  { "az", "aze", NULL },
-  { "ba", "bak", NULL },
-  { "bm", "bam", NULL },
-  { "be", "bel", NULL },
-  { "bn", "ben", NULL },
-  { "bh", "bih", NULL },
-  { "bi", "bis", NULL },
-  { "bo", "tib", NULL },
-  { "bs", "bos", NULL },
-  { "br", "bre", NULL },
-  { "bg", "bul", NULL },
-  { "ca", "cat", NULL },
-  { "cs", "cze", "ces" },
-  { "ch", "cha", NULL },
-  { "ce", "che", NULL },
-  { "cu", "chu", NULL },
-  { "cv", "chv", NULL },
-  { "kw", "cor", NULL },
-  { "co", "cos", NULL },
-  { "cr", "cre", NULL },
-  { "cy", "wel", NULL },
-  { "da", "dan", NULL },
-  { "de", "ger", "deu" },
-  { "dv", "div", NULL },
-  { "dz", "dzo", NULL },
-  { "el", "gre", "ell" },
-  { "en", "eng", NULL },
-  { "eo", "epo", NULL },
-  { "et", "est", NULL },
-  { "eu", "baq", NULL },
-  { "ee", "ewe", NULL },
-  { "fo", "fao", NULL },
-  { "fa", "per", NULL },
-  { "fj", "fij", NULL },
-  { "fi", "fin", NULL },
-  { "fr", "fre", "fra" },
-  { "fy", "fry", NULL },
-  { "ff", "ful", NULL },
-  { "gd", "gla", NULL },
-  { "ga", "gle", NULL },
-  { "gl", "glg", NULL },
-  { "gv", "glv", NULL },
-  { "gn", "grn", NULL },
-  { "gu", "guj", NULL },
-  { "ht", "hat", NULL },
-  { "ha", "hau", NULL },
-  { "he", "heb", NULL },
-  { "hz", "her", NULL },
-  { "hi", "hin", NULL },
-  { "ho", "hmo", NULL },
-  { "hr", "hrv", NULL },
-  { "hu", "hun", NULL },
-  { "hy", "arm", NULL },
-  { "ig", "ibo", NULL },
-  { "io", "ido", NULL },
-  { "ii", "iii", NULL },
-  { "iu", "iku", NULL },
-  { "ie", "ile", NULL },
-  { "ia", "ina", NULL },
-  { "id", "ind", NULL },
-  { "ik", "ipk", NULL },
-  { "is", "ice", "isl" },
-  { "it", "ita", NULL },
-  { "jv", "jav", NULL },
-  { "ja", "jpn", NULL },
-  { "kl", "kal", NULL },
-  { "kn", "kan", NULL },
-  { "ks", "kas", NULL },
-  { "ka", "geo", NULL },
-  { "kr", "kau", NULL },
-  { "kk", "kaz", NULL },
-  { "km", "khm", NULL },
-  { "ki", "kik", NULL },
-  { "rw", "kin", NULL },
-  { "ky", "kir", NULL },
-  { "kv", "kom", NULL },
-  { "kg", "kon", NULL },
-  { "ko", "kor", NULL },
-  { "kj", "kua", NULL },
-  { "ku", "kur", NULL },
-  { "lo", "lao", NULL },
-  { "la", "lat", NULL },
-  { "lv", "lav", NULL },
-  { "li", "lim", NULL },
-  { "ln", "lin", NULL },
-  { "lt", "lit", NULL },
-  { "lb", "ltz", NULL },
-  { "lu", "lub", NULL },
-  { "lg", "lug", NULL },
-  { "mk", "mac", NULL },
-  { "mh", "mah", NULL },
-  { "ml", "mal", NULL },
-  { "mi", "mao", NULL },
-  { "mr", "mar", NULL },
-  { "ms", "may", NULL },
-  { "mg", "mlg", NULL },
-  { "mt", "mlt", NULL },
-  { "mn", "mon", NULL },
-  { "my", "bur", NULL },
-  { "na", "nau", NULL },
-  { "nv", "nav", NULL },
-  { "nr", "nbl", NULL },
-  { "nd", "nde", NULL },
-  { "ng", "ndo", NULL },
-  { "ne", "nep", NULL },
-  { "nl", "dut", "nld" },
-  { "nn", "nno", NULL },
-  { "nb", "nob", NULL },
-  { "no", "nor", NULL },
-  { "ny", "nya", NULL },
-  { "oc", "oci", NULL },
-  { "oj", "oji", NULL },
-  { "or", "ori", NULL },
-  { "om", "orm", NULL },
-  { "os", "oss", NULL },
-  { "pa", "pan", NULL },
-  { "pi", "pli", NULL },
-  { "pl", "pol", "plk" },
-  { "pt", "por", "ptg" },
-  { "ps", "pus", NULL },
-  { "qu", "que", NULL },
-  { "rm", "roh", NULL },
-  { "ro", "rum", "ron" },
-  { "rn", "run", NULL },
-  { "ru", "rus", NULL },
-  { "sh", "scr", NULL },
-  { "sg", "sag", NULL },
-  { "sa", "san", NULL },
-  { "si", "sin", NULL },
-  { "sk", "slo", "sky" },
-  { "sl", "slv", NULL },
-  { "se", "sme", NULL },
-  { "sm", "smo", NULL },
-  { "sn", "sna", NULL },
-  { "sd", "snd", NULL },
-  { "so", "som", NULL },
-  { "st", "sot", NULL },
-  { "es", "spa", "esp" },
-  { "sq", "alb", NULL },
-  { "sc", "srd", NULL },
-  { "sr", "srp", NULL },
-  { "ss", "ssw", NULL },
-  { "su", "sun", NULL },
-  { "sw", "swa", NULL },
-  { "sv", "swe", "sve" },
-  { "ty", "tah", NULL },
-  { "ta", "tam", NULL },
-  { "tt", "tat", NULL },
-  { "te", "tel", NULL },
-  { "tg", "tgk", NULL },
-  { "tl", "tgl", NULL },
-  { "th", "tha", NULL },
-  { "ti", "tir", NULL },
-  { "to", "ton", NULL },
-  { "tn", "tsn", NULL },
-  { "ts", "tso", NULL },
-  { "tk", "tuk", NULL },
-  { "tr", "tur", "trk" },
-  { "tw", "twi", NULL },
-  { "ug", "uig", NULL },
-  { "uk", "ukr", NULL },
-  { "ur", "urd", NULL },
-  { "uz", "uzb", NULL },
-  { "ve", "ven", NULL },
-  { "vi", "vie", NULL },
-  { "vo", "vol", NULL },
-  { "wa", "wln", NULL },
-  { "wo", "wol", NULL },
-  { "xh", "xho", NULL },
-  { "yi", "yid", NULL },
-  { "yo", "yor", NULL },
-  { "za", "zha", NULL },
-  { "zh", "chi", "zho" },
-  { "zu", "zul", NULL },
-  { "zv", "und", NULL }, // Kodi intern mapping for missing "Undetermined" iso639-1 code
-  { "zx", "zxx", NULL }, // Kodi intern mapping for missing "No linguistic content" iso639-1 code
-  { "zy", "mis", NULL }, // Kodi intern mapping for missing "Miscellaneous languages" iso639-1 code
-  { "zz", "mul", NULL }  // Kodi intern mapping for missing "Multiple languages" iso639-1 code
-};
+
+const std::array<ISO639, 189> LanguageCodes =
+{ {
+  { "aa", "aar", NULL, NULL },
+  { "ab", "abk", NULL, NULL },
+  { "af", "afr", NULL, NULL },
+  { "ak", "aka", NULL, NULL },
+  { "am", "amh", NULL, NULL },
+  { "ar", "ara", NULL, NULL },
+  { "an", "arg", NULL, NULL },
+  { "as", "asm", NULL, NULL },
+  { "av", "ava", NULL, NULL },
+  { "ae", "ave", NULL, NULL },
+  { "ay", "aym", NULL, NULL },
+  { "az", "aze", NULL, NULL },
+  { "ba", "bak", NULL, NULL },
+  { "bm", "bam", NULL, NULL },
+  { "be", "bel", NULL, NULL },
+  { "bn", "ben", NULL, NULL },
+  { "bh", "bih", NULL, NULL },
+  { "bi", "bis", NULL, NULL },
+  { "bo", "tib", NULL, "bod" },
+  { "bs", "bos", NULL, NULL },
+  { "br", "bre", NULL, NULL },
+  { "bg", "bul", NULL, NULL },
+  { "ca", "cat", NULL, NULL },
+  { "cs", "cze", "ces", "ces" },
+  { "ch", "cha", NULL, NULL },
+  { "ce", "che", NULL, NULL },
+  { "cu", "chu", NULL, NULL },
+  { "cv", "chv", NULL, NULL },
+  { "kw", "cor", NULL, NULL },
+  { "co", "cos", NULL, NULL },
+  { "cr", "cre", NULL, NULL },
+  { "cy", "wel", NULL, "cym" },
+  { "da", "dan", NULL, NULL },
+  { "de", "ger", "deu", "deu" },
+  { "dv", "div", NULL, NULL },
+  { "dz", "dzo", NULL, NULL },
+  { "el", "gre", "ell", "ell" },
+  { "en", "eng", NULL, NULL },
+  { "eo", "epo", NULL, NULL },
+  { "et", "est", NULL, NULL },
+  { "eu", "baq", NULL, "eus" },
+  { "ee", "ewe", NULL, NULL },
+  { "fo", "fao", NULL, NULL },
+  { "fa", "per", NULL, "fas" },
+  { "fj", "fij", NULL, NULL },
+  { "fi", "fin", NULL, NULL },
+  { "fr", "fre", "fra", "fra" },
+  { "fy", "fry", NULL, NULL },
+  { "ff", "ful", NULL, NULL },
+  { "gd", "gla", NULL, NULL },
+  { "ga", "gle", NULL, NULL },
+  { "gl", "glg", NULL, NULL },
+  { "gv", "glv", NULL, NULL },
+  { "gn", "grn", NULL, NULL },
+  { "gu", "guj", NULL, NULL },
+  { "ht", "hat", NULL, NULL },
+  { "ha", "hau", NULL, NULL },
+  { "he", "heb", NULL, NULL },
+  { "hz", "her", NULL, NULL },
+  { "hi", "hin", NULL, NULL },
+  { "ho", "hmo", NULL, NULL },
+  { "hr", "hrv", NULL, NULL },
+  { "hu", "hun", NULL, NULL },
+  { "hy", "arm", NULL, "hye" },
+  { "ig", "ibo", NULL, NULL },
+  { "io", "ido", NULL, NULL },
+  { "ii", "iii", NULL, NULL },
+  { "iu", "iku", NULL, NULL },
+  { "ie", "ile", NULL, NULL },
+  { "ia", "ina", NULL, NULL },
+  { "id", "ind", NULL, NULL },
+  { "ik", "ipk", NULL, NULL },
+  { "is", "ice", "isl", "isl" },
+  { "it", "ita", NULL, NULL },
+  { "jv", "jav", NULL, NULL },
+  { "ja", "jpn", NULL, NULL },
+  { "kl", "kal", NULL, NULL },
+  { "kn", "kan", NULL, NULL },
+  { "ks", "kas", NULL, NULL },
+  { "ka", "geo", NULL, "kat" },
+  { "kr", "kau", NULL, NULL },
+  { "kk", "kaz", NULL, NULL },
+  { "km", "khm", NULL, NULL },
+  { "ki", "kik", NULL, NULL },
+  { "rw", "kin", NULL, NULL },
+  { "ky", "kir", NULL, NULL },
+  { "kv", "kom", NULL, NULL },
+  { "kg", "kon", NULL, NULL },
+  { "ko", "kor", NULL, NULL },
+  { "kj", "kua", NULL, NULL },
+  { "ku", "kur", NULL, NULL },
+  { "lo", "lao", NULL, NULL },
+  { "la", "lat", NULL, NULL },
+  { "lv", "lav", NULL, NULL },
+  { "li", "lim", NULL, NULL },
+  { "ln", "lin", NULL, NULL },
+  { "lt", "lit", NULL, NULL },
+  { "lb", "ltz", NULL, NULL },
+  { "lu", "lub", NULL, NULL },
+  { "lg", "lug", NULL, NULL },
+  { "mk", "mac", NULL, "mdk" },
+  { "mh", "mah", NULL, NULL },
+  { "ml", "mal", NULL, NULL },
+  { "mi", "mao", NULL, "mri" },
+  { "mr", "mar", NULL, NULL },
+  { "ms", "may", NULL, "msa" },
+  { "mg", "mlg", NULL, NULL },
+  { "mt", "mlt", NULL, NULL },
+  { "mn", "mon", NULL, NULL },
+  { "my", "bur", NULL, "mya" },
+  { "na", "nau", NULL, NULL },
+  { "nv", "nav", NULL, NULL },
+  { "nr", "nbl", NULL, NULL },
+  { "nd", "nde", NULL, NULL },
+  { "ng", "ndo", NULL, NULL },
+  { "ne", "nep", NULL, NULL },
+  { "nl", "dut", "nld", "nld" },
+  { "nn", "nno", NULL, NULL },
+  { "nb", "nob", NULL, NULL },
+  { "no", "nor", NULL, NULL },
+  { "ny", "nya", NULL, NULL },
+  { "oc", "oci", NULL, NULL },
+  { "oj", "oji", NULL, NULL },
+  { "or", "ori", NULL, NULL },
+  { "om", "orm", NULL, NULL },
+  { "os", "oss", NULL, NULL },
+  { "pa", "pan", NULL, NULL },
+  { "pi", "pli", NULL, NULL },
+  { "pl", "pol", "plk", NULL },
+  { "pt", "por", "ptg", NULL },
+  { "ps", "pus", NULL, NULL },
+  { "qu", "que", NULL, NULL },
+  { "rm", "roh", NULL, NULL },
+  { "ro", "rum", "ron", "ron" },
+  { "rn", "run", NULL, NULL },
+  { "ru", "rus", NULL, NULL },
+  { "sh", "scr", NULL, NULL },
+  { "sg", "sag", NULL, NULL },
+  { "sa", "san", NULL, NULL },
+  { "si", "sin", NULL, NULL },
+  { "sk", "slo", "sky", "slk" },
+  { "sl", "slv", NULL, NULL },
+  { "se", "sme", NULL, NULL },
+  { "sm", "smo", NULL, NULL },
+  { "sn", "sna", NULL, NULL },
+  { "sd", "snd", NULL, NULL },
+  { "so", "som", NULL, NULL },
+  { "st", "sot", NULL, NULL },
+  { "es", "spa", "esp", NULL },
+  { "sq", "alb", NULL, "sqi" },
+  { "sc", "srd", NULL, NULL },
+  { "sr", "srp", NULL, NULL },
+  { "ss", "ssw", NULL, NULL },
+  { "su", "sun", NULL, NULL },
+  { "sw", "swa", NULL, NULL },
+  { "sv", "swe", "sve", NULL },
+  { "ty", "tah", NULL, NULL },
+  { "ta", "tam", NULL, NULL },
+  { "tt", "tat", NULL, NULL },
+  { "te", "tel", NULL, NULL },
+  { "tg", "tgk", NULL, NULL },
+  { "tl", "tgl", NULL, NULL },
+  { "th", "tha", NULL, NULL },
+  { "ti", "tir", NULL, NULL },
+  { "to", "ton", NULL, NULL },
+  { "tn", "tsn", NULL, NULL },
+  { "ts", "tso", NULL, NULL },
+  { "tk", "tuk", NULL, NULL },
+  { "tr", "tur", "trk", NULL },
+  { "tw", "twi", NULL, NULL },
+  { "ug", "uig", NULL, NULL },
+  { "uk", "ukr", NULL, NULL },
+  { "ur", "urd", NULL, NULL },
+  { "uz", "uzb", NULL, NULL },
+  { "ve", "ven", NULL, NULL },
+  { "vi", "vie", NULL, NULL },
+  { "vo", "vol", NULL, NULL },
+  { "wa", "wln", NULL, NULL },
+  { "wo", "wol", NULL, NULL },
+  { "xh", "xho", NULL, NULL },
+  { "yi", "yid", NULL, NULL },
+  { "yo", "yor", NULL, NULL },
+  { "za", "zha", NULL, NULL },
+  { "zh", "chi", "zho", "zho" },
+  { "zu", "zul", NULL, NULL },
+  { "zv", "und", NULL, NULL }, // Kodi intern mapping for missing "Undetermined" iso639-1 code
+  { "zx", "zxx", NULL, NULL }, // Kodi intern mapping for missing "No linguistic content" iso639-1 code
+  { "zy", "mis", NULL, NULL }, // Kodi intern mapping for missing "Miscellaneous languages" iso639-1 code
+  { "zz", "mul", NULL, NULL }  // Kodi intern mapping for missing "Multiple languages" iso639-1 code
+} };
 
 // Based on ISO 3166
-const ISO3166_1 RegionCodes[245] =
-{
+const std::array<ISO3166_1, 245> RegionCodes =
+{ {
   { "af", "afg" },
   { "ax", "ala" },
   { "al", "alb" },
@@ -1688,4 +1719,4 @@ const ISO3166_1 RegionCodes[245] =
   { "ye", "yem" },
   { "zm", "zmb" },
   { "zw", "zwe" }
-};
+} };

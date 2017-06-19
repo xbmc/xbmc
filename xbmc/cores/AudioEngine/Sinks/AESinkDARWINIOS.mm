@@ -134,10 +134,8 @@ class CAAudioUnitSink
 
     unsigned int        m_sampleRate;
     unsigned int        m_frameSize;
-    unsigned int        m_frames;
 
     bool                m_playing;
-    bool                m_playing_saved;
     volatile bool       m_started;
 
     CAESpinSection      m_render_section;
@@ -149,7 +147,6 @@ CAAudioUnitSink::CAAudioUnitSink()
 : m_activated(false)
 , m_buffer(NULL)
 , m_playing(false)
-, m_playing_saved(false)
 , m_started(false)
 , m_render_timestamp(0)
 , m_render_frames(0)

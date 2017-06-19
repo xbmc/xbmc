@@ -1,7 +1,7 @@
 # Kodi Media Center language file
 # Addon Name: Estuary
 # Addon id: skin.estuary
-# Addon Provider: phil65, Piers
+# Addon Provider: phil65, Ichabod Fletchman
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
@@ -120,6 +120,10 @@ msgctxt "#31029"
 msgid "Last logged in"
 msgstr "เข้าระบบล่าสุด"
 
+msgctxt "#31030"
+msgid "System memory usage"
+msgstr "หน่วยความจำของระบบที่ใช้"
+
 msgctxt "#31031"
 msgid "Version info"
 msgstr "ข้อมูลเวอร์ชั่น"
@@ -220,17 +224,81 @@ msgctxt "#31062"
 msgid "Choose weather fanart pack"
 msgstr "เลือกแพ็คแฟนอาร์ตสภาพอากาศ"
 
+msgctxt "#31063"
+msgid "Sections"
+msgstr "ส่วน"
+
+msgctxt "#31065"
+msgid "Video playlist"
+msgstr "รายการเล่นวิดีโอ"
+
+msgctxt "#31066"
+msgid "Music playlist"
+msgstr "รายการเล่นเพลง"
+
+msgctxt "#31067"
+msgid "Event log"
+msgstr "บันทึกกิจกรรม"
+
+msgctxt "#31068"
+msgid "Choose presets"
+msgstr "เลือกแม่แบบ"
+
 msgctxt "#31069"
 msgid "Last Updated"
 msgstr "ปรับปรุงล่าสุด"
+
+msgctxt "#31071"
+msgid "by"
+msgstr "โดย"
 
 msgctxt "#31072"
 msgid "Power Options"
 msgstr "ตัวเลือก ด้านพลังงาน"
 
+msgctxt "#31075"
+msgid "Movie sets"
+msgstr "ภาพยนตร์ชุด"
+
+msgctxt "#31079"
+msgid "Cast not available"
+msgstr "ไม่พบผู้แสดง"
+
+msgctxt "#31080"
+msgid "Ends at"
+msgstr "สิ้นสุดที่"
+
 msgctxt "#31082"
 msgid "Lyrics add-on"
 msgstr "ส่วนเสริมเนื้อเพลง"
+
+msgctxt "#31083"
+msgid "Lyrics add-on settings"
+msgstr "การตั้งค่าส่วนเสริมเนื้อเพลง"
+
+msgctxt "#31084"
+msgid "Visualisation settings"
+msgstr "การตั้งค่าแสดงแสงสี"
+
+msgctxt "#31089"
+msgid "Available groups"
+msgstr "กลุ่มที่พบ"
+
+msgctxt "#31090"
+msgid "Search trailer"
+msgstr "ค้นหาตัวอย่างหนัง"
+
+msgctxt "#31092"
+msgid "Video menu"
+msgstr "เมนูวิดีโอ"
+
+msgctxt "#31093"
+msgid "Show weather info in top bar"
+msgstr "แสดงข้อมูลสภาพอากาศในแถบบน"
+
+msgctxt "#31095"
+msgid "Use slide animations"
+msgstr "ใช้การเคลื่อนไหวแบบเลื่อน"
 
 msgctxt "#31096"
 msgid "Local subtitle available"
@@ -244,10 +312,226 @@ msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
 msgstr "เลือกโปรไฟล์ผู้ใช้ Kodi ของคุณ[CR]เพื่อเข้าสู่ระบบและดำเนินการต่อไป"
 
+msgctxt "#31099"
+msgid "IconWall"
+msgstr "ผนังไอคอน"
+
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Shift"
 
+msgctxt "#31101"
+msgid "InfoWall"
+msgstr "ผนังข้อมูล"
+
+msgctxt "#31102"
+msgid "Wall"
+msgstr "ผนัง"
+
+msgctxt "#31103"
+msgid "Enter text here..."
+msgstr "ป้อนอักษรที่นี่..."
+
+msgctxt "#31104"
+msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
+msgstr "คลังข้อมูลของคุณตอนนี้ว่างเปล่า เพื่อจะเพิ่มข้อมูลด้วยสื่อส่วนบุคคลของคุณ เข้าไปที่ส่วน \"แฟ้ม\" เพิ่มแหล่งของสื่อและกำหนดค่า หลังจากที่แหล่งข้อมูลได้รับการเพิ่มและจัดทำดัชนี คุณจะเรียกดูคลังข้อมูลของคุณได้"
+
+msgctxt "#31105"
+msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
+msgstr "เพิ่มแหล่งวิดีโอและกำหนดชนิดของเนื้อหาที่เหมาะสม ในการเพิ่มข้อมูลสู่คลังวิดีโอของคุณ"
+
 msgctxt "#31106"
 msgid "Teletext"
 msgstr "Teletext"
+
+msgctxt "#31107"
+msgid "WideList"
+msgstr "รายการแบบกว้าง"
+
+msgctxt "#31110"
+msgid "Enter files section"
+msgstr "เข้าสู่ส่วนแฟ้ม"
+
+msgctxt "#31111"
+msgid "View your personal pictures or download one of the many image add-ons from the official repository."
+msgstr "ดูรูปภาพส่วนตัวของคุณหรือดาวน์โหลดหนึ่งในส่วนเสริมรูปภาพอันหลากหลาย จากแหล่งโปรแกรมอย่างเป็นทางการ"
+
+msgctxt "#31112"
+msgid "Toggle audio stream"
+msgstr "สลับกระแสเสียง"
+
+msgctxt "#31113"
+msgid "Search local library"
+msgstr "ค้นหาจากคลังข้อมูลท้องถิ่น"
+
+msgctxt "#31114"
+msgid "Search YouTube"
+msgstr "ค้นหาจากยูทูป"
+
+msgctxt "#31115"
+msgid "Search TheMovieDB"
+msgstr "ค้นหาจาก TheMovieDB"
+
+msgctxt "#31116"
+msgid "Remove this main menu item"
+msgstr "ลบรายการเมนูหลักนี้"
+
+msgctxt "#31117"
+msgid "Edit nodes"
+msgstr "แก้ไขส่วนเชื่อมโยง"
+
+msgctxt "#31118"
+msgid "Enter add-on browser"
+msgstr "เข้าสู่สืบค้นส่วนเสริม"
+
+msgctxt "#31119"
+msgid "You do not have any add-ons installed yet. Visit our add-on browser to browse through our collection and improve your Kodi experience."
+msgstr "คุณไม่มีส่วนเสริมใดๆติดตั้งอยู่ เยี่ยมชมการเรียกดูส่วนเสริมของเรา เพื่อเรียกดูการรวบรวมของเราและปรับปรุงประสบการณ์ Kodi ของคุณ"
+
+msgctxt "#31120"
+msgid "You did not set up a weather provider yet. In order to view weather information, choose a weather provider and set up your location."
+msgstr "คุณยังไม่ได้ตั้งค่าผู้ให้บริการสภาพอากาศเลย เพื่อที่จะดูข้อมูลสภาพอากาศ เลือกผู้ให้บริการสภาพอากาศและตั้งค่าสถานที่ของคุณ"
+
+msgctxt "#31121"
+msgid "Set weather provider"
+msgstr "ตั้งค่าผู้ให้บริการสภาพอากาศ"
+
+msgctxt "#31122"
+msgid "Unwatched TV Shows"
+msgstr "รายการทีวีที่ยังไม่ได้ดู"
+
+msgctxt "#31123"
+msgid "Same director"
+msgstr "ผู้กำกับเดียวกัน"
+
+msgctxt "#31124"
+msgid "Show images on map"
+msgstr "แสดงภาพบนแผนที่"
+
+msgctxt "#31125"
+msgid "Press up for actor info"
+msgstr "กด ขึ้น สำหรับข้อมูลนักแสดง"
+
+msgctxt "#31126"
+msgid "Press OK to read plot"
+msgstr "กด ตกลง เพื่ออ่านเรื่องย่อ"
+
+msgctxt "#31127"
+msgid "Show icons"
+msgstr "แสดงไอคอน"
+
+msgctxt "#31128"
+msgid "Contributors"
+msgstr "ผู้ให้ข้อมูล"
+
+msgctxt "#31129"
+msgid "General settings applying to all areas of the skin."
+msgstr "การตั้งค่าทั่วไปที่ถูกนำไปใช้ในทุกพื้นที่ของหน้าตา"
+
+msgctxt "#31130"
+msgid "Main menu-related settings: Configure the home screen to your likings."
+msgstr "เมนูที่เกี่ยวข้องกับตั้งค่าเมนูหลัก: การกำหนดค่าหน้าจอหลักตามความชอบของคุณ"
+
+msgctxt "#31131"
+msgid "Choose skin fanart pack"
+msgstr "เลือกแพ็คแฟนอาร์ตของหน้าตา"
+
+msgctxt "#31134"
+msgid "Remaining"
+msgstr "ที่เหลืออยู่"
+
+msgctxt "#31136"
+msgid "Click here to see latest changes..."
+msgstr "คลิกที่นี่เพื่อดูการเปลี่ยนแปลงล่าสุด..."
+
+msgctxt "#31137"
+msgid "PVR info"
+msgstr "ข้อมูล PVR"
+
+msgctxt "#31138"
+msgid "Player process info"
+msgstr "ข้อมูลการดำเนินการของตัวเล่น"
+
+msgctxt "#31139"
+msgid "Video decoder"
+msgstr "ตัวถอดรหัสวิดีโอ"
+
+msgctxt "#31140"
+msgid "Pixel format"
+msgstr "รูปแบบพิกเซล"
+
+msgctxt "#31141"
+msgid "Changes for version"
+msgstr "การเปลี่ยนแปลงสำหรับรุ่น"
+
+msgctxt "#31142"
+msgid "Play speed"
+msgstr "ความเร็วการเล่น"
+
+msgctxt "#31143"
+msgid "You did not set up PVR yet. In order to use PVR, choose a PVR client addon and configure it. Please visit http://kodi.wiki/view/PVR to learn more."
+msgstr "คุณยังไม่ได้ตั้งค่า PVR เพื่อที่จะใช้ PVR เลือกส่วนเสริม ลูกข่าย PVR และกำหนดค่า เยี่ยมชม http://kodi.wiki/view/PVR เพื่อเรียนรู้เพิ่มเติม"
+
+msgctxt "#31144"
+msgid "Enter add-on browser"
+msgstr "เข้าสู่สืบค้นส่วนเสริม"
+
+msgctxt "#31145"
+msgid "Search add-ons"
+msgstr "ค้นหาส่วนเสริม"
+
+msgctxt "#31148"
+msgid "Categories"
+msgstr "หมวดหมู่"
+
+msgctxt "#31149"
+msgid "Select genre fanart pack"
+msgstr "เลือกแพ็คแฟนอาร์ตประเภท"
+
+msgctxt "#31150"
+msgid "Repository"
+msgstr "แหล่งโปรแกรม"
+
+msgctxt "#31151"
+msgid "Unwatched music videos"
+msgstr "วิดีโอเพลงที่ยังไม่ได้ดู"
+
+msgctxt "#31152"
+msgid "Random music videos"
+msgstr "สุ่มวิดีโอเพลง"
+
+msgctxt "#31153"
+msgid "You do not have any add-ons of this type installed. Enter the add-on browser to download add-ons created by our community."
+msgstr "คุณยังไม่มี ส่วนเสริมประเภทนี้ติดตั้ง เข้าสู่การเรียกดูส่วนเสริม เพื่อดาวน์โหลดส่วนเสริมที่สร้างขึ้นโดยชุมชนของเรา"
+
+msgctxt "#31154"
+msgid "Press OK to switch between locations"
+msgstr "กด ตกลง  เพื่อสลับสถานที่"
+
+msgctxt "#31155"
+msgid "No bookmarks created yet."
+msgstr "ยังไม่มีที่คั่นหน้าที่ถูกสร้าง"
+
+msgctxt "#31156"
+msgid "Choose background pattern"
+msgstr "เลือกพื้นหลังแบบลวดลาย"
+
+msgctxt "#31157"
+msgid "Edit categories"
+msgstr "แก้ไขหมวดหมู่"
+
+msgctxt "#31158"
+msgid "Touch mode"
+msgstr "โหมดสัมผัส"
+
+msgctxt "#31159"
+msgid "Artwork"
+msgstr "งานศิลป์"
+
+msgctxt "#31160"
+msgid "Show media flags"
+msgstr "แสดงป้ายสื่อ"
+
+msgctxt "#31161"
+msgid "Numeric pad"
+msgstr "แป้นตัวเลข"

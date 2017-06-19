@@ -32,14 +32,14 @@ public:
   virtual ~CHTTPJsonRpcHandler() { }
   
   // implementations of IHTTPRequestHandler
-  virtual IHTTPRequestHandler* Create(const HTTPRequest &request) { return new CHTTPJsonRpcHandler(request); }
-  virtual bool CanHandleRequest(const HTTPRequest &request);
+  IHTTPRequestHandler* Create(const HTTPRequest &request) const override { return new CHTTPJsonRpcHandler(request); }
+  bool CanHandleRequest(const HTTPRequest &request) const override;
 
-  virtual int HandleRequest();
+  int HandleRequest() override;
 
-  virtual HttpResponseRanges GetResponseData() const;
+  HttpResponseRanges GetResponseData() const override;
 
-  virtual int GetPriority() const { return 5; }
+  int GetPriority() const override { return 5; }
 
 protected:
   explicit CHTTPJsonRpcHandler(const HTTPRequest &request)
@@ -47,9 +47,9 @@ protected:
   { }
 
 #if (MHD_VERSION >= 0x00040001)
-  virtual bool appendPostData(const char *data, size_t size);
+  bool appendPostData(const char *data, size_t size) override;
 #else
-  virtual bool appendPostData(const char *data, unsigned int size);
+  bool appendPostData(const char *data, unsigned int size) override;
 #endif
 
 private:
@@ -61,7 +61,7 @@ private:
   {
   public:
     CHTTPTransportLayer() = default;
-    ~CHTTPTransportLayer() = default;
+    virtual ~CHTTPTransportLayer() = default;
 
     // implementations of JSONRPC::ITransportLayer
     bool PrepareDownload(const char *path, CVariant &details, std::string &protocol) override;
@@ -73,8 +73,14 @@ private:
   class CHTTPClient : public JSONRPC::IClient
   {
   public:
-    virtual int  GetPermissionFlags();
-    virtual int  GetAnnouncementFlags();
-    virtual bool SetAnnouncementFlags(int flags);
+    CHTTPClient(HTTPMethod method);
+    virtual ~CHTTPClient() = default;
+
+    int GetPermissionFlags() override { return m_permissionFlags; }
+    int GetAnnouncementFlags() override;
+    bool SetAnnouncementFlags(int flags) override;
+
+  private:
+    int m_permissionFlags;
   };
 };

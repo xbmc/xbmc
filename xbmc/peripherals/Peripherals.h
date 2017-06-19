@@ -24,7 +24,7 @@
 #include "EventScanner.h"
 #include "bus/PeripheralBus.h"
 #include "devices/Peripheral.h"
-#include "games/ports/PortMapper.h" //! @todo Find me a better place
+#include "interfaces/IAnnouncer.h"
 #include "messaging/IMessageTarget.h"
 #include "settings/lib/ISettingCallback.h"
 #include "system.h"
@@ -49,15 +49,15 @@ namespace JOYSTICK
 
 namespace PERIPHERALS
 {
-  #define g_peripherals CPeripherals::GetInstance()
-
   class CPeripherals :  public ISettingCallback,
                         public Observable,
                         public KODI::MESSAGING::IMessageTarget,
-                        public IEventScannerCallback
+                        public IEventScannerCallback,
+                        public ANNOUNCEMENT::IAnnouncer
   {
   public:
-    static CPeripherals &GetInstance();
+    CPeripherals();
+
     virtual ~CPeripherals();
 
     /*!
@@ -235,7 +235,12 @@ namespace PERIPHERALS
      * @brief Request peripherals with the specified feature to perform a quick test
      * @return true if any peripherals support the feature, false otherwise
      */
-    bool TestFeature(PeripheralFeature feature);
+    void TestFeature(PeripheralFeature feature);
+
+    /*!
+     * \brief Request all devices with power-off support to power down
+     */
+    void PowerOffDevices();
 
     bool SupportsCEC() const
     {
@@ -257,10 +262,8 @@ namespace PERIPHERALS
      * controller profiles.
      *
      * If user input is required, a blocking dialog may be shown.
-     *
-     * \return True if button mapping is enabled for at least one bus
      */
-    bool EnableButtonMapping();
+    void EnableButtonMapping();
 
     /*!
      * \brief Get an add-on that can provide button maps for a device
@@ -295,30 +298,30 @@ namespace PERIPHERALS
      */
     void UnregisterJoystickButtonMapper(KODI::JOYSTICK::IButtonMapper* mapper);
 
-    virtual void OnSettingChanged(const CSetting *setting) override;
-    virtual void OnSettingAction(const CSetting *setting) override;
+    // implementation of ISettingCallback
+    virtual void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
+    virtual void OnSettingAction(std::shared_ptr<const CSetting> setting) override;
 
+    // implementation of IMessageTarget
     virtual void OnApplicationMessage(KODI::MESSAGING::ThreadMessage* pMsg) override;
     virtual int GetMessageMask() override;
 
+    // implementation of IAnnouncer
+    virtual void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data) override;
+
   private:
-    CPeripherals();
     bool LoadMappings();
     bool GetMappingForDevice(const CPeripheralBus &bus, PeripheralScanResult& result) const;
     static void GetSettingsFromMappingsFile(TiXmlElement *xmlNode, std::map<std::string, PeripheralDeviceSetting> &m_settings);
 
     void OnDeviceChanged();
 
-    bool                                 m_bInitialised;
-    bool                                 m_bIsStarted;
 #if !defined(HAVE_LIBCEC)
-    bool                                 m_bMissingLibCecWarningDisplayed;
+    bool                                 m_bMissingLibCecWarningDisplayed = false;
 #endif
     std::vector<PeripheralBusPtr>        m_busses;
     std::vector<PeripheralDeviceMapping> m_mappings;
     CEventScanner                        m_eventScanner;
-	GAME::CPortMapper                    m_portMapper; //! @todo Find me a better place
-    CCriticalSection                     m_critSection;
     CCriticalSection                     m_critSectionBusses;
     CCriticalSection                     m_critSectionMappings;
   };

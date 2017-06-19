@@ -18,7 +18,7 @@ msgstr ""
 
 msgctxt "#31002"
 msgid "Audio Settings"
-msgstr "Stabiliri audio"
+msgstr "Setări audio"
 
 msgctxt "#31003"
 msgid "IP"
@@ -34,7 +34,7 @@ msgstr "Opțiuni pentru Vizualizare"
 
 msgctxt "#31006"
 msgid "Visualization Presets"
-msgstr "Prestabiliri vizualizare"
+msgstr "Presetări vizualizare"
 
 msgctxt "#31007"
 msgid "Context Menu"
@@ -59,6 +59,26 @@ msgstr "Episoade"
 msgctxt "#31016"
 msgid "Albums"
 msgstr "Albume"
+
+msgctxt "#31017"
+msgid "PVR info"
+msgstr "Informații PVR"
+
+msgctxt "#31018"
+msgid "Player process info"
+msgstr "Informații de procesare player"
+
+msgctxt "#31019"
+msgid "Video decoder"
+msgstr "Decodor video"
+
+msgctxt "#31020"
+msgid "Pixel format"
+msgstr "Format pixeli"
+
+msgctxt "#31021"
+msgid "System memory usage"
+msgstr "Utilizare memorie sistem"
 
 msgctxt "#31024"
 msgid "Page"
@@ -144,6 +164,10 @@ msgctxt "#31303"
 msgid "Data provider"
 msgstr "Furnizor informații"
 
+msgctxt "#31309"
+msgid "System Memory Used:"
+msgstr "Utilizare memorie sistem:"
+
 msgctxt "#31320"
 msgid "Last Logged In"
 msgstr "Ultima intrare"
@@ -174,7 +198,7 @@ msgstr "Cu Arial la bază"
 
 msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
-msgstr "Schimbați costumul · Stabiliți limba și regiunea · Schimbați opțiunile de listare a fișierelor · Alegeți un protector de ecran"
+msgstr "Schimbați tema · Setați limba și regiunea · Schimbați opțiunile de listare a fișierelor · Alegeți un protector de ecran"
 
 msgctxt "#31405"
 msgid "Configure & manage media sharing services · Configure & manage the weather service"
@@ -186,7 +210,7 @@ msgstr "Configurați afișajul · Configurați sunetul · Configurați accesul l
 
 msgctxt "#31407"
 msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
-msgstr "Vă gestionați suplimentele instalate · Răsfoiți și instalați suplimente de la kodi.tv · Modificați stabiliri suplimente"
+msgstr "Vă gestionați suplimentele instalate · Răsfoiți și instalați suplimente de la kodi.tv · Modificați setările suplimentelor"
 
 msgctxt "#31408"
 msgid "Configure actions that can be used during playback · Configure how media content is played"
@@ -202,7 +226,7 @@ msgstr "Configurați costumul · Configurați regiunea · Configurați controlul
 
 msgctxt "#31411"
 msgid "Configure your profiles · Set locking options · Enable login screen"
-msgstr "Vă configurați profilele · Stabiliți opțiuni de blocare · Activați ecranul de autentificare"
+msgstr "Vă configurați profilele · Setați opțiuni de blocare · Activați ecranul de autentificare"
 
 msgctxt "#31412"
 msgid "Display system information · Hardware statistics · Check storage availability · View network configuration"
@@ -211,6 +235,14 @@ msgstr "Afișează informații sistem · Statistici componente · Verificați di
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Selectați profilul dumneavoastră de utilizator Kodi[CR]pentru a vă autentifica și a continua"
+
+msgctxt "#31548"
+msgid "Home menu"
+msgstr "Meniu Acasă"
+
+msgctxt "#31549"
+msgid "Home Add-ons"
+msgstr "Suplimente Acasă"
 
 msgctxt "#31550"
 msgid "Backgrounds"
@@ -234,7 +266,7 @@ msgstr "Fundal: "
 
 msgctxt "#31555"
 msgid "Configure TV settings · Change full screen info · Manage EPG data settings"
-msgstr "Configurați stabiliri televizor · Schimbați informațiile din ecranul complet · Gestionați stabiliri date EPG"
+msgstr "Configurați setările televizorului · Schimbați informațiile din ecranul complet · Gestionați setările date EPG"
 
 msgctxt "#31556"
 msgid "Live TV"
@@ -250,7 +282,7 @@ msgstr "Ascunde fundal vizualizare"
 
 msgctxt "#31559"
 msgid "Channel settings"
-msgstr "Stabiliri canal"
+msgstr "Setări canal"
 
 msgctxt "#31560"
 msgid "Available groups"

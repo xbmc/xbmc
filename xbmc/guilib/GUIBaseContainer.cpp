@@ -161,7 +161,7 @@ void CGUIBaseContainer::ProcessItem(float posX, float posY, CGUIListItemPtr& ite
   {
     if (!item->GetFocusedLayout())
     {
-      CGUIListItemLayout *layout = new CGUIListItemLayout(*m_focusedLayout);
+      CGUIListItemLayout *layout = new CGUIListItemLayout(*m_focusedLayout, this);
       item->SetFocusedLayout(layout);
     }
     if (item->GetFocusedLayout())
@@ -189,6 +189,7 @@ void CGUIBaseContainer::ProcessItem(float posX, float posY, CGUIListItemPtr& ite
     if (!item->GetLayout())
     {
       CGUIListItemLayout *layout = new CGUIListItemLayout(*m_layout);
+      layout->SetParentControl(this);
       item->SetLayout(layout);
     }
     if (item->GetFocusedLayout())
@@ -912,11 +913,13 @@ void CGUIBaseContainer::UpdateVisibility(const CGUIListItem *item)
   if (!IsVisible() && !CGUIControl::CanFocus())
     return; // no need to update the content if we're not visible and we can't focus
 
-  // check whether we need to update our layouts
-  if ((m_layout && !m_layout->CheckCondition()) ||
-      (m_focusedLayout && !m_focusedLayout->CheckCondition()))
+  // update layouts in case of condition changed
+  if ((m_layout && m_layout->CheckCondition() != m_layoutCondition) ||
+      (m_focusedLayout && m_focusedLayout->CheckCondition() != m_focusedLayoutCondition))
   {
-    // and do it
+    m_layoutCondition = m_layout->CheckCondition();
+    m_focusedLayoutCondition = m_focusedLayout->CheckCondition();
+
     int itemIndex = GetSelectedItem();
     UpdateLayout(true); // true to refresh all items
     SelectItem(itemIndex);
@@ -1147,6 +1150,7 @@ void CGUIBaseContainer::LoadLayout(TiXmlElement *layout)
     m_layouts.emplace_back();
     m_layouts.back().LoadLayout(itemElement, GetParentID(), false, m_width, m_height);
     itemElement = itemElement->NextSiblingElement("itemlayout");
+    m_layouts.back().SetParentControl(this);
   }
   itemElement = layout->FirstChildElement("focusedlayout");
   while (itemElement)
@@ -1154,6 +1158,7 @@ void CGUIBaseContainer::LoadLayout(TiXmlElement *layout)
     m_focusedLayouts.emplace_back();
     m_focusedLayouts.back().LoadLayout(itemElement, GetParentID(), true, m_width, m_height);
     itemElement = itemElement->NextSiblingElement("focusedlayout");
+    m_focusedLayouts.back().SetParentControl(this);
   }
 }
 
@@ -1304,29 +1309,29 @@ std::string CGUIBaseContainer::GetLabel(int info) const
         label = StringUtils::Format("%i", GetSelectedItem() + 1);
     }
     break;
-  case CONTAINER_ACTUAL_ITEMS:
+  case CONTAINER_NUM_ALL_ITEMS:
   case CONTAINER_NUM_ITEMS:
-  case CONTAINER_NONFOLDER_ITEMS:
     {
       unsigned int numItems = GetNumItems();
       if (info == CONTAINER_NUM_ITEMS && numItems && m_items[0]->IsFileItem() && (std::static_pointer_cast<CFileItem>(m_items[0]))->IsParentFolder())
         label = StringUtils::Format("%u", numItems-1);
-      else if (info == CONTAINER_NONFOLDER_ITEMS)
-      {
-        int iNonFolderItems = 0;
-        for (auto item : m_items)
-        {
-          if (!item->m_bIsFolder)
-            iNonFolderItems++;
-        }
-        label = StringUtils::Format("%u", iNonFolderItems);
-      }
       else
         label = StringUtils::Format("%u", numItems);
     }
     break;
+  case CONTAINER_NUM_NONFOLDER_ITEMS:
+    {
+      int numItems = 0;
+      for (auto item : m_items)
+      {
+        if (!item->m_bIsFolder)
+          numItems++;
+      }
+      label = StringUtils::Format("%u", numItems);
+    }
+    break;
   default:
-      break;
+    break;
   }
   return label;
 }
@@ -1359,6 +1364,8 @@ void CGUIBaseContainer::GetCacheOffsets(int &cacheBefore, int &cacheAfter) const
 
 void CGUIBaseContainer::SetCursor(int cursor)
 {
+  if (m_cursor != cursor)
+    MarkDirtyRegion();
   m_cursor = cursor;
 }
 

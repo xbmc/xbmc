@@ -2,15 +2,24 @@
   <addon>audioencoder.xbmc.builtin.aac</addon>
   <addon>audioencoder.xbmc.builtin.wma</addon>
   <addon>game.controller.default</addon>
-  <addon>kodi.adsp</addon>
-  <addon>kodi.audiodecoder</addon>
-  <addon>kodi.game</addon>
-  <addon>kodi.guilib</addon>
-  <addon>kodi.imagedecoder</addon>
-  <addon>kodi.inputstream</addon>
-  <addon>kodi.peripheral</addon>
+  <addon>kodi.binary.global.audioengine</addon>
+  <addon>kodi.binary.global.main</addon>
+  <addon>kodi.binary.global.general</addon>
+  <addon>kodi.binary.global.network</addon>
+  <addon>kodi.binary.global.gui</addon>
+  <addon>kodi.binary.global.filesystem</addon>
+  <addon>kodi.binary.instance.adsp</addon>
+  <addon>kodi.binary.instance.audiodecoder</addon>
+  <addon>kodi.binary.instance.audioencoder</addon>
+  <addon>kodi.binary.instance.game</addon>
+  <addon>kodi.binary.instance.imagedecoder</addon>
+  <addon>kodi.binary.instance.inputstream</addon>
+  <addon>kodi.binary.instance.peripheral</addon>
+  <addon>kodi.binary.instance.pvr</addon>
+  <addon>kodi.binary.instance.screensaver</addon>
+  <addon>kodi.binary.instance.vfs</addon>
+  <addon>kodi.binary.instance.visualization</addon>
   <addon>kodi.resource</addon>
-  <addon>kodi.vfs</addon>
   <addon>metadata.album.universal</addon>
   <addon>metadata.artists.universal</addon>
   <addon>metadata.common.allmusic.com</addon>
@@ -31,18 +40,15 @@
   <addon>screensaver.xbmc.builtin.dim</addon>
   <addon>script.module.pil</addon>
   <addon>script.module.pycryptodome</addon>
-  <addon>service.xbmc.versioncheck</addon>
+  <addon optional="true">service.xbmc.versioncheck</addon>
   <addon>skin.estuary</addon>
   <addon>skin.estouchy</addon>
   <addon>webinterface.default</addon>
   <addon>xbmc.addon</addon>
-  <addon>xbmc.audioencoder</addon>
-  <addon>xbmc.codec</addon>
   <addon>xbmc.core</addon>
   <addon>xbmc.gui</addon>
   <addon>xbmc.json</addon>
   <addon>xbmc.metadata</addon>
-  <addon>xbmc.pvr</addon>
   <addon>xbmc.python</addon>
   <addon>xbmc.webinterface</addon>
   <addon optional="true">peripheral.joystick</addon>

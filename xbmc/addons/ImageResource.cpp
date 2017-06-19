@@ -28,14 +28,14 @@
 namespace ADDON
 {
 
-std::unique_ptr<CImageResource> CImageResource::FromExtension(AddonProps props, const cp_extension_t* ext)
+std::unique_ptr<CImageResource> CImageResource::FromExtension(CAddonInfo addonInfo, const cp_extension_t* ext)
 {
   std::string type = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@type");
-  return std::unique_ptr<CImageResource>(new CImageResource(std::move(props), std::move(type)));
+  return std::unique_ptr<CImageResource>(new CImageResource(std::move(addonInfo), std::move(type)));
 }
 
-CImageResource::CImageResource(AddonProps props, std::string type)
-    : CResource(std::move(props)), m_type(std::move(type))
+CImageResource::CImageResource(CAddonInfo addonInfo, std::string type)
+    : CResource(std::move(addonInfo)), m_type(std::move(type))
 {
 }
 

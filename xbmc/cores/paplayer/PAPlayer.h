@@ -44,39 +44,35 @@ public:
   PAPlayer(IPlayerCallback& callback);
   virtual ~PAPlayer();
 
-  virtual void RegisterAudioCallback(IAudioCallback* pCallback);
-  virtual void UnRegisterAudioCallback();
-  virtual bool OpenFile(const CFileItem& file, const CPlayerOptions &options);
-  virtual bool QueueNextFile(const CFileItem &file);
-  virtual void OnNothingToQueueNotify();
-  virtual bool CloseFile(bool reopen = false);
-  virtual bool IsPlaying() const;
+  virtual bool OpenFile(const CFileItem& file, const CPlayerOptions &options) override;
+  virtual bool QueueNextFile(const CFileItem &file) override;
+  virtual void OnNothingToQueueNotify() override;
+  virtual bool CloseFile(bool reopen = false) override;
+  virtual bool IsPlaying() const override;
   virtual void Pause() override;
-  virtual bool HasVideo() const { return false; }
-  virtual bool HasAudio() const { return true; }
-  virtual bool CanSeek();
-  virtual void Seek(bool bPlus = true, bool bLargeStep = false, bool bChapterOverride = false);
-  virtual void SeekPercentage(float fPercent = 0.0f);
-  virtual float GetPercentage();
-  virtual void SetVolume(float volume);
-  virtual void SetDynamicRangeCompression(long drc);
-  virtual void GetAudioInfo( std::string& strAudioInfo) {}
-  virtual void GetVideoInfo( std::string& strVideoInfo) {}
+  virtual bool HasVideo() const override { return false; }
+  virtual bool HasAudio() const override { return true; }
+  virtual bool CanSeek() override;
+  virtual void Seek(bool bPlus = true, bool bLargeStep = false, bool bChapterOverride = false) override;
+  virtual void SeekPercentage(float fPercent = 0.0f) override;
+  virtual float GetPercentage() override;
+  virtual void SetVolume(float volume) override;
+  virtual void SetDynamicRangeCompression(long drc) override;
   virtual void SetSpeed(float speed = 0) override;
   virtual float GetSpeed() override;
-  virtual int GetCacheLevel() const;
-  virtual int64_t GetTotalTime();
-  virtual void SetTotalTime(int64_t time);
-  virtual void GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info);
-  virtual int64_t GetTime();
-  virtual void SetTime(int64_t time);
-  virtual void SeekTime(int64_t iTime = 0);
-  virtual bool SkipNext();
-  virtual void GetAudioCapabilities(std::vector<int> &audioCaps) {}
+  virtual int GetCacheLevel() const override;
+  virtual int64_t GetTotalTime() override;
+  virtual void SetTotalTime(int64_t time) override;
+  virtual void GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info) override;
+  virtual int64_t GetTime() override;
+  virtual void SetTime(int64_t time) override;
+  virtual void SeekTime(int64_t iTime = 0) override;
+  virtual void GetAudioCapabilities(std::vector<int> &audioCaps) override {}
 
   static bool HandlesType(const std::string &type);
 
-  virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
+  // implementation of IJobCallback
+  virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job) override;
 
   struct
   {
@@ -92,9 +88,10 @@ public:
   } m_playerGUIData;
 
 protected:
-  virtual void OnStartup() {}
-  virtual void Process();
-  virtual void OnExit();
+  // implementation of CThread
+  virtual void OnStartup() override {}
+  virtual void Process() override;
+  virtual void OnExit() override;
 
 private:
   typedef struct

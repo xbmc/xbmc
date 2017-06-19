@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2014-2016 Team Kodi
+ *      Copyright (C) 2014-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -37,14 +37,12 @@
 #include "guilib/GUIControlGroupList.h"
 #include "guilib/GUIWindow.h"
 #include "guilib/WindowIDs.h"
-#include "input/joysticks/DefaultJoystick.h" // for DEFAULT_CONTROLLER_ID
+#include "input/joysticks/JoystickIDs.h"
 #include "messaging/ApplicationMessenger.h"
 #include "peripherals/Peripherals.h"
 #include "ServiceBroker.h"
 
-#include <algorithm>
-#include <iterator>
-
+using namespace KODI;
 using namespace ADDON;
 using namespace GAME;
 
@@ -143,7 +141,7 @@ void CGUIControllerList::ResetController(void)
     if (!CGUIDialogYesNo::ShowAndGetInput(35060, 35061))
       return;
 
-    PERIPHERALS::g_peripherals.ResetButtonMaps(strControllerId);
+    CServiceBroker::GetPeripherals().ResetButtonMaps(strControllerId);
   }
 }
 
@@ -151,7 +149,7 @@ void CGUIControllerList::OnEvent(const ADDON::AddonEvent& event)
 {
   if (typeid(event) == typeid(ADDON::AddonEvents::InstalledChanged))
   {
-    using namespace KODI::MESSAGING;
+    using namespace MESSAGING;
     CGUIMessage msg(GUI_MSG_REFRESH_LIST, m_guiWindow->GetID(), CONTROL_CONTROLLER_LIST);
     CApplicationMessenger::GetInstance().SendGUIMessage(msg);
   }

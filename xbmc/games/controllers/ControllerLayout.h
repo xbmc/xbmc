@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2015-2016 Team Kodi
+ *      Copyright (C) 2015-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -26,6 +26,8 @@
 
 class TiXmlElement;
 
+namespace KODI
+{
 namespace GAME
 {
 
@@ -58,4 +60,5 @@ private:
   std::vector<CControllerFeature> m_features;
 };
 
+}
 }

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2014-2016 Team Kodi
+ *      Copyright (C) 2014-2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -33,7 +33,7 @@ namespace JOYSTICK
   /*!
    * \brief Name of a physical feature belonging to the joystick
    */
-  typedef std::string FeatureName;
+  using FeatureName = std::string;
 
   /*!
    * \brief Types of features used in the joystick library
@@ -89,7 +89,7 @@ namespace JOYSTICK
   /*!
    * \brief Typedef for analog stick directions
    */
-  typedef HAT_DIRECTION  ANALOG_STICK_DIRECTION;
+  using ANALOG_STICK_DIRECTION = HAT_DIRECTION;
 
   /*!
    * \brief States in which a hat can be

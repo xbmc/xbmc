@@ -13,6 +13,8 @@ endif()
 
 set(PLATFORM_DIR platform/win32)
 
+set(CORE_MAIN_SOURCE ${CMAKE_SOURCE_DIR}/xbmc/platform/win32/WinMain.cpp)
+
 # Precompiled headers fail with per target output directory. (needs CMake 3.1)
 set(PRECOMPILEDHEADER_DIR ${PROJECT_BINARY_DIR}/${CORE_BUILD_CONFIG}/objs)
 
@@ -39,7 +41,11 @@ set(SYSTEM_DEFINES -DNOMINMAX -DHAS_DX -D__STDC_CONSTANT_MACROS
                    -DPLT_HTTP_DEFAULT_USER_AGENT="UPnP/1.0 DLNADOC/1.50 Kodi"
                    -DPLT_HTTP_DEFAULT_SERVER="UPnP/1.0 DLNADOC/1.50 Kodi"
                    -DUNICODE -D_UNICODE
-                   $<$<CONFIG:Debug>:-DD3D_DEBUG_INFO -D_ITERATOR_DEBUG_LEVEL=0>)
+                   $<$<CONFIG:Debug>:-DD3D_DEBUG_INFO>)
+
+if(${ARCH} STREQUAL win32)
+  list(APPEND SYSTEM_DEFINES $<$<CONFIG:Debug>:-D_ITERATOR_DEBUG_LEVEL=0>)
+endif()
 
 # Make sure /FS is set for Visual Studio in order to prevent simultaneous access to pdb files.
 if(CMAKE_GENERATOR MATCHES "Visual Studio")
@@ -58,6 +64,7 @@ set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SAFESEH:NO")
 # TODO: It would certainly be better to handle these libraries via CMake modules.
 if(${ARCH} STREQUAL win32)
   link_directories(${CMAKE_SOURCE_DIR}/lib/win32/ffmpeg/bin
+                   ${CMAKE_SOURCE_DIR}/project/BuildDependencies/${ARCH}/lib
                    ${CMAKE_SOURCE_DIR}/project/BuildDependencies/lib)
 else()
   link_directories(${CMAKE_SOURCE_DIR}/lib/win32/ffmpeg/bin
@@ -102,5 +109,6 @@ if(CMAKE_GENERATOR MATCHES "Visual Studio")
              "@echo off\n"
              "set KODI_HOME=%~dp0\n"
              "set PATH=%~dp0\\system\n"
+             "set PreferredToolArchitecture=x64\n"
              "start %~dp0\\${PROJECT_NAME}.sln")
 endif()

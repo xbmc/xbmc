@@ -1,4 +1,4 @@
-package org.xbmc.@APP_NAME_LC@;
+package @APP_PACKAGE@;
 
 import android.app.NativeActivity;
 import android.content.ComponentName;
@@ -9,76 +9,70 @@ import android.media.AudioManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Choreographer;
+import android.view.Gravity;
 import android.view.View;
-import android.view.Surface;
-import android.widget.RelativeLayout;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.os.Handler;
-import org.xbmc.@APP_NAME_LC@.XBMCVideoView;
 
 public class Main extends NativeActivity implements Choreographer.FrameCallback
 {
   private static final String TAG = "@APP_NAME_LC@";
 
+  public static Main MainActivity = null;
+
   private XBMCSettingsContentObserver mSettingsContentObserver;
   private XBMCInputDeviceListener mInputDeviceListener;
-  private XBMCVideoView mVideoView = null;
-  private RelativeLayout mVideoLayout = null;
+  private XBMCJsonRPC mJsonRPC = null;
   private View thisView = null;
   private Handler handler = new Handler();
+  private Intent mNewIntent = null;
 
   native void _onNewIntent(Intent intent);
+  native void _onActivityResult(int requestCode, int resultCode, Intent resultData);
   native void _doFrame(long frameTimeNanos);
+
+  private Runnable leanbackUpdateRunnable = new Runnable()
+  {
+    @Override
+    public void run()
+    {
+      Log.d(TAG, "Updating recommendations");
+      new Thread()
+      {
+        public void run()
+        {
+          mJsonRPC.updateLeanback(Main.this);
+        }
+      }.start();
+      handler.postDelayed(this, XBMCProperties.getIntProperty("xbmc.leanbackrefresh", 60*60) * 1000);
+    }
+  };
 
   public Main()
   {
     super();
+    MainActivity = this;
   }
 
-  public Surface getVideoViewSurface()
-  {
-    return mVideoView.getSurface();
-  }
-
-  public Rect getVideoViewSurfaceRect()
+  public Rect getDisplayRect()
   {
     Rect ret = new Rect();
     ret.top = 0;
     ret.left = 0;
-    ret.right = mVideoView.mWidth;
-    ret.bottom = mVideoView.mHeight;
+    ret.right = 0;
+    ret.bottom = 0;
+
+    try
+    {
+      ret.right = thisView.getRootView().getWidth();
+      ret.bottom = thisView.getRootView().getHeight();
+    }
+    catch (Exception e) {}
 
     return ret;
   }
 
-  public void setVideoViewSurfaceRect(final int left, final int top, final int right, final int bottom)
-  {
-    runOnUiThread(new Runnable()
-    {
-      @Override
-      public void run()
-      {
-        android.widget.RelativeLayout.LayoutParams mp = new android.widget.RelativeLayout.LayoutParams(mVideoView.getLayoutParams());
-        mp.setMargins(left, top, mVideoLayout.getWidth() - right, mVideoLayout.getHeight() - bottom);
-        mVideoView.setLayoutParams(mp);
-        mVideoView.requestLayout();
-      }
-    });
-  }
-
-  public void clearVideoView()
-  {
-    runOnUiThread(new Runnable()
-    {
-      @Override
-      public void run()
-      {
-        mVideoView.clearSurface();
-      }
-    });
-  }
-  
   public void registerMediaButtonEventReceiver()
   {
     AudioManager manager = (AudioManager) getSystemService(AUDIO_SERVICE);
@@ -94,33 +88,29 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
   @Override
   public void onCreate(Bundle savedInstanceState)
   {
-    // The dynamic linker on droid is a mess.
-    // Depending on version, it might not be able to properly resolve
-    try
-    {
-      // Surround with try-catch to allow static version (3.0)
-      System.loadLibrary("smbclient");
-    }
-    catch (UnsatisfiedLinkError e) {}
     System.loadLibrary("@APP_NAME_LC@");
 
     super.onCreate(savedInstanceState);
     getWindow().setFormat(PixelFormat.TRANSPARENT);
 
     setContentView(R.layout.activity_main);
-    mVideoView = (XBMCVideoView)findViewById(R.id.VideoView1);
-    mVideoView.getHolder().setFormat(PixelFormat.TRANSPARENT);
-    mVideoLayout = (RelativeLayout) findViewById(R.id.VideoLayout);
-
     setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
-    mSettingsContentObserver = new XBMCSettingsContentObserver(this, new Handler());
+    mSettingsContentObserver = new XBMCSettingsContentObserver(this, handler);
     getApplicationContext().getContentResolver().registerContentObserver(android.provider.Settings.System.CONTENT_URI, true, mSettingsContentObserver );
+
+    if (getPackageManager().hasSystemFeature("android.software.leanback"))
+    {
+      // Leanback
+      mJsonRPC = new XBMCJsonRPC();
+      handler.removeCallbacks(leanbackUpdateRunnable);
+      handler.postDelayed(leanbackUpdateRunnable, 30*1000);
+    }
 
     // register the InputDeviceListener implementation
     mInputDeviceListener = new XBMCInputDeviceListener();
     InputManager manager = (InputManager) getSystemService(INPUT_SERVICE);
-    manager.registerInputDeviceListener(mInputDeviceListener, new Handler());
+    manager.registerInputDeviceListener(mInputDeviceListener, handler);
 
     thisView = getWindow().getDecorView();
     thisView.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener()
@@ -159,11 +149,8 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
   protected void onNewIntent(Intent intent)
   {
     super.onNewIntent(intent);
-    try {
-      _onNewIntent(intent);
-    } catch (UnsatisfiedLinkError e) {
-      Log.e("Main", "Native not registered");
-    }
+    // Delay until after Resume
+    mNewIntent = intent;
   }
 
   @Override
@@ -195,6 +182,25 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
               | View.SYSTEM_UI_FLAG_FULLSCREEN
               | API_SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
     }
+
+    // New intent ?
+    if (mNewIntent != null)
+    {
+      handler.postDelayed(new Runnable()
+      {
+        @Override
+        public void run()
+        {
+          try {
+            _onNewIntent(mNewIntent);
+          } catch (UnsatisfiedLinkError e) {
+            Log.e("Main", "Native not registered");
+          } finally {
+            mNewIntent = null;
+          }
+        }
+      }, 500);
+    }
   }
 
   @Override
@@ -203,6 +209,14 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
     super.onPause();
   }
   
+  @Override
+  public void onActivityResult(int requestCode, int resultCode,
+      Intent resultData)
+  {
+    _onActivityResult(requestCode, resultCode, resultData);
+  }
+
+  @Override
   public void onDestroy()
   {
     // unregister the InputDeviceListener implementation
