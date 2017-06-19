@@ -16,40 +16,25 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 #include "AudioEncoder.h"
 
 namespace ADDON
 {
 
-std::unique_ptr<CAudioEncoder> CAudioEncoder::FromExtension(CAddonInfo addonInfo, const cp_extension_t* ext)
+CAudioEncoder::CAudioEncoder(BinaryAddonBasePtr addonInfo)
+  : IAddonInstanceHandler(ADDON_INSTANCE_AUDIOENCODER, addonInfo)
 {
-  std::string extension = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@extension");
-  return std::unique_ptr<CAudioEncoder>(new CAudioEncoder(std::move(addonInfo), std::move(extension)));
+  m_struct = {{ 0 }};
 }
 
-CAudioEncoder::CAudioEncoder(CAddonInfo addonInfo, std::string _extension)
-    : CAddonDll(std::move(addonInfo)), extension(std::move(_extension)), m_context(nullptr)
+bool CAudioEncoder::Init(AddonToKodiFuncTable_AudioEncoder& callbacks)
 {
-  memset(&m_struct, 0, sizeof(m_struct));
-}
-
-bool CAudioEncoder::Create()
-{
-  m_struct.toKodi.kodiInstance = this;
-  return CAddonDll::Create(ADDON_INSTANCE_AUDIOENCODER, &m_struct, &m_struct.props) == ADDON_STATUS_OK;
-}
-
-bool CAudioEncoder::Init(audioenc_callbacks &callbacks)
-{
-  if (!Initialized())
+  m_struct.toKodi = callbacks;
+  if (!CreateInstance(&m_struct) || !m_struct.toAddon.start)
     return false;
 
-  // create encoder instance
-  m_context = m_struct.toAddon.Create(&callbacks);
-  if (!m_context)
-    return false;
-
-  return m_struct.toAddon.Start(m_context,
+  return m_struct.toAddon.start(&m_struct,
                                 m_iInChannels,
                                 m_iInSampleRate,
                                 m_iInBitsPerSample,
@@ -66,29 +51,21 @@ bool CAudioEncoder::Init(audioenc_callbacks &callbacks)
 
 int CAudioEncoder::Encode(int nNumBytesRead, uint8_t* pbtStream)
 {
-  if (!Initialized() || !m_context)
-    return 0;
-
-  return m_struct.toAddon.Encode(m_context, nNumBytesRead, pbtStream);
+  if (m_struct.toAddon.encode)
+    return m_struct.toAddon.encode(&m_struct, nNumBytesRead, pbtStream);
+  return 0;
 }
 
 bool CAudioEncoder::Close()
 {
-  if (!Initialized() || !m_context)
-    return false;
+  bool ret = false;
+  if (m_struct.toAddon.finish)
+    ret = m_struct.toAddon.finish(&m_struct);
 
-  if (!m_struct.toAddon.Finish(m_context))
-    return false;
+  DestroyInstance();
+  m_struct = {{ 0 }};
 
-  m_struct.toAddon.Free(m_context);
-  m_context = NULL;
-
-  return true;
-}
-
-void CAudioEncoder::Destroy()
-{
-  CAddonDll::Destroy();
+  return ret;
 }
 
 } /*namespace ADDON*/

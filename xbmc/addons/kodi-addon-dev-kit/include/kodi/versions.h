@@ -88,11 +88,10 @@
 #define ADDON_INSTANCE_VERSION_AUDIODECODER_DEPENDS   "kodi_audiodec_dll.h" \
                                                       "kodi_audiodec_types.h"
 
-#define ADDON_INSTANCE_VERSION_AUDIOENCODER           "1.0.1"
-#define ADDON_INSTANCE_VERSION_AUDIOENCODER_MIN       "1.0.1"
+#define ADDON_INSTANCE_VERSION_AUDIOENCODER           "2.0.0"
+#define ADDON_INSTANCE_VERSION_AUDIOENCODER_MIN       "2.0.0"
 #define ADDON_INSTANCE_VERSION_AUDIOENCODER_XML_ID    "kodi.binary.instance.audioencoder"
-#define ADDON_INSTANCE_VERSION_AUDIOENCODER_DEPENDS   "xbmc_audioenc_dll.h" \
-                                                      "xbmc_audioenc_types.h"
+#define ADDON_INSTANCE_VERSION_AUDIOENCODER_DEPENDS   "addon-instance/AudioEncoder.h"
 
 #define ADDON_INSTANCE_VERSION_GAME                   "1.0.32"
 #define ADDON_INSTANCE_VERSION_GAME_MIN               "1.0.32"
