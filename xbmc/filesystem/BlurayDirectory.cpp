@@ -136,7 +136,7 @@ void CBlurayDirectory::GetRoot(CFileItemList &items)
     item->SetIconImage("DefaultVideoPlaylists.png");
     items.Add(item);
 
-    path.SetFileName("BDMV/MovieObject.bdmv");
+    path.SetFileName("menu");
     item.reset(new CFileItem());
     item->SetPath(path.Get());
     item->m_bIsFolder = false;
