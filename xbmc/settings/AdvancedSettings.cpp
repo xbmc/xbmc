@@ -29,6 +29,7 @@
 #include "addons/BinaryAddonCache.h"
 #include "addons/IAddon.h"
 #include "addons/ImageDecoder.h"
+#include "addons/binary-addons/BinaryAddonBase.h"
 #include "Application.h"
 #include "ServiceBroker.h"
 #include "filesystem/File.h"
@@ -1451,14 +1452,12 @@ std::string CAdvancedSettings::GetPictureExtensions() const
 {
   std::string result(m_pictureExtensions);
 
-  VECADDONS codecs;
-  CBinaryAddonCache &addonCache = CServiceBroker::GetBinaryAddonCache();
-  addonCache.GetAddons(codecs, ADDON_IMAGEDECODER);
-  for (size_t i=0;i<codecs.size();++i)
+  BinaryAddonBaseList addonInfos;
+  CServiceBroker::GetBinaryAddonManager().GetAddonInfos(addonInfos, true, ADDON_IMAGEDECODER);
+  for (auto addonInfo : addonInfos)
   {
-    std::shared_ptr<CImageDecoder> dec(std::static_pointer_cast<CImageDecoder>(codecs[i]));
     result += '|';
-    result += dec->GetExtensions();
+    result += addonInfo->Type(ADDON_IMAGEDECODER)->GetValue("@extension").asString();
   }
 
   return result;

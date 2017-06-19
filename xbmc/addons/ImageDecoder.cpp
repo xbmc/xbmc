@@ -16,8 +16,8 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 #include "ImageDecoder.h"
-#include "kodi-addon-dev-kit/include/kodi/kodi_imagedec_types.h"
 #include "guilib/TextureFormats.h"
 
 static const std::map<int,int> KodiToAddonFormat = {{XB_FMT_A8R8G8B8, ADDON_IMG_FMT_A8R8G8B8},
@@ -28,54 +28,39 @@ static const std::map<int,int> KodiToAddonFormat = {{XB_FMT_A8R8G8B8, ADDON_IMG_
 namespace ADDON
 {
 
-std::unique_ptr<CImageDecoder>
-CImageDecoder::FromExtension(CAddonInfo&& addonInfo, const cp_extension_t* ext)
-{
-  std::string mime = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@mimetype");
-  std::string extension = CAddonMgr::GetInstance().GetExtValue(ext->configuration, "@extension");
-  return std::unique_ptr<CImageDecoder>(new CImageDecoder(std::move(addonInfo),
-                                                          std::move(mime),
-                                                          std::move(extension)));
-}
-
-CImageDecoder::CImageDecoder(CAddonInfo&& addonInfo, std::string mime, std::string extension) :
-  CAddonDll(std::move(addonInfo)),
-  m_mimetype(std::move(mime)),
-  m_extension(std::move(extension))
+CImageDecoder::CImageDecoder(BinaryAddonBasePtr addonBase)
+  : IAddonInstanceHandler(ADDON_INSTANCE_IMAGEDECODER, addonBase)
 {
 }
 
 CImageDecoder::~CImageDecoder()
 {
-  if (m_image && Initialized())
-    m_struct.toAddon.Close(m_image);
+  DestroyInstance();
 }
 
 bool CImageDecoder::LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize,
                                         unsigned int width, unsigned int height)
 {
-  if (!Initialized())
+  if (!m_struct.toAddon.load_image_from_memory)
     return false;
 
   m_width = width;
   m_height = height;
-  m_image = m_struct.toAddon.LoadImage(buffer, bufSize, &m_width, &m_height);
-
-  return m_image != nullptr;
+  return m_struct.toAddon.load_image_from_memory(&m_struct, buffer, bufSize, &m_width, &m_height);
 }
 
 bool CImageDecoder::Decode(unsigned char* const pixels, unsigned int width,
                            unsigned int height, unsigned int pitch,
                            unsigned int format)
 {
-  if (!Initialized())
+  if (!m_struct.toAddon.decode)
     return false;
 
   auto it = KodiToAddonFormat.find(format & XB_FMT_MASK);
   if (it == KodiToAddonFormat.end())
     return false;
 
-  bool result = m_struct.toAddon.Decode(m_image, pixels, width, height, pitch, it->second);
+  bool result = m_struct.toAddon.decode(&m_struct, pixels, width, height, pitch, it->second);
   m_width = width;
   m_height = height;
 
@@ -85,8 +70,8 @@ bool CImageDecoder::Decode(unsigned char* const pixels, unsigned int width,
 bool CImageDecoder::Create(const std::string& mimetype)
 {
   m_struct.props.mimetype = mimetype.c_str();
-  m_struct.toKodi.kodiInstance = this;
-  return CAddonDll::Create(ADDON_INSTANCE_IMAGEDECODER, &m_struct, &m_struct.props) == ADDON_STATUS_OK;
+  m_struct.toKodi.kodi_instance = this;
+  return CreateInstance(&m_struct);
 }
 
 } /*namespace ADDON*/
