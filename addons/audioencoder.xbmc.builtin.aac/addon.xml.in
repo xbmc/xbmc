@@ -10,7 +10,7 @@
     library_@CORE_SYSTEM_NAME@="dummy.so"/>
   <extension point="xbmc.addon.metadata">
     <summary lang="en">AAC Audio Encoder</summary>
-    <description lang="en">AAC Audio Encoder</description>
+    <description lang="en">AAC is a set of codecs designed to provide better compression than MP3s, and are improved versions of MPEG audio.</description>
     <platform>all</platform>
   </extension>
 </addon>
