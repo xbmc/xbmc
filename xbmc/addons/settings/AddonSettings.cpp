@@ -292,6 +292,10 @@ bool CAddonSettings::Load(const CXBMCTinyXML& doc)
   // process all settings
   for (const auto& setting : settingValues)
   {
+    // ignore setting values without a setting identifier
+    if (setting.first.empty())
+      continue;
+
     // try to find a matching setting
     SettingPtr newSetting = GetSetting(setting.first);
     if (newSetting == nullptr)
