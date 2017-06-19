@@ -101,11 +101,10 @@
                                                       "kodi_game_types.h" \
                                                       "libKODI_game.h"
 
-#define ADDON_INSTANCE_VERSION_IMAGEDECODER           "1.0.1"
-#define ADDON_INSTANCE_VERSION_IMAGEDECODER_MIN       "1.0.1"
+#define ADDON_INSTANCE_VERSION_IMAGEDECODER           "2.0.0"
+#define ADDON_INSTANCE_VERSION_IMAGEDECODER_MIN       "2.0.0"
 #define ADDON_INSTANCE_VERSION_IMAGEDECODER_XML_ID    "kodi.binary.instance.imagedecoder"
-#define ADDON_INSTANCE_VERSION_IMAGEDECODER_DEPENDS   "kodi_imagedec_dll.h" \
-                                                      "kodi_imagedec_types.h"
+#define ADDON_INSTANCE_VERSION_IMAGEDECODER_DEPENDS   "addon-instance/ImageDecoder.h"
 
 #define ADDON_INSTANCE_VERSION_INPUTSTREAM            "1.0.8"
 #define ADDON_INSTANCE_VERSION_INPUTSTREAM_MIN        "1.0.8"
