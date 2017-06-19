@@ -122,7 +122,7 @@ namespace JOYSTICK
      *
      * \return True if the event was handled otherwise false
      */
-    virtual bool OnAnalogStickMotion(const FeatureName& feature, float x, float y, unsigned int motionTimeMs = 0) = 0;
+    virtual bool OnAnalogStickMotion(const FeatureName& feature, float x, float y, unsigned int motionTimeMs) = 0;
 
     /*!
      * \brief An accelerometer's state has changed

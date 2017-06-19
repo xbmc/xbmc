@@ -57,7 +57,7 @@ namespace JOYSTICK
     virtual bool OnButtonPress(const FeatureName& feature, bool bPressed) override;
     virtual void OnButtonHold(const FeatureName& feature, unsigned int holdTimeMs) override;
     virtual bool OnButtonMotion(const FeatureName& feature, float magnitude, unsigned int motionTimeMs) override;
-    virtual bool OnAnalogStickMotion(const FeatureName& feature, float x, float y, unsigned int motionTimeMs = 0) override;
+    virtual bool OnAnalogStickMotion(const FeatureName& feature, float x, float y, unsigned int motionTimeMs) override;
     virtual bool OnAccelerometerMotion(const FeatureName& feature, float x, float y, float z) override;
 
     // implementation of IActionMap

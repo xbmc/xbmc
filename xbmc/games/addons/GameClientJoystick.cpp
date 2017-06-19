@@ -121,7 +121,7 @@ bool CGameClientJoystick::OnButtonMotion(const std::string& feature, float magni
   return bHandled;
 }
 
-bool CGameClientJoystick::OnAnalogStickMotion(const std::string& feature, float x, float y, unsigned int motionTimeMs /* = 0 */)
+bool CGameClientJoystick::OnAnalogStickMotion(const std::string& feature, float x, float y, unsigned int motionTimeMs)
 {
   bool bHandled = false;
 
