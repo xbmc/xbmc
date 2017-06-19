@@ -42,6 +42,7 @@
 #include <d3d10umddi.h>
 #pragma warning(default: 4091)
 #include <algorithm>
+#include <wrl.h>
 
 #ifndef _M_X64
 #pragma comment(lib, "EasyHook32.lib")
@@ -63,6 +64,7 @@ static PFND3D10DDI_CREATERESOURCE s_fnCreateResourceOrig{ nullptr };
 CRenderSystemDX* s_windowing{ nullptr };
 
 using namespace DirectX::PackedVector;
+using namespace Microsoft::WRL;
 
 CRenderSystemDX::CRenderSystemDX() : CRenderSystemBase()
 {
@@ -671,62 +673,8 @@ bool CRenderSystemDX::CreateDevice()
     SAFE_RELEASE(dxgiFactory2);
   }
 
-  m_renderCaps = 0;
-  unsigned int usage = D3D11_FORMAT_SUPPORT_TEXTURE2D | D3D11_FORMAT_SUPPORT_SHADER_SAMPLE;
-  if ( IsFormatSupport(DXGI_FORMAT_BC1_UNORM, usage)
-    && IsFormatSupport(DXGI_FORMAT_BC2_UNORM, usage)
-    && IsFormatSupport(DXGI_FORMAT_BC3_UNORM, usage))
-    m_renderCaps |= RENDER_CAPS_DXT;
-
-  // MSDN: At feature levels 9_1, 9_2 and 9_3, the display device supports the use of 2D textures with dimensions that are not powers of two under two conditions.
-  // First, only one MIP-map level for each texture can be created - we are using only 1 mip level)
-  // Second, no wrap sampler modes for textures are allowed - we are using clamp everywhere
-  // At feature levels 10_0, 10_1 and 11_0, the display device unconditionally supports the use of 2D textures with dimensions that are not powers of two.
-  // so, setup caps NPOT
-  m_renderCaps |= m_featureLevel > D3D_FEATURE_LEVEL_9_3 ? RENDER_CAPS_NPOT : 0;
-  if ((m_renderCaps & RENDER_CAPS_DXT) != 0)
-  {
-    if (m_featureLevel > D3D_FEATURE_LEVEL_9_3 ||
-      (!IsFormatSupport(DXGI_FORMAT_BC1_UNORM, D3D11_FORMAT_SUPPORT_MIP_AUTOGEN)
-      && !IsFormatSupport(DXGI_FORMAT_BC2_UNORM, D3D11_FORMAT_SUPPORT_MIP_AUTOGEN)
-      && !IsFormatSupport(DXGI_FORMAT_BC3_UNORM, D3D11_FORMAT_SUPPORT_MIP_AUTOGEN)))
-      m_renderCaps |= RENDER_CAPS_DXT_NPOT;
-  }
-
-  // Temporary - allow limiting the caps to debug a texture problem
-  if (g_advancedSettings.m_RestrictCapsMask != 0)
-    m_renderCaps &= ~g_advancedSettings.m_RestrictCapsMask;
-
-  if (m_renderCaps & RENDER_CAPS_DXT)
-    CLog::Log(LOGDEBUG, "%s - RENDER_CAPS_DXT", __FUNCTION__);
-  if (m_renderCaps & RENDER_CAPS_NPOT)
-    CLog::Log(LOGDEBUG, "%s - RENDER_CAPS_NPOT", __FUNCTION__);
-  if (m_renderCaps & RENDER_CAPS_DXT_NPOT)
-    CLog::Log(LOGDEBUG, "%s - RENDER_CAPS_DXT_NPOT", __FUNCTION__);
-
-  /* All the following quirks need to be tested
-  // nVidia quirk: some NPOT DXT textures of the GUI display with corruption
-  // when using D3DPOOL_DEFAULT + D3DUSAGE_DYNAMIC textures (no other choice with D3D9Ex for example)
-  // most likely xbmc bug, but no hw to repro & fix properly.
-  // affects lots of hw generations - 6xxx, 7xxx, GT220, ION1
-  // see ticket #9269
-  if (m_adapterDesc.VendorId == PCIV_nVidia)
-  {
-    CLog::Log(LOGDEBUG, __FUNCTION__" - nVidia workaround - disabling RENDER_CAPS_DXT_NPOT");
-    m_renderCaps &= ~RENDER_CAPS_DXT_NPOT;
-  }
-
-  // Intel quirk: DXT texture pitch must be > 64
-  // when using D3DPOOL_DEFAULT + D3DUSAGE_DYNAMIC textures (no other choice with D3D9Ex)
-  // DXT1:   32 pixels wide is the largest non-working texture width
-  // DXT3/5: 16 pixels wide ----------------------------------------
-  // Both equal to a pitch of 64. So far no Intel has DXT NPOT (including i3/i5/i7, so just go with the next higher POT.
-  // See ticket #9578
-  if (m_adapterDesc.VendorId == PCIV_Intel)
-  {
-    CLog::Log(LOGDEBUG, __FUNCTION__" - Intel workaround - specifying minimum pitch for compressed textures.");
-    m_minDXTPitch = 128;
-  }*/
+  // check various device capabilities
+  CheckDeviceCaps();
 
   if (!CreateStates() || !InitGUIShader() || !CreateWindowSizeDependentResources())
     return false;
@@ -1835,6 +1783,134 @@ void CRenderSystemDX::UninitHooks()
   {
     FreeLibrary(m_hDriverModule);
     m_hDriverModule = nullptr;
+  }
+}
+
+void CRenderSystemDX::CheckDeviceCaps()
+{
+  HRESULT hr = S_OK;
+
+  m_renderCaps = 0;
+  unsigned int usage = D3D11_FORMAT_SUPPORT_TEXTURE2D | D3D11_FORMAT_SUPPORT_SHADER_SAMPLE;
+  if (IsFormatSupport(DXGI_FORMAT_BC1_UNORM, usage)
+    && IsFormatSupport(DXGI_FORMAT_BC2_UNORM, usage)
+    && IsFormatSupport(DXGI_FORMAT_BC3_UNORM, usage))
+    m_renderCaps |= RENDER_CAPS_DXT;
+
+  // MSDN: At feature levels 9_1, 9_2 and 9_3, the display device supports the use of 2D textures with dimensions that are not powers of two under two conditions.
+  // First, only one MIP-map level for each texture can be created - we are using only 1 mip level)
+  // Second, no wrap sampler modes for textures are allowed - we are using clamp everywhere
+  // At feature levels 10_0, 10_1 and 11_0, the display device unconditionally supports the use of 2D textures with dimensions that are not powers of two.
+  // so, setup caps NPOT
+  m_renderCaps |= m_featureLevel > D3D_FEATURE_LEVEL_9_3 ? RENDER_CAPS_NPOT : 0;
+  if ((m_renderCaps & RENDER_CAPS_DXT) != 0)
+  {
+    if (m_featureLevel > D3D_FEATURE_LEVEL_9_3 ||
+      (!IsFormatSupport(DXGI_FORMAT_BC1_UNORM, D3D11_FORMAT_SUPPORT_MIP_AUTOGEN)
+        && !IsFormatSupport(DXGI_FORMAT_BC2_UNORM, D3D11_FORMAT_SUPPORT_MIP_AUTOGEN)
+        && !IsFormatSupport(DXGI_FORMAT_BC3_UNORM, D3D11_FORMAT_SUPPORT_MIP_AUTOGEN)))
+      m_renderCaps |= RENDER_CAPS_DXT_NPOT;
+  }
+
+  // Temporary - allow limiting the caps to debug a texture problem
+  if (g_advancedSettings.m_RestrictCapsMask != 0)
+    m_renderCaps &= ~g_advancedSettings.m_RestrictCapsMask;
+
+  if (m_renderCaps & RENDER_CAPS_DXT)
+    CLog::Log(LOGDEBUG, "%s - RENDER_CAPS_DXT", __FUNCTION__);
+  if (m_renderCaps & RENDER_CAPS_NPOT)
+    CLog::Log(LOGDEBUG, "%s - RENDER_CAPS_NPOT", __FUNCTION__);
+  if (m_renderCaps & RENDER_CAPS_DXT_NPOT)
+    CLog::Log(LOGDEBUG, "%s - RENDER_CAPS_DXT_NPOT", __FUNCTION__);
+
+  m_processorFormats.clear();
+  m_sharedFormats.clear();
+  m_shaderFormats.clear();
+
+  // check video buffer caps
+  ComPtr<ID3D11Device> d3d11Dev(m_pD3DDev);
+  ComPtr<ID3D11DeviceContext> ctx(m_pImdContext);
+  ComPtr<ID3D11VideoDevice> videoDev;
+  ComPtr<ID3D11VideoContext> videoCtx;
+  CD3D11_TEXTURE2D_DESC texDesc(DXGI_FORMAT_NV12, 1920, 1080, 1, 1, D3D11_BIND_DECODER, D3D11_USAGE_DEFAULT, 0);
+
+  if (SUCCEEDED(d3d11Dev.As(&videoDev)) && SUCCEEDED(ctx.As(&videoCtx)))
+  {
+    // VA decoding/rendering exists, let's check caps
+#ifdef _M_ARM
+    bool isNotArm = false;
+#else
+    // possible fast converting on x86/x64
+    bool isNotArm = true;
+#endif
+    // check renderer formats
+    texDesc.Usage = D3D11_USAGE_DYNAMIC;
+    texDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+    if (SUCCEEDED(d3d11Dev->CreateTexture2D(&texDesc, nullptr, nullptr)))
+    {
+      m_processorFormats.push_back(AV_PIX_FMT_NV12);
+      if (isNotArm)
+        m_processorFormats.push_back(AV_PIX_FMT_YUV420P);
+    }
+    texDesc.Format = DXGI_FORMAT_P010;
+    if (SUCCEEDED(d3d11Dev->CreateTexture2D(&texDesc, nullptr, nullptr)))
+    {
+      m_processorFormats.push_back(AV_PIX_FMT_P010);
+      if (isNotArm)
+        m_processorFormats.push_back(AV_PIX_FMT_YUV420P10);
+    }
+    texDesc.Format = DXGI_FORMAT_P016;
+    if (SUCCEEDED(hr = d3d11Dev->CreateTexture2D(&texDesc, nullptr, nullptr)))
+    {
+      m_processorFormats.push_back(AV_PIX_FMT_P016);
+      if (isNotArm)
+        m_processorFormats.push_back(AV_PIX_FMT_YUV420P16);
+    }
+
+    // check shared formats between d3d11va and shaders
+    texDesc.BindFlags |= D3D11_BIND_SHADER_RESOURCE;
+    texDesc.Format = DXGI_FORMAT_NV12;
+    if (SUCCEEDED(d3d11Dev->CreateTexture2D(&texDesc, nullptr, nullptr)))
+    {
+      m_sharedFormats.push_back(AV_PIX_FMT_NV12);
+      if (isNotArm)
+        m_sharedFormats.push_back(AV_PIX_FMT_YUV420P);
+    }
+    texDesc.Format = DXGI_FORMAT_P010;
+    if (SUCCEEDED(d3d11Dev->CreateTexture2D(&texDesc, nullptr, nullptr)))
+    {
+      m_sharedFormats.push_back(AV_PIX_FMT_P010);
+      if (isNotArm)
+        m_sharedFormats.push_back(AV_PIX_FMT_YUV420P10);
+    }
+    texDesc.Format = DXGI_FORMAT_P016;
+    if (SUCCEEDED(d3d11Dev->CreateTexture2D(&texDesc, nullptr, nullptr)))
+    {
+      m_sharedFormats.push_back(AV_PIX_FMT_P016);
+      if (isNotArm)
+        m_sharedFormats.push_back(AV_PIX_FMT_YUV420P16);
+    }
+  }
+
+  // common shader formats
+  texDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+  texDesc.Format = DXGI_FORMAT_R8_UNORM;
+  if (SUCCEEDED(d3d11Dev->CreateTexture2D(&texDesc, nullptr, nullptr)))
+  {
+    m_shaderFormats.push_back(AV_PIX_FMT_YUV420P);
+    m_shaderFormats.push_back(AV_PIX_FMT_NV12);
+  }
+  texDesc.Format = DXGI_FORMAT_R16_UNORM;
+  if (SUCCEEDED(d3d11Dev->CreateTexture2D(&texDesc, nullptr, nullptr)))
+  {
+    m_shaderFormats.push_back(AV_PIX_FMT_YUV420P10);
+    m_shaderFormats.push_back(AV_PIX_FMT_YUV420P16);
+  }
+  texDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+  if (SUCCEEDED(d3d11Dev->CreateTexture2D(&texDesc, nullptr, nullptr)))
+  {
+    m_shaderFormats.push_back(AV_PIX_FMT_YUYV422);
+    m_shaderFormats.push_back(AV_PIX_FMT_UYVY422);
   }
 }
 
