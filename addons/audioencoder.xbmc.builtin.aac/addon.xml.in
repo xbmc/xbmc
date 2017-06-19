@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon
-  id="audioencoder.xbmc.builtin.aac"
+  id="audioencoder.kodi.builtin.aac"
   version="1.0.0"
   name="AAC encoder"
   provider-name="spiff">
   <extension
-    point="xbmc.audioencoder"
+    point="kodi.audioencoder"
     extension=".m4a"
     library_@CORE_SYSTEM_NAME@="dummy.so"/>
   <extension point="xbmc.addon.metadata">

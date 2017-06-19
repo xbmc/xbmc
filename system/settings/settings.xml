@@ -557,9 +557,9 @@
         </setting>
         <setting id="audiocds.encoder" type="addon" label="621" help="36287">
           <level>3</level>
-          <default>audioencoder.xbmc.builtin.aac</default>
+          <default>audioencoder.kodi.builtin.aac</default>
           <constraints>
-            <addontype>xbmc.audioencoder</addontype>
+            <addontype>kodi.audioencoder</addontype>
           </constraints>
           <control type="button" format="addon">
             <show more="true" details="true">installed</show>

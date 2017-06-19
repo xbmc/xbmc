@@ -185,8 +185,8 @@ int CCDDARipJob::RipChunk(CFile& reader, CEncoder* encoder, int& percent)
 CEncoder* CCDDARipJob::SetupEncoder(CFile& reader)
 {
   CEncoder* encoder = NULL;
-  if (CServiceBroker::GetSettings().GetString(CSettings::SETTING_AUDIOCDS_ENCODER) == "audioencoder.xbmc.builtin.aac" ||
-      CServiceBroker::GetSettings().GetString(CSettings::SETTING_AUDIOCDS_ENCODER) == "audioencoder.xbmc.builtin.wma")
+  if (CServiceBroker::GetSettings().GetString(CSettings::SETTING_AUDIOCDS_ENCODER) == "audioencoder.kodi.builtin.aac" ||
+      CServiceBroker::GetSettings().GetString(CSettings::SETTING_AUDIOCDS_ENCODER) == "audioencoder.kodi.builtin.wma")
   {
     std::shared_ptr<IEncoder> enc(new CEncoderFFmpeg());
     encoder = new CEncoder(enc);

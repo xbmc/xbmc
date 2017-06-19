@@ -79,7 +79,7 @@ std::shared_ptr<IAddon> CAddonBuilder::Build()
   if (type == ADDON_AUDIOENCODER)
   {
     // built in audio encoder
-    if (StringUtils::StartsWithNoCase(m_extPoint->plugin->identifier, "audioencoder.xbmc.builtin."))
+    if (StringUtils::StartsWithNoCase(m_extPoint->plugin->identifier, "audioencoder.kodi.builtin."))
       return std::make_shared<CAddonDll>(std::move(m_addonInfo));
   }
 

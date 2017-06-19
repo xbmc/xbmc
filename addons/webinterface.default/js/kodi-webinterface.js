@@ -19155,7 +19155,7 @@ this.Kodi.module("SettingsApp.Show.Kodi", function(Kodi, App, Backbone, Marionet
         'services.webskin': 'xbmc.webinterface',
         'subtitles.tv': 'xbmc.subtitle.module',
         'subtitles.movie': 'xbmc.subtitle.module',
-        'audiocds.encoder': 'xbmc.audioencoder'
+        'audiocds.encoder': 'kodi.audioencoder'
       },
       actionLookups: {
         "musiclibrary.cleanup": "command:kodi:audio:clean",

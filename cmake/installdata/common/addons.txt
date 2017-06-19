@@ -1,5 +1,5 @@
-addons/audioencoder.xbmc.builtin.aac/*
-addons/audioencoder.xbmc.builtin.wma/*
+addons/audioencoder.kodi.builtin.aac/*
+addons/audioencoder.kodi.builtin.wma/*
 addons/game.controller.default/*
 addons/kodi.adsp/*
 addons/kodi.audiodecoder/*
