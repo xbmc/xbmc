@@ -14,6 +14,7 @@ set(SOURCES DDSImage.cpp
             GUIControlFactory.cpp
             GUIControlGroup.cpp
             GUIControlGroupList.cpp
+            GUIControlLookup.cpp
             GUIControlProfiler.cpp
             GUIDialog.cpp
             GUIEditControl.cpp
@@ -94,6 +95,7 @@ set(HEADERS DDSImage.h
             GUIControlGroup.h
             GUIControlGroupList.h
             GUIControlProfiler.h
+            GUIControlLookup.h
             GUIDialog.h
             GUIEditControl.h
             GUIFadeLabelControl.h
