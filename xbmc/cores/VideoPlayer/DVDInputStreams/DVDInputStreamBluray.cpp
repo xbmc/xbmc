@@ -20,6 +20,7 @@
 #include "system.h"
 
 #include <functional>
+#include <limits>
 
 #include "DVDInputStreamBluray.h"
 #include "IVideoPlayer.h"
@@ -49,6 +50,22 @@
 #define LIBBLURAY_BYTESEEK 0
 
 using namespace XFILE;
+
+
+static int read_blocks(void* handle, void* buf, int lba, int num_blocks)
+{
+  int result = -1;
+  CDVDInputStreamFile* lpstream = reinterpret_cast<CDVDInputStreamFile*>(handle);
+  int64_t offset = static_cast<int64_t>(lba) * 2048;
+  if (lpstream->Seek(offset, SEEK_SET) >= 0)
+  {
+    int64_t size = static_cast<int64_t>(num_blocks) * 2048;
+    if (size <= std::numeric_limits<int>::max())
+      result = lpstream->Read(reinterpret_cast<uint8_t*>(buf), static_cast<int>(size)) / 2048;
+  }
+
+  return result;
+}
 
 void DllLibbluray::file_close(BD_FILE_H *file)
 {
@@ -194,7 +211,7 @@ void  bluray_overlay_argb_cb(void *this_gen, const struct bd_argb_overlay_s * co
 #endif
 
 CDVDInputStreamBluray::CDVDInputStreamBluray(IVideoPlayer* player, const CFileItem& fileitem) :
-  CDVDInputStream(DVDSTREAM_TYPE_BLURAY, fileitem)
+  CDVDInputStream(DVDSTREAM_TYPE_BLURAY, fileitem), m_pstream(nullptr)
 {
   m_title = NULL;
   m_clip  = (uint32_t)-1;
@@ -279,18 +296,38 @@ bool CDVDInputStreamBluray::Open()
   std::string filename;
   std::string root;
 
-  if(URIUtils::IsProtocol(strPath, "bluray"))
+  bool openStream = false;
+
+  // The item was selected via the simple menu
+  if (URIUtils::IsProtocol(strPath, "bluray"))
   {
     CURL url(strPath);
-    root     = url.GetHostName();
+    root = url.GetHostName();
     filename = URIUtils::GetFileName(url.GetFileName());
+
+    // check for a menu call for an image file
+    if (StringUtils::EqualsNoCase(filename, "menu"))
+    {
+      //get rid of the udf:// protocol
+      CURL url2(root);
+      std::string root2 = url2.GetHostName();
+      CURL url(root2);
+      CFileItem item(url, false);
+      if (item.IsDiscImage())
+      {
+        if (!OpenStream(item))
+          return false;
+
+        openStream = true;
+      }
+    }
   }
-  else if(URIUtils::HasExtension(strPath, ".iso|.img|.udf"))
+  else if (m_item.IsDiscImage())
   {
-    CURL url("udf://");
-    url.SetHostName(strPath);
-    root     = url.Get();
-    filename = "index.bdmv";
+    if (!OpenStream(m_item))
+      return false;
+
+    openStream = true;
   }
   else
   {
@@ -335,7 +372,15 @@ bool CDVDInputStreamBluray::Open()
 
   CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::Open - opening %s", root.c_str());
 
-  if (!m_dll->bd_open_disc(m_bd, root.c_str(), NULL))
+  if (openStream)
+  {
+    if (!m_dll->bd_open_stream(m_bd, m_pstream.get(), read_blocks))
+    {
+      CLog::Log(LOGERROR, "CDVDInputStreamBluray::Open - failed to open %s in stream mode", CURL::GetRedacted(root).c_str());
+      return false;
+    }
+  }
+  else if (!m_dll->bd_open_disc(m_bd, root.c_str(), NULL))
   {
     CLog::Log(LOGERROR, "CDVDInputStreamBluray::Open - failed to open %s", root.c_str());
     return false;
@@ -467,6 +512,11 @@ void CDVDInputStreamBluray::Close()
   }
   m_bd = NULL;
   m_title = NULL;
+  if (m_pstream != nullptr)
+  {
+    m_pstream->Close();
+    m_pstream.reset();
+  }
 }
 
 void CDVDInputStreamBluray::ProcessEvent() {
@@ -1235,4 +1285,18 @@ void CDVDInputStreamBluray::SetupPlayerSettings()
   m_dll->bd_set_player_setting_str(m_bd, BLURAY_PLAYER_PERSISTENT_ROOT, persistentDir.c_str());
   m_dll->bd_set_player_setting_str(m_bd, BLURAY_PLAYER_CACHE_ROOT, cacheDir.c_str());
 #endif
+}
+
+bool CDVDInputStreamBluray::OpenStream(CFileItem &item)
+{
+  m_pstream.reset(new CDVDInputStreamFile(item));
+
+  if (!m_pstream->Open())
+  {
+    CLog::Log(LOGERROR, "Error opening image file %s", CURL::GetRedacted(item.GetPath()).c_str());
+    Close();
+    return false;
+  }
+
+  return true;
 }
