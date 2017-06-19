@@ -41,6 +41,7 @@ enum PCI_Vendors
 
 class ID3DResource;
 struct D3D10DDIARG_CREATERESOURCE;
+enum AVPixelFormat;
 
 class CRenderSystemDX : public CRenderSystemBase
 {
@@ -97,6 +98,10 @@ public:
   static std::string GetErrorDescription(HRESULT hr);
   void FixRefreshRateIfNecessary(const D3D10DDIARG_CREATERESOURCE* pResource);
 
+  std::vector<AVPixelFormat> m_processorFormats;
+  std::vector<AVPixelFormat> m_sharedFormats;
+  std::vector<AVPixelFormat> m_shaderFormats;
+
 protected:
   bool CreateDevice();
   void DeleteDevice();
@@ -124,6 +129,7 @@ protected:
   void UpdateDisplayStereoStatus(bool isfirst = false);
   void InitHooks();
   void UninitHooks();
+  void CheckDeviceCaps();
 
   virtual void Register(ID3DResource *resource);
   virtual void Unregister(ID3DResource *resource);
