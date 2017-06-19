@@ -55,11 +55,10 @@ public:
   void UnInit();
   bool Open(UINT width, UINT height, unsigned int flags, unsigned int format, DXGI_FORMAT dxva_format);
   void Close();
-  CRenderPicture *Convert(VideoPicture &picture);
+  CRenderPicture *Convert(const VideoPicture &picture) const;
   bool Render(CRect src, CRect dst, ID3D11Resource* target, ID3D11View **views, DWORD flags, UINT frameIdx, UINT rotation);
   uint8_t Size() const { if (m_pVideoProcessor) return m_size; return 0; }
   uint8_t PastRefs() const { return m_max_back_refs; }
-  void ApplySupportedFormats(std::vector<ERenderFormat> * formats);
 
   // ID3DResource overrides
   void OnCreateDevice() override  {}
@@ -105,7 +104,6 @@ protected:
   D3D11_VIDEO_PROCESSOR_RATE_CONVERSION_CAPS m_rateCaps;
   D3D11_TEXTURE2D_DESC m_texDesc;
   PROCESSOR_VIEW_TYPE m_eViewType;
-  std::vector<ERenderFormat> m_formats;
 };
 
 };
