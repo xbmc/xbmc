@@ -235,7 +235,7 @@ bool DXVA::CProcessorHD::IsFormatSupported(DXGI_FORMAT format, D3D11_VIDEO_PROCE
   return false;
 }
 
-bool CProcessorHD::ConfigureProcessor(unsigned int format, DXGI_FORMAT dxva_format)
+bool CProcessorHD::ConfigureProcessor(AVPixelFormat format, DXGI_FORMAT dxva_format)
 {
   // check default output format DXGI_FORMAT_B8G8R8A8_UNORM (as render target)
   if (!IsFormatSupported(DXGI_FORMAT_B8G8R8A8_UNORM, D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_OUTPUT))
@@ -268,7 +268,7 @@ bool CProcessorHD::ConfigureProcessor(unsigned int format, DXGI_FORMAT dxva_form
   return true;
 }
 
-bool CProcessorHD::Open(UINT width, UINT height, unsigned int flags, unsigned int format, DXGI_FORMAT dxva_format)
+bool CProcessorHD::Open(UINT width, UINT height, unsigned int flags, AVPixelFormat format, DXGI_FORMAT dxva_format)
 {
   Close();
 
