@@ -20,7 +20,6 @@
 
 #include "addons/AddonBuilder.h"
 #include "addons/AudioDecoder.h"
-#include "addons/AudioEncoder.h"
 #include "addons/ContextMenuAddon.h"
 #include "addons/GameResource.h"
 #include "addons/ImageDecoder.h"
@@ -80,8 +79,8 @@ std::shared_ptr<IAddon> CAddonBuilder::Build()
   if (type == ADDON_AUDIOENCODER)
   {
     // built in audio encoder
-    if (StringUtils::StartsWithNoCase(m_extPoint->plugin->identifier, "audioencoder.xbmc.builtin."))
-      return CAudioEncoder::FromExtension(std::move(m_addonInfo), m_extPoint);
+    if (StringUtils::StartsWithNoCase(m_extPoint->plugin->identifier, "audioencoder.kodi.builtin."))
+      return std::make_shared<CAddonDll>(std::move(m_addonInfo));
   }
 
   // Ensure binary types have a valid library for the platform
@@ -124,6 +123,7 @@ std::shared_ptr<IAddon> CAddonBuilder::Build()
     case ADDON_SCRAPER_TVSHOWS:
     case ADDON_SCRAPER_LIBRARY:
       return CScraper::FromExtension(std::move(m_addonInfo), m_extPoint);
+    case ADDON_AUDIOENCODER:
     case ADDON_IMAGEDECODER:
     case ADDON_VIZ:
     case ADDON_SCREENSAVER:
@@ -132,8 +132,6 @@ std::shared_ptr<IAddon> CAddonBuilder::Build()
       return std::make_shared<PVR::CPVRClient>(std::move(m_addonInfo));
     case ADDON_ADSPDLL:
       return std::make_shared<ActiveAE::CActiveAEDSPAddon>(std::move(m_addonInfo));
-    case ADDON_AUDIOENCODER:
-      return CAudioEncoder::FromExtension(std::move(m_addonInfo), m_extPoint);
     case ADDON_AUDIODECODER:
       return CAudioDecoder::FromExtension(std::move(m_addonInfo), m_extPoint);
     case ADDON_INPUTSTREAM:
@@ -196,6 +194,7 @@ AddonPtr CAddonBuilder::FromProps(CAddonInfo addonInfo)
       return AddonPtr(new CScraper(std::move(addonInfo)));
     case ADDON_SKIN:
       return AddonPtr(new CSkinInfo(std::move(addonInfo)));
+    case ADDON_AUDIOENCODER:
     case ADDON_IMAGEDECODER:
     case ADDON_VIZ:
     case ADDON_SCREENSAVER:
@@ -204,8 +203,6 @@ AddonPtr CAddonBuilder::FromProps(CAddonInfo addonInfo)
       return AddonPtr(new PVR::CPVRClient(std::move(addonInfo)));
     case ADDON_ADSPDLL:
       return AddonPtr(new ActiveAE::CActiveAEDSPAddon(std::move(addonInfo)));
-    case ADDON_AUDIOENCODER:
-      return AddonPtr(new CAudioEncoder(std::move(addonInfo)));
     case ADDON_AUDIODECODER:
       return AddonPtr(new CAudioDecoder(std::move(addonInfo)));
     case ADDON_RESOURCE_IMAGES:

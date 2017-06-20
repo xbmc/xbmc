@@ -185,21 +185,18 @@ int CCDDARipJob::RipChunk(CFile& reader, CEncoder* encoder, int& percent)
 CEncoder* CCDDARipJob::SetupEncoder(CFile& reader)
 {
   CEncoder* encoder = NULL;
-  if (CServiceBroker::GetSettings().GetString(CSettings::SETTING_AUDIOCDS_ENCODER) == "audioencoder.xbmc.builtin.aac" ||
-           CServiceBroker::GetSettings().GetString(CSettings::SETTING_AUDIOCDS_ENCODER) == "audioencoder.xbmc.builtin.wma")
+  if (CServiceBroker::GetSettings().GetString(CSettings::SETTING_AUDIOCDS_ENCODER) == "audioencoder.kodi.builtin.aac" ||
+      CServiceBroker::GetSettings().GetString(CSettings::SETTING_AUDIOCDS_ENCODER) == "audioencoder.kodi.builtin.wma")
   {
     std::shared_ptr<IEncoder> enc(new CEncoderFFmpeg());
     encoder = new CEncoder(enc);
   }
   else
   {
-    AddonPtr addon;
-    CAddonMgr::GetInstance().GetAddon(CServiceBroker::GetSettings().GetString(CSettings::SETTING_AUDIOCDS_ENCODER), addon);
-    if (addon)
+    const BinaryAddonBasePtr addonInfo = CServiceBroker::GetBinaryAddonManager().GetInstalledAddonInfo(CServiceBroker::GetSettings().GetString(CSettings::SETTING_AUDIOCDS_ENCODER), ADDON_AUDIOENCODER);
+    if (addonInfo)
     {
-      std::shared_ptr<CAudioEncoder> aud =  std::static_pointer_cast<CAudioEncoder>(addon);
-      aud->Create();
-      std::shared_ptr<IEncoder> enc =  std::static_pointer_cast<IEncoder>(aud);
+      std::shared_ptr<IEncoder> enc = std::make_shared<CAudioEncoder>(addonInfo);
       encoder = new CEncoder(enc);
     }
   }
