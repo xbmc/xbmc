@@ -245,5 +245,5 @@ private:
   CRect          m_maxRect;      ///< maximum sizing of text
   bool           m_invalid;      ///< if true, the label needs recomputing
   COLOR          m_color;        ///< color to render text \sa SetColor, GetColor
-  unsigned int   m_maxScrollLoops = ~0;
+  unsigned int   m_maxScrollLoops = ~0U;
 };

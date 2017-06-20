@@ -522,11 +522,8 @@ bool CGUIControlGroup::RemoveControl(const CGUIControl *control)
 void CGUIControlGroup::ClearAll()
 {
   // first remove from the lookup table
-  if (m_parentControl)
-  {
-    for (auto *control : m_children)
-      ((CGUIControlGroup *)m_parentControl)->RemoveLookup(control);
-  }
+  RemoveLookup();
+
   // and delete all our children
   for (auto *control : m_children)
   {
