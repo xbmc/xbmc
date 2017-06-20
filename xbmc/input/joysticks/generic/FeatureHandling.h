@@ -114,7 +114,6 @@ namespace JOYSTICK
     INPUT_TYPE       m_inputType = INPUT_TYPE::UNKNOWN;
     bool             m_bDigitalState;
     bool             m_bDigitalHandled;
-    bool             m_bDigitalPressSent;
     unsigned int     m_motionStartTimeMs;
     float            m_analogState;
     bool             m_analogEvent;

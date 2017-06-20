@@ -61,11 +61,6 @@ unsigned int CKeymapHandler::GetActionID(unsigned int keyId, int windowId, bool 
     return ACTION_NONE;
 }
 
-unsigned int CKeymapHandler::GetHoldTimeMs(unsigned int keyId, int windowId, bool bFallthrough) const
-{
-  return CButtonTranslator::GetInstance().GetHoldTimeMs(windowId, CKey(keyId), bFallthrough);
-}
-
 void CKeymapHandler::OnDigitalKey(unsigned int keyId, int windowId, bool bFallthrough, bool bPressed, unsigned int holdTimeMs /* = 0 */)
 {
   CAction action(ACTION_NONE);

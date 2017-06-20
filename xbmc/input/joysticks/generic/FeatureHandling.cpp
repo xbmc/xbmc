@@ -66,7 +66,6 @@ CScalarFeature::CScalarFeature(const FeatureName& name, IInputHandler* handler, 
   CJoystickFeature(name, handler, buttonMap),
   m_bDigitalState(false),
   m_bDigitalHandled(false),
-  m_bDigitalPressSent(false),
   m_motionStartTimeMs(0),
   m_analogState(0.0f),
   m_analogEvent(false),
@@ -109,7 +108,22 @@ bool CScalarFeature::OnAnalogMotion(const CDriverPrimitive& source, float magnit
 
 void CScalarFeature::ProcessMotions(void)
 {
-  if (m_analogEvent)
+  if (m_bDigitalState && m_bDigitalHandled)
+  {
+    if (m_motionStartTimeMs == 0)
+    {
+      // Button was just pressed, record start time and exit (button press
+      // event was already sent this frame)
+      m_motionStartTimeMs = XbmcThreads::SystemClockMillis();
+    }
+    else
+    {
+      // Button has been pressed more than one event frame
+      const unsigned int elapsed = XbmcThreads::SystemClockMillis() - m_motionStartTimeMs;
+      m_handler->OnButtonHold(m_name, elapsed);
+    }
+  }
+  else if (m_analogEvent)
   {
     float magnitude = m_analogState;
 
@@ -136,37 +150,6 @@ void CScalarFeature::ProcessMotions(void)
       m_motionStartTimeMs = 0;
     }
   }
-  else if (m_bDigitalState)
-  {
-    if (m_motionStartTimeMs == 0)
-    {
-      // Button was just pressed, record start time and exit (button press
-      // event was already sent this frame)
-      m_motionStartTimeMs = XbmcThreads::SystemClockMillis();
-    }
-    else
-    {
-      // Calculate time elapsed
-      const unsigned int elapsed = XbmcThreads::SystemClockMillis() - m_motionStartTimeMs;
-
-      // Calculate holdtime, if any
-      const unsigned int holdtimeMs = m_handler->GetDelayMs(m_name);
-
-      // Only process button events if holdtime has elapsed
-      if (elapsed >= holdtimeMs)
-      {
-        if (m_bDigitalHandled)
-        {
-          m_handler->OnButtonHold(m_name, elapsed - holdtimeMs);
-        }
-        else if (!m_bDigitalPressSent)
-        {
-          m_bDigitalHandled = m_handler->OnButtonPress(m_name, true);
-          m_bDigitalPressSent = true;
-        }
-      }
-    }
-  }
 }
 
 void CScalarFeature::OnDigitalMotion(bool bPressed)
@@ -179,31 +162,7 @@ void CScalarFeature::OnDigitalMotion(bool bPressed)
     CLog::Log(LOGDEBUG, "FEATURE [ %s ] on %s %s", m_name.c_str(), m_handler->ControllerID().c_str(),
               bPressed ? "pressed" : "released");
 
-    if (bPressed)
-    {
-      // Don't send event if a holdtime was specified
-      bool bHasHoldtime = false;
-
-      if (m_handler->GetDelayMs(m_name) != 0)
-        bHasHoldtime = true;
-
-      if (bHasHoldtime)
-      {
-        m_bDigitalHandled = false;
-        m_bDigitalPressSent = false;
-      }
-      else
-      {
-        m_bDigitalHandled = m_handler->OnButtonPress(m_name, true);
-        m_bDigitalPressSent = true;
-      }
-    }
-    else
-    {
-      m_handler->OnButtonPress(m_name, false);
-      m_bDigitalHandled = false;
-      m_bDigitalPressSent = false;
-    }
+    m_bDigitalHandled = m_handler->OnButtonPress(m_name, bPressed);
   }
 }
 

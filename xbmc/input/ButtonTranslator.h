@@ -72,13 +72,6 @@ public:
    */
   bool HasLongpressMapping(int window, const CKey &key);
 
-  /*! \brief Get the "holdtime" parameter if specified for this key
-   \param window id of the current window
-   \param key to search a mapping for
-   \return the holdtime in ms, or 0 if no holdtime was specified
-   */
-  unsigned int GetHoldTimeMs(int window, const CKey &key, bool fallback = true);
-
   /*! \brief Obtain the action configured for a given window and key
    \param window the window id
    \param key the key to query the action for
@@ -104,7 +97,6 @@ private:
   {
     unsigned int id;
     std::string strID; // needed for "ActivateWindow()" type actions
-    unsigned int holdtimeMs;
   };
 
   typedef std::multimap<uint32_t, CButtonAction> buttonMap; // our button map to fill in
@@ -118,7 +110,7 @@ private:
   unsigned int GetActionCode(int window, const CKey &key, std::string &strAction) const;
 
   void MapWindowActions(const TiXmlNode *pWindow, int wWindowID);
-  void MapAction(uint32_t buttonCode, const std::string &szAction, unsigned int holdtimeMs, buttonMap &map);
+  void MapAction(uint32_t buttonCode, const std::string &szAction, buttonMap &map);
 
   bool LoadKeymap(const std::string &keymapPath);
 

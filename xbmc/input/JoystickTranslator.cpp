@@ -27,15 +27,13 @@
 
 #include <sstream>
 
-uint32_t CJoystickTranslator::TranslateButton(const TiXmlNode* pDevice, const TiXmlElement *pButton, unsigned int& holdtimeMs)
+uint32_t CJoystickTranslator::TranslateButton(const TiXmlNode* pDevice, const TiXmlElement *pButton)
 {
   std::string controllerId = DEFAULT_CONTROLLER_ID;
 
   const TiXmlElement* deviceElem = pDevice->ToElement();
   if (deviceElem != nullptr)
     deviceElem->QueryValueAttribute("profile", &controllerId);
-
-  holdtimeMs = 0;
 
   const char *szButton = pButton->Value();
   if (szButton == nullptr)
@@ -85,19 +83,7 @@ uint32_t CJoystickTranslator::TranslateButton(const TiXmlNode* pDevice, const Ti
   }
 
   if (buttonCode == 0)
-  {
     CLog::Log(LOGERROR, "Joystick Translator: Can't find button %s for controller %s", szButton, controllerId.c_str());
-  }
-  else
-  {
-    // Process holdtime parameter
-    std::string strHoldTime;
-    if (pButton->QueryValueAttribute("holdtime", &strHoldTime) == TIXML_SUCCESS)
-    {
-      std::stringstream ss(std::move(strHoldTime));
-      ss >> holdtimeMs;
-    }
-  }
 
   return buttonCode;
 }

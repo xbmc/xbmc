@@ -93,9 +93,7 @@
   </FullscreenVideo>
   <FullscreenGame>
     <joystick profile="game.controller.default">
-      <start holdtime="1000">OSD</start>
-      <back holdtime="1000">OSD</back>
-      <guide holdtime="1000">OSD</guide>
+      <guide>OSD</guide>
     </joystick>
   </FullscreenGame>
   <FullscreenLiveTV>

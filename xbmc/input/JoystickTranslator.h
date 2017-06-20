@@ -27,5 +27,5 @@ class TiXmlNode;
 class CJoystickTranslator
 {
 public:
-  static uint32_t TranslateButton(const TiXmlNode* pDevice, const TiXmlElement *pButton, unsigned int& holdtimeMs);
+  static uint32_t TranslateButton(const TiXmlNode* pDevice, const TiXmlElement *pButton);
 };
