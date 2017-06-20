@@ -53,7 +53,7 @@ public:
 
   bool PreInit();
   void UnInit();
-  bool Open(UINT width, UINT height, unsigned int flags, unsigned int format, DXGI_FORMAT dxva_format);
+  bool Open(UINT width, UINT height, unsigned int flags, AVPixelFormat format, DXGI_FORMAT dxva_format);
   void Close();
   CRenderPicture *Convert(const VideoPicture &picture) const;
   bool Render(CRect src, CRect dst, ID3D11Resource* target, ID3D11View **views, DWORD flags, UINT frameIdx, UINT rotation);
@@ -69,7 +69,7 @@ public:
 protected:
   bool ReInit();
   bool InitProcessor();
-  bool ConfigureProcessor(unsigned int format, DXGI_FORMAT dxva_format);
+  bool ConfigureProcessor(AVPixelFormat format, DXGI_FORMAT dxva_format);
   bool OpenProcessor();
   bool CreateSurfaces();
   bool ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER filter, int value, int min, int max, int def) const;
@@ -79,7 +79,7 @@ protected:
   uint32_t m_width;
   uint32_t m_height;
   uint32_t m_flags = 0;
-  uint32_t m_renderFormat = 0;
+  AVPixelFormat m_renderFormat = AV_PIX_FMT_NONE;
   uint8_t  m_size = 0;
   uint8_t  m_max_back_refs = 0;
   uint8_t  m_max_fwd_refs = 0;
