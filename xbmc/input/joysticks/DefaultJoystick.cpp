@@ -117,7 +117,7 @@ bool CDefaultJoystick::OnButtonMotion(const FeatureName& feature, float magnitud
 
   if (m_handler->GetInputType(keyId, windowId, bFallthrough) == INPUT_TYPE::ANALOG)
   {
-    m_handler->OnAnalogKey(keyId, windowId, bFallthrough, magnitude);
+    m_handler->OnAnalogKey(keyId, windowId, bFallthrough, magnitude, motionTimeMs);
     return true;
   }
 
@@ -203,7 +203,7 @@ bool CDefaultJoystick::ActivateDirection(const FeatureName& feature, float magni
   }
   else if (inputType == INPUT_TYPE::ANALOG)
   {
-    m_handler->OnAnalogKey(keyId, windowId, bFallthrough, magnitude);
+    m_handler->OnAnalogKey(keyId, windowId, bFallthrough, magnitude, motionTimeMs);
     bHandled = true;
   }
 
@@ -225,11 +225,11 @@ void CDefaultJoystick::DeactivateDirection(const FeatureName& feature, ANALOG_ST
 
     if (inputType == INPUT_TYPE::DIGITAL)
     {
-      m_handler->OnDigitalKey(keyId, windowId, bFallthrough, false);
+      m_handler->OnDigitalKey(keyId, windowId, bFallthrough, false, 0);
     }
     else if (inputType == INPUT_TYPE::ANALOG)
     {
-      m_handler->OnAnalogKey(keyId, windowId, bFallthrough, 0.0f);
+      m_handler->OnAnalogKey(keyId, windowId, bFallthrough, 0.0f, 0);
     }
 
     m_holdStartTimes.erase(keyId);

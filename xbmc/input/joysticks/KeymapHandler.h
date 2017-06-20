@@ -45,7 +45,7 @@ namespace JOYSTICK
     virtual unsigned int GetActionID(unsigned int keyId, int windowId, bool bFallthrough) const override;
     virtual unsigned int GetHoldTimeMs(unsigned int keyId, int windowId, bool bFallthrough) const override;
     virtual void OnDigitalKey(unsigned int keyId, int windowId, bool bFallthrough, bool bPressed, unsigned int holdTimeMs = 0) override;
-    virtual void OnAnalogKey(unsigned int keyId, int windowId, bool bFallthrough, float magnitude) override;
+    virtual void OnAnalogKey(unsigned int keyId, int windowId, bool bFallthrough, float magnitude, unsigned int motionTimeMs) override;
 
   private:
     void SendAction(const CAction& action);

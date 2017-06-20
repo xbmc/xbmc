@@ -90,10 +90,11 @@ namespace JOYSTICK
      * \param windowId   The window ID from WindowIDs.h
      * \param bFallthrough Use a key from an underlying window or global keymap
      * \param magnitude  The amount of the analog action
+     * \param motionTimeMs The time elapsed since the magnitude was 0
      *
      * If keyId is not mapped to an analog action, no action need be taken
      */
-    virtual void OnAnalogKey(unsigned int keyId, int windowId, bool bFallthrough, float magnitude) = 0;
+    virtual void OnAnalogKey(unsigned int keyId, int windowId, bool bFallthrough, float magnitude, unsigned int motionTimeMs) = 0;
   };
 }
 }

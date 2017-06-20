@@ -98,7 +98,7 @@ void CKeymapHandler::OnDigitalKey(unsigned int keyId, int windowId, bool bFallth
   }
 }
 
-void CKeymapHandler::OnAnalogKey(unsigned int keyId, int windowId, bool bFallthrough, float magnitude)
+void CKeymapHandler::OnAnalogKey(unsigned int keyId, int windowId, bool bFallthrough, float magnitude, unsigned int motionTimeMs)
 {
   if (keyId != 0)
   {
