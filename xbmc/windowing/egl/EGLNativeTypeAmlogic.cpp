@@ -19,6 +19,7 @@
  */
 
 #include "EGLNativeTypeAmlogic.h"
+#include "guilib/GraphicContext.h"
 #include "guilib/gui3d.h"
 #include "utils/AMLUtils.h"
 #include "utils/StringUtils.h"
@@ -133,6 +134,7 @@ bool CEGLNativeTypeAmlogic::GetNativeResolution(RESOLUTION_INFO *res) const
 
 bool CEGLNativeTypeAmlogic::SetNativeResolution(const RESOLUTION_INFO &res)
 {
+  bool result = false;
 #if defined(_FBDEV_WINDOW_H_)
   if (m_nativeWindow)
   {
@@ -144,10 +146,14 @@ bool CEGLNativeTypeAmlogic::SetNativeResolution(const RESOLUTION_INFO &res)
   // Don't set the same mode as current
   std::string mode;
   SysfsUtils::GetString("/sys/class/display/mode", mode);
-  if (res.strId == mode)
-    return false;
+  
+  if (res.strId != mode)
+    result = SetDisplayResolution(res.strId.c_str());
 
-  return SetDisplayResolution(res.strId.c_str());
+  RENDER_STEREO_MODE stereo_mode = g_graphicsContext.GetStereoMode();
+  aml_handle_display_stereo_mode(stereo_mode);
+  
+  return result;
 }
 
 bool CEGLNativeTypeAmlogic::ProbeResolutions(std::vector<RESOLUTION_INFO> &resolutions)
