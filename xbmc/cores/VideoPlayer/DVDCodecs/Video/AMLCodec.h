@@ -63,7 +63,7 @@ private:
   void          SetVideoContrast(const int contrast);
   void          SetVideoBrightness(const int brightness);
   void          SetVideoSaturation(const int saturation);
-  void          SetVideo3dMode(const int mode3d);
+  bool          SetVideo3dMode(const int mode3d);
   std::string   GetStereoMode();
   bool          OpenAmlVideo(const CDVDStreamInfo &hints);
   void          CloseAmlVideo();
