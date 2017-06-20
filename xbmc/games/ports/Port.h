@@ -51,7 +51,7 @@ namespace GAME
 
   private:
     JOYSTICK::IInputHandler* const m_gameInput;
-    std::unique_ptr<JOYSTICK::IInputHandler> m_appInput;
+
     std::unique_ptr<JOYSTICK::IInputHandler> m_inputSink;
   };
 }

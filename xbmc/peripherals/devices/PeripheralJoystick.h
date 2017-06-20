@@ -20,7 +20,6 @@
 #pragma once
 
 #include "Peripheral.h"
-#include "input/joysticks/DefaultController.h"
 #include "input/joysticks/IDriverReceiver.h"
 #include "input/joysticks/JoystickMonitor.h"
 #include "input/joysticks/JoystickTypes.h"
@@ -125,7 +124,6 @@ namespace PERIPHERALS
     unsigned int                        m_axisCount;
     unsigned int                        m_motorCount;
     bool                                m_supportsPowerOff;
-    KODI::JOYSTICK::CDefaultController        m_defaultController;
     std::unique_ptr<KODI::JOYSTICK::CRumbleGenerator> m_rumbleGenerator;
     KODI::JOYSTICK::CJoystickMonitor          m_joystickMonitor;
     std::unique_ptr<KODI::JOYSTICK::IButtonMap>      m_buttonMap;

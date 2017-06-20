@@ -19,7 +19,6 @@
  */
 
 #include "Port.h"
-#include "PortInput.h"
 #include "InputSink.h"
 #include "peripherals/devices/Peripheral.h"
 
@@ -28,7 +27,6 @@ using namespace GAME;
 
 CPort::CPort(JOYSTICK::IInputHandler *gameInput, CGameClient &gameClient) :
   m_gameInput(gameInput),
-  m_appInput(new CPortInput(gameClient)),
   m_inputSink(new CInputSink(gameClient))
 {
 }
@@ -39,9 +37,6 @@ CPort::~CPort()
 
 void CPort::RegisterInput(JOYSTICK::IInputProvider *provider)
 {
-  // Register GUI input  as promiscuous to not block any input from the game
-  provider->RegisterInputHandler(m_appInput.get(), true);
-
   // Give input sink the lowest priority by registering it before the other
   // non-promiscuous input handlers
   provider->RegisterInputHandler(m_inputSink.get(), false);
@@ -55,5 +50,4 @@ void CPort::UnregisterInput(JOYSTICK::IInputProvider *provider)
   // Unregister in reverse order
   provider->UnregisterInputHandler(m_gameInput);
   provider->UnregisterInputHandler(m_inputSink.get());
-  provider->UnregisterInputHandler(m_appInput.get());
 }

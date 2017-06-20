@@ -53,11 +53,10 @@ CPeripheralJoystick::CPeripheralJoystick(CPeripherals& manager, const Peripheral
 
 CPeripheralJoystick::~CPeripheralJoystick(void)
 {
+  m_rumbleGenerator->AbortRumble();
+  UnregisterJoystickDriverHandler(&m_joystickMonitor);
   m_deadzoneFilter.reset();
   m_buttonMap.reset();
-  m_rumbleGenerator->AbortRumble();
-  UnregisterInputHandler(&m_defaultController);
-  UnregisterJoystickDriverHandler(&m_joystickMonitor);
 }
 
 bool CPeripheralJoystick::InitialiseFeature(const PeripheralFeature feature)
@@ -78,7 +77,6 @@ bool CPeripheralJoystick::InitialiseFeature(const PeripheralFeature feature)
         InitializeDeadzoneFiltering();
 
         // Give joystick monitor priority over default controller
-        RegisterInputHandler(&m_defaultController, false);
         RegisterJoystickDriverHandler(&m_joystickMonitor, false);
       }
     }
@@ -120,8 +118,6 @@ void CPeripheralJoystick::InitializeDeadzoneFiltering()
 
 void CPeripheralJoystick::OnUserNotification()
 {
-  IInputReceiver *inputReceiver = m_defaultController.InputReceiver();
-  m_rumbleGenerator->NotifyUser(inputReceiver);
 }
 
 bool CPeripheralJoystick::TestFeature(PeripheralFeature feature)
@@ -131,12 +127,7 @@ bool CPeripheralJoystick::TestFeature(PeripheralFeature feature)
   switch (feature)
   {
   case FEATURE_RUMBLE:
-  {
-
-    IInputReceiver *inputReceiver = m_defaultController.InputReceiver();
-    bSuccess = m_rumbleGenerator->DoTest(inputReceiver);
     break;
-  }
   case FEATURE_POWER_OFF:
     if (m_supportsPowerOff)
     {

@@ -29,7 +29,7 @@
 #include "CustomControllerTranslator.h"
 #include "GamepadTranslator.h"
 #include "IRTranslator.h"
-#include "JoystickTranslator.h"
+#include "Key.h"
 #include "KeyboardTranslator.h"
 #include "MouseTranslator.h"
 #include "TouchTranslator.h"
@@ -37,7 +37,6 @@
 #include "FileItem.h"
 #include "filesystem/Directory.h"
 #include "guilib/WindowIDs.h"
-#include "input/Key.h"
 #include "Util.h"
 #include "utils/log.h"
 #include "utils/XBMCTinyXML.h"
@@ -386,7 +385,7 @@ void CButtonTranslator::MapWindowActions(const TiXmlNode *pWindow, int windowID)
 
   const TiXmlNode *pDevice;
 
-  static const std::vector<std::string> types = {"gamepad", "remote", "universalremote", "keyboard", "mouse", "appcommand", "joystick"};
+  static const std::vector<std::string> types = {"gamepad", "remote", "universalremote", "keyboard", "mouse", "appcommand"};
 
   for (const auto& type : types)
   {
@@ -420,8 +419,6 @@ void CButtonTranslator::MapWindowActions(const TiXmlNode *pWindow, int windowID)
             buttonCode = CMouseTranslator::TranslateCommand(pButton);
         else if (type == "appcommand")
             buttonCode = CAppTranslator::TranslateAppCommand(pButton->Value());
-        else if (type == "joystick")
-          buttonCode = CJoystickTranslator::TranslateButton(pDevice, pButton);
 
         if (buttonCode != 0)
         {
