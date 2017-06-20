@@ -431,11 +431,12 @@ CGUIControl *CGUIControlGroup::GetFocusedControl() const
     // Avoid calling HasFocus() on control group as it will (possibly) recursively
     // traverse entire group tree just to check if there is focused control.
     // We are recursively traversing it here so no point in doing it twice.
-    if (control->IsGroup())
+    CGUIControlGroup *groupControl(dynamic_cast<CGUIControlGroup*>(control));
+    if (groupControl)
     {
-      CGUIControl* focusedControl = ((CGUIControlGroup *)control)->GetFocusedControl();
+      CGUIControl* focusedControl = groupControl->GetFocusedControl();
       if (focusedControl)
-        return (CGUIControl *)focusedControl;
+        return focusedControl;
     }
     else if (control->HasFocus())
       return (CGUIControl *)control;
@@ -450,9 +451,9 @@ CGUIControl *CGUIControlGroup::GetFirstFocusableControl(int id)
   if (id && id == (int) GetID()) return this; // we're focusable and they want us
   for (auto *pControl : m_children)
   {
-    if (pControl->IsGroup())
+    CGUIControlGroup *group(dynamic_cast<CGUIControlGroup*>(pControl));
+    if (group)
     {
-      CGUIControlGroup *group = (CGUIControlGroup *)pControl;
       CGUIControl *control = group->GetFirstFocusableControl(id);
       if (control) return control;
     }
@@ -481,7 +482,8 @@ bool CGUIControlGroup::InsertControl(CGUIControl *control, const CGUIControl *in
   for (unsigned int i = 0; i < m_children.size(); i++)
   {
     CGUIControl *child = m_children[i];
-    if (child->IsGroup() && ((CGUIControlGroup *)child)->InsertControl(control, insertPoint))
+    CGUIControlGroup *group(dynamic_cast<CGUIControlGroup*>(child));
+    if (group && group->InsertControl(control, insertPoint))
       return true;
     else if (child == insertPoint)
     {
@@ -506,7 +508,8 @@ bool CGUIControlGroup::RemoveControl(const CGUIControl *control)
   for (iControls it = m_children.begin(); it != m_children.end(); ++it)
   {
     CGUIControl *child = *it;
-    if (child->IsGroup() && ((CGUIControlGroup *)child)->RemoveControl(control))
+    CGUIControlGroup *group(dynamic_cast<CGUIControlGroup*>(child));
+    if (group && group->RemoveControl(control))
       return true;
     if (control == child)
     {
