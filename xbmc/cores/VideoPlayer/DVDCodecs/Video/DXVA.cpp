@@ -792,7 +792,8 @@ static bool CheckH264L41(AVCodecContext *avctx)
 
 static bool IsL41LimitedATI()
 {
-  DXGI_ADAPTER_DESC AIdentifier = g_Windowing.GetAIdentifier();
+  DXGI_ADAPTER_DESC AIdentifier = { 0 };
+  DX::DeviceResources::Get()->GetAdapterDesc(&AIdentifier);
 
   if(AIdentifier.VendorId == PCIV_ATI)
   {
@@ -808,8 +809,8 @@ static bool IsL41LimitedATI()
 static bool HasVP3WidthBug(AVCodecContext *avctx)
 {
   // Some nVidia VP3 hardware cannot do certain macroblock widths
-
-  DXGI_ADAPTER_DESC AIdentifier = g_Windowing.GetAIdentifier();
+  DXGI_ADAPTER_DESC AIdentifier = { 0 };
+  DX::DeviceResources::Get()->GetAdapterDesc(&AIdentifier);
 
   if(AIdentifier.VendorId == PCIV_nVidia
   && !CDVDCodecUtils::IsVP3CompatibleWidth(avctx->coded_width))
@@ -824,7 +825,8 @@ static bool HasVP3WidthBug(AVCodecContext *avctx)
 
 static bool HasATIMP2Bug(AVCodecContext *avctx)
 {
-  DXGI_ADAPTER_DESC AIdentifier = g_Windowing.GetAIdentifier();
+  DXGI_ADAPTER_DESC AIdentifier = { 0 };
+  DX::DeviceResources::Get()->GetAdapterDesc(&AIdentifier);
   if (AIdentifier.VendorId != PCIV_ATI)
     return false;
 
@@ -953,7 +955,8 @@ bool CDecoder::Open(AVCodecContext *avctx, AVCodecContext* mainctx, enum AVPixel
   mainctx->slice_flags = SLICE_FLAG_ALLOW_FIELD | SLICE_FLAG_CODED_ORDER;
 
   m_avctx = mainctx;
-  DXGI_ADAPTER_DESC AIdentifier = g_Windowing.GetAIdentifier();
+  DXGI_ADAPTER_DESC AIdentifier = { 0 };
+  DX::DeviceResources::Get()->GetAdapterDesc(&AIdentifier);
   if (AIdentifier.VendorId == PCIV_Intel && m_format.Guid == DXVADDI_Intel_ModeH264_E)
   {
 #ifdef FF_DXVA2_WORKAROUND_INTEL_CLEARVIDEO

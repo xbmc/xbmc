@@ -23,10 +23,7 @@
 
 #include "system.h"
 
-#if   defined(TARGET_WINDOWS) && defined(HAS_GL)
-#include "windows/WinSystemWin32GL.h"
-
-#elif defined(TARGET_WINDOWS) && defined(HAS_DX)
+#if defined(TARGET_WINDOWS) && defined(HAS_DX)
 #include "windows/WinSystemWin32DX.h"
 
 #elif defined(TARGET_RASPBERRY_PI) && defined(HAS_GLES)

@@ -324,16 +324,6 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
       }
       break;
     case XBMC_VIDEOMOVE:
-#ifdef TARGET_WINDOWS
-      if (g_advancedSettings.m_fullScreen)
-      {
-        // when fullscreen, remain fullscreen and resize to the dimensions of the new screen
-        RESOLUTION newRes = (RESOLUTION) g_Windowing.DesktopResolution(g_Windowing.GetCurrentScreen());
-        CDisplaySettings::GetInstance().SetCurrentResolution(newRes, true);
-        g_graphicsContext.SetVideoResolution(g_graphicsContext.GetVideoResolution(), true);
-      }
-      else
-#endif
       {
         g_Windowing.OnMove(newEvent.move.x, newEvent.move.y);
       }

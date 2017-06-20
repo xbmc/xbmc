@@ -323,9 +323,11 @@ ID3D11RenderTargetView** CD3DTexture::GetAddressOfRTV()
 
 void CD3DTexture::Release()
 {
-  g_Windowing.Unregister(this);
-  for (auto it = m_views.begin(); it != m_views.end(); ++it)
-    SAFE_RELEASE(it->second);
+  if (m_texture)
+    g_Windowing.Unregister(this);
+
+  for (auto it : m_views)
+    SAFE_RELEASE(it.second);
   SAFE_RELEASE(m_renderTargets[0]);
   SAFE_RELEASE(m_renderTargets[1]);
   SAFE_RELEASE(m_texture);

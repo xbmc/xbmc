@@ -76,7 +76,6 @@ uint32_t g_uQueryCancelAutoPlay = 0;
 
 int XBMC_TranslateUNICODE = 1;
 
-CWinEventsWin32::PHANDLE_EVENT_FUNC CWinEventsWin32::m_pEventFunc = NULL;
 int CWinEventsWin32::m_originalZoomDistance = 0;
 Pointer CWinEventsWin32::m_touchPointer;
 CGenericTouchSwipeDetector* CWinEventsWin32::m_touchSwipeDetector = NULL;
@@ -370,18 +369,13 @@ static XBMC_keysym *TranslateKey(WPARAM vkey, UINT scancode, XBMC_keysym *keysym
 
 void CWinEventsWin32::MessagePush(XBMC_Event *newEvent)
 {
-  // m_pEventFunc should be set because MessagePush is only executed by
-  // methods called from WndProc()
-  if (m_pEventFunc == NULL)
-    return;
-
-  m_pEventFunc(*newEvent);
+  g_application.OnEvent(*newEvent);
 }
 
 bool CWinEventsWin32::MessagePump()
 {
   MSG  msg;
-  while( PeekMessage( &msg, NULL, 0U, 0U, PM_REMOVE ) )
+  while( PeekMessage( &msg, nullptr, 0U, 0U, PM_REMOVE ) )
   {
     TranslateMessage( &msg );
     DispatchMessage( &msg );
@@ -410,7 +404,9 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
   if (uMsg == WM_CREATE)
   {
     g_hWnd = hWnd;
-    SetWindowLongPtr(hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(reinterpret_cast<LPCREATESTRUCT>(lParam)->lpCreateParams));
+    // need to set windows handle before WM_SIZE processing
+    g_Windowing.SetWindow(hWnd);
+
     DIB_InitOSKeymap();
     g_uQueryCancelAutoPlay = RegisterWindowMessage(TEXT("QueryCancelAutoPlay"));
     shcne.pidl = NULL;
@@ -422,11 +418,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
   }
 
   if (uMsg == WM_DESTROY)
-    g_hWnd = NULL;
-
-  m_pEventFunc = (PHANDLE_EVENT_FUNC)GetWindowLongPtr(hWnd, GWLP_USERDATA);
-  if (!m_pEventFunc)
-    return DefWindowProc(hWnd, uMsg, wParam, lParam);
+    g_hWnd = nullptr;
 
   if(g_uQueryCancelAutoPlay != 0 && uMsg == g_uQueryCancelAutoPlay)
     return S_FALSE;
@@ -439,12 +431,12 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       if (hDeviceNotify)
       {
         if (UnregisterDeviceNotification(hDeviceNotify))
-          hDeviceNotify = 0;
+          hDeviceNotify = nullptr;
         else
           CLog::Log(LOGNOTICE, "%s: UnregisterDeviceNotification failed (%d)", __FUNCTION__, GetLastError());
       }
       newEvent.type = XBMC_QUIT;
-      m_pEventFunc(newEvent);
+      g_application.OnEvent(newEvent);
       break;
     case WM_SHOWWINDOW:
       {
@@ -452,11 +444,12 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
         g_application.SetRenderGUI(wParam != 0);
         if (g_application.GetRenderGUI() != active)
           g_Windowing.NotifyAppActiveChange(g_application.GetRenderGUI());
-        CLog::Log(LOGDEBUG, __FUNCTION__"Window is %s", g_application.GetRenderGUI() ? "shown" : "hidden");
+        CLog::Log(LOGDEBUG, __FUNCTION__" WM_SHOWWINDOW -> window is %s", wParam != 0 ? "shown" : "hidden");
       }
       break;
     case WM_ACTIVATE:
       {
+        CLog::Log(LOGDEBUG, __FUNCTION__" WM_ACTIVATE -> window is %s", LOWORD(wParam) != WA_INACTIVE ? "active" : "inactive");
         bool active = g_application.GetRenderGUI();
         if (HIWORD(wParam))
         {
@@ -473,7 +466,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
           }
           else
           {
-            g_application.SetRenderGUI(g_Windowing.WindowedMode());
+            //g_application.SetRenderGUI(g_Windowing.WindowedMode());
           }
         }
         if (g_application.GetRenderGUI() != active)
@@ -484,6 +477,8 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
     case WM_SETFOCUS:
     case WM_KILLFOCUS:
       g_application.m_AppFocused = uMsg == WM_SETFOCUS;
+      CLog::Log(LOGDEBUG, __FUNCTION__"Window focus %s", g_application.m_AppFocused ? "set" : "lost");
+
       g_Windowing.NotifyAppFocusChange(g_application.m_AppFocused);
       if (uMsg == WM_KILLFOCUS)
       {
@@ -547,7 +542,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
 
       newEvent.type = XBMC_KEYDOWN;
       newEvent.key.keysym = keysym;
-      m_pEventFunc(newEvent);
+      g_application.OnEvent(newEvent);
     }
     return(0);
 
@@ -588,7 +583,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       else
         newEvent.type = XBMC_KEYUP;
       newEvent.key.keysym = keysym;
-      m_pEventFunc(newEvent);
+      g_application.OnEvent(newEvent);
     }
     return(0);
     case WM_APPCOMMAND: // MULTIMEDIA keys are mapped to APPCOMMANDS
@@ -596,10 +591,9 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       CLog::Log(LOGDEBUG, "WinEventsWin32.cpp: APPCOMMAND %d", GET_APPCOMMAND_LPARAM(lParam));
       newEvent.type = XBMC_APPCOMMAND;
       newEvent.appcommand.action = GET_APPCOMMAND_LPARAM(lParam);
-      if (m_pEventFunc(newEvent))
+      if (g_application.OnEvent(newEvent))
         return TRUE;
-      else
-        return DefWindowProc(hWnd, uMsg, wParam, lParam);
+      return DefWindowProc(hWnd, uMsg, wParam, lParam);
     }
     case WM_GESTURENOTIFY:
     {
@@ -623,7 +617,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       newEvent.type = XBMC_MOUSEMOTION;
       newEvent.motion.x = GET_X_LPARAM(lParam);
       newEvent.motion.y = GET_Y_LPARAM(lParam);
-      m_pEventFunc(newEvent);
+      g_application.OnEvent(newEvent);
       return(0);
     case WM_LBUTTONDOWN:
     case WM_MBUTTONDOWN:
@@ -635,7 +629,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       if (uMsg == WM_LBUTTONDOWN) newEvent.button.button = XBMC_BUTTON_LEFT;
       else if (uMsg == WM_MBUTTONDOWN) newEvent.button.button = XBMC_BUTTON_MIDDLE;
       else if (uMsg == WM_RBUTTONDOWN) newEvent.button.button = XBMC_BUTTON_RIGHT;
-      m_pEventFunc(newEvent);
+      g_application.OnEvent(newEvent);
       return(0);
     case WM_LBUTTONUP:
     case WM_MBUTTONUP:
@@ -647,7 +641,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       if (uMsg == WM_LBUTTONUP) newEvent.button.button = XBMC_BUTTON_LEFT;
       else if (uMsg == WM_MBUTTONUP) newEvent.button.button = XBMC_BUTTON_MIDDLE;
       else if (uMsg == WM_RBUTTONUP) newEvent.button.button = XBMC_BUTTON_RIGHT;
-      m_pEventFunc(newEvent);
+      g_application.OnEvent(newEvent);
       return(0);
     case WM_MOUSEWHEEL:
       {
@@ -663,54 +657,59 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
         newEvent.button.x = (uint16_t)point.x;
         newEvent.button.y = (uint16_t)point.y;
         newEvent.button.button = GET_Y_LPARAM(wParam) > 0 ? XBMC_BUTTON_WHEELUP : XBMC_BUTTON_WHEELDOWN;
-        m_pEventFunc(newEvent);
+        g_application.OnEvent(newEvent);
         newEvent.type = XBMC_MOUSEBUTTONUP;
-        m_pEventFunc(newEvent);
-      }
+        g_application.OnEvent(newEvent);
+    }
       return(0);
     case WM_DPICHANGED:
-      // This message tells the program that most of its window is on a
-      // monitor with a new DPI. The wParam contains the new DPI, and the 
-      // lParam contains a rect which defines the window rectangle scaled 
-      // the new DPI. 
-      if (g_application.GetRenderGUI() && !g_Windowing.IsAlteringWindow())
-      {
-        // get the suggested size of the window on the new display with a different DPI
-        unsigned short  dpi = LOWORD(wParam);
-        RECT resizeRect = *((RECT*)lParam);
-        g_Windowing.DPIChanged(dpi, resizeRect);
-      }
+    // This message tells the program that most of its window is on a
+    // monitor with a new DPI. The wParam contains the new DPI, and the 
+    // lParam contains a rect which defines the window rectangle scaled 
+    // the new DPI. 
+    {
+      // get the suggested size of the window on the new display with a different DPI
+      unsigned short  dpi = LOWORD(wParam);
+      RECT resizeRect = *((RECT*)lParam);
+      g_Windowing.DPIChanged(dpi, resizeRect);
       return(0);
+    }
     case WM_DISPLAYCHANGE:
       CLog::Log(LOGDEBUG, __FUNCTION__": display change event");  
       if (g_application.GetRenderGUI() && !g_Windowing.IsAlteringWindow() && GET_X_LPARAM(lParam) > 0 && GET_Y_LPARAM(lParam) > 0)  
       {
         g_Windowing.UpdateResolutions();
-        if (g_advancedSettings.m_fullScreen)  
-        {  
-          newEvent.type = XBMC_VIDEOMOVE;  
-          newEvent.move.x = 0;  
-          newEvent.move.y = 0;  
-        }  
-        else  
-        {  
-          newEvent.type = XBMC_VIDEORESIZE;  
-          newEvent.resize.w = GET_X_LPARAM(lParam);  
-          newEvent.resize.h = GET_Y_LPARAM(lParam);  
-        }
-        m_pEventFunc(newEvent);
       }
       return(0);  
     case WM_SIZE:
-      newEvent.type = XBMC_VIDEORESIZE;
-      newEvent.resize.w = GET_X_LPARAM(lParam);
-      newEvent.resize.h = GET_Y_LPARAM(lParam);
+      if (wParam == SIZE_MINIMIZED)
+      {
+        if (!g_Windowing.IsMinimized())
+        {
+          g_Windowing.SetMinimized(true);
+          if (!g_application.GetRenderGUI())
+            g_application.SetRenderGUI(false);
+        }
+      }
+      else if (g_Windowing.IsMinimized())
+      {
+        g_Windowing.SetMinimized(false);
+        if (!g_application.GetRenderGUI())
+          g_application.SetRenderGUI(true);
+      } 
+      else
+      {
+        newEvent.type = XBMC_VIDEORESIZE;
+        newEvent.resize.w = GET_X_LPARAM(lParam);
+        newEvent.resize.h = GET_Y_LPARAM(lParam);
 
-      CLog::Log(LOGDEBUG, __FUNCTION__": window resize event");
-
-      if (g_application.GetRenderGUI() && !g_Windowing.IsAlteringWindow() && newEvent.resize.w > 0 && newEvent.resize.h > 0)
-        m_pEventFunc(newEvent);
-
+        CLog::Log(LOGDEBUG, __FUNCTION__": window resize event %d x %d", newEvent.resize.w, newEvent.resize.h);
+        // tell device about new size
+        g_Windowing.OnResize(newEvent.resize.w, newEvent.resize.h);
+        // tell application about size changes
+        if (g_application.GetRenderGUI() && !g_Windowing.IsAlteringWindow() && newEvent.resize.w > 0 && newEvent.resize.h > 0)
+          g_application.OnEvent(newEvent);
+      }
       return(0);
     case WM_MOVE:
       newEvent.type = XBMC_VIDEOMOVE;
@@ -720,7 +719,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       CLog::Log(LOGDEBUG, __FUNCTION__": window move event");
 
       if (g_application.GetRenderGUI() && !g_Windowing.IsAlteringWindow())
-        m_pEventFunc(newEvent);
+        g_application.OnEvent(newEvent);
 
       return(0);
     case WM_MEDIA_CHANGE:
