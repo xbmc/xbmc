@@ -33,6 +33,7 @@
 #include "guilib/gui3d.h"
 #include "utils/RegExp.h"
 #include "filesystem/SpecialProtocol.h"
+#include "rendering/RenderSystem.h"
 
 #include "linux/fb.h"
 #include <sys/ioctl.h>
@@ -58,7 +59,8 @@ bool aml_hw3d_present()
   static int has_hw3d = -1;
   if (has_hw3d == -1)
   {
-    if (SysfsUtils::Has("/sys/class/ppmgr/ppmgr_3d_mode"))
+    if (SysfsUtils::Has("/sys/class/ppmgr/ppmgr_3d_mode") ||
+        SysfsUtils::Has("/sys/class/amhdmitx/amhdmitx0/config"))
       has_hw3d = 1;
     else
       has_hw3d = 0;
@@ -144,6 +146,10 @@ bool aml_permissions()
     if (!SysfsUtils::HasRW("/sys/class/ppmgr/ppmgr_3d_mode"))
     {
       CLog::Log(LOGERROR, "AML: no rw on /sys/class/ppmgr/ppmgr_3d_mode");
+    }
+    if (!SysfsUtils::HasRW("/sys/class/amhdmitx/amhdmitx0/config"))
+    {
+      CLog::Log(LOGERROR, "AML: no rw on /sys/class/amhdmitx/amhdmitx0/config");
     }
     if (!SysfsUtils::HasRW("/sys/class/vfm/map"))
     {
@@ -588,7 +594,7 @@ bool aml_get_native_resolution(RESOLUTION_INFO *res)
   return aml_mode_to_resolution(mode.c_str(), res);
 }
 
-bool aml_set_native_resolution(const RESOLUTION_INFO &res, std::string framebuffer_name)
+bool aml_set_native_resolution(const RESOLUTION_INFO &res, std::string framebuffer_name, const int stereo_mode)
 {
   bool result = false;
 
@@ -599,6 +605,7 @@ bool aml_set_native_resolution(const RESOLUTION_INFO &res, std::string framebuff
     result = aml_set_display_resolution(res.strId.c_str(), framebuffer_name);
 
   aml_handle_scale(res);
+  aml_handle_display_stereo_mode(stereo_mode);
 
   return result;
 }
@@ -681,6 +688,50 @@ void aml_handle_scale(const RESOLUTION_INFO &res)
     aml_enable_freeScale(res);
   else
     aml_disable_freeScale();
+}
+
+void aml_handle_display_stereo_mode(const int stereo_mode)
+{
+  static std::string lastHdmiTxConfig = "3doff";
+  
+  std::string command = "3doff";
+  switch (stereo_mode)
+  {
+    case RENDER_STEREO_MODE_SPLIT_VERTICAL:
+      command = "3dlr";
+      break;
+    case RENDER_STEREO_MODE_SPLIT_HORIZONTAL:
+      command = "3dtb";
+      break;
+    default:
+      // nothing - command is already initialised to "3doff"
+      break;
+  }
+  
+  CLog::Log(LOGDEBUG, "AMLUtils::aml_handle_display_stereo_mode old mode %s new mode %s", lastHdmiTxConfig.c_str(), command.c_str());
+  // there is no way to read back current mode from sysfs
+  // so we track state internal. Because even
+  // when setting the same mode again - kernel driver
+  // will initiate a new hdmi handshake which is not
+  // what we want of course.
+  // for 3d mode we are called 2 times and need to allow both calls
+  // to succeed. Because the first call doesn't switch mode (i guessi its
+  // timing issue between switching the refreshrate and switching to 3d mode
+  // which needs to occure in the correct order, else switching refresh rate
+  // might reset 3dmode).
+  // So we set the 3d mode - if the last command is different from the current
+  // command - or in case they are the same - we ensure that its not the 3doff
+  // command that gets repeated here.
+  if (lastHdmiTxConfig != command || command != "3doff")
+  {
+    CLog::Log(LOGDEBUG, "AMLUtils::aml_handle_display_stereo_mode setting new mode");
+    lastHdmiTxConfig = command;
+    SysfsUtils::SetString("/sys/class/amhdmitx/amhdmitx0/config", command);
+  }
+  else
+  {
+    CLog::Log(LOGDEBUG, "AMLUtils::aml_handle_display_stereo_mode - no change needed");
+  }
 }
 
 void aml_enable_freeScale(const RESOLUTION_INFO &res)
