@@ -23,9 +23,8 @@
 #include <string>
 #include <vector>
 
-#include "addons/Addon.h"
-#include "addons/binary-addons/AddonDll.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/kodi_adsp_types.h"
+#include "addons/binary-addons/AddonInstanceHandler.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/addon-instance/AudioDSP.h"
 
 namespace ActiveAE
 {
@@ -41,19 +40,11 @@ namespace ActiveAE
    *
    * Also translates KODI's C++ structures to the addon's C structures.
    */
-  class CActiveAEDSPAddon : public ADDON::CAddonDll
+  class CActiveAEDSPAddon : public ADDON::IAddonInstanceHandler
   {
   public:
-    explicit CActiveAEDSPAddon(ADDON::CAddonInfo addonInfo);
+    explicit CActiveAEDSPAddon(ADDON::BinaryAddonBasePtr addonInfo);
     ~CActiveAEDSPAddon(void);
-
-    virtual void OnDisabled();
-    virtual void OnEnabled();
-    virtual ADDON::AddonPtr GetRunningInstance() const;
-    virtual void OnPreInstall();
-    virtual void OnPostInstall(bool restart, bool update);
-    virtual void OnPreUnInstall();
-    virtual void OnPostUnInstall();
 
     /** @name Audio DSP add-on methods */
     //@{
@@ -61,12 +52,7 @@ namespace ActiveAE
      * @brief Initialise the instance of this add-on.
      * @param iClientId The ID of this add-on.
      */
-    ADDON_STATUS Create(int iClientId);
-
-    /*!
-     * @return True when the dll for this add-on was loaded, false otherwise (e.g. unresolved symbols)
-     */
-    bool DllLoaded(void) const;
+    bool Create(int iClientId);
 
     /*!
      * @brief Destroy the instance of this add-on.
@@ -195,7 +181,7 @@ namespace ActiveAE
      * @param samples Amount of samples inside array_in
      * @return Amount of samples processed
      */
-    unsigned int InputResampleProcess(const ADDON_HANDLE handle, float **array_in, float **array_out, unsigned int samples);
+    unsigned int InputResampleProcess(const ADDON_HANDLE handle, const float **array_in, float **array_out, unsigned int samples);
 
     /*!
      * Returns the re-sampling generated new sample rate used before the master process
@@ -243,7 +229,7 @@ namespace ActiveAE
      * @param samples Amount of samples inside array_in
      * @return Amount of samples processed
      */
-    unsigned int PreProcess(const ADDON_HANDLE handle, unsigned int mode_id, float **array_in, float **array_out, unsigned int samples);
+    unsigned int PreProcess(const ADDON_HANDLE handle, unsigned int mode_id, const float **array_in, float **array_out, unsigned int samples);
 
     /*!
      * @brief Set the active master process mode
@@ -289,7 +275,7 @@ namespace ActiveAE
      * @param samples Amount of samples inside array_in
      * @return Amount of samples processed
      */
-    unsigned int MasterProcess(const ADDON_HANDLE handle, float **array_in, float **array_out, unsigned int samples);
+    unsigned int MasterProcess(const ADDON_HANDLE handle, const float **array_in, float **array_out, unsigned int samples);
 
     /*!
      * @brief Get a from addon generated information string
@@ -328,7 +314,7 @@ namespace ActiveAE
      * @param samples Amount of samples inside array_in
      * @return Amount of samples processed
      */
-    unsigned int PostProcess(const ADDON_HANDLE handle, unsigned int mode_id, float **array_in, float **array_out, unsigned int samples);
+    unsigned int PostProcess(const ADDON_HANDLE handle, unsigned int mode_id, const float **array_in, float **array_out, unsigned int samples);
 
     /*!
      * @brief If the add-on operate with buffered arrays and the output size can be higher as the input
@@ -347,7 +333,7 @@ namespace ActiveAE
      * @param samples Amount of samples inside array_in
      * @return Amount of samples processed
      */
-    unsigned int OutputResampleProcess(const ADDON_HANDLE handle, float **array_in, float **array_out, unsigned int samples);
+    unsigned int OutputResampleProcess(const ADDON_HANDLE handle, const float **array_in, float **array_out, unsigned int samples);
 
     /*!
      * Returns the re-sampling generated new sample rate used after the master process
@@ -373,20 +359,13 @@ namespace ActiveAE
 
     static const char *ToString(const AE_DSP_ERROR error);
 
-    /*!
-     * @brief To get the interface table used between addon and kodi
-     * @todo This function becomes removed after old callback library system
-     * is removed.
-     */
-    AddonInstance_AudioDSP* GetInstanceInterface() { return &m_struct; }
-
   private:
     /*!
      * @brief Resets all class members to their defaults. Called by the constructors.
      */
     void ResetProperties(int iClientId = AE_DSP_INVALID_ADDON_ID);
 
-    bool GetAddonProperties(void);
+    void GetAddonProperties(void);
 
     bool LogError(const AE_DSP_ERROR error, const char *strMethod) const;
 
@@ -411,87 +390,17 @@ namespace ActiveAE
     /*!
     * @brief Add or replace master mode information inside audio dsp database.
     * Becomes identifier written inside mode to iModeID if it was 0 (undefined)
+    * @param kodiInstance A pointer to the add-on.
     * @param mode The master mode to add or update inside database
     */
     static void cb_register_mode(void* kodiInstance, AE_DSP_MODES::AE_DSP_MODE* mode);
 
     /*!
     * @brief Remove a master mode from audio dsp database
+    * @param kodiInstance A pointer to the add-on.
     * @param mode The Mode to remove
     */
     static void cb_unregister_mode(void* kodiInstance, AE_DSP_MODES::AE_DSP_MODE* mode);
-
-    /*! @name KODI background sound play handling */
-    //@{
-    /*!
-    * @brief Get a handle to open a gui sound wave playback
-    * @param kodiInstance A pointer to the add-on.
-    * @param filename the related wave file to open
-    * @return pointer to sound play handle
-    */
-    static ADSPHANDLE cb_sound_play_get_handle(void *kodiInstance, const char *filename);
-
-    /*!
-    * @brief Release the selected handle on KODI
-    * @param kodiInstance A pointer to the add-on.
-    * @param handle pointer to sound play handle
-    */
-    static void cb_sound_play_release_handle(void *kodiInstance, ADSPHANDLE handle);
-
-    /*!
-    * @brief Start the wave file playback
-    * @param kodiInstance A pointer to the add-on.
-    * @param handle pointer to sound play handle
-    */
-    static void cb_sound_play_play(void *kodiInstance, ADSPHANDLE handle);
-
-    /*!
-    * @brief Stop the wave file playback
-    * @param kodiInstance A pointer to the add-on.
-    * @param handle pointer to sound play handle
-    */
-    static void cb_sound_play_stop(void *kodiInstance, ADSPHANDLE handle);
-
-    /*!
-    * @brief Ask that the playback of wave is in progress
-    * @param kodiInstance A pointer to the add-on.
-    * @param handle pointer to sound play handle
-    * @return true if playing
-    */
-    static bool cb_sound_play_is_playing(void *kodiInstance, ADSPHANDLE handle);
-
-    /*!
-    * @brief Set the optional playback channel position, if not used it is on all channels
-    * @param kodiInstance A pointer to the add-on.
-    * @param handle pointer to sound play handle
-    * @param used channel pointer for the playback, AE_DSP_CH_INVALID for on all
-    */
-    static void cb_sound_play_set_channel(void *kodiInstance, ADSPHANDLE handle, AE_DSP_CHANNEL channel);
-
-    /*!
-    * @brief Get the selected playback channel position
-    * @param kodiInstance A pointer to the add-on.
-    * @param handle pointer to sound play handle
-    * @return the used channel pointer for the playback, AE_DSP_CH_INVALID for on all
-    */
-    static AE_DSP_CHANNEL cb_sound_play_get_channel(void *kodiInstance, ADSPHANDLE handle);
-
-    /*!
-    * @brief Set the volume for the wave file playback
-    * @param kodiInstance A pointer to the add-on.
-    * @param handle pointer to sound play handle
-    * @param volume for the file playback
-    */
-    static void cb_sound_play_set_volume(void *kodiInstance, ADSPHANDLE handle, float volume);
-
-    /*!
-    * @brief Get the volume which is set for the playback
-    * @param kodiInstance A pointer to the add-on.
-    * @param handle pointer to sound play handle
-    * @return current volume for the file playback
-    */
-    static float cb_sound_play_get_volume(void *kodiInstance, ADSPHANDLE handle);
-    //@}
     //@}
 
     bool                      m_bReadyToUse;            /*!< true if this add-on is connected to the audio DSP, false otherwise */
@@ -500,7 +409,7 @@ namespace ActiveAE
     int                       m_iClientId;              /*!< database ID of the audio DSP */
 
     /* cached data */
-    std::string               m_strAudioDSPName;        /*!< the cached audio DSP version */
+    std::string               m_strAudioDSPName;        /*!< the cached audio DSP name */
     std::string               m_strAudioDSPVersion;     /*!< the cached audio DSP version */
     std::string               m_strFriendlyName;        /*!< the cached friendly name */
     AE_DSP_ADDON_CAPABILITIES m_addonCapabilities;      /*!< the cached add-on capabilities */
@@ -511,6 +420,6 @@ namespace ActiveAE
 
     CCriticalSection          m_critSection;
 
-    AddonInstance_AudioDSP m_struct;
+    AddonInstance_AudioDSP m_struct; /*!< Interface table who contains function addresses and fixed values */
   };
 }

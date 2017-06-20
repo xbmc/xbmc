@@ -36,7 +36,6 @@
 #include "addons/VFSEntry.h"
 #include "addons/Visualization.h"
 #include "addons/Webinterface.h"
-#include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.h"
 #include "games/addons/GameClient.h"
 #include "games/controllers/Controller.h"
 #include "peripherals/addons/PeripheralAddon.h"
@@ -123,6 +122,7 @@ std::shared_ptr<IAddon> CAddonBuilder::Build()
     case ADDON_SCRAPER_TVSHOWS:
     case ADDON_SCRAPER_LIBRARY:
       return CScraper::FromExtension(std::move(m_addonInfo), m_extPoint);
+    case ADDON_ADSPDLL:
     case ADDON_AUDIOENCODER:
     case ADDON_IMAGEDECODER:
     case ADDON_VIZ:
@@ -130,8 +130,6 @@ std::shared_ptr<IAddon> CAddonBuilder::Build()
       return std::make_shared<CAddonDll>(std::move(m_addonInfo));
     case ADDON_PVRDLL:
       return std::make_shared<PVR::CPVRClient>(std::move(m_addonInfo));
-    case ADDON_ADSPDLL:
-      return std::make_shared<ActiveAE::CActiveAEDSPAddon>(std::move(m_addonInfo));
     case ADDON_AUDIODECODER:
       return CAudioDecoder::FromExtension(std::move(m_addonInfo), m_extPoint);
     case ADDON_INPUTSTREAM:
@@ -194,6 +192,7 @@ AddonPtr CAddonBuilder::FromProps(CAddonInfo addonInfo)
       return AddonPtr(new CScraper(std::move(addonInfo)));
     case ADDON_SKIN:
       return AddonPtr(new CSkinInfo(std::move(addonInfo)));
+    case ADDON_ADSPDLL:
     case ADDON_AUDIOENCODER:
     case ADDON_IMAGEDECODER:
     case ADDON_VIZ:
@@ -201,8 +200,6 @@ AddonPtr CAddonBuilder::FromProps(CAddonInfo addonInfo)
       return AddonPtr(new CAddonDll(std::move(addonInfo)));
     case ADDON_PVRDLL:
       return AddonPtr(new PVR::CPVRClient(std::move(addonInfo)));
-    case ADDON_ADSPDLL:
-      return AddonPtr(new ActiveAE::CActiveAEDSPAddon(std::move(addonInfo)));
     case ADDON_AUDIODECODER:
       return AddonPtr(new CAudioDecoder(std::move(addonInfo)));
     case ADDON_RESOURCE_IMAGES:
