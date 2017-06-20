@@ -64,11 +64,6 @@ bool CGameClientJoystick::AcceptsInput(void)
   return m_gameClient->AcceptsInput();
 }
 
-JOYSTICK::INPUT_TYPE CGameClientJoystick::GetInputType(const std::string& feature) const
-{
-  return m_controller->GetInputType(feature);
-}
-
 bool CGameClientJoystick::OnButtonPress(const std::string& feature, bool bPressed)
 {
   bool bHandled = false;

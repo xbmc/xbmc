@@ -111,7 +111,7 @@ namespace JOYSTICK
     void OnDigitalMotion(bool bPressed);
     void OnAnalogMotion(float magnitude);
 
-    const INPUT_TYPE m_inputType;
+    INPUT_TYPE       m_inputType = INPUT_TYPE::UNKNOWN;
     bool             m_bDigitalState;
     bool             m_bDigitalHandled;
     bool             m_bDigitalPressSent;

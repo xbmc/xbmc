@@ -39,11 +39,3 @@ bool CInputSink::AcceptsInput(void)
 {
   return m_gameClient.AcceptsInput();
 }
-
-JOYSTICK::INPUT_TYPE CInputSink::GetInputType(const std::string& feature) const
-{
-  // Convert all input to analog. This is done to simplify this function
-  // and avoid any extra dependencies. Analog is chosen to avoid any
-  // thresholding effects.
-  return JOYSTICK::INPUT_TYPE::ANALOG;
-}

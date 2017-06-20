@@ -62,14 +62,6 @@ namespace JOYSTICK
     virtual bool AcceptsInput(void) = 0;
 
     /*!
-     * \brief Get the type of input handled by the specified feature
-     *
-     * \return INPUT_TYPE::DIGITAL for digital buttons, INPUT::ANALOG for analog
-     *         buttons, or INPUT::UNKNOWN otherwise
-     */
-    virtual INPUT_TYPE GetInputType(const FeatureName& feature) const = 0;
-
-    /*!
      * \brief Get the delay before this feature should be processed
      *
      * \param feature The feature

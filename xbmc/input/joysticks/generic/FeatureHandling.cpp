@@ -19,11 +19,14 @@
  */
 
 #include "FeatureHandling.h"
+#include "games/controllers/Controller.h"
+#include "games/GameServices.h"
 #include "input/joysticks/DriverPrimitive.h"
 #include "input/joysticks/IButtonMap.h"
 #include "input/joysticks/IInputHandler.h"
 #include "threads/SystemClock.h"
 #include "utils/log.h"
+#include "ServiceBroker.h"
 
 #include <vector>
 
@@ -61,7 +64,6 @@ bool CJoystickFeature::AcceptsInput(bool bActivation)
 
 CScalarFeature::CScalarFeature(const FeatureName& name, IInputHandler* handler, IButtonMap* buttonMap) :
   CJoystickFeature(name, handler, buttonMap),
-  m_inputType(handler->GetInputType(name)),
   m_bDigitalState(false),
   m_bDigitalHandled(false),
   m_bDigitalPressSent(false),
@@ -70,6 +72,9 @@ CScalarFeature::CScalarFeature(const FeatureName& name, IInputHandler* handler, 
   m_analogEvent(false),
   m_bDiscrete(true)
 {
+  GAME::ControllerPtr controller = CServiceBroker::GetGameServices().GetController(handler->ControllerID());
+  if (controller)
+    m_inputType = controller->GetInputType(name);
 }
 
 bool CScalarFeature::OnDigitalMotion(const CDriverPrimitive& source, bool bPressed)

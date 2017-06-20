@@ -21,6 +21,7 @@
 
 #include "input/joysticks/IKeymapHandler.h"
 
+#include <map>
 #include <vector>
 
 class CAction;
@@ -41,14 +42,14 @@ namespace JOYSTICK
     virtual ~CKeymapHandler(void);
 
     // implementation of IKeymapHandler
-    virtual INPUT_TYPE GetInputType(unsigned int keyId, int windowId, bool bFallthrough) const override;
     virtual unsigned int GetActionID(unsigned int keyId, int windowId, bool bFallthrough) const override;
     virtual unsigned int GetHoldTimeMs(unsigned int keyId, int windowId, bool bFallthrough) const override;
     virtual void OnDigitalKey(unsigned int keyId, int windowId, bool bFallthrough, bool bPressed, unsigned int holdTimeMs = 0) override;
     virtual void OnAnalogKey(unsigned int keyId, int windowId, bool bFallthrough, float magnitude, unsigned int motionTimeMs) override;
 
   private:
-    void SendAction(const CAction& action);
+    static INPUT_TYPE GetInputType(unsigned int keyId, int windowId, bool bFallthrough);
+    void SendDigitalAction(const CAction& action);
     void ProcessButtonRelease(unsigned int keyId);
     bool IsPressed(unsigned int keyId) const;
 
@@ -58,6 +59,7 @@ namespace JOYSTICK
     unsigned int              m_lastButtonPress;
     unsigned int              m_lastDigitalActionMs;
     std::vector<unsigned int> m_pressedButtons;
+    std::map<unsigned int, unsigned int> m_holdStartTimes; // Key ID -> hold start time (ms)
   };
 }
 }

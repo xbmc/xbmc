@@ -38,18 +38,6 @@ namespace JOYSTICK
     virtual ~IKeymapHandler() = default;
 
     /*!
-     * \brief Get the type of action mapped to the specified key ID
-     *
-     * \param keyId  The key ID from Key.h
-     * \param windowId   The window ID from WindowIDs.h
-     * \param bFallthrough Use a key from an underlying window or global keymap
-     *
-     * \return The type of action mapped to keyId, or INPUT_TYPE::UNKNOWN if
-     *         no action is mapped to the specified key
-     */
-    virtual INPUT_TYPE GetInputType(unsigned int keyId, int windowId, bool bFallthrough) const = 0;
-
-    /*!
      * \brief Get the action ID mapped to the specified key ID
      *
      * \param keyId  The key ID from Key.h
