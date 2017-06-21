@@ -263,7 +263,7 @@ void CAdvancedSettings::Initialize()
   m_imageRes = 720;
   m_imageScalingAlgorithm = CPictureScalingAlgorithm::Default;
 
-  m_sambaclienttimeout = 10;
+  m_sambaclienttimeout = 30;
   m_sambadoscodepage = "";
   m_sambastatfiles = true;
 
