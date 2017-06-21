@@ -18,9 +18,6 @@
  *
  */
 
-#include "system.h"
-#ifdef HAVE_LIBBLURAY
-
 #include <string>
 
 #include "DiscSettings.h"
@@ -88,4 +85,3 @@ void CDiscSettings::OnSettingChanged(std::shared_ptr<const CSetting> setting)
   }
 #endif
 }
-#endif

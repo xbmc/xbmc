@@ -18,8 +18,6 @@
  *
  */
 #pragma once
-#include "system.h"
-#ifdef HAVE_LIBBLURAY
 
 #include "DynamicDll.h"
 
@@ -196,5 +194,3 @@ public:
   static BD_DIR_H *dir_open(const char* dirname);
   static void      bluray_logger(const char* msg);
 };
-
-#endif
