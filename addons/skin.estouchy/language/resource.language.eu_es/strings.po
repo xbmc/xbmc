@@ -16,13 +16,29 @@ msgstr ""
 "Language: eu_ES\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "#31002"
+msgid "Audio Settings"
+msgstr "Audioaren ezarpenak"
+
+msgctxt "#31005"
+msgid "Visualization Options"
+msgstr "Ikuste aukerak"
+
 msgctxt "#31006"
 msgid "Visualization Presets"
 msgstr "Ikuste aurrezpenak"
 
+msgctxt "#31007"
+msgid "Context Menu"
+msgstr "Kontextu menua"
+
 msgctxt "#31009"
 msgid "Working..."
 msgstr "Lanean..."
+
+msgctxt "#31011"
+msgid "Recent"
+msgstr "Duela gutxikoak"
 
 msgctxt "#31013"
 msgid "Movies"
@@ -36,13 +52,33 @@ msgctxt "#31016"
 msgid "Albums"
 msgstr "Albumak"
 
+msgctxt "#31017"
+msgid "PVR info"
+msgstr "PVR informazioa"
+
+msgctxt "#31018"
+msgid "Player process info"
+msgstr "Erreproduzigailuaren prozesuaren informazioa"
+
+msgctxt "#31019"
+msgid "Video decoder"
+msgstr "Bideo dekodifikazioa"
+
+msgctxt "#31020"
+msgid "Pixel format"
+msgstr "Pixel formatua"
+
+msgctxt "#31021"
+msgid "System memory usage"
+msgstr "Erabilitako memoria"
+
 msgctxt "#31024"
 msgid "Page"
 msgstr "Orrialdea"
 
 msgctxt "#31038"
 msgid "Login"
-msgstr "Sartu"
+msgstr "Hasi saioa"
 
 msgctxt "#31039"
 msgid "Updated:"
@@ -55,6 +91,10 @@ msgstr "AZKAR AURRERA"
 msgctxt "#31045"
 msgid "REWIND"
 msgstr "ATZERA"
+
+msgctxt "#31046"
+msgid "Play speed"
+msgstr "Erreprodukzio abiadura"
 
 msgctxt "#31049"
 msgid "End Time"
@@ -112,6 +152,10 @@ msgctxt "#31303"
 msgid "Data provider"
 msgstr "Datu hornitzailea"
 
+msgctxt "#31309"
+msgid "System Memory Used:"
+msgstr "Erabilitako sistemaren memoria:"
+
 msgctxt "#31320"
 msgid "Last Logged In"
 msgstr "Azken saioa : "
@@ -148,9 +192,33 @@ msgctxt "#31550"
 msgid "Backgrounds"
 msgstr "Atzeko irudiak"
 
+msgctxt "#31553"
+msgid "Use Custom Background"
+msgstr "Erabili atzeko plano pertsonalizatua"
+
+msgctxt "#31554"
+msgid "Background:"
+msgstr "Atzeko planoa:"
+
 msgctxt "#31556"
 msgid "Live TV"
 msgstr "TB"
+
+msgctxt "#31557"
+msgid "Hide video background"
+msgstr "Ezkutatu bideoaren atzeko planoa"
+
+msgctxt "#31558"
+msgid "Hide visualization background"
+msgstr "Ezkutatu bisualizazioaren atzeko planoa"
+
+msgctxt "#31559"
+msgid "Channel settings"
+msgstr "Kanalaren ezarpenak"
+
+msgctxt "#31560"
+msgid "Available groups"
+msgstr "Eskuragarri dauden taldeak"
 
 msgctxt "#31561"
 msgid "Add Group"
@@ -163,6 +231,14 @@ msgstr "Berrizendatu taldea"
 msgctxt "#31563"
 msgid "Delete Group"
 msgstr "Ezabatu taldea"
+
+msgctxt "#31564"
+msgid "Show hidden"
+msgstr "Erakutsi ezkutukoak"
+
+msgctxt "#31565"
+msgid "Show deleted"
+msgstr "Erakutsi ezabatutakoak"
 
 msgctxt "#31900"
 msgid "First Run"

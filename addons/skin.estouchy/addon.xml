@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="skin.estouchy" version="2.0.2" name="Estouchy" provider-name="Team Kodi">
+<addon id="skin.estouchy" version="2.0.3" name="Estouchy" provider-name="Team Kodi">
 	<requires>
 		<import addon="xbmc.gui" version="5.13.0"/>
 	</requires>
@@ -20,6 +20,8 @@
 		<summary lang="en_US">Skin for touchscreen devices</summary>
 		<summary lang="es_ES">Skin para dispositivos táctiles</summary>
 		<summary lang="es_MX">Máscara para dispositivos con pantalla táctil</summary>
+		<summary lang="et_EE">Puutetundlike seadmete rüü</summary>
+		<summary lang="eu_ES">Gailu taktilentzako azal</summary>
 		<summary lang="fi_FI">Ulkoasu kosketusnäyttölaitteille</summary>
 		<summary lang="fr_CA">Habillage pour appareils à écran tactile</summary>
 		<summary lang="fr_FR">Habillage pour les appareils à écran tactile</summary>
@@ -27,6 +29,7 @@
 		<summary lang="he_IL">מעטפת עבור התקני מסך מגע</summary>
 		<summary lang="hr_HR">Presvlaka za uređaje s dodirom na zaslon</summary>
 		<summary lang="hu_HU">Felület érintőképernyős eszközöknek</summary>
+		<summary lang="is_IS">Skinn fyrir tæki með snertiskjá</summary>
 		<summary lang="it_IT">Skin per dispositivi touchscreen</summary>
 		<summary lang="ko_KR">터치 스크린 기기를 위한 스킨</summary>
 		<summary lang="lt_LT">Teminė išvaizda liečiamiesiems įrenginiams</summary>
@@ -59,6 +62,7 @@
 		<description lang="en_US">Skin designed to be used on touchscreen devices like tablets and smartphones</description>
 		<description lang="es_ES">Esta skin está diseñada para usarla en dispositivos táctiles como tabletas y smartphones</description>
 		<description lang="es_MX">Máscara diseñada para ser usada en dispositivos de pantalla táctil como tabletas y teléfonos inteligentes</description>
+		<description lang="eu_ES">Pantalla taktila duten gailuentzat erabiltzeko diseinatutako azala da, telefonoak edo tabletak bezala</description>
 		<description lang="fi_FI">Ulkoasu on suunniteltu käytettäväksi kosketusnäyttölaitteissa, esimerkiksi tableteissa ja älypuhelimissa</description>
 		<description lang="fr_CA">Habillage conçu pour être utilisé sur les appareils à écran tactile comme les tablettes et les téléphones intelligents</description>
 		<description lang="fr_FR">Habillage conçu pour les appareils à écran tactile comme les tablettes et les téléphones</description>
@@ -66,6 +70,7 @@
 		<description lang="he_IL">מעטפת מיועדת לשימוש בהתקני מסך מגע כגון טאבלט וסמארטפון</description>
 		<description lang="hr_HR">Presvlaka dizajnirana za korištenje na uređajima s dodirom na zaslon poput tableta i pametnih telefona</description>
 		<description lang="hu_HU">Egy érintőképernyős eszközökre, például táblagépekre és okostelefonokra tervezett felület</description>
+		<description lang="is_IS">Skinn sem er hannað til notkunar á tækjum með snertiskjá, eins og til dæmis spjaldtölvum og snjallsímum.</description>
 		<description lang="it_IT">Skin progettata per essere usata su dispositivi touchscreen come tablet e smartphone</description>
 		<description lang="ko_KR">태블릿이나 스마트폰과 같은 터치 스크린 기기에서 사용할 수 있게 디자인한 스킨</description>
 		<description lang="lt_LT">Teminė išvaizda pritaikyta naudojimui įrenginiuose su liečiamaisiais ekranais, tokiuose kaip planšetiniai kompiuteriai ar išmanieji telefonai</description>

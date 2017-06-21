@@ -64,9 +64,17 @@ msgctxt "#31017"
 msgid "PVR info"
 msgstr "Info. do PVR"
 
+msgctxt "#31018"
+msgid "Player process info"
+msgstr "Información do procesado da Xogadora"
+
 msgctxt "#31019"
 msgid "Video decoder"
 msgstr "Decodificador de vídeo"
+
+msgctxt "#31020"
+msgid "Pixel format"
+msgstr "Formato de pixel"
 
 msgctxt "#31021"
 msgid "System memory usage"
@@ -208,6 +216,10 @@ msgctxt "#31408"
 msgid "Configure actions that can be used during playback · Configure how media content is played"
 msgstr "Configurar as accións permitidas durante a reprodución · Configurar como se reproduce o contido multimedia"
 
+msgctxt "#31409"
+msgid "Configure library sources · Show the media lists display content · Configure how library lists are navigated"
+msgstr "Axustes das fontes da biblioteca · Amosar o contido das listas de medios · Axustes de como navegar as listas da biblioteca"
+
 msgctxt "#31410"
 msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
 msgstr "Configurar o tema · Configurar a rexión · Configurar o control · Configurar  o protector de pantalla · Configurar o bloqueo maestro"
@@ -224,6 +236,14 @@ msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Selecione o seu perfíl de usuario de Kodi[CR]para ingresar e continuar"
 
+msgctxt "#31548"
+msgid "Home menu"
+msgstr "Menú principal"
+
+msgctxt "#31549"
+msgid "Home Add-ons"
+msgstr "Complementos da pantalla principal"
+
 msgctxt "#31550"
 msgid "Backgrounds"
 msgstr "Fondos"
@@ -231,6 +251,10 @@ msgstr "Fondos"
 msgctxt "#31551"
 msgid "Add-on Shortcut"
 msgstr "Atallo a complemento"
+
+msgctxt "#31552"
+msgid "SYNC"
+msgstr "SYNC"
 
 msgctxt "#31553"
 msgid "Use Custom Background"
@@ -251,6 +275,10 @@ msgstr "TV en Directo"
 msgctxt "#31557"
 msgid "Hide video background"
 msgstr "Agochar os fondos de vídeo"
+
+msgctxt "#31558"
+msgid "Hide visualization background"
+msgstr "Agochar o findo de visualización"
 
 msgctxt "#31559"
 msgid "Channel settings"
@@ -287,6 +315,14 @@ msgstr "Primeira execución"
 msgctxt "#31901"
 msgid "There are two things to know about navigating Estouchy"
 msgstr "Hai dúas cousas que tes que saber canto a navegación en Estouchy"
+
+msgctxt "#31902"
+msgid "The Kodi logo functions as a 'HOME' button. Whenever you touch it, you will be taken back to the home screen."
+msgstr "O logo de Kodi funciona coma un botón 'Inicio'. Cando o premes, voltarás á pantalla principal."
+
+msgctxt "#31903"
+msgid "When you are playing audio or video, the item title will appear at the top of the screen. Touching it will take you to the fullscreen visualization or video window."
+msgstr "Cando estás a reproducir audio ou vídeo, o título do item aparecerá na parte superior da pantalla. Premelo levarache á visualización a pantalla completa ou xanela de vídeo."
 
 msgctxt "#31904"
 msgid "Now Playing Title..."
