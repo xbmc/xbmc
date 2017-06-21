@@ -873,14 +873,16 @@ void RarVM::ExecuteStandardFilter(VM_StandardFilters FilterType)
       break;
     case VMSF_DELTA:
       {
-        int DataSize=R[4],Channels=R[0],SrcPos=0,Border=DataSize*2;
-        SET_VALUE(false,&Mem[VM_GLOBALMEMADDR+0x20],DataSize);
-        if (DataSize>=VM_GLOBALMEMADDR/2)
+        uint DataSize=R[4],Channels=R[0],SrcPos=0,Border=DataSize*2;
+        if (DataSize>VM_MEMSIZE/2 || Channels>MAX3_UNPACK_CHANNELS || Channels==0)
           break;
-        for (int CurChannel=0;CurChannel<Channels;CurChannel++)
+
+        // Bytes from same channels are grouped to continual data blocks,
+        // so we need to place them back to their interleaving positions.
+        for (uint CurChannel=0;CurChannel<Channels;CurChannel++)
         {
           byte PrevByte=0;
-          for (int DestPos=DataSize+CurChannel;DestPos<Border;DestPos+=Channels)
+          for (uint DestPos=DataSize+CurChannel;DestPos<Border;DestPos+=Channels)
             Mem[DestPos]=(PrevByte-=Mem[SrcPos++]);
         }
       }
