@@ -22,7 +22,6 @@
 #include "AddonInterfaces.h"
 
 #include "addons/Addon.h"
-#include "addons/InputStream.h"
 #include "addons/PVRClient.h"
 #include "games/addons/GameClient.h"
 
@@ -56,8 +55,6 @@ CAddonInterfaces::CAddonInterfaces(CAddon* addon)
   m_callbacks->GUILib_UnRegisterMe          = CAddonInterfaces::GUILib_UnRegisterMe;
   m_callbacks->PVRLib_RegisterMe            = CAddonInterfaces::PVRLib_RegisterMe;
   m_callbacks->PVRLib_UnRegisterMe          = CAddonInterfaces::PVRLib_UnRegisterMe;
-  m_callbacks->INPUTSTREAMLib_RegisterMe    = CAddonInterfaces::INPUTSTREAMLib_RegisterMe;
-  m_callbacks->INPUTSTREAMLib_UnRegisterMe  = CAddonInterfaces::INPUTSTREAMLib_UnRegisterMe;
   m_callbacks->PeripheralLib_RegisterMe     = CAddonInterfaces::PeripheralLib_RegisterMe;
   m_callbacks->PeripheralLib_UnRegisterMe   = CAddonInterfaces::PeripheralLib_UnRegisterMe;
   m_callbacks->GameLib_RegisterMe           = CAddonInterfaces::GameLib_RegisterMe;
@@ -160,23 +157,6 @@ void* CAddonInterfaces::GameLib_RegisterMe(void *addonData)
 }
 
 void CAddonInterfaces::GameLib_UnRegisterMe(void *addonData, void *cbTable)
-{
-}
-/*\_____________________________________________________________________________
-\*/
-void* CAddonInterfaces::INPUTSTREAMLib_RegisterMe(void *addonData)
-{
-  CAddonInterfaces* addon = static_cast<CAddonInterfaces*>(addonData);
-  if (addon == nullptr)
-  {
-    CLog::Log(LOGERROR, "CAddonInterfaces - %s - called with a null pointer", __FUNCTION__);
-    return nullptr;
-  }
-
-  return dynamic_cast<ADDON::CInputStream*>(addon->m_addon)->GetInstanceInterface();
-}
-
-void CAddonInterfaces::INPUTSTREAMLib_UnRegisterMe(void *addonData, void* cbTable)
 {
 }
 /*\_____________________________________________________________________________
