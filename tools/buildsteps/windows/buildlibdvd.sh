@@ -3,21 +3,9 @@
 [[ -f buildhelpers.sh ]] &&
     source buildhelpers.sh
 
-LIBDVDPREFIX=/xbmc/lib/libdvd
+LIBDVDPREFIX=$PREFIX
 PKG_CONFIG_PATH=$LIBDVDPREFIX/lib/pkgconfig
 export PKG_CONFIG_PATH
-
-if [ "$(pathChanged $LIBDVDPREFIX /xbmc/tools/depends/target/libdvdcss/DVDCSS-VERSION /xbmc/tools/depends/target/libdvdread/DVDREAD-VERSION /xbmc/tools/depends/target/libdvdnav/DVDNAV-VERSION /xbmc/project/BuildDependencies/DownloadMingwBuildEnv.bat /xbmc/tools/buildsteps/windows)" == "0" ]
-then
-  cp "$LIBDVDPREFIX/bin/libdvdcss-2.dll" /xbmc/system/
-  cp $LIBDVDPREFIX/bin/libdvdnav.dll /xbmc/system/
-  if [ -f $BGPROCESSFILE ]; then
-    rm $BGPROCESSFILE
-  fi
-  exit
-else
-  git clean -dffx $LIBDVDPREFIX
-fi
 
 do_load_autoconf() {
   do_loaddeps $1
@@ -37,8 +25,7 @@ CC="gcc -static-libgcc" \
       --build="$MINGW_CHOST"
 do_makelib $MAKEFLAGS
 
-strip -S $LIBDVDPREFIX/bin/libdvdcss-2.dll &&
-cp "$LIBDVDPREFIX/bin/libdvdcss-2.dll" /xbmc/system/
+strip -S $LIBDVDPREFIX/bin/libdvdcss-2.dll
 
 #libdvdread
 do_load_autoconf /xbmc/tools/depends/target/libdvdread/DVDREAD-VERSION 
@@ -74,6 +61,4 @@ gcc \
    -static-libgcc
 
 strip -S $LIBDVDPREFIX/bin/libdvdnav.dll &&
-cp $LIBDVDPREFIX/bin/libdvdnav.dll /xbmc/system/ &&
-tagSuccessFulBuild $LIBDVDPREFIX /xbmc/tools/depends/target/libdvdcss/DVDCSS-VERSION /xbmc/tools/depends/target/libdvdread/DVDREAD-VERSION /xbmc/tools/depends/target/libdvdnav/DVDNAV-VERSION /xbmc/project/BuildDependencies/DownloadMingwBuildEnv.bat /xbmc/tools/buildsteps/windows
 do_print_status "libdvd (${BITS})" "$green_color" "Done"

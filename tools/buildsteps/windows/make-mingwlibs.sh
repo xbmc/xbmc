@@ -1,3 +1,5 @@
+[[ -f $(dirname $0)/buildhelpers.sh ]] &&
+    source $(dirname $0)/buildhelpers.sh
 
 Win32BuildSetup=/xbmc/project/Win32BuildSetup
 ERRORFILE=$Win32BuildSetup/errormingw
@@ -46,6 +48,12 @@ checkfiles() {
 }
 
 buildProcess() {
+export PREFIX=/xbmc/project/BuildDependencies/mingwlibs/$ARCHITECTURE
+if [ "$(pathChanged $PREFIX /xbmc/tools/buildsteps/windows /xbmc/tools/depends/target/*/*-VERSION)" == "0" ]; then
+  return
+fi
+
+git clean -dffx $PREFIX
 cd /xbmc/tools/buildsteps/windows
 
 # compile our mingw dlls
@@ -64,7 +72,7 @@ echo "-------------------------------------------------"
 echo " building FFmpeg $BITS"
 echo "-------------------------------------------------"
 ./buildffmpeg.sh
-setfilepath /xbmc/system
+setfilepath $PREFIX/bin
 checkfiles avcodec-57.dll avformat-57.dll avutil-55.dll postproc-54.dll swscale-4.dll avfilter-6.dll swresample-2.dll
 echo "-------------------------------------------------"
 echo " building of FFmpeg $BITS done..."
@@ -86,6 +94,7 @@ echo "compile mingw libs $BITS done..."
 echo
 echo "-------------------------------------------------------------------------------"
 
+tagSuccessFulBuild $PREFIX /xbmc/tools/buildsteps/windows /xbmc/tools/depends/target/*/*-VERSION
 }
 
 run_builds() {
