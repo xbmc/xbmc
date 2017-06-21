@@ -48,8 +48,9 @@ void CVideoBuffer::Release()
   m_refCount--;
   if (m_refCount <= 0)
   {
-    m_pool->Return(m_id);
+    std::shared_ptr<IVideoBufferPool> pool = m_pool->GetPtr();
     m_pool = nullptr;
+    pool->Return(m_id);
   }
 }
 
