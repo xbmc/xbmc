@@ -31,6 +31,7 @@
 #include "dialogs/GUIDialogOK.h"
 #include "utils/Variant.h"
 
+#include <libbluray/bluray-version.h>
 
 CDiscSettings::CDiscSettings(void)
 {
@@ -58,7 +59,7 @@ CDiscSettings& CDiscSettings::GetInstance()
 
 void CDiscSettings::OnSettingChanged(std::shared_ptr<const CSetting> setting)
 {
-#ifdef TARGET_WINDOWS
+#if (BLURAY_VERSION >= BLURAY_VERSION_CODE(1,0,1))
   if (setting == NULL)
     return;
 
