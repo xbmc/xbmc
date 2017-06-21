@@ -18,7 +18,6 @@
  *
  */
 #include "system.h"
-#ifdef HAVE_LIBBLURAY
 
 #include <functional>
 
@@ -1237,5 +1236,3 @@ void CDVDInputStreamBluray::SetupPlayerSettings()
   m_dll->bd_set_player_setting_str(m_bd, BLURAY_PLAYER_CACHE_ROOT, cacheDir.c_str());
 #endif
 }
-
-#endif
