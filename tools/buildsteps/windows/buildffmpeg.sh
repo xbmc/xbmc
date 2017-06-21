@@ -161,8 +161,3 @@ do_print_status "$LIBNAME-$VERSION (${BITS})" "$blue_color" "Configuring"
 do_makelib &&
 cp $FFMPEGDESTDIR/bin/*.dll /xbmc/system/ &&
 tagSuccessFulBuild $FFMPEGDESTDIR $FFMPEG_VERSION_FILE /xbmc/project/BuildDependencies/DownloadMingwBuildEnv.bat /xbmc/tools/buildsteps/windows
-
-#remove the bgprocessfile for signaling the process end
-if [ -f $BGPROCESSFILE ]; then
-  rm $BGPROCESSFILE
-fi

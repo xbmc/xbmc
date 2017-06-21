@@ -1,9 +1,6 @@
 
 Win32BuildSetup=/xbmc/project/Win32BuildSetup
 ERRORFILE=$Win32BuildSetup/errormingw
-NOPFILE=$Win32BuildSetup/noprompt
-MAKECLEANFILE=$Win32BuildSetup/makeclean
-BGPROCESSFILE=$Win32BuildSetup/bgprocess
 TOUCH=/bin/touch
 RM=/bin/rm
 NOPROMPT=0
@@ -48,19 +45,6 @@ checkfiles() {
   done
 }
 
-#start the process backgrounded
-runBackgroundProcess() {
-  $TOUCH $BGPROCESSFILE
-  echo "backgrounding: sh $1 $BGPROCESSFILE $TOOLS & (workdir: $(PWD))"
-  sh $1 $BGPROCESSFILE $targetBuild $TOOLS &
-  echo "waiting on bgprocess..."
-  while [ -f $BGPROCESSFILE ]; do
-    echo -n "."
-    sleep 5
-  done
-}
-
-
 buildProcess() {
 cd /xbmc/tools/buildsteps/windows
 
@@ -79,7 +63,7 @@ echo -ne "\033]0;building FFmpeg $BITS\007"
 echo "-------------------------------------------------"
 echo " building FFmpeg $BITS"
 echo "-------------------------------------------------"
-runBackgroundProcess "./buildffmpeg.sh $MAKECLEAN"
+./buildffmpeg.sh
 setfilepath /xbmc/system
 checkfiles avcodec-57.dll avformat-57.dll avutil-55.dll postproc-54.dll swscale-4.dll avfilter-6.dll swresample-2.dll
 echo "-------------------------------------------------"
@@ -90,8 +74,7 @@ echo -ne "\033]0;building libdvd $BITS\007"
 echo "-------------------------------------------------"
 echo " building libdvd $BITS"
 echo "-------------------------------------------------"
-runBackgroundProcess "./buildlibdvd.sh $MAKECLEAN"
-setfilepath /xbmc/system
+./buildlibdvd.sh
 checkfiles libdvdcss-2.dll libdvdnav.dll
 echo "-------------------------------------------------"
 echo " building of libdvd $BITS done..."

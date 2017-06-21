@@ -77,8 +77,3 @@ strip -S $LIBDVDPREFIX/bin/libdvdnav.dll &&
 cp $LIBDVDPREFIX/bin/libdvdnav.dll /xbmc/system/ &&
 tagSuccessFulBuild $LIBDVDPREFIX /xbmc/tools/depends/target/libdvdcss/DVDCSS-VERSION /xbmc/tools/depends/target/libdvdread/DVDREAD-VERSION /xbmc/tools/depends/target/libdvdnav/DVDNAV-VERSION /xbmc/project/BuildDependencies/DownloadMingwBuildEnv.bat /xbmc/tools/buildsteps/windows
 do_print_status "libdvd (${BITS})" "$green_color" "Done"
-
-#remove the bgprocessfile for signaling the process end
-if [ -f $BGPROCESSFILE ]; then
-  rm $BGPROCESSFILE
-fi
