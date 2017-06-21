@@ -48,6 +48,10 @@ msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "未观看电影"
 
+msgctxt "#31008"
+msgid "Enable category widgets"
+msgstr "启用类别小部件"
+
 msgctxt "#31009"
 msgid "Download icons"
 msgstr "下载图标"
@@ -107,6 +111,10 @@ msgstr "排序"
 msgctxt "#31023"
 msgid "Viewtype"
 msgstr "视图类型"
+
+msgctxt "#31024"
+msgid "Choose rating to display for media items"
+msgstr "选择要显示媒体项目的评级"
 
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
@@ -539,3 +547,11 @@ msgstr "显示媒体标识"
 msgctxt "#31161"
 msgid "Numeric pad"
 msgstr "数字键盘"
+
+msgctxt "#31162"
+msgid "Play your personal games or download one of the many game add-ons from the official repository."
+msgstr "玩你自己珍藏的游戏或者从官方仓库中下载游戏插件"
+
+msgctxt "#31163"
+msgid "Show Fanart background"
+msgstr "显示同人画背景"

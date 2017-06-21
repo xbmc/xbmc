@@ -278,11 +278,11 @@ msgstr "Complement de lletres"
 
 msgctxt "#31083"
 msgid "Lyrics add-on settings"
-msgstr "Ajust del complement de lletres"
+msgstr "Opcions del complement de lletres"
 
 msgctxt "#31084"
 msgid "Visualisation settings"
-msgstr "Ajusts de la visualització"
+msgstr "Opcions de la visualització"
 
 msgctxt "#31089"
 msgid "Available groups"
@@ -430,11 +430,11 @@ msgstr "Contribuïdors"
 
 msgctxt "#31129"
 msgid "General settings applying to all areas of the skin."
-msgstr "Els ajusts generals que s'apliquen a totes les àrees de l'aparença."
+msgstr "Les opcions generals que s'apliquen a totes les àrees de l'aparença."
 
 msgctxt "#31130"
 msgid "Main menu-related settings: Configure the home screen to your likings."
-msgstr "Principals ajusts relacionats amb el menú principal: Configureu la pantalla d'inici segons els vostres gustos."
+msgstr "Opcions que estan relacionades amb el menú principal: Configureu la pantalla d'inici segons els vostres gustos."
 
 msgctxt "#31131"
 msgid "Choose skin fanart pack"

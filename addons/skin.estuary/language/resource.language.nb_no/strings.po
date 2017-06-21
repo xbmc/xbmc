@@ -48,6 +48,10 @@ msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "Usette filmer"
 
+msgctxt "#31008"
+msgid "Enable category widgets"
+msgstr "Skru på kategori-miniprogrammer"
+
 msgctxt "#31009"
 msgid "Download icons"
 msgstr "Nedlastingsikon"
@@ -62,7 +66,7 @@ msgstr "Mest spilte albumer"
 
 msgctxt "#31012"
 msgid "Random albums"
-msgstr "Tilfeldige albumer"
+msgstr "Tilfeldige album"
 
 msgctxt "#31013"
 msgid "Random artists"
@@ -70,7 +74,7 @@ msgstr "Tilfeldige artister"
 
 msgctxt "#31014"
 msgid "Unplayed albums"
-msgstr "Uspilte albumer"
+msgstr "Uspilte album"
 
 msgctxt "#31015"
 msgid "Recent recordings"
@@ -108,9 +112,13 @@ msgctxt "#31023"
 msgid "Viewtype"
 msgstr "Visningstype"
 
+msgctxt "#31024"
+msgid "Choose rating to display for media items"
+msgstr "Vis poenggivning å vise for mediaelementer"
+
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
-msgstr "Ingen favoritter funnet. Du kan legge til artikler fra media listen til denne listen ved å bruke hurtigmenyen."
+msgstr "Ingen favoritter funnet. Du kan legge til artikler fra medialisten til denne listen ved å bruke hurtigmenyen."
 
 msgctxt "#31026"
 msgid "Timeshift"
@@ -126,7 +134,7 @@ msgstr "Sist innlogget"
 
 msgctxt "#31030"
 msgid "System memory usage"
-msgstr "System minne bruk"
+msgstr "Systemminnebruk"
 
 msgctxt "#31031"
 msgid "Version info"
@@ -238,7 +246,7 @@ msgstr "Video spilleliste"
 
 msgctxt "#31066"
 msgid "Music playlist"
-msgstr "Musikk spilleliste"
+msgstr "Musikkspilleliste"
 
 msgctxt "#31067"
 msgid "Event log"
@@ -278,7 +286,7 @@ msgstr "Sangtekst-utvidelse"
 
 msgctxt "#31083"
 msgid "Lyrics add-on settings"
-msgstr "Sangtekst tillegg innstilinger"
+msgstr "Innstillinger for sangteksttillegg"
 
 msgctxt "#31084"
 msgid "Visualisation settings"
@@ -302,7 +310,7 @@ msgstr "Vis værinformasjon i toppmenyen"
 
 msgctxt "#31095"
 msgid "Use slide animations"
-msgstr "Aktiver animasjoner"
+msgstr "Bruk animasjoner"
 
 msgctxt "#31096"
 msgid "Local subtitle available"
@@ -310,7 +318,7 @@ msgstr "Lokal tekst tilgjengelig"
 
 msgctxt "#31097"
 msgid "Channel options"
-msgstr "Kanal instillinger"
+msgstr "Kanalalternativer"
 
 msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
@@ -350,11 +358,11 @@ msgstr "Tekst-TV"
 
 msgctxt "#31107"
 msgid "WideList"
-msgstr "Bred Liste"
+msgstr "Bred liste"
 
 msgctxt "#31110"
 msgid "Enter files section"
-msgstr "Skriv inn filens mappe"
+msgstr "Gå til filområde"
 
 msgctxt "#31111"
 msgid "View your personal pictures or download one of the many image add-ons from the official repository."
@@ -370,7 +378,7 @@ msgstr "Søk i lokalt bibliotek"
 
 msgctxt "#31114"
 msgid "Search YouTube"
-msgstr "Søk i YouTube"
+msgstr "Søk på YouTube"
 
 msgctxt "#31115"
 msgid "Search TheMovieDB"
@@ -386,11 +394,11 @@ msgstr "Rediger noder"
 
 msgctxt "#31118"
 msgid "Enter add-on browser"
-msgstr "Skriv inn utvidelsesleseren"
+msgstr "Gå til utvidelser"
 
 msgctxt "#31119"
 msgid "You do not have any add-ons installed yet. Visit our add-on browser to browse through our collection and improve your Kodi experience."
-msgstr "Du har ingen tillegg innstallert enda. Besøk din tilleggsleser for å se gjennom vår samling og forbedre din Kodi opplevelse."
+msgstr "Du har ingen tillegg installert enda. Besøk din tilleggsutforsker for å se gjennom vår samling og forbedre din Kodi-opplevelse."
 
 msgctxt "#31120"
 msgid "You did not set up a weather provider yet. In order to view weather information, choose a weather provider and set up your location."
@@ -402,7 +410,7 @@ msgstr "Sett værtilbyder"
 
 msgctxt "#31122"
 msgid "Unwatched TV Shows"
-msgstr "Usette TV Serier"
+msgstr "Usette TV-serier"
 
 msgctxt "#31123"
 msgid "Same director"
@@ -414,11 +422,11 @@ msgstr "Vis bilder på kart"
 
 msgctxt "#31125"
 msgid "Press up for actor info"
-msgstr "Trykk opp for skuespiller informasjon"
+msgstr "Trykk opp for skuespillerinformasjon"
 
 msgctxt "#31126"
 msgid "Press OK to read plot"
-msgstr "Trykk OK for å lese plottet"
+msgstr "Trykk OK for å lese handlingen"
 
 msgctxt "#31127"
 msgid "Show icons"
@@ -450,19 +458,19 @@ msgstr "Klikk her for å se siste endringer…"
 
 msgctxt "#31137"
 msgid "PVR info"
-msgstr "PVR informasjon"
+msgstr "PVR-informasjon"
 
 msgctxt "#31138"
 msgid "Player process info"
-msgstr "Spiller prosess informasjon"
+msgstr "Prosessinformasjon for avspiller"
 
 msgctxt "#31139"
 msgid "Video decoder"
-msgstr "Video dekoder"
+msgstr "Videodekoder"
 
 msgctxt "#31140"
 msgid "Pixel format"
-msgstr "Piksel format"
+msgstr "Pikselformat"
 
 msgctxt "#31141"
 msgid "Changes for version"
@@ -478,7 +486,7 @@ msgstr "Du har ikke satt opp PVR enda. For å bruke PVR, velg et PVR-klient -til
 
 msgctxt "#31144"
 msgid "Enter add-on browser"
-msgstr "Skriv inn utvidelsesleseren"
+msgstr "Gå til utvidelser"
 
 msgctxt "#31145"
 msgid "Search add-ons"
@@ -498,15 +506,15 @@ msgstr "Pakkebrønn"
 
 msgctxt "#31151"
 msgid "Unwatched music videos"
-msgstr "Usette musikk videoer"
+msgstr "Usette musikkvideoer"
 
 msgctxt "#31152"
 msgid "Random music videos"
-msgstr "Tilfeldige musikk videoer"
+msgstr "Tilfeldige musikkvideoer"
 
 msgctxt "#31153"
 msgid "You do not have any add-ons of this type installed. Enter the add-on browser to download add-ons created by our community."
-msgstr "Du har ingen tillegg av denne typen installert. Gå til tilleggs modulen for å laste ned tillegg som er laget av vårt miljø."
+msgstr "Du har ingen tillegg av denne typen installert. Gå til tilleggsmodulen for å laste ned tillegg laget av vår gemenskap."
 
 msgctxt "#31154"
 msgid "Press OK to switch between locations"
@@ -539,3 +547,11 @@ msgstr "Vis mediaflagg"
 msgctxt "#31161"
 msgid "Numeric pad"
 msgstr "Talltastatur"
+
+msgctxt "#31162"
+msgid "Play your personal games or download one of the many game add-ons from the official repository."
+msgstr "Spill personlige spill eller last ned en av de mange spilltilleggene fra den offisielle pakkebrønnen."
+
+msgctxt "#31163"
+msgid "Show Fanart background"
+msgstr "Vis brukerkunstbidrag-bakgrunn"

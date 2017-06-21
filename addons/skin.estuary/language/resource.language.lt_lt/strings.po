@@ -48,6 +48,10 @@ msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "Neperžiūrėti filmai"
 
+msgctxt "#31008"
+msgid "Enable category widgets"
+msgstr "Įjungti kategorijos valdiklius"
+
 msgctxt "#31009"
 msgid "Download icons"
 msgstr "Atsisiųsti piktogramas"
@@ -108,6 +112,10 @@ msgctxt "#31023"
 msgid "Viewtype"
 msgstr "Rodinio tipas"
 
+msgctxt "#31024"
+msgid "Choose rating to display for media items"
+msgstr "Pasirinkite kurį media elementų reitingą rodyti"
+
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
 msgstr "Nerasta mėgstamiausiųjų. Jūs galite pridėti bet kurį elementą iš media rodinių į šį sąrašą naudodami kontekstinį meniu."
@@ -126,7 +134,7 @@ msgstr "Paskutinis prisijungimas"
 
 msgctxt "#31030"
 msgid "System memory usage"
-msgstr "Sistemos atminties naudojimas"
+msgstr "RAM naudojimas"
 
 msgctxt "#31031"
 msgid "Version info"
@@ -358,7 +366,7 @@ msgstr "Eiti į failų skyrių"
 
 msgctxt "#31111"
 msgid "View your personal pictures or download one of the many image add-ons from the official repository."
-msgstr "Peržiūrėti asmeninius paveikslėlius ar atsisiųsti vieną iš daugelio atvaizdų priedų iš oficialios saugyklos."
+msgstr "Peržiūrėkite asmeninius paveikslėlius arba atsisiųskite vieną iš daugelio atvaizdų priedų iš oficialios saugyklos."
 
 msgctxt "#31112"
 msgid "Toggle audio stream"
@@ -539,3 +547,11 @@ msgstr "Rodyti media vėliavas"
 msgctxt "#31161"
 msgid "Numeric pad"
 msgstr "Skaičių klaviatūra"
+
+msgctxt "#31162"
+msgid "Play your personal games or download one of the many game add-ons from the official repository."
+msgstr "Žaiskite asmeninius žaidimus arba atsisiųskite vieną iš daugelio žaidimų priedų iš oficialios saugyklos."
+
+msgctxt "#31163"
+msgid "Show Fanart background"
+msgstr "Rodyti Fanart fone"

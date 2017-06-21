@@ -48,6 +48,10 @@ msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "Cereka belum ditonton"
 
+msgctxt "#31008"
+msgid "Enable category widgets"
+msgstr "Mengaktifkan widget kategori"
+
 msgctxt "#31009"
 msgid "Download icons"
 msgstr "Muat turun ikon"
@@ -107,6 +111,10 @@ msgstr "Isih mengikut"
 msgctxt "#31023"
 msgid "Viewtype"
 msgstr "Jenis paparan"
+
+msgctxt "#31024"
+msgid "Choose rating to display for media items"
+msgstr "Memilih rating untuk paparan item-item media"
 
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
@@ -539,3 +547,11 @@ msgstr "Tunjuk bendera media"
 msgctxt "#31161"
 msgid "Numeric pad"
 msgstr "Pad numerik"
+
+msgctxt "#31162"
+msgid "Play your personal games or download one of the many game add-ons from the official repository."
+msgstr "Main game sendiri ataupun muat turun salah satu add-on game daripada repositori rasmi."
+
+msgctxt "#31163"
+msgid "Show Fanart background"
+msgstr "Menunjuk latar balakang seni peminat"

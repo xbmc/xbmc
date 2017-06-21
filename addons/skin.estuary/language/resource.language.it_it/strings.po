@@ -48,6 +48,10 @@ msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "Film non visti"
 
+msgctxt "#31008"
+msgid "Enable category widgets"
+msgstr "Abilita Widget di categoria"
+
 msgctxt "#31009"
 msgid "Download icons"
 msgstr "Scarica icone"
@@ -107,6 +111,10 @@ msgstr "Ordina per"
 msgctxt "#31023"
 msgid "Viewtype"
 msgstr "Tipo di vista"
+
+msgctxt "#31024"
+msgid "Choose rating to display for media items"
+msgstr "Scegli la valutazione da mostrare per gli elementi multimediali"
 
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
@@ -539,3 +547,11 @@ msgstr "Mostra etichette info media"
 msgctxt "#31161"
 msgid "Numeric pad"
 msgstr "Tastierino numerico"
+
+msgctxt "#31162"
+msgid "Play your personal games or download one of the many game add-ons from the official repository."
+msgstr "Gioca ai tuoi giochi personali o scarica uno dei tanti giochi Add-on dalla repository ufficiale."
+
+msgctxt "#31163"
+msgid "Show Fanart background"
+msgstr "Mostra sfondo Fanart"

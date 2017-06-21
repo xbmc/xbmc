@@ -48,6 +48,10 @@ msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "Nem látott filmek"
 
+msgctxt "#31008"
+msgid "Enable category widgets"
+msgstr "Kategória ablakelemek engedélyezése"
+
 msgctxt "#31009"
 msgid "Download icons"
 msgstr "Ikonok letöltése"
@@ -107,6 +111,10 @@ msgstr "Rendezés"
 msgctxt "#31023"
 msgid "Viewtype"
 msgstr "Nézettípus"
+
+msgctxt "#31024"
+msgid "Choose rating to display for media items"
+msgstr "Válassz besorolást a médiaelemek megjelenítéséhez"
 
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
@@ -539,3 +547,11 @@ msgstr "Média ikonok megjelenítése"
 msgctxt "#31161"
 msgid "Numeric pad"
 msgstr "Numerikus billentyűzet"
+
+msgctxt "#31162"
+msgid "Play your personal games or download one of the many game add-ons from the official repository."
+msgstr "Játssz a saját játékaiddal vagy töltsd le a számos játék kiegészítő egyikét a hivatalos tárolóból."
+
+msgctxt "#31163"
+msgid "Show Fanart background"
+msgstr "Illusztráció háttér megjelenítése"
