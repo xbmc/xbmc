@@ -6667,6 +6667,8 @@ msgctxt "#13429"
 msgid "Allow hardware acceleration - VTBDecoder"
 msgstr ""
 
+#empty string with id 13430
+
 #: system/settings/settings.xml
 #: xbmc/cores/VideoPlayer/VideoRenderers/BaseRenderer.cpp
 msgctxt "#13431"
@@ -16522,7 +16524,7 @@ msgctxt "#35020"
 msgid "Press all analog buttons now to detect them:[CR][CR]{0:s}"
 msgstr ""
 
-#empty strings from id 35022 to 35046
+#empty strings from id 35021 to 35046
 
 #. Name of setting to configure peripheral add-ons
 #: system/settings/settings.xml
@@ -17632,6 +17634,8 @@ msgstr ""
 msgctxt "#36160"
 msgid "Enable VTB hardware decoding of video files."
 msgstr ""
+
+#empty string with id 36161
 
 #. Description of setting with label #13432 "Allow hardware acceleration (VideoToolbox)"
 #: system/settings/settings.xml
