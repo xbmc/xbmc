@@ -217,195 +217,195 @@ namespace addon
     virtual ~CInstanceInputStream() = default;
 
     /*!
-    * Open a stream.
-    * @param props
-    * @return True if the stream has been opened successfully, false otherwise.
-    * @remarks
-    */
+     * Open a stream.
+     * @param props
+     * @return True if the stream has been opened successfully, false otherwise.
+     * @remarks
+     */
     virtual bool Open(INPUTSTREAM& props) = 0;
 
     /*!
-    * Close an open stream.
-    * @remarks
-    */
+     * Close an open stream.
+     * @remarks
+     */
     virtual void Close() = 0;
 
     /*!
-    * Get Capabilities of this addon.
-    * @param capabilities The add-on's capabilities.
-    * @remarks
-    */
+     * Get Capabilities of this addon.
+     * @param capabilities The add-on's capabilities.
+     * @remarks
+     */
     virtual void GetCapabilities(INPUTSTREAM_CAPABILITIES& capabilities) = 0;
 
     /*!
-    * Get IDs of available streams
-    * @remarks
-    */
+     * Get IDs of available streams
+     * @remarks
+     */
     virtual INPUTSTREAM_IDS GetStreamIds() { return INPUTSTREAM_IDS(); }
 
     /*!
-    * Get stream properties of a stream.
-    * @param streamid unique id of stream
-    * @return struc of stream properties
-    * @remarks
-    */
+     * Get stream properties of a stream.
+     * @param streamid unique id of stream
+     * @return struc of stream properties
+     * @remarks
+     */
     virtual INPUTSTREAM_INFO GetStream(int streamid) { return INPUTSTREAM_INFO(); }
 
     /*!
-    * Enable or disable a stream.
-    * A disabled stream does not send demux packets
-    * @param streamid unique id of stream
-    * @param enable true for enable, false for disable
-    * @remarks
-    */
+     * Enable or disable a stream.
+     * A disabled stream does not send demux packets
+     * @param streamid unique id of stream
+     * @param enable true for enable, false for disable
+     * @remarks
+     */
     virtual void EnableStream(int streamid, bool enable) { }
 
     /*!
-    * Reset the demultiplexer in the add-on.
-    * @remarks Required if bHandlesDemuxing is set to true.
-    */
+     * Reset the demultiplexer in the add-on.
+     * @remarks Required if bHandlesDemuxing is set to true.
+     */
     virtual void DemuxReset() { }
 
     /*!
-    * Abort the demultiplexer thread in the add-on.
-    * @remarks Required if bHandlesDemuxing is set to true.
-    */
+     * Abort the demultiplexer thread in the add-on.
+     * @remarks Required if bHandlesDemuxing is set to true.
+     */
     virtual void DemuxAbort() { }
 
     /*!
-    * Flush all data that's currently in the demultiplexer buffer in the add-on.
-    * @remarks Required if bHandlesDemuxing is set to true.
-    */
+     * Flush all data that's currently in the demultiplexer buffer in the add-on.
+     * @remarks Required if bHandlesDemuxing is set to true.
+     */
     virtual void DemuxFlush() { }
 
     /*!
-    * Read the next packet from the demultiplexer, if there is one.
-    * @return The next packet.
-    *         If there is no next packet, then the add-on should return the
-    *         packet created by calling AllocateDemuxPacket(0) on the callback.
-    *         If the stream changed and Kodi's player needs to be reinitialised,
-    *         then, the add-on should call AllocateDemuxPacket(0) on the
-    *         callback, and set the streamid to DMX_SPECIALID_STREAMCHANGE and
-    *         return the value.
-    *         The add-on should return NULL if an error occured.
-    * @remarks Return NULL if this add-on won't provide this function.
-    */
+     * Read the next packet from the demultiplexer, if there is one.
+     * @return The next packet.
+     *         If there is no next packet, then the add-on should return the
+     *         packet created by calling AllocateDemuxPacket(0) on the callback.
+     *         If the stream changed and Kodi's player needs to be reinitialised,
+     *         then, the add-on should call AllocateDemuxPacket(0) on the
+     *         callback, and set the streamid to DMX_SPECIALID_STREAMCHANGE and
+     *         return the value.
+     *         The add-on should return NULL if an error occured.
+     * @remarks Return NULL if this add-on won't provide this function.
+     */
     virtual DemuxPacket* DemuxRead() { return nullptr; }
 
     /*!
-    * Notify the InputStream addon/demuxer that Kodi wishes to seek the stream by time
-    * Demuxer is required to set stream to an IDR frame
-    * @param time The absolute time since stream start
-    * @param backwards True to seek to keyframe BEFORE time, else AFTER
-    * @param startpts can be updated to point to where display should start
-    * @return True if the seek operation was possible
-    * @remarks Optional, and only used if addon has its own demuxer.
-    */
+     * Notify the InputStream addon/demuxer that Kodi wishes to seek the stream by time
+     * Demuxer is required to set stream to an IDR frame
+     * @param time The absolute time since stream start
+     * @param backwards True to seek to keyframe BEFORE time, else AFTER
+     * @param startpts can be updated to point to where display should start
+     * @return True if the seek operation was possible
+     * @remarks Optional, and only used if addon has its own demuxer.
+     */
     virtual bool DemuxSeekTime(double time, bool backwards, double &startpts) { return false; }
 
     /*!
-    * Notify the InputStream addon/demuxer that Kodi wishes to change playback speed
-    * @param speed The requested playback speed
-    * @remarks Optional, and only used if addon has its own demuxer.
-    */
+     * Notify the InputStream addon/demuxer that Kodi wishes to change playback speed
+     * @param speed The requested playback speed
+     * @remarks Optional, and only used if addon has its own demuxer.
+     */
     virtual void DemuxSetSpeed(int speed) { }
 
     /*!
-    * Sets desired width / height
-    * @param width / hight
-    */
+     * Sets desired width / height
+     * @param width / hight
+     */
     virtual void SetVideoResolution(int width, int height) { }
 
     /*!
-    * Totel time in ms
-    * @remarks
-    */
+     * Totel time in ms
+     * @remarks
+     */
     virtual int GetTotalTime() { return -1; }
 
     /*!
-    * Playing time in ms
-    * @remarks
-    */
+     * Playing time in ms
+     * @remarks
+     */
     virtual int GetTime() { return -1; }
 
     /*!
-    * Positions inputstream to playing time given in ms
-    * @remarks
-    */
+     * Positions inputstream to playing time given in ms
+     * @remarks
+     */
     virtual bool PosTime(int ms) { return false; }
 
 
     /*!
-    * Check if the backend support pausing the currently playing stream
-    * This will enable/disable the pause button in Kodi based on the return value
-    * @return false if the InputStream addon/backend does not support pausing, true if possible
-    */
+     * Check if the backend support pausing the currently playing stream
+     * This will enable/disable the pause button in Kodi based on the return value
+     * @return false if the InputStream addon/backend does not support pausing, true if possible
+     */
     virtual bool CanPauseStream() { return false; }
 
     /*!
-    * Check if the backend supports seeking for the currently playing stream
-    * This will enable/disable the rewind/forward buttons in Kodi based on the return value
-    * @return false if the InputStream addon/backend does not support seeking, true if possible
-    */
+     * Check if the backend supports seeking for the currently playing stream
+     * This will enable/disable the rewind/forward buttons in Kodi based on the return value
+     * @return false if the InputStream addon/backend does not support seeking, true if possible
+     */
     virtual bool CanSeekStream() { return false; }
 
     /*!
-    * Read from an open stream.
-    * @param buffer The buffer to store the data in.
-    * @param bufferSize The amount of bytes to read.
-    * @return The amount of bytes that were actually read from the stream.
-    * @remarks Return -1 if this add-on won't provide this function.
-    */
+     * Read from an open stream.
+     * @param buffer The buffer to store the data in.
+     * @param bufferSize The amount of bytes to read.
+     * @return The amount of bytes that were actually read from the stream.
+     * @remarks Return -1 if this add-on won't provide this function.
+     */
     virtual int ReadStream(uint8_t* buffer, unsigned int bufferSize) { return -1; }
 
     /*!
-    * Seek in a stream.
-    * @param position The position to seek to.
-    * @param whence ?
-    * @return The new position.
-    * @remarks Return -1 if this add-on won't provide this function.
-    */
+     * Seek in a stream.
+     * @param position The position to seek to.
+     * @param whence ?
+     * @return The new position.
+     * @remarks Return -1 if this add-on won't provide this function.
+     */
     virtual int64_t SeekStream(int64_t position, int whence = SEEK_SET) { return -1; }
 
     /*!
-    * @return The position in the stream that's currently being read.
-    * @remarks Return -1 if this add-on won't provide this function.
-    */
+     * @return The position in the stream that's currently being read.
+     * @remarks Return -1 if this add-on won't provide this function.
+     */
     virtual int64_t PositionStream() { return -1; }
 
     /*!
-    * @return The total length of the stream that's currently being read.
-    * @remarks Return -1 if this add-on won't provide this function.
-    */
+     * @return The total length of the stream that's currently being read.
+     * @remarks Return -1 if this add-on won't provide this function.
+     */
     virtual int64_t LengthStream() { return -1; }
 
 
     /*!
-    * @brief Notify the InputStream addon that Kodi (un)paused the currently playing stream
-    */
+     * @brief Notify the InputStream addon that Kodi (un)paused the currently playing stream
+     */
     virtual void PauseStream(double time) { }
 
 
     /*!
-    *  Check for real-time streaming
-    *  @return true if current stream is real-time
-    */
+     *  Check for real-time streaming
+     *  @return true if current stream is real-time
+     */
     virtual bool IsRealTimeStream() { return true; }
 
     /*!
-    * @brief Allocate a demux packet. Free with FreeDemuxPacket
-    * @param dataSize The size of the data that will go into the packet
-    * @return The allocated packet
-    */
+     * @brief Allocate a demux packet. Free with FreeDemuxPacket
+     * @param dataSize The size of the data that will go into the packet
+     * @return The allocated packet
+     */
     DemuxPacket* AllocateDemuxPacket(int dataSize)
     {
       return m_instanceData->toKodi.allocate_demux_packet(m_instanceData->toKodi.kodiInstance, dataSize);
     }
 
     /*!
-    * @brief Free a packet that was allocated with AllocateDemuxPacket
-    * @param packet The packet to free
-    */
+     * @brief Free a packet that was allocated with AllocateDemuxPacket
+     * @param packet The packet to free
+     */
     void FreeDemuxPacket(DemuxPacket* packet)
     {
       return m_instanceData->toKodi.free_demux_packet(m_instanceData->toKodi.kodiInstance, packet);
