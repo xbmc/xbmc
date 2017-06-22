@@ -63,6 +63,24 @@ namespace ADDON
     bool HasEnabledAddons(const TYPE &type) const;
 
     /*!
+     * @brief Checks whether an addon is installed.
+     *
+     * @param[in] addonId id of the addon
+     * @param[in] type Add-on type to check installed
+     * @return true if installed
+     */
+    bool IsAddonInstalled(const std::string& addonId, const TYPE &type = ADDON_UNKNOWN);
+
+    /*!
+     * @brief Check whether an addon has been enabled.
+     *
+     * @param[in] addonId id of the addon
+     * @param[in] type Add-on type to check installed and enabled
+     * @return true if enabled
+     */
+    bool IsAddonEnabled(const std::string& addonId, const TYPE &type = ADDON_UNKNOWN);
+
+    /*!
      * @brief Get a list of add-on's with info's for the on system available
      * ones.
      *
@@ -76,6 +94,19 @@ namespace ADDON
      *                        returned who match them. Default is for all types.
      */
     void GetAddonInfos(BinaryAddonBaseList& addonInfos, bool enabledOnly, const TYPE &type) const;
+
+    /*!
+     * @brief Get a list of disabled add-on's with info's for the on system
+     * available ones.
+     *
+     * @param[out] addonInfos list where finded addon information becomes stored
+     * @param[in] type        The requested type, with "ADDON_UNKNOWN"
+     *                        are all add-on types given back who match the case
+     *                        with value before.
+     *                        If a type id becomes added are only add-ons
+     *                        returned who match them. Default is for all types.
+     */
+    void GetDisabledAddonInfos(BinaryAddonBaseList& addonInfos, const TYPE& type);
 
     /*!
      * @brief To get information from a installed add-on
