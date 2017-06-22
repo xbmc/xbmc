@@ -62,7 +62,7 @@ libunistring-devel
 Build-Depends: autoconf, automake, autopoint, autotools-dev, cmake, curl,
   default-jre, gawk, gperf, libao-dev, libasound2-dev,
   libass-dev (>= 0.9.8), libavahi-client-dev, libavahi-common-dev, libbluetooth-dev,
-  libbluray-dev (>= 0.7.0), libbz2-dev, libcap-dev,
+  libbluray-dev (>= 0.9.3), libbz2-dev, libcap-dev,
   libcdio-dev, libcec-dev, libcurl4-openssl-dev | libcurl4-gnutls-dev | libcurl-dev,
   libcwiid-dev, libdbus-1-dev, libegl1-mesa-dev, libfontconfig-dev, libfreetype6-dev,
   libfribidi-dev, libgif-dev (>= 4.1.6), libgl1-mesa-dev | libgl-dev, libglu1-mesa-dev | libglu-dev,

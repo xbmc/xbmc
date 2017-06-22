@@ -161,12 +161,12 @@ bool CBlurayDirectory::GetDirectory(const CURL& url, CFileItemList &items)
     return false;
   }
 
-  m_dll->bd_register_dir(DllLibbluray::dir_open);
-  m_dll->bd_register_file(DllLibbluray::file_open);
   m_dll->bd_set_debug_handler(DllLibbluray::bluray_logger);
   m_dll->bd_set_debug_mask(DBG_CRIT | DBG_BLURAY | DBG_NAV);
 
-  m_bd = m_dll->bd_open(root.c_str(), NULL);
+  m_bd = m_dll->bd_init();
+  std::unique_ptr<std::string> rootPath(new std::string(root));
+  m_dll->bd_open_files(m_bd, rootPath.get(), DllLibbluray::dir_open, DllLibbluray::file_open);
 
   if(!m_bd)
   {
