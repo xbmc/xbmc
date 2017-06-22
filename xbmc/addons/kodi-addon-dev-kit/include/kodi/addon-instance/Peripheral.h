@@ -330,175 +330,175 @@ namespace addon
     /// @name Peripheral operations
     ///{
     /*!
-    * @brief Get the list of features that this add-on provides
-    * @param capabilities The add-on's capabilities.
-    * @remarks Valid implementation required.
-    *
-    * Called by the frontend to query the add-on's capabilities and supported
-    * peripherals. All capabilities that the add-on supports should be set to true.
-    *
-    */
+     * @brief Get the list of features that this add-on provides
+     * @param capabilities The add-on's capabilities.
+     * @remarks Valid implementation required.
+     *
+     * Called by the frontend to query the add-on's capabilities and supported
+     * peripherals. All capabilities that the add-on supports should be set to true.
+     *
+     */
     virtual void GetCapabilities(PERIPHERAL_CAPABILITIES &capabilities) { }
 
     /*!
-    * @brief Perform a scan for joysticks
-    * @param peripheral_count  Assigned to the number of peripherals allocated
-    * @param scan_results      Assigned to allocated memory
-    * @return PERIPHERAL_NO_ERROR if successful; peripherals must be freed using
-    * FreeScanResults() in this case
-    *
-    * The frontend calls this when a hardware change is detected. If an add-on
-    * detects a hardware change, it can trigger this function using the
-    * TriggerScan() callback.
-    */
+     * @brief Perform a scan for joysticks
+     * @param peripheral_count  Assigned to the number of peripherals allocated
+     * @param scan_results      Assigned to allocated memory
+     * @return PERIPHERAL_NO_ERROR if successful; peripherals must be freed using
+     * FreeScanResults() in this case
+     *
+     * The frontend calls this when a hardware change is detected. If an add-on
+     * detects a hardware change, it can trigger this function using the
+     * TriggerScan() callback.
+     */
     virtual PERIPHERAL_ERROR PerformDeviceScan(unsigned int* peripheral_count, PERIPHERAL_INFO** scan_results) { return PERIPHERAL_ERROR_NOT_IMPLEMENTED; }
 
     /*!
-    * @brief Free the memory allocated in PerformDeviceScan()
-    *
-    * Must be called if PerformDeviceScan() returns PERIPHERAL_NO_ERROR.
-    *
-    * @param peripheral_count  The number of events allocated for the events array
-    * @param scan_results      The array of allocated peripherals
-    */
+     * @brief Free the memory allocated in PerformDeviceScan()
+     *
+     * Must be called if PerformDeviceScan() returns PERIPHERAL_NO_ERROR.
+     *
+     * @param peripheral_count  The number of events allocated for the events array
+     * @param scan_results      The array of allocated peripherals
+     */
     virtual void FreeScanResults(unsigned int peripheral_count, PERIPHERAL_INFO* scan_results) { }
 
     /*!
-    * @brief Get all events that have occurred since the last call to GetEvents()
-    * @return PERIPHERAL_NO_ERROR if successful; events must be freed using
-    * FreeEvents() in this case
-    */
+     * @brief Get all events that have occurred since the last call to GetEvents()
+     * @return PERIPHERAL_NO_ERROR if successful; events must be freed using
+     * FreeEvents() in this case
+     */
     virtual PERIPHERAL_ERROR GetEvents(unsigned int* event_count, PERIPHERAL_EVENT** events) { return PERIPHERAL_ERROR_NOT_IMPLEMENTED; }
 
     /*!
-    * @brief Free the memory allocated in GetEvents()
-    *
-    * Must be called if GetEvents() returns PERIPHERAL_NO_ERROR.
-    *
-    * @param event_count  The number of events allocated for the events array
-    * @param events       The array of allocated events
-    */
+     * @brief Free the memory allocated in GetEvents()
+     *
+     * Must be called if GetEvents() returns PERIPHERAL_NO_ERROR.
+     *
+     * @param event_count  The number of events allocated for the events array
+     * @param events       The array of allocated events
+     */
     virtual void FreeEvents(unsigned int event_count, PERIPHERAL_EVENT* events) { }
 
     /*!
-    * @brief Send an input event to the specified peripheral
-    * @param peripheralIndex The index of the device receiving the input event
-    * @param event The input event
-    * @return true if the event was handled, false otherwise
-    */
+     * @brief Send an input event to the specified peripheral
+     * @param peripheralIndex The index of the device receiving the input event
+     * @param event The input event
+     * @return true if the event was handled, false otherwise
+     */
     virtual bool SendEvent(const PERIPHERAL_EVENT* event) { return false; }
     ///}
 
     /// @name Joystick operations
     /*!
-    * @note #define PERIPHERAL_ADDON_JOYSTICKS before including kodi_peripheral_dll.h
-    * in the add-on if the add-on provides joysticks and add provides_joysticks="true"
-    * to the kodi.peripheral extension point node in addon.xml.
-    */
+     * @note #define PERIPHERAL_ADDON_JOYSTICKS before including kodi_peripheral_dll.h
+     * in the add-on if the add-on provides joysticks and add provides_joysticks="true"
+     * to the kodi.peripheral extension point node in addon.xml.
+     */
     ///{
     /*!
-    * @brief Get extended info about an attached joystick
-    * @param index  The joystick's driver index
-    * @param info   The container for the allocated joystick info
-    * @return PERIPHERAL_NO_ERROR if successful; array must be freed using
-    *         FreeJoystickInfo() in this case
-    */
+     * @brief Get extended info about an attached joystick
+     * @param index  The joystick's driver index
+     * @param info   The container for the allocated joystick info
+     * @return PERIPHERAL_NO_ERROR if successful; array must be freed using
+     *         FreeJoystickInfo() in this case
+     */
     virtual PERIPHERAL_ERROR GetJoystickInfo(unsigned int index, JOYSTICK_INFO* info) { return PERIPHERAL_ERROR_NOT_IMPLEMENTED; }
 
     /*!
-    * @brief Free the memory allocated in GetJoystickInfo()
-    */
+     * @brief Free the memory allocated in GetJoystickInfo()
+     */
     virtual void FreeJoystickInfo(JOYSTICK_INFO* info) { }
 
     /*!
-    * @brief Get the features that allow translating the joystick into the controller profile
-    * @param joystick      The device's joystick properties; unknown values may be left at their default
-    * @param controller_id The controller profile being requested, e.g. game.controller.default
-    * @param feature_count The number of features allocated for the features array
-    * @param features      The array of allocated features
-    * @return PERIPHERAL_NO_ERROR if successful; array must be freed using
-    *         FreeButtonMap() in this case
-    */
+     * @brief Get the features that allow translating the joystick into the controller profile
+     * @param joystick      The device's joystick properties; unknown values may be left at their default
+     * @param controller_id The controller profile being requested, e.g. game.controller.default
+     * @param feature_count The number of features allocated for the features array
+     * @param features      The array of allocated features
+     * @return PERIPHERAL_NO_ERROR if successful; array must be freed using
+     *         FreeButtonMap() in this case
+     */
     virtual PERIPHERAL_ERROR GetFeatures(const JOYSTICK_INFO* joystick, const char* controller_id,
                                          unsigned int* feature_count, JOYSTICK_FEATURE** features) { return PERIPHERAL_ERROR_NOT_IMPLEMENTED; }
 
     /*!
-    * @brief Free the memory allocated in GetFeatures()
-    *
-    * Must be called if GetFeatures() returns PERIPHERAL_NO_ERROR.
-    *
-    * @param feature_count  The number of features allocated for the features array
-    * @param features       The array of allocated features
-    */
+     * @brief Free the memory allocated in GetFeatures()
+     *
+     * Must be called if GetFeatures() returns PERIPHERAL_NO_ERROR.
+     *
+     * @param feature_count  The number of features allocated for the features array
+     * @param features       The array of allocated features
+     */
     virtual void FreeFeatures(unsigned int feature_count, JOYSTICK_FEATURE* features) { }
 
     /*!
-    * @brief Add or update joystick features
-    * @param joystick      The device's joystick properties; unknown values may be left at their default
-    * @param controller_id The game controller profile being updated
-    * @param feature_count The number of features in the features array
-    * @param features      The array of features
-    * @return PERIPHERAL_NO_ERROR if successful
-    */
+     * @brief Add or update joystick features
+     * @param joystick      The device's joystick properties; unknown values may be left at their default
+     * @param controller_id The game controller profile being updated
+     * @param feature_count The number of features in the features array
+     * @param features      The array of features
+     * @return PERIPHERAL_NO_ERROR if successful
+     */
     virtual PERIPHERAL_ERROR MapFeatures(const JOYSTICK_INFO* joystick, const char* controller_id,
                                          unsigned int feature_count, const JOYSTICK_FEATURE* features) { return PERIPHERAL_ERROR_NOT_IMPLEMENTED; }
 
     /*!
-    * @brief Get the driver primitives that should be ignored while mapping the device
-    * @param joystick        The device's joystick properties; unknown values may be left at their default
-    * @param primitive_count The number of features allocated for the primitives array
-    * @param primitives      The array of allocated driver primitives to be ignored
-    * @return PERIPHERAL_NO_ERROR if successful; array must be freed using
-    *         FreePrimitives() in this case
-    */
+     * @brief Get the driver primitives that should be ignored while mapping the device
+     * @param joystick        The device's joystick properties; unknown values may be left at their default
+     * @param primitive_count The number of features allocated for the primitives array
+     * @param primitives      The array of allocated driver primitives to be ignored
+     * @return PERIPHERAL_NO_ERROR if successful; array must be freed using
+     *         FreePrimitives() in this case
+     */
     virtual PERIPHERAL_ERROR GetIgnoredPrimitives(const JOYSTICK_INFO* joystick,
                                                   unsigned int* primitive_count,
                                                   JOYSTICK_DRIVER_PRIMITIVE** primitives) { return PERIPHERAL_ERROR_NOT_IMPLEMENTED; }
 
     /*!
-    * @brief Free the memory allocated in GetIgnoredPrimitives()
-    *
-    * Must be called if GetIgnoredPrimitives() returns PERIPHERAL_NO_ERROR.
-    *
-    * @param primitive_count  The number of driver primitives allocated for the primitives array
-    * @param primitives       The array of allocated driver primitives
-    */
+     * @brief Free the memory allocated in GetIgnoredPrimitives()
+     *
+     * Must be called if GetIgnoredPrimitives() returns PERIPHERAL_NO_ERROR.
+     *
+     * @param primitive_count  The number of driver primitives allocated for the primitives array
+     * @param primitives       The array of allocated driver primitives
+     */
     virtual void FreePrimitives(unsigned int primitive_count, JOYSTICK_DRIVER_PRIMITIVE* primitives) { }
 
     /*!
-    * @brief Set the list of driver primitives that are ignored for the device
-    * @param joystick         The device's joystick properties; unknown values may be left at their default
-    * @param primitive_count  The number of driver features in the primitives array
-    * @param primitives       The array of driver primitives to ignore
-    * @return PERIPHERAL_NO_ERROR if successful
-    */
+     * @brief Set the list of driver primitives that are ignored for the device
+     * @param joystick         The device's joystick properties; unknown values may be left at their default
+     * @param primitive_count  The number of driver features in the primitives array
+     * @param primitives       The array of driver primitives to ignore
+     * @return PERIPHERAL_NO_ERROR if successful
+     */
     virtual PERIPHERAL_ERROR SetIgnoredPrimitives(const JOYSTICK_INFO* joystick,
                                                   unsigned int primitive_count,
                                                   const JOYSTICK_DRIVER_PRIMITIVE* primitives) { return PERIPHERAL_ERROR_NOT_IMPLEMENTED; }
 
     /*!
-    * @brief Save the button map for the given joystick
-    * @param joystick      The device's joystick properties
-    */
+     * @brief Save the button map for the given joystick
+     * @param joystick      The device's joystick properties
+     */
     virtual void SaveButtonMap(const JOYSTICK_INFO* joystick) { }
 
     /*!
-    * @brief Revert the button map to the last time it was loaded or committed to disk
-    * @param joystick      The device's joystick properties
-    */
+     * @brief Revert the button map to the last time it was loaded or committed to disk
+     * @param joystick      The device's joystick properties
+     */
     virtual void RevertButtonMap(const JOYSTICK_INFO* joystick) { }
 
     /*!
-    * @brief Reset the button map for the given joystick and controller profile ID
-    * @param joystick      The device's joystick properties
-    * @param controller_id The game controller profile being reset
-    */
+     * @brief Reset the button map for the given joystick and controller profile ID
+     * @param joystick      The device's joystick properties
+     * @param controller_id The game controller profile being reset
+     */
     virtual void ResetButtonMap(const JOYSTICK_INFO* joystick, const char* controller_id) { }
 
     /*!
-    * @brief Powers off the given joystick if supported
-    * @param index  The joystick's driver index
-    */
+     * @brief Powers off the given joystick if supported
+     * @param index  The joystick's driver index
+     */
     virtual void PowerOffJoystick(unsigned int index) { }
 
     const std::string AddonPath() const
@@ -512,34 +512,34 @@ namespace addon
     }
 
     /*!
-    * @brief Trigger a scan for peripherals
-    *
-    * The add-on calls this if a change in hardware is detected.
-    */
+     * @brief Trigger a scan for peripherals
+     *
+     * The add-on calls this if a change in hardware is detected.
+     */
     void TriggerScan(void)
     {
       return m_instanceData->toKodi.trigger_scan(m_instanceData->toKodi.kodiInstance);
     }
 
     /*!
-    * @brief Notify the frontend that button maps have changed
-    *
-    * @param[optional] deviceName The name of the device to refresh, or empty/null for all devices
-    * @param[optional] controllerId The controller ID to refresh, or empty/null for all controllers
-    */
+     * @brief Notify the frontend that button maps have changed
+     *
+     * @param[optional] deviceName The name of the device to refresh, or empty/null for all devices
+     * @param[optional] controllerId The controller ID to refresh, or empty/null for all controllers
+     */
     void RefreshButtonMaps(const std::string& strDeviceName = "", const std::string& strControllerId = "")
     {
       return m_instanceData->toKodi.refresh_button_maps(m_instanceData->toKodi.kodiInstance, strDeviceName.c_str(), strControllerId.c_str());
     }
 
     /*!
-    * @brief Return the number of features belonging to the specified controller
-    *
-    * @param controllerId    The controller ID to enumerate
-    * @param type[optional]  Type to filter by, or JOYSTICK_FEATURE_TYPE_UNKNOWN for all features
-    *
-    * @return The number of features matching the request parameters
-    */
+     * @brief Return the number of features belonging to the specified controller
+     *
+     * @param controllerId    The controller ID to enumerate
+     * @param type[optional]  Type to filter by, or JOYSTICK_FEATURE_TYPE_UNKNOWN for all features
+     *
+     * @return The number of features matching the request parameters
+     */
     unsigned int FeatureCount(const std::string& strControllerId, JOYSTICK_FEATURE_TYPE type = JOYSTICK_FEATURE_TYPE_UNKNOWN)
     {
       return m_instanceData->toKodi.feature_count(m_instanceData->toKodi.kodiInstance, strControllerId.c_str(), type);
