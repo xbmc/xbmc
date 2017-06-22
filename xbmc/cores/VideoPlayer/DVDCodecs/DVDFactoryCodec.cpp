@@ -22,10 +22,13 @@
 #include "utils/log.h"
 
 #include "DVDFactoryCodec.h"
+#include "Video/AddonVideoCodec.h"
 #include "Video/DVDVideoCodec.h"
 #include "Audio/DVDAudioCodec.h"
 #include "Overlay/DVDOverlayCodec.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDCodecs.h"
+
+#include "addons/AddonProvider.h"
 
 #include "Video/DVDVideoCodecFFmpeg.h"
 
@@ -66,6 +69,24 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, CProces
     options.m_formats = info.formats;
 
   options.m_opaque_pointer = info.opaque_pointer;
+
+  // addon handler for this stream ?
+
+  if (hint.externalInterfaces)
+  {
+    ADDON::AddonInfoPtr addonInfo;
+    kodi::addon::IAddonInstance* parentInstance;
+    hint.externalInterfaces->getAddonInstance(ADDON::IAddonProvider::INSTANCE_VIDEOCODEC, addonInfo, parentInstance);
+    if (addonInfo && parentInstance)
+    {
+      pCodec.reset(new CAddonVideoCodec(processInfo, addonInfo, parentInstance));
+      if (pCodec && pCodec->Open(hint, options))
+      {
+        return pCodec.release();
+      }
+    }
+    return nullptr;
+  }
 
   // platform specifig video decoders
   if (!(hint.codecOptions & CODEC_FORCE_SOFTWARE))

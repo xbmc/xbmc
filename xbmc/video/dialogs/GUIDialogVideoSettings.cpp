@@ -409,9 +409,14 @@ void CGUIDialogVideoSettings::VideoStreamsOptionFiller(std::shared_ptr<const CSe
     }
 
     if (info.videoCodecName.empty())
-      strItem += StringUtils::Format(" (%ix%i)", info.width, info.height);
+      strItem += StringUtils::Format(" (%ix%i", info.width, info.height);
     else
-      strItem += StringUtils::Format(" (%s, %ix%i)", info.videoCodecName.c_str(), info.width, info.height);
+      strItem += StringUtils::Format(" (%s, %ix%i", info.videoCodecName.c_str(), info.width, info.height);
+
+    if (info.bitrate)
+      strItem += StringUtils::Format(", %i bps)", info.bitrate);
+    else
+      strItem += ")";
 
     strItem += StringUtils::Format(" (%i/%i)", i + 1, videoStreamCount);
     list.push_back(make_pair(strItem, i));

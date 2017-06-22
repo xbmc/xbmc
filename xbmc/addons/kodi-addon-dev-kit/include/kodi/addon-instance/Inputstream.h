@@ -25,6 +25,8 @@
  */
 
 #include "../AddonBase.h"
+#include "../StreamCrypto.h"
+#include "../StreamCodec.h"
 
 #ifdef BUILD_KODI_ADDON
 #include "../DVDDemuxPacket.h"
@@ -107,8 +109,15 @@ extern "C" {
       TYPE_TELETEXT
     } m_streamType;
 
+    enum Codec_FEATURES
+    {
+      FEATURE_DECODE = 1
+    };
+    unsigned int m_features;
+
     char m_codecName[32];                /*!< @brief (required) name of codec according to ffmpeg */
     char m_codecInternalName[32];        /*!< @brief (optional) internal name of codec (selectionstream info) */
+    kodi::addon::CODEC_PROFILE m_codecProfile; /*!< @brief (optional) bandwidth of the stream (selectionstream info) */
     unsigned int m_pID;                  /*!< @brief (required) physical index */
 
     const uint8_t *m_ExtraData;
@@ -127,6 +136,8 @@ extern "C" {
     unsigned int m_BitRate;              /*!< @brief (required) bit rate */
     unsigned int m_BitsPerSample;        /*!< @brief (required) bits per sample */
     unsigned int m_BlockAlign;
+
+    CRYPTO_INFO m_cryptoInfo;
   } INPUTSTREAM_INFO;
 
   /*!
@@ -241,7 +252,7 @@ namespace addon
     * Get IDs of available streams
     * @remarks
     */
-    virtual INPUTSTREAM_IDS GetStreamIds() { return INPUTSTREAM_IDS(); }
+    virtual INPUTSTREAM_IDS GetStreamIds() = 0;
 
     /*!
     * Get stream properties of a stream.
@@ -249,7 +260,7 @@ namespace addon
     * @return struc of stream properties
     * @remarks
     */
-    virtual INPUTSTREAM_INFO GetStream(int streamid) { return INPUTSTREAM_INFO(); }
+    virtual INPUTSTREAM_INFO GetStream(int streamid) = 0;
 
     /*!
     * Enable or disable a stream.
@@ -258,7 +269,7 @@ namespace addon
     * @param enable true for enable, false for disable
     * @remarks
     */
-    virtual void EnableStream(int streamid, bool enable) { }
+    virtual void EnableStream(int streamid, bool enable) = 0;
 
     /*!
     * Reset the demultiplexer in the add-on.

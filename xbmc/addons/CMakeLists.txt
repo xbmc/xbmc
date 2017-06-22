@@ -41,6 +41,7 @@ set(HEADERS Addon.h
             AddonInfo.h
             AddonInstaller.h
             AddonManager.h
+            AddonProvider.h
             AddonStatusHandler.h
             AddonSystemSettings.h
             AddonVersion.h

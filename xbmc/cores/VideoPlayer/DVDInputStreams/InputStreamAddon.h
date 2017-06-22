@@ -25,8 +25,22 @@
 
 #include "DVDInputStream.h"
 #include "IVideoPlayer.h"
+#include "addons/AddonProvider.h"
 #include "addons/binary-addons/AddonInstanceHandler.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/addon-instance/Inputstream.h"
+
+class CInputStreamProvider
+  : public ADDON::IAddonProvider
+{
+public:
+  CInputStreamProvider(ADDON::AddonInfoPtr addonInfo, kodi::addon::IAddonInstance* parentInstance);
+
+  virtual void getAddonInstance(INSTANCE_TYPE instance_type, ADDON::AddonInfoPtr& addonInfo, kodi::addon::IAddonInstance*& parentInstance);
+
+private:
+  ADDON::AddonInfoPtr m_addonInfo;
+  kodi::addon::IAddonInstance* m_parentInstance;
+};
 
 //! \brief Input stream class
 class CInputStreamAddon
@@ -81,6 +95,8 @@ public:
 protected:
   void UpdateStreams();
   void DisposeStreams();
+  int ConvertVideoCodecProfile(kodi::addon::CODEC_PROFILE profile);
+
 
   IVideoPlayer* m_player;
 
@@ -90,6 +106,7 @@ private:
   std::map<int, CDemuxStream*> m_streams;
 
   AddonInstance_InputStream m_struct;
+  std::shared_ptr<CInputStreamProvider> m_subAddonProvider;
 
   /*!
    * Callbacks from add-on to kodi
