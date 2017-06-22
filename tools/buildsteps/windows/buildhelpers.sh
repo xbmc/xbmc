@@ -162,7 +162,7 @@ function getBuildHash ()
   shift 1
   local hashStr
   hashStr="$(git rev-list HEAD --max-count=1  -- $checkPath $@)"
-  hashStr="$hashStr $@ $BITS $tools"
+  hashStr="$hashStr $@ $BITS $TOOLS"
   echo $hashStr
 }
 
