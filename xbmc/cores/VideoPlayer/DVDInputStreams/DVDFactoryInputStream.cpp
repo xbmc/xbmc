@@ -40,13 +40,14 @@
 #include "filesystem/File.h"
 #include "utils/URIUtils.h"
 #include "ServiceBroker.h"
-#include "addons/InputStream.h"
-#include "addons/BinaryAddonCache.h"
+#include "addons/binary-addons/BinaryAddonManager.h"
 #include "Util.h"
 
 
 CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IVideoPlayer* pPlayer, const CFileItem &fileitem, bool scanforextaudio)
 {
+  using namespace ADDON;
+
   std::string file = fileitem.GetPath();
   if (scanforextaudio)
   {
@@ -61,28 +62,12 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IVideoPlayer* pPlayer
     }
   }
 
-  ADDON::VECADDONS addons;
-  ADDON::CBinaryAddonCache &addonCache = CServiceBroker::GetBinaryAddonCache();
-  addonCache.GetAddons(addons, ADDON::ADDON_INPUTSTREAM);
-  for (size_t i=0; i<addons.size(); ++i)
+  BinaryAddonBaseList addonInfos;
+  CServiceBroker::GetBinaryAddonManager().GetAddonInfos(addonInfos, true /*enabled only*/, ADDON_INPUTSTREAM);
+  for (auto addonInfo : addonInfos)
   {
-    std::shared_ptr<ADDON::CInputStream> input(std::static_pointer_cast<ADDON::CInputStream>(addons[i]));
-
-    if (input->Supports(fileitem))
-    {
-      std::shared_ptr<ADDON::CInputStream> addon = input;
-      if (!input->UseParent())
-        addon = std::shared_ptr<ADDON::CInputStream>(new ADDON::CInputStream(*input));
-
-      if (addon->Create())
-      {
-        unsigned int videoWidth, videoHeight;
-        pPlayer->GetVideoResolution(videoWidth, videoHeight);
-        addon->SetVideoResolution(videoWidth, videoHeight);
-
-        return new CInputStreamAddon(fileitem, addon);
-      }
-    }
+    if (CInputStreamAddon::Supports(addonInfo, fileitem))
+      return new CInputStreamAddon(addonInfo, pPlayer, fileitem);
   }
 
   if (fileitem.IsDiscImage())
