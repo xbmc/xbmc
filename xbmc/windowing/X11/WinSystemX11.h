@@ -50,8 +50,6 @@ public:
   int  GetNumScreens() override { return 1; }
   int  GetCurrentScreen() override { return m_nScreen; }
   void ShowOSMouse(bool show) override;
-  void ResetOSScreensaver() override;
-  void EnableSystemScreenSaver(bool bEnable) override;
 
   void NotifyAppActiveChange(bool bActivated) override;
   void NotifyAppFocusChange(bool bGaining) override;
@@ -73,6 +71,8 @@ public:
   int GetCrtc() { return m_crtc; }
 
 protected:
+  std::unique_ptr<KODI::WINDOWING::IOSScreenSaver> GetOSScreenSaverImpl() override;
+
   virtual bool SetWindow(int width, int height, bool fullscreen, const std::string &output, int *winstate = NULL) = 0;
   virtual XVisualInfo* GetVisual() = 0;
 
@@ -103,6 +103,4 @@ private:
   bool CreateIconPixmap();
   bool HasWindowManager();
   void UpdateCrtc();
-
-  CStopWatch m_screensaverReset;
 };
