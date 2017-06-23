@@ -511,11 +511,11 @@ int CInputStreamAddon::ConvertVideoCodecProfile(STREAMCODEC_PROFILE profile)
   {
   case H264CodecProfileBaseline:
     return FF_PROFILE_H264_BASELINE;
-  case  H264CodecProfileMain:
+  case H264CodecProfileMain:
     return FF_PROFILE_H264_MAIN;
-  case  H264CodecProfileExtended:
+  case H264CodecProfileExtended:
     return FF_PROFILE_H264_EXTENDED;
-  case  H264CodecProfileHigh:
+  case H264CodecProfileHigh:
     return FF_PROFILE_H264_HIGH;
   case H264CodecProfileHigh10:
     return FF_PROFILE_H264_HIGH_10;

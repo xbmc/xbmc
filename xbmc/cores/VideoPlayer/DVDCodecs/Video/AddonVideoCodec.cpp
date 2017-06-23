@@ -91,8 +91,8 @@ private:
 CAddonVideoCodec::CAddonVideoCodec(CProcessInfo &processInfo, ADDON::BinaryAddonBasePtr& addonInfo, kodi::addon::IAddonInstance* parentInstance)
   : CDVDVideoCodec(processInfo),
     IAddonInstanceHandler(ADDON_INSTANCE_VIDEOCODEC, addonInfo, parentInstance)
-  , m_displayAspect(0.0f)
   , m_codecFlags(0)
+  , m_displayAspect(0.0f)
   , m_lastPictureBuffer(nullptr)
   , m_bufferPool(new BufferPool())
 {
@@ -190,7 +190,7 @@ bool CAddonVideoCodec::CopyToInitData(VIDEOCODEC_INITDATA &initData, CDVDStreamI
   initData.height = hints.height;
   initData.videoFormats = m_formats;
 
-  m_displayAspect = (hints.aspect > 0.0 && !hints.forced_aspect) ? hints.aspect : 0.0f;
+  m_displayAspect = (hints.aspect > 0.0 && !hints.forced_aspect) ? static_cast<float>(hints.aspect) : 0.0f;
   m_width = hints.width;
   m_height = hints.height;
 
@@ -222,7 +222,7 @@ bool CAddonVideoCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 
   m_lastPictureBuffer = nullptr;
 
-  return m_struct.toAddon.open(&m_struct, initData);
+  return m_struct.toAddon.open(&m_struct, &initData);
 }
 
 bool CAddonVideoCodec::Reconfigure(CDVDStreamInfo &hints)
@@ -234,7 +234,7 @@ bool CAddonVideoCodec::Reconfigure(CDVDStreamInfo &hints)
   if (!CopyToInitData(initData, hints))
     return false;
 
-  return m_struct.toAddon.reconfigure(&m_struct, initData);
+  return m_struct.toAddon.reconfigure(&m_struct, &initData);
 }
 
 bool CAddonVideoCodec::AddData(const DemuxPacket &packet)
@@ -242,7 +242,7 @@ bool CAddonVideoCodec::AddData(const DemuxPacket &packet)
   if (!m_struct.toAddon.add_data)
     return false;
 
-  return m_struct.toAddon.add_data(&m_struct, packet);
+  return m_struct.toAddon.add_data(&m_struct, &packet);
 }
 
 CDVDVideoCodec::VCReturn CAddonVideoCodec::GetPicture(VideoPicture* pVideoPicture)
@@ -253,7 +253,7 @@ CDVDVideoCodec::VCReturn CAddonVideoCodec::GetPicture(VideoPicture* pVideoPictur
   VIDEOCODEC_PICTURE picture;
   picture.flags = (m_codecFlags & DVD_CODEC_CTRL_DRAIN) ? VIDEOCODEC_PICTURE::FLAG_DRAIN : 0;
 
-  switch (m_struct.toAddon.get_picture(&m_struct, picture))
+  switch (m_struct.toAddon.get_picture(&m_struct, &picture))
   {
   case VIDEOCODEC_RETVAL::VC_NONE:
     return CDVDVideoCodec::VC_NONE;
@@ -331,7 +331,7 @@ void CAddonVideoCodec::Reset()
   picture.flags = VIDEOCODEC_PICTURE::FLAG_DRAIN;
 
   VIDEOCODEC_RETVAL ret;
-  while ((ret = m_struct.toAddon.get_picture(&m_struct, picture)) != VIDEOCODEC_RETVAL::VC_EOF)
+  while ((ret = m_struct.toAddon.get_picture(&m_struct, &picture)) != VIDEOCODEC_RETVAL::VC_EOF)
   {
     if (ret == VIDEOCODEC_RETVAL::VC_PICTURE)
     {
@@ -352,10 +352,10 @@ bool CAddonVideoCodec::GetFrameBuffer(VIDEOCODEC_PICTURE &picture)
 
 /*********************     ADDON-TO-KODI    **********************/
 
-bool CAddonVideoCodec::get_frame_buffer(void* kodiInstance, VIDEOCODEC_PICTURE &picture)
+bool CAddonVideoCodec::get_frame_buffer(void* kodiInstance, VIDEOCODEC_PICTURE *picture)
 {
   if (!kodiInstance)
     return false;
 
-  return static_cast<CAddonVideoCodec*>(kodiInstance)->GetFrameBuffer(picture);
+  return static_cast<CAddonVideoCodec*>(kodiInstance)->GetFrameBuffer(*picture);
 }

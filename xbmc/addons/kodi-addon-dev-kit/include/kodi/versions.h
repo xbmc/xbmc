@@ -272,6 +272,10 @@ inline const char* GetTypeVersion(int type)
     case ADDON_INSTANCE_VISUALIZATION:
       return ADDON_INSTANCE_VERSION_VISUALIZATION;
 #endif
+#if !defined(BUILD_KODI_ADDON) || defined(ADDON_INSTANCE_VERSION_VIDEOCODEC_USED)
+    case ADDON_INSTANCE_VIDEOCODEC:
+      return ADDON_INSTANCE_VERSION_VIDEOCODEC;
+#endif
   }
   return "0.0.0";
 }
@@ -325,6 +329,8 @@ inline const char* GetTypeMinVersion(int type)
       return ADDON_INSTANCE_VERSION_VFS_MIN;
     case ADDON_INSTANCE_VISUALIZATION:
       return ADDON_INSTANCE_VERSION_VISUALIZATION_MIN;
+    case ADDON_INSTANCE_VIDEOCODEC:
+      return ADDON_INSTANCE_VERSION_VIDEOCODEC_MIN;
   }
   return "0.0.0";
 }
@@ -375,6 +381,8 @@ inline const char* GetTypeName(int type)
       return "ScreenSaver";
     case ADDON_INSTANCE_VISUALIZATION:
       return "Visualization";
+    case ADDON_INSTANCE_VIDEOCODEC:
+      return "VideoCodec";
   }
   return "unknown";
 }
@@ -426,6 +434,8 @@ inline int GetTypeId(const char* name)
       return ADDON_INSTANCE_VFS;
     else if (strcmp(name, "visualization") == 0)
       return ADDON_INSTANCE_VISUALIZATION;
+    else if (strcmp(name, "videocodec") == 0)
+      return ADDON_INSTANCE_VIDEOCODEC;
   }
   return -1;
 }

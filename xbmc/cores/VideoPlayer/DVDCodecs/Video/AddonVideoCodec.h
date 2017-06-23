@@ -52,7 +52,7 @@ private:
    */
   bool GetFrameBuffer(VIDEOCODEC_PICTURE &picture);
 
-  static bool get_frame_buffer(void* kodiInstance, VIDEOCODEC_PICTURE &picture);
+  static bool get_frame_buffer(void* kodiInstance, VIDEOCODEC_PICTURE *picture);
 
   AddonInstance_VideoCodec m_struct;
   int m_codecFlags;

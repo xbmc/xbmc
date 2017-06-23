@@ -21,7 +21,7 @@
 
 typedef struct CRYPTO_INFO
 {
-  enum CRYPTO_KEY_SYSTEM :uint16_t
+  enum CRYPTO_KEY_SYSTEM : uint16_t
   {
     CRYPTO_KEY_SYSTEM_NONE = 0,
     CRYPTO_KEY_SYSTEM_WIDEVINE,

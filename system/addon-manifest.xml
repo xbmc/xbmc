@@ -18,6 +18,7 @@
   <addon>kodi.binary.instance.pvr</addon>
   <addon>kodi.binary.instance.screensaver</addon>
   <addon>kodi.binary.instance.vfs</addon>
+  <addon>kodi.binary.instance.videocodec</addon>
   <addon>kodi.binary.instance.visualization</addon>
   <addon>kodi.resource</addon>
   <addon>metadata.album.universal</addon>
