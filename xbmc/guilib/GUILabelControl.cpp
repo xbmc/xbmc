@@ -34,6 +34,7 @@ CGUILabelControl::CGUILabelControl(int parentID, int controlID, float posX, floa
   m_startHighlight = m_endHighlight = 0;
   m_startSelection = m_endSelection = 0;
   m_minWidth = 0;
+  m_label.SetScrollLoopCount(2);
 }
 
 CGUILabelControl::~CGUILabelControl(void)
@@ -210,7 +211,7 @@ bool CGUILabelControl::OnMessage(CGUIMessage& message)
       return true;
     }
   }
-  if (message.GetMessage() == GUI_MSG_REFRESH_TIMER)
+  if (message.GetMessage() == GUI_MSG_REFRESH_TIMER && IsVisible())
     UpdateInfo();
 
   return CGUIControl::OnMessage(message);

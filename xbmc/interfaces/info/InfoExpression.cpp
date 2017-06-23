@@ -27,10 +27,9 @@
 
 using namespace INFO;
 
-InfoSingle::InfoSingle(const std::string &expression, int context, unsigned int& refreshCounter)
-: InfoBool(expression, context, refreshCounter)
+void InfoSingle::Initialize()
 {
-  m_condition = g_infoManager.TranslateSingleString(expression, m_listItemDependent);
+  m_condition = g_infoManager.TranslateSingleString(m_expression, m_listItemDependent);
 }
 
 void InfoSingle::Update(const CGUIListItem *item)
@@ -38,12 +37,11 @@ void InfoSingle::Update(const CGUIListItem *item)
   m_value = g_infoManager.GetBool(m_condition, m_context, item);
 }
 
-InfoExpression::InfoExpression(const std::string &expression, int context, unsigned int& refreshCounter)
-: InfoBool(expression, context, refreshCounter)
+void InfoExpression::Initialize()
 {
-  if (!Parse(expression))
+  if (!Parse(m_expression))
   {
-    CLog::Log(LOGERROR, "Error parsing boolean expression %s", expression.c_str());
+    CLog::Log(LOGERROR, "Error parsing boolean expression %s", m_expression.c_str());
     m_expression_tree = std::make_shared<InfoLeaf>(g_infoManager.Register("false", 0), false);
   }
 }

@@ -6846,12 +6846,15 @@ INFO::InfoPtr CGUIInfoManager::Register(const std::string &expression, int conte
     return INFO::InfoPtr();
 
   CSingleLock lock(m_critInfo);
-  std::pair<INFOBOOLTYPE::const_iterator, bool> res;
+  std::pair<INFOBOOLTYPE::iterator, bool> res;
 
   if (condition.find_first_of("|+[]!") != condition.npos)
     res = m_bools.insert(std::make_shared<InfoExpression>(condition, context, m_refreshCounter));
   else
     res = m_bools.insert(std::make_shared<InfoSingle>(condition, context, m_refreshCounter));
+
+  if (res.second)
+    res.first->get()->Initialize();
 
   return *(res.first);
 }
