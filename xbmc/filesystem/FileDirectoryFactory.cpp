@@ -22,10 +22,8 @@
 #include "system.h"
 #include "utils/URIUtils.h"
 #include "FileDirectoryFactory.h"
-#ifdef HAS_FILESYSTEM
 #include "UDFDirectory.h"
 #include "RSSDirectory.h"
-#endif
 #if defined(TARGET_ANDROID)
 #include "APKDirectory.h"
 #endif

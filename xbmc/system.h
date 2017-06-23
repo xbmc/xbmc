@@ -42,7 +42,6 @@
 
 #define HAS_JSONRPC
 
-#define HAS_FILESYSTEM
 #define HAS_FILESYSTEM_CDDA
 
 #ifdef HAVE_LIBSMBCLIENT
