@@ -56,8 +56,8 @@ bool CSettingPath::Deserialize(const TiXmlNode *node, bool update /* = false */)
   if (!CSettingString::Deserialize(node, update))
     return false;
     
-  if (m_control != NULL &&
-     (m_control->GetType() != "button" || m_control->GetFormat() != "path"))
+  if (m_control != nullptr &&
+     (m_control->GetType() != "button" || (m_control->GetFormat() != "path" && m_control->GetFormat() != "file")))
   {
     CLog::Log(LOGERROR, "CSettingPath: invalid <control> of \"%s\"", m_id.c_str());
     return false;
