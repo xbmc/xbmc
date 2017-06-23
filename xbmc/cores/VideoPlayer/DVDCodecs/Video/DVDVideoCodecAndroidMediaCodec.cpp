@@ -470,14 +470,14 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
       m_mime = "video/3gpp";
       m_formatname = "amc-h263";
       break;
-    case AV_CODEC_ID_VP3:
     case AV_CODEC_ID_VP6:
     case AV_CODEC_ID_VP6F:
+      m_mime = "video/x-vnd.on2.vp6";
+      m_formatname = "amc-vp6";
+      break;
     case AV_CODEC_ID_VP8:
-      //m_mime = "video/x-vp6";
-      //m_mime = "video/x-vp7";
       m_mime = "video/x-vnd.on2.vp8";
-      m_formatname = "amc-vpX";
+      m_formatname = "amc-vp8";
       break;
     case AV_CODEC_ID_VP9:
       m_mime = "video/x-vnd.on2.vp9";
