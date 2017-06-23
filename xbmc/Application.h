@@ -73,6 +73,7 @@ namespace PLAYLIST
 #ifdef HAS_PERFORMANCE_SAMPLE
 #include "utils/PerformanceStats.h"
 #endif
+#include "windowing/OSScreenSaver.h"
 #include "windowing/XBMC_events.h"
 #include "threads/Thread.h"
 
@@ -407,6 +408,8 @@ protected:
 
   bool LoadSkin(const std::string& skinID);
 
+  void CheckOSScreenSaverInhibitionSetting();
+
   /*!
    \brief Delegates the action to all registered action handlers.
    \param action The action
@@ -430,6 +433,10 @@ protected:
   bool m_screensaverActive;
   std::string m_screensaverIdInUse;
   ADDON::AddonPtr m_pythonScreenSaver; // @warning: Fallback for Python interface, for binaries not needed!
+  // OS screen saver inhibitor that is always active if user selected a Kodi screen saver
+  KODI::WINDOWING::COSScreenSaverInhibitor m_globalScreensaverInhibitor;
+  // Inhibitor that is active e.g. during video playback
+  KODI::WINDOWING::COSScreenSaverInhibitor m_screensaverInhibitor;
 
   // timer information
 #ifdef TARGET_WINDOWS
