@@ -25,13 +25,12 @@
 class CGUIControlLookup : public CGUIControl
 {
 public:
-  CGUIControlLookup()
-    : CGUIControl() {}
+  CGUIControlLookup() = default;
   CGUIControlLookup(int parentID, int controlID, float posX, float posY, float width, float height)
     : CGUIControl(parentID, controlID, posX, posY, width, height) {}
   CGUIControlLookup(const CGUIControlLookup &from)
     : CGUIControl(from) {}
-  virtual ~CGUIControlLookup(void) {}
+  virtual ~CGUIControlLookup(void) = default;
 
   virtual CGUIControl *GetControl(int id, std::vector<CGUIControl*> *idCollector = nullptr);
 protected:
