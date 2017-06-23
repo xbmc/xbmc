@@ -31,7 +31,7 @@ class CAddonVideoCodec
   , public ADDON::IAddonInstanceHandler
 {
 public:
-  CAddonVideoCodec(CProcessInfo &processInfo, ADDON::AddonInfoPtr& addonInfo, kodi::addon::IAddonInstance* parentInstance);
+  CAddonVideoCodec(CProcessInfo &processInfo, ADDON::BinaryAddonBasePtr& addonInfo, kodi::addon::IAddonInstance* parentInstance);
   ~CAddonVideoCodec();
 
   virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options) override;
@@ -53,9 +53,7 @@ private:
 
   static bool get_frame_buffer(void* kodiInstance, VIDEOCODEC_PICTURE &picture);
 
-  kodi::addon::CInstanceVideoCodec* m_addonInstance;
   AddonInstance_VideoCodec m_struct;
-  kodi::addon::IAddonInstance* m_parentInstance;
   int m_codecFlags;
   VIDEOCODEC_FORMAT m_formats[VIDEOCODEC_FORMAT::MaxVideoFormats + 1];
   float m_displayAspect;

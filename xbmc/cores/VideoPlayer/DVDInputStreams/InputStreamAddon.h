@@ -33,12 +33,12 @@ class CInputStreamProvider
   : public ADDON::IAddonProvider
 {
 public:
-  CInputStreamProvider(ADDON::AddonInfoPtr addonInfo, kodi::addon::IAddonInstance* parentInstance);
+  CInputStreamProvider(ADDON::BinaryAddonBasePtr addonBase, kodi::addon::IAddonInstance* parentInstance);
 
-  virtual void getAddonInstance(INSTANCE_TYPE instance_type, ADDON::AddonInfoPtr& addonInfo, kodi::addon::IAddonInstance*& parentInstance);
+  virtual void getAddonInstance(INSTANCE_TYPE instance_type, ADDON::BinaryAddonBasePtr& addonBase, kodi::addon::IAddonInstance*& parentInstance) override;
 
 private:
-  ADDON::AddonInfoPtr m_addonInfo;
+  ADDON::BinaryAddonBasePtr m_addonBase;
   kodi::addon::IAddonInstance* m_parentInstance;
 };
 
@@ -119,6 +119,14 @@ private:
    * @return The allocated packet.
    */
   static DemuxPacket* cb_allocate_demux_packet(void* kodiInstance, int iDataSize = 0);
+
+  /*!
+  * @brief Allocate a demux packet. Free with FreeDemuxPacket
+  * @param kodiInstance A pointer to the add-on.
+  * @param iDataSize The size of the data that will go into the packet
+  * @return The allocated packet.
+  */
+  static DemuxPacket* cb_allocate_encrypted_demux_packet(void* kodiInstance, unsigned int data_size, unsigned int encrypted_subsample_count);
 
   /*!
    * @brief Free a packet that was allocated with AllocateDemuxPacket

@@ -31,21 +31,19 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
-CInputStreamProvider::CInputStreamProvider(ADDON::AddonInfoPtr addonInfo, kodi::addon::IAddonInstance* parentInstance)
-  : m_addonInfo(addonInfo),
-  m_parentInstance(parentInstance)
+CInputStreamProvider::CInputStreamProvider(ADDON::BinaryAddonBasePtr addonBase, kodi::addon::IAddonInstance* parentInstance)
+  : m_addonBase(addonBase)
+  , m_parentInstance(parentInstance)
 {
-
 }
 
-void CInputStreamProvider::getAddonInstance(INSTANCE_TYPE instance_type, ADDON::AddonInfoPtr& addonInfo, kodi::addon::IAddonInstance*& parentInstance)
+void CInputStreamProvider::getAddonInstance(INSTANCE_TYPE instance_type, ADDON::BinaryAddonBasePtr& addonBase, kodi::addon::IAddonInstance*& parentInstance)
 {
   if (instance_type == ADDON::IAddonProvider::INSTANCE_VIDEOCODEC)
   {
-    addonInfo = m_addonInfo;
+    addonBase = m_addonBase;
     parentInstance = m_parentInstance;
   }
-  return;
 }
 
 /*****************************************************************************************************************/
@@ -124,6 +122,7 @@ bool CInputStreamAddon::Open()
   m_struct.toKodi.kodiInstance = this;
   m_struct.toKodi.free_demux_packet = cb_free_demux_packet;
   m_struct.toKodi.allocate_demux_packet = cb_allocate_demux_packet;
+  m_struct.toKodi.allocate_encrypted_demux_packet = cb_allocate_encrypted_demux_packet;
   if (!CreateInstance(&m_struct) || !m_struct.toAddon.open)
     return false;
 
@@ -150,12 +149,6 @@ bool CInputStreamAddon::Open()
   std::string profileFolder = CSpecialProtocol::TranslatePath(Addon()->Profile());
   props.m_libFolder = libFolder.c_str();
   props.m_profileFolder = profileFolder.c_str();
-
-  unsigned int videoWidth = 1280;
-  unsigned int videoHeight = 720;
-  if (m_player)
-    m_player->GetVideoResolution(videoWidth, videoHeight);
-  SetVideoResolution(videoWidth, videoHeight);
 
   unsigned int videoWidth = 1280;
   unsigned int videoHeight = 720;
@@ -496,7 +489,7 @@ void CInputStreamAddon::UpdateStreams()
       if ((stream.m_features & INPUTSTREAM_INFO::FEATURE_DECODE) != 0)
       {
         if (!m_subAddonProvider)
-          m_subAddonProvider = std::shared_ptr<CInputStreamProvider>(new CInputStreamProvider(m_addonInfo, m_addonInstance));
+          m_subAddonProvider = std::shared_ptr<CInputStreamProvider>(new CInputStreamProvider(GetAddonBase(), m_struct.toAddon.addonInstance));
 
         demuxStream->externalInterfaces = m_subAddonProvider;
       }
@@ -542,6 +535,11 @@ int CInputStreamAddon::ConvertVideoCodecProfile(CODEC_PROFILE profile)
 DemuxPacket* CInputStreamAddon::cb_allocate_demux_packet(void* kodiInstance, int data_size)
 {
   return CDVDDemuxUtils::AllocateDemuxPacket(data_size);
+}
+
+DemuxPacket* CInputStreamAddon::cb_allocate_encrypted_demux_packet(void* kodiInstance, unsigned int data_size, unsigned int encrypted_subsample_count)
+{
+  return CDVDDemuxUtils::AllocateDemuxPacket(data_size, encrypted_subsample_count);
 }
 
 void CInputStreamAddon::cb_free_demux_packet(void* kodiInstance, DemuxPacket* packet)

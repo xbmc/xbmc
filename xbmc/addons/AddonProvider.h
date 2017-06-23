@@ -30,8 +30,8 @@ namespace kodi { namespace addon { class IAddonInstance; } }
 
 namespace ADDON
 {
-  class CAddonInfo;
-  typedef std::shared_ptr<CAddonInfo> AddonInfoPtr;
+  class CBinaryAddonBase;
+  typedef std::shared_ptr<CBinaryAddonBase> BinaryAddonBasePtr;
 
   class IAddonProvider
   {
@@ -40,7 +40,7 @@ namespace ADDON
     {
       INSTANCE_VIDEOCODEC
     };
-    virtual void getAddonInstance(INSTANCE_TYPE instance_type, AddonInfoPtr& addonInfo, kodi::addon::IAddonInstance*& parentInstance) = 0;
+    virtual void getAddonInstance(INSTANCE_TYPE instance_type, ADDON::BinaryAddonBasePtr& addonBase, kodi::addon::IAddonInstance*& parentInstance) = 0;
   };
 
   } //Namespace

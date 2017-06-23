@@ -155,6 +155,7 @@ extern "C" {
   {
     KODI_HANDLE kodiInstance;
     DemuxPacket* (*allocate_demux_packet)(void* kodiInstance, int data_size);
+    DemuxPacket* (*allocate_encrypted_demux_packet)(void* kodiInstance, unsigned int data_size, unsigned int encrypted_subsample_count);
     void (*free_demux_packet)(void* kodiInstance, DemuxPacket* packet);
   } AddonToKodiFuncTable_InputStream;
 
@@ -411,6 +412,16 @@ namespace addon
     DemuxPacket* AllocateDemuxPacket(int dataSize)
     {
       return m_instanceData->toKodi.allocate_demux_packet(m_instanceData->toKodi.kodiInstance, dataSize);
+    }
+
+    /*!
+    * @brief Allocate a demux packet. Free with FreeDemuxPacket
+    * @param dataSize The size of the data that will go into the packet
+    * @return The allocated packet
+    */
+    DemuxPacket* AllocateEncryptedDemuxPacket(int dataSize, unsigned int encryptedSubsampleCount)
+    {
+      return m_instanceData->toKodi.allocate_encrypted_demux_packet(m_instanceData->toKodi.kodiInstance, dataSize, encryptedSubsampleCount);
     }
 
     /*!
