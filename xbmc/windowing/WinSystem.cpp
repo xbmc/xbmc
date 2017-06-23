@@ -60,6 +60,7 @@ bool CWinSystemBase::DestroyWindowSystem()
 #if HAS_GLES
   CGUIFontTTFGL::DestroyStaticVertexBuffers();
 #endif
+  m_screenSaverManager.reset();
   return false;
 }
 
@@ -260,4 +261,18 @@ int CWinSystemBase::NoOfBuffers(void)
 {
   int buffers = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_VIDEOSCREEN_NOOFBUFFERS);
   return buffers;
+}
+
+KODI::WINDOWING::COSScreenSaverManager* CWinSystemBase::GetOSScreenSaver()
+{
+  if (!m_screenSaverManager)
+  {
+    auto impl = GetOSScreenSaverImpl();
+    if (impl)
+    {
+      m_screenSaverManager.reset(new KODI::WINDOWING::COSScreenSaverManager(std::move(impl)));
+    }
+  }
+
+  return m_screenSaverManager.get();
 }

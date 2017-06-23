@@ -1,7 +1,9 @@
-set(SOURCES WinEvents.cpp
+set(SOURCES OSScreenSaver.cpp
+            WinEvents.cpp
             WinSystem.cpp)
 
-set(HEADERS WindowingFactory.h
+set(HEADERS OSScreenSaver.h
+            WindowingFactory.h
             WinEvents.h
             WinSystem.h
             XBMC_events.h
