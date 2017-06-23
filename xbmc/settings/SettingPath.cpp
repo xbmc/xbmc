@@ -82,6 +82,11 @@ bool CSettingPath::Deserialize(const TiXmlNode *node, bool update /* = false */)
         source = source->NextSibling("source");
       }
     }
+
+    // get masking
+    auto masking = constraints->FirstChild("masking");
+    if (masking != nullptr)
+      m_masking = masking->FirstChild()->ValueStr();
   }
 
   return true;
