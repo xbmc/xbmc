@@ -505,7 +505,7 @@ void CInputStreamAddon::DisposeStreams()
   m_streams.clear();
 }
 
-int CInputStreamAddon::ConvertVideoCodecProfile(CODEC_PROFILE profile)
+int CInputStreamAddon::ConvertVideoCodecProfile(STREAMCODEC_PROFILE profile)
 {
   switch (profile)
   {
@@ -537,9 +537,9 @@ DemuxPacket* CInputStreamAddon::cb_allocate_demux_packet(void* kodiInstance, int
   return CDVDDemuxUtils::AllocateDemuxPacket(data_size);
 }
 
-DemuxPacket* CInputStreamAddon::cb_allocate_encrypted_demux_packet(void* kodiInstance, unsigned int data_size, unsigned int encrypted_subsample_count)
+DemuxPacket* CInputStreamAddon::cb_allocate_encrypted_demux_packet(void* kodiInstance, unsigned int dataSize, unsigned int encryptedSubsampleCount)
 {
-  return CDVDDemuxUtils::AllocateDemuxPacket(data_size, encrypted_subsample_count);
+  return CDVDDemuxUtils::AllocateDemuxPacket(dataSize, encryptedSubsampleCount);
 }
 
 void CInputStreamAddon::cb_free_demux_packet(void* kodiInstance, DemuxPacket* packet)

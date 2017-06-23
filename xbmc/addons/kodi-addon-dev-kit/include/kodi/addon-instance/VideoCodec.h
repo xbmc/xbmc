@@ -52,7 +52,7 @@ extern "C"
       CodecVp9
     } codec;
 
-    kodi::addon::CODEC_PROFILE codecProfile;
+    STREAMCODEC_PROFILE codecProfile;
     
     //UnknownVideoFormat is terminator
     VIDEOCODEC_FORMAT *videoFormats;
@@ -74,7 +74,7 @@ extern "C"
       MaxPlanes = 3,
     };
 
-    enum Flags :uint32_t {
+    enum Flags : uint32_t {
       FLAG_DROP,
       FLAG_DRAIN
     };

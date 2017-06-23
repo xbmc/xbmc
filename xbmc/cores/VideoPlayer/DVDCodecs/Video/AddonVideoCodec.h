@@ -41,14 +41,15 @@ public:
   virtual VCReturn GetPicture(VideoPicture* pVideoPicture) override;
   virtual const char* GetName() override;
   virtual void SetCodecControl(int flags) override { m_codecFlags = flags; }
+
 private:
   bool CopyToInitData(VIDEOCODEC_INITDATA &initData, CDVDStreamInfo &hints);
 
   /*!
-  * @brief all picture members can be expected to be set correctly except decodedData and pts.
-    GetFrameBuffer has to set decodedData() to a valid memory adress and return true.
-    In case no buffer allocation fails, return false.
-  */
+   * @brief All picture members can be expected to be set correctly except decodedData and pts.
+   * GetFrameBuffer has to set decodedData to a valid memory adress and return true.
+   * In case buffer allocation fails, return false.
+   */
   bool GetFrameBuffer(VIDEOCODEC_PICTURE &picture);
 
   static bool get_frame_buffer(void* kodiInstance, VIDEOCODEC_PICTURE &picture);

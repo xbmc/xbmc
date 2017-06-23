@@ -74,6 +74,7 @@ public:
     freeBuffer.push_back(*res);
     usedBuffer.erase(res);
   }
+
 private:
   struct BUFFER
   {
@@ -95,7 +96,7 @@ CAddonVideoCodec::CAddonVideoCodec(CProcessInfo &processInfo, ADDON::BinaryAddon
   , m_lastPictureBuffer(nullptr)
   , m_bufferPool(new BufferPool())
 {
-  memset(&m_struct, 0, sizeof(m_struct));
+  m_struct = { { 0 } };
   m_struct.toKodi.kodiInstance = this;
   m_struct.toKodi.get_frame_buffer = get_frame_buffer;
   if (!CreateInstance(&m_struct) || !m_struct.toAddon.open)
@@ -117,7 +118,7 @@ CAddonVideoCodec::~CAddonVideoCodec()
 
 bool CAddonVideoCodec::CopyToInitData(VIDEOCODEC_INITDATA &initData, CDVDStreamInfo &hints)
 {
-  initData.codecProfile = CODEC_PROFILE::CodecProfileNotNeeded;
+  initData.codecProfile = STREAMCODEC_PROFILE::CodecProfileNotNeeded;
   switch (hints.codec)
   {
   case AV_CODEC_ID_H264:
@@ -126,28 +127,28 @@ bool CAddonVideoCodec::CopyToInitData(VIDEOCODEC_INITDATA &initData, CDVDStreamI
     {
     case 0:
     case FF_PROFILE_UNKNOWN:
-      initData.codecProfile = CODEC_PROFILE::CodecProfileUnknown;
+      initData.codecProfile = STREAMCODEC_PROFILE::CodecProfileUnknown;
       break;
     case FF_PROFILE_H264_BASELINE:
-      initData.codecProfile = CODEC_PROFILE::H264CodecProfileBaseline;
+      initData.codecProfile = STREAMCODEC_PROFILE::H264CodecProfileBaseline;
       break;
     case FF_PROFILE_H264_MAIN:
-      initData.codecProfile = CODEC_PROFILE::H264CodecProfileMain;
+      initData.codecProfile = STREAMCODEC_PROFILE::H264CodecProfileMain;
       break;
     case FF_PROFILE_H264_EXTENDED:
-      initData.codecProfile = CODEC_PROFILE::H264CodecProfileExtended;
+      initData.codecProfile = STREAMCODEC_PROFILE::H264CodecProfileExtended;
       break;
     case FF_PROFILE_H264_HIGH:
-      initData.codecProfile = CODEC_PROFILE::H264CodecProfileHigh;
+      initData.codecProfile = STREAMCODEC_PROFILE::H264CodecProfileHigh;
       break;
     case FF_PROFILE_H264_HIGH_10:
-      initData.codecProfile = CODEC_PROFILE::H264CodecProfileHigh10;
+      initData.codecProfile = STREAMCODEC_PROFILE::H264CodecProfileHigh10;
       break;
     case FF_PROFILE_H264_HIGH_422:
-      initData.codecProfile = CODEC_PROFILE::H264CodecProfileHigh422;
+      initData.codecProfile = STREAMCODEC_PROFILE::H264CodecProfileHigh422;
       break;
     case FF_PROFILE_H264_HIGH_444_PREDICTIVE:
-      initData.codecProfile = CODEC_PROFILE::H264CodecProfileHigh444Predictive;
+      initData.codecProfile = STREAMCODEC_PROFILE::H264CodecProfileHigh444Predictive;
       break;
     default:
       return false;

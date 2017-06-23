@@ -19,20 +19,15 @@
  *
  */
 
-namespace kodi {
-  namespace addon {
-
-    enum CODEC_PROFILE
-    {
-      CodecProfileUnknown = 0,
-      CodecProfileNotNeeded,
-      H264CodecProfileBaseline,
-      H264CodecProfileMain,
-      H264CodecProfileExtended,
-      H264CodecProfileHigh,
-      H264CodecProfileHigh10,
-      H264CodecProfileHigh422,
-      H264CodecProfileHigh444Predictive
-    };
-  }
-}
+enum STREAMCODEC_PROFILE
+{
+  CodecProfileUnknown = 0,
+  CodecProfileNotNeeded,
+  H264CodecProfileBaseline,
+  H264CodecProfileMain,
+  H264CodecProfileExtended,
+  H264CodecProfileHigh,
+  H264CodecProfileHigh10,
+  H264CodecProfileHigh422,
+  H264CodecProfileHigh444Predictive
+};

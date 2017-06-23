@@ -95,8 +95,7 @@ public:
 protected:
   void UpdateStreams();
   void DisposeStreams();
-  int ConvertVideoCodecProfile(kodi::addon::CODEC_PROFILE profile);
-
+  int ConvertVideoCodecProfile(STREAMCODEC_PROFILE profile);
 
   IVideoPlayer* m_player;
 
@@ -121,12 +120,13 @@ private:
   static DemuxPacket* cb_allocate_demux_packet(void* kodiInstance, int iDataSize = 0);
 
   /*!
-  * @brief Allocate a demux packet. Free with FreeDemuxPacket
+  * @brief Allocate an encrypted demux packet. Free with FreeDemuxPacket
   * @param kodiInstance A pointer to the add-on.
-  * @param iDataSize The size of the data that will go into the packet
+  * @param dataSize The size of the data that will go into the packet
+  * @param encryptedSubsampleCount The number of subsample description blocks to allocate
   * @return The allocated packet.
   */
-  static DemuxPacket* cb_allocate_encrypted_demux_packet(void* kodiInstance, unsigned int data_size, unsigned int encrypted_subsample_count);
+  static DemuxPacket* cb_allocate_encrypted_demux_packet(void* kodiInstance, unsigned int dataSize, unsigned int encryptedSubsampleCount);
 
   /*!
    * @brief Free a packet that was allocated with AllocateDemuxPacket
