@@ -21,6 +21,7 @@
 #include "WinSystemOSX.h"
 #include "WinEventsOSX.h"
 #include "VideoSyncOsx.h"
+#include "OSScreenSaverOSX.h"
 #include "Application.h"
 #include "ServiceBroker.h"
 #include "messaging/ApplicationMessenger.h"
@@ -55,19 +56,7 @@
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 
 using namespace KODI::MESSAGING;
-
-//------------------------------------------------------------------------------------------
-// special object-c class for handling the inhibit display NSTimer callback.
-@interface windowInhibitScreenSaverClass : NSObject
-- (void) updateSystemActivity: (NSTimer*)timer;
-@end
-
-@implementation windowInhibitScreenSaverClass
--(void) updateSystemActivity: (NSTimer*)timer
-{
-  UpdateSystemActivity(UsrActivity);
-}
-@end
+using namespace KODI::WINDOWING;
 
 //------------------------------------------------------------------------------------------
 // special object-c class for handling the NSWindowDidMoveNotification callback.
@@ -607,7 +596,6 @@ CWinSystemOSX::CWinSystemOSX() : CWinSystemBase(), m_lostDeviceTimer(this)
   m_osx_events = NULL;
   m_obscured   = false;
   m_obscured_timecheck = XbmcThreads::SystemClockMillis() + 1000;
-  m_use_system_screensaver = true;
   // check runtime, we only allow this on 10.5+
   m_can_display_switch = (floor(NSAppKitVersionNumber) >= 949);
   m_lastDisplayNr = -1;
@@ -1681,39 +1669,9 @@ void CWinSystemOSX::OnMove(int x, int y)
   HandlePossibleRefreshrateChange();
 }
 
-void CWinSystemOSX::EnableSystemScreenSaver(bool bEnable)
+std::unique_ptr<IOSScreenSaver> CWinSystemOSX::GetOSScreenSaverImpl()
 {
-  // see Technical Q&A QA1340
-  static IOPMAssertionID assertionID = 0;
-
-  if (!bEnable)
-  {
-    if (assertionID == 0)
-    {
-      CFStringRef reasonForActivity= CFSTR("XBMC requested disable system screen saver");
-      IOPMAssertionCreateWithName(kIOPMAssertionTypeNoDisplaySleep,
-        kIOPMAssertionLevelOn, reasonForActivity, &assertionID);
-    }
-    UpdateSystemActivity(UsrActivity);
-  }
-  else if (assertionID != 0)
-  {
-    IOPMAssertionRelease(assertionID);
-    assertionID = 0;
-  }
-
-  m_use_system_screensaver = bEnable;
-}
-
-bool CWinSystemOSX::IsSystemScreenSaverEnabled()
-{
-  return m_use_system_screensaver;
-}
-
-void CWinSystemOSX::ResetOSScreensaver()
-{
-  // allow os screensaver only if we are fullscreen
-  EnableSystemScreenSaver(!m_bFullScreen);
+  return std::unique_ptr<IOSScreenSaver> (new COSScreenSaverOSX);
 }
 
 void CWinSystemOSX::EnableTextInput(bool bEnable)
