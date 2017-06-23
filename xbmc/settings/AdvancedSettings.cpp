@@ -1436,14 +1436,12 @@ std::string CAdvancedSettings::GetMusicExtensions() const
 {
   std::string result(m_musicExtensions);
 
-  VECADDONS codecs;
-  CBinaryAddonCache &addonCache = CServiceBroker::GetBinaryAddonCache();
-  addonCache.GetAddons(codecs, ADDON_AUDIODECODER);
-  for (size_t i=0;i<codecs.size();++i)
+  BinaryAddonBaseList addonInfos;
+  CServiceBroker::GetBinaryAddonManager().GetAddonInfos(addonInfos, true, ADDON_AUDIODECODER);
+  for (const auto& addonInfo : addonInfos)
   {
-    std::shared_ptr<CAudioDecoder> dec(std::static_pointer_cast<CAudioDecoder>(codecs[i]));
     result += '|';
-    result += dec->GetExtensions();
+    result += CAudioDecoder::GetExtensions(addonInfo);
   }
 
   return result;

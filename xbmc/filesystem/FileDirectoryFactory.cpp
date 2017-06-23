@@ -42,6 +42,7 @@
 #include "addons/AudioDecoder.h"
 #include "addons/VFSEntry.h"
 #include "addons/BinaryAddonCache.h"
+#include "addons/binary-addons/BinaryAddonBase.h"
 #include "AudioBookFileDirectory.h"
 
 using namespace ADDON;
@@ -64,20 +65,20 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
   StringUtils::ToLower(strExtension);
   if (!strExtension.empty())
   {
-    VECADDONS codecs;
-    CBinaryAddonCache &addonCache = CServiceBroker::GetBinaryAddonCache();
-    addonCache.GetAddons(codecs, ADDON_AUDIODECODER);
-    for (size_t i=0;i<codecs.size();++i)
+    BinaryAddonBaseList addonInfos;
+    CServiceBroker::GetBinaryAddonManager().GetAddonInfos(addonInfos, true, ADDON_AUDIODECODER);
+    for (const auto& addonInfo : addonInfos)
     {
-      std::shared_ptr<CAudioDecoder> dec(std::static_pointer_cast<CAudioDecoder>(codecs[i]));
-      if (dec->HasTracks() && dec->GetExtensions().find(strExtension) != std::string::npos)
+      if (CAudioDecoder::HasTags(addonInfo) &&
+          CAudioDecoder::GetExtensions(addonInfo).find(strExtension) != std::string::npos)
       {
-        CAudioDecoder* result = new CAudioDecoder(*dec);
-        result->Create();
-        if (result->ContainsFiles(url))
-          return result;
-        delete result;
-        return NULL;
+        CAudioDecoder* result = new CAudioDecoder(addonInfo);
+        if (!result->CreateDecoder() || !result->ContainsFiles(url))
+        {
+          delete result;
+          return nullptr;
+        }
+        return result;
       }
     }
   }
