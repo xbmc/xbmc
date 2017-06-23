@@ -27,7 +27,7 @@
 #include <memory>
 #include <vector>
 
-typedef enum _WindowSystemType
+enum WindowSystemType
 {
   WINDOW_SYSTEM_WIN32,
   WINDOW_SYSTEM_OSX,
@@ -39,7 +39,7 @@ typedef enum _WindowSystemType
   WINDOW_SYSTEM_RPI,
   WINDOW_SYSTEM_AML,
   WINDOW_SYSTEM_ANDROID
-} WindowSystemType;
+};
 
 struct RESOLUTION_WHR
 {
