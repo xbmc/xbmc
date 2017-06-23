@@ -40,8 +40,10 @@
 #include "platform/darwin/DictionaryUtils.h"
 #include "platform/darwin/DarwinUtils.h"
 
-#import <SDL/SDL_video.h>
-#import <SDL/SDL_events.h>
+#include <cstdlib>
+#include <signal.h>
+
+#import <SDL/SDL.h>
 
 #import <Cocoa/Cocoa.h>
 #import <QuartzCore/QuartzCore.h>
@@ -638,6 +640,19 @@ void CWinSystemOSX::OnTimeout()
 
 bool CWinSystemOSX::InitWindowSystem()
 {
+  CLog::LogF(LOGNOTICE, "Setup SDL");
+
+  /* Clean up on exit, exit on window close and interrupt */
+  std::atexit(SDL_Quit);
+
+  if (SDL_Init(SDL_INIT_VIDEO) != 0)
+  {
+    CLog::LogF(LOGFATAL, "Unable to initialize SDL: %s", SDL_GetError());
+    return false;
+  }
+  // SDL_Init will install a handler for segfaults, restore the default handler.
+  signal(SIGSEGV, SIG_DFL);
+
   SDL_EnableUNICODE(1);
 
   // set repeat to 10ms to ensure repeat time < frame time
