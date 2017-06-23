@@ -1,10 +1,12 @@
 if(CORE_SYSTEM_NAME STREQUAL osx)
-  set(SOURCES WinEventsOSX.mm
+  set(SOURCES OSScreenSaverOSX.cpp
+              WinEventsOSX.mm
               WinEventsSDL.cpp
               WinSystemOSX.mm
               WinSystemOSXGL.mm
               VideoSyncOsx.cpp)
-  set(HEADERS WinEventsOSX.h
+  set(HEADERS OSScreenSaverOSX.h
+              WinEventsOSX.h
               WinEventsSDL.h
               WinSystemOSX.h
               WinSystemOSXGL.h
