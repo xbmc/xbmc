@@ -98,3 +98,19 @@ TEST(TestUtil, SplitExec)
   EXPECT_EQ(params[0], "foo");
   EXPECT_EQ(params[1], "ba(\"ba black )\",sheep)");
 }
+
+TEST(TestUtil, MakeShortenPath)
+{
+  std::string result;
+  EXPECT_EQ(true, CUtil::MakeShortenPath("smb://test/string/is/long/and/very/much/so", result, 10));
+  EXPECT_EQ("smb:/../so", result);
+
+  EXPECT_EQ(true, CUtil::MakeShortenPath("smb://test/string/is/long/and/very/much/so", result, 30));
+  EXPECT_EQ("smb://../../../../../../../so", result);
+
+  EXPECT_EQ(true, CUtil::MakeShortenPath("smb://test//string/is/long/and/very//much/so", result, 30));
+  EXPECT_EQ("smb:/../../../../../so", result);
+
+  EXPECT_EQ(true, CUtil::MakeShortenPath("//test//string/is/long/and/very//much/so", result, 30));
+  EXPECT_EQ("/../../../../../so", result);
+}
