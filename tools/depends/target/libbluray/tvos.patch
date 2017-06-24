@@ -1,0 +1,20 @@
+--- src/libbluray/bdj/bdj.c.orig	2017-06-24 22:13:02.000000000 +0200
++++ src/libbluray/bdj/bdj.c	2017-06-24 22:13:37.000000000 +0200
+@@ -239,7 +239,7 @@
+         return NULL;
+     }
+ 
+-    switch (java_home_pid = vfork())
++    /*switch (java_home_pid = vfork())
+     {
+         case -1:
+             BD_DEBUG(DBG_BDJ | DBG_CRIT, "vfork failed\n");
+@@ -271,7 +271,7 @@
+ 
+             waitpid(java_home_pid, &exitcode, 0);
+     }
+-
++*/
+     if (result[0] == '\0' || exitcode) {
+         BD_DEBUG(DBG_BDJ | DBG_CRIT,
+                  "Unable to read path from " MACOS_JAVA_HOME "\n");
