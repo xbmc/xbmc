@@ -73,6 +73,18 @@ bool CBinaryAddonManager::HasEnabledAddons(const TYPE &type) const
   return false;
 }
 
+bool CBinaryAddonManager::IsAddonInstalled(const std::string& addonId, const TYPE &type/* = ADDON_UNKNOWN*/)
+{
+  CSingleLock lock(m_critSection);
+  return (m_installedAddons.find(addonId) != m_installedAddons.end());
+}
+
+bool CBinaryAddonManager::IsAddonEnabled(const std::string& addonId, const TYPE &type/* = ADDON_UNKNOWN*/)
+{
+  CSingleLock lock(m_critSection);
+  return (m_enabledAddons.find(addonId) != m_enabledAddons.end());
+}
+
 void CBinaryAddonManager::GetAddonInfos(BinaryAddonBaseList& addonInfos, bool enabledOnly, const TYPE &type) const
 {
   CSingleLock lock(m_critSection);
@@ -88,6 +100,20 @@ void CBinaryAddonManager::GetAddonInfos(BinaryAddonBaseList& addonInfos, bool en
     if (type == ADDON_UNKNOWN || info.second->IsType(type))
     {
       addonInfos.push_back(info.second);
+    }
+  }
+}
+
+void CBinaryAddonManager::GetDisabledAddonInfos(BinaryAddonBaseList& addonInfos, const TYPE& type)
+{
+  CSingleLock lock(m_critSection);
+
+  for (auto info : m_installedAddons)
+  {
+    if (type == ADDON_UNKNOWN || info.second->IsType(type))
+    {
+      if (!IsAddonEnabled(info.second->ID(), type))
+        addonInfos.push_back(info.second);
     }
   }
 }

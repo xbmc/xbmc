@@ -317,45 +317,45 @@ bool CAndroidJoystickState::ProcessEvent(const AInputEvent* event)
   return false;
 }
 
-void CAndroidJoystickState::GetEvents(std::vector<ADDON::PeripheralEvent>& events) const
+void CAndroidJoystickState::GetEvents(std::vector<kodi::addon::PeripheralEvent>& events) const
 {
   GetButtonEvents(events);
   GetHatEvents(events);
   GetAxisEvents(events);
 }
 
-void CAndroidJoystickState::GetButtonEvents(std::vector<ADDON::PeripheralEvent>& events) const
+void CAndroidJoystickState::GetButtonEvents(std::vector<kodi::addon::PeripheralEvent>& events) const
 {
   const std::vector<JOYSTICK_STATE_BUTTON>& buttons = m_stateBuffer.buttons;
 
   for (unsigned int i = 0; i < buttons.size(); i++)
   {
     if (buttons[i] != m_state.buttons[i])
-      events.push_back(ADDON::PeripheralEvent(m_deviceId, i, buttons[i]));
+      events.push_back(kodi::addon::PeripheralEvent(m_deviceId, i, buttons[i]));
   }
 
   m_state.buttons.assign(buttons.begin(), buttons.end());
 }
 
-void CAndroidJoystickState::GetHatEvents(std::vector<ADDON::PeripheralEvent>& events) const
+void CAndroidJoystickState::GetHatEvents(std::vector<kodi::addon::PeripheralEvent>& events) const
 {
   const std::vector<JOYSTICK_STATE_HAT>& hats = m_stateBuffer.hats;
 
   for (unsigned int i = 0; i < hats.size(); i++)
   {
     if (hats[i] != m_state.hats[i])
-      events.push_back(ADDON::PeripheralEvent(m_deviceId, i, hats[i]));
+      events.push_back(kodi::addon::PeripheralEvent(m_deviceId, i, hats[i]));
   }
 
   m_state.hats.assign(hats.begin(), hats.end());
 }
 
-void CAndroidJoystickState::GetAxisEvents(std::vector<ADDON::PeripheralEvent>& events) const
+void CAndroidJoystickState::GetAxisEvents(std::vector<kodi::addon::PeripheralEvent>& events) const
 {
   const std::vector<JOYSTICK_STATE_AXIS>& axes = m_stateBuffer.axes;
 
   for (unsigned int i = 0; i < axes.size(); i++)
-    events.push_back(ADDON::PeripheralEvent(m_deviceId, i, axes[i]));
+    events.push_back(kodi::addon::PeripheralEvent(m_deviceId, i, axes[i]));
 
   m_state.axes.assign(axes.begin(), axes.end());
 }

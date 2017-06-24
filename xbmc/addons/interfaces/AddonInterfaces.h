@@ -62,10 +62,6 @@ namespace ADDON
     static void         PVRLib_UnRegisterMe            (void* addonData, void* cbTable);
     /*\_________________________________________________________________________
     \*/
-    static void*        PeripheralLib_RegisterMe       (void *addonData);
-    static void         PeripheralLib_UnRegisterMe     (void *addonData, void* cbTable);
-    /*\_________________________________________________________________________
-    \*/
     static void*        GameLib_RegisterMe             (void *addonData);
     static void         GameLib_UnRegisterMe           (void *addonData, void* cbTable);
     /*

@@ -37,7 +37,6 @@
 #include "addons/Webinterface.h"
 #include "games/addons/GameClient.h"
 #include "games/controllers/Controller.h"
-#include "peripherals/addons/PeripheralAddon.h"
 #include "addons/PVRClient.h"
 #include "utils/StringUtils.h"
 
@@ -125,6 +124,7 @@ std::shared_ptr<IAddon> CAddonBuilder::Build()
     case ADDON_AUDIOENCODER:
     case ADDON_IMAGEDECODER:
     case ADDON_INPUTSTREAM:
+    case ADDON_PERIPHERALDLL:
     case ADDON_VIZ:
     case ADDON_SCREENSAVER:
       return std::make_shared<CAddonDll>(std::move(m_addonInfo));
@@ -132,8 +132,6 @@ std::shared_ptr<IAddon> CAddonBuilder::Build()
       return std::make_shared<PVR::CPVRClient>(std::move(m_addonInfo));
     case ADDON_AUDIODECODER:
       return CAudioDecoder::FromExtension(std::move(m_addonInfo), m_extPoint);
-    case ADDON_PERIPHERALDLL:
-      return PERIPHERALS::CPeripheralAddon::FromExtension(std::move(m_addonInfo), m_extPoint);
     case ADDON_GAMEDLL:
       return GAME::CGameClient::FromExtension(std::move(m_addonInfo), m_extPoint);
     case ADDON_VFS:
@@ -194,6 +192,7 @@ AddonPtr CAddonBuilder::FromProps(CAddonInfo addonInfo)
     case ADDON_AUDIOENCODER:
     case ADDON_IMAGEDECODER:
     case ADDON_INPUTSTREAM:
+    case ADDON_PERIPHERALDLL:
     case ADDON_VIZ:
     case ADDON_SCREENSAVER:
       return AddonPtr(new CAddonDll(std::move(addonInfo)));
@@ -213,8 +212,6 @@ AddonPtr CAddonBuilder::FromProps(CAddonInfo addonInfo)
       return AddonPtr(new CRepository(std::move(addonInfo)));
     case ADDON_CONTEXT_ITEM:
       return AddonPtr(new CContextMenuAddon(std::move(addonInfo)));
-    case ADDON_PERIPHERALDLL:
-      return AddonPtr(new PERIPHERALS::CPeripheralAddon(std::move(addonInfo), false, false)); //! @todo implement
     case ADDON_GAME_CONTROLLER:
       return AddonPtr(new GAME::CController(std::move(addonInfo)));
     case ADDON_GAMEDLL:

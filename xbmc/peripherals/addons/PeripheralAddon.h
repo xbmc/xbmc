@@ -19,9 +19,10 @@
  */
 #pragma once
 
-#include "addons/binary-addons/AddonDll.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/kodi_peripheral_types.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/kodi_peripheral_utils.hpp"
+#include "addons/binary-addons/AddonInstanceHandler.h"
+#include "addons/binary-addons/BinaryAddonBase.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/addon-instance/Peripheral.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/addon-instance/PeripheralUtils.h"
 #include "input/joysticks/JoystickTypes.h"
 #include "peripherals/PeripheralTypes.h"
 #include "threads/CriticalSection.h"
@@ -45,25 +46,19 @@ namespace PERIPHERALS
   class CPeripheral;
   class CPeripheralJoystick;
 
-  typedef std::vector<ADDON::DriverPrimitive> PrimitiveVector;
-  typedef std::map<KODI::JOYSTICK::FeatureName, ADDON::JoystickFeature> FeatureMap;
+  typedef std::vector<kodi::addon::DriverPrimitive> PrimitiveVector;
+  typedef std::map<KODI::JOYSTICK::FeatureName, kodi::addon::JoystickFeature> FeatureMap;
 
-  class CPeripheralAddon : public ADDON::CAddonDll
+  class CPeripheralAddon : public ADDON::IAddonInstanceHandler
   {
   public:
-    static std::unique_ptr<CPeripheralAddon> FromExtension(ADDON::CAddonInfo addonInfo, const cp_extension_t* ext);
-
-    CPeripheralAddon(ADDON::CAddonInfo addonInfo, bool bProvidesJoysticks, bool bProvidesButtonMaps);
-
+    CPeripheralAddon(const ADDON::BinaryAddonBasePtr& addonInfo);
     virtual ~CPeripheralAddon(void);
-
-    // implementation of IAddon
-    virtual ADDON::AddonPtr GetRunningInstance(void) const override;
 
     /*!
      * @brief Initialise the instance of this add-on
      */
-    ADDON_STATUS CreateAddon(void);
+    bool CreateAddon(void);
 
     /*!
      * \brief Deinitialize the instance of this add-on
@@ -94,7 +89,7 @@ namespace PERIPHERALS
     bool GetJoystickProperties(unsigned int index, CPeripheralJoystick& joystick);
     bool HasButtonMaps(void) const { return m_bProvidesButtonMaps; }
     bool GetFeatures(const CPeripheral* device, const std::string& strControllerId, FeatureMap& features);
-    bool MapFeature(const CPeripheral* device, const std::string& strControllerId, const ADDON::JoystickFeature& feature);
+    bool MapFeature(const CPeripheral* device, const std::string& strControllerId, const kodi::addon::JoystickFeature& feature);
     bool GetIgnoredPrimitives(const CPeripheral* device, PrimitiveVector& primitives);
     bool SetIgnoredPrimitives(const CPeripheral* device, const PrimitiveVector& primitives);
     void SaveButtonMap(const CPeripheral* device);
@@ -107,12 +102,15 @@ namespace PERIPHERALS
     void UnregisterButtonMap(KODI::JOYSTICK::IButtonMap* buttonMap);
     void RefreshButtonMaps(const std::string& strDeviceName = "");
 
-    /*!
-     * @brief To get the interface table used between addon and kodi
-     * @todo This function becomes removed after old callback library system
-     * is removed.
-     */
-    AddonInstance_Peripheral* GetInstanceInterface() { return &m_struct; }
+    static inline bool ProvidesJoysticks(const ADDON::BinaryAddonBasePtr& addonInfo)
+    {
+      return addonInfo->Type(ADDON::ADDON_PERIPHERALDLL)->GetValue("@provides_joysticks").asBoolean();
+    }
+
+    static inline bool ProvidesButtonMaps(const ADDON::BinaryAddonBasePtr& addonInfo)
+    {
+      return addonInfo->Type(ADDON::ADDON_PERIPHERALDLL)->GetValue("@provides_buttonmaps").asBoolean();
+    }
 
   private:
     void UnregisterButtonMap(CPeripheral* device);
@@ -120,10 +118,10 @@ namespace PERIPHERALS
     /*!
      * @brief Helper functions
      */
-    static void GetPeripheralInfo(const CPeripheral* device, ADDON::Peripheral& peripheralInfo);
+    static void GetPeripheralInfo(const CPeripheral* device, kodi::addon::Peripheral& peripheralInfo);
 
-    static void GetJoystickInfo(const CPeripheral* device, ADDON::Joystick& joystickInfo);
-    static void SetJoystickInfo(CPeripheralJoystick& joystick, const ADDON::Joystick& joystickInfo);
+    static void GetJoystickInfo(const CPeripheral* device, kodi::addon::Joystick& joystickInfo);
+    static void SetJoystickInfo(CPeripheralJoystick& joystick, const kodi::addon::Joystick& joystickInfo);
 
     /*!
      * @brief Reset all class members to their defaults. Called by the constructors
