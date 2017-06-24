@@ -31,7 +31,7 @@
 #include <windows.h>
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
-#include "../DVDCodecUtils.h"
+#include "cores/VideoPlayer/DVDCodecs/DVDCodecUtils.h"
 #include "DXVA.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/Log.h"
@@ -43,7 +43,7 @@ using namespace DXVA;
 static void RelBufferS(void *opaque, uint8_t *data)
 { ((CDecoder*)opaque)->RelBuffer(data); }
 
-static int GetBufferS(AVCodecContext *avctx, AVFrame *pic, int flags) 
+static int GetBufferS(AVCodecContext *avctx, AVFrame *pic, int flags)
 {  return ((CDecoder*)((ICallbackHWAccel*)avctx->opaque)->GetHWAccel())->GetBuffer(avctx, pic, flags); }
 
 DEFINE_GUID(DXVADDI_Intel_ModeH264_A, 0x604F8E64,0x4951,0x4c54,0x88,0xFE,0xAB,0xD2,0x5C,0x15,0xB3,0xD6);
@@ -52,7 +52,7 @@ DEFINE_GUID(DXVADDI_Intel_ModeH264_E, 0x604F8E68,0x4951,0x4c54,0x88,0xFE,0xAB,0x
 DEFINE_GUID(DXVADDI_Intel_ModeVC1_E , 0xBCC5DB6D,0xA2B6,0x4AF0,0xAC,0xE4,0xAD,0xB1,0xF7,0x87,0xBC,0x89);
 
 // redefine DXVA_NoEncrypt with other macro, solves unresolved external symbol linker error
-#ifdef DXVA_NoEncrypt 
+#ifdef DXVA_NoEncrypt
 #undef DXVA_NoEncrypt
 #endif
 DEFINE_GUID(DXVA_NoEncrypt, 0x1b81beD0, 0xa0c7, 0x11d3, 0xb9, 0x84, 0x00, 0xc0, 0x4f, 0x2e, 0x73, 0xc5);
@@ -312,7 +312,7 @@ void CDXVAContext::DestroyContext()
 void CDXVAContext::QueryCaps()
 {
   m_input_count = m_service->GetVideoDecoderProfileCount();
-  
+
   m_input_list = new GUID[m_input_count];
   for (unsigned i = 0; i < m_input_count; i++)
   {
@@ -435,9 +435,9 @@ bool CDXVAContext::CreateSurfaces(D3D11_VIDEO_DECODER_DESC format, unsigned int 
   HRESULT hr = S_OK;
   ID3D11Device* pDevice = g_Windowing.Get3D11Device();
 
-  CD3D11_TEXTURE2D_DESC texDesc(format.OutputFormat, 
-                                FFALIGN(format.SampleWidth, alignment), 
-                                FFALIGN(format.SampleHeight, alignment), 
+  CD3D11_TEXTURE2D_DESC texDesc(format.OutputFormat,
+                                FFALIGN(format.SampleWidth, alignment),
+                                FFALIGN(format.SampleHeight, alignment),
                                 count, 1, D3D11_BIND_DECODER);
 
   ID3D11Texture2D *texture = nullptr;
@@ -800,7 +800,7 @@ static bool HasATIMP2Bug(AVCodecContext *avctx)
   // here are params of these videos
   return avctx->height <= 576
       && avctx->colorspace == AVCOL_SPC_BT470BG
-      && avctx->color_primaries == AVCOL_PRI_BT470BG 
+      && avctx->color_primaries == AVCOL_PRI_BT470BG
       && avctx->color_trc == AVCOL_TRC_GAMMA28;
 }
 
@@ -1048,7 +1048,7 @@ CDVDVideoCodec::VCReturn CDecoder::Check(AVCodecContext* avctx)
   && avctx->codec_id != AV_CODEC_ID_VC1
   && avctx->codec_id != AV_CODEC_ID_WMV3)
     return CDVDVideoCodec::VC_NONE;
-  
+
   D3D11_VIDEO_DECODER_EXTENSION data = {0};
   union {
     DXVA_Status_H264 h264;

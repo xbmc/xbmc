@@ -20,8 +20,8 @@
 #pragma once
 
 #include <vector>
-#include "DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
-#include "DVDCodecs/Video/DXVA.h"
+#include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
+#include "cores/VideoPlayer/DVDCodecs/Video/windows/DXVA.h"
 #include "guilib/D3DResource.h"
 #include "guilib/Geometry.h"
 

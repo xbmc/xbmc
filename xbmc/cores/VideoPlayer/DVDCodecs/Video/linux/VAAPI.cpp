@@ -21,7 +21,7 @@
 #include "VAAPI.h"
 #include "ServiceBroker.h"
 #include "windowing/WindowingFactory.h"
-#include "DVDVideoCodec.h"
+#include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDCodecUtils.h"
 #include "cores/VideoPlayer/TimingConstants.h"
 #include "cores/VideoPlayer/Process/ProcessInfo.h"

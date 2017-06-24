@@ -10,3 +10,4 @@ xbmc/filesystem/posix      filesystem/posix
 xbmc/utils/posix           utils_posix
 xbmc/platform/posix        posix
 xbmc/windowing/rpi         windowing/rpi # EGL
+xbmc/cores/VideoPlayer/DVDCodecs/Video/rbpi       cores/VideoPlayer/codecs/video/rbpi

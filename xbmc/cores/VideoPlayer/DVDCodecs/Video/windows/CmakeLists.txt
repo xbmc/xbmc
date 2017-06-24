@@ -1,0 +1,4 @@
+set(SOURCES DXVA.cpp)
+set(HEADERS DXVA.h)
+
+core_add_library(dxvadecoder)

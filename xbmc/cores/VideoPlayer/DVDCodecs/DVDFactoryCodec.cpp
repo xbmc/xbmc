@@ -198,7 +198,7 @@ CDVDOverlayCodec* CDVDFactoryCodec::CreateOverlayCodec( CDVDStreamInfo &hint )
 // temp
 #if defined(HAS_MMAL)
 #define VP_VIDEOCODEC_HW
-#include "Video/MMALCodec.h"
+#include "Video/rbpi/MMALCodec.h"
 CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodecHW(CProcessInfo &processInfo)
 {
   CDVDVideoCodec* pCodec = new CMMALVideo(processInfo);

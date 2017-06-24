@@ -31,7 +31,7 @@
 #include "utils/log.h"
 #include "utils/MathUtils.h"
 #include "windowing/WindowingFactory.h"
-#include "cores/VideoPlayer/DVDCodecs/Video/MMALCodec.h"
+#include "cores/VideoPlayer/DVDCodecs/Video/rbpi/MMALCodec.h"
 #include "xbmc/Application.h"
 #include "linux/RBP.h"
 #include "TimingConstants.h"

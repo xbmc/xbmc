@@ -21,7 +21,7 @@
 
 #include "system_gl.h"
 
-#include "DVDVideoCodecFFmpeg.h"
+#include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
 #include <CoreVideo/CVPixelBuffer.h>
 

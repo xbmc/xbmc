@@ -12,3 +12,4 @@ xbmc/utils/win32             utils_win32
 xbmc/rendering/dx            rendering_dx
 xbmc/threads/platform/win    threads_win
 xbmc/windowing/windows       windowing/windows
+xbmc/cores/VideoPlayer/DVDCodecs/Video/windows       cores/VideoPlayer/codecs/video/windows

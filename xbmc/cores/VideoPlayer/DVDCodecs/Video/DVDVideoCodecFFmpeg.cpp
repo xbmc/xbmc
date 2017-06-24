@@ -45,6 +45,8 @@ extern "C" {
 #include "libavutil/pixdesc.h"
 }
 
+#include "HWAccel_override.h"
+
 #ifndef TARGET_POSIX
 #define RINT(x) ((x) >= 0 ? ((int)((x) + 0.5)) : ((int)((x) - 0.5)))
 #else
@@ -1160,65 +1162,6 @@ IHardwareDecoder* CDVDVideoCodecFFmpeg::GetHWAccel()
 {
   return m_pHardware;
 }
-
-//------------------------------------------------------------------------------
-// temporary
-//------------------------------------------------------------------------------
-
-#ifdef HAS_DX
-#include "DXVA.h"
-#define VP_VIDEOCODEC_HW
-IHardwareDecoder* CDVDVideoCodecFFmpeg::CreateVideoDecoderHW(AVPixelFormat pixfmt, CProcessInfo &processInfo)
-{
-  if (DXVA::CDecoder::Supports(pixfmt) && CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_USEDXVA2))
-    return new DXVA::CDecoder(m_processInfo);
-  return nullptr;
-}
-#endif
-
-// Linux X11
-#if defined(HAVE_LIBVA) || defined(HAVE_LIBVDPAU)
-#if defined(HAVE_LIBVA)
-#include "VAAPI.h"
-#endif
-#if defined(HAVE_LIBVDPAU)
-#include "VDPAU.h"
-#endif
-
-#define VP_VIDEOCODEC_HW
-IHardwareDecoder* CDVDVideoCodecFFmpeg::CreateVideoDecoderHW(AVPixelFormat pixfmt, CProcessInfo &processInfo)
-{
-  if (pixfmt == AV_PIX_FMT_VAAPI_VLD && CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVAAPI))
-    return new VAAPI::CDecoder(m_processInfo);
-
-  if(VDPAU::CDecoder::IsVDPAUFormat(pixfmt) && CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVDPAU))
-    return new VDPAU::CDecoder(m_processInfo);
-
-  return nullptr;
-}
-#endif
-
-#ifdef TARGET_DARWIN
-#include "VTB.h"
-#define VP_VIDEOCODEC_HW
-IHardwareDecoder* CDVDVideoCodecFFmpeg::CreateVideoDecoderHW(AVPixelFormat pixfmt, CProcessInfo &processInfo)
-{
-  if (pixfmt == AV_PIX_FMT_VIDEOTOOLBOX && CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVTB))
-    return new VTB::CDecoder(m_processInfo);
-  return nullptr;
-}
-#endif
-
-#ifdef HAS_MMAL
-#include "MMALFFmpeg.h"
-#define VP_VIDEOCODEC_HW
-IHardwareDecoder* CDVDVideoCodecFFmpeg::CreateVideoDecoderHW(AVPixelFormat pixfmt, CProcessInfo &processInfo)
-{
-  if (pixfmt == AV_PIX_FMT_YUV420P)
-    return new MMAL::CDecoder(m_processInfo, m_hints);
-  return nullptr;
-}
-#endif
 
 //------------------------------------------------------------------------------
 // Stubs for platform specific overrides

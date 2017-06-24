@@ -29,7 +29,7 @@
 #include "../RenderCapture.h"
 #include "settings/VideoSettings.h"
 #include "cores/VideoPlayer/DVDStreamInfo.h"
-#include "cores/VideoPlayer/DVDCodecs/Video/MMALFFmpeg.h"
+#include "cores/VideoPlayer/DVDCodecs/Video/rbpi/MMALFFmpeg.h"
 #include "guilib/Geometry.h"
 #include "threads/Thread.h"
 

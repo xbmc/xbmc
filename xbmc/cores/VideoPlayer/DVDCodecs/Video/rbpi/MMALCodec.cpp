@@ -29,7 +29,7 @@
 #include "DVDStreamInfo.h"
 #include "windowing/WindowingFactory.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDCodecs.h"
-#include "DVDVideoCodec.h"
+#include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 #include "settings/Settings.h"
