@@ -48,6 +48,7 @@ namespace ADDON
     bool CreateInstance(KODI_HANDLE instance);
     void DestroyInstance();
     const AddonDllPtr& Addon() { return m_addon; }
+    BinaryAddonBasePtr GetAddonBase() { return m_addonBase; };
 
   private:
     ADDON_TYPE m_type;

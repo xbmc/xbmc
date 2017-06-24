@@ -22,14 +22,34 @@
 #include "TimingConstants.h"
 #include "addons/binary-addons/AddonDll.h"
 #include "addons/binary-addons/BinaryAddonBase.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/addon-instance/VideoCodec.h"
 #include "cores/VideoPlayer/DVDClock.h"
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemux.h"
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemuxUtils.h"
+#include "cores/VideoPlayer/DVDDemuxers/DemuxCrypto.h"
 #include "filesystem/SpecialProtocol.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
+CInputStreamProvider::CInputStreamProvider(ADDON::BinaryAddonBasePtr addonBase, kodi::addon::IAddonInstance* parentInstance)
+  : m_addonBase(addonBase)
+  , m_parentInstance(parentInstance)
+{
+}
+
+void CInputStreamProvider::getAddonInstance(INSTANCE_TYPE instance_type, ADDON::BinaryAddonBasePtr& addonBase, kodi::addon::IAddonInstance*& parentInstance)
+{
+  if (instance_type == ADDON::IAddonProvider::INSTANCE_VIDEOCODEC)
+  {
+    addonBase = m_addonBase;
+    parentInstance = m_parentInstance;
+  }
+}
+
+/*****************************************************************************************************************/
+
 using namespace ADDON;
+using namespace kodi::addon;
 
 CInputStreamAddon::CInputStreamAddon(BinaryAddonBasePtr& addonBase, IVideoPlayer* player, const CFileItem& fileitem)
   : IAddonInstanceHandler(ADDON_INSTANCE_INPUTSTREAM, addonBase),
@@ -45,8 +65,8 @@ CInputStreamAddon::CInputStreamAddon(BinaryAddonBasePtr& addonBase, IVideoPlayer
     StringUtils::Trim(key);
     key = name + "." + key;
   }
-
   m_struct = {{ 0 }};
+  m_caps.m_mask = 0;
 }
 
 CInputStreamAddon::~CInputStreamAddon()
@@ -102,6 +122,7 @@ bool CInputStreamAddon::Open()
   m_struct.toKodi.kodiInstance = this;
   m_struct.toKodi.free_demux_packet = cb_free_demux_packet;
   m_struct.toKodi.allocate_demux_packet = cb_allocate_demux_packet;
+  m_struct.toKodi.allocate_encrypted_demux_packet = cb_allocate_encrypted_demux_packet;
   if (!CreateInstance(&m_struct) || !m_struct.toAddon.open)
     return false;
 
@@ -306,7 +327,6 @@ CDemuxStream* CInputStreamAddon::GetStream(int streamId) const
   auto stream = m_streams.find(streamId);
   if (stream != m_streams.end())
     return stream->second;
-
   return nullptr;
 }
 
@@ -427,6 +447,7 @@ void CInputStreamAddon::UpdateStreams()
       videoStream->fAspect = stream.m_Aspect;
       videoStream->stereo_mode = "mono";
       videoStream->iBitRate = stream.m_BitRate;
+      videoStream->profile = ConvertVideoCodecProfile(stream.m_codecProfile);
       demuxStream = videoStream;
     }
     else if (stream.m_streamType == INPUTSTREAM_INFO::TYPE_SUBTITLE)
@@ -453,6 +474,26 @@ void CInputStreamAddon::UpdateStreams()
         demuxStream->ExtraData[j] = stream.m_ExtraData[j];
     }
 
+    if (stream.m_cryptoInfo.m_CryptoKeySystem != CRYPTO_INFO::CRYPTO_KEY_SYSTEM_NONE &&
+      stream.m_cryptoInfo.m_CryptoKeySystem < CRYPTO_INFO::CRYPTO_KEY_SYSTEM_COUNT)
+    {
+      static const CryptoSessionSystem map[] =
+      {
+        CRYPTO_SESSION_SYSTEM_NONE,
+        CRYPTO_SESSION_SYSTEM_WIDEVINE,
+        CRYPTO_SESSION_SYSTEM_PLAYREADY
+      };
+      demuxStream->cryptoSession = std::shared_ptr<DemuxCryptoSession>(new DemuxCryptoSession(
+        map[stream.m_cryptoInfo.m_CryptoKeySystem], stream.m_cryptoInfo.m_CryptoSessionIdSize, stream.m_cryptoInfo.m_CryptoSessionId));
+
+      if ((stream.m_features & INPUTSTREAM_INFO::FEATURE_DECODE) != 0)
+      {
+        if (!m_subAddonProvider)
+          m_subAddonProvider = std::shared_ptr<CInputStreamProvider>(new CInputStreamProvider(GetAddonBase(), m_struct.toAddon.addonInstance));
+
+        demuxStream->externalInterfaces = m_subAddonProvider;
+      }
+    }
     m_streams[demuxStream->uniqueId] = demuxStream;
   }
 }
@@ -464,6 +505,29 @@ void CInputStreamAddon::DisposeStreams()
   m_streams.clear();
 }
 
+int CInputStreamAddon::ConvertVideoCodecProfile(STREAMCODEC_PROFILE profile)
+{
+  switch (profile)
+  {
+  case H264CodecProfileBaseline:
+    return FF_PROFILE_H264_BASELINE;
+  case H264CodecProfileMain:
+    return FF_PROFILE_H264_MAIN;
+  case H264CodecProfileExtended:
+    return FF_PROFILE_H264_EXTENDED;
+  case H264CodecProfileHigh:
+    return FF_PROFILE_H264_HIGH;
+  case H264CodecProfileHigh10:
+    return FF_PROFILE_H264_HIGH_10;
+  case H264CodecProfileHigh422:
+    return FF_PROFILE_H264_HIGH_422;
+  case H264CodecProfileHigh444Predictive:
+    return FF_PROFILE_H264_HIGH_444_PREDICTIVE;
+  default:
+    return FF_PROFILE_UNKNOWN;
+  }
+}
+
 /*!
  * Callbacks from add-on to kodi
  */
@@ -473,8 +537,14 @@ DemuxPacket* CInputStreamAddon::cb_allocate_demux_packet(void* kodiInstance, int
   return CDVDDemuxUtils::AllocateDemuxPacket(data_size);
 }
 
+DemuxPacket* CInputStreamAddon::cb_allocate_encrypted_demux_packet(void* kodiInstance, unsigned int dataSize, unsigned int encryptedSubsampleCount)
+{
+  return CDVDDemuxUtils::AllocateDemuxPacket(dataSize, encryptedSubsampleCount);
+}
+
 void CInputStreamAddon::cb_free_demux_packet(void* kodiInstance, DemuxPacket* packet)
 {
   CDVDDemuxUtils::FreeDemuxPacket(packet);
 }
+
 //@}

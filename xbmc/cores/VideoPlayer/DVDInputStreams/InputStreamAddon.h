@@ -25,8 +25,22 @@
 
 #include "DVDInputStream.h"
 #include "IVideoPlayer.h"
+#include "addons/AddonProvider.h"
 #include "addons/binary-addons/AddonInstanceHandler.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/addon-instance/Inputstream.h"
+
+class CInputStreamProvider
+  : public ADDON::IAddonProvider
+{
+public:
+  CInputStreamProvider(ADDON::BinaryAddonBasePtr addonBase, kodi::addon::IAddonInstance* parentInstance);
+
+  virtual void getAddonInstance(INSTANCE_TYPE instance_type, ADDON::BinaryAddonBasePtr& addonBase, kodi::addon::IAddonInstance*& parentInstance) override;
+
+private:
+  ADDON::BinaryAddonBasePtr m_addonBase;
+  kodi::addon::IAddonInstance* m_parentInstance;
+};
 
 //! \brief Input stream class
 class CInputStreamAddon
@@ -81,6 +95,7 @@ public:
 protected:
   void UpdateStreams();
   void DisposeStreams();
+  int ConvertVideoCodecProfile(STREAMCODEC_PROFILE profile);
 
   IVideoPlayer* m_player;
 
@@ -90,6 +105,7 @@ private:
   std::map<int, CDemuxStream*> m_streams;
 
   AddonInstance_InputStream m_struct;
+  std::shared_ptr<CInputStreamProvider> m_subAddonProvider;
 
   /*!
    * Callbacks from add-on to kodi
@@ -102,6 +118,15 @@ private:
    * @return The allocated packet.
    */
   static DemuxPacket* cb_allocate_demux_packet(void* kodiInstance, int iDataSize = 0);
+
+  /*!
+  * @brief Allocate an encrypted demux packet. Free with FreeDemuxPacket
+  * @param kodiInstance A pointer to the add-on.
+  * @param dataSize The size of the data that will go into the packet
+  * @param encryptedSubsampleCount The number of subsample description blocks to allocate
+  * @return The allocated packet.
+  */
+  static DemuxPacket* cb_allocate_encrypted_demux_packet(void* kodiInstance, unsigned int dataSize, unsigned int encryptedSubsampleCount);
 
   /*!
    * @brief Free a packet that was allocated with AllocateDemuxPacket

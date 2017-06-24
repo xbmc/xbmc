@@ -141,6 +141,13 @@
 #define ADDON_INSTANCE_VERSION_VISUALIZATION_XML_ID   "kodi.binary.instance.visualization"
 #define ADDON_INSTANCE_VERSION_VISUALIZATION_DEPENDS  "addon-instance/Visualization.h"
 
+#define ADDON_INSTANCE_VERSION_VIDEOCODEC          "1.0.0"
+#define ADDON_INSTANCE_VERSION_VIDEOCODEC_MIN      "1.0.0"
+#define ADDON_INSTANCE_VERSION_VIDEOCODEC_XML_ID   "kodi.binary.instance.videocodec"
+#define ADDON_INSTANCE_VERSION_VIDEOCODEC_DEPENDS  "addon-instance/VideoCodec.h" \
+                                                   "StreamCodec.h" \
+                                                   "StreamCrypto.h"
+
 ///
 /// The currently available instance types for Kodi add-ons
 ///
@@ -172,6 +179,7 @@ typedef enum ADDON_TYPE
   ADDON_INSTANCE_VISUALIZATION = 109,
   ADDON_INSTANCE_VFS = 110,
   ADDON_INSTANCE_IMAGEDECODER = 111,
+  ADDON_INSTANCE_VIDEOCODEC = 112,
 } ADDON_TYPE;
 
 #ifdef __cplusplus
@@ -264,6 +272,10 @@ inline const char* GetTypeVersion(int type)
     case ADDON_INSTANCE_VISUALIZATION:
       return ADDON_INSTANCE_VERSION_VISUALIZATION;
 #endif
+#if !defined(BUILD_KODI_ADDON) || defined(ADDON_INSTANCE_VERSION_VIDEOCODEC_USED)
+    case ADDON_INSTANCE_VIDEOCODEC:
+      return ADDON_INSTANCE_VERSION_VIDEOCODEC;
+#endif
   }
   return "0.0.0";
 }
@@ -317,6 +329,8 @@ inline const char* GetTypeMinVersion(int type)
       return ADDON_INSTANCE_VERSION_VFS_MIN;
     case ADDON_INSTANCE_VISUALIZATION:
       return ADDON_INSTANCE_VERSION_VISUALIZATION_MIN;
+    case ADDON_INSTANCE_VIDEOCODEC:
+      return ADDON_INSTANCE_VERSION_VIDEOCODEC_MIN;
   }
   return "0.0.0";
 }
@@ -367,6 +381,8 @@ inline const char* GetTypeName(int type)
       return "ScreenSaver";
     case ADDON_INSTANCE_VISUALIZATION:
       return "Visualization";
+    case ADDON_INSTANCE_VIDEOCODEC:
+      return "VideoCodec";
   }
   return "unknown";
 }
@@ -418,6 +434,8 @@ inline int GetTypeId(const char* name)
       return ADDON_INSTANCE_VFS;
     else if (strcmp(name, "visualization") == 0)
       return ADDON_INSTANCE_VISUALIZATION;
+    else if (strcmp(name, "videocodec") == 0)
+      return ADDON_INSTANCE_VIDEOCODEC;
   }
   return -1;
 }
