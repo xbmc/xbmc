@@ -73,8 +73,6 @@ void CGUIVideoControl::Render()
 
     g_graphicsContext.RemoveTransform();
   }
-  //! @todo remove this crap: HAS_VIDEO_PLAYBACK
-  //! instantiating a video control having no playback is complete nonsense
   CGUIControl::Render();
 }
 
