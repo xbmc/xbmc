@@ -416,15 +416,6 @@ typedef struct _RECT {
   LONG bottom;
 } RECT, *PRECT;
 
-typedef enum _D3DFORMAT
-{
-  D3DFMT_A8R8G8B8     = 0x00000006,
-  D3DFMT_DXT1         = 0x0000000C,
-  D3DFMT_DXT2         = 0x0000000E,
-  D3DFMT_DXT4         = 0x0000000F,
-  D3DFMT_UNKNOWN      = 0xFFFFFFFF
-} D3DFORMAT;
-
 // Misc stuff found in the code, not really important
 #define PAGE_READWRITE    0x04
 #define MAXULONG_PTR    ((ULONG) 0xffffffff)
@@ -463,24 +454,6 @@ typedef enum _D3DFORMAT
 #define FILE_SHARE_READ                  0x00000001
 #define FILE_SHARE_WRITE                 0x00000002
 #define FILE_SHARE_DELETE                0x00000004
-
-// Audio stuff
-typedef struct tWAVEFORMATEX
-{
-WORD    wFormatTag;
-WORD    nChannels;
-DWORD   nSamplesPerSec;
-DWORD   nAvgBytesPerSec;
-WORD    nBlockAlign;
-WORD    wBitsPerSample;
-WORD    cbSize;
-} __attribute__((__packed__)) WAVEFORMATEX, *PWAVEFORMATEX, *LPWAVEFORMATEX;
-
-#define WAVE_FORMAT_UNKNOWN           0x0000
-#define WAVE_FORMAT_PCM               0x0001
-#define WAVE_FORMAT_ADPCM             0x0002
-#define WAVE_FORMAT_IEEE_FLOAT        0x0003
-#define WAVE_FORMAT_EXTENSIBLE        0xFFFE
 
 #endif
 
