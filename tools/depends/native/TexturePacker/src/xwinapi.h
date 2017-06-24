@@ -1,6 +1,4 @@
-#ifndef XWINAPI_H__
-#define XWINAPI_H__
-
+#pragma once
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://xbmc.org
@@ -20,12 +18,9 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-
 #include "PlatformDefs.h"
 
 LPTSTR GetCommandLine();
 DWORD GetCurrentDirectory(DWORD nBufferLength, LPTSTR lpBuffer);
-BOOL SetCurrentDirectory(LPCTSTR lpPathName);
+int SetCurrentDirectory(LPCTSTR lpPathName);
 DWORD GetLastError();
-#endif // XWINAPI_H__
-

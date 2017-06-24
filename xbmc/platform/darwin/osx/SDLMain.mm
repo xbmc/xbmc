@@ -16,13 +16,9 @@
 #import <unistd.h>
 
 #import "platform/darwin/osx/CocoaInterface.h"
-//hack around problem with xbmc's typedef int BOOL
-// and obj-c's typedef unsigned char BOOL
-#define BOOL XBMC_BOOL
 #import "PlatformDefs.h"
 #import "messaging/ApplicationMessenger.h"
 #import "storage/osx/DarwinStorageProvider.h"
-#undef BOOL
 
 #import "platform/darwin/osx/HotKeyController.h"
 #import "platform/darwin/DarwinUtils.h"

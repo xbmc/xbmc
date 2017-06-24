@@ -18,9 +18,6 @@
  *
  */
 
-//hack around problem with xbmc's typedef int BOOL
-// and obj-c's typedef unsigned char BOOL
-#define BOOL XBMC_BOOL
 #include "WinSystemOSX.h"
 #include "WinEventsOSX.h"
 #include "VideoSyncOsx.h"
@@ -42,7 +39,6 @@
 #include "platform/darwin/osx/CocoaInterface.h"
 #include "platform/darwin/DictionaryUtils.h"
 #include "platform/darwin/DarwinUtils.h"
-#undef BOOL
 
 #import <SDL/SDL_video.h>
 #import <SDL/SDL_events.h>

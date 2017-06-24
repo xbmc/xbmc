@@ -148,7 +148,7 @@ HANDLE CreateFile(LPCTSTR lpFileName, DWORD dwDesiredAccess,
   HANDLE result = new CXHandle(CXHandle::HND_FILE);
   result->fd = fd;
 
-#if (defined(TARGET_LINUX) || defined(TARGET_FREEBSD)) && defined(HAS_DVD_DRIVE) 
+#if (defined(TARGET_LINUX) || defined(TARGET_FREEBSD)) && defined(HAS_DVD_DRIVE)
   // special case for opening the cdrom device
   if (strcmp(lpFileName, MEDIA_DETECT::CLibcdio::GetInstance()->GetDeviceFileName())==0)
     result->m_bCDROM = true;
@@ -164,7 +164,7 @@ HANDLE CreateFile(LPCTSTR lpFileName, DWORD dwDesiredAccess,
   return result;
 }
 
-BOOL ReadFile(HANDLE hFile, LPVOID lpBuffer, DWORD nNumberOfBytesToRead,
+int ReadFile(HANDLE hFile, LPVOID lpBuffer, DWORD nNumberOfBytesToRead,
   LPDWORD lpNumberOfBytesRead, LPVOID lpOverlapped)
 {
   if (lpOverlapped)
@@ -183,7 +183,7 @@ BOOL ReadFile(HANDLE hFile, LPVOID lpBuffer, DWORD nNumberOfBytesToRead,
   return 1;
 }
 
-BOOL WriteFile(HANDLE hFile, const void * lpBuffer, DWORD nNumberOfBytesToWrite,
+int WriteFile(HANDLE hFile, const void * lpBuffer, DWORD nNumberOfBytesToWrite,
   LPDWORD lpNumberOfBytesWritten, LPVOID lpOverlapped)
 {
   if (lpOverlapped)
@@ -202,7 +202,7 @@ BOOL WriteFile(HANDLE hFile, const void * lpBuffer, DWORD nNumberOfBytesToWrite,
   return 1;
 }
 
-DWORD  SetFilePointer(HANDLE hFile, int32_t lDistanceToMove,
+uint32_t SetFilePointer(HANDLE hFile, int32_t lDistanceToMove,
                       int32_t *lpDistanceToMoveHigh, DWORD dwMoveMethod)
 {
   if (hFile == NULL)
@@ -239,7 +239,7 @@ DWORD  SetFilePointer(HANDLE hFile, int32_t lDistanceToMove,
 }
 
 // uses statfs
-BOOL GetDiskFreeSpaceEx(
+int GetDiskFreeSpaceEx(
   LPCTSTR lpDirectoryName,
   PULARGE_INTEGER lpFreeBytesAvailable,
   PULARGE_INTEGER lpTotalNumberOfBytes,
@@ -267,10 +267,10 @@ BOOL GetDiskFreeSpaceEx(
   if (lpTotalNumberOfFreeBytes)
     lpTotalNumberOfFreeBytes->QuadPart = (ULONGLONG)fsInfo.f_bfree * (ULONGLONG)fsInfo.f_bsize;
 
-  return true;
+  return 1;
 }
 
-DWORD GetTimeZoneInformation( LPTIME_ZONE_INFORMATION lpTimeZoneInformation )
+uint32_t GetTimeZoneInformation( LPTIME_ZONE_INFORMATION lpTimeZoneInformation )
 {
   if (lpTimeZoneInformation == NULL)
     return TIME_ZONE_ID_INVALID;
@@ -288,7 +288,7 @@ DWORD GetTimeZoneInformation( LPTIME_ZONE_INFORMATION lpTimeZoneInformation )
   return TIME_ZONE_ID_UNKNOWN;
 }
 
-BOOL SetFilePointerEx(  HANDLE hFile,
+int SetFilePointerEx(  HANDLE hFile,
             LARGE_INTEGER liDistanceToMove,
             PLARGE_INTEGER lpNewFilePointer,
             DWORD dwMoveMethod )
@@ -311,7 +311,7 @@ BOOL SetFilePointerEx(  HANDLE hFile,
   if (lpNewFilePointer)
     lpNewFilePointer->QuadPart = currOff;
 
-  return true;
+  return 1;
 }
 
 int _fstat64(int fd, struct __stat64 *buffer)
@@ -331,4 +331,3 @@ int _stat64(   const char *path,   struct __stat64 *buffer )
   return stat64(path, buffer);
 }
 #endif
-

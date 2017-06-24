@@ -62,17 +62,17 @@ public:
   virtual void SetSpeed(float iSpeed) override;
   virtual float GetSpeed() override;
   virtual void DoAudioWork() override {}
-  
+
   virtual std::string GetPlayerState() override;
   virtual bool SetPlayerState(const std::string& state) override;
-  
+
 #if defined(TARGET_WINDOWS)
-  BOOL ExecuteAppW32(const char* strPath, const char* strSwitches);
+  bool ExecuteAppW32(const char* strPath, const char* strSwitches);
   //static void CALLBACK AppFinished(void* closure, BOOLEAN TimerOrWaitFired);
 #elif defined(TARGET_ANDROID)
-  BOOL ExecuteAppAndroid(const char* strSwitches,const char* strPath);
+  bool ExecuteAppAndroid(const char* strSwitches,const char* strPath);
 #elif defined(TARGET_POSIX)
-  BOOL ExecuteAppLinux(const char* strSwitches);
+  bool ExecuteAppLinux(const char* strSwitches);
 #endif
 
 private:
@@ -87,11 +87,11 @@ private:
   int m_totalTime;
   int m_time;
   std::string m_launchFilename;
-  HWND m_hwndXbmc; 
+  HWND m_hwndXbmc;
 #if defined(TARGET_WINDOWS)
   POINT m_ptCursorpos;
   PROCESS_INFORMATION m_processInfo;
-#endif 
+#endif
   CGUIDialogOK* m_dialog;
   int m_xPos;
   int m_yPos;

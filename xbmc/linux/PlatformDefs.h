@@ -188,7 +188,6 @@ typedef unsigned short  WORD;
 typedef unsigned char   BYTE;
 typedef char        CHAR;
 typedef wchar_t     WCHAR;
-typedef int         BOOL;
 typedef int         INT;
 typedef unsigned int  UINT;
 // typedef int INT32;              // unused; must match Xmd.h but why bother
@@ -230,7 +229,6 @@ typedef intptr_t (*FARPROC)(void);
 
 typedef DWORD LCID;
 typedef WORD* LPWORD;
-typedef BOOL* LPBOOL;
 typedef CHAR* LPCHAR;
 typedef CHAR* PCHAR;
 typedef const void* LPCVOID;
@@ -383,7 +381,7 @@ typedef struct _WIN32_FIND_DATA
 typedef struct _SECURITY_ATTRIBUTES {
   DWORD nLength;
   LPVOID lpSecurityDescriptor;
-  BOOL bInheritHandle;
+  int bInheritHandle;
 } SECURITY_ATTRIBUTES, *PSECURITY_ATTRIBUTES, *LPSECURITY_ATTRIBUTES;
 
 #define FILE_BEGIN              0

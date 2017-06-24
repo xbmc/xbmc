@@ -18,9 +18,6 @@
  *
  */
 
-//hack around problem with xbmc's typedef int BOOL
-// and obj-c's typedef unsigned char BOOL
-#define BOOL XBMC_BOOL
 #include <sys/resource.h>
 #include <signal.h>
 #include <stdio.h>
@@ -35,7 +32,6 @@
 #include "utils/TimeUtils.h"
 #include "Util.h"
 #include "platform/XbmcContext.h"
-#undef BOOL
 
 #import <QuartzCore/QuartzCore.h>
 
