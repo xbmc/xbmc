@@ -14,12 +14,14 @@ CROSSFLAGS=PYTHONXCPREFIX="$(PREFIX)" CC="$(CC) $(CFLAGS)" LDSHARED="$(CC) -shar
 ifeq ($(OS),android)
 CROSSFLAGS=PYTHONXCPREFIX="$(PREFIX)" CC="$(CC) $(CFLAGS)" LDSHARED="$(CC) -shared" LDFLAGS="$(LDFLAGS) -L$(PREFIX)/lib/dummy-lib$(APP_NAME)/ -l$(APP_NAME) -lm" PYTHONPATH="$(PREFIX)/lib/python2.7/site-packages/"
 endif
-ifeq ($(OS),osx)
-CROSSFLAGS=PYTHONXCPREFIX="$(PREFIX)" CC="$(CC)" LDSHARED="$(CC) -shared" LDFLAGS="$(LDFLAGS) -lpython" PYTHONPATH="$(PREFIX)/lib/python2.7/site-packages/"
-endif
+
+ifeq (darwin, $(findstring darwin, $(HOST)))
 ifeq ($(OS),ios)
 PYTHON_O=$(abs_top_srcdir)/target/python27/$(PLATFORM)/Modules/python.o
-CROSSFLAGS=PYTHONXCPREFIX="$(PREFIX)" CC="$(CC) $(CFLAGS)" CCSHARED="$(CC) $(CFLAGS) $(PYTHON_O)" LDFLAGS="$(LDFLAGS)" PYTHONPATH="$(PREFIX)/lib/python2.7/site-packages/"
+endif
+#ensure that only our target ldflags are passed to the python build
+LDSHARED:=$(CC) -bundle -undefined dynamic_lookup $(LDFLAGS)
+CROSSFLAGS=PYTHONXCPREFIX="$(PREFIX)" CC="$(CC) $(CFLAGS)" CCSHARED="$(CC) $(CFLAGS) $(PYTHON_O)" LDFLAGS="$(LDFLAGS)" PYTHONPATH="$(PREFIX)/lib/python2.7/site-packages/" LDSHARED="$(LDSHARED)"
 endif
 
 LIBDYLIB=$(PLATFORM)/dist/$(LIBNAME)-$(VERSION)-py2.7.egg
