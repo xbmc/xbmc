@@ -33,6 +33,7 @@
 #include "DVDStreamInfo.h"
 #include "windowing/WindowingFactory.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDCodecs.h"
+#include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
 #include "DVDVideoCodec.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
@@ -846,4 +847,14 @@ void CMMALVideo::SetCodecControl(int flags)
     if (g_advancedSettings.CanLogComponent(LOGVIDEO))
       CLog::Log(LOGDEBUG, "%s::%s %x->%x", CLASSNAME, __func__, m_codecControlFlags, flags);
   m_codecControlFlags = flags;
+}
+
+CDVDVideoCodec* CMMALVideo::Create(CProcessInfo &processInfo)
+ {
+   return new CMMALVideo(processInfo);
+ }
+
+void CMMALVideo::Register()
+{
+  CDVDFactoryCodec::RegisterHWVideoCodec("mmal", CMMALVideo::Create);
 }
