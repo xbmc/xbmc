@@ -114,7 +114,7 @@ void AnnounceBridge(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, con
         item_type = nonConstData["item"]["type"].asString();
       }
     }
-  
+
     // if we got an id from the passed data
     // we need to get title, track, album and artist from the db
     if (item_id >= 0)
@@ -219,7 +219,7 @@ void CAnnounceReceiver::DeInitialize()
 void CAnnounceReceiver::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
 {
   // can be called from c++, we need an auto poll here.
-  NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];	
+  NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
   AnnounceBridge(flag, sender, message, data);
   [pool release];
 }
