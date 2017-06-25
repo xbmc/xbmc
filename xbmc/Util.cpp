@@ -1465,9 +1465,13 @@ bool CUtil::MakeShortenPath(std::string StrInput, std::string& StrOutput, size_t
   {
     nPos = StrInput.find_last_of( cDelim, nPos );
     nGreaterDelim = nPos;
-    if ( nPos != std::string::npos )
-      nPos = StrInput.find_last_of( cDelim, nPos - 1 );
-    if ( nPos == 0 )
+
+    if (nPos == std::string::npos || nPos == 0)
+      break;
+
+    nPos = StrInput.find_last_of( cDelim, nPos - 1 );
+
+    if ( nPos == std::string::npos )
       break;
     if ( nGreaterDelim > nPos )
       StrInput.replace( nPos + 1, nGreaterDelim - nPos - 1, ".." );
