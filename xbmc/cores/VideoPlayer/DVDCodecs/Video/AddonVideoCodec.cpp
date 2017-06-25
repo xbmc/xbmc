@@ -203,12 +203,7 @@ bool CAddonVideoCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     return false;
 
   unsigned int nformats(0);
-  for (auto fmt : options.m_formats)
-    if (fmt == RENDER_FMT_YUV420P)
-    {
-      m_formats[nformats++] = VideoFormatYV12;
-      break;
-    }
+  m_formats[nformats++] = VideoFormatYV12;
   m_formats[nformats] = UnknownVideoFormat;
 
   if (nformats == 0)
@@ -260,22 +255,22 @@ CDVDVideoCodec::VCReturn CAddonVideoCodec::GetPicture(VideoPicture* pVideoPictur
   case VIDEOCODEC_RETVAL::VC_BUFFER:
     return CDVDVideoCodec::VC_BUFFER;
   case VIDEOCODEC_RETVAL::VC_PICTURE:
-    pVideoPicture->data[0] = picture.decodedData + picture.planeOffsets[0];
-    pVideoPicture->data[1] = picture.decodedData + picture.planeOffsets[1];
-    pVideoPicture->data[2] = picture.decodedData + picture.planeOffsets[2];
-    pVideoPicture->iLineSize[0] = picture.stride[0];
-    pVideoPicture->iLineSize[1] = picture.stride[1];
-    pVideoPicture->iLineSize[2] = picture.stride[2];
-    pVideoPicture->iWidth = picture.width;
-    pVideoPicture->iHeight = picture.height;
-    pVideoPicture->pts = DVD_NOPTS_VALUE;
-    pVideoPicture->dts = DVD_NOPTS_VALUE;
-    pVideoPicture->color_range = 0;
-    pVideoPicture->color_matrix = 4;
-    pVideoPicture->iFlags = DVP_FLAG_ALLOCATED;
-    if (m_codecFlags & DVD_CODEC_CTRL_DROP)
-      pVideoPicture->iFlags |= DVP_FLAG_DROPPED;
-    pVideoPicture->format = RENDER_FMT_YUV420P;
+//    pVideoPicture->data[0] = picture.decodedData + picture.planeOffsets[0];
+//    pVideoPicture->data[1] = picture.decodedData + picture.planeOffsets[1];
+//    pVideoPicture->data[2] = picture.decodedData + picture.planeOffsets[2];
+//    pVideoPicture->iLineSize[0] = picture.stride[0];
+//    pVideoPicture->iLineSize[1] = picture.stride[1];
+//    pVideoPicture->iLineSize[2] = picture.stride[2];
+//    pVideoPicture->iWidth = picture.width;
+//    pVideoPicture->iHeight = picture.height;
+//    pVideoPicture->pts = DVD_NOPTS_VALUE;
+//    pVideoPicture->dts = DVD_NOPTS_VALUE;
+//    pVideoPicture->color_range = 0;
+//    pVideoPicture->color_matrix = 4;
+//    pVideoPicture->iFlags = DVP_FLAG_ALLOCATED;
+//    if (m_codecFlags & DVD_CODEC_CTRL_DROP)
+//      pVideoPicture->iFlags |= DVP_FLAG_DROPPED;
+//    pVideoPicture->format = RENDER_FMT_YUV420P;
 
     pVideoPicture->iDisplayWidth = pVideoPicture->iWidth;
     pVideoPicture->iDisplayHeight = pVideoPicture->iHeight;
