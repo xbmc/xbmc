@@ -5,8 +5,10 @@ endif()
 
 if(VAAPI_FOUND)
   if(OPENGL_FOUND)
-    list(APPEND SOURCES RendererVAAPIGL.cpp)
-    list(APPEND HEADERS RendererVAAPIGL.h)
+    list(APPEND SOURCES RendererVAAPIGL.cpp
+                        VaapiEGL.cpp)
+    list(APPEND HEADERS RendererVAAPIGL.h
+                        VaapiEGL.h)
   elseif(OPENGLES_FOUND)
     list(APPEND SOURCES RendererVAAPIGLES.cpp)
     list(APPEND HEADERS RendererVAAPIGLES.h)

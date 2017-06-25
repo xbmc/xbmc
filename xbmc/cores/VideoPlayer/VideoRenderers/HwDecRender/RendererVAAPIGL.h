@@ -23,6 +23,7 @@
 #include "system.h"
 
 #include "cores/VideoPlayer/VideoRenderers/LinuxRendererGL.h"
+#include "VaapiEGL.h"
 
 class CRendererVAAPI : public CLinuxRendererGL
 {
@@ -35,6 +36,8 @@ public:
   // Player functions
   virtual bool ConfigChanged(const VideoPicture &picture) override;
   static bool HandlesVideoBuffer(CVideoBuffer *buffer);
+  virtual void ReleaseBuffer(int idx) override;
+  bool NeedBuffer(int idx) override;
 
   // Feature support
   virtual bool Supports(ERENDERFEATURE feature) override;
@@ -53,5 +56,6 @@ protected:
   virtual EShaderFormat GetShaderFormat() override;
 
   bool m_isVAAPIBuffer = true;
+  VAAPI::CVaapiTexture m_vaapiTextures[NUM_BUFFERS];
+  GLsync m_fences[NUM_BUFFERS];
 };
-
