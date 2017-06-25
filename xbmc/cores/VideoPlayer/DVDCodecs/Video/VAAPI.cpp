@@ -17,12 +17,12 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#include "system.h"
 #include "VAAPI.h"
 #include "ServiceBroker.h"
 #include "windowing/WindowingFactory.h"
 #include "DVDVideoCodec.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDCodecUtils.h"
+#include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
 #include "cores/VideoPlayer/TimingConstants.h"
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
 #include "utils/log.h"
@@ -48,11 +48,15 @@ extern "C" {
 }
 
 #ifdef HAVE_X11
+#include <X11/Xlib.h>
 #include <va/va_x11.h>
 #endif
 
 #include <va/va_vpp.h>
 #include <xf86drm.h>
+
+#include <EGL/egl.h>
+#include <EGL/eglext.h>
 
 using namespace VAAPI;
 #define NUM_RENDER_PICS 7
@@ -62,10 +66,6 @@ using namespace VAAPI;
 
 CVAAPIContext *CVAAPIContext::m_context = 0;
 CCriticalSection CVAAPIContext::m_section;
-
-#ifdef HAVE_X11
-Display *CVAAPIContext::m_X11dpy = 0;
-#endif
 
 CVAAPIContext::CVAAPIContext()
 {
@@ -175,12 +175,13 @@ void CVAAPIContext::SetVaDisplayForSystem()
   if (win_system == WINDOW_SYSTEM_X11)
   {
 #if HAVE_X11
+    static Display *X11dpy = nullptr;
     { CSingleLock lock(g_graphicsContext);
-      if (m_X11dpy == nullptr)
-        m_X11dpy = XOpenDisplay(nullptr);
+      if (X11dpy == nullptr)
+        X11dpy = XOpenDisplay(nullptr);
     }
 
-    m_display = vaGetDisplay(m_X11dpy);
+    m_display = vaGetDisplay(X11dpy);
 #endif
   }
   else
@@ -505,8 +506,8 @@ bool CVideoSurfaces::HasRefs()
 // VAAPI
 //-----------------------------------------------------------------------------
 
-bool CDecoder::m_capGeneral = true;
-bool CDecoder::m_capHevc = true;
+bool CDecoder::m_capGeneral = false;
+bool CDecoder::m_capHevc = false;
 
 CDecoder::CDecoder(CProcessInfo& processInfo) :
   m_vaapiOutput(*this, &m_inMsgEvent),
@@ -1007,7 +1008,10 @@ CDVDVideoCodec::VCReturn CDecoder::Check(AVCodecContext* avctx)
 bool CDecoder::GetPicture(AVCodecContext* avctx, VideoPicture* picture)
 {
   if (picture->videoBuffer)
+  {
     picture->videoBuffer->Release();
+    picture->videoBuffer = nullptr;
+  }
 
   CSingleLock lock(m_DecoderSection);
 
@@ -1191,7 +1195,15 @@ void CDecoder::ReturnRenderPicture(CVaapiRenderPicture *renderPic)
   m_vaapiOutput.m_dataPort.SendOutMessage(COutputDataProtocol::RETURNPIC, &renderPic, sizeof(renderPic));
 }
 
-void CDecoder::CheckCaps(EGLDisplay eglDisplay)
+IHardwareDecoder* CDecoder::Create(CDVDStreamInfo &hint, CProcessInfo &processInfo, AVPixelFormat fmt)
+{
+  if (fmt == AV_PIX_FMT_VAAPI_VLD && CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVTB))
+    return new VAAPI::CDecoder(processInfo);
+
+  return nullptr;
+}
+
+void CDecoder::Register(EGLDisplay eglDisplay)
 {
   CVaapiConfig config;
   if (!CVAAPIContext::EnsureContext(&config.context, nullptr))
@@ -1270,6 +1282,7 @@ void CDecoder::CheckCaps(EGLDisplay eglDisplay)
       {
         eglDestroyImageKHR(eglDisplay, eglImage);
         m_capGeneral = true;
+        CDVDFactoryCodec::RegisterHWAccel("vaapi", CDecoder::Create);
       }
 
     }
@@ -1331,283 +1344,6 @@ void CDecoder::CheckCaps(EGLDisplay eglDisplay)
 }
 
 //-----------------------------------------------------------------------------
-// RenderPicture
-//-----------------------------------------------------------------------------
-
-void CVaapiRenderPicture::Sync()
-{
-#ifdef GL_ARB_sync
-  CSingleLock lock(bufferPoolSection);
-  if (usefence)
-  {
-    if (glIsSync(fence))
-    {
-      glDeleteSync(fence);
-      fence = None;
-    }
-    fence = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
-  }
-#endif
-}
-
-bool CVaapiRenderPicture::GLMapSurface()
-{
-  VAStatus status;
-  glInterop.vaImage.image_id = VA_INVALID_ID;
-
-  vaSyncSurface(glInterop.m_glInfo.vadsp, glInterop.procPic.videoSurface);
-
-  status = vaDeriveImage(glInterop.m_glInfo.vadsp, glInterop.procPic.videoSurface,
-                                                  &glInterop.vaImage);
-  if (status != VA_STATUS_SUCCESS)
-  {
-    CLog::Log(LOGERROR, "VAAPI::%s - Error: %s(%d)", __FUNCTION__, vaErrorStr(status), status);
-    return false;
-  }
-  memset(&glInterop.vBufInfo, 0, sizeof(glInterop.vBufInfo));
-  glInterop.vBufInfo.mem_type = VA_SURFACE_ATTRIB_MEM_TYPE_DRM_PRIME;
-  status = vaAcquireBufferHandle(glInterop.m_glInfo.vadsp, glInterop.vaImage.buf,
-                                 &glInterop.vBufInfo);
-  if (status != VA_STATUS_SUCCESS)
-  {
-    CLog::Log(LOGERROR, "VAAPI::%s - Error: %s(%d)", __FUNCTION__, vaErrorStr(status), status);
-    return false;
-  }
-
-  texWidth = glInterop.vaImage.width;
-  texHeight = glInterop.vaImage.height;
-
-  GLint attribs[23], *attrib;
-
-  switch (glInterop.vaImage.format.fourcc)
-  {
-    case VA_FOURCC('N','V','1','2'):
-    {
-      attrib = attribs;
-      *attrib++ = EGL_LINUX_DRM_FOURCC_EXT;
-      *attrib++ = fourcc_code('R', '8', ' ', ' ');
-      *attrib++ = EGL_WIDTH;
-      *attrib++ = glInterop.vaImage.width;
-      *attrib++ = EGL_HEIGHT;
-      *attrib++ = glInterop.vaImage.height;
-      *attrib++ = EGL_DMA_BUF_PLANE0_FD_EXT;
-      *attrib++ = (intptr_t)glInterop.vBufInfo.handle;
-      *attrib++ = EGL_DMA_BUF_PLANE0_OFFSET_EXT;
-      *attrib++ = glInterop.vaImage.offsets[0];
-      *attrib++ = EGL_DMA_BUF_PLANE0_PITCH_EXT;
-      *attrib++ = glInterop.vaImage.pitches[0];
-      *attrib++ = EGL_NONE;
-      glInterop.eglImageY = glInterop.m_glInfo.eglCreateImageKHR(glInterop.m_glInfo.eglDisplay,
-                                          EGL_NO_CONTEXT, EGL_LINUX_DMA_BUF_EXT, (EGLClientBuffer)NULL,
-                                          attribs);
-      if (!glInterop.eglImageY)
-      {
-        EGLint err = eglGetError();
-        CLog::Log(LOGERROR, "failed to import VA buffer NV12 into EGL image: %d", err);
-        return false;
-      }
-
-      attrib = attribs;
-      *attrib++ = EGL_LINUX_DRM_FOURCC_EXT;
-      *attrib++ = fourcc_code('G', 'R', '8', '8');
-      *attrib++ = EGL_WIDTH;
-      *attrib++ = (glInterop.vaImage.width + 1) >> 1;
-      *attrib++ = EGL_HEIGHT;
-      *attrib++ = (glInterop.vaImage.height + 1) >> 1;
-      *attrib++ = EGL_DMA_BUF_PLANE0_FD_EXT;
-      *attrib++ = (intptr_t)glInterop.vBufInfo.handle;
-      *attrib++ = EGL_DMA_BUF_PLANE0_OFFSET_EXT;
-      *attrib++ = glInterop.vaImage.offsets[1];
-      *attrib++ = EGL_DMA_BUF_PLANE0_PITCH_EXT;
-      *attrib++ = glInterop.vaImage.pitches[1];
-      *attrib++ = EGL_NONE;
-      glInterop.eglImageVU = glInterop.m_glInfo.eglCreateImageKHR(glInterop.m_glInfo.eglDisplay,
-                                          EGL_NO_CONTEXT, EGL_LINUX_DMA_BUF_EXT, (EGLClientBuffer)NULL,
-                                          attribs);
-      if (!glInterop.eglImageVU)
-      {
-        EGLint err = eglGetError();
-        CLog::Log(LOGERROR, "failed to import VA buffer NV12 into EGL image: %d", err);
-        return false;
-      }
-
-      GLint format;
-
-      glGenTextures(1, &textureY);
-      glEnable(glInterop.m_glInfo.textureTarget);
-      glBindTexture(glInterop.m_glInfo.textureTarget, textureY);
-      glTexParameteri(glInterop.m_glInfo.textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-      glTexParameteri(glInterop.m_glInfo.textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-      glTexParameteri(glInterop.m_glInfo.textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-      glTexParameteri(glInterop.m_glInfo.textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-      glInterop.m_glInfo.glEGLImageTargetTexture2DOES(glInterop.m_glInfo.textureTarget, glInterop.eglImageY);
-      glGetIntegerv(GL_IMPLEMENTATION_COLOR_READ_FORMAT, &format);
-
-      glGenTextures(1, &textureVU);
-      glEnable(glInterop.m_glInfo.textureTarget);
-      glBindTexture(glInterop.m_glInfo.textureTarget, textureVU);
-      glTexParameteri(glInterop.m_glInfo.textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-      glTexParameteri(glInterop.m_glInfo.textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-      glTexParameteri(glInterop.m_glInfo.textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-      glTexParameteri(glInterop.m_glInfo.textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-      glInterop.m_glInfo.glEGLImageTargetTexture2DOES(glInterop.m_glInfo.textureTarget, glInterop.eglImageVU);
-      glGetIntegerv(GL_IMPLEMENTATION_COLOR_READ_FORMAT, &format);
-
-      glBindTexture(glInterop.m_glInfo.textureTarget, 0);
-      glDisable(glInterop.m_glInfo.textureTarget);
-
-      break;
-    }
-    case VA_FOURCC('P','0','1','0'):
-    {
-      attrib = attribs;
-      *attrib++ = EGL_LINUX_DRM_FOURCC_EXT;
-      *attrib++ = fourcc_code('R', '1', '6', ' ');
-      *attrib++ = EGL_WIDTH;
-      *attrib++ = glInterop.vaImage.width;
-      *attrib++ = EGL_HEIGHT;
-      *attrib++ = glInterop.vaImage.height;
-      *attrib++ = EGL_DMA_BUF_PLANE0_FD_EXT;
-      *attrib++ = (intptr_t)glInterop.vBufInfo.handle;
-      *attrib++ = EGL_DMA_BUF_PLANE0_OFFSET_EXT;
-      *attrib++ = glInterop.vaImage.offsets[0];
-      *attrib++ = EGL_DMA_BUF_PLANE0_PITCH_EXT;
-      *attrib++ = glInterop.vaImage.pitches[0];
-      *attrib++ = EGL_NONE;
-      glInterop.eglImageY = glInterop.m_glInfo.eglCreateImageKHR(glInterop.m_glInfo.eglDisplay,
-                                          EGL_NO_CONTEXT, EGL_LINUX_DMA_BUF_EXT, (EGLClientBuffer)NULL,
-                                          attribs);
-      if (!glInterop.eglImageY)
-      {
-        EGLint err = eglGetError();
-        CLog::Log(LOGERROR, "failed to import VA buffer P010 into EGL image: %d", err);
-        return false;
-      }
-
-      attrib = attribs;
-      *attrib++ = EGL_LINUX_DRM_FOURCC_EXT;
-      *attrib++ = fourcc_code('G', 'R', '3', '2');
-      *attrib++ = EGL_WIDTH;
-      *attrib++ = (glInterop.vaImage.width + 1) >> 1;
-      *attrib++ = EGL_HEIGHT;
-      *attrib++ = (glInterop.vaImage.height + 1) >> 1;
-      *attrib++ = EGL_DMA_BUF_PLANE0_FD_EXT;
-      *attrib++ = (intptr_t)glInterop.vBufInfo.handle;
-      *attrib++ = EGL_DMA_BUF_PLANE0_OFFSET_EXT;
-      *attrib++ = glInterop.vaImage.offsets[1];
-      *attrib++ = EGL_DMA_BUF_PLANE0_PITCH_EXT;
-      *attrib++ = glInterop.vaImage.pitches[1];
-      *attrib++ = EGL_NONE;
-      glInterop.eglImageVU = glInterop.m_glInfo.eglCreateImageKHR(glInterop.m_glInfo.eglDisplay,
-                                          EGL_NO_CONTEXT, EGL_LINUX_DMA_BUF_EXT, (EGLClientBuffer)NULL,
-                                          attribs);
-      if (!glInterop.eglImageVU)
-      {
-        EGLint err = eglGetError();
-        CLog::Log(LOGERROR, "failed to import VA buffer P010 into EGL image: %d", err);
-        return false;
-      }
-
-      GLint format;
-
-      glGenTextures(1, &textureY);
-      glEnable(glInterop.m_glInfo.textureTarget);
-      glBindTexture(glInterop.m_glInfo.textureTarget, textureY);
-      glTexParameteri(glInterop.m_glInfo.textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-      glTexParameteri(glInterop.m_glInfo.textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-      glTexParameteri(glInterop.m_glInfo.textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-      glTexParameteri(glInterop.m_glInfo.textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-      glInterop.m_glInfo.glEGLImageTargetTexture2DOES(glInterop.m_glInfo.textureTarget, glInterop.eglImageY);
-      glGetIntegerv(GL_IMPLEMENTATION_COLOR_READ_FORMAT, &format);
-
-      glGenTextures(1, &textureVU);
-      glEnable(glInterop.m_glInfo.textureTarget);
-      glBindTexture(glInterop.m_glInfo.textureTarget, textureVU);
-      glTexParameteri(glInterop.m_glInfo.textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-      glTexParameteri(glInterop.m_glInfo.textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-      glTexParameteri(glInterop.m_glInfo.textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-      glTexParameteri(glInterop.m_glInfo.textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-      glInterop.m_glInfo.glEGLImageTargetTexture2DOES(glInterop.m_glInfo.textureTarget, glInterop.eglImageVU);
-      glGetIntegerv(GL_IMPLEMENTATION_COLOR_READ_FORMAT, &format);
-
-      glBindTexture(glInterop.m_glInfo.textureTarget, 0);
-      glDisable(glInterop.m_glInfo.textureTarget);
-
-      break;
-    }
-    case VA_FOURCC('B','G','R','A'):
-    {
-      attrib = attribs;
-      *attrib++ = EGL_DRM_BUFFER_FORMAT_MESA;
-      *attrib++ = EGL_DRM_BUFFER_FORMAT_ARGB32_MESA;
-      *attrib++ = EGL_WIDTH;
-      *attrib++ = glInterop.vaImage.width;
-      *attrib++ = EGL_HEIGHT;
-      *attrib++ = glInterop.vaImage.height;
-      *attrib++ = EGL_DRM_BUFFER_STRIDE_MESA;
-      *attrib++ = glInterop.vaImage.pitches[0] / 4;
-      *attrib++ = EGL_NONE;
-      glInterop.eglImage = glInterop.m_glInfo.eglCreateImageKHR(glInterop.m_glInfo.eglDisplay, EGL_NO_CONTEXT,
-                                         EGL_DRM_BUFFER_MESA,
-                                         (EGLClientBuffer)glInterop.vBufInfo.handle,
-                                         attribs);
-      if (!glInterop.eglImage)
-      {
-        EGLint err = eglGetError();
-        CLog::Log(LOGERROR, "failed to import VA buffer BGRA into EGL image: %d", err);
-        return false;
-      }
-
-      glGenTextures(1, &texture);
-      glEnable(glInterop.m_glInfo.textureTarget);
-      glBindTexture(glInterop.m_glInfo.textureTarget, texture);
-      glTexParameteri(glInterop.m_glInfo.textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-      glTexParameteri(glInterop.m_glInfo.textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-      glTexParameteri(glInterop.m_glInfo.textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-      glTexParameteri(glInterop.m_glInfo.textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-      glInterop.m_glInfo.glEGLImageTargetTexture2DOES(glInterop.m_glInfo.textureTarget, glInterop.eglImage);
-
-      glBindTexture(glInterop.m_glInfo.textureTarget, 0);
-      glDisable(glInterop.m_glInfo.textureTarget);
-
-      break;
-    }
-    default:
-      return false;
-  }
-
-  return true;
-}
-
-void CVaapiRenderPicture::GLUnMapSurface()
-{
-  if (glInterop.vaImage.image_id == VA_INVALID_ID)
-    return;
-
-  glInterop.m_glInfo.eglDestroyImageKHR(glInterop.m_glInfo.eglDisplay, glInterop.eglImageY);
-  glInterop.m_glInfo.eglDestroyImageKHR(glInterop.m_glInfo.eglDisplay, glInterop.eglImageVU);
-
-  VAStatus status;
-  status = vaReleaseBufferHandle(glInterop.m_glInfo.vadsp, glInterop.vaImage.buf);
-  if (status != VA_STATUS_SUCCESS)
-  {
-    CLog::Log(LOGERROR, "VAAPI::%s - Error: %s(%d)", __FUNCTION__, vaErrorStr(status), status);
-  }
-
-  status = vaDestroyImage(glInterop.m_glInfo.vadsp, glInterop.vaImage.image_id);
-  if (status != VA_STATUS_SUCCESS)
-  {
-    CLog::Log(LOGERROR, "VAAPI::%s - Error: %s(%d)", __FUNCTION__, vaErrorStr(status), status);
-  }
-  glInterop.mapped = false;
-  glInterop.vaImage.image_id = VA_INVALID_ID;
-
-  glDeleteTextures(1, &textureY);
-  glDeleteTextures(1, &textureVU);
-}
-
-//-----------------------------------------------------------------------------
 // Buffer Pool
 //-----------------------------------------------------------------------------
 
@@ -1625,16 +1361,13 @@ public:
   CVaapiRenderPicture* GetVaapi();
   bool HasFree();
   void QueueReturnPicture(CVaapiRenderPicture *pic);
-  CVaapiRenderPicture* ProcessSyncPicture(bool &busy);
-  void UseFence(bool usefence);
-  void Init(CVaapiGLSurface::GlInfo &info);
-  void WaitForFences();
+  CVaapiRenderPicture* ProcessSyncPicture();
+  void Init();
   void DeleteTextures(bool precleanup);
 
   std::deque<CVaapiProcessedPicture> processedPics;
   std::deque<CVaapiProcessedPicture> processedPicsAway;
   std::deque<CVaapiDecodedPicture> decodedPics;
-  CCriticalSection bufferPoolSection;
   int procPicId;
 
 protected:
@@ -1652,7 +1385,7 @@ CVaapiBufferPool::CVaapiBufferPool(CDecoder &decoder)
   CVaapiRenderPicture *pic;
   for (unsigned int i = 0; i < NUM_RENDER_PICS; i++)
   {
-    pic = new CVaapiRenderPicture(i, bufferPoolSection);
+    pic = new CVaapiRenderPicture(i);
     allRenderPics.push_back(pic);
     freeRenderPics.push_back(i);
   }
@@ -1729,33 +1462,13 @@ void CVaapiBufferPool::QueueReturnPicture(CVaapiRenderPicture *pic)
   }
 }
 
-CVaapiRenderPicture* CVaapiBufferPool::ProcessSyncPicture(bool &busy)
+CVaapiRenderPicture* CVaapiBufferPool::ProcessSyncPicture()
 {
   CVaapiRenderPicture *retPic = nullptr;
 
   for (auto it = syncRenderPics.begin(); it != syncRenderPics.end(); ++it)
   {
     retPic = allRenderPics[*it];
-
-    if (retPic->usefence)
-    {
-      if (retPic->fence)
-      {
-        GLint state;
-        GLsizei length;
-        glGetSynciv(retPic->fence, GL_SYNC_STATUS, 1, &length, &state);
-        if (state == GL_SIGNALED)
-        {
-          glDeleteSync(retPic->fence);
-          retPic->fence = None;
-        }
-        else
-        {
-          busy = true;
-          continue;
-        }
-      }
-    }
 
     freeRenderPics.push_back(*it);
 
@@ -1781,68 +1494,14 @@ CVaapiRenderPicture* CVaapiBufferPool::ProcessSyncPicture(bool &busy)
   return retPic;
 }
 
-void CVaapiBufferPool::UseFence(bool usefence)
+void CVaapiBufferPool::Init()
 {
   for (auto &pic : allRenderPics)
   {
-    pic->usefence = usefence;
-  }
-}
-
-void CVaapiBufferPool::Init(CVaapiGLSurface::GlInfo &info)
-{
-  for (auto &pic : allRenderPics)
-  {
-    pic->glInterop.m_glInfo.vadsp = info.vadsp;
-    pic->glInterop.m_glInfo.eglDisplay = info.eglDisplay;
-    pic->glInterop.m_glInfo.textureTarget = info.textureTarget;
-    pic->glInterop.m_glInfo.eglCreateImageKHR = info.eglCreateImageKHR;
-    pic->glInterop.m_glInfo.eglDestroyImageKHR = info.eglDestroyImageKHR;
-    pic->glInterop.m_glInfo.glEGLImageTargetTexture2DOES = info.glEGLImageTargetTexture2DOES;
-
-    pic->glInterop.vaImage.image_id = VA_INVALID_ID;
-    pic->glInterop.mapped = false;
-
     pic->avFrame = av_frame_alloc();
     pic->valid = false;
   }
   procPicId = 0;
-}
-
-void CVaapiBufferPool::WaitForFences()
-{
-  CSingleLock lock(bufferPoolSection);
-
-  // wait for all fences
-  XbmcThreads::EndTime timeout(1000);
-  for (auto &pic : allRenderPics)
-  {
-    if (pic->usefence)
-    {
-#ifdef GL_ARB_sync
-      while (pic->fence)
-      {
-        GLint state;
-        GLsizei length;
-        glGetSynciv(pic->fence, GL_SYNC_STATUS, 1, &length, &state);
-        if(state == GL_SIGNALED || timeout.IsTimePast())
-        {
-          glDeleteSync(pic->fence);
-          pic->fence = None;
-        }
-        else
-        {
-          Sleep(5);
-        }
-      }
-      pic->fence = None;
-#endif
-    }
-  }
-  if (timeout.IsTimePast())
-  {
-    CLog::Log(LOGERROR, "CVaapiBufferPool::%s - timeout waiting for fence", __FUNCTION__);
-  }
 }
 
 void CVaapiBufferPool::DeleteTextures(bool precleanup)
@@ -1852,11 +1511,6 @@ void CVaapiBufferPool::DeleteTextures(bool precleanup)
     if (precleanup && pic->valid)
       continue;
 
-    if (pic->texture)
-    {
-      glDeleteTextures(1, &pic->texture);
-      pic->texture = 0;
-    }
     av_frame_free(&pic->avFrame);
     pic->valid = false;
   }
@@ -2069,10 +1723,8 @@ void COutput::StateMachine(int signal, Protocol *port, Message *msg)
         switch (signal)
         {
         case COutputControlProtocol::TIMEOUT:
-          if (ProcessSyncPicture())
-            m_extTimeout = 10;
-          else
-            m_extTimeout = 100;
+          ProcessSyncPicture();
+          m_extTimeout = 100;
           if (HasWork())
           {
             m_state = O_TOP_CONFIGURED_WORK;
@@ -2292,12 +1944,6 @@ void COutput::Process()
 
 bool COutput::Init()
 {
-  if (!CreateEGLContext())
-    return false;
-
-  if (!GLInit())
-    return false;
-
   m_diMethods.numDiMethods = 0;
 
   m_pp = new CFFmpegPostproc();
@@ -2322,15 +1968,10 @@ bool COutput::Init()
 
 bool COutput::Uninit()
 {
-  glFlush();
-  while(ProcessSyncPicture())
-  {
-    Sleep(10);
-  }
+  ProcessSyncPicture();
   ReleaseBufferPool();
   delete m_pp;
   m_pp = NULL;
-  DestroyEGLContext();
   return true;
 }
 
@@ -2527,17 +2168,17 @@ CVaapiRenderPicture* COutput::ProcessPicture(CVaapiProcessedPicture &pic)
   if (pic.source == CVaapiProcessedPicture::SKIP_SRC ||
       pic.source == CVaapiProcessedPicture::VPP_SRC)
   {
+    vaSyncSurface(m_config.dpy, pic.videoSurface);
     pic.id = m_bufferPool->procPicId++;
     m_bufferPool->processedPicsAway.push_back(pic);
-    retPic->glInterop.procPic = pic;
-    retPic->glInterop.mapped = false;
-    retPic->GLMapSurface();
+    retPic->procPic = pic;
+    retPic->vadsp = m_config.dpy;
   }
   else if (pic.source == CVaapiProcessedPicture::FFMPEG_SRC)
   {
     av_frame_move_ref(retPic->avFrame, pic.frame);
     av_frame_free(&pic.frame);
-    retPic->textureY = GL_NONE;
+    retPic->procPic.videoSurface = VA_INVALID_ID;
   }
   else
   {
@@ -2550,10 +2191,6 @@ CVaapiRenderPicture* COutput::ProcessPicture(CVaapiProcessedPicture &pic)
   retPic->DVDPic.iHeight = m_config.vidHeight;
 
   retPic->valid = true;
-  retPic->crop.x1 = 0;
-  retPic->crop.y1 = 0;
-  retPic->crop.x2 = m_config.outWidth;
-  retPic->crop.y2 = m_config.outHeight;
 
   return retPic;
 }
@@ -2612,18 +2249,16 @@ void COutput::QueueReturnPicture(CVaapiRenderPicture *pic)
   ProcessSyncPicture();
 }
 
-bool COutput::ProcessSyncPicture()
+void COutput::ProcessSyncPicture()
 {
   CVaapiRenderPicture *pic;
-  bool busy = false;
 
-  pic = m_bufferPool->ProcessSyncPicture(busy);
+  pic = m_bufferPool->ProcessSyncPicture();
 
   if (pic)
   {
     ProcessReturnPicture(pic);
   }
-  return busy;
 }
 
 void COutput::ProcessReturnPicture(CVaapiRenderPicture *pic)
@@ -2631,8 +2266,7 @@ void COutput::ProcessReturnPicture(CVaapiRenderPicture *pic)
   if (pic->avFrame)
     av_frame_unref(pic->avFrame);
 
-  pic->GLUnMapSurface();
-  ProcessReturnProcPicture(pic->glInterop.procPic.id);
+  ProcessReturnProcPicture(pic->procPic.id);
   pic->valid = false;
 }
 
@@ -2651,26 +2285,12 @@ void COutput::ProcessReturnProcPicture(int id)
 
 void COutput::EnsureBufferPool()
 {
-  CVaapiGLSurface::GlInfo info;
-  info.vadsp = m_config.dpy;
-  info.eglDisplay = m_eglDisplay;
-  info.textureTarget = m_textureTarget;
-  info.eglCreateImageKHR = eglCreateImageKHR;
-  info.eglDestroyImageKHR = eglDestroyImageKHR;
-  info.glEGLImageTargetTexture2DOES = glEGLImageTargetTexture2DOES;
-  m_bufferPool->Init(info);
+  m_bufferPool->Init();
 }
 
 void COutput::ReleaseBufferPool(bool precleanup)
 {
   CVaapiRenderPicture *pic;
-
-  if (!precleanup)
-  {
-    // wait for all fences
-    m_bufferPool->WaitForFences();
-    XbmcThreads::EndTime timeout(1000);
-  }
 
   ProcessSyncPicture();
 
@@ -2689,18 +2309,6 @@ void COutput::ReleaseBufferPool(bool precleanup)
   m_bufferPool->processedPics.clear();
 }
 
-bool COutput::GLInit()
-{
-  bool hasfence = g_Windowing.IsExtSupported("GL_ARB_sync");
-  m_bufferPool->UseFence(hasfence);
-
-  m_textureTarget = GL_TEXTURE_2D;
-  eglCreateImageKHR = (PFNEGLCREATEIMAGEKHRPROC)eglGetProcAddress("eglCreateImageKHR");
-  eglDestroyImageKHR = (PFNEGLDESTROYIMAGEKHRPROC)eglGetProcAddress("eglDestroyImageKHR");
-  glEGLImageTargetTexture2DOES = (PFNGLEGLIMAGETARGETTEXTURE2DOESPROC)eglGetProcAddress("glEGLImageTargetTexture2DOES");
-  return true;
-}
-
 bool COutput::CheckSuccess(VAStatus status)
 {
   if (status != VA_STATUS_SUCCESS)
@@ -2709,61 +2317,6 @@ bool COutput::CheckSuccess(VAStatus status)
     m_vaError = true;
     return false;
   }
-  return true;
-}
-
-bool COutput::CreateEGLContext()
-{
-  EGLDisplay eglDisplay = g_Windowing.GetEGLDisplay();
-  EGLContext eglMainContext = g_Windowing.GetEGLContext();
-  EGLConfig eglMainConfig = g_Windowing.GetEGLConfig();
-
-  EGLint pbufferAttribs[] =
-  {
-    EGL_WIDTH, 8,
-    EGL_HEIGHT, 8,
-    EGL_TEXTURE_TARGET, EGL_NO_TEXTURE,
-    EGL_TEXTURE_FORMAT, EGL_NO_TEXTURE,
-    EGL_NONE
-  };
-  EGLint contextAttributes[] =
-  {
-    EGL_CONTEXT_CLIENT_VERSION, 2,
-    EGL_NONE
-  };
-  if (!eglBindAPI(EGL_OPENGL_API))
-  {
-    CLog::Log(LOGERROR, "VAAPI::COutput::CreateEGLContext -failed to bind egl API");
-    return false;
-  }
-  m_eglSurface = eglCreatePbufferSurface(eglDisplay, eglMainConfig, pbufferAttribs);
-  m_eglContext = eglCreateContext(eglDisplay, eglMainConfig, eglMainContext, contextAttributes);
-  m_eglDisplay = eglDisplay;
-
-  if (!eglMakeCurrent(eglDisplay, m_eglSurface, m_eglSurface, m_eglContext))
-  {
-    CLog::Log(LOGERROR, "VAAPI::COutput::CreateEGLContext - Could not make surface current");
-    return false;
-  }
-  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
-    CLog::Log(LOGDEBUG, "VAAPI::COutput::CreateEGLContext - created context");
-  return true;
-}
-
-bool COutput::DestroyEGLContext()
-{
-  if (m_eglContext)
-  {
-    glFinish();
-    //eglMakeCurrent(m_eglContext, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
-    eglDestroyContext(m_eglDisplay, m_eglContext);
-  }
-  m_eglContext = EGL_NO_CONTEXT;
-
-  if (m_eglSurface)
-    eglDestroySurface(m_eglDisplay, m_eglSurface);
-  m_eglSurface = EGL_NO_SURFACE;
-
   return true;
 }
 

@@ -19,10 +19,6 @@
  */
 #pragma once
 
-#include "system_gl.h"
-#include <EGL/egl.h>
-#include <EGL/eglext.h>
-
 #include "DVDVideoCodec.h"
 #include "cores/VideoPlayer/Process/VideoBuffer.h"
 #include "settings/VideoSettings.h"
@@ -153,60 +149,16 @@ struct CVaapiProcessedPicture
   bool crop;
 };
 
-/**
- *
- */
-struct CVaapiGLSurface
-{
-  CVaapiProcessedPicture procPic;
-  VAImage vaImage;
-  VABufferInfo vBufInfo;
-  EGLImageKHR eglImage;
-  EGLImageKHR eglImageY, eglImageVU;
-  bool mapped;
-
-  struct GlInfo
-  {
-    VADisplay vadsp;
-    GLenum textureTarget;
-    EGLDisplay eglDisplay;
-    PFNEGLCREATEIMAGEKHRPROC eglCreateImageKHR;
-    PFNEGLDESTROYIMAGEKHRPROC eglDestroyImageKHR;
-    PFNGLEGLIMAGETARGETTEXTURE2DOESPROC glEGLImageTargetTexture2DOES;
-  } m_glInfo;
-};
-
-/**
- * Ready to render textures
- * Sent from COutput back to CDecoder
- * Objects are referenced by VideoPicture and are sent
- * to renderer
- */
 class CVaapiRenderPicture : public CVideoBuffer
 {
-  friend class CDecoder;
-  friend class COutput;
-  friend class CVaapiBufferPool;
 public:
-  CVaapiRenderPicture(int id, CCriticalSection &section)
-    : CVideoBuffer(id), bufferPoolSection(section) { }
-  void Sync();
+  CVaapiRenderPicture(int id) : CVideoBuffer(id) { }
   VideoPicture DVDPic;
-  int texWidth = 0;
-  int texHeight = 0;
-  CRect crop;
-  GLuint texture = 0;
-  GLuint textureY = 0;
-  GLuint textureVU = 0;
-  bool valid = false;
+  CVaapiProcessedPicture procPic;
   AVFrame *avFrame = nullptr;
-private:
-  bool GLMapSurface();
-  void GLUnMapSurface();
-  bool usefence;
-  GLsync fence = 0;
-  CVaapiGLSurface glInterop;
-  CCriticalSection &bufferPoolSection;
+
+  bool valid = false;
+  VADisplay vadsp;
 };
 
 //-----------------------------------------------------------------------------
@@ -286,21 +238,15 @@ protected:
   void QueueReturnPicture(CVaapiRenderPicture *pic);
   void ProcessReturnPicture(CVaapiRenderPicture *pic);
   void ProcessReturnProcPicture(int id);
-  bool ProcessSyncPicture();
+  void ProcessSyncPicture();
   void ReleaseProcessedPicture(CVaapiProcessedPicture &pic);
   void DropVppProcessedPictures();
   bool Init();
   bool Uninit();
   void Flush();
-  bool CreateEGLContext();
-  bool DestroyEGLContext();
   void EnsureBufferPool();
   void ReleaseBufferPool(bool precleanup = false);
-  bool GLInit();
   bool CheckSuccess(VAStatus status);
-  PFNEGLCREATEIMAGEKHRPROC eglCreateImageKHR;
-  PFNEGLDESTROYIMAGEKHRPROC eglDestroyImageKHR;
-  PFNGLEGLIMAGETARGETTEXTURE2DOESPROC glEGLImageTargetTexture2DOES;
   CEvent m_outMsgEvent;
   CEvent *m_inMsgEvent;
   int m_state;
@@ -312,11 +258,7 @@ protected:
   bool m_vaError;
   CVaapiConfig m_config;
   std::shared_ptr<CVaapiBufferPool> m_bufferPool;
-  EGLDisplay m_eglDisplay;
-  EGLSurface m_eglSurface;
-  EGLContext m_eglContext;
   CVaapiDecodedPicture m_currentPicture;
-  GLenum m_textureTarget;
   CPostproc *m_pp;
   SDiMethods m_diMethods;
   EINTERLACEMETHOD m_currentDiMethod;
@@ -382,9 +324,6 @@ private:
   VAProfile *m_profiles;
   std::vector<CDecoder*> m_decoders;
   int m_renderNodeFD{-1};
-#ifdef HAVE_X11
-  static Display *m_X11dpy;
-#endif
 };
 
 /**
@@ -416,8 +355,8 @@ public:
   void FFReleaseBuffer(uint8_t *data);
   static int FFGetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags);
 
-  static void CheckCaps(EGLDisplay eglDisplay);
-  static bool IsCapGeneral() { return m_capGeneral; }
+  static IHardwareDecoder* Create(CDVDStreamInfo &hint, CProcessInfo &processInfo, AVPixelFormat fmt);
+  static void Register(void *eglDisplay);
 
 protected:
   void SetWidthHeight(int width, int height);
