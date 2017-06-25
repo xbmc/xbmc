@@ -28,6 +28,7 @@
 #include "peripherals/bus/virtual/PeripheralBusAddon.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
+#include "Application.h"
 
 #include <algorithm>
 
@@ -172,6 +173,10 @@ bool CPeripheralJoystick::OnButtonMotion(unsigned int buttonIndex, bool bPressed
   CLog::Log(LOGDEBUG, "BUTTON [ %u ] on \"%s\" %s", buttonIndex,
             DeviceName().c_str(), bPressed ? "pressed" : "released");
 
+  // Avoid sending activated input if the app is in the background
+  if (bPressed && !g_application.IsAppFocused())
+    return false;
+
   CSingleLock lock(m_handlerMutex);
 
   // Process promiscuous handlers
@@ -208,6 +213,10 @@ bool CPeripheralJoystick::OnHatMotion(unsigned int hatIndex, HAT_STATE state)
 {
   CLog::Log(LOGDEBUG, "HAT [ %u ] on \"%s\" %s", hatIndex,
             DeviceName().c_str(), CJoystickTranslator::HatStateToString(state));
+
+  // Avoid sending activated input if the app is in the background
+  if (state != HAT_STATE::UNPRESSED && !g_application.IsAppFocused())
+    return false;
 
   CSingleLock lock(m_handlerMutex);
 
@@ -252,6 +261,10 @@ bool CPeripheralJoystick::OnAxisMotion(unsigned int axisIndex, float position)
   // Apply deadzone filtering
   if (center == 0 && m_deadzoneFilter)
     position = m_deadzoneFilter->FilterAxis(axisIndex, position);
+
+  // Avoid sending activated input if the app is in the background
+  if (position != static_cast<float>(center) && !g_application.IsAppFocused())
+    return false;
 
   CSingleLock lock(m_handlerMutex);
 

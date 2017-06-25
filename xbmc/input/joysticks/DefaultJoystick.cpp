@@ -69,7 +69,7 @@ bool CDefaultJoystick::HasFeature(const FeatureName& feature) const
 
 bool CDefaultJoystick::AcceptsInput(const FeatureName &feature) const
 {
-  return g_application.IsAppFocused();
+  return true;
 }
 
 unsigned int CDefaultJoystick::GetDelayMs(const FeatureName& feature) const
