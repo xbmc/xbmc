@@ -33,13 +33,13 @@ bool CIOSKeyboard::ShowAndGetInput(char_callback_t pCallback, const std::string 
   // we are in xbmc main thread or python module thread.
 
   CCocoaAutoPool pool;
-  
+
   @synchronized([KeyboardView class])
   {
     // in case twice open keyboard.
     if (g_pIosKeyboard)
       return false;
-    
+
     // assume we are only drawn on the mainscreen ever!
     UIScreen *pCurrentScreen = [UIScreen mainScreen];
     CGRect keyboardFrame = CGRectMake(0, 0, pCurrentScreen.bounds.size.height, pCurrentScreen.bounds.size.width);
@@ -48,7 +48,7 @@ bool CIOSKeyboard::ShowAndGetInput(char_callback_t pCallback, const std::string 
       keyboardFrame = CGRectMake(0, 0, pCurrentScreen.bounds.size.width, pCurrentScreen.bounds.size.height);
 #endif
 //    LOG(@"kb: kb frame: %@", NSStringFromCGRect(keyboardFrame));
-    
+
     //create the keyboardview
     g_pIosKeyboard = [[KeyboardView alloc] initWithFrame:keyboardFrame];
     if (!g_pIosKeyboard)

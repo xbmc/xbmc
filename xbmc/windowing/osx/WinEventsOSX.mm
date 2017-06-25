@@ -31,4 +31,3 @@ CWinEventsOSX::CWinEventsOSX()
 CWinEventsOSX::~CWinEventsOSX()
 {
 }
-

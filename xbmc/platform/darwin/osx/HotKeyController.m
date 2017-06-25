@@ -6,21 +6,21 @@
 //  SOURCE: http://stackoverflow.com/questions/2969110/cgeventtapcreate-breaks-down-mysteriously-with-key-down-events
 //
 //
-//  Permission is hereby granted, free of charge, to any person 
+//  Permission is hereby granted, free of charge, to any person
 //  obtaining a copy of this software and associated documentation
 //  files (the "Software"), to deal in the Software without restriction,
-//  including without limitation the rights to use, copy, modify, 
-//  merge, publish, distribute, sublicense, and/or sell copies of 
-//  the Software, and to permit persons to whom the Software is 
+//  including without limitation the rights to use, copy, modify,
+//  merge, publish, distribute, sublicense, and/or sell copies of
+//  the Software, and to permit persons to whom the Software is
 //  furnished to do so, subject to the following conditions:
 //
-//  The above copyright notice and this permission notice shall be 
+//  The above copyright notice and this permission notice shall be
 //  included in all copies or substantial portions of the Software.
-//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
-//  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES 
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+//  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
 //  OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-//  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR 
-//  ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF 
+//  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR
+//  ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
 //  CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 //  WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
@@ -61,28 +61,28 @@ NSString* const MediaKeyPreviousNotification  = @"MediaKeyPreviousNotification";
 {
   return [[self sharedController] retain];
 }
- 
+
 - (id)copyWithZone:(NSZone *)zone
 {
   return self;
 }
- 
+
 - (id)retain
 {
   return self;
 }
- 
+
 - (NSUInteger)retainCount
 {
   //denotes an object that cannot be released
   return NSUIntegerMax;
 }
- 
+
 - (oneway void)release
 {
   //do nothing
 }
- 
+
 - (id)autorelease
 {
   return self;
@@ -124,14 +124,14 @@ NSString* const MediaKeyPreviousNotification  = @"MediaKeyPreviousNotification";
 - (BOOL)getDebuggerActive
 {
   // Technical Q&A QA1361
-  // returns true if the current process is being debugged (either 
+  // returns true if the current process is being debugged (either
   // running under the debugger or has a debugger attached post facto).
   int                 junk;
   int                 mib[4];
   struct kinfo_proc   info;
   size_t              size;
 
-  // initialize the flags so that, if sysctl fails for some bizarre 
+  // initialize the flags so that, if sysctl fails for some bizarre
   // reason, we get a predictable result.
   info.kp_proc.p_flag = 0;
 
@@ -164,25 +164,25 @@ static CGEventRef tapEventCallback2(CGEventTapProxy proxy, CGEventType type, CGE
       CGEventTapEnable([hot_key_controller eventPort], TRUE);
     return NULL;
   }
-  
+
   if ((type != NX_SYSDEFINED) || (![hot_key_controller getActive]))
     return event;
 
   NSEvent *nsEvent = [NSEvent eventWithCGEvent:event];
-  if (!nsEvent || [nsEvent subtype] != 8) 
+  if (!nsEvent || [nsEvent subtype] != 8)
     return event;
-    
+
   int data = [nsEvent data1];
   int keyCode  = (data & 0xFFFF0000) >> 16;
   int keyFlags = (data & 0xFFFF);
   int keyState = (keyFlags & 0xFF00) >> 8;
   BOOL keyIsRepeat = (keyFlags & 0x1) > 0;
-  
+
   // allow repeated keypresses for volume buttons
   // all other repeated keypresses are handled by the os (is this really good?)
-  if (keyIsRepeat && keyCode != NX_KEYTYPE_SOUND_UP && keyCode != NX_KEYTYPE_SOUND_DOWN) 
+  if (keyIsRepeat && keyCode != NX_KEYTYPE_SOUND_UP && keyCode != NX_KEYTYPE_SOUND_DOWN)
     return event;
-  
+
   NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
   switch (keyCode)
   {

@@ -44,7 +44,7 @@ bool CWinEventsSDL::MessagePump()
     switch(event.type)
     {
       case SDL_QUIT:
-        if (!g_application.m_bStop) 
+        if (!g_application.m_bStop)
           CApplicationMessenger::GetInstance().PostMsg(TMSG_QUIT);
         break;
 
