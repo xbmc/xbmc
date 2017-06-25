@@ -53,7 +53,7 @@ bool CJoystickFeature::AcceptsInput(bool bActivation)
 
   if (m_bEnabled)
   {
-    if (m_handler->AcceptsInput())
+    if (m_handler->AcceptsInput(m_name))
       bAcceptsInput = true;
   }
 

@@ -35,7 +35,7 @@ std::string CInputSink::ControllerID(void) const
   return DEFAULT_CONTROLLER_ID;
 }
 
-bool CInputSink::AcceptsInput(void)
+bool CInputSink::AcceptsInput(const std::string& feature) const
 {
   return m_gameClient.AcceptsInput();
 }

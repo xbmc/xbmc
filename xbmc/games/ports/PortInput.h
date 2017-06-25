@@ -56,7 +56,7 @@ namespace GAME
     virtual ~CPortInput() = default;
 
     // Implementation of IInputHandler via CDefaultController
-    virtual bool AcceptsInput(void) override;
+    virtual bool AcceptsInput(const std::string &feature) const override;
 
     // Implementation of CDefaultJoystick via CDefaultController
     virtual int GetWindowID() const;

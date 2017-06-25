@@ -59,7 +59,7 @@ bool CGameClientJoystick::HasFeature(const std::string& feature) const
   return false;
 }
 
-bool CGameClientJoystick::AcceptsInput(void)
+bool CGameClientJoystick::AcceptsInput(const std::string &feature) const
 {
   return m_gameClient->AcceptsInput();
 }

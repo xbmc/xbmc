@@ -58,8 +58,12 @@ namespace JOYSTICK
 
     /*!
      * \brief Return true if the input handler is currently accepting input
+     *
+     * \param feature A feature belonging to the controller specified by ControllerID()
+     *
+     * \return True if the feature is currently accepting input, false otherwise
      */
-    virtual bool AcceptsInput(void) = 0;
+    virtual bool AcceptsInput(const FeatureName &feature) const = 0;
 
     /*!
      * \brief Get the delay before this feature should be processed

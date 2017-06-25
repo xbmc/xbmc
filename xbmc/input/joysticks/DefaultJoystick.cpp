@@ -67,7 +67,7 @@ bool CDefaultJoystick::HasFeature(const FeatureName& feature) const
   return false;
 }
 
-bool CDefaultJoystick::AcceptsInput()
+bool CDefaultJoystick::AcceptsInput(const FeatureName &feature) const
 {
   return g_application.IsAppFocused();
 }
