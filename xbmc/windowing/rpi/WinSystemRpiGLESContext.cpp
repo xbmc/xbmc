@@ -23,6 +23,9 @@
 #include "WinSystemRpiGLESContext.h"
 #include "guilib/GUIWindowManager.h"
 #include "utils/log.h"
+#include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
+#include "cores/VideoPlayer/DVDCodecs/Video/MMALFFmpeg.h"
+#include "cores/VideoPlayer/DVDCodecs/Video/MMALCodec.h"
 
 bool CWinSystemRpiGLESContext::InitWindowSystem()
 {
@@ -37,6 +40,10 @@ bool CWinSystemRpiGLESContext::InitWindowSystem()
   {
     return false;
   }
+  CDVDFactoryCodec::ClearHWAccels();
+  MMAL::CDecoder::Register();
+  CDVDFactoryCodec::ClearHWVideoCodecs();
+  MMAL::CMMALVideo::Register();
 
   return true;
 }
