@@ -48,11 +48,12 @@
 #include "utils/StringUtils.h"
 
 
-//#include "VPFactoryCodec_override.h"
-
 //------------------------------------------------------------------------------
 // Video
 //------------------------------------------------------------------------------
+
+std::map<std::string, CreateHWVideoCodec> CDVDFactoryCodec::m_hwVideoCodecs;
+std::map<std::string, CreateHWAccel> CDVDFactoryCodec::m_hwAccels;
 
 CCriticalSection videoCodecSection;
 
@@ -64,6 +65,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, CProces
   CDVDCodecOptions options;
 
   // addon handler for this stream ?
+
   if (hint.externalInterfaces)
   {
     ADDON::BinaryAddonBasePtr addonInfo;
@@ -73,7 +75,9 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, CProces
     {
       pCodec.reset(new CAddonVideoCodec(processInfo, addonInfo, parentInstance));
       if (pCodec && pCodec->Open(hint, options))
+      {
         return pCodec.release();
+      }
     }
     return nullptr;
   }
@@ -81,10 +85,13 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, CProces
   // platform specifig video decoders
   if (!(hint.codecOptions & CODEC_FORCE_SOFTWARE))
   {
-    pCodec.reset(CreateVideoCodecHW(processInfo));
-    if (pCodec && pCodec->Open(hint, options))
+    for (auto &codec : m_hwVideoCodecs)
     {
-      return pCodec.release();
+      pCodec.reset(CreateVideoCodecHW(codec.first, processInfo));
+      if (pCodec && pCodec->Open(hint, options))
+      {
+        return pCodec.release();
+      }
     }
     if (!(hint.codecOptions & CODEC_ALLOW_FALLBACK))
       return nullptr;
@@ -97,6 +104,73 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, CProces
   }
 
   return nullptr;
+}
+
+CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodecHW(std::string id, CProcessInfo &processInfo)
+{
+  CSingleLock lock(videoCodecSection);
+
+  auto it = m_hwVideoCodecs.find(id);
+  if (it != m_hwVideoCodecs.end())
+  {
+    return it->second(processInfo);
+  }
+
+  return nullptr;
+}
+
+IHardwareDecoder* CDVDFactoryCodec::CreateVideoCodecHWAccel(std::string id, CDVDStreamInfo &hint, CProcessInfo &processInfo, AVPixelFormat fmt)
+{
+  CSingleLock lock(videoCodecSection);
+
+  auto it = m_hwAccels.find(id);
+  if (it != m_hwAccels.end())
+  {
+    return it->second(hint, processInfo, fmt);
+  }
+
+  return nullptr;
+}
+
+
+void CDVDFactoryCodec::RegisterHWVideoCodec(std::string id, CreateHWVideoCodec createFunc)
+{
+  CSingleLock lock(videoCodecSection);
+
+  m_hwVideoCodecs[id] = createFunc;
+}
+
+void CDVDFactoryCodec::ClearHWVideoCodecs()
+{
+  CSingleLock lock(videoCodecSection);
+
+  m_hwVideoCodecs.clear();
+}
+
+std::vector<std::string> CDVDFactoryCodec::GetHWAccels()
+{
+  CSingleLock lock(videoCodecSection);
+
+  std::vector<std::string> ret;
+  for (auto &hwaccel : m_hwAccels)
+  {
+    ret.push_back(hwaccel.first);
+  }
+  return ret;
+}
+
+void CDVDFactoryCodec::RegisterHWAccel(std::string id, CreateHWAccel createFunc)
+{
+  CSingleLock lock(videoCodecSection);
+
+  m_hwAccels[id] = createFunc;
+}
+
+void CDVDFactoryCodec::ClearHWAccels()
+{
+  CSingleLock lock(videoCodecSection);
+
+  m_hwAccels.clear();
 }
 
 //------------------------------------------------------------------------------
@@ -198,57 +272,8 @@ CDVDOverlayCodec* CDVDFactoryCodec::CreateOverlayCodec( CDVDStreamInfo &hint )
 // Stubs for platform specific overrides
 //------------------------------------------------------------------------------
 
-// temp
-#if defined(HAS_MMAL)
-#define VP_VIDEOCODEC_HW
-#include "Video/MMALCodec.h"
-CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodecHW(CProcessInfo &processInfo)
-{
-  CDVDVideoCodec* pCodec = new CMMALVideo(processInfo);
-  return pCodec;
-}
-#endif
 
-#if defined(TARGET_ANDROID)
-#define VP_VIDEOCODEC_HW
-#include "Video/DVDVideoCodecAndroidMediaCodec.h"
-CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodecHW(CProcessInfo &processInfo)
-{
-  CDVDVideoCodec* pCodec = new CDVDVideoCodecAndroidMediaCodec(processInfo);
-  return pCodec;
-}
-#endif
-
-#if defined(HAS_LIBAMCODEC)
-#define VP_VIDEOCODEC_HW
-#include "Video/DVDVideoCodecAmlogic.h"
-CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodecHW(CProcessInfo &processInfo)
-{
-  CDVDVideoCodec* pCodec = new CDVDVideoCodecAmlogic(processInfo);
-  return pCodec;
-}
-#endif
-
-#if !defined(VP_VIDEOCODEC_HW)
-CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodecHW(CProcessInfo &processInfo)
-{
-  return nullptr;
-}
-#endif
-
-#if defined(TARGET_ANDROID)
-#define VP_AUDIOCODEC_HW
-#include "Audio/DVDAudioCodecAndroidMediaCodec.h"
-CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodecHW(CProcessInfo &processInfo)
-{
-  CDVDAudioCodec* pCodec = new CDVDAudioCodecAndroidMediaCodec(processInfo);
-  return pCodec;
-}
-#endif
-
-#if !defined(VP_AUDIOCODEC_HW)
 CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodecHW(CProcessInfo &processInfo)
 {
   return nullptr;
 }
-#endif
