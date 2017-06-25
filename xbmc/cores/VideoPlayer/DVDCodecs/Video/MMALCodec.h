@@ -70,6 +70,8 @@ public:
   void dec_output_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer);
   void dec_control_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer);
   void dec_input_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer);
+  static CDVDVideoCodec* Create(CProcessInfo &processInfo);
+  static void Register();
 
 protected:
   void QueryCodec(void);
