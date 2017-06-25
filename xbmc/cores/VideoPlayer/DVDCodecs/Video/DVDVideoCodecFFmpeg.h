@@ -25,7 +25,6 @@
 #include "DVDVideoCodec.h"
 #include "DVDResource.h"
 #include "DVDVideoPPFFmpeg.h"
-#include <memory>
 #include <string>
 #include <vector>
 
