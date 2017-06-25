@@ -22,6 +22,7 @@
 #include "games/controllers/Controller.h"
 #include "games/GameServices.h"
 #include "input/joysticks/IInputReceiver.h"
+#include "input/joysticks/JoystickIDs.h"
 #include "ServiceBroker.h"
 
 #include <algorithm>
@@ -35,12 +36,17 @@
 using namespace KODI;
 using namespace JOYSTICK;
 
-CRumbleGenerator::CRumbleGenerator(const std::string& controllerId) :
+CRumbleGenerator::CRumbleGenerator() :
   CThread("RumbleGenerator"),
-  m_motors(GetMotors(controllerId)),
+  m_motors(GetMotors(ControllerID())),
   m_receiver(nullptr),
   m_type(RUMBLE_UNKNOWN)
 {
+}
+
+std::string CRumbleGenerator::ControllerID() const
+{
+  return DEFAULT_CONTROLLER_ID;
 }
 
 void CRumbleGenerator::NotifyUser(IInputReceiver* receiver)

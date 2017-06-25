@@ -37,6 +37,7 @@ namespace KODI
 namespace JOYSTICK
 {
   class CDeadzoneFilter;
+  class CRumbleGenerator;
   class IButtonMap;
   class IDriverHandler;
 }
@@ -126,6 +127,7 @@ namespace PERIPHERALS
     unsigned int                        m_motorCount;
     bool                                m_supportsPowerOff;
     KODI::JOYSTICK::CDefaultController        m_defaultController;
+    std::unique_ptr<KODI::JOYSTICK::CRumbleGenerator> m_rumbleGenerator;
     KODI::JOYSTICK::CJoystickMonitor          m_joystickMonitor;
     std::unique_ptr<KODI::JOYSTICK::IButtonMap>      m_buttonMap;
     std::unique_ptr<KODI::JOYSTICK::CDeadzoneFilter> m_deadzoneFilter;

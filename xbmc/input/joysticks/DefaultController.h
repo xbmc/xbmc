@@ -20,7 +20,6 @@
 #pragma once
 
 #include "DefaultJoystick.h"
-#include "RumbleGenerator.h"
 
 namespace KODI
 {
@@ -33,19 +32,10 @@ namespace JOYSTICK
 
     virtual ~CDefaultController(void) = default;
 
-    // Forward rumble commands to rumble generator
-    void NotifyUser(void) { m_rumbleGenerator.NotifyUser(InputReceiver()); }
-    bool TestRumble(void) { return m_rumbleGenerator.DoTest(InputReceiver()); }
-    void AbortRumble() { m_rumbleGenerator.AbortRumble(); }
-
   protected:
     // implementation of CDefaultJoystick
     virtual std::string GetControllerID() const;
     virtual unsigned int GetKeyID(const FeatureName& feature, ANALOG_STICK_DIRECTION dir = ANALOG_STICK_DIRECTION::UNKNOWN) const override;
-
-  private:
-    // Rumble functionality
-    CRumbleGenerator m_rumbleGenerator;
   };
 }
 }

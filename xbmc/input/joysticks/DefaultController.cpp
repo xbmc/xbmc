@@ -26,8 +26,7 @@
 using namespace KODI;
 using namespace JOYSTICK;
 
-CDefaultController::CDefaultController(void) :
-  m_rumbleGenerator(GetControllerID())
+CDefaultController::CDefaultController(void)
 {
   // initialize CDefaultJoystick
   m_easterEgg.reset(new CJoystickEasterEgg(GetControllerID()));
