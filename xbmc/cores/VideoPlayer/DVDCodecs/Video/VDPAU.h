@@ -509,8 +509,8 @@ public:
   virtual void OnLostDisplay();
   virtual void OnResetDisplay();
 
-  static void CheckCaps();
-  static bool IsCapGeneral() { return m_capGeneral; }
+  static IHardwareDecoder* Create(CDVDStreamInfo &hint, CProcessInfo &processInfo, AVPixelFormat fmt);
+  static void Register();
 
 protected:
   void SetWidthHeight(int width, int height);
