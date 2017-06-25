@@ -36,7 +36,6 @@
 #include "DllLibbluray.h"
 #include "URL.h"
 #include "guilib/Geometry.h"
-#include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/LocalizeStrings.h"
 #include "settings/DiscSettings.h"
 #include "utils/LangCodeExpander.h"
@@ -140,8 +139,6 @@ int DllLibbluray::dir_read(BD_DIR_H *dir, BD_DIRENT *entry)
 
 BD_DIR_H* DllLibbluray::dir_open(void *handle, const char* rel_path)
 {
-  CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - Opening dir %s\n", rel_path);
-
   std::string strRelPath(rel_path);
   std::string* strBasePath = reinterpret_cast<std::string*>(handle);
   if (!strBasePath)
@@ -151,12 +148,16 @@ BD_DIR_H* DllLibbluray::dir_open(void *handle, const char* rel_path)
   }
 
   std::string strDirname = URIUtils::AddFileToFolder(*strBasePath, strRelPath);
-  URIUtils::RemoveSlashAtEnd(strDirname);
+  if (URIUtils::HasSlashAtEnd(strDirname))
+    URIUtils::RemoveSlashAtEnd(strDirname);
+
+  CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - Opening dir %s\n", CURL::GetRedacted(strDirname).c_str());
 
   SDirState *st = new SDirState();
   if (!CDirectory::GetDirectory(strDirname, st->list))
   {
-    CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - Error opening dir! (%s)\n", rel_path);
+    if (!CFile::Exists(strDirname))
+      CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - Error opening dir! (%s)\n", CURL::GetRedacted(strDirname).c_str());
     delete st;
     return NULL;
   }
@@ -292,7 +293,7 @@ BLURAY_TITLE_INFO* CDVDInputStreamBluray::GetTitleFile(const std::string& filena
   unsigned int playlist;
   if(sscanf(filename.c_str(), "%05u.mpls", &playlist) != 1)
   {
-    CLog::Log(LOGERROR, "get_playlist_title - unsupported playlist file selected %s", filename.c_str());
+    CLog::Log(LOGERROR, "get_playlist_title - unsupported playlist file selected %s", CURL::GetRedacted(filename).c_str());
     return NULL;
   }
 
@@ -381,7 +382,7 @@ bool CDVDInputStreamBluray::Open()
 
   SetupPlayerSettings();
 
-  CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::Open - opening %s", root.c_str());
+  CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::Open - opening %s", CURL::GetRedacted(root).c_str());
 
   if (openStream)
   {
@@ -438,12 +439,14 @@ bool CDVDInputStreamBluray::Open()
   if (disc_info->aacs_detected && !disc_info->aacs_handled)
   {
     CLog::Log(LOGERROR, "CDVDInputStreamBluray::Open - Media stream scrambled/encrypted with AACS");
+    m_player->OnDiscNavResult(nullptr, BD_EVENT_ENC_ERROR);
     return false;
   }
 
   if (disc_info->bdplus_detected && !disc_info->bdplus_handled)
   {
     CLog::Log(LOGERROR, "CDVDInputStreamBluray::Open - Media stream scrambled/encrypted with BD+");
+    m_player->OnDiscNavResult(nullptr, BD_EVENT_ENC_ERROR);
     return false;
   }
 
@@ -485,7 +488,7 @@ bool CDVDInputStreamBluray::Open()
 
     if(m_dll->bd_play(m_bd) <= 0)
     {
-      CLog::Log(LOGERROR, "CDVDInputStreamBluray::Open - failed play disk %s", strPath.c_str());
+      CLog::Log(LOGERROR, "CDVDInputStreamBluray::Open - failed play disk %s", CURL::GetRedacted(strPath).c_str());
       return false;
     }
     m_hold = HOLD_DATA;
@@ -506,7 +509,7 @@ bool CDVDInputStreamBluray::Open()
     m_clip = 0;
   }
 
-  // Process any events that occured during opening
+  // Process any events that occurred during opening
   while (m_dll->bd_get_event(m_bd, &m_event))
     ProcessEvent();
 
@@ -545,13 +548,8 @@ void CDVDInputStreamBluray::ProcessEvent() {
     case BD_ERROR_BDJ:
       m_player->OnDiscNavResult(nullptr, BD_EVENT_MENU_ERROR);
       break;
-    case BD_ERROR_AACS:
-      break;
-    case BD_ERROR_BDPLUS:
-      break;
     default:
       break;
-
     }
     CLog::Log(LOGERROR, "CDVDInputStreamBluray - BD_EVENT_ERROR: Fatal error. Playback can't be continued.");
     m_hold = HOLD_ERROR;
@@ -563,6 +561,19 @@ void CDVDInputStreamBluray::ProcessEvent() {
 
   case BD_EVENT_ENCRYPTED:
     CLog::Log(LOGERROR, "CDVDInputStreamBluray - BD_EVENT_ENCRYPTED");
+    switch (m_event.param)
+    {
+    case BD_ERROR_AACS:
+      CLog::Log(LOGERROR, "CDVDInputStreamBluray - BD_ERROR_AACS");
+      break;
+    case BD_ERROR_BDPLUS:
+      CLog::Log(LOGERROR, "CDVDInputStreamBluray - BD_ERROR_BDPLUS");
+      break;
+    default:
+      break;
+    }
+    m_hold = HOLD_ERROR;
+    m_player->OnDiscNavResult(nullptr, BD_EVENT_ENC_ERROR);
     break;
 
   /* playback control */

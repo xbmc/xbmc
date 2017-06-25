@@ -15252,7 +15252,13 @@ msgctxt "#29804"
 msgid "There was an error encountered loading Java, so BD-J menus will not be functional at this time. BD-J menus require the Java Runtime Environment so make sure this is installed and functioning on your system."
 msgstr ""
 
-#empty strings from id 29805 to 29899
+#. Body text for the encryption error kaitoast
+#: xbmc/cores/VideoPlayer/VideoPlayer.cpp
+msgctxt "#29805"
+msgid "This Blu-ray disc (or file) is encrypted and can't be played."
+msgstr ""
+
+#empty strings from id 29806 to 29899
 
 #. Header string on RDS Radiotext+ Info dialog
 msgctxt "#29900"
