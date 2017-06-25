@@ -229,10 +229,11 @@ protected:
 
   /*! \brief Load the default settings and override these with any previously configured user settings
    \param bForce force the load of settings even if they are already loaded (reload)
+   \param loadUserSettings whether or not to load user settings
    \return true if settings exist, false otherwise
    \sa LoadUserSettings, SaveSettings, HasSettings, HasUserSettings, GetSetting, UpdateSetting
    */
-  bool LoadSettings(bool bForce);
+  bool LoadSettings(bool bForce, bool loadUserSettings = true);
 
   /*! \brief Load the user settings
    \return true if user settings exist, false otherwise
