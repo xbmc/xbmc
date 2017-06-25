@@ -64,6 +64,8 @@ public:
   static void AlignedSize(AVCodecContext *avctx, int &width, int &height);
   static void FFReleaseBuffer(void *opaque, uint8_t *data);
   static int FFGetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags);
+  static IHardwareDecoder* Create(CDVDStreamInfo &hint, CProcessInfo &processInfo, AVPixelFormat fmt);
+  static void Register();
 
 protected:
   AVCodecContext *m_avctx;
