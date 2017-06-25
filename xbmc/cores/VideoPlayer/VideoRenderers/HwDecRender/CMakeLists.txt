@@ -11,6 +11,8 @@ if(VAAPI_FOUND)
     list(APPEND SOURCES RendererVAAPIGLES.cpp)
     list(APPEND HEADERS RendererVAAPIGLES.h)
   endif()
+  list(APPEND SOURCES VaapiEGL.cpp)
+  list(APPEND HEADERS VaapiEGL.h)
 endif()
 
 if(VDPAU_FOUND)
