@@ -26,6 +26,9 @@
 #include "games/addons/GameClient.h"
 #include "games/tags/GameInfoTag.h"
 #include "games/GameUtils.h"
+#include "guilib/GUIDialog.h"
+#include "guilib/GUIWindowManager.h"
+#include "guilib/WindowIDs.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/MathUtils.h"
@@ -155,6 +158,9 @@ void CRetroPlayer::Pause()
   {
     m_gameClient->GetPlayback()->PauseUnpause();
     m_audio->Enable(m_gameClient->GetPlayback()->GetSpeed() == 1.0);
+
+    if (m_gameClient->GetPlayback()->GetSpeed() != 0.0)
+      CloseOSD();
   }
 }
 
@@ -251,6 +257,9 @@ void CRetroPlayer::SeekTime(int64_t iTime /* = 0 */)
   {
     m_gameClient->GetPlayback()->SeekTimeMs(static_cast<unsigned int>(iTime));
     m_audio->Enable(m_gameClient->GetPlayback()->GetSpeed() == 1.0);
+
+    if (m_gameClient->GetPlayback()->GetSpeed() != 0.0)
+      CloseOSD();
   }
 }
 
@@ -298,6 +307,9 @@ void CRetroPlayer::SetSpeed(float speed)
 
     m_gameClient->GetPlayback()->SetSpeed(speed);
     m_audio->Enable(m_gameClient->GetPlayback()->GetSpeed() == 1.0);
+
+    if (m_gameClient->GetPlayback()->GetSpeed() != 0.0)
+      CloseOSD();
   }
 }
 
@@ -322,6 +334,46 @@ bool CRetroPlayer::SetPlayerState(const std::string& state)
   return false;
 }
 
+void CRetroPlayer::FrameMove()
+{
+  m_renderManager.FrameMove();
+
+  if (m_gameClient)
+  {
+    const bool bFullscreen = (g_windowManager.GetActiveWindowID() == WINDOW_FULLSCREEN_GAME);
+
+    switch (m_state)
+    {
+    case State::STARTING:
+    {
+      if (bFullscreen)
+        m_state = State::FULLSCREEN;
+      break;
+    }
+    case State::FULLSCREEN:
+    {
+      if (!bFullscreen)
+      {
+        m_priorSpeed = m_gameClient->GetPlayback()->GetSpeed();
+        m_gameClient->GetPlayback()->SetSpeed(0.0);
+        m_state = State::BACKGROUND;
+      }
+      break;
+    }
+    case State::BACKGROUND:
+    {
+      if (bFullscreen)
+      {
+        if (m_gameClient->GetPlayback()->GetSpeed() == 0.0)
+          m_gameClient->GetPlayback()->SetSpeed(m_priorSpeed);
+        m_state = State::FULLSCREEN;
+      }
+      break;
+    }
+    }
+  }
+}
+
 bool CRetroPlayer::Supports(EINTERLACEMETHOD method)
 {
   return m_processInfo->Supports(method);
@@ -340,6 +392,13 @@ void CRetroPlayer::UpdateClockSync(bool enabled)
 void CRetroPlayer::UpdateRenderInfo(CRenderInfo &info)
 {
   m_processInfo->UpdateRenderInfo(info);
+}
+
+void CRetroPlayer::CloseOSD()
+{
+  CGUIDialog *pDialog = g_windowManager.GetDialog(WINDOW_DIALOG_VIDEO_OSD);
+  if (pDialog)
+    pDialog->Close(true, WINDOW_FULLSCREEN_GAME);
 }
 
 void CRetroPlayer::PrintGameInfo(const CFileItem &file) const

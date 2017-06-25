@@ -683,15 +683,6 @@ void CGUIWindowManager::PreviousWindow()
 
   // ok to go to the previous window now
 
-  // pause game when leaving fullscreen or resume game when entering fullscreen
-  if (g_application.m_pPlayer->IsPlayingGame())
-  {
-    if (previousWindow == WINDOW_FULLSCREEN_VIDEO && g_application.m_pPlayer->IsPaused())
-      g_application.OnAction(ACTION_PAUSE);
-    else if (currentWindow == WINDOW_FULLSCREEN_VIDEO && !g_application.m_pPlayer->IsPaused())
-      g_application.OnAction(ACTION_PAUSE);
-  }
-
   // tell our info manager which window we are going to
   g_infoManager.SetNextWindow(previousWindow);
 
