@@ -23,7 +23,6 @@
 #include "games/controllers/Controller.h"
 #include "games/controllers/ControllerFeature.h"
 #include "input/joysticks/DriverPrimitive.h"
-#include "input/joysticks/IActionMap.h"
 #include "input/joysticks/IButtonMap.h"
 #include "input/joysticks/IButtonMapper.h"
 #include "input/joysticks/JoystickTranslator.h"
@@ -244,47 +243,14 @@ void CAxisDetector::DetectType(float position)
 
 // --- CButtonMapping ----------------------------------------------------------
 
-CButtonMapping::CButtonMapping(IButtonMapper* buttonMapper, IButtonMap* buttonMap, IActionMap* actionMap) :
+CButtonMapping::CButtonMapping(IButtonMapper* buttonMapper, IButtonMap* buttonMap) :
   m_buttonMapper(buttonMapper),
   m_buttonMap(buttonMap),
-  m_actionMap(actionMap),
   m_lastAction(0),
   m_frameCount(0)
 {
   assert(m_buttonMapper != nullptr);
   assert(m_buttonMap != nullptr);
-
-  // Make sure axes mapped to Select are centered before they can be mapped.
-  // This ensures that they are not immediately mapped to the first button.
-  if (m_actionMap && m_actionMap->ControllerID() == m_buttonMap->ControllerID())
-  {
-    using namespace GAME;
-
-    CGameServices& gameServices = CServiceBroker::GetGameServices();
-    ControllerPtr controller = gameServices.GetController(m_actionMap->ControllerID());
-
-    const auto& features = controller->Layout().Features();
-    for (const auto& feature : features)
-    {
-      if (m_actionMap->GetActionID(feature.Name()) != ACTION_SELECT_ITEM)
-        continue;
-
-      CDriverPrimitive primitive;
-      if (!m_buttonMap->GetScalar(feature.Name(), primitive))
-        continue;
-
-      if (primitive.Type() != PRIMITIVE_TYPE::SEMIAXIS)
-        continue;
-
-      // Set initial config, as detection will fail because axis is already activated
-      AxisConfiguration axisConfig;
-      axisConfig.bKnown = true;
-      axisConfig.center = primitive.Center();
-      axisConfig.range = primitive.Range();
-
-      GetAxis(primitive.Index(), static_cast<float>(primitive.Center()), axisConfig).SetEmitted(primitive);
-    }
-  }
 }
 
 bool CButtonMapping::OnButtonMotion(unsigned int buttonIndex, bool bPressed)
@@ -341,7 +307,7 @@ bool CButtonMapping::MapPrimitive(const CDriverPrimitive& primitive)
 
   if (bTimeoutElapsed)
   {
-    bHandled = m_buttonMapper->MapPrimitive(m_buttonMap, m_actionMap, primitive);
+    bHandled = m_buttonMapper->MapPrimitive(m_buttonMap, primitive);
 
     if (bHandled)
       m_lastAction = SystemClockMillis();

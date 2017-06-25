@@ -62,7 +62,6 @@ namespace PERIPHERALS
     void RegisterJoystickDriverHandler(KODI::JOYSTICK::IDriverHandler* handler, bool bPromiscuous) override;
     void UnregisterJoystickDriverHandler(KODI::JOYSTICK::IDriverHandler* handler) override;
     KODI::JOYSTICK::IDriverReceiver* GetDriverReceiver() override { return this; }
-    KODI::JOYSTICK::IActionMap* GetActionMap() override { return &m_defaultController; }
 
     bool OnButtonMotion(unsigned int buttonIndex, bool bPressed);
     bool OnHatMotion(unsigned int hatIndex, KODI::JOYSTICK::HAT_STATE state);

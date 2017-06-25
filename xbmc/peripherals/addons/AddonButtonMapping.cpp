@@ -42,7 +42,7 @@ CAddonButtonMapping::CAddonButtonMapping(CPeripherals& manager, CPeripheral* per
     m_buttonMap.reset(new CAddonButtonMap(peripheral, addon, mapper->ControllerID()));
     if (m_buttonMap->Load())
     {
-      m_buttonMapping.reset(new CButtonMapping(mapper, m_buttonMap.get(), peripheral->GetActionMap()));
+      m_buttonMapping.reset(new CButtonMapping(mapper, m_buttonMap.get()));
 
       // Allow the mapper to save our button map
       mapper->SetButtonMapCallback(peripheral->DeviceName(), this);

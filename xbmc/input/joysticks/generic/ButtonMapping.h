@@ -188,7 +188,6 @@ namespace JOYSTICK
     unsigned int m_activationTimeMs; // only used to delay anomalous trigger mapping to detect full range
   };
 
-  class IActionMap;
   class IButtonMap;
   class IButtonMapper;
 
@@ -213,7 +212,7 @@ namespace JOYSTICK
      * \param buttonMapper Carries out button-mapping commands using <buttonMap>
      * \param buttonMap The button map given to <buttonMapper> on each command
      */
-    CButtonMapping(IButtonMapper* buttonMapper, IButtonMap* buttonMap, IActionMap* actionMap);
+    CButtonMapping(IButtonMapper* buttonMapper, IButtonMap* buttonMap);
 
     virtual ~CButtonMapping() = default;
 
@@ -253,7 +252,6 @@ namespace JOYSTICK
     // Construction parameters
     IButtonMapper* const m_buttonMapper;
     IButtonMap* const    m_buttonMap;
-    IActionMap* const    m_actionMap;
 
     std::map<unsigned int, CButtonDetector> m_buttons;
     std::map<unsigned int, CHatDetector> m_hats;

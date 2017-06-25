@@ -27,7 +27,6 @@ namespace KODI
 namespace JOYSTICK
 {
   class CDriverPrimitive;
-  class IActionMap;
   class IButtonMap;
   class IButtonMapCallback;
 
@@ -88,7 +87,7 @@ namespace JOYSTICK
      *
      * \return True if driver primitive was mapped to a feature
      */
-    virtual bool MapPrimitive(IButtonMap* buttonMap, IActionMap* actionMap, const CDriverPrimitive& primitive) = 0;
+    virtual bool MapPrimitive(IButtonMap* buttonMap, const CDriverPrimitive& primitive) = 0;
 
     /*!
      * \brief Called once per event frame to notify the implementation of motion status

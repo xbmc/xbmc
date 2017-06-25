@@ -138,18 +138,6 @@ bool CDefaultJoystick::OnAccelerometerMotion(const FeatureName& feature, float x
   return false; //! @todo implement
 }
 
-unsigned int CDefaultJoystick::GetActionID(const FeatureName& feature)
-{
-  const unsigned int keyId = GetKeyID(feature);
-  const int windowId = GetWindowID();
-  const bool bFallthrough = GetFallthrough();
-
-  if (keyId > 0)
-    return m_handler->GetActionID(keyId, windowId, bFallthrough);
-
-  return ACTION_NONE;
-}
-
 int CDefaultJoystick::GetWindowID() const
 {
   return g_windowManager.GetActiveWindowID();

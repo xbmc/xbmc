@@ -188,7 +188,6 @@ void CGUIConfigurationWizard::Process(void)
 }
 
 bool CGUIConfigurationWizard::MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
-                                           JOYSTICK::IActionMap* actionMap,
                                            const JOYSTICK::CDriverPrimitive& primitive)
 {
   using namespace JOYSTICK;

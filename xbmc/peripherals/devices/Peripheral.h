@@ -34,7 +34,6 @@ namespace KODI
 {
 namespace JOYSTICK
 {
-  class IActionMap;
   class IButtonMapper;
   class IDriverHandler;
   class IDriverReceiver;
@@ -209,8 +208,6 @@ namespace PERIPHERALS
     virtual void UnregisterJoystickButtonMapper(KODI::JOYSTICK::IButtonMapper* mapper);
 
     virtual KODI::JOYSTICK::IDriverReceiver* GetDriverReceiver() { return nullptr; }
-
-    virtual KODI::JOYSTICK::IActionMap* GetActionMap() { return nullptr; }
 
   protected:
     virtual void ClearSettings(void);

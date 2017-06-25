@@ -19,7 +19,6 @@
  */
 #pragma once
 
-#include "IActionMap.h"
 #include "IInputHandler.h"
 #include "JoystickTypes.h"
 
@@ -40,8 +39,7 @@ namespace JOYSTICK
    *
    * \sa IInputHandler
    */
-  class CDefaultJoystick : public IInputHandler,
-                           public IActionMap
+  class CDefaultJoystick : public IInputHandler
   {
   public:
     CDefaultJoystick(void);
@@ -58,9 +56,6 @@ namespace JOYSTICK
     virtual bool OnButtonMotion(const FeatureName& feature, float magnitude, unsigned int motionTimeMs) override;
     virtual bool OnAnalogStickMotion(const FeatureName& feature, float x, float y, unsigned int motionTimeMs) override;
     virtual bool OnAccelerometerMotion(const FeatureName& feature, float x, float y, float z) override;
-
-    // implementation of IActionMap
-    virtual unsigned int GetActionID(const FeatureName& feature) override;
 
   protected:
     /*!

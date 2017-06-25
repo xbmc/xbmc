@@ -52,7 +52,6 @@ std::string CGUIDialogAxisDetection::GetDialogHeader()
 }
 
 bool CGUIDialogAxisDetection::MapPrimitiveInternal(JOYSTICK::IButtonMap* buttonMap,
-                                                   JOYSTICK::IActionMap* actionMap,
                                                    const JOYSTICK::CDriverPrimitive& primitive)
 {
   if (primitive.Type() == JOYSTICK::PRIMITIVE_TYPE::SEMIAXIS)
