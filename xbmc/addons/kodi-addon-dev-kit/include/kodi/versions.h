@@ -111,10 +111,8 @@
 #define ADDON_INSTANCE_VERSION_PERIPHERAL             "1.3.3"
 #define ADDON_INSTANCE_VERSION_PERIPHERAL_MIN         "1.3.3"
 #define ADDON_INSTANCE_VERSION_PERIPHERAL_XML_ID      "kodi.binary.instance.peripheral"
-#define ADDON_INSTANCE_VERSION_PERIPHERAL_DEPENDS     "kodi_peripheral_dll.h" \
-                                                      "kodi_peripheral_types.h" \
-                                                      "kodi_peripheral_utils.hpp" \
-                                                      "libKODI_peripheral.h"
+#define ADDON_INSTANCE_VERSION_PERIPHERAL_DEPENDS     "addon-instance/Peripheral.h" \
+                                                      "addon-instance/PeripheralUtils.h"
 
 #define ADDON_INSTANCE_VERSION_PVR                    "5.2.4"
 #define ADDON_INSTANCE_VERSION_PVR_MIN                "5.2.4"

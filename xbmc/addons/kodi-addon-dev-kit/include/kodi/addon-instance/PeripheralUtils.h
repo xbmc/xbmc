@@ -19,7 +19,7 @@
  */
 #pragma once
 
-#include "kodi_peripheral_types.h"
+#include "Peripheral.h"
 
 #include <array> // Requires c++11
 #include <cstring>
@@ -30,7 +30,9 @@
 #define PERIPHERAL_SAFE_DELETE(x)        do { delete   (x); (x) = NULL; } while (0)
 #define PERIPHERAL_SAFE_DELETE_ARRAY(x)  do { delete[] (x); (x) = NULL; } while (0)
 
-namespace ADDON
+namespace kodi
+{
+namespace addon
 {
   /*!
    * Utility class to manipulate arrays of peripheral types.
@@ -232,7 +234,7 @@ namespace ADDON
   typedef PeripheralVector<PeripheralEvent, PERIPHERAL_EVENT> PeripheralEvents;
 
   /*!
-   * ADDON::Joystick
+   * kodi::addon::Joystick
    *
    * Wrapper class providing additional joystick information not provided by
    * ADDON::Peripheral.
@@ -570,7 +572,7 @@ namespace ADDON
   typedef PeripheralVector<DriverPrimitive, JOYSTICK_DRIVER_PRIMITIVE> DriverPrimitives;
 
   /*!
-   * ADDON::JoystickFeature
+   * kodi::addon::JoystickFeature
    *
    * Class for joystick features. A feature can be:
    *
@@ -660,4 +662,7 @@ namespace ADDON
   };
 
   typedef PeripheralVector<JoystickFeature, JOYSTICK_FEATURE> JoystickFeatures;
-}
+
+} /* namespace addon */
+} /* namespace kodi */
+
