@@ -25,6 +25,7 @@
 
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "../DVDCodecUtils.h"
+#include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
 #include "MMALFFmpeg.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
@@ -324,6 +325,16 @@ CDVDVideoCodec::VCReturn CDecoder::Check(AVCodecContext* avctx)
 unsigned CDecoder::GetAllowedReferences()
 {
   return 6;
+}
+
+IHardwareDecoder* CDecoder::Create(CDVDStreamInfo &hint, CProcessInfo &processInfo, AVPixelFormat fmt)
+ {
+   return new CDecoder(processInfo, hint);
+ }
+
+void CDecoder::Register()
+{
+  CDVDFactoryCodec::RegisterHWAccel("mmalffmpeg", CDecoder::Create);
 }
 
 #endif
