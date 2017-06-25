@@ -88,7 +88,7 @@ bool CAddon::SettingsLoaded() const
   return m_settings != nullptr && m_settings->IsLoaded();
 }
 
-bool CAddon::LoadSettings(bool bForce /* = false */)
+bool CAddon::LoadSettings(bool bForce, bool loadUserSettings /* = true */)
 {
   if (SettingsInitialized() && !bForce)
     return true;
@@ -128,7 +128,8 @@ bool CAddon::LoadSettings(bool bForce /* = false */)
   m_loadSettingsFailed = false;
 
   // load user settings / values
-  LoadUserSettings();
+  if (loadUserSettings)
+    LoadUserSettings();
 
   return true;
 }
