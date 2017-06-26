@@ -33,21 +33,24 @@
 #
 
 # required ffmpeg library versions
+# note to distro maintainers:
+# only ffmpeg 3.1 is supported for Krypton!
+# our ffmpeg 3.1 version carries two important patches: https://github.com/xbmc/FFmpeg/commits/release/3.1-xbmc
 set(REQUIRED_FFMPEG_VERSION 3.1)
-set(_avcodec_ver ">=57.48.101")
-set(_avfilter_ver ">=6.47.100")
-set(_avformat_ver ">=57.41.100")
-set(_avutil_ver ">=55.28.100")
-set(_swscale_ver ">=4.1.100")
-set(_swresample_ver ">=2.1.100")
-set(_postproc_ver ">=54.0.100")
+set(_avcodec_ver "=57.48.101")
+set(_avfilter_ver "=6.47.100")
+set(_avformat_ver "=57.41.100")
+set(_avutil_ver "=55.28.100")
+set(_swscale_ver "=4.1.100")
+set(_swresample_ver "=2.1.100")
+set(_postproc_ver "=54.0.100")
 
 
 # Allows building with external ffmpeg not found in system paths,
 # without library version checks
 if(WITH_FFMPEG)
   set(FFMPEG_PATH ${WITH_FFMPEG})
-  message(STATUS "Warning: FFmpeg version checking disabled")
+  message(STATUS "Warning: FFmpeg version checking disabled, resulting build is unsupported!")
   set(REQUIRED_FFMPEG_VERSION undef)
   unset(_avcodec_ver)
   unset(_avfilter_ver)
