@@ -24,8 +24,13 @@
 
 CDBusMessage::CDBusMessage(const char *destination, const char *object, const char *interface, const char *method)
 {
-  m_reply = NULL;
+  m_reply = nullptr;
   m_message = dbus_message_new_method_call (destination, object, interface, method);
+  if (!m_message)
+  {
+    // Fails only due to memory allocation failure
+    throw std::runtime_error("dbus_message_new_method_call");
+  }
   m_haveArgs = false;
 
   if (g_advancedSettings.CanLogComponent(LOGDBUS))
@@ -119,56 +124,44 @@ bool CDBusMessage::SendAsyncSession()
 DBusMessage *CDBusMessage::Send(DBusBusType type)
 {
   CDBusError error;
-  DBusConnection *con = dbus_bus_get(type, error);
+  CDBusConnection con;
+  if (!con.Connect(type))
+    return nullptr;
 
   DBusMessage *returnMessage = Send(con, error);
 
   if (error)
     error.Log();
 
-  dbus_connection_unref(con);
-
   return returnMessage;
 }
 
 DBusMessage *CDBusMessage::Send(DBusBusType type, CDBusError& error)
 {
-  DBusConnection *con = dbus_bus_get(type, error);
-  if (!con)
+  CDBusConnection con;
+  if (!con.Connect(type, error))
     return nullptr;
   
   DBusMessage *returnMessage = Send(con, error);
-
-  dbus_connection_unref(con);
 
   return returnMessage;
 }
 
 bool CDBusMessage::SendAsync(DBusBusType type)
 {
-  if (!m_message)
+  CDBusConnection con;
+  if (!con.Connect(type))
     return false;
 
-  DBusConnection *con = dbus_bus_get(type, NULL);
-  if (!con)
-    return false;
-
-  bool result = dbus_connection_send(con, m_message, NULL);
-  
-  dbus_connection_unref(con);
-  return result;
+  return dbus_connection_send(con, m_message, nullptr);
 }
 
 DBusMessage *CDBusMessage::Send(DBusConnection *con, CDBusError& error)
 {
-  if (con && m_message)
-  {
-    if (m_reply)
-      dbus_message_unref(m_reply);
+  if (m_reply)
+    dbus_message_unref(m_reply);
 
-    m_reply = dbus_connection_send_with_reply_and_block(con, m_message, -1, error);
-  }
-
+  m_reply = dbus_connection_send_with_reply_and_block(con, m_message, -1, error);
   return m_reply;
 }
 
