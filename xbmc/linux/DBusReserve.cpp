@@ -49,7 +49,7 @@ CDBusReserve::~CDBusReserve()
 
 bool CDBusReserve::AcquireDevice(const std::string& device)
 {
-  DBusMessage* msg, *reply;
+  DBusMessagePtr msg, reply;
   DBusMessageIter args;
   CDBusError error;
   int res;
@@ -85,21 +85,21 @@ bool CDBusReserve::AcquireDevice(const std::string& device)
     return false;
   }
 
-  msg = dbus_message_new_method_call(service.c_str(), object.c_str(), interface, "RequestRelease");
+  msg.reset(dbus_message_new_method_call(service.c_str(), object.c_str(), interface, "RequestRelease"));
   if (!msg)
   {
     CLog::Log(LOGERROR, "CDBusReserve::AcquireDevice(%s): Failed to get function", device.c_str());
     return false;
   }
 
-  dbus_message_iter_init_append(msg, &args);
+  dbus_message_iter_init_append(msg.get(), &args);
   if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &prio))
   {
     CLog::Log(LOGERROR, "CDBusReserve::AcquireDevice(%s): Failed to append arguments", device.c_str());
-    dbus_message_unref(msg);
+    return false;
   }
 
-  reply = dbus_connection_send_with_reply_and_block(m_conn, msg, 5000, error);
+  reply.reset(dbus_connection_send_with_reply_and_block(m_conn, msg.get(), 5000, error));
   if(!reply)
   {
     if(error.Name() == DBUS_ERROR_TIMED_OUT
@@ -109,18 +109,15 @@ bool CDBusReserve::AcquireDevice(const std::string& device)
     else
       CLog::Log(LOGERROR, "CDBusReserve::AcquireDevice(%s): RequestRelease call failed: %s - %s", device.c_str(), error.Name().c_str(), error.Message().c_str());
 
-    dbus_message_unref(msg);
     return false;
   }
-  dbus_message_unref(msg);
 
   dbus_bool_t allowed;
-  if(!dbus_message_get_args(reply, error, DBUS_TYPE_BOOLEAN, &allowed, DBUS_TYPE_INVALID))
+  if(!dbus_message_get_args(reply.get(), error, DBUS_TYPE_BOOLEAN, &allowed, DBUS_TYPE_INVALID))
   {
     CLog::Log(LOGERROR, "CDBusReserve::AcquireDevice(%s): Failed to get reply arguments", device.c_str());
-    dbus_message_unref(reply);
+    return false;
   }
-  dbus_message_unref(reply);
 
   if(!allowed)
   {

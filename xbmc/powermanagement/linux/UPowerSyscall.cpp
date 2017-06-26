@@ -193,16 +193,16 @@ bool CUPowerSyscall::PumpPowerEvents(IPowerEventsCallback *callback)
   if (m_connection)
   {
     dbus_connection_read_write(m_connection, 0);
-    DBusMessage *msg = dbus_connection_pop_message(m_connection);
+    DBusMessagePtr msg(dbus_connection_pop_message(m_connection));
 
     if (msg)
     {
       result = true;
-      if (dbus_message_is_signal(msg, "org.freedesktop.UPower", "Sleeping"))
+      if (dbus_message_is_signal(msg.get(), "org.freedesktop.UPower", "Sleeping"))
         callback->OnSleep();
-      else if (dbus_message_is_signal(msg, "org.freedesktop.UPower", "Resuming"))
+      else if (dbus_message_is_signal(msg.get(), "org.freedesktop.UPower", "Resuming"))
         callback->OnWake();
-      else if (dbus_message_is_signal(msg, "org.freedesktop.UPower", "Changed"))
+      else if (dbus_message_is_signal(msg.get(), "org.freedesktop.UPower", "Changed"))
       {
         bool lowBattery = m_lowBattery;
         UpdateCapabilities();
@@ -210,9 +210,7 @@ bool CUPowerSyscall::PumpPowerEvents(IPowerEventsCallback *callback)
           callback->OnLowBattery();
       }
       else
-        CLog::Log(LOGDEBUG, "UPower: Received an unknown signal %s", dbus_message_get_member(msg));
-
-      dbus_message_unref(msg);
+        CLog::Log(LOGDEBUG, "UPower: Received an unknown signal %s", dbus_message_get_member(msg.get()));
     }
   }
   return result;
