@@ -411,7 +411,7 @@ void CDVDVideoCodecFFmpeg::SetFilters()
       case 180:
         m_filters_next += "vflip,hflip";
         break;
-      case 270:  
+      case 270:
         m_filters_next += "transpose=2";
         break;
       default:
@@ -1177,13 +1177,9 @@ IHardwareDecoder* CDVDVideoCodecFFmpeg::CreateVideoDecoderHW(AVPixelFormat pixfm
 #endif
 
 // Linux X11
-#if defined(HAVE_LIBVA) || defined(HAVE_LIBVDPAU)
-#if defined(HAVE_LIBVA)
+#ifdef HAVE_X11
 #include "VAAPI.h"
-#endif
-#if defined(HAVE_LIBVDPAU)
 #include "VDPAU.h"
-#endif
 
 #define VP_VIDEOCODEC_HW
 IHardwareDecoder* CDVDVideoCodecFFmpeg::CreateVideoDecoderHW(AVPixelFormat pixfmt, CProcessInfo &processInfo)
