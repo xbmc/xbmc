@@ -46,7 +46,7 @@
 
 #ifdef TARGET_POSIX
 
-void WINAPI Sleep(DWORD dwMilliSeconds)
+void WINAPI Sleep(uint32_t dwMilliSeconds)
 {
 #if _POSIX_PRIORITY_SCHEDULING
   if(dwMilliSeconds == 0)
@@ -59,7 +59,7 @@ void WINAPI Sleep(DWORD dwMilliSeconds)
   usleep(dwMilliSeconds * 1000);
 }
 
-VOID GetLocalTime(LPSYSTEMTIME sysTime)
+void GetLocalTime(LPSYSTEMTIME sysTime)
 {
   const time_t t = time(NULL);
   struct tm now;
@@ -77,7 +77,7 @@ VOID GetLocalTime(LPSYSTEMTIME sysTime)
   g_timezone.m_IsDST = now.tm_isdst;
 }
 
-BOOL FileTimeToLocalFileTime(const FILETIME* lpFileTime, LPFILETIME lpLocalFileTime)
+int FileTimeToLocalFileTime(const FILETIME* lpFileTime, LPFILETIME lpLocalFileTime)
 {
   ULARGE_INTEGER l;
   l.u.LowPart = lpFileTime->dwLowDateTime;
@@ -92,10 +92,10 @@ BOOL FileTimeToLocalFileTime(const FILETIME* lpFileTime, LPFILETIME lpLocalFileT
 
   lpLocalFileTime->dwLowDateTime = l.u.LowPart;
   lpLocalFileTime->dwHighDateTime = l.u.HighPart;
-  return true;
+  return 1;
 }
 
-BOOL   SystemTimeToFileTime(const SYSTEMTIME* lpSystemTime,  LPFILETIME lpFileTime)
+int SystemTimeToFileTime(const SYSTEMTIME* lpSystemTime,  LPFILETIME lpFileTime)
 {
   static const int dayoffset[12] = {0, 31, 59, 90, 120, 151, 182, 212, 243, 273, 304, 334};
 #if defined(TARGET_DARWIN)
@@ -137,7 +137,7 @@ BOOL   SystemTimeToFileTime(const SYSTEMTIME* lpSystemTime,  LPFILETIME lpFileTi
   return 1;
 }
 
-LONG   CompareFileTime(const FILETIME* lpFileTime1, const FILETIME* lpFileTime2)
+long CompareFileTime(const FILETIME* lpFileTime1, const FILETIME* lpFileTime2)
 {
   ULARGE_INTEGER t1;
   t1.u.LowPart = lpFileTime1->dwLowDateTime;
@@ -155,7 +155,7 @@ LONG   CompareFileTime(const FILETIME* lpFileTime1, const FILETIME* lpFileTime2)
      return 1;
 }
 
-BOOL   FileTimeToSystemTime( const FILETIME* lpFileTime, LPSYSTEMTIME lpSystemTime)
+int FileTimeToSystemTime( const FILETIME* lpFileTime, LPSYSTEMTIME lpSystemTime)
 {
   LARGE_INTEGER fileTime;
   fileTime.u.LowPart = lpFileTime->dwLowDateTime;
@@ -182,7 +182,7 @@ BOOL   FileTimeToSystemTime( const FILETIME* lpFileTime, LPSYSTEMTIME lpSystemTi
   return 1;
 }
 
-BOOL   LocalFileTimeToFileTime( const FILETIME* lpLocalFileTime, LPFILETIME lpFileTime)
+int LocalFileTimeToFileTime( const FILETIME* lpLocalFileTime, LPFILETIME lpFileTime)
 {
   ULARGE_INTEGER l;
   l.u.LowPart = lpLocalFileTime->dwLowDateTime;
@@ -196,7 +196,7 @@ BOOL   LocalFileTimeToFileTime( const FILETIME* lpLocalFileTime, LPFILETIME lpFi
   return 1;
 }
 
-BOOL  FileTimeToTimeT(const FILETIME* lpLocalFileTime, time_t *pTimeT) {
+int FileTimeToTimeT(const FILETIME* lpLocalFileTime, time_t *pTimeT) {
 
   if (lpLocalFileTime == NULL || pTimeT == NULL)
   return false;
@@ -215,10 +215,10 @@ BOOL  FileTimeToTimeT(const FILETIME* lpLocalFileTime, time_t *pTimeT) {
   localtime_r(&ft,&tm_ft);
 
   *pTimeT = mktime(&tm_ft);
-  return true;
+  return 1;
 }
 
-BOOL  TimeTToFileTime(time_t timeT, FILETIME* lpLocalFileTime) {
+int TimeTToFileTime(time_t timeT, FILETIME* lpLocalFileTime) {
 
   if (lpLocalFileTime == NULL)
   return false;
@@ -230,7 +230,7 @@ BOOL  TimeTToFileTime(time_t timeT, FILETIME* lpLocalFileTime) {
   lpLocalFileTime->dwLowDateTime  = result.u.LowPart;
   lpLocalFileTime->dwHighDateTime = result.u.HighPart;
 
-  return true;
+  return 1;
 }
 
 void GetSystemTimeAsFileTime(LPFILETIME lpSystemTimeAsFileTime)
@@ -239,4 +239,3 @@ void GetSystemTimeAsFileTime(LPFILETIME lpSystemTimeAsFileTime)
 }
 
 #endif
-

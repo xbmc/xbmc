@@ -18,9 +18,6 @@
  *
  */
 
-//hack around problem with xbmc's typedef int BOOL
-// and obj-c's typedef unsigned char BOOL
-#define BOOL XBMC_BOOL
 #include <sys/resource.h>
 #include <signal.h>
 
@@ -53,8 +50,6 @@ using namespace KODI::MESSAGING;
 #define M_PI 3.1415926535897932384626433832795028842
 #endif
 #define RADIANS_TO_DEGREES(radians) ((radians) * (180.0 / M_PI))
-
-#undef BOOL
 
 #import <AVFoundation/AVAudioSession.h>
 #import <MediaPlayer/MPMediaItem.h>

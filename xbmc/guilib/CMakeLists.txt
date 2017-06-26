@@ -1,5 +1,4 @@
 set(SOURCES DDSImage.cpp
-            DirectXGraphics.cpp
             DirtyRegionSolvers.cpp
             DirtyRegionTracker.cpp
             FFmpegImage.cpp
@@ -74,7 +73,6 @@ set(SOURCES DDSImage.cpp
             XBTFReader.cpp)
 
 set(HEADERS DDSImage.h
-            DirectXGraphics.h
             DirtyRegion.h
             DirtyRegionSolvers.h
             DirtyRegionTracker.h
@@ -192,11 +190,13 @@ endif()
 
 if(CORE_SYSTEM_NAME STREQUAL windows)
   list(APPEND SOURCES D3DResource.cpp
+                      DirectXGraphics.cpp
                       GUIFontTTFDX.cpp
                       GUIShaderDX.cpp
                       GUITextureD3D.cpp
                       TextureDX.cpp)
   list(APPEND HEADERS D3DResource.h
+                      DirectXGraphics.h
                       GUIFontTTFDX.h
                       GUIShaderDX.h
                       GUITextureD3D.h

@@ -180,7 +180,7 @@ struct iso_dirtree *iso9660::ReadRecursiveDirFromSector( DWORD sector, const cha
   if (!pCurr_dir_cache )
     return NULL;
 
-  BOOL bResult = ::ReadFile( m_info.ISO_HANDLE, pCurr_dir_cache, wSectorSize, &lpNumberOfBytesRead, NULL );
+  int bResult = ::ReadFile( m_info.ISO_HANDLE, pCurr_dir_cache, wSectorSize, &lpNumberOfBytesRead, NULL );
   if (!bResult || lpNumberOfBytesRead != wSectorSize)
   {
     CLog::Log(LOGERROR, "%s: unable to read", __FUNCTION__);
@@ -498,7 +498,7 @@ void iso9660::Scan()
     DWORD lpNumberOfBytesRead;
     char* pCurr_dir_cache = (char*)malloc( 16*wSectorSize );
     iso9660_Directory isodir;
-    BOOL bResult = ::ReadFile( m_info.ISO_HANDLE, pCurr_dir_cache, wSectorSize, &lpNumberOfBytesRead, NULL );
+    int bResult = ::ReadFile( m_info.ISO_HANDLE, pCurr_dir_cache, wSectorSize, &lpNumberOfBytesRead, NULL );
     memcpy( &isodir, pCurr_dir_cache, sizeof(isodir));
 
     int iso9660searchpointer=0;

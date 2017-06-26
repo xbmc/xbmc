@@ -20,7 +20,6 @@
 
 #include "cores/AudioEngine/Sinks/AESinkDARWINIOS.h"
 
-#define BOOL XBMC_BOOL
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/AudioEngine/Utils/AERingBuffer.h"
 #include "cores/AudioEngine/Sinks/osx/CoreAudioHelpers.h"
@@ -29,7 +28,6 @@
 #include "utils/StringUtils.h"
 #include "threads/Condition.h"
 #include "windowing/WindowingFactory.h"
-#undef BOOL
 
 #include <sstream>
 #include <AudioToolbox/AudioToolbox.h>

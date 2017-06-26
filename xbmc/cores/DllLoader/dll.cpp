@@ -133,7 +133,7 @@ extern "C" HMODULE __stdcall dllLoadLibraryExA(LPCSTR lpLibFileName, HANDLE hFil
   return dllLoadLibraryExExtended(lpLibFileName, hFile, dwFlags, NULL);
 }
 
-extern "C" BOOL __stdcall dllFreeLibrary(HINSTANCE hLibModule)
+extern "C" int __stdcall dllFreeLibrary(HINSTANCE hLibModule)
 {
   LibraryLoader* dllhandle = DllLoaderContainer::GetModule(hLibModule);
 

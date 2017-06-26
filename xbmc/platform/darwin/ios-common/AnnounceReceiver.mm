@@ -20,9 +20,6 @@
 
 #import <UIKit/UIKit.h>
 
-//hack around problem with xbmc's typedef int BOOL
-// and obj-c's typedef unsigned char BOOL
-#define BOOL XBMC_BOOL
 #import "system.h"
 
 #import "Application.h"
@@ -41,8 +38,6 @@
 #import "platform/darwin/ios/XBMCController.h"
 #endif
 #import "utils/Variant.h"
-#undef BOOL
-
 
 id objectFromVariant(const CVariant &data);
 

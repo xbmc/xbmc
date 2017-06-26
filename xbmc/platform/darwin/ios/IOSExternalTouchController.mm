@@ -18,14 +18,10 @@
  *
  */
 
-//hack around problem with xbmc's typedef int BOOL
-// and obj-c's typedef unsigned char BOOL
-#define BOOL XBMC_BOOL
 #include "input/MouseStat.h"
 #include "windowing/WindowingFactory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/LocalizeStrings.h"
-#undef BOOL
 
 #import "IOSExternalTouchController.h"
 #import "XBMCController.h"

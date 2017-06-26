@@ -121,7 +121,7 @@ extern "C" HMODULE __stdcall track_LoadLibraryExA(LPCSTR lpLibFileName, HANDLE h
   return hHandle;
 }
 
-extern "C" BOOL __stdcall track_FreeLibrary(HINSTANCE hLibModule)
+extern "C" int __stdcall track_FreeLibrary(HINSTANCE hLibModule)
 {
   uintptr_t loc = (uintptr_t)_ReturnAddress();
 
@@ -129,5 +129,3 @@ extern "C" BOOL __stdcall track_FreeLibrary(HINSTANCE hLibModule)
 
   return dllFreeLibrary(hLibModule);
 }
-
-
