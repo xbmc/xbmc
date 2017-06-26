@@ -20,6 +20,7 @@
  */
 #include "system.h"
 #ifdef HAS_DBUS
+#include <memory>
 #include <string>
 
 #include <dbus/dbus.h>
@@ -37,6 +38,30 @@ private:
   static CVariant ParseType(DBusMessageIter *itr);
   static CVariant ParseVariant(DBusMessageIter *itr);
 };
+
+class CDBusConnection
+{
+public:
+  CDBusConnection();
+  bool Connect(DBusBusType bus, bool openPrivate = false);
+  bool Connect(DBusBusType bus, CDBusError& error, bool openPrivate = false);
+  void Destroy();
+  operator DBusConnection*();
+
+private:
+  CDBusConnection(CDBusConnection const& other) = delete;
+  CDBusConnection& operator=(CDBusConnection const& other) = delete;
+
+  struct DBusConnectionDeleter
+  {
+    DBusConnectionDeleter()
+    {}
+    bool closeBeforeUnref = false;
+    void operator()(DBusConnection* connection) const;
+  };
+  std::unique_ptr<DBusConnection, DBusConnectionDeleter> m_connection;
+};
+
 class CDBusError
 {
 public:

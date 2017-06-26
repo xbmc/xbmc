@@ -164,6 +164,62 @@ CVariant CDBusUtil::ParseType(DBusMessageIter *itr)
   return value;
 }
 
+CDBusConnection::CDBusConnection()
+{}
+
+bool CDBusConnection::Connect(DBusBusType bus, bool openPrivate)
+{
+  CDBusError error;
+  Connect(bus, error, openPrivate);
+  if (error)
+  {
+    error.Log(LOGWARNING, "DBus connection failed");
+    return false;
+  }
+
+  return true;
+}
+
+bool CDBusConnection::Connect(DBusBusType bus, CDBusError& error, bool openPrivate)
+{
+  if (m_connection)
+  {
+    throw std::logic_error("Cannot reopen connected DBus connection");
+  }
+
+  m_connection.get_deleter().closeBeforeUnref = openPrivate;
+
+  if (openPrivate)
+  {
+    m_connection.reset(dbus_bus_get_private(bus, error));
+  }
+  else
+  {
+    m_connection.reset(dbus_bus_get(bus, error));
+  }
+
+  return !!m_connection;
+}
+
+CDBusConnection::operator DBusConnection*()
+{
+  return m_connection.get();
+}
+
+void CDBusConnection::DBusConnectionDeleter::operator()(DBusConnection* connection) const
+{
+  if (closeBeforeUnref)
+  {
+    dbus_connection_close(connection);
+  }
+  dbus_connection_unref(connection);
+}
+
+void CDBusConnection::Destroy()
+{
+  m_connection.reset();
+}
+
 
 CDBusError::CDBusError()
 {
