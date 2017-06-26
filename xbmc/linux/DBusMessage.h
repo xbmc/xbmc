@@ -21,6 +21,7 @@
 #include "system.h"
 #ifdef HAS_DBUS
 #include <cstdint>
+#include <memory>
 #include <string>
 
 #include <dbus/dbus.h>
@@ -41,12 +42,17 @@ template<> struct ToDBusType<std::int64_t> { static constexpr int TYPE = DBUS_TY
 template<> struct ToDBusType<std::uint64_t> { static constexpr int TYPE = DBUS_TYPE_UINT64; };
 template<> struct ToDBusType<double> { static constexpr int TYPE = DBUS_TYPE_DOUBLE; };
 
+struct DBusMessageDeleter
+{
+  void operator()(DBusMessage* message) const;
+};
+using DBusMessagePtr = std::unique_ptr<DBusMessage, DBusMessageDeleter>;
+
 class CDBusMessage
 {
 public:
   CDBusMessage(const char *destination, const char *object, const char *interface, const char *method);
   CDBusMessage(std::string const& destination, std::string const& object, std::string const& interface, std::string const& method);
-  ~CDBusMessage();
 
   void AppendObjectPath(const char *object);
 
@@ -72,11 +78,10 @@ private:
   void AppendWithType(int type, const void* value);
   bool SendAsync(DBusBusType type);
 
-  void Close();
   void PrepareArgument();
 
-  DBusMessage *m_message;
-  DBusMessage *m_reply;
+  DBusMessagePtr m_message;
+  DBusMessagePtr m_reply;
   DBusMessageIter m_args;
   bool m_haveArgs;
 };
