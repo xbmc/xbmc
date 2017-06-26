@@ -62,24 +62,27 @@ CUPowerSyscall::CUPowerSyscall()
 
   m_lowBattery = false;
 
-  dbus_error_init (&m_error);
+  CDBusError error;
   //! @todo do not use dbus_connection_pop_message() that requires the use of a
   //! private connection
-  m_connection = dbus_bus_get_private(DBUS_BUS_SYSTEM, &m_error);
+  m_connection = dbus_bus_get_private(DBUS_BUS_SYSTEM, error);
 
   if (m_connection)
   {
     dbus_connection_set_exit_on_disconnect(m_connection, false);
 
-    dbus_bus_add_match(m_connection, "type='signal',interface='org.freedesktop.UPower'", &m_error);
+    dbus_bus_add_match(m_connection, "type='signal',interface='org.freedesktop.UPower'", error);
     dbus_connection_flush(m_connection);
   }
 
-  if (dbus_error_is_set(&m_error))
+  if (error)
   {
-    CLog::Log(LOGERROR, "UPower: Failed to attach to signal %s", m_error.message);
-    dbus_connection_close(m_connection);
-    dbus_connection_unref(m_connection);
+    error.Log("UPower: Failed to attach to signal");
+    if (m_connection)
+    {
+      dbus_connection_close(m_connection);
+      dbus_connection_unref(m_connection);
+    }
     m_connection = NULL;
   }
 
@@ -99,8 +102,6 @@ CUPowerSyscall::~CUPowerSyscall()
     dbus_connection_unref(m_connection);
     m_connection = NULL;
   }
-
-  dbus_error_free (&m_error);
 }
 
 bool CUPowerSyscall::Powerdown()

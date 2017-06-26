@@ -69,7 +69,6 @@ protected:
 private:
   std::list<CUPowerSource> m_powerSources;
   DBusConnection *m_connection;
-  DBusError m_error;
 
   bool m_lowBattery;
   void EnumeratePowerSources();

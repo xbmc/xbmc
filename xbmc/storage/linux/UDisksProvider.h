@@ -84,6 +84,5 @@ private:
   DeviceMap m_AvailableDevices;
 
   DBusConnection *m_connection;
-  DBusError m_error;
 };
 #endif
