@@ -18,6 +18,7 @@
  *
  */
 #include "DBusMessage.h"
+#include "DBusUtil.h"
 #include "utils/log.h"
 #include "settings/AdvancedSettings.h"
 
@@ -79,6 +80,16 @@ DBusMessage *CDBusMessage::SendSession()
   return Send(DBUS_BUS_SESSION);
 }
 
+DBusMessage *CDBusMessage::SendSystem(CDBusError& error)
+{
+  return Send(DBUS_BUS_SYSTEM, error);
+}
+
+DBusMessage *CDBusMessage::SendSession(CDBusError& error)
+{
+  return Send(DBUS_BUS_SESSION, error);
+}
+
 bool CDBusMessage::SendAsyncSystem()
 {
   return SendAsync(DBUS_BUS_SYSTEM);
@@ -91,16 +102,27 @@ bool CDBusMessage::SendAsyncSession()
 
 DBusMessage *CDBusMessage::Send(DBusBusType type)
 {
-  DBusError error;
-  dbus_error_init (&error);
-  DBusConnection *con = dbus_bus_get(type, &error);
+  CDBusError error;
+  DBusConnection *con = dbus_bus_get(type, error);
 
-  DBusMessage *returnMessage = Send(con, &error);
+  DBusMessage *returnMessage = Send(con, error);
 
-  if (dbus_error_is_set(&error))
-    CLog::Log(LOGERROR, "DBus: Error %s - %s", error.name, error.message);
+  if (error)
+    error.Log();
 
-  dbus_error_free (&error);
+  dbus_connection_unref(con);
+
+  return returnMessage;
+}
+
+DBusMessage *CDBusMessage::Send(DBusBusType type, CDBusError& error)
+{
+  DBusConnection *con = dbus_bus_get(type, error);
+  if (!con)
+    return nullptr;
+  
+  DBusMessage *returnMessage = Send(con, error);
+
   dbus_connection_unref(con);
 
   return returnMessage;
@@ -108,22 +130,20 @@ DBusMessage *CDBusMessage::Send(DBusBusType type)
 
 bool CDBusMessage::SendAsync(DBusBusType type)
 {
-  DBusError error;
-  dbus_error_init (&error);
-  DBusConnection *con = dbus_bus_get(type, &error);
+  if (!m_message)
+    return false;
 
-  bool result;
-  if (con && m_message)
-    result = dbus_connection_send(con, m_message, NULL);
-  else
-    result = false;
+  DBusConnection *con = dbus_bus_get(type, NULL);
+  if (!con)
+    return false;
 
-  dbus_error_free (&error);
+  bool result = dbus_connection_send(con, m_message, NULL);
+  
   dbus_connection_unref(con);
   return result;
 }
 
-DBusMessage *CDBusMessage::Send(DBusConnection *con, DBusError *error)
+DBusMessage *CDBusMessage::Send(DBusConnection *con, CDBusError& error)
 {
   if (con && m_message)
   {

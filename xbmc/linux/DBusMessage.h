@@ -22,6 +22,8 @@
 #ifdef HAS_DBUS
 #include <dbus/dbus.h>
 
+class CDBusError;
+
 class CDBusMessage
 {
 public:
@@ -35,12 +37,15 @@ public:
 
   DBusMessage *SendSystem();
   DBusMessage *SendSession();
+  DBusMessage *SendSystem(CDBusError& error);
+  DBusMessage *SendSession(CDBusError& error);
 
   bool SendAsyncSystem();
   bool SendAsyncSession();
 
   DBusMessage *Send(DBusBusType type);
-  DBusMessage *Send(DBusConnection *con, DBusError *error);
+  DBusMessage *Send(DBusBusType type, CDBusError& error);
+  DBusMessage *Send(DBusConnection *con, CDBusError& error);
 private:
 
   bool SendAsync(DBusBusType type);

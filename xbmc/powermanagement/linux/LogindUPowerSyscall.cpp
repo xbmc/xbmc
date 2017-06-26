@@ -61,17 +61,12 @@ CLogindUPowerSyscall::CLogindUPowerSyscall()
   if (m_hasUPower)
     UpdateBatteryLevel();
 
-  DBusError error;
-  dbus_error_init(&error);
-  m_connection = dbus_bus_get_private(DBUS_BUS_SYSTEM, &error);
+  CDBusError error;
+  m_connection = dbus_bus_get_private(DBUS_BUS_SYSTEM, error);
 
-  if (dbus_error_is_set(&error))
+  if (!m_connection)
   {
-    CLog::Log(LOGERROR, "LogindUPowerSyscall: Failed to get dbus connection: %s", error.message);
-    dbus_connection_close(m_connection);
-    dbus_connection_unref(m_connection);
-    m_connection = NULL;
-    dbus_error_free(&error);
+    error.Log("LogindUPowerSyscall: Failed to get dbus connection");
     return;
   }
 
@@ -82,7 +77,6 @@ CLogindUPowerSyscall::CLogindUPowerSyscall()
     dbus_bus_add_match(m_connection, "type='signal',interface='org.freedesktop.UPower',member='DeviceChanged'", NULL);
 
   dbus_connection_flush(m_connection);
-  dbus_error_free(&error);
 }
 
 CLogindUPowerSyscall::~CLogindUPowerSyscall()

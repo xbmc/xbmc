@@ -85,43 +85,30 @@ int CConsoleDeviceKitPowerSyscall::BatteryLevel()
 
 bool CConsoleDeviceKitPowerSyscall::HasDeviceConsoleKit()
 {
-  bool hasConsoleKitManager = false;
   CDBusMessage consoleKitMessage("org.freedesktop.ConsoleKit", "/org/freedesktop/ConsoleKit/Manager", "org.freedesktop.ConsoleKit.Manager", "CanStop");
 
-  DBusError error;
-  dbus_error_init (&error);
-  DBusConnection *con = dbus_bus_get(DBUS_BUS_SYSTEM, &error);
-
-  if (dbus_error_is_set(&error))
+  CDBusError error;
+  consoleKitMessage.SendSystem(error);
+  if (error)
   {
-    CLog::Log(LOGDEBUG, "ConsoleUPowerSyscall: %s - %s", error.name, error.message);
-    dbus_error_free(&error);
+    error.Log(LOGDEBUG, "ConsoleKit.Manager");
     return false;
   }
 
-  consoleKitMessage.Send(con, &error);
+  error.Reset();
 
-  if (!dbus_error_is_set(&error))
-    hasConsoleKitManager = true;
-  else
-    CLog::Log(LOGDEBUG, "ConsoleKit.Manager: %s - %s", error.name, error.message);
-
-  dbus_error_free (&error);
-
-  bool hasDeviceKitPower = false;
   CDBusMessage deviceKitMessage("org.freedesktop.DeviceKit.Disks", "/org/freedesktop/DeviceKit/Disks", "org.freedesktop.DeviceKit.Disks", "EnumerateDevices");
+  deviceKitMessage.SendSystem(error);
 
-  deviceKitMessage.Send(con, &error);
-
-  if (!dbus_error_is_set(&error))
-    hasDeviceKitPower = true;
+  if (!error)
+  {
+    return true;
+  }
   else
-    CLog::Log(LOGDEBUG, "DeviceKit.Power: %s - %s", error.name, error.message);
-
-  dbus_error_free (&error);
-  dbus_connection_unref(con);
-
-  return hasDeviceKitPower && hasConsoleKitManager;
+  {
+    error.Log(LOGDEBUG, "DeviceKit.Power");
+    return false;
+  }
 }
 
 bool CConsoleDeviceKitPowerSyscall::ConsoleKitMethodCall(const char *method)

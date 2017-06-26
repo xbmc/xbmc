@@ -199,33 +199,20 @@ void CUPowerSyscall::EnumeratePowerSources()
 
 bool CUPowerSyscall::HasUPower()
 {
-  DBusError error;
-  DBusConnection *con;
-  bool hasUPower = false;
-  
-  dbus_error_init (&error);
-  con = dbus_bus_get(DBUS_BUS_SYSTEM, &error);
-
-  if (dbus_error_is_set(&error))
-  {
-    CLog::Log(LOGDEBUG, "UPowerSyscall: %s - %s", error.name, error.message);
-    dbus_error_free(&error);
-    return false;
-  }
-
   CDBusMessage deviceKitMessage("org.freedesktop.UPower", "/org/freedesktop/UPower", "org.freedesktop.UPower", "EnumerateDevices");
 
-  deviceKitMessage.Send(con, &error);
+  CDBusError error;
+  deviceKitMessage.SendSystem(error);
 
-  if (!dbus_error_is_set(&error))
-    hasUPower = true;
+  if (!error)
+  {
+    return true;
+  }
   else
-    CLog::Log(LOGDEBUG, "UPower: %s - %s", error.name, error.message);
-
-  dbus_error_free (&error);
-  dbus_connection_unref(con);
-
-  return hasUPower;
+  {
+    error.Log(LOGDEBUG, "UPower");
+    return false;
+  }
 }
 
 bool CUPowerSyscall::PumpPowerEvents(IPowerEventsCallback *callback)
