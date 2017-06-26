@@ -43,21 +43,15 @@ CDBusMessage::~CDBusMessage()
 
 bool CDBusMessage::AppendObjectPath(const char *object)
 {
-  PrepareArgument();
-  return dbus_message_iter_append_basic(&m_args, DBUS_TYPE_OBJECT_PATH, &object);
+  return AppendWithType(DBUS_TYPE_OBJECT_PATH, &object);
 }
 
-bool CDBusMessage::AppendArgument(const char *string)
+template<>
+bool CDBusMessage::AppendArgument<bool>(const bool arg)
 {
-  PrepareArgument();
-  return dbus_message_iter_append_basic(&m_args, DBUS_TYPE_STRING, &string);
-}
-
-bool CDBusMessage::AppendArgument(const bool b)
-{
-  dbus_bool_t arg = (b == true);
-  PrepareArgument();
-  return dbus_message_iter_append_basic(&m_args, DBUS_TYPE_BOOLEAN, &arg);
+  // dbus_bool_t width might not match C++ bool width
+  dbus_bool_t convArg = (arg == true);
+  return AppendWithType(DBUS_TYPE_BOOLEAN, &convArg);
 }
 
 bool CDBusMessage::AppendArgument(const char **arrayString, unsigned int length)
@@ -72,6 +66,12 @@ bool CDBusMessage::AppendArgument(const char **arrayString, unsigned int length)
   success &= dbus_message_iter_close_container(&m_args, &sub);
 
   return success;
+}
+
+bool CDBusMessage::AppendWithType(int type, const void* value)
+{
+  PrepareArgument();
+  return dbus_message_iter_append_basic(&m_args, type, value);
 }
 
 DBusMessage *CDBusMessage::SendSystem()

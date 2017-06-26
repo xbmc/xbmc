@@ -20,11 +20,26 @@
  */
 #include "system.h"
 #ifdef HAS_DBUS
+#include <cstdint>
 #include <string>
 
 #include <dbus/dbus.h>
 
 class CDBusError;
+
+template<typename T>
+struct ToDBusType;
+template<> struct ToDBusType<bool> { static constexpr int TYPE = DBUS_TYPE_BOOLEAN; };
+template<> struct ToDBusType<char*> { static constexpr int TYPE = DBUS_TYPE_STRING; };
+template<> struct ToDBusType<const char*> { static constexpr int TYPE = DBUS_TYPE_STRING; };
+template<> struct ToDBusType<std::uint8_t> { static constexpr int TYPE = DBUS_TYPE_BYTE; };
+template<> struct ToDBusType<std::int16_t> { static constexpr int TYPE = DBUS_TYPE_INT16; };
+template<> struct ToDBusType<std::uint16_t> { static constexpr int TYPE = DBUS_TYPE_UINT16; };
+template<> struct ToDBusType<std::int32_t> { static constexpr int TYPE = DBUS_TYPE_INT32; };
+template<> struct ToDBusType<std::uint32_t> { static constexpr int TYPE = DBUS_TYPE_UINT32; };
+template<> struct ToDBusType<std::int64_t> { static constexpr int TYPE = DBUS_TYPE_INT64; };
+template<> struct ToDBusType<std::uint64_t> { static constexpr int TYPE = DBUS_TYPE_UINT64; };
+template<> struct ToDBusType<double> { static constexpr int TYPE = DBUS_TYPE_DOUBLE; };
 
 class CDBusMessage
 {
@@ -34,8 +49,12 @@ public:
   ~CDBusMessage();
 
   bool AppendObjectPath(const char *object);
-  bool AppendArgument(const char *string);
-  bool AppendArgument(const bool b);
+
+  template<typename T>
+  bool AppendArgument(const T arg)
+  {
+    return AppendWithType(ToDBusType<T>::TYPE, &arg);
+  }
   bool AppendArgument(const char **arrayString, unsigned int length);
 
   DBusMessage *SendSystem();
@@ -50,7 +69,7 @@ public:
   DBusMessage *Send(DBusBusType type, CDBusError& error);
   DBusMessage *Send(DBusConnection *con, CDBusError& error);
 private:
-
+  bool AppendWithType(int type, const void* value);
   bool SendAsync(DBusBusType type);
 
   void Close();
@@ -61,4 +80,7 @@ private:
   DBusMessageIter m_args;
   bool m_haveArgs;
 };
+
+template<>
+bool CDBusMessage::AppendArgument<bool>(const bool arg);
 #endif
