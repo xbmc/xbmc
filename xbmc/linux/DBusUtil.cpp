@@ -26,25 +26,22 @@ CVariant CDBusUtil::GetVariant(const char *destination, const char *object, cons
   CDBusMessage message(destination, object, "org.freedesktop.DBus.Properties", "Get");
   CVariant result;
 
-  if (message.AppendArgument(interface) && message.AppendArgument(property))
+  message.AppendArgument(interface);
+  message.AppendArgument(property);
+  DBusMessage *reply = message.SendSystem();
+
+  if (reply)
   {
-    DBusMessage *reply = message.SendSystem();
+    DBusMessageIter iter;
 
-    if (reply)
+    if (dbus_message_iter_init(reply, &iter))
     {
-      DBusMessageIter iter;
-
-      if (dbus_message_iter_init(reply, &iter))
-      {
-        if (!dbus_message_has_signature(reply, "v"))
-          CLog::Log(LOGERROR, "DBus: wrong signature on Get - should be \"v\" but was %s", dbus_message_iter_get_signature(&iter));
-        else
-          result = ParseVariant(&iter);
-      }
+      if (!dbus_message_has_signature(reply, "v"))
+        CLog::Log(LOGERROR, "DBus: wrong signature on Get - should be \"v\" but was %s", dbus_message_iter_get_signature(&iter));
+      else
+        result = ParseVariant(&iter);
     }
   }
-  else
-    CLog::Log(LOGERROR, "DBus: append arguments failed");
 
   return result;
 }

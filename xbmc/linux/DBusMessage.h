@@ -48,14 +48,14 @@ public:
   CDBusMessage(std::string const& destination, std::string const& object, std::string const& interface, std::string const& method);
   ~CDBusMessage();
 
-  bool AppendObjectPath(const char *object);
+  void AppendObjectPath(const char *object);
 
   template<typename T>
-  bool AppendArgument(const T arg)
+  void AppendArgument(const T arg)
   {
-    return AppendWithType(ToDBusType<T>::TYPE, &arg);
+    AppendWithType(ToDBusType<T>::TYPE, &arg);
   }
-  bool AppendArgument(const char **arrayString, unsigned int length);
+  void AppendArgument(const char **arrayString, unsigned int length);
 
   DBusMessage *SendSystem();
   DBusMessage *SendSession();
@@ -69,7 +69,7 @@ public:
   DBusMessage *Send(DBusBusType type, CDBusError& error);
   DBusMessage *Send(DBusConnection *con, CDBusError& error);
 private:
-  bool AppendWithType(int type, const void* value);
+  void AppendWithType(int type, const void* value);
   bool SendAsync(DBusBusType type);
 
   void Close();
@@ -82,5 +82,5 @@ private:
 };
 
 template<>
-bool CDBusMessage::AppendArgument<bool>(const bool arg);
+void CDBusMessage::AppendArgument<bool>(const bool arg);
 #endif

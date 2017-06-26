@@ -41,37 +41,49 @@ CDBusMessage::~CDBusMessage()
   Close();
 }
 
-bool CDBusMessage::AppendObjectPath(const char *object)
+void CDBusMessage::AppendObjectPath(const char *object)
 {
-  return AppendWithType(DBUS_TYPE_OBJECT_PATH, &object);
+  AppendWithType(DBUS_TYPE_OBJECT_PATH, &object);
 }
 
 template<>
-bool CDBusMessage::AppendArgument<bool>(const bool arg)
+void CDBusMessage::AppendArgument<bool>(const bool arg)
 {
   // dbus_bool_t width might not match C++ bool width
   dbus_bool_t convArg = (arg == true);
-  return AppendWithType(DBUS_TYPE_BOOLEAN, &convArg);
+  AppendWithType(DBUS_TYPE_BOOLEAN, &convArg);
 }
 
-bool CDBusMessage::AppendArgument(const char **arrayString, unsigned int length)
+void CDBusMessage::AppendArgument(const char **arrayString, unsigned int length)
 {
   PrepareArgument();
   DBusMessageIter sub;
-  bool success = dbus_message_iter_open_container(&m_args, DBUS_TYPE_ARRAY, DBUS_TYPE_STRING_AS_STRING, &sub);
+  if (!dbus_message_iter_open_container(&m_args, DBUS_TYPE_ARRAY, DBUS_TYPE_STRING_AS_STRING, &sub))
+  {
+    throw std::runtime_error("dbus_message_iter_open_container");
+  }
 
-  for (unsigned int i = 0; i < length && success; i++)
-    success &= dbus_message_iter_append_basic(&sub, DBUS_TYPE_STRING, &arrayString[i]);
+  for (unsigned int i = 0; i < length; i++)
+  {
+    if (!dbus_message_iter_append_basic(&sub, DBUS_TYPE_STRING, &arrayString[i]))
+    {
+      throw std::runtime_error("dbus_message_iter_append_basic");
+    }
+  }
 
-  success &= dbus_message_iter_close_container(&m_args, &sub);
-
-  return success;
+  if (!dbus_message_iter_close_container(&m_args, &sub))
+  {
+    throw std::runtime_error("dbus_message_iter_close_container");
+  }
 }
 
-bool CDBusMessage::AppendWithType(int type, const void* value)
+void CDBusMessage::AppendWithType(int type, const void* value)
 {
   PrepareArgument();
-  return dbus_message_iter_append_basic(&m_args, type, value);
+  if (!dbus_message_iter_append_basic(&m_args, type, value))
+  {
+    throw std::runtime_error("dbus_message_iter_append_basic");
+  }
 }
 
 DBusMessage *CDBusMessage::SendSystem()
