@@ -397,6 +397,10 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItemPtr item, const ScraperPtr &info2, b
     CGUIDialogOK::ShowAndGetInput(CVariant{13346}, CVariant{14057});
     return false;
   }
+  
+  // If the scraper failed above and no videoinfotag was created, return
+  if (!item->HasVideoInfoTag())
+    return false;
 
   bool listNeedsUpdating = false;
   // 3. Run a loop so that if we Refresh we re-run this block
