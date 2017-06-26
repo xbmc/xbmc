@@ -38,6 +38,11 @@ ADDON::CBinaryAddonCache &CServiceBroker::GetBinaryAddonCache()
   return g_application.m_ServiceManager->GetBinaryAddonCache();
 }
 
+ADDON::CVFSAddonCache &CServiceBroker::GetVFSAddonCache()
+{
+  return g_application.m_ServiceManager->GetVFSAddonCache();
+}
+
 ANNOUNCEMENT::CAnnouncementManager &CServiceBroker::GetAnnouncementManager()
 {
   return g_application.m_ServiceManager->GetAnnouncementManager();

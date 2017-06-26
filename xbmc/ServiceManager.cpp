@@ -20,6 +20,7 @@
 
 #include "ServiceManager.h"
 #include "addons/BinaryAddonCache.h"
+#include "addons/VFSEntry.h"
 #include "addons/binary-addons/BinaryAddonManager.h"
 #include "ContextMenuManager.h"
 #include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
@@ -92,6 +93,9 @@ bool CServiceManager::Init2()
   m_binaryAddonCache.reset( new ADDON::CBinaryAddonCache());
   m_binaryAddonCache->Init();
 
+  m_vfsAddonCache.reset(new ADDON::CVFSAddonCache());
+  m_vfsAddonCache->Init();
+
   m_favouritesService.reset(new CFavouritesService(CProfilesManager::GetInstance().GetProfileUserDataFolder()));
   m_contextMenuManager.reset(new CContextMenuManager(*m_addonMgr.get()));
 
@@ -145,6 +149,7 @@ void CServiceManager::Deinit()
   m_peripherals.reset();
   m_contextMenuManager.reset();
   m_favouritesService.reset();
+  m_vfsAddonCache.reset();
   m_binaryAddonCache.reset();
   if (m_PVRManager)
     m_PVRManager->Deinit();
@@ -172,6 +177,11 @@ ADDON::CBinaryAddonCache &CServiceManager::GetBinaryAddonCache()
 ADDON::CBinaryAddonManager &CServiceManager::GetBinaryAddonManager()
 {
   return *m_binaryAddonManager.get();
+}
+
+ADDON::CVFSAddonCache &CServiceManager::GetVFSAddonCache()
+{
+  return *m_vfsAddonCache.get();
 }
 
 ANNOUNCEMENT::CAnnouncementManager& CServiceManager::GetAnnouncementManager()

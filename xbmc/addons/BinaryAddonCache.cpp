@@ -36,7 +36,6 @@ void CBinaryAddonCache::Init()
     ADDON_AUDIODECODER,
     ADDON_PVRDLL,
     ADDON_GAMEDLL,
-    ADDON_VFS,
   };
   CAddonMgr::GetInstance().Events().Subscribe(this, &CBinaryAddonCache::OnEvent);
   Update();

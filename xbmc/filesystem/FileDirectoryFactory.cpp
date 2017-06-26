@@ -82,18 +82,14 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
     }
   }
 
-  if (CServiceBroker::IsBinaryAddonCacheUp())
+  if (!strExtension.empty() && CServiceBroker::IsBinaryAddonCacheUp())
   {
-    VECADDONS vfs;
-    CBinaryAddonCache &addonCache = CServiceBroker::GetBinaryAddonCache();
-    addonCache.GetAddons(vfs, ADDON_VFS);
-    for (size_t i=0;i<vfs.size();++i)
+    for (const auto& vfsAddon : CServiceBroker::GetVFSAddonCache().GetAddonInstances())
     {
-      std::shared_ptr<CVFSEntry> dec(std::static_pointer_cast<CVFSEntry>(vfs[i]));
-      if (!strExtension.empty() && dec->HasFileDirectories() &&
-          dec->GetExtensions().find(strExtension) != std::string::npos)
+      if (!vfsAddon->HasFileDirectories() &&
+           vfsAddon->GetExtensions().find(strExtension) != std::string::npos)
       {
-        CVFSEntryIFileDirectoryWrapper* wrap = new CVFSEntryIFileDirectoryWrapper(dec);
+        CVFSEntryIFileDirectoryWrapper* wrap = new CVFSEntryIFileDirectoryWrapper(vfsAddon);
         if (wrap->ContainsFiles(url))
         {
           if (wrap->m_items.Size() == 1)
@@ -111,7 +107,7 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
           pItem->m_bIsFolder = true;
 
         delete wrap;
-        return NULL;
+        return nullptr;
       }
     }
   }

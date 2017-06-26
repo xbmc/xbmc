@@ -125,7 +125,7 @@ bool IDirectory::ProcessRequirements()
   if (type == "keyboard")
   {
     std::string input;
-    if (CGUIKeyboardFactory::ShowAndGetInput(input, m_requirements["heading"], false))
+    if (CGUIKeyboardFactory::ShowAndGetInput(input, m_requirements["heading"], false, m_requirements["hidden"].asBoolean()))
     {
       m_requirements["input"] = input;
       return true;
@@ -148,7 +148,7 @@ bool IDirectory::ProcessRequirements()
   return false;
 }
 
-bool IDirectory::GetKeyboardInput(const CVariant &heading, std::string &input)
+bool IDirectory::GetKeyboardInput(const CVariant &heading, std::string &input, bool hiddenInput)
 {
   if (!m_requirements["input"].asString().empty())
   {
@@ -158,6 +158,7 @@ bool IDirectory::GetKeyboardInput(const CVariant &heading, std::string &input)
   m_requirements.clear();
   m_requirements["type"] = "keyboard";
   m_requirements["heading"] = heading;
+  m_requirements["hidden"] = hiddenInput;
   return false;
 }
 

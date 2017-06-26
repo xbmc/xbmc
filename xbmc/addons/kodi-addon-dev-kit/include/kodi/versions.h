@@ -127,24 +127,22 @@
 #define ADDON_INSTANCE_VERSION_SCREENSAVER_XML_ID     "kodi.binary.instance.screensaver"
 #define ADDON_INSTANCE_VERSION_SCREENSAVER_DEPENDS    "addon-instance/Screensaver.h"
 
-#define ADDON_INSTANCE_VERSION_VFS                    "1.0.1"
-#define ADDON_INSTANCE_VERSION_VFS_MIN                "1.0.1"
+#define ADDON_INSTANCE_VERSION_VFS                    "2.0.0"
+#define ADDON_INSTANCE_VERSION_VFS_MIN                "2.0.0"
 #define ADDON_INSTANCE_VERSION_VFS_XML_ID             "kodi.binary.instance.vfs"
-#define ADDON_INSTANCE_VERSION_VFS_DEPENDS            "kodi_vfs_dll.h" \
-                                                      "kodi_vfs_types.h" \
-                                                      "kodi_vfs_utils.hpp"
+#define ADDON_INSTANCE_VERSION_VFS_DEPENDS            "addon-instance/VFS.h"
 
 #define ADDON_INSTANCE_VERSION_VISUALIZATION          "2.0.0"
 #define ADDON_INSTANCE_VERSION_VISUALIZATION_MIN      "2.0.0"
 #define ADDON_INSTANCE_VERSION_VISUALIZATION_XML_ID   "kodi.binary.instance.visualization"
 #define ADDON_INSTANCE_VERSION_VISUALIZATION_DEPENDS  "addon-instance/Visualization.h"
 
-#define ADDON_INSTANCE_VERSION_VIDEOCODEC          "1.0.0"
-#define ADDON_INSTANCE_VERSION_VIDEOCODEC_MIN      "1.0.0"
-#define ADDON_INSTANCE_VERSION_VIDEOCODEC_XML_ID   "kodi.binary.instance.videocodec"
-#define ADDON_INSTANCE_VERSION_VIDEOCODEC_DEPENDS  "addon-instance/VideoCodec.h" \
-                                                   "StreamCodec.h" \
-                                                   "StreamCrypto.h"
+#define ADDON_INSTANCE_VERSION_VIDEOCODEC             "1.0.0"
+#define ADDON_INSTANCE_VERSION_VIDEOCODEC_MIN         "1.0.0"
+#define ADDON_INSTANCE_VERSION_VIDEOCODEC_XML_ID      "kodi.binary.instance.videocodec"
+#define ADDON_INSTANCE_VERSION_VIDEOCODEC_DEPENDS     "addon-instance/VideoCodec.h" \
+                                                      "StreamCodec.h" \
+                                                      "StreamCrypto.h"
 
 ///
 /// The currently available instance types for Kodi add-ons

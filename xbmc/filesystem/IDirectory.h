@@ -149,7 +149,7 @@ protected:
    \return true if keyboard input has been received. False if it hasn't.
    \sa ProcessRequirements
    */
-  bool GetKeyboardInput(const CVariant &heading, std::string &input);
+  bool GetKeyboardInput(const CVariant &heading, std::string &input, bool hiddenInput = false);
 
   /*! \brief Show an error dialog on failure of GetDirectory call
    Call this method from the GetDirectory method to set an error message to be shown to the user
