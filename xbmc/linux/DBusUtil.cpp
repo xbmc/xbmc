@@ -166,3 +166,71 @@ CVariant CDBusUtil::ParseType(DBusMessageIter *itr)
 
   return value;
 }
+
+
+CDBusError::CDBusError()
+{
+  dbus_error_init(&m_error);
+}
+
+CDBusError::~CDBusError()
+{
+  Reset();
+}
+
+void CDBusError::Reset()
+{
+ dbus_error_free(&m_error);
+}
+
+CDBusError::operator DBusError*()
+{
+  return &m_error;
+}
+
+bool CDBusError::IsSet() const
+{
+  return dbus_error_is_set(&m_error);
+}
+
+CDBusError::operator bool()
+{
+  return IsSet();
+}
+
+CDBusError::operator bool() const
+{
+  return IsSet();
+}
+
+std::string CDBusError::Name() const
+{
+  if (!IsSet())
+  {
+    throw std::logic_error("Cannot retrieve name of unset DBus error");
+  }
+  return m_error.name;
+}
+
+std::string CDBusError::Message() const
+{
+  if (!IsSet())
+  {
+    throw std::logic_error("Cannot retrieve message of unset DBus error");
+  }
+  return m_error.message;
+}
+
+void CDBusError::Log(std::string const& message) const
+{
+  Log(LOGERROR, message);
+}
+
+void CDBusError::Log(int level, const std::string& message) const
+{
+  if (!IsSet())
+  {
+    throw std::logic_error("Cannot log unset DBus error");
+  }
+  CLog::Log(level, "%s: %s - %s", message.c_str(), m_error.name, m_error.message);
+}

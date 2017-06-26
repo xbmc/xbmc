@@ -20,6 +20,10 @@
  */
 #include "system.h"
 #ifdef HAS_DBUS
+#include <string>
+
+#include <dbus/dbus.h>
+
 #include "DBusMessage.h"
 #include "utils/Variant.h"
 
@@ -33,4 +37,34 @@ private:
   static CVariant ParseType(DBusMessageIter *itr);
   static CVariant ParseVariant(DBusMessageIter *itr);
 };
+class CDBusError
+{
+public:
+  CDBusError();
+  ~CDBusError();
+  operator DBusError*();
+  bool IsSet() const;
+  /**
+   * Reset this error wrapper
+   *
+   * If there was an error, it was handled and this error wrapper should be used
+   * again in a new call, it must be reset before that call.
+   */
+  void Reset();
+  // Keep because operator DBusError* would be used for if-statements on
+  // non-const CDBusError instead
+  operator bool();
+  operator bool() const;
+  std::string Name() const;
+  std::string Message() const;
+  void Log(std::string const& message = "DBus error") const;
+  void Log(int level, std::string const& message = "DBus error") const;
+
+private:
+  CDBusError(CDBusError const& other) = delete;
+  CDBusError& operator=(CDBusError const& other) = delete;
+
+  DBusError m_error;
+};
+
 #endif
