@@ -101,6 +101,6 @@ private:
 
   DeviceMap m_AvailableDevices;
 
-  DBusConnection *m_connection;
+  CDBusConnection m_connection;
 };
 #endif

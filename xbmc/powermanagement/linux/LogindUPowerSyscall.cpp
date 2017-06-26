@@ -61,32 +61,29 @@ CLogindUPowerSyscall::CLogindUPowerSyscall()
   if (m_hasUPower)
     UpdateBatteryLevel();
 
-  CDBusError error;
-  m_connection = dbus_bus_get_private(DBUS_BUS_SYSTEM, error);
-
-  if (!m_connection)
+  if (!m_connection.Connect(DBUS_BUS_SYSTEM, true))
   {
-    error.Log("LogindUPowerSyscall: Failed to get dbus connection");
     return;
   }
 
+  CDBusError error;
   dbus_connection_set_exit_on_disconnect(m_connection, false);
-  dbus_bus_add_match(m_connection, "type='signal',interface='org.freedesktop.login1.Manager',member='PrepareForSleep'", NULL);
+  dbus_bus_add_match(m_connection, "type='signal',interface='org.freedesktop.login1.Manager',member='PrepareForSleep'", error);
 
-  if (m_hasUPower)
-    dbus_bus_add_match(m_connection, "type='signal',interface='org.freedesktop.UPower',member='DeviceChanged'", NULL);
+  if (!error && m_hasUPower)
+    dbus_bus_add_match(m_connection, "type='signal',interface='org.freedesktop.UPower',member='DeviceChanged'", error);
 
   dbus_connection_flush(m_connection);
+
+  if (error)
+  {
+    error.Log("UPowerSyscall: Failed to attach to signal");
+    m_connection.Destroy();
+  }
 }
 
 CLogindUPowerSyscall::~CLogindUPowerSyscall()
 {
-  if (m_connection)
-  {
-    dbus_connection_close(m_connection);
-    dbus_connection_unref(m_connection);
-  }
-
   ReleaseDelayLock();
 }
 

@@ -35,9 +35,7 @@ CDBusReserve::CDBusReserve()
 {
   CDBusError error;
   
-  m_conn = dbus_bus_get (DBUS_BUS_SESSION, error);
-  if (!m_conn)
-    error.Log("CDBusReserve::CDBusReserve: Failed to get dbus conn");
+  m_conn.Connect(DBUS_BUS_SESSION);
 }
 
 CDBusReserve::~CDBusReserve()
@@ -47,9 +45,6 @@ CDBusReserve::~CDBusReserve()
     std::string buf = *m_devs.begin();
     ReleaseDevice(buf);
   }
-
-  if(m_conn)
-    dbus_connection_unref(m_conn);
 }
 
 bool CDBusReserve::AcquireDevice(const std::string& device)

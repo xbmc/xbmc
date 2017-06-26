@@ -173,28 +173,23 @@ std::string CUDiskDevice::toString()
 
 CUDisksProvider::CUDisksProvider()
 {
-  CDBusError error;
   //! @todo do not use dbus_connection_pop_message() that requires the use of a
   //! private connection
-  m_connection = dbus_bus_get_private(DBUS_BUS_SYSTEM, error);
-
-  if (m_connection)
+  if (!m_connection.Connect(DBUS_BUS_SYSTEM, true))
   {
-    dbus_connection_set_exit_on_disconnect(m_connection, false);
-
-    dbus_bus_add_match(m_connection, "type='signal',interface='org.freedesktop.UDisks'", error);
-    dbus_connection_flush(m_connection);
+    return;
   }
+  
+  dbus_connection_set_exit_on_disconnect(m_connection, false);
+
+  CDBusError error;
+  dbus_bus_add_match(m_connection, "type='signal',interface='org.freedesktop.UDisks'", error);
+  dbus_connection_flush(m_connection);
 
   if (error)
   {
     error.Log("UDisks: Failed to attach to signal");
-    if (m_connection)
-    {
-      dbus_connection_close(m_connection);
-      dbus_connection_unref(m_connection);
-    }
-    m_connection = NULL;
+    m_connection.Destroy();
   }
 }
 
@@ -206,13 +201,6 @@ CUDisksProvider::~CUDisksProvider()
     delete m_AvailableDevices[itr->first];
 
   m_AvailableDevices.clear();
-
-  if (m_connection)
-  {
-    dbus_connection_close(m_connection);
-    dbus_connection_unref(m_connection);
-    m_connection = NULL;
-  }
 }
 
 void CUDisksProvider::Initialize()

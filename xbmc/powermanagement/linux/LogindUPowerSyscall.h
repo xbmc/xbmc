@@ -42,7 +42,7 @@ public:
   // we don't require UPower because everything except the battery level works fine without it
   static bool HasLogind();  
 private:
-  DBusConnection *m_connection;
+  CDBusConnection m_connection;
   bool m_canPowerdown;
   bool m_canSuspend;
   bool m_canHibernate;
