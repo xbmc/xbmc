@@ -23,6 +23,7 @@
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
 #include "DVDVideoCodec.h"
 #include "DVDCodecs/DVDCodecUtils.h"
+#include "DVDCodecs/DVDFactoryCodec.h"
 #include "utils/log.h"
 #include "VTB.h"
 #include "utils/BitstreamConverter.h"
@@ -139,6 +140,20 @@ void CVideoBufferPoolVTB::Return(int id)
 //------------------------------------------------------------------------------
 // main class
 //------------------------------------------------------------------------------
+
+IHardwareDecoder* CDecoder::Create(CDVDStreamInfo &hint, CProcessInfo &processInfo, AVPixelFormat fmt)
+{
+  if (fmt == AV_PIX_FMT_VIDEOTOOLBOX && CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVTB))
+    return new VTB::CDecoder(processInfo);
+
+  return nullptr;
+}
+
+bool CDecoder::Register()
+{
+  CDVDFactoryCodec::RegisterHWAccel("vtb", CDecoder::Create);
+  return true;
+}
 
 CDecoder::CDecoder(CProcessInfo& processInfo) : m_processInfo(processInfo)
 {

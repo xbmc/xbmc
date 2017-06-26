@@ -19,7 +19,7 @@
  */
 #pragma once
 
-#include "system_gl.h"
+#include <OpenGL/gl.h>
 
 #include "DVDVideoCodecFFmpeg.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
@@ -53,6 +53,8 @@ class CDecoder: public IHardwareDecoder
 public:
   CDecoder(CProcessInfo& processInfo);
   virtual ~CDecoder();
+  static IHardwareDecoder* Create(CDVDStreamInfo &hint, CProcessInfo &processInfo, AVPixelFormat fmt);
+  static bool Register();
   virtual bool Open(AVCodecContext* avctx, AVCodecContext* mainctx,
                     const enum AVPixelFormat) override;
   virtual CDVDVideoCodec::VCReturn Decode(AVCodecContext* avctx, AVFrame* frame) override;
