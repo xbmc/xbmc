@@ -20,6 +20,8 @@
  */
 #include "system.h"
 #ifdef HAS_DBUS
+#include <string>
+
 #include <dbus/dbus.h>
 
 class CDBusError;
@@ -28,6 +30,7 @@ class CDBusMessage
 {
 public:
   CDBusMessage(const char *destination, const char *object, const char *interface, const char *method);
+  CDBusMessage(std::string const& destination, std::string const& object, std::string const& interface, std::string const& method);
   ~CDBusMessage();
 
   bool AppendObjectPath(const char *object);

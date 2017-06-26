@@ -32,6 +32,10 @@ CDBusMessage::CDBusMessage(const char *destination, const char *object, const ch
     CLog::Log(LOGDEBUG, "DBus: Creating message to %s on %s with interface %s and method %s\n", destination, object, interface, method);
 }
 
+CDBusMessage::CDBusMessage(const std::string& destination, const std::string& object, const std::string& interface, const std::string& method)
+: CDBusMessage(destination.c_str(), object.c_str(), interface.c_str(), method.c_str())
+{}
+
 CDBusMessage::~CDBusMessage()
 {
   Close();
