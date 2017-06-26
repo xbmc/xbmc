@@ -26,6 +26,8 @@
 #include "ServiceBroker.h"
 #include "messaging/ApplicationMessenger.h"
 #include "CompileInfo.h"
+#include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
+#include "cores/VideoPlayer/DVDCodecs/Video/VTB.h"
 #include "guilib/DispResource.h"
 #include "guilib/GUIWindowManager.h"
 #include "settings/DisplaySettings.h"
@@ -773,6 +775,10 @@ bool CWinSystemOSX::CreateNewWindow(const std::string& name, bool fullScreen, RE
   int dummy;
   m_lastDisplayNr = resInfo.iScreen;
   GetScreenResolution(&dummy, &dummy, &m_refreshRate, GetCurrentScreen());
+
+  // register platform dependent objects
+  CDVDFactoryCodec::ClearHWAccels();
+  VTB::CDecoder::Register();
 
   return true;
 }
