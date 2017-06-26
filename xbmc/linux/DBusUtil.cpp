@@ -164,6 +164,23 @@ CVariant CDBusUtil::ParseType(DBusMessageIter *itr)
   return value;
 }
 
+bool CDBusUtil::TryMethodCall(DBusBusType bus, const char* destination, const char* object, const char* interface, const char* method)
+{
+  CDBusMessage message(destination, object, interface, method);
+  CDBusError error;
+  message.Send(bus, error);
+  if (error)
+  {
+    error.Log(LOGDEBUG, std::string("DBus method call to ") + interface + "." + method + " at " + object + " of " + destination + " failed");
+  }
+  return !error;
+}
+
+bool CDBusUtil::TryMethodCall(DBusBusType bus, std::string const& destination, std::string const& object, std::string const& interface, std::string const& method)
+{
+  return TryMethodCall(bus, destination.c_str(), object.c_str(), interface.c_str(), method.c_str());
+}
+
 CDBusConnection::CDBusConnection()
 {}
 

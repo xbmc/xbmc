@@ -32,8 +32,16 @@ class CDBusUtil
 {
 public:
   static CVariant GetAll(const char *destination, const char *object, const char *interface);
-
   static CVariant GetVariant(const char *destination, const char *object, const char *interface, const char *property);
+  /**
+   * Try to call a DBus method and return whether the call succeeded
+   */
+  static bool TryMethodCall(DBusBusType bus, const char* destination, const char* object, const char* interface, const char* method);
+  /**
+   * Try to call a DBus method and return whether the call succeeded
+   */
+  static bool TryMethodCall(DBusBusType bus, std::string const& destination, std::string const& object, std::string const& interface, std::string const& method);
+
 private:
   static CVariant ParseType(DBusMessageIter *itr);
   static CVariant ParseVariant(DBusMessageIter *itr);
