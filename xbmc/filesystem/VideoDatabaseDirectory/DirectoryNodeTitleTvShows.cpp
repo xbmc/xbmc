@@ -38,9 +38,12 @@ NODE_TYPE CDirectoryNodeTitleTvShows::GetChildType() const
 std::string CDirectoryNodeTitleTvShows::GetLocalizedName() const
 {
   CVideoDatabase db;
-  if (db.Open())
-    return db.GetTvShowTitleById(GetID());
-  return "";
+  if (!db.Open())
+    return "";
+
+  std::string name = db.GetTvShowTitleById(GetID());
+  db.Close();
+  return name;
 }
 
 bool CDirectoryNodeTitleTvShows::GetContent(CFileItemList& items) const

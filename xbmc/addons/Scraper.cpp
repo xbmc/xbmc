@@ -404,13 +404,19 @@ bool CScraper::IsInUse() const
   { // music scraper
     CMusicDatabase db;
     if (db.Open() && db.ScraperInUse(ID()))
+    {
+      db.Close();
       return true;
+    }
   }
   else
   { // video scraper
     CVideoDatabase db;
     if (db.Open() && db.ScraperInUse(ID()))
+    {
+      db.Close();
       return true;
+    }
   }
   return false;
 }

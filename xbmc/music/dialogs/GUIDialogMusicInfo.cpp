@@ -190,6 +190,7 @@ void CGUIDialogMusicInfo::SetAlbum(const CAlbum& album, const std::string &path)
       if (artwork.find("fanart") != artwork.end())
         m_albumItem->SetArt("fanart",artwork["fanart"]);
     }
+    db.Close();
   }
   m_startUserrating = m_album.iUserrating;
   m_hasUpdatedThumb = false;
@@ -268,6 +269,7 @@ void CGUIDialogMusicInfo::SetDiscography() const
 
     m_albumSongs->Add(item);
   }
+  database.Close();
 }
 
 void CGUIDialogMusicInfo::Update()
@@ -387,6 +389,7 @@ void CGUIDialogMusicInfo::OnGetThumb()
     std::string strArtistPath;
     if (database.GetArtistPath(m_artist.idArtist,strArtistPath))
       localThumb = URIUtils::AddFileToFolder(strArtistPath, "folder.jpg");
+    database.Close();
   }
   else
     localThumb = m_albumItem->GetUserMusicThumb();
@@ -483,6 +486,7 @@ void CGUIDialogMusicInfo::OnGetFanart()
   database.Open();
   std::string strArtistPath;
   database.GetArtistPath(m_artist.idArtist,strArtistPath);
+  database.Close();
   CFileItem item(strArtistPath,true);
   std::string strLocal = item.GetLocalFanart();
   if (!strLocal.empty())
@@ -564,6 +568,7 @@ void CGUIDialogMusicInfo::OnSearch(const CFileItem* pItem)
       Update();
     }
   }
+  database.Close();
 }
 
 CFileItemPtr CGUIDialogMusicInfo::GetCurrentListItem(int offset)

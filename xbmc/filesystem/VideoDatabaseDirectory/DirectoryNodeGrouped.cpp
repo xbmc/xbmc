@@ -51,7 +51,11 @@ std::string CDirectoryNodeGrouped::GetLocalizedName() const
 {
   CVideoDatabase db;
   if (db.Open())
-    return db.GetItemById(GetContentType(), GetID());
+  {
+    std::string name = db.GetItemById(GetContentType(), GetID());
+    db.Close();
+    return name;
+  }
 
   return "";
 }
@@ -73,8 +77,11 @@ bool CDirectoryNodeGrouped::GetContent(CFileItemList& items) const
   CVideoDbUrl videoUrl;
   if (!videoUrl.FromString(BuildPath()))
     return false;
+  
+  bool result = videodatabase.GetItems(videoUrl.ToString(), (VIDEODB_CONTENT_TYPE)params.GetContentType(), itemType, items);
+  videodatabase.Close();
 
-  return videodatabase.GetItems(videoUrl.ToString(), (VIDEODB_CONTENT_TYPE)params.GetContentType(), itemType, items);
+  return result;
 }
 
 std::string CDirectoryNodeGrouped::GetContentType() const

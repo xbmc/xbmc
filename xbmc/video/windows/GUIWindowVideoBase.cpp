@@ -1684,6 +1684,8 @@ void CGUIWindowVideoBase::OnAssignContent(const std::string &path)
     }
     db.SetScraperForPath(path, info, settings);
   }
+  
+  db.Close();
 
   if (bScan)
   {

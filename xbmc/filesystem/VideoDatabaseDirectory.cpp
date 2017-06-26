@@ -169,6 +169,8 @@ bool CVideoDatabaseDirectory::GetLabel(const std::string& strDirectory, std::str
   // get tag
   if (params.GetTagId() != -1)
     strLabel += videodatabase.GetTagById(params.GetTagId());
+  
+  videodatabase.Close();
 
   // get year
   if (params.GetYear() != -1)
@@ -225,7 +227,6 @@ bool CVideoDatabaseDirectory::GetLabel(const std::string& strDirectory, std::str
       return false;
     }
   }
-
   return true;
 }
 

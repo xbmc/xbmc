@@ -508,10 +508,12 @@ bool CAutorun::CanResumePlayDVD(const std::string& path)
   if (!strUniqueId.empty())
   {
     CVideoDatabase dbs;
-    dbs.Open();
     CBookmark bookmark;
-    if (dbs.GetResumeBookMark(strUniqueId, bookmark))
+    if (dbs.Open() && dbs.GetResumeBookMark(strUniqueId, bookmark))
+    {
+      dbs.Close();
       return true;
+    }
   }
   return false;
 }

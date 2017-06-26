@@ -191,12 +191,13 @@ CVideoThumbLoader::CVideoThumbLoader() :
 CVideoThumbLoader::~CVideoThumbLoader()
 {
   StopThread();
+  if (m_videoDatabase->IsOpen())
+    m_videoDatabase->Close();
   delete m_videoDatabase;
 }
 
 void CVideoThumbLoader::OnLoaderStart()
 {
-  m_videoDatabase->Open();
   m_showArt.clear();
   m_seasonArt.clear();
   CThumbLoader::OnLoaderStart();
@@ -204,7 +205,6 @@ void CVideoThumbLoader::OnLoaderStart()
 
 void CVideoThumbLoader::OnLoaderFinish()
 {
-  m_videoDatabase->Close();
   m_showArt.clear();
   m_seasonArt.clear();
   CThumbLoader::OnLoaderFinish();
@@ -453,6 +453,7 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem &item)
       int idArtist = database.GetArtistByName(item.GetLabel());
       if (database.GetArtForItem(idArtist, MediaTypeArtist, artwork))
         item.SetArt(artwork);
+      database.Close();
     }
     else if (tag.m_type == MediaTypeAlbum)
     { // we retrieve music video art from the music database (no backward compat)

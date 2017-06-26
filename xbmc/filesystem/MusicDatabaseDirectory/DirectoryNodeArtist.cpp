@@ -43,8 +43,12 @@ std::string CDirectoryNodeArtist::GetLocalizedName() const
     return g_localizeStrings.Get(15103); // All Artists
   CMusicDatabase db;
   if (db.Open())
-    return db.GetArtistById(GetID());
-  return "";
+    return "";
+  
+  std::string name = db.GetArtistById(GetID());
+  db.Close();
+  return name;
+  
 }
 
 bool CDirectoryNodeArtist::GetContent(CFileItemList& items) const

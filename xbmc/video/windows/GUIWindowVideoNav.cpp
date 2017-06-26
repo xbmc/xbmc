@@ -909,6 +909,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
       CVideoDatabase database;
       database.Open();
       ADDON::ScraperPtr info = database.GetScraperForPath(item->GetPath());
+      database.Close();
 
       if (!item->IsLiveTV() && !item->IsPlugin() && !item->IsAddonsPath() && !URIUtils::IsUPnP(item->GetPath()))
       {
@@ -934,6 +935,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
       database.Open();
       if (database.GetArtistByName(StringUtils::Join(item->GetVideoInfoTag()->m_artist, g_advancedSettings.m_videoItemSeparator)) > -1)
         buttons.Add(CONTEXT_BUTTON_GO_TO_ARTIST, 20396);
+      database.Close();
     }
     if (item->HasVideoInfoTag() && !item->GetVideoInfoTag()->m_strAlbum.empty())
     {
@@ -1075,6 +1077,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       database.Open();
       strPath = StringUtils::Format("musicdb://artists/%i/",
                                     database.GetArtistByName(StringUtils::Join(m_vecItems->Get(itemNumber)->GetVideoInfoTag()->m_artist, g_advancedSettings.m_videoItemSeparator)));
+      database.Close();
       g_windowManager.ActivateWindow(WINDOW_MUSIC_NAV,strPath);
       return true;
     }
@@ -1185,6 +1188,7 @@ bool CGUIWindowVideoNav::OnClick(int iItem, const std::string &player)
       }
     }
 
+    videodb.Close();
     Refresh(true);
     return true;
   }

@@ -38,7 +38,11 @@ std::string CDirectoryNodeInProgressTvShows::GetLocalizedName() const
 {
   CVideoDatabase db;
   if (db.Open())
-    return db.GetTvShowTitleById(GetID());
+  {
+    std::string name = db.GetTvShowTitleById(GetID());
+    db.Close();
+    return name;
+  }
   return "";
 }
 

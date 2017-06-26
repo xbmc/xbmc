@@ -664,6 +664,8 @@ int CGUIDialogMediaFilter::GetItems(const Filter &filter, std::vector<std::strin
       videodb.GetMusicVideoAlbumsNav(m_dbUrl->ToString(), selectItems, -1, dbfilter, countOnly);
     else if (filter.field == FieldTag)
       videodb.GetTagsNav(m_dbUrl->ToString(), selectItems, type, dbfilter, countOnly);
+    
+    videodb.Close();
   }
   else if (m_mediaType == "artists" || m_mediaType == "albums" || m_mediaType == "songs")
   {
@@ -685,6 +687,8 @@ int CGUIDialogMediaFilter::GetItems(const Filter &filter, std::vector<std::strin
       musicdb.GetAlbumTypesNav(m_dbUrl->ToString(), selectItems, dbfilter, countOnly);
     else if (filter.field == FieldMusicLabel)
       musicdb.GetMusicLabelsNav(m_dbUrl->ToString(), selectItems, dbfilter, countOnly);
+    
+    musicdb.Close();
   }
 
   int size = selectItems.Size();

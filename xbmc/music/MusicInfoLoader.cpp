@@ -52,6 +52,8 @@ CMusicInfoLoader::CMusicInfoLoader()
 CMusicInfoLoader::~CMusicInfoLoader()
 {
   StopThread();
+  if (m_musicDatabase.IsOpen())
+    m_musicDatabase.Close();
   delete m_mapFileItems;
   delete m_thumbLoader;
 }
@@ -105,6 +107,8 @@ bool CMusicInfoLoader::LoadAdditionalTagInfo(CFileItem* pItem)
     CAlbum album;
     if (database.GetAlbum(param.GetAlbumId(), album, false))
       CMusicDatabase::SetPropertiesFromAlbum(*pItem,album);
+    
+    database.Close();
 
     path = pItem->GetMusicInfoTag()->GetURL();
   }

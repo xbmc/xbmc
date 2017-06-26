@@ -166,6 +166,8 @@ bool CMusicDatabaseDirectory::GetLabel(const std::string& strDirectory, std::str
       strLabel += " / ";
     strLabel += musicdatabase.GetAlbumById(params.GetAlbumId());
   }
+  
+  musicdatabase.Close();
 
   if (strLabel.empty())
   {

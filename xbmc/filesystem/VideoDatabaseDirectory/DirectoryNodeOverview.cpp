@@ -112,6 +112,8 @@ bool CDirectoryNodeOverview::GetContent(CFileItemList& items) const
     pItem->SetCanQueue(false);
     items.Add(pItem);
   }
+  
+  database.Close();
 
   return true;
 }

@@ -32,6 +32,9 @@ bool CVideoLibraryJob::DoWork()
   CVideoDatabase db;
   if (!db.Open())
     return false;
+  
+  bool result = Work(db);
+  db.Close();
 
-  return Work(db);
+  return result;
 }
