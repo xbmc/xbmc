@@ -200,20 +200,7 @@ void CUPowerSyscall::EnumeratePowerSources()
 
 bool CUPowerSyscall::HasUPower()
 {
-  CDBusMessage deviceKitMessage("org.freedesktop.UPower", "/org/freedesktop/UPower", "org.freedesktop.UPower", "EnumerateDevices");
-
-  CDBusError error;
-  deviceKitMessage.SendSystem(error);
-
-  if (!error)
-  {
-    return true;
-  }
-  else
-  {
-    error.Log(LOGDEBUG, "UPower");
-    return false;
-  }
+  return CDBusUtil::TryMethodCall(DBUS_BUS_SYSTEM, "org.freedesktop.UPower", "/org/freedesktop/UPower", "org.freedesktop.UPower", "EnumerateDevices");
 }
 
 bool CUPowerSyscall::PumpPowerEvents(IPowerEventsCallback *callback)

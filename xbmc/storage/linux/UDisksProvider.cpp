@@ -278,20 +278,7 @@ bool CUDisksProvider::PumpDriveChangeEvents(IStorageEventsCallback *callback)
 
 bool CUDisksProvider::HasUDisks()
 {
-  CDBusMessage message("org.freedesktop.UDisks", "/org/freedesktop/UDisks", "org.freedesktop.UDisks", "EnumerateDevices");
-
-  CDBusError error;
-  message.SendSystem(error);
-
-  if (!error)
-  {
-    return true;
-  }
-  else
-  {
-    error.Log(LOGDEBUG, "UDisks");
-    return false;
-  }
+  return CDBusUtil::TryMethodCall(DBUS_BUS_SYSTEM, "org.freedesktop.UDisks", "/org/freedesktop/UDisks", "org.freedesktop.UDisks", "EnumerateDevices");
 }
 
 void CUDisksProvider::DeviceAdded(const char *object, IStorageEventsCallback *callback)

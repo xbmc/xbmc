@@ -44,20 +44,8 @@ bool CConsoleUPowerSyscall::Reboot()
 
 bool CConsoleUPowerSyscall::HasConsoleKitAndUPower()
 {
-  CDBusMessage consoleKitMessage("org.freedesktop.ConsoleKit", "/org/freedesktop/ConsoleKit/Manager", "org.freedesktop.ConsoleKit.Manager", "CanStop");
-
-  CDBusError error;
-  consoleKitMessage.SendSystem(error);
-
-  if (!error)
-  {
-    return HasUPower();
-  }
-  else
-  {
-    error.Log(LOGDEBUG, "ConsoleKit.Manager");
-    return false;
-  }
+  return CDBusUtil::TryMethodCall(DBUS_BUS_SYSTEM, "org.freedesktop.ConsoleKit", "/org/freedesktop/ConsoleKit/Manager", "org.freedesktop.ConsoleKit.Manager", "CanStop")
+    && HasUPower();
 }
 
 bool CConsoleUPowerSyscall::ConsoleKitMethodCall(const char *method)

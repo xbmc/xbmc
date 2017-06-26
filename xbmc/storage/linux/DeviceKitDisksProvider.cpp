@@ -298,19 +298,7 @@ bool CDeviceKitDisksProvider::PumpDriveChangeEvents(IStorageEventsCallback *call
 
 bool CDeviceKitDisksProvider::HasDeviceKitDisks()
 {
-  CDBusMessage message("org.freedesktop.DeviceKit.Disks", "/org/freedesktop/DeviceKit/Disks", "org.freedesktop.DeviceKit.Disks", "EnumerateDevices");
-
-  CDBusError error;
-  message.SendSystem(error);
-  if (!error)
-  {
-    return true;
-  }
-  else
-  {
-    error.Log(LOGDEBUG, "DeviceKit.Disks");
-    return false;
-  }
+  return CDBusUtil::TryMethodCall(DBUS_BUS_SYSTEM, "org.freedesktop.DeviceKit.Disks", "/org/freedesktop/DeviceKit/Disks", "org.freedesktop.DeviceKit.Disks", "EnumerateDevices");
 }
 
 void CDeviceKitDisksProvider::DeviceAdded(const char *object, IStorageEventsCallback *callback)

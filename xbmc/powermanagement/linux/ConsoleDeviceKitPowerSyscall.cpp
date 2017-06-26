@@ -85,30 +85,8 @@ int CConsoleDeviceKitPowerSyscall::BatteryLevel()
 
 bool CConsoleDeviceKitPowerSyscall::HasDeviceConsoleKit()
 {
-  CDBusMessage consoleKitMessage("org.freedesktop.ConsoleKit", "/org/freedesktop/ConsoleKit/Manager", "org.freedesktop.ConsoleKit.Manager", "CanStop");
-
-  CDBusError error;
-  consoleKitMessage.SendSystem(error);
-  if (error)
-  {
-    error.Log(LOGDEBUG, "ConsoleKit.Manager");
-    return false;
-  }
-
-  error.Reset();
-
-  CDBusMessage deviceKitMessage("org.freedesktop.DeviceKit.Disks", "/org/freedesktop/DeviceKit/Disks", "org.freedesktop.DeviceKit.Disks", "EnumerateDevices");
-  deviceKitMessage.SendSystem(error);
-
-  if (!error)
-  {
-    return true;
-  }
-  else
-  {
-    error.Log(LOGDEBUG, "DeviceKit.Power");
-    return false;
-  }
+  return CDBusUtil::TryMethodCall(DBUS_BUS_SYSTEM, "org.freedesktop.ConsoleKit", "/org/freedesktop/ConsoleKit/Manager", "org.freedesktop.ConsoleKit.Manager", "CanStop")
+    && CDBusUtil::TryMethodCall(DBUS_BUS_SYSTEM, "org.freedesktop.DeviceKit.Disks", "/org/freedesktop/DeviceKit/Disks", "org.freedesktop.DeviceKit.Disks", "EnumerateDevices");
 }
 
 bool CConsoleDeviceKitPowerSyscall::ConsoleKitMethodCall(const char *method)
