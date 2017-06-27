@@ -36,14 +36,14 @@ class VideoPlayerCodec : public ICodec
 {
 public:
   VideoPlayerCodec();
-  virtual ~VideoPlayerCodec();
+  ~VideoPlayerCodec() override;
 
-  virtual bool Init(const CFileItem &file, unsigned int filecache) override;
-  virtual bool Seek(int64_t iSeekTime) override;
-  virtual int ReadPCM(BYTE *pBuffer, int size, int *actualsize) override;
-  virtual int ReadRaw(uint8_t **pBuffer, int *bufferSize) override;
-  virtual bool CanInit() override;
-  virtual bool CanSeek() override;
+  bool Init(const CFileItem &file, unsigned int filecache) override;
+  bool Seek(int64_t iSeekTime) override;
+  int ReadPCM(BYTE *pBuffer, int size, int *actualsize) override;
+  int ReadRaw(uint8_t **pBuffer, int *bufferSize) override;
+  bool CanInit() override;
+  bool CanSeek() override;
 
   void DeInit();
   AEAudioFormat GetFormat();
