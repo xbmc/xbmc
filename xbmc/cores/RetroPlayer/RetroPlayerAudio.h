@@ -35,14 +35,14 @@ namespace RETRO
   {
   public:
     CRetroPlayerAudio(CProcessInfo& processInfo);
-    virtual ~CRetroPlayerAudio();
+    ~CRetroPlayerAudio() override;
 
     // implementation of IGameAudioCallback
-    virtual unsigned int NormalizeSamplerate(unsigned int samplerate) const override;
-    virtual bool OpenPCMStream(AEDataFormat format, unsigned int samplerate, const CAEChannelInfo& channelLayout) override;
-    virtual bool OpenEncodedStream(AVCodecID codec, unsigned int samplerate, const CAEChannelInfo& channelLayout) override;
-    virtual void AddData(const uint8_t* data, unsigned int size) override;
-    virtual void CloseStream() override;
+    unsigned int NormalizeSamplerate(unsigned int samplerate) const override;
+    bool OpenPCMStream(AEDataFormat format, unsigned int samplerate, const CAEChannelInfo& channelLayout) override;
+    bool OpenEncodedStream(AVCodecID codec, unsigned int samplerate, const CAEChannelInfo& channelLayout) override;
+    void AddData(const uint8_t* data, unsigned int size) override;
+    void CloseStream() override;
 
     void Enable(bool bEnabled) { m_bAudioEnabled = bEnabled; }
 

@@ -31,13 +31,13 @@ class CPixelConverter : public IPixelConverter
 {
 public:
   CPixelConverter();
-  virtual ~CPixelConverter() { Dispose(); }
+  ~CPixelConverter() override { Dispose(); }
 
   // implementation of IPixelConverter
-  virtual bool Open(AVPixelFormat pixfmt, AVPixelFormat target, unsigned int width, unsigned int height) override;
-  virtual void Dispose() override;
-  virtual bool Decode(const uint8_t* pData, unsigned int size) override;
-  virtual void GetPicture(VideoPicture& dvdVideoPicture) override;
+  bool Open(AVPixelFormat pixfmt, AVPixelFormat target, unsigned int width, unsigned int height) override;
+  void Dispose() override;
+  bool Decode(const uint8_t* pData, unsigned int size) override;
+  void GetPicture(VideoPicture& dvdVideoPicture) override;
 
 protected:
   ERenderFormat m_renderFormat;
