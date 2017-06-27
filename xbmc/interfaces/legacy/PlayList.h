@@ -66,7 +66,7 @@ namespace XBMCAddon
 
     public:
       PlayList(int playList);
-      virtual ~PlayList();
+      ~PlayList() override;
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///

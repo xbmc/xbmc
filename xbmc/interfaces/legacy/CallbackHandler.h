@@ -57,9 +57,9 @@ namespace XBMCAddon
     inline RetardedAsyncCallbackHandler() {}
   public:
 
-    virtual ~RetardedAsyncCallbackHandler();
+    ~RetardedAsyncCallbackHandler() override;
 
-    virtual void invokeCallback(Callback* cb);
+    void invokeCallback(Callback* cb) override;
     static void makePendingCalls();
     static void clearPendingCalls(void* userData);
 

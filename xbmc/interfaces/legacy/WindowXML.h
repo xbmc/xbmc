@@ -119,7 +119,7 @@ namespace XBMCAddon
                 const String& defaultSkin = "Default",
                 const String& defaultRes = "720p",
                 bool isMedia = false);
-      virtual ~WindowXML();
+      ~WindowXML() override;
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
@@ -428,15 +428,15 @@ namespace XBMCAddon
 
 #ifndef SWIG
       // CGUIWindow
-      SWIGHIDDENVIRTUAL bool      OnMessage(CGUIMessage& message);
-      SWIGHIDDENVIRTUAL bool      OnAction(const CAction &action);
-      SWIGHIDDENVIRTUAL void      AllocResources(bool forceLoad = false);
-      SWIGHIDDENVIRTUAL void      FreeResources(bool forceUnLoad = false);
-      SWIGHIDDENVIRTUAL bool      OnClick(int iItem);
-      SWIGHIDDENVIRTUAL bool      OnDoubleClick(int iItem);
-      SWIGHIDDENVIRTUAL void      Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
+      SWIGHIDDENVIRTUAL bool OnMessage(CGUIMessage& message) override;
+      SWIGHIDDENVIRTUAL bool OnAction(const CAction &action) override;
+      SWIGHIDDENVIRTUAL void AllocResources(bool forceLoad = false);
+      SWIGHIDDENVIRTUAL void FreeResources(bool forceUnLoad = false);
+      SWIGHIDDENVIRTUAL bool OnClick(int iItem);
+      SWIGHIDDENVIRTUAL bool OnDoubleClick(int iItem);
+      SWIGHIDDENVIRTUAL void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
 
-      SWIGHIDDENVIRTUAL bool IsMediaWindow() const { XBMC_TRACE; return m_isMedia; };
+      SWIGHIDDENVIRTUAL bool IsMediaWindow() const override { XBMC_TRACE; return m_isMedia; };
 
       // This method is identical to the Window::OnDeinitWindow method
       //  except it passes the message on to their respective parents.
@@ -447,15 +447,15 @@ namespace XBMCAddon
 
     protected:
       // CGUIWindow
-      SWIGHIDDENVIRTUAL bool     LoadXML(const String &strPath, const String &strPathLower);
+      SWIGHIDDENVIRTUAL bool LoadXML(const String &strPath, const String &strPathLower);
 
       // CGUIMediaWindow
-      SWIGHIDDENVIRTUAL void     GetContextButtons(int itemNumber, CContextButtons &buttons);
-      SWIGHIDDENVIRTUAL bool     Update(const String &strPath);
+      SWIGHIDDENVIRTUAL void GetContextButtons(int itemNumber, CContextButtons &buttons);
+      SWIGHIDDENVIRTUAL bool Update(const String &strPath);
 
-      void             SetupShares();
-      String       m_scriptPath;
-      String       m_mediaDir;
+      void SetupShares();
+      String m_scriptPath;
+      String m_mediaDir;
       bool m_isMedia;
 
       friend class WindowXMLInterceptor;
@@ -538,21 +538,21 @@ namespace XBMCAddon
                       const String& defaultSkin = "Default",
                       const String& defaultRes = "720p");
 
-      virtual ~WindowXMLDialog();
+      ~WindowXMLDialog() override;
 
 #ifndef SWIG
-      SWIGHIDDENVIRTUAL bool    OnMessage(CGUIMessage &message);
-      SWIGHIDDENVIRTUAL bool    IsDialogRunning() const { XBMC_TRACE; return WindowDialogMixin::IsDialogRunning(); }
-      SWIGHIDDENVIRTUAL bool    IsDialog() const { XBMC_TRACE; return true;};
-      SWIGHIDDENVIRTUAL bool    IsModalDialog() const { XBMC_TRACE; return true; };
-      SWIGHIDDENVIRTUAL bool    IsMediaWindow() const { XBMC_TRACE; return false; };
-      SWIGHIDDENVIRTUAL bool    OnAction(const CAction &action);
-      SWIGHIDDENVIRTUAL void    OnDeinitWindow(int nextWindowID);
+      SWIGHIDDENVIRTUAL bool OnMessage(CGUIMessage &message) override;
+      SWIGHIDDENVIRTUAL bool IsDialogRunning() const override { XBMC_TRACE; return WindowDialogMixin::IsDialogRunning(); }
+      SWIGHIDDENVIRTUAL bool IsDialog() const override { XBMC_TRACE; return true;};
+      SWIGHIDDENVIRTUAL bool IsModalDialog() const override { XBMC_TRACE; return true; };
+      SWIGHIDDENVIRTUAL bool IsMediaWindow() const override { XBMC_TRACE; return false; };
+      SWIGHIDDENVIRTUAL bool OnAction(const CAction &action) override;
+      SWIGHIDDENVIRTUAL void OnDeinitWindow(int nextWindowID) override;
 
-      SWIGHIDDENVIRTUAL bool    LoadXML(const String &strPath, const String &strPathLower);
+      SWIGHIDDENVIRTUAL bool LoadXML(const String &strPath, const String &strPathLower) override;
 
-      SWIGHIDDENVIRTUAL inline void show() { XBMC_TRACE; WindowDialogMixin::show(); }
-      SWIGHIDDENVIRTUAL inline void close() { XBMC_TRACE; WindowDialogMixin::close(); }
+      SWIGHIDDENVIRTUAL inline void show() override { XBMC_TRACE; WindowDialogMixin::show(); }
+      SWIGHIDDENVIRTUAL inline void close() override { XBMC_TRACE; WindowDialogMixin::close(); }
 
       friend class DialogJumper;
 #endif

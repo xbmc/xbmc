@@ -31,20 +31,20 @@ class CPythonInvoker : public ILanguageInvoker
 {
 public:
   explicit CPythonInvoker(ILanguageInvocationHandler *invocationHandler);
-  virtual ~CPythonInvoker();
+  ~CPythonInvoker() override;
 
-  virtual bool Execute(const std::string &script, const std::vector<std::string> &arguments = std::vector<std::string>());
+  bool Execute(const std::string &script, const std::vector<std::string> &arguments = std::vector<std::string>()) override;
 
-  virtual bool IsStopping() const { return m_stop || ILanguageInvoker::IsStopping(); }
+  bool IsStopping() const override { return m_stop || ILanguageInvoker::IsStopping(); }
 
   typedef void (*PythonModuleInitialization)();
   
 protected:
   // implementation of ILanguageInvoker
-  virtual bool execute(const std::string &script, const std::vector<std::string> &arguments);
+  bool execute(const std::string &script, const std::vector<std::string> &arguments) override;
   virtual void executeScript(void *fp, const std::string &script, void *module, void *moduleDict);
-  virtual bool stop(bool abort);
-  virtual void onExecutionFailed();
+  bool stop(bool abort) override;
+  void onExecutionFailed() override;
 
   // custom virtual methods
   virtual std::map<std::string, PythonModuleInitialization> getModules() const;

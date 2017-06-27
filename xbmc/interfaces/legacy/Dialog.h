@@ -60,7 +60,7 @@ namespace XBMCAddon
     public:
 
       inline Dialog() {}
-      virtual ~Dialog();
+      ~Dialog() override;
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
@@ -600,12 +600,12 @@ namespace XBMCAddon
       bool                open;
 
     protected:
-      virtual void deallocating();
+      void deallocating() override;
 
     public:
 
       DialogProgress() : dlg(NULL), open(false) {}
-      virtual ~DialogProgress();
+      ~DialogProgress() override;
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
@@ -739,12 +739,12 @@ namespace XBMCAddon
       bool open;
 
     protected:
-      virtual void deallocating();
+      void deallocating() override;
 
     public:
 
       DialogBusy() : dlg(NULL), open(false) {}
-      virtual ~DialogBusy();
+      ~DialogBusy() override;
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
@@ -847,12 +847,12 @@ namespace XBMCAddon
       bool open;
 
     protected:
-      virtual void deallocating();
+      void deallocating() override;
 
     public:
 
       DialogProgressBG() : dlg(NULL), handle(NULL), open(false) {}
-      virtual ~DialogProgressBG();
+      ~DialogProgressBG() override;
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///

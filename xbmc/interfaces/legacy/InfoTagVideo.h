@@ -63,7 +63,7 @@ namespace XBMCAddon
       InfoTagVideo(const CVideoInfoTag& tag);
 #endif
       InfoTagVideo();
-      virtual ~InfoTagVideo();
+      ~InfoTagVideo() override;
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///

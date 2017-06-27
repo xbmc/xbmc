@@ -80,7 +80,7 @@ namespace XBMCAddon
 
     public:
       Addon(const char* id = NULL);
-      virtual ~Addon();
+      ~Addon() override;
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///

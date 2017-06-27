@@ -45,7 +45,7 @@ namespace XBMCAddon
     {
     public:
       WsgiResponse();
-      virtual ~WsgiResponse();
+      ~WsgiResponse() override;
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
       /// \ingroup python_xbmcwsgi_WsgiInputStreamIterator

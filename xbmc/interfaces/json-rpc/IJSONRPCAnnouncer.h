@@ -28,7 +28,7 @@ namespace JSONRPC
   class IJSONRPCAnnouncer : public ANNOUNCEMENT::IAnnouncer
   {
   public:
-    virtual ~IJSONRPCAnnouncer() { }
+    ~IJSONRPCAnnouncer() override { }
 
   protected:
     static std::string AnnouncementToJSONRPC(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *method, const CVariant &data, bool compactOutput)

@@ -25,10 +25,10 @@ class CAddonPythonInvoker : public CPythonInvoker
 {
 public:
   explicit CAddonPythonInvoker(ILanguageInvocationHandler *invocationHandler);
-  virtual ~CAddonPythonInvoker();
+  ~CAddonPythonInvoker() override;
 
 protected:
   // overrides of CPythonInvoker
-  virtual std::map<std::string, PythonModuleInitialization> getModules() const;
-  virtual const char* getInitializationScript() const;
+  std::map<std::string, PythonModuleInitialization> getModules() const override;
+  const char* getInitializationScript() const override;
 };

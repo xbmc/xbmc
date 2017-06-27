@@ -28,16 +28,16 @@ class CVariant;
 class CAddOnTransport : public JSONRPC::ITransportLayer
 {
 public:
-  virtual bool PrepareDownload(const char *path, CVariant &details, std::string &protocol) { return false; }
-  virtual bool Download(const char *path, CVariant& result) { return false; }
-  virtual int GetCapabilities() { return JSONRPC::Response; }
+  bool PrepareDownload(const char *path, CVariant &details, std::string &protocol) override { return false; }
+  bool Download(const char *path, CVariant& result) override { return false; }
+  int GetCapabilities() override { return JSONRPC::Response; }
 
   class CAddOnClient : public JSONRPC::IClient
   {
   public:
-    virtual int  GetPermissionFlags() { return JSONRPC::OPERATION_PERMISSION_ALL; }
-    virtual int  GetAnnouncementFlags() { return 0; }
-    virtual bool SetAnnouncementFlags(int flags) { return true; }
+    int  GetPermissionFlags() override { return JSONRPC::OPERATION_PERMISSION_ALL; }
+    int  GetAnnouncementFlags() override { return 0; }
+    bool SetAnnouncementFlags(int flags) override { return true; }
   };
 };
 #endif
