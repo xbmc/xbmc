@@ -97,7 +97,7 @@ public:
   CDateTime(const time_t& time);
   CDateTime(const tm& time);
   CDateTime(int year, int month, int day, int hour, int minute, int second);
-  virtual ~CDateTime() {}
+  ~CDateTime() override {}
 
   static CDateTime GetCurrentDateTime();
   static CDateTime GetUTCDateTime();
@@ -163,7 +163,7 @@ public:
 
   operator FILETIME() const;
 
-  virtual void Archive(CArchive& ar);
+  void Archive(CArchive& ar) override;
 
   void Reset();
 

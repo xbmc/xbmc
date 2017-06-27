@@ -53,11 +53,11 @@ class CPlayListPlayer : public IMsgTargetCallback,
 
 public:
   CPlayListPlayer(void);
-  virtual ~CPlayListPlayer(void);
-  virtual bool OnMessage(CGUIMessage &message) override;
+  ~CPlayListPlayer(void) override;
+  bool OnMessage(CGUIMessage &message) override;
 
-  virtual int GetMessageMask() override;
-  virtual void OnApplicationMessage(KODI::MESSAGING::ThreadMessage* pMsg) override;
+  int GetMessageMask() override;
+  void OnApplicationMessage(KODI::MESSAGING::ThreadMessage* pMsg) override;
 
   /*! \brief Play the next (or another) entry in the current playlist
    \param offset The offset from the current entry (defaults to 1, i.e. the next entry).

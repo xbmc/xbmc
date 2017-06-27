@@ -48,11 +48,11 @@ class CStaticContextMenuAction : public IContextMenuItem
 {
 public:
   explicit CStaticContextMenuAction(uint32_t label) : m_label(label) {}
-  std::string GetLabel(const CFileItem& item) const override final
+  std::string GetLabel(const CFileItem& item) const final
   {
     return g_localizeStrings.Get(m_label);
   }
-  bool IsGroup() const override final { return false; }
+  bool IsGroup() const final { return false; }
 private:
   const uint32_t m_label;
 };

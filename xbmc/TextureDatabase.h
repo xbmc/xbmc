@@ -33,18 +33,18 @@ class CTextureRule : public CDatabaseQueryRule
 {
 public:
   CTextureRule() {};
-  virtual ~CTextureRule() {};
+  ~CTextureRule() override {};
 
   static void GetAvailableFields(std::vector<std::string> &fieldList);
 protected:
-  virtual int                 TranslateField(const char *field) const;
-  virtual std::string         TranslateField(int field) const;
-  virtual std::string         GetField(int field, const std::string& type) const;
-  virtual FIELD_TYPE          GetFieldType(int field) const;
-  virtual std::string         FormatParameter(const std::string &negate,
+  int                 TranslateField(const char *field) const override;
+  std::string         TranslateField(int field) const override;
+  std::string         GetField(int field, const std::string& type) const override;
+  FIELD_TYPE          GetFieldType(int field) const override;
+  std::string         FormatParameter(const std::string &negate,
                                               const std::string &oper,
                                               const CDatabase &db,
-                                              const std::string &type) const;
+                                              const std::string &type) const override;
 };
 
 class CTextureUtils
@@ -71,8 +71,8 @@ class CTextureDatabase : public CDatabase, public IDatabaseQueryRuleFactory
 {
 public:
   CTextureDatabase();
-  virtual ~CTextureDatabase();
-  virtual bool Open();
+  ~CTextureDatabase() override;
+  bool Open() override;
 
   bool GetCachedTexture(const std::string &originalURL, CTextureDetails &details);
   bool AddCachedTexture(const std::string &originalURL, const CTextureDetails &details);
@@ -119,8 +119,8 @@ public:
   bool GetTextures(CVariant &items, const Filter &filter);
 
   // rule creation
-  virtual CDatabaseQueryRule *CreateRule() const;
-  virtual CDatabaseQueryRuleCombination *CreateCombination() const;
+  CDatabaseQueryRule *CreateRule() const override;
+  CDatabaseQueryRuleCombination *CreateCombination() const override;
 protected:
   /*! \brief retrieve a hash for the given url
    Computes a hash of the current url to use for lookups in the database
@@ -129,9 +129,9 @@ protected:
    */
   unsigned int GetURLHash(const std::string &url) const;
 
-  virtual void CreateTables();
-  virtual void CreateAnalytics();
-  virtual void UpdateTables(int version);
-  virtual int GetSchemaVersion() const { return 13; };
-  const char *GetBaseDBName() const { return "Textures"; };
+  void CreateTables() override;
+  void CreateAnalytics() override;
+  void UpdateTables(int version) override;
+  int GetSchemaVersion() const override { return 13; };
+  const char *GetBaseDBName() const override { return "Textures"; };
 };

@@ -61,13 +61,13 @@ class CLangInfo : public ISettingCallback, public ISettingsHandler
 {
 public:
   CLangInfo();
-  virtual ~CLangInfo();
+  ~CLangInfo() override;
 
   // implementation of ISettingCallback
-  virtual void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
+  void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
 
   // implementation of ISettingsHandler
-  virtual void OnSettingsLoaded() override;
+  void OnSettingsLoaded() override;
 
   bool Load(const std::string& strLanguage);
 
@@ -223,9 +223,9 @@ protected:
       custom_numpunct(const char decimal_point, const char thousands_sep, const std::string grouping)
         : cDecimalPoint(decimal_point), cThousandsSep(thousands_sep), sGroup(grouping) {}
     protected:
-      virtual char do_decimal_point() const { return cDecimalPoint; }
-      virtual char do_thousands_sep() const { return cThousandsSep; }
-      virtual std::string do_grouping() const { return sGroup; }
+      char do_decimal_point() const override { return cDecimalPoint; }
+      char do_thousands_sep() const override { return cThousandsSep; }
+      std::string do_grouping() const override { return sGroup; }
     private:
       const char cDecimalPoint;
       const char cThousandsSep;

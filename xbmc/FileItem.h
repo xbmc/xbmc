@@ -122,8 +122,8 @@ public:
   CFileItem(std::shared_ptr<const ADDON::IAddon> addonInfo);
   CFileItem(const EventPtr& eventLogEntry);
 
-  virtual ~CFileItem(void);
-  virtual CGUIListItem *Clone() const { return new CFileItem(*this); };
+  ~CFileItem(void) override;
+  CGUIListItem *Clone() const override { return new CFileItem(*this); };
 
   const CURL GetURL() const;
   void SetURL(const CURL& url);
@@ -138,11 +138,11 @@ public:
    */
   void Reset();
   const CFileItem& operator=(const CFileItem& item);
-  virtual void Archive(CArchive& ar);
-  virtual void Serialize(CVariant& value) const;
-  virtual void ToSortable(SortItem &sortable, Field field) const;
+  void Archive(CArchive& ar) override;
+  void Serialize(CVariant& value) const override;
+  void ToSortable(SortItem &sortable, Field field) const override;
   void ToSortable(SortItem &sortable, const Fields &fields) const;
-  virtual bool IsFileItem() const { return true; };
+  bool IsFileItem() const override { return true; };
 
   bool Exists(bool bUseCache = true) const;
 
@@ -250,7 +250,7 @@ public:
   void CleanString();
   void FillInDefaultIcon();
   void SetFileSizeLabel();
-  virtual void SetLabel(const std::string &strLabel);
+  void SetLabel(const std::string &strLabel) override;
   int GetVideoContentType() const; /* return VIDEODB_CONTENT_TYPE, but don't want to include videodb in this header */
   bool IsLabelPreformatted() const { return m_bLabelPreformatted; }
   void SetLabelPreformatted(bool bYesNo) { m_bLabelPreformatted=bYesNo; }
@@ -641,8 +641,8 @@ public:
 
   CFileItemList();
   explicit CFileItemList(const std::string& strPath);
-  virtual ~CFileItemList();
-  virtual void Archive(CArchive& ar);
+  ~CFileItemList() override;
+  void Archive(CArchive& ar) override;
   CFileItemPtr operator[] (int iItem);
   const CFileItemPtr operator[] (int iItem) const;
   CFileItemPtr operator[] (const std::string& strPath);

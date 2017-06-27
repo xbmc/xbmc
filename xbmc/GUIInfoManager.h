@@ -101,13 +101,13 @@ friend CSetCurrentItemJob;
 
 public:
   CGUIInfoManager(void);
-  virtual ~CGUIInfoManager(void);
+  ~CGUIInfoManager(void) override;
 
   void Clear();
-  virtual bool OnMessage(CGUIMessage &message) override;
+  bool OnMessage(CGUIMessage &message) override;
 
-  virtual int GetMessageMask() override;
-  virtual void OnApplicationMessage(KODI::MESSAGING::ThreadMessage* pMsg) override;
+  int GetMessageMask() override;
+  void OnApplicationMessage(KODI::MESSAGING::ThreadMessage* pMsg) override;
 
   /*! \brief Register a boolean condition/expression
    This routine allows controls or other clients of the info manager to register

@@ -160,7 +160,7 @@ private:
   CTextureCache();
   CTextureCache(const CTextureCache&);
   CTextureCache const& operator=(CTextureCache const&);
-  virtual ~CTextureCache();
+  ~CTextureCache() override;
 
   /*! \brief Check if the given image is a cached image
    \param image url of the image
@@ -208,8 +208,8 @@ private:
    */
   bool SetCachedTextureValid(const std::string &url, bool updateable);
 
-  virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
-  virtual void OnJobProgress(unsigned int jobID, unsigned int progress, unsigned int total, const CJob *job);
+  void OnJobComplete(unsigned int jobID, bool success, CJob *job) override;
+  void OnJobProgress(unsigned int jobID, unsigned int progress, unsigned int total, const CJob *job) override;
 
   /*! \brief Called when a caching job has completed.
    Removes the job from our processing list, updates the database
