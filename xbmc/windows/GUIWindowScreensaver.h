@@ -29,13 +29,13 @@ class CGUIWindowScreensaver : public CGUIWindow
 public:
   CGUIWindowScreensaver(void);
 
-  virtual bool OnMessage(CGUIMessage& message);
-  virtual bool OnAction(const CAction &action) { return false; } // We're just a screen saver, nothing to do here
-  virtual void Render();
-  virtual void Process(unsigned int currentTime, CDirtyRegionList &regions);
+  bool OnMessage(CGUIMessage& message) override;
+  bool OnAction(const CAction &action) override { return false; } // We're just a screen saver, nothing to do here
+  void Render() override;
+  void Process(unsigned int currentTime, CDirtyRegionList &regions) override;
 
 protected:
-  virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
+  EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event) override;
 
 private:
   ADDON::CScreenSaver* m_addon;

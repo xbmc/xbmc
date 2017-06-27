@@ -39,17 +39,17 @@ class CGUIWindowFileManager :
 public:
 
   CGUIWindowFileManager(void);
-  virtual ~CGUIWindowFileManager(void);
-  virtual bool OnMessage(CGUIMessage& message);
-  virtual bool OnAction(const CAction &action);
-  virtual bool OnBack(int actionID);
+  ~CGUIWindowFileManager(void) override;
+  bool OnMessage(CGUIMessage& message) override;
+  bool OnAction(const CAction &action) override;
+  bool OnBack(int actionID) override;
   const CFileItem &CurrentDirectory(int indx) const;
 
   static int64_t CalculateFolderSize(const std::string &strDirectory, CGUIDialogProgress *pProgress = NULL);
 
-  virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
+  void OnJobComplete(unsigned int jobID, bool success, CJob *job) override;
 protected:
-  virtual void OnInitWindow();
+  void OnInitWindow() override;
   void SetInitialPath(const std::string &path);
   void GoParentFolder(int iList);
   void UpdateControl(int iList, int item);
