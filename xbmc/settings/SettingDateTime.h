@@ -28,11 +28,11 @@ public:
   CSettingDate(const std::string &id, CSettingsManager *settingsManager = NULL);
   CSettingDate(const std::string &id, int label, const std::string &value, CSettingsManager *settingsManager = NULL);
   CSettingDate(const std::string &id, const CSettingDate &setting);
-  virtual ~CSettingDate() = default;
+  ~CSettingDate() override = default;
 
-  virtual SettingPtr Clone(const std::string &id) const override;
+  SettingPtr Clone(const std::string &id) const override;
 
-  virtual bool CheckValidity(const std::string &value) const override;
+  bool CheckValidity(const std::string &value) const override;
 
   CDateTime GetDate() const { return CDateTime::FromDBDate(GetValue()); }
   bool SetDate(const CDateTime& date) { return SetValue(date.GetAsDBDate()); }
@@ -44,11 +44,11 @@ public:
   CSettingTime(const std::string &id, CSettingsManager *settingsManager = NULL);
   CSettingTime(const std::string &id, int label, const std::string &value, CSettingsManager *settingsManager = NULL);
   CSettingTime(const std::string &id, const CSettingTime &setting);
-  virtual ~CSettingTime() = default;
+  ~CSettingTime() override = default;
 
-  virtual SettingPtr Clone(const std::string &id) const override;
+  SettingPtr Clone(const std::string &id) const override;
 
-  virtual bool CheckValidity(const std::string &value) const override;
+  bool CheckValidity(const std::string &value) const override;
 
   CDateTime GetTime() const { return CDateTime::FromDBTime(GetValue()); }
   bool SetTime(const CDateTime& time) { return SetValue(time.GetAsDBTime()); }

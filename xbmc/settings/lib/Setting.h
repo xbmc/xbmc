@@ -59,11 +59,11 @@ class CSetting : public ISetting,
 public:
   CSetting(const std::string &id, CSettingsManager *settingsManager = nullptr);
   CSetting(const std::string &id, const CSetting &setting);
-  virtual ~CSetting() = default;
+  ~CSetting() override = default;
 
   virtual std::shared_ptr<CSetting> Clone(const std::string &id) const = 0;
 
-  virtual bool Deserialize(const TiXmlNode *node, bool update = false) override;
+  bool Deserialize(const TiXmlNode *node, bool update = false) override;
 
   virtual SettingType GetType() const = 0;
   virtual bool FromString(const std::string &value) = 0;
@@ -89,17 +89,17 @@ public:
   void SetCallback(ISettingCallback *callback) { m_callback = callback; }
 
   // overrides of ISetting
-  virtual bool IsVisible() const override;
+  bool IsVisible() const override;
 
   // implementation of ISettingCallback
-  virtual void OnSettingAction(std::shared_ptr<const CSetting> setting) override;
+  void OnSettingAction(std::shared_ptr<const CSetting> setting) override;
 
 protected:
   // implementation of ISettingCallback
-  virtual bool OnSettingChanging(std::shared_ptr<const CSetting> setting) override;
-  virtual void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
-  virtual bool OnSettingUpdate(std::shared_ptr<CSetting> setting, const char *oldSettingId, const TiXmlNode *oldSettingNode) override;
-  virtual void OnSettingPropertyChanged(std::shared_ptr<const CSetting> setting, const char *propertyName) override;
+  bool OnSettingChanging(std::shared_ptr<const CSetting> setting) override;
+  void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
+  bool OnSettingUpdate(std::shared_ptr<CSetting> setting, const char *oldSettingId, const TiXmlNode *oldSettingNode) override;
+  void OnSettingPropertyChanged(std::shared_ptr<const CSetting> setting, const char *propertyName) override;
 
   void Copy(const CSetting &setting);
 
@@ -127,7 +127,7 @@ public:
   typedef TValue Value;
 
   // implementation of CSetting
-  virtual SettingType GetType() const override { return TSettingType; }
+  SettingType GetType() const override { return TSettingType; }
 
   static SettingType Type() { return TSettingType; }
 
@@ -138,7 +138,7 @@ protected:
   CTraitedSetting(const std::string &id, const CTraitedSetting &setting)
     : CSetting(id, setting)
   { }
-  virtual ~CTraitedSetting() = default;
+  ~CTraitedSetting() override = default;
 };
 
 class CSettingReference : public CSetting
@@ -146,16 +146,16 @@ class CSettingReference : public CSetting
 public:
   CSettingReference(const std::string &id, CSettingsManager *settingsManager = nullptr);
   CSettingReference(const std::string &id, const CSettingReference &setting);
-  virtual ~CSettingReference() = default;
+  ~CSettingReference() override = default;
 
-  virtual std::shared_ptr<CSetting> Clone(const std::string &id) const override;
+  std::shared_ptr<CSetting> Clone(const std::string &id) const override;
 
-  virtual SettingType GetType() const override { return SettingType::Reference; }
-  virtual bool FromString(const std::string &value) override { return false; }
-  virtual std::string ToString() const override { return ""; }
-  virtual bool Equals(const std::string &value) const override { return false; }
-  virtual bool CheckValidity(const std::string &value) const override { return false; }
-  virtual void Reset() override { }
+  SettingType GetType() const override { return SettingType::Reference; }
+  bool FromString(const std::string &value) override { return false; }
+  std::string ToString() const override { return ""; }
+  bool Equals(const std::string &value) const override { return false; }
+  bool CheckValidity(const std::string &value) const override { return false; }
+  void Reset() override { }
 
   const std::string& GetReferencedId() const { return m_referencedId; }
   void SetReferencedId(const std::string& referencedId) { m_referencedId = referencedId; }
@@ -175,18 +175,18 @@ public:
   CSettingList(const std::string &id, std::shared_ptr<CSetting> settingDefinition, CSettingsManager *settingsManager = nullptr);
   CSettingList(const std::string &id, std::shared_ptr<CSetting> settingDefinition, int label, CSettingsManager *settingsManager = nullptr);
   CSettingList(const std::string &id, const CSettingList &setting);
-  virtual ~CSettingList() = default;
+  ~CSettingList() override = default;
 
-  virtual std::shared_ptr<CSetting> Clone(const std::string &id) const override;
+  std::shared_ptr<CSetting> Clone(const std::string &id) const override;
 
-  virtual bool Deserialize(const TiXmlNode *node, bool update = false) override;
+  bool Deserialize(const TiXmlNode *node, bool update = false) override;
 
-  virtual SettingType GetType() const override { return SettingType::List; }
-  virtual bool FromString(const std::string &value) override;
-  virtual std::string ToString() const override;
-  virtual bool Equals(const std::string &value) const override;
-  virtual bool CheckValidity(const std::string &value) const override;
-  virtual void Reset() override;
+  SettingType GetType() const override { return SettingType::List; }
+  bool FromString(const std::string &value) override;
+  std::string ToString() const override;
+  bool Equals(const std::string &value) const override;
+  bool CheckValidity(const std::string &value) const override;
+  void Reset() override;
   
   SettingType GetElementType() const;
   std::shared_ptr<CSetting> GetDefinition() { return m_definition; }
@@ -233,17 +233,17 @@ public:
   CSettingBool(const std::string &id, CSettingsManager *settingsManager = nullptr);
   CSettingBool(const std::string &id, const CSettingBool &setting);
   CSettingBool(const std::string &id, int label, bool value, CSettingsManager *settingsManager = nullptr);
-  virtual ~CSettingBool() = default;
+  ~CSettingBool() override = default;
 
-  virtual std::shared_ptr<CSetting> Clone(const std::string &id) const override;
+  std::shared_ptr<CSetting> Clone(const std::string &id) const override;
 
-  virtual bool Deserialize(const TiXmlNode *node, bool update = false) override;
+  bool Deserialize(const TiXmlNode *node, bool update = false) override;
 
-  virtual bool FromString(const std::string &value) override;
-  virtual std::string ToString() const override;
-  virtual bool Equals(const std::string &value) const override;
-  virtual bool CheckValidity(const std::string &value) const override;
-  virtual void Reset() override { SetValue(m_default); }
+  bool FromString(const std::string &value) override;
+  std::string ToString() const override;
+  bool Equals(const std::string &value) const override;
+  bool CheckValidity(const std::string &value) const override;
+  void Reset() override { SetValue(m_default); }
 
   bool GetValue() const { CSharedLock lock(m_critical); return m_value; }
   bool SetValue(bool value);
@@ -271,18 +271,18 @@ public:
   CSettingInt(const std::string &id, int label, int value, CSettingsManager *settingsManager = nullptr);
   CSettingInt(const std::string &id, int label, int value, int minimum, int step, int maximum, CSettingsManager *settingsManager = nullptr);
   CSettingInt(const std::string &id, int label, int value, const TranslatableIntegerSettingOptions &options, CSettingsManager *settingsManager = nullptr);
-  virtual ~CSettingInt() = default;
+  ~CSettingInt() override = default;
 
-  virtual std::shared_ptr<CSetting> Clone(const std::string &id) const override;
+  std::shared_ptr<CSetting> Clone(const std::string &id) const override;
 
-  virtual bool Deserialize(const TiXmlNode *node, bool update = false) override;
+  bool Deserialize(const TiXmlNode *node, bool update = false) override;
 
-  virtual bool FromString(const std::string &value) override;
-  virtual std::string ToString() const override;
-  virtual bool Equals(const std::string &value) const override;
-  virtual bool CheckValidity(const std::string &value) const override;
+  bool FromString(const std::string &value) override;
+  std::string ToString() const override;
+  bool Equals(const std::string &value) const override;
+  bool CheckValidity(const std::string &value) const override;
   virtual bool CheckValidity(int value) const;
-  virtual void Reset() override { SetValue(m_default); }
+  void Reset() override { SetValue(m_default); }
 
   int GetValue() const { CSharedLock lock(m_critical); return m_value; }
   bool SetValue(int value);
@@ -343,18 +343,18 @@ public:
   CSettingNumber(const std::string &id, const CSettingNumber &setting);
   CSettingNumber(const std::string &id, int label, float value, CSettingsManager *settingsManager = nullptr);
   CSettingNumber(const std::string &id, int label, float value, float minimum, float step, float maximum, CSettingsManager *settingsManager = nullptr);
-  virtual ~CSettingNumber() = default;
+  ~CSettingNumber() override = default;
 
-  virtual std::shared_ptr<CSetting> Clone(const std::string &id) const override;
+  std::shared_ptr<CSetting> Clone(const std::string &id) const override;
 
-  virtual bool Deserialize(const TiXmlNode *node, bool update = false) override;
+  bool Deserialize(const TiXmlNode *node, bool update = false) override;
 
-  virtual bool FromString(const std::string &value) override;
-  virtual std::string ToString() const override;
-  virtual bool Equals(const std::string &value) const override;
-  virtual bool CheckValidity(const std::string &value) const override;
+  bool FromString(const std::string &value) override;
+  std::string ToString() const override;
+  bool Equals(const std::string &value) const override;
+  bool CheckValidity(const std::string &value) const override;
   virtual bool CheckValidity(double value) const;
-  virtual void Reset() override { SetValue(m_default); }
+  void Reset() override { SetValue(m_default); }
 
   double GetValue() const { CSharedLock lock(m_critical); return m_value; }
   bool SetValue(double value);
@@ -390,17 +390,17 @@ public:
   CSettingString(const std::string &id, CSettingsManager *settingsManager = nullptr);
   CSettingString(const std::string &id, const CSettingString &setting);
   CSettingString(const std::string &id, int label, const std::string &value, CSettingsManager *settingsManager = nullptr);
-  virtual ~CSettingString() = default;
+  ~CSettingString() override = default;
 
-  virtual std::shared_ptr<CSetting> Clone(const std::string &id) const override;
+  std::shared_ptr<CSetting> Clone(const std::string &id) const override;
 
-  virtual bool Deserialize(const TiXmlNode *node, bool update = false) override;
+  bool Deserialize(const TiXmlNode *node, bool update = false) override;
 
-  virtual bool FromString(const std::string &value) override { return SetValue(value); }
-  virtual std::string ToString() const override { return m_value; }
-  virtual bool Equals(const std::string &value) const override { return m_value == value; }
-  virtual bool CheckValidity(const std::string &value) const override;
-  virtual void Reset() override { SetValue(m_default); }
+  bool FromString(const std::string &value) override { return SetValue(value); }
+  std::string ToString() const override { return m_value; }
+  bool Equals(const std::string &value) const override { return m_value == value; }
+  bool CheckValidity(const std::string &value) const override;
+  void Reset() override { SetValue(m_default); }
 
   virtual const std::string& GetValue() const { CSharedLock lock(m_critical); return m_value; }
   virtual bool SetValue(const std::string &value);
@@ -457,18 +457,18 @@ public:
   CSettingAction(const std::string &id, CSettingsManager *settingsManager = nullptr);
   CSettingAction(const std::string &id, int label, CSettingsManager *settingsManager = nullptr);
   CSettingAction(const std::string &id, const CSettingAction &setting);
-  virtual ~CSettingAction() = default;
+  ~CSettingAction() override = default;
 
-  virtual std::shared_ptr<CSetting> Clone(const std::string &id) const override;
+  std::shared_ptr<CSetting> Clone(const std::string &id) const override;
 
-  virtual bool Deserialize(const TiXmlNode *node, bool update = false) override;
+  bool Deserialize(const TiXmlNode *node, bool update = false) override;
 
-  virtual SettingType GetType() const override { return SettingType::Action; }
-  virtual bool FromString(const std::string &value) override { return CheckValidity(value); }
-  virtual std::string ToString() const override { return ""; }
-  virtual bool Equals(const std::string &value) const override { return value.empty(); }
-  virtual bool CheckValidity(const std::string &value) const override { return value.empty(); }
-  virtual void Reset() override { }
+  SettingType GetType() const override { return SettingType::Action; }
+  bool FromString(const std::string &value) override { return CheckValidity(value); }
+  std::string ToString() const override { return ""; }
+  bool Equals(const std::string &value) const override { return value.empty(); }
+  bool CheckValidity(const std::string &value) const override { return value.empty(); }
+  void Reset() override { }
 
   bool HasData() const { return !m_data.empty(); }
   const std::string& GetData() const { return m_data; }

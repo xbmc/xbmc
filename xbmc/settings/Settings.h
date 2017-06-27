@@ -389,7 +389,7 @@ public:
    be used.
    */
   CSettings() = default;
-  virtual ~CSettings() = default;
+  ~CSettings() override = default;
 
   CSettingsManager* GetSettingsManager() const { return m_settingsManager; }
 

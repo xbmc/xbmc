@@ -28,14 +28,14 @@ class CGUIWindowSettingsScreenCalibration : public CGUIWindow
 {
 public:
   CGUIWindowSettingsScreenCalibration(void);
-  virtual ~CGUIWindowSettingsScreenCalibration(void);
-  virtual bool OnMessage(CGUIMessage& message);
-  virtual bool OnAction(const CAction &action);
-  virtual void DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions);
-  virtual void FrameMove();
-  virtual void DoRender();
-  virtual void AllocResources(bool forceLoad = false);
-  virtual void FreeResources(bool forceUnLoad = false);
+  ~CGUIWindowSettingsScreenCalibration(void) override;
+  bool OnMessage(CGUIMessage& message) override;
+  bool OnAction(const CAction &action) override;
+  void DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;
+  void FrameMove() override;
+  void DoRender() override;
+  void AllocResources(bool forceLoad = false) override;
+  void FreeResources(bool forceUnLoad = false) override;
 
 protected:
   unsigned int FindCurrentResolution();

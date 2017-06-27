@@ -57,10 +57,10 @@ public:
   CSettingDependencyCondition(const std::string &strProperty, const std::string &value,
                               const std::string &setting = "", bool negated = false,
                               CSettingsManager *settingsManager = nullptr);
-  virtual ~CSettingDependencyCondition() = default;
+  ~CSettingDependencyCondition() override = default;
 
-  virtual bool Deserialize(const TiXmlNode *node);
-  virtual bool Check() const;
+  bool Deserialize(const TiXmlNode *node) override;
+  bool Check() const override;
   
   const std::string& GetName() const { return m_name; }
   const std::string& GetSetting() const { return m_setting; }
@@ -91,9 +91,9 @@ public:
   {
     SetOperation(op);
   }
-  virtual ~CSettingDependencyConditionCombination() = default;
+  ~CSettingDependencyConditionCombination() override = default;
 
-  virtual bool Deserialize(const TiXmlNode *node);
+  bool Deserialize(const TiXmlNode *node) override;
 
   const std::set<std::string>& GetSettings() const { return m_settings; }
 
@@ -101,8 +101,8 @@ public:
   CSettingDependencyConditionCombination* Add(CSettingDependencyConditionCombinationPtr operation);
 
 private:
-  virtual CBooleanLogicOperation* newOperation() { return new CSettingDependencyConditionCombination(m_settingsManager); }
-  virtual CBooleanLogicValue* newValue() { return new CSettingDependencyCondition(m_settingsManager); }
+  CBooleanLogicOperation* newOperation() override { return new CSettingDependencyConditionCombination(m_settingsManager); }
+  CBooleanLogicValue* newValue() override { return new CSettingDependencyCondition(m_settingsManager); }
 
   std::set<std::string> m_settings;
 };
@@ -112,9 +112,9 @@ class CSettingDependency : public CSettingCondition
 public:
   explicit CSettingDependency(CSettingsManager *settingsManager = nullptr);
   CSettingDependency(SettingDependencyType type, CSettingsManager *settingsManager = nullptr);
-  virtual ~CSettingDependency() = default;
+  ~CSettingDependency() override = default;
 
-  virtual bool Deserialize(const TiXmlNode *node);
+  bool Deserialize(const TiXmlNode *node) override;
 
   SettingDependencyType GetType() const { return m_type; }
   std::set<std::string> GetSettings() const;

@@ -38,13 +38,13 @@ class CDisplaySettings : public ISettingCallback, public ISubSettings,
 public:
   static CDisplaySettings& GetInstance();
 
-  virtual bool Load(const TiXmlNode *settings) override;
-  virtual bool Save(TiXmlNode *settings) const override;
-  virtual void Clear() override;
+  bool Load(const TiXmlNode *settings) override;
+  bool Save(TiXmlNode *settings) const override;
+  void Clear() override;
 
-  virtual void OnSettingAction(std::shared_ptr<const CSetting> setting) override;
-  virtual bool OnSettingChanging(std::shared_ptr<const CSetting> setting) override;
-  virtual bool OnSettingUpdate(std::shared_ptr<CSetting> setting, const char *oldSettingId, const TiXmlNode *oldSettingNode) override;
+  void OnSettingAction(std::shared_ptr<const CSetting> setting) override;
+  bool OnSettingChanging(std::shared_ptr<const CSetting> setting) override;
+  bool OnSettingUpdate(std::shared_ptr<CSetting> setting, const char *oldSettingId, const TiXmlNode *oldSettingNode) override;
 
   /*!
    \brief Returns the currently active resolution
@@ -108,7 +108,7 @@ protected:
   CDisplaySettings();
   CDisplaySettings(const CDisplaySettings&);
   CDisplaySettings& operator=(CDisplaySettings const&);
-  virtual ~CDisplaySettings();
+  ~CDisplaySettings() override;
 
   DisplayMode GetCurrentDisplayMode() const;
 
