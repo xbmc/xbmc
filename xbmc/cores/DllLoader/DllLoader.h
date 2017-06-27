@@ -67,16 +67,16 @@ class DllLoader : public CoffLoader, public LibraryLoader
 {
 public:
   DllLoader(const char *dll, bool track = false, bool bSystemDll = false, bool bLoadSymbols = false, Export* exports = NULL);
-  virtual ~DllLoader();
+  ~DllLoader() override;
 
-  virtual bool Load();
-  virtual void Unload();
+  bool Load() override;
+  void Unload() override;
 
-  virtual int ResolveExport(const char*, void** ptr, bool logging = true);
-  virtual int ResolveOrdinal(unsigned long ordinal, void** ptr);
-  virtual bool HasSymbols() { return m_bLoadSymbols && !m_bUnloadSymbols; }
-  virtual bool IsSystemDll() { return m_bSystemDll; }
-  virtual HMODULE GetHModule() { return (HMODULE)hModule; }
+  int ResolveExport(const char*, void** ptr, bool logging = true) override;
+  int ResolveOrdinal(unsigned long ordinal, void** ptr) override;
+  bool HasSymbols() override { return m_bLoadSymbols && !m_bUnloadSymbols; }
+  bool IsSystemDll() override { return m_bSystemDll; }
+  HMODULE GetHModule() override { return (HMODULE)hModule; }
 
   Export* GetExportByFunctionName(const char* sFunctionName);
   Export* GetExportByOrdinal(unsigned long ordinal);
